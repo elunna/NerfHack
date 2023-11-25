@@ -220,4 +220,5 @@ OPTIONS=sanity_check
 # Options that make dev and testing much more painful, but should probably be enabled on public servers
 OPTIONS=!cmdassist
 OPTIONS=!tutorial
+OPTIONS=!safe_wait
 #eof
