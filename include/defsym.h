@@ -132,7 +132,7 @@
     /* start cmap B */
     PCHAR( 34, '|',  S_grave,  "grave", CLR(CLR_WHITE))
     PCHAR2(35, '\\', S_throne, "throne", "opulent throne", CLR(HI_GOLD))
-    PCHAR( 36, '{',  S_sink,   "sink", CLR(CLR_WHITE))
+    PCHAR( 36, '#',  S_sink,   "sink", CLR(CLR_WHITE))
     PCHAR( 37, '{',  S_fountain, "fountain", CLR(CLR_BRIGHT_BLUE))
     PCHAR2(38, '}',  S_pool,   "pool", "water", CLR(CLR_BLUE))
     PCHAR( 39, '.',  S_ice,    "ice", CLR(CLR_CYAN))
