@@ -91,3 +91,7 @@ bundle/*
 *.user
 util/*.lib
 util/*.exp
+
+# HACKEM dev settings
+.idea
+warnings.log
