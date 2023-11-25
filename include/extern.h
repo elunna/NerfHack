@@ -2404,7 +2404,7 @@ extern void punish(struct obj *);
 extern void unpunish(void);
 extern boolean cant_revive(int *, boolean, struct obj *);
 extern boolean create_particular(void);
-extern boolean create_particular_from_buffer(const char*);
+extern boolean create_particular_from_buffer(char*);
 
 /* ### rect.c ### */
 

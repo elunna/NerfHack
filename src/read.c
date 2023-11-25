@@ -3267,7 +3267,7 @@ create_particular(void)
 }
 
 boolean
-create_particular_from_buffer(const char* bufp)
+create_particular_from_buffer(char* bufp)
 {
     struct _create_particular_data d;
     
