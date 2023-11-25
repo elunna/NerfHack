@@ -458,6 +458,7 @@ Helmet_on(void)
                              <= (ABASE(A_INT) + ABON(A_INT) + ATEMP(A_INT))
                          ? "like sitting in a corner"
                          : "giddy");
+            makeknown(DUNCE_CAP);
         } else {
             /* [message formerly given here moved to uchangealign()] */
             makeknown(HELM_OF_OPPOSITE_ALIGNMENT);
@@ -487,6 +488,7 @@ Helmet_off(void)
         break;
     case DUNCE_CAP:
         gc.context.botl = 1;
+        makeknown(DUNCE_CAP);
         break;
     case CORNUTHAUM:
         if (!gc.context.takeoff.cancelled_don) {
