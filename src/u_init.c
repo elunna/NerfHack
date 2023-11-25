@@ -757,7 +757,6 @@ u_init(void)
             ini_inv(Magicmarker);
         else if (!rn2(10))
             ini_inv(Lamp);
-        knows_object(POT_WATER);
         skill_init(Skill_P);
         /* KMH, conduct --
          * Some may claim that this isn't agnostic, since they
@@ -945,6 +944,10 @@ u_init(void)
     if (num_spells() && (u.uenmax < SPELL_LEV_PW(1)))
         u.uen = u.uenmax = u.uenpeak = u.ueninc[u.ulevel] = SPELL_LEV_PW(1);
 
+    /* Quality-of-Life */
+    knows_object(POT_WATER);
+    knows_object(SCR_BLANK_PAPER);
+    knows_object(SCR_IDENTIFY);
     return;
 }
 
