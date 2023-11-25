@@ -51,13 +51,6 @@ dungeon = {
       },
       levels = {
          {
-            name = "rogue",
-            bonetag = "R",
-            base = 15,
-            range = 4,
-            flags = "roguelike",
-         },
-         {
             name = "oracle",
             bonetag = "O",
             base = 5,
