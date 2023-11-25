@@ -1241,6 +1241,7 @@ seffect_destroy_armor(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
     struct obj *otmp = some_armor(&gy.youmonst);
+    boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
     boolean old_erodeproof, new_erodeproof;
@@ -1266,7 +1267,13 @@ seffect_destroy_armor(struct obj **sobjp)
         return;
     }
     if (!scursed || !otmp || !otmp->cursed) {
-        if (!destroy_arm(otmp)) {
+        /* player is prompted to choose what to destroy only when the scroll is
+         * blessed and they are actually wearing armor */
+        boolean gets_choice = (sblessed && otmp);
+        if (gets_choice) {
+            pline("This is a scroll of destroy armor.");
+        }
+        if (!destroy_arm(otmp, gets_choice)) {
             strange_feeling(sobj, "Your skin itches.");
             *sobjp = 0; /* useup() in strange_feeling() */
             exercise(A_STR, FALSE);

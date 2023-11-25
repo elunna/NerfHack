@@ -606,7 +606,7 @@ extern struct obj *unchanger(void);
 extern void reset_remarm(void);
 extern int doddoremarm(void);
 extern int remarm_swapwep(void);
-extern int destroy_arm(struct obj *);
+extern int destroy_arm(struct obj *, boolean);
 extern void adj_abon(struct obj *, schar);
 extern boolean inaccessible_equipment(struct obj *, const char *, boolean);
 

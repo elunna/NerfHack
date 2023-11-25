@@ -1512,7 +1512,10 @@ splittable(struct obj *obj)
 static boolean
 taking_off(const char *action)
 {
-    return !strcmp(action, "take off") || !strcmp(action, "remove");
+    return !strcmp(action, "take off") || !strcmp(action, "remove") ||
+           /* choosing armor to destroy is also "taking it off", so should
+            * only use worn armor pieces */
+           !strcmp(action, "destroy");
 }
 
 static void

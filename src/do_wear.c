@@ -3014,12 +3014,24 @@ wornarm_destroyed(struct obj *wornarm)
         }
 }
 
-/* hit by destroy armor scroll/black dragon breath/monster spell */
+/* hit by destroy armor scroll/black dragon breath/monster spell
+ * if choose is TRUE, let the player choose what to destroy.
+ * Return 1 if something was destroyed, 0 if not.
+ */
 int
-destroy_arm(struct obj *atmp)
+destroy_arm(register struct obj *atmp, boolean choose)
 {
     struct obj *otmp;
+    struct obj *ochoice;
     boolean losing_gloves = FALSE;
+    if (choose) {
+        ochoice = getobj("destroy", takeoff_ok, GETOBJ_PROMPT);
+        /* prevent player from selecting non-worn armor */
+        if (ochoice && (ochoice->owornmask & W_ARMOR)) {
+            atmp = ochoice;
+        }
+    }
+    
     /*
      * Note: if there were any artifact cloaks, the 90% chance of
      * resistance here means that the cloak could survive and then

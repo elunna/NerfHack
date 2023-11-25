@@ -501,7 +501,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_MAGR);
             pline("A field of force surrounds you!");
-        } else if (!destroy_arm(some_armor(&gy.youmonst))) {
+        } else if (!destroy_arm(some_armor(&gy.youmonst), FALSE)) {
             Your("skin itches.");
         } else {
             /* monsters only realize you aren't magic-protected if armor is
