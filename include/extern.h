@@ -1986,6 +1986,7 @@ extern int choose_disco_sort(int);
 extern int dodiscovered(void);
 extern int doclassdisco(void);
 extern void rename_disco(void);
+extern void makeknown_msg(int);
 
 /* ### objects.c ### */
 
