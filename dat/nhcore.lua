@@ -135,7 +135,9 @@ nhcore = {
     -- game_exit = function() end,
 
     -- getpos_tip is called the first time the code enters getpos()
-    getpos_tip = show_getpos_tip,
+    
+    -- HACKEM: We assume people already know how to use farlook.
+    -- getpos_tip = show_getpos_tip,
 
     -- enter_tutorial and leave_tutorial
     enter_tutorial = tutorial_enter,

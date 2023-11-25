@@ -203,7 +203,7 @@ OPTIONS=msg_window:reversed
 OPTIONS=number_pad:0
 OPTIONS=sortloot:full
 OPTIONS=time
-OPTIONS=!tutorial
+
 
 # For fuzzing
 BIND=v:wizmakemap
@@ -216,4 +216,8 @@ OPTIONS=sanity_check
 #OPTIONS=align_message:top
 #OPTIONS=align_status:bottom
 #OPTIONS=perm_invent
+
+# Options that make dev and testing much more painful, but should probably be enabled on public servers
+OPTIONS=!cmdassist
+OPTIONS=!tutorial
 #eof
