@@ -111,6 +111,7 @@ static int dotravel_target(void);
 static int doclicklook(void);
 static int domouseaction(void);
 static int doterrain(void);
+static int wiz_clear(void);
 static int wiz_wish(void);
 static int wiz_identify(void);
 static int wiz_map(void);
@@ -2840,6 +2841,8 @@ struct ext_func_tab extcmdlist[] = {
               wiz_where, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
     { C('w'), "wizwish", "wish for something",
               wiz_wish, IFBURIED | WIZMODECMD, NULL },
+    { C('z'), "wizclear", "clear all monsters on the level",
+              wiz_clear, IFBURIED | WIZMODECMD, NULL },
     { '\0',   "wmode", "show wall modes",
               wiz_show_wmodes, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
     { 'z',    "zap", "zap a wand",
@@ -6781,6 +6784,29 @@ dosh_core(void)
     Norep(cmdnotavail, "#shell");
 #endif
     return ECMD_OK;
+}
+
+
+/* ^Z command - clear all monsters */
+static int
+wiz_clear(void)
+{
+    /* Can't let the fuzzer use this otherwise vault guards might die on 
+     * (0, 0) and weird things happen */
+    if (wizard && !iflags.debug_fuzzer) {
+        register struct monst *mtmp, *mtmp2;
+        
+        int gonecnt = 0;
+        for (mtmp = fmon; mtmp; mtmp = mtmp2) {
+            mtmp2 = mtmp->nmon;
+            if (DEADMONSTER(mtmp))
+                continue;
+            mongone(mtmp);
+            gonecnt++;
+        }
+        pline("Eliminated %d monster%s.", gonecnt, plur(gonecnt));
+    }
+    return 0;
 }
 
 /*cmd.c*/
