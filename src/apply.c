@@ -473,6 +473,8 @@ use_whistle(struct obj *obj)
             You(whistle_str, obj->cursed ? "shrill" : "high");
         Soundeffect(se_shrill_whistle, 50);
         wake_nearby();
+        if (obj->otyp == TIN_WHISTLE)
+            makeknown_msg(obj->otyp);
         if (obj->cursed)
             vault_summon_gd();
     }
