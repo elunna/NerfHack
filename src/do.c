@@ -507,7 +507,7 @@ dosinkring(struct obj *obj)
  giveback:
         obj->in_use = FALSE;
         dropx(obj);
-        trycall(obj);
+        makeknown(obj->otyp);
         return;
     case RIN_LEVITATION:
         pline_The("sink quivers upward for a moment.");
@@ -636,7 +636,7 @@ dosinkring(struct obj *obj)
         }
     }
     if (ideed) {
-        trycall(obj);
+        makeknown(obj->otyp);
     } else if (!nosink) {
         Soundeffect(se_ring_in_drain, 50);
         You_hear("the ring bouncing down the drainpipe.");
