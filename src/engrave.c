@@ -705,8 +705,15 @@ doengrave(void)
                 Sprintf(post_engr_text, "You probe the bugs on the floor.");
                 postknown = TRUE;
                 break;
-            case WAN_NOTHING:
             case WAN_UNDEAD_TURNING:
+                if (!Blind) {
+                    Sprintf(post_engr_text,
+                            "The dead bugs on the %s start moving!",
+                            surface(u.ux, u.uy));
+                    postknown = TRUE;
+                }
+                break;
+            case WAN_NOTHING:
             case WAN_OPENING:
             case WAN_LOCKING:
                 break;
