@@ -28,7 +28,7 @@ endif
 
 #4. Other
 GAMEUID  = $(USER)
-GAMEGRP  = games
+GAMEGRP  = bin
 
 #-----------------------------------------------------------------------------
 # You shouldn't need to change anything below here (in the hints file; if
@@ -311,12 +311,12 @@ MOREALL += ( cd src ; $(MAKE) pregame ; $(MAKE) $(TARGETPFX)libnh.a )
 endif  # WANT_LIBNH
 
 # Typical install path for normal user (non-root)
-#PREFIX=$(wildcard ~)
-#HACKDIR=$(PREFIX)/games/$(GAME)dir
+PREFIX=$(wildcard ~)
+HACKDIR=$(PREFIX)/games/$(GAME)dir
 
 # Default install path (assumes running at root)
-PREFIX=/usr
-HACKDIR=$(PREFIX)/games/lib/370-hdf_$(GAME)dir
+#PREFIX=/usr
+#HACKDIR=$(PREFIX)/games/lib/370-hdf_$(GAME)dir
 
 SHELLDIR = $(PREFIX)/games
 INSTDIR=$(HACKDIR)
