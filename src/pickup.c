@@ -3137,8 +3137,9 @@ menu_loot(int retry, boolean put_in)
     } else if (flags.menu_style == MENU_FULL) {
         all_categories = FALSE;
         Sprintf(buf, "%s what type of objects?", action);
-        mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | CHOOSE_ALL
-                  | JUSTPICKED );
+        mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | JUSTPICKED );
+        if (!put_in)
+            mflags |= CHOOSE_ALL;
         n = query_category(buf, put_in ? gi.invent : gc.current_container->cobj,
                            mflags, &pick_list, PICK_ANY);
         if (!n)
