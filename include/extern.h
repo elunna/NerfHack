@@ -140,6 +140,8 @@ extern void adjalign(int);
 extern int is_innate(int);
 extern char *from_what(int);
 extern void uchangealign(int, int);
+extern int uhp(void);
+extern int uhpmax(void);
 
 /* ### ball.c ### */
 

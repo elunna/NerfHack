@@ -1146,7 +1146,6 @@ Ring_on(register struct obj *obj)
 
     switch (obj->otyp) {
     case RIN_TELEPORTATION:
-    case RIN_REGENERATION:
     case RIN_SEARCHING:
     case RIN_HUNGER:
     case RIN_AGGRAVATE_MONSTER:
@@ -1223,6 +1222,15 @@ Ring_on(register struct obj *obj)
         learnring(obj, observable);
         if (obj->spe)
             find_ac(); /* updates botl */
+        break;
+    case RIN_REGENERATION:
+        if (!oldprop && !HRegeneration && !regenerates(gy.youmonst.data)) {
+            if ((uhp() < uhpmax()) &&
+                !objects[obj->otyp].oc_name_known) {
+                Your("wounds are rapidly healing!");
+                makeknown(RIN_REGENERATION);
+            }
+        }
         break;
     }
 }
