@@ -170,8 +170,11 @@ Boots_on(void)
     case LOW_BOOTS:
     case IRON_SHOES:
     case HIGH_BOOTS:
-    case JUMPING_BOOTS:
     case KICKING_BOOTS:
+        break;
+    case JUMPING_BOOTS:
+        makeknown(uarmf->otyp);
+        pline("Your %s feel longer.", makeplural(body_part(LEG)));
         break;
     case WATER_WALKING_BOOTS:
         if (u.uinwater)
@@ -269,10 +272,13 @@ Boots_off(void)
             float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
         }
         break;
+    case JUMPING_BOOTS:
+        makeknown(otyp);
+        pline("Your %s feel longer.", makeplural(body_part(LEG)));
+        break;
     case LOW_BOOTS:
     case IRON_SHOES:
     case HIGH_BOOTS:
-    case JUMPING_BOOTS:
     case KICKING_BOOTS:
         break;
     default:
