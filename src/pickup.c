@@ -2447,6 +2447,7 @@ in_container(struct obj *obj)
         return 0;
     } else if ((obj->otyp == LOADSTONE) && obj->cursed) {
         set_bknown(obj, 1);
+        makeknown(obj->otyp);	/* unambiguously a loadstone */
         pline_The("stone%s won't leave your person.", plur(obj->quan));
         return 0;
     } else if (obj->otyp == AMULET_OF_YENDOR

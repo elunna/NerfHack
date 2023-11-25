@@ -690,6 +690,7 @@ canletgo(struct obj *obj, const char *word)
         }
         obj->corpsenm = 0; /* reset */
         set_bknown(obj, 1);
+        makeknown(obj->otyp);	/* unambiguously a loadstone */
         return FALSE;
     }
     if (obj->otyp == LEASH && obj->leashmon != 0) {
