@@ -1765,7 +1765,7 @@ pickup_object(
             pline_The("scroll%s %s to dust as you %s %s up.", plur(obj->quan),
                       otense(obj, "turn"), telekinesis ? "raise" : "pick",
                       (obj->quan == 1L) ? "it" : "them");
-            trycall(obj);
+            makeknown(obj->otyp);
             useupf(obj, obj->quan);
             return 1; /* tried to pick something up and failed, but
                          don't want to terminate pickup loop yet   */
