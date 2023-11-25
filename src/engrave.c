@@ -8,6 +8,7 @@
 static int stylus_ok(struct obj *);
 static boolean u_can_engrave(void);
 static int engrave(void);
+static void engraving_learn_wand(struct obj*);
 static const char *blengr(void);
 
 char *
@@ -484,7 +485,8 @@ doengrave(void)
 {
     boolean dengr = FALSE;    /* TRUE if we wipe out the current engraving */
     boolean doblind = FALSE;  /* TRUE if engraving blinds the player */
-    boolean doknown = FALSE;  /* TRUE if we identify the stylus */
+    boolean preknown = FALSE;  /* TRUE if we identify the stylus before */
+    boolean postknown = FALSE; /* TRUE if we identify the stylus after */
     boolean eow = FALSE;      /* TRUE if we are overwriting oep */
     boolean jello = FALSE;    /* TRUE if we are engraving in slime */
     boolean ptext = TRUE;     /* TRUE if we must prompt for engrave text */
@@ -643,10 +645,19 @@ doengrave(void)
                 break;
             /* NODIR wands */
             case WAN_LIGHT:
-            case WAN_SECRET_DOOR_DETECTION:
             case WAN_CREATE_MONSTER:
             case WAN_WISHING:
             case WAN_ENLIGHTENMENT:
+                zapnodir(otmp);
+                /* pre/postknown not needed; these will make it known if
+                 * applicable */
+                break;
+            case WAN_SECRET_DOOR_DETECTION:
+                if (!Blind) {
+                    Strcpy(post_engr_text,
+                        "You find many hidden bugs on the floor.");
+                    postknown = TRUE;
+                }
                 zapnodir(otmp);
                 break;
             /* IMMEDIATE wands */
@@ -656,17 +667,20 @@ doengrave(void)
             case WAN_STRIKING:
                 Strcpy(post_engr_text,
                     "The wand unsuccessfully fights your attempt to write!");
+                postknown = TRUE;
                 break;
             case WAN_SLOW_MONSTER:
                 if (!Blind) {
                     Sprintf(post_engr_text, "The bugs on the %s slow down!",
                             surface(u.ux, u.uy));
+                    postknown = TRUE;
                 }
                 break;
             case WAN_SPEED_MONSTER:
                 if (!Blind) {
                     Sprintf(post_engr_text, "The bugs on the %s speed up!",
                             surface(u.ux, u.uy));
+                    postknown = TRUE;
                 }
                 break;
             case WAN_POLYMORPH:
@@ -674,6 +688,7 @@ doengrave(void)
                     if (!Blind) {
                         type = (xint16) 0; /* random */
                         (void) random_engraving(buf);
+                        preknown = TRUE;
                     } else {
                         /* keep the same type so that feels don't
                            change and only the text is altered,
@@ -686,11 +701,14 @@ doengrave(void)
                     dengr = TRUE;
                 }
                 break;
+            case WAN_PROBING:
+                Sprintf(post_engr_text, "You probe the bugs on the floor.");
+                postknown = TRUE;
+                break;
             case WAN_NOTHING:
             case WAN_UNDEAD_TURNING:
             case WAN_OPENING:
             case WAN_LOCKING:
-            case WAN_PROBING:
                 break;
             /* RAY wands */
             case WAN_MAGIC_MISSILE:
@@ -699,6 +717,7 @@ doengrave(void)
                     Sprintf(post_engr_text,
                             "The %s is riddled by bullet holes!",
                             surface(u.ux, u.uy));
+                    postknown = TRUE;
                 }
                 break;
             /* can't tell sleep from death - Eric Backus */
@@ -710,9 +729,11 @@ doengrave(void)
                 }
                 break;
             case WAN_COLD:
-                if (!Blind)
+                if (!Blind) {
                     Strcpy(post_engr_text,
                            "A few ice cubes drop from the wand.");
+                    postknown = TRUE;
+                }
                 if (!oep || (oep->engr_type != BURN))
                     break;
                 /*FALLTHRU*/
@@ -740,7 +761,7 @@ doengrave(void)
                 if (!objects[otmp->otyp].oc_name_known) {
                     if (flags.verbose)
                         pline("This %s is a wand of digging!", xname(otmp));
-                    doknown = TRUE;
+                    preknown = TRUE;
                 }
                 Strcpy(post_engr_text,
                        (Blind && !Deaf)
@@ -763,7 +784,7 @@ doengrave(void)
                 if (!objects[otmp->otyp].oc_name_known) {
                     if (flags.verbose)
                         pline("This %s is a wand of fire!", xname(otmp));
-                    doknown = TRUE;
+                    preknown = TRUE;
                 }
                 Strcpy(post_engr_text, Blind ? "You feel the wand heat up."
                                              : "Flames fly from the wand.");
@@ -774,7 +795,7 @@ doengrave(void)
                 if (!objects[otmp->otyp].oc_name_known) {
                     if (flags.verbose)
                         pline("This %s is a wand of lightning!", xname(otmp));
-                    doknown = TRUE;
+                    preknown = TRUE;
                 }
                 if (!Blind) {
                     Strcpy(post_engr_text, "Lightning arcs from the wand.");
@@ -886,10 +907,8 @@ doengrave(void)
      */
 
     /* Identify stylus */
-    if (doknown) {
-        learnwand(otmp);
-        if (objects[otmp->otyp].oc_name_known)
-            more_experienced(0, 10);
+    if (preknown) {
+        engraving_learn_wand(otmp);
     }
     if (teleengr) {
         rloc_engr(oep);
@@ -1089,8 +1108,12 @@ doengrave(void)
     gc.context.engraving.actionct = 0;
     set_occupation(engrave, "engraving", 0);
 
-    if (post_engr_text[0])
+    if (post_engr_text[0]) {
         pline("%s", post_engr_text);
+        if (postknown) {
+            engraving_learn_wand(otmp);
+        }
+    }
     if (doblind && !resists_blnd(&gy.youmonst)) {
         You("are blinded by the flash!");
         make_blinded((long) rnd(50), FALSE);
@@ -1307,6 +1330,17 @@ engrave(void)
     if (neweng)
         newsym(gc.context.engraving.pos.x, gc.context.engraving.pos.y);
     return 0;
+}
+
+/* Learn what a wand is by engraving with it. */
+static void
+engraving_learn_wand(struct obj *obj)
+{
+    learnwand(obj);
+    /* For some reason, this gives 10 points even if you already knew the
+     * wand... */
+    if (objects[obj->otyp].oc_name_known)
+        more_experienced(0, 10);
 }
 
 /* while loading bones, clean up text which might accidentally
