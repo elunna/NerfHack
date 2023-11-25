@@ -5987,6 +5987,14 @@ makewish(void)
      */
     strcpy(bufcpy, buf);
     otmp = readobjnam(buf, &nothing);
+
+    /* allow wishing for monsters in wizmode */
+    if (wizard && !otmp) {
+        if (create_particular_from_buffer(buf)) {
+            return;
+        }
+    }
+
     if (!otmp) {
         pline("Nothing fitting that description exists in the game.");
         if (++tries < MAXWISHTRY)
