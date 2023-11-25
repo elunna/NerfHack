@@ -1257,14 +1257,14 @@ uchangealign(int newalign,
 
 /** Returns the hitpoints of your current form. */
 int
-uhp()
+uhp(void)
 {
     return (Upolyd ? u.mh : u.uhp);
 }
 
 /** Returns the maximal hitpoints of your current form. */
 int
-uhpmax()
+uhpmax(void)
 {
     return (Upolyd ? u.mhmax : u.uhpmax);
 }
