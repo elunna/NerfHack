@@ -714,6 +714,7 @@ u_init(void)
         skill_init(Skill_B);
         break;
     case PM_CAVE_DWELLER:
+        u.nv_range = 2;
         Cave_man[C_AMMO].trquan = rn1(11, 10); /* 10..20 */
         ini_inv(Cave_man);
         skill_init(Skill_C);
