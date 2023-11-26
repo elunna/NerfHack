@@ -2058,7 +2058,7 @@ jump(int magic) /* 0=Physical, otherwise skill level */
     cc.y = u.uy;
     gj.jumping_is_magic = magic;
     getpos_sethilite(display_jump_positions, get_valid_jump_position);
-    if (getpos(&cc, TRUE, "the desired position") < 0)
+    if (getpos(&cc, FALSE, "the desired position") < 0)
         return ECMD_CANCEL; /* user pressed ESC */
     if (!is_valid_jump_pos(cc.x, cc.y, magic, TRUE)) {
         return ECMD_FAIL;
@@ -3378,7 +3378,7 @@ use_pole(struct obj *obj, boolean autohit)
     if (!autohit) {
         getpos_sethilite(display_polearm_positions,
                          get_valid_polearm_position);
-        if (getpos(&cc, TRUE, "the spot to hit") < 0)
+        if (getpos(&cc, FALSE, "the spot to hit") < 0)
             /* ESC; uses turn iff polearm became wielded */
             return (res | ECMD_CANCEL);
     }
@@ -3630,7 +3630,7 @@ use_grapple(struct obj *obj)
     cc.x = u.ux;
     cc.y = u.uy;
     getpos_sethilite(NULL, can_grapple_location);
-    if (getpos(&cc, TRUE, "the spot to hit") < 0)
+    if (getpos(&cc, FALSE, "the spot to hit") < 0)
         /* ESC; uses turn iff grapnel became wielded */
         return (res | ECMD_CANCEL);
 

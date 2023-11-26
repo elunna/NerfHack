@@ -1354,7 +1354,7 @@ throwspell(void)
     cc.x = u.ux;
     cc.y = u.uy;
     getpos_sethilite(NULL, can_center_spell_location);
-    if (getpos(&cc, TRUE, "the desired position") < 0)
+    if (getpos(&cc, FALSE, "the desired position") < 0)
         return 0; /* user pressed ESC */
     clear_nhwindow(WIN_MESSAGE); /* discard any autodescribe feedback */
 
