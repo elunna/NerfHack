@@ -1115,8 +1115,20 @@ doname_base(
                               * end (Strcat is used on the end) */
     const char *aname = 0;
     int omndx = obj->corpsenm;
-    register char *bp = xname(obj);
+    int nochrg = 0;
+    register char *bp;
 
+    /* tourists get a special identification service for shop items */
+    if (Role_if(PM_TOURIST)) {
+        long price = get_cost_of_shop_item(obj, &nochrg);
+        if (price > 0) {
+            discover_object(obj->otyp,TRUE,FALSE);
+        }
+    }
+    
+    /* This needs to come after the tourist ID */
+    bp = xname(obj);
+    
     if (iflags.override_ID) {
         known = dknown = cknown = bknown = lknown = TRUE;
     } else {
@@ -1477,7 +1489,6 @@ doname_base(
                 obj->unpaid ? "unpaid" : "contents",
                 quotedprice, currency(quotedprice));
     } else if (with_price) { /* on floor or in container on floor */
-        int nochrg = 0;
         long price = get_cost_of_shop_item(obj, &nochrg);
 
         if (price > 0L)
