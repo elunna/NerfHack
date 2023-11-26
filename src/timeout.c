@@ -865,6 +865,7 @@ nh_timeout(void)
             }
         }
 
+    spell_nag();
     run_timers();
 }
 

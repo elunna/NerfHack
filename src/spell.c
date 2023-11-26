@@ -2086,4 +2086,16 @@ num_spells(void)
     return i;
 }
 
+/* Check for fading spells and remind player if one has
+ * 100 turns left before being forgotten. */
+void
+spell_nag(void)
+{
+    for (int i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
+        if (spellknow(i) == 100) {
+            Your("%s spell is fading!", spellname(i));
+        }
+    }
+}
+
 /*spell.c*/

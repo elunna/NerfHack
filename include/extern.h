@@ -2773,6 +2773,7 @@ extern int known_spell(short);
 extern int spell_idx(short);
 extern char force_learn_spell(short);
 extern int num_spells(void);
+extern void spell_nag(void);
 
 /* ### steal.c ### */
 
