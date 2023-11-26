@@ -3067,6 +3067,8 @@ struct o_range {
 
 /* wishable subranges of objects */
 static NEARDATA const struct o_range o_ranges[] = {
+    { "anything", RANDOM_CLASS, ARROW, IRON_CHAIN },
+    { "surprise me", RANDOM_CLASS, ARROW, IRON_CHAIN },
     { "bag", TOOL_CLASS, SACK, BAG_OF_TRICKS },
     { "lamp", TOOL_CLASS, OIL_LAMP, MAGIC_LAMP },
     { "candle", TOOL_CLASS, TALLOW_CANDLE, WAX_CANDLE },
@@ -3146,6 +3148,34 @@ static const struct alt_spellings {
     { "load stone", LOADSTONE },
     { "touch stone", TOUCHSTONE },
     { "flintstone", FLINT },
+    
+    /* Community abbreviations */
+    { "BoH", BAG_OF_HOLDING },
+    { "CoMR", CLOAK_OF_MAGIC_RESISTANCE },
+    { "gdsm", GRAY_DRAGON_SCALE_MAIL },
+    { "sdsm", SILVER_DRAGON_SCALE_MAIL },
+    { "AoR", AMULET_OF_REFLECTION },
+    { "map", SCR_MAGIC_MAPPING },
+    { "pmd", POT_MONSTER_DETECTION },
+    { "uh", UNICORN_HORN },
+    { "mm", MAGIC_MARKER },
+    { "box", LARGE_BOX },
+    { "SoEA", SCR_ENCHANT_ARMOR },
+    { "SoEW", SCR_ENCHANT_WEAPON },
+    { "genocide", SCR_GENOCIDE },
+    { "RoC", RIN_CONFLICT },
+    { "BoL",  LEVITATION_BOOTS},
+    { "bos",  SPEED_BOOTS},
+    { "BoWW",  WATER_WALKING_BOOTS},
+    { "CoD",  CLOAK_OF_DISPLACEMENT},
+    { "CoI",  CLOAK_OF_INVISIBILITY},
+    { "CoMR",  CLOAK_OF_MAGIC_RESISTANCE},
+    { "GoD",  GAUNTLETS_OF_DEXTERITY},
+    { "GoP",  GAUNTLETS_OF_POWER},
+    { "HoB",  HELM_OF_BRILLIANCE},
+    { "HoOA",  HELM_OF_OPPOSITE_ALIGNMENT},
+    { "HoT",  HELM_OF_TELEPATHY},
+    { "SoR",  SHIELD_OF_REFLECTION},
     { (const char *) 0, 0 },
 };
 
