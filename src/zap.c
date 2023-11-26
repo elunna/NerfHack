@@ -2421,7 +2421,10 @@ bhitpile(
 int
 zappable(struct obj *wand)
 {
-    if (wand->spe < 0 || (wand->spe == 0 && rn2(WAND_WREST_CHANCE)))
+    int wrestchance = (wand->blessed ? 7 
+                                     : (wand->cursed ? WAND_WREST_CHANCE 
+                                                     : 23));
+    if (wand->spe < 0 || (wand->spe == 0 && rn2(wrestchance)))
         return 0;
     if (wand->spe == 0)
         You("wrest one last charge from the worn-out wand.");
