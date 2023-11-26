@@ -2306,6 +2306,11 @@ trapeffect_poly_trap(
             (void) newcham(mtmp, (struct permonst *) 0, NC_SHOW_MSG);
             if (in_sight)
                 seetrap(trap);
+            if (!rn2(27)) {
+                if (in_sight)
+                    pline("The polymorph trap evaporates in a puff of mist!");
+                deltrap(trap);
+            }
         }
     }
     return Trap_Effect_Finished;
