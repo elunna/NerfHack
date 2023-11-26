@@ -2531,9 +2531,17 @@ in_container(struct obj *obj)
         urgent_pline(
               "As you put %s inside, you are blasted by a magical explosion!",
                      doname(obj));
+        
         /* did not actually insert obj yet */
         if (was_unpaid)
             addtobill(obj, FALSE, FALSE, TRUE);
+        
+        /* At least ID the wand and give some experience for losing a bag of
+         * holding this way. */
+        if (obj->otyp == WAN_CANCELLATION) {
+            makeknown(obj->otyp);
+        }
+        
         if (obj->otyp == BAG_OF_HOLDING) /* one bag of holding into another */
             do_boh_explosion(obj, (boolean) (obj->where == OBJ_FLOOR));
         obfree(obj, (struct obj *) 0);
