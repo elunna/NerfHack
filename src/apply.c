@@ -7,7 +7,7 @@
 
 static int use_camera(struct obj *);
 static int use_towel(struct obj *);
-static boolean its_dead(coordxy, coordxy, int *);
+static boolean its_dead(coordxy, coordxy, int *, struct obj *);
 static int use_stethoscope(struct obj *);
 static void use_whistle(struct obj *);
 static void use_magic_whistle(struct obj *);
@@ -182,39 +182,50 @@ use_towel(struct obj *obj)
 
 /* maybe give a stethoscope message based on floor objects */
 static boolean
-its_dead(coordxy rx, coordxy ry, int *resp)
+its_dead(coordxy rx, coordxy ry, int *resp, struct obj *stethoscope)
 {
     char buf[BUFSZ];
-    boolean more_corpses;
+    boolean more_corpses = FALSE;
     struct permonst *mptr;
-    struct obj *corpse = sobj_at(CORPSE, rx, ry),
-               *statue = sobj_at(STATUE, rx, ry);
+    struct obj *corpse, *statue, *egg, *otmp;
+    boolean floor = can_reach_floor(TRUE); /* levitation or unskilled riding */
 
-    if (!can_reach_floor(TRUE)) { /* levitation or unskilled riding */
-        corpse = 0;               /* can't reach corpse on floor */
+    /* Set only one of corpse, statue, and egg based on which is the topmost. */
+    corpse = statue = egg = NULL;
+    for (otmp = gl.level.objects[rx][ry]; otmp; otmp = otmp->nexthere) {
+        /* can't reach corpse on floor */
+        if (otmp->otyp == CORPSE && floor) {
+            corpse = otmp;
+            more_corpses = (nxtobj(corpse, CORPSE, TRUE) != NULL);
+            break;
+        }
         /* you can't reach tiny statues (even though you can fight
            tiny monsters while levitating--consistency, what's that?) */
-        while (statue && mons[statue->corpsenm].msize == MZ_TINY)
-            statue = nxtobj(statue, STATUE, TRUE);
+        if (otmp->otyp == STATUE && (mons[otmp->corpsenm].msize > MZ_TINY
+                                     || floor)) {
+            statue = otmp;
+            break;
+        }
+        /* and you also can't reach eggs if you can't reach the floor */
+        if (otmp->otyp == EGG && floor) {
+            egg = otmp;
+            break;
+        }
     }
-    /* when both corpse and statue are present, pick the uppermost one */
-    if (corpse && statue) {
-        if (nxtobj(statue, CORPSE, TRUE) == corpse)
-            corpse = 0; /* corpse follows statue; ignore it */
-        else
-            statue = 0; /* corpse precedes statue; ignore statue */
-    }
-    more_corpses = (corpse && nxtobj(corpse, CORPSE, TRUE));
 
     /* additional stethoscope messages from jyoung@apanix.apana.org.au */
-    if (!corpse && !statue) {
-        ; /* nothing to do */
+    if (!corpse && !statue && !egg) {
+        return FALSE; /* nothing to do */
 
     } else if (Hallucination) {
-        if (!corpse) {
-            /* it's a statue */
+        if (egg) {
+            pline("This is indubitably a %s egg!", rndmonnam(NULL));
+        }
+        else if (statue) {
             Strcpy(buf, "You're both stoned");
-        } else if (corpse->quan == 1L && !more_corpses) {
+        }
+        /* else corpse... */
+        else if (corpse->quan == 1L && !more_corpses) {
             int gndr = 2; /* neuter: "it" */
             struct monst *mtmp = get_mtraits(corpse, FALSE);
 
@@ -266,6 +277,21 @@ its_dead(coordxy rx, coordxy ry, int *resp)
             one ? "" : "s", one ? "is" : "are", reviver ? " mostly" : "");
         return TRUE;
 
+    } else if (egg) {
+        if (stethoscope->blessed) {
+            if (stale_egg(egg) || egg->corpsenm == NON_PM) {
+                pline("The egg doesn't make any noise at all.");
+            }
+            else {
+                You("listen to the egg and guess... %s!",
+                    mons[egg->corpsenm].pmnames[NEUTRAL]);
+            egg->known = 1;
+        }
+        }
+        else {
+            You("can't quite tell what's inside the egg.");
+        }
+        return TRUE;
     } else { /* statue */
         const char *what, *how;
 
@@ -293,7 +319,6 @@ its_dead(coordxy rx, coordxy ry, int *resp)
         pline("%s is in %s health for a statue.", what, how);
         return TRUE;
     }
-    return FALSE; /* no corpse or statue */
 }
 
 static const char hollow_str[] = "a hollow sound.  This must be a secret %s!";
@@ -350,7 +375,7 @@ use_stethoscope(struct obj *obj)
             You_hear("faint splashing.");
         } else if (u.dz < 0 || !can_reach_floor(TRUE)) {
             cant_reach_floor(u.ux, u.uy, (u.dz < 0), TRUE);
-        } else if (its_dead(u.ux, u.uy, &res)) {
+	} else if (its_dead(u.ux, u.uy, &res, obj)) {
             ; /* message already given */
         } else if (Is_stronghold(&u.uz)) {
             Soundeffect(se_crackling_of_hellfire, 35);
@@ -451,7 +476,7 @@ use_stethoscope(struct obj *obj)
         return res;
     }
 
-    if (!its_dead(rx, ry, &res))
+    if (!its_dead(rx, ry, &res, obj))
         You("hear nothing special."); /* not You_hear()  */
     return res;
 }
