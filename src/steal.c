@@ -594,6 +594,22 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
     return freed_otmp;
 }
 
+static boolean
+is_stealable_item(struct obj *obj, struct monst *mtmp)
+{
+    /* the Wizard is not allowed to steal the player's quest artifact */
+    if (mtmp->iswiz && is_quest_artifact(obj)) {
+        return FALSE;
+    }
+
+    /* every other quest artifact is fine */
+    if (any_quest_artifact(obj)) {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 /* called for AD_SAMU (the Wizard and quest nemeses) */
 void
 stealamulet(struct monst* mtmp)
@@ -602,16 +618,16 @@ stealamulet(struct monst* mtmp)
     struct obj *otmp = 0, *obj = 0;
     int real = 0, fake = 0, n;
 
-    /* target every quest artifact, not just current role's;
+    /* target quest artifacts, but not current role's;
        if hero has more than one, choose randomly so that player
        can't use inventory ordering to influence the theft */
     for (n = 0, obj = gi.invent; obj; obj = obj->nobj)
-        if (any_quest_artifact(obj))
+        if (is_stealable_item(obj, mtmp))
             ++n, otmp = obj;
     if (n > 1) {
         n = rnd(n);
         for (otmp = gi.invent; otmp; otmp = otmp->nobj)
-            if (any_quest_artifact(otmp) && !--n)
+            if (is_stealable_item(otmp, mtmp) && !--n)
                 break;
     }
 
