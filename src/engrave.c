@@ -733,6 +733,11 @@ doengrave(void)
                 if (!Blind) {
                     Sprintf(post_engr_text, "The bugs on the %s stop moving!",
                             surface(u.ux, u.uy));
+                    /* automatically use the process of elimination */
+                    if (objects[WAN_SLEEP].oc_name_known 
+                        || objects[WAN_DEATH].oc_name_known) {
+                        postknown = TRUE;
+                    }
                 }
                 break;
             case WAN_COLD:
@@ -747,17 +752,29 @@ doengrave(void)
             case WAN_CANCELLATION:
             case WAN_MAKE_INVISIBLE:
                 if (oep && oep->engr_type != HEADSTONE) {
-                    if (!Blind)
+                    if (!Blind) {
                         pline_The("engraving on the %s vanishes!",
                                   surface(u.ux, u.uy));
+                        /* automatically use the process of elimination */
+                        if ((objects[WAN_TELEPORTATION].oc_name_known
+                             && objects[WAN_CANCELLATION].oc_name_known)
+                            || (objects[WAN_TELEPORTATION].oc_name_known
+                                && objects[WAN_MAKE_INVISIBLE].oc_name_known))
+                            preknown = TRUE;
+                    }
                     dengr = TRUE;
                 }
                 break;
             case WAN_TELEPORTATION:
                 if (oep && oep->engr_type != HEADSTONE) {
-                    if (!Blind)
+                    if (!Blind) {
                         pline_The("engraving on the %s vanishes!",
                                   surface(u.ux, u.uy));
+                        /* automatically use the process of elimination */
+                        if (objects[WAN_CANCELLATION].oc_name_known &&
+                            objects[WAN_MAKE_INVISIBLE].oc_name_known)
+                            preknown = TRUE;
+                    }
                     teleengr = TRUE;
                 }
                 break;
