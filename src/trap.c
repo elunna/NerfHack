@@ -4549,6 +4549,8 @@ water_damage(
                 else
                     ga.acid_ctx.unk_boom++;
             }
+            if (obj->dknown)
+                makeknown(POT_ACID);
             setnotworn(obj);
             delobj(obj);
             if (in_invent)
