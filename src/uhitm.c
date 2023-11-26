@@ -5559,9 +5559,10 @@ hmonas(struct monst *mon)
             if ((dhit = (tmp > rnd(20 + i)))) {
                 wakeup(mon, TRUE);
                 /* can't engulf unsolid creatures */
-                if (mon->data == &mons[PM_SHADE]) {
-                    /* no specialdmg check needed */
-                    Your("attempt to surround %s is harmless.", mon_nam(mon));
+                if (mon->data == &mons[PM_SHADE] || passes_walls(mon->data)) {
+                    Your("attempt to %s %s is futile.",
+                         (mattk->adtyp == AD_DGST ? "engulf" : "surround"),
+                         mon_nam(mon));
                 } else if (failed_grab(&gy.youmonst, mon, mattk)) {
                     ; /* non-shade miss; message already given */
                 } else {
