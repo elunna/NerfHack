@@ -4792,7 +4792,28 @@ drown(void)
     coordxy x, y;
     boolean is_solid = is_waterwall(u.ux, u.uy);
 
+    if (Levitation || Flying) {
+        /* shouldn't drown */
+        return FALSE;
+    }
     feel_newsym(u.ux, u.uy); /* in case Blind, map the water here */
+    /* Note: drown() callers should NOT check !Wwalking as a condition of
+     * calling it. If water walking boots prevent the player from falling in,
+     * they should become identified. */
+    if (Wwalking) {
+        if (u.uinwater) {
+            impossible("drown: in water but also water walking?");
+        }
+        /* maybe we were called because the hero moved or fell into a pool; if
+         * so, assuming the only source of water walking is water walking
+         * boots, identify them. */
+        if (!objects[WATER_WALKING_BOOTS].oc_name_known) {
+            Your("boots don't sink into the water!");
+        }
+        makeknown(WATER_WALKING_BOOTS);
+        return FALSE;
+    }
+
     /* happily wading in the same contiguous pool */
     if (u.uinwater && is_pool(u.ux - u.dx, u.uy - u.dy)
         && (Swimming || Amphibious || Breathless)) {

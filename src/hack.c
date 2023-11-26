@@ -2883,7 +2883,7 @@ pooleffects(
         if (is_lava(u.ux, u.uy)) {
             if (lava_effects())
                 return TRUE;
-        } else if ((!Wwalking || is_waterwall(u.ux,u.uy))
+        } else if ((is_pool(u.ux, u.uy) || is_waterwall(u.ux,u.uy))
                    && (newspot || !u.uinwater
                        || !(Swimming || Amphibious || Breathless))) {
             if (drown())
