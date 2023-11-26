@@ -934,9 +934,11 @@ polymon(int mntmp)
         reset_utrap(TRUE);
     }
     if (amorphous(gy.youmonst.data) || is_whirly(gy.youmonst.data)
-        || unsolid(gy.youmonst.data)) {
+        || unsolid(gy.youmonst.data) || nolimbs(gy.youmonst.data)) {
         if (Punished) {
-            You("slip out of the iron chain.");
+            You("%s out of the iron chain.",
+                (nolimbs(gy.youmonst.data)
+                 && gy.youmonst.data->msize > MZ_MEDIUM) ? "break" : "slip");
             unpunish();
         } else if (u.utrap && u.utraptype == TT_BURIEDBALL) {
             You("slip free of the buried ball and chain.");
