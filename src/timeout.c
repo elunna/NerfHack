@@ -559,20 +559,60 @@ nh_timeout(void)
     if (gq.quest_status.killed_leader)
         baseluck -= 4;
 
-    if (u.uluck != baseluck
-        && gm.moves % ((u.uhave.amulet || u.ugangr) ? 300 : 600) == 0) {
-        /* Cursed luckstones stop bad luck from timing out; blessed luckstones
-         * stop good luck from timing out; normal luckstones stop both;
-         * neither is stopped if you don't have a luckstone.
+    if (u.uluck != baseluck) {
+        int timeout = 600;
+        int time_luck = stone_luck(FALSE);
+        int base_dist = u.uluck - baseluck;
+        /* Cursed luckstones slow bad luck timing out; blessed luckstones
+         * slow good luck timing out; normal luckstones slow both;
+         * neither is affected if you don't have a luckstone.
          * Luck is based at 0 usually, +1 if a full moon and -1 on Friday 13th
          */
-        register int time_luck = stone_luck(FALSE);
-        boolean nostone = !carrying(LUCKSTONE) && !stone_luck(TRUE);
+        if ((has_luckitem() || base_dist > 15) 
+                               && (!time_luck
+                               || (time_luck > 0 && u.uluck > baseluck)
+                               || (time_luck < 0 && u.uluck < baseluck))) {
 
-        if (u.uluck > baseluck && (nostone || time_luck < 0))
-            u.uluck--;
-        else if (u.uluck < baseluck && (nostone || time_luck > 0))
-            u.uluck++;
+            /* The slowed timeout depends on the distance between your
+             * luck (not including luck bonuses) and your base luck.
+             *
+             * distance	timeout
+             * --------------------
+             *  1       9025
+             *  2       8100
+             *  3       7225
+             *  4       6400
+             *  5       5625
+             *  6       4900
+             *  7       4225
+             *  8       3600
+             *  9       3025
+             *  10      2500
+             *  11      2025
+             *  12      1600
+             *  13      1225
+             *  14      900
+             *  15      625
+             *  16      400
+             *  17      225
+             *  18      100
+             *  19      25
+             *  20      0
+             */
+            
+            int slow_timeout = 25 * ((20 - base_dist) * (20 - base_dist));
+            timeout = slow_timeout;
+        }
+
+        if (u.uhave.amulet || u.ugangr) timeout = timeout / 2;
+
+        if (gm.moves >= u.luckturn + timeout) {
+            if (u.uluck > baseluck)
+                u.uluck--;
+            else if (u.uluck < baseluck)
+                u.uluck++;
+            u.luckturn = gm.moves;
+        }
     }
     if (u.uinvulnerable)
         return; /* things past this point could kill you */
