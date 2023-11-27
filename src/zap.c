@@ -5982,11 +5982,17 @@ makewish(void)
         buf[0] = '\0'; /* for EDIT_GETLIN */
         goto retry;
     }
+    if (buf[0] == '\0') {
+        if (y_n("Really forfeit this wish?") == 'y') {
+            Strcpy(buf, "nothing");
+        }
+        else
+            goto retry;
+    }
     /*
      *  Note: if they wished for and got a non-object successfully,
-     *  otmp == &hands_obj.  That includes an artifact which has been
-     *  denied. Wishing for "nothing" requires a separate value to remain
-     *  distinct.
+     *  otmp == &zeroobj.  That includes an artifact which has been denied.
+     *  Wishing for "nothing" requires a separate value to remain distinct.
      */
     strcpy(bufcpy, buf);
     otmp = readobjnam(buf, &nothing);
