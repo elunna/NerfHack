@@ -3997,7 +3997,13 @@ wakeup(struct monst* mtmp, boolean via_attack)
     if (via_attack) {
         boolean was_peaceful = mtmp->mpeaceful;
 
-        if (was_sleeping)
+        /* To preserve the classic behavior of stealth, we will weight the
+         * chance of growling against luck. Good luck is highly rewarded, 
+         * bad luck is punished.
+         * LUCK:   −11	   −8	  −5	 −2	  0    +2 and higher
+         * CHANCE: 61.3%  49.1%	 36.9%	24.7%	12.5%     0.3%
+         */
+        if (was_sleeping && rnl(8) > 6)
             growl(mtmp);
         setmangry(mtmp, TRUE);
         if (was_peaceful) {
