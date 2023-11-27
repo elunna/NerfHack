@@ -410,10 +410,11 @@ dipfountain(struct obj *obj)
     if (obj->otyp == LONG_SWORD && u.ulevel >= 5 && !rn2(6)
         /* once upon a time it was possible to poly N daggers into N swords */
         && obj->quan == 1L && !obj->oartifact
+        && !(uarmh && uarmh->otyp == HELM_OF_OPPOSITE_ALIGNMENT)
         && !exist_artifact(LONG_SWORD, artiname(ART_EXCALIBUR))) {
         static const char lady[] = "Lady of the Lake";
 
-        if (u.ualign.type != A_LAWFUL) {
+        if (u.ualign.type != A_LAWFUL || !Role_if(PM_KNIGHT)) {
             /* Ha!  Trying to cheat her. */
             pline("A freezing mist rises from the %s and envelopes the sword.",
                   hliquid("water"));
