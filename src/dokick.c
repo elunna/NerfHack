@@ -36,9 +36,6 @@ kickdmg(struct monst *mon, boolean clumsy)
     int specialdmg, kick_skill = P_NONE;
     boolean trapkilled = FALSE;
 
-    if (uarmf && uarmf->otyp == KICKING_BOOTS)
-        dmg += 5;
-
     /* excessive wt affects dex, so it affects dmg */
     if (clumsy)
         dmg /= 2;
@@ -46,6 +43,9 @@ kickdmg(struct monst *mon, boolean clumsy)
     /* kicking a dragon or an elephant will not harm it */
     if (thick_skinned(mon->data))
         dmg = 0;
+
+    if (uarmf && uarmf->otyp == KICKING_BOOTS)
+        dmg += 5;
 
     /* attacking a shade is normally useless */
     if (mon->data == &mons[PM_SHADE])
