@@ -1989,9 +1989,20 @@ potionbreathe(struct obj *obj)
             exercise(A_CON, FALSE);
         }
         break;
-    case POT_HALLUCINATION:
+    case POT_HALLUCINATION: {
         kn++;
-        You("have a momentary vision.");
+        boolean not_affected = Blind || (u.umonnum == PM_BLACK_LIGHT
+                                         || u.umonnum == PM_VIOLET_FUNGUS
+                                         || dmgtype(gy.youmonst.data, AD_STUN));
+        if (!not_affected) {
+            boolean chg;
+            if (!Hallucination)
+                chg =
+                    make_hallucinated(HHallucination + (long) rn1(10, 5), FALSE, 0L);
+            You("%s.", chg ? "are freaked out"
+                           : "have a momentary vision, but are otherwise unaffected");
+        }
+    }
         break;
     case POT_CONFUSION:
     case POT_BOOZE:
