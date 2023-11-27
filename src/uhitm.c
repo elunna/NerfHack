@@ -363,9 +363,9 @@ find_roll_to_hit(
 
     *role_roll_penalty = 0; /* default is `none' */
 
-    tmp = 1 + Luck + abon() + find_mac(mtmp) + u.uhitinc
-          + maybe_polyd(gy.youmonst.data->mlevel, u.ulevel);
-
+    tmp = 1 + (Luck / 3) + abon() + find_mac(mtmp) + u.uhitinc
+          + maybe_polyd(gy.youmonst.data->mlevel, (u.ulevel > 20 ? 20 : u.ulevel));
+    
     /* some actions should occur only once during multiple attacks */
     if (!(*attk_count)++) {
         /* knight's chivalry or samurai's giri */
