@@ -5983,7 +5983,7 @@ makewish(void)
         goto retry;
     }
     if (buf[0] == '\0') {
-        if (y_n("Really forfeit this wish?") == 'y') {
+        if (wizard || y_n("Really forfeit this wish?") == 'y') {
             Strcpy(buf, "nothing");
         }
         else
