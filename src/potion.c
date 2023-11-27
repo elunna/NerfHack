@@ -1972,6 +1972,7 @@ potionbreathe(struct obj *obj)
         exercise(A_CON, TRUE);
         break;
     case POT_SICKNESS:
+        kn++;
         if (!Role_if(PM_HEALER)) {
             if (Upolyd) {
                 if (u.mh <= 5)
@@ -1989,6 +1990,7 @@ potionbreathe(struct obj *obj)
         }
         break;
     case POT_HALLUCINATION:
+        kn++;
         You("have a momentary vision.");
         break;
     case POT_CONFUSION:
@@ -2030,8 +2032,10 @@ potionbreathe(struct obj *obj)
         }
         break;
     case POT_SPEED:
-        if (!Fast)
+        if (!Fast) {
+            kn++;
             Your("knees seem more flexible now.");
+        }
         incr_itimeout(&HFast, rnd(5));
         exercise(A_DEX, TRUE);
         break;
