@@ -6004,7 +6004,12 @@ makewish(void)
         }
     }
 
-    if (!otmp) {
+    if (!otmp && iflags.debug_fuzzer) {
+        /* allow the fuzzer, and only the fuzzer, to get a random object from a
+         * random input string that corresponds to nothing. */
+        buf[0] = '\0';
+        otmp = readobjnam(buf, &nothing);
+    } else if (!otmp) {
         pline("Nothing fitting that description exists in the game.");
         if (++tries < MAXWISHTRY)
             goto retry;
