@@ -4512,10 +4512,16 @@ burn_floor_objects(
 /* will zap/spell/breath attack score a hit against armor class `ac'? */
 static int
 zap_hit(int ac,
-        int type) /* either hero cast spell type or 0 */
+        int type) /* either hero cast spell type,
+                   * or a lil bonus for high Dex, or 0 */
 {
     int chance = rn2(20);
-    int spell_bonus = type ? spell_hit_bonus(type) : 0;
+    int spell_bonus = 0;
+
+    if (type)
+        spell_bonus = spell_hit_bonus(type);
+    else if (ACURR(A_DEX) > 17)
+        spell_bonus = (ACURR(A_DEX) - 17);
 
     /* small chance for naked target to avoid being hit */
     if (!chance)
