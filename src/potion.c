@@ -2569,6 +2569,7 @@ potion_dip(struct obj *obj, struct obj *potion)
                 Strcpy(buf, The(xname(potion)));
             pline("%s forms a coating on %s.", buf, the(xname(obj)));
             obj->opoisoned = TRUE;
+            makeknown(POT_SICKNESS);
             goto poof;
         } else if (obj->opoisoned && (potion->otyp == POT_HEALING
                                       || potion->otyp == POT_EXTRA_HEALING
