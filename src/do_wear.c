@@ -2346,18 +2346,66 @@ find_ac(void)
     int uac = mons[u.umonnum].ac; /* base armor class for current form */
 
     /* armor class from worn gear */
-    if (uarm)
+
+    int racial_bonus;
+
+    /* Wearing racial armor is worth +x to the armor's AC; orcs get a slightly
+     * larger bonus to compensate their sub-standard equipment, lack of equipment,
+     * and the stats-challenged orc itself. Taken from SporkHack.
+     */
+    racial_bonus = Race_if(PM_ORC) ? 2
+                     : Race_if(PM_ELF) ? 1
+                       : Race_if(PM_DWARF) ? 1 : 0;
+
+    if (uarm) {
         uac -= ARM_BONUS(uarm);
-    if (uarmc)
+        if ((Race_if(PM_ORC)
+             && (uarm->otyp == ORCISH_CHAIN_MAIL
+                 || uarm->otyp == ORCISH_RING_MAIL))
+            || (Race_if(PM_ELF) && uarm->otyp == ELVEN_MITHRIL_COAT)
+            || (Race_if(PM_DWARF) && uarm->otyp == DWARVISH_MITHRIL_COAT)) {
+            uac -= racial_bonus;
+        }
+    }
+
+    if (uarmc) {
         uac -= ARM_BONUS(uarmc);
-    if (uarmh)
+        if ((Race_if(PM_ORC) && uarmc->otyp == ORCISH_CLOAK)
+            || (Race_if(PM_ELF) && uarmc->otyp == ELVEN_CLOAK)
+            || (Race_if(PM_DWARF) && uarmc->otyp == DWARVISH_CLOAK)) {
+            uac -= racial_bonus;
+        }
+    }
+
+    if (uarmh) {
         uac -= ARM_BONUS(uarmh);
-    if (uarmf)
+        if ((Race_if(PM_ORC) && uarmh->otyp == ORCISH_HELM)
+            || (Race_if(PM_ELF) && uarmh->otyp == ELVEN_LEATHER_HELM)
+            || (Race_if(PM_DWARF) && uarmh->otyp == DWARVISH_IRON_HELM)) {
+            uac -= racial_bonus;
+        }
+    }
+
+    if (uarmf) {
         uac -= ARM_BONUS(uarmf);
-    if (uarms)
+        if ((Race_if(PM_ELF) && uarmf->otyp == ELVEN_BOOTS)
+            || (Race_if(PM_DWARF) && uarmf->otyp == IRON_SHOES)) {
+            uac -= racial_bonus;
+        }
+    }
+
+    if (uarms) {
         uac -= ARM_BONUS(uarms);
+        if ((Race_if(PM_ORC) && uarms->otyp == ORCISH_SHIELD)
+            || (Race_if(PM_ELF) && uarms->otyp == ELVEN_SHIELD)
+            || (Race_if(PM_DWARF) && uarms->otyp == DWARVISH_ROUNDSHIELD)) {
+            uac -= racial_bonus;
+        }
+    }
+
     if (uarmg)
         uac -= ARM_BONUS(uarmg);
+    
     if (uarmu)
         uac -= ARM_BONUS(uarmu);
     if (uleft && uleft->otyp == RIN_PROTECTION)
