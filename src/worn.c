@@ -65,6 +65,7 @@ setworn(struct obj *obj, long mask)
                     if (u.twoweap && (oobj->owornmask & (W_WEP | W_SWAPWEP)))
                         set_twoweap(FALSE); /* u.twoweap = FALSE */
                     oobj->owornmask &= ~wp->w_mask;
+                    oobj->owt = weight(oobj); /* undo armor weight reduction */
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
                         /* leave as "x = x <op> y", here and below, for broken
                          * compilers */
@@ -87,6 +88,7 @@ setworn(struct obj *obj, long mask)
                 *(wp->w_obj) = obj;
                 if (obj) {
                     obj->owornmask |= wp->w_mask;
+                    obj->owt = weight(obj); /* armor weight reduction */
                     /* Prevent getting/blocking intrinsics from wielding
                      * potions, through the quiver, etc.
                      * Allow weapon-tools, too.
@@ -138,6 +140,7 @@ setnotworn(struct obj *obj)
             u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
             monstunseesu_prop(p); /* remove this extrinsic from seenres */ 
             obj->owornmask &= ~wp->w_mask;
+            obj->owt = weight(obj); /* remove armor weight reduction */
             if (obj->oartifact)
                 set_artifact_intrinsic(obj, 0, wp->w_mask);
             if ((p = w_blocks(obj, wp->w_mask)) != 0)
@@ -696,11 +699,12 @@ m_dowear_type(
         m_delay += 2;
     /* when upgrading a piece of armor, account for time spent
        taking off current one */
-    if (old) {
+    if (old) { /* do this first to avoid "(being worn)" */
         m_delay += objects[old->otyp].oc_delay;
 
         oldmask = old->owornmask; /* needed later by artifact_light() */
         old->owornmask = 0L; /* avoid doname() showing "(being worn)" */
+        old->owt = weight(old); /* remove armor weight reduction */
     }
 
     if (!creation) {
@@ -734,6 +738,7 @@ m_dowear_type(
     }
     mon->misc_worn_check |= flag;
     best->owornmask |= flag;
+    best->owt = weight(best); /* armor weight reduction */
     if (autocurse)
         curse(best);
     if (artifact_light(best) && !best->lamplit) {
@@ -1172,6 +1177,7 @@ extract_from_minvent(
     obj_extract_self(obj);
     obj->owornmask = 0L;
     if (unwornmask) {
+        obj->owt = weight(obj); /* reset armor to base weight */
         if (!DEADMONSTER(mon) && do_extrinsics) {
             update_mon_extrinsics(mon, obj, FALSE, silently);
         }
