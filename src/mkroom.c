@@ -346,7 +346,9 @@ fill_zoo(struct mkroom* sroom)
                                      : (type == LEPREHALL)
                                          ? &mons[PM_LEPRECHAUN]
                                          : (type == COCKNEST)
-                                             ? &mons[PM_COCKATRICE]
+                                             ? (rn2(4) 
+                                                ? &mons[PM_COCKATRICE] 
+                                                : &mons[PM_CHICKATRICE])
                                              : (type == ANTHOLE)
                                                  ? antholemon()
                                                  : (struct permonst *) 0,
@@ -400,6 +402,11 @@ fill_zoo(struct mkroom* sroom)
                                 sobj, mkobj(RANDOM_CLASS, FALSE));
                         sobj->owt = weight(sobj);
                     }
+                }
+                if (!rn2(5)) {
+                    struct obj *egg = mksobj_at(EGG, sx, sy, FALSE, FALSE);
+                    egg->owt = weight(egg);
+                    set_corpsenm(egg, PM_COCKATRICE);
                 }
                 break;
             case ANTHOLE:
