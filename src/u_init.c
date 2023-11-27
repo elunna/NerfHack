@@ -176,9 +176,6 @@ static struct trobj Wizard[] = {
 
 static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
-static struct trobj Magicmarker[] = { { MAGIC_MARKER, UNDEF_SPE, TOOL_CLASS,
-                                        1, 0 },
-                                      { 0, 0, 0, 0, 0 } };
 static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
 static struct trobj Blindfold[] = { { BLINDFOLD, 0, TOOL_CLASS, 1, 0 },
@@ -695,8 +692,6 @@ u_init(void)
             ini_inv(Tinopener);
         else if (!rn2(4))
             ini_inv(Lamp);
-        else if (!rn2(10))
-            ini_inv(Magicmarker);
         knows_object(SACK);
         knows_object(TOUCHSTONE);
         skill_init(Skill_A);
@@ -742,9 +737,7 @@ u_init(void)
 
         Monk[M_BOOK].trotyp = M_spell[rn2(90) / 30]; /* [0..2] */
         ini_inv(Monk);
-        if (!rn2(5))
-            ini_inv(Magicmarker);
-        else if (!rn2(10))
+        if (!rn2(10))
             ini_inv(Lamp);
         knows_class(ARMOR_CLASS);
         /* sufficiently martial-arts oriented item to ignore language issue */
@@ -755,8 +748,6 @@ u_init(void)
     case PM_CLERIC: /* priest/priestess */
         ini_inv(Priest);
         if (!rn2(10))
-            ini_inv(Magicmarker);
-        else if (!rn2(10))
             ini_inv(Lamp);
         skill_init(Skill_P);
         /* KMH, conduct --
@@ -811,8 +802,6 @@ u_init(void)
             ini_inv(Leash);
         else if (!rn2(25))
             ini_inv(Towel);
-        else if (!rn2(25))
-            ini_inv(Magicmarker);
         skill_init(Skill_T);
         break;
     case PM_VALKYRIE:
@@ -825,8 +814,6 @@ u_init(void)
         break;
     case PM_WIZARD:
         ini_inv(Wizard);
-        if (!rn2(5))
-            ini_inv(Magicmarker);
         if (!rn2(5))
             ini_inv(Blindfold);
         skill_init(Skill_W);
