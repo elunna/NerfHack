@@ -78,8 +78,28 @@ throne_sit_effect(void)
             if (u.uluck + rn2(5) < 0) {
                 You_feel("your luck is changing.");
                 change_luck(1);
-            } else
+            } else if (!rn2(5)) {
+                /* overall this equates to a 1.5% chance for a wish */
                 makewish();
+                /* no farming thrones for multiple wishes */
+                goto poofthrone;
+            } else {
+                if (Luck < 0 || (HSee_invisible & INTRINSIC)) {
+                    if (gl.level.flags.nommap) {
+                        pline("An awful drone fills your head!");
+                        make_confused((HConfusion & TIMEOUT) + (long) rnd(30),
+                                      FALSE);
+                    } else {
+                        pline("A clear image forms in your mind.");
+                        do_mapping();
+                    }
+                } else {
+                    /* permanent see invisible in this instance */
+                    Your("vision becomes crystal clear.");
+                    HSee_invisible |= FROMOUTSIDE;
+                    newsym(u.ux, u.uy);
+                }
+            }
             break;
         case 7:
             {
@@ -186,6 +206,7 @@ throne_sit_effect(void)
     }
 
     if (!rn2(3) && IS_THRONE(levl[u.ux][u.uy].typ)) {
+poofthrone:
         /* may have teleported */
         levl[u.ux][u.uy].typ = ROOM, levl[u.ux][u.uy].flags = 0;
         pline_The("throne vanishes in a puff of logic.");
