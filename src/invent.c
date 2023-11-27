@@ -2637,8 +2637,13 @@ xprname(
     boolean use_invlet = (flags.invlet_constant
                           && let != CONTAINED_SYM && let != HANDS_SYM);
     long savequan = 0L;
+    long save_owt = 0L;
 
     if (quan && obj) {
+        if (iflags.invweight) {
+            save_owt = obj->owt;
+            obj->owt = obj->owt * quan / obj->quan;
+        }
         savequan = obj->quan;
         obj->quan = quan;
     }
@@ -2675,8 +2680,12 @@ xprname(
         txtlen = BUFSZ - 1 - (4 + sfxlen);
     Sprintf(li, fmt, let, txtlen, txt, suffix);
 
-    if (savequan)
+    if (savequan) {
         obj->quan = savequan;
+    }
+    if (save_owt) {
+        obj->owt = save_owt;
+    }
 
     return li;
 }

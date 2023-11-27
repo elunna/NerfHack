@@ -4210,6 +4210,10 @@
 
        If you use menu coloring, you may want to turn this off.
 
+     invweight
+       Augment  inventory  object  descriptions  with  their  objects'
+       weight (default on).
+
      legacy
        Display an introductory message when starting the game (default on).
        Persistent.
@@ -4992,10 +4996,6 @@
        comment  line.   For  a comma-separated list in NETHACKOPTIONS or an
        OPTIONS line in a configuration file, that would  be  the  rightmost
        option in the list.
-
-     wizweight
-       Augment  object  descriptions  with  their  objects' weight (default
-       off).  Debug mode only.
 
      zerocomp
        When writing out a save file, perform zero-comp compression  of  the

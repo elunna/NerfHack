@@ -1092,7 +1092,7 @@ obfree(register struct obj* obj, register struct obj* merge)
             bp->useup = 1;
             obj->unpaid = 0; /* only for doinvbill */
             /* for used up glob, put back origial weight in case it gets
-               formatted ('I x' or itemized billing) with 'wizweight' On */
+               formatted ('I x' or itemized billing) with 'invweight' On */
             if (obj->globby && !obj->owt && has_omid(obj))
                 obj->owt = OMID(obj);
             add_to_billobjs(obj);
