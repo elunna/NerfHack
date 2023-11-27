@@ -836,7 +836,9 @@ Armor_on(void)
     if (!uarm) /* no known instances of !uarm here but play it safe */
         return 0;
     uarm->known = 1; /* suit's +/- evident because of status line AC */
-
+    if (Role_if(PM_MONK))
+        You_feel("extremely uncomfortable wearing such armor.");
+    
     dragon_armor_handling(uarm, TRUE, TRUE);
     /* gold DSM requires special handling since it emits light when worn;
        do that after the special armor handling */
@@ -859,6 +861,8 @@ Armor_off(void)
     gc.context.takeoff.mask &= ~W_ARM;
     setworn((struct obj *) 0, W_ARM);
     gc.context.takeoff.cancelled_don = FALSE;
+    if (Role_if(PM_MONK))
+        You_feel("much more comfortable and free now.");
 
     /* taking off yellow dragon scales/mail might be fatal; arti_light
        comes from gold dragon scales/mail so they don't overlap, but
@@ -889,7 +893,9 @@ Armor_gone(void)
     gc.context.takeoff.mask &= ~W_ARM;
     setnotworn(uarm);
     gc.context.takeoff.cancelled_don = FALSE;
-
+    if (Role_if(PM_MONK))
+        You_feel("much more comfortable and free now.");
+    
     /* losing yellow dragon scales/mail might be fatal; arti_light
        comes from gold dragon scales/mail so they don't overlap, but
        conceptually the non-fatal change should be done before the
