@@ -5986,8 +5986,14 @@ makewish(void)
         if (wizard || y_n("Really forfeit this wish?") == 'y') {
             Strcpy(buf, "nothing");
         }
-        else
+#ifdef HANGUPHANDLING
+        else if (gp.program_state.done_hup) {
+            Strcpy(buf, "nothing");
+        }
+#endif
+        else {
             goto retry;
+        }
     }
     /*
      *  Note: if they wished for and got a non-object successfully,
