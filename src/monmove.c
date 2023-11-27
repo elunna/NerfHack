@@ -259,6 +259,7 @@ void
 mon_regen(struct monst *mon, boolean digest_meal)
 {
     if (mon->mhp < mon->mhpmax
+        && (!Is_valley(&u.uz) || is_undead(mon->data))
         && (gm.moves % 20 == 0 || regenerates(mon->data)))
         mon->mhp++;
     if (mon->mspec_used)

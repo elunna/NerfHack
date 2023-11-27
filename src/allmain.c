@@ -583,7 +583,9 @@ regen_pw(int wtcap)
     }
 }
 
-#define U_CAN_REGEN() (Regeneration || (Sleepy && u.usleep))
+#define U_CAN_REGEN() ((Regeneration || (Sleepy && u.usleep)) \
+    /* Players cannot regenerate in the valley unless undead */ \
+    && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data)))
 
 /* maybe recover some lost health (or lose some when an eel out of water) */
 static void
