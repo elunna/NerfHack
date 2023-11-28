@@ -381,7 +381,7 @@ WEAPON("flail", NoDes,
 
 /* misc */
 WEAPON("bullwhip", NoDes,
-       1, 0, 0,  2,  20,   4,  2,  1, 0, 0,   P_WHIP, LEATHER, CLR_BROWN,
+       1, 0, 0,  2,  7,   4,  2,  1, 0, 0,   P_WHIP, LEATHER, CLR_BROWN,
                                                         BULLWHIP),
 
 /* bows */
