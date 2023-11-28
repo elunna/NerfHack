@@ -364,9 +364,9 @@ find_roll_to_hit(
 
     *role_roll_penalty = 0; /* default is `none' */
 
-    tmp = 1 + Luck + abon() + find_mac(mtmp) + u.uhitinc
-          + maybe_polyd(gy.youmonst.data->mlevel, u.ulevel);
-
+    tmp = 1 + (Luck / 3) + abon() + find_mac(mtmp) + u.uhitinc
+          + maybe_polyd(gy.youmonst.data->mlevel, (u.ulevel > 20 ? 20 : u.ulevel));
+    
     /* some actions should occur only once during multiple attacks */
     if (!(*attk_count)++) {
         /* knight's chivalry or samurai's giri */
@@ -944,6 +944,22 @@ hmon_hitmon_weapon_melee(
            let it also hit from behind or shatter foes' weapons */
         || (hmd->hand_to_hand && is_art(obj, ART_CLEAVER))) {
         ; /* no special bonuses */
+    } else if (hmd->mdat->mlet == S_GIANT && uslinging()
+               && hmd->thrown == HMON_THROWN
+               && ammo_and_launcher(obj, uwep)
+               && P_SKILL(P_SLING) >= P_SKILLED && hmd->dieroll == 1
+               && !rn2(P_SKILL(P_SLING) == P_SKILLED ? 2 : 1)) {
+        /* With a critical hit, a skilled slinger can bring down
+         * even the mightiest of giants. */
+        hmd->dmg = mon->mhp + 100;
+        pline("%s crushes %s forehead!", The(mshot_xname(obj)),
+              s_suffix(mon_nam(mon)));
+        hmd->hittxt = TRUE;
+        /* Same as above; account for negative udaminc and skill
+         * damage penalties. (In the really odd situation where for
+         * some reason being Skilled+ gives a penalty?) */
+        hmd->get_dmg_bonus = FALSE;
+        hmd->dmg -= weapon_dam_bonus(uwep);
     } else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd
                /* multi-shot throwing is too powerful here */
                && hmd->hand_to_hand) {
@@ -1408,7 +1424,8 @@ hmon_hitmon_dmg_recalc(struct _hitmon_data *hmd, struct obj *obj)
            hero is simply bashing with one of those and does not apply
            to jousting because lances are one-handed */
         if (hmd->thrown != HMON_THROWN
-            || !obj || !uwep || !ammo_and_launcher(obj, uwep)) {
+            || !obj || !uwep || !ammo_and_launcher(obj, uwep)
+                                || uslinging()) {
             strbonus = dbon();
             absbonus = abs(strbonus);
             if (hmd->twohits)

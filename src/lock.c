@@ -525,6 +525,20 @@ pick_lock(
                 if (otmp->cursed)
                     ch /= 2;
 
+                /* small chance a cursed locking tool will break on use */
+                if (pick->cursed && !rn2(5)
+                    && picktyp != STETHOSCOPE && !pick->oartifact) {
+                    pline("As you start to %s the %s, your %s breaks!",
+                          (otmp->olocked ? "unlock" : "lock"),
+                          xname(otmp), xname(pick));
+                    if (carried(pick))
+                        useup(pick);
+                    else
+                    delobj(pick);
+                    nomul(0);
+                    return PICKLOCK_DID_NOTHING;
+                }
+                
                 gx.xlock.box = otmp;
                 gx.xlock.door = 0;
                 break;
@@ -634,6 +648,20 @@ pick_lock(
             default:
                 ch = 0;
             }
+                /* small chance a cursed locking tool will break on use */
+                if (pick->cursed && !rn2(5)
+                    && picktyp != STETHOSCOPE && !pick->oartifact) {
+                    pline("As you start to %s the door, your %s breaks!",
+                          ((door->doormask & D_LOCKED) ? "unlock" : "lock"),
+                          xname(pick));
+                    if (carried(pick))
+                        useup(pick);
+                    else
+                        delobj(pick);
+                    nomul(0);
+                    return PICKLOCK_DID_NOTHING;
+                }
+                
             gx.xlock.door = door;
             gx.xlock.box = 0;
         }

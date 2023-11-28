@@ -123,6 +123,7 @@ extern void poisontell(int, boolean);
 extern void poisoned(const char *, int, const char *, int, boolean);
 extern void change_luck(schar);
 extern int stone_luck(boolean);
+extern boolean has_luckitem(void);
 extern void set_moreluck(void);
 extern void restore_attrib(void);
 extern void exercise(int, boolean);

@@ -832,14 +832,14 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 350, MS_SILENT, MZ_HUGE), 0, 0,
         M1_HIDE | M1_FLY | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
-            | M1_CARNIVORE,
+            | M1_MINDLESS | M1_CARNIVORE,
         M2_HOSTILE | M2_STALK | M2_STRONG, 0, 12, CLR_GRAY, LURKER_ABOVE),
     MON("trapper", S_TRAPPER, LVL(12, 3, 3, 0, 0), (G_GENO | 2),
         A(ATTK(AT_ENGL, AD_WRAP, 1, 8), ATTK(AT_ENGL, AD_PHYS, 2, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 350, MS_SILENT, MZ_HUGE), 0, 0,
         M1_HIDE | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
-            | M1_CARNIVORE,
+            | M1_MINDLESS | M1_CARNIVORE,
         M2_HOSTILE | M2_STALK | M2_STRONG, 0, 14, CLR_GREEN, TRAPPER),
     /*
      * unicorns and horses
@@ -2284,7 +2284,7 @@
         M2_NOPOLY | M2_HUMAN | M2_HOSTILE | M2_STRONG | M2_COLLECT
             | M2_SHAPESHIFTER,
         M3_INFRAVISIBLE, 11, HI_DOMESTIC, DOPPELGANGER),
-    MON("shopkeeper", S_HUMAN, LVL(12, 18, 0, 50, 0), G_NOGEN,
+    MON("shopkeeper", S_HUMAN, LVL(13, 18, 0, 50, 0), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 4, 4), ATTK(AT_WEAP, AD_PHYS, 4, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_SELL, MZ_HUMAN), 0, 0,

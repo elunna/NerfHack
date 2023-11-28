@@ -2546,7 +2546,10 @@ dozap(void)
         if (!Blind)
             pline("%s glows and fades.", The(xname(obj)));
         /* make him pay for knowing !NODIR */
-    } else if (need_dir && !u.dx && !u.dy && !u.dz) {
+    } else if (need_dir && ((!u.dx && !u.dy && !u.dz) 
+                || (obj->cursed && !rn2(WAND_BACKZAP_CHANCE)))) {
+        if (u.dx || u.dy || u.dz)
+            pline("%s backfires!", The(xname(obj)));
         if ((damage = zapyourself(obj, TRUE)) != 0) {
             char buf[BUFSZ];
 
@@ -5502,7 +5505,8 @@ destroy_one_item(struct obj *obj, int osym, int dmgtyp)
 
     switch (dmgtyp) {
     case AD_COLD:
-        if (osym == POTION_CLASS && obj->otyp != POT_OIL) {
+        if (osym == POTION_CLASS && obj->otyp != POT_ACID
+            && obj->otyp != POT_OIL) {
             quan = obj->quan;
             dindx = 0;
             dmg = rnd(4);

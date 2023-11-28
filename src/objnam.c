@@ -4966,7 +4966,8 @@ readobjnam(char *bp, struct obj *no_wish)
         d.otmp->greased = 1;
 
     if (d.isdiluted && d.otmp->oclass == POTION_CLASS)
-        d.otmp->odiluted = (d.otmp->otyp != POT_WATER);
+        d.otmp->odiluted = (d.otmp->otyp != POT_WATER 
+                            && d.otmp->otyp != POT_OIL);
 
     /* set tin variety */
     if (d.otmp->otyp == TIN && d.tvariety >= 0 && (rn2(4) || wizard))

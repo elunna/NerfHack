@@ -2306,6 +2306,11 @@ trapeffect_poly_trap(
             (void) newcham(mtmp, (struct permonst *) 0, NC_SHOW_MSG);
             if (in_sight)
                 seetrap(trap);
+            if (!rn2(27)) {
+                if (in_sight)
+                    pline("The polymorph trap evaporates in a puff of mist!");
+                deltrap(trap);
+            }
         }
     }
     return Trap_Effect_Finished;
@@ -4567,6 +4572,9 @@ water_damage(
             if (in_invent)
                 update_inventory();
             return ER_DAMAGED;
+        } else if (obj->otyp == POT_OIL) {
+            pline("The water doesn't seem to mix with your %s.", ostr);
+            makeknown(POT_OIL);
         } else if (obj->otyp != POT_WATER) {
             if (in_invent)
                 Your("%s %s.", ostr, vtense(ostr, "dilute"));
