@@ -2095,7 +2095,7 @@ show_conduct(int final)
 
     if (!u.uconduct.polypiles) {
         you_have_never("polymorphed an object");
-    } else if (wizard) {
+    } else {
         Sprintf(buf, "polymorphed %ld item%s", u.uconduct.polypiles,
                 plur(u.uconduct.polypiles));
         you_have_X(buf);
