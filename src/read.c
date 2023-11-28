@@ -320,6 +320,19 @@ read_ok(struct obj* obj)
     return GETOBJ_DOWNPLAY;
 }
 
+/* getobj callback for object to enchant */
+static int
+enchant_ok(struct obj* obj)
+{
+    if (!obj)
+        return GETOBJ_EXCLUDE;
+
+    if (obj->oclass == ARMOR_CLASS)
+        return GETOBJ_SUGGEST;
+
+    return GETOBJ_DOWNPLAY;
+}
+
 DISABLE_WARNING_FORMAT_NONLITERAL
 
 /* the #read command; read a scroll or spell book or various other things */
@@ -1091,14 +1104,33 @@ seffect_enchant_armor(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
     register schar s;
+    int i;
     boolean special_armor;
     boolean same_color;
-    struct obj *otmp = some_armor(&gy.youmonst);
+    struct obj *otmp;
     boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
     boolean old_erodeproof, new_erodeproof;
+    boolean already_known = objects[sobj->otyp].oc_name_known;
 
+     if (already_known) {
+         for (i = 0; i < 5; i++) {
+             otmp = getobj("enchant", enchant_ok, GETOBJ_NOFLAGS);
+             if (!otmp && y_n("Really forfeit this scroll?") == 'y') {
+                break;
+             } else if (otmp && otmp->oclass != ARMOR_CLASS) {
+                 You("must select armor to enchant.");
+                 otmp = (struct obj *) 0;
+             } else if (otmp && !(otmp->owornmask & W_ARMOR)) {
+                 You("cannot enchant armor that is not worn.");
+                 otmp = (struct obj *) 0;
+             }
+         }
+     } else {
+         otmp = some_armor(&gy.youmonst);
+     }
+     
     if (!otmp) {
         strange_feeling(sobj, !Blind
                         ? "Your skin glows then fades."
