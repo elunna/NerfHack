@@ -1265,7 +1265,7 @@ use_crystal_ball(struct obj **optr)
      */
 
     You("peer into %s...", the(xname(obj)));
-    nomul(-rnd(charged ? 10 : 2));
+    nomul(-rnd((charged && !Free_action) ? 10 : 2));
     gm.multi_reason = "gazing into a crystal ball";
     gn.nomovemsg = "";
 
