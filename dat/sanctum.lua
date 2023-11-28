@@ -5,7 +5,7 @@
 --
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "noflip")
 -- This is outside the main map, below, so we must do it before adding
 -- that map and anchoring coordinates to it. This extends the invisible
 -- barrier up to the top row, which falls outside the drawn map.

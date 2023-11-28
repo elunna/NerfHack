@@ -5,7 +5,7 @@
 --
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "shortsighted")
+des.level_flags("mazelevel", "shortsighted", "noflip")
 
 local tmpbounds = selection.match("-");
 local bnds = tmpbounds:bounds();

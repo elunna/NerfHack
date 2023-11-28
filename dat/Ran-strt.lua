@@ -11,7 +11,7 @@
 --
 des.level_init({ style = "solidfill", fg = "." });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "arboreal")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "arboreal", "noflip")
 
 des.level_init({ style="mines", fg=".", bg=".", smoothed=true, joined=true, lit=1, walled=false })
 des.replace_terrain({ region={00,00, 76,19}, fromterrain=".", toterrain="T", chance=5 })

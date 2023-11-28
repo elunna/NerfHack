@@ -6,7 +6,7 @@
 --
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noteleport")
+des.level_flags("mazelevel", "noteleport", "noflip")
 -- Fort's entry is via a secret door rather than a drawbridge;
 -- the moat must be manually circumvented.
 des.map([[

@@ -4,7 +4,7 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("noteleport", "mazelevel")
+des.level_flags("noteleport", "mazelevel", "noflip")
 --
 -- Here the Medusa rules some slithery monsters from her 'palace', with
 -- a yellow dragon nesting in the backyard.

@@ -12,7 +12,7 @@
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "shortsighted")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "shortsighted", "noflip")
 
 des.message("Well done, mortal!")
 des.message("But now thou must face the final Test...")

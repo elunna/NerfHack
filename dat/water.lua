@@ -6,7 +6,7 @@
 --
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "shortsighted")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "shortsighted", "noflip")
 des.message("You find yourself suspended in an air bubble surrounded by water.")
 -- The player lands upon arrival to an air bubble
 -- within the leftmost third of the level.  The

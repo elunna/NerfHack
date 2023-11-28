@@ -7,7 +7,7 @@
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "inaccessibles")
+des.level_flags("mazelevel", "inaccessibles", "noflip")
 
 des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=1,walled=true })
 

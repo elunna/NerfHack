@@ -6,7 +6,7 @@
 --
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "shortsighted", "hot", "fumaroles")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "shortsighted", "hot", "fumaroles", "noflip")
 -- The player lands, upon arrival, in the
 -- lower-right.  The location of the
 -- portal to the next level is randomly chosen.

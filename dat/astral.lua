@@ -6,7 +6,7 @@
 --
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "shortsighted", "solidify")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "shortsighted", "solidify", "noflip")
 des.message("You arrive on the Astral Plane!")
 des.message("Here the High Temple of %d is located.")
 des.message("You sense alarm, hostility, and excitement in the air!")
