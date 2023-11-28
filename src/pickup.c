@@ -2441,7 +2441,7 @@ in_container(struct obj *obj)
     } else if (obj == gc.current_container) {
         pline("That would be an interesting topological exercise.");
         return 0;
-    } else if ((Is_mbag(obj) || obj->otyp == WAN_CANCELLATION)
+    } else if ((Is_mbag(obj) || (obj->otyp == WAN_CANCELLATION && obj->spe > 0))
              && objects[obj->otyp].oc_name_known && obj->dknown 
                && gc.current_container->otyp == BAG_OF_HOLDING) {
         pline("That combination is a little too explosive.");
@@ -3621,7 +3621,8 @@ tipcontainer(struct obj *box) /* or bag */
                                       && Is_mbag(targetbox) 
                                       && mbag_explodes(otmp, 0);
             boolean prevent_explosion = explosive_combo 
-                                        && (Is_mbag(otmp) || otmp->otyp == WAN_CANCELLATION)
+                                        && (Is_mbag(otmp) 
+                                            || (otmp->otyp == WAN_CANCELLATION && otmp->spe > 0))
                                         && objects[otmp->otyp].oc_name_known 
                                         && otmp->dknown 
                                         && targetbox->otyp == BAG_OF_HOLDING;
