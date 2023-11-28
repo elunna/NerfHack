@@ -55,6 +55,7 @@ static void move_into_trap(struct trap *);
 static int try_disarm(struct trap *, boolean);
 static void reward_untrap(struct trap *, struct monst *);
 static int disarm_holdingtrap(struct trap *);
+static int disarm_rust_trap(struct trap *);
 static int disarm_landmine(struct trap *);
 static int unsqueak_ok(struct obj *);
 static int disarm_squeaky_board(struct trap *);
@@ -5289,6 +5290,22 @@ disarm_holdingtrap(struct trap* ttmp) /* Helge Hafting */
     return 1;
 }
 
+
+static int
+disarm_rust_trap(struct trap *ttmp) /* Paul Sonier */
+{
+    int fails = try_disarm(ttmp, FALSE);
+    coordxy x = ttmp->tx, y = ttmp->ty;
+    if (fails < 2)
+        return fails;
+    You("disarm the water trap!");
+    deltrap(ttmp);
+    levl[x][y].typ = FOUNTAIN;
+    newsym(x, y);
+    gl.level.flags.nfountains++;
+    return 1;
+}
+
 static int
 disarm_landmine(struct trap* ttmp) /* Helge Hafting */
 {
@@ -5658,6 +5675,8 @@ untrap(
                     return disarm_shooting_trap(ttmp, DART);
                 case ARROW_TRAP:
                     return disarm_shooting_trap(ttmp, ARROW);
+                case RUST_TRAP:
+                    return disarm_rust_trap(ttmp);
                 case PIT:
                 case SPIKED_PIT:
                     if (here) {
