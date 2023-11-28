@@ -3947,8 +3947,9 @@ setmangry(struct monst* mtmp, boolean via_attack)
             adjalign(-5); /* very bad */
         else
             adjalign(2);
-    } else
+    } else if (u.ualign.type != A_CHAOTIC) {
         adjalign(-1); /* attacking peaceful monsters is bad */
+    }
     if (humanoid(mtmp->data) || mtmp->isshk || mtmp->isgd) {
         if (couldsee(mtmp->mx, mtmp->my))
             pline("%s gets angry!", Monnam(mtmp));
