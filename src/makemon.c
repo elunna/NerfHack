@@ -2163,6 +2163,9 @@ set_malign(struct monst *mtmp)
         /* (see align.h for valid aligntyp values)     */
         if (mal != A_NONE)
             mal *= 5;
+        /* make priests of Moloch hostile */
+        if (mal == A_NONE) 
+            mtmp->mpeaceful = 0;
     }
 
     coaligned = (sgn(mal) == sgn(u.ualign.type));
