@@ -317,6 +317,11 @@ m_initweap(register struct monst *mtmp)
                 (void) mongets(mtmp, LEATHER_ARMOR);
                 break;
             }
+        } else if (mm == PM_WIZARD_OF_YENDOR) {
+            otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, FALSE, FALSE);
+            otmp->spe = rnd(4) + 1;
+            otmp->oeroded = otmp->oeroded2 = 0;
+            (void) mpickobj(mtmp, otmp);
         }
         break;
 
