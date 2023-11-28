@@ -3616,11 +3616,24 @@ tipcontainer(struct obj *box) /* or bag */
                 addtobill(otmp, FALSE, FALSE, TRUE);
                 iflags.suppress_price++; /* doname formatting */
             }
-
-            if (targetbox) {
-                if (Is_mbag(targetbox) && mbag_explodes(otmp, 0)) {
+            
+            boolean explosive_combo = targetbox 
+                                      && Is_mbag(targetbox) 
+                                      && mbag_explodes(otmp, 0);
+            boolean prevent_explosion = explosive_combo 
+                                        && (Is_mbag(otmp) || otmp->otyp == WAN_CANCELLATION)
+                                        && objects[otmp->otyp].oc_name_known 
+                                        && otmp->dknown 
+                                        && targetbox->otyp == BAG_OF_HOLDING;
+            
+            if (prevent_explosion)
+                You("flick %s away from the %s.", ansimpleoname(otmp), 
+                    xname(targetbox));
+            
+            if (targetbox && !prevent_explosion) {
+                if (explosive_combo) {
                     livelog_printf(LL_ACHIEVE,
-                                 "just blew up %s bag of holding via tipping",
+                                 "just blew up %s bag of holding.",
                                    uhis());
                     /* explicitly mention what item is triggering explosion */
                     urgent_pline(
