@@ -2308,6 +2308,7 @@ extern boolean stuck_in_wall(void);
 extern int dosacrifice(void);
 extern boolean can_pray(boolean);
 extern int dopray(void);
+extern int wiz_crown(void);
 extern const char *u_gname(void);
 extern int doturn(void);
 extern int altarmask_at(coordxy, coordxy);

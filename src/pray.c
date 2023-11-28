@@ -788,6 +788,14 @@ at_your_feet(const char *str)
     }
 }
 
+int
+wiz_crown(void)
+{
+    pline("Your crown, my %s.", flags.female ? "queen" : "king");
+    gcrownu();
+    return 0;
+}
+
 static void
 gcrownu(void)
 {
