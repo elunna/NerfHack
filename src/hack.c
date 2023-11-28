@@ -1123,7 +1123,7 @@ test_move(
                 && !Sokoban) {
                 if (still_chewing(x, y))
                     return FALSE;
-            } else if (moverock() < 0)
+            } else if (gc.context.run || moverock() < 0)
                 return FALSE;
         } else if (mode == TEST_TRAV) {
             struct obj *obj;
