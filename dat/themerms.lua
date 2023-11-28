@@ -28,6 +28,8 @@ local buried_treasure = { };
 themeroom_fills = {
 
    -- Ice room
+   {
+   mindiff = 5,
    function(rm)
       local ice = selection.room();
       des.terrain(ice, "I");
@@ -39,8 +41,11 @@ themeroom_fills = {
          ice:iterate(ice_melter);
       end
    end,
-
+   },
+   
    -- Cloud room
+   {
+   mindiff = 5,
    function(rm)
       local fog = selection.room();
       des.terrain(fog, "C");
@@ -48,10 +53,11 @@ themeroom_fills = {
          des.monster({ id = "fog cloud", asleep = true });
       end
    end,
-
+   },
+   
    -- Boulder room
    {
-      mindiff = 4,
+      mindiff = 5,
       contents = function(rm)
          local locs = selection.room():percentage(30);
          local func = function(x,y)
@@ -66,6 +72,8 @@ themeroom_fills = {
    },
 
    -- Spider nest
+   {
+   mindiff = 5,
    function(rm)
       local spooders = nh.level_difficulty() > 8;
       local locs = selection.room():percentage(30);
@@ -75,8 +83,11 @@ themeroom_fills = {
       end
       locs:iterate(func);
    end,
+   },
 
    -- Trap room
+   {
+   mindiff = 5,
    function(rm)
       local traps = { "arrow", "dart", "falling rock", "bear",
                       "land mine", "sleep gas", "rust",
@@ -88,8 +99,11 @@ themeroom_fills = {
       end
       locs:iterate(func);
    end,
-
+   },
+   
    -- Buried treasure
+   {
+   mindiff = 5,
    function(rm)
       des.object({ id = "chest", buried = true, contents = function(otmp)
                       local xobj = otmp:totable();
@@ -102,8 +116,11 @@ themeroom_fills = {
                       end
       end });
    end,
+   },
 
    -- Buried zombies
+   {
+   mindiff = 5,
    function(rm)
       local diff = nh.level_difficulty()
       -- start with [1..4] for low difficulty
@@ -122,8 +139,11 @@ themeroom_fills = {
          o:start_timer("zombify-mon", math.random(990, 1010));
       end
    end,
-
+   },
+   
    -- Massacre
+   {
+   mindiff = 5,
    function(rm)
       local mon = { "apprentice", "warrior", "ninja", "thug",
                     "hunter", "acolyte", "abbot", "page",
@@ -139,8 +159,11 @@ themeroom_fills = {
          des.object({ id = "corpse", montype = mon[idx] });
       end
    end,
+   },
 
    -- Statuary
+   {
+   mindiff = 5,
    function(rm)
       for i = 1, d(5,5) do
          des.object({ id = "statue" });
@@ -149,9 +172,11 @@ themeroom_fills = {
          des.trap("statue");
       end
    end,
-
+   },
+   
    -- Light source
    {
+      mindiff = 5,
       eligible = function(rm) return rm.lit == false; end,
       contents = function(rm)
          des.object({ id = "oil lamp", lit = true });
@@ -159,13 +184,18 @@ themeroom_fills = {
    },
 
    -- Temple of the gods
+   {
+   mindiff = 5,
    function(rm)
       des.altar({ align = align[1] });
       des.altar({ align = align[2] });
       des.altar({ align = align[3] });
    end,
-
+   },
+   
    -- Ghost of an Adventurer
+   {
+   mindiff = 5,
    function(rm)
       local loc = selection.room():rndcoord(0);
       des.monster({ id = "ghost", asleep = true, waiting = true, coord = loc });
@@ -189,8 +219,11 @@ themeroom_fills = {
          des.object({ class = "?", coord = loc, buc = "not-blessed" });
       end
    end,
+   },
 
    -- Storeroom
+   {
+   mindiff = 5,
    function(rm)
       local locs = selection.room():percentage(30);
       local func = function(x,y)
@@ -202,6 +235,7 @@ themeroom_fills = {
       end;
       locs:iterate(func);
    end,
+   },
 };
 
 themerooms = {
@@ -214,6 +248,8 @@ themerooms = {
    },
 
    -- Fake Delphi
+   {
+   mindiff = 5,
    function()
       des.room({ type = "ordinary", w = 11,h = 9, filled = 1,
                  contents = function()
@@ -225,8 +261,11 @@ themerooms = {
                  end
       });
    end,
+   },
 
    -- Room in a room
+   {
+   mindiff = 5,
    function()
       des.room({ type = "ordinary", filled = 1,
                  contents = function()
@@ -238,8 +277,11 @@ themerooms = {
                  end
       });
    end,
-
+   },
+   
    -- Huge room, with another room inside (90%)
+   {
+   mindiff = 5,
    function()
       des.room({ type = "ordinary", w = nh.rn2(10)+11,h = nh.rn2(5)+8, filled = 1,
                  contents = function()
@@ -256,8 +298,11 @@ themerooms = {
                  end
       });
    end,
+   },
 
    -- Nesting rooms
+   {
+   mindiff = 5,
    function()
       des.room({ type = "ordinary", w = 9 + nh.rn2(4), h = 9 + nh.rn2(4), filled = 1,
                  contents = function(rm)
@@ -284,8 +329,10 @@ themerooms = {
                  end
       });
    end,
+   },
 
    {
+      mindiff = 5;
       frequency = 6,
       contents = function()
          des.room({ type = "themed", contents = themeroom_fill });
@@ -293,6 +340,7 @@ themerooms = {
    },
 
    {
+      mindiff = 5;
       frequency = 2,
       contents = function()
          des.room({ type = "themed", lit = 0, contents = themeroom_fill });
@@ -300,6 +348,7 @@ themerooms = {
    },
 
    {
+      mindiff = 5;
       frequency = 2,
       contents = function()
          des.room({ type = "themed", filled = 1, contents = themeroom_fill });
@@ -307,6 +356,8 @@ themerooms = {
    },
 
    -- Pillars
+{
+   mindiff = 5;
    function()
       des.room({ type = "themed", w = 10, h = 10,
                  contents = function(rm)
@@ -323,8 +374,11 @@ themerooms = {
                  end
       });
    end,
+},
 
    -- Mausoleum
+{
+   mindiff = 5;
    function()
       des.room({ type = "themed", w = 5 + nh.rn2(3)*2, h = 5 + nh.rn2(3)*2,
                  contents = function(rm)
@@ -347,8 +401,11 @@ themerooms = {
                  end
       });
    end,
+},
 
    -- Random dungeon feature in the middle of a odd-sized room
+{
+   mindiff = 5;
    function()
       local wid = 3 + (nh.rn2(3) * 2);
       local hei = 3 + (nh.rn2(3) * 2);
@@ -361,8 +418,11 @@ themerooms = {
                  end
       });
    end,
+},
 
    -- L-shaped
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 -----xxx
@@ -374,8 +434,11 @@ themerooms = {
 |......|
 --------]], contents = function(m) filler_region(1,1); end });
    end,
+},
 
    -- L-shaped, rot 1
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xxx-----
@@ -387,8 +450,11 @@ xxx|...|
 |......|
 --------]], contents = function(m) filler_region(5,1); end });
    end,
+},
 
    -- L-shaped, rot 2
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 --------
@@ -400,8 +466,11 @@ xxx|...|
 xxx|...|
 xxx-----]], contents = function(m) filler_region(1,1); end });
    end,
+},
 
    -- L-shaped, rot 3
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 --------
@@ -413,8 +482,11 @@ xxx-----]], contents = function(m) filler_region(1,1); end });
 |...|xxx
 -----xxx]], contents = function(m) filler_region(1,1); end });
    end,
+},
 
    -- Blocked center
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 -----------
@@ -436,8 +508,11 @@ end
 filler_region(1,1);
 end });
    end,
+},
 
    -- Circular, small
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xx---xx
@@ -448,8 +523,11 @@ x--.--x
 x--.--x
 xx---xx]], contents = function(m) filler_region(3,3); end });
    end,
+},
 
    -- Circular, medium
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xx-----xx
@@ -462,8 +540,11 @@ x--...--x
 x--...--x
 xx-----xx]], contents = function(m) filler_region(4,4); end });
    end,
+},
 
    -- Circular, big
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xxx-----xxx
@@ -478,8 +559,11 @@ x-.......-x
 x---...---x
 xxx-----xxx]], contents = function(m) filler_region(5,5); end });
    end,
+},
 
    -- T-shaped
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xxx-----xxx
@@ -491,8 +575,11 @@ xxx|...|xxx
 |.........|
 -----------]], contents = function(m) filler_region(5,5); end });
    end,
+},
 
    -- T-shaped, rot 1
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 -----xxx
@@ -507,8 +594,11 @@ xxx|...|xxx
 |...|xxx
 -----xxx]], contents = function(m) filler_region(2,2); end });
    end,
+},
 
    -- T-shaped, rot 2
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 -----------
@@ -520,8 +610,11 @@ xxx|...|xxx
 xxx|...|xxx
 xxx-----xxx]], contents = function(m) filler_region(2,2); end });
    end,
+},
 
    -- T-shaped, rot 3
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xxx-----
@@ -536,8 +629,11 @@ xxx|...|
 xxx|...|
 xxx-----]], contents = function(m) filler_region(5,5); end });
    end,
+},
 
    -- S-shaped
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 -----xxx
@@ -552,8 +648,11 @@ xxx|...|
 xxx|...|
 xxx-----]], contents = function(m) filler_region(2,2); end });
    end,
+},
 
    -- S-shaped, rot 1
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xxx--------
@@ -565,8 +664,11 @@ xxx|......|
 |......|xxx
 --------xxx]], contents = function(m) filler_region(5,5); end });
    end,
+},
 
    -- Z-shaped
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xxx-----
@@ -581,8 +683,11 @@ xxx|...|
 |...|xxx
 -----xxx]], contents = function(m) filler_region(5,5); end });
    end,
+},
 
    -- Z-shaped, rot 1
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 --------xxx
@@ -594,8 +699,11 @@ xxx|......|
 xxx|......|
 xxx--------]], contents = function(m) filler_region(2,2); end });
    end,
+},
 
    -- Cross
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 xxx-----xxx
@@ -610,8 +718,11 @@ xxx|...|xxx
 xxx|...|xxx
 xxx-----xxx]], contents = function(m) filler_region(6,6); end });
    end,
+},
 
    -- Four-leaf clover
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 -----x-----
@@ -626,8 +737,11 @@ xx|.....|xx
 |...|x|...|
 -----x-----]], contents = function(m) filler_region(6,6); end });
    end,
+},
 
    -- Water-surrounded vault
+{
+   mindiff = 5;
    function()
       des.map({ map = [[
 }}}}}}
@@ -674,10 +788,10 @@ xx|.....|xx
      des.exclusion({ type = "teleport", region = { 2,2, 3,3 } });
 end });
    end,
-
+},
    -- Twin businesses
    {
-      mindiff = 4; -- arbitrary
+      mindiff = 5; -- arbitrary
       contents = function()
          -- Due to the way room connections work in mklev.c, we must guarantee
          -- that the "aisle" between the shops touches all four walls of the
