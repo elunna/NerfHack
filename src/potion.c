@@ -1947,9 +1947,29 @@ potionhit(struct monst *mon, struct obj *obj, int how)
 void
 potionbreathe(struct obj *obj)
 {
-    int i, ii, isdone, kn = 0;
     boolean cureblind = FALSE;
+    boolean unambiguous = FALSE; /* if effect is unambiguous, call makeknown */
+    boolean breathe = !breathless(gy.youmonst.data);
+    boolean cansmell = breathe && olfaction(gy.youmonst.data);
+    boolean eyes = eyecount(gy.youmonst.data);
+    const char * eyestr =
+        (eyes > 1 ? makeplural(body_part(EYE)) : body_part(EYE));
     unsigned already_in_use = obj->in_use;
+
+    if (!breathe) {
+        /* currently only acid affects eyes */
+        if (eyes && obj->otyp == POT_ACID && !Acid_resistance) {
+            pline("The fumes sting your %s.", eyestr);
+        }
+        else {
+            pline("The vapors don't seem to affect you.");
+        }
+        return;
+    }
+
+    /* after this, can assume the player is breathing the vapors so should be
+     * affected by any potion effects; however, they still might not be able to
+     * smell them */
 
     /* potion of unholy water might be wielded; prevent
        you_were() -> drop_weapon() from dropping it so that it
@@ -1966,17 +1986,13 @@ potionbreathe(struct obj *obj)
     case POT_RESTORE_ABILITY:
     case POT_GAIN_ABILITY:
         if (obj->cursed) {
-            if (!breathless(gy.youmonst.data)) {
+            if (cansmell) {
                 pline("Ulch!  That potion smells terrible!");
-            } else if (haseyes(gy.youmonst.data)) {
-                const char *eyes = body_part(EYE);
-
-                if (eyecount(gy.youmonst.data) != 1)
-                    eyes = makeplural(eyes);
-                Your("%s %s!", eyes, vtense(eyes, "sting"));
             }
             break;
         } else {
+            /* restore 1 point in each lost attribute */
+            int i, ii, isdone;
             i = rn2(A_MAX); /* start at a random point */
             for (isdone = ii = 0; !isdone && ii < A_MAX; ii++) {
                 if (ABASE(i) < AMAX(i)) {
@@ -1988,28 +2004,51 @@ potionbreathe(struct obj *obj)
                 if (++i >= A_MAX)
                     i = 0;
             }
+            if (cansmell) {
+                pline("Wow!  That potion smells good!");
+            }
         }
         break;
+    case POT_GAIN_ENERGY:
+        u.uen += rnd(2);
+        if (u.uen > u.uenmax) {
+            u.uenmax++;
+            u.uen = u.uenmax;
+        }
+        You_feel("a brief rush of magical energy.");
+        unambiguous = TRUE;
+        break;
+    case POT_POLYMORPH:
+        You_feel("a change coming over you, but it peters out.");
+        unambiguous = TRUE;
+        break;
     case POT_FULL_HEALING:
-        if (Upolyd && u.mh < u.mhmax)
-            u.mh++, gc.context.botl = 1;
-        if (u.uhp < u.uhpmax)
-            u.uhp++, gc.context.botl = 1;
+        if (Upolyd)
+            u.mh += 10;
+        else
+            u.uhp += 10;
         cureblind = TRUE;
         /*FALLTHRU*/
     case POT_EXTRA_HEALING:
-        if (Upolyd && u.mh < u.mhmax)
-            u.mh++, gc.context.botl = 1;
-        if (u.uhp < u.uhpmax)
-            u.uhp++, gc.context.botl = 1;
+        if (Upolyd)
+            u.mh += 2;
+        else
+            u.uhp += 2;
         if (!obj->cursed)
             cureblind = TRUE;
         /*FALLTHRU*/
     case POT_HEALING:
-        if (Upolyd && u.mh < u.mhmax)
-            u.mh++, gc.context.botl = 1;
-        if (u.uhp < u.uhpmax)
-            u.uhp++, gc.context.botl = 1;
+        if (Upolyd)
+            u.mh++;
+        else
+            u.uhp++;
+        if (u.mh > u.mhmax) {
+            u.mh = u.mhmax;
+        }
+        if (u.uhp > u.uhpmax) {
+            u.uhp = u.uhpmax;
+        }
+        gc.context.botl = 1;
         if (obj->blessed)
             cureblind = TRUE;
         if (cureblind) {
@@ -2017,9 +2056,9 @@ potionbreathe(struct obj *obj)
             make_deaf(0L, TRUE);
         }
         exercise(A_CON, TRUE);
+        You_feel("a little better.");
         break;
     case POT_SICKNESS:
-        kn++;
         if (!Role_if(PM_HEALER)) {
             if (Upolyd) {
                 if (u.mh <= 5)
@@ -2035,52 +2074,69 @@ potionbreathe(struct obj *obj)
             gc.context.botl = 1;
             exercise(A_CON, FALSE);
         }
-        break;
-    case POT_HALLUCINATION: {
-        kn++;
-        boolean not_affected = Blind || (u.umonnum == PM_BLACK_LIGHT
-                                         || u.umonnum == PM_VIOLET_FUNGUS
-                                         || dmgtype(gy.youmonst.data, AD_STUN));
-        if (!not_affected) {
-            boolean chg;
-            if (!Hallucination)
-                chg =
-                    make_hallucinated(HHallucination + (long) rn1(10, 5), FALSE, 0L);
-            You("%s.", chg ? "are freaked out"
-                           : "have a momentary vision, but are otherwise unaffected");
+        if (cansmell) {
+            You("smell something diseased.");
+            unambiguous = TRUE;
         }
-    }
+        break;
+    case POT_HALLUCINATION:
+        if (!(dmgtype(gy.youmonst.data, AD_HALU)
+              || dmgtype(gy.youmonst.data, AD_STUN)
+              || gy.youmonst.data == &mons[PM_VIOLET_FUNGUS])) {
+            /* This has a longer effect than other potions because the
+             * effect if quaffed is considerably longer than those other
+             * potions. Also the case for blindness vapors. */
+            if (!make_hallucinated(itimeout_incr(HHallucination, rn1(20, 20)),
+                                   TRUE, 0L)) {
+                /* either hallu is blocked, or we were already hallucinating */
+                if (Hallucination) {
+                    pline("The cosmicness around you exacerbates.");
+                }
+                else {
+                    pline("You have a momentary vision.");
+                }
+            }
+            unambiguous = TRUE;
+        }
+        else {
+            pline("Nothing seems to happen.");
+        }
+        break;
+    case POT_BOOZE:
+        /* a whiff of alcohol isn't going to instantly confuse anyone */
+        if (cansmell) {
+            /* "peculiar odor" or "puff of vapor" message printed before this */
+            pline("It smells like alcohol.");
+            unambiguous = TRUE;
+        }
         break;
     case POT_CONFUSION:
-    case POT_BOOZE:
         if (!Confusion)
             You_feel("somewhat dizzy.");
-        make_confused(itimeout_incr(HConfusion, rnd(5)), FALSE);
+        make_confused(itimeout_incr(HConfusion, rn1(10, 5)), FALSE);
+        unambiguous = TRUE;
         break;
     case POT_INVISIBILITY:
         if (!Blind && !Invis) {
-            kn++;
             pline("For an instant you %s!",
                   See_invisible ? "could see right through yourself"
                                 : "couldn't see yourself");
+            unambiguous = TRUE;
         }
         break;
     case POT_PARALYSIS:
-        kn++;
         if (!Free_action) {
             pline("%s seems to be holding you.", Something);
-            nomul(-rnd(5));
-            gm.multi_reason = "frozen by a potion";
-            gn.nomovemsg = You_can_move_again;
-            exercise(A_DEX, FALSE);
-        } else
-            You("stiffen momentarily.");
+        }
+        nomul(-rnd(5));
+        gm.multi_reason = "frozen by a potion";
+        gn.nomovemsg = You_can_move_again;
+        unambiguous = TRUE;
         break;
     case POT_SLEEPING:
-        kn++;
         if (!Free_action && !Sleep_resistance) {
             You_feel("rather tired.");
-            nomul(-rnd(5));
+            nomul(-rn1(5, 5));
             gm.multi_reason = "sleeping off a magical draught";
             gn.nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);
@@ -2088,57 +2144,112 @@ potionbreathe(struct obj *obj)
             You("yawn.");
             monstseesu(M_SEEN_SLEEP);
         }
+        unambiguous = TRUE;
         break;
     case POT_SPEED:
-        if (!Fast) {
-            kn++;
+        if (Fast) {
+            Your("legs get a bit more energy.");
+        }
+        else {
             Your("knees seem more flexible now.");
         }
-        incr_itimeout(&HFast, rnd(5));
+        unambiguous = TRUE;
+        incr_itimeout(&HFast, rnd(10));
         exercise(A_DEX, TRUE);
         break;
     case POT_BLINDNESS:
         if (!Blind && !Unaware) {
-            kn++;
             pline("It suddenly gets dark.");
+            unambiguous = TRUE;
         }
-        make_blinded(itimeout_incr(BlindedTimeout, rnd(5)), FALSE);
+        make_blinded(itimeout_incr(BlindedTimeout, rn1(20, 20)), FALSE);
         if (!Blind && !Unaware)
             Your1(vision_clears);
         break;
     case POT_WATER:
         if (u.umonnum == PM_GREMLIN) {
-            (void) split_mon(&gy.youmonst, (struct monst *) 0);
+            unambiguous = TRUE;
         } else if (u.ulycn >= LOW_PM) {
             /* vapor from [un]holy water will trigger
                transformation but won't cure lycanthropy */
-            if (obj->blessed && gy.youmonst.data == &mons[u.ulycn])
+            if (obj->blessed && gy.youmonst.data == &mons[u.ulycn]) {
                 you_unwere(FALSE);
-            else if (obj->cursed && !Upolyd)
+                unambiguous = TRUE;
+            }
+            else if (obj->cursed && !Upolyd) {
                 you_were();
+                unambiguous = TRUE;
+            }
         }
         break;
     case POT_ACID:
-    case POT_POLYMORPH:
+        if (Acid_resistance) {
+            if (cansmell) {
+                pline("It smells %s.", Hallucination ? "tangy" : "sour");
+                unambiguous = TRUE;
+            }
+        }
+        else {
+            pline("The %s fumes burn your %s and %s!",
+                    (Hallucination ? "amaroidal" : "acrid"),
+                    (eyes ? eyestr : ""),
+                    makeplural(body_part(LUNG)));
+            losehp(rnd(2), "acid fumes", KILLED_BY);
         exercise(A_CON, FALSE);
+            unambiguous = TRUE;
+        }
         break;
-    /*
     case POT_GAIN_LEVEL:
-    case POT_GAIN_ENERGY:
+        more_experienced(5, 0);
+        /* FALLTHRU */
     case POT_LEVITATION:
-    case POT_FRUIT_JUICE:
-    case POT_MONSTER_DETECTION:
-    case POT_OBJECT_DETECTION:
-    case POT_OIL:
+        You_feel("slightly elevated.");
+        /* Strictly speaking, this is only unambiguous if the player has showexp
+         * turned on or has it off but gains a level in the process, but it's
+         * probably better not to make the identification here not based on the
+         * current options. */
+        unambiguous = TRUE;
         break;
-     */
+    case POT_SEE_INVISIBLE:
+        if (!obj->cursed) {
+            make_blinded(0L, TRUE);
+        }
+        if (!See_invisible) {
+            You("think you saw something invisible, but it vanished.");
+            unambiguous = TRUE;
+        }
+        break;
+    case POT_FRUIT_JUICE:
+        if (cansmell) {
+            pline("It smells %s.",
+                  (obj->cursed ? (Hallucination ? "overripe" : "rotten")
+                               : "sweet"));
+            unambiguous = TRUE;
+        }
+        break;
+    case POT_MONSTER_DETECTION:
+        /* force uncursed monster detection if blessed */
+        obj->blessed = 0;
+        peffects(obj);
+        unambiguous = TRUE;
+        break;
+    case POT_OBJECT_DETECTION:
+        /* force uncursed object detection if blessed */
+        obj->blessed = 0;
+        peffects(obj);
+        unambiguous = TRUE;
+        break;
+    case POT_ENLIGHTENMENT:
+        You("have a brief moment of introspection.");
+        unambiguous = TRUE;
+        break;
     }
 
     if (!already_in_use)
         obj->in_use = 0;
     /* note: no obfree() -- that's our caller's responsibility */
     if (obj->dknown) {
-        if (kn)
+        if (unambiguous)
             makeknown(obj->otyp);
         else
             trycall(obj);
