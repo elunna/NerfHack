@@ -207,7 +207,7 @@ int wincnt = 0; /* # of nh windows opened */
 extern struct Hook fillhook;
 struct TagItem tags[] = {
     { WA_BackFill, (ULONG) &fillhook },
-    { WA_PubScreenName, (ULONG) "NetHack" },
+    { WA_PubScreenName, (ULONG) "HACKEM" },
     { TAG_DONE, 0 },
 };
 #endif
@@ -393,7 +393,7 @@ struct amii_WinDesc *amii_wins[MAXWIN + 1];
 UWORD amii_defpens[20];
 
 struct TagItem scrntags[] = {
-    { SA_PubName, (ULONG) "NetHack" },
+    { SA_PubName, (ULONG) "HACKEM" },
     { SA_Overscan, OSCAN_TEXT },
     { SA_AutoScroll, TRUE },
 #if LIBRARY_VERSION >= 39

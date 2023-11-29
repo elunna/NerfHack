@@ -11,7 +11,7 @@ Credit for the porting of NetHack to the Win32 Console Subsystem goes to
 the NT Porting Team started by Michael Allison.
 
 Credit for the Win32 Graphical version of NetHack (aka "NetHack for
-Windows" or NetHackW) goes to Alex Kompel who initially developed and
+Windows" or HackEMW) goes to Alex Kompel who initially developed and
 contributed the port.
 
 Alex Kompel, Dion Nicolaas, Yitzhak Sapir, Derek S. Ray, Michael Allison,
@@ -19,8 +19,8 @@ Pasi Kallinen, Bart House, and Janet Walz contributed to the maintainance
 of the tty and graphical windows versions of NetHack 3.7.0.
 
 The build Makefiles and procedures produce two executables:
-    a. A TTY and curses version of NetHack in nethack.exe
-    b. A Windows Graphical version in nethackw.exe.
+    a. A TTY and curses version of NetHack in hackem.exe
+    b. A Windows Graphical version in hackemw.exe.
 
 You can use one of the following build environments:
   o A copy of Microsoft Visual Studio 2017 Community Edition or
@@ -205,11 +205,11 @@ command line using the Makefile approach:
     A tty port utilizing the Win32 Console I/O subsystem, Console
         NetHack;
     A Win32 native port built on the Windows API, Graphical NetHack or
-        NetHackW.
+        HackEMW.
 
-The executable for Console NetHack will be named NetHack.exe. The
-executable for Graphical NetHack will be named NetHackW.exe. The
-Makefile configuration will build both; NetHackW.exe and NetHack.exe
+The executable for Console NetHack will be named HackEM.exe. The
+executable for Graphical NetHack will be named HackEMW.exe. The
+Makefile configuration will build both; HackEMW.exe and HackEM.exe
 will be able to use the same datafiles, save files and bones files.
 
 Since the last official release of NetHack, compilers and computer
@@ -225,7 +225,7 @@ that will change in an upcoming release.
 
 I. Dispelling the Myths:
 
-    Compiling NetHack for Windows is not as easy as it sounds, nor as hard
+    Compiling HACKEM for Windows is not as easy as it sounds, nor as hard
     as it looks, however it will behoove you to read this entire section
     through before beginning the task.
 
@@ -338,7 +338,7 @@ Notes:
     **Note**: saved games are NOT compatible between the 32-bit and the
     64-bit versions at this time. 
 
-NetHack.exe is the tty plus curses version. NetHackW.exe is the windows
+HackEM.exe is the tty plus curses version. HackEMW.exe is the windows
 graphical version.
 
 Play NetHack.

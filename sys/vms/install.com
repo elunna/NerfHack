@@ -5,7 +5,7 @@ $! NetHack may be freely redistributed.  See license for details.
 $ !
 $ ! $NHDT-Date: 1573172452 2019/11/08 00:20:52 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.12 $
 $ !
-$ ! Use vmsbuild.com to create nethack.exe, makedefs, and lev_comp *first*.
+$ ! Use vmsbuild.com to create hackem.exe, makedefs, and lev_comp *first*.
 $ !
 $ ! Note: this command procedure is also used by the top level Makefile
 $ ! if you build and install with MMS or MMK.  In that situation, only the
@@ -17,7 +17,7 @@ $ !	@[.sys.vms]install "disk$users:[games.nethack]" "games"
 $ ! or	@[.sys.vms]install "[-.play]" "[40,1]"
 $ !
 $	! default location is old playground, default owner is installer
-$	gamedir = f$trnlnm("NETHACKDIR")	!location of playground
+$	gamedir = f$trnlnm("HACKEMDIR")	!location of playground
 $	if gamedir.eqs."" then  gamedir = f$trnlnm("HACKDIR")
 $	gameuic = f$user()			!owner of playground
 $	! --- nothing below this line should need to be changed ---
@@ -220,8 +220,8 @@ $ endif
 $ if p3.nes."" then  exit
 $!
 $make_executable:
-$	milestone "(nethack.exe)"
-$ call copy_file [.src]nethack.exe 'gamedir'nethack.exe "re"
+$	milestone "(hackem.exe)"
+$ call copy_file [.src]hackem.exe 'gamedir'hackem.exe "re"
 $ if p3.nes."" then  exit
 $!
 $! provide invocation procedure (if available)
@@ -265,7 +265,7 @@ $ if p3.nes."" then  exit
 $!
 $! done
 $	milestone "<done>"
-$ define/nolog nethackdir 'gamedir'
+$ define/nolog hackemdir 'gamedir'
 $ define/nolog hackdir 'gamedir'
 $ echo -
     f$fao("!/ Nethack installation complete. !/ Playground is !AS !/",gamedir)

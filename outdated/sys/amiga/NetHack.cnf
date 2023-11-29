@@ -36,7 +36,7 @@ OPTIONS=windowtype:amii
 #
 # A hard disk configuration.
 #
-HACKDIR=NetHack:
+HACKDIR=HACKEM:
 LEVELS=Nethack:Levels
 SAVE=Nethack:Save
 BONESDIR=Nethack:Levels

@@ -15,11 +15,11 @@ if not canceled then
 	set hpath to the path to me
 	set mpath to the POSIX path of hpath
 	considering case
-		--set lastpos to offset of "/nethackdir" in mpath
-		--set lastpos to lastpos + (length of "/nethackdir")
+		--set lastpos to offset of "/hackemdir" in mpath
+		--set lastpos to lastpos + (length of "/hackemdir")
 		--set rawpath to (get text 1 through lastpos of mpath) & "/recover.pl"
 		--set safepath to the quoted form of rawpath
-		set safepath to the quoted form of "/Library/Nethack/nethackdir/recover.pl"
+		set safepath to the quoted form of "/Library/HACKEM/hackemdir/recover.pl"
 	end considering
 	do shell script safepath
 	display dialog result with title "NetHackRecover Output"

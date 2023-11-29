@@ -309,11 +309,11 @@ ifdef WANT_SHARE_INSTALL
 #$(info WANT_SOURCE_INSTALL = $(WANT_SOURCE_INSTALL), WANT_SHARE_INSTALL = $(WANT_SHARE_INSTALL))
 #endif
 # if $GAMEUID is root, we install into roughly proper Mac locations, otherwise
-# we install into ~/nethackdir
+# we install into ~/hackemdir
 ifeq ($(GAMEUID),root)
 PREFIX:=/Library/NetHack
 SHELLDIR=/usr/local/bin
-HACKDIR=$(PREFIX)/nethackdir
+HACKDIR=$(PREFIX)/hackemdir
 CHOWN=chown
 CHGRP=chgrp
 # We run sgid so the game has access to both HACKDIR and user preferences.
@@ -321,7 +321,7 @@ GAMEPERM = 02755
 else	# ! root
 PREFIX:=/Users/$(GAMEUID)
 SHELLDIR=$(PREFIX)/bin
-HACKDIR=$(PREFIX)/Library/NetHack/nethackdir
+HACKDIR=$(PREFIX)/Library/NetHack/hackemdir
 CHOWN=/usr/bin/true
 CHGRP=/usr/bin/true
 GAMEPERM = 0500
@@ -348,7 +348,7 @@ else ifdef WANT_SOURCE_INSTALL
 #$(info WANT_SOURCE_INSTALL = $(WANT_SOURCE_INSTALL), WANT_SHARE_INSTALL = $(WANT_SHARE_INSTALL))
 #endif
 PREFIX=$(abspath $(NHSROOT))
-# suppress nethack.sh
+# suppress hackem.sh
 #SHELLDIR=
 HACKDIR=$(PREFIX)/playground
 CHOWN=/usr/bin/true
@@ -372,7 +372,7 @@ else	# !WANT_SOURCE_INSTALL
 #endif
 PREFIX:=$(wildcard ~)
 SHELLDIR=$(PREFIX)/bin
-HACKDIR=$(PREFIX)/nethackdir
+HACKDIR=$(PREFIX)/hackemdir
 CHOWN=/usr/bin/true
 CHGRP=/usr/bin/true
 GAMEPERM = 0700
@@ -380,8 +380,8 @@ VARFILEPERM = 0600
 VARDIRPERM = 0700
 
 ifdef ($(WANT_DEFAULT),X11)
-# install nethack.rc as ~/.nethackrc if no ~/.nethackrc exists
-PREINSTALL+= cp -n win/X11/nethack.rc ~/.nethackrc || true;
+# install hackem.rc as ~/.hackemrc if no ~/.hackemrc exists
+PREINSTALL+= cp -n win/X11/hackem.rc ~/.hackemrc || true;
 endif	# WANT_DEFAULT X11
 
 PREINSTALL+= (mkdir $(SHELLDIR) || true);
@@ -589,9 +589,9 @@ $(BUNDLE_INFOPLIST):
 	@echo '<key>CFBundleName</key>' >>$@
 	@echo '<string>$(BUNDLE_NAME)</string>' >>$@
 	@echo '<key>CFBundleVersion</key>' >>$@
-	@echo '<string>3.7.0b73</string>' >>$@
+	@echo '<string>2.0.0b73</string>' >>$@
 	@echo '<key>CFBundleShortVersionString</key>' >>$@
-	@echo '<string>3.7.0</string>' >>$@
+	@echo '<string>2.0.0</string>' >>$@
 	@echo '<key>NSHumanReadableCopyright</key>' >>$@
 	@echo '<string>©By Stichting Mathematisch Centrum and M. Stephenson 1985-2023</string>' >>$@
 	@echo '<key>LSApplicationCategoryType</key>' >>$@
@@ -691,9 +691,9 @@ else
 	sys/unix/hints/macosx.sh infoplist > Info.plist
 
 	mkdir PKGROOT/Applications
-	#osacompile -o NetHackQt/NetHackQt.app/nethackdir/NetHackRecover.app \
+	#osacompile -o NetHackQt/NetHackQt.app/hackemdir/NetHackRecover.app \
 	#	 win/macosx/NetHackRecover.applescript
-	#cp win/macosx/recover.pl NetHackQt/NetHackQt.app/nethackdir
+	#cp win/macosx/recover.pl NetHackQt/NetHackQt.app/hackemdir
 	osacompile -o PKGROOT/Applications/NetHackRecover.app \
 		 win/macosx/NetHackRecover.applescript
 	cp win/macosx/recover.pl $(PKGROOT_UGLN)
@@ -785,13 +785,13 @@ ifneq (,$(WANT_WIN_X11)$(WANT_WIN_TTY))
 else
 	$(MAKE) build_package_root
 	rm -rf NetHackQt
-	mkdir -p NetHackQt/NetHackQt.app/nethackdir/save
+	mkdir -p NetHackQt/NetHackQt.app/hackemdir/save
 	mkdir NetHackQt/Documentation
 	cp doc/Guidebook.txt doc/nethack.txt doc/recover.txt NetHackQt/Documentation
 
-	osacompile -o NetHackQt/NetHackQt.app/nethackdir/NetHackRecover.app \
+	osacompile -o NetHackQt/NetHackQt.app/hackemdir/NetHackRecover.app \
 		 win/macosx/NetHackRecover.applescript
-	cp win/macosx/recover.pl NetHackQt/NetHackQt.app/nethackdir
+	cp win/macosx/recover.pl NetHackQt/NetHackQt.app/hackemdir
 
 	mkdir -p NetHackQt/NetHackQt.app/Contents/Frameworks
 	cp $(QTDIR)/libqt-mt.3.dylib NetHackQt/NetHackQt.app/Contents/Frameworks
@@ -799,7 +799,7 @@ else
 	mkdir NetHackQt/NetHackQt.app/Contents/MacOS
 	mv PKGROOT/nethack NetHackQt/NetHackQt.app/Contents/MacOS
 
-	mv PKGROOT/lib/nethackdir NetHackQt/NetHackQt.app/nethackdir
+	mv PKGROOT/lib/hackemdir NetHackQt/NetHackQt.app/hackemdir
 
 # XXX still missing:
 #NetHackQt/NetHackQt.app

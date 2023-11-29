@@ -9,7 +9,7 @@ NetHack may be freely redistributed.  See license for details.
 Credit for the porting of NetHack to Windows CE goes to Alex Kompel who 
 initially developed and contributed the port.
 
-In order to build NetHack for Windows CE, you need *both* of the following:
+In order to build HACKEM for Windows CE, you need *both* of the following:
 
   o A copy of Microsoft Visual C V6.0 SP3 or later.  Things may work with 
     an earlier version of the compiler, but the current code has not been
@@ -19,7 +19,7 @@ In order to build NetHack for Windows CE, you need *both* of the following:
 
 FIRST STEP:
 
-The first step in building NetHack for Windows CE is to execute
+The first step in building HACKEM for Windows CE is to execute
 sys/wince/cesetup.bat.
 
 From the command prompt:

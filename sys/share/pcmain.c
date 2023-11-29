@@ -132,7 +132,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         run_from_desktop = FALSE;
     } else
 #endif
-        gh.hname = "NetHack"; /* used for syntax messages */
+        gh.hname = "HACKEM"; /* used for syntax messages */
 
     choose_windows(DEFAULT_WINDOW_SYS);
 
@@ -148,7 +148,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 #endif
 #endif /* !AMIGA && !GNUDOS */
 
-    dir = nh_getenv("NETHACKDIR");
+    dir = nh_getenv("HACKEMDIR");
     if (dir == (char *) 0)
         dir = nh_getenv("HACKDIR");
 #ifdef EXEPATH
@@ -348,10 +348,11 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 #endif
     if (!dlb_init()) {
         pline(
-            "%s\n%s\n%s\n%s\n\nNetHack was unable to open the required file "
+            "%s\n%s\n%s\n%s\n%s\n\nHACKEM was unable to open the required file "
             "\"%s\".%s",
             copyright_banner_line(1), copyright_banner_line(2),
-            copyright_banner_line(3), copyright_banner_line(4), DLBFILE,
+            copyright_banner_line(3), copyright_banner_line(4), 
+            copyright_banner_line(5), DLBFILE,
             "");
         error("dlb_init failure.");
     }

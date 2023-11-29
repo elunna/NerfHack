@@ -47,7 +47,7 @@ tell application "Terminal"
 	
 	# main loop - wait for all nethack processes to exit
 	set hit to true
-	set nhname to "nethack" as text
+	set nhname to "hackem" as text
 	delay 4
 	repeat while hit
 		set hit to false

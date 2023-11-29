@@ -16,12 +16,12 @@ has been reduced to a single event loop complaint, so downgraded from
 "Urgent", but the prompt is auto-answered with ESC instead of letting
 the user respond.
 
-On OSX, if the program is run from nethackdir/nethack rather than from
+On OSX, if the program is run from hackemdir/nethack rather than from
 NetHack.app/Contents/MacOS/nethack (plus having NetHack.app/Contents/
 Info.plist containing pertinent information) then the menu bar at the
 top of the screen won't accept mouse clicks and the application menu
-entry in that menu bar will show as "nethack" (filename) rather than
-"NetHack" (intended application name).  The click issue can be worked
+entry in that menu bar will show as "hackem" (filename) rather than
+"HACKEM" (intended application name).  The click issue can be worked
 around by giving focus to some other application (which will put up
 its own menu bar) and then back to nethack (thereby reloading nethack's
 menu bar).
