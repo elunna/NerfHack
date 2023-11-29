@@ -1011,8 +1011,50 @@ static void
 peffect_gain_ability(struct obj *otmp)
 {
     if (otmp->cursed) {
+        int i;
         pline("Ulch!  That potion tasted foul!");
-        gp.potion_unkn++;
+        if (Fixed_abil) {
+            gp.potion_unkn++; /* not potion_nothing because you got message */
+            return;
+        }
+        /* gain a point in an ability by stealing it from another ability;
+         * point will always be given to the lowest score and taken from
+         * somewhere else, so it can be used somewhat reliably to increase the
+         * worst scores */
+        int lowest = A_STR; /* attrib_types with lowest known score */
+        int nlowest = 0; /* number of attribs with the same lowest known score;
+                            pick randomly if tie; start at 0 because we haven't
+                            actually evaluated A_STR yet (note assumption that
+                            A_STR is first in attrib_types) */
+        int highest = A_STR;
+        int nhighest = 0;
+        for (i = 0; i < A_MAX; ++i) {
+            if (ABASE(i) < ABASE(lowest)) {
+                lowest = i;
+                nlowest = 1;
+            }
+            else if (ABASE(i) == ABASE(lowest)) {
+                nlowest++;
+                if (!rn2(nlowest + 1))
+                    lowest = i;
+            }
+            if (ABASE(i) > ABASE(highest)) {
+                highest = i;
+                nhighest = 1;
+            }
+            else if (ABASE(i) == ABASE(highest)) {
+                nhighest++;
+                if (!rn2(nhighest + 1))
+                    highest = i;
+            }
+        }
+        if (ABASE(lowest) == ABASE(highest)) {
+            /* possible for this if the hero has the same in every attribute */
+            gp.potion_unkn++;
+            return;
+        }
+        adjattrib(highest, -1, TRUE);
+        adjattrib(lowest, 1, TRUE);
     } else if (Fixed_abil) {
         gp.potion_nothing++;
     } else {      /* If blessed, increase all; if not, try up to */
