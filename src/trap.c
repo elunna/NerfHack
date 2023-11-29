@@ -4573,9 +4573,6 @@ water_damage(
             if (in_invent)
                 update_inventory();
             return ER_DAMAGED;
-        } else if (obj->otyp == POT_OIL) {
-            pline("The water doesn't seem to mix with your %s.", ostr);
-            makeknown(POT_OIL);
         } else if (obj->otyp != POT_WATER) {
             if (in_invent)
                 Your("%s %s.", ostr, vtense(ostr, "dilute"));
