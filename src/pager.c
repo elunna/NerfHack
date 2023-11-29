@@ -779,10 +779,14 @@ checkfile(
      * for Angel and angel, make the lookup string the same for both
      * user_typed_name and picked name.
      */
-    if (pm != (struct permonst *) 0 && !user_typed_name)
-        dbase_str = strcpy(newstr, pm->pmnames[NEUTRAL]);
-    else
+    if (pm != (struct permonst *) 0 && !user_typed_name) {
+        if (is_rider(pm))
+            dbase_str = strcpy(newstr, "Rider");
+        else
+            dbase_str = strcpy(newstr, pm->pmnames[NEUTRAL]);
+    } else {
         dbase_str = strcpy(newstr, inp);
+    }
     (void) lcase(dbase_str);
 
     /*
@@ -977,7 +981,6 @@ checkfile(
                 if (!user_typed_name && !without_asking) {
                     char *entrytext = pass ? alt : dbase_str;
                     char question[QBUFSZ];
-
                     Strcpy(question, "More info about \"");
                     /* +2 => length of "\"?" */
                     copynchars(eos(question), entrytext,
