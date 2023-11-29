@@ -1010,28 +1010,14 @@ peffect_confusion(struct obj *otmp)
 static void
 peffect_gain_ability(struct obj *otmp)
 {
-    int ii;
     if (otmp->cursed) {
         pline("Ulch!  That potion tasted foul!");
-        /* [BarclayII] cursed potions randomly decrease your attribute */
-        boolean happened = FALSE;
-        if (!Fixed_abil) {
-            for (ii = 0; ii < A_MAX; ++ii) {
-                if (rn2(2)) {
-                    adjattrib(ii, -1, 0);
-                    happened = TRUE;
-                }
-            }
-        }
-        if (!happened)
-            gp.potion_nothing++;
-        
         gp.potion_unkn++;
     } else if (Fixed_abil) {
         gp.potion_nothing++;
     } else {      /* If blessed, increase all; if not, try up to */
         int itmp; /* 6 times to find one which can be increased. */
-        int i = -1;   /* increment to 0 */
+        int ii, i = -1;   /* increment to 0 */
         for (ii = A_MAX; ii > 0; ii--) {
             i = (otmp->blessed ? i + 1 : rn2(A_MAX));
             /* only give "your X is already as high as it can get"
