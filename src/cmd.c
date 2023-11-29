@@ -945,8 +945,10 @@ domonability(void)
             pline("Unfortunately sound does not carry well through rock.");
         else
             aggravate();
+#if 0 /* Disabled - no vampshifting for monsters or the player */
     } else if (is_vampire(uptr) || is_vampshifter(&gy.youmonst)) {
         return dopoly();
+#endif
     } else if (u.usteed && can_breathe(u.usteed->data)) {
         (void) pet_ranged_attk(u.usteed);
         return ECMD_TIME;
