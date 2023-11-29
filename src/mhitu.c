@@ -1593,7 +1593,8 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             cancelled = (mtmp->mcan != 0), already = FALSE,
             mcanseeu = (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
                         && mtmp->mcansee);
-
+    boolean wearing_eyes = ublindf
+                            && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD;
     if (m_seenres(mtmp, cvt_adtyp_to_mseenres(mattk->adtyp)))
         return M_ATTK_MISS;
 
@@ -1663,6 +1664,9 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             stop_occupation();
             if (poly_when_stoned(gy.youmonst.data) && polymon(PM_STONE_GOLEM))
                 break;
+            if (wearing_eyes)
+                pline("%s gaze is too powerful for %s to resist!",
+                      s_suffix(Monnam(mtmp)), bare_artifactname(ublindf));
             urgent_pline("You turn to stone...");
             gk.killer.format = KILLED_BY;
             Strcpy(gk.killer.name, pmname(mtmp->data, Mgender(mtmp)));
@@ -1674,6 +1678,11 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             if (cancelled) {
                 react = 0; /* "confused" */
                 already = (mtmp->mconf != 0);
+            } else if (wearing_eyes) {
+                if (!rn2(4))
+                    pline("%s protect you from %s confusing gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                break;
             } else {
                 int conf = d(3, 4);
 
@@ -1692,6 +1701,11 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             if (cancelled) {
                 react = 1; /* "stunned" */
                 already = (mtmp->mstun != 0);
+            } else if (wearing_eyes) {
+                if (!rn2(4))
+                    pline("%s protect you from %s stunning gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                break;
             } else {
                 int stun = d(2, 6);
 
