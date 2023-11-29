@@ -832,7 +832,10 @@ merged(struct obj **potmp, struct obj **pobj)
            unidentified by monsters very frequently). */
         if (discovered && otmp->where == OBJ_INVENT &&
             !obj->was_thrown && !otmp->was_thrown) {
+            ; /* Do nothing */
+#if 0
             pline("You learn more about your items by comparing them.");
+#endif
         }
 
         obfree(obj, otmp); /* free(obj), bill->otmp */
