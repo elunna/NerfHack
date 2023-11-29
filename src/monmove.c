@@ -19,7 +19,6 @@ static boolean soko_allow_web(struct monst *);
 static boolean m_search_items(struct monst *, coordxy *, coordxy *, schar *,
                               int *);
 static boolean leppie_avoidance(struct monst *);
-static void leppie_stash(struct monst *);
 static boolean m_balks_at_approaching(struct monst *);
 static boolean stuff_prevents_passage(struct monst *);
 static int vamp_shift(struct monst *, struct permonst *, boolean);
@@ -633,8 +632,7 @@ dochug(register struct monst* mtmp)
     /* Some monsters teleport. Teleportation costs a turn. */
     if (mtmp->mflee && !rn2(40) && can_teleport(mdat) && !mtmp->iswiz
         && !noteleport_level(mtmp)) {
-        if (rloc(mtmp, RLOC_MSG))
-            leppie_stash(mtmp);
+        (void) rloc(mtmp, RLOC_MSG);
         return 0;
     }
 
@@ -1035,27 +1033,6 @@ leppie_avoidance(struct monst *mtmp)
         return TRUE;
 
     return FALSE;
-}
-
-/* unseen leprechaun with gold might stash it */
-static void
-leppie_stash(struct monst *mtmp)
-{
-    struct obj *gold;
-
-    if (mtmp->data == &mons[PM_LEPRECHAUN]
-        && !DEADMONSTER(mtmp)
-        && !m_canseeu(mtmp)
-        && !*in_rooms(mtmp->mx, mtmp->my, SHOPBASE)
-        && levl[mtmp->mx][mtmp->my].typ == ROOM
-        && !t_at(mtmp->mx, mtmp->my)
-        && rn2(4)
-        && (gold = findgold(mtmp->minvent)) != 0) {
-        mdrop_obj(mtmp, gold, FALSE);
-        gold = g_at(mtmp->mx, mtmp->my);
-        if (gold)
-            (void) bury_an_obj(gold, (boolean *) 0);
-    }
 }
 
 /* does monster want to avoid you? */
