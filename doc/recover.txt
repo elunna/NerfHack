@@ -59,7 +59,7 @@ DESCRIPTION
        all .0 files in the playground to be  fed  to  recover  when  the  host
        machine boots, and handle game crashes individually.  If the user popu-
        lation is sufficiently trustworthy, recover can be installed  with  the
-       same  permissions  the nethack executable has.  In either case, recover
+       same  permissions  the hackem executable has.  In either case, recover
        is easily compiled from the distribution utility directory.
 
 NOTES

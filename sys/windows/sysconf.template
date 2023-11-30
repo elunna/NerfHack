@@ -42,7 +42,7 @@ WIZARDS=*
 # Disabled by setting to 0, or commenting out.
 #BONES_POOLS=10
 
-# Limit the number of simultaneous games (see also nethack.sh).
+# Limit the number of simultaneous games (see also hackem.sh).
 #MAXPLAYERS=10
 
 # If not null, added to string "To get local support, " in the support
@@ -80,8 +80,8 @@ HIDEUSAGE=1
 #MAX_STATUENAME_RANK=10
 
 # 'portable_device_paths' is only supported for Windows.  Starting with
-# 3.6.3, nethack on Windows treats the folder containing nethack.exe and
-# nethackW.exe as read-only and puts data files which are generated or
+# 3.6.3, nethack on Windows treats the folder containing hackem.exe and
+# hackemW.exe as read-only and puts data files which are generated or
 # modified during play or by the user in assorted folders derived from
 # user name.  3.6.4 added PORTABLE_DEVICE_PATHS to allow reverting to
 # the old behavior of having the run-time configuration file and other

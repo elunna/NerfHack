@@ -24,7 +24,7 @@
 # NOTE: Make sure GAMEDIR exists before nmake is started.
 #
 
-GAME	= NetHack
+GAME	= HACKEM
 GAMEDIR = ..\binary
 
 #

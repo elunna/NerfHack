@@ -3617,7 +3617,7 @@
      "%USERPROFILE%\NetHack\".  If you have not created  the  configuration
      file, NetHack will create one for you using the default template file.
 
-          On MS-DOS, it is "defaults.nh" in the same folder as nethack.exe.
+          On MS-DOS, it is "defaults.nh" in the same folder as hackem.exe.
 
           Any  line  in the configuration file starting with `#' is treated
      as a comment and ignored.  Empty lines are ignored.
@@ -3668,7 +3668,7 @@
 
      HACKDIR
        Default location of files NetHack needs. On Windows HACKDIR defaults
-       to  the  location of the NetHack.exe or NetHackw.exe file so setting
+       to  the  location of the hackem.exe or hackemW.exe file so setting
        HACKDIR to override that is not usually necessary or recommended.
 
      LEVELDIR

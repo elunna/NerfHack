@@ -12,7 +12,7 @@
 # * %USERPROFILE%\nethack\.hackemrc on Windows
 # * ~/.hackemrc (Unix, linux, macOS)
 # * "NetHack Defaults" on pre-OSX Mac and BeOS
-# * defaults.nh, same folder as nethack.exe on DOS
+# * defaults.nh, same folder as hackem.exe on DOS
 # * hackem.cnf on Amiga, Atari, OS/2, and VMS
 #
 # To change the configuration, comment out the unwanted lines, and
@@ -394,8 +394,8 @@
 #OPTIONS=windowcolors:status windowtext/window message windowtext/window
 
 # HACKDIR is the default location for everything.
-# Note: On Windows HACKDIR defaults to the location of the NetHack.exe or
-# NetHackw.exe file so setting HACKDIR below to override that is not usually
+# Note: On Windows HACKDIR defaults to the location of the hackem.exe or
+# hackemW.exe file so setting HACKDIR below to override that is not usually
 # necessary or recommended.
 #HACKDIR=c:\games\nethack
 

@@ -18,7 +18,7 @@
 #       NetHack.
 #
 #   A Win32 native port built on the Windows API, Graphical NetHack or
-#       NetHackW.
+#       hackemW.
 #
 #   If you have any questions read the sys/windows/Install.windows file included
 #   with the distribution.
@@ -112,7 +112,7 @@ GIT_AVAILABLE=Y
 endif
 
 # if WANT_GUICURSES=1 is passed, use the Bill Gray pdcursesmod and enable
-# curses in NetHackW
+# curses in hackemW
 ifeq "$(WANT_GUICURSES)" "1"
 PDCURSES=pdcursesmod
 else
@@ -540,7 +540,7 @@ CLEAN_DIR += $(OP)
 CLEAN_FILE += $(PDCLIB) $(PDCOBJS)
 
 ifneq ("$(wildcard $(PDCURSES_TOP)/wingui/pdcwin.h)", "")
-# pdcursesmod in use; enable Curses graphics on NetHackW
+# pdcursesmod in use; enable Curses graphics on hackemW
 OPW = $(O)pdcursesw
 PDCWOBJS = $(PDCCOMMONOBJS) $(addprefix $(OPW)/, \
 	  pdcclip.o pdcdisp.o pdcgetsc.o pdckbd.o pdcscrn.o pdcsetsc.o pdcutil.o)
@@ -980,7 +980,7 @@ DATEW_O  = $(addsuffix .o, $(addprefix $(ONHW)/, date))
 TILEFILES = $(addprefix $(WSHR)/, monsters.txt objects.txt other.txt)
 BMPS = $(addprefix $(MSWIN)/, $(addsuffix .bmp, mnsel mnselcnt mnunsel petmark pilemark rip splash tiles))
 NHWRES = $(ONHW)/winres.o
-NHWTARGETS = $(GAMEDIR)/NetHackW.exe
+NHWTARGETS = $(GAMEDIR)/hackemW.exe
 
 ifneq "$(PDCWINGUI)" ""
 CFLAGSW += $(NHCURSESFLAGS)
@@ -989,7 +989,7 @@ endif
 
 nethackw: $(NHWTARGETS)
 
-$(GAMEDIR)/NetHackW.exe: $(NHWOBJS) $(NHWRES) $(DATEW_O) $(LUALIB) $(PDCWLIB) | $(GAMEDIR)
+$(GAMEDIR)/hackemW.exe: $(NHWOBJS) $(NHWRES) $(DATEW_O) $(LUALIB) $(PDCWLIB) | $(GAMEDIR)
 	$(ld) $(LDFLAGS) -mwindows $^ $(LIBS) -static -lstdc++ $(SOUNDLIBLIBS) -o$@
 
 $(ONHW)/%.o: $(SRC)/%.c $(NHLUAH) | $(ONHW)
@@ -1072,11 +1072,11 @@ DATE_O  = $(addsuffix .o, $(addprefix $(ONH)/, date))
 
 NHOBJS = $(addprefix $(ONH)/, $(COREOBJS) $(NHONLY))
 NHRES = $(ONH)/conres.o
-NHTARGET = $(GAMEDIR)/NetHack.exe
+NHTARGET = $(GAMEDIR)/hackem.exe
 
 nethack: $(NHTARGET)
 
-$(GAMEDIR)/NetHack.exe: $(NHOBJS) $(NHRES) $(DATE_O) $(LUALIB) $(PDCLIB) $(SOUNDLIBLIBS) | $(GAMEDIR)
+$(GAMEDIR)/hackem.exe: $(NHOBJS) $(NHRES) $(DATE_O) $(LUALIB) $(PDCLIB) $(SOUNDLIBLIBS) | $(GAMEDIR)
 	$(ld) $(LDFLAGS) -mconsole $^ $(LIBS) -static -lstdc++ -o$@
 
 $(ONH)/%.o: $(SRC)/%.c $(NHLUAH) | $(ONH)
@@ -1147,7 +1147,7 @@ CLEAN_FILE += $(NHTARGET) $(NHOBJS) $(NHRES)
 
 all: install
 
-TO_INSTALL = $(GAMEDIR)/NetHack.exe $(RTARGETS) $(GAMEDIRDLLS) \
+TO_INSTALL = $(GAMEDIR)/hackem.exe $(RTARGETS) $(GAMEDIRDLLS) \
 	     $(addprefix $(GAMEDIR)/, \
 	     $(addsuffix .template, sysconf .hackemrc symbols) \
 	     Guidebook.txt NetHack.txt license opthelp record)
@@ -1161,7 +1161,7 @@ TO_INSTALL += $(LUADLL)
 endif
 
 ifneq "$(SKIP_NETHACKW)" "Y"
-TO_INSTALL += $(GAMEDIR)/NetHackW.exe
+TO_INSTALL += $(GAMEDIR)/hackemW.exe
 endif
 
 ifeq "$(USE_DLB)" "Y"

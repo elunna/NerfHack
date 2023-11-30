@@ -232,7 +232,7 @@ override WINLIB=
 override LUALIB=
 override LUALIBS=
 override TOPLUALIB=
-override GAMEBIN = $(TARGETPFX)nethack.exe
+override GAMEBIN = $(TARGETPFX)hackem.exe
 override PACKAGE = dospkg
 override PREGAME += mkdir -p $(TARGETDIR) ; make $(TARGETPFX)exceptn.o ;
 override CLEANMORE += rm -f -r $(TARGETDIR) ; rm -f -r $(FONTTARGETS) ;
@@ -348,7 +348,7 @@ override LUALIB=
 override TOPLUALIB=
 override REGEXOBJ = $(TARGETPFX)posixregex.o
 override WINOBJ=
-# don't bother Making regular NetHack executable
+# don't bother Making regular HACKEM executable
 override GAME=
 # the real VARDAT hasn't been defined yet for use in ALLDEP override
 WASM_DAT = bogusmon data engrave epitaph oracles quest.lua rumors

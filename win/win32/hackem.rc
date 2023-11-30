@@ -78,10 +78,10 @@ BEGIN
         BEGIN
             VALUE "FileDescription", "HACKEM for Windows - TTY Interface"
             VALUE "FileVersion", "2.0.0"
-            VALUE "InternalName", "NetHack"
+            VALUE "InternalName", "hackem"
             VALUE "LegalCopyright", "Copyright (C) 1985 - 2021.  By Stichting Mathematisch Centrum and M. Stephenson.  See license for details."
-            VALUE "OriginalFilename", "NetHack.exe"
-            VALUE "ProductName", "NetHack"
+            VALUE "OriginalFilename", "hackem.exe"
+            VALUE "ProductName", "HACKEM"
             VALUE "ProductVersion", "2.0.0"
         END
     END

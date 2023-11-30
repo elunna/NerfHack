@@ -61,7 +61,7 @@ nethack --windowtype:Iii
   designation itself may be any case; variations '--windowtype Iii' and
   '-w Iii' work too.
 
-  On Windows, nethack.exe might support both tty and curses; nethackW.exe
+  On Windows, hackem.exe might support both tty and curses; hackemW.exe
   supports mswin only.  MS-DOS is tty only.
 
 nethack -n

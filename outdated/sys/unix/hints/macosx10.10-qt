@@ -189,7 +189,7 @@ POSTINSTALL+= sys/unix/hints/macosx.sh editsysconf sys/unix/sysconf $(HACKDIR)/s
 CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
 else ifdef WANT_SOURCE_INSTALL
 PREFIX=$(abspath $(NHSROOT))
-# suppress nethack.sh
+# suppress hackem.sh
 #SHELLDIR=
 HACKDIR=$(PREFIX)/playground
 CHOWN=/usr/bin/true

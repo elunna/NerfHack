@@ -675,7 +675,7 @@ vms_traceback(int how) /* 1: exit after traceback; 2: stay in debugger */
     /*
      * If we've been linked /noTraceback then we can't provide any
      * trace of the call stack.  Linking that way is required if
-     * nethack.exe is going to be installed with privileges, so the
+     * hackem.exe is going to be installed with privileges, so the
      * SECURE configuration usually won't have any trace feedback.
      */
     if (!debuggable) {
@@ -721,7 +721,7 @@ extern unsigned lib$sig_to_ret(unsigned *, unsigned *);
    access to the debugger; fortunately, the linker knows now to find it
    without needing to link against sys.stb (VAX) or use LINK/System (Alpha).
    We won't be calling it, but we indirectly check whether it has already
-   been called by checking if nethack.exe has it as a transfer address. */
+   been called by checking if hackem.exe has it as a transfer address. */
 extern unsigned sys$imgsta(void);
 
 /*

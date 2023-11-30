@@ -353,11 +353,11 @@ BEGIN
         BEGIN
             VALUE "FileDescription", "HACKEM for Windows - Graphical Interface"
             VALUE "FileVersion", "2.0.0"
-            VALUE "InternalName", "NetHackW"
+            VALUE "InternalName", "hackemW"
             VALUE "LegalCopyright", "Copyright (C) 1985 - 2021.  By Stichting Mathematisch Centrum and M. Stephenson.  See license for details."
-            VALUE "OriginalFilename", "NetHackW.exe"
+            VALUE "OriginalFilename", "hackemW.exe"
             VALUE "PrivateBuild", "140606"
-            VALUE "ProductName", "NetHack"
+            VALUE "ProductName", "HACKEM"
             VALUE "ProductVersion", "2.0.0"
         END
     END

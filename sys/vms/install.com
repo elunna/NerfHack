@@ -5,7 +5,7 @@ $! NetHack may be freely redistributed.  See license for details.
 $ !
 $ ! $NHDT-Date: 1573172452 2019/11/08 00:20:52 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.12 $
 $ !
-$ ! Use vmsbuild.com to create nethack.exe, makedefs, and lev_comp *first*.
+$ ! Use vmsbuild.com to create hackem.exe, makedefs, and lev_comp *first*.
 $ !
 $ ! Note: this command procedure is also used by the top level Makefile
 $ ! if you build and install with MMS or MMK.  In that situation, only the
@@ -220,8 +220,8 @@ $ endif
 $ if p3.nes."" then  exit
 $!
 $make_executable:
-$	milestone "(nethack.exe)"
-$ call copy_file [.src]nethack.exe 'gamedir'nethack.exe "re"
+$	milestone "(hackem.exe)"
+$ call copy_file [.src]hackem.exe 'gamedir'hackem.exe "re"
 $ if p3.nes."" then  exit
 $!
 $! provide invocation procedure (if available)

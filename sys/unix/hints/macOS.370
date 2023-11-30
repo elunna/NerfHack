@@ -348,7 +348,7 @@ else ifdef WANT_SOURCE_INSTALL
 #$(info WANT_SOURCE_INSTALL = $(WANT_SOURCE_INSTALL), WANT_SHARE_INSTALL = $(WANT_SHARE_INSTALL))
 #endif
 PREFIX=$(abspath $(NHSROOT))
-# suppress nethack.sh
+# suppress hackem.sh
 #SHELLDIR=
 HACKDIR=$(PREFIX)/playground
 CHOWN=/usr/bin/true

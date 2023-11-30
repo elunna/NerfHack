@@ -315,9 +315,9 @@ interject_assistance(int num, int interjection_type, genericptr_t ptr1, genericp
                     "displayed\n"
                     "inside an unzip utility.\n\n"
                     "You have to unzip the contents of the zip file into a\n"
-                    "folder on your system, and then run \"NetHack.exe\" or "
+                    "folder on your system, and then run \"hackem.exe\" or "
                     "\n"
-                    "\"NetHackW.exe\" from there.\n\n"
+                    "\"hackemW.exe\" from there.\n\n"
                     "If that is not the situation, you are encouraged to\n"
                     "report the error as shown above.\n\n",
                     1023);

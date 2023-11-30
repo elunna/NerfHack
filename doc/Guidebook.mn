@@ -3453,7 +3453,7 @@ for system administrators.
 Using a configuration file
 .pg
 .\" hw: don't hyphenate file names; percent-sign doesn't need special handling
-.hw .hackemrc defaults.nh nethack.exe nethackW.exe %USERPROFILE%\\NetHack\\
+.hw .hackemrc defaults.nh hackem.exe hackemW.exe %USERPROFILE%\\NetHack\\
 The default name of the configuration file varies on different
 operating systems.
 .pg
@@ -3475,7 +3475,7 @@ in \(lq%USERPROFILE%\\NetHack\\\(rq.
 If you have not created the configuration file, NetHack will create
 one for you using the default template file.
 .pg
-On MS-DOS, it is \(lqdefaults.nh\(rq in the same folder as nethack.exe.
+On MS-DOS, it is \(lqdefaults.nh\(rq in the same folder as hackem.exe.
 .pg
 Any line in the configuration file starting with \(oq\f(CR#\fP\(cq is treated
 as a comment and ignored.
@@ -3521,7 +3521,7 @@ OPTIONS=!legacy,autopickup,pickup_types:$\(dq=/!?+
 .ed
 .lp HACKDIR
 Default location of files NetHack needs. On Windows HACKDIR
-defaults to the location of the NetHack.exe or NetHackw.exe file
+defaults to the location of the hackem.exe or hackemW.exe file
 so setting HACKDIR to override that is not usually necessary or recommended.
 .lp LEVELDIR
 The location that in-progress level files are stored. Defaults to HACKDIR,

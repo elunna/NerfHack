@@ -591,7 +591,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      */
 #ifndef CURSES_GRAPHICS
     if (argc >= 1 && !strcmpi(default_window_sys, "mswin")
-        && (strstri(argv[0], "nethackw.exe") || GUILaunched))
+        && (strstri(argv[0], "hackemw.exe") || GUILaunched))
         iflags.windowtype_locked = TRUE;
 #endif
     windowtype = default_window_sys;

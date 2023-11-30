@@ -190,7 +190,7 @@
  *                           this does NOT default to compiled-in value)
  *              EXPLORERS    (who can use explore mode, aka discover mode)
  *              SHELLERS     (who can use ! to execute a shell subprocess)
- *              MAXPLAYERS   (see MAX_NR_OF_PLAYERS below and nethack.sh)
+ *              MAXPLAYERS   (see MAX_NR_OF_PLAYERS below and hackem.sh)
  *              SUPPORT      (how to get local support) [no default]
  *              RECOVER      (how to recover a game at your site) [no default]
  *            For the record file (see topten.c):

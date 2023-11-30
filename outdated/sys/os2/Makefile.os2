@@ -183,8 +183,8 @@ RLIBP	= c:\emx\lib		# Possible real mode C libraries
 #	The game name and description.
 #
 
-GAME	= nethack
-GAMEDES = "NetHack 3.6.0"
+GAME	= hackem
+GAMEDES = "HACKEM 2.0.0"
 
 #
 #	The uppermost two lines for MSC, the middle two for GCC, and
@@ -1086,7 +1086,7 @@ cmd_msg :
 
 cmd_act :
 	$(ECHO) @echo off> $(CMDF)
-	$(ECHO) REM Command file for starting nethack.exe from PM/WPS Desktop>> $(CMDF)
+	$(ECHO) REM Command file for starting hackem.exe from PM/WPS Desktop>> $(CMDF)
 	$(ECHO) $(GAME).exe $(P)1 $(P)2 $(P)3 $(P)4 $(P)5 $(P)6 $(P)7>> $(CMDF)
 	$(ECHO) pause>> $(CMDF)
 
