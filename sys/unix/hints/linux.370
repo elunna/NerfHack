@@ -283,7 +283,7 @@ MOREALL += ( cd src ; $(MAKE) pregame ; $(MAKE) $(TARGETPFX)libnh.a )
 endif  # WANT_LIBNH
 
 #PREFIX=/usr
-PREFIX=$(wildcard ~)/nh/install
+PREFIX=$(wildcard ~)/hackem/install
 HACKDIR=$(PREFIX)/games/lib/nethackdir
 SHELLDIR = $(PREFIX)/games
 INSTDIR=$(HACKDIR)

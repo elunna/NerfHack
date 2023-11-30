@@ -1,7 +1,7 @@
 #
 # NetHack 3.7  linux $NHDT-Date: 1596498415 2020/08/03 23:46:55 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.32 $
 # Copyright (c) Kenneth Lorber, Kensington, Maryland, 2007.
-# NetHack may be freely redistributed.  See license for details. 
+# NetHack may be freely redistributed.  See license for details.
 #
 #-PRE
 # Linux hints file
@@ -10,7 +10,7 @@
 
 
 #PREFIX=/usr
-PREFIX=$(wildcard ~)/nh/install
+PREFIX=$(wildcard ~)/hackem/install
 HACKDIR=$(PREFIX)/games/lib/$(GAME)dir
 SHELLDIR = $(PREFIX)/games
 INSTDIR=$(HACKDIR)

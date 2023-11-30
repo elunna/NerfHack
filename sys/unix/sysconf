@@ -86,7 +86,7 @@ POINTSMIN=1
 #PERS_IS_UID=1
 
 # Help menu control; 0 - include "command line usage" entry in help menu;
-# 1 - suppress it from the menu.  Does not affect 'nethack --usage' when
+# 1 - suppress it from the menu.  Does not affect 'hackem --usage' when
 # player has access to the command line.
 #HIDEUSAGE=0
 
@@ -94,7 +94,7 @@ POINTSMIN=1
 MAX_STATUENAME_RANK=50
 
 # Use "Live logging" for important events (achievements, wishes, etc)
-# Only available if NetHack was compiled with LIVELOG.
+# Only available if HACKEM was compiled with LIVELOG.
 # Only really meaningful for public servers.
 # See the log in-game with #chronicle -command.
 # Bitmask for kinds of things you want to log - combine the following values
@@ -140,12 +140,12 @@ LIVELOG=0x0FFF
 #   %D current time, YYYYMMDDhhmmss format
 #   %n player name
 #   %N first character of player name
-DUMPLOGFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nh.txt
+DUMPLOGFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.hackem.txt
 
 # End of game HTML dump.
-# Only available if NetHack was compiled with DUMPHTML
+# Only available if HACKEM was compiled with DUMPHTML
 # Allows placeholders as above.
-DUMPHTMLFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nh.html
+DUMPHTMLFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.hackem.html
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will

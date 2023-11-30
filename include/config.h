@@ -417,7 +417,7 @@
  * otherwise it will be the current directory.
  */
 #ifndef HACKDIR
-#define HACKDIR "/usr/games/lib/nethackdir"
+#define HACKDIR "/usr/games/lib/hackemdir"
 #endif
 
 /*
@@ -693,7 +693,7 @@ typedef unsigned char uchar;
 #define DUMPLOG_MSG_COUNT   50
 #endif /* DUMPLOG_MSG_COUNT */
 #ifndef DUMPLOG_FILE
-#define DUMPLOG_FILE        "/tmp/nethack.%n.%d.log"
+#define DUMPLOG_FILE        "/tmp/hackem.%n.%d.log"
 /* DUMPLOG_FILE allows following placeholders:
    %% literal '%'
    %v version (eg. "3.6.3-0")
@@ -711,7 +711,7 @@ typedef unsigned char uchar;
 
 #ifdef DUMPHTML
 #ifndef DUMPHTML_FILE
-#define DUMPHTML_FILE        "/tmp/nethack.%n.%d.html"
+#define DUMPHTML_FILE        "/tmp/hackem.%n.%d.html"
 /* Placeholders as above
  * DUMPHTML_FILE is not used if SYSCF is defiined
  */

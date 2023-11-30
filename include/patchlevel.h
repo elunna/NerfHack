@@ -36,9 +36,8 @@
 #define DEBUG
 #endif
 
-#define COPYRIGHT_BANNER_A "HACKEM-MUCHE"
-#define COPYRIGHT_BANNER_B \
-    "         a NetHack 3.7.0 variant by Erik Lunna."
+#define COPYRIGHT_BANNER_A "HACKEM, Copyright 2023, based on NetHack, Copyright 1985-2023"
+#define COPYRIGHT_BANNER_B "by Stichting Mathematisch Centrum and M. Stephenson."
 /* nomakedefs.copyright_banner_c is generated at runtime */
 #define COPYRIGHT_BANNER_C nomakedefs.copyright_banner_c
 #define COPYRIGHT_BANNER_D "         See license for details."
