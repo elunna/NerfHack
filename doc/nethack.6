@@ -33,9 +33,9 @@ nethack \- Exploring The Mazes of Menace
 ]
 .br 1
 [
-.BI \-\-hackemrc: RC-file
+.BI \-\-nethackrc: RC-file
 |
-.B \-\-no\-hackemrc
+.B \-\-no\-nethackrc
 ]
 [
 .B \-n
@@ -129,7 +129,7 @@ Also
 .ad
 .hy 14
 .\" Make sure path is not hyphenated below
-.hw hackemdir
+.hw nethackdir
 .SH DESCRIPTION
 .PP
 .I NetHack
@@ -185,9 +185,9 @@ supporting multiple types of terminals.)
 Because the option list can be very long,
 options may also be included in a configuration file.
 The default is located in your home directory and
-named .hackemrc on UNIX systems (including descendants such as
+named .nethackrc on UNIX systems (including descendants such as
 linux, NetBSD, and macOS).
-On Windows, the name is also .hackemrc but the location can vary
+On Windows, the name is also .nethackrc but the location can vary
 (see
 .B \-\-showpaths
 below).
@@ -197,7 +197,7 @@ while
 .\" on the Macintosh or BeOS, it is \(lqNetHack Defaults\(rq, and
 on VMS|OpenVMS it is nethack.ini in your home directory.
 The default configuration file may be overridden via the
-.BI \-\-hackemrc: "rc-file"
+.BI \-\-nethackrc: "rc-file"
 command line option or by setting NETHACKOPTIONS in your environment
 to a string consisting of an @ character followed by the path and filename.
 .PP
@@ -308,9 +308,9 @@ The
 .BR \-d " or " \-\-directory
 option, which must be the first argument if it appears,
 supplies a directory which is to serve as the playground.
-It overrides the value from HACKEMDIR, HACKDIR,
+It overrides the value from NETHACKDIR, HACKDIR,
 or the directory specified by the game administrator during compilation
-(usually /usr/games/lib/hackemdir).
+(usually /usr/games/lib/nethackdir).
 This option is usually only useful to the game administrator.
 The playground must contain several auxiliary files such as help files,
 the list of top scorers, and a subdirectory
@@ -328,13 +328,13 @@ specified in the run-time configuration file.
 NetHack's #version command shows available interfaces.
 .PP
 The
-.BI \-\-hackemrc: RC-file
+.BI \-\-nethackrc: RC-file
 option will use
 .I RC-file
 instead of the default run-time configuration file
-.RI "(typically " \(ti/.hackemrc ")"
+.RI "(typically " \(ti/.nethackrc ")"
 and the
-.B \-\-no\-hackemrc
+.B \-\-no\-nethackrc
 option can be used to skip any run-time configuration file.
 .PP
 .\" extra blank line
@@ -414,11 +414,11 @@ distinction, as he may eventually release a new version of his own.
 Run-time configuration options were discussed above and use a platform
 specific name for a file in a platform specific location.
 For Unix, the
-name is '.hackemrc' in the user's home directory.
+name is '.nethackrc' in the user's home directory.
 
 .br
 All other files are in the playground directory,
-normally /usr/games/lib/hackemdir.
+normally /usr/games/lib/nethackdir.
 If DLB was defined during the compile, the data files and special levels
 will be inside a larger file, normally nhdat, instead of being separate
 files.
@@ -527,7 +527,7 @@ the program distribution neglected to include it.
 In a perfect world, 'paniclog' would remain empty.
 .SH ENVIRONMENT
 .DT
-.ta \w'HACKEMDIR or HACKDIR\ \ \ 'u
+.ta \w'NETHACKDIR or HACKDIR\ \ \ 'u
 USER or LOGNAME	Your login name.
 .br
 HOME		Your home directory.
@@ -544,12 +544,12 @@ MAILREADER	Replacement for default reader
 .br
 \ 	(probably /bin/mail or /usr/ucb/mail).
 .br
-HACKEMDIR or HACKDIR	Playground.
+NETHACKDIR or HACKDIR	Playground.
 .br
 NETHACKOPTIONS	String predefining several NetHack options.
 .br
 
-If the same option is specified in both NETHACKOPTIONS and .hackemrc,
+If the same option is specified in both NETHACKOPTIONS and .nethackrc,
 the value assigned in NETHACKOPTIONS takes precedence.
 .br
 

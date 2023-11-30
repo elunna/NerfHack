@@ -21,14 +21,14 @@
 # Game Installation Variables
 # NOTE: Make sure GAMEDIR exists before make is started.
 
-GAME = hackem
+GAME = nethack
 # The GNU Make has a problem if you include a drive spec below (unfortunately).
 GAMEDIR =../binary
 
 # Optional PDCurses support
 #    Uncomment these and set them appropriately if you want to
 #    include curses port support alongside TTY support in your
-#    HackEM.exe binary. 
+#    NetHack.exe binary. 
 #
 #    You'll have to set PDCURSES_H to the correct location of the 
 #    PDCurses header (.h) files and PDCURSES_C to the location

@@ -24,7 +24,7 @@ WIZARDS=*
 # Only available if NetHack was compiled with DUMPLOG
 # Allows following placeholders:
 #   %% literal '%'
-#   %v version (eg. "2.0.0-0")
+#   %v version (eg. "3.7.0-0")
 #   %u game UID
 #   %t game start time, UNIX timestamp format
 #   %T current time, UNIX timestamp format
@@ -32,7 +32,7 @@ WIZARDS=*
 #   %D current time, YYYYMMDDhhmmss format
 #   %n player name
 #   %N first character of player name
-#DUMPLOGFILE=hackem-%n-%d.log
+#DUMPLOGFILE=nethack-%n-%d.log
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will
@@ -42,7 +42,7 @@ WIZARDS=*
 # Disabled by setting to 0, or commenting out.
 #BONES_POOLS=10
 
-# Limit the number of simultaneous games (see also hackem.sh).
+# Limit the number of simultaneous games (see also nethack.sh).
 #MAXPLAYERS=10
 
 # If not null, added to string "To get local support, " in the support

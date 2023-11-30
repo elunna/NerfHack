@@ -3605,19 +3605,19 @@
           The default name of the configuration file  varies  on  different
      operating systems.
 
-          On  UNIX,  Linux, and macOS it is ".hackemrc" in the user's home
+          On  UNIX,  Linux, and macOS it is ".nethackrc" in the user's home
      directory.  The file may not exist, but it is a normal ASCII text file
      and can be created with any text editor.
 
-          On  Windows,  the  name  is  ".hackemrc"  located  in the folder
+          On  Windows,  the  name  is  ".nethackrc"  located  in the folder
      "%USERPROFILE%\NetHack\".  The file may not exist, but it is a  normal
      ASCII  text  file can can be created with any text editor.  After run-
      ning NetHack for the first time, you should find  a  default  template
-     for    the   configuration   file   named   ".hackemrc.template"   in
+     for    the   configuration   file   named   ".nethackrc.template"   in
      "%USERPROFILE%\NetHack\".  If you have not created  the  configuration
      file, NetHack will create one for you using the default template file.
 
-          On MS-DOS, it is "defaults.nh" in the same folder as hackem.exe.
+          On MS-DOS, it is "defaults.nh" in the same folder as nethack.exe.
 
           Any  line  in the configuration file starting with `#' is treated
      as a comment and ignored.  Empty lines are ignored.
@@ -3668,7 +3668,7 @@
 
      HACKDIR
        Default location of files NetHack needs. On Windows HACKDIR defaults
-       to  the  location of the HackEM.exe or HackEMw.exe file so setting
+       to  the  location of the NetHack.exe or NetHackw.exe file so setting
        HACKDIR to override that is not usually necessary or recommended.
 
      LEVELDIR
@@ -6243,7 +6243,7 @@
      code codepoint values and red-green-blue colors to  glyph  representa-
      tions.  The customizations can be specified for use with a symset that
      has a UTF8 handler within the symbols file such as the enhanced1  set,
-     or individually within your hackem.rc file.
+     or individually within your nethack.rc file.
 
           The format for defining a glyph representation is:
 

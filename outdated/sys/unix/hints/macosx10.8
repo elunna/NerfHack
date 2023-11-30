@@ -149,11 +149,11 @@ endif	# !WANT_WIN_QT
 
 ifdef WANT_SHARE_INSTALL
 # if $GAMEUID is root, we install into roughly proper Mac locations, otherwise
-# we install into ~/hackemdir
+# we install into ~/nethackdir
 ifeq ($(GAMEUID),root)
 PREFIX:=/Library/NetHack
 SHELLDIR=/usr/local/bin
-HACKDIR=$(PREFIX)/hackemdir
+HACKDIR=$(PREFIX)/nethackdir
 INSTDIR=$(HACKDIR)
 VARDIR=$(HACKDIR)
 CHOWN=chown
@@ -163,7 +163,7 @@ GAMEPERM = 02755
 else	# ! root
 PREFIX:=/Users/$(GAMEUID)
 SHELLDIR=$(PREFIX)/bin
-HACKDIR=$(PREFIX)/hackemdir
+HACKDIR=$(PREFIX)/nethackdir
 INSTDIR=$(HACKDIR)
 VARDIR=$(HACKDIR)
 CHOWN=/usr/bin/true
@@ -180,7 +180,7 @@ POSTINSTALL+= sys/unix/hints/macosx.sh editsysconf sys/unix/sysconf $(INSTDIR)/s
 CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
 else ifdef WANT_SOURCE_INSTALL
 PREFIX=$(abspath $(NHSROOT))
-# suppress hackem.sh
+# suppress nethack.sh
 #SHELLDIR=
 HACKDIR=$(PREFIX)/playground
 INSTDIR=$(HACKDIR)
@@ -196,7 +196,7 @@ CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
 else	# !WANT_SOURCE_INSTALL
 PREFIX:=$(wildcard ~)
 SHELLDIR=$(PREFIX)/bin
-HACKDIR=$(PREFIX)/hackemdir
+HACKDIR=$(PREFIX)/nethackdir
 INSTDIR=$(HACKDIR)
 VARDIR=$(HACKDIR)
 CHOWN=/usr/bin/true
@@ -205,8 +205,8 @@ GAMEPERM = 0700
 VARFILEPERM = 0600
 VARDIRPERM = 0700
 ifdef WANT_WIN_X11
-# install hackem.rc as ~/.hackemrc if no ~/.hackemrc exists
-PREINSTALL= cp -n win/X11/hackem.rc ~/.hackemrc || true
+# install nethack.rc as ~/.nethackrc if no ~/.nethackrc exists
+PREINSTALL= cp -n win/X11/nethack.rc ~/.nethackrc || true
 endif	# WANT_WIN_X11
 POSTINSTALL+= sys/unix/hints/macosx.sh editsysconf sys/unix/sysconf $(INSTDIR)/sysconf; $(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; $(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf; chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
 CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
@@ -238,7 +238,7 @@ SVS=$(shell $(NHSROOT)/util/makedefs --svs)
 SVSDOT=$(shell $(NHSROOT)/util/makedefs --svs .)
 
 PKGROOT_UG	= PKGROOT/usr/games
-PKGROOT_UGLN	= PKGROOT/usr/games/lib/hackemdir
+PKGROOT_UGLN	= PKGROOT/usr/games/lib/nethackdir
 build_tty_pkg:
 ifneq (,$(WANT_WIN_X11)$(WANT_WIN_QT))
 	-echo build_tty_pkg only works for a tty-only build
@@ -253,9 +253,9 @@ else
 	sys/unix/hints/macosx.sh infoplist > Info.plist
 
 	mkdir PKGROOT/Applications
-	#osacompile -o NetHackQt/NetHackQt.app/hackemdir/NetHackRecover.app \
+	#osacompile -o NetHackQt/NetHackQt.app/nethackdir/NetHackRecover.app \
 	#	 win/macosx/NetHackRecover.applescript
-	#cp win/macosx/recover.pl NetHackQt/NetHackQt.app/hackemdir
+	#cp win/macosx/recover.pl NetHackQt/NetHackQt.app/nethackdir
 	osacompile -o PKGROOT/Applications/NetHackRecover.app \
 		 win/macosx/NetHackRecover.applescript
 	cp win/macosx/recover.pl $(PKGROOT_UGLN)
@@ -303,13 +303,13 @@ ifneq (,$(WANT_WIN_X11)$(WANT_WIN_TTY))
 else
 	$(MAKE) build_package_root
 	rm -rf NetHackQt
-	mkdir -p NetHackQt/NetHackQt.app/hackemdir/save
+	mkdir -p NetHackQt/NetHackQt.app/nethackdir/save
 	mkdir NetHackQt/Documentation
 	cp doc/Guidebook.txt doc/nethack.txt doc/recover.txt NetHackQt/Documentation
 
-	osacompile -o NetHackQt/NetHackQt.app/hackemdir/NetHackRecover.app \
+	osacompile -o NetHackQt/NetHackQt.app/nethackdir/NetHackRecover.app \
 		 win/macosx/NetHackRecover.applescript
-	cp win/macosx/recover.pl NetHackQt/NetHackQt.app/hackemdir
+	cp win/macosx/recover.pl NetHackQt/NetHackQt.app/nethackdir
 
 	mkdir -p NetHackQt/NetHackQt.app/Contents/Frameworks
 	cp $(QTDIR)/libqt-mt.3.dylib NetHackQt/NetHackQt.app/Contents/Frameworks
@@ -317,7 +317,7 @@ else
 	mkdir NetHackQt/NetHackQt.app/Contents/MacOS
 	mv PKGROOT/nethack NetHackQt/NetHackQt.app/Contents/MacOS
 
-	mv PKGROOT/lib/hackemdir NetHackQt/NetHackQt.app/hackemdir
+	mv PKGROOT/lib/nethackdir NetHackQt/NetHackQt.app/nethackdir
 
 # XXX still missing:
 #NetHackQt/NetHackQt.app

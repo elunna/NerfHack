@@ -36,4 +36,4 @@ Open the project and build
 
 In XCode open the project file sys/unix/NetHack.xcodeproj, select
 the product NetHack and build.  The build results are placed in
-~/hackemdir.
+~/nethackdir.

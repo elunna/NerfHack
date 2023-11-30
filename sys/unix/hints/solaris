@@ -12,7 +12,7 @@
 # with Solaris 11
 
 # Build NetHack off your home directory
-HACKDIR=$(HOME)/hackemdir
+HACKDIR=$(HOME)/nethackdir
 INSTDIR=$(HACKDIR)
 VARDIR=$(HACKDIR)
 SHELLDIR=$(HOME)

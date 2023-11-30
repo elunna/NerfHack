@@ -303,7 +303,7 @@ prompt_for_player_selection(void)
         /* tty_putstr(BASE_WINDOW, 0, ""); */
         /* echoline = wins[BASE_WINDOW]->cury; */
         box_result = MessageBox(NULL, NH_A2W(prompt, wbuf, BUFSZ),
-                                TEXT("HACKEM for Windows"),
+                                TEXT("NetHack for Windows"),
 #if defined(WIN_CE_SMARTPHONE)
                                 MB_YESNO | MB_DEFBUTTON1
 #else
@@ -1243,7 +1243,7 @@ mswin_raw_print(const char *str)
     logDebug("mswin_raw_print(%s)\n", str);
     if (str && *str)
         MessageBox(GetNHApp()->hMainWnd, NH_A2W(str, wbuf, sizeof(wbuf)),
-                   TEXT("HACKEM"), MB_OK);
+                   TEXT("NetHack"), MB_OK);
 }
 
 /*
@@ -1258,7 +1258,7 @@ mswin_raw_print_bold(const char *str)
     logDebug("mswin_raw_print_bold(%s)\n", str);
     if (str && *str)
         MessageBox(GetNHApp()->hMainWnd, NH_A2W(str, wbuf, sizeof(wbuf)),
-                   TEXT("HACKEM"), MB_OK);
+                   TEXT("NetHack"), MB_OK);
 }
 
 /*

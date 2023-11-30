@@ -71,7 +71,7 @@ main(int argc, char *argv[])
      * The logical name HACKDIR is overridden by a
      *  -d command line option (must be the first option given)
      */
-    dir = nh_getenv("HACKEMDIR");
+    dir = nh_getenv("NETHACKDIR");
     if (!dir)
         dir = nh_getenv("HACKDIR");
 #endif

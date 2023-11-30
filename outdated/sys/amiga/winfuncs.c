@@ -149,7 +149,7 @@ struct Hook SM_FilterHook;
 struct Hook fillhook;
 struct TagItem wintags[] = {
     { WA_BackFill, (ULONG) &fillhook },
-    { WA_PubScreenName, (ULONG) "HACKEM" },
+    { WA_PubScreenName, (ULONG) "NetHack" },
     { TAG_END, 0 },
 };
 #endif

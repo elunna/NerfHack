@@ -35,7 +35,7 @@
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>NetHackPackage_StoreKey.pfx</PackageCertificateKeyFile>
-    <EntryPointProjectUniqueName>HackEMW\HackEMW.vcxproj</EntryPointProjectUniqueName>
+    <EntryPointProjectUniqueName>NetHackW\NetHackW.vcxproj</EntryPointProjectUniqueName>
     <PackageCertificateThumbprint>19591BE8832D6EFED75019EACE7C4CA42ABC90D4</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
@@ -112,33 +112,33 @@
     <Content Include="Images\Wide310x150Logo.scale-125.png" />
     <Content Include="Images\Wide310x150Logo.scale-150.png" />
     <Content Include="Images\Wide310x150Logo.scale-200.png" />
-    <Content Include="..\..\..\binary\$(Configuration)\$(Platform)\.hackemrc.template">
-      <Link>HackEMW\.hackemrc.template</Link>
+    <Content Include="..\..\..\binary\$(Configuration)\$(Platform)\.nethackrc.template">
+      <Link>NetHackW\.nethackrc.template</Link>
     </Content>
     <Content Include="..\..\..\binary\$(Configuration)\$(Platform)\Guidebook.txt">
-      <Link>HackEMW\Guidebook.txt</Link>
+      <Link>NetHackW\Guidebook.txt</Link>
     </Content>
     <Content Include="..\..\..\binary\$(Configuration)\$(Platform)\license">
-      <Link>HackEMW\license</Link>
+      <Link>NetHackW\license</Link>
     </Content>
     <Content Include="..\..\..\binary\$(Configuration)\$(Platform)\nhdat$(VERSION_MAJOR)$(VERSION_MINOR)$(PATCHLEVEL)">
-      <Link>HackEMW\nhdat$(VERSION_MAJOR)$(VERSION_MINOR)$(PATCHLEVEL)</Link>
+      <Link>NetHackW\nhdat$(VERSION_MAJOR)$(VERSION_MINOR)$(PATCHLEVEL)</Link>
     </Content>
     <Content Include="..\..\..\binary\$(Configuration)\$(Platform)\opthelp">
-      <Link>HackEMW\opthelp</Link>
+      <Link>NetHackW\opthelp</Link>
     </Content>
     <Content Include="..\..\..\binary\$(Configuration)\$(Platform)\symbols.template">
-      <Link>HackEMW\symbols.template</Link>
+      <Link>NetHackW\symbols.template</Link>
     </Content>
     <Content Include="..\..\..\binary\$(Configuration)\$(Platform)\sysconf.template">
-      <Link>HackEMW\sysconf.template</Link>
+      <Link>NetHackW\sysconf.template</Link>
     </Content>
     <Content Include="Images\Wide310x150Logo.scale-400.png" />
     <None Include="NetHackPackage_StoreKey.pfx" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="HackEMW\HackEMW.vcxproj" />
+    <ProjectReference Include="NetHackW\NetHackW.vcxproj" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

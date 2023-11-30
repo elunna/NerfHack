@@ -25,7 +25,7 @@
 #define SYSCF_FILE "sysconf" /* Use a file to hold the SYSCF configuration */
 
 #ifdef DUMPLOG
-#define DUMPLOG_FILE "%TEMP%/hackem-%n-%d.log"
+#define DUMPLOG_FILE "%TEMP%/nethack-%n-%d.log"
 #endif
 
 /*#define CHANGE_COLOR*/ /* allow palette changes */
@@ -81,8 +81,8 @@
                      * objects being thrown when the hangup occurs.    \
                      */
 
-#define CONFIG_FILE ".hackemrc"
-#define CONFIG_TEMPLATE ".hackemrc.template"
+#define CONFIG_FILE ".nethackrc"
+#define CONFIG_TEMPLATE ".nethackrc.template"
 #define SYSCF_TEMPLATE "sysconf.template"
 #define SYMBOLS_TEMPLATE "symbols.template"
 #define GUIDEBOOK_FILE "Guidebook.txt"

@@ -129,7 +129,8 @@ ghack_about_cb(GtkWidget *widget, gpointer data)
 {
     char buf[BUFSZ] = "\0";
     char buf1[BUFSZ] = "\0";
-    const gchar *authors[] = { "Erik Lunna", "The Nethack Dev Team", NULL };
+    const gchar *authors[] = { "Erik Andersen", "Anthony Taylor",
+                               "Jeff Garzik", "The Nethack Dev Team", NULL };
 
     if (about) {
         gdk_window_raise(about->window);
@@ -157,11 +158,11 @@ free(str) below
 #else
     strcat(buf1, VERSION_STRING);
     strcat(buf,
-           _("\nSend comments and bug reports to: eslunna@gmail.com\n"
+           _("\nSend comments and bug reports to: nethack-bugs@nethack.org\n"
              "This game is free software. See License for details."));
 #endif
-    about = gnome_about_new(_("HACKEM"), buf1,
-                            "Copyright (C) 1985-2023 Mike Stephenson",
+    about = gnome_about_new(_("Nethack"), buf1,
+                            "Copyright (C) 1985-2002 Mike Stephenson",
                             (const char **) authors, buf, NULL);
 
     gtk_signal_connect(GTK_OBJECT(about), "destroy",
@@ -593,7 +594,7 @@ ghack_init_main_window(int argc, char **argv)
         setuid(uid);
     hide_privileges(TRUE);
     /* XXX gnome_init must print nethack options for --help, but does not */
-    gnome_init("hackem", VERSION_STRING, argc, argv);
+    gnome_init("nethack", VERSION_STRING, argc, argv);
     hide_privileges(FALSE);
     parse_args(argc, argv);
 
@@ -605,7 +606,7 @@ ghack_init_main_window(int argc, char **argv)
 
     /* Main window */
     mainWindow =
-        gnome_app_new((char *) "hackem", (char *) N_("HACKEM for Gnome"));
+        gnome_app_new((char *) "nethack", (char *) N_("Nethack for Gnome"));
     gtk_widget_realize(mainWindow);
     if (restarted) {
         gtk_widget_set_uposition(mainWindow, os_x, os_y);

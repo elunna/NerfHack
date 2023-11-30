@@ -1726,7 +1726,7 @@ create_map_window(
         XtSetArg(args[num_args], XtNinput, False);
         num_args++;
 
-        wp->popup = parent = XtCreatePopupShell("hackem",
+        wp->popup = parent = XtCreatePopupShell("nethack",
                                                 topLevelShellWidgetClass,
                                                 toplevel, args, num_args);
         /*

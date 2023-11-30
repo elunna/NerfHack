@@ -515,7 +515,7 @@ use the following guidelines:
                         Windows with mingw32 or MSYS2 using GNU make at
                         the command line.
 
-       sys/windows/vs/HackEMW/HackEMW.vcxproj
+       sys/windows/vs/NetHackW/NetHackW.vcxproj
 
                         Will need an <ClCompile Include="$(SndWindDir)myprefix.c" />
                         entry added in order to build under visual

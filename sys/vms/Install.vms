@@ -95,7 +95,7 @@
     generated code, before NetHack's '#include "config.h"', leading to
     conflicts that prevent compilation from completing.
 
-5.  To build HACKEM.EXE and its auxiliary programs, execute the
+5.  To build NETHACK.EXE and its auxiliary programs, execute the
     following DCL command:
        $ @[.SYS.VMS]VMSBUILD          !defaults to CC, either VAXC or DECC
     or $ @[.SYS.VMS]VMSBUILD "GNUC"   !force "GCC"
@@ -125,9 +125,9 @@
     [.dat] subdirectory.  Then it will create the playground directory,
     if necessary, plus the associated [.save] subdirectory.  Next it will
     copy the data files into the playground; this step can take a while.
-    Finally it will copy hackem.exe and a few additional support files.
+    Finally it will copy nethack.exe and a few additional support files.
 
-    After it completes, the files [.src]nethack.olb, [.src]hackem.exe,
+    After it completes, the files [.src]nethack.olb, [.src]nethack.exe,
     [.util]*.obj, [.util]*_comp.exe, and [.util]makedefs.exe can be
     deleted in order to save disk space if desired.  The other program,
     [.util]recover.exe, should not be deleted unless you make a copy of
@@ -135,7 +135,7 @@
     used to resurrect some games disrupted by system or program crash.
 
 8.  The file nethack.com which is copied to the playground directory can
-    be used to invoke NetHack, or hackem.exe can be run directly.  Most
+    be used to invoke NetHack, or nethack.exe can be run directly.  Most
     of the command-line options specified in the Unix man-page (file
     [.doc]nethack.txt) are also applicable to VMS.  Some comments at the
     beginning of nethack.com illustrate several of the options.  New
@@ -184,7 +184,7 @@ Notes:
     representation) can also be present; see the "Guidebook" for details.
     (Guidebook.txt can be found in the [.doc] subdirectory; a copy gets
     placed in the playground directory by install.com.  Also, an example
-    configuration file can be found in [.win.X11]hackem.rc.)
+    configuration file can be found in [.win.X11]nethack.rc.)
 
 4.  [As mentioned above, the set of Makefiles is out of date so disregard
     this note....]
@@ -236,7 +236,7 @@ Notes:
     by install.com, and NetHack will use it if it can't find any other
     one.  NetHack uses the following sequence to attempt to locate the
     termcap file:  translation of the logical name TERMCAP (used as-is),
-    file HACKEMDIR:TERMCAP, similar file HACKDIR:TERMCAP, GNU-Emacs file
+    file NETHACKDIR:TERMCAP, similar file HACKDIR:TERMCAP, GNU-Emacs file
     EMACS_LIBRARY:[ETC]TERMCAP.DAT, file []TERMCAP, and lastly file
     $TERMCAP (which most likely would be a logical name).  If NetHack
     can't find the termcap file, or if the above search sequence finds a
@@ -297,14 +297,14 @@ Notes:
     In order for installed privileges to be used at all, the value of
     HACKDIR (via Local_HACKDIR in vmsconf.h) compiled into the program
     must correspond to the actual playground directory.  If logical name
-    HACKDIR (or HACKEMDIR) is used to override that value, installed
+    HACKDIR (or NETHACKDIR) is used to override that value, installed
     privileges will be deactivated unless its value corresponds to the
     same device and directory as the internal value.  If that internal
     value contains a logical name, only an executive-mode translation
     will be honored; if there is no such translation, installed privs
     will be deactivated.
 
-    To be able to install hackem.exe with privileges (SYSPRV or GRPPRV,
+    To be able to install nethack.exe with privileges (SYSPRV or GRPPRV,
     perhaps EXQUOTA, depending on site usage and needs), you'll need to
     link it with debugging and tracebacks both disabled.  You can do this
     by specifying an argument to vmsbuild.com when performing step #6
@@ -314,7 +314,7 @@ Notes:
     built NetHack, you can relink with tracebacks disabled by doing
        $ @[.SYS.VMS]VMSBUILD "LINK" "" "" "/noTrace/noDebug"
 
-8.  If you can't or won't install hackem.exe with privileges and if you
+8.  If you can't or won't install nethack.exe with privileges and if you
     don't have access to a privileged account yourself, then if you intend
     to allow other users to access your copy of NetHack you should probably
     place an ACL on the playground directory and its save subdirectory.
@@ -417,7 +417,7 @@ Notes:
     modules in the object library prior to linking the program:
        $ cc/include=[-.include] [-.sys.vms]vmstty   !for example
        $ libr/obj []nethack vmstty                  !replace VMSTTY
-       $ @[-.sys.vms]vmsbuild LINK                  !re-link HACKEM.EXE
+       $ @[-.sys.vms]vmsbuild LINK                  !re-link NETHACK.EXE
     If you forget to replace the library entry, your newly compiled code
     will not be included in the new executable image.
 

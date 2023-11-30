@@ -71,10 +71,10 @@ OPTIONS=fullscreen,wraptext,softkeyboard
 OPTIONS=windowcolors:status white/#000000 message white/#000000 menu white/#000000 text white/#000000
 
 #
-#HACKDIR=c:\games\hackem
+#HACKDIR=c:\games\nethack
 # 
 # Note: On Windows HACKDIR defaults to the location 
-#       of the HackEM.exe or HackEMw.exe file. 
+#       of the NetHack.exe or NetHackw.exe file. 
 #       Setting HACKDIR above will override that.
 #
 #   LEVELS and SAVE default to HACKDIR

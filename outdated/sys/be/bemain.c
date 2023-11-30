@@ -27,7 +27,7 @@ MAIN(int argc, char **argv)
 
     early_init();
 
-    dir = nh_getenv("HACKEMDIR");
+    dir = nh_getenv("NETHACKDIR");
     if (!dir)
         dir = nh_getenv("HACKDIR");
 
