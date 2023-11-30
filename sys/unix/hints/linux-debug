@@ -20,6 +20,7 @@
 #        multiw-1.370 contains sections 1 to 2
 #-INCLUDE multiw-1.370
 
+PRECHECK+=checkmakefiles
 
 ifndef LIBXPM
 LIBXPM= -L/opt/X11/lib -lXpm
@@ -27,12 +28,23 @@ endif
 
 #4. Other
 GAMEUID  = $(USER)
-GAMEGRP  = games
+GAMEGRP  = bin
 
 #-----------------------------------------------------------------------------
 # You shouldn't need to change anything below here (in the hints file; if
 # you're reading this in Makefile augmented by hints, that may not be true).
 #
+
+ifeq "$(GIT)" "1"
+ifndef GITSUBMODULES
+GITSUBMODULES=1
+endif
+endif
+ifeq "$(git)" "1"
+ifndef GITSUBMODULES
+GITSUBMODULES=1
+endif
+endif
 
 #-INCLUDE multiw-2.370
 
@@ -56,10 +68,20 @@ endif  # WANT_WIN_QT
 #
 #-INCLUDE multiw-3.370
 
-# Uncomment this is you plan on fuzzing with ASAN enabled                                                           
-CFLAGS+=-fsanitize=address -fno-omit-frame-pointer
+ifeq "$(USE_ASAN)" "1"
+CFLAGS+=-fsanitize=address
 LFLAGS+=-fsanitize=address
+endif
 
+ifdef WANT_WIN_TTY
+USE_CURSESLIB=1
+endif
+
+ifdef WANT_WIN_CURSES
+ifneq "$(USE_CURSESLIB)" "1"
+USE_CURSESLIB=1
+endif
+endif
 
 ifeq "$(USE_CURSESLIB)" "1"
 # default
@@ -70,10 +92,17 @@ CURSESLIB = -lncurses -ltinfo
 ifdef MAKEFILE_SRC
 comma:=,
 NCURSES_LFLAGS = $(shell pkg-config ncursesw --libs)
-ifneq (,$(findstring ncursesw, $(NCURSES_LFLAGS)))
-HAVE_NCURSESW=1
-else
+ifeq (,$(findstring ncursesw, $(NCURSES_LFLAGS)))
+ifeq (,$(findstring ncurses, $(NCURSES_LFLAGS)))
+#this indicates that pkg-config itself was unavailable
+NCURSES_LFLAGS = -lncursesw -ltinfo
+endif
+endif
+#$(info $(NCURSES_LFLAGS))
+ifeq (,$(findstring ncursesw, $(NCURSES_LFLAGS)))
 HAVE_NCURSESW=0
+else
+HAVE_NCURSESW=1
 endif
 #$(info $(NCURSES_LFLAGS))
 #$(info HAVE_NCURSESW=$(HAVE_NCURSESW))
@@ -89,25 +118,34 @@ endif      #HAVE_NCURSESW
 endif      #MAKEFILE_SRC
 endif      #USE_CURSESLIB
 
+AUTOLIBS=$(shell (../util/makedefs --grep-defined CRASHREPORT && echo "-lcrypto" ) || true )
+
 # NetHack sources control
 NHCFLAGS+=-DDLB
 NHCFLAGS+=-DHACKDIR=\"$(HACKDIR)\"
+NHCFLAGS+=-DVAR_PLAYGROUND=\"$(HACKDIR)/var\"
 NHCFLAGS+=-DDEFAULT_WINDOW_SYS=\"$(WANT_DEFAULT)\"
 NHCFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
 NHCFLAGS+=-DTIMED_DELAY
-NHCFLAGS+=-DDUMPLOG
 NHCFLAGS+=-DCONFIG_ERROR_SECURE=FALSE
+NHCFLAGS+=-DPANICLOG_FMT2
+NHCFLAGS+=-DFCMASK=0644
 #NHCFLAGS+=-DGREPPATH=\"/usr/bin/grep\"
 NHCFLAGS+=-DCOMPRESS=\"/bin/gzip\" -DCOMPRESS_EXTENSION=\".gz\"
 #NHCFLAGS+=-DNOMAIL
 #NHCFLAGS+=-DEXTRA_SANITY_CHECKS
-#NHCFLAGS+=-DEDIT_GETLIN
-#NHCFLAGS+=-DSCORE_ON_BOTL
+NHCFLAGS+=-DEDIT_GETLIN
+NHCFLAGS+=-DSCORE_ON_BOTL
 #NHCFLAGS+=-DMSGHANDLER
-#NHCFLAGS+=-DTTY_TILES_ESCCODES
+NHCFLAGS+=-DTTY_TILES_ESCCODES
 #NHCFLAGS+=-DTTY_SOUND_ESCCODES
 #NHCFLAGS+=-DNO_CHRONICLE
-#NHCFLAGS+=-DLIVELOG
+NHCFLAGS+=-DDGAMELAUNCH
+NHCFLAGS+=-DLIVELOG
+NHCFLAGS+=-DDUMPLOG
+NHCFLAGS+=-DDUMPHTML
+NHCFLAGS+=-DUSE_GENERAL_ALTAR_COLORS
+
 ifdef WANT_WIN_CURSES
 ifeq "$(HAVE_NCURSESW)" "1"
 NHCFLAGS+=-DCURSES_UNICODE
@@ -117,25 +155,6 @@ $(info Attention: CURSES_UNICODE is not being defined without ncursesw)
 endif   #MAKEFILE_SRC
 endif   #HAVE_NCURSESW
 endif   #WANT_WIN_CURSES
-
-# CUSTOM COMPILER OPTIONS FOR ENSURING HARDFOUGHT SERVER BUILD WORKS
-NHCFLAGS+=-DDUMPHTML
-NHCFLAGS+=-DDGAMELAUNCH
-
-# CUSTOM FLAGS FOR DEBUGGING
-NHCFLAGS+=-O0 # don't optimize out anything
-NHCFLAGS+=-g  # -g3 will include highest level of debug symbols (macros) but
-              # this slows it down too much
-NHCFLAGS+=-Wformat=2 # -Wformat=2 includes format-nonliteral, which NetHack liberally violates;
-                     # however we still want those warnings outside
-                     # DISABLE_WARNING_FORMAT_NONLITERAL blocks
-                     
-# NHCFLAGS+=-Werror # turns all warnings into errors, and thus will abort
-NHCFLAGS+= -Wimplicit-fallthrough=2 # 3 usually ok, but nice to enforce
-                                    # /* else FALLTHRU */
-NHCFLAGS+=-Warray-bounds=2 # extra checking for struct/pointer array access
-NHCFLAGS+=-DFUZZER_LOG # log things so fuzzer crashes can trace what was happening
-# END CUSTOM FLAGS
 
 #
 #-INCLUDE multisnd1-pre.370
@@ -197,6 +216,7 @@ QTCXXFLAGS += $(sort $(shell PKG_CONFIG_PATH=$(QTDIR)/lib/pkgconfig pkg-config Q
 WINLIB += $(shell PKG_CONFIG_PATH=$(QTDIR)/lib/pkgconfig pkg-config Qt5Gui Qt5Widgets Qt5Multimedia --libs)
 endif    # WANT_WIN_QT5
 ifdef WANT_WIN_QT6
+ifdef QT6MANUAL
 # Try some likely spots for a self-built Qt6.
 # You'll have to change these manually before using the hints file
 # if they don't match the installed location on your system.
@@ -216,7 +236,7 @@ QTCXXFLAGS += -I$(QTINCDIR)/QtNetwork -I$(QTINCDIR)/QtGui -I$(QTINCDIR)/QtCore
 WINLIB += -L$(QTLIBDIR) -lQt6Widgets -lQt6Multimedia -lQt6Network -lQt6Gui -lQt6Core
 MOCPATH = /usr/lib/qt6/libexec/moc
 #/usr/lib/x86_64-linux-gnu/libQt6EglFSDeviceIntegration.so
-endif
+endif    # QTTOP/*
 ifndef QTINCDIR
 ifneq ($(wildcard /usr/local/Qt6/*),)
 QTDIR=/usr/local/Qt6
@@ -235,7 +255,17 @@ QTCXXFLAGS += -I$(QTDIR)/include/QtWidgets
 MOCPATH = $(QTDIR)/libexec/moc
 WINLIB += -L$(QTDIR)/lib -lQt6Widgets -lQt6Multimedia -lQt6Network -lQt6Gui -lQt6Core
 endif   # QTLOCATED
-endif   # !QTINCDIR
+else    # !QT6MANUAL
+MOCDIR = $(shell pkg-config Qt6Gui --variable=libexecdir)
+ifneq ($(wildcard $(MOCDIR)/*),)
+MOCPATH = $(MOCDIR)/moc
+else
+MOCPATH = /usr/lib/qt6/libexec/moc
+endif   # MOCDIR
+QTCXXFLAGS += $(sort $(shell pkg-config Qt6Gui Qt6Widgets Qt6Multimedia --cflags))
+WINLIB += $(shell pkg-config Qt6Gui Qt6Widgets Qt6Multimedia --libs)
+endif   # QT6MANUAL
+endif   # WANT_WIN_QT6
 ifndef QTDIR
 $(error QTDIR not defined in the environment or Makefile)
 endif	# QTDIR
@@ -295,7 +325,11 @@ VARDIR = $(HACKDIR)/var
 POSTINSTALL+= cp -n sys/unix/sysconf $(INSTDIR)/sysconf; \
 	$(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; \
 	$(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf; \
-	chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
+	chmod $(VARFILEPERM) $(INSTDIR)/sysconf; \
+	( util/makedefs --grep-defined CRASHREPORT && \
+	  ( cp win/share/nhcrashreport.lua $(INSTDIR) ; \
+	  chmod 555 $(INSTDIR)/nhcrashreport.lua ; \
+	  cp $(LUATOP)/lua $(INSTDIR)/nhlua); true)
 
 ifneq "$(CCISCLANG)" ""
 # gdb may not be installed if clang is chosen compiler so the game
@@ -304,11 +338,6 @@ ifneq "$(CCISCLANG)" ""
 POSTINSTALL+= sed -i -e 's;^GDBPATH=/usr/bin/gdb;\#GDBPATH=/usr/bin/gdb;' \
 		-e 's;PANICTRACE_GDB=1;PANICTRACE_GDB=0;' $(INSTDIR)/sysconf;
 endif
-
-# CUSTOM - enable wizmode by default without having to keep sys/unix/sysconf
-# edits around
-POSTINSTALL+=sed -i"" 's/root games/*/' $(INSTDIR)/sysconf;
-# END CUSTOM
 
 # Lua
 # when building liblua.a, avoid warning that use of tmpnam() should be
@@ -331,8 +360,8 @@ DLLIB = -ldl
 LFLAGS+=-rdynamic
 
 # if TTY_TILES_ESCCODES
-#WINSRC += tile.c
-#WINOBJ += tile.o
+WINSRC += tile.c
+WINOBJ += tile.o
 # endif
 
 CHOWN=true
@@ -362,6 +391,9 @@ GAMEPERM = 0755
 #-INCLUDE multisnd-post.370
 #
 
+.PHONY: checkmakefiles
+checkmakefiles:
+	( $(MAKE) -f sys/unix/Makefile.check )
 ifdef WANT_LIBNH
 $(TARGETPFX)libnh.a: $(HOBJ) $(LIBNHSYSOBJ) ../lib/lua/liblua.a
 	$(AR) rcs $@ $(HOBJ) $(LIBNHSYSOBJ) ../lib/lua/liblua.a
