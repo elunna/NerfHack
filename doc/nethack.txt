@@ -3,20 +3,20 @@ NETHACK(6)                       Games Manual                       NETHACK(6)
 
 
 NAME
-       nethack - Exploring The Mazes of Menace
+       hackem - Exploring The Mazes of Menace
 
 SYNOPSIS
-       nethack [ -d|--directory directory ] [ -w|--windowtype interface ]
+       hackem [ -d|--directory directory ] [ -w|--windowtype interface ]
        [ --hackemrc:RC-file | --no-hackemrc ] [ -n ] [ -dec | -ibm ]
        [ -u playername ] [ -X | -D ] [ -p profession ] [ -r race ] [ -@ ]
 
        Also [ -A|-Arc | -B|-Bar | -C|-Cav | -H|-Hea | -K|-Kni | -M|-Mon |
        -P|-Pri | -R|-Rog | -Ran | -S|-Sam | -T|-Tou | -V|-Val | -W|-Wiz ]
 
-       nethack [ -d|--directory directory ] -s|--scores [ -v ]
+       hackem [ -d|--directory directory ] -s|--scores [ -v ]
        [ -p profession ] [ -r race ] [ playernames ]
 
-       nethack [ --usage | --help ] [ --showpaths ] [ --version[:paste] ]
+       hackem [ --usage | --help ] [ --showpaths ] [ --version[:paste] ]
 
 DESCRIPTION
        NetHack is a display oriented Dungeons & Dragons(tm) - like game.   The
