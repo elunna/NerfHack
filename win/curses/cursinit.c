@@ -29,23 +29,30 @@ typedef struct nhrgb_type {
 /* Banners used for an optional ASCII splash screen */
 
 #define NETHACK_SPLASH_A \
-" _   _        _    _    _               _    "
+"    __  __           __      ________  ___"
 
 #define NETHACK_SPLASH_B \
-"| \\ | |      | |  | |  | |             | |   "
+"   / / / /___ ______/ /__ ' / ____/  |/  /"
 
 #define NETHACK_SPLASH_C \
-"|  \\| |  ___ | |_ | |__| |  __ _   ___ | | __"
+"  / /_/ / __ `/ ___/ //_/  / __/ / /|_/ / "
 
 #define NETHACK_SPLASH_D \
-"| . ` | / _ \\| __||  __  | / _` | / __|| |/ /"
+" / __  / /_/ / /__/ ,<    / /___/ /  / /  "
 
 #define NETHACK_SPLASH_E \
-"| |\\  ||  __/| |_ | |  | || (_| || (__ |   < "
+"/_/ /_/|__,_/|___/_/|_|  /_____/_/  /_/  "
 
 #define NETHACK_SPLASH_F \
-"|_| \\_| \\___| \\__||_|  |_| \\__,_| \\___||_|\\_\\"
+" "
 
+/* how the above should look...
+    __  __           __      ________  ___
+   / / / /___ ______/ /__ ' / ____/  |/  /
+  / /_/ / __ `/ ___/ //_/  / __/ / /|_/ / 
+ / __  / /_/ / /__/ ,<    / /___/ /  / /  
+/_/ /_/\__,_/\___/_/|_|  /_____/_/  /_/
+*/
 
 /* win* is size and placement of window to change, x/y/w/h is baseline
    which can decrease depending on alignment of win* in orientation.
