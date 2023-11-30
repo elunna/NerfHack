@@ -68,10 +68,9 @@ endif  # WANT_WIN_QT
 #
 #-INCLUDE multiw-3.370
 
-ifeq "$(USE_ASAN)" "1"
-CFLAGS+=-fsanitize=address
+# Uncomment this is you plan on fuzzing with ASAN enabled                                                           
+CFLAGS+=-fsanitize=address -fno-omit-frame-pointer
 LFLAGS+=-fsanitize=address
-endif
 
 ifdef WANT_WIN_TTY
 USE_CURSESLIB=1
