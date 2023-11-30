@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       #LUA_VERSION: 5.4.2
-      HINTS_FILE: linux.370
+      #HINTS_FILE: linux.370
+      HINTS_FILE: linux-debug
     steps:
     - uses: actions/checkout@v3
     - name: setup
