@@ -8,7 +8,7 @@
     you have any problems.
 
 1.  Make sure all the NetHack files are in the appropriate directory
-    structure.  You should have a top directory (e.g. hackem2, or whatever you
+    structure.  You should have a top directory (e.g. nh33, or whatever you
     like) with subdirectories dat, doc, include, src, util, sys\share,
     sys\os2, and win\tty.  You may have other subdirectories under sys and
     win, but they will not affect compilation for an OS/2 system.  If you do
@@ -164,7 +164,7 @@
     fakewiz2.lev   fire.lev       help           hh             history
     juiblex.lev    knox.lev       license        medusa-1.lev   medusa-2.lev
     minefill.lev   minend-1.lev   minend-2.lev   minetn-1.lev   minetn-2.lev
-    nethack.cmd    nethack.cnf    hackem.exe    nethack.ico    opthelp
+    nethack.cmd    nethack.cnf    nethack.exe    nethack.ico    opthelp
     options        oracle.lev     oracles        orcus.lev      quest.dat
     recover.exe    rumors         sanctum.lev    soko1-1.lev    soko1-2.lev
     soko2-1.lev    soko2-2.lev    soko3-1.lev    soko3-2.lev    soko4-1.lev
@@ -191,7 +191,7 @@
     file to your game directory.
 
 8.  If you'll be running NetHack from a different subdirectory, you will want
-    to "set HACKDIR=c:\games\hackem" (or whatever directory you want to use).
+    to "set HACKDIR=c:\games\nh33" (or whatever directory you want to use).
     Add it to your config.sys, if you'll be playing often.
 
     You can also create a special NetHack entry in your Presentation Manager /
@@ -199,10 +199,10 @@
     The following is a sample program description for OS/2 1.3 desktop, but
     it's similar for OS/2 2.0:
 
-    Program title:          HACKEM 2.0
-    Path and file name:     c:\games\hackem2\nethack.cmd
+    Program title:          NetHack 3.4
+    Path and file name:     c:\games\nh33\nethack.cmd
     Parameters:
-    Working directory:      c:\games\hackem2
+    Working directory:      c:\games\nh33
     Program type:           OS/2 Full screen
 
     Naturally you must fill in your own game directory and parameters if you
@@ -212,7 +212,7 @@
     the program exit, because otherwise you wouldn't get to see the high score
     list upon quitting due to PM/WPS automatically closing the program window.
     When starting NetHack normally from OS/2 command prompt, the command
-    processor starts hackem.exe instead, so no extra pause is generated.
+    processor starts nethack.exe instead, so no extra pause is generated.
 
 9.  If you want to clear up the temporary files and objects created by the
     compilation process, you may issue "make spotless".  This will return your

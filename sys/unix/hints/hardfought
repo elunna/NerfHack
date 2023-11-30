@@ -27,8 +27,8 @@ LIBXPM= -L/opt/X11/lib -lXpm
 endif
 
 #4. Other
-GAMEUID  = $(USER)
-GAMEGRP  = bin
+GAMEUID  = games
+GAMEGRP  = games
 
 #-----------------------------------------------------------------------------
 # You shouldn't need to change anything below here (in the hints file; if
@@ -310,17 +310,16 @@ override GAME=
 MOREALL += ( cd src ; $(MAKE) pregame ; $(MAKE) $(TARGETPFX)libnh.a )
 endif  # WANT_LIBNH
 
-# Typical install path for normal user (non-root)
-PREFIX=$(wildcard ~)
-HACKDIR=$(PREFIX)/games/$(GAME)dir
+# this is the chroot dir
+PREFIX=/opt/nethack/chroot
 
-# Default install path (assumes running at root)
-#PREFIX=/usr
-#HACKDIR=$(PREFIX)/games/lib/370-hdf_$(GAME)dir
+# this is the dir where NetHack is inside the chroot
+HACKDIR=/nh370.89-hdf
+INSTDIR=$(PREFIX)$(HACKDIR)
+VARDIR =$(INSTDIR)/var
 
-SHELLDIR = $(PREFIX)/games
-INSTDIR=$(HACKDIR)
-VARDIR = $(HACKDIR)/var
+# DGL does not use the shell script launcher
+SHELLDIR=/tmp
 
 POSTINSTALL+= cp -n sys/unix/sysconf $(INSTDIR)/sysconf; \
 	$(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; \

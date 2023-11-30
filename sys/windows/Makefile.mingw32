@@ -18,7 +18,7 @@
 #       NetHack.
 #
 #   A Win32 native port built on the Windows API, Graphical NetHack or
-#       HackEMW.
+#       NetHackW.
 #
 #   If you have any questions read the sys/windows/Install.windows file included
 #   with the distribution.
@@ -112,7 +112,7 @@ GIT_AVAILABLE=Y
 endif
 
 # if WANT_GUICURSES=1 is passed, use the Bill Gray pdcursesmod and enable
-# curses in HackEMW
+# curses in NetHackW
 ifeq "$(WANT_GUICURSES)" "1"
 PDCURSES=pdcursesmod
 else
@@ -223,7 +223,7 @@ endif
 #==============================================================================
 
 #  The version of the game this Makefile was designed for
-NETHACK_VERSION="2.0.0"
+NETHACK_VERSION="3.7.0"
 
 # A brief version for use in macros
 NHV1=$(subst .,,$(NETHACK_VERSION))
@@ -540,7 +540,7 @@ CLEAN_DIR += $(OP)
 CLEAN_FILE += $(PDCLIB) $(PDCOBJS)
 
 ifneq ("$(wildcard $(PDCURSES_TOP)/wingui/pdcwin.h)", "")
-# pdcursesmod in use; enable Curses graphics on HackEMW
+# pdcursesmod in use; enable Curses graphics on NetHackW
 OPW = $(O)pdcursesw
 PDCWOBJS = $(PDCCOMMONOBJS) $(addprefix $(OPW)/, \
 	  pdcclip.o pdcdisp.o pdcgetsc.o pdckbd.o pdcscrn.o pdcsetsc.o pdcutil.o)
@@ -952,7 +952,7 @@ $(info No soundlib integration)
 endif   # HAVE_SOUNDLIB
 
 #==========================================
-# hackemw
+# nethackw
 #==========================================
 COREOBJS = $(addsuffix .o, allmain alloc apply artifact attrib ball bones botl cmd cppregex \
 	   dbridge decl detect dig display dlb do do_name do_wear \
@@ -972,24 +972,24 @@ COREOBJS = $(addsuffix .o, allmain alloc apply artifact attrib ball bones botl c
 CFLAGSW = $(CFLAGS) $(CFLAGSXTRA) $(SOUNDLIBINCL) $(COMMONDEF) $(DLBFLG) -DTILES -D_WINDOWS -DMSWIN_GRAPHICS -DSAFEPROCS -DNOTTYGRAPHICS $(SOUNDLIBDEFS)
 CPPFLAGSW = $(CFLAGS) $(CPPFLAGSXTRA) $(COMMONDEF) $(DLBFLG) -DTILES -D_WINDOWS -DMSWIN_GRAPHICS -DSAFEPROCS -DNOTTYGRAPHICS $(SOUNDLIBDEFS)
 
-ONHW = $(O)hackemw
+ONHW = $(O)nethackw
 NHWONLY = $(addsuffix .o, mhaskyn mhdlg mhfont mhinput mhmain mhmap mhmenu \
-	  mhmsgwnd mhrip mhsplash mhstatus mhtext mswproc tile HackEMW win10)
+	  mhmsgwnd mhrip mhsplash mhstatus mhtext mswproc tile NetHackW win10)
 NHWOBJS = $(addprefix $(ONHW)/, $(COREOBJS) $(NHWONLY))
 DATEW_O  = $(addsuffix .o, $(addprefix $(ONHW)/, date))
 TILEFILES = $(addprefix $(WSHR)/, monsters.txt objects.txt other.txt)
 BMPS = $(addprefix $(MSWIN)/, $(addsuffix .bmp, mnsel mnselcnt mnunsel petmark pilemark rip splash tiles))
 NHWRES = $(ONHW)/winres.o
-NHWTARGETS = $(GAMEDIR)/HackEMW.exe
+NHWTARGETS = $(GAMEDIR)/NetHackW.exe
 
 ifneq "$(PDCWINGUI)" ""
 CFLAGSW += $(NHCURSESFLAGS)
 NHWONLY += $(addsuffix .o, cursdial cursinit cursinvt cursmain cursmesg cursmisc cursstat curswins guitty)
 endif
 
-hackemw: $(NHWTARGETS)
+nethackw: $(NHWTARGETS)
 
-$(GAMEDIR)/HackEMW.exe: $(NHWOBJS) $(NHWRES) $(DATEW_O) $(LUALIB) $(PDCWLIB) | $(GAMEDIR)
+$(GAMEDIR)/NetHackW.exe: $(NHWOBJS) $(NHWRES) $(DATEW_O) $(LUALIB) $(PDCWLIB) | $(GAMEDIR)
 	$(ld) $(LDFLAGS) -mwindows $^ $(LIBS) -static -lstdc++ $(SOUNDLIBLIBS) -o$@
 
 $(ONHW)/%.o: $(SRC)/%.c $(NHLUAH) | $(ONHW)
@@ -1034,7 +1034,7 @@ $(ONHW)/%.o: $(WSHR)/%.c $(NHLUAH) | $(ONHW)
 $(ONHW)/%.o: $(WCURSES)/%.c $(NHLUAH) | $(ONHW)
 	$(cc) $(CFLAGSW) $(PDCINCL) $< -o$@
 
-$(NHWRES): $(MSWIN)/HackEMW.rc $(BMPS) $(WAV) $(MSWIN)/NetHack.ico | $(ONHW)
+$(NHWRES): $(MSWIN)/NetHackW.rc $(BMPS) $(WAV) $(MSWIN)/NetHack.ico | $(ONHW)
 	$(rc) --include-dir=$(MSWIN) $(RCFLAGS) --input=$< -o$@
 
 $(MSWIN)/tiles.bmp: $(U)tile2bmp.exe $(TILEFILES)
@@ -1072,11 +1072,11 @@ DATE_O  = $(addsuffix .o, $(addprefix $(ONH)/, date))
 
 NHOBJS = $(addprefix $(ONH)/, $(COREOBJS) $(NHONLY))
 NHRES = $(ONH)/conres.o
-NHTARGET = $(GAMEDIR)/HackEM.exe
+NHTARGET = $(GAMEDIR)/NetHack.exe
 
 nethack: $(NHTARGET)
 
-$(GAMEDIR)/HackEM.exe: $(NHOBJS) $(NHRES) $(DATE_O) $(LUALIB) $(PDCLIB) $(SOUNDLIBLIBS) | $(GAMEDIR)
+$(GAMEDIR)/NetHack.exe: $(NHOBJS) $(NHRES) $(DATE_O) $(LUALIB) $(PDCLIB) $(SOUNDLIBLIBS) | $(GAMEDIR)
 	$(ld) $(LDFLAGS) -mconsole $^ $(LIBS) -static -lstdc++ -o$@
 
 $(ONH)/%.o: $(SRC)/%.c $(NHLUAH) | $(ONH)
@@ -1124,7 +1124,7 @@ $(ONH)/%.o: $(TTY)/%.c $(NHLUAH) | $(ONH)
 $(ONH)/%.o: $(WCURSES)/%.c $(NHLUAH) | $(ONH)
 	$(cc) $(CFLAGSNH) $(PDCINCL) $< -o$@
 
-$(NHRES): $(MSWIN)/HackEM.rc $(WAV) $(MSWIN)/NetHack.ico | $(ONH)
+$(NHRES): $(MSWIN)/NetHack.rc $(WAV) $(MSWIN)/NetHack.ico | $(ONH)
 	$(rc) --include-dir=$(MSWIN) $(RCFLAGS) --input=$< -o$@
 
 $(ONH):
@@ -1138,7 +1138,7 @@ CLEAN_FILE += $(NHTARGET) $(NHOBJS) $(NHRES)
 #==========================================
 
 .PHONY: all clean default install lua makedefs recover pdcurses pdcursesw \
-	tile2bmp tilemap uudecode dlb hackemw nethack tileutil \
+	tile2bmp tilemap uudecode dlb nethackw nethack tileutil \
 	fetchlua fetchpdcurses
 
 #
@@ -1147,9 +1147,9 @@ CLEAN_FILE += $(NHTARGET) $(NHOBJS) $(NHRES)
 
 all: install
 
-TO_INSTALL = $(GAMEDIR)/HackEM.exe $(RTARGETS) $(GAMEDIRDLLS) \
+TO_INSTALL = $(GAMEDIR)/NetHack.exe $(RTARGETS) $(GAMEDIRDLLS) \
 	     $(addprefix $(GAMEDIR)/, \
-	     $(addsuffix .template, sysconf .hackemrc symbols) \
+	     $(addsuffix .template, sysconf .nethackrc symbols) \
 	     Guidebook.txt NetHack.txt license opthelp record)
 
 ifeq "$(HAVE_SOUNDLIB)" "Y"
@@ -1161,7 +1161,7 @@ TO_INSTALL += $(LUADLL)
 endif
 
 ifneq "$(SKIP_NETHACKW)" "Y"
-TO_INSTALL += $(GAMEDIR)/HackEMW.exe
+TO_INSTALL += $(GAMEDIR)/NetHackW.exe
 endif
 
 ifeq "$(USE_DLB)" "Y"

@@ -17,8 +17,8 @@ The Linux binary package assumes that you have a user and a group named
 creating them first.
 
 Log in as or su to "root".  Then, cd /, gunzip and untar the package,
-preserving permissions to put the NetHack files in /usr/games/hackem and
-/usr/games/lib/hackemdir.   For example, if the package in in your
+preserving permissions to put the NetHack files in /usr/games/nethack and
+/usr/games/lib/nethackdir.   For example, if the package in in your
 home directory you might perform these steps.
     % su
     # cd /
@@ -32,16 +32,16 @@ not. If you are installing from the RPM, there is no need to save the old
 record and logfile; they are automatically preserved.
 
 In addition to data files for running the game, you will find other useful
-things in /usr/games/lib/hackemdir (such as a copy of this README :-).
+things in /usr/games/lib/nethackdir (such as a copy of this README :-).
 
 The general documentation Guidebook.txt and the processed man pages
 nethack.txt and recover.txt should provide an introduction to the game.
 
-The sample config file called dot.hackemrc can be used by copying
-it to your home directory as .hackemrc and modifying it to your liking.
+The sample config file called dot.nethackrc can be used by copying
+it to your home directory as .nethackrc and modifying it to your liking.
 
 If you are running X11 copy the nh10.pcf and ibm.pcf font files from
-/usr/games/lib/hackemdir to a X11 fonts directory (such as
+/usr/games/lib/nethackdir to a X11 fonts directory (such as
 /usr/X11/lib/X11/fonts/misc) and run "mkfontdir", then restart X
 windows to load them.  If you prefer to use the graphical tiles,
 add the following to your .Xdefaults or .Xresources file:
@@ -52,7 +52,7 @@ doing this.
 The official Linux binary is set up to run setgid games, which allows
 multiple users on your system to play the game and prevents cheating by
 unprivileged users.  The usual default for NetHack is setuid games, but
-this causes problems with accessing .hackemrc on distributions with
+this causes problems with accessing .nethackrc on distributions with
 restrictive default security on home directories and users who don't know
 the tradeoffs of various permission settings.
 

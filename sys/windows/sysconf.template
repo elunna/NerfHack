@@ -1,5 +1,5 @@
 #
-# NetHack 3.7 sysconf $NHDT-Date: 1524689357 2018/04/25 20:49:17 $ $NHDT-Branch: NetHack-2.0.0 $:$NHDT-Revision: 1.22 $
+# NetHack 3.7 sysconf $NHDT-Date: 1524689357 2018/04/25 20:49:17 $ $NHDT-Branch: NetHack-3.7.0 $:$NHDT-Revision: 1.22 $
 # Copyright (c) 2015 by Michael Allison
 # NetHack may be freely redistributed.  See license for details.
 #
@@ -24,7 +24,7 @@ WIZARDS=*
 # Only available if NetHack was compiled with DUMPLOG
 # Allows following placeholders:
 #   %% literal '%'
-#   %v version (eg. "2.0.0-0")
+#   %v version (eg. "3.7.0-0")
 #   %u game UID
 #   %t game start time, UNIX timestamp format
 #   %T current time, UNIX timestamp format
@@ -32,7 +32,7 @@ WIZARDS=*
 #   %D current time, YYYYMMDDhhmmss format
 #   %n player name
 #   %N first character of player name
-#DUMPLOGFILE=hackem-%n-%d.log
+#DUMPLOGFILE=nethack-%n-%d.log
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will
@@ -42,7 +42,7 @@ WIZARDS=*
 # Disabled by setting to 0, or commenting out.
 #BONES_POOLS=10
 
-# Limit the number of simultaneous games (see also hackem.sh).
+# Limit the number of simultaneous games (see also nethack.sh).
 #MAXPLAYERS=10
 
 # If not null, added to string "To get local support, " in the support
@@ -80,8 +80,8 @@ HIDEUSAGE=1
 #MAX_STATUENAME_RANK=10
 
 # 'portable_device_paths' is only supported for Windows.  Starting with
-# 3.6.3, nethack on Windows treats the folder containing hackem.exe and
-# hackemW.exe as read-only and puts data files which are generated or
+# 3.6.3, nethack on Windows treats the folder containing nethack.exe and
+# nethackW.exe as read-only and puts data files which are generated or
 # modified during play or by the user in assorted folders derived from
 # user name.  3.6.4 added PORTABLE_DEVICE_PATHS to allow reverting to
 # the old behavior of having the run-time configuration file and other

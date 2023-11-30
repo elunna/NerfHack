@@ -1,4 +1,4 @@
-Files: bin/nethack pics/NetHack.png apps/Games/nethack.desktop games/lib/hackemdir/[a-r]* games/lib/hackemdir/[t-z]* games/lib/hackemdir/save games/lib/hackemdir/s*.* games/lib/hackemdir/[A-Z0-9]*
+Files: bin/nethack pics/NetHack.png apps/Games/nethack.desktop games/lib/nethackdir/[a-r]* games/lib/nethackdir/[t-z]* games/lib/nethackdir/save games/lib/nethackdir/s*.* games/lib/nethackdir/[A-Z0-9]*
 Priority: optional
 Section: qpe/games
 Maintainer: Warwick Allison <warwick@trolltech.com>

@@ -1190,7 +1190,7 @@ dump_fmtstr(
                 else
                     Strcpy(tmpbuf, "{current date+time}");
                 break;
-            case 'v': /* version, eg. "2.0.0-0" */
+            case 'v': /* version, eg. "3.7.0-0" */
                 Sprintf(tmpbuf, "%s", version_string(verbuf, sizeof verbuf));
                 break;
             case 'u': /* UID */

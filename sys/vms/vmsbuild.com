@@ -1,5 +1,5 @@
 $ ! vms/vmsbuild.com -- compile and link NetHack 3.7.*			[pr]
-$	version_number = "2.0.0"
+$	version_number = "3.7.0"
 $ ! $NHDT-Date: 1687541093 2023/06/23 17:24:53 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.39 $
 $ ! Copyright (c) 2018 by Robert Patrick Rankin
 $ ! NetHack may be freely redistributed.  See license for details.
@@ -75,7 +75,7 @@ $	copy sys$input: sys$error:	!p1 usage
    or  "VAXC"      -- use VAX C to compile everything
    or  "DECC"      -- use DEC C to compile everything
    or  "GNUC"      -- use GNU C to compile everything
-   or  "LINK"      -- skip compilation, just relink hackem.exe
+   or  "LINK"      -- skip compilation, just relink nethack.exe
    or  "SPEC[IAL]" -- just compile and link dlb.exe and recover.exe
    or  "FETCHLUA"  -- skip compilaton, just fetch lua from lua.org
    or  "BUILDLUA"  -- build [-.lib.lua]lua'LUAVER'.olb
@@ -450,10 +450,10 @@ $! We do these at the end
 $ c_list = "#[-.sys.vms]vmsmain,#date"
 $ gosub compile_list
 $ milestone "<linking...>"
-$ link /EXECUTABLE=hackem.exe vmsmain.obj,date.obj-
+$ link /EXECUTABLE=nethack.exe vmsmain.obj,date.obj-
         +[-.src]nethack.olb/library -
         +sys$disk:[-.lib.lua]lua546.olb/library
-$ milestone "HACKEM"
+$ milestone "NetHack"
 $     if c_opt.eq.o_LINK then  goto done	!"LINK" only
 $special:
 $!

@@ -2593,14 +2593,14 @@ docontact(void)
         putstr(cwin, 0, buf);
         putstr(cwin, 0, "");
     }
-    putstr(cwin, 0, "To contact the HACKEM MUCHE development team directly,");
+    putstr(cwin, 0, "To contact the NetHack development team directly,");
     /*XXX overflow possibilities*/
-    Sprintf(buf, "feel free to drop into #hackem on irc.libera.chat or email <%s>.",
+    Sprintf(buf, "see the 'Contact' form on our website or email <%s>.",
             DEVTEAM_EMAIL);
     putstr(cwin, 0, buf);
     putstr(cwin, 0, "");
-    putstr(cwin, 0, "For more information on HACKEM MUCHE, or to report a bug,");
-    Sprintf(buf, "visit our github page, \"%s\".", DEVTEAM_URL);
+    putstr(cwin, 0, "For more information on NetHack, or to report a bug,");
+    Sprintf(buf, "visit our website \"%s\".", DEVTEAM_URL);
     putstr(cwin, 0, buf);
     display_nhwindow(cwin, FALSE);
     destroy_nhwindow(cwin);
@@ -2693,7 +2693,7 @@ static const struct {
     void (*f)(void);
     const char *text;
 } help_menu_items[] = {
-    { hmenu_doextversion, "About HACKEM (version information)." },
+    { hmenu_doextversion, "About NetHack (version information)." },
     { dispfile_help, "Long description of the game and commands." },
     { dispfile_shelp, "List of game commands." },
     { hmenu_dohistory, "Concise history of NetHack." },
