@@ -1,9 +1,9 @@
 #!/bin/sh
-# NetHack 3.7  nethack.sh	$NHDT-Date: 1596498294 2020/08/03 23:44:54 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.21 $
+# HACKEM MUCHE 2.0.0 hackem.sh	$NHDT-Date: 1596498294 2020/08/03 23:44:54 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.21 $
 # Copyright (c) 2015 by Kenneth Lorber, Kensington, Maryland
 # NetHack may be freely redistributed.  See license for details.
 
-HACKDIR=/usr/games/lib/nethackdir
+HACKDIR=/usr/games/lib/hackemdir
 export HACKDIR
 HACK=$HACKDIR/nethack
 

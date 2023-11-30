@@ -604,7 +604,7 @@ unix: Makefile.src and Makefile.utl inadvertently relied on a 'gnu make'
 	specifically requested; use 'make QUIETCC=1 <target>' to get the
 	3.6.1 behavior back
 unix: add curses window port
-unix: in nethack.sh, use 'test -f' instead of 'test -e' when checking for
+unix: in hackem.sh, use 'test -f' instead of 'test -e' when checking for
 	fonts.dir while running under X11
 vms: data file processing and playground setup were missing post-3.4.3 files
 	engrave, epitaph, and bogusmon made from corresponding *.txt
@@ -614,7 +614,7 @@ windows: Added ntassert() mechanism for Windows based port use
 windows: heed OPTIONS=symset:default in config file if it is present
 windows: add curses window port which can co-exist with tty in exe and be
 	selectable in user config file via OPTIONS=windowtype:curses
-windows-gui: In nethackw, there could be conflicts between menu accelerators
+windows-gui: In hackemw, there could be conflicts between menu accelerators
 	and an extra choice accelerator to fix H7132.
 windows-gui: recognize new BL_RESET in status_update; no change in behavior yet
 windows-gui: align hpbar behavior at zero hit points with tty behavior

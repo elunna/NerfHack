@@ -575,7 +575,7 @@ tty_init_nhwindows(int *argcp UNUSED, char **argv UNUSED)
      * row 3, out of the way. */
 
     tty_curs(BASE_WINDOW, 1, 4);
-    for (i = 1; i <= 4; ++i)
+    for (i = 1; i <= 5; ++i)
         tty_putstr(BASE_WINDOW, 0, copyright_banner_line(i));
     tty_putstr(BASE_WINDOW, 0, "");
     tty_display_nhwindow(BASE_WINDOW, FALSE);

@@ -6,9 +6,9 @@
 #ifndef PATCHLEVEL_H
 #define PATCHLEVEL_H
 
-/* NetHack 3.7.x */
-#define VERSION_MAJOR 3
-#define VERSION_MINOR 7
+/* HACKEM MUCHE 2.0.x */
+#define VERSION_MAJOR 2
+#define VERSION_MINOR 0
 /*
  * PATCHLEVEL is updated for each release.
  */
@@ -17,7 +17,7 @@
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
  */
-#define EDITLEVEL 89
+#define EDITLEVEL 0
 
 /*
  * Development status possibilities.
@@ -30,15 +30,15 @@
 /*
  * Development status of this NetHack version.
  */
-#define NH_DEVEL_STATUS NH_STATUS_WIP
+#define NH_DEVEL_STATUS NH_STATUS_BETA
 
 #ifndef DEBUG  /* allow tool chains to define without causing warnings */
 #define DEBUG
 #endif
 
-#define COPYRIGHT_BANNER_A "NetHack, Copyright 1985-2023"
+#define COPYRIGHT_BANNER_A "HACKEM MUCHE, Copyright 1985-2023"
 #define COPYRIGHT_BANNER_B \
-    "         By Stichting Mathematisch Centrum and M. Stephenson."
+    "         A NetHack variant by hackemslashem."
 /* nomakedefs.copyright_banner_c is generated at runtime */
 #define COPYRIGHT_BANNER_C nomakedefs.copyright_banner_c
 #define COPYRIGHT_BANNER_D "         See license for details."
@@ -59,7 +59,7 @@
  * to individual level files matter; changes to general game state don't)
  * but the extra complexity to support that is not worth the effort.]
  */
-/*#define VERSION_COMPATIBILITY 0x03070000L*/
+/*#define VERSION_COMPATIBILITY 0x02000000L*/
 
 /****************************************************************************/
 /* Version 3.7.x */
@@ -95,7 +95,7 @@
  *  windows: switch from using keyhandling dll's to incorporating the three
  *      variations (default, ray, 340) in sys/winnt/nttty.c
  *  curses: cherry-picked selectsaved code from 3.7 for menu of save files
- *  NetHackW: fix delayed rendering of cursor when using farlook
+ *  HackEMW: fix delayed rendering of cursor when using farlook
  */
 
 /*  Patch 6, March 8, 2020

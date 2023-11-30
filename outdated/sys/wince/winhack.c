@@ -205,7 +205,7 @@ getlock()
     choice = MessageBox(GetNHApp()->hMainWnd,
                         TEXT("There are files from a game in progress under "
                              "your name. Recover?"),
-                        TEXT("Nethack"), MB_YESNO | MB_DEFBUTTON1);
+                        TEXT("HACKEM"), MB_YESNO | MB_DEFBUTTON1);
     switch (choice) {
     case IDYES:
         if (recover_savefile()) {

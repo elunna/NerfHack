@@ -6817,7 +6817,7 @@ initoptions_init(void)
 /*
  *  Process user's run-time configuration file:
  *    get value of NETHACKOPTIONS;
- *    if command line specified -nethackrc=filename, use that;
+ *    if command line specified -hackemrc=filename, use that;
  *      if NETHACKOPTIONS is present,
  *        honor it if it has a list of options to set
  *        or ignore it if it specifies a file name;
@@ -6826,7 +6826,7 @@ initoptions_init(void)
  *      no extra options (normal use of NETHACKOPTIONS) will be set;
  *    otherwise (not on command line and either no NETHACKOPTIONS or that
  *        isn't a file name),
- *      pass Null to read_config_file() so that it will read ~/.nethackrc
+ *      pass Null to read_config_file() so that it will read ~/.hackemrc
  *        by default,
  *      then process the value of NETHACKOPTIONS as extra options.
  */
@@ -6877,10 +6877,10 @@ initoptions_finish(void)
         go.opt_phase = rc_file_opt;
         config_error_init(TRUE, namesrc, FALSE);
         config_error_add(
-                   "nethackrc file name \"%.40s\"... too long; using default",
+                   "hackemrc file name \"%.40s\"... too long; using default",
                          nameval);
         config_error_done();
-        nameval = namesrc = 0; /* revert to default nethackrc */
+        nameval = namesrc = 0; /* revert to default hackemrc */
     }
 
     config_error_init(TRUE, nameval, nameval ? CONFIG_ERROR_SECURE : FALSE);
@@ -6894,7 +6894,7 @@ initoptions_finish(void)
         config_error_done();
     }
 
-    /* after .nethackrc and NETHACKOPTIONS so that cmdline takes precedence */
+    /* after .hackemrc and NETHACKOPTIONS so that cmdline takes precedence */
     if (gc.cmdline_windowsys) {
         go.opt_phase = cmdline_opt;
         config_error_init(FALSE, "command line", FALSE);
@@ -6905,7 +6905,7 @@ initoptions_finish(void)
 
     if (gc.cmdline_rcfile)
         free((genericptr_t) gc.cmdline_rcfile), gc.cmdline_rcfile = 0;
-    /*[end of nethackrc handling]*/
+    /*[end of hackemrc handling]*/
 
     (void) fruitadd(gp.pl_fruit, (struct fruit *) 0);
     /*

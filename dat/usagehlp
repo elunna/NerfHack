@@ -61,19 +61,19 @@ nethack --windowtype:Iii
   designation itself may be any case; variations '--windowtype Iii' and
   '-w Iii' work too.
 
-  On Windows, nethack.exe might support both tty and curses; nethackW.exe
+  On Windows, hackem.exe might support both tty and curses; hackemW.exe
   supports mswin only.  MS-DOS is tty only.
 
 nethack -n
   don't show the 'news' file if one is present in nethack's directory.
 
-nethack --nethackrc:RC-file
+nethack --hackemrc:RC-file
   use RC-file instead of the default run-time configuration file (which is
-  usually '~/.nethackrc'); the file name should include full path unless
+  usually '~/.hackemrc'); the file name should include full path unless
   located in nethack's directory;
-nethack --no-nethackrc
+nethack --no-hackemrc
   don't use any run-time configuration file; equivalent to
-  --nethackrc:/dev/null which behaves as if an empty file.
+  --hackemrc:/dev/null which behaves as if an empty file.
 
 nethack -dDir
 nethack --directory:Dir

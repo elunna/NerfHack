@@ -22,9 +22,9 @@ NHSROOT=.
 
 #	make NetHack (as opposite to variants or such)
 #PREFIX	 = /usr
-GAME     = nethack
-# GAME     = nethack.exe
-# GAME     = nethack.prg
+GAME     = hackem
+# GAME     = hackem.exe
+# GAME     = hackem.prg
 #GAMEUID  = games
 #GAMEGRP  = bin
 
@@ -46,7 +46,7 @@ DIRPERM  = 0755
 #	modify the install commands below).
 #HACKDIR  = $(PREFIX)/games/lib/$(GAME)dir
 #VARDIR  = $(HACKDIR)
-#	Where nethack.sh is installed (as 'nethack').
+#	Where hackem.sh is installed (as 'hackem').
 #	If this is not defined, the shell wrapper script is not used.
 #SHELLDIR = $(PREFIX)/games
 
@@ -278,9 +278,9 @@ dofiles:
 	cp util/recover $(INSTDIR)
 	-if test -n '$(SHELLDIR)'; then rm -f $(SHELLDIR)/$(GAME); fi
 	if test -n '$(SHELLDIR)'; then \
-		sed -e 's;/usr/games/lib/nethackdir;$(HACKDIR);' \
+		sed -e 's;/usr/games/lib/hackemdir;$(HACKDIR);' \
 		-e 's;HACKDIR/nethack;HACKDIR/$(GAME);' \
-		< sys/unix/nethack.sh \
+		< sys/unix/hackem.sh \
 		> $(SHELLDIR)/$(GAME) ; fi
 # set up their permissions
 	-( cd $(INSTDIR) ; $(CHOWN) $(GAMEUID) $(GAME) recover ; \

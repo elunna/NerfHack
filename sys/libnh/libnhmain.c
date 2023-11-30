@@ -94,7 +94,7 @@ nhmain(int argc, char *argv[])
      * The environment variable HACKDIR is overridden by a
      *  -d command line option (must be the first option given).
      */
-    dir = nh_getenv("NETHACKDIR");
+    dir = nh_getenv("HACKEMDIR");
     if (!dir)
         dir = nh_getenv("HACKDIR");
 
@@ -992,6 +992,7 @@ void js_constants_init() {
     // XXX: not set for cross-compile
     //SET_CONSTANT_STRING("COPYRIGHT", COPYRIGHT_BANNER_C);
     SET_CONSTANT_STRING("COPYRIGHT", COPYRIGHT_BANNER_D);
+    SET_CONSTANT_STRING("COPYRIGHT", COPYRIGHT_BANNER_E);
 
     // glyphs
     SET_CONSTANT("GLYPH", GLYPH_MON_OFF);

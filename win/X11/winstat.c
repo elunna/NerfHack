@@ -579,7 +579,7 @@ tt_status_fixup(void)
 
             if (!font) { /* this bit is untested... */
                 /* write some text and hope Xaw sets up font for us */
-                XtSetArg(args[0], nhStr(XtNlabel), "NetHack");
+                XtSetArg(args[0], nhStr(XtNlabel), "HACKEM");
                 XtSetValues(X11_status_labels[0], args, ONE);
                 (void) XFlush(XtDisplay(X11_status_labels[0]));
 

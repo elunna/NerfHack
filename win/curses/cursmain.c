@@ -31,9 +31,9 @@ extern glyph_info mesg_gi;
 #else  /* WIDE */
 #ifdef NH_PRAGMA_MESSAGE
 #ifdef _MSC_VER
-#pragma message ("Curses wide support not defined so NetHack curses message window functionality reduced")
+#pragma message ("Curses wide support not defined so HACKEM curses message window functionality reduced")
 #else
-#pragma message "Curses wide support not defined so NetHack curses message window functionality reduced"
+#pragma message "Curses wide support not defined so HACKEM curses message window functionality reduced"
 #endif /* _MSC_VER */
 #endif /* NH_PRAGMA_MESSAGE */
 #endif /* WIDE */
@@ -257,13 +257,13 @@ curses_init_nhwindows(
 # else
 #  ifdef VERSION_STRING
     Snprintf(window_title, sizeof window_title, "%s %s",
-                "NetHack", VERSION_STRING);
+                "HACKEM MUCHE", VERSION_STRING);
 #  else
     if (nomakedefs.version_string)
         Snprintf(window_title, sizeof window_title, "%s %s",
-                    "NetHack", nomakedefs.version_string);
+                    "HACKEM MUCHE", nomakedefs.version_string);
     else
-        Snprintf(window_title, sizeof window_title, "%s", "NetHack");
+        Snprintf(window_title, sizeof window_title, "%s", "HACKEM MUCHE");
 #  endif
        /* VERSION_STRING */
 # endif/* DEF_GAME_NAME */

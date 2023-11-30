@@ -21,8 +21,8 @@ DESCRIPTION
 
        The -d option, which must be the first argument if it appears, supplies
        a directory which is the NetHack playground.  It  overrides  the  value
-       from NETHACKDIR, HACKDIR, or the directory specified by the game admin-
-       istrator during compilation (usually /usr/games/lib/nethackdir).
+       from HACKEMDIR, HACKDIR, or the directory specified by the game admin-
+       istrator during compilation (usually /usr/games/lib/hackemdir).
 
        ^?ALLDOCS For recovery to be possible, nethack must have been  compiled
        with the INSURANCE option, and the run-time option checkpoint must also
