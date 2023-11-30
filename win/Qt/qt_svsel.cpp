@@ -76,7 +76,7 @@ NetHackQtSavedGameSelector::NetHackQtSavedGameSelector(const char** saved) :
     logo->setPixmap(QPixmap("nhsplash.xpm"));
     vbl->addWidget(logo);
 
-    QLabel *attr = new QLabel("by the NetHack DevTeam", this);
+    QLabel *attr = new QLabel("a NetHack 3.7.0 variant by Erik Lunna", this);
     attr->setAlignment(Qt::AlignCenter);
     vbl->addWidget(attr);
     vbl->addStretch(2);

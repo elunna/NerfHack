@@ -1073,7 +1073,7 @@ char **argv;
     NewHackScreen.Height = max(SCREENHEIGHT, amiIDisplay->ypix);
     {
         static char fname[18];
-        sprintf(fname, "NetHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR,
+        sprintf(fname, "HACKEM %d.%d.%d", VERSION_MAJOR, VERSION_MINOR,
                 PATCHLEVEL);
         NewHackScreen.DefaultTitle = fname;
     }

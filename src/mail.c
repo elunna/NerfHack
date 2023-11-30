@@ -493,7 +493,7 @@ readmail(struct obj *otmp UNUSED)
            (formerly "!") has deliberately been omitted so that it can't be
            mistaken for part of the URL (unfortunately that is still followed
            by a closing quote--in the pline below, not the data here) */
-        "%sInvitation: Visit the NetHack web site at %s%s"
+        "%sInvitation: Visit the HACKEM web site at %s%s"
     };
     const char *const it_reads = "It reads:  \"";
 

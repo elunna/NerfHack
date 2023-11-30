@@ -7,8 +7,8 @@
 #define PATCHLEVEL_H
 
 /* NetHack 3.7.x */
-#define VERSION_MAJOR 3
-#define VERSION_MINOR 7
+#define VERSION_MAJOR 2
+#define VERSION_MINOR 0
 /*
  * PATCHLEVEL is updated for each release.
  */
@@ -17,7 +17,7 @@
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
  */
-#define EDITLEVEL 89
+#define EDITLEVEL 00
 
 /*
  * Development status possibilities.
@@ -36,9 +36,9 @@
 #define DEBUG
 #endif
 
-#define COPYRIGHT_BANNER_A "NetHack, Copyright 1985-2023"
+#define COPYRIGHT_BANNER_A "HACKEM-MUCHE"
 #define COPYRIGHT_BANNER_B \
-    "         By Stichting Mathematisch Centrum and M. Stephenson."
+    "         a NetHack 3.7.0 variant by Erik Lunna."
 /* nomakedefs.copyright_banner_c is generated at runtime */
 #define COPYRIGHT_BANNER_C nomakedefs.copyright_banner_c
 #define COPYRIGHT_BANNER_D "         See license for details."
@@ -59,7 +59,7 @@
  * to individual level files matter; changes to general game state don't)
  * but the extra complexity to support that is not worth the effort.]
  */
-/*#define VERSION_COMPATIBILITY 0x03070000L*/
+/*#define VERSION_COMPATIBILITY 0x02000000L*/
 
 /****************************************************************************/
 /* Version 3.7.x */

@@ -33,7 +33,7 @@ resource 'vers' (1, purgeable) {
 resource 'vers' (2, purgeable) {
 	VERSION_MAJOR, (VERSION_MINOR<<4) | PATCHLEVEL, final, EDITLEVEL, verUS,
 	VERSION_STRING,
-	"devteam@nethack.org"
+	"eslunna@gmail.com"
 };
 
 

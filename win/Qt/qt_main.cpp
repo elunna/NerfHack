@@ -488,7 +488,7 @@ aboutMsg()
         "Qt:\n     http://www.troll.no/\n"      // obsolete
 #endif
         "Lua:\n     https://lua.org/\n"
-        "NetHack:\n     %s\n", // DEVTEAM_URL
+        "HACKEM:\n     %s\n", // DEVTEAM_URL
         // arguments
 #ifdef QT_VERSION_MAJOR
         QT_VERSION_MAJOR,
@@ -1058,7 +1058,7 @@ void NetHackQtMainWindow::doQuit(bool)
     // nethack's #quit command itself) but this routine is unconditional
     // in case someone wants to change that
 #ifdef MACOS
-    QString info = nh_qsprintf("This will end your NetHack session.%s",
+    QString info = nh_qsprintf("This will end your HACKEM session.%s",
                  !gp.program_state.something_worth_saving ? ""
                  : "\n(Cancel quitting and use the Save command"
                    "\nto save your current game.)");
@@ -1410,8 +1410,8 @@ void NetHackQtMainWindow::closeEvent(QCloseEvent *e UNUSED)
         /* this used to offer "Save" and "Cancel"
            but cancel (ignoring the close attempt) won't work
            if user has clicked on the window's Close button */
-	int act = QMessageBox::information(this, "NetHack",
-                              "This will end your NetHack session.",
+	int act = QMessageBox::information(this, "HACKEM",
+                              "This will end your HACKEM session.",
                               "&Save and exit", "&Quit without saving", 0, 1);
 	switch (act) {
         case 0:

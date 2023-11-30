@@ -140,7 +140,7 @@ extern "C" void play_sound_for_message(const char* str);
 #define QT_CHOOSE_RACE_FIRST
 
 static const char nh_attribution[] = "<center><big>NetHack</big>"
-	"<br><small>by the NetHack DevTeam</small></center>";
+	"<br><small>a NetHack 3.7.0 variant by Erik Lunna</small></center>";
 
 static QString
 aboutMsg()
@@ -4052,8 +4052,8 @@ void NetHackQtMainWindow::keyPressEvent(QKeyEvent* event)
 void NetHackQtMainWindow::closeEvent(QCloseEvent* e)
 {
     if ( gp.program_state.something_worth_saving ) {
-	switch ( QMessageBox::information( this, "NetHack",
-	    "This will end your NetHack session",
+	switch ( QMessageBox::information( this, "HACKEM",
+	    "This will end your HACKEM session",
 	    "&Save", "&Cancel", 0, 1 ) )
 	{
 	    case 0:
@@ -4591,7 +4591,7 @@ NetHackQtSavedGameSelector::NetHackQtSavedGameSelector(const char** saved) :
     QLabel* logo = new QLabel(this); vbl->addWidget(logo);
     logo->setAlignment(AlignCenter);
     logo->setPixmap(QPixmap("nhsplash.xpm"));
-    QLabel* attr = new QLabel("by the NetHack DevTeam",this);
+    QLabel* attr = new QLabel("a NetHack 3.7.0 variant by Erik Lunna",this);
     attr->setAlignment(AlignCenter);
     vbl->addWidget(attr);
     vbl->addStretch(2);

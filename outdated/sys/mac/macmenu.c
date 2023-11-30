@@ -1068,7 +1068,7 @@ aboutNetHack()
 
         aboutStr[++aboutStr[0]] = '0' + (PATCHLEVEL % 10);
 
-        ParamText(aboutStr, "\p\rdevteam@www.nethack.org", "\p", "\p");
+        ParamText(aboutStr, "\p\reslunna@gmail.com", "\p", "\p");
         (void) Alert(alrtMenuNote, (ModalFilterUPP) 0L);
         ResetAlertStage();
     }
