@@ -1033,7 +1033,7 @@ $(OBJ)\wintty.o  : $(WIN)\$(CB) $(HACK_H) $(INCL)\tcap.h $(INCL)\date.h
 
 dat :	help_fil $(GAMEDIR)\data $(GAMEDIR)\rumors \
 	$(GAMEDIR)\oracles $(GAMEDIR)\quest.dat	$(GAMEDIR)\$(GAME).ico \
-	$(GAMEDIR)\$(GAME).cmd $(GAMEDIR)\nethack.cnf $(GAMEDIR)\nhdat \
+	$(GAMEDIR)\$(GAME).cmd $(GAMEDIR)\hackem.cnf $(GAMEDIR)\nhdat \
 	$(WINX11VARDAT)
 
 help_fil : $(GAMEDIR)\cmdhelp $(GAMEDIR)\help $(GAMEDIR)\hh $(GAMEDIR)\history \
@@ -1094,8 +1094,8 @@ cmd_act :
 #	NetHack configuration file.  Will not overwrite an existing file.
 #
 
-$(GAMEDIR)\nethack.cnf :
-	$(CP) $(SSYS)\nethack.cnf $(GAMEDIR)
+$(GAMEDIR)\hackem.cnf :
+	$(CP) $(SSYS)\hackem.cnf $(GAMEDIR)
 
 #
 #	Documentation.

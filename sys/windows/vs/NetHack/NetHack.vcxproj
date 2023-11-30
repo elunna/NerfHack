@@ -279,7 +279,7 @@
     <ClInclude Include="$(WinCursDir)curswins.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="$(WinWin32Dir)NetHack.rc" />
+    <ResourceCompile Include="$(WinWin32Dir)hackem.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)nethack.ico" />

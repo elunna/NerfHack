@@ -380,8 +380,8 @@ VARFILEPERM = 0600
 VARDIRPERM = 0700
 
 ifdef ($(WANT_DEFAULT),X11)
-# install nethack.rc as ~/.nethackrc if no ~/.nethackrc exists
-PREINSTALL+= cp -n win/X11/nethack.rc ~/.nethackrc || true;
+# install hackem.rc as ~/.hackemrc if no ~/.hackemrc exists
+PREINSTALL+= cp -n win/X11/hackem.rc ~/.hackemrc || true;
 endif	# WANT_DEFAULT X11
 
 PREINSTALL+= (mkdir $(SHELLDIR) || true);

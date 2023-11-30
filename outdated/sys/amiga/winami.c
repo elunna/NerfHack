@@ -106,7 +106,7 @@ struct window_procs amiv_procs = {
 };
 
 unsigned short amii_initmap[AMII_MAXCOLORS];
-/* Default pens used unless user overides in nethack.cnf. */
+/* Default pens used unless user overides in hackem.cnf. */
 unsigned short amii_init_map[AMII_MAXCOLORS] = {
     0x0000, /* color #0  C_BLACK    */
     0x0FFF, /* color #1  C_WHITE    */

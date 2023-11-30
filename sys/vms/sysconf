@@ -8,7 +8,7 @@
 # program.
 #
 # This file can also be used to set local system defaults for run-time
-# options, using the same syntax as an individual user's ./nethackrc file.
+# options, using the same syntax as an individual user's ./hackemrc file.
 
 # The options which take a space-separated list of usernames haven't been
 # implemented for VMS.
@@ -157,7 +157,7 @@ PANICTRACE_GDB=1
 # default values.  Unlike all the SYSCF values above, individual users
 # can override the overridden options set here by choosing their own
 # option settings via NETHACKOPTIONS in their environment or via
-# sys$login:nethack.ini run-time configuration file.
+# sys$login:hackem.ini run-time configuration file.
 #OPTIONS=!autopickup,fruit:tomato,symset:DECgraphics
 
 #eof

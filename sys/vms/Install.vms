@@ -175,7 +175,7 @@ Notes:
     NETHACKOPTIONS--or HACKOPTIONS--begins with an "@" character then the
     rest of the translation is assumed to be the name of the configuration
     file.  Otherwise, the following are tried:  file specified by logical
-    name NETHACKINI, file SYS$LOGIN:NETHACK.INI, and file HOME:NETHACK.CNF
+    name HACKEMINI, file SYS$LOGIN:HACKEM.INI, and file HOME:HACKEM.CNF
     (note that the C run-time library sets up the value of HOME to match
     sys$login).  Syntax for the configuration file is similar to
     NETHACKOPTIONS, but multiple lines can be used, each must start with
@@ -184,7 +184,7 @@ Notes:
     representation) can also be present; see the "Guidebook" for details.
     (Guidebook.txt can be found in the [.doc] subdirectory; a copy gets
     placed in the playground directory by install.com.  Also, an example
-    configuration file can be found in [.win.X11]nethack.rc.)
+    configuration file can be found in [.win.X11]hackem.rc.)
 
 4.  [As mentioned above, the set of Makefiles is out of date so disregard
     this note....]

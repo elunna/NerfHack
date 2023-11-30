@@ -5,7 +5,7 @@
 #
 # Sample sysconf file.
 # The sysconf file is only used if NetHack is compiled with SYSCF defined.
-# This file uses the same syntax as nethack.cnf.
+# This file uses the same syntax as hackem.cnf.
 
 # Which users can use WIZARD (debugging) mode (the -D flag).
 # A value of * allows anyone to enter debugging mode.

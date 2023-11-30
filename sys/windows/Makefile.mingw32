@@ -1034,7 +1034,7 @@ $(ONHW)/%.o: $(WSHR)/%.c $(NHLUAH) | $(ONHW)
 $(ONHW)/%.o: $(WCURSES)/%.c $(NHLUAH) | $(ONHW)
 	$(cc) $(CFLAGSW) $(PDCINCL) $< -o$@
 
-$(NHWRES): $(MSWIN)/NetHackW.rc $(BMPS) $(WAV) $(MSWIN)/NetHack.ico | $(ONHW)
+$(NHWRES): $(MSWIN)/hackemW.rc $(BMPS) $(WAV) $(MSWIN)/NetHack.ico | $(ONHW)
 	$(rc) --include-dir=$(MSWIN) $(RCFLAGS) --input=$< -o$@
 
 $(MSWIN)/tiles.bmp: $(U)tile2bmp.exe $(TILEFILES)
@@ -1124,7 +1124,7 @@ $(ONH)/%.o: $(TTY)/%.c $(NHLUAH) | $(ONH)
 $(ONH)/%.o: $(WCURSES)/%.c $(NHLUAH) | $(ONH)
 	$(cc) $(CFLAGSNH) $(PDCINCL) $< -o$@
 
-$(NHRES): $(MSWIN)/NetHack.rc $(WAV) $(MSWIN)/NetHack.ico | $(ONH)
+$(NHRES): $(MSWIN)/hackem.rc $(WAV) $(MSWIN)/NetHack.ico | $(ONH)
 	$(rc) --include-dir=$(MSWIN) $(RCFLAGS) --input=$< -o$@
 
 $(ONH):
@@ -1149,7 +1149,7 @@ all: install
 
 TO_INSTALL = $(GAMEDIR)/NetHack.exe $(RTARGETS) $(GAMEDIRDLLS) \
 	     $(addprefix $(GAMEDIR)/, \
-	     $(addsuffix .template, sysconf .nethackrc symbols) \
+	     $(addsuffix .template, sysconf .hackemrc symbols) \
 	     Guidebook.txt NetHack.txt license opthelp record)
 
 ifeq "$(HAVE_SOUNDLIB)" "Y"

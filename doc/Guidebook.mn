@@ -3453,24 +3453,24 @@ for system administrators.
 Using a configuration file
 .pg
 .\" hw: don't hyphenate file names; percent-sign doesn't need special handling
-.hw .nethackrc defaults.nh nethack.exe nethackW.exe %USERPROFILE%\\NetHack\\
+.hw .hackemrc defaults.nh nethack.exe nethackW.exe %USERPROFILE%\\NetHack\\
 The default name of the configuration file varies on different
 operating systems.
 .pg
 On
 .UX ,
 Linux,
-and macOS it is \(lq.nethackrc\(rq in the user's home directory.
+and macOS it is \(lq.hackemrc\(rq in the user's home directory.
 The file may not exist, but it is a normal ASCII text file and
 can be created with any text editor.
 .pg
-On Windows, the name is \(lq.nethackrc\(rq located in the folder
+On Windows, the name is \(lq.hackemrc\(rq located in the folder
 \(lq%USERPROFILE%\\NetHack\\\(rq.
 The file may not exist,
 but it is a normal ASCII text file can can be created with any
 text editor.
 After running NetHack for the first time, you should find a default
-template for the configuration file named \(lq.nethackrc.template\(rq
+template for the configuration file named \(lq.hackemrc.template\(rq
 in \(lq%USERPROFILE%\\NetHack\\\(rq.
 If you have not created the configuration file, NetHack will create
 one for you using the default template file.
@@ -5819,7 +5819,7 @@ sequences, you can customize your game display by assigning Unicode
 codepoint values and \fIred-green-blue\fP colors to glyph
 representations. The customizations can be specified for use with a symset that
 has a UTF8 handler within the symbols file such as the enhanced1 set, or 
-individually within your nethack.rc file.
+individually within your hackem.rc file.
 .pg
 The format for defining a glyph representation is:
 .SD n

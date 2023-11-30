@@ -667,11 +667,11 @@ early_options(int *argc_p, char ***argv_p, char **hackdir_p)
             break;
         case 'n':
             oldargc = argc;
-            if (!strcmp(arg, "-no-nethackrc")) /* no abbreviation allowed */
+            if (!strcmp(arg, "-no-hackemrc")) /* no abbreviation allowed */
                 arg = nhStr("/dev/null");
             else
                 arg = lopt(arg, (ArgValRequired | ArgErrComplain),
-                           "-nethackrc", origarg, &argc, &argv);
+                           "-hackemrc", origarg, &argc, &argv);
             if (arg) {
                 gc.cmdline_rcfile = dupstr(arg);
                 if (oldargc == argc)

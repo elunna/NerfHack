@@ -212,7 +212,7 @@
  *                           feature))
  *            Regular nethack options can also be specified in order to
  *            provide system-wide default values local to your system:
- *              OPTIONS      (same as in users' .nethackrc or defaults.nh)
+ *              OPTIONS      (same as in users' .hackemrc or defaults.nh)
  *
  *              In the future there may be other ways to supply SYSCF
  *              information (Windows registry, Apple resource forks, etc)

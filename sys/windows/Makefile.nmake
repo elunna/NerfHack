@@ -1532,7 +1532,7 @@ install.tag: 	$(DAT)\data $(DAT)\rumors $(DAT)\oracles $(DLB) \
 	if exist $(DOC)\nethack.txt copy $(DOC)\nethack.txt $(GAMEDIR)\NetHack.txt
 	@if exist $(GAMEDIR)\NetHack.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHack.PDB to conserve space
 	@if exist $(GAMEDIR)\NetHackW.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHackW.PDB to conserve space
-	-if exist $(MSWSYS)\.nethackrc.template copy $(MSWSYS)\.nethackrc.template   $(GAMEDIR)
+	-if exist $(MSWSYS)\.hackemrc.template copy $(MSWSYS)\.hackemrc.template   $(GAMEDIR)
 	-if not exist $(GAMEDIR)\record. goto>$(GAMEDIR)\record.
 	echo install done > $@
 
@@ -1557,12 +1557,12 @@ $(INCL)\nhlua.h:
 tileutil: $(U)gif2txt.exe $(U)gif2tx32.exe $(U)txt2ppm.exe
 	@echo Optional tile development utilities are up to date.
 
-$(OGUI)NetHackW.res: $(SRC)\tiles.bmp $(MSWIN)\NetHackW.rc $(MSWIN)\NetHack.ico \
+$(OGUI)NetHackW.res: $(SRC)\tiles.bmp $(MSWIN)\hackemW.rc $(MSWIN)\NetHack.ico \
 	$(MSWIN)\mnsel.bmp $(MSWIN)\mnselcnt.bmp $(MSWIN)\mnunsel.bmp \
 	$(MSWIN)\petmark.bmp $(MSWIN)\pilemark.bmp $(MSWIN)\NetHack.ico \
 	$(MSWIN)\rip.bmp $(MSWIN)\splash.bmp $(WAV)
 	@echo Building resource file $@ from $**
-	$(rc) -nologo -r -fo$@ -i$(MSWIN) -i$(SndWavDir) -dNDEBUG $(RCFLAGS) $(MSWIN)\NetHackW.rc
+	$(rc) -nologo -r -fo$@ -i$(MSWIN) -i$(SndWavDir) -dNDEBUG $(RCFLAGS) $(MSWIN)\hackemW.rc
 
 $(OTTY)console.res: $(MSWSYS)\console.rc $(MSWSYS)\NetHack.ico $(WAV)
 	@echo Building resource file $@ from $**

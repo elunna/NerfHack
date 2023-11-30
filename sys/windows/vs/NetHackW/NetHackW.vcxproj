@@ -233,7 +233,7 @@
     <ClCompile Include="$(WinWin32Dir)NetHackW.c" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="$(WinWin32Dir)NetHackW.rc" />
+    <ResourceCompile Include="$(WinWin32Dir)hackemW.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(WinWin32Dir)mhaskyn.h" />

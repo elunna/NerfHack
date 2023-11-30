@@ -77,7 +77,7 @@ Whether or not you install tile support, you can provide support for
 special graphics symbols via alternate fonts.  (The fonts and tiles
 cannot be used at the same time, but the same executable handles both.)
 The two included X11 fonts use the general NetHack map area remapping
-to represent object/dungeon/trap/effect characters (see win/X11/nethack.rc
+to represent object/dungeon/trap/effect characters (see win/X11/hackem.rc
 and the Guidebook) as monocolored symbols and monsters as monocolored
 letters.  For instance, a ruby potion will show up as a potion symbol in
 red.  It's easier to see the difference between fonts and tiles than to
@@ -86,7 +86,7 @@ you already know which you prefer, we suggest installing the optional files
 for both possibilities and letting each person decide for themselves.
 
 To use the included fonts, you will need to install one or both of them
-and then use the symbol mappings found in nethack.rc.  The fonts are found
+and then use the symbol mappings found in hackem.rc.  The fonts are found
 in nh10.bdf and ibm.bdf.  You first need to convert the bdf files to whatever
 form your X11 server recognizes (usually using a command called bdftosnf
 for R4 servers or bdftopcf for R5 servers).  Then run mkfontdir on the
@@ -145,10 +145,10 @@ Notes for XFree86 - (on linux and BSD386 platforms)
 
 File				Description
 ---------	---------------------------------------------------------------
-nethack.rc	- A sample configuration file for fonts nh10 and ibm.
+hackem.rc	- A sample configuration file for fonts nh10 and ibm.
 nh10.bdf	- A modified version of the 10x20 standard font.
 ibm.bdf		- A modified version of one of the ibm (8x14) nethack font.
-		  Must be used in conjunction with NetHack.ad or nethack.rc.
+		  Must be used in conjunction with NetHack.ad or hackem.rc.
 nh32icon	- A 32x32 icon bitmap for use with window managers.
 nh56icon	- A 56x56 icon bitmap for use with window managers.
 nh72icon	- A 72x72 icon bitmap for use with window managers.

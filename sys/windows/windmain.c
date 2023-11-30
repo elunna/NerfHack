@@ -457,7 +457,7 @@ void copy_config_content(void)
         gf.fqn_prefix[DATAPREFIX], CONFIG_TEMPLATE, FALSE);
 
     /* If the required early game file does not exist, copy it */
-    /* NOTE: We never replace .nethackrc or sysconf */
+    /* NOTE: We never replace .hackemrc or sysconf */
     copy_file(gf.fqn_prefix[CONFIGPREFIX], CONFIG_FILE,
         gf.fqn_prefix[DATAPREFIX], CONFIG_TEMPLATE, FALSE);
 }

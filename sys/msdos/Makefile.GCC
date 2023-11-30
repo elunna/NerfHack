@@ -590,7 +590,7 @@ ifdef TERMLIB
 endif
 	@$(subst /,\,if exist $(TILE_BMP) copy $(TILE_BMP) $(GAMEDIR))
 	@$(subst /,\,if exist $(DAT)/symbols copy $(DAT)/symbols $(GAMEDIR))
-	@$(subst /,\,copy $(SSHR)/NetHack.cnf  $(GAMEDIR)/defaults.nh)
+	@$(subst /,\,copy $(SSHR)/hackem.cnf  $(GAMEDIR)/defaults.nh)
 	-@$(subst /,\,touch $(GAMEDIR)/record)
 	@$(subst /,\,copy $(DOC)/guideb*.txt  $(GAMEDIR))
 	@$(subst /,\,copy $(MSYS)/sysconf  $(GAMEDIR))

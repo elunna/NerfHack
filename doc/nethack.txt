@@ -7,7 +7,7 @@ NAME
 
 SYNOPSIS
        nethack [ -d|--directory directory ] [ -w|--windowtype interface ]
-       [ --nethackrc:RC-file | --no-nethackrc ] [ -n ] [ -dec | -ibm ]
+       [ --hackemrc:RC-file | --no-hackemrc ] [ -n ] [ -dec | -ibm ]
        [ -u playername ] [ -X | -D ] [ -p profession ] [ -r race ] [ -@ ]
 
        Also [ -A|-Arc | -B|-Bar | -C|-Cav | -H|-Hea | -K|-Kni | -M|-Mon |
@@ -54,13 +54,13 @@ DESCRIPTION
 
        Because  the option list can be very long, options may also be included
        in a configuration file.  The default is located in your home directory
-       and  named  .nethackrc  on  UNIX systems (including descendants such as
-       linux, NetBSD, and macOS).  On Windows, the name is also .nethackrc but
+       and  named  .hackemrc  on  UNIX systems (including descendants such as
+       linux, NetBSD, and macOS).  On Windows, the name is also .hackemrc but
        the  location  can vary (see --showpaths below).  On other systems, the
-       default may be different, possibly NetHack.cnf.  On MS-DOS, the name is
+       default may be different, possibly hackem.cnf.  On MS-DOS, the name is
        defaults.nh in NetHack's directory (folder), while on VMS|OpenVMS it is
-       nethack.ini in your home directory.  The default configuration file may
-       be  overridden  via  the  --nethackrc:rc-file command line option or by
+       hackem.ini in your home directory.  The default configuration file may
+       be  overridden  via  the  --hackemrc:rc-file command line option or by
        setting NETHACKOPTIONS in your environment to a string consisting of an
        @ character followed by the path and filename.
 
@@ -129,9 +129,9 @@ DESCRIPTION
        specified  in the run-time configuration file.  NetHack's #version com-
        mand shows available interfaces.
 
-       The --nethackrc:RC-file option will use RC-file instead of the  default
-       run-time   configuration   file   (typically   ~/.nethackrc)   and  the
-       --no-nethackrc option can be used to skip  any  run-time  configuration
+       The --hackemrc:RC-file option will use RC-file instead of the  default
+       run-time   configuration   file   (typically   ~/.hackemrc)   and  the
+       --no-hackemrc option can be used to skip  any  run-time  configuration
        file.
 
        Some options provide feedback and then exit rather than play the game:
@@ -186,7 +186,7 @@ AUTHORS
 FILES
        Run-time  configuration options were discussed above and use a platform
        specific name for a file in a platform specific  location.   For  Unix,
-       the name is '.nethackrc' in the user's home directory.
+       the name is '.hackemrc' in the user's home directory.
 
        All   other   files   are   in   the   playground  directory,  normally
        /usr/games/lib/nethackdir.  If DLB was defined during the compile,  the
@@ -257,7 +257,7 @@ ENVIRONMENT
        NETHACKDIR or HACKDIR   Playground.
        NETHACKOPTIONS          String predefining several NetHack options.
 
-       If  the same option is specified in both NETHACKOPTIONS and .nethackrc,
+       If  the same option is specified in both NETHACKOPTIONS and .hackemrc,
        the value assigned in NETHACKOPTIONS takes precedence.
 
        SHOPTYPE and SPLEVTYPE can be used in debugging (wizard) mode.

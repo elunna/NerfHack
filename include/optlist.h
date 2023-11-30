@@ -832,7 +832,7 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTP(font, Advanced, 0, opt_in, set_hidden,
                 Yes, Yes, Yes, No, NoAlias, "prefix for font options")
 #if defined(MICRO) && !defined(AMIGA)
-    /* included for compatibility with old NetHack.cnf files */
+    /* included for compatibility with old hackem.cnf files */
     NHOPTP(IBM_, Advanced, 0, opt_in, set_hidden,
                 No, No, Yes, No, NoAlias, "prefix for old micro IBM_ options")
 #endif /* MICRO */

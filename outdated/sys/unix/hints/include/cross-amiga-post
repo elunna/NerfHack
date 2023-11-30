@@ -59,7 +59,7 @@ amigapkg: $(GAMEBIN) $(TARGETPFX)recover.exe ../dat/nhtiles.bmp
 	cp $(TARGETPFX)objects.iff $(TARGETPFX)pkg/objects.iff
 	cp $(TARGETPFX)other.iff $(TARGETPFX)pkg/other.iff
 	cp ../dat/symbols $(TARGETPFX)pkg/symbols
-	cp ../sys/share/NetHack.cnf $(TARGETPFX)pkg/nethack.cnf
+	cp ../sys/share/hackem.cnf $(TARGETPFX)pkg/hackem.cnf
 	cp ../sys/msdos/sysconf $(TARGETPFX)pkg/sysconf
 	cp ../outdated/sys/amiga/amii.hlp $(TARGETPFX)pkg/amii.hlp
 	cp ../sys/msdos/sysconf $(TARGETPFX)pkg/sysconf

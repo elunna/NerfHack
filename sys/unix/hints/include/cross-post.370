@@ -53,7 +53,7 @@ dospkg: dodata dosfonts $(GAMEBIN) $(TARGETPFX)recover.exe ../dat/nhtiles.bmp
 	cp ../dat/license $(TARGETPFX)pkg/LICENSE
 	cp ../dat/nhtiles.bmp $(TARGETPFX)pkg/NHTILES.BMP
 	cp ../dat/symbols $(TARGETPFX)pkg/SYMBOLS
-	cp ../sys/share/NetHack.cnf $(TARGETPFX)pkg/NETHACK.CNF
+	cp ../sys/share/hackem.cnf $(TARGETPFX)pkg/HACKEM.CNF
 	cp ../sys/msdos/sysconf $(TARGETPFX)pkg/SYSCONF
 	cp ../doc/nethack.txt $(TARGETPFX)pkg/NETHACK.TXT
 	cp $(DOSFONT)/ter-u16b.psf $(TARGETPFX)pkg/TER-U16B.PSF

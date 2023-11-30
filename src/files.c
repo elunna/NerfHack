@@ -2219,7 +2219,7 @@ unlock_file(const char *filename)
 
 const char *default_configfile =
 #ifdef UNIX
-    ".nethackrc";
+    ".hackemrc";
 #else
 #if defined(MAC) || defined(__BEOS__)
     "NetHack Defaults";
@@ -2227,7 +2227,7 @@ const char *default_configfile =
 #if defined(MSDOS) || defined(WIN32)
     CONFIG_FILE;
 #else
-    "NetHack.cnf";
+    "hackem.cnf";
 #endif
 #endif
 #endif
@@ -2237,13 +2237,13 @@ char configfile[BUFSZ];
 
 #ifdef MSDOS
 /* conflict with speed-dial under windows
- * for XXX.cnf file so support of NetHack.cnf
+ * for XXX.cnf file so support of hackem.cnf
  * is for backward compatibility only.
  * Preferred name (and first tried) is now defaults.nh but
  * the game will try the old name if there
  * is no defaults.nh.
  */
-const char *backward_compat_configfile = "nethack.cnf";
+const char *backward_compat_configfile = "hackem.cnf";
 #endif
 
 /* #saveoptions - save config options into file */
@@ -2373,29 +2373,29 @@ fopen_config_file(const char *filename, int src)
 /* constructed full path names don't need fqname() */
 #ifdef VMS
     /* no punctuation, so might be a logical name */
-    set_configfile_name("nethackini");
+    set_configfile_name("hackemini");
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
         return fp;
-    set_configfile_name("sys$login:nethack.ini");
+    set_configfile_name("sys$login:hackem.ini");
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
         return fp;
 
     envp = nh_getenv("HOME");
     if (!envp || !*envp)
-        Strcpy(tmp_config, "NetHack.cnf");
+        Strcpy(tmp_config, "hackem.cnf");
     else
         Sprintf(tmp_config, "%s%s%s", envp,
                 !strchr(":]>/", envp[strlen(envp) - 1]) ? "/" : "",
-                "NetHack.cnf");
+                "hackem.cnf");
     set_configfile_name(tmp_config);
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
         return fp;
 #else /* should be only UNIX left */
     envp = nh_getenv("HOME");
     if (!envp)
-        Strcpy(tmp_config, ".nethackrc");
+        Strcpy(tmp_config, ".hackemrc");
     else
-        Sprintf(tmp_config, "%s/%s", envp, ".nethackrc");
+        Sprintf(tmp_config, "%s/%s", envp, ".hackemrc");
 
     set_configfile_name(tmp_config);
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
@@ -4872,7 +4872,7 @@ reveal_paths(void)
                            (int) (sizeof buf - 1 - strlen(buf)));
                 if (access(buf, 4) == -1) {
                     /* second alternate failed too, so revert to the
-                       original default ("$HOME/.nethackrc") for message */
+                       original default ("$HOME/.hackemrc") for message */
                     copynchars(endp, default_configfile,
                                (int) (sizeof buf - 1 - strlen(buf)));
                 }
