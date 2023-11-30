@@ -95,3 +95,4 @@ util/*.exp
 # HACKEM dev settings
 .idea
 warnings.log
+src/hackem
