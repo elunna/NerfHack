@@ -27,6 +27,8 @@ static int use_figurine(struct obj **);
 static int grease_ok(struct obj *);
 static int use_grease(struct obj *);
 static void use_trap(struct obj *);
+static int flint_ok(struct obj *);
+static int apply_flint(struct obj *);
 static int touchstone_ok(struct obj *);
 static int use_stone(struct obj *);
 static int set_trap(void); /* occupation callback */
@@ -2623,6 +2625,71 @@ use_grease(struct obj *obj)
     return ECMD_TIME;
 }
 
+/* getobj callback for object to apply flint to */
+static int
+flint_ok(struct obj *obj)
+{
+    if (!obj)
+        return GETOBJ_SUGGEST;
+
+    /* can only stick flint to arrows */
+    if (obj->otyp < ARROW || obj->otyp > YA) {
+        return GETOBJ_EXCLUDE;
+    }
+    return GETOBJ_SUGGEST;
+}
+
+/* creating flint arrows - DSR */
+static int
+apply_flint(struct obj *flint)
+{
+    struct obj *obj;
+    char szwork[QBUFSZ];
+    int num_flints, flints_used, arrows, max_arrows_enchanted, i;
+
+    num_flints = flint->quan;
+
+    if (Glib) {
+        pline("%s from your %s.", Tobjnam(flint, "slip"),
+              fingers_or_gloves(FALSE));
+        dropx(flint);
+        return ECMD_TIME;
+    }
+    
+    Sprintf(szwork, "affix the stone%s to", plur(num_flints));
+    obj = getobj("affix the flint to", flint_ok, GETOBJ_PROMPT);
+    if (!obj)
+        return ECMD_CANCEL;
+
+    if (!u_handsy())
+        return ECMD_TIME;
+    
+    /* can't make MIRV arrows; if they're +1, leave it be */
+    if (obj->spe > 0) {
+        You("don't think you can make these any better than they are.");
+        return ECMD_OK;
+    }
+
+    arrows = obj->quan;
+    max_arrows_enchanted = num_flints * 1;
+    flints_used = arrows / 10;
+    
+    /* One flint stone will do 10 arrows. */
+    if (max_arrows_enchanted >= arrows) {
+        (obj->spe)++;
+        You("lash flint tips to the %s.", xname(obj));
+        
+        if (flints_used >= num_flints)
+            /**flint = (struct obj *) 0;*/
+            useupall(flint);
+        else
+            for (i = 0; i <= arrows / 10; i++)
+                useup(flint);
+    } else {
+        You("don't have enough flint to re-tip all of these %s.", xname(obj));
+    }
+    return ECMD_TIME;
+}
 /* getobj callback for object to rub on a known touchstone */
 static int
 touchstone_ok(struct obj *obj)
@@ -4346,6 +4413,13 @@ doapply(void)
             obj = (struct obj *) 0; /* not gone yet but behave as if it was */
         break;
     case FLINT:
+        if (Role_if(PM_CAVE_DWELLER)
+            && y_n("Affix your flint to some arrows?") == 'y')
+            res = apply_flint(obj);
+        else
+            res = use_stone(obj);
+        return res; /* Might useup the flint */
+        break;
     case LUCKSTONE:
     case LOADSTONE:
     case TOUCHSTONE:
