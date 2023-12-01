@@ -630,52 +630,65 @@ magic portal which brought you here."]],
    },
    Cav = {
       assignquest = {
-         synopsis = "[Find and defeat %n, recover %o, and return with it.]",
+         synopsis = "[Go beat %n.  Get %o.  Bring back.]",
          output = "text",
-         text = [["You are indeed ready now, %p.  I shall tell you a tale of
-great suffering among your people:
+         text = [[
+"Yes, you good now, %p.  Me tell you what happen to us.
 
-"Shortly after you left on your vision quest, the caves were invaded by
-the creatures sent against us by %n.
+"Right after you leave, Bad Men come to caves, fight us.
+They come with %n.  This one very bad.  It stomp.
+It bite.  It claw.  It breathe on us, burn us, freeze us,
+hurt us lots of ways.  It lead the Bad Men to fight us.
+Some of us die.
 
-"She, herself, could not attack us due to her great size, but her minions
-have harassed us ever since.  In the first attacks, many died, and the
-minions of %n managed to steal %o.
-They took it to %i and there, none of our
-%g warriors have been able to go.
+"While we hurt, Bad Men take %o.  They take it to %i.
+We can not get it back.  %n will kill us.
 
-"You must find %i, and within it wrest
-%o from %n.  She guards it as
-jealously as she guards all treasures she attains.  But with it,
-we can make our caves safe once more.
-
-"Please, %p, recover %o for us, and return it here."]],
+"%p, you find %i, take back %o from %n.  Then we can
+make caves safe."
+         ]],
       },
       badalign = {
-         synopsis = "[\"You no longer follow the path of the %a.  Go, and purify yourself.\"]",
+         synopsis = "[\"You not acting %a well.  Go fix self.\"]",
          output = "text",
-         text = [["%pC!  You have deviated from my teachings.  You no longer follow
-the path of the %a as you should.  I banish you from these caves, to
-go forth and purify yourself.  Then, you might be able to accomplish this
-quest."]],
+         text = [[
+"%pC!  You not do like me teach you.  You not do right things
+on true path of %a.  Me send you from our caves.  Go, %p.
+Go away and make self right.  Then maybe you can do this quest."
+         ]],
       },
       badlevel = {
-         synopsis = "[\"%rA is too inexperienced.  Come back when you have progressed.\"]",
+         synopsis = "[%rA not ready.  Go do other things.]",
          output = "text",
-         text = [["Alas, %p, you are as yet too inexperienced to embark upon such
-a difficult quest as that I propose to give you.
+         text = [[
+"No, %p, you not ready to go on such hard quest as what me give you.
 
-"%rA could not possibly survive the rigors demanded to find
-%i, never mind to confront %n herself.
+"%rA can not do what it take to find %i, could not fight %n, could not
+bring back %o.
 
-"Adventure some more, and you will learn the skills you will require.
-%d decrees it."]],
+"Go do more things.  You learn stuff you need.
+%d say so."
+         ]],
+      },
+      banished = {
+         synopsis = "[You cast out from %H for rest of your life.]",
+         output = "text",
+         text = [[
+"You turn your back on us.  You turn your back on %d!
+You not part of this tribe no more.
+
+Get out.  You not come back ever.
+You never get God Thing now.  You not get Bright Thing from %n.
+You not have Bright Thing, you not able to go to place of God Thing.
+
+Go! Or else we eat you.]],
       },
       discourage = {
+         -- Note that Tiamat doesn't use caveman speak.
          "\"You are weak, %c.  No challenge for the Mother of all Dragons.\"",
          "\"I grow hungry, %r.  You look like a nice appetizer!\"",
          "\"Join me for lunch?  You're the main course, %c.\"",
-         "\"With %o, I am invincible!  You cannot succeed.\"",
+         "\"With the power of %o, I will kill your tribe.\"",
          "\"Your mentor, %l has failed.  You are nothing to fear.\"",
          "\"You shall die here, %c.  %rA cannot hope to defeat me.\"",
          "\"You, a mere %r challenge the might of %n?  Hah!\"",
@@ -684,70 +697,76 @@ a difficult quest as that I propose to give you.
          "\"%d has deserted you, %c.  This is my domain.\"",
       },
       encourage = {
-         "\"%nC is immune to her own breath weapons. You should use magic upon her that she does not use herself.\"",
-         "\"When you encounter %n, call upon %d for assistance.\"",
-         "\"There will be nowhere to hide inside %ns inner sanctum.\"",
-         "\"Your best chance with %n will be to keep moving.\"",
-         "\"Do not be distracted by the great treasures in %ns lair. Concentrate on %o.\"",
-         "\"%oC is the only object that %n truly fears.\"",
-         "\"Do not be fooled by %ns size.  She is fast, and it is rumored that she uses magic.\"",
-         "\"I would send a party of %gP with you, but we will need all of our strength to defend ourselves.\"",
-         "\"Remember, be %a at all times.  This is your strength.\"",
-         "\"If only we had an amulet of reflection, this would not have happened.\"",
+         "\"%nC not hurt by her own breath.  You should use magic that she not use, maybe she not know how to beat that.\"",
+         "\"When you fight %n, call to %d for help.\"",
+         "\"There no place to hide in %ns cave.\"",
+         "\"Best way to not die when %n fight you is, run away.\"",
+         "\"You no stop to take pretty things in %ns lair.  Just make sure you get %o.\"",
+         "\"If you take %o from %n, maybe you use it to hit her.\"",
+         "\"Do not be fooled by %ns size.  She is fast and has magic too.\"",
+         "\"Me would send %gP with you, but we need them to fight here, keep our cave.\"",
+         "\"If you kill %n, you be big hero here.\"",
+         "\"Watch out for %ns breath.  It hurt lots of ways.\"",
       },
       firsttime = {
-         synopsis = "[You arrive back at %H, but something is wrong here.]",
+         synopsis = "[You come to %H.  It wrong.]",
          output = "text",
-         text = [[You descend through a barely familiar stairwell that you remember
-%l showing you when you embarked upon your vision quest.
-
-You arrive back at %H, but something seems
-wrong here.  The usual smoke and glowing light of the fires of the
-outer caves are absent, and an uneasy quiet fills the damp air.]],
+         text = [[
+You come to %H.  It not right.  There no meat in cave.
+There no mammoth hides.  Men are sad.  Things broke.  Fire
+not lit.  Caves not right, make you sad.  You look for %l.
+Him tell you what is wrong.
+         ]],
       },
       goal_first = {
-         synopsis = "[You enter a large cavern.  %nC is present.]",
+         synopsis = "[You come to big cave.  %nC is here.]",
          output = "text",
-         text = [[You find yourself in a large cavern, with neatly polished walls, that
-nevertheless show signs of being scorched by fire.
+         text = [[
+You come to big cave, with shiny walls.  Walls look like they
+have been burned.
 
-Bones litter the floor, and there are objects scattered everywhere.
-The air is close with the stench of sulphurous fumes.
+You see bones on the floor, and other things.
+It smell bad in here, like smoke from fire mountain.
 
-%nC is clearly visible, but %nh seems to be asleep.]],
+%nC is here, but it seem like she is asleep.
+         ]],
       },
       goal_next = {
-         text = "Once again, you find yourself in the lair of %n.",
+         text = "You come to lair of %n again.",
       },
       gotit = {
-         synopsis = "[%oC fills you with a feeling of power.]",
+         synopsis = "[%oC make you feel strong and good.]",
          output = "text",
-         text = [[As you pick up %o it seems heavy at first, but as you
-hold it strength flows into your arms.
+         text = [[
+As you pick up %o it seem heavy at first, but then
+your arms feel strong.
 
-You suddenly feel full of power, as if nothing could possibly stand
-in your path.]],
+You feel like you can beat up anyone now.
+         ]],
       },
       guardtalk_after = {
-         "\"The rains have returned and the land grows lush again.\"",
-         "\"Peace has returned, give thanks to %d!\"",
-         "\"Welcome back!  Did you find %o?\"",
-         "\"So, %p, tell us the story of your fight with %n.\"",
-         "\"%lC grows old.  Perhaps you will guide us after he ascends.\"",
+         "\"We hunt mammoth again.\"",
+         "\"Peace back.  Peace good.  Give thanks to %d!\"",
+         "\"You back!  You find %o?\"",
+         "\"Strong %p, tell us how you fight %n.\"",
+         "\"%lC old.  Maybe you guide us after him die.\"",
       },
       guardtalk_before = {
-         "\"We have not been able to gather as much food since the Giants sealed off our access to the outer world.\"",
-         "\"Since %n sent her minions, we have been constantly fighting.\"",
-         "\"I have heard your vision quest was successful.  Is this so?\"",
-         "\"So, tell me, %p, how have you fared?\"",
-         "\"%lC grows old.  We know not who will guide us after he ascends.\"",
+         "\"We not get much food since Big Men seal off %H.\"",
+         "\"Since Bad Men come with %n, we fight all the time.\"",
+         "\"You think we beat %n, take back %o?\"",
+         "\"Hey, %p, you help?\"",
+         "\"%lC old.  We not know who guide us after him die.\"",
       },
       hasamulet = {
-         synopsis = "[\"Take the Amulet to the altar of %d on the Astral Plane and offer it.\"]",
+         synopsis = "[\"Take God Thing up to %d in place of gods.\"]",
          output = "text",
-         text = [["You have been successful, I see, %p.
+         text = [[
+"Oh, good, %p, you find God Thing for %d.
 
-"Now that the Amulet of Yendor is yours, here is what you must do:
+"Take God Thing up to sky.  It take you where you need to go,
+to place of earth, place of fire, place of air, place of water,
+and place of gods, where the Great House of %d is.
 
 "Journey upwards to the open air.  The Amulet you carry will then
 take you into the Astral Planes, where the Great Temple of %d
@@ -756,45 +775,50 @@ casts its influence throughout our world.
 "Sacrifice the Amulet on the altar.  Thus shall %d become supreme!"]],
       },
       killed_nemesis = {
-         text = [[%nC sinks to the ground, her heads flailing about.
-As she dies, a cloud of noxious fumes billows about her.]],
+         text = [[
+%nC sink to ground.  She move a lot, then she not move.
+Big cloud of smelly smoke come out of all her heads.
+         ]],
       },
       leader_first = {
-         synopsis = "[\"You have returned.  We are in dire need of your help.\"]",
+         synopsis = "[\"You back.  We need big help.\"]",
          output = "text",
-         text = [["You have returned from your vision quest, %p.  Thank %d.
+         text = [[
+"You come back, %p.  Thank %d.
 
-"We are in dire need of your help, my %S.
+"We need big help, my %S.
 
-"But first, I must see if you are yet capable of the quest I would
-ask you to undertake."]],
+"But first, me see if you can do things me ask you to do."
+         ]],
       },
       leader_last = {
-         synopsis = "[\"You have betrayed the %L.  Begone!\"]",
+         synopsis = "[\"You not %L.  Leave!\"]",
          output = "text",
-         text = [["%pC!  You have sealed our fate.  You seem unable to reform yourself,
-so I must select another to take your place.
+         text = [[
+"%pC!  You not good enough.  Seems you not able to get ready.
+Me pick other one from tribe to take your place.
 
-"Begone from %H!  You have betrayed us by choosing
-the path of the %C over the true path of the %L.
+"Leave %H!  You let us down.  You choose
+path of %C over true path of %L.
 
-"You no longer live in our eyes."]],
+"You not live in our eyes."
+         ]],
       },
       leader_next = {
-         text = "\"Again, you return to us, %p.  Let me see if you are ready now.\"",
+         text = "\"You back, %p.  Let me see if you ready now.\"",
       },
       leader_other = {
-         text = "\"Ah, %p.  Are you finally ready?\"",
+         text = "\"Ah, %p.  You ready?\"",
       },
       locate_first = {
-         synopsis = "[You %x many large claw marks, smell carrion, and notice bones.]",
+         synopsis = "[You %x many big claw marks and bones, smell dead things.]",
          output = "text",
-         text = [[You %x many large claw marks on the ground.  The tunnels ahead
-of you are larger than most of those in any cave complex you have
-ever been in before.
+         text = [[
+You %x many big claw marks and bones on ground.  Cave ahead of you
+is larger than most cave you have been in before.
 
-Your nose detects the smell of carrion from within, and bones litter
-the sides of the tunnels.]],
+You smell dead things in there.
+         ]],
       },
       locate_next = {
          text = "Once again, you approach %i.",
@@ -817,38 +841,38 @@ Now I shall kill you."]],
          text = "\"I'll have %o from you, %c.  You shall die.\"",
       },
       nexttime = {
-         text = "Once again, you arrive back at %H.",
+         text = "You come to %H again.",
       },
       offeredit = {
-         synopsis = "[\"Take %o with you.  It will help in your quest for the Amulet of Yendor.\"]",
+         synopsis = "[\"Take %o with you.  It maybe help you on big quest.\"]",
          output = "text",
-         text = [[%lC glimpses %o in your possession.
-He smiles and says:
+         text = [[
+%lC see %o in your hands.
+Him smile and say:
 
-    You have done it!  We are saved.  But I fear that %o
-    will always be a target for %C forces who will want it for their
-    own.
+    You have it!  We saved now.  But me fear that Bad Men still
+    want to take it from us.
 
-    To prevent further trouble, I would like you, %p,
-    to take %o away with you.  It will help you as you
-    quest for the Amulet of Yendor.]],
+    You keep it safe, %p, take %o away with you.  It
+    help you find other thing you look for.
+         ]],
       },
       offeredit2 = {
-         synopsis = "[\"You are the keeper of %o now.  Return to %Z to search for the Amulet.]",
+         synopsis = "[\"You keep %o now.  Return to %Z.\"]",
          output = "text",
-         text = [[%l grasps %o proudly for a moment, then looks at you.
+         text = [[
+%l take %o, then him look at you.
 
-"You are its keeper now, and the time has come to resume your search
-for the Amulet.  %Z await your return through the
-magic portal which brought you here."]],
+"You keep it now.  Keep it safe, go look for other
+thing, thing for %d.  Go back though magic thing that
+brought you here."
+         ]],
       },
       othertime = {
-         text = [[For some reason, you think that this may be the last time you will
-enter %H.]],
+         text = "You think this may be last time you come to %H."
       },
       posthanks = {
-         text = [["%pC!  Welcome back.
-How goes your quest to recover the Amulet for %d?"]],
+         text = "%pC!  You back.  Did you find other thing %d told you to look for?"
       },
    },
    Hea = {
