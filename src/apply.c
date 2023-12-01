@@ -2671,7 +2671,7 @@ apply_flint(struct obj *flint)
     }
 
     arrows = obj->quan;
-    max_arrows_enchanted = num_flints * 10;
+    max_arrows_enchanted = num_flints * 1;
     flints_used = arrows / 10;
     
     /* One flint stone will do 10 arrows. */
