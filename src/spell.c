@@ -552,7 +552,9 @@ study_book(register struct obj* spellbook)
 
         /* Books are often wiser than their readers (Rus.) */
         spellbook->in_use = TRUE;
-        if (!spellbook->blessed && spellbook->otyp != SPE_BOOK_OF_THE_DEAD) {
+        if ((!spellbook->blessed 
+                || (spellbook->blessed && Role_if(PM_CAVE_DWELLER)))
+            && spellbook->otyp != SPE_BOOK_OF_THE_DEAD) {
             if (spellbook->cursed) {
                 too_hard = TRUE;
             } else {
@@ -573,6 +575,9 @@ study_book(register struct obj* spellbook)
                         return 1;
                     }
                 }
+                /* Cavepersons always have at least an 80% chance to fail */
+                if (Role_if(PM_CAVE_DWELLER) && read_ability > 4)
+                    read_ability = 4;
                 /* its up to random luck now */
                 if (rnd(20) > read_ability) {
                     too_hard = TRUE;
