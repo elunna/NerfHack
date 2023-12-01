@@ -146,7 +146,7 @@ const struct Role roles[NUM_ROLES+1] = {
       1,
       8,
       A_INT,
-      SPE_DIG,
+      0,
       -4 },
     { { "Healer", 0 },
       { { "Rhizotomist", 0 },
