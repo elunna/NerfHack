@@ -2652,9 +2652,11 @@ use_stone(struct obj *tstone)
     static const char scritch[] = "\"scritch, scritch\"";
     struct obj *obj;
     boolean do_scratch;
+    boolean make_sparks;
+    struct monst* mtmp;
     const char *streak_color;
     char stonebuf[QBUFSZ];
-    int oclass;
+    int oclass, i, j;
     boolean known;
 
     /* in case it was acquired while blinded */
@@ -2733,6 +2735,7 @@ use_stone(struct obj *tstone)
     }
 
     do_scratch = FALSE;
+    make_sparks = FALSE;
     streak_color = 0;
 
     oclass = obj->oclass;
@@ -2746,6 +2749,8 @@ use_stone(struct obj *tstone)
     case GEM_CLASS: /* these have class-specific handling below */
     case RING_CLASS:
         if (tstone->otyp != TOUCHSTONE) {
+            if (tstone->otyp == FLINT && objects[obj->otyp].oc_material == IRON)
+                make_sparks = TRUE; /* we'll catch it later */
             do_scratch = TRUE;
         } else if (obj->oclass == GEM_CLASS
                    && (tstone->blessed
@@ -2790,6 +2795,10 @@ use_stone(struct obj *tstone)
             do_scratch = TRUE; /* scratching and streaks */
             streak_color = "silvery";
             break;
+        case IRON:
+            if (tstone->otyp == FLINT)
+                make_sparks = TRUE;
+            /* FALLTHRU */
         default:
             /* Objects passing the is_flimsy() test will not
                scratch a stone.  They will leave streaks on
@@ -2804,11 +2813,62 @@ use_stone(struct obj *tstone)
     }
 
     Sprintf(stonebuf, "stone%s", plur(tstone->quan));
-    if (do_scratch)
-        You("make %s%sscratch marks on the %s.",
-            streak_color ? streak_color : (const char *) "",
-            streak_color ? " " : "", stonebuf);
-    else if (streak_color)
+    if (do_scratch) {
+        if (!make_sparks) {
+            You("make %s%sscratch marks on the %s.",
+                streak_color ? streak_color : (const char *) "",
+                streak_color ? " " : "", stonebuf);
+        } else if (tstone->otyp == FLINT) {
+            /* Iron and flint make sparks. Non-intelligent creatures
+             * fear fire.  So anything next to Our Hero(tm) that isn't
+             * intelligent should have a chance of becoming afraid.
+             */
+            makeknown(tstone->otyp);
+            if (u.uinwater) {
+                pline("You'd need a flamethrower to make fire here.");
+                return ECMD_TIME;
+            }
+            You("strike a few sparks from the flint stone!");
+            if (u.uswallow) {
+                /* Not even the thing you're inside can see your piddly spark. */
+                pline("That's not going to make it any brighter in here.");
+                if (!rn2(3)) {
+                    Your("flint stone crumbles!");
+                    useup(tstone);
+                }
+                return ECMD_TIME;
+            }
+            /* Fire scares monsters */
+            for (i = u.ux - 1; i < u.ux + 2; i++) {
+                for (j = u.uy - 1; j < u.uy + 2; j++) {
+                    if (!isok(i, j))
+                        continue;
+                    mtmp = m_at(i, j);
+                    /* blind monsters can't see it */
+                    if (!mtmp || mtmp->mblinded || !haseyes(mtmp->data))
+                        continue;
+                    /* only some things will be scared:
+                     * animals and undead fear fire, but
+                     * not if they're fire resistant, sufficiently powerful,
+                     * gigantic (purple worm), mindless, or currently in water
+                     */
+                    if ((is_animal(mtmp->data) || is_undead(mtmp->data))
+                        && !(resists_fire(mtmp) || defended(mtmp, AD_FIRE)
+                             || (mtmp->data->geno & G_UNIQ)
+                             || mtmp->data->msize == MZ_GIGANTIC
+                             || mindless(mtmp->data))) {
+                        if (rn2(3))
+                            monflee(mtmp, rnd(10), TRUE, TRUE);
+                    }
+                }
+            }
+            if (!rn2(3)) {
+                Your("flint stone crumbles!");
+                useup(tstone);
+            }
+            return ECMD_TIME;
+        }
+    } else if (streak_color)
         You_see("%s streaks on the %s.", streak_color, stonebuf);
     else
         pline(scritch);
