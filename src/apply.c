@@ -2645,7 +2645,7 @@ apply_flint(struct obj *flint)
 {
     struct obj *obj;
     char szwork[QBUFSZ];
-    int num_flints, flints_used, arrows, max_arrows_enchanted, i;
+    int num_flints, arrows, i;
 
     num_flints = flint->quan;
 
@@ -2671,19 +2671,24 @@ apply_flint(struct obj *flint)
     }
 
     arrows = obj->quan;
-    max_arrows_enchanted = num_flints * 1;
-    flints_used = arrows / 10;
+
+    /* TODO: Rewrite so that we don't just reject the process if we don't have
+     * enough flint. Instead, split the arrows into two stacks, one stack for
+     * the arrows we'll enchant and another for the leftover arrows. We'll 
+     * have to use hold_another_object to see if we can hold the leftovers.
+     * This eliminates an annoying step where the player has to match up 
+     * their arrows with the available flint.
+     */
     
-    /* One flint stone will do 10 arrows. */
-    if (max_arrows_enchanted >= arrows) {
+    /* One flint stone for each arrow. */
+    if (num_flints >= arrows) {
         (obj->spe)++;
         You("lash flint tips to the %s.", xname(obj));
         
-        if (flints_used >= num_flints)
-            /**flint = (struct obj *) 0;*/
+        if (arrows == num_flints)
             useupall(flint);
         else
-            for (i = 0; i <= arrows / 10; i++)
+            for (i = 0; i < arrows; i++)
                 useup(flint);
     } else {
         You("don't have enough flint to re-tip all of these %s.", xname(obj));
