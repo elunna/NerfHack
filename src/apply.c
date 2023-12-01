@@ -1773,6 +1773,9 @@ rub_ok(struct obj *obj)
         || obj->otyp == LUMP_OF_ROYAL_JELLY)
         return GETOBJ_SUGGEST;
 
+    if (obj->otyp == ROCK)
+        return GETOBJ_DOWNPLAY;
+    
     return GETOBJ_EXCLUDE;
 }
 
@@ -1787,18 +1790,20 @@ dorub(void)
         return ECMD_OK;
     }
     obj = getobj("rub", rub_ok, GETOBJ_NOFLAGS);
-    if (!obj)
+    if (!obj) {
         return ECMD_CANCEL;
-    if (obj->oclass == GEM_CLASS || obj->oclass == FOOD_CLASS) {
-        if (is_graystone(obj)) {
+    }
+    if (obj->oclass == GEM_CLASS) {
+        if (is_graystone(obj) || obj->otyp == ROCK) {
             return use_stone(obj);
-        } else if (obj->otyp == LUMP_OF_ROYAL_JELLY) {
-            return use_royal_jelly(&obj);
         } else {
             pline("Sorry, I don't know how to use that.");
             return ECMD_OK;
         }
-    }
+        } else if (obj->otyp == LUMP_OF_ROYAL_JELLY) {
+            return use_royal_jelly(&obj);
+    } 
+    
     if (obj != uwep) {
         if (wield_tool(obj, "rub")) {
             cmdq_add_ec(CQ_CANNED, dorub);
@@ -2679,6 +2684,42 @@ use_stone(struct obj *tstone)
         else
             pline("A sharp crack shatters %s%s.",
                   (obj->quan > 1L) ? "one of " : "", the(xname(obj)));
+        useup(obj);
+        return ECMD_TIME;
+    }
+
+    /* break rocks and maybe get some flint out of them */
+    if (obj->otyp == ROCK) {
+        int flint_made = rnd(10) - 9;
+        struct obj * flint = NULL;
+
+        if (Role_if(PM_CAVE_DWELLER)) {
+            /* experts on banging rocks together */
+            flint_made += 3;
+        }
+        else if (tstone->otyp == TOUCHSTONE) {
+            /* a rock can be broken on any other rock, but breaking it on a
+             * touchstone will yield the most */
+            flint_made += 2;
+        }
+        if (tstone->otyp == ROCK) {
+            You("bang two rocks together.");
+        } else {
+            You("bang %s%s on %s.", ((obj->quan > 1L) ? "one of " : ""),
+              the(xname(obj)), the(xname(tstone)));
+        }
+        pline_The("rock crumbles.");
+
+        if (flint_made <= 0) {
+            useup(obj);
+            return ECMD_TIME;
+        }
+        flint = mksobj(FLINT, TRUE, FALSE);
+        flint->quan = flint_made;
+        flint->owt = weight(flint);
+        flint = hold_another_object(flint, "Oops!  %s out of your grasp!",
+                                    The(aobjnam(flint, "slip")),
+                                    (const char*) 0);
         useup(obj);
         return ECMD_TIME;
     }
