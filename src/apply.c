@@ -1773,7 +1773,7 @@ rub_ok(struct obj *obj)
         || obj->otyp == LUMP_OF_ROYAL_JELLY)
         return GETOBJ_SUGGEST;
 
-    if (obj->otyp == ROCK)
+    if (obj->otyp == ROCK || obj->otyp == FLINT)
         return GETOBJ_DOWNPLAY;
     
     return GETOBJ_EXCLUDE;
@@ -4058,6 +4058,9 @@ apply_ok(struct obj *obj)
     if (obj->oclass == COIN_CLASS)
         return GETOBJ_DOWNPLAY;
 
+    if (obj->otyp == ROCK || obj->otyp == FLINT)
+        return GETOBJ_DOWNPLAY;
+    
     /* certain weapons */
     if (obj->oclass == WEAPON_CLASS
         && (is_pick(obj) || is_axe(obj) || is_pole(obj)
@@ -4286,6 +4289,7 @@ doapply(void)
     case LUCKSTONE:
     case LOADSTONE:
     case TOUCHSTONE:
+    case ROCK:
         res = use_stone(obj);
         break;
     default:
