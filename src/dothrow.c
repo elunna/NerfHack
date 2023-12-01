@@ -1467,7 +1467,9 @@ throwit(struct obj *obj,
             tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
 
     gn.notonhead = FALSE; /* reset potentially stale value */
-    if ((obj->cursed || obj->greased) && (u.dx || u.dy) && !rn2(7)) {
+    if ((obj->cursed || obj->greased
+                     || (Role_if(PM_CLERIC) && (is_pierce(obj) || is_slash(obj))))
+        && (u.dx || u.dy) && !rn2(7)) {
         boolean slipok = TRUE;
 
         if (ammo_and_launcher(obj, uwep)) {
@@ -2158,6 +2160,20 @@ thitmonst(
             if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
                 if (mon->wormno)
                     cutworm(mon, gb.bhitpos.x, gb.bhitpos.y, chopper);
+            }
+            /* Priests firing/throwing edged weapons is frowned upon by
+             * their deity */
+            if (Role_if(PM_CLERIC) && (is_pierce(obj) || is_slash(obj))) {
+                if (!rn2(4)) {
+                    pline("%s %s weapons such as %s %s %s!",
+                          ammo_and_launcher(obj, uwep) ? "Firing" : "Throwing",
+                          is_slash(obj) ? "edged" : "piercing",
+                          ansimpleoname(obj),
+                          rn2(2) ? "angers" : "displeases",
+                          align_gname(u.ualign.type));
+                    adjalign(-1);
+                }
+                exercise(A_WIS, FALSE);
             }
             exercise(A_DEX, TRUE);
             /* if hero was swallowed and projectile killed the engulfer,

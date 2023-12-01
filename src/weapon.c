@@ -1589,6 +1589,14 @@ weapon_hit_bonus(struct obj *weapon)
             bonus -= 2;
     }
 
+    /* Priests using edged weapons is frowned upon by their deity */
+    if (uwep && Role_if(PM_CLERIC)
+        && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
+        && (is_pierce(uwep) || is_slash(uwep) || is_ammo(uwep))) {
+        /* feedback handled in attack() */
+        bonus = -30;
+    }
+
     return bonus;
 }
 

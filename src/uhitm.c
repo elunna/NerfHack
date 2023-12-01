@@ -544,6 +544,21 @@ do_attack(struct monst *mtmp)
     if (u.twoweap && !can_twoweapon())
         untwoweapon();
 
+    /* feedback for priests using non-blunt weapons */
+    if (uwep && Role_if(PM_CLERIC)
+        && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
+        && (is_pierce(uwep) || is_slash(uwep) || is_ammo(uwep))) {
+        if (!rn2(4))
+            pline("%s has %s you from using %s weapons such as %s!",
+                  align_gname(u.ualign.type), rn2(2) ? "forbidden" : "prohibited",
+                  is_slash(uwep) ? "edged" : "piercing", ansimpleoname(uwep));
+        exercise(A_WIS, FALSE);
+        if (!rn2(10)) {
+            Your("behavior has displeased %s.",
+                 align_gname(u.ualign.type));
+            adjalign(-1);
+        }
+    }
     if (gu.unweapon) {
         gu.unweapon = FALSE;
         if (flags.verbose) {
