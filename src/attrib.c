@@ -1036,7 +1036,7 @@ adjabil(int oldlevel, int newlevel)
 int
 newhp(void)
 {
-    int hp, conplus;
+    int hp, conplus, tempnum;
 
     if (u.ulevel == 0) {
         /* Initialize hit points */
@@ -1065,6 +1065,25 @@ newhp(void)
             if (gu.urace.hpadv.hirnd > 0)
                 hp += rnd(gu.urace.hpadv.hirnd);
         }
+
+        /* Cavemen get a tiny HP boost if they've remained illiterate,
+         * as well as a tiny wisdom boost.  The longer they remain
+         * illiterate, the bigger the HP boost gets (capped at d3)
+         */
+        if (Role_if(PM_CAVE_DWELLER)) {
+            tempnum = 0;
+            if (u.uconduct.literate < 1) {
+                if (u.ulevel < 4)
+                    tempnum += 1;
+                else if (u.ulevel < 8)
+                    tempnum += rnd(2);
+                else
+                    tempnum += rnd(3);
+                exercise(A_WIS, TRUE);
+            }
+            hp += tempnum;
+        }
+
         if (ACURR(A_CON) <= 3)
             conplus = -2;
         else if (ACURR(A_CON) <= 6)
