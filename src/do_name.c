@@ -1694,8 +1694,17 @@ docallcmd(void)
         break;
     case 'i': /* name an individual object in inventory */
         obj = getobj("name", name_ok, GETOBJ_PROMPT);
-        if (obj)
-            do_oname(obj);
+        if (obj) {
+            char *tempstr = xname(obj);
+            maybereleaseobuf(tempstr);
+
+            if (!obj->dknown) {
+                You("would never recognize %s later.",
+                    obj->quan > 1L ? "them" : "it");
+            } else {
+                do_oname(obj);
+            }
+        }
         break;
     case 'o': /* name a type of object in inventory */
         obj = getobj("call", call_ok, GETOBJ_NOFLAGS);
@@ -1703,7 +1712,8 @@ docallcmd(void)
             /* behave as if examining it in inventory;
                this might set dknown if it was picked up
                while blind and the hero can now see */
-            (void) xname(obj);
+            char *tempstr = xname(obj);
+            maybereleaseobuf(tempstr);
 
             if (!obj->dknown) {
                 You("would never recognize another one.");
