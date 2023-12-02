@@ -2574,6 +2574,7 @@ potion_dip(struct obj *obj, struct obj *potion)
             pline1(nothing_happens);
         } else {
             short save_otyp = obj->otyp;
+            short save_dknown = obj->dknown;
 
             /* KMH, conduct */
             if (!u.uconduct.polypiles++)
@@ -2588,10 +2589,13 @@ potion_dip(struct obj *obj, struct obj *potion)
              * if obj->otyp is worn amulet and becomes AMULET_OF_CHANGE.
              */
             if (!obj) {
-                makeknown(POT_POLYMORPH);
+                if (potion->dknown)
+                    makeknown(POT_POLYMORPH);
                 return ECMD_TIME;
-            } else if (obj->otyp != save_otyp) {
-                makeknown(POT_POLYMORPH);
+            } else if (obj->otyp != save_otyp 
+                || obj->dknown != save_dknown) {
+                if (potion->dknown)
+                    makeknown(POT_POLYMORPH);
                 useup(potion);
                 prinv((char *) 0, obj, 0L);
                 return ECMD_TIME;
