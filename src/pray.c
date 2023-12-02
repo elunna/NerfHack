@@ -62,6 +62,10 @@ static const char *const godvoices[] = {
 #define FERVENT 9
 #define STRIDENT 4
 
+/* In case we ever want to easily change the priest's
+ * crowning gift */
+#define PRIEST_GIFT ART_MJOLLNIR
+
 /*
  * The actual trouble priority is determined by the order of the
  * checks performed in in_trouble() rather than by these numeric
@@ -837,7 +841,6 @@ gcrownu(void)
     switch (u.ualign.type) {
     case A_LAWFUL:
         u.uevent.uhand_of_elbereth = 1;
-        SetVoice((struct monst *) 0, 0, 80, voice_deity);
         verbalize("I crown thee...  The Hand of Elbereth!");
         livelog_printf(LL_DIVINEGIFT,
                        "was crowned \"The Hand of Elbereth\" by %s",
@@ -845,9 +848,16 @@ gcrownu(void)
         break;
     case A_NEUTRAL:
         u.uevent.uhand_of_elbereth = 2;
-        in_hand = u_wield_art(ART_VORPAL_BLADE);
-        already_exists = exist_artifact(LONG_SWORD,
-                                        artiname(ART_VORPAL_BLADE));
+        /* priests aren't supposed to use edged weapons */
+        if (Role_if(PM_CLERIC)) {
+            in_hand = (uwep && uwep->oartifact == PRIEST_GIFT);
+            already_exists =
+                    exist_artifact(WAR_HAMMER, artiname(PRIEST_GIFT));
+        } else {
+            in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE);
+            already_exists =
+                    exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
+        }
         SetVoice((struct monst *) 0, 0, 80, voice_deity);
         verbalize("Thou shalt be my Envoy of Balance!");
         livelog_printf(LL_DIVINEGIFT, "became %s Envoy of Balance",
@@ -855,9 +865,18 @@ gcrownu(void)
         break;
     case A_CHAOTIC:
         u.uevent.uhand_of_elbereth = 3;
-        in_hand = u_wield_art(ART_STORMBRINGER);
-        already_exists = exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER));
-        what = (((already_exists && !in_hand) || class_gift != STRANGE_OBJECT)
+        /* priests aren't supposed to use edged weapons */
+        if (Role_if(PM_CLERIC)) {
+            in_hand = (uwep && uwep->oartifact == PRIEST_GIFT);
+            already_exists =
+                    exist_artifact(WAR_HAMMER, artiname(PRIEST_GIFT));
+        } else {
+            in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER);
+            already_exists =
+                    exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER));
+        }
+        what = (((already_exists && !in_hand) || class_gift != STRANGE_OBJECT
+                || Role_if(PM_CLERIC))
                 ? "take lives"
                 : "steal souls");
         SetVoice((struct monst *) 0, 0, 80, voice_deity);
@@ -897,6 +916,22 @@ gcrownu(void)
     case A_LAWFUL:
         if (class_gift != STRANGE_OBJECT) {
             ; /* already got bonus above */
+        } else if (Role_if(PM_CLERIC)) {
+            if (obj && obj->otyp == WAR_HAMMER && !obj->oartifact) {
+                char lbuf[BUFSZ];
+
+                Strcpy(lbuf, simpleonames(obj)); /* before transformation */
+                if (!Blind)
+                    Your("hammer shines brightly for a moment.");
+                obj = oname(obj, artiname(PRIEST_GIFT),
+                            ONAME_GIFT | ONAME_KNOW_ARTI);
+                if (is_art(obj, PRIEST_GIFT)) {
+                    u.ugifts++;
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                                   "had %s wielded %s transformed into %s",
+                                   uhis(), lbuf, artiname(PRIEST_GIFT));
+                }
+            }
         } else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact) {
             char lbuf[BUFSZ];
 
@@ -912,23 +947,34 @@ gcrownu(void)
                                uhis(), lbuf, artiname(ART_EXCALIBUR));
             }
         }
-        /* acquire Excalibur's skill regardless of weapon or gift */
+        /* acquire Excalibur's skill regardless of weapon or gift (not for priests) */
         unrestrict_weapon_skill(P_LONG_SWORD);
         if (is_art(obj, ART_EXCALIBUR))
             discover_artifact(ART_EXCALIBUR);
+        if (is_art(obj, PRIEST_GIFT))
+            discover_artifact(PRIEST_GIFT);
         break;
     case A_NEUTRAL:
         if (class_gift != STRANGE_OBJECT) {
             ; /* already got bonus above */
         } else if (obj && in_hand) {
-            Your("%s goes snicker-snack!", xname(obj));
+            if (!Role_if(PM_CLERIC))
+                Your("%s goes snicker-snack!", xname(obj));
             obj->dknown = 1;
         } else if (!already_exists) {
-            obj = mksobj(LONG_SWORD, FALSE, FALSE);
-            obj = oname(obj, artiname(ART_VORPAL_BLADE),
-                        ONAME_GIFT | ONAME_KNOW_ARTI);
-            obj->spe = 1;
-            at_your_feet("A sword");
+            if (Role_if(PM_CLERIC)) {
+                obj = mksobj(WAR_HAMMER, FALSE, FALSE);
+                obj = oname(obj, artiname(PRIEST_GIFT), 
+                            ONAME_GIFT | ONAME_KNOW_ARTI);
+                obj->spe = 1;
+                at_your_feet("A hammer");
+            } else {
+                obj = mksobj(LONG_SWORD, FALSE, FALSE);
+                obj = oname(obj, artiname(ART_VORPAL_BLADE), 
+                            ONAME_GIFT | ONAME_KNOW_ARTI);
+                obj->spe = 1;
+                at_your_feet("A sword");
+            }
             dropy(obj);
             u.ugifts++;
             livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
@@ -939,6 +985,8 @@ gcrownu(void)
         unrestrict_weapon_skill(P_LONG_SWORD);
         if (is_art(obj, ART_VORPAL_BLADE))
             discover_artifact(ART_VORPAL_BLADE);
+        if (obj && obj->oartifact == PRIEST_GIFT)
+            discover_artifact(PRIEST_GIFT);
         break;
     case A_CHAOTIC: {
         char swordbuf[BUFSZ];
@@ -947,14 +995,23 @@ gcrownu(void)
         if (class_gift != STRANGE_OBJECT) {
             ; /* already got bonus above */
         } else if (obj && in_hand) {
-            Your("%s hums ominously!", swordbuf);
+            if (!Role_if(PM_CLERIC))
+                Your("%s hums ominously!", swordbuf);
             obj->dknown = 1;
         } else if (!already_exists) {
-            obj = mksobj(RUNESWORD, FALSE, FALSE);
-            obj = oname(obj, artiname(ART_STORMBRINGER),
-                        ONAME_GIFT | ONAME_KNOW_ARTI);
-            obj->spe = 1;
-            at_your_feet(An(swordbuf));
+            if (Role_if(PM_CLERIC)) {
+                obj = mksobj(WAR_HAMMER, FALSE, FALSE);
+                obj = oname(obj, artiname(PRIEST_GIFT),
+                                          ONAME_GIFT | ONAME_KNOW_ARTI);
+                obj->spe = 1;
+                at_your_feet("A hammer");
+            } else {
+                obj = mksobj(RUNESWORD, FALSE, FALSE);
+                obj = oname(obj, artiname(ART_STORMBRINGER),
+                            ONAME_GIFT | ONAME_KNOW_ARTI);
+                obj->spe = 1;
+                at_your_feet(An(swordbuf));
+            }
             dropy(obj);
             u.ugifts++;
             livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
@@ -965,6 +1022,8 @@ gcrownu(void)
         unrestrict_weapon_skill(P_BROAD_SWORD);
         if (is_art(obj, ART_STORMBRINGER))
             discover_artifact(ART_STORMBRINGER);
+        if (obj && obj->oartifact == PRIEST_GIFT)
+            discover_artifact(PRIEST_GIFT);
         break;
     }
     default:
@@ -1331,7 +1390,7 @@ pleased(aligntyp g_align)
         }
         case 7:
         case 8:
-            if (u.ualign.record >= PIOUS && !u.uevent.uhand_of_elbereth) {
+            if (u.ualign.record >= 0 && !u.uevent.uhand_of_elbereth) {
                 gcrownu();
                 break;
             }
