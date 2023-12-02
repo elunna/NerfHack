@@ -342,9 +342,13 @@ map_object(register struct obj *obj, int show)
         /* these 'r' and 'neardist' calculations match distant_name(objnam.c)
            and see_nearby_objects(below); we assume that this is a lone
            object or a pile-top, not something below the top of a pile */
-        int r = (u.xray_range > 2) ? u.xray_range : 2,
-            /* neardist produces a small square with rounded corners */
-            neardist = (r * r) * 2 - r; /* same as r*r + r*(r-1) */
+        
+        /* Rangers have excellent vision */
+        int r = Role_if(PM_RANGER) ? 16
+                : (u.xray_range > 2) ? u.xray_range 
+                : 2;
+        /* neardist produces a small square with rounded corners */
+        int neardist = (r * r) * 2 - r; /* same as r*r + r*(r-1) */
 
         if (distu(x, y) <= neardist) {
             obj->dknown = 1;
