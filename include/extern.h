@@ -1876,6 +1876,7 @@ extern boolean munslime(struct monst *, boolean);
 
 /* ### music.c ### */
 
+extern void put_monsters_to_sleep(struct monst *, int);
 extern void awaken_soldiers(struct monst *);
 extern int do_play_instrument(struct obj *);
 enum instruments obj_to_instr(struct obj *);

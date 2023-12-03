@@ -29,7 +29,6 @@
 #include "hack.h"
 
 static void awaken_monsters(int);
-static void put_monsters_to_sleep(int);
 static void charm_snakes(int);
 static void calm_nymphs(int);
 static void charm_monsters(int);
@@ -74,15 +73,20 @@ awaken_monsters(int distance)
  * Make monsters fall asleep.  Note that they may resist the spell.
  */
 
-static void
-put_monsters_to_sleep(int distance)
+void
+put_monsters_to_sleep(struct monst * caster, int distance)
 {
     register struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mdistu(mtmp) < distance
+        if (mtmp == caster) /* immune to own effects */
+            continue;
+        coordxy cx = (caster == &gy.youmonst) ? u.ux : caster->mx;
+        coordxy cy = (caster == &gy.youmonst) ? u.uy : caster->my;
+
+        if (dist2(cx, cy, mtmp->mx, mtmp->my) < distance
             && sleep_monst(mtmp, d(10, 10), TOOL_CLASS)) {
             mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
             slept_monst(mtmp);
@@ -586,7 +590,7 @@ do_improvisation(struct obj* instr)
             Hallucination ? "piped" : "soft",
             same_old_song ? ", familiar" : "");
         Hero_playnotes(obj_to_instr(&itmp), improvisation, 50);
-        put_monsters_to_sleep(u.ulevel * 5);
+        put_monsters_to_sleep(&gy.youmonst, u.ulevel * 5);
         exercise(A_DEX, TRUE);
         makeknown_msg(MAGIC_FLUTE);
         break;
