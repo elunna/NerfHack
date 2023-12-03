@@ -2958,7 +2958,7 @@ mhitm_ad_curs(
 
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (night() && !rn2(10) && !mdef->mcan) {
+        if (!rn2(10) && !mdef->mcan) {
             if (pd == &mons[PM_CLAY_GOLEM]) {
                 if (!Blind)
                     pline("Some writing vanishes from %s head!",
@@ -2974,8 +2974,6 @@ mhitm_ad_curs(
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!night() && pa == &mons[PM_GREMLIN])
-            return;
         if (!magr->mcan && !rn2(10)) {
             if (!Deaf) {
                 Soundeffect(se_laughter, 40);
@@ -2995,8 +2993,6 @@ mhitm_ad_curs(
         }
     } else {
         /* mhitm */
-        if (!night() && (pa == &mons[PM_GREMLIN]))
-            return;
         if (!magr->mcan && !rn2(10)) {
             mdef->mcan = 1; /* cancelled regardless of lifesave */
             mdef->mstrategy &= ~STRAT_WAITFORU;
