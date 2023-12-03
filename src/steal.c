@@ -804,6 +804,7 @@ relobj(
     boolean is_pet) /* If true, pet should keep wielded/worn items */
 {
     struct obj *otmp;
+    struct monst *shkp;
     int omx = mtmp->mx, omy = mtmp->my;
 
     /* vault guard's gold goes away rather than be dropped... */
@@ -816,6 +817,11 @@ relobj(
     } /* isgd && has gold */
 
     while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) {
+        if (is_unpaid(otmp) && costly_spot(omx, omy)
+            && (shkp = shop_keeper(*in_rooms(omx, omy, SHOPBASE))) != 0
+            && inhishop(shkp)) {
+            subfrombill(otmp, shkp);
+        }
         mdrop_obj(mtmp, otmp, is_pet && flags.verbose);
     }
 
