@@ -3576,7 +3576,7 @@ obj_meld(struct obj** obj1, struct obj** obj2)
             /* callers really ought to take care of this; glob melding is
                a bookkeeping issue rather than a display one */
             if (ox && cansee(ox, oy))
-                newsym(ox, oy);
+                newsym_force(ox, oy);
         }
     } else {
         impossible("obj_meld: not called with two actual objects");

@@ -1086,7 +1086,6 @@ hatch_egg(anything *arg, long timeout)
                 verbalize("Gleep!"); /* Mything eggs :-) */
             }
             break;
-
         case OBJ_FLOOR:
             if (cansee_hatchspot) {
                 knows_egg = TRUE;
@@ -1094,7 +1093,6 @@ hatch_egg(anything *arg, long timeout)
                 redraw = TRUE; /* update egg's map location */
             }
             break;
-
         case OBJ_MINVENT:
             if (cansee_hatchspot) {
                 /* egg carrying monster might be invisible */
@@ -1140,6 +1138,7 @@ hatch_egg(anything *arg, long timeout)
         }
         if (redraw)
             newsym(x, y);
+        maybe_unhide_at(x, y);
     }
 }
 
