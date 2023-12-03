@@ -1071,6 +1071,14 @@ tamedog(struct monst *mtmp, struct obj *obj)
         || (mtmp->data->mflags3 & M3_WANTSARTI))
         return FALSE;
 
+    /* Monsters on the astral plane present formidable challenges to taming 
+     * due to their intrinsic wildness, strongly resisting attempts to 
+     * subdue their untamed nature. The inherent chaos and unpredictability 
+     * of the astral realm further complicates matters, as they thrive on 
+     * disorder and rebel against any imposed order. */
+    if (Is_astralevel(&u.uz) && rn2(4))
+        return FALSE;
+    
     /* worst case, at least it'll be peaceful. */
     mtmp->mpeaceful = 1;
     set_malign(mtmp);
