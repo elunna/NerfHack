@@ -361,6 +361,7 @@ learn(void)
         (void) confused_book(book);
         gc.context.spbook.book = 0; /* no longer studying */
         gc.context.spbook.o_id = 0;
+        update_inventory();
         nomul(gc.context.spbook.delay); /* remaining delay is uninterrupted */
         gm.multi_reason = "reading a book";
         gn.nomovemsg = 0;
