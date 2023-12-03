@@ -1195,6 +1195,7 @@ rnd_defensive_item(struct monst *mtmp)
                                      * redefine; nonconsecutive value is ok */
 #define MUSE_POT_OIL 21
 #define MUSE_MAGIC_FLUTE 22
+#define MUSE_SCR_STINKING_CLOUD 23
 
 static boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -1410,6 +1411,13 @@ find_offensive(struct monst *mtmp)
         if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_BLINDNESS;
+        }
+        nomore(MUSE_SCR_STINKING_CLOUD)
+        if (obj->otyp == SCR_STINKING_CLOUD && m_canseeu(mtmp)
+            && distu(mtmp->mx, mtmp->my) < 32
+            && !m_seenres(mtmp, M_SEEN_POISON)) {
+            gm.m.offensive = obj;
+            gm.m.has_offense = MUSE_SCR_STINKING_CLOUD;
         }
         nomore(MUSE_POT_HALLUCINATION);
         if (obj->otyp == POT_HALLUCINATION && !attacktype(mtmp->data, AT_GAZE)) {
@@ -1922,6 +1930,14 @@ use_offensive(struct monst *mtmp)
         }
         return 2;
     }
+    case MUSE_SCR_STINKING_CLOUD:
+        mreadmsg(mtmp, otmp);
+        if (oseen)
+            makeknown(otmp->otyp);
+        (void) create_gas_cloud(mtmp->mux, mtmp->muy, 3 + bcsign(otmp),
+                                8 + 4 * bcsign(otmp));
+        m_useup(mtmp, otmp);
+        return 2;
     case 0:
         return 0; /* i.e. an exploded wand */
     default:
@@ -1974,6 +1990,8 @@ rnd_offensive_item(struct monst *mtmp)
         return WAN_COLD;
     case 12:
         return WAN_LIGHTNING;
+    case 13:
+        return SCR_STINKING_CLOUD;
     }
     /*NOTREACHED*/
     return 0;
@@ -2615,7 +2633,8 @@ searches_for_item(struct monst *mon, struct obj *obj)
         break;
     case SCROLL_CLASS:
         if (typ == SCR_TELEPORTATION || typ == SCR_CREATE_MONSTER
-            || typ == SCR_EARTH || typ == SCR_FIRE)
+            || typ == SCR_EARTH || typ == SCR_FIRE
+            || (typ == SCR_STINKING_CLOUD && mon->mcansee))
             return TRUE;
         break;
     case AMULET_CLASS:
