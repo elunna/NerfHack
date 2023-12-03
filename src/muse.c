@@ -1189,6 +1189,7 @@ rnd_defensive_item(struct monst *mtmp)
 #define MUSE_POT_SLEEPING 16
 #define MUSE_SCR_EARTH 17
 #define MUSE_CAMERA 18
+#define MUSE_POT_HALLUCINATION 19
 /*#define MUSE_WAN_UNDEAD_TURNING 20*/ /* also a defensive item so don't
                                      * redefine; nonconsecutive value is ok */
 
@@ -1406,6 +1407,11 @@ find_offensive(struct monst *mtmp)
         if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_BLINDNESS;
+        }
+        nomore(MUSE_POT_HALLUCINATION);
+        if (obj->otyp == POT_HALLUCINATION && !attacktype(mtmp->data, AT_GAZE)) {
+            gm.m.offensive = obj;
+            gm.m.has_offense = MUSE_POT_HALLUCINATION;
         }
         nomore(MUSE_POT_CONFUSION);
         if (obj->otyp == POT_CONFUSION) {
@@ -1834,6 +1840,7 @@ use_offensive(struct monst *mtmp)
 #endif /* 0 */
     case MUSE_POT_PARALYSIS:
     case MUSE_POT_BLINDNESS:
+    case MUSE_POT_HALLUCINATION:
     case MUSE_POT_CONFUSION:
     case MUSE_POT_SLEEPING:
     case MUSE_POT_ACID:
@@ -1888,7 +1895,7 @@ rnd_offensive_item(struct monst *mtmp)
     case 4:
         return POT_BLINDNESS;
     case 5:
-        return POT_SLEEPING;
+        return rn2(3) ? POT_SLEEPING : POT_HALLUCINATION;
     case 6:
         return POT_PARALYSIS;
     case 7:
@@ -2535,7 +2542,8 @@ searches_for_item(struct monst *mon, struct obj *obj)
         if (typ == POT_HEALING || typ == POT_EXTRA_HEALING
             || typ == POT_FULL_HEALING || typ == POT_POLYMORPH
             || typ == POT_GAIN_LEVEL || typ == POT_PARALYSIS
-            || typ == POT_SLEEPING || typ == POT_ACID || typ == POT_CONFUSION)
+            || typ == POT_SLEEPING || typ == POT_ACID || typ == POT_CONFUSION
+            || typ == POT_HALLUCINATION)
             return TRUE;
         if (typ == POT_BLINDNESS && !attacktype(mon->data, AT_GAZE))
             return TRUE;
