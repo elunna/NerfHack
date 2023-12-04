@@ -3593,6 +3593,7 @@ extern int spell_damage_bonus(int);
 extern const char *exclam(int force);
 extern void hit(const char *, struct monst *, const char *);
 extern void miss(const char *, struct monst *);
+extern void maybe_explode_trap(struct trap *, struct obj *, boolean *);
 extern struct monst *bhit(coordxy, coordxy, int, enum bhit_call_types,
                           int(*)(struct monst *, struct obj *),
                           int(*)(struct obj *, struct obj *), struct obj **);

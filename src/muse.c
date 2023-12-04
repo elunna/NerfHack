@@ -1196,6 +1196,7 @@ rnd_defensive_item(struct monst *mtmp)
 #define MUSE_POT_OIL 21
 #define MUSE_MAGIC_FLUTE 22
 #define MUSE_SCR_STINKING_CLOUD 23
+#define MUSE_WAN_CANCELLATION 24
 
 static boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -1387,6 +1388,11 @@ find_offensive(struct monst *mtmp)
             && !m_seenres(mtmp, M_SEEN_MAGR)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_WAN_STRIKING;
+        }
+        nomore(MUSE_WAN_CANCELLATION);
+        if (obj->otyp == WAN_CANCELLATION && obj->spe > 0) {
+            gm.m.offensive = obj;
+            gm.m.has_offense = MUSE_WAN_CANCELLATION;
         }
         nomore(MUSE_WAN_TELEPORTATION);
         if (obj->otyp == WAN_TELEPORTATION && obj->spe > 0
@@ -1694,6 +1700,7 @@ mbhit(
             gb.bhitpos.y -= ddy;
             break;
         }
+        maybe_explode_trap(t_at(x, y), obj, &gz.zap_oseen); /* note: ttmp might be now gone */
     }
 }
 
@@ -1806,6 +1813,7 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_TELEPORTATION:
     case MUSE_WAN_UNDEAD_TURNING:
     case MUSE_WAN_STRIKING:
+    case MUSE_WAN_CANCELLATION:
         gz.zap_oseen = oseen;
         mzapwand(mtmp, otmp, FALSE);
         gm.m_using = TRUE;
@@ -2021,6 +2029,8 @@ rnd_offensive_item(struct monst *mtmp)
         return WAN_LIGHTNING;
     case 13:
         return SCR_STINKING_CLOUD;
+    case 14:
+        return WAN_CANCELLATION;
     }
     /*NOTREACHED*/
     return 0;
@@ -2646,7 +2656,7 @@ searches_for_item(struct monst *mon, struct obj *obj)
         if (typ == WAN_POLYMORPH)
             return (boolean) (mons[monsndx(mon->data)].difficulty < 6);
         if (objects[typ].oc_dir == RAY || typ == WAN_STRIKING
-            || typ == WAN_UNDEAD_TURNING
+            || typ == WAN_UNDEAD_TURNING || typ == WAN_CANCELLATION
             || typ == WAN_TELEPORTATION || typ == WAN_CREATE_MONSTER)
             return TRUE;
         break;

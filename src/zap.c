@@ -23,7 +23,6 @@ static void zhitu(int, int, const char *, coordxy, coordxy);
 static void revive_egg(struct obj *);
 static boolean zap_steed(struct obj *);
 static void skiprange(int, int *, int *);
-static void maybe_explode_trap(struct trap *, struct obj *, boolean *);
 static void zap_map(coordxy, coordxy, struct obj *);
 static int zap_hit(int, int);
 static void disintegrate_mon(struct monst *, int, const char *);
@@ -1247,6 +1246,27 @@ cancel_item(struct obj *obj)
                 gc.context.botl = TRUE;
             break;
         }
+    }
+    /* Small chance DSM can revert to scales if cancelled */
+    if (!rn2(6) && obj->otyp >= GRAY_DRAGON_SCALE_MAIL
+        && obj->otyp <= YELLOW_DRAGON_SCALE_MAIL) {
+        boolean worn = (obj == uarm);
+
+        if (!Blind) {
+            char buf[BUFSZ];
+            pline("%s%s reverts to its natural state.",
+                  Shk_Your(buf, obj), xname(obj));
+        }
+        if (worn)
+            Your("armor feels more loose.");
+        costly_alteration(obj, COST_CANCEL);
+        if (worn)
+            setworn((struct obj *) 0, W_ARM);
+        /* assumes same order */
+        obj->otyp = (GRAY_DRAGON_SCALES +
+                     obj->otyp - GRAY_DRAGON_SCALE_MAIL);
+        if (worn)
+            setworn(obj, W_ARM);
     }
     /* cancelled item might not be in hero's possession but
        cancellation is presumed to be instigated by hero */
@@ -3044,24 +3064,194 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         writing_vanishes[] = "Some writing vanishes from %s head!",
         your[] = "your"; /* should be extern */
     boolean youdefend = (mdef == &gy.youmonst);
-
+    int onum = 0, oindex = 0, cnt = 0;
+    struct obj *otmp;
+    
     if (youdefend ? (!youattack && Antimagic)
                   : resist(mdef, obj->oclass, 0, NOTELL))
         return FALSE; /* resisted cancellation */
 
-    if (self_cancel) { /* 1st cancel inventory */
-        struct obj *otmp;
+    boolean resisted = (youdefend && Antimagic)
+                       || (!youdefend
+                           && resist(mdef, obj ? obj->oclass : 0, 0, NOTELL));
 
+    if (obj && obj->otyp == WAN_CANCELLATION)
+        makeknown(obj->otyp);
+    
+    if (self_cancel) { /* 1st cancel inventory */
         for (otmp = (youdefend ? gi.invent : mdef->minvent); otmp;
              otmp = otmp->nobj)
             cancel_item(otmp);
 
         if (youdefend) {
+            You_feel("magical energies being absorbed from your exact location.");
             gc.context.botl = 1; /* potential AC change */
             find_ac();
-            /* update_inventory(); -- handled by caller */
+        }
+    } else {
+        /* shield effect if target has MR - does not
+           protect against cancellation */
+        if (youdefend && Antimagic)
+            shieldeff(u.ux, u.uy);
+        if (!youdefend && resisted)
+            shieldeff(mdef->mx, mdef->my);
+
+        /* player attacking monster */
+        if (youattack) {
+            if (rn2(10)
+                && (otmp = which_armor(mdef, W_ARM))
+                && (otmp->otyp == GRAY_DRAGON_SCALES 
+                    || otmp->otyp == GRAY_DRAGON_SCALE_MAIL)) {
+                shieldeff(mdef->mx, mdef->my);
+                if (canseemon(mdef))
+                    You("sense a wave of energy dissipate around %s.",
+                        mon_nam(mdef));
+                return FALSE;
+            }
+            else {
+                if (!mdef->mcan && canseemon(mdef))
+                    pline("Magical energies are absorbed from %s.", mon_nam(mdef));
+#if 0
+                if (mdef->mprotection) {
+                    if (canseemon(mdef))
+                        pline_The("%s haze around %s %s.",
+                                  hcolor(NH_GOLDEN), mon_nam(mdef), "disappears");
+                    mdef->mprotection = mdef->mprottime = 0;
+                }
+#endif
+            }
+        }
+
+        /* monster attacking player */
+        if (youdefend) {
+            if (rn2(10) && uarm
+                && (uarm->otyp == GRAY_DRAGON_SCALES
+                    || uarm->otyp == GRAY_DRAGON_SCALE_MAIL)) {
+                shieldeff(u.ux, u.uy);
+                You_feel("a wave of energy dissipate around you.");
+                return FALSE;
+            } else if (rn2(3) && Role_if(PM_MONK)
+                            && ublindf && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                shieldeff(u.ux, u.uy);
+                You_feel("a wave of energy dissipate around you.");
+                return FALSE;
+            } else if (Upolyd && gy.youmonst.data == &mons[PM_GRAY_DRAGON]) {
+                shieldeff(u.ux, u.uy);
+                You_feel("a wave of energy dissipate around you.");
+                return FALSE;
+            } else {
+                You_feel("magical energies being absorbed from your vicinity.");
+                if (u.uspellprot) {
+                    pline_The("%s haze around you disappears.",
+                              hcolor(NH_GOLDEN));
+                    u.usptime = u.uspmtime = u.uspellprot = 0;
+                    gc.context.botl = 1; /* potential AC change */
+                    find_ac();
+                }
+#if 0
+                if (HReflecting > 0) {
+                    pline("The shimmering globe around you disappears.");
+                    HReflecting = 0;
+                }
+#endif
+            }
+        }
+
+        /* monster attacking another monster */
+        if (!youdefend && !youattack) {
+            if (rn2(10)
+                && (otmp = which_armor(mdef, W_ARM))
+                && (otmp->otyp == GRAY_DRAGON_SCALES
+                    || otmp->otyp == GRAY_DRAGON_SCALE_MAIL)) {
+                shieldeff(mdef->mx, mdef->my);
+                if (canseemon(mdef))
+                    You("sense a wave of energy dissipate around %s.",
+                        mon_nam(mdef));
+                return FALSE;
+            } else if (mdef->data == &mons[PM_GRAY_DRAGON]) {
+                shieldeff(mdef->mx, mdef->my);
+                if (canseemon(mdef))
+                    You("sense a wave of energy dissipate around %s.",
+                        mon_nam(mdef));
+                return FALSE;
+            }
+#if 0
+            else {
+                if (!mdef->mcan && canseemon(mdef))
+                    pline("Magical energies are absorbed from %s.", mon_nam(mdef));
+                if (mdef->mprotection) {
+                    if (canseemon(mdef))
+                        pline_The("%s haze around %s %s.",
+                                  hcolor(NH_GOLDEN), mon_nam(mdef), "disappears");
+                    mdef->mprotection = mdef->mprottime = 0;
+                }
+                 if (has_reflection(mdef)) {
+                    if (canseemon(mdef))
+                        pline("%s shimmering globe disappears.",
+                              s_suffix(Monnam(mdef)));
+                    mdef->mextrinsics &= ~(MR2_REFLECTION);
+                    mdef->mreflecttime = 0;
+                }
+            }
+#endif
+        }
+
+        for (otmp = (youdefend ? gi.invent : mdef->minvent);
+             otmp; otmp = otmp->nobj) {
+            /* gold isn't subject to being cursed or blessed */
+            if (otmp->oclass == COIN_CLASS)
+                continue;
+            onum++;
+        }
+
+        if (onum) {
+            int hero_count = ((!!Antimagic) + (!!Half_spell_damage) + 1);
+            int mon_count = rnd(3);
+
+            for (cnt = rnd(6 / (youdefend ? hero_count : mon_count));
+                 cnt > 0; cnt--) {
+                oindex = rnd(onum);
+                /* if random count is higher than number of objects
+                   in inventory, clamp count to be no greater than
+                   number of objects in inventory */
+                if (cnt > onum)
+                    cnt = onum;
+                for (otmp = (youdefend ? gi.invent : mdef->minvent);
+                     otmp; otmp = otmp->nobj) {
+                    /* as above */
+                    if (otmp->oclass == COIN_CLASS)
+                        continue;
+                    if (--oindex == 0)
+                        break; /* found the target */
+                }
+                if (!otmp)
+                    continue; /* next target */
+
+                if (otmp->blessed && !otmp->oartifact
+                    && !obj_resists(otmp, 0, 0) && !rn2(5)) {
+                    pline("%s!", Yobjnam2(otmp, "resist"));
+                    continue;
+                }
+#if 0
+                if (((otmp->oartifact && spec_ability(otmp, SPFX_INTEL))
+                     || obj_resists(otmp, 0, 0))
+                    && rn2(10) < 8) {
+                    pline("%s!", Tobjnam(otmp, "resist"));
+                    continue;
+                }
+#endif
+                cancel_item(otmp);
+            }
+            if (youdefend) {
+                gc.context.botl = 1; /* potential AC change */
+                find_ac();
+            }
+            update_inventory();
         }
     }
+
+    if (resisted)
+        return FALSE;
 
     /* now handle special cases */
     if (youdefend) {
@@ -3481,7 +3671,7 @@ skiprange(int range, int *skipstart, int *skipend)
 /* Maybe explode a trap hit by object otmp's effect;
    cancellation beam hitting a magical trap causes an explosion.
    Might delete the trap; won't destroy otmp. */
-static void
+void
 maybe_explode_trap(
     struct trap *ttmp,
     struct obj *otmp,
