@@ -2054,6 +2054,7 @@ rnd_offensive_item(struct monst *mtmp)
 #define MUSE_BULLWHIP 8
 #define MUSE_POT_POLYMORPH 9
 #define MUSE_BAG 10
+#define MUSE_SCR_REMOVE_CURSE 11
 
 boolean
 find_misc(struct monst *mtmp)
@@ -2192,6 +2193,17 @@ find_misc(struct monst *mtmp)
             && mons[monsndx(mdat)].difficulty < 6) {
             gm.m.misc = obj;
             gm.m.has_misc = MUSE_POT_POLYMORPH;
+        }
+        nomore(MUSE_SCR_REMOVE_CURSE);
+        if (obj->otyp == SCR_REMOVE_CURSE) {
+            register struct obj *otmp;
+            for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+                if (otmp->cursed && (otmp->otyp == LOADSTONE
+                        || otmp->owornmask)) {
+                    gm.m.misc = obj;
+                    gm.m.has_misc = MUSE_SCR_REMOVE_CURSE;
+                }
+            }
         }
         nomore(MUSE_BAG);
         if (Is_container(obj) && obj->otyp != BAG_OF_TRICKS && !rn2(5)
@@ -2355,102 +2367,128 @@ use_misc(struct monst *mtmp)
     oseen = otmp && vismon;
 
     switch (gm.m.has_misc) {
-    case MUSE_POT_GAIN_LEVEL:
-        mquaffmsg(mtmp, otmp);
-        if (otmp->cursed) {
-            if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz)) {
-                register int tolev = depth(&u.uz) - 1;
-                d_level tolevel;
-
-                get_level(&tolevel, tolev);
-                /* insurance against future changes... */
-                if (on_level(&tolevel, &u.uz))
-                    goto skipmsg;
-                if (vismon) {
-                    pline("%s rises up, through the %s!", Monnam(mtmp),
-                          ceiling(mtmp->mx, mtmp->my));
-                    trycall(otmp);
-                }
-                m_useup(mtmp, otmp);
-                migrate_to_level(mtmp, ledger_no(&tolevel), MIGR_RANDOM,
-                                 (coord *) 0);
-                return 2;
-            } else {
- skipmsg:
-                if (vismon) {
-                    pline("%s looks uneasy.", Monnam(mtmp));
-                    trycall(otmp);
-                }
-                m_useup(mtmp, otmp);
-                return 2;
-            }
-        }
-        if (vismon)
-            pline("%s seems more experienced.", Monnam(mtmp));
-        if (oseen)
-            makeknown(POT_GAIN_LEVEL);
-        m_useup(mtmp, otmp);
-        if (!grow_up(mtmp, (struct monst *) 0))
-            return 1;
-        /* grew into genocided monster */
-        return 2;
-    case MUSE_WAN_MAKE_INVISIBLE:
-    case MUSE_POT_INVISIBILITY:
-        if (otmp->otyp == WAN_MAKE_INVISIBLE) {
-            mzapwand(mtmp, otmp, TRUE);
-        } else
+        case MUSE_POT_GAIN_LEVEL:
             mquaffmsg(mtmp, otmp);
-        /* format monster's name before altering its visibility */
-        Strcpy(nambuf, mon_nam(mtmp));
-        mon_set_minvis(mtmp);
-        if (vismon && mtmp->minvis) { /* was seen, now invisible */
-            if (canspotmon(mtmp)) {
-                pline("%s body takes on a %s transparency.",
-                      upstart(s_suffix(nambuf)),
-                      Hallucination ? "normal" : "strange");
-            } else {
-                pline("Suddenly you cannot see %s.", nambuf);
-                if (vis)
-                    map_invisible(mtmp->mx, mtmp->my);
+            if (otmp->cursed) {
+                if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz)) {
+                    register int tolev = depth(&u.uz) - 1;
+                    d_level tolevel;
+
+                    get_level(&tolevel, tolev);
+                    /* insurance against future changes... */
+                    if (on_level(&tolevel, &u.uz))
+                        goto skipmsg;
+                    if (vismon) {
+                        pline("%s rises up, through the %s!", Monnam(mtmp),
+                              ceiling(mtmp->mx, mtmp->my));
+                        trycall(otmp);
+                    }
+                    m_useup(mtmp, otmp);
+                    migrate_to_level(mtmp, ledger_no(&tolevel), MIGR_RANDOM,
+                                     (coord *) 0);
+                    return 2;
+                } else {
+                    skipmsg:
+                    if (vismon) {
+                        pline("%s looks uneasy.", Monnam(mtmp));
+                        trycall(otmp);
+                    }
+                    m_useup(mtmp, otmp);
+                    return 2;
+                }
             }
+            if (vismon)
+                pline("%s seems more experienced.", Monnam(mtmp));
             if (oseen)
-                makeknown(otmp->otyp);
-        }
-        if (otmp->otyp == POT_INVISIBILITY) {
-            if (otmp->cursed)
-                you_aggravate(mtmp);
+                makeknown(POT_GAIN_LEVEL);
             m_useup(mtmp, otmp);
-        }
-        return 2;
-    case MUSE_WAN_SPEED_MONSTER:
-        mzapwand(mtmp, otmp, TRUE);
-        mon_adjust_speed(mtmp, 1, otmp);
-        return 2;
-    case MUSE_POT_SPEED:
-        mquaffmsg(mtmp, otmp);
-        /* note difference in potion effect due to substantially
-           different methods of maintaining speed ratings:
-           player's character becomes "very fast" temporarily;
-           monster becomes "one stage faster" permanently */
-        mon_adjust_speed(mtmp, 1, otmp);
-        m_useup(mtmp, otmp);
-        return 2;
-    case MUSE_WAN_POLYMORPH:
-        mzapwand(mtmp, otmp, TRUE);
-        (void) newcham(mtmp, muse_newcham_mon(mtmp),
-                       NC_VIA_WAND_OR_SPELL | NC_SHOW_MSG);
-        if (oseen)
-            makeknown(WAN_POLYMORPH);
-        return 2;
-    case MUSE_POT_POLYMORPH:
-        mquaffmsg(mtmp, otmp);
-        m_useup(mtmp, otmp);
-        if (vismon)
-            pline("%s suddenly mutates!", Monnam(mtmp));
-        (void) newcham(mtmp, muse_newcham_mon(mtmp), NC_SHOW_MSG);
-        if (oseen)
-            makeknown(POT_POLYMORPH);
-        return 2;
+            if (!grow_up(mtmp, (struct monst *) 0))
+                return 1;
+            /* grew into genocided monster */
+            return 2;
+        case MUSE_WAN_MAKE_INVISIBLE:
+        case MUSE_POT_INVISIBILITY:
+            if (otmp->otyp == WAN_MAKE_INVISIBLE) {
+                mzapwand(mtmp, otmp, TRUE);
+            } else
+                mquaffmsg(mtmp, otmp);
+            /* format monster's name before altering its visibility */
+            Strcpy(nambuf, mon_nam(mtmp));
+            mon_set_minvis(mtmp);
+            if (vismon && mtmp->minvis) { /* was seen, now invisible */
+                if (canspotmon(mtmp)) {
+                    pline("%s body takes on a %s transparency.",
+                          upstart(s_suffix(nambuf)),
+                          Hallucination ? "normal" : "strange");
+                } else {
+                    pline("Suddenly you cannot see %s.", nambuf);
+                    if (vis)
+                        map_invisible(mtmp->mx, mtmp->my);
+                }
+                if (oseen)
+                    makeknown(otmp->otyp);
+            }
+            if (otmp->otyp == POT_INVISIBILITY) {
+                if (otmp->cursed)
+                    you_aggravate(mtmp);
+                m_useup(mtmp, otmp);
+            }
+            return 2;
+        case MUSE_WAN_SPEED_MONSTER:
+            mzapwand(mtmp, otmp, TRUE);
+            mon_adjust_speed(mtmp, 1, otmp);
+            return 2;
+        case MUSE_POT_SPEED:
+            mquaffmsg(mtmp, otmp);
+            /* note difference in potion effect due to substantially
+               different methods of maintaining speed ratings:
+               player's character becomes "very fast" temporarily;
+               monster becomes "one stage faster" permanently */
+            mon_adjust_speed(mtmp, 1, otmp);
+            m_useup(mtmp, otmp);
+            return 2;
+        case MUSE_WAN_POLYMORPH:
+            mzapwand(mtmp, otmp, TRUE);
+            (void) newcham(mtmp, muse_newcham_mon(mtmp),
+                           NC_VIA_WAND_OR_SPELL | NC_SHOW_MSG);
+            if (oseen)
+                makeknown(WAN_POLYMORPH);
+            return 2;
+        case MUSE_POT_POLYMORPH:
+            mquaffmsg(mtmp, otmp);
+            m_useup(mtmp, otmp);
+            if (vismon)
+                pline("%s suddenly mutates!", Monnam(mtmp));
+            (void) newcham(mtmp, muse_newcham_mon(mtmp), NC_SHOW_MSG);
+            if (oseen)
+                makeknown(POT_POLYMORPH);
+            return 2;
+        case MUSE_SCR_REMOVE_CURSE: {
+            register struct obj *obj;
+            mreadmsg(mtmp, otmp);
+            if (canseemon(mtmp)) {
+                if (mtmp->mconf)
+                    You("feel as though %s needs some help.", mon_nam(mtmp));
+                else
+                    You("feel like someone is helping %s.", mon_nam(mtmp));
+                if (!objects[SCR_REMOVE_CURSE].oc_name_known
+                    && !objects[SCR_REMOVE_CURSE].oc_uname)
+                    docall(otmp);
+            }
+            for (obj = mtmp->minvent; obj; obj = obj->nobj) {
+                /* gold isn't subject to cursing and blessing */
+                if (obj->oclass == COIN_CLASS)
+                    continue;
+                if (otmp->blessed || otmp->owornmask
+                    || obj->otyp == LOADSTONE) {
+                    if (mtmp->mconf)
+                        blessorcurse(obj, 2);
+                    else uncurse(obj);
+                }
+            }
+            m_useup(mtmp, otmp);
+            return 0;
+    }
     case MUSE_POLY_TRAP:
         t = t_at(gt.trapx, gt.trapy);
         vistrapspot = cansee(t->tx, t->ty);
@@ -2680,7 +2718,7 @@ searches_for_item(struct monst *mon, struct obj *obj)
         break;
     case SCROLL_CLASS:
         if (typ == SCR_TELEPORTATION || typ == SCR_CREATE_MONSTER
-            || typ == SCR_EARTH || typ == SCR_FIRE
+            || typ == SCR_EARTH || typ == SCR_FIRE || typ == SCR_REMOVE_CURSE
             || (typ == SCR_STINKING_CLOUD && mon->mcansee))
             return TRUE;
         break;
