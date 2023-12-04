@@ -2790,11 +2790,12 @@ mon_wounds(struct monst *mon,
     if (DEADMONSTER(mon)) {
         return NULL;
     }
+#if 0 /* Too much info */
     if (mon->mhp == mon->mhpmax) {
         Sprintf(outbuf, "uninjured%s", addspace ? " " : "");
         return outbuf;
     }
-
+#endif
     adjective = is_fleshy(mdat) ? "wounded" : "damaged";
 
     if (Hallucination && !clarity) {
@@ -2813,7 +2814,9 @@ mon_wounds(struct monst *mon,
         };
         adverb = wound_adverbs[rn2(SIZE(wound_adverbs))];
         adjective = wound_adjectives[rn2(SIZE(wound_adjectives))];
-    }
+    } else if (mon->mhp * 10 <= mon->mhpmax) {    /* <= 10%   */
+        adverb = "almost";
+        adjective = nonliving(mdat) ? "destroyed" : "dead";
     else if (mon->mhp * 6 <= mon->mhpmax) {     /* <= 16.6% */
         adverb = "critically";
     }
