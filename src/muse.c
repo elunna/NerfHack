@@ -2055,6 +2055,7 @@ rnd_offensive_item(struct monst *mtmp)
 #define MUSE_POT_POLYMORPH 9
 #define MUSE_BAG 10
 #define MUSE_SCR_REMOVE_CURSE 11
+#define MUSE_FIGURINE 12
 
 boolean
 find_misc(struct monst *mtmp)
@@ -2137,6 +2138,11 @@ find_misc(struct monst *mtmp)
                 || (!mtmp->isgd && !mtmp->isshk && !mtmp->ispriest))) {
             gm.m.misc = obj;
             gm.m.has_misc = MUSE_POT_GAIN_LEVEL;
+        }
+        nomore(MUSE_FIGURINE);
+        if (obj->otyp == FIGURINE && !mtmp->mpeaceful) {
+            gm.m.misc = obj;
+            gm.m.has_misc = MUSE_FIGURINE;
         }
         nomore(MUSE_BULLWHIP);
         if (obj->otyp == BULLWHIP && !mtmp->mpeaceful
@@ -2367,6 +2373,33 @@ use_misc(struct monst *mtmp)
     oseen = otmp && vismon;
 
     switch (gm.m.has_misc) {
+        case MUSE_FIGURINE: {
+            coord cc;
+            struct permonst *pm;
+            struct monst *mon;
+            int mndx = otmp->corpsenm;
+
+            pm = &mons[mndx];
+            if (vismon)
+                pline("%s activates a figurine!", Monnam(mtmp));
+            else if (!Deaf)
+                You("hear a figurine being activated.");
+            /* activating a figurine provides one way to exceed the
+               maximum number of the target critter created--unless
+               it has a special limit (erinys, Nazgul) */
+            if ((gm.mvitals[mndx].mvflags & G_EXTINCT)
+                && mbirth_limit(mndx) != MAXMONNO) {
+                pline("... but the figurine refused.");
+                break; /* mtmp is null */
+            }
+            if (!enexto(&cc, mtmp->mx, mtmp->my, pm))
+                return 0;
+            m_useup(mtmp, otmp);
+            mon = makemon(pm, cc.x, cc.y, NO_MM_FLAGS);
+            mon->mpeaceful = 0;
+            set_malign(mon);
+            return 2;
+        }
         case MUSE_POT_GAIN_LEVEL:
             mquaffmsg(mtmp, otmp);
             if (otmp->cursed) {
@@ -2741,6 +2774,8 @@ searches_for_item(struct monst *mon, struct obj *obj)
             return TRUE;
         if (typ == EXPENSIVE_CAMERA)
             return (obj->spe > 0);
+        if (typ == FIGURINE)
+            return TRUE;
         break;
     case FOOD_CLASS:
         if (typ == CORPSE)
