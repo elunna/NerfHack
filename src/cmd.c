@@ -6513,6 +6513,84 @@ readchar_poskey(coordxy *x, coordxy *y, int *mod)
     return ch;
 }
 
+
+/** Returns the number of known up- or downstairs. */
+static int
+find_remembered_stairs(boolean upstairs, coord *cc)
+{
+    int k, x, y;
+    int stair, sladder, sbranch;
+    int found_stairs = 0;
+    if (upstairs) {
+        stair = S_upstair;
+        sladder = S_upladder;
+        sbranch = S_brupstair;
+    } else {
+        stair = S_dnstair;
+        sladder = S_dnladder;
+        sbranch = S_brdnstair;
+    }
+    
+    /* Prefer already marked travel positions. */
+    x = iflags.travelcc.x;
+    y = iflags.travelcc.y;
+    if (isok(x, y) &&
+        (glyph_to_cmap(gl.level.locations[x][y].glyph) == stair ||
+         glyph_to_cmap(gl.level.locations[x][y].glyph) == sladder ||
+         glyph_to_cmap(gl.level.locations[x][y].glyph) == sbranch)) {
+        cc->x = x;
+        cc->y = y;
+        return TRUE;
+    }
+
+    /* We can't reference the stairs directly because mimics can mimic fake
+       ones. */
+    for (x = 0; x < COLNO; x++) {
+        for (y = 0; y < ROWNO; y++) {
+            if (levl[x][y].seenv) {
+                k = back_to_glyph(x, y);
+
+                if (glyph_is_cmap(k) &&
+                    (glyph_to_cmap(k) == stair
+                     || glyph_to_cmap(k) == sladder
+                     || glyph_to_cmap(k) == sbranch)) {
+                    if (found_stairs == 0) {
+                        cc->x = x;
+                        cc->y = y;
+                    }
+                    found_stairs++;
+                }
+            }
+        }
+    }
+
+    return found_stairs;
+}
+
+static int not_interactive = 0;
+
+int
+do_stair_travel(char up_or_down)
+{
+    boolean upstairs = (up_or_down == '<');
+    coord cc;
+    int stairs = 0;
+    if (!flags.autostairtravel)
+        return 0;
+    if ((stairs = find_remembered_stairs(upstairs, &cc)) > 0) {
+        iflags.travelcc.x = cc.x;
+        iflags.travelcc.y = cc.y;
+
+        /* kludge, the command methods should be properly refactored similar
+         * to what nh4 did */
+        not_interactive = (stairs == 1);
+        dotravel();
+        not_interactive = 0;
+        return 1;
+    }
+    return 0;
+}
+
 /* '_' command, #travel, via keyboard rather than mouse click */
 static int
 dotravel(void)
@@ -6549,11 +6627,13 @@ dotravel(void)
         }
         iflags.getloc_filter = gfilt;
     } else {
-        pline("Where do you want to travel to?");
-        if (getpos(&cc, TRUE, "the desired destination") < 0) {
-            /* user pressed ESC */
-            iflags.getloc_travelmode = FALSE;
-            return ECMD_CANCEL;
+        if (!not_interactive) {
+            pline("Where do you want to travel to?");
+            if (getpos(&cc, TRUE, "the desired destination") < 0) {
+                /* user pressed ESC */
+                iflags.getloc_travelmode = FALSE;
+                return ECMD_CANCEL;
+            }
         }
     }
     iflags.travelcc.x = u.tx = cc.x;

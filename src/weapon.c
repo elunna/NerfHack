@@ -338,7 +338,7 @@ dmgval(struct obj *otmp, struct monst *mon)
     }
 
     if (tmp > 0) {
-        int mac = (mon && mon != &zeromonst) ? find_mac(mon) : 10;
+        int mac = (mon && mon != &cg.zeromonst) ? find_mac(mon) : 10;
         /* It's debatable whether a rusted blunt instrument
            should do less damage than a pristine one, since
            it will hit with essentially the same impact, but

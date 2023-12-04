@@ -562,6 +562,7 @@ forget_temple_entry(struct monst *priest)
 void
 priest_talk(struct monst *priest)
 {
+    struct obj *gypgold;
     boolean coaligned = p_coaligned(priest);
     boolean strayed = (u.ualign.record < 0);
 
@@ -681,6 +682,15 @@ priest_talk(struct monst *priest)
             }
         }
     }
+    /* The priest never carries cash; it might get stolen! */
+    if ((gypgold = findgold(priest->minvent)) != 0) {
+        if (canspotmon(priest))
+            pline("%s gold %s.", s_suffix(Monnam(priest)),
+                  canseemon(priest) ? "vanishes" : "seems to vanish");
+        obj_extract_self(gypgold);
+        obfree(gypgold, (struct obj *) 0);
+    }
+    /*m_useup(priest, gypgold);*/
 }
 
 struct monst *

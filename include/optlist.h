@@ -174,6 +174,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTO("autopickup exceptions", Behavior, o_autopickup_exceptions, BUFSZ,
                 opt_in, set_in_game,
                 No, Yes, No, NoAlias, "edit autopickup exceptions")
+     NHOPTB(autostairtravel, Behavior, 0, opt_in, set_in_game,
+           Off, Yes, No, No, NoAlias, &flags.autostairtravel, Term_False,
+           "allow using < and > to travel to stairs")
     NHOPTB(autoquiver, Behavior, 0, opt_in, set_in_game,
            Off, Yes, No, No, NoAlias, &flags.autoquiver, Term_False,
            "fill empty quiver automatically when firing")
