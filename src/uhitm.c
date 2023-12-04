@@ -2956,7 +2956,6 @@ mhitm_ad_curs(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
-    struct permonst *pa = magr->data;
     struct permonst *pd = mdef->data;
 
     if (magr == &gy.youmonst) {
