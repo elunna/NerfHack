@@ -303,6 +303,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                    for all long worms on the level */
                 gc.context.bypasses = TRUE;
             }
+            if (mtmp->mpeaceful)
+                helpful_gesture = TRUE;
         }
         break;
     case WAN_CANCELLATION:
