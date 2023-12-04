@@ -293,8 +293,10 @@ dig(void)
 
     gc.context.digging.effort +=
         10 + rn2(5) + abon() + uwep->spe - greatest_erosion(uwep) + u.udaminc;
-    if (Race_if(PM_DWARF))
+    if (Race_if(PM_DWARF) || P_SKILL(P_PICK_AXE) == P_SKILLED)
         gc.context.digging.effort *= 2;
+    if (P_SKILL(P_PICK_AXE) == P_EXPERT)
+        gc.context.digging.effort *= 4;
     if (gc.context.digging.down) {
         struct trap *ttmp = t_at(dpx, dpy);
 
