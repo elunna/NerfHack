@@ -392,12 +392,30 @@ look_at_monster(
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
 
-    if (mtmp->misc_worn_check && canseemon(mtmp))
-        Strcat(buf, ", wearing armor");
+    if (canseemon(mtmp) && !Blind) {
+        if (mtmp->misc_worn_check & W_ARMOR) {
+            int base_ac = 0, arm_ct = 0;
+            long atype;
+            struct obj *otmp;
 
-    if (MON_WEP(mtmp) && canseemon(mtmp))
-        Sprintf(eos(buf), ", wielding %s", ansimpleoname(MON_WEP(mtmp)));
+            for (atype = W_ARM; atype & W_ARMOR; atype <<= 1) {
+                if (!(otmp = which_armor(mtmp, atype)))
+                    continue;
+                /* don't count armor->spe, since this represents only what
+                 * the hero can see from afar -- monster with +8 gloves
+                 * will still seem "lightly armored" from a distance */
+                base_ac += ARM_BONUS(otmp) - otmp->spe;
+                arm_ct++;
+            }
 
+            Sprintf(eos(buf), ", wearing %s%sarmor",
+                    arm_ct > 4 ? "full " : arm_ct < 3 ? "some " : "",
+                    base_ac > 9 ? "heavy " : base_ac < 6 ? "light " : "");
+        }
+        if (MON_WEP(mtmp))
+            Sprintf(eos(buf), ", wielding %s",
+                    ansimpleoname(MON_WEP(mtmp)));
+    }
     if (mtmp->mtrapped && cansee(mtmp->mx, mtmp->my)) {
         struct trap *t = t_at(mtmp->mx, mtmp->my);
         int tt = t ? t->ttyp : NO_TRAP;
