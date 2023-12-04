@@ -2817,19 +2817,15 @@ mon_wounds(struct monst *mon,
     } else if (mon->mhp * 10 <= mon->mhpmax) {    /* <= 10%   */
         adverb = "almost";
         adjective = nonliving(mdat) ? "destroyed" : "dead";
-    else if (mon->mhp * 6 <= mon->mhpmax) {     /* <= 16.6% */
+    } else if (mon->mhp * 6 <= mon->mhpmax) {     /* <= 16.6% */
         adverb = "critically";
-    }
-    else if (mon->mhp * 4 <= mon->mhpmax) {     /* <= 25%   */
+    } else if (mon->mhp * 4 <= mon->mhpmax) {     /* <= 25%   */
         adverb = "badly";
-    }
-    else if (mon->mhp * 3 <= mon->mhpmax) {     /* <= 33.3% */
+    } else if (mon->mhp * 3 <= mon->mhpmax) {     /* <= 33.3% */
         adverb = "seriously";
-    }
-    else if (mon->mhp * 4 <= mon->mhpmax * 3) { /* <= 75%   */
+    } else if (mon->mhp * 4 <= mon->mhpmax * 3) { /* <= 75%   */
         adverb = "moderately";
-    }
-    else {                                      /*  < 100%  */
+    } else {                                      /*  < 100%  */
         adverb = "slightly";
     }
 
