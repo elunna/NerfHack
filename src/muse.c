@@ -1197,6 +1197,7 @@ rnd_defensive_item(struct monst *mtmp)
 #define MUSE_MAGIC_FLUTE 22
 #define MUSE_SCR_STINKING_CLOUD 23
 #define MUSE_WAN_CANCELLATION 24
+#define MUSE_POT_POLYMORPH_THROW 25
 
 static boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -1429,6 +1430,12 @@ find_offensive(struct monst *mtmp)
         if (obj->otyp == POT_HALLUCINATION && !attacktype(mtmp->data, AT_GAZE)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_HALLUCINATION;
+        }
+        nomore(MUSE_POT_POLYMORPH_THROW);
+        if (obj->otyp == POT_POLYMORPH
+            && !m_seenres(mtmp, M_SEEN_MAGR)) {
+            gm.m.offensive = obj;
+            gm.m.has_offense = MUSE_POT_POLYMORPH_THROW;
         }
         nomore(MUSE_POT_CONFUSION);
         if (obj->otyp == POT_CONFUSION) {
@@ -1940,7 +1947,8 @@ use_offensive(struct monst *mtmp)
     case MUSE_POT_CONFUSION:
     case MUSE_POT_SLEEPING:
     case MUSE_POT_ACID:
-    case MUSE_POT_OIL: {
+    case MUSE_POT_OIL:
+    case MUSE_POT_POLYMORPH_THROW:{
         /* Note: this setting of dknown doesn't suffice.  A monster
          * which is out of sight might throw and it hits something _in_
          * sight, a problem not existing with wands because wand rays
