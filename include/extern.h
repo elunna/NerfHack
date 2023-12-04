@@ -167,6 +167,7 @@ extern boolean drag_ball(coordxy, coordxy, int *, coordxy *, coordxy *,
                          coordxy *, coordxy *, boolean *, boolean);
 extern void drop_ball(coordxy, coordxy);
 extern void drag_down(void);
+extern int do_stair_travel(char);
 extern void bc_sanity_check(void);
 
 /* ### bones.c ### */

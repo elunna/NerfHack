@@ -1201,6 +1201,8 @@ dodown(void)
                    || !Can_fall_thru(&u.uz) || !trap->tseen) {
             if (flags.autodig && !gc.context.nopick && uwep && is_pick(uwep)) {
                 return use_pick_axe2(uwep);
+            } else if (do_stair_travel('>')) {
+                return ECMD_TIME;
             } else {
                 You_cant("go down here%s.",
                          (trap && trap->ttyp == VIBRATING_SQUARE) ? " yet"
@@ -1268,7 +1270,6 @@ int
 doup(void)
 {
     stairway *stway = stairway_at(u.ux,u.uy);
-
     set_move_cmd(DIR_UP, 0);
 
     if (u_rooted())
@@ -1279,11 +1280,15 @@ doup(void)
         climb_pit();
         return ECMD_TIME;
     }
-
     if (!stway || (stway && !stway->up)) {
-        You_cant("go up here.");
-        return ECMD_OK;
+        if (do_stair_travel('<')) {
+            return ECMD_TIME;
+        } else {
+            You_cant("go up here.");
+            return ECMD_OK;
+        }
     }
+
     if (stucksteed(TRUE)) {
         return ECMD_OK;
     }
