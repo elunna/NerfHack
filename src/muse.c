@@ -1703,15 +1703,44 @@ mbhit(
 int
 use_offensive(struct monst *mtmp)
 {
-    int i;
+    int i, maxdmg = 0;
     struct obj *otmp = gm.m.offensive;
     boolean oseen;
+    struct attack* mattk;
 
     /* offensive potions are not drunk, they're thrown */
     if (otmp->oclass != POTION_CLASS && (i = precheck(mtmp, otmp)) != 0)
         return i;
     oseen = otmp && canseemon(mtmp);
+    
+    /* From SporkHack (modified): some monsters would be better served if they
+       were to melee attack instead using whatever offensive item they possess
+       (read: master mind flayer zapping a wand of striking at the player repeatedly
+       while in melee range). If the monster has an attack that is potentially
+       better than its offensive item, or if it's wielding an artifact, and they're
+       in melee range, don't give priority to the offensive item */
+    for (i = 0; i < NATTK; i++) {
+        mattk = &mtmp->data->mattk[i];
+        maxdmg += mattk->damn * mattk->damd; /* total up the possible damage for just swinging */
+    }
 
+    /* If the monsters' combined damage from a melee attack exceeds nine, or if
+       their wielded weapon is an artifact, use it if close enough. Exception
+       being certain wands that can incapacitate or can already do significant
+       damage. Because intelligent monsters know not to use a certain attack if
+       they've seen that the player is resistant to it, the monster will switch
+       offensive items appropriately */
+    if ((maxdmg > 9
+         || (MON_WEP(mtmp) && MON_WEP(mtmp)->oartifact))
+        && (monnear(mtmp, mtmp->mux, mtmp->muy)
+            && gm.m.has_offense != MUSE_WAN_DEATH
+            && gm.m.has_offense != MUSE_WAN_SLEEP
+            && gm.m.has_offense != MUSE_WAN_FIRE
+            && gm.m.has_offense != MUSE_WAN_COLD
+            && gm.m.has_offense != MUSE_WAN_LIGHTNING)) {
+        return 0;
+    }
+    
     switch (gm.m.has_offense) {
     case MUSE_WAN_DEATH:
     case MUSE_WAN_SLEEP:
