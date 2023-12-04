@@ -6518,8 +6518,9 @@ readchar_poskey(coordxy *x, coordxy *y, int *mod)
 static int
 find_remembered_stairs(boolean upstairs, coord *cc)
 {
-    int x, y;
+    int k, x, y;
     int stair, sladder, sbranch;
+    int found_stairs = 0;
     if (upstairs) {
         stair = S_upstair;
         sladder = S_upladder;
@@ -6544,17 +6545,21 @@ find_remembered_stairs(boolean upstairs, coord *cc)
 
     /* We can't reference the stairs directly because mimics can mimic fake
        ones. */
-    int found_stairs = 0;
     for (x = 0; x < COLNO; x++) {
         for (y = 0; y < ROWNO; y++) {
-            if (glyph_to_cmap(gl.level.locations[x][y].glyph) == stair ||
-                glyph_to_cmap(gl.level.locations[x][y].glyph) == sladder ||
-                glyph_to_cmap(gl.level.locations[x][y].glyph) == sbranch) {
-                if (found_stairs == 0) {
-                    cc->x = x;
-                    cc->y = y;
+            if (levl[x][y].seenv) {
+                k = back_to_glyph(x, y);
+
+                if (glyph_is_cmap(k) &&
+                    (glyph_to_cmap(k) == stair
+                     || glyph_to_cmap(k) == sladder
+                     || glyph_to_cmap(k) == sbranch)) {
+                    if (found_stairs == 0) {
+                        cc->x = x;
+                        cc->y = y;
+                    }
+                    found_stairs++;
                 }
-                found_stairs++;
             }
         }
     }
