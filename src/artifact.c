@@ -1674,9 +1674,11 @@ arti_invoke(struct obj *obj)
             /* the artifact is tired :-) */
             You_feel("that %s %s ignoring you.", the(xname(obj)),
                      otense(obj, "are"));
-            /* and just got more so; patience is essential... */
-            obj->age += (long) d(3, 10);
-            return ECMD_TIME;
+            if (!(wizard && y_n("Override?") == 'y')) {
+                /* and just got more so; patience is essential... */
+                obj->age += (long) d(3, 10);
+                return ECMD_TIME;
+            }
         }
         obj->age = gm.moves + rnz(100);
 
@@ -1914,9 +1916,11 @@ arti_invoke(struct obj *obj)
             u.uprops[oart->inv_prop].extrinsic ^= W_ARTI;
             You_feel("that %s %s ignoring you.", the(xname(obj)),
                      otense(obj, "are"));
-            /* can't just keep repeatedly trying */
-            obj->age += (long) d(3, 10);
-            return ECMD_TIME;
+            if (!(wizard && y_n("Override?") == 'y')) {
+                /* can't just keep repeatedly trying */
+                obj->age += (long) d(3, 10);
+                return ECMD_TIME;
+            }
         } else if (!on) {
             /* when turning off property, determine downtime */
             /* arbitrary for now until we can tune this -dlc */
