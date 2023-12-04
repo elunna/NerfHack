@@ -1723,6 +1723,7 @@ extern const char *on_fire(struct permonst *, struct attack *);
 extern const char *msummon_environ(struct permonst *, const char **);
 extern const struct permonst *raceptr(struct monst *);
 extern boolean olfaction(struct permonst *);
+extern boolean is_fleshy(const struct permonst *);
 unsigned long cvt_adtyp_to_mseenres(uchar);
 unsigned long cvt_prop_to_mseenres(uchar);
 extern void monstseesu(unsigned long);

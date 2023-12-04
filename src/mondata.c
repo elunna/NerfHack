@@ -1436,6 +1436,31 @@ olfaction(struct permonst *mdat)
     return TRUE;
 }
 
+/* Return TRUE if the monster has flesh. */
+boolean
+is_fleshy(const struct permonst *ptr)
+{
+    if (vegetarian(ptr)) {
+        /* vegetarian monsters generally don't have flesh */
+        return FALSE;
+    }
+    if (noncorporeal(ptr)) {
+        /* these certainly don't have flesh */
+        return FALSE;
+    }
+    if (!nonliving(ptr)) {
+        /* nonvegetarian, alive monsters generally do */
+        return TRUE;
+    }
+    if (ptr->mlet == S_MUMMY || ptr->mlet == S_VAMPIRE
+        || (ptr->mlet == S_ZOMBIE && ptr != &mons[PM_SKELETON])
+        || ptr == &mons[PM_FLESH_GOLEM]) {
+        /* Exceptions: non-living monsters that do have flesh */
+        return TRUE;
+    }
+    return FALSE;
+}
+
 /* Convert attack damage type AD_foo to M_SEEN_bar */
 unsigned long
 cvt_adtyp_to_mseenres(uchar adtyp)
