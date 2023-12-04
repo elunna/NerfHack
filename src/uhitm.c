@@ -1719,6 +1719,7 @@ hmon_hitmon(
     int dieroll)
 {
     struct _hitmon_data hmd;
+    int saved_mhp = mon->mhp;
 
     hmd.dmg = 0;
     hmd.thrown = thrown;
@@ -1833,7 +1834,7 @@ hmon_hitmon(
        (via 'thrownobj'; if swallowed, it gets added to engulfer's
        minvent and might merge with a stack that's already there)] */
     /* already_killed and poiskilled won't apply for Trollsbane */
-
+    
     if (hmd.needpoismsg)
         pline_The("poison doesn't seem to affect %s.", mon_nam(mon));
     if (hmd.poiskilled) {
@@ -1860,8 +1861,10 @@ hmon_hitmon(
         Your("%s %s no longer poisoned.", hmd.saved_oname,
              vtense(hmd.saved_oname, "are"));
 
-    if (!hmd.destroyed)
+    if (!hmd.destroyed) {
+        print_mon_wounded(mon, saved_mhp);
         wakeup(mon, TRUE);
+    }
 
     return hmd.destroyed ? FALSE : TRUE;
 }

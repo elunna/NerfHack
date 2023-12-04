@@ -347,8 +347,9 @@ look_at_monster(
     struct monst *mtmp,
     coordxy x, coordxy y)
 {
-    char *name, monnambuf[BUFSZ], healthbuf[BUFSZ];
+    char *name, monnambuf[BUFSZ];
     boolean accurate = !Hallucination;
+    char *mwounds = mon_wounds(mtmp, TRUE, FALSE);
 
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
@@ -357,7 +358,7 @@ look_at_monster(
             (mtmp->mx != x || mtmp->my != y)
                 ? ((mtmp->isshk && accurate) ? "tail of " : "tail of a ")
                 : "",
-            accurate ? monhealthdescr(mtmp, TRUE, healthbuf) : "",
+            mwounds ? mwounds : "",
             (mtmp->mtame && accurate)
                 ? "tame "
                 : (mtmp->mpeaceful && accurate)

@@ -4680,11 +4680,13 @@ dobuzz(
         }
 
         if (mon) {
+            int saved_mhp;
             if (type == ZT_SPELL(ZT_FIRE))
                 break;
             if (type >= 0)
                 mon->mstrategy &= ~STRAT_WAITMASK;
  buzzmonst:
+            saved_mhp = mon->mhp; /* for print_mon_wounded() */
             gn.notonhead = (mon->mx != gb.bhitpos.x
                             || mon->my != gb.bhitpos.y);
             if (zap_hit(find_mac(mon), spell_type)) {
@@ -4749,8 +4751,10 @@ dobuzz(
                     } else {
                         if (!otmp) {
                             /* normal non-fatal hit */
-                            if (say || canseemon(mon))
+                            if (say || canseemon(mon)) {
                                 hit(flash_str(fltyp, FALSE), mon, exclam(tmp));
+                                print_mon_wounded(mon, saved_mhp);
+                            }
                         } else {
                             /* some armor was destroyed; no damage done */
                             if (canseemon(mon))
@@ -5898,12 +5902,15 @@ resist(struct monst *mtmp, char oclass, int damage, int tell)
     }
 
     if (damage) {
+        int saved_mhp = mtmp->mhp;
         mtmp->mhp -= damage;
         if (DEADMONSTER(mtmp)) {
             if (gm.m_using)
                 monkilled(mtmp, "", AD_RBRE);
             else
                 killed(mtmp);
+        } else {
+            print_mon_wounded(mtmp, saved_mhp);
         }
     }
     return resisted;

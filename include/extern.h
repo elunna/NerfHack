@@ -556,6 +556,8 @@ extern char *rndorcname(char *);
 extern struct monst *christen_orc(struct monst *, const char *, const char *);
 extern const char *noveltitle(int *);
 extern const char *lookup_novel(const char *, int *);
+extern char *mon_wounds(struct monst *, boolean, boolean);
+extern void print_mon_wounded(struct monst *, int);
 #ifndef PMNAME_MACROS
 extern int Mgender(struct monst *);
 extern const char *pmname(struct permonst *, int);
