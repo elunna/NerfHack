@@ -6575,6 +6575,8 @@ do_stair_travel(char up_or_down)
     boolean upstairs = (up_or_down == '<');
     coord cc;
     int stairs = 0;
+    if (!flags.autostairtravel)
+        return 0;
     if ((stairs = find_remembered_stairs(upstairs, &cc)) > 0) {
         iflags.travelcc.x = cc.x;
         iflags.travelcc.y = cc.y;

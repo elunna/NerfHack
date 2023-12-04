@@ -3928,6 +3928,9 @@
 
        Note: prior to version 3.7.0, the default for autopickup was on.
 
+     autostairtravel
+       Automatically travel to stairs using < or >.
+                
      autoquiver
        This option controls what happens when you attempt  the  `f'  (fire)
        command  when  nothing is quivered or readied (default false).  When

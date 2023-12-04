@@ -18,6 +18,7 @@
 struct flag {
     boolean acoustics;       /* allow dungeon sound messages */
     boolean autodig;         /* MRKR: Automatically dig */
+    boolean autostairtravel; /* Travel to stairs via < or > */
     boolean autoquiver;      /* Automatically fill quiver */
     boolean autoopen;        /* open doors by walking into them */
     boolean beginner;        /* True early in each game; affects feedback */

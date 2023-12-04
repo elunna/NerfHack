@@ -3765,6 +3765,8 @@ for ways to refine the behavior.
 Note: prior to version 3.7.0, the default for
 .op autopickup
 was \fIon\fP.
+.lp autostairtravel
+Automatically travel to stairs using < or >.
 .lp autoquiver
 This option controls what happens when you attempt the \(oqf\(cq (fire)
 command when nothing is quivered or readied (default false).
