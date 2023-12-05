@@ -3227,7 +3227,8 @@ create_particular_creation(
         }
         if (d->invisible)
             mmflags |= MM_MINVIS;
-
+        if (d->sleeping)
+            mmflags |= MM_ASLEEP;
         mtmp = makemon(whichpm, u.ux, u.uy, mmflags);
         if (!mtmp) {
             /* quit trying if creation failed and is going to repeat */
