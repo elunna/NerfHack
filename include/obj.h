@@ -158,6 +158,7 @@ struct obj {
                                * boulders, 0 for first (top of pile),
                                * 1 for others (format as "next boulder") */
     int usecount;           /* overloaded for various things that tally */
+#define wep_kills usecount  /* number of kills a weapon has */
 #define spestudied usecount /* # of times a spellbook has been studied */
     unsigned oeaten;        /* nutrition left in food, if partly eaten */
     long age;               /* creation date */

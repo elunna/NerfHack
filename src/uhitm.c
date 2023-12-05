@@ -60,6 +60,7 @@ static void first_weapon_hit(struct obj *);
 static boolean shade_aware(struct obj *);
 
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
+#define KILL_FAMILIARITY 20
 
 static boolean
 mhitm_mgc_atk_negated(
@@ -1838,9 +1839,26 @@ hmon_hitmon(
        a level draining artifact has already done to max HP */
     if (mon->mhp > mon->mhpmax)
         mon->mhp = mon->mhpmax;
-    if (DEADMONSTER(mon))
+    if (DEADMONSTER(mon)) {
         hmd.destroyed = TRUE;
 
+        /* Weapons have a chance to id after a certain number of kills with
+           them. The more powerful a weapon, the lower this chance is. This
+           way, there is uncertainty about when a weapon will ID, but spoiled
+           players can make an educated guess. */
+        if ((obj == uwep) && uwep
+            && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
+            && !uwep->known) {
+            uwep->wep_kills++;
+            if (uwep->wep_kills > KILL_FAMILIARITY
+                && !rn2(max(2, uwep->spe) && !uwep->known)) {
+                You("have become quite familiar with %s.",
+                    yobjnam(uwep, (char *) 0));
+                uwep->known = TRUE;
+                update_inventory();
+            }
+        }
+    }
     hmon_hitmon_pet(&hmd, mon, obj);
 
     hmon_hitmon_splitmon(&hmd, mon, obj);
