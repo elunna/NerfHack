@@ -1750,8 +1750,7 @@ Can_rise_up(coordxy x, coordxy y, d_level *lev)
     stairway *stway = stairway_find_special_dir(FALSE);
 
     /* can't rise up from inside the top of the Wizard's tower */
-    /* KMH -- or in sokoban */
-    if (In_endgame(lev) || In_sokoban(lev)
+    if (In_endgame(lev)
         || (Is_wiz1_level(lev) && In_W_tower(x, y, lev)))
         return FALSE;
     return (boolean) (lev->dlevel > 1

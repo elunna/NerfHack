@@ -1114,6 +1114,10 @@ peffect_gain_level(struct obj *otmp)
             int newlev;
             d_level newlevel;
 
+            /* This is allowed now to bypass Sokoban levels, but it's pretty
+             * clearly cheating on the challenge. */
+            sokoban_guilt();
+
             if (on_lvl_1) {
                 assign_level(&newlevel, &earth_level);
             } else {
