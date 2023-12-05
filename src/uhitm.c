@@ -1662,15 +1662,17 @@ hmon_hitmon_msg_hit(
             hit(mshot_xname(obj), mon, exclam(hmd->dmg));
         else if (!flags.verbose)
             You("hit it.");
-        else /* hand_to_hand */
-            You("%s %s%s",
-                (obj && (is_shield(obj)
-                         || obj->otyp == HEAVY_IRON_BALL)) ? "bash"
-                : (obj && (objects[obj->otyp].oc_skill == P_WHIP
-                           || is_wet_towel(obj))) ? "lash"
-                  : Role_if(PM_BARBARIAN) ? "smite"
-                    : "hit",
-                mon_nam(mon), canseemon(mon) ? exclam(hmd->dmg) : ".");
+        else {
+            const char *verb = !obj ? barehitmsg(&gy.youmonst)
+                                    : (hmd->use_weapon_skill
+                                       || is_wet_towel(obj))
+                                        ? weaphitmsg(obj, &gy.youmonst)
+                                      : "bash";
+            if (!verb)
+                verb = "hit";
+            You("%s %s%s", verb, mon_nam(mon),
+                canseemon(mon) ? exclam(hmd->dmg) : ".");
+        }
     }
 }
 
@@ -5522,7 +5524,7 @@ hmonas(struct monst *mon)
                                                 &silverhit);
                     break;
                 case AT_BITE:
-                    verb = "bite";
+                    verb = has_beak(gy.youmonst.data) ? "peck" : "bite";
                     break;
                 case AT_STNG:
                     verb = "sting";
@@ -5547,7 +5549,9 @@ hmonas(struct monst *mon)
                         Your("tentacles suck %s.", mon_nam(mon));
                     } else {
                         if (mattk->aatyp == AT_CLAW)
-                            verb = "hit"; /* not "claws" */
+                            verb = barehitmsg(&gy.youmonst);
+                        if (!verb)
+                            verb = "hit";
                         You("%s %s.", verb, mon_nam(mon));
                         if (silverhit && flags.verbose)
                             silver_sears(&gy.youmonst, mon, silverhit);
