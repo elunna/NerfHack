@@ -917,6 +917,8 @@ mksobj_init(struct obj *otmp, boolean artif)
                     }
                 }
             blessorcurse(otmp, 10);
+            if (!rn2(30))
+                otmp->otrapped = TRUE;
             break;
         case SLIME_MOLD:
             otmp->spe = gc.context.current_fruit;
