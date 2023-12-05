@@ -585,6 +585,39 @@ do_attack(struct monst *mtmp)
         return FALSE;
     }
 
+    if (Underwater && !is_pool(mtmp->mx, mtmp->my)) {
+        ; /* no attack, hero will still attempt to move onto solid ground */
+        return FALSE;
+    }
+
+    if (Underwater
+        && (!u.ustuck && !u.uswallow)
+        && (!grounded(mtmp->data))
+        && (!mtmp->minvis)
+        && is_pool(mtmp->mx, mtmp->my)) {
+        char pnambuf[BUFSZ];
+
+        /* Don't allow forcefighting flying monsters. This can cause the
+         * flyer to displace into the hero's position without moving the hero.
+         * This solution still let's rogue's exercise their thievery skills
+         * underwater as well. This solution was created by terrapin. */
+        if (gc.context.forcefight) {
+            You("flail wildly.");
+            return FALSE;
+        }
+
+        /* save its current description in case of polymorph */
+        Strcpy(pnambuf, y_monnam(mtmp));
+        mtmp->mtrapped = 0;
+        remove_monster(mtmp->mx, mtmp->my);
+        place_monster(mtmp, u.ux0, u.uy0);
+        newsym(mtmp->mx, mtmp->my);
+        newsym(u.ux0, u.uy0);
+
+        You("swim underneath %s.", pnambuf);
+        return FALSE;
+    }
+
     if (Upolyd)
         (void) hmonas(mtmp);
     else
