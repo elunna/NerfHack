@@ -1,4 +1,4 @@
-/* NetHack 3.7	options.c	$NHDT-Date: 1700012888 2023/11/15 01:48:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.675 $ */
+/* NetHack 3.7	options.c	$NHDT-Date: 1701499956 2023/12/02 06:52:36 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.685 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2008. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -50,6 +50,8 @@ NEARDATA struct instance_flags iflags; /* provide linkage */
  *
  */
 
+#define OPTIONS_C
+
 #define NHOPT_PROTO
 #include "optlist.h"
 #undef NHOPT_PROTO
@@ -72,6 +74,7 @@ static struct allopt_t allopt_init[] = {
 };
 #undef NHOPT_PARSE
 
+#undef OPTIONS_C
 
 #define PILE_LIMIT_DFLT 5
 #define rolestring(val, array, field) \
@@ -110,7 +113,7 @@ static struct allopt_t allopt[SIZE(allopt_init)];
 
 extern char configfile[]; /* for messages */
 extern const struct symparse loadsyms[];
-#if defined(TOS) && defined(TEXTCOLOR)
+#if defined(TOS)
 extern boolean colors_changed;  /* in tos.c */
 #endif
 #ifdef VIDEOSHADES
@@ -3148,8 +3151,8 @@ optfn_pickup_types(
             if (use_menu) {
                 if (wizard && !strchr(ocl, VENOM_SYM))
                     strkitten(ocl, VENOM_SYM);
-                (void) choose_classes_menu("Autopickup what?", 1, TRUE, ocl,
-                                           tbuf);
+                (void) choose_classes_menu("Autopickup what?",
+                                           1, TRUE, ocl, tbuf);
                 op = tbuf;
             }
         }
@@ -4637,8 +4640,10 @@ optfn_windowcolors(int optidx, int req, boolean negated UNUSED,
 }
 
 static int
-optfn_windowtype(int optidx, int req, boolean negated UNUSED,
-                 char *opts, char *op)
+optfn_windowtype(
+    int optidx, int req,
+    boolean negated UNUSED,
+    char *opts, char *op)
 {
     if (req == do_init) {
         return optn_ok;
@@ -4881,7 +4886,9 @@ pfxfn_IBM_(int optidx UNUSED, int req, boolean negated UNUSED,
  */
 
 static int
-optfn_boolean(int optidx, int req, boolean negated, char *opts, char *op)
+optfn_boolean(
+    int optidx, int req, boolean negated,
+    char *opts, char *op)
 {
     if (req == do_init) {
         return optn_ok;
@@ -5006,6 +5013,7 @@ optfn_boolean(int optidx, int req, boolean negated, char *opts, char *op)
         case opt_fixinv:
         case opt_sortpack:
         case opt_implicit_uncursed:
+        case opt_invweight:
             if (!flags.invlet_constant)
                 reassign();
             update_inventory();
@@ -5071,7 +5079,6 @@ optfn_boolean(int optidx, int req, boolean negated, char *opts, char *op)
 #endif
             go.opt_need_redraw = TRUE;
             go.opt_need_glyph_reset = TRUE;
-            go.opt_need_promptstyle = TRUE;
             break;
         case opt_menucolors:
         case opt_guicolor:
@@ -6662,21 +6669,25 @@ initoptions_init(void)
     determine_ambiguities();
 
     /* if windowtype has been specified on the command line, set it up
-       early so windowtype-specific options use it as their base; we will
-       set it again in initoptions_finish() so that NETHACKOPTIONS and
-       .nethrackrc can't override it (command line takes precedence) */
+       early so windowtype-specific options use it as their base */
     if (gc.cmdline_windowsys) {
         nmcpy(gc.chosen_windowtype, gc.cmdline_windowsys, WINTYPELEN);
         config_error_init(FALSE, "command line", FALSE);
         choose_windows(gc.cmdline_windowsys);
         config_error_done();
-        /* do not free gc.cmdline_windowsys yet unless it was rejected;
-           keeping it in that situation would complain about it twice */
-        if (!windowprocs.name
-            || strcmpi(windowprocs.name, gc.cmdline_windowsys) != 0) {
-            free((genericptr_t) gc.cmdline_windowsys),
+        /*
+         * FIXME?  This continues even if setting windowtype to player's
+         * specified value fails.  It doesn't lock the windowtype in
+         * that situation though, so the game will use whatever is in
+         * RC/NETHACKOPTIONS or resort to DEFAULT_WINDOW_SYS.
+         */
+        if (windowprocs.name
+            && !strcmpi(windowprocs.name, gc.cmdline_windowsys))
+            /* ignore any windowtype:foo in RC file or NETHACKOPTIONS */
+            iflags.windowtype_locked = TRUE;
+        /* should't need cmdline_windowsys beyond here */
+        free((genericptr_t) gc.cmdline_windowsys),
             gc.cmdline_windowsys = NULL;
-        }
     }
 
 #ifdef ENHANCED_SYMBOLS
@@ -6756,9 +6767,7 @@ initoptions_init(void)
         if (!gs.symset[ROGUESET].explicitly)
             load_symset("RogueIBM", ROGUESET);
         switch_symbols(TRUE);
-#ifdef TEXTCOLOR
         iflags.use_color = TRUE;
-#endif
     }
 #endif /* UNIX && TTY_GRAPHICS */
 #if defined(UNIX) || defined(VMS)
@@ -6892,15 +6901,6 @@ initoptions_finish(void)
         config_error_init(FALSE, envname, FALSE);
         (void) parseoptions(xtraopts, TRUE, FALSE);
         config_error_done();
-    }
-
-    /* after .hackemrc and NETHACKOPTIONS so that cmdline takes precedence */
-    if (gc.cmdline_windowsys) {
-        go.opt_phase = cmdline_opt;
-        config_error_init(FALSE, "command line", FALSE);
-        choose_windows(gc.cmdline_windowsys);
-        config_error_done();
-        free((genericptr_t) gc.cmdline_windowsys), gc.cmdline_windowsys = NULL;
     }
 
     if (gc.cmdline_rcfile)
@@ -8670,7 +8670,8 @@ doset_simple_menu(void)
 int
 doset_simple(void)
 {
-    int pickedone = 0;
+    int pickedone = 0,
+        opt_crt_flags = docrtNocls;
 
     if (iflags.menu_requested) {
         /* doset() checks for 'm' and calls doset_simple(); clear the
@@ -8694,14 +8695,18 @@ doset_simple(void)
         if (go.opt_need_redraw) {
             check_gold_symbol();
             reglyph_darkroom();
-            docrt();
+            docrt_flags(opt_crt_flags);
             flush_screen(1);
         }
         if (go.opt_need_promptstyle)
             adjust_menu_promptstyle(WIN_INVEN, &iflags.menu_headings);
+/*
+ *      I don't think the status window requires updating between
+ *      simplemenu iterations.
         if (gc.context.botl || gc.context.botlx) {
             bot();
         }
+  */
     } while (pickedone > 0);
     give_opt_msg = TRUE;
     return ECMD_OK;
@@ -9683,128 +9688,6 @@ next_opt(winid datawin, const char *str)
         free((genericptr_t) buf), buf = 0;
     }
     return;
-}
-
-/*
- * This is a somewhat generic menu for taking a list of NetHack style
- * class choices and presenting them via a description
- * rather than the traditional NetHack characters.
- * (Benefits users whose first exposure to NetHack is via tiles).
- *
- * prompt
- *           The title at the top of the menu.
- *
- * category: 0 = monster class
- *           1 = object  class
- *
- * way
- *           FALSE = PICK_ONE, TRUE = PICK_ANY
- *
- * class_list
- *           a null terminated string containing the list of choices.
- *
- * class_selection
- *           a null terminated string containing the selected characters.
- *
- * Returns number selected.
- */
-int
-choose_classes_menu(const char *prompt,
-                    int category,
-                    boolean way,
-                    char *class_list,
-                    char *class_select)
-{
-    menu_item *pick_list = (menu_item *) 0;
-    winid win;
-    anything any;
-    char buf[BUFSZ];
-    int i, n;
-    int ret;
-    int next_accelerator, accelerator;
-    int clr = NO_COLOR;
-
-    if (class_list == (char *) 0 || class_select == (char *) 0)
-        return 0;
-    accelerator = 0;
-    next_accelerator = 'a';
-    any = cg.zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win, MENU_BEHAVE_STANDARD);
-    while (*class_list) {
-        const char *text;
-        boolean selected;
-
-        text = (char *) 0;
-        selected = FALSE;
-        switch (category) {
-        case 0:
-            text = def_monsyms[def_char_to_monclass(*class_list)].explain;
-            accelerator = *class_list;
-            Sprintf(buf, "%s", text);
-            break;
-        case 1:
-            text = def_oc_syms[def_char_to_objclass(*class_list)].explain;
-            accelerator = next_accelerator;
-            Sprintf(buf, "%c  %s", *class_list, text);
-            break;
-        default:
-            impossible("choose_classes_menu: invalid category %d", category);
-        }
-        if (way && *class_select) { /* Selections there already */
-            if (strchr(class_select, *class_list)) {
-                selected = TRUE;
-            }
-        }
-        any.a_int = *class_list;
-        add_menu(win, &nul_glyphinfo, &any, accelerator,
-                 category ? *class_list : 0, ATR_NONE, clr, buf,
-                 selected ? MENU_ITEMFLAGS_SELECTED : MENU_ITEMFLAGS_NONE);
-        ++class_list;
-        if (category > 0) {
-            ++next_accelerator;
-            if (next_accelerator == ('z' + 1))
-                next_accelerator = 'A';
-            if (next_accelerator == ('Z' + 1))
-                break;
-        }
-    }
-    if (category == 1 && next_accelerator <= 'z') {
-        /* for objects, add "A - ' '  all classes", after a separator */
-        any = cg.zeroany;
-        add_menu_str(win, "");
-        any.a_int = (int) ' ';
-        Sprintf(buf, "%c  %s", (char) any.a_int, "all classes of objects");
-        /* we won't preselect this even if the incoming list is empty;
-           having it selected means that it would have to be explicitly
-           de-selected in order to select anything else */
-        add_menu(win, &nul_glyphinfo, &any, 'A', 0,
-                 ATR_NONE, clr, buf, MENU_ITEMFLAGS_NONE);
-    }
-    end_menu(win, prompt);
-    n = select_menu(win, way ? PICK_ANY : PICK_ONE, &pick_list);
-    destroy_nhwindow(win);
-    if (n > 0) {
-        if (category == 1) {
-            /* for object classes, first check for 'all'; it means 'use
-               a blank list' rather than 'collect every possible choice' */
-            for (i = 0; i < n; ++i)
-                if (pick_list[i].item.a_int == ' ') {
-                    pick_list[0].item.a_int = ' ';
-                    n = 1; /* return 1; also an implicit 'break;' */
-                }
-        }
-        for (i = 0; i < n; ++i)
-            *class_select++ = (char) pick_list[i].item.a_int;
-        free((genericptr_t) pick_list);
-        ret = n;
-    } else if (n == -1) {
-        class_select = eos(class_select);
-        ret = -1;
-    } else
-        ret = 0;
-    *class_select = '\0';
-    return ret;
 }
 
 static struct wc_Opt wc_options[] = {

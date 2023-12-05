@@ -1,4 +1,4 @@
-DLB(6)                           Games Manual                           DLB(6)
+DLB(6)                                                                  DLB(6)
 
 
 
@@ -16,10 +16,8 @@ DESCRIPTION
        specified  as  a  continuous  string  and are followed by any arguments
        required in the same order as the option specifiers.
 
-       ^?ALLDOCS This facility is optional and may be excluded during  NetHack
-       configuration.   ^:  ^?DLB This facility is optional but is included in
-       this NetHack configuration.  ^:  This  facility  is  optional  and  was
-       excluded from this NetHack configuration.  ^.  ^.
+       This facility is optional and may be excluded during NetHack configura-
+       tion.
 
 COMMANDS
        The  x  command  causes dlb to extract the contents of the archive into
@@ -64,7 +62,7 @@ BUGS
 
 COPYRIGHT
        This  file  is  Copyright  (C)  Kenneth  Lorber,   2022   for   version
-       NetHack-3.7:1.10.   NetHack  may  be freely redistributed.  See license
+       NetHack-3.7:1.12.   NetHack  may  be freely redistributed.  See license
        for details.
 
 

@@ -1,4 +1,4 @@
-/* NetHack 3.7	objects.h	$NHDT-Date: 1596498192 2020/08/03 23:43:12 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.66 $ */
+/* NetHack 3.7	objects.h	$NHDT-Date: 1700725879 2023/11/23 07:51:19 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.20 $ */
 /* Copyright (c) Mike Threepoint, 1989.                           */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -35,7 +35,6 @@
 #define MARKER(tag,sn) /*empty*/
 
 #elif defined(OBJECTS_INIT)
-#define COLOR_FIELD(X) X,
 /* notes: 'sub' was once a bitfield but got changed to separate schar when
    it was overloaded to hold negative weapon skill indices; the first zero
    is padding for oc_prediscovered which has variable init at run-time;
@@ -44,7 +43,7 @@
     nmkn,mrg,uskn,0,mgc,chrg,uniq,nwsh,big,tuf,0,dir,mtrl,sub /*cpp fodder*/
 #define OBJECT(obj,bits,prp,sym,prob,dly,wt,        \
                cost,sdam,ldam,oc1,oc2,nut,color,sn) \
-  { 0, 0, (char *) 0, bits, prp, sym, dly, COLOR_FIELD(color) prob, wt, \
+  { 0, 0, (char *) 0, bits, prp, sym, dly, color, prob, wt, \
     cost, sdam, ldam, oc1, oc2, nut }
 #define MARKER(tag,sn) /*empty*/
 
@@ -1099,29 +1098,29 @@ FOOD("tin",                  75,  0, 10, 1, METAL,   0, HI_METAL, TIN),
     OBJECT(OBJ(name, desc),                                             \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, GLASS),      \
            power, POTION_CLASS, prob, 0, 20, cost, 0, 0, 0, 0, 10, color, sn)
-POTION("gain ability",           "ruby",  1, 0, 42, 300, CLR_RED,
+POTION("gain ability",           "ruby",  1, 0, 40, 300, CLR_RED,
                                                         POT_GAIN_ABILITY),
 POTION("restore ability",        "pink",  1, 0, 40, 100, CLR_BRIGHT_MAGENTA,
                                                         POT_RESTORE_ABILITY),
-POTION("confusion",            "orange",  1, CONFUSION, 42, 100, CLR_ORANGE,
+POTION("confusion",            "orange",  1, CONFUSION, 40, 100, CLR_ORANGE,
                                                         POT_CONFUSION),
-POTION("blindness",            "yellow",  1, BLINDED, 40, 150, CLR_YELLOW,
+POTION("blindness",            "yellow",  1, BLINDED, 30, 150, CLR_YELLOW,
                                                         POT_BLINDNESS),
-POTION("paralysis",           "emerald",  1, 0, 42, 300, CLR_BRIGHT_GREEN,
+POTION("paralysis",           "emerald",  1, 0, 40, 300, CLR_BRIGHT_GREEN,
                                                         POT_PARALYSIS),
-POTION("speed",            "dark green",  1, FAST, 42, 200, CLR_GREEN,
+POTION("speed",            "dark green",  1, FAST, 40, 200, CLR_GREEN,
                                                         POT_SPEED),
-POTION("levitation",             "cyan",  1, LEVITATION, 42, 200, CLR_CYAN,
+POTION("levitation",             "cyan",  1, LEVITATION, 40, 200, CLR_CYAN,
                                                         POT_LEVITATION),
-POTION("hallucination",      "sky blue",  1, HALLUC, 40, 100, CLR_CYAN,
+POTION("hallucination",      "sky blue",  1, HALLUC, 30, 100, CLR_CYAN,
                                                         POT_HALLUCINATION),
 POTION("invisibility", "brilliant blue",  1, INVIS, 40, 150, CLR_BRIGHT_BLUE,
                                                         POT_INVISIBILITY),
-POTION("see invisible",       "magenta",  1, SEE_INVIS, 42, 50, CLR_MAGENTA,
+POTION("see invisible",       "magenta",  1, SEE_INVIS, 40, 50, CLR_MAGENTA,
                                                         POT_SEE_INVISIBLE),
-POTION("healing",          "purple-red",  1, 0, 57, 100, CLR_MAGENTA,
+POTION("healing",          "purple-red",  1, 0, 115, 20, CLR_MAGENTA,
                                                         POT_HEALING),
-POTION("extra healing",          "puce",  1, 0, 47, 100, CLR_RED,
+POTION("extra healing",          "puce",  1, 0, 45, 100, CLR_RED,
                                                         POT_EXTRA_HEALING),
 POTION("gain level",            "milky",  1, 0, 20, 300, CLR_WHITE,
                                                         POT_GAIN_LEVEL),
@@ -1129,21 +1128,21 @@ POTION("enlightenment",        "swirly",  1, 0, 20, 200, CLR_BROWN,
                                                         POT_ENLIGHTENMENT),
 POTION("monster detection",    "bubbly",  1, 0, 40, 150, CLR_WHITE,
                                                         POT_MONSTER_DETECTION),
-POTION("object detection",      "smoky",  1, 0, 42, 150, CLR_GRAY,
+POTION("object detection",      "smoky",  1, 0, 40, 150, CLR_GRAY,
                                                         POT_OBJECT_DETECTION),
-POTION("gain energy",          "cloudy",  1, 0, 42, 150, CLR_WHITE,
+POTION("gain energy",          "cloudy",  1, 0, 40, 150, CLR_WHITE,
                                                         POT_GAIN_ENERGY),
-POTION("sleeping",       "effervescent",  1, 0, 42, 100, CLR_GRAY,
+POTION("sleeping",       "effervescent",  1, 0, 40, 100, CLR_GRAY,
                                                         POT_SLEEPING),
 POTION("full healing",          "black",  1, 0, 10, 200, CLR_BLACK,
                                                         POT_FULL_HEALING),
 POTION("polymorph",            "golden",  1, 0, 10, 200, CLR_YELLOW,
                                                         POT_POLYMORPH),
-POTION("booze",                 "brown",  0, 0, 42,  50, CLR_BROWN,
+POTION("booze",                 "brown",  0, 0, 40,  50, CLR_BROWN,
                                                         POT_BOOZE),
-POTION("sickness",              "fizzy",  0, 0, 42,  50, CLR_CYAN,
+POTION("sickness",              "fizzy",  0, 0, 40,  50, CLR_CYAN,
                                                         POT_SICKNESS),
-POTION("fruit juice",            "dark",  0, 0, 42,  50, CLR_BLACK,
+POTION("fruit juice",            "dark",  0, 0, 40,  50, CLR_BLACK,
                                                         POT_FRUIT_JUICE),
 POTION("acid",                  "white",  0, 0, 10, 250, CLR_WHITE,
                                                         POT_ACID),
@@ -1151,7 +1150,7 @@ POTION("oil",                   "murky",  0, 0, 30, 250, CLR_BROWN,
                                                         POT_OIL),
 /* fixed description
  */
-POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN,
+POTION("water",                 "clear",  0, 0, 80, 100, CLR_CYAN,
                                                         POT_WATER),
 #undef POTION
 
@@ -1402,12 +1401,12 @@ MARKER(LAST_SPELL, SPE_BLANK_PAPER)
 /* tribute book for 3.6 */
 OBJECT(OBJ("novel", "paperback"),
        BITS(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, PAPER),
-       0, SPBOOK_CLASS, 1, 0, 0, 20, 0, 0, 0, 1, 20, CLR_BRIGHT_BLUE,
+       0, SPBOOK_CLASS, 1, 0, 10, 20, 0, 0, 0, 1, 20, CLR_BRIGHT_BLUE,
                                                         SPE_NOVEL),
 /* a special, one of a kind, spellbook */
 OBJECT(OBJ("Book of the Dead", "papyrus"),
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, P_NONE, PAPER),
-       0, SPBOOK_CLASS, 0, 0, 20, 10000, 0, 0, 0, 7, 20, HI_PAPER,
+       0, SPBOOK_CLASS, 0, 0, 50, 10000, 0, 0, 0, 7, 20, HI_PAPER,
                                                         SPE_BOOK_OF_THE_DEAD),
 #undef SPELL
 
@@ -1616,7 +1615,6 @@ OBJECT(OBJ(NoDes, NoDes),
        BITS(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), 0,
        ILLOBJ_CLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 #undef BITS
-#undef COLOR_FIELD
 #endif
 
 #undef OBJ

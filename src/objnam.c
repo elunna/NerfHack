@@ -1423,7 +1423,15 @@ doname_base(
                     tethered ? "tethered " : "", /* aklys */
                     /* avoid "tethered wielded in right hand" for twoweapon */
                     (twoweap_primary && !tethered) ? "wielded" : "weapon",
-                    twoweap_primary ? "right " : "", hand_s);
+                    bimanual(obj) ? "" : URIGHTY ? "right " : "left ",
+/*
+                    (twoweap_primary && URIGHTY)
+                        ? "right "
+                        : (twoweap_primary && ULEFTY)
+                            ? "left "
+                            :  "",
+*/
+                    hand_s);
             if (!Blind) {
                 if (gw.warn_obj_cnt && obj == uwep
                     && (EWarn_of_mon & W_WEP) != 0L)
@@ -1440,7 +1448,8 @@ doname_base(
     }
     if (obj->owornmask & W_SWAPWEP) {
         if (u.twoweap)
-            Sprintf(eos(bp), " (wielded in left %s)", body_part(HAND));
+            Sprintf(eos(bp), " (wielded in %s %s)",
+                    URIGHTY ? "left" : "right", body_part(HAND));
         else
             /* TODO: rephrase this when obj isn't a weapon or weptool */
             Sprintf(eos(bp), " (alternate weapon%s; not wielded)",

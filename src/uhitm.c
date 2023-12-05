@@ -2774,7 +2774,8 @@ mhitm_ad_sgld(
 
         if (mongold) {
             obj_extract_self(mongold);
-            if (merge_choice(gi.invent, mongold) || inv_cnt(FALSE) < 52) {
+            if (merge_choice(gi.invent, mongold)
+                    || inv_cnt(FALSE) < invlet_basic) {
                 addinv(mongold);
                 Your("purse feels heavier.");
             } else {
@@ -5469,12 +5470,12 @@ hmonas(struct monst *mon)
                     verb = (mattk->aatyp == AT_TUCH) ? "touch" : "claws";
                     /* decide if silver-hater will be hit by silver ring(s);
                        for 'multi_claw' where attacks alternate right/left,
-                       assume 'even' claw or touch attacks use right hand
-                       or paw, 'odd' ones use left for ring interaction;
-                       even vs odd is based on actual attacks rather
-                       than on index into mon->dat->mattk[] so that {bite,
-                       claw,claw} instead of {claw,claw,bite} doesn't
-                       make poly'd hero mysteriously become left-handed */
+                       assume 'even' claw or touch attacks use dominant hand
+                       or paw, 'odd' ones use non-dominant hand for ring
+                       interaction; even vs odd is based on actual attacks
+                       rather than on index into mon->dat->mattk[] so that
+                       {bite,claw,claw} instead of {claw,claw,bite} doesn't
+                       make poly'd hero mysteriously switch handedness */
                     odd_claw = !odd_claw;
                     specialdmg = special_dmgval(&gy.youmonst, mon,
                                                 W_ARMG

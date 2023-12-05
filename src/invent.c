@@ -1,14 +1,16 @@
-/* NetHack 3.7	invent.c	$NHDT-Date: 1698264784 2023/10/25 20:13:04 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.457 $ */
+/* NetHack 3.7	invent.c	$NHDT-Date: 1700869704 2023/11/24 23:48:24 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.476 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
-#define NOINVSYM '#'
+/* fake inventory letters, not 'a'..'z' or 'A'..'Z' */
+#define NOINVSYM '#'      /* overflow because all 52 letters are in use */
 #define CONTAINED_SYM '>' /* designator for inside a container */
-#define HANDS_SYM '-'
+#define HANDS_SYM '-'     /* hands|fingers|self depending on context */
 
+static void inuse_classify(Loot *, struct obj *);
 static char *loot_xname(struct obj *);
 static int invletter_value(char);
 static int QSORTCALLBACK sortloot_cmp(const genericptr, const genericptr);
@@ -22,12 +24,13 @@ static char *cinv_ansimpleoname(struct obj *);
 static boolean only_here(struct obj *);
 static void compactify(char *);
 static boolean taking_off(const char *);
+static void mime_action(const char *);
 static int ckvalidcat(struct obj *);
 static int ckunpaid(struct obj *);
 static char *safeq_xprname(struct obj *);
 static char *safeq_shortxprname(struct obj *);
 static char display_pickinv(const char *, const char *, const char *,
-                            boolean, long *);
+                            boolean, boolean, long *);
 static char display_used_invlets(char);
 static boolean this_type_only(struct obj *);
 static void dounpaid(int, int, int);
@@ -42,7 +45,8 @@ static boolean item_naming_classification(struct obj *, char *, char *);
 static int item_reading_classification(struct obj *, char *);
 static void ia_addmenu(winid, int, char, const char *);
 static void itemactions_pushkeys(struct obj *, int);
-static void mime_action(const char *);
+static int itemactions(struct obj *);
+static int dispinv_with_action(char *, boolean, const char *);
 
 /* enum and structs are defined in wintype.h */
 static win_request_info wri_info;
@@ -60,7 +64,95 @@ static boolean in_perm_invent_toggled;
  */
 static const char venom_inv[] = { VENOM_CLASS, 0 }; /* (constant) */
 
-/* sortloot() classification; called at most once [per sort] for each object */
+/* menu heading lines used instead of object classes when sorting by in-use;
+   pointers aren't const because dispinv_with_action() might temporarily
+   change "Accessories" to "Rings" or "Amulet", then back again */
+static const char *inuse_headers[] = { /* [4] shown first, [1] last */
+    "", "Miscellaneous", "Worn Armor",
+    "Wielded/Readied Weapons", "Accessories",
+};
+
+/* sortloot() classification for in-use sort;
+   called at most once [per sort] for each object */
+static void
+inuse_classify(Loot *sort_item, struct obj *obj)
+{
+    long w_mask = (obj->owornmask & (W_ACCESSORY | W_WEAPONS | W_ARMOR));
+    int rating = 0, altclass = 0;
+
+#define USE_RATING(test) \
+    do {                                                        \
+        /* 'rating' advances for each USE_RATING() call */      \
+        ++rating;                                               \
+        if ((test) != 0)                                        \
+            goto assign_rating;                                 \
+    } while (0)
+
+    /*
+     * In order of importance, least to most, somewhat arbitrarily.
+     *
+     * For instance, all accessories are grouped together even
+     * though they're usually less important than other stuff, so
+     * that they appear earlier within displayed list of used items.
+     * Amulet is rated as most important primarily because the
+     * default 'packorder' puts amulets first (possibly because one
+     * might be The Amulet).  Non-wielded alternate weapon and
+     * quiver are grouped with primary weapon.  Weapons are rated
+     * above armor because of default 'packorder'.
+     *
+     * These ratings don't match either subclasses or 'packorder'.
+     *
+     * USE_RATING() sets up 'rating' then jumps to 'assign_rating'
+     * if 'obj' warrants that.
+     */
+    /* "Miscellaneous" */
+    ++altclass; /* 1 */
+    /* lamp and leash might be used doubly, as a tool and also wielded
+       or readied-in-quiver; these tests for used-as-tool only pass
+       when owornmask is 0 so that used-as-weapon takes precedence */
+    USE_RATING(!w_mask && obj->otyp == LEASH && obj->leashmon);
+    USE_RATING(!w_mask && obj->oclass == TOOL_CLASS && obj->lamplit);
+    /* "Armor" */
+    ++altclass; /* 2 */
+    USE_RATING(w_mask & WORN_SHIRT);
+    USE_RATING(w_mask & WORN_BOOTS);
+    USE_RATING(w_mask & WORN_GLOVES);
+    USE_RATING(w_mask & WORN_HELMET);
+    USE_RATING(w_mask & WORN_SHIELD);
+    USE_RATING(w_mask & WORN_CLOAK);
+    USE_RATING(w_mask & WORN_ARMOR);
+    /* "Weapons" */
+    ++altclass; /* 3 */
+    /* could get more complicated:  if uswapwep is just alternate weapon
+       rather than wielded secondary, swap order with quiver (unless
+       quiver is ammo for uswapwep without also being ammo for uwep) */
+    USE_RATING(w_mask & W_QUIVER);
+    USE_RATING(w_mask & W_SWAPWEP);
+    USE_RATING(w_mask & W_WEP);
+    /* "Accessories" */
+    ++altclass; /* 4 */
+    USE_RATING(w_mask & WORN_BLINDF);
+    USE_RATING(w_mask & (ULEFTY ? RIGHT_RING : LEFT_RING)); /* off hand */
+    USE_RATING(w_mask & (URIGHTY ? RIGHT_RING : LEFT_RING)); /* main hand */
+    USE_RATING(w_mask & WORN_AMUL);
+
+    /* if we get here, the USE_RATING() checks failed to find a match */
+    rating = 0;
+    altclass = -1; /* 'orderclass' must end up non-zero */
+
+ assign_rating:
+    sort_item->inuse = rating;
+    sort_item->orderclass = altclass; /* used for alternate headings */
+
+    /* not applicable for in-use */
+    sort_item->subclass = 0;
+    sort_item->disco = 0;
+
+#undef USE_RATING
+}
+
+/* sortloot() classification; called at most once [per sort] for each object;
+   also called by '\' command if discoveries use sortloot order */
 void
 loot_classify(Loot *sort_item, struct obj *obj)
 {
@@ -216,6 +308,8 @@ loot_classify(Loot *sort_item, struct obj *obj)
           : (objects[otyp].oc_uname) ? 3 /* named (partially discovered) */
             : 2; /* undiscovered */
     sort_item->disco = k;
+    /* not applicable */
+    sort_item->inuse = 0;
 }
 
 /* sortloot() formatting routine; for alphabetizing, not shown to user */
@@ -307,8 +401,8 @@ invletter_value(char c)
     return ('a' <= c && c <= 'z') ? (c - 'a' + 2)
            : ('A' <= c && c <= 'Z') ? (c - 'A' + 2 + 26)
              : (c == '$') ? 1
-               : (c == '#') ? 1 + 52 + 1
-                 : 1 + 52 + 1 + 1; /* none of the above (shouldn't happen) */
+               : (c == '#') ? 1 + invlet_basic + 1
+                 : 1 + invlet_basic + 1 + 1; /* none of the above (shouldn't happen) */
 }
 
 /* qsort comparison routine for sortloot() */
@@ -321,6 +415,24 @@ sortloot_cmp(const genericptr vptr1, const genericptr vptr2)
                *obj2 = sli2->obj;
     char *nam1, *nam2, *tmpstr;
     int val1, val2, namcmp;
+
+    /* in-use takes precedence over all others */
+    if ((gs.sortlootmode & SORTLOOT_INUSE) != 0) {
+        /* Classify each object at most once no matter how many
+           comparisons it is involved in. */
+        if (!sli1->orderclass)
+            inuse_classify(sli1, obj1);
+        if (!sli2->orderclass)
+            inuse_classify(sli2, obj2);
+
+        val1 = sli1->inuse;
+        val2 = sli2->inuse;
+        if (val1 != val2)
+            return val2 - val1; /* bigger value comes before smaller */
+        /* neither item in use (or both are lit lamps/candles or both are
+           attached leashes; items using owornmask don't produce ties) */
+        goto tiebreak;
+    }
 
     /* order by object class unless we're doing by-invlet without sortpack */
     if ((gs.sortlootmode & (SORTLOOT_PACK | SORTLOOT_INVLET))
@@ -336,7 +448,7 @@ sortloot_cmp(const genericptr vptr1, const genericptr vptr2)
         val1 = sli1->orderclass;
         val2 = sli2->orderclass;
         if (val1 != val2)
-            return (int) (val1 - val2);
+            return val1 - val2;
 
         /* skip sub-classes when ordering by sortpack+invlet */
         if ((gs.sortlootmode & SORTLOOT_INVLET) == 0) {
@@ -491,6 +603,7 @@ sortloot(
     boolean by_nexthere, /* T: traverse via obj->nexthere, F: via obj->nobj */
     boolean (*filterfunc)(struct obj *)) /* optional filter */
 {
+    static Loot zerosli;
     Loot *sliarray;
     struct obj *o;
     unsigned n, i;
@@ -513,16 +626,14 @@ sortloot(
             && (!augment_filter || o->otyp != CORPSE
                 || !touch_petrifies(&mons[o->corpsenm])))
             continue;
+        sliarray[i] = zerosli;
         sliarray[i].obj = o, sliarray[i].indx = (int) i;
-        sliarray[i].str = (char *) 0;
-        sliarray[i].orderclass = sliarray[i].subclass = sliarray[i].disco = 0;
         ++i;
     }
     n = i;
     /* add a terminator so that we don't have to pass 'n' back to caller */
-    sliarray[n].obj = (struct obj *) 0, sliarray[n].indx = -1;
-    sliarray[n].str = (char *) 0;
-    sliarray[n].orderclass = sliarray[n].subclass = sliarray[n].disco = 0;
+    sliarray[n] = zerosli;
+    sliarray[n].indx = -1;
 
     /* do the sort; if no sorting is requested, we'll just return
        a sortloot_item array reflecting the current ordering */
@@ -589,7 +700,7 @@ sortloot(
 void
 assigninvlet(struct obj *otmp)
 {
-    boolean inuse[52];
+    boolean inuse[invlet_basic];
     register int i;
     register struct obj *obj;
 
@@ -599,7 +710,7 @@ assigninvlet(struct obj *otmp)
         return;
     }
 
-    for (i = 0; i < 52; i++)
+    for (i = 0; i < invlet_basic; i++)
         inuse[i] = FALSE;
     for (obj = gi.invent; obj; obj = obj->nobj)
         if (obj != otmp) {
@@ -615,7 +726,7 @@ assigninvlet(struct obj *otmp)
         && (('a' <= i && i <= 'z') || ('A' <= i && i <= 'Z')))
         return;
     for (i = gl.lastinvnr + 1; i != gl.lastinvnr; i++) {
-        if (i == 52) {
+        if (i == invlet_basic) {
             i = -1;
             continue;
         }
@@ -1134,8 +1245,9 @@ hold_another_object(
             drop_arg = strcpy(buf, drop_arg);
 
         obj = addinv_core0(obj, (struct obj *) 0, FALSE);
-        if (inv_cnt(FALSE) > 52 || ((obj->otyp != LOADSTONE || !obj->cursed)
-                                    && near_capacity() > prev_encumbr)) {
+        if (inv_cnt(FALSE) > invlet_basic
+                || ((obj->otyp != LOADSTONE || !obj->cursed)
+                       && near_capacity() > prev_encumbr)) {
             /* undo any merge which took place */
             if (obj->quan > oquan)
                 obj = splitobj(obj, oquan);
@@ -1399,7 +1511,8 @@ currency(long amount)
 }
 
 struct obj *
-u_carried_gloves(void) {
+u_carried_gloves(void)
+{
     struct obj *otmp, *gloves = (struct obj *) 0;
 
     if (uarmg) {
@@ -1790,26 +1903,31 @@ getobj(
             long ctmp = 0;
             char menuquery[QBUFSZ];
 
+            if (ilet == '?' && !*lets && *altlets)
+                allowed_choices = altlets;
+
             menuquery[0] = qbuf[0] = '\0';
             if (iflags.force_invmenu)
                 Sprintf(menuquery, "What do you want to %s?", word);
-            if (!strcmp(word, "grease"))
-                Sprintf(qbuf, "your %s", fingers_or_gloves(FALSE));
-            else if (!strcmp(word, "write with"))
-                Sprintf(qbuf, "your %s", body_part(FINGERTIP));
-            else if (!strcmp(word, "wield"))
-                Sprintf(qbuf, "your %s %s%s", uarmg ? "gloved" : "bare",
-                        makeplural(body_part(HAND)),
-                        !uwep ? " (wielded)" : "");
-            else if (!strcmp(word, "ready"))
-                Sprintf(qbuf, "empty quiver%s",
-                        !uquiver ? " (nothing readied)" : "");
-
-            if (ilet == '?' && !*lets && *altlets)
-                allowed_choices = altlets;
+            if (!allowed_choices || *allowed_choices == '-' || *buf == '-') {
+                if (!strcmp(word, "grease")) {
+                    Sprintf(qbuf, "your %s", fingers_or_gloves(FALSE));
+                } else if (!strcmp(word, "write with")) {
+                    Sprintf(qbuf, "your %s", body_part(FINGERTIP));
+                } else if (!strcmp(word, "wield")) {
+                    Sprintf(qbuf, "your %s %s%s", uarmg ? "gloved" : "bare",
+                            makeplural(body_part(HAND)),
+                            !uwep ? " (wielded)" : "");
+                } else if (!strcmp(word, "ready")) {
+                    Sprintf(qbuf, "empty quiver%s",
+                            !uquiver ? " (nothing readied)" : "");
+                } else {
+                    Sprintf(qbuf, "your %s", makeplural(body_part(HAND)));
+                }
+            }
             ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
-                                   menuquery,
-                                   TRUE, allowcnt ? &ctmp : (long *) 0);
+                                   menuquery, allownone, TRUE,
+                                   allowcnt ? &ctmp : (long *) 0);
             if (!ilet) {
                 if (oneloop)
                     return (struct obj *) 0;
@@ -1903,7 +2021,7 @@ getobj(
         silly_thing(word, otmp);
         return (struct obj *) 0;
     }
-split_otmp:
+ split_otmp:
     if (cntgiven) {
         if (cnt == 0)
             return (struct obj *) 0;
@@ -1993,6 +2111,15 @@ is_worn(struct obj *otmp)
     return (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE | W_WEAPONS))
             ? TRUE
             : FALSE;
+}
+
+/* is 'obj' being used by the hero?  worn, wielded, active lamp or leash;
+   not to be confused with obj->in_use, which finishes using up an item
+   (destroys it) if restoring a save file finds that bit set */
+boolean
+is_inuse(struct obj *obj)
+{
+    return (carried(obj) && (is_worn(obj) || tool_being_used(obj)));
 }
 
 /* extra xprname() input that askchain() can't pass through safe_qbuf() */
@@ -2497,8 +2624,9 @@ learn_unseen_invent(void)
     for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
         if (otmp->dknown && (otmp->bknown || !Role_if(PM_CLERIC)))
             continue; /* already seen */
-        /* set dknown, perhaps bknown (for priest[ess]) */
-        (void) xname(otmp);
+        /* xname() will set dknown, perhaps bknown (for priest[ess]);
+           result from xname() is immediately released for re-use */
+        maybereleaseobuf(xname(otmp));
         /*
          * If object->eknown gets implemented (see learnwand(zap.c)),
          * handle deferred discovery here.
@@ -2720,6 +2848,7 @@ enum item_action_actions {
     IA_WIELD_OBJ,
     IA_WEAR_OBJ,
     IA_SWAPWEAPON,
+    IA_TWOWEAPON,
     IA_ZAP_OBJ,
     IA_WHATIS_OBJ, /* '/' specify inventory object */
 };
@@ -2936,6 +3065,9 @@ itemactions_pushkeys(struct obj *otmp, int act)
             break;
         case IA_SWAPWEAPON:
             cmdq_add_ec(CQ_CANNED, doswapweapon);
+            break;
+        case IA_TWOWEAPON:
+            cmdq_add_ec(CQ_CANNED, dotwoweapon);
             break;
         case IA_ZAP_OBJ:
             cmdq_add_ec(CQ_CANNED, dozap);
@@ -3232,6 +3364,30 @@ itemactions(struct obj *otmp)
     else if (otmp == uswapwep)
         ia_addmenu(win, IA_SWAPWEAPON, 'x', "Swap this with your main weapon");
 
+    /* this is based on TWOWEAPOK() in wield.c; we don't call can_two_weapon()
+       because it is very verbose; attempting to two-weapon might be rejected
+       but we screen out most reasons for rejection before offering it as a
+       choice */
+#define MAYBETWOWEAPON(obj) \
+    ((((obj)->oclass == WEAPON_CLASS)                           \
+      ? !(is_launcher(obj) || is_ammo(obj) || is_missile(obj))  \
+      : is_weptool(obj))                                        \
+     && !bimanual(obj))
+
+    /* X: Toggle two-weapon mode on or off */
+    if ((otmp == uwep || otmp == uswapwep)
+        /* if already two-weaponing, no special checks needed to toggle off */
+        && (u.twoweap
+        /* but if not, try to filter most "you can't do that" here */
+            || (could_twoweap(gy.youmonst.data) && !uarms
+                && uwep && MAYBETWOWEAPON(uwep)
+                && uswapwep && MAYBETWOWEAPON(uswapwep)))) {
+        Sprintf(buf, "Toggle two-weapon combat %s", u.twoweap ? "off" : "on");
+        ia_addmenu(win, IA_TWOWEAPON, 'X', buf);
+    }
+
+#undef MAYBETWOWEAPON
+
     /* z: Zap wand */
     if (otmp->oclass == WAND_CLASS)
         ia_addmenu(win, IA_ZAP_OBJ, 'z', "Zap this wand to release its magic");
@@ -3259,13 +3415,40 @@ itemactions(struct obj *otmp)
     return ECMD_OK;
 }
 
-
-/* the #inventory command */
-int
-ddoinv(void)
+/* show some or all of inventory while allowing the picking of an item in
+   order to preform context-sensitive item action on it; always returns 'ok';
+   invent subsets specified by the ')', '[', '(', '=', '"', or '*' commands
+   when they're invoked with the 'm' prefix (or without it for '*') */
+static int
+dispinv_with_action(
+    char *lets,                 /* list of invlet values to include */
+    boolean use_inuse_ordering, /* affects sortloot() and header labels */
+    const char *alt_label)      /* alternate value for in-use "Accessories" */
 {
     struct obj *otmp;
-    char c = display_inventory((char *) 0, TRUE);
+    const char *save_accessories = 0;
+    char c, save_sortloot = 0;
+    unsigned len = lets ? (unsigned) strlen(lets) : 0U;
+    boolean menumode = (len != 1 || iflags.menu_requested) ? TRUE : FALSE,
+            save_force_invmenu = iflags.force_invmenu;
+
+    if (use_inuse_ordering) {
+        save_accessories = inuse_headers[4];
+        save_sortloot = flags.sortloot;
+
+        flags.sortloot = 'i'; /* checked by display_pickinv() */
+        if (alt_label)
+            inuse_headers[4] = alt_label;
+    }
+    iflags.force_invmenu = FALSE;
+
+    c = display_inventory(lets, menumode);
+
+    if (use_inuse_ordering) {
+        flags.sortloot = save_sortloot;
+        inuse_headers[4] = save_accessories;
+    }
+    iflags.force_invmenu = save_force_invmenu;
 
     if (c && c != '\033') {
         for (otmp = gi.invent; otmp; otmp = otmp->nobj)
@@ -3273,6 +3456,13 @@ ddoinv(void)
                 return itemactions(otmp);
     }
     return ECMD_OK;
+}
+
+/* the #inventory command (not much left...) */
+int
+ddoinv(void)
+{
+    return dispinv_with_action((char *) 0, FALSE, NULL);
 }
 
 /*
@@ -3325,6 +3515,7 @@ display_pickinv(
     const char *lets,        /* non-compacted list of invlet values */
     const char *xtra_choice, /* non-object "bare hands" or "fingers" */
     const char *query,       /* optional; prompt string for menu */
+    boolean allowxtra,       /* hands are allowed (maybe alternate) choice */
     boolean want_reply,      /* True: select an item, False: just display */
     long *out_cnt) /* optional; count player entered when selecting an item */
 {
@@ -3332,7 +3523,7 @@ display_pickinv(
         not_carrying_anything[] = "Not carrying anything",
         not_using_anything[] = "Not using any items",
         only_carrying_gold[] = "Only carrying gold";
-    struct obj *otmp, wizid_fakeobj;
+    struct obj *otmp, wizid_fakeobj, inuse_fakeobj;
     char ilet, ret, *formattedobj;
     const char *invlet = flags.inv_order;
     int n, classcount, inusecount = 0;
@@ -3341,11 +3532,14 @@ display_pickinv(
     menu_item *selected;
     unsigned sortflags;
     Loot *sortedinvent, *srtinv;
+    int8_t prevorderclass;
+    boolean (*filter)(struct obj *) = (boolean (*)(OBJ_P)) 0;
+
     boolean wizid = (wizard && iflags.override_ID), gotsomething = FALSE;
     int clr = NO_COLOR, menu_behavior = MENU_BEHAVE_STANDARD;
-    boolean show_gold = TRUE, inuse_only = FALSE,
-            skipped_gold = FALSE, skipped_noninuse = FALSE,
-            doing_perm_invent = FALSE, save_flags_sortpack = flags.sortpack;
+    boolean show_gold = TRUE, inuse_only = FALSE, skipped_gold = FALSE,
+            doing_perm_invent = FALSE, save_flags_sortpack = flags.sortpack,
+            usextra = (xtra_choice && allowxtra);
 
     if (lets && !*lets)
         lets = 0; /* simplify tests: (lets) instead of (lets && *lets) */
@@ -3355,7 +3549,7 @@ display_pickinv(
         win = 0; /* passed to dump_putstr() which ignores it... */
     } else
 #endif
-    if (lets || xtra_choice || wizid || want_reply
+    if (lets || usextra || wizid || want_reply
 #ifdef TTY_PERM_INVENT
         /*|| !gi.in_sync_perminvent*/
 #endif
@@ -3366,6 +3560,8 @@ display_pickinv(
         if (gc.cached_pickinv_win == WIN_ERR)
             gc.cached_pickinv_win = create_nhwindow(NHW_MENU);
         win = gc.cached_pickinv_win;
+        if (flags.sortloot == 'i')
+            inuse_only = TRUE;
     } else {
         win = WIN_INVEN;
         menu_behavior = MENU_BEHAVE_PERMINV;
@@ -3385,17 +3581,18 @@ display_pickinv(
      * an issue if empty checks are done before hand and the call
      * to here is short circuited away.
      *
-     * 2: our count here is only to distinguish between 0 and 1 and
-     * more than 1; for the last one, we don't need a precise number.
+     * 2: our count here is only to distinguish between 0 or 1 or
+     * more than 1; for the last case, we don't need a precise number.
      * For perm_invent update we force 'more than 1'.
      */
     n = (doing_perm_invent && !lets && !want_reply) ? 2
         : lets ? (int) strlen(lets)
                : !gi.invent ? 0 : !gi.invent->nobj ? 1 : 2;
     /* for xtra_choice, there's another 'item' not included in initial 'n';
-       for !lets (full invent) and for override_ID (wizard mode identify),
-       skip message_menu handling of single item even if item count was 1 */
-    if (xtra_choice || (n == 1 && (!lets || wizid)))
+       for !lets (full invent or inuse_only) and for override_ID (wizard
+       mode identify), skip message_menu handling of single item even if
+       item count was 1 */
+    if (usextra || (n == 1 && (!lets || wizid)))
         ++n;
 
     if (n == 0) {
@@ -3407,14 +3604,15 @@ display_pickinv(
     if (!flags.invlet_constant)
         reassign();
 
-    if (n == 1 && !iflags.force_invmenu) {
+    if (n == 1 && !iflags.force_invmenu && !iflags.menu_requested) {
         /* when only one item of interest, use pline instead of menus;
            we actually use a fake message-line menu in order to allow
            the user to perform selection at the --More-- prompt for tty */
         ret = '\0';
-        if (xtra_choice) {
+        if (usextra) {
             /* xtra_choice is "bare hands" (wield), "fingertip" (Engrave),
-               "nothing" (ready Quiver), or "fingers" (apply grease) */
+               "nothing" (prepare Quiver), "fingers" (apply grease), or
+               "hands" (default) */
             ret = message_menu(HANDS_SYM, PICK_ONE,
                                xprname((struct obj *) 0, xtra_choice,
                                        HANDS_SYM, TRUE, 0L, 0L)); /* '-' */
@@ -3436,17 +3634,47 @@ display_pickinv(
     sortflags = (flags.sortloot == 'f') ? SORTLOOT_LOOT : SORTLOOT_INVLET;
     if (flags.sortpack)
         sortflags |= SORTLOOT_PACK;
+    save_flags_sortpack = flags.sortpack;
 #ifdef TTY_PERM_INVENT
     if (doing_perm_invent && WINDOWPORT(tty)) {
-        sortflags = SORTLOOT_INVLET;
-        save_flags_sortpack = flags.sortpack;
         flags.sortpack = FALSE;
+        sortflags = SORTLOOT_INVLET;
     }
-#else
-    nhUse(save_flags_sortpack);
 #endif
-    sortedinvent = sortloot(&gi.invent, sortflags, FALSE,
-                            (boolean (*)(OBJ_P)) 0);
+    if (inuse_only) {
+        flags.sortpack = FALSE;
+        sortflags = SORTLOOT_INUSE; /* override */
+        filter = is_inuse;
+        if (!uwep) {
+            /*
+             * inuse_only and not wielding anything: insert "bare hands"
+             * into primary weapon slot.  Unlike adding an extra menu
+             * entry for 'xtra_choice' at top of menu, we need an object
+             * in invent for it to be sorted into desired position.
+             * It will need custom formatting below.
+             */
+            inuse_fakeobj = cg.zeroobj; /* STRANGE_OBJECT, ILLOBJ_CLASS */
+            inuse_fakeobj.invlet = HANDS_SYM; /* '-' */
+            inuse_fakeobj.owornmask = W_WEP;  /* inuse_classify needs this */
+            inuse_fakeobj.where = OBJ_INVENT; /* is_inuse filter needs this */
+            inuse_fakeobj.nobj = gi.invent;
+            gi.invent = &inuse_fakeobj;
+        }
+    }
+
+    sortedinvent = sortloot(&gi.invent, sortflags, FALSE, filter);
+    /* inuse_only: if we inserted bare hands as a fake weapon, remove them;
+       although the fake object will no longer be in invent, sortedinvent
+       will still contain a pointer to it */
+    if (gi.invent == &inuse_fakeobj) {
+        gi.invent = inuse_fakeobj.nobj;
+        inuse_fakeobj.nobj = (struct obj *) 0;
+        /* if inuse_fakeobj is the only thing present in sortedinvent, get
+           rid of it in order to produce "not using any items" */
+        if (sortedinvent[0].obj == &inuse_fakeobj && !sortedinvent[1].obj)
+            sortedinvent[0].obj = (struct obj *) 0;
+    }
+
     start_menu(win, menu_behavior);
     any = cg.zeroany;
     if (wizid) {
@@ -3480,7 +3708,7 @@ display_pickinv(
                      ATR_NONE, clr, prompt, MENU_ITEMFLAGS_SKIPINVERT);
             gotsomething = TRUE;
         }
-   } else if (xtra_choice) {
+   } else if (usextra) {
         /* wizard override ID and xtra_choice are mutually exclusive */
         if (flags.sortpack)
             add_menu_heading(win, "Miscellaneous");
@@ -3503,50 +3731,68 @@ display_pickinv(
     }
 nextclass:
     classcount = 0;
+    prevorderclass = 0;
     for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
         int tmpglyph;
         glyph_info tmpglyphinfo = nul_glyphinfo;
 
+        /* for showing a set of specific letters, skip ones not in the set */
         if (lets && !strchr(lets, otmp->invlet))
             continue;
         if (!flags.sortpack || otmp->oclass == *invlet) {
             if (wizid && !not_fully_identified(otmp))
                 continue;
-            if (doing_perm_invent) {
+            if (inuse_only) {
+                /* for inuse-only, start with an extra header */
+                if (!inusecount++)
+                    add_menu_heading(win, doing_perm_invent ? "In use"
+                                            : "Inventory in use");
+            } else if (doing_perm_invent && !show_gold) {
                 /* don't skip gold if it is quivered, even for !show_gold */
-                if (inuse_only) {
-                    if (!otmp->owornmask && !tool_being_used(otmp)) {
-                        skipped_noninuse = TRUE;
-                        continue;
-                    }
-                    /* for inuse-only, start with an extra header */
-                    if (!inusecount++)
-                        add_menu_str(win, "In use");
-                } else if (!show_gold) {
-                    if (otmp->invlet == GOLD_SYM && !otmp->owornmask) {
-                        skipped_gold = TRUE;
-                        continue;
-                    }
+                if (otmp->invlet == GOLD_SYM && !otmp->owornmask) {
+                    skipped_gold = TRUE;
+                    continue;
                 }
             }
-            any = cg.zeroany; /* all bits zero */
-            ilet = otmp->invlet;
-            if (flags.sortpack && !classcount) {
-                add_menu_heading(win,
-                         let_to_name(*invlet, FALSE,
-                                     (want_reply && iflags.menu_head_objsym)));
+            /* maybe insert a class header */
+            if (inuse_only ? (srtinv->orderclass != prevorderclass)
+                           : (flags.sortpack && !classcount)) {
+                boolean withsym = (want_reply && iflags.menu_head_objsym);
+                const char *class_header = inuse_only
+                        ? inuse_headers[(int) srtinv->orderclass]
+                        : (const char *) let_to_name(*invlet, FALSE, withsym);
+
+                add_menu_heading(win, class_header);
                 classcount++;
+                prevorderclass = srtinv->orderclass;
             }
+
+            ilet = otmp->invlet;
+            any = cg.zeroany; /* all bits zero */
             if (wizid)
                 any.a_obj = otmp;
             else
                 any.a_char = ilet;
-            tmpglyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            map_glyphinfo(0, 0, tmpglyph, 0U, &tmpglyphinfo);
-            formattedobj = doname(otmp);
-            add_menu(win, &tmpglyphinfo, &any, ilet,
-                     wizid ? def_oc_syms[(int) otmp->oclass].sym : 0,
-                     ATR_NONE, clr, formattedobj, MENU_ITEMFLAGS_NONE);
+
+            if (otmp == &inuse_fakeobj) {
+                /* fake item to format as "bare|gloved hands" */
+                char barehands[QBUFSZ];
+
+                /* like doname() below, makeplural() returns an obuf[] */
+                formattedobj = makeplural(body_part(HAND));
+                Sprintf(barehands, "%s %s (no weapon)",
+                        uarmg ? "gloved" : "bare", formattedobj);
+                add_menu(win, &nul_glyphinfo, &any, ilet, 0,
+                         ATR_NONE, clr, barehands, MENU_ITEMFLAGS_NONE);
+            } else {
+                /* normal inventory item */
+                tmpglyph = obj_to_glyph(otmp, rn2_on_display_rng);
+                map_glyphinfo(0, 0, tmpglyph, 0U, &tmpglyphinfo);
+                formattedobj = doname(otmp);
+                add_menu(win, &tmpglyphinfo, &any, ilet,
+                         wizid ? def_oc_syms[(int) otmp->oclass].sym : 0,
+                         ATR_NONE, clr, formattedobj, MENU_ITEMFLAGS_NONE);
+            }
             /* doname() uses a static pool of obuf[] output buffers and
                we don't want inventory display to overwrite all of them,
                so when we've used one we release it for re-use */
@@ -3562,12 +3808,16 @@ nextclass:
             goto nextclass;
         }
     }
+    if (save_flags_sortpack != flags.sortpack)
+        flags.sortpack = save_flags_sortpack;
+
     /* default for force_invmenu is a list of likely candidates;
        add '*' for 'show all' as an extra choice unless list already
        includes everything; won't work via keyboard if current menu
        uses '*' as group accelerator for gems but might work via mouse */
     if (iflags.force_invmenu && lets && want_reply
-        && (int) strlen(lets) < inv_cnt(TRUE)) {
+        && ((allowxtra && !usextra)
+            || (int) strlen(lets) < inv_cnt(TRUE))) {
         any = cg.zeroany;
         add_menu_heading(win, "Special");
         any.a_char = '*';
@@ -3583,13 +3833,8 @@ nextclass:
         add_menu_str(win, inuse_only ? not_using_anything
                           : (!show_gold && skipped_gold) ? only_carrying_gold
                             : not_carrying_anything);
-        nhUse(skipped_noninuse); /* no longer needed */
         want_reply = FALSE;
     }
-#ifdef TTY_PERM_INVENT
-    if (doing_perm_invent && WINDOWPORT(tty))
-        flags.sortpack = save_flags_sortpack;
-#endif
     end_menu(win, (query && *query) ? query : (char *) 0);
 
     n = select_menu(win,
@@ -3651,7 +3896,8 @@ display_inventory(const char *lets, boolean want_reply)
             for (otmp = gi.invent; otmp; otmp = otmp->nobj)
                 if (otmp->invlet == cmdq->key
                     && (!lets || !*lets
-                        || strchr(lets, def_oc_syms[(int) otmp->oclass].sym))) {
+                        || strchr(lets,
+                                  def_oc_syms[(int) otmp->oclass].sym))) {
                     free(cmdq);
                     return otmp->invlet;
                 }
@@ -3663,7 +3909,7 @@ display_inventory(const char *lets, boolean want_reply)
         return '\0';
     }
     return display_pickinv(lets, (char *) 0, (char *) 0,
-                           want_reply, (long *) 0);
+                           FALSE, want_reply, (long *) 0);
 }
 
 /*
@@ -4716,6 +4962,14 @@ doprgold(void)
             You("have no money.");
     }
     shopper_financial_report();
+
+    if (umoney && iflags.menu_requested) {
+        char dollarsign[] = "$";
+
+        /* mustn't use TRUE or gold wouldn't show up unless it was quivered */
+        (void) dispinv_with_action(dollarsign, FALSE, NULL);
+    }
+
     return ECMD_OK;
 }
 
@@ -4725,10 +4979,24 @@ doprwep(void)
 {
     if (!uwep) {
         You("are %s.", empty_handed());
-    } else {
+    } else if (!iflags.menu_requested) {
         prinv((char *) 0, uwep, 0L);
         if (u.twoweap)
             prinv((char *) 0, uswapwep, 0L);
+    } else {
+        char lets[4]; /* 4: uwep, uswapwep, uquiver, terminator */
+        int ct = 0;
+
+        /* obj_to_let() will assign letters to all of invent if necessary
+           (for '!fixinv') so doesn't need to be repeated once called here */
+        lets[ct++] = obj_to_let(uwep);
+        if (uswapwep)
+            lets[ct++] = uswapwep->invlet;
+        if (uquiver)
+            lets[ct++] = uquiver->invlet;
+        lets[ct] = '\0';
+
+        (void) dispinv_with_action(lets, TRUE, NULL);
     }
     return ECMD_OK;
 }
@@ -4760,8 +5028,6 @@ noarmor(boolean report_uskin)
 int
 doprarm(void)
 {
-    char lets[8];
-    int ct = 0;
     /*
      * Note:  players sometimes get here by pressing a function key which
      * transmits ''ESC [ <something>'' rather than by pressing '[';
@@ -4771,22 +5037,30 @@ doprarm(void)
     if (!wearing_armor()) {
         noarmor(TRUE);
     } else {
-        if (uarmu)
-            lets[ct++] = obj_to_let(uarmu);
+        char lets[8]; /* 8: up to 7 pieces of armor plus terminator */
+        int ct = 0;
+
+        /* obj_to_let() will assign letters to all of invent if necessary
+           (for '!fixinv') so doesn't need to be repeated once called, but
+           each armor slot doesn't know whether any that precede have made
+           that call so just do it for each one; use SORTPACK_INUSE order */
         if (uarm)
             lets[ct++] = obj_to_let(uarm);
         if (uarmc)
             lets[ct++] = obj_to_let(uarmc);
-        if (uarmh)
-            lets[ct++] = obj_to_let(uarmh);
         if (uarms)
             lets[ct++] = obj_to_let(uarms);
+        if (uarmh)
+            lets[ct++] = obj_to_let(uarmh);
         if (uarmg)
             lets[ct++] = obj_to_let(uarmg);
         if (uarmf)
             lets[ct++] = obj_to_let(uarmf);
+        if (uarmu)
+            lets[ct++] = obj_to_let(uarmu);
         lets[ct] = 0;
-        (void) display_inventory(lets, FALSE);
+
+        (void) dispinv_with_action(lets, TRUE, NULL);
     }
     return ECMD_OK;
 }
@@ -4798,15 +5072,32 @@ doprring(void)
     if (!uleft && !uright) {
         You("are not wearing any rings.");
     } else {
-        char lets[3];
+        char lets[3]; /* 3: uright, uleft, terminator */
+        boolean use_inuse_mode = FALSE;
         int ct = 0;
 
-        if (uleft)
-            lets[ct++] = obj_to_let(uleft);
-        if (uright)
+        /* if either ring is a meat ring, switch to use_inuse_mode in order
+           to label it/them as "Rings" rather than "Comestibles" */
+        if (uright) {
             lets[ct++] = obj_to_let(uright);
-        lets[ct] = 0;
-        (void) display_inventory(lets, FALSE);
+            if (uright->oclass != RING_CLASS)
+                use_inuse_mode = TRUE;
+        }
+        if (uleft) {
+            lets[ct++] = obj_to_let(uleft);
+            if (uleft->oclass != RING_CLASS)
+                use_inuse_mode = TRUE;
+        }
+        lets[ct] = '\0';
+        /* also switch to use_inuse_mode if there are two rings or player
+           used the 'm' prefix */
+        if (ct > 1 || iflags.menu_requested)
+            use_inuse_mode = TRUE;
+
+        (void) dispinv_with_action(lets, use_inuse_mode,
+                                   /* note; alternate label will be ignored
+                                      if 'use_inuse_mode' is False */
+                                   (ct == 1) ? "Ring" : "Rings");
     }
     return ECMD_OK;
 }
@@ -4815,10 +5106,18 @@ doprring(void)
 int
 dopramulet(void)
 {
-    if (!uamul)
+    if (!uamul) {
         You("are not wearing an amulet.");
-    else
-        prinv((char *) 0, uamul, 0L);
+    } else {
+        char lets[2];
+
+        /* using display_inventory() instead of prinv() allows player
+           to use 'm "' to force and menu and be able to choose amulet
+           in order to perform a context-sensitve item action */
+        lets[0] = obj_to_let(uamul), lets[1] = '\0';
+
+        (void) dispinv_with_action(lets, TRUE, "Amulet");
+    }
     return ECMD_OK;
 }
 
@@ -4845,7 +5144,7 @@ doprtool(void)
 {
     struct obj *otmp;
     int ct = 0;
-    char lets[52 + 1];
+    char lets[invlet_basic + 1];
 
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
         if (tool_being_used(otmp)) {
@@ -4859,7 +5158,7 @@ doprtool(void)
     if (!ct)
         You("are not using any tools.");
     else
-        (void) display_inventory(lets, FALSE);
+        (void) dispinv_with_action(lets, TRUE, NULL);
     return ECMD_OK;
 }
 
@@ -4870,21 +5169,18 @@ doprinuse(void)
 {
     struct obj *otmp;
     int ct = 0;
-    char lets[52 + 1];
 
+    /* no longer need to collect letters; sortloot() takes care of it, but
+       still want to count far enough to know whether anything is in use */
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
-        if (is_worn(otmp) || tool_being_used(otmp)) {
-            /* we could be carrying more than 52 items; theoretically they
-               might all be lit candles so avoid potential lets[] overflow */
-            if (ct >= (int) sizeof lets - 1)
-                break;
-            lets[ct++] = obj_to_let(otmp);
+        if (is_inuse(otmp)) {
+            ++ct;
+            break;
         }
-    lets[ct] = '\0';
     if (!ct)
         You("are not wearing or wielding anything.");
     else
-        (void) display_inventory(lets, FALSE);
+        (void) dispinv_with_action((char *) 0, TRUE, NULL);
     return ECMD_OK;
 }
 
@@ -5204,8 +5500,8 @@ doorganize_core(struct obj *obj)
     char let;
 #define GOLD_INDX   0
 #define GOLD_OFFSET 1
-#define OVRFLW_INDX (GOLD_OFFSET + 52) /* past gold and 2*26 letters */
-    char lets[1 + 52 + 1 + 1]; /* room for '$a-zA-Z#\0' */
+#define OVRFLW_INDX (GOLD_OFFSET + invlet_basic) /* past gold & 2*26 letters */
+    char lets[1 + invlet_basic + 1 + 1]; /* room for '$a-zA-Z#\0' */
     char qbuf[QBUFSZ];
     char *objname, *otmpname;
     const char *adj_type;
@@ -5238,7 +5534,7 @@ doorganize_core(struct obj *obj)
     lets[OVRFLW_INDX] = ' ';
     lets[sizeof lets - 1] = '\0';
     /* for floating inv letters, truncate list after the first open slot */
-    if (!flags.invlet_constant && (ix = inv_cnt(FALSE)) < 52)
+    if (!flags.invlet_constant && (ix = inv_cnt(FALSE)) < invlet_basic)
         lets[ix + (splitting ? 1 : 2)] = '\0';
 
     /* blank out all the letters currently in use in the inventory
@@ -5364,7 +5660,7 @@ doorganize_core(struct obj *obj)
                     adj_type = "Splitting and merging:";
                     obj = otmp;
                     extract_nobj(obj, &gi.invent);
-                } else if (inv_cnt(FALSE) >= 52) {
+                } else if (inv_cnt(FALSE) >= invlet_basic) {
                     (void) merged(&splitting, &obj); /* undo split */
                     /* "knapsack cannot accommodate any more items" */
                     Your("pack is too full.");

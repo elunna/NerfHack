@@ -1331,6 +1331,7 @@ seffect_confuse_monster(struct obj **sobjp)
             scursed = sobj->cursed,
             confused = (Confusion != 0),
             altfeedback = (Blind || Invisible);
+    const char *const hands = makeplural(body_part(HAND));
 
     if (gy.youmonst.data->mlet != S_HUMAN || scursed) {
         if (!HConfusion)
@@ -1338,7 +1339,7 @@ seffect_confuse_monster(struct obj **sobjp)
         make_confused(HConfusion + rnd(100), FALSE);
     } else if (confused) {
         if (!sblessed) {
-            Your("%s begin to %s%s.", makeplural(body_part(HAND)),
+            Your("%s begin to %s%s.", hands,
                  altfeedback ? "tingle" : "glow ",
                  altfeedback ? "" : hcolor(NH_PURPLE));
             make_confused(HConfusion + rnd(100), FALSE);
@@ -1353,18 +1354,20 @@ seffect_confuse_monster(struct obj **sobjp)
         int incr = (sobj->oclass == SCROLL_CLASS) ? 3 : 0;
 
         if (!sblessed) {
-            Your("%s%s %s%s.", makeplural(body_part(HAND)),
-                 altfeedback ? "" : " begin to glow",
-                 altfeedback ? (const char *) "tingle" : hcolor(NH_RED),
-                 u.umconf ? " even more" : "");
+            if (altfeedback)
+                Your("%s tingle%s.", hands, u.umconf ? " even more" : "");
+            else if (!u.umconf)
+                Your("%s begin to glow %s.", hands, hcolor(NH_RED));
+            else
+                pline_The("%s glow of your %s intensifies.", hcolor(NH_RED),
+                          hands);
             incr += rnd(2);
         } else {
             if (altfeedback)
-                Your("%s tingle %s sharply.", makeplural(body_part(HAND)),
+                Your("%s tingle %s sharply.", hands,
                      u.umconf ? "even more" : "very");
             else
-                Your("%s glow %s brilliant %s.",
-                     makeplural(body_part(HAND)),
+                Your("%s glow %s brilliant %s.", hands,
                      u.umconf ? "an even more" : "a", hcolor(NH_RED));
             incr += rn1(8, 2);
         }
@@ -1688,12 +1691,14 @@ seffect_light(struct obj **sobjp)
             for (i = 0; i < numlights; ++i) {
                 mon = makemon(&mons[pm], u.ux, u.uy,
                               MM_EDOG | NO_MINVENT | MM_NOMSG);
-                initedog(mon);
-                mon->msleeping = 0;
-                mon->mcan = TRUE;
-                if (canspotmon(mon))
-                    sawlights = TRUE;
-                newsym(mon->mx, mon->my);
+                if (mon) {
+                    initedog(mon);
+                    mon->msleeping = 0;
+                    mon->mcan = TRUE;
+                    if (canspotmon(mon))
+                        sawlights = TRUE;
+                    newsym(mon->mx, mon->my);
+                }
             }
             if (sawlights) {
                 pline("Lights appear all around you!");

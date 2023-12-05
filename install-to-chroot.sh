@@ -17,9 +17,9 @@ COMPRESSBIN="/bin/gzip"
 # fixed data to copy (leave blank to skip)
 NH_GIT="/home/build/NetHack37"
 # HACKDIR from include/config.h; aka nethack subdir inside chroot
-NHSUBDIR="nh370.89-hdf"
+NHSUBDIR="nh370.90-hdf"
 # VAR_PLAYGROUND from include/unixconf.h
-NH_VAR_PLAYGROUND="/nh370.89-hdf/var/"
+NH_VAR_PLAYGROUND="/nh370.90-hdf/var/"
 # END OF CONFIG
 ##############################################################################
 
@@ -44,8 +44,8 @@ set -e
 umask 022
 
 echo "Creating inprogress and extrainfo directories"
-mkdir -p "$NAO_CHROOT/dgldir/inprogress-nh370.89-hdf"
-chown "$USRGRP" "$NAO_CHROOT/dgldir/inprogress-nh370.89-hdf"
+mkdir -p "$NAO_CHROOT/dgldir/inprogress-nh370.90-hdf"
+chown "$USRGRP" "$NAO_CHROOT/dgldir/inprogress-nh370.90-hdf"
 mkdir -p "$NAO_CHROOT/dgldir/extrainfo-nh370"
 chown "$USRGRP" "$NAO_CHROOT/dgldir/extrainfo-nh370"
 

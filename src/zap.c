@@ -2253,9 +2253,7 @@ bhito(struct obj *obj, struct obj *otmp)
         case WAN_CANCELLATION:
         case SPE_CANCELLATION:
             cancel_item(obj);
-#ifdef TEXTCOLOR
             newsym(obj->ox, obj->oy); /* might change color */
-#endif
             break;
         case SPE_DRAIN_LIFE:
             (void) drain_item(obj, TRUE);
@@ -3925,6 +3923,8 @@ bhit(
     boolean in_skip = FALSE, allow_skip = FALSE;
     boolean tethered_weapon = FALSE;
     int skiprange_start = 0, skiprange_end = 0, skipcount = 0;
+    struct obj *was_returning =
+        (iflags.returning_missile == obj) ? obj : (struct obj *) 0;
 
     if (weapon == KICKED_WEAPON) {
         /* object starts one square in front of player */
@@ -4014,6 +4014,8 @@ bhit(
                 ttmp->tseen = TRUE;
                 newsym(x, y);
             }
+            if (was_returning)
+                iflags.returning_missile = (genericptr_t) 0;
             break;
         }
 
@@ -4187,7 +4189,8 @@ bhit(
         point_blank = FALSE; /* affects passing through iron bars */
     }
 
-    if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM && !tethered_weapon)
+    if ((weapon != ZAPPED_WAND && weapon != INVIS_BEAM && !tethered_weapon)
+        || (was_returning && was_returning != iflags.returning_missile))
         tmp_at(DISP_END, 0);
 
     if (shopdoor)
@@ -4214,9 +4217,9 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
     register int i, ct;
     int boom; /* showsym[] index  */
     struct monst *mtmp;
-    boolean counterclockwise = TRUE; /* right-handed throw */
+    boolean counterclockwise = URIGHTY; /* ULEFTY => clockwise */
 
-    /* counterclockwise traversal patterns:
+    /* counterclockwise traversal patterns, from @ to 1 then on through to 9
      *  ..........................54.................................
      *  ..................43.....6..3....765.........................
      *  ..........32.....5..2...7...2...8...4....87..................
@@ -5850,7 +5853,7 @@ destroy_item(int osym, int dmgtyp)
     int i, deferral_indx = 0;
     /* 1+52+1: try to handle a full inventory; it doesn't matter if
       inventory actually has more, even if everything should be deferred */
-    unsigned short deferrals[1 + 52 + 1]; /* +1: gold, overflow */
+    unsigned short deferrals[invlet_gold + invlet_basic + invlet_overflow];
 
     (void) memset((genericptr_t) deferrals, 0, sizeof deferrals);
     /*

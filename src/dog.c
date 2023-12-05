@@ -604,10 +604,12 @@ mon_catchup_elapsed_time(
         mtmp->mstun = 0;
 
     /* might finish eating or be able to use special ability again */
-    if (imv > mtmp->meating)
-        finish_meating(mtmp);
-    else
-        mtmp->meating -= imv;
+    if (mtmp->meating) {
+        if (imv > mtmp->meating)
+            finish_meating(mtmp);
+        else
+            mtmp->meating -= imv;
+    }
     if (imv > mtmp->mspec_used)
         mtmp->mspec_used = 0;
     else
@@ -733,7 +735,7 @@ keepdogs(
                unlike level change for steed, don't bother trying
                to achieve a normal trap escape first */
             mtmp->mtrapped = 0;
-            mtmp->meating = 0;
+            finish_meating(mtmp);
             mtmp->msleeping = 0;
             mtmp->mfrozen = 0;
             mtmp->mcanmove = 1;

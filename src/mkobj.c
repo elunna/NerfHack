@@ -2063,13 +2063,12 @@ save_mtraits(struct obj *obj, struct monst *mtmp)
     if (!has_omonst(obj))
         newomonst(obj);
     if (has_omonst(obj)) {
-        int baselevel = mtmp->data->mlevel;
+        int baselevel = mtmp->data->mlevel; /* mtmp->data is valid ptr */
         struct monst *mtmp2 = OMONST(obj);
 
         *mtmp2 = *mtmp;
         mtmp2->mextra = (struct mextra *) 0;
-        if (mtmp->data)
-            mtmp2->mnum = monsndx(mtmp->data);
+        mtmp2->mnum = monsndx(mtmp->data);
         /* invalidate pointers */
         /* m_id is needed to know if this is a revived quest leader */
         /* but m_id must be cleared when loading bones */

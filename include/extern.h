@@ -178,6 +178,7 @@ extern boolean can_make_bones(void);
 extern void savebones(int, time_t, struct obj *);
 extern int getbones(void);
 extern boolean bones_include_name(const char *);
+extern void fix_ghostly_obj(struct obj *);
 
 /* ### botl.c ### */
 
@@ -1193,6 +1194,7 @@ extern struct obj *o_on(unsigned int, struct obj *);
 extern boolean obj_here(struct obj *, coordxy, coordxy);
 extern boolean wearing_armor(void);
 extern boolean is_worn(struct obj *);
+extern boolean is_inuse(struct obj *);
 extern struct obj *g_at(coordxy, coordxy);
 extern boolean splittable(struct obj *);
 extern int any_obj_ok(struct obj *);
@@ -1710,7 +1712,6 @@ extern struct attack *dmgtype_fromattack(struct permonst *, int, int);
 extern boolean dmgtype(struct permonst *, int);
 extern int max_passive_dmg(struct monst *, struct monst *);
 extern boolean same_race(struct permonst *, struct permonst *);
-extern int monsndx(struct permonst *);
 extern int name_to_mon(const char *, int *);
 extern int name_to_monplus(const char *, const char **, int *);
 extern int name_to_monclass(const char *, int *);
@@ -2086,7 +2087,6 @@ extern void option_help(void);
 extern void all_options_strbuf(strbuf_t *);
 extern void next_opt(winid, const char *);
 extern int fruitadd(char *, struct fruit *);
-extern int choose_classes_menu(const char *, int, boolean, char *, char *);
 extern boolean parsebindings(char *);
 extern void oc_to_str(char *, char *);
 extern void add_menu_cmd_alias(char, char);
@@ -2310,6 +2310,7 @@ extern void speed_up(long);
 
 extern boolean critically_low_hp(boolean);
 extern boolean stuck_in_wall(void);
+extern void desecrate_altar(boolean, aligntyp);
 extern int dosacrifice(void);
 extern boolean can_pray(boolean);
 extern int dopray(void);
@@ -2780,6 +2781,7 @@ extern int known_spell(short);
 extern int spell_idx(short);
 extern char force_learn_spell(short);
 extern int num_spells(void);
+extern void skill_based_spellbook_id(void);
 extern void spell_nag(void);
 
 /* ### steal.c ### */
@@ -3469,12 +3471,12 @@ extern void genl_display_file(const char *, boolean);
 extern boolean menuitem_invert_test(int, unsigned, boolean);
 extern const char *mixed_to_glyphinfo(const char *str, glyph_info *gip);
 extern void adjust_menu_promptstyle(winid, color_attr *);
+extern int choose_classes_menu(const char *, int, boolean, char *, char *);
 extern void add_menu(winid, const glyph_info *, const ANY_P *,
                      char, char, int, int, const char *, unsigned int);
 extern void add_menu_heading(winid, const char *);
 extern void add_menu_str(winid, const char *);
 extern int select_menu(winid, int, menu_item **);
-
 extern void getlin(const char *, char *);
 
 /* ### windows.c ### */

@@ -166,6 +166,7 @@ static struct trobj Wizard[] = {
     { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS },
     { SPE_FORCE_BOLT, 0, SPBOOK_CLASS, 1, 1 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS },
+    { MAGIC_MARKER, 19, TOOL_CLASS, 1, 0 }, /* actually spe = 18 + d4 */
     { 0, 0, 0, 0, 0 }
 };
 
@@ -586,7 +587,7 @@ knows_class(char sym)
 void
 u_init(void)
 {
-    register int i;
+    int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
 
     flags.female = flags.initgend;
@@ -879,6 +880,9 @@ u_init(void)
         break;
     }
 
+    /* roughly based on distribution in human population */
+    u.uhandedness = rn2(10) ? RIGHT_HANDED : LEFT_HANDED;
+
     if (discover)
         ini_inv(Wishing);
 
@@ -1118,8 +1122,11 @@ ini_inv(struct trobj *trop)
                        && obj->otyp != FLINT) {
                 obj->quan = 1L;
             }
-            if (trop->trspe != UNDEF_SPE)
+            if (trop->trspe != UNDEF_SPE) {
                 obj->spe = trop->trspe;
+                if (trop->trotyp == MAGIC_MARKER && obj->spe < 96)
+                    obj->spe += rn2(4);
+            }
             if (trop->trbless != UNDEF_BLESS)
                 obj->blessed = trop->trbless;
         }

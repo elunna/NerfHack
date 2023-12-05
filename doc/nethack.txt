@@ -1,4 +1,4 @@
-NETHACK(6)                       Games Manual                       NETHACK(6)
+NETHACK(6)                                                          NETHACK(6)
 
 
 
@@ -16,7 +16,7 @@ SYNOPSIS
        nethack [ -d|--directory directory ] -s|--scores [ -v ]
        [ -p profession ] [ -r race ] [ playernames ]
 
-       nethack [ --usage | --help ] [ --showpaths ] [ --version[:paste] ]
+       nethack [ --usage | --help ] [ --showpaths ] [ --version[:copy] ]
 
 DESCRIPTION
        NetHack is a display oriented Dungeons & Dragons(tm) - like game.   The
@@ -134,16 +134,17 @@ DESCRIPTION
        --no-hackemrc option can be used to skip  any  run-time  configuration
        file.
 
+
        Some options provide feedback and then exit rather than play the game:
 
        The  -s or --scores option alone will print out the list of your scores
        on the current version.  An immediately following  -v  reports  on  all
-       versions present in the score file.  '-s|-s -v' may also be followed by
+       versions present in the score file.  `-s|-s -v' may also be followed by
        arguments -p profession and -r race to print the scores  of  particular
        roles  and  races  only.   Either  can  be  specified multiple times to
        include more than one role or more than one race.  When both are speci-
        fied,  score  entries which match either the role or the race (or both)
-       are printed rather than just entries which match both.  '-s|-s -v'  may
+       are printed rather than just entries which match both.  `-s|-s -v'  may
        be  followed  by  one  or  more player names to print the scores of the
        players mentioned, by 'all' to print out all scores, or by a number  to
        print  that many top scores.  Combining names with role or race or both
@@ -153,10 +154,10 @@ DESCRIPTION
        --version  can be used to cause NetHack to show the version information
        it was compiled with, then exit.  That will include the git commit hash
        if  the  information was available when the game was compiled.  On some
-       platforms, such as Windows and macOS, a variation  --version:paste  can
-       be  used  to  cause NetHack to show the version information, then exit,
-       while also leaving a copy of the version information in the paste  buf-
-       fer or clipboard for potential insertion into things like bug reports.
+       platforms, such as Windows and macOS, a variation --version:copy can be
+       used to cause NetHack to show the version information, then exit, while
+       also leaving a copy of the version information in the paste  buffer  or
+       clipboard for potential insertion into things like bug reports.
 
        --showpaths  can be used to cause NetHack to show where it is expecting
        to find various files.  Among other things it shows  the  path  to  and
@@ -164,7 +165,7 @@ DESCRIPTION
        can be editted to customize aspects of how the game operates.
 
        --usage or --help will display information similar to this manual page,
-       then exit.  Use 'nethack --usage | more' to read it a page at a time.
+       then exit.  Use `nethack --usage | more' to read it a page at a time.
 
 AUTHORS
        Jay  Fenlason  (+  Kenny  Woodland, Mike Thome and Jon Payne) wrote the
@@ -203,7 +204,7 @@ FILES
                                    map features.
        options                     Data file containing a description of the
                                    build-time option settings.
-       help, hh, cmdhelp           Help data files.  ('cmdhelp' is obsolete.)
+       help, hh, cmdhelp           Help data files.  ('cmdhelp' is  obsolete.)
        opthelp, optmenu, wizhelp   More help data files.
        keyhelp, usagehlp           Even more help data files.
        *.lua                       Predefined special levels, dungeon control
@@ -236,11 +237,11 @@ FILES
                                    program is built with 'SYSCF' option
                                    enabled, ignored if not.
 
-       The location of 'sysconf' is specified  at  build  time  and  can't  be
-       changed  except  by  updating source file "config.h" and rebuilding the
+       The  location  of  'sysconf'  is  specified  at build time and can't be
+       changed except by updating source file "config.h"  and  rebuilding  the
        program.
 
-       NetHack's Guidebook  might  not  be  present  if  whoever  packaged  or
+       NetHack's  Guidebook  might  not  be  present  if  whoever  packaged or
        installed the program distribution neglected to include it.
 
        In a perfect world, 'paniclog' would remain empty.
@@ -257,7 +258,7 @@ ENVIRONMENT
        NETHACKDIR or HACKDIR   Playground.
        NETHACKOPTIONS          String predefining several NetHack options.
 
-       If  the same option is specified in both NETHACKOPTIONS and .hackemrc,
+       If the same option is specified in both NETHACKOPTIONS and .hackemrc,
        the value assigned in NETHACKOPTIONS takes precedence.
 
        SHOPTYPE and SPLEVTYPE can be used in debugging (wizard) mode.
@@ -270,8 +271,8 @@ BUGS
        Probably infinite.
 
 COPYRIGHT
-       This file is Copyright (C) Robert  Patrick  Rankin,  2022  for  version
-       NetHack-3.7:1.27.   NetHack  may  be freely redistributed.  See license
+       This  file  is  Copyright  (C)  Robert Patrick Rankin, 2022 for version
+       NetHack-3.7:1.31.  NetHack may be freely  redistributed.   See  license
        for details.
 
        Dungeons & Dragons is a Trademark of Wizards of the Coast, Inc.

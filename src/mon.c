@@ -268,7 +268,7 @@ mon_sanity_check(void)
         sanity_check_single_mon(mtmp, FALSE, "migr");
 
         if ((mtmp->mstate
-             & ~(MON_MIGRATING | MON_LIMBO | MON_ENDGAME_MIGR)) != 0L
+             & ~(MON_MIGRATING | MON_LIMBO | MON_ENDGAME_MIGR | MON_OFFMAP)) != 0L
             || !(mtmp->mstate & MON_MIGRATING))
             impossible("migrating mon (%s) with mstate set to 0x%08lx",
                        fmt_ptr((genericptr_t) mtmp), mtmp->mstate);
@@ -3292,7 +3292,15 @@ xkilled(
             otmp = mkobj(RANDOM_CLASS, TRUE);
             /* don't create large objects from small monsters */
             otyp = otmp->otyp;
-            if (mdat->msize < MZ_HUMAN && otyp != FIGURINE
+            if (otmp->oclass == FOOD_CLASS && !(mdat->mflags2 & M2_COLLECT) &&
+                !otmp->oartifact) {
+                /* don't drop newly created permafood from kills, unless
+                   the monster collects food; it creates too much nutrition
+                   in the late game and encourages grinding in the early
+                   game; oartifact check is paranoia and will be redundant
+                   until an artifact comestible is added */
+                delobj(otmp);
+            } else if (mdat->msize < MZ_HUMAN && otyp != FIGURINE
                 /* oc_big is also oc_bimanual and oc_bulky */
                 && (otmp->owt > 30 || objects[otyp].oc_big)) {
                 if (otmp->oartifact) /* un-create */

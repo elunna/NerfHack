@@ -131,7 +131,7 @@ VDECLCB(shim_display_file,(const char *name, boolean complain), "vsi", P2V name,
 VDECLCB(shim_start_menu,(winid window, unsigned long mbehavior), "vii", A2P window, A2P mbehavior)
 VDECLCB(shim_add_menu,
     (winid window, const glyph_info *glyphinfo, const ANY_P *identifier, char ch, char gch, int attr, int clr, const char *str, unsigned int itemflags),
-    "vippiiisi",
+    "vippiiiisi",
     A2P window, P2V glyphinfo, P2V identifier, A2P ch, A2P gch, A2P attr, A2P clr, P2V str, A2P itemflags)
 VDECLCB(shim_end_menu,(winid window, const char *prompt), "vis", A2P window, P2V prompt)
 /* XXX: shim_select_menu menu_list is an output */
@@ -186,7 +186,7 @@ void shim_update_inventory(int a1 UNUSED) {
 win_request_info *
 shim_ctrl_nhwindow(
     winid window UNUSED,
-    int request,
+    int request UNUSED,
     win_request_info *wri UNUSED) {
     return (win_request_info *) 0;
 }
@@ -213,11 +213,7 @@ struct window_procs shim_procs = {
      | WC2_RESET_STATUS
 #endif
      | WC2_DARKGRAY | WC2_SUPPRESS_HIST | WC2_STATUSLINES),
-#ifdef TEXTCOLOR
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},   /* color availability */
-#else
-    {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-#endif
     shim_init_nhwindows, shim_player_selection, shim_askname, shim_get_nh_event,
     shim_exit_nhwindows, shim_suspend_nhwindows, shim_resume_nhwindows,
     shim_create_nhwindow, shim_clear_nhwindow, shim_display_nhwindow,

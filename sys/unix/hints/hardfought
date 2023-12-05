@@ -1,4 +1,4 @@
-# NetHack 3.7  linux.370 $NHDT-Date: 1693519390 2023/08/31 22:03:10 $  $NHDT-Branch: keni-crashweb2 $:$NHDT-Revision: 1.61 $
+# NetHack 3.7  linux.370 $NHDT-Date: 1668359835 2022/11/13 17:17:15 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.50 $
 # Copyright (c) Kenneth Lorber, Kensington, Maryland, 2007.
 # NetHack may be freely redistributed.  See license for details.
 #
@@ -20,33 +20,31 @@
 #        multiw-1.370 contains sections 1 to 2
 #-INCLUDE multiw-1.370
 
-HINTSVERSION := 370
-
-ifdef MAKEFILE_TOP
-ifeq ($(MAKELEVEL),0)
 PRECHECK+=checkmakefiles
-# all files included from this hints file get listed
-# in HINTSINCLNAMES (without suffix and without a path)
-HINTSINCLNAMES := compiler cross-pre cross-post \
-		gbdates-pre gbdates-post \
-		multiw-1 multiw-2 misc \
-		multisnd1-pre multisnd2-pre multisnd-post
-HINTSINCLFILES := $(addsuffix .$(HINTSVERSION), $(HINTSINCLNAMES))
-endif
-endif
 
 ifndef LIBXPM
 LIBXPM= -L/opt/X11/lib -lXpm
 endif
 
 #4. Other
-GAMEUID  = $(USER)
+GAMEUID  = games
 GAMEGRP  = games
 
 #-----------------------------------------------------------------------------
 # You shouldn't need to change anything below here (in the hints file; if
 # you're reading this in Makefile augmented by hints, that may not be true).
 #
+
+ifeq "$(GIT)" "1"
+ifndef GITSUBMODULES
+GITSUBMODULES=1
+endif
+endif
+ifeq "$(git)" "1"
+ifndef GITSUBMODULES
+GITSUBMODULES=1
+endif
+endif
 
 #-INCLUDE multiw-2.370
 
@@ -65,14 +63,24 @@ QTDIR=/usr/local/qt6
 endif   # WANT_WIN_QT6
 endif  # WANT_WIN_QT
 
-# misc.370 must come after compiler.370
+# multiw-3.370 must come after compiler.370
 # and after QTDIR is defined.
 #
-#-INCLUDE misc.370
+#-INCLUDE multiw-3.370
 
 ifeq "$(USE_ASAN)" "1"
 CFLAGS+=-fsanitize=address
 LFLAGS+=-fsanitize=address
+endif
+
+ifdef WANT_WIN_TTY
+USE_CURSESLIB=1
+endif
+
+ifdef WANT_WIN_CURSES
+ifneq "$(USE_CURSESLIB)" "1"
+USE_CURSESLIB=1
+endif
 endif
 
 ifeq "$(USE_CURSESLIB)" "1"
@@ -115,22 +123,29 @@ AUTOLIBS=$(shell (../util/makedefs --grep-defined CRASHREPORT && echo "-lcrypto"
 # NetHack sources control
 NHCFLAGS+=-DDLB
 NHCFLAGS+=-DHACKDIR=\"$(HACKDIR)\"
+NHCFLAGS+=-DVAR_PLAYGROUND=\"$(HACKDIR)/var\"
 NHCFLAGS+=-DDEFAULT_WINDOW_SYS=\"$(WANT_DEFAULT)\"
 NHCFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
 NHCFLAGS+=-DTIMED_DELAY
-NHCFLAGS+=-DDUMPLOG
 NHCFLAGS+=-DCONFIG_ERROR_SECURE=FALSE
+NHCFLAGS+=-DPANICLOG_FMT2
+NHCFLAGS+=-DFCMASK=0644
 #NHCFLAGS+=-DGREPPATH=\"/usr/bin/grep\"
 NHCFLAGS+=-DCOMPRESS=\"/bin/gzip\" -DCOMPRESS_EXTENSION=\".gz\"
 #NHCFLAGS+=-DNOMAIL
 #NHCFLAGS+=-DEXTRA_SANITY_CHECKS
-#NHCFLAGS+=-DEDIT_GETLIN
-#NHCFLAGS+=-DSCORE_ON_BOTL
+NHCFLAGS+=-DEDIT_GETLIN
+NHCFLAGS+=-DSCORE_ON_BOTL
 #NHCFLAGS+=-DMSGHANDLER
-#NHCFLAGS+=-DTTY_TILES_ESCCODES
+NHCFLAGS+=-DTTY_TILES_ESCCODES
 #NHCFLAGS+=-DTTY_SOUND_ESCCODES
 #NHCFLAGS+=-DNO_CHRONICLE
-#NHCFLAGS+=-DLIVELOG
+NHCFLAGS+=-DDGAMELAUNCH
+NHCFLAGS+=-DLIVELOG
+NHCFLAGS+=-DDUMPLOG
+NHCFLAGS+=-DDUMPHTML
+NHCFLAGS+=-DUSE_GENERAL_ALTAR_COLORS
+
 ifdef WANT_WIN_CURSES
 ifeq "$(HAVE_NCURSESW)" "1"
 NHCFLAGS+=-DCURSES_UNICODE
@@ -295,12 +310,16 @@ override GAME=
 MOREALL += ( cd src ; $(MAKE) pregame ; $(MAKE) $(TARGETPFX)libnh.a )
 endif  # WANT_LIBNH
 
-#PREFIX=/usr
-PREFIX=$(wildcard ~)/hackem/install
-HACKDIR=$(PREFIX)/games/lib/hackemdir
-SHELLDIR = $(PREFIX)/games
-INSTDIR=$(HACKDIR)
-VARDIR = $(HACKDIR)
+# this is the chroot dir
+PREFIX=/opt/nethack/chroot
+
+# this is the dir where NetHack is inside the chroot
+HACKDIR=/nh370.89-hdf
+INSTDIR=$(PREFIX)$(HACKDIR)
+VARDIR =$(INSTDIR)/var
+
+# DGL does not use the shell script launcher
+SHELLDIR=/tmp
 
 POSTINSTALL+= cp -n sys/unix/sysconf $(INSTDIR)/sysconf; \
 	$(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; \
@@ -340,8 +359,8 @@ DLLIB = -ldl
 LFLAGS+=-rdynamic
 
 # if TTY_TILES_ESCCODES
-#WINSRC += tile.c
-#WINOBJ += tile.o
+WINSRC += tile.c
+WINOBJ += tile.o
 # endif
 
 CHOWN=true
@@ -350,9 +369,6 @@ CHGRP=true
 VARDIRPERM = 0755
 VARFILEPERM = 0600
 GAMEPERM = 0755
-#
-# manpages directory
-MANDIR=/usr/share/man/man6
 #
 #-INCLUDE cross-pre.370
 #
@@ -374,15 +390,9 @@ MANDIR=/usr/share/man/man6
 #-INCLUDE multisnd-post.370
 #
 
-ifdef MAKEFILE_TOP
-ifeq ($(MAKELEVEL),0)
 .PHONY: checkmakefiles
 checkmakefiles:
-	@$(MAKE) -f sys/unix/Makefile.check \
-		HINTSFILE="$(HINTSFILE)" HINTSINCLFILES="$(HINTSINCLFILES)"
-endif
-endif
-
+	( $(MAKE) -f sys/unix/Makefile.check )
 ifdef WANT_LIBNH
 $(TARGETPFX)libnh.a: $(HOBJ) $(LIBNHSYSOBJ) ../lib/lua/liblua.a
 	$(AR) rcs $@ $(HOBJ) $(LIBNHSYSOBJ) ../lib/lua/liblua.a

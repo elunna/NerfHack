@@ -1039,6 +1039,7 @@ enum docrt_flags_bits {
     docrtRefresh = 1, /* redraw_map(), draw what we think the map shows */
     docrtMapOnly = 2, /* ORed with Recalc or Refresh; draw the map but not
                        * status or perminv */
+    docrtNocls = 4,
 };
 
 typedef struct {
@@ -1046,12 +1047,10 @@ typedef struct {
     glyph_info glyphinfo;
 } gbuf_entry;
 
-#ifdef TEXTCOLOR
 extern const int altarcolors[];
 extern const int zapcolors[];
 extern const int explodecolors[];
 extern int wallcolors[];
-#endif
 
 /* If TILES_IN_GLYPHMAP is defined during build, this is defined
  * in the generated tile.c, complete with appropriate tile references in

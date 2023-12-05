@@ -562,15 +562,16 @@ void
 digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
 {
     struct obj *oldobjs, *newobjs;
-    register struct trap *ttmp;
-    char surface_type[BUFSZ];
+    struct trap *ttmp;
+    const char *surface_type, *tname, *in_thru;
+    char furniture[BUFSZ];
     struct rm *lev = &levl[x][y];
-    boolean shopdoor;
     struct monst *mtmp = m_at(x, y); /* may be madeby */
-    boolean madeby_u = (madeby == BY_YOU);
-    boolean madeby_obj = (madeby == BY_OBJECT);
-    boolean at_u = u_at(x, y);
-    boolean wont_fall = Levitation || Flying;
+    boolean madeby_u = (madeby == BY_YOU), madeby_obj = (madeby == BY_OBJECT),
+            /* BY_OBJECT means the hero broke a wand, so blame her for it */
+            heros_fault = (madeby_u || madeby_obj);
+    boolean shopdoor, at_u = u_at(x, y), wont_fall = Levitation || Flying;
+    int old_typ, old_aligntyp = A_NONE;
 
     if (at_u && u.utrap) {
         if (u.utraptype == TT_BURIEDBALL)
@@ -588,41 +589,63 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
         ttyp = PIT;
     }
 
-    /* maketrap() might change it, also, in this situation,
-       surface() returns an inappropriate string for a grave */
-    if (IS_GRAVE(lev->typ))
-        Strcpy(surface_type, "grave");
-    else
-        Strcpy(surface_type, surface(x, y));
+    /* maketrap() might change terrain type but we deliver messages after
+       that, so prepare in advance */
+    old_typ = lev->typ;
+    furniture[0] = '\0';
+    if (IS_FURNITURE(lev->typ)) {
+        /* should mirror the word used by surface() for normal floor */
+        surface_type = (IS_ROOM(lev->typ) && !Is_earthlevel(&u.uz)
+                         ? "floor" : "ground");
+        if (IS_ALTAR(lev->typ)) {
+            old_aligntyp = Amask2align(levl[x][y].altarmask & AM_MASK);
+            Strcpy(furniture, align_str(old_aligntyp));
+            Strcat(furniture, " ");
+        }
+        Strcat(furniture, surface(x, y));
+    } else {
+        surface_type = surface(x, y);
+    }
     shopdoor = IS_DOOR(lev->typ) && *in_rooms(x, y, SHOPBASE);
     oldobjs = gl.level.objects[x][y];
     ttmp = maketrap(x, y, ttyp);
     if (!ttmp)
         return;
     newobjs = gl.level.objects[x][y];
-    ttmp->madeby_u = madeby_u;
+    ttmp->madeby_u = heros_fault;
     ttmp->tseen = 0;
     if (cansee(x, y))
         seetrap(ttmp);
     else if (madeby_u)
         feeltrap(ttmp);
 
+    tname = trapname(ttyp, TRUE);
+    in_thru = (ttyp == HOLE ? "through" : "in");
+    if (madeby_u) {
+        if (x != u.ux || y != u.uy)
+            You("dig an adjacent %s.", tname);
+        else
+            You("dig %s %s the %s.", an(tname), in_thru, surface_type);
+    } else if (!madeby_obj && canseemon(madeby)) {
+        pline("%s digs %s %s the %s.", Monnam(madeby), an(tname), in_thru,
+              surface_type);
+    } else if (cansee(x, y) && flags.verbose) {
+        pline("%s appears in the %s.", An(tname), surface_type);
+    }
+    if (IS_FURNITURE(old_typ) && cansee(x, y))
+        pline_The("%s falls into the %s!", furniture, tname);
+    /* wrath should immediately follow altar destruction message */
+    if (heros_fault && old_typ == ALTAR)
+        desecrate_altar(FALSE, old_aligntyp);
+
+    /* now deal with actual post-trap creation effects */
     if (ttyp == PIT) {
-        if (madeby_u) {
-            if (x != u.ux || y != u.uy)
-                You("dig an adjacent pit.");
-            else
-                You("dig a pit in the %s.", surface_type);
-            if (shopdoor)
-                pay_for_damage("ruin", FALSE);
-            else
-                add_damage(x, y, madeby_u ? SHOP_PIT_COST : 0L);
+        if (shopdoor && heros_fault)
+            pay_for_damage("ruin", FALSE);
+        else
+            add_damage(x, y, heros_fault ? SHOP_PIT_COST : 0L);
+        if (madeby_u)
             wake_nearby();
-        } else if (!madeby_obj && canseemon(madeby)) {
-            pline("%s digs a pit in the %s.", Monnam(madeby), surface_type);
-        } else if (cansee(x, y) && flags.verbose) {
-            pline("A pit appears in the %s.", surface_type);
-        }
         /* in case we're digging down while encased in solid rock
            which is blocking levitation or flight */
         switch_terrain();
@@ -646,15 +669,6 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
                 (void) mintrap(mtmp, NO_TRAP_FLAGS);
         }
     } else { /* was TRAPDOOR now a HOLE*/
-
-        if (madeby_u)
-            You("dig a hole through the %s.", surface_type);
-        else if (!madeby_obj && canseemon(madeby))
-            pline("%s digs a hole through the %s.", Monnam(madeby),
-                  surface_type);
-        else if (cansee(x, y) && flags.verbose)
-            pline("A hole appears in the %s.", surface_type);
-
         if (at_u) {
             /* in case we're digging down while encased in solid rock
                which is blocking levitation or flight */
@@ -677,18 +691,15 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
                     impact_drop((struct obj *) 0, x, y, 0);
                 if (oldobjs != newobjs)
                     (void) pickup(1);
-                if (shopdoor && madeby_u)
+                if (shopdoor && heros_fault)
                     pay_for_damage("ruin", FALSE);
-
             } else {
                 d_level newlevel;
 
-                if (*u.ushops && madeby_u)
+                if (*u.ushops && heros_fault)
                     shopdig(1); /* shk might snatch pack */
-                /* handle earlier damage, eg breaking wand of digging */
-                else if (!madeby_u)
+                else /* handle any earlier hero-caused damage */
                     pay_for_damage("dig into", TRUE);
-
                 You("fall through...");
                 /* Earlier checks must ensure that the destination
                  * level exists and is in the present dungeon.
@@ -700,7 +711,7 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
                 spoteffects(FALSE);
             }
         } else {
-            if (shopdoor && madeby_u)
+            if (shopdoor && heros_fault)
                 pay_for_damage("ruin", FALSE);
             if (newobjs)
                 impact_drop((struct obj *) 0, x, y, 0);

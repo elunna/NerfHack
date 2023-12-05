@@ -7,8 +7,6 @@
 
 /* #define SHELL */    /* nt use of pcsys routines caused a hang */
 
-#define TEXTCOLOR /* Color text */
-
 #define EXEPATH              /* Allow .exe location to be used as HACKDIR */
 #define TRADITIONAL_GLYPHMAP /* Store glyph mappings at level change time */
 
@@ -101,12 +99,7 @@ extern char *windows_exepath(void);
  */
 
 #ifdef __MINGW32__
-#if 0
 #define MD_USE_TMPFILE_S
-#if !defined(__cplusplus)
-extern errno_t tmpfile_s(FILE * restrict * restrict streamptr);
-#endif
-#endif
 #
 #ifdef strncasecmp
 #undef strncasecmp

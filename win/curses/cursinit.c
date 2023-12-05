@@ -308,7 +308,6 @@ curses_create_main_windows(void)
 void
 curses_init_nhcolors(void)
 {
-#ifdef TEXTCOLOR
     if (has_colors()) {
         use_default_colors();
         init_pair(1, COLOR_BLACK, -1);
@@ -369,7 +368,6 @@ curses_init_nhcolors(void)
             init_pair(16, COLOR_WHITE + 8, -1);
         }
     }
-#endif
 }
 
 #if 0   /* curses_choose_character + curses_character_dialog no longer used */
@@ -692,7 +690,7 @@ int
 curses_character_dialog(const char **choices, const char *prompt)
 {
     int count, count2, ret, curletter;
-    char used_letters[52];
+    char used_letters[invlet_basic]; /* a..zA..Z */
     anything identifier;
     menu_item *selected = NULL;
     winid wid = curses_get_wid(NHW_MENU);

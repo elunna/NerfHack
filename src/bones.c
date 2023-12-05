@@ -1,4 +1,4 @@
-/* NetHack 3.7	bones.c	$NHDT-Date: 1654931350 2022/06/11 07:09:10 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.119 $ */
+/* NetHack 3.7	bones.c	$NHDT-Date: 1701500709 2023/12/02 07:05:09 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.129 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985,1993. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -11,6 +11,7 @@ static void resetobjs(struct obj *, boolean);
 static void give_to_nearby_mon(struct obj *, coordxy, coordxy);
 static boolean fixuporacle(struct monst *);
 static void remove_mon_from_bones(struct monst *);
+static void set_ghostly_objlist(struct obj *objchain);
 
 static boolean
 no_bones_level(d_level *lev)
@@ -448,12 +449,14 @@ savebones(int how, time_t when, struct obj *corpse)
     for (f = gf.ffruit; f; f = f->nextf)
         f->fid = -f->fid;
 
+    set_ghostly_objlist(gi.invent);
     /* dispose of your possessions, usually cursed */
     if (u.ugrave_arise == (NON_PM - 1)) {
         struct obj *otmp;
 
         /* embed your possessions in your statue */
-        otmp = mk_named_object(STATUE, &mons[u.umonnum], u.ux, u.uy, gp.plname);
+        otmp = mk_named_object(STATUE, &mons[u.umonnum], u.ux, u.uy,
+                               gp.plname);
 
         drop_upon_death((struct monst *) 0, otmp, u.ux, u.uy);
         if (!otmp)
@@ -503,17 +506,22 @@ savebones(int how, time_t when, struct obj *corpse)
         Strcpy(mtmp->former_rank, rank());
     }
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        set_ghostly_objlist(mtmp->minvent);
         resetobjs(mtmp->minvent, FALSE);
         /* do not zero out m_ids for bones levels any more */
         mtmp->mlstmv = 0L;
         if (mtmp->mtame)
             mtmp->mtame = mtmp->mpeaceful = 0;
+        /* observations about the current hero won't apply to future game */
+        mtmp->seen_resistance = M_SEEN_NOTHING;
     }
     for (ttmp = gf.ftrap; ttmp; ttmp = ttmp->ntrap) {
         ttmp->madeby_u = 0;
         ttmp->tseen = unhideable_trap(ttmp->ttyp);
     }
+    set_ghostly_objlist(fobj);
     resetobjs(fobj, FALSE);
+    set_ghostly_objlist(gl.level.buriedobjlist);
     resetobjs(gl.level.buriedobjlist, FALSE);
 
     /* Hero is no longer on the map. */
@@ -718,6 +726,41 @@ bones_include_name(const char *name)
     }
 
     return FALSE;
+}
+
+/* set the ghostly bit in a list of objects */
+static void
+set_ghostly_objlist(struct obj *objchain)
+{
+    while (objchain) {
+        objchain->ghostly = 1;
+        objchain = objchain->nobj;
+    }
+}
+
+/* This is called when a marked object from a bones file is picked-up.
+   Some could result in a message, and the obj->ghostly flag is always
+   cleared. obj->ghostly has no other usage at this time. */
+void
+fix_ghostly_obj(struct obj *obj)
+{
+    if (!obj->ghostly)
+        return;
+    switch(obj->otyp) {
+        /* asymetrical weapons */
+        case BOW:
+        case ELVEN_BOW:
+        case ORCISH_BOW:
+        case YUMI:
+        case BOOMERANG:
+            You("make adjustments to %s to suit your %s hand.",
+                the(xname(obj)),
+                URIGHTY ? "right" : "left");
+            break;
+        default:
+            break;
+    }
+    obj->ghostly = 0;
 }
 
 /*bones.c*/

@@ -1,4 +1,4 @@
-MAKEDEFS(6)                      Games Manual                      MAKEDEFS(6)
+MAKEDEFS(6)                                                        MAKEDEFS(6)
 
 
 
@@ -32,7 +32,7 @@ SHORT COMMANDS
 
        -m     Generate  date.h and options file. It will read dat/gitinfo.txt,
               only if it is present, to obtain githash= and gitbranch=
-               info and include related preprocessor #defines in date.h file.
+               info and include related preprocessor #defines in date.h  file.
 
        -p     Generate pm.h
 
@@ -47,7 +47,7 @@ LONG COMMANDS
               Show debugging output.
 
        --make [command]
-              Execute a short command.  Command  is  given  without  preceding
+              Execute  a  short  command.   Command is given without preceding
               dash.
 
        --input file
@@ -55,25 +55,29 @@ LONG COMMANDS
               is - standard input is read.
 
        --output file
-              Specify the output file for the command  (if  needed).   If  the
+              Specify  the  output  file  for the command (if needed).  If the
               file is - standard output is written.
 
        --svs [delimiter]
-              Generate  a version string to standard output without a trailing
-              newline.  If specified, the delimiter is used between each  part
+              Generate a version string to standard output without a  trailing
+              newline.   If specified, the delimiter is used between each part
               of the version string.
 
-       --grep Filter  the input file to the output file.  See the MDGREP FUNC-
+       --grep Filter the input file to the output file.  See the MDGREP  FUNC-
               TIONS section below for information on controlling the filtering
               operation.
 
        --grep-showvars
-              Show  the  name  and  value  for each variable known to the grep
+              Show the name and value for each  variable  known  to  the  grep
               option.
 
        --grep-trace
-              Turn on debug tracing for the grep function  (  --grep  must  be
+              Turn  on  debug  tracing  for the grep function ( --grep must be
               specified as well).
+
+       --grep-defined symbol
+              Exit shell true (0) if symbol is known  and  defined,  otherwise
+              exit shell false (1).
 
        --grep-define symbol
               Force  the value of symbol to be "defined."  Symbol must already
@@ -133,9 +137,9 @@ AUTHOR
        The NetHack Development Team
 
 COPYRIGHT
-       This  file  is  Copyright  (C)  Kenneth  Lorber,   2022   for   version
-       NetHack-3.7:1.18.   NetHack  may  be freely redistributed.  See license
-       for details.
+       This file is Copyright (C) Kenneth Lorber, 2022 for version keni-crash-
+       web2:1.21.   NetHack  may  be  freely  redistributed.   See license for
+       details.
 
 
 
