@@ -618,7 +618,7 @@
     /*
      * orcs
      */
-    MON("goblin", S_ORC, LVL(0, 6, 10, 0, -3), (G_GENO | 2),
+    MON("goblin", S_ORC, LVL(0, 6, 10, 0, -3), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 100, MS_ORC, MZ_SMALL), 0, 0, M1_HUMANOID | M1_OMNIVORE,
