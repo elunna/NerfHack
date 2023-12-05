@@ -13,6 +13,7 @@ static boolean known_hitum(struct monst *, struct obj *, int *, int, int,
                            struct attack *, int);
 static boolean theft_petrifies(struct obj *);
 static void steal_it(struct monst *, struct attack *);
+static void mhitm_ad_slow_core(struct monst *, struct monst *);
 static boolean hitum_cleave(struct monst *, struct attack *);
 static boolean double_punch(void);
 static boolean hitum(struct monst *, struct attack *);
@@ -2498,6 +2499,13 @@ mhitm_ad_drli(
                heal any from the drained life */
         }
     }
+    /* Ice devils' cold sting has some troublesome side effects */
+    if (monsndx(magr->data) == PM_ICE_DEVIL) {
+        if (mhm->damage == 0 && !rn2(5)) /* damage == 0: cold resistance */
+            strip_cold_resistance(mdef);
+        else
+            mhitm_ad_slow_core(magr, mdef); /* note this is only 25% on hero */
+    }
 }
 
 void
@@ -2667,6 +2675,13 @@ mhitm_ad_cold(
             mhm->damage = 0;
         }
         mhm->damage += destroy_mitem(mdef, POTION_CLASS, AD_COLD);
+    }
+    /* Ice devils' cold sting has some troublesome side effects */
+    if (monsndx(magr->data) == PM_ICE_DEVIL) {
+        if (mhm->damage == 0 && !rn2(5)) /* damage == 0: cold resistance */
+            strip_cold_resistance(mdef);
+        else
+            mhitm_ad_slow_core(magr, mdef); /* note this is only 25% on hero */
     }
 }
 
@@ -3620,20 +3635,15 @@ mhitm_ad_ench(
     }
 }
 
-void
-mhitm_ad_slow(
-    struct monst *magr, struct attack *mattk,
-    struct monst *mdef,
-    struct mhitm_data *mhm UNUSED)
+/* guts of mhitm_ad_slow(); extracted so that ice devils' cold attack can cause
+ * slowness; assumes checks for avoiding slowing have already been performed.
+ * Note that this doesn't take mhm_data so it can't adjust damage. */
+static void
+mhitm_ad_slow_core(struct monst *magr, struct monst *mdef)
 {
-    boolean negated = mhitm_mgc_atk_negated(magr, mdef, FALSE);
-
-    if (defended(mdef, AD_SLOW))
-        return;
-
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (!negated && mdef->mspeed != MSLOW) {
+        if (mdef->mspeed != MSLOW) {
             unsigned int oldspeed = mdef->mspeed;
 
             mon_adjust_speed(mdef, -1, (struct obj *) 0);
@@ -3642,12 +3652,11 @@ mhitm_ad_slow(
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-        hitmsg(magr, mattk);
-        if (!negated && HFast && !rn2(4))
+        if (HFast && !rn2(4))
             u_slow_down();
     } else {
         /* mhitm */
-        if (!negated && mdef->mspeed != MSLOW) {
+        if (mdef->mspeed != MSLOW) {
             unsigned int oldspeed = mdef->mspeed;
 
             mon_adjust_speed(mdef, -1, (struct obj *) 0);
@@ -3656,6 +3665,24 @@ mhitm_ad_slow(
                 pline("%s slows down.", Monnam(mdef));
         }
     }
+}
+
+void
+mhitm_ad_slow(
+    struct monst *magr, struct attack *mattk,
+    struct monst *mdef, struct mhitm_data *mhm UNUSED)
+{
+    boolean negated = mhitm_mgc_atk_negated(magr, mdef, FALSE);
+
+    if (defended(mdef, AD_SLOW))
+        return;
+    if (mdef == &gy.youmonst) {
+        hitmsg(magr, mattk);
+    }
+    if (negated)
+        return;
+
+    mhitm_ad_slow_core(magr, mdef);
 }
 
 void

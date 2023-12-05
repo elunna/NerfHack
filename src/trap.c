@@ -1656,6 +1656,29 @@ trapeffect_fire_trap(
     return Trap_Effect_Finished;
 }
 
+/* Remove any intrinsic cold resistance from mtmp, which can be either the
+ * player or a monster. Does not affect extrinsic cold resistance or resistance
+ * inherent to a monster's form.
+ * Return true if it was removed, false if mtmp did not have cold resistance. */
+boolean
+strip_cold_resistance(struct monst *mtmp)
+{
+    if (mtmp == &gy.youmonst) {
+        if (HCold_resistance) {
+            HCold_resistance = 0;
+            You_feel("alarmingly cooler.");
+            return TRUE;
+        }
+    }
+    else {
+        if (mtmp->mintrinsics & MR_COLD) {
+            mtmp->mintrinsics &= ~MR_COLD;
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 static int
 trapeffect_pit(
     struct monst *mtmp,
