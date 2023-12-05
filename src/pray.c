@@ -708,6 +708,12 @@ angrygods(aligntyp resp_god)
         resp_god = A_NONE;
     u.ublessed = 0; /* lose divine protection */
 
+    if (u.ualign.type == resp_god) {
+        u.lastprayed = gm.moves;
+        u.lastprayresult = PRAY_ANGER;
+        u.reconciled = REC_NONE;
+    }
+
     /* changed from tmp = u.ugangr + abs (u.uluck) -- rph */
     /* added test for alignment diff -dlc */
     if (resp_god != u.ualign.type)
@@ -1663,6 +1669,9 @@ offer_fake_amulet(
         } else { /* value < 0 */
             gods_upset(altaralign);
         }
+        u.lastprayed = gm.moves;
+        u.lastprayresult = PRAY_ANGER;
+        u.reconciled = REC_NONE;
     }
 }
 
@@ -1685,9 +1694,15 @@ offer_different_alignment_altar(
             /* Beware, Conversion is costly */
             change_luck(-3);
             u.ublesscnt += 300;
+            u.lastprayed = gm.moves;
+            u.lastprayresult = PRAY_CONV;
+            u.reconciled = REC_NONE;
         } else {
             u.ugangr += 3;
             adjalign(-5);
+            u.lastprayed = gm.moves;
+            u.lastprayresult = PRAY_ANGER;
+            u.reconciled = REC_NONE;
             pline("%s rejects your sacrifice!", a_gname());
             godvoice(altaralign, "Suffer, infidel!");
             change_luck(-5);
@@ -1847,6 +1862,9 @@ bestow_artifact(void)
             godvoice(u.ualign.type, "Use my gift wisely!");
             u.ugifts++;
             u.ublesscnt = rnz(300 + (50 * u.ugifts));
+            u.lastprayed = gm.moves;
+            u.lastprayresult = PRAY_GIFT;
+            u.reconciled = REC_NONE;
             exercise(A_WIS, TRUE);
             livelog_printf (LL_DIVINEGIFT | LL_ARTIFACT,
                             "was bestowed with %s by %s",
@@ -2037,6 +2055,7 @@ dosacrifice(void)
 
                     if ((int) u.uluck < 0)
                         u.uluck = 0;
+                    u.reconciled = REC_MOL;
                 }
             } else { /* not satisfied yet */
                 if (Hallucination)
@@ -2071,6 +2090,7 @@ dosacrifice(void)
                         You("have a feeling of reconciliation.");
                     if ((int) u.uluck < 0)
                         u.uluck = 0;
+                    u.reconciled = REC_REC;
                 }
             }
         } else {
@@ -2089,6 +2109,7 @@ dosacrifice(void)
                             : "glimpse a four-leaf clover at your %s.",
                         makeplural(body_part(FOOT)));
             }
+            u.reconciled = REC_REC;
         }
     }
     return ECMD_TIME;
@@ -2199,6 +2220,10 @@ dopray(void)
     if (!can_pray(TRUE))
         return ECMD_OK;
 
+    u.lastprayed = gm.moves;
+    u.lastprayresult = PRAY_INPROG;
+    u.reconciled = REC_NONE;
+    
     if (wizard && gp.p_type >= 0) {
         static const char forcesuccess[] = "Force the gods to be pleased?";
 
@@ -2247,6 +2272,7 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
     aligntyp alignment = gp.p_aligntyp;
 
     u.uinvulnerable = FALSE;
+    u.lastprayresult = PRAY_GOOD;
     if (gp.p_type == -2) {
         /* praying at an unaligned altar, not necessarily in Gehennom */
         You("%s diabolical laughter all around you...",
@@ -2268,6 +2294,7 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
         You_feel("like you are falling apart.");
         /* KMH -- Gods have mastery over unchanging */
         rehumanize();
+        u.lastprayresult = PRAY_BAD;
         /* no Half_physical_damage adjustment here */
         losehp(rnd(20), "residual undead turning effect", KILLED_BY_AN);
         exercise(A_CON, FALSE);

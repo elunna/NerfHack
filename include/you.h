@@ -465,6 +465,20 @@ struct you {
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
     int ublessed, ublesscnt; /* blessing/duration from #pray */
+    int lastprayed;
+    uchar lastprayresult, reconciled;
+#define PRAY_NONE   0
+#define PRAY_GOOD   1
+#define PRAY_BAD    2
+#define PRAY_GIFT   3
+#define PRAY_ANGER  4
+#define PRAY_CONV   5
+#define PRAY_INPROG 6
+
+#define REC_NONE    0
+#define REC_REC     1
+#define REC_MOL     2
+    
     long umoney0;
     long uspare1;
     long uexp, urexp;        /* exper pts for gaining levels and for score */

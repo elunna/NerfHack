@@ -398,7 +398,64 @@ enlightenment(
         /* intrinsics and other traditional enlightenment feedback */
         attributes_enlightenment(mode, final);
     }
+    
+    /* Stuff related to #pray */
 
+    enlght_out("");
+    enlght_out_attr(ATR_SUBHEAD, final ? "Final Attributes:" : "Spiritual Attributes:");
+
+    if (u.ugangr) {
+        Sprintf(buf, " %sangry with you",
+                u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+        if (wizard)
+            Sprintf(eos(buf), " (%d)", u.ugangr);
+        enl_msg(u_gname(), " is", " was", buf, "");
+    } else {
+        /*
+         * We need to suppress this when the game is over, because death
+         * can change the value calculated by can_pray(), potentially
+         * resulting in a false claim that you could have prayed safely.
+         */
+        if (!final) {
+#if 0
+            /* "can [not] safely pray" vs "could [not] have safely prayed" */
+            Sprintf(buf, "%s%ssafely pray%s", can_pray(FALSE) ? "" : "not ",
+                    final ? "have " : "", final ? "ed" : "");
+#else
+            Sprintf(buf, "%ssafely pray", can_pray(FALSE) ? "" : "not ");
+#endif
+            if (wizard)
+                Sprintf(eos(buf), " (%d)", u.ublesscnt);
+            you_can(buf, "");
+        }
+    }
+
+    if (u.lastprayed) {
+        Sprintf(buf, "You last %s %ld turns ago",
+                u.lastprayresult == PRAY_GIFT ? "received a gift" :
+                u.lastprayresult == PRAY_ANGER ? "angered your god" :
+                u.lastprayresult == PRAY_CONV ? "converted to a new god" :
+                "prayed",
+                gm.moves - u.lastprayed);
+        enl_msg(buf, "", "", "", "");
+        if (u.lastprayresult == PRAY_GOOD) {
+            enl_msg("That prayer was well received", "", "", "", "");
+        } else if (u.lastprayresult == PRAY_BAD) {
+            enl_msg("That prayer was poorly received", "", "", "", "");
+        } else if (u.lastprayresult == PRAY_INPROG) {
+            enl_msg("That prayer ", "is ", "was ", "in progress", "");
+        }
+        if (u.reconciled) {
+            if (u.reconciled == REC_REC) {
+                Sprintf(buf, " since reconciled with your god");
+                enl_msg("You ", "have", "had", buf, "");
+            } else if (u.reconciled == REC_MOL) {
+                Sprintf(buf, " since mollified your god");
+                enl_msg("You ", "have", "had", buf, "");
+            }
+        }
+    }
+    
     enlght_out(""); /* separator */
     enlght_out_attr(ATR_SUBHEAD, "Miscellaneous:");
     /* reminder to player and/or information for dumplog */
@@ -1858,33 +1915,7 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
         if (ltmp >= 0)
             enl_msg("Good luck ", "times", "timed", " out slowly for you", "");
     }
-
-    if (u.ugangr) {
-        Sprintf(buf, " %sangry with you",
-                u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
-        if (wizard)
-            Sprintf(eos(buf), " (%d)", u.ugangr);
-        enl_msg(u_gname(), " is", " was", buf, "");
-    } else {
-        /*
-         * We need to suppress this when the game is over, because death
-         * can change the value calculated by can_pray(), potentially
-         * resulting in a false claim that you could have prayed safely.
-         */
-        if (!final) {
-#if 0
-            /* "can [not] safely pray" vs "could [not] have safely prayed" */
-            Sprintf(buf, "%s%ssafely pray%s", can_pray(FALSE) ? "" : "not ",
-                    final ? "have " : "", final ? "ed" : "");
-#else
-            Sprintf(buf, "%ssafely pray", can_pray(FALSE) ? "" : "not ");
-#endif
-            if (wizard)
-                Sprintf(eos(buf), " (%d)", u.ublesscnt);
-            you_can(buf, "");
-        }
-    }
-
+    
 #ifdef DEBUG
     /* named fruit debugging (doesn't really belong here...); to enable,
        include 'fruit' in DEBUGFILES list (even though it isn't a file...) */
