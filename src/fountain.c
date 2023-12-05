@@ -437,6 +437,9 @@ dipfountain(struct obj *obj)
                         ONAME_VIA_DIP | ONAME_KNOW_ARTI);
             discover_artifact(ART_EXCALIBUR);
             bless(obj);
+            if (obj->spe < 0) {
+                obj->spe = 0;
+            }
             obj->oeroded = obj->oeroded2 = 0;
             obj->oerodeproof = TRUE;
             exercise(A_WIS, TRUE);

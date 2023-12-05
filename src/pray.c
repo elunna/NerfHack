@@ -951,6 +951,9 @@ gcrownu(void)
                                "had %s wielded %s transformed into %s",
                                uhis(), lbuf, artiname(ART_EXCALIBUR));
             }
+            if (obj->spe < 1) {
+                obj->spe = 1;
+            }
         }
         /* acquire Excalibur's skill regardless of weapon or gift (not for priests) */
         unrestrict_weapon_skill(P_LONG_SWORD);
