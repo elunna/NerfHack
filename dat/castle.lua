@@ -19,7 +19,7 @@
 
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "noteleport", "noflip")
+des.level_flags("mazelevel", "noteleport", "graveyard", "noflip")
 
 des.map([[
 }}}}}}}}}.............................................}}}}}}}}}
