@@ -203,7 +203,8 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp) \
     (objects[otmp->otyp].oc_material == COPPER          \
-     || objects[otmp->otyp].oc_material == IRON)
+     || objects[otmp->otyp].oc_material == IRON         \
+     || objects[otmp->otyp].oc_material == SILVER)
 /* subject to any damage */
 #define is_damageable(otmp) \
     (is_rustprone(otmp) || is_flammable(otmp)           \
