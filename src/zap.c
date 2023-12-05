@@ -3973,6 +3973,22 @@ bhit(
 
         typ = levl[x][y].typ;
 
+        if (typ == IRONBARS
+            && ((levl[gb.bhitpos.x][gb.bhitpos.y].wall_info & W_NONDIGGABLE) == 0)
+            && (weapon != THROWN_WEAPON && weapon != KICKED_WEAPON)
+            && (obj->otyp == SPE_FORCE_BOLT || obj->otyp == WAN_STRIKING)) {
+            levl[gb.bhitpos.x][gb.bhitpos.y].typ = ROOM;
+            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                pline_The("iron bars are blown apart!");
+            else
+                You_hear("a lot of loud clanging sounds!");
+            wake_nearto(gb.bhitpos.x, gb.bhitpos.y, 20 * 20);
+            newsym(gb.bhitpos.x, gb.bhitpos.y);
+            /* stop the bolt here; it takes a lot of energy to destroy bars */
+            range = 0;
+            break;
+        }
+        
         /* WATER aka "wall of water" stops items */
         if (IS_WATERWALL(typ) || typ == LAVAWALL) {
             if (weapon == THROWN_WEAPON || weapon == KICKED_WEAPON)
