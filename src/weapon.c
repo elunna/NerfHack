@@ -931,34 +931,26 @@ int
 dbon(void)
 {
     int str = ACURR(A_STR);
-    int dbon = 0;
 
     if (Upolyd)
         return 0;
 
     if (str < 6)
-        dbon = -1;
+        return -1;
     else if (str < 16)
-        dbon = 0;
+        return 0;
     else if (str < 18)
-        dbon = 1;
+        return 1;
     else if (str == 18)
-        dbon = 2; /* up to 18 */
+        return 2; /* up to 18 */
     else if (str <= STR18(75))
-        dbon = 3; /* up to 18/75 */
+        return 3; /* up to 18/75 */
     else if (str <= STR18(90))
-        dbon = 4; /* up to 18/90 */
+        return 4; /* up to 18/90 */
     else if (str < STR18(100))
-        dbon = 5; /* up to 18/99 */
-    else if (str == STR18(100))
-        dbon = 6; /* 18/00 only */
+        return 5; /* up to 18/99 */
     else
-        dbon = 7;
-
-    if (uwep && bimanual(uwep)) {
-        dbon *= 1.5;
-    }
-	return dbon;
+        return 6;
 }
 
 /* called when wet_a_towel() or dry_a_towel() is changing a towel's wetness */
@@ -1554,13 +1546,13 @@ weapon_hit_bonus(struct obj *weapon)
             bonus = -9;
             break;
         case P_BASIC:
-            bonus = -5;
+            bonus = -7;
             break;
         case P_SKILLED:
-            bonus = -3;
+            bonus = -5;
             break;
         case P_EXPERT:
-            bonus = 0; /* if you're an expert, there shouldn't be a penalty */
+            bonus = -3;
             break;
         }
     } else if (type == P_BARE_HANDED_COMBAT) {
