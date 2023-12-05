@@ -2072,6 +2072,10 @@ mongets(register struct monst *mtmp, int otyp)
                 otmp->spe = 1;
             else if (otmp->oclass == ARMOR_CLASS && otmp->spe < 0)
                 otmp->spe = 0;
+        } else if (is_lord(mtmp->data)) {
+            if ((otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS)
+                && otmp->spe < 0)
+                otmp->spe = 0;
         }
 
         if (mpickobj(mtmp, otmp)) {
