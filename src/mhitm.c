@@ -82,13 +82,21 @@ missmm(
     pre_mm_attack(magr, mdef);
 
     if (gv.vis) {
-        pline("%s %s %s.", Monnam(magr),
-              (magr->mcan || !could_seduce(magr, mdef, mattk)) ? "misses"
-                  : "pretends to be friendly to",
-              mon_nam_too(mdef, magr));
-    } else {
+        const char *blocker = attack_blocker(mdef);
+        if (blocker && !rn2(5)) {
+            char buf[BUFSZ];
+            Sprintf(buf, "%s %s %s", s_suffix(Monnam(mdef)), blocker,
+                    rn2(3) ? "blocks" : "deflects");
+            pline("%s %s attack.", buf, s_suffix(mon_nam_too(magr, mdef)));
+        }
+        else  {
+           pline("%s %s %s.", Monnam(magr),
+                 (magr->mcan || !could_seduce(magr, mdef, mattk)) ? "misses"
+                     : "pretends to be friendly to",
+                 mon_nam_too(mdef, magr));
+        }
+    } else
         noises(magr, mattk);
-    }
 }
 
 /*

@@ -3114,6 +3114,7 @@ extern void do_stone_mon(struct monst *, struct attack *, struct monst *,
                          struct mhitm_data *);
 extern int damageum(struct monst *, struct attack *, int);
 extern int explum(struct monst *, struct attack *);
+extern const char *attack_blocker(struct monst *);
 extern void missum(struct monst *, struct attack *, boolean);
 extern boolean m_is_steadfast(struct monst *);
 extern boolean mhitm_knockback(struct monst *, struct monst *,struct attack *,
