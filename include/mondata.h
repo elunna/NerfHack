@@ -182,6 +182,12 @@
 #define is_placeholder(ptr)                             \
     ((ptr) == &mons[PM_ORC] || (ptr) == &mons[PM_GIANT] \
      || (ptr) == &mons[PM_ELF] || (ptr) == &mons[PM_HUMAN])
+
+/* various monsters move faster underwater vs on land */
+#define is_fast_underwater(ptr) \
+    ((ptr) == &mons[PM_WATER_TROLL] || (ptr) == &mons[PM_BABY_CROCODILE] \
+     || (ptr) == &mons[PM_CROCODILE])
+
 /* return TRUE if the monster tends to revive */
 #define is_reviver(ptr) (is_rider(ptr) || (ptr)->mlet == S_TROLL)
 /* monsters whose corpses and statues need special handling;

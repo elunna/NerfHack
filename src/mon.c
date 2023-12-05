@@ -912,6 +912,10 @@ mcalcmove(
     else if (mon->mspeed == MFAST)
         mmove = (4 * mmove + 2) / 3;
 
+    /* various monsters get a slight bump in speed when in their natural element */
+    if (is_pool(mon->mx, mon->my) && is_fast_underwater(mon->data))
+        mmove = (4 * mmove + 2) / 3;
+    
     if (mon == u.usteed && u.ugallop && gc.context.mv) {
         /* increase movement by a factor of 1.5; also increase variance of
            movement speed (if it's naturally 24, we don't want it to always
