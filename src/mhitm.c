@@ -498,7 +498,7 @@ mattackm(
             break;
 
         case AT_ENGL:
-            if (mdef->data == &mons[PM_SHADE]  /* no silver teeth... */
+            if (noncorporeal(mdef->data)  /* no silver teeth... */
                 || passes_walls(mdef->data)) {
                 if (gv.vis)
                     pline("%s attempt to engulf %s is futile.",
