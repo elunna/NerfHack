@@ -1093,6 +1093,13 @@ ini_inv(struct trobj *trop)
                     break;
                 }
         }
+        /* Put post-creation object adjustments that don't depend on whether it
+         * was UNDEF_TYP or not after this. */
+
+        /* Don't start with +0 or negative rings */
+        if (objects[otyp].oc_class == RING_CLASS && objects[otyp].oc_charged
+            && obj->spe <= 0)
+            obj->spe = rne(3);
 
         /* nudist gets no armor */
         if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS) {
