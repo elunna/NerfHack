@@ -3078,6 +3078,8 @@ extern void mhitm_ad_conf(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *);
 extern void mhitm_ad_poly(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *);
+extern void mhitm_ad_wthr(struct monst *, struct attack *, struct monst *,
+                          struct mhitm_data *);
 extern void mhitm_ad_famn(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *);
 extern void mhitm_ad_pest(struct monst *, struct attack *, struct monst *,

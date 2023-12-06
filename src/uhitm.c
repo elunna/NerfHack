@@ -3772,6 +3772,67 @@ mhitm_ad_poly(
     }
 }
 
+
+void
+mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
+              struct monst *mdef, struct mhitm_data *mhm)
+{
+    uchar withertime = max(2, mhm->damage);
+    mhm->damage = 0; /* doesn't deal immediate damage */
+    int armpro = magic_negation(mdef);
+    boolean no_effect =
+            (nonliving(mdef->data) /* This could use is_fleshy(), but that would
+                                  make a large set of monsters immune like
+                                  fungus, blobs, and jellies. */
+             || is_vampshifter(mdef)
+             || (magr != &gy.youmonst && magr->mcan)
+             || !(rn2(10) >= 3 * armpro));
+    boolean lose_maxhp = (withertime >= 8); /* if already withering */
+
+    if (mdef == &gy.youmonst) {
+        /* mhitu */
+        hitmsg(magr, mattk);
+        if (!no_effect) {
+            if (Withering) {
+                Your("withering speeds up!");
+            }
+            else {
+                You("begin to wither away!");
+            }
+            incr_itimeout(&HWithering, withertime);
+            if (lose_maxhp) {
+                if (Upolyd && u.mhmax > 1) {
+                    u.mhmax--;
+                    u.mh = min(u.mh, u.mhmax);
+                }
+                else if (u.uhpmax > 1) {
+                    u.uhpmax--;
+                    u.uhp = min(u.uhp, u.uhpmax);
+                }
+            }
+            gc.context.botl = TRUE;
+        }
+    } else {
+        /* uhitm, mhitm */
+        if (!no_effect) {
+            if (canseemon(mdef)) {
+                pline("%s is withering away!", Monnam(mdef));
+            }
+            if (mdef->mwither + withertime > UCHAR_MAX) {
+                mdef->mwither = UCHAR_MAX;
+            }
+            else {
+                mdef->mwither += withertime;
+            }
+            if (lose_maxhp && mdef->mhpmax > 1) {
+                mdef->mhpmax--;
+                mdef->mhp = min(mdef->mhp, mdef->mhpmax);
+            }
+            mdef->mwither_from_u = (magr == &gy.youmonst);
+        }
+    }
+}
+
 void
 mhitm_ad_famn(
     struct monst *magr,
@@ -4785,6 +4846,7 @@ mhitm_adtyping(
     case AD_SLOW: mhitm_ad_slow(magr, mattk, mdef, mhm); break;
     case AD_CONF: mhitm_ad_conf(magr, mattk, mdef, mhm); break;
     case AD_POLY: mhitm_ad_poly(magr, mattk, mdef, mhm); break;
+    case AD_WTHR: mhitm_ad_wthr(magr, mattk, mdef, mhm); break;
     case AD_DISE: mhitm_ad_dise(magr, mattk, mdef, mhm); break;
     case AD_SAMU: mhitm_ad_samu(magr, mattk, mdef, mhm); break;
     case AD_DETH: mhitm_ad_deth(magr, mattk, mdef, mhm); break;

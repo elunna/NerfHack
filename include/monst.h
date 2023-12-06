@@ -159,7 +159,9 @@ struct monst {
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
     Bitfield(mtemplit, 1);  /* temporarily seen; only valid during bhit() */
     Bitfield(meverseen, 1); /* mon has been seen at some point */
-
+    Bitfield(mwither_from_u, 1); /* is withering due to player */
+    
+    uchar mwither;          /* withering; amount of turns left till recovery */
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
 
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
