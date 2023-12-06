@@ -783,7 +783,8 @@ dochug(register struct monst* mtmp)
         || (mdat->mlet == S_LEPRECHAUN && !findgold(gi.invent)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || (Conflict && !mtmp->iswiz)
-        || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful) {
+        || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful
+        || (nearby && !mtmp->mpeaceful && is_outflanker(mtmp->data) && !rn2(2))) {
 
         /* Possibly cast an undirected spell if not attacking you */
         /* note that most of the time castmu() will pick a directed
@@ -1523,7 +1524,7 @@ postmov(
 int
 m_move(register struct monst *mtmp, int after)
 {
-    int appr;
+    int appr, fi, fj;
     coordxy ggx, ggy, nix, niy;
     xint16 chcnt;
     boolean can_tunnel = 0;
@@ -1651,7 +1652,41 @@ m_move(register struct monst *mtmp, int after)
         return postmov(mtmp, ptr, omx, omy, MMOVE_MOVED,
                        sawmon, can_tunnel, can_unlock, can_open);
     }
- not_special:
+
+    /* if smart enough, then attempt to outflank the player.
+     We do this by modifying the ggx and ggy coords.  */
+    if (!mtmp->mpeaceful && is_outflanker(ptr)
+            && monnear(mtmp, u.ux, u.uy)) {
+
+        if (!calculate_flankers(mtmp, &gy.youmonst)) {
+            for (fi = u.ux - 1; fi <= u.ux + 1; fi++) {
+                for (fj = u.uy - 1; fj <= u.uy + 1; fj++) {
+                    if (fi == u.ux && fj == u.uy)
+                        continue;
+                    if (fi == mtmp->mx && fj == mtmp->my)
+                        continue;
+                    if (isok(fi, fj) && !MON_AT(fi, fj))
+                        continue;
+                    /* Set our goal position */
+                    ggx = fi + (2 * (u.ux - fi));
+                    ggy = fj + (2 * (u.uy - fj));
+                    if (monnear(mtmp, ggx, ggy)) {
+                        goto not_special;
+                    }
+                }
+            }
+            goto not_special;
+        } else {
+            ggx = 0;
+            ggy = 0;
+            mmoved = 0;
+            return postmov(mtmp, ptr, omx, omy, MMOVE_MOVED,
+                           sawmon, can_tunnel, can_unlock, can_open);
+        }
+    }
+
+
+not_special:
     if (u.uswallow && !mtmp->mflee && u.ustuck != mtmp)
         return MMOVE_MOVED;
     omx = mtmp->mx;

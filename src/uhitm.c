@@ -361,7 +361,7 @@ find_roll_to_hit(
     int *attk_count,
     int *role_roll_penalty)
 {
-    int tmp, tmp2;
+    int tmp, tmp2, ftmp;
     int wepskill, twowepskill, useskill;
 
     *role_roll_penalty = 0; /* default is `none' */
@@ -384,6 +384,13 @@ find_roll_to_hit(
         tmp += 2;
     if (!mtmp->mcanmove)
         tmp += 4;
+
+    if (calculate_flankers(&gy.youmonst, mtmp)) {
+        /* Scale with monster difficulty */
+        ftmp = (int) ((u.ulevel - 4) / 2) + 4;
+        tmp += ftmp;
+        You("flank %s.", mon_nam(mtmp));
+    }
 
     /* role/race adjustments */
     if (Role_if(PM_MONK) && !Upolyd) {

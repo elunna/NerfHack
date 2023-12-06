@@ -599,7 +599,7 @@ int
 mattacku(register struct monst *mtmp)
 {
     struct attack *mattk, alt_attk;
-    int i, j = 0, tmp, sum[NATTK];
+    int i, j = 0, tmp, ftmp, sum[NATTK];
     struct permonst *mdat = mtmp->data;
     /*
      * ranged: Is it near you?  Affects your actions.
@@ -824,6 +824,13 @@ mattacku(register struct monst *mtmp)
         tmp -= 2;
     if (tmp <= 0)
         tmp = 1;
+
+    if (!u.uswallow && calculate_flankers(mtmp, &gy.youmonst)) {
+        /* Scale with monster difficulty */
+        ftmp = (int) ((mtmp->m_lev - 4) / 2) + 4;
+        tmp += ftmp;
+        You("are being flanked!");
+    }
 
     /* make eels visible the moment they hit/miss us */
     if (mdat->mlet == S_EEL && mtmp->minvis && cansee(mtmp->mx, mtmp->my)) {

@@ -302,6 +302,7 @@ mattackm(
 {
     int i,          /* loop counter */
         tmp,        /* armor class difference */
+        ftmp,       /* flanking bonus */
         strike = 0, /* hit this attack */
         attk,       /* attack attempted this time */
         struck = 0, /* hit at least once */
@@ -329,6 +330,14 @@ mattackm(
     if (mdef->mconf || helpless(mdef)) {
         tmp += 4;
         mdef->msleeping = 0;
+    }
+    if (calculate_flankers(magr, mdef)) {
+        /* Scale with monster difficulty */
+        ftmp = (int) ((magr->m_lev - 4) / 2) + 4;
+        tmp += ftmp;
+        if (canseemon(magr)) {
+            pline("%s flanks %s.", Monnam(magr), mon_nam(mdef));
+        }
     }
 
     /* mundetected monsters become un-hidden if they are attacked */

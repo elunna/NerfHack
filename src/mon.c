@@ -5567,4 +5567,115 @@ check_gear_next_turn(struct monst *mon)
 {
     mon->misc_worn_check |= I_SPECIAL;
 }
+
+
+/* Returns TRUE if mdef will be flanked by magr and another monster,
+ * otherwise return FALSE. */
+boolean
+calculate_flankers(magr, mdef)
+        struct monst *magr;
+        struct monst *mdef;
+{
+    struct monst* flanker;
+    boolean grudge, youflanker, youattack, youdefend;
+    int ax, ay; /* Attacker coords */
+    int dx, dy; /* Defender coords */
+    int fx, fy; /* Flanker coords */
+    grudge = youflanker = youattack = youdefend = FALSE;
+
+    if (magr == &gy.youmonst)
+        youattack = TRUE;
+    if (mdef == &gy.youmonst)
+        youdefend = TRUE;
+
+    if (!magr || !mdef)
+        return FALSE;
+
+    /* Attacker location */
+    if (youattack) {
+        ax = u.ux;
+        ay = u.uy;
+    } else {
+        ax = magr->mx;
+        ay = magr->my;
+    }
+    /* Defender location */
+    if (youdefend) {
+        dx = u.ux;
+        dy = u.uy;
+    } else {
+        dx = mdef->mx;
+        dy = mdef->my;
+    }
+
+    /* If too far, then return. */
+    if (abs(ax - dx) > 1 || abs(ay - dy) > 1)
+        return FALSE;
+
+    /* Find the flanker, if one happens to exist.
+     * The flanker must "sandwich" the defender.
+     * 
+     * a..  .a.  ..a  ...  f..  .f.  ..f  ...
+     * .d.  .d.  .d.  fda  .d.  .d.  .d.  adf
+     * ..f  .f.  f..  ...  ..a  .a.  a..  ...  
+     */
+    if (dx > ax)
+        fx = ax + 2;
+    else if (dx < ax)
+        fx = ax - 2;
+    else
+        fx = ax;
+
+    if (dy > ay)
+        fy = ay + 2;
+    else if (dy < ay)
+        fy = ay - 2;
+    else
+        fy = ay;
+
+    if (isok(fx, fy) && MON_AT(fx, fy)) {
+        flanker = m_at(fx, fy);
+    } else if (u_at(fx, fy)) {
+        flanker = &gy.youmonst;
+        youflanker = TRUE;
+
+        if (youdefend)
+            impossible("calculate_flankers: youflanker and youdefend both TRUE!");
+        if (youattack)
+            impossible("calculate_flankers: youflanker and youattack both TRUE!");
+    } else {
+        return FALSE;
+    }
+
+    /* Depending on who the attacker and flanker are, return a boolean. */
+    if (youflanker) {
+        if (!canseemon(mdef) || Hallucination || Confusion
+            || Punished || Fumbling || Wounded_legs || Stunned)
+            return FALSE;
+    } else if (!flanker || !flanker->mcanmove || flanker->msleeping
+               || flanker->mflee || flanker->mconf || flanker->mtrapped
+               || flanker->mstun) {
+        /* Impaired monsters don't make good flankers */
+        return FALSE;
+    }
+
+    /* Peaceful monsters will help others depending on their Grudges. */
+    if ((mm_aggression(mdef, flanker)))
+        grudge = TRUE;
+
+    if (youattack) {
+        /* Pets and non-hostile monsters with a grudge can help us flank */
+        return flanker->mtame || (flanker->mpeaceful && grudge);
+    } else if (youdefend) {
+        /* Any hostiles can flank us */
+        return !flanker->mpeaceful;
+    } else if (youflanker) {
+        return magr->mtame && !mdef->mpeaceful;
+    } else {
+        /* If you are not involved in the flanking, then flanking can 
+         * still occur if the defender and flanker have a grudge vs each other. */
+        return grudge;
+    }
+}
+
 /*mon.c*/

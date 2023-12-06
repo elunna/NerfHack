@@ -132,6 +132,7 @@ enum ms_sounds {
 #define M2_MINION       0x00001000L /* is a minion of a deity */
 #define M2_GIANT        0x00002000L /* is a giant */
 #define M2_SHAPESHIFTER 0x00004000L /* is a shapeshifting species */
+#define M2_FLANK        0x00008000L /* will attempt to outflank the player */
 #define M2_MALE         0x00010000L /* always male */
 #define M2_FEMALE       0x00020000L /* always female */
 #define M2_NEUTER       0x00040000L /* neither male nor female */
@@ -147,6 +148,7 @@ enum ms_sounds {
 #define M2_GREEDY       0x10000000L /* likes gold */
 #define M2_JEWELS       0x20000000L /* likes gems */
 #define M2_COLLECT      0x40000000L /* picks up weapons and food */
+
 #ifdef NHSTDC
 #define M2_MAGIC        0x80000000UL /* picks up magic items */
 #else
