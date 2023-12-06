@@ -1658,7 +1658,7 @@ m_move(register struct monst *mtmp, int after)
     ggx = mtmp->mux;
     ggy = mtmp->muy;
     appr = mtmp->mflee ? -1 : 1;
-    if (mtmp->mconf || engulfing_u(mtmp)) {
+    if (mtmp->mconf || mtmp->mstun || engulfing_u(mtmp)) {
         appr = 0;
     } else {
         boolean should_see = (couldsee(omx, omy)

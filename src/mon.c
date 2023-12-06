@@ -1972,7 +1972,7 @@ mfndpos(
 
  nexttry: /* eels prefer the water, but if there is no water nearby,
              they will crawl over land */
-    if (mon->mconf) {
+    if (mon->mconf || mon->mstun) {
         flag |= ALLOW_ALL;
         flag &= ~NOTONL;
     }
