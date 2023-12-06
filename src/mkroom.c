@@ -560,6 +560,9 @@ mkswamp(void) /* Michiel Huisjes & Fred de Wilde */
                                                  ? &mons[PM_PIRANHA]
                                                  : &mons[PM_ELECTRIC_EEL],
                                            sx, sy, NO_MM_FLAGS);
+                            if (!rn2(13))
+                                (void) makemon(&mons[PM_WILL_O__THE_WISP],
+                                               sx, sy, NO_MM_FLAGS);
                             eelct++;
                         }
                     } else if (!rn2(4)) /* swamps tend to be moldy */
