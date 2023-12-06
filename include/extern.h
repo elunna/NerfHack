@@ -1843,7 +1843,7 @@ extern const char *rnd_hallublast(void);
 extern boolean m_has_launcher_and_ammo(struct monst *);
 extern int thitu(int, int, struct obj **, const char *);
 extern boolean ohitmon(struct monst *, struct obj *, int, boolean);
-extern void thrwmu(struct monst *);
+extern boolean thrwmu(struct monst *);
 extern int spitmu(struct monst *, struct attack *);
 extern int breamu(struct monst *, struct attack *);
 extern boolean linedup_callback(coordxy, coordxy, coordxy, coordxy,
