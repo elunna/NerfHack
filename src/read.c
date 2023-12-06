@@ -1125,7 +1125,8 @@ seffect_enchant_armor(struct obj **sobjp)
              } else if (otmp && !(otmp->owornmask & W_ARMOR)) {
                  You("cannot enchant armor that is not worn.");
                  otmp = (struct obj *) 0;
-             }
+             } else
+                 break; /* Success! */
          }
      } else {
          otmp = some_armor(&gy.youmonst);
