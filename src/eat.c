@@ -1149,6 +1149,9 @@ cpostfx(int pm)
     case PM_BAT:
         make_stunned((HStun & TIMEOUT) + 30L, FALSE);
         break;
+    case PM_ZOO_BAT:
+        make_confused((HConfusion & TIMEOUT) + 30L, TRUE);
+        break;
     case PM_GIANT_MIMIC:
         tmp += 10;
         /*FALLTHRU*/
