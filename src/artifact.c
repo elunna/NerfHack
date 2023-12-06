@@ -1510,6 +1510,13 @@ artifact_hit(
                       mon_nam(mdef));
                 if (Hallucination && !flags.female)
                     pline("Good job Henry, but that wasn't Anne.");
+                if (is_reviver(mdef->data) && !is_rider(mdef->data)
+                    && !mlifesaver(mdef)) {
+                    /* kind of hard to revive if you've lost your head...
+                     * if they'll be lifesaved, however, we shouldn't cancel
+                     * them, because we assume that'll fix them. */
+                    mdef->mcan = 1;
+                }
                 otmp->dknown = TRUE;
                 return TRUE;
             } else {

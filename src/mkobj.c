@@ -2026,6 +2026,10 @@ mkcorpstat(
         if (otmp->otyp == CORPSE && (gz.zombify || special_corpse(old_corpsenm)
                                      || special_corpse(otmp->corpsenm))) {
             obj_stop_timers(otmp);
+            if (mtmp && is_reviver(mtmp->data) && !is_rider(mtmp->data)
+                && mtmp->mcan) {
+                otmp->norevive = 1;
+            }
             start_corpse_timeout(otmp);
         }
     }
