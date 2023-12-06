@@ -601,7 +601,7 @@ unsplitobj(struct obj *obj)
                 ochild = obj;
                 break;
             }
-    }
+        }
     /* if we have both parent and child, try to merge them;
        if successful, return the combined stack, otherwise return null */
     return (oparent && ochild && merged(&oparent, &ochild)) ? oparent : 0;
@@ -1359,18 +1359,26 @@ start_corpse_timeout(struct obj *body)
         action = REVIVE_MON;
         when = rider_revival_time(body, FALSE);
     } else if (mons[body->corpsenm].mlet == S_TROLL) {
-        for (age = 2; age <= TAINT_AGE; age++)
+        for (age = 2; age <= TAINT_AGE; age++) {
             if (!rn2(TROLL_REVIVE_CHANCE)) { /* troll revives */
                 action = REVIVE_MON;
                 when = age;
                 break;
             }
+        }
     } else if (gz.zombify && zombie_form(&mons[body->corpsenm]) != NON_PM
-               && !body->norevive) {
+               && !body->zombie_corpse && !body->norevive) {
         action = ZOMBIFY_MON;
         when = rn1(15, 5); /* 5..19 */
+    } else if (body->zombie_corpse && !body->norevive) {
+        for (age = 2; age <= ROT_AGE; age++) {
+            if (!rn2(ZOMBIE_REVIVE_CHANCE)) { /* zombie revives */
+                action = REVIVE_MON;
+                when = age;
+                break;
+            }
+        }
     }
-
     (void) start_timer(when, TIMER_OBJECT, action, obj_to_any(body));
 }
 
@@ -1953,10 +1961,9 @@ mkgold(long amount, coordxy x, coordxy y)
 }
 
 /* return TRUE if the corpse has special timing;
-   lizards and lichen don't rot, trolls and Riders auto-revive */
+   lizards and lichen don't rot, trolls and Riders and zombies auto-revive */
 #define special_corpse(num) \
-    (((num) == PM_LIZARD || (num) == PM_LICHEN)                 \
-     || (mons[num].mlet == S_TROLL || is_rider(&mons[num])))
+    (((num) == PM_LIZARD || (num) == PM_LICHEN) || is_reviver(&mons[num]))
 
 /* mkcorpstat: make a corpse or statue; never returns Null.
  *
@@ -1990,6 +1997,10 @@ mkcorpstat(
     /* record gender and 'historic statue' in overloaded enchantment field */
     otmp->spe = (corpstatflags & CORPSTAT_SPE_VAL);
     otmp->norevive = gm.mkcorpstat_norevive; /* via envrmt rather than flags */
+
+    if ((corpstatflags & CORPSTAT_ZOMBIE) != 0) {
+        otmp->zombie_corpse = 1;
+    }
 
     /* when 'mtmp' is non-null save the monster's details with the
        corpse or statue; it will also force the 'ptr' override below */
