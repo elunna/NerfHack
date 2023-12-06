@@ -1050,7 +1050,9 @@ test_move(
         }
     }
     if (dx && dy && bad_rock(gy.youmonst.data, ux, y)
-        && bad_rock(gy.youmonst.data, x, uy)) {
+        && bad_rock(gy.youmonst.data, x, uy)
+        && !(is_elf(gy.youmonst.data) && IS_TREE(levl[ux][y].typ)
+             && IS_TREE(levl[x][uy].typ))) {
         /* Move at a diagonal. */
         switch (cant_squeeze_thru(&gy.youmonst)) {
         case 3:
