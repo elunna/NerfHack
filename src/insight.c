@@ -424,9 +424,10 @@ enlightenment(
 #else
             Sprintf(buf, "%ssafely pray", can_pray(FALSE) ? "" : "not ");
 #endif
-            if (wizard)
+            if (wizard || final) {
                 Sprintf(eos(buf), " (%d)", u.ublesscnt);
-            you_can(buf, "");
+                you_can(buf, "");
+            }
         }
     }
 
