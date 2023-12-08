@@ -129,10 +129,8 @@ resists_drli(struct monst *mon)
 {
     struct permonst *ptr = mon->data;
 
-    if (is_undead(ptr) || is_demon(ptr) || is_were(ptr)
-        /* is_were() doesn't handle hero in human form */
-        || (mon == &gy.youmonst && u.ulycn >= LOW_PM)
-        || ptr == &mons[PM_DEATH] || is_vampshifter(mon))
+    if (resists_drain(ptr) || is_vampshifter(mon)
+        || (mon == &gy.youmonst && u.ulycn >= LOW_PM))
         return TRUE;
     return defended(mon, AD_DRLI);
 }
@@ -146,9 +144,7 @@ resists_magm(struct monst *mon)
     long slotmask;
     struct obj *o;
 
-    /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
-    if (dmgtype(ptr, AD_MAGM) || ptr == &mons[PM_BABY_GRAY_DRAGON]
-        || dmgtype(ptr, AD_RBRE)) /* Chromatic Dragon */
+    if (resists_mgc(ptr))
         return TRUE;
     /* check for magic resistance granted by wielded weapon */
     o = is_you ? uwep : MON_WEP(mon);
