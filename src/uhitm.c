@@ -911,7 +911,7 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
            strength bonus or skill bonus, usually both... */
         hmd->dmg = rnd(!martial_bonus() ? 2 : 4);
         hmd->use_weapon_skill = TRUE;
-        hmd->train_weapon_skill = (hmd->dmg > 1);
+        hmd->train_weapon_skill = (hmd->dmg > 0);
     }
 
     /* Blessed gloves give bonuses when fighting 'bare-handed'.  So do
@@ -993,8 +993,8 @@ hmon_hitmon_weapon_melee(
     /* "normal" weapon usage */
     hmd->use_weapon_skill = TRUE;
     hmd->dmg = dmgval(obj, mon);
-    /* a minimal hit doesn't exercise proficiency */
-    hmd->train_weapon_skill = (hmd->dmg > 1);
+    /* a non-hit doesn't exercise proficiency */
+    hmd->train_weapon_skill = (hmd->dmg > 0);
     /* special attack actions */
     if (!hmd->train_weapon_skill || mon == u.ustuck || u.twoweap
         /* Cleaver can hit up to three targets at once so don't
