@@ -1394,7 +1394,9 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     struct obj *otmp2;
     int i;
     boolean physical_damage = FALSE;
-
+    /* for tracking if this is the first engulf */
+    boolean old_uswallow = u.uswallow;
+    
     if (!u.uswallow) { /* swallows you */
         int omx = mtmp->mx, omy = mtmp->my;
 
@@ -1550,6 +1552,27 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                                                : "pummeled with debris");
             exercise(A_STR, FALSE);
         }
+        break;
+    case AD_WRAP:
+        /* From GruntHack by way of Keith Simpson: AD_WRAP is used because
+         * there's no specific suffocation attack, but it's used for other
+         * suffocation-y things like drowning attacks.
+         * Generally, only give a message if this is the first engulf, not a
+         * subsequent attack when already engulfed. */
+        if (Breathless) {
+            if (!old_uswallow)
+                You("can't breathe, but you don't need to.");
+            tmp = 0;
+        }
+        else if (!Strangled) {
+            if (!old_uswallow)
+                pline("It's impossible to breathe in here!");
+            Strangled = 5;
+            tmp = 0;
+            /* Immediate timeout message: "You find it hard to breathe." */
+        }
+        if (mtmp->data == &mons[PM_WATER_ELEMENTAL])
+            water_damage_chain(gi.invent, FALSE);
         break;
     case AD_ACID:
         if (Acid_resistance) {

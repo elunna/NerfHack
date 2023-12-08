@@ -140,25 +140,42 @@ float_vs_flight(void)
 static void
 check_strangling(boolean on)
 {
+    /* Suffocating due to being engulfed by something with a suffocation attack,
+     * versus due to wearing an amulet of strangulation. We assume that
+     * suffocation isn't actually strangulation, and the hero is OK if
+     * breathless. */
+    boolean from_mon = (u.uswallow && u.ustuck &&
+                        attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_WRAP));
+    boolean from_amul = (uamul && uamul->otyp == AMULET_OF_STRANGULATION &&
+                         can_be_strangled(&gy.youmonst));
+
     /* on -- maybe resume strangling */
     if (on) {
         boolean was_strangled = (Strangled != 0L);
 
         /* when Strangled is already set, polymorphing from one
            vulnerable form into another causes the counter to be reset */
-        if (uamul && uamul->otyp == AMULET_OF_STRANGULATION
-            && can_be_strangled(&gy.youmonst)) {
-            Strangled = 6L;
-            gc.context.botl = TRUE;
+        if (from_amul) {
             Your("%s %s your %s!", simpleonames(uamul),
                  was_strangled ? "still constricts" : "begins constricting",
                  body_part(NECK)); /* "throat" */
+            Strangled = 6L;
+            gc.context.botl = TRUE;
             makeknown(AMULET_OF_STRANGULATION);
         }
-
+        else if (from_mon && !Breathless) {
+            Strangled = 6L;
+            gc.context.botl = TRUE;
+            You("can't breathe in here!");
+        }
     /* off -- maybe block strangling */
-    } else {
-        if (Strangled && !can_be_strangled(&gy.youmonst)) {
+    } else if (Strangled) {
+        if (from_mon && Breathless) {
+            Strangled = 0L;
+            gc.context.botl = TRUE;
+            You("don't seem to need air anymore.");
+        }
+        if (from_amul && Strangled && !can_be_strangled(&gy.youmonst)) {
             Strangled = 0L;
             gc.context.botl = TRUE;
             You("are no longer being strangled.");

@@ -476,6 +476,14 @@ teleds(coordxy nux, coordxy nuy, int teleds_flags)
             ball_active = TRUE; /* to put chain and non-carried ball on map */
             ball_still_in_range = allow_drag = FALSE; /* (redundant) */
         }
+        unstuck(u.ustuck);
+        /* ...and then we have to unplacebc() after this, because unstuck places
+         * it where the hero is teleporting from. Unplacing it again lets the
+         * placebc() below set it properly */
+        if (Punished) {
+            /* ensure ball placement, like unstuck */
+            unplacebc();
+        }
         docrt();
     }
     if (ball_active && (ball_still_in_range || allow_drag)) {

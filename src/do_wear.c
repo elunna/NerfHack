@@ -964,7 +964,9 @@ Amulet_on(void)
     case AMULET_OF_STRANGULATION:
         if (can_be_strangled(&gy.youmonst)) {
             makeknown(AMULET_OF_STRANGULATION);
-            Strangled = 6L;
+            if (Strangled == 0 || Strangled > 6) {
+                Strangled = 6L;
+            }
             gc.context.botl = TRUE;
             pline("It constricts your throat!");
         }
