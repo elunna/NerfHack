@@ -425,7 +425,8 @@ hates_silver(struct permonst *ptr)
 {
     return (boolean) (is_were(ptr) || ptr->mlet == S_VAMPIRE || is_demon(ptr)
                       || ptr == &mons[PM_SHADE]
-                      || (ptr->mlet == S_IMP && ptr != &mons[PM_TENGU]));
+                      || (ptr->mlet == S_IMP && ptr != &mons[PM_TENGU] 
+                          && ptr != &mons[PM_REDCAP]));
 }
 
 /* True if specific monster is especially affected by blessed objects */

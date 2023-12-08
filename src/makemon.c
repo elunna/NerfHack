@@ -178,6 +178,12 @@ m_initweap(register struct monst *mtmp)
         if ((mm != PM_ETTIN) && !rn2(5))
             (void) mongets(mtmp, rn2(2) ? TWO_HANDED_SWORD : BATTLE_AXE);
         break;
+    case S_IMP:
+        if (mm == PM_REDCAP) {
+            /* Sorry, we don't have scythes! */
+            (void) mongets(mtmp, BARDICHE);
+        }
+        break;
     case S_HUMAN:
         if (is_mercenary(ptr)) {
             w1 = w2 = 0;
