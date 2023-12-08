@@ -1920,7 +1920,7 @@ crackaltar(void)
     if ((u.ugifts > 2 && !rn2(2)) || lev->cracked 
           || u.uevent.uhand_of_elbereth) {
         
-        if (lev->cracked) && !Is_astralevel(&u.uz)) {
+        if (lev->cracked && !Is_astralevel(&u.uz)) {
             /* don't leave loose ends.. */
             lev->looted = 0;
             lev->cracked = 0;
