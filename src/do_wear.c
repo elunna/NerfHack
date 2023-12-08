@@ -2355,7 +2355,7 @@ find_ac(void)
 
     /* armor class from worn gear */
 
-    int racial_bonus;
+    int racial_bonus, dex_adjust_ac;;
 
     /* Wearing racial armor is worth +x to the armor's AC; orcs get a slightly
      * larger bonus to compensate their sub-standard equipment, lack of equipment,
@@ -2428,6 +2428,34 @@ find_ac(void)
         uac -= u.ublessed;
     uac -= u.uspellprot;
 
+    
+    /* Dexterity affects your base AC */
+    dex_adjust_ac = 0;
+    if (ACURR(A_DEX) <= 6)
+        dex_adjust_ac += 3;
+    else if (ACURR(A_DEX) <= 8)
+        dex_adjust_ac += 2;
+    else if (ACURR(A_DEX) <= 10)
+        dex_adjust_ac += 1;
+    else if (ACURR(A_DEX) <= 14)
+        dex_adjust_ac -= 0;
+    else if (ACURR(A_DEX) <= 16)
+        dex_adjust_ac -= 1;
+    else if (ACURR(A_DEX) >= 18)
+        dex_adjust_ac -= 2;
+    
+    /* Wearing certain types of body armor negates any
+     * beneficial dexterity bonus. So does being
+     * encumbered in any way.
+     */
+    if ((uarm && is_heavy_metallic(uarm))
+        || (near_capacity() >= SLT_ENCUMBER)) {
+        if (dex_adjust_ac < 0)
+            dex_adjust_ac = 0;
+    }
+    
+    uac = uac + dex_adjust_ac;
+    
     /* put a cap on armor class [3.7: was +127,-128, now reduced to +/- 99 */
     if (abs(uac) > AC_MAX)
         uac = sgn(uac) * AC_MAX;
