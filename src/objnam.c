@@ -4670,6 +4670,17 @@ readobjnam(char *bp, struct obj *no_wish)
         }
     }
 
+    /* Batteries not included. */
+    
+    if (d.typ == SCALE_MAIL && d.mntmp >= PM_GRAY_DRAGON
+        && d.mntmp <= PM_YELLOW_DRAGON)
+        d.typ = FIRST_DRAGON_SCALES + d.mntmp - FIRST_DRAGON;
+    
+    if (d.typ >= FIRST_DRAGON_SCALES && d.typ <= LAST_DRAGON_SCALES
+        && d.spe != 0) {
+        d.spe = 0;
+    }
+
     /* if asking for corpse of a monster which leaves behind a glob, give
        glob instead of rejecting the monster type to create random corpse */
     if (d.typ == CORPSE && d.mntmp >= LOW_PM
@@ -4885,12 +4896,6 @@ readobjnam(char *bp, struct obj *no_wish)
             d.otmp->corpsenm = d.mntmp;
             if (Has_contents(d.otmp) && verysmall(&mons[d.mntmp]))
                 delete_contents(d.otmp); /* no spellbook */
-            break;
-        case SCALE_MAIL:
-            /* Dragon mail - depends on the order of objects & dragons. */
-            if (d.mntmp >= PM_GRAY_DRAGON && d.mntmp <= PM_YELLOW_DRAGON)
-                d.otmp->otyp = GRAY_DRAGON_SCALE_MAIL
-                              + d.mntmp - PM_GRAY_DRAGON;
             break;
         }
     }
