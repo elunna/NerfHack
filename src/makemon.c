@@ -690,9 +690,9 @@ m_initinv(register struct monst *mtmp)
                 curse(otmp);
                 (void) mpickobj(mtmp, otmp);
             } else { /* soldiers and their officers */
-                if (!rn2(3))
+                if (!rn2(6))
                     (void) mongets(mtmp, K_RATION);
-                if (!rn2(2))
+                if (!rn2(4))
                     (void) mongets(mtmp, C_RATION);
                 if (ptr != &mons[PM_SOLDIER] && !rn2(3))
                     (void) mongets(mtmp, BUGLE);
