@@ -1219,7 +1219,7 @@ dokick(void)
                 }
                 exercise(A_DEX, TRUE);
                 return ECMD_TIME;
-            } else if (Luck > 0 && !rn2(3) && !gm.maploc->looted) {
+            } else if (Luck > 0 && !rn2(3) && !gm.maploc->looted & T_LOOTED) {
                 (void) mkgold((long) rn1(201, 300), x, y);
                 i = Luck + 1;
                 if (i > 6)
@@ -1235,7 +1235,7 @@ dokick(void)
                     newsym(x, y);
                 }
                 /* prevent endless milking */
-                gm.maploc->looted = T_LOOTED;
+                gm.maploc->looted |= T_LOOTED;
                 return ECMD_TIME;
             } else if (!rn2(4)) {
                 if (dunlev(&u.uz) < dunlevs_in_dungeon(&u.uz)) {

@@ -26,6 +26,7 @@ static void offer_fake_amulet(struct obj *, boolean, aligntyp);
 static void offer_different_alignment_altar(struct obj *, aligntyp);
 static void sacrifice_your_race(struct obj *, boolean, aligntyp);
 static int bestow_artifact(void);
+static void crackaltar(void);
 static boolean pray_revive(void);
 static boolean water_prayer(boolean);
 static boolean blocked_boulder(int, int);
@@ -1067,6 +1068,9 @@ gcrownu(void)
     /* lastly, confer an extra skill slot/credit beyond the
        up-to-29 you can get from gaining experience levels */
     add_weapon_skill(1);
+    
+    /* The altar can't handle the transference of all that power! */
+    crackaltar();
     return;
 }
 
@@ -1898,12 +1902,46 @@ bestow_artifact(void)
                 makeknown(otmp->otyp);
                 discover_artifact(otmp->oartifact);
             }
+            crackaltar();
+          
             return TRUE;
         }
     }
     return FALSE;
 }
 
+/* Altars can crack and be destroyed if you have received more than
+ * 2 gifts or if you are already crowned.
+ */
+static void
+crackaltar(void)
+{
+    struct rm *lev = &levl[u.ux][u.uy];
+    if ((u.ugifts > 2 && !rn2(2)) || lev->cracked 
+          || u.uevent.uhand_of_elbereth) {
+        
+        if (lev->cracked) && !Is_astralevel(&u.uz)) {
+            /* don't leave loose ends.. */
+            lev->looted = 0;
+            lev->cracked = 0;
+            lev->typ = ROOM;
+            Soundeffect(se_crash_throne_destroyed, 60);
+            if (Blind && !Deaf)
+                pline("CRACK!  Something loudly crumbles.");
+            else {
+                pline("CRACK!  The altar cracks in two and is destroyed!");
+                newsym(u.ux, u.uy);
+            }
+        } else {
+            lev->cracked = 1;
+            if (Blind && !Deaf)
+                You_hear("something cracking.");
+            else {
+                pline("A large crack forms in the middle of the altar...");
+            }
+        }
+    }
+}
 /* the #offer command - sacrifice something to the gods */
 int
 dosacrifice(void)

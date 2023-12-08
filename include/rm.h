@@ -361,6 +361,7 @@ struct rm {
 #define blessedftn horizontal /* a fountain that grants attribs */
 #define disturbed  horizontal /* kicking or engraving on a grave's headstone
                                * has summoned a ghoul */
+#define cracked horizontal    /* an altar that is cracked */
 
 struct damage {
     struct damage *next;
