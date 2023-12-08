@@ -1467,9 +1467,17 @@ throwit(struct obj *obj,
             tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
 
     gn.notonhead = FALSE; /* reset potentially stale value */
-    if ((obj->cursed || obj->greased
-                     || (Role_if(PM_CLERIC) && (is_pierce(obj) || is_slash(obj))))
-        && (u.dx || u.dy) && !rn2(7)) {
+    /* From UnNetHack: The chances of slipping a cursed greased object have been
+     * separated.
+     * Additionally, throwing unskilled or restricted now causes slipping to
+     * make it harder and to discourage role- or race-atypical fighting (and
+     * because of real life experience in throwing darts ...)
+     */
+    if (((obj->cursed && !rn2(7)) 
+         || (obj->greased && !rn2(7))
+         || (Role_if(PM_CLERIC) && (is_pierce(obj) || is_slash(obj)) && !rn2(7))
+         || (P_SKILL(weapon_type(obj)) <= P_UNSKILLED && !rn2(7)))
+        && (u.dx || u.dy)) {
         boolean slipok = TRUE;
 
         if (ammo_and_launcher(obj, uwep)) {
