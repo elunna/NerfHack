@@ -330,6 +330,12 @@ struct obj {
     ((o)->otyp == OILSKIN_SACK || (o)->otyp == ICE_BOX || Is_box(o))
 
 /* dragon gear */
+#define FIRST_DRAGON        PM_GRAY_DRAGON
+#define LAST_DRAGON         PM_YELLOW_DRAGON
+#define NUM_DRAGONS         (LAST_DRAGON - FIRST_DRAGON)
+#define FIRST_DRAGON_SCALES GRAY_DRAGON_SCALES
+#define LAST_DRAGON_SCALES  YELLOW_DRAGON_SCALES
+
 #define Is_dragon_scales(obj) \
     ((obj)->otyp >= GRAY_DRAGON_SCALES && (obj)->otyp <= YELLOW_DRAGON_SCALES)
 #define Is_dragon_mail(obj)                \
