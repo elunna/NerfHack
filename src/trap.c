@@ -6391,8 +6391,11 @@ b_trapped(const char* item, int bodypart)
 
     Soundeffect(se_kaboom, 80);
     pline("KABOOM!!  %s was booby-trapped!", The(item));
+    explode(u.ux, u.uy, AD_FIRE - 1, dmg,
+            DOOR_TRAP, EXPL_FIERY);
+    scatter(u.ux, u.uy, dmg,
+            VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, 0);
     wake_nearby();
-    losehp(Maybe_Half_Phys(dmg), "explosion", KILLED_BY_AN);
     exercise(A_STR, FALSE);
     if (bodypart != NO_PART)
         exercise(A_CON, FALSE);

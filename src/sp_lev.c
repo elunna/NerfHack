@@ -1707,7 +1707,8 @@ create_door(room_door *dd, struct mkroom *broom)
                     dd->mask = D_LOCKED;
                 else
                     dd->mask = D_CLOSED;
-                if (dd->mask != D_ISOPEN && !rn2(25))
+                if (dd->mask != D_ISOPEN
+                    && level_difficulty() >= 10 && !rn2(25))
                     dd->mask |= D_TRAPPED;
             } else
                 dd->mask = D_NODOOR;
@@ -1717,7 +1718,7 @@ create_door(room_door *dd, struct mkroom *broom)
             else
                 dd->mask = D_CLOSED;
 
-            if (!rn2(20))
+            if (level_difficulty() >= 10 && !rn2(20))
                 dd->mask |= D_TRAPPED;
         }
     }

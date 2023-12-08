@@ -319,7 +319,8 @@ explode(
             break;
         case 1:
             adstr = (olet == BURNING_OIL) ? "burning oil"
-                     : (olet == SCROLL_CLASS) ? "tower of flame" : "fireball";
+                     : (olet == SCROLL_CLASS) ? "tower of flame"
+                          : (olet == DOOR_TRAP) ? "explosion" : "fireball";
             /* fire damage, not physical damage */
             adtyp = AD_FIRE;
             break;
@@ -659,6 +660,9 @@ explode(
                     Snprintf(gk.killer.name, sizeof gk.killer.name,
                              "caught %sself in %s own %s", uhim(),
                              uhis(), str);
+                } else if (adtyp == AD_FIRE && olet == DOOR_TRAP) {
+                    gk.killer.format = KILLED_BY_AN;
+                    Strcpy(gk.killer.name, str);
                 } else {
                     gk.killer.format = (!strcmpi(str, "tower of flame")
                                      || !strcmpi(str, "fireball"))
