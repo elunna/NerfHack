@@ -1351,8 +1351,11 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         return ECMD_OK;
     }
 
-    /* gain skill for successful cast */
-    use_skill(skill, spellev(spell));
+    /* Skill gain for spells is faster than skill gain for weapons;
+       four times faster when at basic skill or lower, two times
+       when above. Players may want to (ab)use this to train spells
+       even faster by not advancing to skilled as soon as possible. */
+    use_skill(skill, (spellev(spell) * (role_skill <= P_BASIC ? 4 : 2)));
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     return ECMD_TIME;
