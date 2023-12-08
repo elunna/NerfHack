@@ -1820,7 +1820,7 @@
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID,
         M2_HOSTILE | M2_NEUTER, 0, 6, CLR_BROWN, BROWN_PUDDING),
-    MON("green slime", S_PUDDING, LVL(6, 6, 6, 0, 0),
+    MON("green slime", S_PUDDING, LVL(6, 13, 6, 0, 0),
         (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_TUCH, AD_SLIM, 1, 4), ATTK(AT_NONE, AD_SLIM, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
