@@ -618,6 +618,14 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         dmg = d(8, 6);
         if (Half_physical_damage)
             dmg = (dmg + 1) / 2;
+        if (u.umonnum == PM_IRON_GOLEM) {
+            You("rust!");
+            Strcpy(gk.killer.name, "rusted away");
+            gk.killer.format = NO_KILLER_PREFIX;
+            rehumanize();
+            dmg = 0; /* prevent further damage after rehumanization */
+        }
+        erode_armor(&gy.youmonst, ERODE_RUST);
         break;
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
