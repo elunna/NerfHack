@@ -289,4 +289,10 @@
                         ? (ptr)->pmnames[g] : (ptr)->pmnames[NEUTRAL])
 #endif
 
+/* The monster prefers to keep its distance rather than charging and engaging
+ * you in combat. This was adapted from the M3_SKITTISH flag in SporkHack;
+ * however, since only a couple monsters have this behavior and they're all in
+ * the same class, it isn't necessary to add a M3 flag. */
+#define keeps_distance(ptr) ((ptr)->mlet == S_CENTAUR)
+
 #endif /* MONDATA_H */

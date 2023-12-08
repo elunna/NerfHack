@@ -1709,6 +1709,15 @@ not_special:
     ggx = mtmp->mux;
     ggy = mtmp->muy;
     appr = mtmp->mflee ? -1 : 1;
+    
+    if (keeps_distance(ptr) && dist2(omx, omy, ggx, ggy) < 10) {
+        /* FIXME: This should really only happen when the monster has a ranged
+         * attack available. We can check to see if mdat has an innate ranged
+         * attack, or if mtmp has an offensive item, but it's harder to check
+         * whether they have a usable ranged weapon. */
+        appr = -1;
+    }
+    
     if (mtmp->mconf || mtmp->mstun || engulfing_u(mtmp)) {
         appr = 0;
     } else {
