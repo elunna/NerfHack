@@ -757,7 +757,8 @@ resurrect(void)
 void
 intervene(void)
 {
-    int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(6);
+    struct monst *mtmp = (struct monst *) 0;
+    int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(7);
 
     /* cases 0 and 5 don't apply on the Astral level */
     switch (which) {
@@ -777,6 +778,22 @@ intervene(void)
         (void) nasty((struct monst *) 0);
         break;
     case 5:
+        if (u.uevent.invoked) {
+            pline_The("entire dungeon starts shaking around you!");
+            do_earthquake((MAXULEV - 1) / 3 + 1);
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+                if (DEADMONSTER(mtmp))
+                    continue;
+                wakeup(mtmp, FALSE); /* peaceful monster will not become hostile */
+            }
+            /* shake up monsters in a much larger radius... */
+            awaken_monsters(ROWNO * COLNO);
+        } else {
+            /* Don't waste a good intervene... */
+            (void) nasty((struct monst *) 0);
+        }
+        break;
+    case 6:
         resurrect();
         break;
     }

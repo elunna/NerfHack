@@ -28,11 +28,9 @@
 
 #include "hack.h"
 
-static void awaken_monsters(int);
 static void charm_snakes(int);
 static void calm_nymphs(int);
 static void charm_monsters(int);
-static void do_earthquake(int);
 static const char *generic_lvl_desc(void);
 static int do_improvisation(struct obj *);
 static char *improvised_notes(boolean *);
@@ -42,7 +40,7 @@ static char *improvised_notes(boolean *);
  * Wake every monster in range...
  */
 
-static void
+void
 awaken_monsters(int distance)
 {
     register struct monst *mtmp;
@@ -227,7 +225,7 @@ charm_monsters(int distance)
 /* Generate earthquake :-) of desired force.
  * That is:  create random chasms (pits).
  */
-static void
+void
 do_earthquake(int force)
 {
     static const char into_a_chasm[] = " into a chasm";
@@ -331,6 +329,17 @@ do_earthquake(int force)
             case CORR:
             case ROOM: /* Try to make a pit. */
  do_pit:
+                /* maketrap() won't replace furniture with a trap,
+                   so remove the furniture first */
+                if (levl[x][y].typ != CORR) {
+                    if (levl[x][y].typ != DOOR) {
+                        levl[x][y].typ = ROOM;
+                        /* clear blessed fountain, disturbed grave */
+                        levl[x][y].horizontal = 0;
+                    }
+                    /* clear doormask, altarmask, looted throne */
+                    levl[x][y].flags = 0; /* same as 'doormask = D_NODOOR' */
+                }
                 chasm = maketrap(x, y, PIT);
                 if (!chasm)
                     break; /* no pit if portal at that location */
