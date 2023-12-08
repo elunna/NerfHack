@@ -399,6 +399,8 @@ monflee(
     boolean first,
     boolean fleemsg)
 {
+    struct monst* mtmp2;
+
     /* shouldn't happen; maybe warrants impossible()? */
     if (DEADMONSTER(mtmp))
         return;
@@ -446,7 +448,20 @@ monflee(
                     SetVoice(mtmp, 0, 80, 0);
                     verbalize("Bright light!");
                 }
-            } else {
+            } else if (!rn2(5) && !Deaf && !mindless(mtmp->data) 
+                       && !is_silent(mtmp->data)) {
+                if (mtmp->data->msound != MS_BUZZ 
+                    && mtmp->data->msound != MS_HISS)
+                    pline("%s screams in terror!", Monnam(mtmp));
+                else
+                    pline("%s squeals in fear!", Monnam(mtmp));
+                /* Check and see who was close enough to hear it */
+                for (mtmp2 = fmon; mtmp2; mtmp2 = mtmp2->nmon) {
+                    if (dist2(mtmp->mx, mtmp->my, mtmp2->mx, mtmp2->my) < 19 
+                        && !rn2(3)) {
+                        mtmp2->msleeping = 0;
+                    }
+                }
                 pline("%s turns to flee.", Monnam(mtmp));
             }
         }
