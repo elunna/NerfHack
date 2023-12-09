@@ -213,6 +213,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
      * inside their own shop, priests inside their own temple */
     if (mtmp->iswiz || is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL]
         || is_rider(mtmp->data)
+        || mtmp->data == &mons[PM_GIANT_PRAYING_MANTIS]
         || mtmp->data->mlet == S_HUMAN || unique_corpstat(mtmp->data)
         || (mtmp->isshk && inhishop(mtmp))
         || (mtmp->ispriest && inhistemple(mtmp)))
