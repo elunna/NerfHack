@@ -17,14 +17,20 @@ were_change(struct monst *mon)
                             : (flags.moonphase == FULL_MOON ? 10 : 50))) {
             new_were(mon); /* change into animal form */
             if (!Deaf && !canseemon(mon)) {
-                const char *howler;
+                const char *howler, *howl = "";
 
                 switch (monsndx(mon->data)) {
                 case PM_WEREWOLF:
                     howler = "wolf";
+                    howl = "howling";
                     break;
                 case PM_WEREJACKAL:
                     howler = "jackal";
+                    howl = "howling";
+                    break;
+                case PM_HUMAN_WERETIGER:	
+                    howler = "tiger";
+                    howl = "yowling";
                     break;
                 default:
                     howler = (char *) 0;
@@ -32,7 +38,7 @@ were_change(struct monst *mon)
                 }
                 if (howler) {
                     Soundeffect(se_canine_howl, 50);
-                    You_hear("a %s howling at the moon.", howler);
+                    You_hear("a %s %s at the moon.", howler, howl);
                     wake_nearto(mon->mx, mon->my, 4 * 4);
                 }
             }
@@ -60,6 +66,10 @@ counter_were(int pm)
         return PM_HUMAN_WERERAT;
     case PM_HUMAN_WERERAT:
         return PM_WERERAT;
+    case PM_WERETIGER:        
+        return PM_HUMAN_WERETIGER;
+    case PM_HUMAN_WERETIGER:  
+        return PM_WERETIGER;
     default:
         return NON_PM;
     }
@@ -85,6 +95,9 @@ were_beastie(int pm)
     case PM_WARG:
     case PM_WINTER_WOLF:
         return PM_WEREWOLF;
+    case PM_TIGER:
+    case PM_JAGUAR:
+        return PM_WERETIGER;
     default:
         break;
     }
@@ -164,6 +177,12 @@ were_summon(
             typ = rn2(5) ? PM_WOLF : rn2(2) ? PM_WARG : PM_WINTER_WOLF;
             if (genbuf)
                 Strcpy(genbuf, "wolf");
+            break;
+        case PM_WERETIGER:
+        case PM_HUMAN_WERETIGER:
+            typ = rn2(5) ? PM_JAGUAR : PM_TIGER;
+            if (genbuf) 
+                Strcpy(genbuf, "large cat");
             break;
         default:
             continue;

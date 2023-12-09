@@ -2854,6 +2854,8 @@ mondead(struct monst *mtmp)
         set_mon_data(mtmp, &mons[PM_HUMAN_WEREWOLF]);
     else if (mtmp->data == &mons[PM_WERERAT])
         set_mon_data(mtmp, &mons[PM_HUMAN_WERERAT]);
+    else if (mtmp->data == &mons[PM_WERETIGER])
+        set_mon_data(mtmp, &mons[PM_HUMAN_WERETIGER]);
 
     /*
      * gm.mvitals[].died does double duty as total number of dead monsters
@@ -5499,9 +5501,11 @@ usmellmon(struct permonst* mdat)
         case PM_HUMAN_WEREJACKAL:
         case PM_HUMAN_WERERAT:
         case PM_HUMAN_WEREWOLF:
+        case PM_HUMAN_WERETIGER:
         case PM_WEREJACKAL:
         case PM_WERERAT:
         case PM_WEREWOLF:
+        case PM_WERETIGER:
         case PM_OWLBEAR:
             You("detect an odor reminiscent of an animal's den.");
             msg_given = TRUE;
