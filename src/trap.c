@@ -2103,6 +2103,7 @@ trapeffect_web(
         case PM_IRON_GOLEM:
         case PM_BALROG:
         case PM_KRAKEN:
+        case PM_THING_FROM_BELOW:
         case PM_MASTODON:
         case PM_ORION:
         case PM_NORN:
