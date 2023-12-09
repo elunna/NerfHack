@@ -1603,7 +1603,8 @@ dogaze(void)
             break;
         }
     }
-    if (adtyp != AD_CONF && adtyp != AD_FIRE && adtyp != AD_BLND) {
+    if (adtyp != AD_CONF && adtyp != AD_FIRE 
+        && adtyp != AD_BLND && adtyp != AD_TLPT ) {
         impossible("gaze attack %d?", adtyp);
         return ECMD_OK;
     }
@@ -1697,6 +1698,17 @@ dogaze(void)
                             killed(mtmp);
                     }
 
+                } else if (adtyp == AD_TLPT) {
+                    char nambuf[BUFSZ];
+                    /* record the name before losing sight of monster */
+                    Strcpy(nambuf, Monnam(mtmp));
+                    if (gy.youmonst.data == &mons[PM_BLINKING_EYE]
+                        && mtmp->data == &mons[PM_BLINKING_EYE]) {
+                        pline("You blink at the blinking eye...");
+                        continue;
+                    }
+                    if (u_teleport_mon(mtmp, FALSE) && !(canseemon(mtmp)))
+                        pline("%s suddenly disappears!", nambuf);
                 }
                 /* For consistency with passive() in uhitm.c, this only
                  * affects you if the monster is still alive.

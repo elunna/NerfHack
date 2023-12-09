@@ -160,7 +160,7 @@ struct conditionals_t {
     { MON_GLYPH, PM_HELL_HOUND, "Cerberus" },
 #endif
     /* commented out in monst.c at present */
-    { MON_GLYPH, PM_SHOCKING_SPHERE, "beholder" },
+    { MON_GLYPH, PM_BLINKING_EYE, "beholder" },
     { MON_GLYPH, PM_BABY_SILVER_DRAGON, "baby shimmering dragon" },
     { MON_GLYPH, PM_SILVER_DRAGON, "shimmering dragon" },
     { MON_GLYPH, PM_JABBERWOCK, "vorpal jabberwock" },

@@ -945,7 +945,10 @@ should_givit(int type, struct permonst *ptr)
         chance = 10;
         break;
     case TELEPORT_CONTROL:
-        chance = 12;
+        if (ptr == &mons[PM_BLINKING_EYE])
+            chance = 80;
+        else
+            chance = 12;
         break;
     case TELEPAT:
         chance = 1;

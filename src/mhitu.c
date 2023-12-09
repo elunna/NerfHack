@@ -1984,6 +1984,15 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
+    case AD_TLPT:
+        if(!mtmp->mcan && canseemon(mtmp) && mtmp->mcansee && !cancelled
+            && !mtmp->mspec_used && rn2(5)) {
+            pline("%s stares blinkingly at you!", Monnam(mtmp));
+            if (flags.verbose)
+                Your("position suddenly seems very uncertain!");
+            tele();
+        }
+        break;
 #ifdef PM_BEHOLDER /* work in progress */
     case AD_SLEE:
         if (mcanseeu && gm.multi >= 0 && !rn2(5) && !Sleep_resistance) {
