@@ -127,6 +127,13 @@
         SIZ(1, 5, MS_BUZZ, MZ_TINY), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_FLY | M1_NOHANDS | M1_OVIPAROUS | M1_POIS,
         M2_HOSTILE | M2_FEMALE | M2_PRINCE, 0, 12, HI_LORD, QUEEN_BEE),
+    MON("locust", S_ANT,                                       /* SporkHack */
+        LVL(9, 12, 0, 0, 0), (G_GENO | G_SGROUP | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 1, 8), ATTK(AT_STNG, AD_DISE, 1, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1, 5, MS_BUZZ, MZ_TINY), MR_POISON, MR_POISON,
+        M1_ANIMAL | M1_FLY | M1_NOHANDS | M1_OVIPAROUS | M1_POIS,
+        M2_HOSTILE, 0, 11, CLR_GRAY, LOCUST),
     /*
      * blobs
      */
