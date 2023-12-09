@@ -96,6 +96,7 @@ set_uasmon(void)
        suppress flying for it so that enlightenment doesn't confusingly
        show latent flight capability always blocked by levitation */
     PROPSET(FLYING, (is_flyer(mdat) && !is_floater(mdat)));
+    PROPSET(JUMPING, (is_jumper(mdat)));
     PROPSET(SWIMMING, is_swimmer(mdat));
     /* [don't touch MAGICAL_BREATHING here; both Amphibious and Breathless
        key off of it but include different monster forms...] */

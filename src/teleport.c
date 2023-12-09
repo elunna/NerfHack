@@ -10,7 +10,6 @@ static boolean goodpos_onscary(coordxy, coordxy, struct permonst *);
 static boolean tele_jump_ok(coordxy, coordxy, coordxy, coordxy);
 static boolean teleok(coordxy, coordxy, boolean);
 static void vault_tele(void);
-static boolean rloc_pos_ok(coordxy, coordxy, struct monst *);
 static void rloc_to_core(struct monst *, coordxy, coordxy, unsigned);
 static void mvault_tele(struct monst *);
 static boolean m_blocks_teleporting(struct monst *);
@@ -1495,7 +1494,7 @@ level_tele_trap(struct trap *trap, unsigned int trflags)
 }
 
 /* check whether monster can arrive at location <x,y> via Tport (or fall) */
-static boolean
+boolean
 rloc_pos_ok(
     coordxy x, coordxy y, /* coordinates of candidate location */
     struct monst *mtmp)

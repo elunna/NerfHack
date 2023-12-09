@@ -1658,6 +1658,38 @@ m_move(register struct monst *mtmp, int after)
     }
 #endif
 
+    
+    /* jump toward the player if that lies in
+       our nature, can see the player, and isn't
+       otherwise incapacitated in some way */
+    if ((/*can_jump(mtmp) ||*/ is_jumper(ptr)) && m_canseeu(mtmp)
+        && !(mtmp->mflee || mtmp->mconf
+             || mtmp->mstun || mtmp->msleeping)) {
+        int dist = dist2(mtmp->mx, mtmp->my, u.ux, u.uy);
+        
+        if (!mtmp->mpeaceful && !rn2(3) && dist <= 20 && dist > 8) {
+            int x = u.ux - mtmp->mx;
+            int y = u.uy - mtmp->my;
+            if (x < 0)
+                x = 1;
+            else if (x > 0)
+                x = -1;
+            if (y < 0)
+                y = 1;
+            else if (y > 0)
+                y = -1;
+            if (rloc_pos_ok(u.ux + x, u.uy + y, mtmp)
+                && check_mon_jump(mtmp, u.ux + x, u.uy + y)) {
+                rloc_to(mtmp, u.ux + x, u.uy + y);
+                if (canseemon(mtmp))
+                    pline("%s leaps at you!", Monnam(mtmp));
+                mmoved = 1;
+                return postmov(mtmp, ptr, omx, omy, MMOVE_MOVED,
+                               sawmon, can_tunnel, can_unlock, can_open);
+            }
+        }
+    }
+
     /* teleport if that lies in our nature */
     if (ptr == &mons[PM_TENGU] && !rn2(5) && !mtmp->mcan
         && !tele_restrict(mtmp)) {
