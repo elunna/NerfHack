@@ -84,6 +84,7 @@
 #define AD_CORR 42  /* corrode armor (black pudding) */
 #define AD_POLY 43  /* polymorph the target (genetic engineer) */
 #define AD_WTHR 44  /* withering (mummies) */
+#define AD_TCKL 45  /* tickle (Nightgaunts) */
 
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */

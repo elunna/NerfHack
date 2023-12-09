@@ -1208,6 +1208,18 @@
         M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG | M2_COLLECT | M2_MAGIC
             | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION, 15, CLR_BROWN, BYAKHEE),
+    MON("nightgaunt", S_BAT,                                    /* Slash'EM */
+        LVL(15, 20, -2, 50, -6), (G_GENO | 2 | G_SGROUP),
+        A(ATTK(AT_WEAP, AD_PHYS, 2, 6), ATTK(AT_CLAW, AD_TCKL, 1, 6), 
+          ATTK(AT_CLAW, AD_TCKL, 1, 6), ATTK(AT_STNG, AD_PHYS, 1, 10), 
+          NO_ATTK, NO_ATTK),
+        SIZ(1300, 100, MS_SQEEK, MZ_MEDIUM), 
+        MR_SLEEP | MR_POISON | MR_COLD, MR_COLD,
+        M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE 
+            | M1_SEE_INVIS | M1_OMNIVORE | M1_NOEYES,
+        M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG 
+            | M2_COLLECT | M2_MAGIC | M2_FLANK,
+        M3_INFRAVISIBLE | M3_INFRAVISION, 19, CLR_BROWN, NIGHTGAUNT),
     /*
      * Centaurs
      */

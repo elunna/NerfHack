@@ -3984,6 +3984,54 @@ mhitm_ad_halu(
     }
 }
 
+
+void
+mhitm_ad_tckl(struct monst *magr,
+    struct attack *mattk,
+    struct monst *mdef,
+    struct mhitm_data *mhm)
+{
+    if (magr == &gy.youmonst) {
+        /* uhitm */
+        /* since hero can't be cancelled, only defender's armor applies */
+        if (mdef->mcanmove && !rn2(3) && mhm->damage < mdef->mhp) {
+            if (!Blind) 
+                You("mercilessly tickle %s!", mon_nam(mdef));
+            mdef->mcanmove = 0;
+            mdef->mfrozen = rnd(6);
+        }
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu */
+        boolean uncancelled = !magr->mcan;
+        
+        hitmsg(magr, mattk);
+        if (uncancelled && gm.multi >= 0 && !rn2(3)) {
+            if (Free_action && !rn2(10))
+                You_feel("horrible tentacles probing your flesh!");
+            else {
+                if (Blind) 
+                    You("are mercilessly tickled!");
+                else 
+                    You("are mercilessly tickled by %s!", mon_nam(magr));
+                gn.nomovemsg = 0;	/* default: "you can move again" */
+                nomul(-rnd(6));
+                exercise(A_DEX, FALSE);
+                exercise(A_CON, FALSE);
+            }
+        }
+    } else {
+        /* mhitm */
+        boolean cancelled = magr->mcan;
+        if (!cancelled && mdef->mcanmove) {
+            if (gv.vis)
+                pline("%s mercilessly tickles %s.", Monnam(magr), mon_nam(mdef));
+            mdef->mcanmove = 0;
+            mdef->mfrozen = rnd(6);
+            mdef->mstrategy &= ~STRAT_WAITFORU;
+        }
+    }
+}
+
 boolean
 do_stone_u(struct monst *mtmp)
 {
@@ -4861,6 +4909,7 @@ mhitm_adtyping(
     case AD_FAMN: mhitm_ad_famn(magr, mattk, mdef, mhm); break;
     case AD_DGST: mhitm_ad_dgst(magr, mattk, mdef, mhm); break;
     case AD_HALU: mhitm_ad_halu(magr, mattk, mdef, mhm); break;
+    case AD_TCKL: mhitm_ad_tckl(magr, mattk, mdef, mhm); break;
     default:
         mhm->damage = 0;
     }
