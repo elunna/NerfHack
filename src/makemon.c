@@ -402,6 +402,12 @@ m_initweap(register struct monst *mtmp)
             } else {
                 (void) mongets(mtmp, !rn2(3) ? PICK_AXE : DAGGER);
             }
+        } else if (mm == PM_ALHOON && !rn2(3)) {
+            otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
+                          rn2(13) ? FALSE : TRUE);
+            if (otmp->spe < 2)
+                otmp->spe = rnd(3);
+            (void) mpickobj(mtmp, otmp);
         }
         break;
     case S_KOP:

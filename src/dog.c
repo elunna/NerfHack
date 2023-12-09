@@ -1081,6 +1081,7 @@ tamedog(struct monst *mtmp, struct obj *obj)
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
     if (mtmp->iswiz || mtmp->data == &mons[PM_MEDUSA]
         || mtmp->data == &mons[PM_RABID_RAT]
+        || mtmp->data == &mons[PM_ALHOON]
         || (mtmp->data->mflags3 & M3_WANTSARTI))
         return FALSE;
 
