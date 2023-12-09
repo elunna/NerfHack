@@ -31,6 +31,10 @@
      || ptr == &mons[PM_DEEPEST_ONE] || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 
+#define non_tameable(ptr) (unique_corpstat(ptr) \
+     || ((ptr)->mflags3 & M3_WANTSARTI) \
+     || (ptr->mflags3 & M3_NOTAME))
+
 #define is_jumper(ptr) (((ptr)->mflags3 & M3_JUMPER) != 0L)
 #define is_flyer(ptr) (((ptr)->mflags1 & M1_FLY) != 0L)
 #define is_floater(ptr) ((ptr)->mlet == S_EYE || (ptr)->mlet == S_LIGHT)

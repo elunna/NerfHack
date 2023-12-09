@@ -108,6 +108,10 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
                 if (!quietly)
                     There("seems to be nothing available for a familiar.");
                 break;
+            } else if (pm->mflags3 & M3_NOTAME) {
+                /* These would not make good familiars */
+                pm = 0;
+                continue;
             }
         }
 
@@ -151,6 +155,10 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
         if (chance > 2)
             chance = otmp->blessed ? 0 : !otmp->cursed ? 1 : 2;
         /* 0,1,2:  b=80%,10,10; nc=10%,80,10; c=10%,10,80 */
+
+        if (non_tameable(mtmp->data))
+            chance = 2;
+        
         if (chance > 0) {
             mtmp->mtame = 0;   /* not tame after all */
             u.uconduct.pets--; /* doesn't count as creating a pet */
@@ -1078,11 +1086,7 @@ tamedog(struct monst *mtmp, struct obj *obj)
     if (mtmp->msleeping)
         wake_nearto(mtmp->mx, mtmp->my, 1); /* [different from wakeup()] */
 
-    /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
-    if (mtmp->iswiz || mtmp->data == &mons[PM_MEDUSA]
-        || mtmp->data == &mons[PM_RABID_RAT]
-        || mtmp->data == &mons[PM_ALHOON]
-        || (mtmp->data->mflags3 & M3_WANTSARTI))
+    if (non_tameable(mtmp->data))
         return FALSE;
 
     /* Monsters on the astral plane present formidable challenges to taming 

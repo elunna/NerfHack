@@ -172,9 +172,9 @@ enum ms_sounds {
 /* Infravision is currently implemented for players only */
 #define M3_INFRAVISION  0x0100 /* has infravision */
 #define M3_INFRAVISIBLE 0x0200 /* visible by infravision */
-
 #define M3_DISPLACES    0x0400 /* moves monsters out of its way */
 #define M3_JUMPER       0x0800 /* can jump at the player */
+#define M3_NOTAME	0x1000 /* Cannot be tamed */
 
 #define MZ_TINY         0 /* < 2' */
 #define MZ_SMALL        1 /* 2-4' */
