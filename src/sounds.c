@@ -955,6 +955,10 @@ domonnoise(register struct monst* mtmp)
         pline_msg = "trumpets!";
         wake_nearto(mtmp->mx, mtmp->my, 11 * 11);
         break;
+    case MS_ATHOL:
+        pline_msg = "athools.";
+        aggravate();
+        break;
     case MS_SHRIEK:
         Soundeffect(se_shriek, 60);
         pline_msg = "shrieks.";

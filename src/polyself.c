@@ -1024,6 +1024,8 @@ polymon(int mntmp)
             pline(use_thec, monsterc, "emit a mental blast");
         if (uptr->msound == MS_SHRIEK) /* worthless, actually */
             pline(use_thec, monsterc, "shriek");
+        if (uptr->msound == MS_ATHOL) /* worthless, actually */
+            pline(use_thec, monsterc, "athool");
 #if 0 /* Vampshifting disabled */
         if (is_vampire(uptr) || is_vampshifter(&gy.youmonst))
             pline(use_thec, monsterc, "change shape");

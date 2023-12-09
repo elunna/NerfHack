@@ -119,7 +119,8 @@
 #define your_race(ptr) (((ptr)->mflags2 & gu.urace.selfmask) != 0L)
 #define is_bat(ptr)                                         \
     ((ptr) == &mons[PM_BAT] || (ptr) == &mons[PM_GIANT_BAT] \
-     || (ptr) == &mons[PM_ZOO_BAT] || (ptr) == &mons[PM_VAMPIRE_BAT])
+     || (ptr) == &mons[PM_ZOO_BAT] || (ptr) == &mons[PM_VAMPIRE_BAT] \
+     || (ptr) == &mons[PM_ATHOL])
 #define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
 /* Jabberwocks not considered to have beaks because they have "jaws". */
 #define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] || \

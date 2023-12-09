@@ -664,6 +664,13 @@ dochug(register struct monst* mtmp)
        used. */
     if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
         m_respond(mtmp);
+    /* Athols have a greater range than shriekers */
+    if (mdat->msound == MS_ATHOL \
+        && !um_dist(mtmp->mx, mtmp->my, 3) && couldsee(mtmp->mx, mtmp->my)) {
+        /* Make the athooling less frequent so it's not excessive. */
+        if (!rn2(10))
+            m_respond(mtmp);
+    }
     if (mdat == &mons[PM_NAZGUL])
         m_respond(mtmp);
     if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my))

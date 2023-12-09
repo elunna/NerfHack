@@ -3831,6 +3831,17 @@ m_respond(struct monst* mtmp)
         }
         aggravate();
     }
+    if (mtmp->data->msound == MS_ATHOL) {
+        if (!Deaf) {
+            if (canseemon(mtmp)) {
+                pline("%s athools.", Monnam(mtmp));
+                stop_occupation();
+            }
+            else
+                You_hear("a distant athooool!");
+        }
+        aggravate();
+    }
     if (mtmp->data == &mons[PM_MEDUSA]) {
         register int i;
 

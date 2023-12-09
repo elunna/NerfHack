@@ -939,8 +939,13 @@ domonability(void)
     } else if (is_unicorn(uptr)) {
         use_unicorn_horn((struct obj **) 0);
         return ECMD_TIME;
-    } else if (uptr->msound == MS_SHRIEK) {
-        You("shriek.");
+    } else if (gy.youmonst.data->msound == MS_SHRIEK 
+               || gy.youmonst.data->msound == MS_ATHOL) {
+        if (gy.youmonst.data->msound == MS_SHRIEK)
+            You("shriek.");
+        else
+            You("howl 'athool!'");
+        
         if (u.uburied)
             pline("Unfortunately sound does not carry well through rock.");
         else

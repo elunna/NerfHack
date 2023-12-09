@@ -1188,6 +1188,15 @@
         SIZ(30, 20, MS_SQEEK, MZ_SMALL), MR_SLEEP | MR_POISON, 0,
         M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_REGEN | M1_OMNIVORE,
         M2_HOSTILE, M3_INFRAVISIBLE, 7, CLR_BLACK, VAMPIRE_BAT),
+    MON("athol", S_BAT,
+        LVL(7, 20, 7, 0, 0), (G_GENO | G_SGROUP | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 1, 10), 
+          ATTK(AT_CLAW, AD_PHYS, 2, 8),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(30, 30, MS_ATHOL, MZ_MEDIUM), 0, 0,
+        M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
+        M2_WANDER | M2_HOSTILE | M2_FLANK, 
+        M3_INFRAVISIBLE, 10, CLR_GRAY, ATHOL),
     /*
      * Centaurs
      */
