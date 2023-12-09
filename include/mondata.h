@@ -28,7 +28,7 @@
 
 #define resists_drain(ptr) \
     (is_undead(ptr) || is_demon(ptr) || is_were(ptr) \
-     || ptr == &mons[PM_DEATH])
+     || ptr == &mons[PM_DEEPEST_ONE] || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 
 #define is_jumper(ptr) (((ptr)->mflags3 & M3_JUMPER) != 0L)

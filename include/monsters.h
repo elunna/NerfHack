@@ -530,6 +530,15 @@
             | M2_JEWELS | M2_COLLECT | M2_UNDEAD,
         M3_WANTSBOOK | M3_INFRAVISIBLE | M3_INFRAVISION,
         30, CLR_GRAY, ALHOON),
+    MON("deepest one", S_HUMANOID, LVL(30, 15, -5, 70, -9), (1),
+        A(ATTK(AT_CLAW, AD_PHYS, 3, 6), ATTK(AT_CLAW, AD_PHYS, 3, 6),
+          ATTK(AT_BITE, AD_PHYS, 5, 6), NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(3000, 500, MS_GURGLE, MZ_HUGE), MR_COLD | MR_POISON, MR_POISON,
+        M1_SWIM | M1_AMPHIBIOUS | M1_HUMANOID | M1_OMNIVORE | M1_POIS
+            | M1_THICK_HIDE,
+        M2_HOSTILE | M2_STALK | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_PRINCE
+            | M2_STRONG | M2_MAGIC | M2_FLANK,
+        M3_INFRAVISIBLE | M3_INFRAVISION, 33, HI_LORD, DEEPEST_ONE),
     /*
      * imps & other minor demons/devils
      */
