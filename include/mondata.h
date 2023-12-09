@@ -31,7 +31,7 @@
      || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 
-#define is_jumper(ptr) (((ptr)->mflags2 & M3_JUMPER) != 0L)
+#define is_jumper(ptr) (((ptr)->mflags3 & M3_JUMPER) != 0L)
 #define is_flyer(ptr) (((ptr)->mflags1 & M1_FLY) != 0L)
 #define is_floater(ptr) ((ptr)->mlet == S_EYE || (ptr)->mlet == S_LIGHT)
 /* clinger: piercers, mimics, wumpus -- generally don't fall down holes */
