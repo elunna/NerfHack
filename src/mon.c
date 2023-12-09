@@ -405,6 +405,9 @@ undead_to_corpse(int mndx)
     case PM_GIANT_MUMMY:
         mndx = PM_GIANT;
         break;
+    case PM_TROLL_MUMMY:
+        mndx = PM_TROLL;
+        break;
     case PM_ETTIN_ZOMBIE:
     case PM_ETTIN_MUMMY:
         mndx = PM_ETTIN;
@@ -595,6 +598,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_ELF_MUMMY:
     case PM_HUMAN_MUMMY:
     case PM_GIANT_MUMMY:
+    case PM_TROLL_MUMMY:
     case PM_ETTIN_MUMMY:
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
