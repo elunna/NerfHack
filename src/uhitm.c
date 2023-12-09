@@ -3984,6 +3984,50 @@ mhitm_ad_halu(
     }
 }
 
+void
+mhitm_ad_dsrm(struct monst *magr,
+              struct attack *mattk,
+              struct monst *mdef,
+              struct mhitm_data *mhm)
+{
+    struct obj *otmp;
+    if (magr == &gy.youmonst) {
+        /* uhitm */
+        mhitm_ad_phys(magr, mattk, mdef, mhm);
+        if (mhm->done)
+            return;
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu */
+        hitmsg(magr, mattk);
+        
+        otmp = MON_WEP(magr);
+        if (otmp) {
+            pline("%s's %s sticks to you!", Monnam(magr), xname(otmp));
+            obj_extract_self(otmp);
+            possibly_unwield(magr, FALSE);
+            setmnotwielded(magr, otmp);
+            hold_another_object(otmp, "You drop %s!", doname(otmp), (const char *)0);
+        } else if (!u.ustuck) {
+            u.ustuck = magr;
+            pline("%s sticks to you!", Monnam(magr));
+        }
+        return;
+    } else {
+        /* mhitm */
+        mhitm_ad_phys(magr, mattk, mdef, mhm);
+        otmp = MON_WEP(magr);
+        if (otmp) {
+            pline("%s's %s sticks to %s!", Monnam(magr), xname(otmp),
+                  Monnam(mdef));
+            obj_extract_self(otmp);
+            possibly_unwield(magr, FALSE);
+            setmnotwielded(magr, otmp);
+            (void) mpickobj(mdef, otmp);
+        }
+        if (mhm->done)
+            return;
+    }
+}
 
 void
 mhitm_ad_tckl(struct monst *magr,
@@ -4910,6 +4954,7 @@ mhitm_adtyping(
     case AD_DGST: mhitm_ad_dgst(magr, mattk, mdef, mhm); break;
     case AD_HALU: mhitm_ad_halu(magr, mattk, mdef, mhm); break;
     case AD_TCKL: mhitm_ad_tckl(magr, mattk, mdef, mhm); break;
+    case AD_DSRM: mhitm_ad_dsrm(magr, mattk, mdef, mhm); break;
     default:
         mhm->damage = 0;
     }
@@ -5969,6 +6014,7 @@ passive(
     boolean wep_was_destroyed)
 {
     struct permonst *ptr = mon->data;
+    struct obj *otmp;
     int i, tmp;
     int mhit = mhitb ? M_ATTK_HIT : M_ATTK_MISS;
     int malive = maliveb ? M_ATTK_HIT : M_ATTK_MISS;
@@ -6116,6 +6162,19 @@ passive(
      */
     if (malive && !mon->mcan && rn2(3)) {
         switch (ptr->mattk[i].adtyp) {
+        case AD_DSRM: /* adherer */
+            otmp = uwep;
+            if (otmp && otmp != uball) {
+                /* Just the main weapon */
+                pline("%s to %s!", Yobjnam2(otmp, "stick"), mon_nam(mon));
+                dropx(otmp);
+                obj_extract_self(otmp);
+                add_to_minv(mon, otmp);
+            } else {
+                u.ustuck = mon;
+                You("stick to %s!", mon_nam(mon));
+            }
+            break;
         case AD_PLYS:
             if (ptr == &mons[PM_FLOATING_EYE]) {
                 if (!canseemon(mon)) {

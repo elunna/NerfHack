@@ -3094,6 +3094,8 @@ extern void mhitm_ad_deth(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *);
 extern void mhitm_ad_halu(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *);
+extern void mhitm_ad_dsrm(struct monst *, struct attack *, struct monst *,
+                          struct mhitm_data *);
 extern void mhitm_ad_tckl(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *);
 extern void mhitm_ad_phys(struct monst *, struct attack *, struct monst *,
