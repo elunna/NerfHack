@@ -1101,6 +1101,8 @@ dog_move(
                     && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
                     && (perceives(mtmp->data) || !mtmp2->minvis))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
+                || (mtmp2->data == &mons[PM_GRAY_FUNGUS] 
+                    && !(resists_sick(mtmp->data) || defended(mtmp, AD_DISE)))
                 || (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
                 || ((mtmp->mhp * 4 < mtmp->mhpmax
                      || mtmp2->data->msound == MS_GUARDIAN

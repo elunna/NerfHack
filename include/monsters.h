@@ -1493,6 +1493,14 @@
         M1_BREATHLESS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
             | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, 0, 5, CLR_MAGENTA, VIOLET_FUNGUS),
+    MON("gray fungus", S_FUNGUS,
+        LVL(4, 1, 7, 0, 0), (G_GENO | 1),
+        A(ATTK(AT_TUCH, AD_STCK, 0, 0), ATTK(AT_NONE, AD_DISE, 0, 2),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(50, 30, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_BREATHLESS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
+            | M1_NOTAKE | M1_POIS,
+        M2_HOSTILE | M2_NEUTER, 0, 5, CLR_GRAY, GRAY_FUNGUS),
     /*
      * Gnomes
      */

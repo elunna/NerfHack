@@ -6168,6 +6168,17 @@ passive(
             You("are jolted with electricity!");
             mdamageu(mon, tmp);
             break;
+        case AD_DISE:
+            if (ptr == &mons[PM_GRAY_FUNGUS]) {
+                if (!Strangled && !Breathless) {
+                    You("inhale a cloud of spores!");
+                } else {
+                    pline("A cloud of spores surrounds you!");
+                    break;
+                }
+            }
+            diseasemu(ptr);
+            break;
         default:
             break;
         }

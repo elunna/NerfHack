@@ -16,6 +16,11 @@
 #define immune_poisongas(ptr) ((ptr) == &mons[PM_HEZROU]        \
                                || (ptr) == &mons[PM_VROCK])
 
+#define resists_sick(ptr) \
+    ((ptr)->mlet == S_FUNGUS || nonliving(ptr) || is_demon(ptr) \
+     || is_rider(ptr) || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
+     || (ptr) == &mons[PM_GREEN_DRAGON] || (ptr) == &mons[PM_LOCUST])
+
 /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
 #define resists_mgc(ptr) \
     (dmgtype(ptr, AD_MAGM) || ptr == &mons[PM_BABY_GRAY_DRAGON] \
