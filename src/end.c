@@ -782,6 +782,11 @@ done_in_by(struct monst *mtmp, int how)
         u.ugrave_arise = gu.urace.mummynum;
     else if (zombie_maker(mtmp) && gu.urace.zombienum != NON_PM)
         u.ugrave_arise = gu.urace.zombienum;
+    /* Vampire Mages can produce more of their kind if
+      conditions are just right */
+    else if (mptr == &mons[PM_VAMPIRE_MAGE] && Race_if(PM_HUMAN)
+             && Role_if(PM_WIZARD))
+        u.ugrave_arise = PM_VAMPIRE_MAGE;
     else if (mptr->mlet == S_VAMPIRE && Race_if(PM_HUMAN))
         u.ugrave_arise = PM_VAMPIRE;
     else if (mptr == &mons[PM_GHOUL])

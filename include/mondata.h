@@ -288,8 +288,9 @@
 
 #define is_bones_monster(ptr) \
     ((ptr) == &mons[PM_GHOST] || (ptr) == &mons[PM_GHOUL]        \
-     || (ptr) == &mons[PM_VAMPIRE] || (ptr) == &mons[PM_WRAITH]  \
-     || (ptr) == &mons[PM_GREEN_SLIME] || (ptr)->mlet == S_MUMMY)
+     || (ptr) == &mons[PM_VAMPIRE]  || (ptr) == &mons[PM_VAMPIRE_MAGE] \
+     || (ptr) == &mons[PM_WRAITH] || (ptr) == &mons[PM_GREEN_SLIME]    \
+     || (ptr)->mlet == S_MUMMY)
 
 #ifdef PMNAME_MACROS
 #define pmname(ptr,g) ((((g) == MALE || (g) == FEMALE) && (ptr)->pmnames[g]) \

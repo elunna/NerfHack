@@ -394,9 +394,7 @@ undead_to_corpse(int mndx)
         break;
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
-#if 0 /* DEFERRED */
     case PM_VAMPIRE_MAGE:
-#endif
     case PM_HUMAN_ZOMBIE:
     case PM_HUMAN_MUMMY:
         mndx = PM_HUMAN;
@@ -575,6 +573,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         goto default_1;
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_MAGE:
         /* include mtmp in the mkcorpstat() call */
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
@@ -4655,6 +4654,7 @@ pickvampshape(struct monst *mon)
             break; /* leave mndx as is */
         wolfchance = 3;
     /*FALLTHRU*/
+    case PM_VAMPIRE_MAGE:
     /* Vlad can become wolf */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
@@ -4807,6 +4807,7 @@ select_newcham_form(struct monst* mon)
             mndx = pick_animal();
         break;
     case PM_VLAD_THE_IMPALER:
+    case PM_VAMPIRE_MAGE:
     case PM_VAMPIRE_LEADER:
     case PM_VAMPIRE:
         mndx = pickvampshape(mon);
