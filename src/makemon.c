@@ -793,6 +793,15 @@ m_initinv(register struct monst *mtmp)
             }
             (void) mpickobj(mtmp, otmp);
         }
+        if (ptr == &mons[PM_ALCHEMIST]) {
+            for (cnt = rnd(3); cnt; cnt--) {
+                otmp = mksobj(rnd_class(POT_GAIN_ABILITY, POT_OIL),
+                              FALSE, FALSE);
+                (void) mpickobj(mtmp, otmp);
+            }
+            (void) mongets(mtmp, POT_ACID);
+            (void) mongets(mtmp, POT_ACID);
+        }
         break;
     case S_LEPRECHAUN:
         mkmonmoney(mtmp, (long) d(level_difficulty(), 30));

@@ -302,6 +302,7 @@
  * however, since only a couple monsters have this behavior and they're all in
  * the same class, it isn't necessary to add a M3 flag. */
 #define keeps_distance(ptr) ((ptr)->mlet == S_CENTAUR \
-                             || (ptr) == &mons[PM_BLINKING_EYE])
+                             || (ptr) == &mons[PM_BLINKING_EYE] \
+                             || (ptr) == &mons[PM_ALCHEMIST])
 
 #endif /* MONDATA_H */
