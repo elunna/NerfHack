@@ -1741,6 +1741,14 @@ mk_gen_ok(int mndx, unsigned mvflagsmask, unsigned genomask)
         return FALSE;
     if (is_placeholder(ptr))
         return FALSE;
+    if (Is_mineend_level(&u.uz) 
+        && ptr == &mons[PM_VAMPIRE_MAGE])
+        return FALSE;
+    if (In_mines(&u.uz)
+        && (ptr == &mons[PM_ALHOON]
+            || ptr == &mons[PM_MASTER_MIND_FLAYER]
+            || ptr == &mons[PM_DEEPEST_ONE]))
+        return FALSE;
 #ifdef MAIL_STRUCTURES
     /* special levels might ask for random demon type; reject this one */
     if (ptr == &mons[PM_MAIL_DAEMON])
