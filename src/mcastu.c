@@ -9,6 +9,7 @@
 enum mcast_mage_spells {
     MGC_PSI_BOLT = 0,
     MGC_FIRE_BOLT,
+    MGC_ICE_BOLT,
     MGC_CURE_SELF,
     MGC_HASTE_SELF,
     MGC_STUN_YOU,
@@ -83,9 +84,11 @@ choose_magic_spell(int spellval)
     switch (spellval) {
     case 24:
     case 23:
-        switch (rnd(2)) {
+        switch (rnd(3)) {
         case 1:
             return MGC_FIRE_BOLT;
+        case 2:
+            return MGC_ICE_BOLT;
         default:
             if (Antimagic || Hallucination)
                 return MGC_PSI_BOLT;
@@ -127,9 +130,11 @@ choose_magic_spell(int spellval)
         return MGC_CURE_SELF;
     case 0:
     default:
-        switch (rnd(2)) {
+        switch (rnd(3)) {
         case 1:
             return MGC_FIRE_BOLT;
+        case 2:
+            return MGC_ICE_BOLT;
         default:
             return MGC_PSI_BOLT;
         }
@@ -613,6 +618,31 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             }
         }
         break;
+    case MGC_ICE_BOLT:
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+            pline("%s blasts you with a bolt of cold!", Monnam(mtmp));
+            if (Cold_resistance) {
+                shieldeff(u.ux, u.uy);
+                monstseesu(M_SEEN_COLD);
+                dmg = 0;
+            } else {
+                dmg =  d((ml / 5) + 1, 8);
+                monstunseesu(M_SEEN_COLD);
+            }
+            if (Half_spell_damage)
+                dmg = (dmg + 1) / 2;
+            destroy_item(POTION_CLASS, AD_COLD);
+            if (!rn2(2))
+                destroy_item(POTION_CLASS, AD_COLD);
+        } else {
+            if (canseemon(mtmp)) {
+                pline("%s blasts the %s with cold and curses!",
+                      Monnam(mtmp), rn2(2) ? "ceiling" : "floor");
+            } else {
+                You_hear("some cursing!");
+            }
+        }
+        break;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
@@ -901,6 +931,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_HASTE_SELF:
         case MGC_CURE_SELF:
         case MGC_FIRE_BOLT:
+        case MGC_ICE_BOLT:
             return TRUE;
         default:
             break;
@@ -972,7 +1003,13 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             && spellnum == MGC_FIRE_BOLT) {
             return TRUE;
         }
-        if (spellnum == MGC_FIRE_BOLT && (mtmp->mpeaceful || u.uinvulnerable)) {
+        if ((m_seenres(mtmp, M_SEEN_COLD)
+             || (distu(mtmp->mx, mtmp->my) < 3 && rn2(5)))
+            && spellnum == MGC_ICE_BOLT) {
+            return TRUE;
+        }
+        if ((spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT) 
+            && (mtmp->mpeaceful || u.uinvulnerable)) {
             return TRUE;
         }
     } else if (adtyp == AD_CLRC) {
