@@ -18,6 +18,7 @@ enum mcast_mage_spells {
     MGC_DESTRY_ARMR,
     MGC_CURSE_ITEMS,
     MGC_AGGRAVATION,
+    MGC_ACID_BLAST,
     MGC_SUMMON_MONS,
     MGC_CLONE_WIZ,
     MGC_DEATH_TOUCH
@@ -103,9 +104,10 @@ choose_magic_spell(int spellval)
         return MGC_CLONE_WIZ;
     case 17:
     case 16:
-    case 15:
         return MGC_SUMMON_MONS;
+    case 15:
     case 14:
+        return MGC_ACID_BLAST;
     case 13:
         return MGC_AGGRAVATION;
     case 12:
@@ -469,6 +471,31 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             pline("Lucky for you, it didn't work!");
         }
         dmg = 0;
+        break;
+    case MGC_ACID_BLAST:
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+            pline("%s douses you in a torrent of acid!", Monnam(mtmp));
+            dmg = d((ml / 2) + 4, 8);
+            if (Acid_resistance) {
+                shieldeff(u.ux, u.uy);
+                pline("The acid doesn't harm you.");
+                monstseesu(M_SEEN_ACID);
+            }
+            if (rn2(u.twoweap ? 2 : 3))
+                acid_damage(uwep);
+            if (u.twoweap && rn2(2))
+                acid_damage(uswapwep);
+            if (rn2(4))
+                erode_armor(&gy.youmonst, ERODE_CORRODE);
+        } else {
+            if (canseemon(mtmp)) {
+                pline("%s blasts the %s with %s and curses!",
+                      Monnam(mtmp), rn2(2) ? "ceiling"
+                                           : "floor", "acid");
+            } else {
+                You_hear("some cursing!");
+            }
+        }
         break;
     case MGC_CLONE_WIZ:
         if (mtmp->iswiz && gc.context.no_of_wizards == 1) {
@@ -932,6 +959,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_CURE_SELF:
         case MGC_FIRE_BOLT:
         case MGC_ICE_BOLT:
+        case MGC_ACID_BLAST:
             return TRUE;
         default:
             break;
@@ -1008,7 +1036,13 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             && spellnum == MGC_ICE_BOLT) {
             return TRUE;
         }
-        if ((spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT) 
+        if ((m_seenres(mtmp, M_SEEN_ACID)
+             || (distu(mtmp->mx, mtmp->my) < 3 && rn2(5)))
+            && spellnum == MGC_ACID_BLAST) {
+            return TRUE;
+        }
+        if ((spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT
+             || spellnum == MGC_ACID_BLAST) 
             && (mtmp->mpeaceful || u.uinvulnerable)) {
             return TRUE;
         }
