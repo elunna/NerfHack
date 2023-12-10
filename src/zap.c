@@ -34,22 +34,6 @@ static int spell_hit_bonus(int);
 static void destroy_one_item(struct obj *, int, int);
 static void wishcmdassist(int);
 
-#define ZT_MAGIC_MISSILE (AD_MAGM - 1)
-#define ZT_FIRE (AD_FIRE - 1)
-#define ZT_COLD (AD_COLD - 1)
-#define ZT_SLEEP (AD_SLEE - 1)
-#define ZT_DEATH (AD_DISN - 1) /* or disintegration */
-#define ZT_LIGHTNING (AD_ELEC - 1)
-#define ZT_POISON_GAS (AD_DRST - 1)
-#define ZT_ACID (AD_ACID - 1)
-/* 8 and 9 are currently unassigned */
-
-#define ZT_WAND(x) (x)
-#define ZT_SPELL(x) (10 + (x))
-#define ZT_BREATH(x) (20 + (x))
-
-#define is_hero_spell(type) ((type) >= 10 && (type) < 20)
-
 #define M_IN_WATER(ptr) ((ptr)->mlet == S_EEL || cant_drown(ptr))
 
 static const char are_blinded_by_the_flash[] = "are blinded by the flash!";
