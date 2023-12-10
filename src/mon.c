@@ -4691,7 +4691,6 @@ pickvampshape(struct monst *mon)
             break; /* leave mndx as is */
         wolfchance = 3;
     /*FALLTHRU*/
-    case PM_VAMPIRE_MAGE:
     /* Vlad can become wolf */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
