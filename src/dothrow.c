@@ -381,7 +381,8 @@ autoquiver(void)
 
     /* Scan through the inventory */
     for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
-        if (otmp->owornmask || otmp->oartifact || !otmp->dknown) {
+        if (otmp->owornmask || otmp->oartifact || otmp->otyp == CRYSKNIFE
+            || !otmp->dknown) {
             ; /* Skip it */
         } else if (otmp->otyp == ROCK
                    /* seen rocks or known flint or known glass */
