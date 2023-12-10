@@ -3981,10 +3981,8 @@ mhitm_ad_halu(
 }
 
 void
-mhitm_ad_dsrm(struct monst *magr,
-              struct attack *mattk,
-              struct monst *mdef,
-              struct mhitm_data *mhm)
+mhitm_ad_dsrm(struct monst *magr, struct attack *mattk,
+              struct monst *mdef, struct mhitm_data *mhm)
 {
     struct obj *otmp;
     if (magr == &gy.youmonst) {
@@ -4031,6 +4029,8 @@ mhitm_ad_tckl(struct monst *magr,
     struct monst *mdef,
     struct mhitm_data *mhm)
 {
+    boolean uncancelled = !magr->mcan;
+    
     if (magr == &gy.youmonst) {
         /* uhitm */
         /* since hero can't be cancelled, only defender's armor applies */
@@ -4042,7 +4042,7 @@ mhitm_ad_tckl(struct monst *magr,
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-        boolean uncancelled = !magr->mcan;
+        
         
         hitmsg(magr, mattk);
         if (uncancelled && gm.multi >= 0 && !rn2(3)) {
@@ -4901,6 +4901,62 @@ mhitm_ad_ssex(struct monst *magr, struct attack *mattk, struct monst *mdef,
 }
 
 void
+mhitm_ad_webs(
+    struct monst *magr, struct attack *mattk,
+    struct monst *mdef, struct mhitm_data *mhm)
+{
+    boolean negated = mhitm_mgc_atk_negated(magr, mdef, FALSE);
+    if (negated)
+        return;
+    if (magr == &gy.youmonst) {
+        /* uhitm */
+        if (!t_at(mdef->mx, mdef->my)) {
+            struct trap *web = maketrap(mdef->mx, mdef->my, WEB);
+            if (web) {
+                mintrap(mdef, NO_TRAP_FLAGS);
+            }
+        }
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu */
+        hitmsg(magr, mattk);
+        if (magr->mcan)
+            return;
+        if (!t_at(u.ux, u.uy)) {
+            struct trap *web = maketrap(u.ux, u.uy, WEB);
+            if (web) {
+                hitmsg(magr, mattk);
+                pline("%s entangles you in a web%s",
+                      Monnam(magr),
+                      (is_pool_or_lava(u.ux, u.uy)
+                       || IS_AIR(levl[u.ux][u.uy].typ))
+                          ? ", but it has nothing to anchor to."
+                          : is_giant(gy.youmonst.data)
+                                ? ", but you rip through it!"
+                                : webmaker(gy.youmonst.data)
+                                      ? ", but you easily disentangle yourself."
+                                      : "!");
+                dotrap(web, NOWEBMSG);
+                /*trapeffect_web - use this here?*/
+                if (u.usteed && u.utrap)
+                    dismount_steed(DISMOUNT_FELL);
+            }
+        }
+        mhm->damage = 0;
+    } else {
+        /* mhitm */
+        if (magr->mcan)
+            return;
+        if (!t_at(mdef->mx, mdef->my)) {
+            struct trap *web = maketrap(mdef->mx, mdef->my, WEB);
+            if (web)
+                mintrap(mdef, NO_TRAP_FLAGS);
+        }
+    }
+}
+
+
+
+void
 mhitm_adtyping(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
@@ -4951,6 +5007,7 @@ mhitm_adtyping(
     case AD_HALU: mhitm_ad_halu(magr, mattk, mdef, mhm); break;
     case AD_TCKL: mhitm_ad_tckl(magr, mattk, mdef, mhm); break;
     case AD_DSRM: mhitm_ad_dsrm(magr, mattk, mdef, mhm); break;
+    case AD_WEBS: mhitm_ad_webs(magr, mattk, mdef, mhm); break;
     default:
         mhm->damage = 0;
     }
