@@ -16,6 +16,9 @@
 #define immune_poisongas(ptr) ((ptr) == &mons[PM_HEZROU]        \
                                || (ptr) == &mons[PM_VROCK])
 
+#define has_reflection(mon) \
+    ((mon_resistancebits(mon) & MR2_REFLECTION) != 0)
+
 #define resists_sick(ptr) \
     ((ptr)->mlet == S_FUNGUS || nonliving(ptr) || is_demon(ptr) \
      || is_rider(ptr) || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \

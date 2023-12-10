@@ -602,6 +602,12 @@ mon_catchup_elapsed_time(
         else
             mtmp->mfleetim -= imv;
     }
+    if (mtmp->mreflecttime) {
+        if (imv >= (int) mtmp->mreflecttime)
+            mtmp->mreflecttime = 1;
+        else
+            mtmp->mreflecttime -= imv;
+    }
 
     /* Withering monsters by rights ought to keep withering while off-level, but
      * it brings up a host of problems to have a monster die in this function

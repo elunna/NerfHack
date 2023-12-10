@@ -199,6 +199,7 @@ struct monst {
     char former_rank[25];  /* for bones' ghost rank in their former life */
 
     int meating;           /* monster is eating timeout */
+    int mreflecttime;      /* timeout for monster reflection spell */
     struct mextra *mextra; /* point to mextra struct */
 };
 

@@ -3097,8 +3097,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     You("sense a wave of energy dissipate around %s.",
                         mon_nam(mdef));
                 return FALSE;
-            }
-            else {
+            } else {
                 if (!mdef->mcan && canseemon(mdef))
                     pline("Magical energies are absorbed from %s.", mon_nam(mdef));
 #if 0
@@ -3109,6 +3108,13 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     mdef->mprotection = mdef->mprottime = 0;
                 }
 #endif
+                if (has_reflection(mdef)) {
+                    if (canseemon(mdef))
+                        pline("%s shimmering globe disappears.",
+                              s_suffix(Monnam(mdef)));
+                    mdef->mextrinsics &= ~(MR2_REFLECTION);
+                    mdef->mreflecttime = 0;
+                }
             }
         }
 
@@ -3160,16 +3166,18 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                         mon_nam(mdef));
                 return FALSE;
             }
-#if 0
+
             else {
                 if (!mdef->mcan && canseemon(mdef))
                     pline("Magical energies are absorbed from %s.", mon_nam(mdef));
+#if 0
                 if (mdef->mprotection) {
                     if (canseemon(mdef))
                         pline_The("%s haze around %s %s.",
                                   hcolor(NH_GOLDEN), mon_nam(mdef), "disappears");
                     mdef->mprotection = mdef->mprottime = 0;
                 }
+#endif
                  if (has_reflection(mdef)) {
                     if (canseemon(mdef))
                         pline("%s shimmering globe disappears.",
@@ -3178,7 +3186,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     mdef->mreflecttime = 0;
                 }
             }
-#endif
+
         }
 
         for (otmp = (youdefend ? gi.invent : mdef->minvent);

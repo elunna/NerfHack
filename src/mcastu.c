@@ -21,6 +21,7 @@ enum mcast_mage_spells {
     MGC_ACID_BLAST,
     MGC_SUMMON_MONS,
     MGC_CLONE_WIZ,
+    MGC_REFLECTION,
     MGC_DEATH_TOUCH
 };
 
@@ -111,6 +112,7 @@ choose_magic_spell(int spellval)
     case 13:
         return MGC_AGGRAVATION;
     case 12:
+        return MGC_REFLECTION;
     case 11:
     case 10:
         return MGC_CURSE_ITEMS;
@@ -472,10 +474,22 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         }
         dmg = 0;
         break;
+    case MGC_REFLECTION: {
+        boolean strongbad = (mtmp->iswiz || is_prince(mtmp->data)
+                             || mtmp->data->msound == MS_NEMESIS
+                             || mtmp->data->msound == MS_LEADER);
+        if (canseemon(mtmp))
+            pline("A shimmering globe appears around %s!", mon_nam(mtmp));
+        /* monster reflection is handled in mon_reflects() */
+        mtmp->mextrinsics |= MR2_REFLECTION;
+        mtmp->mreflecttime = rn1(50, strongbad ? 200 : 100);
+        dmg = 0;
+        break;
+    }
     case MGC_ACID_BLAST:
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
             pline("%s douses you in a torrent of acid!", Monnam(mtmp));
-            dmg = d((ml / 2) + 4, 8);
+            dmg = d((ml / 2) + 4, 6);
             if (Acid_resistance) {
                 shieldeff(u.ux, u.uy);
                 pline("The acid doesn't harm you.");
@@ -960,6 +974,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_FIRE_BOLT:
         case MGC_ICE_BOLT:
         case MGC_ACID_BLAST:
+        case MGC_REFLECTION:
             return TRUE;
         default:
             break;
@@ -999,6 +1014,9 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             return TRUE;
         /* invisibility when already invisible */
         if ((mtmp->minvis || mtmp->invis_blkd) && spellnum == MGC_DISAPPEAR)
+            return TRUE;
+        if ((has_reflection(mtmp) || mon_reflects(mtmp, (char *) 0))
+            && spellnum == MGC_REFLECTION)
             return TRUE;
         /* peaceful monster won't cast invisibility if you can't see
            invisible,

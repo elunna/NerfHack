@@ -80,6 +80,7 @@ enum ms_sounds {
 #define MR2_DISPLACED   0x1000 /* displaced */
 #define MR2_STRENGTH    0x2000 /* gauntlets of power */
 #define MR2_FUMBLING    0x4000 /* clumsy */
+#define MR2_REFLECTION  0x8000 /* has reflection */
 
 #define M1_FLY          0x00000001L /* can fly or float */
 #define M1_SWIM         0x00000002L /* can traverse water */
