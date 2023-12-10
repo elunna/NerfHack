@@ -991,6 +991,23 @@ m_calcdistress(struct monst *mtmp)
         }
     }
     
+    if (mtmp->mprotection) {
+        if (mtmp->mprottime-- == 0) {
+            mtmp->mprotection--;
+            if (canseemon(mtmp))
+                if (!rn2(4))
+                    pline_The("%s haze around %s %s.",
+                              hcolor(NH_GOLDEN), mon_nam(mtmp),
+                              mtmp->mprotection ? "becomes less dense"
+                                                : "disappears");
+            if (mtmp->mprotection)
+                mtmp->mprottime = (mtmp->iswiz || is_prince(mtmp->data)
+                                   || mtmp->data->msound == MS_NEMESIS
+                                   || mtmp->data->msound == MS_LEADER)
+                                      ? 20 : 10;
+        }
+    }
+    
     if (has_reflection(mtmp) && mtmp->mreflecttime <= 1) {
         if (canseemon(mtmp))
             pline("%s shimmering globe disappears.",

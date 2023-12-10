@@ -200,6 +200,8 @@ struct monst {
 
     int meating;           /* monster is eating timeout */
     int mreflecttime;      /* timeout for monster reflection spell */
+    uchar mprotection;     /* monster protection spell */
+    uchar mprottime;       /* timeout for monster protection spell */
     struct mextra *mextra; /* point to mextra struct */
 };
 

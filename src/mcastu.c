@@ -29,6 +29,7 @@ enum mcast_mage_spells {
 enum mcast_cleric_spells {
     CLC_OPEN_WOUNDS = 0,
     CLC_CURE_SELF,
+    CLC_PROTECTION,
     CLC_CONFUSE_YOU,
     CLC_PARALYZE,
     CLC_BLIND_YOU,
@@ -178,8 +179,9 @@ choose_clerical_spell(int spellnum)
     case 4:
         return CLC_PARALYZE;
     case 3:
-    case 2:
         return CLC_CONFUSE_YOU;
+    case 2:
+        return CLC_PROTECTION;
     case 1:
         return CLC_CURE_SELF;
     case 0:
@@ -718,6 +720,7 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 static void
 cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 {
+    int ml = min(mtmp->m_lev, 50);
     if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         impossible("cast directed cleric spell (%d) with dmg=0?", spellnum);
         return;
@@ -948,6 +951,39 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         else
             Your("body is covered with painful wounds!");
         break;
+    case CLC_PROTECTION: {
+        int natac = find_mac(mtmp) + mtmp->mprotection;
+        int loglev = 0;
+        int gain = 0;
+
+        dmg = 0;
+
+        for (; ml > 0; ml /= 2)
+            loglev++;
+
+        gain = loglev - mtmp->mprotection / (4 - min(3, (10 - natac) / 10));
+
+        if (mtmp->mpeaceful
+            && mtmp->ispriest && inhistemple(mtmp)) {
+            ; /* cut down on the temple spam */
+        } else {
+            if (gain && canseemon(mtmp)) {
+                if (mtmp->mprotection) {
+                    pline_The("%s haze around %s becomes more dense.",
+                              hcolor(NH_GOLDEN), mon_nam(mtmp));
+                } else {
+                    mtmp->mprottime = (mtmp->iswiz || is_prince(mtmp->data)
+                                       || mtmp->data->msound == MS_NEMESIS
+                                       || mtmp->data->msound == MS_LEADER)
+                                       ? 20 : 10;
+                    pline_The("air around %s begins to shimmer with a %s haze.",
+                              mon_nam(mtmp), hcolor(NH_GOLDEN));
+                }
+            }
+        }
+        mtmp->mprotection += gain;
+        break;
+    }
     default:
         impossible("mcastu: invalid clerical spell (%d)", spellnum);
         dmg = 0;
@@ -983,6 +1019,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         switch (spellnum) {
         case CLC_INSECTS:
         case CLC_CURE_SELF:
+        case CLC_PROTECTION:
             return TRUE;
         default:
             break;

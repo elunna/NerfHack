@@ -3100,14 +3100,12 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
             } else {
                 if (!mdef->mcan && canseemon(mdef))
                     pline("Magical energies are absorbed from %s.", mon_nam(mdef));
-#if 0
                 if (mdef->mprotection) {
                     if (canseemon(mdef))
                         pline_The("%s haze around %s %s.",
                                   hcolor(NH_GOLDEN), mon_nam(mdef), "disappears");
                     mdef->mprotection = mdef->mprottime = 0;
                 }
-#endif
                 if (has_reflection(mdef)) {
                     if (canseemon(mdef))
                         pline("%s shimmering globe disappears.",
@@ -3170,14 +3168,12 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
             else {
                 if (!mdef->mcan && canseemon(mdef))
                     pline("Magical energies are absorbed from %s.", mon_nam(mdef));
-#if 0
                 if (mdef->mprotection) {
                     if (canseemon(mdef))
                         pline_The("%s haze around %s %s.",
                                   hcolor(NH_GOLDEN), mon_nam(mdef), "disappears");
                     mdef->mprotection = mdef->mprottime = 0;
                 }
-#endif
                  if (has_reflection(mdef)) {
                     if (canseemon(mdef))
                         pline("%s shimmering globe disappears.",

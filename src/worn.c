@@ -502,7 +502,7 @@ int
 find_mac(struct monst *mon)
 {
     register struct obj *obj;
-    int base = mon->data->ac;
+    int base = mon->data->ac - mon->mprotection;
     long mwflags = mon->misc_worn_check;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
