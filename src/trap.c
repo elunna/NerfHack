@@ -228,6 +228,12 @@ erode_obj(
         crackers = TRUE;
         cost_type = COST_CRACK;
         break;
+    case ERODE_DETERIORATE:
+        vulnerable = is_supermaterial(otmp);
+        check_grease = FALSE;
+        is_primary = FALSE;
+        cost_type = COST_DETERIORATE;
+        break;
     default:
         impossible("Invalid erosion type in erode_obj");
         return ER_NOTHING;

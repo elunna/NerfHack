@@ -209,6 +209,10 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
     (objects[otmp->otyp].oc_material == COPPER          \
      || objects[otmp->otyp].oc_material == IRON         \
      || objects[otmp->otyp].oc_material == SILVER)
+/* inherently fooproof */
+#define is_supermaterial(otmp) \
+    (objects[otmp->otyp].oc_material == DRAGON_HIDE \
+    || objects[otmp->otyp].oc_material == MITHRIL)
 /* subject to any damage */
 #define is_damageable(otmp) \
     (is_rustprone(otmp) || is_flammable(otmp)           \

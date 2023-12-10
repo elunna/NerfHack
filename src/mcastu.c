@@ -44,6 +44,7 @@ static void cursetxt(struct monst *, boolean);
 static int choose_magic_spell(int);
 static int choose_clerical_spell(int);
 static int m_cure_self(struct monst *, int);
+static int m_destroy_armor(struct monst *, struct monst *);
 static void cast_wizard_spell(struct monst *, int, int);
 static void cast_cleric_spell(struct monst *, int, int);
 static boolean is_undirected_spell(unsigned int, int);
@@ -433,6 +434,110 @@ death_inflicted_by(
     return outbuf;
 }
 
+
+static int
+m_destroy_armor(struct monst *mattk, struct monst *mdef)
+{
+    boolean udefend = (mdef == &gy.youmonst),
+            uattk = (mattk == &gy.youmonst);
+    int erodelvl = rnd(3);
+    struct obj *oatmp;
+    
+    if (udefend ? Antimagic
+                : (resists_magm(mdef) || defended(mdef, AD_MAGM))) {
+        if (udefend) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_MAGR);
+        } else {
+            shieldeff(mdef->mx, mdef->my);
+        }
+        erodelvl = 1;
+    }
+
+    oatmp = some_armor(mdef);
+    if (oatmp) {
+        if (any_quest_artifact(oatmp)) {
+            if (udefend || canseemon(mdef)) {
+                if (!Blind)
+                    pline("%s shines brightly.", The(xname(oatmp)));
+                pline("%s is immune to %s destructive magic.",
+                      The(xname(oatmp)),
+                      uattk ? "your" : s_suffix(mon_nam(mattk)));
+            }
+            return 0;
+        } else if (oatmp->otyp == CRYSTAL_PLATE_MAIL) {
+            if (udefend && !Blind)
+                pline("%s glimmers brightly.", Yname2(oatmp));
+            pline("%s is immune to %s destructive magic.",
+                  Yname2(oatmp),
+                  uattk ? "your" : s_suffix(mon_nam(mattk)));
+            return 0; /* no effect */
+        } else if (oatmp->oerodeproof) {
+            if (!udefend && !canseemon(mdef)) {
+                You("smell something strange.");
+            } else if (!Blind) {
+                pline("%s glows brown for a moment.", Yname2(oatmp));
+            } else {
+                pline("%s briefly emits an odd smell.", Yname2(oatmp));
+            }
+            oatmp->oerodeproof = 0;
+            erodelvl--;
+        }
+
+        if (greatest_erosion(oatmp) >= MAX_ERODE) {
+            if (objects[oatmp->otyp].oc_oprop == DISINT_RES
+                || obj_resists(oatmp, 0, 90))
+                return 0;
+            if (udefend) {
+                destroy_arm(oatmp, FALSE);
+            } else {
+                if (canseemon(mdef)) {
+                    const char *action;
+                    if (is_cloak(oatmp))
+                        action = "crumbles and turns to dust";
+                    else if (is_shirt(oatmp))
+                        action = "crumbles into tiny threads";
+                    else if (is_helmet(oatmp))
+                        action = "turns to dust and is blown away";
+                    else if (is_gloves(oatmp))
+                        action = "vanish";
+                    else if (is_boots(oatmp))
+                        action = "disintegrate";
+                    else if (is_shield(oatmp))
+                        action = "crumbles away";
+                    else
+                        action = "turns to dust";
+                    pline("%s %s %s!", s_suffix(Monnam(mdef)), xname(oatmp),
+                          action);
+                }
+                m_useupall(mdef, oatmp);
+            }
+        } else {
+            int erodetype;
+            if (is_corrodeable(oatmp))
+                erodetype = ERODE_CORRODE;
+            else if (is_flammable(oatmp))
+                erodetype = ERODE_BURN;
+            else if (is_supermaterial(oatmp))
+                erodetype = ERODE_DETERIORATE;
+            else
+                erodetype = ERODE_ROT;
+
+            while (erodelvl-- > 0) {
+                (void) erode_obj(oatmp, (char *) 0, erodetype, EF_NONE);
+            }
+        }
+    } else {
+        if (udefend)
+            Your("body itches.");
+        else if (uattk || canseemon(mdef))
+            pline("%s seems irritated.", Monnam(mdef));
+    }
+    update_inventory();
+
+    return 0;
+}
+
 /*
  * Monster wizard and cleric spellcasting functions.
  */
@@ -560,18 +665,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         dmg = 0;
         break;
     case MGC_DESTRY_ARMR:
-        if (Antimagic) {
-            shieldeff(u.ux, u.uy);
-            monstseesu(M_SEEN_MAGR);
-            pline("A field of force surrounds you!");
-        } else if (!destroy_arm(some_armor(&gy.youmonst), FALSE)) {
-            Your("skin itches.");
-        } else {
-            /* monsters only realize you aren't magic-protected if armor is
-               actually destroyed */
-            monstunseesu(M_SEEN_MAGR);
-        }
-        dmg = 0;
+        dmg = m_destroy_armor(mtmp, &gy.youmonst);
         break;
     case MGC_WEAKEN_YOU: /* drain strength */
         if (Antimagic) {
