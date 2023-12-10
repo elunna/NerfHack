@@ -1037,6 +1037,10 @@ fill_ordinary_room(struct mkroom *croom, boolean bonus_items)
         }
     }
 
+    /* Maybe decorate the walls */
+    if (croom->rtype == OROOM && depth(&u.uz) > 1 && !rn2(27))
+        croom->rtype = ARTROOM;
+    
  skip_nonrogue:
     if (!rn2(3) && somexyspace(croom, &pos)) {
         (void) mkobj_at(RANDOM_CLASS, pos.x, pos.y, TRUE);

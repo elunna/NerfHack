@@ -62,18 +62,19 @@ enum roomtype_types {
     LEPREHALL  = 11, /* leprechaun hall (Tom Proudfoot) */
     COCKNEST   = 12, /* cockatrice nest (Tom Proudfoot) */
     ANTHOLE    = 13, /* ants (Tom Proudfoot) */
-    SHOPBASE   = 14, /* everything above this is a shop */
-    ARMORSHOP  = 15, /* specific shop defines for level compiler */
-    SCROLLSHOP = 16,
-    POTIONSHOP = 17,
-    WEAPONSHOP = 18,
-    FOODSHOP   = 19,
-    RINGSHOP   = 20,
-    WANDSHOP   = 21,
-    TOOLSHOP   = 22,
-    BOOKSHOP   = 23,
-    FODDERSHOP = 24, /* health food store */
-    CANDLESHOP = 25
+    ARTROOM    = 14, /* art room */
+    SHOPBASE   = 15, /* everything above this is a shop */
+    ARMORSHOP  = 16, /* specific shop defines for level compiler */
+    SCROLLSHOP = 17,
+    POTIONSHOP = 18,
+    WEAPONSHOP = 19,
+    FOODSHOP   = 20,
+    RINGSHOP   = 21,
+    WANDSHOP   = 22,
+    TOOLSHOP   = 23,
+    BOOKSHOP   = 24,
+    FODDERSHOP = 25, /* health food store */
+    CANDLESHOP = 26
 };
 
 #define MAXRTYPE (CANDLESHOP) /* maximum valid room type */
