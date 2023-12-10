@@ -945,8 +945,7 @@ mksobj_init(struct obj *otmp, boolean artif)
                need to perform any fix up and returns glob->owt as-is */
             otmp->owt = objects[otmp->otyp].oc_weight;
             otmp->known = otmp->dknown = 1;
-            otmp->corpsenm = PM_GRAY_OOZE
-                           + (otmp->otyp - GLOB_OF_GRAY_OOZE);
+            otmp->corpsenm = PM_GRAY_OOZE + (otmp->otyp - GLOB_OF_GRAY_OOZE);
             start_glob_timeout(otmp, 0L);
         } else {
             if (otmp->otyp != CORPSE && otmp->otyp != MEAT_RING
@@ -1040,9 +1039,10 @@ mksobj_init(struct obj *otmp, boolean artif)
     case AMULET_CLASS:
         if (otmp->otyp == AMULET_OF_YENDOR)
             gc.context.made_amulet = TRUE;
-        if (rn2(10) && (otmp->otyp == AMULET_OF_STRANGULATION
-                        || otmp->otyp == AMULET_OF_CHANGE
-                        || otmp->otyp == AMULET_OF_RESTFUL_SLEEP)) {
+        if (rn2(10)
+            && (otmp->otyp == AMULET_OF_STRANGULATION
+                || otmp->otyp == AMULET_OF_CHANGE
+                || otmp->otyp == AMULET_OF_RESTFUL_SLEEP)) {
             curse(otmp);
         } else
             blessorcurse(otmp, 10);
@@ -1064,8 +1064,7 @@ mksobj_init(struct obj *otmp, boolean artif)
         break;
     case ARMOR_CLASS:
         if (rn2(10)
-            && (otmp->otyp == FUMBLE_BOOTS
-                || otmp->otyp == LEVITATION_BOOTS
+            && (otmp->otyp == FUMBLE_BOOTS || otmp->otyp == LEVITATION_BOOTS
                 || otmp->otyp == HELM_OF_OPPOSITE_ALIGNMENT
                 || otmp->otyp == GAUNTLETS_OF_FUMBLING || !rn2(11))) {
             curse(otmp);
@@ -1090,9 +1089,10 @@ mksobj_init(struct obj *otmp, boolean artif)
         }
         break;
     case WAND_CLASS:
-        if (otmp->otyp == WAN_WISHING)
+        if (otmp->otyp == WAN_WISHING) {
             otmp->spe = rnd(3);
-        else
+            otmp->recharged = (Is_stronghold(&u.uz) || discover) ? 0 : 1;
+        } else
             otmp->spe = rn1(5, (objects[otmp->otyp].oc_dir == NODIR) ? 11 : 4);
         blessorcurse(otmp, 17);
         otmp->recharged = 0; /* used to control recharging */
