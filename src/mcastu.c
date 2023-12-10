@@ -8,6 +8,7 @@
 /* monster mage spells */
 enum mcast_mage_spells {
     MGC_PSI_BOLT = 0,
+    MGC_FIRE_BOLT,
     MGC_CURE_SELF,
     MGC_HASTE_SELF,
     MGC_STUN_YOU,
@@ -82,8 +83,13 @@ choose_magic_spell(int spellval)
     switch (spellval) {
     case 24:
     case 23:
-        if (Antimagic || Hallucination)
-            return MGC_PSI_BOLT;
+        switch (rnd(2)) {
+        case 1:
+            return MGC_FIRE_BOLT;
+        default:
+            if (Antimagic || Hallucination)
+                return MGC_PSI_BOLT;
+        }
         /*FALLTHRU*/
     case 22:
     case 21:
@@ -110,6 +116,7 @@ choose_magic_spell(int spellval)
     case 6:
         return MGC_WEAKEN_YOU;
     case 5:
+        return MGC_FIRE_BOLT;
     case 4:
         return MGC_DISAPPEAR;
     case 3:
@@ -120,7 +127,12 @@ choose_magic_spell(int spellval)
         return MGC_CURE_SELF;
     case 0:
     default:
-        return MGC_PSI_BOLT;
+        switch (rnd(2)) {
+        case 1:
+            return MGC_FIRE_BOLT;
+        default:
+            return MGC_PSI_BOLT;
+        }
     }
 }
 
@@ -426,6 +438,7 @@ static
 void
 cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
 {
+    int ml = min(mtmp->m_lev, 50);
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
         impossible("cast directed wizard spell (%d) with dmg=0?", spellnum);
         return;
@@ -569,6 +582,36 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         break;
     case MGC_CURE_SELF:
         dmg = m_cure_self(mtmp, dmg);
+        break;
+    case MGC_FIRE_BOLT:
+        /* hotwire these to only go off if the critter can see you
+         * to avoid bugs WRT the Eyes and detect monsters */
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+            pline("%s blasts you with a bolt of fire!", Monnam(mtmp));
+            if (Fire_resistance) {
+                shieldeff(u.ux, u.uy);
+                monstseesu(M_SEEN_FIRE);
+                dmg = 0;
+            } else {
+                dmg =  d((ml / 5) + 1, 8);
+                monstunseesu(M_SEEN_FIRE);
+            }
+            if (Half_spell_damage)
+                dmg = (dmg + 1) / 2;
+            burn_away_slime();
+            (void) burnarmor(&gy.youmonst);
+            destroy_item(SCROLL_CLASS, AD_FIRE);
+            destroy_item(POTION_CLASS, AD_FIRE);
+            destroy_item(SPBOOK_CLASS, AD_FIRE);
+            ignite_items(gi.invent);
+        } else {
+            if (canseemon(mtmp)) {
+                pline("%s blasts the %s with fire and curses!",
+                      Monnam(mtmp), rn2(2) ? "ceiling" : "floor");
+            } else {
+                You_hear("some cursing!");
+            }
+        }
         break;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
@@ -857,6 +900,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_DISAPPEAR:
         case MGC_HASTE_SELF:
         case MGC_CURE_SELF:
+        case MGC_FIRE_BOLT:
             return TRUE;
         default:
             break;
@@ -922,6 +966,14 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
                will eventually end up picking it too often] */
             if (!has_aggravatables(mtmp))
                 return rn2(100) ? TRUE : FALSE;
+        }
+        if ((m_seenres(mtmp, M_SEEN_FIRE)
+             || (distu(mtmp->mx, mtmp->my) < 3 && rn2(5)))
+            && spellnum == MGC_FIRE_BOLT) {
+            return TRUE;
+        }
+        if (spellnum == MGC_FIRE_BOLT && (mtmp->mpeaceful || u.uinvulnerable)) {
+            return TRUE;
         }
     } else if (adtyp == AD_CLRC) {
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
