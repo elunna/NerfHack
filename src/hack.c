@@ -2617,7 +2617,7 @@ domove_core(void)
     if (gc.context.run) {
         if (gc.context.run < 8)
             if (IS_DOOR(tmpr->typ) || IS_ROCK(tmpr->typ)
-                || IS_FURNITURE(tmpr->typ))
+                || (IS_FURNITURE(tmpr->typ) && tmpr->typ != GRAVE))
                 nomul(0);
     }
 
@@ -3540,7 +3540,8 @@ lookaround(void)
 
             /* more uninteresting terrain */
             if (IS_ROCK(levl[x][y].typ) || levl[x][y].typ == ROOM
-                || IS_AIR(levl[x][y].typ) || levl[x][y].typ == ICE) {
+                || IS_AIR(levl[x][y].typ) || levl[x][y].typ == GRAVE
+                || levl[x][y].typ == ICE) {
                 continue;
             } else if (closed_door(x, y) || (mtmp && is_door_mappear(mtmp))) {
                 /* a closed door? */

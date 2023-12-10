@@ -255,7 +255,8 @@ read_engr_at(coordxy x, coordxy y)
     struct engr *ep = engr_at(x, y);
     const char *eloc = surface(x, y);
     int sensed = 0;
-
+    
+        
     /* Sensing an engraving does not require sight,
      * nor does it necessarily imply comprehension (literacy).
      */
@@ -270,6 +271,9 @@ read_engr_at(coordxy x, coordxy y)
             break;
         case ENGRAVE:
         case HEADSTONE:
+            /* We're running, we don't want to look at engravings. */
+            if (gc.context.run && ep->engr_type == HEADSTONE)
+                return;
             if (!Blind || can_reach_floor(TRUE)) {
                 sensed = 1;
                 pline("%s is engraved here on the %s.", Something, eloc);
