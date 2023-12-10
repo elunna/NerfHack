@@ -311,6 +311,7 @@ mattackm(
         saved_mhp = (mdef ? mdef->mhp : 0); /* for print_mon_wounded() */
     struct attack *mattk, alt_attk;
     struct obj *mwep;
+    struct obj *marmf = which_armor(magr, W_ARMF);
     struct permonst *pa, *pd;
 
     if (!magr || !mdef)
@@ -325,6 +326,19 @@ mattackm(
         && magr->my != mdef->my)
         return M_ATTK_MISS;
 
+    if (marmf && marmf->otyp == STOMPING_BOOTS && verysmall(mdef->data)
+        && distmin(magr->mx,magr->my,mdef->mx,mdef->my) <= 1) {
+        if (canseemon(magr)) {
+            pline("%s stomps on %s!", Monnam(magr), mon_nam(mdef));
+            makeknown(marmf->otyp);
+        } else if (!Deaf) {
+            You_hear(mdef->data->mlet ? "a disgusting crunch." : "a loud squelch.");
+        }
+        mondead(mdef);
+        if (magr && DEADMONSTER(mdef)) {
+            return M_ATTK_DEF_DIED;
+        }
+    }
     /* Calculate the armour class differential. */
     tmp = find_mac(mdef) + magr->m_lev;
     if (mdef->mconf || helpless(mdef)) {

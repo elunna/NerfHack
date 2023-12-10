@@ -523,6 +523,14 @@ do_attack(struct monst *mtmp)
         }
     }
 
+    if (Stomping && verysmall(mtmp->data)) {
+        You("stomp on %s!", mon_nam(mtmp));
+        xkilled(mtmp, XKILL_GIVEMSG);
+        wake_nearby();
+        makeknown(uarmf->otyp);
+        return TRUE;
+    }
+
     /* possibly set in attack_checks;
        examined in known_hitum, called via hitum or hmonas below */
     go.override_confirmation = FALSE;

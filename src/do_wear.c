@@ -191,6 +191,12 @@ Boots_on(void)
                      (oldprop || HFast) ? " a bit more" : "");
         }
         break;
+    case STOMPING_BOOTS:
+        if (Stomping && !Flying) {
+            You("begin stomping around very loudly.");
+            makeknown(uarmf->otyp);
+        }
+        break;
     case ELVEN_BOOTS:
         toggle_stealth(uarmf, oldprop, TRUE);
         break;
@@ -253,6 +259,12 @@ Boots_off(void)
             spoteffects(TRUE);
         }
         break;
+    case STOMPING_BOOTS:
+        if (!Levitation && !Flying) {
+            Your("footsteps become considerably less violent.");
+            makeknown(otyp);
+        }
+        break;
     case ELVEN_BOOTS:
         toggle_stealth(otmp, oldprop, FALSE);
         break;
@@ -305,7 +317,13 @@ Cloak_on(void)
         makeknown(uarmc->otyp);
         break;
     case ELVEN_CLOAK:
-        toggle_stealth(uarmc, oldprop, TRUE);
+        if (Stomping) {
+            pline("This %s will not silence your stomping!", xname(uarmf));
+            makeknown(uarmf->otyp);
+            EStealth &= ~W_ARMF;
+        } else {
+            toggle_stealth(uarmc, oldprop, TRUE);
+        }
         break;
     case CLOAK_OF_DISPLACEMENT:
         toggle_displacement(uarmc, oldprop, TRUE);
@@ -1171,7 +1189,13 @@ Ring_on(register struct obj *obj)
     case MEAT_RING:
         break;
     case RIN_STEALTH:
-        toggle_stealth(obj, oldprop, TRUE);
+        if (Stomping) {
+            pline("This %s will not silence your stomping!", xname(obj));
+            learnring(obj, TRUE);
+            EStealth &= ~W_RING;
+        } else {
+            toggle_stealth(obj, oldprop, TRUE);
+        }
         break;
     case RIN_WARNING:
         see_monsters();

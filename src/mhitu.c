@@ -614,7 +614,8 @@ mattacku(register struct monst *mtmp)
      */
     boolean ranged, range2, foundyou, firstfoundyou, youseeit,
             skipnonmagc = FALSE;
-
+    struct obj * marmf = which_armor(mtmp, W_ARMF);
+    
     calc_mattacku_vars(mtmp, &ranged, &range2, &foundyou, &youseeit);
 
     if (!ranged)
@@ -811,6 +812,20 @@ mattacku(register struct monst *mtmp)
             unmul(buf); /* immediately stop mimicking */
         }
         return 0;
+    }
+
+    if (!range2 && marmf && marmf->otyp == STOMPING_BOOTS 
+        && verysmall(gy.youmonst.data)) {
+        pline("%s stomps on you!", Monnam(mtmp));
+        makeknown(marmf->otyp);
+        if (Upolyd && !Unchanging) {
+            rehumanize();
+            You("surge out from under the boot of %s!", mon_nam(mtmp));
+        } else {
+            gk.killer.format = KILLED_BY;
+            Strcpy(gk.killer.name, "getting stomped on");
+            done(DIED);
+        }
     }
 
     /*  Work out the armor class differential   */
