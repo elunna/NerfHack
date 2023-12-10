@@ -3091,8 +3091,8 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
             cancel_item(otmp);
 
         if (youdefend) {
-            You_feel("magical energies being absorbed from your exact location.");
-            gc.context.botl = 1; /* potential AC change */
+            You(!Hallucination? "are covered in sparkling lights!"
+                               : "are enveloped by psychedelic fireworks!");            gc.context.botl = 1; /* potential AC change */
             find_ac();
         }
     } else {
@@ -3105,8 +3105,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
 
         /* player attacking monster */
         if (youattack) {
-            if (rn2(10)
-                && (otmp = which_armor(mdef, W_ARM))
+            if (rn2(10) && (otmp = which_armor(mdef, W_ARM))
                 && (otmp->otyp == GRAY_DRAGON_SCALES 
                     || otmp->otyp == GRAY_DRAGON_SCALE_MAIL)) {
                 shieldeff(mdef->mx, mdef->my);
@@ -3147,7 +3146,8 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                 You_feel("a wave of energy dissipate around you.");
                 return FALSE;
             } else {
-                You_feel("magical energies being absorbed from your vicinity.");
+                You(!Hallucination? "are covered in sparkling lights!"
+                                   : "are enveloped by psychedelic fireworks!");    
                 if (u.uspellprot) {
                     pline_The("%s haze around you disappears.",
                               hcolor(NH_GOLDEN));
@@ -3155,12 +3155,6 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     gc.context.botl = 1; /* potential AC change */
                     find_ac();
                 }
-#if 0
-                if (HReflecting > 0) {
-                    pline("The shimmering globe around you disappears.");
-                    HReflecting = 0;
-                }
-#endif
             }
         }
 
