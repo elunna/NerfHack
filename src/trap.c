@@ -105,7 +105,7 @@ burnarmor(struct monst* victim)
         item = item->nobj;
     }
 
-#define burn_dmg(obj, descr) erode_obj(obj, descr, ERODE_BURN, EF_GREASE)
+#define burn_dmg(obj, descr) erode_obj(obj, descr, ERODE_BURN, EF_GREASE | EF_DESTROY)
     while (1) {
         switch (rn2(5)) {
         case 0:
@@ -4415,7 +4415,7 @@ acid_damage(struct obj* obj)
         obj->spe = 0;
         obj->dknown = 0;
     } else
-        erode_obj(obj, (char *) 0, ERODE_CORRODE, EF_GREASE | EF_VERBOSE);
+        erode_obj(obj, (char *) 0, ERODE_CORRODE, EF_GREASE | EF_DESTROY);
 }
 
 /* Get an object wet and damage it appropriately.
@@ -4615,7 +4615,7 @@ water_damage(
             return ER_DAMAGED;
         }
     } else {
-        return erode_obj(obj, ostr, ERODE_RUST, EF_NONE);
+        return erode_obj(obj, ostr, ERODE_RUST, EF_DESTROY);
     }
     return ER_NOTHING;
 }
