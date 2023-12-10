@@ -1619,7 +1619,11 @@ disturb_buried_zombies(coordxy x, coordxy y)
 {
     struct obj *otmp;
     long t;
-
+    
+    /* Give hothraxxa a break ;) */
+    if (In_sokoban(&u.uz))
+        return;
+    
     for (otmp = gl.level.buriedobjlist; otmp; otmp = otmp->nobj) {
         if (otmp->otyp == CORPSE && otmp->timed
             && otmp->ox >= x - 1 && otmp->ox <= x + 1
