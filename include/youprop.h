@@ -201,8 +201,8 @@
 #define HStealth u.uprops[STEALTH].intrinsic
 #define EStealth u.uprops[STEALTH].extrinsic
 /* BStealth has FROMOUTSIDE set if mounted on non-flying steed */
-#define BStealth (u.uprops[STEALTH].blocked || Stomping)
-#define Stealth ((HStealth || EStealth) && !BStealth)
+#define BStealth u.uprops[STEALTH].blocked
+#define Stealth ((HStealth || EStealth) && !BStealth && !Stomping)
 
 #define HAggravate_monster u.uprops[AGGRAVATE_MONSTER].intrinsic
 #define EAggravate_monster u.uprops[AGGRAVATE_MONSTER].extrinsic
