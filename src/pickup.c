@@ -1882,7 +1882,7 @@ int
 encumber_msg(void)
 {
     int newcap = near_capacity();
-
+    
     if (go.oldcap < newcap) {
         switch (newcap) {
         case 1:

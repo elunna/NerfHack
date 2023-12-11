@@ -2378,11 +2378,10 @@ void
 find_ac(void)
 {
     int uac = mons[u.umonnum].ac; /* base armor class for current form */
-
     /* armor class from worn gear */
-
-    int racial_bonus, dex_adjust_ac;;
-
+    int racial_bonus, dex_adjust_ac;
+    int mvl_wtcap = near_capacity();
+    
     /* Wearing racial armor is worth +x to the armor's AC; orcs get a slightly
      * larger bonus to compensate their sub-standard equipment, lack of equipment,
      * and the stats-challenged orc itself. Taken from SporkHack.
@@ -2481,6 +2480,13 @@ find_ac(void)
     }
     
     uac = uac + dex_adjust_ac;
+   
+    
+    /* Being encumbered incurs an AC penalty. 
+     * The penalty matches the level of encumberance. */
+    if (mvl_wtcap > UNENCUMBERED) {
+        uac = uac + mvl_wtcap * 2;
+    }
     
     /* put a cap on armor class [3.7: was +127,-128, now reduced to +/- 99 */
     if (abs(uac) > AC_MAX)
