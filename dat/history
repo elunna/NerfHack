@@ -1,3 +1,28 @@
+HACKEM History file
+
+HACKEM is a variant based on NetHack 3.7 by Erik Lunna - it is a rewrite of
+Hack'EM but has different goals than the original version. While writing the
+original Hack'EM, Erik ran into an unsolvable bug involving disappearing bags
+of holding and unicorn horns. Unfortunately, this made investing a lot of
+time into a game a big risk for players so Erik made the decision to start 
+from scratch. The rebase to 3.7 was going to have to come at some time, so 
+that juncture seemed like a good opportunity.
+
+-----------------------------------------------------------------------------
+
+Hack'EM was a variant created by Erik Lunna (hackemslashem) which is based on
+EvilHack, which is in turn based on NetHack 3.6.2.
+
+The primary goal of Hack'EM was to bring the mechanics and new content of
+Slash'EM to a modern port of NetHack. Because HackEM is based on EvilHack, it
+is also a marriage of the challenges of Evil with the content of SlashEM -
+but also merging in many of the best of features from other forks (like
+SpliceHack, UnHetHack, and XNetHack).
+
+NetHack's history can be viewed below.
+
+-----------------------------------------------------------------------------
+
 NetHack History file for release 3.7
 
 Behold, mortal, the origins of NetHack...
