@@ -141,6 +141,7 @@ precheck(struct monst *mon, struct obj *obj)
                         ? "nearby" : "in the distance");
         }
         m_useup(mon, obj);
+        showdmg(dam, FALSE);
         mon->mhp -= dam;
         if (DEADMONSTER(mon)) {
             monkilled(mon, "", AD_RBRE);
@@ -1953,9 +1954,12 @@ use_offensive(struct monst *mtmp)
                 if (dist2(mtmp2->mx, mtmp2->my, mtmp->mx, mtmp->my) < 3) {
                     if (resists_fire(mtmp2))
                         continue;
+                    showdmg(num, FALSE);
                     mtmp2->mhp -= num;
-                    if (resists_cold(mtmp2))
+                    if (resists_cold(mtmp2)) {
+                        showdmg(3 * num, FALSE);
                         mtmp2->mhp -= 3 * num;
+                    }
                     if (DEADMONSTER(mtmp2)) {
                         mondied(mtmp2);
                         break;

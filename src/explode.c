@@ -520,6 +520,7 @@ explode(
 
                 if ((explmask[i][j] & EXPL_MON) != 0) {
                     golemeffects(mtmp, (int) adtyp, dam + idamres);
+                    showdmg(idamnonres, FALSE);
                     mtmp->mhp -= idamnonres;
                 } else {
                     /* call resist with 0 and do damage manually so 1) we can
@@ -547,6 +548,7 @@ explode(
                         mdam *= 2;
                     else if (resists_fire(mtmp) && adtyp == AD_COLD)
                         mdam *= 2;
+                    showdmg(mdam + idamres + idamnonres, FALSE);
                     mtmp->mhp -= mdam;
                     mtmp->mhp -= (idamres + idamnonres);
                 }
@@ -631,6 +633,8 @@ explode(
                 u.mh -= damu;
             else
                 u.uhp -= damu;
+            
+            showdmg(damu, TRUE);
             gc.context.botl = 1;
         }
 

@@ -789,6 +789,7 @@ minliquid_core(struct monst* mtmp)
 
         if (cansee(mtmp->mx, mtmp->my))
             pline("%s rusts.", Monnam(mtmp));
+        showdmg(dam, FALSE);
         mtmp->mhp -= dam;
         if (mtmp->mhpmax > dam)
             mtmp->mhpmax -= dam;
@@ -833,6 +834,7 @@ minliquid_core(struct monst* mtmp)
                 else
                     xkilled(mtmp, XKILL_NOMSG);
             } else {
+                showdmg(1, FALSE);
                 mtmp->mhp -= 1;
                 if (DEADMONSTER(mtmp)) {
                     if (cansee(mtmp->mx, mtmp->my))
@@ -2998,6 +3000,7 @@ corpse_chance(
                     losehp(Maybe_Half_Phys(tmp), gk.killer.name, KILLED_BY_AN);
                 } else {
                     You_hear("an explosion.");
+                    showdmg(tmp, FALSE);
                     magr->mhp -= tmp;
                     if (DEADMONSTER(magr))
                         mondied(magr);

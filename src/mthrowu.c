@@ -446,6 +446,7 @@ ohitmon(
 
         /* might already be dead (if petrified) */
         if (!harmless && !DEADMONSTER(mtmp)) {
+            showdmg(damage, FALSE);
             mtmp->mhp -= damage;
             if (DEADMONSTER(mtmp)) {
                 if (vis || (verbose && !gm.mtarget))

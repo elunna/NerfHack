@@ -1681,8 +1681,10 @@ dogaze(void)
                         (void) destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
                     if (lev > rn2(20))
                         ignite_items(mtmp->minvent);
-                    if (dmg)
+                    if (dmg) {
+                        showdmg(dmg, FALSE);
                         mtmp->mhp -= dmg;
+                    }
                     if (DEADMONSTER(mtmp))
                         killed(mtmp);
                 } else if (adtyp == AD_BLND) {
@@ -1692,7 +1694,8 @@ dogaze(void)
                         pline("%s doesn't seem affected.", Monnam(mtmp));
                         dmg = 0;
                     }
-                    if(dmg) {
+                    if (dmg) {
+                        showdmg(dmg, FALSE);
                         mtmp->mhp -= dmg;
                         mtmp->mcansee = 0;
                         mtmp->mblinded = rnd(50);
@@ -1914,6 +1917,7 @@ domindblast(void)
                 u_sen ? "telepathy"
                 : telepathic(mtmp->data) ? "latent telepathy"
                   : "mind");
+            showdmg(dmg, FALSE);
             mtmp->mhp -= dmg;
             if (DEADMONSTER(mtmp))
                 killed(mtmp);

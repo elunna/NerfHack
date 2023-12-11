@@ -2276,6 +2276,7 @@ trapeffect_anti_magic(
 
             if (in_sight)
                 seetrap(trap);
+            showdmg(dmgval2, FALSE);
             mtmp->mhp -= dmgval2;
             if (DEADMONSTER(mtmp))
                 monkilled(mtmp,
@@ -6452,6 +6453,7 @@ thitm(
                 dam = 1;
         }
         if (!harmless) {
+            showdmg(dam, FALSE);
             mon->mhp -= dam;
             if (mon->mhp <= 0) {
                 int xx = mon->mx, yy = mon->my;

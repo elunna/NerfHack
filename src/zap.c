@@ -471,6 +471,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             shieldeff(mtmp->mx, mtmp->my);
         } else if (!resist(mtmp, otmp->oclass, dmg, NOTELL)
                    && !DEADMONSTER(mtmp)) {
+            showdmg(dmg, FALSE);
             mtmp->mhp -= dmg;
             mtmp->mhpmax -= dmg;
             /* die if already level 0, regardless of hit points */
@@ -4459,6 +4460,7 @@ zhitm(
         tmp = 0; /* don't allow negative damage */
     debugpline3("zapped monster hp = %d (= %d - %d)", mon->mhp - tmp,
                 mon->mhp, tmp);
+    showdmg(tmp, FALSE);
     mon->mhp -= tmp;
     return tmp;
 }
@@ -6107,6 +6109,7 @@ resist(struct monst *mtmp, char oclass, int damage, int tell)
 
     if (damage) {
         int saved_mhp = mtmp->mhp;
+        showdmg(damage, FALSE);
         mtmp->mhp -= damage;
         if (DEADMONSTER(mtmp)) {
             if (gm.m_using)

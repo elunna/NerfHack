@@ -3949,6 +3949,24 @@ saving_grace(int dmg)
     return dmg;
 }
 
+
+/* Print the amount of damage inflicted */
+/* KMH -- Centralized to one function 
+* Damage to the player will be in parentheses "(3)"
+* Damage to the monster will be brackets "[3]" 
+* */
+void
+showdmg(int n, boolean you)
+{
+    if (!flags.showdmg)
+        return;
+    if (you)
+        pline("(%d pt%s)", n, (n > 1 ? "s" : ""));
+    else
+        pline("[%d pt%s]", n, (n > 1 ? "s" : ""));
+    return;
+}
+
 void
 losehp(int n, const char *knam, schar k_format)
 {
@@ -3963,6 +3981,7 @@ losehp(int n, const char *knam, schar k_format)
     end_running(TRUE);
     if (Upolyd) {
         u.mh -= n;
+        showdmg(n, TRUE);
         if (u.mhmax < u.mh)
             u.mhmax = u.mh;
         if (u.mh < 1)
@@ -3974,6 +3993,8 @@ losehp(int n, const char *knam, schar k_format)
 
     n = saving_grace(n);
     u.uhp -= n;
+    showdmg(n, TRUE);
+    
     if (u.uhp > u.uhpmax)
         u.uhpmax = u.uhp; /* perhaps n was negative */
     if (u.uhp < 1) {

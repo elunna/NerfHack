@@ -714,7 +714,9 @@ mattacku(register struct monst *mtmp)
                 if (3 + find_mac(mtmp) <= rnd(20)) {
                     pline("%s is hit by a falling piercer (you)!",
                           Monnam(mtmp));
-                    if ((mtmp->mhp -= d(3, 6)) < 1)
+                    int tdmg = d(3, 6);
+                    showdmg(tdmg, FALSE);
+                    if ((mtmp->mhp -= tdmg) < 1)
                         killed(mtmp);
                 } else
                     pline("%s is almost hit by a falling piercer (you)!",
@@ -844,7 +846,10 @@ mattacku(register struct monst *mtmp)
         /* Scale with monster difficulty */
         ftmp = (int) ((mtmp->m_lev - 4) / 2) + 4;
         tmp += ftmp;
-        You("are being flanked!");
+        if (flags.showdmg)
+            You("are being flanked! [-%dAC]", ftmp);
+        else
+            You("are being flanked!");
     }
 
     /* make eels visible the moment they hit/miss us */
@@ -2067,6 +2072,7 @@ void
 mdamageu(struct monst *mtmp, int n)
 {
     gc.context.botl = 1;
+    showdmg(n, TRUE);
     if (Upolyd) {
         u.mh -= n;
         if (u.mh < 1)
@@ -2682,6 +2688,7 @@ passiveum(
         tmp = 0;
 
  assess_dmg:
+    showdmg(tmp, FALSE);
     if ((mtmp->mhp -= tmp) <= 0) {
         pline("%s dies!", Monnam(mtmp));
         xkilled(mtmp, XKILL_NOMSG);

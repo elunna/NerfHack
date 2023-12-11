@@ -603,6 +603,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTB(selectsaved, Advanced, 0, opt_out, set_in_config,
            On, Yes, No, No, NoAlias, &iflags.wc2_selectsaved, Term_False,
            (char *)0)
+    NHOPTB(showdmg, Status, 0, opt_in, set_in_game,
+           Off, Yes, No, No, NoAlias, &flags.showdmg, Term_False,
+           "show damage results in messages")
     NHOPTB(showexp, Status, 0, opt_in, set_in_game,
            Off, Yes, No, No, NoAlias, &flags.showexp, Term_False,
            "show experience points in status line")

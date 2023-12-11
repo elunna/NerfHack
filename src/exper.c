@@ -254,6 +254,7 @@ losexp(
     if (u.uhpmax > olduhpmax)
         setuhpmax(olduhpmax);
 
+    showdmg(num, TRUE);
     u.uhp -= num;
     if (u.uhp < 1)
         u.uhp = 1;

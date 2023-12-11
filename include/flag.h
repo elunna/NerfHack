@@ -56,6 +56,7 @@ struct flag {
     boolean safe_dog;        /* give complete protection to the dog */
     boolean safe_wait;       /* prevent wait or search next to hostile */
     boolean showexp;         /* show experience points */
+    boolean showdmg;         /* Display damage being dealt */
     boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     boolean sortpack;        /* sorted inventory */

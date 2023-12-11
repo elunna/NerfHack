@@ -385,7 +385,10 @@ find_roll_to_hit(
         /* Scale with monster difficulty */
         ftmp = (int) ((u.ulevel - 4) / 2) + 4;
         tmp += ftmp;
-        You("flank %s.", mon_nam(mtmp));
+        if (flags.showdmg)
+            You("flank %s. [-%dAC]", mon_nam(mtmp), ftmp);
+        else
+            You("flank %s.", mon_nam(mtmp));
     }
 
     /* role/race adjustments */
@@ -1847,6 +1850,7 @@ hmon_hitmon(
                so we test for 1; 0 shouldn't be able to happen here... */
             && hmd.dmg > 0 && u.uconduct.weaphit <= 1)
             first_weapon_hit(obj);
+        showdmg(hmd.dmg, FALSE);
         mon->mhp -= hmd.dmg;
     }
     /* adjustments might have made tmp become less than what
@@ -2456,6 +2460,7 @@ mhitm_ad_drli(
                 if (mdef->mhpmax > (int) mdef->m_lev)
                     mdef->mhpmax = (int) mdef->m_lev + 1;
             }
+            showdmg(mhm->damage, FALSE);
             mdef->mhp -= mhm->damage;
             /* !m_lev: level 0 monster is killed regardless of hit points
                rather than drop to level -1; note: some non-living creatures
@@ -5047,6 +5052,7 @@ damageum(
         return mhm.hitflags;
 
     mdef->mstrategy &= ~STRAT_WAITFORU; /* in case player is very fast */
+    showdmg(mhm.damage, FALSE);
     mdef->mhp -= mhm.damage;
     if (DEADMONSTER(mdef)) {
         /* troll killed by Trollsbane won't auto-revive; FIXME? same when
@@ -5377,6 +5383,7 @@ gulpum(struct monst *mdef, struct attack *mattk)
                 break;
             }
             end_engulf();
+            showdmg(dam, FALSE);
             mdef->mhp -= dam;
             if (DEADMONSTER(mdef)) {
                 killed(mdef);
@@ -6561,6 +6568,7 @@ light_hits_gremlin(struct monst *mon, int dmg)
 {
     pline("%s %s!", Monnam(mon),
           (dmg > mon->mhp / 2) ? "wails in agony" : "cries out in pain");
+    showdmg(dmg, FALSE);
     mon->mhp -= dmg;
     wake_nearto(mon->mx, mon->my, 30);
     if (DEADMONSTER(mon)) {

@@ -89,8 +89,10 @@ kickdmg(struct monst *mon, boolean clumsy)
     if (uarmf)
         dmg += uarmf->spe;
     dmg += u.udaminc; /* add ring(s) of increase damage */
-    if (dmg > 0)
+    if (dmg > 0) {
+        showdmg(dmg, FALSE);
         mon->mhp -= dmg;
+    }
     if (!DEADMONSTER(mon) && martial() && !bigmonst(mon->data) && !rn2(3)
         && mon->mcanmove && mon != u.ustuck && !mon->mtrapped) {
         /* see if the monster has a place to move into */
