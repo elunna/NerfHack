@@ -160,7 +160,8 @@ struct monst {
     Bitfield(mtemplit, 1);  /* temporarily seen; only valid during bhit() */
     Bitfield(meverseen, 1); /* mon has been seen at some point */
     Bitfield(mwither_from_u, 1); /* is withering due to player */
-    
+    Bitfield(mberserk, 1);   /* monster is berserk */
+                             
     uchar mwither;          /* withering; amount of turns left till recovery */
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
 

@@ -505,6 +505,9 @@ find_mac(struct monst *mon)
     int base = mon->data->ac - mon->mprotection;
     long mwflags = mon->misc_worn_check;
 
+    if (mon->mberserk)
+        base -= 2;
+    
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags) {
             if (obj->otyp == AMULET_OF_GUARDING)

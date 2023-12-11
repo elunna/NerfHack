@@ -1311,6 +1311,10 @@ hitmu(register struct monst *mtmp, register struct attack *mattk)
 
     mhitm_adtyping(mtmp, mattk, &gy.youmonst, &mhm);
 
+    /* Handle berserkers */
+    if (mtmp->mberserk)
+        mhm.damage += d((int) mattk->damn, (int) mattk->damd);
+    
     (void) mhitm_knockback(mtmp, &gy.youmonst, mattk, &mhm.hitflags,
                            (MON_WEP(mtmp) != 0));
 

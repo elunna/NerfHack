@@ -176,6 +176,7 @@ enum ms_sounds {
 #define M3_DISPLACES    0x0400 /* moves monsters out of its way */
 #define M3_JUMPER       0x0800 /* can jump at the player */
 #define M3_NOTAME	0x1000 /* Cannot be tamed */
+#define M3_BERSERK      0x2000 /* extremely indiscriminate in its attacks */
 
 #define MZ_TINY         0 /* < 2' */
 #define MZ_SMALL        1 /* 2-4' */

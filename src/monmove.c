@@ -216,7 +216,8 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
         || mtmp->data == &mons[PM_GIANT_PRAYING_MANTIS]
         || mtmp->data->mlet == S_HUMAN || unique_corpstat(mtmp->data)
         || (mtmp->isshk && inhishop(mtmp))
-        || (mtmp->ispriest && inhistemple(mtmp)))
+        || (mtmp->ispriest && inhistemple(mtmp))
+        || mtmp->mberserk)
         return FALSE;
 
     /* <0,0> is used by musical scaring to check for the above;
@@ -1783,6 +1784,10 @@ not_special:
         if (m_balks_at_approaching(mtmp))
             appr = -1;
 
+        /* ... unless they are currently berserk */
+        if (mtmp->mberserk)
+            appr = 1;
+        
         if (!should_see && can_track(ptr)) {
             register coord *cp;
 

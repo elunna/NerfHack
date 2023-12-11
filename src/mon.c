@@ -970,6 +970,27 @@ m_calcdistress(struct monst *mtmp)
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
     
+    if (is_berserker(mtmp->data) && !noattacks(mtmp->data)) {
+        if ((mtmp->mhp < (mtmp->mhpmax / 3)) && !mtmp->mberserk
+            && !rn2(13)) {
+            if (canseemon(mtmp) && humanoid(mtmp->data)
+                && !mindless(mtmp->data)) {
+                pline("%s flies into a berserker rage!", Monnam(mtmp));
+            } else if (canseemon(mtmp)) { /* animal/mindless */
+                pline("%s seems to go berserk!", Monnam(mtmp));
+            } else {
+                You_hear("an enraged %s %s!",
+                         !rn2(3) ? "roar" : rn2(2) ? "bellow" : "howl",
+                         (distu(mtmp->mx, mtmp->my) > (6 * 6)
+                              ? "in the distance" : "nearby"));
+            }
+            mtmp->mberserk = 1;
+            mtmp->mflee = 0;
+        } else if (mtmp->mhp > (mtmp->mhpmax / 2)) {
+            mtmp->mberserk = 0;
+        }
+    }
+    
     /* wither away */
     if (mtmp->mwither) {
         mtmp->mhp -= (rnd(2) - (regenerates(mtmp->data) ? 1 : 0));
@@ -2251,6 +2272,13 @@ mm_aggression(
     if ((mndx == PM_PURPLE_WORM || mndx == PM_BABY_PURPLE_WORM)
         && mdef->data == &mons[PM_SHRIEKER])
         return ALLOW_M | ALLOW_TM;
+    
+    /* berserk monsters sometimes lash out at everything
+       when trying to attack you  */
+    if (magr->mberserk && !magr->mpeaceful
+        && !rn2(3) && m_canseeu(magr))
+        return ALLOW_M | ALLOW_TM;
+    
     /* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */

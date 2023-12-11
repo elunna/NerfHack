@@ -1102,7 +1102,11 @@ mdamagem(
     }
 
     mhitm_adtyping(magr, mattk, mdef, &mhm);
-
+    
+    /* Handle berserkers */
+    if (magr->mberserk)
+        mhm.damage += d((int) mattk->damn, (int) mattk->damd);
+    
     if (mhitm_knockback(magr, mdef, mattk, &mhm.hitflags,
                         (MON_WEP(magr) != 0))
         && ((mhm.hitflags & (M_ATTK_DEF_DIED | M_ATTK_HIT)) != 0
