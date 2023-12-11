@@ -775,11 +775,11 @@ void
 amii_setpens(int count)
 {
 #ifdef INTUI_NEW_LOOK
-    struct EasyStruct ea = { sizeof(struct EasyStruct), 0l, "NetHack Request",
+    struct EasyStruct ea = { sizeof(struct EasyStruct), 0l, "HACKEM Request",
                              "Number of pens requested(%ld) not correct",
                              "Use default pens|Use requested pens" };
     struct EasyStruct ea2 = { sizeof(struct EasyStruct), 0l,
-                              "NetHack Request",
+                              "HACKEM Request",
                               "Number of pens requested(%ld) not\ncompatible "
                               "with game configuration(%ld)",
                               "Use default pens|Use requested pens" };

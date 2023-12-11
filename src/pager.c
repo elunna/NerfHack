@@ -2722,10 +2722,10 @@ static const struct {
     void (*f)(void);
     const char *text;
 } help_menu_items[] = {
-    { hmenu_doextversion, "About NetHack (version information)." },
+    { hmenu_doextversion, "About HACKEM (version information)." },
     { dispfile_help, "Long description of the game and commands." },
     { dispfile_shelp, "List of game commands." },
-    { hmenu_dohistory, "Concise history of NetHack." },
+    { hmenu_dohistory, "Concise history of HACKEM." },
     { hmenu_dowhatis, "Info on a character in the game display." },
     { hmenu_dowhatdoes, "Info on what a given key does." },
     { option_help, "List of game options." },
@@ -2734,7 +2734,7 @@ static const struct {
     { dokeylist, "Full list of keyboard commands." },
     { hmenu_doextlist, "List of extended commands." },
     { domenucontrols, "List menu control keys." },
-    { dispfile_usagehelp, "Description of NetHack's command line." },
+    { dispfile_usagehelp, "Description of HACKEM's command line." },
     { dispfile_license, "The NetHack license." },
     { docontact, "Support information." },
 #ifdef PORT_HELP

@@ -169,7 +169,7 @@ aboutMsg()
 #else
         "Qt:\n     http://www.troll.no/\n"      // obsolete
 #endif
-        "NetHack:\n     %s\n",
+        "HACKEM:\n     %s\n",
         // arguments
 #ifdef QT_VERSION_MAJOR
         QT_VERSION_MAJOR,
@@ -4087,7 +4087,7 @@ NetHackQtYnDialog::NetHackQtYnDialog(NetHackQtKeyBuffer& keysrc,const char* q,co
     question(q), choices(ch), def(df),
     keysource(keysrc)
 {
-    setCaption("NetHack: Question");
+    setCaption("HACKEM: Question");
 }
 
 char NetHackQtYnDialog::Exec()
@@ -4985,7 +4985,7 @@ char NetHackQtBind::qt_yn_function(const char *question, const char *choices, CH
 #ifdef USE_POPUPS
 	// Improve some special-cases (DIRKS 08/02/23)
 	if (strcmp (choices,"ynq") == 0) {
-	    switch (QMessageBox::information (qApp->mainWidget(),"NetHack",question,"&Yes","&No","&Quit",0,2))
+	    switch (QMessageBox::information (qApp->mainWidget(),"HACKEM",question,"&Yes","&No","&Quit",0,2))
 	    {
 	      case 0: return 'y'; 
 	      case 1: return 'n'; 
@@ -4994,7 +4994,7 @@ char NetHackQtBind::qt_yn_function(const char *question, const char *choices, CH
 	}
 
 	if (strcmp (choices,"yn") == 0) {
-	    switch (QMessageBox::information(qApp->mainWidget(),"NetHack",question,"&Yes", "&No",0,1))
+	    switch (QMessageBox::information(qApp->mainWidget(),"HACKEM",question,"&Yes", "&No",0,1))
 	    {
 	      case 0: return 'y';
 	      case 1: return 'n'; 

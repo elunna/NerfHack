@@ -466,7 +466,7 @@ aboutMsg()
     (void) strsubst(vbuf, " - ", "\n- ");
     QString msg = nh_qsprintf(
         // format
-        "NetHack-Qt is a version of NetHack built using" // no newline
+        "HACKEM-Qt is a version of NetHack built using" // no newline
 #ifdef KDE
         " KDE and"                                       // ditto
 #endif
@@ -474,7 +474,7 @@ aboutMsg()
         "\n"
         "This is %s%s and Lua %s.\n" // long nethack version, Qt & Lua versions
         "\n"
-        "NetHack's Qt interface originally developed by Warwick Allison.\n"
+        "HACKEM's Qt interface originally developed by Warwick Allison.\n"
         "\n"
 #if 0
         "Homepage:\n     http://trolls.troll.no/warwick/nethack/\n" //obsolete
@@ -538,7 +538,7 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
     addToolBar(toolbar);
     menubar = menuBar();
 
-    setWindowTitle("NetHack-Qt");
+    setWindowTitle("HACKEM-Qt");
     setWindowIcon(QIcon(QPixmap(qt_compact_mode ? nh_icon_small : nh_icon)));
 
 #ifdef MACOS
@@ -711,16 +711,16 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
        nethack's #quit command with "really quit?" prompt, this quit--with
        Command+q as shortcut--pops up a dialog to choose between quit or
        cancel-and-resume-playing */
-    actn = game->addAction("Quit NetHack-Qt", this, SLOT(doQuit(bool)));
+    actn = game->addAction("Quit HACKEM-Qt", this, SLOT(doQuit(bool)));
     actn->setMenuRole(QWidgetAction::QuitRole);
 #endif
 
-    actn = help->addAction("About NetHack-Qt", this, SLOT(doAbout(bool)));
+    actn = help->addAction("About HACKEM-Qt", this, SLOT(doAbout(bool)));
 #ifdef MACOS
     actn->setMenuRole(QWidgetAction::AboutRole);
     /* for OSX, the preceding "About" went into the application menu;
        now add another duplicate one to the Help dropdown menu */
-    actn = help->addAction("About NetHack-Qt", this, SLOT(doAbout(bool)));
+    actn = help->addAction("About HACKEM-Qt", this, SLOT(doAbout(bool)));
     actn->setMenuRole(QWidgetAction::NoRole);
 #else
     nhUse(actn);
@@ -1044,7 +1044,7 @@ void NetHackQtMainWindow::doQtSettings(bool)
 
 void NetHackQtMainWindow::doAbout(bool)
 {
-    QMessageBox::about(this, "About NetHack-Qt", aboutMsg());
+    QMessageBox::about(this, "About HACKEM-Qt", aboutMsg());
 }
 
 // on OSX, "quit nethack" has been selected in the application menu or

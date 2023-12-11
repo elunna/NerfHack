@@ -536,14 +536,14 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 #endif
 #endif
 
-    gh.hname = "NetHack"; /* used for syntax messages */
+    gh.hname = "HACKEM"; /* used for syntax messages */
 
 #if defined(CHDIR) && !defined(NOCWD_ASSUMPTIONS)
     /* Save current directory and make sure it gets restored when
      * the game is exited.
      */
     if (getcwd(orgdir, sizeof orgdir) == (char *) 0)
-        error("NetHack: current directory path too long");
+        error("HACKEM: current directory path too long");
 #endif
 
     set_default_prefix_locations(argv[0]);
@@ -601,9 +601,9 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         pline("%s\n%s\n%s\n%s\n\n", copyright_banner_line(1),
               copyright_banner_line(2), copyright_banner_line(3),
               copyright_banner_line(4));
-        pline("NetHack was unable to open the required file \"%s\"", DLBFILE);
+        pline("HACKEM was unable to open the required file \"%s\"", DLBFILE);
         if (file_exists(DLBFILE))
-            pline("\nAre you perhaps trying to run NetHack within a zip "
+            pline("\nAre you perhaps trying to run HACKEM within a zip "
                   "utility?");
         error("dlb_init failure.");
     }

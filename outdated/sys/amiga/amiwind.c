@@ -642,7 +642,7 @@ amii_cleanup()
                 FreeVisualInfo(VisualInfo);
             while (CloseScreen(HackScreen) == FALSE) {
                 struct EasyStruct easy = {
-                    sizeof(struct EasyStruct), 0, "Nethack Problem",
+                    sizeof(struct EasyStruct), 0, "HACKEM Problem",
                     "Can't Close Screen, Close Visiting Windows", "Okay"
                 };
                 EasyRequest(NULL, &easy, NULL, NULL);
@@ -734,8 +734,8 @@ long rc;
 #ifdef INTUI_NEW_LOOK
     if (IntuitionBase->LibNode.lib_Version >= 37) {
         struct EasyStruct es = {
-            sizeof(struct EasyStruct), 0, "NetHack Panic Request",
-            "NetHack is Aborting with code == 0x%08lx",
+            sizeof(struct EasyStruct), 0, "HACKEM Panic Request",
+            "HACKEM is Aborting with code == 0x%08lx",
             "Continue Abort|Return to Program|Clean up and exit",
         };
         fault = EasyRequest(NULL, &es, NULL, (long) rc);

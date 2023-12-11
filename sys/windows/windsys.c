@@ -428,7 +428,7 @@ GetConsoleHwnd(void)
     /* Get current window title */
     GetConsoleTitle(OldTitle, sizeof OldTitle);
 
-    (void) sprintf(NewTitle, "NETHACK%ld/%ld", GetTickCount(),
+    (void) sprintf(NewTitle, "HACKEM%ld/%ld", GetTickCount(),
                    GetCurrentProcessId());
     SetConsoleTitle(NewTitle);
 

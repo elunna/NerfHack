@@ -606,7 +606,7 @@ ghack_init_main_window(int argc, char **argv)
 
     /* Main window */
     mainWindow =
-        gnome_app_new((char *) "nethack", (char *) N_("Nethack for Gnome"));
+        gnome_app_new((char *) "hackem", (char *) N_("HACKEM for Gnome"));
     gtk_widget_realize(mainWindow);
     if (restarted) {
         gtk_widget_set_uposition(mainWindow, os_x, os_y);

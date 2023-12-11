@@ -49,7 +49,7 @@ int Enable_Abort = 0; /* for stdio package */
 #endif
 
 /* Initial path, so we can find hackem.cnf */
-char PATH[PATHLEN] = "NetHack:";
+char PATH[PATHLEN] = "HACKEM:";
 
 static boolean record_exists(void);
 

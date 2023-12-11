@@ -2,8 +2,8 @@
 # This will work only with MINIWIN v1.1
 # or TOSWIN v2.0 (or better)
 
-#%title "NetHack"
-#%about "About NetHack" "v"
+#%title "HACKEM"
+#%about "About HACKEM" "v"
 
 File
 	"Shell"		"!"
