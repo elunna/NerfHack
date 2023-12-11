@@ -1,4 +1,4 @@
-/* NetHack 3.7	invent.c	$NHDT-Date: 1700869704 2023/11/24 23:48:24 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.476 $ */
+/* NetHack 3.7	invent.c	$NHDT-Date: 1702023269 2023/12/08 08:14:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.485 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -941,12 +941,10 @@ merged(struct obj **potmp, struct obj **pobj)
            information about the items (with the exception of thrown
            items, where this would be too spammy as such items get
            unidentified by monsters very frequently). */
-        if (discovered && otmp->where == OBJ_INVENT &&
-            !obj->was_thrown && !otmp->was_thrown) {
-            ; /* Do nothing */
-#if 0
+        if (discovered && otmp->where == OBJ_INVENT
+            && obj->how_lost != LOST_THROWN
+            && otmp->how_lost != LOST_THROWN) {
             pline("You learn more about your items by comparing them.");
-#endif
         }
 
         obfree(obj, otmp); /* free(obj), bill->otmp */
@@ -1052,8 +1050,8 @@ addinv_core0(struct obj *obj, struct obj *other_obj,
     obj->no_charge = 0; /* should not be set in hero's invent */
     if (Has_contents(obj))
         picked_container(obj); /* clear no_charge */
-    obj_was_thrown = obj->was_thrown;
-    obj->was_thrown = 0;       /* not meaningful for invent */
+    obj_was_thrown = (obj->how_lost == LOST_THROWN);
+    obj->how_lost = LOST_NONE;
 
     if (gl.loot_reset_justpicked) {
         gl.loot_reset_justpicked = FALSE;
@@ -1504,7 +1502,7 @@ currency(long amount)
 {
     const char *res;
 
-    res = Hallucination ? currencies[rn2(SIZE(currencies))] : "zorkmid";
+    res = Hallucination ? ROLL_FROM(currencies) : "zorkmid";
     if (amount != 1L)
         res = makeplural(res);
     return res;
@@ -2617,6 +2615,7 @@ void
 learn_unseen_invent(void)
 {
     struct obj *otmp;
+    boolean invupdated = FALSE;
 
     if (Blind)
         return; /* sanity check */
@@ -2624,6 +2623,7 @@ learn_unseen_invent(void)
     for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
         if (otmp->dknown && (otmp->bknown || !Role_if(PM_CLERIC)))
             continue; /* already seen */
+        invupdated = TRUE;
         /* xname() will set dknown, perhaps bknown (for priest[ess]);
            result from xname() is immediately released for re-use */
         maybereleaseobuf(xname(otmp));
@@ -2632,7 +2632,8 @@ learn_unseen_invent(void)
          * handle deferred discovery here.
          */
     }
-    update_inventory();
+    if (invupdated)
+        update_inventory();
 }
 
 /* persistent inventory window is maintained by interface code;
@@ -4846,7 +4847,8 @@ mergable(
 
     if (obj->unpaid != otmp->unpaid || obj->spe != otmp->spe
         || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken
-        || obj->otrapped != otmp->otrapped || obj->lamplit != otmp->lamplit)
+        || obj->otrapped != otmp->otrapped || obj->lamplit != otmp->lamplit
+        || obj->how_lost != otmp->how_lost)
         return FALSE;
 
     if (obj->oclass == FOOD_CLASS

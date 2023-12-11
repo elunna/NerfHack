@@ -125,9 +125,9 @@ struct obj {
 #define on_ice recharged    /* corpse on ice */
     Bitfield(lamplit, 1);   /* a light-source -- can be lit */
     Bitfield(globby, 1);    /* combines with like types on adjacent squares */
-    Bitfield(greased, 1);    /* covered with grease */
-    Bitfield(nomerge, 1);    /* set temporarily to prevent merging */
-    Bitfield(was_thrown, 1); /* thrown by hero since last picked up */
+    Bitfield(greased, 1);   /* covered with grease */
+    Bitfield(nomerge, 1);   /* set temporarily to prevent merging */
+    Bitfield(how_lost, 2);  /* stolen by mon or thrown, dropped by hero */
 
     Bitfield(in_use, 1); /* for magic items before useup items */
     Bitfield(bypass, 1); /* mark this as an object to be skipped by bhito() */
@@ -145,9 +145,9 @@ struct obj {
     Bitfield(eknown, 1); /* effect known for wands zapped or rings worn when
                           * not seen yet after being picked up while blind
                           * [maybe for remaining stack of used potion too] */
-    /* 0 free bits */
+    /* 7 free bits */
 #else
-    /* 2 free bits */
+    /* 1 free bit */
 #endif
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
@@ -465,6 +465,12 @@ struct obj {
 #define POTHIT_HERO_THROW  1 /* thrown by hero */
 #define POTHIT_MONST_THROW 2 /* thrown by a monster */
 #define POTHIT_OTHER_THROW 3 /* propelled by some other means [scatter()] */
+
+/* tracking how an item left your inventory */
+#define LOST_NONE    0 /* still in inventory, or method not covered below */
+#define LOST_THROWN  1 /* thrown or fired by the hero */
+#define LOST_DROPPED 2 /* dropped or tipped out of a container by the hero */
+#define LOST_STOLEN  3 /* stolen from hero's inventory by a monster */
 
 /*
  *  Notes for adding new oextra structures:

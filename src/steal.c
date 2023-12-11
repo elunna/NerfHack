@@ -419,7 +419,7 @@ steal(struct monst* mtmp, char* objnambuf)
                                                "take" };
  cant_take:
             pline("%s tries to %s %s%s but gives up.", Monnam(mtmp),
-                  how[rn2(SIZE(how))],
+                  ROLL_FROM(how),
                   (otmp->owornmask & W_ARMOR) ? "your " : "",
                   (otmp->owornmask & W_ARMOR) ? equipname(otmp)
                                               : yname(otmp));
@@ -527,6 +527,7 @@ steal(struct monst* mtmp, char* objnambuf)
     (void) encumber_msg();
     could_petrify = (otmp->otyp == CORPSE
                      && touch_petrifies(&mons[otmp->corpsenm]));
+    otmp->how_lost = LOST_STOLEN;
     (void) mpickobj(mtmp, otmp); /* may free otmp */
     if (could_petrify && !(mtmp->misc_worn_check & W_ARMG)) {
         minstapetrify(mtmp, TRUE);

@@ -45,6 +45,7 @@ static long set_cost(struct obj *, struct monst *);
 static const char *shk_embellish(struct obj *, long);
 static long cost_per_charge(struct monst *, struct obj *, boolean);
 static long cheapest_item(struct monst *);
+static int menu_pick_pay_items(struct monst *);
 static int dopayobj(struct monst *, struct bill_x *, struct obj **, int,
                     boolean);
 static long stolen_container(struct obj *, struct monst *, long, boolean);
@@ -696,7 +697,7 @@ u_entered_shop(char *enterstring)
                       s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
         } else {
             pline("%s seems %s over your return to %s %s!",
-                  Shknam(shkp), angrytexts[rn2(SIZE(angrytexts))],
+                  Shknam(shkp), ROLL_FROM(angrytexts),
                   noit_mhis(shkp), shtypes[rt - SHOPBASE].name);
         }
     } else if (eshkp->surcharge) {
@@ -1381,6 +1382,56 @@ cheapest_item(struct monst *shkp)
     return gmin;
 }
 
+/* show items on your bill in a menu, and ask which to pay.
+   returns the number of entries selected. */
+static int
+menu_pick_pay_items(struct monst *shkp)
+{
+    struct eshk *eshkp = ESHK(shkp);
+    winid win;
+    anything any;
+    menu_item *pick_list = (menu_item *) 0;
+    int i, j, n, clr = NO_COLOR;
+    char buf[BUFSZ];
+
+    any = cg.zeroany;
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win, MENU_BEHAVE_STANDARD);
+
+    for (n = 0; n < eshkp->billct; n++) {
+        struct obj *otmp;
+        register struct bill_x *bp = &(eshkp->bill_p[n]);
+
+        bp->queuedpay = FALSE;
+
+        /* find the object on one of the lists */
+        if ((otmp = bp_to_obj(bp)) != 0) {
+            /* if completely used up, object quantity is stale;
+               restoring it to its original value here avoids
+               making the partly-used-up code more complicated */
+            if (bp->useup)
+                otmp->quan = bp->bquan;
+            Snprintf(buf, sizeof buf, "%s%s",
+                    bp->useup ? "(used up) " : "",
+                    doname(otmp));
+            any.a_int = n + 1; /* +1: avoid 0 */
+            add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, clr, buf,
+                     MENU_ITEMFLAGS_NONE);
+        }
+    }
+
+    end_menu(win, "Pay for which items?");
+    n = select_menu(win, PICK_ANY, &pick_list);
+    destroy_nhwindow(win);
+
+    for (j = 0; j < n; ++j) {
+        i = pick_list[j].item.a_int - 1; /* -1: reverse +1 above */
+        eshkp->bill_p[i].queuedpay = TRUE;
+    }
+    free(pick_list);
+    return n;
+}
+
 /* the #pay command */
 int
 dopay(void)
@@ -1390,7 +1441,7 @@ dopay(void)
     struct monst *nxtm, *resident;
     long ltmp;
     long umoney;
-    int pass, tmp, sk = 0, seensk = 0;
+    int pass, tmp, sk = 0, seensk = 0, nexttosk = 0;
     boolean paid = FALSE, stashed_gold = (hidden_gold(TRUE) > 0L);
 
     gm.multi = 0;
@@ -1402,16 +1453,21 @@ dopay(void)
     for (shkp = next_shkp(fmon, FALSE); shkp;
          shkp = next_shkp(shkp->nmon, FALSE)) {
         sk++;
-        if (ANGRY(shkp) && next2u(shkp->mx, shkp->my))
+        if (next2u(shkp->mx, shkp->my)) {
+            /* next to an irate shopkeeper? prioritize that */
+            if (nxtm && ANGRY(nxtm))
+                continue;
+            nexttosk++;
             nxtm = shkp;
+        }
         if (canspotmon(shkp))
             seensk++;
         if (inhishop(shkp) && (*u.ushops == ESHK(shkp)->shoproom))
             resident = shkp;
     }
 
-    if (nxtm) {      /* Player should always appease an */
-        shkp = nxtm; /* irate shk standing next to them. */
+    if (nxtm && nexttosk == 1) {
+        shkp = nxtm;
         goto proceed;
     }
 
@@ -1634,6 +1690,7 @@ dopay(void)
     /* now check items on bill */
     if (eshkp->billct) {
         register boolean itemize;
+        boolean queuedpay = FALSE, via_menu;
         int iprompt;
 
         umoney = money_cnt(gi.invent);
@@ -1650,18 +1707,46 @@ dopay(void)
             return ECMD_OK;
         }
 
-        /* this isn't quite right; it itemizes without asking if the
-         * single item on the bill is partly used up and partly unpaid */
-        iprompt = (eshkp->billct > 1 ? ynq("Itemized billing?") : 'y');
-        itemize = (iprompt == 'y');
-        if (iprompt == 'q')
-            goto thanks;
+        via_menu = (flags.menu_style != MENU_TRADITIONAL);
+        /* allow 'm p' to request a menu for menustyle:traditional;
+           for other styles, it will do the opposite; that doesn't make
+           a whole lot of sense for a 'request-menu' prefix, but otherwise
+           it would simply be reduncant and there wouldn't be any way to
+           skip the menu when hero owes for multiple items */
+        if (iflags.menu_requested)
+            via_menu = !via_menu;
+        /* this will loop for a second iteration iff not initially using a
+           menu and player answers 'm' to custom ynq prompt */
+        do {
+            if (via_menu && eshkp->billct > 1) {
+                if (!menu_pick_pay_items(shkp))
+                    return ECMD_OK;
+                queuedpay = TRUE;
+                itemize = FALSE;
+                via_menu = FALSE; /* reset so that we don't loop */
+            } else {
+                /* this isn't quite right; it itemizes without asking if the
+                   single item on bill is partly used up and partly unpaid */
+                iprompt = (eshkp->billct < 2) ? 'y'
+                          : yn_function("Itemized billing?",
+                                        "ynq m", 'q', TRUE);
+                itemize = (iprompt == 'y');
+                if (iprompt == 'q')
+                    goto thanks;
+                via_menu = (iprompt == 'm');
+            }
+        } while (via_menu);
 
         for (pass = 0; pass <= 1; pass++) {
             tmp = 0;
             while (tmp < eshkp->billct) {
                 struct obj *otmp;
                 register struct bill_x *bp = &(eshkp->bill_p[tmp]);
+
+                if (queuedpay && !bp->queuedpay) {
+                    tmp++;
+                    continue;
+                }
 
                 /* find the object on one of the lists */
                 if ((otmp = bp_to_obj(bp)) != 0) {
@@ -4613,7 +4698,7 @@ pay_for_damage(const char *dmgstr, boolean cant_mollify)
                           dugwall ? "shop" : "door");
             } else {
                 pline("%s is %s that you decided to %s %s %s!",
-                      Shknam(shkp), angrytexts[rn2(SIZE(angrytexts))],
+                      Shknam(shkp), ROLL_FROM(angrytexts),
                       dmgstr, noit_mhis(shkp), dugwall ? "shop" : "door");
             }
         } else {
@@ -4624,7 +4709,7 @@ pay_for_damage(const char *dmgstr, boolean cant_mollify)
                           dugwall ? "shop" : "door");
             } else {
                 pline("%s is %s that someone decided to %s %s %s!",
-                      Shknam(shkp), angrytexts[rn2(SIZE(angrytexts))],
+                      Shknam(shkp), ROLL_FROM(angrytexts),
                       dmgstr, noit_mhis(shkp), dugwall ? "shop" : "door");
             }
         }
@@ -4926,7 +5011,7 @@ shk_chat(struct monst* shkp)
               (!Deaf && !muteshk(shkp)) ? "says" : "indicates");
     } else if (is_izchak(shkp, FALSE)) {
         if (!Deaf && !muteshk(shkp))
-            pline(Izchak_speaks[rn2(SIZE(Izchak_speaks))], shkname(shkp));
+            pline(ROLL_FROM(Izchak_speaks), shkname(shkp));
     } else {
         if (!Deaf && !muteshk(shkp))
             pline("%s talks about the problem of shoplifters.", Shknam(shkp));

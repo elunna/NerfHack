@@ -305,6 +305,7 @@
 #define pmname(ptr,g) ((((g) == MALE || (g) == FEMALE) && (ptr)->pmnames[g]) \
                         ? (ptr)->pmnames[g] : (ptr)->pmnames[NEUTRAL])
 #endif
+#define monsym(ptr) (def_monsyms[(int) (ptr)->mlet].sym)
 
 /* The monster prefers to keep its distance rather than charging and engaging
  * you in combat. This was adapted from the M3_SKITTISH flag in SporkHack;

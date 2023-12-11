@@ -1,4 +1,4 @@
-/* NetHack 3.7	hack.c	$NHDT-Date: 1695932717 2023/09/28 20:25:17 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.410 $ */
+/* NetHack 3.7	hack.c	$NHDT-Date: 1702017600 2023/12/08 06:40:00 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.422 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -2149,12 +2149,13 @@ static void
 slippery_ice_fumbling(void)
 {
     boolean on_ice = !Levitation && is_ice(u.ux, u.uy);
+    struct monst *iceskater = u.usteed ? u.usteed : &gy.youmonst;
 
     if (on_ice) {
         if ((uarmf && objdescr_is(uarmf, "snow boots"))
-            || resists_cold(&gy.youmonst) || Flying
-            || is_floater(gy.youmonst.data) || is_clinger(gy.youmonst.data)
-            || is_whirly(gy.youmonst.data)) {
+            || resists_cold(iceskater) || Flying
+            || is_floater(iceskater->data) || is_clinger(iceskater->data)
+            || is_whirly(iceskater->data)) {
             on_ice = FALSE;
         } else if (!rn2(Cold_resistance ? 3 : 2)) {
             HFumbling |= FROMOUTSIDE;
@@ -3884,6 +3885,7 @@ unmul(const char *msg_override)
     gn.nomovemsg = 0;
     u.usleep = 0;
     gm.multi_reason = NULL, gm.multireasonbuf[0] = '\0';
+
     if (ga.afternmv) {
         int (*f)(void) = ga.afternmv;
 
@@ -3891,8 +3893,6 @@ unmul(const char *msg_override)
            encumbrance hack for levitation--see weight_cap()) */
         ga.afternmv = (int (*)(void)) 0;
         (void) (*f)();
-        /* for finishing Armor/Boots/&c_on() */
-        update_inventory();
     }
 }
 

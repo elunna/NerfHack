@@ -46,7 +46,7 @@
 .ds f0 \*(vr
 .ds f1 \" empty
 .\"DO NOT REMOVE NH_DATESUB .ds f2 DATE(%B %-d, %Y)
-.ds f2 "November 17, 2023
+.ds f2 December 08, 2023
 .
 .\" A note on some special characters:
 .\" \(lq = left double quote
@@ -3870,6 +3870,13 @@ Show out-of-sight areas of lit rooms (default on).  Persistent.
 .lp "deaf    "
 Start the character permanently deaf (default false).
 Persistent.
+.lp dropped_nopick
+If this option is on, items you dropped will not be automatically
+picked up, even if
+.op autopickup
+is also on and they are in
+.op pickup_types
+or match a positive autopickup exception (defualt on).  Persistent.
 .lp disclose
 Controls what information the program reveals when the game ends.
 Value is a space separated list of prompting/category pairs
@@ -4391,6 +4398,15 @@ When you pick up an item that would exceed this encumbrance
 level (Unencumbered, Burdened, streSsed, straiNed, overTaxed,
 or overLoaded), you will be asked if you want to continue.
 (Default \(oqS\(cq).
+Persistent.
+.lp pickup_stolen
+If this option is on and
+.op autopickup
+is also on, try to pick up things that a monster stole from you, even if they
+aren't in
+.op pickup_types
+or match an autopickup exception.
+Default is on.
 Persistent.
 .lp pickup_thrown
 If this option is on and

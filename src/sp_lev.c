@@ -1125,7 +1125,7 @@ rnddoor(void)
 {
     static int state[] = { D_NODOOR, D_BROKEN, D_ISOPEN, D_CLOSED, D_LOCKED };
 
-    return state[rn2(SIZE(state))];
+    return ROLL_FROM(state);
 }
 
 /*
@@ -3303,7 +3303,7 @@ lspo_monster(lua_State *L)
         tmpmons.coord = SP_COORD_PACK(mx, my);
 
     if (tmpmons.id != NON_PM && tmpmons.class == -1)
-        tmpmons.class = def_monsyms[(int) mons[tmpmons.id].mlet].sym;
+        tmpmons.class = monsym(&mons[tmpmons.id]);
 
     create_monster(&tmpmons, gc.coder->croom);
 
@@ -5786,7 +5786,7 @@ generate_way_out_method(
 
     /* generate one of the escape items */
     if (selection_rndcoord(ov2, &x, &y, FALSE)) {
-        mksobj_at(escapeitems[rn2(SIZE(escapeitems))], x, y, TRUE, FALSE);
+        mksobj_at(ROLL_FROM(escapeitems), x, y, TRUE, FALSE);
         goto gotitdone;
     }
 

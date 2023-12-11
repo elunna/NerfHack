@@ -81,6 +81,7 @@ moveloop_preamble(boolean resuming)
         /* give hero initial movement points; new game only--for restore,
            pending movement points were included in the save file */
         u.umovement = NORMAL_SPEED;
+        initrack();
     }
     gc.context.botlx = TRUE; /* for STATUS_HILITES */
     if (resuming) { /* restoring old game */
@@ -93,7 +94,6 @@ moveloop_preamble(boolean resuming)
         gd.defer_see_monsters = FALSE;
         see_monsters();
     }
-    initrack();
 
     u.uz0.dlevel = u.uz.dlevel;
     gc.context.move = 0;
@@ -634,24 +634,10 @@ regen_hp(int wtcap)
            once u.mh reached u.mhmax; that may have been convenient
            for the player, but it didn't make sense for gameplay...] */
         if (u.uhp < u.uhpmax && (encumbrance_ok || U_CAN_REGEN())) {
-            if (u.ulevel > 9) {
-                if (!(gm.moves % 3L)) {
-                    int Con = (int) ACURR(A_CON);
+            heal = (u.ulevel + (int)ACURR(A_CON)) > rn2(100);
 
-                    if (Con <= 12) {
-                        heal = 1;
-                    } else {
-                        heal = rnd(Con);
-                        if (heal > u.ulevel - 9)
-                            heal = u.ulevel - 9;
-                    }
-                }
-            } else { /* u.ulevel <= 9 */
-                if (!(gm.moves % (long) ((MAXULEV + 12) / (u.ulevel + 2) + 1)))
-                    heal = 1;
-            }
-            if (U_CAN_REGEN() && !heal)
-                heal = 1;
+            if (U_CAN_REGEN())
+                heal += 1;
             if (Sleepy && u.usleep)
                 heal++;
 
@@ -1147,9 +1133,49 @@ struct enum_dump objdump[] = {
 #include "objects.h"
     { NUM_OBJECTS, "NUM_OBJECTS" },
 };
+
+#define DUMP_ENUMS_PCHAR
+struct enum_dump defsym_cmap_dump[] = {
+#include "defsym.h"
+    { MAXPCHARS, "MAXPCHARS" },
+};
+#undef DUMP_ENUMS_PCHAR
+
+#define DUMP_ENUMS_MONSYMS
+struct enum_dump defsym_mon_syms_dump[] = {
+#include "defsym.h"
+    { MAXMCLASSES, "MAXMCLASSES" },
+};
+#undef DUMP_ENUMS_MONSYMS
+
+#define DUMP_ENUMS_MONSYMS_DEFCHAR
+struct enum_dump defsym_mon_defchars_dump[] = {
+#include "defsym.h"
+};
+#undef DUMP_ENUMS_MONSYMS_DEFCHAR
+
+#define DUMP_ENUMS_OBJCLASS_DEFCHARS
+struct enum_dump objclass_defchars_dump[] = {
+#include "defsym.h"
+};
+#undef DUMP_ENUMS_OBJCLASS_DEFCHARS
+
+#define DUMP_ENUMS_OBJCLASS_CLASSES
+struct enum_dump objclass_classes_dump[] = {
+#include "defsym.h"
+};
+#undef DUMP_ENUMS_OBJCLASS_CLASSES
+
+#define DUMP_ENUMS_OBJCLASS_SYMS
+struct enum_dump objclass_syms_dump[] = {
+#include "defsym.h"
+};
+#undef DUMP_ENUMS_OBJCLASS_SYMS
+
 #undef DUMP_ENUMS
 
 #ifndef NODUMPENUMS
+
 static void
 dump_enums(void)
 {
@@ -1157,10 +1183,19 @@ dump_enums(void)
         monsters_enum,
         objects_enum,
         objects_misc_enum,
+        defsym_cmap_enum,
+        defsym_mon_syms_enum,
+        defsym_mon_defchars_enum,
+        objclass_defchars_enum,
+        objclass_classes_enum,
+        objclass_syms_enum,
         NUM_ENUM_DUMPS
     };
     static const char *const titles[NUM_ENUM_DUMPS] = {
-        "monnums", "objects_nums" , "misc_object_nums"
+        "monnums", "objects_nums" , "misc_object_nums",
+        "cmap_symbols", "mon_syms", "mon_defchars",
+        "objclass_defchars", "objclass_classes",
+        "objclass_syms",
     };
 #define dump_om(om) { om, #om }
     static const struct enum_dump omdump[] = {
@@ -1182,14 +1217,29 @@ dump_enums(void)
     };
 #undef dump_om
     static const struct enum_dump *const ed[NUM_ENUM_DUMPS] = {
-        monsdump, objdump, omdump
+        monsdump, objdump, omdump,
+        defsym_cmap_dump, defsym_mon_syms_dump,
+        defsym_mon_defchars_dump,
+        objclass_defchars_dump,
+        objclass_classes_dump,
+        objclass_syms_dump,
     };
-    static const char *const pfx[NUM_ENUM_DUMPS] = { "PM_", "", "" };
-    static int szd[NUM_ENUM_DUMPS] = {
-        SIZE(monsdump), SIZE(objdump), SIZE(omdump)
+    static const char *const pfx[NUM_ENUM_DUMPS] = { "PM_", "", "",
+                                                     "", "", "", "",
+                                                     "", "" };
+    /* 0 = dump numerically only, 1 = add 'char' comment */
+    static const int dumpflgs[NUM_ENUM_DUMPS] = { 0, 0, 0, 0, 0, 1, 1, 0, 0};
+    static int szd[NUM_ENUM_DUMPS] = { SIZE(monsdump), SIZE(objdump),
+                                       SIZE(omdump), SIZE(defsym_cmap_dump),
+                                       SIZE(defsym_mon_syms_dump),
+                                       SIZE(defsym_mon_defchars_dump),
+                                       SIZE(objclass_defchars_dump),
+                                       SIZE(objclass_classes_dump),
+                                       SIZE(objclass_syms_dump)
     };
     const char *nmprefix;
     int i, j, nmwidth;
+    char comment[BUFSZ];
 
     for (i = 0; i < NUM_ENUM_DUMPS; ++ i) {
         raw_printf("enum %s = {", titles[i]);
@@ -1198,8 +1248,18 @@ dump_enums(void)
             nmprefix = (j >= szd[i] - unprefixed_count)
                            ? "" : pfx[i]; /* "" or "PM_" */
             nmwidth = 27 - (int) strlen(nmprefix); /* 27 or 24 */
-            raw_printf("    %s%*s = %3d,",
-                       nmprefix, -nmwidth, ed[i][j].nm, ed[i][j].val);
+            if (dumpflgs[i] > 0) {
+                Snprintf(comment, sizeof comment,
+                         "    /* '%c' */",
+                         (ed[i][j].val >= 32 && ed[i][j].val <= 126)
+                         ? ed[i][j].val : ' ');
+            } else {
+                comment[0] = '\0';
+            }
+            raw_printf("    %s%*s = %3d,%s",
+                       nmprefix, -nmwidth,
+                       ed[i][j].nm, ed[i][j].val,
+                       comment);
        }
         raw_print("};");
         raw_print("");

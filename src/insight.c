@@ -1,4 +1,4 @@
-/* NetHack 3.7	insight.c	$NHDT-Date: 1701677864 2023/12/04 08:17:44 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.102 $ */
+/* NetHack 3.7	insight.c	$NHDT-Date: 1702023267 2023/12/08 08:14:27 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.104 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -1495,13 +1495,33 @@ weapon_insight(int final)
     } /* skill applies */
 }
 
+static void
+item_resistance_message(
+    int adtyp,
+    const char *prot_message,
+    int final)
+{
+    int protection = u_adtyp_resistance_obj(adtyp);
+
+    if (protection) {
+        boolean somewhat = protection < 99;
+
+        enl_msg("Your items ",
+                somewhat ? "are somewhat" : "are",
+                somewhat ? "were somewhat" : "were",
+                prot_message, item_what(adtyp));
+    }
+}
+
 /* attributes: intrinsics and the like, other non-obvious capabilities */
 static void
-attributes_enlightenment(int unused_mode UNUSED, int final)
+attributes_enlightenment(
+    int unused_mode UNUSED,
+    int final)
 {
     static NEARDATA const char
         if_surroundings_permitted[] = " if surroundings permitted";
-    int ltmp, armpro;
+    int ltmp, armpro, warnspecies;
     char buf[BUFSZ];
 
     /*\
@@ -1535,26 +1555,18 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
         you_are("magic-protected", from_what(ANTIMAGIC));
     if (Fire_resistance)
         you_are("fire resistant", from_what(FIRE_RES));
-    if (u_adtyp_resistance_obj(AD_FIRE))
-        enl_msg("Your items ", "are", "were", " protected from fire",
-                item_what(AD_FIRE));
+    item_resistance_message(AD_FIRE, " protected from fire", final);
     if (Cold_resistance)
         you_are("cold resistant", from_what(COLD_RES));
-    if (u_adtyp_resistance_obj(AD_COLD))
-        enl_msg("Your items ", "are", "were", " protected from cold",
-                item_what(AD_COLD));
+    item_resistance_message(AD_COLD, " protected from cold", final);
     if (Sleep_resistance)
         you_are("sleep resistant", from_what(SLEEP_RES));
     if (Disint_resistance)
         you_are("disintegration resistant", from_what(DISINT_RES));
-    if (u_adtyp_resistance_obj(AD_DISN))
-        enl_msg("Your items ", "are", "were",
-                " protected from disintegration", item_what(AD_DISN));
+    item_resistance_message(AD_DISN, " protected from disintegration", final);
     if (Shock_resistance)
         you_are("shock resistant", from_what(SHOCK_RES));
-    if (u_adtyp_resistance_obj(AD_ELEC))
-        enl_msg("Your items ", "are", "were",
-                " protected from electric shocks", item_what(AD_ELEC));
+    item_resistance_message(AD_ELEC, " protected from electric shocks", final);
     if (Poison_resistance)
         you_are("poison resistant", from_what(POISON_RES));
     if (Acid_resistance) {
@@ -1563,9 +1575,7 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
                 "acid resistant");
         you_are(buf, from_what(ACID_RES));
     }
-    if (u_adtyp_resistance_obj(AD_ACID))
-        enl_msg("Your items ", "are", "were", " protected from acid",
-                item_what(AD_ACID));
+    item_resistance_message(AD_ACID, " protected from acid", final);
     if (Drain_resistance)
         you_are("level-drain resistant", from_what(DRAIN_RES));
     if (Sick_resistance)
@@ -1622,9 +1632,10 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
                                             : "certain monsters");
         you_are(buf, "");
     }
-    if (Warn_of_mon && gc.context.warntype.speciesidx >= LOW_PM) {
+    warnspecies =  gc.context.warntype.speciesidx;
+    if (Warn_of_mon && warnspecies >= LOW_PM) {
         Sprintf(buf, "aware of the presence of %s",
-             makeplural(mons[gc.context.warntype.speciesidx].pmnames[NEUTRAL]));
+                makeplural(mons[warnspecies].pmnames[NEUTRAL]));
         you_are(buf, from_what(WARN_OF_MON));
     }
     if (Undead_warning)
@@ -1686,8 +1697,13 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
         you_are("visible", from_what(-INVIS));
     if (Displaced)
         you_are("displaced", from_what(DISPLACED));
-    if (Stealth)
+    if (Stealth) {
         you_are("stealthy", from_what(STEALTH));
+    } else if (BStealth && (HStealth || EStealth)) {
+        Sprintf(buf, " steathy%s",
+                (BStealth == FROMOUTSIDE) ? " if not mounted" : "");
+        enl_msg(You_, "would be", "would have been", buf, "");
+    }
     if (Aggravate_monster)
         enl_msg("You aggravate", "", "d", " monsters",
                 from_what(AGGRAVATE_MONSTER));

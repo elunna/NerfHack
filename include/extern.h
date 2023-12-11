@@ -2821,6 +2821,7 @@ extern void exercise_steed(void);
 extern void kick_steed(void);
 extern void dismount_steed(int);
 extern void place_monster(struct monst *, coordxy, coordxy);
+extern void poly_steed(struct monst *, struct permonst *);
 extern boolean stucksteed(boolean);
 
 /* ### symbols.c ### */
@@ -2952,6 +2953,8 @@ extern int tt_doppel(struct monst *);
 extern void initrack(void);
 extern void settrack(void);
 extern coord *gettrack(coordxy, coordxy);
+extern void save_track(NHFILE *);
+extern void rest_track(NHFILE *);
 
 /* ### trap.c ### */
 
@@ -3451,6 +3454,10 @@ extern void choose_windows(const char *);
 void addto_windowchain(const char *s);
 void commit_windowchain(void);
 #endif
+#ifdef TTY_GRAPHICS
+extern boolean check_tty_wincap(unsigned long);
+extern boolean check_tty_wincap2(unsigned long);
+#endif
 extern boolean genl_can_suspend_no(void);
 extern boolean genl_can_suspend_yes(void);
 extern char genl_message_menu(char, int, const char *);
@@ -3631,7 +3638,8 @@ extern void melt_ice_away(union any *, long);
 extern int zap_over_floor(coordxy, coordxy, int, boolean *, boolean, short);
 extern void fracture_rock(struct obj *);
 extern boolean break_statue(struct obj *);
-extern boolean u_adtyp_resistance_obj(int);
+extern int u_adtyp_resistance_obj(int);
+extern boolean inventory_resistance_check(int);
 extern char *item_what(int);
 extern void destroy_item(int, int);
 extern int destroy_mitem(struct monst *, int, int);
