@@ -1493,7 +1493,7 @@ hmon_hitmon_dmg_recalc(struct _hitmon_data *hmd, struct obj *obj)
            to jousting because lances are one-handed */
         if (hmd->thrown != HMON_THROWN
             || !obj || !uwep || !ammo_and_launcher(obj, uwep)
-                                || uslinging()) {
+                                || (uslinging() && Role_if(PM_CAVE_DWELLER))) {
             strbonus = dbon();
             absbonus = abs(strbonus);
             if (hmd->twohits)
