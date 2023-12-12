@@ -2353,6 +2353,7 @@ wand_explode(struct obj* obj, int chg /* recharging */)
     case WAN_FIRE:
     case WAN_LIGHTNING:
     case WAN_MAGIC_MISSILE:
+    case WAN_POISON_GAS:
         k = 8;
         break;
     case WAN_NOTHING:

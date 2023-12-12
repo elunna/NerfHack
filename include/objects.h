@@ -1472,6 +1472,8 @@ WAND("death",            "long",  5, 500, 1, RAY, IRON, HI_METAL,
                                                     WAN_DEATH),
 WAND("lightning",      "curved", 40, 175, 1, RAY, IRON, HI_METAL,
                                                     WAN_LIGHTNING),
+WAND("poison gas",  "octagonal", 80, 175, 1, RAY, GLASS, HI_METAL,
+                                                    WAN_POISON_GAS),
 /* extra descriptions, shuffled into use at start of new game */
 WAND(NoDes,             "forked",  0, 150, 1, 0, WOOD, HI_WOOD, WAN1),
 WAND(NoDes,             "spiked",  0, 150, 1, 0, IRON, HI_METAL, WAN2),
