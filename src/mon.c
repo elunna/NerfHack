@@ -35,7 +35,7 @@ static int wiz_force_cham_form(struct monst *);
 static struct permonst *accept_newcham_form(struct monst *, int);
 static void kill_eggs(struct obj *);
 static void pacify_guard(struct monst *);
-
+static void mon_berserk(struct monst *);
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
@@ -973,25 +973,10 @@ m_calcdistress(struct monst *mtmp)
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
     
-    if (is_berserker(mtmp->data) && !noattacks(mtmp->data)) {
-        if ((mtmp->mhp < (mtmp->mhpmax / 3)) && !mtmp->mberserk
-            && !rn2(13)) {
-            if (canseemon(mtmp) && humanoid(mtmp->data)
-                && !mindless(mtmp->data)) {
-                pline("%s flies into a berserker rage!", Monnam(mtmp));
-            } else if (canseemon(mtmp)) { /* animal/mindless */
-                pline("%s seems to go berserk!", Monnam(mtmp));
-            } else {
-                You_hear("an enraged %s %s!",
-                         !rn2(3) ? "roar" : rn2(2) ? "bellow" : "howl",
-                         (distu(mtmp->mx, mtmp->my) > (6 * 6)
-                              ? "in the distance" : "nearby"));
-            }
-            mtmp->mberserk = 1;
-            mtmp->mflee = 0;
-        } else if (mtmp->mhp > (mtmp->mhpmax / 2)) {
-            mtmp->mberserk = 0;
-        }
+    /* Berserkers go wild if their HP is getting low */
+    if (is_berserker(mtmp->data) && (mtmp->mhp < (mtmp->mhpmax / 2)) 
+        && !mtmp->mberserk && !rn2(2)) {
+        mon_berserk(mtmp);
     }
     
     /* wither away */
@@ -4164,6 +4149,12 @@ setmangry(struct monst* mtmp, boolean via_attack)
         growl(mtmp);
     }
 
+    /* It only makes sense that the function that angers monsters should
+     * also trigger berserkers */
+    if (is_berserker(mtmp->data) && !mtmp->mberserk && rn2(3)) {
+        mon_berserk(mtmp);
+    }
+        
     /* attacking your own quest leader will anger his or her guardians */
     if (mtmp->data == &mons[quest_info(MS_LEADER)])
         qst_guardians_respond();
@@ -5790,6 +5781,32 @@ kill_monster_on_level(int mndx)
             mondead(mtmp);
         }
     }
+}
+
+static void
+mon_berserk(struct monst *mtmp)
+{
+    if (noattacks(mtmp->data))
+        return;
+   
+    if (canseemon(mtmp) && humanoid(mtmp->data)
+        && !mindless(mtmp->data)) {
+        pline("%s flies into a berserker rage!", Monnam(mtmp));
+    } else if (canseemon(mtmp)) { /* animal/mindless */
+        pline("%s seems to go berserk!", Monnam(mtmp));
+    } else {
+        You_hear("an enraged %s %s!",
+                 !rn2(3) ? "roar" : rn2(2) ? "bellow" : "howl",
+                 (distu(mtmp->mx, mtmp->my) > (6 * 6)
+                      ? "in the distance" : "nearby"));
+    }
+    /* Renewed vigor!
+     * Here we give the berserker a chance to instantly regenerate a roll
+     * of their entire HP. Looking through the codebase, I don't think this
+     * causes any problems or panics - but it might for the player! */
+    mtmp->mhp += rnd(mtmp->mhpmax);
+    mtmp->mberserk = 1;
+    mtmp->mflee = 0;
 }
 
 /*mon.c*/
