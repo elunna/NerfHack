@@ -1782,7 +1782,7 @@ poly_obj(struct obj *obj, int id)
 
     case WAND_CLASS:
         while (otmp->otyp == WAN_WISHING || otmp->otyp == WAN_POLYMORPH)
-            otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
+            otmp->otyp = rnd_class(WAN_LIGHT, LAST_WAND);
         /* altering the object tends to degrade its quality
            (analogous to spellbook `read count' handling) */
         if ((int) otmp->recharged < rn2(7)) /* recharge_limit */
@@ -3529,7 +3529,7 @@ weffects(struct obj *obj)
             zap_dig();
         else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_FINGER_OF_DEATH)
             ubuzz(BZ_U_SPELL(BZ_OFS_SPE(otyp)), u.ulevel / 2 + 1);
-        else if (otyp >= WAN_MAGIC_MISSILE && otyp <= WAN_LIGHTNING)
+        else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(otyp)),
                   (otyp == WAN_MAGIC_MISSILE) ? 2 : 6);
         else

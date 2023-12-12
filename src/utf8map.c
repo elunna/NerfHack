@@ -769,10 +769,10 @@ parse_id(const char *id, struct find_struct *findwhat)
                     const char *buf2 = "";
                     const char *buf3 = "";
                     if (((i > SCR_STINKING_CLOUD) && (i < SCR_MAIL))
-                        || ((i > WAN_LIGHTNING) && (i < GOLD_PIECE)))
+                        || ((i > LAST_WAND) && (i < GOLD_PIECE)))
                         skip_this_one = TRUE;
                     if (!skip_this_one) {
-                        if ((i >= WAN_LIGHT) && (i <= WAN_LIGHTNING))
+                        if ((i >= WAN_LIGHT) && (i <= LAST_WAND))
                             buf2 = "wand of ";
                         else if ((i >= SPE_DIG) && (i < SPE_BLANK_PAPER))
                             buf2 = "spellbook of ";

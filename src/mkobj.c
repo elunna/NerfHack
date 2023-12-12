@@ -366,7 +366,7 @@ mkbox_cnts(struct obj *box)
                     otmp->owt = weight(otmp);
                 } else
                     while (otmp->otyp == WAN_CANCELLATION)
-                        otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
+                        otmp->otyp = rnd_class(WAN_LIGHT, LAST_WAND);
             }
         }
         (void) add_to_container(box, otmp);
