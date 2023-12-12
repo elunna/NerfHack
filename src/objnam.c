@@ -3144,6 +3144,7 @@ static const struct alt_spellings {
     { "huge meatball", ENORMOUS_MEATBALL }, /* likely conflated name */
     { "huge chunk of meat", ENORMOUS_MEATBALL }, /* original name */
     { "marker", MAGIC_MARKER },
+    { "unihorn", UNICORN_HORN },
     { "hook", GRAPPLING_HOOK },
     { "grappling iron", GRAPPLING_HOOK },
     { "grapnel", GRAPPLING_HOOK },
