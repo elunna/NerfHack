@@ -449,8 +449,8 @@ explode(
             didmsg = TRUE;
         }
     }
-
-    if (!Deaf && !didmsg)
+    
+    if (!Deaf && !didmsg && olet != DOOR_TRAP)
         pline("Boom!");
 
     /* apply effects to monsters and floor objects first, in case the
