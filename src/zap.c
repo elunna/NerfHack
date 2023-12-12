@@ -47,12 +47,12 @@ static const char are_blinded_by_the_flash[] = "are blinded by the flash!";
 static const char *const flash_types[] = {
     "magic missile", /* Wands must be 0-9 */
     "bolt of fire", "bolt of cold", "sleep ray", "death ray",
-    "bolt of lightning", "", "", "", "",
+    "bolt of lightning", "poison gas", "acid stream", "", "",
 
     "magic missile", /* Spell equivalents must be 10-19 */
     "fireball", "cone of cold", "sleep ray", "finger of death",
     "bolt of lightning", /* there is no spell, used for retribution */
-    "", "", "", "",
+    "blast of poison gas", "blast of acid", "", "",
 
     "blast of missiles", /* Dragon breath equivalents 20-29*/
     "blast of fire", "blast of frost", "blast of sleep gas",
@@ -1782,7 +1782,7 @@ poly_obj(struct obj *obj, int id)
 
     case WAND_CLASS:
         while (otmp->otyp == WAN_WISHING || otmp->otyp == WAN_POLYMORPH)
-            otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
+            otmp->otyp = rnd_class(WAN_LIGHT, LAST_WAND);
         /* altering the object tends to degrade its quality
            (analogous to spellbook `read count' handling) */
         if ((int) otmp->recharged < rn2(7)) /* recharge_limit */
@@ -2695,7 +2695,33 @@ zapyourself(struct obj *obj, boolean ordinary)
         }
         destroy_item(POTION_CLASS, AD_COLD);
         break;
-
+    case WAN_POISON_GAS:
+        learn_it = TRUE;
+        if (!Deaf) {
+            pline("Whoosh!");
+        }
+        (void) create_gas_cloud(u.ux, u.uy, 1, 8);
+        break;
+    case WAN_CORROSION:
+        learn_it = TRUE;
+        if (Acid_resistance) {
+            shieldeff(u.ux, u.uy);
+            You("coat yourself in a seemingly harmless substance.");
+            monstseesu(M_SEEN_ACID);
+            ugolemeffects(AD_ACID, d(12, 6));
+        } else {
+            You("cover yourself with slime!  It burns!");
+            damage = d(12, 6);
+            monstunseesu(M_SEEN_ACID);
+        }
+        /* using two weapons at once makes both of them more vulnerable */
+        if (!rn2(u.twoweap ? 3 : 6))
+            acid_damage(uwep);
+        if (u.twoweap && !rn2(3))
+            acid_damage(uswapwep);
+        if (rn2(3))
+            erode_armor(&gy.youmonst, ERODE_CORRODE);
+        break;
     case WAN_MAGIC_MISSILE:
     case SPE_MAGIC_MISSILE:
         learn_it = TRUE;
@@ -3529,7 +3555,7 @@ weffects(struct obj *obj)
             zap_dig();
         else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_FINGER_OF_DEATH)
             ubuzz(BZ_U_SPELL(BZ_OFS_SPE(otyp)), u.ulevel / 2 + 1);
-        else if (otyp >= WAN_MAGIC_MISSILE && otyp <= WAN_LIGHTNING)
+        else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(otyp)),
                   (otyp == WAN_MAGIC_MISSILE) ? 2 : 6);
         else
@@ -4898,13 +4924,17 @@ dobuzz(
             gn.notonhead = (mon->mx != gb.bhitpos.x
                             || mon->my != gb.bhitpos.y);
             if (zap_hit(find_mac(mon), spell_type)) {
-                if (mon_reflects(mon, (char *) 0)) {
+                if (mon_reflects(mon, (char *) 0) 
+                    && damgtype != ZT_ACID) {
                     if (cansee(mon->mx, mon->my)) {
                         hit(flash_str(fltyp, FALSE), mon, exclam(0));
                         shieldeff(mon->mx, mon->my);
                         (void) mon_reflects(mon,
                                             "But it reflects from %s %s!");
                     }
+                    /* water is reflected but doesn't bounce */
+                    if (damgtype == ZT_POISON_GAS)
+                        range = 0;
                     dx = -dx;
                     dy = -dy;
                 } else {
@@ -4937,6 +4967,10 @@ dobuzz(
                         break; /* Out of while loop */
                     }
 
+                    if (damgtype == ZT_POISON_GAS) {
+                        range = 0;
+                        break; /* Out of while loop */
+                    }
                     if (tmp == MAGIC_COOKIE) { /* disintegration */
                         disintegrate_mon(mon, type, flash_str(fltyp, FALSE));
                     } else if (DEADMONSTER(mon)) {
@@ -4990,7 +5024,7 @@ dobuzz(
             } else if (zap_hit((int) u.uac, 0)) {
                 range -= 2;
                 pline("%s hits you!", The(flash_str(fltyp, FALSE)));
-                if (Reflecting) {
+                if (Reflecting && damgtype != ZT_ACID) {
                     if (!Blind) {
                         (void) ureflects("But %s reflects from your %s!",
                                          "it");
@@ -5017,18 +5051,34 @@ dobuzz(
             nomul(0);
         }
 
+        if (levl[sx][sy].typ == TREE 
+            && (damgtype == ZT_DEATH || damgtype == ZT_POISON_GAS)) {
+            levl[sx][sy].typ = ROOM;
+            if (cansee(sx, sy)) {
+                pline_The("tree withers and shrivels!");
+                newsym(sx, sy);
+            }
+            range = 0;
+            break;
+        }
+        
         if (!ZAP_POS(levl[sx][sy].typ)
             || (closed_door(sx, sy) && range >= 0)) {
             int bounce, bchance;
             uchar rmn;
             boolean fireball;
+            
+            /* Acid doesn't bounce */
+            if (damgtype == ZT_ACID)
+                range = 0;
 
  make_bounce:
             bchance = (!isok(sx, sy) || levl[sx][sy].typ == STONE) ? 10
                       : (In_mines(&u.uz) && IS_WALL(levl[sx][sy].typ)) ? 20
                         : 75;
             bounce = 0;
-            fireball = (type == ZT_SPELL(ZT_FIRE));
+            fireball = (type == ZT_SPELL(ZT_FIRE) 
+                        || damgtype == ZT_POISON_GAS);
             if ((--range > 0 && isok(lsx, lsy) && cansee(lsx, lsy))
                 || fireball) {
                 if (Is_airlevel(&u.uz)) { /* nothing to bounce off of */
@@ -5078,12 +5128,15 @@ dobuzz(
     tmp_at(DISP_END, 0);
     if (type == ZT_SPELL(ZT_FIRE))
         explode(sx, sy, type, d(12, 6), 0, EXPL_FIERY);
+    if (type == ZT_WAND(ZT_POISON_GAS))
+        explode(sx, sy, type, d(6, 6), 0, EXPL_NOXIOUS);
     if (shopdamage)
         pay_for_damage(damgtype == ZT_FIRE ? "burn away"
                        : damgtype == ZT_COLD ? "shatter"
                          /* "damage" indicates wall rather than door */
                          : damgtype == ZT_ACID ? "damage"
                            : damgtype == ZT_DEATH ? "disintegrate"
+                            : damgtype == ZT_POISON_GAS ? "rot away"
                              : "destroy",
                        FALSE);
     gb.bhitpos = save_bhitpos;
@@ -5468,6 +5521,11 @@ zap_over_floor(
             new_doormask = D_BROKEN;
             see_txt = "The door splinters!";
             hear_txt = "crackling.";
+            break;
+        case ZT_POISON_GAS:
+            new_doormask = D_BROKEN;
+            see_txt = "The door rots away!";
+            hear_txt = "hollow thud.";
             break;
         default:
  def_case:

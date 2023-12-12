@@ -1221,6 +1221,8 @@ rnd_defensive_item(struct monst *mtmp)
 #define MUSE_SCR_STINKING_CLOUD 23
 #define MUSE_WAN_CANCELLATION 24
 #define MUSE_POT_POLYMORPH_THROW 25
+#define MUSE_WAN_POISON_GAS     26
+#define MUSE_WAN_CORROSION      27
 
 static boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -1368,6 +1370,12 @@ find_offensive(struct monst *mtmp)
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_SLEEP;
             }
+            nomore(MUSE_WAN_CORROSION);
+            if (obj->otyp == WAN_CORROSION && obj->spe > 0
+                && !m_seenres(mtmp, M_SEEN_ACID)) {
+                gm.m.offensive = obj;
+                gm.m.has_offense = MUSE_WAN_CORROSION;
+            }
             nomore(MUSE_WAN_FIRE);
             if (obj->otyp == WAN_FIRE && obj->spe > 0
                 && !m_seenres(mtmp, M_SEEN_FIRE)) {
@@ -1397,6 +1405,12 @@ find_offensive(struct monst *mtmp)
                 && !m_seenres(mtmp, M_SEEN_ELEC)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_LIGHTNING;
+            }
+            nomore(MUSE_WAN_POISON_GAS);
+            if (obj->otyp == WAN_POISON_GAS && obj->spe > 0 
+                && !m_seenres(mtmp, M_SEEN_POISON)) {
+                gm.m.offensive = obj;
+                gm.m.has_offense = MUSE_WAN_POISON_GAS;
             }
             nomore(MUSE_WAN_MAGIC_MISSILE);
             if (obj->otyp == WAN_MAGIC_MISSILE && obj->spe > 0
@@ -1788,6 +1802,8 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_COLD:
     case MUSE_WAN_LIGHTNING:
     case MUSE_WAN_MAGIC_MISSILE:
+    case MUSE_WAN_CORROSION:
+    case MUSE_WAN_POISON_GAS:
         mzapwand(mtmp, otmp, FALSE);
         if (oseen)
             makeknown(otmp->otyp);

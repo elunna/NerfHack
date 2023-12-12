@@ -4065,6 +4065,12 @@ do_break_wand(struct obj *obj)
     case WAN_FIRE:
         broken_wand_explode(obj, dmg * 2, EXPL_FIERY);
         return ECMD_TIME;
+    case WAN_CORROSION:
+        broken_wand_explode(obj, dmg * 3, EXPL_WET);
+        return ECMD_TIME;
+    case WAN_POISON_GAS:
+        broken_wand_explode(obj, dmg * 2, EXPL_NOXIOUS);
+        return ECMD_TIME;
     case WAN_COLD:
         broken_wand_explode(obj, dmg * 2, EXPL_FROSTY);
         return ECMD_TIME;
