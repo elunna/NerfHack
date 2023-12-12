@@ -847,7 +847,22 @@ doengrave(void)
                                 : "Your hair stands up!");
                 }
                 break;
-
+            case WAN_CORROSION:
+                ptext = TRUE;
+                type = BURN;
+                if (!Blind) {
+                    Sprintf(post_engr_text,
+                            "The bugs on the %s seem to be covered with goo!",
+                            surface(u.ux, u.uy));
+                    if (!objects[otmp->otyp].oc_name_known) {
+                        if (flags.verbose)
+                            pline("This %s is a wand of corrosion!", xname(otmp));
+                        preknown = TRUE;
+                    }
+                } else if (!Deaf) {
+                    Sprintf(post_engr_text, "Something sprays from the wand.");
+                }
+                break;
             /* type = MARK wands */
             /* type = ENGR_BLOOD wands */
             }

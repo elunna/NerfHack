@@ -47,12 +47,12 @@ static const char are_blinded_by_the_flash[] = "are blinded by the flash!";
 static const char *const flash_types[] = {
     "magic missile", /* Wands must be 0-9 */
     "bolt of fire", "bolt of cold", "sleep ray", "death ray",
-    "bolt of lightning", "poison gas", "", "", "",
+    "bolt of lightning", "poison gas", "acid stream", "", "",
 
     "magic missile", /* Spell equivalents must be 10-19 */
     "fireball", "cone of cold", "sleep ray", "finger of death",
     "bolt of lightning", /* there is no spell, used for retribution */
-    "blast of poison gas", "", "", "",
+    "blast of poison gas", "blast of acid", "", "",
 
     "blast of missiles", /* Dragon breath equivalents 20-29*/
     "blast of fire", "blast of frost", "blast of sleep gas",
@@ -2702,6 +2702,26 @@ zapyourself(struct obj *obj, boolean ordinary)
         }
         (void) create_gas_cloud(u.ux, u.uy, 1, 8);
         break;
+    case WAN_CORROSION:
+        learn_it = TRUE;
+        if (Acid_resistance) {
+            shieldeff(u.ux, u.uy);
+            You("coat yourself in a seemingly harmless substance.");
+            monstseesu(M_SEEN_ACID);
+            ugolemeffects(AD_ACID, d(12, 6));
+        } else {
+            You("cover yourself with slime!  It burns!");
+            damage = d(12, 6);
+            monstunseesu(M_SEEN_ACID);
+        }
+        /* using two weapons at once makes both of them more vulnerable */
+        if (!rn2(u.twoweap ? 3 : 6))
+            acid_damage(uwep);
+        if (u.twoweap && !rn2(3))
+            acid_damage(uswapwep);
+        if (rn2(3))
+            erode_armor(&gy.youmonst, ERODE_CORRODE);
+        break;
     case WAN_MAGIC_MISSILE:
     case SPE_MAGIC_MISSILE:
         learn_it = TRUE;
@@ -4904,7 +4924,8 @@ dobuzz(
             gn.notonhead = (mon->mx != gb.bhitpos.x
                             || mon->my != gb.bhitpos.y);
             if (zap_hit(find_mac(mon), spell_type)) {
-                if (mon_reflects(mon, (char *) 0)) {
+                if (mon_reflects(mon, (char *) 0) 
+                    && damgtype != ZT_ACID) {
                     if (cansee(mon->mx, mon->my)) {
                         hit(flash_str(fltyp, FALSE), mon, exclam(0));
                         shieldeff(mon->mx, mon->my);
@@ -5003,7 +5024,7 @@ dobuzz(
             } else if (zap_hit((int) u.uac, 0)) {
                 range -= 2;
                 pline("%s hits you!", The(flash_str(fltyp, FALSE)));
-                if (Reflecting) {
+                if (Reflecting && damgtype != ZT_ACID) {
                     if (!Blind) {
                         (void) ureflects("But %s reflects from your %s!",
                                          "it");
@@ -5046,6 +5067,10 @@ dobuzz(
             int bounce, bchance;
             uchar rmn;
             boolean fireball;
+            
+            /* Acid doesn't bounce */
+            if (damgtype == ZT_ACID)
+                range = 0;
 
  make_bounce:
             bchance = (!isok(sx, sy) || levl[sx][sy].typ == STONE) ? 10
