@@ -1112,7 +1112,8 @@ cpostfx(int pm)
 
     switch (pm) {
     case PM_WRAITH:
-        pluslvl(FALSE);
+        if (rnd(40) <= u.ulevel)
+            pluslvl(FALSE);
         break;
     case PM_HUMAN_WERERAT:
         catch_lycanthropy = PM_WERERAT;
