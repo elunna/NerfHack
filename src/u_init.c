@@ -277,7 +277,6 @@ static const struct def_skill Skill_B[] = {
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_C[] = {
-    { P_DAGGER, P_BASIC },
     { P_AXE, P_SKILLED },
     { P_PICK_AXE, P_BASIC },
     { P_CLUB, P_EXPERT },
@@ -285,7 +284,6 @@ static const struct def_skill Skill_C[] = {
     { P_FLAIL, P_SKILLED },
     { P_HAMMER, P_SKILLED },
     { P_QUARTERSTAFF, P_EXPERT },
-    { P_POLEARMS, P_SKILLED },
     { P_SPEAR, P_EXPERT },
     { P_TRIDENT, P_SKILLED },
     { P_BOW, P_SKILLED },
