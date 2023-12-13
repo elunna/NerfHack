@@ -143,9 +143,10 @@ do_statusline2(void)
     hpmax = Upolyd ? u.mhmax : u.uhpmax;
     if (hp < 0)
         hp = 0;
-    Sprintf(hlth, "HP:%d(%d) Pw:%d(%d) AC:%-2d",
+    Sprintf(hlth, "HP:%d(%d) Pw:%d(%d) AC:%-2d MC:%d",
             min(hp, 9999), min(hpmax, 9999),
-            min(u.uen, 9999), min(u.uenmax, 9999), u.uac);
+            min(u.uen, 9999), min(u.uenmax, 9999), u.uac,
+            magic_negation(&gy.youmonst));
     hln = strlen(hlth);
 
     /* experience */
@@ -564,6 +565,7 @@ static struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("power-max", "(%s)", ANY_INT, 10, BL_ENEMAX),
     INIT_BLSTATP("experience-level", " Xp:%s", ANY_INT, 10, BL_EXP, BL_XP),
     INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
+    INIT_BLSTAT("magic-neg", " MC:%s", ANY_INT, 10, BL_MC),
     INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
     INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
@@ -853,6 +855,9 @@ bot_via_windowport(void)
     /* Armor class */
     gb.blstats[idx][BL_AC].a.a_int = u.uac;
 
+    /* Magic negation */
+    gb.blstats[idx][BL_MC].a.a_int = magic_negation(&gy.youmonst);
+    
     /* Monster level (if Upolyd) */
     gb.blstats[idx][BL_HD].a.a_int = Upolyd ? (int) mons[u.umonnum].mlevel : 0;
 
@@ -1902,6 +1907,7 @@ static const struct fieldid_t {
     { "xl",       BL_XP },
     { "xplvl",    BL_XP },
     { "ac",       BL_AC },
+    { "mc",       BL_MC },
     { "hit-dice", BL_HD },
     { "turns",    BL_TIME },
     { "hp",       BL_HP },

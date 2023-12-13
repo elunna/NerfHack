@@ -39,8 +39,8 @@ enum statusfields {
     BL_TITLE = 0,
     BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,  /* 1..6 */
     BL_ALIGN, BL_SCORE, BL_CAP, BL_GOLD, BL_ENE, BL_ENEMAX, /* 7..12 */
-    BL_XP, BL_AC, BL_HD, BL_TIME, BL_HUNGER, BL_HP, /* 13..18 */
-    BL_HPMAX, BL_LEVELDESC, BL_EXP, BL_CONDITION, /* 19..22 */
+    BL_XP, BL_AC, BL_MC, BL_HD, BL_TIME, BL_HUNGER, BL_HP, /* 13..19 */
+    BL_HPMAX, BL_LEVELDESC, BL_EXP, BL_CONDITION, /* 20..23 */
     MAXBLSTATS /* [23] */
 };
 
