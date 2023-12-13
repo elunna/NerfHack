@@ -466,6 +466,7 @@ monflee(
                         mtmp2->msleeping = 0;
                     }
                 }
+            } else {
                 pline("%s turns to flee.", Monnam(mtmp));
             }
         }
