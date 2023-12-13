@@ -300,6 +300,11 @@ dmgval(struct obj *otmp, struct monst *mon)
     if (objects[otyp].oc_material <= LEATHER && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
+    
+    if (otmp->oclass == GEM_CLASS && thick_skinned(ptr))
+        /* pebbles don't penetrate */
+        tmp = rnd(2);
+    
     if (ptr == &mons[PM_SHADE] && !shade_glare(otmp))
         tmp = 0;
 
