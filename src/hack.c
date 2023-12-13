@@ -3713,8 +3713,9 @@ interesting_room(void)
     /* Carving message */
     switch (rnd(7)) {
     case 1:
-        pline("%s on the ceiling portrays %s %s.", An(art[rn2(SIZE(art))]),
-              an(adjectives[rn2(SIZE(adjectives))]), carvemon);
+        pline("%s %s on the ceiling portrays %s.", 
+              An(adjectives[rn2(SIZE(adjectives))]), art[rn2(SIZE(art))],
+              an(carvemon));
         break;
     case 2:
         pline("There is %s of %s in this room.", an(art[rn2(SIZE(art))]),
