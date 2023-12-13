@@ -3012,7 +3012,8 @@ corpse_chance(
         return FALSE;
 
     if (((bigmonst(mdat) || mdat == &mons[PM_LIZARD]) && !mon->mcloned)
-        || is_golem(mdat) || is_mplayer(mdat) || is_rider(mdat) || mon->isshk)
+        || is_zombie(mdat) || is_golem(mdat) || is_mplayer(mdat)
+        || is_rider(mdat) || mon->isshk)
         return TRUE;
     tmp = 2 + ((mdat->geno & G_FREQ) < 2) + verysmall(mdat);
     return (boolean) !rn2(tmp);

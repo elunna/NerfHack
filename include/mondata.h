@@ -135,7 +135,9 @@
 #define is_giant(ptr) (((ptr)->mflags2 & M2_GIANT) != 0L)
 #define is_golem(ptr) ((ptr)->mlet == S_GOLEM)
 #define is_zombie(ptr) \
-    ((ptr)->mlet == S_ZOMBIE && strstri((ptr)->pmnames[NEUTRAL], "zombie"))
+    ((ptr)->mlet == S_ZOMBIE && !is_not_zombie(ptr))
+#define is_not_zombie(ptr) \
+    ((ptr) == &mons[PM_GHOUL] || (ptr) == &mons[PM_SKELETON])
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mflags2 & M2_DEMON) != 0L)
 #define is_mercenary(ptr) (((ptr)->mflags2 & M2_MERC) != 0L)

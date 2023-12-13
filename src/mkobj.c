@@ -1331,8 +1331,8 @@ rider_revival_time(struct obj *body, boolean retry)
 void
 start_corpse_timeout(struct obj *body)
 {
-    long when;       /* rot away when this old */
-    long age;        /* age of corpse          */
+    long when; /* rot away when this old */
+    long age;  /* age of corpse          */
     int rot_adjust;
     short action;
 
@@ -1346,7 +1346,7 @@ start_corpse_timeout(struct obj *body)
     if (body->corpsenm == PM_LIZARD || body->corpsenm == PM_LICHEN)
         return;
 
-    action = ROT_CORPSE;               /* default action: rot away */
+    action = ROT_CORPSE;                /* default action: rot away */
     rot_adjust = gi.in_mklev ? 25 : 10; /* give some variation */
     age = gm.moves - body->age;
     if (age > ROT_AGE)
@@ -1366,19 +1366,23 @@ start_corpse_timeout(struct obj *body)
                 break;
             }
         }
-    } else if (gz.zombify && zombie_form(&mons[body->corpsenm]) != NON_PM
-               && !body->zombie_corpse && !body->norevive) {
-        action = ZOMBIFY_MON;
-        when = rn1(15, 5); /* 5..19 */
+        /* corpse of an actual zombie */
     } else if (body->zombie_corpse && !body->norevive) {
         for (age = 2; age <= ROT_AGE; age++) {
             if (!rn2(ZOMBIE_REVIVE_CHANCE)) { /* zombie revives */
-                action = REVIVE_MON;
+                action = REVIVE_MON; /* if buried, can dig itself out */
                 when = age;
                 break;
             }
         }
     }
+    /* corpse of a monster a zombie just killed and could become one */
+    else if (gz.zombify && zombie_form(&mons[body->corpsenm]) != NON_PM
+             && !body->zombie_corpse && !body->norevive) {
+        action = ZOMBIFY_MON;
+        when = rn1(15, 5); /* 5..19 */
+    }
+    
     (void) start_timer(when, TIMER_OBJECT, action, obj_to_any(body));
 }
 
@@ -1963,7 +1967,7 @@ mkgold(long amount, coordxy x, coordxy y)
 /* return TRUE if the corpse has special timing;
    lizards and lichen don't rot, trolls and Riders and zombies auto-revive */
 #define special_corpse(num) \
-    (((num) == PM_LIZARD || (num) == PM_LICHEN) || is_reviver(&mons[num]))
+    ((num) == PM_LIZARD || (num) == PM_LICHEN || is_reviver(&mons[num]))
 
 /* mkcorpstat: make a corpse or statue; never returns Null.
  *
@@ -2023,7 +2027,8 @@ mkcorpstat(
 
         otmp->corpsenm = monsndx(ptr);
         otmp->owt = weight(otmp);
-        if (otmp->otyp == CORPSE && (gz.zombify || special_corpse(old_corpsenm)
+        if (otmp->otyp == CORPSE && (gz.zombify || otmp->zombie_corpse
+                                     || special_corpse(old_corpsenm)
                                      || special_corpse(otmp->corpsenm))) {
             obj_stop_timers(otmp);
             if (mtmp && is_reviver(mtmp->data) && !is_rider(mtmp->data)
