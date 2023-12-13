@@ -993,7 +993,7 @@ WEPTOOL("grappling hook", NoDes,
         1, 0, 0,  5,  30,  50,  2,  6, WHACK,  P_FLAIL,    IRON, HI_METAL,
                                                              GRAPPLING_HOOK),
 WEPTOOL("unicorn horn", NoDes,
-        1, 1, 1,  0,  20, 100, 12, 12, PIERCE, P_UNICORN_HORN,
+        1, 1, 0,  0,  20, 100, 6, 7, PIERCE, P_UNICORN_HORN,
                                                            BONE, CLR_WHITE,
                                                                 UNICORN_HORN),
         /* 3.4.1: unicorn horn left classified as "magic" */

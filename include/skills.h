@@ -47,7 +47,7 @@ enum p_skills {
     P_SHURIKEN           = 24,
     P_BOOMERANG          = 25,
     P_WHIP               = 26, /* flexible, one-handed */
-    P_UNICORN_HORN       = 27, /* last weapon, two-handed */
+    P_UNICORN_HORN       = 27, /* last weapon, one-handed */
 
     /* Spell Skills added by Larry Stewart-Zerba */
     P_ATTACK_SPELL       = 28,
