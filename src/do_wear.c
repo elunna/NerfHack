@@ -2407,6 +2407,10 @@ find_ac(void)
     int racial_bonus, dex_adjust_ac;
     int mvl_wtcap = near_capacity();
     
+    /* Polearms AC bonus */
+    if (uwep && is_pole(uwep))
+        uac -= 2;
+    
     /* Wearing racial armor is worth +x to the armor's AC; orcs get a slightly
      * larger bonus to compensate their sub-standard equipment, lack of equipment,
      * and the stats-challenged orc itself. Taken from SporkHack.
