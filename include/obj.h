@@ -420,6 +420,7 @@ struct obj {
 
 #define unpolyable(o) ((o)->otyp == WAN_POLYMORPH \
                        || (o)->otyp == SPE_POLYMORPH \
+                       || (o)->otyp == AMULET_OF_UNCHANGING \
                        || (o)->otyp == POT_POLYMORPH)
 
 /* achievement tracking; 3.6.x did this differently */
