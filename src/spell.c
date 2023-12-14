@@ -2091,6 +2091,10 @@ percent_success(int spell)
                                                     : gu.urole.spelarmr;
     else if (uarmc && uarmc->otyp == ROBE)
         splcaster -= gu.urole.spelarmr;
+    
+    if (uwep && uwep->otyp == QUARTERSTAFF)
+        splcaster -= 3; /* Small bonus */
+    
     if (uarms)
         splcaster += gu.urole.spelshld;
 
