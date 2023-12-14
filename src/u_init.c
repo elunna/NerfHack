@@ -779,7 +779,7 @@ u_init(void)
         skill_init(Skill_S);
         break;
     case PM_TOURIST:
-        Tourist[T_DARTS].trquan = rn1(20, 21);
+        Tourist[T_DARTS].trquan = rn1(11, 40);
         u.umoney0 = rnd(1000);
         ini_inv(Tourist);
         if (!rn2(25))
