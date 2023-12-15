@@ -1655,6 +1655,11 @@ seffect_genocide(struct obj **sobjp)
     if (!already_known)
         You("have found a scroll of genocide!");
     gk.known = TRUE;
+    
+    if (In_endgame(&u.uz)) {
+        sblessed = 0; /* No dungeon-wide genos in endgame */
+    }
+    
     do_genocide((!scursed) | (2 * !!Confusion), !sblessed);
 }
 
@@ -2693,7 +2698,7 @@ do_genocide(
     }
 
     on_this_level = only_on_level ? " on this level" : "";
-    which = "all ";
+    which = In_endgame(&u.uz) ? "some " : "all ";
     if (Hallucination) {
         if (Upolyd)
             Strcpy(buf, pmname(gy.youmonst.data, flags.female ? FEMALE : MALE));

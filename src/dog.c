@@ -1105,7 +1105,7 @@ tamedog(struct monst *mtmp, struct obj *obj)
      * subdue their untamed nature. The inherent chaos and unpredictability 
      * of the astral realm further complicates matters, as they thrive on 
      * disorder and rebel against any imposed order. */
-    if (Is_astralevel(&u.uz) && rn2(4)) {
+    if (In_endgame(&u.uz) && rn2(4)) {
         if (canseemon(mtmp))
             pline("%s resists the taming magic!", Monnam(mtmp));
         return FALSE;

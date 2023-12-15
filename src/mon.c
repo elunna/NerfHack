@@ -5777,6 +5777,11 @@ kill_monster_on_level(int mndx)
         mtmp2 = mtmp->nmon;
         if (DEADMONSTER(mtmp))
             continue;
+        
+        /* Genocides are throttled for the endgame, sorry... */
+        if (In_endgame(&u.uz) && rn2(4))
+            continue;
+        
         tmp_mndx = monsndx(mtmp->data);
         if (mndx == tmp_mndx) {
             mondead(mtmp);
