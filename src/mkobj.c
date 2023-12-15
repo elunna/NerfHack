@@ -1367,9 +1367,20 @@ start_corpse_timeout(struct obj *body)
             }
         }
         /* corpse of an actual zombie */
-    } else if (body->zombie_corpse && !body->norevive
-          /* Priests have a chance to put down zombies for good. */
-          && !(Role_if(PM_CLERIC) && rn2(2))) {
+    } else if (body->zombie_corpse && !body->norevive) {
+        /* Priests have a chance to put down zombies for good. */
+        static const char *const holy_msg[4] = {
+            "A divine radiance briefly envelops the lifeless corpse.",
+            "A celestial glow surrounds the deceased.",
+            "The corpse is touched by a divine glow!",
+            "The corpse is momentarily illuminated by a sacred brilliance!",
+        };
+        if (Role_if(PM_CLERIC) && rn2(2)) {
+            if (cansee(body->ox, body->oy))
+                pline1(holy_msg[rn2(3)]);
+            return;
+        }
+        
         for (age = 2; age <= ROT_AGE; age++) {
             if (!rn2(ZOMBIE_REVIVE_CHANCE)) { /* zombie revives */
                 action = REVIVE_MON; /* if buried, can dig itself out */
