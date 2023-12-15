@@ -2,64 +2,55 @@
 --	Copyright (c) 1998-1999 by Kevin Hugo
 -- NetHack may be freely redistributed.  See license for details.
 --
+-- https://nethackwiki.com/wiki/Sokoban_Level_1k
+
 des.level_init({ style = "solidfill", fg = " " });
-
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify");
-
 des.map([[
- ----          -----------
--|..|-------   |.........|
-|..........|   |.........|
-|..-----.-.|   |.........|
-|..|...|...|   |.........|
-|.........-|   |.........|
-|.......|..|   |.........|
-|.----..--.|   |.........|
-|........|.--  |.........|
-|.---.-.....------------+|
-|...|...-................|
-|.........----------------
-----|..|..|               
-    -------               
+----------------- 
+|........F......| 
+|..--....F......| 
+--.|.....F......| 
+ |.---------.--.| 
+ |...........||.| 
+ |..------...--.--
+ ----    |.......|
+       ---.----.--
+       |........| 
+       |....----- 
+       --...|     
+        -----     
 ]]);
-des.stair("down", 03,01)
-des.stair("up", 20,04)
-des.door("locked",24,09)
-des.region(selection.area(00,00,25,13), "lit")
-des.non_diggable(selection.area(00,00,25,13))
-des.non_passwall(selection.area(00,00,25,13))
+des.stair("down", 16,07)
+des.stair("up", 04,03)
+
+des.region(selection.area(00,00,17,12), "lit")
+des.non_diggable(selection.area(00,00,17,12))
+des.non_passwall(selection.area(00,00,17,12))
 
 -- Boulders
-des.object("boulder",02,03)
-des.object("boulder",08,03)
-des.object("boulder",09,04)
-des.object("boulder",02,05)
-des.object("boulder",04,05)
-des.object("boulder",09,05)
-des.object("boulder",02,06)
-des.object("boulder",05,06)
-des.object("boulder",06,07)
-des.object("boulder",03,08)
-des.object("boulder",07,08)
-des.object("boulder",05,09)
-des.object("boulder",10,09)
-des.object("boulder",07,10)
+des.object("boulder",12,02)
+des.object("boulder",14,02)
+des.object("boulder",11,03)
+des.object("boulder",13,03)
+des.object("boulder",11,06)
+des.object("boulder",12,06)
+des.object("boulder",11,07)
+des.object("boulder",09,09)
+des.object("boulder",11,09)
 des.object("boulder",10,10)
-des.object("boulder",03,11)
 
 -- Traps
-des.trap("hole",12,10)
-des.trap("hole",13,10)
-des.trap("hole",14,10)
-des.trap("hole",15,10)
-des.trap("hole",16,10)
-des.trap("hole",17,10)
-des.trap("hole",18,10)
-des.trap("hole",19,10)
-des.trap("hole",20,10)
-des.trap("hole",21,10)
-des.trap("hole",22,10)
-des.trap("hole",23,10)
+des.trap("hole",03,01)
+des.trap("hole",04,01)
+des.trap("hole",02,03)
+des.trap("hole",02,04)
+des.trap("hole",04,05)
+des.trap("hole",05,05)
+des.trap("hole",06,05)
+des.trap("hole",07,05)
+des.trap("hole",08,05)
+des.trap("hole",09,05)
 
 -- Random objects
 des.object({ class = "%" });
@@ -69,3 +60,5 @@ des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
 
+-- One random mimic
+des.monster("m")

@@ -2,60 +2,63 @@
 --	Copyright (c) 1998-1999 by Kevin Hugo
 -- NetHack may be freely redistributed.  See license for details.
 --
+--  https://nethackwiki.com/wiki/Sokoban_Level_1f
+-- authorship may be Hiroyuki Imabayashi, the original 1982 sokoban developer
+-- thinking rabbit republished sokoban in 1988, and added some levels
+
 des.level_init({ style = "solidfill", fg = " " });
-
-des.level_flags("mazelevel", "noteleport", "hardfloor", "premapped", "sokoban", "solidify");
-
+des.level_flags("mazelevel", "noteleport", "hardfloor", "premapped", "solidify");
 des.map([[
--------- ------
-|.|....|-|....|
-|.|-..........|
-|.||....|.....|
-|.||....|.....|
-|.|-----|.-----
-|.|    |......|
-|.-----|......|
-|.............|
-|..|---|......|
-----   --------
+-----------------
+|.......|...--..|
+|.-----.|.......|
+|.---...|.......|
+|...........--..|
+|......--...||..|
+|FFFFF-------|.-|
+|...........|-..|
+|.....-------...|
+|..L............|
+|.....-------...|
+|.....|     |...|
+-------     -----
 ]]);
-des.levregion({ region = {03,01,03,01}, type = "branch" })
-des.stair("up", 01,01)
-des.region(selection.area(00,00,14,10),"lit")
-des.non_diggable(selection.area(00,00,14,10))
-des.non_passwall(selection.area(00,00,14,10))
-
--- Boulders
-des.object("boulder",05,02)
-des.object("boulder",06,02)
-des.object("boulder",06,03)
-des.object("boulder",07,03)
---
-des.object("boulder",09,05)
-des.object("boulder",10,03)
-des.object("boulder",11,02)
-des.object("boulder",12,03)
---
-des.object("boulder",07,08)
-des.object("boulder",08,08)
-des.object("boulder",09,08)
-des.object("boulder",10,08)
-
--- Traps
-des.trap("pit",01,02)
-des.trap("pit",01,03)
-des.trap("pit",01,04)
-des.trap("pit",01,05)
-des.trap("pit",01,06)
-des.trap("pit",01,07)
-des.trap("pit",03,08)
-des.trap("pit",04,08)
-des.trap("pit",05,08)
-des.trap("pit",06,08)
+des.levregion({ region = {01,05,01,05}, type = "branch" })
+des.stair("up", 11,07)
+des.region(selection.area(00,00,16,12),"lit")
+des.non_diggable(selection.area(00,00,16,12))
+des.non_passwall(selection.area(00,00,16,12))
 
 -- A little help
-des.object("scroll of earth",01,09)
-des.object("scroll of earth",02,09)
+des.object("earth",14,01)
+if percent(50) then
+    des.object("earth",15,01)
+end
+
+-- Boulders
+des.object("boulder",12,02)
+des.object("boulder",06,03)
+des.object("boulder",12,03)
+des.object("boulder",06,04)
+des.object("boulder",07,04)
+des.object("boulder",14,04)
+des.object("boulder",14,07)
+des.object("boulder",02,09)
+des.object("boulder",12,09)
+des.object("boulder",13,09)
+des.object("boulder",14,10)
+
+-- Traps
+des.trap("pit",06,07)
+des.trap("pit",07,07)
+des.trap("pit",08,07)
+des.trap("pit",09,07)
+des.trap("pit",10,07)
+des.trap("pit",06,09)
+des.trap("pit",07,09)
+des.trap("pit",08,09)
+des.trap("pit",09,09)
+des.trap("pit",10,09)
 
 -- Random objects
 des.object({ class = "%" });
@@ -65,4 +68,5 @@ des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
 
-
+-- One random mimic
+des.monster("m")
