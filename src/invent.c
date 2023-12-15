@@ -818,7 +818,6 @@ int
 merged(struct obj **potmp, struct obj **pobj)
 {
     register struct obj *otmp = *potmp, *obj = *pobj;
-    boolean discovered = FALSE;
 
     if (mergable(otmp, obj)) {
         /* Approximate age: we do it this way because if we were to
@@ -865,19 +864,12 @@ merged(struct obj **potmp, struct obj **pobj)
            previously been identified */
         if (obj->known != otmp->known) {
             otmp->known = TRUE;
-            discovered = TRUE;
         }
         if (obj->rknown != otmp->rknown) {
             otmp->rknown = TRUE;
-            if (otmp->oerodeproof) {
-                discovered = TRUE;
-            }
         }
         if (obj->bknown != otmp->bknown) {
             otmp->bknown = TRUE;
-            if (!Role_if(PM_CLERIC)) {
-                discovered = TRUE;
-            }
         }
 
         /* fixup for `#adjust' merging wielded darts, daggers, &c */
@@ -935,16 +927,6 @@ merged(struct obj **potmp, struct obj **pobj)
             pudding_merge_message(otmp, obj);
             obj_absorb(potmp, pobj);
             return 1;
-        }
-
-        /* Print a message if item comparison discovers more
-           information about the items (with the exception of thrown
-           items, where this would be too spammy as such items get
-           unidentified by monsters very frequently). */
-        if (discovered && otmp->where == OBJ_INVENT
-            && obj->how_lost != LOST_THROWN
-            && otmp->how_lost != LOST_THROWN) {
-            pline("You learn more about your items by comparing them.");
         }
 
         obfree(obj, otmp); /* free(obj), bill->otmp */
@@ -4847,8 +4829,7 @@ mergable(
 
     if (obj->unpaid != otmp->unpaid || obj->spe != otmp->spe
         || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken
-        || obj->otrapped != otmp->otrapped || obj->lamplit != otmp->lamplit
-        || obj->how_lost != otmp->how_lost)
+        || obj->otrapped != otmp->otrapped || obj->lamplit != otmp->lamplit)
         return FALSE;
 
     if (obj->oclass == FOOD_CLASS
