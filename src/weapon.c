@@ -1373,7 +1373,7 @@ unrestrict_weapon_skill(int skill)
      * Same for priests, they shouldn't have edged weapons at all.
      */
 
-    if (Role_if(PM_CAVE_DWELLER) || Role_if(PM_CLERIC)) {
+    if (Role_if(PM_CAVE_DWELLER)) {
         if (skill >= P_DAGGER && skill <= P_SABER)
             return;
         if (skill >= P_POLEARMS && skill <= P_UNICORN_HORN)
