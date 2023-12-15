@@ -1698,6 +1698,31 @@ poly_obj(struct obj *obj, int id)
     }
 #endif
 
+    /* things that affect what otyp will be created by polymorph */
+    switch(obj->otyp) {
+    case SCR_BLANK_PAPER:
+        if (rn2(100))
+            otmp->otyp = SCR_BLANK_PAPER;
+        break;
+    case SPE_BLANK_PAPER:
+        if (rn2(100))
+            otmp->otyp = SPE_BLANK_PAPER;
+        break;
+    case WAN_NOTHING:
+        if (rn2(100))
+            otmp->otyp = WAN_NOTHING;
+        break;
+    case POT_BOOZE:
+    case POT_SICKNESS:
+    case POT_FRUIT_JUICE:
+    case POT_ACID:
+    case POT_OIL:
+    case POT_WATER:
+        if (rn2(100))
+            otmp->otyp = POT_BOOZE + rn2(5);
+        break;
+    }
+    
     /* avoid abusing eggs laid by you */
     if (obj->otyp == EGG && obj->spe) {
         int mnum, tryct = 100;
