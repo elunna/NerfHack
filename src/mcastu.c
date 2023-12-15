@@ -1057,9 +1057,8 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 
         gain = loglev - mtmp->mprotection / (4 - min(3, (10 - natac) / 10));
 
-        if (mtmp->mpeaceful
-            && mtmp->ispriest && inhistemple(mtmp)) {
-            ; /* cut down on the temple spam */
+        if (mtmp->mpeaceful) {
+            ; /* cut down on the protection spam */
         } else {
             if (gain && canseemon(mtmp)) {
                 if (mtmp->mprotection) {
