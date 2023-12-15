@@ -5801,6 +5801,8 @@ mon_berserk(struct monst *mtmp)
                  (distu(mtmp->mx, mtmp->my) > (6 * 6)
                       ? "in the distance" : "nearby"));
     }
+    wake_nearto(mtmp->mx, mtmp->my, 4 * 4);
+    
     /* Renewed vigor!
      * Here we give the berserker a chance to instantly regenerate a roll
      * of their entire HP. Looking through the codebase, I don't think this
