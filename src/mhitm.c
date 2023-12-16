@@ -345,6 +345,11 @@ mattackm(
         tmp += 4;
         mdef->msleeping = 0;
     }
+    
+    /* M3_ACCURATE monsters get a to-hit bonus */
+    if (is_accurate(pa))
+        tmp += 5;
+    
     if (calculate_flankers(magr, mdef)) {
         /* Scale with monster difficulty */
         ftmp = (int) ((magr->m_lev - 4) / 2) + 4;

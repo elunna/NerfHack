@@ -680,6 +680,12 @@ m_throw(
                     if (bigmonst(gy.youmonst.data))
                         hitv++;
                     hitv += 8 + singleobj->spe;
+                    
+                    /* M3_ACCURATE monsters get a significant bonus here */
+                    if (is_accurate(mon->data)) {
+                        hitv += mon->m_lev + 1;
+                    }
+                    
                     if (dam < 1)
                         dam = 1;
                     hitu = thitu(hitv, dam, &singleobj, (char *) 0);
