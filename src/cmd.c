@@ -2553,7 +2553,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('c'), "chat", "talk to someone",
               dotalk, IFBURIED | AUTOCOMPLETE, NULL },
     { '\0',   "chronicle", "show journal of major events",
-              do_gamelog, IFBURIED | AUTOCOMPLETE | GENERALCMD, NULL },
+              do_gamelog, IFBURIED | GENERALCMD, NULL },
     { 'c',    "close", "close a door",
               doclose, 0, NULL },
     { M('C'), "conduct", "list voluntary challenges you have maintained",
