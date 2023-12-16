@@ -110,13 +110,15 @@ mon_yells(struct monst* mon, const char* shout)
 boolean
 m_can_break_boulder(struct monst *mtmp)
 {
-    return (is_rider(mtmp->data)
+    return (!mtmp->mpeaceful
             /* Leave the boulders in Soko alone! */
             && !In_sokoban(&u.uz)
-            && ((MON_WEP(mtmp) && is_pick(MON_WEP(mtmp)))
+            && (is_rider(mtmp->data)
+                || (MON_WEP(mtmp) && is_pick(MON_WEP(mtmp)))
             || (!mtmp->mspec_used
-                && (mtmp->isshk || mtmp->ispriest
-                    || (mtmp->data->msound == MS_LEADER)))));
+                && (mtmp->isshk 
+                        || mtmp->ispriest
+                        || (mtmp->data->msound == MS_LEADER)))));
 }
 
 /* monster mtmp breaks boulder at x,y */
