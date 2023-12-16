@@ -111,6 +111,7 @@ boolean
 m_can_break_boulder(struct monst *mtmp)
 {
     return (is_rider(mtmp->data)
+            || (MON_WEP(mtmp) && is_pick(MON_WEP(mtmp)))
             || (!mtmp->mspec_used
                 && (mtmp->isshk || mtmp->ispriest
                     || (mtmp->data->msound == MS_LEADER))));
@@ -121,13 +122,24 @@ void
 m_break_boulder(struct monst *mtmp, coordxy x, coordxy y)
 {
     struct obj *otmp;
+    boolean using_pick = (MON_WEP(mtmp) && is_pick(MON_WEP(mtmp)));
 
     if (m_can_break_boulder(mtmp) && ((otmp = sobj_at(BOULDER, x, y)) != 0)) {
         if (!is_rider(mtmp->data)) {
-            if (!Deaf && (mdistu(mtmp) < 4*4))
-                pline("%s mutters %s.",
-                      Monnam(mtmp),
-                      mtmp->ispriest ? "a prayer" : "an incantation");
+            if (distu(mtmp->mx, mtmp->my) < 4 * 4) {
+                if (using_pick) {
+                    if (cansee(x, y))
+                        pline("%s swings %s %s.", Monnam(mtmp), mhis(mtmp),
+                              simpleonames(MON_WEP(mtmp)));
+                    else if (!Deaf)
+                        You_hear("chipping sounds.");
+                } else {
+                    if (!Deaf)
+                        pline("%s %s %s.", Monnam(mtmp),
+                              rn2(2) ? "mutters" : "whispers",
+                              mtmp->ispriest ? "a prayer" : "an incantation");
+                }
+            }
             mtmp->mspec_used += rn1(20, 10);
         }
         if (cansee(x, y))
