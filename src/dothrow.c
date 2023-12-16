@@ -1368,8 +1368,8 @@ toss_up(struct obj *obj, boolean hitsroof)
             if (is_silver && Hate_silver)
                 dmg += rnd(20);
         }
-        if (dmg > 1 && less_damage)
-            dmg = 1;
+        if (dmg > 2 && less_damage)
+            dmg = (dmg > 2 ? dmg - 2 : 2);
         if (dmg > 0)
             dmg += u.udaminc;
         if (dmg < 0)
@@ -1378,9 +1378,12 @@ toss_up(struct obj *obj, boolean hitsroof)
 
         if (uarmh) {
             /* note: 'harmless' and 'petrifier' are mutually exclusive */
-            if ((less_damage && dmg < (Upolyd ? u.mh : u.uhp)) || harmless) {
+            if ((less_damage && dmg < (Upolyd ? u.mh : u.uhp))
+                       || harmless) {
                 if (!artimsg) {
-                    if (!harmless) /* !harmless => less_damage here */
+                    if (dmg > 2)
+                        Your("helmet only slightly protects you.");
+                    else if (!harmless) /* !harmless => less_damage here */
                         pline("Fortunately, you are wearing a hard helmet.");
                     else
                         pline("Unfortunately, you are wearing %s.",

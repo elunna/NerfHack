@@ -2237,9 +2237,15 @@ drop_boulder_on_player(
         dmg = (int) (dmgval(otmp2, &gy.youmonst) * otmp2->quan);
         if (uarmh && helmet_protects) {
             if (hard_helmet(uarmh)) {
-                pline("Fortunately, you are wearing a hard helmet.");
-                if (dmg > 2)
-                    dmg = 2;
+                if (otmp2->owt >= 400) {
+                    if (dmg > 2)
+                        dmg -= 2;
+                    Your("helmet only slightly protects you.");
+                } else {
+                    if (dmg > 2)
+                        dmg = 2;
+                    pline("Fortunately, you are wearing a hard helmet.");
+                }
             } else if (flags.verbose) {
                 pline("%s does not protect you.", Yname2(uarmh));
             }
@@ -2289,13 +2295,22 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
         mdmg = dmgval(otmp2, mtmp) * otmp2->quan;
         if (helmet) {
             if (hard_helmet(helmet)) {
-                if (canspotmon(mtmp))
-                    pline("Fortunately, %s is wearing a hard helmet.",
-                          mon_nam(mtmp));
-                else if (!Deaf)
-                    You_hear("a clanging sound.");
-                if (mdmg > 2)
-                    mdmg = 2;
+                if (otmp2->owt >= 400) {
+                    if (mdmg > 2)
+                        mdmg -= 2;
+                    if (canspotmon(mtmp)) {
+                        pline("%s helmet is only slightly protective.",
+                              s_suffix(Monnam(mtmp)));
+                    }
+                } else {
+                    if (mdmg > 2)
+                        mdmg = 2;
+                    if (canspotmon(mtmp))
+                        pline("Fortunately, %s is wearing a hard helmet.",
+                              mon_nam(mtmp));
+                    else if (!Deaf)
+                        You_hear("a clanging sound.");
+                }
             } else {
                 if (canspotmon(mtmp))
                     pline("%s's %s does not protect %s.", Monnam(mtmp),

@@ -56,8 +56,9 @@ ballfall(void)
         pline_The("iron ball falls on your %s.", body_part(HEAD));
         if (uarmh) {
             if (hard_helmet(uarmh)) {
-                pline("Fortunately, you are wearing a hard helmet.");
-                dmg = 3;
+                Your("helmet only slightly protects you.");
+                if (dmg > 2)
+                    dmg -= 2;
             } else if (flags.verbose)
                 pline("%s does not protect you.", Yname2(uarmh));
         }
