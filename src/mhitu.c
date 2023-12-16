@@ -665,7 +665,6 @@ mattacku(register struct monst *mtmp)
         if (is_hider(gy.youmonst.data) && u.umonnum != PM_TRAPPER) {
             /* ceiling hider */
             coord cc; /* maybe we need a unexto() function? */
-            struct obj *obj;
 
             You("fall from the %s!", ceiling(u.ux, u.uy));
             /* take monster off map now so that its location
@@ -699,30 +698,14 @@ mattacku(register struct monst *mtmp)
                 if (m_at(cc.x, cc.y))
                     (void) enexto(&cc, u.ux, u.uy, gy.youmonst.data);
             }
+
+            if (gy.youmonst.data->mlet == S_PIERCER) {
+                /* lurkers don't attack */
+                piercer_hit(&gy.youmonst, mtmp);
+            }
             teleds(cc.x, cc.y, TELEDS_ALLOW_DRAG); /* move hero */
             set_apparxy(mtmp);
             newsym(u.ux, u.uy);
-
-            if (gy.youmonst.data->mlet != S_PIERCER)
-                return 0; /* lurkers don't attack */
-
-            obj = which_armor(mtmp, WORN_HELMET);
-            if (hard_helmet(obj)) {
-                Your("blow glances off %s %s.", s_suffix(mon_nam(mtmp)),
-                     helm_simple_name(obj));
-            } else {
-                if (3 + find_mac(mtmp) <= rnd(20)) {
-                    pline("%s is hit by a falling piercer (you)!",
-                          Monnam(mtmp));
-                    int tdmg = d(3, 6);
-                    showdmg(tdmg, FALSE);
-                    if ((mtmp->mhp -= tdmg) < 1)
-                        killed(mtmp);
-                } else
-                    pline("%s is almost hit by a falling piercer (you)!",
-                          Monnam(mtmp));
-            }
-
         } else {
             /* surface hider */
             if (!youseeit) {
@@ -2726,6 +2709,94 @@ cloneu(void)
     u.mh -= mon->mhp;
     gc.context.botl = 1;
     return mon;
+}
+
+
+/* Piercer (magr) falls and hits a monster (mdef).
+ * Despite its presence in mhitu.c, this function can be called for any
+ * player/monster combination, and is intended to unify those code paths.
+ */
+void
+piercer_hit(struct monst *magr, struct monst *mdef)
+{
+    boolean youattack = (magr == &gy.youmonst);
+    boolean youdefend = (mdef == &gy.youmonst);
+    
+    /* Damage is always at least 4d6, but scales with monster level. */
+    int dmg = d(min(magr->m_lev, 4), 6);
+    /* Monsters don't have a Dex stat; use their speed as a proxy
+     * (it used to use a to-hit roll with defender's AC penalized at 3, which
+     * was in line with D&D rules but made piercers utterly meaningless for
+     * players wearing basically any decent armor at all, and anyway a success
+     * on this roll means evading the attack entirely, not being well-armored
+     * enough not to take damage) */
+    int mac = find_mac(mdef);
+    struct obj *helm = which_armor(mdef, W_ARMH);
+    
+    if (youdefend && Half_physical_damage)
+        dmg = (dmg + 1) / 2;
+
+    if (!youattack) { /* caller gives messages in youattack case */
+        pline("%s suddenly drops from the %s!", Amonnam(magr),
+              ceiling(u.ux, u.uy));
+    }
+
+    if ((youattack && mdef->mtame) || (youdefend && magr->mtame)) {
+        /* jumps to greet you, not attack */
+        return;
+    } else if (youdefend && u.uac + 23 <= rnd(20)) {
+        /* Player now needs -22AC to dodge these reliably */
+        You("are almost hit by %s!",
+            x_monnam(magr, ARTICLE_A, "falling", 0, TRUE));
+        return;
+    } else if (!youdefend && mac + 23 <= rnd(20)) {
+        pline("%s is almost hit by a falling piercer%s!",
+              Monnam(mdef), youattack ? " (you)" : "");
+        return;
+    } else if (helm) {
+        /* These things now quite frequently destroy hard helmets - 
+         * they are piercers after all! */
+        if (!helm->oartifact && dmg > 11) {
+            pline("%s is pierced and shattered!", Yname2(helm));
+            if (youdefend) {
+                Helmet_off();
+                update_inventory();
+            } else {
+                helm->owornmask = 0;
+                mdef->misc_worn_check &= ~W_ARMH;
+                check_gear_next_turn(mdef);
+                update_mon_extrinsics(mdef, helm, FALSE, TRUE);
+            }
+            breakobj(helm, u.ux, u.uy, FALSE, TRUE);
+             /* Give it some bonus damage. */
+            dmg += rnd(6);
+        } else if (hard_helmet(helm)) {
+            pline("%s partially diverts the blow.", Yname2(helm));
+            dmg = (dmg + 1) / 2;
+        }
+    } else {
+        if (youdefend) {
+            You("are hit by %s!",
+                x_monnam(magr, ARTICLE_A, "falling", 0, TRUE));
+        }
+        else {
+            pline("%s is hit by a falling piercer%s!",
+                  Monnam(mdef), youattack ? " (you)" : "");
+        }
+    }
+    if (youdefend) {
+        mdamageu(magr, dmg);
+    } else {
+        mdef->mhp -= dmg;
+        if (mdef->mhp < 1) {
+            if (youattack) {
+                killed(mdef);
+            }
+            else {
+                monkilled(mdef, "", AD_PHYS);
+            }
+        }
+    }
 }
 
 /*mhitu.c*/
