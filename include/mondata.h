@@ -20,9 +20,14 @@
     ((mon_resistancebits(mon) & MR2_REFLECTION) != 0)
 
 #define resists_sick(ptr) \
-    ((ptr)->mlet == S_FUNGUS || nonliving(ptr) || is_demon(ptr) \
-     || is_rider(ptr) || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
-     || (ptr) == &mons[PM_GREEN_DRAGON] || (ptr) == &mons[PM_LOCUST])
+    ((ptr)->mlet == S_FUNGUS \
+     || ((ptr)->mlet == S_ELEMENTAL && (ptr) != &mons[PM_STALKER]) \
+     || nonliving(ptr) \
+     || is_demon(ptr) \
+     || is_rider(ptr) \
+     || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
+     || (ptr) == &mons[PM_GREEN_DRAGON]        \
+     || (ptr) == &mons[PM_LOCUST])
 
 /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
 #define resists_mgc(ptr) \
