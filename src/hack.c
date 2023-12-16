@@ -3012,23 +3012,34 @@ spoteffects(boolean pick)
             pline("%s suddenly drops from the %s!", Amonnam(mtmp),
                   ceiling(u.ux, u.uy));
             if (mtmp->mtame) { /* jumps to greet you, not attack */
-                ;
-            } else if (hard_helmet(uarmh)) {
-                pline("Its blow glances off your %s.",
-                      helm_simple_name(uarmh));
-            } else if (u.uac + 23 <= rnd(20)) {
+                break;
+            }
+            if (u.uac + 23 <= rnd(20)) {
                 You("are almost hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
-            } else {
-                int dmg;
-
-                You("are hit by %s!",
-                    x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
-                dmg = d(4, 6);
-                if (Half_physical_damage)
-                    dmg = (dmg + 1) / 2;
-                mdamageu(mtmp, dmg);
+                break;
             }
+            if (hard_helmet(uarmh)) {
+                if (uarmh && uarmh->oartifact) {
+                    pline("Its blow glances off your %s.",
+                          helm_simple_name(uarmh));
+                    break;
+                } else {
+                    pline("It drills through your %s!",
+                          helm_simple_name(uarmh));
+                    (void) destroy_arm(uarmh, FALSE);
+                }
+                mdamageu(mtmp, rnd(4));
+                break;
+            }
+            
+            int dmg;
+            You("are hit by %s!",
+                x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
+            dmg = d(min(mtmp->m_lev, 4), 6);
+            if (Half_physical_damage)
+                dmg = (dmg + 1) / 2;
+            mdamageu(mtmp, dmg);
             break;
         default: /* monster surprises you. */
             if (mtmp->mtame)
