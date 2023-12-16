@@ -2000,7 +2000,7 @@ dospellmenu(
 {
     winid tmpwin;
     int i, n, how, splnum;
-    char buf[BUFSZ], sep;
+    char buf[BUFSZ];
     const char *fmt;
     menu_item *selected;
     anything any;
@@ -2021,15 +2021,11 @@ dospellmenu(
         Sprintf(buf, "%-20s     Level %-12s Fail Retention",
                 "    Name", "Category");
         fmt = "%-20s  %2d   %-12s %3d%% %5d";
-        sep = ' ';
     } else {
         Sprintf(buf, "Name\tLevel\tCategory\tFail\tRetention");
         fmt = "%s\t%-d\t%s\t%-d%%\t%d";
-        sep = '\t';
     }
-    if (wizard)
-        Sprintf(eos(buf), "%c%6s", sep, "turns");
-
+    
     add_menu_heading(tmpwin, buf);
     for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
         splnum = !gs.spl_orderindx ? i : gs.spl_orderindx[i];
@@ -2037,8 +2033,6 @@ dospellmenu(
                 spelltypemnemonic(spell_skilltype(spellid(splnum))),
                 100 - percent_success(splnum),
                 spellknow(splnum));
-        if (wizard)
-            Sprintf(eos(buf), "%c%6d", sep, spellknow(i));
 
         any.a_int = splnum + 1; /* must be non-zero */
         add_menu(tmpwin, &nul_glyphinfo, &any, spellet(splnum), 0,
