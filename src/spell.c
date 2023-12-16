@@ -14,6 +14,9 @@
    used to be 1000 turns, which was 10% of the original 10000 turn retention
    period but didn't get adjusted when that period got doubled to 20000) */
 #define KEEN 20000
+#define CAST_BOOST 	  500	/* memory increase for successful casting */
+#define MAX_KNOW 	(KEEN * 2) /* Absolute Max timeout */
+
 /* x: need to add 1 when used for reading a spellbook rather than for hero
    initialization; spell memory is decremented at the end of each turn,
    including the turn on which the spellbook is read; without the extra
@@ -24,6 +27,11 @@
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))
+
+/* These are the roles that specialize in spellcasting, they start with
+ * spellbooks */
+#define primary_spellcaster() (Role_if(PM_HEALER) || Role_if(PM_CLERIC) \
+                               || Role_if(PM_MONK) || Role_if(PM_WIZARD))
 
 static int spell_let_to_idx(char);
 static boolean cursed_book(struct obj * bp);
@@ -1541,7 +1549,18 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
        when above. Players may want to (ab)use this to train spells
        even faster by not advancing to skilled as soon as possible. */
     use_skill(skill, (spellev(spell) * (role_skill <= P_BASIC ? 4 : 2)));
-
+    
+    /* Successful casting increases the amount of time the cast
+       spell is known. The players INT must be greater than 6 to be
+       able to help remember spells as they're cast. Only the
+       primary spellcasters (healers, priests, monks, wizards) 
+       get this benefit. */
+    if (primary_spellcaster() && ACURR(A_INT) > 6) {
+        gs.spl_book[spell].sp_know += CAST_BOOST;
+        if (gs.spl_book[spell].sp_know >= MAX_KNOW)
+            gs.spl_book[spell].sp_know = MAX_KNOW;
+    }
+    
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     return ECMD_TIME;
 }
