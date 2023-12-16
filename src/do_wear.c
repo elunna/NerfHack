@@ -2512,9 +2512,9 @@ find_ac(void)
    
     
     /* Being encumbered incurs an AC penalty. 
-     * The penalty matches the level of encumberance. */
+     * The penalty matches the level of encumbrance. */
     if (mvl_wtcap > UNENCUMBERED) {
-        uac = uac + mvl_wtcap * 2;
+        uac = uac + mvl_wtcap * 4;
     }
     
     /* put a cap on armor class [3.7: was +127,-128, now reduced to +/- 99 */
