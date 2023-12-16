@@ -1169,7 +1169,7 @@ seffect_enchant_armor(struct obj **sobjp)
         return;
     }
     /* elven armor vibrates warningly when enchanted beyond a limit */
-    special_armor = is_elven_armor(otmp)
+    special_armor = (is_elven_armor(otmp) && Race_if(PM_ELF))
         || (Role_if(PM_WIZARD) && otmp->otyp == CORNUTHAUM);
     if (scursed)
         same_color = (otmp->otyp == BLACK_DRAGON_SCALE_MAIL
@@ -1263,7 +1263,7 @@ seffect_enchant_armor(struct obj **sobjp)
     }
 
     if ((otmp->spe > (special_armor ? 5 : 3))
-        && (special_armor || !rn2(7)))
+        && (special_armor || is_elven_armor(otmp) || !rn2(7)))
         pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
               Blind ? "again" : "unexpectedly");
 }
