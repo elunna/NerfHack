@@ -1554,8 +1554,10 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
        spell is known. The players INT must be greater than 6 to be
        able to help remember spells as they're cast. Only the
        primary spellcasters (healers, priests, monks, wizards) 
-       get this benefit. */
-    if (primary_spellcaster() && ACURR(A_INT) > 6) {
+       get this benefit. Roles casting their special spell also
+       get the bonus. */
+    if ((primary_spellcaster() || spellid(spell) == gu.urole.spelspec)
+            && ACURR(A_INT) > 6) {
         gs.spl_book[spell].sp_know += CAST_BOOST;
         if (gs.spl_book[spell].sp_know >= MAX_KNOW)
             gs.spl_book[spell].sp_know = MAX_KNOW;
