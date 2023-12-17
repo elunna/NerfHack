@@ -574,6 +574,7 @@ extern boolean mapxy_valid(coordxy, coordxy);
 extern const char *fingers_or_gloves(boolean);
 extern void off_msg(struct obj *);
 extern void toggle_displacement(struct obj *, long, boolean);
+extern void cursed_gear_welds(struct obj *);
 extern void set_wear(struct obj *);
 extern boolean donning(struct obj *);
 extern boolean doffing(struct obj *);

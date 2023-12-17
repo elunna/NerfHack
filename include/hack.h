@@ -151,7 +151,8 @@ enum bodypart_types {
     BLOOD     = 15,
     LUNG      = 16,
     NOSE      = 17,
-    STOMACH   = 18
+    STOMACH   = 18,
+    TORSO     = 19
 };
 
 #define MAX_BMASK 4

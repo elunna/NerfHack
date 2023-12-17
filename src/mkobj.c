@@ -1793,6 +1793,9 @@ curse(struct obj *otmp)
         if (!already_cursed)
             book_cursed(otmp);
     }
+    if (otmp->owornmask && !already_cursed) {
+        cursed_gear_welds(otmp);
+    }
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
     return;
