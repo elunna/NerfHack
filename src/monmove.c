@@ -954,7 +954,7 @@ mon_would_take_item(struct monst *mtmp, struct obj *otmp)
     if (likes_objs(mtmp->data) && strchr(practical, otmp->oclass)
         && pctload < 75)
         return TRUE;
-    if (likes_magic(mtmp->data) && strchr(magical, otmp->oclass)
+    if (likes_magic(mtmp->data) && objects[otmp->otyp].oc_magic
         && pctload < 85)
         return TRUE;
     if (throws_rocks(mtmp->data) && otmp->otyp == BOULDER
