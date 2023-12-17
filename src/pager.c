@@ -388,7 +388,9 @@ look_at_monster(
         Strcat(buf, ", meditating");
     else if (mtmp->mflee)
         Strcat(buf, ", fleeing");
-
+    else if (mtmp->mberserk)
+        Strcat(buf, ", berserking");
+    
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
 
