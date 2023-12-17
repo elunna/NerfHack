@@ -3109,6 +3109,10 @@ create_particular_creation(
             mtmp->mtame = 0; /* sanity precaution */
             mtmp->mpeaceful = d->makepeaceful ? 1 : 0;
             set_malign(mtmp);
+            if (iflags.wc_underline_peacefuls)
+                /* mpeaceful is only set here, so the previous calls to newsym
+                 * will make it look like the monster isn't peaceful. */
+            newsym(mtmp->mx, mtmp->my);
         }
         if (d->saddled && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
             struct obj *otmp = mksobj(SADDLE, TRUE, FALSE);

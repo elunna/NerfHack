@@ -911,6 +911,9 @@ curses_print_glyph(
     if ((special & MG_PET) && iflags.hilite_pet) {
         attr = iflags.wc2_petattr;
     }
+    else if ((special & MG_PEACEFUL) && iflags.underline_peacefuls) {
+        attr = A_UNDERLINE;
+    }
     if ((special & MG_DETECT) && iflags.use_inverse) {
         attr = A_REVERSE;
     }

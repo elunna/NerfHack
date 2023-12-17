@@ -509,6 +509,8 @@ detect_wsegs(struct monst *worm, boolean use_detection_glyph)
                     worm->female ? FEMALE : MALE)
               : worm->mtame ? petnum_to_glyph(what_tail,
                     worm->female ? FEMALE : MALE)
+                : worm->mpeaceful ? peacefulnum_to_glyph(what_tail,
+                        worm->female ? FEMALE : MALE)
                 : monnum_to_glyph(what_tail,
                     worm->female ? FEMALE : MALE);
         show_glyph(curr->wx, curr->wy, num);

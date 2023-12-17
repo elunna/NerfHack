@@ -747,6 +747,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTB(tutorial, Advanced, 0, opt_out, set_in_config,
            On, Yes, No, No, NoAlias, &flags.tutorial, Term_False,
            "ask if you want the tutorial")
+    NHOPTB(underline_peacefuls, Map, 0, opt_out, set_in_game,
+           On, Yes, No, No, NoAlias, &iflags.wc_underline_peacefuls, Term_False,
+           "display peaceful monsters as underlined")
     NHOPTB(use_darkgray, Advanced, 0, opt_out, set_in_config,
            On, Yes, No, No, NoAlias, &iflags.wc2_darkgray, Term_False,
            "use bold black color instead of blue")

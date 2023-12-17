@@ -110,7 +110,8 @@ map_monst(struct monst *mtmp, boolean showtail)
                 ? detected_mon_to_glyph(mtmp, newsym_rn2)
                 : mtmp->mtame
                   ? pet_to_glyph(mtmp, newsym_rn2)
-                  : mon_to_glyph(mtmp, newsym_rn2);
+                          : mtmp->mpeaceful ? peaceful_to_glyph(mtmp, newsym_rn2)
+                                            : mon_to_glyph(mtmp, newsym_rn2);
 
     show_glyph(mtmp->mx, mtmp->my, glyph);
 

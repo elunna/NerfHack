@@ -596,6 +596,12 @@ display_monster(
                 num = petnum_to_glyph(PM_LONG_WORM_TAIL, mgendercode);
             else
                 num = pet_to_glyph(mon, rn2_on_display_rng);
+        } else if (mon->mpeaceful && !Hallucination) {
+            if (worm_tail)
+                num = peacefulnum_to_glyph(PM_LONG_WORM_TAIL,
+                        mon->female ? FEMALE : MALE);
+            else
+                num = peaceful_to_glyph(mon, rn2_on_display_rng);
         } else if (sightflags == DETECTED) {
             if (worm_tail)
                 num = detected_monnum_to_glyph(what_mon(PM_LONG_WORM_TAIL,
@@ -1880,6 +1886,10 @@ show_glyph(coordxy x, coordxy y, int glyph)
             text = "detected male monster";
         } else if ((offset = (glyph - GLYPH_INVIS_OFF)) >= 0) {
             text = "invisible monster";
+        } else if ((offset = (glyph - GLYPH_PEACEFUL_FEM_OFF)) >= 0) {
+            text = "peaceful female monster";
+        } else if ((offset = (glyph - GLYPH_PEACEFUL_MALE_OFF)) >= 0) {
+            text = "peaceful male monster";
         } else if ((offset = (glyph - GLYPH_PET_FEM_OFF)) >= 0) {
             text = "female pet";
         } else if ((offset = (glyph - GLYPH_PET_MALE_OFF)) >= 0) {
@@ -2884,6 +2894,20 @@ reset_glyphmap(enum glyphmap_change_triggers trigger)
             else
                 invis_color(offset);
             gmap->glyphflags |= MG_INVIS;
+        } else if ((offset = (glyph - GLYPH_PEACEFUL_FEM_OFF)) >= 0) {
+            gmap->sym.symidx = mons[offset].mlet + SYM_OFF_M;
+            if (has_rogue_color)
+                color = NO_COLOR;
+            else
+                mon_color(offset);
+            gmap->glyphflags |= (MG_PEACEFUL | MG_FEMALE);
+        } else if ((offset = (glyph - GLYPH_PEACEFUL_MALE_OFF)) >= 0) {
+            gmap->sym.symidx = mons[offset].mlet + SYM_OFF_M;
+            if (has_rogue_color)
+                color = NO_COLOR;
+            else
+                mon_color(offset);
+            gmap->glyphflags |= (MG_PEACEFUL | MG_MALE);
         } else if ((offset = (glyph - GLYPH_PET_FEM_OFF)) >= 0) {
             gmap->sym.symidx = mons[offset].mlet + SYM_OFF_M;
             if (has_rogue_color)

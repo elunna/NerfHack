@@ -594,6 +594,9 @@ init_tilemap(void)
     Fprintf(tilemap_file, "GLYPH_PET_OFF = %d\n", GLYPH_PET_OFF);
     Fprintf(tilemap_file, "GLYPH_PET_MALE_OFF = %d\n", GLYPH_PET_MALE_OFF);
     Fprintf(tilemap_file, "GLYPH_PET_FEM_OFF = %d\n", GLYPH_PET_FEM_OFF);
+    Fprintf(tilemap_file, "GLYPH_PEACEFUL_OFF = %d\n", GLYPH_PEACEFUL_OFF);
+    Fprintf(tilemap_file, "GLYPH_PEACEFUL_MALE_OFF = %d\n", GLYPH_PEACEFUL_MALE_OFF);
+    Fprintf(tilemap_file, "GLYPH_PEACEFUL_FEM_OFF = %d\n", GLYPH_PEACEFUL_FEM_OFF);
     Fprintf(tilemap_file, "GLYPH_INVIS_OFF = %d\n", GLYPH_INVIS_OFF);
     Fprintf(tilemap_file, "GLYPH_DETECT_OFF = %d\n", GLYPH_DETECT_OFF);
     Fprintf(tilemap_file, "GLYPH_DETECT_MALE_OFF = %d\n",
@@ -703,6 +706,7 @@ init_tilemap(void)
 
         tilemap[GLYPH_MON_MALE_OFF + i].tilenum = tilenum;
         tilemap[GLYPH_PET_MALE_OFF + i].tilenum = tilenum;
+        tilemap[GLYPH_PEACEFUL_MALE_OFF + i].tilenum = tilenum;
         tilemap[GLYPH_DETECT_MALE_OFF + i].tilenum = tilenum;
         tilemap[GLYPH_RIDDEN_MALE_OFF + i].tilenum = tilenum;
         tilemap[GLYPH_BODY_OFF + i].tilenum = corpsetile;
@@ -713,6 +717,8 @@ init_tilemap(void)
                  sizeof tilemap[0].name,"male %s", buf);
         Snprintf(tilemap[GLYPH_PET_MALE_OFF + i].name,
                  sizeof tilemap[0].name, "%s male %s", "pet", buf);
+        Snprintf(tilemap[GLYPH_PEACEFUL_MALE_OFF + i].name,
+                 sizeof tilemap[0].name, "%s male %s", "peaceful", buf);
         Snprintf(tilemap[GLYPH_DETECT_MALE_OFF + i].name,
                  sizeof tilemap[0].name, "%s male %s", "detected", buf);
         Snprintf(tilemap[GLYPH_RIDDEN_MALE_OFF + i].name,
@@ -725,6 +731,8 @@ init_tilemap(void)
                     file_entry, tilemap[GLYPH_MON_MALE_OFF + i].name, "");
         add_tileref(tilenum, GLYPH_PET_MALE_OFF + i, monsters_file,
                     file_entry, tilemap[GLYPH_PET_MALE_OFF + i].name, "");
+        add_tileref(tilenum, GLYPH_PEACEFUL_MALE_OFF + i, monsters_file,
+                    file_entry, tilemap[GLYPH_PEACEFUL_MALE_OFF + i].name, "");
         add_tileref(tilenum, GLYPH_DETECT_MALE_OFF + i, monsters_file,
                     file_entry, tilemap[GLYPH_DETECT_MALE_OFF + i].name,"");
         add_tileref(tilenum, GLYPH_RIDDEN_MALE_OFF + i, monsters_file,
@@ -738,6 +746,7 @@ init_tilemap(void)
         file_entry++;
         tilemap[GLYPH_MON_FEM_OFF + i].tilenum = tilenum;
         tilemap[GLYPH_PET_FEM_OFF + i].tilenum = tilenum;
+        tilemap[GLYPH_PEACEFUL_FEM_OFF + i].tilenum = tilenum;
         tilemap[GLYPH_DETECT_FEM_OFF + i].tilenum = tilenum;
         tilemap[GLYPH_RIDDEN_FEM_OFF + i].tilenum = tilenum;
 #if defined(OBTAIN_TILEMAP)
@@ -746,6 +755,9 @@ init_tilemap(void)
                  sizeof tilemap[0].name, "female %s", buf);
         Snprintf(tilemap[GLYPH_PET_FEM_OFF + i].name,
                  sizeof tilemap[0].name, "%s female %s", "pet",
+                 buf);
+        Snprintf(tilemap[GLYPH_PEACEFUL_FEM_OFF + i].name,
+                 sizeof tilemap[0].name, "%s female %s", "peaceful",
                  buf);
         Snprintf(tilemap[GLYPH_DETECT_FEM_OFF + i].name,
                  sizeof tilemap[0].name, "%s female %s",
@@ -762,6 +774,8 @@ init_tilemap(void)
                     file_entry, tilemap[GLYPH_MON_FEM_OFF + i].name, "");
         add_tileref(tilenum, GLYPH_PET_FEM_OFF + i, monsters_file,
                     file_entry, tilemap[GLYPH_PET_FEM_OFF + i].name, "");
+        add_tileref(tilenum, GLYPH_PEACEFUL_FEM_OFF + i, monsters_file,
+                    file_entry, tilemap[GLYPH_PEACEFUL_FEM_OFF + i].name, "");
         add_tileref(tilenum, GLYPH_DETECT_FEM_OFF + i, monsters_file,
                     file_entry, tilemap[GLYPH_DETECT_FEM_OFF + i].name, "");
         add_tileref(tilenum, GLYPH_RIDDEN_FEM_OFF + i, monsters_file,
