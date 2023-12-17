@@ -3785,7 +3785,8 @@ tty_print_glyph(
     const glyph_info *glyphinfo,
     const glyph_info *bkglyphinfo)
 {
-    boolean inverse_on = FALSE, colordone = FALSE, glyphdone = FALSE;
+    boolean inverse_on = FALSE, underline_on = FALSE,
+            colordone = FALSE, glyphdone = FALSE;
     int ch, color;
     unsigned special;
 #ifdef ENHANCED_SYMBOLS
@@ -3860,6 +3861,11 @@ tty_print_glyph(
         inverse_on = TRUE;
     }
 
+    if ((special & MG_PEACEFUL) && iflags.underline_peacefuls) {
+        term_start_attr(ATR_ULINE);
+        underline_on = TRUE;
+    }
+
 #if defined(TILES_IN_GLYPHMAP) && defined(MSDOS)
     if (iflags.grmode && iflags.tile_view) {
         xputg(glyphinfo, bkglyphinfo);
@@ -3878,6 +3884,9 @@ tty_print_glyph(
     if (!glyphdone)
         g_putch(ch); /* print the character */
 
+    if (underline_on) {
+        term_end_attr(ATR_ULINE);
+    }
     if (inverse_on)
         term_end_attr(ATR_INVERSE);
     if (iflags.use_color) {

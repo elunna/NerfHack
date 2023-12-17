@@ -373,6 +373,12 @@ enum glyphmap_change_triggers { gm_nochange, gm_newgame, gm_levelchange,
  * female pets      Represents all of the female tame monsters.
  *                  Count: NUMMONS.
  *
+ * male peacefuls   Represents all of the male peaceful monsters.
+ *                  Count: NUMMONS.
+ *
+ * female peacefuls Represents all of the female peaceful monsters.
+ *                  Count: NUMMONS.
+ *
  * invisible        Invisible monster placeholder.
  *                  Count: 1.
  *
@@ -501,7 +507,10 @@ enum glyph_offsets {
     GLYPH_PET_OFF = (NUMMONS + GLYPH_MON_FEM_OFF),
     GLYPH_PET_MALE_OFF = (GLYPH_PET_OFF),
     GLYPH_PET_FEM_OFF = (NUMMONS + GLYPH_PET_MALE_OFF),
-    GLYPH_INVIS_OFF = (NUMMONS + GLYPH_PET_FEM_OFF),
+    GLYPH_PEACEFUL_OFF = (NUMMONS + GLYPH_PET_FEM_OFF),
+    GLYPH_PEACEFUL_MALE_OFF = (GLYPH_PEACEFUL_OFF),
+    GLYPH_PEACEFUL_FEM_OFF = (NUMMONS + GLYPH_PEACEFUL_OFF),
+    GLYPH_INVIS_OFF = (NUMMONS + GLYPH_PEACEFUL_FEM_OFF),
     GLYPH_DETECT_OFF = (1 + GLYPH_INVIS_OFF),
     GLYPH_DETECT_MALE_OFF = (GLYPH_DETECT_OFF),
     GLYPH_DETECT_FEM_OFF = (NUMMONS + GLYPH_DETECT_MALE_OFF),
@@ -563,6 +572,9 @@ enum glyph_offsets {
 #define pet_to_glyph(mon, rng) \
     ((int) what_mon(monsndx((mon)->data), rng)                          \
      + (((mon)->female == 0) ? GLYPH_PET_MALE_OFF : GLYPH_PET_FEM_OFF))
+#define peaceful_to_glyph(mon, rng) \
+    ((int) what_mon(monsndx((mon)->data), rng)  \
+     + (((mon)->female == 0) ? GLYPH_PEACEFUL_MALE_OFF : GLYPH_PEACEFUL_FEM_OFF))
 
 /* treat unaligned as the default instead of explicitly checking for it;
    altar alignment uses 3 bits with 4 defined values and 4 unused ones */
@@ -648,6 +660,9 @@ enum glyph_offsets {
 #define petnum_to_glyph(mnum,gnd) \
     ((int) (mnum) + (((gnd) == MALE) ? GLYPH_PET_MALE_OFF       \
                                      : GLYPH_PET_FEM_OFF))
+#define peacefulnum_to_glyph(mnum,gnd) \
+    ((int) (mnum) + (((gnd) == MALE) ? GLYPH_PEACEFUL_MALE_OFF       \
+                                     : GLYPH_PEACEFUL_FEM_OFF))
 
 /* The hero's glyph when seen as a monster.
  */
@@ -772,6 +787,12 @@ enum glyph_offsets {
     ((glyph) >= GLYPH_PET_MALE_OFF && (glyph) < (GLYPH_PET_MALE_OFF + NUMMONS))
 #define glyph_is_pet(glyph) \
     (glyph_is_male_pet(glyph) || glyph_is_female_pet(glyph))
+#define glyph_is_female_peaceful(glyph) \
+    ((glyph) >= GLYPH_PEACEFUL_FEM_OFF && (glyph) < (GLYPH_PEACEFUL_FEM_OFF + NUMMONS))
+#define glyph_is_male_peaceful(glyph) \
+    ((glyph) >= GLYPH_PEACEFUL_MALE_OFF && (glyph) < (GLYPH_PEACEFUL_MALE_OFF + NUMMONS))
+#define glyph_is_peaceful(glyph) \
+    (glyph_is_male_peaceful(glyph) || glyph_is_female_peaceful(glyph))
 #define glyph_is_ridden_female_monster(glyph) \
     ((glyph) >= GLYPH_RIDDEN_FEM_OFF                    \
      && (glyph) < (GLYPH_RIDDEN_FEM_OFF + NUMMONS))
@@ -792,6 +813,7 @@ enum glyph_offsets {
         || glyph_is_detected_female_monster(glyph))
 #define glyph_is_monster(glyph)                            \
     (glyph_is_normal_monster(glyph) || glyph_is_pet(glyph) \
+     || glyph_is_peaceful(glyph) \
      || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph))
 #define glyph_is_invisible(glyph) ((glyph) == GLYPH_INVISIBLE)
 
@@ -805,6 +827,10 @@ enum glyph_offsets {
              ? ((glyph) - GLYPH_PET_FEM_OFF)                   \
              : glyph_is_male_pet(glyph)                        \
                ? ((glyph) - GLYPH_PET_MALE_OFF)                \
+               : glyph_is_female_peaceful(glyph)               \
+               ? ((glyph) - GLYPH_PEACEFUL_FEM_OFF)            \
+               : glyph_is_male_peaceful(glyph)                 \
+               ? ((glyph) - GLYPH_PEACEFUL_MALE_OFF)           \
                : glyph_is_detected_female_monster(glyph)       \
                  ? ((glyph) - GLYPH_DETECT_FEM_OFF)            \
                  : glyph_is_detected_male_monster(glyph)       \
@@ -1032,6 +1058,8 @@ enum glyph_offsets {
 #define MG_MALE    0x01000  /* represents a male mon or statue of one */
 #define MG_FEMALE  0x02000  /* represents a female mon or statue of one */
 #define MG_BADXY   0x04000  /* bad coordinates were passed */
+/* HACKEM added ones start here */
+#define MG_PEACEFUL 0x08000 /* peaceful monster */
 
 /* docrt(): re-draw whole screen; docrt_flags(): docrt() with more control */
 enum docrt_flags_bits {
