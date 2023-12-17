@@ -451,8 +451,7 @@ int
 doswapweapon(void)
 {
     register struct obj *oldwep, *oldswap;
-    int result = 0;
-
+    
     /* May we attempt this? */
     gm.multi = 0;
     if (cantwield(gy.youmonst.data)) {
@@ -470,7 +469,7 @@ doswapweapon(void)
     setuswapwep((struct obj *) 0);
 
     /* Set your new primary weapon */
-    result = ready_weapon(oldswap);
+    ready_weapon(oldswap);
 
     /* Set your new secondary weapon */
     if (uwep == oldwep) {
@@ -487,7 +486,8 @@ doswapweapon(void)
     if (u.twoweap && !can_twoweapon())
         untwoweapon();
 
-    return result;
+    /* Never use a turn when swapping */
+    return 0;
 }
 
 /* the #quiver command */
