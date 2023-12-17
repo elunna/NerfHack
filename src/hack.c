@@ -3697,6 +3697,8 @@ interesting_room(void)
         pline("%s %s on the ceiling portrays %s.", 
               An(adjectives[rn2(SIZE(adjectives))]), art[rn2(SIZE(art))],
               an(carvemon));
+        /* Art can inspire in different ways */
+        exercise(rn2(2) ? A_INT : A_WIS, TRUE);
         break;
     case 2:
         pline("There is %s of %s in this room.", an(art[rn2(SIZE(art))]),
@@ -3715,6 +3717,7 @@ interesting_room(void)
     case 3:
         pline("%s on the wall depicts a large number of %s.",
               An(art[rn2(SIZE(art))]), makeplural(carvemon));
+        exercise(rn2(2) ? A_INT : A_WIS, TRUE);
         break;
     case 4:
         pline("%s in this room contains a partial map of the dungeon!",
@@ -3731,9 +3734,11 @@ interesting_room(void)
         make_stunned(((HStun & TIMEOUT) + (long) rn1(10, 5)), FALSE);
         break;
     default:
-        pline("%s in this room presents a battle between %s and %s.",
+        pline("%s in this room presents a battle between %s and %s. The %s are winning.",
               An(art[rn2(SIZE(art))]), makeplural(carvemon),
-              makeplural(carvemon2));
+              makeplural(carvemon2),
+              makeplural(rn2(2) ? carvemon : carvemon2));
+        exercise(rn2(2) ? A_INT : A_WIS, TRUE);
     }
     more_experienced(2, 0);
     newexplevel();
