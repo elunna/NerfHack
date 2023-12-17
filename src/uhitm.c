@@ -1013,9 +1013,9 @@ hmon_hitmon_weapon_melee(
          * some reason being Skilled+ gives a penalty?) */
         hmd->get_dmg_bonus = FALSE;
         hmd->dmg -= weapon_dam_bonus(uwep);
-    } else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd
-               /* multi-shot throwing is too powerful here */
-               && hmd->hand_to_hand) {
+    } else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd 
+               && (hmd->hand_to_hand || gm.m_shot.i == 1)) {
+        /* Allow 3.4.3 backstab damage for the first thrown weapon. */
         You("strike %s from behind!", mon_nam(mon));
         hmd->dmg += rnd(u.ulevel);
         hmd->hittxt = TRUE;
