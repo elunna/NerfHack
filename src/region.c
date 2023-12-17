@@ -1018,7 +1018,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         return FALSE; /* if no damage then there's nothing to do here... */
 
     if (!mtmp) { /* hero is indicated by Null rather than by &youmonst */
-        if (!rn2(3))
+        if (!rn2(7))
             erode_armor(&gy.youmonst, ERODE_ROT);
         if (m_poisongas_ok(&gy.youmonst) == M_POISONGAS_OK)
             return FALSE;
@@ -1045,7 +1045,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         }
     } else { /* A monster is inside the cloud */
         mtmp = (struct monst *) p2;
-        if (!rn2(3))
+        if (!rn2(7))
             erode_armor(mtmp, ERODE_ROT);
         if (m_poisongas_ok(mtmp) != M_POISONGAS_OK) {
             if (cansee(mtmp->mx, mtmp->my))
