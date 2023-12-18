@@ -106,7 +106,7 @@ enum skill_levels {
 /**
  * Too reach the specified skill level:
  * P_UNSKILLED       0
- * P_BASIC         100
+ * P_BASIC         100 (50 for weapon skills)
  * P_SKILLED       200
  * P_EXPERT        400
  * P_MASTER        800

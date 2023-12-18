@@ -1514,7 +1514,8 @@ hmon_hitmon_dmg_recalc(struct _hitmon_data *hmd, struct obj *obj)
             /* [this assumes that `!thrown' implies wielded...] */
             int wtype = hmd->thrown ? weapon_type(skillwep)
                                     : uwep_skill_type();
-            use_skill(wtype, 1);
+            /* Bonus for training out of unskilled */
+            use_skill(wtype, (P_SKILL(wtype) == P_UNSKILLED ? 2 : 1));
         }
     }
 
