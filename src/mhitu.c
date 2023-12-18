@@ -1163,7 +1163,8 @@ boolean
 u_slip_free(struct monst *mtmp, struct attack *mattk)
 {
     struct obj *obj;
-
+    boolean is_sal = mtmp->data == &mons[PM_SALAMANDER];
+    
     /* greased armor does not protect against AT_ENGL+AD_WRAP */
     if (mattk->aatyp == AT_ENGL)
         return FALSE;
@@ -1193,6 +1194,14 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
             obj->greased = 0;
             update_inventory();
         }
+        return TRUE;
+    } else if (mattk->adtyp == AD_WRAP && uarmf && !uarmf->cursed
+             && objdescr_is(uarmf, "mud boots") && rnl(10) < 5) {
+        /* 50% chance (with a luck bonus) of slipping free with mud boots. 
+         * Doesn't apply to brain attacks or cursed boots. */
+        pline("%s %s you, but you quickly free yourself!",
+              Monnam(mtmp), (mattk->adtyp == AD_WRAP && !is_sal)
+                                ? "swings itself around" : "grabs");
         return TRUE;
     }
     return FALSE;
