@@ -1743,7 +1743,7 @@ trapeffect_pit(
             return Trap_Effect_Finished;
         }
         if (!Sokoban && !u.usteed && !Blind && 
-            objdescr_is(uarmf, "hiking boots")) {
+            uarmf && objdescr_is(uarmf, "hiking boots")) {
             pline("With your hiking boots, you effortlessly maneuver around the pit!");
             return Trap_Effect_Finished;
         }
