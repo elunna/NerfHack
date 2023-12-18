@@ -176,7 +176,13 @@ static NEARDATA struct artifact artilist[] = {
     A("Sunsword", LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_UNDEAD,
       PHYS(5, 0), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       NO_COLOR, SUNSWORD),
-
+    /*
+     *      Keolewa from SporkHack - a Hawaiian war club.
+     *      Buffing this up a bit to give it more utility.
+     */
+    A("Keolewa", CLUB, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN),
+      0, 0, ELEC(5, 8), DFNS(AD_ELEC), NO_CARY, 0, A_NEUTRAL,
+      NON_PM, NON_PM, 2000L, NO_COLOR, KEOLEWA),
     /*
      *      The artifacts for the quest dungeon, all self-willed.
      */
