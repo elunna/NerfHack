@@ -425,6 +425,12 @@ find_roll_to_hit(
     if (uarmf && objdescr_is(uarmf, "combat boots")) 
         tmp += 1;
     
+    /* fencing gloves increase weapon accuracy when you have a free off-hand */
+    if (weapon && !bimanual(weapon) && !which_armor(mtmp, W_ARMS)) {
+        struct obj * otmp = which_armor(mtmp, W_ARMG);
+        if (otmp && objdescr_is(otmp, "fencing gloves"))
+            tmp += 2;
+    }
     /* if unskilled with a weapon/object type (bare-handed is exempt),
      * you'll never have a chance greater than 75% to land a hit.
      */
