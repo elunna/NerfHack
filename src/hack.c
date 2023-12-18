@@ -4036,6 +4036,10 @@ weight_cap(void)
                 carrcap -= 100;
             if (EWounded_legs & RIGHT_SIDE)
                 carrcap -= 100;
+            
+            /* these carrcap modifiers only make sense if you have feet on the ground */
+            if (uarmf && objdescr_is(uarmf, "hiking boots")) 
+                carrcap += 100;
         }
     }
 
