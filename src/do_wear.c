@@ -2568,6 +2568,9 @@ find_ac(void)
     /* combat boots give +1 AC */
     if (uarmf && objdescr_is(uarmf, "combat boots")) 
         uac -= 1;
+    /* padded gloves give +1 AC */
+    if (uarmg && objdescr_is(uarmg, "padded gloves")) 
+        uac -= 1;
 
     /* armor class from other sources */
     if (HProtection & INTRINSIC)
