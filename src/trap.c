@@ -246,6 +246,14 @@ erode_obj(
     if (visobj && !(uvictim || vismon) && !strncmpi(ostr, "the ", 4))
         ostr += 4;
 
+    /* Old gloves are already as damaged as they're going to get */
+    if (otmp && objdescr_is(otmp, "old gloves")) {
+        if (flags.verbose && print && (uvictim || vismon))
+            pline("%s %s %s not affected by %s.",
+                  uvictim ? "Your" : s_suffix(Monnam(victim)), ostr,
+                  vtense(ostr, "are"), bythe[type]);
+        return ER_NOTHING;
+    }
     if (check_grease && otmp->greased) {
         grease_protect(otmp, ostr, victim);
         return ER_GREASED;
