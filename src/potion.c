@@ -2308,8 +2308,14 @@ mixtype(struct obj *o1, struct obj *o2)
         /*FALLTHRU*/
     case UNICORN_HORN:
         switch (o2typ) {
-        case POT_SICKNESS:
+        case POT_SICKNESS: {
+            /* This is an unambiguous identification */
+            if (!Blind) {
+                makeknown(POT_SICKNESS);
+                makeknown(POT_FRUIT_JUICE);
+            }
             return POT_FRUIT_JUICE;
+        }
         case POT_HALLUCINATION:
         case POT_BLINDNESS:
         case POT_CONFUSION:
@@ -2319,9 +2325,11 @@ mixtype(struct obj *o1, struct obj *o2)
     case AMETHYST: /* "a-methyst" == "not intoxicated" */
         if (o2->otyp == POT_BOOZE) {
             /* This is an unambiguous identification */
-            makeknown(AMETHYST);
-            makeknown(POT_BOOZE);
-            makeknown(POT_FRUIT_JUICE);
+            if (!Blind) {
+                makeknown(AMETHYST);
+                makeknown(POT_BOOZE);
+                makeknown(POT_FRUIT_JUICE);
+            }
             return POT_FRUIT_JUICE;
         }
         break;
