@@ -2013,6 +2013,10 @@ thitmonst(
     else if (ACURR(A_DEX) >= 14)
         tmp += (ACURR(A_DEX) - 14);
 
+    /* combat boots give +1 to-hit for thrown */
+    if (uarmf && objdescr_is(uarmf, "combat boots")) 
+        tmp += 1;
+    
     /* Modify to-hit depending on distance; but keep it sane.
      * Polearms get a distance penalty even when wielded; it's
      * hard to hit at a distance.

@@ -2565,6 +2565,10 @@ find_ac(void)
     if (uamul && uamul->otyp == AMULET_OF_GUARDING)
         uac -= 2; /* fixed amount; main benefit is to MC */
 
+    /* combat boots give +1 AC */
+    if (uarmf && objdescr_is(uarmf, "combat boots")) 
+        uac -= 1;
+
     /* armor class from other sources */
     if (HProtection & INTRINSIC)
         uac -= u.ublessed;

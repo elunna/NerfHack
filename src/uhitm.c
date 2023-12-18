@@ -421,6 +421,10 @@ find_roll_to_hit(
         tmp += weapon_hit_bonus((struct obj *) 0);
     }
 
+    /* combat boots give +1 to-hit */
+    if (uarmf && objdescr_is(uarmf, "combat boots")) 
+        tmp += 1;
+    
     /* if unskilled with a weapon/object type (bare-handed is exempt),
      * you'll never have a chance greater than 75% to land a hit.
      */
