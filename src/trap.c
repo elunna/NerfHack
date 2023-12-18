@@ -621,6 +621,9 @@ fall_through(
                   || (ceiling_hider(gy.youmonst.data) && u.uundetected))
                  && !(ftflags & TOOKPLUNGE))) {
         dont_fall = "don't fall in.";
+    } else if (Role_if(PM_ARCHEOLOGIST) && uwep && uwep->otyp == BULLWHIP) {       
+        pline("But thanks to your trusty whip ...");
+        dont_fall = "don't fall in.";
     } else if (gy.youmonst.data->msize >= MZ_HUGE) {
         dont_fall = "don't fit through.";
     } else if (!next_to_u()) {
