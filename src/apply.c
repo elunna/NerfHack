@@ -1994,6 +1994,7 @@ int
 jump(int magic) /* 0=Physical, otherwise skill level */
 {
     coord cc;
+    int bootdamage;
 
     /* attempt "jumping" spell if hero has no innate jumping ability */
     if (!magic && !Jumping && known_spell(SPE_JUMPING) >= spe_Fresh)
@@ -2096,9 +2097,21 @@ jump(int magic) /* 0=Physical, otherwise skill level */
                 long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
 
                 You("rip yourself free of the bear trap!  Ouch!");
-                losehp(Maybe_Half_Phys(rnd(10)), "jumping out of a bear trap",
-                       KILLED_BY);
-                set_wounded_legs(side, rn1(1000, 500));
+                
+                /* Jungle boots protect us from wounding, but also take the 
+                 * brunt of the damage. */ 
+                if (uarmf && objdescr_is(uarmf, "jungle boots")) {
+                    losehp(rnd(10), "jumping out of a bear trap", KILLED_BY);
+                    set_wounded_legs(side, rn1(100, 50));
+                    for (bootdamage = d(1, 5); bootdamage >= 0; bootdamage--)  {
+                        drain_item(uarmf, TRUE);
+                    Your("boots are damaged!");
+                    }
+                } else {
+                    losehp(Maybe_Half_Phys(d(5, 6)),
+                           "jumping out of a bear trap", KILLED_BY);
+                    set_wounded_legs(side, rn1(1000, 500));
+                }
                 break;
             }
             case TT_PIT:

@@ -883,6 +883,7 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 void
 drop_ball(coordxy x, coordxy y)
 {
+    int bootdamage;
     if (Blind) {
         /* get the order */
         u.bc_order = bc_order();
@@ -913,14 +914,30 @@ drop_ball(coordxy x, coordxy y)
             case TT_BEARTRAP:
                 side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
                 pline(pullmsg, "bear trap");
-                set_wounded_legs(side, rn1(1000, 500));
-                if (!u.usteed) {
-                    Your("%s %s is severely damaged.",
-                         (side == LEFT_SIDE) ? "left" : "right",
-                         body_part(LEG));
-                    losehp(Maybe_Half_Phys(2),
+                
+                /* Jungle boots protect us from wounding, but also take the 
+                 * brunt of the damage. */ 
+                if (uarmf && objdescr_is(uarmf, "jungle boots")) {
+                    losehp(rnd(10),
                            "leg damage from being pulled out of a bear trap",
                            KILLED_BY);
+                    set_wounded_legs(side, rn1(100, 50));
+                    for (bootdamage = d(1, 5); bootdamage >= 0;
+                         bootdamage--) {
+                        drain_item(uarmf, TRUE);
+                        Your("boots are damaged!");
+                    }
+                } else {
+                    set_wounded_legs(side, rn1(1000, 500));
+                    if (!u.usteed) {
+                        Your("%s %s is severely damaged.",
+                             (side == LEFT_SIDE) ? "left" : "right",
+                             body_part(LEG));
+                        losehp(
+                            Maybe_Half_Phys(d(5, 6)),
+                            "leg damage from being pulled out of a bear trap",
+                            KILLED_BY);
+                    }
                 }
                 break;
             }

@@ -4586,7 +4586,8 @@ mhitm_ad_legs(
                                || uarmf->otyp == IRON_SHOES)) {
                     pline("%s pricks the exposed part of your %s %s!",
                           Monst_name, sidestr, leg);
-                } else if (!rn2(5)) {
+                } else if (!objdescr_is(uarmf, "jungle boots") && !rn2(5)) {
+                    /* Jungle boots protect from this wounding */
                     pline("%s pricks through your %s boot!", Monst_name,
                           sidestr);
                 } else {

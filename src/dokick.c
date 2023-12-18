@@ -887,7 +887,7 @@ kick_ouch(coordxy x, coordxy y, const char *kickobjnam)
         }
         wake_nearto(x, y, 5 * 5);
     }
-    if (!rn2(3))
+    if (!(uarmf && objdescr_is(uarmf, "jungle boots")) && !rn2(3))
         set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
     dmg = rnd(ACURR(A_CON) > 15 ? 3 : 5);
     losehp(Maybe_Half_Phys(dmg), kickstr(buf, kickobjnam), KILLED_BY);

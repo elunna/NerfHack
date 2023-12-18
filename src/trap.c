@@ -1377,10 +1377,15 @@ trapeffect_bear_trap(
         } else {
             pline("%s bear trap closes on your %s!", A_Your[trap->madeby_u],
                   body_part(FOOT));
-            set_wounded_legs(rn2(2) ? RIGHT_SIDE : LEFT_SIDE, rn1(10, 10));
-            if (u.umonnum == PM_OWLBEAR || u.umonnum == PM_BUGBEAR)
-                You("howl in anger!");
-            losehp(Maybe_Half_Phys(dmg), "bear trap", KILLED_BY_AN);
+            /* Jungle boots protect us from getting wounded. */
+            if (!(uarmf && objdescr_is(uarmf, "jungle boots"))) {
+                set_wounded_legs(rn2(2) ? RIGHT_SIDE : LEFT_SIDE,
+                                 rn1(10, 10));
+                if (u.umonnum == PM_OWLBEAR || u.umonnum == PM_BUGBEAR)
+                    You("howl in anger!");
+                losehp(Maybe_Half_Phys(dmg), "bear trap", KILLED_BY_AN);
+            } else
+                Your("jungle boots protect you!");
         }
         exercise(A_DEX, FALSE);
     } else {

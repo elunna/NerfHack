@@ -275,7 +275,9 @@ dig(void)
                 else
                     pline("Ouch!  %s and %s you!", Yobjnam2(uwep, "bounce"),
                           otense(uwep, "hit"));
-                set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
+                /* Jungle boots protect from this wounding */
+                if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
+                    set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
             }
             break;
         case 1:
