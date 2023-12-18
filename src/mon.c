@@ -3236,7 +3236,7 @@ unstuck(struct monst *mtmp)
         
         if (attacktype_fordmg(mtmp->data, AT_ENGL, AD_WRAP)) {
             /* If this is a suffocating engulfer, make sure to reset
-                 * Strangled, unless the hero was already being strangled. */
+             * Strangled, unless the hero was already being strangled. */
             if (Strangled
                 && (!uamul || uamul->otyp == AMULET_OF_STRANGULATION)) {
                 /* FIXME: What if the hero was being strangled by some other
