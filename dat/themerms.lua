@@ -158,13 +158,6 @@ themeroom_fills = {
       end
    },
 
-   -- Temple of the gods
-   function(rm)
-      des.altar({ align = align[1] });
-      des.altar({ align = align[2] });
-      des.altar({ align = align[3] });
-   end,
-
    -- Ghost of an Adventurer
    function(rm)
       local loc = selection.room():rndcoord(0);
