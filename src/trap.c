@@ -1742,8 +1742,8 @@ trapeffect_pit(
             }
             return Trap_Effect_Finished;
         }
-        if (objdescr_is(uarmf, "hiking boots") && !Sokoban && !plunged 
-            && !u.usteed && !Blind && uarm) {
+        if (uarmf && objdescr_is(uarmf, "hiking boots") && !Sokoban
+            && !plunged && !u.usteed && !Blind) {
             pline("With your hiking boots, you effortlessly maneuver around the pit!");
             if (Fumbling && rn2(2))
                 ; /* You are still clumsy */
