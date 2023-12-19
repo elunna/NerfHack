@@ -2590,8 +2590,10 @@ find_ac(void)
         dex_adjust_ac += 1;
     else if (ACURR(A_DEX) <= 16)
         dex_adjust_ac -= 0;
-    else if (ACURR(A_DEX) > 18)
+    else if (ACURR(A_DEX) <= 18)
         dex_adjust_ac -= 1;
+    else if (ACURR(A_DEX) >= 20)
+        dex_adjust_ac -= 2;
     
     /* Wearing certain types of body armor negates any
      * beneficial dexterity bonus. So does being
