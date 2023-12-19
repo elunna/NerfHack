@@ -2777,8 +2777,8 @@ piercer_hit(struct monst *magr, struct monst *mdef)
                 update_mon_extrinsics(mdef, helm, FALSE, TRUE);
             }
             breakobj(helm, u.ux, u.uy, FALSE, TRUE);
-             /* Give it some bonus damage. */
-            dmg += rnd(6);
+             /* The helmet absorbed some damage. */
+            dmg -= 11;
         } else if (hard_helmet(helm)) {
             pline("%s partially diverts the blow.", Yname2(helm));
             dmg = (dmg + 1) / 2;
