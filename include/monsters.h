@@ -944,15 +944,15 @@
      * The Monster Manual states that someone engulfed by a trapper
      * can't use weapons but we do not enforce that.
      */
-    MON("lurker above", S_TRAPPER, LVL(10, 3, 3, 0, 0), (G_GENO | 2),
-        A(ATTK(AT_ENGL, AD_WRAP, 1, 6), ATTK(AT_ENGL, AD_PHYS, 2, 6),
+    MON("lurker above", S_TRAPPER, LVL(10, 6, 0, 0, 0), (G_GENO | 2),
+        A(ATTK(AT_ENGL, AD_WRAP, 1, 8), ATTK(AT_ENGL, AD_PHYS, 2, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 350, MS_SILENT, MZ_HUGE), 0, 0,
         M1_HIDE | M1_FLY | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_CARNIVORE,
         M2_HOSTILE | M2_STALK | M2_STRONG, 0, 12, CLR_GRAY, LURKER_ABOVE),
-    MON("trapper", S_TRAPPER, LVL(12, 3, 3, 0, 0), (G_GENO | 2),
-        A(ATTK(AT_ENGL, AD_WRAP, 1, 8), ATTK(AT_ENGL, AD_PHYS, 2, 8),
+    MON("trapper", S_TRAPPER, LVL(12, 6, 0, 0, 0), (G_GENO | 2),
+        A(ATTK(AT_ENGL, AD_WRAP, 1, 12), ATTK(AT_ENGL, AD_PHYS, 2, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 350, MS_SILENT, MZ_HUGE), 0, 0,
         M1_HIDE | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
