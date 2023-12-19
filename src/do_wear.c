@@ -2615,12 +2615,9 @@ find_ac(void)
     }
     
     /* Wounded legs also bad.
-     * It's debatable how severe this should be. 
-     * This status affects dex so there's already a side effect.
-     * We will try scaling this with weight for some real potency
-     * - is 1AC for each 100 aum too much? */
+     * Scale this with weight for some real potency */
     if (Wounded_legs)
-        uac += (inv_weight() + weight_cap()) / 100;
+        uac += (inv_weight() + weight_cap()) / 200;
     
     /* put a cap on armor class [3.7: was +127,-128, now reduced to +/- 99 */
     if (abs(uac) > AC_MAX)
