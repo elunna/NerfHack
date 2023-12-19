@@ -5652,7 +5652,7 @@ check_gear_next_turn(struct monst *mon)
 /* Returns TRUE if mdef will be flanked by magr and another monster,
  * otherwise return FALSE. */
 boolean
-calculate_flankers( struct monst *magr, struct monst *mdef)
+calculate_flankers(struct monst *magr, struct monst *mdef)
 {
     struct monst* flanker;
     boolean grudge, youflanker, youattack, youdefend;
@@ -5732,7 +5732,7 @@ calculate_flankers( struct monst *magr, struct monst *mdef)
             return FALSE;
     } else if (!flanker || !flanker->mcanmove || flanker->msleeping
                || flanker->mflee || flanker->mconf || flanker->mtrapped
-               || flanker->mstun) {
+               || flanker->mstun || flanker->meating) {
         /* Impaired monsters don't make good flankers */
         return FALSE;
     }
