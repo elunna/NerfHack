@@ -5,6 +5,8 @@
 --
 -- "Bazaar Town" by Kelly Bailey
 
+des.level_flags("noflip")
+
 des.room({ type="ordinary", lit=1, x=3,y=3,
            xalign="center",yalign="center", w=30,h=15,
            contents = function()

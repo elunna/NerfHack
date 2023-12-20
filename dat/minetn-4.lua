@@ -6,6 +6,8 @@
 -- Minetown variant 4 by Kelly Bailey
 -- "College Town"
 
+des.level_flags("noflip")
+
 des.room({ type = "ordinary", lit=1, x=3,y=3,
            xalign="center", yalign="center", w=30, h=15,
            contents = function()
