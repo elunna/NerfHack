@@ -249,7 +249,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL,
 
     A("The Tsurugi of Muramasa", TSURUGI,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_BEHEAD | SPFX_LUCK
-       | SPFX_PROTECT),
+       | SPFX_PROTECT | SPFX_HPHDAM),
       0, 0, PHYS(0, 8), NO_DFNS, NO_CARY, 0, A_LAWFUL, PM_SAMURAI, NON_PM,
       4500L, NO_COLOR, TSURUGI_OF_MURAMASA),
 
