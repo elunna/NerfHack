@@ -1110,9 +1110,9 @@ hmon_hitmon_weapon_melee(
                 hmd->dmg++;
             hmd->train_weapon_skill = (hmd->dmg > 0);
         }
-        if (obj->opoisoned && is_poisonable(obj))
-            hmd->ispoisoned = TRUE;
     }
+    if (obj->opoisoned && is_poisonable(obj))
+        hmd->ispoisoned = TRUE;
 }
 
 static void
