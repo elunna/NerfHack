@@ -349,6 +349,26 @@ result:
         }
         break;
     case 23:
+         /* One-time erodeproofing of an item */
+        if (!levl[u.ux][u.uy].looted) {
+            if (!Blind)
+                pline("%s flickers with purple light.", Doname2(obj));
+            else
+                pline("%s shudders slightly in your grip.", Doname2(obj));
+            obj->oerodeproof = 1;
+            obj->rknown = 1;
+            levl[u.ux][u.uy].looted |= T_LOOTED;
+        } else {
+            /* Steam cloud */
+            if (!Blind)
+                pline("A blast of steam surges from the forge!");
+            else
+                You("a blast of hot air rush past you.");
+            losehp(Fire_resistance ? 0 : rnd(2), 
+                   "blasted by steam", KILLED_BY);
+            (void) create_gas_cloud(u.ux, u.uy, rn1(15, 10), 0);
+        }
+        break;
     case 24:
     case 25:
     case 26:
