@@ -2493,19 +2493,21 @@ find_ac(void)
     /* Dexterity affects your base AC */
     dex_adjust_ac = 0;
     if (ACURR(A_DEX) <= 6)
-        dex_adjust_ac += 4;
-    else if (ACURR(A_DEX) <= 8)
         dex_adjust_ac += 3;
-    else if (ACURR(A_DEX) <= 10)
-        dex_adjust_ac += 2;
-    else if (ACURR(A_DEX) <= 14)
+    else if (ACURR(A_DEX) <= 9)
         dex_adjust_ac += 1;
-    else if (ACURR(A_DEX) <= 16)
+    else if (ACURR(A_DEX) <= 14)
         dex_adjust_ac -= 0;
-    else if (ACURR(A_DEX) <= 18)
+    else if (ACURR(A_DEX) <= 16)
         dex_adjust_ac -= 1;
-    else if (ACURR(A_DEX) >= 20)
+    else if (ACURR(A_DEX) <= 18)
         dex_adjust_ac -= 2;
+    else if (ACURR(A_DEX) <= 20)
+        dex_adjust_ac -= 3;
+    else if (ACURR(A_DEX) <= 23)
+        dex_adjust_ac -= 4;
+    else if (ACURR(A_DEX) >= 24)
+        dex_adjust_ac -= 5;
     
     /* Wearing certain types of body armor negates any
      * beneficial dexterity bonus. So does being
