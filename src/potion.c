@@ -556,6 +556,15 @@ dodrink(void)
             }
             ++drink_ok_extra;
         }
+        /* Or a forge? */
+        if (IS_FORGE(levl[u.ux][u.uy].typ)
+            /* not as low as floor level but similar restrictions apply */
+            && can_reach_floor(FALSE)) {
+            if (y_n("Drink from the forge?") == 'y') {
+                drinkforge();
+                return 1;
+            }
+        }
         /* Or are you surrounded by water? */
         if (Underwater && !u.uswallow) {
             if (y_n("Drink the water around you?") == 'y') {
@@ -2442,7 +2451,9 @@ dodip(void)
     const char *shortestname; /* last resort obj name for prompt */
     uchar here = levl[u.ux][u.uy].typ;
     boolean is_hands, at_pool = is_pool(u.ux, u.uy),
-            at_fountain = IS_FOUNTAIN(here), at_sink = IS_SINK(here),
+            at_fountain = IS_FOUNTAIN(here), 
+            at_forge = IS_FORGE(here),
+            at_sink = IS_SINK(here),
             at_here = (!iflags.menu_requested
                        && (at_pool || at_fountain || at_sink));
 
@@ -2490,6 +2501,17 @@ dodip(void)
                 if (!is_hands)
                     obj->pickup_prev = 0;
                 dipfountain(obj);
+                return ECMD_TIME;
+            }
+            ++drink_ok_extra;
+        } else if (at_forge) {
+            Snprintf(qbuf, sizeof(qbuf), "%s%s into the forge?", Dip_,
+                     flags.verbose ? obuf : shortestname);
+            /* "Dip <the object> into the forge?" */
+            if (y_n(qbuf) == 'y') {
+                if (!is_hands)
+                    obj->pickup_prev = 0;
+                dipforge(obj);
                 return ECMD_TIME;
             }
             ++drink_ok_extra;

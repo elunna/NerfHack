@@ -5470,9 +5470,9 @@ nhl_abs_coord(lua_State *L)
 int
 lspo_feature(lua_State *L)
 {
-    static const char *const features[] = { "fountain", "sink", "pool",
+    static const char *const features[] = { "fountain", "forge", "sink", "pool",
                                             "throne", "tree", NULL };
-    static const int features2i[] = { FOUNTAIN, SINK, POOL,
+    static const int features2i[] = { FOUNTAIN, FORGE, SINK, POOL,
                                       THRONE, TREE, STONE };
     coordxy x, y;
     int typ;
@@ -5531,6 +5531,9 @@ lspo_feature(lua_State *L)
     case FOUNTAIN:
         l_table_getset_feature_flag(L, x, y, "looted", F_LOOTED);
         l_table_getset_feature_flag(L, x, y, "warned", F_WARNED);
+        break;
+    case FORGE:
+        typ = FORGE;
         break;
     case SINK:
         l_table_getset_feature_flag(L, x, y, "pudding", S_LPUDDING);

@@ -2710,6 +2710,15 @@
         M2_NOPOLY | M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY
             | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION, 11, CLR_BLUE, WATER_DEMON),
+    MON("lava demon", S_DEMON, LVL(12, 12, -8, 40, -7),
+        (G_NOCORPSE | G_NOGEN),
+        A(ATTK(AT_WEAP, AD_PHYS, 2, 4), ATTK(AT_BITE, AD_PHYS, 1, 8),
+          ATTK(AT_BITE, AD_FIRE, 2, 6), NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 400, MS_SILENT, MZ_HUMAN), MR_FIRE | MR_POISON, 0,
+        M1_HUMANOID | M1_POIS,
+        M2_NOPOLY | M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY 
+            | M2_COLLECT | M2_FLANK,
+        M3_INFRAVISIBLE | M3_INFRAVISION, 15, CLR_ORANGE, LAVA_DEMON),
     /* standard demons & devils
      */
 #define SEDUCTION_ATTACKS_YES                                     \

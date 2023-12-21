@@ -224,6 +224,10 @@ explode(
     boolean you_exploding = (olet == MON_EXPLODE && type >= 0);
     boolean didmsg = FALSE;
 
+    if (olet == FORGE_EXPLODE) { /* exploding forges */
+        exploding_wand_typ = type;
+    }
+    
     if (olet == WAND_CLASS) { /* retributive strike */
         /* 'type' is passed as (wand's object type * -1); save
            object type and convert 'type' itself to zap-type */
@@ -321,8 +325,9 @@ explode(
             break;
         case 1:
             adstr = (olet == BURNING_OIL) ? "burning oil"
-                     : (olet == SCROLL_CLASS) ? "tower of flame"
-                          : (olet == DOOR_TRAP) ? "explosion" : "fireball";
+                    : (olet == SCROLL_CLASS) ? "tower of flame"
+                    : (olet == FORGE_EXPLODE) ? "exploding forge"
+                    : (olet == DOOR_TRAP) ? "explosion" : "fireball";
             /* fire damage, not physical damage */
             adtyp = AD_FIRE;
             break;
@@ -667,6 +672,9 @@ explode(
                              "caught %sself in %s own %s", uhim(),
                              uhis(), str);
                 } else if (adtyp == AD_FIRE && olet == DOOR_TRAP) {
+                    gk.killer.format = KILLED_BY_AN;
+                    Strcpy(gk.killer.name, str);
+                } else if (adtyp == AD_FIRE && olet == FORGE_EXPLODE) {
                     gk.killer.format = KILLED_BY_AN;
                     Strcpy(gk.killer.name, str);
                 } else {
