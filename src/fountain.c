@@ -131,10 +131,12 @@ dolavademon(void)
                 You_feel("the temperature rise significantly.");
 
             /* low levels offer a (slightly) better chance of survival */
-            if (rnd(100) > (80 + level_difficulty())) {
-                pline("Freed from the depths of Gehennom, %s offers to aid you in your quest!",
+            if (rnd(100) > (80 + level_difficulty()) && !HFire_resistance) {
+                pline("Freed from the depths of Gehennom, "
+                      "%s grants you protection from fire!",
                       mhe(mtmp));
-                (void) tamedog(mtmp, (struct obj *) 0);
+                HFire_resistance |= FROMOUTSIDE;
+                mongone(mtmp);
             } else if (t_at(mtmp->mx, mtmp->my))
                 (void) mintrap(mtmp, NO_TRAP_FLAGS);
         }
