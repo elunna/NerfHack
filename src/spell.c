@@ -1018,7 +1018,7 @@ static void
 cast_chain_lightning(void)
 {
     struct chain_lightning_queue clq = {
-        {{0}}, 0, 0, Hallucination ? rn2_on_display_rng(6) : (AD_ELEC - 1)
+        {{0}}, 0, 0, Hallucination ? rn2_on_display_rng(6) : ZT_LIGHTNING
     };
 
     if (u.uswallow) {
@@ -1049,7 +1049,7 @@ cast_chain_lightning(void)
 
             if (mon) {
                 struct obj *unused; /* AD_ELEC can't destroy armor */
-                int dmg = zhitm(mon, BZ_U_SPELL(AD_ELEC - 1), 2, &unused);
+                int dmg = zhitm(mon, BZ_U_SPELL(ZT_LIGHTNING), 2, &unused);
 
                 if (dmg) {
                     /* mon has been damaged, but we haven't yet printed the
