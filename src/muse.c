@@ -172,7 +172,6 @@ mzapwand(
         Soundeffect(se_zap, 100);
         You_hear("a %s zap.", (mdistu(mtmp) <= range * range)
                                  ? "nearby" : "distant");
-        unknow_object(otmp); /* hero loses info when unseen obj is used */
     } else if (self) {
         pline("%s with %s!",
               monverbself(mtmp, Monnam(mtmp), "zap", (char *) 0),
@@ -201,7 +200,6 @@ mplayhorn(
         You_hear("a horn being played %s.",
                  (mdistu(mtmp) <= range * range)
                     ? "nearby" : "in the distance");
-        unknow_object(otmp); /* hero loses info when unseen obj is used */
     } else if (self) {
         otmp->dknown = 1;
         objnamp = xname(otmp);

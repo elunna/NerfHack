@@ -577,13 +577,6 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
        and if it's eventually dropped in a shop, shk will claim it */
     if (!mtmp->mtame)
         otmp->no_charge = 0;
-    /* if monster is unseen, info hero knows about this object becomes lost;
-       continual pickup and drop by pets makes this too annoying if it is
-       applied to them; when engulfed (where monster can't be seen because
-       vision is disabled), or when held (or poly'd and holding) while blind,
-       behave as if the monster can be 'seen' by touch */
-    if (!mtmp->mtame && !(canseemon(mtmp) || mtmp == u.ustuck))
-        unknow_object(otmp);
     /* Must do carrying effects on object prior to add_to_minv() */
     carry_obj_effects(otmp);
     /* add_to_minv() might free otmp [if merged with something else],
