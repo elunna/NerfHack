@@ -1818,14 +1818,11 @@ arti_invoke(struct obj *obj)
              * i is now index into dungeon structure for the new dungeon.
              * Find the closest level in the given dungeon, open
              * a use-once portal to that dungeon and go there.
-             * The closest level is either the entry or dunlev_ureached.
+             * Go to the entry.
              */
             newlev.dnum = i;
-            if (gd.dungeons[i].depth_start >= depth(&u.uz))
-                newlev.dlevel = gd.dungeons[i].entry_lev;
-            else
-                newlev.dlevel = gd.dungeons[i].dunlev_ureached;
-
+            newlev.dlevel = gd.dungeons[i].entry_lev;
+            
             if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
                 || newlev.dnum == u.uz.dnum || !next_to_u()) {
                 You_feel("very disoriented for a moment.");
