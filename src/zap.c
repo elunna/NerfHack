@@ -4952,8 +4952,7 @@ dobuzz(
             gn.notonhead = (mon->mx != gb.bhitpos.x
                             || mon->my != gb.bhitpos.y);
             if (zap_hit(find_mac(mon), spell_type)) {
-                if (mon_reflects(mon, (char *) 0) 
-                    && damgtype != ZT_ACID) {
+                if (mon_reflects(mon, (char *) 0)) {
                     if (cansee(mon->mx, mon->my)) {
                         hit(flash_str(fltyp, FALSE), mon, exclam(0));
                         shieldeff(mon->mx, mon->my);
@@ -5052,7 +5051,7 @@ dobuzz(
             } else if (zap_hit((int) u.uac, 0)) {
                 range -= 2;
                 pline("%s hits you!", The(flash_str(fltyp, FALSE)));
-                if (Reflecting && damgtype != ZT_ACID) {
+                if (Reflecting) {
                     if (!Blind) {
                         (void) ureflects("But %s reflects from your %s!",
                                          "it");
@@ -5096,10 +5095,6 @@ dobuzz(
             uchar rmn;
             boolean fireball;
             
-            /* Acid doesn't bounce */
-            if (damgtype == ZT_ACID)
-                range = 0;
-
  make_bounce:
             bchance = (!isok(sx, sy) || levl[sx][sy].typ == STONE) ? 10
                       : (In_mines(&u.uz) && IS_WALL(levl[sx][sy].typ)) ? 20
