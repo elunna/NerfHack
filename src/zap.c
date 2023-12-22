@@ -4214,7 +4214,7 @@ bhit(
             /* kicked objects fall in pools */
             if ((weapon == KICKED_WEAPON) && is_pool_or_lava(x, y))
                 break;
-            if ((IS_SINK(typ) || IS_FORGE(typ)) && weapon != FLASHED_LIGHT)
+            if (IS_SINK(typ) && weapon != FLASHED_LIGHT)
                 break; /* physical objects fall onto sink / forge */
         }
         /* limit range of ball so hero won't make an invalid move */
