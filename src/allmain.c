@@ -594,9 +594,7 @@ regen_pw(int wtcap)
     }
 }
 
-#define U_CAN_REGEN() ((Regeneration || (Sleepy && u.usleep)) \
-    /* Players cannot regenerate in the valley unless undead */ \
-    && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data)))
+#define U_CAN_REGEN() (Regeneration || (Sleepy && u.usleep))
 
 /* maybe recover some lost health (or lose some when an eel out of water) */
 static void
@@ -618,7 +616,9 @@ regen_hp(int wtcap)
                 && (!Half_physical_damage || !(gm.moves % 2L)))
                 heal = -1;
         } else if (u.mh < u.mhmax) {
-            if (U_CAN_REGEN() || (encumbrance_ok && !(gm.moves % 20L)))
+            if (((U_CAN_REGEN() || (encumbrance_ok && !(gm.moves % 20L)))
+                /* Non-undead cannot regenerate in the valley */
+                && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))))
                 heal = 1;
         }
         if (heal && !(Withering && heal > 0)) {
@@ -633,7 +633,10 @@ regen_hp(int wtcap)
            no !Upolyd check here, so poly'd hero recovered lost u.uhp
            once u.mh reached u.mhmax; that may have been convenient
            for the player, but it didn't make sense for gameplay...] */
-        if (u.uhp < u.uhpmax && (encumbrance_ok || U_CAN_REGEN())) {
+        if (u.uhp < u.uhpmax
+            /* Non-undead cannot regenerate in the valley */
+            && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))
+            && (encumbrance_ok || U_CAN_REGEN())) {
             heal = (u.ulevel + (int)ACURR(A_CON)) > rn2(100);
 
             if (U_CAN_REGEN())
