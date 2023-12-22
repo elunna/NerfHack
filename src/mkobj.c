@@ -841,6 +841,11 @@ unknow_object(struct obj *obj)
 
     obj->bknown = obj->rknown = 0;
     obj->cknown = obj->lknown = 0;
+    
+    /* Always reveal erodeproof status */
+    if (is_rustprone(obj) || is_corrodeable(obj) || is_flammable(obj))
+        obj->rknown = 1; 
+    
     /* for an existing object, awareness of charges or enchantment has
        gone poof...  [object types which don't use the known flag have
        it set True for some reason] */

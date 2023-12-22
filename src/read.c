@@ -1153,7 +1153,7 @@ seffect_enchant_armor(struct obj **sobjp)
         new_erodeproof = !scursed;
         otmp->oerodeproof = 0; /* for messages */
         if (Blind) {
-            otmp->rknown = FALSE;
+            otmp->rknown = sobj->bknown;
             pline("%s warm for a moment.", Yobjnam2(otmp, "feel"));
         } else {
             otmp->rknown = TRUE;
@@ -1575,7 +1575,7 @@ seffect_enchant_weapon(struct obj **sobjp)
         new_erodeproof = !scursed;
         uwep->oerodeproof = 0; /* for messages */
         if (Blind) {
-            uwep->rknown = FALSE;
+            uwep->rknown = sobj->bknown;
             Your("weapon feels warm for a moment.");
         } else {
             uwep->rknown = TRUE;
