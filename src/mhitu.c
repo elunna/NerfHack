@@ -2589,6 +2589,22 @@ passiveum(
             /* No message */
         }
         return M_ATTK_HIT;
+    case AD_SLIM:
+        if (!rn2(3)) {
+            Your("slime splashes onto %s!", mon_nam(mtmp));
+            if (flaming(mtmp->data)) {
+                pline_The("slime burns away!");
+            } else if (slimeproof(mtmp->data)) {
+                pline("%s is unaffected.", Monnam(mtmp));
+            } else if (!rn2(4) && !slimeproof(mtmp->data)) {
+                if (!munslime(mtmp, FALSE) && !DEADMONSTER(mtmp)) {
+                    if (newcham(mtmp, &mons[PM_GREEN_SLIME], NC_SHOW_MSG))
+                        mtmp->mstrategy &= ~STRAT_WAITFORU;
+                }
+            }
+        }
+        return 1;
+        break;
     default:
         break;
     }

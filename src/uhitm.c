@@ -6223,6 +6223,25 @@ passive(
             passive_obj(mon, weapon, &(ptr->mattk[i]));
         }
         break;
+    case AD_SLIM:
+        if (mhit && !mon->mcan && !rn2(3)) {
+            pline("Its slime splashes onto you!");
+            if (flaming(gy.youmonst.data)) {
+                pline_The("slime burns away!");
+                tmp = 0;
+            } else if (Unchanging || noncorporeal(gy.youmonst.data)
+                       || gy.youmonst.data == &mons[PM_GREEN_SLIME]) {
+                You("are unaffected.");
+                tmp = 0;
+            } else if (!Slimed) {
+                You("don't feel very well.");
+                make_slimed(10L, (char *) 0);
+                delayed_killer(SLIMED, KILLED_BY_AN, "green slime");
+            } else {
+                pline("Yuck!");
+            }
+        }
+        break;
     default:
         break;
     }

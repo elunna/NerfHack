@@ -1403,6 +1403,30 @@ passivemm(
             /* No message */
         }
         break;
+    case AD_SLIM:
+        if (mhit && !mdef->mcan && !rn2(3)) {
+            pline("Its slime splashes onto %s!", mon_nam(magr));
+            if (flaming(magr->data)) {
+                pline_The("slime burns away!");
+                tmp = 0;
+            } else if (slimeproof(magr->data)) {
+                pline("%s is unaffected.", Monnam(magr));
+                tmp = 0;
+            } else if (!rn2(4) && !slimeproof(magr->data)) {
+                if (!munslime(magr, FALSE) && !DEADMONSTER(magr)) {
+                    if (newcham(magr, &mons[PM_GREEN_SLIME], NC_SHOW_MSG))
+                        magr->mstrategy &= ~STRAT_WAITFORU;
+                }
+                /* munslime attempt could have been fatal,
+                   potentially to multiple monsters (SCR_FIRE) */
+                if (DEADMONSTER(magr))
+                    return (mdead | mhit | M_ATTK_AGR_DIED);
+                if (DEADMONSTER(mdef))
+                    return (mdead | mhit | M_ATTK_DEF_DIED);
+                tmp = 0;
+            }
+        }
+        break;
     default:
         break;
     }
