@@ -222,7 +222,7 @@ WEAPON("stiletto", NoDes,
    when a stack of crysknives drops, the whole stack reverts to teeth */
 /* 3.7: change crysknife from MINERAL to BONE and worm tooth from 0 to BONE */
 WEAPON("worm tooth", NoDes,
-       1, 1, 0,  0,  20,   2,  2,  2, 0, 0,   P_KNIFE, BONE, CLR_WHITE,
+       1, 1, 0,  0,  20,   2,  2,  2, 0, P,   P_KNIFE, BONE, CLR_WHITE,
                                                         WORM_TOOTH),
 WEAPON("crysknife", NoDes,
        1, 1, 0,  0,  20, 100, 10, 10, 3, P,   P_KNIFE, BONE, CLR_WHITE,
