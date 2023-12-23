@@ -4994,10 +4994,6 @@ dobuzz(
                         break; /* Out of while loop */
                     }
 
-                    if (damgtype == ZT_POISON_GAS) {
-                        range = 0;
-                        break; /* Out of while loop */
-                    }
                     if (tmp == MAGIC_COOKIE) { /* disintegration */
                         disintegrate_mon(mon, type, flash_str(fltyp, FALSE));
                     } else if (DEADMONSTER(mon)) {
@@ -5078,30 +5074,18 @@ dobuzz(
             nomul(0);
         }
 
-        if (levl[sx][sy].typ == TREE 
-            && (damgtype == ZT_DEATH || damgtype == ZT_POISON_GAS)) {
-            levl[sx][sy].typ = ROOM;
-            if (cansee(sx, sy)) {
-                pline_The("tree withers and shrivels!");
-                newsym(sx, sy);
-            }
-            range = 0;
-            break;
-        }
-        
         if (!ZAP_POS(levl[sx][sy].typ)
             || (closed_door(sx, sy) && range >= 0)) {
             int bounce, bchance;
             uchar rmn;
             boolean fireball;
-            
+
  make_bounce:
             bchance = (!isok(sx, sy) || levl[sx][sy].typ == STONE) ? 10
                       : (In_mines(&u.uz) && IS_WALL(levl[sx][sy].typ)) ? 20
                         : 75;
             bounce = 0;
-            fireball = (type == ZT_SPELL(ZT_FIRE) 
-                        || damgtype == ZT_POISON_GAS);
+            fireball = (type == ZT_SPELL(ZT_FIRE));
             if ((--range > 0 && isok(lsx, lsy) && cansee(lsx, lsy))
                 || fireball) {
                 if (Is_airlevel(&u.uz)) { /* nothing to bounce off of */
@@ -5151,8 +5135,6 @@ dobuzz(
     tmp_at(DISP_END, 0);
     if (type == ZT_SPELL(ZT_FIRE))
         explode(sx, sy, type, d(12, 6), 0, EXPL_FIERY);
-    if (type == ZT_WAND(ZT_POISON_GAS))
-        explode(sx, sy, type, d(6, 6), 0, EXPL_NOXIOUS);
     if (shopdamage)
         pay_for_damage(damgtype == ZT_FIRE ? "burn away"
                        : damgtype == ZT_COLD ? "shatter"
