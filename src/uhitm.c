@@ -6431,9 +6431,7 @@ passive_obj(
     default:
         break;
     }
-
-    if (carried(obj))
-        update_inventory();
+    update_inventory();
 }
 
 DISABLE_WARNING_FORMAT_NONLITERAL
