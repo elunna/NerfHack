@@ -4538,8 +4538,8 @@ zhitu(
             dam = (dam + 1) / 2;
         } else 
             monstunseesu(M_SEEN_MAGR);
-        /* Half spell damage stacks with Antimagic, but is already counted after
-         * this switch */
+        /* Half spell damage stacks with Antimagic, 
+         * but is already counted after this switch */
         break;
     case ZT_FIRE:
         if (Fire_resistance) {
@@ -4551,17 +4551,19 @@ zhitu(
             dam = d(nd, 6);
             monstunseesu(M_SEEN_FIRE);
         }
-        burn_away_slime();
-        if (burnarmor(&gy.youmonst)) { /* "body hit" */
-            if (!rn2(3))
-                destroy_item(POTION_CLASS, AD_FIRE);
-            if (!rn2(3))
-                destroy_item(SCROLL_CLASS, AD_FIRE);
-            if (!rn2(5))
-                destroy_item(SPBOOK_CLASS, AD_FIRE);
-            if (!rn2(3))
-                ignite_items(gi.invent);
-            destroy_item(FOOD_CLASS, AD_FIRE);
+        if (!Reflecting) {
+            burn_away_slime();
+            if (burnarmor(&gy.youmonst)) { /* "body hit" */
+                if (!rn2(3))
+                    destroy_item(POTION_CLASS, AD_FIRE);
+                if (!rn2(3))
+                    destroy_item(SCROLL_CLASS, AD_FIRE);
+                if (!rn2(5))
+                    destroy_item(SPBOOK_CLASS, AD_FIRE);
+                if (!rn2(3))
+                    ignite_items(gi.invent);
+                destroy_item(FOOD_CLASS, AD_FIRE);
+            }
         }
         break;
     case ZT_COLD:
@@ -4574,14 +4576,18 @@ zhitu(
             dam = d(nd, 6);
             monstunseesu(M_SEEN_COLD);
         }
-        if (!rn2(3))
-            destroy_item(POTION_CLASS, AD_COLD);
+        if (!Reflecting) {
+            if (!rn2(3))
+                destroy_item(POTION_CLASS, AD_COLD);
+        }
         break;
     case ZT_SLEEP:
         if (Sleep_resistance) {
             shieldeff(u.ux, u.uy);
             You("don't feel sleepy.");
             monstseesu(M_SEEN_SLEEP);
+        } else if (Reflecting) {
+            fall_asleep(-d(1, 6), TRUE);
         } else {
             monstunseesu(M_SEEN_SLEEP);
             fall_asleep(-d(nd, 25), TRUE); /* sleep ray */
@@ -4596,6 +4602,10 @@ zhitu(
                 monstseesu(M_SEEN_DISINT);
                 break;
             } else if (disn_prot) {
+                break;
+            } else if (Reflecting) {
+                You("aren't disintegrated, but that hurts!");
+                dam = d(6, 6);
                 break;
             }
             monstunseesu(M_SEEN_DISINT);
@@ -4612,21 +4622,45 @@ zhitu(
             }
             /* no shield or suit, you're dead; wipe out cloak
                and/or shirt in case of life-saving or bones */
-            if (uarmc)
-                (void) destroy_arm(uarmc, FALSE);
-            if (uarmu)
-                (void) destroy_arm(uarmu, FALSE);
+            if (!Reflecting) {
+                if (uarmc)
+                    (void) destroy_arm(uarmc, FALSE);
+                if (uarmu)
+                    (void) destroy_arm(uarmu, FALSE);
+            }
         } else if (nonliving(gy.youmonst.data) || is_demon(gy.youmonst.data)
                    || gy.youmonst.data->mlet == S_ANGEL) {
             shieldeff(sx, sy);
             You("seem unaffected.");
             break;
         } else if (Antimagic) {
+            /* not as much damage as 'touch of death'
+             * but this will still leave a mark */
+            dam = d(4, 6);
+            if (Antimagic && Half_spell_damage) {
             shieldeff(sx, sy);
             monstseesu(M_SEEN_MAGR);
-            You("aren't affected.");
+                dam /= 2;
+            }
+            if (Reflecting) {
+                You("feel a little drained...");
+                u.uhpmax -= (dam / 3 + rn2(5)) / 2;
+            } else {
+                You("feel drained...");
+                u.uhpmax -= dam / 3 + rn2(5);
+            }
             break;
-        }
+        } else if (Reflecting && !Antimagic) {
+            dam = d(4, 6);
+            if (Reflecting && Half_spell_damage) {
+                shieldeff(sx, sy);
+                monstseesu(M_SEEN_MAGR);
+                dam /= 2;
+            }
+            You("feel drained...");
+            u.uhpmax -= dam / 3 + rn2(5);
+	    break;
+	}
         monstunseesu(M_SEEN_MAGR);
         gk.killer.format = KILLED_BY_AN;
         Strcpy(gk.killer.name, fltxt ? fltxt : "");
@@ -4645,13 +4679,17 @@ zhitu(
             exercise(A_CON, FALSE);
             monstunseesu(M_SEEN_ELEC);
         }
-        if (!rn2(3))
-            destroy_item(WAND_CLASS, AD_ELEC);
-        if (!rn2(3))
-            destroy_item(RING_CLASS, AD_ELEC);
+        if (!Reflecting) {
+            if (!rn2(3))
+                destroy_item(WAND_CLASS, AD_ELEC);
+            if (!rn2(3))
+                destroy_item(RING_CLASS, AD_ELEC);
+        }
         break;
     case ZT_POISON_GAS:
-        poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
+        if (!Reflecting) {
+            poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
+        }
         break;
     case ZT_ACID:
         if (Acid_resistance) {
@@ -4664,13 +4702,15 @@ zhitu(
             exercise(A_STR, FALSE);
             monstunseesu(M_SEEN_ACID);
         }
-        /* using two weapons at once makes both of them more vulnerable */
-        if (!rn2(u.twoweap ? 3 : 6))
-            acid_damage(uwep);
-        if (u.twoweap && !rn2(3))
-            acid_damage(uswapwep);
-        if (!rn2(6))
-            erode_armor(&gy.youmonst, ERODE_CORRODE);
+        if (!Reflecting) {
+            /* using two weapons at once makes both of them more vulnerable */
+            if (!rn2(u.twoweap ? 3 : 6))
+                acid_damage(uwep);
+            if (u.twoweap && !rn2(3))
+                acid_damage(uswapwep);
+            if (!rn2(6))
+                erode_armor(&gy.youmonst, ERODE_CORRODE);
+        }
         break;
     }
 
@@ -5049,20 +5089,17 @@ dobuzz(
                 pline("%s hits you!", The(flash_str(fltyp, FALSE)));
                 if (Reflecting) {
                     if (!Blind) {
-                        (void) ureflects("But %s reflects from your %s!",
+                        (void) ureflects("Some of %s reflects from your %s!",
                                          "it");
                     } else
-                        pline("For some reason you are not affected.");
+                        pline("You appear to only be partially affected.");
                     monstseesu(M_SEEN_REFL);
                     dx = -dx;
                     dy = -dy;
                     shieldeff(sx, sy);
-                } else {
-                    /* flash_str here only used for killer; suppress
-                     * hallucination */
-                    zhitu(type, nd, flash_str(fltyp, TRUE), sx, sy);
-                    monstunseesu(M_SEEN_REFL);
+                    nd = (nd + 1) / 2;
                 }
+                zhitu(type, nd, flash_str(fltyp, TRUE), sx, sy);
             } else if (!Blind) {
                 pline("%s whizzes by you!", The(flash_str(fltyp, FALSE)));
             } else if (damgtype == ZT_LIGHTNING) {
