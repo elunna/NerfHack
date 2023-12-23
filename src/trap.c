@@ -172,10 +172,12 @@ erode_obj(
     int ef_flags)
 {
     static NEARDATA const char
-        *const action[] = { "smoulder", "rust", "rot", "corrode", "crack" },
-        *const msg[] = { "burnt", "rusted", "rotten", "corroded", "cracked" },
+        *const action[] = { "smoulder", "rust", "rot", "corrode", "crack",
+                            "deteriorate" },
+        *const msg[] = { "burnt", "rusted", "rotten", "corroded", "cracked",
+                                "deteriorated" },
         *const bythe[] = { "heat", "oxidation", "decay", "corrosion",
-                           "impact" }; /* this could use improvement... */
+                                  "fragmentation", "deterioration" };
     boolean vulnerable = FALSE, is_primary = TRUE,
             check_grease = (ef_flags & EF_GREASE) ? TRUE : FALSE,
             print = (ef_flags & EF_VERBOSE) ? TRUE : FALSE,
