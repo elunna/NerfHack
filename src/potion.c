@@ -1836,10 +1836,8 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             break;
         case POT_PARALYSIS:
             if (mon->mcanmove) {
-                /* really should be rnd(5) for consistency with players
-                 * breathing potions, but...
-                 */
-                paralyze_monst(mon, rnd(25));
+                /* effect will last 3-24 turns */
+                paralyze_monst(mon, rnd(22) + 2);
             }
             break;
         case POT_SPEED:
