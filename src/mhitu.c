@@ -2730,6 +2730,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
 {
     boolean youattack = (magr == &gy.youmonst);
     boolean youdefend = (mdef == &gy.youmonst);
+    int helm_res;
     
     /* Damage is always at least 4d6, but scales with monster level. */
     int dmg = d(min(magr->m_lev, 4), 6);
@@ -2763,9 +2764,10 @@ piercer_hit(struct monst *magr, struct monst *mdef)
               Monnam(mdef), youattack ? " (you)" : "");
         return;
     } else if (helm) {
+        helm_res = 11 + helm->spe * 6;
         /* These things now quite frequently destroy hard helmets - 
          * they are piercers after all! */
-        if (!helm->oartifact && dmg > 11) {
+        if (!helm->oartifact && dmg > helm_res) {
             pline("%s is pierced and shattered!", Yname2(helm));
             if (youdefend) {
                 Helmet_off();
