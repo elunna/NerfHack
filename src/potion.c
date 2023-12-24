@@ -1815,6 +1815,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             break;
         case POT_CONFUSION:
         case POT_BOOZE:
+        case POT_HALLUCINATION:
             if (!resist(mon, POTION_CLASS, 0, NOTELL))
                 mon->mconf = TRUE;
             break;
