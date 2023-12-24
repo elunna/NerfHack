@@ -1778,6 +1778,9 @@ wiz_map_levltyp(void)
         if (gl.level.flags.nfountains)
             Sprintf(eos(dsc), " %c:%d", defsyms[S_fountain].sym,
                     (int) gl.level.flags.nfountains);
+        if (gl.level.flags.nforges)
+            Sprintf(eos(dsc), " %c:%d", defsyms[S_forge].sym,
+                    (int) gl.level.flags.nforges);
         if (gl.level.flags.nsinks)
             Sprintf(eos(dsc), " %c:%d", defsyms[S_sink].sym,
                     (int) gl.level.flags.nsinks);
@@ -1873,8 +1876,8 @@ const char *levltyp[MAX_TYPE + 2] = {
     "tee-left wall", "tee-right wall", "drawbridge wall", "tree",
     "secret door", "secret corridor", "pool", "moat", "water",
     "drawbridge up", "lava pool", "lava wall", "iron bars", "door",
-    "corridor", "room", "stairs", "ladder", "fountain", "throne", "sink",
-    "grave", "altar", "ice", "drawbridge down", "air", "cloud",
+    "corridor", "room", "stairs", "ladder", "fountain", "forge", "throne",
+    "sink", "grave", "altar", "ice", "drawbridge down", "air", "cloud",
     /* not a real terrain type, but used for undiggable stone
        by wiz_map_levltyp() */
     "unreachable/undiggable",
@@ -5689,7 +5692,9 @@ there_cmd_menu_self(winid win, coordxy x, coordxy y, int *act UNUSED)
                 defsyms[IS_FOUNTAIN(typ) ? S_fountain : S_sink].explanation);
         mcmd_addmenu(win, MCMD_QUAFF, buf), ++K;
     }
-    if (IS_FOUNTAIN(typ) && can_reach_floor(FALSE))
+    if (IS_FORGE(typ))
+        mcmd_addmenu(win, MCMD_QUAFF, "Really drink the lava from the forge?"), ++K;
+    if ((IS_FOUNTAIN(typ) || IS_FORGE(typ)) && can_reach_floor(FALSE))
         mcmd_addmenu(win, MCMD_DIP, "Dip something into the fountain"), ++K;
     if (IS_THRONE(typ))
         mcmd_addmenu(win, MCMD_SIT, "Sit on the throne"), ++K;
@@ -6178,6 +6183,9 @@ domouseaction(void)
             if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)
                 || IS_SINK(levl[u.ux][u.uy].typ)) {
                 cmdq_add_ec(CQ_CANNED, dodrink);
+                return ECMD_OK;
+            } else if (IS_FORGE(levl[u.ux][u.uy].typ)) {
+                cmdq_add_ec(CQ_CANNED, dodip);
                 return ECMD_OK;
             } else if (IS_THRONE(levl[u.ux][u.uy].typ)) {
                 cmdq_add_ec(CQ_CANNED, dosit);

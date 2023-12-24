@@ -3341,6 +3341,13 @@ wizterrainwish(struct _readobjnam_data *d)
         lev->blessedftn = d->blessed || !strncmpi(bp, "magic ", 6);
         pline("A %sfountain.", lev->blessedftn ? "magic " : "");
         madeterrain = TRUE;
+    } else if (!BSTRCMPI(bp, p - 5, "forge")) {
+        lev->typ = FORGE;
+        if (oldtyp != FORGE)
+            gl.level.flags.nforges++;
+        lev->looted = 0; /* overlays 'flags' */
+        pline("A forge.");
+        madeterrain = TRUE;
     } else if (!BSTRCMPI(bp, p - 6, "throne")) {
         lev->typ = THRONE;
         lev->looted = d->looted ? T_LOOTED : 0; /* overlays 'flags' */
@@ -3574,7 +3581,7 @@ wizterrainwish(struct _readobjnam_data *d)
         }
 
         /* fixups for replaced terrain that aren't handled above */
-        if (IS_FOUNTAIN(oldtyp) || IS_SINK(oldtyp))
+        if (IS_FOUNTAIN(oldtyp) || IS_SINK(oldtyp) || IS_FORGE(oldtyp))
             count_level_features(); /* update level.flags.nfountains,nsinks */
         /* horizontal is overlaid by fountain->blessedftn, grave->disturbed */
         if (IS_FOUNTAIN(oldtyp) || IS_GRAVE(oldtyp)

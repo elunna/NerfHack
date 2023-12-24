@@ -41,6 +41,7 @@ static boolean door_into_nonjoined(coordxy, coordxy);
 static boolean finddpos(coord *, coordxy, coordxy, coordxy, coordxy);
 static void mkinvpos(coordxy, coordxy, int);
 static void mk_knox_portal(coordxy, coordxy);
+static void mkforge(struct mkroom *);
 
 #define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE)
 #define init_vault() gv.vault_x = -1
@@ -736,14 +737,18 @@ void
 count_level_features(void)
 {
     coordxy x, y;
-
-    gl.level.flags.nfountains = gl.level.flags.nsinks = 0;
+    gl.level.flags.nfountains 
+        = gl.level.flags.nsinks 
+        = gl.level.flags.nforges = 0;
+    
     for (y = 0; y < ROWNO; y++)
         for (x = 1; x < COLNO; x++) {
             int typ = levl[x][y].typ;
 
             if (typ == FOUNTAIN)
                 gl.level.flags.nfountains++;
+            else if (typ == FORGE)
+                gl.level.flags.nforges++;
             else if (typ == SINK)
                 gl.level.flags.nsinks++;
         }
@@ -781,6 +786,7 @@ clear_level_structures(void)
     gl.level.bonesinfo = (struct cemetery *) 0;
 
     gl.level.flags.nfountains = 0;
+    gl.level.flags.nforges = 0;
     gl.level.flags.nsinks = 0;
     gl.level.flags.has_shop = 0;
     gl.level.flags.has_vault = 0;
@@ -891,6 +897,8 @@ fill_ordinary_room(struct mkroom *croom, boolean bonus_items)
         mksink(croom);
     if (!rn2(60))
         mkaltar(croom);
+    if (!rn2(40))
+        mkforge(croom);
     x = 80 - (depth(&u.uz) * 2);
     if (x < 2)
         x = 2;
@@ -2043,6 +2051,25 @@ mkfount(struct mkroom *croom)
         levl[m.x][m.y].blessedftn = 1;
 
     gl.level.flags.nfountains++;
+}
+
+static void
+mkforge(struct mkroom *croom)
+{
+    coord m;
+    register int tryct = 0;
+
+    do {
+        if (++tryct > 200)
+            return;
+        if (!somexy(croom, &m))
+            return;
+    } while (occupied(m.x, m.y) || bydoor(m.x, m.y));
+
+    /* Put a forge at m.x, m.y */
+    levl[m.x][m.y].typ = FORGE;
+
+    gl.level.flags.nforges++;
 }
 
 static boolean

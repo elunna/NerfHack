@@ -373,6 +373,16 @@ dosit(void)
         You(sit_message, defsyms[S_sink].explanation);
         Your("%s gets wet.",
              humanoid(gy.youmonst.data) ? "rump" : "underside");
+    } else if (IS_FORGE(typ)) {
+        You(sit_message, defsyms[S_forge].explanation);
+        burn_away_slime();
+        if (likes_fire(gy.youmonst.data) || Fire_resistance) {
+            pline_The("forge feels nice and warm.");
+            return 1;
+        }
+        pline("Argh!  This forge is hot!");
+        /* lava damage */
+        losehp(d(4, 4), "sitting on a forge", KILLED_BY);
     } else if (IS_ALTAR(typ)) {
         You(sit_message, defsyms[S_altar].explanation);
         altar_wrath(u.ux, u.uy);

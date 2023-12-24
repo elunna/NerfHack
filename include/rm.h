@@ -82,17 +82,18 @@ enum levl_typ_types {
     STAIRS    = 26,
     LADDER    = 27,
     FOUNTAIN  = 28,
-    THRONE    = 29,
-    SINK      = 30,
-    GRAVE     = 31,
-    ALTAR     = 32,
-    ICE       = 33,
-    DRAWBRIDGE_DOWN = 34,
-    AIR       = 35,
-    CLOUD     = 36,
+    FORGE     = 29,
+    THRONE    = 30,
+    SINK      = 31,
+    GRAVE     = 32,
+    ALTAR     = 33,
+    ICE       = 34,
+    DRAWBRIDGE_DOWN = 35,
+    AIR       = 36,
+    CLOUD     = 37,
 
-    MAX_TYPE  = 37,
-    MATCH_WALL = 38,
+    MAX_TYPE  = 38,
+    MATCH_WALL = 39,
     INVALID_TYPE = 127
 };
 
@@ -116,6 +117,7 @@ enum levl_typ_types {
 #define IS_LAVA(typ) ((typ) == LAVAPOOL || (typ) == LAVAWALL)
 #define IS_THRONE(typ) ((typ) == THRONE)
 #define IS_FOUNTAIN(typ) ((typ) == FOUNTAIN)
+#define IS_FORGE(typ) ((typ) == FORGE)
 #define IS_SINK(typ) ((typ) == SINK)
 #define IS_GRAVE(typ) ((typ) == GRAVE)
 #define IS_ALTAR(typ) ((typ) == ALTAR)
@@ -389,6 +391,7 @@ struct cemetery {
 struct levelflags {
     uchar nfountains; /* number of fountains on level */
     uchar nsinks;     /* number of sinks on the level */
+    uchar nforges;  /* number of forges on the level */
     /* Several flags that give hints about what's on the level */
     Bitfield(has_shop, 1);
     Bitfield(has_vault, 1);

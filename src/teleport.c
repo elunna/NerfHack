@@ -1121,7 +1121,10 @@ level_tele(void)
     char buf[BUFSZ];
     boolean force_dest = FALSE;
 
-#if 0 /* Disable temporarily */
+    if (iflags.debug_fuzzer)
+        goto random_levtport;
+    
+#if 0 /* Enable for branchport fuzz-testing */
     if (iflags.debug_fuzzer) {
         do {
             newlevel.dnum = rn2(gn.n_dgns);
@@ -1134,6 +1137,7 @@ level_tele(void)
         return;
     }
 #endif
+    
     if ((u.uhave.amulet || In_endgame(&u.uz) || In_sokoban(&u.uz))
         && !wizard) {
         You_feel("very disoriented for a moment.");

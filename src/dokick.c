@@ -801,6 +801,8 @@ kickstr(char *buf, const char *kickobjnam)
         what = "a throne";
     else if (IS_FOUNTAIN(gm.maploc->typ))
         what = "a fountain";
+    else if (IS_FORGE(gm.maploc->typ))
+        what = "a forge";
     else if (IS_GRAVE(gm.maploc->typ))
         what = "a headstone";
     else if (IS_SINK(gm.maploc->typ))
@@ -1281,6 +1283,30 @@ dokick(void)
                     Your("boots get wet.");
                     /* could cause short-lived fumbling here */
                 }
+            exercise(A_DEX, TRUE);
+            return ECMD_TIME;
+        }
+        if (IS_FORGE(gm.maploc->typ)) {
+            if (Levitation) {
+                kick_dumb(x, y);
+                return ECMD_TIME;
+            }
+            You("kick %s.", (Blind ? something : "the forge"));
+            if (!rn2(3)) {
+                kick_ouch(x, y, "");
+                return ECMD_TIME;
+            }
+            if (rn2(2)) {
+                if (uarmf) {
+                    pline("Molten lava from the forge splashes onto your boots.");
+                    fire_damage(uarmf, TRUE, u.ux, u.uy);
+                } else {
+                    pline("Molten lava from the forge splashes onto your %s!",
+                          body_part(FOOT));
+                    losehp(Fire_resistance ? d(2, 6) : d(2, 12),
+                           "molten lava from kicking a forge", KILLED_BY);
+                }
+            }
             exercise(A_DEX, TRUE);
             return ECMD_TIME;
         }
