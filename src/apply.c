@@ -4364,7 +4364,7 @@ doapply(void)
     case CREDIT_CARD:
     case SKELETON_KEY:
         res = (pick_lock(obj, 0, 0, NULL) != 0) ? ECMD_TIME : ECMD_OK;
-        break;
+        return res;
     case PICK_AXE:
     case DWARVISH_MATTOCK:
         res = use_pick_axe(obj);
