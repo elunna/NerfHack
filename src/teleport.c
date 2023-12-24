@@ -1434,7 +1434,8 @@ domagicportal(struct trap *ttmp)
         totype = UTOTYPE_PORTAL;
         stunmsg = !Stunned ? "You feel slightly dizzy."
                             : "You feel dizzier.";
-        make_stunned((HStun & TIMEOUT) + 3L, FALSE);
+        if (!Role_if(PM_RANGER))
+            make_stunned((HStun & TIMEOUT) + 3L, FALSE);
     }
 
     schedule_goto(&target_level, totype, stunmsg, (char *) 0);
