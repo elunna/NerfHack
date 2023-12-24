@@ -738,6 +738,11 @@ end
 function is_eligible(room, mkrm)
    local t = type(room);
    local diff = nh.level_difficulty();
+   
+   if (nh.level_difficulty() < 5) then
+        return false
+   end
+   
    if (t == "table") then
       if (room.mindiff ~= nil and diff < room.mindiff) then
          return false
