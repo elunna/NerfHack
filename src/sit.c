@@ -96,7 +96,7 @@ throne_sit_effect(void)
                 } else {
                     /* permanent see invisible in this instance */
                     Your("vision becomes crystal clear.");
-                    HSee_invisible |= FROMOUTSIDE;
+                    incr_itimeout(&HSee_invisible, rn1(1000, 1000));
                     newsym(u.ux, u.uy);
                 }
             }
@@ -171,7 +171,7 @@ throne_sit_effect(void)
                         break;
                     }
                 }
-                HSee_invisible |= FROMOUTSIDE;
+                incr_itimeout(&HSee_invisible, rn1(1000, 1000));
                 newsym(u.ux, u.uy);
             }
             break;

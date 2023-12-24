@@ -4161,7 +4161,7 @@ domagictrap(void)
                 You_feel("a little more %s now.",
                          HInvis ? "obvious" : "hidden");
             }
-            HInvis = HInvis ? 0 : HInvis | FROMOUTSIDE;
+            set_itimeout(&HInvis, HInvis ? 0 : rnd(1000) + 1000);
             newsym(u.ux, u.uy);
             break;
         case 12: /* a flash of fire */
