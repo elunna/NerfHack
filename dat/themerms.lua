@@ -14,7 +14,8 @@
 --     doesn't get converted into a special room. Without filled,
 --     the room only gets what you define in here.
 --   - use type = "themed" to force a room that's never converted
---     to a special room, such as a shop or a temple.
+--     to a special room, such as a shop or a temple. As a rule of thumb, any
+--     room that can have non-regular-floor terrain should use this.
 --
 -- for each level, the core first calls pre_themerooms_generate(),
 -- then it calls themerooms_generate() multiple times until it decides
@@ -208,9 +209,9 @@ themerooms = {
 
    -- Fake Delphi
    function()
-      des.room({ type = "ordinary", w = 11,h = 9, filled = 1,
+      des.room({ type = "themed", w = 11,h = 9, filled = 1,
                  contents = function()
-                    des.room({ type = "ordinary", x = 4,y = 3, w = 3,h = 3, filled = 1,
+                    des.room({ type = "themed", x = 4,y = 3, w = 3,h = 3, filled = 1,
                                contents = function()
                                   des.door({ state="random", wall="all" });
                                end
@@ -221,7 +222,7 @@ themerooms = {
 
    -- Room in a room
    function()
-      des.room({ type = "ordinary", filled = 1,
+      des.room({ type = "themed", filled = 1,
                  contents = function()
                     des.room({ type = "ordinary",
                                contents = function()
@@ -345,7 +346,7 @@ themerooms = {
    function()
       local wid = 3 + (nh.rn2(3) * 2);
       local hei = 3 + (nh.rn2(3) * 2);
-      des.room({ type = "ordinary", filled = 1, w = wid, h = hei,
+      des.room({ type = "themed", filled = 1, w = wid, h = hei,
                  contents = function(rm)
                     local feature = { "C", "L", "I", "P", "T" };
                     shuffle(feature);
