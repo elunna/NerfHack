@@ -304,20 +304,21 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
     } else if (gc.context.mon_moving && IS_ALTAR(levl[x][y].typ)
                && cansee(x,y)) {
         doaltarobj(obj);
-    } else if (obj->oclass == POTION_CLASS && gl.level.flags.temperature > 0
+    } else if ((obj->oclass == POTION_CLASS || obj->oclass == SCROLL_CLASS) 
+               && gl.level.flags.temperature > 0
                && (levl[x][y].typ == ROOM || levl[x][y].typ == CORR)) {
-        /* Potions are sometimes destroyed when landing on very hot
+        /* Potions/scrolls are sometimes destroyed when landing on very hot
            ground. The basic odds are 50% for nonblessed potions and
            30% for blessed potions; if you have handled the object
            (i.e. it is or was yours), these odds are adjusted by Luck
-           (each Luck point affects them by 2%). Artifact potions
+           (each Luck point affects them by 2%). Artifact items
            would not be affected, if any existed.
 
            Oil is not affected because its boiling point (and flash
            point) are higher than that of water. For example, whale
            oil, one of the substances traditionally used in oil lamps,
            can survive over 100 degrees Centigrade more heat than
-           water can.*/
+           water can. Scrolls of fire are also not affected. */
         if (cansee(x,y)) {
             /* unconditional "ground" is safe as this only runs for
                room and corridor tiles */
@@ -328,17 +329,23 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
         int survival_chance = obj->blessed ? 70 : 50;
         if (obj->invlet)
             survival_chance += Luck * 2;
-        if (obj->otyp == POT_OIL)
+        if (obj->otyp == POT_OIL || obj->otyp == SCR_FIRE)
             survival_chance = 100;
 
         if (!obj_resists(obj, survival_chance, 100)) {
             if (cansee(x,y)) {
                 pline("%s from the heat!",
-                      is_plural(obj) ? "They shatter" : "It shatters");
+                      obj->oclass == SCROLL_CLASS
+                          ? (is_plural(obj) ? "They burn" : "It burns")
+                          : (is_plural(obj) ? "They shatter" : "It shatters"));
             } else {
                 You_hear("a shattering noise.");
             }
-            breakobj(obj, x, y, FALSE, FALSE);
+            if (obj->oclass == SCROLL_CLASS) {
+                delobj(obj);
+            } else {
+                breakobj(obj, x, y, FALSE, FALSE);
+            }
             res = TRUE;
         }
     }
