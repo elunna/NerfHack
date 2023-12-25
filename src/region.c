@@ -1024,6 +1024,9 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
             Your("%s sting.", makeplural(body_part(EYE)));
             make_blinded(1L, FALSE);
         }
+        if (Breathless)
+            return FALSE;
+        
         if (!Poison_resistance) {
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
@@ -1036,6 +1039,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
             monstunseesu(M_SEEN_POISON);
             return FALSE;
         } else {
+            /* Should a poison resistant hero cough here? */
             You("cough!");
             wake_nearto(u.ux, u.uy, 2);
             monstseesu(M_SEEN_POISON);
@@ -1046,9 +1050,11 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         if (!rn2(7))
             erode_armor(mtmp, ERODE_ROT);
         if (m_poisongas_ok(mtmp) != M_POISONGAS_OK) {
-            if (cansee(mtmp->mx, mtmp->my))
+            if (cansee(mtmp->mx, mtmp->my) && has_head(mtmp->data) 
+                && !breathless(mtmp->data)) {
                 pline("%s coughs!", Monnam(mtmp));
-            wake_nearto(mtmp->mx, mtmp->my, 2);
+                wake_nearto(mtmp->mx, mtmp->my, 2);
+            }
             if (heros_fault(reg))
                 setmangry(mtmp, TRUE);
             if (haseyes(mtmp->data) && mtmp->mcansee) {
