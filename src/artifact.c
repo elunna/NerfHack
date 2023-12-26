@@ -1600,6 +1600,24 @@ artifact_hit(
         }
         return TRUE;
     }
+    if (otmp->oartifact == ART_DOOMBLADE && dieroll < 6) {
+        if (verysmall(mdef->data)) {
+            if (youattack)
+                You("violently smash %s with your Doomblade!", mon_nam(mdef));
+            else
+                pline("%s violently smashes %s with its Doomblade!",
+                      Monnam(magr), hittee);
+        } else {
+            if (youattack)
+                You("plunge the %s deeply into %s!", 
+                    artiname(otmp->oartifact), mon_nam(mdef));
+            else
+                pline("%s plunges the %s deeply into %s!",
+                      Monnam(magr), artiname(otmp->oartifact), hittee);
+        }
+        *dmgptr += rnd(4) * 5;
+        return TRUE;
+    }
     
     if (spec_ability(otmp, SPFX_DRLI)) {
         /* some non-living creatures (golems, vortices) are vulnerable to

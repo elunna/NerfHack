@@ -123,6 +123,11 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 600L, NO_COLOR, MOUSER_S_SCALPEL),
     
+    
+    A("Doomblade", ORCISH_SHORT_SWORD, SPFX_RESTR, 0, 0, PHYS(0, 10), 
+      NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 1000L, NO_COLOR, 
+      DOOMBLADE),
+    
     A("Serpent's Tongue", DAGGER, SPFX_RESTR, 0, 0, PHYS(2,0), NO_DFNS, NO_CARY,
       0, A_CHAOTIC, NON_PM, NON_PM, 400L, NO_COLOR, SERPENT_S_TONGUE),
     
