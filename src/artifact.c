@@ -691,6 +691,13 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         else
             ESearching &= ~wp_mask;
     }
+    if (otmp->oartifact == ART_ORIGIN) {
+        if (on) {
+            pline("Your mind is flooded with magical knowledge.");
+        } else {
+            pline("You feel less in touch with your magical abilities.");
+        }
+    }
     if (spfx & SPFX_HALRES) {
         /* make_hallucinated must (re)set the mask itself to get
          * the display right */

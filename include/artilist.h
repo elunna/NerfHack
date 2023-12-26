@@ -187,6 +187,13 @@ static NEARDATA struct artifact artilist[] = {
     A("Disrupter", MACE, (SPFX_RESTR | SPFX_WARN | SPFX_DFLAG2), 0, M2_UNDEAD,
       PHYS(5, 30), NO_DFNS, NO_CARY, 0, A_NEUTRAL, PM_CLERIC, NON_PM, 500L,
       NO_COLOR, DISRUPTER),
+    /*
+    *      Quarterstaff that grants teleport control, and also greatly increases
+    *      spellcasting ability (as a robe).
+     */
+    A("Origin", QUARTERSTAFF, (SPFX_RESTR | SPFX_TCTRL), 0, 0,
+      PHYS(2, 6), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
+      CLR_MAGENTA, ORIGIN),
     
     /*
      *      Ah, never shall I forget the cry,
