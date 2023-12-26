@@ -2194,7 +2194,7 @@ thitmonst(
                     pline("%s explodes in a ball of fire!", Doname2(obj));
                 else
                     You_hear("an explosion");
-                explode(gb.bhitpos.x, gb.bhitpos.y, ZT_SPELL(ZT_FIRE), d(4, 6),
+                explode(gb.bhitpos.x, gb.bhitpos.y, ZT_SPELL(ZT_FIRE), d(2, 6),
                         WEAPON_CLASS, EXPL_FIERY);
             }
 

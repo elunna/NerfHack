@@ -96,10 +96,12 @@ static NEARDATA struct artifact artilist[] = {
     A("Grimtooth", ORCISH_DAGGER, (SPFX_RESTR | SPFX_WARN | SPFX_DFLAG2),
       0, M2_ELF, PHYS(2, 6), NO_DFNS,
       NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ORC, 300L, CLR_RED, GRIMTOOTH),
-    /* Auto-explode code in dothrow.c, uhitm.c */
+    
     A("Hellfire", CROSSBOW, (SPFX_RESTR | SPFX_DEFN), 0, 0, 
-      PHYS(5, 0), DFNS(AD_FIRE), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 
+      PHYS(5, 7), DFNS(AD_FIRE), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 
       4000L, CLR_RED, HELLFIRE),
+    /* Auto-explode code in dothrow.c, mthrowu.c
+     * Extra damage handled in uhitm.c */
    
     /*
      *      Orcrist and Sting have same alignment as elves.
@@ -137,9 +139,10 @@ static NEARDATA struct artifact artilist[] = {
       0, A_CHAOTIC, NON_PM, NON_PM, 400L, NO_COLOR, SERPENT_S_TONGUE),
     
     A("Plague", ORCISH_BOW, (SPFX_RESTR | SPFX_DEFN), 0, 0,
-      PHYS(5, 0), DFNS(AD_DISE), NO_CARY, 0, 
+      PHYS(5, 7), DFNS(AD_DISE), NO_CARY, 0, 
       A_CHAOTIC, NON_PM, NON_PM, 4000L, NO_COLOR, PLAGUE),
-    /* Auto-poison code in dothrow.c */
+    /* Auto-poison code in dothrow.c 
+     * +d7 damage handled in uhitm.c */
     
     /*
     *       Seafoam grants waterbreathing, and is generated rustproof.

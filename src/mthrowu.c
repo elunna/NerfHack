@@ -178,7 +178,7 @@ drop_throw(
     /* D: Detonate crossbow bolts from Hellfire if they hit */
     if (ohit && mon_launcher && mon_launcher->oartifact == ART_HELLFIRE
         && is_ammo(obj) && ammo_and_launcher(obj, mon_launcher)) {
-        explode(x, y, -ZT_SPELL(ZT_FIRE), d(4, 6),
+        explode(x, y, -ZT_SPELL(ZT_FIRE), d(2, 6),
                 WEAPON_CLASS, EXPL_FIERY);
         
         /* D: Exploding bolts will be destroyed */
@@ -608,7 +608,6 @@ m_throw(
         /* D: Hellfire is handled in drop_throw */
     }
     
-    
     if (!canseemon(mon))
         clear_dknown(singleobj); /* singleobj->dknown = 0; */
 
@@ -698,6 +697,16 @@ m_throw(
                         if (singleobj->otyp == ELVEN_ARROW)
                             dam++;
                     }
+                    /* Hellfire physical bonus */
+                    if (MON_WEP(mon) && MON_WEP(mon)->oartifact == ART_HELLFIRE 
+                        && singleobj->otyp == CROSSBOW_BOLT)
+                        dam += rnd(7);
+                    
+                    /* Plague physical bonus */
+                    if (MON_WEP(mon) && MON_WEP(mon)->oartifact == ART_PLAGUE 
+                        &&  objects[singleobj->otyp].oc_skill == P_BOW)
+                        dam += rnd(7);
+                    
                     if (bigmonst(gy.youmonst.data))
                         hitv++;
                     hitv += 8 + singleobj->spe;

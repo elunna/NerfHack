@@ -1084,6 +1084,13 @@ hmon_hitmon_weapon_melee(
         }
         hmd->hittxt = TRUE;
     }
+
+    if (uwep && (uwep->oartifact == ART_PLAGUE 
+                 || uwep->oartifact == ART_HELLFIRE)
+        && ammo_and_launcher(obj, uwep)) {
+        hmd->dmg += rnd(7);
+    }
+    
     if (hmd->material == SILVER && mon_hates_silver(mon)) {
         hmd->silvermsg = hmd->silverobj = TRUE;
     }
@@ -1127,7 +1134,8 @@ hmon_hitmon_weapon(
         /* or strike with a missile in your hand... */
         || (!hmd->thrown && (is_missile(obj) || is_ammo(obj)))
         /* or use a pole at short range and not mounted... */
-        || (!hmd->thrown && !u.usteed && (is_pole(obj) && obj->otyp != SCYTHE))
+        || (!hmd->thrown && !u.usteed 
+            && (is_pole(obj) && obj->otyp != SCYTHE))
         /* or throw a missile without the proper bow... */
         || (is_ammo(obj) && (hmd->thrown != HMON_THROWN
                              || !ammo_and_launcher(obj, uwep)))) {
