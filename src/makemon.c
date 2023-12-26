@@ -180,8 +180,27 @@ m_initweap(register struct monst *mtmp)
         break;
     case S_IMP:
         if (mm == PM_REDCAP) {
-            /* Sorry, we don't have scythes! */
-            (void) mongets(mtmp, BARDICHE);
+            switch (rn2(10)) {
+            case 0: (void) mongets(mtmp, TWO_HANDED_SWORD); break;
+            case 1: (void) mongets(mtmp, BATTLE_AXE); break;
+            case 2: (void) mongets(mtmp, DWARVISH_MATTOCK); break;
+            case 3: (void) mongets(mtmp, BROADSWORD); break;
+            default:
+                (void) mongets(mtmp, SCYTHE);
+            }
+            
+            /* They also traditionally get slings */
+            otmp = mongets(mtmp, FLINT);
+            otmp->quan = 6 + rnd(6);
+            otmp->owt = weight(otmp);
+            (void) mongets(mtmp, SLING);
+            
+            if (rn2(2))
+                (void) mongets(mtmp, ELVEN_LEATHER_HELM);
+            if (rn2(2))
+                (void) mongets(mtmp, IRON_SHOES);
+            if (rn2(2))
+                (void) mongets(mtmp, LEATHER_CLOAK);
         }
         break;
     case S_HUMAN:
