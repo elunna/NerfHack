@@ -142,7 +142,6 @@ does_block(int x, int y, struct rm *lev)
 {
     struct obj *obj;
     struct monst *mon;
-    int i;
 
 #ifdef DEBUG
     /* set DEBUGFILES=seethru in environment to see through bubbles */
