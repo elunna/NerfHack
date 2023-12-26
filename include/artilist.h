@@ -64,6 +64,11 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL | SPFX_DRLI), 0, 0,
       DRLI(5, 2), DRLI(0, 0), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 8000L,
       NO_COLOR, STORMBRINGER),
+    
+    A("The End", SCYTHE, 
+      (SPFX_RESTR | SPFX_DEFN), 0, 0, COLD(3, 20), DFNS(AD_DRLI), NO_CARY, 0, 
+      A_NEUTRAL, NON_PM, NON_PM, 6000L, NO_COLOR, THE_END),
+    
     /*
      *      Mjollnir can be thrown when wielded if hero has 25 Strength
      *      (usually via gauntlets of power but possible with rings of
