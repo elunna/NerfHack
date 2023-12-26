@@ -1985,6 +1985,7 @@ thitmonst(
     register int disttmp; /* distance modifier */
     int otyp = obj->otyp, hmode;
     boolean guaranteed_hit = engulfing_u(mon);
+    boolean hellfiring = uwep && uwep->oartifact == ART_HELLFIRE;
     int dieroll;
 
     hmode = (obj == uwep) ? HMON_APPLIED
@@ -2181,6 +2182,17 @@ thitmonst(
                     cutworm(mon, gb.bhitpos.x, gb.bhitpos.y, chopper);
             }
             exercise(A_DEX, TRUE);
+
+            /* Detonate bolts shot by Hellfire */
+            if (hellfiring && ammo_and_launcher(obj, uwep)) {
+                if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                    pline("%s explodes in a ball of fire!", Doname2(obj));
+                else
+                    You_hear("an explosion");
+                explode(gb.bhitpos.x, gb.bhitpos.y, ZT_SPELL(ZT_FIRE), d(4, 6),
+                        WEAPON_CLASS, EXPL_FIERY);
+            }
+
             /* if hero was swallowed and projectile killed the engulfer,
                'obj' got added to engulfer's inventory and then dropped,
                so we can't safely use that pointer anymore; it escapes

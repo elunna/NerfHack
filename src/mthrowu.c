@@ -166,7 +166,8 @@ drop_throw(
     coordxy y)
 {
     boolean broken;
-
+    struct obj *mon_launcher = gm.marcher ? MON_WEP(gm.marcher) : NULL;
+    
     if (obj->otyp == CREAM_PIE || obj->oclass == VENOM_CLASS
         || (ohit && obj->otyp == EGG)) {
         broken = TRUE;
@@ -174,6 +175,16 @@ drop_throw(
         broken = (ohit && should_mulch_missile(obj));
     }
 
+    /* D: Detonate crossbow bolts from Hellfire if they hit */
+    if (ohit && mon_launcher && mon_launcher->oartifact == ART_HELLFIRE
+        && is_ammo(obj) && ammo_and_launcher(obj, mon_launcher)) {
+        explode(x, y, -ZT_SPELL(ZT_FIRE), d(4, 6),
+                WEAPON_CLASS, EXPL_FIERY);
+        
+        /* D: Exploding bolts will be destroyed */
+        broken = TRUE;
+    }
+    
     if (broken) {
         delobj(obj);
     } else {
