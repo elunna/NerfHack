@@ -1317,6 +1317,11 @@ makemon(
             (void) hideunder(mtmp);
         }
         break;
+    case S_PIERCER:
+    case S_TRAPPER:
+        /* These should always generate hidden if possible */
+        hide_monst(mtmp);
+        break;
     case S_LIGHT:
     case S_ELEMENTAL:
         if (mndx == PM_STALKER || mndx == PM_BLACK_LIGHT) {

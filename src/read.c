@@ -2938,7 +2938,7 @@ create_particular_parse(
     d->genderconf = -1;  /* no confusion on which gender to assign */
     d->randmonst = FALSE;
     d->maketame = d->makepeaceful = d->makehostile = FALSE;
-    d->sleeping = d->saddled = d->invisible = d->hidden = FALSE;
+    d->sleeping = d->saddled = d->invisible = FALSE;
 
     /* quantity */
     if (digit(*bufp)) {
