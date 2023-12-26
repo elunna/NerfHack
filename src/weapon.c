@@ -235,6 +235,7 @@ dmgval(struct obj *otmp, struct monst *mon)
 
         case FLAIL:
         case RANSEUR:
+        case SCYTHE:
         case VOULGE:
             tmp += rnd(4);
             break;
@@ -284,6 +285,7 @@ dmgval(struct obj *otmp, struct monst *mon)
         case BROADSWORD:
         case ELVEN_BROADSWORD:
         case RUNESWORD:
+        case SCYTHE:
         case VOULGE:
             tmp += rnd(4);
             break;
@@ -507,7 +509,8 @@ static NEARDATA const int rwep[] = {
     /* BOOMERANG, */ CREAM_PIE
 };
 
-static NEARDATA const int pwep[] = { HALBERD,       BARDICHE, SPETUM,
+static NEARDATA const int pwep[] = { SCYTHE,
+                                     HALBERD,       BARDICHE, SPETUM,
                                      BILL_GUISARME, VOULGE,   RANSEUR,
                                      GUISARME,      GLAIVE,   LUCERN_HAMMER,
                                      BEC_DE_CORBIN, FAUCHARD, PARTISAN,
@@ -648,6 +651,7 @@ monmightthrowwep(struct obj *obj)
 /* Weapons in order of preference */
 static const NEARDATA short hwep[] = {
     CORPSE, /* cockatrice corpse */
+    SCYTHE,
     TSURUGI, RUNESWORD, DWARVISH_MATTOCK, TWO_HANDED_SWORD, BATTLE_AXE,
     KATANA, CRYSKNIFE, TRIDENT, LONG_SWORD, ELVEN_BROADSWORD,
     BROADSWORD, SCIMITAR, SILVER_SABER, MORNING_STAR, ELVEN_SHORT_SWORD,
