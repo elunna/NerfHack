@@ -1615,8 +1615,11 @@ dogaze(void)
             break;
         }
     }
-    if (adtyp != AD_CONF && adtyp != AD_FIRE 
-        && adtyp != AD_BLND && adtyp != AD_TLPT ) {
+    if (adtyp != AD_CONF 
+        && adtyp != AD_FIRE 
+        && adtyp != AD_BLND 
+        && adtyp != AD_TLPT
+        && adtyp != AD_STUN) {
         impossible("gaze attack %d?", adtyp);
         return ECMD_OK;
     }
@@ -1712,7 +1715,10 @@ dogaze(void)
                         if(DEADMONSTER(mtmp))
                             killed(mtmp);
                     }
-
+                } else if (adtyp == AD_STUN) {
+                    pline("%s %s for a moment.", Monnam(mtmp),
+                        makeplural(stagger(mtmp->data, "stagger")));
+                    mtmp->mstun = 1;
                 } else if (adtyp == AD_TLPT) {
                     char nambuf[BUFSZ];
                     /* record the name before losing sight of monster */
