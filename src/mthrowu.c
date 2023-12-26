@@ -565,6 +565,7 @@ m_throw(
 {
     struct monst *mtmp;
     struct obj *singleobj;
+    struct obj *mwep = mon ? MON_WEP(mon) : (struct obj *) 0;
     boolean forcehit;
     char sym = obj->oclass;
     int hitu = 0, oldumort, blindinc = 0;
@@ -599,6 +600,15 @@ m_throw(
     gt.thrownobj = singleobj;
 
     singleobj->owornmask = 0; /* threw one of multiple weapons in hand? */
+    
+    /* D: Special launcher effects */
+    if (mwep && is_ammo(singleobj) && ammo_and_launcher(singleobj, mwep)) {
+        if (mwep->oartifact == ART_PLAGUE && is_poisonable(singleobj))
+            singleobj->opoisoned = 1;
+        /* D: Hellfire is handled in drop_throw */
+    }
+    
+    
     if (!canseemon(mon))
         clear_dknown(singleobj); /* singleobj->dknown = 0; */
 

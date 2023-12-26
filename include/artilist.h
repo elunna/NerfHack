@@ -136,6 +136,11 @@ static NEARDATA struct artifact artilist[] = {
     A("Serpent's Tongue", DAGGER, SPFX_RESTR, 0, 0, PHYS(2,0), NO_DFNS, NO_CARY,
       0, A_CHAOTIC, NON_PM, NON_PM, 400L, NO_COLOR, SERPENT_S_TONGUE),
     
+    A("Plague", ORCISH_BOW, (SPFX_RESTR | SPFX_DEFN), 0, 0,
+      PHYS(5, 0), DFNS(AD_DISE), NO_CARY, 0, 
+      A_CHAOTIC, NON_PM, NON_PM, 4000L, NO_COLOR, PLAGUE),
+    /* Auto-poison code in dothrow.c */
+    
     /*
     *       Seafoam grants waterbreathing, and is generated rustproof.
      */

@@ -1470,6 +1470,11 @@ throwit(struct obj *obj,
                         || Hallucination || Fumbling),
             tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
 
+    /* KMH -- Handle Plague here */
+    if (uwep && uwep->oartifact == ART_PLAGUE &&
+        ammo_and_launcher(obj, uwep) && is_poisonable(obj))
+        obj->opoisoned = 1;
+    
     gn.notonhead = FALSE; /* reset potentially stale value */
     /* From UnNetHack: The chances of slipping a cursed greased object have been
      * separated.
