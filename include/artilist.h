@@ -98,7 +98,7 @@ static NEARDATA struct artifact artilist[] = {
       NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ORC, 300L, CLR_RED, GRIMTOOTH),
     /* Auto-explode code in dothrow.c, uhitm.c */
     A("Hellfire", CROSSBOW, (SPFX_RESTR | SPFX_DEFN), 0, 0, 
-      PHYS(5, 7), DFNS(AD_FIRE), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 
+      PHYS(5, 0), DFNS(AD_FIRE), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 
       4000L, CLR_RED, HELLFIRE),
    
     /*
