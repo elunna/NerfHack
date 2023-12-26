@@ -131,6 +131,14 @@ static NEARDATA struct artifact artilist[] = {
     A("Serpent's Tongue", DAGGER, SPFX_RESTR, 0, 0, PHYS(2,0), NO_DFNS, NO_CARY,
       0, A_CHAOTIC, NON_PM, NON_PM, 400L, NO_COLOR, SERPENT_S_TONGUE),
     
+    /*
+    *       Seafoam grants waterbreathing, and is generated rustproof.
+     */
+    A("Poseidon\'s Trident", TRIDENT, (SPFX_RESTR | SPFX_BREATHE), 0, 0,
+      PHYS(3, 7), NO_DFNS, NO_CARY, WWALKING, A_CHAOTIC, NON_PM, NON_PM,
+      1500L, NO_COLOR, POSEIDON_S_TRIDENT),
+    
+    
     A("Frost Brand", LONG_SWORD, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       COLD(5, 0), COLD(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, FROST_BRAND),

@@ -782,6 +782,12 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         else
             EProtection &= ~wp_mask;
     }
+    if (spfx & SPFX_BREATHE) {
+        if (on)
+            EMagical_breathing |= wp_mask;
+        else
+            EMagical_breathing &= ~wp_mask;
+    }
 
     if (wp_mask == W_ART && !on && oart->inv_prop) {
         /* might have to turn off invoked power too */
@@ -2041,6 +2047,23 @@ arti_invoke(struct obj *obj)
             else
                 Your("body seems to unfade...");
             break;
+        case WWALKING:
+            if (on) {
+                Your("feet are surrounded by a swirl of foam!");
+                do_earthquake(7);
+                if (u.uinwater)
+                    spoteffects(TRUE);
+            } else {
+                You_feel("as if you are no longer at equilibrium.");
+                if ((is_pool(u.ux, u.uy) || is_lava(u.ux, u.uy))
+                    && !Levitation && !Flying && !is_clinger(gy.youmonst.data)
+                    && !gc.context.takeoff.cancelled_don
+                    /* avoid recursive call to lava_effects() */
+                    && !iflags.in_lava_effects) {
+                    spoteffects(TRUE);
+                }
+            }
+            break;
         }
     }
 
@@ -2172,6 +2195,7 @@ abil_to_spfx(long *abil)
         { &EHalf_spell_damage, SPFX_HSPDAM },
         { &EHalf_physical_damage, SPFX_HPHDAM },
         { &EReflecting, SPFX_REFLECT },
+        { &EMagical_breathing, SPFX_BREATHE },
     };
     int k;
 
