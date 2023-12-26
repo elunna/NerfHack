@@ -39,13 +39,13 @@ des.object("boulder",10,6)
 des.object("boulder",11,6)
 
 -- Traps
-des.trap("pit",2,6)
-des.trap("pit",2,7)
-des.trap("pit",4,9)
-des.trap("pit",5,9)
-des.trap("pit",6,9)
-des.trap("pit",7,9)
-des.trap("pit",8,9)
+des.trap("hole",2,6)
+des.trap("hole",2,7)
+des.trap("hole",4,9)
+des.trap("hole",5,9)
+des.trap("hole",6,9)
+des.trap("hole",7,9)
+des.trap("hole",8,9)
 
 -- Random objects
 des.object({ class = "%" });
