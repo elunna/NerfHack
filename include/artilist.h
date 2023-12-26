@@ -113,6 +113,11 @@ static NEARDATA struct artifact artilist[] = {
       STUN(3, 4), DFNS(AD_MAGM), NO_CARY, 0, A_NEUTRAL, PM_WIZARD, NON_PM,
       3500L, NO_COLOR, MAGICBANE),
 
+    A("Mouser\'s Scalpel", RAPIER,
+      SPFX_RESTR, 0, 0,
+      PHYS(5, 1), NO_DFNS, NO_CARY, 0,
+      A_NEUTRAL, NON_PM, NON_PM, 600L, NO_COLOR, MOUSER_S_SCALPEL),
+    
     A("Frost Brand", LONG_SWORD, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       COLD(5, 0), COLD(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, FROST_BRAND),

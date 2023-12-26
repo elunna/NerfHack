@@ -1356,6 +1356,7 @@ artifact_hit(
     const char *wepdesc;
     static const char you[] = "you";
     char hittee[BUFSZ];
+    int time = 1; /* For Mouser's Scalpel */
 
     Strcpy(hittee, youdefend ? you : mon_nam(mdef));
 
@@ -1543,6 +1544,26 @@ artifact_hit(
             }
         }
     }
+    
+    /* Credits to BarclayII for Mouser's Scalpel rename and mechanic */
+    if (otmp->oartifact == ART_MOUSER_S_SCALPEL && dieroll < 10) { 
+        /* faster than a speeding bullet is the Gray Mouser... */
+        There("is a flurry of blows!");
+        /* I suppose this could theoretically continue forever... */
+        do {
+            *dmgptr += rnd(8) + 1 + otmp->spe;
+            time++;
+            dieroll = rn2(11);
+        } while (dieroll < 5);
+            
+        if (time == 1)
+            pline_The("rapier strikes %s!", hittee);
+        else if (time == 2)
+            pline_The("rapier strikes %s twice!", hittee);
+        else
+            pline_The("rapier strikes %s %d times in a row!", hittee, time); 
+    }
+    
     if (spec_ability(otmp, SPFX_DRLI)) {
         /* some non-living creatures (golems, vortices) are vulnerable to
            life drain effects so can get "<Arti> draws the <life>" feedback */
