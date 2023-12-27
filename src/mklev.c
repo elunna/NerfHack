@@ -1651,6 +1651,8 @@ mktrap_victim(struct trap *ttmp)
     case ROCKTRAP:
         otmp = mksobj(ROCK, TRUE, FALSE);
         break;
+    case SPEAR_TRAP:
+        break;
     default:
         /* no item dropped by the trap */
         break;
@@ -1818,6 +1820,10 @@ mktrap(
                     kind = NO_TRAP;
                 break;
             case LANDMINE:
+                if (lvl < 6)
+                    kind = NO_TRAP;
+                break;
+            case SPEAR_TRAP:
                 if (lvl < 6)
                     kind = NO_TRAP;
                 break;

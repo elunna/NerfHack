@@ -35,6 +35,7 @@ static int trapeffect_magicbeam_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_anti_magic(struct monst *, struct trap *, unsigned);
 static int trapeffect_poly_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_landmine(struct monst *, struct trap *, unsigned);
+static int trapeffect_spear_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_rolling_boulder_trap(struct monst *, struct trap *,
                                            unsigned);
 static int trapeffect_magic_portal(struct monst *, struct trap *, unsigned);
@@ -1095,6 +1096,7 @@ floor_trigger(int ttyp)
     case BEAR_TRAP:
     case LANDMINE:
     case ROLLING_BOULDER_TRAP:
+    case SPEAR_TRAP:
     case SLP_GAS_TRAP:
     case RUST_TRAP:
     case FIRE_TRAP:
@@ -2594,6 +2596,84 @@ trapeffect_landmine(
 }
 #undef MINE_TRIGGER_WT
 
+
+static int
+trapeffect_spear_trap(
+    struct monst* mtmp,
+    struct trap* trap,
+    unsigned int trflags UNUSED)
+{
+    boolean is_you = mtmp == &gy.youmonst;
+
+    if (is_you) {
+        feeltrap(trap);
+        if (u.usteed)
+            pline("A spear shoots up from a hole in the ground at %s!",
+                  mon_nam(u.usteed));
+        else
+            pline("A spear shoots up from a hole in the ground at you!");
+        
+        if (u.usteed) {
+            /* trap hits steed instead of you */
+            (void) steedintrap(trap, (struct obj *) 0);
+        } else if ((Levitation || Flying) && !rn2(4)) {
+            pline("But it isn't long enough to reach you.");
+        } else if (thick_skinned(gy.youmonst.data)) {
+            pline("But it breaks off against your thick hide.");
+            deltrap(trap);
+            newsym(u.ux, u.uy);
+        } else if (unsolid(gy.youmonst.data)) {
+            pline("But it passes right through you!");
+        } else {
+            pline("It %s %s!  Ouch, that hurts!",
+                  rn2(2) ? "pierces your" : "stabs you in the",
+                  body_part(LEG));
+            set_wounded_legs(rn2(2) ? RIGHT_SIDE : LEFT_SIDE, rn1(10, 10));
+            exercise(A_DEX, FALSE);
+            losehp(Maybe_Half_Phys(rnd(8) + 6), "spear trap", KILLED_BY_AN);
+        }
+    } else {
+        boolean trapkilled = FALSE;
+        boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
+
+        if (in_sight) {
+            seetrap(trap);
+            pline("A spear stabs up from a hole in the ground!");
+        }
+
+        /* update steed position, if it exists, since it might die */
+        mtmp->mx = mtmp->mx;
+        mtmp->my = mtmp->my;
+        if (is_flyer(mtmp->data)) {
+            if (in_sight)
+                pline("The spear isn't long enough to reach %s.",
+                      mon_nam(mtmp));
+        } else if (thick_skinned(mtmp->data)) {
+            if (in_sight)
+                pline("But it breaks off against %s.",
+                      mon_nam(mtmp));
+            deltrap(trap);
+            newsym(mtmp->mx, mtmp->my);
+        } else if (unsolid(mtmp->data)) {
+            if (in_sight)
+                pline("It passes right through %s!",
+                      mon_nam(mtmp));
+        } else {
+            if ((DEADMONSTER(mtmp)
+                 || thitm(0, mtmp, (struct obj *) 0,
+                          (rnd(8) + 6), FALSE)))
+                trapkilled = TRUE;
+            else if (in_sight && !DEADMONSTER(mtmp))
+                pline("%s is skewered!", Monnam(mtmp));
+        }
+        return trapkilled ? Trap_Killed_Mon
+               : mtmp->mtrapped ? Trap_Caught_Mon
+                                : Trap_Effect_Finished;
+    }
+    
+    return Trap_Effect_Finished;
+}
+
 static int
 trapeffect_rolling_boulder_trap(
     struct monst* mtmp,
@@ -2919,6 +2999,8 @@ trapeffect_selector(
         return trapeffect_poly_trap(mtmp, trap, trflags);
     case ROLLING_BOULDER_TRAP:
         return trapeffect_rolling_boulder_trap(mtmp, trap, trflags);
+    case SPEAR_TRAP:
+        return trapeffect_spear_trap(mtmp, trap, trflags);
     case VIBRATING_SQUARE:
         return trapeffect_vibrating_square(mtmp, trap, trflags);
     default:
@@ -3069,6 +3151,24 @@ steedintrap(struct trap *trap, struct obj *otmp)
                 pline("%s suddenly falls asleep!", Monnam(steed));
         }
         steedhit = TRUE;
+        break;
+    case SPEAR_TRAP:
+        pline("The spear stabs %s%s!",
+              (is_flyer(steed->data) || Levitation || Flying) ? "at " : "",
+              mon_nam(steed));
+        if (is_flyer(steed->data) || Levitation || Flying) {
+            pline("But it isn't long enough to reach %s.", mon_nam(steed));
+            break;
+        } else if (thick_skinned(steed->data)) {
+            pline("But it breaks off against %s thick hide.", s_suffix(mon_nam(steed)));
+            deltrap(trap);
+            newsym(steed->mx, steed->my);
+        } else {
+            trapkilled = (DEADMONSTER(steed)
+                          || thitm(0, steed, (struct obj*) 0,
+                                   (rnd(8) + 6), FALSE));
+            steedhit = TRUE;
+        }
         break;
     case LANDMINE:
         trapkilled = thitm(0, steed, (struct obj *) 0, rnd(16), FALSE);
