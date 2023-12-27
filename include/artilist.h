@@ -130,6 +130,20 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 600L, NO_COLOR, MOUSER_S_SCALPEL),
     
+    /* Some "worse" sacrifice gifts are needed to avoid making #offer
+    *  overpowered. Used to be PM_KNIGHT. */
+    A("Carnwennan", KNIFE, (SPFX_RESTR | SPFX_SEARCH | SPFX_STLTH), 0, 0,
+      PHYS(3, 8), NO_DFNS, NO_CARY, 0, A_LAWFUL,
+      NON_PM, NON_PM, 400L, NO_COLOR, CARNWENNAN),
+    
+    A("Quick Blade", ELVEN_SHORT_SWORD,
+      SPFX_RESTR, 0, 0, PHYS(9, 2), NO_DFNS, NO_CARY, 0, 
+      A_LAWFUL, NON_PM, NON_PM, 1000L, NO_COLOR, QUICK_BLADE),
+    
+    /* Shield of King Arthur. */
+    A("Pridwen", LARGE_SHIELD, (SPFX_RESTR | SPFX_HPHDAM | SPFX_DEFN), 0, 0,
+      NO_ATTK, NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
+      CLR_MAGENTA, PRIDWEN),
     
     A("Doomblade", ORCISH_SHORT_SWORD, SPFX_RESTR, 0, 0, PHYS(0, 10), 
       NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 1000L, NO_COLOR, 

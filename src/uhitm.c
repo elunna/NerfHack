@@ -5481,6 +5481,7 @@ m_is_steadfast(struct monst *mtmp)
 {
     boolean is_u = (mtmp == &gy.youmonst);
     struct obj *otmp = is_u ? uwep : MON_WEP(mtmp);
+    struct obj *shield = is_u ? uarms : which_armor(mtmp, W_ARMS);
 
     /* must be on the ground (or in water) */
     if ((is_u ? (Flying || Levitation)
@@ -5489,7 +5490,8 @@ m_is_steadfast(struct monst *mtmp)
         || (Is_waterlevel(&u.uz) && !is_pool(u.ux, u.uy))) /* air bubble */
         return FALSE;
 
-    if (is_art(otmp, ART_GIANTSLAYER))
+    if (is_art(otmp, ART_GIANTSLAYER) 
+        || (shield && shield->oartifact == ART_PRIDWEN))
         return TRUE;
 
     /* steadfast if carrying any loadstone (and not floating or flying);
