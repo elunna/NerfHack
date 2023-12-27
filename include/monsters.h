@@ -2535,7 +2535,7 @@
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_HUMAN | M2_PEACEFUL
             | M2_STRONG | M2_COLLECT | M2_MAGIC,
-        M3_INFRAVISIBLE | M3_ACCURATE, 15, HI_DOMESTIC, SHOPKEEPER),
+        M3_INFRAVISIBLE | M3_ACCURATE, 15, CLR_YELLOW, SHOPKEEPER),
     MON("guard", S_HUMAN, LVL(12, 12, 10, 40, 10), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2569,7 +2569,7 @@
         SIZ(WT_HUMAN, 400, MS_PRIEST, MZ_HUMAN), MR_ELEC, 0,
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_HUMAN | M2_LORD | M2_PEACEFUL | M2_COLLECT,
-        M3_INFRAVISIBLE, 15, CLR_WHITE, ALIGNED_CLERIC),
+        M3_INFRAVISIBLE, 15, CLR_YELLOW, ALIGNED_CLERIC),
     /* high priests always have epri and always have ispriest set */
     MON3("high priest", "high priestess", "high cleric",
         S_HUMAN, LVL(25, 15, 7, 70, 0), (G_NOGEN | G_UNIQ),
