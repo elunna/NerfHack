@@ -2057,17 +2057,16 @@ static void
 mkforge(struct mkroom *croom)
 {
     coord m;
-    register int tryct = 0;
 
-    do {
-        if (++tryct > 200)
-            return;
-        if (!somexy(croom, &m))
-            return;
-    } while (occupied(m.x, m.y) || bydoor(m.x, m.y));
+    if (croom->rtype != OROOM)
+        return;
+
+    if (!find_okay_roompos(croom, &m))
+        return;
 
     /* Put a forge at m.x, m.y */
-    levl[m.x][m.y].typ = FORGE;
+    if (!set_levltyp(m.x, m.y, FORGE))
+        return;
 
     gl.level.flags.nforges++;
 }
