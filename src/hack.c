@@ -45,9 +45,10 @@ static void maybe_wail(void);
 /* XXX: if more sources of water walking than just boots are added,
    cause_known(insight.c) should be externified and used for this */
 #define Known_wwalking \
-    (uarmf && uarmf->otyp == WATER_WALKING_BOOTS \
-     && objects[WATER_WALKING_BOOTS].oc_name_known \
-     && !u.usteed)
+    ((uarmf && uarmf->otyp == WATER_WALKING_BOOTS \
+     && objects[WATER_WALKING_BOOTS].oc_name_known && !u.usteed) \
+     || (uwep && uwep->oartifact == ART_POSEIDON_S_TRIDENT && EWwalking)      \
+     || HWwalking)
 #define Known_lwalking \
     (Known_wwalking && Fire_resistance \
      && uarmf->oerodeproof && uarmf->rknown)
