@@ -4248,6 +4248,7 @@ static const struct {
                    { "sleep gas", SLP_GAS_TRAP },
                    { "rust", RUST_TRAP },
                    { "fire", FIRE_TRAP },
+                   { "cold", COLD_TRAP },
                    { "pit", PIT },
                    { "spiked pit", SPIKED_PIT },
                    { "hole", HOLE },

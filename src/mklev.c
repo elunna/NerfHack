@@ -1840,6 +1840,10 @@ mktrap(
                 if (lvl < 10)
                     kind = NO_TRAP;
                 break;
+            case COLD_TRAP:
+                if (lvl < 12)
+                    kind = NO_TRAP;
+                break;
             case FIRE_TRAP:
                 if (!Inhell)
                     kind = NO_TRAP;
