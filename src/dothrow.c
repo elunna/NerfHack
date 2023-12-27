@@ -954,7 +954,7 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
         } else if (ttmp->ttyp == VIBRATING_SQUARE) {
             pline("The ground vibrates as you pass it.");
             dotrap(ttmp, NO_TRAP_FLAGS); /* doesn't print messages */
-        } else if (ttmp->ttyp == FIRE_TRAP) {
+        } else if (ttmp->ttyp == FIRE_TRAP || ttmp->ttyp == COLD_TRAP) {
             dotrap(ttmp, NO_TRAP_FLAGS);
         } else if ((is_pit(ttmp->ttyp) || is_hole(ttmp->ttyp))
                    && Sokoban) {
