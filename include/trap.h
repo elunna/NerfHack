@@ -78,7 +78,8 @@ enum trap_types {
     MAGIC_TRAP   = 20,
     ANTI_MAGIC   = 21,
     POLY_TRAP    = 22,
-    VIBRATING_SQUARE = 23, /* not a trap but shown/remembered as if one
+    MAGIC_BEAM_TRAP  = 23,
+    VIBRATING_SQUARE = 24, /* not a trap but shown/remembered as if one
                             * once it has been discovered */
 
     /* trapped door and trapped chest aren't traps on the map, but they
@@ -86,10 +87,10 @@ enum trap_types {
        comes in view of them and sees the feature or object;
        key-using or door-busting monsters who survive a door trap learn
        to avoid other such doors [not implemented] */
-    TRAPPED_DOOR = 24, /* part of door; not present on map as a trap */
-    TRAPPED_CHEST = 25, /* part of object; not on map */
+    TRAPPED_DOOR = 25, /* part of door; not present on map as a trap */
+    TRAPPED_CHEST = 26, /* part of object; not on map */
 
-    TRAPNUM = 26
+    TRAPNUM = 27
 };
 
 /* some trap-related function return results */
@@ -118,6 +119,7 @@ enum trap_immunities {
                                || (ttyp) == LEVEL_TELEP \
                                || (ttyp) == MAGIC_TRAP  \
                                || (ttyp) == ANTI_MAGIC  \
+                               || (ttyp) == MAGIC_BEAM_TRAP \
                                || (ttyp) == POLY_TRAP)
 /* "transportation" traps */
 #define is_xport(ttyp) ((ttyp) >= TELEP_TRAP && (ttyp) <= MAGIC_PORTAL)

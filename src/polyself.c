@@ -1558,6 +1558,7 @@ dospinweb(void)
         case MAGIC_TRAP:
         case ANTI_MAGIC:
         case POLY_TRAP:
+        case MAGIC_BEAM_TRAP:
             You("have triggered a trap!");
             dotrap(ttmp, NO_TRAP_FLAGS);
             return ECMD_TIME;

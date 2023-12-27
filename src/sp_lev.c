@@ -4260,6 +4260,7 @@ static const struct {
                    { "magic", MAGIC_TRAP },
                    { "anti magic", ANTI_MAGIC },
                    { "polymorph", POLY_TRAP },
+                   { "magic beam", MAGIC_BEAM_TRAP },
                    { "vibrating square", VIBRATING_SQUARE },
                    { "random", -1 },
                    { 0, NO_TRAP } };

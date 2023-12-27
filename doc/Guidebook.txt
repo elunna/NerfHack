@@ -6176,6 +6176,7 @@
         \  S_lslant               (diagonal beam [zap animation])
         ^  S_magic_portal         (magic portal)
         ^  S_magic_trap           (magic trap)
+        ^  S_magic_beam_trap      (magic beam trap)
         m  S_mimic                (mimic)
         ]  S_mimic_def            (mimic)
         M  S_mummy                (mummy)
