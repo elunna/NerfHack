@@ -1547,6 +1547,11 @@ dospinweb(void)
             deltrap(ttmp);
             newsym(x, y);
             return ECMD_TIME;
+        case SPEAR_TRAP:
+            You("spin a web, jamming the mechanism.");
+            deltrap(ttmp);
+            newsym(x, y);
+            return ECMD_TIME;
         case ARROW_TRAP:
         case DART_TRAP:
         case BEAR_TRAP:
