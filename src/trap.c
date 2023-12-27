@@ -31,6 +31,7 @@ static int trapeffect_level_telep(struct monst *, struct trap *, unsigned);
 static int trapeffect_web(struct monst *, struct trap *, unsigned);
 static int trapeffect_statue_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_magic_trap(struct monst *, struct trap *, unsigned);
+static int trapeffect_magicbeam_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_anti_magic(struct monst *, struct trap *, unsigned);
 static int trapeffect_poly_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_landmine(struct monst *, struct trap *, unsigned);
@@ -524,6 +525,53 @@ maketrap(coordxy x, coordxy y, int typ)
     case STATUE_TRAP: /* create a "living" statue */
         mk_trap_statue(x, y);
         break;
+    case MAGIC_BEAM_TRAP: {
+        int d, lx, ly, dist, ok = 0, startdir = rn2(8);
+        for (d = 0; ((d < 8) && !ok); d++) {
+            for (dist = 1; ((dist < 8) && !ok); dist++) {
+                lx = x;
+                ly = y;
+                switch ((startdir + d) % 8) {
+                case 0: lx += dist;
+                    break;
+                case 1: lx += dist; ly += dist;
+                    break;
+                case 2: ly += dist;
+                    break;
+                case 3: lx -= dist; ly += dist;
+                    break;
+                case 4: lx -= dist;
+                    break;
+                case 5: lx -= dist; ly -= dist;
+                    break;
+                case 6: ly -= dist;
+                    break;
+                case 7: lx += dist; ly -= dist;
+                    break;
+                }
+                if (isok(lx, ly) && IS_STWALL(levl[lx][ly].typ)) {
+                    ttmp->launch.x = lx;
+                    ttmp->launch.y = ly;
+                    /* no AD_DISN, thanks */
+                    ttmp->launch_otyp = -ZT_SPELL(ZT_MAGIC_MISSILE);
+                    if (!rn2(15))
+                        ttmp->launch_otyp = -ZT_BREATH(ZT_LIGHTNING);
+                    else if (!rn2(10))
+                        ttmp->launch_otyp = -ZT_BREATH(ZT_FIRE);
+                    else if (!rn2(10))
+                        ttmp->launch_otyp = -ZT_SPELL(ZT_COLD);
+                    else if (!rn2(7))
+                        ttmp->launch_otyp = -ZT_BREATH(ZT_POISON_GAS);
+                    else if (!rn2(7))
+                        ttmp->launch_otyp = -ZT_BREATH(ZT_ACID);
+                    else if (!rn2(5))
+                        ttmp->launch_otyp = -ZT_SPELL(ZT_SLEEP);
+                    ok = 1;
+                }
+            }
+        }
+        break;
+    }
     case ROLLING_BOULDER_TRAP: /* boulder will roll towards trigger */
         (void) mkroll_launch(ttmp, x, y, BOULDER, 1L);
         break;
@@ -2210,6 +2258,50 @@ trapeffect_magic_trap(
 }
 
 static int
+trapeffect_magicbeam_trap(
+    struct monst* mtmp,
+    struct trap* trap,
+    unsigned int trflags UNUSED)
+{
+    /* Delete trap if it doesn't make sense */
+    if (!isok(trap->launch.x, trap->launch.y)
+        || !IS_STWALL(levl[trap->launch.x][trap->launch.y].typ)) {
+        deltrap(trap);
+        newsym(u.ux, u.uy);
+        return Trap_Effect_Finished;
+    }
+    if (mtmp == &gy.youmonst) {
+        if (!Deaf)
+            You_hear("a soft click.");
+        trap->once = 1;
+        seetrap(trap);
+        dobuzz(trap->launch_otyp, 8, trap->launch.x, trap->launch.y,
+               sgn(trap->tx - trap->launch.x), sgn(trap->ty - trap->launch.y),
+               FALSE);
+    } else {
+        /* A magic beam trap. */
+        boolean trapkilled = FALSE;
+        if (distu(trap->tx, trap->ty) < 4) {
+            if (!Deaf)
+                You_hear("a faint click.");
+        }
+        if (canseemon(mtmp))
+            seetrap(trap);
+
+        dobuzz(trap->launch_otyp, 8, trap->launch.x, trap->launch.y,
+               sgn(trap->tx - trap->launch.x), sgn(trap->ty - trap->launch.y),
+               FALSE);
+        trap->once = 1;
+        if (DEADMONSTER(mtmp))
+            trapkilled = TRUE;
+        
+        return trapkilled ? Trap_Killed_Mon : mtmp->mtrapped
+                                              ? Trap_Caught_Mon : Trap_Effect_Finished;
+    }
+    return Trap_Effect_Finished;
+}
+
+static int
 trapeffect_anti_magic(
     struct monst *mtmp, /* monster, possibly youmonst */
     struct trap *trap,  /* trap->ttyp == ANTI_MAGIC */
@@ -2819,6 +2911,8 @@ trapeffect_selector(
         return trapeffect_magic_trap(mtmp, trap, trflags);
     case ANTI_MAGIC:
         return trapeffect_anti_magic(mtmp, trap, trflags);
+    case MAGIC_BEAM_TRAP:
+        return trapeffect_magicbeam_trap(mtmp, trap, trflags);
     case LANDMINE:
         return trapeffect_landmine(mtmp, trap, trflags);
     case POLY_TRAP:

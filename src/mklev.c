@@ -1830,6 +1830,10 @@ mktrap(
                 if (lvl < 8)
                     kind = NO_TRAP;
                 break;
+            case MAGIC_BEAM_TRAP:
+                if (lvl < 10)
+                    kind = NO_TRAP;
+                break;
             case FIRE_TRAP:
                 if (!Inhell)
                     kind = NO_TRAP;
