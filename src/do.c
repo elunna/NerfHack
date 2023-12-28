@@ -811,6 +811,7 @@ drop(struct obj *obj)
             if (flags.verbose)
                 You("drop %s.", doname(obj));
             freeinv(obj);
+            gt.thrownobj = obj;
             hitfloor(obj, TRUE);
             if (levhack)
                 float_down(I_SPECIAL | TIMEOUT, W_ARTI | W_ART);
