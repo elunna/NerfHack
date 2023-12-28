@@ -65,23 +65,24 @@ enum trap_types {
     ROLLING_BOULDER_TRAP = 7,
     SLP_GAS_TRAP =  8,
     RUST_TRAP    =  9,
-    FIRE_TRAP    = 10,
-    COLD_TRAP    = 11,
-    PIT          = 12,
-    SPIKED_PIT   = 13,
-    HOLE         = 14,
-    TRAPDOOR     = 15,
-    TELEP_TRAP   = 16,
-    LEVEL_TELEP  = 17,
-    MAGIC_PORTAL = 18,
-    WEB          = 19,
-    STATUE_TRAP  = 20,
-    MAGIC_TRAP   = 21,
-    ANTI_MAGIC   = 22,
-    POLY_TRAP    = 23,
-    MAGIC_BEAM_TRAP  = 24,
-    SPEAR_TRAP  = 25,
-    VIBRATING_SQUARE = 26, /* not a trap but shown/remembered as if one
+    GREASE_TRAP  = 10,
+    FIRE_TRAP    = 11,
+    COLD_TRAP    = 12,
+    PIT          = 13,
+    SPIKED_PIT   = 14,
+    HOLE         = 15,
+    TRAPDOOR     = 16,
+    TELEP_TRAP   = 17,
+    LEVEL_TELEP  = 18,
+    MAGIC_PORTAL = 19,
+    WEB          = 20,
+    STATUE_TRAP  = 21,
+    MAGIC_TRAP   = 22,
+    ANTI_MAGIC   = 23,
+    POLY_TRAP    = 24,
+    MAGIC_BEAM_TRAP  = 25,
+    SPEAR_TRAP  = 26,
+    VIBRATING_SQUARE = 27, /* not a trap but shown/remembered as if one
                             * once it has been discovered */
 
     /* trapped door and trapped chest aren't traps on the map, but they
@@ -89,10 +90,10 @@ enum trap_types {
        comes in view of them and sees the feature or object;
        key-using or door-busting monsters who survive a door trap learn
        to avoid other such doors [not implemented] */
-    TRAPPED_DOOR = 27, /* part of door; not present on map as a trap */
-    TRAPPED_CHEST = 28, /* part of object; not on map */
+    TRAPPED_DOOR = 28, /* part of door; not present on map as a trap */
+    TRAPPED_CHEST = 29, /* part of object; not on map */
 
-    TRAPNUM = 29
+    TRAPNUM = 30
 };
 
 /* some trap-related function return results */

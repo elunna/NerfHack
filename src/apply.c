@@ -174,6 +174,16 @@ use_towel(struct obj *obj)
         if (is_wet_towel(obj))
             dry_a_towel(obj, -1, drying_feedback);
         return ECMD_TIME;
+    } else if (HFumbling & I_SPECIAL) {
+        pline("You've got the goop off your %s.", 
+              uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
+        HFumbling &= ~I_SPECIAL;
+        HFumbling = 0;
+        if (rn2(2) && !obj->greased) {
+            Your("gets covered in grease.");
+            obj->greased = 1;
+        }
+        return ECMD_TIME;
     }
 
     Your("%s and %s are already clean.", body_part(FACE),

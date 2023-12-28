@@ -924,9 +924,12 @@ from_what(int propidx) /* special cases can have negative values */
             else if (propidx == BLINDED && u.ucreamed
                      && BlindedTimeout == (long) u.ucreamed
                      && !EBlinded && !(HBlinded & ~TIMEOUT))
-                Sprintf(buf, "due to goop coverting your %s",
+                Sprintf(buf, " due to goop covering your %s",
                         body_part(FACE));
-
+            else if (propidx == FUMBLING && (HFumbling & I_SPECIAL))
+                Sprintf(buf, " due to goop covering your %s",
+                        makeplural(body_part(FOOT)));
+            
             /* remove some verbosity and/or redundancy */
             if ((p = strstri(buf, " pair of ")) != 0)
                 copynchars(p + 1, p + 9, BUFSZ); /* overlapping buffers ok */
