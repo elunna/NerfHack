@@ -1816,6 +1816,7 @@ mktrap(
                     kind = NO_TRAP;
                 break;
             case SPIKED_PIT:
+            case GREASE_TRAP:
                 if (lvl < 5)
                     kind = NO_TRAP;
                 break;
