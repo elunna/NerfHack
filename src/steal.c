@@ -397,6 +397,27 @@ steal(struct monst* mtmp, char* objnambuf)
             goto retry;
         goto cant_take;
     }
+    
+    /* greased objects are difficult to get a grip on, hence
+       the odds that an attempt at stealing it may fail */
+    if (otmp && (otmp->greased || otmp->otyp == OILSKIN_CLOAK 
+                 || otmp->otyp == OILSKIN_SACK)
+        && (!otmp->cursed || rn2(4))) {
+        pline("%s %s slip off of your %s %s!", s_suffix(Monnam(mtmp)),
+              makeplural(mbodypart(mtmp, HAND)),
+              otmp->greased ? "greased" : "slippery",
+              (otmp->greased || objects[otmp->otyp].oc_name_known)
+                  ? xname(otmp)
+                  : cloak_simple_name(otmp));
+        
+        if (otmp->greased && !rn2(2)) {
+            pline_The("grease wears off.");
+            otmp->greased = 0;
+            update_inventory();
+        }
+        return 1; /* let them flee */
+    }
+
     /* animals can't overcome curse stickiness nor unlock chains */
     if (monkey_business) {
         boolean ostuck;
@@ -654,6 +675,21 @@ stealamulet(struct monst* mtmp)
     }
 
     if (otmp) { /* we have something to snatch */
+        /* grease protects quest artifacts but not invocation items */
+        if (otmp->greased
+            && (!otmp->cursed || rn2(4))
+            && !obj_resists(obj, 0, 0)) {
+            pline("%s %s slip off of your greased %s!", s_suffix(Monnam(mtmp)),
+                  makeplural(mbodypart(mtmp, HAND)),
+                  xname(otmp));
+            
+            if (otmp->greased && !rn2(2)) {
+                pline_The("grease wears off.");
+                otmp->greased = 0;
+                update_inventory();
+            }
+            return;
+        }
         /* take off outer gear if we're targeting [hypothetical]
            quest artifact suit, shirt, gloves, or rings */
         if ((otmp == uarm || otmp == uarmu) && uarmc)

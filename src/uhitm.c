@@ -2187,6 +2187,26 @@ steal_it(struct monst *mdef, struct attack *mattk)
     if (!otmp || (otmp->oclass == COIN_CLASS && !otmp->nobj))
         return; /* nothing to take */
 
+    /* greased objects are difficult to get a grip on, hence
+       the odds that an attempt at stealing it may fail */
+    if (otmp && (otmp->greased || otmp->otyp == OILSKIN_CLOAK
+                 || otmp->otyp == OILSKIN_SACK)
+        && (!otmp->cursed || rn2(4))) {
+        Your("%s slip off of %s %s %s!",
+              makeplural(body_part(HAND)),
+              s_suffix(mon_nam(mdef)),
+              otmp->greased ? "greased" : "slippery",
+              (otmp->greased || objects[otmp->otyp].oc_name_known)
+                  ? xname(otmp)
+                  : cloak_simple_name(otmp));
+
+        if (otmp->greased && !rn2(2)) {
+            pline_The("grease wears off.");
+            otmp->greased = 0;
+        }
+        return;
+    }
+
     /* look for worn body armor */
     ustealo = (struct obj *) 0;
     if (could_seduce(&gy.youmonst, mdef, mattk) && mdef->mcanmove) {
@@ -4855,6 +4875,27 @@ mhitm_ad_sedu(
             Strcpy(mdefnambuf,
                    x_monnam(mdef, ARTICLE_THE, (char *) 0, 0, FALSE));
 
+            /* greased objects are difficult to get a grip on, hence
+              the odds that an attempt at stealing it may fail */
+            if ((obj->greased || obj->otyp == OILSKIN_CLOAK
+                 || obj->otyp == OILSKIN_SACK)
+                && (!obj->cursed || rn2(4))) {
+                if (canseemon(mdef)) {
+                    pline("%s %s slip off of %s's %s %s!", s_suffix(Monnam(magr)),
+                          makeplural(mbodypart(magr, HAND)),
+                          mdefnambuf,
+                          obj->greased ? "greased" : "slippery",
+                          (obj->greased || objects[obj->otyp].oc_name_known)
+                              ? xname(obj)
+                              : cloak_simple_name(obj));
+                }
+                if (obj->greased && !rn2(2)) {
+                    if (canseemon(mdef))
+                        pline_The("grease wears off.");
+                    obj->greased = 0;
+                }
+                return;
+            }
             if (u.usteed == mdef && obj == which_armor(mdef, W_SADDLE))
                 /* "You can no longer ride <steed>." */
                 dismount_steed(DISMOUNT_POLY);
