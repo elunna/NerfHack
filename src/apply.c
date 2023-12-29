@@ -4319,6 +4319,12 @@ doapply(void)
         return ECMD_TIME; /* evading your grasp costs a turn; just be
                              grateful that you don't drop it as well */
 
+    if (Glib && obj->otyp != TOWEL) {
+        pline("%s from your %s.", Tobjnam(obj, "slip"),
+              fingers_or_gloves(FALSE));
+        dropx(obj);
+        return ECMD_TIME;
+    }
     if (obj->oclass == WAND_CLASS)
         return do_break_wand(obj);
 
