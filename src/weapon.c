@@ -993,16 +993,6 @@ wet_a_towel(struct obj *obj,
 {
     int newspe = (amt <= 0) ? obj->spe - amt : amt;
 
-    if (obj->greased && rn2(2)) {
-        obj->greased = 0;
-        if (carried(obj))
-            pline("The grease washes off %s.", yobjnam(obj, (const char *) 0));
-        else if (mcarried(obj) && canseemon(obj->ocarry))
-            pline("The grease washes off %s %s.", s_suffix(mon_nam(obj->ocarry)),
-                  xname(obj));
-        return;
-    }
-        
     /* new state is only reported if it's an increase */
     if (newspe > obj->spe) {
         if (verbose) {
