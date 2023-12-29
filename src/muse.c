@@ -2610,6 +2610,7 @@ use_misc(struct monst *mtmp)
             struct obj *obj = uwep;
             const char *hand;
             char the_weapon[BUFSZ];
+            boolean freegrease = FALSE;
 
             if (!obj || !canletgo(obj, "")
                 || (u.twoweap && canletgo(uswapwep, "") && rn2(2)))
@@ -2638,8 +2639,18 @@ use_misc(struct monst *mtmp)
                 /* obj->bknown = 1; */ /* welded() takes care of this */
                 where_to = 0;
             }
+            if (obj->greased) {
+                pline("%s slippery from being greased.",
+                      !is_plural(obj) ? "It is" : "They are");
+                where_to = 0;
+                freegrease = TRUE;
+            }
             if (!where_to) {
                 pline_The("whip slips free."); /* not `The_whip' */
+                if (freegrease && !rn2(2)) {
+                    pline_The("grease wears off.");
+                    obj->greased = 0;
+                }
                 return 1;
             } else if (where_to == 3 && mon_hates_silver(mtmp)
                        && objects[obj->otyp].oc_material == SILVER) {

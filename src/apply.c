@@ -3361,6 +3361,14 @@ use_whip(struct obj *obj)
                 set_bknown(otmp, 1);
                 gotit = FALSE; /* can't pull it free */
             }
+            if (gotit && otmp->greased) {
+                gotit = FALSE; /* can't pull it free */
+                if (otmp->greased && !rn2(2)) {
+                    pline_The("grease wears off.");
+                    otmp->greased = 0;
+                }
+            }
+                
             if (gotit) {
                 obj_extract_self(otmp);
                 possibly_unwield(mtmp, FALSE);
