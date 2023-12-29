@@ -545,6 +545,8 @@ moveloop_core(void)
 static void
 maybe_do_tutorial(void)
 {
+    return; /* Skip the tutorial by default */
+            
     s_level *sp = find_level("tut-1");
 
     if (!sp)
@@ -566,10 +568,10 @@ void
 moveloop(boolean resuming)
 {
     moveloop_preamble(resuming);
-
+    
     if (!resuming)
         maybe_do_tutorial();
-
+    
     for (;;) {
         moveloop_core();
     }
