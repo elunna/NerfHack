@@ -100,6 +100,7 @@ use_camera(struct obj *obj)
 static int
 use_towel(struct obj *obj)
 {
+    struct obj *otmp;
     boolean drying_feedback = (obj == uwep);
 
     if (!freehand()) {
@@ -189,6 +190,22 @@ use_towel(struct obj *obj)
     Your("%s and %s are already clean.", body_part(FACE),
          makeplural(body_part(HAND)));
 
+    /* Allow player to remove grease */
+    otmp = getobj("clean", any_obj_ok, GETOBJ_PROMPT);
+    if (!otmp)
+        return ECMD_CANCEL;
+    if (inaccessible_equipment(otmp, "clean", FALSE))
+        return ECMD_OK;
+    if (!otmp->greased) {
+        pline("That item is not greased!");
+        return ECMD_CANCEL;
+    }
+    You("remove the grimy grease from %s", yobjnam(otmp, (char *) 0));
+    otmp->greased = 0;
+    if (!rn2(3)) {
+        Your("gets covered in grease.");
+        obj->greased = 1;
+    }
     return ECMD_OK;
 }
 
