@@ -7,7 +7,7 @@
 -- with edits from paxed/patr
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "hardfloor", "premapped", "solidify");
+des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify");
 des.map([[
  --------       
  |......|       
