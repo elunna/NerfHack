@@ -889,9 +889,16 @@ nh_timeout(void)
                         wake_nearby();
                     }
                 }
-                /* from outside means slippery ice; don't reset
+                /* from outside means slippery ice/grease; don't reset
                    counter if that's the only fumble reason */
                 HFumbling &= ~FROMOUTSIDE;
+                /* I_SPECIAL means from grease */
+                if (HFumbling & I_SPECIAL && !rn2(20)) {
+                        pline_The("goop wears off of your %s",
+                                  makeplural(body_part(FOOT)));
+                        HFumbling &= ~I_SPECIAL;
+                }
+                
                 if (Fumbling)
                     incr_itimeout(&HFumbling, rnd(20));
 

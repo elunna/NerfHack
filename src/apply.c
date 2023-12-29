@@ -100,6 +100,7 @@ use_camera(struct obj *obj)
 static int
 use_towel(struct obj *obj)
 {
+    struct obj *otmp;
     boolean drying_feedback = (obj == uwep);
 
     if (!freehand()) {
@@ -108,7 +109,7 @@ use_towel(struct obj *obj)
     } else if (obj == ublindf) {
         You("cannot use it while you're wearing it!");
         return ECMD_OK;
-    } else if (obj->cursed) {
+    } else if (obj->cursed || obj->greased) {
         long old;
 
         switch (rn2(3)) {
@@ -174,11 +175,37 @@ use_towel(struct obj *obj)
         if (is_wet_towel(obj))
             dry_a_towel(obj, -1, drying_feedback);
         return ECMD_TIME;
+    } else if (HFumbling & I_SPECIAL) {
+        pline("You've got the goop off your %s.", 
+              uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
+        HFumbling &= ~I_SPECIAL;
+        HFumbling = 0;
+        if (rn2(2) && !obj->greased) {
+            Your("gets covered in grease.");
+            obj->greased = 1;
+        }
+        return ECMD_TIME;
     }
 
     Your("%s and %s are already clean.", body_part(FACE),
          makeplural(body_part(HAND)));
 
+    /* Allow player to remove grease */
+    otmp = getobj("clean", any_obj_ok, GETOBJ_PROMPT);
+    if (!otmp)
+        return ECMD_CANCEL;
+    if (inaccessible_equipment(otmp, "clean", FALSE))
+        return ECMD_OK;
+    if (!otmp->greased) {
+        pline("That item is not greased!");
+        return ECMD_CANCEL;
+    }
+    You("remove the grimy grease from %s", yobjnam(otmp, (char *) 0));
+    otmp->greased = 0;
+    if (!rn2(3)) {
+        Your("gets covered in grease.");
+        obj->greased = 1;
+    }
     return ECMD_OK;
 }
 
@@ -3351,6 +3378,14 @@ use_whip(struct obj *obj)
                 set_bknown(otmp, 1);
                 gotit = FALSE; /* can't pull it free */
             }
+            if (gotit && otmp->greased) {
+                gotit = FALSE; /* can't pull it free */
+                if (otmp->greased && !rn2(2)) {
+                    pline_The("grease wears off.");
+                    otmp->greased = 0;
+                }
+            }
+                
             if (gotit) {
                 obj_extract_self(otmp);
                 possibly_unwield(mtmp, FALSE);
@@ -4309,6 +4344,12 @@ doapply(void)
         return ECMD_TIME; /* evading your grasp costs a turn; just be
                              grateful that you don't drop it as well */
 
+    if (Glib && obj->otyp != TOWEL) {
+        pline("%s from your %s.", Tobjnam(obj, "slip"),
+              fingers_or_gloves(FALSE));
+        dropx(obj);
+        return ECMD_TIME;
+    }
     if (obj->oclass == WAND_CLASS)
         return do_break_wand(obj);
 

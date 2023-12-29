@@ -23,6 +23,7 @@ static int trapeffect_sqky_board(struct monst *, struct trap *, unsigned);
 static int trapeffect_bear_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_slp_gas_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_rust_trap(struct monst *, struct trap *, unsigned);
+static int trapeffect_grease_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_fire_trap(struct monst *, struct trap *, unsigned);
 static int trapeffect_pit(struct monst *, struct trap *, unsigned);
 static int trapeffect_hole(struct monst *, struct trap *, unsigned);
@@ -58,6 +59,7 @@ static int try_disarm(struct trap *, boolean);
 static void reward_untrap(struct trap *, struct monst *);
 static int disarm_holdingtrap(struct trap *);
 static int disarm_rust_trap(struct trap *);
+static int disarm_grease_trap(struct trap *);
 static int disarm_landmine(struct trap *);
 static int unsqueak_ok(struct obj *);
 static int disarm_squeaky_board(struct trap *);
@@ -72,11 +74,13 @@ static void join_adjacent_pits(struct trap *);
 #endif
 static boolean thitm(int, struct monst *, struct obj *, int, boolean);
 static void maybe_finish_sokoban(void);
+static void grease_hits(struct obj *);
 
 static const char *const a_your[2] = { "a", "your" };
 static const char *const A_Your[2] = { "A", "Your" };
 static const char tower_of_flame[] = "tower of flame";
 static const char *const A_gush_of_water_hits = "A gush of water hits";
+static const char *const A_gush_of_grease_hits = "A gush of grease hits";
 static const char *const blindgas[6] = { "humid",   "odorless",
                                          "pungent", "chilling",
                                          "acrid",   "biting" };
@@ -1649,6 +1653,229 @@ trapeffect_rust_trap(
 }
 
 static int
+trapeffect_grease_trap(
+    struct monst *mtmp,
+    struct trap *trap,
+    unsigned int trflags UNUSED)
+{
+    long old;
+    int blindinc;
+    struct obj *otmp;
+    
+    if (mtmp == &gy.youmonst) {
+        /* Make fumbling (like stepping in a puddle grease) */
+        if (!Levitation && !Flying) {
+            You("step in a puddle of grease.");
+            /* This is not great - but FROMOUTSIDE is used by other 
+             * sources of fumbling. In timeout.c we check if this is I_SPECIAL
+             * and reset it for a while or until it's wiped off by a towel. */
+            HFumbling |= (I_SPECIAL);
+            old = (HFumbling & TIMEOUT);
+            HFumbling &= ~TIMEOUT;
+            HFumbling += old + rnd(3);
+        }
+        if (trap->once && trap->tseen && !rn2(15)) {
+            if (!Blind)
+                pline("A broken hose pops out of %s!", the(surface(u.ux, u.uy)));
+            else 
+                You_hear("a soft click.");
+            deltrap(trap);
+            newsym(u.ux, u.uy);
+            return Trap_Is_Gone;
+        }
+        seetrap(trap);
+        trap->once = 1;
+        
+        switch (rn2(5)) {
+        case 0:
+            pline("%s you on the %s!", A_gush_of_grease_hits, body_part(HEAD));
+            if (uarmh) {
+                grease_hits(uarmh);
+                if (objdescr_is(uarmh, "visored helmet")) {
+                    Your("%s protects your face from getting covered in grease.",
+                         xname(uarmh));
+                    return Trap_Effect_Finished;
+                }
+            }
+            /* Blindfolds/etc get pushed off first */
+            if (ublindf) {
+                grease_hits(ublindf);
+                otmp = ublindf;
+                Your("%s slips off your %s.", xname(otmp),
+                     body_part(HEAD));
+                Blindf_off(ublindf);
+                dropx(otmp);
+            }
+            pline("There's greasy goop all over your %s.",
+                  body_part(FACE));
+            blindinc = rnd(25);
+            u.ucreamed += blindinc;
+            make_blinded(BlindedTimeout + (long) blindinc, FALSE);
+            break;
+        case 1:
+            pline("%s your left %s!", A_gush_of_grease_hits, body_part(ARM));
+            if (uarms) {
+                grease_hits(uarms);
+                otmp = uarms;
+                Your("%s slips off your left %s.", xname(otmp), body_part(ARM));
+                Shield_off();
+                dropx(otmp);
+            }
+            if (u.twoweap) {
+                grease_hits(uswapwep);
+            } else if (uwep && bimanual(uwep)) {
+                grease_hits(uwep);
+            }
+            if (uarmg) {
+                grease_hits(uarmg);
+            }
+            old = (Glib & TIMEOUT);
+            make_glib((int) old + rn1(6, 10)); /* + 10..15 */
+            break;
+        case 2:
+            pline("%s your right %s!", A_gush_of_grease_hits, body_part(ARM));
+            if (uwep && bimanual(uwep)) {
+                grease_hits(uwep);
+            }
+            if (uarmg) {
+                grease_hits(uarmg);
+            }
+            old = (Glib & TIMEOUT);
+            make_glib((int) old + rn1(6, 10)); /* + 3..12 */
+            break;
+        case 3:
+            pline("%s your %s!", A_gush_of_grease_hits, body_part(FOOT));
+            if (uarmf) {
+                grease_hits(uarmf);
+                if (objdescr_is(uarmf, "buckled boots")) {
+                    Your("%s stay strapped tight to your feet.",
+                         xname(uarmf));
+                } else {
+                    otmp = uarmf;
+                    Your("%s slip off your %s.", xname(otmp),
+                         makeplural(body_part(FOOT)));
+                    Boots_off();
+                    dropx(otmp);
+                }
+            }
+            break;
+        default:
+            pline("%s you!", A_gush_of_grease_hits);
+            /* Sabotage their cure! */
+            otmp = carrying(TOWEL);
+            if (otmp && !rn2(2))
+                grease_hits(otmp);
+            
+            /* Hit the quiver too */
+            if (uquiver && !rn2(2))
+                grease_hits(uquiver);
+
+            /* Grease a random item */
+            for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+                if (!rn2(7)) {
+                    grease_hits(otmp);
+                    if (!is_worn(otmp)) {
+                        Your("%s slip%s from your pack.", xname(otmp),
+                             otmp->quan > 1 ? "" : "s");
+                        dropx(otmp);
+                        break; /* Just one drop */
+                    }
+                }
+            }
+            
+            if (uarmc) {
+                grease_hits(uarmc);
+            } else if (uarm) {
+                grease_hits(uarm);
+            } else if (uarmu) {
+                grease_hits(uarmu);
+            }
+            
+            /* Usually fall off steed if riding */
+            if (u.usteed) {
+                /* Hit the saddle */
+                pline("%s saddle gets covered in grease!",
+                      s_suffix(Monnam(u.usteed)));
+                otmp = which_armor(u.usteed, W_SADDLE);
+                otmp->greased = 1;
+                dismount_steed(DISMOUNT_FELL);
+            }
+        }
+        update_inventory();
+    } else {
+        struct obj *target;
+        boolean see_it = cansee(mtmp->mx, mtmp->my);
+        boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
+        
+        if (trap->once && trap->tseen && !rn2(15)) {
+            if (in_sight && see_it)
+                pline("A broken hose pops out at %s!",
+                      mon_nam(mtmp));
+            deltrap(trap);
+            newsym(mtmp->mx, mtmp->my);
+            return Trap_Is_Gone;
+        }
+        
+        if (in_sight)
+            seetrap(trap);
+        trap->once = 1;
+        switch (rn2(5)) {
+        case 0:
+            if (in_sight)
+                pline("%s %s on the %s!", A_gush_of_grease_hits,
+                      mon_nam(mtmp), mbodypart(mtmp, HEAD));
+            if ((target = which_armor(mtmp, W_ARMH)) != 0)
+                target->greased = 1;
+            break;
+        case 1:
+            if (in_sight)
+                pline("%s %s's left %s!", A_gush_of_grease_hits,
+                      mon_nam(mtmp), mbodypart(mtmp, ARM));
+            if ((target = which_armor(mtmp, W_ARMS)) != 0)
+                target->greased = 1;
+            
+            target = MON_WEP(mtmp);
+            if (target && bimanual(target))
+                target->greased = 1;
+        mglovecheck:
+            if ((target = which_armor(mtmp, W_ARMG)) != 0)
+                target->greased = 1;
+            break;
+        case 2:
+            if (in_sight)
+                pline("%s %s's right %s!", A_gush_of_grease_hits,
+                      mon_nam(mtmp), mbodypart(mtmp, ARM));
+            goto mglovecheck;
+        default:
+            if (in_sight)
+                pline("%s %s!", A_gush_of_grease_hits, mon_nam(mtmp));
+            if ((target = which_armor(mtmp, W_ARMC)) != 0)
+                target->greased = 1;
+            else if ((target = which_armor(mtmp, W_ARM)) != 0)
+                target->greased = 1;
+            else if ((target = which_armor(mtmp, W_ARMU)) != 0)
+                target->greased = 1;
+        }
+    }
+    return Trap_Effect_Finished;
+}
+
+/* Helper function for the grease trap effects.
+ * The chance of an item being greased is always 50%.
+ * TODO: Add handling for item slipping
+ * TODO: Add monster item handling
+ */
+static void
+grease_hits(struct obj *otmp)
+{
+    if (!otmp->greased && !rn2(2)) {
+        otmp->greased = 1;
+        Your("%s %s covered in grease!", xname(otmp),
+             otmp->quan > 1 ? "are" : "is");
+    }
+}
+
+static int
 trapeffect_fire_trap(
     struct monst *mtmp,
     struct trap *trap,
@@ -3078,6 +3305,8 @@ trapeffect_selector(
         return trapeffect_slp_gas_trap(mtmp, trap, trflags);
     case RUST_TRAP:
         return trapeffect_rust_trap(mtmp, trap, trflags);
+    case GREASE_TRAP:
+        return trapeffect_grease_trap(mtmp, trap, trflags);
     case FIRE_TRAP:
         return trapeffect_fire_trap(mtmp, trap, trflags);
     case COLD_TRAP:
@@ -5668,6 +5897,17 @@ disarm_rust_trap(struct trap *ttmp) /* Paul Sonier */
 }
 
 static int
+disarm_grease_trap(struct trap *ttmp) /* Erik Lunna */
+{
+    int fails = try_disarm(ttmp, FALSE);
+    if (fails < 2)
+        return fails;
+    You("disarm the grease trap!");
+    cnv_trap_obj(RUBBER_HOSE, 1, ttmp, FALSE);
+    return 1;
+}
+
+static int
 disarm_landmine(struct trap* ttmp) /* Helge Hafting */
 {
     int fails = try_disarm(ttmp, FALSE);
@@ -6038,6 +6278,8 @@ untrap(
                     return disarm_shooting_trap(ttmp, ARROW);
                 case RUST_TRAP:
                     return disarm_rust_trap(ttmp);
+                case GREASE_TRAP:
+                    return disarm_grease_trap(ttmp);
                 case PIT:
                 case SPIKED_PIT:
                     if (here) {
