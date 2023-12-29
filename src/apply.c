@@ -108,7 +108,7 @@ use_towel(struct obj *obj)
     } else if (obj == ublindf) {
         You("cannot use it while you're wearing it!");
         return ECMD_OK;
-    } else if (obj->cursed) {
+    } else if (obj->cursed || obj->greased) {
         long old;
 
         switch (rn2(3)) {
