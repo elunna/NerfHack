@@ -811,8 +811,9 @@ drop(struct obj *obj)
             if (flags.verbose)
                 You("drop %s.", doname(obj));
             freeinv(obj);
-            gt.thrownobj = obj;
+            gt.thrownobj = obj; /* For dropped potions of mon detection */
             hitfloor(obj, TRUE);
+            gt.thrownobj = 0;
             if (levhack)
                 float_down(I_SPECIAL | TIMEOUT, W_ARTI | W_ART);
             return ECMD_TIME;
