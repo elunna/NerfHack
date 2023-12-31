@@ -351,6 +351,8 @@ result:
         }
         break;
     case 23:
+        if (!is_metallic(obj))
+            goto lava;
          /* One-time erodeproofing of an item */
         if (!levl[u.ux][u.uy].looted) {
             if (!Blind)
