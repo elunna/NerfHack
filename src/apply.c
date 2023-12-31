@@ -2384,9 +2384,17 @@ use_unicorn_horn(struct obj **optr)
      */
     val_limit = (obj && obj->blessed) ? trouble_count : 1;
     if (obj && obj->spe > 0)
-        chance = (obj->spe < 6) ? obj->spe+3 : 9;
+        chance = (obj->spe < 6) ? (obj->spe + 3) : 9;
     else
-        chance = 3;
+        chance = Role_if(PM_HEALER) ? 4 : 3;
+    
+    /* Skill in unicorn horn has an impact on success */
+    if (P_SKILL(P_UNICORN_HORN) == P_BASIC)
+        chance++;
+    if (P_SKILL(P_UNICORN_HORN) == P_SKILLED)
+        chance++;
+    if (P_SKILL(P_UNICORN_HORN) == P_EXPERT)
+        chance += 2;
 #endif
     
     /* fix [some of] the troubles */
@@ -2429,9 +2437,13 @@ use_unicorn_horn(struct obj **optr)
         }
     }
 
-    if (did_prop)
+    if (did_prop) {
         gc.context.botl = TRUE;
-    else
+        /* Successfully using the unicorn horn exercises skill.
+         * We'll grant a significant skill boost since the unihorn was nerfed
+         * so heavily. */
+        use_skill(P_UNICORN_HORN, 5);
+    } else
         pline("%s", nothing_seems_to_happen);
 
 #undef PROP_COUNT
