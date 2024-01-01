@@ -95,8 +95,6 @@ static int condattr(long, unsigned long *);
 static void dump_render_status(void);
 static void dump_status_update(int, genericptr_t, int, int,
                                int, unsigned long *);
-static void dump_headers(void);
-static void dump_footers(void);
 static void dump_css(void);
 static void dump_outrip(winid, int, time_t);
 
@@ -1615,7 +1613,6 @@ static long dump_condition_bits;
 static struct dump_status_fields dump_status[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 
-#ifdef DUMPHTML
 /* condcolor and condattr are needed to render the HTML status bar.
    These static routines exist verbatim in at least two other window
    ports. They should be promoted to the core (maybe botl.c).
@@ -1990,8 +1987,6 @@ dump_outrip(
        fprintf(dumphtml_file, "%s\n", PREF_E);
 
 }
-
-#endif /* DUMPHTML */
 
 /** Dump file handling **/
 
