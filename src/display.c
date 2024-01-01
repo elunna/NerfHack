@@ -124,17 +124,15 @@
 #include "hack.h"
 
 static void show_mon_or_warn(coordxy, coordxy, int);
-static void display_monster(coordxy, coordxy, struct monst *, int, boolean);
+static void display_monster(coordxy, coordxy,
+                            struct monst *, int, boolean) NONNULLPTRS;
 static int swallow_to_glyph(int, int);
-static void display_warning(struct monst *);
+static void display_warning(struct monst *) NONNULLARG1;
 
 static int check_pos(coordxy, coordxy, int);
 static void get_bkglyph_and_framecolor(coordxy x, coordxy y, int *, uint32 *);
 static int tether_glyph(coordxy, coordxy);
-static void mimic_light_blocking(struct monst *);
-#ifdef UNBUFFERED_GLYPHINFO
-static glyph_info *glyphinfo_at(coordxy, coordxy, int);
-#endif
+static void mimic_light_blocking(struct monst *) NONNULLARG1;
 
 /*#define WA_VERBOSE*/ /* give (x,y) locations for all "bad" spots */
 #ifdef WA_VERBOSE
@@ -151,7 +149,6 @@ static void set_seenv(struct rm *, coordxy, coordxy, coordxy, coordxy);
 static void t_warn(struct rm *);
 static int wall_angle(struct rm *);
 
-#define remember_topology(x, y) (gl.lastseentyp[x][y] = levl[x][y].typ)
 #define _glyph_at(x, y) gg.gbuf[y][x].glyphinfo.glyph
 
 /*
@@ -255,7 +252,7 @@ magic_map_background(coordxy x, coordxy y, int show)
     if (show)
         show_glyph(x, y, glyph);
 
-    remember_topology(x, y);
+    update_lastseentyp(x, y);
 }
 
 /*
@@ -464,7 +461,7 @@ unmap_object(register coordxy x, register coordxy y)
         else                                                                \
             map_background(x, y, show);                                     \
                                                                             \
-        remember_topology(x, y);                                            \
+        update_lastseentyp(x, y);                                           \
     }
 
 void
@@ -1555,12 +1552,16 @@ static glyph_info no_ginfo = {
     }
 };
 #ifndef UNBUFFERED_GLYPHINFO
+/* Note that the 'glyph' argument is not used in the expansion
+ * of this !UNBUFFERED_GLYPHINFO (default) variation, but is
+ * a requirement for the UNBUFFERED_GLYPHINFO variation */
 #define Glyphinfo_at(x, y, glyph) \
     (((x) < 0 || (y) < 0 || (x) >= COLNO || (y) >= ROWNO) ? &no_ginfo   \
      : &gg.gbuf[(y)][(x)].glyphinfo)
 #else
 static glyph_info ginfo;
-#define Glyphinfo_at(x, y, glyph) glyphinfo_at(x, y, glyph)
+static glyph_info *glyphinfo_at(coordxy, coordxy, int);
+#define Glyphinfo_at(x, y, glyph) glyphinfo_at((x), (y), (glyph))
 #endif
 
 #ifdef TILES_IN_GLYPHMAP
@@ -1992,7 +1993,7 @@ clear_glyph_buffer(void)
                         != nul_gbuf.glyphinfo.gm.glyphflags
                      || giptr->gm.tileidx != nul_gbuf.glyphinfo.gm.tileidx)
 #else
-    nul_gbuf.gnew = (giptr->glyphinfo.ttychar != ' '
+    nul_gbuf.gnew = (giptr->ttychar != ' '
                      || giptr->gm.sym.color != NO_COLOR
                      || (giptr->gm.glyphflags & ~MG_UNEXPL) != 0)
 #endif
@@ -2112,7 +2113,7 @@ flush_screen(int cursor_on_u)
                     && bkglyphinfo.framecolor != NO_COLOR)) {
                 map_glyphinfo(x, y, bkglyph, 0, &bkglyphinfo); /* won't touch framecolor */
                 print_glyph(WIN_MAP, x, y,
-                            Glyphinfo_at(x, y, gptr->glyph), &bkglyphinfo);
+                            Glyphinfo_at(x, y, gptr->glyphinfo.glyph), &bkglyphinfo);
                 gptr->gnew = 0;
             }
         }
@@ -2344,7 +2345,7 @@ glyph_at(coordxy x, coordxy y)
 glyph_info *
 glyphinfo_at(coordxy x, coordxy y, int glyph)
 {
-    map_glyphinfo(x, y, glyph, 0, &ginfo);
+    map_glyphinfo(x, y, glyph, 0, &ginfo); /* ginfo declared at file scope */
     return &ginfo;
 }
 #endif
@@ -3700,7 +3701,6 @@ fn_cmap_to_glyph(int cmap)
 /* for 'onefile' processing where end of this file isn't necessarily the
    end of the source code seen by the compiler (there are lots of other
    macros defined above...) */
-#undef remember_topology
 #undef _glyph_at
 #undef DETECTED
 #undef PHYSICALLY_SEEN

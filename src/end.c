@@ -26,7 +26,7 @@ static void done_hangup(int);
 #endif
 #endif
 static void disclose(int, boolean);
-static void get_valuables(struct obj *);
+static void get_valuables(struct obj *) NO_NNARGS;
 static void sort_valuables(struct valuable_data *, int);
 static void artifact_score(struct obj *, boolean, winid);
 static boolean fuzzer_savelife(int);
@@ -558,6 +558,7 @@ done1(int sig_unused UNUSED)
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, SIG_IGN);
 #endif
+    iflags.debug_fuzzer = FALSE;
     if (flags.ignintr) {
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, (SIG_RET_TYPE) done1);

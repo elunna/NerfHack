@@ -324,6 +324,7 @@ hero poly'd into rust monster could implicitly eat bars when adjacent by
 	can explicitly eat them via 'e' after moving onto their spot
 monster hiding under an egg that hatched was kept hidden
 restful sleep regenerates hit points
+restful sleep gives a warning message few turns before you fall asleep
 attacking non-adjacent concealed mimic by applying a polearm would make the
 	hero be stuck to that mimic
 hero could break a wand ("raising the wand high over your head, you break it
@@ -1331,6 +1332,14 @@ avoid impossible "trapped without a trap (fmon)" from 'sanity_check' when a
 demons cannot be frightened by showing them their reflection
 HP regeneration formula has changed, primarily to be less fast in the endgame
 riding negates stealth unless the steed is flying
+previous hero rising as undead in bones retains intrinsics
+level temperature affects monster generation
+amulet of unchanging cannot be polymorphed
+wishing for a "lit candle" provided one, but the feedback as it was added into
+	invent was "partly used candle (lit)" because of how 'lit' timer works
+don't fall off steed because of Fumbling if saddle is cursed
+cursed welded quarterstaff doesn't prevent spellcasting
+wielded quarterstaff gives a small spellcasting bonus
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -1801,6 +1810,15 @@ add 'X' as a potential context-sensitive item-action for uwep and uswapwep
 monsters weren't noticing hero's possession or lack of magic resistance when
 	hero getting zapped by a wand of striking was or wasn't resisted
 discard monsters' observations about hero's resistances when saving bones
+autopickup while levitating shares code with 'mention_decor'; after being told
+	about ice covered by an object, moving over some other object later
+	when mention_decor is Off could give "you are back on solid ground"
+	long after leaving the ice
+duration of temporary stoning resistance would be extended while eating a
+	cockatrice corpse, as intended, but not while eating Medusa's corpse
+	so if it timed out during the meal, player got the message about hero
+	no longer being protected against stoning but was able to finish the
+	meal safely
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository

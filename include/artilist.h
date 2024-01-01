@@ -13,8 +13,13 @@ static const char *const artifact_names[] = {
 
 #elif defined(ARTI_ENUM)
 #define A(nam, typ, s1, s2, mt, atk, dfn, cry, inv, al, cl, rac, \
-          cost, clr, bn) \
+          cost, clr, bn)                                         \
     ART_##bn
+
+#elif defined(DUMP_ARTI_ENUM)
+#define A(nam, typ, s1, s2, mt, atk, dfn, cry, inv, al, cl, rac, \
+          cost, clr, bn)                                         \
+        { ART_##bn, "ART_" #bn }
 #else
 /* in artifact.c, set up the actual artifact list structure */
 
@@ -50,7 +55,7 @@ static NEARDATA struct artifact artilist[] = {
 
     /*  dummy element #0, so that all interesting indices are non-zero */
     A("", STRANGE_OBJECT, 0, 0, 0, NO_ATTK, NO_DFNS, NO_CARY, 0, A_NONE,
-      NON_PM, NON_PM, 0L, NO_COLOR, PLACEHOLDER),
+      NON_PM, NON_PM, 0L, NO_COLOR, NONARTIFACT),
 
     A("Excalibur", LONG_SWORD, (SPFX_NOGEN | SPFX_RESTR | SPFX_SEEK
                                 | SPFX_DEFN | SPFX_INTEL | SPFX_SEARCH),
@@ -330,7 +335,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL,
       NO_ATTK, DFNS(AD_MAGM), NO_CARY, CREATE_PORTAL, A_NEUTRAL, PM_WIZARD,
       NON_PM, 4000L, NO_COLOR, EYE_OF_THE_AETHIOPICA),
 
-#if !defined(ARTI_ENUM)
+#if !defined(ARTI_ENUM) && !defined(DUMP_ARTI_ENUM)
     /*
      *  terminator; otyp must be zero
      */

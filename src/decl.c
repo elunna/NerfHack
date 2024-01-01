@@ -205,6 +205,8 @@ const struct instance_globals_a g_init_a = {
     UNDEFINED_PTR, /* animal_list */
     UNDEFINED_VALUE, /* animal_list_count */
     /* pickup.c */
+    0, /* A_first_hint */
+    0, /* A_second_hint */
     UNDEFINED_VALUE, /* abort_looting */
     /* shk.c */
     FALSE, /* auto_credit */
@@ -960,6 +962,7 @@ const struct const_globals cg = {
     DUMMY, /* zeroobj */
     DUMMY, /* zeromonst */
     DUMMY, /* zeroany */
+    DUMMY, /* zeroNhRect */
 };
 
 #define ZERO(x) memset(&x, 0, sizeof(x))

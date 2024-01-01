@@ -16,6 +16,7 @@
 
 static boolean uncommon(int);
 static int align_shift(struct permonst *);
+static int temperature_shift(struct permonst *);
 static boolean mk_gen_ok(int, unsigned, unsigned);
 static boolean wrong_elem_type(struct permonst *);
 static void m_initgrp(struct monst *, coordxy, coordxy, int, mmflags_nht);
@@ -952,6 +953,7 @@ clone_mon(struct monst *mon,
         int atyp;
 
         newemin(m2);
+        assert(has_emin(m2) && has_emin(mon));
         *EMIN(m2) = *EMIN(mon);
         /* renegade when same alignment as hero but not peaceful or
            when peaceful while being different alignment from hero */
@@ -962,8 +964,10 @@ clone_mon(struct monst *mon,
            However, tamedog() will not re-tame a tame dog, so m2
            must be made non-tame to get initialized properly. */
         m2->mtame = 0;
-        if (tamedog(m2, (struct obj *) 0))
+        if (tamedog(m2, (struct obj *) 0)) {
+            assert(has_edog(m2) && has_edog(mon));
             *EDOG(m2) = *EDOG(mon);
+        }
         /* [TODO? some (most? all?) edog fields probably should be
            reinitialized rather that retain the 'parent's values] */
     }
@@ -1670,6 +1674,17 @@ align_shift(register struct permonst *ptr)
     return alshift;
 }
 
+/* return larger value if monster prefers the level temperature */
+static int
+temperature_shift(struct permonst *ptr)
+{
+    if (gl.level.flags.temperature
+        && pm_resistance(ptr, (gl.level.flags.temperature > 0)
+                         ? MR_FIRE : MR_COLD))
+        return 3;
+    return 0;
+}
+
 /* select a random monster type */
 struct permonst *
 rndmonst(void)
@@ -1727,6 +1742,7 @@ rndmonst_adj(int minadj, int maxadj)
          * potentially steal its spot.
          */
         weight = (int) (ptr->geno & G_FREQ) + align_shift(ptr);
+        weight += temperature_shift(ptr);
         if (weight < 0 || weight > 127) {
             impossible("bad weight in rndmonst for mndx %d", mndx);
             weight = 0;

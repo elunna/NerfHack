@@ -20,12 +20,12 @@ static void gloc_filter_done(void);
 static boolean gather_locs_interesting(coordxy, coordxy, int);
 static void gather_locs(coord **, int *, int);
 static void truncate_to_map(int *, int *, schar, schar);
-static void getpos_refresh(int *);
+static void getpos_refresh(int *) NONNULLARG1;
 static char *name_from_player(char *, const char *, const char *);
 static void do_mgivenname(void);
-static boolean alreadynamed(struct monst *, char *, char *);
-static void do_oname(struct obj *);
-static char *docall_xname(struct obj *);
+static boolean alreadynamed(struct monst *, char *, char *) NONNULLPTRS;
+static void do_oname(struct obj *) NONNULLARG1;
+static char *docall_xname(struct obj *) NONNULLARG1;
 static void namefloorobj(void);
 
 extern const char what_is_an_unknown_object[]; /* from pager.c */
@@ -1488,6 +1488,9 @@ do_oname(struct obj *obj)
            a valid artifact name */
         u.uconduct.literate++;
     } else if (obj->otyp == objtyp) {
+        /* artifact_name() always returns non-Null when it sets objtyp */
+        assert(aname != 0);
+
         /* artifact_name() found a match and restrict_name() didn't reject
            it; since 'obj' is the right type, naming will change it into an
            artifact so use canonical capitalization (Sting or Orcrist) */
@@ -1775,40 +1778,39 @@ void
 docall(struct obj *obj)
 {
     char buf[BUFSZ], qbuf[QBUFSZ];
-    char **str1;
+    char **uname_p;
+    boolean had_name = FALSE;
 
     if (!obj->dknown)
-        return; /* probably blind */
+        return; /* probably blind; Blind || Hallucination for 'fromsink' */
     flush_screen(1); /* buffered updates might matter to player's response */
 
     if (obj->oclass == POTION_CLASS && obj->fromsink)
-        /* kludge, meaning it's sink water */
+        /* fromsink: kludge, meaning it's sink water */
         Sprintf(qbuf, "Call a stream of %s fluid:",
                 OBJ_DESCR(objects[obj->otyp]));
     else
         (void) safe_qbuf(qbuf, "Call ", ":", obj,
                          docall_xname, simpleonames, "thing");
     /* pointer to old name */
-    str1 = &(objects[obj->otyp].oc_uname);
+    uname_p = &(objects[obj->otyp].oc_uname);
     /* use getlin() to get a name string from the player */
-    if (!name_from_player(buf, qbuf, *str1))
+    if (!name_from_player(buf, qbuf, *uname_p))
         return;
 
     /* clear old name */
-    if (*str1)
-        free((genericptr_t) *str1);
+    if (*uname_p) {
+        had_name = TRUE;
+        free((genericptr_t) *uname_p), *uname_p = NULL; /* clear oc_uname */
+    }
 
     /* strip leading and trailing spaces; uncalls item if all spaces */
     (void) mungspaces(buf);
     if (!*buf) {
-        if (*str1) { /* had name, so possibly remove from disco[] */
-            /* strip name first, for the update_inventory() call
-               from undiscover_object() */
-            *str1 = (char *) 0;
+        if (had_name) /* possibly remove from disco[]; old *uname_p is gone */
             undiscover_object(obj->otyp);
-        }
     } else {
-        *str1 = dupstr(buf);
+        *uname_p = dupstr(buf);
         discover_object(obj->otyp, FALSE, TRUE); /* possibly add to disco[] */
     }
 }
@@ -2611,7 +2613,7 @@ hliquid(
         if (liquidpref && *liquidpref)
             ++count;
         indx = rn2_on_display_rng(count);
-        if (indx < SIZE(hliquids))
+        if (IndexOk(indx, hliquids))
             return hliquids[indx];
     }
     return liquidpref;
@@ -2762,7 +2764,7 @@ lookup_novel(const char *lookname, int *idx)
         }
     }
     /* name not found; if novelidx is already set, override the name */
-    if (idx && *idx >= 0 && *idx < SIZE(sir_Terry_novels))
+    if (idx && IndexOk(*idx, sir_Terry_novels))
         return sir_Terry_novels[*idx];
 
     return (const char *) 0;

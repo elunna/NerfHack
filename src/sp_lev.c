@@ -4674,7 +4674,7 @@ struct selectionvar *
 selection_not(struct selectionvar *s)
 {
     int x, y;
-    NhRect tmprect;
+    NhRect tmprect = cg.zeroNhRect;
 
     for (x = 0; x < s->wid; x++)
         for (y = 0; y < s->hei; y++)
@@ -4688,7 +4688,7 @@ selection_filter_mapchar(struct selectionvar *ov,  xint16 typ, int lit)
 {
     int x, y;
     struct selectionvar *ret;
-    NhRect rect;
+    NhRect rect = cg.zeroNhRect;
 
     if (!ov)
         return NULL;
@@ -4726,7 +4726,7 @@ selection_filter_percent(
 {
     int x, y;
     struct selectionvar *ret;
-    NhRect rect;
+    NhRect rect = cg.zeroNhRect;
 
     if (!ov)
         return NULL;
@@ -4752,7 +4752,7 @@ selection_rndcoord(
     int idx = 0;
     int c;
     int dx, dy;
-    NhRect rect;
+    NhRect rect = cg.zeroNhRect;
 
     selection_getbounds(ov, &rect);
 
@@ -4793,7 +4793,7 @@ selection_do_grow(struct selectionvar *ov, int dir)
 {
     coordxy x, y;
     struct selectionvar *tmp;
-    NhRect rect;
+    NhRect rect = cg.zeroNhRect;
 
     if (!ov)
         return;
@@ -5221,7 +5221,7 @@ selection_iterate(
     genericptr_t arg)
 {
     coordxy x, y;
-    NhRect rect;
+    NhRect rect = cg.zeroNhRect;
 
     if (!ov)
         return;
@@ -5647,7 +5647,7 @@ lspo_replace_terrain(lua_State *L)
     lua_Integer x1, y1, x2, y2;
     int chance;
     int tolit;
-    NhRect rect;
+    NhRect rect = cg.zeroNhRect;
 
     create_des_coder();
 
@@ -6192,6 +6192,8 @@ lspo_region(lua_State *L)
         if (rlit)
             selection_do_grow(sel, W_ANY);
         selection_iterate(sel, sel_set_lit, (genericptr_t) &rlit);
+
+        selection_free(sel, TRUE);
 
         /* TODO: skip the rest of this function? */
         return 0;

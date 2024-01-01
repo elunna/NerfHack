@@ -1,4 +1,4 @@
-/* NetHack 3.7	detect.c	$NHDT-Date: 1613721262 2021/02/19 07:54:22 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.131 $ */
+/* NetHack 3.7	detect.c	$NHDT-Date: 1703070189 2023/12/20 11:03:09 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.171 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -21,7 +21,7 @@ static boolean check_map_spot(coordxy, coordxy, char, unsigned);
 static boolean clear_stale_map(char, unsigned);
 static void sense_trap(struct trap *, coordxy, coordxy, int);
 static int detect_obj_traps(struct obj *, boolean, int);
-static void display_trap_map(struct trap *, int);
+static void display_trap_map(int);
 static int furniture_detect(void);
 static void findone(coordxy, coordxy, genericptr_t);
 static void openone(coordxy, coordxy, genericptr_t);
@@ -921,19 +921,21 @@ detect_obj_traps(
 }
 
 static void
-display_trap_map(struct trap *ttmp, int cursed_src)
+display_trap_map(int cursed_src)
 {
     struct monst *mon;
+    struct trap *ttmp;
     int door, glyph, ter_typ = TER_DETECT | ( cursed_src ? TER_OBJ : TER_TRP );
     coord cc;
 
     cls();
 
     (void) unconstrain_map();
-    /* show chest traps first, so that subsequent floor trap display
-       will override if both types are present at the same location */
-    (void) detect_obj_traps(fobj, TRUE, cursed_src);
+    /* show chest traps first, first buried chests then floor chests, so
+       that subsequent floor trap display will override if both types are
+       present at the same location */
     (void) detect_obj_traps(gl.level.buriedobjlist, TRUE, cursed_src);
+    (void) detect_obj_traps(fobj, TRUE, cursed_src);
     for (mon = fmon; mon; mon = mon->nmon) {
         if (DEADMONSTER(mon) || (mon->isgd && !mon->mx))
             continue;
@@ -974,8 +976,8 @@ display_trap_map(struct trap *ttmp, int cursed_src)
  * returns 0 if something was detected
  */
 int
-trap_detect(struct obj *sobj) /* null if crystal ball,
-                                 *scroll if gold detection scroll */
+trap_detect(
+    struct obj *sobj) /* Null if crystal ball, scroll if gold detection */
 {
     register struct trap *ttmp;
     struct monst *mon;
@@ -990,36 +992,36 @@ trap_detect(struct obj *sobj) /* null if crystal ball,
     /* floor/ceiling traps */
     for (ttmp = gf.ftrap; ttmp; ttmp = ttmp->ntrap) {
         if (ttmp->tx != u.ux || ttmp->ty != u.uy) {
-            display_trap_map(ttmp, cursed_src);
+            display_trap_map(cursed_src);
             return 0;
-        } else
-            found = TRUE;
+        }
+        found = TRUE;
     }
     /* chest traps (might be buried or carried) */
     if ((tr = detect_obj_traps(fobj, FALSE, 0)) != OTRAP_NONE) {
         if (tr & OTRAP_THERE) {
-            display_trap_map(ttmp, cursed_src);
+            display_trap_map(cursed_src);
             return 0;
-        } else
-            found = TRUE;
+        }
+        found = TRUE;
     }
     if ((tr = detect_obj_traps(gl.level.buriedobjlist, FALSE, 0))
         != OTRAP_NONE) {
         if (tr & OTRAP_THERE) {
-            display_trap_map(ttmp, cursed_src);
+            display_trap_map(cursed_src);
             return 0;
-        } else
-            found = TRUE;
+        }
+        found = TRUE;
     }
     for (mon = fmon; mon; mon = mon->nmon) {
         if (DEADMONSTER(mon) || (mon->isgd && !mon->mx))
             continue;
         if ((tr = detect_obj_traps(mon->minvent, FALSE, 0)) != OTRAP_NONE) {
             if (tr & OTRAP_THERE) {
-                display_trap_map(ttmp, cursed_src);
+                display_trap_map(cursed_src);
                 return 0;
-            } else
-                found = TRUE;
+            }
+            found = TRUE;
         }
     }
     if (detect_obj_traps(gi.invent, FALSE, 0) != OTRAP_NONE)
@@ -1034,10 +1036,10 @@ trap_detect(struct obj *sobj) /* null if crystal ball,
             continue;
         if (levl[cc.x][cc.y].doormask & D_TRAPPED) {
             if (cc.x != u.ux || cc.y != u.uy) {
-                display_trap_map(ttmp, cursed_src);
+                display_trap_map(cursed_src);
                 return 0;
-            } else
-                found = TRUE;
+            }
+            found = TRUE;
         }
     }
     if (!found) {
@@ -1098,46 +1100,55 @@ furniture_detect(void)
     return 0;
 }
 
+/* way back in 3.0plN and/or 2.x, you could use a crystal ball to find out
+   where the wizard was relative to your current location; that was when the
+   Wizard guarded the Amulet and was located on a random maze level, and you
+   were expected to level teleport deep into Hell and hunt for him while
+   working your way up; this isn't of much use anymore */
 const char *
 level_distance(d_level *where)
 {
-    register schar ll = depth(&u.uz) - depth(where);
-    register boolean indun = (u.uz.dnum == where->dnum);
+    schar ll = depth(&u.uz) - depth(where);
+    boolean indun = (u.uz.dnum == where->dnum);
+    const char *res = ""; /* always replaced by some other non-Null value */
 
     if (ll < 0) {
         if (ll < (-8 - rn2(3)))
             if (!indun)
-                return "far away";
+                res = "far away";
             else
-                return "far below";
+                res = "far below";
         else if (ll < -1)
             if (!indun)
-                return "away below you";
+                res = "away below you";
             else
-                return "below you";
+                res = "below you";
         else if (!indun)
-            return "in the distance";
+            res = "in the distance";
         else
-            return "just below";
+            res = "just below";
     } else if (ll > 0) {
         if (ll > (8 + rn2(3)))
             if (!indun)
-                return "far away";
+                res = "far away";
             else
-                return "far above";
+                res = "far above";
         else if (ll > 1)
             if (!indun)
-                return "away above you";
+                res = "away above you";
             else
-                return "above you";
+                res = "above you";
         else if (!indun)
-            return "in the distance";
+            res = "in the distance";
         else
-            return "just above";
-    } else if (!indun)
-        return "in the distance";
-    else
-        return "near you";
+            res = "just above";
+    } else { /* l1 == 0 */
+        if (!indun)
+            res = "in the distance";
+        else
+            res = "near you";
+    }
+    return res;
 }
 
     /*
@@ -1360,7 +1371,7 @@ show_map_spot(coordxy x, coordxy y, boolean cnf)
     if (!IS_FURNITURE(lev->typ)) {
         if ((t = t_at(x, y)) != 0 && t->tseen) {
             map_trap(t, 1);
-        } else if ((ep = engr_at(x,y)) != 0) {
+        } else if ((ep = engr_at(x, y)) != 0) {
             map_engraving(ep, 1);
         } else if (glyph_is_trap(oldglyph) || glyph_is_object(oldglyph)) {
             show_glyph(x, y, oldglyph);
@@ -1442,7 +1453,7 @@ do_vicinity_map(struct obj *sobj) /* scroll--actually fake spellbook--object */
     /* if hero is engulfed, show engulfer at <u.ux,u.uy> */
     save_viz_uyux = gv.viz_array[u.uy][u.ux];
     if (u.uswallow)
-        gv.viz_array[u.uy][u.ux] |= IN_SIGHT; /* <x,y> are reversed to [y][x] */
+        gv.viz_array[u.uy][u.ux] |= IN_SIGHT; /* <x,y> are reversed, [y][x] */
     save_EDetect_mons = EDetect_monsters;
     /* for skilled spell, getpos() scanning of the map will display all
        monsters within range; otherwise, "unseen creature" will be shown */
@@ -2032,9 +2043,9 @@ reveal_terrain_getglyph(
         glyph = back_to_glyph(x, y);
         levl[x][y].seenv = seenv;
     } else {
-        levl_glyph = gl.level.flags.hero_memory
-              ? levl[x][y].glyph
-              : seenv ? back_to_glyph(x, y): default_glyph;
+        levl_glyph = gl.level.flags.hero_memory ? levl[x][y].glyph
+                     : seenv ? back_to_glyph(x, y)
+                       : default_glyph;
         /* glyph_at() returns the displayed glyph, which might
            be a monster.  levl[][].glyph contains the remembered
            glyph, which will never be a monster (unless it is
@@ -2190,7 +2201,7 @@ reveal_terrain(
 
         for (x = 1; x < COLNO; x++)
             for (y = 0; y < ROWNO; y++) {
-                glyph = reveal_terrain_getglyph(x,y, swallowed,
+                glyph = reveal_terrain_getglyph(x, y, swallowed,
                                                 default_glyph, which_subset);
                 show_glyph(x, y, glyph);
             }

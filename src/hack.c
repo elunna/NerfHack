@@ -14,16 +14,17 @@ static boolean findtravelpath(int);
 static boolean trapmove(coordxy, coordxy, struct trap *);
 static schar u_simple_floortyp(coordxy, coordxy);
 static boolean swim_move_danger(coordxy, coordxy);
-static boolean domove_bump_mon(struct monst *, int);
+static boolean domove_bump_mon(struct monst *, int) NONNULLARG1;
 static boolean domove_attackmon_at(struct monst *, coordxy, coordxy,
-                                   boolean *);
+                                   boolean *) NONNULLPTRS;
 static boolean domove_fight_ironbars(coordxy, coordxy);
 static boolean domove_fight_web(coordxy, coordxy);
-static boolean domove_swap_with_pet(struct monst *, coordxy, coordxy);
+static boolean domove_swap_with_pet(struct monst *,
+                                    coordxy, coordxy) NONNULLARG1;
 static boolean domove_fight_empty(coordxy, coordxy);
 static boolean air_turbulence(void);
 static void slippery_ice_fumbling(void);
-static boolean impaired_movement(coordxy *, coordxy *);
+static boolean impaired_movement(coordxy *, coordxy *) NONNULLPTRS;
 static boolean avoid_moving_on_trap(coordxy, coordxy, boolean);
 static boolean avoid_moving_on_liquid(coordxy, coordxy, boolean);
 static boolean avoid_running_into_trap_or_liquid(coordxy, coordxy);
@@ -32,7 +33,7 @@ static boolean carrying_too_much(void);
 static boolean escape_from_sticky_mon(coordxy, coordxy);
 static void domove_core(void);
 static void maybe_smudge_engr(coordxy, coordxy, coordxy, coordxy);
-static struct monst *monstinroom(struct permonst *, int);
+static struct monst *monstinroom(struct permonst *, int) NONNULLARG1;
 static boolean furniture_present(int, int);
 static void move_update(boolean);
 static int pickup_checks(void);
@@ -1775,6 +1776,7 @@ domove_attackmon_at(
     coordxy x, coordxy y,
     boolean *displaceu)
 {
+    /* assert(mtmp != NULL) */
     /* only attack if we know it's there
      * or if we used the 'F' command to fight blindly
      * or if it hides_under, in which case we call do_attack() to print
@@ -2564,6 +2566,8 @@ domove_core(void)
         return;
 
     mtmp = m_at(x, y);
+    /* mtmp can be null at this point */
+
     /* tentatively move the hero plus steed; leave CLIPPING til later */
     u.ux += u.dx;
     u.uy += u.dy;
@@ -2574,47 +2578,50 @@ domove_core(void)
         exercise_steed(); /* train riding skill */
     }
 
-    if (displaceu && mtmp) {
-        boolean noticed_it = (canspotmon(mtmp) || glyph_is_invisible(glyph)
-                              || glyph_is_warning(glyph));
+    if (mtmp) {
+        if (displaceu) {
+            boolean noticed_it = (canspotmon(mtmp) || glyph_is_invisible(glyph)
+                                  || glyph_is_warning(glyph));
 
-        remove_monster(u.ux, u.uy);
-        place_monster(mtmp, u.ux0, u.uy0);
-        newsym(u.ux, u.uy);
-        newsym(u.ux0, u.uy0);
-        /* monst still knows where hero is */
-        mtmp->mux = u.ux, mtmp->muy = u.uy;
+            remove_monster(u.ux, u.uy);
+            place_monster(mtmp, u.ux0, u.uy0);
+            newsym(u.ux, u.uy);
+            newsym(u.ux0, u.uy0);
+            /* monst still knows where hero is */
+            mtmp->mux = u.ux, mtmp->muy = u.uy;
 
-        pline("%s swaps places with you...",
-              !noticed_it ? Something : Monnam(mtmp));
-        if (!canspotmon(mtmp))
-            map_invisible(u.ux0, u.uy0);
-        /* monster chose to swap places; hero doesn't get any credit
-           or blame if something bad happens to it */
-        gc.context.mon_moving = 1;
-        if (!minliquid(mtmp))
-            (void) mintrap(mtmp, NO_TRAP_FLAGS);
-        gc.context.mon_moving = 0;
+            pline("%s swaps places with you...",
+                  !noticed_it ? Something : Monnam(mtmp));
+            if (!canspotmon(mtmp))
+                map_invisible(u.ux0, u.uy0);
+            /* monster chose to swap places; hero doesn't get any credit
+               or blame if something bad happens to it */
+            gc.context.mon_moving = 1;
+            if (!minliquid(mtmp))
+                (void) mintrap(mtmp, NO_TRAP_FLAGS);
+            gc.context.mon_moving = 0;
 
-    /*
-     * If safepet at destination then move the pet to the hero's
-     * previous location using the same conditions as in do_attack().
-     * there are special extenuating circumstances:
-     * (1) if the pet dies then your god angers,
-     * (2) if the pet gets trapped then your god may disapprove.
-     *
-     * Ceiling-hiding pets are skipped by this section of code, to
-     * be caught by the normal falling-monster code.
-     */
-    } else if (is_safemon(mtmp)
-               && !(is_hider(mtmp->data) && mtmp->mundetected)) {
-        if (!domove_swap_with_pet(mtmp, x, y)) {
-            u.ux = u.ux0, u.uy = u.uy0; /* didn't move after all */
-            /* could skip this bit since we're about to call u_on_newpos() */
-            if (u.usteed)
-                u.usteed->mx = u.ux, u.usteed->my = u.uy;
+        /*
+         * If safepet at destination then move the pet to the hero's
+         * previous location using the same conditions as in do_attack().
+         * there are special extenuating circumstances:
+         * (1) if the pet dies then your god angers,
+         * (2) if the pet gets trapped then your god may disapprove.
+         *
+         * Ceiling-hiding pets are skipped by this section of code, to
+         * be caught by the normal falling-monster code.
+         */
+        } else if (is_safemon(mtmp)
+                   && !(is_hider(mtmp->data) && mtmp->mundetected)) {
+            if (!domove_swap_with_pet(mtmp, x, y)) {
+                u.ux = u.ux0, u.uy = u.uy0; /* didn't move after all */
+                /* could skip this bit since we're about to call u_on_newpos() */
+                if (u.usteed)
+                    u.usteed->mx = u.ux, u.usteed->my = u.uy;
+            }
         }
-    }
+    }  /* mtmp != NULL */
+
     /* tentative move above didn't handle CLIPPING, in case there was a
        monster in the way and the move attempt ended up being blocked;
        do a full re-position now, possibly back to where hero started */
@@ -2839,7 +2846,6 @@ pooleffects(
                 You("leave the %s...", hliquid("water")); /* oops! */
             } else {
                 back_on_ground(FALSE);
-                iflags.last_msg = PLNMSG_BACK_ON_GROUND;
             }
         } else if (Is_waterlevel(&u.uz)) {
             still_inwater = TRUE;

@@ -8,57 +8,64 @@
 static const char brief_feeling[] =
     "have a %s feeling for a moment, then it passes.";
 
-static boolean mhitm_mgc_atk_negated(struct monst *, struct monst *, boolean);
+static boolean mhitm_mgc_atk_negated(struct monst *, struct monst *,
+                                     boolean) NONNULLPTRS;
 static boolean known_hitum(struct monst *, struct obj *, int *, int, int,
-                           struct attack *, int);
-static boolean theft_petrifies(struct obj *);
-static void steal_it(struct monst *, struct attack *);
+                           struct attack *, int) NONNULLARG13;
+static boolean theft_petrifies(struct obj *) NONNULLARG1;
+static void steal_it(struct monst *, struct attack *) NONNULLARG1;
 static void mhitm_ad_slow_core(struct monst *, struct monst *);
-static boolean hitum_cleave(struct monst *, struct attack *);
+
+/* hitum_cleave() has contradictory information. There's a comment
+ * beside the 1st arg 'target' stating non-null, but later on there
+ * is a test for 'target' being null */
+static boolean hitum_cleave(struct monst *, struct attack *) NO_NNARGS;
 static boolean double_punch(void);
-static boolean hitum(struct monst *, struct attack *);
-static void hmon_hitmon_barehands(struct _hitmon_data *, struct monst *);
+static boolean hitum(struct monst *, struct attack *) NONNULLARG1;
+static void hmon_hitmon_barehands(struct _hitmon_data *,
+		                  struct monst *) NONNULLARG12;
 static void hmon_hitmon_weapon_ranged(struct _hitmon_data *, struct monst *,
-                                      struct obj *);
+                                      struct obj *) NONNULLARG123;
 static void hmon_hitmon_weapon_melee(struct _hitmon_data *, struct monst *,
-                                     struct obj *);
+                                     struct obj *) NONNULLARG123;
 static void hmon_hitmon_weapon(struct _hitmon_data *, struct monst *,
-                               struct obj *);
+                               struct obj *) NONNULLARG123;
 static void hmon_hitmon_potion(struct _hitmon_data *, struct monst *,
-                               struct obj *);
+                               struct obj *) NONNULLARG123;
 static void hmon_hitmon_misc_obj(struct _hitmon_data *, struct monst *,
-                                 struct obj *);
+                                 struct obj *) NONNULLARG123;
 static void hmon_hitmon_do_hit(struct _hitmon_data *, struct monst *,
-                               struct obj *);
+                               struct obj *) NONNULLARG12;
 static void hmon_hitmon_dmg_recalc(struct _hitmon_data *, struct obj *);
 static void hmon_hitmon_poison(struct _hitmon_data *, struct monst *,
-                               struct obj *);
+                               struct obj *) NONNULLARG123;
 static void hmon_hitmon_jousting(struct _hitmon_data *, struct monst *,
-                                 struct obj *);
+                                 struct obj *) NONNULLARG123;
 static void hmon_hitmon_stagger(struct _hitmon_data *, struct monst *,
-                                struct obj *);
+                                struct obj *) NONNULLARG12;
 static void hmon_hitmon_pet(struct _hitmon_data *, struct monst *,
-                            struct obj *);
+                            struct obj *) NONNULLARG12;
 static void hmon_hitmon_splitmon(struct _hitmon_data *, struct monst *,
-                                 struct obj *);
+                                 struct obj *) NONNULLARG12;
 static void hmon_hitmon_msg_hit(struct _hitmon_data *, struct monst *,
-                                struct obj *);
+                                struct obj *) NONNULLARG12;
 static void hmon_hitmon_msg_silver(struct _hitmon_data *, struct monst *,
-                                   struct obj *);
+                                   struct obj *) NONNULLARG12;
 static void hmon_hitmon_msg_lightobj(struct _hitmon_data *, struct monst *,
-                                     struct obj *);
-static boolean hmon_hitmon(struct monst *, struct obj *, int, int);
-static int joust(struct monst *, struct obj *);
+                                     struct obj *) NONNULLARG12;
+static boolean hmon_hitmon(struct monst *, struct obj *, int, int) NONNULLARG1;
+static int joust(struct monst *, struct obj *) NONNULLARG12;
 static void demonpet(void);
-static boolean m_slips_free(struct monst *, struct attack *);
-static void start_engulf(struct monst *);
+static boolean m_slips_free(struct monst *, struct attack *) NONNULLPTRS;
+static void start_engulf(struct monst *) NONNULLARG1;
 static void end_engulf(void);
-static int gulpum(struct monst *, struct attack *);
-static boolean hmonas(struct monst *);
-static void nohandglow(struct monst *);
-static boolean mhurtle_to_doom(struct monst *, int, struct permonst **);
-static void first_weapon_hit(struct obj *);
-static boolean shade_aware(struct obj *);
+static int gulpum(struct monst *, struct attack *) NONNULLPTRS;
+static boolean hmonas(struct monst *) NONNULLARG1;
+static void nohandglow(struct monst *) NONNULLARG1;
+static boolean mhurtle_to_doom(struct monst *, int,
+                               struct permonst **) NONNULLARG13;
+static void first_weapon_hit(struct obj *) NONNULLARG1;
+static boolean shade_aware(struct obj *) NO_NNARGS;
 
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
 #define KILL_FAMILIARITY 20
@@ -961,7 +968,7 @@ static void
 hmon_hitmon_weapon_ranged(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)    /* obj is not NULL */
 {
     /* then do only 1-2 points of damage and don't use or
        train weapon's skill */
@@ -996,7 +1003,7 @@ static void
 hmon_hitmon_weapon_melee(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)    /* obj is not NULL */
 {
     int wtype;
     struct obj *monwep;
@@ -1131,7 +1138,7 @@ static void
 hmon_hitmon_weapon(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)   /* obj is not NULL */
 {
     /* is it not a melee weapon? */
     if (/* if you strike with a bow... */
@@ -1156,7 +1163,7 @@ static void
 hmon_hitmon_potion(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)    /* obj is not NULL */
 {
     if (obj->quan > 1L)
         obj = splitobj(obj, 1L);
@@ -1180,7 +1187,7 @@ static void
 hmon_hitmon_misc_obj(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)    /* obj is not NULL */
 {
     switch (obj->otyp) {
     case BOULDER:         /* 1d20 */
@@ -1280,10 +1287,11 @@ hmon_hitmon_misc_obj(
             return;
             /*return (boolean) (!DEADMONSTER(mon));*/
         } else { /* ordinary egg(s) */
-            const char *eggp = (obj->corpsenm != NON_PM
-                                && obj->known)
-                ? the(mons[obj->corpsenm].pmnames[NEUTRAL])
-                : (cnt > 1L) ? "some" : "an";
+            enum monnums mnum = obj->corpsenm;
+            const char *eggp =
+                (mnum >= LOW_PM && mnum < NUMMONS && obj->known)
+                    ? the(mons[mnum].pmnames[NEUTRAL])
+                    : (cnt > 1L) ? "some" : "an";
 
             You("hit %s with %s egg%s.", mon_nam(mon), eggp,
                 plur(cnt));
@@ -1430,11 +1438,13 @@ static void
 hmon_hitmon_do_hit(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)    /* obj can be NULL */
 {
     if (!obj) { /* attack with bare hands */
         hmon_hitmon_barehands(hmd, mon);
     } else {
+        /* obj is not NULL here because of the !obj check in this if block,
+         , so no guard is needed ahead of stone_missile(obj) */
         /* stone missile does not hurt xorn or earth elemental, but doesn't
            pass all the way through and continue on to some further target */
         if ((hmd->thrown == HMON_THROWN
@@ -1553,7 +1563,7 @@ static void
 hmon_hitmon_poison(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)    /* obj is not NULL */
 {
     int nopoison = (10 - (obj->owt / 10));
 
@@ -1566,7 +1576,7 @@ hmon_hitmon_poison(
         You_feel("like an evil coward for using a poisoned weapon.");
         adjalign(-1);
     }
-    if (obj && !rn2(nopoison)) {
+    if (!rn2(nopoison)) {
         /* remove poison now in case obj ends up in a bones file */
         obj->opoisoned = FALSE;
         /* defer "obj is no longer poisoned" until after hit message */
@@ -1584,7 +1594,7 @@ static void
 hmon_hitmon_jousting(
     struct _hitmon_data *hmd,
     struct monst *mon, /* target */
-    struct obj *obj) /* lance */
+    struct obj *obj) /* lance; obj is not NULL */
 {
     hmd->dmg += d(2, (obj == uwep) ? 10 : 2); /* [was in dmgval()] */
     You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam(hmd->dmg) : ".");
@@ -1647,7 +1657,7 @@ static void
 hmon_hitmon_splitmon(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)    /* obj can be NULL but guards are in place below */
 {
     if ((hmd->mdat == &mons[PM_BLACK_PUDDING]
          || hmd->mdat == &mons[PM_BROWN_PUDDING])
@@ -1680,7 +1690,7 @@ static void
 hmon_hitmon_msg_hit(
     struct _hitmon_data *hmd,
     struct monst *mon,
-    struct obj *obj)
+    struct obj *obj)   /* obj can be NULL for hand_to_hand; otherwise not */
 {
     if (!hmd->hittxt /*( thrown => obj exists )*/
         && (!hmd->destroyed
@@ -1773,6 +1783,26 @@ hmon_hitmon_msg_lightobj(
     pline(fmt, whom);
     RESTORE_WARNING_FORMAT_NONLITERAL
 }
+
+/*
+ * These will segfault if passed a NULL obj pointer:
+ *       hmon_hitmon_weapon_ranged,
+ *       hmon_hitmon_weapon_melee,
+ *       hmon_hitmon_weapon,
+ *       hmon_hitmon_potion,
+ *       hmon_hitmon_misc_obj,
+ *       hmon_hitmon_poison,
+ *       hmon_hitmon_jousting,
+ *
+ * These are equipped to handle a NULL obj pointer:
+ *       hmon_hitmon_stagger,       - obj arg is unused
+ *       hmon_hitmon_pet,           - obj arg is unused
+ *       hmon_hitmon_msg_silver,    - obj arg is unused
+ *       hmon_hitmon_msg_lightobj,  - obj arg is unused
+ *       hmon_hitmon_do_hit,        - has obj and !obj code paths
+ *       hmon_hitmon_splitmon,      - has !obj guards
+ *       hmon_hitmon_msg_hit,       - has !obj guards exc. thrown which is ok
+ */
 
 /* guts of hmon(); returns True if 'mon' survives */
 static boolean

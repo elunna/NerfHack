@@ -15,7 +15,7 @@ static char *loot_xname(struct obj *);
 static int invletter_value(char);
 static int QSORTCALLBACK sortloot_cmp(const genericptr, const genericptr);
 static void reorder_invent(void);
-static struct obj *addinv_core0(struct obj *, struct obj *, boolean);
+static struct obj *addinv_core0(struct obj *, struct obj *, boolean) NONNULLARG1;
 static void noarmor(boolean);
 static void invdisp_nothing(const char *, const char *);
 static boolean worn_wield_only(struct obj *);
@@ -783,6 +783,7 @@ merge_choice(struct obj *objlist, struct obj *obj)
 {
     struct monst *shkp;
     int save_nocharge;
+    struct obj *objlist2;
 
     if (obj->otyp == SCR_SCARE_MONSTER) /* punt on these */
         return (struct obj *) 0;
@@ -804,13 +805,14 @@ merge_choice(struct obj *objlist, struct obj *obj)
         else if (inhishop(shkp))
             return (struct obj *) 0;
     }
-    while (objlist) {
-        if (mergable(objlist, obj))
+    objlist2 = objlist; /* allow objlist arg to be nonnull w/o a warning */
+    while (objlist2) {
+        if (mergable(objlist2, obj))
             break;
-        objlist = objlist->nobj;
+        objlist2 = objlist2->nobj;
     }
     obj->no_charge = save_nocharge;
-    return objlist;
+    return objlist2;
 }
 
 /* merge obj with otmp and delete obj if types agree */
@@ -4885,7 +4887,9 @@ mergable(
     if ((objnamelth != otmpnamelth
          && ((objnamelth && otmpnamelth) || obj->otyp == CORPSE))
         || (objnamelth && otmpnamelth
-            && strncmp(ONAME(obj), ONAME(otmp), objnamelth)))
+           /* verify pointers before deref for static analyzer */
+            && has_oname(obj) && has_oname(otmp)
+               && strncmp(ONAME(obj), ONAME(otmp), objnamelth)))
         return FALSE;
 
     /* if one has an attached mail command, other must have same command */

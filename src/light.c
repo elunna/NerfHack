@@ -1,4 +1,4 @@
-/* NetHack 3.7	light.c	$NHDT-Date: 1657918094 2022/07/15 20:48:14 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.57 $ */
+/* NetHack 3.7	light.c	$NHDT-Date: 1702680171 2023/12/15 22:42:51 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.66 $ */
 /* Copyright (c) Dean Luick, 1994                                       */
 /* NetHack may be freely redistributed.  See license for details.       */
 
@@ -41,7 +41,8 @@
 #define LSF_SHOW 0x1        /* display the light source */
 #define LSF_NEEDS_FIXUP 0x2 /* need oid fixup */
 
-static light_source *new_light_core(coordxy, coordxy, int, int, anything *);
+static light_source *new_light_core(coordxy, coordxy,
+                                    int, int, anything *) NONNULLPTRS;
 static void discard_flashes(void);
 static void write_ls(NHFILE *, light_source *);
 static int maybe_write_ls(NHFILE *, int, boolean);
@@ -239,6 +240,9 @@ show_transient_light(struct obj *obj, coordxy x, coordxy y)
         cameraflash = cg.zeroany;
         /* radius 0 will just light <x,y>; cameraflash.a_obj is Null */
         ls = new_light_core(x, y, 0, LS_OBJECT, &cameraflash);
+        /* pacify static analysis; 'ls' is never Null for
+           new_light_core(,,0,LS_OBJECT,&zeroany) */
+        assert(ls != NULL);
     } else {
         /* thrown or kicked object which is emitting light; validate its
            light source to obtain its radius (for monster sightings) */
@@ -248,12 +252,14 @@ show_transient_light(struct obj *obj, coordxy x, coordxy y)
             if (ls->id.a_obj == obj)
                 break;
         }
-    }
-    if (!ls || (obj && obj->where != OBJ_FREE)) {
-        impossible("transient light %s %s is not %s?",
-                   obj->lamplit ? "lit" : "unlit", xname(obj),
-                   !ls ? "a light source" : "free");
-        return;
+        assert(obj != NULL); /* necessary condition to get into this 'else' */
+        if (!ls || obj->where != OBJ_FREE) {
+            impossible("transient light %s %s %s not %s?",
+                       obj->lamplit ? "lit" : "unlit",
+                       simpleonames(obj), otense(obj, "are"),
+                       !ls ? "a light source" : "free");
+            return;
+        }
     }
 
     if (obj) /* put lit candle or lamp temporarily on the map */

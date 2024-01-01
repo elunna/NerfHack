@@ -8,9 +8,9 @@
 static boolean no_bones_level(d_level *);
 static void goodfruit(int);
 static void resetobjs(struct obj *, boolean);
-static void give_to_nearby_mon(struct obj *, coordxy, coordxy);
-static boolean fixuporacle(struct monst *);
-static void remove_mon_from_bones(struct monst *);
+static void give_to_nearby_mon(struct obj *, coordxy, coordxy) NONNULLARG1;
+static boolean fixuporacle(struct monst *) NONNULLARG1;
+static void remove_mon_from_bones(struct monst *) NONNULLARG1;
 static void set_ghostly_objlist(struct obj *objchain);
 
 static boolean
@@ -496,6 +496,7 @@ savebones(int how, time_t when, struct obj *corpse)
             u.ugrave_arise = NON_PM; /* in case caller cares */
             return;
         }
+        give_u_to_m_resistances(mtmp);
         mtmp = christen_monst(mtmp, gp.plname);
         newsym(u.ux, u.uy);
         /* ["Your body rises from the dead as an <mname>..." used
@@ -608,7 +609,8 @@ getbones(void)
 {
     int ok;
     NHFILE *nhfp = (NHFILE *) 0;
-    char c = 0, *bonesid, oldbonesid[40]; /* was [10]; more should be safer */
+    char c = 0, *bonesid,
+         oldbonesid[40] = { 0 }; /* was [10]; more should be safer */
 
     if (discover) /* save bones files for real games */
         return 0;
@@ -650,8 +652,18 @@ getbones(void)
                string and wasn't recorded in the file */
             mread(nhfp->fd, (genericptr_t) &c,
                   sizeof c); /* length including terminating '\0' */
-            mread(nhfp->fd, (genericptr_t) oldbonesid,
-                  (unsigned) c); /* DD.nn or Qrrr.n for role rrr */
+            if ((unsigned) c <= sizeof oldbonesid) {
+                mread(nhfp->fd, (genericptr_t) oldbonesid,
+                      (unsigned) c); /* DD.nn or Qrrr.n for role rrr */
+            } else {
+                if (wizard)
+                    debugpline2("Abandoning bones , %u > %u.",
+                                (unsigned) c, (unsigned) sizeof oldbonesid);
+                close_nhfile(nhfp);
+                compress_bonesfile();
+                /* ToDo: maybe unlink these problematic bones? */
+                return 0;
+            }
         }
         if (strcmp(bonesid, oldbonesid) != 0) {
             char errbuf[BUFSZ];

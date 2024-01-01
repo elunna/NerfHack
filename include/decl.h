@@ -147,6 +147,8 @@ struct instance_globals_a {
     int animal_list_count;
 
     /* pickup.c */
+    int A_first_hint; /* menustyle:Full plus 'A' response + !paranoid:A */
+    int A_second_hint; /* menustyle:Full plus 'A' response + paranoid:A */
     boolean abort_looting;
 
     /* shk.c */
@@ -1153,6 +1155,7 @@ struct const_globals {
     const struct obj zeroobj;      /* used to zero out a struct obj */
     const struct monst zeromonst;  /* used to zero out a struct monst */
     const anything zeroany;        /* used to zero out union any */
+    const NhRect zeroNhRect;       /* used to zero out NhRect */
 };
 
 extern const struct const_globals cg;

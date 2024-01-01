@@ -1,4 +1,4 @@
-/* NetHack 3.7	mklev.c	$NHDT-Date: 1702023271 2023/12/08 08:14:31 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.163 $ */
+/* NetHack 3.7	mklev.c	$NHDT-Date: 1702839454 2023/12/17 18:57:34 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.169 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Alex Smith, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -13,17 +13,16 @@ static boolean generate_stairs_room_good(struct mkroom *, int);
 static struct mkroom *generate_stairs_find_room(void);
 static void generate_stairs(void);
 static void mkfount(struct mkroom *);
-static boolean find_okay_roompos(struct mkroom *, coord *);
+static boolean find_okay_roompos(struct mkroom *, coord *) NONNULLARG12;
 static void mksink(struct mkroom *);
 static void mkaltar(struct mkroom *);
 static void mkgrave(struct mkroom *);
 static void makevtele(void);
-void clear_level_structures(void);
-static void fill_ordinary_room(struct mkroom *, boolean);
+static void fill_ordinary_room(struct mkroom *, boolean) NONNULLARG1;
 static void makelevel(void);
 static boolean bydoor(coordxy, coordxy);
 static void mktrap_victim(struct trap *);
-static struct mkroom *find_branch_room(coord *);
+static struct mkroom *find_branch_room(coord *) NONNULLARG1;
 static struct mkroom *pos_to_room(coordxy, coordxy);
 static boolean cardinal_nextto_room(struct mkroom *, coordxy, coordxy);
 static boolean place_niche(struct mkroom *, int *, coordxy *, coordxy *);
@@ -122,7 +121,7 @@ void
 sort_rooms(void)
 {
     coordxy x, y;
-    unsigned i, ri[MAXNROFROOMS + 1], n = (unsigned) gn.nroom;
+    unsigned i, ri[MAXNROFROOMS + 1] = { 0U }, n = (unsigned) gn.nroom;
 
     qsort((genericptr_t) gr.rooms, n, sizeof (struct mkroom), mkroom_cmp);
 
@@ -302,7 +301,7 @@ makerooms(void)
 
     /* make rooms until satisfied */
     /* rnd_rect() will returns 0 if no more rects are available... */
-    while (gn.nroom < (MAXNROFROOMS-1) && rnd_rect()) {
+    while (gn.nroom < (MAXNROFROOMS - 1) && rnd_rect()) {
         if (gn.nroom >= (MAXNROFROOMS / 6) && rn2(2) && !tried_vault) {
             tried_vault = TRUE;
             if (create_vault()) {
@@ -840,7 +839,8 @@ clear_level_structures(void)
 }
 
 #define ROOM_IS_FILLABLE(croom) \
-    ((croom->rtype == OROOM || croom->rtype == THEMEROOM) && croom->needfill == FILL_NORMAL)
+    ((croom->rtype == OROOM || croom->rtype == THEMEROOM)       \
+     && croom->needfill == FILL_NORMAL)
 
 /* Fill a "random" room (i.e. a typical non-special room in the Dungeons of
    Doom) with random monsters, objects, and dungeon features.
@@ -848,7 +848,9 @@ clear_level_structures(void)
    If bonus_items is TRUE, there may be an additional special item
    generated, depending on depth. */
 static void
-fill_ordinary_room(struct mkroom *croom, boolean bonus_items)
+fill_ordinary_room(
+    struct mkroom *croom,
+    boolean bonus_items)
 {
     int trycnt = 0;
     coord pos;
@@ -863,7 +865,13 @@ fill_ordinary_room(struct mkroom *croom, boolean bonus_items)
      * that's specified to be unfilled to block an inner subroom that's
      * specified to be filled. */
     for (x = 0; x < croom->nsubrooms; ++x) {
-        fill_ordinary_room(croom->sbrooms[x], FALSE);
+        struct mkroom *subroom = croom->sbrooms[x];
+
+        if (!subroom) {
+            impossible("fill_ordinary_room: Null subroom");
+            return;
+        }
+        fill_ordinary_room(subroom, FALSE);
     }
 
     if (croom->needfill != FILL_NORMAL)
@@ -1044,7 +1052,7 @@ fill_ordinary_room(struct mkroom *croom, boolean bonus_items)
 
         if (mesg) {
             do {
-                somexyspace(croom, &pos);
+                (void) somexyspace(croom, &pos);
                 x = pos.x;
                 y = pos.y;
             } while (levl[x][y].typ != ROOM && !rn2(40));
@@ -1117,8 +1125,10 @@ makelevel(void)
         if (Is_rogue_level(&u.uz)) {
             makeroguerooms();
             makerogueghost();
-        } else
+        } else {
             makerooms();
+        }
+        assert(gn.nroom > 0);
         sort_rooms();
 
         generate_stairs(); /* up and down stairs */
@@ -1140,7 +1150,8 @@ makelevel(void)
             h = 1;
             if (check_room(&gv.vault_x, &w, &gv.vault_y, &h, TRUE)) {
  fill_vault:
-                add_room(gv.vault_x, gv.vault_y, gv.vault_x + w, gv.vault_y + h,
+                add_room(gv.vault_x, gv.vault_y,
+                         gv.vault_x + w, gv.vault_y + h,
                          TRUE, VAULT, FALSE);
                 gl.level.flags.has_vault = 1;
                 ++room_threshold;
@@ -1216,14 +1227,17 @@ makelevel(void)
            bonus items, if there are any; if there aren't any we don't
            generate the bonus items (but levels with no fillable rooms
            typically don't have any bonus items to generate anyway) */
-        signed bonus_item_room_countdown =
-            fillable_room_count ? rn2(fillable_room_count) : -1;
+        int bonus_item_room_countdown = fillable_room_count
+                                        ? rn2(fillable_room_count) : -1;
 
         /* for each room: put things inside */
         for (croom = gr.rooms; croom->hx > 0; croom++) {
             boolean fillable = ROOM_IS_FILLABLE(croom);
-            fill_ordinary_room(croom, fillable && bonus_item_room_countdown == 0);
-            if (fillable) --bonus_item_room_countdown;
+
+            fill_ordinary_room(croom,
+                               fillable && bonus_item_room_countdown == 0);
+            if (fillable)
+                --bonus_item_room_countdown;
         }
     }
     /* Fill all special rooms now, regardless of whether this is a special
@@ -1466,7 +1480,7 @@ find_branch_room(coord *mp)
         mazexy(mp); /* already verifies location */
     } else {
         croom = generate_stairs_find_room();
-
+        assert(croom != NULL); /* Null iff nroom==0 which won't get here */
         if (!somexyspace(croom, mp))
             impossible("Can't place branch!");
     }
@@ -1753,7 +1767,7 @@ mktrap(
     register int kind;
     struct trap *t;
     unsigned lvl = level_difficulty();
-    coord m;
+    coord m = { 0, 0 };
 
     /* no traps in pools */
     if (tm && is_pool(tm->x, tm->y))
@@ -1876,7 +1890,7 @@ mktrap(
                 return;
             if (mktrapflags & MKTRAP_MAZEFLAG)
                 mazexy(&m);
-            else if (!somexyspace(croom, &m))
+            else if (croom && !somexyspace(croom, &m))
                 return;
         } while (occupied(m.x, m.y)
                  || (avoid_boulder && sobj_at(BOULDER, m.x, m.y)));
@@ -2027,10 +2041,17 @@ generate_stairs_find_room(void)
 static void
 generate_stairs(void)
 {
-    struct mkroom *croom = generate_stairs_find_room();
+    /* generate_stairs_find_room() returns Null if nroom == 0, but that
+       should never happen for a rooms+corridors style level */
+    static const char
+        gen_stairs_panic[] = "generate_stairs: failed to find a room! (%d)";
+    struct mkroom *croom;
     coord pos;
 
     if (!Is_botlevel(&u.uz)) {
+        if ((croom = generate_stairs_find_room()) == NULL)
+            panic(gen_stairs_panic, gn.nroom);
+
         if (!somexyspace(croom, &pos)) {
             pos.x = somex(croom);
             pos.y = somey(croom);
@@ -2038,10 +2059,12 @@ generate_stairs(void)
         mkstairs(pos.x, pos.y, 0, croom, FALSE); /* down */
     }
 
-    if (gn.nroom > 1)
-        croom = generate_stairs_find_room();
-
     if (u.uz.dlevel != 1) {
+        /* if there is only 1 room and we found it above, this will find
+           it again */
+        if ((croom = generate_stairs_find_room()) == NULL)
+            panic(gen_stairs_panic, gn.nroom);
+
         if (!somexyspace(croom, &pos)) {
             pos.x = somex(croom);
             pos.y = somey(croom);
@@ -2359,6 +2382,9 @@ mk_knox_portal(coordxy x, coordxy y)
     schar u_depth;
 
     br = dungeon_branch("Fort Ludios");
+    /* dungeon_branch() panics (so never returns) if result would be Null */
+    assert(br != NULL);
+
     if (on_level(&knox_level, &br->end1)) {
         source = &br->end2;
     } else {

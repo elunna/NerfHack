@@ -1,4 +1,4 @@
-/* NetHack 3.7	zap.c	$NHDT-Date: 1702023277 2023/12/08 08:14:37 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.498 $ */
+/* NetHack 3.7	zap.c	$NHDT-Date: 1703070194 2023/12/20 11:03:14 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.501 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -13,25 +13,27 @@
 #define MAGIC_COOKIE 1000
 
 static int zaptype(int);
-static void probe_objchain(struct obj *);
+static void probe_objchain(struct obj *) NO_NNARGS;
 static boolean zombie_can_dig(coordxy x, coordxy y);
-static void polyuse(struct obj *, int, int);
-static void create_polymon(struct obj *, int);
-static int stone_to_flesh_obj(struct obj *);
-static boolean zap_updown(struct obj *);
-static void zhitu(int, int, const char *, coordxy, coordxy);
-static void revive_egg(struct obj *);
-static boolean zap_steed(struct obj *);
-static void skiprange(int, int *, int *);
-static void zap_map(coordxy, coordxy, struct obj *);
+static void polyuse(struct obj *, int, int) NO_NNARGS;
+static void create_polymon(struct obj *, int) NO_NNARGS;
+static int stone_to_flesh_obj(struct obj *) NONNULLARG1;
+static boolean zap_updown(struct obj *) NONNULLARG1;
+static void zhitu(int, int, const char *, coordxy, coordxy) NO_NNARGS;
+static void revive_egg(struct obj *) NONNULLARG1;
+static boolean zap_steed(struct obj *) NONNULLARG1;
+static void skiprange(int, int *, int *) NONNULLPTRS;
+static void zap_map(coordxy, coordxy, struct obj *) NONNULLARG3;
 static int zap_hit(int, int);
-static void disintegrate_mon(struct monst *, int, const char *);
+static void disintegrate_mon(struct monst *, int, const char *) NONNULLARG1;
 static int adtyp_to_prop(int);
-static void backfire(struct obj *);
-static int zap_ok(struct obj *);
-static void boxlock_invent(struct obj *);
+static void backfire(struct obj *) NONNULLARG1;
+static int zap_ok(struct obj *) NO_NNARGS;
+/* all callers of boxlock_invent() pass a NONNULL obj, and boxlock
+ * boxlock_invent() calls boxlock() which has nonnull arg. */
+static void boxlock_invent(struct obj *) NONNULLARG1;
 static int spell_hit_bonus(int);
-static void destroy_one_item(struct obj *, int, int);
+static void destroy_one_item(struct obj *, int, int) NONNULLARG1;
 static void wishcmdassist(int);
 
 #define M_IN_WATER(ptr) ((ptr)->mlet == S_EEL || cant_drown(ptr))
@@ -1082,7 +1084,7 @@ revive(struct obj *corpse, boolean by_hero)
 }
 
 static void
-revive_egg(struct obj *obj)
+revive_egg(struct obj *obj) /* nonnull */
 {
     /*
      * Note: generic eggs with corpsenm set to NON_PM will never hatch.
@@ -1945,7 +1947,7 @@ poly_obj(struct obj *obj, int id)
 
 /* stone-to-flesh spell hits and maybe transforms or animates obj */
 static int
-stone_to_flesh_obj(struct obj *obj)
+stone_to_flesh_obj(struct obj *obj) /* nonnull */
 {
     struct permonst *ptr;
     struct monst *mon, *shkp;
@@ -2823,7 +2825,7 @@ zapyourself(struct obj *obj, boolean ordinary)
             if (ordinary)
                 pline_The("sleep ray hits you!");
             else
-                You("fall alseep!");
+                You("fall asleep!");
             monstunseesu(M_SEEN_SLEEP);
             fall_asleep(-rnd(50), TRUE);
         }
@@ -3117,9 +3119,9 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
 
     boolean resisted = (youdefend && Antimagic)
                        || (!youdefend
-                           && resist(mdef, obj ? obj->oclass : 0, 0, NOTELL));
+                           && resist(mdef, obj->oclass, 0, NOTELL));
 
-    if (obj && obj->otyp == WAN_CANCELLATION)
+    if (obj->otyp == WAN_CANCELLATION)
         makeknown(obj->otyp);
     
     if (self_cancel) { /* 1st cancel inventory */
@@ -3338,7 +3340,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
 
 /* you've zapped an immediate type wand up or down */
 static boolean
-zap_updown(struct obj *obj) /* wand or spell */
+zap_updown(struct obj *obj) /* wand or spell, nonnull */
 {
     boolean striking = FALSE, disclose = FALSE, map_zapped = FALSE;
     coordxy x, y, xx, yy;
@@ -3361,7 +3363,7 @@ zap_updown(struct obj *obj) /* wand or spell */
             You("probe towards the %s.", ceiling(x, y));
         } else { /* down */
             const char *surf;
-            schar ltyp, rememberedltyp = gl.lastseentyp[x][y];
+            schar ltyp, rememberedltyp = update_mapseen_for(x, y);
 
             ptmp += bhitpile(obj, bhito, x, y, u.dz);
             /* sequencing: zap_map() calls force_decor() for ice or furniture;
@@ -3734,10 +3736,6 @@ maybe_explode_trap(
         } else if (is_magical_trap(ttmp->ttyp)) {
             int seeit = cansee(x, y);
 
-            if (!Deaf) {
-                Soundeffect(se_kaboom, 80);
-                pline("Kaboom!");
-            }
             /* note: this explosion mustn't destroy otmp */
             explode(x, y, -WAN_CANCELLATION,
                     20 + d(3, 6), TRAP_EXPLODE, EXPL_MAGICAL);

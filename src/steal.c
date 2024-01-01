@@ -1,4 +1,4 @@
-/* NetHack 3.7	steal.c	$NHDT-Date: 1646688070 2022/03/07 21:21:10 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.98 $ */
+/* NetHack 3.7	steal.c	$NHDT-Date: 1702529046 2023/12/14 04:44:06 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.114 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -54,8 +54,10 @@ somegold(long lmoney)
  * Deals in gold only, as leprechauns don't care for lesser coins.
 */
 struct obj *
-findgold(register struct obj* chain)
+findgold(register struct obj* argchain)
 {
+    struct obj *chain = argchain; /* allow arg to be nonnull */
+
     while (chain && chain->otyp != GOLD_PIECE)
         chain = chain->nobj;
     return chain;
@@ -594,10 +596,23 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
             pline("%s out.", Tobjnam(otmp, "go"));
         snuff_otmp = TRUE;
     }
-    /* for hero owned object on shop floor, mtmp is taking possession
-       and if it's eventually dropped in a shop, shk will claim it */
-    if (!mtmp->mtame)
+    /* some object handling is only done if mtmp isn't a pet */
+    if (!mtmp->mtame) {
+        /* for hero owned object on shop floor, mtmp is taking possession
+           and if it's eventually dropped in a shop, shk will claim it */
         otmp->no_charge = 0;
+        
+        /* if otmp has flags set for how it left hero's inventory, change
+           those flags; if thrown, now stolen and autopickup might override
+           pickup_types and autopickup exceptions based on 'pickup_stolen'
+           rather than 'pickup_thrown'; if previously stolen, stays stolen;
+           if previously dropped, now forgotten and autopickup will operate
+           normally regardless of the setting for 'dropped_nopick' */
+        if (otmp->how_lost == LOST_THROWN)
+            otmp->how_lost = LOST_STOLEN;
+        else if (otmp->how_lost == LOST_DROPPED)
+            otmp->how_lost = LOST_NONE;
+    }
     /* Must do carrying effects on object prior to add_to_minv() */
     carry_obj_effects(otmp);
     /* add_to_minv() might free otmp [if merged with something else],

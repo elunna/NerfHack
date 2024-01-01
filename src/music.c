@@ -1,4 +1,4 @@
-/* NetHack 3.7	music.c	$NHDT-Date: 1702206294 2023/12/10 11:04:54 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.101 $ */
+/* NetHack 3.7	music.c	$NHDT-Date: 1702349065 2023/12/12 02:44:25 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.102 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -160,7 +160,8 @@ awaken_soldiers(struct monst* bugler  /* monster that played instrument */)
     int distance, distm;
 
     /* distance of affected non-soldier monsters to bugler */
-    distance = ((bugler == &gy.youmonst) ? u.ulevel : bugler->data->mlevel) * 30;
+    distance = ((bugler == &gy.youmonst) ? u.ulevel
+                                         : bugler->data->mlevel) * 30;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -349,18 +350,6 @@ do_earthquake(int force)
                     break; /* no pit if portal at that location */
                 chasm->tseen = 1;
 
-                /* Let liquid flow into the newly created chasm.
-                   Adjust corresponding code in apply.c for exploding
-                   wand of digging if you alter this sequence. */
-                filltype = fillholetyp(x, y, FALSE);
-                if (filltype != ROOM) {
-                    set_levltyp(x, y, filltype); /* levl[x][y] = filltype; */
-                    liquid_flow(x, y, filltype, chasm, (char *) 0);
-                    /* liquid_flow() deletes trap, might kill mtmp */
-                    if ((chasm = t_at(x, y)) == NULL)
-                        break; /* from switch, not loop */
-                }
-
                 mtmp = m_at(x, y); /* (redundant?) */
                 if ((otmp = sobj_at(BOULDER, x, y)) != 0) {
                     if (cansee(x, y))
@@ -371,6 +360,18 @@ do_earthquake(int force)
                     obj_extract_self(otmp);
                     (void) flooreffects(otmp, x, y, "");
                     break; /* from switch, not loop */
+                }
+
+                /* Let liquid flow into the newly created chasm.
+                   Adjust corresponding code in apply.c for exploding
+                   wand of digging if you alter this sequence. */
+                filltype = fillholetyp(x, y, FALSE);
+                if (filltype != ROOM) {
+                    set_levltyp(x, y, filltype); /* levl[x][y] = filltype; */
+                    liquid_flow(x, y, filltype, chasm, (char *) 0);
+                    /* liquid_flow() deletes trap, might kill mtmp */
+                    if ((chasm = t_at(x, y)) == NULL)
+                        break; /* from switch, not loop */
                 }
 
                 /* We have to check whether monsters or hero falls into a
@@ -513,8 +514,8 @@ do_improvisation(struct obj* instr)
 
     itmp = *instr;
     itmp.oextra = (struct oextra *) 0; /* ok on this copy as instr maintains
-                                          the ptr to free at some point if
-                                          there is one */
+                                        * the ptr to free at some point if
+                                        * there is one */
 
     /* if won't yield special effect, make sound of mundane counterpart */
     if (!do_spec || instr->spe <= 0)
@@ -665,7 +666,8 @@ do_improvisation(struct obj* instr)
 
         if (!Deaf)
             pline("%s very attractive%s music.",
-                  Tobjnam(instr, "produce"), same_old_song ? " and familiar" : "");
+                  Tobjnam(instr, "produce"),
+                  same_old_song ? " and familiar" : "");
         else
             You_feel("very soothing vibrations.");
         Hero_playnotes(obj_to_instr(&itmp), improvisation, 50);
@@ -677,9 +679,11 @@ do_improvisation(struct obj* instr)
         do_spec &= (rn2(ACURR(A_DEX)) + u.ulevel > 25);
         if (!Deaf)
             pline("%s %s.", Yname2(instr),
-                  (do_spec && same_old_song) ? "produces a familiar, lilting melody"
-                      : (do_spec) ? "produces a lilting melody"
-                  : (same_old_song) ? "twangs a familar tune" : "twangs");
+                  (do_spec && same_old_song)
+                  ? "produces a familiar, lilting melody"
+                  : (do_spec) ? "produces a lilting melody"
+                    : (same_old_song) ? "twangs a familar tune"
+                      : "twangs");
         else
             You_feel("soothing vibrations.");
         Hero_playnotes(obj_to_instr(&itmp), improvisation, 50);
@@ -733,7 +737,7 @@ do_improvisation(struct obj* instr)
 static char *
 improvised_notes(boolean *same_as_last_time)
 {
-    static const char notes[] = "ABCDEFG";
+    static const char notes[7] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
     /* target buffer has to be in gc.context, otherwise saving game 
      * between improvised recitals would not be able to maintain
      * the same_as_last_time context. */
@@ -741,8 +745,9 @@ improvised_notes(boolean *same_as_last_time)
     /* You can change your tune, usually */
     if (!(Unchanging && gc.context.jingle[0] != '\0')) {
         int i, notecount = rnd(SIZE(gc.context.jingle) - 1); /* 1 - 5 */
+
         for (i = 0; i < notecount; ++i) {
-            gc.context.jingle[i] = notes[rn2(SIZE(notes) - 1)]; /* -1 to exclude '\0' */
+            gc.context.jingle[i] = ROLL_FROM(notes);
         }
         gc.context.jingle[notecount] = '\0';
         *same_as_last_time = FALSE;

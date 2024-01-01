@@ -33,7 +33,7 @@ static boolean isspecmon(struct monst *);
 static boolean validspecmon(struct monst *, int);
 static int wiz_force_cham_form(struct monst *);
 static struct permonst *accept_newcham_form(struct monst *, int);
-static void kill_eggs(struct obj *);
+static void kill_eggs(struct obj *) NO_NNARGS;
 static void pacify_guard(struct monst *);
 static void mon_berserk(struct monst *);
 extern const struct shclass shtypes[]; /* defined in shknam.c */
@@ -2428,26 +2428,31 @@ copy_mextra(struct monst* mtmp2, struct monst* mtmp1)
     if (EGD(mtmp1)) {
         if (!EGD(mtmp2))
             newegd(mtmp2);
+        assert(has_egd(mtmp2));
         *EGD(mtmp2) = *EGD(mtmp1);
     }
     if (EPRI(mtmp1)) {
         if (!EPRI(mtmp2))
             newepri(mtmp2);
+        assert(has_epri(mtmp2));
         *EPRI(mtmp2) = *EPRI(mtmp1);
     }
     if (ESHK(mtmp1)) {
         if (!ESHK(mtmp2))
             neweshk(mtmp2);
+        assert(has_eshk(mtmp2));
         *ESHK(mtmp2) = *ESHK(mtmp1);
     }
     if (EMIN(mtmp1)) {
         if (!EMIN(mtmp2))
             newemin(mtmp2);
+        assert(has_emin(mtmp2));
         *EMIN(mtmp2) = *EMIN(mtmp1);
     }
     if (EDOG(mtmp1)) {
         if (!EDOG(mtmp2))
             newedog(mtmp2);
+        assert(has_edog(mtmp2));
         *EDOG(mtmp2) = *EDOG(mtmp1);
     }
     if (has_mcorpsenm(mtmp1))
@@ -3417,10 +3422,18 @@ xkilled(
     newsym(x, y);
 
  cleanup:
-    /* punish bad behavior */
+    /*
+     * Punish bad behavior.
+     */
     if (is_human(mdat)
         && (!always_hostile(mdat) && mtmp->malign <= 0)
+        /* exclude role monsters */
         && (mndx < PM_ARCHEOLOGIST || mndx > PM_WIZARD)
+        /* exclude plain "human", which isn't flagged as always hostile;
+           it is rare and most likely to occur as the result of resurrecting
+           a corpse or animating a statue and usually will be hostile */
+        && mndx != PM_HUMAN
+        /* only applicable if hero is lawful or neutral */
         && u.ualign.type != A_CHAOTIC) {
         HTelepat &= ~INTRINSIC;
         change_luck(-2);
@@ -4615,7 +4628,7 @@ pick_animal(void)
 
     if (!ga.animal_list)
         mon_animal_list(TRUE);
-
+    assert(ga.animal_list != 0);
     res = ga.animal_list[rn2(ga.animal_list_count)];
     /* rogue level should use monsters represented by uppercase letters
        only, but since chameleons aren't generated there (not uppercase!)

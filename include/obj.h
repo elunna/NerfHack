@@ -259,7 +259,7 @@ struct obj {
 /* 'missile' aspect is up to the caller and does not imply is_missile();
    rings might be launched as missiles when being scattered by an explosion */
 #define stone_missile(o) \
-    ((o) && (objects[(o)->otyp].oc_material == GEMSTONE             \
+    ((objects[(o)->otyp].oc_material == GEMSTONE             \
              || (objects[(o)->otyp].oc_material == MINERAL))        \
          && (o)->oclass != RING_CLASS)
 
@@ -421,14 +421,16 @@ struct obj {
 
 #define unpolyable(o) ((o)->otyp == WAN_POLYMORPH \
                        || (o)->otyp == SPE_POLYMORPH \
-                       || (o)->otyp == AMULET_OF_UNCHANGING \
-                       || (o)->otyp == POT_POLYMORPH)
+                       || (o)->otyp == POT_POLYMORPH \
+                       || (o)->otyp == AMULET_OF_UNCHANGING)
 
 /* achievement tracking; 3.6.x did this differently */
 #define is_mines_prize(o) ((o)->o_id == gc.context.achieveo.mines_prize_oid)
 #define is_soko_prize(o) ((o)->o_id == gc.context.achieveo.soko_prize_oid)
 
-#define is_art(o,art) ((o) && (o)->oartifact == (art))
+/* is_art() is now a function in artifact.c */
+/* #define is_art(o,art) ((o) && (o)->oartifact == (art)) */
+
 #define u_wield_art(art) is_art(uwep, art)
 
 /* mummy wrappings are more versatile sizewise than other cloaks */

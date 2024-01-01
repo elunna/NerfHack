@@ -859,6 +859,8 @@ dochug(register struct monst* mtmp)
             /* if confused grabber has wandered off, let go */
             if (mtmp == u.ustuck && !next2u(mtmp->mx, mtmp->my))
                 unstuck(mtmp);
+            if (grounded(mdat))
+                disturb_buried_zombies(mtmp->mx, mtmp->my);
             /* Maybe it stepped on a trap and fell asleep... */
             if (helpless(mtmp))
                 return 0;
@@ -1904,6 +1906,7 @@ not_special:
          * mfndpos) has no effect for normal attacks, though it lets a
          * confused monster attack you by accident.
          */
+        assert(IndexOk(chi, info));
         if (info[chi] & ALLOW_U) {
             nix = mtmp->mux;
             niy = mtmp->muy;
@@ -2177,7 +2180,7 @@ undesirable_disp(
     coordxy x,
     coordxy y) /* spot 'mtmp' is considering moving to */
 {
-    boolean is_pet = (mtmp && mtmp->mtame && !mtmp->isminion);
+    boolean is_pet = (mtmp->mtame && !mtmp->isminion);
     struct trap *trap = t_at(x, y);
 
     if (is_pet) {

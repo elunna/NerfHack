@@ -13,7 +13,7 @@ static void mksobj_init(struct obj *, boolean);
 static int item_on_ice(struct obj *);
 static void shrinking_glob_gone(struct obj *);
 static void obj_timer_checks(struct obj *, coordxy, coordxy, int);
-static void container_weight(struct obj *);
+static void container_weight(struct obj *) NONNULLARG1;
 static struct obj *save_mtraits(struct obj *, struct monst *);
 static void objlist_sanity(struct obj *, int, const char *);
 static void shop_obj_sanity(struct obj *, const char *);
@@ -416,6 +416,7 @@ copy_oextra(struct obj *obj2, struct obj *obj1)
     if (has_omonst(obj1)) {
         if (!OMONST(obj2))
             newomonst(obj2);
+        assert(has_omonst(obj2));
         (void) memcpy((genericptr_t) OMONST(obj2),
                       (genericptr_t) OMONST(obj1), sizeof (struct monst));
         OMONST(obj2)->mextra = (struct mextra *) 0;
@@ -2264,6 +2265,7 @@ place_object(struct obj *otmp, coordxy x, coordxy y)
         panic("place_object: obj \"%s\" [%d] not free",
               safe_typename(otmp->otyp), otmp->where);
 
+    assert(x >= 0 && x < COLNO && y >= 0 && y < ROWNO);
     otmp2 = gl.level.objects[x][y];
 
     obj_no_longer_held(otmp);
