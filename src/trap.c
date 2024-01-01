@@ -3230,6 +3230,18 @@ immune_to_trap(struct monst *mon, unsigned ttype)
             }
         }
         return TRAP_CLEARLY_IMMUNE;
+    case GREASE_TRAP:
+        if (is_you)
+            return TRAP_NOT_IMMUNE;
+        /** Any firey/watery monsters will burn or wash away grease instantly.
+          * TODO: Flesh this out a bit more. Add an is_firey macro. Consider 
+          * making non-solid monsters immune also? Also check the polyd state
+          * of the player?
+          **/
+        if (likes_fire(mon->data) || pm == &mons[PM_WATER_ELEMENTAL])
+            return TRAP_CLEARLY_IMMUNE;
+        else
+            return TRAP_NOT_IMMUNE;
     case MAGIC_TRAP:
         /* for player, any number of bad effects;
            for monsters, only replicates fire trap, so fall through */
