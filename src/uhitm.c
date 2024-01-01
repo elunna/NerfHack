@@ -402,6 +402,11 @@ find_roll_to_hit(
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;
 
+    /* Accurate monster bonus */
+    if (is_accurate(gy.youmonst.data) || (!Upolyd && Race_if(PM_ELF))) {
+        tmp += 5;
+    }
+    
     /* encumbrance: with a lot of luggage, your agility diminishes */
     if ((tmp2 = near_capacity()) != 0)
         tmp -= (tmp2 * 2) - 1;
