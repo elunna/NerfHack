@@ -4,7 +4,3 @@
 #define E
 #define NDECL(x) x
 #define FDECL(x, y) x y
-
-// Fix windows build for git workflows
-#define DUMPLOG
-#define DUMPHTML

@@ -70,6 +70,7 @@ static void def_raw_print(const char *s) NONNULLARG1;
 static void def_wait_synch(void);
 static boolean get_menu_coloring(const char *, int *, int *) NONNULLPTRS;
 
+#if defined(DUMPLOG) || defined(DUMPHTML)
 static winid dump_create_nhwindow(int);
 static void dump_clear_nhwindow(winid);
 static void dump_display_nhwindow(winid, boolean);
@@ -83,6 +84,7 @@ static void dump_putstr(winid, int, const char *);
 static void dump_headers(void);
 static void dump_footers(void);
 static void dump_set_color_attr(int, int, boolean);
+#ifdef DUMPHTML
 static void html_write_tags(FILE *, int, boolean);
 static void html_dump_char(FILE *, char);
 static void html_dump_str(FILE *, const char *);
@@ -97,6 +99,9 @@ static void dump_status_update(int, genericptr_t, int, int,
                                int, unsigned long *);
 static void dump_css(void);
 static void dump_outrip(winid, int, time_t);
+#endif /* DUMPHTML */
+
+#endif /* DUMPLOG */
 
 #ifdef HANGUPHANDLING
 volatile
