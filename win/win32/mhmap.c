@@ -1285,30 +1285,30 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
     *color = iflags.use_color ? def_warnsyms[n].color : NO_COLOR
 
     if ((offset = (g - GLYPH_WARNING_OFF)) >= 0) { /* a warning flash */
-        *ch = showsyms[offset + SYM_OFF_W];
+        *ch = gs.showsyms[offset + SYM_OFF_W];
         warn_color(offset);
     } else if ((offset = (g - GLYPH_SWALLOW_OFF)) >= 0) { /* swallow */
         /* see swallow_to_glyph() in display.c */
-        *ch = (uchar) showsyms[(S_sw_tl + (offset & 0x7)) + SYM_OFF_P];
+        *ch = (uchar) gs.showsyms[(S_sw_tl + (offset & 0x7)) + SYM_OFF_P];
         mon_color(offset >> 3);
     } else if ((offset = (g - GLYPH_ZAP_OFF)) >= 0) { /* zap beam */
         /* see zapdir_to_glyph() in display.c */
-        *ch = showsyms[(S_vbeam + (offset & 0x3)) + SYM_OFF_P];
+        *ch = gs.showsyms[(S_vbeam + (offset & 0x3)) + SYM_OFF_P];
         zap_color((offset >> 2));
     } else if ((offset = (g - GLYPH_CMAP_OFF)) >= 0) { /* cmap */
-        *ch = showsyms[offset + SYM_OFF_P];
+        *ch = gs.showsyms[offset + SYM_OFF_P];
         cmap_color(offset);
     } else if ((offset = (g - GLYPH_OBJ_OFF)) >= 0) { /* object */
-        *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
+        *ch = gs.showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
     } else if ((offset = (g - GLYPH_BODY_OFF)) >= 0) { /* a corpse */
-        *ch = showsyms[(int) objects[CORPSE].oc_class + SYM_OFF_O];
+        *ch = gs.showsyms[(int) objects[CORPSE].oc_class + SYM_OFF_O];
         mon_color(offset);
     } else if ((offset = (g - GLYPH_PET_OFF)) >= 0) { /* a pet */
-        *ch = showsyms[(int) mons[offset].mlet + SYM_OFF_M];
+        *ch = gs.showsyms[(int) mons[offset].mlet + SYM_OFF_M];
         pet_color(offset);
     } else { /* a monster */
-        *ch = showsyms[(int) mons[g].mlet + SYM_OFF_M];
+        *ch = gs.showsyms[(int) mons[g].mlet + SYM_OFF_M];
         mon_color(g);
     }
     // end of wintty code
