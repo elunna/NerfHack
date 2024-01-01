@@ -655,8 +655,8 @@ typedef unsigned char uchar;
 #endif /* NO_CHRONICLE */
 #endif /* DGAMELAUNCH */
 
-/* #define DUMPLOG */  /* End-of-game dump logs */
-/* #define DUMPHTML */ /* End-of-game HTML dumps */
+#define DUMPLOG   /* End-of-game dump logs */
+#define DUMPHTML  /* End-of-game HTML dumps */
 
 #define USE_ISAAC64 /* Use cross-plattform, bundled RNG */
 
