@@ -2617,7 +2617,7 @@ potion_dip(struct obj *obj, struct obj *potion)
             pline1(nothing_happens);
         } else {
             short save_otyp = obj->otyp;
-            short save_dknown = obj->dknown;
+            int save_dknown = obj->dknown;
 
             /* KMH, conduct */
             if (!u.uconduct.polypiles++)
