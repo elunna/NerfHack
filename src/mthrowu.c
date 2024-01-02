@@ -147,6 +147,12 @@ thitu(
             if (is_acid) {
                 pline("It burns!");
                 monstunseesu(M_SEEN_ACID);
+                if (!rn2(7))
+                    erode_armor(&gy.youmonst, ERODE_CORRODE);
+                if (rn2(u.twoweap ? 2 : 3))
+                    acid_damage(uwep);
+                if (u.twoweap && rn2(2))
+                    acid_damage(uswapwep);
             }
             losehp(dam, knm, kprefix); /* acid damage */
             exercise(A_STR, FALSE);

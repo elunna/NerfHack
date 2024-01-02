@@ -1613,6 +1613,12 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                 You("are covered in slime!  It burns!");
             exercise(A_STR, FALSE);
             monstunseesu(M_SEEN_ACID);
+            if (!rn2(7))
+                erode_armor(&gy.youmonst, ERODE_CORRODE);
+            if (rn2(u.twoweap ? 2 : 3))
+                acid_damage(uwep);
+            if (u.twoweap && rn2(2))
+                acid_damage(uswapwep);
         }
         break;
     case AD_BLND:
@@ -2550,9 +2556,9 @@ passiveum(
             }
         } else
             tmp = 0;
-        if (!rn2(30))
+        if (!rn2(7))
             erode_armor(mtmp, ERODE_CORRODE);
-        if (!rn2(6))
+        if (!rn2(3))
             acid_damage(MON_WEP(mtmp));
         goto assess_dmg;
     case AD_STON: /* cockatrice */
