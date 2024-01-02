@@ -567,7 +567,7 @@ m_throw(
 {
     struct monst *mtmp;
     struct obj *singleobj;
-    struct obj *mwep = mon ? MON_WEP(mon) : (struct obj *) 0;
+    struct obj *mwep = MON_WEP(mon);
     boolean forcehit;
     char sym = obj->oclass;
     int hitu = 0, oldumort, blindinc = 0;
