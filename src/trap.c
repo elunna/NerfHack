@@ -3155,6 +3155,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
     case TRAPDOOR:
     case PIT:
     case SPIKED_PIT:
+    case SPEAR_TRAP:
         /* ground-based traps, which can be evaded by levitation, flying, or
            hanging to the ceiling */
         if (Sokoban && (is_pit(ttype) || is_hole(ttype)))
