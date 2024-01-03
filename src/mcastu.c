@@ -1175,18 +1175,15 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             if (!has_aggravatables(mtmp))
                 return rn2(100) ? TRUE : FALSE;
         }
-        if ((m_seenres(mtmp, M_SEEN_FIRE)
-             || (distu(mtmp->mx, mtmp->my) < 3 && rn2(5)))
+        if ((m_seenres(mtmp, M_SEEN_FIRE))
             && spellnum == MGC_FIRE_BOLT) {
             return TRUE;
         }
-        if ((m_seenres(mtmp, M_SEEN_COLD)
-             || (distu(mtmp->mx, mtmp->my) < 3 && rn2(5)))
+        if ((m_seenres(mtmp, M_SEEN_COLD))
             && spellnum == MGC_ICE_BOLT) {
             return TRUE;
         }
-        if ((m_seenres(mtmp, M_SEEN_ACID)
-             || (distu(mtmp->mx, mtmp->my) < 3 && rn2(5)))
+        if ((m_seenres(mtmp, M_SEEN_ACID))
             && spellnum == MGC_ACID_BLAST) {
             return TRUE;
         }
