@@ -411,7 +411,9 @@ find_roll_to_hit(
 
     /* Accurate monster bonus */
     if (is_accurate(gy.youmonst.data) || (!Upolyd && Race_if(PM_ELF))) {
-        tmp += 5;
+        /* This doesn't mirror monster behavior, but that is fine. 
+         * Scale with levels, capped at level 20 at +5. */
+        tmp += u.ulevel < 20 ? u.ulevel / 4 : 5;
     }
     
     /* encumbrance: with a lot of luggage, your agility diminishes */
