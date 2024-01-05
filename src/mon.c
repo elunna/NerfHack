@@ -2965,6 +2965,14 @@ corpse_chance(
         return FALSE;
     }
 
+    /* Zombies don't leave a corpse when the player is wielding Sunsword */
+    if (is_zombie(mdat) && uwep && uwep->oartifact == ART_SUNSWORD
+        && distu(mon->mx, mon->my) < 3) {
+        if (cansee(mon->mx, mon->my))
+            pline("In the presence of Sunsword, %s corpse dissolves into nothingness.",
+                  s_suffix(mon_nam(mon)));
+        return FALSE;
+    }
     /* Gas spores always explode upon death */
     for (i = 0; i < NATTK; i++) {
         if (mdat->mattk[i].aatyp == AT_BOOM) {
