@@ -3132,6 +3132,8 @@ create_particular_creation(
             put_saddle_on_mon(otmp, mtmp);
         }
         if (d->hidden
+           /* can't hide on a closed door (amorphous green slimes, etc) */
+           && !closed_door(mtmp->mx, mtmp->my)
            && ((is_hider(mtmp->data) && mtmp->data->mlet != S_MIMIC)
                || (hides_under(mtmp->data) && OBJ_AT(mx, my))
                || (mtmp->data->mlet == S_EEL && is_pool(mx, my))))

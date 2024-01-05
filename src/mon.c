@@ -4465,6 +4465,8 @@ restrap(struct monst *mtmp)
             && !is_pit(t->ttyp))
         /* can't hide on ceiling if there isn't one */
         || (ceiling_hider(mtmp->data) && !has_ceiling(&u.uz))
+        /* can't hide on a closed door (amorphous green slimes, etc) */
+        || closed_door(mtmp->mx, mtmp->my)
         /* won't hide when adjacent to hero */
         || (sensemon(mtmp) && next2u(mtmp->mx, mtmp->my)))
         return FALSE;
