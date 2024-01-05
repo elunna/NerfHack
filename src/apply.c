@@ -180,7 +180,7 @@ use_towel(struct obj *obj)
               uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
         HFumbling &= ~I_SPECIAL;
         HFumbling = 0;
-        if (rn2(2) && !obj->greased) {
+        if (!rn2(4) && !obj->greased) {
             Your("towel gets covered in grease.");
             obj->greased = 1;
         }
