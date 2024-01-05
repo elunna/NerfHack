@@ -181,7 +181,7 @@ use_towel(struct obj *obj)
         HFumbling &= ~I_SPECIAL;
         HFumbling = 0;
         if (rn2(2) && !obj->greased) {
-            Your("gets covered in grease.");
+            Your("towel gets covered in grease.");
             obj->greased = 1;
         }
         return ECMD_TIME;
