@@ -1373,7 +1373,8 @@ start_corpse_timeout(struct obj *body)
             }
         }
         /* corpse of an actual zombie */
-    } else if (body->zombie_corpse && !body->norevive) {
+    } else if (body->zombie_corpse && !body->norevive 
+               && !In_sokoban(&u.uz)) {
         /* Priests have a chance to put down zombies for good. */
         static const char *const holy_msg[4] = {
             "A divine radiance briefly envelops the lifeless corpse.",
