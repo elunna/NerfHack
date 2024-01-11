@@ -2556,6 +2556,7 @@ extern void unpunish(void);
 extern boolean cant_revive(int *, boolean, struct obj *) NO_NNARGS;
 extern boolean create_particular(void);
 extern boolean create_particular_from_buffer(char*);
+extern void forget(int);
 
 /* ### rect.c ### */
 

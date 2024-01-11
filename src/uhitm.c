@@ -3338,6 +3338,8 @@ mhitm_ad_drin(
         }
         /* adjattrib gives dunce cap message when appropriate */
         (void) adjattrib(A_INT, -rnd(2), FALSE);
+        if (rn2(2))
+            forget(rnd(u.uluck <= 0 ? 4 : 2));
 
     } else {
         /* mhitm */

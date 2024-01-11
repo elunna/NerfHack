@@ -16,7 +16,6 @@ static int read_ok(struct obj *);
 static void stripspe(struct obj *);
 static void p_glow1(struct obj *);
 static void p_glow2(struct obj *, const char *);
-static void forget(int);
 static int maybe_tame(struct monst *, struct obj *);
 static boolean can_center_cloud(coordxy, coordxy);
 static void display_stinking_cloud_positions(int);
@@ -1010,7 +1009,7 @@ recharge(struct obj* obj, int curse_bless)
  * Other things are subject to flags:
  *      howmuch & ALL_SPELLS    = forget all spells
  */
-static void
+void
 forget(int howmuch)
 {
     struct monst *mtmp;
