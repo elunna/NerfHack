@@ -13,13 +13,22 @@ static int enermod(int);
 long
 newuexp(int lev)
 {
+    double newlev = 1.0;
+    long res;
     if (lev < 1) /* for newuexp(u.ulevel - 1) when u.ulevel is 1 */
         return 0L;
     if (lev < 10)
         return (10L * (1L << lev));
-    if (lev < 20)
-        return (10000L * (1L << (lev - 10)));
-    return (10000000L * ((long) (lev - 19)));
+    if (lev < 24) {
+        for (int i = 0; i < lev - 10; i++)
+            newlev *= 1.5;
+        res = 10000L * newlev;
+        
+        if (lev > 10) 
+            res = res - (res % 1000); /* Trim off small digits */
+        return res;
+    }
+    return (320000L * ((long) (lev - 14)));
 }
 
 static int
