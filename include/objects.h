@@ -938,7 +938,7 @@ EYEWEAR("towel",            NoDes, 1, BLINDED, 50,  2, 50, CLOTH, CLR_MAGENTA,
 #undef EYEWEAR
 
 /* still other tools */
-TOOL("saddle",              NoDes, 1, 0, 0, 0,  5,200,150, LEATHER, HI_LEATHER,
+TOOL("saddle",              NoDes, 1, 0, 0, 0, 10,200,150, LEATHER, HI_LEATHER,
                                                                 SADDLE),
 TOOL("leash",               NoDes, 1, 0, 0, 0, 65, 12, 20, LEATHER, HI_LEATHER,
                                                                 LEASH),
