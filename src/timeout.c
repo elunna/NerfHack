@@ -774,6 +774,13 @@ nh_timeout(void)
                     stop_occupation();
                 }
                 break;
+            case TELEPAT:
+                if (!HTelepat) {
+                    You_feel(Hallucination ? "out of touch with the cosmos."
+                                           : "a strange mental dullness.");
+                    stop_occupation();
+                }
+                break;
             case SEE_INVIS:
                 set_mimic_blocking(); /* do special mimic handling */
                 see_monsters();       /* make invis mons appear */

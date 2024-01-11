@@ -1051,10 +1051,10 @@ givit(int type, register struct permonst *ptr)
         break;
     case TELEPAT:
         debugpline0("Trying to give telepathy");
-        if (!(HTelepat & FROMOUTSIDE)) {
+        if (!HTelepat) {
             You_feel(Hallucination ? "in touch with the cosmos."
                                    : "a strange mental acuity.");
-            HTelepat |= FROMOUTSIDE;
+            incr_itimeout(&HTelepat, rn1(250, 500));
             /* If blind, make sure monsters show up. */
             if (Blind)
                 see_monsters();
