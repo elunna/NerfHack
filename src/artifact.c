@@ -2683,4 +2683,14 @@ get_artifact(struct obj *obj)
     }
     return &artilist[ART_NONARTIFACT];
 }
+
+boolean
+non_wishable_artifact(struct obj *otmp)
+{
+    int art = otmp->oartifact;
+    if (!art)
+        return FALSE;
+    return ((artilist[art].spfx & SPFX_NOWISH) != 0L);
+}
+
 /*artifact.c*/

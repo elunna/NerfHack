@@ -170,7 +170,6 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(3, 7), NO_DFNS, NO_CARY, WWALKING, A_CHAOTIC, NON_PM, NON_PM,
       1500L, NO_COLOR, POSEIDON_S_TRIDENT),
     
-    
     A("Frost Brand", LONG_SWORD, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       COLD(5, 0), COLD(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, FROST_BRAND),
@@ -220,8 +219,8 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 30), NO_DFNS, NO_CARY, 0, A_NEUTRAL, PM_CLERIC, NON_PM, 500L,
       NO_COLOR, DISRUPTER),
     /*
-    *      Quarterstaff that grants teleport control, and also greatly increases
-    *      spellcasting ability (as a robe).
+     *Quarterstaff that grants teleport control, and also greatly increases
+     * spellcasting ability (as a robe).
      */
     A("Origin", QUARTERSTAFF, (SPFX_RESTR | SPFX_TCTRL), 0, 0,
       PHYS(2, 6), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
@@ -241,10 +240,7 @@ static NEARDATA struct artifact artilist[] = {
     A("Sunsword", LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_UNDEAD,
       PHYS(5, 0), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       NO_COLOR, SUNSWORD),
-    /*
-     *      Keolewa from SporkHack - a Hawaiian war club.
-     *      Buffing this up a bit to give it more utility.
-     */
+
     A("Keolewa", CLUB, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN),
       0, 0, ELEC(5, 8), DFNS(AD_ELEC), NO_CARY, 0, A_NEUTRAL,
       NON_PM, NON_PM, 2000L, NO_COLOR, KEOLEWA),
@@ -253,24 +249,25 @@ static NEARDATA struct artifact artilist[] = {
      */
 
     A("The Orb of Detection", CRYSTAL_BALL,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL), (SPFX_ESP | SPFX_HSPDAM), 0,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
+      (SPFX_ESP | SPFX_HSPDAM), 0,
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), INVIS, A_LAWFUL, PM_ARCHEOLOGIST,
       NON_PM, 2500L, NO_COLOR, ORB_OF_DETECTION),
 
     A("The Heart of Ahriman", LUCKSTONE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL), SPFX_STLTH, 0,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH), SPFX_STLTH, 0,
       /* this stone does double damage if used as a projectile weapon */
       PHYS(5, 0), NO_DFNS, NO_CARY, LEVITATION, A_NEUTRAL, PM_BARBARIAN,
       NON_PM, 2500L, NO_COLOR, HEART_OF_AHRIMAN),
 
     A("The Sceptre of Might", MACE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN), 0, 0, PHYS(5, 0),
-      DFNS(AD_MAGM), NO_CARY, CONFLICT, A_LAWFUL, PM_CAVE_DWELLER, NON_PM, 2500L,
-      NO_COLOR, SCEPTRE_OF_MIGHT),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN | SPFX_NOWISH),
+      0, 0, PHYS(5, 0), DFNS(AD_MAGM), NO_CARY, CONFLICT, A_LAWFUL,
+      PM_CAVE_DWELLER, NON_PM, 2500L, NO_COLOR, SCEPTRE_OF_MIGHT),
 
 #if 0 /* OBSOLETE */
 A("The Palantir of Westernesse",        CRYSTAL_BALL,
-        (SPFX_NOGEN|SPFX_RESTR|SPFX_INTEL),
+        (SPFX_NOGEN|SPFX_RESTR|SPFX_INTEL|SPFX_NOWISH),
                 (SPFX_ESP|SPFX_REGEN|SPFX_HSPDAM), 0,
         NO_ATTK,        NO_DFNS,        NO_CARY,
         TAMING,         A_CHAOTIC, NON_PM , PM_ELF, 8000L, NO_COLOR,
@@ -279,59 +276,61 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL,
 
     A("The Staff of Aesculapius", QUARTERSTAFF,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK | SPFX_INTEL | SPFX_DRLI
-       | SPFX_REGEN),
+       | SPFX_REGEN | SPFX_NOWISH),
       0, 0, DRLI(0, 0), DRLI(0, 0), NO_CARY, HEALING, A_NEUTRAL, PM_HEALER,
       NON_PM, 5000L, NO_COLOR, STAFF_OF_AESCULAPIUS),
 
     A("The Magic Mirror of Merlin", MIRROR,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK), SPFX_ESP, 0,
-      NO_ATTK, NO_DFNS, CARY(AD_MAGM), 0, A_LAWFUL, PM_KNIGHT, NON_PM, 1500L,
-      NO_COLOR, MAGIC_MIRROR_OF_MERLIN),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK | SPFX_NOWISH),
+      SPFX_ESP, 0, NO_ATTK, NO_DFNS, CARY(AD_MAGM), 0, A_LAWFUL, 
+      PM_KNIGHT, NON_PM, 1500L, NO_COLOR, MAGIC_MIRROR_OF_MERLIN),
 
     A("The Eyes of the Overworld", LENSES,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_XRAY), 0, 0, NO_ATTK,
-      DFNS(AD_MAGM), NO_CARY, ENLIGHTENING, A_NEUTRAL, PM_MONK, NON_PM,
-      2500L, NO_COLOR, EYES_OF_THE_OVERWORLD),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_XRAY | SPFX_NOWISH), 
+      0, 0, NO_ATTK, DFNS(AD_MAGM), NO_CARY, ENLIGHTENING, A_NEUTRAL, 
+      PM_MONK, NON_PM, 2500L, NO_COLOR, EYES_OF_THE_OVERWORLD),
 
     A("The Mitre of Holiness", HELM_OF_BRILLIANCE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_DFLAG2 | SPFX_INTEL | SPFX_PROTECT), 0,
-      M2_UNDEAD, NO_ATTK, NO_DFNS, CARY(AD_FIRE), ENERGY_BOOST, A_LAWFUL,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_DFLAG2 | SPFX_INTEL | SPFX_PROTECT 
+       | SPFX_NOWISH),
+      0, M2_UNDEAD, NO_ATTK, NO_DFNS, CARY(AD_FIRE), ENERGY_BOOST, A_LAWFUL,
       PM_CLERIC, NON_PM, 2000L, NO_COLOR, MITRE_OF_HOLINESS),
 
     A("The Longbow of Diana", BOW,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT), SPFX_ESP, 0,
-      PHYS(5, 0), NO_DFNS, NO_CARY, CREATE_AMMO, A_CHAOTIC, PM_RANGER, NON_PM,
-      4000L, NO_COLOR, LONGBOW_OF_DIANA),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT | SPFX_NOWISH),
+      SPFX_ESP, 0, PHYS(5, 0), NO_DFNS, NO_CARY, CREATE_AMMO, A_CHAOTIC, 
+      PM_RANGER, NON_PM, 4000L, NO_COLOR, LONGBOW_OF_DIANA),
 
     /* MKoT has an additional carry property if the Key is not cursed (for
        rogues) or blessed (for non-rogues):  #untrap of doors and chests
        will always find any traps and disarming those will always succeed */
     A("The Master Key of Thievery", SKELETON_KEY,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK | SPFX_NOWISH),
       (SPFX_WARN | SPFX_TCTRL | SPFX_HPHDAM), 0, NO_ATTK, NO_DFNS, NO_CARY,
       UNTRAP, A_CHAOTIC, PM_ROGUE, NON_PM, 3500L, NO_COLOR,
       MASTER_KEY_OF_THIEVERY),
 
     A("The Tsurugi of Muramasa", TSURUGI,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_BEHEAD | SPFX_LUCK
-       | SPFX_PROTECT | SPFX_HPHDAM),
+       | SPFX_PROTECT | SPFX_HPHDAM | SPFX_NOWISH),
       0, 0, PHYS(0, 8), NO_DFNS, NO_CARY, 0, A_LAWFUL, PM_SAMURAI, NON_PM,
       4500L, NO_COLOR, TSURUGI_OF_MURAMASA),
 
     A("The Platinum Yendorian Express Card", CREDIT_CARD,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DEFN),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DEFN | SPFX_NOWISH),
       (SPFX_ESP | SPFX_HSPDAM), 0, NO_ATTK, NO_DFNS, CARY(AD_MAGM),
       CHARGE_OBJ, A_NEUTRAL, PM_TOURIST, NON_PM, 7000L, NO_COLOR,
       YENDORIAN_EXPRESS_CARD),
 
     A("The Orb of Fate", CRYSTAL_BALL,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK | SPFX_NOWISH),
       (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM), 0, NO_ATTK, NO_DFNS, NO_CARY,
       LEV_TELE, A_NEUTRAL, PM_VALKYRIE, NON_PM, 3500L, NO_COLOR,
       ORB_OF_FATE),
 
     A("The Eye of the Aethiopica", AMULET_OF_ESP,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL), (SPFX_EREGEN | SPFX_HSPDAM), 0,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
+      (SPFX_EREGEN | SPFX_HSPDAM), 0,
       NO_ATTK, DFNS(AD_MAGM), NO_CARY, CREATE_PORTAL, A_NEUTRAL, PM_WIZARD,
       NON_PM, 4000L, NO_COLOR, EYE_OF_THE_AETHIOPICA),
 

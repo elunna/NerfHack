@@ -38,6 +38,7 @@
 #define SPFX_REFLECT 0x04000000L /* Reflection */
 #define SPFX_PROTECT 0x08000000L /* Protection */
 #define SPFX_BREATHE 0x10000000L /* Magical breathing */
+#define SPFX_NOWISH 0x20000000L  /* cannot be wished for */
 
 struct artifact {
     short otyp;
