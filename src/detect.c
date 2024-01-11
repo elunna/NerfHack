@@ -1902,6 +1902,8 @@ dosearch0(int aflag) /* intrinsic autosearch vs explicit searching */
 
         if (ublindf && ublindf->otyp == LENSES && !Blind)
             fund += 2; /* JDS: lenses help searching */
+        if (Role_if(PM_ARCHEOLOGIST))
+            fund += 2;
         if (fund > 5)
             fund = 5;
         for (x = u.ux - 1; x < u.ux + 2; x++)
