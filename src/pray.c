@@ -829,12 +829,70 @@ gcrownu(void)
     short class_gift;
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
-    HSee_invisible |= FROMOUTSIDE;
-    HFire_resistance |= FROMOUTSIDE;
-    HCold_resistance |= FROMOUTSIDE;
-    HShock_resistance |= FROMOUTSIDE;
-    HSleep_resistance |= FROMOUTSIDE;
-    HPoison_resistance |= FROMOUTSIDE;
+    /* Player gets up to 3 intrinsics granted */
+    for (int i = 0; i < 3; i++) {
+        switch (rnd(7)) {
+        case 1:
+            if (!(HSee_invisible & FROMOUTSIDE)) {
+                if (Blind) {
+                    if (Invisible) {
+                        You("feel transparent.");
+                    } else {
+                        You("feel very self-conscious.");
+                        pline("Then it passes.");
+                    }
+                } else {
+                    You_see("an image of someone stalking you.");
+                    pline("But it disappears.");
+                }
+                HSee_invisible |= FROMOUTSIDE;
+            }
+            break;
+        case 2:
+            if (!(HFire_resistance & FROMOUTSIDE)) {
+                You(Hallucination ? "be chillin'." : "feel a momentary chill.");
+                HFire_resistance |= FROMOUTSIDE;
+            }
+            break;
+        case 3:
+            if (!(HCold_resistance & FROMOUTSIDE)) {
+                You_feel("full of hot air.");
+                HCold_resistance |= FROMOUTSIDE;
+            }
+            break;
+        case 4:
+            if (!(HShock_resistance & FROMOUTSIDE)) {
+                if (Hallucination)
+                    You_feel("grounded in reality.");
+                else
+                    Your("health currently feels amplified!");
+                HShock_resistance |= FROMOUTSIDE;
+            }
+            break;
+        case 5:
+            if (!(HSleep_resistance & FROMOUTSIDE)) {
+                You_feel("wide awake.");
+                HSleep_resistance |= FROMOUTSIDE;
+            }
+            break;
+        case 6:
+            if (!(HPoison_resistance & FROMOUTSIDE)) {
+                You_feel(Poison_resistance ? "especially healthy." : "healthy.");
+                HPoison_resistance |= FROMOUTSIDE;
+            }
+            break;
+        case 7:
+            if (!(HAcid_resistance & FROMOUTSIDE)) {
+                You_feel("%s.",
+                         Hallucination
+                             ? "secure from flashbacks"
+                             : "less concerned about being harmed by acid");
+                HAcid_resistance |= FROMOUTSIDE;
+            }
+            break;
+        }
+    }
+    
     godvoice(u.ualign.type, (char *) 0);
 
     class_gift = STRANGE_OBJECT;
