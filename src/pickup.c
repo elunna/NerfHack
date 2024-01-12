@@ -2425,7 +2425,9 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
         boolean mtmp_would_ston = (!taking && petri
                                    && !which_armor(mtmp, W_ARMG)
                                    && !resists_ston(mtmp));
-
+        boolean unpaid = otmp->unpaid 
+                || (!otmp->no_charge && costly_spot(otmp->ox, otmp->oy));
+        
         /* Clear inapplicable wornmask bits */
         unwornmask &= ~(W_ART | W_ARTI | W_QUIVER);
 
@@ -2433,6 +2435,11 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
             int carryamt;
             if (welded(otmp)) {
                 weldmsg(otmp);
+                continue;
+            }
+            if (unpaid) {
+                pline("A mysterious force prevents you from giving away %s...", 
+                      yname(otmp));
                 continue;
             }
             if (!canletgo(otmp, "give away")) {
