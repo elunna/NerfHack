@@ -3649,7 +3649,7 @@ interesting_room(void)
     static const char *const adjectives[] = {
         "furious",    "wrathful",        "mysterious",   "ugly",
         "beautiful",  "poorly-rendered", "large",        "lifelike",
-        "peaceful",   "covetous",        "subservient",  "lovely",
+        "peaceful",   "covetous",        "crooked",      "lovely",
         "misshapen",  "luminous",        "melancholic",  "bold",
         "surreal",    "brooding",        "enigmatic",    "chaotic",
         "seething",   "frenzied",        "cheap",        "knock-off",
