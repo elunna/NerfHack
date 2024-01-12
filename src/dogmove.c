@@ -420,8 +420,11 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
                 && could_reach_item(mtmp, obj->ox, obj->oy))
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
+            boolean shopgood = (obj->unpaid 
+                    || (obj->where == OBJ_FLOOR && !obj->no_charge 
+                    && costly_spot(obj->ox, obj->oy)));
             carryamt = can_carry(mtmp, obj);
-            if (carryamt > 0 && !obj->cursed
+            if (carryamt > 0 && !obj->cursed && !shopgood
                 && could_reach_item(mtmp, obj->ox, obj->oy)) {
                 if (rn2(20) < edog->apport + 3) {
                     if (rn2(udist) || !rn2(edog->apport)) {
@@ -519,6 +522,10 @@ dog_goal(
                 /* skip completely unreachable goals */
                 if (!could_reach_item(mtmp, nx, ny)
                     || !can_reach_location(mtmp, mtmp->mx, mtmp->my, nx, ny))
+                    continue;
+                /* skip always shop food and other items if chastised */
+                if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge 
+                                    && costly_spot(obj->ox, obj->oy)))
                     continue;
                 if (otyp < MANFOOD) {
                     if (otyp < gg.gtyp
