@@ -1340,6 +1340,10 @@ peffect_acid(struct obj *otmp)
     }
     if (Stoned)
         fix_petrification();
+    
+    if (!rn2(3))
+        erode_armor(&gy.youmonst, ERODE_CORRODE);
+    
     gp.potion_unkn++; /* holy/unholy water can burn like acid too */
 }
 
