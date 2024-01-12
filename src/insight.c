@@ -434,6 +434,7 @@ enlightenment(
     if (u.lastprayed) {
         Sprintf(buf, "You last %s %ld turns ago",
                 u.lastprayresult == PRAY_GIFT ? "received a gift" :
+                u.lastprayresult == PRAY_WISH ? "made a wish" :
                 u.lastprayresult == PRAY_ANGER ? "angered your god" :
                 u.lastprayresult == PRAY_CONV ? "converted to a new god" :
                 "prayed",
