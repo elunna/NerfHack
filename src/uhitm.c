@@ -6220,7 +6220,7 @@ passive(
             } else {
                 monstseesu(M_SEEN_ACID);
             }
-            if (!rn2(30))
+            if (!rn2(3))
                 erode_armor(&gy.youmonst, ERODE_CORRODE);
         }
         if (mhitb && weapon) {
