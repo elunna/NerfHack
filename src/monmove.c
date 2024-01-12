@@ -512,7 +512,10 @@ distfleeck(
     sawscary = onscary(seescaryx, seescaryy, mtmp);
     if (*nearby && (sawscary
                     || (flees_light(mtmp) && !bravegremlin)
-                    || (!mtmp->mpeaceful && in_your_sanctuary(mtmp, 0, 0)))) {
+                    || (!mtmp->mpeaceful && in_your_sanctuary(mtmp, 0, 0) &&
+                        /* don't warn due to fleeing monsters about
+				         * the right temple on Astral */
+                        !Is_astralevel(&u.uz)))) {
         *scared = 1;
         monflee(mtmp, rnd(rn2(7) ? 10 : 100), TRUE, TRUE);
     } else
