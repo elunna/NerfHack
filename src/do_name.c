@@ -2792,12 +2792,12 @@ mon_wounds(struct monst *mon,
     if (DEADMONSTER(mon)) {
         return NULL;
     }
-#if 0 /* Too much info */
+    
     if (mon->mhp == mon->mhpmax) {
         Sprintf(outbuf, "uninjured%s", addspace ? " " : "");
         return outbuf;
     }
-#endif
+
     adjective = is_fleshy(mdat) ? "wounded" : "damaged";
 
     if (Hallucination && !clarity) {
