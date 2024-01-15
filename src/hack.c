@@ -1487,9 +1487,11 @@ trapmove(
         break;
     case TT_WEB:
         if (u_wield_art(ART_STING)) {
-            /* escape trap but don't move and don't destroy it */
+            /* escape trap but don't move and destroy it */
             u.utrap = 0; /* caller will call reset_utrap() */
             pline("Sting cuts through the web!");
+            deltrap(t_at(u.ux, u.uy));
+            newsym(u.ux, u.uy);
             break;
         }
         if (--u.utrap) {
