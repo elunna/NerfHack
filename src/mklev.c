@@ -857,7 +857,8 @@ fill_ordinary_room(
     struct monst *tmonst; /* always put a web with a spider */
     coordxy x, y;
     boolean skip_chests = FALSE;
-
+    unsigned lvl = level_difficulty();
+    
     if (croom->rtype != OROOM && croom->rtype != THEMEROOM)
         return;
 
@@ -903,9 +904,9 @@ fill_ordinary_room(
         mkfount(croom);
     if (!rn2(60))
         mksink(croom);
-    if (!rn2(60))
+    if (lvl > 4 && !rn2(60))
         mkaltar(croom);
-    if (!rn2(60))
+    if (lvl > 4 && !rn2(60))
         mkforge(croom);
     x = 80 - (depth(&u.uz) * 2);
     if (x < 2)
