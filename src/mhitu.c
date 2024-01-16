@@ -1587,12 +1587,13 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
          * suffocation-y things like drowning attacks.
          * Generally, only give a message if this is the first engulf, not a
          * subsequent attack when already engulfed. */
-        if (Breathless) {
+        if (mtmp->data != &mons[PM_WATER_ELEMENTAL])
+            break;
+        if (Breathless || Amphibious) {
             if (!old_uswallow)
                 You("can't breathe, but you don't need to.");
             tmp = 0;
-        }
-        else if (!Strangled) {
+        } else if (!Strangled) {
             if (!old_uswallow)
                 pline("It's impossible to breathe in here!");
             Strangled = 5;
