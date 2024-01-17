@@ -820,8 +820,8 @@ do_play_instrument(struct obj* instr)
         exercise(A_WIS, TRUE); /* just for trying */
         if (!strcmp(buf, gt.tune)) {
             /* Search for the drawbridge */
-            for (y = u.uy - 1; y <= u.uy + 1; y++)
-                for (x = u.ux - 1; x <= u.ux + 1; x++) {
+            for (y = u.uy - 2; y <= u.uy + 2; y++)
+                for (x = u.ux - 2; x <= u.ux + 2; x++) {
                     if (!isok(x, y))
                         continue;
                     if (find_drawbridge(&x, &y)) {
@@ -831,13 +831,12 @@ do_play_instrument(struct obj* instr)
                         if (levl[x][y].typ == DRAWBRIDGE_DOWN) {
                             if (!rn2(5)) {
                                 /* Future improvement: if flags is ever
-                                     * expanded beyond 5 bits, could set a
-                                     * bit here to make the mechanism
-                                     * continue to be stuck until some
-                                     * condition is met, such as
-                                     * opening/closing magic used on it */
-                                pline_The(
-                                        "mechanism seems to get jammed.");
+                                 * expanded beyond 5 bits, could set a
+                                 * bit here to make the mechanism
+                                 * continue to be stuck until some
+                                 * condition is met, such as
+                                 * opening/closing magic used on it */
+                                pline_The( "mechanism seems to get jammed.");
                                 pline("It won't close.");
                                 return ECMD_TIME;
                             }
