@@ -550,6 +550,7 @@ use_magic_whistle(struct obj *obj)
             : (Underwater && !Deaf) ? "strange, high-pitched"
               : "strange");
         Soundeffect(se_shrill_whistle, 80);
+        makeknown_msg(MAGIC_WHISTLE);
         magic_whistled(obj);
     }
 }
