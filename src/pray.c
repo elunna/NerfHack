@@ -831,7 +831,7 @@ gcrownu(void)
 
     /* Player gets up to 3 intrinsics granted */
     for (int i = 0; i < 3; i++) {
-        switch (rnd(7)) {
+        switch (rnd(8)) {
         case 1:
             if (!(HSee_invisible & FROMOUTSIDE)) {
                 if (Blind) {
@@ -888,6 +888,15 @@ gcrownu(void)
                              ? "secure from flashbacks"
                              : "less concerned about being harmed by acid");
                 HAcid_resistance |= FROMOUTSIDE;
+            }
+            break;
+        case 8:
+            if (!(HTelepat & FROMOUTSIDE)) {
+                You_feel(Hallucination ? "in touch with the cosmos."
+                                       : "a strange mental acuity.");
+                HTelepat |= FROMOUTSIDE;
+                if (Blind)
+                    see_monsters();
             }
             break;
         }
