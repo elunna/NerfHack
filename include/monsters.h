@@ -419,7 +419,7 @@
           ATTK(AT_BITE, AD_PHYS, 1, 10), NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(600, 300, MS_GROWL, MZ_LARGE), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE,
-        M3_INFRAVISIBLE | M3_INFRAVISION, 8, CLR_YELLOW, TIGER),
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_JUMPER, 8, CLR_YELLOW, TIGER),
     MON("weretiger", S_FELINE,                                  /* Slash'EM */
         LVL(7, 12, 6, 20, -7), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_WERE, 2, 6), 
