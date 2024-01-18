@@ -4636,8 +4636,8 @@ zhitu(
              * but this will still leave a mark */
             dam = d(4, 6);
             if (Antimagic && Half_spell_damage) {
-            shieldeff(sx, sy);
-            monstseesu(M_SEEN_MAGR);
+                shieldeff(sx, sy);
+                monstseesu(M_SEEN_MAGR);
                 dam /= 2;
             }
             if (Reflecting) {
