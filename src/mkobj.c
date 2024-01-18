@@ -1385,14 +1385,13 @@ start_corpse_timeout(struct obj *body)
         if (Role_if(PM_CLERIC) && rn2(2)) {
             if (cansee(body->ox, body->oy))
                 pline1(holy_msg[rn2(3)]);
-            return;
-        }
-        
-        for (age = 2; age <= ROT_AGE; age++) {
-            if (!rn2(ZOMBIE_REVIVE_CHANCE)) { /* zombie revives */
-                action = REVIVE_MON; /* if buried, can dig itself out */
-                when = age;
-                break;
+        } else {
+            for (age = 2; age <= ROT_AGE; age++) {
+                if (!rn2(ZOMBIE_REVIVE_CHANCE)) { /* zombie revives */
+                    action = REVIVE_MON; /* if buried, can dig itself out */
+                    when = age;
+                    break;
+                }
             }
         }
     }
