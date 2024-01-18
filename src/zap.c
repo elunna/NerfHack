@@ -143,6 +143,9 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     struct obj *obj;
     boolean disguised_mimic = (mtmp->data->mlet == S_MIMIC
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
+    int healing_skill = ((P_SKILL(P_HEALING_SPELL) >= P_EXPERT)
+                         ? 10 : (P_SKILL(P_HEALING_SPELL) == P_SKILLED)
+                           ? 8 : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
 
     if (engulfing_u(mtmp))
         reveal_invis = FALSE;
@@ -394,7 +397,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         if (mtmp->data != &mons[PM_PESTILENCE]) {
             boolean already_max = (mtmp->mhp == mtmp->mhpmax);
             wake = FALSE; /* wakeup() makes the target angry */
-            mtmp->mhp += d(6, otyp == SPE_EXTRA_HEALING ? 8 : 4);
+            mtmp->mhp += d(healing_skill, otyp == SPE_EXTRA_HEALING ? 8 : 4);
             if (mtmp->mhp > mtmp->mhpmax)
                 mtmp->mhp = mtmp->mhpmax;
             /* plain healing must be blessed to cure blindness; extra
@@ -2642,6 +2645,9 @@ zapyourself(struct obj *obj, boolean ordinary)
 {
     boolean learn_it = FALSE;
     int damage = 0;
+    int healing_skill = ((P_SKILL(P_HEALING_SPELL) >= P_EXPERT)
+                         ? 10 : (P_SKILL(P_HEALING_SPELL) == P_SKILLED)
+                           ? 8 : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
 
     switch (obj->otyp) {
     case WAN_STRIKING:
@@ -2875,7 +2881,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
         learn_it = TRUE; /* (no effect for spells...) */
-        healup(d(6, obj->otyp == SPE_EXTRA_HEALING ? 8 : 4), 0, FALSE,
+        healup(d(healing_skill, obj->otyp == SPE_EXTRA_HEALING ? 8 : 4), 0, FALSE,
                (obj->blessed || obj->otyp == SPE_EXTRA_HEALING));
         You_feel("%sbetter.", obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
         break;
