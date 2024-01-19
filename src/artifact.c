@@ -163,7 +163,18 @@ mk_artifact(
             continue;
         if ((a->spfx & SPFX_NOGEN) || unique)
             continue;
-
+        
+        /* Crowning gifts should not be granted during the normal course
+         * of #offering */
+        if (Role_if(PM_CLERIC) && m == ART_MJOLLNIR)
+            continue;
+        else if (u.ualign.type == A_NEUTRAL && m == ART_VORPAL_BLADE)
+            continue;
+        else if (u.ualign.type == A_LAWFUL && m == ART_EXCALIBUR)
+            continue;
+        else if (u.ualign.type == A_CHAOTIC && m == ART_STORMBRINGER)
+            continue;
+        
         if (!by_align) {
             /* looking for a particular type of item; not producing a
                divine gift so we don't care about role's first choice */
