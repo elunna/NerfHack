@@ -656,6 +656,8 @@ mattacku(register struct monst *mtmp)
             gn.notonhead = FALSE;
             return !!(mattackm(u.usteed, mtmp) & M_ATTK_DEF_DIED);
         }
+        if (u.usteed->mtame >= 15)
+            return !!(mattackm(u.usteed, mtmp) & M_ATTK_DEF_DIED);
     }
 
     if (u.uundetected && !range2 && foundyou && !u.uswallow) {
