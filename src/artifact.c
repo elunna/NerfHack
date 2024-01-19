@@ -734,6 +734,13 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
             ETelepat &= ~wp_mask;
         see_monsters();
     }
+    if (spfx & SPFX_SEEINV) {
+        if (on)
+            ESee_invisible |= wp_mask;
+        else
+            ESee_invisible &= ~wp_mask;
+        see_monsters();
+    }
     if (spfx & SPFX_STLTH) {
         if (on)
             EStealth |= wp_mask;
@@ -2217,6 +2224,7 @@ abil_to_spfx(long *abil)
         { &ESearching, SPFX_SEARCH },
         { &EHalluc_resistance, SPFX_HALRES },
         { &ETelepat, SPFX_ESP },
+        { &ESee_invisible, SPFX_SEEINV },
         { &EStealth, SPFX_STLTH },
         { &ERegeneration, SPFX_REGEN },
         { &ETeleport_control, SPFX_TCTRL },
