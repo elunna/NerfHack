@@ -41,8 +41,8 @@ enum mcast_cleric_spells {
 };
 
 static void cursetxt(struct monst *, boolean);
-static int choose_magic_spell(int);
-static int choose_clerical_spell(int);
+static int choose_magic_spell(struct monst *, int);
+static int choose_clerical_spell(struct monst *, int);
 static int m_cure_self(struct monst *, int);
 static int m_destroy_armor(struct monst *, struct monst *);
 static void cast_wizard_spell(struct monst *, int, int);
@@ -79,11 +79,15 @@ cursetxt(struct monst *mtmp, boolean undirected)
 /* convert a level-based random selection into a specific mage spell;
    inappropriate choices will be screened out by spell_would_be_useless() */
 static int
-choose_magic_spell(int spellval)
+choose_magic_spell(struct monst* mtmp, int spellval)
 {
     /* for 3.4.3 and earlier, val greater than 22 selected default spell */
     while (spellval > 24 && rn2(25))
         spellval = rn2(spellval);
+
+    /* Low HP, prioritize healing */
+    if ((mtmp->mhp * 4) <= mtmp->mhpmax)
+        spellval = 1;
 
     switch (spellval) {
     case 24:
@@ -149,12 +153,16 @@ choose_magic_spell(int spellval)
 
 /* convert a level-based random selection into a specific cleric spell */
 static int
-choose_clerical_spell(int spellnum)
+choose_clerical_spell(struct monst* mtmp, int spellnum)
 {
     /* for 3.4.3 and earlier, num greater than 13 selected the default spell
      */
     while (spellnum > 15 && rn2(16))
         spellnum = rn2(spellnum);
+
+    /* Low HP, prioritize healing */
+    if ((mtmp->mhp * 4) <= mtmp->mhpmax)
+        spellnum = 1;
 
     switch (spellnum) {
     case 15:
@@ -224,9 +232,9 @@ castmu(
         do {
             spellnum = rn2(ml);
             if (mattk->adtyp == AD_SPEL)
-                spellnum = choose_magic_spell(spellnum);
+                spellnum = choose_magic_spell(mtmp, spellnum);
             else
-                spellnum = choose_clerical_spell(spellnum);
+                spellnum = choose_clerical_spell(mtmp, spellnum);
             /* not trying to attack?  don't allow directed spells */
             if (!thinks_it_foundyou) {
                 if (!is_undirected_spell(mattk->adtyp, spellnum)
