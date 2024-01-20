@@ -2461,7 +2461,8 @@ find_ac(void)
 
     if (uarms) {
         uac -= ARM_BONUS(uarms);
-        if ((Race_if(PM_ORC) && uarms->otyp == ORCISH_SHIELD)
+        if ((Race_if(PM_ORC) && (uarms->otyp == ORCISH_SHIELD 
+                                 || uarms->otyp == URUK_HAI_SHIELD))
             || (Race_if(PM_ELF) && uarms->otyp == ELVEN_SHIELD)
             || (Race_if(PM_DWARF) && uarms->otyp == DWARVISH_ROUNDSHIELD)) {
             uac -= racial_bonus;
