@@ -2022,12 +2022,16 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         }
         break;
     case AD_TLPT:
-        if(!mtmp->mcan && canseemon(mtmp) && mtmp->mcansee && !cancelled
-            && !mtmp->mspec_used && rn2(5)) {
-            pline("%s stares blinkingly at you!", Monnam(mtmp));
-            if (flags.verbose)
-                Your("position suddenly seems very uncertain!");
-            tele();
+        if (mcanseeu && !mtmp->mspec_used && rn2(5)) {
+            if (cancelled) {
+                pline("%s blinks.", Monnam(mtmp));
+            } else {
+                pline("%s stares blinkingly at you!", Monnam(mtmp));
+                if (flags.verbose)
+                    Your("position suddenly seems very uncertain!");
+                tele();
+                mtmp->mspec_used = mtmp->mspec_used + d(2, 6);
+            }
         }
         break;
 #ifdef PM_BEHOLDER /* work in progress */
