@@ -1157,12 +1157,10 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
         if ((has_reflection(mtmp) || mon_reflects(mtmp, (char *) 0))
             && spellnum == MGC_REFLECTION)
             return TRUE;
-        /* peaceful monster won't cast invisibility if you can't see
-           invisible,
-           same as when monsters drink potions of invisibility.  This doesn't
+        /* peaceful monster won't cast invisibility. This doesn't
            really make a lot of sense, but lets the player avoid hitting
            peaceful monsters by mistake */
-        if (mtmp->mpeaceful && !See_invisible && spellnum == MGC_DISAPPEAR)
+        if (mtmp->mpeaceful && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == MGC_CURE_SELF)
