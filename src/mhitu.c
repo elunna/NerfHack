@@ -1838,6 +1838,18 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     if (m_seenres(mtmp, cvt_adtyp_to_mseenres(mattk->adtyp)))
         return M_ATTK_MISS;
 
+    /* Invisibility protection: If we are invisible, we should expect a 
+     * reasonable amount of misses gazes from gaze attacks. As it was 
+     * previously implemented, a gazing monster would have 100% accuracy 
+     * whether you were invisible or not, and it didn't matter if they could
+     * see invisible or not. Let's use the same detection odds as monmove 
+     * uses (1 in 11 of random hit). */
+    if (mcanseeu && Invis && !perceives(mtmp->data) && rn2(11)) {
+        if (!rn2(23)) /* Don't spam this. */
+            pline("%s looks around searchingly...", Monnam(mtmp));
+        mcanseeu = 0;
+    }
+        
     is_medusa = (mtmp->data == &mons[PM_MEDUSA]);
     reflectable = (Reflecting && couldsee(mtmp->mx, mtmp->my) && is_medusa);
     /* assumes that hero has to see monster's gaze in order to be
