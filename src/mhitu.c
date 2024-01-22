@@ -1835,6 +1835,8 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                         && mtmp->mcansee);
     boolean wearing_eyes = ublindf
                             && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD;
+    boolean foundyou = (u.ux == mtmp->mux && u.uy == mtmp->muy);
+    
     if (m_seenres(mtmp, cvt_adtyp_to_mseenres(mattk->adtyp)))
         return M_ATTK_MISS;
 
@@ -1853,6 +1855,14 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         && mdistu(mtmp) > 3 && rn2(11)) {
         if (!rn2(23)) /* Don't spam this. */
             pline("%s looks around searchingly...", Monnam(mtmp));
+        mcanseeu = 0;
+    }
+    
+    /* Displacement protection */
+    if (mcanseeu && Displaced && (!foundyou || rn2(11))) {
+        if (!rn2(13)) /* Don't spam this. */
+            pline("%s gazes at your displaced image and misses you!",
+                  Monnam(mtmp));
         mcanseeu = 0;
     }
         
