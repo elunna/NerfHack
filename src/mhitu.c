@@ -1838,14 +1838,17 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     if (m_seenres(mtmp, cvt_adtyp_to_mseenres(mattk->adtyp)))
         return M_ATTK_MISS;
 
-    /* Invisibility protection: If we are invisible, we should expect a 
-     * reasonable amount of misses gazes from gaze attacks. As it was 
-     * previously implemented, a gazing monster would have 100% accuracy 
-     * whether you were invisible or not, and it didn't matter if they could
-     * see invisible or not. Let's use the same detection odds as monmove 
-     * uses (1 in 11 of random hit). If the gazer is in melee range we'll
-     * let them have an easy hit (otherwise the blinking eye will 
-     * just sit awkwardly next to the player...) */
+    /* Invisibility Protection: If the player character is currently
+     * invisible, they should anticipate a reasonable number of avoided
+     * gazes during gaze attacks. In the previous implementation, a 
+     * gazing monster would achieve 100% accuracy regardless of the 
+     * player's visibility status, and whether or not the monster had 
+     * the ability to see invisible. To address this, we are now 
+     * adopting the same detection odds as in the 'monmove' function, 
+     * which employs a 1 in 11 chance of a random hit. If the gazer is
+     * in melee range, we allow for an easy hit (otherwise, the 
+     * blinking eye will simply linger awkwardly next to the player...)
+     * */
     if (mcanseeu && Invis && !perceives(mtmp->data)
         && mdistu(mtmp) > 3 && rn2(11)) {
         if (!rn2(23)) /* Don't spam this. */
