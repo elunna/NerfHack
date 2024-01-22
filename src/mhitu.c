@@ -1843,8 +1843,11 @@ gazemu(struct monst *mtmp, struct attack *mattk)
      * previously implemented, a gazing monster would have 100% accuracy 
      * whether you were invisible or not, and it didn't matter if they could
      * see invisible or not. Let's use the same detection odds as monmove 
-     * uses (1 in 11 of random hit). */
-    if (mcanseeu && Invis && !perceives(mtmp->data) && rn2(11)) {
+     * uses (1 in 11 of random hit). If the gazer is in melee range we'll
+     * let them have an easy hit (otherwise the blinking eye will 
+     * just sit awkwardly next to the player...) */
+    if (mcanseeu && Invis && !perceives(mtmp->data)
+        && mdistu(mtmp) > 3 && rn2(11)) {
         if (!rn2(23)) /* Don't spam this. */
             pline("%s looks around searchingly...", Monnam(mtmp));
         mcanseeu = 0;
