@@ -1865,6 +1865,14 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                   Monnam(mtmp));
         mcanseeu = 0;
     }
+    
+    /* Darkness protection: If we are on a dark square and the gazer doesn't
+     * have infravision and we are infravisible and they are not right next 
+     * to us, we should reasonably expect they can't "gaze" at us. */
+    if (!levl[u.ux][u.uy].lit && infravision(mtmp->data)
+        && infravisible(gy.youmonst.data) && mdistu(mtmp) < 3) {
+        mcanseeu = 0;
+    }
         
     is_medusa = (mtmp->data == &mons[PM_MEDUSA]);
     reflectable = (Reflecting && couldsee(mtmp->mx, mtmp->my) && is_medusa);
