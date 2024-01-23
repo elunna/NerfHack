@@ -5553,7 +5553,7 @@ m_is_steadfast(struct monst *mtmp)
         || (Is_waterlevel(&u.uz) && !is_pool(u.ux, u.uy))) /* air bubble */
         return FALSE;
 
-    if (is_art(otmp, ART_GIANTSLAYER) 
+    if (is_art(otmp, ART_GIANTSLAYER) || is_art(otmp, ART_LOAD_BRAND) 
         || (shield && shield->oartifact == ART_PRIDWEN))
         return TRUE;
 

@@ -259,6 +259,7 @@ dmgval(struct obj *otmp, struct monst *mon)
         case TSURUGI:
         case DWARVISH_MATTOCK:
         case TWO_HANDED_SWORD:
+        case HEAVY_SWORD:
             tmp += d(2, 6);
             break;
         }
