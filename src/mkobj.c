@@ -1096,8 +1096,8 @@ mksobj_init(struct obj *otmp, boolean artif)
         break;
     case WAND_CLASS:
         if (otmp->otyp == WAN_WISHING) {
-            otmp->spe = rnd(3);
-            otmp->recharged = (Is_stronghold(&u.uz) || discover) ? 0 : 1;
+            otmp->spe = rnd(2);
+            otmp->recharged = 1;
         } else
             otmp->spe = rn1(5, (objects[otmp->otyp].oc_dir == NODIR) ? 11 : 4);
         blessorcurse(otmp, 17);
