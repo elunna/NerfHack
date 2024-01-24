@@ -259,9 +259,10 @@ static NEARDATA struct artifact artilist[] = {
       NON_PM, 2500L, NO_COLOR, ORB_OF_DETECTION),
 
     A("The Heart of Ahriman", LUCKSTONE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH), SPFX_STLTH, 0,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH), 
+      (SPFX_FLYING | SPFX_DISPLAC), 0,
       /* this stone does double damage if used as a projectile weapon */
-      PHYS(5, 0), NO_DFNS, NO_CARY, LEVITATION, A_NEUTRAL, PM_BARBARIAN,
+      PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_NEUTRAL, PM_BARBARIAN,
       NON_PM, 2500L, NO_COLOR, HEART_OF_AHRIMAN),
 
     A("The Sceptre of Might", MACE,

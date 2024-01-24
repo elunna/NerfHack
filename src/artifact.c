@@ -820,6 +820,17 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         else
             EMagical_breathing &= ~wp_mask;
     }
+    if (spfx & SPFX_DISPLAC) {
+        long oldprop =
+            u.uprops[DISPLACED].extrinsic & ~wp_mask;
+        if (on) {
+            EDisplaced |= wp_mask;
+            toggle_displacement(otmp, oldprop, TRUE);
+        } else {
+            EDisplaced &= ~wp_mask;
+            toggle_displacement(otmp, oldprop, FALSE);
+        }
+    }
     if (spfx & SPFX_FLYING) {
         if (on) {
             EFlying |= wp_mask;
