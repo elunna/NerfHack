@@ -2830,7 +2830,7 @@
         M1_FLY | M1_HUMANOID | M1_POIS,
         M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION, 15, CLR_RED, NALFESHNEE),
-    MON("pit fiend", S_DEMON, LVL(13, 6, -3, 65, -13),
+    MON("pit fiend", S_DEMON, LVL(13, 8, -3, 65, -13),
         (G_HELL | G_NOCORPSE | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 2), ATTK(AT_WEAP, AD_PHYS, 4, 2),
           ATTK(AT_HUGS, AD_PHYS, 2, 4), NO_ATTK, NO_ATTK, NO_ATTK),
