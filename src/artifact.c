@@ -820,6 +820,35 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         else
             EMagical_breathing &= ~wp_mask;
     }
+    if (spfx & SPFX_FLYING) {
+        if (on) {
+            EFlying |= wp_mask;
+            float_vs_flight(); /* block flying if levitating */
+            if (Flying) {
+                boolean already_flying;
+                EFlying &= ~wp_mask;
+                already_flying = !!Flying;
+                EFlying |= wp_mask;
+
+                if (!already_flying) {
+                    gc.context.botl = TRUE; /* status: 'Fly' On */
+                    You("are now in flight.");
+                }
+            }
+        } else {
+            boolean was_flying = !!Flying;
+            EFlying &= ~wp_mask;
+            float_vs_flight(); /* probably not needed here */
+            if (was_flying && !Flying) {
+                gc.context.botl = TRUE; /* status: 'Fly' Off */
+                You("%s.", (is_pool_or_lava(u.ux, u.uy)
+                            || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                               ? "stop flying"
+                               : "land");
+                spoteffects(TRUE);
+            }
+        }
+    }
 
     if (wp_mask == W_ART && !on && oart->inv_prop) {
         /* might have to turn off invoked power too */
@@ -2235,6 +2264,7 @@ abil_to_spfx(long *abil)
         { &EHalf_physical_damage, SPFX_HPHDAM },
         { &EReflecting, SPFX_REFLECT },
         { &EMagical_breathing, SPFX_BREATHE },
+        { &EFlying, SPFX_FLYING },
     };
     int k;
 
