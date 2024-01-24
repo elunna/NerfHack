@@ -2812,7 +2812,7 @@
         M1_FLY | M1_POIS,
         M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION, 13, CLR_GRAY, BONE_DEVIL),
-    MON("ice devil", S_DEMON, LVL(11, 6, -4, 55, 12),
+    MON("ice devil", S_DEMON, LVL(11, 8, -4, 55, 12),
         (G_HELL | G_NOCORPSE | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_BITE, AD_PHYS, 2, 4), ATTK(AT_STNG, AD_COLD, 3, 4), NO_ATTK,
