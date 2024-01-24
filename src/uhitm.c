@@ -6342,9 +6342,12 @@ passive(
                     break;
                 }
                 if (mon->mcansee) {
-                    if (ureflects("%s gaze is reflected by your %s.",
-                                  s_suffix(Monnam(mon)))) {
-                        ;
+                    if (ureflects("%s gaze is partially reflected by your %s.",
+                                  s_suffix(Monnam(mon))) && !Free_action) {
+                        You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
+                        nomul(-rnd(6));
+                        dynamic_multi_reason(mon, "frozen", TRUE);
+                        gn.nomovemsg = 0;
                     } else if (Hallucination && rn2(4)) {
                         /* [it's the hero who should be getting paralyzed
                            and isn't; this message describes the monster's
