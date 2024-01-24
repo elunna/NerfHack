@@ -2527,7 +2527,7 @@
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE,
          11, CLR_BRIGHT_BLUE, ELF_NOBLE),
     MON3("Elvenking", "Elvenqueen", "elven monarch",
-        S_HUMAN, LVL(9, 12, 10, 25, -10), (G_GENO | 1),
+        S_HUMAN, LVL(9, 12, 8, 25, -10), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4), ATTK(AT_WEAP, AD_PHYS, 2, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_ELF, 350, MS_HUMANOID, MZ_HUMAN), MR_SLEEP, MR_SLEEP,
