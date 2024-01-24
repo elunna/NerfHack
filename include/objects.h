@@ -267,7 +267,7 @@ WEAPON("elven broadsword", "runed broadsword",
                                                         ELVEN_BROADSWORD),
         /* +d4 small, +1 large */
 WEAPON("long sword", NoDes,
-       1, 0, 0, 50,  40,  15,  8, 12, 0, S,   P_LONG_SWORD, IRON, HI_METAL,
+       1, 0, 0, 20,  40,  15,  8, 12, 0, S,   P_LONG_SWORD, IRON, HI_METAL,
                                                         LONG_SWORD),
 WEAPON("two-handed sword", NoDes,
        1, 0, 1, 22, 150,  50, 12,  6, 0, S,   P_TWO_HANDED_SWORD,
