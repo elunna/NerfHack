@@ -953,6 +953,8 @@ hmon_hitmon_weapon_ranged(
        train weapon's skill */
     if (hmd->mdat == &mons[PM_SHADE] && !shade_glare(obj))
         hmd->dmg = 0;
+    else if (thick_skinned(hmd->mdat) && obj->oclass == GEM_CLASS)
+        hmd->dmg = 0;
     else
         hmd->dmg = rnd(2);
     if (hmd->material == SILVER && mon_hates_silver(mon)) {

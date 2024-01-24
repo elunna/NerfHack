@@ -310,7 +310,7 @@ dmgval(struct obj *otmp, struct monst *mon)
     
     if (otmp->oclass == GEM_CLASS && thick_skinned(ptr))
         /* pebbles don't penetrate */
-        tmp = rnd(2);
+        tmp = 0;
     
     if (ptr == &mons[PM_SHADE] && !shade_glare(otmp))
         tmp = 0;
