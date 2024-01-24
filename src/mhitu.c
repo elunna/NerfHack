@@ -1915,6 +1915,12 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             if (useeit)
                 (void) ureflects("%s gaze is reflected by your %s.",
                                  s_suffix(Monnam(mtmp)));
+            if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > 8) {
+                if (useeit)
+                    pline("%s reflection is too far away for %s to notice.",
+                          s_suffix(Monnam(mtmp)), mhis(mtmp));
+                break;
+            }
             if (mon_reflects(mtmp, !useeit ? (char *) 0
                                   : "The gaze is reflected away by %s %s!"))
                 break;
@@ -1925,10 +1931,19 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                           Monnam(mtmp), mhis(mtmp));
                 break;
             }
-            if (useeit)
-                pline("%s is turned to stone!", Monnam(mtmp));
-            gs.stoned = TRUE;
-            killed(mtmp);
+            if (!rn2(50)) {
+                if (useeit)
+                    pline("%s is turned to stone!", Monnam(mtmp));
+                gs.stoned = TRUE;
+                killed(mtmp);
+            } else {
+                if (useeit)
+                    pline(
+                        "%s %s %s eyes from %s reflected gaze just in time!",
+                        Monnam(mtmp), rn2(2) ? "shields" : "covers",
+                        mhis(mtmp), mhis(mtmp));
+                break;
+            }
 
             if (!DEADMONSTER(mtmp))
                 break;
