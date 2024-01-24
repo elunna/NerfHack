@@ -1467,9 +1467,11 @@ pleased(aligntyp g_align)
                 if (!(HProtection & INTRINSIC)) {
                     HProtection |= FROMOUTSIDE;
                     if (!u.ublessed)
-                        u.ublessed = rn1(3, 2);
-                } else
+                        u.ublessed = 1;
+                } else if ((rn2(10) - u.ublessed >= 0) && (rn2(10) - u.ublessed >= 0))
                     u.ublessed++;
+                else
+                    break; /* Sorry... */
                 pline(msg, "my protection");
             }
             SetVoice((struct monst *) 0, 0, 80, voice_deity);
