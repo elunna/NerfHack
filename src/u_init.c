@@ -43,7 +43,7 @@ static struct trobj Barbarian[] = {
 #define B_MINOR 1 /* matched with axe or short sword */
     { TWO_HANDED_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { AXE, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { RING_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { STUDDED_LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
@@ -72,7 +72,7 @@ static struct trobj Healer[] = {
 static struct trobj Knight[] = {
     { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { LANCE, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { RING_MAIL, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { RING_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { LEATHER_GLOVES, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
