@@ -724,7 +724,7 @@ m_initinv(register struct monst *mtmp)
             } else { /* soldiers and their officers */
                 if (!rn2(6))
                     (void) mongets(mtmp, K_RATION);
-                if (!rn2(4))
+                else if (!rn2(4))
                     (void) mongets(mtmp, C_RATION);
                 if (ptr != &mons[PM_SOLDIER] && !rn2(3))
                     (void) mongets(mtmp, BUGLE);
