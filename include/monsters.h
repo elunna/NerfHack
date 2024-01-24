@@ -1683,7 +1683,7 @@
         M1_ANIMAL | M1_HUMANOID | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK, 13, CLR_BROWN, ETTIN),
-    MON("storm giant", S_GIANT, LVL(16, 12, 3, 10, -3),
+    MON("storm giant", S_GIANT, LVL(16, 12, -1, 10, -3),
         (G_GENO | G_SGROUP | 1), A(ATTK(AT_WEAP, AD_PHYS, 2, 12), NO_ATTK,
                                    NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2250, 750, MS_BOAST, MZ_HUGE), MR_ELEC, MR_ELEC,
