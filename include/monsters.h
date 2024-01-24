@@ -1690,7 +1690,7 @@
         M1_HUMANOID | M1_CARNIVORE, M2_GIANT | M2_STRONG | M2_ROCKTHROW
                                         | M2_NASTY | M2_COLLECT | M2_JEWELS,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK, 19, CLR_BLUE, STORM_GIANT),
-    MON("titan", S_GIANT, LVL(16, 18, -3, 70, 9), (1),
+    MON("titan", S_GIANT, LVL(17, 18, -6, 70, 9), (1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8), ATTK(AT_MAGC, AD_SPEL, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2300, 900, MS_SPELL, MZ_HUGE), 0, 0,
