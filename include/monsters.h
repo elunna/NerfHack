@@ -1983,7 +1983,7 @@
         M2_STRONG | M2_LORD | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK, 9, CLR_RED, OGRE_LEADER),
     MON3("ogre king", "ogre queen", "ogre tyrant",
-        S_OGRE, LVL(9, 14, 4, 60, -7), (G_GENO | 2),
+        S_OGRE, LVL(9, 14, 1, 60, -7), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 5), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(1700, 750, MS_GRUNT, MZ_LARGE), 0, 0, M1_HUMANOID | M1_CARNIVORE,
