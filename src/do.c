@@ -1830,7 +1830,7 @@ goto_level(
                 if (u.usteed)
                     dismount_steed(DISMOUNT_FELL);
                 else
-                    losehp(Maybe_Half_Phys(rnd(3)),
+                    losehp(Maybe_Half_Phys(d(2, 3)),
                            ga.at_ladder ? "falling off a ladder"
                                      : "tumbling down a flight of stairs",
                            KILLED_BY);
