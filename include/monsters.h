@@ -2409,7 +2409,7 @@
         SIZ(900, 0, MS_SILENT, MZ_LARGE), MR_COLD | MR_SLEEP | MR_POISON, 0,
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_THICK_HIDE,
         M2_HOSTILE | M2_NEUTER, 0, 8, HI_WOOD, WOOD_GOLEM),
-    MON("flesh golem", S_GOLEM, LVL(9, 8, 9, 30, 0), (1),
+    MON("flesh golem", S_GOLEM, LVL(9, 8, 8, 30, 0), (1),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 8), ATTK(AT_CLAW, AD_PHYS, 2, 8), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1400, 600, MS_SILENT, MZ_LARGE),
