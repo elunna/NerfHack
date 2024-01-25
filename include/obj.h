@@ -283,20 +283,6 @@ struct obj {
      && objects[otmp->otyp].oc_armcat == ARM_SHIRT)
 #define is_suit(otmp) \
     (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armcat == ARM_SUIT)
-#define is_elven_armor(otmp)                                              \
-    ((otmp)->otyp == ELVEN_LEATHER_HELM                                   \
-     || (otmp)->otyp == ELVEN_MITHRIL_COAT || (otmp)->otyp == ELVEN_CLOAK \
-     || (otmp)->otyp == ELVEN_SHIELD || (otmp)->otyp == ELVEN_BOOTS)
-#define is_orcish_armor(otmp)                                            \
-    ((otmp)->otyp == ORCISH_HELM || (otmp)->otyp == ORCISH_CHAIN_MAIL    \
-     || (otmp)->otyp == ORCISH_RING_MAIL || (otmp)->otyp == ORCISH_CLOAK \
-     || (otmp)->otyp == URUK_HAI_SHIELD || (otmp)->otyp == ORCISH_SHIELD)
-#define is_dwarvish_armor(otmp)               \
-    ((otmp)->otyp == DWARVISH_IRON_HELM       \
-     || (otmp)->otyp == DWARVISH_MITHRIL_COAT \
-     || (otmp)->otyp == DWARVISH_CLOAK        \
-     || (otmp)->otyp == DWARVISH_ROUNDSHIELD)
-#define is_gnomish_armor(otmp) (FALSE)
 
 /* Eggs and other food */
 #define MAX_EGG_HATCH_TIME 200 /* longest an egg can remain unhatched */
@@ -350,26 +336,62 @@ struct obj {
 #define Dragon_to_scales(pm) (GRAY_DRAGON_SCALES + (pm - mons))
 
 /* Elven gear */
-#define is_elven_weapon(otmp)                                             \
-    ((otmp)->otyp == ELVEN_ARROW || (otmp)->otyp == ELVEN_SPEAR           \
-     || (otmp)->otyp == ELVEN_DAGGER || (otmp)->otyp == ELVEN_SHORT_SWORD \
-     || (otmp)->otyp == ELVEN_BROADSWORD || (otmp)->otyp == ELVEN_BOW)
+#define is_elven_armor(otmp) \
+    ((otmp)->otyp == ELVEN_LEATHER_HELM \
+     || (otmp)->otyp == ELVEN_MITHRIL_COAT \
+     || (otmp)->otyp == ELVEN_CLOAK \
+     || (otmp)->otyp == ELVEN_SHIELD \
+     || (otmp)->otyp == ELVEN_BOOTS)
+#define is_elven_weapon(otmp) \
+    ((otmp)->otyp == ELVEN_ARROW \
+     || (otmp)->otyp == ELVEN_SPEAR \
+     || (otmp)->otyp == ELVEN_DAGGER \
+     || (otmp)->otyp == ELVEN_SHORT_SWORD \
+     || (otmp)->otyp == ELVEN_BROADSWORD \
+     || (otmp)->otyp == ELVEN_BOW)
 #define is_elven_obj(otmp) (is_elven_armor(otmp) || is_elven_weapon(otmp))
 
 /* Orcish gear */
-#define is_orcish_obj(otmp)                                           \
-    (is_orcish_armor(otmp) || (otmp)->otyp == ORCISH_ARROW            \
-     || (otmp)->otyp == ORCISH_SPEAR || (otmp)->otyp == ORCISH_DAGGER \
-     || (otmp)->otyp == ORCISH_SHORT_SWORD || (otmp)->otyp == ORCISH_BOW)
+#define is_orcish_armor(otmp) \
+    ((otmp)->otyp == ORCISH_HELM \
+     || (otmp)->otyp == ORCISH_CHAIN_MAIL \
+     || (otmp)->otyp == ORCISH_RING_MAIL \
+     || (otmp)->otyp == ORCISH_CLOAK \
+     || (otmp)->otyp == URUK_HAI_SHIELD \
+     || (otmp)->otyp == ORCISH_SHIELD)
+#define is_orcish_weapon(otmp) \
+    ((otmp)->otyp == ORCISH_ARROW \
+     || (otmp)->otyp == ORCISH_SPEAR \
+     || (otmp)->otyp == ORCISH_DAGGER \
+     || (otmp)->otyp == ORCISH_SHORT_SWORD \
+     || (otmp)->otyp == ORCISH_BOW)
+#define is_orcish_obj(otmp) (is_orcish_armor(otmp) || is_orcish_weapon(otmp))
 
 /* Dwarvish gear */
-#define is_dwarvish_obj(otmp)                                  \
-    (is_dwarvish_armor(otmp) || (otmp)->otyp == DWARVISH_SPEAR \
-     || (otmp)->otyp == DWARVISH_SHORT_SWORD                   \
+#define is_dwarvish_armor(otmp) \
+    ((otmp)->otyp == DWARVISH_IRON_HELM \
+     || (otmp)->otyp == DWARVISH_MITHRIL_COAT \
+     || (otmp)->otyp == DWARVISH_CLOAK \
+     || (otmp)->otyp == DWARVISH_ROUNDSHIELD)
+#define is_dwarvish_weapon(otmp) \
+     ((otmp)->otyp == DWARVISH_SPEAR \
+     || (otmp)->otyp == DWARVISH_SHORT_SWORD \
      || (otmp)->otyp == DWARVISH_MATTOCK)
-
+#define is_dwarvish_obj(otmp) (is_dwarvish_armor(otmp) \
+                                   || is_dwarvish_weapon(otmp))
 /* Gnomish gear */
 #define is_gnomish_obj(otmp) (is_gnomish_armor(otmp))
+#define is_gnomish_armor(otmp) (FALSE)
+
+#define hates_item(otmp) \
+    ((Race_if(PM_ELF) && (is_orcish_obj(otmp) \
+                          || is_dwarvish_obj(otmp))) \
+    || (Race_if(PM_DWARF) && (is_orcish_obj(otmp)    \
+                               || is_elven_obj(otmp))) \
+    || (Race_if(PM_HUMAN) && is_orcish_obj(otmp)) \
+    || (Race_if(PM_GNOME) && is_orcish_obj(otmp)) \
+    || (Race_if(PM_ORC) && (is_dwarvish_obj(otmp)    \
+                             || is_elven_obj(otmp))))
 
 /* Light sources */
 #define Is_candle(otmp) \

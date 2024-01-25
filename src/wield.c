@@ -115,6 +115,17 @@ setuwep(struct obj *obj)
         && (u_wield_art(ART_OGRESMASHER)
             || is_art(olduwep, ART_OGRESMASHER)))
         gc.context.botl = 1;
+    
+    /* Hated items decrease AC and affect to-hit */
+    if (uwep && hates_item(uwep)) {
+        find_ac();
+        gc.context.botl = 1;
+        You_feel("awkward wielding %s...", yname(uwep));
+    } else if (olduwep && hates_item(olduwep)) {
+        find_ac();
+        gc.context.botl = 1;
+        You_feel("more comfortable now.");
+    }
     /* Note: Explicitly wielding a pick-axe will not give a "bashing"
      * message.  Wielding one via 'a'pplying it will.
      * 3.2.2:  Wielding arbitrary objects will give bashing message too.
@@ -278,7 +289,13 @@ setuqwep(struct obj *obj)
 void
 setuswapwep(struct obj *obj)
 {
+    struct obj *olduswapwep = uswapwep;
     setworn(obj, W_SWAPWEP);
+    /* Hated items decrease AC and affect to-hit */
+    if (!u.twoweap && olduswapwep && hates_item(olduswapwep)) {
+        if (!(uwep && hates_item(uwep)))
+            You_feel("more relaxed now.");
+    }
     return;
 }
 
@@ -824,6 +841,14 @@ void
 set_twoweap(boolean on_off)
 {
     u.twoweap = on_off;
+
+    if (on_off && uswapwep && hates_item(uswapwep) && !hates_item(uwep)) {
+        find_ac();
+        gc.context.botl = 1;
+        You_feel("strange wielding %s...", yname(uswapwep));
+    } else if (!on_off && uswapwep && hates_item(uswapwep) 
+               && !hates_item(uwep))
+        You_feel("more comfortable now.");
 }
 
 /* the #twoweapon command */

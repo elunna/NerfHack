@@ -178,6 +178,9 @@ Boots_on(void)
     long oldprop =
         u.uprops[objects[uarmf->otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
+    if (hates_item(uarmf))
+        You_feel("uncomfortable wearing these boots.");
+    
     switch (uarmf->otyp) {
     case LOW_BOOTS:
     case IRON_SHOES:
@@ -249,6 +252,9 @@ Boots_off(void)
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
+    if (hates_item(uarmf))
+        You_feel("more comfortable now.");
+    
     gc.context.takeoff.mask &= ~W_ARMF;
     /* For levitation, float_down() returns if Levitation, so we
      * must do a setworn() _before_ the levitation case.
@@ -321,6 +327,9 @@ Cloak_on(void)
     long oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
+    if (hates_item(uarmc))
+        You_feel("uncomfortable wearing this cloak.");
+    
     switch (uarmc->otyp) {
     case ORCISH_CLOAK:
     case DWARVISH_CLOAK:
@@ -385,6 +394,9 @@ Cloak_off(void)
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
+    if (hates_item(uarmc))
+        You_feel("more comfortable now.");
+    
     gc.context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
     setworn((struct obj *) 0, W_ARMC);
@@ -432,6 +444,9 @@ Cloak_off(void)
 static int
 Helmet_on(void)
 {
+    if (hates_item(uarmh))
+        You_feel("uncomfortable wearing this helmet.");
+    
     switch (uarmh->otyp) {
     case FEDORA:
     case HELMET:
@@ -514,7 +529,10 @@ int
 Helmet_off(void)
 {
     gc.context.takeoff.mask &= ~W_ARMH;
-
+    
+    if (hates_item(uarmh))
+        You_feel("more comfortable now.");
+    
     switch (uarmh->otyp) {
     case FEDORA:
     case HELMET:
@@ -698,6 +716,9 @@ Gloves_off(void)
 static int
 Shield_on(void)
 {
+    if (hates_item(uarms))
+        You_feel("uncomfortable wearing that shield.");
+    
     /* no shield currently requires special handling when put on, but we
        keep this uncommented in case somebody adds a new one which does
        [reflection is handled by setting u.uprops[REFLECTION].extrinsic
@@ -726,6 +747,9 @@ Shield_off(void)
 {
     gc.context.takeoff.mask &= ~W_ARMS;
 
+    if (hates_item(uarms))
+        You_feel("more comfortable now.");
+    
     /* no shield currently requires special handling when taken off, but we
        keep this uncommented in case somebody adds a new one which does */
     switch (uarms->otyp) {
@@ -884,6 +908,8 @@ Armor_on(void)
     }
     if (Role_if(PM_MONK))
         You_feel("extremely uncomfortable wearing such armor.");
+    else if (hates_item(uarm))
+        You_feel("uncomfortable wearing such armor.");
     
     dragon_armor_handling(uarm, TRUE, TRUE);
     /* gold DSM requires extra handling since it emits light when worn;
@@ -909,7 +935,9 @@ Armor_off(void)
     gc.context.takeoff.cancelled_don = FALSE;
     if (Role_if(PM_MONK))
         You_feel("much more comfortable and free now.");
-
+    else if (hates_item(otmp))
+        You_feel("more comfortable now.");
+    
     /* taking off yellow dragon scales/mail might be fatal; arti_light
        comes from gold dragon scales/mail so they don't overlap, but
        conceptually the non-fatal change should be done before the
@@ -2424,54 +2452,51 @@ find_ac(void)
 
     if (uarm) {
         uac -= ARM_BONUS(uarm);
-        if ((Race_if(PM_ORC)
-             && (uarm->otyp == ORCISH_CHAIN_MAIL
-                 || uarm->otyp == ORCISH_RING_MAIL))
-            || (Race_if(PM_ELF) && uarm->otyp == ELVEN_MITHRIL_COAT)
-            || (Race_if(PM_DWARF) && uarm->otyp == DWARVISH_MITHRIL_COAT)) {
+        if ((Race_if(PM_ORC) && is_orcish_armor(uarm))
+            || (Race_if(PM_ELF) && is_elven_armor(uarm))
+            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarm))) {
             uac -= racial_bonus;
         }
     }
 
     if (uarmc) {
         uac -= ARM_BONUS(uarmc);
-        if ((Race_if(PM_ORC) && uarmc->otyp == ORCISH_CLOAK)
-            || (Race_if(PM_ELF) && uarmc->otyp == ELVEN_CLOAK)
-            || (Race_if(PM_DWARF) && uarmc->otyp == DWARVISH_CLOAK)) {
+        if ((Race_if(PM_ORC) && is_orcish_armor(uarmc))
+            || (Race_if(PM_ELF) && is_elven_armor(uarmc))
+            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmc))) {
             uac -= racial_bonus;
         }
     }
 
     if (uarmh) {
         uac -= ARM_BONUS(uarmh);
-        if ((Race_if(PM_ORC) && uarmh->otyp == ORCISH_HELM)
-            || (Race_if(PM_ELF) && uarmh->otyp == ELVEN_LEATHER_HELM)
-            || (Race_if(PM_DWARF) && uarmh->otyp == DWARVISH_IRON_HELM)) {
+        if ((Race_if(PM_ORC) && is_orcish_armor(uarmh))
+            || (Race_if(PM_ELF) && is_elven_armor(uarmh))
+            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmh))) {
             uac -= racial_bonus;
         }
     }
 
     if (uarmf) {
         uac -= ARM_BONUS(uarmf);
-        if ((Race_if(PM_ELF) && uarmf->otyp == ELVEN_BOOTS)
-            || (Race_if(PM_DWARF) && uarmf->otyp == IRON_SHOES)) {
+        /* No orcish boots */
+        if ((Race_if(PM_ELF) && is_elven_armor(uarmf))
+            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmf))) {
             uac -= racial_bonus;
         }
     }
 
     if (uarms) {
         uac -= ARM_BONUS(uarms);
-        if ((Race_if(PM_ORC) && (uarms->otyp == ORCISH_SHIELD 
-                                 || uarms->otyp == URUK_HAI_SHIELD))
-            || (Race_if(PM_ELF) && uarms->otyp == ELVEN_SHIELD)
-            || (Race_if(PM_DWARF) && uarms->otyp == DWARVISH_ROUNDSHIELD)) {
+        if ((Race_if(PM_ORC) && is_orcish_armor(uarms))
+            || (Race_if(PM_ELF) && is_elven_armor(uarms))
+            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarms))) {
             uac -= racial_bonus;
         }
     }
 
     if (uarmg)
         uac -= ARM_BONUS(uarmg);
-    
     if (uarmu)
         uac -= ARM_BONUS(uarmu);
     if (uleft && uleft->otyp == RIN_PROTECTION)
@@ -2536,6 +2561,11 @@ find_ac(void)
      * Scale this with weight for some real potency */
     if (Wounded_legs)
         uac += (inv_weight() + weight_cap()) / 200;
+    
+    /* Racial preferences in armor. Some races really hate wearing the armor
+     * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
+     * too. For each piece of hated armor, the player gets a +2AC penalty. */
+    uac += count_hated_items() * 2;
     
     /* put a cap on armor class [3.7: was +127,-128, now reduced to +/- 99 */
     if (abs(uac) > AC_MAX)

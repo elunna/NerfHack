@@ -407,7 +407,49 @@ find_roll_to_hit(
     if (is_orc(mtmp->data)
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;
-
+    
+    /* Some races really don't like wearing other racial armor, if they
+     * do they get a severe to-hit penalty */
+    tmp -= count_hated_items() * 5;
+    if (tmp && !rn2(5)) {
+        switch (rnd(7)) {
+        case 1:
+            if (uarm && hates_item(uarm))
+                Your("%s is awkward for combat.", aobjnam(uarm, (char *) 0));
+            break;
+        case 2:
+            if (uarmc && hates_item(uarmc))
+                Your("%s is unbearable for combat.",
+                     aobjnam(uarmc, (char *) 0));
+            break;
+        case 3:
+            if (uarmh && hates_item(uarmh))
+                Your("%s is annoying to fight in.",
+                     aobjnam(uarmh, (char *) 0));
+            break;
+        case 4:
+            if (uarmf && hates_item(uarmf))
+                Your("%s are uncomfortable to fight in.",
+                     aobjnam(uarmf, (char *) 0));
+            break;
+        case 5:
+            if (uarms && hates_item(uarms))
+                Your("%s is clunky to fight with.",
+                     aobjnam(uarms, (char *) 0));
+            break;
+        case 6:
+            if (uwep && hates_item(uwep))
+                You("struggle trying to fight with your strange %s.",
+                    aobjnam(uwep, (char *) 0));
+            break;
+        case 7:
+            if (u.twoweap && uswapwep && hates_item(uswapwep))
+                You("struggle trying to fight with your strange %s.",
+                    aobjnam(uswapwep, (char *) 0));
+            break;
+        }
+    }
+    
     /* Accurate monster bonus */
     if (is_accurate(gy.youmonst.data) || (!Upolyd && Race_if(PM_ELF))) {
         /* This doesn't mirror monster behavior, but that is fine. 
@@ -6677,4 +6719,33 @@ light_hits_gremlin(struct monst *mon, int dmg)
     }
 }
 
+/* This counts the armor that our race hates.
+ * Elves hate orcish and dwarvish equipment.
+ * Dwarves hate orcish and elvish equipment.
+ * Orcs hate elven and dwarvish equipment.
+ * Gnomes are really picky, they don't like any other races' armor
+ * Humans are not picky, they can and will wear anything.
+ * Hobbits will tolerate elven and dwarven armor but never orcish.
+ */
+int
+count_hated_items(void)
+{
+    int count = 0;
+    
+    if (uarm && hates_item(uarm))
+        count++;
+    if (uarmc && hates_item(uarmc))
+        count++;
+    if (uarmh && hates_item(uarmh))
+        count++;
+    if (uarmf && hates_item(uarmf))
+        count++;
+    if (uarms && hates_item(uarms))
+        count++;
+    if (uwep && hates_item(uwep))
+        count++;
+    if (u.twoweap && uswapwep && hates_item(uswapwep))
+        count++;
+    return count;
+}
 /*uhitm.c*/
