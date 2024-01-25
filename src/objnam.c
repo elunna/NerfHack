@@ -5115,11 +5115,22 @@ readobjnam(char *bp, struct obj *no_wish)
         }
     }
 
-    /* more wishing abuse: don't allow wishing for certain artifacts */
-    /* and make them pay; charge them for the wish anyway! */
-    if ((is_quest_artifact(d.otmp)
-         || non_wishable_artifact(d.otmp)
-         || (d.otmp->oartifact && rn2(u.uconduct.wisharti))) && !wizard) {
+    /* No wishing for quest artifacts, but don't charge them for it. */
+    if (!wizard && non_wishable_artifact(d.otmp)) {
+        if (!Deaf) {
+            if (flags.verbose)
+                pline("A thunderous voice booms through the caverns:");
+            SetVoice((struct monst *) 0, 0, 80, voice_deity);
+            verbalize("No, mortal!  That will not be done.");
+        }
+        artifact_exists(d.otmp, safe_oname(d.otmp), FALSE, ONAME_NO_FLAGS);
+        obfree(d.otmp, (struct obj *) 0);
+        d.otmp = &hands_obj;
+        return (struct obj *) 0;
+    }
+    
+    /* more wishing abuse: charge them for the wish anyway! */
+    if (d.otmp->oartifact && rn2(u.uconduct.wisharti) && !wizard) {
         artifact_exists(d.otmp, safe_oname(d.otmp), FALSE, ONAME_NO_FLAGS);
         obfree(d.otmp, (struct obj *) 0);
         d.otmp = &hands_obj;
