@@ -354,6 +354,7 @@ struct obj {
 /* Orcish gear */
 #define is_orcish_armor(otmp) \
     ((otmp)->otyp == ORCISH_HELM \
+     || (otmp)->otyp == ORCISH_BOOTS \
      || (otmp)->otyp == ORCISH_CHAIN_MAIL \
      || (otmp)->otyp == ORCISH_RING_MAIL \
      || (otmp)->otyp == ORCISH_CLOAK \

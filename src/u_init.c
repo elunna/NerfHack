@@ -880,6 +880,7 @@ u_init(void)
         knows_object(ORCISH_SHIELD);
         knows_object(URUK_HAI_SHIELD);
         knows_object(ORCISH_CLOAK);
+        knows_object(ORCISH_BOOTS);
         break;
 
     default: /* impossible */

@@ -459,7 +459,7 @@ m_initweap(register struct monst *mtmp)
             if (!rn2(3))
                 (void) mongets(mtmp, rn2(3) ? ORCISH_SHORT_SWORD : ORCISH_SPEAR);
             if (!rn2(3))
-                (void) mongets(mtmp, IRON_SHOES);
+                (void) mongets(mtmp, ORCISH_BOOTS);
             if (!rn2(3)) {
                 (void) mongets(mtmp, ORCISH_BOW);
                 m_initthrow(mtmp, ORCISH_ARROW, 12);

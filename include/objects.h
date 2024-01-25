@@ -688,6 +688,8 @@ GLOVES("gauntlets of dexterity", "fencing gloves",
 /* boots */
 BOOTS("low boots", "walking shoes",
       0, 0,          0, 25, 2, 10,  8, 9, 0, LEATHER, HI_LEATHER, LOW_BOOTS),
+BOOTS("orcish boots", "crude shoes",
+      0, 0,          0,  8, 2, 30, 16, 9, 0, IRON, CLR_BLACK, ORCISH_BOOTS),
 BOOTS("iron shoes", "hard shoes",
       0, 0,          0,  7, 2, 50, 16, 8, 0, IRON, HI_METAL, IRON_SHOES),
 BOOTS("high boots", "jackboots",

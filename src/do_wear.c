@@ -183,6 +183,7 @@ Boots_on(void)
     
     switch (uarmf->otyp) {
     case LOW_BOOTS:
+    case ORCISH_BOOTS:
     case IRON_SHOES:
     case HIGH_BOOTS:
     case KICKING_BOOTS:
@@ -310,6 +311,7 @@ Boots_off(void)
         pline("Your %s feel longer.", makeplural(body_part(LEG)));
         break;
     case LOW_BOOTS:
+    case ORCISH_BOOTS:
     case IRON_SHOES:
     case HIGH_BOOTS:
     case KICKING_BOOTS:
@@ -2479,8 +2481,8 @@ find_ac(void)
 
     if (uarmf) {
         uac -= ARM_BONUS(uarmf);
-        /* No orcish boots */
-        if ((Race_if(PM_ELF) && is_elven_armor(uarmf))
+        if ((Race_if(PM_ORC) && is_orcish_armor(uarmf))
+            || (Race_if(PM_ELF) && is_elven_armor(uarmf))
             || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmf))) {
             uac -= racial_bonus;
         }
