@@ -200,9 +200,9 @@ gainstr(struct obj *otmp, int incr, boolean givemsg)
 
     if (!num) {
         if (ABASE(A_STR) < 18)
-            num = (rn2(4) ? 1 : rnd(6));
+            num = (rn2(4) ? 1 : rnd(3));
         else if (ABASE(A_STR) < STR18(85))
-            num = rnd(10);
+            num = rnd(5);
         else
             num = 1;
     }
