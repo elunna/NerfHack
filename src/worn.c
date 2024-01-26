@@ -509,15 +509,22 @@ find_mac(struct monst *mon)
     int base = mon->data->ac - mon->mprotection;
     long mwflags = mon->misc_worn_check;
 
-    if (mon->mberserk)
-        base -= 2;
-    
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags) {
             if (obj->otyp == AMULET_OF_GUARDING)
                 base -= 2; /* fixed amount, not impacted by erosion */
             else
                 base -= ARM_BONUS(obj);
+            
+            /* Racial bonuses */
+            if (Race_if(PM_ORC) && is_orcish_armor(uarm))
+                base -= 2;
+            else if (Race_if(PM_GNOME) && is_gnomish_armor(uarm))
+                base -= 2;
+            else if (Race_if(PM_ELF) && is_elven_armor(uarm))
+                base -= 1;
+            else if (Race_if(PM_DWARF) && is_dwarvish_armor(uarm))
+                base -= 1;
             /* since ARM_BONUS is positive, subtracting it increases AC */
         }
     }
