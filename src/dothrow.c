@@ -1476,14 +1476,11 @@ throwit(struct obj *obj,
         obj->opoisoned = 1;
     
     gn.notonhead = FALSE; /* reset potentially stale value */
-    /* From UnNetHack: The chances of slipping a cursed greased object have been
-     * separated.
-     * Additionally, throwing unskilled or restricted now causes slipping to
-     * make it harder and to discourage role- or race-atypical fighting (and
-     * because of real life experience in throwing darts ...)
-     */
-    if ((obj->cursed || obj->greased)
-        && (u.dx || u.dy) && !rn2(7)) {
+
+    if (((obj->cursed && !rn2(7))
+         || (obj->greased && !rn2(7))
+         || (hates_item(obj) && !rn2(7)))
+        && (u.dx || u.dy)) {
         boolean slipok = TRUE;
 
         if (ammo_and_launcher(obj, uwep)) {
