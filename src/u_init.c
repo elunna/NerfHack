@@ -225,6 +225,10 @@ static struct inv_sub {
     { PM_DWARF, LEMBAS_WAFER, CRAM_RATION },
     { PM_GNOME, BOW, CROSSBOW },
     { PM_GNOME, ARROW, CROSSBOW_BOLT },
+    { PM_GNOME, HELMET, GNOMISH_HELM },
+    { PM_GNOME, LOW_BOOTS, GNOMISH_BOOTS },
+    { PM_GNOME, HIGH_BOOTS, GNOMISH_BOOTS },
+    { PM_GNOME, LEATHER_ARMOR, GNOMISH_SUIT },
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
@@ -861,6 +865,9 @@ u_init(void)
         break;
 
     case PM_GNOME:
+        knows_object(GNOMISH_HELM);
+        knows_object(GNOMISH_BOOTS);
+        knows_object(GNOMISH_SUIT);
         u.nv_range = 2;
         break;
 

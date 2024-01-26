@@ -382,17 +382,20 @@ struct obj {
                                    || is_dwarvish_weapon(otmp))
 /* Gnomish gear */
 #define is_gnomish_obj(otmp) (is_gnomish_armor(otmp))
-#define is_gnomish_armor(otmp) (FALSE)
+#define is_gnomish_armor(otmp)	((otmp)->otyp == GNOMISH_HELM\
+				|| (otmp)->otyp == GNOMISH_BOOTS\
+				|| (otmp)->otyp == GNOMISH_SUIT)
 
 #define hates_item(otmp) \
-    ((Race_if(PM_ELF) && (is_orcish_obj(otmp) \
-                          || is_dwarvish_obj(otmp))) \
-    || (Race_if(PM_DWARF) && (is_orcish_obj(otmp)    \
+    ((Race_if(PM_ELF) && (is_orcish_obj(otmp) || is_dwarvish_obj(otmp) \
+                               || is_gnomish_obj(otmp))) \
+    || (Race_if(PM_DWARF) && (is_orcish_obj(otmp) || is_elven_obj(otmp) \
+                               || is_gnomish_obj(otmp))) \
+    || (Race_if(PM_GNOME) && (is_orcish_obj(otmp) || is_dwarvish_obj(otmp) \
                                || is_elven_obj(otmp))) \
-    || (Race_if(PM_HUMAN) && is_orcish_obj(otmp)) \
-    || (Race_if(PM_GNOME) && is_orcish_obj(otmp)) \
-    || (Race_if(PM_ORC) && (is_dwarvish_obj(otmp)    \
-                             || is_elven_obj(otmp))))
+    || (Race_if(PM_ORC) && (is_dwarvish_obj(otmp) || is_elven_obj(otmp)\
+                               || is_gnomish_obj(otmp))) \
+    || (Race_if(PM_HUMAN) && (is_orcish_obj(otmp) || is_gnomish_obj(otmp))))
 
 /* Light sources */
 #define Is_candle(otmp) \

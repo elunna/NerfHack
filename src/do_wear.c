@@ -184,6 +184,7 @@ Boots_on(void)
     switch (uarmf->otyp) {
     case LOW_BOOTS:
     case ORCISH_BOOTS:
+    case GNOMISH_BOOTS:
     case IRON_SHOES:
     case HIGH_BOOTS:
     case KICKING_BOOTS:
@@ -312,6 +313,7 @@ Boots_off(void)
         break;
     case LOW_BOOTS:
     case ORCISH_BOOTS:
+    case GNOMISH_BOOTS:
     case IRON_SHOES:
     case HIGH_BOOTS:
     case KICKING_BOOTS:
@@ -456,6 +458,7 @@ Helmet_on(void)
     case ELVEN_LEATHER_HELM:
     case DWARVISH_IRON_HELM:
     case ORCISH_HELM:
+    case GNOMISH_HELM:
     case HELM_OF_TELEPATHY:
         break;
     case HELM_OF_CAUTION:
@@ -542,6 +545,7 @@ Helmet_off(void)
     case ELVEN_LEATHER_HELM:
     case DWARVISH_IRON_HELM:
     case ORCISH_HELM:
+    case GNOMISH_HELM:
         break;
     case DUNCE_CAP:
         gc.context.botl = 1;
@@ -2449,13 +2453,15 @@ find_ac(void)
      * and the stats-challenged orc itself. Taken from SporkHack.
      */
     racial_bonus = Race_if(PM_ORC) ? 2
-                     : Race_if(PM_ELF) ? 1
-                       : Race_if(PM_DWARF) ? 1 : 0;
+                   : Race_if(PM_GNOME) ? 2
+                   : Race_if(PM_ELF) ? 1
+                   : Race_if(PM_DWARF) ? 1 : 0;
 
     if (uarm) {
         uac -= ARM_BONUS(uarm);
         if ((Race_if(PM_ORC) && is_orcish_armor(uarm))
             || (Race_if(PM_ELF) && is_elven_armor(uarm))
+            || (Race_if(PM_GNOME) && is_gnomish_armor(uarm))
             || (Race_if(PM_DWARF) && is_dwarvish_armor(uarm))) {
             uac -= racial_bonus;
         }
@@ -2465,6 +2471,7 @@ find_ac(void)
         uac -= ARM_BONUS(uarmc);
         if ((Race_if(PM_ORC) && is_orcish_armor(uarmc))
             || (Race_if(PM_ELF) && is_elven_armor(uarmc))
+            || (Race_if(PM_GNOME) && is_gnomish_armor(uarmc))
             || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmc))) {
             uac -= racial_bonus;
         }
@@ -2474,6 +2481,7 @@ find_ac(void)
         uac -= ARM_BONUS(uarmh);
         if ((Race_if(PM_ORC) && is_orcish_armor(uarmh))
             || (Race_if(PM_ELF) && is_elven_armor(uarmh))
+            || (Race_if(PM_GNOME) && is_gnomish_armor(uarmh))
             || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmh))) {
             uac -= racial_bonus;
         }
@@ -2483,6 +2491,7 @@ find_ac(void)
         uac -= ARM_BONUS(uarmf);
         if ((Race_if(PM_ORC) && is_orcish_armor(uarmf))
             || (Race_if(PM_ELF) && is_elven_armor(uarmf))
+            || (Race_if(PM_GNOME) && is_gnomish_armor(uarmf))
             || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmf))) {
             uac -= racial_bonus;
         }
@@ -2492,6 +2501,7 @@ find_ac(void)
         uac -= ARM_BONUS(uarms);
         if ((Race_if(PM_ORC) && is_orcish_armor(uarms))
             || (Race_if(PM_ELF) && is_elven_armor(uarms))
+            || (Race_if(PM_GNOME) && is_gnomish_armor(uarms))
             || (Race_if(PM_DWARF) && is_dwarvish_armor(uarms))) {
             uac -= racial_bonus;
         }
