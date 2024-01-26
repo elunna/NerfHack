@@ -177,9 +177,13 @@ static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
 static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
+static struct trobj OilPotion[] = { { POT_OIL, 1, POTION_CLASS, 1, 0 },
+                               { 0, 0, 0, 0, 0 } };
 static struct trobj Blindfold[] = { { BLINDFOLD, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
 static struct trobj Instrument[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0 },
+                                     { 0, 0, 0, 0, 0 } };
+static struct trobj Xtra_Tool[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0 },
                                      { 0, 0, 0, 0, 0 } };
 static struct trobj Xtra_food[] = { { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 2, 0 },
                                     { 0, 0, 0, 0, 0 } };
@@ -869,6 +873,21 @@ u_init(void)
         knows_object(GNOMISH_BOOTS);
         knows_object(GNOMISH_SUIT);
         u.nv_range = 2;
+        
+        /* Gnomes get an interesting tool. 
+         * Tourists already get many of these tools...
+         **/
+        if (!Role_if(PM_TOURIST) && rn2(2)) {
+            static int trotyp[] = { TIN_OPENER, WAX_CANDLE, TALLOW_CANDLE,
+                                    FIGURINE, CAN_OF_GREASE, CREDIT_CARD,
+                                    TOWEL, };
+            Xtra_Tool[0].trotyp = ROLL_FROM(trotyp);
+            ini_inv(Xtra_Tool);
+        } else {
+            ini_inv(OilPotion);
+            knows_object(POT_OIL);
+        }
+        
         break;
 
     case PM_ORC:
