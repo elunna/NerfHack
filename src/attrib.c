@@ -95,6 +95,7 @@ static const struct innate {
                  { 0, 0, 0, 0 } },
 
   gno_abil[] = { { 1, &HInfravision, "", "" },
+                 { 5, &(HStealth), "stealthy", "" },
                  { 0, 0, 0, 0 } },
 
   orc_abil[] = { { 1, &HInfravision, "", "" },
