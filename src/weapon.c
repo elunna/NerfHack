@@ -496,6 +496,8 @@ oselect(struct monst *mtmp, int x)
             /* never select non-cockatrice corpses */
             && !((x == CORPSE || x == EGG)
                  && !touch_petrifies(&mons[otmp->corpsenm]))
+            /* Don't select items our race isn't compatible with */
+            && !hates_item(mtmp, otmp)
             && (!otmp->oartifact || touch_artifact(otmp, mtmp)))
             return otmp;
     }

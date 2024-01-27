@@ -414,36 +414,36 @@ find_roll_to_hit(
     if (tmp && !rn2(5)) {
         switch (rnd(7)) {
         case 1:
-            if (uarm && hates_item(uarm))
+            if (uarm && hates_item(&gy.youmonst, uarm))
                 Your("%s is awkward for combat.", aobjnam(uarm, (char *) 0));
             break;
         case 2:
-            if (uarmc && hates_item(uarmc))
+            if (uarmc && hates_item(&gy.youmonst, uarmc))
                 Your("%s is unbearable for combat.",
                      aobjnam(uarmc, (char *) 0));
             break;
         case 3:
-            if (uarmh && hates_item(uarmh))
+            if (uarmh && hates_item(&gy.youmonst, uarmh))
                 Your("%s is annoying to fight in.",
                      aobjnam(uarmh, (char *) 0));
             break;
         case 4:
-            if (uarmf && hates_item(uarmf))
+            if (uarmf && hates_item(&gy.youmonst, uarmf))
                 Your("%s are uncomfortable to fight in.",
                      aobjnam(uarmf, (char *) 0));
             break;
         case 5:
-            if (uarms && hates_item(uarms))
+            if (uarms && hates_item(&gy.youmonst, uarms))
                 Your("%s is clunky to fight with.",
                      aobjnam(uarms, (char *) 0));
             break;
         case 6:
-            if (uwep && hates_item(uwep))
+            if (uwep && hates_item(&gy.youmonst, uwep))
                 You("struggle trying to fight with your strange %s.",
                     aobjnam(uwep, (char *) 0));
             break;
         case 7:
-            if (u.twoweap && uswapwep && hates_item(uswapwep))
+            if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep))
                 You("struggle trying to fight with your strange %s.",
                     aobjnam(uswapwep, (char *) 0));
             break;
@@ -6732,19 +6732,19 @@ count_hated_items(void)
 {
     int count = 0;
     
-    if (uarm && hates_item(uarm))
+    if (uarm && hates_item(&gy.youmonst, uarm))
         count++;
-    if (uarmc && hates_item(uarmc))
+    if (uarmc && hates_item(&gy.youmonst, uarmc))
         count++;
-    if (uarmh && hates_item(uarmh))
+    if (uarmh && hates_item(&gy.youmonst, uarmh))
         count++;
-    if (uarmf && hates_item(uarmf))
+    if (uarmf && hates_item(&gy.youmonst, uarmf))
         count++;
-    if (uarms && hates_item(uarms))
+    if (uarms && hates_item(&gy.youmonst, uarms))
         count++;
-    if (uwep && hates_item(uwep))
+    if (uwep && hates_item(&gy.youmonst, uwep))
         count++;
-    if (u.twoweap && uswapwep && hates_item(uswapwep))
+    if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep))
         count++;
     return count;
 }

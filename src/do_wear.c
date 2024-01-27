@@ -178,7 +178,7 @@ Boots_on(void)
     long oldprop =
         u.uprops[objects[uarmf->otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
-    if (hates_item(uarmf))
+    if (hates_item(&gy.youmonst, uarmf))
         You_feel("uncomfortable wearing these boots.");
     
     switch (uarmf->otyp) {
@@ -254,7 +254,7 @@ Boots_off(void)
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
-    if (hates_item(uarmf))
+    if (hates_item(&gy.youmonst, uarmf))
         You_feel("more comfortable now.");
     
     gc.context.takeoff.mask &= ~W_ARMF;
@@ -331,7 +331,7 @@ Cloak_on(void)
     long oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
-    if (hates_item(uarmc))
+    if (hates_item(&gy.youmonst, uarmc))
         You_feel("uncomfortable wearing this cloak.");
     
     switch (uarmc->otyp) {
@@ -398,7 +398,7 @@ Cloak_off(void)
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
-    if (hates_item(uarmc))
+    if (hates_item(&gy.youmonst, uarmc))
         You_feel("more comfortable now.");
     
     gc.context.takeoff.mask &= ~W_ARMC;
@@ -448,7 +448,7 @@ Cloak_off(void)
 static int
 Helmet_on(void)
 {
-    if (hates_item(uarmh))
+    if (hates_item(&gy.youmonst, uarmh))
         You_feel("uncomfortable wearing this helmet.");
     
     switch (uarmh->otyp) {
@@ -535,7 +535,7 @@ Helmet_off(void)
 {
     gc.context.takeoff.mask &= ~W_ARMH;
     
-    if (hates_item(uarmh))
+    if (hates_item(&gy.youmonst, uarmh))
         You_feel("more comfortable now.");
     
     switch (uarmh->otyp) {
@@ -722,7 +722,7 @@ Gloves_off(void)
 static int
 Shield_on(void)
 {
-    if (hates_item(uarms))
+    if (hates_item(&gy.youmonst, uarms))
         You_feel("uncomfortable wearing that shield.");
     
     /* no shield currently requires special handling when put on, but we
@@ -753,7 +753,7 @@ Shield_off(void)
 {
     gc.context.takeoff.mask &= ~W_ARMS;
 
-    if (hates_item(uarms))
+    if (hates_item(&gy.youmonst, uarms))
         You_feel("more comfortable now.");
     
     /* no shield currently requires special handling when taken off, but we
@@ -914,7 +914,7 @@ Armor_on(void)
     }
     if (Role_if(PM_MONK))
         You_feel("extremely uncomfortable wearing such armor.");
-    else if (hates_item(uarm))
+    else if (hates_item(&gy.youmonst, uarm))
         You_feel("uncomfortable wearing such armor.");
     
     dragon_armor_handling(uarm, TRUE, TRUE);
@@ -941,7 +941,7 @@ Armor_off(void)
     gc.context.takeoff.cancelled_don = FALSE;
     if (Role_if(PM_MONK))
         You_feel("much more comfortable and free now.");
-    else if (hates_item(otmp))
+    else if (hates_item(&gy.youmonst, otmp))
         You_feel("more comfortable now.");
     
     /* taking off yellow dragon scales/mail might be fatal; arti_light

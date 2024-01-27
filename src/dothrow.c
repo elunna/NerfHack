@@ -1479,7 +1479,7 @@ throwit(struct obj *obj,
 
     if (((obj->cursed && !rn2(7))
          || (obj->greased && !rn2(7))
-         || (hates_item(obj) && !rn2(7)))
+         || (hates_item(&gy.youmonst, obj) && !rn2(7)))
         && (u.dx || u.dy)) {
         boolean slipok = TRUE;
 
