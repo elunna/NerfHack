@@ -216,7 +216,7 @@ static struct inv_sub {
     { PM_ORC, BOW, ORCISH_BOW },
     { PM_ORC, ARROW, ORCISH_ARROW },
     { PM_ORC, HELMET, ORCISH_HELM },
-    { PM_ORC, SMALL_SHIELD, ORCISH_SHIELD },
+    /*{ PM_ORC, SMALL_SHIELD, ORCISH_SHIELD },*/
     { PM_ORC, RING_MAIL, ORCISH_RING_MAIL },
     { PM_ORC, CHAIN_MAIL, ORCISH_CHAIN_MAIL },
     { PM_ORC, CRAM_RATION, TRIPE_RATION },
@@ -836,7 +836,8 @@ u_init(void)
          * Non-warriors get an instrument.  We use a kludge to
          * get only non-magic instruments.
          */
-        if (Role_if(PM_CLERIC) || Role_if(PM_WIZARD)) {
+        if (Role_if(PM_CLERIC) || Role_if(PM_WIZARD)
+            || Role_if(PM_HEALER) || Role_if(PM_ROGUE)) {
             static int trotyp[] = { WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP,
                                     BELL,         BUGLE,       LEATHER_DRUM };
             Instrument[0].trotyp = ROLL_FROM(trotyp);

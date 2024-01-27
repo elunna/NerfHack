@@ -382,8 +382,8 @@ struct obj {
                                    || is_dwarvish_weapon(otmp))
 /* Gnomish gear */
 #define is_gnomish_obj(otmp) (is_gnomish_armor(otmp))
-#define is_gnomish_armor(otmp)	((otmp)->otyp == GNOMISH_HELM\
-				|| (otmp)->otyp == GNOMISH_BOOTS\
+#define is_gnomish_armor(otmp)	((otmp)->otyp == GNOMISH_HELM \
+				|| (otmp)->otyp == GNOMISH_BOOTS \
 				|| (otmp)->otyp == GNOMISH_SUIT)
 
 /* Light sources */
