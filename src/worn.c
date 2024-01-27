@@ -517,13 +517,13 @@ find_mac(struct monst *mon)
                 base -= ARM_BONUS(obj);
             
             /* Racial bonuses */
-            if (Race_if(PM_ORC) && is_orcish_armor(uarm))
+            if (is_orc(mon->data) && is_orcish_armor(obj))
                 base -= 2;
-            else if (Race_if(PM_GNOME) && is_gnomish_armor(uarm))
+            else if (is_gnome(mon->data) && is_gnomish_armor(obj))
                 base -= 2;
-            else if (Race_if(PM_ELF) && is_elven_armor(uarm))
+            else if (is_elf(mon->data) && is_elven_armor(obj))
                 base -= 1;
-            else if (Race_if(PM_DWARF) && is_dwarvish_armor(uarm))
+            else if (is_dwarf(mon->data) && is_dwarvish_armor(obj))
                 base -= 1;
             /* since ARM_BONUS is positive, subtracting it increases AC */
         }
