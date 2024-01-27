@@ -386,17 +386,6 @@ struct obj {
 				|| (otmp)->otyp == GNOMISH_BOOTS\
 				|| (otmp)->otyp == GNOMISH_SUIT)
 
-#define hates_item(mtmp, otmp) \
-    ((is_elf((mtmp)->data) && (is_orcish_obj(otmp) || is_dwarvish_obj(otmp) \
-                               || is_gnomish_obj(otmp))) \
-    || (is_dwarf((mtmp)->data) && (is_orcish_obj(otmp) || is_elven_obj(otmp) \
-                               || is_gnomish_obj(otmp))) \
-    || (is_gnome((mtmp)->data) && (is_orcish_obj(otmp) || is_dwarvish_obj(otmp) \
-                               || is_elven_obj(otmp))) \
-    || (is_orc((mtmp)->data) && (is_dwarvish_obj(otmp) || is_elven_obj(otmp)\
-                               || is_gnomish_obj(otmp))) \
-    || (is_human((mtmp)->data) && (is_orcish_obj(otmp) || is_gnomish_obj(otmp))))
-
 /* Light sources */
 #define Is_candle(otmp) \
     (otmp->otyp == TALLOW_CANDLE || otmp->otyp == WAX_CANDLE)

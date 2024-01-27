@@ -6719,14 +6719,41 @@ light_hits_gremlin(struct monst *mon, int dmg)
     }
 }
 
-/* This counts the armor that our race hates.
- * Elves hate orcish and dwarvish equipment.
- * Dwarves hate orcish and elvish equipment.
- * Orcs hate elven and dwarvish equipment.
- * Gnomes are really picky, they don't like any other races' armor
- * Humans are not picky, they can and will wear anything.
- * Hobbits will tolerate elven and dwarven armor but never orcish.
- */
+
+/* Elves hate non-elvish equipment.
+* Dwarves hate non-dwarvish equipment.
+* Orcs hate non-orcish equipment.
+* Gnomes are really picky, they don't like any other races' armor
+* Humans are not too picky, they only dislike orcish and gnomish armor
+* Hobbits will tolerate elven and dwarven armor but never orcish. */
+boolean
+hates_item(struct monst *mtmp, struct obj *otmp)
+{
+    boolean is_you = (mtmp == &gy.youmonst);
+        
+    if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)) 
+                    : is_elf(mtmp->data))
+        return (is_orcish_obj(otmp) || is_dwarvish_obj(otmp)
+                || is_gnomish_obj(otmp));
+    else if (is_you ? maybe_polyd(is_dwarf(gy.youmonst.data), Race_if(PM_DWARF)) 
+                    : is_dwarf(mtmp->data))
+        return (is_orcish_obj(otmp) || is_elven_obj(otmp)
+                || is_gnomish_obj(otmp));
+    else if (is_you ? maybe_polyd(is_gnome(gy.youmonst.data), Race_if(PM_GNOME)) 
+                    : is_gnome(mtmp->data))
+        return (is_orcish_obj(otmp) || is_dwarvish_obj(otmp)
+                || is_elven_obj(otmp));
+    else if (is_you ? maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC)) 
+                    : is_orc(mtmp->data))
+        return (is_dwarvish_obj(otmp) || is_elven_obj(otmp)
+                || is_gnomish_obj(otmp));
+    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN)) 
+                    : is_human(mtmp->data))
+        return (is_orcish_obj(otmp) || is_gnomish_obj(otmp));
+    return FALSE;
+}
+
+/* This counts the armor that our race hates. */
 int
 count_hated_items(void)
 {
