@@ -381,11 +381,11 @@ m_initweap(register struct monst *mtmp)
         }
         break;
     case S_GNOME:
-        if (!rn2(5))
+        if (!rn2(3) || mm == PM_GNOMISH_WIZARD)
             (void) mongets(mtmp, GNOMISH_HELM);
-        if (!rn2(4))
+        if (is_lord(mtmp->data) || !rn2(5))
             (void) mongets(mtmp, GNOMISH_BOOTS);
-        if (!rn2(6))
+        if (is_lord(mtmp->data) || is_prince(mtmp->data) || !rn2(7))
             (void) mongets(mtmp, GNOMISH_SUIT);
         break;
     case S_HUMANOID:
