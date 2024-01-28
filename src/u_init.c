@@ -179,6 +179,8 @@ static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
 static struct trobj OilPotion[] = { { POT_OIL, 1, POTION_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
+static struct trobj PoisonPotion[] = { { POT_SICKNESS, 0, POTION_CLASS, 2, 0 },
+                                       { 0, 0, 0, 0, 0 } };
 static struct trobj Blindfold[] = { { BLINDFOLD, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
 static struct trobj Instrument[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0 },
@@ -886,6 +888,8 @@ u_init(void)
         /* compensate for generally inferior equipment */
         if (!Role_if(PM_WIZARD))
             ini_inv(Xtra_food);
+        /* Orcs are naughty and carry poison */
+        ini_inv(PoisonPotion);
         /* Orcs can recognize all orcish objects */
         knows_object(ORCISH_SHORT_SWORD);
         knows_object(ORCISH_ARROW);
@@ -899,6 +903,7 @@ u_init(void)
         knows_object(URUK_HAI_SHIELD);
         knows_object(ORCISH_CLOAK);
         knows_object(ORCISH_BOOTS);
+        knows_object(POT_SICKNESS);
         break;
 
     default: /* impossible */
