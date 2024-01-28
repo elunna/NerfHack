@@ -387,6 +387,7 @@ m_initweap(register struct monst *mtmp)
             (void) mongets(mtmp, GNOMISH_BOOTS);
         if (is_lord(mtmp->data) || is_prince(mtmp->data) || !rn2(7))
             (void) mongets(mtmp, GNOMISH_SUIT);
+        goto catchgnomes;
         break;
     case S_HUMANOID:
         if (mm == PM_HOBBIT) {
@@ -561,6 +562,7 @@ m_initweap(register struct monst *mtmp)
             break;
         /*FALLTHRU*/
     default:
+    catchgnomes:
         /*
          * Now the general case, some chance of getting some type
          * of weapon for "normal" monsters.  Certain special types
