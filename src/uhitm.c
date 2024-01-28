@@ -15,7 +15,7 @@ static boolean known_hitum(struct monst *, struct obj *, int *, int, int,
 static boolean theft_petrifies(struct obj *) NONNULLARG1;
 static void steal_it(struct monst *, struct attack *) NONNULLARG1;
 static void mhitm_ad_slow_core(struct monst *, struct monst *);
-
+static boolean should_cleave(void);
 /* hitum_cleave() has contradictory information. There's a comment
  * beside the 1st arg 'target' stating non-null, but later on there
  * is a test for 'target' being null */
@@ -749,6 +749,43 @@ known_hitum(
     return malive;
 }
 
+/* return TRUE iff no peaceful targets are found in cleaving range to the left
+ * and right of the target space
+ * assumes u.dx and u.dy have been set */
+static boolean
+should_cleave(void)
+{
+    int i;
+    boolean bystanders = FALSE;
+    /* find the direction toward primary target */
+    int dir = xytod(u.dx, u.dy);
+    if (dir > 7) {
+        impossible("should_cleave: unknown target direction");
+        return FALSE; /* better safe than sorry */
+    }
+    /* loop over dir+1 % 8 and dir+7 % 8 (the clockwise and anticlockwise
+     * directions); a monster standing at dir itself is NOT checked; also,
+     * monsters visible only with warning or as invisible markers will NOT
+     * trigger this prompt */
+    for (i = dir + 1; i <= dir + 7; i += 6) {
+        int realdir = i % 8;
+        int x = u.ux + xdir[realdir];
+        int y = u.uy + ydir[realdir];
+        struct monst *mtmp;
+        if (!isok(x, y))
+            continue;
+        mtmp = m_at(x, y);
+        if (mtmp && canspotmon(mtmp) && mtmp->mpeaceful) {
+            bystanders = TRUE;
+        }
+    }
+    if (bystanders) {
+        if (!gc.context.forcefight)
+            return FALSE;
+    }
+    return TRUE;
+}
+
 /* hit the monster next to you and the monsters to the left and right of it;
    return False if the primary target is killed, True otherwise */
 static boolean
@@ -871,7 +908,9 @@ hitum(struct monst *mon, struct attack *uattk)
        it can't be part of dual-wielding but we guard against that anyway;
        cleave return value reflects status of primary target ('mon') */
     if (u_wield_art(ART_CLEAVER) && !u.twoweap
-        && !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
+        && !u.uswallow && !u.ustuck && !NODIAG(u.umonnum)
+        /* If Cleaver is cursed, it doesn't care about who it hits */
+        && (uwep->cursed || should_cleave()))
         return hitum_cleave(mon, uattk);
 
     /* 0: single hit, 1: first of two hits; affects strength bonus and
