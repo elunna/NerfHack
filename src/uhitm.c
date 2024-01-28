@@ -4136,8 +4136,6 @@ mhitm_ad_tckl(struct monst *magr,
     struct monst *mdef,
     struct mhitm_data *mhm)
 {
-    boolean uncancelled = !magr->mcan;
-    
     if (magr == &gy.youmonst) {
         /* uhitm */
         /* since hero can't be cancelled, only defender's armor applies */
@@ -4149,10 +4147,8 @@ mhitm_ad_tckl(struct monst *magr,
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-        
-        
         hitmsg(magr, mattk);
-        if (uncancelled && gm.multi >= 0 && !rn2(3)) {
+        if (gm.multi >= 0 && !rn2(3)) {
             if (Free_action && !rn2(10))
                 You_feel("horrible tentacles probing your flesh!");
             else {
@@ -4168,8 +4164,7 @@ mhitm_ad_tckl(struct monst *magr,
         }
     } else {
         /* mhitm */
-        boolean cancelled = magr->mcan;
-        if (!cancelled && mdef->mcanmove) {
+        if (mdef->mcanmove) {
             if (gv.vis)
                 pline("%s mercilessly tickles %s.", Monnam(magr), mon_nam(mdef));
             mdef->mcanmove = 0;
