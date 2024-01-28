@@ -1632,11 +1632,6 @@ obj_unpolyable(struct obj *obj)
             || obj_resists(obj, 5, 95));
 }
 
-/* classes of items whose current charge count carries over across polymorph
- */
-static const char charged_objs[] = { WAND_CLASS, WEAPON_CLASS, ARMOR_CLASS,
-                                     '\0' };
-
 /*
  * Polymorph the object to the given object ID.  If the ID is STRANGE_OBJECT
  * then pick random object from the source's class (this is the standard
@@ -1693,6 +1688,11 @@ poly_obj(struct obj *obj, int id)
     /* preserve inventory letter if in inventory */
     if (obj_location == OBJ_INVENT)
         otmp->invlet = obj->invlet;
+    /* Meddle with obj->spe to reduce utility of polying heavily enchanted stuff */
+    if (obj->spe > 0) {
+        otmp->spe = rn2(obj->spe);
+    }
+    
 #ifdef MAIL_STRUCTURES
     /* You can't send yourself 100 mail messages and then
      * polymorph them into useful scrolls
@@ -1753,9 +1753,7 @@ poly_obj(struct obj *obj, int id)
         }
     }
 
-    /* keep special fields (including charges on wands) */
-    if (strchr(charged_objs, otmp->oclass))
-        otmp->spe = obj->spe;
+    /* keep special fields (not including charges on wands) */
     otmp->recharged = obj->recharged;
 
     otmp->cursed = obj->cursed;
