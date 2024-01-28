@@ -5816,7 +5816,8 @@ mon_berserk(struct monst *mtmp)
 {
     if (noattacks(mtmp->data))
         return;
-   
+   if (helpless(mtmp))
+        return;
     if (canseemon(mtmp) && humanoid(mtmp->data)
         && !mindless(mtmp->data)) {
         pline("%s flies into a berserker rage!", Monnam(mtmp));
