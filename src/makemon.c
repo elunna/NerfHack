@@ -460,6 +460,8 @@ m_initweap(register struct monst *mtmp)
                 (void) mongets(mtmp, KNIFE);
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_CHAIN_MAIL);
+            if (!rn2(5))
+                (void) mongets(mtmp, ORCISH_BOOTS);
             break;
         case PM_URUK_HAI:
             if (!rn2(3))
