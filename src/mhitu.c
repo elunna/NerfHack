@@ -2617,7 +2617,7 @@ passiveum(
             }
         } else
             tmp = 0;
-        if (!rn2(7))
+        if (!rn2(3))
             erode_armor(mtmp, ERODE_CORRODE);
         if (!rn2(3))
             acid_damage(MON_WEP(mtmp));

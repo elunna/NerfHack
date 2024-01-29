@@ -1905,6 +1905,11 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             /* no Glib for monsters */
             break;
         case POT_ACID:
+            if (!rn2(3))
+                erode_armor(mon, ERODE_CORRODE);
+            if (!rn2(3))
+                acid_damage(MON_WEP(mon));
+            
             if (!resists_acid(mon) && !resist(mon, POTION_CLASS, 0, NOTELL)) {
                 pline("%s %s in pain!", Monnam(mon),
                       is_silent(mon->data) ? "writhes" : "shrieks");
@@ -2219,6 +2224,12 @@ potionbreathe(struct obj *obj)
         exercise(A_CON, FALSE);
             unambiguous = TRUE;
         }
+        if (rn2(u.twoweap ? 2 : 3))
+            acid_damage(uwep);
+        if (u.twoweap && rn2(2))
+            acid_damage(uswapwep);
+        if (rn2(4))
+            erode_armor(&gy.youmonst, ERODE_CORRODE);
         break;
     case POT_GAIN_LEVEL:
         more_experienced(5, 0);
