@@ -1739,7 +1739,7 @@
      * Kops
      */
     MON("Keystone Kop", S_KOP, LVL(1, 6, 10, 10, 9),
-        (G_GENO | G_LGROUP | G_NOGEN),
+        (G_LGROUP | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 4), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(WT_HUMAN, 200, MS_ARREST, MZ_HUMAN), 0, 0, 
@@ -1747,7 +1747,7 @@
         M2_HUMAN | M2_WANDER | M2_HOSTILE | M2_MALE | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE, 3, CLR_BLUE, KEYSTONE_KOP),
     MON("Kop Sergeant", S_KOP, LVL(2, 8, 10, 10, 10),
-        (G_GENO | G_SGROUP | G_NOGEN),
+        (G_SGROUP | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(WT_HUMAN, 200, MS_ARREST, MZ_HUMAN), 0, 0,
@@ -1755,7 +1755,7 @@
         M2_HUMAN | M2_WANDER | M2_HOSTILE | M2_STRONG | M2_MALE
             | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE, 4, CLR_BLUE, KOP_SERGEANT),
-    MON("Kop Lieutenant", S_KOP, LVL(3, 10, 10, 20, 11), (G_GENO | G_NOGEN),
+    MON("Kop Lieutenant", S_KOP, LVL(3, 10, 10, 20, 11), (G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(WT_HUMAN, 200, MS_ARREST, MZ_HUMAN), 0, 0,
@@ -1763,7 +1763,7 @@
         M2_HUMAN | M2_WANDER | M2_HOSTILE | M2_STRONG | M2_MALE
             | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE, 5, CLR_CYAN, KOP_LIEUTENANT),
-    MON("Kop Kaptain", S_KOP, LVL(4, 12, 10, 20, 12), (G_GENO | G_NOGEN),
+    MON("Kop Kaptain", S_KOP, LVL(4, 12, 10, 20, 12), (G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(WT_HUMAN, 200, MS_ARREST, MZ_HUMAN), 0, 0,
