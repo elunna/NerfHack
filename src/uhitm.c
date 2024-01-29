@@ -6783,7 +6783,7 @@ hates_item(struct monst *mtmp, struct obj *otmp)
                 || is_gnomish_obj(otmp));
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN)) 
                     : is_human(mtmp->data))
-        return (is_orcish_obj(otmp) || is_gnomish_obj(otmp));
+        return (is_gnomish_obj(otmp));
     return FALSE;
 }
 
