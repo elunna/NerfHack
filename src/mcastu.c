@@ -44,7 +44,6 @@ static void cursetxt(struct monst *, boolean);
 static int choose_magic_spell(struct monst *, int);
 static int choose_clerical_spell(struct monst *, int);
 static int m_cure_self(struct monst *, int);
-static int m_destroy_armor(struct monst *, struct monst *);
 static void cast_wizard_spell(struct monst *, int, int);
 static void cast_cleric_spell(struct monst *, int, int);
 static boolean is_undirected_spell(unsigned int, int);
@@ -443,11 +442,12 @@ death_inflicted_by(
 }
 
 
-static int
+int
 m_destroy_armor(struct monst *mattk, struct monst *mdef)
 {
     boolean udefend = (mdef == &gy.youmonst),
             uattk = (mattk == &gy.youmonst);
+    boolean mtrap = !mattk;
     int erodelvl = rnd(3);
     struct obj *oatmp;
     
@@ -470,7 +470,8 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
                     pline("%s shines brightly.", The(xname(oatmp)));
                 pline("%s is immune to %s destructive magic.",
                       The(xname(oatmp)),
-                      uattk ? "your" : s_suffix(mon_nam(mattk)));
+                      mtrap ? "the trap's" 
+                      : uattk ? "your" : s_suffix(mon_nam(mattk)));
             }
             return 0;
         } else if (oatmp->otyp == CRYSTAL_PLATE_MAIL) {
@@ -478,7 +479,8 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
                 pline("%s glimmers brightly.", Yname2(oatmp));
             pline("%s is immune to %s destructive magic.",
                   Yname2(oatmp),
-                  uattk ? "your" : s_suffix(mon_nam(mattk)));
+                  mtrap ? "the trap's" 
+                  : uattk ? "your" : s_suffix(mon_nam(mattk)));
             return 0; /* no effect */
         } else if (oatmp->oerodeproof) {
             if (!udefend && !canseemon(mdef)) {

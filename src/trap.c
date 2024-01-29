@@ -4776,6 +4776,10 @@ domagictrap(void)
             HConfusion = save_conf;
             break;
         }
+        case 21: { /* Destroy armor - ZOMG */
+            m_destroy_armor((struct monst *) 0, &gy.youmonst);
+            break;
+        }
         default:
             break;
         }
