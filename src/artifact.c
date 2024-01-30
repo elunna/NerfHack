@@ -1488,10 +1488,17 @@ artifact_hit(
         return realizes_damage;
     }
     if (attacks(AD_ELEC, otmp)) {
-        if (realizes_damage)
-            pline_The("massive hammer hits%s %s%c",
-                      !gs.spec_dbon_applies ? "" : "!  Lightning strikes",
-                      hittee, !gs.spec_dbon_applies ? '.' : '!');
+        if (realizes_damage) {
+            if (otmp->oartifact == ART_MJOLLNIR) {
+                pline_The("massive hammer hits%s %s%c",
+                          !gs.spec_dbon_applies ? "" : "!  Lightning strikes",
+                          hittee, !gs.spec_dbon_applies ? '.' : '!');
+            } else if (otmp->oartifact == ART_KEOLEWA) {
+                pline_The("war club hits%s %s%c",
+                          !gs.spec_dbon_applies ? "" : "!  Lightning strikes",
+                          hittee, !gs.spec_dbon_applies ? '.' : '!');
+            }
+        }
         if (gs.spec_dbon_applies)
             wake_nearto(mdef->mx, mdef->my, 4 * 4);
         if (!rn2(5))
