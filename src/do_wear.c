@@ -2572,7 +2572,7 @@ find_ac(void)
     /* Wounded legs also bad.
      * Scale this with weight for some real potency */
     if (Wounded_legs)
-        uac += (inv_weight() + weight_cap()) / 200;
+        uac += (inv_weight() + weight_cap()) / 100;
     
     /* Racial preferences in armor. Some races really hate wearing the armor
      * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
