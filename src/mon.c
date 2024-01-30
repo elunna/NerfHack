@@ -5761,7 +5761,8 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
             return FALSE;
     } else if (!flanker || !flanker->mcanmove || flanker->msleeping
                || flanker->mflee || flanker->mconf || flanker->mtrapped
-               || flanker->mstun || flanker->meating) {
+               || flanker->mstun || flanker->meating 
+               || flanker->mundetected) {
         /* Impaired monsters don't make good flankers */
         return FALSE;
     }
