@@ -78,27 +78,6 @@ throne_sit_effect(void)
             if (u.uluck + rn2(5) < 0) {
                 You_feel("your luck is changing.");
                 change_luck(1);
-            } else if (!rn2(5)) {
-                /* overall this equates to a 1.5% chance for a wish */
-                makewish();
-                /* no farming thrones for multiple wishes */
-                goto poofthrone;
-            } else {
-                if (Luck < 0 || (HSee_invisible & INTRINSIC)) {
-                    if (gl.level.flags.nommap) {
-                        pline("An awful drone fills your head!");
-                        make_confused((HConfusion & TIMEOUT) + (long) rnd(30),
-                                      FALSE);
-                    } else {
-                        pline("A clear image forms in your mind.");
-                        do_mapping();
-                    }
-                } else {
-                    /* permanent see invisible in this instance */
-                    Your("vision becomes crystal clear.");
-                    incr_itimeout(&HSee_invisible, rn1(1000, 1000));
-                    newsym(u.ux, u.uy);
-                }
             }
             break;
         case 7:
@@ -185,10 +164,16 @@ throne_sit_effect(void)
             }
             break;
         case 12:
-            You("are granted an insight!");
             if (gi.invent) {
-                /* rn2(5) agrees w/seffects() */
-                identify_pack(rn2(5), FALSE);
+                if (u.uluck + rn2(3) > 5) {
+                    You("are granted an epiphany!");
+                    /* Recursively identify all items in all containers */
+                    identify_pack(-1, FALSE);
+                } else {
+                    You("are granted an insight!");
+                    /* rn2(5) agrees w/seffects() */
+                    identify_pack(rn2(5), FALSE);
+                }
             }
             break;
         case 13:
@@ -208,7 +193,6 @@ throne_sit_effect(void)
     }
 
     if (!rn2(3) && IS_THRONE(levl[u.ux][u.uy].typ)) {
-poofthrone:
         /* may have teleported */
         levl[u.ux][u.uy].typ = ROOM, levl[u.ux][u.uy].flags = 0;
         pline_The("throne vanishes in a puff of logic.");

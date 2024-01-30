@@ -2555,6 +2555,18 @@ count_unidentified(struct obj *objchn)
     return unid_cnt;
 }
 
+static void
+chain_identify(struct obj *chain)
+{
+    struct obj *obj;
+    for (obj = chain; obj; obj = obj->nobj) {
+        if (not_fully_identified(obj))
+            (void) identify(obj);
+        if (Has_contents(obj))
+            chain_identify(obj->cobj);
+    }
+}
+
 /* dialog with user to identify a given number of items; 0 means all */
 void
 identify_pack(
@@ -2564,7 +2576,9 @@ identify_pack(
     struct obj *obj;
     int n, unid_cnt = count_unidentified(gi.invent);
 
-    if (!unid_cnt) {
+    if (id_limit < 0)
+        chain_identify(gi.invent);
+    else if (!unid_cnt) {
         You("have already identified %s of your possessions.",
             !learning_id ? "all" : "the rest");
     } else if (!id_limit || id_limit >= unid_cnt) {
