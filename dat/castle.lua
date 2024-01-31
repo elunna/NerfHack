@@ -270,8 +270,8 @@ des.non_diggable(selection.area(00,00,62,16))
 --   Entire castle area
 des.region(selection.area(00,00,62,16),"unlit")
 --   Courtyards
-des.region(selection.area(00,05,05,11),"lit")
-des.region(selection.area(57,05,62,11),"lit")
+des.region(selection.area(00,05,05,11),"unlit")
+des.region(selection.area(57,05,62,11),"unlit")
 --   Throne room
 des.region({ region={27,05, 37,11},lit=1,type="throne", filled=2 })
 --   Antechamber
