@@ -189,8 +189,7 @@ mk_artifact(
             /* avoid enemies' equipment */
             && (a->race == NON_PM || !race_hostile(&mons[a->race]))
             /* Priests and cavepeople don't get pointy/slicey weapons */
-            && (!((Role_if(PM_CLERIC) || Role_if(PM_CAVE_DWELLER)) 
-                  && (is_slash(a) || is_pierce(a))))) {
+            && (!(Role_if(PM_CLERIC) && (is_slash(a) || is_pierce(a))))) {
             /* when a role-specific first choice is available, use it */
             if (Role_if(a->role)) {
                 /* make this be the only possibility in the list */
