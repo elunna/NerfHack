@@ -2158,6 +2158,10 @@ mkaltar(struct mkroom *croom)
     /* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
     al = rn2((int) A_LAWFUL + 2) - 1;
     levl[m.x][m.y].altarmask = Align2amask(al);
+    
+    /* Sometimes they are in poor condition */
+    if (!rn2(4))
+        levl[m.x][m.y].cracked = 1;
 }
 
 static void
