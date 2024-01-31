@@ -1345,8 +1345,8 @@ corpse_intrinsic(struct permonst *ptr)
             prop = i;
         }
     }
-    /* if strength is the only candidate, give it 17% chance */
-    if (conveys_STR && count == 1 && rn2(6))
+    /* if strength is the only candidate, give it 25% chance */
+    if (conveys_STR && count == 1 && rn2(4))
         prop = 0;
 
     return prop;
