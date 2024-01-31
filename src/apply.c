@@ -180,8 +180,8 @@ use_towel(struct obj *obj)
               uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
         HFumbling &= ~I_SPECIAL;
         HFumbling = 0;
-        if (!rn2(4) && !obj->greased) {
-            Your("towel gets covered in grease.");
+        if (rn2(3) && !obj->greased) {
+            Your("towel gets covered in grease!");
             obj->greased = 1;
         }
         return ECMD_TIME;
@@ -202,7 +202,7 @@ use_towel(struct obj *obj)
     }
     You("remove the grimy grease from %s", yobjnam(otmp, (char *) 0));
     otmp->greased = 0;
-    if (!rn2(3)) {
+    if (!rn2(2)) {
         Your("gets covered in grease.");
         obj->greased = 1;
     }
