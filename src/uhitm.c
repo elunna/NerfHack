@@ -1079,7 +1079,7 @@ hmon_hitmon_weapon_melee(
            let it also hit from behind or shatter foes' weapons */
         || (hmd->hand_to_hand && is_art(obj, ART_CLEAVER))) {
         ; /* no special bonuses */
-    } else if (hmd->mdat->mlet == S_GIANT && uslinging()
+    } else if (is_giant(hmd->mdat) && uslinging()
                && hmd->thrown == HMON_THROWN
                && ammo_and_launcher(obj, uwep)
                && P_SKILL(P_SLING) >= P_SKILLED && hmd->dieroll == 1
