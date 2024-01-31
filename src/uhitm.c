@@ -1034,8 +1034,6 @@ hmon_hitmon_weapon_ranged(
        train weapon's skill */
     if (hmd->mdat == &mons[PM_SHADE] && !shade_glare(obj))
         hmd->dmg = 0;
-    else if (thick_skinned(hmd->mdat) && obj->oclass == GEM_CLASS)
-        hmd->dmg = 0;
     else
         hmd->dmg = rnd(2);
     if (hmd->material == SILVER && mon_hates_silver(mon)) {
@@ -1936,6 +1934,13 @@ hmon_hitmon(
             /* this gives "harmlessly passes through" feedback even when
                hero doesn't see it happen; presumably sensed by touch? */
             hmd.hittxt = shade_miss(&gy.youmonst, mon, obj, FALSE, TRUE);
+        /* Rocks/flint/etc don't harm thick skinned monsters */
+        else if (thick_skinned(mon->data) && obj->oclass == GEM_CLASS) {
+            if (canseemon(mon) && !rn2(3))
+                pline("The %s bounces harmlessly off %s thick skin.", 
+                      xname(obj), s_suffix(mon_nam(mon)));
+            hmd.dmg = 0;
+        }
     }
 
     if (hmd.jousting) {
