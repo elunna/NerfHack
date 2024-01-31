@@ -208,7 +208,8 @@ mkobj_erosions(struct obj *otmp)
                     otmp->oeroded++;
                 } while (otmp->oeroded < 3 && !rn2(9));
             }
-            if (!rn2(80) && (is_rottable(otmp) || is_corrodeable(otmp))) {
+            if ((!rn2(80) || otmp->otyp == MUMMY_WRAPPING)
+                && (is_rottable(otmp) || is_corrodeable(otmp))) {
                 do {
                     otmp->oeroded2++;
                 } while (otmp->oeroded2 < 3 && !rn2(9));
