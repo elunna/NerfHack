@@ -1826,8 +1826,11 @@ offer_different_alignment_altar(
                                    : (const char *) "gray"));
 
             if (rnl(u.ulevel) > 6 && u.ualign.record > 0
-                && rnd(u.ualign.record) > (3 * ALIGNLIM) / 4)
+                && rnd(u.ualign.record) > 
+                       (3 * ALIGNLIM) / (temple_occupied(u.urooms)
+                                             ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
+            }
             /* anger priest; test handles bones files */
             if ((pri = findpriest(temple_occupied(u.urooms)))
                 && !p_coaligned(pri))
