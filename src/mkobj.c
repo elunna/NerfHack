@@ -201,8 +201,9 @@ mkobj_erosions(struct obj *otmp)
         if (!rn2(100) || (is_dwarvish_obj(otmp) && !rn2(5))) {
             otmp->oerodeproof = 1;
         } else {
-            if (!rn2(80) && (is_flammable(otmp) || is_rustprone(otmp)
-                             || is_crackable(otmp))) {
+            if ((!rn2(80) || (is_orcish_obj(otmp) && rn2(3)))
+                && (is_flammable(otmp) || is_rustprone(otmp)
+                    || is_crackable(otmp))) {
                 do {
                     otmp->oeroded++;
                 } while (otmp->oeroded < 3 && !rn2(9));
