@@ -1087,8 +1087,9 @@ hmon_hitmon_weapon_melee(
         /* With a critical hit, a skilled slinger can bring down
          * even the mightiest of giants. */
         hmd->dmg = mon->mhp + 100;
-        pline("%s crushes %s forehead!", The(mshot_xname(obj)),
-              s_suffix(mon_nam(mon)));
+        if (canseemon(mon))
+            pline("%s crushes %s forehead!", The(mshot_xname(obj)),
+                  s_suffix(mon_nam(mon)));
         hmd->hittxt = TRUE;
         /* Same as above; account for negative udaminc and skill
          * damage penalties. (In the really odd situation where for
