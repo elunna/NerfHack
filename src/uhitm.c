@@ -6408,6 +6408,8 @@ passive(
     if (malive && !mon->mcan && rn2(3)) {
         switch (ptr->mattk[i].adtyp) {
         case AD_DSRM: /* adherer */
+            if (!mhitb)
+                break; /* Don't stick if we missed */
             otmp = uwep;
             if (otmp && otmp != uball) {
                 /* Just the main weapon */
