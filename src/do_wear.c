@@ -309,7 +309,7 @@ Boots_off(void)
         break;
     case JUMPING_BOOTS:
         makeknown(otyp);
-        pline("Your %s feel longer.", makeplural(body_part(LEG)));
+        Your("%s feel shorter.", makeplural(body_part(LEG)));
         break;
     case LOW_BOOTS:
     case ORCISH_BOOTS:
