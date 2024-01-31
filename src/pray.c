@@ -1830,6 +1830,7 @@ offer_different_alignment_altar(
                        (3 * ALIGNLIM) / (temple_occupied(u.urooms)
                                              ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
+                crackaltar();
             }
             /* anger priest; test handles bones files */
             if ((pri = findpriest(temple_occupied(u.urooms)))
