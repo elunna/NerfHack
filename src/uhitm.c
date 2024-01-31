@@ -6412,7 +6412,8 @@ passive(
             if (otmp && otmp != uball) {
                 /* Just the main weapon */
                 pline("%s to %s!", Yobjnam2(otmp, "stick"), mon_nam(mon));
-                dropx(otmp);
+                setnotworn(otmp);
+                freeinv(otmp);
                 obj_extract_self(otmp);
                 add_to_minv(mon, otmp);
             } else {
