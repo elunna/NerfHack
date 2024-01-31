@@ -642,10 +642,11 @@ do_improvisation(struct obj* instr)
         makeknown(instr->otyp);
         break;
     case TOOLED_HORN: /* Awaken or scare monsters */
-        if (!Deaf)
+        if (!Deaf) {
             You("produce a frightful, grave%s sound.",
                 same_old_song ? ", yet familiar," : "");
-        else
+            makeknown_msg(TOOLED_HORN);
+        } else
             You("blow into the horn.");
         Hero_playnotes(obj_to_instr(&itmp), improvisation, 80);
         awaken_monsters(u.ulevel * 30);
