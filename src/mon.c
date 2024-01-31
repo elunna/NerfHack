@@ -5762,7 +5762,9 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
     } else if (!flanker || !flanker->mcanmove || flanker->msleeping
                || flanker->mflee || flanker->mconf || flanker->mtrapped
                || flanker->mstun || flanker->meating 
-               || flanker->mundetected) {
+               || flanker->mundetected
+               /* hidden mimics can't help flank - gives away their position */
+               || (flanker->data->mlet == S_MIMIC && flanker->mappearance)) {
         /* Impaired monsters don't make good flankers */
         return FALSE;
     }
