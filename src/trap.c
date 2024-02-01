@@ -1272,11 +1272,17 @@ trapeffect_rocktrap(
             deltrap(trap);
             newsym(u.ux, u.uy);
         } else {
-            int dmg = d(2, 6); /* should be std ROCK dmg? */
-
+            int dmg;
             trap->once = 1;
             feeltrap(trap);
-            otmp = t_missile(ROCK, trap);
+            if (rnd(level_difficulty()) > 10) {
+                dmg = d(2, 6);
+                otmp = t_missile(ROCK, trap);
+            } else {
+                dmg = rn1(7, 25);
+                otmp = t_missile(BOULDER, trap);
+            }
+            
             place_object(otmp, u.ux, u.uy);
 
             pline("A trap door in %s opens and %s falls on your %s!",
@@ -1288,6 +1294,9 @@ trapeffect_rocktrap(
                     pline("Unfortunately, you are wearing %s.",
                           an(helm_simple_name(uarmh))); /* helm or hat */
                     dmg = 2;
+                } else if (hard_helmet(uarmh) && otmp->otyp == BOULDER) {
+                    Your("helmet only slightly protects you.");
+                    dmg -= 2;
                 } else if (hard_helmet(uarmh)) {
                     pline("Fortunately, you are wearing a hard helmet.");
                     dmg = 2;
