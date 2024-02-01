@@ -147,13 +147,6 @@ des.trap("magic")
 des.trap("magic")
 
 -- Random monsters.
--- The ghosts.
-des.monster("ghost")
-des.monster("ghost")
-des.monster("ghost")
-des.monster("ghost")
-des.monster("ghost")
-des.monster("ghost")
 -- Add a few bats for atmosphere.
 des.monster("vampire bat")
 des.monster("vampire bat")
