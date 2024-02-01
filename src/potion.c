@@ -1468,9 +1468,13 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
         } else {
             u.uhp += nhp;
             if (u.uhp > u.uhpmax) {
-                u.uhp = (u.uhpmax += nxtra);
+                /* hard upper limit (copied from nurse care) */
+                if (u.uhpmax < 5 * u.ulevel + d(2 * u.ulevel, 10)) {
+                    u.uhpmax += nxtra;
+                }
                 if (u.uhpmax > u.uhppeak)
                     u.uhppeak = u.uhpmax;
+                u.uhp = u.uhpmax;
             }
         }
     }
