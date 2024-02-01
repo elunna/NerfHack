@@ -1921,6 +1921,8 @@ check_jump(genericptr arg, coordxy x, coordxy y)
        at all, let alone over something tall?) */
     if (sobj_at(BOULDER, x, y) && !throws_rocks(gy.youmonst.data))
         return FALSE;
+    if (lev->typ == IRONBARS)
+        return FALSE;
     return TRUE;
 }
 
