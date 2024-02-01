@@ -150,7 +150,7 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       CLR_MAGENTA, PRIDWEN),
     
-    A("Doomblade", ORCISH_SHORT_SWORD, SPFX_RESTR, 0, 0, PHYS(0, 10), 
+    A("Doomblade", ORCISH_SHORT_SWORD, SPFX_RESTR, 0, 0, PHYS(0, 20), 
       NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 1000L, NO_COLOR, 
       DOOMBLADE),
     
