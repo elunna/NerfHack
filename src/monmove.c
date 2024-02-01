@@ -612,11 +612,12 @@ dochug(register struct monst* mtmp)
     int inrange, nearby, scared, res;
     struct obj *otmp;
     boolean panicattk = FALSE;
-
+    coord start;
     /*
      * PHASE ONE: Pre-movement adjustments
      */
-
+    start.x = mtmp->mx;
+    start.y = mtmp->my;
     mdat = mtmp->data;
 
     if (mtmp->mstrategy & STRAT_ARRIVE) {
@@ -789,13 +790,7 @@ dochug(register struct monst* mtmp)
     /*
      * PHASE THREE: Now the actual movement phase
      */
-
-    /* Hezrous create clouds of stench. This does not cost a move. */
-    if (mtmp->data == &mons[PM_HEZROU]) /* stench */
-        create_gas_cloud(mtmp->mx, mtmp->my, 1, 8);
-    else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
-        create_gas_cloud(mtmp->mx, mtmp->my, 1, 0); /* harmless vapor */
-
+    
     /* A killer bee may eat honey in order to turn into a queen bee,
        costing it a move. */
     if (mdat == &mons[PM_KILLER_BEE]
@@ -859,6 +854,12 @@ dochug(register struct monst* mtmp)
                 newsym(mtmp->mx, mtmp->my);
             break;
         case MMOVE_MOVED: /* monster moved */
+            /* Hezrous create clouds of stench. This does not cost a move. */
+            if (mtmp->data == &mons[PM_HEZROU]) /* stench */
+                create_gas_cloud(start.x, start.y, 1, 8);
+            else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
+                create_gas_cloud(start.x, start.y, 1, 0); /* harmless vapor */
+            
             /* if confused grabber has wandered off, let go */
             if (mtmp == u.ustuck && !next2u(mtmp->mx, mtmp->my))
                 unstuck(mtmp);
