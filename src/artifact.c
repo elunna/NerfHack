@@ -1530,7 +1530,7 @@ artifact_hit(
     /* We really want "on a natural 20" but Nethack does it in */
     /* reverse from AD&D. */
     if (spec_ability(otmp, SPFX_BEHEAD)) {
-        if (is_art(otmp, ART_TSURUGI_OF_MURAMASA) && dieroll == 1) {
+        if (is_art(otmp, ART_TSURUGI_OF_MURAMASA) && dieroll < 3) {
             wepdesc = "The razor-sharp blade";
             /* not really beheading, but so close, why add another SPFX */
             if (youattack && engulfing_u(mdef)) {
