@@ -305,11 +305,14 @@ demon_talk(register struct monst *mtmp)
             (void) rloc(mtmp, RLOC_MSG);
         return 1;
     }
+    
+    /* Bribable monsters are very greedy, and don't care how much gold you
+     * appear to be carrying. */
     cash = money_cnt(gi.invent);
-    demand = (cash * (rnd(80) + 20 * Athome))
-           / (100 * (1 + (sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))));
+    demand = rn1(4000, 4000)
+             + (2000 * (1 - (sgn(u.ualign.type) == sgn(mon_aligntyp(mtmp)))));
 
-    if (!demand || gm.multi < 0) { /* you have no gold or can't move */
+    if (!demand || gm.multi < 0 || cash <= 0) { /* you have no gold or can't move */
         mtmp->mpeaceful = 0;
         set_malign(mtmp);
         return 0;
