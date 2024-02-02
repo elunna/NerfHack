@@ -1363,7 +1363,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK,
         0, 5, CLR_BLACK, BABY_BLACK_DRAGON),
-    MON("baby blue dragon", S_DRAGON, LVL(4, 9, 2, 10, -7), (G_GENO | 2),
+    MON("baby blue dragon", S_DRAGON, LVL(4, 12, 2, 10, -7), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), MR_ELEC, 0,
@@ -1474,7 +1474,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0, 25, CLR_BLACK, BLACK_DRAGON),
-    MON("blue dragon", S_DRAGON, LVL(18, 20, -4, 20, -7), (G_GENO | 2),
+    MON("blue dragon", S_DRAGON, LVL(18, 24, -4, 20, -7), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_ELEC, 4, 6), ATTK(AT_BITE, AD_PHYS, 4, 8),
           ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
           NO_ATTK, NO_ATTK),
