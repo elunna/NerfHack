@@ -38,7 +38,7 @@ const struct class_sym def_monsyms[MAXMCLASSES] = {
 
 const struct symdef def_warnsyms[WARNCOUNT] = {
     /* white warning  */
-    { '0', "unknown creature causing you worry",    C(CLR_WHITE) },
+    { '0', "unknown creature causing you worry",    C(CLR_ORANGE) },
     /* pink warning   */
     { '1', "unknown creature causing you concern",  C(CLR_RED) },
     /* red warning    */

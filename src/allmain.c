@@ -715,7 +715,7 @@ newgame(void)
 
     gc.context.botlx = TRUE;
     gc.context.ident = 1;
-    gc.context.warnlevel = 1;
+    gc.context.warnlevel = 0L;
     gc.context.next_attrib_check = 600L; /* arbitrary first setting */
     gc.context.tribute.enabled = TRUE;   /* turn on 3.6 tributes    */
     gc.context.tribute.tributesz = sizeof(struct tribute_info);
