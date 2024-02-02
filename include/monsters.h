@@ -788,14 +788,14 @@
         M1_CLING | M1_HIDE | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_CARNIVORE
             | M1_NOTAKE | M1_MINDLESS,
         M2_HOSTILE, M3_ACCURATE, 6, CLR_CYAN, IRON_PIERCER),
-    MON("glass piercer", S_PIERCER, LVL(7, 1, 0, 0, 0), (G_GENO | 1),
+    MON("glass piercer", S_PIERCER, LVL(7, 1, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 4, 6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(400, 300, MS_SILENT, MZ_MEDIUM), MR_ACID, 0,
         M1_CLING | M1_HIDE | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_CARNIVORE
             | M1_NOTAKE | M1_MINDLESS,
         M2_HOSTILE, M3_ACCURATE, 9, CLR_WHITE, GLASS_PIERCER),
-    MON("diamond piercer", S_PIERCER, LVL(8, 1, 0, 0, 0), (G_GENO),
+    MON("diamond piercer", S_PIERCER, LVL(8, 1, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 8, 6), 
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 300, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_FIRE | 0, 0,
