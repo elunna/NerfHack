@@ -116,6 +116,11 @@ setuwep(struct obj *obj)
             || is_art(olduwep, ART_OGRESMASHER)))
         gc.context.botl = 1;
     
+    if (uwep == obj
+        && (u_wield_art(ART_GIANTSLAYER)
+            || is_art(olduwep, ART_GIANTSLAYER)))
+        gc.context.botl = 1;
+    
     /* Hated items decrease AC and affect to-hit */
     if (uwep && hates_item(&gy.youmonst, uwep)) {
         find_ac();

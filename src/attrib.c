@@ -1153,6 +1153,8 @@ acurr(int x)
     if (x == A_STR) {
         if (tmp >= 125 || (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER))
             return (schar) 125;
+        else if (uwep && uwep->oartifact == ART_GIANTSLAYER)
+            return (schar) (tmp < 118 ? 118 : tmp);
         else
 #ifdef WIN32_BUG
             return (x = ((tmp <= 3) ? 3 : tmp));
@@ -1210,6 +1212,8 @@ extremeattr(int attrindx) /* does attrindx's value match its max or min? */
         hilimit = STR19(25); /* 125 */
         /* lower limit for Str can also be 25 */
         if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER)
+            lolimit = hilimit;
+        else if (u_wield_art(ART_OGRESMASHER))
             lolimit = hilimit;
     } else if (attrindx == A_CON) {
         if (u_wield_art(ART_OGRESMASHER))
