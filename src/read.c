@@ -1175,7 +1175,7 @@ seffect_enchant_armor(struct obj **sobjp)
         otmp->oerodeproof = new_erodeproof ? 1 : 0;
         return;
     }
-    /* elven armor vibrates warningly when enchanted beyond a limit */
+    /* sometimes armor can be enchanted to a higher limit than usual */
     special_armor = (is_elven_armor(otmp) && Race_if(PM_ELF))
         || (Role_if(PM_WIZARD) && otmp->otyp == CORNUTHAUM);
     if (scursed)
@@ -1269,8 +1269,8 @@ seffect_enchant_armor(struct obj **sobjp)
             alter_cost(otmp, 0L);
     }
 
-    if ((otmp->spe > (special_armor ? 5 : 3))
-        && (special_armor || is_elven_armor(otmp) || !rn2(7)))
+    /* armor vibrates warningly when enchanted beyond a limit */
+    if (otmp->spe > (special_armor ? 5 : 3))
         pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
               Blind ? "again" : "unexpectedly");
 }
