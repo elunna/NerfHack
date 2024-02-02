@@ -1384,119 +1384,119 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_ACID,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK,
         0, 5, CLR_YELLOW, BABY_YELLOW_DRAGON),
-    MON("gray dragon", S_DRAGON, LVL(15, 20, -1, 20, 4), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_MAGM, 4, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4), NO_ATTK,
+    MON("gray dragon", S_DRAGON, LVL(18, 20, -4, 20, 4), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_MAGM, 4, 6), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4), NO_ATTK,
           NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, CLR_GRAY, GRAY_DRAGON),
+        0, 25, CLR_GRAY, GRAY_DRAGON),
     /* gold dragon can be seen via infravision but doesn't have infravision */
-    MON("gold dragon", S_DRAGON, LVL(15, 20, -1, 20, 4), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_FIRE, 4, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4),
+    MON("gold dragon", S_DRAGON, LVL(18, 20, -4, 20, 4), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_FIRE, 4, 6), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
           NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_FIRE, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        M3_INFRAVISIBLE, 20, HI_GOLD, GOLD_DRAGON),
-    MON("silver dragon", S_DRAGON, LVL(15, 20, -1, 20, 4), (G_GENO | 1),
+        M3_INFRAVISIBLE, 25, HI_GOLD, GOLD_DRAGON),
+    MON("silver dragon", S_DRAGON, LVL(18, 20, -1, 95, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_COLD, 4, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4), NO_ATTK,
-          NO_ATTK),
+          ATTK(AT_CLAW, AD_PHYS, 1, 4), ATTK(AT_CLAW, AD_PHYS, 1, 4),
+          NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_COLD, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, DRAGON_SILVER, SILVER_DRAGON),
+        0, 25, DRAGON_SILVER, SILVER_DRAGON),
 #if 0 /* DEFERRED */
     /* shimmering scales/scale-mail would confer displacement when worn by
        the hero, so shimmering dragon ought to be displaced (hero who can
        see one might misjudge its location) but monster displacement hasn't
        been implemented so we don't include it */
     MON("shimmering dragon", S_DRAGON,
-        LVL(15, 20, -1, 20, 4), (G_GENO | 1),
+        LVL(18, 20, -8, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_MAGM, 4, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4),
+          ATTK(AT_CLAW, AD_PHYS, 1, 4), ATTK(AT_CLAW, AD_PHYS, 1, 4),
           NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
           | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, CLR_CYAN, SHIMMERING_DRAGON),
+        0, 25, CLR_CYAN, SHIMMERING_DRAGON),
 #endif
     /* red dragon has infravision and can be seen via infravision */
-    MON("red dragon", S_DRAGON, LVL(15, 20, -1, 20, -4), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_FIRE, 6, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4), NO_ATTK,
-          NO_ATTK),
+    MON("red dragon", S_DRAGON, LVL(18, 20, -4, 20, -4), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_FIRE, 6, 6), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
+          NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_FIRE, MR_FIRE,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        M3_INFRAVISION | M3_INFRAVISIBLE, 20, CLR_RED, RED_DRAGON),
-    MON("white dragon", S_DRAGON, LVL(15, 20, -1, 20, -5), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_COLD, 4, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4), NO_ATTK,
-          NO_ATTK),
+        M3_INFRAVISION | M3_INFRAVISIBLE, 25, CLR_RED, RED_DRAGON),
+    MON("white dragon", S_DRAGON, LVL(18, 20, -4, 20, -5), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_COLD, 4, 6), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
+          NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_COLD, MR_COLD,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, CLR_WHITE, WHITE_DRAGON),
-    MON("orange dragon", S_DRAGON, LVL(15, 20, -1, 20, -5), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_SLEE, 4, 25), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4), NO_ATTK,
-          NO_ATTK),
+        0, 25, CLR_WHITE, WHITE_DRAGON),
+    MON("orange dragon", S_DRAGON, LVL(18, 20, -4, 20, -5), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_SLEE, 4, 25), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
+          NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_SLEEP, MR_SLEEP,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, CLR_ORANGE, ORANGE_DRAGON),
+        0, 25, CLR_ORANGE, ORANGE_DRAGON),
     /* disintegration breath is actually all or nothing, not 1d255 */
-    MON("black dragon", S_DRAGON, LVL(15, 20, -1, 20, -6), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_DISN, 1, 255), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4), NO_ATTK,
-          NO_ATTK),
+    MON("black dragon", S_DRAGON, LVL(18, 20, -4, 20, -6), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_DISN, 1, 255), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
+          NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_DISINT, MR_DISINT,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, CLR_BLACK, BLACK_DRAGON),
-    MON("blue dragon", S_DRAGON, LVL(15, 20, -1, 20, -7), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_ELEC, 4, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4), NO_ATTK,
-          NO_ATTK),
+        0, 25, CLR_BLACK, BLACK_DRAGON),
+    MON("blue dragon", S_DRAGON, LVL(18, 20, -4, 20, -7), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_ELEC, 4, 6), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
+          NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_ELEC, MR_ELEC,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, CLR_BLUE, BLUE_DRAGON),
-    MON("green dragon", S_DRAGON, LVL(15, 20, -1, 20, -6), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_DRST, 4, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4), NO_ATTK,
-          NO_ATTK),
+        0, 25, CLR_BLUE, BLUE_DRAGON),
+    MON("green dragon", S_DRAGON, LVL(18, 20, -4, 20, -6), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_DRST, 4, 6), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
+          NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_POISON, MR_POISON,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE | M1_POIS,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, CLR_GREEN, GREEN_DRAGON),
-    MON("yellow dragon", S_DRAGON, LVL(15, 20, -1, 20, -7), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_ACID, 4, 6), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 4), ATTK(AT_CLAW, AD_PHYS, 2, 4),
+        0, 25, CLR_GREEN, GREEN_DRAGON),
+    MON("yellow dragon", S_DRAGON, LVL(18, 20, -4, 20, -7), (G_GENO | 2),
+        A(ATTK(AT_BREA, AD_ACID, 4, 6), ATTK(AT_BITE, AD_PHYS, 4, 8),
+          ATTK(AT_CLAW, AD_PHYS, 3, 4), ATTK(AT_CLAW, AD_PHYS, 3, 4),
           NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC),
         MR_ACID | MR_STONE, MR_ACID | MR_STONE,
@@ -1504,7 +1504,7 @@
             | M1_OVIPAROUS | M1_CARNIVORE | M1_ACID,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
-        0, 20, CLR_YELLOW, YELLOW_DRAGON),
+        0, 25, CLR_YELLOW, YELLOW_DRAGON),
     /*
      * Elementals
      */
