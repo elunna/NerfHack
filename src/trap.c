@@ -5079,12 +5079,28 @@ water_damage(
             || obj->otyp == SCR_MAIL
 #endif
            ) return 0;
-        if (in_invent)
-            Your("%s %s.", ostr, vtense(ostr, "fade"));
-
-        obj->otyp = SCR_BLANK_PAPER;
-        obj->dknown = 0;
-        obj->spe = 0;
+        
+        if (rn2(3)) {
+            if (in_invent)
+                Your("%s %s.", ostr, vtense(ostr, "fade"));
+            obj->otyp = SCR_BLANK_PAPER;
+            obj->dknown = 0;
+            obj->spe = 0;
+        } else {
+            /* 1/3'rd of scrolls damaged by water disintegrate */
+            if (in_invent)
+                Your("%s %s.", ostr, vtense(ostr, "disintegrate"));
+            else 
+                pline(obj->quan == 1 ?
+                                 "A scroll disintegrates." :
+                                 "Some scrolls disintegrate.");
+            setnotworn(obj);
+            delobj(obj);
+            return ER_DESTROYED;
+            if (in_invent)
+                update_inventory();
+        }
+        
         if (in_invent)
             update_inventory();
         return ER_DAMAGED;
