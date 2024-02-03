@@ -203,7 +203,7 @@ use_towel(struct obj *obj)
     You("remove the grimy grease from %s", yobjnam(otmp, (char *) 0));
     otmp->greased = 0;
     if (!rn2(2)) {
-        Your("gets covered in grease.");
+        Your("towel gets covered in grease.");
         obj->greased = 1;
     }
     return ECMD_OK;
