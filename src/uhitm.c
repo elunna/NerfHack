@@ -6452,7 +6452,7 @@ passive(
                         break;
                     } else {
                         You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
-                        nomul((ACURR(A_WIS) > 12 || rn2(4)) ? -tmp : -127);
+                        nomul(-min(tmp, 10 * max(1, (20 - ACURR(A_WIS)))));
                         /* set gm.multi_reason;
                            3.6.x used "frozen by a monster's gaze" */
                         dynamic_multi_reason(mon, "frozen", TRUE);

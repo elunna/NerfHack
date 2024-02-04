@@ -1440,8 +1440,6 @@ passivemm(
             if (tmp > 127)
                 tmp = 127;
             if (mddat == &mons[PM_FLOATING_EYE]) {
-                if (!rn2(4))
-                    tmp = 127;
                 if (magr->mcansee && haseyes(madat) && mdef->mcansee
                     && (perceives(madat) || !mdef->minvis)) {
                     /* construct format string; guard against '%' in Monnam */
