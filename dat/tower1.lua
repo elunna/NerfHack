@@ -55,7 +55,7 @@ des.object({ id = "chest", coord=niches[4],
 });
 des.object({ id = "chest", coord=niches[5],
              contents = function()
-                des.object({ id = "flint stone", quantity=math.random(4,8) })
+                des.object({ id = "flint", quantity=math.random(4,8) })
              end
 });
 -- We have to protect the tower against outside attacks
