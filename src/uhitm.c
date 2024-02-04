@@ -3829,7 +3829,7 @@ mhitm_ad_slow(
 {
     boolean negated = mhitm_mgc_atk_negated(magr, mdef, FALSE);
 
-    if (defended(mdef, AD_SLOW))
+    if (defended(mdef, AD_SLOW) || is_undead(mdef->data))
         return;
     if (mdef == &gy.youmonst) {
         hitmsg(magr, mattk);
