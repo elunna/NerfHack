@@ -87,19 +87,15 @@ static const struct innate {
                  { 0, 0, 0, 0 } },
 
   /* Intrinsics conferred by race */
-  dwa_abil[] = { { 1, &HInfravision, "", "" },
+  dwa_abil[] = { { 0, 0, 0, 0 } },
+
+  elf_abil[] = { { 4, &HSleep_resistance, "awake", "tired" },
                  { 0, 0, 0, 0 } },
 
-  elf_abil[] = { { 1, &HInfravision, "", "" },
-                 { 4, &HSleep_resistance, "awake", "tired" },
+  gno_abil[] = { { 5, &(HStealth), "stealthy", "" },
                  { 0, 0, 0, 0 } },
 
-  gno_abil[] = { { 1, &HInfravision, "", "" },
-                 { 5, &(HStealth), "stealthy", "" },
-                 { 0, 0, 0, 0 } },
-
-  orc_abil[] = { { 1, &HInfravision, "", "" },
-                 { 1, &HPoison_resistance, "", "" },
+  orc_abil[] = { { 1, &HPoison_resistance, "", "" },
                  { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };
