@@ -37,7 +37,7 @@ static const struct innate {
                  { 15, &(HWarning), "sensitive", "" },
                  { 0, 0, 0, 0 } },
 
-  hea_abil[] = { { 5, &(HPoison_resistance), "", "" },
+  hea_abil[] = { { 1, &(HPoison_resistance), "", "" },
                  { 15, &(HWarning), "sensitive", "" },
                  { 0, 0, 0, 0 } },
 
