@@ -1100,10 +1100,20 @@ m_balks_at_approaching(struct monst* mtmp)
 
     /* can attack from distance, and hp loss or attack not used */
     if (ranged_attk(mtmp->data)
-        && ((mtmp->mhp < (mtmp->mhpmax+1) / 3)
-            || !mtmp->mspec_used))
-        return TRUE;
-
+        && ((mtmp->mhp < (mtmp->mhpmax + 1) / 4)
+            || !mtmp->mspec_used)) {
+        /* Most breathing monsters prefer melee more often: 
+         * dragons, nagas, golems, etc. This also serves to make altar
+         * sacrifice a bit more convenient. Otherwise, they never sit 
+         * still long enough to die on the altar and we can't pick up 
+         * nagas or dragons :/ */
+        if ((mtmp->data->mlet == S_DRAGON || mtmp->data->mlet == S_NAGA
+             || mtmp->data->mlet == S_GOLEM)
+            && rn2(3))
+            return FALSE;
+        else
+            return TRUE;
+    }
     return FALSE;
 }
 
