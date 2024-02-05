@@ -614,6 +614,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
                 shieldeff(u.ux, u.uy);
                 pline("The acid doesn't harm you.");
                 monstseesu(M_SEEN_ACID);
+                dmg = 0;
             }
             if (rn2(u.twoweap ? 2 : 3))
                 acid_damage(uwep);
