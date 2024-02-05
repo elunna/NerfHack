@@ -496,8 +496,10 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
 
         if (greatest_erosion(oatmp) >= MAX_ERODE) {
             if (objects[oatmp->otyp].oc_oprop == DISINT_RES
-                || obj_resists(oatmp, 0, 90))
+                || obj_resists(oatmp, 0, 90)) {
+                pline("%s resists the destructive spell!", Yname2(oatmp));
                 return 0;
+            }
             if (udefend) {
                 destroy_arm(oatmp, FALSE);
             } else {
