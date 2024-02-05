@@ -1571,8 +1571,7 @@ hmon_hitmon_dmg_recalc(struct _hitmon_data *hmd, struct obj *obj)
            hero is simply bashing with one of those and does not apply
            to jousting because lances are one-handed */
         if (hmd->thrown != HMON_THROWN
-            || !obj || !uwep || !ammo_and_launcher(obj, uwep)
-                                || (uslinging() && Role_if(PM_CAVE_DWELLER))) {
+            || !obj || !uwep || !ammo_and_launcher(obj, uwep) || uslinging()) {
             strbonus = dbon();
             absbonus = abs(strbonus);
             if (hmd->twohits)
