@@ -1123,8 +1123,11 @@ seffect_enchant_armor(struct obj **sobjp)
      if (already_known) {
          for (i = 0; i < 5; i++) {
              otmp = getobj("enchant", enchant_ok, GETOBJ_NOFLAGS);
-             if (!otmp && y_n("Really forfeit this scroll?") == 'y') {
-                break;
+             if (!otmp) {
+                if (y_n("Really forfeit this scroll?") == 'y')
+                    break;
+                else
+                    continue;
              } else if (otmp && otmp->oclass != ARMOR_CLASS) {
                  You("must select armor to enchant.");
                  otmp = (struct obj *) 0;
