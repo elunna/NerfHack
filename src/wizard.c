@@ -785,9 +785,13 @@ intervene(void)
     case 3:
         aggravate();
         break;
-    case 4:
-        (void) nasty((struct monst *) 0);
+    case 4: {
+        int count = nasty((struct monst *) 0);
+        boolean one = (count == 1);
+        const char *mappear = one ? "A monster appears" : "Monsters appear";
+        pline("%s from nowhere!", mappear);
         break;
+    }
     case 5:
         if (u.uevent.invoked) {
             pline_The("entire dungeon starts shaking around you!");
