@@ -683,6 +683,10 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         free_mgivenname(mtmp);
         newsym(x, y);
         return obj;
+    case PM_ALCHEMIST:
+        (void) mksobj_at(rnd_class(POT_GAIN_ABILITY, POT_OIL),
+                         x, y, TRUE, FALSE);
+        goto default_1;
     default:
  default_1:
         if (gm.mvitals[mndx].mvflags & G_NOCORPSE) {

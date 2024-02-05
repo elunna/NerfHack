@@ -718,6 +718,17 @@ dochug(register struct monst* mtmp)
             return 0;
     }
 
+    /* Alchemists will occasionally alchemize more acid */
+    if (mtmp->data == &mons[PM_ALCHEMIST] && !m_carrying(mtmp, POT_ACID) 
+            && !rn2(20)) {
+        if (canseemon(mtmp))
+            pline("%s alchemizes something!", Monnam(mtmp));
+        else 
+            You_hear("giggling.");
+        (void) mongets(mtmp, POT_ACID);
+        if (rn2(2))
+            (void) mongets(mtmp, POT_ACID);
+    }
     /* check distance and scariness of attacks */
     distfleeck(mtmp, &inrange, &nearby, &scared);
 
