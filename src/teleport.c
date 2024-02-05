@@ -813,7 +813,7 @@ scrolltele(struct obj* scroll)
     if (!Blinded)
         make_blinded(0L, FALSE);
 
-    if ((u.uhave.amulet || On_W_tower_level(&u.uz)) && !rn2(3)) {
+    if (u.uhave.amulet || On_W_tower_level(&u.uz)) {
         You_feel("disoriented for a moment.");
         /* don't discover the scroll [at least not yet for wizard override];
            disorientation doesn't reveal that this is a teleport attempt */
