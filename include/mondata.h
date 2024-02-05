@@ -323,8 +323,7 @@
  * you in combat. This was adapted from the M3_SKITTISH flag in SporkHack;
  * however, since only a couple monsters have this behavior and they're all in
  * the same class, it isn't necessary to add a M3 flag. */
-#define keeps_distance(ptr) ((ptr)->mlet == S_CENTAUR \
-                             || (ptr) == &mons[PM_BLINKING_EYE] \
+#define keeps_distance(ptr) ((ptr) == &mons[PM_BLINKING_EYE] \
                              || (ptr) == &mons[PM_KOBOLD_SHAMAN] \
                              || (ptr) == &mons[PM_ORC_SHAMAN] \
                              || (ptr) == &mons[PM_ALCHEMIST])
