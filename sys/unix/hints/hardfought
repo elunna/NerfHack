@@ -154,7 +154,7 @@ NHCFLAGS+=-DTTY_TILES_ESCCODES
 #NHCFLAGS+=-DTTY_SOUND_ESCCODES
 #NHCFLAGS+=-DNO_CHRONICLE
 NHCFLAGS+=-DDGAMELAUNCH
-NHCFLAGS+=-DLIVELOG
+#NHCFLAGS+=-DLIVELOG
 NHCFLAGS+=-DDUMPLOG
 NHCFLAGS+=-DDUMPHTML
 NHCFLAGS+=-DUSE_GENERAL_ALTAR_COLORS
@@ -323,25 +323,32 @@ override GAME=
 MOREALL += ( cd src ; $(MAKE) pregame ; $(MAKE) $(TARGETPFX)libnh.a )
 endif  # WANT_LIBNH
 
+SYSCONFCREATE = cp sys/unix/sysconf $(INSTDIR)/sysconf
+SYSCONFINSTALL = $(SYSCONFCREATE) && \
+	 $(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf && \
+	 $(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf && \
+	 chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
+SYSCONFENSURE = (if ! test -f $(INSTDIR)/sysconf ; then \
+	 $(SYSCONFCREATE) && \
+	 $(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf && \
+	 $(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf && \
+	 chmod $(VARFILEPERM) $(INSTDIR)/sysconf; fi );
+
 # this is the chroot dir
 PREFIX=/opt/nethack/chroot
 
 # this is the dir where NetHack is inside the chroot
-HACKDIR=/nh370.95-hdf
+HACKDIR=/nh370.97-hdf
 INSTDIR=$(PREFIX)$(HACKDIR)
 VARDIR =$(INSTDIR)/var
 
 # DGL does not use the shell script launcher
 SHELLDIR=/tmp
 
-POSTINSTALL+= cp -n sys/unix/sysconf $(INSTDIR)/sysconf; \
-	$(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; \
-	$(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf; \
-	chmod $(VARFILEPERM) $(INSTDIR)/sysconf; \
-	( util/makedefs --grep-defined CRASHREPORT && \
+POSTINSTALL+= ( util/makedefs --grep-defined CRASHREPORT && \
 	  ( cp win/share/nhcrashreport.lua $(INSTDIR) ; \
 	  chmod 555 $(INSTDIR)/nhcrashreport.lua ; \
-	  cp $(LUATOP)/lua $(INSTDIR)/nhlua); true);
+	  cp $(LUATOP)/lua $(INSTDIR)/nhlua); true );
 
 ifneq "$(CCISCLANG)" ""
 # gdb may not be installed if clang is chosen compiler so the game

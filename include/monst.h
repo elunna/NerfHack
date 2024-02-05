@@ -161,7 +161,8 @@ struct monst {
     Bitfield(meverseen, 1); /* mon has been seen at some point */
     Bitfield(mwither_from_u, 1); /* is withering due to player */
     Bitfield(mberserk, 1);   /* monster is berserk */
-                             
+    Bitfield(mspotted, 1);  /* mon is currently seen by hero */
+                
     uchar mwither;          /* withering; amount of turns left till recovery */
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
 
@@ -291,5 +292,8 @@ struct monst {
     ((mon_resistancebits(mon) & MR_STONE) != 0)
 #define is_lminion(mon) \
     (is_minion((mon)->data) && mon_aligntyp(mon) == A_LAWFUL)
+
+/* x is a valid index into mons[] array */
+#define ismnum(x) ((x) >= LOW_PM && (x) < NUMMONS)
 
 #endif /* MONST_H */

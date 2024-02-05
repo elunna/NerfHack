@@ -1,4 +1,4 @@
-/* NetHack 3.7	sp_lev.c	$NHDT-Date: 1695159628 2023/09/19 21:40:28 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.339 $ */
+/* NetHack 3.7	sp_lev.c	$NHDT-Date: 1704787190 2024/01/09 07:59:50 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.349 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -95,6 +95,8 @@ static void l_table_getset_feature_flag(lua_State *, int, int, const char *,
 static void l_get_lregion(lua_State *, lev_region *);
 static void sel_set_lit(coordxy, coordxy, genericptr_t);
 static void add_doors_to_room(struct mkroom *);
+static void get_table_coords_or_region(lua_State *,
+                             coordxy *, coordxy *, coordxy *, coordxy *);
 static void selection_iterate(struct selectionvar *, select_iter_func,
                               genericptr_t);
 static void sel_set_ter(coordxy, coordxy, genericptr_t);
@@ -159,6 +161,7 @@ int lspo_finalize_level(lua_State *);
 int lspo_room(lua_State *);
 int lspo_stair(lua_State *);
 int lspo_teleport_region(lua_State *);
+int lspo_gas_cloud(lua_State *);
 int lspo_terrain(lua_State *);
 int lspo_trap(lua_State *);
 int lspo_wall_property(lua_State *);
@@ -337,7 +340,7 @@ map_cleanup(void)
         for (y = 0; y < ROWNO; y++) {
             schar typ = levl[x][y].typ;
 
-            if (typ == LAVAPOOL || typ == LAVAWALL || IS_POOL(typ)) {
+            if (IS_LAVA(typ) || IS_POOL(typ)) {
                 /* in case any boulders are on liquid, delete them */
                 while ((otmp = sobj_at(BOULDER, x, y)) != 0) {
                     obj_extract_self(otmp);
@@ -1789,7 +1792,7 @@ create_trap(spltrap *t, struct mkroom *croom)
 {
     coordxy x = -1, y = -1;
     coord tm;
-    int mktrap_flags = MKTRAP_MAZEFLAG;
+    unsigned mktrap_flags = MKTRAP_MAZEFLAG;
 
     if (t->type == VIBRATING_SQUARE) {
         pick_vibrasquare_location();
@@ -1978,7 +1981,7 @@ create_monster(monster *m, struct mkroom *croom)
         if (m->appear_as.str
             && ((mtmp->data->mlet == S_MIMIC)
                 /* shapechanger (chameleons, et al, and vampires) */
-                || (mtmp->cham >= LOW_PM && m->appear == M_AP_MONSTER))
+                || (ismnum(mtmp->cham) && m->appear == M_AP_MONSTER))
             && !Protection_from_shape_changers) {
             int i;
 
@@ -2797,8 +2800,7 @@ light_region(region *tmpregion)
     for (x = lowx; x <= hix; x++) {
         lev = &levl[x][lowy];
         for (y = lowy; y <= hiy; y++) {
-            if (lev->typ != LAVAPOOL) /* this overrides normal lighting */
-                lev->lit = litstate;
+            lev->lit = IS_LAVA(lev->typ) ? 1 : litstate;
             lev++;
         }
     }
@@ -3309,9 +3311,7 @@ lspo_monster(lua_State *L)
 
     if (tmpmons.has_invent && lua_type(L, -1) == LUA_TFUNCTION) {
         lua_remove(L, -2);
-        if (nhl_pcall(L, 0, 0)){
-            impossible("Lua error: %s", lua_tostring(L, -1));
-        }
+        nhl_pcall_handle(L, 0, 0, "lspo_monster", NHLpa_panic);
         spo_end_moninvent();
     } else
         lua_pop(L, 1);
@@ -3656,9 +3656,7 @@ lspo_object(lua_State *L)
     if (lua_type(L, -1) == LUA_TFUNCTION) {
         lua_remove(L, -2);
         nhl_push_obj(L, otmp);
-        if (nhl_pcall(L, 1, 0)){
-            impossible("Lua error: %s", lua_tostring(L, -1));
-        }
+        nhl_pcall_handle(L, 1, 0, "lspo_object", NHLpa_panic);
     } else
         lua_pop(L, 1);
 
@@ -4009,9 +4007,7 @@ lspo_room(lua_State *L)
                 if (lua_type(L, -1) == LUA_TFUNCTION) {
                     lua_remove(L, -2);
                     l_push_mkroom_table(L, tmpcr);
-                    if (nhl_pcall(L, 1, 0)){
-                        impossible("Lua error: %s", lua_tostring(L, -1));
-                    }
+                    nhl_pcall_handle(L, 1, 0, "lspo_room", NHLpa_panic);
                 } else
                     lua_pop(L, 1);
                 spo_endroom(gc.coder);
@@ -5554,6 +5550,49 @@ lspo_feature(lua_State *L)
     return 0;
 }
 
+/* gas_cloud({ selection=SELECTION }); */
+/* gas_cloud({ selection=SELECTION, damage=N }); */
+/* gas_cloud({ selection=SELECTION, damage=N, ttl=N }); */
+int
+lspo_gas_cloud(lua_State *L)
+{
+    coordxy x = 0, y = 0;
+    struct selectionvar *sel = NULL;
+    int argc = lua_gettop(L);
+    int damage = 0;
+    int ttl = -2;
+
+    create_des_coder();
+
+    if (argc == 1 && lua_type(L, 1) == LUA_TTABLE) {
+        lua_Integer tx, ty;
+        NhRegion *reg;
+
+        lcheck_param_table(L);
+
+        get_table_xy_or_coord(L, &tx, &ty);
+        x = tx, y = ty;
+        if (tx == -1 && ty == -1) {
+            lua_getfield(L, 1, "selection");
+            sel = l_selection_check(L, -1);
+            lua_pop(L, 1);
+        }
+        damage = get_table_int_opt(L, "damage", 0);
+        ttl = get_table_int_opt(L, "ttl", -2);
+        if (!sel) {
+            reg = create_gas_cloud(x, y, 1, damage);
+        } else
+            reg = create_gas_cloud_selection(sel, damage);
+        if (ttl > -2)
+            reg->ttl = ttl;
+    } else {
+        nhl_error(L, "wrong parameters");
+    }
+
+    return 0;
+}
+
+
 /*
  * [lit_state: 1 On, 0 Off, -1 random, -2 leave as-is]
  * terrain({ x=NN, y=NN, typ=MAPCHAR, lit=lit_state });
@@ -6116,7 +6155,7 @@ sel_set_lit(coordxy x, coordxy y, genericptr_t arg)
 {
      int lit = *(int *) arg;
 
-     levl[x][y].lit = (levl[x][y].typ == LAVAPOOL) ? 1 : lit;
+     levl[x][y].lit = (IS_LAVA(levl[x][y].typ) || lit) ? 1 : 0;
 }
 
 /* Add to the room any doors within/bordering it */
@@ -6135,6 +6174,26 @@ add_doors_to_room(struct mkroom *croom)
 }
 
 DISABLE_WARNING_UNREACHABLE_CODE
+
+/* inside a lua table, get fields x1,y1,x2,y2 or region table */
+static void
+get_table_coords_or_region(lua_State *L,
+                           coordxy *dx1, coordxy *dy1,
+                           coordxy *dx2, coordxy *dy2)
+{
+    *dx1 = get_table_int_opt(L, "x1", -1);
+    *dy1 = get_table_int_opt(L, "y1", -1);
+    *dx2 = get_table_int_opt(L, "x2", -1);
+    *dy2 = get_table_int_opt(L, "y2", -1);
+
+    if (*dx1 == -1 && *dy1 == -1 && *dx2 == -1 && *dy2 == -1) {
+        lua_Integer rx1, ry1, rx2, ry2;
+
+        get_table_region(L, "region", &rx1, &ry1, &rx2, &ry2, FALSE);
+        *dx1 = rx1; *dy1 = ry1;
+        *dx2 = rx2; *dy2 = ry2;
+    }
+}
 
 /* region(selection, lit); */
 /* region({ x1=NN, y1=NN, x2=NN, y2=NN, lit=BOOL, type=ROOMTYPE, joined=BOOL,
@@ -6163,17 +6222,9 @@ lspo_region(lua_State *L)
         do_arrival_room = get_table_boolean_opt(L, "arrival_room", 0);
         rtype = get_table_roomtype_opt(L, "type", OROOM);
         rlit = get_table_int_opt(L, "lit", -1);
-        dx1 = get_table_int_opt(L, "x1", -1); /* TODO: area */
-        dy1 = get_table_int_opt(L, "y1", -1);
-        dx2 = get_table_int_opt(L, "x2", -1);
-        dy2 = get_table_int_opt(L, "y2", -1);
 
-        if (dx1 == -1 && dy1 == -1 && dx2 == -1 && dy2 == -1) {
-            lua_Integer rx1, ry1, rx2, ry2;
-            get_table_region(L, "region", &rx1, &ry1, &rx2, &ry2, FALSE);
-            dx1 = rx1; dy1 = ry1;
-            dx2 = rx2; dy2 = ry2;
-        }
+        get_table_coords_or_region(L, &dx1, &dy1, &dx2, &dy2);
+
         if (dx1 == -1 && dy1 == -1 && dx2 == -1 && dy2 == -1) {
             nhl_error(L, "region needs region");
         }
@@ -6270,9 +6321,7 @@ lspo_region(lua_State *L)
             if (lua_type(L, -1) == LUA_TFUNCTION) {
                 lua_remove(L, -2);
                 l_push_mkroom_table(L, troom);
-                if (nhl_pcall(L, 1, 0)){
-                    impossible("Lua error: %s", lua_tostring(L, -1));
-                }
+                nhl_pcall_handle(L, 1, 0, "lspo_region", NHLpa_panic);
             } else {
                 lua_pop(L, 1);
             }
@@ -6456,17 +6505,7 @@ lspo_wall_property(lua_State *L)
 
     lcheck_param_table(L);
 
-    dx1 = get_table_int_opt(L, "x1", -1);
-    dy1 = get_table_int_opt(L, "y1", -1);
-    dx2 = get_table_int_opt(L, "x2", -1);
-    dy2 = get_table_int_opt(L, "y2", -1);
-
-    if (dx1 == -1 && dy1 == -1 && dx2 == -1 && dy2 == -1) {
-        lua_Integer rx1, ry1, rx2, ry2;
-        get_table_region(L, "region", &rx1, &ry1, &rx2, &ry2, FALSE);
-        dx1 = rx1; dy1 = ry1;
-        dx2 = rx2; dy2 = ry2;
-    }
+    get_table_coords_or_region(L, &dx1, &dy1, &dx2, &dy2);
 
     wprop = wprop2i[get_table_option(L, "property", "nondiggable", wprops)];
 
@@ -6882,9 +6921,7 @@ TODO: gc.coder->croom needs to be updated
     }
     else if (has_contents) {
         l_push_wid_hei_table(L, gx.xsize, gy.ysize);
-        if (nhl_pcall(L, 1, 0)){
-            impossible("Lua error: %s", lua_tostring(L, -1));
-        }
+        nhl_pcall_handle(L, 1, 0, "lspo_map", NHLpa_panic);
         reset_xystart_size();
     }
 
@@ -7008,6 +7045,7 @@ static const struct luaL_Reg nhl_functions[] = {
     { "teleport_region", lspo_teleport_region },
     { "reset_level", lspo_reset_level },
     { "finalize_level", lspo_finalize_level },
+    { "gas_cloud", lspo_gas_cloud },
     /* TODO: { "branch", lspo_branch }, */
     /* TODO: { "portal", lspo_portal }, */
     { NULL, NULL }
@@ -7051,7 +7089,7 @@ boolean
 load_special(const char *name)
 {
     boolean result = FALSE;
-    nhl_sandbox_info sbi = {NHL_SB_SAFE, 0, 0, 0};
+    nhl_sandbox_info sbi = {NHL_SB_SAFE, 1*1024*1024, 0, 1*1024*1024};
 
     create_des_coder();
 

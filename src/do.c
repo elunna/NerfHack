@@ -1,4 +1,4 @@
-/* NetHack 3.7	do.c	$NHDT-Date: 1702023250 2023/12/08 08:14:10 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.368 $ */
+/* NetHack 3.7	do.c	$NHDT-Date: 1704225560 2024/01/02 19:59:20 $  $NHDT-Branch: keni-luabits2 $:$NHDT-Revision: 1.376 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -1623,7 +1623,7 @@ goto_level(
     if (gl.luacore && nhcb_counts[NHCB_LVL_LEAVE]) {
         lua_getglobal(gl.luacore, "nh_callback_run");
         lua_pushstring(gl.luacore, nhcb_name[NHCB_LVL_LEAVE]);
-        nhl_pcall(gl.luacore, 1, 0);
+        nhl_pcall_handle(gl.luacore, 1, 0, "goto_level", NHLpa_panic);
     }
 
     /* tethered movement makes level change while trapped feasible */
@@ -1882,6 +1882,7 @@ goto_level(
     /* Reset the screen. */
     vision_reset(); /* reset the blockages */
     reset_glyphmap(gm_levelchange);
+    notice_mon_off(); /* not noticing monsters yet! */
     docrt(); /* does a full vision recalc */
     flush_screen(-1);
 
@@ -1998,6 +1999,8 @@ goto_level(
 #ifdef INSURANCE
     save_currentstate();
 #endif
+    notice_mon_on();
+    notice_all_mons(TRUE);
 
     print_level_annotation();
     /* give room entrance message, if any */
@@ -2452,7 +2455,7 @@ set_wounded_legs(long side, int timex)
      * You still call this function, but don't lose hp.
      * Caller is also responsible for adjusting messages.
      */
-    gc.context.botl = 1;
+    disp.botl = TRUE;
     if (!Wounded_legs)
         ATEMP(A_DEX)--;
 
@@ -2472,7 +2475,7 @@ heal_legs(
     int how) /* 0: ordinary, 1: dismounting steed, 2: limbs turn to stone */
 {
     if (Wounded_legs) {
-        gc.context.botl = 1;
+        disp.botl = TRUE;
         if (ATEMP(A_DEX) < 0)
             ATEMP(A_DEX)++;
 

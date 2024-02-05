@@ -1,4 +1,4 @@
-/* NetHack 3.7	mcastu.c	$NHDT-Date: 1596498177 2020/08/03 23:42:57 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.68 $ */
+/* NetHack 3.7	mcastu.c	$NHDT-Date: 1705428596 2024/01/16 18:09:56 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.95 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -68,7 +68,8 @@ cursetxt(struct monst *mtmp, boolean undirected)
         else
             point_msg = "at you, then curses";
 
-        pline("%s points %s.", Monnam(mtmp), point_msg);
+        pline_xy(mtmp->mx, mtmp->my,
+                 "%s points %s.", Monnam(mtmp), point_msg);
     } else if ((!(gm.moves % 4) || !rn2(4))) {
         if (!Deaf)
             Norep("You hear a mumbled curse.");   /* Deaf-aware */
@@ -259,42 +260,48 @@ castmu(
     }
 
     if (mattk->adtyp == AD_SPEL || mattk->adtyp == AD_CLRC) {
-        mtmp->mspec_used = 10 - mtmp->m_lev;
-        if (mtmp->mspec_used < 2)
-            mtmp->mspec_used = 2;
+        /* monst->m_lev is unsigned (uchar), permonst->mspec_used is int */
+        mtmp->mspec_used = (int) ((mtmp->m_lev < 8) ? (10 - mtmp->m_lev) : 2);
     }
 
-    /* monster can cast spells, but is casting a directed spell at the
-       wrong place?  If so, give a message, and return.  Do this *after*
-       penalizing mspec_used. */
+    /* Monster can cast spells, but is casting a directed spell at the
+     * wrong place?  If so, give a message, and return.
+     * Do this *after* penalizing mspec_used.
+     *
+     * FIXME?
+     *  Shouldn't wall of lava have a case similar to wall of water?
+     *  And should cold damage hit water or lava instead of missing
+     *  even when the caster has targeted the wrong spot?  Likewise
+     *  for fire mis-aimed at ice.
+     */
     if (!foundyou && thinks_it_foundyou
         && !is_undirected_spell(mattk->adtyp, spellnum)) {
-        pline("%s casts a spell at %s!",
-              canseemon(mtmp) ? Monnam(mtmp) : "Something",
-              is_waterwall(mtmp->mux,mtmp->muy) ? "empty water"
-                                                : "thin air");
+        pline_xy(mtmp->mx, mtmp->my, "%s casts a spell at %s!",
+                 canseemon(mtmp) ? Monnam(mtmp) : "Something",
+                 is_waterwall(mtmp->mux, mtmp->muy) ? "empty water"
+                                                    : "thin air");
         return M_ATTK_MISS;
     }
 
     nomul(0);
     if (rn2(ml * 10) < (mtmp->mconf ? 100 : 20)) { /* fumbled attack */
         Soundeffect(se_air_crackles, 60);
-        if (canseemon(mtmp) && !Deaf)
+        if (canseemon(mtmp) && !Deaf) {
+            set_msg_xy(mtmp->mx, mtmp->my);
             pline_The("air crackles around %s.", mon_nam(mtmp));
+        }
         return M_ATTK_MISS;
     }
     if (canspotmon(mtmp) || !is_undirected_spell(mattk->adtyp, spellnum)) {
-        pline("%s casts a spell%s!",
-              canspotmon(mtmp) ? Monnam(mtmp) : "Something",
-              is_undirected_spell(mattk->adtyp, spellnum)
-                  ? ""
-                  : (Invis && !perceives(mtmp->data)
-                     && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                        ? " at a spot near you"
-                        : (Displaced
-                           && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                              ? " at your displaced image"
-                              : " at you");
+        pline_xy(mtmp->mx, mtmp->my, "%s casts a spell%s!",
+                 canspotmon(mtmp) ? Monnam(mtmp) : "Something",
+                 is_undirected_spell(mattk->adtyp, spellnum) ? ""
+                 : (Invis && !perceives(mtmp->data)
+                    && !u_at(mtmp->mux, mtmp->muy))
+                   ? " at a spot near you"
+                   : (Displaced && !u_at(mtmp->mux, mtmp->muy))
+                     ? " at your displaced image"
+                     : " at you");
     }
 
     /*
@@ -317,6 +324,10 @@ castmu(
         dmg = (dmg + 1) / 2;
 
     ret = M_ATTK_HIT;
+    /*
+     * FIXME: none of these hit the steed when hero is riding, nor do
+     *  they inflict damage on carried items.
+     */
     switch (mattk->adtyp) {
     case AD_FIRE:
         pline("You're enveloped in flames.");
@@ -329,6 +340,8 @@ castmu(
             monstunseesu(M_SEEN_FIRE);
         }
         burn_away_slime();
+        /* burn up flammable items on the floor, melt ice terrain */
+        mon_spell_hits_spot(mtmp, AD_FIRE, u.ux, u.uy);
         break;
     case AD_COLD:
         pline("You're covered in frost.");
@@ -340,6 +353,10 @@ castmu(
         } else {
             monstunseesu(M_SEEN_COLD);
         }
+        /* freeze water or lava terrain */
+        /* FIXME: mon_spell_hits_spot() uses zap_over_floor(); unlike with
+         * fire, it does not target susceptible floor items with cold */
+        mon_spell_hits_spot(mtmp, AD_COLD, u.ux, u.uy);
         break;
     case AD_MAGM:
         You("are hit by a shower of missiles!");
@@ -354,6 +371,8 @@ castmu(
         if (Half_spell_damage) { /* stacks with Antimagic */
             dmg = (dmg + 1) / 2;
         }
+        /* shower of magic missiles scuffs an engraving */
+        mon_spell_hits_spot(mtmp, AD_MAGM, u.ux, u.uy);
         break;
     case AD_SPEL: /* wizard spell */
     case AD_CLRC: /* clerical spell */
@@ -365,7 +384,7 @@ castmu(
         dmg = 0; /* done by the spell casting functions */
         break;
     }
-    }
+    } /* switch */
     if (dmg)
         mdamageu(mtmp, dmg);
     return ret;
@@ -423,7 +442,7 @@ death_inflicted_by(
     Strcpy(outbuf, deathreason);
     if (mtmp) {
         struct permonst *mptr = mtmp->data,
-            *champtr = (mtmp->cham >= LOW_PM) ? &mons[mtmp->cham] : mptr;
+            *champtr = (ismnum(mtmp->cham)) ? &mons[mtmp->cham] : mptr;
         const char *realnm = pmname(champtr, Mgender(mtmp)),
             *fakenm = pmname(mptr, Mgender(mtmp));
 
@@ -851,6 +870,9 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
             dmg = 0; /* prevent further damage after rehumanization */
         }
         erode_armor(&gy.youmonst, ERODE_RUST);
+        /* since inventory items aren't affected, don't include this */
+        /* make floor items wet */
+        water_damage_chain(gl.level.objects[u.ux][u.uy], TRUE);
         break;
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
@@ -870,7 +892,8 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         destroy_item(POTION_CLASS, AD_FIRE);
         destroy_item(SPBOOK_CLASS, AD_FIRE);
         ignite_items(gi.invent);
-        (void) burn_floor_objects(u.ux, u.uy, TRUE, FALSE);
+        /* burn up flammable items on the floor, melt ice terrain */
+        mon_spell_hits_spot(mtmp, AD_FIRE, u.ux, u.uy);
         break;
     case CLC_LIGHTNING: {
         boolean reflects;
@@ -895,6 +918,12 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
             dmg = (dmg + 1) / 2;
         destroy_item(WAND_CLASS, AD_ELEC);
         destroy_item(RING_CLASS, AD_ELEC);
+        /* lightning might destroy iron bars if hero is on such a spot;
+           reflection protects terrain here [execution won't get here due
+           to 'if (reflects) break' above] but hero resistance doesn't;
+           do this before maybe blinding the hero via flashburn() */
+        mon_spell_hits_spot(mtmp, AD_ELEC, u.ux, u.uy);
+        /* blind hero; no effect if already blind */
         (void) flashburn((long) rnd(100));
         break;
     }

@@ -13,9 +13,18 @@ struct trobj {
     Bitfield(trbless, 2);
 };
 
+static struct obj *ini_inv_mkobj_filter(int, boolean);
+static short ini_inv_obj_substitution(struct trobj *,
+                                      struct obj *) NONNULLPTRS;
+static void ini_inv_adjust_obj(struct trobj *,
+                               struct obj *) NONNULLPTRS;
+static void ini_inv_use_obj(struct obj *) NONNULLARG1;
 static void ini_inv(struct trobj *) NONNULLARG1;
 static void knows_object(int);
 static void knows_class(char);
+static void u_init_role(void);
+static void u_init_race(void);
+static void u_init_carry_attr_boost(void);
 static boolean restricted_spell_discipline(int);
 
 #define UNDEF_TYP 0
@@ -591,91 +600,12 @@ knows_class(char sym)
     }
 }
 
-void
-u_init(void)
+/* role-specific initializations */
+static void
+u_init_role(void)
 {
     int i;
-    struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
 
-    flags.female = flags.initgend;
-    flags.beginner = 1;
-
-    /* zero u, including pointer values --
-     * necessary when aborting from a failed restore */
-    (void) memset((genericptr_t) &u, 0, sizeof(u));
-    u.ustuck = (struct monst *) 0;
-    (void) memset((genericptr_t) &ubirthday, 0, sizeof(ubirthday));
-    (void) memset((genericptr_t) &urealtime, 0, sizeof(urealtime));
-
-    u.uroleplay = tmpuroleplay; /* restore options set via rcfile */
-
-#if 0  /* documentation of more zero values as desirable */
-    u.usick_cause[0] = 0;
-    u.uluck  = u.moreluck = 0;
-    uarmu = 0;
-    uarm = uarmc = uarmh = uarms = uarmg = uarmf = 0;
-    uwep = uball = uchain = uleft = uright = 0;
-    uswapwep = uquiver = 0;
-    u.twoweap = FALSE; /* bypass set_twoweap() */
-    u.ublessed = 0;                     /* not worthy yet */
-    u.ugangr   = 0;                     /* gods not angry */
-    u.ugifts   = 0;                     /* no divine gifts bestowed */
-    u.uevent.uhand_of_elbereth = 0;
-    u.uevent.uheard_tune = 0;
-    u.uevent.uopened_dbridge = 0;
-    u.uevent.udemigod = 0;              /* not a demi-god yet... */
-    u.udg_cnt = 0;
-    u.mh = u.mhmax = u.mtimedone = 0;
-    u.uz.dnum = u.uz0.dnum = 0;
-    u.utotype = UTOTYPE_NONE;
-#endif /* 0 */
-
-    u.uz.dlevel = 1;
-    u.uz0.dlevel = 0;
-    u.utolev = u.uz;
-
-    u.umoved = FALSE;
-    u.umortality = 0;
-    u.ugrave_arise = NON_PM;
-
-    u.umonnum = u.umonster = gu.urole.mnum;
-    u.ulycn = NON_PM;
-    set_uasmon();
-
-    u.ulevel = 0; /* set up some of the initial attributes */
-    u.uhp = u.uhpmax = u.uhppeak = newhp();
-    u.uen = u.uenmax = u.uenpeak = newpw();
-    u.uspellprot = 0;
-    adjabil(0, 1);
-    u.ulevel = u.ulevelmax = 1;
-
-    init_uhunger();
-    for (i = 0; i <= MAXSPELL; i++)
-        gs.spl_book[i].sp_id = NO_SPELL;
-    u.ublesscnt = 300; /* no prayers just yet */
-    u.ualignbase[A_CURRENT] = u.ualignbase[A_ORIGINAL] = u.ualign.type =
-        aligns[flags.initalign].value;
-
-#if defined(BSD) && !defined(POSIX_TYPES)
-    (void) time((long *) &ubirthday);
-#else
-    (void) time(&ubirthday);
-#endif
-
-    /*
-     *  For now, everyone starts out with a night vision range of 1 and
-     *  their xray range disabled.
-     */
-    u.nv_range = 1;
-    u.xray_range = -1;
-    /* OPTIONS:blind results in permanent blindness (unless overridden
-       by the Eyes of the Overworld, which will clear 'u.uroleplay.blind'
-       to void the conduct, but will leave the PermaBlind bit set so that
-       blindness resumes when the Eyes are removed). */
-    if (u.uroleplay.blind)
-        HBlinded |= FROMOUTSIDE; /* set PermaBlind */
-
-    /*** Role-specific initializations ***/
     switch (Role_switch) {
     /* rn2(100) > 50 necessary for some choices because some
      * random number generators are bad enough to seriously
@@ -816,8 +746,12 @@ u_init(void)
     default: /* impossible */
         break;
     }
+}
 
-    /*** Race-specific initializations ***/
+/* race-specific initializations */
+static void
+u_init_race(void)
+{
     switch (Race_switch) {
     case PM_HUMAN:
         /* Nothing special */
@@ -909,6 +843,109 @@ u_init(void)
     default: /* impossible */
         break;
     }
+}
+
+/* boost STR and CON until hero can carry inventory */
+static void
+u_init_carry_attr_boost(void)
+{
+    /* make sure you can carry all you have - especially for Tourists */
+    while (inv_weight() > 0) {
+        if (adjattrib(A_STR, 1, TRUE))
+            continue;
+        if (adjattrib(A_CON, 1, TRUE))
+            continue;
+        /* only get here when didn't boost strength or constitution */
+        break;
+    }
+}
+
+void
+u_init(void)
+{
+    int i;
+    struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
+
+    flags.female = flags.initgend;
+    flags.beginner = TRUE;
+
+    /* zero u, including pointer values --
+     * necessary when aborting from a failed restore */
+    (void) memset((genericptr_t) &u, 0, sizeof(u));
+    u.ustuck = (struct monst *) 0;
+    (void) memset((genericptr_t) &ubirthday, 0, sizeof(ubirthday));
+    (void) memset((genericptr_t) &urealtime, 0, sizeof(urealtime));
+
+    u.uroleplay = tmpuroleplay; /* restore options set via rcfile */
+
+#if 0  /* documentation of more zero values as desirable */
+    u.usick_cause[0] = 0;
+    u.uluck  = u.moreluck = 0;
+    uarmu = 0;
+    uarm = uarmc = uarmh = uarms = uarmg = uarmf = 0;
+    uwep = uball = uchain = uleft = uright = 0;
+    uswapwep = uquiver = 0;
+    u.twoweap = FALSE; /* bypass set_twoweap() */
+    u.ublessed = 0;                     /* not worthy yet */
+    u.ugangr   = 0;                     /* gods not angry */
+    u.ugifts   = 0;                     /* no divine gifts bestowed */
+    u.uevent.uhand_of_elbereth = 0;
+    u.uevent.uheard_tune = 0;
+    u.uevent.uopened_dbridge = 0;
+    u.uevent.udemigod = 0;              /* not a demi-god yet... */
+    u.udg_cnt = 0;
+    u.mh = u.mhmax = u.mtimedone = 0;
+    u.uz.dnum = u.uz0.dnum = 0;
+    u.utotype = UTOTYPE_NONE;
+#endif /* 0 */
+
+    u.uz.dlevel = 1;
+    u.uz0.dlevel = 0;
+    u.utolev = u.uz;
+
+    u.umoved = FALSE;
+    u.umortality = 0;
+    u.ugrave_arise = NON_PM;
+
+    u.umonnum = u.umonster = gu.urole.mnum;
+    u.ulycn = NON_PM;
+    set_uasmon();
+
+    u.ulevel = 0; /* set up some of the initial attributes */
+    u.uhp = u.uhpmax = u.uhppeak = newhp();
+    u.uen = u.uenmax = u.uenpeak = newpw();
+    u.uspellprot = 0;
+    adjabil(0, 1);
+    u.ulevel = u.ulevelmax = 1;
+
+    init_uhunger();
+    for (i = 0; i <= MAXSPELL; i++)
+        gs.spl_book[i].sp_id = NO_SPELL;
+    u.ublesscnt = 300; /* no prayers just yet */
+    u.ualignbase[A_CURRENT] = u.ualignbase[A_ORIGINAL] = u.ualign.type =
+        aligns[flags.initalign].value;
+
+#if defined(BSD) && !defined(POSIX_TYPES)
+    (void) time((long *) &ubirthday);
+#else
+    (void) time(&ubirthday);
+#endif
+
+    /*
+     *  For now, everyone starts out with a night vision range of 1 and
+     *  their xray range disabled.
+     */
+    u.nv_range = 1;
+    u.xray_range = -1;
+    /* OPTIONS:blind results in permanent blindness (unless overridden
+       by the Eyes of the Overworld, which will clear 'u.uroleplay.blind'
+       to void the conduct, but will leave the PermaBlind bit set so that
+       blindness resumes when the Eyes are removed). */
+    if (u.uroleplay.blind)
+        HBlinded |= FROMOUTSIDE; /* set PermaBlind */
+
+    u_init_role();
+    u_init_race();
 
     /* roughly based on distribution in human population */
     u.uhandedness = rn2(10) ? RIGHT_HANDED : LEFT_HANDED;
@@ -925,28 +962,9 @@ u_init(void)
 
     find_ac();     /* get initial ac value */
     init_attr(75); /* init attribute values */
+    vary_init_attr(); /* minor variation to attrs */
+    u_init_carry_attr_boost();
     max_rank_sz(); /* set max str size for class ranks */
-    /*
-     *  Do we really need this?
-     */
-    for (i = 0; i < A_MAX; i++)
-        if (!rn2(20)) {
-            register int xd = rn2(7) - 2; /* biased variation */
-
-            (void) adjattrib(i, xd, TRUE);
-            if (ABASE(i) < AMAX(i))
-                AMAX(i) = ABASE(i);
-        }
-
-    /* make sure you can carry all you have - especially for Tourists */
-    while (inv_weight() > 0) {
-        if (adjattrib(A_STR, 1, TRUE))
-            continue;
-        if (adjattrib(A_CON, 1, TRUE))
-            continue;
-        /* only get here when didn't boost strength or constitution */
-        break;
-    }
 
     /* If we have at least one spell, force starting Pw to be enough,
        so hero can cast the level 1 spell they should have */
@@ -1020,11 +1038,182 @@ restricted_spell_discipline(int otyp)
     return TRUE;
 }
 
+/* create random object of certain class, filtering out too powerful items */
+static struct obj *
+ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
+{
+    struct obj *obj;
+    int otyp, trycnt = 0;
+
+    /*
+     * For random objects, do not create certain overly powerful
+     * items: wand of wishing, ring of levitation, or the
+     * polymorph/polymorph control combination.  Specific objects,
+     * i.e. the discovery wishing, are still OK.
+     * Also, don't get a couple of really useless items.  (Note:
+     * punishment isn't "useless".  Some players who start out with
+     * one will immediately read it and use the iron ball as a
+     * weapon.)
+     */
+    obj = mkobj(oclass, FALSE);
+    otyp = obj->otyp;
+
+    while (otyp == WAN_WISHING || otyp == gn.nocreate
+           || otyp == gn.nocreate2 || otyp == gn.nocreate3
+           || otyp == gn.nocreate4 || otyp == RIN_LEVITATION
+           /* 'useless' items */
+           || otyp == POT_HALLUCINATION
+           || otyp == POT_ACID
+           || otyp == SCR_AMNESIA
+           || otyp == SCR_FIRE
+           || otyp == SCR_BLANK_PAPER
+           || otyp == SPE_BLANK_PAPER
+           || otyp == RIN_AGGRAVATE_MONSTER
+           || otyp == RIN_HUNGER
+           || otyp == WAN_NOTHING
+           /* orcs start with poison resistance */
+           || (otyp == RIN_POISON_RESISTANCE && Race_if(PM_ORC))
+           /* Monks don't use weapons */
+           || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
+           /* wizard patch -- they already have one */
+           || (otyp == SPE_FORCE_BOLT && Role_if(PM_WIZARD))
+           /* powerful spells are either useless to
+              low level players or unbalancing; also
+              spells in restricted skill categories */
+           || (obj->oclass == SPBOOK_CLASS
+               && (objects[otyp].oc_level > (got_level1_spellbook ? 3 : 1)
+                   || restricted_spell_discipline(otyp)))
+           || otyp == SPE_NOVEL) {
+        dealloc_obj(obj);
+        obj = mkobj(oclass, FALSE);
+        otyp = obj->otyp;
+        if (++trycnt > 1000)
+            break;
+    }
+    return obj;
+}
+
+/* substitute object with something else based on race.
+   only changes otyp, and returns it. */
+static short
+ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
+{
+    if (gu.urace.mnum != PM_HUMAN) {
+        int i;
+
+        /* substitute race-specific items; this used to be in
+           the 'if (otyp != UNDEF_TYP) { }' block above, but then
+           substitutions didn't occur for randomly generated items
+           (particularly food) which have racial substitutes */
+        for (i = 0; inv_subs[i].race_pm != NON_PM; ++i)
+            if (inv_subs[i].race_pm == gu.urace.mnum
+                && obj->otyp == inv_subs[i].item_otyp) {
+                debugpline3("ini_inv: substituting %s for %s%s",
+                            OBJ_NAME(objects[inv_subs[i].subs_otyp]),
+                            (trop->trotyp == UNDEF_TYP) ? "random " : "",
+                            OBJ_NAME(objects[obj->otyp]));
+                obj->otyp = inv_subs[i].subs_otyp;
+                break;
+            }
+    }
+    return obj->otyp;
+}
+
+static void
+ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
+{
+    if (trop->trclass == COIN_CLASS) {
+        /* no "blessed" or "identified" money */
+        obj->quan = u.umoney0;
+    } else {
+        if (objects[obj->otyp].oc_uses_known)
+            obj->known = 1;
+        obj->dknown = obj->bknown = obj->rknown = 1;
+        if (Is_container(obj) || obj->otyp == STATUE) {
+            obj->cknown = obj->lknown = 1;
+            obj->otrapped = 0;
+        }
+        obj->cursed = 0;
+        if (obj->opoisoned && u.ualign.type != A_CHAOTIC)
+            obj->opoisoned = 0;
+        if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS) {
+            obj->quan = (long) trop->trquan;
+            trop->trquan = 1;
+        } else if (obj->oclass == GEM_CLASS && is_graystone(obj)
+                   && obj->otyp != FLINT) {
+            obj->quan = 1L;
+        }
+        if (trop->trspe != UNDEF_SPE) {
+            obj->spe = trop->trspe;
+            if (trop->trotyp == MAGIC_MARKER && obj->spe < 96)
+                obj->spe += rn2(4);
+        } else {
+            /* Don't start with +0 or negative rings */
+            if (objects[obj->otyp].oc_class == RING_CLASS
+                && objects[obj->otyp].oc_charged && obj->spe <= 0)
+                obj->spe = rne(3);
+        }
+        if (trop->trbless != UNDEF_BLESS)
+            obj->blessed = trop->trbless;
+
+    }
+    /* defined after setting otyp+quan + blessedness */
+    obj->owt = weight(obj);
+}
+
+/* initial inventory: wear, wield, learn the spell/obj */
+static void
+ini_inv_use_obj(struct obj *obj)
+{
+    /* Make the type known if necessary */
+    if (OBJ_DESCR(objects[obj->otyp]) && obj->known)
+        discover_object(obj->otyp, TRUE, FALSE);
+    if (obj->otyp == OIL_LAMP)
+        discover_object(POT_OIL, TRUE, FALSE);
+
+    if (obj->oclass == ARMOR_CLASS) {
+        if (is_shield(obj) && !uarms && !(uwep && bimanual(uwep))) {
+            setworn(obj, W_ARMS);
+            /* Prior to 3.6.2 this used to unset uswapwep if it was set,
+               but wearing a shield doesn't prevent having an alternate
+               weapon ready to swap with the primary; just make sure we
+               aren't two-weaponing (academic; no one starts that way) */
+            set_twoweap(FALSE); /* u.twoweap = FALSE */
+        } else if (is_helmet(obj) && !uarmh)
+            setworn(obj, W_ARMH);
+        else if (is_gloves(obj) && !uarmg)
+            setworn(obj, W_ARMG);
+        else if (is_shirt(obj) && !uarmu)
+            setworn(obj, W_ARMU);
+        else if (is_cloak(obj) && !uarmc)
+            setworn(obj, W_ARMC);
+        else if (is_boots(obj) && !uarmf)
+            setworn(obj, W_ARMF);
+        else if (is_suit(obj) && !uarm)
+            setworn(obj, W_ARM);
+    }
+
+    if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
+        || obj->otyp == TIN_OPENER
+        || obj->otyp == FLINT || obj->otyp == ROCK) {
+        if (is_ammo(obj) || is_missile(obj)) {
+            if (!uquiver)
+                setuqwep(obj);
+        } else if (!uwep && (!uarms || !bimanual(obj))) {
+            setuwep(obj);
+        } else if (!uswapwep) {
+            setuswapwep(obj);
+        }
+    }
+    if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)
+        initialspell(obj);
+}
+
 static void
 ini_inv(struct trobj *trop)
 {
     struct obj *obj;
-    int otyp, i;
+    int otyp;
     boolean got_sp1 = FALSE; /* got a level 1 spellbook? */
 
     while (trop->trclass) {
@@ -1032,52 +1221,8 @@ ini_inv(struct trobj *trop)
         if (otyp != UNDEF_TYP) {
             obj = mksobj(otyp, TRUE, FALSE);
         } else { /* UNDEF_TYP */
-            int trycnt = 0;
-            /*
-             * For random objects, do not create certain overly powerful
-             * items: wand of wishing, ring of levitation, or the
-             * polymorph/polymorph control combination.  Specific objects,
-             * i.e. the discovery wishing, are still OK.
-             * Also, don't get a couple of really useless items.  (Note:
-             * punishment isn't "useless".  Some players who start out with
-             * one will immediately read it and use the iron ball as a
-             * weapon.)
-             */
-            obj = mkobj(trop->trclass, FALSE);
+            obj = ini_inv_mkobj_filter(trop->trclass, got_sp1);
             otyp = obj->otyp;
-            while (otyp == WAN_WISHING || otyp == gn.nocreate
-                   || otyp == gn.nocreate2 || otyp == gn.nocreate3
-                   || otyp == gn.nocreate4 || otyp == RIN_LEVITATION
-                   /* 'useless' items */
-                   || otyp == POT_HALLUCINATION
-                   || otyp == POT_ACID
-                   || otyp == SCR_AMNESIA
-                   || otyp == SCR_FIRE
-                   || otyp == SCR_BLANK_PAPER
-                   || otyp == SPE_BLANK_PAPER
-                   || otyp == RIN_AGGRAVATE_MONSTER
-                   || otyp == RIN_HUNGER
-                   || otyp == WAN_NOTHING
-                   /* orcs start with poison resistance */
-                   || (otyp == RIN_POISON_RESISTANCE && Race_if(PM_ORC))
-                   /* Monks don't use weapons */
-                   || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
-                   /* wizard patch -- they already have one */
-                   || (otyp == SPE_FORCE_BOLT && Role_if(PM_WIZARD))
-                   /* powerful spells are either useless to
-                      low level players or unbalancing; also
-                      spells in restricted skill categories */
-                   || (obj->oclass == SPBOOK_CLASS
-                       && (objects[otyp].oc_level > (got_sp1 ? 3 : 1)
-                           || restricted_spell_discipline(otyp)))
-                   || otyp == SPE_NOVEL) {
-                dealloc_obj(obj);
-                obj = mkobj(trop->trclass, FALSE);
-                otyp = obj->otyp;
-                if (++trycnt > 1000)
-                    break;
-            }
-
             /* Heavily relies on the fact that 1) we create wands
              * before rings, 2) that we create rings before
              * spellbooks, and that 3) not more than 1 object of a
@@ -1102,27 +1247,7 @@ ini_inv(struct trobj *trop)
         /* Put post-creation object adjustments that don't depend on whether it
          * was UNDEF_TYP or not after this. */
 
-        /* Don't start with +0 or negative rings */
-        if (objects[otyp].oc_class == RING_CLASS && objects[otyp].oc_charged
-            && obj->spe <= 0)
-            obj->spe = rne(3);
-
-        if (gu.urace.mnum != PM_HUMAN) {
-            /* substitute race-specific items; this used to be in
-               the 'if (otyp != UNDEF_TYP) { }' block above, but then
-               substitutions didn't occur for randomly generated items
-               (particularly food) which have racial substitutes */
-            for (i = 0; inv_subs[i].race_pm != NON_PM; ++i)
-                if (inv_subs[i].race_pm == gu.urace.mnum
-                    && otyp == inv_subs[i].item_otyp) {
-                    debugpline3("ini_inv: substituting %s for %s%s",
-                                OBJ_NAME(objects[inv_subs[i].subs_otyp]),
-                                (trop->trotyp == UNDEF_TYP) ? "random " : "",
-                                OBJ_NAME(objects[otyp]));
-                    otyp = obj->otyp = inv_subs[i].subs_otyp;
-                    break;
-                }
-        }
+        otyp = ini_inv_obj_substitution(trop, obj);
 
         /* nudist gets no armor */
         if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS) {
@@ -1131,78 +1256,10 @@ ini_inv(struct trobj *trop)
             continue;
         }
 
-        if (trop->trclass == COIN_CLASS) {
-            /* no "blessed" or "identified" money */
-            obj->quan = u.umoney0;
-        } else {
-            if (objects[otyp].oc_uses_known)
-                obj->known = 1;
-            obj->dknown = obj->bknown = obj->rknown = 1;
-            if (Is_container(obj) || obj->otyp == STATUE) {
-                obj->cknown = obj->lknown = 1;
-                obj->otrapped = 0;
-            }
-            obj->cursed = 0;
-            if (obj->opoisoned && u.ualign.type != A_CHAOTIC)
-                obj->opoisoned = 0;
-            if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS) {
-                obj->quan = (long) trop->trquan;
-                trop->trquan = 1;
-            } else if (obj->oclass == GEM_CLASS && is_graystone(obj)
-                       && obj->otyp != FLINT) {
-                obj->quan = 1L;
-            }
-            if (trop->trspe != UNDEF_SPE) {
-                obj->spe = trop->trspe;
-            }
-            if (trop->trbless != UNDEF_BLESS)
-                obj->blessed = trop->trbless;
-        }
-        /* defined after setting otyp+quan + blessedness */
-        obj->owt = weight(obj);
+        ini_inv_adjust_obj(trop, obj);
         obj = addinv(obj);
 
-        /* Make the type known if necessary */
-        if (OBJ_DESCR(objects[otyp]) && obj->known)
-            discover_object(otyp, TRUE, FALSE);
-        if (otyp == OIL_LAMP)
-            discover_object(POT_OIL, TRUE, FALSE);
-
-        if (obj->oclass == ARMOR_CLASS) {
-            if (is_shield(obj) && !uarms && !(uwep && bimanual(uwep))) {
-                setworn(obj, W_ARMS);
-                /* Prior to 3.6.2 this used to unset uswapwep if it was set,
-                   but wearing a shield doesn't prevent having an alternate
-                   weapon ready to swap with the primary; just make sure we
-                   aren't two-weaponing (academic; no one starts that way) */
-                set_twoweap(FALSE); /* u.twoweap = FALSE */
-            } else if (is_helmet(obj) && !uarmh)
-                setworn(obj, W_ARMH);
-            else if (is_gloves(obj) && !uarmg)
-                setworn(obj, W_ARMG);
-            else if (is_shirt(obj) && !uarmu)
-                setworn(obj, W_ARMU);
-            else if (is_cloak(obj) && !uarmc)
-                setworn(obj, W_ARMC);
-            else if (is_boots(obj) && !uarmf)
-                setworn(obj, W_ARMF);
-            else if (is_suit(obj) && !uarm)
-                setworn(obj, W_ARM);
-        }
-
-        if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
-            || otyp == TIN_OPENER || otyp == FLINT || otyp == ROCK) {
-            if (is_ammo(obj) || is_missile(obj)) {
-                if (!uquiver)
-                    setuqwep(obj);
-            } else if (!uwep && (!uarms || !bimanual(obj))) {
-                setuwep(obj);
-            } else if (!uswapwep) {
-                setuswapwep(obj);
-            }
-        }
-        if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)
-            initialspell(obj);
+        ini_inv_use_obj(obj);
 
         /* First spellbook should be level 1 - did we get it? */
         if (obj->oclass == SPBOOK_CLASS && objects[obj->otyp].oc_level == 1)

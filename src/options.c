@@ -376,6 +376,7 @@ static int handler_perminv_mode(void);
 static int handler_pickup_burden(void);
 static int handler_pickup_types(void);
 static int handler_runmode(void);
+static int handler_petattr(void);
 static int handler_sortloot(void);
 static int handler_symset(int);
 static int handler_whatis_coord(void);
@@ -395,10 +396,6 @@ static void wc_set_font_name(int, char *);
 static int wc_set_window_colors(char *);
 static boolean illegal_menu_cmd_key(uchar);
 static const char *term_for_boolean(int, boolean *);
-#ifdef CURSES_GRAPHICS
-extern int curses_read_attrs(const char *attrs);
-extern char *curses_fmt_attrs(char *);
-#endif
 
 /* ask user if they want a tutorial, except if tutorial boolean option has
    been set in config - either on or off - in which case just obey that
@@ -2950,8 +2947,8 @@ optfn_petattr(
             bad_negation(allopt[optidx].name, TRUE);
             retval = optn_err;
         } else if (op != empty_optstr) {
-#ifdef CURSES_GRAPHICS
-            int itmp = curses_read_attrs(op);
+#if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
+            int itmp = match_str2attr(op, FALSE);
 
             if (itmp == -1) {
                 config_error_add("Unknown %s parameter '%s'",
@@ -2960,9 +2957,6 @@ optfn_petattr(
             } else
                 iflags.wc2_petattr = itmp;
 #else
-            /* non-curses windowports will not use this flag anyway
-             * but the above will not compile if we don't have curses.
-             * Just set it to a sensible default: */
             iflags.wc2_petattr = ATR_INVERSE;
 #endif
         } else if (negated) {
@@ -2976,11 +2970,9 @@ optfn_petattr(
         return retval;
     }
     if (req == get_val || req == get_cnf_val) {
-#ifdef CURSES_GRAPHICS
-        if (WINDOWPORT(curses)) {
-            char tmpbuf[QBUFSZ];
-
-            Strcpy(opts, curses_fmt_attrs(tmpbuf));
+#if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
+        if (WINDOWPORT(tty) || WINDOWPORT(curses)) {
+            Strcpy(opts, attr2attrname(iflags.wc2_petattr));
         } else
 #endif
         if (iflags.wc2_petattr != 0)
@@ -2989,6 +2981,9 @@ optfn_petattr(
             opts[0] = '\0';
         else
             Strcpy(opts, defopt);
+    }
+    if (req == do_handler) {
+        return handler_petattr();
     }
     return optn_ok;
 }
@@ -3683,16 +3678,7 @@ optfn_sortdiscoveries(
         return optn_ok;
     }
     if (req == get_val || req == get_cnf_val) {
-        extern const char *const disco_orders_descr[]; /* o_init.c */
-        extern const char disco_order_let[];
-        const char *p = strchr(disco_order_let, flags.discosort);
-
-        if (!p)
-            flags.discosort = 'o', p = disco_order_let;
-        if (req == get_cnf_val)
-            Sprintf(opts, "%c", flags.discosort);
-        else
-            Strcpy(opts, disco_orders_descr[p - disco_order_let]);
+        get_sortdisco(opts, (req == get_cnf_val) ? TRUE : FALSE);
         return optn_ok;
     }
     if (req == do_handler) {
@@ -4996,6 +4982,19 @@ optfn_boolean(
         case opt_tiled_map:
             iflags.wc_ascii_map = negated;
             break;
+        case opt_hilite_pet:
+#if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
+            if (WINDOWPORT(tty) || WINDOWPORT(curses)) {
+                /* if we're enabling hilite_pet and petattr isn't set,
+                   set it to Inverse; if we're disabling, leave petattr
+                   alone so that re-enabling will get current value back
+                 */
+                if (iflags.hilite_pet && !iflags.wc2_petattr)
+                    iflags.wc2_petattr = ATR_INVERSE;
+            }
+#endif
+            go.opt_need_redraw = TRUE;
+            break;
         default:
             break;
         }
@@ -5013,7 +5012,7 @@ optfn_boolean(
         case opt_showexp:
             if (VIA_WINDOWPORT())
                 status_initialize(REASSESS_ONLY);
-            gc.context.botl = TRUE;
+            disp.botl = TRUE;
             break;
         case opt_fixinv:
         case opt_sortpack:
@@ -5047,19 +5046,6 @@ optfn_boolean(
             go.opt_need_redraw = TRUE;
             go.opt_need_glyph_reset = TRUE;
             break;
-        case opt_hilite_pet:
-#ifdef CURSES_GRAPHICS
-            if (WINDOWPORT(curses)) {
-                /* if we're enabling hilite_pet and petattr isn't set,
-                   set it to Inverse; if we're disabling, leave petattr
-                   alone so that re-enabling will get current value back
-                 */
-                if (iflags.hilite_pet && !iflags.wc2_petattr)
-                    iflags.wc2_petattr = curses_read_attrs("I");
-            }
-#endif
-            go.opt_need_redraw = TRUE;
-            break;
         case opt_hitpointbar:
             if (VIA_WINDOWPORT()) {
                 /* [is reassessment really needed here?] */
@@ -5069,7 +5055,7 @@ optfn_boolean(
             } else if (WINDOWPORT(Qt)) {
                 /* Qt doesn't support HILITE_STATUS or FLUSH_STATUS so fails
                    VIA_WINDOWPORT(), but it does support WC2_HITPOINTBAR */
-                gc.context.botlx = TRUE;
+                disp.botlx = TRUE;
 #endif
             }
             break;
@@ -5758,6 +5744,20 @@ handler_runmode(void)
         free((genericptr_t) mode_pick);
     }
     destroy_nhwindow(tmpwin);
+    return optn_ok;
+}
+
+static int
+handler_petattr(void)
+{
+    int tmp = query_attr("Select pet highlight attribute", iflags.wc2_petattr);
+
+    if (tmp != -1) {
+        iflags.wc2_petattr = tmp;
+        iflags.hilite_pet = (iflags.wc2_petattr != ATR_NONE);
+        if (!go.opt_initial)
+            go.opt_need_redraw = TRUE;
+    }
     return optn_ok;
 }
 
@@ -7477,23 +7477,26 @@ query_attr(const char *prompt, int dflt_attr)
                 j = picks[i].item.a_int - 1;
                 if (attrnames[j].attr != ATR_NONE || pick_cnt == 1) {
                     switch (attrnames[j].attr) {
-                    case ATR_DIM:
-                        k |= HL_DIM;
-                        break;
-                    case ATR_BLINK:
-                        k |= HL_BLINK;
-                        break;
-                    case ATR_ULINE:
-                        k |= HL_ULINE;
-                        break;
-                    case ATR_INVERSE:
-                        k |= HL_INVERSE;
+                    case ATR_NONE:
+                        k = HL_NONE;
                         break;
                     case ATR_BOLD:
                         k |= HL_BOLD;
                         break;
-                    case ATR_NONE:
-                        k = HL_NONE;
+                    case ATR_DIM:
+                        k |= HL_DIM;
+                        break;
+                    case ATR_ITALIC:
+                        k |= HL_ITALIC;
+                        break;
+                    case ATR_ULINE:
+                        k |= HL_ULINE;
+                        break;
+                    case ATR_BLINK:
+                        k |= HL_BLINK;
+                        break;
+                    case ATR_INVERSE:
+                        k |= HL_INVERSE;
                         break;
                     }
                 }
@@ -8222,13 +8225,13 @@ fruitadd(char *str, struct fruit *replace_fruit)
             || !strncmp(gp.pl_fruit, "partly eaten ", 13)
             || (!strncmp(gp.pl_fruit, "tin of ", 7)
                 && (!strcmp(gp.pl_fruit + 7, "spinach")
-                    || name_to_mon(gp.pl_fruit + 7, (int *) 0) >= LOW_PM))
+                    || ismnum(name_to_mon(gp.pl_fruit + 7, (int *) 0))))
             || !strcmp(gp.pl_fruit, "empty tin")
             || (!strcmp(gp.pl_fruit, "glob")
                 || (globpfx > 0 && !strcmp("glob", &gp.pl_fruit[globpfx])))
             || ((str_end_is(gp.pl_fruit, " corpse")
                  || str_end_is(gp.pl_fruit, " egg"))
-                && name_to_mon(gp.pl_fruit, (int *) 0) >= LOW_PM)) {
+                && ismnum(name_to_mon(gp.pl_fruit, (int *) 0)))) {
             Strcpy(buf, gp.pl_fruit);
             Strcpy(gp.pl_fruit, "candied ");
             nmcpy(gp.pl_fruit + 8, buf, PL_FSIZ - 8);
@@ -8717,7 +8720,7 @@ doset_simple(void)
 /*
  *      I don't think the status window requires updating between
  *      simplemenu iterations.
-        if (gc.context.botl || gc.context.botlx) {
+        if (disp.botl || disp.botlx) {
             bot();
         }
   */
@@ -8972,7 +8975,7 @@ doset(void) /* changing options via menu by Per Liboriussen */
     if (go.opt_need_promptstyle) {
         adjust_menu_promptstyle(WIN_INVEN, &iflags.menu_headings);
     }
-    if (gc.context.botl || gc.context.botlx) {
+    if (disp.botl || disp.botlx) {
         bot();
     }
     return ECMD_OK;

@@ -175,7 +175,7 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
        if same gender, "engagingly" for nymph, normal msg for others. */
     if ((compat = could_seduce(mtmp, &gy.youmonst, mattk)) != 0
         && !mtmp->mcan && !mtmp->mspec_used) {
-        pline("%s %s you %s.", Monst_name,
+        pline_xy(mtmp->mx, mtmp->my, "%s %s you %s.", Monst_name,
               !Blind ? "smiles at" : !Deaf ? "talks to" : "touches",
               (compat == 2) ? "engagingly" : "seductively");
     } else {
@@ -231,7 +231,7 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
                  && gh.hitmsg_prev != NULL
                  && mattk == gh.hitmsg_prev + 1
                  && mattk->aatyp == gh.hitmsg_prev->aatyp) ? " again" : "";
-        pline("%s %s%s%s", Monst_name, verb, again, punct);
+        pline_xy(mtmp->mx, mtmp->my, "%s %s%s%s", Monst_name, verb, again, punct);
     }
     gh.hitmsg_mid = mtmp->m_id;
     gh.hitmsg_prev = mattk;
@@ -248,17 +248,17 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
         map_invisible(mtmp->mx, mtmp->my);
 
     if (could_seduce(mtmp, &gy.youmonst, mattk) && !mtmp->mcan)
-        pline("%s pretends to be friendly.", Monnam(mtmp));
+        pline_xy(mtmp->mx, mtmp->my, "%s pretends to be friendly.",
+                 Monnam(mtmp));
     else {
         const char *blocker = attack_blocker(&gy.youmonst);
         if (blocker && !rn2(5))
-            pline("Your %s %s %s attack.", blocker,
+            pline_xy(mtmp->mx, mtmp->my, "Your %s %s %s attack.", blocker,
                   rn2(3) ? "blocks" : "deflects", s_suffix(mon_nam(mtmp)));
         else
-            pline("%s %smisses!", Monnam(mtmp),
-                (nearmiss && flags.verbose) ? "just " : "");
+        pline_xy(mtmp->mx, mtmp->my, "%s %smisses!", Monnam(mtmp),
+                 (nearmiss && flags.verbose) ? "just " : "");
     }
-
     stop_occupation();
 }
 
@@ -296,7 +296,7 @@ mswings(
     boolean bash)       /* True: polearm used at too close range */
 {
     if (flags.verbose && !Blind && mon_visible(mtmp)) {
-        pline("%s %s %s%s %s.", Monnam(mtmp), mswings_verb(otemp, bash),
+        pline_xy(mtmp->mx, mtmp->my, "%s %s %s%s %s.", Monnam(mtmp), mswings_verb(otemp, bash),
               (otemp->quan > 1L) ? "one of " : "", mhis(mtmp), xname(otemp));
     }
 }
@@ -362,6 +362,7 @@ wildmiss(struct monst *mtmp, struct attack *mattk)
               ? could_seduce(mtmp, &gy.youmonst, mattk) : 0);
     Monst_name = Monnam(mtmp);
 
+    set_msg_xy(mtmp->mx, mtmp->my);
     if (unotseen) { /* !mtmp->cansee || (Invis && !perceives(mtmp->data)) */
         const char *swings = (mattk->aatyp == AT_BITE) ? "snaps"
                              : (mattk->aatyp == AT_KICK) ? "kicks"
@@ -424,7 +425,7 @@ expels(
     struct permonst *mdat, /* if mtmp is polymorphed, mdat != mtmp->data */
     boolean message)
 {
-    gc.context.botl = 1;
+    disp.botl = TRUE;
     if (message) {
         if (digests(mdat)) {
             You("get regurgitated!");
@@ -641,7 +642,7 @@ mattacku(register struct monst *mtmp)
             /* Your steed won't attack you */
             return 0;
         /* Orcs like to steal and eat horses and the like */
-        if (!rn2(is_orc(mtmp->data) ? 2 : 4) && next2u(mtmp->mx, mtmp->my)) {
+        if (!rn2(is_orc(mtmp->data) ? 2 : 4) && m_next2u(mtmp)) {
             /* attack your steed instead; 'bhitpos' and 'notonhead' are
                already set from tagetting hero */
             i = mattackm(mtmp, u.usteed);
@@ -649,7 +650,7 @@ mattacku(register struct monst *mtmp)
                 return 1;
             /* make sure steed is still alive and within range */
             if ((i & M_ATTK_DEF_DIED) != 0 || !u.usteed
-                || !next2u(mtmp->mx, mtmp->my))
+                || !m_next2u(mtmp))
                 return 0;
             /* Let your steed retaliate */
             gb.bhitpos.x = mtmp->mx, gb.bhitpos.y = mtmp->my;
@@ -1021,7 +1022,7 @@ mattacku(register struct monst *mtmp)
                     mon_currwep = MON_WEP(mtmp);
                     if (mon_currwep) {
                         boolean bash = (is_pole(mon_currwep)
-                                        && next2u(mtmp->mx, mtmp->my));
+                                        && m_next2u(mtmp));
 
                         hittmp = hitval(mon_currwep, &gy.youmonst);
                         tmp += hittmp;
@@ -1051,7 +1052,7 @@ mattacku(register struct monst *mtmp)
         default: /* no attack */
             break;
         }
-        if (gc.context.botl)
+        if (disp.botl)
             bot();
         /* give player a chance of waking up before dying -kaa */
         if (sum[i] == M_ATTK_HIT) { /* successful attack */
@@ -1382,7 +1383,7 @@ hitmu(register struct monst *mtmp, register struct attack *mattk)
                 *hpmax_p = lowerlimit;
             /* else unlikely...
              * already at or below minimum threshold; do nothing */
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
 
         mdamageu(mtmp, mhm.damage);
@@ -2134,7 +2135,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
 void
 mdamageu(struct monst *mtmp, int n)
 {
-    gc.context.botl = 1;
+    disp.botl = TRUE;
     showdmg(n, TRUE);
     if (Upolyd) {
         u.mh -= n;
@@ -2313,7 +2314,7 @@ doseduce(struct monst *mon)
                 Ring_gone(uright);
                 /* ring removal might cause loss of levitation which could
                    drop hero onto trap that transports hero somewhere else */
-                if (u.utotype || !next2u(mon->mx, mon->my))
+                if (u.utotype || !m_next2u(mon))
                     return 1;
                 setworn(ring, RIGHT_RING);
             } else if (uleft && uleft->otyp != RIN_ADORNMENT) {
@@ -2321,7 +2322,7 @@ doseduce(struct monst *mon)
                 pline("%s replaces %s with %s.",
                       Who, yname(uleft), yname(ring));
                 Ring_gone(uleft);
-                if (u.utotype || !next2u(mon->mx, mon->my))
+                if (u.utotype || !m_next2u(mon))
                     return 1;
                 setworn(ring, LEFT_RING);
             } else
@@ -2354,7 +2355,7 @@ doseduce(struct monst *mon)
        and changing location, so hero might not be adjacent to seducer
        any more (mayberem() has its own adjacency test so we don't need
        to check after each potential removal) */
-    if (u.utotype || !next2u(mon->mx, mon->my))
+    if (u.utotype || !m_next2u(mon))
         return 1;
 
     if (uarm || uarmc) {
@@ -2413,13 +2414,13 @@ doseduce(struct monst *mon)
             You("are down in the dumps.");
             (void) adjattrib(A_CON, -1, TRUE);
             exercise(A_CON, FALSE);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             break;
         case 2:
             Your("senses are dulled.");
             (void) adjattrib(A_WIS, -1, TRUE);
             exercise(A_WIS, FALSE);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             break;
         case 3:
             if (!resists_drli(&gy.youmonst)) {
@@ -2457,13 +2458,13 @@ doseduce(struct monst *mon)
             You_feel("good enough to do it again.");
             (void) adjattrib(A_CON, 1, TRUE);
             exercise(A_CON, TRUE);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             break;
         case 2:
             You("will always remember %s...", noit_mon_nam(mon));
             (void) adjattrib(A_WIS, 1, TRUE);
             exercise(A_WIS, TRUE);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             break;
         case 3:
             pline("That was a very educational experience.");
@@ -2476,7 +2477,7 @@ doseduce(struct monst *mon)
             if (Upolyd)
                 u.mh = u.mhmax;
             exercise(A_STR, TRUE);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             break;
         }
     }
@@ -2510,7 +2511,7 @@ doseduce(struct monst *mon)
             pline("%s takes %ld %s for services rendered!", noit_Monnam(mon),
                   cost, currency(cost));
             money2mon(mon, cost);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
     }
     if (!rn2(25))
@@ -2532,7 +2533,7 @@ mayberem(struct monst *mon,
         return;
     /* removal of a previous item might have sent the hero elsewhere
        (loss of levitation that leads to landing on a transport trap) */
-    if (u.utotype || !next2u(mon->mx, mon->my))
+    if (u.utotype || !m_next2u(mon))
         return;
 
     /* being deaf overrides confirmation prompt for high charisma */
@@ -2797,7 +2798,7 @@ cloneu(void)
     mon->mhpmax = u.mhmax;
     mon->mhp = u.mh / 2;
     u.mh -= mon->mhp;
-    gc.context.botl = 1;
+    disp.botl = TRUE;
     return mon;
 }
 

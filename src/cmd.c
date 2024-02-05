@@ -1,4 +1,4 @@
-/* NetHack 3.7	cmd.c	$NHDT-Date: 1703070187 2023/12/20 11:03:07 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.695 $ */
+/* NetHack 3.7	cmd.c	$NHDT-Date: 1704225560 2024/01/02 19:59:20 $  $NHDT-Branch: keni-luabits2 $:$NHDT-Revision: 1.699 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -168,7 +168,7 @@ static char there_cmd_menu(coordxy, coordxy, int);
 static char here_cmd_menu(void);
 
 static char readchar_core(coordxy *, coordxy *, int *);
-static char *parse(void);
+static int parse(void);
 static void show_direction_keys(winid, char, boolean);
 static boolean help_dir(char, uchar, const char *);
 static int QSORTCALLBACK migrsort_cmp(const genericptr, const genericptr);
@@ -487,7 +487,7 @@ can_do_extcmd(const struct ext_func_tab *extcmd)
         lua_getglobal(gl.luacore, "nh_callback_run");
         lua_pushstring(gl.luacore, nhcb_name[NHCB_CMD_BEFORE]);
         lua_pushstring(gl.luacore, extcmd->ef_txt);
-        nhl_pcall(gl.luacore, 2, 1);
+        nhl_pcall_handle(gl.luacore, 2, 1, "can_do_extcmd", NHLpa_panic);
         if (!lua_toboolean(gl.luacore, -1))
             return FALSE;
     }
@@ -803,7 +803,7 @@ extcmd_via_menu(void)
       "Exceeded %d extended commands in doextcmd() menu; 'extmenu' disabled.",
                                MAX_EXT_CMD);
 #endif /* NH_DEVEL_STATUS != NH_STATUS_RELEASED */
-                    iflags.extmenu = 0;
+                    iflags.extmenu = FALSE;
                     return -1;
                 }
             }
@@ -1397,7 +1397,10 @@ wiz_load_lua(void)
 {
     if (wizard) {
         char buf[BUFSZ];
-        nhl_sandbox_info sbi = {NHL_SB_SAFE | NHL_SB_DEBUGGING, 0, 0, 0};
+            /* Large but not unlimited memory and CPU so random bits of
+             * code can be tested by wizards. */
+        nhl_sandbox_info sbi = {NHL_SB_SAFE | NHL_SB_DEBUGGING,
+                16*1024*1024, 0, 16*1024*1024};
 
         buf[0] = '\0';
         getlin("Load which lua file?", buf);
@@ -2130,7 +2133,7 @@ wiz_intrinsic(void)
  def_feedback:
                 if (p != GLIB)
                     incr_itimeout(&u.uprops[p].intrinsic, amt);
-                gc.context.botl = 1; /* have pline() do a status update */
+                disp.botl = TRUE; /* have pline() do a status update */
                 pline("Timeout for %s %s %d.", propname,
                       oldtimeout ? "increased by" : "set to", amt);
                 break;
@@ -2521,7 +2524,7 @@ do_repeat(void)
         }
         repeat_copy = cmdq_copy(CQ_REPEAT);
         gi.in_doagain = TRUE;
-        rhack((char *) 0); /* read and execute command */
+        rhack(0); /* read and execute command */
         gi.in_doagain = FALSE;
         cmdq_clear(CQ_REPEAT);
         gc.command_queue[CQ_REPEAT] = repeat_copy;
@@ -4893,10 +4896,9 @@ reset_cmd_vars(boolean reset_cmdq)
 }
 
 void
-rhack(char *cmd)
+rhack(int key)
 {
-    char queuedkeystroke[2];
-    boolean bad_command, firsttime = (cmd == 0);
+    boolean bad_command, firsttime = (key == 0);
     struct _cmd_queue cq, *cmdq = NULL;
     const struct ext_func_tab *cmdq_ec = 0, *prefix_seen = 0;
     boolean was_m_prefix = FALSE;
@@ -4914,23 +4916,21 @@ rhack(char *cmd)
         free(cmdq);
         if (cq.typ == CMDQ_EXTCMD && (cmdq_ec = cq.ec_entry) != 0)
             goto do_cmdq_extcmd;
-        cmd = queuedkeystroke;
         /* already handled a queued command (goto do_cmdq_extcmd);
            if something other than a key is queued, we'll drop down
            to the !*cmd handling which clears out the command-queue */
-        cmd[0] = (cq.typ == CMDQ_KEY) ? cq.key : '\0';
-        cmd[1] = '\0';
+        key = (cq.typ == CMDQ_KEY) ? cq.key : 0;
     } else if (firsttime) {
-        cmd = parse();
+        key = parse();
         /* parse() pushed a cmd but didn't return any key */
-        if (!*cmd && cmdq_peek(CQ_CANNED))
+        if (!key && cmdq_peek(CQ_CANNED))
             goto got_prefix_input;
     }
 
     /* if there's no command, there's nothing to do except reset */
-    if (!cmd || !*cmd || *cmd == (char) 0377
-        || *cmd == gc.Cmd.spkeys[NHKF_ESC]) {
-        if (!cmd || *cmd != gc.Cmd.spkeys[NHKF_ESC])
+    if (!key || key == (char) 0377
+        || key == gc.Cmd.spkeys[NHKF_ESC]) {
+        if (!key || key != gc.Cmd.spkeys[NHKF_ESC])
             nhbell();
         reset_cmd_vars(TRUE);
         return;
@@ -4946,9 +4946,9 @@ rhack(char *cmd)
         if (cmdq_ec)
             tlist = cmdq_ec;
         else
-            tlist = gc.Cmd.commands[*cmd & 0xff];
+            tlist = gc.Cmd.commands[key & 0xff];
 
-        /* current - use *cmd to directly index cmdlist array */
+        /* current - use key to directly index cmdlist array */
         if (tlist != 0) {
             if (!can_do_extcmd(tlist)) {
                 /* can_do_extcmd() already gave a message */
@@ -4973,9 +4973,9 @@ rhack(char *cmd)
                     pline("The %s command does not accept '%s' prefix.",
                           tlist->ef_txt, which);
                 } else {
-                    uchar key = tlist->key;
-                    boolean up = (key == '<' || tlist->ef_funct == doup),
-                            down = (key == '>' || tlist->ef_funct == dodown);
+                    uchar ch = tlist->key;
+                    boolean up = (ch == '<' || tlist->ef_funct == doup),
+                            down = (ch == '>' || tlist->ef_funct == dodown);
 
                     pline(
                 "The '%s' prefix should be followed by a movement command%s.",
@@ -5090,22 +5090,7 @@ rhack(char *cmd)
     }
 
     if (bad_command) {
-        char expcmd[20]; /* we expect 'cmd' to point to 1 or 2 chars */
-        char c, c1 = cmd[1];
-
-        expcmd[0] = '\0';
-        while ((c = *cmd++) != '\0')
-            Strcat(expcmd, visctrl(c)); /* add 1..4 chars plus terminator */
-#if 1
-        nhUse(c1);
-#else
-        /* note: since prefix keys became actual commnads, we can no longer
-           get here with 'prefix_seen' set so this never calls help_dir()
-           anymore */
-        if (!prefix_seen
-            || !help_dir(c1, prefix_seen->key, "Invalid direction key!"))
-#endif
-            Norep("Unknown command '%s'.", expcmd);
+        Norep("Unknown command '%s'.", visctrl(key));
         cmdq_clear(CQ_CANNED);
         cmdq_clear(CQ_REPEAT);
     }
@@ -6340,7 +6325,7 @@ get_count(
 }
 
 
-static char *
+static int
 parse(void)
 {
     register int foo;
@@ -6381,12 +6366,11 @@ parse(void)
     if (gm.multi)
         gm.multi--;
 
-    gc.command_line[0] = foo;
-    gc.command_line[1] = '\0';
+    gc.cmd_key = foo;
     clear_nhwindow(WIN_MESSAGE);
 
     iflags.in_parse = FALSE;
-    return gc.command_line;
+    return gc.cmd_key;
 }
 
 #ifdef HANGUPHANDLING

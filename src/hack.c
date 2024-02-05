@@ -12,6 +12,7 @@ static int moverock(void);
 static void dosinkfall(void);
 static boolean findtravelpath(int);
 static boolean trapmove(coordxy, coordxy, struct trap *);
+static int QSORTCALLBACK notice_mons_cmp(const genericptr, const genericptr);
 static schar u_simple_floortyp(coordxy, coordxy);
 static boolean swim_move_danger(coordxy, coordxy);
 static boolean domove_bump_mon(struct monst *, int) NONNULLARG1;
@@ -978,7 +979,7 @@ test_move(
                         Sprintf(buf, "solid stone");
                     else
                         Sprintf(buf, "%s", an(firstmatch));
-                    pline("It's %s.", buf);
+                    pline_dir(xytod(dx, dy), "It's %s.", buf);
                 }
             }
             return FALSE;
@@ -1120,7 +1121,7 @@ test_move(
         if (mode != TEST_TRAV && gc.context.run >= 2
             && !(Blind || Hallucination) && !could_move_onto_boulder(x, y)) {
             if (mode == DO_MOVE && flags.mention_walls)
-                pline("A boulder blocks your path.");
+                pline_dir(xytod(dx,dy), "A boulder blocks your path.");
             return FALSE;
         }
         if (mode == DO_MOVE) {
@@ -1607,6 +1608,80 @@ u_rooted(void)
     return FALSE;
 }
 
+void
+notice_mon(struct monst *mtmp)
+{
+    if (a11y.mon_notices && !a11y.mon_notices_blocked) {
+        boolean spot = canspotmon(mtmp)
+            && !(is_hider(mtmp->data)
+                 && (mtmp->mundetected
+                     || M_AP_TYPE(mtmp) == M_AP_FURNITURE
+                     || M_AP_TYPE(mtmp) == M_AP_OBJECT));
+
+        if (spot && !mtmp->mspotted && !DEADMONSTER(mtmp)) {
+            mtmp->mspotted = TRUE;
+            set_msg_xy(mtmp->mx, mtmp->my);
+            You("%s %s.", canseemon(mtmp) ? "see" : "notice",
+                x_monnam(mtmp,
+                     mtmp->mtame ? ARTICLE_YOUR
+                     : (!has_mgivenname(mtmp)
+                        && !type_is_pname(mtmp->data)) ? ARTICLE_A
+                     : ARTICLE_NONE,
+                     (mtmp->mpeaceful && !mtmp->mtame) ? "peaceful" : 0,
+                     has_mgivenname(mtmp) ? SUPPRESS_SADDLE : 0, FALSE));
+        } else if (!spot) {
+            mtmp->mspotted = FALSE;
+        }
+    }
+}
+
+static int QSORTCALLBACK
+notice_mons_cmp(const genericptr ptr1, const genericptr ptr2)
+{
+    const struct monst *m1 = *(const struct monst **) ptr1,
+        *m2 = *(const struct monst **) ptr2;
+
+    return (distu(m1->mx, m1->my) - distu(m2->mx, m2->my));
+}
+
+void
+notice_all_mons(boolean reset)
+{
+    if (a11y.mon_notices && !a11y.mon_notices_blocked) {
+        struct monst *mtmp;
+        struct monst **arr = NULL;
+        int j, i = 0, cnt = 0;
+
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            if (canspotmon(mtmp))
+                cnt++;
+            else if (reset)
+                mtmp->mspotted = FALSE;
+
+        if (!cnt)
+            return;
+
+        arr = (struct monst **) alloc(cnt * sizeof(struct monst *));
+
+
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+            if (!canspotmon(mtmp))
+                mtmp->mspotted = FALSE;
+            else if (!DEADMONSTER(mtmp) && i < cnt)
+                arr[i++] = mtmp;
+        }
+
+        if (i) {
+            qsort((genericptr_t) arr, (size_t) i, sizeof *arr, notice_mons_cmp);
+
+            for (j = 0; j < i; j++)
+                notice_mon(arr[j]);
+        }
+
+        free(arr);
+    }
+}
+
 /* maybe disturb buried zombies when an object is dropped or thrown nearby */
 void
 impact_disturbs_zombies(struct obj *obj, boolean violent)
@@ -1841,22 +1916,70 @@ domove_fight_web(coordxy x, coordxy y)
 {
     struct trap *trap = t_at(x, y);
 
-    if (gc.context.forcefight && trap && trap->ttyp == WEB
-        && trap->tseen && uwep) {
-        if (u_wield_art(ART_STING)) {
+    if (gc.context.forcefight && trap && trap->ttyp == WEB && trap->tseen) {
+        int wtype = uwep_skill_type(),
+            /* minus_2: restricted or unskilled: -1, basic: 0, skilled: 1,
+               expert: 2, master: 3, grandmaster: 4 */
+            wskill_minus_2 = max(P_SKILL(wtype), P_UNSKILLED) - 2,
+            /* higher value is worse for player; for weaponless, adjust the
+               chance to succeed rather than maybe make two tries */
+            roll = rn2(uwep ? 20 : (45 - 5 * wskill_minus_2));
+
+        if (uwep && (u_wield_art(ART_STING)
+                     || (uwep->oartifact && attacks(AD_FIRE, uwep)))) {
             /* guaranteed success */
-            pline("%s cuts through the web!",
-                  bare_artifactname(uwep));
-        } else if (!is_blade(uwep)) {
-            You_cant("cut a web with %s!", an(xname(uwep)));
+            pline("%s %s through the web!", bare_artifactname(uwep),
+                  u_wield_art(ART_STING) ? "cuts" : "burns");
+
+        /* is_blade() includes daggers (which are classified as PIERCE)
+           but doesn't include axes and slashing polearms */
+        } else if (uwep && !is_blade(uwep)
+                   && (!u.twoweap || !is_blade(uswapwep))) {
+            char *uwepstr = 0, *scndstr = 0, uwepbuf[BUFSZ], scndbuf[BUFSZ];
+            boolean onewep;
+
+            /* when dual wielding, second weapon will only be mentioned
+               if it has a different type description from primary */
+            Strcpy(uwepbuf, weapon_descr(uwep));
+            Strcpy(scndbuf, u.twoweap ? weapon_descr(uswapwep) : "");
+            onewep = !*scndbuf || !strcmp(uwepbuf, scndbuf);
+            if (!strcmpi(uwepbuf, "armor") || !strcmpi(uwepbuf, "food")
+                || !strcmpi(uwepbuf, "venom")) { /* as-is */
+                /* non-weapon item wielded, of a type where an() would
+                   result in weird phrasing; dual wield not possible */
+                uwepstr = uwepbuf;
+            } else if (uwep->quan == 1L /* singular */
+                       /* unless secondary is suppressed due to same type */
+                       && !(u.twoweap && onewep)) {
+                uwepstr = an(uwepbuf);
+            } else { /* plural */
+                uwepstr = makeplural(uwepbuf);
+            }
+            if (!onewep) {
+                assert(uswapwep != NULL);
+                scndstr = (uswapwep->quan == 1L) ? an(scndbuf)
+                                                 : makeplural(scndbuf);
+            }
+            You_cant("cut a web with %s%s%s!", uwepstr,
+                     !onewep ? " or " : "", !onewep ? scndstr : "");
             return TRUE;
-        } else if (rn2(20) > ACURR(A_STR) + uwep->spe) {
+
+        /* weapon is ok; check whether hit is successful */
+        } else if (roll > (acurrstr() - 2 /* 1..19 */
+                           /* for weaponless, 'roll' was adjusted above */
+                           + (uwep ? uwep->spe + wskill_minus_2 : 0))) {
             /* TODO: add failures, maybe make an occupation? */
-            You("hack ineffectually at some of the strands.");
+            You("%s ineffectually at some of the strands.",
+                uwep ? "hack" : "thrash");
             return TRUE;
+
+        /* hit has succeeded */
         } else {
-            You("cut through the web.");
+            You("%s through the web.", uwep ? "cut" : "punch");
+            /* doesn't break "never hit with a wielded weapon" conduct */
+            use_skill(wtype, 1);
         }
+
         deltrap(trap);
         newsym(x, y);
         return TRUE;
@@ -2204,9 +2327,11 @@ avoid_moving_on_trap(coordxy x, coordxy y, boolean msg)
     struct trap *trap;
 
     if ((trap = t_at(x, y)) && trap->tseen) {
-        if (msg && flags.mention_walls)
+        if (msg && flags.mention_walls) {
+            set_msg_xy(x, y);
             You("stop in front of %s.",
                 an(trapname(trap->ttyp, FALSE)));
+        }
         return TRUE;
     }
     return FALSE;
@@ -2232,9 +2357,11 @@ avoid_moving_on_liquid(
            polyforms are allowed to move over water */
         return FALSE; /* liquid is safe to traverse */
     } else if (is_pool_or_lava(x, y) && levl[x][y].seenv) {
-        if (msg && flags.mention_walls)
+        if (msg && flags.mention_walls) {
+            set_msg_xy(x, y);
             You("stop at the edge of the %s.",
                 hliquid(is_pool(x,y) ? "water" : "lava"));
+        }
         return TRUE;
     }
     return FALSE;
@@ -2319,7 +2446,7 @@ escape_from_sticky_mon(coordxy x, coordxy y)
     if (u.ustuck && (x != u.ustuck->mx || y != u.ustuck->my)) {
         struct monst *mtmp;
 
-        if (!next2u(u.ustuck->mx, u.ustuck->my)) {
+        if (!m_next2u(u.ustuck)) {
             /* perhaps it fled (or was teleported or ... ) */
             set_ustuck((struct monst *) 0);
         } else if (sticks(gy.youmonst.data)) {
@@ -2534,7 +2661,7 @@ domove_core(void)
         boolean moved = trapmove(x, y, trap);
 
         if (!u.utrap) {
-            gc.context.botl = TRUE;
+            disp.botl = TRUE;
             reset_utrap(TRUE); /* might resume levitation or flight */
         }
         /* might not have escaped, or did escape but remain in same spot */
@@ -2699,7 +2826,7 @@ runmode_delay_output(void)
            display after every step */
         if (flags.runmode != RUN_LEAP || !(gm.moves % 7L)) {
             /* moveloop() suppresses time_botl when running */
-            iflags.time_botl = flags.time;
+            disp.time_botl = flags.time;
             curs_on_u();
             nh_delay_output();
             if (flags.runmode == RUN_CRAWL) {
@@ -2734,7 +2861,7 @@ overexert_hp(void)
 
     if (*hp > 1) {
         *hp -= 1;
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
     } else {
         You("pass out from exertion!");
         exercise(A_CON, FALSE);
@@ -2819,7 +2946,7 @@ switch_terrain(void)
             You("start flying.");
     }
     if ((!!Levitation ^ was_levitating) || (!!Flying ^ was_flying))
-        gc.context.botl = TRUE; /* update Lev/Fly status condition */
+        disp.botl = TRUE; /* update Lev/Fly status condition */
 }
 
 /* set or clear u.uinwater */
@@ -3521,7 +3648,7 @@ lookaround(void)
                 if ((gc.context.run != 1 && !is_safemon(mtmp))
                     || (infront && !gc.context.travel)) {
                     if (flags.mention_walls)
-                        pline("%s blocks your path.",
+                        pline_xy(x, y, "%s blocks your path.",
                               upstart(a_monnam(mtmp)));
                     goto stop;
                 }
@@ -3553,8 +3680,10 @@ lookaround(void)
                 if (x != u.ux && y != u.uy)
                     continue;
                 if (gc.context.run != 1 && !gc.context.travel) {
-                    if (flags.mention_walls)
+                    if (flags.mention_walls) {
+                        set_msg_xy(x, y);
                         You("stop in front of the door.");
+                    }
                     goto stop;
                 }
                 /* we're orthogonal to a closed door, consider it a corridor */
@@ -3829,7 +3958,7 @@ end_running(boolean and_travel)
     /* moveloop() suppresses time_botl when context.run is non-zero; when
        running stops, update 'time' even if other botl status is unchanged */
     if (flags.time && gc.context.run)
-        iflags.time_botl = TRUE;
+        disp.time_botl = TRUE;
     gc.context.run = 0;
     /* 'context.mv' isn't travel but callers who want to end travel
        all clear it too */
@@ -3849,7 +3978,7 @@ nomul(int nval)
 {
     if (gm.multi < nval)
         return;              /* This is a bug fix by ab@unido */
-    gc.context.botl |= (gm.multi >= 0);
+    disp.botl |= (gm.multi >= 0);
     u.uinvulnerable = FALSE; /* Kludge to avoid ctrl-C bug -dlc */
     u.usleep = 0;
     gm.multi = nval;
@@ -3863,7 +3992,7 @@ nomul(int nval)
 void
 unmul(const char *msg_override)
 {
-    gc.context.botl = TRUE;
+    disp.botl = TRUE;
     gm.multi = 0; /* caller will usually have done this already */
     if (msg_override)
         gn.nomovemsg = msg_override;
@@ -3975,7 +4104,7 @@ losehp(int n, const char *knam, schar k_format)
         return;
     }
 #endif
-    gc.context.botl = TRUE; /* u.uhp or u.mh is changing */
+    disp.botl = TRUE; /* u.uhp or u.mh is changing */
     end_running(TRUE);
     if (Upolyd) {
         u.mh -= n;

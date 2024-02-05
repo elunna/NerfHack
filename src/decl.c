@@ -1,4 +1,4 @@
-/* NetHack 3.7	decl.c	$NHDT-Date: 1701132220 2023/11/28 00:43:40 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.304 $ */
+/* NetHack 3.7	decl.c	$NHDT-Date: 1706079841 2024/01/24 07:04:01 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.314 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -104,6 +104,7 @@ const schar dirs_ord[N_DIRS] =
 NEARDATA boolean has_strong_rngseed = FALSE;
 struct engr *head_engr;
 NEARDATA struct instance_flags iflags;
+NEARDATA struct accessibility_data a11y;
 /* NOTE: the order of these words exactly corresponds to the
    order of oc_material values #define'd in objclass.h. */
 const char *materialnm[] = { "mysterious", "liquid",  "wax",        "organic",
@@ -188,6 +189,7 @@ const struct Race urace_init_data = {
     { 1, 0, 2, 0, 2, 0 }  /* Energy */
 };
 
+struct display_hints disp = { 0 };
 
 const struct instance_globals_a g_init_a = {
     /* artifact.c */
@@ -267,7 +269,7 @@ const struct instance_globals_c g_init_c = {
     { 0, 0 }, /* clicklook_cc */
     /* decl.c */
     UNDEFINED_VALUES, /* chosen_windowtype */
-    UNDEFINED_VALUES, /* command_line */
+    0, /* cmd_key */
     0L, /* command_count */
     UNDEFINED_PTR, /* current_wand */
 #ifdef DEF_PAGER
@@ -446,6 +448,8 @@ const struct instance_globals_i g_init_i = {
     NULL, /* invbuf */
     0U, /* invbufsize */
     0,       /* in_sync_perminvent */
+    /* mon.c */
+    NULL, /* itermonarr */
     /* restore.c */
     UNDEFINED_PTR, /* id_map */
     /* sp_lev.c */
@@ -507,6 +511,8 @@ const struct instance_globals_l g_init_l = {
     /* nhlua.c */
     UNDEFINED_VALUE, /* luacore */
     DUMMY, /* lua_warnbuf[] */
+    0, /* loglua */
+    0, /* lua_sid */
     /* options.c */
     FALSE, /* loot_reset_justpicked */
     /* save.c */
@@ -881,9 +887,8 @@ const struct instance_globals_w g_init_w = {
     UNDEFINED_PTR, /* wportal */
     /* new */
     { wdmode_traditional, NO_COLOR },       /* wsettings */
-
     TRUE, /* havestate*/
-    IVMAGIC  /* w_magic used to validate that structure layout has been preserved */
+    IVMAGIC  /* w_magic to validate that structure layout has been preserved */
 };
 
 const struct instance_globals_x g_init_x = {
@@ -894,6 +899,8 @@ const struct instance_globals_x g_init_x = {
     /* mkmaze.c */
     UNDEFINED_VALUE, /* xmin */
     UNDEFINED_VALUE, /* xmax */
+    /* objnam.c */
+    NULL, /* xnamep */
     /* sp_lev.c */
     UNDEFINED_VALUE, /* xstart */
     UNDEFINED_VALUE, /* xsize */
@@ -1060,6 +1067,8 @@ decl_globals_init(void)
 
     ZERO(flags);
     ZERO(iflags);
+    ZERO(a11y);
+    ZERO(disp);
     ZERO(u);
     ZERO(ubirthday);
     ZERO(urealtime);
@@ -1089,4 +1098,5 @@ sa_victual(
 {
     return;
 }
+
 /*decl.c*/

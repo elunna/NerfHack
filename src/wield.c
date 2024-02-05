@@ -114,21 +114,20 @@ setuwep(struct obj *obj)
     if (uwep == obj
         && (u_wield_art(ART_OGRESMASHER)
             || is_art(olduwep, ART_OGRESMASHER)))
-        gc.context.botl = 1;
-    
+        disp.botl = TRUE;
     if (uwep == obj
         && (u_wield_art(ART_GIANTSLAYER)
             || is_art(olduwep, ART_GIANTSLAYER)))
-        gc.context.botl = 1;
+        disp.botl = TRUE;
     
     /* Hated items decrease AC and affect to-hit */
     if (uwep && hates_item(&gy.youmonst, uwep)) {
         find_ac();
-        gc.context.botl = 1;
+        disp.botl = TRUE;
         You_feel("awkward wielding %s...", yname(uwep));
     } else if (olduwep && hates_item(&gy.youmonst, olduwep)) {
         find_ac();
-        gc.context.botl = 1;
+        disp.botl = TRUE;
         You_feel("more comfortable now.");
     }
     /* Note: Explicitly wielding a pick-axe will not give a "bashing"
@@ -278,7 +277,7 @@ ready_weapon(struct obj *wep)
         }
     }
     if ((had_wep != (uwep != 0)) && condtests[bl_bareh].enabled)
-        gc.context.botl = 1;
+        disp.botl = TRUE;
     return res;
 }
 
@@ -850,7 +849,7 @@ set_twoweap(boolean on_off)
     if (on_off && uswapwep && hates_item(&gy.youmonst,uswapwep) 
         && !hates_item(&gy.youmonst, uwep)) {
         find_ac();
-        gc.context.botl = 1;
+        disp.botl = TRUE;
         You_feel("strange wielding %s...", yname(uswapwep));
     } else if (!on_off && uswapwep && hates_item(&gy.youmonst, uswapwep) 
                && !hates_item(&gy.youmonst,uwep))

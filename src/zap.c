@@ -1,4 +1,4 @@
-/* NetHack 3.7	zap.c	$NHDT-Date: 1703070194 2023/12/20 11:03:14 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.501 $ */
+/* NetHack 3.7	zap.c	$NHDT-Date: 1704316449 2024/01/03 21:14:09 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.508 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -268,7 +268,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                            /* if shapechange failed because there aren't
                               enough eligible candidates (most likely for
                               vampshifter), try reverting to original form */
-                           || (mtmp->cham >= LOW_PM
+                           || (ismnum(mtmp->cham)
                                && newcham(mtmp, &mons[mtmp->cham],
                                           ncflags) != 0)) {
                     if (give_msg && (canspotmon(mtmp)
@@ -1065,6 +1065,7 @@ revive(struct obj *corpse, boolean by_hero)
         m_useup(corpse->ocarry, corpse);
         break;
     case OBJ_CONTAINED:
+        /* obj_extract_self() will update corpse->ocontainer->owt */
         obj_extract_self(corpse);
         obfree(corpse, (struct obj *) 0);
         break;
@@ -1193,19 +1194,19 @@ cancel_item(struct obj *obj)
         case RIN_GAIN_STRENGTH:
             if ((obj->owornmask & W_RING) != 0L) {
                 ABON(A_STR) -= obj->spe;
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
             }
             break;
         case RIN_GAIN_CONSTITUTION:
             if ((obj->owornmask & W_RING) != 0L) {
                 ABON(A_CON) -= obj->spe;
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
             }
             break;
         case RIN_ADORNMENT:
             if ((obj->owornmask & W_RING) != 0L) {
                 ABON(A_CHA) -= obj->spe;
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
             }
             break;
         case RIN_INCREASE_ACCURACY:
@@ -1218,24 +1219,24 @@ cancel_item(struct obj *obj)
             break;
         case RIN_PROTECTION:
             if ((obj->owornmask & W_RING) != 0L)
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
             break;
         case GAUNTLETS_OF_DEXTERITY:
             if ((obj->owornmask & W_ARMG) != 0L) {
                 ABON(A_DEX) -= obj->spe;
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
             }
             break;
         case HELM_OF_BRILLIANCE:
             if ((obj->owornmask & W_ARMH) != 0L) {
                 ABON(A_INT) -= obj->spe;
                 ABON(A_WIS) -= obj->spe;
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
             }
             break;
         default:
             if ((obj->owornmask & W_ARMOR) != 0L) /* AC */
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
             break;
         }
     }
@@ -1354,19 +1355,19 @@ drain_item(struct obj *obj, boolean by_you)
     case RIN_GAIN_STRENGTH:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_STR)--;
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
         break;
     case RIN_GAIN_CONSTITUTION:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_CON)--;
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
         break;
     case RIN_ADORNMENT:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_CHA)--;
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
         break;
     case RIN_INCREASE_ACCURACY:
@@ -1379,25 +1380,25 @@ drain_item(struct obj *obj, boolean by_you)
         break;
     case RIN_PROTECTION:
         if (u_ring)
-            gc.context.botl = 1; /* bot() will recalc u.uac */
+            disp.botl = TRUE; /* bot() will recalc u.uac */
         break;
     case HELM_OF_BRILLIANCE:
         if ((obj->owornmask & W_ARMH) && (obj == uarmh)) {
             ABON(A_INT)--;
             ABON(A_WIS)--;
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
         break;
     case GAUNTLETS_OF_DEXTERITY:
         if ((obj->owornmask & W_ARMG) && (obj == uarmg)) {
             ABON(A_DEX)--;
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
         break;
     default:
         break;
     }
-    if (gc.context.botl)
+    if (disp.botl)
         bot();
     if (carried(obj))
         update_inventory();
@@ -1820,6 +1821,9 @@ poly_obj(struct obj *obj, int id)
     case POTION_CLASS:
         while (otmp->otyp == POT_POLYMORPH)
             otmp->otyp = rnd_class(POT_GAIN_ABILITY, POT_WATER);
+        /* potions of oil use obj->age field differently from other potions */
+        if (otmp->otyp == POT_OIL || obj->otyp == POT_OIL)
+            fixup_oil(otmp, obj);
         break;
 
     case SPBOOK_CLASS:
@@ -3135,7 +3139,8 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
 
         if (youdefend) {
             You(!Hallucination? "are covered in sparkling lights!"
-                               : "are enveloped by psychedelic fireworks!");            gc.context.botl = 1; /* potential AC change */
+                               : "are enveloped by psychedelic fireworks!");
+            disp.botl = TRUE; /* potential AC change */
             find_ac();
         }
     } else {
@@ -3199,7 +3204,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     pline_The("%s haze around you disappears.",
                               hcolor(NH_GOLDEN));
                     u.usptime = u.uspmtime = u.uspellprot = 0;
-                    gc.context.botl = 1; /* potential AC change */
+                    disp.botl = 1; /* potential AC change */
                     find_ac();
                 }
             }
@@ -3291,7 +3296,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                 cancel_item(otmp);
             }
             if (youdefend) {
-                gc.context.botl = 1; /* potential AC change */
+                disp.botl = 1; /* potential AC change */
                 find_ac();
             }
             update_inventory();
@@ -5088,7 +5093,7 @@ dobuzz(
                 goto buzzmonst;
             } else if (zap_hit((int) u.uac, 0)) {
                 range -= 2;
-                pline("%s hits you!", The(flash_str(fltyp, FALSE)));
+                pline_dir(xytod(-dx,-dy), "%s hits you!", The(flash_str(fltyp, FALSE)));
                 if (Reflecting) {
                     if (!Blind) {
                         (void) ureflects("Some of %s reflects from your %s!",
@@ -5629,6 +5634,42 @@ zap_over_floor(
     return rangemod;
 }
 
+/* monster has cast flames or frost at target on <x,y>; called by mcastu() */
+void
+mon_spell_hits_spot(
+    struct monst *caster UNUSED,
+    int adtyp, /* canonical damage type */
+    coordxy x, coordxy y) /* so far, only used for targeting <u.ux,u.uy> */
+{
+    /* "shower of missiles" or [hypothetical] "acid rain" attack:
+       thoroughly clobber an engraving (unless its type makes it be
+       scuff-protected); zap_over_floor() doesn't handle this */
+    if (adtyp == AD_MAGM || adtyp == AD_ACID) {
+        struct engr *ep = engr_at(x, y);
+        char *etext = ep ? ep->engr_txt[actual_text] : NULL;
+
+        if (etext)
+            wipe_engr_at(x, y, (int) strlen(etext) + d(6, 6), TRUE);
+        /* hero and player will still remember prior text until the spot
+           is re-examined (lookhere or move off and back on) */
+    }
+
+    /* hit items and/or terrain; only matters for AD_FIRE and AD_COLD but
+       accept any basic damage type that zap_over_floor() might handle */
+    if (adtyp >= AD_MAGM && adtyp <= AD_ACID) {
+        boolean shopdummy = FALSE; /* zap_over_floor() requires this even
+                                    * though it's only used when zapdmgtyp
+                                    * is non-negative (hero's fault) */
+        int zt_typ = adtyp - 1,            /* convert AD_xxxx to ZT_xxxx */
+            zapdmgtyp = -ZT_SPELL(zt_typ); /* damage is from monster spell */
+
+        (void) zap_over_floor(x, y, zapdmgtyp, &shopdummy, TRUE, 0);
+    } else {
+        impossible("Unsupported damage type (%d) for mon_spell_hits_spot.",
+                   adtyp);
+    }
+}
+
 /* fractured by pick-axe or wand of striking or by vault guard */
 void
 fracture_rock(struct obj *obj) /* no texts here! */
@@ -6047,7 +6088,7 @@ destroy_item(int osym, int dmgtyp)
                      || objects[obj->otyp].oc_oprop == FLYING))
                 /* destroyed wands and potions of polymorph don't trigger
                    polymorph so don't need to be deferred */
-                || (obj->otyp == POT_WATER && u.ulycn >= LOW_PM
+                || (obj->otyp == POT_WATER && ismnum(u.ulycn)
                     && (Upolyd ? obj->blessed : obj->cursed)))) {
             deferrals[deferral_indx++] = obj->o_id;
             continue;

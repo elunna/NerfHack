@@ -667,6 +667,10 @@ dochug(register struct monst* mtmp)
         return 0;
     }
 
+    /* Erinyes will inform surrounding monsters of your crimes */
+    if (mdat == &mons[PM_ERINYS] && !mtmp->mpeaceful && m_canseeu(mtmp))
+        aggravate();
+
     /* Shriekers and Medusa have irregular abilities which must be
        checked every turn. These abilities do not cost a turn when
        used. */
@@ -716,6 +720,7 @@ dochug(register struct monst* mtmp)
         /* tactics -> mnexto -> deal_with_overcrowding */
         if (mtmp->mstate)
             return 0;
+        set_apparxy(mtmp);
     }
 
     /* Alchemists will occasionally alchemize more acid */
@@ -872,7 +877,7 @@ dochug(register struct monst* mtmp)
                 create_gas_cloud(start.x, start.y, 1, 0); /* harmless vapor */
             
             /* if confused grabber has wandered off, let go */
-            if (mtmp == u.ustuck && !next2u(mtmp->mx, mtmp->my))
+            if (mtmp == u.ustuck && !m_next2u(mtmp))
                 unstuck(mtmp);
             if (grounded(mdat))
                 disturb_buried_zombies(mtmp->mx, mtmp->my);
@@ -1341,6 +1346,8 @@ postmov(
     int etmp, trapret;
     boolean canseeit = cansee(mtmp->mx, mtmp->my),
             didseeit = canseeit;
+
+    notice_mon(mtmp);
 
     if (mmoved == MMOVE_MOVED) {
         nix = mtmp->mx, niy = mtmp->my;
@@ -2120,7 +2127,7 @@ void
 set_apparxy(register struct monst *mtmp)
 {
     boolean notseen, notthere, gotu;
-    int disp;
+    int displ;
     coordxy mx = mtmp->mux, my = mtmp->muy;
     long umoney = money_cnt(gi.invent);
 
@@ -2140,17 +2147,17 @@ set_apparxy(register struct monst *mtmp)
     notthere = (Displaced && mtmp->data != &mons[PM_DISPLACER_BEAST]);
     /* add cases as required.  eg. Displacement ... */
     if (Underwater) {
-        disp = 1;
+        displ = 1;
     } else if (notseen) {
         /* Xorns can smell quantities of valuable metal
            like that in solid gold coins, treat as seen */
-        disp = (mtmp->data == &mons[PM_XORN] && umoney) ? 0 : 1;
+        displ = (mtmp->data == &mons[PM_XORN] && umoney) ? 0 : 1;
     } else if (notthere) {
-        disp = couldsee(mx, my) ? 2 : 1;
+        displ = couldsee(mx, my) ? 2 : 1;
     } else {
-        disp = 0;
+        displ = 0;
     }
-    if (!disp) {
+    if (!displ) {
         mtmp->mux = u.ux;
         mtmp->muy = u.uy;
         return;
@@ -2169,10 +2176,10 @@ set_apparxy(register struct monst *mtmp)
                 my = u.uy;
                 break; /* punt */
             }
-            mx = u.ux - disp + rn2(2 * disp + 1);
-            my = u.uy - disp + rn2(2 * disp + 1);
+            mx = u.ux - displ + rn2(2 * displ + 1);
+            my = u.uy - displ + rn2(2 * displ + 1);
         } while (!isok(mx, my)
-                 || (disp != 2 && mx == mtmp->mx && my == mtmp->my)
+                 || (displ != 2 && mx == mtmp->mx && my == mtmp->my)
                  || ((mx != u.ux || my != u.uy) && !passes_walls(mtmp->data)
                      && !(accessible(mx, my)
                           || (closed_door(mx, my)

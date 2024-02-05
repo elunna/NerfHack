@@ -6,12 +6,14 @@
 #include "hack.h"
 
 static void setgemprobs(d_level *);
+static void randomize_gem_colors(void);
 static void shuffle(int, int, boolean);
 static void shuffle_all(void);
 static int QSORTCALLBACK discovered_cmp(const genericptr, const genericptr);
 static char *sortloot_descr(int, char *);
 static char *disco_typename(int);
 static void disco_append_typename(char *, int);
+static void disco_output_sorted(winid, char **, int, boolean);
 static char *oclass_to_name(char, char *);
 
 #ifdef TILES_IN_GLYPHMAP
@@ -76,6 +78,34 @@ setgemprobs(d_level* dlev)
     go.oclass_prob_totals[GEM_CLASS] = sum;
 }
 
+/* some gems can have different colors */
+static void
+randomize_gem_colors(void)
+{
+#define COPY_OBJ_DESCR(o_dst, o_src) \
+    o_dst.oc_descr_idx = o_src.oc_descr_idx, o_dst.oc_color = o_src.oc_color
+    if (rn2(2)) { /* change turquoise from green to blue? */
+        COPY_OBJ_DESCR(objects[TURQUOISE], objects[SAPPHIRE]);
+    }
+    if (rn2(2)) { /* change aquamarine from green to blue? */
+        COPY_OBJ_DESCR(objects[AQUAMARINE], objects[SAPPHIRE]);
+    }
+    switch (rn2(4)) { /* change fluorite from violet? */
+    case 0:
+        break;
+    case 1: /* blue */
+        COPY_OBJ_DESCR(objects[FLUORITE], objects[SAPPHIRE]);
+        break;
+    case 2: /* white */
+        COPY_OBJ_DESCR(objects[FLUORITE], objects[DIAMOND]);
+        break;
+    case 3: /* green */
+        COPY_OBJ_DESCR(objects[FLUORITE], objects[EMERALD]);
+        break;
+    }
+#undef COPY_OBJ_DESCR
+}
+
 /* shuffle descriptions on objects o_low to o_high */
 static void
 shuffle(int o_low, int o_high, boolean domaterial)
@@ -120,8 +150,6 @@ init_objects(void)
 {
     int i, first, last, prevoclass;
     char oclass;
-#define COPY_OBJ_DESCR(o_dst, o_src) \
-    o_dst.oc_descr_idx = o_src.oc_descr_idx, o_dst.oc_color = o_src.oc_color
 
     for (i = 0; i <= MAXOCLASSES; i++) {
         gb.bases[i] = 0;
@@ -156,26 +184,7 @@ init_objects(void)
 
         if (oclass == GEM_CLASS) {
             setgemprobs((d_level *) 0);
-
-            if (rn2(2)) { /* change turquoise from green to blue? */
-                COPY_OBJ_DESCR(objects[TURQUOISE], objects[SAPPHIRE]);
-            }
-            if (rn2(2)) { /* change aquamarine from green to blue? */
-                COPY_OBJ_DESCR(objects[AQUAMARINE], objects[SAPPHIRE]);
-            }
-            switch (rn2(4)) { /* change fluorite from violet? */
-            case 0:
-                break;
-            case 1: /* blue */
-                COPY_OBJ_DESCR(objects[FLUORITE], objects[SAPPHIRE]);
-                break;
-            case 2: /* white */
-                COPY_OBJ_DESCR(objects[FLUORITE], objects[DIAMOND]);
-                break;
-            case 3: /* green */
-                COPY_OBJ_DESCR(objects[FLUORITE], objects[EMERALD]);
-                break;
-            }
+            randomize_gem_colors();
         }
         first = last;
         prevoclass = (int) oclass;
@@ -667,6 +676,27 @@ disco_append_typename(char *buf, int dis)
     }
 }
 
+/* sort and output sorted_lines to window and free the lines */
+static void
+disco_output_sorted(winid tmpwin,
+                    char **sorted_lines, int sorted_ct,
+                    boolean lootsort)
+{
+    char *p;
+    int j;
+
+    qsort(sorted_lines, sorted_ct, sizeof (char *), discovered_cmp);
+    for (j = 0; j < sorted_ct; ++j) {
+        p = sorted_lines[j];
+        if (lootsort) {
+            p[6] = p[0]; /* '*' or ' ' */
+            p += 6;
+        }
+        putstr(tmpwin, 0, p);
+        free(sorted_lines[j]), sorted_lines[j] = 0;
+    }
+}
+
 /* the #known command - show discovered object types */
 int
 dodiscovered(void) /* free after Robert Viduya */
@@ -675,7 +705,7 @@ dodiscovered(void) /* free after Robert Viduya */
     char *s, *p, oclass, prev_class,
          classes[MAXOCLASSES], buf[BUFSZ],
          *sorted_lines[NUM_OBJECTS]; /* overkill */
-    int i, j, dis, ct, uniq_ct, arti_ct, sorted_ct;
+    int i, dis, ct, uniq_ct, arti_ct, sorted_ct;
     long sortindx;  // should be ptrdiff_t, but we don't require that exists
     boolean alphabetized, alphabyclass, lootsort;
 
@@ -727,17 +757,7 @@ dodiscovered(void) /* free after Robert Viduya */
                 if (oclass != prev_class) {
                     if ((alphabyclass || lootsort) && sorted_ct) {
                         /* output previous class */
-                        qsort(sorted_lines, sorted_ct, sizeof (char *),
-                              discovered_cmp);
-                        for (j = 0; j < sorted_ct; ++j) {
-                            p = sorted_lines[j];
-                            if (lootsort) {
-                                p[6] = p[0]; /* '*' or ' ' */
-                                p += 6;
-                            }
-                            putstr(tmpwin, 0, p);
-                            free(sorted_lines[j]), sorted_lines[j] = 0;
-                        }
+                        disco_output_sorted(tmpwin, sorted_lines, sorted_ct, lootsort);
                         sorted_ct = 0;
                     }
                     if (!alphabetized || alphabyclass) {
@@ -769,16 +789,7 @@ dodiscovered(void) /* free after Robert Viduya */
                any unique items or any artifacts then we do need one */
             if ((uniq_ct || arti_ct) && alphabetized && !alphabyclass)
                 putstr(tmpwin, iflags.menu_headings.attr, "Discovered items");
-            qsort(sorted_lines, sorted_ct, sizeof (char *), discovered_cmp);
-            for (j = 0; j < sorted_ct; ++j) {
-                p = sorted_lines[j];
-                if (lootsort) {
-                    p[6] = p[0]; /* '*' or ' ' */
-                    p += 6;
-                }
-                putstr(tmpwin, 0, p);
-                free(sorted_lines[j]), sorted_lines[j] = 0;
-            }
+            disco_output_sorted(tmpwin, sorted_lines, sorted_ct, lootsort);
         }
         display_nhwindow(tmpwin, TRUE);
     }
@@ -1089,6 +1100,18 @@ rename_disco(void)
     return;
 }
 
+void
+get_sortdisco(char *opts, boolean cnf)
+{
+    const char *p = strchr(disco_order_let, flags.discosort);
+
+    if (!p)
+        flags.discosort = 'o', p = disco_order_let;
+    if (cnf)
+        Sprintf(opts, "%c", flags.discosort);
+    else
+        Strcpy(opts, disco_orders_descr[p - disco_order_let]);
+}
 
 void
 makeknown_msg(int otyp)
@@ -1100,7 +1123,7 @@ makeknown_msg(int otyp)
     was_known = objects[otyp].oc_name_known;
     makeknown(otyp);
     now_known = objects[otyp].oc_name_known;
-
+    
     if (flags.verbose && !was_known && now_known) {
         if (otyp == LENSES ||
             (oclass == ARMOR_CLASS &&
@@ -1111,5 +1134,4 @@ makeknown_msg(int otyp)
         }
     }
 }
-
 /*o_init.c*/

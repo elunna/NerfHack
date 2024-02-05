@@ -1,4 +1,4 @@
-/* NetHack 3.7	dungeon.c	$NHDT-Date: 1703070190 2023/12/20 11:03:10 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.205 $ */
+/* NetHack 3.7	dungeon.c	$NHDT-Date: 1704043695 2023/12/31 17:28:15 $  $NHDT-Branch: keni-luabits2 $:$NHDT-Revision: 1.207 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -50,6 +50,13 @@ static boolean place_level(int, struct proto_dungeon *);
 static int get_dgn_flags(lua_State *);
 static int get_dgn_align(lua_State *);
 static void init_dungeon_levels(lua_State *, struct proto_dungeon *, int);
+static void init_dungeon_branches(lua_State *, struct proto_dungeon *, int);
+static void init_dungeon_set_entry(struct proto_dungeon *, int);
+static void init_dungeon_set_depth(struct proto_dungeon *, int);
+static void init_castle_tune(void);
+static void fixup_level_locations(void);
+static void free_proto_dungeon(struct proto_dungeon *);
+static boolean init_dungeon_dungeons(lua_State *, struct proto_dungeon *, int);
 static boolean unplaced_floater(struct dungeon *);
 static boolean unreachable_level(d_level *, boolean);
 static void tport_menu(winid, char *, struct lchoice *, d_level *, boolean);
@@ -857,17 +864,347 @@ init_dungeon_levels(
         panic("init_dungeon: too many special levels");
 }
 
+static void
+init_dungeon_branches(
+    lua_State *L,
+    struct proto_dungeon *pd,
+    int dngidx)
+{
+    static const char *const brdirstr[] = { "up", "down", 0 };
+    static const int brdirstr2i[] = { TRUE, FALSE, FALSE };
+    static const char *const brtypes[] = {
+        "stair", "portal", "no_down", "no_up", 0
+    };
+    static const int brtypes2i[] = {
+        TBR_STAIR, TBR_PORTAL, TBR_NO_DOWN, TBR_NO_UP, TBR_STAIR
+    };
+    char *br_name, *br_chain;
+    int br_base, br_range, br_type, br_up;
+    struct tmpbranch *tmpb;
+    int bi, f, nbranches;
+
+    lua_len(L, -1);
+    nbranches = (int) lua_tointeger(L, -1);
+    pd->tmpdungeon[dngidx].branches = nbranches;
+    lua_pop(L, 1);
+    for (f = 0; f < nbranches; f++) {
+        lua_pushinteger(L, f + 1);
+        lua_gettable(L, -2);
+        if (lua_type(L, -1) == LUA_TTABLE) {
+            br_name = get_table_str(L, "name");
+            br_chain = get_table_str_opt(L, "chainlevel", NULL);
+            br_base = get_table_int(L, "base");
+            br_range = get_table_int_opt(L, "range", 0);
+            br_type = brtypes2i[get_table_option(L, "branchtype",
+                                                 "stair", brtypes)];
+            br_up = brdirstr2i[get_table_option(L, "direction",
+                                                "down", brdirstr)];
+            tmpb = &(pd->tmpbranch[pd->n_brs + f]);
+
+            debugpline4("BRANCH[%i]:%s,(%i,%i)",
+                        f, br_name, br_base, br_range);
+            tmpb->name = br_name;
+            tmpb->lev.base = br_base;
+            tmpb->lev.rand = br_range;
+            tmpb->type = br_type;
+            tmpb->up = br_up;
+            tmpb->chain = -1;
+            if (br_chain) {
+                debugpline1("CHAINBRANCH:%s", br_chain);
+                for (bi = 0; bi < pd->n_levs + f - 1; bi++)
+                    if (!strcmp(pd->tmplevel[bi].name, br_chain)) {
+                        tmpb->chain = bi;
+                        break;
+                    }
+                if (tmpb->chain == -1)
+                    panic("Could not chain branch %s to level %s",
+                          br_name, br_chain);
+                free(br_chain);
+            }
+        } else
+            panic("dungeon[%i].branches[%i] is not a hash", dngidx, f);
+        lua_pop(L, 1);
+    }
+    pd->n_brs += nbranches;
+    if (pd->n_brs > BRANCH_LIMIT)
+        panic("init_dungeon: too many branches");
+}
+
+static void
+init_dungeon_set_entry(struct proto_dungeon *pd, int dngidx)
+{
+    int dgn_entry = pd->tmpdungeon[dngidx].entry_lev;
+    /*
+     * Set the entry level for this dungeon.  The entry value means:
+     *              < 0     from bottom (-1 == bottom level)
+     *                0     default (top)
+     *              > 0     actual level (1 = top)
+     *
+     * Note that the entry_lev field in the dungeon structure is
+     * redundant.  It is used only here and in print_dungeon().
+     */
+    if (dgn_entry < 0) {
+        gd.dungeons[dngidx].entry_lev =
+            gd.dungeons[dngidx].num_dunlevs + dgn_entry + 1;
+        if (gd.dungeons[dngidx].entry_lev <= 0)
+            gd.dungeons[dngidx].entry_lev = 1;
+    } else if (dgn_entry > 0) {
+        gd.dungeons[dngidx].entry_lev = dgn_entry;
+        if (gd.dungeons[dngidx].entry_lev > gd.dungeons[dngidx].num_dunlevs)
+            gd.dungeons[dngidx].entry_lev = gd.dungeons[dngidx].num_dunlevs;
+    } else { /* default */
+        gd.dungeons[dngidx].entry_lev = 1; /* defaults to top level */
+    }
+}
+
+static void
+init_dungeon_set_depth(struct proto_dungeon *pd, int dngidx)
+{
+    branch *br;
+    schar from_depth;
+    boolean from_up;
+
+    br = add_branch(dngidx, gd.dungeons[dngidx].entry_lev, pd);
+
+    /* Get the depth of the connecting end. */
+    if (br->end1.dnum == dngidx) {
+        from_depth = depth(&br->end2);
+        from_up = !br->end1_up;
+    } else {
+        from_depth = depth(&br->end1);
+        from_up = br->end1_up;
+    }
+
+    /*
+     * Calculate the depth of the top of the dungeon via
+     * its branch.  First, the depth of the entry point:
+     *
+     *  depth of branch from "parent" dungeon
+     *  + -1 or 1 depending on an up or down stair or
+     *    0 if portal
+     *
+     * Followed by the depth of the top of the dungeon:
+     *
+     *  - (entry depth - 1)
+     *
+     * We'll say that portals stay on the same depth.
+     */
+    gd.dungeons[dngidx].depth_start =
+        from_depth + (br->type == BR_PORTAL ? 0 : (from_up ? -1 : 1))
+        - (gd.dungeons[dngidx].entry_lev - 1);
+}
+
+static boolean
+init_dungeon_dungeons(
+   lua_State *L,
+   struct proto_dungeon *pd,
+   int dngidx)
+{
+    char *dgn_name, *dgn_bonetag, *dgn_protoname, *dgn_fill;
+    char *dgn_themerms;
+    int dgn_base, dgn_range, dgn_align, dgn_entry, dgn_chance, dgn_flags;
+
+    dgn_name = get_table_str(L, "name");
+    dgn_bonetag = get_table_str_opt(L, "bonetag", emptystr); /* TODO: single char or "none" */
+    dgn_protoname = get_table_str_opt(L, "protofile", emptystr);
+    dgn_base = get_table_int(L, "base");
+    dgn_range = get_table_int_opt(L, "range", 0);
+    dgn_align = get_dgn_align(L);
+    dgn_entry = get_table_int_opt(L, "entry", 0);
+    dgn_chance = get_table_int_opt(L, "chance", 100);
+    dgn_flags = get_dgn_flags(L);
+    dgn_fill = get_table_str_opt(L, "lvlfill", emptystr);
+    dgn_themerms = get_table_str_opt(L, "themerooms", emptystr);
+
+    debugpline4("DUNGEON[%i]: %s, base=(%i,%i)",
+                dngidx, dgn_name, dgn_base, dgn_range);
+
+    if (!wizard && dgn_chance && (dgn_chance <= rn2(100))) {
+        debugpline1("IGNORING %s", dgn_name);
+        gn.n_dgns--;
+        free((genericptr_t) dgn_name);
+        free((genericptr_t) dgn_bonetag);
+        free((genericptr_t) dgn_protoname);
+        free((genericptr_t) dgn_fill);
+        free((genericptr_t) dgn_themerms);
+        return FALSE;
+    }
+
+    /* levels begin */
+    lua_getfield(L, -1, "levels");
+    if (lua_type(L, -1) == LUA_TTABLE) {
+        init_dungeon_levels(L, pd, dngidx);
+    } else if (lua_type(L, -1) != LUA_TNIL)
+        panic("dungeon[%i].levels is not an array of hashes", dngidx);
+    lua_pop(L, 1);
+    /* levels end */
+
+    /* branches begin */
+    lua_getfield(L, -1, "branches");
+    if (lua_type(L, -1) == LUA_TTABLE) {
+        init_dungeon_branches(L, pd, dngidx);
+    } else if (lua_type(L, -1) != LUA_TNIL)
+        panic("dungeon[%i].branches is not an array of hashes", dngidx);
+    lua_pop(L, 1);
+    /* branches end */
+
+    pd->tmpdungeon[dngidx].name = dgn_name;
+    pd->tmpdungeon[dngidx].protoname = dgn_protoname;
+    pd->tmpdungeon[dngidx].boneschar = *dgn_bonetag ? *dgn_bonetag : 0;
+    pd->tmpdungeon[dngidx].lev.base = dgn_base;
+    pd->tmpdungeon[dngidx].lev.rand = dgn_range;
+    pd->tmpdungeon[dngidx].flags = dgn_flags;
+    pd->tmpdungeon[dngidx].align = dgn_align;
+    pd->tmpdungeon[dngidx].chance = dgn_chance;
+    pd->tmpdungeon[dngidx].entry_lev = dgn_entry;
+
+    Strcpy(gd.dungeons[dngidx].fill_lvl, dgn_fill); /* FIXME: fill_lvl len */
+    Strcpy(gd.dungeons[dngidx].dname, dgn_name); /* FIXME: dname length */
+    Strcpy(gd.dungeons[dngidx].proto, dgn_protoname); /* FIXME: proto length */
+    Strcpy(gd.dungeons[dngidx].themerms, dgn_themerms); /* FIXME: length */
+    gd.dungeons[dngidx].boneid = *dgn_bonetag ? *dgn_bonetag : 0;
+    free((genericptr) dgn_fill);
+    /* free((genericptr) dgn_protoname); -- stored in pd.tmpdungeon[] */
+    free((genericptr) dgn_bonetag);
+    free((genericptr) dgn_themerms);
+
+    if (dgn_range)
+        gd.dungeons[dngidx].num_dunlevs = (xint16) rn1(dgn_range, dgn_base);
+    else
+        gd.dungeons[dngidx].num_dunlevs = (xint16) dgn_base;
+
+    if (!dngidx) {
+        gd.dungeons[dngidx].ledger_start = 0;
+        gd.dungeons[dngidx].depth_start = 1;
+        gd.dungeons[dngidx].dunlev_ureached = 1;
+    } else {
+        gd.dungeons[dngidx].ledger_start = gd.dungeons[dngidx - 1].ledger_start
+            + gd.dungeons[dngidx - 1].num_dunlevs;
+        gd.dungeons[dngidx].dunlev_ureached = 0;
+    }
+
+    gd.dungeons[dngidx].flags.hellish = !!(dgn_flags & HELLISH);
+    gd.dungeons[dngidx].flags.maze_like = !!(dgn_flags & MAZELIKE);
+    gd.dungeons[dngidx].flags.rogue_like = !!(dgn_flags & ROGUELIKE);
+    gd.dungeons[dngidx].flags.align = dgn_align;
+    gd.dungeons[dngidx].flags.unconnected = !!(dgn_flags & UNCONNECTED);
+
+    init_dungeon_set_entry(pd, dngidx);
+
+    if (gd.dungeons[dngidx].flags.unconnected) {
+        gd.dungeons[dngidx].depth_start = 1;
+    } else if (dngidx) { /* set depth */
+        init_dungeon_set_depth(pd, dngidx);
+    }
+
+    if (gd.dungeons[dngidx].num_dunlevs > MAXLEVEL)
+        gd.dungeons[dngidx].num_dunlevs = MAXLEVEL;
+
+    return TRUE;
+}
+
+/* initialize the Castle drawbridge tune */
+static void
+init_castle_tune(void)
+{
+    int i;
+
+    for (i = 0; i < 5; i++)
+        gt.tune[i] = 'A' + rn2(7);
+    gt.tune[5] = 0;
+}
+
+/* fix up the special level names and locations for quick access */
+static void
+fixup_level_locations(void)
+{
+    int i;
+    s_level *x;
+    struct level_map *lev_map;
+
+    /*
+     * Find most of the special levels and dungeons so we can access their
+     * locations quickly.
+     */
+    for (lev_map = level_map; lev_map->lev_name[0]; lev_map++) {
+        x = find_level(lev_map->lev_name);
+        if (x) {
+            assign_level(lev_map->lev_spec, &x->dlevel);
+            if (!strncmp(lev_map->lev_name, "x-", 2)) {
+                /* This is where the name substitution on the
+                 * levels of the quest dungeon occur.
+                 */
+                Sprintf(x->proto, "%s%s", gu.urole.filecode,
+                        &lev_map->lev_name[1]);
+            } else if (lev_map->lev_spec == &knox_level) {
+                branch *br;
+                /*
+                 * Kludge to allow floating Knox entrance.  We
+                 * specify a floating entrance by the fact that its
+                 * entrance (end1) has a bogus dnum, namely n_dgns.
+                 */
+                for (br = gb.branches; br; br = br->next)
+                    if (on_level(&br->end2, &knox_level))
+                        break;
+
+                if (br)
+                    br->end1.dnum = gn.n_dgns;
+                /* adjust the branch's position on the list */
+                insert_branch(br, TRUE);
+            }
+        }
+    }
+    /*
+     *  I hate hardwiring these names. :-(
+     */
+    quest_dnum = dname_to_dnum("The Quest");
+    sokoban_dnum = dname_to_dnum("Sokoban");
+    mines_dnum = dname_to_dnum("The Gnomish Mines");
+    tower_dnum = dname_to_dnum("Vlad's Tower");
+    tutorial_dnum = dname_to_dnum("The Tutorial");
+
+    /* one special fixup for dummy surface level */
+    if ((x = find_level("dummy")) != 0) {
+        i = x->dlevel.dnum;
+        /* the code above puts earth one level above dungeon level #1,
+           making the dummy level overlay level 1; but the whole reason
+           for having the dummy level is to make earth have depth -1
+           instead of 0, so adjust the start point to shift endgame up */
+        if (dunlevs_in_dungeon(&x->dlevel) > 1 - gd.dungeons[i].depth_start)
+            gd.dungeons[i].depth_start -= 1;
+        /* TODO: strip "dummy" out all the way here,
+           so that it's hidden from '#wizwhere' feedback. */
+    }
+}
+
+static void
+free_proto_dungeon(struct proto_dungeon *pd)
+{
+    int i;
+
+    for (i = 0; i < pd->n_brs; i++) {
+        free((genericptr_t) pd->tmpbranch[i].name);
+    }
+    for (i = 0; i < pd->n_levs; i++) {
+        free((genericptr_t) pd->tmplevel[i].name);
+        if (pd->tmplevel[i].chainlvl)
+            free((genericptr_t) pd->tmplevel[i].chainlvl);
+    }
+    for (i = 0; i < gn.n_dgns; i++) {
+        free((genericptr_t) pd->tmpdungeon[i].name);
+        free((genericptr_t) pd->tmpdungeon[i].protoname);
+    }
+}
+
 /* initialize the "dungeon" structs */
 void
 init_dungeons(void)
 {
     lua_State *L;
     register int i, cl = 0;
-    register s_level *x;
     struct proto_dungeon pd;
-    struct level_map *lev_map;
     int tidx;
-    nhl_sandbox_info sbi = {NHL_SB_SAFE, 0, 0, 0};
+    nhl_sandbox_info sbi = {NHL_SB_SAFE, 1*1024*1024, 0, 1*1024*1024};
 
     (void) memset(&pd, 0, sizeof (struct proto_dungeon));
     pd.n_levs = pd.n_brs = 0;
@@ -935,322 +1272,43 @@ init_dungeons(void)
     lua_pushnil(L); /* first key */
     i = 0;
     while (lua_next(L, tidx) != 0) {
-        char *dgn_name, *dgn_bonetag, *dgn_protoname, *dgn_fill;
-        char *dgn_themerms;
-        int dgn_base, dgn_range, dgn_align, dgn_entry, dgn_chance, dgn_flags;
 
         if (!lua_istable(L, -1))
             panic("dungeon[%i] is not a lua table", i);
 
-        dgn_name = get_table_str(L, "name");
-        dgn_bonetag = get_table_str_opt(L, "bonetag", emptystr); /* TODO: single char or "none" */
-        dgn_protoname = get_table_str_opt(L, "protofile", emptystr);
-        dgn_base = get_table_int(L, "base");
-        dgn_range = get_table_int_opt(L, "range", 0);
-        dgn_align = get_dgn_align(L);
-        dgn_entry = get_table_int_opt(L, "entry", 0);
-        dgn_chance = get_table_int_opt(L, "chance", 100);
-        dgn_flags = get_dgn_flags(L);
-        dgn_fill = get_table_str_opt(L, "lvlfill", emptystr);
-        dgn_themerms = get_table_str_opt(L, "themerooms", emptystr);
-
-        debugpline4("DUNGEON[%i]: %s, base=(%i,%i)",
-                    i, dgn_name, dgn_base, dgn_range);
-
-        if (!wizard && dgn_chance && (dgn_chance <= rn2(100))) {
-            debugpline1("IGNORING %s", dgn_name);
-            gn.n_dgns--;
-            lua_pop(L, 1); /* pop the dungeon table */
-            free((genericptr_t) dgn_name);
-            free((genericptr_t) dgn_bonetag);
-            free((genericptr_t) dgn_protoname);
-            free((genericptr_t) dgn_fill);
-            free((genericptr_t) dgn_themerms);
-            continue;
-        }
-
-        /* levels begin */
-        lua_getfield(L, -1, "levels");
-        if (lua_type(L, -1) == LUA_TTABLE) {
-            init_dungeon_levels(L, &pd, i);
-        } else if (lua_type(L, -1) != LUA_TNIL)
-            panic("dungeon[%i].levels is not an array of hashes", i);
-        lua_pop(L, 1);
-        /* levels end */
-
-        /* branches begin */
-        lua_getfield(L, -1, "branches");
-        if (lua_type(L, -1) == LUA_TTABLE) {
-            static const char *const brdirstr[] = { "up", "down", 0 };
-            static const int brdirstr2i[] = { TRUE, FALSE, FALSE };
-            static const char *const brtypes[] = {
-                "stair", "portal", "no_down", "no_up", 0
-            };
-            static const int brtypes2i[] = {
-                TBR_STAIR, TBR_PORTAL, TBR_NO_DOWN, TBR_NO_UP, TBR_STAIR
-            };
-            char *br_name, *br_chain;
-            int br_base, br_range, br_type, br_up;
-            struct tmpbranch *tmpb;
-            int bi, f, nbranches;
-
-            lua_len(L, -1);
-            nbranches = (int) lua_tointeger(L, -1);
-            pd.tmpdungeon[i].branches = nbranches;
-            lua_pop(L, 1);
-            for (f = 0; f < nbranches; f++) {
-                lua_pushinteger(L, f + 1);
-                lua_gettable(L, -2);
-                if (lua_type(L, -1) == LUA_TTABLE) {
-                    br_name = get_table_str(L, "name");
-                    br_chain = get_table_str_opt(L, "chainlevel", NULL);
-                    br_base = get_table_int(L, "base");
-                    br_range = get_table_int_opt(L, "range", 0);
-                    br_type = brtypes2i[get_table_option(L, "branchtype",
-                                                         "stair", brtypes)];
-                    br_up = brdirstr2i[get_table_option(L, "direction",
-                                                        "down", brdirstr)];
-                    tmpb = &pd.tmpbranch[pd.n_brs + f];
-
-                    debugpline4("BRANCH[%i]:%s,(%i,%i)",
-                                f, br_name, br_base, br_range);
-                    tmpb->name = br_name;
-                    tmpb->lev.base = br_base;
-                    tmpb->lev.rand = br_range;
-                    tmpb->type = br_type;
-                    tmpb->up = br_up;
-                    tmpb->chain = -1;
-                    if (br_chain) {
-                        debugpline1("CHAINBRANCH:%s", br_chain);
-                        for (bi = 0; bi < pd.n_levs + f - 1; bi++)
-                            if (!strcmp(pd.tmplevel[bi].name, br_chain)) {
-                                tmpb->chain = bi;
-                                break;
-                            }
-                        if (tmpb->chain == -1)
-                            panic("Could not chain branch %s to level %s",
-                                  br_name, br_chain);
-                        free(br_chain);
-                    }
-                } else
-                    panic("dungeon[%i].branches[%i] is not a hash", i, f);
-                lua_pop(L, 1);
+        if (init_dungeon_dungeons(L, &pd, i)) {
+            for (; cl < pd.n_levs; cl++) {
+                init_level(i, cl, &pd);
             }
-            pd.n_brs += nbranches;
-            if (pd.n_brs > BRANCH_LIMIT)
-                panic("init_dungeon: too many branches");
-        } else if (lua_type(L, -1) != LUA_TNIL)
-            panic("dungeon[%i].branches is not an array of hashes", i);
-        lua_pop(L, 1);
-        /* branches end */
-
-        pd.tmpdungeon[i].name = dgn_name;
-        pd.tmpdungeon[i].protoname = dgn_protoname;
-        pd.tmpdungeon[i].boneschar = *dgn_bonetag ? *dgn_bonetag : 0;
-        pd.tmpdungeon[i].lev.base = dgn_base;
-        pd.tmpdungeon[i].lev.rand = dgn_range;
-        pd.tmpdungeon[i].flags = dgn_flags;
-        pd.tmpdungeon[i].align = dgn_align;
-        pd.tmpdungeon[i].chance = dgn_chance;
-        pd.tmpdungeon[i].entry_lev = dgn_entry;
-
-        Strcpy(gd.dungeons[i].fill_lvl, dgn_fill); /* FIXME: fill_lvl len */
-        Strcpy(gd.dungeons[i].dname, dgn_name); /* FIXME: dname length */
-        Strcpy(gd.dungeons[i].proto, dgn_protoname); /* FIXME: proto length */
-        Strcpy(gd.dungeons[i].themerms, dgn_themerms); /* FIXME: length */
-        gd.dungeons[i].boneid = *dgn_bonetag ? *dgn_bonetag : 0;
-        free((genericptr) dgn_fill);
-        /* free((genericptr) dgn_protoname); -- stored in pd.tmpdungeon[] */
-        free((genericptr) dgn_bonetag);
-        free((genericptr) dgn_themerms);
-
-        if (dgn_range)
-            gd.dungeons[i].num_dunlevs = (xint16) rn1(dgn_range, dgn_base);
-        else
-            gd.dungeons[i].num_dunlevs = (xint16) dgn_base;
-
-        if (!i) {
-            gd.dungeons[i].ledger_start = 0;
-            gd.dungeons[i].depth_start = 1;
-            gd.dungeons[i].dunlev_ureached = 1;
-        } else {
-            gd.dungeons[i].ledger_start = gd.dungeons[i - 1].ledger_start
-                                         + gd.dungeons[i - 1].num_dunlevs;
-            gd.dungeons[i].dunlev_ureached = 0;
-        }
-
-        gd.dungeons[i].flags.hellish = !!(dgn_flags & HELLISH);
-        gd.dungeons[i].flags.maze_like = !!(dgn_flags & MAZELIKE);
-        gd.dungeons[i].flags.rogue_like = !!(dgn_flags & ROGUELIKE);
-        gd.dungeons[i].flags.align = dgn_align;
-        gd.dungeons[i].flags.unconnected = !!(dgn_flags & UNCONNECTED);
-
-        /*
-         * Set the entry level for this dungeon.  The entry value means:
-         *              < 0     from bottom (-1 == bottom level)
-         *                0     default (top)
-         *              > 0     actual level (1 = top)
-         *
-         * Note that the entry_lev field in the dungeon structure is
-         * redundant.  It is used only here and in print_dungeon().
-         */
-        if (dgn_entry < 0) {
-            gd.dungeons[i].entry_lev =
-                gd.dungeons[i].num_dunlevs + dgn_entry + 1;
-            if (gd.dungeons[i].entry_lev <= 0)
-                gd.dungeons[i].entry_lev = 1;
-        } else if (dgn_entry > 0) {
-            gd.dungeons[i].entry_lev = dgn_entry;
-            if (gd.dungeons[i].entry_lev > gd.dungeons[i].num_dunlevs)
-                gd.dungeons[i].entry_lev = gd.dungeons[i].num_dunlevs;
-        } else {                       /* default */
-            gd.dungeons[i].entry_lev = 1; /* defaults to top level */
-        }
-
-        if (gd.dungeons[i].flags.unconnected) {
-            gd.dungeons[i].depth_start = 1;
-        } else if (i) { /* set depth */
-            branch *br;
-            schar from_depth;
-            boolean from_up;
-
-            br = add_branch(i, gd.dungeons[i].entry_lev, &pd);
-
-            /* Get the depth of the connecting end. */
-            if (br->end1.dnum == i) {
-                from_depth = depth(&br->end2);
-                from_up = !br->end1_up;
-            } else {
-                from_depth = depth(&br->end1);
-                from_up = br->end1_up;
-            }
-
             /*
-             * Calculate the depth of the top of the dungeon via
-             * its branch.  First, the depth of the entry point:
-             *
-             *  depth of branch from "parent" dungeon
-             *  + -1 or 1 depending on an up or down stair or
-             *    0 if portal
-             *
-             * Followed by the depth of the top of the dungeon:
-             *
-             *  - (entry depth - 1)
-             *
-             * We'll say that portals stay on the same depth.
+             * Recursively place the generated levels for this dungeon.  This
+             * routine will attempt all possible combinations before giving
+             * up.
              */
-            gd.dungeons[i].depth_start =
-                from_depth + (br->type == BR_PORTAL ? 0 : (from_up ? -1 : 1))
-                - (gd.dungeons[i].entry_lev - 1);
-        }
-
-        if (gd.dungeons[i].num_dunlevs > MAXLEVEL)
-            gd.dungeons[i].num_dunlevs = MAXLEVEL;
-
-
-       for (; cl < pd.n_levs; cl++) {
-            init_level(i, cl, &pd);
-        }
-
-        /*
-         * Recursively place the generated levels for this dungeon.  This
-         * routine will attempt all possible combinations before giving
-         * up.
-         */
-        if (!place_level(pd.start, &pd))
-            panic("init_dungeon:  couldn't place levels");
+            if (!place_level(pd.start, &pd))
+                panic("init_dungeon:  couldn't place levels");
 #ifdef DDEBUG
-        fprintf(stderr, "--- end of dungeon %d ---\n", i);
-        fflush(stderr);
-        getchar();
+            fprintf(stderr, "--- end of dungeon %d ---\n", i);
+            fflush(stderr);
+            getchar();
 #endif
-
-        for (; pd.start < pd.n_levs; pd.start++)
-            if (pd.final_lev[pd.start])
-                add_level(pd.final_lev[pd.start]);
-        /* levels handling end */
-
+            for (; pd.start < pd.n_levs; pd.start++)
+                if (pd.final_lev[pd.start])
+                    add_level(pd.final_lev[pd.start]);
+            /* levels handling end */
+            i++;
+        }
         lua_pop(L, 1); /* pop the dungeon table */
-        i++;
     }
 
     lua_pop(L, 1); /* get rid of the dungeon global */
     debugpline2("init_dungeon lua DONE (n_levs=%i, n_brs=%i)",
                 pd.n_levs, pd.n_brs);
 
-    for (i = 0; i < 5; i++)
-        gt.tune[i] = 'A' + rn2(7);
-    gt.tune[5] = 0;
-
-    /*
-     * Find most of the special levels and dungeons so we can access their
-     * locations quickly.
-     */
-    for (lev_map = level_map; lev_map->lev_name[0]; lev_map++) {
-        x = find_level(lev_map->lev_name);
-        if (x) {
-            assign_level(lev_map->lev_spec, &x->dlevel);
-            if (!strncmp(lev_map->lev_name, "x-", 2)) {
-                /* This is where the name substitution on the
-                 * levels of the quest dungeon occur.
-                 */
-                Sprintf(x->proto, "%s%s", gu.urole.filecode,
-                        &lev_map->lev_name[1]);
-            } else if (lev_map->lev_spec == &knox_level) {
-                branch *br;
-                /*
-                 * Kludge to allow floating Knox entrance.  We
-                 * specify a floating entrance by the fact that its
-                 * entrance (end1) has a bogus dnum, namely n_dgns.
-                 */
-                for (br = gb.branches; br; br = br->next)
-                    if (on_level(&br->end2, &knox_level))
-                        break;
-
-                if (br)
-                    br->end1.dnum = gn.n_dgns;
-                /* adjust the branch's position on the list */
-                insert_branch(br, TRUE);
-            }
-        }
-    }
-    /*
-     *  I hate hardwiring these names. :-(
-     */
-    quest_dnum = dname_to_dnum("The Quest");
-    sokoban_dnum = dname_to_dnum("Sokoban");
-    mines_dnum = dname_to_dnum("The Gnomish Mines");
-    tower_dnum = dname_to_dnum("Vlad's Tower");
-    tutorial_dnum = dname_to_dnum("The Tutorial");
-
-    /* one special fixup for dummy surface level */
-    if ((x = find_level("dummy")) != 0) {
-        i = x->dlevel.dnum;
-        /* the code above puts earth one level above dungeon level #1,
-           making the dummy level overlay level 1; but the whole reason
-           for having the dummy level is to make earth have depth -1
-           instead of 0, so adjust the start point to shift endgame up */
-        if (dunlevs_in_dungeon(&x->dlevel) > 1 - gd.dungeons[i].depth_start)
-            gd.dungeons[i].depth_start -= 1;
-        /* TODO: strip "dummy" out all the way here,
-           so that it's hidden from '#wizwhere' feedback. */
-    }
-
+    init_castle_tune();
+    fixup_level_locations();
     nhl_done(L);
-
-    for (i = 0; i < pd.n_brs; i++) {
-        free((genericptr_t) pd.tmpbranch[i].name);
-    }
-    for (i = 0; i < pd.n_levs; i++) {
-        free((genericptr_t) pd.tmplevel[i].name);
-        if (pd.tmplevel[i].chainlvl)
-            free((genericptr_t) pd.tmplevel[i].chainlvl);
-    }
-    for (i = 0; i < gn.n_dgns; i++) {
-        free((genericptr_t) pd.tmpdungeon[i].name);
-        free((genericptr_t) pd.tmpdungeon[i].protoname);
-    }
-
+    free_proto_dungeon(&pd);
 #ifdef DEBUG
     dumpit();
 #endif

@@ -15,7 +15,8 @@ static char *loot_xname(struct obj *);
 static int invletter_value(char);
 static int QSORTCALLBACK sortloot_cmp(const genericptr, const genericptr);
 static void reorder_invent(void);
-static struct obj *addinv_core0(struct obj *, struct obj *, boolean) NONNULLARG1;
+static struct obj *addinv_core0(struct obj *, struct obj *,
+                                                         boolean) NONNULLARG1;
 static void noarmor(boolean);
 static void invdisp_nothing(const char *, const char *);
 static boolean worn_wield_only(struct obj *);
@@ -25,6 +26,7 @@ static boolean only_here(struct obj *);
 static void compactify(char *);
 static boolean taking_off(const char *);
 static void mime_action(const char *);
+static char *getobj_hands_txt(const char *, char *);
 static int ckvalidcat(struct obj *);
 static int ckunpaid(struct obj *);
 static char *safeq_xprname(struct obj *);
@@ -779,11 +781,11 @@ reorder_invent(void)
    one of them; used in pickup.c when all 52 inventory slots are in use,
    to figure out whether another object could still be picked up */
 struct obj *
-merge_choice(struct obj *objlist, struct obj *obj)
+merge_choice(struct obj **objlist, struct obj *obj)
 {
     struct monst *shkp;
-    int save_nocharge;
-    struct obj *objlist2;
+    unsigned save_nocharge;
+    struct obj *olist = *objlist;
 
     if (obj->otyp == SCR_SCARE_MONSTER) /* punt on these */
         return (struct obj *) 0;
@@ -791,28 +793,29 @@ merge_choice(struct obj *objlist, struct obj *obj)
        have when carried are different from what they are now; prevent
        that from eliciting an incorrect result from mergable() */
     save_nocharge = obj->no_charge;
-    if (objlist == gi.invent && obj->where == OBJ_FLOOR
-        && (shkp = shop_keeper(inside_shop(obj->ox, obj->oy))) != 0) {
-        if (obj->no_charge)
-            obj->no_charge = 0;
-        /* A billable object won't have its `unpaid' bit set, so would
-           erroneously seem to be a candidate to merge with a similar
-           ordinary object.  That's no good, because once it's really
-           picked up, it won't merge after all.  It might merge with
-           another unpaid object, but we can't check that here (depends
-           too much upon shk's bill) and if it doesn't merge it would
-           end up in the '#' overflow inventory slot, so reject it now. */
-        else if (inhishop(shkp))
-            return (struct obj *) 0;
-    }
-    objlist2 = objlist; /* allow objlist arg to be nonnull w/o a warning */
-    while (objlist2) {
-        if (mergable(objlist2, obj))
-            break;
-        objlist2 = objlist2->nobj;
+    if (olist) {
+        if (olist == gi.invent && obj->where == OBJ_FLOOR
+            && (shkp = shop_keeper(inside_shop(obj->ox, obj->oy))) != 0) {
+            if (obj->no_charge)
+                obj->no_charge = 0;
+            /* A billable object won't have its `unpaid' bit set, so would
+               erroneously seem to be a candidate to merge with a similar
+               ordinary object.  That's no good, because once it's really
+               picked up, it won't merge after all.  It might merge with
+               another unpaid object, but we can't check that here (depends
+               too much upon shk's bill) and if it doesn't merge it would
+               end up in the '#' overflow inventory slot, so reject it now. */
+            else if (inhishop(shkp))
+                return (struct obj *) 0;
+        }
+        do {
+            if (mergable(olist, obj))
+                break;
+            olist = olist->nobj;
+        } while (olist);
     }
     obj->no_charge = save_nocharge;
-    return objlist2;
+    return olist;
 }
 
 /* merge obj with otmp and delete obj if types agree */
@@ -865,13 +868,13 @@ merged(struct obj **potmp, struct obj **pobj)
            identification states don't match, one of them must have
            previously been identified */
         if (obj->known != otmp->known) {
-            otmp->known = TRUE;
+            otmp->known = 1;
         }
         if (obj->rknown != otmp->rknown) {
-            otmp->rknown = TRUE;
+            otmp->rknown = 1;
         }
         if (obj->bknown != otmp->bknown) {
-            otmp->bknown = TRUE;
+            otmp->bknown = 1;
         }
 
         /* fixup for `#adjust' merging wielded darts, daggers, &c */
@@ -886,13 +889,13 @@ merged(struct obj **potmp, struct obj **pobj)
                (Prior to 3.3.0, it was not possible for the two
                stacks to be worn in different slots and `obj'
                didn't need to be unworn when merging.) */
-            if (wmask & W_WEP)
+            if ((wmask & W_WEP) != 0L) {
                 wmask = W_WEP;
-            else if (wmask & W_SWAPWEP)
+            } else if ((wmask & W_SWAPWEP) != 0L) {
                 wmask = W_SWAPWEP;
-            else if (wmask & W_QUIVER)
+            } else if ((wmask & W_QUIVER) != 0L) {
                 wmask = W_QUIVER;
-            else {
+            } else {
                 impossible("merging strangely worn items (%lx)", wmask);
                 wmask = otmp->owornmask;
             }
@@ -952,7 +955,7 @@ void
 addinv_core1(struct obj *obj)
 {
     if (obj->oclass == COIN_CLASS) {
-        gc.context.botl = 1;
+        disp.botl = TRUE;
     } else if (obj->otyp == AMULET_OF_YENDOR) {
         if (u.uhave.amulet)
             impossible("already have amulet?");
@@ -1312,7 +1315,7 @@ void
 freeinv_core(struct obj *obj)
 {
     if (obj->oclass == COIN_CLASS) {
-        gc.context.botl = 1;
+        disp.botl = TRUE;
         return;
     } else if (obj->otyp == AMULET_OF_YENDOR) {
         if (!u.uhave.amulet)
@@ -1343,7 +1346,7 @@ freeinv_core(struct obj *obj)
         curse(obj);
     } else if (confers_luck(obj)) {
         set_moreluck();
-        gc.context.botl = 1;
+        disp.botl = TRUE;
     } else if (obj->otyp == FIGURINE && obj->timed) {
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(obj));
     }
@@ -1656,6 +1659,27 @@ any_obj_ok(struct obj *obj)
     return GETOBJ_EXCLUDE;
 }
 
+/* return string describing your hands based on action. */
+static char *
+getobj_hands_txt(const char *action, char *qbuf)
+{
+    if (!strcmp(action, "grease")) {
+        Sprintf(qbuf, "your %s", fingers_or_gloves(FALSE));
+    } else if (!strcmp(action, "write with")) {
+        Sprintf(qbuf, "your %s", body_part(FINGERTIP));
+    } else if (!strcmp(action, "wield")) {
+        Sprintf(qbuf, "your %s %s%s", uarmg ? "gloved" : "bare",
+                makeplural(body_part(HAND)),
+                !uwep ? " (wielded)" : "");
+    } else if (!strcmp(action, "ready")) {
+        Sprintf(qbuf, "empty quiver%s",
+                !uquiver ? " (nothing readied)" : "");
+    } else {
+        Sprintf(qbuf, "your %s", makeplural(body_part(HAND)));
+    }
+    return qbuf;
+}
+
 /*
  * getobj returns:
  *      struct obj *xxx:        object to do something with.
@@ -1884,6 +1908,7 @@ getobj(
             char *allowed_choices = (ilet == '?') ? lets : (char *) 0;
             long ctmp = 0;
             char menuquery[QBUFSZ];
+            char *handsbuf = (char *) 0;
 
             if (ilet == '?' && !*lets && *altlets)
                 allowed_choices = altlets;
@@ -1891,23 +1916,10 @@ getobj(
             menuquery[0] = qbuf[0] = '\0';
             if (iflags.force_invmenu)
                 Sprintf(menuquery, "What do you want to %s?", word);
-            if (!allowed_choices || *allowed_choices == '-' || *buf == '-') {
-                if (!strcmp(word, "grease")) {
-                    Sprintf(qbuf, "your %s", fingers_or_gloves(FALSE));
-                } else if (!strcmp(word, "write with")) {
-                    Sprintf(qbuf, "your %s", body_part(FINGERTIP));
-                } else if (!strcmp(word, "wield")) {
-                    Sprintf(qbuf, "your %s %s%s", uarmg ? "gloved" : "bare",
-                            makeplural(body_part(HAND)),
-                            !uwep ? " (wielded)" : "");
-                } else if (!strcmp(word, "ready")) {
-                    Sprintf(qbuf, "empty quiver%s",
-                            !uquiver ? " (nothing readied)" : "");
-                } else {
-                    Sprintf(qbuf, "your %s", makeplural(body_part(HAND)));
-                }
-            }
-            ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
+            if (!allowed_choices || *allowed_choices == HANDS_SYM
+                || *buf == HANDS_SYM)
+                handsbuf = getobj_hands_txt(word, qbuf);
+            ilet = display_pickinv(allowed_choices, handsbuf,
                                    menuquery, allownone, TRUE,
                                    allowcnt ? &ctmp : (long *) 0);
             if (!ilet) {
@@ -1977,7 +1989,7 @@ getobj(
                 continue;
             }
         }
-        gc.context.botl = 1; /* May have changed the amount of money */
+        disp.botl = TRUE; /* May have changed the amount of money */
         if (otmp && !gi.in_doagain) {
             if (cntgiven && cnt > 0)
                 cmdq_add_int(CQ_REPEAT, cnt);

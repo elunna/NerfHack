@@ -1274,25 +1274,26 @@ condattr(long bm, unsigned long *bmarray)
     int i, attr = 0;
 
     if (bm && bmarray) {
-        for (i = HL_ATTCLR_DIM; i < BL_ATTCLR_MAX; ++i) {
+        for (i = HL_ATTCLR_BOLD; i < BL_ATTCLR_MAX; ++i) {
             if ((bmarray[i] & bm) != 0) {
-                switch (i) {
+                switch(i) {
+                case HL_ATTCLR_BOLD:
+                    attr |= HL_BOLD;
+                    break;
                 case HL_ATTCLR_DIM:
                     attr |= HL_DIM;
                     break;
-                case HL_ATTCLR_BLINK:
-                    attr |= HL_BLINK;
+                case HL_ATTCLR_ITALIC:
+                    attr |= HL_ITALIC;
                     break;
                 case HL_ATTCLR_ULINE:
                     attr |= HL_ULINE;
                     break;
+                case HL_ATTCLR_BLINK:
+                    attr |= HL_BLINK;
+                    break;
                 case HL_ATTCLR_INVERSE:
                     attr |= HL_INVERSE;
-                    break;
-                case HL_ATTCLR_BOLD:
-                    attr |= HL_BOLD;
-                    break;
-                default:
                     break;
                 }
             }
@@ -1309,14 +1310,16 @@ nhattr2curses(int attrmask)
 
     if (attrmask & HL_BOLD)
         result |= A_BOLD;
-    if (attrmask & HL_INVERSE)
-        result |= A_REVERSE;
+    if (attrmask & HL_DIM)
+        result |= A_DIM;
+    if (attrmask & HL_ITALIC)
+        result |= A_ITALIC;
     if (attrmask & HL_ULINE)
         result |= A_UNDERLINE;
     if (attrmask & HL_BLINK)
         result |= A_BLINK;
-    if (attrmask & HL_DIM)
-        result |= A_DIM;
+    if (attrmask & HL_INVERSE)
+        result |= A_REVERSE;
 
     return result;
 }

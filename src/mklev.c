@@ -1,4 +1,4 @@
-/* NetHack 3.7	mklev.c	$NHDT-Date: 1702839454 2023/12/17 18:57:34 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.169 $ */
+/* NetHack 3.7	mklev.c	$NHDT-Date: 1704830831 2024/01/09 20:07:11 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.175 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Alex Smith, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -17,11 +17,16 @@ static boolean find_okay_roompos(struct mkroom *, coord *) NONNULLARG12;
 static void mksink(struct mkroom *);
 static void mkaltar(struct mkroom *);
 static void mkgrave(struct mkroom *);
+static void mkinvpos(coordxy, coordxy, int);
+static int mkinvk_check_wall(coordxy x, coordxy y);
+static void mk_knox_portal(coordxy, coordxy);
 static void makevtele(void);
 static void fill_ordinary_room(struct mkroom *, boolean) NONNULLARG1;
 static void makelevel(void);
 static boolean bydoor(coordxy, coordxy);
 static void mktrap_victim(struct trap *);
+static int traptype_rnd(unsigned);
+static int traptype_roguelvl(void);
 static struct mkroom *find_branch_room(coord *) NONNULLARG1;
 static struct mkroom *pos_to_room(coordxy, coordxy);
 static boolean cardinal_nextto_room(struct mkroom *, coordxy, coordxy);
@@ -38,8 +43,6 @@ static void do_room_or_subroom(struct mkroom *,
 static void makerooms(void);
 static boolean door_into_nonjoined(coordxy, coordxy);
 static boolean finddpos(coord *, coordxy, coordxy, coordxy, coordxy);
-static void mkinvpos(coordxy, coordxy, int);
-static void mk_knox_portal(coordxy, coordxy);
 static void mkforge(struct mkroom *);
 
 #define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE)
@@ -268,7 +271,7 @@ makerooms(void)
     boolean tried_vault = FALSE;
     int themeroom_tries = 0;
     char *fname;
-    nhl_sandbox_info sbi = {NHL_SB_SAFE, 0, 0, 0};
+    nhl_sandbox_info sbi = {NHL_SB_SAFE, 1*1024*1024, 0, 1*1024*1024};
     lua_State *themes = (lua_State *) gl.luathemes[u.uz.dnum];
 
     if (!themes && *(fname = gd.dungeons[u.uz.dnum].themerms)) {
@@ -293,9 +296,7 @@ makerooms(void)
         iflags.in_lua = gi.in_mk_themerooms = TRUE;
         gt.themeroom_failed = FALSE;
         lua_getglobal(themes, "pre_themerooms_generate");
-        if ( nhl_pcall(themes, 0, 0)){
-            impossible("Lua error: %s", lua_tostring(themes, -1));
-        }
+        nhl_pcall_handle(themes, 0, 0, "makerooms-1", NHLpa_impossible);
         iflags.in_lua = gi.in_mk_themerooms = FALSE;
     }
 
@@ -314,9 +315,7 @@ makerooms(void)
                 iflags.in_lua = gi.in_mk_themerooms = TRUE;
                 gt.themeroom_failed = FALSE;
                 lua_getglobal(themes, "themerooms_generate");
-                if (nhl_pcall(themes, 0, 0)) {
-                    impossible("Lua error: %s", lua_tostring(themes, -1));
-                }
+                nhl_pcall_handle(themes, 0, 0, "makerooms-2", NHLpa_panic);
                 iflags.in_lua = gi.in_mk_themerooms = FALSE;
                 if (gt.themeroom_failed
                     && ((themeroom_tries++ > 10)
@@ -333,14 +332,13 @@ makerooms(void)
         iflags.in_lua = gi.in_mk_themerooms = TRUE;
         gt.themeroom_failed = FALSE;
         lua_getglobal(themes, "post_themerooms_generate");
-        if ( nhl_pcall(themes, 0, 0)){
-            impossible("Lua error: %s", lua_tostring(themes, -1));
-        }
+        nhl_pcall_handle(themes, 0, 0, "makerooms-3", NHLpa_panic);
         iflags.in_lua = gi.in_mk_themerooms = FALSE;
 
         wallification(1, 0, COLNO - 1, ROWNO - 1);
         free(gc.coder);
         gc.coder = NULL;
+        lua_gc(themes, LUA_GCCOLLECT);
     }
 }
 
@@ -731,7 +729,7 @@ makevtele(void)
     makeniche(TELEP_TRAP);
 }
 
-/* count the different features (sinks, fountains) in the level */
+/* count the tracked features (sinks, fountains) present on the level */
 void
 count_level_features(void)
 {
@@ -962,29 +960,27 @@ fill_ordinary_room(
             supply_chest->olocked = !!(rn2(6));
 
             do {
-                /* 50% this is a potion of healing */
-                if (rn2(2)) {
-                    otyp = POT_HEALING;
-                } else {
-                    static const int supply_items[] = {
-                        POT_EXTRA_HEALING,
-                        POT_SPEED,
-                        POT_GAIN_ENERGY,
-                        SCR_ENCHANT_WEAPON,
-                        SCR_ENCHANT_ARMOR,
-                        SCR_CONFUSE_MONSTER,
-                        SCR_SCARE_MONSTER,
-                        WAN_DIGGING,
-                        SPE_HEALING,
-                    };
+                static const int supply_items[] = {
+                    POT_EXTRA_HEALING,
+                    POT_SPEED,
+                    POT_GAIN_ENERGY,
+                    SCR_ENCHANT_WEAPON,
+                    SCR_ENCHANT_ARMOR,
+                    SCR_CONFUSE_MONSTER,
+                    SCR_SCARE_MONSTER,
+                    WAN_DIGGING,
+                    SPE_HEALING,
+                };
 
-                    otyp = ROLL_FROM(supply_items);
-                }
+                /* 50% this is a potion of healing */
+                otyp = rn2(2) ? POT_HEALING : ROLL_FROM(supply_items);
                 otmp = mksobj(otyp, TRUE, FALSE);
-                if (otyp == POT_HEALING && rn2(2))
+                if (otyp == POT_HEALING && rn2(2)) {
                     otmp->quan = 2;
+                    otmp->owt = weight(otmp);
+                }
                 cursed = otmp->cursed;
-                add_to_container(supply_chest, otmp);
+                add_to_container(supply_chest, otmp); /* owt updated below */
 
                 ++tryct;
                 if (tryct == 50) {
@@ -1017,20 +1013,28 @@ fill_ordinary_room(
 
                 otmp = mkobj(oclass, FALSE);
                 if (oclass == SPBOOK_no_NOVEL) {
-                    /* bias towards lower level by generating again
-                       and taking the lower-level book */
-                    struct obj *otmp2 = mkobj(oclass, FALSE);
+                    int pass, maxpass = (depth(&u.uz) > 2) ? 2 : 3;
 
-                    if (objects[otmp->otyp].oc_level
-                        <= objects[otmp2->otyp].oc_level) {
-                        dealloc_obj(otmp2);
-                    } else {
-                        dealloc_obj(otmp);
-                        otmp = otmp2;
+                    /* bias towards lower level by generating again
+                       and taking the lower-level book; do that three
+                       times if on level 1 or 2, twice when deeper */
+                    for (pass = 1; pass <= maxpass; ++pass) {
+                        struct obj *otmp2 = mkobj(oclass, FALSE);
+
+                        if (objects[otmp->otyp].oc_level
+                            <= objects[otmp2->otyp].oc_level) {
+                            dealloc_obj(otmp2);
+                        } else {
+                            dealloc_obj(otmp);
+                            otmp = otmp2;
+                        }
                     }
                 }
-                add_to_container(supply_chest, otmp);
+                add_to_container(supply_chest, otmp); /* owt updated below */
             }
+
+            /* add_to_container() doesn't update the container's weight */
+            supply_chest->owt = weight(supply_chest);
 
             skip_chests = TRUE; /* don't want a second chest in this room */
         }
@@ -1042,7 +1046,8 @@ fill_ordinary_room(
      *  of rooms; about 5 - 7.5% for 2 boxes, least likely
      *  when few rooms; chance for 3 or more is negligible.
      */
-    if (!rn2(gn.nroom * 5 / 2) && somexyspace(croom, &pos) && !skip_chests)
+    /*assert(gn.nroom > 0); // must be true because we're filling a room*/
+    if (!skip_chests && !rn2(gn.nroom * 5 / 2) && somexyspace(croom, &pos))
         (void) mksobj_at(rn2(3) ? LARGE_BOX : CHEST,
                          pos.x, pos.y, TRUE, FALSE);
 
@@ -1250,7 +1255,7 @@ makelevel(void)
     if (gl.luacore && nhcb_counts[NHCB_LVL_ENTER]) {
         lua_getglobal(gl.luacore, "nh_callback_run");
         lua_pushstring(gl.luacore, nhcb_name[NHCB_LVL_ENTER]);
-        nhl_pcall(gl.luacore, 1, 0);
+        nhl_pcall_handle(gl.luacore, 1, 0, "makelevel", NHLpa_panic);
     }
 }
 
@@ -1651,6 +1656,7 @@ mktrap_victim(struct trap *ttmp)
     int kind = ttmp->ttyp;
     coordxy x = ttmp->tx, y = ttmp->ty;
 
+    assert(x > 0 && x < COLNO && y >= 0 && y < ROWNO);
     /* Not all trap types have special handling here; only the ones
        that kill in a specific way that's obvious after the fact. */
     switch (kind) {
@@ -1736,39 +1742,164 @@ mktrap_victim(struct trap *ttmp)
         victim_mnum = PM_GNOME;
         /* 10% chance of a candle too */
         if (!rn2(10)) {
-            otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE,
-                          TRUE, FALSE);
+            otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE);
             otmp->quan = 1;
-            otmp->blessed = 0;
-            otmp->cursed = 1;
             otmp->owt = weight(otmp);
+            curse(otmp);
             place_object(otmp, x, y);
+            if (!levl[x][y].lit)
+                begin_burn(otmp, FALSE);
         }
         break;
     default:
-        /* the most common race */
+        /* human is the most common result */
         victim_mnum = PM_HUMAN;
         break;
     }
-    otmp = mkcorpstat(CORPSE, NULL, &mons[victim_mnum], x, y,
-                      CORPSTAT_INIT);
-    if (otmp)
-        otmp->age -= (TAINT_AGE + 1); /* died too long ago to eat */
+    /* PM_HUMAN is a placeholder monster primarily used for zombie, mummy,
+       and vampire corpses; usually change it into a fake player monster
+       instead (always human); no role-specific equipment is provided */
+    if (victim_mnum == PM_HUMAN && rn2(25))
+        victim_mnum = rn1(PM_WIZARD - PM_ARCHEOLOGIST, PM_ARCHEOLOGIST);
+    otmp = mkcorpstat(CORPSE, NULL, &mons[victim_mnum], x, y, CORPSTAT_INIT);
+    otmp->age -= (TAINT_AGE + 1); /* died too long ago to safely eat */
 }
 
-/* make a trap somewhere (in croom if mazeflag = 0 && !tm) */
-/* if tm != null, make trap at that location */
+/* pick a random trap type, return NO_TRAP if "too hard" */
+static int
+traptype_rnd(unsigned mktrapflags)
+{
+    unsigned lvl = level_difficulty();
+    int kind = rnd(TRAPNUM - 1);
+
+    switch (kind) {
+        /* these are controlled by the feature or object they guard,
+           not by the map so mustn't be created on it */
+    case TRAPPED_DOOR:
+    case TRAPPED_CHEST:
+        kind = NO_TRAP;
+        break;
+        /* these can have a random location but can't be generated
+           randomly */
+    case MAGIC_PORTAL:
+    case VIBRATING_SQUARE:
+        kind = NO_TRAP;
+        break;
+    case ROLLING_BOULDER_TRAP:
+    case SLP_GAS_TRAP:
+        if (lvl < 2)
+            kind = NO_TRAP;
+        break;
+    case LEVEL_TELEP:
+        if (lvl < 5 || gl.level.flags.noteleport
+            || single_level_branch(&u.uz))
+            kind = NO_TRAP;
+        break;
+    case SPIKED_PIT:
+    case GREASE_TRAP:
+        if (lvl < 5)
+            kind = NO_TRAP;
+        break;
+    case LANDMINE:
+    case SPEAR_TRAP:
+        if (lvl < 6)
+            kind = NO_TRAP;
+        break;
+    case WEB:
+        if (lvl < 7 && !(mktrapflags & MKTRAP_NOSPIDERONWEB))
+            kind = NO_TRAP;
+        break;
+    case STATUE_TRAP:
+    case POLY_TRAP:
+        if (lvl < 8)
+            kind = NO_TRAP;
+        break;
+    case MAGIC_BEAM_TRAP:
+        if (lvl < 10)
+            kind = NO_TRAP;
+        break;
+    case COLD_TRAP:
+        if (lvl < 12)
+            kind = NO_TRAP;
+        break;
+    case FIRE_TRAP:
+        if (!Inhell)
+            kind = NO_TRAP;
+        break;
+    case TELEP_TRAP:
+        if (gl.level.flags.noteleport)
+            kind = NO_TRAP;
+        break;
+    case HOLE:
+        /* make these much less often than other traps */
+        if (rn2(7))
+            kind = NO_TRAP;
+        break;
+    }
+    return kind;
+}
+
+/* random trap type for the Rogue level */
+static int
+traptype_roguelvl(void)
+{
+    int kind;
+
+    switch (rn2(7)) {
+    default:
+        kind = BEAR_TRAP;
+        break; /* 0 */
+    case 1:
+        kind = ARROW_TRAP;
+        break;
+    case 2:
+        kind = DART_TRAP;
+        break;
+    case 3:
+        kind = TRAPDOOR;
+        break;
+    case 4:
+        kind = PIT;
+        break;
+    case 5:
+        kind = SLP_GAS_TRAP;
+        break;
+    case 6:
+        kind = RUST_TRAP;
+        break;
+    }
+    return kind;
+}
+
+/* mktrap(): select trap type and location, then use maketrap() to create it;
+   make it at location 'tm' when that isn't Null, otherwise in 'croom'
+   if mktrapflags doesn't have MKTRAP_MAZEFLAG set, else in maze corridor */
 void
 mktrap(
-    int num,
-    int mktrapflags,
-    struct mkroom *croom,
-    coord *tm)
+    int num,              /* if non-zero, specific type of trap to make */
+    unsigned mktrapflags, /* MKTRAP_{SEEN,MAZEFLAG,NOSPIDERONWEB,NOVICTIM} */
+    struct mkroom *croom, /* room to hold trap */
+    coord *tm)            /* specific location for trap */
 {
-    register int kind;
+    static int mktrap_err = 0; /* move to struct g? */
     struct trap *t;
+    coord m;
+    int kind;
     unsigned lvl = level_difficulty();
-    coord m = { 0, 0 };
+
+    if (!tm && !croom && !(mktrapflags & MKTRAP_MAZEFLAG)) {
+        /* complain when the combination of arguments will never set 'm' */
+        if (!mktrap_err++) {
+            char errbuf[BUFSZ];
+
+            Snprintf(errbuf, sizeof errbuf,
+                     "args (%d,%d,%s,%s) are invalid",
+                     num, mktrapflags, "null room", "null location");
+            paniclog("mktrap", errbuf);
+        }
+        return;
+    }
+    m.x = m.y = 0;
 
     /* no traps in pools */
     if (tm && is_pool(tm->x, tm->y))
@@ -1777,103 +1908,13 @@ mktrap(
     if (num > NO_TRAP && num < TRAPNUM) {
         kind = num;
     } else if (Is_rogue_level(&u.uz)) {
-        switch (rn2(7)) {
-        default:
-            kind = BEAR_TRAP;
-            break; /* 0 */
-        case 1:
-            kind = ARROW_TRAP;
-            break;
-        case 2:
-            kind = DART_TRAP;
-            break;
-        case 3:
-            kind = TRAPDOOR;
-            break;
-        case 4:
-            kind = PIT;
-            break;
-        case 5:
-            kind = SLP_GAS_TRAP;
-            break;
-        case 6:
-            kind = RUST_TRAP;
-            break;
-        }
+        kind = traptype_roguelvl();
     } else if (Inhell && !rn2(5)) {
         /* bias the frequency of fire traps in Gehennom */
         kind = FIRE_TRAP;
     } else {
         do {
-            kind = rnd(TRAPNUM - 1);
-            /* reject "too hard" traps */
-            switch (kind) {
-            /* these are controlled by the feature or object they guard,
-               not by the map so mustn't be created on it */
-            case TRAPPED_DOOR:
-            case TRAPPED_CHEST:
-                kind = NO_TRAP;
-                break;
-            /* these can have a random location but can't be generated
-               randomly */
-            case MAGIC_PORTAL:
-            case VIBRATING_SQUARE:
-                kind = NO_TRAP;
-                break;
-            case ROLLING_BOULDER_TRAP:
-            case SLP_GAS_TRAP:
-                if (lvl < 2)
-                    kind = NO_TRAP;
-                break;
-            case LEVEL_TELEP:
-                if (lvl < 5 || gl.level.flags.noteleport
-                    || single_level_branch(&u.uz))
-                    kind = NO_TRAP;
-                break;
-            case SPIKED_PIT:
-            case GREASE_TRAP:
-                if (lvl < 5)
-                    kind = NO_TRAP;
-                break;
-            case LANDMINE:
-                if (lvl < 6)
-                    kind = NO_TRAP;
-                break;
-            case SPEAR_TRAP:
-                if (lvl < 6)
-                    kind = NO_TRAP;
-                break;
-            case WEB:
-                if (lvl < 7 && !(mktrapflags & MKTRAP_NOSPIDERONWEB))
-                    kind = NO_TRAP;
-                break;
-            case STATUE_TRAP:
-            case POLY_TRAP:
-                if (lvl < 8)
-                    kind = NO_TRAP;
-                break;
-            case MAGIC_BEAM_TRAP:
-                if (lvl < 10)
-                    kind = NO_TRAP;
-                break;
-            case COLD_TRAP:
-                if (lvl < 12)
-                    kind = NO_TRAP;
-                break;
-            case FIRE_TRAP:
-                if (!Inhell)
-                    kind = NO_TRAP;
-                break;
-            case TELEP_TRAP:
-                if (gl.level.flags.noteleport)
-                    kind = NO_TRAP;
-                break;
-            case HOLE:
-                /* make these much less often than other traps */
-                if (rn2(7))
-                    kind = NO_TRAP;
-                break;
-            }
+            kind = traptype_rnd(mktrapflags);
         } while (kind == NO_TRAP);
     }
 
@@ -1889,7 +1930,7 @@ mktrap(
         do {
             if (++tryct > 200)
                 return;
-            if (mktrapflags & MKTRAP_MAZEFLAG)
+            if ((mktrapflags & MKTRAP_MAZEFLAG) != 0)
                 mazexy(&m);
             else if (croom && !somexyspace(croom, &m))
                 return;
@@ -2211,10 +2252,6 @@ mkgrave(struct mkroom *croom)
     return;
 }
 
-/* maze levels have slightly different constraints from normal levels */
-#define x_maze_min 2
-#define y_maze_min 2
-
 /*
  * Major level transmutation:  add a set of stairs (to the Sanctum) after
  * an earthquake that leaves behind a new topology, centered at inv_pos.
@@ -2228,19 +2265,50 @@ mkgrave(struct mkroom *croom)
 void
 mkinvokearea(void)
 {
-    int dist;
-    coordxy xmin = gi.inv_pos.x, xmax = gi.inv_pos.x,
-          ymin = gi.inv_pos.y, ymax = gi.inv_pos.y;
+    int dist, wallct;
+    coordxy xmin, xmax, ymin, ymax;
     register coordxy i;
 
     /* slightly odd if levitating, but not wrong */
     pline_The("floor shakes violently under you!");
-    /*
-     * TODO:
-     *  Suppress this message if player has dug out all the walls
-     *  that would otherwise be affected.
-     */
-    pline_The("walls around you begin to bend and crumble!");
+    /* decide whether to issue the crumbling walls message */
+    {
+        xmin = xmax = gi.inv_pos.x;
+        ymin = ymax = gi.inv_pos.y;
+        wallct = mkinvk_check_wall(xmin, ymin);
+        /* this replicates the somewhat convoluted loop below, working
+           out from the stair position, except for stopping early when
+           walls are found */
+        for (dist = 1; !wallct && dist < 7; ++dist) {
+            xmin--, xmax++;
+            /* top and bottom */
+            if (dist != 3) { /* the area is wider that it is high */
+                ymin--, ymax++;
+                for (i = xmin + 1; i < xmax; i++) {
+                    if (mkinvk_check_wall(i, ymin))
+                        ++wallct; /* we could break after finding first wall
+                                   * but it isn't a significant optimization
+                                   * for code which only executes once */
+                    if (mkinvk_check_wall(i, ymax))
+                        ++wallct;
+                }
+            }
+            /* left and right */
+            if (!wallct) { /* skip y loop if x loop found any walls */
+                for (i = ymin; i <= ymax; i++) {
+                    if (mkinvk_check_wall(xmin, i))
+                        ++wallct;
+                    if (mkinvk_check_wall(xmax, i))
+                        ++wallct;
+                }
+            }
+        }
+        /* message won't appear if the maze 'walls' on this level are lava
+           or if all the walls within range have been dug away; when it does
+           appear, it will describe iron bars as "walls" (which is ok) */
+        if (wallct)
+            pline_The("walls around you begin to bend and crumble!");
+    }
     display_nhwindow(WIN_MESSAGE, TRUE);
 
     /* any trap hero is stuck in will be going away now */
@@ -2249,6 +2317,9 @@ mkinvokearea(void)
             buried_ball_to_punishment();
         reset_utrap(FALSE);
     }
+
+    xmin = xmax = gi.inv_pos.x; /* reset after the check for walls */
+    ymin = ymax = gi.inv_pos.y;
     mkinvpos(xmin, ymin, 0); /* middle, before placing stairs */
 
     for (dist = 1; dist < 7; dist++) {
@@ -2292,13 +2363,22 @@ mkinvpos(coordxy x, coordxy y, int dist)
     boolean make_rocks;
     register struct rm *lev = &levl[x][y];
     struct monst *mon;
+    /* maze levels have slightly different constraints from normal levels;
+       these are also defined in mkmaze.c and may not be appropriate for
+       mazes with corridors wider than 1 or for cavernous levels */
+#define x_maze_min 2
+#define y_maze_min 2
 
     /* clip at existing map borders if necessary */
-    if (!within_bounded_area(x, y, x_maze_min + 1, y_maze_min + 1,
-                             gx.x_maze_max - 1, gy.y_maze_max - 1)) {
+    if (!within_bounded_area(x, y, x_maze_min, y_maze_min,
+                             gx.x_maze_max, gy.y_maze_max)) {
         /* outermost 2 columns and/or rows may be truncated due to edge */
-        if (dist < (7 - 2))
-            panic("mkinvpos: <%d,%d> (%d) off map edge!", x, y, dist);
+        if (dist < (7 - 2)) { /* panic() or impossible() */
+            void (*errfunc)(const char *, ...) PRINTF_F(1, 2);
+
+            errfunc = !isok(x, y) ? panic : impossible;
+            (*errfunc)("mkinvpos: <%d,%d> (%d) off map edge!", x, y, dist);
+        }
         return;
     }
 
@@ -2369,6 +2449,23 @@ mkinvpos(coordxy x, coordxy y, int dist)
 
     /* display new value of position; could have a monster/object on it */
     newsym(x, y);
+#undef x_maze_min
+#undef y_maze_min
+}
+
+/* reduces clutter in mkinvokearea() while avoiding potential static analyzer
+   confusion about using isok(x,y) to control access to levl[x][y] */
+static int
+mkinvk_check_wall(coordxy x, coordxy y)
+{
+    unsigned ltyp;
+
+    if (!isok(x, y))
+        return 0;
+    assert(x > 0 && x < COLNO);
+    assert(y >= 0 && y < ROWNO);
+    ltyp = levl[x][y].typ;
+    return (IS_STWALL(ltyp) || ltyp == IRONBARS) ? 1 : 0;
 }
 
 /*

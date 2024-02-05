@@ -233,7 +233,7 @@ attack_checks(
         if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers) {
             if (!u.ustuck && !mtmp->mflee && dmgtype(mtmp->data, AD_STCK)
                 /* applied pole-arm attack is too far to get stuck */
-                && next2u(mtmp->mx, mtmp->my))
+                && m_next2u(mtmp))
                 set_ustuck(mtmp);
         }
         /* #H7329 - if hero is on engraved "Elbereth", this will end up
@@ -1300,7 +1300,7 @@ hmon_hitmon_misc_obj(
             ; /* maybe turn the corpse into a statue? */
 #endif
         }
-        hmd->dmg = (obj->corpsenm >= LOW_PM ? mons[obj->corpsenm].msize
+        hmd->dmg = (ismnum(obj->corpsenm) ? mons[obj->corpsenm].msize
                     : 0) + 1;
         break;
 
@@ -1322,14 +1322,15 @@ hmon_hitmon_misc_obj(
            hand-to-hand attack should yield a "bashing" mesg */
         if (obj == uwep)
             gu.unweapon = TRUE;
-        if (obj->spe && obj->corpsenm >= LOW_PM) {
+        if (obj->spe && ismnum(obj->corpsenm)) {
             if (obj->quan < 5L)
                 change_luck((schar) - (obj->quan));
             else
                 change_luck(-5);
         }
 
-        if (touch_petrifies(&mons[obj->corpsenm])) {
+        if (ismnum(obj->corpsenm)
+            && touch_petrifies(&mons[obj->corpsenm])) {
             /*learn_egg_type(obj->corpsenm);*/
             pline("Splat!  You hit %s with %s %s egg%s!",
                   mon_nam(mon),
@@ -1350,7 +1351,7 @@ hmon_hitmon_misc_obj(
         } else { /* ordinary egg(s) */
             enum monnums mnum = obj->corpsenm;
             const char *eggp =
-                (mnum >= LOW_PM && mnum < NUMMONS && obj->known)
+                (ismnum(mnum) && obj->known)
                     ? the(mons[mnum].pmnames[NEUTRAL])
                     : (cnt > 1L) ? "some" : "an";
 
@@ -2143,7 +2144,7 @@ shade_miss(
 
     if (verbose
         && ((youdef || cansee(mdef->mx, mdef->my) || sensemon(mdef))
-            || (magr == &gy.youmonst && next2u(mdef->mx, mdef->my)))) {
+            || (magr == &gy.youmonst && m_next2u(mdef)))) {
         static const char harmlessly_thru[] = " harmlessly through ";
 
         what = (!obj || shade_aware(obj)) ? "attack" : cxname(obj);
@@ -2961,7 +2962,7 @@ mhitm_ad_sgld(
 
         if (mongold) {
             obj_extract_self(mongold);
-            if (merge_choice(gi.invent, mongold)
+            if (merge_choice(&gi.invent, mongold)
                     || inv_cnt(FALSE) < invlet_basic) {
                 addinv(mongold);
                 Your("purse feels heavier.");
@@ -3456,7 +3457,7 @@ mhitm_ad_stck(
 
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (!negated && !sticks(pd) && next2u(mdef->mx, mdef->my)) {
+        if (!negated && !sticks(pd) && m_next2u(mdef)) {
             set_ustuck(mdef); /* it's now stuck to you */
             if (barbs)
                 Your("barbs stick to %s!", y_monnam(mdef));
@@ -3964,7 +3965,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
                     u.uhp = min(u.uhp, u.uhpmax);
                 }
             }
-            gc.context.botl = TRUE;
+            disp.botl = TRUE;
         }
     } else {
         /* uhitm, mhitm */
@@ -4390,7 +4391,7 @@ mhitm_ad_phys(
                         exercise(A_STR, FALSE);
                     /* inflict damage now; we know it can't be fatal */
                     u.mh -= tmp;
-                    gc.context.botl = 1;
+                    disp.botl = TRUE;
                     mhm->damage = 0; /* don't inflict more damage below */
                     if (cloneu())
                         You("divide as %s hits you!", mon_nam(magr));
@@ -4620,7 +4621,7 @@ mhitm_ad_heal(
                 exercise(A_CON, TRUE);
             if (Sick)
                 make_sick(0L, (char *) 0, FALSE, SICK_ALL);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             if (goaway) {
                 mongone(magr);
                 mhm->done = TRUE;
@@ -5811,7 +5812,7 @@ hmonas(struct monst *mon)
     boolean monster_survived;
 
     /* not used here but umpteen mhitm_ad_xxxx() need this */
-    gv.vis = (canseemon(mon) || next2u(mon->mx, mon->my));
+    gv.vis = (canseemon(mon) || m_next2u(mon));
 
     /* with just one touch/claw/weapon attack, both rings matter;
        with more than one, alternate right and left when checking
@@ -6625,7 +6626,7 @@ stumble_onto_mimic(struct monst *mtmp)
 
     if (!u.ustuck && !mtmp->mflee && dmgtype(mtmp->data, AD_STCK)
         /* must be adjacent; attack via polearm could be from farther away */
-        && next2u(mtmp->mx, mtmp->my))
+        && m_next2u(mtmp))
         set_ustuck(mtmp);
 
     if (Blind) {

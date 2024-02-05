@@ -183,14 +183,8 @@ does_block(int x, int y, struct rm *lev)
 #if 0 /* Block this feature. Being able to see poisonous clouds is a quality-
        * of-life feature */
     /* Clouds (poisonous or not) block light. */
-    for (i = 0; i < gn.n_regions; i++) {
-        /* Ignore regions with ttl == 0 - expire_gas_cloud must unblock its
-         * points prior to being removed itself. */
-        if (gr.regions[i]->ttl > 0 && gr.regions[i]->visible
-            && inside_region(gr.regions[i], x, y)) {
-            return 1;
-        }
-    }
+    if (visible_region_at(x, y))
+        return 1;
 #endif
         
 #ifdef DEBUG
@@ -259,7 +253,7 @@ vision_reset(void)
         }
     }
 
-    iflags.vision_inited = 1; /* vision is ready */
+    iflags.vision_inited = TRUE; /* vision is ready */
     gv.vision_full_recalc = 1;   /* we want to run vision_recalc() */
 }
 
@@ -841,6 +835,8 @@ vision_recalc(int control)
     /* Set the new min and max pointers. */
     gv.viz_rmin = next_rmin;
     gv.viz_rmax = next_rmax;
+
+    notice_all_mons(TRUE);
 }
 
 /*

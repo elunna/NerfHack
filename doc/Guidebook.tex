@@ -46,7 +46,7 @@
 \author{Original version - Eric S. Raymond\\
 (Edited and expanded for 3.7.0 by Mike Stephenson and others)}
 %DO NOT REMOVE NH_DATESUB \date{DATE(%B %-d, %Y)}
-\date{December 08, 2023}
+\date{January 29, 2024}
 
 \maketitle
 
@@ -3363,6 +3363,33 @@ Some chests are trapped, causing nasty things to happen when you
 unlock or open them.  You can check for and try to deactivate traps
 with the ``{\tt \#untrap}'' extended command.
 
+%.pg
+When the contents of a container are known, that container will be
+described as something like ``a sack containing 3 items''.
+In this example, the 3 refers to number of {\it stacks\/} of compatible
+items, not to the total number of individual items.
+So a sack holding 2 sky blue potions, 7 arrows, and 350 gold pieces would be
+described as having 3 items rather than 10 or 359.
+And you would need to have 3 unused inventory slots available in order
+to take everything out (for the case where the items you remove don't
+combine into bigger stacks with things you're already carrying).
+
+%.pg
+If a chest or large box is described as ``broken'', that means that it
+can't be locked rather than that it no longer functions as a container.
+
+%.pg
+The {\it apply\/} and {\it loot\/} commands allow you to take out and/or
+put in an arbitrary number of items in a single operation.
+If you want to take everything out of a container, you can use the
+``{\tt \#tip}'' command to pour the contents onto the floor.
+This may be your only way to get things out if your hands are stuck
+to a cursed two-handed weapon.
+When your hands aren't stuck, you have the potential to pour the
+contents into another container.
+(As of this writing, the other container must be carried rather than on
+the floor.)
+
 %.hn 2
 \subsection*{Amulets (`{\tt "}')}
 
@@ -4082,6 +4109,9 @@ applies only to new games.
 
 \blist{}
 %.lp
+\item[\ib{accessiblemsg}]
+Add location or direction information to messages (default is off).
+%.lp
 \item[\ib{acoustics}]
 Enable messages about what your character hears (default on).
 Note that this has nothing to do with your computer's audio capabilities.
@@ -4383,7 +4413,7 @@ In text windowing, text highlighting or inverse video is often used;
 with tiles, generally displays a heart symbol near pets.
 
 %.lp ""
-With the curses interface, the {\it petattr\/}
+With the tty or curses interface, the {\it petattr\/}
 option controls how to highlight pets and setting it will turn the
 {\it hilite\verb+_+pet\/} option on or off as warranted.
 %.lp
@@ -4774,23 +4804,9 @@ included for {\it all\/} despite that mode normally omitting gold.
 Specifies one or more text highlighting attributes to use when showing
 pets on the map.
 Effectively a superset of the {\it hilite\verb+_+pet\/} boolean option.
-Curses interface only; value is one or more of the following letters.
-
-%.sd
-%.si
-{\tt n} --- Normal text (no highlighting)\\
-{\tt i} --- Inverse video (default)\\
-{\tt b} --- Bold text\\
-{\tt u} --- Underlined text\\
-{\tt k} --- blinKing text\\
-{\tt d} --- Dim text\\
-{\tt t} --- iTalic text\\
-{\tt l} --- Left line indicator\\
-{\tt r} --- Right line indicator\\
-%.ei
-%.ed
-
-Some of those choices might not work, particularly the final three,
+Curses or tty interface only; value is one of
+none, bold, dim, underline, italic, blink, and inverse.
+Some of those choices might not work,
 depending upon terminal hardware or terminal emulation software.
 
 %.lp ""
@@ -5091,6 +5107,9 @@ Allow sounds to be emitted from an integrated sound library (default on).
 \item[\ib{sparkle}]
 Display a sparkly effect when a monster (including yourself) is hit by an
 attack to which it is resistant (default on).  Persistent.
+%.lp
+\item[\ib{spot\verb+_+monsters}]
+Show a message when hero notices a monster (default is off).
 %.lp
 \item[\ib{standout}]
 Boldface monsters and ``{\tt --More--}'' (default off).  Persistent.
@@ -6042,7 +6061,7 @@ orange, light-green, yellow, light-blue, light-magenta, light-cyan, and white.
 And {\it no-color}, the default foreground color on the display, which
 is not necessarily the same as black or white or any of the other colors.
 
-Allowed attributes are none, bold, dim, underline, blink, and inverse.
+Allowed attributes are none, bold, dim, underline, italic, blink, and inverse.
 ``Normal'' is a synonym for ``none''; they should not be used in
 combination with any of the other attributes.
 
@@ -6531,6 +6550,12 @@ traditional Rogue-like commands.
 %.lp
 \item[\ib{paranoid\verb+_+confirmation:swim}]
 Prevent walking into water or lava.
+%.lp
+\item[\ib{accessiblemsg}]
+Adds direction or location information to messages.
+%.lp
+\item[\ib{spot\verb+_+monsters}]
+Shows a message when hero notices a monster; combine with accessiblemsg.
 %.lp
 \item[\ib{autodescribe}]
 Automatically describe the terrain under the cursor when targeting.

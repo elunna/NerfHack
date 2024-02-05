@@ -1,4 +1,4 @@
-/* NetHack 3.7	allmain.c	$NHDT-Date: 1697779529 2023/10/20 05:25:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.223 $ */
+/* NetHack 3.7	allmain.c	$NHDT-Date: 1704225560 2024/01/02 19:59:20 $  $NHDT-Branch: keni-luabits2 $:$NHDT-Revision: 1.238 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -82,7 +82,7 @@ moveloop_preamble(boolean resuming)
         u.umovement = NORMAL_SPEED;
         initrack();
     }
-    gc.context.botlx = TRUE; /* for STATUS_HILITES */
+    disp.botlx = TRUE; /* for STATUS_HILITES */
     if (resuming) { /* restoring old game */
         read_engr_at(u.ux, u.uy); /* subset of pickup() */
         fix_shop_damage();
@@ -241,7 +241,7 @@ moveloop_core(void)
                 gh.hero_seq = gm.moves << 3;
 
                 if (flags.time && !gc.context.run)
-                    iflags.time_botl = TRUE; /* 'moves' just changed */
+                    disp.time_botl = TRUE; /* 'moves' just changed */
 
                 /********************************/
                 /* once-per-turn things go here */
@@ -289,7 +289,7 @@ moveloop_core(void)
                         You("wither away completely!");
                     }
                     losehp(loss, "withered away", NO_KILLER_PREFIX);
-                    gc.context.botl = TRUE;
+                    disp.botl = TRUE;
                     interrupt_multi("You are slowly withering away.");
                 }
 
@@ -323,7 +323,7 @@ moveloop_core(void)
                         mvl_change = 0;
                     if (Polymorph && !rn2(100))
                         mvl_change = 1;
-                    else if (u.ulycn >= LOW_PM && !Upolyd
+                    else if (ismnum(u.ulycn) && !Upolyd
                              && !rn2(80 - (20 * night())))
                         mvl_change = 2;
                     if (mvl_change && !Unchanging) {
@@ -451,10 +451,10 @@ moveloop_core(void)
         if (gv.vision_full_recalc)
             vision_recalc(0); /* vision! */
     }
-    if (gc.context.botl || gc.context.botlx) {
+    if (disp.botl || disp.botlx) {
         bot();
         curs_on_u();
-    } else if (iflags.time_botl) {
+    } else if (disp.time_botl) {
         timebot();
         curs_on_u();
     }
@@ -511,13 +511,13 @@ moveloop_core(void)
         } else {
             --gm.multi;
             nhassert(gc.command_count != 0);
-            rhack(gc.command_line);
+            rhack(gc.cmd_key);
         }
     } else if (gm.multi == 0) {
 #ifdef MAIL
         ckmailstatus();
 #endif
-        rhack((char *) 0);
+        rhack(0);
     }
     if (u.utotype)       /* change dungeon level */
         deferred_goto(); /* after rhack() */
@@ -529,7 +529,7 @@ moveloop_core(void)
         && (gm.multi && (!gc.context.travel ? !(gm.multi % 7)
                         : !(gm.moves % 7L)))) {
         if (flags.time && gc.context.run)
-            gc.context.botl = TRUE;
+            disp.botl = TRUE;
         /* [should this be flush_screen() instead?] */
         display_nhwindow(WIN_MAP, FALSE);
     }
@@ -537,7 +537,7 @@ moveloop_core(void)
     if (gl.luacore && nhcb_counts[NHCB_END_TURN]) {
         lua_getglobal(gl.luacore, "nh_callback_run");
         lua_pushstring(gl.luacore, nhcb_name[NHCB_END_TURN]);
-        nhl_pcall(gl.luacore, 1, 0);
+        nhl_pcall_handle(gl.luacore, 1, 0, "moveloop_core", NHLpa_panic);
     }
 }
 
@@ -564,7 +564,7 @@ regen_pw(int wtcap)
         u.uen += rn1(upper, 1);
         if (u.uen > u.uenmax)
             u.uen = u.uenmax;
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
         if (u.uen == u.uenmax)
             interrupt_multi("You feel full of energy.");
     }
@@ -598,7 +598,7 @@ regen_hp(int wtcap)
                 heal = 1;
         }
         if (heal && !(Withering && heal > 0)) {
-            gc.context.botl = TRUE;
+            disp.botl = TRUE;
             u.mh += heal;
             reached_full = (u.mh == u.mhmax);
         }
@@ -621,7 +621,7 @@ regen_hp(int wtcap)
                 heal++;
 
             if (heal && !(Withering && heal > 0)) {
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
                 u.uhp += heal;
                 if (u.uhp > u.uhpmax)
                     u.uhp = u.uhpmax;
@@ -644,7 +644,7 @@ stop_occupation(void)
         if (!maybe_finished_meal(TRUE))
             You("stop %s.", go.occtxt);
         go.occupation = (int (*)(void)) 0;
-        gc.context.botl = TRUE; /* in case u.uhs changed */
+        disp.botl = TRUE; /* in case u.uhs changed */
         nomul(0);
     } else if (gm.multi >= 0) {
         nomul(0);
@@ -713,7 +713,9 @@ newgame(void)
 {
     int i;
 
-    gc.context.botlx = TRUE;
+    /* make sure welcome messages are given before noticing monsters */
+    notice_mon_off();
+    disp.botlx = TRUE;
     gc.context.ident = 1;
     gc.context.warnlevel = 0L;
     gc.context.next_attrib_check = 600L; /* arbitrary first setting */
@@ -773,6 +775,8 @@ newgame(void)
 
     /* Success! */
     welcome(TRUE);
+    notice_mon_on(); /* now we can notice monsters */
+    notice_all_mons(TRUE);
     return;
 }
 

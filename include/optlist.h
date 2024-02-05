@@ -135,6 +135,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
                 "your starting alignment (lawful, neutral, or chaotic)")
     /* end of special ordering; remainder of entries are in alphabetical order
      */
+    NHOPTB(accessiblemsg, Advanced, 0, opt_out, set_in_game,
+           Off, Yes, No, No, NoAlias, &a11y.accessiblemsg, Term_False,
+           "add location information to messages")
     NHOPTB(acoustics, Advanced, 0, opt_out, set_in_game,
            On, Yes, No, No, NoAlias, &flags.acoustics, Term_False,
            "can your character hear anything")
@@ -532,8 +535,8 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTC(perminv_mode, Advanced, 20, opt_in, set_in_game,
                 Yes, Yes, No, Yes, NoAlias,
                 "what to show in persistent inventory window")
-    NHOPTC(petattr, Advanced, 88, opt_in, set_in_game, /* curses only */
-                No, Yes, No, No, NoAlias, "attributes for highlighting pets")
+    NHOPTC(petattr, Advanced, 88, opt_in, set_in_game, /* tty/curses only */
+                No, Yes, No, Yes, NoAlias, "attributes for highlighting pets")
     /* pettype is ignored for some roles */
     NHOPTC(pettype, Advanced, 4, opt_in, set_gameview,
                 Yes, Yes, No, No, "pet", "your preferred initial pet type")
@@ -660,6 +663,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTB(sparkle, Map, 0, opt_out, set_in_game,
            On, Yes, No, No, NoAlias, &flags.sparkle, Term_False,
            "display sparkly effect when resisting magic")
+    NHOPTB(spot_monsters, Advanced, 0, opt_in, set_in_game,
+           Off, Yes, No, No, NoAlias, &a11y.mon_notices, Term_False,
+           "message when hero spots a monster")
     NHOPTB(splash_screen, Advanced, 0, opt_out, set_in_config,
            On, Yes, No, No, NoAlias, &iflags.wc_splash_screen, Term_False,
            (char *)0)

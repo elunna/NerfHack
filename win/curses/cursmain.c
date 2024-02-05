@@ -909,7 +909,7 @@ curses_print_glyph(
     ch = glyphinfo->ttychar;
     color = glyphinfo->gm.sym.color;
     if ((special & MG_PET) && iflags.hilite_pet) {
-        attr = iflags.wc2_petattr;
+        attr = curses_convert_attr(iflags.wc2_petattr);
     }
     else if ((special & MG_PEACEFUL) && iflags.underline_peacefuls) {
         attr = A_UNDERLINE;

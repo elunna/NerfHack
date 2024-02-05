@@ -1,4 +1,4 @@
-/* NetHack 3.7	save.c	$NHDT-Date: 1689629246 2023/07/17 21:27:26 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.207 $ */
+/* NetHack 3.7	save.c	$NHDT-Date: 1706079844 2024/01/24 07:04:04 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.214 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -537,7 +537,11 @@ savelev_core(NHFILE *nhfp, xint8 lev)
         bwrite(nhfp->fd, (genericptr_t) &gd.dndest, sizeof (dest_area));
         bwrite(nhfp->fd, (genericptr_t) &gl.level.flags, sizeof gl.level.flags);
         bwrite(nhfp->fd, (genericptr_t) &gd.doors_alloc, sizeof gd.doors_alloc);
-        bwrite(nhfp->fd, (genericptr_t) gd.doors, gd.doors_alloc * sizeof (coord));
+        /* don't rely on underlying write() behavior to write
+         *  nothing if count arg is 0, just skip it */
+        if (gd.doors_alloc)
+            bwrite(nhfp->fd, (genericptr_t) gd.doors,
+                   gd.doors_alloc * sizeof (coord));
     }
     save_rooms(nhfp); /* no dynamic memory to reclaim */
 
@@ -1184,6 +1188,7 @@ freedynamicdata(void)
 
     /* move-specific data */
     dmonsfree(); /* release dead monsters */
+    alloc_itermonarr(0U); /* a request of 0 releases existing allocation */
 
     /* level-specific data */
     done_object_cleanup(); /* maybe force some OBJ_FREE items onto map */

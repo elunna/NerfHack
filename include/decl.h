@@ -1,4 +1,4 @@
-/* NetHack 3.7  decl.h  $NHDT-Date: 1698264758 2023/10/25 20:12:38 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.339 $ */
+/* NetHack 3.7  decl.h  $NHDT-Date: 1706079834 2024/01/24 07:03:54 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.355 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2007. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -115,6 +115,13 @@ extern struct tc_gbl_data {   /* also declared in tcap.h */
 extern const char *ARGV0;
 #endif
 
+struct display_hints {
+    boolean botl;            /* partially redo status line */
+    boolean botlx;           /* print an entirely new bottom line */
+    boolean time_botl;       /* context.botl for 'time' (moves) only */
+};
+extern struct display_hints disp;
+
 /*
  * 'gX' -- instance_globals holds engine state that does not need to be
  * persisted upon game exit.  The initialization state is well defined
@@ -229,7 +236,7 @@ struct instance_globals_c {
     coord clicklook_cc;
     /* decl.c */
     char chosen_windowtype[WINTYPELEN];
-    char command_line[COLNO];
+    int cmd_key; /* parse() / rhack() */
     cmdcount_nht command_count;
     /* some objects need special handling during destruction or placement */
     struct obj *current_wand;  /* wand currently zapped/applied */
@@ -469,6 +476,10 @@ struct instance_globals_i {
     unsigned invbufsiz;
     int in_sync_perminvent;
 
+    /* mon.c */
+    struct monst **itermonarr; /* temporary array of all N monsters
+                                * on the current level */
+
     /* restore.c */
     struct bucket *id_map;
 
@@ -544,6 +555,8 @@ struct instance_globals_l {
     /* nhlua.c */
     genericptr_t luacore; /* lua_State * */
     char lua_warnbuf[BUFSZ];
+    int loglua;
+    int lua_sid;
 
     /* options.c */
     boolean loot_reset_justpicked;
@@ -1079,6 +1092,12 @@ struct instance_globals_x {
     /* mkmaze.c */
     int xmin, xmax; /* level boundaries x */
 
+    /* objnam.c */
+    char *xnamep; /* obuf[] returned by xname(), for use in doname() for
+                   * bounds checking; differs from xname() return value
+                   * due to reserving PREFIX bytes at start and possibly
+                   * skipping leading "the " after constructing result */
+
     /* sp_lev.c */
     coordxy xstart, xsize;
 
@@ -1163,5 +1182,3 @@ extern const struct const_globals cg;
 extern struct obj hands_obj;
 
 #endif /* DECL_H */
-
-

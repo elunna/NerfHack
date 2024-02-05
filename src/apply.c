@@ -927,9 +927,9 @@ static boolean
 mleashed_next2u(struct monst *mtmp)
 {
     if (mtmp->mleashed) {
-        if (!next2u(mtmp->mx, mtmp->my))
+        if (!m_next2u(mtmp))
             mnexto(mtmp, RLOC_NOMSG);
-        if (!next2u(mtmp->mx, mtmp->my)) {
+        if (!m_next2u(mtmp)) {
             struct obj *otmp = get_mleash(mtmp);
 
             if (!otmp) {
@@ -2443,7 +2443,7 @@ use_unicorn_horn(struct obj **optr)
     }
 
     if (did_prop) {
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
         /* Successfully using the unicorn horn exercises skill.
          * We'll grant a significant skill boost since the unihorn was nerfed
          * so heavily. */
@@ -4224,11 +4224,11 @@ do_break_wand(struct obj *obj)
              */
             if ((mon = m_at(x, y)) != 0) {
                 (void) bhitm(mon, obj);
-                /* if (gc.context.botl) bot(); */
+                /* if (disp.botl) bot(); */
             }
             if (affects_objects && gl.level.objects[x][y]) {
                 (void) bhitpile(obj, bhito, x, y, 0);
-                if (gc.context.botl)
+                if (disp.botl)
                     bot(); /* potion effects */
             }
         } else {
@@ -4246,7 +4246,7 @@ do_break_wand(struct obj *obj)
              */
             if (affects_objects && gl.level.objects[x][y]) {
                 (void) bhitpile(obj, bhito, x, y, 0);
-                if (gc.context.botl)
+                if (disp.botl)
                     bot(); /* potion effects */
             }
             damage = zapyourself(obj, FALSE);
@@ -4254,7 +4254,7 @@ do_break_wand(struct obj *obj)
                 Sprintf(buf, "killed %sself by breaking a wand", uhim());
                 losehp(Maybe_Half_Phys(damage), buf, NO_KILLER_PREFIX);
             }
-            if (gc.context.botl)
+            if (disp.botl)
                 bot(); /* blindness */
         }
     }

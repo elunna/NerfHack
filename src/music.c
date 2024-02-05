@@ -35,6 +35,24 @@ static const char *generic_lvl_desc(void);
 static int do_improvisation(struct obj *);
 static char *improvised_notes(boolean *);
 
+/* wake up monster, possibly scare it */
+static void
+awaken_scare(struct monst *mtmp, boolean scary)
+{
+    mtmp->msleeping = 0;
+    mtmp->mcanmove = 1;
+    mtmp->mfrozen = 0;
+    /* may scare some monsters -- waiting monsters excluded */
+    if (!unique_corpstat(mtmp->data)
+        && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
+        mtmp->mstrategy &= ~STRAT_WAITMASK;
+    else if (scary
+             && !mindless(mtmp->data)
+             && !resist(mtmp, TOOL_CLASS, 0, NOTELL)
+             /* some monsters are immune */
+             && onscary(0, 0, mtmp))
+        monflee(mtmp, 0, FALSE, TRUE);
+}
 
 /*
  * Wake every monster in range...
@@ -49,21 +67,8 @@ awaken_monsters(int distance)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if ((distm = mdistu(mtmp)) < distance) {
-            mtmp->msleeping = 0;
-            mtmp->mcanmove = 1;
-            mtmp->mfrozen = 0;
-            /* may scare some monsters -- waiting monsters excluded */
-            if (!unique_corpstat(mtmp->data)
-                && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
-                mtmp->mstrategy &= ~STRAT_WAITMASK;
-            else if (distm < distance / 3
-                     && !mindless(mtmp->data)
-                     && !resist(mtmp, TOOL_CLASS, 0, NOTELL)
-                     /* some monsters are immune */
-                     && onscary(0, 0, mtmp))
-                monflee(mtmp, 0, FALSE, TRUE);
-        }
+        if ((distm = mdistu(mtmp)) < distance)
+            awaken_scare(mtmp, (distm < distance / 3));
     }
 }
 
@@ -181,19 +186,7 @@ awaken_soldiers(struct monst* bugler  /* monster that played instrument */)
                                  ? mdistu(mtmp)
                                  : dist2(bugler->mx, bugler->my, mtmp->mx,
                                          mtmp->my))) < distance) {
-            mtmp->msleeping = 0;
-            mtmp->mcanmove = 1;
-            mtmp->mfrozen = 0;
-            /* may scare some monsters -- waiting monsters excluded */
-            if (!unique_corpstat(mtmp->data)
-                && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
-                mtmp->mstrategy &= ~STRAT_WAITMASK;
-            else if (distm < distance / 3
-                     && !mindless(mtmp->data)
-                     && !resist(mtmp, TOOL_CLASS, 0, NOTELL)
-                     /* some monsters are immune */
-                     && onscary(0, 0, mtmp))
-                monflee(mtmp, 0, FALSE, TRUE);
+            awaken_scare(mtmp, (distm < distance / 3));
         }
     }
 }
@@ -726,7 +719,7 @@ do_improvisation(struct obj* instr)
             Hero_playnotes(obj_to_instr(&itmp), improvisation, 50);
         }
         awaken_monsters(u.ulevel * (mundane ? 5 : 40));
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
         break;
     default:
         impossible("What a weird instrument (%d)!", instr->otyp);

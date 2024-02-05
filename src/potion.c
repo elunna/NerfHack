@@ -1,4 +1,4 @@
-/* NetHack 3.7	potion.c	$NHDT-Date: 1699582924 2023/11/10 02:22:04 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.251 $ */
+/* NetHack 3.7	potion.c	$NHDT-Date: 1704316448 2024/01/03 21:14:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.256 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -96,7 +96,7 @@ make_confused(long xtime, boolean talk)
             You_feel("less %s now.", Hallucination ? "trippy" : "confused");
     }
     if ((xtime && !old) || (!xtime && old))
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
 
     set_itimeout(&HConfusion, xtime);
 }
@@ -123,7 +123,7 @@ make_stunned(long xtime, boolean talk)
         }
     }
     if ((!xtime && old) || (xtime && !old))
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
 
     set_itimeout(&HStun, xtime);
 }
@@ -157,7 +157,7 @@ make_sick(long xtime,
         }
         set_itimeout(&Sick, xtime);
         u.usick_type |= type;
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
     } else if (old && (type & u.usick_type)) {
         /* was sick, now not */
         u.usick_type &= ~type;
@@ -170,7 +170,7 @@ make_sick(long xtime,
                 You_feel("cured.  What a relief!");
             Sick = 0L; /* set_itimeout(&Sick, 0L) */
         }
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
     }
 
     kptr = find_delayed_killer(SICK);
@@ -200,7 +200,7 @@ make_slimed(long xtime, const char *msg)
 #endif
     set_itimeout(&Slimed, xtime);
     if ((xtime != 0L) ^ (old != 0L)) {
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
         if (msg)
             pline("%s", msg);
     }
@@ -227,7 +227,7 @@ make_stoned(long xtime, const char *msg, int killedby, const char *killername)
 #endif
     set_itimeout(&Stoned, xtime);
     if ((xtime != 0L) ^ (old != 0L)) {
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
         if (msg)
             pline("%s", msg);
     }
@@ -246,7 +246,7 @@ make_vomiting(long xtime, boolean talk)
         talk = FALSE;
 
     set_itimeout(&Vomiting, xtime);
-    gc.context.botl = TRUE;
+    disp.botl = TRUE;
     if (!xtime && old)
         if (talk)
             You_feel("much less nauseated now.");
@@ -336,7 +336,7 @@ toggle_blindness(void)
     boolean Stinging = (uwep && (EWarn_of_mon & W_WEP) != 0L);
 
     /* blindness has just been toggled */
-    gc.context.botl = TRUE; /* status conditions need update */
+    disp.botl = TRUE; /* status conditions need update */
     gv.vision_full_recalc = 1; /* vision has changed */
     /* this vision recalculation used to be deferred until moveloop(),
        but that made it possible for vision irregularities to occur
@@ -428,7 +428,7 @@ make_hallucinated(
         (eg. Qt windowport's equipped items display) */
         update_inventory();
 
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
         if (talk)
             pline(message, verb);
     }
@@ -447,7 +447,7 @@ make_deaf(long xtime, boolean talk)
 
     set_itimeout(&HDeaf, xtime);
     if ((xtime != 0L) ^ (old != 0L)) {
-        gc.context.botl = TRUE;
+        disp.botl = TRUE;
         if (talk)
             You(old && !Deaf ? "can hear again."
                              : "are unable to hear anything.");
@@ -458,7 +458,7 @@ make_deaf(long xtime, boolean talk)
 void
 make_glib(int xtime)
 {
-    gc.context.botl |= (!Glib ^ !!xtime);
+    disp.botl |= (!Glib ^ !!xtime);
     set_itimeout(&Glib, xtime);
     /* may change "(being worn)" to "(being worn; slippery)" or vice versa */
     if (uarmg)
@@ -664,7 +664,7 @@ peffect_restore_ability(struct obj *otmp)
                WEAK or worse, but that's handled via ATEMP(A_STR) now */
             if (ABASE(i) < lim) {
                 ABASE(i) = lim;
-                gc.context.botl = 1;
+                disp.botl = TRUE;
                 /* only first found if not blessed */
                 if (!otmp->blessed)
                     break;
@@ -722,7 +722,7 @@ peffect_water(struct obj *otmp)
         if (otmp->blessed) {
             pline("This burns like %s!", hliquid("acid"));
             exercise(A_CON, FALSE);
-            if (u.ulycn >= LOW_PM) {
+            if (ismnum(u.ulycn)) {
                 Your("affinity to %s disappears!",
                      makeplural(mons[u.ulycn].pmnames[NEUTRAL]));
                 if (gy.youmonst.data == &mons[u.ulycn])
@@ -734,7 +734,7 @@ peffect_water(struct obj *otmp)
         } else if (otmp->cursed) {
             You_feel("quite proud of yourself.");
             healup(d(2, 6), 0, 0, 0);
-            if (u.ulycn >= LOW_PM && !Upolyd)
+            if (ismnum(u.ulycn) && !Upolyd)
                 you_were();
             exercise(A_CON, TRUE);
         }
@@ -744,7 +744,7 @@ peffect_water(struct obj *otmp)
             make_sick(0L, (char *) 0, TRUE, SICK_ALL);
             exercise(A_WIS, TRUE);
             exercise(A_CON, TRUE);
-            if (u.ulycn >= LOW_PM)
+            if (ismnum(u.ulycn))
                 you_unwere(TRUE); /* "Purified" */
             /* make_confused(0L, TRUE); */
         } else {
@@ -754,7 +754,7 @@ peffect_water(struct obj *otmp)
                        KILLED_BY_AN);
             } else
                 You_feel("full of dread.");
-            if (u.ulycn >= LOW_PM && !Upolyd)
+            if (ismnum(u.ulycn) && !Upolyd)
                 you_were();
             exercise(A_CON, FALSE);
         }
@@ -1281,7 +1281,7 @@ peffect_gain_energy(struct obj *otmp)
         u.uen = u.uenmax;
     else if (u.uen <= 0)
         u.uen = 0;
-    gc.context.botl = 1;
+    disp.botl = TRUE;
     exercise(A_WIS, TRUE);
 }
 
@@ -1490,7 +1490,7 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
         make_vomiting(0L, TRUE);
         make_sick(0L, (char *) 0, TRUE, SICK_ALL);
     }
-    gc.context.botl = 1;
+    disp.botl = TRUE;
     return;
 }
 
@@ -2029,7 +2029,7 @@ potionbreathe(struct obj *obj)
                     ABASE(i)++;
                     /* only first found if not blessed */
                     isdone = !(obj->blessed);
-                    gc.context.botl = 1;
+                    disp.botl = TRUE;
                 }
                 if (++i >= A_MAX)
                     i = 0;
@@ -2053,32 +2053,25 @@ potionbreathe(struct obj *obj)
         unambiguous = TRUE;
         break;
     case POT_FULL_HEALING:
-        if (Upolyd)
-            u.mh += 10;
-        else
-            u.uhp += 10;
+        if (Upolyd && u.mh < u.mhmax)
+            u.mh++, disp.botl = TRUE;
+        if (u.uhp < u.uhpmax)
+            u.uhp++, disp.botl = TRUE;
         cureblind = TRUE;
         /*FALLTHRU*/
     case POT_EXTRA_HEALING:
-        if (Upolyd)
-            u.mh += 2;
-        else
-            u.uhp += 2;
+        if (Upolyd && u.mh < u.mhmax)
+            u.mh++, disp.botl = TRUE;
+        if (u.uhp < u.uhpmax)
+            u.uhp++, disp.botl = TRUE;
         if (!obj->cursed)
             cureblind = TRUE;
         /*FALLTHRU*/
     case POT_HEALING:
-        if (Upolyd)
-            u.mh++;
-        else
-            u.uhp++;
-        if (u.mh > u.mhmax) {
-            u.mh = u.mhmax;
-        }
-        if (u.uhp > u.uhpmax) {
-            u.uhp = u.uhpmax;
-        }
-        gc.context.botl = 1;
+        if (Upolyd && u.mh < u.mhmax)
+            u.mh++, disp.botl = TRUE;
+        if (u.uhp < u.uhpmax)
+            u.uhp++, disp.botl = TRUE;
         if (obj->blessed)
             cureblind = TRUE;
         if (cureblind) {
@@ -2101,7 +2094,7 @@ potionbreathe(struct obj *obj)
                 else
                     u.uhp -= 5;
             }
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             exercise(A_CON, FALSE);
         }
         if (cansmell) {
@@ -2199,7 +2192,8 @@ potionbreathe(struct obj *obj)
     case POT_WATER:
         if (u.umonnum == PM_GREMLIN) {
             unambiguous = TRUE;
-        } else if (u.ulycn >= LOW_PM) {
+            (void) split_mon(&gy.youmonst, (struct monst *) 0);
+        } else if (ismnum(u.ulycn)) {
             /* vapor from [un]holy water will trigger
                transformation but won't cure lycanthropy */
             if (obj->blessed && gy.youmonst.data == &mons[u.ulycn]) {
@@ -2743,6 +2737,9 @@ potion_dip(struct obj *obj, struct obj *potion)
             case 4:
                 otmp = mkobj(POTION_CLASS, FALSE);
                 obj->otyp = otmp->otyp;
+                /* oil uses obj->age field differently from other potions */
+                if (obj->otyp == POT_OIL || otmp->otyp == POT_OIL)
+                    fixup_oil(obj, otmp);
                 obfree(otmp, (struct obj *) 0);
                 break;
             default:
@@ -3078,7 +3075,7 @@ split_mon(
         if (mtmp2) {
             mtmp2->mhpmax = u.mhmax / 2;
             u.mhmax -= mtmp2->mhpmax;
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             You("multiply%s!", reason);
         }
     } else {

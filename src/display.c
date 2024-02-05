@@ -1680,7 +1680,7 @@ docrt_flags(int refresh_flags)
         /* perm_invent */
         update_inventory();
         /* status */
-        gc.context.botlx = 1; /* force a redraw of the bottom lines */
+        disp.botlx = TRUE; /* force a redraw of the bottom lines */
         /* note: caller needs to call bot() to actually redraw status */
     }
     gp.program_state.in_docrt = FALSE;
@@ -2059,7 +2059,7 @@ cls(void)
         return;
     in_cls = TRUE;
     display_nhwindow(WIN_MESSAGE, FALSE); /* flush messages */
-    gc.context.botlx = 1;                 /* force update of botl window */
+    disp.botlx = TRUE;                 /* force update of botl window */
     clear_nhwindow(WIN_MAP);              /* clear physical screen */
 
     clear_glyph_buffer(); /* force gbuf[][].glyph to unexplored */
@@ -2098,9 +2098,9 @@ flush_screen(int cursor_on_u)
 #endif
 
     /* get this done now, before we place the cursor on the hero */
-    if (gc.context.botl || gc.context.botlx)
+    if (disp.botl || disp.botlx)
         bot();
-    else if (iflags.time_botl)
+    else if (disp.time_botl)
         timebot();
 
     for (y = 0; y < ROWNO; y++) {
@@ -3437,22 +3437,6 @@ wall_angle(struct rm *lev)
             }
             break;
         case WM_T_BL:
-#if 0  /* older method, fixed */
-            if (only(seenv, SV4 | SV5)) {
-                col = T_tlcorn;
-            } else if ((seenv & (SV0 | SV1 | SV2))
-                       && only(seenv, SV0 | SV1 | SV2 | SV6 | SV7)) {
-                col = T_hwall;
-            } else if ((seenv & SV3)
-                       || ((seenv & (SV0 | SV1 | SV2))
-                           && (seenv & (SV4 | SV5)))) {
-                col = T_tdwall;
-            } else {
-                if (seenv != SV6)
-                    t_warn(lev);
-                col = T_stone;
-            }
-#endif /* 0 */
             if (only(seenv, SV4 | SV5))
                 col = T_tlcorn;
             else if ((seenv & (SV0 | SV1 | SV2 | SV7))
@@ -3464,22 +3448,6 @@ wall_angle(struct rm *lev)
                 col = T_tdwall;
             break;
         case WM_T_BR:
-#if 0  /* older method, fixed */
-            if (only(seenv, SV5 | SV6)) {
-                col = T_trcorn;
-            } else if ((seenv & (SV0 | SV1 | SV2))
-                       && only(seenv, SV0 | SV1 | SV2 | SV3 | SV4)) {
-                col = T_hwall;
-            } else if ((seenv & SV7)
-                       || ((seenv & (SV0 | SV1 | SV2))
-                           && (seenv & (SV5 | SV6)))) {
-                col = T_tdwall;
-            } else {
-                if (seenv != SV4)
-                    t_warn(lev);
-                col = T_stone;
-            }
-#endif /* 0 */
             if (only(seenv, SV5 | SV6))
                 col = T_trcorn;
             else if ((seenv & (SV0 | SV1 | SV2 | SV3))

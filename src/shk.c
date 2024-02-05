@@ -124,7 +124,7 @@ money2mon(struct monst* mon, long amount)
         remove_worn_item(ygold, FALSE); /* quiver */
     freeinv(ygold);
     add_to_minv(mon, ygold);
-    gc.context.botl = 1;
+    disp.botl = TRUE;
     return amount;
 }
 
@@ -152,13 +152,13 @@ money2u(struct monst* mon, long amount)
         mongold = splitobj(mongold, amount);
     obj_extract_self(mongold);
 
-    if (!merge_choice(gi.invent, mongold)
+    if (!merge_choice(&gi.invent, mongold)
             && inv_cnt(FALSE) >= invlet_basic) {
         You("have no room for the gold!");
         dropy(mongold);
     } else {
         addinv(mongold);
-        gc.context.botl = 1;
+        disp.botl = TRUE;
     }
 }
 
@@ -1178,7 +1178,7 @@ pay(long tmp, register struct monst* shkp)
         money2mon(shkp, balance);
     else if (balance < 0)
         money2u(shkp, -balance);
-    gc.context.botl = 1;
+    disp.botl = TRUE;
     if (robbed) {
         robbed -= tmp;
         if (robbed < 0)
@@ -1453,7 +1453,7 @@ dopay(void)
     for (shkp = next_shkp(fmon, FALSE); shkp;
          shkp = next_shkp(shkp->nmon, FALSE)) {
         sk++;
-        if (next2u(shkp->mx, shkp->my)) {
+        if (m_next2u(shkp)) {
             /* next to an irate shopkeeper? prioritize that */
             if (nxtm && ANGRY(nxtm))
                 continue;
@@ -1494,7 +1494,7 @@ dopay(void)
              shkp = next_shkp(shkp->nmon, FALSE))
             if (canspotmon(shkp))
                 break;
-        if (shkp != resident && !next2u(shkp->mx, shkp->my)) {
+        if (shkp != resident && !m_next2u(shkp)) {
             pline("%s is not near enough to receive your payment.",
                   Shknam(shkp));
             return ECMD_OK;
@@ -1532,7 +1532,7 @@ dopay(void)
             pline("%s is not interested in your payment.", Monnam(mtmp));
             return ECMD_OK;
         }
-        if (mtmp != resident && !next2u(mtmp->mx, mtmp->my)) {
+        if (mtmp != resident && !m_next2u(mtmp)) {
             pline("%s is too far to receive your payment.", Shknam(mtmp));
             return ECMD_OK;
         }
@@ -1673,7 +1673,7 @@ dopay(void)
                 eshkp->debit = 0L;
                 eshkp->loan = 0L;
                 You("pay that debt.");
-                gc.context.botl = 1;
+                disp.botl = TRUE;
             } else {
                 dtmp -= eshkp->credit;
                 eshkp->credit = 0L;
@@ -1682,7 +1682,7 @@ dopay(void)
                 eshkp->loan = 0L;
                 pline("That debt is partially offset by your credit.");
                 You("pay the remainder.");
-                gc.context.botl = 1;
+                disp.botl = TRUE;
             }
             paid = TRUE;
         }
@@ -2087,7 +2087,7 @@ inherits(
         takes[0] = '\0';
         if (helpless(shkp))
             Strcat(takes, "wakes up and ");
-        if (!next2u(shkp->mx, shkp->my))
+        if (!m_next2u(shkp))
             Strcat(takes, "comes and ");
         Strcat(takes, "takes");
 
@@ -2097,14 +2097,14 @@ inherits(
                 eshkp->robbed = 0L;
             if (umoney > 0L) {
                 money2mon(shkp, umoney);
-                gc.context.botl = 1;
+                disp.botl = TRUE;
             }
             if (!silently)
                 pline("%s %s all your possessions.", Shknam(shkp), takes);
             taken = TRUE;
         } else {
             money2mon(shkp, loss);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
             if (!silently)
                 pline("%s %s the %ld %s %sowed %s.", Shknam(shkp),
                       takes, loss, currency(loss),
@@ -3706,7 +3706,7 @@ corpsenm_price_adj(struct obj *obj)
     long val = 0L;
 
     if ((obj->otyp == TIN || obj->otyp == EGG || obj->otyp == CORPSE)
-        && obj->corpsenm >= LOW_PM) {
+        && ismnum(obj->corpsenm)) {
         int i;
         long tmp = 1L;
         struct permonst *ptr = &mons[obj->corpsenm];
@@ -4505,10 +4505,10 @@ shopdig(int fall)
             return;
 #endif
         }
-        if (!next2u(shkp->mx, shkp->my)) {
+        if (!m_next2u(shkp)) {
             mnexto(shkp, RLOC_MSG);
             /* for some reason the shopkeeper can't come next to you */
-            if (!next2u(shkp->mx, shkp->my)) {
+            if (!m_next2u(shkp)) {
                 if (lang == 2)
                     pline("%s curses you in anger and frustration!",
                           Shknam(shkp));
@@ -4730,7 +4730,7 @@ pay_for_damage(const char *dmgstr, boolean cant_mollify)
         cost_of_damage = check_credit(cost_of_damage, shkp);
         if (cost_of_damage > 0L) {
             money2mon(shkp, cost_of_damage);
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
         pline("Mollified, %s accepts your restitution.", shkname(shkp));
         /* move shk back to his home loc */
@@ -5279,7 +5279,7 @@ block_entry(register coordxy x, register coordxy y)
 char *
 shk_your(char *buf, struct obj *obj)
 {
-    boolean chk_pm = obj->otyp == CORPSE && obj->corpsenm >= LOW_PM;
+    boolean chk_pm = obj->otyp == CORPSE && ismnum(obj->corpsenm);
 
     buf[0] = '\0';
     if (chk_pm && type_is_pname(&mons[obj->corpsenm]))

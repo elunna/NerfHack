@@ -519,6 +519,7 @@ teleds(coordxy nux, coordxy nuy, int teleds_flags)
     see_monsters();
     gv.vision_full_recalc = 1;
     nomul(0);
+    notice_mon_off();
     vision_recalc(0); /* vision before effects */
 
     /* this used to take place sooner, but if a --More-- prompt was issued
@@ -548,6 +549,8 @@ teleds(coordxy nux, coordxy nuy, int teleds_flags)
     /* possible shop entry message comes after guard's shrill whistle */
     spoteffects(TRUE);
     invocation_message();
+    notice_mon_on();
+    notice_all_mons(TRUE);
     return;
 }
 
@@ -1092,7 +1095,7 @@ dotele(
         } else {
             /* bypassing spelleffects(); apply energy cost directly */
             u.uen -= energy;
-            gc.context.botl = 1;
+            disp.botl = TRUE;
         }
     }
 
@@ -1616,7 +1619,7 @@ rloc_to_core(
         if (u.uswallow) {
             u_on_newpos(mtmp->mx, mtmp->my);
             docrt();
-        } else if (!next2u(mtmp->mx, mtmp->my)) {
+        } else if (!m_next2u(mtmp)) {
            unstuck(mtmp);
         }
     }
@@ -1629,6 +1632,7 @@ rloc_to_core(
         const char *next = (du <= 2) ? " next to you" : 0, /* next2u() */
                    *nearu = (du <= BOLT_LIM * BOLT_LIM) ? " close by" : 0;
 
+        set_msg_xy(x, y);
         mtmp->mstrategy &= ~STRAT_APPEARMSG; /* one chance only */
         if (telemsg && (couldsee(x, y) || sensemon(mtmp))) {
             pline("%s vanishes and reappears%s.",
@@ -2166,8 +2170,8 @@ u_teleport_mon(struct monst* mtmp, boolean give_feedback)
             You("are no longer inside %s!", mon_nam(mtmp));
         unstuck(mtmp);
         (void) rloc(mtmp, RLOC_MSG);
-    } else if (is_rider(mtmp->data) && rn2(13)
-               && enexto(&cc, u.ux, u.uy, mtmp->data))
+    } else if ((is_rider(mtmp->data) || control_teleport(mtmp->data))
+               && rn2(13) && enexto(&cc, u.ux, u.uy, mtmp->data))
         rloc_to(mtmp, cc.x, cc.y);
     else
         (void) rloc(mtmp, RLOC_MSG);

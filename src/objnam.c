@@ -66,6 +66,32 @@ struct Jitem {
 #define BSTRNCMPI(base, ptr, str, num) \
     ((ptr) < base || strncmpi((ptr), str, num))
 #define Strcasecpy(dst, src) (void) strcasecpy(dst, src)
+#define Strncat(dst, src, cnt) (void) strncat(dst, src, cnt)
+
+/* Concat(): append text to base, adjusted by delta, with bounds checking
+   via a pair of behind-the-scenes variables; delta is either 0 for normal
+   concatenation or 1 to replace the final character with something */
+#define Concat(base, delta, text) \
+    do {                                                                \
+        Strncat(base ## _eos - delta, text, base ## spaceleft + delta); \
+        ConcUpdate(base);                                               \
+    } while (0)
+#define ConcatF1(base, delta, fmt, arg1) \
+    do {                                                                \
+        Snprintf(base ## _eos - delta, base ## spaceleft + delta,       \
+                 fmt, arg1);                                            \
+        ConcUpdate(base);                                               \
+    } while (0)
+#define ConcatF2(base, delta, fmt, arg1, arg2) \
+    do {                                                                \
+        Snprintf(base ## _eos - delta, base ## spaceleft + delta,       \
+                 fmt, arg1, arg2);                                      \
+        ConcUpdate(base);                                               \
+    } while (0)
+#define ConcUpdate(base) \
+    base ## _eos = eos(base),                                           \
+    /* convert signed ptrdiff_t to unsigned size_t */                   \
+    base ## spaceleft = (size_t) (base ## _end - base ## _eos)
 
 /* true for gems/rocks that should have " stone" appended to their names */
 #define GemStone(typ)                                                  \
@@ -93,7 +119,7 @@ static const struct Jitem Japanese_items[] = {
 };
 
 static char *
-strprepend(char *s,const char * pref)
+strprepend(char *s, const char *pref)
 {
     register int i = (int) strlen(pref);
 
@@ -520,7 +546,7 @@ xcalled(
 }
 
 char *
-xname(struct obj* obj)
+xname(struct obj *obj)
 {
     return xname_flags(obj, CXN_NORMAL);
 }
@@ -531,7 +557,8 @@ xname_flags(
     unsigned cxn_flags) /* bitmask of CXN_xxx values */
 {
     register char *buf;
-    char *obufp;
+    char *obufp, *buf_end, *buf_eos;
+    size_t bufspaceleft;
     int typ = obj->otyp;
     struct objclass *ocl = &objects[typ];
     int nn = ocl->oc_name_known, omndx = obj->corpsenm;
@@ -541,7 +568,14 @@ xname_flags(
     boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
     boolean known, dknown, bknown;
 
-    buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
+    gx.xnamep = nextobuf();
+    /* set up primary work buffer; the first 'PREFIX' bytes are set
+       aside for use by doname() */
+    buf = gx.xnamep + PREFIX; /* leave room for "17 -3 " */
+    buf_end = gx.xnamep + BUFSZ - 1; /* last byte within the obuf[] */
+    buf[0] = '\0';
+    ConcUpdate(buf); /* set buf_eos and bufspaceleft */
+
     if (Role_if(PM_SAMURAI)) {
         actualn = Japanese_item_name(typ, actualn);
         if (typ == WOODEN_HARP || typ == MAGIC_HARP)
@@ -556,7 +590,6 @@ xname_flags(
     if (!dn)
         dn = actualn;
 
-    buf[0] = '\0';
     /*
      * clean up known when it's tied to oc_name_known, eg after AD_DRIN
      * This is only required for unique objects since the article
@@ -613,6 +646,12 @@ xname_flags(
 
     if (obj_is_pname(obj))
         goto nameit;
+
+    /* Some classes use strcpy(buf, something)+strcat(buf, otherthing).
+       In those cases, ConcUpdate() is needed in between if Concat()
+       will be used for the strcat() part.  Other classes just use
+       strcpy(buf, something) and the ConcUpdate() can be deferred
+       until after the switch. */
     switch (obj->oclass) {
     case AMULET_CLASS:
         if (!dknown)
@@ -633,6 +672,8 @@ xname_flags(
         /*FALLTHRU*/
     case VENOM_CLASS:
     case TOOL_CLASS:
+        /* note: lenses or towel prefix would overwrite poisoned weapon
+           prefix if both were simultaneously posssible, but they aren't */
         if (typ == LENSES)
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
@@ -646,15 +687,16 @@ xname_flags(
             xcalled(buf, BUFSZ - PREFIX, dn, un);
         else
             Strcat(buf, dn);
+        ConcUpdate(buf);
 
         if (typ == FIGURINE && omndx != NON_PM) {
             char anbuf[10]; /* [4] would be enough: 'a','n',' ','\0' */
             const char *pm_name = obj_pmname(obj);
 
-            Sprintf(eos(buf), " of %s%s", just_an(anbuf, pm_name), pm_name);
+            ConcatF2(buf, 0, " of %s%s", just_an(anbuf, pm_name), pm_name);
         } else if (is_wet_towel(obj)) {
             if (wizard)
-                Sprintf(eos(buf), " (%d)", obj->spe);
+                ConcatF1(buf, 0, " (%d)", obj->spe);
         }
         break;
     case ARMOR_CLASS:
@@ -662,11 +704,10 @@ xname_flags(
         if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES) {
             Sprintf(buf, "set of %s", actualn);
             break;
-        }
-        if (is_boots(obj) || is_gloves(obj))
+        } else if (is_boots(obj) || is_gloves(obj)) {
             Strcpy(buf, "pair of ");
-
-        if (!dknown) {
+            /*FALLTHRU*/
+        } else if (is_shield(obj) && !dknown) {
             if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD) {
                 Strcpy(buf, "shield");
                 break;
@@ -675,13 +716,14 @@ xname_flags(
                 break;
             }
         }
+        ConcUpdate(buf);
 
         if (nn)
-            Strcat(buf, actualn);
+            Concat(buf, 0, actualn);
         else if (un)
             xcalled(buf, BUFSZ - PREFIX, armor_simple_name(obj), un);
         else
-            Strcat(buf, dn);
+            Concat(buf, 0, dn);
         break;
     case FOOD_CLASS:
         /* we could include partly-eaten-hack on fruit but don't need to */
@@ -692,6 +734,9 @@ xname_flags(
                 impossible("Bad fruit #%d?", obj->spe);
                 Strcpy(buf, "fruit");
             } else {
+                /* fruit name is limited in length to PL_FSIZ; converting
+                   to/from singular/plural might increase the length a
+                   little but not enough to pose a risk of overflowing buf */
                 Strcpy(buf, f->fname);
                 if (pluralize) {
                     /* ick: already pluralized fruit names are allowed--we
@@ -716,18 +761,18 @@ xname_flags(
                appropriate and omitted by xname(); shrink_glob() wants
                it but uses Yname2() -> yname() -> xname() rather than
                doname() so we've added an external flag to request it */
-            Strcat(buf, "partly eaten ");
+            Concat(buf, 0, "partly eaten ");
         }
         if (obj->globby) { /* 3.7 added "medium" to replace no-prefix */
-            Sprintf(eos(buf), "%s %s", (obj->owt <= 100) ? "small"
-                                       : (obj->owt <= 300) ? "medium"
-                                         : (obj->owt <= 500) ? "large"
-                                           : "very large",
-                    actualn);
+            ConcatF2(buf, 0, "%s %s", (obj->owt <= 100) ? "small"
+                                      : (obj->owt <= 300) ? "medium"
+                                        : (obj->owt <= 500) ? "large"
+                                          : "very large",
+                     actualn);
             break;
         }
 
-        Strcpy(buf, actualn);
+        Concat(buf, 0, actualn);
         if (typ == TIN && known)
             tin_details(obj, omndx, buf);
         break;
@@ -740,24 +785,24 @@ xname_flags(
             char anbuf[10];
             const char *statue_pmname = obj_pmname(obj);
 
-            Sprintf(buf, "%s%s of %s%s",
-                    (Role_if(PM_ARCHEOLOGIST)
-                     && (obj->spe & CORPSTAT_HISTORIC)) ? "historic " : "",
-                    actualn,
-                    type_is_pname(&mons[omndx]) ? ""
-                      : the_unique_pm(&mons[omndx]) ? "the "
-                        : just_an(anbuf, statue_pmname),
-                    statue_pmname);
-        } else {
+            Snprintf(buf, bufspaceleft, "%s%s of %s%s",
+                     (Role_if(PM_ARCHEOLOGIST)
+                      && (obj->spe & CORPSTAT_HISTORIC) != 0) ? "historic "
+                       : "",
+                     actualn,
+                     type_is_pname(&mons[omndx]) ? ""
+                       : the_unique_pm(&mons[omndx]) ? "the "
+                         : just_an(anbuf, statue_pmname),
+                     statue_pmname);
+        } else if (typ == BOULDER && obj->next_boulder == 1) {
             /* sometimes caller wants "next boulder" rather than just
                "boulder" (when pushing against a pile of more than one);
                originally we just tested for non-0 but checking for 1 is
                more robust because the default value for that overloaded
                field (obj->corpsenm) is NON_PM (-1) rather than 0 */
-            if (typ == BOULDER && obj->next_boulder == 1)
-                Strcat(strcpy(buf, "next "), actualn);
-            else
-                Strcpy(buf, actualn);
+            Strcat(strcpy(buf, "next "), actualn); /* "next boulder" */
+        } else {
+            Strcpy(buf, actualn); /* "boulder" or "statue" */
         }
         break;
     case BALL_CLASS:
@@ -862,20 +907,39 @@ xname_flags(
                 Strcat(buf, " stone");
         }
         break;
-    }
+    } /* gem */
     default:
         Sprintf(buf, "glorkum %d %d %d", obj->oclass, typ, obj->spe);
         impossible("xname_flags: %s", buf);
         break;
+    } /* switch */
+
+    /* check whether we've already gone out of bounds of the obuf[], prior
+       to pluralization and end-of-game shirt and apron text */
+    buf_eos = eos(buf);
+    if (buf_eos > buf_end) {
+        /* PREFIX is bigger than 6 so there will always be room within the
+           obuf[] in front of buf to insert "buf[]="; strncpy(,,N) doesn't
+           add '\0' terminator unless fewer than N chars are copied, which
+           is what we want, but gcc complains about that so use memcpy() */
+        paniclog("xname", (char *) memcpy(buf - 6, "buf[]=", 6));
+        panic("xname: buffer overflow before appending name.");
+        /*NOTREACHED*/
     }
+    bufspaceleft = (size_t) (buf_end - buf_eos);
+
+    /* if the name should be plural, do that now, after overflow check;
+       it could make buf[] become shorter */
     if (pluralize) {
-        /* (see fruit name handling in case FOOD_CLASS above) */
-        Strcpy(buf, obufp = makeplural(buf));
+        obufp = makeplural(buf);
+        buf[0] = '\0'; /* replace the whole string */
+        ConcUpdate(buf); /* reset buf_eos and bufspaceleft */
+        Concat(buf, 0, obufp);
         releaseobuf(obufp);
     }
 
     /* maybe give some extra information which isn't shown during play */
-    if (gp.program_state.gameover) {
+    if (gp.program_state.gameover && bufspaceleft > 0) {
         const char *lbl;
         char tmpbuf[BUFSZ];
 
@@ -884,18 +948,18 @@ xname_flags(
         switch (obj->otyp) {
         case T_SHIRT:
         case ALCHEMY_SMOCK:
-            Sprintf(eos(buf), " with text \"%s\"",
-                    (obj->otyp == T_SHIRT) ? tshirt_text(obj, tmpbuf)
-                                           : apron_text(obj, tmpbuf));
+            ConcatF1(buf, 0, " with text \"%s\"",
+                     (obj->otyp == T_SHIRT) ? tshirt_text(obj, tmpbuf)
+                                            : apron_text(obj, tmpbuf));
             break;
         case CANDY_BAR:
             lbl = candy_wrapper_text(obj);
             if (*lbl)
-                Sprintf(eos(buf), " labeled \"%s\"", lbl);
+                ConcatF1(buf, 0, " labeled \"%s\"", lbl);
             break;
         case HAWAIIAN_SHIRT:
-            Sprintf(eos(buf), " with %s motif",
-                    an(hawaiian_motif(obj, tmpbuf)));
+            ConcatF1(buf, 0, " with %s motif",
+                     an(hawaiian_motif(obj, tmpbuf)));
             break;
         default:
             break;
@@ -903,18 +967,35 @@ xname_flags(
     }
 
     if (has_oname(obj) && dknown) {
-        Strcat(buf, " named ");
+        Concat(buf, 0, " named ");
+
+        /* jump directly here if obj passes the has-personal-name test */
  nameit:
-        obufp = eos(buf);
-        (void) strncat(buf, ONAME(obj),
-                       BUFSZ - 1 - PREFIX - (unsigned) strlen(buf));
+        /*assert(has_oname(obj));*/
+        obufp = eos(buf); /* remember where the name will start */
+        Concat(buf, 0, ONAME(obj));
         /* downcase "The" in "<quest-artifact-item> named The ..." */
         if (obj->oartifact && !strncmp(obufp, "The ", 4))
-            *obufp = lowc(*obufp); /* = 't'; */
+            *obufp = lowc(*obufp); /* change 'T' in "The " to 't' */
     }
 
     if (!strncmpi(buf, "the ", 4))
         buf += 4;
+
+    buf_eos = eos(buf); /* pointer to '\0' terminator somewhere in obuf[] */
+    if (buf_eos >= buf_end) { /* ('>' shouldn't be possible) */
+        static int xname_full = 0;
+
+        /* we want a record of something needing more buffer space than
+           anticipated; since we aren't panicking here, this could happen
+           repeatedly and we don't want to spam the paniclog file */
+        if (!xname_full++) {
+            paniclog("xname", (char *) memcpy(buf - 6, "buf[]=", 6));
+            /* 'PREFIX' ought to be 'PREFIX+4' if we stripped leading "the" */
+            paniclog("xname", "used up entire obuf[PREFIX..BUFSX-1]");
+        }
+    }
+
     return buf;
 }
 
@@ -975,7 +1056,7 @@ minimal_xname(struct obj *obj)
 
 /* xname() output augmented for multishot missile feedback */
 char *
-mshot_xname(struct obj* obj)
+mshot_xname(struct obj *obj)
 {
     char tmpbuf[BUFSZ];
     char *onm = xname(obj);
@@ -991,7 +1072,7 @@ mshot_xname(struct obj* obj)
 
 /* used for naming "the unique_item" instead of "a unique_item" */
 boolean
-the_unique_obj(struct obj* obj)
+the_unique_obj(struct obj *obj)
 {
     boolean known = (obj->known || iflags.override_ID);
 
@@ -1006,7 +1087,7 @@ the_unique_obj(struct obj* obj)
 
 /* should monster type be prefixed with "the"? (mostly used for corpses) */
 boolean
-the_unique_pm(struct permonst* ptr)
+the_unique_pm(struct permonst *ptr)
 {
     boolean uniq;
 
@@ -1028,7 +1109,7 @@ the_unique_pm(struct permonst* ptr)
 }
 
 static void
-add_erosion_words(struct obj* obj, char* prefix)
+add_erosion_words(struct obj *obj, char *prefix)
 {
     boolean iscrys = (obj->otyp == CRYSKNIFE);
     boolean rknown;
@@ -1103,16 +1184,18 @@ erosion_matters(struct obj *obj)
 
 #define DONAME_WITH_PRICE 1
 #define DONAME_VAGUE_QUAN 2
+#define DONAME_FOR_MENU   4 /* [not used anywhere yet] */
 
 /* core of doname() */
 static char *
 doname_base(
-    struct obj* obj,       /* object to format */
+    struct obj *obj,       /* object to format */
     unsigned doname_flags) /* special case requests */
 {
     boolean ispoisoned = FALSE,
             with_price = (doname_flags & DONAME_WITH_PRICE) != 0,
-            vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0;
+            vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0,
+            for_menu = (doname_flags & DONAME_FOR_MENU) != 0;
     boolean known, dknown, cknown, bknown, lknown,
             fake_arti, force_the;
     char prefix[PREFIX];
@@ -1123,6 +1206,19 @@ doname_base(
     int omndx = obj->corpsenm;
     int nochrg = 0;
     register char *bp;
+    char *bp_eos, *bp_end;
+    size_t bpspaceleft;
+
+    /* 'bp' will be within an obuf[] rather than at the start of one,
+       usually (but not always) pointing at &obuf[PREFIX];
+       gx.xnamep always points to the start of that buffer;
+       'bp_eos' and 'bpspaceleft' are used and updated by Concat*() macros */
+    bp = xname(obj);
+    bp_end = gx.xnamep + BUFSZ - 1;
+    bp_eos = eos(bp);
+    assert(bp_end >= bp_eos); /* ok provided xname() bounds checking works */
+    /* size_t cast: convert signed ptrdiff_t to unsigned size_t */
+    bpspaceleft = (size_t) (bp_end - bp_eos);
 
     /* tourists get a special identification service for shop items */
     if (Role_if(PM_TOURIST)) {
@@ -1152,7 +1248,7 @@ doname_base(
      */
     /* must check opoisoned--someone can have a weirdly-named fruit */
     if (!strncmp(bp, "poisoned ", 9) && obj->opoisoned) {
-        bp += 9;
+        bp += 9; /* doesn't affect bp_eos or bpspaceleft */
         ispoisoned = TRUE;
     }
 
@@ -1175,7 +1271,7 @@ doname_base(
         ;
     } else if (force_the || obj_is_pname(obj) || the_unique_obj(obj)) {
         if (!strncmpi(bp, "the ", 4))
-            bp += 4;
+            bp += 4; /* doesn't affect bp_eos or bpspaceleft */
         Strcpy(prefix, "the ");
     } else if (!fake_arti) {
         /* default prefix */
@@ -1247,39 +1343,48 @@ doname_base(
     if (obj->greased)
         Strcat(prefix, "greased ");
 
-    if (cknown && Has_contents(obj)) {
+    if (cknown && Has_contents(obj) && bpspaceleft > 0) {
         /* we count the number of separate stacks, which corresponds
            to the number of inventory slots needed to be able to take
            everything out if no merges occur */
         long itemcount = count_contents(obj, FALSE, FALSE, TRUE, FALSE);
 
-        Sprintf(eos(bp), " containing %ld item%s", itemcount,
-                plur(itemcount));
+        ConcatF2(bp, 0, " containing %ld item%s", itemcount, plur(itemcount));
     }
 
     switch (is_weptool(obj) ? WEAPON_CLASS : obj->oclass) {
     case AMULET_CLASS:
         if (obj->owornmask & W_AMUL)
-            Strcat(bp, " (being worn)");
+            Concat(bp, 0, " (being worn)");
         break;
     case ARMOR_CLASS:
         if (obj->owornmask & W_ARMOR) {
-            Strcat(bp, (obj == uskin) ? " (embedded in your skin)"
-                       /* in case of perm_invent update while Wear/Takeoff
-                          is in progress; check doffing() before donning()
-                          because donning() returns True for both cases */
-                       : doffing(obj) ? " (being doffed)"
-                         : donning(obj) ? " (being donned)"
-                           : " (being worn)");
-            /* slippery fingers is an intrinsic condition of the hero
-               rather than extrinsic condition of objects, but gloves
-               are described as slippery when hero has slippery fingers */
-            if (obj == uarmg && Glib) /* just appended "(something)",
-                                       * change to "(something; slippery)" */
-                Strcpy(strrchr(bp, ')'), "; slippery)");
-            else if (!Blind && obj->lamplit && artifact_light(obj))
-                Sprintf(strrchr(bp, ')'), ", %s lit)",
-                        arti_light_description(obj));
+            Concat(bp, 0,
+                   (obj == uskin) ? " (embedded in your skin)"
+                   /* in case of perm_invent update while Wear/Takeoff
+                      is in progress; check doffing() before donning()
+                      because donning() returns True for both cases */
+                   : doffing(obj) ? " (being doffed)"
+                     : donning(obj) ? " (being donned)"
+                       : " (being worn)");
+            /* we just added a parenthesized phrase, but the right paren
+               might be absent if the appended string got truncated */
+            if (bp_eos[-1] == ')') {
+                /* slippery fingers is an intrinsic condition of the hero
+                   rather than extrinsic condition of objects, but gloves
+                   are described as slippery when hero has slippery fingers */
+                if (obj == uarmg && Glib) /* just appended "(something)",
+                                           * replace paren, changing that
+                                           * to be "(something; slippery)" */
+                    Concat(bp,  1, "; slippery)");
+            }
+            if (bp_eos[-1] == ')') {
+                /* there could be light-emitting artifact gloves someday,
+                   so add 'lit' separately from 'slippery' rather than via
+                   'else if' after uarmg+Glib */
+                if (!Blind && obj->lamplit && artifact_light(obj))
+                    ConcatF1(bp, 1, ", %s lit)", arti_light_description(obj));
+            }
         }
         /*FALLTHRU*/
     case WEAPON_CLASS:
@@ -1287,13 +1392,12 @@ doname_base(
             Strcat(prefix, "poisoned ");
         add_erosion_words(obj, prefix);
         if (known) {
-            Strcat(prefix, sitoa(obj->spe));
-            Strcat(prefix, " ");
+            Sprintf(eos(prefix), "%+d ", obj->spe); /* sitoa(obj->spe)+" " */
         }
         break;
     case TOOL_CLASS:
         if (obj->owornmask & (W_TOOL | W_SADDLE)) { /* blindfold */
-            Strcat(bp, " (being worn)");
+            Concat(bp, 0, " (being worn)");
             break;
         }
         if (obj->otyp == LEASH && obj->leashmon != 0) {
@@ -1303,15 +1407,17 @@ doname_base(
                 impossible("leashed monster not on this level");
                 obj->leashmon = 0;
             } else {
-                Sprintf(eos(bp), " (attached to %s)",
-                        noit_mon_nam(mlsh));
+                ConcatF1(bp, 0, " (attached to %s)", noit_mon_nam(mlsh));
             }
             break;
         }
         if (obj->otyp == CANDELABRUM_OF_INVOCATION) {
-            Sprintf(eos(bp), " (%d of 7 candle%s%s)",
-                    obj->spe, plur(obj->spe),
+            char suffix[20]; /* longest value is "s attached" */
+
+            /* separately formatted suffix avoids need for ConcatF3() */
+            Sprintf(suffix, "%s%s", plur(obj->spe),
                     !obj->lamplit ? " attached" : ", lit");
+            ConcatF2(bp, 0, " (%d of 7 candle%s)", obj->spe, suffix);
             break;
         } else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
                    || obj->otyp == BRASS_LANTERN || Is_candle(obj)) {
@@ -1335,7 +1441,7 @@ doname_base(
                     Strcat(prefix, "partly used ");
             }
             if (obj->lamplit)
-                Strcat(bp, " (lit)");
+                Concat(bp, 0, " (lit)");
             break;
         }
         if (objects[obj->otyp].oc_charged)
@@ -1344,25 +1450,22 @@ doname_base(
     case WAND_CLASS:
  charges:
         if (known)
-            Sprintf(eos(bp), " (%d:%d)", (int) obj->recharged, obj->spe);
+            ConcatF2(bp, 0, " (%d:%d)", (int) obj->recharged, obj->spe);
         break;
     case POTION_CLASS:
         if (obj->otyp == POT_OIL && obj->lamplit)
-            Strcat(bp, " (lit)");
+            Concat(bp, 0, " (lit)");
         break;
     case RING_CLASS:
- ring:
+ ring:  /* normal rings reach here 'naturally'; meat ring jumps here */
         if (obj->owornmask & W_RINGR)
-            Strcat(bp, " (on right ");
+            Concat(bp, 0, " (on right ");
         if (obj->owornmask & W_RINGL)
-            Strcat(bp, " (on left ");
-        if (obj->owornmask & W_RING) {
-            Strcat(bp, body_part(HAND));
-            Strcat(bp, ")");
-        }
+            Concat(bp, 0, " (on left ");
+        if (obj->owornmask & W_RING) /* either left or right */
+            ConcatF1(bp, 0,"%s)", body_part(HAND));
         if (known && objects[obj->otyp].oc_charged) {
-            Strcat(prefix, sitoa(obj->spe));
-            Strcat(prefix, " ");
+            Sprintf(eos(prefix), "%+d ", obj->spe); /* sitoa(obj->spe)+" " */
         }
         break;
     case FOOD_CLASS:
@@ -1374,33 +1477,39 @@ doname_base(
                "corpse" is already in the buffer returned by xname() */
             unsigned cxarg = (((obj->quan != 1L) ? 0 : CXN_ARTICLE)
                               | CXN_NOCORPSE);
-            char *cxstr = corpse_xname(obj, prefix, cxarg);
+            char *cxstr, *save_xnamep;
 
+            /* corpse_xname() sets xnamep; callers other than doname_base()
+               itself shouldn't care about xnamep (pointer to start of
+               current obuf[]) but keep it accurate anyway */
+            save_xnamep = gx.xnamep;
+            cxstr = corpse_xname(obj, prefix, cxarg);
             Sprintf(prefix, "%s ", cxstr);
             /* avoid having doname(corpse) consume an extra obuf */
             releaseobuf(cxstr);
+            gx.xnamep = save_xnamep;
         } else if (obj->otyp == EGG) {
 #if 0 /* corpses don't tell if they're stale either */
             if (known && stale_egg(obj))
                 Strcat(prefix, "stale ");
 #endif
-            if (omndx >= LOW_PM
+            if (ismnum(omndx)
                 && (known || (gm.mvitals[omndx].mvflags & MV_KNOWS_EGG))) {
                 Strcat(prefix, mons[omndx].pmnames[NEUTRAL]);
                 Strcat(prefix, " ");
                 if (obj->spe == 1)
-                    Strcat(bp, " (laid by you)");
+                    Concat(bp, 0, " (laid by you)");
             }
-        }
-        if (obj->otyp == MEAT_RING)
+        } else if (obj->otyp == MEAT_RING) {
             goto ring;
+        }
         break;
     case BALL_CLASS:
     case CHAIN_CLASS:
         add_erosion_words(obj, prefix);
         if (obj->owornmask & (W_BALL | W_CHAIN))
-            Sprintf(eos(bp), " (%s to you)",
-                    (obj->owornmask & W_BALL) ? "chained" : "attached");
+            ConcatF1(bp, 0, " (%s to you)",
+                     (obj->owornmask & W_BALL) ? "chained" : "attached");
         break;
     }
 
@@ -1410,9 +1519,10 @@ doname_base(
             mgend = ((cgend == CORPSTAT_MALE) ? MALE
                      : (cgend == CORPSTAT_FEMALE) ? FEMALE
                        : NEUTRAL);
-        Sprintf(eos(bp), " (%s)",
-                cgend != CORPSTAT_RANDOM ? genders[mgend].adj
-                                         : "unspecified gender");
+
+        ConcatF1(bp, 0, " (%s)",
+                 (cgend != CORPSTAT_RANDOM) ? genders[mgend].adj
+                                            : "unspecified gender");
     }
 
     if ((obj->owornmask & W_WEP) && !gm.mrg_to_wielded) {
@@ -1430,83 +1540,78 @@ doname_base(
                  ? (is_ammo(obj) || is_missile(obj))
                  : !is_weptool(obj)))
             && !twoweap_primary) {
-            Strcat(bp, " (wielded)");
+            Concat(bp, 0, " (wielded)");
         } else {
             const char *hand_s = body_part(HAND);
             char *obufp, handsbuf[40];
 
-            if (bimanual(obj)) {
+            if (bimanual(obj)) { /* "hands" */
                 hand_s = strcpy(handsbuf, obufp = makeplural(hand_s));
                 releaseobuf(obufp);
+            } else { /* "right hand" or "left hand" */
+                Sprintf(handsbuf, "%s %s",
+                        URIGHTY ? "right" : "left", hand_s);
+                hand_s = handsbuf;
             }
             /* note: Sting's glow message, if added, will insert text
                in front of "(weapon in hand)"'s closing paren */
-            Sprintf(eos(bp), " (%s%s in %s%s)",
-                    tethered ? "tethered " : "", /* aklys */
-                    /* avoid "tethered wielded in right hand" for twoweapon */
-                    (twoweap_primary && !tethered) ? "wielded" : "weapon",
-                    bimanual(obj) ? "" : URIGHTY ? "right " : "left ",
-/*
-                    (twoweap_primary && URIGHTY)
-                        ? "right "
-                        : (twoweap_primary && ULEFTY)
-                            ? "left "
-                            :  "",
-*/
-                    hand_s);
-            if (!Blind) {
+            ConcatF2(bp, 0, " (%s %s)",
+                     tethered ? "tethered to"
+                     : twoweap_primary ? "wielded in"
+                       : "weapon in",
+                     hand_s);
+
+            /* we just added a parenthesized pharse, but the right paren
+               might be absent if the appended string got truncated */
+            if (!Blind && bpspaceleft && bp_eos[-1] == ')') {
                 if (gw.warn_obj_cnt && obj == uwep
                     && (EWarn_of_mon & W_WEP) != 0L)
                     /* we know bp[] ends with ')'; overwrite that */
-                    Sprintf(eos(bp) - 1, ", %s %s)",
-                            glow_verb(gw.warn_obj_cnt, TRUE),
-                            glow_color(obj->oartifact));
+                    ConcatF2(bp, 1, ", %s %s)",
+                             glow_verb(gw.warn_obj_cnt, TRUE),
+                             glow_color(obj->oartifact));
                 else if (obj->lamplit && artifact_light(obj))
                     /* as above, overwrite known closing paren */
-                    Sprintf(eos(bp) - 1, ", %s lit)",
-                            arti_light_description(obj));
+                    ConcatF1(bp, 1, ", %s lit)",
+                             arti_light_description(obj));
             }
         }
     }
     if (obj->owornmask & W_SWAPWEP) {
         if (u.twoweap)
-            Sprintf(eos(bp), " (wielded in %s %s)",
-                    URIGHTY ? "left" : "right", body_part(HAND));
+            ConcatF2(bp, 0, " (wielded in %s %s)",
+                     URIGHTY ? "left" : "right", body_part(HAND));
         else
             /* TODO: rephrase this when obj isn't a weapon or weptool */
-            Sprintf(eos(bp), " (alternate weapon%s; not wielded)",
-                    plur(obj->quan));
+            ConcatF1(bp, 0, " (alternate weapon%s; not wielded)",
+                     plur(obj->quan));
     }
     if (obj->owornmask & W_QUIVER) {
+        int Qtyp;
+
         switch (obj->oclass) {
         case WEAPON_CLASS:
-            if (is_ammo(obj)) {
-                if (objects[obj->otyp].oc_skill == -P_BOW) {
-                    /* Ammo for a bow */
-                    Strcat(bp, " (in quiver)");
-                    break;
-                } else {
-                    /* Ammo not for a bow */
-                    Strcat(bp, " (in quiver pouch)");
-                    break;
-                }
-            } else {
-                /* Weapons not considered ammo */
-                Strcat(bp, " (at the ready)");
-                break;
-            }
-        /* Small things and ammo not for a bow */
+            Qtyp = !is_ammo(obj) ? 3 /* not ammo: "at the ready" */
+                   : (objects[obj->otyp].oc_skill != -P_BOW) ? 2 /* non-bow */
+                     : 1; /* ammo for a bow: "in quiver" */
+            break;
         case RING_CLASS:
         case AMULET_CLASS:
         case WAND_CLASS:
         case COIN_CLASS:
         case GEM_CLASS:
-            Strcat(bp, " (in quiver pouch)");
+            Qtyp = 2; /* small, non-bow: "in quiver pouch" */
             break;
         default: /* odd things */
-            Strcat(bp, " (at the ready)");
+            Qtyp = 3; /* "at the ready" */
+            break;
         }
+        ConcatF1(bp, 0, " (%s)",
+                 (Qtyp == 1) ? "in quiver"
+                 : (Qtyp == 2) ? "in quiver pouch"
+                   : "at the ready");
     }
+
     /* treat 'restoring' like suppress_price because shopkeeper and
        bill might not be available yet while restore is in progress
        (objects won't normally be formatted during that time, but if
@@ -1514,21 +1619,27 @@ doname_base(
     if (iflags.suppress_price || gp.program_state.restoring) {
         ; /* don't attempt to obtain any shop pricing, even if 'with_price' */
     } else if (is_unpaid(obj)) { /* in inventory or in container in invent */
+        char pricebuf[40];
         long quotedprice = unpaid_cost(obj, TRUE);
 
-        Sprintf(eos(bp), " (%s, %ld %s)",
-                obj->unpaid ? "unpaid" : "contents",
-                quotedprice, currency(quotedprice));
+        /* separately formatted suffix avoids need for ConcatF3() */
+        Sprintf(pricebuf, "%ld %s", quotedprice, currency(quotedprice));
+        ConcatF2(bp, 0, " (%s, %s)",
+                 obj->unpaid ? "unpaid" : "contents", pricebuf);
     } else if (with_price) { /* on floor or in container on floor */
         long price = get_cost_of_shop_item(obj, &nochrg);
 
-        if (price > 0L)
-            Sprintf(eos(bp), " (%s, %ld %s)",
-                    nochrg ? "contents" : "for sale",
-                    price, currency(price));
-        else if (nochrg > 0)
-            Sprintf(eos(bp), " (no charge)");
+        if (price > 0L) {
+            char pricebuf[40];
+
+            Sprintf(pricebuf, "%ld %s", price, currency(price));
+            ConcatF2(bp, 0, " (%s, %s)",
+                     nochrg ? "contents" : "for sale", pricebuf);
+        } else if (nochrg > 0) {
+            Concat(bp, 0, " (no charge)");
+        }
     }
+
     if (!strncmp(prefix, "a ", 2)) {
         /* save current prefix, without "a "; might be empty */
         Strcpy(tmpbuf, prefix + 2);
@@ -1538,12 +1649,60 @@ doname_base(
         Strcat(prefix, tmpbuf);
     }
 
-    /* show weight for items */
-    if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {
-        Sprintf(eos(bp), " {%d}", obj->owt);
+    /* show weight for items (debug tourist info);
+       "aum" is stolen from Crawl's "Arbitrary Unit of Measure" */
+    if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {        /* wizard mode user has asked to see object weights */
+        if (with_price && bp_eos[-1] == ')')
+            ConcatF1(bp, 1, ", %u aum)", obj->owt);
+        else
+            ConcatF1(bp, 0, " (%u aum)", obj->owt);
+
+        /* ConcatF1(bp) updates bp_eos and bpspaceleft but we're done
+           with them now; add a fake use so compiler won't complain
+           about a variable assignment that won't be subsequently used */
+        nhUse(bp_eos);
+        nhUse(bpspaceleft);
     }
-    
+
     bp = strprepend(bp, prefix);
+
+    /*
+     * Last gasp bounds check.
+     *
+     * If caller intends this to be for a menu entry, make sure that
+     * there is some room to combine with menu selector prefix without
+     * exceeding BUFSZ-1.
+     *
+     * offsetbp=4: width of menu entry selector text: "c - " for tty.
+     * For curses, that wastes a char since it only needs 3: "c) ".
+     *
+     * Reaching full BUFSZ-1 length can't happen unless both doname
+     * (BUFSZ-PREFIX) and strprepend (PREFIX) use up all available
+     * space or one of them overflows without being detected.
+     */
+    if (strlen(bp) > BUFSZ - 1) {
+        paniclog("doname", bp);
+        /* ideally this will never happen; if xnamep is any obuf[]
+           other than the last, overflow here would be relatively
+           benign and we could probably keep going */
+        panic("doname: long object description overflow.");
+        /*NOTREACHED*/
+    } else {
+        static int doname_full = 0;
+        int offsetbp = for_menu ? 4 : 0;
+
+        if (strlen(bp) + offsetbp >= BUFSZ - 1) {
+            /* for !offsetbp, we'll only get here if strlen(bp)==BUFSZ-1 */
+            if (!doname_full++) {
+                paniclog("doname", bp);
+                Sprintf(tmpbuf, "long object description%s.",
+                        offsetbp ? " truncated for menu use" : "");
+                paniclog("doname", tmpbuf);
+            }
+            bp[BUFSZ - 1 - offsetbp] = '\0';
+        }
+    }
+
     return bp;
 }
 
@@ -1623,8 +1782,7 @@ corpse_xname(
     const char *adjective,
     unsigned cxn_flags) /* bitmask of CXN_xxx values */
 {
-    /* some callers [aobjnam()] rely on prefix area that xname() sets aside */
-    char *nambuf = nextobuf() + PREFIX;
+    char *nambuf;
     int omndx = otmp->corpsenm;
     boolean ignore_quan = (cxn_flags & CXN_SINGULAR) != 0,
             /* suppress "the" from "the unique monster corpse" */
@@ -1638,6 +1796,10 @@ corpse_xname(
         possessive = FALSE,
         glob = (otmp->otyp != CORPSE && otmp->globby);
     const char *mnam;
+
+    /* some callers [aobjnam()] rely on prefix area that xname() sets aside */
+    gx.xnamep = nextobuf();
+    nambuf = gx.xnamep + PREFIX;
 
     if (glob) {
         mnam = OBJ_NAME(objects[otmp->otyp]); /* "glob of <monster>" */
@@ -4318,7 +4480,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         d->otmp = mksobj(GOLD_PIECE, FALSE, FALSE);
         d->otmp->quan = (long) d->cnt;
         d->otmp->owt = weight(d->otmp);
-        gc.context.botl = 1;
+        disp.botl = TRUE;
         return 3; /*return otmp;*/
     }
 
@@ -4905,7 +5067,7 @@ readobjnam(char *bp, struct obj *no_wish)
     case STATUE: /* otmp->cobj already done in mksobj() */
     case FIGURINE:
     case CORPSE: {
-        struct permonst *P = (d.mntmp >= LOW_PM) ? &mons[d.mntmp] : 0;
+        struct permonst *P = (ismnum(d.mntmp)) ? &mons[d.mntmp] : 0;
 
         d.otmp->spe = !P ? CORPSTAT_RANDOM
                       /* if neuter, force neuter regardless of wish request */
@@ -4945,7 +5107,7 @@ readobjnam(char *bp, struct obj *no_wish)
     }
 
     /* set otmp->corpsenm or dragon scale [mail] */
-    if (d.mntmp >= LOW_PM) {
+    if (ismnum(d.mntmp)) {
         int humanwere;
 
         if (d.mntmp == PM_LONG_WORM_TAIL)

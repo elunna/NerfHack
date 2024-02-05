@@ -190,6 +190,23 @@ struct debug_flags {
 #endif
 };
 
+struct accessibility_data {
+    boolean accessiblemsg; /* use msg_loc for plined messages */
+    coord msg_loc;         /* accessiblemsg: location */
+    boolean mon_notices;   /* msg when hero notices a monster */
+    int mon_notices_blocked; /* temp disable mon_notices */
+};
+
+/* Use notice_mon_off() / notice_mon_on() to temporarily disable
+   noticing the monsters in the vision code - perhaps the game
+   needs to output some other messages in between.
+   Call notice_all_mons() afterwards to catch up. */
+#define notice_mon_off() do { a11y.mon_notices_blocked++; } while(0)
+#define notice_mon_on()  do { if (--a11y.mon_notices_blocked < 0) { \
+            impossible("mon_notices_blocked<0");                    \
+            a11y.mon_notices_blocked = 0;                           \
+        } } while(0)
+
 /*
  * Stuff that really isn't option or platform related and does not
  * get saved and restored.  They are set and cleared during the game
@@ -337,8 +354,7 @@ struct instance_flags {
 #endif
     boolean cmdassist;       /* provide detailed assistance for some comnds */
     boolean fireassist;      /* autowield launcher when using fire-command */
-    boolean time_botl;       /* context.botl for 'time' (moves) only */
-    boolean invweight;       /* display weights of items in inventory */
+    boolean invweight;       /* display weight of everything in wizard mode */
     boolean wizmgender;      /* test gender info from core in window port */
     boolean msg_is_alert;    /* suggest windowport should grab player's attention
                               * and request <TAB> acknowlegement */
@@ -444,6 +460,7 @@ struct instance_flags {
 
 extern NEARDATA struct flag flags;
 extern NEARDATA struct instance_flags iflags;
+extern NEARDATA struct accessibility_data a11y;
 
 /* last_msg values
  * Usage:

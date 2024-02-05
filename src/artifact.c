@@ -70,7 +70,6 @@ static xint16 artidisco[NROFARTIFACTS];
 static const struct arti_info zero_artiexist = {0}; /* all bits zero */
 
 static void hack_artifacts(void);
-static boolean attacks(int, struct obj *);
 
 /* handle some special cases; must be called after u_init() */
 static void
@@ -549,7 +548,7 @@ restrict_name(struct obj *otmp, const char *name)
     return FALSE;
 }
 
-static boolean
+boolean
 attacks(int adtyp, struct obj *otmp)
 {
     const struct artifact *weap;
@@ -562,7 +561,7 @@ attacks(int adtyp, struct obj *otmp)
 boolean
 defends(int adtyp, struct obj *otmp)
 {
-    struct artifact *weap;
+    const struct artifact *weap;
 
     if (!otmp)
         return FALSE;
@@ -841,7 +840,7 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
                 EFlying |= wp_mask;
 
                 if (!already_flying) {
-                    gc.context.botl = TRUE; /* status: 'Fly' On */
+                    disp.botl = TRUE; /* status: 'Fly' On */
                     You("are now in flight.");
                 }
             }
@@ -850,7 +849,7 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
             EFlying &= ~wp_mask;
             float_vs_flight(); /* probably not needed here */
             if (was_flying && !Flying) {
-                gc.context.botl = TRUE; /* status: 'Fly' Off */
+                disp.botl = TRUE; /* status: 'Fly' Off */
                 You("%s.", (is_pool_or_lava(u.ux, u.uy)
                             || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
                                ? "stop flying"
@@ -1003,7 +1002,7 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
         return ((ptr->mflags2 & weap->mtype)
                 || (yours
                     && ((!Upolyd && (gu.urace.selfmask & weap->mtype))
-                        || ((weap->mtype & M2_WERE) && u.ulycn >= LOW_PM))));
+                        || ((weap->mtype & M2_WERE) && ismnum(u.ulycn)))));
     } else if (weap->spfx & SPFX_DALIGN) {
         return yours ? (u.ualign.type != weap->alignment)
                      : (ptr->maligntyp == A_NONE
@@ -1305,7 +1304,7 @@ Mb_hit(struct monst *magr, /* attacker */
                     u.uenmax--;
                     if (u.uen > 0)
                         u.uen--;
-                    gc.context.botl = TRUE;
+                    disp.botl = TRUE;
                     You("lose magical energy!");
                 }
             } else {
@@ -1320,7 +1319,7 @@ Mb_hit(struct monst *magr, /* attacker */
                     if (u.uenmax > u.uenpeak)
                         u.uenpeak = u.uenmax;
                     u.uen++;
-                    gc.context.botl = TRUE;
+                    disp.botl = TRUE;
                     You("absorb magical energy!");
                 }
             }
@@ -1896,7 +1895,7 @@ arti_invoke(struct obj *obj)
                 make_slimed(0L, (char *) 0);
             if (BlindedTimeout > creamed)
                 make_blinded(creamed, FALSE);
-            gc.context.botl = TRUE;
+            disp.botl = TRUE;
             break;
         }
         case ENERGY_BOOST: {
@@ -1908,7 +1907,7 @@ arti_invoke(struct obj *obj)
                 epboost = u.uenmax - u.uen;
             if (epboost) {
                 u.uen += epboost;
-                gc.context.botl = TRUE;
+                disp.botl = TRUE;
                 You_feel("re-energized.");
             } else
                 goto nothing_special;

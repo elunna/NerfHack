@@ -1,4 +1,4 @@
-/* NetHack 3.7	mkobj.c	$NHDT-Date: 1689180492 2023/07/12 16:48:12 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.272 $ */
+/* NetHack 3.7	mkobj.c	$NHDT-Date: 1704316444 2024/01/03 21:14:04 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.282 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -13,7 +13,6 @@ static void mksobj_init(struct obj *, boolean);
 static int item_on_ice(struct obj *);
 static void shrinking_glob_gone(struct obj *);
 static void obj_timer_checks(struct obj *, coordxy, coordxy, int);
-static void container_weight(struct obj *) NONNULLARG1;
 static struct obj *save_mtraits(struct obj *, struct monst *);
 static void objlist_sanity(struct obj *, int, const char *);
 static void shop_obj_sanity(struct obj *, const char *);
@@ -222,6 +221,8 @@ mkobj_erosions(struct obj *otmp)
     }
 }
 
+/* make a random object of class 'let' at a specific location;
+   'let' might be random class; place_object() will validate <x,y> */
 struct obj *
 mkobj_at(char let, coordxy x, coordxy y, boolean artif)
 {
@@ -232,8 +233,12 @@ mkobj_at(char let, coordxy x, coordxy y, boolean artif)
     return otmp;
 }
 
+/* make a specific object at a specific location */
 struct obj *
-mksobj_at(int otyp, coordxy x, coordxy y, boolean init, boolean artif)
+mksobj_at(
+    int otyp,
+    coordxy x, coordxy y,
+    boolean init, boolean artif)
 {
     struct obj *otmp;
 
@@ -242,12 +247,13 @@ mksobj_at(int otyp, coordxy x, coordxy y, boolean init, boolean artif)
     return otmp;
 }
 
+
+/* used for extra orctown loot */
 struct obj *
 mksobj_migr_to_species(
     int otyp,
-    unsigned int mflags2,
-    boolean init,
-    boolean artif)
+    unsigned mflags2,
+    boolean init, boolean artif)
 {
     struct obj *otmp;
 
@@ -373,6 +379,7 @@ mkbox_cnts(struct obj *box)
         }
         (void) add_to_container(box, otmp);
     }
+    /* caller will update box->owt */
 }
 
 /* select a random, common monster type */
@@ -855,8 +862,7 @@ unknow_object(struct obj *obj)
     obj->known = objects[obj->otyp].oc_uses_known ? 0 : 1;
 }
 
-/* do some initialization to a newly created object.
-   object otyp must be set. */
+/* do some initialization to newly created object; otyp must already be set */
 static void
 mksobj_init(struct obj *otmp, boolean artif)
 {
@@ -1147,7 +1153,7 @@ mksobj_init(struct obj *otmp, boolean artif)
             otmp->corpsenm = rndmonnum();
             if (!verysmall(&mons[otmp->corpsenm])
                 && rn2(level_difficulty() / 2 + 10) > 10)
-                (void) add_to_container(otmp,
+                (void) add_to_container(otmp, /* caller will update owt */
                                         mkobj(SPBOOK_no_NOVEL, FALSE));
         }
         /* boulder init'd below in the 'regardless of !init' code */
@@ -1888,7 +1894,7 @@ weight(struct obj *obj)
         struct obj *contents;
         int cwt;
 
-        if (obj->otyp == STATUE && obj->corpsenm >= LOW_PM) {
+        if (obj->otyp == STATUE && ismnum(obj->corpsenm)) {
             int msize = (int) mons[obj->corpsenm].msize, /* 0..7 */
                 minwt = (msize + msize + 1) * 100;
 
@@ -1930,7 +1936,7 @@ weight(struct obj *obj)
 
         return wt + cwt;
     }
-    if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM) {
+    if (obj->otyp == CORPSE && ismnum(obj->corpsenm)) {
         long long_wt = obj->quan * (long) mons[obj->corpsenm].cwt;
 
         wt = (long_wt > LARGEST_INT) ? LARGEST_INT : (int) long_wt;
@@ -1983,6 +1989,34 @@ mkgold(long amount, coordxy x, coordxy y)
     }
     gold->owt = weight(gold);
     return gold;
+}
+
+/* potions of oil use their obj->age field differently from other potions
+   so changing potion type to or from oil needs to have that fixed up */
+void
+fixup_oil(
+    struct obj *potion, /* potion that just had its otyp changed */
+    struct obj *source) /* item used to create potion; might be Null */
+{
+    if (potion->otyp == POT_OIL) {
+        if (source && source->otyp == POT_OIL) {
+            /* potion of oil being used to set potion's otyp to oil;
+               source might be partly used */
+            potion->age = source->age;
+        } else {
+            /* non-oil is being turned into oil; change absolute age
+               (turn created) into relative age (amount remaining /
+               burn time available) */
+            potion->age = MAX_OIL_IN_FLASK;
+        }
+    } else if (source && source->otyp == POT_OIL) {
+        /* potion is no longer oil, being turned into non-oil */
+        if (potion->age == source->age)
+            potion->age = gm.moves;
+        /* when source is a partly used oil, mark potion as diluted */
+        if (source->age < MAX_OIL_IN_FLASK)
+            potion->odiluted = 1;
+    }
 }
 
 /* return TRUE if the corpse has special timing;
@@ -2608,6 +2642,10 @@ add_to_minv(struct monst *mon, struct obj *obj)
 /*
  * Add obj to container, make sure obj is "free".  Returns (merged) obj.
  * The input obj may be deleted in the process.
+ *
+ * Caveat:  this does not update the container's weight [possibly to
+ * prevent that from being recalculated repeatedly when adding multiple
+ * items].
  */
 struct obj *
 add_to_container(struct obj *container, struct obj *obj)
@@ -2664,17 +2702,14 @@ add_to_buried(struct obj *obj)
     gl.level.buriedobjlist = obj;
 }
 
-/* Recalculate the weight of this container and all of _its_ containers. */
-static void
-container_weight(struct obj *container)
+/* recalculate weight of object, which doesn't have to be a container
+   itself; if it is contained, recursively handle _its_ container(s) */
+void
+container_weight(struct obj *object)
 {
-    container->owt = weight(container);
-    if (container->where == OBJ_CONTAINED)
-        container_weight(container->ocontainer);
-    /*
-        else if (container->where == OBJ_INVENT)
-        recalculate load delay here ???
-    */
+    object->owt = weight(object);
+    if (object->where == OBJ_CONTAINED)
+        container_weight(object->ocontainer);
 }
 
 /*
@@ -2758,10 +2793,14 @@ hornoplenty(
         consume_obj_charge(horn, !tipping);
         if (!rn2(13)) {
             obj = mkobj(POTION_CLASS, FALSE);
-            if (objects[obj->otyp].oc_magic)
+            if (objects[obj->otyp].oc_magic) {
                 do {
                     obj->otyp = rnd_class(POT_BOOZE, POT_WATER);
                 } while (obj->otyp == POT_SICKNESS);
+                /* oil uses obj->age field differently from other potions */
+                if (obj->otyp == POT_OIL)
+                    fixup_oil(obj, (struct obj *) NULL);
+            }
             what = (obj->quan > 1L) ? "Some potions" : "A potion";
         } else {
             obj = mkobj(FOOD_CLASS, FALSE);
