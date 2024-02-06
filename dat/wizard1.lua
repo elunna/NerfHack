@@ -55,7 +55,11 @@ local wiz1 = des.map({ halign = "center", valign = "center", map = [[
    -- The wizard and his guards
    des.monster({ id = "Wizard of Yendor", x=16, y=05, asleep=1 })
    des.monster("hell hound", 15, 05)
-   des.monster("vampire lord", 17, 05)
+   if percent(50) then
+        des.monster("vampire lord", 17, 05)
+   else
+        des.monster("vampire mage", 17, 05)
+   end
    -- The local treasure
    des.object("Book of the Dead", 16, 05)
    -- Surrounding terror
