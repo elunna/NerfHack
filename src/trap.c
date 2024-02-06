@@ -1184,6 +1184,8 @@ m_harmless_trap(struct monst *mtmp, struct trap *ttmp)
         break;
     case MAGIC_PORTAL:
         break;
+    case GREASE_TRAP:
+        break;
     case WEB:
         if (amorphous(mdat) || webmaker(mdat)
             || is_whirly(mdat) || unsolid(mdat))
