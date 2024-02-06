@@ -203,8 +203,8 @@ static NEARDATA struct artifact artilist[] = {
       MH_GIANT, PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM,
       200L, NO_COLOR, GIANTSLAYER),
 
-    A("Ogresmasher", WAR_HAMMER, (SPFX_RESTR | SPFX_DCLAS), 0, S_OGRE,
-      PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 200L,
+    A("Ogresmasher", WAR_HAMMER, (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0,
+      MH_OGRE, PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 200L,
       NO_COLOR, OGRESMASHER),
 
     A("Trollsbane", MORNING_STAR,

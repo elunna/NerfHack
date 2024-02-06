@@ -2468,7 +2468,7 @@
         M1_HUMANOID | M1_CARNIVORE,
         M2_STRONG | M2_GREEDY | M2_JEWELS | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
-        NO_RACE, 7, CLR_BROWN, OGRE),
+        MH_OGRE, 7, CLR_BROWN, OGRE),
     MON(NAMS("ogre lord", "ogre lady", "ogre leader"), S_OGRE,
          LVL(7, 12, 3, 30, -5), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6),
@@ -2476,7 +2476,7 @@
         SIZ(1700, 700, MS_GRUNT, MZ_LARGE), 0, 0, M1_HUMANOID | M1_CARNIVORE,
         M2_STRONG | M2_LORD | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
-        NO_RACE, 9, CLR_RED, OGRE_LEADER),
+        MH_OGRE, 9, CLR_RED, OGRE_LEADER),
     MON(NAMS("ogre king", "ogre queen", "ogre tyrant"), S_OGRE,
          LVL(9, 14, 1, 60, -7), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 5),
@@ -2484,7 +2484,7 @@
         SIZ(1700, 750, MS_GRUNT, MZ_LARGE), 0, 0, M1_HUMANOID | M1_CARNIVORE,
         M2_STRONG | M2_PRINCE | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK | M3_ACCURATE,
-        NO_RACE, 11, HI_LORD, OGRE_TYRANT),
+        MH_OGRE, 11, HI_LORD, OGRE_TYRANT),
     /*
      * Puddings
      *
