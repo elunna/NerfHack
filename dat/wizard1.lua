@@ -61,7 +61,7 @@ local wiz1 = des.map({ halign = "center", valign = "center", map = [[
    -- Surrounding terror
    des.monster("kraken", 14, 02)
    des.monster("giant eel", 17, 02)
-   des.monster("kraken", 13, 04)
+   des.monster("thing from below", 13, 04)
    des.monster("giant eel", 13, 06)
    des.monster("kraken", 19, 04)
    des.monster("giant eel", 19, 06)
