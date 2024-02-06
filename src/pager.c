@@ -493,6 +493,7 @@ look_at_monster(
                                         : (mW & MH_ELF & mh) ? "elf"
                                           : (mW & MH_ORC & mh) ? "orc"
                                             : (mW & MH_DEMON & mh) ? "demon"
+                                            : (mW & MH_DRAGON & mh) ? "dragon"
                                               : pmname(mtmp->data,
                                                        Mgender(mtmp)));
 

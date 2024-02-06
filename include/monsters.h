@@ -1638,7 +1638,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, CLR_GRAY, BABY_GRAY_DRAGON),
+        MH_DRAGON, 5, CLR_GRAY, BABY_GRAY_DRAGON),
     MON(NAM("baby gold dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, 4), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1647,7 +1647,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK,
         M3_INFRAVISIBLE,
-        NO_RACE, 5, HI_GOLD, BABY_GOLD_DRAGON),
+        MH_DRAGON, 5, HI_GOLD, BABY_GOLD_DRAGON),
     MON(NAM("baby silver dragon"), S_DRAGON,
         LVL(4, 9, 2, 40, 4), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1655,7 +1655,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, DRAGON_SILVER, BABY_SILVER_DRAGON),
+        MH_DRAGON, 5, DRAGON_SILVER, BABY_SILVER_DRAGON),
 #if 0 /* DEFERRED */
     /* [see "shimmering dragon" below] */
     MON(NAM("baby shimmering dragon"), S_DRAGON,
@@ -1665,7 +1665,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, CLR_CYAN, BABY_SHIMMERING_DRAGON),
+        MH_DRAGON, 5, CLR_CYAN, BABY_SHIMMERING_DRAGON),
 #endif
     MON(NAM("baby red dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, -4), (G_GENO | 2),
@@ -1675,7 +1675,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK,
         M3_INFRAVISIBLE | M3_BERSERK,
-        NO_RACE, 5, CLR_RED, BABY_RED_DRAGON),
+        MH_DRAGON, 5, CLR_RED, BABY_RED_DRAGON),
     MON(NAM("baby white dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, -4), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1683,7 +1683,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), MR_COLD, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, CLR_WHITE, BABY_WHITE_DRAGON),
+        MH_DRAGON, 5, CLR_WHITE, BABY_WHITE_DRAGON),
     MON(NAM("baby orange dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, -5), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1691,7 +1691,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), MR_SLEEP, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, CLR_ORANGE, BABY_ORANGE_DRAGON),
+        MH_DRAGON, 5, CLR_ORANGE, BABY_ORANGE_DRAGON),
     MON(NAM("baby black dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, -6), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1699,7 +1699,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), MR_DISINT, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, CLR_BLACK, BABY_BLACK_DRAGON),
+        MH_DRAGON, 5, CLR_BLACK, BABY_BLACK_DRAGON),
     MON(NAM("baby blue dragon"), S_DRAGON,
         LVL(4, 12, 2, 10, -7), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1707,7 +1707,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), MR_ELEC, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, CLR_BLUE, BABY_BLUE_DRAGON),
+        MH_DRAGON, 5, CLR_BLUE, BABY_BLUE_DRAGON),
     MON(NAM("baby green dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, -6), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1715,7 +1715,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), MR_POISON, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_POIS,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, CLR_GREEN, BABY_GREEN_DRAGON),
+        MH_DRAGON, 5, CLR_GREEN, BABY_GREEN_DRAGON),
     MON(NAM("baby yellow dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, -7), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1723,7 +1723,7 @@
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), MR_ACID | MR_STONE, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_ACID,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
-        NO_RACE, 5, CLR_YELLOW, BABY_YELLOW_DRAGON),
+        MH_DRAGON, 5, CLR_YELLOW, BABY_YELLOW_DRAGON),
     MON(NAM("gray dragon"), S_DRAGON,
         LVL(18, 20, -4, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_MAGM, 4, 6),
@@ -1737,7 +1737,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, CLR_GRAY, GRAY_DRAGON),
+        MH_DRAGON, 25, CLR_GRAY, GRAY_DRAGON),
     /* gold dragon can be seen via infravision but doesn't have infravision */
     MON(NAM("gold dragon"), S_DRAGON,
         LVL(18, 20, -4, 20, 4), (G_GENO | 2),
@@ -1752,7 +1752,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         M3_INFRAVISIBLE,
-        NO_RACE, 25, HI_GOLD, GOLD_DRAGON),
+        MH_DRAGON, 25, HI_GOLD, GOLD_DRAGON),
     MON(NAM("silver dragon"), S_DRAGON,
         LVL(18, 20, -1, 95, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_COLD, 4, 6),
@@ -1766,7 +1766,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, DRAGON_SILVER, SILVER_DRAGON),
+        MH_DRAGON, 25, DRAGON_SILVER, SILVER_DRAGON),
 #if 0 /* DEFERRED */
     /* shimmering scales/scale-mail would confer displacement when worn by
        the hero, so shimmering dragon ought to be displaced (hero who can
@@ -1785,7 +1785,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, CLR_CYAN, SHIMMERING_DRAGON),
+        MH_DRAGON, 25, CLR_CYAN, SHIMMERING_DRAGON),
 #endif
     /* red dragon has infravision and can be seen via infravision */
     MON(NAM("red dragon"), S_DRAGON,
@@ -1801,7 +1801,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         M3_INFRAVISION | M3_INFRAVISIBLE | M3_BERSERK,
-        NO_RACE, 25, CLR_RED, RED_DRAGON),
+        MH_DRAGON, 25, CLR_RED, RED_DRAGON),
     MON(NAM("white dragon"), S_DRAGON,
         LVL(18, 20, -4, 20, -5), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_COLD, 4, 6),
@@ -1815,7 +1815,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, CLR_WHITE, WHITE_DRAGON),
+        MH_DRAGON, 25, CLR_WHITE, WHITE_DRAGON),
     MON(NAM("orange dragon"), S_DRAGON,
         LVL(18, 20, -4, 20, -5), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_SLEE, 4, 25),
@@ -1829,7 +1829,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, CLR_ORANGE, ORANGE_DRAGON),
+        MH_DRAGON, 25, CLR_ORANGE, ORANGE_DRAGON),
     /* disintegration breath is actually all or nothing, not 1d255 */
     MON(NAM("black dragon"), S_DRAGON,
         LVL(18, 20, -4, 20, -6), (G_GENO | 2),
@@ -1844,7 +1844,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, CLR_BLACK, BLACK_DRAGON),
+        MH_DRAGON, 25, CLR_BLACK, BLACK_DRAGON),
     MON(NAM("blue dragon"), S_DRAGON,
         LVL(18, 24, -4, 20, -7), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_ELEC, 4, 6),
@@ -1858,7 +1858,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, CLR_BLUE, BLUE_DRAGON),
+        MH_DRAGON, 25, CLR_BLUE, BLUE_DRAGON),
     MON(NAM("green dragon"), S_DRAGON,
         LVL(18, 20, -4, 20, -6), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_DRST, 4, 6),
@@ -1872,7 +1872,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, CLR_GREEN, GREEN_DRAGON),
+        MH_DRAGON, 25, CLR_GREEN, GREEN_DRAGON),
     MON(NAM("yellow dragon"), S_DRAGON,
         LVL(18, 20, -4, 20, -7), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_ACID, 4, 6),
@@ -1887,7 +1887,7 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
-        NO_RACE, 25, CLR_YELLOW, YELLOW_DRAGON),
+        MH_DRAGON, 25, CLR_YELLOW, YELLOW_DRAGON),
     /*
      * Elementals
      */
@@ -4272,7 +4272,7 @@
         M2_NOPOLY | M2_HOSTILE | M2_FEMALE | M2_STALK | M2_STRONG | M2_NASTY
             | M2_GREEDY | M2_JEWELS | M2_MAGIC,
         M3_WANTSARTI | M3_WAITFORU | M3_INFRAVISION | M3_INFRAVISIBLE,
-        NO_RACE, 23, HI_LORD, CHROMATIC_DRAGON),
+        MH_DRAGON, 23, HI_LORD, CHROMATIC_DRAGON),
 #if 0 /* OBSOLETE -- nemesis for 3.1.x/3.2.x elf quest when elf was a role */
     MON(NAM("Goblin King"), S_ORC,
         LVL(15, 12, 10, 0, -15), (G_NOGEN | G_UNIQ),
@@ -4313,7 +4313,7 @@
         M2_NOPOLY | M2_MALE | M2_PNAME | M2_HOSTILE | M2_STRONG | M2_NASTY
             | M2_STALK | M2_GREEDY | M2_JEWELS | M2_MAGIC,
         M3_WANTSARTI | M3_WAITFORU | M3_INFRAVISIBLE,
-        NO_RACE, 22, CLR_RED, IXOTH),
+        MH_DRAGON, 22, CLR_RED, IXOTH),
     MON(NAM("Master Kaen"), S_HUMAN,
         LVL(25, 12, -10, 10, -20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_CLAW, AD_PHYS, 16, 2),

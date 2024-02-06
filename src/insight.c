@@ -1617,6 +1617,7 @@ attributes_enlightenment(
         Sprintf(buf, "aware of the presence of %s",
                 (gc.context.warntype.obj & MH_ORC) ? "orcs"
                 : (gc.context.warntype.obj & MH_ELF) ? "elves"
+                : (gc.context.warntype.obj & MH_DRAGON) ? "dragons"
                 : (gc.context.warntype.obj & MH_DEMON) ? "demons" : something);
         you_are(buf, from_what(WARN_OF_MON));
     }
