@@ -1554,7 +1554,7 @@
         SIZ(30, 30, MS_ATHOL, MZ_MEDIUM), 0, 0,
         M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_WANDER | M2_HOSTILE | M2_FLANK, M3_INFRAVISIBLE,
-        10, CLR_GRAY, ATHOL),
+        8, CLR_GRAY, ATHOL),
     MON(NAM("byakhee"), S_BAT,
         LVL(11, 20, 1, 25, -4), (G_GENO | 2 | G_SGROUP),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
