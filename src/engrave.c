@@ -9,7 +9,8 @@
 struct _doengrave_ctx {
     boolean dengr;    /* TRUE if we wipe out the current engraving */
     boolean doblind;  /* TRUE if engraving blinds the player */
-    boolean doknown;  /* TRUE if we identify the stylus */
+    boolean preknown;  /* TRUE if we identify the stylus before */
+    boolean postknown;  /* TRUE if we identify the stylus after */
     boolean eow;      /* TRUE if we are overwriting oep */
     boolean jello;    /* TRUE if we are engraving in slime */
     boolean ptext;    /* TRUE if we must prompt for engrave text */
@@ -498,6 +499,8 @@ doengrave_ctx_init(struct _doengrave_ctx *de)
 {
     de->dengr = FALSE;
     de->doblind = FALSE;
+    de->preknown = FALSE;
+    de->postknown = FALSE;
     de->eow = FALSE;
     de->jello = FALSE;
     de->ptext = TRUE;
@@ -552,20 +555,20 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_STRIKING:
         Strcpy(de->post_engr_text,
                "The wand unsuccessfully fights your attempt to write!");
-        de->doknown = TRUE;
+        de->postknown = TRUE;
         break;
     case WAN_SLOW_MONSTER:
         if (!Blind) {
             Sprintf(de->post_engr_text, "The bugs on the %s slow down!",
                     surface(u.ux, u.uy));
-            de->doknown = TRUE;
+            de->postknown = TRUE;
         }
         break;
     case WAN_SPEED_MONSTER:
         if (!Blind) {
             Sprintf(de->post_engr_text, "The bugs on the %s speed up!",
                     surface(u.ux, u.uy));
-            de->doknown = TRUE;
+            de->postknown = TRUE;
         }
         break;
     case WAN_POLYMORPH:
@@ -573,7 +576,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             if (!Blind) {
                 de->type = (xint16) 0; /* random */
                 (void) random_engraving(de->buf);
-                de->doknown = TRUE;
+                de->preknown = TRUE;
             } else {
                 /* keep the same type so that feels don't
                    change and only the text is altered,
@@ -588,14 +591,14 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
         break;
     case WAN_PROBING:
         Sprintf(de->post_engr_text, "You probe the bugs on the floor.");
-        de->doknown = TRUE;
+        de->postknown = TRUE;
         break;
     case WAN_UNDEAD_TURNING:
         if (!Blind) {
             Sprintf(de->post_engr_text,
                     "The dead bugs on the %s start moving!",
                     surface(u.ux, u.uy));
-            de->doknown = TRUE;
+            de->postknown = TRUE;
         }
         break;
     case WAN_NOTHING:
@@ -606,11 +609,14 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_MAGIC_MISSILE:
         de->ptext = TRUE;
         if (!Blind) {
-            Sprintf(de->post_engr_text,
-                    "The %s is riddled by bullet holes!",
+            Sprintf(de->post_engr_text, "The %s is riddled by bullet holes!",
                     surface(u.ux, u.uy));
+            de->postknown = TRUE;
+        } else if (!Deaf) {
+            Sprintf(de->post_engr_text, Hallucination ? "You hear fireworks!"
+                                                      : "You hear gun fire!");
+            de->postknown = TRUE;
         }
-        de->doknown = TRUE;
         break;
         /* can't tell sleep from death - Eric Backus */
     case WAN_SLEEP:
@@ -619,31 +625,29 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             Sprintf(de->post_engr_text, "The bugs on the %s stop moving!",
                     surface(u.ux, u.uy));
             /* automatically use the process of elimination */
-            if (objects[WAN_SLEEP].oc_name_known 
+            if (objects[WAN_SLEEP].oc_name_known
                 || objects[WAN_DEATH].oc_name_known) {
-                de->doknown = TRUE;
+                de->postknown = TRUE;
             }
         }
         break;
     case WAN_POISON_GAS:
         if (Hallucination)
-            Sprintf(de->post_engr_text,
-                    "The bugs on the %s cough!", surface(u.ux, u.uy));
+            Sprintf(de->post_engr_text, "The bugs on the %s cough!",
+                    surface(u.ux, u.uy));
         else if (!Blind)
-            Sprintf(de->post_engr_text,
-                    "The bugs on the %s stop moving!", surface(u.ux, u.uy));
+            Sprintf(de->post_engr_text, "The bugs on the %s stop moving!",
+                    surface(u.ux, u.uy));
         else if (!Deaf)
-            Strcpy(de->post_engr_text,
-                   "Something sprays from the wand.");
+            Strcpy(de->post_engr_text, "Something sprays from the wand.");
         create_gas_cloud(u.ux, u.uy, 1, 4);
-        de->doknown = TRUE;
+        de->postknown = TRUE;
         break;
     case WAN_COLD:
         if (!Blind)
-            Strcpy(de->post_engr_text,
-                   "A few ice cubes drop from the wand.");
+            Strcpy(de->post_engr_text, "A few ice cubes drop from the wand.");
         /* Doesn't matter if we are blind or not, we can feel the cold */
-        de->doknown = TRUE;
+        de->postknown = TRUE;
         if (!de->oep || (de->oep->engr_type != BURN))
             break;
         /*FALLTHRU*/
@@ -658,7 +662,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
                      && objects[WAN_CANCELLATION].oc_name_known)
                     || (objects[WAN_TELEPORTATION].oc_name_known
                         && objects[WAN_MAKE_INVISIBLE].oc_name_known))
-                    de->doknown = TRUE;
+                    de->preknown = TRUE;
             }
             de->dengr = TRUE;
         }
@@ -669,9 +673,9 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
                 pline_The("engraving on the %s vanishes!",
                           surface(u.ux, u.uy));
                 /* automatically use the process of elimination */
-                if (objects[WAN_CANCELLATION].oc_name_known &&
-                    objects[WAN_MAKE_INVISIBLE].oc_name_known)
-                    de->doknown = TRUE;
+                if (objects[WAN_CANCELLATION].oc_name_known
+                    && objects[WAN_MAKE_INVISIBLE].oc_name_known)
+                    de->preknown = TRUE;
             }
             de->teleengr = TRUE;
         }
@@ -683,21 +687,17 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
         if (!objects[de->otmp->otyp].oc_name_known) {
             if (flags.verbose)
                 pline("This %s is a wand of digging!", xname(de->otmp));
-            de->doknown = TRUE;
+            de->preknown = TRUE;
         }
         Strcpy(de->post_engr_text,
-               (Blind && !Deaf)
-               ? "You hear drilling!"    /* Deaf-aware */
-               : Blind
-                  ? "You feel tremors."
-                  : IS_GRAVE(levl[u.ux][u.uy].typ)
-                     ? "Chips fly out from the headstone."
-                     : de->frosted
-                        ? "Ice chips fly up from the ice surface!"
-                        : (gl.level.locations[u.ux][u.uy].typ
-                          == DRAWBRIDGE_DOWN)
-                           ? "Splinters fly up from the bridge."
-                           : "Gravel flies up from the floor.");
+               (Blind && !Deaf) ? "You hear drilling!" /* Deaf-aware */
+               : Blind          ? "You feel tremors."
+               : IS_GRAVE(levl[u.ux][u.uy].typ)
+                   ? "Chips fly out from the headstone."
+               : de->frosted ? "Ice chips fly up from the ice surface!"
+               : (gl.level.locations[u.ux][u.uy].typ == DRAWBRIDGE_DOWN)
+                   ? "Splinters fly up from the bridge."
+                   : "Gravel flies up from the floor.");
         break;
         /* type = BURN wands */
     case WAN_FIRE:
@@ -706,7 +706,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
         if (!objects[de->otmp->otyp].oc_name_known) {
             if (flags.verbose)
                 pline("This %s is a wand of fire!", xname(de->otmp));
-            de->doknown = TRUE;
+            de->preknown = TRUE;
         }
         Strcpy(de->post_engr_text, Blind ? "You feel the wand heat up."
                                          : "Flames fly from the wand.");
@@ -717,15 +717,31 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
         if (!objects[de->otmp->otyp].oc_name_known) {
             if (flags.verbose)
                 pline("This %s is a wand of lightning!", xname(de->otmp));
-            de->doknown = TRUE;
+            de->preknown = TRUE;
         }
         if (!Blind) {
             Strcpy(de->post_engr_text, "Lightning arcs from the wand.");
             de->doblind = TRUE;
         } else {
-            Strcpy(de->post_engr_text, !Deaf
-                   ? "You hear crackling!"     /* Deaf-aware */
-                   : "Your hair stands up!");
+            Strcpy(de->post_engr_text,
+                   !Deaf ? "You hear crackling!" /* Deaf-aware */
+                         : "Your hair stands up!");
+        }
+        break;
+    case WAN_CORROSION:
+        de->ptext = TRUE;
+        de->type = BURN;
+        if (!Blind) {
+            Sprintf(de->post_engr_text,
+                    "The bugs on the %s seem to be covered with goo!",
+                    surface(u.ux, u.uy));
+            if (!objects[de->otmp->otyp].oc_name_known) {
+                if (flags.verbose)
+                    pline("This %s is a wand of corrosion!", xname(de->otmp));
+                de->preknown = TRUE;
+            }
+        } else if (!Deaf) {
+            Sprintf(de->post_engr_text, "Something sprays from the wand.");
         }
         break;
         /* type = MARK wands */
@@ -1030,7 +1046,7 @@ doengrave(void)
      */
 
     /* Identify stylus */
-    if (de->doknown) {
+    if (de->preknown) {
         learnwand(de->otmp);
         if (objects[de->otmp->otyp].oc_name_known)
             more_experienced(0, 10);
@@ -1210,8 +1226,14 @@ doengrave(void)
     gc.context.engraving.actionct = 0;
     set_occupation(engrave, "engraving", 0);
 
-    if (de->post_engr_text[0])
+    if (de->post_engr_text[0]) {
         pline("%s", de->post_engr_text);
+        if (de->postknown) {
+            learnwand(de->otmp);
+            if (objects[de->otmp->otyp].oc_name_known)
+                more_experienced(0, 10);
+        }
+    }
     if (de->doblind && !resists_blnd(&gy.youmonst)) {
         You("are blinded by the flash!");
         make_blinded((long) rnd(50), FALSE);
