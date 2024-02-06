@@ -1313,7 +1313,7 @@ nhattr2curses(int attrmask)
     if (attrmask & HL_DIM)
         result |= A_DIM;
     if (attrmask & HL_ITALIC)
-        result |= A_ITALIC;
+        result |= A_UNDERLINE; /* Was A_ITALIC but the value is duplicated */
     if (attrmask & HL_ULINE)
         result |= A_UNDERLINE;
     if (attrmask & HL_BLINK)
