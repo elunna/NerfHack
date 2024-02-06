@@ -2393,6 +2393,7 @@ Sting_effects(int orc_count) /* new count (warn_obj_cnt is old count); -1 is a f
         || u_wield_art(ART_GIANTSLAYER)
         || u_wield_art(ART_OGRESMASHER)
         || u_wield_art(ART_TROLLSBANE)
+        || u_wield_art(ART_VORPAL_BLADE)
         || u_wield_art(ART_DISRUPTER)) {
         int oldstr = glow_strength(gw.warn_obj_cnt),
             newstr = glow_strength(orc_count);

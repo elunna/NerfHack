@@ -216,9 +216,10 @@ static NEARDATA struct artifact artilist[] = {
      *      2) doesn't give unusual message for 2-headed monsters (but
      *      allowing those at all causes more problems than worth the effort).
      */
-    A("Vorpal Blade", LONG_SWORD, (SPFX_RESTR | SPFX_BEHEAD | SPFX_SEEINV), 
-      0, 0, PHYS(5, 1), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 4000L,
-      NO_COLOR, VORPAL_BLADE),
+    A("Vorpal Blade", LONG_SWORD,
+      (SPFX_RESTR | SPFX_BEHEAD | SPFX_SEEINV | SPFX_WARN | SPFX_DFLAGH), 
+      0, MH_JABBERWOCK, PHYS(5, 1), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM,
+      NON_PM, 4000L, CLR_RED, VORPAL_BLADE),
     
     A("Disrupter", MACE, (SPFX_RESTR | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       PHYS(5, 30), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 500L,

@@ -496,6 +496,7 @@ look_at_monster(
                                         : (mW & MH_DRAGON & mh) ? "dragon"
                                         : (mW & MH_TROLL & mh) ? "troll"
                                         : (mW & MH_OGRE & mh) ? "ogre"
+                                        : (mW & MH_JABBERWOCK & mh) ? "jabberwocks"
                                         : pmname(mtmp->data, Mgender(mtmp)));
 
                     Sprintf(eos(monbuf), "warned of %s", makeplural(whom));

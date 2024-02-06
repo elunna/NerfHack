@@ -1621,7 +1621,9 @@ attributes_enlightenment(
                 : (gc.context.warntype.obj & MH_DEMON) ? "demons"
                 : (gc.context.warntype.obj & MH_DRAGON) ? "dragons"
                 : (gc.context.warntype.obj & MH_TROLL) ? "trolls"
-                : (gc.context.warntype.obj & MH_OGRE) ? "ogres" : something);
+                : (gc.context.warntype.obj & MH_OGRE) ? "ogres" 
+                : (gc.context.warntype.obj & MH_JABBERWOCK) ? "jabberwocks"
+                                                            : something);
         you_are(buf, from_what(WARN_OF_MON));
     }
     if (Warn_of_mon && gc.context.warntype.polyd) {
@@ -1643,6 +1645,8 @@ attributes_enlightenment(
                     ? "trolls"
                     : (gc.context.warntype.polyd & MH_OGRE)
                     ? "ogres"
+                    : (gc.context.warntype.polyd & MH_JABBERWOCK)
+                    ? "jabberwocks"
                     : "certain monsters");
         you_are(buf, "");
     }

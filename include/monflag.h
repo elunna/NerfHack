@@ -193,6 +193,7 @@ enum ms_sounds {
 #define MH_DRAGON       0x00001000L
 #define MH_TROLL        0x00002000L
 #define MH_OGRE         0x00004000L
+#define MH_JABBERWOCK   0x00008000L
 
 #define MH_ANY          0x80000000L
 
