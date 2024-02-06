@@ -12,9 +12,7 @@
 
 #include <ctype.h>
 
-#ifndef A_ITALIC
 #define A_ITALIC A_UNDERLINE
-#endif
 
 /* Misc. curses interface functions */
 
