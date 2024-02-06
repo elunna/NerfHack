@@ -2379,13 +2379,21 @@ glow_verb(int count, /* 0 means blind rather than no applicable creatures */
     return resbuf;
 }
 
-/* use for warning "glow" for Sting, Orcrist, and Grimtooth */
+/* use for warning "glow" for Sting, Orcrist, and Grimtooth.
+* (actually, all banes are included now) */
 void
 Sting_effects(int orc_count) /* new count (warn_obj_cnt is old count); -1 is a flag value */
 {
     if (u_wield_art(ART_STING)
         || u_wield_art(ART_ORCRIST)
-        || u_wield_art(ART_GRIMTOOTH)) {
+        || u_wield_art(ART_GRIMTOOTH)
+        || u_wield_art(ART_DRAGONBANE)
+        || u_wield_art(ART_DEMONBANE)
+        || u_wield_art(ART_WEREBANE)
+        || u_wield_art(ART_GIANTSLAYER)
+        || u_wield_art(ART_OGRESMASHER)
+        || u_wield_art(ART_TROLLSBANE)
+        || u_wield_art(ART_DISRUPTER)) {
         int oldstr = glow_strength(gw.warn_obj_cnt),
             newstr = glow_strength(orc_count);
 

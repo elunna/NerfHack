@@ -104,7 +104,7 @@ static NEARDATA struct artifact artilist[] = {
     
     A("Hellfire", CROSSBOW, (SPFX_RESTR | SPFX_DEFN), 0, 0, 
       PHYS(5, 7), DFNS(AD_FIRE), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 
-      4000L, CLR_RED, HELLFIRE),
+      4000L, NO_COLOR, HELLFIRE),
     /* Auto-explode code in dothrow.c, mthrowu.c
      * Extra damage handled in uhitm.c */
    
@@ -148,7 +148,7 @@ static NEARDATA struct artifact artilist[] = {
     /* Shield of King Arthur. */
     A("Pridwen", LARGE_SHIELD, (SPFX_RESTR | SPFX_HPHDAM | SPFX_DEFN), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
-      CLR_MAGENTA, PRIDWEN),
+      NO_COLOR, PRIDWEN),
     
     A("Doomblade", ORCISH_SHORT_SWORD, SPFX_RESTR, 0, 0, PHYS(0, 20), 
       NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 1000L, NO_COLOR, 
@@ -189,11 +189,11 @@ static NEARDATA struct artifact artilist[] = {
 
     A("Demonbane", MACE, (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_DEMON,
       PHYS(5, 0), NO_DFNS, NO_CARY, BANISH, A_LAWFUL, PM_CLERIC, NON_PM, 2500L,
-      CLR_WHITE, DEMONBANE),
+      CLR_RED, DEMONBANE),
 
     A("Werebane", SILVER_SABER, (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0,
       MH_WERE, PHYS(5, 0), DFNS(AD_WERE), NO_CARY, 0, A_NONE, NON_PM, NON_PM,
-      1500L, NO_COLOR, WEREBANE),
+      1500L, CLR_RED, WEREBANE),
 
     A("Grayswandir", SILVER_SABER, (SPFX_RESTR | SPFX_HALRES), 0, 0,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 8000L,
@@ -201,16 +201,16 @@ static NEARDATA struct artifact artilist[] = {
 
     A("Giantslayer", SPEAR, (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0,
       MH_GIANT, PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM,
-      200L, NO_COLOR, GIANTSLAYER),
+      200L, CLR_RED, GIANTSLAYER),
 
     A("Ogresmasher", WAR_HAMMER, (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0,
       MH_OGRE, PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 200L,
-      NO_COLOR, OGRESMASHER),
+      CLR_RED, OGRESMASHER),
 
     A("Trollsbane", MORNING_STAR,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_REGEN | SPFX_WARN), 0, 
       MH_TROLL, PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 1000L,
-      NO_COLOR, TROLLSBANE),
+      CLR_RED, TROLLSBANE),
     /*
      *      Two problems:  1) doesn't let trolls regenerate heads,
      *      2) doesn't give unusual message for 2-headed monsters (but
@@ -222,14 +222,14 @@ static NEARDATA struct artifact artilist[] = {
     
     A("Disrupter", MACE, (SPFX_RESTR | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       PHYS(5, 30), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 500L,
-      NO_COLOR, DISRUPTER),
+      CLR_RED, DISRUPTER),
     /*
      *Quarterstaff that grants teleport control, and also greatly increases
      * spellcasting ability (as a robe).
      */
     A("Origin", QUARTERSTAFF, (SPFX_RESTR | SPFX_TCTRL), 0, 0,
       PHYS(2, 6), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
-      CLR_MAGENTA, ORIGIN),
+      NO_COLOR, ORIGIN),
     
     /*
      *      Ah, never shall I forget the cry,
