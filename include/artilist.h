@@ -208,7 +208,7 @@ static NEARDATA struct artifact artilist[] = {
       NO_COLOR, OGRESMASHER),
 
     A("Trollsbane", MORNING_STAR,
-      (SPFX_RESTR | SPFX_DCLAS | SPFX_REGEN | SPFX_WARN), 0, 
+      (SPFX_RESTR | SPFX_DFLAGH | SPFX_REGEN | SPFX_WARN), 0, 
       MH_TROLL, PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 1000L,
       NO_COLOR, TROLLSBANE),
     /*
