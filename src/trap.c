@@ -1148,6 +1148,7 @@ m_harmless_trap(struct monst *mtmp, struct trap *ttmp)
     case SQKY_BOARD:
         break;
     case BEAR_TRAP:
+    case SPEAR_TRAP:
         if (mdat->msize <= MZ_SMALL || amorphous(mdat)
             || is_whirly(mdat) || unsolid(mdat))
             return TRUE;
@@ -1168,6 +1169,8 @@ m_harmless_trap(struct monst *mtmp, struct trap *ttmp)
         if (resists_fire(mtmp) || defended(mtmp, AD_FIRE))
             return TRUE;
         break;
+    case COLD_TRAP:
+        break; /* Affects cold resistant monsters too */ 
     case PIT:
         /*FALLTHRU*/
     case SPIKED_PIT:
@@ -1201,6 +1204,8 @@ m_harmless_trap(struct monst *mtmp, struct trap *ttmp)
         break;
     case POLY_TRAP:
         break;
+    case MAGIC_BEAM_TRAP:
+        return TRUE; /* usually */
     case VIBRATING_SQUARE:
         return TRUE;
     default:
