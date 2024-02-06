@@ -3883,7 +3883,7 @@
     /* trivia:  before monster corspes were implemented, "lizard corpse"
        was a specific type of item */
     MON(NAM("lizard"), S_LIZARD,
-        LVL(5, 6, 6, 10, 0), (G_GENO | 5),
+        LVL(5, 6, 6, 10, 0), (G_GENO | 4),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(10, 40, MS_SILENT, MZ_TINY), MR_STONE, MR_STONE,
