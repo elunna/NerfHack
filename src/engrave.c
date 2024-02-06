@@ -613,8 +613,9 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
                     surface(u.ux, u.uy));
             de->postknown = TRUE;
         } else if (!Deaf) {
-            Sprintf(de->post_engr_text, Hallucination ? "You hear fireworks!"
-                                                      : "You hear gun fire!");
+            Sprintf(de->post_engr_text, "You hear %s", Hallucination 
+                                                           ? "fireworks!"
+                                                           : "gunfire!");
             de->postknown = TRUE;
         }
         break;
