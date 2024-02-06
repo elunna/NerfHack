@@ -139,6 +139,9 @@
 #define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] || \
                        (ptr) == &mons[PM_VROCK])
 #define is_giant(ptr) (((ptr)->mflags2 & M2_GIANT) != 0L)
+#define is_ettin(ptr) \
+    ((ptr) == &mons[PM_ETTIN] || (ptr) == &mons[PM_ETTIN_MUMMY] \
+     || (ptr) == &mons[PM_ETTIN_ZOMBIE])
 #define is_golem(ptr) ((ptr)->mlet == S_GOLEM)
 #define is_zombie(ptr) \
     ((ptr)->mlet == S_ZOMBIE && !is_not_zombie(ptr))
