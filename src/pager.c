@@ -491,11 +491,10 @@ look_at_monster(
                                   mh = mtmp->data->mhflags;
                     const char *whom = ((mW & MH_HUMAN & mh) ? "human"
                                         : (mW & MH_ELF & mh) ? "elf"
-                                          : (mW & MH_ORC & mh) ? "orc"
-                                            : (mW & MH_DEMON & mh) ? "demon"
-                                            : (mW & MH_DRAGON & mh) ? "dragon"
-                                              : pmname(mtmp->data,
-                                                       Mgender(mtmp)));
+                                        : (mW & MH_ORC & mh) ? "orc"
+                                        : (mW & MH_DEMON & mh) ? "demon"
+                                        : (mW & MH_DRAGON & mh) ? "dragon"
+                                        : pmname(mtmp->data, Mgender(mtmp)));
 
                     Sprintf(eos(monbuf), "warned of %s", makeplural(whom));
                 }
