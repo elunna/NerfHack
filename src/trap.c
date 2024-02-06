@@ -5182,9 +5182,9 @@ water_damage(
                                  "Some scrolls disintegrate.");
             setnotworn(obj);
             delobj(obj);
-            return ER_DESTROYED;
             if (in_invent)
                 update_inventory();
+            return ER_DESTROYED;
         }
         
         if (in_invent)
