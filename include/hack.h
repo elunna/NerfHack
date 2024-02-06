@@ -1066,8 +1066,8 @@ typedef struct {
 
 #define MATCH_WARN_OF_MON(mon) \
     (Warn_of_mon                                                        \
-     && ((gc.context.warntype.obj & (mon)->data->mflags2) != 0           \
-         || (gc.context.warntype.polyd & (mon)->data->mflags2) != 0      \
+     && ((gc.context.warntype.obj & (mon)->data->mhflags) != 0           \
+         || (gc.context.warntype.polyd & (mon)->data->mhflags) != 0      \
          || (gc.context.warntype.species                                 \
              && (gc.context.warntype.species == (mon)->data))))
 

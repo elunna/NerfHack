@@ -2297,7 +2297,7 @@ polysense(void)
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
     case PM_VAMPIRE_MAGE:
-        gc.context.warntype.polyd = M2_HUMAN | M2_ELF;
+        gc.context.warntype.polyd = MH_HUMAN | MH_ELF;
         HWarn_of_mon |= FROMRACE;
         return;
     }

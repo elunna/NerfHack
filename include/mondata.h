@@ -122,14 +122,14 @@
 #define polyok(ptr) (((ptr)->mflags2 & M2_NOPOLY) == 0L)
 #define is_outflanker(ptr) (((ptr)->mflags2 & M2_FLANK) != 0)
 #define is_shapeshifter(ptr) (((ptr)->mflags2 & M2_SHAPESHIFTER) != 0L)
-#define is_undead(ptr) (((ptr)->mflags2 & M2_UNDEAD) != 0L)
-#define is_were(ptr) (((ptr)->mflags2 & M2_WERE) != 0L)
-#define is_elf(ptr) (((ptr)->mflags2 & M2_ELF) != 0L)
-#define is_dwarf(ptr) (((ptr)->mflags2 & M2_DWARF) != 0L)
-#define is_gnome(ptr) (((ptr)->mflags2 & M2_GNOME) != 0L)
-#define is_orc(ptr) (((ptr)->mflags2 & M2_ORC) != 0L)
-#define is_human(ptr) (((ptr)->mflags2 & M2_HUMAN) != 0L)
-#define your_race(ptr) (((ptr)->mflags2 & gu.urace.selfmask) != 0L)
+#define is_undead(ptr) (((ptr)->mflags2 & MH_UNDEAD) != 0L)
+#define is_were(ptr) (((ptr)->mflags2 & MH_WERE) != 0L)
+#define is_elf(ptr) (((ptr)->mflags2 & MH_ELF) != 0L)
+#define is_dwarf(ptr) (((ptr)->mflags2 & MH_DWARF) != 0L)
+#define is_gnome(ptr) (((ptr)->mflags2 & MH_GNOME) != 0L)
+#define is_orc(ptr) (((ptr)->mflags2 & MH_ORC) != 0L)
+#define is_human(ptr) (((ptr)->mflags2 & MH_HUMAN) != 0L)
+#define your_race(ptr) (((ptr)->mhflags & gu.urace.selfmask) != 0L)
 #define is_bat(ptr)                                         \
     ((ptr) == &mons[PM_BAT] || (ptr) == &mons[PM_GIANT_BAT] \
      || (ptr) == &mons[PM_ZOO_BAT] || (ptr) == &mons[PM_VAMPIRE_BAT] \
@@ -138,7 +138,7 @@
 /* Jabberwocks not considered to have beaks because they have "jaws". */
 #define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] || \
                        (ptr) == &mons[PM_VROCK])
-#define is_giant(ptr) (((ptr)->mflags2 & M2_GIANT) != 0L)
+#define is_giant(ptr) (((ptr)->mflags2 & MH_GIANT) != 0L)
 #define is_ettin(ptr) \
     ((ptr) == &mons[PM_ETTIN] || (ptr) == &mons[PM_ETTIN_MUMMY] \
      || (ptr) == &mons[PM_ETTIN_ZOMBIE])
@@ -148,7 +148,7 @@
 #define is_not_zombie(ptr) \
     ((ptr) == &mons[PM_GHOUL] || (ptr) == &mons[PM_SKELETON])
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
-#define is_demon(ptr) (((ptr)->mflags2 & M2_DEMON) != 0L)
+#define is_demon(ptr) (((ptr)->mhflags & MH_DEMON) != 0L)
 #define is_mercenary(ptr) (((ptr)->mflags2 & M2_MERC) != 0L)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
 #define is_female(ptr) (((ptr)->mflags2 & M2_FEMALE) != 0L)

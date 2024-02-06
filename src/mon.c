@@ -5053,7 +5053,7 @@ accept_newcham_form(struct monst *mon, int mndx)
     if (is_shapeshifter(mdat)
         && ismnum(mon->cham) && mdat == &mons[mon->cham])
         return mdat;
-    /* polyok() rules out M2_PNAME, M2_WERE, and all humans except Kops */
+    /* polyok() rules out M2_PNAME, MH_WERE, and all humans except Kops */
     return polyok(mdat) ? mdat : 0;
 }
 

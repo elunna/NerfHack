@@ -252,7 +252,7 @@ mksobj_at(
 struct obj *
 mksobj_migr_to_species(
     int otyp,
-    unsigned mflags2,
+    unsigned mhflags,
     boolean init, boolean artif)
 {
     struct obj *otmp;
@@ -260,7 +260,7 @@ mksobj_migr_to_species(
     otmp = mksobj(otyp, init, artif);
     add_to_migration(otmp);
     otmp->owornmask = (long) MIGR_TO_SPECIES;
-    otmp->migr_species = mflags2;
+    otmp->migr_species = mhflags;
     return otmp;
 }
 
