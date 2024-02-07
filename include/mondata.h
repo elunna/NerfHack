@@ -122,13 +122,15 @@
 #define polyok(ptr) (((ptr)->mflags2 & M2_NOPOLY) == 0L)
 #define is_outflanker(ptr) (((ptr)->mflags2 & M2_FLANK) != 0)
 #define is_shapeshifter(ptr) (((ptr)->mflags2 & M2_SHAPESHIFTER) != 0L)
-#define is_undead(ptr) (((ptr)->mflags2 & MH_UNDEAD) != 0L)
-#define is_were(ptr) (((ptr)->mflags2 & MH_WERE) != 0L)
-#define is_elf(ptr) (((ptr)->mflags2 & MH_ELF) != 0L)
-#define is_dwarf(ptr) (((ptr)->mflags2 & MH_DWARF) != 0L)
-#define is_gnome(ptr) (((ptr)->mflags2 & MH_GNOME) != 0L)
-#define is_orc(ptr) (((ptr)->mflags2 & MH_ORC) != 0L)
-#define is_human(ptr) (((ptr)->mflags2 & MH_HUMAN) != 0L)
+#define is_undead(ptr) (((ptr)->mhflags & MH_UNDEAD) != 0L)
+#define is_were(ptr) (((ptr)->mhflags & MH_WERE) != 0L)
+#define is_elf(ptr) (((ptr)->mhflags & MH_ELF) != 0L)
+#define is_dwarf(ptr) (((ptr)->mhflags & MH_DWARF) != 0L)
+#define is_gnome(ptr) (((ptr)->mhflags & MH_GNOME) != 0L)
+#define is_orc(ptr) (((ptr)->mhflags & MH_ORC) != 0L)
+#define is_human(ptr) (((ptr)->mhflags & MH_HUMAN) != 0L)
+#define is_troll(ptr) (((ptr)->mhflags & MH_TROLL) != 0L)
+#define is_ogre(ptr) (((ptr)->mhflags & MH_OGRE) != 0L)
 #define your_race(ptr) (((ptr)->mhflags & gu.urace.selfmask) != 0L)
 #define is_bat(ptr)                                         \
     ((ptr) == &mons[PM_BAT] || (ptr) == &mons[PM_GIANT_BAT] \
@@ -138,7 +140,7 @@
 /* Jabberwocks not considered to have beaks because they have "jaws". */
 #define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] || \
                        (ptr) == &mons[PM_VROCK])
-#define is_giant(ptr) (((ptr)->mflags2 & MH_GIANT) != 0L)
+#define is_giant(ptr) (((ptr)->mhflags & MH_GIANT) != 0L)
 #define is_ettin(ptr) \
     ((ptr) == &mons[PM_ETTIN] || (ptr) == &mons[PM_ETTIN_MUMMY] \
      || (ptr) == &mons[PM_ETTIN_ZOMBIE])

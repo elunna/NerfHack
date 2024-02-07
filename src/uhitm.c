@@ -1824,6 +1824,9 @@ hmon_hitmon_msg_lightobj(
     char *whom = mon_nam(mon);
     char emitlightobjbuf[BUFSZ];
 
+    if (DEADMONSTER(mon))
+        return;
+    
     if (canspotmon(mon)) {
         if (hmd->saved_oname[0]) {
             Sprintf(emitlightobjbuf,
