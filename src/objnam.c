@@ -1228,9 +1228,6 @@ doname_base(
         }
     }
     
-    /* This needs to come after the tourist ID */
-    bp = xname(obj);
-    
     if (iflags.override_ID) {
         known = dknown = cknown = bknown = lknown = TRUE;
     } else {
@@ -1652,10 +1649,7 @@ doname_base(
     /* show weight for items (debug tourist info);
        "aum" is stolen from Crawl's "Arbitrary Unit of Measure" */
     if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {
-        if (with_price && bp_eos[-1] == ')')
-            ConcatF1(bp, 1, ", %u aum)", obj->owt);
-        else
-            ConcatF1(bp, 0, " (%u aum)", obj->owt);
+        ConcatF1(bp, 0, " {%u aum}", obj->owt);
         
         /* ConcatF1(bp) updates bp_eos and bpspaceleft but we're done
            with them now; add a fake use so compiler won't complain
