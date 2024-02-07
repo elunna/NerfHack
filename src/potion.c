@@ -2777,7 +2777,7 @@ potion_dip(struct obj *obj, struct obj *potion)
                                      : hcolor(NH_RED));
         potion->in_use = FALSE; /* didn't go poof */
         if (potion->dknown)
-            trycall(potion);
+            makeknown(POT_ACID);
         return ECMD_TIME;
     }
 
