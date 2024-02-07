@@ -1561,7 +1561,7 @@ doname_base(
                        : "weapon in",
                      hand_s);
 
-            /* we just added a parenthesized pharse, but the right paren
+            /* we just added a parenthesized phrase, but the right paren
                might be absent if the appended string got truncated */
             if (!Blind && bpspaceleft && bp_eos[-1] == ')') {
                 if (gw.warn_obj_cnt && obj == uwep
@@ -1651,19 +1651,18 @@ doname_base(
 
     /* show weight for items (debug tourist info);
        "aum" is stolen from Crawl's "Arbitrary Unit of Measure" */
-    if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {        /* wizard mode user has asked to see object weights */
+    if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {
         if (with_price && bp_eos[-1] == ')')
             ConcatF1(bp, 1, ", %u aum)", obj->owt);
         else
             ConcatF1(bp, 0, " (%u aum)", obj->owt);
-
+        
         /* ConcatF1(bp) updates bp_eos and bpspaceleft but we're done
            with them now; add a fake use so compiler won't complain
            about a variable assignment that won't be subsequently used */
         nhUse(bp_eos);
         nhUse(bpspaceleft);
     }
-
     bp = strprepend(bp, prefix);
 
     /*
