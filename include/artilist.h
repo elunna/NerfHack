@@ -67,7 +67,7 @@ static NEARDATA struct artifact artilist[] = {
      */
     A("Stormbringer", RUNESWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL | SPFX_DRLI), 0, 0,
-      DRLI(5, 2), DRLI(0, 0), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 8000L,
+      DRLI(5, 2), DFNS(AD_DRLI), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 8000L,
       NO_COLOR, STORMBRINGER),
     
     A("The End", SCYTHE, 
@@ -171,11 +171,11 @@ static NEARDATA struct artifact artilist[] = {
       1500L, NO_COLOR, POSEIDON_S_TRIDENT),
     
     A("Frost Brand", LONG_SWORD, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
-      COLD(5, 0), COLD(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
+      COLD(5, 0), DFNS(AD_COLD), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, FROST_BRAND),
 
     A("Fire Brand", LONG_SWORD, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
-      FIRE(5, 0), FIRE(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
+      FIRE(5, 0), DFNS(AD_FIRE), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, FIRE_BRAND),
 
     A("Load Brand", HEAVY_SWORD, (SPFX_RESTR | SPFX_PROTECT), 0, 0,
@@ -284,7 +284,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL,
     A("The Staff of Aesculapius", QUARTERSTAFF,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK | SPFX_INTEL | SPFX_DRLI
        | SPFX_REGEN | SPFX_NOWISH),
-      0, 0, DRLI(0, 0), DRLI(0, 0), NO_CARY, HEALING, A_NEUTRAL, PM_HEALER,
+      0, 0, DRLI(0, 0), DFNS(AD_DRLI), NO_CARY, HEALING, A_NEUTRAL, PM_HEALER,
       NON_PM, 5000L, NO_COLOR, STAFF_OF_AESCULAPIUS),
 
     A("The Magic Mirror of Merlin", MIRROR,
