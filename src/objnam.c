@@ -1209,6 +1209,14 @@ doname_base(
     char *bp_eos, *bp_end;
     size_t bpspaceleft;
 
+    /* tourists get a special identification service for shop items */
+    if (Role_if(PM_TOURIST)) {
+        long price = get_cost_of_shop_item(obj, &nochrg);
+        if (price > 0) {
+            discover_object(obj->otyp,TRUE,FALSE);
+        }
+    }
+    
     /* 'bp' will be within an obuf[] rather than at the start of one,
        usually (but not always) pointing at &obuf[PREFIX];
        gx.xnamep always points to the start of that buffer;
@@ -1219,14 +1227,6 @@ doname_base(
     assert(bp_end >= bp_eos); /* ok provided xname() bounds checking works */
     /* size_t cast: convert signed ptrdiff_t to unsigned size_t */
     bpspaceleft = (size_t) (bp_end - bp_eos);
-
-    /* tourists get a special identification service for shop items */
-    if (Role_if(PM_TOURIST)) {
-        long price = get_cost_of_shop_item(obj, &nochrg);
-        if (price > 0) {
-            discover_object(obj->otyp,TRUE,FALSE);
-        }
-    }
     
     if (iflags.override_ID) {
         known = dknown = cknown = bknown = lknown = TRUE;
