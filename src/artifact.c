@@ -2411,6 +2411,10 @@ artifact_light(struct obj *obj)
         && (obj->owornmask & W_ARM) != 0L)
         return TRUE;
 
+    if (obj && is_art(obj, ART_MIRRORBRIGHT) 
+            && (obj->owornmask & W_ARMS) != 0L)
+        return TRUE;
+    
     return (boolean) ((get_artifact(obj) != &artilist[ART_NONARTIFACT])
                       && is_art(obj, ART_SUNSWORD));
 }

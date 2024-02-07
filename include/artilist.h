@@ -262,7 +262,11 @@ static NEARDATA struct artifact artilist[] = {
     
     A("Deluder", CLOAK_OF_DISPLACEMENT,
       (SPFX_RESTR | SPFX_STLTH | SPFX_PROTECT), 0, 0, NO_ATTK, NO_DFNS,
-      NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, DELUDER ),
+      NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, DELUDER),
+    
+    A("Mirrorbright", SHIELD_OF_REFLECTION, 
+      (SPFX_RESTR | SPFX_HALRES), 0, 0, NO_ATTK, NO_DFNS, NO_CARY, 0, 
+      A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, MIRRORBRIGHT),
     /*
      *      The artifacts for the quest dungeon, all self-willed.
      */

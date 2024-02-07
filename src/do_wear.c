@@ -759,6 +759,16 @@ Shield_on(void)
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
     }
+    
+    /* Mirrorbright requires extra handling since it emits light when worn;*/
+    if (artifact_light(uarms) && !uarms->lamplit) {
+        begin_burn(uarms, FALSE);
+        if (!Blind)
+            pline("%s %s to shine %s!",
+                  Yname2(uarms), otense(uarms, "begin"),
+                  arti_light_description(uarms));
+    }
+    
     if (!uarms->known) {
         uarms->known = 1; /* shield's +/- evident because of status line AC */
         update_inventory();
@@ -769,6 +779,9 @@ Shield_on(void)
 int
 Shield_off(void)
 {
+    struct obj *otmp = uarms;
+    boolean was_arti_light = otmp && otmp->lamplit && artifact_light(otmp);
+    
     gc.context.takeoff.mask &= ~W_ARMS;
 
     if (hates_item(&gy.youmonst, uarms))
@@ -790,6 +803,12 @@ Shield_off(void)
     }
 
     setworn((struct obj *) 0, W_ARMS);
+    /* arti_light comes from Mirrorbright */
+    if (was_arti_light && !artifact_light(otmp)) {
+        end_burn(otmp, FALSE);
+        if (!Blind)
+            pline("%s shining.", Tobjnam(otmp, "stop"));
+    }
     return 0;
 }
 
