@@ -120,6 +120,17 @@ setuwep(struct obj *obj)
             || is_art(olduwep, ART_GIANTSLAYER)))
         disp.botl = TRUE;
     
+    /* Werebane grants protection from shape-changers.
+     * Handled with this method because we ran out of SPFX fields. */
+    if (is_art(olduwep, ART_WEREBANE)) {
+        EProtection_from_shape_changers &= ~W_WEP;
+        restartcham();
+    }
+    if (uwep && u_wield_art(ART_WEREBANE)) {
+        EProtection_from_shape_changers |= W_WEP;
+        rescham();
+    } 
+    
     /* Hated items decrease AC and affect to-hit */
     if (uwep && hates_item(&gy.youmonst, uwep)) {
         find_ac();
