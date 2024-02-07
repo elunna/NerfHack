@@ -259,6 +259,10 @@ static NEARDATA struct artifact artilist[] = {
     A("Whisperfeet", SPEED_BOOTS, (SPFX_RESTR | SPFX_STLTH | SPFX_LUCK), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM,
       5000L, NO_COLOR, WHISPERFEET),
+    
+    A("Deluder", CLOAK_OF_DISPLACEMENT,
+      (SPFX_RESTR | SPFX_STLTH | SPFX_PROTECT), 0, 0, NO_ATTK, NO_DFNS,
+      NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, DELUDER ),
     /*
      *      The artifacts for the quest dungeon, all self-willed.
      */
