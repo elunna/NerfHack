@@ -764,7 +764,8 @@ u_init_race(void)
          * get only non-magic instruments.
          */
         if (Role_if(PM_CLERIC) || Role_if(PM_WIZARD)
-            || Role_if(PM_HEALER) || Role_if(PM_ROGUE)) {
+            || Role_if(PM_HEALER) || Role_if(PM_ROGUE)
+            || Role_if(PM_ARCHEOLOGIST)) {
             static int trotyp[] = { WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP,
                                     BELL,         BUGLE,       LEATHER_DRUM };
             Instrument[0].trotyp = ROLL_FROM(trotyp);
