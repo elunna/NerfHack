@@ -1633,7 +1633,7 @@
      */
     MON(NAM("baby gray dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, 4), (G_GENO | 2),
-        A(ATTK(AT_BITE, AD_PHYS, 2, 6),
+        A(ATTK(AT_BITE, AD_ENCH, 2, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
