@@ -41,6 +41,7 @@ static const char *const artifact_names[] = {
 #define     COLD(a,b)   {0,AD_COLD,a,b}
 #define     FIRE(a,b)   {0,AD_FIRE,a,b}
 #define     ELEC(a,b)   {0,AD_ELEC,a,b}         /* electrical shock */
+#define     ACID(a,b)   {0,AD_ACID,a,b}         /* acid */
 #define     STUN(a,b)   {0,AD_STUN,a,b}         /* magical attack */
 /* clang-format on */
 
@@ -268,6 +269,10 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM,
       1500L, NO_COLOR, BLACKSHROUD),
     
+    A("Snakeskin", ROBE, (SPFX_RESTR | SPFX_HALRES), 0, 0,
+      NO_ATTK, DFNS(AD_ACID), NO_CARY, 0, A_NEUTRAL, 0, NON_PM,
+      1700L, NO_COLOR, SNAKESKIN),
+    
     A("Mirrorbright", SHIELD_OF_REFLECTION, 
       (SPFX_RESTR | SPFX_HALRES), 0, 0, NO_ATTK, NO_DFNS, NO_CARY, 0, 
       A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, MIRRORBRIGHT),
@@ -383,6 +388,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL,
 #undef COLD
 #undef FIRE
 #undef ELEC
+#undef ACID
 #undef STUN
 #endif
 

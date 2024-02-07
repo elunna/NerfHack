@@ -667,6 +667,8 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         mask = &EPoison_resistance;
     else if (dtyp == AD_DRLI)
         mask = &EDrain_resistance;
+    else if (dtyp == AD_ACID)
+        mask = &EAcid_resistance;
 
     if (mask && wp_mask == W_ART && !on) {
         /* find out if some other artifact also confers this intrinsic;
@@ -1028,6 +1030,8 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
             return !(yours ? Drain_resistance : resists_drli(mtmp));
         case AD_STON:
             return !(yours ? Stone_resistance : resists_ston(mtmp));
+        case AD_ACID:
+            return !(yours ? Acid_resistance : resists_acid(mtmp));
         default:
             impossible("Weird weapon special attack.");
         }
@@ -2471,6 +2475,7 @@ abil_to_adtyp(long *abil)
         { &EFire_resistance, AD_FIRE },
         { &ECold_resistance, AD_COLD },
         { &EShock_resistance, AD_ELEC },
+        { &EAcid_resistance, AD_ACID },
         { &EAntimagic, AD_MAGM },
         { &EDisint_resistance, AD_DISN },
         { &EPoison_resistance, AD_DRST },
