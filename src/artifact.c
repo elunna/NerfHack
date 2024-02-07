@@ -711,9 +711,10 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         if (on) {
             pline("Your mind is flooded with magical knowledge.");
         } else {
-            pline("You feel less in touch with your magical abilities.");
+            You_feel("less in touch with your magical abilities.");
         }
     }
+
     if (spfx & SPFX_HALRES) {
         /* make_hallucinated must (re)set the mask itself to get
          * the display right */

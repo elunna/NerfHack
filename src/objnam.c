@@ -4332,6 +4332,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         && strncmpi(d->bp, "wizard lock", 11) /* not the "wizard" monster! */
         && strncmpi(d->bp, "death wand", 10)  /* 'of inversion', not Rider */
         && strncmpi(d->bp, "master key", 10)  /* not the "master" rank */
+        && strncmpi(d->bp, "dark souls", 10)  /* not the "Dark One" monster */
         && strncmpi(d->bp, "ninja-to", 8)     /* not the "ninja" rank */
         && strncmpi(d->bp, "magenta", 7)) {   /* not the "mage" rank */
         const char *rest = 0;

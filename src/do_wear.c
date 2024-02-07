@@ -209,7 +209,11 @@ Boots_on(void)
         }
         break;
     case STOMPING_BOOTS:
-        if (Stomping && !Flying) {
+        if (uarmf->oartifact == ART_MAYHEM) {
+            You_feel("the spirits begin to stir...");
+            EConflict |= W_ARMF;
+            makeknown(uarmf->otyp);
+        } else if (Stomping && !Flying) {
             You("begin stomping around very loudly.");
             makeknown(uarmf->otyp);
         }
@@ -288,7 +292,10 @@ Boots_off(void)
         }
         break;
     case STOMPING_BOOTS:
-        if (!Levitation && !Flying) {
+        if (uarmf->oartifact == ART_MAYHEM) {
+            You_feel("the spiritual commotion recede.");
+            EConflict &= ~W_ARMF;
+        } else if (!Levitation && !Flying) {
             Your("footsteps become considerably less violent.");
             makeknown(otyp);
         }
