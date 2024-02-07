@@ -1287,8 +1287,20 @@ seffect_destroy_armor(struct obj **sobjp)
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
     boolean old_erodeproof, new_erodeproof;
-
+    boolean already_known = objects[sobj->otyp].oc_name_known;
+    
+    /* player is prompted to choose what to destroy when:
+     * - the scroll is blessed
+     * - the scroll is cursed, player is confused, and have it id'd
+     * - they must also actually be wearing armor */
+    boolean gets_choice = (otmp && (sblessed
+                               || (scursed && confused && already_known)));
+    
     if (confused) {
+        if (gets_choice) {
+            pline("This is a scroll of destroy armor.");
+            otmp = getobj("proof", enchant_ok, GETOBJ_NOFLAGS);
+        }
         if (!otmp) {
             strange_feeling(sobj, "Your bones itch.");
             *sobjp = 0; /* useup() in strange_feeling() */
@@ -1309,9 +1321,6 @@ seffect_destroy_armor(struct obj **sobjp)
         return;
     }
     if (!scursed || !otmp || !otmp->cursed) {
-        /* player is prompted to choose what to destroy only when the scroll is
-         * blessed and they are actually wearing armor */
-        boolean gets_choice = (sblessed && otmp);
         if (gets_choice) {
             pline("This is a scroll of destroy armor.");
         }
