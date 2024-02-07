@@ -1696,7 +1696,7 @@
         MH_DRAGON, 5, CLR_ORANGE, BABY_ORANGE_DRAGON),
     MON(NAM("baby black dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, -6), (G_GENO | 2),
-        A(ATTK(AT_BITE, AD_PHYS, 2, 6),
+        A(ATTK(AT_BITE, AD_DRLI, 2, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), MR_DISINT, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
