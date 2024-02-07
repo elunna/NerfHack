@@ -3310,12 +3310,13 @@
     /* Unique humans not tied to quests.
      */
     MON(NAM("Medusa"), S_HUMAN,
-        LVL(20, 12, 2, 50, -15), (G_NOGEN | G_UNIQ),
-        A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
+        LVL(24, 12, -8, 50, -15), (G_NOGEN | G_UNIQ),
+        A(ATTK(AT_WEAP, AD_PHYS, 4, 4),
           ATTK(AT_CLAW, AD_PHYS, 1, 8),
           ATTK(AT_GAZE, AD_STON, 0, 0),
-          ATTK(AT_BITE, AD_DRST, 1, 6),
-          NO_ATTK, NO_ATTK),
+          ATTK(AT_TENT, AD_DRST, 2, 6),
+          ATTK(AT_TENT, AD_DRST, 2, 6),
+          ATTK(AT_TENT, AD_DRST, 2, 6)),
         SIZ(WT_HUMAN, 400, MS_HISS, MZ_LARGE),
         MR_POISON | MR_STONE, MR_POISON | MR_STONE,
         M1_FLY | M1_SWIM | M1_AMPHIBIOUS | M1_HUMANOID | M1_POIS | M1_OMNIVORE,

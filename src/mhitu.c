@@ -198,7 +198,12 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
             verb = "touches you";
             break;
         case AT_TENT:
-            verb = "tentacles suck your brain";
+            
+            if (mtmp->data == &mons[PM_MEDUSA]) {
+                verb = "snakes bite you";
+            } else {
+                verb = "tentacles suck your brain";
+            }
             Monst_name = s_suffix(Monst_name);
             break;
         case AT_EXPL:
@@ -313,7 +318,8 @@ mpoisons_subj(struct monst *mtmp, struct attack *mattk)
     } else {
         return (mattk->aatyp == AT_TUCH) ? "contact"
                   : (mattk->aatyp == AT_GAZE) ? "gaze"
-                       : (mattk->aatyp == AT_BITE) ? "bite" : "sting";
+                       : (mattk->aatyp == AT_TENT) ? "snake bite" /* Medusa's hair-do */
+                            : (mattk->aatyp == AT_BITE) ? "bite" : "sting";
     }
 }
 
