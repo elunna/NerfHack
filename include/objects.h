@@ -723,9 +723,9 @@ BOOTS("kicking boots", "buckled boots",
 BOOTS("fumble boots", "riding boots",
       0, 1,   FUMBLING, 12, 2, 20, 30, 9, 0, LEATHER, HI_LEATHER,
                                                         FUMBLE_BOOTS),
-BOOTS("levitation boots", "snow boots",
-      0, 1, LEVITATION, 12, 2, 15, 30, 9, 0, LEATHER, HI_LEATHER,
-                                                        LEVITATION_BOOTS),
+BOOTS("flying boots", "snow boots",
+      0, 1, FLYING, 12, 2, 15, 30, 9, 0, LEATHER, HI_LEATHER,
+                                                        FLYING_BOOTS),
 #undef HELM
 #undef CLOAK
 #undef SHIELD

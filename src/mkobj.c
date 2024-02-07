@@ -1078,7 +1078,7 @@ mksobj_init(struct obj *otmp, boolean artif)
         break;
     case ARMOR_CLASS:
         if (rn2(10)
-            && (otmp->otyp == FUMBLE_BOOTS || otmp->otyp == LEVITATION_BOOTS
+            && (otmp->otyp == FUMBLE_BOOTS
                 || otmp->otyp == HELM_OF_OPPOSITE_ALIGNMENT
                 || otmp->otyp == GAUNTLETS_OF_FUMBLING || !rn2(11))) {
             curse(otmp);

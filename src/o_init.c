@@ -277,8 +277,8 @@ obj_shuffle_range(
             *lo_p = LEATHER_GLOVES, *hi_p = GAUNTLETS_OF_DEXTERITY;
         else if (otyp >= CLOAK_OF_PROTECTION && otyp <= CLOAK_OF_DISPLACEMENT)
             *lo_p = CLOAK_OF_PROTECTION, *hi_p = CLOAK_OF_DISPLACEMENT;
-        else if (otyp >= SPEED_BOOTS && otyp <= LEVITATION_BOOTS)
-            *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
+        else if (otyp >= SPEED_BOOTS && otyp <= FLYING_BOOTS)
+            *lo_p = SPEED_BOOTS, *hi_p = FLYING_BOOTS;
         break;
     case POTION_CLASS:
         /* potion of water has the only fixed description */

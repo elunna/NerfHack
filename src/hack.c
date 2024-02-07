@@ -758,8 +758,7 @@ dosinkfall(void)
     static const char fell_on_sink[] = "fell onto a sink";
     struct obj *obj;
     int dmg;
-    boolean lev_boots = (uarmf && uarmf->otyp == LEVITATION_BOOTS),
-            innate_lev = ((HLevitation & (FROMOUTSIDE | FROMFORM)) != 0L),
+    boolean innate_lev = ((HLevitation & (FROMOUTSIDE | FROMFORM)) != 0L),
             /* to handle being chained to buried iron ball, trying to
                levitate but being blocked, then moving onto adjacent sink;
                no need to worry about being blocked by terrain because we
@@ -795,24 +794,6 @@ dosinkfall(void)
         HLevitation = save_HLev;
     }
 
-    /*
-     * Interrupt multi-turn putting on/taking off of armor (in which
-     * case we reached the sink due to being teleported while busy;
-     * in 3.4.3, Boots_on()/Boots_off() [called via (*afternmv)() when
-     * 'multi' reaches 0] triggered a crash if we were donning/doffing
-     * levitation boots [because the Boots_off() below causes 'uarmf'
-     * to be null by the time 'afternmv' gets called]).
-     *
-     * Interrupt donning/doffing if we fall onto the sink, or if the
-     * code below is going to remove levitation boots even when we
-     * haven't fallen (innate floating or flying becoming unblocked).
-     */
-    if (ufall || lev_boots) {
-        (void) stop_donning(lev_boots ? uarmf : (struct obj *) 0);
-        /* recalculate in case uarmf just got set to null */
-        lev_boots = (uarmf && uarmf->otyp == LEVITATION_BOOTS);
-    }
-
     /* remove worn levitation items */
     ELevitation &= ~W_ARTI;
     HLevitation &= ~(I_SPECIAL | TIMEOUT);
@@ -827,11 +808,7 @@ dosinkfall(void)
         Ring_off(obj);
         off_msg(obj);
     }
-    if (lev_boots) {
-        obj = uarmf;
-        (void) Boots_off();
-        off_msg(obj);
-    }
+
     HLevitation--;
     /* probably moot; we're either still levitating or went
        through float_down(), but make sure BFlying is up to date */

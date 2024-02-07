@@ -221,19 +221,24 @@ Boots_on(void)
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             incr_itimeout(&HFumbling, rnd(20));
         break;
-    case LEVITATION_BOOTS:
-        if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)) {
-            uarmf->known = 1; /* might come off if putting on over a sink,
-                               * so uarmf could be Null below; status line
-                               * gets updated during brief interval they're
-                               * worn so hero and player learn enchantment */
-            disp.botl = TRUE; /* status hilites might mark AC changed */
-            makeknown(uarmf->otyp);
-            float_up();
-            if (Levitation)
-                spoteffects(FALSE); /* for sink effect */
-        } else {
-            float_vs_flight(); /* maybe toggle BFlying's I_SPECIAL */
+    case FLYING_BOOTS:
+        /* Copied from AMULET_OF_FLYING */
+        /* setworn() has already set extrinisic flying */
+        float_vs_flight(); /* block flying if levitating */
+        if (Flying) {
+            boolean already_flying;
+            
+            /* to determine whether this flight is new we have to muck
+               about in the Flying intrinsic (actually extrinsic) */
+            EFlying &= ~W_ARMF;
+            already_flying = !!Flying;
+            EFlying |= W_ARMF;
+
+            if (!already_flying) {
+                makeknown(FLYING_BOOTS);
+                disp.botl = TRUE; /* status: 'Fly' On */
+                You("are now in flight.");
+            }
         }
         break;
     default:
@@ -295,18 +300,24 @@ Boots_off(void)
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             HFumbling = EFumbling = 0;
         break;
-    case LEVITATION_BOOTS:
-        if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)
-            && !gc.context.takeoff.cancelled_don) {
-            /* lava_effects() sets in_lava_effects and calls Boots_off()
-               so hero is already in midst of floating down */
-            if (!iflags.in_lava_effects)
-                (void) float_down(0L, 0L);
-            makeknown(otyp);
-        } else {
-            float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
+    case FLYING_BOOTS: {
+        /* Copied from AMULET_OF_FLYING */
+        boolean was_flying = !!Flying;
+
+        /* remove amulet 'early' to determine whether Flying changes */
+        setworn((struct obj *) 0, W_ARMF);
+        float_vs_flight(); /* probably not needed here */
+        if (was_flying && !Flying) {
+            makeknown(FLYING_BOOTS);
+            disp.botl = TRUE; /* status: 'Fly' Off */
+            You("%s.", (is_pool_or_lava(u.ux, u.uy) || Is_waterlevel(&u.uz)
+                        || Is_airlevel(&u.uz))
+                           ? "stop flying"
+                           : "land");
+            spoteffects(TRUE);
         }
         break;
+    }
     case JUMPING_BOOTS:
         makeknown(otyp);
         Your("%s feel shorter.", makeplural(body_part(LEG)));
