@@ -61,6 +61,7 @@ static int disarm_holdingtrap(struct trap *);
 static int disarm_rust_trap(struct trap *);
 static int disarm_grease_trap(struct trap *);
 static int disarm_landmine(struct trap *);
+static int disarm_spear_trap(struct trap *);
 static int unsqueak_ok(struct obj *);
 static int disarm_squeaky_board(struct trap *);
 static int disarm_shooting_trap(struct trap *, int);
@@ -6068,6 +6069,42 @@ disarm_grease_trap(struct trap *ttmp) /* Erik Lunna */
     return 1;
 }
 
+
+static int
+disarm_spear_trap(struct trap *ttmp) /* Erik Lunna */
+{
+    int fails = try_disarm(ttmp, FALSE);
+    const char *which = the_your[ttmp->madeby_u];
+    coord trapxy;
+    trapxy.x = ttmp->tx;
+    trapxy.y = ttmp->ty;
+    
+    if (fails < 2)
+        return fails;
+    You("disarm %s spear trap!", which);
+
+    if (rnl(10) > 5) {
+        switch (rn2(4)) {
+        case 0:
+            cnv_trap_obj(SPEAR, 1, ttmp, FALSE);
+            break;
+        case 1:
+            cnv_trap_obj(ELVEN_SPEAR, 1, ttmp, FALSE);
+            break;
+        case 2:
+            cnv_trap_obj(ORCISH_SPEAR, 1, ttmp, FALSE);
+            break;
+        case 3:
+            cnv_trap_obj(DWARVISH_SPEAR, 1, ttmp, FALSE);
+            break;
+        }
+    } else {
+        You("broke %s spear during your efforts.", which);
+        deltrap(ttmp);
+        newsym(trapxy.x, trapxy.y);
+    }
+    return 1;
+}
 static int
 disarm_landmine(struct trap* ttmp) /* Helge Hafting */
 {
@@ -6437,6 +6474,8 @@ untrap(
                     return disarm_shooting_trap(ttmp, DART);
                 case ARROW_TRAP:
                     return disarm_shooting_trap(ttmp, ARROW);
+                case SPEAR_TRAP:
+                    return disarm_spear_trap(ttmp);
                 case RUST_TRAP:
                     return disarm_rust_trap(ttmp);
                 case GREASE_TRAP:
