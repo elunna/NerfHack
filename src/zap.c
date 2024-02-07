@@ -2770,7 +2770,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         } else
             monstunseesu(M_SEEN_MAGR);
         if (Half_spell_damage) { /* stacks with Antimagic */
-            damage = (damage + 1) / 2;
+            damage -= ((damage + 1) / 4);
         
         }
         break;
@@ -4647,7 +4647,7 @@ zhitu(
             if (Antimagic && Half_spell_damage) {
                 shieldeff(sx, sy);
                 monstseesu(M_SEEN_MAGR);
-                dam /= 2;
+                dam -= ((dam + 1) / 4);
             }
             if (Reflecting) {
                 You("feel a little drained...");
@@ -4662,7 +4662,7 @@ zhitu(
             if (Reflecting && Half_spell_damage) {
                 shieldeff(sx, sy);
                 monstseesu(M_SEEN_MAGR);
-                dam /= 2;
+                dam -= ((dam + 1) / 4);
             }
             You("feel drained...");
             u.uhpmax -= dam / 3 + rn2(5);
@@ -4759,7 +4759,7 @@ zhitu(
         /* Half_spell_damage protection yields half-damage for wands & spells,
            including hero's own ricochets; breath attacks do full damage */
         if (dam && Half_spell_damage && abstyp < 20)
-            dam = (dam + 1) / 2;
+            dam -= ((dam + 1) / 4);
         losehp(dam, kbuf, KILLED_BY_AN);
     }
     return;

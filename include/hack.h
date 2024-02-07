@@ -1152,9 +1152,10 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
  * Can be used on-the-fly with the 1st parameter to losehp() if you don't
  * need to retain the dmg value beyond that call scope.
  * Take care to ensure it doesn't get used more than once in other instances.
+ * NOTE: This is now 1/4 damage reduction.
  */
 #define Maybe_Half_Phys(dmg) \
-    ((Half_physical_damage) ? (((dmg) + 1) / 2) : (dmg))
+    ((Half_physical_damage) ? ((dmg) - (((dmg) + 1) / 4)) : (dmg))
 
 /* flags for special ggetobj status returns */
 #define ALL_FINISHED 0x01 /* called routine already finished the job */

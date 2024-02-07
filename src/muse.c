@@ -1592,7 +1592,7 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
                 pline_The("wand hits you!");
                 tmp = d(2, 12);
                 if (Half_spell_damage)
-                    tmp = (tmp + 1) / 2;
+                    tmp -= ((tmp + 1) / 4);
                 losehp(tmp, "wand", KILLED_BY_AN);
                 learnit = TRUE;
             } else {
@@ -1996,7 +1996,7 @@ use_offensive(struct monst *mtmp)
                 You("are not harmed.");
             burn_away_slime();
             if (Half_spell_damage)
-                num = (num + 1) / 2;
+                num -= ((num + 1) / 4);
             else
                 losehp(num, "scroll of fire", KILLED_BY_AN);
             for (mtmp2 = fmon; mtmp2; mtmp2 = mtmp2->nmon) {

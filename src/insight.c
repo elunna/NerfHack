@@ -213,8 +213,7 @@ enlght_halfdmg(int category, int final)
         category_name = "unknown";
         break;
     }
-    Sprintf(buf, " %s %s damage", (final || wizard) ? "half" : "reduced",
-            category_name);
+    Sprintf(buf, " reduced %s damage", category_name);
     enl_msg(You_, "take", "took", buf, from_what(category));
 }
 

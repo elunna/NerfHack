@@ -3392,7 +3392,7 @@ mhitm_ad_drin(
         }
         /* negative armor class doesn't reduce this damage */
         if (Half_physical_damage)
-            mhm->damage = (mhm->damage + 1) / 2;
+            mhm->damage -= ((mhm->damage + 1) / 4);
         mdamageu(magr, mhm->damage);
         mhm->damage = 0; /* don't inflict a second dose below */
 
