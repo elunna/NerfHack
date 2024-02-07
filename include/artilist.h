@@ -255,6 +255,10 @@ static NEARDATA struct artifact artilist[] = {
     A("Keolewa", CLUB, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN),
       0, 0, ELEC(5, 8), DFNS(AD_ELEC), NO_CARY, 0, A_NEUTRAL,
       NON_PM, NON_PM, 2000L, NO_COLOR, KEOLEWA),
+    
+    A("Whisperfeet", SPEED_BOOTS, (SPFX_RESTR | SPFX_STLTH | SPFX_LUCK), 0, 0,
+      NO_ATTK, NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM,
+      5000L, NO_COLOR, WHISPERFEET),
     /*
      *      The artifacts for the quest dungeon, all self-willed.
      */
