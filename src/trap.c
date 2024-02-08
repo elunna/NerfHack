@@ -1354,6 +1354,7 @@ trapeffect_rocktrap(
 {
     struct obj *otmp;
     boolean harmless = FALSE;
+    boolean drop_boulder = rnd(level_difficulty()) > 10;
 
     if (mtmp == &gy.youmonst) {
         if (trap->once && trap->tseen && !rn2(15)) {
@@ -1365,12 +1366,12 @@ trapeffect_rocktrap(
             int dmg;
             trap->once = 1;
             feeltrap(trap);
-            if (rnd(level_difficulty()) > 10) {
-                dmg = d(2, 6);
-                otmp = t_missile(ROCK, trap);
-            } else {
+            if (drop_boulder) {
                 dmg = rn1(7, 25);
                 otmp = t_missile(BOULDER, trap);
+            } else {
+                dmg = d(2, 6);
+                otmp = t_missile(ROCK, trap);
             }
             
             place_object(otmp, u.ux, u.uy);
@@ -1421,10 +1422,10 @@ trapeffect_rocktrap(
             return Trap_Is_Gone;
         }
         trap->once = 1;
-        otmp = t_missile(ROCK, trap);
+        otmp = t_missile(drop_boulder ? BOULDER : ROCK, trap);
         if (in_sight)
             seetrap(trap);
-        if (thitm(0, mtmp, otmp, d(2, 6), FALSE))
+        if (thitm(0, mtmp, otmp, drop_boulder ? rn1(7, 25) : d(2, 6), FALSE))
             trapkilled = TRUE;
 
         return trapkilled ? Trap_Killed_Mon : mtmp->mtrapped
