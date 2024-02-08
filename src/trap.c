@@ -6089,7 +6089,10 @@ disarm_spear_trap(struct trap *ttmp) /* Erik Lunna */
         return fails;
     You("disarm %s spear trap!", which);
 
-    if (rnl(10) > 5) {
+    /* LUCK:    0	+2	+5	+8	+11
+     * CHANCE: 14.3%	28.2%	42.1%	56.1%	70.0%
+     */
+    if (rnl(7) == 0) {
         switch (rn2(4)) {
         case 0:
             cnv_trap_obj(SPEAR, 1, ttmp, FALSE);
