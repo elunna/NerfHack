@@ -1800,6 +1800,7 @@ traptype_rnd(unsigned mktrapflags)
         if (lvl < 5)
             kind = NO_TRAP;
         break;
+    case ANTI_MAGIC:
     case LANDMINE:
     case SPEAR_TRAP:
         if (lvl < 6)

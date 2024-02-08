@@ -2728,13 +2728,17 @@ trapeffect_anti_magic(
     unsigned int trflags UNUSED)
 {
     if (mtmp == &gy.youmonst) {
-        int drain, halfd;
+        int drain = (u.uen > 1) ? (rnd(u.uen / 2) + 2) : 4;
+        int halfd;
         boolean exclaim_it = FALSE;
 
         seetrap(trap);
+        /* hero without magic resistance loses spell energy,
+          hero with magic resistance takes damage instead;
+          possibly non-intuitive but useful for play balance */
         if (Antimagic) {
             struct obj *otmp;
-            int dmgval2 = rnd(4), hp = Upolyd ? u.mh : u.uhp;
+            int dmgval2 = rnd(drain), hp = Upolyd ? u.mh : u.uhp;
 
             /* Half_XXX_damage has opposite its usual effect (approx)
                but isn't cumulative if hero has more than one */
@@ -2759,6 +2763,7 @@ trapeffect_anti_magic(
                      : (dmgval2 >= hp / 4) ? "very lethargic."
                        : "sluggish.");
             /* opposite of magical explosion */
+            showdmg(dmgval2, TRUE);
             losehp(dmgval2, "anti-magic implosion", KILLED_BY_AN);
         }
 
