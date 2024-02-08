@@ -1330,9 +1330,12 @@ makemon(
     place_monster(mtmp, x, y);
     mtmp->mcansee = mtmp->mcanmove = TRUE;
     mtmp->seen_resistance = M_SEEN_NOTHING;
-    mtmp->mpeaceful = In_sokoban(&u.uz) ? FALSE 
-                      : (mmflags & MM_ANGRY) ? FALSE 
-                                             : peace_minded(ptr);
+    mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
+    
+    /* Less trouble for the player */
+    if (In_sokoban(&u.uz))
+        mtmp->mpeaceful = 0;
+            
     if ((mmflags & MM_MINVIS) != 0) /* for ^G */
         mon_set_minvis(mtmp); /* call after place_monster() */
 
