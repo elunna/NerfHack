@@ -15,23 +15,23 @@ des.level_flags("mazelevel", "noteleport", "hardfloor", "noflip")
 
 des.map([[
                                                                             
-  ......     ..........................       ...        ....  ......       
- ......       ..........................     ........       ....    .....   
-  .BBB      .............................    .........            ....  ..  
-    ...    ......................              .......      ..     ....  .. 
-    ...     ....................                     ..  .......    ..  ... 
-   ..              S   BB                .....     .......   ....      .... 
-    ..        ...  .   ..               ........  ..     ..   ..       ...  
-     ..      .......    ..             ............       ..          ...   
-      ..      ....       ..             ........           ..  ...........  
-  ...  ...     ..        .............                  ................... 
- .....   .....            ...............................      ...........  
-  ....BB................            ...                               ...   
-  .....     .  ..........        .... .      ...  ..........           ...  
-   ...     ..          .............  ..    ...................        .... 
-          BB       ..   .........      BB    ...  ..............   ...  ... 
-       ......    .....  B          ........         ..         .. .... .... 
-     ..........  ..........         ..... ...      .....        ........    
+  ......     ..........................       ... }}     ....  ......       
+ ......       ..........................     ........     } .... }} .....} 
+  .BBB      .............................   }.........}    }}}}}}}....  ..  
+    ...    ......................             }.......}  }} .. }}}}....} .. 
+    ...    BB...................         }}          ..  .......}  }..} ... 
+   ..    ...B      S   BB                ..... }   .......   ....  }}} .... 
+    ..}}}.    ...  .   ..               ........} ..     ..   ..   }   ...  
+     ..  .}  .......   }..            }............       ..       }} ...   
+  }}} .. .    ....     }}..}}  }      } ........  }        ..  ...........  
+  ...}}...     ..      }}.............}  }}  }}  }} }   ..........}........ 
+ .....  }.....          }}...............................      ...........  
+} .}}.BB................ }}}}}}}}   ... }}} }}}}}}  } }}        }}}   ...   
+  .....  }} .  ..........    }}} ....}.}} }}}...  .......... }}}}}    }...  
+  }...}    ..          .............  ..    ...................  }}}}}}.... 
+          BB       ..   .........}}    BB    ...  ..........} .. }}...  ... 
+       ......    .....  B     }}}} ........     }}  .. }}}     .. .... .... 
+     ..........  ..........    }}   ..... ..       .....        ........ }  
        ..  ...    .  .....         ....    ..       ...            ..       
                                                                             
 ]]);
@@ -71,24 +71,66 @@ des.monster("neanderthal", 22, 01)
 des.monster("neanderthal", 26, 09)
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
--- Random traps
+
+-- A couple of pits to make navigation a bit annoying
 des.trap("pit",47,11)
 des.trap("pit",57,10)
-des.trap()
-des.trap()
-des.trap()
-des.trap()
+des.trap("bear",46,11)
+
+-- Random traps
+
+des.trap("pit")
+des.trap("pit")
+des.trap("pit")
+des.trap("spiked pit")
+des.trap("spiked pit")
+des.trap("spiked pit")
+des.trap("bear")
+des.trap("bear")
+des.trap("bear")
+des.trap("spear")
+des.trap("spear")
+des.trap("spear")
+
 -- Monsters on siege duty (in the outer caves).
-des.monster({ id ="bugbear", x=47, y=02, peaceful=0 })
-des.monster({ id ="bugbear", x=48, y=03, peaceful=0 })
-des.monster({ id ="bugbear", x=49, y=04, peaceful=0 })
-des.monster({ id ="bugbear", x=67, y=03, peaceful=0 })
-des.monster({ id ="bugbear", x=69, y=04, peaceful=0 })
-des.monster({ id ="bugbear", x=51, y=13, peaceful=0 })
-des.monster({ id ="bugbear", x=53, y=14, peaceful=0 })
-des.monster({ id ="bugbear", x=55, y=15, peaceful=0 })
-des.monster({ id ="bugbear", x=63, y=10, peaceful=0 })
-des.monster({ id ="bugbear", x=65, y=09, peaceful=0 })
-des.monster({ id ="bugbear", x=67, y=10, peaceful=0 })
-des.monster({ id ="bugbear", x=69, y=11, peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+
+des.monster({ id = "ape", peaceful=0 })
+des.monster({ id = "ape", peaceful=0 })
+des.monster({ id = "ape", peaceful=0 })
+des.monster({ id = "ape", peaceful=0 })
+des.monster({ id = "ape", peaceful=0 })
+
+des.monster({ id = "python", peaceful=0 })
+des.monster({ id = "python", peaceful=0 })
+des.monster({ id = "python", peaceful=0 })
+des.monster({ id = "python", peaceful=0 })
+
+des.monster({ id = "panther", peaceful=0 })
+des.monster({ id = "panther", peaceful=0 })
+des.monster({ id = "panther", peaceful=0 })
+des.monster({ id = "panther", peaceful=0 })
+des.monster({ id = "tiger", peaceful=0 })
+des.monster({ id = "tiger", peaceful=0 })
+des.monster({ id = "weretiger", peaceful=0 })
+
 des.wallify()

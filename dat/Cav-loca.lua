@@ -11,22 +11,22 @@ des.map([[
                                                                             
     .............                     ...........                           
    ...............                   .............                          
-    .............                  ...............        ..........        
-     ...........                    .............      ...............      
-        ...                                    ...   ..................     
+    ......}}}....                  ...............        ..........        
+     ....}}}....                    .............      ...............      
+        ...  }}                                ...   ..................     
          ...                ..........          ... ..................      
-          ...              ............          BBB...................     
-           ...              ..........          ......................      
-            .....                 ..      .....B........................    
-  ....       ...............      .    ........B..........................  
+         }...              ....}}}.....          BBB...................     
+           ... }            ..........          ......................      
+   }}       ..... }}   }          ..      ....}B........................    
+  ....       ...............      .  } .......}B..........................  
  ......     .. .............S..............         ..................      
-  ....     ..                ...........             ...............        
-     ..  ...                                    ....................        
+  ....     ..  }   }}}       ...........             ...............        
+     ..  ...                      }}}           ....................        
       ....                                      BB...................       
-         ..                 ..                 ..  ...............          
-          ..   .......     ....  .....  ....  ..     .......   S            
-           ............     ....... ..  .......       .....    ...  ....    
-               .......       .....   ......                      .......    
+      }} .. }               ..                 ..  ...............          
+          ..   .......     ....  .....  ....  ..     .......   }            
+         } ......}}}...     ....... ..  .......       .....    ...  ....    
+            }  .......       .....   ......                      .......    
                                                                             
 ]]);
 -- Dungeon Description
@@ -56,40 +56,61 @@ des.object()
 des.object()
 des.object()
 -- Random traps
-des.trap()
-des.trap()
-des.trap()
-des.trap()
+des.trap("pit")
+des.trap("pit")
+des.trap("pit")
+des.trap("spiked pit")
+des.trap("spiked pit")
+des.trap("spiked pit")
+des.trap("bear")
+des.trap("bear")
+des.trap("bear")
+des.trap("spear")
+des.trap("spear")
+des.trap("spear")
 des.trap()
 des.trap()
 -- Random monsters.
-des.monster({ id = "bugbear", x=02, y=10, peaceful=0 })
-des.monster({ id = "bugbear", x=03, y=11, peaceful=0 })
-des.monster({ id = "bugbear", x=04, y=12, peaceful=0 })
-des.monster({ id = "bugbear", x=02, y=11, peaceful=0 })
-des.monster({ id = "bugbear", x=16, y=16, peaceful=0 })
-des.monster({ id = "bugbear", x=17, y=17, peaceful=0 })
-des.monster({ id = "bugbear", x=18, y=18, peaceful=0 })
-des.monster({ id = "bugbear", x=19, y=16, peaceful=0 })
-des.monster({ id = "bugbear", x=30, y=06, peaceful=0 })
-des.monster({ id = "bugbear", x=31, y=07, peaceful=0 })
-des.monster({ id = "bugbear", x=32, y=08, peaceful=0 })
-des.monster({ id = "bugbear", x=33, y=06, peaceful=0 })
-des.monster({ id = "bugbear", x=34, y=07, peaceful=0 })
-des.monster({ id = "bugbear", peaceful=0 })
-des.monster({ id = "bugbear", peaceful=0 })
-des.monster({ id = "bugbear", peaceful=0 })
-des.monster({ id = "bugbear", peaceful=0 })
 des.monster({ class = "h", peaceful=0 })
 des.monster({ class = "H", peaceful=0 })
-des.monster({ id = "hill giant", x=03, y=12, peaceful=0 })
-des.monster({ id = "hill giant", x=20, y=17, peaceful=0 })
-des.monster({ id = "hill giant", x=35, y=08, peaceful=0 })
 des.monster({ id = "hill giant", peaceful=0 })
 des.monster({ id = "hill giant", peaceful=0 })
 des.monster({ id = "hill giant", peaceful=0 })
 des.monster({ id = "hill giant", peaceful=0 })
 des.monster({ class = "H", peaceful=0 })
+
+
+des.monster({ id = "electric eel", peaceful=0 })
+des.monster({ id = "electric eel", peaceful=0 })
+des.monster({ id = "electric eel", peaceful=0 })
+des.monster({ id = "electric eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+des.monster({ id = "giant eel", peaceful=0 })
+
+des.monster({ id = "carnivorous ape", peaceful=0 })
+des.monster({ id = "carnivorous ape", peaceful=0 })
+des.monster({ id = "carnivorous ape", peaceful=0 })
+des.monster({ id = "carnivorous ape", peaceful=0 })
+des.monster({ id = "carnivorous ape", peaceful=0 })
+des.monster({ id = "carnivorous ape", peaceful=0 })
+des.monster({ id = "carnivorous ape", peaceful=0 })
+des.monster({ id = "carnivorous ape", peaceful=0 })
+
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+des.monster({ id = "monkey", peaceful=0 })
+
+des.monster({ id = "python", peaceful=0 })
+des.monster({ id = "python", peaceful=0 })
+des.monster({ id = "python", peaceful=0 })
+des.monster({ id = "python", peaceful=0 })
+
+des.monster({ id = "tiger", peaceful=0 })
+des.monster({ id = "tiger", peaceful=0 })
+des.monster({ id = "weretiger tiger", peaceful=0 })
 des.wallify()
 
 --
