@@ -487,7 +487,12 @@ m_initweap(register struct monst *mtmp)
     case S_OGRE:
         if (!rn2(mm == PM_OGRE_TYRANT ? 3 : mm == PM_OGRE_LEADER ? 6 : 12))
             (void) mongets(mtmp, BATTLE_AXE);
-        else
+        else if (mm == PM_OGRE_MAGE) {
+            otmp = mksobj(QUARTERSTAFF, TRUE, FALSE);
+            if (otmp->spe < 2)
+                otmp->spe += rnd(3);
+            (void) mpickobj(mtmp, otmp);
+        } else
             (void) mongets(mtmp, CLUB);
         break;
     case S_TROLL:
