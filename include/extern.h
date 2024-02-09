@@ -969,6 +969,7 @@ extern void splatter_burning_oil(coordxy, coordxy, boolean);
 extern void explode_oil(struct obj *, coordxy, coordxy) NONNULLARG1;
 extern int adtyp_to_expltype(const int);
 extern void mon_explodes(struct monst *, struct attack *) NONNULLPTRS;
+extern void mon_explodes_nodmg(struct monst *, struct attack *);
 
 /* ### extralev.c ### */
 
@@ -1811,6 +1812,7 @@ extern boolean resists_magm(struct monst *) NONNULLARG1;
 extern boolean resists_blnd(struct monst *) NONNULLARG1;
 extern boolean can_blnd(struct monst *, struct monst *,
                         uchar, struct obj *) NONNULLARG2;
+extern boolean resists_light_halu(struct monst *);
 extern boolean ranged_attk(struct permonst *) NONNULLARG1;
 extern boolean mon_hates_silver(struct monst *) NONNULLARG1;
 extern boolean hates_silver(struct permonst *) NONNULLARG1;

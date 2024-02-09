@@ -3130,7 +3130,9 @@ mhitm_ad_blnd(
         /* uhitm */
         if (can_blnd(magr, mdef, mattk->aatyp, (struct obj *) 0)) {
             if (!Blind && mdef->mcansee)
-                pline("%s is blinded.", Monnam(mdef));
+                pline("%s is blinded%s", Monnam(mdef),
+                      (mattk->aatyp == AT_EXPL ? " by your flash of light!"
+                                               : "."));
             mdef->mcansee = 0;
             mhm->damage += mdef->mblinded;
             if (mhm->damage > 127)
@@ -4114,24 +4116,36 @@ mhitm_ad_halu(
     struct attack *mattk UNUSED,
     struct monst *mdef, struct mhitm_data *mhm)
 {
-    struct permonst *pd = mdef->data;
+    mhm->damage = 0;
+
+    /* Currently this code assumes this is an AT_EXPL attack (the only such
+     * attack currently implemented). Make something break if some other
+     * hallucination attack gets implemented, so that the below can be revised.
+     */
+    if (mattk->aatyp != AT_EXPL) {
+        impossible("Non-explosion AD_HALU attack; behavior is unimplemented");
+        return;
+    }
+    if (resists_light_halu(mdef)) {
+        return;
+    }
 
     if (magr == &gy.youmonst) {
         /* uhitm */
-        mhm->damage = 0;
+        if (gv.vis && canseemon(mdef))
+            pline("%s is affected by your flash of light!", Monnam(mdef));
+        mdef->mconf = 1;
+        mdef->mstrategy &= ~STRAT_WAITFORU;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-        mhm->damage = 0;
+        /* handled in mon_explodes_nodmg */
     } else {
         /* mhitm */
-        if (!magr->mcan && haseyes(pd) && mdef->mcansee) {
-            if (gv.vis && canseemon(mdef))
-                pline("%s looks %sconfused.", Monnam(mdef),
-                      mdef->mconf ? "more " : "");
-            mdef->mconf = 1;
-            mdef->mstrategy &= ~STRAT_WAITFORU;
-        }
-        mhm->damage = 0;
+        if (gv.vis && canseemon(mdef))
+            pline("%s looks %sconfused.", Monnam(mdef),
+                  mdef->mconf ? "more " : "");
+        mdef->mconf = 1;
+        mdef->mstrategy &= ~STRAT_WAITFORU;
     }
 }
 
@@ -5249,17 +5263,8 @@ explum(struct monst *mdef, struct attack *mattk)
 
     switch (mattk->adtyp) {
     case AD_BLND:
-        if (mdef && !resists_blnd(mdef)) {
-            pline("%s is blinded by your flash of light!", Monnam(mdef));
-            mdef->mblinded = min((int) mdef->mblinded + tmp, 127);
-            mdef->mcansee = 0;
-        }
-        break;
     case AD_HALU:
-        if (mdef && haseyes(mdef->data) && mdef->mcansee) {
-            pline("%s is affected by your flash of light!", Monnam(mdef));
-            mdef->mconf = 1;
-        }
+        mon_explodes_nodmg(&gy.youmonst, mattk);
         break;
     case AD_COLD:
     case AD_FIRE:

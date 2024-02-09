@@ -1023,6 +1023,8 @@ static int
 explmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
 {
     int result;
+    /* it's not currently possible to leash any exploding monsters... */
+    boolean was_leashed = (magr->mleashed != 0);
 
     if (magr->mcan)
         return M_ATTK_MISS;
@@ -1036,26 +1038,23 @@ explmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     if (mattk->adtyp == AD_FIRE || mattk->adtyp == AD_COLD
         || mattk->adtyp == AD_ELEC) {
         mon_explodes(magr, mattk);
-        /* unconditionally set AGR_DIED here; lifesaving is accounted below */
-        result = M_ATTK_AGR_DIED | (DEADMONSTER(mdef) ? M_ATTK_DEF_DIED : 0);
     } else {
-        result = mdamagem(magr, mdef, mattk, (struct obj *) 0, 0);
+        mon_explodes_nodmg(magr, mattk);
+    }
+    /* unconditionally set AGR_DIED here; lifesaving is accounted below */
+    result = M_ATTK_AGR_DIED | (DEADMONSTER(mdef) ? M_ATTK_DEF_DIED : 0);
+
+    /* it's also not currently possible for any exploding monsters to wear life
+     * saving... */
+    if (!DEADMONSTER(magr)) {
+        result &= ~M_ATTK_AGR_DIED;
+        return result; /* life saved */
     }
 
-    /* Kill off aggressor if it didn't die. */
-    if (!(result & M_ATTK_AGR_DIED)) {
-        boolean was_leashed = (magr->mleashed != 0);
-
-        mondead(magr);
-        if (!DEADMONSTER(magr))
-            return result; /* life saved */
-        result |= M_ATTK_AGR_DIED;
-
-        /* mondead() -> m_detach() -> m_unleash() always suppresses
-           the m_unleash() slack message, so deliver it here instead */
-        if (was_leashed)
-            Your("leash falls slack.");
-    }
+    /* mondead() -> m_detach() -> m_unleash() always suppresses
+       the m_unleash() slack message, so deliver it here instead */
+    if (was_leashed)
+        Your("leash falls slack.");
     if (magr->mtame) /* give this one even if it was visible */
         You(brief_feeling, "melancholy");
 
