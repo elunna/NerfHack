@@ -984,7 +984,7 @@
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 9, CLR_WHITE, GLASS_PIERCER),
     MON(NAM("diamond piercer"), S_PIERCER,
-        LVL(8, 1, 0, 0, 0), (G_GENO | 1),
+        LVL(12, 1, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 8, 6), 
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 300, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_FIRE | 0, 0,
