@@ -1435,7 +1435,7 @@
         M1_FLY | M1_NOHANDS | M1_SLITHY | M1_POIS,
         M2_MINION | M2_STALK | M2_STRONG | M2_NASTY | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION,
-        NO_RACE, 11, CLR_GREEN, COUATL),
+        MH_ANGEL, 11, CLR_GREEN, COUATL),
     MON(NAM("Aleax"), S_ANGEL,
         LVL(10, 8, 0, 30, 7), (G_NOHELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
@@ -1447,7 +1447,7 @@
         M1_HUMANOID | M1_SEE_INVIS,
         M2_MINION | M2_STALK | M2_NASTY | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION,
-        NO_RACE, 12, CLR_YELLOW, ALEAX),
+        MH_ANGEL, 12, CLR_YELLOW, ALEAX),
     /* Angels start with the emin extension attached, and usually have
        the isminion flag set; however, non-minion Angels can be tamed
        and will switch to edog (guardian Angel is handled specially and
@@ -1464,7 +1464,7 @@
         M1_FLY | M1_HUMANOID | M1_SEE_INVIS,
         M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE,
-        NO_RACE, 19, CLR_WHITE, ANGEL),
+        MH_ANGEL, 19, CLR_WHITE, ANGEL),
     /* the AD&D Monster Manual depicts ki-rin as very similar to unicorns
        except that they fly (without wings) and can cast spells; nethack's
        ki-rin doesn't leave its horn when killed, but it can use the horn
@@ -1481,7 +1481,7 @@
         M1_FLY | M1_NOHANDS | M1_SEE_INVIS,
         M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY | M2_LORD,
         M3_INFRAVISIBLE | M3_INFRAVISION,
-        NO_RACE, 21, HI_GOLD, KI_RIN),
+        MH_ANGEL, 21, HI_GOLD, KI_RIN),
     MON(NAM("Archon"), S_ANGEL,
         LVL(19, 16, -6, 80, 15), (G_NOHELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
@@ -1496,7 +1496,7 @@
         M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY | M2_LORD
             | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE,
-        NO_RACE, 26, HI_LORD, ARCHON),
+        MH_ANGEL, 26, HI_LORD, ARCHON),
     /*
      * Bats and birds
      */

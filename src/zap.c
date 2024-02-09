@@ -2858,8 +2858,7 @@ zapyourself(struct obj *obj, boolean ordinary)
 
     case WAN_DEATH:
     case SPE_FINGER_OF_DEATH:
-        if (nonliving(gy.youmonst.data) || is_demon(gy.youmonst.data) 
-            || gy.youmonst.data->mlet == S_ANGEL) {
+        if (resists_death(gy.youmonst.data)) {
             pline((obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."
                       : "You seem no deader than before.");
@@ -4431,9 +4430,7 @@ zhitm(
                 tmp = 0;
                 break;
             }
-            if (nonliving(mon->data) || is_demon(mon->data)
-                || is_vampshifter(mon) || resists_magm(mon)
-                || mon->data->mlet == S_ANGEL) {
+            if (resists_death(mon->data) || resists_magm(mon)) {
                 /* similar to player */
                 sho_shieldeff = TRUE;
                 break;
@@ -4635,8 +4632,7 @@ zhitu(
                 if (uarmu)
                     (void) destroy_arm(uarmu, FALSE);
             }
-        } else if (nonliving(gy.youmonst.data) || is_demon(gy.youmonst.data)
-                   || gy.youmonst.data->mlet == S_ANGEL) {
+        } else if (resists_death(gy.youmonst.data)) {
             shieldeff(sx, sy);
             You("seem unaffected.");
             break;

@@ -19,6 +19,13 @@
 #define has_reflection(mon) \
     ((mon_resistancebits(mon) & MR2_REFLECTION) != 0)
 
+#define resists_death(ptr) \
+    (dmgtype((ptr), AD_DETH) \
+     || nonliving(ptr) \
+     || is_demon(ptr) \
+     || is_angel(ptr) \
+     || (ptr) == &mons[PM_DEATH])
+
 #define resists_sick(ptr) \
     ((ptr)->mlet == S_FUNGUS \
      || ((ptr)->mlet == S_ELEMENTAL && (ptr) != &mons[PM_STALKER]) \
@@ -151,6 +158,7 @@
     ((ptr) == &mons[PM_GHOUL] || (ptr) == &mons[PM_SKELETON])
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mhflags & MH_DEMON) != 0L)
+#define is_angel(ptr) (((ptr)->mhflags & MH_ANGEL) != 0L)
 #define is_mercenary(ptr) (((ptr)->mflags2 & M2_MERC) != 0L)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
 #define is_female(ptr) (((ptr)->mflags2 & M2_FEMALE) != 0L)

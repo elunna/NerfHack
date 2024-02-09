@@ -594,9 +594,10 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
     switch (spellnum) {
     case MGC_DEATH_TOUCH:
         pline("Oh no, %s's using the touch of death!", mhe(mtmp));
-        if (nonliving(gy.youmonst.data) || is_demon(gy.youmonst.data)
-            || gy.youmonst.data->mlet == S_ANGEL) {
+        if (nonliving(gy.youmonst.data)) {
             You("seem no deader than before.");
+        } else if (resists_death(gy.youmonst.data)) {
+            You("are unaffected.");
         } else if (!Antimagic && rn2(mtmp->m_lev) > 12) {
             if (Hallucination) {
                 You("have an out of body experience.");
