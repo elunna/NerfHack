@@ -303,7 +303,9 @@
          && (ptr) != &mons[PM_LEATHER_GOLEM]) || noncorporeal(ptr))
 #define vegetarian(ptr) \
     (vegan(ptr)         \
-     || ((ptr)->mlet == S_PUDDING && (ptr) != &mons[PM_BLACK_PUDDING]))
+     || ((ptr)->mlet == S_PUDDING \
+         && ((ptr) != &mons[PM_BLACK_PUDDING] \
+            && (ptr) != &mons[PM_LIKE_LIKE])))
 
 #define corpse_eater(ptr)                    \
     (ptr == &mons[PM_PURPLE_WORM]            \

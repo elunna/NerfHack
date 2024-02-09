@@ -1071,6 +1071,8 @@ FOOD("glob of brown pudding", 0,  2, 20, 0, FLESH,  20, CLR_BROWN,
                                                         GLOB_OF_BROWN_PUDDING),
 FOOD("glob of green slime",   0,  2, 20, 0, FLESH,  20, CLR_GREEN,
                                                         GLOB_OF_GREEN_SLIME),
+FOOD("glob of like-like",     0,  2, 20, 0, FLESH,  20, CLR_ORANGE,
+     GLOB_OF_LIKE_LIKE),
 FOOD("glob of black pudding", 0,  2, 20, 0, FLESH,  20, CLR_BLACK,
                                                         GLOB_OF_BLACK_PUDDING),
 

@@ -520,7 +520,7 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
                 return 0;
             }
             if (udefend) {
-                destroy_arm(oatmp, FALSE);
+                destroy_arm(oatmp, FALSE, TRUE);
             } else {
                 if (canseemon(mdef)) {
                     const char *action;

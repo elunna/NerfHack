@@ -1324,7 +1324,7 @@ seffect_destroy_armor(struct obj **sobjp)
         if (gets_choice) {
             pline("This is a scroll of destroy armor.");
         }
-        if (!destroy_arm(otmp, gets_choice)) {
+        if (!destroy_arm(otmp, gets_choice, TRUE)) {
             strange_feeling(sobj, "Your skin itches.");
             *sobjp = 0; /* useup() in strange_feeling() */
             exercise(A_STR, FALSE);

@@ -3288,7 +3288,10 @@ maybe_destroy_armor(struct obj *armor, struct obj *atmp, boolean *resisted)
  * Return 1 if something was destroyed, 0 if not.
  */
 int
-destroy_arm(register struct obj *atmp, boolean choose)
+destroy_arm(
+    register struct obj *atmp,
+    boolean choose,
+    boolean noisy)
 {
     struct obj *otmp;
     struct obj *ochoice;
@@ -3311,9 +3314,10 @@ destroy_arm(register struct obj *atmp, boolean choose)
      */
 
     if ((otmp = maybe_destroy_armor(uarmc, atmp, &resistedc)) != 0) {
-        urgent_pline("Your %s crumbles and turns to dust!",
-                     /* cloak/robe/apron/smock (ID'd apron)/wrapping */
-                     cloak_simple_name(otmp));
+        if (noisy)
+            urgent_pline("Your %s crumbles and turns to dust!",
+                         /* cloak/robe/apron/smock (ID'd apron)/wrapping */
+                         cloak_simple_name(otmp));
     } else if (!resistedc
              && (otmp = maybe_destroy_armor(uarm, atmp, &resistedsuit)) != 0) {
         const char *suit = suit_simple_name(otmp);
@@ -3339,7 +3343,8 @@ destroy_arm(register struct obj *atmp, boolean choose)
     } else if ((otmp = maybe_destroy_armor(uarmf, atmp, &resisted)) != 0) {
         urgent_pline("Your %s disintegrate!", boots_simple_name(otmp));
     } else if ((otmp = maybe_destroy_armor(uarms, atmp, &resisted)) != 0) {
-        urgent_pline("Your %s crumbles away!", shield_simple_name(otmp));
+        if (noisy)
+            urgent_pline("Your %s crumbles away!", shield_simple_name(otmp));
     } else {
         return 0; /* could not destroy anything */
     }

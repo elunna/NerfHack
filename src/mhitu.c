@@ -1706,6 +1706,38 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
             drain_en(tmp, FALSE);
         tmp = 0;
         break;
+    case AD_DCAY: /* like-like */
+        if (!mtmp->mcan && rn2(2)) {
+            /* They prefer shields first */
+            if (uarms && objects[uarms->otyp].oc_material != SILVER) {
+                pline("%s eats %s!", Monnam(mtmp), yobjnam(uarms, (char *) 0));
+                destroy_arm(uarms, FALSE, FALSE);
+                if (uarms)
+                    pline("%s!", Yobjnam2(uarms, "resist"));
+                else
+                    expels(mtmp, mtmp->data, FALSE);
+            } else if (uarmc) {
+                pline("%s eats %s!", Monnam(mtmp), yobjnam(uarmc, (char *) 0));
+                destroy_arm(uarmc, FALSE, FALSE);
+                if (uarmc)
+                    pline("%s!", Yobjnam2(uarmc, "resist"));
+                else /* Eat only one thing at a time */
+                    expels(mtmp, mtmp->data, FALSE);
+            } else {
+                /* Rot stuff if nothing looks edible */
+                if (completelyrots(gy.youmonst.data)) {
+                    You("rot!");
+                    /* KMH -- this is okay with unchanging */
+                    rehumanize();
+                    expels(mtmp, mtmp->data, FALSE);
+                    break;
+                }
+                erode_armor(&gy.youmonst, ERODE_ROT);
+            }
+            exercise(A_CON, FALSE);
+        }
+        tmp = 0;
+        break;
     default:
         physical_damage = TRUE;
         tmp = 0;
