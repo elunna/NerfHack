@@ -755,6 +755,7 @@ Shield_on(void)
     case DWARVISH_ROUNDSHIELD:
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
+    case ANTI_MAGIC_SHIELD:
         break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
@@ -797,6 +798,7 @@ Shield_off(void)
     case DWARVISH_ROUNDSHIELD:
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
+    case ANTI_MAGIC_SHIELD:
         break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
