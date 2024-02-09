@@ -372,6 +372,8 @@ moverock(void)
                     deltrap(ttmp);
                     useupf(otmp, 1L);
                     bury_objs(rx, ry);
+                    if (gl.level.flags.temperature < 0)
+                        levl[rx][ry].typ = ICE;
                     levl[rx][ry].wall_info &= ~W_NONDIGGABLE;
                     levl[rx][ry].candig = 1;
                     if (cansee(rx, ry))

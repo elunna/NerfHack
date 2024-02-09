@@ -558,6 +558,8 @@ fillholetyp(coordxy x, coordxy y,
         return MOAT;
     else if ((pool_cnt > 0 && rn2(pool_cnt + 1)) || (pool_cnt && fill_if_any))
         return POOL;
+    else if (gl.level.flags.temperature < 0)
+        return ICE;
     else
         return ROOM;
 }
