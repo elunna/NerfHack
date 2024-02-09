@@ -6,7 +6,7 @@
 -- https://nethackwiki.com/wiki/Sokoban_Level_4d
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify");
+des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[
 ------------      
 |.+......+.|      
@@ -28,6 +28,8 @@ des.map([[
  |...|...-----..| 
  ---------   ---- 
 ]]);
+
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=100 })
 
 place = selection.new();
 place:set(01,01);

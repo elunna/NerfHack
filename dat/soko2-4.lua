@@ -7,7 +7,7 @@
 -- "Joseph L Traub"
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify");
+des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[
          ----------
     -----|........|
@@ -25,6 +25,9 @@ des.map([[
    |...---.......| 
    ----- --------- 
 ]]);
+
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=60 })
+
 des.stair("down", 04,04)
 des.stair("up", 10,02)
 des.region(selection.area(00,00,18,14), "lit");

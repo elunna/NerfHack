@@ -23,6 +23,9 @@ des.map([[
 |.....|     |...|
 -------     -----
 ]]);
+
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=20 })
+
 des.levregion({ region = {01,05,01,05}, type = "branch" })
 des.stair("up", 11,07)
 des.region(selection.area(00,00,16,12),"lit")

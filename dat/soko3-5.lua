@@ -5,7 +5,7 @@
 -- https://nethackwiki.com/wiki/Sokoban_Level_1j
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify");
+des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[
             ---------
 ------------|.....+.|
@@ -21,6 +21,9 @@ des.map([[
   ---.----           
     ---              
 ]]);
+
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=40 })
+
 des.stair("down", 05,11)
 des.stair("up", 15,05)
 des.region(selection.area(00,00,20,12), "lit")

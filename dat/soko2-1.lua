@@ -6,7 +6,7 @@
 -- https://nethackwiki.com/wiki/Sokoban_Level_3e
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "premapped", "solidify");
+des.level_flags("mazelevel", "noteleport", "premapped", "solidify", "cold");
 des.map([[
     ------------------
  ----....|.........+.|
@@ -22,6 +22,9 @@ des.map([[
  |....|..|...........|
  ---------------------
 ]]);
+
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=60 })
+
 des.stair("down", 02,08)
 des.stair("up", 11,03)
 des.region(selection.area(00,00,21,12), "lit");
