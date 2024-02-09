@@ -49,9 +49,7 @@ explosionmask(
             break;
         case AD_DISN:
             if ((olet == WAND_CLASS)
-                ? (m->data->mlet == S_ANGEL 
-                       || nonliving(m->data) || is_demon(m->data))
-                : Disint_resistance)
+                    ? (resists_death(m->data)) : Disint_resistance)
                 res = EXPL_HERO;
             break;
         case AD_ELEC:
@@ -90,10 +88,7 @@ explosionmask(
             break;
         case AD_DISN:
             if ((olet == WAND_CLASS)
-                ? (m->data->mlet == S_ANGEL
-                       || nonliving(m->data) || is_demon(m->data)
-                   || is_vampshifter(m))
-                : !!resists_disint(m))
+                ? resists_death(m->data) : !!resists_disint(m))
                 res = EXPL_MON;
             break;
         case AD_ELEC:
