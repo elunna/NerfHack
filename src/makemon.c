@@ -1356,6 +1356,12 @@ makemon(
         /* These should always generate hidden if possible */
         hide_monst(mtmp);
         break;
+    case S_ANGEL:
+        if (mndx == PM_COUATL && !rn2(2)) {
+            mtmp->perminvis = TRUE;
+            mtmp->minvis = TRUE;
+        }
+        break;
     case S_LIGHT:
     case S_ELEMENTAL:
         if (mndx == PM_STALKER || mndx == PM_BLACK_LIGHT) {
