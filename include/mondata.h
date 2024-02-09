@@ -46,7 +46,9 @@
 
 #define resists_drain(ptr) \
     (is_undead(ptr) || is_demon(ptr) || is_were(ptr) \
-     || ptr == &mons[PM_DEEPEST_ONE] || ptr == &mons[PM_DEATH])
+     || ptr == &mons[PM_DEEPEST_ONE]                 \
+     || ptr == &mons[PM_SHADOW_OGRE]                 \
+     || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 
 #define non_tameable(ptr) (unique_corpstat(ptr) \
@@ -277,7 +279,8 @@
 
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
 
-#define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN])
+#define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN] \
+                          || (ptr) == &mons[PM_SHADOW_OGRE])
 
 /* used to vary a few messages */
 #define weirdnonliving(ptr) (is_golem(ptr) || (ptr)->mlet == S_VORTEX)
