@@ -52,6 +52,7 @@ struct attack {
 #define WT_HUMAN 1450U
 #define WT_ELF 800U
 #define WT_DRAGON 4500U
+#define WT_BABY_DRAGON 1000U
 
 #ifndef ALIGN_H
 #include "align.h"
