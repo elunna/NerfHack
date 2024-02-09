@@ -25,6 +25,8 @@
      || is_demon(ptr) \
      || is_angel(ptr) \
      || (ptr)->msound == MS_LEADER \
+     || (ptr) == &mons[PM_MINOTAUR] \
+     || (ptr) == &mons[PM_TITAN] \
      || (ptr) == &mons[PM_DEATH])
 
 #define resists_sick(ptr) \
