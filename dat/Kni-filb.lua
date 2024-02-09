@@ -33,6 +33,12 @@ des.monster({ class = "i", peaceful=0 })
 des.monster({ id = "ochre jelly", peaceful=0 })
 des.monster({ id = "ochre jelly", peaceful=0 })
 des.monster({ id = "ochre jelly", peaceful=0 })
+
+des.monster({ id = "merfolk", peaceful=0 })
+des.monster({ id = "merfolk", peaceful=0 })
+des.monster({ id = "merfolk", peaceful=0 })
+des.monster({ id = "merfolk", peaceful=0 })
+des.monster({ id = "merfolk", peaceful=0 })
 --
 des.trap()
 des.trap()
