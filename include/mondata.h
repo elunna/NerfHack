@@ -24,6 +24,7 @@
      || nonliving(ptr) \
      || is_demon(ptr) \
      || is_angel(ptr) \
+     || (ptr)->msound == MS_LEADER \
      || (ptr) == &mons[PM_DEATH])
 
 #define resists_sick(ptr) \
