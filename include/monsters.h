@@ -1138,15 +1138,6 @@
         M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
         M2_HOSTILE, 0,
         NO_RACE, 4, CLR_YELLOW, CENTIPEDE),
-    MON(NAM("jumping spider"), S_SPIDER,
-        LVL(3, 15, 3, 0, 0), (G_GENO | G_SGROUP | 1),
-        A(ATTK(AT_BITE, AD_DRST, 1, 4), 
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(75, 75, MS_SILENT, MZ_TINY), MR_POISON, MR_POISON,
-        M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS
-            | M1_CARNIVORE,
-        M2_HOSTILE, M3_JUMPER,
-        NO_RACE, 5, CLR_CYAN, JUMPING_SPIDER),
     MON(NAM("giant spider"), S_SPIDER,
         LVL(5, 15, 4, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 2, 4),
@@ -1167,6 +1158,16 @@
             | M1_CARNIVORE,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 8, CLR_RED, SCORPION),
+    MON(NAM("jumping spider"), S_SPIDER,
+        LVL(6, 15, 4, 0, 0), (G_GENO | 1),
+        A(ATTK(AT_BITE, AD_DRST, 2, 4), 
+          ATTK(AT_TUCH, AD_WEBS, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(100, 100, MS_SILENT, MZ_MEDIUM), MR_POISON, MR_POISON,
+        M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE
+            | M1_CONCEAL,
+        M2_HOSTILE | M2_STRONG | M3_JUMPER, 0,
+        NO_RACE, 8, CLR_BLUE, JUMPING_SPIDER),
     /*
      * trappers, lurkers, &c
      * Note:  prior to 3.7, these were defined to do AD_DGST damage,
