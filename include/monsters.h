@@ -123,6 +123,8 @@
         SIZ(200, 50, MS_SILENT, MZ_LARGE), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_CARNIVORE, M2_HOSTILE, 0,
         NO_RACE, 6, CLR_BLACK, GIANT_BEETLE),
+    /* From SpliceHack: In Splice it ignores Elbereth. Now it ignores Elbereth
+     * and all magical scaring. */
     MON(NAM("giant praying mantis"), S_ANT,
         LVL(7, 12, 2, 0, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6),
@@ -140,7 +142,8 @@
         M1_ANIMAL | M1_FLY | M1_NOHANDS | M1_OVIPAROUS | M1_POIS,
         M2_HOSTILE | M2_FEMALE | M2_PRINCE, M3_DISPLACES, 
         NO_RACE, 12, HI_LORD, QUEEN_BEE),
-    MON(NAM("locust"), S_ANT, /* From SporkHack */
+    /* From SporkHack */
+    MON(NAM("locust"), S_ANT, 
         LVL(9, 12, 0, 0, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 8),
           ATTK(AT_STNG, AD_DISE, 1, 4),
@@ -373,6 +376,7 @@
         M1_FLY | M1_AMPHIBIOUS | M1_NOLIMBS | M1_NOHEAD | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
         NO_RACE, 3, CLR_BLUE, FLOATING_EYE),
+    /* From SLASH'EM - they now wander */
     MON(NAM("glowing eye"), S_EYE,
         LVL(5, 3, 4, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_GAZE, AD_BLND, 3, 4),
@@ -408,6 +412,7 @@
             | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
         NO_RACE, 10, HI_ZAP, SHOCKING_SPHERE),
+    /* From SLASH'EM */
     MON(NAM("bloodshot eye"), S_EYE,
         LVL(6, 3, 4, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_GAZE, AD_STUN, 3, 4),
@@ -416,6 +421,7 @@
         M1_FLY | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS,
         M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
         NO_RACE, 8, CLR_RED, BLOODSHOT_EYE),
+    /* From SLASH'EM */
     MON(NAM("blinking eye"), S_EYE,
         LVL(8, 12, 4, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_GAZE, AD_TLPT, 0, 0),
@@ -495,6 +501,10 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_STRONG | M2_DOMESTIC,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 7, HI_DOMESTIC, LARGE_CAT),
+    /* From SLASH'EM with changes:
+     * - Color is light green instead of orange
+     * - The snake bite attacks are now poisonous
+     * - They now have infravision */
     MON(NAM("kamadan"), S_FELINE,
         LVL(4, 12, 4, 0, -3), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BREA, AD_SLEE, 1, 6),
@@ -516,6 +526,9 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_JUMPER,
         NO_RACE, 8, CLR_ORANGE, TIGER),
+    /* From SLASH'EM with changes
+     * - colored orange instead of yellow
+     * - they now have infravision and can jump in tiger form */
     MON(NAM("weretiger"), S_FELINE,
         LVL(7, 12, 6, 20, -7), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_WERE, 2, 6), 
@@ -527,6 +540,9 @@
         M2_NOPOLY | M2_HOSTILE,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_JUMPER,
         MH_WERE, 9, CLR_ORANGE, WERETIGER),
+    /* From SLASH'EM with changes:
+     * - They now count as a nasty and get infravision
+     * - their traitorous nature has been removed */
     MON(NAM("displacer beast"), S_FELINE,
         LVL(12, 12, -10, 0, -3), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 4, 4),
@@ -540,6 +556,8 @@
     /*
      * gremlins and gargoyles
      */
+    /* Gremlins no longer require midnight for their attribute stealing to
+     * work - from FIQHack */
     MON(NAM("gremlin"), S_GREMLIN,
         LVL(5, 12, 2, 25, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 6),
@@ -669,6 +687,10 @@
         M2_HOSTILE | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 19, CLR_BRIGHT_MAGENTA, MASTER_MIND_FLAYER),
+    /* From SLASH'EM with changes:
+     * - Difficulty reduced from 33 to 27
+     * - They get flanking; removed traitorous nature
+     * - Cannot be genocided */
     MON(NAM("deepest one"), S_HUMANOID,
         LVL(30, 15, -5, 70, -9), (1),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6),
@@ -682,6 +704,18 @@
             | M2_STRONG | M2_MAGIC | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 28, HI_LORD, DEEPEST_ONE),
+    /* From EvilHack:
+     * 'Alhoon are the product of rogue mind flayers attempting to gain
+     * ultimate power as a lich. They still retain their form but are a
+     * sickly gray in color. Alhoon are basically a cross between an arch-
+     * lich and a master mind flayer - not as many tentacle attacks, but
+     * they can employ the lich frost touch attack and can cast spells.
+     * They are flagged as MH_UNDEAD and enjoy all of the benefits and 
+     * weaknesses that come with being undead. They are very rare, and
+     * typically will only be found in Gehennom.'
+     * Changes from EvilHack:
+     * - Alhoons are no longer covetous, instead 
+     * - their speed was raised from 9 to 15 */
     MON(NAM("alhoon"), S_HUMANOID,
         LVL(26, 15, -6, 90, -15), (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 10),
@@ -752,6 +786,11 @@
         M1_TPORT | M1_TPORT_CNTRL | M1_CARNIVORE,
         M2_STALK, M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 7, CLR_CYAN, TENGU),
+    /* From SpliceHack with changes:
+     *  - They now berserk and they don't leave any corpses.
+     *  - Their starting gear includes a selection of strong weapons, sling
+     *      & flint, and armor.
+     */
     MON(NAM("redcap"), S_IMP,
         LVL(10, 15, 2, 30, 7), (G_GENO | 1 | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_PHYS, 1, 2),
@@ -1008,6 +1047,10 @@
             | M1_NOTAKE | M1_MINDLESS,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 9, CLR_WHITE, GLASS_PIERCER),
+    /* From SpliceHack with changes:
+     * - They can generate randomly and are mindless (cannot be seen with ESP)
+     * - Difficulty was raised from 9 to 12
+     */
     MON(NAM("diamond piercer"), S_PIERCER,
         LVL(12, 1, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 8, 6), 
@@ -1060,6 +1103,7 @@
         M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE, M2_HOSTILE | M2_STRONG,
         M3_INFRAVISIBLE,
         NO_RACE, 8, CLR_RED, LEOCROTTA),
+    /* From SpliceHack */
     MON(NAM("landshark"), S_QUADRUPED,
         LVL(7, 12, 2, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 5, 6),
@@ -1194,6 +1238,7 @@
             | M1_CARNIVORE,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 8, CLR_RED, SCORPION),
+    /* From SpliceHack */
     MON(NAM("jumping spider"), S_SPIDER,
         LVL(6, 15, 4, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 2, 4), 
@@ -1436,6 +1481,10 @@
             | M1_NOHEAD | M1_MINDLESS | M1_UNSOLID | M1_SEE_INVIS | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 7, CLR_BLACK, BLACK_LIGHT),
+    /* From SpliceHack with changes:
+     * - Raised their level from 2 to 3, reduced frequency from 4 to 2
+     * - 
+     */
     MON(NAM("will-o'-the-wisp"), S_LIGHT,
         LVL(3, 9, 2, 0, 0), (G_NOCORPSE | G_SGROUP | G_GENO | 2),
         A(ATTK(AT_TUCH, AD_BLND, 1, 2),
@@ -1556,6 +1605,10 @@
         M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE | M1_SEE_INVIS,
         M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 3, CLR_RED, GIANT_BAT),
+    /* From SpliceHack with changes
+     * - eating their corpse conveys confusion
+     * - they can see invisible
+     */
     MON(NAM("zoo bat"), S_BAT,
         LVL(3, 20, 7, 0, 0), (G_GENO | G_LGROUP | 3),
         A(ATTK(AT_BITE, AD_PHYS, 1, 3),
@@ -1584,6 +1637,13 @@
             | M1_OMNIVORE | M1_SEE_INVIS,
         M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 7, CLR_BLACK, VAMPIRE_BAT),
+    /* From SLASH'EM with changes:
+     * - They are no longer restricted to gehennom and can spawn anywhere
+     * - They spawn in small grounds instead of large groups
+     * - Raised level from 2 to 7; Weight, nutrition, and size were increased
+     * - They are able to use their clawed "hands" and have infravision
+     * - They are strong, flank, can berserk, and no longer "wander"
+     * - Like shriekers they occasionally shriek and aggravate monsters */
     MON(NAM("athol"), S_BAT,
         LVL(7, 20, 7, 0, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 10), 
@@ -1593,6 +1653,9 @@
         M1_FLY | M1_ANIMAL | M1_CARNIVORE, M2_HOSTILE | M2_FLANK | M2_STRONG,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
         NO_RACE, 8, CLR_GRAY, ATHOL),
+    /* From SLASH'EM with changes:
+     * - Increased bite and sting damage. They can now flank.
+     * - Removed traitorous nature */
     MON(NAM("byakhee"), S_BAT,
         LVL(11, 20, 1, 25, -4), (G_GENO | 2 | G_SGROUP),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
@@ -1607,6 +1670,11 @@
             | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 15, CLR_YELLOW, BYAKHEE),
+    /* From SLASH'EM with changes:
+     * - Added a weapon attack and a sting attack. They can now flank.
+     * - Their paralyzing tickle is no longer protected from by possessing
+     *   Free Action and it is unaffected by magic cancellation. However,the
+     *   length of paralysis when it does occur was reduced. */
     MON(NAM("nightgaunt"), S_BAT,
         LVL(15, 20, -2, 50, -6), (G_GENO | 2 | G_SGROUP),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6),
@@ -1680,6 +1748,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
         MH_DRAGON, 7, CLR_GRAY, BABY_GRAY_DRAGON),
+    /* Initially appeared in SporkHack */
     MON(NAM("baby gold dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, 4), (G_NOHELL | G_GENO | 1),
         /* The bite attack is the lesser version of
@@ -1791,8 +1860,10 @@
             | M2_STALK,
         0,
         MH_DRAGON, 21, CLR_GRAY, GRAY_DRAGON),
-    /* gold dragon can be seen via infravision but doesn't have infravision */
-    MON(NAM("gold dragon"), S_DRAGON,
+        /* Initially appeared in SporkHack
+         * gold dragon can be seen via infravision but doesn't have infravision
+         */
+        MON(NAM("gold dragon"), S_DRAGON,
         LVL(16, 20, -1, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_FIRE, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
@@ -2061,6 +2132,12 @@
             | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 5, CLR_MAGENTA, VIOLET_FUNGUS),
+    /* From SlashTHEM, originally from SporkHack.
+     * - The THEM version is a bit different and more interesting from the
+     *   Spork gray fungus so I pulled from there.
+     * - They have a movement speed of 1, making them mobile.
+     * - THEM added a minor touch attack, instead we have taken this and
+     *   converted it to a slightly more annoying stick attack. */
     MON(NAM("gray fungus"), S_FUNGUS,
         LVL(4, 1, 7, 0, 0), (G_GENO | 1),
         A(ATTK(AT_TUCH, AD_STCK, 0, 0),
@@ -2150,7 +2227,8 @@
         M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_JEWELS,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
         MH_GIANT, 13, CLR_WHITE, FROST_GIANT),
-    /* ettin is a two-headed giant but its corpse doesn't confer strength */
+    /* ettin is a two-headed giant
+     * HACKEM changes: now counts as a giant and can confer strength*/
     MON(NAM("ettin"), S_GIANT,
         LVL(10, 12, 3, 0, 0), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
@@ -2175,18 +2253,19 @@
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
           ATTK(AT_MAGC, AD_SPEL, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(2300, 900, MS_SPELL, MZ_HUGE), 0, 0,
+        SIZ(2300, 900, MS_SPELL, MZ_HUGE), 0, 0, /* Resists death */
         M1_FLY | M1_HUMANOID | M1_OMNIVORE | M1_SEE_INVIS,
         M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE,
         NO_RACE, 20, CLR_MAGENTA, TITAN),
+    /* Minotaurs ignore Elbereth */
     MON(NAM("minotaur"), S_GIANT,
         LVL(15, 15, 6, 0, 0), (G_GENO | G_NOGEN),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 10),
           ATTK(AT_CLAW, AD_PHYS, 3, 10),
           ATTK(AT_BUTT, AD_PHYS, 2, 8),
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1500, 700, MS_MOO, MZ_LARGE), 0, 0,
+        SIZ(1500, 700, MS_MOO, MZ_LARGE), 0, 0, /* Resists death */
         M1_ANIMAL | M1_HUMANOID | M1_CARNIVORE | M1_THICK_HIDE,
         M2_HOSTILE | M2_STRONG | M2_NASTY, M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 17, CLR_BROWN, MINOTAUR),
@@ -2380,6 +2459,12 @@
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_POIS,
         M2_HOSTILE | M2_STRONG, M3_INFRAVISION,
         MH_UNDEAD | MH_GIANT, 8, CLR_BLUE, ETTIN_MUMMY),
+    /* From SpliceHack with changes
+     * - stronger withering attack
+     * - raised difficulty from 9 to 10
+     * Weapons that hit adherers stick to them. Attacking one barehanded
+     * results in you sticking to it.
+     * */
     MON(NAM("adherer"), S_MUMMY,
         LVL(7, 12, 4, 30, -5), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_STCK, 2, 4),
@@ -2401,6 +2486,9 @@
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_POIS,
         M2_HOSTILE | M2_STRONG | M2_JEWELS, M3_INFRAVISION,
         MH_UNDEAD | MH_GIANT, 10, CLR_CYAN, GIANT_MUMMY),
+    /* From SLASH'EM with changes
+     * - Added a withering attack
+     * */
     MON(NAM("troll mummy"), S_MUMMY,
         LVL(9, 14, 3, 30, -8), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_WTHR, 6, 4), 
@@ -2499,6 +2587,7 @@
             | M1_NOTAKE | M1_OMNIVORE,
         M2_STRONG, 0,
         NO_RACE, 17, CLR_GREEN, GUARDIAN_NAGA),
+    /* From SpliceHack */
     MON(NAM("ha-naga"), S_NAGA,
         LVL(20, 18, -4, 70, -2), (G_GENO | G_HELL | 1),
         A(ATTK(AT_SPIT, AD_DRST, 3, 6),
@@ -2644,6 +2733,13 @@
         M1_HUMANOID | M1_OMNIVORE | M1_POIS | M1_TPORT, M2_HOSTILE | M2_NASTY,
         M3_INFRAVISIBLE,
         NO_RACE, 14, CLR_GREEN, GENETIC_ENGINEER),
+    /* From SpliceHack with changes
+     * - Alchemists spawn with 2 potions of acid. When they run out, they 
+     *   are able to produce more at random intervals.
+     * - In Splice they started with 1d3 random potions as well, but that has
+     *   been removed and they instead death drop 1 random potion.
+     * - Alchemists are now skittish and will avoid approaching the player,
+     */
     MON(NAM("alchemist"), S_QUANTMECH,
         LVL(9, 12, 3, 10, 0), (G_GENO | 3),
         A(ATTK(AT_NONE, AD_ACID, 2, 3),
@@ -3210,6 +3306,7 @@
         M2_NOPOLY | M2_HOSTILE | M2_COLLECT,
         M3_INFRAVISIBLE,
         MH_WERE | MH_HUMAN, 6, CLR_ORANGE, HUMAN_WEREWOLF),
+    /* From SLASH'EM */
     MON(NAM("weretiger"), S_HUMAN,
         LVL(7, 12, 10, 20, -7), (1),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 4),
@@ -3918,7 +4015,11 @@
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
         M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 10, CLR_BRIGHT_BLUE, ELECTRIC_EEL),
-    MON(NAMS("merman", "mermaid", "merfolk"), S_EEL, /* SpliceHack + SlashTHEM */
+    /* SpliceHack + SlashTHEM
+     * In Splice these serve as the base form for the merfolk player race.
+     * Most of the stats were pulled from THEM. 
+     * */
+    MON(NAMS("merman", "mermaid", "merfolk"), S_EEL,
         LVL(9, 15, 4, 10, -10), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_SITM, 0, 0), 
@@ -3940,6 +4041,9 @@
         M1_SWIM | M1_AMPHIBIOUS | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 22, CLR_RED, KRAKEN),
+    /* From SpliceHack with changes 
+     * - Raised its MR from 0 to 95
+     */
     MON(NAM("thing from below"), S_EEL,
         LVL(30, 12, 6, 95, -3), (G_GENO | G_NOGEN),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 4),

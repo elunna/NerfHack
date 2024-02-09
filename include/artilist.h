@@ -67,8 +67,8 @@ static NEARDATA struct artifact artilist[] = {
     /*** Lawful artifacts ***/
     
     
-    /* Some "worse" sacrifice gifts are needed to avoid making #offer
-    *  overpowered. Used to be PM_KNIGHT. */
+    /* From SpliceHack: Some "worse" sacrifice gifts are needed to avoid
+     * making #offer overpowered. Used to be PM_KNIGHT. */
     A("Carnwennan", KNIFE,
       (SPFX_RESTR | SPFX_SEARCH | SPFX_STLTH), 0, 0,
       PHYS(3, 8), NO_DFNS, NO_CARY, 0,
@@ -78,6 +78,9 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_DEMON,
       PHYS(5, 0), NO_DFNS, NO_CARY, BANISH,
       A_LAWFUL, PM_CLERIC, NON_PM, 2500L, CLR_RED, DEMONBANE),
+    
+    /* Excalibur it no longer available to any lawful character when dipping
+     * in fountains - only lawful knights can be blessed with it. */
     A("Excalibur", LONG_SWORD, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN 
                                 | SPFX_INTEL | SPFX_SEARCH),
       0, 0, PHYS(5, 10), DRLI(0, 0), NO_CARY, 0,
@@ -88,12 +91,14 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 8000L, NO_COLOR, GRAYSWANDIR),
     
-    /* Shield of King Arthur. */
+    /* From SpliceHack: Shield of King Arthur.
+     * This shield now grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
       (SPFX_RESTR | SPFX_HPHDAM | SPFX_DEFN), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 1500L, NO_COLOR, PRIDWEN),
     
+    /* From SLASH'EM */
     A("Quick Blade", ELVEN_SHORT_SWORD,
       SPFX_RESTR, 0, 0,
       PHYS(9, 2), NO_DFNS, NO_CARY, 0, 
@@ -120,7 +125,10 @@ static NEARDATA struct artifact artilist[] = {
     
     /*** Neutral artifacts ***/
     
-    
+    /* From SlashTHEM with changes:
+     * In THEM, this was a neutral cloak of protection that granted luck,
+     * drain resistance, and warning. Now it is a cloak of invisibility that 
+     * grants drain resistance and warning. Luck was removed. */
     A("Blackshroud", CLOAK_OF_INVISIBILITY,
       (SPFX_RESTR | SPFX_WARN), 0, 0,
       NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
@@ -131,33 +139,47 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(3, 6), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_BARBARIAN, NON_PM, 1500L, NO_COLOR, CLEAVER),
     
+    /* From SLASH'EM with changes: removed the Luck bonus and replaced it MC1
+     * protection. */
     A("Deluder", CLOAK_OF_DISPLACEMENT,
       (SPFX_RESTR | SPFX_STLTH | SPFX_PROTECT), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, DELUDER),
     
+    /* From SLASH'EM with changes: This now grants warning vs undead */
     A("Disrupter", MACE,
       (SPFX_RESTR | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       PHYS(5, 30), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 500L, CLR_RED, DISRUPTER),
     
+    /* When wielded:
+     * - grants warning vs giants and instakills giants
+     * - grants steadfastness
+     * - grants max STR
+     * - type was changed from long sword to spear */
     A("Giantslayer", SPEAR,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_GIANT,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 200L, CLR_RED, GIANTSLAYER),
     
+    /* From EvilHack */
     A("Keolewa", CLUB,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       ELEC(5, 8), DFNS(AD_ELEC), NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 2000L, NO_COLOR, KEOLEWA),
     
     /*Magicbane is a bit different!  Its magic fanfare unbalances victims 
-     * in addition to doing some damage. */
+     * in addition to doing some damage.
+     * - Magicbane was changed from an athame to a quarterstaff. */
     A("Magicbane", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       STUN(3, 4), DFNS(AD_MAGM), NO_CARY, 0,
       A_NEUTRAL, PM_WIZARD, NON_PM, 3500L, NO_COLOR, MAGICBANE),
     
+    /* From SLASH'EM with changes:
+     * - Now doesn't impede spellcasting when worn
+     * - It acts as a light source.
+     * - It is not the healers first sacrifice gift as it was in SLASH'EM */
     A("Mirrorbright", SHIELD_OF_REFLECTION, 
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0, 
@@ -174,6 +196,10 @@ static NEARDATA struct artifact artilist[] = {
      *
      *      Monsters don't throw Mjollnir regardless of strength (not even
      *      fake-player valkyries).
+     *      
+     * Changes from vanilla:
+     * - The warhammer is now 2-handed and deals 2d6 vs small, 2d8 vs large
+     * - Can be invoked for a lightning bolt
      */
     A("Mjollnir", WAR_HAMMER, /* Mjo:llnir */
       (SPFX_RESTR | SPFX_ATTK), 0, 0,
@@ -181,16 +207,22 @@ static NEARDATA struct artifact artilist[] = {
       LIGHTNING_BOLT,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, NO_COLOR, MJOLLNIR),
     
+    /* From SLASH6/slashem-up/SlashTHEM */
     A("Mouser\'s Scalpel", RAPIER,
       SPFX_RESTR, 0, 0,
       PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 600L, NO_COLOR, MOUSER_S_SCALPEL),
     
+    /* From SlashTHEM with changes:  In SlashTHEM this is a neutral robe that
+     * confers hallucination resistance and acid resistance when worn. It 
+     * also granted protection, but was removed since the robe already has MC2.
+     * */
     A("Snakeskin", ROBE,
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
       NO_ATTK, DFNS(AD_ACID), NO_CARY, 0,
       A_NEUTRAL, 0, NON_PM, 1700L, NO_COLOR, SNAKESKIN),
     
+    /* From SpliceHack */
     A("The End", SCYTHE, 
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
       COLD(3, 20), DFNS(AD_DRLI), NO_CARY, 0, 
@@ -199,13 +231,20 @@ static NEARDATA struct artifact artilist[] = {
     /* Two problems:
      *  1) doesn't let trolls regenerate heads,
      *  2) doesn't give unusual message for 2-headed monsters (but allowing
-     *  those at all causes more problems than worth the effort). */
+     *  those at all causes more problems than worth the effort).
+     *  
+     *  Changes:
+     *  - Now grants see invisible when wielded
+     *  - Provides warning vs jabberwocks
+     *  - Increased rate of beheading from 5% to 10%
+     */
     A("Vorpal Blade", LONG_SWORD,
       (SPFX_RESTR | SPFX_BEHEAD | SPFX_SEEINV | SPFX_WARN | SPFX_DFLAGH), 
       0, MH_JABBERWOCK,
       PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 4000L, CLR_RED, VORPAL_BLADE),
 
+    /* From SLASH'EM */
     A("Whisperfeet", SPEED_BOOTS,
       (SPFX_RESTR | SPFX_STLTH | SPFX_LUCK), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
@@ -214,7 +253,7 @@ static NEARDATA struct artifact artilist[] = {
    
     /*** Chaotic artifacts ***/
     
-    
+    /* From SLASH'EM */
     A("Doomblade", ORCISH_SHORT_SWORD,
       SPFX_RESTR, 0, 0,
       PHYS(0, 20), NO_DFNS, NO_CARY, 0,
@@ -230,31 +269,32 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(2, 6), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ORC, 300L, CLR_RED, GRIMTOOTH),
     
-    /* Auto-explode code in dothrow.c, mthrowu.c
-     * Extra damage handled in uhitm.c */
+    /* From SLASH'EM */
     A("Hellfire", CROSSBOW,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
       PHYS(5, 7), DFNS(AD_FIRE), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 4000L, NO_COLOR, HELLFIRE),
     
+    /* Debut artifact in HACKEM */
     A("Mayhem", STOMPING_BOOTS,
       (SPFX_RESTR | SPFX_DEFN | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 5000L, NO_COLOR, MAYHEM),
     
-    /* Auto-poison code in dothrow.c 
-     * +d7 damage handled in uhitm.c */
+    /* From SLASH'EM: Instead of granting poison resistance, this grants
+     * sickness resistance instead. */
     A("Plague", ORCISH_BOW,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
       PHYS(5, 7), DFNS(AD_DISE), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 4000L, NO_COLOR, PLAGUE),
     
-    /* Seafoam grants waterbreathing, and is generated rustproof. */
+    /* From SpliceHack */
     A("Poseidon\'s Trident", TRIDENT,
       (SPFX_RESTR | SPFX_BREATHE), 0, 0,
       PHYS(3, 7), NO_DFNS, NO_CARY, WWALKING,
       A_CHAOTIC, NON_PM, NON_PM, 1500L, NO_COLOR, POSEIDON_S_TRIDENT),
 
+    /* From SLASH'EM */
     A("Serpent's Tongue", DAGGER,
       SPFX_RESTR, 0, 0,
       PHYS(2,0), NO_DFNS, NO_CARY, 0,
@@ -282,48 +322,58 @@ static NEARDATA struct artifact artilist[] = {
     
     /*** Unaligned artifacts ***/
     
-    
+    /* Changes: Now grants warning vs dragons and can instakill dragons */
     A("Dragonbane", BROADSWORD,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_REFLECT | SPFX_WARN), 0, MH_DRAGON,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 500L, CLR_RED, DRAGONBANE),
     
+    /* Changes: Now can instakill flammable monsters and green slime */
     A("Fire Brand", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       FIRE(5, 0), DFNS(AD_FIRE), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, FIRE_BRAND),
     
+    /* Changes: Now can instakill water elementals */
     A("Frost Brand", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       COLD(5, 0), DFNS(AD_COLD), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, FROST_BRAND),
     
+    /* Debut artifact in HACKEM */
     A("Load Brand", HEAVY_SWORD,
       (SPFX_RESTR | SPFX_PROTECT | SPFX_HPHDAM),
       0, 0, PHYS(5, 20), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, LOAD_BRAND),
     
+    /* Changes: Now grants warning vs ogres and can instakill ogres */
     A("Ogresmasher", WAR_HAMMER,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0,
       MH_OGRE, PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 200L, CLR_RED, OGRESMASHER),
 
-    /* Grants teleport control; greatly increases spellcasting ability. */
+    /* From SpliceHack with changes:
+     * Grants teleport control; greatly increases spellcasting ability. */
     A("Origin", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_TCTRL), 0, 0,
       PHYS(2, 6), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 500L, NO_COLOR, ORIGIN),
     
+    /* Debut artifact in HACKEM */
     A("The Lenses of Truth", LENSES,
       (SPFX_RESTR | SPFX_SEEINV | SPFX_SEARCH), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, LENSES_OF_TRUTH),
     
+    /* Changes: Now grants regeneration, warning vs trolls and can instakill
+     * trolls */
     A("Trollsbane", MORNING_STAR,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_REGEN | SPFX_WARN), 0, MH_TROLL,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 1000L, CLR_RED, TROLLSBANE),
     
+    /* Changes: Now grants protection from shapechangers, warning vs werefoo
+     * and can instakill werefoo */
     A("Werebane", SILVER_SABER,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_WERE,
       PHYS(5, 0), DFNS(AD_WERE), NO_CARY, 0,
@@ -341,6 +391,7 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), INVIS,
       A_LAWFUL, PM_ARCHEOLOGIST, NON_PM, 2500L, NO_COLOR, ORB_OF_DETECTION),
 
+    /* Instead of stealth, this grants displacement and flying when carried */
     A("The Heart of Ahriman", LUCKSTONE,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH), 
       (SPFX_FLYING | SPFX_DISPLAC), 0,
@@ -348,6 +399,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_BARBARIAN, NON_PM, 2500L, NO_COLOR, HEART_OF_AHRIMAN),
 
+    /* Changes: Now gets a flat +3 damage bonus */
     A("The Sceptre of Might", MACE,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN
         | SPFX_NOWISH), 0, 0,
@@ -386,6 +438,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       NO_ATTK, NO_DFNS, CARY(AD_FIRE), ENERGY_BOOST,
       A_LAWFUL, PM_CLERIC, NON_PM, 2000L, NO_COLOR, MITRE_OF_HOLINESS),
 
+    /* Changes: Now grants physical damage reduction */
     A("The Longbow of Diana", BOW,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT | SPFX_HPHDAM 
         | SPFX_NOWISH),
@@ -403,6 +456,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       UNTRAP,
       A_CHAOTIC, PM_ROGUE, NON_PM, 3500L, NO_COLOR, MASTER_KEY_OF_THIEVERY),
 
+    /* Changes: Increased the rate of bisection from 5% to 10% */
     A("The Tsurugi of Muramasa", TSURUGI,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_BEHEAD | SPFX_LUCK
        | SPFX_PROTECT | SPFX_NOWISH), 0, 0,

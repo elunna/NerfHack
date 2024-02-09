@@ -83,10 +83,10 @@
 #define AD_ENCH 41  /* remove enchantment (disenchanter) */
 #define AD_CORR 42  /* corrode armor (black pudding) */
 #define AD_POLY 43  /* polymorph the target (genetic engineer) */
-#define AD_WTHR 44  /* withering (mummies) */
-#define AD_TCKL 45  /* tickle (Nightgaunts) */
-#define AD_DSRM 46  /* disarm the player */
-#define AD_WEBS 47  /* entangles target in webbing */
+#define AD_WTHR 44  /* withering (from xNetHack/EvilHack, for mummies) */
+#define AD_TCKL 45  /* tickle (from SLASH'EM, for nightgaunts) */
+#define AD_DSRM 46  /* disarm the player (from SpliceHack) */
+#define AD_WEBS 47  /* entangles target in webbing (from EvilHack) */
 #define AD_LUCK 48  /* drain luck */
 
 #define AD_CLRC 240 /* random clerical spell */
