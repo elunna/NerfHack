@@ -1646,13 +1646,16 @@ disturb_grave(coordxy x, coordxy y)
     struct rm *lev = &levl[x][y];
 
     if (!IS_GRAVE(lev->typ)) {
-        impossible("Disturing grave that isn't a grave? (%d)", lev->typ);
+        impossible("Disturbing grave that isn't a grave? (%d)", lev->typ);
     } else if (lev->disturbed) {
-        impossible("Disturing already disturbed grave?");
+        impossible("Disturbing already disturbed grave?");
     } else {
         You("disturb the undead!");
         lev->disturbed = 1;
-        (void) makemon(&mons[PM_GHOUL], x, y, NO_MM_FLAGS);
+        if (level_difficulty() > 11 && !rn2(3))
+            (void) makemon(&mons[PM_GHOUL_MAGE], x, y, NO_MM_FLAGS);
+        else
+            (void) makemon(&mons[PM_GHOUL], x, y, NO_MM_FLAGS);
         exercise(A_WIS, FALSE);
     }
 }
