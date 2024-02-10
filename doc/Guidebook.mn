@@ -46,7 +46,7 @@
 .ds f0 \*(vr
 .ds f1 \" empty
 .\"DO NOT REMOVE NH_DATESUB .ds f2 DATE(%B %-d, %Y)
-.ds f2 January 29, 2024
+.ds f2 February 06, 2024
 .
 .\" A note on some special characters:
 .\" \(lq = left double quote
@@ -4184,6 +4184,8 @@ Default \(oq}\(cq.
 ." Format menu entries using TAB to separate columns (default off).
 ." Only applicable to some menus, and only useful to some interfaces.
 ." Debug mode only.
+.lp mon_movement
+Show a message when hero notices a monster movement (default is off).
 .lp monpolycontrol
 Prompt for new form whenever any monster changes shape (default off).
 Debug mode only.
@@ -4392,13 +4394,6 @@ Curses or tty interface only; value is one of
 none, bold, dim, underline, italic, blink, and inverse.
 Some of those choices might not work,
 depending upon terminal hardware or terminal emulation software.
-.lp ""
-Currently multiple highlight-style letters can be combined by simply
-stringing them together (for example, \(lqbk\(rq), but in the future
-they might require being separated by plus signs (such as \(lqb+k\(rq,
-which works already).
-When using the \(oqn\(cq choice, it should be specified on its own,
-not in combination with any of the other letters.
 .lp "pettype "
 Specify the type of your initial pet, if you are playing a character class
 that uses multiple types of pets; or choose to have no initial pet at all.
@@ -5957,6 +5952,9 @@ Prevent walking into water or lava.
 Adds direction or location information to messages.
 .lp spot_monsters
 Shows a message when hero notices a monster; combine with accessiblemsg.
+.lp mon_movement
+Shows a message when hero notices a monster movement;
+combine with spot_monsters and accessiblemsg.
 .lp autodescribe
 Automatically describe the terrain under the cursor when targeting.
 .lp mention_walls

@@ -1854,6 +1854,13 @@ debug fuzzer was triggering out of bounds array access in loseexp() if
 	levels and restored those all the way to level 30; introducing an
 	assert(u.ulevel < MAXULEV) changed bounds issue to assertion failure
 strength less than 25 was unintentionally being capped at 18/07
+if an amulet of flying gets stolen while hero is over lava without other
+	protection against lava, it will be destroyed even though it isn't
+	flammable, then attempting to format it for messages will trigger an
+	impossible warning about "glorkum", then a crash occurs
+poison gas breath from green dragon or iron golem that hit and was reflected
+	left target enveloped in a gas cloud (reflection now takes precedence;
+	somewhat odd though: gas that misses still leaves target enveloped)
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -2141,6 +2148,9 @@ tty: have <return> dismiss pick-none menus instead of acting like '>' (not
 tty: menu search via ':' would clobber part of the menu with a status line
 	refresh if the menu was tall enough to cover that
 tty: add support for petattr
+tty: if a ^C interrupt occurred while DECgraphics characters were being drawn
+	on the map, the "Really quit?" prompt would be illegible due to being
+	rendered with VT line drawing characters
 Unix: when user name is used as default character name, keep hyphenated value
 	intact instead stripping off dash and whatever follows as if that
 	specified role/race/&c (worked once upon a time; broken since 3.3.0)
@@ -2201,6 +2211,7 @@ sound: add 'qtsound' soundlib implementation for use on any platform
 documentation: when building plain text Guidebook.txt from Guidebook.mn, avoid
 	attempting to use CR font; change doesn't affect building Guidebook.ps
 	which utilizes CR to get various instances of fixed-width text
+Unix: implement SELF_RECOVER compile-time option, on by default on linux
 
 
 General New Features
@@ -2463,8 +2474,9 @@ allow the ')', '[', '(', '=', '"', and '*' commands to be preceded by the 'm'
 hot ground (Gehennom / Plane of Fire) often destroys dropped potions
 erinyes overhaul; they now attempt to punish heroes who have violated their
 	alignment and get stronger with greater alignment abuse
-accessibility options to tell where on map a message happened (accessiblemsg)
-	and to notify when a monster is spotted (spot_monsters)
+accessibility options to tell where on map a message happened (accessiblemsg),
+	to notify when a monster is spotted (spot_monsters), and when
+	a monster moved (mon_movement)
 
 
 Platform- and/or Interface-Specific New Features

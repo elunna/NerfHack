@@ -73,6 +73,7 @@ static void init_u_data(lua_State *);
 static int nhl_set_package_path(lua_State *, const char *);
 #endif
 static int traceback_handler(lua_State *);
+static uint32_t nhl_getmeminuse(lua_State *);
 #ifdef NHL_SANDBOX
 static void nhlL_openlibs(lua_State *, uint32_t);
 #endif
@@ -164,9 +165,9 @@ l_nhcore_call(int callidx)
 
     lua_getfield(gl.luacore, -1, nhcore_call_names[callidx]);
     ltyp = lua_type(gl.luacore, -1);
+    lua_remove(gl.luacore, -2); /* nhcore_call_names[callidx] */
+    lua_remove(gl.luacore, -2); /* nhcore */
     if (ltyp == LUA_TFUNCTION) {
-        lua_remove(gl.luacore, -2); /* nhcore_call_names[callidx] */
-        lua_remove(gl.luacore, -2); /* nhcore */
         nhl_pcall_handle(gl.luacore, 0, 1, "l_nhcore_call", NHLpa_panic);
     } else {
         /*impossible("nhcore.%s is not a lua function",
@@ -1106,7 +1107,7 @@ nhl_variable(lua_State *L)
     const char *key;
 
     if (!gl.luacore) {
-        nhl_error(L, "nh luacore not inited");
+        panic("nh luacore not inited");
         /*NOTREACHED*/
         return 0;
     }
@@ -1180,17 +1181,10 @@ get_nh_lua_variables(void)
     char *key = NULL;
 
     if (!gl.luacore) {
-        nhl_error(gl.luacore, "nh luacore not inited");
+        panic("nh luacore not inited");
         /*NOTREACHED*/
         return key;
     }
-
-    lua_getglobal(gl.luacore, "nh_lua_variables");
-    if (!lua_istable(gl.luacore, -1)) {
-        impossible("nh_lua_variables is not a lua table");
-        return key;
-    }
-
     lua_getglobal(gl.luacore, "get_variables_string");
     if (lua_type(gl.luacore, -1) == LUA_TFUNCTION) {
         if (nhl_pcall_handle(gl.luacore, 0, 1, "get_nh_lua_variables",
@@ -1199,6 +1193,7 @@ get_nh_lua_variables(void)
         }
         key = dupstr(lua_tostring(gl.luacore, -1));
     }
+    lua_pop(gl.luacore, 1);
     return key;
 }
 
@@ -1518,11 +1513,10 @@ nhl_callback(lua_State *L)
     const char *fn, *cb;
 
     if (!gl.luacore) {
-        nhl_error(L, "nh luacore not inited");
+        panic("nh luacore not inited");
         /*NOTREACHED*/
         return 0;
     }
-
     if (argc == 2 || argc == 3) {
         if (argc == 2) {
             rm = FALSE;
@@ -1876,7 +1870,8 @@ traceback_handler(lua_State *L)
 }
 
 static uint32_t
-nhl_getmeminuse(lua_State *L){
+nhl_getmeminuse(lua_State *L)
+{
     return lua_gc(L, LUA_GCCOUNT) * 1024 + lua_gc(L, LUA_GCCOUNTB);
 }
 
@@ -1922,7 +1917,6 @@ nhl_pcall(lua_State *L, int nargs, int nresults, const char *name)
                        nud->name, ic);
     }
     if (nud && nud->memlimit && gl.loglua) {
-        lua_gc(L, LUA_GCCOLLECT);
         livelog_printf(LL_DEBUG, "LUASTATS PMEM %d:%s %lu", nud->sid,
                        nud->name, (long unsigned) nhl_getmeminuse(L));
     }
@@ -1947,6 +1941,8 @@ nhl_pcall_handle(lua_State *L, int nargs, int nresults, const char *name,
             impossible("Lua error: %d:%s %s", nud->sid,
                        nud->name ? nud->name : "(unknown)",
                        lua_tostring(L, -1));
+                /* Drop the error.  If the caller cares, use nhl_pcall(). */
+	    lua_pop(L, 1);
         }
     }
     return rv;
@@ -2147,7 +2143,6 @@ nhl_done(lua_State *L)
                                nud->name, ic);
             }
             if (nud && nud->memlimit && !nud->perpcall) {
-                lua_gc(L, LUA_GCCOLLECT);
                 livelog_printf(LL_DEBUG, "LUASTATS DMEM %d:%s %lu", nud->sid,
                                nud->name, (long unsigned) nhl_getmeminuse(L));
             }

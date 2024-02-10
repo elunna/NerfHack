@@ -2968,7 +2968,7 @@ mhitm_ad_sgld(
 
         if (mongold) {
             obj_extract_self(mongold);
-            if (merge_choice(&gi.invent, mongold)
+            if (merge_choice(gi.invent, mongold)
                     || inv_cnt(FALSE) < invlet_basic) {
                 addinv(mongold);
                 Your("purse feels heavier.");
