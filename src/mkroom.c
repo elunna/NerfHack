@@ -488,9 +488,12 @@ morguemon(void)
         }
     }
 
-    if (hd > 8 && i > 85)
-        return mkclass(S_VAMPIRE, 0);
-
+    if (hd > 8 && i > 85) {
+        if (!rn2(5))
+            return &mons[PM_GRAVE_TROLL];
+        else
+            return mkclass(S_VAMPIRE, 0);
+    }
     return ((i < 20) ? &mons[PM_GHOST]
                      : (i < 40) ? &mons[PM_WRAITH]
                                 : mkclass(S_ZOMBIE, 0));
