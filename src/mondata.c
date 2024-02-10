@@ -1215,6 +1215,8 @@ static const short grownups[][2] = {
     { PM_ROCK_PIERCER, PM_IRON_PIERCER },
     { PM_IRON_PIERCER, PM_GLASS_PIERCER },
     { PM_GLASS_PIERCER, PM_DIAMOND_PIERCER },
+    { PM_DEEP_ONE, PM_DEEPER_ONE },
+    { PM_DEEPER_ONE, PM_DEEPEST_ONE },
     { NON_PM, NON_PM }
 };
 
