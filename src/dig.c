@@ -992,6 +992,15 @@ dig_up_grave(coord *cc)
                                        : "You've disturbed a tomb");
         (void) makemon(mkclass(S_MUMMY, 0), dig_x, dig_y, MM_NOMSG);
         break;
+    case 4:
+        if (level_difficulty() > 11 && !rn2(3)) {
+            (void) makemon(&mons[PM_GRAVE_TROLL], dig_x, dig_y, MM_NOMSG);
+            if (!Blind)
+                pline("%s!", Hallucination ? "Grave party!"
+                                           : "Something was sleeping here");
+            break;
+        } 
+        /* FALLTHROUGH */
     default:
         /* No corpse */
         pline_The("grave is unoccupied.  Strange...");
