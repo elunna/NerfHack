@@ -2142,7 +2142,8 @@ domove_fight_empty(coordxy x, coordxy y)
                 return TRUE;
             }
             /* force fight at boulder while wearing gauntlets of force */
-            if (gc.context.forcefight && boulder->otyp == BOULDER) {
+            if (gc.context.forcefight 
+                    && boulder && boulder->otyp == BOULDER) {
                 You("smash %s!", cansee(boulder->ox, boulder->oy)
                                     ? "the boulder" : "something");
                 Soundeffect(se_crumbling_sound, 75);
