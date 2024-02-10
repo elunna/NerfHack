@@ -238,6 +238,11 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(2, 6), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
       NO_COLOR, ORIGIN),
     
+    A("The Lenses of Truth", LENSES,
+      (SPFX_RESTR | SPFX_SEEINV | SPFX_SEARCH), 0, 0,
+      NO_ATTK, NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM,
+      3000L, NO_COLOR, LENSES_OF_TRUTH),
+    
     /*
      *      Ah, never shall I forget the cry,
      *              or the shriek that shrieked he,
