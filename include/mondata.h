@@ -160,7 +160,9 @@
 #define is_zombie(ptr) \
     ((ptr)->mlet == S_ZOMBIE && !is_not_zombie(ptr))
 #define is_not_zombie(ptr) \
-    ((ptr) == &mons[PM_GHOUL] || (ptr) == &mons[PM_SKELETON])
+    (is_ghoul(ptr) || (ptr) == &mons[PM_SKELETON])
+#define is_ghoul(ptr) ((ptr) == &mons[PM_GHOUL] \
+                       || (ptr)== &mons[PM_GHOUL_MAGE])
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mhflags & MH_DEMON) != 0L)
 #define is_angel(ptr) (((ptr)->mhflags & MH_ANGEL) != 0L)
@@ -313,7 +315,7 @@
 #define corpse_eater(ptr)                    \
     (ptr == &mons[PM_PURPLE_WORM]            \
      || ptr == &mons[PM_BABY_PURPLE_WORM]    \
-     || ptr == &mons[PM_GHOUL]               \
+     || is_ghoul(ptr)                        \
      || ptr == &mons[PM_PIRANHA])
 
 /* monkeys are tamable via bananas but not pacifiable via food,

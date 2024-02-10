@@ -325,7 +325,7 @@ zombie_maker(struct monst *mon)
     switch (pm->mlet) {
     case S_ZOMBIE:
         /* Z-class monsters that aren't actually zombies go here */
-        if (pm == &mons[PM_GHOUL] || pm == &mons[PM_SKELETON])
+        if (is_ghoul(pm) || pm == &mons[PM_SKELETON])
             return FALSE;
         return TRUE;
     case S_LICH:

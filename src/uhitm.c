@@ -4899,8 +4899,7 @@ mhitm_ad_dise(
         /* mhitm; protected monsters use the same criteria as for poly'd
            hero gaining sick resistance combined with any hero wielding a
            weapon or wearing dragon scales/mail that guards against disease */
-        if (pd->mlet == S_FUNGUS || pd == &mons[PM_GHOUL]
-            || defended(mdef, AD_DISE))
+        if (pd->mlet == S_FUNGUS || is_ghoul(pd) || defended(mdef, AD_DISE))
             mhm->damage = 0;
         /* else does ordinary damage */
     }

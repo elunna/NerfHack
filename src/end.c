@@ -811,7 +811,7 @@ done_in_by(struct monst *mtmp, int how)
         u.ugrave_arise = PM_VAMPIRE_MAGE;
     else if (mptr->mlet == S_VAMPIRE && Race_if(PM_HUMAN))
         u.ugrave_arise = PM_VAMPIRE;
-    else if (mptr == &mons[PM_GHOUL])
+    else if (is_ghoul(mptr))
         u.ugrave_arise = PM_GHOUL;
     /* this could happen if a high-end vampire kills the hero
        when ordinary vampires are genocided; ditto for wraiths */
