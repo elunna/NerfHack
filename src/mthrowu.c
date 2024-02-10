@@ -1302,7 +1302,8 @@ hit_bars(
             static const char *const barsounds[] = {
                 "", "Whang", "Whap", "Flapp", "Clink", "Clonk"
             };
-            int bsindx = (obj_type == BOULDER || obj_type == HEAVY_IRON_BALL)
+            int bsindx = (obj_type == BOULDER || obj_type == HEAVY_IRON_BALL
+                          || obj_type == GAUNTLETS_OF_FORCE)
                          ? 1
                          : harmless_missile(otmp) ? 2
                          : is_flimsy(otmp) ? 3
@@ -1319,7 +1320,8 @@ hit_bars(
             noise = 4 * 4;
 
         if (your_fault && (otmp->otyp == WAR_HAMMER
-                           || otmp->otyp == HEAVY_IRON_BALL)) {
+                           || otmp->otyp == HEAVY_IRON_BALL
+                           || otmp->otyp == GAUNTLETS_OF_FORCE)) {
             /* iron ball isn't a weapon or wep-tool so doesn't use obj->spe;
                weight is normally 480 but can be increased by increments
                of 160 (scrolls of punishment read while already punished) */
@@ -1330,7 +1332,7 @@ hit_bars(
                break those when 'chance' is _lower_; acurrstr(): 3..25 */
             int chance = (melee_attk ? 40 : 60) - acurrstr() - spe;
 
-            if (!rn2(max(2, chance))) {
+            if (!rn2(max(2, chance)) || otmp->otyp == GAUNTLETS_OF_FORCE) {
                 You("break the bars apart!");
                 dissolve_bars(barsx, barsy);
                 noise = noise * 2;

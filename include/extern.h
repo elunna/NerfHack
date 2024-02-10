@@ -660,6 +660,7 @@ extern int Helmet_off(void);
 extern boolean hard_helmet(struct obj *);
 extern void wielding_corpse(struct obj *, struct obj *, boolean);
 extern int Gloves_off(void);
+extern int Gloves_on(void);
 extern int Boots_on(void);
 extern int Boots_off(void);
 extern int Cloak_off(void);

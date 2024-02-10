@@ -1686,9 +1686,12 @@ hmon_hitmon_stagger(
     struct monst *mon,
     struct obj *obj UNUSED)
 {
+    /* Gauntlets of force occasionally hit hard */
+   boolean forcegloves = uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE 
+                          && !rn2(40);
     /* VERY small chance of stunning opponent if unarmed. */
-    if (rnd(100) < P_SKILL(P_BARE_HANDED_COMBAT) && !bigmonst(hmd->mdat)
-        && !thick_skinned(hmd->mdat)) {
+    if ((rnd(100) < P_SKILL(P_BARE_HANDED_COMBAT) || forcegloves)
+         && !bigmonst(hmd->mdat) && !thick_skinned(hmd->mdat)) {
         if (canspotmon(mon))
             pline("%s %s from your powerful strike!", Monnam(mon),
                   makeplural(stagger(mon->data, "stagger")));
@@ -5709,7 +5712,7 @@ mhitm_knockback(
               || mattk->aatyp == AT_BUTT
               || (mattk->aatyp == AT_WEAP && !weapon_used))))
         return FALSE;
-
+    
     /* needs a solid physical hit */
     if (unsolid(magr->data))
         return FALSE;

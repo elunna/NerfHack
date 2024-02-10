@@ -1227,6 +1227,10 @@ cancel_item(struct obj *obj)
                 disp.botl = TRUE;
             }
             break;
+        case GAUNTLETS_OF_FORCE:
+            if ((obj->owornmask & W_ARMG) != 0L)
+                u.udaminc -= obj->spe;
+            break;
         case HELM_OF_BRILLIANCE:
             if ((obj->owornmask & W_ARMH) != 0L) {
                 ABON(A_INT) -= obj->spe;
@@ -1394,6 +1398,10 @@ drain_item(struct obj *obj, boolean by_you)
             ABON(A_DEX)--;
             disp.botl = TRUE;
         }
+        break;
+    case GAUNTLETS_OF_FORCE:
+        if ((obj->owornmask & W_ARMG) && (obj == uarmg))
+            u.udaminc--;
         break;
     default:
         break;

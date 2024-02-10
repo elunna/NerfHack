@@ -26,7 +26,6 @@ static int Armor_on(void);
 /* int Boots_on(void); -- moved to extern.h */
 static int Cloak_on(void);
 static int Helmet_on(void);
-static int Gloves_on(void);
 static int Shield_on(void);
 static int Shirt_on(void);
 static void dragon_armor_handling(struct obj *, boolean, boolean);
@@ -608,7 +607,7 @@ hard_helmet(struct obj *obj)
     return (is_metallic(obj) || is_crackable(obj)) ? TRUE : FALSE;
 }
 
-static int
+int
 Gloves_on(void)
 {
     long oldprop =
@@ -627,6 +626,9 @@ Gloves_on(void)
         break;
     case GAUNTLETS_OF_DEXTERITY:
         adj_abon(uarmg, uarmg->spe);
+        break;
+    case GAUNTLETS_OF_FORCE:
+        u.udaminc += uarmg->spe;
         break;
     default:
         impossible(unknown_type, c_gloves, uarmg->otyp);
@@ -702,6 +704,9 @@ Gloves_off(void)
     case GAUNTLETS_OF_DEXTERITY:
         if (!gc.context.takeoff.cancelled_don)
             adj_abon(uarmg, -uarmg->spe);
+        break;
+    case GAUNTLETS_OF_FORCE:
+        u.udaminc -= uarmg->spe;
         break;
     default:
         impossible(unknown_type, c_gloves, uarmg->otyp);

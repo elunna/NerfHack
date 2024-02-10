@@ -2032,6 +2032,7 @@ thitmonst(
     if (uarmg && uwep && objects[uwep->otyp].oc_skill == P_BOW) {
         switch (uarmg->otyp) {
         case GAUNTLETS_OF_POWER: /* metal */
+        case GAUNTLETS_OF_FORCE: /* bulky */
             tmp -= 2;
             break;
         case GAUNTLETS_OF_FUMBLING:

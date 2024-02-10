@@ -1868,23 +1868,29 @@ domove_attackmon_at(
 static boolean
 domove_fight_ironbars(coordxy x, coordxy y)
 {
-    if (gc.context.forcefight && levl[x][y].typ == IRONBARS && uwep) {
-        struct obj *obj = uwep;
-        unsigned breakflags = (BRK_BY_HERO | BRK_FROM_INV | BRK_MELEE);
+    unsigned breakflags = (BRK_BY_HERO | BRK_FROM_INV | BRK_MELEE);
+    
+    if (gc.context.forcefight && levl[x][y].typ == IRONBARS) {
+        if (uwep) {
+            struct obj *obj = uwep;
+            if (breaktest(obj)) {
+                if (obj->quan > 1L)
+                    obj = splitobj(obj, 1L);
+                else
+                    setuwep((struct obj *) 0);
+                freeinv(obj);
+                breakflags |= BRK_KNOWN2BREAK;
+            } else {
+                breakflags |= BRK_KNOWN2NOTBREAK;
+            }
 
-        if (breaktest(obj)) {
-            if (obj->quan > 1L)
-                obj = splitobj(obj, 1L);
-            else
-                setuwep((struct obj *) 0);
-            freeinv(obj);
-            breakflags |= BRK_KNOWN2BREAK;
-        } else {
+            hit_bars(&obj, u.ux, u.uy, x, y, breakflags);
+            return TRUE;
+        } else if (uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE) {
             breakflags |= BRK_KNOWN2NOTBREAK;
+            hit_bars(&uarmg, u.ux, u.uy, x, y, breakflags);
+            return TRUE;
         }
-
-        hit_bars(&obj, u.ux, u.uy, x, y, breakflags);
-        return TRUE;
     }
     return FALSE;
 }
@@ -2133,6 +2139,19 @@ domove_fight_empty(coordxy x, coordxy y)
                 /* should we dig? */
                 && !glyph_is_invisible(glyph) && !glyph_is_monster(glyph)) {
                 (void) use_pick_axe2(uwep);
+                return TRUE;
+            }
+            /* force fight at boulder while wearing gauntlets of force */
+            if (gc.context.forcefight && boulder->otyp == BOULDER) {
+                You("smash %s!", cansee(boulder->ox, boulder->oy)
+                                    ? "the boulder" : "something");
+                Soundeffect(se_crumbling_sound, 75);
+                if (cansee(boulder->ox, boulder->oy))
+                    pline_The("boulder falls apart.");
+                else
+                    You_hear("a crumbling sound.");
+                fracture_rock(boulder);
+                sokoban_guilt();
                 return TRUE;
             }
         }

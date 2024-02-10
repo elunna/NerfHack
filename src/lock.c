@@ -238,7 +238,9 @@ forcelock(void)
     } else             /* blunt */
         wake_nearby(); /* due to hammering on the container */
 
-    if (rn2(100) >= gx.xlock.chance)
+    if (uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE)
+        ; /* Forcing is easy with these! */
+    else if (rn2(100) >= gx.xlock.chance)
         return 1; /* still busy */
 
     You("succeed in forcing the lock.");
@@ -917,7 +919,9 @@ doopen_indir(coordxy x, coordxy y)
     }
 
     /* door is known to be CLOSED */
-    if (rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
+    if ((rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3)
+        /* Minor perk of force gloves */
+        || (uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE)) {
         set_msg_xy(cc.x, cc.y);
         pline_The("door opens.");
         if (door->doormask & D_TRAPPED) {
