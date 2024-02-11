@@ -1193,7 +1193,7 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
         if (mtmp->mpeaceful
             && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS
-                || spellnum == MGC_CLONE_WIZ))
+                || spellnum == MGC_EVIL_EYE || spellnum == MGC_CLONE_WIZ))
             return TRUE;
         /* haste self when already fast */
         if (mtmp->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
@@ -1215,6 +1215,10 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
         /* don't summon monsters if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
                             || (!mtmp->iswiz && spellnum == MGC_CLONE_WIZ)))
+            return TRUE;
+        /* only undead and demons can cast evil eye */
+        if (spellnum == MGC_EVIL_EYE 
+            && !is_undead(mtmp->data) && !is_demon(mtmp->data))
             return TRUE;
         if ((!mtmp->iswiz || gc.context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
