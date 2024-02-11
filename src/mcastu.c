@@ -38,7 +38,8 @@ enum mcast_cleric_spells {
     CLC_CURSE_ITEMS,
     CLC_LIGHTNING,
     CLC_FIRE_PILLAR,
-    CLC_GEYSER
+    CLC_GEYSER,
+    CLC_BLIGHT,
 };
 
 static void cursetxt(struct monst *, boolean);
@@ -114,7 +115,6 @@ choose_magic_spell(struct monst* mtmp, int spellval)
     case 16:
         return MGC_SUMMON_MONS;
     case 15:
-    case 14:
         return MGC_ACID_BLAST;
     case 13:
         return MGC_AGGRAVATION;
@@ -182,6 +182,7 @@ choose_clerical_spell(struct monst* mtmp, int spellnum)
     case 11:
         return CLC_LIGHTNING;
     case 10:
+        return CLC_BLIGHT;
     case 9:
         return CLC_CURSE_ITEMS;
     case 8:
@@ -866,6 +867,14 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
     }
 
     switch (spellnum) {
+    case CLC_BLIGHT:
+        /* TODO: Should undead resist this? */
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 65) {
+            You("%s rapidly decomposing!", Withering ? "continue" : "begin");
+            incr_itimeout(&HWithering, rn1(41, 20));
+            dmg = 0;
+        }
+        break;
     case CLC_GEYSER:
         /* this is physical damage (force not heat),
          * not magical damage or fire damage
@@ -1169,6 +1178,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case CLC_INSECTS:
         case CLC_CURE_SELF:
         case CLC_PROTECTION:
+        case CLC_BLIGHT:
             return TRUE;
         default:
             break;
@@ -1252,7 +1262,7 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
     } else if (adtyp == AD_CLRC) {
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */
-        if (mtmp->mpeaceful && spellnum == CLC_INSECTS)
+        if (mtmp->mpeaceful && (spellnum == CLC_INSECTS || spellnum == CLC_BLIGHT))
             return TRUE;
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == CLC_CURE_SELF)
