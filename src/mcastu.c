@@ -41,6 +41,7 @@ enum mcast_cleric_spells {
     CLC_FIRE_PILLAR,
     CLC_GEYSER,
     CLC_BLIGHT,
+    CLC_HOBBLE
 };
 
 static void cursetxt(struct monst *, boolean);
@@ -193,6 +194,7 @@ choose_clerical_spell(struct monst* mtmp, int spellnum)
     case 6:
         return CLC_BLIND_YOU;
     case 5:
+        return CLC_HOBBLE;
     case 4:
         return CLC_PARALYZE;
     case 3:
@@ -1062,6 +1064,17 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         } else
             impossible("no reason for monster to cast blindness spell?");
         break;
+    case CLC_HOBBLE: {
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+            long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
+            Your("%s are smashed by a bolt of force!",
+                 makeplural(body_part(LEG)));
+
+            if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
+                set_wounded_legs(side, rn1(100, 50));
+        }
+        break;
+    }
     case CLC_PARALYZE:
         if (Antimagic || Free_action) {
             shieldeff(u.ux, u.uy);
@@ -1193,6 +1206,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case CLC_CURE_SELF:
         case CLC_PROTECTION:
         case CLC_BLIGHT:
+        case CLC_HOBBLE:
             return TRUE;
         default:
             break;
@@ -1281,13 +1295,17 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
     } else if (adtyp == AD_CLRC) {
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */
-        if (mtmp->mpeaceful && (spellnum == CLC_INSECTS || spellnum == CLC_BLIGHT))
+        if (mtmp->mpeaceful && (spellnum == CLC_INSECTS 
+                                || spellnum == CLC_HOBBLE
+                                || spellnum == CLC_BLIGHT))
             return TRUE;
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == CLC_CURE_SELF)
             return TRUE;
         /* don't summon insects if it doesn't think you're around */
-        if (!mcouldseeu && spellnum == CLC_INSECTS)
+        if (!mcouldseeu && (spellnum == CLC_INSECTS
+                            || spellnum == CLC_HOBBLE
+                            || spellnum == CLC_BLIGHT))
             return TRUE;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)
