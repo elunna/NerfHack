@@ -23,7 +23,8 @@ enum mcast_mage_spells {
     MGC_SUMMON_MONS,
     MGC_CLONE_WIZ,
     MGC_REFLECTION,
-    MGC_DEATH_TOUCH
+    MGC_DEATH_TOUCH,
+    MGC_CALL_UNDEAD
 };
 
 /* monster cleric spells */
@@ -121,6 +122,7 @@ choose_magic_spell(struct monst* mtmp, int spellval)
     case 12:
         return MGC_REFLECTION;
     case 11:
+        return MGC_CALL_UNDEAD;
     case 10:
         return MGC_CURSE_ITEMS;
     case 9:
@@ -694,6 +696,17 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         dmg = 0;
         break;
     }
+    case MGC_CALL_UNDEAD: {
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+            coord mm;
+            mm.x = u.ux;
+            mm.y = u.uy;
+            pline("Undead creatures are called forth from the grave!");
+            mkundead(&mm, FALSE, NO_MINVENT);
+            dmg = 0;
+        }
+        break;
+    }
     case MGC_AGGRAVATION:
         You_feel("that monsters are aware of your presence.");
         aggravate();
@@ -1164,6 +1177,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_DISAPPEAR:
         case MGC_HASTE_SELF:
         case MGC_CURE_SELF:
+        case MGC_CALL_UNDEAD:
         case MGC_FIRE_BOLT:
         case MGC_ICE_BOLT:
         case MGC_ACID_BLAST:
@@ -1202,8 +1216,11 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
     if (adtyp == AD_SPEL) {
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
         if (mtmp->mpeaceful
-            && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS
-                || spellnum == MGC_EVIL_EYE || spellnum == MGC_CLONE_WIZ))
+            && (spellnum == MGC_AGGRAVATION 
+                || spellnum == MGC_SUMMON_MONS
+                || spellnum == MGC_CALL_UNDEAD
+                || spellnum == MGC_EVIL_EYE 
+                || spellnum == MGC_CLONE_WIZ))
             return TRUE;
         /* haste self when already fast */
         if (mtmp->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
@@ -1224,12 +1241,14 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             return TRUE;
         /* don't summon monsters if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
+                            || spellnum == MGC_CALL_UNDEAD
                             || (!mtmp->iswiz && spellnum == MGC_CLONE_WIZ)))
             return TRUE;
-        /* only undead and demons can cast evil eye */
-        if (spellnum == MGC_EVIL_EYE 
-            && !is_undead(mtmp->data) && !is_demon(mtmp->data))
-            return TRUE;
+        /* only undead and demons can cast evil eye/call undead */
+        if (spellnum == MGC_EVIL_EYE || spellnum == MGC_CALL_UNDEAD) {
+            if (!is_undead(mtmp->data) && !is_demon(mtmp->data))
+                return TRUE;
+        }
         if ((!mtmp->iswiz || gc.context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
