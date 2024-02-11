@@ -24,7 +24,8 @@ enum mcast_mage_spells {
     MGC_CLONE_WIZ,
     MGC_REFLECTION,
     MGC_DEATH_TOUCH,
-    MGC_CALL_UNDEAD
+    MGC_CALL_UNDEAD,
+    MGC_ENTOMB
 };
 
 /* monster cleric spells */
@@ -52,6 +53,7 @@ static void cast_wizard_spell(struct monst *, int, int);
 static void cast_cleric_spell(struct monst *, int, int);
 static boolean is_undirected_spell(unsigned int, int);
 static boolean spell_would_be_useless(struct monst *, unsigned int, int);
+static boolean is_entombed(coordxy, coordxy);
 
 /* feedback when frustrated monster couldn't cast a spell */
 static void
@@ -90,9 +92,12 @@ choose_magic_spell(struct monst* mtmp, int spellval)
         spellval = rn2(spellval);
 
     /* Low HP, prioritize healing */
-    if ((mtmp->mhp * 4) <= mtmp->mhpmax)
-        spellval = 1;
-
+    if ((mtmp->mhp * 4) <= mtmp->mhpmax) {
+        if (!rn2(10) || mtmp->mflee)
+            return MGC_ENTOMB;
+        return MGC_CURE_SELF;
+    }
+    
     switch (spellval) {
     case 24:
     case 23:
@@ -128,6 +133,8 @@ choose_magic_spell(struct monst* mtmp, int spellval)
         return MGC_CURSE_ITEMS;
     case 9:
     case 8:
+        if (mtmp->mflee)
+            return MGC_ENTOMB;
         return MGC_DESTRY_ARMR;
     case 7:
     case 6:
@@ -860,6 +867,33 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         else
             Your("%s suddenly aches very painfully!", body_part(HEAD));
         break;
+    case MGC_ENTOMB: {
+        /* entomb you in rocks (and maybe a couple diggable walls) to delay you
+         * and allow some time for the caster to get away */
+        coordxy x, y;
+        /* Only allow casting at reletively short-range */
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 26) {
+            pline_The("ground shakes violently!");
+            if (!Blind)
+                pline("Boulders fall from above!");
+            for (x = u.ux - 1; x <= u.ux + 1; ++x) {
+                for (y = u.uy - 1; y <= u.uy + 1; ++y) {
+                    if (!SPACE_POS(levl[x][y].typ))
+                        continue;
+                    if (x == u.ux && y == u.uy)
+                        continue;
+                    if (rn2(5))
+                        drop_boulder_on_monster(x, y, FALSE, FALSE);
+                    if (rn2(3))
+                        drop_boulder_on_monster(x, y, FALSE, FALSE);
+                }
+            }
+            if (rn2(4))
+                drop_boulder_on_player(FALSE, FALSE, FALSE, FALSE);
+            dmg = 0;
+        }
+        break;
+    }
     default:
         impossible("mcastu: invalid magic spell (%d)", spellnum);
         dmg = 0;
@@ -1196,6 +1230,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_ACID_BLAST:
         case MGC_REFLECTION:
         case MGC_EVIL_EYE:
+        case MGC_ENTOMB:
             return TRUE;
         default:
             break;
@@ -1292,6 +1327,13 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             && (mtmp->mpeaceful || u.uinvulnerable)) {
             return TRUE;
         }
+        /* don't entomb if hero is already entombed */
+        if (spellnum == MGC_ENTOMB && is_entombed(u.ux, u.uy))
+            return TRUE;
+        /* only entomb as a desperation measure */
+        if (spellnum == MGC_ENTOMB && mtmp->mhp > (mtmp->mhpmax / 5)
+            && !mtmp->mflee)
+            return TRUE;
     } else if (adtyp == AD_CLRC) {
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */
@@ -1339,6 +1381,22 @@ buzzmu(struct monst *mtmp, struct attack *mattk)
         return M_ATTK_HIT;
     }
     return M_ATTK_MISS;
+}
+
+/* is (x,y) entombed (completely surrounded by boulders or nonwalkable spaces)?
+ * note that (x,y) itself is not checked */
+static boolean
+is_entombed(coordxy x, coordxy y)
+{
+    coordxy xx, yy;
+    for (xx = x - 1; xx <= x + 1; xx++) {
+        for (yy = y - 1; yy <= y + 1; yy++) {
+            if (isok(xx, yy) && xx != x && yy != y
+                && SPACE_POS(levl[xx][yy].typ) && !sobj_at(BOULDER, xx, yy))
+                return FALSE;
+        }
+    }
+    return TRUE;
 }
 
 /*mcastu.c*/
