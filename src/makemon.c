@@ -246,7 +246,9 @@ m_initweap(register struct monst *mtmp)
             if (w2)
                 (void) mongets(mtmp, w2);
         } else if (is_elf(ptr)) {
-            if (rn2(2))
+            if (mm == PM_ELVEN_CLERIC) {
+                (void) mongets(mtmp, rn2(2) ? ELVEN_CLOAK : ROBE);
+            } else if (rn2(2))
                 (void) mongets(mtmp,
                                rn2(2) ? ELVEN_MITHRIL_COAT : ELVEN_CLOAK);
             if (rn2(2))
