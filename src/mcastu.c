@@ -16,6 +16,7 @@ enum mcast_mage_spells {
     MGC_DISAPPEAR,
     MGC_WEAKEN_YOU,
     MGC_DESTRY_ARMR,
+    MGC_EVIL_EYE,
     MGC_CURSE_ITEMS,
     MGC_AGGRAVATION,
     MGC_ACID_BLAST,
@@ -127,7 +128,11 @@ choose_magic_spell(struct monst* mtmp, int spellval)
         return MGC_DESTRY_ARMR;
     case 7:
     case 6:
-        return MGC_WEAKEN_YOU;
+        if (!rn2(2))
+            return MGC_EVIL_EYE;
+        else
+            return MGC_WEAKEN_YOU;
+        break;
     case 5:
         return MGC_FIRE_BOLT;
     case 4:
@@ -701,6 +706,12 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
     case MGC_DESTRY_ARMR:
         dmg = m_destroy_armor(mtmp, &gy.youmonst);
         break;
+    case MGC_EVIL_EYE: { /* drains luck */
+        struct attack evilEye = { AT_GAZE, AD_LUCK, 1, 4 };
+        (void) gazemu(mtmp, &evilEye);
+        dmg = 0;
+        break;
+    }
     case MGC_WEAKEN_YOU: /* drain strength */
         if (Antimagic) {
             shieldeff(u.ux, u.uy);
@@ -1148,6 +1159,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_ICE_BOLT:
         case MGC_ACID_BLAST:
         case MGC_REFLECTION:
+        case MGC_EVIL_EYE:
             return TRUE;
         default:
             break;

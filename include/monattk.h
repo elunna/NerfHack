@@ -87,6 +87,7 @@
 #define AD_TCKL 45  /* tickle (Nightgaunts) */
 #define AD_DSRM 46  /* disarm the player */
 #define AD_WEBS 47  /* entangles target in webbing */
+#define AD_LUCK 48  /* drain luck */
 
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */

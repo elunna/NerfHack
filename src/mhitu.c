@@ -2100,6 +2100,20 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
+    case AD_LUCK:
+        if (mcanseeu) {
+            if (cancelled) {
+                pline("%s winks.", Monnam(mtmp));
+            } else {
+               /* mtmp->mspec_used = mtmp->mspec_used + 3 + rn2(8);*/
+                pline("%s %s you!", Monnam(mtmp),
+                      rn2(2) ? "locks eyes with" : "glares ominously at");
+                change_luck(-1);
+                You_feel("unlucky.");
+                stop_occupation();
+            }
+        }
+        break;
 #ifdef PM_BEHOLDER /* work in progress */
     case AD_SLEE:
         if (mcanseeu && gm.multi >= 0 && !rn2(5) && !Sleep_resistance) {
