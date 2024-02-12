@@ -667,6 +667,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             } else {
                 You_hear("some cursing!");
             }
+            dmg = 0;
         }
         break;
     case MGC_CLONE_WIZ:
@@ -821,6 +822,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             } else {
                 You_hear("some cursing!");
             }
+            dmg = 0;
         }
         break;
     case MGC_ICE_BOLT:
@@ -846,6 +848,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             } else {
                 You_hear("some cursing!");
             }
+            dmg = 0;
         }
         break;
     case MGC_PSI_BOLT:
