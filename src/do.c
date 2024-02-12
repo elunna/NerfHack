@@ -258,7 +258,7 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
         useupf(obj, 1L);
         bury_objs(x, y);
         if (gl.level.flags.temperature < 0)
-            levl[x][y].typ = ICE;
+            levl[x][y].typ = rn2(3) ? ICE : ROOM;
         newsym(x, y);
         res = TRUE;
     } else if (is_lava(x, y)) {
