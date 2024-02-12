@@ -29,7 +29,7 @@ des.map([[
  ---------   ---- 
 ]]);
 
-des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=100 })
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=50 })
 
 place = selection.new();
 place:set(01,01);

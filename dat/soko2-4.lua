@@ -26,7 +26,7 @@ des.map([[
    ----- --------- 
 ]]);
 
-des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=60 })
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=40 })
 
 des.stair("down", 04,04)
 des.stair("up", 10,02)
