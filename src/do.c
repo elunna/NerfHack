@@ -353,8 +353,33 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
             }
             res = TRUE;
         }
-    }
+    } else if ((obj->oclass == POTION_CLASS) && gl.level.flags.temperature < 0
+         && (levl[x][y].typ == ROOM || levl[x][y].typ == CORR
+                   || levl[x][y].typ == ICE)) {
+        /* Potions are sometimes destroyed when landing on cold ground. */
+        if (cansee(x, y)) {
+            pline("%s up as %s the icy ground.", Tobjnam(obj, "freeze"),
+                  is_plural(obj) ? "they hit" : "it hits");
+        }
 
+        int survival_chance = obj->blessed ? 70 : 50;
+        if (obj->invlet)
+            survival_chance += Luck * 2;
+        if (obj->otyp == POT_OIL)
+            survival_chance = 100;
+
+        if (!obj_resists(obj, survival_chance, 100)) {
+            if (cansee(x, y)) {
+                pline("%s from the cold!",
+                      (is_plural(obj) ? "They shatter" : "It shatters"));
+            } else {
+                You_hear("a shattering noise.");
+            }
+
+            breakobj(obj, x, y, FALSE, FALSE);
+            res = TRUE;
+        }
+    }
     gb.bhitpos = save_bhitpos;
     return res;
 }
