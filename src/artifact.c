@@ -1520,7 +1520,7 @@ artifact_hit(
             }
         }
         if (gs.spec_dbon_applies)
-            wake_nearto(mdef->mx, mdef->my, 4 * 4);
+            wake_nearto(mdef->mx, mdef->my, 9 * 9);
         if (!rn2(5))
             (void) destroy_mitem(mdef, RING_CLASS, AD_ELEC);
         if (!rn2(5))
