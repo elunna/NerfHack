@@ -1714,7 +1714,13 @@ attributes_enlightenment(
         you_are("visible", from_what(-INVIS));
     if (Displaced)
         you_are("displaced", from_what(DISPLACED));
-    if (Stealth) {
+    
+    /* TODO: Make stomping officially block stealth. Here we only show 
+     * one or the other, but a more elegant solution would be for stomping
+     * boots to also block stealth when worn. */
+    if (Stomping) {
+        you_are("stomping", from_what(STOMPING));
+    } else if (Stealth) {
         you_are("stealthy", from_what(STEALTH));
     } else if (BStealth && (HStealth || EStealth)) {
         Sprintf(buf, " steathy%s",
