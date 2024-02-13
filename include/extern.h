@@ -3331,6 +3331,8 @@ extern int flash_hits_mon(struct monst *, struct obj *) NONNULLARG12;
 extern void light_hits_gremlin(struct monst *, int) NONNULLARG1;
 extern boolean hates_item(struct monst *, struct obj *);
 extern int count_hated_items(void);
+extern boolean stompable(struct monst *) NONNULLARG1;
+
 
 /* ### unixmain.c ### */
 #ifdef UNIX

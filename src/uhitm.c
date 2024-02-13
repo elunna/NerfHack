@@ -573,7 +573,7 @@ do_attack(struct monst *mtmp)
         }
     }
 
-    if (Stomping && verysmall(mtmp->data)) {
+    if (Stomping && stompable(mtmp)) {
         You("stomp on %s!", mon_nam(mtmp));
         xkilled(mtmp, XKILL_GIVEMSG);
         wake_nearby();
@@ -6829,4 +6829,22 @@ count_hated_items(void)
         count++;
     return count;
 }
+
+/* Can a monster be stomped with stomping boots? */
+boolean
+stompable(struct monst *mon)
+{
+    /* Only tiny monsters */
+    if (!verysmall(mon->data))
+        return FALSE;
+    /* Can't stomp monsters in water */
+    if (is_pool(mon->mx, mon->my))
+        return FALSE;
+    /* Can't stomp squishy monsters */
+    if (amorphous(mon->data) || noncorporeal(mon->data))
+        return FALSE;
+    /* Can't stomp monsters in the air */
+    return grounded(mon->data);
+}
+
 /*uhitm.c*/

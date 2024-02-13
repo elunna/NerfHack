@@ -809,7 +809,7 @@ mattacku(register struct monst *mtmp)
     }
 
     if (!range2 && marmf && marmf->otyp == STOMPING_BOOTS 
-        && verysmall(gy.youmonst.data)) {
+        && stompable(&gy.youmonst)) {
         pline("%s stomps on you!", Monnam(mtmp));
         makeknown(marmf->otyp);
         if (Upolyd && !Unchanging) {

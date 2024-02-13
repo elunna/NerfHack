@@ -326,7 +326,7 @@ mattackm(
         && magr->my != mdef->my)
         return M_ATTK_MISS;
 
-    if (marmf && marmf->otyp == STOMPING_BOOTS && verysmall(mdef->data)
+    if (marmf && marmf->otyp == STOMPING_BOOTS && stompable(mdef)
         && distmin(magr->mx,magr->my,mdef->mx,mdef->my) <= 1) {
         if (canseemon(magr)) {
             pline("%s stomps on %s!", Monnam(magr), mon_nam(mdef));
