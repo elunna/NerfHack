@@ -1080,6 +1080,7 @@ hmon_hitmon_weapon_melee(
         || (hmd->hand_to_hand && is_art(obj, ART_CLEAVER))) {
         ; /* no special bonuses */
     } else if ((is_giant(hmd->mdat) || is_ettin(hmd->mdat)) && uslinging()
+               && !unique_corpstat(hmd->mdat)
                && hmd->thrown == HMON_THROWN
                && ammo_and_launcher(obj, uwep)
                && P_SKILL(P_SLING) >= P_SKILLED && hmd->dieroll == 1
