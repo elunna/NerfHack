@@ -6834,9 +6834,12 @@ count_hated_items(void)
 boolean
 stompable(struct monst *mon)
 {
-    /* Only tiny monsters */
-    if (!verysmall(mon->data))
+    /* Only tiny or smallmonsters */
+    if (mon->data->msize > MZ_SMALL)
         return FALSE;
+    /* Small monsters have a very small chance of getting stomped too */
+    if (mon->data->msize == MZ_SMALL && rn2(40))
+        return FALSE; 
     /* Can't stomp monsters in water */
     if (is_pool(mon->mx, mon->my))
         return FALSE;
