@@ -1575,14 +1575,27 @@ artifact_hit(
             return TRUE;
         case ART_GIANTSLAYER:
             if (youattack && is_giant(mdef->data) && j) {
-                You("eviscerate %s with a fatal stab!", mon_nam(mdef));
-                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+                if (unique_corpstat(mdef->data)) {
+                    pline("The jagged spear pierces deeply into %s!",
+                          mon_nam(mdef));
+                    *dmgptr *= 3;
+                    return TRUE;
+                } else {
+                    You("eviscerate %s with a fatal stab!", mon_nam(mdef));
+                    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+                }
             } else if (!youattack && !youdefend
                        && magr && is_giant(mdef->data) && j) {
-                if (show_instakill)
+                if (unique_corpstat(mdef->data)) {
+                    pline("The jagged spear pierces deeply into %s!",
+                          mon_nam(mdef));
+                    *dmgptr *= 3;
+                    return TRUE;
+                } else if (show_instakill) {
                     pline("%s eviscerates %s with a fatal stab!",
                           Monnam(magr), mon_nam(mdef));
-                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+                    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+                }
             } else if (youdefend && maybe_polyd(is_giant(gy.youmonst.data),
                                                 Race_if(PM_GIANT)) && k) {
                 pline("The jagged spear eviscerates you!");
@@ -1682,7 +1695,7 @@ artifact_hit(
             return TRUE;
         case ART_SUNSWORD:
             if (youattack && is_undead(mdef->data) && j) {
-                if (mdef->data == &mons[PM_VLAD_THE_IMPALER]) {
+                if (unique_corpstat(mdef->data)) {
                     pline("The consecrated blade flares brightly, severely wounding %s!",
                           mon_nam(mdef));
                     *dmgptr *= 3;
@@ -1694,7 +1707,7 @@ artifact_hit(
                 }
             } else if (!youattack && !youdefend
                        && magr && is_undead(mdef->data) && j) {
-                if (mdef->data == &mons[PM_VLAD_THE_IMPALER]) {
+                if (unique_corpstat(mdef->data)) {
                     if (show_instakill)
                         pline("The consecrated blade flares brightly, severely wounding %s!",
                               mon_nam(mdef));
