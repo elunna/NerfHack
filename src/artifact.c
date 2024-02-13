@@ -1445,8 +1445,8 @@ artifact_hit(
     static const char you[] = "you";
     char hittee[BUFSZ];
     int time = 1; /* For Mouser's Scalpel */
+    int instakill = 0;
     struct artifact *atmp;
-    int j, k = 0;
     
     Strcpy(hittee, youdefend ? you : mon_nam(mdef));
 
@@ -1552,11 +1552,10 @@ artifact_hit(
     atmp = &artilist[(unsigned char) otmp->oartifact];
     
     if (atmp->spfx & (SPFX_DFLAGH | SPFX_DCLAS)) {
-        j = !rn2(5); /* 20% chance of instakill for some artifacts */
-        k = !rn2(5); /* 20% chance if same weapon is used against the player */
+        instakill = !rn2(5); /* 20% chance of instakill for some artifacts */
         switch (otmp->oartifact) {
         case ART_DRAGONBANE:
-            if (youattack && is_dragon(mdef->data) && j) {
+            if (youattack && is_dragon(mdef->data) && instakill) {
                 if (unique_corpstat(mdef->data)) {
                     pline("The gleaming blade cuts deep into %s!",
                           mon_nam(mdef));
@@ -1567,7 +1566,7 @@ artifact_hit(
                     *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 }
             } else if (!youattack && !youdefend
-                       && magr && is_dragon(mdef->data) && j) {
+                       && magr && is_dragon(mdef->data) && instakill) {
                 if (unique_corpstat(mdef->data)) {
                     pline("The gleaming blade cuts deep into %s!",
                           mon_nam(mdef));
@@ -1578,7 +1577,7 @@ artifact_hit(
                           Monnam(magr), mon_nam(mdef));
                     *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 }
-            } else if (youdefend &&is_dragon(gy.youmonst.data) && k) {
+            } else if (youdefend &&is_dragon(gy.youmonst.data) && instakill) {
                 pline("The gleaming blade cuts your head off!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
@@ -1587,15 +1586,15 @@ artifact_hit(
             }
             return TRUE;
         case ART_WEREBANE:
-            if (youattack && is_were(mdef->data) && j) {
+            if (youattack && is_were(mdef->data) && instakill) {
                 pline("The silver saber explodes in flame!");
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (!youattack && !youdefend
-                       && magr && is_were(mdef->data) && j) {
+                       && magr && is_were(mdef->data) && instakill) {
                 if (canseemon(magr))
                     pline("The silver saber explodes in flame!");
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-            } else if (youdefend && is_were(gy.youmonst.data) && k) {
+            } else if (youdefend && is_were(gy.youmonst.data) && instakill) {
                 if (canseemon(magr))
                     pline("The silver saber explodes in flame!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
@@ -1605,7 +1604,7 @@ artifact_hit(
             }
             return TRUE;
         case ART_GIANTSLAYER:
-            if (youattack && is_giant(mdef->data) && j) {
+            if (youattack && is_giant(mdef->data) && instakill) {
                 if (unique_corpstat(mdef->data)) {
                     pline("The jagged spear pierces deeply into %s!",
                           mon_nam(mdef));
@@ -1616,7 +1615,7 @@ artifact_hit(
                     *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 }
             } else if (!youattack && !youdefend
-                       && magr && is_giant(mdef->data) && j) {
+                       && magr && is_giant(mdef->data) && instakill) {
                 if (unique_corpstat(mdef->data)) {
                     pline("The jagged spear pierces deeply into %s!",
                           mon_nam(mdef));
@@ -1628,7 +1627,7 @@ artifact_hit(
                     *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 }
             } else if (youdefend && maybe_polyd(is_giant(gy.youmonst.data),
-                                                Race_if(PM_GIANT)) && k) {
+                                                Race_if(PM_GIANT)) && instakill) {
                 pline("The jagged spear eviscerates you!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
@@ -1636,16 +1635,16 @@ artifact_hit(
                 return FALSE;
             return TRUE;
         case ART_OGRESMASHER:
-            if (youattack && is_ogre(mdef->data) && j) {
+            if (youattack && is_ogre(mdef->data) && instakill) {
                 You("crush %s skull!", s_suffix(mon_nam(mdef)));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (!youattack && !youdefend
-                       && magr && is_ogre(mdef->data) && j) {
+                       && magr && is_ogre(mdef->data) && instakill) {
                 if (show_instakill)
                     pline("%s crushes %s skull!",
                           Monnam(magr), s_suffix(mon_nam(mdef)));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-            } else if (youdefend && is_ogre(gy.youmonst.data) && k) {
+            } else if (youdefend && is_ogre(gy.youmonst.data) && instakill) {
                 pline("The monstrous hammer crushes your skull!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form */
@@ -1672,16 +1671,16 @@ artifact_hit(
                 return FALSE;
             return TRUE;
         case ART_TROLLSBANE:
-            if (youattack && is_troll(mdef->data) && j) {
+            if (youattack && is_troll(mdef->data) && instakill) {
                 pline("As you strike %s, it bursts into flame!", mon_nam(mdef));
                 xkilled(mdef, XKILL_NOMSG | XKILL_NOCORPSE);
             } else if (!youattack && !youdefend
-                       && magr && is_troll(mdef->data) && j) {
+                       && magr && is_troll(mdef->data) && instakill) {
                 if (show_instakill)
                     pline("As %s strikes %s, it bursts into flame!",
                           mon_nam(magr), mon_nam(mdef));
                 mongone(mdef);
-            } else if (youdefend && is_troll(gy.youmonst.data) && k) {
+            } else if (youdefend && is_troll(gy.youmonst.data) && instakill) {
                 You("burst into flame as you are hit!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form */
@@ -1689,17 +1688,17 @@ artifact_hit(
                 return FALSE;
             return TRUE;
         case ART_ORCRIST:
-            if (youattack && is_orc(mdef->data) && j) {
+            if (youattack && is_orc(mdef->data) && instakill) {
                 You("slice open %s throat!", s_suffix(mon_nam(mdef)));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (!youattack && !youdefend
-                       && magr && is_orc(mdef->data) && j) {
+                       && magr && is_orc(mdef->data) && instakill) {
                 if (show_instakill)
                     pline("%s slices open %s throat!",
                           Monnam(magr), s_suffix(mon_nam(mdef)));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (youdefend && maybe_polyd(is_orc(gy.youmonst.data),
-                                                Race_if(PM_ORC)) && k) {
+                                                Race_if(PM_ORC)) && instakill) {
                 You("feel Orcrist slice deep across your neck!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
@@ -1707,17 +1706,17 @@ artifact_hit(
                 return FALSE;
             return TRUE;
         case ART_STING:
-            if (youattack && is_orc(mdef->data) && j) {
+            if (youattack && is_orc(mdef->data) && instakill) {
                 You("stab deep into %s heart!", s_suffix(mon_nam(mdef)));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (!youattack && !youdefend
-                       && magr && is_orc(mdef->data) && j) {
+                       && magr && is_orc(mdef->data) && instakill) {
                 if (show_instakill)
                     pline("%s stabs deep into %s heart!",
                           Monnam(magr), s_suffix(mon_nam(mdef)));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (youdefend && maybe_polyd(is_orc(gy.youmonst.data),
-                                                Race_if(PM_ORC)) && k) {
+                                                Race_if(PM_ORC)) && instakill) {
                 You("feel Sting stab deep into your heart!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
@@ -1725,7 +1724,7 @@ artifact_hit(
                 return FALSE;
             return TRUE;
         case ART_SUNSWORD:
-            if (youattack && is_undead(mdef->data) && j) {
+            if (youattack && is_undead(mdef->data) && instakill) {
                 if (unique_corpstat(mdef->data)) {
                     pline("The consecrated blade flares brightly, severely wounding %s!",
                           mon_nam(mdef));
@@ -1737,7 +1736,7 @@ artifact_hit(
                     xkilled(mdef, XKILL_NOMSG | XKILL_NOCORPSE);
                 }
             } else if (!youattack && !youdefend
-                       && magr && is_undead(mdef->data) && j) {
+                       && magr && is_undead(mdef->data) && instakill) {
                 if (unique_corpstat(mdef->data)) {
                     if (show_instakill)
                         pline("The consecrated blade flares brightly, severely wounding %s!",
@@ -1750,7 +1749,7 @@ artifact_hit(
                               mon_nam(mdef));
                     mongone(mdef);
                 }
-            } else if (youdefend && is_undead(gy.youmonst.data) && k) {
+            } else if (youdefend && is_undead(gy.youmonst.data) && instakill) {
                 pline("The holy power of Sunsword incinerates your undead flesh!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form */
@@ -1758,7 +1757,7 @@ artifact_hit(
                 return FALSE;
             return TRUE;
         case ART_DEMONBANE:
-            if (youattack && is_demon(mdef->data) && j) {
+            if (youattack && is_demon(mdef->data) && instakill) {
                 if (!is_ndemon(mdef->data)) {
                     pline("The holy mace gravely wounds %s!",
                           mon_nam(mdef));
@@ -1770,7 +1769,7 @@ artifact_hit(
                     *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 }
             } else if (!youattack && !youdefend
-                       && magr && is_demon(mdef->data) && j) {
+                       && magr && is_demon(mdef->data) && instakill) {
                 if (!is_ndemon(mdef->data)) {
                     if (show_instakill)
                         pline("The holy mace gravely wounds %s!",
@@ -1783,7 +1782,7 @@ artifact_hit(
                               mon_nam(mdef));
                     *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 }
-            } else if (youdefend && k && is_demon(gy.youmonst.data)) {
+            } else if (youdefend && is_demon(gy.youmonst.data) && instakill) {
                 pline("Demonbane shines brilliantly, disintegrating you!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
