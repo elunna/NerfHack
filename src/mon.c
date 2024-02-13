@@ -5923,6 +5923,7 @@ mon_berserk(struct monst *mtmp)
     /* If a monster goes berserk towards the player, but the hero can't retaliate
      * it seems unfair and awkward. Make it so berserkers turn hostile. */
     mtmp->mpeaceful = 0;
+    newsym(mtmp->mx, mtmp->my);
 }
 
 /*mon.c*/
