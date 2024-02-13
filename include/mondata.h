@@ -168,6 +168,7 @@
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mhflags & MH_DEMON) != 0L)
 #define is_angel(ptr) (((ptr)->mhflags & MH_ANGEL) != 0L)
+#define is_dragon(ptr) (((ptr)->mhflags & MH_DRAGON) != 0L)
 #define is_mercenary(ptr) (((ptr)->mflags2 & M2_MERC) != 0L)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
 #define is_female(ptr) (((ptr)->mflags2 & M2_FEMALE) != 0L)

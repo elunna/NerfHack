@@ -1555,6 +1555,37 @@ artifact_hit(
         j = !rn2(5); /* 20% chance of instakill for some artifacts */
         k = !rn2(5); /* 20% chance if same weapon is used against the player */
         switch (otmp->oartifact) {
+        case ART_DRAGONBANE:
+            if (youattack && is_dragon(mdef->data) && j) {
+                if (unique_corpstat(mdef->data)) {
+                    pline("The gleaming blade cuts deep into %s!",
+                          mon_nam(mdef));
+                    *dmgptr *= 3;
+                    return TRUE;
+                } else {
+                    You("slice the head clean off %s!", mon_nam(mdef));
+                    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+                }
+            } else if (!youattack && !youdefend
+                       && magr && is_dragon(mdef->data) && j) {
+                if (unique_corpstat(mdef->data)) {
+                    pline("The gleaming blade cuts deep into %s!",
+                          mon_nam(mdef));
+                    *dmgptr *= 3;
+                    return TRUE;
+                } else if (show_instakill) {
+                    pline("%s cleanly slices the head off of %s!",
+                          Monnam(magr), mon_nam(mdef));
+                    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+                }
+            } else if (youdefend &&is_dragon(gy.youmonst.data) && k) {
+                pline("The gleaming blade cuts your head off!");
+                *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
+                /* player returns to their original form if poly'd */
+            } else {
+                return FALSE;
+            }
+            return TRUE;
         case ART_WEREBANE:
             if (youattack && is_were(mdef->data) && j) {
                 pline("The silver saber explodes in flame!");
