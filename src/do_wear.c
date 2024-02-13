@@ -99,7 +99,12 @@ toggle_stealth(
 {
     if (on ? gi.initial_don : gc.context.takeoff.cancelled_don)
         return;
-
+    
+    if (Stomping && on) {
+        pline("This %s will not silence your stomping!", xname(obj));
+        makeknown(obj->otyp);
+        return;
+    }
     if (!oldprop /* extrinsic stealth from something else */
         && !HStealth /* intrinsic stealth */
         && !BStealth) { /* stealth blocked by something */
@@ -115,7 +120,7 @@ toggle_stealth(
                 You("float imperceptibly.");
             else
                 You("walk very quietly.");
-        } else {
+        } else if (!Stomping) {
             boolean riding = (u.usteed != NULL);
 
             You("%s%s are noisy.", riding ? "and " : "sure",
@@ -216,6 +221,7 @@ Boots_on(void)
             You("begin stomping around very loudly.");
             makeknown(uarmf->otyp);
         }
+        BStealth |= I_SPECIAL;
         break;
     case ELVEN_BOOTS:
         toggle_stealth(uarmf, oldprop, TRUE);
@@ -298,6 +304,7 @@ Boots_off(void)
             Your("footsteps become considerably less violent.");
             makeknown(otyp);
         }
+        BStealth &= ~I_SPECIAL;
         break;
     case ELVEN_BOOTS:
         toggle_stealth(otmp, oldprop, FALSE);
@@ -362,13 +369,7 @@ Cloak_on(void)
         makeknown(uarmc->otyp);
         break;
     case ELVEN_CLOAK:
-        if (Stomping) {
-            pline("This %s will not silence your stomping!", xname(uarmf));
-            makeknown(uarmf->otyp);
-            EStealth &= ~W_ARMF;
-        } else {
-            toggle_stealth(uarmc, oldprop, TRUE);
-        }
+        toggle_stealth(uarmc, oldprop, TRUE);
         break;
     case CLOAK_OF_DISPLACEMENT:
         toggle_displacement(uarmc, oldprop, TRUE);
@@ -1295,13 +1296,7 @@ Ring_on(struct obj *obj)
     case MEAT_RING:
         break;
     case RIN_STEALTH:
-        if (Stomping) {
-            pline("This %s will not silence your stomping!", xname(obj));
-            learnring(obj, TRUE);
-            EStealth &= ~W_RING;
-        } else {
-            toggle_stealth(obj, oldprop, TRUE);
-        }
+        toggle_stealth(obj, oldprop, TRUE);
         break;
     case RIN_WARNING:
         see_monsters();

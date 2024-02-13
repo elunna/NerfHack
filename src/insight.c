@@ -1715,16 +1715,18 @@ attributes_enlightenment(
     if (Displaced)
         you_are("displaced", from_what(DISPLACED));
     
-    /* TODO: Make stomping officially block stealth. Here we only show 
-     * one or the other, but a more elegant solution would be for stomping
-     * boots to also block stealth when worn. */
     if (Stomping) {
         you_are("stomping", from_what(STOMPING));
-    } else if (Stealth) {
+    }
+    
+    if (Stealth) {
         you_are("stealthy", from_what(STEALTH));
     } else if (BStealth && (HStealth || EStealth)) {
-        Sprintf(buf, " steathy%s",
-                (BStealth == FROMOUTSIDE) ? " if not mounted" : "");
+        Sprintf(buf, " stealthy%s",
+                (BStealth == FROMOUTSIDE)
+                    ? " if not mounted" 
+                    : ((BStealth == I_SPECIAL) 
+                           ? " if not wearing stomping boots" : ""));
         enl_msg(You_, "would be", "would have been", buf, "");
     }
     if (Aggravate_monster)
