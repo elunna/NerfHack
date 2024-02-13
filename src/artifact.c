@@ -1723,39 +1723,6 @@ artifact_hit(
             } else
                 return FALSE;
             return TRUE;
-        case ART_SUNSWORD:
-            if (youattack && is_undead(mdef->data) && instakill) {
-                if (unique_corpstat(mdef->data)) {
-                    pline("The consecrated blade flares brightly, severely wounding %s!",
-                          mon_nam(mdef));
-                    *dmgptr *= 3;
-                    return TRUE;
-                } else {
-                    pline("The consecrated blade flares brightly as it incinerates %s!",
-                          mon_nam(mdef));
-                    xkilled(mdef, XKILL_NOMSG | XKILL_NOCORPSE);
-                }
-            } else if (!youattack && !youdefend
-                       && magr && is_undead(mdef->data) && instakill) {
-                if (unique_corpstat(mdef->data)) {
-                    if (show_instakill)
-                        pline("The consecrated blade flares brightly, severely wounding %s!",
-                              mon_nam(mdef));
-                    *dmgptr *= 3;
-                    return TRUE;
-                } else {
-                    if (show_instakill)
-                        pline("The consecrated blade flares brightly as it incinerates %s!",
-                              mon_nam(mdef));
-                    mongone(mdef);
-                }
-            } else if (youdefend && is_undead(gy.youmonst.data) && instakill) {
-                pline("The holy power of Sunsword incinerates your undead flesh!");
-                *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
-                /* player returns to their original form */
-            } else
-                return FALSE;
-            return TRUE;
         case ART_DEMONBANE:
             if (youattack && is_demon(mdef->data) && instakill) {
                 if (!is_ndemon(mdef->data)) {
