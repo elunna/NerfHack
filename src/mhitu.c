@@ -258,11 +258,12 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
     else {
         const char *blocker = attack_blocker(&gy.youmonst);
         if (blocker && !rn2(5))
-            pline_xy(mtmp->mx, mtmp->my, "Your %s %s %s attack.", blocker,
-                  rn2(3) ? "blocks" : "deflects", s_suffix(mon_nam(mtmp)));
+            pline_xy(mtmp->mx, mtmp->my, "You %s %s attack with your %s.",
+                     rn2(3) ? "block" : "deflect", s_suffix(mon_nam(mtmp)),
+                     blocker);
         else
-        pline_xy(mtmp->mx, mtmp->my, "%s %smisses!", Monnam(mtmp),
-                 (nearmiss && flags.verbose) ? "just " : "");
+            pline_xy(mtmp->mx, mtmp->my, "%s %smisses!", Monnam(mtmp),
+                     (nearmiss && flags.verbose) ? "just " : "");
     }
     stop_occupation();
 }
