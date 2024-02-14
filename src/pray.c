@@ -836,19 +836,9 @@ gcrownu(void)
     for (int i = 0; i < 3; i++) {
         switch (rnd(8)) {
         case 1:
-            if (!(HSee_invisible & FROMOUTSIDE)) {
-                if (Blind) {
-                    if (Invisible) {
-                        You("feel transparent.");
-                    } else {
-                        You("feel very self-conscious.");
-                        pline("Then it passes.");
-                    }
-                } else {
-                    You_see("an image of someone stalking you.");
-                    pline("But it disappears.");
-                }
-                HSee_invisible |= FROMOUTSIDE;
+            if (!(HDisint_resistance & FROMOUTSIDE)) {
+                You_feel(Hallucination ? "totally together, man." : "very firm.");
+                HDisint_resistance |= FROMOUTSIDE;
             }
             break;
         case 2:
@@ -894,12 +884,11 @@ gcrownu(void)
             }
             break;
         case 8:
-            if (!(HTelepat & FROMOUTSIDE)) {
-                You_feel(Hallucination ? "in touch with the cosmos."
-                                       : "a strange mental acuity.");
-                HTelepat |= FROMOUTSIDE;
-                if (Blind)
-                    see_monsters();
+            if (!(HStone_resistance & FROMOUTSIDE)) {
+                You_feel("%s.", Hallucination 
+                                    ? "unusually limber"
+                                    : "less concerned about becoming petrified");
+                HStone_resistance |= FROMOUTSIDE;
             }
             break;
         }
