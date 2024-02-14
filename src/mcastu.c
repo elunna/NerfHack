@@ -871,11 +871,12 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             Your("%s suddenly aches very painfully!", body_part(HEAD));
         break;
     case MGC_ENTOMB: {
-        /* entomb you in rocks (and maybe a couple diggable walls) to delay you
-         * and allow some time for the caster to get away */
+        /* entomb you in rocks to delay you and get away */
         coordxy x, y;
-        /* Only allow casting at reletively short-range */
-        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 26) {
+        /* Only allow casting at relatively short-range */
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 26
+            /* Don't cast if we get hit by the boulders! */
+            && distu(mtmp->mx, mtmp->my) > 2) {
             pline_The("ground shakes violently!");
             if (!Blind)
                 pline("Boulders fall from above!");
