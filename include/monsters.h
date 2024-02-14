@@ -697,7 +697,7 @@
         M2_HOSTILE | M2_STALK | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_PRINCE
             | M2_STRONG | M2_MAGIC | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION,
-        NO_RACE, 27, HI_LORD, DEEPEST_ONE),
+        NO_RACE, 25, HI_LORD, DEEPEST_ONE),
     /*
      * imps & other minor demons/devils
      */
