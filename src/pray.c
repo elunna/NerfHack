@@ -1834,7 +1834,9 @@ offer_different_alignment_altar(
                                              ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
                 crackaltar();
-            }
+            } else if (rn2(2))
+                crackaltar();
+            
             /* anger priest; test handles bones files */
             if ((pri = findpriest(temple_occupied(u.urooms)))
                 && !p_coaligned(pri))
@@ -1985,9 +1987,14 @@ bestow_artifact(void)
     return FALSE;
 }
 
-/* Altars can crack and be destroyed if you have received more than
- * 2 gifts or if you are already crowned.
- */
+/* Altars can crack from bestowing gifts or granting crowning.
+ * If an already cracked altar cracks again, it is destroyed.
+ * Altars only crack from gifting if you have received more than 2 gifts
+ * or if you are already crowned.
+ * 
+ * Altars can also occasionally generate cracked, and they can crack from
+ * being converted from one alignment to another.
+ * */
 static void
 crackaltar(void)
 {
