@@ -850,7 +850,8 @@ animate_statue(
         mon->mpeaceful = 0;
         set_malign(mon);
     }
-
+    newsym(mon->mx, mon->my);
+    
     comes_to_life = !canspotmon(mon) ? "disappears"
                     : golem_xform ? "turns into flesh"
                       : (nonliving(mon->data) || is_vampshifter(mon)) ? "moves"
