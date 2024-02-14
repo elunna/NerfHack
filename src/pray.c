@@ -1444,12 +1444,7 @@ pleased(aligntyp g_align)
 
             godvoice(u.ualign.type,
                      "Thou hast pleased me with thy progress,");
-            if (!(HTelepat & INTRINSIC)) {
-                HTelepat |= FROMOUTSIDE;
-                pline(msg, "Telepathy");
-                if (Blind)
-                    see_monsters();
-            } else if (!(HFast & INTRINSIC)) {
+            if (!(HFast & INTRINSIC)) {
                 HFast |= FROMOUTSIDE;
                 pline(msg, "Speed");
             } else if (!(HStealth & INTRINSIC)) {
