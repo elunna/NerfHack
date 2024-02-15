@@ -1488,6 +1488,9 @@ artifact_hit(
                                 : "burns",
                       hittee, !gs.spec_dbon_applies ? '.' : '!');
 
+            if (Slimed && (youattack || youdefend))
+                burn_away_slime();
+            
             if (completelyburns(mdef->data) || is_wooden(mdef->data)
                 || mdef->data == &mons[PM_GREEN_SLIME]) {
                 if (youdefend) {
@@ -1510,8 +1513,7 @@ artifact_hit(
             (void) destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
         if (!rn2(4))
             ignite_items(mdef->minvent);
-        if (youdefend && Slimed)
-            burn_away_slime();
+
         return realizes_damage;
     }
     if (attacks(AD_COLD, otmp)) {
