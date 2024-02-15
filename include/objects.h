@@ -503,30 +503,30 @@ HELM("helm of telepathy", "visored helmet",
           cost, ac, 0, ARM_SUIT, DRAGON_HIDE, color,snam)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
-DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  1200, 7, CLR_GRAY,
+DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  1200, 6, CLR_GRAY,
                                                     GRAY_DRAGON_SCALE_MAIL),
     /* gold DSM is a light source; there's no property for that */
-DRGN_ARMR("gold dragon scale mail",    1, 0,           900, 7, HI_GOLD,
+DRGN_ARMR("gold dragon scale mail",    1, 0,           900, 6, HI_GOLD,
                                                     GOLD_DRAGON_SCALE_MAIL),
-DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 1200, 7, DRAGON_SILVER,
+DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 1200, 6, DRAGON_SILVER,
                                                     SILVER_DRAGON_SCALE_MAIL),
 #if 0 /* DEFERRED */
-DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 7, CLR_CYAN,
+DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 6, CLR_CYAN,
                                                 SHIMMERING_DRAGON_SCALE_MAIL),
 #endif
-DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,    900, 7, CLR_RED,
+DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,    900, 6, CLR_RED,
                                                     RED_DRAGON_SCALE_MAIL),
-DRGN_ARMR("white dragon scale mail",   1, COLD_RES,    900, 7, CLR_WHITE,
+DRGN_ARMR("white dragon scale mail",   1, COLD_RES,    900, 6, CLR_WHITE,
                                                     WHITE_DRAGON_SCALE_MAIL),
-DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,   900, 7, CLR_ORANGE,
+DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,   900, 6, CLR_ORANGE,
                                                     ORANGE_DRAGON_SCALE_MAIL),
-DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 1200, 7, CLR_BLACK,
+DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 1200, 6, CLR_BLACK,
                                                     BLACK_DRAGON_SCALE_MAIL),
-DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,   900, 7, CLR_BLUE,
+DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,   900, 6, CLR_BLUE,
                                                     BLUE_DRAGON_SCALE_MAIL),
-DRGN_ARMR("green dragon scale mail",   1, POISON_RES,  900, 7, CLR_GREEN,
+DRGN_ARMR("green dragon scale mail",   1, POISON_RES,  900, 6, CLR_GREEN,
                                                     GREEN_DRAGON_SCALE_MAIL),
-DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,    900, 7, CLR_YELLOW,
+DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,    900, 6, CLR_YELLOW,
                                                     YELLOW_DRAGON_SCALE_MAIL),
 /* For now, only dragons leave these. */
 /* 3.4.1: dragon scales left classified as "non-magic"; they confer magical
