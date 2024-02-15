@@ -2958,14 +2958,6 @@ corpse_chance(
         return FALSE;
     }
 
-    /* Trolls don't leave a corpse when the player is wielding Trollsbane */
-    if (mdat->mlet == S_TROLL && uwep && uwep->oartifact == ART_TROLLSBANE
-        && distu(mon->mx, mon->my) < 3) {
-        if (cansee(mon->mx, mon->my))
-            pline("In the presence of Trollsbane, %s corpse flares brightly and burns to ashes.",
-                  s_suffix(mon_nam(mon)));
-        return FALSE;
-    }
     /* Zombies don't leave a corpse when the player is wielding Sunsword */
     if (is_zombie(mdat) && uwep && uwep->oartifact == ART_SUNSWORD
         && distu(mon->mx, mon->my) < 3) {
