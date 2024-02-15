@@ -1497,8 +1497,7 @@ artifact_hit(
                     You("ignite and turn to ash!");
                     losehp((Upolyd ? u.mh : u.uhp) + 1, "immolation",
                            NO_KILLER_PREFIX);
-                }
-                else {
+                } else {
                     pline("%s ignites and turns to ash!", Monnam(mdef));
                     *dmgptr = mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 }
@@ -1521,6 +1520,18 @@ artifact_hit(
             pline_The("ice-cold blade %s %s%c",
                       !gs.spec_dbon_applies ? "hits" : "freezes", hittee,
                       !gs.spec_dbon_applies ? '.' : '!');
+        
+        if (mdef->data == &mons[PM_WATER_ELEMENTAL]) {
+            if (youdefend) {
+                You("explode into shards of ice!");
+                losehp((Upolyd ? u.mh : u.uhp) + 1, "freezing",
+                       NO_KILLER_PREFIX);
+            } else {
+                pline("%s explodes into shards of ice!", Monnam(mdef));
+                *dmgptr = mdef->mhp + FATAL_DAMAGE_MODIFIER;
+            }
+            return TRUE;
+        }
         if (!rn2(4))
             (void) destroy_mitem(mdef, POTION_CLASS, AD_COLD);
         return realizes_damage;
