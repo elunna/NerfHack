@@ -1478,14 +1478,30 @@ artifact_hit(
 
     /* the four basic attacks: fire, cold, shock and missiles */
     if (attacks(AD_FIRE, otmp)) {
-        if (realizes_damage)
+        if (realizes_damage) {
             pline_The("fiery blade %s %s%c",
                       !gs.spec_dbon_applies
                           ? "hits"
-                          : (mdef->data == &mons[PM_WATER_ELEMENTAL])
+                          : (mdef->data == &mons[PM_WATER_ELEMENTAL]
+                             || mdef->data == &mons[PM_ICE_VORTEX])
                                 ? "vaporizes part of"
                                 : "burns",
                       hittee, !gs.spec_dbon_applies ? '.' : '!');
+
+            if (completelyburns(mdef->data) || is_wooden(mdef->data)
+                || mdef->data == &mons[PM_GREEN_SLIME]) {
+                if (youdefend) {
+                    You("ignite and turn to ash!");
+                    losehp((Upolyd ? u.mh : u.uhp) + 1, "immolation",
+                           NO_KILLER_PREFIX);
+                }
+                else {
+                    pline("%s ignites and turns to ash!", Monnam(mdef));
+                    *dmgptr = mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                }
+                return TRUE;
+            }
+        }
         if (!rn2(4))
             (void) destroy_mitem(mdef, POTION_CLASS, AD_FIRE);
         if (!rn2(4))
