@@ -102,10 +102,8 @@ choose_magic_spell(struct monst* mtmp, int spellval)
     case 24:
     case 23:
         switch (rnd(3)) {
-        case 1:
-            return MGC_FIRE_BOLT;
-        case 2:
-            return MGC_ICE_BOLT;
+        case 1: return MGC_FIRE_BOLT;
+        case 2: return MGC_ICE_BOLT;
         default:
             if (Antimagic || Hallucination)
                 return MGC_PSI_BOLT;
@@ -113,22 +111,23 @@ choose_magic_spell(struct monst* mtmp, int spellval)
         /*FALLTHRU*/
     case 22:
     case 21:
-    case 20:
         return MGC_DEATH_TOUCH;
+    case 20:
     case 19:
-    case 18:
         return MGC_CLONE_WIZ;
+    case 18:
     case 17:
-    case 16:
         return MGC_SUMMON_MONS;
+    case 16:
+        return MGC_CALL_UNDEAD;
     case 15:
         return MGC_ACID_BLAST;
+    case 14:
     case 13:
         return MGC_AGGRAVATION;
     case 12:
         return MGC_REFLECTION;
     case 11:
-        return MGC_CALL_UNDEAD;
     case 10:
         return MGC_CURSE_ITEMS;
     case 9:
@@ -156,10 +155,8 @@ choose_magic_spell(struct monst* mtmp, int spellval)
     case 0:
     default:
         switch (rnd(3)) {
-        case 1:
-            return MGC_FIRE_BOLT;
-        case 2:
-            return MGC_ICE_BOLT;
+        case 1: return MGC_FIRE_BOLT;
+        case 2: return MGC_ICE_BOLT;
         default:
             return MGC_PSI_BOLT;
         }
