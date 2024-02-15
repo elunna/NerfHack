@@ -1868,7 +1868,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
      * blinking eye will simply linger awkwardly next to the player...)
      * */
     if (mcanseeu && Invis && !perceives(mtmp->data)
-        && mdistu(mtmp) > 3 && rn2(11)) {
+        && !m_next2u(mtmp) && rn2(11)) {
         if (!rn2(23)) /* Don't spam this. */
             pline("%s looks around searchingly...", Monnam(mtmp));
         mcanseeu = 0;
@@ -1885,8 +1885,9 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     /* Darkness protection: If we are on a dark square and the gazer doesn't
      * have infravision and we are infravisible and they are not right next 
      * to us, we should reasonably expect they can't "gaze" at us. */
-    if (!levl[u.ux][u.uy].lit && infravision(mtmp->data)
-        && infravisible(gy.youmonst.data) && mdistu(mtmp) < 3) {
+    if (!levl[u.ux][u.uy].lit
+        && !(infravisible(gy.youmonst.data) && infravision(mtmp->data))
+        && !m_next2u(mtmp) && rn2(5)) {
         mcanseeu = 0;
     }
         
