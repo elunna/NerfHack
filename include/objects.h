@@ -160,7 +160,7 @@ WEAPON("shuriken", "throwing star",
        0, 1, 0, 35,   1,   5,  8,  6, 2, P,   -P_SHURIKEN, IRON, HI_METAL,
                                                         SHURIKEN),
 WEAPON("boomerang", NoDes,
-       1, 1, 0, 15,   5,  20,  9,  9, 0, 0,   -P_BOOMERANG, WOOD, HI_WOOD,
+       1, 1, 0, 15,   5,  20,  9,  9, 0, B,   -P_BOOMERANG, WOOD, HI_WOOD,
                                                         BOOMERANG),
 
 /* spears [note: javelin used to have a separate skill from spears,
@@ -390,7 +390,7 @@ WEAPON("flail", NoDes,
 
 /* misc */
 WEAPON("bullwhip", NoDes,
-       1, 0, 0,  2,  7,   4,  2,  1, 0, 0,   P_WHIP, LEATHER, CLR_BROWN,
+       1, 0, 0,  2,  7,   4,  2,  1, 0, B,   P_WHIP, LEATHER, CLR_BROWN,
                                                         BULLWHIP),
 
 /* bows */
