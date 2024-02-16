@@ -417,7 +417,11 @@ rndcurse(void)
         You(mal_aura, "the magic-absorbing staff");
         return;
     }
-
+    if (u_wield_art(ART_LOAD_BRAND) && rn2(20)) {
+        You(mal_aura, "the dense sword");
+        return;
+    }
+    
     if (Antimagic) {
         shieldeff(u.ux, u.uy);
         You(mal_aura, "you");

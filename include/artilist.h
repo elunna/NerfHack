@@ -184,8 +184,8 @@ static NEARDATA struct artifact artilist[] = {
       FIRE(5, 0), DFNS(AD_FIRE), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, FIRE_BRAND),
 
-    A("Load Brand", HEAVY_SWORD, (SPFX_RESTR | SPFX_PROTECT), 0, 0,
-      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
+    A("Load Brand", HEAVY_SWORD, (SPFX_RESTR | SPFX_PROTECT | SPFX_HPHDAM),
+      0, 0, PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, LOAD_BRAND),
     
     A("Dragonbane", BROADSWORD,
