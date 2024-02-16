@@ -1818,7 +1818,7 @@ offer_different_alignment_altar(
                                              ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
                 crackaltar();
-            } else if (rn2(2))
+            } else if (!rn2(3))
                 crackaltar();
             
             /* anger priest; test handles bones files */
@@ -1963,7 +1963,12 @@ bestow_artifact(void)
                 makeknown(otmp->otyp);
                 discover_artifact(otmp->oartifact);
             }
-            crackaltar();
+            
+            /* If more than 2 gifts have been granted, there is a chance
+             * of cracking. If the player is already crowned, it definitely
+             * cracks */
+            if ((u.ugifts > 2 && !rn2(2)) || u.uevent.uhand_of_elbereth) 
+                crackaltar();
           
             return TRUE;
         }
@@ -1971,8 +1976,8 @@ bestow_artifact(void)
     return FALSE;
 }
 
-/* Altars can crack from bestowing gifts or granting crowning.
- * If an already cracked altar cracks again, it is destroyed.
+/* Altars can crack from bestowing gifts or crowning.
+ * If an already cracked altar cracks again, it is destroyed forever.
  * Altars only crack from gifting if you have received more than 2 gifts
  * or if you are already crowned.
  * 
@@ -1983,28 +1988,24 @@ static void
 crackaltar(void)
 {
     struct rm *lev = &levl[u.ux][u.uy];
-    if ((u.ugifts > 2 && !rn2(2)) || lev->cracked 
-          || u.uevent.uhand_of_elbereth) {
-        
-        if (lev->cracked && !Is_astralevel(&u.uz)) {
-            /* don't leave loose ends.. */
-            lev->looted = 0;
-            lev->cracked = 0;
-            lev->typ = ROOM;
-            Soundeffect(se_crash_throne_destroyed, 60);
-            if (Blind && !Deaf)
-                pline("CRACK!  Something loudly crumbles.");
-            else {
-                pline("CRACK!  The altar cracks in two and is destroyed!");
-                newsym(u.ux, u.uy);
-            }
-        } else {
-            lev->cracked = 1;
-            if (Blind && !Deaf)
-                You_hear("something cracking.");
-            else {
-                pline("A large crack forms in the middle of the altar...");
-            }
+    if (lev->cracked && !Is_astralevel(&u.uz)) {
+        /* don't leave loose ends.. */
+        lev->looted = 0;
+        lev->cracked = 0;
+        lev->typ = ROOM;
+        Soundeffect(se_crash_throne_destroyed, 60);
+        if (Blind && !Deaf)
+            pline("CRACK!  Something loudly crumbles.");
+        else {
+            pline("CRACK!  The altar splits in two and is destroyed!");
+            newsym(u.ux, u.uy);
+        }
+    } else {
+        lev->cracked = 1;
+        if (Blind && !Deaf)
+            You_hear("something cracking.");
+        else {
+            pline("A large crack forms in the middle of the altar...");
         }
     }
 }
