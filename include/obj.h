@@ -242,6 +242,10 @@ struct obj {
         /* towel is not a weptool:  spe isn't an enchantment, cursed towel
            doesn't weld to hand, and twoweapon won't work with one */
 #define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->spe > 0)
+#define is_lawful_artifact(otmp) \
+    (otmp->oartifact && arti_align(otmp->oartifact) == A_LAWFUL)
+#define is_chaotic_artifact(otmp) \
+    (otmp->oartifact && arti_align(otmp->oartifact) == A_CHAOTIC)
 #define bimanual(otmp)                                            \
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
      && objects[otmp->otyp].oc_bimanual)

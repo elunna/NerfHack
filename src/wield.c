@@ -810,9 +810,14 @@ can_twoweapon(void)
         pline("%s isn't one-handed.", Yname2(otmp));
     } else if (uarms) {
         You_cant("use two weapons while wearing a shield.");
-    } else if (uswapwep->oartifact) {
-        pline("%s being held second to another weapon!",
-              Yobjnam2(uswapwep, "resist"));
+    /* Adapted from EvilHack:
+     * Allow two-weaponing with an artifact, but not if they are of
+     * opposite alignements. As expected, neutral artifacts don't care */
+    } else if (uswapwep->oartifact
+               && ((is_lawful_artifact(uswapwep) && is_chaotic_artifact(uwep))
+                   || (is_chaotic_artifact(uswapwep) && is_lawful_artifact(uwep)))) {
+        pline("%s being held second to %s!",
+              Yobjnam2(uswapwep, "resist"), artiname(uwep->oartifact));
     } else if (uswapwep->otyp == CORPSE && cant_wield_corpse(uswapwep)) {
         /* [Note: !TWOWEAPOK() check prevents ever getting here...] */
         ; /* must be life-saved to reach here; return FALSE */
@@ -856,7 +861,11 @@ void
 set_twoweap(boolean on_off)
 {
     u.twoweap = on_off;
-
+    
+    if (uswapwep && uswapwep->oartifact) {
+        set_artifact_intrinsic(uswapwep, on_off, W_SWAPWEP);
+    }
+    
     if (on_off && uswapwep && hates_item(&gy.youmonst,uswapwep) 
         && !hates_item(&gy.youmonst, uwep)) {
         find_ac();

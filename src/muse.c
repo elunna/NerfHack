@@ -2961,7 +2961,7 @@ ureflects(const char *fmt, const char *str)
             makeknown(SHIELD_OF_REFLECTION);
         }
         return TRUE;
-    } else if (EReflecting & W_WEP) {
+    } else if (EReflecting & (W_WEP | W_SWAPWEP)) {
         /* Due to wielded artifact weapon */
         if (fmt && str)
             pline(fmt, str, "weapon");
