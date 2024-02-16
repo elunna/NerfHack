@@ -1841,13 +1841,13 @@
         MH_DRAGON, 21, CLR_CYAN, SHIMMERING_DRAGON),
 #endif
     /* red dragon has infravision and can be seen via infravision 
-     * berserks and has stronger attacks, but less AC */
+     * berserks, but less AC */
     MON(NAM("red dragon"), S_DRAGON,
-        LVL(18, 20, 2, 20, -4), (G_GENO | 2),
+        LVL(18, 20, -1, 20, -4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_FIRE, 6, 6),
-          ATTK(AT_BITE, AD_PHYS, 4, 8),
-          ATTK(AT_CLAW, AD_PHYS, 3, 4),
-          ATTK(AT_CLAW, AD_PHYS, 3, 4),
+          ATTK(AT_BITE, AD_PHYS, 3, 8),
+          ATTK(AT_CLAW, AD_PHYS, 2, 4),
+          ATTK(AT_CLAW, AD_PHYS, 2, 4),
           NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_FIRE, MR_FIRE,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
