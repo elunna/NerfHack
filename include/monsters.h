@@ -1778,7 +1778,7 @@
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
         MH_DRAGON, 5, CLR_YELLOW, BABY_YELLOW_DRAGON),
     MON(NAM("gray dragon"), S_DRAGON,
-        LVL(18, 20, -1, 20, 4), (G_GENO | 2),
+        LVL(16, 20, -1, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_MAGM, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -1793,7 +1793,7 @@
         MH_DRAGON, 21, CLR_GRAY, GRAY_DRAGON),
     /* gold dragon can be seen via infravision but doesn't have infravision */
     MON(NAM("gold dragon"), S_DRAGON,
-        LVL(18, 20, -1, 20, 4), (G_GENO | 2),
+        LVL(16, 20, -1, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_FIRE, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -1807,7 +1807,7 @@
         M3_INFRAVISIBLE,
         MH_DRAGON, 21, HI_GOLD, GOLD_DRAGON),
     MON(NAM("silver dragon"), S_DRAGON,
-        LVL(18, 20, -1, 95, 4), (G_GENO | 2),
+        LVL(16, 20, -1, 95, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_COLD, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -1826,7 +1826,7 @@
        see one might misjudge its location) but monster displacement hasn't
        been implemented so we don't include it */
     MON(NAM("shimmering dragon"), S_DRAGON,
-        LVL(18, 20, -4, 20, 4), (G_GENO | 2),
+        LVL(16, 20, -4, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_MAGM, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 2, 8),
           ATTK(AT_CLAW, AD_PHYS, 1, 4),
@@ -1840,10 +1840,10 @@
         0,
         MH_DRAGON, 21, CLR_CYAN, SHIMMERING_DRAGON),
 #endif
-    /* red dragon has infravision and can be seen via infravision 
-     * berserks, but less AC */
+    /* red dragon has infravision and can be seen via infravision. 
+     * It also berserks */
     MON(NAM("red dragon"), S_DRAGON,
-        LVL(18, 20, -1, 20, -4), (G_GENO | 2),
+        LVL(16, 20, -1, 20, -4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_FIRE, 6, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -1857,7 +1857,7 @@
         M3_INFRAVISION | M3_INFRAVISIBLE | M3_BERSERK,
         MH_DRAGON, 21, CLR_RED, RED_DRAGON),
     MON(NAM("white dragon"), S_DRAGON,
-        LVL(18, 20, -1, 20, -5), (G_GENO | 2),
+        LVL(16, 20, -1, 20, -5), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_COLD, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -1871,7 +1871,7 @@
         0,
         MH_DRAGON, 21, CLR_WHITE, WHITE_DRAGON),
     MON(NAM("orange dragon"), S_DRAGON,
-        LVL(18, 20, -1, 20, -5), (G_GENO | 2),
+        LVL(16, 20, -1, 20, -5), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_SLEE, 4, 25),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -1886,7 +1886,7 @@
         MH_DRAGON, 21, CLR_ORANGE, ORANGE_DRAGON),
     /* disintegration breath is actually all or nothing, not 1d255 */
     MON(NAM("black dragon"), S_DRAGON,
-        LVL(18, 20, -1, 20, -6), (G_GENO | 2),
+        LVL(16, 20, -1, 20, -6), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_DISN, 1, 255),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -1901,7 +1901,7 @@
         MH_DRAGON, 21, CLR_BLACK, BLACK_DRAGON),
     /* Faster than the other dragons */
     MON(NAM("blue dragon"), S_DRAGON,
-        LVL(18, 24, -1, 20, -7), (G_GENO | 2),
+        LVL(16, 24, -1, 20, -7), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_ELEC, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
@@ -1929,7 +1929,7 @@
         0,
         MH_DRAGON, 21, CLR_GREEN, GREEN_DRAGON),
     MON(NAM("yellow dragon"), S_DRAGON,
-        LVL(18, 20, -1, 20, -7), (G_GENO | 2),
+        LVL(16, 20, -1, 20, -7), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_ACID, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
