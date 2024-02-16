@@ -1618,9 +1618,12 @@ attributes_enlightenment(
                 : (gc.context.warntype.obj & MH_ELF) ? "elves"
                 : (gc.context.warntype.obj & MH_ORC) ? "orcs"
                 : (gc.context.warntype.obj & MH_DEMON) ? "demons"
+                : (gc.context.warntype.obj & MH_UNDEAD) ? "undead"
+                : (gc.context.warntype.obj & MH_WERE) ? "lycanthropes"
                 : (gc.context.warntype.obj & MH_DRAGON) ? "dragons"
                 : (gc.context.warntype.obj & MH_TROLL) ? "trolls"
                 : (gc.context.warntype.obj & MH_OGRE) ? "ogres" 
+                : (gc.context.warntype.obj & MH_GIANT) ? "giants" 
                 : (gc.context.warntype.obj & MH_JABBERWOCK) ? "jabberwocks"
                                                             : something);
         you_are(buf, from_what(WARN_OF_MON));
@@ -1628,24 +1631,18 @@ attributes_enlightenment(
     if (Warn_of_mon && gc.context.warntype.polyd) {
         Sprintf(buf, "aware of the presence of %s",
                 ((gc.context.warntype.polyd & (MH_HUMAN | MH_ELF))
-                 == (MH_HUMAN | MH_ELF))
-                    ? "humans and elves"
-                    : (gc.context.warntype.polyd & MH_HUMAN)
-                    ? "humans"
-                    : (gc.context.warntype.polyd & MH_ELF)
-                    ? "elves"
-                    : (gc.context.warntype.polyd & MH_ORC)
-                    ? "orcs"
-                    : (gc.context.warntype.polyd & MH_DEMON)
-                    ? "demons"
-                    : (gc.context.warntype.polyd & MH_DRAGON)
-                    ? "dragons"
-                    : (gc.context.warntype.polyd & MH_TROLL)
-                    ? "trolls"
-                    : (gc.context.warntype.polyd & MH_OGRE)
-                    ? "ogres"
-                    : (gc.context.warntype.polyd & MH_JABBERWOCK)
-                    ? "jabberwocks"
+                 == (MH_HUMAN | MH_ELF)) ? "humans and elves"
+                    : (gc.context.warntype.polyd & MH_HUMAN) ? "humans"
+                    : (gc.context.warntype.polyd & MH_ELF) ? "elves"
+                    : (gc.context.warntype.polyd & MH_ORC) ? "orcs"
+                    : (gc.context.warntype.polyd & MH_DEMON) ? "demons"
+                    : (gc.context.warntype.polyd & MH_UNDEAD) ? "undead"
+                    : (gc.context.warntype.polyd & MH_WERE) ? "lycanthropes"
+                    : (gc.context.warntype.polyd & MH_DRAGON) ? "dragons"
+                    : (gc.context.warntype.polyd & MH_TROLL) ? "trolls"
+                    : (gc.context.warntype.polyd & MH_OGRE) ? "ogres"
+                    : (gc.context.warntype.polyd & MH_GIANT) ? "giants"
+                    : (gc.context.warntype.polyd & MH_JABBERWOCK) ? "jabberwocks"
                     : "certain monsters");
         you_are(buf, "");
     }
