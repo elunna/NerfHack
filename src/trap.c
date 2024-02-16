@@ -7023,9 +7023,8 @@ deltrap(register struct trap* trap)
             panic("deltrap: no preceding trap!");
         ttmp->ntrap = trap->ntrap;
     }
-    if (Sokoban && (trap->ttyp == PIT || trap->ttyp == HOLE)) {
+    if (Sokoban && (trap->ttyp == PIT || trap->ttyp == HOLE))
         maybe_finish_sokoban();
-    }
     dealloc_trap(trap);
 }
 
