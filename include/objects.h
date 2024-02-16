@@ -499,7 +499,7 @@ HELM("helm of telepathy", "visored helmet",
  *          is the same as order of dragons defined in monst.c.
  */
 #define DRGN_ARMR(name,mgc,power,cost,ac,color,snam)  \
-    ARMOR(name, NoDes, 1, mgc, 1, power, 0, 5, 200,  \
+    ARMOR(name, NoDes, 1, mgc, 1, power, 0, 5, 80,  \
           cost, ac, 0, ARM_SUIT, DRAGON_HIDE, color,snam)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
