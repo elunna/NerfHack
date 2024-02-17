@@ -5942,6 +5942,7 @@ hmonas(struct monst *mon)
         case AT_STNG:
         case AT_BUTT:
         case AT_TENT:
+        case AT_GAZE:
         /*weaponless:*/
             tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
                                    &attknum, &armorpenalty);
@@ -6013,6 +6014,9 @@ hmonas(struct monst *mon)
                     break;
                 case AT_STNG:
                     verb = "sting";
+                    break;
+                case AT_GAZE:
+                    verb = "gaze";
                     break;
                 default:
                     verb = "hit";
@@ -6191,7 +6195,9 @@ hmonas(struct monst *mon)
 
         case AT_BREA:
         case AT_SPIT:
+#if 0 /* We can gaze in melee */
         case AT_GAZE: /* all done using #monster command */
+#endif
             dhit = 0;
             break;
 
