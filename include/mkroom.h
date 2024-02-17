@@ -65,18 +65,19 @@ enum roomtype_types {
     ARTROOM    = 14, /* art room */
     REALZOO    = 15, /* zoo-like monsters (monkeys, etc.) */
     GIANTCOURT = 16, /* a giant courtroom */
-    SHOPBASE   = 17, /* everything above this is a shop */
-    ARMORSHOP  = 18, /* specific shop defines for level compiler */
-    SCROLLSHOP = 19,
-    POTIONSHOP = 20,
-    WEAPONSHOP = 21,
-    FOODSHOP   = 22,
-    RINGSHOP   = 23,
-    WANDSHOP   = 24,
-    TOOLSHOP   = 25,
-    BOOKSHOP   = 26,
-    FODDERSHOP = 27, /* health food store */
-    CANDLESHOP = 28
+    DRAGONLAIR = 17, /* dragons and $$$ */
+    SHOPBASE   = 18, /* everything above this is a shop */
+    ARMORSHOP  = 19, /* specific shop defines for level compiler */
+    SCROLLSHOP = 20,
+    POTIONSHOP = 21,
+    WEAPONSHOP = 22,
+    FOODSHOP   = 23,
+    RINGSHOP   = 24,
+    WANDSHOP   = 25,
+    TOOLSHOP   = 26,
+    BOOKSHOP   = 27,
+    FODDERSHOP = 28, /* health food store */
+    CANDLESHOP = 29
 };
 
 #define MAXRTYPE (CANDLESHOP) /* maximum valid room type */

@@ -87,6 +87,9 @@ do_mkroom(int roomtype)
         case ANTHOLE:
             mkzoo(ANTHOLE);
             break;
+        case DRAGONLAIR: 
+            mkzoo(DRAGONLAIR); 
+            break;
         default:
             impossible("Tried to make a room of type %d.", roomtype);
         }
@@ -321,6 +324,9 @@ fill_zoo(struct mkroom* sroom)
     case LEPREHALL:
         goldlim = 500 * level_difficulty();
         break;
+    case DRAGONLAIR:
+        goldlim = 1500 * level_difficulty();
+        break;
     }
 
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
@@ -354,6 +360,7 @@ fill_zoo(struct mkroom* sroom)
                           (type == ANTHOLE) ? antholemon() :
                           (type == REALZOO) ? realzoomon() :
                           (type == GIANTCOURT) ? mkclass(S_GIANT, 0) :
+                          (type == DRAGONLAIR) ? mkclass(S_DRAGON, 0) :
                           (struct permonst *) 0,sx, sy, MM_ASLEEP | MM_NOGRP);
             if (mon) {
                 mon->msleeping = 1;
@@ -364,6 +371,7 @@ fill_zoo(struct mkroom* sroom)
             }
             switch (type) {
             case ZOO:
+            case DRAGONLAIR:
             case LEPREHALL:
                 if (sroom->doorct) {
                     int distval = dist2(sx, sy, gd.doors[sh].x, gd.doors[sh].y);

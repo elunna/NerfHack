@@ -1212,6 +1212,9 @@ makelevel(void)
         else if (u_depth > 16 && !rn2(8)
                  && !(gm.mvitals[PM_COCKATRICE].mvflags & G_GONE))
             do_mkroom(COCKNEST);
+        /* Better odds because above rooms gets hit much more often. */
+        else if (u_depth > 16 && !rn2(4))
+            do_mkroom(DRAGONLAIR);
 
  skip0:
         prevstairs = gs.stairs; /* used to test for place_branch() success */

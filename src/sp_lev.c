@@ -2718,6 +2718,7 @@ fill_special_room(struct mkroom *croom)
         case LEPREHALL:
         case MORGUE:
         case BARRACKS:
+        case DRAGONLAIR:
             fill_zoo(croom);
             break;
         }

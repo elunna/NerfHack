@@ -3390,6 +3390,9 @@ check_special_room(boolean newlev)
         case GIANTCOURT:
             You("enter a giant throne room!");
             break;
+        case DRAGONLAIR:
+            You("enter a dragon lair...");
+            break;
         case LEPREHALL:
             You("enter a leprechaun hall!");
             break;
