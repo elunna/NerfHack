@@ -3387,6 +3387,9 @@ check_special_room(boolean newlev)
                 /* the throne room in Sam quest home level lacks a throne */
                 !furniture_present(THRONE, roomno) ? "" : " throne");
             break;
+        case GIANTCOURT:
+            You("enter a giant throne room!");
+            break;
         case LEPREHALL:
             You("enter a leprechaun hall!");
             break;
@@ -3453,6 +3456,7 @@ check_special_room(boolean newlev)
                 /* No more room of that type */
                 switch (rt) {
                 case COURT:
+                case GIANTCOURT:
                     gl.level.flags.has_court = 0;
                     break;
                 case SWAMP:

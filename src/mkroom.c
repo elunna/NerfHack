@@ -54,6 +54,9 @@ do_mkroom(int roomtype)
         case COURT:
             mkzoo(COURT);
             break;
+        case GIANTCOURT:
+            mkzoo(GIANTCOURT);
+            break;
         case ZOO:
             mkzoo(ZOO);
             break;
@@ -286,6 +289,7 @@ fill_zoo(struct mkroom* sroom)
     sh = sroom->fdoor;
     switch (type) {
     case COURT:
+    case GIANTCOURT:
         if (gl.level.flags.is_maze_lev) {
             for (tx = sroom->lx; tx <= sroom->hx; tx++)
                 for (ty = sroom->ly; ty <= sroom->hy; ty++)
@@ -349,6 +353,7 @@ fill_zoo(struct mkroom* sroom)
                                                     : &mons[PM_CHICKATRICE]) :
                           (type == ANTHOLE) ? antholemon() :
                           (type == REALZOO) ? realzoomon() :
+                          (type == GIANTCOURT) ? mkclass(S_GIANT, 0) :
                           (struct permonst *) 0,sx, sy, MM_ASLEEP | MM_NOGRP);
             if (mon) {
                 mon->msleeping = 1;
@@ -413,6 +418,7 @@ fill_zoo(struct mkroom* sroom)
             }
         }
     switch (type) {
+    case GIANTCOURT:
     case COURT: {
         struct obj *chest, *gold;
         levl[tx][ty].typ = THRONE;

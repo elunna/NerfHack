@@ -1202,6 +1202,8 @@ makelevel(void)
             do_mkroom(MORGUE);
         else if (u_depth > 12 && !rn2(8) && antholemon())
             do_mkroom(ANTHOLE);
+        else if(u_depth > 13 && !rn2(8))
+            do_mkroom(GIANTCOURT);
         else if (u_depth > 14 && !rn2(4)
                  && !(gm.mvitals[PM_SOLDIER].mvflags & G_GONE))
             do_mkroom(BARRACKS);

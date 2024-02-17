@@ -2709,6 +2709,7 @@ fill_special_room(struct mkroom *croom)
                                   x, y);
             break;
         case COURT:
+        case GIANTCOURT:
         case ZOO:
         case REALZOO:
         case BEEHIVE:
