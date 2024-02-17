@@ -1196,6 +1196,8 @@ makelevel(void)
         else if (u_depth > 9 && !rn2(5)
                  && !(gm.mvitals[PM_KILLER_BEE].mvflags & G_GONE))
             do_mkroom(BEEHIVE);
+        else if (u_depth > 9 && !rn2(7)) 
+            do_mkroom(REALZOO);
         else if (u_depth > 11 && !rn2(6))
             do_mkroom(MORGUE);
         else if (u_depth > 12 && !rn2(8) && antholemon())

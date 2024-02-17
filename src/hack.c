@@ -3375,6 +3375,9 @@ check_special_room(boolean newlev)
         case ZOO:
             pline("Welcome to David's treasure zoo!");
             break;
+        case REALZOO:
+            You("enter a smelly zoo!");
+            break;
         case SWAMP:
             pline("It %s rather %s down here.", Blind ? "feels" : "looks",
                   Blind ? "humid" : "muddy");
@@ -3459,6 +3462,7 @@ check_special_room(boolean newlev)
                     gl.level.flags.has_morgue = 0;
                     break;
                 case ZOO:
+                case REALZOO:
                     gl.level.flags.has_zoo = 0;
                     break;
                 case BARRACKS:

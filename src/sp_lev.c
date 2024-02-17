@@ -2710,6 +2710,7 @@ fill_special_room(struct mkroom *croom)
             break;
         case COURT:
         case ZOO:
+        case REALZOO:
         case BEEHIVE:
         case ANTHOLE:
         case COCKNEST:
@@ -3883,6 +3884,7 @@ static const struct {
     { "morgue", MORGUE },
     { "barracks", BARRACKS },
     { "zoo", ZOO },
+    { "realzoo", REALZOO },
     { "delphi", DELPHI },
     { "temple", TEMPLE },
     { "anthole", ANTHOLE },

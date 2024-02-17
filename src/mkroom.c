@@ -25,6 +25,7 @@ static void mktemple(void);
 static coord *shrine_pos(int);
 static struct permonst *morguemon(void);
 static struct permonst *squadmon(void);
+static struct permonst *realzoomon(void);
 static void save_room(NHFILE *, struct mkroom *);
 static void rest_room(NHFILE *, struct mkroom *);
 static boolean invalid_shop_shape(struct mkroom *sroom);
@@ -55,6 +56,9 @@ do_mkroom(int roomtype)
             break;
         case ZOO:
             mkzoo(ZOO);
+            break;
+        case REALZOO:
+            mkzoo(REALZOO);
             break;
         case BEEHIVE:
             mkzoo(BEEHIVE);
@@ -333,26 +337,19 @@ fill_zoo(struct mkroom* sroom)
             /* don't place monster on explicitly placed throne */
             if (type == COURT && IS_THRONE(levl[sx][sy].typ))
                 continue;
-            mon = makemon((type == COURT)
-                           ? courtmon()
-                           : (type == BARRACKS)
-                              ? squadmon()
-                              : (type == MORGUE)
-                                 ? morguemon()
-                                 : (type == BEEHIVE)
-                                     ? (sx == tx && sy == ty
-                                         ? &mons[PM_QUEEN_BEE]
-                                         : &mons[PM_KILLER_BEE])
-                                     : (type == LEPREHALL)
-                                         ? &mons[PM_LEPRECHAUN]
-                                         : (type == COCKNEST)
-                                             ? (rn2(4) 
-                                                ? &mons[PM_COCKATRICE] 
-                                                : &mons[PM_CHICKATRICE])
-                                             : (type == ANTHOLE)
-                                                 ? antholemon()
-                                                 : (struct permonst *) 0,
-                          sx, sy, MM_ASLEEP | MM_NOGRP);
+            mon = makemon((type == COURT) ? courtmon() :
+                          (type == BARRACKS) ? squadmon() :
+                          (type == MORGUE) ? morguemon() :
+                          (type == BEEHIVE) ? (sx == tx && sy == ty
+                                                   ? &mons[PM_QUEEN_BEE]
+                                                   : &mons[PM_KILLER_BEE]) :
+                          (type == LEPREHALL) ? &mons[PM_LEPRECHAUN] :
+                          (type == COCKNEST) ? (rn2(4)
+                                                    ? &mons[PM_COCKATRICE]
+                                                    : &mons[PM_CHICKATRICE]) :
+                          (type == ANTHOLE) ? antholemon() :
+                          (type == REALZOO) ? realzoomon() :
+                          (struct permonst *) 0,sx, sy, MM_ASLEEP | MM_NOGRP);
             if (mon) {
                 mon->msleeping = 1;
                 if (type == COURT && mon->mpeaceful) {
@@ -435,6 +432,7 @@ fill_zoo(struct mkroom* sroom)
         gl.level.flags.has_barracks = 1;
         break;
     case ZOO:
+    case REALZOO:
         gl.level.flags.has_zoo = 1;
         break;
     case MORGUE:
@@ -806,6 +804,33 @@ courtmon(void)
         return mkclass(S_GNOME, 0);
     else
         return mkclass(S_KOBOLD, 0);
+}
+
+/* return real zoo monster types. */
+static struct permonst *
+realzoomon(void)
+{
+    int i = rn2(60) + rn2(3 * level_difficulty());
+#if 0 /* Removed, dungeon will never be deep enough to generate */
+    if (i > 175)
+        return (&mons[PM_JUMBO_THE_ELEPHANT]);
+#endif
+    if (i > 115)
+        return (&mons[PM_MASTODON]);
+    else if (i > 85)
+        return (&mons[PM_PYTHON]);
+    else if (i > 70)
+        return (&mons[PM_MUMAK]);
+    else if (i > 55)
+        return (&mons[PM_TIGER]);
+    else if (i > 45)
+        return (&mons[PM_PANTHER]);
+    else if (i > 25)
+        return (&mons[PM_JAGUAR]);
+    else if (i > 15)
+        return (&mons[PM_APE]);
+    else
+        return (&mons[PM_MONKEY]);
 }
 
 static const struct {
