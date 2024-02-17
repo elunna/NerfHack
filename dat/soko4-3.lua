@@ -21,13 +21,14 @@ des.map([[
         -----------
 ]]);
 
-des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=20 })
-
 des.levregion({ region = {07,07,07,07}, type = "branch" })
 des.stair("up", 10,09)
 des.region(selection.area(00,00,18,11),"lit")
 des.non_diggable(selection.area(00,00,18,11))
 des.non_passwall(selection.area(00,00,18,11))
+
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=20 })
+des.replace_terrain({ region={07,07,07,07}, fromterrain="I", toterrain="." })
 
 -- A little help
 des.object("earth",01,08)

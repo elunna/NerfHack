@@ -22,14 +22,14 @@ des.map([[
         -----     
 ]]);
 
-des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=30 })
-
 des.stair("down", 16,07)
 des.stair("up", 04,03)
 
 des.region(selection.area(00,00,17,12), "lit")
 des.non_diggable(selection.area(00,00,17,12))
 des.non_passwall(selection.area(00,00,17,12))
+
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=30 })
 
 -- Boulders
 des.object("boulder",12,02)

@@ -28,8 +28,6 @@ des.map([[
                  ----          
 ]]);
 
-des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=50 })
-
 local place = selection.new();
 place:set(29,03);
 place:set(29,05);
@@ -39,6 +37,8 @@ des.stair("down", 02,12);
 des.region(selection.area(00,00,30,17),"lit");
 des.non_diggable(selection.area(00,00,30,17));
 des.non_passwall(selection.area(00,00,30,17));
+
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=50 })
 
 des.door("locked",22,03)
 des.door("locked",28,03)
