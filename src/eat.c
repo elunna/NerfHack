@@ -1047,10 +1047,11 @@ givit(int type, register struct permonst *ptr)
         break;
     case TELEPORT:
         debugpline0("Trying to give teleport");
-        if (!(HTeleportation & FROMOUTSIDE)) {
+        if (HTeleportation)
             You_feel(Hallucination ? "diffuse." : "very jumpy.");
-            HTeleportation |= FROMOUTSIDE;
-        }
+        else
+            You_feel(Hallucination ? "diffuser." : "more jumpy.");
+        incr_itimeout(&HTeleportation, rn1(250, 500));
         break;
     case TELEPORT_CONTROL:
         debugpline0("Trying to give teleport control");

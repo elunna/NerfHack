@@ -781,6 +781,13 @@ nh_timeout(void)
                     stop_occupation();
                 }
                 break;
+            case TELEPORT:
+                if (!HTeleport_control) {
+                    You_feel(Hallucination ? "yourself."
+                                           : "less jumpy.");
+                    stop_occupation();
+                }
+                break;
             case SEE_INVIS:
                 set_mimic_blocking(); /* do special mimic handling */
                 see_monsters();       /* make invis mons appear */
