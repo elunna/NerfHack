@@ -133,6 +133,7 @@ static int check_pos(coordxy, coordxy, int);
 static void get_bkglyph_and_framecolor(coordxy x, coordxy y, int *, uint32 *);
 static int tether_glyph(coordxy, coordxy);
 static void mimic_light_blocking(struct monst *) NONNULLARG1;
+static int getroomtype(coordxy, coordxy);
 
 /*#define WA_VERBOSE*/ /* give (x,y) locations for all "bad" spots */
 #ifdef WA_VERBOSE
@@ -2509,6 +2510,69 @@ map_glyphinfo(
            turn off override symbol if caller has specified NOOVERRIDE */
         glyphinfo->gm.sym.symidx = mons[glyph_to_mon(glyph)].mlet + SYM_OFF_M;
     }
+    /* NetHack 3.7 commit 1f6c1d0 instated a system in which variants of a
+     * single S_foo defsym that should render as different colors in text
+     * windowports now need to be their own glyphs, optionally allowing each
+     * glyph to be its own tile. (This is how altars are now treated.)
+     * xNetHack has additional color variants of a single defsym (iron doors and
+     * most notably object materials) which were not covered by this change, so
+     * for the time being the on-the-fly color computations have been re-added
+     * here. Likely the ones for object materials will be permanent, since
+     * adding glyphs and tiles for every material variant of every object would
+     * be an enormous amount of work. */
+
+    /* isok is used because this is sometimes called with 0,0 */
+    if (iflags.use_color && isok(x, y)) {
+                /* colored walls - some of these are handled as separate glyphs in
+         * wallcolors[] and don't appear here; currently no glyphs exist for all
+         * the other interesting types of walls */
+        if (gmap->sym.symidx >= S_vwall + SYM_OFF_P
+                 && gmap->sym.symidx <= S_trwall + SYM_OFF_P) {
+            int rtype = getroomtype(x, y);
+            if (On_W_tower_level(&u.uz))
+                glyphinfo->gm.sym.color = CLR_MAGENTA;
+            else if (In_tower(&u.uz)) /* Vlad's */
+                glyphinfo->gm.sym.color = CLR_BLACK;
+            else if (Is_astralevel(&u.uz))
+                glyphinfo->gm.sym.color = CLR_WHITE;
+            else if (rtype == DELPHI) /* special level */
+                glyphinfo->gm.sym.color = CLR_BRIGHT_BLUE;
+            else if (In_sokoban(&u.uz))
+                glyphinfo->gm.sym.color = rn2(13) ? CLR_BLUE : CLR_CYAN;
+            else if (In_mines(&u.uz))
+                glyphinfo->gm.sym.color = CLR_BROWN;
+            else if (!Is_special(&u.uz)) {
+                /* Only in filler levels will these get colored walls for
+                 * the moment; colored walls look weird when they're part of
+                 * special levels that adjoin special room walls to other room
+                 * walls directly. */
+                if (rtype == BEEHIVE || rtype == COCKNEST)
+                    glyphinfo->gm.sym.color = CLR_YELLOW;
+                else if (rtype == COURT && !Is_stronghold(&u.uz))
+                    glyphinfo->gm.sym.color = CLR_BRIGHT_MAGENTA;
+                else if (rtype == VAULT)
+                    glyphinfo->gm.sym.color = HI_METAL;
+                else if (rtype == TEMPLE)
+                    glyphinfo->gm.sym.color = CLR_WHITE;
+                else if (rtype == LEPREHALL)
+                    glyphinfo->gm.sym.color = CLR_BRIGHT_GREEN;
+                else if (rtype == ANTHOLE)
+                    glyphinfo->gm.sym.color = CLR_BROWN;
+                else if (rtype == SWAMP)
+                    glyphinfo->gm.sym.color = CLR_GREEN;
+                else if (rtype == ZOO)
+                    glyphinfo->gm.sym.color = CLR_BLUE;
+            }
+        }
+        /* Colored Walls/Floors Patch: The Valley of the Dead is monochrome, turning
+         * everything to shades of gray. */
+        if (Is_valley(&u.uz) && glyphinfo->gm.sym.color != CLR_BLACK
+            && glyphinfo->gm.sym.color != NO_COLOR) {
+            glyphinfo->gm.sym.color = (glyphinfo->gm.sym.color < NO_COLOR)
+                                       ? CLR_GRAY : CLR_WHITE;
+        }
+    }
+
     glyphinfo->ttychar = gs.showsyms[glyphinfo->gm.sym.symidx];
     glyphinfo->glyph = glyph;
 }
@@ -3664,6 +3728,23 @@ int
 fn_cmap_to_glyph(int cmap)
 {
     return cmap_to_glyph(cmap);
+}
+
+/* Given an x and y space, return the type of the room there. */
+static int
+getroomtype(coordxy x, coordxy y)
+{
+    int rno = levl[x][y].roomno;
+    if (rno >= ROOMOFFSET) {
+        /* rtype is valid while the level is still being created and up until
+         * the player first enters the room. orig_rtype is only initialized late
+         * in level creation and is effectively valid only after the level is
+         * created. */
+        return gi.in_mklev ? gr.rooms[rno - ROOMOFFSET].rtype
+                           : gr.rooms[rno - ROOMOFFSET].orig_rtype;
+    }
+    /* not a room */
+    return OROOM;
 }
 
 /* for 'onefile' processing where end of this file isn't necessarily the
