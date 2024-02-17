@@ -1047,7 +1047,7 @@ givit(int type, register struct permonst *ptr)
         break;
     case TELEPORT:
         debugpline0("Trying to give teleport");
-        if (HTeleportation)
+        if (!HTeleportation)
             You_feel(Hallucination ? "diffuse." : "very jumpy.");
         else
             You_feel(Hallucination ? "diffuser." : "more jumpy.");
