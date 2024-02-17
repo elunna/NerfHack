@@ -1063,14 +1063,16 @@ givit(int type, register struct permonst *ptr)
         break;
     case TELEPAT:
         debugpline0("Trying to give telepathy");
-        if (!HTelepat) {
+        if (!HTelepat)
             You_feel(Hallucination ? "in touch with the cosmos."
-                                   : "a strange mental acuity.");
-            incr_itimeout(&HTelepat, rn1(250, 500));
-            /* If blind, make sure monsters show up. */
-            if (Blind)
-                see_monsters();
-        }
+                               : "a strange mental acuity.");
+        else
+            You_feel(Hallucination ? "more in touch with the cosmos."
+                                   : "more mentally acute.");
+        incr_itimeout(&HTelepat, rn1(250, 500));
+        /* If blind, make sure monsters show up. */
+        if (Blind)
+            see_monsters();
         break;
     case ACID_RES:
         debugpline0("Giving timed acid resistance");
