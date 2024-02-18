@@ -1360,7 +1360,7 @@ passivemm(
     struct permonst *mddat = mdef->data;
     struct permonst *madat = magr->data;
     char buf[BUFSZ];
-    int i, tmp;
+    int i, tmp, orig_dmg;
     int mhit = mhitb ? M_ATTK_HIT : M_ATTK_MISS;
 
     for (i = 0;; i++) {
@@ -1379,6 +1379,7 @@ passivemm(
     /* These affect the enemy even if defender killed */
     switch (mddat->mattk[i].adtyp) {
     case AD_ACID:
+        orig_dmg = tmp;
         if (mhitb && !rn2(2)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
@@ -1391,10 +1392,12 @@ passivemm(
             }
         } else
             tmp = 0;
-        if (!rn2(30))
+        if (!rn2(4))
             erode_armor(magr, ERODE_CORRODE);
-        if (!rn2(6))
+        if (!rn2(3))
             acid_damage(MON_WEP(magr));
+        if (!rn2(3))
+            (void) destroy_items(magr, AD_ACID, orig_dmg);
         goto assess_dmg;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
         if (mhitb && !mdef->mcan && mwep) {

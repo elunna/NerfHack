@@ -1171,17 +1171,14 @@ erosion_matters(struct obj *obj)
 {
     switch (obj->oclass) {
     case TOOL_CLASS:
-        /* it's possible for a rusty weptool to be polymorphed into some
-           non-weptool iron tool, in which case the rust implicitly goes
-           away, but it's also possible for it to be polymorphed into a
-           non-iron tool, in which case rust also implicitly goes away,
-           so there's no particular reason to try to handle the first
-           instance differently [this comment belongs in poly_obj()...] */
-        return is_weptool(obj) ? TRUE : FALSE;
     case WEAPON_CLASS:
     case ARMOR_CLASS:
     case BALL_CLASS:
     case CHAIN_CLASS:
+    case AMULET_CLASS:
+    case RING_CLASS:
+    case WAND_CLASS:
+    case FOOD_CLASS:
         return TRUE;
     default:
         break;
@@ -1358,6 +1355,7 @@ doname_base(
 
     switch (is_weptool(obj) ? WEAPON_CLASS : obj->oclass) {
     case AMULET_CLASS:
+        add_erosion_words(obj, prefix);
         if (obj->owornmask & W_AMUL)
             Concat(bp, 0, " (being worn)");
         break;
@@ -1400,6 +1398,7 @@ doname_base(
         }
         break;
     case TOOL_CLASS:
+        add_erosion_words(obj, prefix);
         if (obj->owornmask & (W_TOOL | W_SADDLE)) { /* blindfold */
             Concat(bp, 0, " (being worn)");
             break;
@@ -1452,6 +1451,7 @@ doname_base(
             goto charges;
         break;
     case WAND_CLASS:
+        add_erosion_words(obj, prefix);
  charges:
         if (known)
             ConcatF2(bp, 0, " (%d:%d)", (int) obj->recharged, obj->spe);
@@ -1461,6 +1461,7 @@ doname_base(
             Concat(bp, 0, " (lit)");
         break;
     case RING_CLASS:
+        add_erosion_words(obj, prefix);
  ring:  /* normal rings reach here 'naturally'; meat ring jumps here */
         if (obj->owornmask & W_RINGR)
             Concat(bp, 0, " (on right ");
@@ -1475,6 +1476,7 @@ doname_base(
     case FOOD_CLASS:
         if (obj->oeaten)
             Strcat(prefix, "partly eaten ");
+        add_erosion_words(obj, prefix);
         if (obj->otyp == CORPSE) {
             /* (quan == 1) => want corpse_xname() to supply article,
                (quan != 1) => already have count or "some" as prefix;

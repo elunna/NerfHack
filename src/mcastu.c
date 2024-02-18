@@ -642,9 +642,9 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         break;
     }
     case MGC_ACID_BLAST:
+        orig_dmg = dmg = d((ml / 2) + 4, 6);
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
             pline("%s douses you in a torrent of acid!", Monnam(mtmp));
-            dmg = d((ml / 2) + 4, 6);
             if (Acid_resistance) {
                 shieldeff(u.ux, u.uy);
                 pline("The acid doesn't harm you.");
@@ -657,6 +657,8 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
                 acid_damage(uswapwep);
             if (rn2(4))
                 erode_armor(&gy.youmonst, ERODE_CORRODE);
+            if (!rn2(2))
+                (void) destroy_items(&gy.youmonst, AD_ACID, orig_dmg);
         } else {
             if (canseemon(mtmp)) {
                 pline("%s blasts the %s with %s and curses!",
@@ -795,7 +797,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
     case MGC_FIRE_BOLT:
         /* hotwire these to only go off if the critter can see you
          * to avoid bugs WRT the Eyes and detect monsters */
-        orig_dmg = dmg =  d((ml / 5) + 1, 8);
+        orig_dmg = dmg = d((ml / 5) + 1, 8);
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
             pline("%s blasts you with a bolt of fire!", Monnam(mtmp));
             if (Fire_resistance) {

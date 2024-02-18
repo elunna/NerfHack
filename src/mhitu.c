@@ -1430,7 +1430,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     int tmp = d((int) mattk->damn, (int) mattk->damd);
     int tim_tmp;
     struct obj *otmp2;
-    int i;
+    int i, orig_dmg;
     boolean physical_damage = FALSE;
     /* for tracking if this is the first engulf */
     boolean old_uswallow = u.uswallow;
@@ -1614,6 +1614,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
             water_damage_chain(gi.invent, FALSE);
         break;
     case AD_ACID:
+        orig_dmg = tmp;
         if (Acid_resistance) {
             You("are covered with a seemingly harmless goo.");
             /* NB: the monst[un]seesu calls in gulpmu are no-ops since the
@@ -1627,12 +1628,14 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                 You("are covered in slime!  It burns!");
             exercise(A_STR, FALSE);
             monstunseesu(M_SEEN_ACID);
-            if (!rn2(7))
+            if (!rn2(4))
                 erode_armor(&gy.youmonst, ERODE_CORRODE);
             if (rn2(u.twoweap ? 2 : 3))
                 acid_damage(uwep);
             if (u.twoweap && rn2(2))
                 acid_damage(uswapwep);
+            if (!rn2(3))
+                (void) destroy_items(&gy.youmonst, AD_ACID, orig_dmg);
         }
         break;
     case AD_BLND:
@@ -1734,6 +1737,8 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                     break;
                 }
                 erode_armor(&gy.youmonst, ERODE_ROT);
+                if (!rn2(3))
+                    (void) destroy_items(&gy.youmonst, AD_DCAY, tmp);
             }
             exercise(A_CON, FALSE);
         }
@@ -2607,7 +2612,7 @@ passiveum(
     struct monst *mtmp,
     struct attack *mattk)
 {
-    int i, tmp;
+    int i, tmp, orig_dmg;
     struct attack *oldu_mattk = 0;
 
     /*
@@ -2632,6 +2637,7 @@ passiveum(
     /* These affect the enemy even if you were "killed" (rehumanized) */
     switch (oldu_mattk->adtyp) {
     case AD_ACID:
+        orig_dmg = tmp;
         if (!rn2(2)) {
             pline("%s is splashed by %s%s!", Monnam(mtmp),
                   /* temporary? hack for sequencing issue:  "your acid"
@@ -2648,6 +2654,7 @@ passiveum(
             erode_armor(mtmp, ERODE_CORRODE);
         if (!rn2(3))
             acid_damage(MON_WEP(mtmp));
+        (void) destroy_items(mtmp, AD_ACID, orig_dmg);
         goto assess_dmg;
     case AD_STON: /* cockatrice */
     {

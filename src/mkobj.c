@@ -2258,7 +2258,12 @@ is_flammable(struct obj *otmp)
     if (Is_candle(otmp))
         return FALSE;
 
-    if (objects[otyp].oc_oprop == FIRE_RES || otyp == WAN_FIRE)
+    if (objects[otyp].oc_oprop == FIRE_RES
+        || otyp == SCR_FIRE
+        || otyp == SPE_FIREBALL
+        || otyp == WAN_FIRE
+        || otyp == RIN_FIRE_RESISTANCE
+        || otyp == FIRE_HORN)
         return FALSE;
 
     return (boolean) ((omat <= WOOD && omat != LIQUID) || omat == PLASTIC);
@@ -2269,6 +2274,15 @@ is_rottable(struct obj *otmp)
 {
     int otyp = otmp->otyp;
 
+    /* We'll grant this; poison resistance protects us against poison gas
+     * clouds, so it also protects against rotting. Includes:
+     * - ring of poison resistance
+     * - apron
+     * - green dragon scales/armor
+     */
+    if (objects[otyp].oc_oprop == POISON_RES)
+        return FALSE;
+        
     return (boolean) (objects[otyp].oc_material <= WOOD
                       && objects[otyp].oc_material != LIQUID);
 }

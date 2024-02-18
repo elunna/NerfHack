@@ -2511,6 +2511,8 @@ mhitm_ad_dcay(
             xkilled(mdef, XKILL_NOMSG);
         }
         erode_armor(mdef, ERODE_ROT);
+        if (!rn2(3))
+            (void) destroy_items(mdef, AD_DCAY, mhm->damage);
         mhm->damage = 0;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
@@ -2524,6 +2526,8 @@ mhitm_ad_dcay(
             return;
         }
         erode_armor(mdef, ERODE_ROT);
+        if (!rn2(3))
+            (void) destroy_items(mdef, AD_DCAY, mhm->damage);
     } else {
         /* mhitm */
         if (magr->mcan)
@@ -2546,6 +2550,8 @@ mhitm_ad_dcay(
             return;
         }
         erode_armor(mdef, ERODE_ROT);
+        if (!rn2(3))
+            (void) destroy_items(mdef, AD_DCAY, mhm->damage);
         mdef->mstrategy &= ~STRAT_WAITFORU;
         mhm->damage = 0;
     }
@@ -2895,6 +2901,8 @@ mhitm_ad_acid(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    int dmg = mhm->damage;
+    
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (resists_acid(mdef) || defended(mdef, AD_ACID))
@@ -2919,6 +2927,7 @@ mhitm_ad_acid(
                 acid_damage(uswapwep);
             if (!rn2(3))
                 erode_armor(&gy.youmonst, ERODE_CORRODE);
+            (void) destroy_items(&gy.youmonst, AD_ACID, dmg);
         } else
             mhm->damage = 0;
     } else {

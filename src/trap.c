@@ -227,6 +227,7 @@ erode_obj(
     case ERODE_CORRODE:
         if (uvictim && inventory_resistance_check(AD_ACID))
             return ER_NOTHING;
+        /* Exceptions handled in destroy_items() */
         vulnerable = is_corrodeable(otmp);
         is_primary = FALSE;
         cost_type = COST_CORRODE;
@@ -4916,6 +4917,16 @@ fire_damage(
     if (catch_lit(obj))
         return FALSE;
 
+    /* special BotD feedback - should it be the "dark red" message?*/
+    if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+        if (in_sight)
+            pline("Smoke rises from %s.", the(xname(obj)));
+        return FALSE;
+    }
+
+    if (!is_flammable(obj) || obj->oerodeproof)
+        return FALSE;
+
     if (Is_container(obj)) {
         switch (obj->otyp) {
         case ICE_BOX:
@@ -5021,7 +5032,7 @@ fire_damage_chain(
 boolean
 lava_damage(struct obj* obj, coordxy x, coordxy y)
 {
-    int otyp = obj->otyp, ocls = obj->oclass;
+    int otyp = obj->otyp;
 
     /* the Amulet, invocation items, and Rider corpses are never destroyed
        (let Book of the Dead fall through to fire_damage() to get feedback) */
@@ -5031,10 +5042,7 @@ lava_damage(struct obj* obj, coordxy x, coordxy y)
        and books--let fire damage deal with them), cloth, leather, wood, bone
        unless it's inherently or explicitly fireproof or contains something;
        note: potions are glass so fall through to fire_damage() and boil */
-    if (objects[otyp].oc_material < DRAGON_HIDE
-        && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
-        && objects[otyp].oc_oprop != FIRE_RES
-        && otyp != WAN_FIRE && otyp != FIRE_HORN
+    if (is_flammable(obj)
         /* assumes oerodeproof isn't overloaded for some other purpose on
            non-eroding items */
         && !obj->oerodeproof
@@ -7321,8 +7329,7 @@ lava_effects(void)
                 continue;
             }
             /* set obj->in_use for items which will be destroyed below */
-            if ((is_organic(obj) || obj->oclass == POTION_CLASS)
-                && !obj->oerodeproof
+            if (is_flammable(obj) && !obj->oerodeproof
                 && objects[obj->otyp].oc_oprop != FIRE_RES
                 && obj->otyp != SCR_FIRE && obj->otyp != SPE_FIREBALL
                 && !obj_resists(obj, 0, 0)) /* for invocation items */
@@ -7459,6 +7466,7 @@ lava_effects(void)
     }
 
  burn_stuff:
+    fire_damage_chain(gi.invent, FALSE, FALSE, u.ux, u.uy);
     (void) destroy_items(&gy.youmonst, AD_FIRE, dmg);
     ignite_items(gi.invent);
     return FALSE;

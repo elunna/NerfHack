@@ -5797,6 +5797,7 @@ destroyable(struct obj *obj, int adtyp)
         /* not available for destroying */
         return FALSE;
     }
+    
     if (adtyp == AD_FIRE) {
         /* fire-magic items are immune */
         if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL) {
@@ -5808,15 +5809,13 @@ destroyable(struct obj *obj, int adtyp)
             || obj->oclass == SPBOOK_CLASS) {
             return TRUE;
         }
-    }
-    else if (adtyp == AD_COLD) {
+    } else if (adtyp == AD_COLD) {
         /* non-water potions don't freeze and shatter */
         if (obj->oclass == POTION_CLASS && obj->otyp != POT_ACID
             && obj->otyp != POT_OIL) {
             return TRUE;
         }
-    }
-    else if (adtyp == AD_ELEC) {
+    } else if (adtyp == AD_ELEC) {
         if (obj->oclass != RING_CLASS && obj->oclass != WAND_CLASS) {
             return FALSE;
         }
@@ -5827,7 +5826,12 @@ destroyable(struct obj *obj, int adtyp)
         /* There used to be a commented out bit of code that would exclude
          * gc.current_wand, but it wasn't used, so it wasn't moved into this
          * function. */
+    } else if (adtyp == AD_DCAY) {
+        return is_rottable(obj);
+    } else if (adtyp == AD_ACID) {
+        return is_corrodeable(obj);
     }
+    
     return FALSE;
 }
 
@@ -5964,6 +5968,9 @@ const char *const destroy_strings[][3] = {
     { "catches fire and burns", "", "burning book" },
     { "turns to dust and vanishes", "", "" },
     { "breaks apart and explodes", "", "exploding wand" },
+    { "smoulders", "smoulder", "" },
+    { "rots", "rot", "" },
+    { "corrodes", "corrode", "" }
 };
 
 /* guts of destroy_items();
@@ -6029,9 +6036,25 @@ maybe_destroy_item(
             dindx = 4;
             dmg = 1;
             break;
-        case FOOD_CLASS: /* only GLOB_OF_GREEN_SLIME */
-            dindx = 1; /* boil and explode */
-            dmg = (obj->owt + 19) / 20;
+        case FOOD_CLASS:
+            if (obj->otyp == GLOB_OF_GREEN_SLIME) {
+                dindx = 1; /* boil and explode */
+                dmg = (obj->owt + 19) / 20;
+                break;
+            }
+            (void) erode_obj(obj, NULL, ERODE_BURN, EF_GREASE | EF_DESTROY);
+            dindx = 7;
+            skip++;
+            break;
+        case RING_CLASS: /* wooden rings */
+        case WAND_CLASS: /* wooden wands */
+        case TOOL_CLASS:
+            (void) erode_obj(obj, NULL, ERODE_BURN, EF_GREASE | EF_DESTROY);
+            dindx = 7;
+            skip++;
+            break;
+        default:
+            skip++;
             break;
         }
         break;
@@ -6057,6 +6080,25 @@ maybe_destroy_item(
             dmg = rnd(10);
             break;
         }
+        break;
+    /* This is klunky but effective way to add erosion. */
+    case AD_DCAY:
+        /* Most decay attacks rot armor separately, let's not double it */
+        if (obj->oclass == ARMOR_CLASS)
+            skip++;
+        (void) erode_obj(obj, NULL, ERODE_ROT, EF_GREASE | EF_DESTROY);
+        dindx = 8;
+        skip++; /* No instant destruction with acid */
+        break;
+    case AD_ACID:
+        /* Weapons and armor are handled by acid_damage and erode_armor */
+        if (obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS)
+            skip++;
+        if (obj->otyp == WAN_CORROSION)
+            skip++;
+        acid_damage(obj);
+        dindx = 9;
+        skip++; /* No instant destruction with acid */
         break;
     default:
         skip = 1; /* just in case ineligible damage type gets through... */
@@ -6136,10 +6178,10 @@ maybe_destroy_item(
 /* largest amount of stacks that will be destroyed in a single call */
 #define MAX_ITEMS_DESTROYED 20
     
-    /* target items of specified class in mon's inventory for possible destruction
- * return total amount of damage inflicted, though this is unused if mon is the
- * player */
-    int
+/* target items of specified class in mon's inventory for possible
+ * destruction return total amount of damage inflicted, though this
+ * is unused if mon is the player */
+int
 destroy_items(
     struct monst *mon, /* monster whose invent is being subjected to
                         * destruction */

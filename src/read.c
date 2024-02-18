@@ -1596,6 +1596,13 @@ seffect_enchant_weapon(struct obj **sobjp)
         old_erodeproof = (uwep->oerodeproof != 0);
         new_erodeproof = !scursed;
         uwep->oerodeproof = 0; /* for messages */
+
+        if (is_supermaterial(uwep)) {
+            if (!Blind)
+                pline("%s for a moment.", Yobjnam2(uwep, "shimmer"));
+            return;
+        }
+        
         if (Blind) {
             uwep->rknown = sobj->bknown;
             Your("weapon feels warm for a moment.");
@@ -1825,8 +1832,7 @@ seffect_fire(struct obj **sobjp)
     if (confused) {
         if (Underwater) {
             pline("A little %s around you vaporizes.", hliquid("water"));
-        }
-        else if (Fire_resistance) {
+        } else if (Fire_resistance) {
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_FIRE);
             if (!Blind)

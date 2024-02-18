@@ -1671,7 +1671,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
 {
     const char *botlnam = bottlename();
     boolean isyou = (mon == &gy.youmonst);
-    int distance, tx, ty;
+    int distance, tx, ty, dmg;
     struct obj *saddle = (struct obj *) 0;
     boolean hit_saddle = FALSE, your_fault = (how <= POTHIT_HERO_THROW);
 
@@ -1745,8 +1745,6 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             break;
         case POT_ACID:
             if (!Acid_resistance) {
-                int dmg;
-
                 pline("This burns%s!",
                       obj->blessed ? " a little"
                                    : obj->cursed ? " a lot" : "");
@@ -1909,17 +1907,21 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             /* no Glib for monsters */
             break;
         case POT_ACID:
+            dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
             if (!rn2(3))
                 erode_armor(mon, ERODE_CORRODE);
             if (!rn2(3))
                 acid_damage(MON_WEP(mon));
+            if (!rn2(3))
+                (void) destroy_items(mon, AD_ACID, dmg);
             
             if (!resists_acid(mon) && !resist(mon, POTION_CLASS, 0, NOTELL)) {
                 pline("%s %s in pain!", Monnam(mon),
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))
                     wake_nearto(tx, ty, mon->data->mlevel * 10);
-                mon->mhp -= d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
+                showdmg(dmg, FALSE);
+                mon->mhp -= dmg;
                 if (DEADMONSTER(mon)) {
                     if (your_fault)
                         killed(mon);
@@ -1985,7 +1987,8 @@ potionbreathe(struct obj *obj)
     const char * eyestr =
         (eyes > 1 ? makeplural(body_part(EYE)) : body_part(EYE));
     unsigned already_in_use = obj->in_use;
-
+    int dmg;
+    
     if (!breathe) {
         /* currently only acid affects eyes */
         if (eyes && obj->otyp == POT_ACID && !Acid_resistance) {
@@ -2207,18 +2210,19 @@ potionbreathe(struct obj *obj)
         }
         break;
     case POT_ACID:
+        dmg = rnd(4);
         if (Acid_resistance) {
             if (cansmell) {
                 pline("It smells %s.", Hallucination ? "tangy" : "sour");
                 unambiguous = TRUE;
             }
-        }
-        else {
+        } else {
             pline("The %s fumes burn your %s and %s!",
                     (Hallucination ? "amaroidal" : "acrid"),
                     (eyes ? eyestr : ""),
                     makeplural(body_part(LUNG)));
-            losehp(rnd(2), "acid fumes", KILLED_BY);
+            showdmg(dmg, TRUE);
+            losehp(dmg, "acid fumes", KILLED_BY);
         exercise(A_CON, FALSE);
             unambiguous = TRUE;
         }
@@ -2228,6 +2232,8 @@ potionbreathe(struct obj *obj)
             acid_damage(uswapwep);
         if (rn2(4))
             erode_armor(&gy.youmonst, ERODE_CORRODE);
+        if (!rn2(7))
+            (void) destroy_items(&gy.youmonst, AD_ACID, dmg);
         break;
     case POT_GAIN_LEVEL:
         more_experienced(5, 0);
