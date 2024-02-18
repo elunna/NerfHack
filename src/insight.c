@@ -1941,6 +1941,20 @@ attributes_enlightenment(
     if (Lifesaved)
         enl_msg("Your life ", "will be", "would have been", " saved", "");
 
+    /* Steadfastness checks: These are not very clean, perhaps in the future
+     * the devteam will add a Steadfast property. The challenge with that is
+     * that loadstones and other gray stones don't have a property field. */
+    if ((uwep && uwep->oartifact == ART_GIANTSLAYER)
+        || (uswapwep && uswapwep->oartifact == ART_GIANTSLAYER))
+        you_have("steadfastness", " from Giantslayer");
+    else if ((uwep && uwep->oartifact == ART_LOAD_BRAND)
+        || (uswapwep && uswapwep->oartifact == ART_LOAD_BRAND))
+        you_have("steadfastness", " from Load Brand");
+    else if (uarms && uarms->oartifact == ART_PRIDWEN)
+        you_have("steadfastness", " from Pridwen");
+    else if (m_carrying(&gy.youmonst, LOADSTONE))
+        you_have("steadfastness", " from a loadstone");
+    
     /*** Miscellany ***/
     if (Luck) {
         ltmp = abs((int) Luck);
