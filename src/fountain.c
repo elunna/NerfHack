@@ -133,9 +133,8 @@ dolavademon(void)
             /* low levels offer a (slightly) better chance of survival */
             if (rnd(100) > (80 + level_difficulty()) && !HFire_resistance) {
                 pline("Freed from the depths of Gehennom, "
-                      "%s grants you protection from fire!",
-                      mhe(mtmp));
-                HFire_resistance |= FROMOUTSIDE;
+                      "%s grants you protection from fire!", mhe(mtmp));
+                incr_resistance(&HFire_resistance, 100);
                 mongone(mtmp);
             } else if (t_at(mtmp->mx, mtmp->my))
                 (void) mintrap(mtmp, NO_TRAP_FLAGS);
@@ -241,17 +240,16 @@ dipforge(struct obj *obj)
      * Non-metallic objects are handled by lava_damage().
      */
     if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) {
-        if (!Fire_resistance) {
+        if (!fully_resistant(FIRE_RES)) {
             You("dip your worn %s into the forge.  You burn yourself!",
                 xname(obj));
             if (!rn2(3))
-                You("may want to remove your %s first...",
-                    xname(obj));
+                You("may want to remove your %s first...", xname(obj));
         }
-        if (is_metallic(obj) && Fire_resistance) {
+        if (is_metallic(obj) && fully_resistant(FIRE_RES)) {
             You("can't reforge something you're wearing.");
         }
-        losehp(Fire_resistance ? d(1, 8) : d(2, 16),
+        losehp(resist_reduce(d(2, 16), FIRE_RES),
                "dipping a worn object into a forge", KILLED_BY);
     }
 
@@ -343,7 +341,7 @@ result:
             return;
         } else {
             pline("Molten lava surges up and splashes all over you!");
-            losehp(Fire_resistance ? d(2, 4) : d(3, 8), 
+            losehp(resist_reduce(d(3, 8), FIRE_RES),
                    "dipping into a forge", KILLED_BY);
         }
         break;
@@ -365,7 +363,7 @@ result:
                 pline("A blast of steam surges from the forge!");
             else
                 You("a blast of hot air rush past you.");
-            losehp(Fire_resistance ? 0 : rnd(2), 
+            losehp(resist_reduce(rnd(4), FIRE_RES),
                    "blasted by steam", KILLED_BY);
             (void) create_gas_cloud(u.ux, u.uy, rn1(15, 10), 0);
         }
@@ -486,10 +484,11 @@ drinkfountain(void)
             break;
         case 21: /* Poisonous */
             pline_The("water is contaminated!");
-            if (Poison_resistance) {
+            if (fully_resistant(POISON_RES)) {
                 pline("Perhaps it is runoff from the nearby %s farm.",
                       fruitname(FALSE));
-                losehp(rnd(4), "unrefrigerated sip of juice", KILLED_BY_AN);
+                losehp(resist_reduce(rnd(4), POISON_RES),
+                       "unrefrigerated sip of juice", KILLED_BY_AN);
                 break;
             }
             poison_strdmg(rn1(4, 3), rnd(10), "contaminated water",
@@ -802,11 +801,12 @@ drinksink(void)
         break;
     case 2:
         You("take a sip of scalding hot %s.", hliquid("water"));
-        if (Fire_resistance) {
+        if (fully_resistant(FIRE_RES)) {
             pline("It seems quite tasty.");
             monstseesu(M_SEEN_FIRE);
         } else {
-            losehp(rnd(6), "sipping boiling water", KILLED_BY);
+            losehp(resist_reduce(rnd(8), FIRE_RES),
+                   "sipping boiling water", KILLED_BY);
             monstunseesu(M_SEEN_FIRE);
         }
         /* boiling water burns considered fire damage */
@@ -1035,7 +1035,8 @@ blowupforge(coordxy x, coordxy y)
     
     /* replace the forge with ordinary floor */
     set_levltyp(x, y, ROOM); /* updates level.flags.nforges */
-    explode(u.ux, u.uy, ZT_FIRE, rnd(30), FORGE_EXPLODE, EXPL_FIERY);
+    explode(u.ux, u.uy, ZT_FIRE, resist_reduce(rnd(30), FIRE_RES),
+            FORGE_EXPLODE, EXPL_FIERY);
     newsym(x, y);
 }
 

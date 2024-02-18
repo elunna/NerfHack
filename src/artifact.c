@@ -1016,16 +1016,16 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
 
         switch (weap->attk.adtyp) {
         case AD_FIRE:
-            return !(yours ? Fire_resistance : resists_fire(mtmp));
+            return !(yours ? fully_resistant(FIRE_RES) : resists_fire(mtmp));
         case AD_COLD:
-            return !(yours ? Cold_resistance : resists_cold(mtmp));
+            return !(yours ? fully_resistant(COLD_RES) : resists_cold(mtmp));
         case AD_ELEC:
-            return !(yours ? Shock_resistance : resists_elec(mtmp));
+            return !(yours ? fully_resistant(SHOCK_RES) : resists_elec(mtmp));
         case AD_MAGM:
         case AD_STUN:
             return !(yours ? Antimagic : (rn2(100) < ptr->mr));
         case AD_DRST:
-            return !(yours ? Poison_resistance : resists_poison(mtmp));
+            return !(yours ? fully_resistant(POISON_RES) : resists_poison(mtmp));
         case AD_DRLI:
             return !(yours ? Drain_resistance : resists_drli(mtmp));
         case AD_STON:
@@ -1922,7 +1922,7 @@ artifact_hit(
         otmp->dknown = TRUE;
         pline_The("twisted blade poisons %s!",
                   youdefend ? "you" : mon_nam(mdef));
-  	    if (youdefend ? Poison_resistance : resists_poison(mdef)) {
+  	    if (youdefend ? fully_resistant(POISON_RES) : resists_poison(mdef)) {
                 if (youdefend)
                     You("are not affected by the poison.");
                 else
@@ -1952,8 +1952,10 @@ artifact_hit(
                                      ? u.mh : u.uhp : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
             break;
         }
+        *dmgptr = resist_reduce(*dmgptr, POISON_RES);
         return TRUE;
     }
+    
     if (otmp->oartifact == ART_DOOMBLADE && dieroll < 6) {
         if (verysmall(mdef->data)) {
             if (youattack)

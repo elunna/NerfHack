@@ -1046,11 +1046,12 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         if (Breathless)
             return FALSE;
         
-        if (!Poison_resistance) {
+        if (!fully_resistant(POISON_RES)) {
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
             You("cough and spit blood!");
             wake_nearto(u.ux, u.uy, 2);
+            dam = resist_reduce(dam, POISON_RES);
             dam = Maybe_Half_Phys(rnd(dam) + 5);
             if (Half_gas_damage) /* worn towel */
                 dam = (dam + 1) / 2;
@@ -1275,7 +1276,7 @@ region_danger(void)
                 continue;
             /* minor inconvenience if you're poison resistant;
                not harmful enough to be a prayer-level trouble */
-            if (Poison_resistance)
+            if (fully_resistant(POISON_RES))
                 continue;
             ++n;
         }

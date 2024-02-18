@@ -345,12 +345,13 @@ castmu(
     switch (mattk->adtyp) {
     case AD_FIRE:
         pline("You're enveloped in flames.");
-        if (Fire_resistance) {
+        if (fully_resistant(FIRE_RES)) {
             shieldeff(u.ux, u.uy);
             pline("But you resist the effects.");
             monstseesu(M_SEEN_FIRE);
             dmg = 0;
         } else {
+            dmg = resist_reduce(dmg, FIRE_RES);
             monstunseesu(M_SEEN_FIRE);
         }
         burn_away_slime();
@@ -359,12 +360,13 @@ castmu(
         break;
     case AD_COLD:
         pline("You're covered in frost.");
-        if (Cold_resistance) {
+        if (fully_resistant(COLD_RES)) {
             shieldeff(u.ux, u.uy);
             pline("But you resist the effects.");
             monstseesu(M_SEEN_COLD);
             dmg = 0;
         } else {
+            dmg = resist_reduce(dmg, COLD_RES);
             monstunseesu(M_SEEN_COLD);
         }
         /* freeze water or lava terrain */
@@ -800,11 +802,12 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         orig_dmg = dmg = d((ml / 5) + 1, 8);
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
             pline("%s blasts you with a bolt of fire!", Monnam(mtmp));
-            if (Fire_resistance) {
+            if (fully_resistant(FIRE_RES)) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_FIRE);
                 dmg = 0;
             } else {
+                dmg = resist_reduce(dmg, FIRE_RES);
                 monstunseesu(M_SEEN_FIRE);
             }
             if (Half_spell_damage)
@@ -827,11 +830,12 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         orig_dmg = dmg = d((ml / 5) + 1, 8);
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
             pline("%s blasts you with a bolt of cold!", Monnam(mtmp));
-            if (Cold_resistance) {
+            if (fully_resistant(COLD_RES)) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_COLD);
                 dmg = 0;
             } else {
+                resist_reduce(dmg, COLD_RES);
                 monstunseesu(M_SEEN_COLD);
             }
             if (Half_spell_damage)
@@ -953,11 +957,12 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
         orig_dmg = dmg = d(8, 6);
-        if (Fire_resistance) {
+        if (fully_resistant(FIRE_RES)) {
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_FIRE);
             dmg = 0;
         } else {
+            dmg = resist_reduce(dmg, FIRE_RES);
             monstunseesu(M_SEEN_FIRE);
         }
         if (Half_spell_damage)
@@ -976,16 +981,21 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         pline("A bolt of lightning strikes down at you from above!");
         reflects = ureflects("It bounces off your %s%s.", "");
         orig_dmg = dmg = d(8, 6);
-        if (reflects || Shock_resistance) {
+        if (reflects || fully_resistant(SHOCK_RES)) {
             shieldeff(u.ux, u.uy);
-            dmg = 0;
             if (reflects) {
+                dmg = resist_reduce(d(4, 6), SHOCK_RES);
                 monstseesu(M_SEEN_REFL);
                 break;
             }
             monstunseesu(M_SEEN_REFL);
-            monstseesu(M_SEEN_ELEC);
+            if (fully_resistant(SHOCK_RES)) {
+                pline("You aren't shocked.");
+                monstseesu(M_SEEN_ELEC);
+                dmg = 0;
+            }
         } else {
+            dmg = resist_reduce(dmg, SHOCK_RES);
             monstunseesu(M_SEEN_ELEC | M_SEEN_REFL);
         }
         if (Half_spell_damage)

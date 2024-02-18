@@ -40,24 +40,24 @@ explosionmask(
                 res = EXPL_HERO;
             break;
         case AD_FIRE:
-            if (Fire_resistance)
+            if (fully_resistant(FIRE_RES))
                 res = EXPL_HERO;
             break;
         case AD_COLD:
-            if (Cold_resistance)
+            if (fully_resistant(COLD_RES))
                 res = EXPL_HERO;
             break;
         case AD_DISN:
             if ((olet == WAND_CLASS)
-                    ? (resists_death(m->data)) : Disint_resistance)
+                    ? (resists_death(m->data)) : fully_resistant(DISINT_RES))
                 res = EXPL_HERO;
             break;
         case AD_ELEC:
-            if (Shock_resistance)
+            if (fully_resistant(SHOCK_RES))
                 res = EXPL_HERO;
             break;
         case AD_DRST:
-            if (Poison_resistance)
+            if (fully_resistant(POISON_RES))
                 res = EXPL_HERO;
             break;
         case AD_ACID:
@@ -628,6 +628,14 @@ explode(
                that victim might have been killed when hit by the blast) */
             if (grabbing && dist2((int) grabxy.x, (int) grabxy.y, x, y) <= 2)
                 damu *= 2;
+            
+            /* Damage reduction for partial resistances.
+             * Brittle - if the order of monattk.h AD types or the 
+             * prop.h prop_types ever changes, this needs updating.
+             * */
+            if (adtyp >= AD_FIRE && adtyp <= AD_DRST)
+                damu = resist_reduce(damu, adtyp - 1);
+                       
             /* hero does not get same fire-resistant vs cold and
                cold-resistant vs fire double damage as monsters [why not?] */
             if (Upolyd)

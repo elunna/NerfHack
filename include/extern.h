@@ -2469,6 +2469,12 @@ extern void djinni_from_bottle(struct obj *) NONNULLARG1;
 extern struct monst *split_mon(struct monst *, struct monst *) NONNULLARG1;
 extern const char *bottlename(void);
 extern void speed_up(long);
+extern int how_resistant(int);
+extern int fully_resistant(int);
+extern int hardly_resistant(int);
+extern int resist_reduce(int, int);
+extern void incr_resistance(long *, int);
+extern void decr_resistance(long *, int);
 
 /* ### pray.c ### */
 

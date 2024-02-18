@@ -130,9 +130,10 @@ boulder_hits_pool(
                 int dmg;
 
                 You("are hit by molten %s%c",
-                    hliquid("lava"), Fire_resistance ? '.' : '!');
+                    hliquid("lava"), fully_resistant(FIRE_RES) ? '.' : '!');
                 burn_away_slime();
-                dmg = d((Fire_resistance ? 1 : 3), 6);
+                dmg = resist_reduce(d(3, 6), FIRE_RES);
+                
                 losehp(Maybe_Half_Phys(dmg), /* lava damage */
                        "molten lava", KILLED_BY);
             } else if (!fills_up && flags.verbose

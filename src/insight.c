@@ -1556,22 +1556,39 @@ attributes_enlightenment(
         you_are("invulnerable", from_what(INVULNERABLE));
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
+
+    /* Partial intrinsic resistances */
+    
+    Sprintf(buf, "%d%% fire resistant", how_resistant(FIRE_RES));
     if (Fire_resistance)
-        you_are("fire resistant", from_what(FIRE_RES));
+        you_are(buf, from_what(FIRE_RES));
     item_resistance_message(AD_FIRE, " protected from fire", final);
+    
+    Sprintf(buf, "%d%% cold resistant", how_resistant(COLD_RES));
     if (Cold_resistance)
-        you_are("cold resistant", from_what(COLD_RES));
+        you_are(buf, from_what(COLD_RES));
     item_resistance_message(AD_COLD, " protected from cold", final);
+    
+    Sprintf(buf, "%d%% sleep resistant", how_resistant(SLEEP_RES));
     if (Sleep_resistance)
-        you_are("sleep resistant", from_what(SLEEP_RES));
+        you_are(buf, from_what(SLEEP_RES));
+    
+    Sprintf(buf, "%d%% disintegration resistant", how_resistant(DISINT_RES));
     if (Disint_resistance)
-        you_are("disintegration resistant", from_what(DISINT_RES));
+        you_are(buf, from_what(DISINT_RES));
     item_resistance_message(AD_DISN, " protected from disintegration", final);
+    
+    Sprintf(buf, "%d%% shock resistant", how_resistant(SHOCK_RES));
     if (Shock_resistance)
-        you_are("shock resistant", from_what(SHOCK_RES));
+        you_are(buf, from_what(SHOCK_RES));
     item_resistance_message(AD_ELEC, " protected from electric shocks", final);
+    
+    Sprintf(buf, "%d%% poison resistant", how_resistant(POISON_RES));
     if (Poison_resistance)
-        you_are("poison resistant", from_what(POISON_RES));
+        you_are(buf, from_what(POISON_RES));
+    
+    /* End of partial intrinsic resistances */
+    
     if (Acid_resistance) {
         Sprintf(buf, "%.20s%.30s",
                 temp_resist(ACID_RES) ? "temporarily " : "",
@@ -1579,19 +1596,24 @@ attributes_enlightenment(
         you_are(buf, from_what(ACID_RES));
     }
     item_resistance_message(AD_ACID, " protected from acid", final);
+    
     if (Drain_resistance)
         you_are("level-drain resistant", from_what(DRAIN_RES));
+    
     if (Sick_resistance)
         you_are("immune to sickness", from_what(SICK_RES));
+    
     if (Stone_resistance) {
         Sprintf(buf, "%.20s%.30s",
                 temp_resist(STONE_RES) ? "temporarily " : "",
                 "petrification resistant");
         you_are(buf, from_what(STONE_RES));
     }
+    
     if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));
+    
     if (u.uedibility)
         you_can("recognize detrimental food", "");
 

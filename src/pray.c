@@ -643,7 +643,7 @@ god_zaps_you(aligntyp resp_god)
             else
                 (void) ureflects("%s reflects from your %s.", "It");
             monstseesu(M_SEEN_REFL);
-        } else if (Shock_resistance) {
+        } else if (fully_resistant(SHOCK_RES)) {
             shieldeff(u.ux, u.uy);
             pline("It seems not to affect you.");
             monstseesu(M_SEEN_ELEC);
@@ -680,7 +680,7 @@ god_zaps_you(aligntyp resp_god)
             (void) destroy_arm(uarm, FALSE, TRUE);
         if (uarmu && !uarm && !uarmc)
             (void) destroy_arm(uarmu, FALSE, TRUE);
-        if (!Disint_resistance) {
+        if (!fully_resistant(DISINT_RES)) {
             fry_by_god(resp_god, TRUE);
             monstunseesu(M_SEEN_DISINT);
         } else {
@@ -838,19 +838,19 @@ gcrownu(void)
         case 1:
             if (!(HDisint_resistance & FROMOUTSIDE)) {
                 You_feel(Hallucination ? "totally together, man." : "very firm.");
-                HDisint_resistance |= FROMOUTSIDE;
+                incr_resistance(&HDisint_resistance, 100);
             }
             break;
         case 2:
             if (!(HFire_resistance & FROMOUTSIDE)) {
                 You(Hallucination ? "be chillin'." : "feel a momentary chill.");
-                HFire_resistance |= FROMOUTSIDE;
+                incr_resistance(&HFire_resistance, 100);
             }
             break;
         case 3:
             if (!(HCold_resistance & FROMOUTSIDE)) {
                 You_feel("full of hot air.");
-                HCold_resistance |= FROMOUTSIDE;
+                incr_resistance(&HCold_resistance, 100);
             }
             break;
         case 4:
@@ -859,19 +859,19 @@ gcrownu(void)
                     You_feel("grounded in reality.");
                 else
                     Your("health currently feels amplified!");
-                HShock_resistance |= FROMOUTSIDE;
+                incr_resistance(&HShock_resistance, 100);
             }
             break;
         case 5:
             if (!(HSleep_resistance & FROMOUTSIDE)) {
                 You_feel("wide awake.");
-                HSleep_resistance |= FROMOUTSIDE;
+                incr_resistance(&HSleep_resistance, 100);
             }
             break;
         case 6:
             if (!(HPoison_resistance & FROMOUTSIDE)) {
                 You_feel(Poison_resistance ? "especially healthy." : "healthy.");
-                HPoison_resistance |= FROMOUTSIDE;
+                incr_resistance(&HPoison_resistance, 100);
             }
             break;
         case 7:

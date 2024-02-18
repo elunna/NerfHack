@@ -1883,7 +1883,7 @@ use_offensive(struct monst *mtmp)
         if (!Deaf) {
             /* No effects on you if you can't hear the music, but the monster
              * doesn't know that so it won't be prevented from trying. */
-            if (Sleep_resistance)
+            if (fully_resistant(SLEEP_RES))
                 You("yawn.");
             else {
                 You("fall asleep.");
@@ -1992,8 +1992,9 @@ use_offensive(struct monst *mtmp)
             (void) destroy_mitem(mtmp, POTION_CLASS, AD_FIRE);
             ignite_items(mtmp->minvent);
             num = (2 * (rn1(3, 3) + 2 * bcsign(otmp)) + 1) / 3;
-            if (Fire_resistance)
+            if (fully_resistant(FIRE_RES))
                 You("are not harmed.");
+            num = resist_reduce(num, FIRE_RES);
             burn_away_slime();
             if (Half_spell_damage)
                 num -= ((num + 1) / 4);

@@ -2682,13 +2682,14 @@ zapyourself(struct obj *obj, boolean ordinary)
     case WAN_LIGHTNING:
         learn_it = TRUE;
         orig_dmg = d(12, 6);
-        if (!Shock_resistance) {
+        if (!fully_resistant(SHOCK_RES)) {
             You("shock yourself!");
-            damage = orig_dmg;
+            damage = resist_reduce(orig_dmg, SHOCK_RES);
             exercise(A_CON, FALSE);
             monstunseesu(M_SEEN_ELEC);
         } else {
             shieldeff(u.ux, u.uy);
+            assert(damage == 0);
             You("zap yourself, but seem unharmed.");
             monstseesu(M_SEEN_ELEC);
             ugolemeffects(AD_ELEC, orig_dmg);
@@ -2705,14 +2706,14 @@ zapyourself(struct obj *obj, boolean ordinary)
     case FIRE_HORN:
         learn_it = TRUE;
         orig_dmg = d(12, 6);
-        if (Fire_resistance) {
+        if (fully_resistant(FIRE_RES)) {
             shieldeff(u.ux, u.uy);
             You_feel("rather warm.");
             monstseesu(M_SEEN_FIRE);
             ugolemeffects(AD_FIRE, orig_dmg);
         } else {
             pline("You've set yourself afire!");
-            damage = orig_dmg;
+            damage = resist_reduce(orig_dmg, FIRE_RES);
             monstunseesu(M_SEEN_FIRE);
         }
         burn_away_slime();
@@ -2726,14 +2727,14 @@ zapyourself(struct obj *obj, boolean ordinary)
     case FROST_HORN:
         learn_it = TRUE;
         orig_dmg = d(12, 6);
-        if (Cold_resistance) {
+        if (fully_resistant(COLD_RES)) {
             shieldeff(u.ux, u.uy);
             You_feel("a little chill.");
             monstseesu(M_SEEN_COLD);
             ugolemeffects(AD_COLD, orig_dmg);
         } else {
             You("imitate a popsicle!");
-            damage = orig_dmg;
+            damage = resist_reduce(orig_dmg, COLD_RES);
             monstunseesu(M_SEEN_COLD);
         }
         (void) destroy_items(&gy.youmonst, AD_COLD, orig_dmg);
@@ -2742,6 +2743,16 @@ zapyourself(struct obj *obj, boolean ordinary)
         learn_it = TRUE;
         if (!Deaf) {
             pline("Whoosh!");
+        }
+        if (!fully_resistant(POISON_RES)) {
+            shieldeff(u.ux, u.uy);
+            You("inhale some apparently harmless gas.");
+            monstseesu(M_SEEN_POISON);
+            ugolemeffects(AD_DRST, d(12, 6));
+        } else {
+            You("just poisoned yourself!");
+            damage = resist_reduce(d(12, 6), POISON_RES);
+            monstunseesu(M_SEEN_POISON);
         }
         (void) create_gas_cloud(u.ux, u.uy, 1, 8);
         break;
@@ -2833,7 +2844,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case WAN_SLEEP:
     case SPE_SLEEP:
         learn_it = TRUE;
-        if (Sleep_resistance) {
+        if (fully_resistant(SLEEP_RES)) {
             shieldeff(u.ux, u.uy);
             You("don't feel sleepy!");
             monstseesu(M_SEEN_SLEEP);
@@ -4552,13 +4563,13 @@ zhitu(
         break;
     case ZT_FIRE:
         orig_dam = d(nd, 6);
-        if (Fire_resistance) {
+        if (fully_resistant(FIRE_RES)) {
             shieldeff(sx, sy);
             You("don't feel hot!");
             monstseesu(M_SEEN_FIRE);
             ugolemeffects(AD_FIRE, orig_dam);
         } else {
-            dam = orig_dam;
+            dam = resist_reduce(orig_dam, FIRE_RES);
             monstunseesu(M_SEEN_FIRE);
         }
         if (!Reflecting) {
@@ -4573,13 +4584,13 @@ zhitu(
         break;
     case ZT_COLD:
         orig_dam = d(nd, 6);
-        if (Cold_resistance) {
+        if (fully_resistant(COLD_RES)) {
             shieldeff(sx, sy);
             You("don't feel cold.");
             monstseesu(M_SEEN_COLD);
             ugolemeffects(AD_COLD, orig_dam);
         } else {
-            dam = orig_dam;
+            dam = resist_reduce(orig_dam, COLD_RES);
             monstunseesu(M_SEEN_COLD);
         }
         if (!Reflecting) {
@@ -4588,7 +4599,7 @@ zhitu(
         }
         break;
     case ZT_SLEEP:
-        if (Sleep_resistance) {
+        if (fully_resistant(SLEEP_RES)) {
             shieldeff(u.ux, u.uy);
             You("don't feel sleepy.");
             monstseesu(M_SEEN_SLEEP);
@@ -4603,7 +4614,7 @@ zhitu(
         if (abstyp == ZT_BREATH(ZT_DEATH)) {
             boolean disn_prot = inventory_resistance_check(AD_DISN);
 
-            if (Disint_resistance) {
+            if (fully_resistant(DISINT_RES)) {
                 You("are not disintegrated.");
                 monstseesu(M_SEEN_DISINT);
                 break;
@@ -4611,7 +4622,7 @@ zhitu(
                 break;
             } else if (Reflecting) {
                 You("aren't disintegrated, but that hurts!");
-                dam = d(6, 6);
+                dam = resist_reduce(d(6, 6), DISINT_RES);
                 break;
             }
             monstunseesu(M_SEEN_DISINT);
@@ -4675,13 +4686,13 @@ zhitu(
         return; /* lifesaved */
     case ZT_LIGHTNING:
         orig_dam = d(nd, 6);
-        if (Shock_resistance) {
+        if (fully_resistant(SHOCK_RES)) {
             shieldeff(sx, sy);
             You("aren't affected.");
             monstseesu(M_SEEN_ELEC);
             ugolemeffects(AD_ELEC, orig_dam);
         } else {
-            dam = orig_dam;
+            dam = resist_reduce(orig_dam, SHOCK_RES);
             exercise(A_CON, FALSE);
             monstunseesu(M_SEEN_ELEC);
         }
@@ -5989,7 +6000,7 @@ maybe_destroy_item(
     case AD_FIRE:
         xresist = (obj->oclass != POTION_CLASS
                    && obj->otyp != GLOB_OF_GREEN_SLIME
-                   && (u_carry ? Fire_resistance : resists_fire(carrier)));
+                   && (u_carry ? fully_resistant(FIRE_RES) : resists_fire(carrier)));
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
             skip = 1;
             if (u_carry ? !Blind : vis) {
@@ -6037,7 +6048,7 @@ maybe_destroy_item(
         break;
     case AD_ELEC:
         xresist = (obj->oclass != RING_CLASS
-                   && (u_carry ? Shock_resistance : resists_elec(carrier)));
+                   && (u_carry ? fully_resistant(SHOCK_RES) : resists_elec(carrier)));
         quan = obj->quan;
         switch (obj->oclass) {
         case RING_CLASS:

@@ -1657,13 +1657,14 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     case AD_ELEC:
         if (!mtmp->mcan && rn2(2)) {
             pline_The("air around you crackles with electricity.");
-            if (Shock_resistance) {
+            if (fully_resistant(SHOCK_RES)) {
                 shieldeff(u.ux, u.uy);
                 You("seem unhurt.");
                 monstseesu(M_SEEN_ELEC);
                 ugolemeffects(AD_ELEC, tmp);
                 tmp = 0;
             } else {
+                tmp = resist_reduce(tmp, SHOCK_RES);
                 monstunseesu(M_SEEN_ELEC);
             }
         } else
@@ -1671,14 +1672,16 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
         break;
     case AD_COLD:
         if (!mtmp->mcan && rn2(2)) {
-            if (Cold_resistance) {
+            if (fully_resistant(COLD_RES)) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly chilly.");
                 monstseesu(M_SEEN_COLD);
                 ugolemeffects(AD_COLD, tmp);
                 tmp = 0;
             } else {
-                You("are freezing to death!");
+                tmp = resist_reduce(tmp, COLD_RES);
+                You("are freezing%s!", hardly_resistant(COLD_RES)
+                                           ? "to death" : "");
                 monstunseesu(M_SEEN_COLD);
             }
         } else
@@ -1686,14 +1689,18 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
         break;
     case AD_FIRE:
         if (!mtmp->mcan && rn2(2)) {
-            if (Fire_resistance) {
+            if (fully_resistant(FIRE_RES)) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly hot.");
                 monstseesu(M_SEEN_FIRE);
                 ugolemeffects(AD_FIRE, tmp);
                 tmp = 0;
             } else {
-                You("are burning to a crisp!");
+                tmp = resist_reduce(tmp, FIRE_RES);
+                if (hardly_resistant(FIRE_RES))
+                    You("are burning to a crisp!");
+                else    
+                    You("are burning!");
                 monstunseesu(M_SEEN_FIRE);
             }
             burn_away_slime();
@@ -2069,13 +2076,14 @@ gazemu(struct monst *mtmp, struct attack *mattk)
 
                 pline("%s attacks you with a fiery gaze!", Monnam(mtmp));
                 stop_occupation();
-                if (Fire_resistance) {
+                if (fully_resistant(FIRE_RES)) {
                     shieldeff(u.ux, u.uy);
                     pline_The("fire doesn't feel hot!");
                     monstseesu(M_SEEN_FIRE);
-                    ugolemeffects(AD_FIRE, d(12, 6));
+                    ugolemeffects(AD_FIRE, orig_dmg);
                     dmg = 0;
                 } else {
+                    dmg = resist_reduce(dmg, FIRE_RES);
                     monstunseesu(M_SEEN_FIRE);
                 }
                 burn_away_slime();
@@ -2119,7 +2127,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         break;
 #ifdef PM_BEHOLDER /* work in progress */
     case AD_SLEE:
-        if (mcanseeu && gm.multi >= 0 && !rn2(5) && !Sleep_resistance) {
+        if (mcanseeu && gm.multi >= 0 && !rn2(5) && !fully_resistant(SLEEP_RES)) {
             if (cancelled) {
                 react = 6;                      /* "tired" */
                 already = (mtmp->mfrozen != 0); /* can't happen... */

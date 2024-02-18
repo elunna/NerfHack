@@ -47,9 +47,9 @@ throne_sit_effect(void)
             break;
         case 3:
             pline("A%s electric shock shoots through your body!",
-                  (Shock_resistance) ? "n" : " massive");
-            losehp(Shock_resistance ? rnd(6) : rnd(30), "electric chair",
-                   KILLED_BY_AN);
+                  (!hardly_resistant(SHOCK_RES)) ? "n" : " massive");
+            losehp(resist_reduce(rnd(24), SHOCK_RES)  + rnd(6), 
+                   "electric chair", KILLED_BY_AN);
             exercise(A_CON, FALSE);
             break;
         case 4:
@@ -360,13 +360,13 @@ dosit(void)
     } else if (IS_FORGE(typ)) {
         You(sit_message, defsyms[S_forge].explanation);
         burn_away_slime();
-        if (likes_fire(gy.youmonst.data) || Fire_resistance) {
+        if (likes_fire(gy.youmonst.data) || fully_resistant(FIRE_RES)) {
             pline_The("forge feels nice and warm.");
             return 1;
         }
         pline("Argh!  This forge is hot!");
-        /* lava damage */
-        losehp(d(4, 4), "sitting on a forge", KILLED_BY);
+        losehp(resist_reduce(d(4, 4), FIRE_RES), /* lava damage */
+               "sitting on a forge", KILLED_BY);
     } else if (IS_ALTAR(typ)) {
         You(sit_message, defsyms[S_altar].explanation);
         altar_wrath(u.ux, u.uy);
@@ -385,11 +385,11 @@ dosit(void)
             return ECMD_TIME;
         }
         pline_The("%s burns you!", hliquid("lava"));
-        losehp(d((Fire_resistance ? 2 : 10), 10), /* lava damage */
+        losehp(resist_reduce(d(8, 10), FIRE_RES) + d(2, 10), /* lava damage */
                "sitting on lava", KILLED_BY);
     } else if (is_ice(u.ux, u.uy)) {
         You(sit_message, defsyms[S_ice].explanation);
-        if (!Cold_resistance)
+        if (hardly_resistant(COLD_RES))
             pline_The("ice feels cold.");
     } else if (typ == DRAWBRIDGE_DOWN) {
         You(sit_message, "drawbridge");
@@ -507,10 +507,12 @@ attrcurse(void)
 {
     int ret = 0;
 
-    switch (rnd(11)) {
+    switch (rnd(14)) {
     case 1:
-        if (HFire_resistance & INTRINSIC) {
-            HFire_resistance &= ~INTRINSIC;
+        if (HFire_resistance) {
+            HFire_resistance =
+                HFire_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HFire_resistance, rnd(25) + 25);
             You_feel("warmer.");
             ret = FIRE_RES;
             break;
@@ -525,8 +527,10 @@ attrcurse(void)
         }
         /*FALLTHRU*/
     case 3:
-        if (HPoison_resistance & INTRINSIC) {
-            HPoison_resistance &= ~INTRINSIC;
+        if (HPoison_resistance) {
+            HPoison_resistance =
+                HPoison_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HPoison_resistance, rnd(25) + 25);
             You_feel("a little sick!");
             ret = POISON_RES;
             break;
@@ -543,8 +547,10 @@ attrcurse(void)
         }
         /*FALLTHRU*/
     case 5:
-        if (HCold_resistance & INTRINSIC) {
-            HCold_resistance &= ~INTRINSIC;
+        if (HCold_resistance) {
+            HCold_resistance =
+                HCold_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HCold_resistance, rnd(25) + 25);
             You_feel("cooler.");
             ret = COLD_RES;
             break;
@@ -603,6 +609,36 @@ attrcurse(void)
             HAggravate_monster &= ~INTRINSIC;
             You_feel("less attractive.");
             ret = AGGRAVATE_MONSTER;
+            break;
+        }
+        /*FALLTHRU*/
+    case 12:
+        if (HSleep_resistance) {
+            HSleep_resistance =
+                HSleep_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HSleep_resistance, rnd(25) + 25);
+            You_feel("a little tired.");
+            ret = SLEEP_RES;
+            break;
+        }
+        /*FALLTHRU*/
+    case 13:
+        if (HDisint_resistance) {
+            HDisint_resistance =
+                HDisint_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HDisint_resistance, rnd(25) + 25);
+            You_feel("less firm.");
+            ret = DISINT_RES;
+            break;
+        }
+        /*FALLTHRU*/
+    case 14:
+        if (HShock_resistance) {
+            HShock_resistance =
+                HShock_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HShock_resistance, rnd(25) + 25);
+            You_feel("more conductive.");
+            ret = SHOCK_RES;
             break;
         }
         /*FALLTHRU*/

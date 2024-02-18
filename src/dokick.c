@@ -1104,7 +1104,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
             } else {
                 pline("Molten lava from the forge splashes onto your %s!",
                       body_part(FOOT));
-                losehp(Fire_resistance ? d(2, 6) : d(2, 12),
+                losehp(resist_reduce(d(2, 12), FIRE_RES),
                        "molten lava from kicking a forge", KILLED_BY);
             }
         }

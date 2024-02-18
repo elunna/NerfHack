@@ -41,12 +41,15 @@
 #define AD_ANY (-1) /* fake damage; attacktype_fordmg wildcard */
 #define AD_PHYS 0   /* ordinary physical */
 #define AD_MAGM 1   /* magic missiles */
+/* Beginning of partial resistances: order is important.
+ * See explode.c and monattk.h */
 #define AD_FIRE 2   /* fire damage */
 #define AD_COLD 3   /* frost damage */
 #define AD_SLEE 4   /* sleep ray */
 #define AD_DISN 5   /* disintegration (death ray) */
 #define AD_ELEC 6   /* shock damage */
 #define AD_DRST 7   /* drains str (poison) */
+/* End of partial resistances */
 #define AD_ACID 8   /* acid damage */
 #define AD_SPC1 9   /* for extension of buzz() */
 #define AD_SPC2 10  /* for extension of buzz() */

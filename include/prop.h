@@ -12,12 +12,15 @@
  */
 /* Resistances to troubles */
 enum prop_types {
+    /* Beginning of partial resistances: order is important. 
+     * See explode.c and monattk.h */
     FIRE_RES          =  1,
     COLD_RES          =  2,
     SLEEP_RES         =  3,
     DISINT_RES        =  4,
     SHOCK_RES         =  5,
     POISON_RES        =  6,
+    /* End of partial resistances */
     ACID_RES          =  7,
     STONE_RES         =  8,
     /* note: for the first eight properties, MR_xxx == (1 << (xxx_RES - 1)) */
@@ -135,7 +138,8 @@ struct prop {
 #define FROMEXPER   0x01000000L /* Gain/lose with experience, for role */
 #define FROMRACE    0x02000000L /* Gain/lose with experience, for race */
 #define FROMOUTSIDE 0x04000000L /* By corpses, prayer, thrones, etc. */
-#define INTRINSIC   (FROMOUTSIDE | FROMRACE | FROMEXPER)
+#define HAVEPARTIAL 0x08000000L /* Partial resistance */
+#define INTRINSIC (FROMOUTSIDE | FROMRACE | FROMEXPER | HAVEPARTIAL)
 /* Control flags */
 #define FROMFORM    0x10000000L /* Polyd; conferred by monster form */
 #define I_SPECIAL   0x20000000L /* Property is controllable */

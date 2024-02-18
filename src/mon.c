@@ -309,7 +309,7 @@ m_poisongas_ok(struct monst* mtmp)
         return M_POISONGAS_OK;
     if (is_you && (u.uinvulnerable || Breathless || Underwater))
         return M_POISONGAS_OK;
-    if (is_you ? Poison_resistance : resists_poison(mtmp))
+    if (is_you ? fully_resistant(POISON_RES) : resists_poison(mtmp))
         return M_POISONGAS_MINOR;
     return M_POISONGAS_BAD;
 }

@@ -673,7 +673,9 @@ nh_timeout(void)
 
     was_flying = Flying;
     for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
-        if ((upp->intrinsic & TIMEOUT) && !(--upp->intrinsic & TIMEOUT)) {
+        if (!(upp->intrinsic & HAVEPARTIAL) /* partial intrinsics do not time out */
+            && (upp->intrinsic & TIMEOUT)
+            && !(--upp->intrinsic & TIMEOUT)) {
             kptr = find_delayed_killer((int) (upp - u.uprops));
             switch (upp - u.uprops) {
             case STONED:
@@ -805,7 +807,7 @@ nh_timeout(void)
                     stop_occupation();
                 break;
             case SLEEPY:
-                if (unconscious() || Sleep_resistance) {
+                if (unconscious() || fully_resistant(SLEEP_RES)) {
                     incr_itimeout(&HSleepy, rnd(100));
                 } else if (Sleepy) {
                     You("fall asleep.");
@@ -870,7 +872,7 @@ nh_timeout(void)
                    as a way to survive lava after multiple life-saving
                    attempts fail to relocate hero; skip timeout message
                    if hero has acquired fire resistance in the meantime */
-                if (!Fire_resistance)
+                if (!fully_resistant(FIRE_RES))
                     Your("temporary ability to survive burning has ended.");
                 break;
             case WWALKING:
@@ -973,6 +975,7 @@ void
 fall_asleep(int how_long, boolean wakeup_msg)
 {
     stop_occupation();
+    how_long = resist_reduce(how_long, SLEEP_RES);
     nomul(how_long);
     gm.multi_reason = "sleeping";
 #if 0   /* this was broken; the fix for 'how_long' will result in changed

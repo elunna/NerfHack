@@ -162,8 +162,7 @@ cursed_book(struct obj* bp)
         /* temp disable in_use; death should not destroy the book */
         was_in_use = bp->in_use;
         bp->in_use = FALSE;
-        poison_strdmg(Poison_resistance ? rn1(2, 1) : rn1(4, 3),
-                      rnd(Poison_resistance ? 6 : 10),
+        poison_strdmg(rn1(6, 4) + rn1(2,1), d(2, 6),
                       "contact-poisoned spellbook", KILLED_BY_AN);
         bp->in_use = was_in_use;
         break;
@@ -463,7 +462,7 @@ study_book(register struct obj* spellbook)
     boolean too_hard = FALSE;
 
     /* attempting to read dull book may make hero fall asleep */
-    if (!confused && !Sleep_resistance
+    if (!confused && !fully_resistant(SLEEP_RES)
         && objdescr_is(spellbook, "dull")) {
         const char *eyes;
         int dullbook = rnd(25) - ACURR(A_WIS);

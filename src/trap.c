@@ -1601,7 +1601,7 @@ trapeffect_slp_gas_trap(
 {
     if (mtmp == &gy.youmonst) {
         seetrap(trap);
-        if (Sleep_resistance || breathless(gy.youmonst.data)) {
+        if (fully_resistant(SLEEP_RES) || breathless(gy.youmonst.data)) {
             You("are enveloped in a cloud of gas!");
             monstseesu(M_SEEN_SLEEP);
         } else {
@@ -2079,7 +2079,9 @@ strip_cold_resistance(struct monst *mtmp)
 {
     if (mtmp == &gy.youmonst) {
         if (HCold_resistance) {
-            HCold_resistance = 0;
+            HCold_resistance =
+                HCold_resistance & (TIMEOUT | FROMOUTSIDE | HAVEPARTIAL);
+            decr_resistance(&HCold_resistance, rnd(25) + 25);
             You_feel("alarmingly cooler.");
             return TRUE;
         }
@@ -2113,7 +2115,7 @@ trapeffect_cold_trap(
          */
         seetrap(trap);
         pline("Mist flash-freezes around you as your heat is sucked away!");
-        if (Cold_resistance) {
+        if (!hardly_resistant(COLD_RES)) {
             dmg = rn2(2);
             if (!rn2(3))
                 lost_resistance = strip_cold_resistance(&gy.youmonst);
@@ -2133,11 +2135,13 @@ trapeffect_cold_trap(
             if (u.uhp > u.uhpmax)
                 u.uhp = u.uhpmax, disp.botl = TRUE;
         }
+        
         if (!dmg) {
             if (!lost_resistance)
                 You("are uninjured.");
         } else
-            losehp(dmg, "flash freeze", KILLED_BY_AN); /* cold damage */
+            losehp(resist_reduce(dmg, COLD_RES), /* keep dmg for destroy_items */
+                   "flash freeze", KILLED_BY_AN); /* cold damage */
         if (rn2(3))
             (void) destroy_items(&gy.youmonst, AD_COLD, dmg);
     } else {
@@ -3279,7 +3283,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
             return TRAP_CLEARLY_IMMUNE;
         else if (!is_you && resists_sleep(mon))
             return TRAP_CLEARLY_IMMUNE;
-        else if (is_you && Sleep_resistance)
+        else if (is_you && fully_resistant(SLEEP_RES))
             return TRAP_HIDDEN_IMMUNE;
         return TRAP_NOT_IMMUNE;
     case LEVEL_TELEP:
@@ -3359,7 +3363,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
         /*FALLTHRU*/
     case FIRE_TRAP: /* can always destroy items being carried */
         /* harmful if not resistant or if carrying anything that could burn */
-        if (is_you ? !Fire_resistance : !resists_fire(mon))
+        if (is_you ? !fully_resistant(FIRE_RES) : !resists_fire(mon))
             return TRAP_NOT_IMMUNE;
 
         for (obj = is_you ? gi.invent : mon->minvent; obj; obj = obj->nobj) {
@@ -4686,15 +4690,15 @@ dofiretrap(
     if ((box && !carried(box)) ? is_pool(box->ox, box->oy) : Underwater) {
         pline("A cascade of steamy bubbles erupts from %s!",
               the(box ? xname(box) : surface(u.ux, u.uy)));
-        if (Fire_resistance)
+        if (fully_resistant(FIRE_RES))
             You("are uninjured.");
         else
-            losehp(rnd(3), "boiling water", KILLED_BY);
+            losehp(resist_reduce(rnd(3), FIRE_RES), "boiling water", KILLED_BY);
         return;
     }
     pline("A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
           the(box ? xname(box) : surface(u.ux, u.uy)));
-    if (Fire_resistance) {
+    if (fully_resistant(FIRE_RES)) {
         shieldeff(u.ux, u.uy);
         monstseesu(M_SEEN_FIRE);
     } else if (Upolyd) {
@@ -4725,7 +4729,7 @@ dofiretrap(
     } else {
         int uhpmin = minuhpmax(1), olduhpmax = u.uhpmax;
 
-        num = d(2, 4);
+        num = resist_reduce(d(2, 4), FIRE_RES);
         if (u.uhpmax > uhpmin) {
             u.uhpmax -= rn2(min(u.uhpmax, num + 1)), disp.botl = TRUE;
         } /* note: no 'else' here */
@@ -4738,6 +4742,7 @@ dofiretrap(
             u.uhp = u.uhpmax, disp.botl = TRUE;
         monstunseesu(M_SEEN_FIRE);
     }
+    num = resist_reduce(num, FIRE_RES);
     if (!num)
         You("are uninjured.");
     else
@@ -6933,12 +6938,13 @@ chest_trap(
             int dmg = d(4, 4), orig_dmg = dmg;
 
             You("are jolted by a surge of electricity!");
-            if (Shock_resistance) {
+            if (fully_resistant(SHOCK_RES)) {
                 shieldeff(u.ux, u.uy);
                 You("don't seem to be affected.");
                 monstseesu(M_SEEN_ELEC);
                 dmg = 0;
             } else {
+                dmg = resist_reduce(dmg, SHOCK_RES);
                 monstunseesu(M_SEEN_ELEC);
             }
             (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
@@ -7187,7 +7193,7 @@ b_trapped(const char* item, int bodypart)
 
     Soundeffect(se_kaboom, 80);
     pline("KABOOM!!  %s was booby-trapped!", The(item));
-    explode(u.ux, u.uy, ZT_FIRE, dmg,
+    explode(u.ux, u.uy, ZT_FIRE, resist_reduce(dmg, FIRE_RES),
             DOOR_TRAP, EXPL_FIERY);
     scatter(u.ux, u.uy, dmg,
             VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, 0);
@@ -7287,7 +7293,9 @@ lava_effects(void)
     boolean usurvive, boil_away;
     unsigned protect_oid = 0;
     int burncount = 0, burnmesgcount = 0;
-    const int dmg = d(6, 6); /* only applicable for water walking */
+    /* only applicable for water walking */
+    const int dmg = resist_reduce(d(6, 6), FIRE_RES); 
+    
 
     if (iflags.in_lava_effects) {
         debugpline0("Skipping recursive lava_effects().");
@@ -7298,7 +7306,7 @@ lava_effects(void)
     if (likes_lava(gy.youmonst.data))
         return FALSE;
 
-    usurvive = Fire_resistance || (Wwalking && dmg < u.uhp);
+    usurvive = fully_resistant(FIRE_RES) || (Wwalking && dmg < u.uhp);
     /*
      * A timely interrupt might manage to salvage your life
      * but not your gear.  For scrolls and potions this
@@ -7343,7 +7351,8 @@ lava_effects(void)
      * (3.7: that assumption is no longer true, but having boots be the first
      * thing to come into contact with lava makes sense.)
      */
-    if (uarmf && uarmf->in_use) {
+    if (uarmf && is_flammable(uarmf) && !uarmf->oerodeproof 
+            && uarmf->in_use) {
         obj = uarmf;
         pline("%s into flame!", Yobjnam2(obj, "burst"));
         ++burnmesgcount;
@@ -7354,7 +7363,7 @@ lava_effects(void)
         ++burncount;
     }
 
-    if (!Fire_resistance) {
+    if (!fully_resistant(FIRE_RES)) {
         if (Wwalking) {
             pline_The("%s here burns you!", hliquid("lava"));
             if (usurvive) {
@@ -7434,7 +7443,7 @@ lava_effects(void)
                the lava again on next move so take countermeasures to give
                the player--or the debug fuzzer--a chance to try something
                else instead of just immediately burning up all over again */
-            if (!Fire_resistance)
+            if (!fully_resistant(FIRE_RES))
                 set_itimeout(&HFire_resistance, 5L);
             if (!Wwalking)
                 set_itimeout(&HWwalking, 5L);
@@ -7448,7 +7457,7 @@ lava_effects(void)
 
         return TRUE;
     } else if (!Wwalking && (!u.utrap || u.utraptype != TT_LAVA)) {
-        boil_away = !Fire_resistance;
+        boil_away = !fully_resistant(FIRE_RES);
         /* if not fire resistant, sink_into_lava() will quickly be fatal;
            hero needs to escape immediately */
         set_utrap((unsigned) (rn1(4, 4) + ((boil_away ? 2 : rn1(4, 12)) << 8)),
@@ -7456,7 +7465,7 @@ lava_effects(void)
         You("sink into the %s%s!", waterbody_name(u.ux, u.uy),
             !boil_away ? ", but it only burns slightly"
                        : " and are about to be immolated");
-        if (Fire_resistance)
+        if (fully_resistant(FIRE_RES))
             monstseesu(M_SEEN_FIRE);
         else
             monstunseesu(M_SEEN_FIRE);
@@ -7467,7 +7476,8 @@ lava_effects(void)
 
  burn_stuff:
     fire_damage_chain(gi.invent, FALSE, FALSE, u.ux, u.uy);
-    (void) destroy_items(&gy.youmonst, AD_FIRE, dmg);
+    /* Reroll dmg for items */
+    (void) destroy_items(&gy.youmonst, AD_FIRE, d(6, 6));
     ignite_items(gi.invent);
     return FALSE;
 }
@@ -7490,7 +7500,7 @@ sink_into_lava(void)
            enough to become stuck in lava, but it can happen without
            resistance if water walking boots allow survival and then
            get burned up; u.utrap time will be quite short in that case */
-        if (!Fire_resistance)
+        if (!fully_resistant(FIRE_RES))
             u.uhp = (u.uhp + 2) / 3;
 
         u.utrap -= (1 << 8);

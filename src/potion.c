@@ -4,6 +4,7 @@
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include <math.h>
 
 static long itimeout(long);
 static long itimeout_incr(long, int);
@@ -81,6 +82,122 @@ void
 incr_itimeout(long *which, int incr)
 {
     set_itimeout(which, itimeout_incr(*which, incr));
+}
+
+/* increase a partial-resistance intrinsic by XX%
+ * ...will automatically cap at 100% */
+void
+incr_resistance(long* which, int incr)
+{
+    long oldval = *which & TIMEOUT;
+
+    if (oldval + incr > 100)
+        oldval = 100;
+    else
+        oldval += incr;
+    
+    *which &= ~TIMEOUT;
+    *which |= (oldval | HAVEPARTIAL);
+}
+
+/* decrease a partial-resistance intrinsic by XX% */
+void
+decr_resistance(long* which, int incr)
+{
+    long oldval = *which & TIMEOUT;
+
+    if (oldval - incr < 0)
+        oldval = 0;
+    else
+        oldval -= incr;
+
+    *which &= ~TIMEOUT;
+    *which |= (oldval | ((oldval < 1) ? 0 : HAVEPARTIAL));
+}
+
+/* Return percent which a player is resistant */
+int
+how_resistant(int which)
+{
+    int val;
+
+    /* externals and level/race based intrinsics always provide 100%
+     * as do monster resistances */
+    if (u.uprops[which].extrinsic
+        || (u.uprops[which].intrinsic & (FROMEXPER | FROMRACE | FROMFORM))) {
+        val = 100;
+    } else {
+        val = (u.uprops[which].intrinsic & TIMEOUT);
+        if (val > 100) {
+            val = 100;
+            u.uprops[which].intrinsic &= ~TIMEOUT;
+            u.uprops[which].intrinsic |= (val | HAVEPARTIAL);
+        }
+    }
+
+#if 0 /* No vulnerability yet/TBD */
+    /* vulnerability will affect things... */
+    switch (which) {
+    case FIRE_RES:
+        if (Vulnerable_fire)
+            val -= 50;
+        break;
+    case COLD_RES:
+        if (Vulnerable_cold)
+            val -= 50;
+        break;
+    case SHOCK_RES:
+        if (Vulnerable_elec)
+            val -= 50;
+        break;
+    case ACID_RES:
+        if (Vulnerable_acid)
+            val -= 50;
+        break;
+    default:
+        break;
+    }
+#endif
+    
+    return val;
+}
+
+/* Wrapper to clean up how_resistant checks */
+int
+fully_resistant(int which)
+{
+    return how_resistant(which) == 100;
+}
+
+/* Wrapper to clean up how_resistant checks */
+int
+hardly_resistant(int which)
+{
+    /* This is fairly arbitrary, but it should suffice as a decent
+     * substitute for the EvilHack style vulnerability checks. */
+    return how_resistant(which) < 25;
+}
+
+/* Handles the damage-reduction shuffle necessary to convert 80% resistance
+ * into 20% damage (and keeps the floating-point silliness out of the main lines) */
+int
+resist_reduce(int amount, int which)
+{
+    float tmp = 100 - how_resistant(which);
+
+    tmp /= 100;
+    /* Take the ceiling so that the player doesn't benefit from fractional 
+     * resistance.
+     * Example: If a player has 2% fire resistance and they are hit by a 
+     * flaming sphere for 16 damage, they take the full 16.
+     * 2% of 16 = .32. This should not be enough to count for 1 HP.
+     */
+    tmp = ceil((float) (amount * tmp));
+
+    /* debug line */
+    if (flags.showdmg && wizard)
+        pline("(in: %d  out: %d)", amount, (int) tmp);
+    return (int) tmp;
 }
 
 void
@@ -883,7 +1000,7 @@ peffect_paralysis(struct obj *otmp)
 static void
 peffect_sleeping(struct obj *otmp)
 {
-    if (Sleep_resistance || Free_action) {
+    if (fully_resistant(SLEEP_RES) || Free_action) {
         monstseesu(M_SEEN_SLEEP);
         You("yawn.");
     } else {
@@ -954,7 +1071,7 @@ peffect_sickness(struct obj *otmp)
             losehp(1, "mildly contaminated potion", KILLED_BY_AN);
         }
     } else {
-        if (Poison_resistance)
+        if (fully_resistant(POISON_RES))
             pline("(But in fact it was biologically contaminated %s.)",
                   fruitname(TRUE));
         if (Role_if(PM_HEALER)) {
@@ -964,21 +1081,22 @@ peffect_sickness(struct obj *otmp)
             int typ = rn2(A_MAX);
 
             Sprintf(contaminant, "%s%s",
-                    (Poison_resistance) ? "mildly " : "",
+                    (fully_resistant(POISON_RES)) ? "mildly " : "",
                     (otmp->fromsink) ? "contaminated tap water"
                     : "contaminated potion");
             if (!Fixed_abil) {
                 poisontell(typ, FALSE);
-                (void) adjattrib(typ, Poison_resistance ? -1 : -rn1(4, 3),
-                                 1);
+                /* TODO: Double check this resist_reduce */
+                (void) adjattrib(typ,
+                                 -resist_reduce(rn1(4, 3), POISON_RES) +1, 1);
             }
-            if (!Poison_resistance) {
+            if (!fully_resistant(POISON_RES)) {
                 if (otmp->fromsink)
-                    losehp(rnd(10) + 5 * !!(otmp->cursed), contaminant,
-                           KILLED_BY);
+                    losehp(resist_reduce(rnd(10) + 5 * !!(otmp->cursed),
+                                     POISON_RES), contaminant, KILLED_BY);
                 else
-                    losehp(rnd(10) + 5 * !!(otmp->cursed), contaminant,
-                           KILLED_BY_AN);
+                    losehp(resist_reduce(rnd(10) + 5 * !!(otmp->cursed),
+                                     POISON_RES), contaminant, KILLED_BY_AN);
             } else {
                 /* rnd loss is so that unblessed poorer than blessed */
                 losehp(1 + rn2(2), contaminant,
@@ -1302,10 +1420,10 @@ peffect_oil(struct obj *otmp)
              */
             You("burn your %s.", body_part(FACE));
             /* fire damage */
-            vulnerable = !Fire_resistance || Cold_resistance;
-            losehp(d(vulnerable ? 4 : 2, 4),
-                   "quaffing a burning potion of oil",
-                   KILLED_BY);
+            vulnerable = hardly_resistant(FIRE_RES)
+                         || how_resistant(COLD_RES > 50);
+            losehp(resist_reduce(d(vulnerable ? 4 : 2, 4) + d(1, 4), FIRE_RES),
+                   "quaffing a burning potion of oil", KILLED_BY);
         }
         /*
          * This is slightly iffy because the burning isn't being
@@ -2159,9 +2277,9 @@ potionbreathe(struct obj *obj)
         unambiguous = TRUE;
         break;
     case POT_SLEEPING:
-        if (!Free_action && !Sleep_resistance) {
+        if (!Free_action && !fully_resistant(SLEEP_RES)) {
             You_feel("rather tired.");
-            nomul(-rn1(5, 5));
+            nomul(-resist_reduce(rn1(5, 5), SLEEP_RES));
             gm.multi_reason = "sleeping off a magical draught";
             gn.nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);

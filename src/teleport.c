@@ -143,7 +143,7 @@ goodpos(
                 return FALSE;
             else if (mtmp == &gy.youmonst)
                 return (Levitation || Flying
-                        || (Fire_resistance && Wwalking && uarmf
+                        || (fully_resistant(FIRE_RES) && Wwalking && uarmf
                             && uarmf->oerodeproof)
                         || (Upolyd && likes_lava(gy.youmonst.data)));
             else

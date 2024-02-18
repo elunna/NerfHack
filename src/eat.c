@@ -19,7 +19,6 @@ static struct obj *touchfood(struct obj *) NONNULL;
 static void do_reset_eat(void);
 static void done_eating(boolean);
 static void cprefx(int);
-static boolean temp_givit(int, struct permonst *);
 static void givit(int, struct permonst *);
 static void eye_of_newt_buzz(void);
 static void cpostfx(int);
@@ -938,13 +937,6 @@ should_givit(int type, struct permonst *ptr)
 
     /* some intrinsics are easier to get than others */
     switch (type) {
-    case POISON_RES:
-        if ((ptr == &mons[PM_KILLER_BEE] || ptr == &mons[PM_SCORPION])
-            && !rn2(4))
-            chance = 1;
-        else
-            chance = 15;
-        break;
     case TELEPORT:
         chance = 10;
         break;
@@ -961,73 +953,104 @@ should_givit(int type, struct permonst *ptr)
         chance = 15;
         break;
     }
-
-    return (ptr->mlevel > rn2(chance));
+    /* TODO: Double check this */
+    return (ptr->mlevel <= rn2(chance));
 }
 
-static boolean
-temp_givit(int type, struct permonst *ptr)
-{
-    int chance = (type == STONE_RES) ? 6 : (type == ACID_RES) ? 3 : 0;
-
-    return chance ? (ptr->mlevel > rn2(chance)) : FALSE;
-}
-
+#define MAX_GAIN 50
+#define MIN_GAIN 2
 /* givit() tries to give you an intrinsic based on the monster's level
  * and what type of intrinsic it is trying to give you.
  */
 static void
 givit(int type, register struct permonst *ptr)
 {
-    debugpline1("Attempting to give intrinsic %d", type);
+    const char *adj;
+    long increase;
 
-    if (!should_givit(type, ptr) && !temp_givit(type, ptr))
-        return;
+    increase = (ptr->cwt / 90);
+    increase = (increase / 2) + rnd((increase / 2) + 1);
+    
+    if (increase < MIN_GAIN)
+        increase = MIN_GAIN;
+    if (increase > MAX_GAIN)
+        increase = MAX_GAIN;
+    
+    if (increase == 40) {
+        adj = "much";
+    } else if (increase > 24) {
+        adj = "significantly";
+    } else if (increase > 16) {
+        adj = "considerably";
+    } else if (increase > 8) {
+        adj = "somewhat";
+    } else if (increase > 4) {
+        adj = "a bit";
+    } else {
+        adj = "slightly";
+    }
 
     switch (type) {
+    /* All these use the new system, which is based on corpse weight. */
     case FIRE_RES:
         debugpline0("Trying to give fire resistance");
-        if (!(HFire_resistance & FROMOUTSIDE)) {
-            You(Hallucination ? "be chillin'." : "feel a momentary chill.");
-            HFire_resistance |= FROMOUTSIDE;
+        if ((HFire_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+            incr_resistance(&HFire_resistance, increase);
+            if ((HFire_resistance & TIMEOUT) == 100)
+                You(Hallucination ? "be chillin'." : "feel completely chilled.");
+            else
+                You_feel("%s more chill.", adj);
         }
         break;
     case SLEEP_RES:
         debugpline0("Trying to give sleep resistance");
-        if (!(HSleep_resistance & FROMOUTSIDE)) {
+        if ((HSleep_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+            incr_resistance(&HSleep_resistance, increase);
+            if ((HSleep_resistance & TIMEOUT) == 100)
             You_feel("wide awake.");
-            HSleep_resistance |= FROMOUTSIDE;
+            else
+                You_feel("%s perkier.", adj);
         }
         break;
     case COLD_RES:
         debugpline0("Trying to give cold resistance");
-        if (!(HCold_resistance & FROMOUTSIDE)) {
+        if ((HCold_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+            incr_resistance(&HCold_resistance, increase);
+            if ((HCold_resistance & TIMEOUT) == 100)
             You_feel("full of hot air.");
-            HCold_resistance |= FROMOUTSIDE;
+            else
+                You_feel("%s warmer.", adj);
         }
         break;
     case DISINT_RES:
         debugpline0("Trying to give disintegration resistance");
-        if (!(HDisint_resistance & FROMOUTSIDE)) {
-            You_feel(Hallucination ? "totally together, man." : "very firm.");
-            HDisint_resistance |= FROMOUTSIDE;
+        if ((HDisint_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+            incr_resistance(&HDisint_resistance, increase);
+            if ((HDisint_resistance & TIMEOUT) == 100)
+                You_feel(Hallucination ? "totally together, man." : "completely firm.");
+            else
+                You_feel("%s more firm.", adj);
         }
         break;
     case SHOCK_RES: /* shock (electricity) resistance */
         debugpline0("Trying to give shock resistance");
-        if (!(HShock_resistance & FROMOUTSIDE)) {
-            if (Hallucination)
-                You_feel("grounded in reality.");
+        if ((HShock_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+            incr_resistance(&HShock_resistance, increase);
+            if ((HShock_resistance & TIMEOUT) == 100)
+                pline(Hallucination ? "You feel grounded in reality."
+                                    : "Your health feels completely amplified!");
             else
-                Your("health currently feels amplified!");
-            HShock_resistance |= FROMOUTSIDE;
+                Your("health is %s more amplified!", adj);
         }
         break;
     case POISON_RES:
         debugpline0("Trying to give poison resistance");
-        if (!(HPoison_resistance & FROMOUTSIDE)) {
-            You_feel(Poison_resistance ? "especially healthy." : "healthy.");
-            HPoison_resistance |= FROMOUTSIDE;
+        if ((HPoison_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+            incr_resistance(&HPoison_resistance, increase);
+            if ((HPoison_resistance & TIMEOUT) == 100)
+                You_feel("completely healthy.");
+            else
+                You_feel("%s healthier.", adj);
         }
         break;
     case TELEPORT:
@@ -1278,6 +1301,8 @@ cpostfx(int pm)
     /* possibly convey an intrinsic */
     if (check_intrinsics) {
         struct permonst *ptr = &mons[pm];
+        boolean conveys_STR = is_giant(ptr);
+        int i;
 
         if (dmgtype(ptr, AD_STUN) || dmgtype(ptr, AD_HALU)
             || pm == PM_VIOLET_FUNGUS) {
@@ -1290,8 +1315,17 @@ cpostfx(int pm)
         if (attacktype(ptr, AT_MAGC) || pm == PM_NEWT)
             eye_of_newt_buzz();
 
-        tmp = corpse_intrinsic(ptr);
-
+        tmp = 0;   /* which one we will try to give */
+        if (conveys_STR) {
+            tmp = -1; /* use -1 as fake prop index for STR */
+            debugpline1("\"Intrinsic\" strength, %d", tmp);
+        }
+        for (i = 1; i <= LAST_PROP; i++) {
+            if (!intrinsic_possible(i, ptr))
+                continue;
+            givit(i, ptr);
+        }
+ 
         /* if something was chosen, give it now (givit() might fail) */
         if (tmp == -1)
             gainstr((struct obj *) 0, 0, TRUE);
@@ -1862,7 +1896,7 @@ eatcorpse(struct obj *otmp)
     } else if (poisonous(&mons[mnum]) && rn2(5)) {
         tp++;
         pline("Ecch - that must have been poisonous!");
-        if (!Poison_resistance) {
+        if (!fully_resistant(POISON_RES)) {
             poison_strdmg(rnd(4), rnd(15),
                           !glob ? "poisonous corpse" : "poisonous glob",
                           KILLED_BY_AN);
@@ -2100,7 +2134,7 @@ fprefx(struct obj *otmp)
             pline("My, this is a %s %s!",
                   Hallucination ? "primo" : "yummy",
                   singular(otmp, xname));
-        } else if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance) {
+        } else if (otmp->otyp == APPLE && otmp->cursed && !fully_resistant(SLEEP_RES)) {
             ; /* skip core joke; feedback deferred til fpostfx() */
 
 #if defined(MAC) || defined(MACOS)
@@ -2291,11 +2325,11 @@ eataccessory(struct obj *otmp)
             break;
         case RIN_FREE_ACTION:
             /* Give sleep resistance instead */
-            if (!(HSleep_resistance & FROMOUTSIDE))
+            if (!fully_resistant(SLEEP_RES)) {
                 accessory_has_effect(otmp);
-            if (!Sleep_resistance)
                 You_feel("wide awake.");
-            HSleep_resistance |= FROMOUTSIDE;
+            }
+            incr_resistance(&HSleep_resistance, 100);
             break;
         case AMULET_OF_CHANGE:
             accessory_has_effect(otmp);
@@ -2510,7 +2544,7 @@ fpostfx(struct obj *otmp)
             make_vomiting(0L, TRUE);
         break;
     case APPLE:
-        if (otmp->cursed && !Sleep_resistance) {
+        if (otmp->cursed && !fully_resistant(SLEEP_RES)) {
             /* Snow White; 'poisoned' applies to [a subset of] weapons,
                not food, so we substitute cursed; fortunately our hero
                won't have to wait for a prince to be rescued/revived */
@@ -2618,11 +2652,11 @@ edibility_prompts(struct obj *otmp)
         /* Rotten */
         Snprintf(buf, sizeof buf, "%s like %s could be rotten!",
                  foodsmell, it_or_they);
-    } else if (cadaver && poisonous(&mons[mnum]) && !Poison_resistance) {
+    } else if (cadaver && poisonous(&mons[mnum]) && !fully_resistant(POISON_RES)) {
         /* poisonous */
         Snprintf(buf, sizeof buf, "%s like %s might be poisonous!",
                  foodsmell, it_or_they);
-    } else if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance) {
+    } else if (otmp->otyp == APPLE && otmp->cursed && !fully_resistant(SLEEP_RES)) {
         /* causes sleep, for long enough to be dangerous */
         Snprintf(buf, sizeof buf, "%s like %s might have been poisoned.",
                  foodsmell, it_or_they);
@@ -2724,7 +2758,7 @@ doeat_nonfood(struct obj *otmp)
 
     if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) {
         pline("Ecch - that must have been poisonous!");
-        if (!Poison_resistance) {
+        if (!fully_resistant(POISON_RES)) {
             poison_strdmg(rnd(4), rnd(15), xname(otmp), KILLED_BY_AN);
         } else
             You("seem unaffected by the poison.");
