@@ -783,6 +783,7 @@ do_play_instrument(struct obj* instr)
             && rnd(7) <= erosion_level) {
         You("start playing %s.", yname(instr));
         pline("The %s suddenly breaks!", xname(instr));
+        setnotworn(instr);
         delobj(instr);
         nomul(0);
         return 0;
