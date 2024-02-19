@@ -4516,8 +4516,7 @@ doapply(void)
     case BUGLE:
     case LEATHER_DRUM:
     case DRUM_OF_EARTHQUAKE:
-        res = do_play_instrument(obj);
-        break;
+        return do_play_instrument(obj);
     case HORN_OF_PLENTY: /* not a musical instrument */
         (void) hornoplenty(obj, FALSE, (struct obj *) 0);
         break;

@@ -528,7 +528,11 @@ do_improvisation(struct obj* instr)
         mode |= PLAY_CONFUSED;
     if (Hallucination)
         mode |= PLAY_HALLU;
-
+    
+    /* Erosion doesn't do the music any favors */
+    if (instr->oeroded || instr->oeroded2)
+        mode |= rn2(2) ? PLAY_STUNNED : PLAY_CONFUSED;
+    
     if (!rn2(2)) {
         /*
          * TEMPORARY?  for multiple impairments, don't always
@@ -761,6 +765,7 @@ do_play_instrument(struct obj* instr)
     char *s;
     coordxy x, y;
     boolean ok;
+    int erosion_level = instr->oeroded + instr->oeroded2;
 
     if (Underwater) {
         You_cant("play music underwater!");
@@ -772,6 +777,17 @@ do_play_instrument(struct obj* instr)
         You("are incapable of playing %s.", thesimpleoname(instr));
         return ECMD_OK;
     }
+
+    /* eroded instruments can break */
+    if (!instr->oartifact && erosion_level > 0 
+            && rnd(7) <= erosion_level) {
+        You("start playing %s.", yname(instr));
+        pline("The %s suddenly breaks!", xname(instr));
+        delobj(instr);
+        nomul(0);
+        return 0;
+    }
+
     if (instr->otyp != LEATHER_DRUM && instr->otyp != DRUM_OF_EARTHQUAKE
         && !(Stunned || Confusion || Hallucination)) {
         c = ynq("Improvise?");
