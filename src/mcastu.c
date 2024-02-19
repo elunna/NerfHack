@@ -917,14 +917,19 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
     }
 
     switch (spellnum) {
-    case CLC_BLIGHT:
-        /* TODO: Should undead resist this? */
-        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 65) {
+    case CLC_BLIGHT: {
+        /* This could use is_fleshy(), but that would make a large set 
+         * of monsters immune like fungus, blobs, and jellies. */
+        boolean no_effect = nonliving(gy.youmonst.data);
+
+        if (!no_effect && m_canseeu(mtmp)
+            && distu(mtmp->mx, mtmp->my) <= 65) {
             You("%s rapidly decomposing!", Withering ? "continue" : "begin");
             incr_itimeout(&HWithering, rn1(41, 20));
             dmg = 0;
         }
         break;
+    }
     case CLC_GEYSER:
         /* this is physical damage (force not heat),
          * not magical damage or fire damage
