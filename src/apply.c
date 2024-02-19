@@ -417,6 +417,10 @@ use_stethoscope(struct obj *obj)
         Soundeffect(se_heart_beat, 100);
         You_hear("your heart beat.");
         return res;
+    } else if (obj->oeroded && rn2(10)) {
+        /* Soundeffect(se_heart_beat, 100);*/
+        You_hear(Hallucination ? "a rusty gate." : "a scratching noise.");
+        return res;
     }
     confdir(FALSE);
     if (!u.dx && !u.dy) {
