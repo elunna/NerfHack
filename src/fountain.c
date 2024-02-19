@@ -299,8 +299,6 @@ result:
         if (!is_metallic(obj))
             goto lava;
 
-        /* TODO: perhaps our hero needs to wield some sort of tool to
-           successfully reforge an object? */
         if (is_metallic(obj) && Luck >= 0) {
             if (greatest_erosion(obj) > 0) {
                 if (!Blind)
