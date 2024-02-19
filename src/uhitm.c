@@ -2668,6 +2668,7 @@ mhitm_ad_fire(
     struct monst *mdef, struct mhitm_data *mhm)
 {
     struct permonst *pd = mdef->data;
+    const int orig_dmg = mhm->damage; /* damage coming into the function */
 
     if (magr == &gy.youmonst) {
         /* uhitm */
@@ -2693,8 +2694,6 @@ mhitm_ad_fire(
             return;
             /* Don't return yet; keep hp<1 and mhm.damage=0 for pet msg */
         }
-        mhm->damage += destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
-        mhm->damage += destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
         if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
             if (!Blind)
                 pline_The("fire doesn't heat %s!", mon_nam(mdef));
@@ -2702,8 +2701,7 @@ mhitm_ad_fire(
             shieldeff(mdef->mx, mdef->my);
             mhm->damage = 0;
         }
-        /* only potions damage resistant players in destroy_item */
-        mhm->damage += destroy_mitem(mdef, POTION_CLASS, AD_FIRE);
+        mhm->damage += destroy_items(mdef, AD_FIRE, orig_dmg);
         ignite_items(mdef->minvent);
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
@@ -2723,14 +2721,10 @@ mhitm_ad_fire(
             } else {
                 monstunseesu(M_SEEN_FIRE);
             }
-            if ((int) magr->m_lev > rn2(20))
-                destroy_item(SCROLL_CLASS, AD_FIRE);
-            if ((int) magr->m_lev > rn2(20))
-                destroy_item(POTION_CLASS, AD_FIRE);
-            if ((int) magr->m_lev > rn2(25))
-                destroy_item(SPBOOK_CLASS, AD_FIRE);
-            if ((int) magr->m_lev > rn2(20))
+            if ((int) magr->m_lev > rn2(20)) {
+                (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
                 ignite_items(gi.invent);
+            }
             burn_away_slime();
         } else {
             mhm->damage = 0;
@@ -2761,8 +2755,6 @@ mhitm_ad_fire(
             mhm->done = TRUE;
             return;
         }
-        mhm->damage += destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
-        mhm->damage += destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
         if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
             if (gv.vis && canseemon(mdef))
                 pline_The("fire doesn't seem to burn %s!", mon_nam(mdef));
@@ -2770,8 +2762,7 @@ mhitm_ad_fire(
             golemeffects(mdef, AD_FIRE, mhm->damage);
             mhm->damage = 0;
         }
-        /* only potions damage resistant players in destroy_item */
-        mhm->damage += destroy_mitem(mdef, POTION_CLASS, AD_FIRE);
+        mhm->damage += destroy_items(mdef, AD_FIRE, orig_dmg);
         ignite_items(mdef->minvent);
     }
 }
@@ -2781,6 +2772,8 @@ mhitm_ad_cold(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    const int orig_dmg = mhm->damage;
+    
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
@@ -2796,7 +2789,7 @@ mhitm_ad_cold(
             golemeffects(mdef, AD_COLD, mhm->damage);
             mhm->damage = 0;
         }
-        mhm->damage += destroy_mitem(mdef, POTION_CLASS, AD_COLD);
+        mhm->damage += destroy_items(mdef, AD_COLD, orig_dmg);
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
@@ -2810,7 +2803,7 @@ mhitm_ad_cold(
                 monstunseesu(M_SEEN_COLD);
             }
             if ((int) magr->m_lev > rn2(20))
-                destroy_item(POTION_CLASS, AD_COLD);
+                (void) destroy_items(&gy.youmonst, AD_COLD, orig_dmg);
         } else
             mhm->damage = 0;
     } else {
@@ -2828,7 +2821,7 @@ mhitm_ad_cold(
             golemeffects(mdef, AD_COLD, mhm->damage);
             mhm->damage = 0;
         }
-        mhm->damage += destroy_mitem(mdef, POTION_CLASS, AD_COLD);
+        mhm->damage += destroy_items(mdef, AD_COLD, orig_dmg);
     }
     /* Ice devils' cold sting has some troublesome side effects */
     if (monsndx(magr->data) == PM_ICE_DEVIL) {
@@ -2844,6 +2837,8 @@ mhitm_ad_elec(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    const int orig_dmg = mhm->damage;
+    
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
@@ -2852,7 +2847,6 @@ mhitm_ad_elec(
         }
         if (!Blind)
             pline("%s is zapped!", Monnam(mdef));
-        mhm->damage += destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
         if (resists_elec(mdef) || defended(mdef, AD_ELEC)) {
             if (!Blind)
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
@@ -2860,8 +2854,7 @@ mhitm_ad_elec(
             shieldeff(mdef->mx, mdef->my);
             mhm->damage = 0;
         }
-        /* only rings damage resistant players in destroy_item */
-        mhm->damage += destroy_mitem(mdef, RING_CLASS, AD_ELEC);
+        mhm->damage += destroy_items(mdef, AD_ELEC, orig_dmg);
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
@@ -2875,9 +2868,7 @@ mhitm_ad_elec(
                 monstunseesu(M_SEEN_ELEC);
             }
             if ((int) magr->m_lev > rn2(20))
-                destroy_item(WAND_CLASS, AD_ELEC);
-            if ((int) magr->m_lev > rn2(20))
-                destroy_item(RING_CLASS, AD_ELEC);
+                (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
         } else
             mhm->damage = 0;
     } else {
@@ -2888,7 +2879,6 @@ mhitm_ad_elec(
         }
         if (gv.vis && canseemon(mdef))
             pline("%s gets zapped!", Monnam(mdef));
-        mhm->damage += destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
         if (resists_elec(mdef) || defended(mdef, AD_ELEC)) {
             if (gv.vis && canseemon(mdef))
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
@@ -2896,8 +2886,7 @@ mhitm_ad_elec(
             golemeffects(mdef, AD_ELEC, mhm->damage);
             mhm->damage = 0;
         }
-        /* only rings damage resistant players in destroy_item */
-        mhm->damage += destroy_mitem(mdef, RING_CLASS, AD_ELEC);
+        mhm->damage += destroy_items(mdef, AD_ELEC, orig_dmg);
     }
 }
 

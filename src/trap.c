@@ -1991,6 +1991,7 @@ trapeffect_fire_trap(
         boolean see_it = cansee(tx, ty);
         boolean trapkilled = FALSE;
         struct permonst *mptr = mtmp->data;
+        int orig_dmg = d(2, 4);
 
         if (in_sight)
             pline("A %s erupts from the %s under %s!", tower_of_flame,
@@ -2005,7 +2006,7 @@ trapeffect_fire_trap(
                 pline("%s is uninjured.", Monnam(mtmp));
             }
         } else {
-            int num = d(2, 4), alt;
+            int num = orig_dmg, alt;
             boolean immolate = FALSE;
 
             /* paper burns very fast, assume straw is tightly packed
@@ -2041,10 +2042,15 @@ trapeffect_fire_trap(
                 mtmp->mhpmax -= rn2(num + 1);
         }
         if (burnarmor(mtmp) || rn2(3)) {
-            (void) destroy_mitem(mtmp, SCROLL_CLASS, AD_FIRE);
-            (void) destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
-            (void) destroy_mitem(mtmp, POTION_CLASS, AD_FIRE);
+            int xtradmg = destroy_items(mtmp, AD_FIRE, orig_dmg);
             ignite_items(mtmp->minvent);
+            if (!DEADMONSTER(mtmp)) {
+                mtmp->mhp -= xtradmg;
+                if (DEADMONSTER(mtmp)) { /* NOW it's dead */
+                    monkilled(mtmp, "", AD_FIRE);
+                trapkilled = TRUE;
+        }
+            }
         }
         if (burn_floor_objects(tx, ty, see_it, FALSE)
             && !see_it && distu(tx, ty) <= 3 * 3)
@@ -2132,7 +2138,7 @@ trapeffect_cold_trap(
         } else
             losehp(dmg, "flash freeze", KILLED_BY_AN); /* cold damage */
         if (rn2(3))
-            destroy_item(POTION_CLASS, AD_COLD);
+            (void) destroy_items(&gy.youmonst, AD_COLD, dmg);
     } else {
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
         boolean see_it = cansee(mtmp->mx, mtmp->my);
@@ -2164,7 +2170,7 @@ trapeffect_cold_trap(
                 mtmp->mhpmax -= rn2(dmg + 1);
         }
         if (rn2(3)) {
-            int xtradmg = destroy_mitem(mtmp, POTION_CLASS, AD_COLD);
+            int xtradmg = destroy_items(mtmp, AD_COLD, dmg);
             if (!DEADMONSTER(mtmp)) {
                 mtmp->mhp -= xtradmg;
                 if (DEADMONSTER(mtmp)) { /* NOW it's dead */
@@ -4669,7 +4675,8 @@ dofiretrap(
     struct obj *box) /* null for floor trap */
 {
     boolean see_it = !Blind;
-    int num, alt;
+    int orig_dmg, num, alt;
+    orig_dmg = num = d(2, 4);
 
     /* Bug: for box case, the equivalent of burn_floor_objects() ought
      * to be done upon its contents.
@@ -4689,9 +4696,7 @@ dofiretrap(
     if (Fire_resistance) {
         shieldeff(u.ux, u.uy);
         monstseesu(M_SEEN_FIRE);
-        num = rn2(2);
     } else if (Upolyd) {
-        num = d(2, 4);
         switch (u.umonnum) {
         case PM_PAPER_GOLEM:
             alt = u.mhmax;
@@ -4739,9 +4744,7 @@ dofiretrap(
     burn_away_slime();
 
     if (burnarmor(&gy.youmonst) || rn2(3)) {
-        destroy_item(SCROLL_CLASS, AD_FIRE);
-        destroy_item(SPBOOK_CLASS, AD_FIRE);
-        destroy_item(POTION_CLASS, AD_FIRE);
+        (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
         ignite_items(gi.invent);
     }
     if (!box && burn_floor_objects(u.ux, u.uy, see_it, TRUE) && !see_it)
@@ -6919,7 +6922,7 @@ chest_trap(
         case 8:
         case 7:
         case 6: {
-            int dmg;
+            int dmg = d(4, 4), orig_dmg = dmg;
 
             You("are jolted by a surge of electricity!");
             if (Shock_resistance) {
@@ -6928,11 +6931,9 @@ chest_trap(
                 monstseesu(M_SEEN_ELEC);
                 dmg = 0;
             } else {
-                dmg = d(4, 4);
                 monstunseesu(M_SEEN_ELEC);
             }
-            destroy_item(RING_CLASS, AD_ELEC);
-            destroy_item(WAND_CLASS, AD_ELEC);
+            (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
             if (dmg)
                 losehp(dmg, "electric shock", KILLED_BY_AN);
             break;
@@ -7278,7 +7279,7 @@ lava_effects(void)
     boolean usurvive, boil_away;
     unsigned protect_oid = 0;
     int burncount = 0, burnmesgcount = 0;
-    int dmg = d(6, 6); /* only applicable for water walking */
+    const int dmg = d(6, 6); /* only applicable for water walking */
 
     if (iflags.in_lava_effects) {
         debugpline0("Skipping recursive lava_effects().");
@@ -7294,7 +7295,7 @@ lava_effects(void)
      * A timely interrupt might manage to salvage your life
      * but not your gear.  For scrolls and potions this
      * will destroy whole stacks, where fire resistant hero
-     * survivor only loses partial stacks via destroy_item().
+     * survivor only loses partial stacks via destroy_items().
      *
      * Flag items to be destroyed before any messages so
      * that player causing hangup at --More-- won't get an
@@ -7458,9 +7459,7 @@ lava_effects(void)
     }
 
  burn_stuff:
-    destroy_item(SCROLL_CLASS, AD_FIRE);
-    destroy_item(SPBOOK_CLASS, AD_FIRE);
-    destroy_item(POTION_CLASS, AD_FIRE);
+    (void) destroy_items(&gy.youmonst, AD_FIRE, dmg);
     ignite_items(gi.invent);
     return FALSE;
 }

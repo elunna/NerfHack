@@ -3833,12 +3833,12 @@ extern int zap_over_floor(coordxy, coordxy, int, boolean *,
                           boolean, short) NONNULLARG4;
 extern void mon_spell_hits_spot(struct monst *, int, coordxy x, coordxy y);
 extern void fracture_rock(struct obj *) NONNULLARG1;
+extern boolean destroyable_oclass(char);
 extern boolean break_statue(struct obj *) NONNULLARG1;
 extern int u_adtyp_resistance_obj(int);
 extern boolean inventory_resistance_check(int);
 extern char *item_what(int);
-extern void destroy_item(int, int);
-extern int destroy_mitem(struct monst *, int, int) NONNULLARG1;
+extern int destroy_items(struct monst *, int, int) NONNULLARG1;
 extern int resist(struct monst *, char, int, int) NONNULLARG1;
 extern void makewish(void);
 extern const char *flash_str(int, boolean) NONNULL;

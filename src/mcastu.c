@@ -600,6 +600,7 @@ void
 cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
 {
     int ml = min(mtmp->m_lev, 50);
+    int orig_dmg = 0;
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
         impossible("cast directed wizard spell (%d) with dmg=0?", spellnum);
         return;
@@ -794,6 +795,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
     case MGC_FIRE_BOLT:
         /* hotwire these to only go off if the critter can see you
          * to avoid bugs WRT the Eyes and detect monsters */
+        orig_dmg = dmg =  d((ml / 5) + 1, 8);
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
             pline("%s blasts you with a bolt of fire!", Monnam(mtmp));
             if (Fire_resistance) {
@@ -801,16 +803,13 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
                 monstseesu(M_SEEN_FIRE);
                 dmg = 0;
             } else {
-                dmg =  d((ml / 5) + 1, 8);
                 monstunseesu(M_SEEN_FIRE);
             }
             if (Half_spell_damage)
                 dmg -= ((dmg + 1) / 4);
             burn_away_slime();
             (void) burnarmor(&gy.youmonst);
-            destroy_item(SCROLL_CLASS, AD_FIRE);
-            destroy_item(POTION_CLASS, AD_FIRE);
-            destroy_item(SPBOOK_CLASS, AD_FIRE);
+            (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
             ignite_items(gi.invent);
         } else {
             if (canseemon(mtmp)) {
@@ -823,6 +822,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         }
         break;
     case MGC_ICE_BOLT:
+        orig_dmg = dmg = d((ml / 5) + 1, 8);
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
             pline("%s blasts you with a bolt of cold!", Monnam(mtmp));
             if (Cold_resistance) {
@@ -830,14 +830,11 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
                 monstseesu(M_SEEN_COLD);
                 dmg = 0;
             } else {
-                dmg =  d((ml / 5) + 1, 8);
                 monstunseesu(M_SEEN_COLD);
             }
             if (Half_spell_damage)
                 dmg -= ((dmg + 1) / 4);
-            destroy_item(POTION_CLASS, AD_COLD);
-            if (!rn2(2))
-                destroy_item(POTION_CLASS, AD_COLD);
+            (void) destroy_items(&gy.youmonst, AD_COLD, orig_dmg);
         } else {
             if (canseemon(mtmp)) {
                 pline("%s blasts the %s with cold and curses!",
@@ -911,6 +908,7 @@ static void
 cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 {
     int ml = min(mtmp->m_lev, 50);
+    int orig_dmg = 0;
     if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         impossible("cast directed cleric spell (%d) with dmg=0?", spellnum);
         return;
@@ -947,21 +945,19 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         break;
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
+        orig_dmg = dmg = d(8, 6);
         if (Fire_resistance) {
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_FIRE);
             dmg = 0;
         } else {
-            dmg = d(8, 6);
             monstunseesu(M_SEEN_FIRE);
         }
         if (Half_spell_damage)
             dmg -= ((dmg + 1) / 4);
         burn_away_slime();
         (void) burnarmor(&gy.youmonst);
-        destroy_item(SCROLL_CLASS, AD_FIRE);
-        destroy_item(POTION_CLASS, AD_FIRE);
-        destroy_item(SPBOOK_CLASS, AD_FIRE);
+        (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
         ignite_items(gi.invent);
         /* burn up flammable items on the floor, melt ice terrain */
         mon_spell_hits_spot(mtmp, AD_FIRE, u.ux, u.uy);
@@ -972,6 +968,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         Soundeffect(se_bolt_of_lightning, 80);
         pline("A bolt of lightning strikes down at you from above!");
         reflects = ureflects("It bounces off your %s%s.", "");
+        orig_dmg = dmg = d(8, 6);
         if (reflects || Shock_resistance) {
             shieldeff(u.ux, u.uy);
             dmg = 0;
@@ -982,13 +979,11 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
             monstunseesu(M_SEEN_REFL);
             monstseesu(M_SEEN_ELEC);
         } else {
-            dmg = d(8, 6);
             monstunseesu(M_SEEN_ELEC | M_SEEN_REFL);
         }
         if (Half_spell_damage)
             dmg -= ((dmg + 1) / 4);
-        destroy_item(WAND_CLASS, AD_ELEC);
-        destroy_item(RING_CLASS, AD_ELEC);
+        (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
         /* lightning might destroy iron bars if hero is on such a spot;
            reflection protects terrain here [execution won't get here due
            to 'if (reflects) break' above] but hero resistance doesn't;
@@ -1111,6 +1106,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         break;
     }
     case CLC_PARALYZE:
+        dmg = 4 + (int) mtmp->m_lev;
         if (Antimagic || Free_action) {
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_MAGR);
@@ -1120,7 +1116,6 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         } else {
             if (gm.multi >= 0)
                 You("are frozen in place!");
-            dmg = 4 + (int) mtmp->m_lev;
             if (Half_spell_damage)
                 dmg -= ((dmg + 1) / 4);
             monstunseesu(M_SEEN_MAGR);

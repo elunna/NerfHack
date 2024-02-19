@@ -4873,7 +4873,7 @@ mergable(
         || obj->greased != otmp->greased)
         return FALSE;
 
-    if ((obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS)
+    if ((erosion_matters(obj) || destroyable_oclass(obj->oclass))
         && (obj->oerodeproof != otmp->oerodeproof
             || (obj->rknown != otmp->rknown && (Blind || Hallucination))))
         return FALSE;
