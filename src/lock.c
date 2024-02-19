@@ -529,8 +529,9 @@ pick_lock(
                 if (otmp->cursed)
                     ch /= 2;
 
-                /* small chance a cursed locking tool will break on use */
-                if (pick->cursed && !rn2(5)
+                /* Cursed or eroded locking tools can break on use */
+                if ((pick->cursed || pick->oeroded || pick->oeroded2) 
+                    && !rn2(3)
                     && picktyp != STETHOSCOPE && !pick->oartifact) {
                     pline("As you start to %s the %s, your %s breaks!",
                           (otmp->olocked ? "unlock" : "lock"),
@@ -652,9 +653,9 @@ pick_lock(
             default:
                 ch = 0;
             }
-                /* small chance a cursed locking tool will break on use */
-                if (pick->cursed && !rn2(5)
-                    && picktyp != STETHOSCOPE && !pick->oartifact) {
+                /* Cursed or eroded locking tool will break on use */
+                if ((pick->cursed || pick->oeroded || pick->oeroded2)
+                    && !rn2(3) && picktyp != STETHOSCOPE && !pick->oartifact) {
                     pline("As you start to %s the door, your %s breaks!",
                           ((door->doormask & D_LOCKED) ? "unlock" : "lock"),
                           xname(pick));
