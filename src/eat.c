@@ -3037,6 +3037,15 @@ use_tin_opener(struct obj *obj)
     if (!otmp)
         return (res|ECMD_CANCEL);
 
+    if (obj->oeroded > 0 && !rn2(5)) {
+        You("start opening %s.", yname(otmp));
+        pline("The %s suddenly breaks!", xname(obj));
+        setnotworn(obj);
+        delobj(obj);
+        nomul(0);
+        return 0;
+    }
+    
     start_tin(otmp);
     return ECMD_TIME;
 }

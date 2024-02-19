@@ -4502,7 +4502,7 @@ doapply(void)
         res = dowrite(obj);
         break;
     case TIN_OPENER:
-        res = use_tin_opener(obj);
+        return use_tin_opener(obj); /* Can break */
         break;
     case FIGURINE:
         res = use_figurine(&obj);
@@ -4520,7 +4520,7 @@ doapply(void)
     case BUGLE:
     case LEATHER_DRUM:
     case DRUM_OF_EARTHQUAKE:
-        return do_play_instrument(obj);
+        return do_play_instrument(obj); /* Can break */
     case HORN_OF_PLENTY: /* not a musical instrument */
         (void) hornoplenty(obj, FALSE, (struct obj *) 0);
         break;
