@@ -1880,7 +1880,8 @@ eatcorpse(struct obj *otmp)
     gc.context.victual.reqtime
         = 3 + ((!glob ? mons[mnum].cwt : otmp->owt) >> 6);
 
-    if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten || !rn2(7))) {
+    if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten || otmp->oeroded2 
+                                            || !rn2(7))) {
         if (rottenfood(otmp)) {
             otmp->orotten = TRUE;
             (void) touchfood(otmp);
@@ -2715,7 +2716,7 @@ doeat_nonfood(struct obj *otmp)
         }
     }
 
-    if (otmp->cursed) {
+    if (otmp->cursed || otmp->oeroded2) {
         (void) rottenfood(otmp);
         nodelicious = TRUE;
     } else if (objects[otmp->otyp].oc_material == PAPER)
@@ -2941,7 +2942,8 @@ doeat(void)
 
         gc.context.victual.reqtime = objects[otmp->otyp].oc_delay;
         if (otmp->otyp != FORTUNE_COOKIE
-            && (otmp->cursed || (!nonrotting_food(otmp->otyp)
+            && (otmp->cursed || otmp->oeroded2 
+                || (!nonrotting_food(otmp->otyp)
                                  && (gm.moves - otmp->age)
                                         > (otmp->blessed ? 50L : 30L)
                                  && (otmp->orotten || !rn2(7))))) {
