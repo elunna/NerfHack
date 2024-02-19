@@ -1199,7 +1199,7 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
                   ? xname(obj)
                   : cloak_simple_name(obj));
 
-        if (obj->greased && !rn2(2)) {
+        if (obj->greased && !rn2(3)) {
             pline_The("grease wears off.");
             obj->greased = 0;
             update_inventory();

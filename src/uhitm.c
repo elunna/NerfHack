@@ -2205,7 +2205,7 @@ m_slips_free(struct monst *mdef, struct attack *mattk)
                 ? xname(obj)
                 : cloak_simple_name(obj));
 
-        if (obj->greased && !rn2(2)) {
+        if (obj->greased && !rn2(3)) {
             pline_The("grease wears off.");
             obj->greased = 0;
         }
@@ -5013,7 +5013,7 @@ mhitm_ad_sedu(
                               ? xname(obj)
                               : cloak_simple_name(obj));
                 }
-                if (obj->greased && !rn2(2)) {
+                if (obj->greased && !rn2(3)) {
                     if (canseemon(mdef))
                         pline_The("grease wears off.");
                     obj->greased = 0;

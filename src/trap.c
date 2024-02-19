@@ -5139,7 +5139,7 @@ water_damage(
         wet_a_towel(obj, -rnd(7 - obj->spe), TRUE);
         return ER_NOTHING;
     } else if (obj->greased) {
-        if (!rn2(2)) {
+        if (!rn2(3)) {
             obj->greased = 0;
             if (in_invent) {
                 pline_The("grease on %s washes off.", yname(obj));

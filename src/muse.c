@@ -2687,7 +2687,7 @@ use_misc(struct monst *mtmp)
             }
             if (!where_to) {
                 pline_The("whip slips free."); /* not `The_whip' */
-                if (freegrease && !rn2(2)) {
+                if (freegrease && !rn2(3)) {
                     pline_The("grease wears off.");
                     obj->greased = 0;
                 }
