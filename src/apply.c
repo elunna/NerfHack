@@ -2395,9 +2395,11 @@ use_unicorn_horn(struct obj **optr)
     if (obj && obj->spe > 0)
         chance = (obj->spe < 6) ? (obj->spe + 3) : 9;
     else
-        chance = Role_if(PM_HEALER) ? 4 : 3;
+        chance = Role_if(PM_HEALER) ? 5 : 3;
     
     /* Skill in unicorn horn has an impact on success */
+    if (P_SKILL(P_UNICORN_HORN) < P_BASIC && !Role_if(PM_HEALER))
+        chance--;
     if (P_SKILL(P_UNICORN_HORN) == P_BASIC)
         chance++;
     if (P_SKILL(P_UNICORN_HORN) == P_SKILLED)
