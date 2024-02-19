@@ -295,6 +295,22 @@ struct obj {
 #define ofood(o) ((o)->otyp == CORPSE || (o)->otyp == EGG || (o)->otyp == TIN)
     /* note: sometimes eggs and tins have special corpsenm values that
        shouldn't be used as an index into mons[]                       */
+
+/* Rider corpses are treated as non-rotting so that attempting to eat one
+   will be sure to reach the stage of eating where that meal is fatal;
+   acid blob corpses eventually rot away to nothing but before that happens
+   they can be sacrificed regardless of age which implies that they never
+   become rotten */
+#define nonrotting_corpse(mnum) \
+    ((mnum) == PM_LIZARD || (mnum) == PM_LICHEN \
+     || is_rider(&mons[mnum])                   \
+     || (mnum) == PM_ACID_BLOB)
+
+/* non-rotting non-corpses; unlike lizard corpses, these items will behave
+   as if rotten if they are cursed (fortune cookies handled elsewhere) */
+#define nonrotting_food(otyp) \
+    ((otyp) == LEMBAS_WAFER || (otyp) == CRAM_RATION)
+
 #define polyfodder(obj) \
     (ofood(obj) && (obj)->corpsenm >= LOW_PM                            \
      && (pm_to_cham((obj)->corpsenm) != NON_PM                          \

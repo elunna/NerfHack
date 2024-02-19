@@ -49,21 +49,6 @@ static int tin_ok(struct obj *);
 /* also used to see if you're allowed to eat cats and dogs */
 #define CANNIBAL_ALLOWED() (Role_if(PM_CAVE_DWELLER) || Race_if(PM_ORC))
 
-/* Rider corpses are treated as non-rotting so that attempting to eat one
-   will be sure to reach the stage of eating where that meal is fatal;
-   acid blob corpses eventually rot away to nothing but before that happens
-   they can be sacrificed regardless of age which implies that they never
-   become rotten */
-#define nonrotting_corpse(mnum) \
-    ((mnum) == PM_LIZARD || (mnum) == PM_LICHEN \
-     || is_rider(&mons[mnum])                   \
-     || (mnum) == PM_ACID_BLOB)
-
-/* non-rotting non-corpses; unlike lizard corpses, these items will behave
-   as if rotten if they are cursed (fortune cookies handled elsewhere) */
-#define nonrotting_food(otyp) \
-    ((otyp) == LEMBAS_WAFER || (otyp) == CRAM_RATION)
-
 /* see hunger states in hack.h - texts used on bottom line */
 const char *const hu_stat[] = {
     "Satiated", "        ", "Hungry  ", "Weak    ",

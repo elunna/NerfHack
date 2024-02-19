@@ -2282,7 +2282,12 @@ is_rottable(struct obj *otmp)
      */
     if (objects[otyp].oc_oprop == POISON_RES)
         return FALSE;
-        
+    
+    if (nonrotting_food(otmp->otyp))
+        return FALSE;
+    else if (otmp->otyp == CORPSE && nonrotting_corpse(otmp->corpsenm))
+        return FALSE;
+    
     return (boolean) (objects[otyp].oc_material <= WOOD
                       && objects[otyp].oc_material != LIQUID);
 }
