@@ -32,7 +32,7 @@ des.region(selection.area(00,00,18,14), "lit");
 des.non_diggable(selection.area(00,00,18,14));
 des.non_passwall(selection.area(00,00,18,14));
 
-des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=40 })
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=24 })
 
 -- Boulders
 des.object("boulder",04,03)

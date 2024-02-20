@@ -29,7 +29,7 @@ des.region(selection.area(00,00,21,12), "lit");
 des.non_diggable(selection.area(00,00,21,12));
 des.non_passwall(selection.area(00,00,21,12));
 
-des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=40 })
+des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=24 })
 
 des.door("locked",19,01)
 

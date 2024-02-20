@@ -97,8 +97,8 @@ des.door("locked", 11, 13);
 des.region({ region={03,01,08,05}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
 
 -- Ice must be created after the zoo, otherwise it interferes with monster creation.
-des.replace_terrain({ region={0,6, 75,19}, fromterrain=".", toterrain="I", chance=50 })
-des.replace_terrain({ region={3,1, 75,06}, fromterrain=".", toterrain="I", chance=50 })
+des.replace_terrain({ region={0,6, 75,19}, fromterrain=".", toterrain="I", chance=26 })
+des.replace_terrain({ region={3,1, 75,06}, fromterrain=".", toterrain="I", chance=26 })
 
 -- Rewards
 
