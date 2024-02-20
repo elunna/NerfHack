@@ -3,6 +3,9 @@
 --	Copyright (c) 1992 by M. Stephenson and Izchak Miller
 -- NetHack may be freely redistributed.  See license for details.
 --
+
+-- This is the actual "fake" level, no portal here!
+
 des.level_init({ style="mazegrid", bg ="-" });
 
 des.level_flags("mazelevel", "noflip");
