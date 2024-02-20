@@ -105,24 +105,6 @@ dungeon = {
             base = -1
          },
          {
-            name = "juiblex",
-            bonetag = "J",
-            base = 4,
-            range = 4
-         },
-         {
-            name = "baalz",
-            bonetag = "B",
-            base = 6,
-            range = 4
-         },
-         {
-            name = "asmodeus",
-            bonetag = "A",
-            base = 2,
-            range = 6
-         },
-         {
             name = "wizard1",
             base = 11,
             range = 6
@@ -138,12 +120,6 @@ dungeon = {
             bonetag = "Y",
             chainlevel = "wizard1",
             base = 2
-         },
-         {
-            name = "orcus",
-            bonetag = "O",
-            base = 10,
-            range = 6
          },
          {
             name = "fakewiz1",
