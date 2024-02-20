@@ -89,8 +89,8 @@ dungeon = {
       branches = {
          {
             name = "Vlad's Tower",
-            base = 9,
-            range = 5,
+            base = 2,
+            range = 1,
             direction = "up"
          }
       },
