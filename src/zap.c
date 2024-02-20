@@ -5113,11 +5113,11 @@ dobuzz(
                     nd = (nd + 1) / 2;
                     gas_hit = FALSE;
                 } else {
-                    /* flash_str here only used for killer; suppress
-                     * hallucination */
-                    zhitu(type, nd, flash_str(fltyp, TRUE), sx, sy);
                     monstunseesu(M_SEEN_REFL);
                 }
+                /* flash_str here only used for killer; suppress
+                     * hallucination */
+                zhitu(type, nd, flash_str(fltyp, TRUE), sx, sy);
             } else if (!Blind) {
                 pline("%s whizzes by you!", The(flash_str(fltyp, FALSE)));
             } else if (damgtype == ZT_LIGHTNING) {
