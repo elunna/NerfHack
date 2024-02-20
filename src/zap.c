@@ -5770,10 +5770,6 @@ destroyable(struct obj *obj, int adtyp)
         /* don't destroy artifacts */
         return FALSE;
     }
-    if (obj->oerodeproof) {
-        /* has been protected against destruction */
-        return FALSE;
-    }
     if (obj->in_use && obj->quan == 1L) {
         /* not available for destroying */
         return FALSE;
