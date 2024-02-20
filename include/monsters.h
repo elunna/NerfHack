@@ -2005,7 +2005,8 @@
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
-          NO_ATTK, NO_ATTK),
+          ATTK(AT_NONE, AD_ACID, 0, 3),
+          NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC),
         MR_ACID | MR_STONE, MR_ACID | MR_STONE,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS
