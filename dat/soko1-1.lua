@@ -39,8 +39,6 @@ des.region(selection.area(00,00,17,18),"lit");
 des.non_diggable(selection.area(00,00,17,18));
 des.non_passwall(selection.area(00,00,17,18));
 
-des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=50 })
-
 -- Boulders
 des.object("boulder", 02, 08);
 des.object("boulder", 03, 08);
@@ -98,7 +96,12 @@ des.door("locked", 11, 13);
 
 des.region({ region={03,01,08,05}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
 
+-- Ice must be created after the zoo, otherwise it interferes with monster creation.
+des.replace_terrain({ region={0,6, 75,19}, fromterrain=".", toterrain="I", chance=50 })
+des.replace_terrain({ region={3,1, 75,06}, fromterrain=".", toterrain="I", chance=50 })
+
 -- Rewards
+
 local pt = selection.rndcoord(place);
 if percent(50) then
    des.object({ id="bag of holding", coord=pt,
