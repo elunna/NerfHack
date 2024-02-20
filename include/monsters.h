@@ -1986,7 +1986,7 @@
         0,
         MH_DRAGON, 21, CLR_BLUE, BLUE_DRAGON),
     MON(NAM("green dragon"), S_DRAGON,
-        LVL(18, 20, -1, 20, -6), (G_GENO | 2),
+        LVL(19, 20, -1, 20, -6), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_DRST, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
