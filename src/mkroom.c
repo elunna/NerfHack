@@ -370,8 +370,13 @@ fill_zoo(struct mkroom* sroom)
                 }
             }
             switch (type) {
-            case ZOO:
             case DRAGONLAIR:
+                if (!rn2(20))
+                    (void) mksobj_at(
+                        rnd_class(GRAY_DRAGON_SCALES, YELLOW_DRAGON_SCALES),
+                        sx, sy, FALSE, FALSE);
+                /* FALLTHROUGH */
+            case ZOO:
             case LEPREHALL:
                 if (sroom->doorct) {
                     int distval = dist2(sx, sy, gd.doors[sh].x, gd.doors[sh].y);
