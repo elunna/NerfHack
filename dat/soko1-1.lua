@@ -9,12 +9,12 @@ des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[
 ------------      
-|.+......+.|      
-|-|......|--------
-|.+......+.......|
-|-|......|-----..|
-|.+......+.|  |.--
-|-------------|.| 
+|.+........F      
+|-|........-------
+|.+........+.....|
+|-|........----..|
+|.+........F  |.--
+|--F----F----F|.| 
 |.....|...|...|.| 
 |.............|.| 
 |....------.|.|.| 
@@ -40,7 +40,7 @@ des.non_diggable(selection.area(00,00,17,18));
 des.non_passwall(selection.area(00,00,17,18));
 
 -- Boulders
-des.object("boulder", 02, 08);
+-- des.object("boulder", 02, 08);
 des.object("boulder", 03, 08);
 des.object("boulder", 06, 08);
 des.object("boulder", 10, 08);
@@ -58,8 +58,8 @@ des.object("boulder", 08, 16);
 des.object("boulder", 09, 16);
 
 -- Traps
-des.trap("hole", 10, 03);
-des.trap("hole", 11, 03);
+-- des.trap("hole", 10, 03);
+-- des.trap("hole", 11, 03);
 des.trap("hole", 12, 03);
 des.trap("hole", 13, 03);
 des.trap("hole", 14, 03);
@@ -87,14 +87,14 @@ des.object({ class = "=" });
 des.object({ class = "/" });
 
 des.door("closed", 02, 01);
-des.door("locked", 09, 01);
+-- des.door("locked", 09, 01);
 des.door("closed", 02, 03);
-des.door("locked", 09, 03);
+des.door("locked", 11, 03);
 des.door("closed", 02, 05);
-des.door("locked", 09, 05);
+--des.door("locked", 09, 05);
 des.door("locked", 11, 13);
 
-des.region({ region={03,01,08,05}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
+des.region({ region={03,01,10,05}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
 
 -- Ice must be created after the zoo, otherwise it interferes with monster creation.
 des.replace_terrain({ region={0,6, 75,19}, fromterrain=".", toterrain="I", chance=26 })
