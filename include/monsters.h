@@ -1857,7 +1857,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
+            | M2_STALK | M2_FLANK,
         0,
         MH_DRAGON, 21, CLR_GRAY, GRAY_DRAGON),
         /* Initially appeared in SporkHack
