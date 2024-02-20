@@ -5049,6 +5049,9 @@ lava_damage(struct obj* obj, coordxy x, coordxy y)
         /* fire_damage() knows how to deal with containers and contents */
         && !Has_contents(obj)) {
         if (cansee(x, y)) {
+            if (carried(obj)) { /* shouldn't happen */
+                remove_worn_item(obj, TRUE);
+            }
             /* this feedback is pretty clunky and can become very verbose
                when former contents of a burned container get here via
                flooreffects() */
@@ -5056,13 +5059,10 @@ lava_damage(struct obj* obj, coordxy x, coordxy y)
                 pline("%s %s up!", is_plural(obj) ? "They" : "It",
                       otense(obj, "burn"));
             else
-                You_see("%s hit lava and burn up!", doname(obj));
+                You_see("%s hit lava and burn up!",
+                        distant_name(obj, doname));
         }
-        if (carried(obj)) { /* shouldn't happen */
-            remove_worn_item(obj, TRUE);
-            useupall(obj);
-        } else
-            delobj(obj);
+        delobj(obj);
         return TRUE;
     }
     return fire_damage(obj, TRUE, x, y);

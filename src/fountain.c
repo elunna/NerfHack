@@ -240,7 +240,7 @@ dipforge(struct obj *obj)
      * lava, probably not the smartest thing to do. This is gonna hurt.
      * Non-metallic objects are handled by lava_damage().
      */
-    if (is_metallic(obj) && (obj->owornmask & (W_ARMOR | W_ACCESSORY))) {
+    if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) {
         if (!Fire_resistance) {
             You("dip your worn %s into the forge.  You burn yourself!",
                 xname(obj));
@@ -248,12 +248,11 @@ dipforge(struct obj *obj)
                 You("may want to remove your %s first...",
                     xname(obj));
         }
-        if (Fire_resistance) {
+        if (is_metallic(obj) && Fire_resistance) {
             You("can't reforge something you're wearing.");
         }
         losehp(Fire_resistance ? d(1, 8) : d(2, 16),
                "dipping a worn object into a forge", KILLED_BY);
-        return;
     }
 
     /* If punished and wielding a hammer, there's a good chance
