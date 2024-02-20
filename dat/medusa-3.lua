@@ -71,7 +71,7 @@ des.object({ id="statue", coord=place:rndcoord(1), buc = "uncursed",
                             des.object({ id = "shield of reflection", buc="cursed", spe=0 })
                          end
                          if percent(25) then
-                            des.object({ id = "levitation boots", spe=0 })
+                            des.object({ id = "flying boots", spe=0 })
                          end
                          if percent(50) then
                             des.object({ id = "scimitar", buc="blessed", spe=2 })
