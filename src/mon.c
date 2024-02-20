@@ -26,6 +26,7 @@ static void qst_guardians_respond(void);
 static void peacefuls_respond(struct monst *);
 static void m_restartcham(struct monst *);
 static void nazgul_shriek(struct monst *);
+static void dragon_roar(struct monst *);
 static boolean restrap(struct monst *);
 static int pick_animal(void);
 static int pickvampshape(struct monst *);
@@ -3907,6 +3908,11 @@ m_respond(struct monst* mtmp)
          * of the time. */
         nazgul_shriek(mtmp);
     }
+    if (mtmp->data == &mons[PM_BLACK_DRAGON] && !mtmp->mcan && !mtmp->mtame
+        && mtmp->mspec_used == 0 && !rn2(3)) {
+        /* Same notes as above for Nazgul also apply. */
+        dragon_roar(mtmp);
+    }
 }
 
 /* mtmp (a Nazgul) has a chance to shriek to negatively afflict the player. It
@@ -3916,6 +3922,10 @@ nazgul_shriek(struct monst *mtmp)
 {
     boolean cansee = canseemon(mtmp);
     struct monst *bystander;
+    
+    if (mtmp->data != &mons[PM_NAZGUL])
+        impossible("%d attempting nazgul_shriek!", mtmp->mnum);
+            
     /* they will not shriek often when they can't see the player
      * uses m_cansee rather than m_canseeu because the latter is blocked by
      * Invis and is based on the hero being able to see the monster; neither of
@@ -3937,8 +3947,7 @@ nazgul_shriek(struct monst *mtmp)
                 pline("%s emits a fell cry.", Monnam(mtmp));
             else
                 pline("A distant fell cry pierces the air.");
-        }
-        else {
+        } else {
             if (cansee)
                 pline("%s shrieks!", Monnam(mtmp));
             else
@@ -3982,6 +3991,74 @@ nazgul_shriek(struct monst *mtmp)
         }
     }
 }
+
+
+/* mtmp (a black dragon) has a chance to roar to scare the player.
+ * Mostly a clone of nazgul_shriek*/
+static void
+dragon_roar(struct monst *mtmp)
+{
+    boolean cansee = canseemon(mtmp);
+    struct monst *bystander;
+    
+    if (mtmp->data != &mons[PM_BLACK_DRAGON])
+        impossible("%d attempting dragon_roar!", mtmp->mnum);
+            
+    if (!m_cansee(mtmp, u.ux, u.uy) && rn2(4)) {
+        mtmp->mspec_used = rn1(20, 20);
+        return;
+    }
+    
+    mtmp->mspec_used = rn1(20, 40);
+
+    if (!Deaf && !Underwater) {
+        if (distu(mtmp->mx, mtmp->my) > 100) {
+            if (cansee)
+                pline("%s emits a terrifying roar.", Monnam(mtmp));
+            else
+                pline("A distant roar echos through the dungeon.");
+        } else {
+            if (cansee)
+                pline("%s roars!", Monnam(mtmp));
+            else
+                pline("A booming roar reverberates nearby!");
+
+            if (u.usleep)
+                unmul("You are shocked awake!");
+
+            if (uwep && uwep->oartifact == ART_DRAGONBANE) {
+                pline("By the power of Dragonbane, you hold firm!");
+            } else if (rn2(100) >= ACURR(A_CHA)) {
+                /* Charisma may spare the player from effects */
+                You("are struck with dread, and you reel in terror...");
+                make_stunned(HStun + d(3, 10), FALSE);
+            }
+        }
+        stop_occupation();
+    }
+
+    /* Monster effects */
+    wake_nearto(mtmp->mx, mtmp->my, 8 * 8);
+    
+    for (bystander = fmon; bystander; bystander = bystander->nmon) {
+        if (dist2(bystander->mx, bystander->my, mtmp->mx, mtmp->my) > 100)
+            continue;
+
+        wakeup(bystander, FALSE);
+        if (is_dragon(bystander->data) || is_undead(bystander->data)
+            || mindless(bystander->data))
+            continue;
+
+        if (humanoid(bystander->data) && !rn2(3)) {
+            bystander->mstun = 1;
+            if (canseemon(bystander)) {
+                pline("%s %s...", Monnam(bystander),
+                      makeplural(stagger(bystander->data, "stagger")));
+            }
+        }
+    }
+}
+
 
 /* how quest guardians respond when you attack the quest leader */
 static void

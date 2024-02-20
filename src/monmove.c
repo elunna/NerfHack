@@ -703,7 +703,7 @@ dochug(register struct monst* mtmp)
         if (!rn2(10))
             m_respond(mtmp);
     }
-    if (mdat == &mons[PM_NAZGUL])
+    if (mdat == &mons[PM_NAZGUL] || mdat == &mons[PM_BLACK_DRAGON])
         m_respond(mtmp);
     if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my))
         m_respond(mtmp);
