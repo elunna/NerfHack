@@ -1069,7 +1069,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         if (!rn2(5))
             erode_armor(mtmp, ERODE_ROT);
         if (!rn2(3))
-            (void) destroy_items(mtmp, AD_DCAY, dam);
+            mtmp += destroy_items(mtmp, AD_DCAY, dam);
         
         if (m_poisongas_ok(mtmp) != M_POISONGAS_OK) {
             if (cansee(mtmp->mx, mtmp->my) && has_head(mtmp->data) 

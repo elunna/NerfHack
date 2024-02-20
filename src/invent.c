@@ -4873,8 +4873,7 @@ mergable(
         || obj->greased != otmp->greased)
         return FALSE;
 
-    if ((erosion_matters(obj) || destroyable_oclass(obj->oclass))
-        && (obj->oerodeproof != otmp->oerodeproof
+    if (erosion_matters(obj) && (obj->oerodeproof != otmp->oerodeproof
             || (obj->rknown != otmp->rknown && (Blind || Hallucination))))
         return FALSE;
 

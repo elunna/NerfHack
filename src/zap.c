@@ -1769,12 +1769,12 @@ poly_obj(struct obj *obj, int id)
     otmp->cursed = obj->cursed;
     otmp->blessed = obj->blessed;
 
-    if (erosion_matters(otmp) || destroyable_oclass(otmp->oclass)) {
+    if (erosion_matters(otmp)) {
         if (is_flammable(otmp) || is_rustprone(otmp) || is_crackable(otmp))
             otmp->oeroded = obj->oeroded;
         if (is_corrodeable(otmp) || is_rottable(otmp))
             otmp->oeroded2 = obj->oeroded2;
-        if (is_damageable(otmp) || destroyable_oclass(otmp->oclass))
+        if (is_damageable(otmp))
             otmp->oerodeproof = obj->oerodeproof;
     }
 
@@ -5756,25 +5756,6 @@ break_statue(struct obj *obj)
     obj->spe = 0;
     fracture_rock(obj);
     return TRUE;
-}
-
-/* Return true if this object class can be damaged or destroyed by an external
- * effect that doesn't have to do with erosion.
- * Generally these items would not be expected to have erosion_matters() return
- * true for them. */
-boolean
-destroyable_oclass(char oclass)
-{
-    /* can be blanked by water and also burnt up by fire effects */
-    if (oclass == SCROLL_CLASS || oclass == SPBOOK_CLASS)
-        return TRUE;
-    /* can be frozen by ice effects */
-    if (oclass == POTION_CLASS)
-        return TRUE;
-    /* can be blown up by shock effects */
-    if (oclass == RING_CLASS || oclass == WAND_CLASS)
-        return TRUE;
-    return FALSE;
 }
 
 /* Return TRUE if obj is eligible to pass to maybe_destroy_item given the type of

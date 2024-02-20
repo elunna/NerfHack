@@ -1397,7 +1397,7 @@ passivemm(
         if (!rn2(3))
             acid_damage(MON_WEP(magr));
         if (!rn2(3))
-            (void) destroy_items(magr, AD_ACID, orig_dmg);
+            tmp += destroy_items(magr, AD_ACID, orig_dmg);
         goto assess_dmg;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
         if (mhitb && !mdef->mcan && mwep) {

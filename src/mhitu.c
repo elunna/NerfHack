@@ -2654,7 +2654,7 @@ passiveum(
             erode_armor(mtmp, ERODE_CORRODE);
         if (!rn2(3))
             acid_damage(MON_WEP(mtmp));
-        (void) destroy_items(mtmp, AD_ACID, orig_dmg);
+        tmp += destroy_items(mtmp, AD_ACID, orig_dmg);
         goto assess_dmg;
     case AD_STON: /* cockatrice */
     {

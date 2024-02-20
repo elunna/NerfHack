@@ -1116,7 +1116,7 @@ add_erosion_words(struct obj *obj, char *prefix)
 
     rknown = (iflags.override_ID == 0) ? obj->rknown : TRUE;
 
-    if (!is_damageable(obj) && !destroyable_oclass(obj->oclass) && !iscrys)
+    if (!is_damageable(obj) && !iscrys)
         return;
 
     /* The only cases where any of these bits do double duty are for
@@ -1149,20 +1149,13 @@ add_erosion_words(struct obj *obj, char *prefix)
     /* note: it is possible for an item to be both eroded and erodeproof
        (cursed scroll of destroy armor read while confused erodeproofs an
        item of armor without repairing existing erosion) */
-    if (rknown && obj->oerodeproof) {
-        if (destroyable_oclass(obj->oclass))
-            Strcat(prefix, "indestructible ");
-        else if (iscrys)
-            Strcat(prefix, "fixed ");
-        else if is_crackable(obj)
-            Strcat(prefix, "tempered ");
-        else if (is_rustprone(obj))
-            Strcat(prefix, "rustproof ");
-        else if (is_corrodeable(obj))
-            Strcat(prefix, "corrodeproof ");
-        else if (is_flammable(obj))
-            Strcat(prefix, "fireproof ");
-    }
+    if (rknown && obj->oerodeproof)
+        Strcat(prefix, iscrys ? "fixed "
+                       : is_rustprone(obj) ? "rustproof "
+                         : is_corrodeable(obj) ? "corrodeproof "
+                           : is_flammable(obj) ? "fireproof "
+                             : is_crackable(obj) ? "tempered " /* hardened */
+                               : "");
 }
 
 /* used to prevent rust on items where rust makes no difference */
@@ -1762,12 +1755,10 @@ not_fully_identified(struct obj* otmp)
     if (otmp->oartifact && undiscovered_artifact(otmp->oartifact))
         return TRUE;
     /* otmp->rknown is the only item of interest if we reach here */
-    if (otmp->rknown
-        || (!erosion_matters(otmp) && !destroyable_oclass(otmp->oclass)))
+    if (otmp->rknown || !erosion_matters(otmp))
         return FALSE;
     else /* lack of `rknown' only matters for vulnerable objects */
-        return (boolean) (is_damageable(otmp)
-                          || destroyable_oclass(otmp->oclass));
+        return (boolean) (is_damageable(otmp));
 }
 
 /* format a corpse name (xname() omits monster type; doname() calls us);
@@ -5177,7 +5168,7 @@ readobjnam(char *bp, struct obj *no_wish)
     }
 
     /* set eroded and erodeproof */
-    if (erosion_matters(d.otmp) || destroyable_oclass(d.otmp->oclass)) {
+    if (erosion_matters(d.otmp)) {
         /* wished-for item shouldn't be eroded unless specified */
         d.otmp->oeroded = d.otmp->oeroded2 = 0;
         if (d.eroded && (is_flammable(d.otmp) || is_rustprone(d.otmp)
@@ -5192,8 +5183,7 @@ readobjnam(char *bp, struct obj *no_wish)
          * so don't prevent player from wishing for such a combination.
          */
         if (d.erodeproof
-            && (is_damageable(d.otmp) || destroyable_oclass(d.otmp->oclass)
-                || d.otmp->otyp == CRYSKNIFE))
+            && (is_damageable(d.otmp) || d.otmp->otyp == CRYSKNIFE))
             d.otmp->oerodeproof = (Luck >= 0 || wizard);
     }
 

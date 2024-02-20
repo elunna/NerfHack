@@ -1913,7 +1913,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             if (!rn2(3))
                 acid_damage(MON_WEP(mon));
             if (!rn2(3))
-                (void) destroy_items(mon, AD_ACID, dmg);
+                dmg += destroy_items(mon, AD_ACID, dmg);
             
             if (!resists_acid(mon) && !resist(mon, POTION_CLASS, 0, NOTELL)) {
                 pline("%s %s in pain!", Monnam(mon),
