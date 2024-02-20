@@ -81,8 +81,8 @@ dungeon = {
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 20,
-      range = 5,
+      base = 9,
+      range = 2,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
       alignment = "noalign",
@@ -106,8 +106,8 @@ dungeon = {
          },
          {
             name = "wizard1",
-            base = 11,
-            range = 6
+            base = 3,
+            range = 3
          },
          {
             name = "wizard2",
