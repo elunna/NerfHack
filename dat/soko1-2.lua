@@ -16,7 +16,7 @@ des.map([[
 |...|-....--.|.|.....|
 |...|..--....|.|.....|
 |...|..-----.|.|.....|
---.........|.|.|+----|
+--.........|.|.|...|-|
  |.....---.|.|.F...+.|
  |.|.....|.|.|.|...|-|
  |.|.|.|...|.|.F...+.|
@@ -87,12 +87,13 @@ des.object({ class = "=" });
 des.object({ class = "/" });
 
 des.door("locked",19,02)
-des.door("locked",16,08)
+-- des.door("locked",16,08)
 des.door("closed",19,09)
 des.door("closed",19,11)
 des.door("closed",19,13)
 
-des.region({ region={16,03, 19,07}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
+des.region({ region={16,03, 13,07}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
+--des.region({ region={16,08, 15,07}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
 
 -- Ice must be created after the zoo, otherwise it interferes with monster creation.
 des.replace_terrain({ region={0,0, 75,08}, fromterrain=".", toterrain="I", chance=26 })
