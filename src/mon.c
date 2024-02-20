@@ -4009,7 +4009,7 @@ dragon_roar(struct monst *mtmp)
         return;
     }
     
-    mtmp->mspec_used = rn1(20, 40);
+    mtmp->mspec_used = rn1(10, 5);
 
     if (!Deaf && !Underwater) {
         if (distu(mtmp->mx, mtmp->my) > 100) {
