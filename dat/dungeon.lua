@@ -124,7 +124,7 @@ dungeon = {
          {
             name = "fakewiz1",
             bonetag = "F",
-            base = -6,
+            base = -3,
             range = 4
          },
       }
