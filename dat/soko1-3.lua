@@ -141,4 +141,4 @@ end
 des.engraving({ coord = pt, type = "burn", text = "Elbereth" });
 des.object({ id = "scroll of scare monster", coord = pt, buc = "cursed" });
 
-des.monster({ id = "baby green dragon",  coord=pt});
+des.monster({ id = "white dragon",  coord=pt});
