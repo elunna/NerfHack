@@ -342,15 +342,20 @@ hells = {
          rnd_hell_prefab(false);
       end
    end,
+--]]
 
+--[[
    -- 3: mazes, style 1: wall thick = 1, random wid corr
+   -- Not using this - too blocky
+   --[[
    function ()
       des.level_init({ style = "solidfill", fg = " ", lit = 0 });
       des.level_flags("mazelevel", "noflip");
       des.level_init({ style = "maze", wallthick = 1 });
    end,
-
+   
    -- 4: mazes, style 2: replace wall with iron bars or lava
+   -- Not using this - too blocky
    function ()
       local cwid = math.random(4);
       des.level_init({ style = "solidfill", fg = " ", lit = 0 });
@@ -370,8 +375,11 @@ hells = {
       end
       des.terrain(outside_walls, " ");  -- return the outside back to solid wall
    end,
+--]]
 
    -- 5: mazes, thick walls, occasionally lava instead of walls
+   -- Not using this - too blocky
+--[[
    function ()
       des.level_init({ style = "solidfill", fg = " ", lit = 0 });
       des.level_flags("mazelevel", "noflip");
@@ -382,10 +390,11 @@ hells = {
          des.terrain(outside_walls, " ");  -- return the outside back to solid wall
       end
    end,
+--]]
 
    -- 6: cold maze, with ice and water
    function ()
-      local cwid = math.random(4);
+      local cwid = math.random(2);
       des.level_init({ style = "solidfill", fg = " ", lit = 0 });
       des.level_flags("mazelevel", "noflip", "cold");
       des.level_init({ style = "maze", wallthick = 1, corrwid = cwid });
@@ -405,6 +414,7 @@ hells = {
       end
       des.terrain(outside_walls, " ");  -- return the outside back to solid wall
    end,
+
 };
 
 local hellno = math.random(1, #hells);
