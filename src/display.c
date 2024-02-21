@@ -2564,13 +2564,6 @@ map_glyphinfo(
                     glyphinfo->gm.sym.color = CLR_BLUE;
             }
         }
-        /* Colored Walls/Floors Patch: The Valley of the Dead is monochrome, turning
-         * everything to shades of gray. */
-        if (Is_valley(&u.uz) && glyphinfo->gm.sym.color != CLR_BLACK
-            && glyphinfo->gm.sym.color != NO_COLOR) {
-            glyphinfo->gm.sym.color = (glyphinfo->gm.sym.color < NO_COLOR)
-                                       ? CLR_GRAY : CLR_WHITE;
-        }
     }
 
     glyphinfo->ttychar = gs.showsyms[glyphinfo->gm.sym.symidx];
