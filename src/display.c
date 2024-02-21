@@ -2558,6 +2558,8 @@ map_glyphinfo(
                     glyphinfo->gm.sym.color = CLR_BROWN;
                 else if (rtype == ZOO)
                     glyphinfo->gm.sym.color = CLR_BLUE;
+                else if (rtype == REALZOO)
+                    glyphinfo->gm.sym.color = rn2(3) ? CLR_BROWN : CLR_YELLOW;
                 else if (getroomtype(x, y) == MORGUE)
                     glyphinfo->gm.sym.color = rn2(2) ? CLR_BLACK
                                               : !rn2(3) ? CLR_BROWN
