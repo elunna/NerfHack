@@ -364,7 +364,8 @@ fill_zoo(struct mkroom* sroom)
                           (struct permonst *) 0,sx, sy, MM_ASLEEP | MM_NOGRP);
             if (mon) {
                 mon->msleeping = 1;
-                if (type == COURT && mon->mpeaceful) {
+                if ((type == COURT || type == GIANTCOURT || type == REALZOO)
+                    && mon->mpeaceful) {
                     mon->mpeaceful = 0;
                     set_malign(mon);
                 }
