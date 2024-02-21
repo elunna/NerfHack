@@ -108,7 +108,7 @@ dungeon = {
          {
             name = "Vlad's Tower",
             base = 2,
-            range = 1,
+            range = 2,
             direction = "up"
          }
       },
