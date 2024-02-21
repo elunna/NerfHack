@@ -345,7 +345,8 @@ fill_zoo(struct mkroom* sroom)
                                    && gd.doors[sh].y == sy + 1))))
                 continue;
             /* don't place monster on explicitly placed throne */
-            if (type == COURT && IS_THRONE(levl[sx][sy].typ))
+            if ((type == COURT || type == GIANTCOURT) 
+                    && IS_THRONE(levl[sx][sy].typ))
                 continue;
             mon = makemon((type == COURT) ? courtmon() :
                           (type == BARRACKS) ? squadmon() :
@@ -388,6 +389,10 @@ fill_zoo(struct mkroom* sroom)
                     i = 5 * level_difficulty();
                 goldlim -= i;
                 (void) mkgold((long) rn1(i, 10), sx, sy);
+                break;
+            case GIANTCOURT:
+                if (!rn2(111))
+                    (void) mksobj_at(TINNING_KIT, sx, sy, TRUE, FALSE);
                 break;
             case MORGUE:
                 if (!rn2(5))
