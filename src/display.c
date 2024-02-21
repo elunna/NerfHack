@@ -2529,9 +2529,7 @@ map_glyphinfo(
         if (gmap->sym.symidx >= S_vwall + SYM_OFF_P
                  && gmap->sym.symidx <= S_trwall + SYM_OFF_P) {
             int rtype = getroomtype(x, y);
-            if (On_W_tower_level(&u.uz))
-                glyphinfo->gm.sym.color = CLR_MAGENTA;
-            else if (In_tower(&u.uz)) /* Vlad's */
+            if (In_tower(&u.uz)) /* Vlad's */
                 glyphinfo->gm.sym.color = CLR_BLACK;
             else if (Is_astralevel(&u.uz))
                 glyphinfo->gm.sym.color = CLR_WHITE;
