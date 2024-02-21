@@ -2556,14 +2556,15 @@ map_glyphinfo(
                     glyphinfo->gm.sym.color = CLR_BRIGHT_GREEN;
                 else if (rtype == ANTHOLE)
                     glyphinfo->gm.sym.color = CLR_BROWN;
-                else if (rtype == SWAMP)
-                    glyphinfo->gm.sym.color = CLR_GREEN;
                 else if (rtype == ZOO)
                     glyphinfo->gm.sym.color = CLR_BLUE;
                 else if (getroomtype(x, y) == MORGUE)
                     glyphinfo->gm.sym.color = rn2(2) ? CLR_BLACK
                                               : !rn2(3) ? CLR_BROWN
                                               : glyphinfo->gm.sym.color;
+                else if (rtype == SWAMP)
+                    glyphinfo->gm.sym.color = rn2(3) ? CLR_GREEN
+                                              : rn2(3) ? CLR_BROWN : CLR_BLUE;
             }
         }
     }
