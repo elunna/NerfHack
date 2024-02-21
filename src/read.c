@@ -2030,12 +2030,15 @@ seffect_identify(struct obj **sobjp)
            performs perm_invent update; also simplifies empty invent check */
         useup(sobj);
         *sobjp = 0; /* it's gone */
-        /* scroll just identifies itself for any scroll read while confused
-           or for cursed scroll read without knowing identify yet */
-        if (confused || (scursed && !already_known))
+        if (confused) {
+            You("identify yourself...");
+            display_nhwindow(WIN_MESSAGE, FALSE);
+            enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
+        } else if (scursed && !already_known)
             You("identify this as an identify scroll.");
         else if (!already_known)
             pline("This is an identify scroll.");
+        
         if (!already_known)
             (void) learnscrolltyp(SCR_IDENTIFY);
         if (confused || (scursed && !already_known))
