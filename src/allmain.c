@@ -218,7 +218,12 @@ moveloop_core(void)
                          : 70))
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
-
+                
+                /* Once you have the amulet, all hell breaks loose */
+                if (carrying(AMULET_OF_YENDOR) && !rn2(10)) {
+                    nasty((struct monst *) 0, TRUE);
+                }
+                
                 u_calc_moveamt(mvl_wtcap);
                 settrack();
 

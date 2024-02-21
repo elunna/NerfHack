@@ -679,7 +679,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             impossible("bad wizard cloning?");
         break;
     case MGC_SUMMON_MONS: {
-        int count = nasty(mtmp);
+        int count = nasty(mtmp, FALSE);
 
         if (!count) {
             ; /* nothing was created? */

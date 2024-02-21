@@ -578,10 +578,11 @@ pick_nasty(
    creatures on average (in 3.6.0 and earlier, Null was treated as chaotic);
    returns the number of monsters created */
 int
-nasty(struct monst *summoner)
+nasty(struct monst *summoner, boolean centered_on_stairs)
 {
     struct monst *mtmp;
     coord bypos;
+    coordxy sx = 0, sy = 0;
     int i, j, count, census, tmp, makeindex,
         s_cls, m_cls, difcap, trylimit, castalign;
     /* when a monster casts the "summon nasties" spell, it gives feedback;
@@ -602,11 +603,18 @@ nasty(struct monst *summoner)
         s_cls = summoner ? summoner->data->mlet : 0;
         difcap = summoner ? summoner->data->difficulty : 0; /* spellcasters */
         castalign = summoner ? sgn(summoner->data->maligntyp) : 0;
-        tmp = (u.ulevel > 3) ? u.ulevel / 3 : 1;
-        /* if we don't have a casting monster, nasties appear around hero,
-           otherwise they'll appear around spot summoner thinks she's at */
-        bypos.x = u.ux;
-        bypos.y = u.uy;
+	tmp = (u.ulevel > 3) ? u.ulevel/3 : 1;
+	/* if we don't have a casting monster, nasties appear around hero,
+	 * ...unless we're being called with the 'stairs' flag to block the
+	 * adventurer's return with the amulet */
+	if (centered_on_stairs) {
+            choose_stairs(&sx, &sy, FALSE);
+            bypos.x = sx;
+            bypos.y = sy;
+	} else {
+            bypos.x = u.ux;
+            bypos.y = u.uy;
+        }
         for (i = rnd(tmp); i > 0 && count < MAXNASTIES; --i) {
             /* Of the 44 nasties[], 10 are lawful, 14 are chaotic,
              * and 20 are neutral.  [These numbers are up date for
@@ -681,6 +689,7 @@ nasty(struct monst *summoner)
                     mtmp->mspec_used = rnd(4);
 
                     if (++count >= MAXNASTIES
+                        || (centered_on_stairs && count > 1)
                         || mtmp->data->maligntyp == 0
                         || sgn(mtmp->data->maligntyp) == castalign)
                         break;
@@ -788,7 +797,7 @@ intervene(void)
         aggravate();
         break;
     case 4: {
-        int count = nasty((struct monst *) 0);
+        int count = nasty((struct monst *) 0, FALSE);
         boolean one = (count == 1);
         const char *mappear = one ? "A monster appears" : "Monsters appear";
         pline("%s from nowhere!", mappear);
@@ -807,7 +816,7 @@ intervene(void)
             awaken_monsters(ROWNO * COLNO);
         } else {
             /* Don't waste a good intervene... */
-            (void) nasty((struct monst *) 0);
+            (void) nasty((struct monst *) 0, FALSE);
         }
         break;
     case 6:
