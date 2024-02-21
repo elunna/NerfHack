@@ -2546,7 +2546,8 @@ map_glyphinfo(
                  * walls directly. */
                 if (rtype == BEEHIVE || rtype == COCKNEST)
                     glyphinfo->gm.sym.color = CLR_YELLOW;
-                else if (rtype == COURT && !Is_stronghold(&u.uz))
+                else if ((rtype == COURT || rtype == GIANTCOURT)
+                         && !Is_stronghold(&u.uz))
                     glyphinfo->gm.sym.color = CLR_BRIGHT_MAGENTA;
                 else if (rtype == VAULT)
                     glyphinfo->gm.sym.color = HI_METAL;
