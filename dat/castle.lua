@@ -59,7 +59,7 @@ port_place:set(60,02);
 port_place:set(02,14);
 port_place:set(60,14);
 local pp = port_place:rndcoord(1);
-des.levregion({ region={pp.x,pp.y,pp.x,pp.y}, type="portal", name="wizard3" })
+des.levregion({ region={pp.x,pp.y,pp.x,pp.y}, type="stair-up", name="wizard3" })
 
 local monster = { "L", "N", "E", "H", "M", "O", "R", "T", "X", "Z" }
 shuffle(monster)
