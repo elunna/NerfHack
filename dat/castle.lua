@@ -45,11 +45,21 @@ des.map([[
 local object = { "[", ")", "*", "%" };
 shuffle(object)
 
+-- For placing the real and fake chests for wands of wishing
 local place = selection.new();
 place:set(04,02);
 place:set(58,02);
 place:set(04,14);
 place:set(58,14);
+
+-- For placing the stairs to the wizard's tower and vlad's tower
+local port_place = selection.new();
+port_place:set(02,02);
+port_place:set(60,02);
+port_place:set(02,14);
+port_place:set(60,14);
+local pp = port_place:rndcoord(1);
+des.levregion({ region={pp.x,pp.y,pp.x,pp.y}, type="portal", name="wizard3" })
 
 local monster = { "L", "N", "E", "H", "M", "O", "R", "T", "X", "Z" }
 shuffle(monster)
@@ -57,6 +67,8 @@ shuffle(monster)
 des.teleport_region({ region = {01,00,10,20}, region_islev=1, exclude={1,1,61,15}, dir="down" })
 des.teleport_region({ region = {69,00,79,20}, region_islev=1, exclude={1,1,61,15}, dir="up" })
 des.levregion({ region = {01,00,10,20}, region_islev=1, exclude={0,0,62,16}, type="stair-up" })
+
+
 des.feature("fountain", 10,08)
 -- Doors
 des.door("closed",07,03)
@@ -152,6 +164,8 @@ des.object(object[4],54,11)
 des.object(object[4],55,11)
 -- THE WAND OF WISHING in 1 of the 4 towers
 local loc = place:rndcoord(1);
+
+
 des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
              contents = function()
                 des.object("wishing");

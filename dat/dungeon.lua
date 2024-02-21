@@ -121,12 +121,6 @@ dungeon = {
             chainlevel = "wizard1",
             base = 2
          },
-         {
-            name = "fakewiz1",
-            bonetag = "F",
-            base = -3,
-            range = 4
-         },
       }
    },
    {
