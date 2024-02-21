@@ -7,7 +7,7 @@ dungeon = {
    {
       name = "The Dungeons of Doom",
       bonetag = "D",
-      base = 25,
+      base = 30,
       range = 5,
       alignment = "unaligned",
       themerooms = "themerms.lua",
@@ -67,11 +67,29 @@ dungeon = {
          },
          {
             name = "medusa",
-            base = -5,
+            base = -8,
             range = 4,
             nlevels = 4,
             alignment = "chaotic"
          },
+         {
+            name = "wizard1",
+            base = -4,
+            range = 1
+         },
+         {
+            name = "wizard2",
+            bonetag = "X",
+            chainlevel = "wizard1",
+            base = 1
+         },
+         {
+            name = "wizard3",
+            bonetag = "Y",
+            chainlevel = "wizard1",
+            base = 2
+         },
+         
          {
             name = "castle",
             base = -1
@@ -81,8 +99,8 @@ dungeon = {
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 9,
-      range = 2,
+      base = 4,
+      range = 3,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
       alignment = "noalign",
@@ -103,23 +121,6 @@ dungeon = {
          {
             name = "sanctum",
             base = -1
-         },
-         {
-            name = "wizard1",
-            base = 3,
-            range = 3
-         },
-         {
-            name = "wizard2",
-            bonetag = "X",
-            chainlevel = "wizard1",
-            base = 1
-         },
-         {
-            name = "wizard3",
-            bonetag = "Y",
-            chainlevel = "wizard1",
-            base = 2
          },
       }
    },
