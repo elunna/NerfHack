@@ -52,15 +52,6 @@ place:set(58,02);
 place:set(04,14);
 place:set(58,14);
 
--- For placing the stairs to the wizard's tower and vlad's tower
-local port_place = selection.new();
-port_place:set(02,02);
-port_place:set(60,02);
-port_place:set(02,14);
-port_place:set(60,14);
-local pp = port_place:rndcoord(1);
-des.levregion({ region={pp.x,pp.y,pp.x,pp.y}, type="stair-up", name="wizard3" })
-
 local monster = { "L", "N", "E", "H", "M", "O", "R", "T", "X", "Z" }
 shuffle(monster)
 
@@ -175,18 +166,16 @@ des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
 des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
+-- The new stairs to the Wizard's Tower
+-- Moved from the fake wizard's levels
+-- Takes the place of one of the fake chests
+local loc = place:rndcoord(2);
+des.levregion({ region={loc.x,loc.y,loc.x,loc.y}, type="stair-up", name="wizard3" })
+
 -- THE NOT QUITE WANDS OF WISHING
 -- ...since you can see the chest now through the bars,
 -- we have to find a better way to disguise where the wand is
 -- From SporkHack
-local loc = place:rndcoord(2);
-des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
-             contents = function()
-                des.object("nothing");
-             end
-});
-des.engraving({ coord = loc, type="burn", text="Elbereth" })
-des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
 local loc = place:rndcoord(3);
 des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
