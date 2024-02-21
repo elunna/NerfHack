@@ -320,7 +320,7 @@ hells = {
    -- 1: "mines" style with lava
    function ()
       des.level_init({ style = "solidfill", fg = " ", lit = 0 });
-      des.level_flags("mazelevel", "noflip");
+      des.level_flags("mazelevel", "noflip", "hot");
       des.level_init({ style="mines", fg=".", smoothed=true ,joined=true, lit=0, walled=true });
       des.replace_terrain({ fromterrain = " ", toterrain = "L" });
       des.replace_terrain({ fromterrain = ".", toterrain = "L", chance = 5 });
@@ -331,7 +331,7 @@ hells = {
    -- 2: mazes like original, with some hell_tweaks
    function ()
       des.level_init({ style = "solidfill", fg = " ", lit = 0 });
-      des.level_flags("mazelevel", "noflip");
+      des.level_flags("mazelevel", "noflip", "hot");
       des.level_init({ style = "mazegrid", bg = "-" });
       des.mazewalk({ coord = {01,10}, dir = "east", stocked = false});
       local tmpbounds = selection.match("-");
