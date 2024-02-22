@@ -155,7 +155,7 @@ could_move_onto_boulder(coordxy sx, coordxy sy)
 static int
 moverock(void)
 {
-    register coordxy rx, ry, sx, sy;
+    coordxy rx, ry, sx, sy;
     struct obj *otmp;
     struct trap *ttmp;
     struct monst *mtmp, *shkp;

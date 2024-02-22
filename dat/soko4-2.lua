@@ -7,7 +7,7 @@
 -- thinking rabbit republished sokoban in 1988, and added some levels
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "hardfloor", "premapped", "solidify");
+des.level_flags("mazelevel", "noteleport", "hardfloor", "sokoban", "premapped", "solidify");
 des.map([[
 -----------------
 |.......|...--..|

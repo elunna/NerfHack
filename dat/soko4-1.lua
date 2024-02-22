@@ -37,7 +37,7 @@
 -- authorship may be J Franklin Mentzer, with edits from paxed/patr
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "hardfloor", "premapped", "solidify");
+des.level_flags("mazelevel", "noteleport", "hardfloor", "sokoban", "premapped", "solidify");
 des.map([[
      -------                 
      |..|..|     --------    

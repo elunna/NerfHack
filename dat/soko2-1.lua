@@ -6,7 +6,7 @@
 -- https://nethackwiki.com/wiki/Sokoban_Level_3e
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "premapped", "solidify", "cold");
+des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[
     ------------------
  ----....|.........+.|
