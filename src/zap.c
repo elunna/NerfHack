@@ -6540,9 +6540,6 @@ makewish(void)
     /* The(aobjnam()) is safe since otmp is unidentified -dlc */
     (void) hold_another_object(otmp, oops_msg, The(aobjnam(otmp, verb)),
                                (const char *) 0);
-    u.lastprayed = gm.moves;
-    u.lastprayresult = PRAY_WISH;
-    u.reconciled = REC_NONE;
 }
 
 /* Fills buf with the appropriate string for this ray.
