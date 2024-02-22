@@ -25,6 +25,19 @@ des.object()
 des.object()
 des.object()
 --
+
+-- Guarantee adult dragons appear
+local dragons = { "gray dragon", "gold dragon", "silver dragon",
+                  "red dragon", "white dragon", "orange dragon",
+                  "black dragon", "blue dragon", "green dragon",
+                  "yellow dragon" };
+shuffle(dragons)
+-- 5 adults
+des.monster({ id = dragons[1], peaceful=0 })
+des.monster({ id = dragons[2], peaceful=0 })
+des.monster({ id = dragons[3], peaceful=0 })
+des.monster({ id = dragons[4], peaceful=0 })
+
 des.monster("rabid rat")
 des.monster("rabid rat")
 des.monster({ class = "r", peaceful=0 })
