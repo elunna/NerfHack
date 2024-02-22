@@ -2886,12 +2886,12 @@ piercer_hit(struct monst *magr, struct monst *mdef)
         pline("%s is almost hit by a falling piercer%s!",
               Monnam(mdef), youattack ? " (you)" : "");
         return;
-    } else if (helm) {
+    } else if (helm && hard_helmet(helm)) {
         helm_res = 11 + helm->spe * 6;
         /* These things now quite frequently destroy hard helmets - 
          * they are piercers after all! */
         if (!helm->oartifact && dmg > helm_res) {
-            pline("%s is pierced and shattered!", Yname2(helm));
+            pline("%s is pierced and breaks apart!", Yname2(helm));
             if (youdefend) {
                 Helmet_off();
                 update_inventory();
