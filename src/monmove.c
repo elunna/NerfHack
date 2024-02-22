@@ -443,6 +443,10 @@ monflee(
     if (DEADMONSTER(mtmp))
         return;
 
+    /* Berserking monsters are too busy berserking to flee */
+    if (mtmp->mberserk)
+        return;
+    
     if (mtmp == u.ustuck)
         release_hero(mtmp); /* expels/unstuck */
 
