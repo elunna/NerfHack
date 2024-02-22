@@ -349,7 +349,8 @@ result:
         if (!is_metallic(obj))
             goto lava;
          /* One-time erodeproofing of an item */
-        if (!levl[u.ux][u.uy].looted) {
+        if (!levl[u.ux][u.uy].looted && !obj->oerodeproof
+                && is_supermaterial(obj)) {
             if (!Blind)
                 pline("%s flickers with purple light.", Doname2(obj));
             else
