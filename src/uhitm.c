@@ -6700,7 +6700,7 @@ nohandglow(struct monst *mon)
             Your("%s stop tingling.", hands);
         else
             Your("%s stop glowing %s.", hands, hcolor(NH_RED));
-    } else {
+    } else if (u.umconf == 2) {
         if (altfeedback)
             pline_The("tingling in your %s lessens.", hands);
         else
