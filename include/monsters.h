@@ -3373,7 +3373,7 @@
         M1_HUMANOID | M1_OMNIVORE | M1_SEE_INVIS,
         M2_STRONG | M2_COLLECT,
         M3_ACCURATE | M3_INFRAVISIBLE | M3_INFRAVISION,
-        MH_ELF, 11, HI_ZAP, ELVEN_CLERIC),
+        MH_ELF, 13, HI_ZAP, ELVEN_CLERIC),
     MON(NAMS("Elvenking", "Elvenqueen", "elven monarch"), S_HUMAN,
          LVL(9, 12, 8, 25, -10), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
