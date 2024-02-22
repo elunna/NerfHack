@@ -623,6 +623,10 @@ m_dowear_type(
     best = old;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
+        /* Don't select items our race isn't compatible with */
+        if (hates_item(mon, obj))
+            continue;
+        
         switch (flag) {
         case W_AMUL:
             if (obj->oclass != AMULET_CLASS
