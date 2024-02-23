@@ -2465,6 +2465,7 @@ doseduce(struct monst *mon)
             if (!resists_drli(&gy.youmonst)) {
                 You_feel("out of shape.");
                 losexp("overexertion");
+                grow_up(mon, (struct monst *) 0);
             } else {
                 You("have a curious feeling...");
             }
