@@ -62,7 +62,7 @@ static const struct innate {
 
   ran_abil[] = { { 1, &(HSearching), "", "" },
                  { 7, &(HStealth), "stealthy", "" },
-                 { 15, &(HSee_invisible), "", "" },
+                 { 15, &(HSee_invisible), "insightful", "ignorant" },
                  { 0, 0, 0, 0 } },
 
   rog_abil[] = { { 1, &(HStealth), "", "" },
