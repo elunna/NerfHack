@@ -895,8 +895,10 @@ dragon_armor_handling(
     case GREEN_DRAGON_SCALE_MAIL:
         if (puton) {
             ESick_resistance |= W_ARM;
+            ERegeneration |= W_ARM;
         } else {
             ESick_resistance &= ~W_ARM;
+            ERegeneration &= ~W_ARM;
         }
         break;
     case RED_DRAGON_SCALES:
