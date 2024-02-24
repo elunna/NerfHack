@@ -1944,7 +1944,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             if (useeit)
                 (void) ureflects("%s gaze is reflected by your %s.",
                                  s_suffix(Monnam(mtmp)));
-            if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > 8) {
+            if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > 9) {
                 if (useeit)
                     pline("%s reflection is too far away for %s to notice.",
                           s_suffix(Monnam(mtmp)), mhis(mtmp));
