@@ -756,7 +756,10 @@ maybe_cannibal(int pm, boolean allowmsg)
     /* Cavepersons get a bonus for cannibalism */
     if (Role_if(PM_CAVE_DWELLER) && your_race(fptr)) {
         if (allowmsg) {
-            You("consume the corpse in accordance with ancient ritual.");
+            if (rn2(2))
+                You("honor the dead.");
+            else
+                You("consume the corpse in accordance with ancient ritual.");
             u.ualign.record += rnd(3) + 2; /* 3 to 5 point boost */
             return FALSE;
         }
