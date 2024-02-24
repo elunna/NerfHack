@@ -41,12 +41,14 @@ Be careful what you wish for.
 Be careful!  The Wizard may plan an ambush!
 Be nice to a nurse:  Put away your weapon and take off your clothes.
 Being digested is a painfully slow process.
+Better keep a lock on your stash...
 Blank scrolls make more interesting reading.
 Beware a big room.
 Blind?  Catch a floating eye!
 Booksellers never read scrolls; they might get carried away.
 Can't find the stairs down? Try looking for Vlad's closet instead.
 Can't stand the heat? Stay away from Gehennom.
+Bribes have been adjusted to keep up with inflation.
 Chemistry 101: Never pour water into acid.
 Concise conquest:  Control, confuse, conjure, condemn.
 Conserve energy, turn off the lights.
@@ -138,6 +140,7 @@ Keep your weaponry away from acids.
 Kill a unicorn of your color and you kill your luck.
 Leather is waterproof.  Ever see a cow with an umbrella?
 Leprechauns are the most skilled cutpurses in this dungeon.
+Listening to eggs is a hobby of mine.
 Lizard corpses protect against cockatrices.
 Losing focus?  Feeling jumpy?  Eat a tengu and get back in control.
 Lucky adventurers usually pay a visit to the Mines.
@@ -176,6 +179,7 @@ Read the manual before entering the cave -- you might get killed otherwise.
 Reading Dune might help you craft a superb knife.
 Reading Tolkien might help you.
 Reading scrolls after drinking booze can give confusing results.
+Resistances must be earned.  Hope you're hungry!
 Riding a dragon can be an uplifting experience.
 Rust monsters love water.  There are potions they hate, however.
 Sacks protect contents from temperatures up to 452 degrees fahrenheit.
@@ -332,6 +336,7 @@ They say that only chaotics can kill shopkeepers and get away with it.
 They say that only female monsters can lay eggs.
 They say that playing a horn really bad is really good.
 They say that prayer at an altar can sometimes make the water there holy.
+They say that reflection isn't an all or nothing proposition.
 They say that rubbing a glowing potion does not make it a magic lamp.
 They say that scalpels become dull because they're not athames.
 They say that scrolls of fire are fireproof.
@@ -411,6 +416,7 @@ Try the fall-back end-run play against ghosts.
 Try using your magic marker on wet scrolls.
 Two wrongs don't make a right, but three lefts do.
 Unicorn horns can cleanse things other than yourself.
+Using the forge is a privilege, not a right.  Please dispose of your corpses properly.
 Valkyries come from the north, and have commensurate abilities.
 Vampires hate garlic.
 Vault guards never disturb their Lords.
@@ -440,6 +446,197 @@ Your dog knows what to eat; maybe you should take lessons.
 Your game may go down the drain if you have extra potions or rings.
 Zap yourself and see what happens...
 Zapping a wand of undead turning might bring your dog back to life.
-If you are fighting a praying mantis, don't have faith in Elbereth.
-A giant praying mantis is always praying...
-They say that time is a flat circle...
+
+# NerfHack
+They say a giant praying mantis can't be frightened.
+A praying mantis is always praying...
+They say you can just drop a container on an altar to BUC test everything.
+They say with enough experience, your weapon will reveal itself.
+They say your friends will be underlined.
+They say you can use > and < to sprint to the stairs.
+They say that all damage trades can be revealed with the showdmg option.
+They say you can dress your pet with the #loot command.
+They say you can merely look at a monster to see if it is mad.
+They say that amidst conflict, the might of Elbereth wanes to naught.
+They say that magic resistance merely halves the sting of magic missiles.
+They say that feasting on wraiths no longer guarantees ascension.
+The bones of fallen adventurers hold less promise now. 
+They say that infravision is no longer a birthright
+They say that healing potions now heed the dance of nurses, limiting their boundless blessings.
+They say that teleportitis no longer binds itself forever.
+Telepathy, once a silent companion, now dances beyond our intrinsic reach.
+They say the sight of the invisible now evades our intrinsic grasp.
+They say intrinsic invisibility is a thing of the past.
+Whispers among adventurers speak of diminished defenses, where once halved now quartered.
+They say that devouring giants now offers but a fraction of its former boon.
+They say your Luck will run out eventually.
+They say once you kill the Wizard of Yendor, all hell breaks loose.
+They say the Riders like their privacy.
+They say Purple Rain ain't no thang.
+They say it's hard to tame on the Astral Plane.
+Beware the priests' hollow blessings, for gold given is gold lost.
+Word has it the economy is so bad even the gods are cheapskates.
+They say once an altar is cracked, that's the last straw.
+They don't make altars like they used to.
+They say altars grow wary, cracking under the burden of too many gifts bestowed.
+Word has it altars crack under the strain of divine generosity.
+They say converting an altar is a stressful process.
+These days the shopkeepers seem to be holding all the money.
+They say shopkeepers actually want to be paid
+Rumors whisper that pets, once cunning thieves, now refuse to pilfer from shops on your behalf.
+They say that for quest artifacts, there can only be one true owner.
+It's said that quest artifacts now lie beyond the reach of wishing."
+Legends speak of thrones' faded glory, their wishes now lost to the winds of time.
+They say sitting on a throne can be an insightful experience.
+If you have a polypiling problem please dial 555-NOPOLY
+Whispers speak of ordinary items spurning the allure of polymorph."
+They say polymorphing is a stressful process... for the items.
+Have you heard? Crowning's boon now offers only a trifling trio.
+They say Vorpal Blade comes solely to the crowned, leaving those who offer empty-handed.
+Beware, for Stormbringer is granted only to those who wear the crown.
+Never be burdened!
+They say your dexterity can have a direct effect on your defense.
+They say being burdened is bad for your health.
+They say being stressed can mean death.
+They say being strained is a pain.
+They say wounded legs also wound your ability to defend yourself.
+They say you'll never break your legs with jungle boots.
+They say dragon scales aren't as hard as they used to be...
+They say dragon scale mail has to be made the old fashioned way.
+They say dragon scales come in one size only.
+They say you need to build up your resistances now.
+They say reflection doesn't reflect everything anymore.
+They say reflection isn't always in the eye of the beholder.
+They say Medusa doesn't like to look at herself.
+They whisper of displacement's veil, shielding from the piercing gaze of monsters.
+They say invisibility now offers sanctuary from harmful stares.
+Those were the good ol' days, when skills were easy to advance.
+Have you heard? Master the pick-axe and you master the earth.
+They say the heavier the spellbook, the heavier the spell...
+They say a quarterstaff can make you a better wizard.
+They say warriors should just skip wizarding school.
+They say your special spell is something you never forget.
+They say there's no such thing as a free spell.
+They say even silver can corrode.
+They say you should keep your leather out of bad weather.
+They say restore ability can restore anything.
+They say no scroll is waterproof in this dungeon.
+To keep your items from thieving hands, grease them up.
+They say butterfingers make for bad tool mastery.
+They say a towel can ungrease anything.
+They say a greased towel is cursed.
+They say Rodney is allergic to quest artifacts.
+They say piercers are nearly invisible these days.
+They say no hard helmet is safe from a piercer.
+They say zombies just can't take no for an answer.
+If you are sick of the zombie apocalypse, try a priest!
+They say the price for paying off a demon has gone through the roof.
+They say baby black dragons can be a drain.
+They say red dragons have an anger management problem.
+Watch out for blue dragons, if you blink you might miss them.
+Green dragons draw healing energy straight from nature.
+Attacking yellow dragons might be a splashy experience...
+They say that white dragons were the runt of the litter.
+They say Medusa went to the gym...
+They say couatls are stunningly beautiful - if you can see them.
+What a tangled web giant spiders weave...
+Gremlins always gremlin.
+It is rumored the Keystone Kops got a training day.
+Did you hear about the time the giant lost his temper?
+It is told the shriek of the Nazgul can stun its victims.
+What did the priest of Moloch say to the hero?  "Say your prayers fool!"
+It's told that rock trolls can't get stoned...
+They say that rabid animals can't be tamed.
+They say that titans aren't afraid to look Death in the eyes.
+It's rumored that a minotaur shook hands with Death and lived to tell the tale.
+Watch out if Lord Surtur has a temper tantrum.
+They say the Master Assassin built up a resistance to Iocane powder.
+They say the soldiers had their rations rationed.
+They say if its got a name, it can't be tamed.
+It's rumored that wraiths got weary of being lured around.
+Don't forget your snorkel if you meet a water elemental.
+You might be surprised what gets thrown at you in this game.
+They say boulder forts don't always work.
+Old warriors warn not to let your guard down and be flanked.
+Old warriors advise using your friends to flank your enemies.
+Did you hear? All the elves took accuracy training courses.
+If you are a cave dweller, don't always rely on your god for help.
+They say reading is bad for a caveman's health.
+Rumor has it cave dwellers are horrible spellcasters.
+Has you tried banging rocks together?
+Did you know that cavemen can lash flint to arrows?
+They say healers are naturals with the unicorn horn.
+They say the Lady of the Lake only responds well to the righteous knight.
+They say monks shouldn't even try to wear body armor anymore.
+They say priests only know how to bash things.
+Whispers travel that priests will always get Mjollnir as their crowning gift.
+They say rogues can stab you in the back again.
+They say tourists get the royal treatment at shops now.
+They say wizards should just stick to wizarding.
+They say you should keep your tools in good condition.
+They say if it's pointy - it can be poisoned.
+If you wear your armor, it's a weight off your mind.
+They say elven armor weighs so little - it must be hollow!
+Is that a wand of death, wishing... or nothing?
+They say a polearm can be a good offense... and a good defense.
+They say genocide doesn't work if you escape the dungeon.
+They say if it vibrates, you should hesitate.
+They say scrolls of gold detection only detect gold.
+They say identifying yourself is pure enlightenment.
+Be advised, the unicorn horn's healing powers depend on it's enchantment.
+Be very careful with cursed wands. Trust me.
+It is said that tiny monsters run in fear from stomping
+It is said that stomping boots are unstoppably noisy.
+They say with gauntlets of force, nothing will stand in your way!
+They say scythes are more unwieldy than mattocks.
+They say flying boots are better than levitation boots.
+They say forges are always hungry for zombies.
+Rusty armor? Try dipping it into a forge!
+Corroded dagger? Go to your nearest forge and #dip!
+Feeling lucky? Dip something metal into a forge to bless it!
+They say sometimes dipping in a forge can fix your items.
+If you use the force, sometimes even iron bars can be broken. 
+They say that Rodney got wanted a better view so he moved.
+They say you won't find any candles in Vlad's Tower.
+They say to watch out for booby trapped tins.
+They say Sokoban was taken over by a white dragon and frozen top to bottom!
+They say Sokoban isn't a good place to make friends.
+They say the demon lords fled Gehennom after the last rent hike.
+They say the Wizard's Tower is at the top of the castle.
+I'm in the Valley of the Dead and I can't regenerate, heeeeeelp!
+They say the passtune doesn't always work.
+They say the Sceptre of Might is mightier.
+Mjollnir is so electric it can shoot lightning bolts!
+Before eating a random tin - check the ingredients for C-4.
+Did you run out of fountains? Try untrapping a rust trap!
+You can't polymorph trap dance forever...
+Just because it's a Bane doesn't mean it's bad...
+They say Vorpal Blade grants the ability to see the unseen...
+The latest rumor says Giantslayer can make you feel like a giant.
+Did you always want to wield two artifact? Well now you can!
+They say lawful and chaotic artifacts don't get along.
+So many good genocide targets, so little genocide!
+Don't try to recharge that wand of wishing - trust me!
+You might get 3 wishes from a wand - if you are lucky.
+They say slings can bring down the mightiest of giants with just one pebble!
+They say thick skinned monsters just shrug off rocks.
+They say Vorpal Blade has been resharpened and is twice as deadly as before.
+How can old gloves take any damage? They are already as worn as they can get!  
+You should try fencing with fencing gloves.
+Padded gloves boost your defense, but lower your dexterity.
+Combat boots are great for combat!
+Hiking boots are great for avoiding those dangerous pits.
+Carrying a lot of gear on a long trip? Try some hiking boots.
+Gnomes are so small they can slip out of the grip of almost anything!
+They say gnomes can see in the dark.
+They say infravision shouldn't be taken for granted - because it isn't.
+They say gnomes have a knack for stealth.
+Elves hate dwarven armor because it stinks.
+Dwarves hate elven armor because it itches.
+Nobody (except gnomes) can fit into gnomish armor.
+Everybody hates orcish armor because it's disgusting.
+They say nothing lasts forever - especially if it's eroding.
+Is that a green slime hiding on the ceiling or are you just happy to see me?
+I met this succubus once, she kept getting stronger while I got weaker.
+Did the quasits step in some radioactive sewage? Because they seem a lot stronger now...
+They say monsters can't gaze at you in the dark.
