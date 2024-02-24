@@ -3829,6 +3829,7 @@ extern struct monst *bhit(coordxy, coordxy, int, enum bhit_call_types,
 extern struct monst *boomhit(struct obj *, coordxy, coordxy) NONNULLARG1;
 extern int zhitm(struct monst *, int, int, struct obj **) NONNULLPTRS;
 extern int burn_floor_objects(coordxy, coordxy, boolean, boolean);
+extern int disintegrate_floor_objects(coordxy, coordxy, boolean, boolean);
 extern void ubuzz(int, int);
 extern void buzz(int, int, coordxy, coordxy, int, int);
 extern void dobuzz(int, int, coordxy, coordxy, int, int, boolean);

@@ -4838,6 +4838,66 @@ burn_floor_objects(
     return cnt;
 }
 
+
+
+/*
+ * Disintegrate boulders on floor at position x,y;
+ * return the number of objects burned
+ * This is a copy-paste of burn_floor_objects.
+ */
+int
+disintegrate_floor_objects(
+    coordxy x, coordxy y,
+    boolean give_feedback, /* caller needs to decide about visibility checks */
+    boolean u_caused)
+{
+    struct obj *obj, *obj2;
+    long i, scrquan, delquan;
+    char buf1[BUFSZ], buf2[BUFSZ];
+    int cnt = 0;
+    
+    for (obj = gl.level.objects[x][y]; obj; obj = obj2) {
+        obj2 = obj->nexthere;
+        if (obj->otyp == BOULDER) {
+            scrquan = obj->quan; /* number present */
+            delquan = 0L;        /* number to destroy */
+            for (i = scrquan; i > 0L; i--)
+                if (!rn2(3))
+                    delquan++;
+            if (delquan) {
+                /* save name before potential delobj() */
+                if (give_feedback) {
+                    obj->quan = 1L;
+                    Strcpy(buf1, u_at(x, y)
+                                     ? xname(obj)
+                                     : distant_name(obj, xname));
+                    obj->quan = 2L;
+                    Strcpy(buf2, u_at(x, y)
+                                     ? xname(obj)
+                                     : distant_name(obj, xname));
+                    obj->quan = scrquan;
+                }
+                /* useupf(), which charges, only if hero caused damage */
+                if (u_caused)
+                    useupf(obj, delquan);
+                else if (delquan < scrquan) {
+                    obj->quan -= delquan;
+                    obj->owt = weight(obj);
+                } else
+                    delobj(obj);
+                cnt += delquan;
+                if (give_feedback) {
+                    if (delquan > 1L)
+                        pline("%ld %s vaporize.", delquan, buf2);
+                    else
+                        pline("%s vaporizes.", An(buf1));
+                }
+            }
+        }
+    }
+    return cnt;
+}
+
 /* will zap/spell/breath attack score a hit against armor class `ac'? */
 static int
 zap_hit(int ac,
@@ -5656,6 +5716,13 @@ zap_over_floor(
             newsym(x, y);
             You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
         }
+    
+    if (OBJ_AT(x, y) && abs(type) == ZT_BREATH(ZT_DEATH))
+        if (disintegrate_floor_objects(x, y, TRUE, type > 0) 
+              && couldsee(x, y)) {
+            newsym(x, y);
+        }
+    
     if (!ignoremon && (mon = m_at(x, y)) != 0)
         wakeup(mon, (type >= 0) ? TRUE : FALSE);
     return rangemod;
