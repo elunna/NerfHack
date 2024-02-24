@@ -764,9 +764,10 @@ maybe_cannibal(int pm, boolean allowmsg)
             return FALSE;
         }
     }
-    /* Only orcs should fall through here */
-    adjalign(-sgn(u.ualign.type));
-    You_feel("evil and fiendish!");
+    if (Race_if(PM_ORC) && your_race(fptr)) {
+        adjalign(-sgn(u.ualign.type));
+        You_feel("evil and fiendish!");
+    }
     return FALSE;
 }
 
