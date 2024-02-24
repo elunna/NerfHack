@@ -170,7 +170,7 @@ des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 -- Moved from the fake wizard's levels
 -- Takes the place of one of the fake chests
 local loc = place:rndcoord(2);
-des.levregion({ region={loc.x,loc.y,loc.x,loc.y}, type="stair-up", name="wizard3" })
+des.levregion({ region={loc.x,loc.y,loc.x,loc.y}, type="portal", name="wizard3" })
 
 -- THE NOT QUITE WANDS OF WISHING
 -- ...since you can see the chest now through the bars,
