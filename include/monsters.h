@@ -3599,7 +3599,7 @@
         M2_NOPOLY | M2_STALK | M2_HOSTILE, M3_INFRAVISION,
         MH_UNDEAD, 12, CLR_GRAY, GHOST),
     MON(NAM("shade"), S_GHOST,
-        LVL(12, 10, 10, 0, 0), (G_NOCORPSE | G_NOGEN),
+        LVL(12, 10, 10, 20, 0), (G_NOCORPSE | G_NOGEN),
         A(ATTK(AT_TUCH, AD_PLYS, 2, 6),
           ATTK(AT_TUCH, AD_SLOW, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
