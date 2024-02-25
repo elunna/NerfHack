@@ -5858,12 +5858,16 @@ destroyable(struct obj *obj, int adtyp)
         if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL) {
             return FALSE;
         }
-        if (obj->otyp == GLOB_OF_GREEN_SLIME
-            || obj->oclass == POTION_CLASS
+        if (obj->oclass == POTION_CLASS
             || obj->oclass == SCROLL_CLASS
             || obj->oclass == SPBOOK_CLASS) {
             return TRUE;
         }
+        if (obj->oclass == FOOD_CLASS 
+            && obj->otyp != TIN 
+            /* Soldier food is protected from explosions */
+            && obj->otyp != C_RATION && obj->otyp != K_RATION)
+            return TRUE;
     } else if (adtyp == AD_COLD) {
         /* non-water potions don't freeze and shatter */
         if (obj->oclass == POTION_CLASS && obj->otyp != POT_ACID

@@ -1135,7 +1135,7 @@ add_erosion_words(struct obj *obj, char *prefix)
                        : is_crackable(obj) ? "cracked "
                          : "burnt ");
     }
-    if (obj->oeroded2 && !iscrys) {
+    if (obj->oeroded2 && !iscrys && obj->oclass != FOOD_CLASS) {
         switch (obj->oeroded2) {
         case 2:
             Strcat(prefix, "very ");
