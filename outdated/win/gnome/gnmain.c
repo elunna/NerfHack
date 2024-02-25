@@ -161,7 +161,7 @@ free(str) below
            _("\nSend comments and bug reports to: eslunna@gmail.com\n"
              "This game is free software. See License for details."));
 #endif
-    about = gnome_about_new(_("HACKEM"), buf1,
+    about = gnome_about_new(_("NerfHack"), buf1,
                             "Copyright (C) 1985-2002 Mike Stephenson",
                             (const char **) authors, buf, NULL);
 
@@ -494,7 +494,7 @@ parse_args(int argc, char *argv[])
             exit(0);
             break;
         case 'v':
-            g_print(_("HACKEM %s.\n"), VERSION_STRING);
+            g_print(_("NerfHack %s.\n"), VERSION_STRING);
             exit(0);
             break;
         case ':':
@@ -594,7 +594,7 @@ ghack_init_main_window(int argc, char **argv)
         setuid(uid);
     hide_privileges(TRUE);
     /* XXX gnome_init must print nethack options for --help, but does not */
-    gnome_init("hackem", VERSION_STRING, argc, argv);
+    gnome_init("nerfhack", VERSION_STRING, argc, argv);
     hide_privileges(FALSE);
     parse_args(argc, argv);
 
@@ -606,7 +606,7 @@ ghack_init_main_window(int argc, char **argv)
 
     /* Main window */
     mainWindow =
-        gnome_app_new((char *) "hackem", (char *) N_("HACKEM for Gnome"));
+        gnome_app_new((char *) "nerfhack", (char *) N_("NerfHack for Gnome"));
     gtk_widget_realize(mainWindow);
     if (restarted) {
         gtk_widget_set_uposition(mainWindow, os_x, os_y);

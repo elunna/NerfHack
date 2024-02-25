@@ -250,13 +250,13 @@ curses_init_nhwindows(
 # else
 #  ifdef VERSION_STRING
     Snprintf(window_title, sizeof window_title, "%s %s",
-                "HACKEM", VERSION_STRING);
+                "NerfHack", VERSION_STRING);
 #  else
     if (nomakedefs.version_string)
         Snprintf(window_title, sizeof window_title, "%s %s",
-                    "HACKEM", nomakedefs.version_string);
+                    "NerfHack", nomakedefs.version_string);
     else
-        Snprintf(window_title, sizeof window_title, "%s", "HACKEM");
+        Snprintf(window_title, sizeof window_title, "%s", "NerfHack");
 #  endif
        /* VERSION_STRING */
 # endif/* DEF_GAME_NAME */

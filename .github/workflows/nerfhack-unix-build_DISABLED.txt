@@ -1,4 +1,4 @@
-name: HACKEM
+name: NerfHack
 
 on:
   push:

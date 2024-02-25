@@ -139,7 +139,7 @@ static struct win_information window_opts[] = {
     { "mswin", "Windows GUI", TRUE },
 #endif
 #ifdef SHIM_GRAPHICS
-    { "shim", "NetHack Library Windowing Shim", TRUE },
+    { "shim", "NerfHack Library Windowing Shim", TRUE },
 #endif
 
 #if 0  /* remainder have been retired */
@@ -178,7 +178,7 @@ struct soundlib_information {
  * None of these are endorsements or recommendations of one library
  * or another, in any way. They are just preprocessor conditionals
  * in the event that glue code for such a library is ever added into
- * NetHack.
+ * NerfHack.
  */
 static struct soundlib_information soundlib_opts[] = {
     { soundlib_nosound, "soundlib_nosound", "", FALSE },
@@ -391,7 +391,7 @@ version_id_string(char *outbuf, size_t bufsz, const char *build_date)
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
 
-    Snprintf(outbuf, bufsz, "%s HACKEM%s Version %s%s - last %s %s.", PORT_ID,
+    Snprintf(outbuf, bufsz, "%s NerfHack%s Version %s%s - last %s %s.", PORT_ID,
             subbuf, mdlib_version_string(versbuf, "."), statusbuf,
             date_via_env ? "revision" : "build", build_date);
     return outbuf;
@@ -679,7 +679,7 @@ static const char *const build_opts[] = {
     "system configuration at run-time",
 #endif
     save_bones_compat_buf,
-    "and basic NetHack features"
+    "and basic NerfHack features"
 };
 
 static int
@@ -773,7 +773,7 @@ build_options(void)
 #else
 #define STATUS_ARG ""
 #endif /* NH_DEVEL_STATUS == NH_STATUS_RELEASED */
-    Sprintf(optbuf, "%sNetHack version %d.%d.%d%s\n",
+    Sprintf(optbuf, "%sNerfHack version %d.%d.%d%s\n",
             opt_indent, VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL, STATUS_ARG);
     STOREOPTTEXT(optbuf);
     Sprintf(optbuf, "Options compiled into this edition:");

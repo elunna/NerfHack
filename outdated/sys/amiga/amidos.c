@@ -48,8 +48,8 @@ FILE *fopenp(const char *, const char *);
 int Enable_Abort = 0; /* for stdio package */
 #endif
 
-/* Initial path, so we can find hackem.cnf */
-char PATH[PATHLEN] = "HACKEM:";
+/* Initial path, so we can find nerfhack.cnf */
+char PATH[PATHLEN] = "NerfHack:";
 
 static boolean record_exists(void);
 

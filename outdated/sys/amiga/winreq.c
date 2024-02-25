@@ -207,23 +207,23 @@ EditColor()
 
                     fp = fopen(configfile, "r");
                     if (!fp) {
-                        pline("can't find hackem.cnf");
+                        pline("can't find nerfhack.cnf");
                         break;
                     }
 
                     strcpy(oname, dirname((char *) configfile));
                     if (oname[strlen(oname) - 1] != ':') {
-                        sprintf(nname, "%s/New_hackem.cnf", oname);
+                        sprintf(nname, "%s/New_nerfhack.cnf", oname);
                         strcat(oname, "/");
-                        strcat(oname, "Old_hackem.cnf");
+                        strcat(oname, "Old_nerfhack.cnf");
                     } else {
-                        sprintf(nname, "%sNew_hackem.cnf", oname);
-                        strcat(oname, "Old_hackem.cnf");
+                        sprintf(nname, "%sNew_nerfhack.cnf", oname);
+                        strcat(oname, "Old_nerfhack.cnf");
                     }
 
                     nfp = fopen(nname, "w");
                     if (!nfp) {
-                        pline("can't write to New_hackem.cnf");
+                        pline("can't write to New_nerfhack.cnf");
                         fclose(fp);
                         break;
                     }
@@ -775,11 +775,11 @@ void
 amii_setpens(int count)
 {
 #ifdef INTUI_NEW_LOOK
-    struct EasyStruct ea = { sizeof(struct EasyStruct), 0l, "HACKEM Request",
+    struct EasyStruct ea = { sizeof(struct EasyStruct), 0l, "NerfHack Request",
                              "Number of pens requested(%ld) not correct",
                              "Use default pens|Use requested pens" };
     struct EasyStruct ea2 = { sizeof(struct EasyStruct), 0l,
-                              "HACKEM Request",
+                              "NerfHack Request",
                               "Number of pens requested(%ld) not\ncompatible "
                               "with game configuration(%ld)",
                               "Use default pens|Use requested pens" };
@@ -813,7 +813,7 @@ amii_setpens(int count)
                amii_numcolors * sizeof(amii_initmap[0]));
     }
 
-    /* If the pens are set in hackem.cnf, we can get called before
+    /* If the pens are set in nerfhack.cnf, we can get called before
      * HackScreen has been opened.
      */
     if (HackScreen != NULL) {

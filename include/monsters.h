@@ -2232,7 +2232,7 @@
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
         MH_GIANT, 13, CLR_WHITE, FROST_GIANT),
     /* ettin is a two-headed giant
-     * HACKEM changes: now counts as a giant and can confer strength*/
+     * NerfHack changes: now counts as a giant and can confer strength*/
     MON(NAM("ettin"), S_GIANT,
         LVL(10, 12, 3, 0, 0), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8),

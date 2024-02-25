@@ -8,7 +8,7 @@
 # program.
 #
 # This file can also be used to set local system defaults for run-time
-# options, using the same syntax as an individual user's ./hackemrc file.
+# options, using the same syntax as an individual user's ./nerfhackrc file.
 
 # Which users can use debug mode (aka wizard mode; accessed via '-D' command
 # line flag or OPTIONS=playmode:debug in the runtime options config file).
@@ -42,7 +42,7 @@ GENERICUSERS=play player game games nethack nethacker ec2-user
 # instead of the user's login name.
 #CHECK_PLNAME=1
 
-# Limit the number of simultaneous games (see also hackem.sh).
+# Limit the number of simultaneous games (see also nerfhack.sh).
 # Valid values are 0-25.
 # Commenting this out or setting the value to 0 constructs lock files
 # with UID and playername, so each user may have one game at a time,
@@ -136,8 +136,8 @@ PANICTRACE_GDB=0
 PANICTRACE_LIBC=0
 
 # 'portable_device_paths' is only supported for Windows.  Starting with
-# 3.6.3, nethack on Windows treats the folder containing hackem.exe and
-# hackemW.exe as read-only and puts data files which are generated or
+# 3.6.3, nethack on Windows treats the folder containing nerfhack.exe and
+# nerfhackW.exe as read-only and puts data files which are generated or
 # modified during play or by the user in assorted folders derived from
 # user name.  3.6.4 added PORTABLE_DEVICE_PATHS to allow reverting to
 # the old behavior of having the run-time configuration file and other
@@ -150,7 +150,7 @@ PANICTRACE_LIBC=0
 # default values.  Unlike all the SYSCF values above, individual users
 # can override the overridden options set here by choosing their own
 # option settings via NETHACKOPTIONS in their environment or via
-# ~/.hackemrc run-time configuration file.
+# ~/.nerfhackrc run-time configuration file.
 #OPTIONS=!autopickup,fruit:tomato,symset:DECgraphics
 OPTIONS=perm_invent
 

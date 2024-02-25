@@ -2,8 +2,8 @@
 # This will work only with MINIWIN v1.1
 # or TOSWIN v2.0 (or better)
 
-#%title "HACKEM"
-#%about "About HACKEM" "v"
+#%title "NerfHack"
+#%about "About NerfHack" "v"
 
 File
 	"Shell"		"!"

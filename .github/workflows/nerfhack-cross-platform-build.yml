@@ -1,4 +1,4 @@
-name: HACKEM
+name: NerfHack
 
 on:
   push:
@@ -53,7 +53,7 @@ jobs:
         PDCURSES_TOP: ../submodules/pdcurses
         LUA_VERSION: 5.4.2
         TRAVIS_COMPILER: 1
-        ZIP_NAME: hackem.zip
+        ZIP_NAME: nerfhack.zip
     steps:
     - uses: actions/checkout@v3
       with:
@@ -67,7 +67,7 @@ jobs:
         cd src
         nmake fetch-lua
         nmake install
-        # Note: mingw build doesn't seem to build HackEMW.exe and is disabled.
+        # Note: mingw build doesn't seem to build NerfHackW.exe and is disabled.
         # This would work to build the tty windows version, though.
         #cp ../sys/winnt/Makefile.gcc ./Makefile
         #mingw32-make LUA_VERSION=$LUA_VERSION install
@@ -76,13 +76,13 @@ jobs:
       with:
         type: 'zip'
         path: binary/
-        filename: hackem_mswindows.zip
+        filename: nerfhack_mswindows.zip
     - name: release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          hackem_mswindows.zip
+          nerfhack_mswindows.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

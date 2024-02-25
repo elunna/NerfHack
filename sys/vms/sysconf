@@ -8,7 +8,7 @@
 # program.
 #
 # This file can also be used to set local system defaults for run-time
-# options, using the same syntax as an individual user's ./hackemrc file.
+# options, using the same syntax as an individual user's ./nerfhackrc file.
 
 # The options which take a space-separated list of usernames haven't been
 # implemented for VMS.
@@ -143,8 +143,8 @@ PANICTRACE_GDB=1
 #--
 
 # 'portable_device_paths' is only supported for Windows.  Starting with
-# 3.6.3, nethack on Windows treats the folder containing hackem.exe and
-# hackemW.exe as read-only and puts data files which are generated or
+# 3.6.3, nethack on Windows treats the folder containing nerfhack.exe and
+# nerfhackW.exe as read-only and puts data files which are generated or
 # modified during play or by the user in assorted folders derived from
 # user name.  3.6.4 added PORTABLE_DEVICE_PATHS to allow reverting to
 # the old behavior of having the run-time configuration file and other
@@ -157,7 +157,7 @@ PANICTRACE_GDB=1
 # default values.  Unlike all the SYSCF values above, individual users
 # can override the overridden options set here by choosing their own
 # option settings via NETHACKOPTIONS in their environment or via
-# sys$login:hackem.ini run-time configuration file.
+# sys$login:nerfhack.ini run-time configuration file.
 #OPTIONS=!autopickup,fruit:tomato,symset:DECgraphics
 
 #eof

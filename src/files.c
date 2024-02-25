@@ -2031,7 +2031,7 @@ lock_file(const char *filename, int whichprefix,
 #ifdef USE_FCNTL
     lockfd = open(filename, O_RDWR);
     if (lockfd == -1) {
-        HUP raw_printf("Cannot open file %s.  Is NetHack installed correctly?",
+        HUP raw_printf("Cannot open file %s.  Is NerfHack installed correctly?",
                        filename);
         gn.nesting--;
         return FALSE;
@@ -2108,7 +2108,7 @@ lock_file(const char *filename, int whichprefix,
             HUP perror(lockname);
             HUP raw_printf("Cannot lock %s.", filename);
             HUP raw_printf(
-  "(Perhaps you are running NetHack from inside the distribution package?).");
+  "(Perhaps you are running NerfHack from inside the distribution package?).");
             gn.nesting--;
             return FALSE;
         default:
@@ -2216,15 +2216,15 @@ unlock_file(const char *filename)
 
 const char *default_configfile =
 #ifdef UNIX
-    ".hackemrc";
+    ".nerfhackrc";
 #else
 #if defined(MAC) || defined(__BEOS__)
-    "NetHack Defaults";
+    "NerfHack Defaults";
 #else
 #if defined(MSDOS) || defined(WIN32)
     CONFIG_FILE;
 #else
-    "hackem.cnf";
+    "nerfhack.cnf";
 #endif
 #endif
 #endif
@@ -2234,13 +2234,13 @@ char configfile[BUFSZ];
 
 #ifdef MSDOS
 /* conflict with speed-dial under windows
- * for XXX.cnf file so support of hackem.cnf
+ * for XXX.cnf file so support of nerfhack.cnf
  * is for backward compatibility only.
  * Preferred name (and first tried) is now defaults.nh but
  * the game will try the old name if there
  * is no defaults.nh.
  */
-const char *backward_compat_configfile = "hackem.cnf";
+const char *backward_compat_configfile = "nerfhack.cnf";
 #endif
 
 /* #saveoptions - save config options into file */
@@ -2324,7 +2324,7 @@ fopen_config_file(const char *filename, int src)
 #ifdef UNIX
         if (access(configfile, 4) == -1) { /* 4 is R_OK on newer systems */
             /* nasty sneaky attempt to read file through
-             * NetHack's setuid permissions -- this is the only
+             * NerfHack's setuid permissions -- this is the only
              * place a file name may be wholly under the player's
              * control (but SYSCF_FILE is not under the player's
              * control so it's OK).
@@ -2370,29 +2370,29 @@ fopen_config_file(const char *filename, int src)
 /* constructed full path names don't need fqname() */
 #ifdef VMS
     /* no punctuation, so might be a logical name */
-    set_configfile_name("hackemini");
+    set_configfile_name("nerfhackini");
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
         return fp;
-    set_configfile_name("sys$login:hackem.ini");
+    set_configfile_name("sys$login:nerfhack.ini");
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
         return fp;
 
     envp = nh_getenv("HOME");
     if (!envp || !*envp)
-        Strcpy(tmp_config, "hackem.cnf");
+        Strcpy(tmp_config, "nerfhack.cnf");
     else
         Sprintf(tmp_config, "%s%s%s", envp,
                 !strchr(":]>/", envp[strlen(envp) - 1]) ? "/" : "",
-                "hackem.cnf");
+                "nerfhack.cnf");
     set_configfile_name(tmp_config);
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
         return fp;
 #else /* should be only UNIX left */
     envp = nh_getenv("HOME");
     if (!envp)
-        Strcpy(tmp_config, ".hackemrc");
+        Strcpy(tmp_config, ".nerfhackrc");
     else
-        Sprintf(tmp_config, "%s/%s", envp, ".hackemrc");
+        Sprintf(tmp_config, "%s/%s", envp, ".nerfhackrc");
 
     set_configfile_name(tmp_config);
     if ((fp = fopen(configfile, "r")) != (FILE *) 0)
@@ -4687,7 +4687,7 @@ reveal_paths(void)
 #if defined(SYSCF) || !defined(UNIX) || defined(DLB)
     const char *filep;
 #ifdef SYSCF
-    const char *gamename = (gh.hname && *gh.hname) ? gh.hname : "NetHack";
+    const char *gamename = (gh.hname && *gh.hname) ? gh.hname : "NerfHack";
 #endif
 #endif
 #if defined(PREFIXES_IN_USE)
@@ -4871,7 +4871,7 @@ reveal_paths(void)
                            (int) (sizeof buf - 1 - strlen(buf)));
                 if (access(buf, 4) == -1) {
                     /* second alternate failed too, so revert to the
-                       original default ("$HOME/.hackemrc") for message */
+                       original default ("$HOME/.nerfhackrc") for message */
                     copynchars(endp, default_configfile,
                                (int) (sizeof buf - 1 - strlen(buf)));
                 }

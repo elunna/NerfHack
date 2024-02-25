@@ -803,7 +803,7 @@ welcome(boolean new_game) /* false => restoring an old game */
     }
 
     if (Hallucination)
-        pline("NetHack is filmed in front of an undead studio audience.");
+        pline("NerfHack is filmed in front of an undead studio audience.");
 
     /*
      * The "welcome back" message always describes your innate form
@@ -824,8 +824,8 @@ welcome(boolean new_game) /* false => restoring an old game */
     Sprintf(eos(buf), " %s %s", gu.urace.adj,
             (currentgend && gu.urole.name.f) ? gu.urole.name.f : gu.urole.name.m);
 
-    pline(new_game ? "%s %s, welcome to NetHack!  You are a%s."
-                   : "%s %s, the%s, welcome back to NetHack!",
+    pline(new_game ? "%s %s, welcome to NerfHack!  You are a%s."
+                   : "%s %s, the%s, welcome back to NerfHack!",
           Hello((struct monst *) 0), gp.plname, buf);
 
     if (new_game) {

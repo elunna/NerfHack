@@ -33,9 +33,9 @@ nethack \- Exploring The Mazes of Menace
 ]
 .br 1
 [
-.BI \-\-hackemrc: RC-file
+.BI \-\-nerfhackrc: RC-file
 |
-.B \-\-no\-hackemrc
+.B \-\-no\-nerfhackrc
 ]
 [
 .B \-n
@@ -185,19 +185,19 @@ supporting multiple types of terminals.)
 Because the option list can be very long,
 options may also be included in a configuration file.
 The default is located in your home directory and
-named .hackemrc on UNIX systems (including descendants such as
+named .nerfhackrc on UNIX systems (including descendants such as
 linux, NetBSD, and macOS).
-On Windows, the name is also .hackemrc but the location can vary
+On Windows, the name is also .nerfhackrc but the location can vary
 (see
 .B \-\-showpaths
 below).
-On other systems, the default may be different, possibly hackem.cnf.
+On other systems, the default may be different, possibly nerfhack.cnf.
 On MS-DOS, the name is defaults.nh in NetHack's directory (folder),
 while
 .\" on the Macintosh or BeOS, it is \(lqNetHack Defaults\(rq, and
-on VMS|OpenVMS it is hackem.ini in your home directory.
+on VMS|OpenVMS it is nerfhack.ini in your home directory.
 The default configuration file may be overridden via the
-.BI \-\-hackemrc: "rc-file"
+.BI \-\-nerfhackrc: "rc-file"
 command line option or by setting NETHACKOPTIONS in your environment
 to a string consisting of an @ character followed by the path and filename.
 .PP
@@ -328,13 +328,13 @@ specified in the run-time configuration file.
 NetHack's #version command shows available interfaces.
 .PP
 The
-.BI \-\-hackemrc: RC-file
+.BI \-\-nerfhackrc: RC-file
 option will use
 .I RC-file
 instead of the default run-time configuration file
-.RI "(typically " \(ti/.hackemrc ")"
+.RI "(typically " \(ti/.nerfhackrc ")"
 and the
-.B \-\-no\-hackemrc
+.B \-\-no\-nerfhackrc
 option can be used to skip any run-time configuration file.
 .PP
 .\" extra blank line
@@ -414,7 +414,7 @@ distinction, as he may eventually release a new version of his own.
 Run-time configuration options were discussed above and use a platform
 specific name for a file in a platform specific location.
 For Unix, the
-name is '.hackemrc' in the user's home directory.
+name is '.nerfhackrc' in the user's home directory.
 
 .br
 All other files are in the playground directory,
@@ -549,7 +549,7 @@ NETHACKDIR or HACKDIR	Playground.
 NETHACKOPTIONS	String predefining several NetHack options.
 .br
 
-If the same option is specified in both NETHACKOPTIONS and .hackemrc,
+If the same option is specified in both NETHACKOPTIONS and .nerfhackrc,
 the value assigned in NETHACKOPTIONS takes precedence.
 .br
 

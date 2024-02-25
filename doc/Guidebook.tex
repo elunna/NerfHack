@@ -3805,26 +3805,26 @@ The default name and location of the configuration file varies on different
 operating systems.\\
 
 %.lp ""
-On UNIX, Linux and macOS it is \mbox{``.hackemrc''} in the user's home
+On UNIX, Linux and macOS it is \mbox{``.nerfhackrc''} in the user's home
 directory.
 The file may not exist, but it is a normal ASCII text file and
 can be created with any text editor.\\
 
 %.lp ""
-On Windows, the name is \mbox{``.hackemrc''} location in the folder
+On Windows, the name is \mbox{``.nerfhackrc''} location in the folder
 \mbox{{``\%USERPROFILE\%\textbackslash NetHack\textbackslash''}}.
 The file may not exist,
 but it is a normal ASCII text file and can be created with any
 text editor.
 After runing {\it NetHack\/} for the first time, you should find a default
-template for ths configuration file named \mbox{``.hackemrc.template''} in
+template for ths configuration file named \mbox{``.nerfhackrc.template''} in
 \mbox{{``\%USERPROFILE\%\textbackslash NetHack\textbackslash''}}.
 If you have not created the configuration file, {\it NetHack\/} will create
 the configuration file for you using the default template file.\\
 
 %.lp ""
 On MS-DOS it is \mbox{``defaults.nh''} in the same folder as
-\mbox{{\it hackem.exe\/}}.\\
+\mbox{{\it nerfhack.exe\/}}.\\
 
 %.lp ""
 Any line in the configuration file starting with `{\tt \#}' is treated
@@ -3877,7 +3877,7 @@ Example:
 %.lp
 \item[\bb{HACKDIR}]
 Default location of files {\it NetHack\/} needs. On Windows HACKDIR
-defaults to the location of the {\it hackem.exe\/} or {\it hackemW.exe\/} file
+defaults to the location of the {\it nerfhack.exe\/} or {\it nerfhackW.exe\/} file
 so setting HACKDIR to override that is not usually necessary or recommended.
 %.lp
 \item[\bb{LEVELDIR}]
@@ -6460,7 +6460,7 @@ sequences, you can customize your game display by assigning Unicode
 codepoint values and red-green-blue colors to glyph
 representations. The customizations can be specified for use with a symset that
 has a UTF8 handler within the symbols file such as the enhanced1 set, or
-individually within your own hackem.rc file.
+individually within your own nerfhack.rc file.
 
 The format for defining a glyph representation is:\\
 \begin{verbatim}

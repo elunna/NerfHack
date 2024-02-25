@@ -44,7 +44,7 @@ options.c	many misc. bugs while compiling for the PC. (Tom Almy)
 pcmain.c
 pctty.c
 hack.h
-hackem.cnf
+nerfhack.cnf
 pager.c
 fight.c
 

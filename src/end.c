@@ -344,7 +344,7 @@ submit_web_report(const char *msg, char *why)
                 /* then pairs of key value */
                 /* subject, generate something useful */
         SWR_ADD("subject");
-        snprintf(version, sizeof version, "%s report for NetHack %s",
+        snprintf(version, sizeof version, "%s report for NerfHack %s",
                  msg, version_string(versionstring, sizeof versionstring));
         SWR_ADD(version);
                 /* name:  someday, this might be stored in nethackcnf

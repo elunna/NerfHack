@@ -190,7 +190,7 @@
  *                           this does NOT default to compiled-in value)
  *              EXPLORERS    (who can use explore mode, aka discover mode)
  *              SHELLERS     (who can use ! to execute a shell subprocess)
- *              MAXPLAYERS   (see MAX_NR_OF_PLAYERS below and hackem.sh)
+ *              MAXPLAYERS   (see MAX_NR_OF_PLAYERS below and nerfhack.sh)
  *              SUPPORT      (how to get local support) [no default]
  *              RECOVER      (how to recover a game at your site) [no default]
  *            For the record file (see topten.c):
@@ -212,7 +212,7 @@
  *                           feature))
  *            Regular nethack options can also be specified in order to
  *            provide system-wide default values local to your system:
- *              OPTIONS      (same as in users' .hackemrc or defaults.nh)
+ *              OPTIONS      (same as in users' .nerfhackrc or defaults.nh)
  *
  *              In the future there may be other ways to supply SYSCF
  *              information (Windows registry, Apple resource forks, etc)
@@ -432,7 +432,7 @@
  * otherwise it will be the current directory.
  */
 #ifndef HACKDIR
-#define HACKDIR "/usr/games/lib/hackemdir"
+#define HACKDIR "/usr/games/lib/nerfhackdir"
 #endif
 
 /*
@@ -715,7 +715,7 @@ typedef unsigned char uchar;
 #define DUMPLOG_MSG_COUNT   50
 #endif /* DUMPLOG_MSG_COUNT */
 #ifndef DUMPLOG_FILE
-#define DUMPLOG_FILE        "/tmp/hackem.%n.%d.log"
+#define DUMPLOG_FILE        "/tmp/nerfhack.%n.%d.log"
 /* DUMPLOG_FILE allows following placeholders:
    %% literal '%'
    %v version (eg. "3.6.3-0")
@@ -733,7 +733,7 @@ typedef unsigned char uchar;
 
 #ifdef DUMPHTML
 #ifndef DUMPHTML_FILE
-#define DUMPHTML_FILE        "/tmp/hackem.%n.%d.html"
+#define DUMPHTML_FILE        "/tmp/nerfhack.%n.%d.html"
 /* Placeholders as above
  * DUMPHTML_FILE is not used if SYSCF is defiined
  */

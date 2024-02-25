@@ -47,13 +47,13 @@ dosfonts: $(FONTTARGETS)
 dospkg: dodata dosfonts $(GAMEBIN) $(TARGETPFX)recover.exe ../dat/nhtiles.bmp
 	$(TARGET_STUBEDIT) $(GAMEBIN) minstack=2048K
 	mkdir -p $(TARGETPFX)pkg
-	cp $(GAMEBIN) $(TARGETPFX)pkg/HACKEM.EXE
+	cp $(GAMEBIN) $(TARGETPFX)pkg/NERFHACK.EXE
 	cp $(TARGETPFX)recover.exe $(TARGETPFX)pkg/RECOVER.EXE
 	cp ../dat/nhdat $(TARGETPFX)pkg/NHDAT
 	cp ../dat/license $(TARGETPFX)pkg/LICENSE
 	cp ../dat/nhtiles.bmp $(TARGETPFX)pkg/NHTILES.BMP
 	cp ../dat/symbols $(TARGETPFX)pkg/SYMBOLS
-	cp ../sys/share/hackem.cnf $(TARGETPFX)pkg/HACKEM.CNF
+	cp ../sys/share/nerfhack.cnf $(TARGETPFX)pkg/NERFHACK.CNF
 	cp ../sys/msdos/sysconf $(TARGETPFX)pkg/SYSCONF
 	cp ../doc/nethack.txt $(TARGETPFX)pkg/NETHACK.TXT
 	cp $(DOSFONT)/ter-u16b.psf $(TARGETPFX)pkg/TER-U16B.PSF

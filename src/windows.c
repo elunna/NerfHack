@@ -1937,9 +1937,9 @@ dump_headers(void)
 
     fprintf(dumphtml_file, "<!DOCTYPE html>\n");
     fprintf(dumphtml_file, "<head>\n");
-    fprintf(dumphtml_file, "<title>HACKEM %s (%s)</title>\n",  version_string(vers, sizeof vers), gp.plname);
+    fprintf(dumphtml_file, "<title>NerfHack %s (%s)</title>\n",  version_string(vers, sizeof vers), gp.plname);
     fprintf(dumphtml_file, "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n");
-    fprintf(dumphtml_file, "<meta name=\"generator\" content=\"HACKEM %s (%s)\" />\n", vers, gp.plname);
+    fprintf(dumphtml_file, "<meta name=\"generator\" content=\"NerfHack %s (%s)\" />\n", vers, gp.plname);
     fprintf(dumphtml_file, "<meta name=\"date\" content=\"%s\" />\n", iso8601);
     fprintf(dumphtml_file, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n");
     fprintf(dumphtml_file, "<link href=\"https://cdn.jsdelivr.net/gh/maxwell-k/dejavu-sans-mono-web-font@2.37/index.css\" title=\"Default\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />\n");

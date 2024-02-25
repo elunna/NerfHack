@@ -1591,7 +1591,7 @@ static int
 wiz_fuzzer(void)
 {
     if (flags.suppress_alert < FEATURE_NOTICE_VER(3,7,0)) {
-        pline("The fuzz tester will make HACKEM execute random keypresses.");
+        pline("The fuzz tester will make NerfHack execute random keypresses.");
         There("is no conventional way out of this mode.");
     }
     if (paranoid_query(TRUE, "Do you want to start fuzz testing?"))
@@ -2793,7 +2793,7 @@ struct ext_func_tab extcmdlist[] = {
               dovanquished,
               IFBURIED | AUTOCOMPLETE | GENERALCMD | CMD_M_PREFIX, NULL },
     { M('v'), "version",
-              "list compile time options for this version of NetHack",
+              "list compile time options for this version of NerfHack",
               doextversion, IFBURIED | AUTOCOMPLETE | GENERALCMD, NULL },
     { 'v',    "versionshort", "show version and date+time program was built",
               doversion, IFBURIED | GENERALCMD, NULL },
@@ -3555,7 +3555,7 @@ dokeylist(void)
     Sprintf(buf2, "[%s]", key2txt(key, buf));
     Sprintf(buf, "%-21s", buf2);
 #endif
-    Strcat(buf, " interrupt: break out of NetHack (SIGINT)");
+    Strcat(buf, " interrupt: break out of NerfHack (SIGINT)");
     putstr(datawin, 0, buf);
     /* keyless special key commands, if any */
     if (spkey_gap) {

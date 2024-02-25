@@ -92,8 +92,8 @@ bundle/*
 util/*.lib
 util/*.exp
 
-# HACKEM dev settings
+# NerfHack dev settings
 .idea
 warnings.log
-src/hackem
+src/nerfhack
 order.sh

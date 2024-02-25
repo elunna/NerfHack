@@ -41,7 +41,7 @@ NetHackQtYnDialog::NetHackQtYnDialog(QWidget *parent, const QString &q,
     le((QLineEdit *) NULL),
     y_btn((QPushButton *) NULL)
 {
-    setWindowTitle("HACKEM: Question");
+    setWindowTitle("NerfHack: Question");
 
     // plain prompt doesn't show any room for an answer (answer won't be
     // echoed but the fact that a prompt is pending and accepts typed

@@ -549,7 +549,7 @@ outrumor(
 
     line = getrumor(truth, buf, reading ? FALSE : TRUE);
     if (!*line)
-        line = "NetHack rumors file closed for renovation.";
+        line = "NerfHack rumors file closed for renovation.";
     switch (mechanism) {
     case BY_ORACLE:
         /* Oracle delivers the rumor */

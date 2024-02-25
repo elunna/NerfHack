@@ -233,7 +233,7 @@ tty_startup(int *wid, int *hgt)
 #endif
     nh_ND = Tgetstr(nhStr("nd")); /* move cursor right 1 column */
     if (tgetflag(nhStr("os"))) /* term can overstrike */
-        error("HACKEM can't have OS.");
+        error("NerfHack can't have OS.");
     if (tgetflag(nhStr("ul"))) /* underline by overstrike w/ underscore */
         ul_hack = TRUE;
     CE = Tgetstr(nhStr("ce")); /* clear line from cursor to eol */
@@ -246,8 +246,8 @@ tty_startup(int *wid, int *hgt)
     /* not:             XD = Tgetstr("do"); */
     if (!(nh_CM = Tgetstr(nhStr("cm")))) { /* cm: move cursor */
         if (!UP && !HO)
-            error("HACKEM needs CM or UP or HO.");
-        tty_raw_print("Playing NetHack on terminals without CM is suspect.");
+            error("NerfHack needs CM or UP or HO.");
+        tty_raw_print("Playing NerfHack on terminals without CM is suspect.");
         tty_wait_synch();
     }
     SO = Tgetstr(nhStr("so")); /* standout start */
@@ -305,7 +305,7 @@ tty_startup(int *wid, int *hgt)
     *hgt = LI;
     /* cl: clear screen, set cursor to upper left */
     if (!(CL = Tgetstr(nhStr("cl")))) /* last thing set */
-        error("HACKEM needs CL.");
+        error("NerfHack needs CL.");
     if ((int) (tbufptr - tbuf) > (int) (sizeof tbuf))
         error("TERMCAP entry too big...\n");
     free((genericptr_t) tptr);

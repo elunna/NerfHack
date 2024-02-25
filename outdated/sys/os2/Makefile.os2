@@ -183,8 +183,8 @@ RLIBP	= c:\emx\lib		# Possible real mode C libraries
 #	The game name and description.
 #
 
-GAME	= hackem
-GAMEDES = "HACKEM 2.0.0"
+GAME	= nerfhack
+GAMEDES = "NerfHack 2.0.0"
 
 #
 #	The uppermost two lines for MSC, the middle two for GCC, and
@@ -1033,7 +1033,7 @@ $(OBJ)\wintty.o  : $(WIN)\$(CB) $(HACK_H) $(INCL)\tcap.h $(INCL)\date.h
 
 dat :	help_fil $(GAMEDIR)\data $(GAMEDIR)\rumors \
 	$(GAMEDIR)\oracles $(GAMEDIR)\quest.dat	$(GAMEDIR)\$(GAME).ico \
-	$(GAMEDIR)\$(GAME).cmd $(GAMEDIR)\hackem.cnf $(GAMEDIR)\nhdat \
+	$(GAMEDIR)\$(GAME).cmd $(GAMEDIR)\nerfhack.cnf $(GAMEDIR)\nhdat \
 	$(WINX11VARDAT)
 
 help_fil : $(GAMEDIR)\cmdhelp $(GAMEDIR)\help $(GAMEDIR)\hh $(GAMEDIR)\history \
@@ -1086,7 +1086,7 @@ cmd_msg :
 
 cmd_act :
 	$(ECHO) @echo off> $(CMDF)
-	$(ECHO) REM Command file for starting hackem.exe from PM/WPS Desktop>> $(CMDF)
+	$(ECHO) REM Command file for starting nerfhack.exe from PM/WPS Desktop>> $(CMDF)
 	$(ECHO) $(GAME).exe $(P)1 $(P)2 $(P)3 $(P)4 $(P)5 $(P)6 $(P)7>> $(CMDF)
 	$(ECHO) pause>> $(CMDF)
 
@@ -1094,8 +1094,8 @@ cmd_act :
 #	NetHack configuration file.  Will not overwrite an existing file.
 #
 
-$(GAMEDIR)\hackem.cnf :
-	$(CP) $(SSYS)\hackem.cnf $(GAMEDIR)
+$(GAMEDIR)\nerfhack.cnf :
+	$(CP) $(SSYS)\nerfhack.cnf $(GAMEDIR)
 
 #
 #	Documentation.

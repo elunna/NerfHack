@@ -1,5 +1,5 @@
 Makefile.* NHSUBST
-hackem.cnf NHSUBST
+nerfhack.cnf NHSUBST
 termcap NH_header=no
 Makefile.lib NH_header=no
 
@@ -12,8 +12,8 @@ pcmain.c	NH_filestag=(file_for_MSDOS,_OS/2,_Amiga,_and_Atari_versions_-_only_MSD
 pcsys.c		NH_filestag=(file%s_for_MSDOS,_OS/2_and_Atari_versions_-_only_MSDOS_tested_for_3.7)
 pcunix.c	NH_filestag=>pcsys.c
 
-hackem.cnf	NH_filestag=(file_for_MSDOS,_OS/2,_and_Atari_versions_-_only_MSDOS_tested_for_3.7)
-pctty.c		NH_filestag=>hackem.cnf
+nerfhack.cnf	NH_filestag=(file_for_MSDOS,_OS/2,_and_Atari_versions_-_only_MSDOS_tested_for_3.7)
+pctty.c		NH_filestag=>nerfhack.cnf
 
 ioctl.c		NH_filestag=(file%s_for_UNIX_and_Be_versions)
 unixtty.c	NH_filestag=>ioctl.c

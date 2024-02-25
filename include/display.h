@@ -1058,7 +1058,7 @@ enum glyph_offsets {
 #define MG_MALE    0x01000  /* represents a male mon or statue of one */
 #define MG_FEMALE  0x02000  /* represents a female mon or statue of one */
 #define MG_BADXY   0x04000  /* bad coordinates were passed */
-/* HACKEM added ones start here */
+/* NerfHack added ones start here */
 #define MG_PEACEFUL 0x08000 /* peaceful monster */
 
 /* docrt(): re-draw whole screen; docrt_flags(): docrt() with more control */

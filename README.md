@@ -1,10 +1,10 @@
-# Hack'EM
+# NerfHack
 
-Welcome, traveler, to HACKEM MUCHE!  
+Welcome, traveler, to NerfHack!  
 
-HACKEM is the followup to Hack'EM, which was a modernized SLASH'EM based on EvilHack - which was based on NetHack 3.6.2.
+NerfHack is the followup to Hack'EM, which was a modernized SLASH'EM based on EvilHack - which was based on NetHack 3.6.2.
 
-HACKEM starts fresh from NetHack 3.7.0 WIP aims to accomplish a couple concise goals:
+NerfHack starts fresh from NetHack 3.7.0 WIP aims to accomplish a couple concise goals:
 
 1) Increase the difficulty
 2) Do more with less
@@ -27,7 +27,7 @@ Lots of inspiration and changes were pulled from other forks. To make the game m
 
 Instead of importing loads and loads of content and becoming a "kitchen-sink variant", we are taking a much more restrained approach, only importing content that has demonstrable impact on gameplay and is easy to learn.
 
-As an example, in Hack'EM there were about double the monsters that Vanilla had, but many of them were very similar or almost copies of monsters Vanilla already had (many of the SLASH'EM monsters were like this). As a result, the monsters ported in to HACKEM is only about 30.
+As an example, in Hack'EM there were about double the monsters that Vanilla had, but many of them were very similar or almost copies of monsters Vanilla already had (many of the SLASH'EM monsters were like this). As a result, the monsters ported in to NerfHack is only about 30.
 
 Features that are *not* being ported include:
 - object materials

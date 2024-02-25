@@ -2641,13 +2641,13 @@ docontact(void)
         putstr(cwin, 0, buf);
         putstr(cwin, 0, "");
     }
-    putstr(cwin, 0, "To contact the NetHack development team directly,");
+    putstr(cwin, 0, "To contact the NerfHack development team directly,");
     /*XXX overflow possibilities*/
     Sprintf(buf, "see the 'Contact' form on our website or email <%s>.",
             DEVTEAM_EMAIL);
     putstr(cwin, 0, buf);
     putstr(cwin, 0, "");
-    putstr(cwin, 0, "For more information on NetHack, or to report a bug,");
+    putstr(cwin, 0, "For more information on NerfHack, or to report a bug,");
     Sprintf(buf, "visit our website \"%s\".", DEVTEAM_URL);
     putstr(cwin, 0, buf);
     display_nhwindow(cwin, FALSE);
@@ -2741,10 +2741,10 @@ static const struct {
     void (*f)(void);
     const char *text;
 } help_menu_items[] = {
-    { hmenu_doextversion, "About HACKEM (version information)." },
+    { hmenu_doextversion, "About NerfHack (version information)." },
     { dispfile_help, "Long description of the game and commands." },
     { dispfile_shelp, "List of game commands." },
-    { hmenu_dohistory, "Concise history of HACKEM." },
+    { hmenu_dohistory, "Concise history of NerfHack." },
     { hmenu_dowhatis, "Info on a character in the game display." },
     { hmenu_dowhatdoes, "Info on what a given key does." },
     { option_help, "List of game options." },
@@ -2753,8 +2753,8 @@ static const struct {
     { dokeylist, "Full list of keyboard commands." },
     { hmenu_doextlist, "List of extended commands." },
     { domenucontrols, "List menu control keys." },
-    { dispfile_usagehelp, "Description of HACKEM's command line." },
-    { dispfile_license, "The NetHack license." },
+    { dispfile_usagehelp, "Description of NerfHack's command line." },
+    { dispfile_license, "The NerfHack/NetHack license." },
     { docontact, "Support information." },
 #ifdef PORT_HELP
     { port_help, "%s-specific help and commands." },

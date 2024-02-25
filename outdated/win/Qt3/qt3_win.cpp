@@ -10,7 +10,7 @@
 //    Michael Hohmuth <hohmuth@inf.tu-dresden.de>
 //       - Userid control
 //    Svante Gerhard <svante@algonet.se>
-//       - .hackemrc tile and font size settings
+//       - .nerfhackrc tile and font size settings
 //    Dirk Schoenberger <schoenberger@signsoft.com>
 //       - KDE support
 //       - SlashEm support
@@ -169,7 +169,7 @@ aboutMsg()
 #else
         "Qt:\n     http://www.troll.no/\n"      // obsolete
 #endif
-        "HACKEM:\n     %s\n",
+        "NerfHack:\n     %s\n",
         // arguments
 #ifdef QT_VERSION_MAJOR
         QT_VERSION_MAJOR,
@@ -669,7 +669,7 @@ NetHackQtSettings::NetHackQtSettings(int w, int h) :
 	tileheight.setValue(30);
     }
 
-    // Tile/font sizes read from .hackemrc
+    // Tile/font sizes read from .nerfhackrc
     if (qt_tilewidth != NULL) {
 	tilewidth.setValue(atoi(qt_tilewidth));
 	free(qt_tilewidth);
@@ -4038,8 +4038,8 @@ void NetHackQtMainWindow::keyPressEvent(QKeyEvent* event)
 void NetHackQtMainWindow::closeEvent(QCloseEvent* e)
 {
     if ( gp.program_state.something_worth_saving ) {
-	switch ( QMessageBox::information( this, "HACKEM",
-	    "This will end your HACKEM session",
+	switch ( QMessageBox::information( this, "NerfHack",
+	    "This will end your NerfHack session",
 	    "&Save", "&Cancel", 0, 1 ) )
 	{
 	    case 0:
@@ -4087,7 +4087,7 @@ NetHackQtYnDialog::NetHackQtYnDialog(NetHackQtKeyBuffer& keysrc,const char* q,co
     question(q), choices(ch), def(df),
     keysource(keysrc)
 {
-    setCaption("HACKEM: Question");
+    setCaption("NerfHack: Question");
 }
 
 char NetHackQtYnDialog::Exec()
@@ -4985,7 +4985,7 @@ char NetHackQtBind::qt_yn_function(const char *question, const char *choices, CH
 #ifdef USE_POPUPS
 	// Improve some special-cases (DIRKS 08/02/23)
 	if (strcmp (choices,"ynq") == 0) {
-	    switch (QMessageBox::information (qApp->mainWidget(),"HACKEM",question,"&Yes","&No","&Quit",0,2))
+	    switch (QMessageBox::information (qApp->mainWidget(),"NerfHack",question,"&Yes","&No","&Quit",0,2))
 	    {
 	      case 0: return 'y'; 
 	      case 1: return 'n'; 
@@ -4994,7 +4994,7 @@ char NetHackQtBind::qt_yn_function(const char *question, const char *choices, CH
 	}
 
 	if (strcmp (choices,"yn") == 0) {
-	    switch (QMessageBox::information(qApp->mainWidget(),"HACKEM",question,"&Yes", "&No",0,1))
+	    switch (QMessageBox::information(qApp->mainWidget(),"NerfHack",question,"&Yes", "&No",0,1))
 	    {
 	      case 0: return 'y';
 	      case 1: return 'n'; 

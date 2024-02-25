@@ -145,7 +145,7 @@ struct Hook SM_FilterHook;
 struct Hook fillhook;
 struct TagItem wintags[] = {
     { WA_BackFill, (ULONG) &fillhook },
-    { WA_PubScreenName, (ULONG) "HACKEM" },
+    { WA_PubScreenName, (ULONG) "NerfHack" },
     { TAG_END, 0 },
 };
 #endif
@@ -1069,7 +1069,7 @@ char **argv;
     NewHackScreen.Height = max(SCREENHEIGHT, amiIDisplay->ypix);
     {
         static char fname[18];
-        sprintf(fname, "HACKEM %d.%d.%d", VERSION_MAJOR, VERSION_MINOR,
+        sprintf(fname, "NerfHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR,
                 PATCHLEVEL);
         NewHackScreen.DefaultTitle = fname;
     }

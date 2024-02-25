@@ -6839,7 +6839,7 @@ initoptions_init(void)
 /*
  *  Process user's run-time configuration file:
  *    get value of NETHACKOPTIONS;
- *    if command line specified -hackemrc=filename, use that;
+ *    if command line specified -nerfhackrc=filename, use that;
  *      if NETHACKOPTIONS is present,
  *        honor it if it has a list of options to set
  *        or ignore it if it specifies a file name;
@@ -6848,7 +6848,7 @@ initoptions_init(void)
  *      no extra options (normal use of NETHACKOPTIONS) will be set;
  *    otherwise (not on command line and either no NETHACKOPTIONS or that
  *        isn't a file name),
- *      pass Null to read_config_file() so that it will read ~/.hackemrc
+ *      pass Null to read_config_file() so that it will read ~/.nerfhackrc
  *        by default,
  *      then process the value of NETHACKOPTIONS as extra options.
  */
@@ -6899,10 +6899,10 @@ initoptions_finish(void)
         go.opt_phase = rc_file_opt;
         config_error_init(TRUE, namesrc, FALSE);
         config_error_add(
-                   "hackemrc file name \"%.40s\"... too long; using default",
+                   "nerfhackrc file name \"%.40s\"... too long; using default",
                          nameval);
         config_error_done();
-        nameval = namesrc = 0; /* revert to default hackemrc */
+        nameval = namesrc = 0; /* revert to default nerfhackrc */
     }
 
     config_error_init(TRUE, nameval, nameval ? CONFIG_ERROR_SECURE : FALSE);
@@ -6918,7 +6918,7 @@ initoptions_finish(void)
 
     if (gc.cmdline_rcfile)
         free((genericptr_t) gc.cmdline_rcfile), gc.cmdline_rcfile = 0;
-    /*[end of hackemrc handling]*/
+    /*[end of nerfhackrc handling]*/
 
     (void) fruitadd(gp.pl_fruit, (struct fruit *) 0);
     /*
@@ -7114,7 +7114,7 @@ feature_alert_opts(char *op, const char *optn)
         Sprintf(buf, "%lu.%lu.%lu", FEATURE_NOTICE_VER_MAJ,
                 FEATURE_NOTICE_VER_MIN, FEATURE_NOTICE_VER_PATCH);
         pline(
-          "Feature change alerts disabled for NetHack %s features and prior.",
+          "Feature change alerts disabled for NerfHack %s features and prior.",
               buf);
     }
     return 1;
@@ -9377,7 +9377,7 @@ sym_val(const char *strval) /* up to 4*BUFSZ-1 long; only first few
 /* data for option_help() */
 static const char *opt_intro[] = {
     "",
-    "                 NetHack Options Help:", "",
+    "                 NerfHack Options Help:", "",
 #define CONFIG_SLOT 3 /* fill in next value at run-time */
     (char *) 0,
 #if !defined(MICRO) && !defined(MAC)
@@ -9402,7 +9402,7 @@ static const char *const opt_epilog[] = {
     "uration file to change them.  Such changes will matter for new games.",
     "The \"other settings\" can be set with 'O', but when set within the",
     "configuration file they use their own directives rather than OPTIONS.",
-    "See NetHack's \"Guidebook\" for details.",
+    "See NerfHack's \"Guidebook\" for details.",
     (char *) 0
 };
 
@@ -9612,7 +9612,7 @@ all_options_strbuf(strbuf_t *sbuf)
     int i;
 
     strbuf_init(sbuf);
-    Sprintf(tmp, "# NetHack config, saved %s\n#\n",
+    Sprintf(tmp, "# NerfHack config, saved %s\n#\n",
             yyyymmddhhmmss((time_t) 0));
     strbuf_append(sbuf, tmp);
 

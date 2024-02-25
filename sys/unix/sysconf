@@ -8,7 +8,7 @@
 # program.
 #
 # This file can also be used to set local system defaults for run-time
-# options, using the same syntax as an individual user's ./hackemrc file.
+# options, using the same syntax as an individual user's ./nerfhackrc file.
 
 # Which users can use debug mode (aka wizard mode; accessed via '-D' command
 # line flag or OPTIONS=playmode:debug in the runtime options config file).
@@ -44,7 +44,7 @@ EXPLORERS=*
 # instead of the user's login name.
 #CHECK_PLNAME=1
 
-# Limit the number of simultaneous games (see also hackem.sh).
+# Limit the number of simultaneous games (see also nerfhack.sh).
 # Valid values are 0-25.
 # Commenting this out or setting the value to 0 constructs lock files
 # with UID and playername, so each user may have one game at a time,
@@ -86,7 +86,7 @@ POINTSMIN=1
 #PERS_IS_UID=1
 
 # Help menu control; 0 - include "command line usage" entry in help menu;
-# 1 - suppress it from the menu.  Does not affect 'hackem --usage' when
+# 1 - suppress it from the menu.  Does not affect 'nerfhack --usage' when
 # player has access to the command line.
 #HIDEUSAGE=0
 
@@ -94,7 +94,7 @@ POINTSMIN=1
 MAX_STATUENAME_RANK=50
 
 # Use "Live logging" for important events (achievements, wishes, etc)
-# Only available if HACKEM was compiled with LIVELOG.
+# Only available if NerfHack was compiled with LIVELOG.
 # Only really meaningful for public servers.
 # See the log in-game with #chronicle -command.
 # Bitmask for kinds of things you want to log - combine the following values
@@ -140,12 +140,12 @@ LIVELOG=0x0FFF
 #   %D current time, YYYYMMDDhhmmss format
 #   %n player name
 #   %N first character of player name
-DUMPLOGFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.hackem.txt
+DUMPLOGFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nerfhack.txt
 
 # End of game HTML dump.
-# Only available if HACKEM was compiled with DUMPHTML
+# Only available if NerfHack was compiled with DUMPHTML
 # Allows placeholders as above.
-DUMPHTMLFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.hackem.html
+DUMPHTMLFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nerfhack.html
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will
@@ -171,8 +171,8 @@ PANICTRACE_GDB=1
 PANICTRACE_LIBC=2
 
 # 'portable_device_paths' is only supported for Windows.  Starting with
-# 3.6.3, nethack on Windows treats the folder containing hackem.exe and
-# hackemW.exe as read-only and puts data files which are generated or
+# 3.6.3, nethack on Windows treats the folder containing nerfhack.exe and
+# nerfhackW.exe as read-only and puts data files which are generated or
 # modified during play or by the user in assorted folders derived from
 # user name.  3.6.4 added PORTABLE_DEVICE_PATHS to allow reverting to
 # the old behavior of having the run-time configuration file and other
@@ -185,7 +185,7 @@ PANICTRACE_LIBC=2
 # default values.  Unlike all the SYSCF values above, individual users
 # can override the overridden options set here by choosing their own
 # option settings via NETHACKOPTIONS in their environment or via
-# ~/.hackemrc run-time configuration file.
+# ~/.nerfhackrc run-time configuration file.
 #OPTIONS=!autopickup,fruit:tomato,symset:DECgraphics
 OPTIONS=bones
 OPTIONS=color

@@ -225,7 +225,7 @@ ghack_init_status_window()
     gtk_widget_set_style(GTK_WIDGET(titleLabel), bigStyle);
 
     /* Begin the second row */
-    dgnLevelLabel = gtk_label_new(_("HACKEM for Gnome"));
+    dgnLevelLabel = gtk_label_new(_("NerfHack for Gnome"));
     gtk_table_attach(GTK_TABLE(statTable), dgnLevelLabel, 0, 8, 1, 2,
                      GTK_FILL, 0, 0, 0);
     gtk_widget_set_style(GTK_WIDGET(dgnLevelLabel), bigStyle);

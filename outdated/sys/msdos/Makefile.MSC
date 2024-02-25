@@ -16,7 +16,7 @@
 # Game Installation Variables
 # NOTE: Make sure GAMEDIR exists before make is started.
 
-GAME = hackem
+GAME = nerfhack
 GAMEDIR =..\binary
 
 #
@@ -382,7 +382,7 @@ $(O)install.tag: 	$(DAT)\data	$(DAT)\rumors	 $(DAT)\dungeon \
 	if exist $(DAT)\symbols copy $(DAT)\symbols $(GAMEDIR)
 	copy $(SSHR)\termcap	  $(GAMEDIR)
 	copy *.tib                $(GAMEDIR)
-	copy $(SSHR)\hackem.cnf  $(GAMEDIR)\defaults.nh
+	copy $(SSHR)\nerfhack.cnf  $(GAMEDIR)\defaults.nh
 	copy $(MSYS)\NHAccess.nh  $(GAMEDIR)
 	copy $(U)recover.exe          $(GAMEDIR)
 	if exist $(DOC)\guideb*.txt copy $(DOC)\guideb*.txt $(GAMEDIR)

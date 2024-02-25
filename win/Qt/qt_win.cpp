@@ -10,7 +10,7 @@
 //    Michael Hohmuth <hohmuth@inf.tu-dresden.de>
 //       - Userid control
 //    Svante Gerhard <svante@algonet.se>
-//       - .hackemrc tile and font size settings
+//       - .nerfhackrc tile and font size settings
 //    Dirk Schoenberger <schoenberger@signsoft.com>
 //       - KDE support
 //       - SlashEm support

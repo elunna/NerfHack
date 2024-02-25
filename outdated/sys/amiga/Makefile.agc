@@ -97,7 +97,7 @@ CFLAGS = -O3 -I $(I)
 #   output file should appear immediately after $(LNSPEC).  $(LIN) should
 #   appear before the list of object files in each link command.  $(LLINK)
 #   should appear as the list of object files in the link command line that
-#   creates the HACKEM executable.  $(LLIB) should appear at the end of each
+#   creates the NerfHack executable.  $(LLIB) should appear at the end of each
 #   link command line.
 
 LINK = gcc -noixemul -O3
@@ -293,7 +293,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)wizard2.lev	$(SLIB)wizard3.lev \
 	$(XDFILES)
 
-INSTDUNGEONFILES= $(NETHACK)hackem.cnf $(INSTDUNGEONFILES1)
+INSTDUNGEONFILES= $(NETHACK)nerfhack.cnf $(INSTDUNGEONFILES1)
 
 
 INSTDATAFILES= \
@@ -859,9 +859,9 @@ $(NETHACK)record:
 $(SLIB)wizhelp: $(DAT)wizhelp
 	copy $(DAT)wizhelp $@
 
-# Create the directories here because hackem.cnf puts them there by default
-$(NETHACK)hackem.cnf:  $(AMI)hackem.cnf
-	copy $(AMI)hackem.cnf $@
+# Create the directories here because nerfhack.cnf puts them there by default
+$(NETHACK)nerfhack.cnf:  $(AMI)nerfhack.cnf
+	copy $(AMI)nerfhack.cnf $@
 	-makedir $(NETHACK)save
 	-makedir $(NETHACK)levels
 

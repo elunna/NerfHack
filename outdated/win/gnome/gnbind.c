@@ -1090,7 +1090,7 @@ gnome_getlin(const char *question, char *input)
 {
     int ret;
 
-    ret = ghack_ask_string_dialog(question, "", "hackem", input);
+    ret = ghack_ask_string_dialog(question, "", "nerfhack", input);
 
     if (ret == -1)
         input[0] = 0;

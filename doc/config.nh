@@ -9,11 +9,11 @@
 # playing.
 #
 # Copy the contents of this file into
-# * %USERPROFILE%\nethack\.hackemrc on Windows
-# * ~/.hackemrc (Unix, linux, macOS)
+# * %USERPROFILE%\nethack\.nerfhackrc on Windows
+# * ~/.nerfhackrc (Unix, linux, macOS)
 # * "NetHack Defaults" on pre-OSX Mac and BeOS
-# * defaults.nh, same folder as hackem.exe on DOS
-# * hackem.cnf on Amiga, Atari, OS/2, and VMS
+# * defaults.nh, same folder as nerfhack.exe on DOS
+# * nerfhack.cnf on Amiga, Atari, OS/2, and VMS
 #
 # To change the configuration, comment out the unwanted lines, and
 # uncomment the configuration you want.
@@ -55,12 +55,12 @@
 # Enable messages about what your character hears
 #OPTIONS=acoustics
 
-# Causes NetHack's top level command loop to treat two character sequence
+# Causes NerfHack's top level command loop to treat two character sequence
 # "ESC c" as M-c, for terminals or emulators which send "ESC c" when Alt+c
 # is pressed.
 #OPTIONS=altmeta
 
-# NetHack should display an ascii character map if it can.
+# NerfHack should display an ascii character map if it can.
 #OPTIONS=ascii_map
 
 # Automatically describe the terrain under cursor when asked to
@@ -74,7 +74,7 @@
 # Automatically try to open doors when walking into them
 #OPTIONS=autoopen
 
-# Let NetHack fill your quiver or make ready some suitable weapon,
+# Let NerfHack fill your quiver or make ready some suitable weapon,
 # when firing with empty quiver or nothing at the ready.
 #OPTIONS=autoquiver
 
@@ -112,7 +112,7 @@
 # Controls what information the program reveals when the game ends.
 #OPTIONS=disclose:+i +a +v +g +c +o
 
-# NetHack should pass eight-bit character values straight through
+# NerfHack should pass eight-bit character values straight through
 # to your terminal (default off).
 #OPTIONS=eight_bit_tty
 
@@ -199,7 +199,7 @@
 # Allow use of the mouse for input and travel.
 #OPTIONS=mouse_support
 
-# Read the NetHack news file, if present (default on).
+# Read the NerfHack news file, if present (default on).
 #OPTIONS=news
 
 # Send padding nulls to the terminal (default on).
@@ -286,7 +286,7 @@
 # Boldface monsters and --More-- (default off).
 #OPTIONS=standout
 
-# NetHack version level to suppress alert notification messages
+# NerfHack version level to suppress alert notification messages
 # about feature changes for that and prior versions.
 #OPTIONS=suppress_alert:3.6.0
 
@@ -338,7 +338,7 @@
 # Windowing system to use, such as 'tty' or 'x11'.
 #OPTIONS=windowtype:tty
 
-# NetHack port should wrap long lines of text if they don't fit in
+# NerfHack port should wrap long lines of text if they don't fit in
 # the visible area of the window.
 # WinCE only.
 #OPTIONS=wraptext
@@ -374,10 +374,10 @@
 # No startup splash screen. Windows GUI only.
 #OPTIONS=!splash_screen
 
-# How does NetHack prompt for character creation. Windows GUI only.
+# How does NerfHack prompt for character creation. Windows GUI only.
 #OPTIONS=player_selection:prompts
 
-# NetHack should pop up dialog boxes for input.
+# NerfHack should pop up dialog boxes for input.
 # Windows GUI only.
 #OPTIONS=popup_dialog
 
@@ -394,8 +394,8 @@
 #OPTIONS=windowcolors:status windowtext/window message windowtext/window
 
 # HACKDIR is the default location for everything.
-# Note: On Windows HACKDIR defaults to the location of the hackem.exe or
-# hackemW.exe file so setting HACKDIR below to override that is not usually
+# Note: On Windows HACKDIR defaults to the location of the nerfhack.exe or
+# nerfhackW.exe file so setting HACKDIR below to override that is not usually
 # necessary or recommended.
 #HACKDIR=c:\games\nethack
 

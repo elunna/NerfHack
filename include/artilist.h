@@ -275,7 +275,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 7), DFNS(AD_FIRE), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 4000L, NO_COLOR, HELLFIRE),
     
-    /* Debut artifact in HACKEM */
+    /* Debut artifact in NerfHack */
     A("Mayhem", STOMPING_BOOTS,
       (SPFX_RESTR | SPFX_DEFN | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
@@ -340,7 +340,7 @@ static NEARDATA struct artifact artilist[] = {
       COLD(5, 0), DFNS(AD_COLD), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, FROST_BRAND),
     
-    /* Debut artifact in HACKEM */
+    /* Debut artifact in NerfHack */
     A("Load Brand", HEAVY_SWORD,
       (SPFX_RESTR | SPFX_PROTECT | SPFX_HPHDAM),
       0, 0, PHYS(5, 20), NO_DFNS, NO_CARY, 0,
@@ -359,7 +359,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(2, 6), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 500L, NO_COLOR, ORIGIN),
     
-    /* Debut artifact in HACKEM */
+    /* Debut artifact in NerfHack */
     A("The Lenses of Truth", LENSES,
       (SPFX_RESTR | SPFX_SEEINV | SPFX_SEARCH), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,

@@ -2654,7 +2654,7 @@ struct pad {
  * default key handling
  *
  * This is the default NetHack keystroke processing.
- * Use the .hackemrc "altkeyhandling" option to set a
+ * Use the .nerfhackrc "altkeyhandling" option to set a
  * different handling type.
  *
  */
@@ -3646,7 +3646,7 @@ ray_kbhit(
  *
  * This is the NetHack keystroke processing from NetHack 3.4.0.
  * It can be built as a run-time loadable dll (nh340key.dll),
- * placed in the same directory as the hackem.exe executable,
+ * placed in the same directory as the nerfhack.exe executable,
  * and loaded by specifying OPTIONS=altkeyhandler:nh340key
  * in defaults.nh
  *

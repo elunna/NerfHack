@@ -90,7 +90,7 @@
 #define NEED_VARARGS
 #undef UNIX
 #define DLB
-#define HACKDIR "HACKEM:"
+#define HACKDIR "NerfHack:"
 #define NO_MACRO_CPATH
 #endif
 

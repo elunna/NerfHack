@@ -466,7 +466,7 @@ aboutMsg()
     (void) strsubst(vbuf, " - ", "\n- ");
     QString msg = nh_qsprintf(
         // format
-        "HACKEM-Qt is a version of NetHack built using" // no newline
+        "NerfHack-Qt is a version of NetHack built using" // no newline
 #ifdef KDE
         " KDE and"                                       // ditto
 #endif
@@ -474,7 +474,7 @@ aboutMsg()
         "\n"
         "This is %s%s and Lua %s.\n" // long nethack version, Qt & Lua versions
         "\n"
-        "HACKEM's Qt interface originally developed by Warwick Allison.\n"
+        "NerfHack's Qt interface originally developed by Warwick Allison.\n"
         "\n"
 #if 0
         "Homepage:\n     http://trolls.troll.no/warwick/nethack/\n" //obsolete
@@ -488,7 +488,7 @@ aboutMsg()
         "Qt:\n     http://www.troll.no/\n"      // obsolete
 #endif
         "Lua:\n     https://lua.org/\n"
-        "HACKEM:\n     %s\n", // DEVTEAM_URL
+        "NerfHack:\n     %s\n", // DEVTEAM_URL
         // arguments
 #ifdef QT_VERSION_MAJOR
         QT_VERSION_MAJOR,
@@ -538,7 +538,7 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
     addToolBar(toolbar);
     menubar = menuBar();
 
-    setWindowTitle("HACKEM-Qt");
+    setWindowTitle("NerfHack-Qt");
     setWindowIcon(QIcon(QPixmap(qt_compact_mode ? nh_icon_small : nh_icon)));
 
 #ifdef MACOS
@@ -711,16 +711,16 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
        nethack's #quit command with "really quit?" prompt, this quit--with
        Command+q as shortcut--pops up a dialog to choose between quit or
        cancel-and-resume-playing */
-    actn = game->addAction("Quit HACKEM-Qt", this, SLOT(doQuit(bool)));
+    actn = game->addAction("Quit NerfHack-Qt", this, SLOT(doQuit(bool)));
     actn->setMenuRole(QWidgetAction::QuitRole);
 #endif
 
-    actn = help->addAction("About HACKEM-Qt", this, SLOT(doAbout(bool)));
+    actn = help->addAction("About NerfHack-Qt", this, SLOT(doAbout(bool)));
 #ifdef MACOS
     actn->setMenuRole(QWidgetAction::AboutRole);
     /* for OSX, the preceding "About" went into the application menu;
        now add another duplicate one to the Help dropdown menu */
-    actn = help->addAction("About HACKEM-Qt", this, SLOT(doAbout(bool)));
+    actn = help->addAction("About NerfHack-Qt", this, SLOT(doAbout(bool)));
     actn->setMenuRole(QWidgetAction::NoRole);
 #else
     nhUse(actn);
@@ -1044,7 +1044,7 @@ void NetHackQtMainWindow::doQtSettings(bool)
 
 void NetHackQtMainWindow::doAbout(bool)
 {
-    QMessageBox::about(this, "About HACKEM-Qt", aboutMsg());
+    QMessageBox::about(this, "About NerfHack-Qt", aboutMsg());
 }
 
 // on OSX, "quit nethack" has been selected in the application menu or
@@ -1058,7 +1058,7 @@ void NetHackQtMainWindow::doQuit(bool)
     // nethack's #quit command itself) but this routine is unconditional
     // in case someone wants to change that
 #ifdef MACOS
-    QString info = nh_qsprintf("This will end your HACKEM session.%s",
+    QString info = nh_qsprintf("This will end your NerfHack session.%s",
                  !gp.program_state.something_worth_saving ? ""
                  : "\n(Cancel quitting and use the Save command"
                    "\nto save your current game.)");
@@ -1410,8 +1410,8 @@ void NetHackQtMainWindow::closeEvent(QCloseEvent *e UNUSED)
         /* this used to offer "Save" and "Cancel"
            but cancel (ignoring the close attempt) won't work
            if user has clicked on the window's Close button */
-	int act = QMessageBox::information(this, "HACKEM",
-                              "This will end your HACKEM session.",
+	int act = QMessageBox::information(this, "NerfHack",
+                              "This will end your NerfHack session.",
                               "&Save and exit", "&Quit without saving", 0, 1);
 	switch (act) {
         case 0:

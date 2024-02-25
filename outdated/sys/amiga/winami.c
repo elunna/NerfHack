@@ -106,7 +106,7 @@ struct window_procs amiv_procs = {
 };
 
 unsigned short amii_initmap[AMII_MAXCOLORS];
-/* Default pens used unless user overides in hackem.cnf. */
+/* Default pens used unless user overides in nerfhack.cnf. */
 unsigned short amii_init_map[AMII_MAXCOLORS] = {
     0x0000, /* color #0  C_BLACK    */
     0x0FFF, /* color #1  C_WHITE    */
@@ -207,7 +207,7 @@ int wincnt = 0; /* # of nh windows opened */
 extern struct Hook fillhook;
 struct TagItem tags[] = {
     { WA_BackFill, (ULONG) &fillhook },
-    { WA_PubScreenName, (ULONG) "HACKEM" },
+    { WA_PubScreenName, (ULONG) "NerfHack" },
     { TAG_DONE, 0 },
 };
 #endif
@@ -393,7 +393,7 @@ struct amii_WinDesc *amii_wins[MAXWIN + 1];
 UWORD amii_defpens[20];
 
 struct TagItem scrntags[] = {
-    { SA_PubName, (ULONG) "HACKEM" },
+    { SA_PubName, (ULONG) "NerfHack" },
     { SA_Overscan, OSCAN_TEXT },
     { SA_AutoScroll, TRUE },
 #if LIBRARY_VERSION >= 39

@@ -59,7 +59,7 @@
 #endif
 
 /*
- * If hackem.exe will be installed with privilege so that the playground
+ * If nerfhack.exe will be installed with privilege so that the playground
  * won't need to be left unprotected, define SECURE to suppress a couple
  * of file protection fixups (protection of bones files and ownership of
  * save files).

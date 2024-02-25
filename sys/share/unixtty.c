@@ -196,7 +196,7 @@ static void
 setctty(void)
 {
     if (STTY(&curttyb) < 0 || STTY2(&curttyb2) < 0)
-        perror("HACKEM (setctty)");
+        perror("NerfHack (setctty)");
 }
 
 /*
@@ -208,7 +208,7 @@ void
 gettty(void)
 {
     if (GTTY(&inittyb) < 0 || GTTY2(&inittyb2) < 0)
-        perror("HACKEM (gettty)");
+        perror("NerfHack (gettty)");
     curttyb = inittyb;
     curttyb2 = inittyb2;
     ospeed = OSPEED(inittyb);
@@ -233,7 +233,7 @@ settty(const char *s)
     if (s)
         raw_print(s);
     if (STTY(&inittyb) < 0 || STTY2(&inittyb2) < 0)
-        perror("HACKEM (settty)");
+        perror("NerfHack (settty)");
     iflags.echo = (inittyb.echoflgs & ECHO) ? ON : OFF;
     iflags.cbreak = (CBRKON(inittyb.cbrkflgs & CBRKMASK)) ? ON : OFF;
     curttyb.inputflags |= STRIPHI;

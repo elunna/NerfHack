@@ -99,7 +99,7 @@ void
 startup()
 {
     if (appFail) {
-        printf("HACKEM fits in memory, but it cannot allocate memory");
+        printf("NerfHack fits in memory, but it cannot allocate memory");
         printf(" for the overlay buffer\nand the runtime functions.  ");
         printf("Please free up just %ld more bytes.",
                (long) (MIN_OVRBUF - tmpbuffer * 16L));

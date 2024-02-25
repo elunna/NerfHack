@@ -42,7 +42,7 @@ WIZARDS=*
 # Disabled by setting to 0, or commenting out.
 #BONES_POOLS=10
 
-# Limit the number of simultaneous games (see also hackem.sh).
+# Limit the number of simultaneous games (see also nerfhack.sh).
 #MAXPLAYERS=10
 
 # If not null, added to string "To get local support, " in the support

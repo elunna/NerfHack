@@ -16,10 +16,10 @@
 #   This is used for building two distinct executables of NetHack:
 #
 #   A tty port utilizing the Win32 Console I/O subsystem, Console
-#       hackem.exe
+#       nerfhack.exe
 #
 #   A Win32 native port built on the Windows API, Graphical NetHack or
-#       hackemW.exe
+#       nerfhackW.exe
 #
 #   If you have any questions about building NetHack for the Windows platform
 #   please read sys/windows/Install.windows file included in the distribution.
@@ -1365,8 +1365,8 @@ install:  envchk.tag libdir.tag ottydir$(TARGET_CPU).tag \
 		$(LUASRC)\lua.h $(PDCDEP) \
 		$(INCL)\nhlua.h $(OUTL)utility.tag \
 		$(DAT)\data $(DAT)\rumors $(DAT)\oracles $(DAT)\engrave \
-		$(DAT)\epitaph $(DAT)\bogusmon $(GAMEDIR)\hackem.exe \
-		$(GAMEDIR)\hackemW.exe $(GAMEDIRDLLS) install.tag
+		$(DAT)\epitaph $(DAT)\bogusmon $(GAMEDIR)\nerfhack.exe \
+		$(GAMEDIR)\nerfhackW.exe $(GAMEDIRDLLS) install.tag
 	@echo Done.
 
 !IF "$(INTERNET_AVAILABLE)" == "Y"
@@ -1447,7 +1447,7 @@ GAMEOBJ=$(GAMEOBJ:^ =^
 #--------
 #
 
-$(GAMEDIR)\hackem.exe : gamedir.tag $(OTTY)consoletty.o \
+$(GAMEDIR)\nerfhack.exe : gamedir.tag $(OTTY)consoletty.o \
 			$(ALLOBJTTY) $(CURSESWINCONOBJS) \
 			$(TTYSOUNDOBJS) $(OTTY)date.o $(OTTY)console.res \
 			$(LUALIB) $(TTYOBJ) $(PDCWINCONLIB) $(PDCWINCONOBJS)
@@ -1470,7 +1470,7 @@ $(GAMEDIR)\hackem.exe : gamedir.tag $(OTTY)consoletty.o \
 # NetHackW
 #---------
 #
-$(GAMEDIR)\hackemW.exe : gamedir.tag $(OGUI)tile.o \
+$(GAMEDIR)\nerfhackW.exe : gamedir.tag $(OGUI)tile.o \
 			$(ALLOBJGUI) $(GAMEOBJGUI) $(GUIOBJ) $(GUISOUNDOBJS) \
 			$(CURSESWINGUIOBJS) $(OGUI)date.o \
 			$(OGUI)NetHackW.res \
@@ -1531,7 +1531,7 @@ install.tag: 	$(DAT)\data $(DAT)\rumors $(DAT)\oracles $(DLB) \
 	if exist $(DOC)\nethack.txt copy $(DOC)\nethack.txt $(GAMEDIR)\NetHack.txt
 	@if exist $(GAMEDIR)\NetHack.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHack.PDB to conserve space
 	@if exist $(GAMEDIR)\NetHackW.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHackW.PDB to conserve space
-	-if exist $(MSWSYS)\.hackemrc.template copy $(MSWSYS)\.hackemrc.template   $(GAMEDIR)
+	-if exist $(MSWSYS)\.nerfhackrc.template copy $(MSWSYS)\.nerfhackrc.template   $(GAMEDIR)
 	-if not exist $(GAMEDIR)\record. goto>$(GAMEDIR)\record.
 	echo install done > $@
 
@@ -1556,12 +1556,12 @@ $(INCL)\nhlua.h:
 tileutil: $(U)gif2txt.exe $(U)gif2tx32.exe $(U)txt2ppm.exe
 	@echo Optional tile development utilities are up to date.
 
-$(OGUI)NetHackW.res: $(SRC)\tiles.bmp $(MSWIN)\hackemW.rc $(MSWIN)\NetHack.ico \
+$(OGUI)NetHackW.res: $(SRC)\tiles.bmp $(MSWIN)\nerfhackW.rc $(MSWIN)\NetHack.ico \
 	$(MSWIN)\mnsel.bmp $(MSWIN)\mnselcnt.bmp $(MSWIN)\mnunsel.bmp \
 	$(MSWIN)\petmark.bmp $(MSWIN)\pilemark.bmp $(MSWIN)\NetHack.ico \
 	$(MSWIN)\rip.bmp $(MSWIN)\splash.bmp $(WAV)
 	@echo Building resource file $@ from $**
-	$(rc) -nologo -r -fo$@ -i$(MSWIN) -i$(SndWavDir) -dNDEBUG $(RCFLAGS) $(MSWIN)\hackemW.rc
+	$(rc) -nologo -r -fo$@ -i$(MSWIN) -i$(SndWavDir) -dNDEBUG $(RCFLAGS) $(MSWIN)\nerfhackW.rc
 
 $(OTTY)console.res: $(MSWSYS)\console.rc $(MSWSYS)\NetHack.ico $(WAV)
 	@echo Building resource file $@ from $**
@@ -2291,7 +2291,7 @@ $(SndWavDir)\sa2_xplevelup.wav: $(SndWavDir)\sa2_xplevelup.uu $(U)uudecode.exe
 #===============================================================================
 
 spotless: clean
-	if exist $(GAMEDIR)\hackem.exe del $(GAMEDIR)\hackem.exe
+	if exist $(GAMEDIR)\nerfhack.exe del $(GAMEDIR)\nerfhack.exe
 	if exist $(GAMEDIR)\NetHack.pdb del $(GAMEDIR)\NetHack.pdb
 	if exist $(GAMEDIR)\nhdat$(NHV) del $(GAMEDIR)\nhdat$(NHV)
 	if exist $(INCL)\date.h         del $(INCL)\date.h

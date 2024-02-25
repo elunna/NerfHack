@@ -969,8 +969,8 @@ unix,vms: allow digits after first character in name at "Who are you?" prompt
 unix: implement fcntl(2) locking on systems that can handle it
 vms: the DLB configuration could fail to build if a file without a dot
 	in its name happened to match a logical name
-Windows: starting a game with hackem.exe (tty) and saving, then restoring
-	and finishing with hackemW.exe (win32) would display the high scores
+Windows: starting a game with nerfhack.exe (tty) and saving, then restoring
+	and finishing with nerfhackW.exe (win32) would display the high scores
 	output in a series of popup windows, one for each line of text
 Windows, probably MSDOS and OS/2: attempting to use very first false rumor
 	for cookie fortune or random engraving could produce garbled text

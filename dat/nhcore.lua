@@ -136,7 +136,7 @@ nhcore = {
 
     -- getpos_tip is called the first time the code enters getpos()
     
-    -- HACKEM: We assume people already know how to use farlook.
+    -- NerfHack: We assume people already know how to use farlook.
     -- getpos_tip = show_getpos_tip,
 
     -- enter_tutorial and leave_tutorial

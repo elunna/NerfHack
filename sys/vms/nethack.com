@@ -15,7 +15,7 @@ $!			!note: "-s" is ambiguous between "play as a samurai"
 $!			!   vs "show scoreboard", so use "-S" for the former
 $!	"-x" or "-X"	!play in 'explore' mode (practice for beginners)
 $!	"-D"		!play in 'wizard' mode (for debugging, available only
-$!			! to the username compiled into hackem.exe as WIZARD)
+$!			! to the username compiled into nerfhack.exe as WIZARD)
 $!	"-dec"		!turn on DECgraphics mode (VT100 line drawing, done
 $!			! automatically below if appropriate term attribs set)
 $!	"-d" dir-path	!specify an alternate playground directory (not

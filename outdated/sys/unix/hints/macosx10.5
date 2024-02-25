@@ -152,7 +152,7 @@ POSTINSTALL+= sys/unix/hints/macosx.sh editsysconf sys/unix/sysconf $(INSTDIR)/s
 CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
 else ifdef WANT_SOURCE_INSTALL
 PREFIX=$(abspath $(NHSROOT))
-# suppress hackem.sh"
+# suppress nerfhack.sh"
 #SHELLDIR=
 HACKDIR=$(PREFIX)/playground
 INSTDIR=$(HACKDIR)
@@ -176,8 +176,8 @@ GAMEPERM = 0700
 VARFILEPERM = 0600
 VARDIRPERM = 0700
 ifdef WANT_WIN_X11
-# install hackem.rc as ~/.hackemrc if no ~/.hackemrc exists
-PREINSTALL= cp -n win/X11/hackem.rc ~/.hackemrc || true
+# install nerfhack.rc as ~/.nerfhackrc if no ~/.nerfhackrc exists
+PREINSTALL= cp -n win/X11/nerfhack.rc ~/.nerfhackrc || true
 endif	# WANT_WIN_X11
 POSTINSTALL+= sys/unix/hints/macosx.sh editsysconf sys/unix/sysconf $(INSTDIR)/sysconf; $(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; $(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf; chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
 CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE

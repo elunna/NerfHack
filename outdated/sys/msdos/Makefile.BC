@@ -24,7 +24,7 @@
 # NOTE: Make sure GAMEDIR exists before nmake is started.
 #
 
-GAME	= HACKEM
+GAME	= NerfHack
 GAMEDIR = ..\binary
 
 #
@@ -289,7 +289,7 @@ OVLINIT =$(OBJ)\ovlinit.o
 
 BCINCL	 = $(BCTOP)\include	# include directory for main BC headers
 BCLIB	 = $(BCTOP)\lib		# library directory for main BC libraries
-BCCFG	 = hackem.cfg		# name of the nethack configuration file
+BCCFG	 = nerfhack.cfg		# name of the nethack configuration file
 VROOMMCFG= vroomm.cfg		# name of file with code segment information
 
 #
@@ -928,7 +928,7 @@ install.tag: 	$(DAT)\data	$(DAT)\rumors	$(DAT)\dungeon \
 	if exist $(DOC)\guideb*.txt copy $(DOC)\guideb*.txt  $(GAMEDIR)
 	if exist $(DOC)\nethack.txt copy $(DOC)\nethack.txt  $(GAMEDIR)\NetHack.txt
 	if exist $(DOC)\recover.txt copy $(DOC)\recover.txt  $(GAMEDIR)
-	copy $(SYS)\hackem.cnf   $(GAMEDIR)\defaults.nh
+	copy $(SYS)\nerfhack.cnf   $(GAMEDIR)\defaults.nh
 	copy $(MSYS)\NHAccess.nh  $(GAMEDIR)
 	copy $(U)recover.exe  $(GAMEDIR)
 	if exist *.tib copy *.tib $(GAMEDIR)

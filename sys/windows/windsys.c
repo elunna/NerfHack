@@ -315,9 +315,9 @@ interject_assistance(int num, int interjection_type, genericptr_t ptr1, genericp
                     "displayed\n"
                     "inside an unzip utility.\n\n"
                     "You have to unzip the contents of the zip file into a\n"
-                    "folder on your system, and then run \"hackem.exe\" or "
+                    "folder on your system, and then run \"nerfhack.exe\" or "
                     "\n"
-                    "\"hackemW.exe\" from there.\n\n"
+                    "\"nerfhackW.exe\" from there.\n\n"
                     "If that is not the situation, you are encouraged to\n"
                     "report the error as shown above.\n\n",
                     1023);
@@ -431,7 +431,7 @@ GetConsoleHwnd(void)
     /* Get current window title */
     GetConsoleTitle(OldTitle, sizeof OldTitle);
 
-    (void) sprintf(NewTitle, "HACKEM%ld/%ld", GetTickCount(),
+    (void) sprintf(NewTitle, "NerfHack%ld/%ld", GetTickCount(),
                    GetCurrentProcessId());
     SetConsoleTitle(NewTitle);
 
