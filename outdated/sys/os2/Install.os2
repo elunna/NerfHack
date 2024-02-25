@@ -164,7 +164,7 @@
     fakewiz2.lev   fire.lev       help           hh             history
     juiblex.lev    knox.lev       license        medusa-1.lev   medusa-2.lev
     minefill.lev   minend-1.lev   minend-2.lev   minetn-1.lev   minetn-2.lev
-    nethack.cmd    nerfhack.cnf   nerfhack.exe   nethack.ico    opthelp
+    nethack.cmd    nerfhack.cnf   NerfHack.exe   nethack.ico    opthelp
     options        oracle.lev     oracles        orcus.lev      quest.dat
     recover.exe    rumors         sanctum.lev    soko1-1.lev    soko1-2.lev
     soko2-1.lev    soko2-2.lev    soko3-1.lev    soko3-2.lev    soko4-1.lev
@@ -212,7 +212,7 @@
     the program exit, because otherwise you wouldn't get to see the high score
     list upon quitting due to PM/WPS automatically closing the program window.
     When starting NetHack normally from OS/2 command prompt, the command
-    processor starts nerfhack.exe instead, so no extra pause is generated.
+    processor starts NerfHack.exe instead, so no extra pause is generated.
 
 9.  If you want to clear up the temporary files and objects created by the
     compilation process, you may issue "make spotless".  This will return your

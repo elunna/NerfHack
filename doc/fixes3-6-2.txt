@@ -614,7 +614,7 @@ windows: Added ntassert() mechanism for Windows based port use
 windows: heed OPTIONS=symset:default in config file if it is present
 windows: add curses window port which can co-exist with tty in exe and be
 	selectable in user config file via OPTIONS=windowtype:curses
-windows-gui: In nerfhackW, there could be conflicts between menu accelerators
+windows-gui: In NerfHackW, there could be conflicts between menu accelerators
 	and an extra choice accelerator to fix H7132.
 windows-gui: recognize new BL_RESET in status_update; no change in behavior yet
 windows-gui: align hpbar behavior at zero hit points with tty behavior

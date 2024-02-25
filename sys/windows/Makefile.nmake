@@ -16,10 +16,10 @@
 #   This is used for building two distinct executables of NetHack:
 #
 #   A tty port utilizing the Win32 Console I/O subsystem, Console
-#       nerfhack.exe
+#       NerfHack.exe
 #
 #   A Win32 native port built on the Windows API, Graphical NetHack or
-#       nerfhackW.exe
+#       NerfHackW.exe
 #
 #   If you have any questions about building NetHack for the Windows platform
 #   please read sys/windows/Install.windows file included in the distribution.
@@ -1365,8 +1365,8 @@ install:  envchk.tag libdir.tag ottydir$(TARGET_CPU).tag \
 		$(LUASRC)\lua.h $(PDCDEP) \
 		$(INCL)\nhlua.h $(OUTL)utility.tag \
 		$(DAT)\data $(DAT)\rumors $(DAT)\oracles $(DAT)\engrave \
-		$(DAT)\epitaph $(DAT)\bogusmon $(GAMEDIR)\nerfhack.exe \
-		$(GAMEDIR)\nerfhackW.exe $(GAMEDIRDLLS) install.tag
+		$(DAT)\epitaph $(DAT)\bogusmon $(GAMEDIR)\NerfHack.exe \
+		$(GAMEDIR)\NerfHackW.exe $(GAMEDIRDLLS) install.tag
 	@echo Done.
 
 !IF "$(INTERNET_AVAILABLE)" == "Y"
@@ -1447,7 +1447,7 @@ GAMEOBJ=$(GAMEOBJ:^ =^
 #--------
 #
 
-$(GAMEDIR)\nerfhack.exe : gamedir.tag $(OTTY)consoletty.o \
+$(GAMEDIR)\NerfHack.exe : gamedir.tag $(OTTY)consoletty.o \
 			$(ALLOBJTTY) $(CURSESWINCONOBJS) \
 			$(TTYSOUNDOBJS) $(OTTY)date.o $(OTTY)console.res \
 			$(LUALIB) $(TTYOBJ) $(PDCWINCONLIB) $(PDCWINCONOBJS)
@@ -1470,7 +1470,7 @@ $(GAMEDIR)\nerfhack.exe : gamedir.tag $(OTTY)consoletty.o \
 # NetHackW
 #---------
 #
-$(GAMEDIR)\nerfhackW.exe : gamedir.tag $(OGUI)tile.o \
+$(GAMEDIR)\NerfHackW.exe : gamedir.tag $(OGUI)tile.o \
 			$(ALLOBJGUI) $(GAMEOBJGUI) $(GUIOBJ) $(GUISOUNDOBJS) \
 			$(CURSESWINGUIOBJS) $(OGUI)date.o \
 			$(OGUI)NetHackW.res \
@@ -2291,7 +2291,7 @@ $(SndWavDir)\sa2_xplevelup.wav: $(SndWavDir)\sa2_xplevelup.uu $(U)uudecode.exe
 #===============================================================================
 
 spotless: clean
-	if exist $(GAMEDIR)\nerfhack.exe del $(GAMEDIR)\nerfhack.exe
+	if exist $(GAMEDIR)\NerfHack.exe del $(GAMEDIR)\NerfHack.exe
 	if exist $(GAMEDIR)\NetHack.pdb del $(GAMEDIR)\NetHack.pdb
 	if exist $(GAMEDIR)\nhdat$(NHV) del $(GAMEDIR)\nhdat$(NHV)
 	if exist $(INCL)\date.h         del $(INCL)\date.h

@@ -22,8 +22,8 @@ NHSROOT=.
 
 #	make NetHack (as opposite to variants or such)
 #PREFIX	 = /usr
-GAME     = nerfhack
-# GAME     = nerfhack.exe
+GAME     = NerfHack
+# GAME     = NerfHack.exe
 # GAME     = nethack.prg
 #GAMEUID  = games
 #GAMEGRP  = bin

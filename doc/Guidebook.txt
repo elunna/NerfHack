@@ -3739,7 +3739,7 @@
 
      HACKDIR
        Default location of files NetHack needs. On Windows HACKDIR defaults
-       to  the  location of the nerfhack.exe or nerfhackW.exe file so setting
+       to  the  location of the NerfHack.exe or NerfHackW.exe file so setting
        HACKDIR to override that is not usually necessary or recommended.
 
      LEVELDIR

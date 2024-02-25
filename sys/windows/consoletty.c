@@ -3646,7 +3646,7 @@ ray_kbhit(
  *
  * This is the NetHack keystroke processing from NetHack 3.4.0.
  * It can be built as a run-time loadable dll (nh340key.dll),
- * placed in the same directory as the nerfhack.exe executable,
+ * placed in the same directory as the NerfHack.exe executable,
  * and loaded by specifying OPTIONS=altkeyhandler:nh340key
  * in defaults.nh
  *

@@ -122,9 +122,9 @@
     [.dat] subdirectory.  Then it will create the playground directory,
     if necessary, plus the associated [.save] subdirectory.  Next it will
     copy the data files into the playground; this step can take a while.
-    Finally it will copy nerfhack.exe and a few additional support files.
+    Finally it will copy NerfHack.exe and a few additional support files.
 
-    After it completes, the files [.src]nethack.olb, [.src]nerfhack.exe,
+    After it completes, the files [.src]nethack.olb, [.src]NerfHack.exe,
     [.util]*.obj, [.util]*_comp.exe, and [.util]makedefs.exe can be
     deleted in order to save disk space if desired.  The other program,
     [.util]recover.exe, should not be deleted unless you make a copy of
@@ -132,7 +132,7 @@
     used to resurrect some games disrupted by system or program crash.
 
 8.  The file nethack.com which is copied to the playground directory can
-    be used to invoke NetHack, or nerfhack.exe can be run directly.  Most
+    be used to invoke NetHack, or NerfHack.exe can be run directly.  Most
     of the command-line options specified in the Unix man-page (file
     [.doc]nethack.txt) are also applicable to VMS.  Some comments at the
     beginning of nethack.com illustrate several of the options.  New
@@ -301,7 +301,7 @@ Notes:
     will be honored; if there is no such translation, installed privs
     will be deactivated.
 
-    To be able to install nerfhack.exe with privileges (SYSPRV or GRPPRV,
+    To be able to install NerfHack.exe with privileges (SYSPRV or GRPPRV,
     perhaps EXQUOTA, depending on site usage and needs), you'll need to
     link it with debugging and tracebacks both disabled.  You can do this
     by specifying an argument to vmsbuild.com when performing step #6
@@ -311,7 +311,7 @@ Notes:
     built NetHack, you can relink with tracebacks disabled by doing
        $ @[.SYS.VMS]VMSBUILD "LINK" "" "" "/noTrace/noDebug"
 
-8.  If you can't or won't install nerfhack.exe with privileges and if you
+8.  If you can't or won't install NerfHack.exe with privileges and if you
     don't have access to a privileged account yourself, then if you intend
     to allow other users to access your copy of NetHack you should probably
     place an ACL on the playground directory and its save subdirectory.
