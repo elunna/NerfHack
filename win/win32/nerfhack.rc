@@ -78,9 +78,9 @@ BEGIN
         BEGIN
             VALUE "FileDescription", "NerfHack for Windows - TTY Interface"
             VALUE "FileVersion", "2.0.0"
-            VALUE "InternalName", "nerfhack"
-            VALUE "LegalCopyright", "Copyright (C) 1985 - 2021.  By Stichting Mathematisch Centrum and M. Stephenson.  See license for details."
-            VALUE "OriginalFilename", "nerfhack.exe"
+            VALUE "InternalName", "NerfHack"
+            VALUE "LegalCopyright", "Copyright (C) 1985 - 2024.  By Stichting Mathematisch Centrum and M. Stephenson.  See license for details.\0"
+            VALUE "OriginalFilename", "NerfHack.exe"
             VALUE "ProductName", "NerfHack"
             VALUE "ProductVersion", "2.0.0"
         END
