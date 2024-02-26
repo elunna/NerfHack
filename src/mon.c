@@ -1825,6 +1825,9 @@ can_carry(struct monst* mtmp, struct obj* otmp)
     int iquan, otyp = otmp->otyp, newload = otmp->owt;
     struct permonst *mdat = mtmp->data;
     short nattk = 0;
+    boolean shopgood = (otmp->unpaid 
+                        || (otmp->where == OBJ_FLOOR && !otmp->no_charge 
+                            && costly_spot(otmp->ox, otmp->oy)));
 
     if (notake(mdat))
         return 0; /* can't carry anything */
@@ -1863,6 +1866,11 @@ can_carry(struct monst* mtmp, struct obj* otmp)
     /* steeds don't pick up stuff (to avoid shop abuse) */
     if (mtmp == u.usteed)
         return 0;
+    
+    /* Pets cannot pick up shop items */
+    if (mtmp->mtame && shopgood)
+        return 0;
+    
     if (mtmp->isshk)
         return iquan; /* no limit */
     if (mtmp->mpeaceful && !mtmp->mtame && otmp->where != OBJ_INVENT)
