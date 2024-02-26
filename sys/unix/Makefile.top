@@ -22,7 +22,7 @@ NHSROOT=.
 
 #	make NetHack (as opposite to variants or such)
 #PREFIX	 = /usr
-GAME     = NerfHack
+GAME     = nerfhack
 # GAME     = NerfHack.exe
 # GAME     = nethack.prg
 #GAMEUID  = games

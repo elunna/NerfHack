@@ -401,7 +401,7 @@ WINCURSESLIB = -lncurses
 #
 # LIBS =
 
-# make NetHack
+# make NerfHack
 GAME     = nerfhack
 # GAME     = nethack.prg
 GAMEBIN = $(GAME)
