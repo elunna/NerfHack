@@ -3830,6 +3830,22 @@
              | M2_LORD | M2_MALE | M2_COLLECT,
          M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
          MH_DEMON, 28, HI_LORD, BUER),
+    /* In SpliceHack this guy had a fumbling attack - we are replacing it
+     * with a clerical spellcasting ability. */
+    MON(NAM("Kostchtchie"), S_DEMON,
+        LVL(54, 15, 3, 30, -15), (G_HELL | G_NOGEN | G_UNIQ),
+        A(ATTK(AT_WEAP, AD_PHYS, 5, 10),
+          ATTK(AT_MAGC, AD_CLRC, 2, 8),
+          ATTK(AT_HUGS, AD_PHYS, 2, 12),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(2250, 750, MS_BOAST, MZ_GIGANTIC),
+        MR_COLD | MR_POISON | MR_STONE, MR_COLD | MR_POISON,
+        M1_HUMANOID | M1_CARNIVORE,
+        M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_JEWELS
+            | M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
+            | M2_LORD | M2_MALE,
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_WANTSAMUL,
+        MH_GIANT | MH_DEMON, 30, HI_LORD, KOSTCHTCHIE),
     MON(NAM("Yeenoghu"), S_DEMON,
         LVL(56, 18, -5, 80, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6),

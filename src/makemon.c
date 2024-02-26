@@ -569,6 +569,14 @@ m_initweap(register struct monst *mtmp)
         case PM_BAPHOMET:
             (void) mongets(mtmp, RANSEUR);
             break;
+        case PM_KOSTCHTCHIE:
+            otmp = mksobj(WAR_HAMMER, FALSE, FALSE);
+            otmp->spe = rnd(5) + 8;
+            otmp->oeroded = otmp->oeroded2 = 0;
+            /* TODO: Name this hammer Matalotok */
+            (void) mpickobj(mtmp, otmp);
+            (void) mongets(mtmp, BOULDER);
+            break;
         }
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish
