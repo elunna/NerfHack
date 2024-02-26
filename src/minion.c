@@ -121,7 +121,11 @@ msummon(struct monst *mon)
         }
         cnt = ((dtype != NON_PM)
                && !rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
-    }
+    } else if (mon == &gy.youmonst) {
+        atyp = rn2(3) - 1; /* Random alignment */
+        dtype =  !rn2(2) ? dprince(atyp) : dlord(atyp);
+        cnt = 1;
+    }    
 
     if (dtype == NON_PM)
         return 0;
@@ -175,6 +179,7 @@ msummon(struct monst *mon)
                 pline("%s appears in a %s of %s!", Amonnam(mtmp),
                       cloud, what);
             }
+            newsym(mtmp->mx, mtmp->my);
         }
         cnt--;
     }
@@ -309,14 +314,16 @@ demon_talk(register struct monst *mtmp)
     /* Bribable monsters are very greedy, and don't care how much gold you
      * appear to be carrying. */
     cash = money_cnt(gi.invent);
-    demand = rn1(4000, 4000)
-             + (2000 * (1 - (sgn(u.ualign.type) == sgn(mon_aligntyp(mtmp)))));
+    demand = rn1(2000, 2000)
+             + (1000 * (1 - (sgn(u.ualign.type) == sgn(mon_aligntyp(mtmp)))));
 
     if (!demand || gm.multi < 0 || cash <= 0) { /* you have no gold or can't move */
         mtmp->mpeaceful = 0;
         set_malign(mtmp);
         return 0;
     } else {
+        
+#if 0
         /* make sure that the demand is unmeetable if the monster
            has the Amulet, preventing monster from being satisfied
            and removed from the game (along with said Amulet...) */
@@ -327,7 +334,8 @@ demon_talk(register struct monst *mtmp)
         if (mon_has_amulet(mtmp) || Deaf)
             /* 125: 5*25 in case hero has maximum possible charisma */
             demand = cash + (long) rn1(1000, 125);
-
+#endif
+        
         if (!Deaf)
             pline("%s demands %ld %s for safe passage.",
                   Amonnam(mtmp), demand, currency(demand));
