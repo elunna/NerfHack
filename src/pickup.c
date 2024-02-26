@@ -2441,7 +2441,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
                                    && !which_armor(mtmp, W_ARMG)
                                    && !resists_ston(mtmp));
         boolean unpaid = otmp->unpaid 
-                || (!otmp->no_charge && costly_spot(otmp->ox, otmp->oy));
+                || (!otmp->no_charge && costly_spot(u.ux, u.uy));
         
         /* Clear inapplicable wornmask bits */
         unwornmask &= ~(W_ART | W_ARTI | W_QUIVER);
