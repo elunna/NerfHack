@@ -551,7 +551,7 @@ can_track(struct permonst *ptr)
 boolean
 sliparm(struct permonst *ptr)
 {
-    return (boolean) (is_whirly(ptr) || ptr->msize <= MZ_SMALL
+    return (boolean) (is_whirly(ptr) || ptr->msize < MZ_SMALL
                       || noncorporeal(ptr));
 }
 

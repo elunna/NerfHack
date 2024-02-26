@@ -573,6 +573,7 @@ m_dowear(struct monst *mon, boolean creation)
 
     m_dowear_type(mon, W_AMUL, creation, FALSE);
     can_wear_armor = !cantweararm(mon->data); /* for suit, cloak, shirt */
+                                              
     /* can't put on shirt if already wearing suit */
     if (can_wear_armor && !(mon->misc_worn_check & W_ARM))
         m_dowear_type(mon, W_ARMU, creation, FALSE);
@@ -688,6 +689,11 @@ m_dowear_type(
             if (!is_suit(obj))
                 continue;
             if (racialexception && (racial_exception(mon, obj) < 1))
+                continue;
+            /* gnomish suit is only armor allowed when small */
+            if (mon->data->msize == MZ_SMALL && obj->otyp != GNOMISH_SUIT)
+                continue;
+            if (mon->data->msize > MZ_SMALL && obj->otyp == GNOMISH_SUIT)
                 continue;
             break;
         }
@@ -1145,6 +1151,8 @@ racial_exception(struct monst *mon, struct obj *obj)
     /* Acceptable Exceptions: */
     /* Allow hobbits to wear elven armor - LoTR */
     if (ptr == &mons[PM_HOBBIT] && is_elven_armor(obj))
+        return 1;
+    if (is_gnome(ptr) && obj->otyp == GNOMISH_SUIT)
         return 1;
     /* Unacceptable Exceptions: */
     /* Checks for object that certain races should never use go here */
