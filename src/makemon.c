@@ -566,6 +566,9 @@ m_initweap(register struct monst *mtmp)
         case PM_MALCANTHET:
             (void) mongets(mtmp, BULLWHIP);
             break;
+        case PM_BAPHOMET:
+            (void) mongets(mtmp, RANSEUR);
+            break;
         }
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish
