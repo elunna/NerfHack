@@ -1017,10 +1017,13 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         break;
     case CLC_INSECTS: {
         /* Try for insects, and if there are none
-           left, go for (sticks to) snakes.  -3. */
+           left, go for (sticks to) snakes.  -3.
+           Lolth summons spiders as he does in EvilHack */
+        boolean spiders = (mtmp->data == &mons[PM_LOLTH]);
         struct permonst *pm = mkclass(S_ANT, 0);
         struct monst *mtmp2 = (struct monst *) 0;
-        char whatbuf[QBUFSZ], let = (pm ? S_ANT : S_SNAKE);
+        char whatbuf[QBUFSZ],
+            let = (pm ? (spiders ? S_SPIDER : S_ANT) : S_SNAKE);
         boolean success = FALSE, seecaster;
         int i, quan, oldseen, newseen;
         coord bypos;
@@ -1045,7 +1048,9 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 
         /* not canspotmon() which includes unseen things sensed via warning */
         seecaster = canseemon(mtmp) || tp_sensemon(mtmp) || Detect_monsters;
-        what = (let == S_SNAKE) ? "snakes" : "insects";
+        what = (let == S_SNAKE) ? "snake"
+               : (let == S_SPIDER) ? "arachnid"
+                                   : "insect";
         if (Hallucination)
             what = makeplural(bogusmon(whatbuf, (char *) 0));
 

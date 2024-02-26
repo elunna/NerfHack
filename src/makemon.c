@@ -577,6 +577,13 @@ m_initweap(register struct monst *mtmp)
             (void) mpickobj(mtmp, otmp);
             (void) mongets(mtmp, BOULDER);
             break;
+        case PM_LOLTH:
+            otmp = mksobj(ELVEN_BROADSWORD, FALSE, FALSE);
+            otmp->opoisoned = TRUE;
+            curse(otmp);
+            otmp->spe = rnd(3) + 2;
+            (void) mpickobj(mtmp, otmp);
+            break;
         }
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish
