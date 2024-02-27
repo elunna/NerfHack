@@ -1681,7 +1681,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
             } else {
                 tmp = resist_reduce(tmp, COLD_RES);
                 You("are freezing%s!", hardly_resistant(COLD_RES)
-                                           ? "to death" : "");
+                                           ? " to death" : "");
                 monstunseesu(M_SEEN_COLD);
             }
         } else
