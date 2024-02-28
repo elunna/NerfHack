@@ -1586,8 +1586,10 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
         } else {
             u.uhp += nhp;
             if (u.uhp > u.uhpmax) {
-                /* hard upper limit (copied from nurse care) */
-                if (u.uhpmax < 5 * u.ulevel + d(2 * u.ulevel, 10)) {
+                /* hard upper limit (copied from nurse care)
+                 * Use the max level of 30 otherwise early characters get
+                 * cheated. */
+                if (u.uhpmax < 5 * MAXULEV + d(2 * MAXULEV, 10)) {
                     u.uhpmax += nxtra;
                 }
                 if (u.uhpmax > u.uhppeak)
