@@ -1922,6 +1922,8 @@ sacrifice_your_race(
 static int
 bestow_artifact(void)
 {
+    struct rm *lev = &levl[u.ux][u.uy];
+    
     /* you were already in pretty good standing */
     /* The player can gain an artifact */
     /* The chance goes down as the number of artifacts goes up */
@@ -1964,12 +1966,13 @@ bestow_artifact(void)
                 discover_artifact(otmp->oartifact);
             }
             
-            /* If more than 2 gifts have been granted, there is a chance
-             * of cracking. If the player is already crowned, it definitely
-             * cracks */
-            if ((u.ugifts > 2 && !rn2(2)) || u.uevent.uhand_of_elbereth) 
+            /* If more than 2 gifts have been granted, the altar can crack. */
+            if ((u.ugifts > 2 && !rn2(2)) 
+                /* If the player is already crowned, it definitely cracks. */
+                    || u.uevent.uhand_of_elbereth
+                /* If the altar is already cracked - sorry... */
+                    || lev->cracked) 
                 crackaltar();
-          
             return TRUE;
         }
     }
