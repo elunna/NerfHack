@@ -1909,13 +1909,22 @@ artifact_hit(
             time++;
             dieroll = rn2(11);
         } while (dieroll < 5);
-            
-        if (time == 1)
+        
+        switch (time) {
+        case 1:
             pline_The("rapier strikes %s!", hittee);
-        else if (time == 2)
+            break;
+        case 2:
             pline_The("rapier strikes %s twice!", hittee);
-        else
-            pline_The("rapier strikes %s %d times in a row!", hittee, time); 
+            break;
+        case 3:
+            pline_The("rapier strikes %s thrice!", hittee);
+            break;
+        default:
+            pline_The("rapier strikes %s %d times in a row!", hittee, time);
+            break;
+        }
+        return TRUE;
     }
     
     if (otmp->oartifact == ART_SERPENT_S_TONGUE) {
