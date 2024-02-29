@@ -759,6 +759,7 @@ extern int breakobj(struct obj *, coordxy, coordxy, boolean, boolean) NONNULLARG
 extern boolean breaktest(struct obj *) NONNULLARG1;
 extern boolean walk_path(coord *, coord *,
                          boolean(*)(void *, coordxy, coordxy), genericptr_t) NONNULLARG12;
+extern void ranseur_hit(struct monst *) NONNULLARG1;
 
 /* ### drawing.c ### */
 

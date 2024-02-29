@@ -1985,6 +1985,7 @@ thitmonst(
     register int tmp;     /* Base chance to hit */
     register int disttmp; /* distance modifier */
     int otyp = obj->otyp, hmode;
+    int wtype;
     boolean guaranteed_hit = engulfing_u(mon);
     boolean hellfiring = uwep && uwep->oartifact == ART_HELLFIRE;
     int dieroll;
@@ -2178,6 +2179,12 @@ thitmonst(
                    delivers the "hit with wielded weapon for first time"
                    gamelog message when applicable */
                 u.uconduct.weaphit++;
+
+                if (dieroll < 3 && obj == uwep && obj->otyp == RANSEUR
+                    && ((wtype = uwep_skill_type()) != P_NONE
+                        && P_SKILL(wtype) >= P_SKILLED)) {
+                    ranseur_hit(mon);
+                }
             }
             if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
                 if (mon->wormno)
@@ -2708,6 +2715,32 @@ throw_gold(struct obj *obj)
     stackobj(obj);
     newsym(gb.bhitpos.x, gb.bhitpos.y);
     return ECMD_TIME;
+}
+
+
+/* Ranseurs can push off weapons and shields */
+void ranseur_hit(struct monst *mon)
+{
+    struct obj *m_wep = MON_WEP(mon);
+    struct obj *m_shield = which_armor(mon, W_ARMS);
+    
+    if (m_wep) {
+        obj_extract_self(m_wep);
+        possibly_unwield(mon, FALSE);
+        setmnotwielded(mon, m_wep);
+        You("knock %s %s to the %s!", s_suffix(mon_nam(mon)),
+            xname(m_wep), surface(u.ux, u.uy));
+
+        place_object(m_wep, mon->mx, mon->my);
+        stackobj(m_wep);
+    } else if (m_shield) {
+        obj_extract_self(m_shield);
+        m_shield->owornmask = 0;
+        You("knock %s %s to the %s!", s_suffix(mon_nam(mon)),
+            xname(m_shield), surface(u.ux, u.uy));
+        place_object(m_shield, mon->mx, mon->my);
+        stackobj(m_shield);
+    }
 }
 
 #undef AutoReturn

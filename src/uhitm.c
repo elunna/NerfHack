@@ -1136,6 +1136,11 @@ hmon_hitmon_weapon_melee(
             monflee(mon, d(2, 3), TRUE, TRUE);
         }
         hmd->hittxt = TRUE;
+    } else if (hmd->dieroll < 3 && obj == uwep
+               && obj->otyp == RANSEUR
+               && ((wtype = uwep_skill_type()) != P_NONE
+                   && P_SKILL(wtype) >= P_SKILLED)) {
+       ranseur_hit(mon);
     }
 
     if (obj->oartifact
