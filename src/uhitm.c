@@ -16,10 +16,12 @@ static boolean theft_petrifies(struct obj *) NONNULLARG1;
 static void steal_it(struct monst *, struct attack *) NONNULLARG1;
 static void mhitm_ad_slow_core(struct monst *, struct monst *);
 static boolean should_cleave(void);
+static boolean should_skewer(void);
 /* hitum_cleave() has contradictory information. There's a comment
  * beside the 1st arg 'target' stating non-null, but later on there
  * is a test for 'target' being null */
 static boolean hitum_cleave(struct monst *, struct attack *) NO_NNARGS;
+static boolean hitum_skewer(struct monst *, struct attack *) NO_NNARGS;
 static boolean double_punch(void);
 static boolean hitum(struct monst *, struct attack *) NONNULLARG1;
 static void hmon_hitmon_barehands(struct _hitmon_data *,
@@ -871,6 +873,106 @@ hitum_cleave(
     return (target && DEADMONSTER(target)) ? FALSE : TRUE;
 }
 
+
+/* return TRUE iff no peaceful target is found behind the target space
+ * assumes u.dx and u.dy have been set */
+static boolean
+should_skewer(void)
+{
+    int x = u.ux + u.dx * 2;
+    int y = u.uy + u.dy * 2;
+    struct monst *mtmp;
+    
+    boolean bystanders = FALSE;
+    int dir = xytod(u.dx, u.dy);
+    if (dir > 7) {
+        impossible("should_skewer: unknown target direction");
+        return FALSE; /* better safe than sorry */
+    }
+    if (!isok(x, y))
+        return FALSE;
+    
+    mtmp = m_at(x, y);
+    if (mtmp && canspotmon(mtmp) && mtmp->mpeaceful)
+        bystanders = TRUE;
+    
+    if (bystanders) {
+        if (!gc.context.forcefight)
+            return FALSE;
+    }
+    return TRUE;
+}
+
+/* hit the monster next to you and the monster behind;
+   return False if the primary target is killed, True otherwise
+   This was copied and adapted from hitum_cleave.
+   */
+static boolean
+hitum_skewer(
+        struct monst *target, /* non-Null; forcefight at nothing doesn't cleave +*/
+        struct attack *uattk) /*+ but we don't enforce that here; Null works ok */
+{
+    int i;
+    coord save_bhitpos;
+    boolean save_notonhead;
+    int count, umort, x = u.ux, y = u.uy;
+
+    /* find the direction toward primary target */
+    i = xytod(u.dx, u.dy);
+    if (i == DIR_ERR) {
+        impossible("hitum_skewer: unknown target direction [%d,%d,%d]?",
+                   u.dx, u.dy, u.dz);
+        return TRUE; /* target hasn't been killed */
+    }
+    umort = u.umortality; /* used to detect life-saving */
+    save_bhitpos = gb.bhitpos;
+    save_notonhead = gn.notonhead;
+
+    /* 2 attacks: primary and behind primary. */
+    for (count = 1; count < 3; count++) {
+        struct monst *mtmp;
+        int tx, ty, tmp, dieroll, mhit, attknum = 0, armorpenalty;
+        
+        tx = x + count * u.dx, ty = y + count * u.dy; /* current target location */
+        if (!isok(tx, ty))
+            continue;
+        mtmp = m_at(tx, ty);
+        if (!mtmp) {
+            if (glyph_is_invisible(levl[tx][ty].glyph))
+                (void) unmap_invisible(tx, ty);
+            continue;
+        }
+
+        tmp = find_roll_to_hit(mtmp, uattk->aatyp, uwep,
+                               &attknum, &armorpenalty);
+        mon_maybe_unparalyze(mtmp);
+        dieroll = rnd(20);
+        mhit = (tmp > dieroll);
+        gb.bhitpos.x = tx, gb.bhitpos.y = ty; /* normally set by do_attack() */
+        gn.notonhead = (mtmp->mx != tx || mtmp->my != ty);
+        
+        if (count == 2 && mhit && canseemon(mtmp))
+            Your("spear skewers through %s!", mon_nam(target));
+        
+        (void) known_hitum(mtmp, uwep, &mhit, tmp, armorpenalty,
+                           uattk, dieroll);
+        (void) passive(mtmp, uwep, mhit, !DEADMONSTER(mtmp), AT_WEAP, !uwep);
+
+        /* stop attacking if weapon is gone or hero got paralyzed or
+           killed (and then life-saved) by passive counter-attack */
+        if (!uwep || gm.multi < 0 || u.umortality > umort)
+            break;
+    }
+    /* set up for next time */
+    gb.bhitpos = save_bhitpos; /* in case somebody relies on bhitpos
+                                * designating the primary target */
+    gn.notonhead = save_notonhead;
+
+    /* return False if primary target died, True otherwise; note: if 'target'
+       was nonNull upon entry then it's still nonNull even if *target died */
+    return (target && DEADMONSTER(target)) ? FALSE : TRUE;
+}
+
 /* returns True if hero is fighting without a weapon and without a shield and
    has sufficient skill in bare-handed/martial arts to attack twice */
 static boolean
@@ -901,7 +1003,7 @@ hitum(struct monst *mon, struct attack *uattk)
     boolean malive, wep_was_destroyed = FALSE;
     struct obj *wepbefore = uwep,
         *secondwep = u.twoweap ? uswapwep : (struct obj *) 0;
-    int tmp, dieroll, mhit, armorpenalty, attknum = 0,
+    int tmp, dieroll, mhit, armorpenalty, wtype, attknum = 0,
         x = u.ux + u.dx, y = u.uy + u.dy, oldumort = u.umortality;
 
     /* Cleaver attacks three spots, 'mon' and one on either side of 'mon';
@@ -913,6 +1015,22 @@ hitum(struct monst *mon, struct attack *uattk)
         && (uwep->cursed || should_cleave()))
         return hitum_cleave(mon, uattk);
 
+    /* Spears at expert can skewer through the enemy, hitting the one behind.
+     * We'll grant this ability solely to the player for now.
+     * We are using thitmonst which is also used for throwing items, but maybe
+     * there is a better way.
+     * 
+     * Implications: The spear could be affected by passive acid.
+     */
+    if (uwep && is_spear(uwep)
+        && !u.twoweap && !u.uswallow && !u.ustuck
+        && ((wtype = uwep_skill_type()) != P_NONE
+        && P_SKILL(wtype) >= P_EXPERT)
+        /* If the spear is cursed, it doesn't care about who it hits */
+        && (uwep->cursed || should_skewer())) {
+        return hitum_skewer(mon, uattk);
+    }
+    
     /* 0: single hit, 1: first of two hits; affects strength bonus and
        silver rings; known_hitum() -> hmon() -> hmon_hitmon() will copy
        gt.twohits into struct _hitmon_data hmd.twohits */
@@ -1067,7 +1185,7 @@ hmon_hitmon_weapon_melee(
 {
     int wtype;
     struct obj *monwep;
-
+    
     /* "normal" weapon usage */
     hmd->use_weapon_skill = TRUE;
     hmd->dmg = dmgval(obj, mon);
@@ -1164,8 +1282,7 @@ hmon_hitmon_weapon_melee(
         hmd->hittxt = TRUE;
     }
 
-    if (uwep && (uwep->oartifact == ART_PLAGUE 
-                 || uwep->oartifact == ART_HELLFIRE)
+    if (uwep && (uwep->oartifact == ART_PLAGUE || uwep->oartifact == ART_HELLFIRE)
         && ammo_and_launcher(obj, uwep)) {
         hmd->dmg += rnd(7);
     }
