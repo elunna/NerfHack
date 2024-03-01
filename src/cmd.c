@@ -2783,7 +2783,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('t'), "turn", "turn undead away",
               doturn, IFBURIED | AUTOCOMPLETE, NULL },
     { 'X',    "twoweapon", "toggle two-weapon combat",
-              dotwoweapon, 0, NULL },
+              dotwoweapon, AUTOCOMPLETE, NULL },
     { M('u'), "untrap", "untrap something",
               dountrap, AUTOCOMPLETE, NULL },
     { '<',    "up", "go up a staircase",
