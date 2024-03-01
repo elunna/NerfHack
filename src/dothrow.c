@@ -2719,27 +2719,44 @@ throw_gold(struct obj *obj)
 
 
 /* Ranseurs can push off weapons and shields */
-void ranseur_hit(struct monst *mon)
+void 
+ranseur_hit(struct monst *mon)
 {
-    struct obj *m_wep = MON_WEP(mon);
-    struct obj *m_shield = which_armor(mon, W_ARMS);
+    boolean hityou = (mon == &gy.youmonst);
+    struct obj *mwep = hityou ? uwep : MON_WEP(mon);
+    const char *The_ransuer = canseemon(mon) ? "The ranseur" : "A ranseur";
+    const char *hand = body_part(HAND);
     
-    if (m_wep) {
-        obj_extract_self(m_wep);
+    if (mwep && mwep->otyp == HEAVY_IRON_BALL) {
+        pline("%s fails to budge %s.", The_ransuer, the(xname(mwep)));
+        return;
+    }
+    if (!mwep)
+        return;
+    
+    if (!hityou) {
+        obj_extract_self(mwep);
         possibly_unwield(mon, FALSE);
-        setmnotwielded(mon, m_wep);
+        setmnotwielded(mon, mwep);
         You("knock %s %s to the %s!", s_suffix(mon_nam(mon)),
-            xname(m_wep), surface(u.ux, u.uy));
+            xname(mwep), surface(mon->mx, mon->my));
 
-        place_object(m_wep, mon->mx, mon->my);
-        stackobj(m_wep);
-    } else if (m_shield) {
-        obj_extract_self(m_shield);
-        m_shield->owornmask = 0;
-        You("knock %s %s to the %s!", s_suffix(mon_nam(mon)),
-            xname(m_shield), surface(u.ux, u.uy));
-        place_object(m_shield, mon->mx, mon->my);
-        stackobj(m_shield);
+        place_object(mwep, mon->mx, mon->my);
+        stackobj(mwep);
+    } else { /* You are hit */
+        urgent_pline("%s pokes a %s you're wielding!", The_ransuer,
+                     xname(mwep));
+
+        if (welded(mwep)) {
+            pline("%s welded to your %s%c",
+                  !is_plural(mwep) ? "It is" : "They are", hand,
+                  !mwep->bknown ? '!' : '.');
+        } else {
+            remove_worn_item(mwep, FALSE);
+            freeinv(mwep);
+            Your("%s falls from your %s!", xname(mwep), hand);
+            place_object(mwep, u.ux, u.uy);
+        }
     }
 }
 

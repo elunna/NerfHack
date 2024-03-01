@@ -1091,7 +1091,10 @@ thrwmu(struct monst* mtmp)
         if (dam < 1)
             dam = 1;
 
-        (void) thitu(hitv, dam, &otmp, (char *) 0);
+        if (thitu(hitv, dam, &otmp, (char *) 0) 
+            && otmp->otyp == RANSEUR && !rn2(10)) {
+            ranseur_hit(&gy.youmonst);
+        }
         stop_occupation();
         return TRUE;
     }
