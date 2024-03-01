@@ -156,6 +156,7 @@ struct u_conduct {     /* number of times... */
     long elbereth;     /* engraved Elbereth */
     long sokocheat;    /* violated special 'rules' in Sokoban */
     long pets;         /* obtained a pet */
+    long altars;       /* altars destroyed via cracking */
     /* genocides already listed at end of game */
 };
 

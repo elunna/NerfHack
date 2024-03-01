@@ -2255,6 +2255,14 @@ show_conduct(int final)
                     " for any artifacts", "");
     }
 
+    if (!u.uconduct.altars) {
+        you_have_never("destroyed an altar");
+    } else if (wizard) {
+        Sprintf(buf, "destroyed %ld altar%s", u.uconduct.altars,
+                plur(u.uconduct.altars));
+        you_have_X(buf);
+    }
+    
     /* only report Sokoban conduct if the Sokoban branch has been entered */
     if (sokoban_in_play()) {
         const char *presentverb = "have violated", *pastverb = "violated";

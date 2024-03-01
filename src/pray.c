@@ -2003,6 +2003,7 @@ crackaltar(void)
             pline("CRACK!  The altar splits in two and is destroyed!");
             newsym(u.ux, u.uy);
         }
+        u.uconduct.altars++;
     } else {
         lev->cracked = 1;
         if (Blind && !Deaf)
