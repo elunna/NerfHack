@@ -1608,6 +1608,9 @@ attributes_enlightenment(
                 "petrification resistant");
         you_are(buf, from_what(STONE_RES));
     }
+
+    if (Stun_resistance)
+        you_are("stun resistant", from_what(STUN_RES));
     
     if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",

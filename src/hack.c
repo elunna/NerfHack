@@ -3878,7 +3878,8 @@ interesting_room(void)
         /* Scare the player! */
         pline("%s on the wall portrays %s %s.", An(art[rn2(SIZE(art))]),
               an(scary_adj[rn2(SIZE(scary_adj))]), carvemon);
-        pline("It %s you!", rn2(2) ? "scares" : "terrifies");
+        if (!Stun_resistance)
+            pline("It %s you!", rn2(2) ? "scares" : "terrifies");
         make_stunned(((HStun & TIMEOUT) + (long) rn1(10, 5)), FALSE);
         break;
     default:

@@ -669,7 +669,17 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         mask = &EDrain_resistance;
     else if (dtyp == AD_ACID)
         mask = &EAcid_resistance;
-
+    else if (dtyp == AD_ACID)
+        mask = &EAcid_resistance;
+    else if (dtyp == AD_STUN) {
+        mask = &EStun_resistance;
+        if (Stunned) {
+            You_feel("%s now.",
+                     Hallucination ? "less wobbly"
+                                   : "a bit steadier");
+            Stunned = 0L;
+        }
+    }
     if (mask && wp_mask == W_ART && !on) {
         /* find out if some other artifact also confers this intrinsic;
            if so, leave the mask alone */
@@ -2552,6 +2562,7 @@ abil_to_adtyp(long *abil)
         { &EDisint_resistance, AD_DISN },
         { &EPoison_resistance, AD_DRST },
         { &EDrain_resistance, AD_DRLI },
+        { &EStun_resistance, AD_STUN },
     };
     int k;
 

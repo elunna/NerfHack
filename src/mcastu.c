@@ -776,10 +776,11 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         if (Antimagic || Free_action) {
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_MAGR);
-            if (!Stunned)
+            if (!Stunned || Stun_resistance)
                 You_feel("momentarily disoriented.");
             make_stunned(1L, FALSE);
         } else {
+            if (!Stun_resistance)
             You(Stunned ? "struggle to keep your balance." : "reel...");
             dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
             if (Half_spell_damage)

@@ -89,9 +89,10 @@ enum prop_types {
     FIXED_ABIL        = 66,
     WITHERING         = 67,
     LIFESAVED         = 68,
-    STOMPING          = 69
+    STOMPING          = 69,
+    STUN_RES          = 70
 };
-#define LAST_PROP (STOMPING)
+#define LAST_PROP (STUN_RES)
 
 /*** Where the properties come from ***/
 /* Definitions were moved here from obj.h and you.h */
