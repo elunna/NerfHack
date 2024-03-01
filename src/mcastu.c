@@ -54,6 +54,7 @@ static void cast_cleric_spell(struct monst *, int, int);
 static boolean is_undirected_spell(unsigned int, int);
 static boolean spell_would_be_useless(struct monst *, unsigned int, int);
 static boolean is_entombed(coordxy, coordxy);
+static boolean counterspell(struct monst *, struct obj *);
 
 /* feedback when frustrated monster couldn't cast a spell */
 static void
@@ -608,6 +609,18 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         return;
     }
 
+    if (u_wield_art(ART_SERENITY) && rn2(5)) {
+        pline("%s shines and %s %s magic!", artiname(uwep->oartifact),
+            !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
+        /* TODO: Maybe more explicit astonishment? */
+        if (canseemon(mtmp)) {
+            pline("%s curses!", Monnam(mtmp));
+        } else {
+            You_hear("some cursing!");
+        }
+        return;
+    }
+    
     switch (spellnum) {
     case MGC_DEATH_TOUCH:
         pline("Oh no, %s's using the touch of death!", mhe(mtmp));
@@ -919,6 +932,11 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
     if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         impossible("cast directed cleric spell (%d) with dmg=0?", spellnum);
         return;
+    }
+    
+    if (u_wield_art(ART_SERENITY) && rn2(5)) {
+        if (counterspell(mtmp, uwep))
+            return;
     }
 
     switch (spellnum) {
@@ -1414,6 +1432,23 @@ is_entombed(coordxy x, coordxy y)
                 && SPACE_POS(levl[xx][yy].typ) && !sobj_at(BOULDER, xx, yy))
                 return FALSE;
         }
+    }
+    return TRUE;
+}
+
+static boolean
+counterspell(struct monst *mtmp, struct obj *otmp) {
+    if (otmp->cursed)
+        return FALSE;
+
+    pline("%s shines and %s %s magic!", artiname(uwep->oartifact),
+          !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
+
+    if (canseemon(mtmp)) {
+        pline("%s %s!", Monnam(mtmp),
+              rn2(2) ? "sputters" : rn2(2) ? "swears" : "curses");
+    } else {
+        You_hear("some cursing!");
     }
     return TRUE;
 }

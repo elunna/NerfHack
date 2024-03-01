@@ -1556,6 +1556,9 @@ attributes_enlightenment(
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
 
+    if (u_wield_art(ART_SERENITY))
+        you_are("countering spells", " because of Serenity");
+    
     /* Partial intrinsic resistances */
     
     Sprintf(buf, "%d%% fire resistant", how_resistant(FIRE_RES));

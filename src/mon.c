@@ -5979,6 +5979,12 @@ mon_berserk(struct monst *mtmp)
         return;
     if (helpless(mtmp))
         return;
+    /* Serenity blocks berserkers */
+    if (u_wield_art(ART_SERENITY)) {
+        if (!rn2(3))
+            pline("%s moans sadly!", Monnam(mtmp));
+        return;
+    }
     if (canseemon(mtmp) && humanoid(mtmp->data)
         && !mindless(mtmp->data)) {
         pline("%s flies into a berserker rage!", Monnam(mtmp));

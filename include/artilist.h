@@ -103,15 +103,21 @@ static NEARDATA struct artifact artilist[] = {
       SPFX_RESTR, 0, 0,
       PHYS(9, 2), NO_DFNS, NO_CARY, 0, 
       A_LAWFUL, NON_PM, NON_PM, 1000L, NO_COLOR, QUICK_BLADE),
-    
-    /*
-     *      Ah, never shall I forget the cry,
-     *              or the shriek that shrieked he,
-     *      As I gnashed my teeth, and from my sheath
-     *              I drew my Snickersnee!
-     *                      --Koko, Lord high executioner of Titipu
-     *                        (From Sir W.S. Gilbert's "The Mikado")
-     */
+
+    A("Serenity", SILVER_SPEAR,
+      (SPFX_RESTR), 0, 0,
+      PHYS(5, 10), DFNS(AD_FIRE), NO_CARY, 0,
+      A_LAWFUL, NON_PM, NON_PM, 5000L, NO_COLOR, SERENITY),
+
+
+        /*
+         *      Ah, never shall I forget the cry,
+         *              or the shriek that shrieked he,
+         *      As I gnashed my teeth, and from my sheath
+         *              I drew my Snickersnee!
+         *                      --Koko, Lord high executioner of Titipu
+         *                        (From Sir W.S. Gilbert's "The Mikado")
+         */
     A("Snickersnee", KATANA,
       SPFX_RESTR, 0, 0,
       PHYS(0, 8), NO_DFNS, NO_CARY,
