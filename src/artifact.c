@@ -1900,7 +1900,8 @@ artifact_hit(
     }
     
     /* Credits to BarclayII for Mouser's Scalpel rename and mechanic */
-    if (otmp->oartifact == ART_MOUSER_S_SCALPEL && dieroll < 10) { 
+    if (otmp->oartifact == ART_MOUSER_S_SCALPEL && dieroll < 10
+        && !Confusion && !Stunned) { 
         /* faster than a speeding bullet is the Gray Mouser... */
         There("is a flurry of blows!");
         /* I suppose this could theoretically continue forever... */
