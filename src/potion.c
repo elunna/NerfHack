@@ -1591,6 +1591,8 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
                  * cheated. */
                 if (u.uhpmax < 5 * MAXULEV + d(2 * MAXULEV, 10)) {
                     u.uhpmax += nxtra;
+                } else {
+                    You_feel("your resilience reaching its apex.");
                 }
                 if (u.uhpmax > u.uhppeak)
                     u.uhppeak = u.uhpmax;
