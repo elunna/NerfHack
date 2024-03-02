@@ -3402,6 +3402,8 @@ immune_to_trap(struct monst *mon, unsigned ttype)
     case VIBRATING_SQUARE:
         /* no adverse effects */
         return TRAP_CLEARLY_IMMUNE;
+    case MAGIC_BEAM_TRAP:
+        return TRAP_NOT_IMMUNE;
     default:
         impossible("immune_to_trap: bad ttype %u", ttype);
         break;
