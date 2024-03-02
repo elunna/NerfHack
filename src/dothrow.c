@@ -22,6 +22,7 @@ static int throw_gold(struct obj *);
 static void check_shop_obj(struct obj *, coordxy, coordxy, boolean);
 static void breakmsg(struct obj *, boolean);
 static boolean mhurtle_step(genericptr_t, coordxy, coordxy);
+static void hitmon_bardiche(struct monst *, struct obj *) NONNULLARG12;
 
 /* uwep might already be removed from inventory so test for W_WEP instead;
    for Valk+Mjollnir, caller needs to validate the strength requirement */
@@ -2185,10 +2186,10 @@ thitmonst(
                         && P_SKILL(wtype) >= P_SKILLED)) {
                     ranseur_hit(mon);
                 }
-                if (dieroll < 3 && obj == uwep && obj->otyp == BARDICHE
+                if (obj == uwep && obj->otyp == BARDICHE
                     && ((wtype = uwep_skill_type()) != P_NONE
                         && P_SKILL(wtype) >= P_SKILLED)) {
-                    /* 1 in 100 chance for decapitation */
+                    hitmon_bardiche(mon, obj);
                 }
             }
             if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
@@ -2762,6 +2763,41 @@ ranseur_hit(struct monst *mon)
             Your("%s falls from your %s!", xname(mwep), hand);
             place_object(mwep, u.ux, u.uy);
         }
+    }
+}
+
+static void
+hitmon_bardiche(
+    struct monst *mon,
+    struct obj *obj)    /* obj is not NULL */
+{
+    /* 1 in 100 chance of beheading */
+#if 0
+    if (rn2(100))
+        return;
+#endif
+    /* Same checks as for Vorpal */
+    if (!has_head(mon->data) || gn.notonhead || u.uswallow) {
+        pline("Somehow, you miss %s wildly.", mon_nam(mon));
+        return;
+    }
+    if (noncorporeal(mon->data) || amorphous(mon->data)) {
+        pline("%s through %s %s.", Yobjnam2(obj, "slice"),
+              s_suffix(mon_nam(mon)), mbodypart(mon, NECK));
+        return;
+    }
+
+    pline("You %s %s %s clean off with the %s!", rn2(2) ? "slice" : "chop",
+          s_suffix(mon_nam(mon)), mbodypart(mon, HEAD), xname(obj));
+
+    /* #define FATAL_DAMAGE_MODIFIER 200 */
+    int dmg = 2 * mon->mhp + 200;
+    showdmg(dmg, FALSE);
+    mon->mhp -= dmg;
+    
+    if (is_reviver(mon->data) && !is_rider(mon->data)
+        && !mlifesaver(mon)) {
+        mon->mcan = 1;
     }
 }
 
