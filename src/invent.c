@@ -703,8 +703,8 @@ void
 assigninvlet(struct obj *otmp)
 {
     boolean inuse[invlet_basic];
-    register int i;
-    register struct obj *obj;
+    int i;
+    struct obj *obj;
 
     /* there should be at most one of these in inventory... */
     if (otmp->oclass == COIN_CLASS) {
@@ -822,7 +822,7 @@ merge_choice(struct obj *objlist, struct obj *obj)
 int
 merged(struct obj **potmp, struct obj **pobj)
 {
-    register struct obj *otmp = *potmp, *obj = *pobj;
+    struct obj *otmp = *potmp, *obj = *pobj;
 
     if (mergable(otmp, obj)) {
         /* Approximate age: we do it this way because if we were to
@@ -949,7 +949,7 @@ merged(struct obj **potmp, struct obj **pobj)
  * addinv) or when an object in the hero's inventory has been polymorphed
  * in-place.
  *
- * It may be valid to merge this code with with addinv_core2().
+ * It may be valid to merge this code with addinv_core2().
  */
 void
 addinv_core1(struct obj *obj)
@@ -1194,7 +1194,7 @@ hold_another_object(
             dropy(obj);            /* now put it back again :-) */
             return obj;
         } else if (wasUpolyd && !Upolyd) {
-            /* loose your grip if you revert your form */
+            /* lose your grip if you revert your form */
             if (drop_fmt)
                 pline(drop_fmt, drop_arg);
             obj_extract_self(obj);
@@ -1396,7 +1396,7 @@ delobj_core(
     boolean update_map;
 
     /* obj_resists(obj,0,0) protects the Amulet, the invocation tools,
-       and Rider corspes */
+       and Rider corpses */
     if (!force && obj_resists(obj, 0, 0)) {
         /* player might be doing something stupid, but we
          * can't guarantee that.  assume special artifacts
@@ -1419,7 +1419,7 @@ delobj_core(
 struct obj *
 sobj_at(int otyp, coordxy x, coordxy y)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = gl.level.objects[x][y]; otmp; otmp = otmp->nexthere)
         if (otmp->otyp == otyp)
@@ -1432,7 +1432,7 @@ sobj_at(int otyp, coordxy x, coordxy y)
 struct obj *
 nxtobj(struct obj *obj, int type, boolean by_nexthere)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     otmp = obj; /* start with the object after this one */
     do {
@@ -1448,7 +1448,7 @@ nxtobj(struct obj *obj, int type, boolean by_nexthere)
 struct obj *
 carrying(int type)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     /* this could be replaced by 'return m_carrying(&gy.youmonst, type);' */
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
@@ -1517,7 +1517,7 @@ u_carried_gloves(void)
 struct obj *
 u_have_novel(void)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == SPE_NOVEL)
@@ -1543,7 +1543,7 @@ o_on(unsigned int id, struct obj *objchn)
 boolean
 obj_here(struct obj *obj, coordxy x, coordxy y)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = gl.level.objects[x][y]; otmp; otmp = otmp->nexthere)
         if (obj == otmp)
@@ -1554,7 +1554,7 @@ obj_here(struct obj *obj, coordxy x, coordxy y)
 struct obj *
 g_at(coordxy x, coordxy y)
 {
-    register struct obj *obj = gl.level.objects[x][y];
+    struct obj *obj = gl.level.objects[x][y];
 
     while (obj) {
         if (obj->oclass == COIN_CLASS)
@@ -1568,8 +1568,8 @@ g_at(coordxy x, coordxy y)
 static void
 compactify(char *buf)
 {
-    register int i1 = 1, i2 = 1;
-    register char ilet, ilet1, ilet2;
+    int i1 = 1, i2 = 1;
+    char ilet, ilet1, ilet2;
 
     ilet2 = buf[0];
     ilet1 = buf[1];
@@ -1699,12 +1699,12 @@ getobj(
     int (*obj_ok)(OBJ_P),   /* callback to classify an object's suitability */
     unsigned int ctrlflags) /* some control to fine-tune the behavior */
 {
-    register struct obj *otmp;
-    register char ilet = 0;
+    struct obj *otmp;
+    char ilet = 0;
     char buf[BUFSZ], qbuf[QBUFSZ];
     char lets[BUFSZ], altlets[BUFSZ];
-    register int suggested = 0;
-    register char *bp = buf, *ap = altlets;
+    int suggested = 0;
+    char *bp = buf, *ap = altlets;
     boolean allowcnt = (ctrlflags & GETOBJ_ALLOWCNT),
             forceprompt = (ctrlflags & GETOBJ_PROMPT),
             allownone = FALSE;
@@ -1780,7 +1780,7 @@ getobj(
         *bp++ = HANDS_SYM;
         *bp++ = ' '; /* put a space after the '-' in the prompt */
         break;
-    case GETOBJ_DOWNPLAY: /* acceptable but not shown as likely chioce */
+    case GETOBJ_DOWNPLAY: /* acceptable but not shown as likely choice */
     case GETOBJ_EXCLUDE_INACCESS:   /* nothing currently gives this for '-' but
                                      * theoretically could if wearing gloves */
     case GETOBJ_EXCLUDE_SELECTABLE: /* ditto, I think... */
@@ -4827,8 +4827,8 @@ stackobj(struct obj *obj)
 /* returns TRUE if obj & otmp can be merged; used in invent.c and mkobj.c */
 boolean
 mergable(
-    register struct obj *otmp, /* potential 'into' stack */
-    register struct obj *obj)  /* 'combine' stack */
+    struct obj *otmp, /* potential 'into' stack */
+    struct obj *obj)  /* 'combine' stack */
 {
     size_t objnamelth = 0, otmpnamelth = 0;
 
@@ -4873,7 +4873,8 @@ mergable(
         || obj->greased != otmp->greased)
         return FALSE;
 
-    if (erosion_matters(obj) && (obj->oerodeproof != otmp->oerodeproof
+    if ((erosion_matters(obj))
+        && (obj->oerodeproof != otmp->oerodeproof
             || (obj->rknown != otmp->rknown && (Blind || Hallucination))))
         return FALSE;
 
@@ -5128,7 +5129,7 @@ dopramulet(void)
 
         /* using display_inventory() instead of prinv() allows player
            to use 'm "' to force and menu and be able to choose amulet
-           in order to perform a context-sensitve item action */
+           in order to perform a context-sensitive item action */
         lets[0] = obj_to_let(uamul), lets[1] = '\0';
 
         (void) dispinv_with_action(lets, TRUE, "Amulet");

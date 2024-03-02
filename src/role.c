@@ -2083,7 +2083,7 @@ role_init(void)
  * place where it actually matters for the hero is in set_uasmon()
  * and that can use mons[race] rather than mons[role] for this
  * particular property.  Despite the comment, it is checked--where
- * needed--via instrinsic 'Infravision' which set_uasmon() manages.
+ * needed--via intrinsic 'Infravision' which set_uasmon() manages.
  */
     /* Fix up infravision */
     if (mons[gu.urace.mnum].mflags3 & M3_INFRAVISION) {
@@ -2107,7 +2107,7 @@ role_init(void)
 }
 
 const char *
-Hello(struct monst* mtmp)
+Hello(struct monst *mtmp)
 {
     switch (Role_switch) {
     case PM_KNIGHT:
@@ -2877,7 +2877,7 @@ setup_rolemenu(
             }
         }
         /* !filtering implies reset_role_filtering() where we want to
-           mark this role as preseleted if current filter excludes it */
+           mark this role as preselected if current filter excludes it */
         add_menu(win, &nul_glyphinfo, &any, thisch, 0,
                  ATR_NONE, clr, an(rolenamebuf),
                  (!filtering && !role_ok)

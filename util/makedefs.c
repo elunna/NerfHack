@@ -423,7 +423,7 @@ static char namebuf[1000];
 DISABLE_WARNING_FORMAT_NONLITERAL
 
 static char *
-name_file(const char* template, const char* tag)
+name_file(const char *template, const char *tag)
 {
     Sprintf(namebuf, template, tag);
     return namebuf;
@@ -442,7 +442,7 @@ delete_file(const char *template, const char *tag)
 #endif
 
 static FILE *
-getfp(const char* template, const char* tag, const char* mode, int flg)
+getfp(const char *template, const char *tag, const char *mode, int flg)
 {
     char *name = name_file(template, tag);
     FILE *rv = (FILE *) 0;
@@ -740,7 +740,7 @@ do_grep_showvars(void)
 }
 
 static struct grep_var *
-grepsearch(const char* name)
+grepsearch(const char *name)
 {
     /* XXX make into binary search */
     int x = 0;
@@ -754,7 +754,7 @@ grepsearch(const char* name)
 }
 
 static int
-grep_check_id(const char* id)
+grep_check_id(const char *id)
 {
     struct grep_var *rv;
 
@@ -783,7 +783,7 @@ grep_check_id(const char* id)
 }
 
 static void
-grep_show_wstack(const char* tag)
+grep_show_wstack(const char *tag)
 {
     int x;
 
@@ -976,12 +976,12 @@ grep0(FILE *inputfp0, FILE* outputfp0, int flg)
 
 /* trivial text encryption routine which can't be broken with `tr' */
 static char *
-xcrypt(const char* str)
+xcrypt(const char *str)
 { /* duplicated in src/hacklib.c */
     static char buf[BUFSZ];
-    register const char *p;
-    register char *q;
-    register int bitmask;
+    const char *p;
+    char *q;
+    int bitmask;
 
     for (bitmask = 1, p = str, q = buf; *p; q++) {
         *q = *p++;
@@ -1418,7 +1418,7 @@ do_oracles(void)
     long fpos;
     unsigned long txt_offset, offset;
     int oracle_cnt;
-    register int i;
+    int i;
     char *line;
 
     Sprintf(tempfile, DATA_TEMPLATE, "oracles.tmp");
@@ -2361,7 +2361,7 @@ do_objs(void)
 }
 
 static char *
-tmpdup(const char* str)
+tmpdup(const char *str)
 {
     static char buf[128];
 

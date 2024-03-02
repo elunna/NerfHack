@@ -157,7 +157,7 @@ color_attr curses_menu_promptstyle = { NO_COLOR, ATR_NONE };
 static int inv_update = 0;
 
 /*
-init_nhwindows(int* argcp, char** argv)
+init_nhwindows(int *argcp, char **argv)
                 -- Initialize the windows used by NetHack.  This can also
                    create the standard windows listed at the top, but does
                    not display them.
@@ -372,7 +372,7 @@ curses_uncurse_terminal(void)
 {
    /* also called by panictrace_handler(), a signal handler, so somewhat
       iffy in that situation; but without this, newlines behave as raw
-      line feeds so subseqent backtrace gets scrawled all over the screen
+      line feeds so subsequent backtrace gets scrawled all over the screen
       and is nearly useless */
     curses_cleanup();
     curs_set(orig_cursor);

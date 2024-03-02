@@ -1159,7 +1159,7 @@ dropp(struct obj *obj)
 static void
 break_armor(void)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     struct permonst *uptr = gy.youmonst.data;
 
     if (breakarm(uptr)) {
@@ -1644,7 +1644,7 @@ dosummon(void)
 int
 dogaze(void)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int looked = 0;
     char qbuf[QBUFSZ];
     int i;
@@ -1731,7 +1731,7 @@ dogaze(void)
                         ignite_items(mtmp->minvent);
                     }
                     if (dmg) {
-                        showdmg(dmg, FALSE);
+                        showdamage(dmg, FALSE);
                         mtmp->mhp -= dmg;
                     }
                     if (DEADMONSTER(mtmp))
@@ -1744,7 +1744,7 @@ dogaze(void)
                         dmg = 0;
                     }
                     if (dmg) {
-                        showdmg(dmg, FALSE);
+                        showdamage(dmg, FALSE);
                         mtmp->mhp -= dmg;
                         mtmp->mcansee = 0;
                         mtmp->mblinded = rnd(50);
@@ -1969,7 +1969,7 @@ domindblast(void)
                 u_sen ? "telepathy"
                 : telepathic(mtmp->data) ? "latent telepathy"
                   : "mind");
-            showdmg(dmg, FALSE);
+            showdamage(dmg, FALSE);
             mtmp->mhp -= dmg;
             if (DEADMONSTER(mtmp))
                 killed(mtmp);

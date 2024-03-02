@@ -25,6 +25,7 @@ static void insane_object(struct obj *, const char *, const char *,
 static void check_contained(struct obj *, const char *);
 static void check_glob(struct obj *, const char *);
 static void sanity_check_worn(struct obj *);
+static void init_oextra(struct oextra *);
 
 struct icp {
     int iprob;   /* probability of an item type */
@@ -314,8 +315,8 @@ mkobj(int oclass, boolean artif)
 static void
 mkbox_cnts(struct obj *box)
 {
-    register int n;
-    register struct obj *otmp;
+    int n;
+    struct obj *otmp;
 
     box->cobj = (struct obj *) 0;
 
@@ -358,7 +359,7 @@ mkbox_cnts(struct obj *box)
                 (void) stop_timer(SHRINK_GLOB, obj_to_any(otmp));
             }
         } else {
-            register int tprob;
+            int tprob;
             const struct icp *iprobs = boxiprobs;
 
             for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
@@ -404,8 +405,8 @@ rndmonnum(void)
 int
 rndmonnum_adj(int minadj, int maxadj)
 {
-    register struct permonst *ptr;
-    register int i;
+    struct permonst *ptr;
+    int i;
     unsigned short excludeflags;
 
     /* Plan A: get a level-appropriate common monster */
@@ -641,7 +642,7 @@ clear_splitobjs(void)
  * the caller to provide a valid context for the swap.  When done, obj will
  * still exist, but not on any chain.
  *
- * Note:  Don't use use obj_extract_self() -- we are doing an in-place swap,
+ * Note:  Don't use obj_extract_self() -- we are doing an in-place swap,
  * not actually moving something.
  */
 void
@@ -718,7 +719,7 @@ unknwn_contnr_contents(struct obj *obj)
 void
 bill_dummy_object(struct obj *otmp)
 {
-    register struct obj *dummy;
+    struct obj *dummy;
     long cost = 0L;
 
     if (otmp->unpaid) {
@@ -1568,7 +1569,7 @@ shrink_glob(
 
     /* format "Your/Shk's/The [partly eaten] glob of <goo>" into
        globnambuf[] before shrinking the glob; Yname2() calls yname()
-       which calls xname() which ordinarly leaves "partly eaten" to
+       which calls xname() which ordinarily leaves "partly eaten" to
        doname() rather than inserting that itself; ask xname() to add
        that when appropriate */
     iflags.partly_eaten_hack = TRUE;
@@ -2310,7 +2311,7 @@ is_rottable(struct obj *otmp)
 void
 place_object(struct obj *otmp, coordxy x, coordxy y)
 {
-    register struct obj *otmp2;
+    struct obj *otmp2;
 
     if (!isok(x, y)) { /* validate location */
         void (*func)(const char *, ...) PRINTF_F_PTR(1, 2);
@@ -3658,7 +3659,7 @@ obj_absorb(struct obj **obj1, struct obj **obj2)
  * cleanly (since we don't know which we want to stay around)
  */
 struct obj *
-obj_meld(struct obj** obj1, struct obj** obj2)
+obj_meld(struct obj **obj1, struct obj **obj2)
 {
     struct obj *otmp1, *otmp2, *result = 0;
     int ox, oy;

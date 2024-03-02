@@ -782,7 +782,10 @@ newgame(void)
     /* Success! */
     welcome(TRUE);
     notice_mon_on(); /* now we can notice monsters */
-    notice_all_mons(TRUE);
+    if (a11y.glyph_updates)
+        (void) dolookaround();
+    else
+        notice_all_mons(TRUE);
     return;
 }
 
@@ -921,7 +924,7 @@ static const struct early_opt earlyopts[] = {
 #ifdef WIN32
     { ARG_WINDOWS, "windows", 4, TRUE },
 #endif
-#ifdef CRASHREPORT
+#if defined(CRASHREPORT)
     { ARG_BIDSHOW, "bidshow", 7, FALSE },
 #endif
 };
@@ -945,11 +948,12 @@ argcheck(int argc, char *argv[], enum earlyarg e_arg)
     const char *dashdash = "";
 
     for (idx = 0; idx < SIZE(earlyopts); idx++) {
-        if (earlyopts[idx].e == e_arg)
+        if (earlyopts[idx].e == e_arg){
             break;
+	}
     }
     if (idx >= SIZE(earlyopts) || argc < 1)
-        return FALSE;
+        return 0;
 
     for (i = 0; i < argc; ++i) {
         if (argv[i][0] != '-')
@@ -988,13 +992,21 @@ argcheck(int argc, char *argv[], enum earlyarg e_arg)
                        than  next major version */
                 if (match_optname(extended_opt, "paste", 5, FALSE)) {
                     insert_into_pastebuf = TRUE;
-                } else if(match_optname(extended_opt, "copy", 4, FALSE)) {
+                } else if (match_optname(extended_opt, "copy", 4, FALSE)) {
                     insert_into_pastebuf = TRUE;
-                } else {
-                    raw_printf(
-                   "-%sversion can only be extended with -%sversion:copy.\n",
+                } else if (match_optname(extended_opt, "dump", 4, FALSE)) {
+                    /* version number plus enabled features and sanity
+                       values that the program compares against the same
+                       thing recorded in save and bones files to check
+                       whether they're being used compatibly */
+                    dump_version_info();
+                    return 2; /* done */
+                } else if (!match_optname(extended_opt, "show", 4, FALSE)) {
+                    raw_printf("-%sversion can only be extended with"
+                               " -%sversion:copy or :dump or :show.\n",
                                dashdash, dashdash);
-                    return TRUE;
+                    /* exit after we've reported bad command line argument */
+                    return 2;
                 }
             }
             early_version_info(insert_into_pastebuf);
@@ -1029,7 +1041,7 @@ argcheck(int argc, char *argv[], enum earlyarg e_arg)
             break;
         }
     };
-    return FALSE;
+    return 0;
 }
 
 /*
@@ -1153,6 +1165,7 @@ struct enum_dump objclass_defchars_dump[] = {
 #define DUMP_ENUMS_OBJCLASS_CLASSES
 struct enum_dump objclass_classes_dump[] = {
 #include "defsym.h"
+    { MAXOCLASSES, "MAXOCLASSES" },
 };
 #undef DUMP_ENUMS_OBJCLASS_CLASSES
 

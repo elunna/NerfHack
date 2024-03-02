@@ -477,7 +477,7 @@ explode(
                     /* for inside_engulfer, only <u.ux,u.uy> is affected */
                     continue;
                 }
-                
+
                 /* Affect the floor unless the player caused the explosion
                  * from inside their engulfer. */
                 if (!(u.uswallow && !gc.context.mon_moving))
@@ -516,9 +516,9 @@ explode(
                     (void) burnarmor(mtmp);
                     ignite_items(mtmp->minvent);
                 }
-                
+
                 if ((explmask[i][j] & EXPL_MON) != 0) {
-                    showdmg(itemdmg, FALSE);
+                    showdamage(itemdmg, FALSE);
                     /* damage from ring/wand explosion isn't itself
                      * electrical in nature, nor is damage from freezing potion
                      * really cold in nature, nor is damage from boiling potion
@@ -527,7 +527,7 @@ explode(
                      * marginal (burning items only deal 1 damage), ignore it
                      * for golemeffects(). */
                     golemeffects(mtmp, (int) adtyp, dam);
-                    mtmp->mhp -= itemdmg;
+                    mtmp->mhp -= itemdmg; /* item destruction dmg */
                 } else {
                     /* call resist with 0 and do damage manually so 1) we can
                      * get out the message before doing the damage, and 2) we
@@ -554,7 +554,7 @@ explode(
                         mdam *= 2;
                     else if (resists_fire(mtmp) && adtyp == AD_COLD)
                         mdam *= 2;
-                    showdmg(mdam + itemdmg, FALSE);
+                    showdamage(mdam + itemdmg, FALSE);
                     mtmp->mhp -= mdam + itemdmg;
                 }
                 if (DEADMONSTER(mtmp)) {
@@ -642,7 +642,7 @@ explode(
                 u.mh -= damu;
             else
                 u.uhp -= damu;
-            showdmg(damu, TRUE);
+            showdamage(damu, TRUE);
             disp.botl = TRUE;
         }
 
@@ -743,8 +743,8 @@ scatter(coordxy sx, coordxy sy,  /* location of objects to scatter */
         unsigned int scflags,
         struct obj *obj) /* only scatter this obj        */
 {
-    register struct obj *otmp;
-    register int tmp;
+    struct obj *otmp;
+    int tmp;
     int farthest = 0;
     uchar typ;
     long qtmp;

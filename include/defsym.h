@@ -203,7 +203,9 @@
     PCHAR2(89, '@',  S_ss3, "shield3", "", HI_ZAP)
     PCHAR2(90, '*',  S_ss4, "shield4", "", HI_ZAP)
     PCHAR( 91, '#',  S_poisoncloud, "poison cloud", CLR_BRIGHT_GREEN)
-    PCHAR( 92, '?',  S_goodpos, "valid position", CLR_BRIGHT_GREEN)
+    /* for a time S_goodpos was a question mark, but dollar sign is the
+       default keystroke for getpos() to toggle goodpos glyphs on or off */
+    PCHAR( 92, '$',  S_goodpos, "valid position", HI_ZAP)
     /* end cmap C */
     /*                                                             */
     /* The 8 swallow symbols.  Do NOT separate.                    */

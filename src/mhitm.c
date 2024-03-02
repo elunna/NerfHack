@@ -112,9 +112,9 @@ missmm(
  */
  /* have monsters fight each other */
 int
-fightm(register struct monst *mtmp)
+fightm(struct monst *mtmp)
 {
-    register struct monst *mon, *nmon;
+    struct monst *mon, *nmon;
     int result, has_u_swallowed;
     /* perhaps the monster will resist Conflict */
     if (resist_conflict(mtmp))
@@ -297,8 +297,8 @@ mdisplacem(
  */
 int
 mattackm(
-    register struct monst *magr,
-    register struct monst *mdef)
+    struct monst *magr,
+    struct monst *mdef)
 {
     int i,          /* loop counter */
         tmp,        /* armor class difference */
@@ -355,7 +355,7 @@ mattackm(
         ftmp = (int) ((magr->m_lev - 4) / 2) + 4;
         tmp += ftmp;
         if (canseemon(magr)) {
-            if (flags.showdmg)
+            if (flags.showdamage)
                 pline("%s flanks %s. [-%dAC]", Monnam(magr), mon_nam(mdef), ftmp);
             else
                 pline("%s flanks %s.", Monnam(magr), mon_nam(mdef));
@@ -876,7 +876,7 @@ engulf_target(struct monst *magr, struct monst *mdef)
         return FALSE;
 
     /* if attacker is phasing in solid rock and defender can't move there,
-       or vice versa, don't allow engulf to succeeed; otherwise expelling
+       or vice versa, don't allow engulf to succeed; otherwise expelling
        might not be able to place attacker and defender both back on map;
        when defender is the hero, a sanity_check complaint about placing
        the hero on top of a monster can occur */
@@ -951,7 +951,7 @@ gulpmm(
     dx = mdef->mx;
     dy = mdef->my;
     /*
-     *  Leave the defender in the monster chain at it's current position,
+     *  Leave the defender in the monster chain at its current position,
      *  but don't leave it on the screen.  Move the aggressor to the
      *  defender's position.
      */
@@ -1126,7 +1126,7 @@ mdamagem(
     if (!mhm.damage)
         return mhm.hitflags;
 
-    showdmg(mhm.damage, FALSE);
+    showdamage(mhm.damage, FALSE);
     mdef->mhp -= mhm.damage;
     if (mdef->mhp < 1) {
         if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
@@ -1218,7 +1218,7 @@ mon_poly(struct monst *magr, struct monst *mdef, int dmg)
                 pline("%s shudders!", Before);
 
             dmg += (mdef->mhpmax + 1) / 2;
-            showdmg(dmg, mdef == &gy.youmonst);
+            showdamage(dmg, mdef == &gy.youmonst);
             mdef->mhp -= dmg;
             dmg = 0;
             if (DEADMONSTER(mdef)) {
@@ -1524,7 +1524,7 @@ passivemm(
         tmp = 0;
 
  assess_dmg:
-    showdmg(tmp, FALSE);
+    showdamage(tmp, FALSE);
     if ((magr->mhp -= tmp) <= 0) {
         monkilled(magr, "", (int) mddat->mattk[i].adtyp);
         return (mdead | mhit | M_ATTK_AGR_DIED);

@@ -1,4 +1,4 @@
-$NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1368 $ $NHDT-Date: 1706272459 2024/01/26 12:34:19 $
+NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1380 $ $NHDT-Date: 1708290308 2024/02/18 21:05:08 $
 
 General Fixes and Modified Features
 -----------------------------------
@@ -1357,6 +1357,19 @@ if loadstone was unIDed but had been assigned a type name and you failed to
 	"stone called <assigned name>"
 when a vision blocking gas cloud dissipated, the screen didn't necessarily
 	get updated to show newly visible locations in a timely fashion
+if confused #loot while on a throne moved whole stack of quivered gold into
+	'coffers' chest, the gold wasn't unworn from quiver slot, potentially
+	leading to crash when quiver was subsequently accessed
+when filling quiver slot, don't bother asking "what do you want to ready?" if
+	invent is empty
+no secret doors or corridors on the first two dungeon levels
+the number of items destroyed by elemental effects is based on the damage
+randomize the spellbook in the second level of vlad's tower
+monsters weren't randomly generating if exactly one square was outside LOS,
+	and it contained a monster
+when a spellbook was polymorphed into a novel and then incrementing spestudied
+	field turned it into a blank spellbook, the novel's title would stick:
+	"{spellbook of blank paper|plain spellbook} named <Discworld title>"
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -1854,13 +1867,18 @@ debug fuzzer was triggering out of bounds array access in loseexp() if
 	levels and restored those all the way to level 30; introducing an
 	assert(u.ulevel < MAXULEV) changed bounds issue to assertion failure
 strength less than 25 was unintentionally being capped at 18/07
-if an amulet of flying gets stolen while hero is over lava without other
-	protection against lava, it will be destroyed even though it isn't
-	flammable, then attempting to format it for messages will trigger an
-	impossible warning about "glorkum", then a crash occurs
+if an amulet of flying got stolen while hero was over lava without other
+	protection against lava, it would be destroyed even though it's not
+	flammable, then attempting to format it for messages would trigger an
+	impossible warning about "glorkum", then a crash occurred
 poison gas breath from green dragon or iron golem that hit and was reflected
 	left target enveloped in a gas cloud (reflection now takes precedence;
 	somewhat odd though: gas that misses still leaves target enveloped)
+Warning didn't show nearby monsters who were inside poison gas/steam/smoke
+	regions
+map didn't show adjacent monsters if they were inside a gas region unless
+	they were seen via telepathy or extended monster detection, but they
+	were described as if visible in messages (combat, for instance)
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -1952,6 +1970,10 @@ Windows: when VIRTUAL_TERMINAL_SEQUENCES was not defined, the preprocessing
 Windows: original fix for GLYPH_UNEXPLORED background tile merging resulted
 	in a new issue where the map wasn't being cleared on level changes
 Windows: don't dupstr the return value of setlocale if it is NULL
+Windows: nethackw.exe calculated vertical spacing for menu items based on
+	the height of the tileset in use, even though the tiles in the
+	menu were drawn at the default height of 16 anyway; get rid of
+	the extraneous vertical spacing between menu rows
 X11: fix build failure if STATUS_HILITES is disabled
 X11: was still initializing map to 'stone' instead of 'unexplored' after they
 	became separate glyphs
@@ -2476,7 +2498,15 @@ erinyes overhaul; they now attempt to punish heroes who have violated their
 	alignment and get stronger with greater alignment abuse
 accessibility options to tell where on map a message happened (accessiblemsg),
 	to notify when a monster is spotted (spot_monsters), and when
-	a monster moved (mon_movement)
+	a monster moved (mon_movement), when hero takes damage (showdamage),
+        when interesting map locations change (mention_map)
+accessibility command #lookaround which will describe what hero can see
+if hero is punished or tethered to a buried iron ball and has no inventory (or
+	only carries gold or embedded dragon scales or both), a nymph might
+	remove the chain when finding nothing else to steal
+'showvers' option (and companion 'versinfo' option) to include program version
+	in the status display so that it will be visible for screenshots or
+	during streaming video
 
 
 Platform- and/or Interface-Specific New Features
@@ -2528,6 +2558,11 @@ tiles: male and female variations in monsters.txt; tested only with tile2bmp
 tty: use bright colors directly on supporting terminals
 tty: if a message is marked urgent, override message suppression initiated
 	by user having typed ESC at previous --More-- prompt
+tty+DECgraphics: when ready to print a normal character after having printed
+	a line-drawing character, don't switch back to normal character set
+	unless current char is one that gets rendered differently as a line
+	drawing char (mainly lowercase letters) so that we might be able to
+	avoid the need to switch to line drawing for next char that uses that
 Unix: can define NOSUSPEND in config.h or src/Makefile's CFLAGS to prevent
 	unixconf.h from enabling SUSPEND without need to modify unixconf.h
 Unix: support --nethackrc=filename on the command line; same effect as
@@ -2794,4 +2829,5 @@ remove the window port get_menu_coloring() calls from all the existing window
 remove TEXTCOLOR build option
 relocate general-purpose function choose_classes_menu(), from
 	options.c to windows.c
+remove register from variable declarations
 

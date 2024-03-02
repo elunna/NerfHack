@@ -272,7 +272,7 @@ in_trouble(void)
         && (!u.uswallow
             || !attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_BLND)))
         return TROUBLE_BLIND;
-    /* deafness isn't it's own trouble; healing magic cures deafness
+    /* deafness isn't its own trouble; healing magic cures deafness
        when it cures blindness, so do the same with trouble repair */
     if ((HDeaf & TIMEOUT) > 1L)
         return TROUBLE_BLIND;
@@ -297,7 +297,7 @@ in_trouble(void)
 static struct obj *
 worst_cursed_item(void)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     /* if strained or worse, check for loadstone first */
     if (near_capacity() >= HVY_ENCUMBER) {
@@ -1413,7 +1413,7 @@ pleased(aligntyp g_align)
             disp.botl = TRUE;
             break;
         case 4: {
-            register struct obj *otmp;
+            struct obj *otmp;
             int any = 0;
 
             if (Blind)
@@ -1518,8 +1518,8 @@ pleased(aligntyp g_align)
 static boolean
 water_prayer(boolean bless_water)
 {
-    register struct obj *otmp;
-    register long changed = 0;
+    struct obj *otmp;
+    long changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
 
     for (otmp = gl.level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) {
@@ -2801,7 +2801,7 @@ altar_wrath(coordxy x, coordxy y)
 static boolean
 blocked_boulder(int dx, int dy)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     int nx, ny;
     long count = 0L;
 

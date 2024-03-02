@@ -130,8 +130,6 @@ endif      #HAVE_NCURSESW
 endif      #MAKEFILE_SRC
 endif      #USE_CURSESLIB
 
-AUTOLIBS=$(shell (../util/makedefs --grep-defined CRASHREPORT && echo "-lcrypto" ) || true )
-
 # NetHack sources control
 NHCFLAGS+=-DDLB
 NHCFLAGS+=-DHACKDIR=\"$(HACKDIR)\"
@@ -158,7 +156,6 @@ NHCFLAGS+=-DDGAMELAUNCH
 #NHCFLAGS+=-DDUMPHTML
 NHCFLAGS+=-DUSE_GENERAL_ALTAR_COLORS
 NHCFLAGS+=-DSELF_RECOVER
-
 ifdef WANT_WIN_CURSES
 ifeq "$(HAVE_NCURSESW)" "1"
 NHCFLAGS+=-DCURSES_UNICODE

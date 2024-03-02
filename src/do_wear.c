@@ -599,7 +599,7 @@ Helmet_off(void)
     return 0;
 }
 
-/* hard helms provide better protection against against falling rocks */
+/* hard helms provide better protection against falling rocks */
 boolean
 hard_helmet(struct obj *obj)
 {
@@ -1108,7 +1108,7 @@ Amulet_on(void)
         break;
     }
     case AMULET_OF_FLYING:
-        /* setworn() has already set extrinisic flying */
+        /* setworn() has already set extrinsic flying */
         float_vs_flight(); /* block flying if levitating */
         if (Flying) {
             boolean already_flying;
@@ -1215,7 +1215,7 @@ learnring(struct obj *ring, boolean observed)
 {
     int ringtype = ring->otyp;
 
-    /* if effect was observeable then we usually discover the type */
+    /* if effect was observable then we usually discover the type */
     if (observed) {
         /* if we already know the ring type which accomplishes this
            effect (assumes there is at most one type for each effect),
@@ -1371,7 +1371,7 @@ Ring_on(struct obj *obj)
 }
 
 static void
-Ring_off_or_gone(register struct obj *obj, boolean gone)
+Ring_off_or_gone(struct obj *obj, boolean gone)
 {
     long mask = (obj->owornmask & W_RING);
     boolean observable;
@@ -2646,7 +2646,7 @@ find_ac(void)
 void
 glibr(void)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     int xfl = 0;
     boolean leftfall, rightfall, wastwoweap = FALSE;
     const char *otherwep = 0, *thiswep, *which, *hand;
@@ -2748,7 +2748,7 @@ glibr(void)
 struct obj *
 some_armor(struct monst *victim)
 {
-    register struct obj *otmph, *otmp;
+    struct obj *otmph, *otmp;
 
     otmph = (victim == &gy.youmonst) ? uarmc : which_armor(victim, W_ARMC);
     if (!otmph)
@@ -2812,7 +2812,7 @@ unchanger(void)
 
 static
 int
-select_off(register struct obj *otmp)
+select_off(struct obj *otmp)
 {
     struct obj *why;
     char buf[BUFSZ];
@@ -3016,8 +3016,8 @@ do_takeoff(void)
 static int
 take_off(void)
 {
-    register int i;
-    register struct obj *otmp;
+    int i;
+    struct obj *otmp;
     struct takeoff_info *doff = &gc.context.takeoff;
 
     if (doff->what) {
@@ -3364,7 +3364,7 @@ destroy_arm(
 }
 
 void
-adj_abon(register struct obj *otmp, register schar delta)
+adj_abon(struct obj *otmp, schar delta)
 {
     if (uarmg && uarmg == otmp && otmp->otyp == GAUNTLETS_OF_DEXTERITY) {
         if (delta) {

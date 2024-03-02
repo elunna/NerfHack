@@ -1,4 +1,4 @@
-/* NetHack 3.7	spell.c	$NHDT-Date: 1702023273 2023/12/08 08:14:33 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.157 $ */
+/* NetHack 3.7	spell.c	$NHDT-Date: 1708126538 2024/02/16 23:35:38 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.163 $ */
 /*      Copyright (c) M. Stephenson 1988                          */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -32,6 +32,8 @@
  * spellbooks */
 #define primary_spellcaster() (Role_if(PM_HEALER) || Role_if(PM_CLERIC) \
                                || Role_if(PM_MONK) || Role_if(PM_WIZARD))
+struct chain_lightning_queue;
+struct chain_lightning_zap;
 
 static int spell_let_to_idx(char);
 static boolean cursed_book(struct obj * bp);
@@ -55,7 +57,10 @@ static int spell_hunger(int);
 static boolean spelleffects_check(int, int *, int *);
 static const char *spelltypemnemonic(int);
 static boolean can_center_spell_location(coordxy, coordxy);
+static void display_spell_target_positions(boolean);
 static boolean spell_aim_step(genericptr_t, coordxy, coordxy);
+static void propagate_chain_lightning(struct chain_lightning_queue *,
+            struct chain_lightning_zap);
 
 /* The roles[] table lists the role-specific values for tuning
  * percent_success().
@@ -129,7 +134,7 @@ spell_let_to_idx(char ilet)
 
 /* TRUE: book should be destroyed by caller */
 static boolean
-cursed_book(struct obj* bp)
+cursed_book(struct obj *bp)
 {
     boolean was_in_use;
     int lev = objects[bp->otyp].oc_level;
@@ -187,7 +192,7 @@ cursed_book(struct obj* bp)
 
 /* study while confused: returns TRUE if the book is destroyed */
 static boolean
-confused_book(struct obj* spellbook)
+confused_book(struct obj *spellbook)
 {
     boolean gone = FALSE;
 
@@ -229,7 +234,7 @@ deadbook_pacify_undead(struct monst *mtmp)
 /* special effects for The Book of the Dead; reading it while blind is
    allowed so that needs to be taken into account too */
 static void
-deadbook(struct obj* book2)
+deadbook(struct obj *book2)
 {
     struct monst *mtmp;
     coord mm;
@@ -240,8 +245,8 @@ deadbook(struct obj* book2)
     /* KMH -- Need ->known to avoid "_a_ Book of the Dead" */
     book2->known = 1;
     if (invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy)) {
-        register struct obj *otmp;
-        register boolean arti1_primed = FALSE, arti2_primed = FALSE,
+        struct obj *otmp;
+        boolean arti1_primed = FALSE, arti2_primed = FALSE,
                          arti_cursed = FALSE;
 
         if (book2->cursed) {
@@ -456,7 +461,7 @@ learn(void)
 RESTORE_WARNING_FORMAT_NONLITERAL
 
 int
-study_book(register struct obj* spellbook)
+study_book(struct obj *spellbook)
 {
     int booktype = spellbook->otyp, i;
     boolean confused = (Confusion != 0);
@@ -636,7 +641,7 @@ study_book(register struct obj* spellbook)
 /* a spellbook has been destroyed or the character has changed levels;
    the stored address for the current book is no longer valid */
 void
-book_disappears(struct obj* obj)
+book_disappears(struct obj *obj)
 {
     if (obj == gc.context.spbook.book) {
         gc.context.spbook.book = (struct obj *) 0;
@@ -648,7 +653,7 @@ book_disappears(struct obj* obj)
    so the sequence start reading, get interrupted, name the book, resume
    reading would read the "new" book from scratch */
 void
-book_substitution(struct obj* old_obj, struct obj* new_obj)
+book_substitution(struct obj *old_obj, struct obj *new_obj)
 {
     if (old_obj == gc.context.spbook.book) {
         gc.context.spbook.book = new_obj;
@@ -705,7 +710,7 @@ rejectcasting(void)
  * parameter.  Otherwise return FALSE.
  */
 static boolean
-getspell(int* spell_no)
+getspell(int *spell_no)
 {
     int nspells, idx;
     char ilet, lets[BUFSZ], qbuf[QBUFSZ];
@@ -1587,6 +1592,33 @@ can_center_spell_location(coordxy x, coordxy y)
     return (isok(x, y) && cansee(x, y) && !(IS_STWALL(levl[x][y].typ)));
 }
 
+static void
+display_spell_target_positions(boolean on_off)
+{
+    coordxy x, y, dx, dy;
+    int dist = 10;
+
+    if (on_off) {
+        /* on */
+        tmp_at(DISP_BEAM, cmap_to_glyph(S_goodpos));
+        for (dx = -dist; dx <= dist; dx++)
+            for (dy = -dist; dy <= dist; dy++) {
+                x = u.ux + dx;
+                y = u.uy + dy;
+                /* hero's location is allowed but highlighting the hero's
+                   spot makes map harder to read (if using '$' rather than
+                   by changing background color) */
+                if (u_at(x, y))
+                    continue;
+                if (can_center_spell_location(x, y))
+                    tmp_at(x, y);
+            }
+    } else {
+        /* off */
+        tmp_at(DISP_END, 0);
+    }
+}
+
 /* Choose location where spell takes effect. */
 static int
 throwspell(void)
@@ -1605,7 +1637,8 @@ throwspell(void)
     pline("Where do you want to cast the spell?");
     cc.x = u.ux;
     cc.y = u.uy;
-    getpos_sethilite(NULL, can_center_spell_location);
+    getpos_sethilite(display_spell_target_positions,
+                     can_center_spell_location);
     if (getpos(&cc, FALSE, "the desired position") < 0)
         return 0; /* user pressed ESC */
     clear_nhwindow(WIN_MESSAGE); /* discard any autodescribe feedback */
@@ -2251,7 +2284,7 @@ spellretention(int idx, char * outbuf)
 
 /* Learn a spell during creation of the initial inventory */
 void
-initialspell(struct obj* obj)
+initialspell(struct obj *obj)
 {
     int i, otyp = obj->otyp;
 

@@ -19,7 +19,7 @@ static void free_msghistory_snapshot(boolean);
 int
 tty_doprev_message(void)
 {
-    register struct WinDesc *cw = wins[WIN_MESSAGE];
+    struct WinDesc *cw = wins[WIN_MESSAGE];
     winid prevmsg_win;
     int i;
 
@@ -169,7 +169,7 @@ show_topl(const char *str)
 void
 remember_topl(void)
 {
-    register struct WinDesc *cw = wins[WIN_MESSAGE];
+    struct WinDesc *cw = wins[WIN_MESSAGE];
     int idx = cw->maxrow;
     unsigned len = strlen(gt.toplines) + 1;
 
@@ -254,10 +254,10 @@ more(void)
 }
 
 void
-update_topl(register const char *bp)
+update_topl(const char *bp)
 {
-    register char *tl, *otl;
-    register int n0;
+    char *tl, *otl;
+    int n0;
     int notdied = 1;
     struct WinDesc *cw = wins[WIN_MESSAGE];
     boolean skip = (cw->flags & (WIN_STOP | WIN_NOSTOP)) == WIN_STOP;
@@ -310,7 +310,7 @@ update_topl(register const char *bp)
 static void
 topl_putsym(char c)
 {
-    register struct WinDesc *cw = wins[WIN_MESSAGE];
+    struct WinDesc *cw = wins[WIN_MESSAGE];
 
     if (cw == (struct WinDesc *) 0)
         panic("Putsym window MESSAGE nonexistent");
@@ -357,7 +357,7 @@ putsyms(const char *str)
 }
 
 static void
-removetopl(register int n)
+removetopl(int n)
 {
     /* assume addtopl() has been done, so ttyDisplay->toplin is already set */
     while (n-- > 0)
@@ -385,7 +385,7 @@ tty_yn_function(
      * are allowed).  If it includes an <esc>, anything beyond that won't
      * be shown in the prompt to the user but will be acceptable as input.
      */
-    register char q;
+    char q;
     char rtmp[40];
     boolean digit_ok, allow_num, preserve_case = FALSE;
     struct WinDesc *cw = wins[WIN_MESSAGE];
@@ -540,7 +540,7 @@ tty_yn_function(
         (void) key2txt(q, rtmp);
     /* addtopl(rtmp); -- rewrite gt.toplines instead */
     Sprintf(gt.toplines, "%s%s", prompt, rtmp);
-#ifdef DUMPLOG
+#ifdef DUMPLOG_CORE
     dumplogmsg(gt.toplines);
 #endif
     ttyDisplay->inread--;
@@ -588,7 +588,7 @@ msghistory_snapshot(
         if (mesg && *mesg) {
             snapshot_mesgs[outidx++] = mesg;
             if (purge) {
-                /* we're taking this pointer away; subsequest history
+                /* we're taking this pointer away; subsequent history
                    updates will eventually allocate a new one to replace it */
                 cw->data[inidx] = (char *) 0;
                 cw->datlen[inidx] = 0;
@@ -690,7 +690,7 @@ tty_putmsghistory(const char *msg, boolean restoring_msghist)
            restored ones are being put into place */
         msghistory_snapshot(TRUE);
         initd = TRUE;
-#ifdef DUMPLOG
+#ifdef DUMPLOG_CORE
         /* this suffices; there's no need to scrub saved_pline[] pointers */
         gs.saved_pline_index = 0;
 #endif
@@ -707,7 +707,7 @@ tty_putmsghistory(const char *msg, boolean restoring_msghist)
         /* move most recent message to history, make this become most recent */
         remember_topl();
         Strcpy(gt.toplines, msg);
-#ifdef DUMPLOG
+#ifdef DUMPLOG_CORE
         dumplogmsg(gt.toplines);
 #endif
     } else if (snapshot_mesgs) {
@@ -718,7 +718,7 @@ tty_putmsghistory(const char *msg, boolean restoring_msghist)
         for (idx = 0; snapshot_mesgs[idx]; ++idx) {
             remember_topl();
             Strcpy(gt.toplines, snapshot_mesgs[idx]);
-#ifdef DUMPLOG
+#ifdef DUMPLOG_CORE
             dumplogmsg(gt.toplines);
 #endif
         }

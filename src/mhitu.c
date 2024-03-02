@@ -604,7 +604,7 @@ calc_mattacku_vars(
  *              take care of it...
  */
 int
-mattacku(register struct monst *mtmp)
+mattacku(struct monst *mtmp)
 {
     struct attack *mattk, alt_attk;
     int i, j = 0, tmp, ftmp, sum[NATTK];
@@ -651,7 +651,7 @@ mattacku(register struct monst *mtmp)
         /* Orcs like to steal and eat horses and the like */
         if (!rn2(is_orc(mtmp->data) ? 2 : 4) && m_next2u(mtmp)) {
             /* attack your steed instead; 'bhitpos' and 'notonhead' are
-               already set from tagetting hero */
+               already set from targeting hero */
             i = mattackm(mtmp, u.usteed);
             if ((i & M_ATTK_AGR_DIED) != 0)
                 return 1;
@@ -843,7 +843,7 @@ mattacku(register struct monst *mtmp)
         /* Scale with monster difficulty */
         ftmp = (int) ((mtmp->m_lev - 4) / 2) + 4;
         tmp += ftmp;
-        if (flags.showdmg)
+        if (flags.showdamage)
             You("are being flanked! [-%dAC]", ftmp);
         else
             You("are being flanked!");
@@ -1276,7 +1276,7 @@ magic_negation(struct monst *mon)
  * returns MM_ flags
 */
 static int
-hitmu(register struct monst *mtmp, register struct attack *mattk)
+hitmu(struct monst *mtmp, struct attack *mattk)
 {
     struct permonst *mdat = mtmp->data;
     struct permonst *olduasmon = gy.youmonst.data;
@@ -2175,7 +2175,7 @@ void
 mdamageu(struct monst *mtmp, int n)
 {
     disp.botl = TRUE;
-    showdmg(n, TRUE);
+    showdamage(n, TRUE);
     if (Upolyd) {
         u.mh -= n;
         if (u.mh < 1)
@@ -2808,7 +2808,7 @@ passiveum(
         tmp = 0;
 
  assess_dmg:
-    showdmg(tmp, FALSE);
+    showdamage(tmp, FALSE);
     if ((mtmp->mhp -= tmp) <= 0) {
         pline("%s dies!", Monnam(mtmp));
         xkilled(mtmp, XKILL_NOMSG);

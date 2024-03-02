@@ -91,9 +91,9 @@ newpw(void)
 
 /* return # of exp points for mtmp after nk killed */
 int
-experience(register struct monst *mtmp, register int nk)
+experience(struct monst *mtmp, int nk)
 {
-    register struct permonst *ptr = mtmp->data;
+    struct permonst *ptr = mtmp->data;
     int i, tmp, tmp2;
 
     tmp = 1 + mtmp->m_lev * mtmp->m_lev;
@@ -175,7 +175,7 @@ experience(register struct monst *mtmp, register int nk)
 }
 
 void
-more_experienced(register int exper, register int rexp)
+more_experienced(int exper, int rexp)
 {
     long oldexp = u.uexp,
          oldrexp = u.urexp,
@@ -269,7 +269,7 @@ losexp(
     if (u.uhpmax > olduhpmax)
         setuhpmax(olduhpmax);
 
-    showdmg(num, TRUE);
+    showdamage(num, TRUE);
     u.uhp -= num;
     if (u.uhp < 1)
         u.uhp = 1;

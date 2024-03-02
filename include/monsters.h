@@ -37,10 +37,10 @@
  *      then the value(s) can be plugged in here and monstr.c deleted.
  *      [Note that some monsters might warrant manually calculated
  *      difficulty, on a case by case basis, instead of blindly using
- *      the default value produced by makedefs.  Or fix the algoritm
+ *      the default value produced by makedefs.  Or fix the algorithm
  *      used by makedefs to generate a more appropriate value....]
  *
- *      TODO:  difficulty is closely releated to level; its field ought
+ *      TODO:  difficulty is closely related to level; its field ought
  *      to be moved sooner in the permonst struct so that it can become
  *      part of LVL() instead of remaining an orphan near the end.
  *
@@ -4176,7 +4176,7 @@
         M1_SWIM | M1_AMPHIBIOUS | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE, 0,
         NO_RACE, 4, CLR_BROWN, BABY_CROCODILE),
-    /* trivia:  before monster corspes were implemented, "lizard corpse"
+    /* trivia:  before monster corpses were implemented, "lizard corpse"
        was a specific type of item */
     MON(NAM("lizard"), S_LIZARD,
         LVL(5, 6, 6, 10, 0), (G_GENO | 4),

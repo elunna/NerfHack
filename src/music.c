@@ -61,8 +61,8 @@ awaken_scare(struct monst *mtmp, boolean scary)
 void
 awaken_monsters(int distance)
 {
-    register struct monst *mtmp;
-    register int distm;
+    struct monst *mtmp;
+    int distm;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -79,7 +79,7 @@ awaken_monsters(int distance)
 void
 put_monsters_to_sleep(struct monst * caster, int distance)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -104,7 +104,7 @@ put_monsters_to_sleep(struct monst * caster, int distance)
 static void
 charm_snakes(int distance)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int could_see_mon, was_peaceful;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -138,7 +138,7 @@ charm_snakes(int distance)
 static void
 calm_nymphs(int distance)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -161,7 +161,7 @@ calm_nymphs(int distance)
 void
 awaken_soldiers(struct monst* bugler  /* monster that played instrument */)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int distance, distm;
 
     /* distance of affected non-soldier monsters to bugler */
@@ -223,7 +223,7 @@ void
 do_earthquake(int force)
 {
     static const char into_a_chasm[] = " into a chasm";
-    register coordxy x, y;
+    coordxy x, y;
     struct monst *mtmp;
     struct obj *otmp;
     struct trap *chasm, *trap_at_u = t_at(u.ux, u.uy);
@@ -497,7 +497,7 @@ const char *beats[] = {
  * The player is trying to extract something from his/her instrument.
  */
 static int
-do_improvisation(struct obj* instr)
+do_improvisation(struct obj *instr)
 {
     int damage, mode, do_spec = !(Stunned || Confusion);
     struct obj itmp;
@@ -680,7 +680,7 @@ do_improvisation(struct obj* instr)
                   (do_spec && same_old_song)
                   ? "produces a familiar, lilting melody"
                   : (do_spec) ? "produces a lilting melody"
-                    : (same_old_song) ? "twangs a familar tune"
+                    : (same_old_song) ? "twangs a familiar tune"
                       : "twangs");
         else
             You_feel("soothing vibrations.");
@@ -759,7 +759,7 @@ improvised_notes(boolean *same_as_last_time)
  * So you want music...
  */
 int
-do_play_instrument(struct obj* instr)
+do_play_instrument(struct obj *instr)
 {
     char buf[BUFSZ] = DUMMY, c = 'y';
     char *s;

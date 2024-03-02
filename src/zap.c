@@ -477,7 +477,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             shieldeff(mtmp->mx, mtmp->my);
         } else if (!resist(mtmp, otmp->oclass, dmg, NOTELL)
                    && !DEADMONSTER(mtmp)) {
-            showdmg(dmg, FALSE);
+            showdamage(dmg, FALSE);
             mtmp->mhp -= dmg;
             mtmp->mhpmax -= dmg;
             /* die if already level 0, regardless of hit points */
@@ -504,7 +504,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             if (mtmp->isshk && !*u.ushops)
                 hot_pursuit(mtmp);
         } else if (M_AP_TYPE(mtmp))
-            seemimic(mtmp); /* might unblock if mimicing a boulder/door */
+            seemimic(mtmp); /* might unblock if mimicking a boulder/door */
     }
     /* note: gb.bhitpos won't be set if swallowed, but that's okay since
      * reveal_invis will be false.  We can't use mtmp->mx, my since it
@@ -1465,7 +1465,7 @@ obj_shudders(struct obj *obj)
 static void
 polyuse(struct obj *objhdr, int mat, int minwt)
 {
-    register struct obj *otmp, *otmp2;
+    struct obj *otmp, *otmp2;
 
     for (otmp = objhdr; minwt > 0 && otmp; otmp = otmp2) {
         otmp2 = otmp->nexthere;
@@ -1838,9 +1838,12 @@ poly_obj(struct obj *obj, int id)
 
     case SPBOOK_CLASS:
         while (otmp->otyp == SPE_POLYMORPH)
-            otmp->otyp = rnd_class(SPE_DIG, SPE_BLANK_PAPER);
-        /* reduce spellbook abuse; non-blank books degrade */
-        if (otmp->otyp != SPE_BLANK_PAPER) {
+            otmp->otyp = rnd_class(gb.bases[SPBOOK_CLASS], SPE_BLANK_PAPER);
+        /* reduce spellbook abuse; non-blank books degrade;
+           3.7: novels don't use spestudied so shouldn't degrade to blank
+           (but don't force spestudied to zero for them since a non-zero
+           value could get passed along to a future polymorph) */
+        if (otmp->otyp != SPE_BLANK_PAPER && otmp->otyp != SPE_NOVEL) {
             otmp->spestudied = obj->spestudied + 1;
             if (otmp->spestudied > MAX_SPELL_STUDY) {
                 otmp->otyp = SPE_BLANK_PAPER;
@@ -2397,7 +2400,7 @@ bhitpile(
     coordxy tx, coordxy ty,     /* target location */
     schar zz)                   /* direction for up/down zaps */
 {
-    register struct obj *otmp, *next_obj;
+    struct obj *otmp, *next_obj;
     boolean hidingunder, first;
     int prevotyp, hitanything = 0;
 
@@ -4298,7 +4301,7 @@ bhit(
 struct monst *
 boomhit(struct obj *obj, coordxy dx, coordxy dy)
 {
-    register int i, ct;
+    int i, ct;
     int boom; /* showsym[] index  */
     struct monst *mtmp;
     boolean counterclockwise = URIGHTY; /* ULEFTY => clockwise */
@@ -4494,7 +4497,7 @@ zhitm(
             && !(type > 0 && engulfing_u(mon))
             && nd > 2) {
             /* sufficiently powerful lightning blinds monsters */
-            register unsigned rnd_tmp = rnd(50);
+            unsigned rnd_tmp = rnd(50);
             mon->mcansee = 0;
             if ((mon->mblinded + rnd_tmp) > 127)
                 mon->mblinded = 127;
@@ -4534,7 +4537,7 @@ zhitm(
         tmp = 0; /* don't allow negative damage */
     debugpline3("zapped monster hp = %d (= %d - %d)", mon->mhp - tmp,
                 mon->mhp, tmp);
-    showdmg(tmp, FALSE);
+    showdamage(tmp, FALSE);
     mon->mhp -= tmp;
     return tmp;
 }
@@ -4989,7 +4992,7 @@ dobuzz(
     boolean say)    /* announce out of sight hit/miss events if true */
 {
     int range, fltyp = zaptype(type), damgtype = fltyp % 10;
-    register coordxy lsx, lsy;
+    coordxy lsx, lsy;
     struct monst *mon;
     coord save_bhitpos;
     boolean shopdamage = FALSE,
@@ -4999,11 +5002,11 @@ dobuzz(
     int spell_type;
     int hdmgtype = Hallucination ? rn2(6) : damgtype;
 
-    /* if its a Hero Spell then get its SPE_TYPE */
+    /* if it's a Hero Spell then get its SPE_TYPE */
     spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + damgtype : 0;
 
     if (u.uswallow) {
-        register int tmp;
+        int tmp;
 
         if (type < 0)
             return;
@@ -6060,7 +6063,7 @@ maybe_destroy_item(
     quan = 0L;
     
     /* external worn item protects inventory? */
-    if (inventory_resistance_check(dmgtyp))
+    if (u_carry && inventory_resistance_check(dmgtyp))
         return 0;
 
     switch (dmgtyp) {
@@ -6237,7 +6240,7 @@ maybe_destroy_item(
 #define DMG_DESTROY_SCALE 5
 /* largest amount of stacks that will be destroyed in a single call */
 #define MAX_ITEMS_DESTROYED 20
-    
+
 /* target items of specified class in mon's inventory for possible
  * destruction return total amount of damage inflicted, though this
  * is unused if mon is the player */
@@ -6248,7 +6251,7 @@ destroy_items(
     int dmgtyp,         /* AD_**** - currently only cold, fire, elec */
     int dmg_in)         /* the amount of HP damage the attack dealt */
 {
-    register struct obj *obj;
+    struct obj *obj;
     int i, defer;
     int limit; /* max amount of item stacks destroyed, based on damage */
     struct {
@@ -6424,7 +6427,7 @@ resist(struct monst *mtmp, char oclass, int damage, int tell)
 
     if (damage) {
         int saved_mhp = mtmp->mhp;
-        showdmg(damage, FALSE);
+        showdamage(damage, FALSE);
         mtmp->mhp -= damage;
         if (DEADMONSTER(mtmp)) {
             if (gm.m_using)
@@ -6597,7 +6600,7 @@ makewish(void)
                        "made %s first artifact wish - %s", uhis(), wish);
     else
         livelog_printf((LL_WISH | maybe_LL_arti), "wished for %s", wish);
-    /* TODO? maybe generate a second event decribing what was received since
+    /* TODO? maybe generate a second event describing what was received since
        those just echo player's request rather than show actual result */
 
     const char *verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),

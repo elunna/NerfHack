@@ -186,7 +186,7 @@ trapped_door_at(int ttyp, coordxy x, coordxy y)
 struct obj *
 o_in(struct obj *obj, char oclass)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     struct obj *temp;
 
     if (obj->oclass == oclass)
@@ -214,7 +214,7 @@ o_in(struct obj *obj, char oclass)
 struct obj *
 o_material(struct obj *obj, unsigned material)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     struct obj *temp;
 
     if (objects[obj->otyp].oc_material == material)
@@ -248,8 +248,8 @@ static boolean
 check_map_spot(coordxy x, coordxy y, char oclass, unsigned material)
 {
     int glyph;
-    register struct obj *otmp;
-    register struct monst *mtmp;
+    struct obj *otmp;
+    struct monst *mtmp;
 
     glyph = glyph_at(x, y);
     if (glyph_is_object(glyph)) {
@@ -301,7 +301,7 @@ check_map_spot(coordxy x, coordxy y, char oclass, unsigned material)
 static boolean
 clear_stale_map(char oclass, unsigned material)
 {
-    register coordxy zx, zy;
+    coordxy zx, zy;
     boolean change_made = FALSE;
 
     for (zx = 1; zx < COLNO; zx++)
@@ -318,8 +318,8 @@ clear_stale_map(char oclass, unsigned material)
 int
 gold_detect(struct obj *sobj)
 {
-    register struct obj *obj;
-    register struct monst *mtmp;
+    struct obj *obj;
+    struct monst *mtmp;
     struct obj gold, *temp = 0;
     boolean stale, ugold = FALSE, steedgold = FALSE;
     int ter_typ = TER_DETECT | TER_OBJ;
@@ -462,9 +462,9 @@ gold_detect(struct obj *sobj)
 int
 food_detect(struct obj *sobj)
 {
-    register struct obj *obj;
-    register struct monst *mtmp;
-    register int ct = 0, ctu = 0;
+    struct obj *obj;
+    struct monst *mtmp;
+    int ct = 0, ctu = 0;
     boolean confused = (Confusion || (sobj && sobj->cursed)), stale;
     char oclass = confused ? POTION_CLASS : FOOD_CLASS;
     const char *what = confused ? something : "food";
@@ -587,15 +587,15 @@ int
 object_detect(struct obj *detector, /* object doing the detecting */
               int class)            /* an object class, 0 for all */
 {
-    register coordxy x, y;
+    coordxy x, y;
     char stuff[BUFSZ];
     int is_cursed = (detector && detector->cursed);
     int do_dknown = (detector && (detector->oclass == POTION_CLASS
                                   || detector->oclass == SPBOOK_CLASS)
                      && detector->blessed);
     int ct = 0, ctu = 0;
-    register struct obj *obj, *otmp = (struct obj *) 0;
-    register struct monst *mtmp;
+    struct obj *obj, *otmp = (struct obj *) 0;
+    struct monst *mtmp;
     int sym, boulder = 0, ter_typ = TER_DETECT | TER_OBJ;
 
     if (class < 0 || class >= MAXOCLASSES) {
@@ -782,7 +782,7 @@ int
 monster_detect(struct obj *otmp, /* detecting object (if any) */
                int mclass)       /* monster class, 0 for all */
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int mcnt = 0;
 
     /* Note: This used to just check fmon for a non-zero value
@@ -980,7 +980,7 @@ int
 trap_detect(
     struct obj *sobj) /* Null if crystal ball, scroll if gold detection */
 {
-    register struct trap *ttmp;
+    struct trap *ttmp;
     struct monst *mon;
     int door, tr;
     int cursed_src = sobj && sobj->cursed;
@@ -1305,7 +1305,7 @@ use_crystal_ball(struct obj **optr)
         if (ch == DEF_MIMIC_DEF)
             ch = DEF_MIMIC;
 
-        /* checking furnture before objects allows '_' to find altars
+        /* checking furniture before objects allows '_' to find altars
            (along with other furniture) instead of finding iron chains */
         if (def_char_is_furniture(ch) >= 0) {
             ret = furniture_detect();
@@ -1385,7 +1385,7 @@ show_map_spot(coordxy x, coordxy y, boolean cnf)
 void
 do_mapping(void)
 {
-    register int zx, zy;
+    int zx, zy;
     boolean unconstrained;
 
     unconstrained = unconstrain_map();
@@ -1411,7 +1411,7 @@ do_mapping(void)
 void
 do_vicinity_map(struct obj *sobj) /* scroll--actually fake spellbook--object */
 {
-    register int zx, zy;
+    int zx, zy;
     struct monst *mtmp;
     struct obj *otmp;
     long save_EDetect_mons;
@@ -1631,8 +1631,8 @@ findone(coordxy zx, coordxy zy, genericptr_t whatfound)
 static void
 openone(coordxy zx, coordxy zy, genericptr_t num)
 {
-    register struct trap *ttmp;
-    register struct obj *otmp;
+    struct trap *ttmp;
+    struct obj *otmp;
     int *num_p = (int *) num;
 
     if (OBJ_AT(zx, zy)) {
@@ -1895,8 +1895,8 @@ int
 dosearch0(int aflag) /* intrinsic autosearch vs explicit searching */
 {
     coordxy x, y;
-    register struct trap *trap;
-    register struct monst *mtmp;
+    struct trap *trap;
+    struct monst *mtmp;
 
     if (u.uswallow) {
         if (!aflag)
@@ -2003,9 +2003,9 @@ warnreveal(void)
 void
 premap_detect(void)
 {
-    register coordxy x, y;
-    register struct trap *ttmp;
-    register struct obj *obj;
+    coordxy x, y;
+    struct trap *ttmp;
+    struct obj *obj;
 
     /* Map the background and boulders */
     for (x = 1; x < COLNO; x++)
@@ -2132,7 +2132,7 @@ dump_map(void)
     boolean blankrow, toprow;
 
     /*
-     * Squeeze out excess vertial space when dumping the map.
+     * Squeeze out excess vertical space when dumping the map.
      * If there are any blank map rows at the top, suppress them
      * (our caller has already printed a separator).  If there is
      * more than one blank map row at the bottom, keep just one.

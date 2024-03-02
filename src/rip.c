@@ -74,7 +74,7 @@ static const char *const rip_txt[] = {
 static void
 center(int line, char *text)
 {
-    register char *ip, *op;
+    char *ip, *op;
     ip = text;
     op = &gr.rip[line][STONE_LINE_CENT - ((strlen(text) + 1) >> 1)];
     while (*ip)
@@ -84,10 +84,10 @@ center(int line, char *text)
 void
 genl_outrip(winid tmpwin, int how, time_t when)
 {
-    register char **dp;
-    register char *dpx;
+    char **dp;
+    char *dpx;
     char buf[BUFSZ];
-    register int x;
+    int x;
     int line, year;
     long cash;
 

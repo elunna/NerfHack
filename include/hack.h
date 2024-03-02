@@ -61,7 +61,7 @@
 /* bitmask flags for corpse_xname();
    PFX_THE takes precedence over ARTICLE, NO_PFX takes precedence over both */
 #define CXN_NORMAL 0    /* no special handling */
-#define CXN_SINGULAR 1  /* override quantity if greather than 1 */
+#define CXN_SINGULAR 1  /* override quantity if greater than 1 */
 #define CXN_NO_PFX 2    /* suppress "the" from "the Unique Monst */
 #define CXN_PFX_THE 4   /* prefix with "the " (unless pname) */
 #define CXN_ARTICLE 8   /* include a/an/the prefix */
@@ -419,7 +419,7 @@ enum earlyarg {
 #ifdef WIN32
     , ARG_WINDOWS
 #endif
-#ifdef CRASHREPORT
+#if defined(CRASHREPORT)
     , ARG_BIDSHOW
 #endif
 };
@@ -683,7 +683,7 @@ enum optset_restrictions {
     set_viaprog    = 2, /* may be set via extern program, not seen in game */
     set_gameview   = 3, /* may be set via extern program, displayed in game */
     set_in_game    = 4, /* may be set via extern program or set in the game */
-    set_wizonly    = 5, /* may be set set in the game if wizmode */
+    set_wizonly    = 5, /* may be set in the game if wizmode */
     set_wiznofuz   = 6, /* wizard-mode only, but not by fuzzer */
     set_hidden     = 7  /* placeholder for prefixed entries, never show it  */
 };
@@ -771,9 +771,9 @@ struct sinfo {
     int saving;                 /* creating a save file */
     int restoring;              /* reloading a save file */
     int in_moveloop;            /* normal gameplay in progress */
-    int in_impossible;          /* reportig a warning */
+    int in_impossible;          /* reporting a warning */
     int in_docrt;               /* in docrt(): redrawing the whole screen */
-    int in_self_recover;        /* processsing orphaned level files */
+    int in_self_recover;        /* processing orphaned level files */
     int in_checkpoint;          /* saving insurance checkpoint */
     int in_parseoptions;        /* in parseoptions */
     int in_role_selection;      /* role/race/&c selection menus in progress */
@@ -788,7 +788,7 @@ struct sinfo {
        used in the curses interface to avoid arrow keys when user is doing
        something other than entering a command or direction and in the Qt
        interface to suppress menu commands in similar conditions;
-       readchar() alrways resets it to 'otherInp' prior to returning */
+       readchar() always resets it to 'otherInp' prior to returning */
     int input_state; /* whether next key pressed will be entering a command */
 #ifdef TTY_GRAPHICS
     /* resize_pending only matters when handling a SIGWINCH signal for tty;
@@ -928,7 +928,7 @@ typedef struct {
     long count;           /* holds current line count for default style file,
                              field count for binary style */
     boolean structlevel;  /* traditional structure binary saves */
-    boolean fieldlevel;   /* fieldlevel saves saves each field individually */
+    boolean fieldlevel;   /* fieldlevel saves each field individually */
     boolean addinfo;      /* if set, some additional context info from core */
     boolean eof;          /* place to mark eof reached */
     boolean bendian;      /* set to true if executing on big-endian machine */
@@ -1075,33 +1075,36 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 
 
 /* flags to control makemon(); goodpos() uses some plus has some of its own*/
-#define NO_MM_FLAGS 0x000000L /* use this rather than plain 0 */
-#define NO_MINVENT  0x000001L /* suppress minvent when creating mon */
-#define MM_NOWAIT   0x000002L /* don't set STRAT_WAITMASK flags */
-#define MM_NOCOUNTBIRTH 0x0004L /* don't increment born count (for revival) */
-#define MM_IGNOREWATER  0x0008L /* ignore water when positioning */
-#define MM_ADJACENTOK   0x0010L /* acceptable to use adjacent coordinates */
-#define MM_ANGRY    0x000020L /* monster is created angry */
-#define MM_NONAME   0x000040L /* monster is not christened */
-#define MM_EGD      0x000100L /* add egd structure */
-#define MM_EPRI     0x000200L /* add epri structure */
-#define MM_ESHK     0x000400L /* add eshk structure */
-#define MM_EMIN     0x000800L /* add emin structure */
-#define MM_EDOG     0x001000L /* add edog structure */
-#define MM_ASLEEP   0x002000L /* monsters should be generated asleep */
-#define MM_NOGRP    0x004000L /* suppress creation of monster groups */
-#define MM_NOTAIL   0x008000L /* if a long worm, don't give it a tail */
-#define MM_MALE     0x010000L /* male variation */
-#define MM_FEMALE   0x020000L /* female variation */
-#define MM_NOMSG    0x040000L /* no appear message */
+#define NO_MM_FLAGS     0x00000000L /* use this rather than plain 0 */
+#define NO_MINVENT      0x00000001L /* suppress minvent when creating mon */
+#define MM_NOWAIT       0x00000002L /* don't set STRAT_WAITMASK flags */
+#define MM_NOCOUNTBIRTH 0x00000004L /* don't incr born count (for revival) */
+#define MM_IGNOREWATER  0x00000008L /* ignore water when positioning */
+#define MM_ADJACENTOK   0x00000010L /* ok to use adjacent coordinates */
+#define MM_ANGRY        0x00000020L /* monster is created angry */
+#define MM_NONAME       0x00000040L /* monster is not christened */
+#define MM_EGD          0x00000080L /* add egd structure */
+#define MM_EPRI         0x00000100L /* add epri structure */
+#define MM_ESHK         0x00000200L /* add eshk structure */
+#define MM_EMIN         0x00000400L /* add emin structure */
+#define MM_EDOG         0x00000800L /* add edog structure */
+#define MM_ASLEEP       0x00001000L /* monsters should be generated asleep */
+#define MM_NOGRP        0x00002000L /* suppress creation of monster groups */
+#define MM_NOTAIL       0x00004000L /* if a long worm, don't give it a tail */
+#define MM_MALE         0x00008000L /* male variation */
+#define MM_FEMALE       0x00010000L /* female variation */
+#define MM_NOMSG        0x00020000L /* no appear message */
+#define MM_NOEXCLAM     0x00040000L /* more sedate "<mon> appears."
+                                     * mesg for ^G */
+#define MM_IGNORELAVA   0x00080000L /* ignore lava when positioning */
+#define MM_MINVIS       0x00100000L /* for ^G/create_particular */
 /* if more MM_ flag masks are added, skip or renumber the GP_ one(s) */
-#define GP_ALLOW_XY   0x080000L /* [actually used by enexto() to decide
-                                 * whether to make extra call to goodpos()] */
-#define GP_ALLOW_U    0x100000L /* don't reject hero's location */
-#define GP_CHECKSCARY 0x200000L /* check monster for onscary() */
-#define MM_NOEXCLAM   0x400000L /* more sedate "<mon> appears." mesg for ^G */
-#define MM_IGNORELAVA 0x800000L /* ignore lava when positioning */
-#define MM_MINVIS   0x01000000L /* for ^G/create_particular */
+#define GP_ALLOW_XY     0x00200000L /* [actually used by enexto() to decide
+                                     * whether to make extra call to goodpos()] */
+#define GP_ALLOW_U      0x00400000L /* don't reject hero's location */
+#define GP_CHECKSCARY   0x00800000L /* check monster for onscary() */
+#define GP_AVOID_MONPOS 0x01000000L /* don't accept existing mon location */
+/* 25 bits used */
 
 /* flags for make_corpse() and mkcorpstat(); 0..7 are recorded in obj->spe */
 #define CORPSTAT_NONE     0x00
@@ -1206,7 +1209,7 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define ONAME_RANDOM     0x0080U /* something created an artifact randomly
                                   * with mk_artifact() (mksboj or mk_player)
                                   * or m_initweap() (lawful Angel) */
-/* flag congrolling potential livelog event of finding an artifact */
+/* flag controlling potential livelog event of finding an artifact */
 #define ONAME_KNOW_ARTI  0x0100U /* hero is already aware of this artifact */
 /* flag for suppressing perm_invent update when name gets assigned */
 #define ONAME_SKIP_INVUPD 0x0200U /* don't call update_inventory() */

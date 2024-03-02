@@ -393,7 +393,7 @@ find_roll_to_hit(
         /* Scale with monster difficulty */
         ftmp = (int) ((u.ulevel - 4) / 2) + 4;
         tmp += ftmp;
-        if (flags.showdmg)
+        if (flags.showdamage)
             You("flank %s. [-%dAC]", mon_nam(mtmp), ftmp);
         else
             You("flank %s.", mon_nam(mtmp));
@@ -1118,7 +1118,7 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
     if (hmd->mdat == &mons[PM_SHADE]) {
         hmd->dmg = 0;
     } else {
-        /* note: 1..2 or 1..4 can be substantiallly increased by
+        /* note: 1..2 or 1..4 can be substantially increased by
            strength bonus or skill bonus, usually both... */
         hmd->dmg = rnd(!martial_bonus() ? 2 : 4);
         hmd->use_weapon_skill = TRUE;
@@ -1704,8 +1704,8 @@ hmon_hitmon_dmg_recalc(struct _hitmon_data *hmd, struct obj *obj)
            for dual attacks, 3/4 of the strength bonus is used; when
            both attacks hit, overall bonus is 3/2 rather than doubled;
            melee hit with two-handed weapon uses 3/2 strength bonus to
-           appoximately match double hit with two-weapon ('approximate'
-           becase udaminc skews in favor of two-weapon); the 3/2 factor
+           approximately match double hit with two-weapon ('approximate'
+           because udaminc skews in favor of two-weapon); the 3/2 factor
            for two-handed strength does not apply to polearms unless
            hero is simply bashing with one of those and does not apply
            to jousting because lances are one-handed */
@@ -2105,7 +2105,7 @@ hmon_hitmon(
                so we test for 1; 0 shouldn't be able to happen here... */
             && hmd.dmg > 0 && u.uconduct.weaphit <= 1)
             first_weapon_hit(obj);
-        showdmg(hmd.dmg, FALSE);
+        showdamage(hmd.dmg, FALSE);
         mon->mhp -= hmd.dmg;
     }
     /* adjustments might have made tmp become less than what
@@ -2741,7 +2741,7 @@ mhitm_ad_drli(
                 if (mdef->mhpmax > (int) mdef->m_lev)
                     mdef->mhpmax = (int) mdef->m_lev + 1;
             }
-            showdmg(mhm->damage, FALSE);
+            showdamage(mhm->damage, FALSE);
             mdef->mhp -= mhm->damage;
             /* !m_lev: level 0 monster is killed regardless of hit points
                rather than drop to level -1; note: some non-living creatures
@@ -2917,7 +2917,7 @@ mhitm_ad_cold(
     struct monst *mdef, struct mhitm_data *mhm)
 {
     const int orig_dmg = mhm->damage;
-    
+
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
@@ -2983,7 +2983,7 @@ mhitm_ad_elec(
     struct monst *mdef, struct mhitm_data *mhm)
 {
     const int orig_dmg = mhm->damage;
-    
+
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
@@ -3214,7 +3214,7 @@ mhitm_ad_tlpt(
                 if (Half_physical_damage)
                     mhm->damage *= 2; /* doesn't actually increase damage;
                                        * we only get here if half the
-                                       * original damage would would have
+                                       * original damage would have
                                        * been fatal, so double reduced
                                        * damage will be less than original */
                 if (mhm->damage < 1) { /* implies (tmphp <= 1) */
@@ -5366,7 +5366,7 @@ damageum(
         return mhm.hitflags;
 
     mdef->mstrategy &= ~STRAT_WAITFORU; /* in case player is very fast */
-    showdmg(mhm.damage, FALSE);
+    showdamage(mhm.damage, FALSE);
     mdef->mhp -= mhm.damage;
     if (DEADMONSTER(mdef)) {
         /* troll killed by Trollsbane won't auto-revive; FIXME? same when
@@ -5400,7 +5400,7 @@ damageum(
 int
 explum(struct monst *mdef, struct attack *mattk)
 {
-    register int tmp = d((int) mattk->damn, (int) mattk->damd);
+    int tmp = d((int) mattk->damn, (int) mattk->damd);
 
     switch (mattk->adtyp) {
     case AD_BLND:
@@ -5459,8 +5459,8 @@ static int
 gulpum(struct monst *mdef, struct attack *mattk)
 {
     static char msgbuf[BUFSZ]; /* for gn.nomovemsg */
-    register int tmp;
-    register int dam = d((int) mattk->damn, (int) mattk->damd);
+    int tmp;
+    int dam = d((int) mattk->damn, (int) mattk->damd);
     boolean fatal_gulp,
             u_digest = digests(gy.youmonst.data),
             u_enfold = enfolds(gy.youmonst.data);
@@ -5688,7 +5688,7 @@ gulpum(struct monst *mdef, struct attack *mattk)
                 break;
             }
             end_engulf();
-            showdmg(dam, FALSE);
+            showdamage(dam, FALSE);
             mdef->mhp -= dam;
             if (DEADMONSTER(mdef)) {
                 killed(mdef);
@@ -6014,7 +6014,7 @@ hmonas(struct monst *mon)
                be Null, and we want to track that for passive() */
             originalweapon = (altwep && uswapwep) ? &uswapwep : &uwep;
             if (uswapwep /* set up 'altwep' flag for next iteration */
-                /* only consider seconary when wielding one-handed primary */
+                /* only consider secondary when wielding one-handed primary */
                 && uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
                 && !bimanual(uwep)
                 /* only switch if not wearing shield and not at artifact;
@@ -6907,7 +6907,7 @@ light_hits_gremlin(struct monst *mon, int dmg)
 {
     pline("%s %s!", Monnam(mon),
           (dmg > mon->mhp / 2) ? "wails in agony" : "cries out in pain");
-    showdmg(dmg, FALSE);
+    showdamage(dmg, FALSE);
     mon->mhp -= dmg;
     wake_nearto(mon->mx, mon->my, 30);
     if (DEADMONSTER(mon)) {

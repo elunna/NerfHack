@@ -238,11 +238,11 @@ losestr(int num, const char *knam, schar k_format)
         losehp(dmg, knam, k_format);
 
         if (Upolyd) {
-            /* if still polymorhed, reduce you-as-monst maxHP; never below 1 */
+            /* if still polymorphed, reduce you-as-monst maxHP; never below 1 */
             u.mhmax -= min(dmg, u.mhmax - 1);
         } else if (!waspolyd) {
             /* not polymorphed now and didn't rehumanize when taking damage;
-               reduce max HP, but not below below uhpmin */
+               reduce max HP, but not below uhpmin */
             if (u.uhpmax > uhpmin)
                 setuhpmax(max(u.uhpmax - dmg, uhpmin));
         }
@@ -411,8 +411,8 @@ change_luck(schar n)
 int
 stone_luck(boolean parameter) /* So I can't think up of a good name.  So sue me. --KAA */
 {
-    register struct obj *otmp;
-    register long bonchance = 0;
+    struct obj *otmp;
+    long bonchance = 0;
 
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
         if (confers_luck(otmp)) {
@@ -718,7 +718,7 @@ init_attr_role_redist(int np, boolean addition)
 void
 init_attr(int np)
 {
-    register int i;
+    int i;
 
     for (i = 0; i < A_MAX; i++) {
         ABASE(i) = AMAX(i) = gu.urole.attrbase[i];
@@ -735,7 +735,7 @@ init_attr(int np)
 void
 redist_attr(void)
 {
-    register int i, tmp;
+    int i, tmp;
 
     for (i = 0; i < A_MAX; i++) {
         if (i == A_INT || i == A_WIS)
@@ -763,7 +763,7 @@ vary_init_attr(void)
 
     for (i = 0; i < A_MAX; i++)
         if (!rn2(20)) {
-            register int xd = rn2(7) - 2; /* biased variation */
+            int xd = rn2(7) - 2; /* biased variation */
 
             (void) adjattrib(i, xd, TRUE);
             if (ABASE(i) < AMAX(i))
@@ -1002,7 +1002,7 @@ RESTORE_WARNING_FORMAT_NONLITERAL
 void
 adjabil(int oldlevel, int newlevel)
 {
-    register const struct innate *abil, *rabil;
+    const struct innate *abil, *rabil;
     long prevabil, mask = FROMEXPER;
 
     abil = role_abil(Role_switch);

@@ -689,7 +689,7 @@ savecemetery(NHFILE *nhfp, struct cemetery **cemeteryaddr)
 static void
 savedamage(NHFILE *nhfp)
 {
-    register struct damage *damageptr, *tmp_dam;
+    struct damage *damageptr, *tmp_dam;
     unsigned int xl = 0;
 
     damageptr = gl.level.damagelist;
@@ -825,7 +825,7 @@ saveobj(NHFILE *nhfp, struct obj *otmp)
 static void
 saveobjchn(NHFILE *nhfp, struct obj **obj_p)
 {
-    register struct obj *otmp = *obj_p;
+    struct obj *otmp = *obj_p;
     struct obj *otmp2;
     boolean is_invent = (otmp && otmp == gi.invent);
     int minusone = -1;
@@ -949,9 +949,9 @@ savemon(NHFILE *nhfp, struct monst *mtmp)
 }
 
 static void
-savemonchn(NHFILE *nhfp, register struct monst *mtmp)
+savemonchn(NHFILE *nhfp, struct monst *mtmp)
 {
-    register struct monst *mtmp2;
+    struct monst *mtmp2;
     int minusone = -1;
 
     while (mtmp) {
@@ -986,10 +986,10 @@ savemonchn(NHFILE *nhfp, register struct monst *mtmp)
 
 /* save traps; gf.ftrap is the only trap chain so the 2nd arg is superfluous */
 static void
-savetrapchn(NHFILE *nhfp, register struct trap *trap)
+savetrapchn(NHFILE *nhfp, struct trap *trap)
 {
     static struct trap zerotrap;
-    register struct trap *trap2;
+    struct trap *trap2;
 
     while (trap) {
         boolean use_relative = (gp.program_state.restoring != REST_GSTATE
@@ -1022,7 +1022,7 @@ void
 savefruitchn(NHFILE *nhfp)
 {
     static struct fruit zerofruit;
-    register struct fruit *f2, *f1;
+    struct fruit *f2, *f1;
 
     f1 = gf.ffruit;
     while (f1) {
@@ -1237,7 +1237,7 @@ freedynamicdata(void)
 #ifdef USER_SOUNDS
     release_sound_mappings();
 #endif
-#ifdef DUMPLOG
+#ifdef DUMPLOG_CORE
     dumplogfreemessages();
 #endif
     discard_gamelog();

@@ -25,6 +25,7 @@ static boolean leppie_avoidance(struct monst *);
 static boolean m_balks_at_approaching(struct monst *);
 static boolean stuff_prevents_passage(struct monst *);
 static int vamp_shift(struct monst *, struct permonst *, boolean);
+static void maybe_spin_web(struct monst *);
 
 /* a11y: give a message when monster moved */
 static void
@@ -101,7 +102,7 @@ monhaskey(
 }
 
 void
-mon_yells(struct monst* mon, const char* shout)
+mon_yells(struct monst *mon, const char *shout)
 {
     if (Deaf) {
         if (canspotmon(mon))
@@ -173,7 +174,7 @@ m_break_boulder(struct monst *mtmp, coordxy x, coordxy y)
 }
 
 static void
-watch_on_duty(register struct monst* mtmp)
+watch_on_duty(struct monst *mtmp)
 {
     coordxy x, y;
 
@@ -202,7 +203,7 @@ watch_on_duty(register struct monst* mtmp)
 /* move a monster; if a threat to busy hero, stop doing whatever it is */
 int
 dochugw(
-    register struct monst *mtmp,
+    struct monst *mtmp,
     boolean chug) /* True: monster is moving;
                    * False: monster was just created or has teleported
                    * so perform stop-what-you're-doing-if-close-enough-
@@ -324,7 +325,7 @@ mon_regen(struct monst *mon, boolean digest_meal)
  * jolted awake.
  */
 static int
-disturb(register struct monst *mtmp)
+disturb(struct monst *mtmp)
 {
     /*
      * + Ettins are hard to surprise.
@@ -336,7 +337,7 @@ disturb(register struct monst *mtmp)
      *  not stealthy or (mon is an ettin and 9/10)              AND
      *  (mon is not a nymph, jabberwock, or leprechaun) or 1/50 AND
      *  Aggravate or mon is (dog or human) or
-     *      (1/7 and mon is not mimicing furniture or object)
+     *      (1/7 and mon is not mimicking furniture or object)
      */
     if (couldsee(mtmp->mx, mtmp->my) && mdistu(mtmp) <= 100
         && (!Stealth || (mtmp->data == &mons[PM_ETTIN] && rn2(10)))
@@ -391,7 +392,7 @@ find_pmmonst(int pm)
    will eat it if there is no queen bee on the level; return 1: mon died,
    0: mon ate jelly and lived; -1: mon didn't eat jelly to use its move */
 int
-bee_eat_jelly(struct monst* mon, struct obj* obj)
+bee_eat_jelly(struct monst *mon, struct obj *obj)
 {
     int m_delay;
     struct monst *mtmp = find_pmmonst(PM_QUEEN_BEE);
@@ -551,7 +552,7 @@ distfleeck(
 /* perform a special one-time action for a monster; returns -1 if nothing
    special happened, 0 if monster uses up its turn, 1 if monster is killed */
 static int
-m_arrival(struct monst* mon)
+m_arrival(struct monst *mon)
 {
     mon->mstrategy &= ~STRAT_ARRIVE; /* always reset */
 
@@ -560,7 +561,7 @@ m_arrival(struct monst* mon)
 
 /* a mind flayer unleashes a mind blast  */
 static void
-mind_blast(register struct monst* mtmp)
+mind_blast(struct monst *mtmp)
 {
     struct monst *m2, *nmon = (struct monst *) 0;
 
@@ -629,10 +630,10 @@ mind_blast(register struct monst* mtmp)
  * code. --KAA
  */
 int
-dochug(register struct monst* mtmp)
+dochug(struct monst *mtmp)
 {
-    register struct permonst *mdat;
-    register int status = MMOVE_NOTHING;
+    struct permonst *mdat;
+    int status = MMOVE_NOTHING;
     int inrange, nearby, scared, res;
     struct obj *otmp;
     boolean panicattk = FALSE;
@@ -1014,7 +1015,7 @@ mon_would_consume_item(struct monst *mtmp, struct obj *otmp)
 }
 
 boolean
-itsstuck(register struct monst* mtmp)
+itsstuck(struct monst *mtmp)
 {
     if (sticks(gy.youmonst.data) && mtmp == u.ustuck && !u.uswallow) {
         pline("%s cannot escape from you!", Monnam(mtmp));
@@ -1042,7 +1043,7 @@ should_displace(
     int shortest_with_displacing = -1;
     int shortest_without_displacing = -1;
     int count_without_displacing = 0;
-    register int i, nx, ny;
+    int i, nx, ny;
     int ndist;
 
     for (i = 0; i < cnt; i++) {
@@ -1117,7 +1118,7 @@ leppie_avoidance(struct monst *mtmp)
 
 /* does monster want to avoid you? */
 static boolean
-m_balks_at_approaching(struct monst* mtmp)
+m_balks_at_approaching(struct monst *mtmp)
 {
     /* peaceful, far away, or can't see you */
     if (mtmp->mpeaceful
@@ -1237,9 +1238,9 @@ m_search_items(
     int *mmoved,
     int *appr)
 {
-    register int minr = SQSRCHRADIUS; /* not too far away */
-    register struct obj *otmp;
-    register coordxy xx, yy;
+    int minr = SQSRCHRADIUS; /* not too far away */
+    struct obj *otmp;
+    coordxy xx, yy;
     coordxy hmx, hmy, lmx, lmy;
     struct trap *ttmp;
     coordxy omx = mtmp->mx, omy = mtmp->my;
@@ -1608,7 +1609,7 @@ postmov(
  * 3: did not move, and can't do anything else either.
  */
 int
-m_move(register struct monst *mtmp, int after)
+m_move(struct monst *mtmp, int after)
 {
     int appr, fi, fj;
     coordxy ggx, ggy, nix, niy;
@@ -1840,7 +1841,7 @@ not_special:
             appr = 1;
         
         if (!should_see && can_track(ptr)) {
-            register coord *cp;
+            coord *cp;
 
             cp = gettrack(omx, omy);
             if (cp) {
@@ -2148,7 +2149,7 @@ accessible(coordxy x, coordxy y)
 
 /* decide where the monster thinks you are standing */
 void
-set_apparxy(register struct monst *mtmp)
+set_apparxy(struct monst *mtmp)
 {
     boolean notseen, notthere, gotu;
     int displ;
@@ -2192,7 +2193,7 @@ set_apparxy(register struct monst *mtmp)
     gotu = notseen ? !rn2(3) : notthere ? !rn2(4) : FALSE;
 
     if (!gotu) {
-        register int try_cnt = 0;
+        int try_cnt = 0;
 
         do {
             if (++try_cnt > 200) {
@@ -2269,7 +2270,7 @@ undesirable_disp(
  * Used by can_ooze() and can_fog().
  */
 static boolean
-stuff_prevents_passage(struct monst* mtmp)
+stuff_prevents_passage(struct monst *mtmp)
 {
     struct obj *chain, *obj;
 
@@ -2306,7 +2307,7 @@ stuff_prevents_passage(struct monst* mtmp)
 }
 
 boolean
-can_ooze(struct monst* mtmp)
+can_ooze(struct monst *mtmp)
 {
     if (!amorphous(mtmp->data) || stuff_prevents_passage(mtmp))
         return FALSE;
@@ -2315,7 +2316,7 @@ can_ooze(struct monst* mtmp)
 
 /* monster can change form into a fog if necessary */
 boolean
-can_fog(struct monst* mtmp)
+can_fog(struct monst *mtmp)
 {
     if (!(gm.mvitals[PM_FOG_CLOUD].mvflags & G_GENOD) && is_vampshifter(mtmp)
         && !Protection_from_shape_changers && !stuff_prevents_passage(mtmp))

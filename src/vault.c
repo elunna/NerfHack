@@ -190,7 +190,7 @@ grddead(struct monst *grd)
 static boolean
 in_fcorridor(struct monst *grd, coordxy x, coordxy y)
 {
-    register int fci;
+    int fci;
     struct egd *egrd = EGD(grd);
 
     for (fci = egrd->fcbeg; fci < egrd->fcend; fci++)
@@ -242,7 +242,7 @@ vault_summon_gd(void)
 char
 vault_occupied(char *array)
 {
-    register char *ptr;
+    char *ptr;
 
     for (ptr = array; *ptr; ptr++)
         if (gr.rooms[*ptr - ROOMOFFSET].rtype == VAULT)
@@ -370,7 +370,7 @@ invault(void)
             }
         }
         while (levl[x][y].typ == ROOM) {
-            register int dx, dy;
+            int dx, dy;
 
             dx = (gdx > x) ? 1 : (gdx < x) ? -1 : 0;
             dy = (gdy > y) ? 1 : (gdy < y) ? -1 : 0;
@@ -466,7 +466,7 @@ invault(void)
             return;
         }
         if (Strangled || is_silent(gy.youmonst.data) || gm.multi < 0) {
-            /* [we ought to record whether this this message has already
+            /* [we ought to record whether this message has already
                been given in order to vary it upon repeat visits, but
                discarding the monster and its egd data renders that hard] */
             if (Deaf) {

@@ -78,7 +78,7 @@ delete_text(Widget w, XEvent *event, String *params, Cardinal *num_params)
 }
 
 /*
- * Callback used for all text windows.  The window is poped down on any key
+ * Callback used for all text windows.  The window is popped down on any key
  * or button down event.  It is destroyed if the main nethack code is done
  * with it.
  */
@@ -482,7 +482,7 @@ calculate_rip_text(int how, time_t when)
 
     /* Put death type on stone */
     for (line = DEATH_LINE, dpx = buf; line < YEAR_LINE; line++) {
-        register int i, i0;
+        int i, i0;
         char tmpchar;
 
         if ((i0 = strlen(dpx)) > STONE_LINE_LEN) {

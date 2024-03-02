@@ -92,7 +92,7 @@ kickdmg(struct monst *mon, boolean clumsy)
         dmg += uarmf->spe;
     dmg += u.udaminc; /* add ring(s) of increase damage */
     if (dmg > 0) {
-        showdmg(dmg, FALSE);
+        showdamage(dmg, FALSE);
         mon->mhp -= dmg;
     }
     if (!DEADMONSTER(mon) && martial() && !bigmonst(mon->data) && !rn2(3)
@@ -293,7 +293,7 @@ kick_monster(struct monst *mon, coordxy x, coordxy y)
  *  The gold object is *not* attached to the fobj chain!
  */
 boolean
-ghitm(register struct monst *mtmp, register struct obj *gold)
+ghitm(struct monst *mtmp, struct obj *gold)
 {
     boolean msg_given = FALSE;
 
@@ -1006,7 +1006,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
         }
     }
     if (IS_THRONE(gm.maploc->typ)) {
-        register int i;
+        int i;
         if (Levitation) {
             kick_dumb(x, y);
             return ECMD_TIME;
@@ -1275,7 +1275,7 @@ dokick(void)
     coordxy x, y;
     int avrg_attrib;
     int glyph, oldglyph = -1;
-    register struct monst *mtmp;
+    struct monst *mtmp;
     boolean no_kick = FALSE;
 
     if (nolimbs(gy.youmonst.data) || slithy(gy.youmonst.data)) {
@@ -1527,8 +1527,8 @@ impact_drop(
     xint16 dlev)          /* if !0 send to dlev near player */
 {
     schar toloc;
-    register struct obj *obj, *obj2;
-    register struct monst *shkp;
+    struct obj *obj, *obj2;
+    struct monst *shkp;
     long oct, dct, price, debit, robbed;
     boolean angry, costly, isrock;
     coord cc;
@@ -1781,7 +1781,7 @@ ship_object(struct obj *otmp, coordxy x, coordxy y, boolean shop_floor_obj)
 void
 obj_delivery(boolean near_hero)
 {
-    register struct obj *otmp, *otmp2;
+    struct obj *otmp, *otmp2;
     int nx = 0, ny = 0;
     int where;
     boolean nobreak, noscatter;
@@ -1918,7 +1918,7 @@ deliver_obj_to_mon(struct monst *mtmp, int cnt, unsigned long deliverflags)
 }
 
 static void
-otransit_msg(register struct obj *otmp, boolean nodrop, boolean chainthere, long num)
+otransit_msg(struct obj *otmp, boolean nodrop, boolean chainthere, long num)
 {
     char *optr = 0, obuf[BUFSZ], xbuf[BUFSZ];
 

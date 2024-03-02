@@ -97,7 +97,7 @@ const char *fqn_prefix_names[PREFIX_COUNT] = {
 const schar xdir[N_DIRS_Z] = { -1, -1,  0,  1,  1,  1,  0, -1, 0,  0 };
 const schar ydir[N_DIRS_Z] = {  0, -1, -1, -1,  0,  1,  1,  1, 0,  0 };
 const schar zdir[N_DIRS_Z] = {  0,  0,  0,  0,  0,  0,  0,  0, 1, -1 };
-/* redordered directions, cardinals first */
+/* reordered directions, cardinals first */
 const schar dirs_ord[N_DIRS] =
     { DIR_W, DIR_N, DIR_E, DIR_S, DIR_NW, DIR_NE, DIR_SE, DIR_SW };
 
@@ -278,6 +278,10 @@ const struct instance_globals_c g_init_c = {
     DUMMY, /* context */
     /* dog.c */
     DUMMY, /* catname */
+    /* end.c */
+    NULL, /* crash_email */
+    NULL, /* crash_name */
+    -1, /* crash_urlmax */
     /* symbols.c */
     0,     /* currentgraphics */
     /* files.c */
@@ -774,7 +778,7 @@ const struct instance_globals_s g_init_s = {
     /* pickup.c */
     FALSE, /* shop_filter */
     /* pline.c */
-#ifdef DUMPLOG
+#ifdef DUMPLOG_CORE
     0U, /* saved_pline_index */
     { NULL }, /* saved_plines */
 #endif

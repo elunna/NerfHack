@@ -131,8 +131,6 @@ endif      #HAVE_NCURSESW
 endif      #MAKEFILE_SRC
 endif      #USE_CURSESLIB
 
-AUTOLIBS=$(shell (../util/makedefs --grep-defined CRASHREPORT && echo "-lcrypto" ) || true )
-
 # NetHack sources control
 NHCFLAGS+=-DDLB
 NHCFLAGS+=-DHACKDIR=\"$(HACKDIR)\"
@@ -159,7 +157,6 @@ NHCFLAGS+=-DDUMPLOG
 NHCFLAGS+=-DDUMPHTML
 NHCFLAGS+=-DUSE_GENERAL_ALTAR_COLORS
 NHCFLAGS+=-DSELF_RECOVER
-
 ifdef WANT_WIN_CURSES
 ifeq "$(HAVE_NCURSESW)" "1"
 NHCFLAGS+=-DCURSES_UNICODE
@@ -345,11 +342,6 @@ VARDIR =$(INSTDIR)/var
 
 # DGL does not use the shell script launcher
 SHELLDIR=/tmp
-
-POSTINSTALL+= ( util/makedefs --grep-defined CRASHREPORT && \
-	  ( cp win/share/nhcrashreport.lua $(INSTDIR) ; \
-	  chmod 555 $(INSTDIR)/nhcrashreport.lua ; \
-	  cp $(LUATOP)/lua $(INSTDIR)/nhlua); true );
 
 ifneq "$(CCISCLANG)" ""
 # gdb may not be installed if clang is chosen compiler so the game

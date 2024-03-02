@@ -26,6 +26,8 @@
 
 \newcommand{\elist}{\end{list}}
 
+\hyphenation{CRASHREPORTURL}
+
 % this will make \tt underscores look better, but requires that
 % math subscripts will never be used in this document
 \catcode`\_=12
@@ -46,7 +48,7 @@
 \author{Original version - Eric S. Raymond\\
 (Edited and expanded for 3.7.0 by Mike Stephenson and others)}
 %DO NOT REMOVE NH_DATESUB \date{DATE(%B %-d, %Y)}
-\date{February 06, 2024}
+\date{February 29, 2024}
 
 \maketitle
 
@@ -1332,6 +1334,12 @@ Show your attributes. Default key is `{\tt \^{}X}'.
 \item[\tb{\#autopickup}]
 Toggle the {\it autopickup\/} option. Default key is `{\tt @}'.
 %.lp
+\item[\tb{\#bugreport}]
+Bring up a browser window to submit a report to the {\it NetHack Development
+Team}.
+Can be disabled at the time the program is built; when enabled,
+CRASHREPORTURL must be set in the system configuration file.
+%.lp
 \item[\tb{\#call}]
 Call (name) a monster, or an object in inventory, on the floor,
 or in the discoveries list, or add an annotation for the
@@ -1497,6 +1505,9 @@ Debug mode only.
 %.lp
 \item[\tb{\#look}]
 Look at what is here, under you. Default key is `{\tt :}'.
+%.lp
+\item[\tb{\#lookaround}]
+Describe what you can see, or remember, of your surroundings.
 %.lp
 \item[\tb{\#loot}]
 Loot a box or bag on the floor beneath you, or the saddle
@@ -3816,7 +3827,7 @@ On Windows, the name is \mbox{``.nerfhackrc''} location in the folder
 The file may not exist,
 but it is a normal ASCII text file and can be created with any
 text editor.
-After runing {\it NetHack\/} for the first time, you should find a default
+After running {\it NetHack\/} for the first time, you should find a default
 template for ths configuration file named \mbox{``.nerfhackrc.template''} in
 \mbox{{``\%USERPROFILE\%\textbackslash NetHack\textbackslash''}}.
 If you have not created the configuration file, {\it NetHack\/} will create
@@ -3974,7 +3985,7 @@ Change the way messages are shown in the top status line.
 See the ``Configuring Message Types`` section.
 %.lp
 \item[\bb{ROGUESYMBOLS}]
-Custom symbols for for the rogue level's symbol set.
+Custom symbols for the rogue level's symbol set.
 See {\it SYMBOLS} below.
 %.lp
 \item[\bb{SOUND}]
@@ -4469,6 +4480,9 @@ Give feedback when walking onto various dungeon features such as stairs,
 fountains, or altars which are ordinarily only described when covered
 by one or more objects (default off).  Persistent.
 %.lp
+\item[\ib{mention\verb+_+map}]
+Give feedback when interesting map locations change (default off).
+%.lp
 \item[\ib{mention\verb+_+walls}]
 Give feedback when walking against a wall (default off).  Persistent.
 %.lp
@@ -4756,7 +4770,7 @@ To remove an entry that has been previously set without removing others,
 precede the first entry in the list with a minus sign,
 ``{\it paranoid\verb+_+confirmation:-swim\/}.
 To both add some new entries and remove some old ones, you can use
-mulitple {\it paranoid\verb+_+confirmation\/} option settings, or you can
+multiple {\it paranoid\verb+_+confirmation\/} option settings, or you can
 use the `{\tt \verb|+|}' form and list entries to be added by their name
 and entries to be removed by `{\tt !}' and name.
 The positive (no `!') and negative (with `!') entries
@@ -4994,6 +5008,10 @@ Control what parts of the score list you are shown at the end (for example,
 letter of each category (`{\tt t}', `{\tt a}' or `{\tt o}') is necessary.
 Persistent.
 %.lp
+\item[\ib{showdamage}]
+Whenever your character takes damage, show a message of the damage taken,
+and the amount of hit points left.
+%.lp
 \item[\ib{showexp}]
 Show your accumulated experience points on bottom line (default off).
 Persistent.
@@ -5006,6 +5024,18 @@ Persistent.
 %.lp
 \item[\ib{showscore}]
 Show your approximate accumulated score on bottom line (default off).
+By default, this feature is suppressed when building the program.
+Persistent.
+%.lp
+\item[\ib{showvers}]
+Include the game's version number on the status lines (default off).
+Potentially useful if you switch between different versions or variants,
+or you are making screenshots or streaming video.
+Using the
+{\it statuslines:3\/}
+option is recommended so that there will be more room available for
+status information, unless you're using nethack's {\it Qt\/} interface
+or your terminal emulator window displays fewer than 25 lines.
 Persistent.
 %.lp
 \item[\ib{silent}]
@@ -5331,7 +5361,7 @@ If {\it NetHack\/} can, it should use this size font for the status window.
 If {\it NetHack\/} can, it should use this size font for text windows.
 %.lp
 \item[\ib{fullscreen}]
-If {\it NetHack\/} can, it should try and display on the entire screen rather than in a window.
+If {\it NetHack\/} can, it should try to display on the entire screen rather than in a window.
 %.lp
 \item[\ib{guicolor}]
 Use color text and/or highlighting attributes when displaying some
@@ -5511,6 +5541,31 @@ one of the named colors ({\it black}, {\it red}, {\it green}, {\it brown},
 If {\it NetHack\/} can, it should wrap long lines of text if they don't fit
 in the visible area of the window.
 \elist
+
+%.hn 2
+\subsection*{Crash Report Options}
+%.pg
+
+Please note that NetHack does not send {\textbf any} information off your
+computer unless you manually click submit on a form.
+%.si
+\blist{}
+%.lp
+\item[OPTION=crash_email:{\it email_address}]
+%.lp
+\item[OPTION=crash_name:{\it your_name}]
+%.ei
+\elist
+These options are used only to save you some typing on the crash
+report and \#bugreport forms.  
+%.si
+\blist{}
+%.lp
+\item[OPTION=crash_urlmax:{\it bytes}]
+%.ei
+\elist
+This option is used to limit the length of the URLs generated and is only
+needed if your browser cannot handle arbitrarily long URLs.
 
 %.hn 2
 \subsection*{Platform-specific Customization options}
@@ -6559,6 +6614,9 @@ combine with spot\verb+_+monsters and accessiblemsg.
 \item[\ib{autodescribe}]
 Automatically describe the terrain under the cursor when targeting.
 %.lp
+\item[\ib{mention\verb+_+map}]
+Give feedback messages when interesting map locations change.
+%.lp
 \item[\ib{mention\verb+_+walls}]
 Give feedback messages when walking towards a wall or when travel command
 was interrupted.
@@ -6579,6 +6637,9 @@ of moving 8 units at a time.
 Prevent updates to the status lines at the bottom of the screen, if
 your screen-reader reads those lines. The same information can be
 seen via the {\tt \#attributes} command.
+%.lp
+\item[\ib{showdamage}]
+Give a message of damage taken and how many hit points are left.
 \elist
 
 %.hn2
@@ -6718,10 +6779,11 @@ large unless it is actively maintained.
 %.lp
 \item[\ib{CRASHREPORTURL}]
 If set to
-{\tt https://www.nethack.org/common/contact.html}
+{\tt https://www.nethack.org/links/cr-37BETA.html}
 and support is compiled in, brings up a browser window populated with
 the information needed to report a problem if the game panics or ends
-up in an internally inconsistent state.
+up in an internally inconsistent state, or if the \#bugreport command is
+invoked.
 \elist
 
 %.hn 1

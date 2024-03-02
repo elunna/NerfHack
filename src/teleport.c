@@ -13,6 +13,7 @@ static void vault_tele(void);
 static void rloc_to_core(struct monst *, coordxy, coordxy, unsigned);
 static void mvault_tele(struct monst *);
 static boolean m_blocks_teleporting(struct monst *);
+static stairway *stairway_find_forwiz(boolean, boolean);
 
 /* does monster block others from teleporting? */
 static boolean
@@ -25,7 +26,7 @@ m_blocks_teleporting(struct monst *mtmp)
 
 /* teleporting is prevented on this level for this monster? */
 boolean
-noteleport_level(struct monst* mon)
+noteleport_level(struct monst *mon)
 {
     /* demon court in Gehennom prevent others from teleporting */
     if (In_hell(&u.uz) && !(is_dlord(mon->data) || is_dprince(mon->data)))
@@ -85,7 +86,8 @@ goodpos(
     boolean ignorewater = ((gpflags & MM_IGNOREWATER) != 0),
             ignorelava = ((gpflags & MM_IGNORELAVA) != 0),
             checkscary = ((gpflags & GP_CHECKSCARY) != 0),
-            allow_u = ((gpflags & GP_ALLOW_U) != 0);
+            allow_u = ((gpflags & GP_ALLOW_U) != 0),
+            avoid_monpos = ((gpflags & GP_AVOID_MONPOS) != 0);
 
     if (!isok(x, y))
         return FALSE;
@@ -102,6 +104,9 @@ goodpos(
             && (!u.usteed || mtmp != u.usteed))
             return FALSE;
     }
+
+    if (MON_AT(x, y) && avoid_monpos)
+        return FALSE;
 
     if (mtmp) {
         struct monst *mtmp2 = m_at(x, y);
@@ -559,7 +564,7 @@ teleds(coordxy nux, coordxy nuy, int teleds_flags)
 int
 collect_coords(
     coord *ccc, /* pointer to array of at least size ROWNO*(COLNO-1) */
-    coordxy cx, coordxy cy, /* center point, not necessarly <u.ux,u.uy> */
+    coordxy cx, coordxy cy, /* center point, not necessarily <u.ux,u.uy> */
     int maxradius,          /* how far from center to go collecting spots;
                              * 0 means collect entire map */
     unsigned cc_flags,      /* incl_center: put <cx,cy> in output list
@@ -623,7 +628,7 @@ collect_coords(
      * (unshown) 4's will be mixed together, and so forth.
      *
      * If caller processes the output list in order, the closest viable
-     * spot will be chosen.  If a compeletely random spot is preferred,
+     * spot will be chosen.  If a completely random spot is preferred,
      * the list can be requested to be unscrambled and then the caller
      * can shuffle it, overriding the collection rings.  A filter function
      * could be used to skip everything after the first acceptable spot.
@@ -765,7 +770,7 @@ vault_tele(void)
 }
 
 boolean
-teleport_pet(register struct monst* mtmp, boolean force_it)
+teleport_pet(struct monst *mtmp, boolean force_it)
 {
     struct obj *otmp;
 
@@ -800,7 +805,7 @@ tele(void)
 
 /* teleport the hero; usually discover scroll of teleportation if via scroll */
 void
-scrolltele(struct obj* scroll)
+scrolltele(struct obj *scroll)
 {
     coord cc;
 
@@ -1118,7 +1123,7 @@ void
 level_tele(void)
 {
     static const char get_there_from[] = "get there from %s.";
-    register int newlev;
+    int newlev;
     d_level newlevel;
     const char *escape_by_flying = 0; /* when surviving dest of -N */
     char buf[BUFSZ];
@@ -1852,7 +1857,7 @@ control_mon_tele(
 }
 
 static void
-mvault_tele(struct monst* mtmp)
+mvault_tele(struct monst *mtmp)
 {
     struct mkroom *croom = search_special(VAULT);
     coord c;
@@ -1865,7 +1870,7 @@ mvault_tele(struct monst* mtmp)
 }
 
 boolean
-tele_restrict(struct monst* mon)
+tele_restrict(struct monst *mon)
 {
     if (noteleport_level(mon)) {
         if (canseemon(mon))
@@ -1877,7 +1882,7 @@ tele_restrict(struct monst* mon)
 }
 
 void
-mtele_trap(struct monst* mtmp, struct trap* trap, int in_sight)
+mtele_trap(struct monst *mtmp, struct trap *trap, int in_sight)
 {
     char *monname;
 
@@ -2157,7 +2162,7 @@ random_teleport_level(void)
 /* you teleport a monster (via wand, spell, or poly'd q.mechanic attack);
    return false iff the attempt fails */
 boolean
-u_teleport_mon(struct monst* mtmp, boolean give_feedback)
+u_teleport_mon(struct monst *mtmp, boolean give_feedback)
 {
     coord cc;
 

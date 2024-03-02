@@ -121,7 +121,7 @@ static const struct Jitem Japanese_items[] = {
 static char *
 strprepend(char *s, const char *pref)
 {
-    register int i = (int) strlen(pref);
+    int i = (int) strlen(pref);
 
     if (i > PREFIX) {
         impossible("PREFIX too short (for %d).", i);
@@ -321,7 +321,7 @@ safe_typename(int otyp)
 }
 
 boolean
-obj_is_pname(struct obj* obj)
+obj_is_pname(struct obj *obj)
 {
     if (!obj->oartifact || !has_oname(obj))
         return FALSE;
@@ -423,7 +423,7 @@ fruit_from_name(
     char *altfname;
     unsigned k;
     /*
-     * note: named fruits are case-senstive...
+     * note: named fruits are case-sensitive...
      */
 
     if (highest_fid)
@@ -553,10 +553,10 @@ xname(struct obj *obj)
 
 static char *
 xname_flags(
-    register struct obj *obj,
+    struct obj *obj,
     unsigned cxn_flags) /* bitmask of CXN_xxx values */
 {
-    register char *buf;
+    char *buf;
     char *obufp, *buf_end, *buf_eos;
     size_t bufspaceleft;
     int typ = obj->otyp;
@@ -673,7 +673,7 @@ xname_flags(
     case VENOM_CLASS:
     case TOOL_CLASS:
         /* note: lenses or towel prefix would overwrite poisoned weapon
-           prefix if both were simultaneously posssible, but they aren't */
+           prefix if both were simultaneously possible, but they aren't */
         if (typ == LENSES)
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
@@ -1202,7 +1202,7 @@ doname_base(
     const char *aname = 0;
     int omndx = obj->corpsenm;
     int nochrg = 0;
-    register char *bp;
+    char *bp;
     char *bp_eos, *bp_end;
     size_t bpspaceleft;
 
@@ -1702,21 +1702,21 @@ doname_base(
 }
 
 char *
-doname(struct obj* obj)
+doname(struct obj *obj)
 {
     return doname_base(obj, (unsigned) 0);
 }
 
 /* Name of object including price. */
 char *
-doname_with_price(struct obj* obj)
+doname_with_price(struct obj *obj)
 {
     return doname_base(obj, DONAME_WITH_PRICE);
 }
 
 /* "some" instead of precise quantity if obj->dknown not set */
 char *
-doname_vague_quan(struct obj* obj)
+doname_vague_quan(struct obj *obj)
 {
     /* Used by farlook.
      * If it hasn't been seen up close and quantity is more than one,
@@ -1735,7 +1735,7 @@ doname_vague_quan(struct obj* obj)
 
 /* used from invent.c */
 boolean
-not_fully_identified(struct obj* otmp)
+not_fully_identified(struct obj *otmp)
 {
     /* gold doesn't have any interesting attributes [yet?] */
     if (otmp->oclass == COIN_CLASS)
@@ -1864,7 +1864,7 @@ corpse_xname(
 
 /* xname doesn't include monster type for "corpse"; cxname does */
 char *
-cxname(struct obj* obj)
+cxname(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return corpse_xname(obj, (const char *) 0, CXN_NORMAL);
@@ -1873,7 +1873,7 @@ cxname(struct obj* obj)
 
 /* like cxname, but ignores quantity */
 char *
-cxname_singular(struct obj* obj)
+cxname_singular(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return corpse_xname(obj, (const char *) 0, CXN_SINGULAR);
@@ -1882,7 +1882,7 @@ cxname_singular(struct obj* obj)
 
 /* treat an object as fully ID'd when it might be used as reason for death */
 char *
-killer_xname(struct obj* obj)
+killer_xname(struct obj *obj)
 {
     struct obj save_obj;
     unsigned save_ocknown;
@@ -2030,7 +2030,7 @@ short_oname(
  * Used if only one of a collection of objects is named (e.g. in eat.c).
  */
 const char *
-singular(struct obj* otmp, char* (*func)(OBJ_P))
+singular(struct obj *otmp, char *(*func)(OBJ_P))
 {
     long savequan;
     char *nam;
@@ -2110,7 +2110,7 @@ An(const char *str)
  * Use type_is_pname() for monster names, not the().  the() is idempotent.
  */
 char *
-the(const char* str)
+the(const char *str)
 {
     const char *aname;
     char *buf = nextobuf();
@@ -2137,7 +2137,7 @@ the(const char* str)
         insert_the = TRUE;
     } else {
         /* Probably a proper name, might not need an article */
-        register char *tmp, *named, *called;
+        char *tmp, *named, *called;
         int l;
 
         /* some objects have capitalized adjectives in their names */
@@ -2220,7 +2220,7 @@ yobjnam(struct obj *obj, const char *verb)
 char *
 Yobjnam2(struct obj *obj, const char *verb)
 {
-    register char *s = yobjnam(obj, verb);
+    char *s = yobjnam(obj, verb);
 
     *s = highc(*s);
     return s;
@@ -2732,9 +2732,9 @@ singplur_compound(char *str)
  * 3.6.0: made case-insensitive.
  */
 char *
-makeplural(const char* oldstr)
+makeplural(const char *oldstr)
 {
-    register char *spot;
+    char *spot;
     char lo_c, *str = nextobuf();
     const char *excess = (char *) 0;
     int len, i;
@@ -2933,9 +2933,9 @@ makeplural(const char* oldstr)
  * 3.6.0: made case-insensitive.
  */
 char *
-makesingular(const char* oldstr)
+makesingular(const char *oldstr)
 {
-    register char *p, *bp;
+    char *p, *bp;
     const char *excess = 0;
     char *str = nextobuf();
 
@@ -3389,7 +3389,7 @@ rnd_otyp_by_namedesc(
 {
     int i, n = 0;
     short validobjs[NUM_OBJECTS];
-    register const char *zn, *of;
+    const char *zn, *of;
     boolean check_of;
     int lo, hi, minglob, maxglob, prob, maxprob = 0;
 
@@ -3895,7 +3895,7 @@ readobjnam_preparse(struct _readobjnam_data *d)
     int more_l = 0, res = 1;
 
     for (;;) {
-        register int l;
+        int l;
 
         if (!d->bp || !*d->bp)
             break;
@@ -4041,7 +4041,7 @@ readobjnam_preparse(struct _readobjnam_data *d)
                and less than 15 (owt < 300) */
             d->gsize = 2;
         } else if (!strncmpi(d->bp, "large ", l = 6)) {
-            /* "large" might be part of monster name (dog, cat, koboold,
+            /* "large" might be part of monster name (dog, cat, kobold,
                mimic) or object name (box, round shield) rather than
                prefix for glob size */
             if (strncmpi(d->bp + l, "glob", 4) && !strstri(d->bp + l, " glob"))
@@ -4244,7 +4244,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
      * referred to as a "pair of".  E.g. We should double if the player
      * types "pair of spears", but not if the player types "pair of
      * lenses".  Luckily (?) all objects that are referred to as pairs
-     * -- boots, gloves, and lenses -- are also not mergable, so cnt is
+     * -- boots, gloves, and lenses -- are also not mergeable, so cnt is
      * ignored anyway.
      */
     if (!strncmpi(d->bp, "pair of ", 8)) {
@@ -4492,7 +4492,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         && strncmpi(d->bp, "food ration", 11)
         && strncmpi(d->bp, "meat ring", 9))
         for (i = 0; i < (int) (sizeof wrpsym); i++) {
-            register int j = Strlen(wrp[i]);
+            int j = Strlen(wrp[i]);
 
             /* check for "<class> [ of ] something" */
             if (!strncmpi(d->bp, wrp[i], j)) {
@@ -4597,7 +4597,7 @@ readobjnam_postparse2(struct _readobjnam_data *d)
         ; /* avoid false hit on "* glass" */
     } else if (!BSTRCMPI(d->bp, d->p - 6, " glass")
                || !strcmpi(d->bp, "glass")) {
-        register char *s = d->bp;
+        char *s = d->bp;
 
         /* treat "broken glass" as a non-existent item; since "broken" is
            also a chest/box prefix it might have been stripped off above */
@@ -4644,7 +4644,7 @@ readobjnam_postparse3(struct _readobjnam_data *d)
     /* check real names of gems first */
     if (!d->oclass && d->actualn) {
         for (i = gb.bases[GEM_CLASS]; i <= LAST_REAL_GEM; i++) {
-            register const char *zn;
+            const char *zn;
 
             if ((zn = OBJ_NAME(objects[i])) != 0 && !strcmpi(d->actualn, zn)) {
                 d->typ = i;
@@ -5504,7 +5504,7 @@ shield_simple_name(struct obj *shield)
     return "shield";
 }
 
-/* for completness */
+/* for completeness */
 const char *
 shirt_simple_name(struct obj *shirt UNUSED)
 {

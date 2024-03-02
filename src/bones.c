@@ -349,7 +349,7 @@ fixuporacle(struct monst *oracle)
             break;
 
     if (o_ridx != ridx && ridx < SIZE(gr.rooms)) {
-        /* room found and she's not not in it, so try to move her there */
+        /* room found and she's not in it, so try to move her there */
         cc.x = (gr.rooms[ridx].lx + gr.rooms[ridx].hx) / 2;
         cc.y = (gr.rooms[ridx].ly + gr.rooms[ridx].hy) / 2;
         if (enexto(&cc, cc.x, cc.y, oracle->data)) {
@@ -369,7 +369,7 @@ fixuporacle(struct monst *oracle)
 boolean
 can_make_bones(void)
 {
-    register struct trap *ttmp;
+    struct trap *ttmp;
 
     if (!flags.bones)
         return FALSE;
@@ -682,7 +682,7 @@ getbones(void)
             }
             trickery(errbuf);
         } else {
-            register struct monst *mtmp;
+            struct monst *mtmp;
 
             getlev(nhfp, 0, 0);
 
@@ -775,7 +775,7 @@ fix_ghostly_obj(struct obj *obj)
     if (!obj->ghostly)
         return;
     switch(obj->otyp) {
-        /* asymetrical weapons */
+        /* asymmetrical weapons */
         case BOW:
         case ELVEN_BOW:
         case ORCISH_BOW:

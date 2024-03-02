@@ -1,4 +1,4 @@
-/* NetHack 3.7	pickup.c	$NHDT-Date: 1700012890 2023/11/15 01:48:10 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.348 $ */
+/* NetHack 3.7	pickup.c	$NHDT-Date: 1707521383 2024/02/09 23:29:43 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.370 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -101,8 +101,8 @@ int
 collect_obj_classes(char ilets[], struct obj *otmp, boolean here,
                     boolean (*filter)(OBJ_P), int *itemcount)
 {
-    register int iletct = 0;
-    register char c;
+    int iletct = 0;
+    char c;
 
     *itemcount = 0;
     ilets[iletct] = '\0'; /* terminate ilets so that strchr() will work */
@@ -411,8 +411,8 @@ describe_decor(void)
 static void
 check_here(boolean picked_some)
 {
-    register struct obj *obj;
-    register int ct = 0;
+    struct obj *obj;
+    int ct = 0;
     unsigned lhflags = picked_some ? LOOKHERE_PICKED_SOME : LOOKHERE_NOFLAGS;
 
     if (flags.mention_decor) {
@@ -1853,7 +1853,7 @@ pickup_object(
     if (res <= 0)
         return res;
 
-    /* Whats left of the special case for gold :-) */
+    /* What's left of the special case for gold :-) */
     if (obj->oclass == COIN_CLASS)
         disp.botl = TRUE;
     if (obj->quan != count && obj->otyp != LOADSTONE)
@@ -2157,7 +2157,7 @@ static int
 doloot_core(void)
 {
     struct obj *cobj, *nobj;
-    register int c = -1;
+    int c = -1;
     int timepassed = 0;
     coord cc;
     boolean underfoot = TRUE;
@@ -2333,8 +2333,7 @@ reverse_loot(void)
     int n, x = u.ux, y = u.uy;
 
     if (!rn2(3)) {
-        /* n objects: 1/(n+1) chance per object plus 1/(n+1) to fall off end
-         */
+        /* n objects: 1/(n+1) chance per object, 1/(n+1) to fall off end */
         for (n = inv_cnt(TRUE), otmp = gi.invent; otmp; --n, otmp = otmp->nobj)
             if (!rn2(n + 1)) {
                 prinv("You find old loot:", otmp, 0L);
@@ -2354,6 +2353,10 @@ reverse_loot(void)
     if (!goldob)
         return FALSE;
 
+    /* gold might be quivered; dropping would un-wear it, but freeinv()
+       expects caller to do that; do so now */
+    remove_worn_item(goldob, FALSE);
+
     if (!IS_THRONE(levl[x][y].typ)) {
         dropx(goldob);
         /* the dropped gold might have fallen to lower level */
@@ -2366,9 +2369,8 @@ reverse_loot(void)
             if (coffers->otyp == CHEST) {
                 if (coffers->spe == 2)
                     break; /* a throne room chest */
-                if (!otmp
-                    || (distu(coffers->ox, coffers->oy)
-                        < distu(otmp->ox, otmp->oy)))
+                if (!otmp || (distu(coffers->ox, coffers->oy)
+                              < distu(otmp->ox, otmp->oy)))
                     otmp = coffers; /* remember closest ordinary chest */
             }
         if (!coffers)

@@ -43,7 +43,7 @@ extern unsigned long smg$init_term_table_by_type(), smg$del_term_table();
 #define vms_ok(sts) ((sts) & 1) /* odd => success */
 
 /* this could be static; it's only used within this file;
-   it won't be used at all if C_LIB$INTIALIZE gets commented out below,
+   it won't be used at all if C_LIB$INITIALIZE gets commented out below,
    so make it global so that compiler won't complain that it's not used */
 int vmsexeini(const void *, const void *, const unsigned char *);
 
@@ -57,7 +57,7 @@ static void hack_resume(boolean);
 static int
 veryold(int fd)
 {
-    register int i;
+    int i;
     time_t date;
     struct stat buf;
 
@@ -99,7 +99,7 @@ veryold(int fd)
 void
 getlock(void)
 {
-    register int i = 0, fd;
+    int i = 0, fd;
 
     /* idea from rpick%ucqais@uccba.uc.edu
      * prevent automated rerolling of characters
@@ -165,9 +165,9 @@ getlock(void)
 }
 
 /* normalize file name */
-void regularize(register char *s)
+void regularize(char *s)
 {
-    register char *lp;
+    char *lp;
 
     for (lp = s; *lp; lp++) /* note: '-' becomes '_' */
         if (!(isalpha(*lp) || isdigit(*lp) || *lp == '$'))
@@ -308,7 +308,7 @@ verify_term(void)
 
         if (devtype && vms_ok(smg$init_term_table_by_type(&devtype, &termtab,
                                                           &smgdsc))) {
-            register char *p = &smgdevtyp[smgdsc.dsc$w_length];
+            char *p = &smgdevtyp[smgdsc.dsc$w_length];
             /* strip trailing blanks */
             while (p > smgdevtyp && *--p == ' ')
                 *p = '\0';
@@ -845,11 +845,11 @@ vmsexeini(const void *inirtn_unused, const void *clirtn_unused,
  * are appended rather than overwriting each other).
  *
  * VAX C made global variables become named program sections, to be
- * compatable with Fortran COMMON blocks, simplifying mixed-language
- * programs.  GNU C for VAX/VMS did the same, to be compatable with
+ * compatible with Fortran COMMON blocks, simplifying mixed-language
+ * programs.  GNU C for VAX/VMS did the same, to be compatible with
  * VAX C.  By default, DEC C makes global variables be global symbols
  * instead, with its /Extern_Model=Relaxed_Ref_Def mode, but can be
- * told to be VAX C compatable by using /Extern_Model=Common_Block.
+ * told to be VAX C compatible by using /Extern_Model=Common_Block.
  *
  * We don't want to force that for the whole program; occasional use
  * of /Extern_Model=Strict_Ref_Def to find mistakes is too useful.
@@ -866,7 +866,7 @@ vmsexeini(const void *inirtn_unused, const void *clirtn_unused,
  * So, we switch modes for this hack only.  Besides, psect attributes
  * for lib$initialize are different from the ones used for ordinary
  * variables, so we'd need to resort to some linker magic anyway.
- * (With assembly language, in addtion to having full control of the
+ * (With assembly language, in addition to having full control of the
  * psect attributes in the source code, Macro32 would include enough
  * information in its object file such that linker wouldn't need any
  * extra instructions from us to make this work.)  [If anyone links

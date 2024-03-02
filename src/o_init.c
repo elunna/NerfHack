@@ -49,7 +49,7 @@ shuffle_tiles(void)
 #endif /* TILES_IN_GLYPHMAP */
 
 static void
-setgemprobs(d_level* dlev)
+setgemprobs(d_level *dlev)
 {
     int j, first, lev, sum = 0;
 
@@ -365,7 +365,7 @@ oinit(void)
 }
 
 void
-savenames(NHFILE* nhfp)
+savenames(NHFILE *nhfp)
 {
     int i;
     unsigned int len;
@@ -398,7 +398,7 @@ savenames(NHFILE* nhfp)
 }
 
 void
-restnames(NHFILE* nhfp)
+restnames(NHFILE *nhfp)
 {
     int i;
     unsigned int len = 0;
@@ -469,8 +469,8 @@ void
 undiscover_object(int oindx)
 {
     if (!objects[oindx].oc_name_known) {
-        register int dindx, acls = objects[oindx].oc_class;
-        register boolean found = FALSE;
+        int dindx, acls = objects[oindx].oc_class;
+        boolean found = FALSE;
 
         /* find the object; shift those behind it forward one slot */
         for (dindx = gb.bases[acls];
@@ -1027,7 +1027,7 @@ doclassdisco(void)
 void
 rename_disco(void)
 {
-    register int i, dis;
+    int i, dis;
     int ct = 0, mn = 0, sl;
     char *s, oclass, prev_class;
     winid tmpwin;

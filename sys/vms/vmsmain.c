@@ -40,7 +40,7 @@ main(int argc, char *argv[])
 {
     NHFILE *nhfp;
 #ifdef CHDIR
-    register char *dir;
+    char *dir;
 #endif
     boolean resuming = FALSE; /* assume new game */
 
@@ -55,7 +55,7 @@ main(int argc, char *argv[])
     atexit(byebye);
     /* vms_basename(,FALSE) strips device, directory, suffix, and version;
        the result is returned in a static buffer so we make a copy that
-       isn't at risk of gettting clobbered by core's handling of DEBUGFILES */
+       isn't at risk of getting clobbered by core's handling of DEBUGFILES */
     progname = dupstr(vms_basename(argv[0], FALSE));
     gh.hname = progname;
     gh.hackpid = getpid();
@@ -388,7 +388,7 @@ whoami(void)
      * Note that we trust the user here; it is possible to play under
      * somebody else's name.
      */
-    register char *s;
+    char *s;
 
     if (!*gp.plname && (s = nh_getenv("USER")))
         (void) lcase(strncpy(gp.plname, s, sizeof(gp.plname) - 1));

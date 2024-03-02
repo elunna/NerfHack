@@ -41,6 +41,7 @@ static int pickup_checks(void);
 static void interesting_room(void);
 static boolean doorless_door(coordxy, coordxy);
 static void maybe_wail(void);
+static boolean water_turbulence(coordxy *, coordxy *);
 
 #define IS_SHOP(x) (gr.rooms[x].rtype >= SHOPBASE)
 
@@ -95,7 +96,7 @@ obj_to_any(struct obj *obj)
 boolean
 revive_nasty(coordxy x, coordxy y, const char *msg)
 {
-    register struct obj *otmp, *otmp2;
+    struct obj *otmp, *otmp2;
     struct monst *mtmp;
     coord cc;
     boolean revived = FALSE;
@@ -817,7 +818,7 @@ dosinkfall(void)
 
 /* intended to be called only on ROCKs or TREEs */
 boolean
-may_dig(register coordxy x, register coordxy y)
+may_dig(coordxy x, coordxy y)
 {
     struct rm *lev = &levl[x][y];
 
@@ -826,14 +827,14 @@ may_dig(register coordxy x, register coordxy y)
 }
 
 boolean
-may_passwall(register coordxy x, register coordxy y)
+may_passwall(coordxy x, coordxy y)
 {
     return (boolean) !(IS_STWALL(levl[x][y].typ)
                        && (levl[x][y].wall_info & W_NONPASSWALL));
 }
 
 boolean
-bad_rock(struct permonst *mdat, register coordxy x, register coordxy y)
+bad_rock(struct permonst *mdat, coordxy x, coordxy y)
 {
     return (boolean) ((Sokoban && sobj_at(BOULDER, x, y))
                       || (IS_ROCK(levl[x][y].typ)
@@ -2303,7 +2304,7 @@ static boolean
 impaired_movement(coordxy *x, coordxy *y)
 {
     if (u_maybe_impaired()) {
-        register int tries = 0;
+        int tries = 0;
 
         do {
             if (tries++ > 50) {
@@ -2507,8 +2508,8 @@ domove(void)
 static void
 domove_core(void)
 {
-    register struct monst *mtmp;
-    register struct rm *tmpr;
+    struct monst *mtmp;
+    struct rm *tmpr;
     coordxy x, y;
     struct trap *trap = NULL;
     int glyph;
@@ -3170,7 +3171,7 @@ spoteffects(boolean pick)
 static struct monst *
 monstinroom(struct permonst *mdat, int roomno)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -3200,12 +3201,12 @@ furniture_present(int furniture, int roomno)
 }
 
 char *
-in_rooms(register coordxy x, register coordxy y, register int typewanted)
+in_rooms(coordxy x, coordxy y, int typewanted)
 {
     static char buf[5];
     char rno, *ptr = &buf[4];
     int typefound, min_x, min_y, max_x, max_y_offset, step;
-    register struct rm *lev;
+    struct rm *lev;
 
 #define goodtype(rno) \
     (!typewanted                                                   \
@@ -3268,7 +3269,7 @@ in_rooms(register coordxy x, register coordxy y, register int typewanted)
 boolean
 in_town(coordxy x, coordxy y)
 {
-    register struct mkroom *sroom;
+    struct mkroom *sroom;
     boolean has_subrooms = FALSE;
 
     if (!gl.level.flags.has_town)
@@ -3290,7 +3291,7 @@ in_town(coordxy x, coordxy y)
 }
 
 static void
-move_update(register boolean newlev)
+move_update(boolean newlev)
 {
     char c, *ptr1, *ptr2, *ptr3, *ptr4;
 
@@ -3546,7 +3547,7 @@ pickup_checks(void)
         }
     }
     if (!OBJ_AT(u.ux, u.uy)) {
-        register struct rm *lev = &levl[u.ux][u.uy];
+        struct rm *lev = &levl[u.ux][u.uy];
 
         if (IS_THRONE(lev->typ))
             pline("It must weigh%s a ton!", lev->looted ? " almost" : "");
@@ -3620,7 +3621,7 @@ dopickup(void)
 void
 lookaround(void)
 {
-    register coordxy x, y;
+    coordxy x, y;
     coordxy i, x0 = 0, y0 = 0, m0 = 1, i0 = 9;
     int corrct = 0, noturn = 0;
     struct monst *mtmp;
@@ -3940,8 +3941,8 @@ crawl_destination(coordxy x, coordxy y)
 int
 monster_nearby(void)
 {
-    register coordxy x, y;
-    register struct monst *mtmp;
+    coordxy x, y;
+    struct monst *mtmp;
 
     /* Also see the similar check in dochugw() in monmove.c */
     for (x = u.ux - 1; x <= u.ux + 1; x++)
@@ -4085,21 +4086,20 @@ saving_grace(int dmg)
     return dmg;
 }
 
-
 /* Print the amount of damage inflicted */
 /* KMH -- Centralized to one function 
 * Damage to the player will be in parentheses "(3)"
 * Damage to the monster will be brackets "[3]" 
 * */
 void
-showdmg(int n, boolean you)
+showdamage(int dmg, boolean you)
 {
-    if (!flags.showdmg)
+    if (!flags.showdamage)
         return;
     if (you)
-        pline("(%d pt%s)", n, (n > 1 ? "s" : ""));
+        pline("[HP %i, %i left]", -dmg, Upolyd ? u.mh : u.uhp);
     else
-        pline("[%d pt%s]", n, (n > 1 ? "s" : ""));
+        pline("[%d pt%s]", dmg, (dmg > 1 ? "s" : ""));
     return;
 }
 
@@ -4117,7 +4117,7 @@ losehp(int n, const char *knam, schar k_format)
     end_running(TRUE);
     if (Upolyd) {
         u.mh -= n;
-        showdmg(n, TRUE);
+        showdamage(n, TRUE);
         if (u.mhmax < u.mh)
             u.mhmax = u.mh;
         if (u.mh < 1)
@@ -4129,7 +4129,7 @@ losehp(int n, const char *knam, schar k_format)
 
     n = saving_grace(n);
     u.uhp -= n;
-    showdmg(n, TRUE);
+    showdamage(n, TRUE);
     
     if (u.uhp > u.uhpmax)
         u.uhpmax = u.uhp; /* perhaps n was negative */
@@ -4206,8 +4206,8 @@ weight_cap(void)
 int
 inv_weight(void)
 {
-    register struct obj *otmp = gi.invent;
-    register int wt = 0;
+    struct obj *otmp = gi.invent;
+    int wt = 0;
 
     while (otmp) {
         if (otmp->oclass == COIN_CLASS)
@@ -4267,8 +4267,8 @@ check_capacity(const char *str)
 int
 inv_cnt(boolean incl_gold)
 {
-    register struct obj *otmp = gi.invent;
-    register int ct = 0;
+    struct obj *otmp = gi.invent;
+    int ct = 0;
 
     while (otmp) {
         if (incl_gold || otmp->invlet != GOLD_SYM)

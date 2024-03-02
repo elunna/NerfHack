@@ -119,7 +119,7 @@ void copy_symbols_content(void);
 #ifdef PORT_HELP
 void port_help(void);
 #endif
-void windows_raw_print(const char* str);
+void windows_raw_print(const char *str);
 
 
 
@@ -545,7 +545,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     if (getcwd(orgdir, sizeof orgdir) == (char *) 0)
         error("NerfHack: current directory path too long");
 #endif
-
+    initoptions_init();	// This allows OPTIONS in syscf on Windows.
     set_default_prefix_locations(argv[0]);
 
 #if defined(CHDIR) && !defined(NOCWD_ASSUMPTIONS)
@@ -637,6 +637,9 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 #ifdef WIN32CON
     if (WINDOWPORT(tty))
         consoletty_open(1);
+#endif
+#ifdef WINCHAIN
+    commit_windowchain();
 #endif
 
     init_nhwindows(&argc, argv);
@@ -812,6 +815,11 @@ process_options(int argc, char * argv[])
             argc--;
             argv++;
         }
+#if defined(CRASHREPORT)
+      	if (argcheck(argc, argv, ARG_BIDSHOW) == 2) {
+		nethack_exit(EXIT_SUCCESS);
+	}
+#endif
         if (argc > 1 && !strncmp(argv[1], "-d", 2) && argv[1][2] != 'e') {
             /* avoid matching "-dec" for DECgraphics; since the man page
              * says -d directory, hope nobody's using -desomething_else
@@ -1133,7 +1141,7 @@ windows_exepath(void)
 }
 
 char *
-translate_path_variables(const char* str, char* buf)
+translate_path_variables(const char *str, char *buf)
 {
     const char *src;
     char evar[BUFSZ], *dest, *envp, *eptr = (char *) 0;
@@ -1187,7 +1195,7 @@ translate_path_variables(const char* str, char* buf)
 
 /*ARGSUSED*/
 void
-windows_raw_print(const char* str)
+windows_raw_print(const char *str)
 {
     if (str)
         fprintf(stdout, "%s\n", str);
@@ -1197,7 +1205,7 @@ windows_raw_print(const char* str)
 
 /*ARGSUSED*/
 void
-windows_raw_print_bold(const char* str)
+windows_raw_print_bold(const char *str)
 {
     windows_raw_print(str);
     return;
@@ -1225,7 +1233,7 @@ windows_nh_poskey(int *x UNUSED, int *y UNUSED, int *mod UNUSED)
 
 /*ARGSUSED*/
 char
-windows_yn_function(const char* query UNUSED, const char* resp UNUSED,
+windows_yn_function(const char *query UNUSED, const char *resp UNUSED,
                     char def UNUSED)
 {
     return '\033';
@@ -1233,7 +1241,7 @@ windows_yn_function(const char* query UNUSED, const char* resp UNUSED,
 
 /*ARGSUSED*/
 static void
-windows_getlin(const char* prompt UNUSED, char* outbuf)
+windows_getlin(const char *prompt UNUSED, char *outbuf)
 {
     Strcpy(outbuf, "\033");
 }
@@ -1242,7 +1250,7 @@ windows_getlin(const char* prompt UNUSED, char* outbuf)
 static int
 eraseoldlocks(void)
 {
-    register int i;
+    int i;
 
     /* cannot use maxledgerno() here, because we need to find a lock name
      * before starting everything (including the dungeon initialization
@@ -1400,7 +1408,7 @@ gotlock:
 #endif /* PC_LOCKING */
 
 boolean
-file_exists(const char* path)
+file_exists(const char *path)
 {
     struct stat sb;
 
@@ -1419,7 +1427,7 @@ RESTORE_WARNING_UNREACHABLE_CODE
   does not exist, it returns TRUE.
  */
 boolean
-file_newer(const char* a_path, const char* b_path)
+file_newer(const char *a_path, const char *b_path)
 {
     struct stat a_sb = { 0 };
     struct stat b_sb = { 0 };
@@ -1446,7 +1454,7 @@ file_newer(const char* a_path, const char* b_path)
 int
 tty_self_recover_prompt(void)
 {
-    register int c, ci, ct, pl, retval = 0;
+    int c, ci, ct, pl, retval = 0;
     /* for saving/replacing functions, if needed */
     struct window_procs saved_procs = {0};
 
@@ -1514,7 +1522,7 @@ tty_self_recover_prompt(void)
 int
 other_self_recover_prompt(void)
 {
-    register int c, ci, ct, pl, retval = 0;
+    int c, ci, ct, pl, retval = 0;
     boolean ismswin = WINDOWPORT(mswin),
             iscurses = WINDOWPORT(curses);
 

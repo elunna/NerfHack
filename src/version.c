@@ -70,6 +70,79 @@ getversionstring(char *buf, size_t bufsz)
     return buf;
 }
 
+/* version info that could be displayed on status lines;
+     "<game name> <git branch name> <x.y.z version number>";
+   if game name is a prefix of--or same as--branch name, it is omitted
+     "<git branch name> <x.y.z version number>";
+   after release--or if branch info is unavailable--it will be
+     "<game name> <x.y.z version number>";
+   game name or branch name or both can be requested via flags */
+char *
+status_version(char *buf, size_t bufsz, boolean indent)
+{
+    const char *name = NULL, *altname = NULL, *indentation;
+    unsigned vflags = flags.versinfo;
+    boolean shownum = ((vflags & VI_NUMBER) != 0),
+            showname = ((vflags & VI_NAME) != 0),
+            showbranch = ((vflags & VI_BRANCH) != 0);
+
+    /* game's name {variants should use own name, not "NetHack"} */
+    if (showname) {
+#ifdef VERS_GAME_NAME /* can be set to override default (base of filename) */
+        name = VERS_GAME_NAME;
+#else
+        name = nh_basename(gh.hname, FALSE); /* hname is from xxxmain.c */
+#endif
+        if (!name || !*name) /* shouldn't happen */
+            showname = FALSE;
+    }
+    /* git branch name, if available */
+    if (showbranch) {
+#if 1   /*#if (NH_DEVEL_STATUS != NH_STATUS_RELEASED)*/
+        altname = nomakedefs.git_branch;
+#endif
+        if (!altname || !*altname)
+            showbranch = FALSE;
+    }
+    if (showname && showbranch) {
+        if (!strncmpi(name, altname, strlen(name)))
+            showname = FALSE;
+#if 0
+        /* note: it's possible for branch name to be a prefix of game name
+           but that's unlikely enough that we won't bother with it; having
+           branch "nethack-3.7" be a superset of game "nethack" seems like
+           including both is redundant, but having branch "net" be a subset
+           of game "nethack" doesn't feel that way; optimizing "net" out
+           seems like it would be a mistake */
+        else if (!strncmpi(altname, name, strlen(altname)))
+            showbranch = FALSE;
+#endif
+    } else if (!showname && !showbranch) {
+        /* flags.versinfo could be set to only 'branch' but it might not
+           be available */
+        shownum = TRUE;
+    }
+
+    *buf = '\0';
+    indentation = indent ? " " : "";
+    if (showname) {
+        Snprintf(eos(buf), bufsz - strlen(buf), "%s%s", indentation, name);
+        indentation = " "; /* forced separator rather than optional indent */
+    }
+    if (showbranch) {
+        Snprintf(eos(buf), bufsz - strlen(buf), "%s%s", indentation, altname);
+        indentation = " ";
+    }
+    if (shownum) {
+        /* x.y.z version number */
+        Snprintf(eos(buf), bufsz - strlen(buf), "%s%s", indentation,
+                 (nomakedefs.version_string && nomakedefs.version_string[0])
+                     ? nomakedefs.version_string
+                     : mdlib_version_string(buf, "."));
+    }
+    return buf;
+}
+
 /* the #versionshort command */
 int
 doversion(void)
@@ -334,7 +407,7 @@ check_version(
     return TRUE;
 }
 
-/* this used to be based on file date and somewhat OS-dependant,
+/* this used to be based on file date and somewhat OS-dependent,
    but now examines the initial part of the file's contents */
 boolean
 uptodate(NHFILE *nhfp, const char *name, unsigned long utdflags)
@@ -483,6 +556,28 @@ copyright_banner_line(int indx)
         return COPYRIGHT_BANNER_D;
 #endif
     return "";
+}
+
+/* called by argcheck(allmain.c) from early_options(sys/xxx/xxxmain.c) */
+void
+dump_version_info(void)
+{
+    char buf[BUFSZ];
+    const char *hname = gh.hname ? gh.hname : "nethack";
+
+    if (strlen(hname) > 33)
+        hname = eos(nhStr(hname)) - 33; /* discard const for eos() */
+    runtime_info_init();
+    Snprintf(buf, sizeof buf, "%-12.33s %08lx %08lx %08lx %08lx %08lx",
+             hname,
+             nomakedefs.version_number,
+             (nomakedefs.version_features & ~nomakedefs.ignored_features),
+             nomakedefs.version_sanity1,
+             nomakedefs.version_sanity2,
+             nomakedefs.version_sanity3);
+    raw_print(buf);
+    release_runtime_info();
+    return;
 }
 
 /*version.c*/

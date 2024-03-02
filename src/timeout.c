@@ -450,7 +450,7 @@ burn_away_slime(void)
 
 /* countdown timer for turning into green slime has run out; kill our hero */
 static void
-slimed_to_death(struct kinfo* kptr)
+slimed_to_death(struct kinfo *kptr)
 {
     uchar save_mvflags;
 
@@ -557,7 +557,7 @@ done_timeout(int how, int which)
 void
 nh_timeout(void)
 {
-    register struct prop *upp;
+    struct prop *upp;
     struct kinfo *kptr;
     boolean was_flying;
     int sleeptime;
@@ -876,7 +876,7 @@ nh_timeout(void)
                     Your("temporary ability to survive burning has ended.");
                 break;
             case WWALKING:
-                /* [see fire reeistance] */
+                /* [see fire resistance] */
                 if (!Wwalking)
                     Your("temporary ability to walk on liquid has ended.");
                 break;
@@ -1003,7 +1003,7 @@ fall_asleep(int how_long, boolean wakeup_msg)
  *             existing hatch timer. Pass 0L for random hatch time.
  */
 void
-attach_egg_hatch_timeout(struct obj* egg, long when)
+attach_egg_hatch_timeout(struct obj *egg, long when)
 {
     int i;
 
@@ -1031,7 +1031,7 @@ attach_egg_hatch_timeout(struct obj* egg, long when)
 
 /* prevent an egg from ever hatching */
 void
-kill_egg(struct obj* egg)
+kill_egg(struct obj *egg)
 {
     /* stop previous timer, if any */
     (void) stop_timer(HATCH_EGG, obj_to_any(egg));
@@ -1388,7 +1388,7 @@ lantern_message(struct obj *obj)
 }
 
 /*
- * Timeout callback for for objects that are burning. E.g. lamps, candles.
+ * Timeout callback for objects that are burning. E.g. lamps, candles.
  * See begin_burn() for meanings of obj->age and obj->spe.
  */
 void
@@ -1855,7 +1855,7 @@ void
 do_storms(void)
 {
     int nstrike;
-    register int x, y;
+    int x, y;
     int dirx, diry;
     int count;
 
@@ -2016,7 +2016,7 @@ kind_name(short kind)
 }
 
 static void
-print_queue(winid win, timer_element* base)
+print_queue(winid win, timer_element *base)
 {
     timer_element *curr;
     char buf[BUFSZ];
@@ -2089,7 +2089,7 @@ wiz_timeout_queue(void)
             intrinsic = u.uprops[p].intrinsic;
             if (intrinsic & TIMEOUT) {
                 if (specindx > 0 && i >= specindx) {
-                    putstr(win, 0, " -- settable via #wizinstrinc only --");
+                    putstr(win, 0, " -- settable via #wizintrinsic only --");
                     specindx = 0;
                 }
                 /* timeout value can be up to 16777215 (0x00ffffff) but
@@ -2322,7 +2322,7 @@ peek_timer(short type, anything *arg)
  * Move all object timers from src to dest, leaving src untimed.
  */
 void
-obj_move_timers(struct obj* src, struct obj* dest)
+obj_move_timers(struct obj *src, struct obj *dest)
 {
     int count;
     timer_element *curr;
@@ -2342,7 +2342,7 @@ obj_move_timers(struct obj* src, struct obj* dest)
  * Find all object timers and duplicate them for the new object "dest".
  */
 void
-obj_split_timers(struct obj* src, struct obj* dest)
+obj_split_timers(struct obj *src, struct obj *dest)
 {
     timer_element *curr, *next_timer = 0;
 
@@ -2360,7 +2360,7 @@ obj_split_timers(struct obj* src, struct obj* dest)
  * all object pointers are unique.
  */
 void
-obj_stop_timers(struct obj* obj)
+obj_stop_timers(struct obj *obj)
 {
     timeout_proc cleanup_func;
     timer_element *curr, *prev, *next_timer = 0;
@@ -2386,7 +2386,7 @@ obj_stop_timers(struct obj* obj)
  * Check whether object has a timer of type timer_type.
  */
 boolean
-obj_has_timer(struct obj* object, short timer_type)
+obj_has_timer(struct obj *object, short timer_type)
 {
     long timeout = peek_timer(timer_type, obj_to_any(object));
 
@@ -2448,7 +2448,7 @@ spot_time_left(coordxy x, coordxy y, short func_index)
 
 /* Insert timer into the global queue */
 static void
-insert_timer(timer_element* gnu)
+insert_timer(timer_element *gnu)
 {
     timer_element *curr, *prev;
 
@@ -2486,7 +2486,7 @@ remove_timer(
 }
 
 static void
-write_timer(NHFILE* nhfp, timer_element* timer)
+write_timer(NHFILE *nhfp, timer_element *timer)
 {
     anything arg_save;
 
@@ -2546,7 +2546,7 @@ DISABLE_WARNING_UNREACHABLE_CODE
  * saved.
  */
 boolean
-obj_is_local(struct obj* obj)
+obj_is_local(struct obj *obj)
 {
     switch (obj->where) {
     case OBJ_INVENT:
@@ -2570,7 +2570,7 @@ obj_is_local(struct obj* obj)
  * level is saved.
  */
 static boolean
-mon_is_local(struct monst* mon)
+mon_is_local(struct monst *mon)
 {
     struct monst *curr;
 
@@ -2589,7 +2589,7 @@ mon_is_local(struct monst* mon)
  * level when the level is saved.
  */
 static boolean
-timer_is_local(timer_element* timer)
+timer_is_local(timer_element *timer)
 {
     switch (timer->kind) {
     case TIMER_LEVEL:
@@ -2613,7 +2613,7 @@ RESTORE_WARNING_UNREACHABLE_CODE
  * be written.  If write_it is true, actually write the timer.
  */
 static int
-maybe_write_timer(NHFILE* nhfp, int range, boolean write_it)
+maybe_write_timer(NHFILE *nhfp, int range, boolean write_it)
 {
     int count = 0;
     timer_element *curr;
@@ -2654,7 +2654,7 @@ maybe_write_timer(NHFILE* nhfp, int range, boolean write_it)
  *      + timeouts that stay with the level (obj & monst)
  */
 void
-save_timers(NHFILE* nhfp, int range)
+save_timers(NHFILE *nhfp, int range)
 {
     timer_element *curr, *prev, *next_timer = 0;
     int count;
@@ -2693,7 +2693,7 @@ save_timers(NHFILE* nhfp, int range)
  * monster pointers.
  */
 void
-restore_timers(NHFILE* nhfp, int range, long adjust)
+restore_timers(NHFILE *nhfp, int range, long adjust)
 {
     int count = 0;
     timer_element *curr;

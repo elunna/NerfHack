@@ -1,4 +1,4 @@
-/* NetHack 3.7	cmd.c	$NHDT-Date: 1704225560 2024/01/02 19:59:20 $  $NHDT-Branch: keni-luabits2 $:$NHDT-Revision: 1.699 $ */
+/* NetHack 3.7	cmd.c	$NHDT-Date: 1707547723 2024/02/10 06:48:43 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.704 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -19,6 +19,8 @@
 static int wiz_display_macros(void);
 static int wiz_mon_diff(void);
 #endif
+static int wiz_load_splua(void);
+static int wiz_telekinesis(void);
 
 #ifdef DUMB /* stuff commented out in extern.h, but needed here */
 extern int doapply(void);            /**/
@@ -112,6 +114,13 @@ static int doclicklook(void);
 static int domouseaction(void);
 static int doterrain(void);
 static int wiz_clear(void);
+static boolean u_have_seen_whole_selection(struct selectionvar *);
+static boolean u_have_seen_bounds_selection(struct selectionvar *);
+static boolean u_can_see_whole_selection(struct selectionvar *);
+static boolean selection_is_irregular(struct selectionvar *);
+static char *selection_size_description(struct selectionvar *, char *);
+static int dolookaround_floodfill_findroom(coordxy, coordxy);
+static void lookaround_known_room(coordxy, coordxy);
 static int wiz_wish(void);
 static int wiz_identify(void);
 static int wiz_map(void);
@@ -463,7 +472,7 @@ cmdq_clear(int q)
 char
 pgetchar(void) /* courtesy of aeb@cwi.nl */
 {
-    register int ch = '\0';
+    int ch = '\0';
 
     if (iflags.debug_fuzzer)
         return randomkey();
@@ -580,7 +589,7 @@ doc_extcmd_flagstr(
 int
 doextlist(void)
 {
-    register const struct ext_func_tab *efp = (struct ext_func_tab *) 0;
+    const struct ext_func_tab *efp = (struct ext_func_tab *) 0;
     char buf[BUFSZ], searchbuf[BUFSZ], descbuf[BUFSZ], promptbuf[QBUFSZ];
     const char *cmd_desc;
     winid menuwin;
@@ -663,9 +672,9 @@ doextlist(void)
                     continue;
                 if (!onelist && pass != wizc)
                     continue;
-                /* command descripton might get modified on the fly */
+                /* command description might get modified on the fly */
                 cmd_desc = efp->ef_desc;
-                /* suppress part of the descripton for #genocided if it
+                /* suppress part of the description for #genocided if it
                    doesn't apply during the current game */
                 if (!wizard && !discover
                     && (efp->flags & GENERALCMD) != 0 /* minor optimization */
@@ -1232,6 +1241,7 @@ wiz_map(void)
         struct engr *ep;
         long save_Hconf = HConfusion, save_Hhallu = HHallucination;
 
+        notice_mon_off();
         HConfusion = HHallucination = 0L;
         for (t = gf.ftrap; t != 0; t = t->ntrap) {
             t->tseen = 1;
@@ -1241,6 +1251,7 @@ wiz_map(void)
             map_engraving(ep, TRUE);
         }
         do_mapping();
+        notice_mon_on();
         HConfusion = save_Hconf;
         HHallucination = save_Hhallu;
     } else
@@ -1456,7 +1467,7 @@ static int
 wiz_flip_level(void)
 {
     static const char choices[] = "0123",
-        prmpt[] = "Flip 0=randomly, 1=vertically, 2=horizonally, 3=both:";
+        prmpt[] = "Flip 0=randomly, 1=vertically, 2=horizontally, 3=both:";
 
     /*
      * Does not handle
@@ -2262,6 +2273,210 @@ doterrain(void)
     return ECMD_OK; /* no time elapses */
 }
 
+/* has hero seen all locations in selection? */
+static boolean
+u_have_seen_whole_selection(struct selectionvar *sel)
+{
+    coordxy x, y;
+    NhRect rect = cg.zeroNhRect;
+
+    selection_getbounds(sel, &rect);
+
+    for (x = rect.lx; x <= rect.hx; x++)
+        for (y = rect.ly; y <= rect.hy; y++)
+            if (isok(x,y) && selection_getpoint(x, y, sel)
+                && glyph_at(x, y) == GLYPH_UNEXPLORED)
+                return FALSE;
+
+    return TRUE;
+}
+
+/* has hero seen all location of the rectangular outline in the selection */
+static boolean
+u_have_seen_bounds_selection(struct selectionvar *sel)
+{
+    coordxy x, y;
+    NhRect rect = cg.zeroNhRect;
+
+    selection_getbounds(sel, &rect);
+
+    for (x = rect.lx; x <= rect.hx; x++) {
+        y = rect.ly;
+        if (isok(x,y) && selection_getpoint(x, y, sel)
+            && glyph_at(x, y) == GLYPH_UNEXPLORED)
+            return FALSE;
+        y = rect.hy;
+        if (isok(x,y) && selection_getpoint(x, y, sel)
+            && glyph_at(x, y) == GLYPH_UNEXPLORED)
+            return FALSE;
+    }
+    for (y = rect.ly; y <= rect.hy; y++) {
+        x = rect.lx;
+        if (isok(x,y) && selection_getpoint(x, y, sel)
+            && glyph_at(x, y) == GLYPH_UNEXPLORED)
+            return FALSE;
+        x = rect.hx;
+        if (isok(x,y) && selection_getpoint(x, y, sel)
+            && glyph_at(x, y) == GLYPH_UNEXPLORED)
+            return FALSE;
+    }
+
+    return TRUE;
+}
+
+/* can hero currently see all locations in the selection */
+static boolean
+u_can_see_whole_selection(struct selectionvar *sel)
+{
+    coordxy x, y;
+    NhRect rect = cg.zeroNhRect;
+
+    selection_getbounds(sel, &rect);
+
+    for (x = rect.lx; x <= rect.hx; x++)
+        for (y = rect.ly; y <= rect.hy; y++)
+            if (isok(x,y) && selection_getpoint(x, y, sel) && !cansee(x, y))
+                return FALSE;
+
+    return TRUE;
+}
+
+/* selection is not rectangular, or has holes in it */
+static boolean
+selection_is_irregular(struct selectionvar *sel)
+{
+    coordxy x, y;
+    NhRect rect = cg.zeroNhRect;
+
+    selection_getbounds(sel, &rect);
+
+    for (x = rect.lx; x <= rect.hx; x++)
+        for (y = rect.ly; y <= rect.hy; y++)
+            if (isok(x,y) && !selection_getpoint(x, y, sel))
+                return TRUE;
+
+    return FALSE;
+}
+
+/* return a description of the selection size */
+static char *
+selection_size_description(struct selectionvar *sel, char *buf)
+{
+    NhRect rect = cg.zeroNhRect;
+    coordxy dx, dy;
+
+    selection_getbounds(sel, &rect);
+    dx = rect.hx - rect.lx + 1;
+    dy = rect.hy - rect.ly + 1;
+    Sprintf(buf, "%s %i by %i", selection_is_irregular(sel) ? "irregularly shaped"
+            : (dx == dy) ? "square"
+            : "rectangular",
+            dx, dy);
+    return buf;
+}
+
+/* selection_floofill callback to get all locations in a room */
+static int
+dolookaround_floodfill_findroom(coordxy x, coordxy y)
+{
+    schar typ = levl[x][y].typ;
+
+    if (IS_STWALL(typ) || IS_DOOR(typ) || IS_TREE(typ)
+        || IS_WATERWALL(typ) || typ == LAVAWALL || typ == IRONBARS
+        || typ == SCORR || typ == SDOOR || typ == DRAWBRIDGE_UP)
+        return FALSE;
+    return TRUE;
+}
+
+/* describe the room at x,y */
+static void
+lookaround_known_room(coordxy x, coordxy y)
+{
+    struct selectionvar *sel = selection_new();
+    int rmno = u.urooms[0] - ROOMOFFSET;
+    char qbuf[QBUFSZ];
+
+    set_selection_floodfillchk(dolookaround_floodfill_findroom);
+    selection_floodfill(sel, x, y, TRUE);
+
+    if (!u_at(x, y))
+        set_msg_xy(x, y);
+
+    if (u_have_seen_whole_selection(sel)) {
+        boolean u_in = (boolean) selection_getpoint(x, y, sel);
+
+        You("%s %s %s.",
+            u_at(x, y) && u_in && u_can_see_whole_selection(sel) ? "are in"
+            : (u_at(x, y)) ? "remember this as" : "remember that as",
+            an(selection_size_description(sel, qbuf)),
+            rmno >= 0 ? "room" : "area");
+    } else if (u_have_seen_bounds_selection(sel)) {
+        You("guess %s to be %s %s.",
+            u_at(x, y) ? "this" : "that",
+            an(selection_size_description(sel, qbuf)),
+            rmno >= 0 ? "room" : "area");
+    } else {
+        You("can't guess the size of %s area.",
+            u_at(x, y) ? "this" : "that");
+    }
+    selection_free(sel, TRUE);
+}
+
+/* #lookaround - describe what the hero can see, in text */
+int
+dolookaround(void)
+{
+    coordxy x, y;
+    int tmp_getloc_filter = iflags.getloc_filter;
+    boolean tmp_accessiblemsg = a11y.accessiblemsg;
+    boolean corr_next2u = FALSE;
+
+    a11y.accessiblemsg = TRUE;
+    if (levl[u.ux][u.uy].typ == CORR) {
+        /* In a corridor, mention corridors next to you. */
+        corr_next2u = TRUE;
+        /* TODO: if we know, describe where the corridor goes,
+           perhaps by describing the rooms? */
+    } else if (IS_DOOR(levl[u.ux][u.uy].typ)) {
+        /* In a doorway, describe the rooms next to you */
+        int i;
+
+        for (i = DIR_W; i < N_DIRS; i += 2) {
+            x = u.ux + xdir[i];
+            y = u.uy + ydir[i];
+            if (isok(x, y) && IS_ROOM(levl[x][y].typ))
+                lookaround_known_room(x, y);
+        }
+        corr_next2u = TRUE;
+    } else {
+        lookaround_known_room(u.ux, u.uy);
+    }
+
+    /* TODO: maybe describe stuff outside the current room differently? */
+
+    iflags.getloc_filter = GFILTER_VIEW;
+    for (y = 0; y < ROWNO; y++)
+        for (x = 1; x < COLNO; x++)
+            if (!u_at(x, y)
+                && (gather_locs_interesting(x, y, GLOC_INTERESTING) ||
+                    (corr_next2u && (glyph_at(x,y) == cmap_to_glyph(S_corr)
+                                     || glyph_at(x,y) == cmap_to_glyph(S_litcorr))))) {
+                char buf[BUFSZ];
+                coord cc;
+                int sym = 0;
+                const char *firstmatch = 0;
+
+                cc.x = x, cc.y = y;
+                do_screen_description(cc, TRUE, sym, buf, &firstmatch, NULL);
+                pline_xy(x, y, "%s.", firstmatch);
+            }
+
+    iflags.getloc_filter = tmp_getloc_filter;
+    a11y.accessiblemsg = tmp_accessiblemsg;
+
+    return ECMD_OK;
+}
+
 void
 set_move_cmd(int dir, int run)
 {
@@ -2559,6 +2774,10 @@ struct ext_func_tab extcmdlist[] = {
               doattributes, IFBURIED, NULL },
     { '@',    "autopickup", "toggle the 'autopickup' option on/off",
               dotogglepickup, IFBURIED, NULL },
+#ifdef CRASHREPORT
+    { '\0',   "bugreport", "file a bug report",
+              dobugreport, GENERALCMD | NOFUZZERCMD, NULL },
+#endif
     { 'C',    "call", "name a monster, specific object, or type of object",
               docallcmd, IFBURIED, NULL },
     { 'Z',    "cast", "zap (cast) a spell",
@@ -2632,6 +2851,8 @@ struct ext_func_tab extcmdlist[] = {
               wiz_light_sources, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
     { ':',    "look", "look at what is here",
               dolook, IFBURIED, NULL },
+    { '\0',   "lookaround", "describe what you can see",
+              dolookaround, IFBURIED | GENERALCMD, NULL },
     { M('l'), "loot", "loot a box on the floor",
               doloot, AUTOCOMPLETE | CMD_M_PREFIX, NULL },
     { '\0',   "migratemons",
@@ -4245,7 +4466,7 @@ wiz_mon_diff(void)
         }
     }
     if (!trouble)
-        putstr(win, 0, "No monster difficulty discrepencies were detected.");
+        putstr(win, 0, "No monster difficulty discrepancies were detected.");
     display_nhwindow(win, FALSE);
     destroy_nhwindow(win);
     return ECMD_OK;
@@ -4272,6 +4493,7 @@ you_sanity_check(void)
             impossible("sanity_check: you over monster");
     }
 
+    check_wornmask_slots();
     (void) check_invent_gold("invent");
 }
 
@@ -4564,7 +4786,7 @@ void
 parseautocomplete(char *autocomplete, boolean condition)
 {
     struct ext_func_tab *efp;
-    register char *autoc;
+    char *autoc;
 
     /* break off first autocomplete from the rest; parse the rest */
     if ((autoc = strchr(autocomplete, ',')) != 0
@@ -4944,7 +5166,7 @@ rhack(int key)
     /* handle most movement commands */
     gc.context.travel = gc.context.travel1 = 0;
     {
-        register const struct ext_func_tab *tlist;
+        const struct ext_func_tab *tlist;
         int res, (*func)(void);
 
  do_cmdq_extcmd:
@@ -5109,7 +5331,7 @@ rhack(int key)
 coordxy
 xytod(coordxy x, coordxy y)
 {
-    register int dd;
+    int dd;
 
     for (dd = 0; dd < N_DIRS; dd++)
         if (x == xdir[dd] && y == ydir[dd])
@@ -5561,7 +5783,7 @@ directionname(int dir)
 }
 
 int
-isok(register coordxy x, register coordxy y)
+isok(coordxy x, coordxy y)
 {
     /* x corresponds to curx, so x==1 is the first column. Ach. %% */
     return x >= 1 && x <= COLNO - 1 && y >= 0 && y <= ROWNO - 1;
@@ -6333,7 +6555,7 @@ get_count(
 static int
 parse(void)
 {
-    register int foo;
+    int foo;
 
     iflags.in_parse = TRUE;
     gc.command_count = 0;
@@ -6437,7 +6659,7 @@ end_of_input(void)
 static char
 readchar_core(coordxy *x, coordxy *y, int *mod)
 {
-    register int sym;
+    int sym;
 
     if (iflags.debug_fuzzer) {
         sym = randomkey();
@@ -6452,7 +6674,7 @@ readchar_core(coordxy *x, coordxy *y, int *mod)
 
 #ifdef NR_OF_EOFS
     if (sym == EOF) {
-        register int cnt = NR_OF_EOFS;
+        int cnt = NR_OF_EOFS;
         /*
          * Some SYSV systems seem to return EOFs for various reasons
          * (?like when one hits break or for interrupted systemcalls?),
@@ -6708,7 +6930,7 @@ yn_function(
 {
     char res = '\033', qbuf[QBUFSZ];
     struct _cmd_queue cq, *cmdq;
-#if defined(DUMPLOG) || defined(DUMPHTML)
+#if defined(DUMPLOG) || defined(DUMPHTML) || defined(DUMPLOG_CORE)
     unsigned idx = gs.saved_pline_index;
     /* buffer to hold query+space+formatted_single_char_response */
     char dumplog_buf[QBUFSZ + 1 + 15]; /* [QBUFSZ+1+7] should suffice */
@@ -6750,7 +6972,7 @@ yn_function(
             cmdq_add_key(CQ_REPEAT, res);
     }
 
-#if defined(DUMPLOG) || defined(DUMPHTML)
+#if defined(DUMPLOG) || defined(DUMPHTML) || defined(DUMPLOG_CORE)
     if (idx == gs.saved_pline_index) {
         /* when idx is still the same as saved_pline_index, the interface
            didn't put the prompt into saved_plines[]; we put a simplified

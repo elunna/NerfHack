@@ -201,7 +201,7 @@ msummon(struct monst *mon)
 void
 summon_minion(aligntyp alignment, boolean talk)
 {
-    register struct monst *mon;
+    struct monst *mon;
     int mnum;
 
     switch ((int) alignment) {
@@ -264,7 +264,7 @@ summon_minion(aligntyp alignment, boolean talk)
 
 /* returns 1 if it won't attack. */
 int
-demon_talk(register struct monst *mtmp)
+demon_talk(struct monst *mtmp)
 {
     long cash, demand, offer;
 

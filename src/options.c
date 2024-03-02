@@ -1,4 +1,4 @@
-/* NetHack 3.7	options.c	$NHDT-Date: 1701499956 2023/12/02 06:52:36 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.685 $ */
+/* NetHack 3.7	options.c	$NHDT-Date: 1708737173 2024/02/24 01:12:53 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.709 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2008. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -25,6 +25,9 @@ NEARDATA struct instance_flags iflags; /* provide linkage */
 #else
 #define PREV_MSGS 0
 #endif
+
+static char *color_attr_to_str(color_attr *);
+static boolean color_attr_parse_str(color_attr *, char *);
 
 /*
  *  NOTE:  If you add (or delete) an option, please review the following:
@@ -96,7 +99,7 @@ enum requests {
 };
 /* these aren't the same as set_xxx in optlist.h */
 enum option_phases {
-    builtin_opt,  /* compiled-in default value of an option */
+    builtin_opt=1,/* compiled-in default value of an option */
     syscf_opt,    /* sysconf setting of an option, overrides builtin */
     rc_file_opt,  /* player's run-time config file setting, overrides syscf */
     environ_opt,  /* player's environment NETHACKOPTIONS, overrides rc_file */
@@ -161,7 +164,7 @@ static const struct paranoia_opts {
        latter requires at least two letters; "e"at vs "ex"plore,
        "cont"inue eating vs "C"onfirm; "wand"-break vs "Were"-change,
        both require at least two letters during config processing but use
-       one letter with case-senstivity for 'm O's interactive menu;
+       one letter with case-sensitivity for 'm O's interactive menu;
        if any entry or alias beginning with 'n' gets added, aside from "none",
        the parsing to accept "nofoo" to mean "!foo" will need fixing */
     { PARANOID_CONFIRM, "Confirm", 1, "Paranoia", 2,
@@ -263,7 +266,7 @@ static NEARDATA const char *perminv_modes[][3] = {
  *      + a number or '#' - reserved for counts
  *      + an upper or lower case US ASCII letter - used for accelerators
  *      + ESC - reserved for escaping the menu
- *      + NULL, CR or LF - reserved for commiting the selection(s).  NULL
+ *      + NULL, CR or LF - reserved for committing the selection(s).  NULL
  *        is kind of odd, but the tty's xwaitforspace() will return it if
  *        someone hits a <ret>.
  *      + a default object class symbol - used for object class accelerators
@@ -379,6 +382,7 @@ static int handler_runmode(void);
 static int handler_petattr(void);
 static int handler_sortloot(void);
 static int handler_symset(int);
+static int handler_versinfo(void);
 static int handler_whatis_coord(void);
 static int handler_whatis_filter(void);
 /* next few are not allopt[] entries, so will only be called
@@ -461,7 +465,7 @@ ask_do_tutorial(void)
  */
 boolean
 parseoptions(
-    register char *opts,
+    char *opts,
     boolean tinitial,
     boolean tfrom_file)
 {
@@ -537,7 +541,7 @@ parseoptions(
          *     determine_ambiguities()
          * figured out exactly how many characters are required to
          * unambiguously differentiate one option from all others, and it
-         * placed that number into each option's alloption[n].minmatch.
+         * placed that number into each option's allopt[n].minmatch.
          *
          */
         if (!got_match)
@@ -1213,6 +1217,82 @@ optfn_catname(
     return petname_optfn(optidx, req, negated, opts, op);
 }
 
+#ifdef CRASHREPORT
+static int
+optfn_crash_email(int optidx UNUSED, int req, boolean negated UNUSED, char *opts, char *op)
+{
+    if (req == do_init) {
+        return optn_ok;
+    }
+    if (req == do_set) {
+        if ((op = string_for_opt(opts, FALSE))
+            != empty_optstr) {
+            gc.crash_email = dupstr(op);
+        } else
+            return optn_err;
+        return optn_ok;
+    }
+    if (req == get_val || req == get_cnf_val) {
+        if (!opts)
+            return optn_err;
+        Sprintf(opts, "%s", gc.crash_email);
+        return optn_ok;
+    }
+    return optn_ok;
+}
+
+static int
+optfn_crash_name(int optidx UNUSED, int req, boolean negated UNUSED, char *opts, char *op)
+{
+    if (req == do_init) {
+        return optn_ok;
+    }
+    if (req == do_set) {
+        if ((op = string_for_opt(opts, FALSE))
+            != empty_optstr) {
+            gc.crash_name = dupstr(op);
+        } else
+            return optn_err;
+        return optn_ok;
+    }
+    if (req == get_val || req == get_cnf_val) {
+        if (!opts)
+            return optn_err;
+        Sprintf(opts, "%s", gc.crash_name);
+        return optn_ok;
+    }
+    return optn_ok;
+}
+
+static int
+optfn_crash_urlmax(int optidx UNUSED, int req, boolean negated UNUSED, char *opts, char *op)
+{
+    if (req == do_init) {
+        return optn_ok;
+    }
+    if (req == do_set) {
+        if ((op = string_for_opt(opts, FALSE))
+            != empty_optstr) {
+            int temp = atoi(op);
+            if(temp < 75){
+                config_error_add("Invalid value %d for crash_urlmax.  Minimum value is 75.",temp);
+                return optn_err;
+            }
+            gc.crash_urlmax = temp;
+        } else
+            return optn_err;
+        return optn_ok;
+    }
+    if (req == get_val || req == get_cnf_val) {
+        if (!opts)
+            return optn_err;
+        Sprintf(opts, "%d", gc.crash_urlmax);
+        return optn_ok;
+    }
+    return optn_ok;
+}
+#endif /* CRASHREPORT */
+
 #ifdef CURSES_GRAPHICS
 static int
 optfn_cursesgraphics(int optidx, int req, boolean negated,
@@ -1373,7 +1453,7 @@ optfn_disclose(int optidx, int req, boolean negated, char *opts, char *op)
                                              DISCLOSE_NO_WITHOUT_PROMPT,
                                              DISCLOSE_SPECIAL_WITHOUT_PROMPT,
                                              '\0' };
-            register char c, *dop;
+            char c, *dop;
 
             c = lowc(*op);
             if (c == 'k')
@@ -3145,7 +3225,7 @@ optfn_pickup_types(
                     op = tbuf; /* restore */
                 else if (abuf[0] == 'm')
                     use_menu = TRUE;
-                /* note: abuf[0]=='a' is already handled via clearing the
+                /* note: abuf[0]=='a' is already handled via clearing
                    the old value (above) as a default action */
             }
             if (use_menu) {
@@ -4248,6 +4328,71 @@ optfn_vary_msgcount(
     return optn_ok;
 }
 
+static int
+optfn_versinfo(
+    int optidx, int req, boolean negated,
+    char *opts, char *op)
+{
+    const char *optname = allopt[optidx].name;
+    unsigned vi = flags.versinfo;
+
+    if (req == do_init) {
+        return optn_ok;
+    }
+    if (req == do_set) {
+        /* versinfo: what to include when 'showvers' displays version
+           on status lines; bitmask with up to three bits:
+           (1) x.y.z number, (2) program name, (4) git branch if available.
+           If branch is requested but unavailable, status_version will
+           treat 4 as 1.
+         */
+        boolean have_branch = (nomakedefs.git_branch
+                               && *nomakedefs.git_branch);
+        int val, dflt = have_branch ? VI_BRANCH : VI_NUMBER;
+
+        if (negated) {
+            bad_negation(allopt[optidx].name, TRUE);
+            return optn_silenterr;
+        }
+        op = string_for_opt(opts, FALSE);
+        if (op == empty_optstr) {
+            config_error_add("'%s' requires a value; defaulting to %d",
+                             optname, dflt);
+            return optn_silenterr;
+        }
+        val = atoi(op);
+        if (!val || (val & ~7) != 0) {
+            config_error_add("'%s' must be one of 1, 2, 4, or"
+                             " the sum of two or all three of those",
+                             optname);
+            return optn_silenterr;
+        }
+        flags.versinfo = (unsigned) val;
+    } else if (req == do_handler) {
+        /* return handler_versinfo(); */
+        (void) handler_versinfo();
+        pline("'%s' %s %u.", optname,
+              (flags.versinfo == vi) ? "not changed, still" : "changed to",
+              flags.versinfo);
+    } else if (req == get_val) {
+        char vbuf[QBUFSZ];
+        boolean g = (vi & VI_NAME) != 0,
+                b = (vi & VI_BRANCH) != 0,
+                n = (vi & VI_NUMBER) != 0;
+
+        Sprintf(opts, "%u: %s%s%s%s%s (%.99s)", flags.versinfo,
+                g ? "name" : "", (b && g) ? "+" : "", b ? "branch" : "",
+                (n && (b || g)) ? "+" : "", n ? "number" : "",
+                status_version(vbuf, sizeof vbuf, FALSE));
+    } else if (req == get_cnf_val) {
+        Sprintf(opts, "%u", flags.versinfo);
+    }
+    if (flags.versinfo != vi && !go.opt_initial)
+        go.opt_need_redraw = TRUE; /* context.botlx = TRUE ought to suffice
+                                    * but doesn't for X11 fancy status */
+    return optn_ok;
+}
+
 #ifdef VIDEOSHADES
 static int
 optfn_videocolors(int optidx, int req, boolean negated UNUSED,
@@ -5009,6 +5154,7 @@ optfn_boolean(
 #ifdef SCORE_ON_BOTL
         case opt_showscore:
 #endif
+        case opt_showvers:
         case opt_showexp:
             if (VIA_WINDOWPORT())
                 status_initialize(REASSESS_ONLY);
@@ -6169,6 +6315,53 @@ handler_msgtype(void)
 
 
 static int
+handler_versinfo(void)
+{
+    winid tmpwin;
+    anything any;
+    menu_item *vi_pick = (menu_item *) 0;
+    boolean have_branch = (nomakedefs.git_branch && *nomakedefs.git_branch);
+    int n, vi = (int) flags.versinfo;
+
+    tmpwin = create_nhwindow(NHW_MENU);
+    start_menu(tmpwin, MENU_BEHAVE_STANDARD);
+    any = cg.zeroany;
+
+    any.a_int = n = VI_NUMBER; /* 1 */
+    add_menu(tmpwin, &nul_glyphinfo, &any, 'n', n + '0', ATR_NONE, NO_COLOR,
+             "version number",
+             (vi & n) ? MENU_ITEMFLAGS_SELECTED : MENU_ITEMFLAGS_NONE);
+    any.a_int = n = VI_NAME; /* 2 */
+    add_menu(tmpwin, &nul_glyphinfo, &any, 'g', n + '0', ATR_NONE, NO_COLOR,
+             "game name",
+             (vi & n) ? MENU_ITEMFLAGS_SELECTED : MENU_ITEMFLAGS_NONE);
+    any.a_int = n = VI_BRANCH; /* 4 */
+    add_menu(tmpwin, &nul_glyphinfo, &any, 'b', n + '0', ATR_NONE, NO_COLOR,
+             (have_branch ? "development branch"
+#if (NH_DEVEL_STATUS == NH_STATUS_RELEASED)
+                          : "(not applicable)"
+#else
+                          : "(not available)"
+#endif
+              ), (vi & n) ? MENU_ITEMFLAGS_SELECTED : MENU_ITEMFLAGS_NONE);
+
+    end_menu(tmpwin, "Select version information flags:");
+    n = select_menu(tmpwin, PICK_ANY, &vi_pick);
+    if (n > 0) {
+        int i, newval = 0;
+
+        for (i = 0; i < n; ++i)
+            newval |= vi_pick[i].item.a_int;
+        newval &= 7;
+        if (newval)
+            flags.versinfo = (unsigned) newval;
+        free((genericptr_t) vi_pick);
+    }
+    destroy_nhwindow(tmpwin);
+    return optn_ok;
+}
+
+static int
 handler_windowborders(void)
 {
     winid tmpwin;
@@ -6192,7 +6385,7 @@ handler_windowborders(void)
         mode_name = windowborders_text[i];
         any.a_int = i + 1;
         /* index 'i' matches the numeric setting for windowborders,
-           so allow corresponding digit as group accellerator */
+           so allow corresponding digit as group accelerator */
         add_menu(tmpwin, &nul_glyphinfo, &any, 'a' + i, '0' + i,
                  ATR_NONE, clr, mode_name, MENU_ITEMFLAGS_NONE);
     }
@@ -6631,8 +6824,15 @@ initoptions(void)
 {
     int i;
 
-    go.opt_phase = builtin_opt;
-    initoptions_init();
+    /*
+     * Most places that call initoptions_init()/initoptions() would
+     * have the calls next to each other, so instead of adding
+     * initoptions_init() everywhere, just add it where it's needed in
+     * a non-adjacent place and call it here for all the other cases.
+     */
+    if(go.opt_phase != builtin_opt)
+         initoptions_init();
+
     /*
      * Call each option function with an init flag and give it a chance
      * to make any preparations that it might require.  We do this
@@ -6676,7 +6876,9 @@ initoptions_init(void)
     char *opts;
 #endif
     int i;
+    boolean have_branch = (nomakedefs.git_branch && *nomakedefs.git_branch);
 
+    go.opt_phase = builtin_opt;		// Did I need to move this here?
     memcpy(allopt, allopt_init, sizeof(allopt));
     determine_ambiguities();
 
@@ -6697,7 +6899,7 @@ initoptions_init(void)
             && !strcmpi(windowprocs.name, gc.cmdline_windowsys))
             /* ignore any windowtype:foo in RC file or NETHACKOPTIONS */
             iflags.windowtype_locked = TRUE;
-        /* should't need cmdline_windowsys beyond here */
+        /* shouldn't need cmdline_windowsys beyond here */
         free((genericptr_t) gc.cmdline_windowsys),
             gc.cmdline_windowsys = NULL;
     }
@@ -6725,6 +6927,7 @@ initoptions_init(void)
     flags.end_top = 3;
     flags.end_around = 2;
     flags.paranoia_bits = PARANOID_PRAY | PARANOID_SWIM;
+    flags.versinfo = have_branch ? 4 : 1;
     flags.pile_limit = PILE_LIMIT_DFLT;  /* 5 */
     flags.runmode = RUN_LEAP;
     iflags.msg_history = 20;
@@ -6968,6 +7171,12 @@ initoptions_finish(void)
     else if (iflags.wc_ascii_map && !wc_supported("ascii_map")
              && wc_supported("tiled_map"))
         iflags.wc_ascii_map = FALSE, iflags.wc_tiled_map = TRUE;
+
+    if (iflags.wc_tiled_map && !opt_set_in_config[opt_color])
+        iflags.wc_color = TRUE;
+    if (iflags.wc_ascii_map && !iflags.wc_color
+        && !opt_set_in_config[opt_bgcolors])
+        iflags.bgcolors = FALSE;
 
 #ifdef ENHANCED_SYMBOLS
     if (glyphid_cache_status())
@@ -8169,8 +8378,8 @@ collect_menu_keys(
 int
 fruitadd(char *str, struct fruit *replace_fruit)
 {
-    register int i;
-    register struct fruit *f;
+    int i;
+    struct fruit *f;
     int highest_fruit_id = 0, globpfx;
     char buf[PL_FSIZ], altname[PL_FSIZ];
     boolean user_specified = (str == gp.pl_fruit);
@@ -9334,7 +9543,7 @@ int
 sym_val(const char *strval) /* up to 4*BUFSZ-1 long; only first few
                                chars matter */
 {
-    char buf[QBUFSZ], tmp[QBUFSZ]; /* to hold trucated copy of 'strval' */
+    char buf[QBUFSZ], tmp[QBUFSZ]; /* to hold truncated copy of 'strval' */
 
     buf[0] = '\0';
     if (!strval[0] || !strval[1]) { /* empty, or single character */
@@ -9411,7 +9620,7 @@ option_help(void)
 {
     char buf[BUFSZ], buf2[BUFSZ];
     const char *optname;
-    register int i;
+    int i;
     winid datawin;
 
     datawin = create_nhwindow(NHW_TEXT);

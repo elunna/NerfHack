@@ -248,6 +248,11 @@ struct instance_globals_c {
     /* dog.c */
     char catname[PL_PSIZ];
 
+    /* end.c */
+    char *crash_email;  // email for crash reports
+    char *crash_name;   // human name for crash reports
+    int crash_urlmax;   // maximum length for the url of a crash report
+
     /* symbols.c */
     int currentgraphics;
 
@@ -745,7 +750,7 @@ struct instance_globals_o {
     boolean opt_need_promptstyle;
 
     /* pickup.c */
-    int oldcap; /* last encumberance */
+    int oldcap; /* last encumbrance */
 
     /* restore.c */
     struct fruit *oldfruit;
@@ -915,7 +920,7 @@ struct instance_globals_s {
     boolean shop_filter;
 
     /* pline.c */
-#ifdef DUMPLOG
+#ifdef DUMPLOG_CORE
     unsigned saved_pline_index;  /* slot in saved_plines[] to use next */
     char *saved_plines[DUMPLOG_MSG_COUNT];
 #endif

@@ -195,7 +195,7 @@ resist_reduce(int amount, int which)
     tmp = ceil((float) (amount * tmp));
 
     /* debug line */
-    if (flags.showdmg && wizard)
+    if (flags.showdamage && wizard)
         pline("(in: %d  out: %d)", amount, (int) tmp);
     return (int) tmp;
 }
@@ -2046,7 +2046,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))
                     wake_nearto(tx, ty, mon->data->mlevel * 10);
-                showdmg(dmg, FALSE);
+                showdamage(dmg, FALSE);
                 mon->mhp -= dmg;
                 if (DEADMONSTER(mon)) {
                     if (your_fault)
@@ -2346,7 +2346,7 @@ potionbreathe(struct obj *obj)
                     (Hallucination ? "amaroidal" : "acrid"),
                     (eyes ? eyestr : ""),
                     makeplural(body_part(LUNG)));
-            showdmg(dmg, TRUE);
+            showdamage(dmg, TRUE);
             losehp(dmg, "acid fumes", KILLED_BY);
         exercise(A_CON, FALSE);
             unambiguous = TRUE;

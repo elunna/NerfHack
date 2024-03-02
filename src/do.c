@@ -204,7 +204,7 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
                         /* normally we'd use ohitmon() but it can call
                            drop_throw() which calls flooreffects() */
                         damage = dmgval(obj, mtmp);
-                        showdmg(damage, FALSE);
+                        showdamage(damage, FALSE);
                         mtmp->mhp -= damage;
                         if (DEADMONSTER(mtmp)) {
                             if (canspotmon(mtmp))
@@ -1460,7 +1460,7 @@ save_currentstate(void)
 
 /*
 static boolean
-badspot(register coordxy x, register coordxy y)
+badspot(coordxy x, coordxy y)
 {
     return (boolean) ((levl[x][y].typ != ROOM
                        && levl[x][y].typ != AIR
@@ -1789,7 +1789,7 @@ goto_level(
 
     if (portal && !In_endgame(&u.uz)) {
         /* find the portal on the new level */
-        register struct trap *ttrap;
+        struct trap *ttrap;
 
         for (ttrap = gf.ftrap; ttrap; ttrap = ttrap->ntrap)
             if (ttrap->ttyp == MAGIC_PORTAL)

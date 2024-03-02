@@ -8,7 +8,7 @@
 static int monmulti(struct monst *, struct obj *, struct obj *);
 static void monshoot(struct monst *, struct obj *, struct obj *);
 static boolean ucatchgem(struct obj *, struct monst *);
-static const char* breathwep_name(int);
+static const char *breathwep_name(int);
 static boolean drop_throw(struct obj *, boolean, coordxy, coordxy);
 static boolean blocking_terrain(coordxy, coordxy);
 static int m_lined_up(struct monst *, struct monst *) NONNULLARG12;
@@ -53,7 +53,7 @@ rnd_hallublast(void)
 }
 
 boolean
-m_has_launcher_and_ammo(struct monst* mtmp)
+m_has_launcher_and_ammo(struct monst *mtmp)
 {
     struct obj *mwep = MON_WEP(mtmp);
 
@@ -190,7 +190,7 @@ thitu(
  */
 static boolean
 drop_throw(
-    register struct obj *obj,
+    struct obj *obj,
     boolean ohit,
     coordxy x,
     coordxy y)
@@ -239,7 +239,7 @@ drop_throw(
 /* calculate multishot volley count for mtmp throwing otmp (if not ammo) or
    shooting otmp with mwep (if otmp is ammo and mwep appropriate launcher) */
 static int
-monmulti(struct monst* mtmp, struct obj* otmp, struct obj* mwep)
+monmulti(struct monst *mtmp, struct obj *otmp, struct obj *mwep)
 {
     int multishot = 1;
 
@@ -298,7 +298,7 @@ monmulti(struct monst* mtmp, struct obj* otmp, struct obj* mwep)
 
 /* mtmp throws otmp, or shoots otmp with mwep, at hero or at monster mtarg */
 static void
-monshoot(struct monst* mtmp, struct obj* otmp, struct obj* mwep)
+monshoot(struct monst *mtmp, struct obj *otmp, struct obj *mwep)
 {
     struct monst *mtarg = gm.mtarget;
     int dm = distmin(mtmp->mx, mtmp->my,
@@ -489,7 +489,7 @@ ohitmon(
 
         /* might already be dead (if petrified) */
         if (!harmless && !DEADMONSTER(mtmp)) {
-            showdmg(damage, FALSE);
+            showdamage(damage, FALSE);
             mtmp->mhp -= damage;
             if (DEADMONSTER(mtmp)) {
                 if (vis || (verbose && !gm.mtarget))
@@ -845,10 +845,10 @@ m_throw(
 
 /* Monster throws item at another monster */
 int
-thrwmm(struct monst* mtmp, struct monst* mtarg)
+thrwmm(struct monst *mtmp, struct monst *mtarg)
 {
     struct obj *otmp, *mwep;
-    register coordxy x, y;
+    coordxy x, y;
     boolean ispole;
 
     /* Polearms won't be applied by monsters against other monsters */
@@ -892,7 +892,7 @@ thrwmm(struct monst* mtmp, struct monst* mtarg)
 
 /* monster spits substance at monster */
 int
-spitmm(struct monst* mtmp, struct attack* mattk, struct monst* mtarg)
+spitmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 {
     struct obj *otmp;
 
@@ -968,7 +968,7 @@ breathwep_name(int typ)
 
 /* monster breathes at monster (ranged) */
 int
-breamm(struct monst* mtmp, struct attack* mattk, struct monst* mtarg)
+breamm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 {
     int typ = get_atkdam_type(mattk->adtyp);
 
@@ -1029,7 +1029,7 @@ breamm(struct monst* mtmp, struct attack* mattk, struct monst* mtarg)
 
 /* remove an entire item from a monster's inventory; destroy that item */
 void
-m_useupall(struct monst* mon, struct obj* obj)
+m_useupall(struct monst *mon, struct obj *obj)
 {
     extract_from_minvent(mon, obj, TRUE, FALSE);
     obfree(obj, (struct obj *) 0);
@@ -1037,7 +1037,7 @@ m_useupall(struct monst* mon, struct obj* obj)
 
 /* remove one instance of an item from a monster's inventory */
 void
-m_useup(struct monst* mon, struct obj* obj)
+m_useup(struct monst *mon, struct obj *obj)
 {
     if (obj->quan > 1L) {
         obj->quan--;
@@ -1050,7 +1050,7 @@ m_useup(struct monst* mon, struct obj* obj)
 /* monster attempts ranged weapon attack against player
  * returns TRUE if it did something; FALSE if it decided not to attack */
 boolean
-thrwmu(struct monst* mtmp)
+thrwmu(struct monst *mtmp)
 {
     struct obj *otmp, *mwep;
     coordxy x, y;
@@ -1139,14 +1139,14 @@ thrwmu(struct monst* mtmp)
 
 /* monster spits substance at you */
 int
-spitmu(struct monst* mtmp, struct attack* mattk)
+spitmu(struct monst *mtmp, struct attack *mattk)
 {
     return spitmm(mtmp, mattk, &gy.youmonst);
 }
 
 /* monster breathes at you (ranged) */
 int
-breamu(struct monst* mtmp, struct attack* mattk)
+breamu(struct monst *mtmp, struct attack *mattk)
 {
     return breamm(mtmp, mattk, &gy.youmonst);
 }
@@ -1202,10 +1202,10 @@ linedup_callback(
 
 boolean
 linedup(
-    register coordxy ax,
-    register coordxy ay,
-    register coordxy bx,
-    register coordxy by,
+    coordxy ax,
+    coordxy ay,
+    coordxy bx,
+    coordxy by,
     int boulderhandling) /* 0=block, 1=ignore, 2=conditionally block */
 {
     int dx, dy, boulderspots;
@@ -1247,7 +1247,7 @@ linedup(
 }
 
 static int
-m_lined_up(struct monst* mtarg, struct monst* mtmp)
+m_lined_up(struct monst *mtarg, struct monst *mtmp)
 {
     boolean utarget = (mtarg == &gy.youmonst);
     coordxy tx = utarget ? mtmp->mux : mtarg->mx;
@@ -1269,7 +1269,7 @@ m_lined_up(struct monst* mtarg, struct monst* mtmp)
 
 /* is mtmp in position to use ranged attack on hero? */
 boolean
-lined_up(register struct monst* mtmp)
+lined_up(struct monst *mtmp)
 {
     return m_lined_up(&gy.youmonst, mtmp) ? TRUE : FALSE;
 }
@@ -1278,7 +1278,7 @@ lined_up(register struct monst* mtmp)
 struct obj *
 m_carrying(struct monst *mtmp, int type)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = (mtmp == &gy.youmonst) ? gi.invent : mtmp->minvent; otmp;
          otmp = otmp->nobj)

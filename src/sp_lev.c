@@ -67,6 +67,10 @@ static void fill_empty_maze(void);
 static void splev_initlev(lev_init *);
 static boolean generate_way_out_method(coordxy nx, coordxy ny,
                                        struct selectionvar *ov);
+static void l_push_wid_hei_table(lua_State *, int, int);
+static boolean good_stair_loc(coordxy, coordxy);
+static void ensure_way_out(void);
+
 #if 0
 /* macosx complains that these are unused */
 static long sp_code_jmpaddr(long, long);
@@ -979,7 +983,7 @@ sel_set_wall_property(coordxy x, coordxy y, genericptr_t arg)
 static void
 set_wall_property(coordxy x1, coordxy y1, coordxy x2, coordxy y2, int prop)
 {
-    register coordxy x, y;
+    coordxy x, y;
 
     x1 = max(x1, 1);
     x2 = min(x2, COLNO - 1);
@@ -1216,7 +1220,7 @@ get_location(
                 break;
         } while (++cpt < 100);
         if (cpt >= 100) {
-            register int xx, yy;
+            int xx, yy;
 
             /* last try */
             for (xx = 0; xx < sx; xx++)
@@ -1258,7 +1262,7 @@ set_ok_location_func(boolean (*func)(coordxy, coordxy))
 static boolean
 is_ok_location(coordxy x, coordxy y, getloc_flags_t humidity)
 {
-    register int typ = levl[x][y].typ;
+    int typ = levl[x][y].typ;
 
     if (Is_waterlevel(&u.uz))
         return TRUE; /* accept any spot */
@@ -1367,7 +1371,7 @@ get_free_room_loc(
     packed_coord pos)
 {
     coordxy try_x, try_y;
-    register int trycnt = 0;
+    int trycnt = 0;
 
     get_location_coord(&try_x, &try_y, DRY, croom, pos);
     if (levl[try_x][try_y].typ != ROOM) {
@@ -1388,8 +1392,8 @@ check_room(
     coordxy *lowy, coordxy *ddy,
     boolean vault)
 {
-    register int x, y, hix = *lowx + *ddx, hiy = *lowy + *ddy;
-    register struct rm *lev;
+    int x, y, hix = *lowx + *ddx, hiy = *lowy + *ddy;
+    struct rm *lev;
     int xlim, ylim, ymax;
     coordxy s_lowx, s_ddx, s_lowy, s_ddy;
 
@@ -2499,7 +2503,9 @@ search_door(
 }
 
 /*
- * Dig a corridor between two points.
+ * Dig a corridor between two points, using terrain ftyp.
+ * if nxcor is TRUE, he corridor may be blocked by a boulder,
+ * or just end without reaching the destination.
  */
 boolean
 dig_corridor(
@@ -2566,7 +2572,7 @@ dig_corridor(
 
         /* do we have to change direction ? */
         if (dy && dix > diy) {
-            register int ddx = (xx > tx) ? -1 : 1;
+            int ddx = (xx > tx) ? -1 : 1;
 
             crm = &levl[xx + ddx][yy];
             if (crm->typ == btyp || crm->typ == ftyp || crm->typ == SCORR) {
@@ -2575,7 +2581,7 @@ dig_corridor(
                 continue;
             }
         } else if (dx && diy > dix) {
-            register int ddy = (yy > ty) ? -1 : 1;
+            int ddy = (yy > ty) ? -1 : 1;
 
             crm = &levl[xx][yy + ddy];
             if (crm->typ == btyp || crm->typ == ftyp || crm->typ == SCORR) {
@@ -2786,10 +2792,10 @@ build_room(room *r, struct mkroom *mkr)
 static void
 light_region(region *tmpregion)
 {
-    register boolean litstate = tmpregion->rlit ? 1 : 0;
-    register int hiy = tmpregion->y2;
-    register int x, y;
-    register struct rm *lev;
+    boolean litstate = tmpregion->rlit ? 1 : 0;
+    int hiy = tmpregion->y2;
+    int x, y;
+    struct rm *lev;
     int lowy = tmpregion->y1;
     int lowx = tmpregion->x1, hix = tmpregion->x2;
 
@@ -2847,7 +2853,7 @@ wallify_map(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
 static void
 maze1xy(coord *m, int humidity)
 {
-    register int x, y, tryct = 2000;
+    int x, y, tryct = 2000;
     /* tryct:  normally it won't take more than ten or so tries due
        to the circumstances under which we'll be called, but the
        `humidity' screening might drastically change the chances */
@@ -3489,7 +3495,7 @@ lspo_object(lua_State *L)
             0,       /* buried */
             0,       /* lit */
             0, 0, 0, 0, /* eroded, locked, trapped, recharged */
-            0, 0, 0, 0, /* invis, greased, broken, achievment */
+            0, 0, 0, 0, /* invis, greased, broken, achievement */
     };
 #if 0
     int nparams = 0;
@@ -6209,7 +6215,7 @@ int
 lspo_region(lua_State *L)
 {
     coordxy dx1, dy1, dx2, dy2;
-    register struct mkroom *troom;
+    struct mkroom *troom;
     boolean do_arrival_room = FALSE, room_not_needed,
             irregular = FALSE, joined = TRUE;
     int rtype = OROOM, rlit = 1, needfill = 0;
@@ -7068,7 +7074,7 @@ static const struct luaL_Reg nhl_functions[] = {
  - automatically add shuffle(array)
  - automatically add align = { "law", "neutral", "chaos" } and shuffle it.
    (remove from lua files)
- - grab the header comments from des-files and add add them to the lua files
+ - grab the header comments from des-files and add them to the lua files
 
 */
 

@@ -3616,7 +3616,7 @@ config_erradd(const char *buf)
 
     /* if buf[] doesn't end in a period, exclamation point, or question mark,
        we'll include a period (in the message, not appended to buf[]) */
-    punct = eos((char *) buf) - 1; /* eos(buf)-1 is valid; cast away const */
+    punct = c_eos((char *) buf) - 1; /* eos(buf)-1 is valid */
     punct = strchr(".!?", *punct) ? "" : ".";
 
     if (!gp.program_state.config_error_ready) {
@@ -4889,6 +4889,9 @@ reveal_paths(void)
 #endif  /* ?UNIX */
 
     raw_print("");
+#if defined(WIN32) && !defined(WIN32CON)
+    wait_synch();
+#endif
 }
 
 /* ----------  BEGIN TRIBUTE ----------- */

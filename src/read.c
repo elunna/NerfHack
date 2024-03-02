@@ -1,4 +1,4 @@
-/* NetHack 3.7	read.c	$NHDT-Date: 1654931501 2022/06/11 07:11:41 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.257 $ */
+/* NetHack 3.7	read.c	$NHDT-Date: 1708126537 2024/02/16 23:35:37 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.300 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -18,7 +18,7 @@ static void p_glow1(struct obj *);
 static void p_glow2(struct obj *, const char *);
 static int maybe_tame(struct monst *, struct obj *);
 static boolean can_center_cloud(coordxy, coordxy);
-static void display_stinking_cloud_positions(int);
+static void display_stinking_cloud_positions(boolean);
 static void seffect_enchant_armor(struct obj **);
 static void seffect_destroy_armor(struct obj **);
 static void seffect_confuse_monster(struct obj **);
@@ -63,7 +63,7 @@ learnscrolltyp(short scrolltyp)
 
 /* also called from teleport.c for scroll of teleportation */
 void
-learnscroll(struct obj* sobj)
+learnscroll(struct obj *sobj)
 {
     /* it's implied that sobj->dknown is set;
        we couldn't be reading this scroll otherwise */
@@ -73,7 +73,7 @@ learnscroll(struct obj* sobj)
 
 /* max spe is +99, min is -99 */
 static void
-cap_spe(struct obj* obj)
+cap_spe(struct obj *obj)
 {
     if (obj) {
         if (abs(obj->spe) > SPE_LIM)
@@ -82,7 +82,7 @@ cap_spe(struct obj* obj)
 }
 
 static char *
-erode_obj_text(struct obj* otmp, char* buf)
+erode_obj_text(struct obj *otmp, char *buf)
 {
     int erosion = greatest_erosion(otmp);
 
@@ -93,7 +93,7 @@ erode_obj_text(struct obj* otmp, char* buf)
 }
 
 char *
-tshirt_text(struct obj* tshirt, char* buf)
+tshirt_text(struct obj *tshirt, char *buf)
 {
     static const char *const shirt_msgs[] = {
         /* Scott Bigham */
@@ -246,7 +246,7 @@ hawaiian_design(struct obj *shirt, char *buf)
 }
 
 char *
-apron_text(struct obj* apron, char* buf)
+apron_text(struct obj *apron, char *buf)
 {
     static const char *const apron_msgs[] = {
         "Kiss the cook",
@@ -288,7 +288,7 @@ static const char *const candy_wrappers[] = {
 
 /* return the text of a candy bar's wrapper */
 const char *
-candy_wrapper_text(struct obj* obj)
+candy_wrapper_text(struct obj *obj)
 {
     /* modulo operation is just bullet proofing; 'spe' is already in range */
     return candy_wrappers[obj->spe % SIZE(candy_wrappers)];
@@ -296,7 +296,7 @@ candy_wrapper_text(struct obj* obj)
 
 /* assign a wrapper to a candy bar stack */
 void
-assign_candy_wrapper(struct obj* obj)
+assign_candy_wrapper(struct obj *obj)
 {
     if (obj->otyp == CANDY_BAR) {
         /* skips candy_wrappers[0] */
@@ -307,7 +307,7 @@ assign_candy_wrapper(struct obj* obj)
 
 /* getobj callback for object to read */
 static int
-read_ok(struct obj* obj)
+read_ok(struct obj *obj)
 {
     if (!obj)
         return GETOBJ_EXCLUDE;
@@ -338,7 +338,7 @@ int
 doread(void)
 {
     static const char find_any_braille[] = "feel any Braille writing.";
-    register struct obj *scroll;
+    struct obj *scroll;
     boolean confused, nodisappear;
     int otyp;
 
@@ -655,7 +655,7 @@ doread(void)
 RESTORE_WARNING_FORMAT_NONLITERAL
 
 static void
-stripspe(register struct obj* obj)
+stripspe(struct obj *obj)
 {
     if (obj->blessed || obj->spe <= 0) {
         pline1(nothing_happens);
@@ -670,13 +670,13 @@ stripspe(register struct obj* obj)
 }
 
 static void
-p_glow1(register struct obj* otmp)
+p_glow1(struct obj *otmp)
 {
     pline("%s briefly.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"));
 }
 
 static void
-p_glow2(register struct obj* otmp, register const char* color)
+p_glow2(struct obj *otmp, const char *color)
 {
     pline("%s%s%s for a moment.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"),
           Blind ? "" : " ", Blind ? "" : hcolor(color));
@@ -684,7 +684,7 @@ p_glow2(register struct obj* otmp, register const char* color)
 
 /* getobj callback for object to charge */
 int
-charge_ok(struct obj* obj)
+charge_ok(struct obj *obj)
 {
     if (!obj)
         return GETOBJ_EXCLUDE;
@@ -724,9 +724,9 @@ charge_ok(struct obj* obj)
 /* recharge an object; curse_bless is -1 if the recharging implement
    was cursed, +1 if blessed, 0 otherwise. */
 void
-recharge(struct obj* obj, int curse_bless)
+recharge(struct obj *obj, int curse_bless)
 {
-    register int n;
+    int n;
     boolean is_cursed, is_blessed;
 
     is_cursed = curse_bless < 0;
@@ -1085,22 +1085,28 @@ can_center_cloud(coordxy x, coordxy y)
 }
 
 static void
-display_stinking_cloud_positions(int state)
+display_stinking_cloud_positions(boolean on_off)
 {
-    if (state == 0) {
-        tmp_at(DISP_BEAM, cmap_to_glyph(S_goodpos));
-    } else if (state == 1) {
-        coordxy x, y, dx, dy;
-        int dist = 6;
+    coordxy x, y, dx, dy;
+    int dist = 6;
 
+    if (on_off) {
+        /* on */
+        tmp_at(DISP_BEAM, cmap_to_glyph(S_goodpos));
         for (dx = -dist; dx <= dist; dx++)
             for (dy = -dist; dy <= dist; dy++) {
                 x = u.ux + dx;
                 y = u.uy + dy;
-                if (can_center_cloud(x,y))
+                /* hero's location is allowed but highlighting the hero's
+                   spot makes map harder to read (if using '$' rather than
+                   by changing background color) */
+                if (u_at(x, y))
+                    continue;
+                if (can_center_cloud(x, y))
                     tmp_at(x, y);
             }
     } else {
+        /* off */
         tmp_at(DISP_END, 0);
     }
 }
@@ -1109,7 +1115,7 @@ static void
 seffect_enchant_armor(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
-    register schar s;
+    schar s;
     int i;
     boolean special_armor;
     boolean same_color;
@@ -1414,8 +1420,8 @@ seffect_scare_monster(struct obj **sobjp)
     int otyp = sobj->otyp;
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
-    register int ct = 0;
-    register struct monst *mtmp;
+    int ct = 0;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -1450,7 +1456,7 @@ seffect_remove_curse(struct obj **sobjp)
     boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
-    register struct obj *obj, *nxto;
+    struct obj *obj, *nxto;
     long wornmask;
 
     You_feel(!Hallucination
@@ -2104,7 +2110,9 @@ seffect_magic_mapping(struct obj **sobjp)
     cval = (scursed && !confused);
     if (cval)
         HConfusion = 1; /* to screw up map */
+    notice_mon_off();
     do_mapping();
+    notice_mon_on();
     if (cval) {
         HConfusion = 0; /* restore */
         pline("Unfortunately, you can't grasp the details.");
@@ -2304,8 +2312,8 @@ drop_boulder_on_player(
 boolean
 drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
 {
-    register struct obj *otmp2;
-    register struct monst *mtmp;
+    struct obj *otmp2;
+    struct monst *mtmp;
 
     /* Make the object(s) */
     otmp2 = mksobj(confused ? ROCK : BOULDER, FALSE, FALSE);
@@ -2355,7 +2363,7 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
                           xname(helmet), mhim(mtmp));
             }
         }
-        showdmg(mdmg, FALSE);
+        showdamage(mdmg, FALSE);
         mtmp->mhp -= mdmg;
         if (DEADMONSTER(mtmp)) {
             if (byu) {
@@ -2839,7 +2847,7 @@ do_genocide(
 }
 
 void
-punish(struct obj* sobj)
+punish(struct obj *sobj)
 {
     /* angrygods() calls this with NULL sobj arg */
     struct obj *reuse_ball = (sobj && sobj->otyp == HEAVY_IRON_BALL)

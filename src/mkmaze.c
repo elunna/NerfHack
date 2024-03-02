@@ -26,6 +26,7 @@ static void stolen_booty(void);
 static boolean maze_inbounds(coordxy, coordxy);
 static void maze_remove_deadends(xint16);
 static void populate_maze(void);
+static boolean is_exclusion_zone(xint16, coordxy, coordxy);
 
 /* adjust a coordinate one step in the specified direction */
 #define mz_move(X, Y, dir) \
@@ -717,7 +718,7 @@ migrate_orc(struct monst *mtmp, unsigned long mflags)
 }
 
 static void
-shiny_orc_stuff(struct monst* mtmp)
+shiny_orc_stuff(struct monst *mtmp)
 {
     int gemprob, goldprob, otyp;
     struct obj *otmp;
@@ -749,7 +750,7 @@ shiny_orc_stuff(struct monst* mtmp)
 }
 
 static void
-migr_booty_item(int otyp, const char* gang)
+migr_booty_item(int otyp, const char *gang)
 {
     struct obj *otmp;
 
@@ -1674,7 +1675,7 @@ water_friction(void)
 }
 
 void
-save_waterlevel(NHFILE* nhfp)
+save_waterlevel(NHFILE *nhfp)
 {
     struct bubble *b;
 
@@ -1884,7 +1885,7 @@ mk_bubble(coordxy x, coordxy y, int n)
  * This property also makes leaving a bubble slightly difficult.
  */
 static void
-mv_bubble(struct bubble* b, coordxy dx, coordxy dy, boolean ini)
+mv_bubble(struct bubble *b, coordxy dx, coordxy dy, boolean ini)
 {
     int i, j, colli = 0;
     coordxy x, y;
