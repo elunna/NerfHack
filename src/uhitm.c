@@ -16,12 +16,12 @@ static boolean theft_petrifies(struct obj *) NONNULLARG1;
 static void steal_it(struct monst *, struct attack *) NONNULLARG1;
 static void mhitm_ad_slow_core(struct monst *, struct monst *);
 static boolean should_cleave(void);
-static boolean should_skewer(void);
+static boolean should_skewer(int);
 /* hitum_cleave() has contradictory information. There's a comment
  * beside the 1st arg 'target' stating non-null, but later on there
  * is a test for 'target' being null */
 static boolean hitum_cleave(struct monst *, struct attack *) NO_NNARGS;
-static boolean hitum_skewer(struct monst *, struct attack *) NO_NNARGS;
+static boolean hitum_skewer(struct monst *, struct obj *, struct attack *) NO_NNARGS;
 static boolean double_punch(void);
 static boolean hitum(struct monst *, struct attack *) NONNULLARG1;
 static void hmon_hitmon_barehands(struct _hitmon_data *,
@@ -879,25 +879,27 @@ hitum_cleave(
 /* return TRUE iff no peaceful target is found behind the target space
  * assumes u.dx and u.dy have been set */
 static boolean
-should_skewer(void)
+should_skewer(int range)
 {
-    int x = u.ux + u.dx * 2;
-    int y = u.uy + u.dy * 2;
-    struct monst *mtmp;
-    
     boolean bystanders = FALSE;
     int dir = xytod(u.dx, u.dy);
+    int i;
     if (dir > 7) {
         impossible("should_skewer: unknown target direction");
         return FALSE; /* better safe than sorry */
     }
-    if (!isok(x, y))
-        return FALSE;
     
-    mtmp = m_at(x, y);
-    if (mtmp && canspotmon(mtmp) && mtmp->mpeaceful)
-        bystanders = TRUE;
-    
+    for (i = 0; i < range; i++) {
+        int x = u.ux + u.dx * (i+1);
+        int y = u.uy + u.dy * (i+1);
+        struct monst *mtmp;
+        if (!isok(x, y))
+            return FALSE;
+
+        mtmp = m_at(x, y);
+        if (mtmp && canspotmon(mtmp) && mtmp->mpeaceful)
+            bystanders = TRUE;
+    }
     if (bystanders) {
         if (!gc.context.forcefight)
             return FALSE;
@@ -911,14 +913,15 @@ should_skewer(void)
    */
 static boolean
 hitum_skewer(
-        struct monst *target, /* non-Null; forcefight at nothing doesn't cleave +*/
-        struct attack *uattk) /*+ but we don't enforce that here; Null works ok */
+    struct monst *target, /* non-Null; forcefight at nothing doesn't cleave +*/
+    struct obj *obj,      /* non-Null */
+    struct attack *uattk) /*+ but we don't enforce that here; Null works ok */
 {
     int i;
     coord save_bhitpos;
     boolean save_notonhead;
     int count, umort, x = u.ux, y = u.uy;
-
+    int range = (obj->otyp == SPETUM) ? 4 : 3;
     /* find the direction toward primary target */
     i = xytod(u.dx, u.dy);
     if (i == DIR_ERR) {
@@ -931,7 +934,7 @@ hitum_skewer(
     save_notonhead = gn.notonhead;
 
     /* 2 attacks: primary and behind primary. */
-    for (count = 1; count < 3; count++) {
+    for (count = 1; count < range; count++) {
         struct monst *mtmp;
         int tx, ty, tmp, dieroll, mhit, attknum = 0, armorpenalty;
         
@@ -939,6 +942,7 @@ hitum_skewer(
         if (!isok(tx, ty))
             continue;
         mtmp = m_at(tx, ty);
+        
         if (!mtmp) {
             if (glyph_is_invisible(levl[tx][ty].glyph))
                 (void) unmap_invisible(tx, ty);
@@ -953,16 +957,18 @@ hitum_skewer(
         gb.bhitpos.x = tx, gb.bhitpos.y = ty; /* normally set by do_attack() */
         gn.notonhead = (mtmp->mx != tx || mtmp->my != ty);
         
+        /* Use the second monster so we don't repeat this message too much. */
         if (count == 2 && mhit && canseemon(mtmp))
-            Your("spear skewers through %s!", mon_nam(target));
+            Your("%s skewers through %s!", xname(obj), mon_nam(target));
         
         (void) known_hitum(mtmp, uwep, &mhit, tmp, armorpenalty,
                            uattk, dieroll);
         (void) passive(mtmp, uwep, mhit, !DEADMONSTER(mtmp), AT_WEAP, !uwep);
 
-        /* stop attacking if weapon is gone or hero got paralyzed or
-           killed (and then life-saved) by passive counter-attack */
-        if (!uwep || gm.multi < 0 || u.umortality > umort)
+        /* stop attacking if hero missed or weapon is gone 
+         * or hero got paralyzed or killed (and then life-saved)
+         * by passive counter-attack */
+        if (!uwep || gm.multi < 0 || u.umortality > umort || !mhit)
             break;
     }
     /* set up for next time */
@@ -1021,16 +1027,25 @@ hitum(struct monst *mon, struct attack *uattk)
      * We'll grant this ability solely to the player for now.
      * We are using thitmonst which is also used for throwing items, but maybe
      * there is a better way.
-     * 
-     * Implications: The spear could be affected by passive acid.
      */
     if (uwep && is_spear(uwep)
         && !u.twoweap && !u.uswallow && !u.ustuck
         && ((wtype = uwep_skill_type()) != P_NONE
         && P_SKILL(wtype) >= P_EXPERT)
         /* If the spear is cursed, it doesn't care about who it hits */
-        && (uwep->cursed || should_skewer())) {
-        return hitum_skewer(mon, uattk);
+        && (uwep->cursed || should_skewer(1))) {
+        return hitum_skewer(mon, uwep, uattk);
+    }
+    /* Like spears, spetums can also skewer enemies - up to 3 in a row!
+     * The main restrictions are that the player must be riding a steed
+     * and be skilled in polearms */
+    if (uwep && uwep->otyp == SPETUM
+        && u.usteed && !u.uswallow && !u.ustuck
+        && ((wtype = uwep_skill_type()) != P_NONE
+            && P_SKILL(wtype) >= P_SKILLED)
+        /* If the spear is cursed, it doesn't care about who it hits */
+        && (uwep->cursed || should_skewer(2))) {
+        return hitum_skewer(mon, uwep, uattk);
     }
     
     /* 0: single hit, 1: first of two hits; affects strength bonus and
