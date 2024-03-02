@@ -2106,7 +2106,7 @@ hmon_hitmon(
         hmon_hitmon_poison(&hmd, mon, obj);
 
     /* The bardiche can behead when pounding. */
-    if (obj->otyp == BARDICHE && thrown == HMON_APPLIED)
+    if (obj && obj->otyp == BARDICHE && thrown == HMON_APPLIED)
         hmon_hitmon_bardiche(&hmd, mon, obj);
     
     if (hmd.dmg < 1) {
