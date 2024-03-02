@@ -138,6 +138,26 @@ thitu(
                (potions deliberately thrown at hero are handled by m_throw) */
             potionhit(&gy.youmonst, obj, POTHIT_OTHER_THROW);
             *objp = obj = 0; /* potionhit() uses up the potion */
+
+
+            /* 1 in 100 chance of beheading */
+        } else if (obj->otyp == BARDICHE && !rn2(100)) {
+            static const char *const behead_msg[2] = { "beheads",
+                                                       "decapitates" };
+            if (!has_head(gy.youmonst.data)) {
+                pline("Somehow, the %s misses you wildly.", xname(obj));
+                return 1;
+            }
+            if (noncorporeal(gy.youmonst.data)
+                || amorphous(gy.youmonst.data)) {
+                pline("The %s slices through your %s.", xname(obj),
+                      body_part(NECK));
+                return 1;
+            }
+            dam = 2 * (Upolyd ? u.mh : u.uhp) + 200;
+            pline("The %s %s you!", xname(obj), ROLL_FROM(behead_msg));
+            obj->dknown = TRUE;
+            losehp(dam, knm, kprefix); /* beheading */
         } else {
             if (obj && objects[obj->otyp].oc_material == SILVER
                 && Hate_silver) {
@@ -1090,8 +1110,8 @@ thrwmu(struct monst* mtmp)
         hitv += 8 + otmp->spe;
         if (dam < 1)
             dam = 1;
-
-        if (thitu(hitv, dam, &otmp, (char *) 0) 
+        
+        if (thitu(hitv, dam, &otmp, (char *) 0)
             && otmp->otyp == RANSEUR && !rn2(10)) {
             ranseur_hit(&gy.youmonst);
         }

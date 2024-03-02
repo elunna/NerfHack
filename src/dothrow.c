@@ -2185,6 +2185,11 @@ thitmonst(
                         && P_SKILL(wtype) >= P_SKILLED)) {
                     ranseur_hit(mon);
                 }
+                if (dieroll < 3 && obj == uwep && obj->otyp == BARDICHE
+                    && ((wtype = uwep_skill_type()) != P_NONE
+                        && P_SKILL(wtype) >= P_SKILLED)) {
+                    /* 1 in 100 chance for decapitation */
+                }
             }
             if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
                 if (mon->wormno)

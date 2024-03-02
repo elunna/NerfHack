@@ -41,6 +41,8 @@ static void hmon_hitmon_do_hit(struct _hitmon_data *, struct monst *,
 static void hmon_hitmon_dmg_recalc(struct _hitmon_data *, struct obj *);
 static void hmon_hitmon_poison(struct _hitmon_data *, struct monst *,
                                struct obj *) NONNULLARG123;
+static void hmon_hitmon_bardiche(struct _hitmon_data *, struct monst *,
+                               struct obj *) NONNULLARG123;
 static void hmon_hitmon_jousting(struct _hitmon_data *, struct monst *,
                                  struct obj *) NONNULLARG123;
 static void hmon_hitmon_stagger(struct _hitmon_data *, struct monst *,
@@ -1774,6 +1776,41 @@ hmon_hitmon_poison(
         hmd->poiskilled = TRUE;
 }
 
+
+static void
+hmon_hitmon_bardiche(
+struct _hitmon_data *hmd,
+struct monst *mon,
+struct obj *obj)    /* obj is not NULL */
+{
+    /* 1 in 100 chance of beheading */
+    if (rn2(100))
+        return;
+
+    /* Same checks as for Vorpal */
+    if (!has_head(mon->data) || gn.notonhead || u.uswallow) {
+        pline("Somehow, you miss %s wildly.", mon_nam(mon));
+        return;
+    }
+    if (noncorporeal(mon->data) || amorphous(mon->data)) {
+        pline("%s through %s %s.", Yobjnam2(obj, "slice"),
+              s_suffix(mon_nam(mon)), mbodypart(mon, NECK));
+        return;
+    }
+    
+    pline("You %s %s %s clean off with the %s!", rn2(2) ? "slice" : "chop",
+          s_suffix(mon_nam(mon)), mbodypart(mon, HEAD), xname(obj));
+
+    /* #define FATAL_DAMAGE_MODIFIER 200 */
+    hmd->dmg = 2 * mon->mhp + 200;
+    
+    if (is_reviver(mon->data) && !is_rider(mon->data)
+        && !mlifesaver(mon)) {
+        mon->mcan = 1;
+    }
+}
+
+
 static void
 hmon_hitmon_jousting(
     struct _hitmon_data *hmd,
@@ -2053,6 +2090,10 @@ hmon_hitmon(
     if (hmd.ispoisoned)
         hmon_hitmon_poison(&hmd, mon, obj);
 
+    /* The bardiche can behead when pounding. */
+    if (obj->otyp == BARDICHE && thrown == HMON_APPLIED)
+        hmon_hitmon_bardiche(&hmd, mon, obj);
+    
     if (hmd.dmg < 1) {
         boolean mon_is_shade = (mon->data == &mons[PM_SHADE]);
 
