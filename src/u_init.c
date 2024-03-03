@@ -128,9 +128,9 @@ static struct trobj Ranger[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Rogue[] = {
-#define R_DAGGERS 1
+#define R_KNIVES 1
     { SHORT_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { DAGGER, 0, WEAPON_CLASS, 10, 0 }, /* quan is variable */
+    { KNIFE, 0, WEAPON_CLASS, 10, 0 }, /* quan is variable */
     { LEATHER_ARMOR, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_SICKNESS, 0, POTION_CLASS, 1, 0 },
     { LOCK_PICK, 0, TOOL_CLASS, 1, 0 },
@@ -685,7 +685,7 @@ u_init_role(void)
         skill_init(Skill_Ran);
         break;
     case PM_ROGUE:
-        Rogue[R_DAGGERS].trquan = rn1(10, 6);
+        Rogue[R_KNIVES].trquan = rn1(10, 6);
         u.umoney0 = 0;
         ini_inv(Rogue);
         if (!rn2(5))
