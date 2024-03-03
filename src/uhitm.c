@@ -1206,7 +1206,9 @@ hmon_hitmon_weapon_melee(
     hmd->dmg = dmgval(obj, mon);
     /* a non-hit doesn't exercise proficiency */
     hmd->train_weapon_skill = (hmd->dmg > 0);
+    
     /* special attack actions */
+    wtype = uwep_skill_type();
     if (!hmd->train_weapon_skill || mon == u.ustuck || u.twoweap
         /* Cleaver can hit up to three targets at once so don't
            let it also hit from behind or shatter foes' weapons */
@@ -1241,7 +1243,7 @@ hmon_hitmon_weapon_melee(
                && (bimanual(obj)
                    || (Role_if(PM_SAMURAI) && obj->otyp == KATANA
                        && !uarms))
-               && ((wtype = uwep_skill_type()) != P_NONE
+               && (wtype != P_NONE
                    && P_SKILL(wtype) >= P_SKILLED)
                && ((monwep = MON_WEP(mon)) != 0
                    && !is_flimsy(monwep)
@@ -1271,9 +1273,24 @@ hmon_hitmon_weapon_melee(
         hmd->hittxt = TRUE;
     } else if (hmd->dieroll < 3 && obj == uwep
                && obj->otyp == RANSEUR
-               && ((wtype = uwep_skill_type()) != P_NONE
+               && (wtype != P_NONE
                    && P_SKILL(wtype) >= P_SKILLED)) {
        ranseur_hit(mon);
+    } else if (hmd->dieroll == 1 && obj == uwep
+               && ((wtype == P_FLAIL || wtype == P_MORNING_STAR)
+                   && P_SKILL(wtype) >= P_SKILLED)
+                   && has_head(mon->data)
+                   && !(noncorporeal(mon->data) || amorphous(mon->data))) {
+        /* Flails and morning stars get a bonus head-bonk stun 
+         * on critical hits. Must be at least skills and fighting
+         * in melee. */
+        You("bash %s on the head with your %s!", mon_nam(mon), xname(uwep));
+        hmd->hittxt = TRUE;
+        if (!Blind)
+            pline("%s %s for a moment.", Monnam(mon),
+                  makeplural(stagger(mon->data, "stagger")));
+        mon->mstun = 1;
+        hmd->dmg += rnd(6); /* Bonus damage */
     }
 
     if (obj->oartifact
