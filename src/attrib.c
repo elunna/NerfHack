@@ -268,10 +268,13 @@ void
 poison_strdmg(int strloss, int dmg, const char *knam, schar k_format)
 {
     strloss = resist_reduce(strloss, POISON_RES);
-    losestr(strloss, knam, k_format);
+    /* strloss may be 0 due to 100% poison resistance */
+    if (strloss > 0)
+        losestr(strloss, knam, k_format);
     
     dmg = resist_reduce(dmg, POISON_RES);
-    losehp(dmg, knam, k_format);
+    if (dmg > 0)
+        losehp(dmg, knam, k_format);
 }
 
 static const struct poison_effect_message {
