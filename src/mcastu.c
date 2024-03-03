@@ -896,6 +896,8 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
                 pline("Boulders fall from above!");
             for (x = u.ux - 1; x <= u.ux + 1; ++x) {
                 for (y = u.uy - 1; y <= u.uy + 1; ++y) {
+                    if (!isok(x, y))
+                        continue;
                     if (!SPACE_POS(levl[x][y].typ))
                         continue;
                     if (x == u.ux && y == u.uy)
