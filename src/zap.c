@@ -2607,6 +2607,7 @@ dozap(void)
                 || (obj->cursed && !rn2(WAND_BACKZAP_CHANCE)))) {
         if (u.dx || u.dy || u.dz)
             pline("%s backfires!", The(xname(obj)));
+        obj->bknown = 1;
         if ((damage = zapyourself(obj, TRUE)) != 0) {
             char buf[BUFSZ];
 
