@@ -1384,6 +1384,7 @@ seffect_confuse_monster(struct obj **sobjp)
                   altfeedback ? "faint buzz" : " glow", body_part(HEAD));
             make_confused(0L, TRUE);
         }
+        gk.known = TRUE;
     } else {
         /* scroll vs spell */
         int incr = (sobj->oclass == SCROLL_CLASS) ? 3 : 0;
@@ -1410,6 +1411,7 @@ seffect_confuse_monster(struct obj **sobjp)
         if (u.umconf >= 40)
             incr = 1;
         u.umconf += (unsigned) incr;
+        gk.known = TRUE;
     }
 }
 
