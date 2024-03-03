@@ -51,7 +51,7 @@ jobs:
         LUASRC: ../submodules/lua
         ADD_CURSES: Y
         PDCURSES_TOP: ../submodules/pdcurses
-        LUA_VERSION: 5.4.2
+        LUA_VERSION: 5.4.6
         TRAVIS_COMPILER: 1
         ZIP_NAME: nerfhack.zip
     steps:
