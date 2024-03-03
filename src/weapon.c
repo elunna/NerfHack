@@ -164,6 +164,9 @@ hitval(struct obj *otmp, struct monst *mon)
     if (is_spear(otmp) && strchr(kebabable, ptr->mlet))
         tmp += 2;
 
+    if (otmp->otyp == SCIMITAR && u.usteed)
+        tmp += 4;
+    
     /* trident is highly effective against swimmers */
     if (otmp->otyp == TRIDENT && is_swimmer(ptr)) {
         if (is_pool(mon->mx, mon->my))
