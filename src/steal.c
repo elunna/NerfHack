@@ -291,6 +291,7 @@ remove_worn_item(
     if (obj->owornmask & (W_BALL | W_CHAIN)) {
         if (unchain_ball)
             unpunish();
+        return;
     } else if (obj->owornmask) {
         /* catchall */
         setnotworn(obj);
