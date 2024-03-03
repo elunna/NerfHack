@@ -196,8 +196,8 @@ ready_weapon(struct obj *wep)
         /* No weapon */
         if (uwep) {
             You("are %s.", empty_handed());
+            res = is_curved(uwep) ? ECMD_OK : ECMD_TIME;
             setuwep((struct obj *) 0);
-            res = ECMD_TIME;
         } else
             You("are already %s.", empty_handed());
     } else if (wep->otyp == CORPSE && cant_wield_corpse(wep)) {
@@ -212,7 +212,7 @@ ready_weapon(struct obj *wep)
         res = ECMD_TIME; /* takes a turn even though it doesn't get wielded */
     } else {
         /* Weapon WILL be wielded after this point */
-        res = ECMD_TIME;
+        res = is_curved(wep) ? ECMD_OK : ECMD_TIME;
         if (will_weld(wep)) {
             const char *tmp = xname(wep), *thestr = "The ";
 

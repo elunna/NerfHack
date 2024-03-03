@@ -207,6 +207,9 @@ struct obj {
     (otmp->oclass == WEAPON_CLASS                \
      && objects[otmp->otyp].oc_skill >= P_DAGGER \
      && objects[otmp->otyp].oc_skill <= P_SABER)
+#define is_curved(otmp) \
+    (otmp->otyp == SCIMITAR || otmp->otyp == SILVER_SABER \
+    || otmp->otyp == KATANA)
 #define is_axe(otmp)                                              \
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
      && objects[otmp->otyp].oc_skill == P_AXE)
