@@ -1236,7 +1236,7 @@ hmon_hitmon_weapon_melee(
                /* Allow 3.4.3 backstab damage for the first thrown weapon. */
                && (hmd->hand_to_hand || gm.m_shot.i == 1)) {
         
-        /* Rogue's can use stilettos quite proficiently */
+        /* Rogues can use stilettos quite proficiently */
         if (obj->otyp == STILETTO && hmd->hand_to_hand) {
             You("stab %s in the back!", mon_nam(mon));
             hmd->dmg += d(5, 2);

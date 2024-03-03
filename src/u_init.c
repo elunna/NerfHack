@@ -129,7 +129,7 @@ static struct trobj Ranger[] = {
 };
 static struct trobj Rogue[] = {
 #define R_KNIVES 1
-    { STILETTO, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { STILETTO, 2, WEAPON_CLASS, 1, UNDEF_BLESS },
     { KNIFE, 0, WEAPON_CLASS, 10, 0 }, /* quan is variable */
     { LEATHER_ARMOR, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_SICKNESS, 0, POTION_CLASS, 1, 0 },
