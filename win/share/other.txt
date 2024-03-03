@@ -2292,7 +2292,7 @@ Z = (195, 195, 195)
   BBBBBBBBBBBBBBBB
 }
 # S_goodpos (dollar sign from generic coin tile)
-# tile 124 (valid position)
+# tile 119 (valid position)
 {
   ................
   ................
