@@ -1601,10 +1601,6 @@ wiz_panic(void)
 static int
 wiz_fuzzer(void)
 {
-    if (flags.suppress_alert < FEATURE_NOTICE_VER(3,7,0)) {
-        pline("The fuzz tester will make NerfHack execute random keypresses.");
-        There("is no conventional way out of this mode.");
-    }
     if (paranoid_query(TRUE, "Do you want to start fuzz testing?"))
         iflags.debug_fuzzer = TRUE; /* Thoth, take the reins */
     return ECMD_OK;
