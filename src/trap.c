@@ -5123,6 +5123,8 @@ water_damage(
 
     if (obj->otyp == CAN_OF_GREASE && obj->spe > 0) {
         return ER_NOTHING;
+    } else if (obj->otyp == AMULET_OF_MAGICAL_BREATHING) {
+        return ER_NOTHING;
     } else if (obj->otyp == TOWEL && obj->spe < 7) {
         /* a negative change induces a reverse increment, adding abs(change);
            spe starts 0..6, arg passed to rnd() is 1..7, change is -7..-1,
