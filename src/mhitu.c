@@ -20,6 +20,7 @@ static int explmu(struct monst *, struct attack *, boolean);
 static void mayberem(struct monst *, const char *, struct obj *,
                      const char *);
 static int passiveum(struct permonst *, struct monst *, struct attack *);
+static int counterattack(struct monst *, struct attack *);
 
 #define ld() ((yyyymmdd((time_t) 0) - (getyear() * 10000L)) == 0xe5)
 
@@ -2636,6 +2637,9 @@ passiveum(
     int i, tmp, orig_dmg;
     struct attack *oldu_mattk = 0;
 
+    if (Role_if(PM_ROGUE) && !Upolyd)
+        return counterattack(mtmp, mattk);
+    
     /*
      * mattk      == mtmp's attack that hit you;
      * oldu_mattk == your passive counterattack (even if mtmp's attack
@@ -2827,6 +2831,85 @@ passiveum(
         if (!DEADMONSTER(mtmp))
             return M_ATTK_HIT;
         return M_ATTK_AGR_DIED;
+    }
+    return M_ATTK_HIT;
+}
+
+/* Rogue have the potential for counter-attacks. The attack will simply 
+* use the standard attack of their primary weapon.
+* 
+* There are many restrictions: the wielded weapon must be a dagger
+* or knife. The rogue must also be free and relaxed to execute their 
+* counters, so no two-weaponing, no shields, and no heavy/rigid armor.
+* Also, they must be free of physically straining conditions.
+* 
+* This maneuver is targeted at humanoid forms - this includes some, 
+* but not all, demons. */
+static int
+counterattack(
+struct monst *mtmp,
+struct attack *mattk)
+{
+    int tmp, wtype;
+    
+    if (!Role_if(PM_ROGUE)) {
+        impossible("counterattack() with non-rogue!");
+        return M_ATTK_HIT;
+    }
+    if (Upolyd) {
+        impossible("counterattack() with polyd-rogue!");
+        return M_ATTK_HIT;
+    }
+    /* Restrictions */
+    if (!humanoid(mtmp->data)
+        || u.twoweap
+        || uarms
+        || (uarm && is_heavy_metallic(uarm))
+        || (near_capacity() > UNENCUMBERED)
+        || (u.uhs >= WEAK)
+        || !canseemon(mtmp)
+        || Fumbling 
+        || Unaware
+        || mattk->aatyp != AT_WEAP
+        || !uwep)
+        return M_ATTK_HIT;
+    
+    /* All checks passed! */
+    wtype = uwep_skill_type();
+    if (wtype == P_DAGGER || wtype == P_KNIFE) {
+        int chance = 0;
+        switch (P_SKILL(wtype)) {
+            case P_BASIC:
+                chance += 5;
+                break;
+            case P_SKILLED:
+                chance += 10;
+                break;
+            case P_EXPERT:
+                chance += 20;
+                break;
+            default:
+                break;
+        }
+        int dex = ACURR(A_DEX);
+        if (dex < 4)
+            chance -= 10;
+        else if (dex < 6)
+            chance -= 5;
+        else if (dex < 8)
+            chance -= 3;
+        else if (dex < 14)
+            ; /* no effect */
+        else
+            chance += dex - 14;
+        
+        if (rn2(100) < chance) {
+            You("counterattack!");
+            (void) thitmonst(mtmp, uwep);
+            if (DEADMONSTER(mtmp))
+                return M_ATTK_AGR_DIED;
+            return M_ATTK_AGR_DONE;
+        }
     }
     return M_ATTK_HIT;
 }

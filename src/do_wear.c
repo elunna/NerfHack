@@ -2602,7 +2602,6 @@ find_ac(void)
     }
     
     uac = uac + dex_adjust_ac;
-   
     
     /* Being encumbered incurs an AC penalty. 
      * The penalty matches the level of encumbrance. */
