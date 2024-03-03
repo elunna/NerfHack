@@ -2850,7 +2850,7 @@ counterattack(
 struct monst *mtmp,
 struct attack *mattk)
 {
-    int tmp, wtype;
+    int wtype;
     
     if (!Role_if(PM_ROGUE)) {
         impossible("counterattack() with non-rogue!");
