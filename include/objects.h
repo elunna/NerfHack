@@ -343,7 +343,7 @@ WEAPON("bec de corbin", "beaked polearm",
        0, 0, 1,  4, 100,   8,  8,  6, 0, B|P, P_POLEARMS, IRON, HI_METAL,
                                                         BEC_DE_CORBIN),
 WEAPON("scythe", "curved polearm",
-       0, 0, 1,  0,  60,   5,  8, 10, -2, S, P_POLEARMS, IRON, HI_METAL,
+       0, 0, 1,  0,  60,   5,  8, 10, 0, S, P_POLEARMS, IRON, HI_METAL,
                                                         SCYTHE),
        /* +1d4 both */
 /* formerly grouped with the polearms but don't use polearms skill;
