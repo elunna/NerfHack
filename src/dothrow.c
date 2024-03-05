@@ -60,8 +60,8 @@ multishot_class_bonus(
             multishot++;
         break;
     case PM_ROGUE:
-        /* possibly should add knives... */
-        if (skill == P_DAGGER)
+        /* added knives! */
+        if (skill == P_DAGGER || skill == P_KNIFE)
             multishot++;
         break;
     case PM_NINJA:
