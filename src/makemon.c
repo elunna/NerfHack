@@ -218,7 +218,7 @@ m_initweap(struct monst *mtmp)
                     do {
                         w1 = rn1(BEC_DE_CORBIN - PARTISAN + 1, PARTISAN);
                     } while (objects[w1].oc_skill != P_POLEARMS);
-                    w2 = rn2(2) ? DAGGER : KNIFE;
+                    w2 = rn2(2) ? DAGGER : rn2(2) ? KNIFE : SHURIKEN;
                 } else
                     w1 = rn2(2) ? SPEAR : SHORT_SWORD;
                 break;
