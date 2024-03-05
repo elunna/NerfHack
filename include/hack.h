@@ -1469,6 +1469,10 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
     (objects[(obj)->otyp].a_ac + (obj)->spe                             \
      - min((int) greatest_erosion(obj), objects[(obj)->otyp].a_ac))
 
+#define UNK_ARM_BONUS(obj)                      \
+    (objects[(obj)->otyp].a_ac - min((int) greatest_erosion(obj), \
+          objects[(obj)->otyp].a_ac))
+
 #define makeknown(x) discover_object((x), TRUE, TRUE)
 #define distu(xx, yy) dist2((coordxy) (xx), (coordxy) (yy), u.ux, u.uy)
 #define mdistu(mon) distu((mon)->mx, (mon)->my)

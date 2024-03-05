@@ -1611,6 +1611,13 @@ doname_base(
                    : "at the ready");
     }
 
+    if (obj->oclass == ARMOR_CLASS) {
+        if (obj->known) {
+            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj));
+        } else {
+            ConcatF1(bp, 0, " [%dAC]", UNK_ARM_BONUS(obj));
+        }
+    }
     /* treat 'restoring' like suppress_price because shopkeeper and
        bill might not be available yet while restore is in progress
        (objects won't normally be formatted during that time, but if
