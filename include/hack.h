@@ -1330,7 +1330,7 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define ROT_AGE (250L)         /* age when corpses rot away */
 
 /* Some misc definitions */
-#define POTION_OCCUPANT_CHANCE(n) (13 + 2 * (n))
+#define POTION_OCCUPANT_CHANCE(n) (26 + 4 * (n))
 #define WAND_BACKFIRE_CHANCE 30
 #define WAND_BACKZAP_CHANCE 8
 #define WAND_WREST_CHANCE 121
