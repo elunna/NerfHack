@@ -2862,8 +2862,6 @@ struct attack *mattk)
     }
     /* Restrictions */
     if (!humanoid(mtmp->data)
-        || u.twoweap
-        || uarms
         || (uarm && is_heavy_metallic(uarm))
         || (near_capacity() > UNENCUMBERED)
         || (u.uhs >= WEAK)
