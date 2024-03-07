@@ -2482,72 +2482,23 @@ find_ac(void)
 {
     int uac = mons[u.umonnum].ac; /* base armor class for current form */
     /* armor class from worn gear */
-    int racial_bonus, dex_adjust_ac;
+    int dex_adjust_ac;
     int mvl_wtcap = near_capacity();
     
     /* Polearms AC bonus */
     if (uwep && is_pole(uwep))
         uac -= 2;
     
-    /* Wearing racial armor is worth +x to the armor's AC; orcs get a slightly
-     * larger bonus to compensate their sub-standard equipment, lack of equipment,
-     * and the stats-challenged orc itself. Taken from SporkHack.
-     */
-    racial_bonus = Race_if(PM_ORC) ? 2
-                   : Race_if(PM_GNOME) ? 2
-                   : Race_if(PM_ELF) ? 1
-                   : Race_if(PM_DWARF) ? 1 : 0;
-
-    if (uarm) {
-        uac -= ARM_BONUS(uarm);
-        if ((Race_if(PM_ORC) && is_orcish_armor(uarm))
-            || (Race_if(PM_ELF) && is_elven_armor(uarm))
-            || (Race_if(PM_GNOME) && is_gnomish_armor(uarm))
-            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarm))) {
-            uac -= racial_bonus;
-        }
-    }
-
-    if (uarmc) {
-        uac -= ARM_BONUS(uarmc);
-        if ((Race_if(PM_ORC) && is_orcish_armor(uarmc))
-            || (Race_if(PM_ELF) && is_elven_armor(uarmc))
-            || (Race_if(PM_GNOME) && is_gnomish_armor(uarmc))
-            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmc))) {
-            uac -= racial_bonus;
-        }
-    }
-
-    if (uarmh) {
-        uac -= ARM_BONUS(uarmh);
-        if ((Race_if(PM_ORC) && is_orcish_armor(uarmh))
-            || (Race_if(PM_ELF) && is_elven_armor(uarmh))
-            || (Race_if(PM_GNOME) && is_gnomish_armor(uarmh))
-            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmh))) {
-            uac -= racial_bonus;
-        }
-    }
-
-    if (uarmf) {
-        uac -= ARM_BONUS(uarmf);
-        if ((Race_if(PM_ORC) && is_orcish_armor(uarmf))
-            || (Race_if(PM_ELF) && is_elven_armor(uarmf))
-            || (Race_if(PM_GNOME) && is_gnomish_armor(uarmf))
-            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarmf))) {
-            uac -= racial_bonus;
-        }
-    }
-
-    if (uarms) {
-        uac -= ARM_BONUS(uarms);
-        if ((Race_if(PM_ORC) && is_orcish_armor(uarms))
-            || (Race_if(PM_ELF) && is_elven_armor(uarms))
-            || (Race_if(PM_GNOME) && is_gnomish_armor(uarms))
-            || (Race_if(PM_DWARF) && is_dwarvish_armor(uarms))) {
-            uac -= racial_bonus;
-        }
-    }
-
+    if (uarm)
+        uac -= (ARM_BONUS(uarm) + race_bonus(uarm));
+    if (uarmc)
+        uac -= (ARM_BONUS(uarmc) + race_bonus(uarmc));
+    if (uarmh)
+        uac -= (ARM_BONUS(uarmh) + race_bonus(uarmh));
+    if (uarmf)
+        uac -= (ARM_BONUS(uarmf) + race_bonus(uarmf));
+    if (uarms)
+        uac -= (ARM_BONUS(uarms) + race_bonus(uarms));
     if (uarmg)
         uac -= ARM_BONUS(uarmg);
     if (uarmu)
@@ -2613,11 +2564,6 @@ find_ac(void)
      * Scale this with weight for some real potency */
     if (Wounded_legs)
         uac += (inv_weight() + weight_cap()) / 100;
-    
-    /* Racial preferences in armor. Some races really hate wearing the armor
-     * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
-     * too. For each piece of hated armor, the player gets a +2AC penalty. */
-    uac += count_hated_items() * 2;
     
     /* put a cap on armor class [3.7: was +127,-128, now reduced to +/- 99 */
     if (abs(uac) > AC_MAX)
@@ -3515,6 +3461,31 @@ static int
 takeoff_ok(struct obj *obj)
 {
     return equip_ok(obj, TRUE, FALSE);
+}
+
+int
+race_bonus(struct obj *obj)
+{
+    /* Wearing racial armor is worth +x to the armor's AC; orcs get a slightly
+    * larger bonus to compensate their sub-standard equipment, lack of equipment,
+    * and the stats-challenged orc itself. Taken from SporkHack.
+    */
+    if (Race_if(PM_ORC) && is_orcish_armor(obj))
+        return 2;
+    if (Race_if(PM_GNOME) && is_gnomish_armor(obj))
+        return 2;
+    if (Race_if(PM_ELF) && is_elven_armor(obj))
+        return 1;
+    if (Race_if(PM_DWARF) && is_dwarvish_armor(obj))
+        return 1;
+
+    /* Racial preferences in armor. Some races really hate wearing the armor
+    * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
+    * too. For each piece of hated armor, the player gets a +2AC penalty. */
+    if (hates_item(&gy.youmonst, obj))
+        return -2;
+
+    return 0;
 }
 
 /*do_wear.c*/

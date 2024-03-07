@@ -1613,9 +1613,9 @@ doname_base(
 
     if (obj->oclass == ARMOR_CLASS) {
         if (obj->known) {
-            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj));
+            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj) + race_bonus(obj));
         } else {
-            ConcatF1(bp, 0, " [%dAC]", UNK_ARM_BONUS(obj));
+            ConcatF1(bp, 0, " [%dAC]", UNK_ARM_BONUS(obj) + race_bonus(obj));
         }
     }
     /* treat 'restoring' like suppress_price because shopkeeper and
