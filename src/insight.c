@@ -1561,34 +1561,40 @@ attributes_enlightenment(
         you_are("countering spells", " because of Serenity");
     
     /* Partial intrinsic resistances */
-    
-    Sprintf(buf, "%d%% fire resistant", how_resistant(FIRE_RES));
-    if (Fire_resistance)
-        you_are(buf, from_what(FIRE_RES));
+
+    Sprintf(buf, "%d%% fire resistant", intrinsic_res(FIRE_RES));
+    you_are(buf, "");
+    if (extrinsic_res(FIRE_RES))
+        you_are("fire resistant", from_what(FIRE_RES));
     item_resistance_message(AD_FIRE, " protected from fire", final);
-    
-    Sprintf(buf, "%d%% cold resistant", how_resistant(COLD_RES));
-    if (Cold_resistance)
-        you_are(buf, from_what(COLD_RES));
+
+    Sprintf(buf, "%d%% cold resistant", intrinsic_res(COLD_RES));
+    you_are(buf, "");
+    if (extrinsic_res(COLD_RES))
+        you_are("cold resistant", from_what(COLD_RES));
     item_resistance_message(AD_COLD, " protected from cold", final);
-    
-    Sprintf(buf, "%d%% sleep resistant", how_resistant(SLEEP_RES));
-    if (Sleep_resistance)
+
+    Sprintf(buf, "%d%% sleep resistant", intrinsic_res(SLEEP_RES));
+    you_are(buf, "");
+    if (extrinsic_res(SLEEP_RES))
         you_are(buf, from_what(SLEEP_RES));
-    
-    Sprintf(buf, "%d%% disintegration resistant", how_resistant(DISINT_RES));
-    if (Disint_resistance)
-        you_are(buf, from_what(DISINT_RES));
+
+    Sprintf(buf, "%d%% disintegration resistant", intrinsic_res(DISINT_RES));
+    you_are(buf, "");
+    if (extrinsic_res(DISINT_RES))
+        you_are("disintegration resistant", from_what(DISINT_RES));
     item_resistance_message(AD_DISN, " protected from disintegration", final);
-    
-    Sprintf(buf, "%d%% shock resistant", how_resistant(SHOCK_RES));
-    if (Shock_resistance)
-        you_are(buf, from_what(SHOCK_RES));
+
+    Sprintf(buf, "%d%% shock resistant", intrinsic_res(SHOCK_RES));
+    you_are(buf, "");
+    if (extrinsic_res(SHOCK_RES))
+        you_are("shock resistant", from_what(SHOCK_RES));
     item_resistance_message(AD_ELEC, " protected from electric shocks", final);
-    
-    Sprintf(buf, "%d%% poison resistant", how_resistant(POISON_RES));
-    if (Poison_resistance)
-        you_are(buf, from_what(POISON_RES));
+
+    Sprintf(buf, "%d%% poison resistant", intrinsic_res(POISON_RES));
+    you_are(buf, "");
+    if (extrinsic_res(POISON_RES))
+        you_are("poison resistant", from_what(POISON_RES));
     
     /* End of partial intrinsic resistances */
     

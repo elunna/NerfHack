@@ -119,47 +119,35 @@ decr_resistance(long* which, int incr)
 int
 how_resistant(int which)
 {
-    int val;
+    if (extrinsic_res(which))
+        return 100;
+    else
+      return intrinsic_res(which);
+}
 
+int
+intrinsic_res(int which)
+{
+    int val;
+    if  (u.uprops[which].intrinsic & (FROMEXPER | FROMRACE | FROMFORM))
+        return 100;
+    val = (u.uprops[which].intrinsic & TIMEOUT);
+    if (val > 100) {
+        val = 100;
+        u.uprops[which].intrinsic &= ~TIMEOUT;
+        u.uprops[which].intrinsic |= (val | HAVEPARTIAL);
+    }
+    return val;
+}
+
+int
+extrinsic_res(int which)
+{
     /* externals and level/race based intrinsics always provide 100%
      * as do monster resistances */
-    if (u.uprops[which].extrinsic
-        || (u.uprops[which].intrinsic & (FROMEXPER | FROMRACE | FROMFORM))) {
-        val = 100;
-    } else {
-        val = (u.uprops[which].intrinsic & TIMEOUT);
-        if (val > 100) {
-            val = 100;
-            u.uprops[which].intrinsic &= ~TIMEOUT;
-            u.uprops[which].intrinsic |= (val | HAVEPARTIAL);
-        }
-    }
-
-#if 0 /* No vulnerability yet/TBD */
-    /* vulnerability will affect things... */
-    switch (which) {
-    case FIRE_RES:
-        if (Vulnerable_fire)
-            val -= 50;
-        break;
-    case COLD_RES:
-        if (Vulnerable_cold)
-            val -= 50;
-        break;
-    case SHOCK_RES:
-        if (Vulnerable_elec)
-            val -= 50;
-        break;
-    case ACID_RES:
-        if (Vulnerable_acid)
-            val -= 50;
-        break;
-    default:
-        break;
-    }
-#endif
-    
-    return val;
+    if (u.uprops[which].extrinsic)
+        return 100;
+    return 0;
 }
 
 /* Wrapper to clean up how_resistant checks */
