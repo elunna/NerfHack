@@ -5857,7 +5857,6 @@ destroyable(struct obj *obj, int adtyp)
         /* not available for destroying */
         return FALSE;
     }
-    
     if (adtyp == AD_FIRE) {
         /* fire-magic items are immune */
         if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL) {
@@ -5868,11 +5867,6 @@ destroyable(struct obj *obj, int adtyp)
             || obj->oclass == SPBOOK_CLASS) {
             return TRUE;
         }
-        if (obj->oclass == FOOD_CLASS 
-            && obj->otyp != TIN 
-            /* Soldier food is protected from explosions */
-            && obj->otyp != C_RATION && obj->otyp != K_RATION)
-            return TRUE;
     } else if (adtyp == AD_COLD) {
         /* non-water potions don't freeze and shatter */
         if (obj->oclass == POTION_CLASS && obj->otyp != POT_ACID
@@ -6106,7 +6100,6 @@ maybe_destroy_item(
                 dmg = (obj->owt + 19) / 20;
                 break;
             }
-            (void) erode_obj(obj, NULL, ERODE_BURN, EF_GREASE | EF_DESTROY);
             dindx = 7;
             skip++;
             break;
