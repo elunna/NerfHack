@@ -1210,7 +1210,7 @@ hmon_hitmon_weapon_melee(
     
     /* special attack actions */
     wtype = uwep_skill_type();
-    if (!hmd->train_weapon_skill || mon == u.ustuck || u.twoweap
+    if (!hmd->train_weapon_skill || mon == u.ustuck
         /* Cleaver can hit up to three targets at once so don't
            let it also hit from behind or shatter foes' weapons */
         || (hmd->hand_to_hand && is_art(obj, ART_CLEAVER))) {
@@ -1244,7 +1244,10 @@ hmon_hitmon_weapon_melee(
         } else {
             You("strike %s from behind!", mon_nam(mon));
         }
-        hmd->dmg += rnd(u.ulevel);
+        if (u.twoweap)
+            hmd->dmg += rnd(u.ulevel / 2) + 1;
+        else
+            hmd->dmg += rnd(u.ulevel);
         hmd->hittxt = TRUE;
     } else if (hmd->dieroll == 2 && obj == uwep
                && obj->oclass == WEAPON_CLASS
