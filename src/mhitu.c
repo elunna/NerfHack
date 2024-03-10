@@ -2877,6 +2877,10 @@ struct attack *mattk)
         || !uwep)
         return M_ATTK_HIT;
     
+    /* No bulky shields */
+    if (uarms && objects[uarms->otyp].oc_bulky)
+        return M_ATTK_HIT;
+    
     /* All checks passed! */
     wtype = uwep_skill_type();
     if (wtype == P_DAGGER || wtype == P_KNIFE) {

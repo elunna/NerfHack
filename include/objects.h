@@ -669,10 +669,10 @@ SHIELD("dwarvish roundshield", "large round shield",
        0, 0, 1,          0, 4, 0, 100, 10, 8, 0,  IRON, HI_METAL,
                                                         DWARVISH_ROUNDSHIELD),
 SHIELD("anti-magic shield", "hide shield",
-       0, 1, 1,  ANTIMAGIC, 2, 0,  25, 75, 8, 0,  LEATHER, CLR_ORANGE,
+       0, 1, 0,  ANTIMAGIC, 2, 0,  25, 75, 8, 0,  LEATHER, CLR_ORANGE,
                                                         ANTI_MAGIC_SHIELD),
 SHIELD("shield of reflection", "polished silver shield",
-       0, 1, 0, REFLECTING, 3, 0,  50, 50, 8, 0,  SILVER, HI_SILVER,
+       0, 1, 1, REFLECTING, 3, 0,  50, 50, 8, 0,  SILVER, HI_SILVER,
                                                         SHIELD_OF_REFLECTION),
 
 /* gloves */
