@@ -900,9 +900,15 @@ dotwoweapon(void)
     /* May we use two weapons? */
     if (can_twoweapon()) {
         /* Success! */
-        You("begin two-weapon combat.");
+        if (Role_if(PM_SAMURAI) && uwep->otyp == KATANA
+            && weapon_type(uswapwep) == P_SHORT_SWORD) {
+            You("begin the Two Heavens technique.");
+        } else {
+            You("begin two-weapon combat.");
+        }
         set_twoweap(TRUE); /* u.twoweap = TRUE */
         update_inventory();
+
         return (rnd(20) > ACURR(A_DEX)) ? ECMD_TIME : ECMD_OK;
     }
     return ECMD_OK;

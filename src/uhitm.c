@@ -406,6 +406,10 @@ find_roll_to_hit(
         else if (!uwep && !uarms)
             tmp += (u.ulevel / 3) + 2;
     }
+    if (Role_if(PM_SAMURAI) && uwep->otyp == KATANA
+        && weapon_type(uswapwep) == P_SHORT_SWORD) {
+        tmp++;
+    }
     if (is_orc(mtmp->data)
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;
@@ -1302,6 +1306,12 @@ hmon_hitmon_weapon_melee(
                   makeplural(stagger(mon->data, "stagger")));
         mon->mstun = 1;
         hmd->dmg += rnd(6); /* Bonus damage */
+    } else if (obj == uwep && u.twoweap
+        && Role_if(PM_SAMURAI) 
+        && uwep->otyp == KATANA 
+        && weapon_type(uswapwep) == P_SHORT_SWORD) {
+        /* Two-heavens technique */
+        hmd->dmg += rnd(P_SKILL(P_TWO_WEAPON_COMBAT));
     }
 
     if (obj->oartifact
