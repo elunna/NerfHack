@@ -1052,8 +1052,16 @@ fill_ordinary_room(
         (void) mksobj_at(rn2(3) ? LARGE_BOX : CHEST,
                          pos.x, pos.y, TRUE, FALSE);
 
-    /* maybe make some graffiti */
-    if (!rn2(27 + 3 * abs(depth(&u.uz)))) {
+    /* Maybe make some graffiti.
+     * Chance decreases the lower you get in the dungeon.
+     *
+     * On dungeon level 1, put a special graffiti in the starting room.
+     * Either a hint or a true rumor. */
+    if (depth(&u.uz) < 5 && has_upstairs(croom) && !rn2(depth(&u.uz))) {
+        if (find_okay_roompos(croom, &pos)) {
+            make_engr_at(pos.x, pos.y, get_hint(), 0L, MARK);
+        }
+    } else if (!rn2(27 + 3 * abs(depth(&u.uz)))) {
         char buf[BUFSZ];
         const char *mesg = random_engraving(buf);
 
