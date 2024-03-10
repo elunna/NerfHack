@@ -613,6 +613,7 @@ u_init_role(void)
             ini_inv(Lamp);
         knows_object(SACK);
         knows_object(TOUCHSTONE);
+        knows_object(DWARVISH_MATTOCK);
         skill_init(Skill_A);
         break;
     case PM_BARBARIAN:
