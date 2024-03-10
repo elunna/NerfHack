@@ -119,6 +119,11 @@ setuwep(struct obj *obj)
         && (u_wield_art(ART_GIANTSLAYER)
             || is_art(olduwep, ART_GIANTSLAYER)))
         disp.botl = TRUE;
+
+    if (uwep == obj && (u_wield_art(ART_ORIGIN)))
+        pline("Your mind is flooded with magical knowledge.");
+    else if (is_art(olduwep, ART_ORIGIN))
+        You_feel("less in touch with your magical abilities.");
     
     /* Werebane grants protection from shape-changers.
      * Handled with this method because we ran out of SPFX fields. */
