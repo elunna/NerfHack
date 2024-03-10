@@ -719,6 +719,14 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         else
             ESearching &= ~wp_mask;
     }
+    
+    if (otmp->oartifact == ART_ORB_OF_DETECTION) {
+        if (on) {
+            HClairvoyant |= wp_mask;
+        } else {
+            HClairvoyant &= ~wp_mask;
+        }
+    }
 
     if (spfx & SPFX_HALRES) {
         /* make_hallucinated must (re)set the mask itself to get
