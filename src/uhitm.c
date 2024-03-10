@@ -410,6 +410,9 @@ find_roll_to_hit(
         && weapon_type(uswapwep) == P_SHORT_SWORD) {
         tmp++;
     }
+    if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
+        tmp -= 1;
+
     if (is_orc(mtmp->data)
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;

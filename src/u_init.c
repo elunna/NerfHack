@@ -616,6 +616,7 @@ u_init_role(void)
         knows_object(TOUCHSTONE);
         knows_object(DWARVISH_MATTOCK);
         skill_init(Skill_A);
+        
         break;
     case PM_BARBARIAN:
         if (rn2(100) >= 50) { /* see above comment */

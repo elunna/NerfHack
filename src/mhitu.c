@@ -836,6 +836,9 @@ mattacku(struct monst *mtmp)
     
     if (is_accurate(mdat)) /* M3_ACCURATE monsters get a to-hit bonus */
         tmp += 5;
+        
+    if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
+        tmp += 2;
     
     if (tmp <= 0)
         tmp = 1;
@@ -1370,7 +1373,31 @@ hitmu(struct monst *mtmp, struct attack *mattk)
             || (Role_if(PM_CLERIC) && uarmh && is_quest_artifact(uarmh)
                 && mon_hates_blessings(mtmp)))
             mhm.damage -= ((mhm.damage + 1) / 4);
-
+        
+        /* Archeologists are deathly afraid of snakes -
+         * They have a paralyzing fear of them.
+         * 
+         * This handled a bit differently from the AD_PLYS attacks - 
+         * it's a bit weaker. If it was as strong as most paralyze 
+         * attacks, arcs probably wouldn't stand a chance...
+         * */
+        if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE) {
+            if (gm.multi >= 0 && !rn2(5)) {
+                /* Free action is only half as effective - this is psychological */
+                if (Free_action && rn2(2)) {
+                    You("momentarily stiffen.");
+                } else {
+                    if (Blind)
+                        You("are frozen in fear!");
+                    else
+                        You("are terrified, and unable to move.");
+                    gn.nomovemsg = You_can_move_again;
+                    nomul(-rnd(4));
+                    dynamic_multi_reason(mtmp, "terrified of a snake", FALSE);
+                }
+            }
+        }
+        
         if (mhm.permdmg) { /* Death's life force drain */
             int lowerlimit, *hpmax_p;
             /*
@@ -1405,7 +1432,7 @@ hitmu(struct monst *mtmp, struct attack *mattk)
             /* else unlikely...
              * already at or below minimum threshold; do nothing */
             disp.botl = TRUE;
-        }        
+        }
         mdamageu(mtmp, mhm.damage);
     }
 
