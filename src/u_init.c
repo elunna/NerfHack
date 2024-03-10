@@ -250,6 +250,7 @@ static struct inv_sub {
 static const struct def_skill Skill_A[] = {
     { P_DAGGER, P_BASIC },
     { P_KNIFE, P_BASIC },
+    { P_AXE, P_BASIC },
     { P_PICK_AXE, P_EXPERT },
     { P_SHORT_SWORD, P_BASIC },
     { P_SABER, P_EXPERT },
