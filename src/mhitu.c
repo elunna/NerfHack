@@ -681,6 +681,7 @@ mattacku(struct monst *mtmp)
             /* take monster off map now so that its location
                is eligible for placing hero; we assume that a
                removed monster remembers its old spot <mx,my> */
+            mtmp->mundetected = 0;
             remove_monster(mtmp->mx, mtmp->my);
             if (!enexto(&cc, u.ux, u.uy, gy.youmonst.data)
                 /* a fish won't voluntarily swap positions
