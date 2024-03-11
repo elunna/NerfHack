@@ -1042,19 +1042,6 @@ mattacku(struct monst *mtmp)
                     }
                     if (tmp > (j = gm.mhitu_dieroll = rnd(20 + i))) {
                         sum[i] = hitmu(mtmp, mattk);
-
-                        /* Special weapon effects */
-                        boolean blunty = mon_currwep 
-                                && (objects[mon_currwep->otyp].oc_skill == P_MORNING_STAR
-                                || objects[mon_currwep->otyp].oc_skill == P_FLAIL);
-                        
-                        if (blunty && has_head(gy.youmonst.data)
-                            && !(noncorporeal(gy.youmonst.data) || amorphous(gy.youmonst.data))
-                            && !rn2(20)) {
-                            pline("%s clocks you on the %s!", Monnam(mtmp), body_part(HEAD));
-                            make_stunned((HStun & TIMEOUT) + (long) sum[i], TRUE);
-                            sum[i] += rnd(6);
-                        }
                     } else
                         missmu(mtmp, (tmp == j), mattk);
                     /* KMH -- Don't accumulate to-hit bonuses */
@@ -1346,6 +1333,20 @@ hitmu(struct monst *mtmp, struct attack *mattk)
     /* Handle berserkers */
     if (mtmp->mberserk)
         mhm.damage += d((int) mattk->damn, (int) mattk->damd);
+
+    /* Morning star and flail critical hits */
+    mon_currwep = MON_WEP(mtmp);
+    boolean blunty = mon_currwep
+                     && (objects[mon_currwep->otyp].oc_skill == P_MORNING_STAR
+                         || objects[mon_currwep->otyp].oc_skill == P_FLAIL);
+
+    if (blunty && has_head(gy.youmonst.data)
+        && !(noncorporeal(gy.youmonst.data) || amorphous(gy.youmonst.data))
+        && !rn2(20)) {
+        pline("%s clocks you on the %s!", Monnam(mtmp), body_part(HEAD));
+        make_stunned((HStun & TIMEOUT) + (long) mhm.damage, TRUE);
+        mhm.damage += rnd(6);
+    }
     
     (void) mhitm_knockback(mtmp, &gy.youmonst, mattk, &mhm.hitflags,
                            (MON_WEP(mtmp) != 0));
