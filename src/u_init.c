@@ -149,12 +149,16 @@ static struct trobj Samurai[] = {
 static struct trobj Tourist[] = {
 #define T_DARTS 0
     { DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS }, /* quan is variable */
-    { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
+    { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 12, 0 },
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS },
     { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0 },
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0 },
+    { LEASH, 0, TOOL_CLASS, 1, 0 },
+    { MAGIC_MARKER, 0, TOOL_CLASS, 1, 0 },
+    { TIN_OPENER, 0, TOOL_CLASS, 1, 0 },
+    { TOWEL, 0, TOOL_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Valkyrie[] = {
@@ -198,10 +202,6 @@ static struct trobj Xtra_Tool[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0 },
                                      { 0, 0, 0, 0, 0 } };
 static struct trobj Xtra_food[] = { { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 2, 0 },
                                     { 0, 0, 0, 0, 0 } };
-static struct trobj Leash[] = { { LEASH, 0, TOOL_CLASS, 1, 0 },
-                                { 0, 0, 0, 0, 0 } };
-static struct trobj Towel[] = { { TOWEL, 0, TOOL_CLASS, 1, 0 },
-                                { 0, 0, 0, 0, 0 } };
 static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0 },
                                   { 0, 0, 0, 0, 0 } };
 static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0 },
@@ -715,14 +715,8 @@ u_init_role(void)
         break;
     case PM_TOURIST:
         Tourist[T_DARTS].trquan = rn1(11, 40);
-        u.umoney0 = rnd(1000);
+        u.umoney0 = rn1(500, 1000);
         ini_inv(Tourist);
-        if (!rn2(25))
-            ini_inv(Tinopener);
-        else if (!rn2(25))
-            ini_inv(Leash);
-        else if (!rn2(25))
-            ini_inv(Towel);
         skill_init(Skill_T);
         break;
     case PM_VALKYRIE:
