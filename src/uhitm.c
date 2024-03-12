@@ -1704,7 +1704,13 @@ hmon_hitmon_do_hit(
         else
             Strcpy(hmd->saved_oname, bare_artifactname(obj));
 
-        if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
+        /* Rocks/flint/etc don't harm thick skinned monsters */
+        if (obj->oclass == GEM_CLASS && thick_skinned(mon->data)) {
+            if (canseemon(mon) && !rn2(3))
+                pline("The %s bounces harmlessly off %s thick skin.",
+                      xname(obj), s_suffix(mon_nam(mon)));
+            hmd->dmg = 0;
+        } else if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
             || obj->oclass == GEM_CLASS) {
             hmon_hitmon_weapon(hmd, mon, obj);
             if (hmd->doreturn)
@@ -2120,13 +2126,6 @@ hmon_hitmon(
             /* this gives "harmlessly passes through" feedback even when
                hero doesn't see it happen; presumably sensed by touch? */
             hmd.hittxt = shade_miss(&gy.youmonst, mon, obj, FALSE, TRUE);
-        /* Rocks/flint/etc don't harm thick skinned monsters */
-        else if (thick_skinned(mon->data) && obj->oclass == GEM_CLASS) {
-            if (canseemon(mon) && !rn2(3))
-                pline("The %s bounces harmlessly off %s thick skin.", 
-                      xname(obj), s_suffix(mon_nam(mon)));
-            hmd.dmg = 0;
-        }
     }
 
     if (hmd.jousting) {
