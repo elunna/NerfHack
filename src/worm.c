@@ -353,9 +353,12 @@ wormhitu(struct monst *worm)
      *  sharing its location should be skipped.
      */
     for (seg = wtails[wnum]; seg != wheads[wnum]; seg = seg->nseg)
-        if (distu(seg->wx, seg->wy) < 3)
+        if (distu(seg->wx, seg->wy) < 3) {
             if (mattacku(worm))
                 return 1; /* your passive ability killed the worm */
+            if (!worm->wormno)
+                return 0; /* may have been slimed */
+        }
     return 0;
 }
 
