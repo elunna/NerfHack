@@ -4162,6 +4162,7 @@ peacefuls_respond(struct monst *mtmp)
                            * perhaps reduce tameness? */
                     } else {
                         mon->mpeaceful = 0;
+                        newsym(mon->mx, mon->my);
                         adjalign(-1);
                         if (!exclaimed)
                             pline("%s gets angry!", Monnam(mon));
@@ -4253,6 +4254,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
     /* make other peaceful monsters react */
     if (!gc.context.mon_moving)
         peacefuls_respond(mtmp);
+    newsym(mtmp->mx, mtmp->my);
 }
 
 /* Indicate via message that a monster has awoken. */
