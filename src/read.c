@@ -2061,6 +2061,10 @@ seffect_identify(struct obj **sobjp)
             if (cval == 1 && sblessed && Luck > 0)
                 ++cval;
         }
+        /* Archeologists are great at research. */
+        if (Role_if(PM_ARCHEOLOGIST) && !scursed && cval > 0)
+            ++cval;
+        
         identify_pack(cval, !already_known);
     } else {
         /* spell cast with inventory empty or scroll read when it's
