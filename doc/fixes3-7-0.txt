@@ -1,4 +1,4 @@
-NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1380 $ $NHDT-Date: 1708290308 2024/02/18 21:05:08 $
+NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1396 $ $NHDT-Date: 1709928001 2024/03/08 20:00:01 $
 
 General Fixes and Modified Features
 -----------------------------------
@@ -1370,6 +1370,9 @@ monsters weren't randomly generating if exactly one square was outside LOS,
 when a spellbook was polymorphed into a novel and then incrementing spestudied
 	field turned it into a blank spellbook, the novel's title would stick:
 	"{spellbook of blank paper|plain spellbook} named <Discworld title>"
+walking on ice can make you slide in a random direction
+if an adjacent statue was a in a pit, you could break it with a pick-axe even
+	though you're conceptually at the wrong elevation to reach it
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -1879,6 +1882,11 @@ Warning didn't show nearby monsters who were inside poison gas/steam/smoke
 map didn't show adjacent monsters if they were inside a gas region unless
 	they were seen via telepathy or extended monster detection, but they
 	were described as if visible in messages (combat, for instance)
+OPTIONS=symset:blank and symset:plain didn't load the specified symbols if
+	used from the RC file or NETHACKOPTIONS
+for OPTIONS=symset:blank, S_engroom (engraving on a room floor spot) and
+	S_engrcorr (engraving on a corridor spot) retained their default
+	symbols ('`' and '#', respectively) instead of switching to space
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -2140,6 +2148,7 @@ Qt: {maybe just Qt+macOS:} when viewing a text window ('V' to look at 'history'
 	window got pushed underneath the main window so seemed to go away
 Qt: use idPressed signal instead of buttonPressed and mappedString instead
 	of mapped for recent Qt (pr #913 by chasonr)
+Qt: make all NetHack menu and text windows modal
 Qt: support Unicode supplementary characters (pr #1047 by chasonr)
 Qt: qt_tilewidth and qt_tileheight are allocated with alloc() and need to be
 	freed with free(); don't use qt_tilewidth and qt_tileheight after
@@ -2698,6 +2707,7 @@ remove a null sobj check from gold_detect that was situated after
 	adjust prototype in extern.h
 check for valid indexes of def_monsyms[] and def_oc_syms[] in
 	choose_classes_menu() (pr #1179 by argrath)
+split damage from acid potion into separate function (pr #1195 by argrath)
 
 
 Code Cleanup and Reorganization

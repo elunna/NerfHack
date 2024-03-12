@@ -17,9 +17,9 @@ COMPRESSBIN="/bin/gzip"
 # fixed data to copy (leave blank to skip)
 NH_GIT="/home/build/NetHack37"
 # HACKDIR from include/config.h; aka nethack subdir inside chroot
-NHSUBDIR="nh370.97-hdf"
+NHSUBDIR="nh370.101-hdf"
 # VAR_PLAYGROUND from include/unixconf.h
-NH_VAR_PLAYGROUND="/nh370.97-hdf/var/"
+NH_VAR_PLAYGROUND="/nh370.101-hdf/var/"
 # END OF CONFIG
 ##############################################################################
 
@@ -44,8 +44,8 @@ set -e
 umask 022
 
 echo "Creating inprogress and extrainfo directories"
-mkdir -p "$NAO_CHROOT/dgldir/inprogress-nh370.97-hdf"
-chown "$USRGRP" "$NAO_CHROOT/dgldir/inprogress-nh370.97-hdf"
+mkdir -p "$NAO_CHROOT/dgldir/inprogress-nh370.101-hdf"
+chown "$USRGRP" "$NAO_CHROOT/dgldir/inprogress-nh370.101-hdf"
 mkdir -p "$NAO_CHROOT/dgldir/extrainfo-nh370"
 chown "$USRGRP" "$NAO_CHROOT/dgldir/extrainfo-nh370"
 
@@ -54,7 +54,7 @@ mkdir -p "$NAO_CHROOT/$NHSUBDIR"
 
 NETHACKBIN="$NETHACK_GIT/src/nethack"
 if [ -n "$NETHACKBIN" -a ! -e "$NETHACKBIN" ]; then
-  errorexit "Cannot find NetHack binary $NETHACKBIN"
+  errorexit "Cannot find NerfHack binary $NETHACKBIN"
 fi
 
 if [ -n "$NETHACKBIN" -a -e "$NETHACKBIN" ]; then
@@ -67,7 +67,7 @@ if [ -n "$NETHACKBIN" -a -e "$NETHACKBIN" ]; then
   cd "$NAO_CHROOT"
 fi
 
-echo "Copying NetHack playground stuff"
+echo "Copying NerfHack playground stuff"
 cp "$NETHACK_GIT/dat/nhdat" "$NAO_CHROOT/$NHSUBDIR"
 chmod 644 "$NAO_CHROOT/$NHSUBDIR/nhdat"
 cp "$NETHACK_GIT/dat/symbols" "$NAO_CHROOT/$NHSUBDIR"
@@ -82,7 +82,7 @@ SYSCF="$NAO_CHROOT/$NHSUBDIR/sysconf"
 cp "$NETHACK_GIT/sys/unix/sysconf" "$SYSCF"
 chmod 644 $SYSCF
 
-echo "Creating NetHack variable dir stuff."
+echo "Creating NerfHack variable dir stuff."
 mkdir -p "$NAO_CHROOT/$NHSUBDIR/var"
 chown -R "$USRGRP" "$NAO_CHROOT/$NHSUBDIR/var"
 mkdir -p "$NAO_CHROOT/$NHSUBDIR/var/save"

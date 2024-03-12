@@ -886,8 +886,8 @@ tty_create_nhwindow(int type)
         /* sanity check */
         if (iflags.msg_history < 20)
             iflags.msg_history = 20;
-        else if (iflags.msg_history > 60)
-            iflags.msg_history = 60;
+        else if (iflags.msg_history > MAX_MSG_HISTORY)
+            iflags.msg_history = MAX_MSG_HISTORY;
         newwin->maxrow = newwin->rows = iflags.msg_history;
         newwin->maxcol = newwin->cols = 0;
         break;
@@ -3845,9 +3845,13 @@ tty_print_glyph(
             && !calling_from_update_inventory
 #endif
             && glyphinfo->gm.u && glyphinfo->gm.u->ucolor) {
-            term_start_24bitcolor(glyphinfo->gm.u);
-            color24bit_on = TRUE;
-            colordone = TRUE;
+            if ((glyphinfo->gm.u->ucolor & NH_BASIC_COLOR) == 0) {
+                term_start_24bitcolor(glyphinfo->gm.u);
+                color24bit_on = TRUE;
+                colordone = TRUE;
+            } else {
+                color = glyphinfo->gm.u->ucolor & ~NH_BASIC_COLOR;
+            }
         }
 #endif
         if (!colordone) {

@@ -10,7 +10,7 @@ math.random = function(...)
       return nh.random(arg[1], arg[2] + 1 - arg[1]);
    else
       -- we don't support reals
-      error("NetHack math.random requires at least one parameter");
+      error("NerfHack math.random requires at least one parameter");
    end
 end
 

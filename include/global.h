@@ -441,9 +441,11 @@ extern struct nomakedefs_s nomakedefs;
 #define MAXMONNO 120 /* extinct monst after this number created */
 #define MHPMAX 500   /* maximum monster hp */
 
-typedef struct color_and_attr {
-           int color, attr;
-} color_attr;
+#ifndef MAX_MSG_HISTORY
+#define MAX_MSG_HISTORY 128 /* max # of lines in msg_history */
+#endif
+
+#include "color.h"
 
 /*
  * Version 3.7.x has aspirations of portable file formats. We
@@ -458,11 +460,11 @@ typedef struct color_and_attr {
 #ifdef UNIX
 #if (NH_DEVEL_STATUS != NH_STATUS_RELEASED)
 /* see end.c */
-#if !defined(CROSS_TO_WASM)
+#if !defined(CROSS_TO_WASM) && !defined(CROSS_TO_MSDOS)
 #ifndef PANICTRACE
 #define PANICTRACE
 #endif  /* PANICTRACE */
-#endif  /* CROSS_TO_WASM */
+#endif  /* CROSS_TO_WASM |  CROSS_TO_MSDOS */
 #endif  /* NH_DEVEL_STATUS != NH_STATUS_RELEASED */
 #endif  /* UNIX */
 
