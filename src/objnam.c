@@ -5,8 +5,8 @@
 
 #include "hack.h"
 
-/* "an uncursed greased partly eaten guardian naga hatchling [corpse]" */
-#define PREFIX 80 /* (56) */
+/* "an uncursed greased thoroughly rusty thoroughly corroded rustproof +0 [chain mail]" (82 characters) */
+#define PREFIX 90
 #define SCHAR_LIM 127
 #define NUMOBUF 12
 
