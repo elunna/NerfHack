@@ -529,7 +529,7 @@ static NEARDATA const int rwep[] = {
 };
 
 static NEARDATA const int pwep[] = { SCYTHE,
-                                     HALBERD,       BARDICHE, SPETUM,
+                                     BARDICHE,      HALBERD,  SPETUM,
                                      BILL_GUISARME, VOULGE,   RANSEUR,
                                      GUISARME,      GLAIVE,   LUCERN_HAMMER,
                                      BEC_DE_CORBIN, FAUCHARD, PARTISAN,
