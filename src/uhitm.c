@@ -1367,6 +1367,17 @@ hmon_hitmon_weapon_melee(
             else if (Race_if(PM_ELF) && obj->otyp == ELVEN_ARROW
                      && uwep->otyp == ELVEN_BOW)
                 hmd->dmg++;
+            
+            /* dnethack style crossbow bonuses */
+            if (uwep->otyp == CROSSBOW) {
+                if (P_SKILL(P_CROSSBOW) == P_SKILLED)
+                    hmd->dmg *= 2;
+                else if (P_SKILL(P_CROSSBOW) == P_EXPERT)
+                    hmd->dmg *= 3;
+                if (Race_if(PM_GNOME))
+                    hmd->dmg += rnd(3);
+            }
+            
             hmd->train_weapon_skill = (hmd->dmg > 0);
         }
     }

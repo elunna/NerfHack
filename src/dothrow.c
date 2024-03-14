@@ -199,10 +199,13 @@ throw_obj(struct obj *obj, int shotlimit)
                     multishot++;
                 break;
             case PM_GNOME:
+#if 0 /* Bonus damage is applied instead */
+            
                 /* arbitrary; there isn't any gnome-specific gear */
                 if (skill == -P_CROSSBOW)
                     multishot++;
                 break;
+#endif
             case PM_HUMAN:
             case PM_DWARF:
             default:
@@ -218,6 +221,7 @@ throw_obj(struct obj *obj, int shotlimit)
                 ++multishot;
         }
 
+#if 0 /* Bonus damage is applied instead */
         /* crossbows are slow to load and probably shouldn't allow multiple
            shots at all, but that would result in players never using them;
            instead, high strength is necessary to load and shoot quickly */
@@ -225,12 +229,15 @@ throw_obj(struct obj *obj, int shotlimit)
             && ammo_and_launcher(obj, uwep)
             && (int) ACURRSTR < (Race_if(PM_GNOME) ? 16 : 18))
             multishot = rnd(multishot);
-
+#endif
+        
         multishot = rnd(multishot);
         if ((long) multishot > obj->quan)
             multishot = (int) obj->quan;
         if (shotlimit > 0 && multishot > shotlimit)
             multishot = shotlimit;
+        if (skill == -P_CROSSBOW)
+            multishot = 1;
     }
 
     gm.m_shot.s = ammo_and_launcher(obj, uwep) ? TRUE : FALSE;
