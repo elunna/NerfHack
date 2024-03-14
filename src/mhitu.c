@@ -2868,9 +2868,8 @@ passiveum(
 * use the standard attack of their primary weapon.
 * 
 * There are many restrictions: the wielded weapon must be a dagger
-* or knife. The rogue must also be free and relaxed to execute their 
-* counters, so no two-weaponing, no shields, and no heavy/rigid armor.
-* Also, they must be free of physically straining conditions.
+* or knife. The rogue must also be free to execute their counters.
+* They must also be free of physically straining conditions.
 * 
 * This maneuver is targeted at humanoid forms - this includes some, 
 * but not all, demons. */
@@ -2891,27 +2890,23 @@ struct attack *mattk)
     }
     /* Allow counterattacks on weapon, claw, and kick attacks. */
     if (mattk->aatyp != AT_WEAP 
-            && mattk->aatyp != AT_CLAW 
-            && mattk->aatyp != AT_KICK)
+            && mattk->aatyp != AT_CLAW && mattk->aatyp != AT_KICK)
         return M_ATTK_HIT;
     
     /* Restrictions */
     if (!humanoid(mtmp->data)
         || (uarm && is_heavy_metallic(uarm))
+        || (uarms && objects[uarms->otyp].oc_bulky)
         || (near_capacity() > UNENCUMBERED)
         || (u.uhs >= WEAK)
-        || !canseemon(mtmp)
+        || !m_next2u(mtmp)
         || Fumbling 
         || Unaware
         || !uwep)
         return M_ATTK_HIT;
-    
-    /* No bulky shields */
-    if (uarms && objects[uarms->otyp].oc_bulky)
-        return M_ATTK_HIT;
-    
+
     /* All checks passed! */
-    wtype = uwep_skill_type();
+    wtype = weapon_type(uwep);
     if (wtype == P_DAGGER || wtype == P_KNIFE) {
         int chance = 0;
         switch (P_SKILL(wtype)) {
@@ -2927,17 +2922,6 @@ struct attack *mattk)
             default:
                 break;
         }
-        int dex = ACURR(A_DEX);
-        if (dex < 4)
-            chance -= 10;
-        else if (dex < 6)
-            chance -= 5;
-        else if (dex < 8)
-            chance -= 3;
-        else if (dex < 14)
-            ; /* no effect */
-        else
-            chance += dex - 14;
         
         if (rn2(100) < chance) {
             You("counterattack!");
