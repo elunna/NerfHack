@@ -406,7 +406,7 @@ find_roll_to_hit(
         else if (!uwep && !uarms)
             tmp += (u.ulevel / 3) + 2;
     }
-    if (Role_if(PM_SAMURAI) && uwep->otyp == KATANA
+    if (Role_if(PM_SAMURAI) && u.twoweap && uwep->otyp == KATANA
         && weapon_type(uswapwep) == P_SHORT_SWORD) {
         tmp++;
     }
