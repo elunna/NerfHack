@@ -2258,14 +2258,14 @@ find_misc(struct monst *mtmp)
          */
         nomore(MUSE_WAN_MAKE_INVISIBLE);
         if (obj->otyp == WAN_MAKE_INVISIBLE && obj->spe > 0 && !mtmp->minvis
-            && !mtmp->invis_blkd && (!mtmp->mpeaceful || See_invisible)
+            && !mtmp->invis_blkd && !mtmp->mpeaceful
             && (!attacktype(mtmp->data, AT_GAZE) || mtmp->mcan)) {
             gm.m.misc = obj;
             gm.m.has_misc = MUSE_WAN_MAKE_INVISIBLE;
         }
         nomore(MUSE_POT_INVISIBILITY);
         if (obj->otyp == POT_INVISIBILITY && !mtmp->minvis
-            && !mtmp->invis_blkd && (!mtmp->mpeaceful || See_invisible)
+            && !mtmp->invis_blkd && !mtmp->mpeaceful
             && (!attacktype(mtmp->data, AT_GAZE) || mtmp->mcan)) {
             gm.m.misc = obj;
             gm.m.has_misc = MUSE_POT_INVISIBILITY;
