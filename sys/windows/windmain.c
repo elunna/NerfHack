@@ -183,7 +183,7 @@ build_known_folder_path(
     if(!get_known_folder_path(folder_id, path, path_size))
         return FALSE;
 
-    strcat(path, "\\NetHack\\");
+    strcat(path, "\\NerfHack\\");
     create_directory(path);
     if (versioned) {
         Sprintf(eos(path), "%d.%d\\",
@@ -1384,7 +1384,7 @@ gotlock:
 #if defined(CHDIR) && !defined(NOCWD_ASSUMPTIONS)
         chdirx(orgdir, 0);
 #endif
-        Sprintf(oops, "cannot creat file (%s.)\n%s\n%s\"%s\" exists?\n", fq_lock,
+        Sprintf(oops, "cannot create file (%s.)\n%s\n%s\"%s\" exists?\n", fq_lock,
               strerror(ern), " Are you sure that the directory",
               gf.fqn_prefix[LEVELPREFIX]);
         raw_print(oops);
