@@ -2707,7 +2707,8 @@ trapeffect_magicbeam_trap(
     if (mtmp == &gy.youmonst) {
         if (!Deaf)
             You_hear("a soft click.");
-        trap->once = 1;
+        trap->once = 1;  /* Set before dobuzz because a fire ray can
+                          * destroy a magic beam trap on top of ice. */
         seetrap(trap);
         dobuzz(trap->launch_otyp, 8, trap->launch.x, trap->launch.y,
                sgn(trap->tx - trap->launch.x), sgn(trap->ty - trap->launch.y),
@@ -2721,11 +2722,10 @@ trapeffect_magicbeam_trap(
         }
         if (canseemon(mtmp))
             seetrap(trap);
-
+        trap->once = 1;
         dobuzz(trap->launch_otyp, 8, trap->launch.x, trap->launch.y,
                sgn(trap->tx - trap->launch.x), sgn(trap->ty - trap->launch.y),
                FALSE);
-        trap->once = 1;
         if (DEADMONSTER(mtmp))
             trapkilled = TRUE;
         
