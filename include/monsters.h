@@ -2697,7 +2697,7 @@
         M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 8, CLR_GREEN, GREEN_SLIME),
     MON(NAM("like-like"), S_PUDDING,
-        LVL(6, 10, 8, 0, 0), (G_HELL | G_GENO | G_NOCORPSE | 1),
+        LVL(6, 10, 8, 0, 0), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_DCAY, 4, 4),
           ATTK(AT_BITE, AD_DCAY, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2706,7 +2706,7 @@
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID,
         M2_HOSTILE | M2_NEUTER, 0,
-        NO_RACE, 8, CLR_ORANGE, LIKE_LIKE),
+        NO_RACE, 14, CLR_ORANGE, LIKE_LIKE),
     MON(NAM("black pudding"), S_PUDDING,
         LVL(10, 6, 6, 0, 0), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_BITE, AD_CORR, 3, 8),
