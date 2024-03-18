@@ -2010,7 +2010,7 @@
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
-          ATTK(AT_NONE, AD_ACID, 0, 3),
+          ATTK(AT_NONE, AD_ACID, 0, 2),
           NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC),
         MR_ACID | MR_STONE, MR_ACID | MR_STONE,
