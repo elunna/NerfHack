@@ -1642,11 +1642,21 @@ doname_base(
 
     if (obj->oclass == ARMOR_CLASS) {
         if (obj->known) {
-            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj) + race_bonus(obj));
+            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj) 
+                     + race_bonus(obj) + misc_bonus(obj));
         } else {
-            ConcatF1(bp, 0, " [%dAC]", UNK_ARM_BONUS(obj) + race_bonus(obj));
+            /* Don't factor in racial bonus if we don't know the identity.
+             * This would leak info for elven boots. */
+            ConcatF1(bp, 0, " [%dAC]", UNK_ARM_BONUS(obj)
+                     /*+ race_bonus(obj)*/ + misc_bonus(obj));
         }
     }
+
+    if (obj->oclass == WEAPON_CLASS) {
+        if (is_pole(obj) && obj->known)
+            ConcatF1(bp, 0, " [%dAC]", misc_bonus(obj));
+    }
+    
     /* treat 'restoring' like suppress_price because shopkeeper and
        bill might not be available yet while restore is in progress
        (objects won't normally be formatted during that time, but if

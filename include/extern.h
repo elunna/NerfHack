@@ -724,6 +724,7 @@ extern int destroy_arm(struct obj *, boolean, boolean);
 extern void adj_abon(struct obj *, schar) NONNULLARG1;
 extern boolean inaccessible_equipment(struct obj *, const char *, boolean);
 extern int race_bonus(struct obj *) NONNULLARG1;
+extern int misc_bonus(struct obj *) NONNULLARG1;
 
 /* ### dog.c ### */
 

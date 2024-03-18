@@ -2509,11 +2509,11 @@ find_ac(void)
         uac -= 2; /* fixed amount; main benefit is to MC */
 
     /* combat boots give +1 AC */
-    if (uarmf && objdescr_is(uarmf, "combat boots")) 
-        uac -= 1;
+    if (uarmf && misc_bonus(uarmf)) 
+        uac -= misc_bonus(uarmf);
     /* padded gloves give +1 AC */
-    if (uarmg && objdescr_is(uarmg, "padded gloves")) 
-        uac -= 1;
+    if (uarmg && misc_bonus(uarmg)) 
+        uac -= misc_bonus(uarmg);
 
     /* armor class from other sources */
     if (HProtection & INTRINSIC)
@@ -3486,4 +3486,16 @@ race_bonus(struct obj *obj)
     return 0;
 }
 
+/* AC bonuses for misc items */
+int
+misc_bonus(struct obj *obj)
+{
+    if (objdescr_is(obj, "combat boots"))
+        return 1;
+    if (objdescr_is(obj, "padded gloves"))
+        return 1;
+    if (is_pole(obj))
+        return 2;
+    return 0;
+}
 /*do_wear.c*/
