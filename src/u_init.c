@@ -817,7 +817,7 @@ u_init_race(void)
         }
         
         /* All gnomes are familiar with crossbows and aklyses */
-        set_skill_cap_minimum(P_CROSSBOW, P_BASIC);
+        set_skill_cap_minimum(P_CROSSBOW, P_SKILLED);
         set_skill_cap_minimum(P_CLUB, P_BASIC);
         break;
 
