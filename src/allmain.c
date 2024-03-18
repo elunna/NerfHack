@@ -220,7 +220,7 @@ moveloop_core(void)
                                    NO_MM_FLAGS);
                 
                 /* Once you have the amulet, all hell breaks loose */
-                if (carrying(AMULET_OF_YENDOR) && !rn2(10)) {
+                if (carrying(AMULET_OF_YENDOR) && !rn2(10) && !In_endgame(&u.uz)) {
                     nasty((struct monst *) 0, TRUE);
                 }
                 
