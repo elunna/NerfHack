@@ -823,7 +823,7 @@ intervene(void)
         resurrect();
         break;
     case 7: {
-        if (carrying(AMULET_OF_YENDOR)) {
+        if (carrying(AMULET_OF_YENDOR) && !Is_astralevel(&u.uz)) {
             /* Summon a mean demon */
             if (msummon(&gy.youmonst))
                 pline("Black magic!");
