@@ -22,6 +22,7 @@ static void ini_inv_use_obj(struct obj *) NONNULLARG1;
 static void ini_inv(struct trobj *) NONNULLARG1;
 static void knows_object(int);
 static void knows_class(char);
+static void set_skill_cap_minimum(int, int);
 static void u_init_role(void);
 static void u_init_race(void);
 static void u_init_carry_attr_boost(void);
@@ -776,6 +777,9 @@ u_init_race(void)
         knows_object(ELVEN_SHIELD);
         knows_object(ELVEN_BOOTS);
         knows_object(ELVEN_CLOAK);
+        
+        /* All elves have a natural affinity for enchantments */
+        set_skill_cap_minimum(P_ENCHANTMENT_SPELL, P_BASIC);
         break;
 
     case PM_DWARF:
@@ -787,6 +791,9 @@ u_init_race(void)
         knows_object(DWARVISH_MITHRIL_COAT);
         knows_object(DWARVISH_CLOAK);
         knows_object(DWARVISH_ROUNDSHIELD);
+        
+        /* All dwarves have skill with digging tools */
+        set_skill_cap_minimum(P_PICK_AXE, P_SKILLED);
         break;
 
     case PM_GNOME:
@@ -809,6 +816,9 @@ u_init_race(void)
             knows_object(POT_OIL);
         }
         
+        /* All gnomes are familiar with crossbows and aklyses */
+        set_skill_cap_minimum(P_CROSSBOW, P_BASIC);
+        set_skill_cap_minimum(P_CLUB, P_BASIC);
         break;
 
     case PM_ORC:
@@ -831,6 +841,9 @@ u_init_race(void)
         knows_object(ORCISH_CLOAK);
         knows_object(ORCISH_BOOTS);
         knows_object(POT_SICKNESS);
+        
+        /* All orcs are familiar with scimitars */
+        set_skill_cap_minimum(P_SABER, P_SKILLED);
         break;
 
     default: /* impossible */
@@ -850,6 +863,15 @@ u_init_carry_attr_boost(void)
             continue;
         /* only get here when didn't boost strength or constitution */
         break;
+    }
+}
+
+/* Adjust a skill cap to a specified minimum. */
+void
+set_skill_cap_minimum(int skill, int minimum)
+{
+    if (P_MAX_SKILL(skill) < minimum) {
+        P_MAX_SKILL(skill) = minimum;
     }
 }
 
