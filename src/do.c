@@ -352,7 +352,8 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
             }
             res = TRUE;
         }
-    } else if ((obj->oclass == POTION_CLASS) && gl.level.flags.temperature < 0
+    } else if (obj->oclass == POTION_CLASS && obj->otyp != POT_ACID
+         && gl.level.flags.temperature < 0
          && (levl[x][y].typ == ROOM || levl[x][y].typ == CORR
                    || levl[x][y].typ == ICE)) {
         /* Potions are sometimes destroyed when landing on cold ground. */
