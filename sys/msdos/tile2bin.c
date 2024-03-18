@@ -189,7 +189,7 @@ main(int argc, char *argv[])
     tibheader.compiler = OTHER_COMP;
 #endif
 
-    strncpy(tibheader.ident, "NetHack 3.7 MSDOS Port binary tile file", 80);
+    strncpy(tibheader.ident, "NerfHack 3.7 MSDOS Port binary tile file", 80);
 #if !defined(NOSTRFTIME)
     (void) strftime(tibheader.timestamp,
                   sizeof tibheader.timestamp, "%c", newtime);

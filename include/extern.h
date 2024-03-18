@@ -1,4 +1,4 @@
-/* NetHack 3.7	extern.h	$NHDT-Date: 1708126520 2024/02/16 23:35:20 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1384 $ */
+/* NetHack 3.7	extern.h	$NHDT-Date: 1709675219 2024/03/05 21:46:59 $  $NHDT-Branch: keni-mdlib-followup $:$NHDT-Revision: 1.1400 $ */
 /* Copyright (c) Steve Creps, 1988.                               */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -81,7 +81,8 @@ extern int FITSint_(long long, const char *, int) NONNULLARG2;
 extern unsigned FITSuint_(unsigned long long, const char *, int) NONNULLARG2;
 /* for Strlen() which returns unsigned instead of size_t and panics for
    strings of length INT_MAX (32K - 1) or longer */
-extern unsigned Strlen_(const char *, const char *, int) NONNULLPTRS;
+
+#include "hacklib.h"
 
 /* This next pre-processor directive covers almost the entire file,
  * interrupted only occasionally to pick up specific functions as needed. */
@@ -288,6 +289,42 @@ extern void all_options_statushilites(strbuf_t *);
 extern boolean status_hilite_menu(void);
 #endif /* STATUS_HILITES */
 
+/* ### calendar.c ### */
+
+extern time_t getnow(void);
+extern int getyear(void);
+#if 0
+extern char *yymmdd(time_t) NONNULL;
+#endif
+extern long yyyymmdd(time_t);
+extern long hhmmss(time_t);
+extern char *yyyymmddhhmmss(time_t) NONNULL;
+extern time_t time_from_yyyymmddhhmmss(char *);
+extern int phase_of_the_moon(void);
+extern boolean friday_13th(void);
+extern int night(void);
+extern int midnight(void);
+
+/* ### coloratt.c ### */
+
+extern char *color_attr_to_str(color_attr *);
+extern boolean color_attr_parse_str(color_attr *, char *);
+extern int32 colortable_to_int32(struct nethack_color *);
+extern int query_color(const char *, int) NO_NNARGS;
+extern int query_attr(const char *, int) NO_NNARGS;
+extern boolean query_color_attr(color_attr *, const char *) NONNULLARG1;
+extern const char *attr2attrname(int);
+extern void basic_menu_colors(boolean);
+extern boolean add_menu_coloring_parsed(const char *, int, int);
+extern const char *clr2colorname(int);
+extern int match_str2clr(char *, boolean) NONNULLARG1;
+extern int match_str2attr(const char *, boolean) NONNULLARG1;
+extern boolean add_menu_coloring(char *) NONNULLARG1;
+extern void free_one_menu_coloring(int);
+extern void free_menu_coloring(void);
+extern int count_menucolors(void);
+extern int32 check_enhanced_colors(char *) NONNULLARG1;
+
 /* ### cmd.c ### */
 
 extern void set_move_cmd(int, int);
@@ -390,6 +427,7 @@ extern char yn_function(const char *, const char *, char, boolean);
 extern char paranoid_ynq(boolean, const char *, boolean);
 extern boolean paranoid_query(boolean, const char *);
 extern void makemap_prepost(boolean, boolean);
+extern const char *ecname_from_fn(int (*)(void));
 
 /* ### date.c ### */
 
@@ -581,12 +619,6 @@ extern void heal_legs(int);
 
 /* ### do_name.c ### */
 
-extern char *dxdy_to_dist_descr(coordxy, coordxy, boolean);
-extern char *coord_desc(coordxy, coordxy, char *, char) NONNULLARG3;
-extern void auto_describe(coordxy, coordxy);
-extern boolean getpos_menu(coord *, int) NONNULLARG1;
-extern int getpos(coord *, boolean, const char *) NONNULLARG1;
-extern void getpos_sethilite(void(*f)(boolean), boolean(*d)(coordxy,coordxy));
 extern void new_mgivenname(struct monst *, int) NONNULLARG1;
 extern void free_mgivenname(struct monst *) NONNULLARG1;
 extern void new_oname(struct obj *, int) NONNULLARG1;
@@ -643,8 +675,6 @@ extern const char *pmname(struct permonst *, int) NONNULLARG1;
 #endif
 extern const char *mon_pmname(struct monst *) NONNULLARG1;
 extern const char *obj_pmname(struct obj *) NONNULLARG1;
-extern boolean mapxy_valid(coordxy, coordxy);
-extern boolean gather_locs_interesting(coordxy, coordxy, int);
 
 /* ### do_wear.c ### */
 
@@ -794,23 +824,6 @@ extern void next_level(boolean);
 extern void prev_level(boolean);
 extern void u_on_newpos(coordxy, coordxy);
 extern void u_on_rndspot(int);
-extern void stairway_add(coordxy, coordxy,
-                         boolean, boolean, d_level *) NONNULLPTRS;
-extern void stairway_print(void);
-extern void stairway_free_all(void);
-extern stairway *stairway_at(coordxy, coordxy);
-extern stairway *stairway_find(d_level *) NONNULLARG1;
-extern stairway *stairway_find_from(d_level *, boolean) NONNULLARG1;
-extern stairway *stairway_find_dir(boolean);
-extern stairway *stairway_find_type_dir(boolean, boolean);
-extern stairway *stairway_find_special_dir(boolean);
-extern void u_on_sstairs(int);
-extern void u_on_upstairs(void);
-extern void u_on_dnstairs(void);
-extern boolean On_stairs(coordxy, coordxy);
-extern boolean On_ladder(coordxy, coordxy);
-extern boolean On_stairs_up(coordxy, coordxy);
-extern boolean On_stairs_dn(coordxy, coordxy);
 extern void get_level(d_level *, int) NONNULLARG1;
 extern boolean Is_botlevel(d_level *) NONNULLARG1;
 extern boolean Can_fall_thru(d_level *) NONNULLARG1;
@@ -837,8 +850,6 @@ extern unsigned int induced_align(int);
 extern boolean Invocation_lev(d_level *) NONNULLARG1;
 extern xint16 level_difficulty(void);
 extern schar lev_by_name(const char *);
-extern boolean known_branch_stairs(stairway *);
-extern char *stairs_description(stairway *, char *, boolean) NONNULLARG1;
 extern schar print_dungeon(boolean, schar *, xint16 *);
 extern void print_level_annotation(void);
 extern int donamelevel(void);
@@ -906,6 +917,7 @@ extern void done1(int);
 extern int done2(void);
 extern void done_in_by(struct monst *, int) NONNULLARG1;
 extern void done_object_cleanup(void);
+extern void NH_abort(char *);
 #endif /* !MAKEDEFS_C && MDLIB_C && !CPPREGEX_C */
 #if !defined(CPPREGEX_C)
 ATTRNORETURN extern void panic(const char *, ...) PRINTF_F(1, 2) NORETURN;
@@ -919,17 +931,7 @@ extern struct kinfo *find_delayed_killer(int);
 extern void dealloc_killer(struct kinfo *);
 extern void save_killers(NHFILE *) NONNULLARG1;
 extern void restore_killers(NHFILE *) NONNULLARG1;
-#ifdef CRASHREPORT
-extern boolean submit_web_report(int, const char *, const char *);
-extern void crashreport_init(int, char *[]);
-extern void crashreport_bidshow(void);
-extern boolean swr_add_uricoded(const char *, char **, int *, char *);
-extern int dobugreport(void);
-#endif
 extern char *build_english_list(char *) NONNULLARG1;
-#if defined(PANICTRACE) && !defined(NO_SIGNAL)
-extern void panictrace_setsignals(boolean);
-#endif
 
 /* ### engrave.c ### */
 
@@ -1088,6 +1090,17 @@ extern void drinkforge(void);
 extern void dipforge(struct obj *);
 extern void breakforge(coordxy, coordxy);
 
+/* ### getpos.c ### */
+
+extern char *dxdy_to_dist_descr(coordxy, coordxy, boolean);
+extern char *coord_desc(coordxy, coordxy, char *, char) NONNULLARG3;
+extern void auto_describe(coordxy, coordxy);
+extern boolean getpos_menu(coord *, int) NONNULLARG1;
+extern int getpos(coord *, boolean, const char *) NONNULLARG1;
+extern void getpos_sethilite(void(*f)(boolean), boolean(*d)(coordxy,coordxy));
+extern boolean mapxy_valid(coordxy, coordxy);
+extern boolean gather_locs_interesting(coordxy, coordxy, int);
+
 /* ### hack.c ### */
 
 extern boolean is_valid_travelpt(coordxy, coordxy);
@@ -1147,96 +1160,21 @@ extern int inv_cnt(boolean);
 /* sometimes money_cnt(gi.invent) which can be null */
 extern long money_cnt(struct obj *) NO_NNARGS;
 extern void spot_checks(coordxy, coordxy, schar);
-
-/* ### hacklib.c ### */
-
-extern boolean digit(char);
-extern boolean letter(char);
-extern char highc(char);
-extern char lowc(char);
-extern char *lcase(char *) NONNULL NONNULLARG1;
-extern char *ucase(char *) NONNULL NONNULLARG1;
-extern char *upstart(char *); /* ought to be changed to NONNULL NONNULLARG1
-                               * and the code changed to not allow NULL arg */
-extern char *upwords(char *) NONNULL NONNULLARG1;
-extern char *mungspaces(char *) NONNULL NONNULLARG1;
-extern char *trimspaces(char *) NONNULL NONNULLARG1;
-extern char *strip_newline(char *) NONNULL NONNULLARG1;
-extern char *eos(char *) NONNULL NONNULLARG1;
-extern const char *c_eos(const char *) NONNULL NONNULLARG1;
-extern unsigned Strlen_(const char *, const char *, int) NONNULLPTRS;
-extern boolean str_start_is(const char *, const char *, boolean) NONNULLPTRS;
-extern boolean str_end_is(const char *, const char *) NONNULLPTRS;
-extern int str_lines_maxlen(const char *);
-extern char *strkitten(char *, char) NONNULL NONNULLARG1;
-extern void copynchars(char *, const char *, int) NONNULLARG12;
-extern char chrcasecpy(int, int);
-extern char *strcasecpy(char *, const char *) NONNULL NONNULLPTRS;
-extern char *s_suffix(const char *) NONNULL NONNULLARG1;
-extern char *ing_suffix(const char *) NONNULL NONNULLARG1;
-extern char *xcrypt(const char *, char *) NONNULL NONNULLPTRS;
-extern boolean onlyspace(const char *) NONNULLARG1;
-extern char *tabexpand(char *) NONNULL NONNULLARG1;
-extern char *visctrl(char) NONNULL;
-extern char *stripchars(char *, const char *,
-                                            const char *) NONNULL NONNULLPTRS;
-extern char *stripdigits(char *) NONNULL NONNULLARG1;
-extern char *strsubst(char *, const char *, const char *) NONNULL NONNULLPTRS;
-extern int strNsubst(char *, const char *, const char *, int) NONNULLPTRS;
-extern const char *findword(const char *, const char *, int,
-                                                         boolean) NONNULLARG2;
-extern const char *ordin(int) NONNULL;
-extern char *sitoa(int) NONNULL;
-extern int sgn(int);
 extern int rounddiv(long, int);
-extern int dist2(coordxy, coordxy, coordxy, coordxy);
-extern int isqrt(int);
-extern int distmin(coordxy, coordxy, coordxy, coordxy);
-extern boolean online2(coordxy, coordxy, coordxy, coordxy);
-extern boolean pmatch(const char *, const char *) NONNULLPTRS;
-extern boolean pmatchi(const char *, const char *) NONNULLPTRS;
-/*
-extern boolean pmatchz(const char *, const char *) NONNULLPTRS;
-*/
-#ifndef STRNCMPI
-extern int strncmpi(const char *, const char *, int) NONNULLPTRS;
-#endif
-#ifndef STRSTRI
-extern char *strstri(const char *, const char *) NONNULLPTRS;
-#endif
-extern boolean fuzzymatch(const char *, const char *,
-                          const char *, boolean) NONNULLPTRS;
-extern void init_random(int(*fn)(int));
-extern void reseed_random(int(*fn)(int));
-extern time_t getnow(void);
-extern int getyear(void);
-#if 0
-extern char *yymmdd(time_t) NONNULL;
-#endif
-extern long yyyymmdd(time_t);
-extern long hhmmss(time_t);
-extern char *yyyymmddhhmmss(time_t) NONNULL;
-extern time_t time_from_yyyymmddhhmmss(char *);
-extern int phase_of_the_moon(void);
-extern boolean friday_13th(void);
-extern int night(void);
-extern int midnight(void);
+
+/* ### strutil.c ### */
+
 extern void strbuf_init(strbuf_t *) NONNULLARG1;
 extern void strbuf_append(strbuf_t *, const char *) NONNULLPTRS;
 extern void strbuf_reserve(strbuf_t *, int) NONNULLARG1;
 extern void strbuf_empty(strbuf_t *) NONNULLARG1;
 extern void strbuf_nl_to_crlf(strbuf_t *) NONNULLARG1;
-extern int swapbits(int, int, int);
-extern void shuffle_int_array(int *, int) NONNULLARG1;
-/* note: the snprintf CPP wrapper includes the "fmt" argument in "..."
-   (__VA_ARGS__) to allow for zero arguments after fmt */
-#define Snprintf(str, size, ...) \
-    nh_snprintf(__func__, __LINE__, str, size, __VA_ARGS__)
-extern void nh_snprintf(const char *func, int line, char *str, size_t size,
-                        const char *fmt, ...) PRINTF_F(5, 6);
-#ifdef ENHANCED_SYMBOLS
-extern int unicodeval_to_utf8str(int, uint8 *, size_t) NONNULLARG2;
-#endif
+extern unsigned Strlen_(const char *, const char *, int) NONNULLPTRS;
+extern boolean pmatch(const char *, const char *) NONNULLPTRS;
+extern boolean pmatchi(const char *, const char *) NONNULLPTRS;
+/*
+extern boolean pmatchz(const char *, const char *) NONNULLPTRS;
+*/
 
 /* ### insight.c ### */
 
@@ -2275,14 +2213,6 @@ extern int add_autopickup_exception(const char *) NONNULLARG1;
 extern void free_autopickup_exceptions(void);
 extern void set_playmode(void);
 extern int sym_val(const char *) NONNULLARG1;
-extern int query_color(const char *, int) NO_NNARGS;
-extern int query_attr(const char *, int) NO_NNARGS;
-extern boolean query_color_attr(color_attr *, const char *) NONNULLARG1;
-extern const char *clr2colorname(int);
-extern int match_str2clr(char *) NONNULLARG1;
-extern int match_str2attr(const char *, boolean) NONNULLARG1;
-extern boolean add_menu_coloring(char *) NONNULLARG1;
-extern void free_menu_coloring(void);
 extern boolean msgtype_parse_add(char *) NONNULLARG1;
 extern int msgtype_type(const char *, boolean) NONNULLARG1;
 extern void hide_unhide_msgtypes(boolean, int);
@@ -2637,6 +2567,28 @@ extern NhRegion *create_gas_cloud_selection(struct selectionvar *, int);
 extern boolean region_danger(void);
 extern void region_safety(void);
 
+/* ### report.c ### */
+
+#ifdef CRASHREPORT
+extern boolean submit_web_report(int, const char *, const char *);
+extern boolean submit_web_report(int, const char *, const char *);
+extern void crashreport_init(int, char *[]);
+extern void crashreport_bidshow(void);
+extern boolean swr_add_uricoded(const char *, char **, int *, char *);
+extern int dobugreport(void);
+#endif /* CRASHREPORT */
+# ifndef NO_SIGNAL
+extern void panictrace_handler(int);
+# endif
+#ifdef PANICTRACE
+extern const char *get_saved_pline(int);
+extern boolean NH_panictrace_libc(void);
+extern boolean NH_panictrace_gdb(void);
+#if defined(PANICTRACE) && !defined(NO_SIGNAL)
+extern void panictrace_setsignals(boolean);
+#endif
+#endif /* PANICTRACE */
+
 /* ### restore.c ### */
 
 extern void inven_inuse(boolean);
@@ -2673,6 +2625,9 @@ extern int rnd(int);
 extern int d(int, int);
 extern int rne(int);
 extern int rnz(int);
+extern void init_random(int(*fn)(int));
+extern void reseed_random(int(*fn)(int));
+extern void shuffle_int_array(int *, int) NONNULLARG1;
 
 /* ### role.c ### */
 
@@ -2750,6 +2705,42 @@ extern void assignlog(char *, char*, int);
 extern FILE *getlog(NHFILE *);
 extern void closelog(NHFILE *);
 #endif
+
+/* ### selvar.c ### */
+
+extern struct selectionvar *selection_new(void);
+extern void selection_free(struct selectionvar *, boolean) NO_NNARGS;
+extern void selection_clear(struct selectionvar *, int) NONNULLARG1;
+extern struct selectionvar *selection_clone(struct selectionvar *) NONNULLARG1;
+extern void selection_getbounds(struct selectionvar *, NhRect *) NO_NNARGS;
+extern void selection_recalc_bounds(struct selectionvar *) NONNULLARG1;
+extern coordxy selection_getpoint(coordxy, coordxy, struct selectionvar *) NO_NNARGS;
+extern void selection_setpoint(coordxy, coordxy, struct selectionvar *, int);
+extern struct selectionvar * selection_not(struct selectionvar *);
+extern struct selectionvar *selection_filter_percent(struct selectionvar *,
+                                                     int);
+extern struct selectionvar *selection_filter_mapchar(struct selectionvar *,
+                                                     xint16, int);
+extern int selection_rndcoord(struct selectionvar *, coordxy *, coordxy *,
+                              boolean);
+extern void selection_do_grow(struct selectionvar *, int);
+extern void set_selection_floodfillchk(int(*)(coordxy, coordxy));
+extern void selection_floodfill(struct selectionvar *, coordxy, coordxy,
+                                boolean);
+extern void selection_do_ellipse(struct selectionvar *, int, int, int, int,
+                                 int);
+extern void selection_do_gradient(struct selectionvar *, long, long, long,
+                                  long, long, long, long);
+extern void selection_do_line(coordxy, coordxy, coordxy, coordxy,
+                              struct selectionvar *);
+extern void selection_do_randline(coordxy, coordxy, coordxy, coordxy,
+                                  schar, schar, struct selectionvar *);
+extern void selection_iterate(struct selectionvar *, select_iter_func,
+                              genericptr_t);
+extern boolean selection_is_irregular(struct selectionvar *);
+extern char *selection_size_description(struct selectionvar *, char *);
+extern struct selectionvar *selection_from_mkroom(struct mkroom *) NO_NNARGS;
+extern void selection_force_newsyms(struct selectionvar *) NONNULLARG1;
 
 /* ### sfstruct.c ### */
 
@@ -2905,6 +2896,7 @@ extern void sound_speak(const char *) NO_NNARGS;
 /* ### sp_lev.c ### */
 
 #if !defined(CROSSCOMPILE) || defined(CROSSCOMPILE_TARGET)
+extern boolean match_maptyps(xint16, xint16);
 extern void create_des_coder(void);
 extern void reset_xystart_size(void);
 extern struct mapfragment *mapfrag_fromstr(char *) NONNULLARG1;
@@ -2922,37 +2914,11 @@ extern boolean dig_corridor(coord *, coord *, boolean, schar, schar) NONNULLARG1
 extern void fill_special_room(struct mkroom *) NO_NNARGS;
 extern void wallify_map(coordxy, coordxy, coordxy, coordxy);
 extern boolean load_special(const char *) NONNULLARG1;
-extern coordxy selection_getpoint(coordxy, coordxy, struct selectionvar *) NO_NNARGS;
-extern struct selectionvar *selection_new(void);
-extern void selection_free(struct selectionvar *, boolean) NO_NNARGS;
-extern void selection_clear(struct selectionvar *, int) NONNULLARG1;
-extern struct selectionvar *selection_clone(struct selectionvar *) NONNULLARG1;
-extern void selection_getbounds(struct selectionvar *, NhRect *) NO_NNARGS;
-extern void selection_recalc_bounds(struct selectionvar *) NONNULLARG1;
-extern void set_selection_floodfillchk(int(*)(coordxy, coordxy));
-extern void selection_floodfill(struct selectionvar *, coordxy, coordxy,
-                                boolean);
+extern coordxy random_wdir(void);
 extern boolean pm_good_location(coordxy, coordxy, struct permonst *) NONNULLARG3;
 extern void get_location_coord(coordxy *, coordxy *, int, struct mkroom *,
                                long) NONNULLARG12;
-extern void selection_setpoint(coordxy, coordxy, struct selectionvar *, int);
-extern struct selectionvar * selection_not(struct selectionvar *);
-extern struct selectionvar *selection_filter_percent(struct selectionvar *,
-                                                     int);
-extern int selection_rndcoord(struct selectionvar *, coordxy *, coordxy *,
-                              boolean);
-extern void selection_do_grow(struct selectionvar *, int);
-extern void selection_do_line(coordxy, coordxy, coordxy, coordxy,
-                              struct selectionvar *);
-extern void selection_do_randline(coordxy, coordxy, coordxy, coordxy,
-                                  schar, schar, struct selectionvar *);
-extern struct selectionvar *selection_filter_mapchar(struct selectionvar *,
-                                                     xint16, int);
 extern void set_floodfillchk_match_under(coordxy);
-extern void selection_do_ellipse(struct selectionvar *, int, int, int, int,
-                                 int);
-extern void selection_do_gradient(struct selectionvar *, long, long, long,
-                                  long, long, long, long);
 extern int lspo_reset_level(lua_State *) NO_NNARGS; /* wiz_load_splua NULL */
 /* lspo_finalize_level() has tests for whether arg1 L is null, and chooses
    code paths to follow based on that. Also preventing NONNULLARG1 is it
@@ -2963,7 +2929,6 @@ extern boolean get_coord(lua_State *, int, lua_Integer *, lua_Integer *) NONNULL
 extern void cvt_to_abscoord(coordxy *, coordxy *) NONNULLPTRS;
 extern void cvt_to_relcoord(coordxy *, coordxy *) NONNULLPTRS;
 extern int nhl_abs_coord(lua_State *) NONNULLARG1;
-extern struct selectionvar *selection_from_mkroom(struct mkroom *) NO_NNARGS;
 extern void update_croom(void);
 extern const char *get_trapname_bytype(int);
 extern void l_register_des(lua_State *) NONNULLARG1;
@@ -2990,6 +2955,27 @@ extern char force_learn_spell(short);
 extern int num_spells(void);
 extern void skill_based_spellbook_id(void);
 extern void spell_nag(void);
+
+/* ### stairs.c ### */
+
+extern void stairway_add(coordxy, coordxy,
+                         boolean, boolean, d_level *) NONNULLPTRS;
+extern void stairway_free_all(void);
+extern stairway *stairway_at(coordxy, coordxy);
+extern stairway *stairway_find(d_level *) NONNULLARG1;
+extern stairway *stairway_find_from(d_level *, boolean) NONNULLARG1;
+extern stairway *stairway_find_dir(boolean);
+extern stairway *stairway_find_type_dir(boolean, boolean);
+extern stairway *stairway_find_special_dir(boolean);
+extern void u_on_sstairs(int);
+extern void u_on_upstairs(void);
+extern void u_on_dnstairs(void);
+extern boolean On_stairs(coordxy, coordxy);
+extern boolean On_ladder(coordxy, coordxy);
+extern boolean On_stairs_up(coordxy, coordxy);
+extern boolean On_stairs_dn(coordxy, coordxy);
+extern boolean known_branch_stairs(stairway *);
+extern char *stairs_description(stairway *, char *, boolean) NONNULLARG1;
 
 /* ### steal.c ### */
 
@@ -3744,6 +3730,42 @@ extern void resurrect(void);
 extern void intervene(void);
 extern void wizdead(void);
 extern void cuss(struct monst *) NONNULLARG1;
+
+/* ### wizcmds.c ### */
+
+extern int wiz_detect(void);
+extern int wiz_flip_level(void);
+extern int wiz_fuzzer(void);
+extern int wiz_genesis(void);
+extern int wiz_identify(void);
+extern int wiz_intrinsic(void);
+extern int wiz_kill(void);
+extern int wiz_level_change(void);
+extern int wiz_level_tele(void);
+extern int wiz_load_lua(void);
+extern int wiz_load_splua(void);
+extern int wiz_makemap(void);
+extern int wiz_map(void);
+extern int wiz_migrate_mons(void);
+extern int wiz_panic(void);
+extern int wiz_polyself(void);
+extern int wiz_rumor_check(void);
+extern int wiz_show_seenv(void);
+extern int wiz_show_stats(void);
+extern int wiz_show_vision(void);
+extern int wiz_show_wmodes(void);
+extern int wiz_smell(void);
+extern int wiz_telekinesis(void);
+extern int wiz_where(void);
+extern int wiz_wish(void);
+extern void makemap_remove_mons(void);
+extern void wiz_levltyp_legend(void);
+extern void wiz_map_levltyp(void);
+#if (NH_DEVEL_STATUS != NH_STATUS_RELEASED) || defined(DEBUG)
+extern int wiz_display_macros(void);
+extern int wiz_mon_diff(void);
+#endif
+extern int wiz_clear(void);
 
 /* ### worm.c ### */
 

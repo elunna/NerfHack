@@ -54,4 +54,23 @@
 #define DRAGON_SILVER CLR_BRIGHT_CYAN
 #define HI_ZAP CLR_BRIGHT_BLUE
 
+#define NH_BASIC_COLOR 0x1000000
+
+enum nhcolortype { no_color, nh_color, rgb_color };
+
+struct nethack_color {
+    enum nhcolortype colortyp;
+    int tableindex;
+    int rgbindex;
+    const char *name;
+    const char *hexval;
+    long r, g, b;
+};
+
+typedef struct color_and_attr {
+           int color, attr;
+} color_attr;
+
 #endif /* COLOR_H */
+
+/*color.h*/
