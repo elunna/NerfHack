@@ -941,12 +941,9 @@ display_trap_map(int cursed_src)
     }
     (void) detect_obj_traps(gi.invent, TRUE, cursed_src);
 
-    for (ttmp = gf.ftrap; ttmp; ttmp = ttmp->ntrap) {
-        if (ttmp->ttyp == MAGIC_PORTAL)
-            continue; /* Portals are not traps */
+    for (ttmp = gf.ftrap; ttmp; ttmp = ttmp->ntrap)
         sense_trap(ttmp, 0, 0, cursed_src);
-    }
-    
+
     dummytrap.ttyp = TRAPPED_DOOR;
     for (door = 0; door < gd.doorindex; door++) {
         cc = gd.doors[door];
