@@ -599,7 +599,7 @@ mind_blast(struct monst *mtmp)
                     : "mind"); /* note: hero is never mindless */
             dmg = rnd(15);
             if (Half_spell_damage)
-                dmg -= ((dmg + 1) / 4);
+                dmg = (dmg + 1) / 2;
             losehp(dmg, "psychic blast", KILLED_BY_AN);
         }
     }

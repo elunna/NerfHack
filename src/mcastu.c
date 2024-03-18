@@ -336,7 +336,7 @@ castmu(
     else
         dmg = d((int) ((ml / 2) + 1), 6);
     if (Half_spell_damage)
-        dmg -= ((dmg + 1) / 4);
+        dmg = (dmg + 1) / 2;
 
     ret = M_ATTK_HIT;
     /*
@@ -386,7 +386,7 @@ castmu(
         } else
             monstunseesu(M_SEEN_MAGR);
         if (Half_spell_damage) { /* stacks with Antimagic */
-            dmg -= ((dmg + 1) / 4);
+            dmg = (dmg + 1) / 2;
         }
         /* shower of magic missiles scuffs an engraving */
         mon_spell_hits_spot(mtmp, AD_MAGM, u.ux, u.uy);
@@ -764,7 +764,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             if (dmg < 1) /* paranoia since only chosen when m_lev is high */
                 dmg = 1;
             if (Half_spell_damage)
-                dmg -= ((dmg + 1) / 4);
+                dmg = (dmg + 1) / 2;
             losestr(rnd(dmg),
                     death_inflicted_by(kbuf, "strength loss", mtmp),
                     KILLED_BY);
@@ -797,7 +797,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             You(Stunned ? "struggle to keep your balance." : "reel...");
             dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
             if (Half_spell_damage)
-                dmg -= ((dmg + 1) / 4);
+                dmg = (dmg + 1) / 2;
             make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
             monstunseesu(M_SEEN_MAGR);
         }
@@ -825,7 +825,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
                 monstunseesu(M_SEEN_FIRE);
             }
             if (Half_spell_damage)
-                dmg -= ((dmg + 1) / 4);
+                dmg = (dmg + 1) / 2;
             burn_away_slime();
             (void) burnarmor(&gy.youmonst);
             (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
@@ -853,7 +853,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
                 monstunseesu(M_SEEN_COLD);
             }
             if (Half_spell_damage)
-                dmg -= ((dmg + 1) / 4);
+                dmg = (dmg + 1) / 2;
             (void) destroy_items(&gy.youmonst, AD_COLD, orig_dmg);
         } else {
             if (canseemon(mtmp)) {
@@ -962,7 +962,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         pline("A sudden geyser slams into you from nowhere!");
         dmg = d(8, 6);
         if (Half_physical_damage)
-            dmg -= ((dmg + 1) / 4);
+            dmg = (dmg + 1) / 2;
         if (u.umonnum == PM_IRON_GOLEM) {
             You("rust!");
             Strcpy(gk.killer.name, "rusted away");
@@ -987,7 +987,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
             monstunseesu(M_SEEN_FIRE);
         }
         if (Half_spell_damage)
-            dmg -= ((dmg + 1) / 4);
+            dmg = (dmg + 1) / 2;
         burn_away_slime();
         (void) burnarmor(&gy.youmonst);
         (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
@@ -1020,7 +1020,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
             monstunseesu(M_SEEN_ELEC | M_SEEN_REFL);
         }
         if (Half_spell_damage)
-            dmg -= ((dmg + 1) / 4);
+            dmg = (dmg + 1) / 2;
         (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
         /* lightning might destroy iron bars if hero is on such a spot;
            reflection protects terrain here [execution won't get here due
@@ -1160,7 +1160,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
             if (gm.multi >= 0)
                 You("are frozen in place!");
             if (Half_spell_damage)
-                dmg -= ((dmg + 1) / 4);
+                dmg = (dmg + 1) / 2;
             monstunseesu(M_SEEN_MAGR);
         }
         nomul(-dmg);
@@ -1178,7 +1178,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 
             dmg = (int) mtmp->m_lev;
             if (Half_spell_damage)
-                dmg -= ((dmg + 1) / 4);
+                dmg = (dmg + 1) / 2;
             make_confused(HConfusion + dmg, TRUE);
             if (Hallucination)
                 You_feel("%s!", oldprop ? "trippier" : "trippy");
