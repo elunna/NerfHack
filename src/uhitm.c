@@ -5692,17 +5692,6 @@ gulpum(struct monst *mdef, struct attack *mattk)
                             : "pummeled with your debris");
                 }
                 break;
-            case AD_WRAP:
-                /* suffocation attack; negate damage if breathless */
-                if (breathless(mdef->data)) {
-                    pline("%s doesn't seem to need air to breathe.",
-                          Monnam(mdef));
-                    dam = 0;
-                }
-                else {
-                    pline("%s is being suffocated!", Monnam(mdef));
-                }
-                break;
             case AD_ACID:
                 pline("%s is covered with your goo!", Monnam(mdef));
                 if (resists_acid(mdef)) {

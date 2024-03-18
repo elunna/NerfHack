@@ -480,13 +480,6 @@ teleds(coordxy nux, coordxy nuy, int teleds_flags)
             ball_active = TRUE; /* to put chain and non-carried ball on map */
             ball_still_in_range = allow_drag = FALSE; /* (redundant) */
         }
-        if (Strangled
-            && (!uamul || uamul->otyp == AMULET_OF_STRANGULATION)) {
-            /* FIXME: What if the hero was being strangled by some other
-                     * source that isn't the amulet? */
-            Strangled = 0;
-            You("can breathe again.");
-        }
         docrt();
     }
     if (ball_active && (ball_still_in_range || allow_drag)) {

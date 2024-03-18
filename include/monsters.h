@@ -2063,9 +2063,8 @@
     MON(NAM("water elemental"), S_ELEMENTAL,
         LVL(8, 6, 2, 30, 0), (G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 5, 6),
-          ATTK(AT_ENGL, AD_WRAP, 4, 4),
           ATTK(AT_NONE, AD_RUST, 0, 0),
-          NO_ATTK, NO_ATTK, NO_ATTK),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2500, 0, MS_SILENT, MZ_HUGE), MR_POISON | MR_STONE, 0,
         M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS | M1_BREATHLESS
             | M1_UNSOLID | M1_AMPHIBIOUS | M1_SWIM,
