@@ -1467,7 +1467,8 @@ pleased(aligntyp g_align)
         }
         case 7:
         case 8:
-            if (u.ualign.record >= 0 && !u.uevent.uhand_of_elbereth) {
+			/* Crowning requires maximized luck */
+            if (u.ualign.record >= 0 && !u.uevent.uhand_of_elbereth && Luck == 13) {
                 gcrownu();
                 break;
             }
