@@ -5806,7 +5806,7 @@ attack_blocker(struct monst *mdef)
     else if (armasks[selected] == BLOCKED_PROT)
         return "golden haze";
     else /* This is a bit klunky but results in less wordy messages. */
-        return OBJ_NAME(objects[which_armor(mdef, armasks[selected])->otyp]);
+		return xname(which_armor(mdef, armasks[selected]));
 #undef BLOCKED_BODY
 #undef BLOCKED_PROT
 }
