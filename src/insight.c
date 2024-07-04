@@ -456,7 +456,9 @@ enlightenment(
                 enl_msg("You ", "have", "had", buf, "");
             }
         }
-    }
+    } else {
+        enl_msg("You ", "have ", "had ", "never prayed", "");
+	}
     
     enlght_out(""); /* separator */
     enlght_out_attr(ATR_SUBHEAD, "Miscellaneous:");
