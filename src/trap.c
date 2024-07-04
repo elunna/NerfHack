@@ -1769,15 +1769,35 @@ trapeffect_grease_trap(
     if (mtmp == &gy.youmonst) {
         /* Make fumbling (like stepping in a puddle grease) */
         if (!Levitation && !Flying) {
-            You("step in a puddle of grease.");
-            /* This is not great - but FROMOUTSIDE is used by other 
-             * sources of fumbling. In timeout.c we check if this is I_SPECIAL
-             * and reset it for a while or until it's wiped off by a towel. */
-            HFumbling |= (I_SPECIAL);
-            old = (HFumbling & TIMEOUT);
-            HFumbling &= ~TIMEOUT;
-            HFumbling += old + rnd(3);
+ 
+            /* Usually fall off steed if riding */
+            if (u.usteed) {
+                pline("%s clops into a puddle of grease and slips!",
+                      s_suffix(Monnam(u.usteed)));
+                /* Hit the saddle */
+                otmp = which_armor(u.usteed, W_SADDLE);
+                otmp->greased = 1;
+                dismount_steed(DISMOUNT_FELL);
+				losehp(Maybe_Half_Phys(d(2, 3)), "bucked off a steed that slipped on grease", KILLED_BY);
+				nomul(-rnd(4));
+            } else {
+				if (rn2(10)) {
+					You("slip on a puddle of grease and crash on the floor!");
+					exercise(A_DEX, FALSE);
+					losehp(Maybe_Half_Phys(rnd(3)), "slipping on grease and falling", KILLED_BY);
+					nomul(-rnd(3));
+				}
+			}
+
+			/* This is not great - but FROMOUTSIDE is used by other 
+			 * sources of fumbling. In timeout.c we check if this is I_SPECIAL
+			 * and reset it for a while or until it's wiped off by a towel. */
+			HFumbling |= (I_SPECIAL);
+			old = (HFumbling & TIMEOUT);
+			HFumbling &= ~TIMEOUT;
+			HFumbling += old + rnd(3);
         }
+
         if (trap->once && trap->tseen && !rn2(15)) {
             if (!Blind)
                 pline("A broken hose pops out of %s!", the(surface(u.ux, u.uy)));
@@ -1894,23 +1914,13 @@ trapeffect_grease_trap(
             } else if (uarmu) {
                 grease_hits(uarmu);
             }
-            
-            /* Usually fall off steed if riding */
-            if (u.usteed) {
-                /* Hit the saddle */
-                pline("%s saddle gets covered in grease!",
-                      s_suffix(Monnam(u.usteed)));
-                otmp = which_armor(u.usteed, W_SADDLE);
-                otmp->greased = 1;
-                dismount_steed(DISMOUNT_FELL);
-            }
         }
         update_inventory();
     } else {
         struct obj *target;
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
-        
+       		
         if (trap->once && trap->tseen && !rn2(15)) {
             if (in_sight && see_it)
                 pline("A broken hose pops out at %s!",
@@ -1960,6 +1970,16 @@ trapeffect_grease_trap(
             else if ((target = which_armor(mtmp, W_ARMU)) != 0)
                 target->greased = 1;
         }
+ 
+		if (!(is_floater(mtmp->data) || is_flyer(mtmp->data)
+					|| (is_clinger(mtmp->data) && has_ceiling(&u.uz)))) { 
+			pline("%s slips in a puddle of grease and falls!", Monnam(mtmp)); 
+			thitm(0, mtmp, (struct obj *) 0, (rnd(4) + 1), FALSE);
+			if (!DEADMONSTER(mtmp))
+				paralyze_monst(mtmp, rnd(4) + 1);
+			else
+				return Trap_Killed_Mon; 
+		}
     }
     return Trap_Effect_Finished;
 }
