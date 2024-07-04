@@ -1057,7 +1057,7 @@ fill_ordinary_room(
      *
      * On dungeon level 1, put a special graffiti in the starting room.
      * Either a hint or a true rumor. */
-    if (depth(&u.uz) < 5 && has_upstairs(croom) && !rn2(depth(&u.uz))) {
+    if (depth(&u.uz) < 2 && has_upstairs(croom) && !rn2(depth(&u.uz))) {
         if (find_okay_roompos(croom, &pos)) {
             make_engr_at(pos.x, pos.y, get_hint(), 0L, MARK);
         }
