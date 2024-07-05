@@ -2273,7 +2273,7 @@ show_conduct(int final)
 
     if (!u.uconduct.altars) {
         you_have_never("destroyed an altar");
-    } else if (wizard) {
+    } else {
         Sprintf(buf, "destroyed %ld altar%s", u.uconduct.altars,
                 plur(u.uconduct.altars));
         you_have_X(buf);
