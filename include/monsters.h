@@ -4577,6 +4577,18 @@
             | M2_HOSTILE | M2_NASTY | M2_COLLECT | M2_MAGIC,
         M3_WANTSARTI | M3_WAITFORU | M3_INFRAVISIBLE,
         MH_HUMAN, 22, HI_LORD, THOTH_AMON),
+    MON(NAM("Dal Zethire"), S_HUMAN,
+         LVL(15, 12, 0, 80, -10), (G_NOGEN | G_UNIQ | G_NOCORPSE),
+         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
+           ATTK(AT_MAGC, AD_SPEL, 0, 0),
+           ATTK(AT_CLAW, AD_SAMU, 1, 4),
+           NO_ATTK, NO_ATTK, NO_ATTK),
+         SIZ(WT_HUMAN, 400, MS_NEMESIS, MZ_HUMAN), MR_STONE, 0,
+         M1_HUMANOID | M1_OMNIVORE,
+         M2_NOPOLY | M2_STRONG | M2_HOSTILE | M2_STALK
+            | M2_NASTY | M2_COLLECT | M2_MAGIC | M2_PNAME,
+         M3_WANTSARTI | M3_WAITFORU | M3_INFRAVISIBLE,
+         MH_HUMAN, 19, CLR_RED, DAL_ZETHIRE),
     /* Multi-headed, possessing the breath attacks of all the other dragons
      * (selected at random when attacking).  Despite being a superset of
      * gold dragon, does not emit light.  Also does not fly.

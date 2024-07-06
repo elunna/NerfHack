@@ -792,6 +792,16 @@ m_initinv(struct monst *mtmp)
                                                  : CLOAK_OF_MAGIC_RESISTANCE);
             (void) mongets(mtmp, SMALL_SHIELD);
             mkmonmoney(mtmp, (long) rn1(10, 20));
+	} else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
+            for (cnt = rn2(3); cnt < 4; cnt++) {
+                otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+                curse(otmp);
+                (void) mpickobj(mtmp, otmp);
+            }
+            (void) mongets(mtmp, SCR_FIRE);
+            (void) mongets(mtmp, SCR_EARTH);
+            (void) mongets(mtmp, SCR_TELEPORTATION);
+            (void) mongets(mtmp, EXPENSIVE_CAMERA);
         } else if (quest_mon_represents_role(ptr, PM_MONK)) {
             (void) mongets(mtmp, rn2(11) ? ROBE : CLOAK_OF_MAGIC_RESISTANCE);
         }
