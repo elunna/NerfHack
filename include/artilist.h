@@ -407,6 +407,12 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_BARBARIAN, NON_PM, 2500L, NO_COLOR, HEART_OF_AHRIMAN),
 
+    A("The Holographic Void Lily", CREDIT_CARD,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL),
+      (SPFX_EREGEN | SPFX_HSPDAM | SPFX_REFLECT), 0,
+      NO_ATTK, NO_DFNS, NO_CARY, SUMMONING,
+      A_CHAOTIC, PM_CARTOMANCER, NON_PM, 7000L, NO_COLOR, HOLOGRAPHIC_VOID_LILY),
+
     /* Changes: Now gets a flat +3 damage bonus */
     A("The Sceptre of Might", MACE,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN

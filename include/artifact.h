@@ -70,6 +70,7 @@ enum invoke_prop_types {
     CREATE_AMMO,
     BANISH,
     LIGHTNING_BOLT,
+    SUMMONING,
 };
 
 /* clang-format on */

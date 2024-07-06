@@ -2366,6 +2366,11 @@ arti_invoke(struct obj *obj)
             }
             break;
         }
+	case SUMMONING: {
+	    /* TODO: Update to temporary spell beings */
+            create_critters(rnd(10), (struct permonst *) 0, TRUE);
+            break;
+        }
         case LIGHTNING_BOLT: {
             struct obj* pseudo = mksobj(WAN_LIGHTNING, FALSE, FALSE);
             pseudo->blessed = pseudo->cursed = 0;
