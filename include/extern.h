@@ -2151,6 +2151,7 @@ extern int rnd_class(int, int);
 /* discover_object() passes NULL arg2 to Japanese_item_name(),
  * preventing NONNULLARG2 */
 extern const char *Japanese_item_name(int, const char *) NO_NNARGS;
+extern const char *Cartomancer_item_name(int, const char *) NO_NNARGS;
 extern const char *armor_simple_name(struct obj *) NONNULL NONNULLARG1;
 /* suit_simple_name has its code in a NULL arg test
    conditional block, preventing NONNULLARG1 */
@@ -2358,6 +2359,7 @@ extern void raw_printf(const char *, ...) PRINTF_F(1, 2);
 extern void impossible(const char *, ...) PRINTF_F(1, 2);
 extern void config_error_add(const char *, ...) PRINTF_F(1, 2);
 extern void nhassert_failed(const char *, const char *, int);
+extern const char * replace(const char *, const char *, const char *);
 
 /* ### polyself.c ### */
 

@@ -18,6 +18,7 @@ static void execplinehandler(const char *);
 extern void maybe_play_sound(const char *);
 #endif
 #if defined(DUMPLOG) || defined(DUMPHTML) || defined(DUMPLOG_CORE)
+static const char *cartsay(const char *);
 
 /* keep the most recent DUMPLOG_MSG_COUNT messages */
 void
@@ -213,6 +214,11 @@ vpline(const char *line, va_list the_args)
     if ((gp.pline_flags & SUPPRESS_HISTORY) == 0)
         dumplogmsg(line);
 #endif
+
+    if (Role_if(PM_CARTOMANCER)) {
+        line = cartsay(line);
+    }
+
     /* use raw_print() if we're called too early (or perhaps too late
        during shutdown) or if we're being called recursively (probably
        via debugpline() in the interface code) */
@@ -739,6 +745,41 @@ nhassert_failed(const char *expression, const char *filepath, int line)
 
     impossible("nhassert(%s) failed in file '%s' at line %d",
                expression, filename, line);
+}
+
+/*Ben Collver's fixes*/
+const char *
+replace(const char *st, const char *orig, const char *repl)
+{
+    static char retval[TBUFSZ];
+    char buffer[TBUFSZ];
+    const char *ch, *pos;
+    size_t len;
+    memset(buffer, 0, TBUFSZ);
+    pos = st;
+    while ((ch = strstr(pos, orig))) {
+        len = (ch - pos);
+        strncat(buffer, pos, len);
+        strncat(buffer, repl, strlen(repl));
+        pos = (ch + strlen(orig));
+    }
+    if (pos == st) {
+        return st;
+    }
+    if (pos < (st + strlen(st))) {
+        strncat(buffer, pos, (st - pos));
+    }
+    strcpy(retval, buffer);
+    return retval;
+}
+
+const char *
+cartsay(const char *orig)
+{
+    orig = replace(orig, "read the scroll", "play the spell card");
+    orig = replace(orig, " reads a", " plays a");
+    orig = replace(orig, "scroll", "spell card");
+    return orig;
 }
 
 /*pline.c*/

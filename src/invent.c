@@ -5235,6 +5235,11 @@ static NEARDATA const char *names[] = {
     "Comestibles", "Potions", "Scrolls", "Spellbooks", "Wands", "Coins",
     "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms"
 };
+static NEARDATA const char *carnames[] = {
+    0, "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
+    "Comestibles", "Potions", "Spell Cards", "Rulebooks", "Wands", "Coins",
+    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms",
+};
 static NEARDATA const char oth_symbols[] = { CONTAINED_SYM, '\0' };
 static NEARDATA const char *oth_names[] = { "Bagged/Boxed items" };
 
@@ -5250,9 +5255,12 @@ let_to_name(char let, boolean unpaid, boolean showsym)
     int oclass = (let >= 1 && let < MAXOCLASSES) ? let : 0;
     unsigned len;
 
-    if (oclass)
-        class_name = names[oclass];
-    else if ((pos = strchr(oth_symbols, let)) != 0)
+    if (oclass) {
+	 if (Role_if(PM_CARTOMANCER))
+            class_name = carnames[oclass];
+        else
+	    class_name = names[oclass];
+    } else if ((pos = strchr(oth_symbols, let)) != 0)
         class_name = oth_names[pos - oth_symbols];
     else
         class_name = names[ILLOBJ_CLASS];

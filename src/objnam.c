@@ -148,6 +148,36 @@ static const struct Jitem Japanese_items[] = {
     { 0, "" }
 };
 
+static struct Jitem Cartomancer_items[] = {
+    /*{ LARGE_BOX, "deck box" },*/
+    /*{ LOCK_PICK, "worthless card" },*/
+    
+    { SHURIKEN, "razor card" },
+    { BOOMERANG, "warped card" },
+    
+    { HAWAIIAN_SHIRT, "graphic tee" },
+    
+    { EXPENSIVE_CAMERA, "holographic card" },
+    { CREDIT_CARD, "banned card" },
+    
+    { SACK, "card bag" },
+    { OILSKIN_SACK, "waterproof deckbox" },
+    { BAG_OF_HOLDING, "professional deckbox" },
+    { BAG_OF_TRICKS, "card trick bag" },
+#if 0
+    { LUCKSTONE, "lucky card" },
+    { HEALTHSTONE, "health insurance card" },
+    { LOADSTONE, "heavy card" },
+    { TOUCHSTONE, "siliceous card" },
+    { WHETSTONE, "diamond coated card" },
+    { FLINT, "flint card" },
+    { SLING_BULLET, "heavy die" },
+#endif
+    { 0, "" } 
+};
+
+static const char *Cartomancer_rarity(int otyp);
+
 static char *
 strprepend(char *s, const char *pref)
 {
@@ -240,6 +270,10 @@ obj_typename(int otyp)
         if (otyp == WOODEN_HARP || otyp == MAGIC_HARP)
             dn = "koto";
     }
+    if (Role_if(PM_CARTOMANCER)) {
+        actualn = Cartomancer_item_name(otyp, actualn);
+    }
+
     /* generic items don't have an actual-name; we shouldn't ever be called
        for those; pacify static analyzer without resorting to impossible() */
     if (!actualn)
@@ -254,14 +288,14 @@ obj_typename(int otyp)
         Strcpy(buf, "potion");
         break;
     case SCROLL_CLASS:
-        Strcpy(buf, "scroll");
+	Strcpy(buf, Role_if(PM_CARTOMANCER) ? "card": "scroll");
         break;
     case WAND_CLASS:
         Strcpy(buf, "wand");
         break;
     case SPBOOK_CLASS:
         if (otyp != SPE_NOVEL) {
-            Strcpy(buf, "spellbook");
+	    Strcpy(buf, Role_if(PM_CARTOMANCER) ? "rulebook": "spellbook");
         } else {
             Strcpy(buf, !nn ? "book" : "novel");
             nn = 0;
@@ -310,6 +344,13 @@ obj_typename(int otyp)
         xcalled(buf, BUFSZ - (dn ? (int) strlen(dn) + 3 : 0), "", un);
     if (dn)
         Sprintf(eos(buf), " (%s)", dn);
+   
+#if 0 /* Do we need this? */
+    if (Role_if(PM_CARTOMANCER)) {
+        buf = (char *) replace(buf, "scroll", "card");
+        buf = (char *) replace(buf, "spellbook", "rulebook");
+    }
+#endif
     return buf;
 }
 
@@ -611,6 +652,9 @@ xname_flags(
         if (typ == WOODEN_HARP || typ == MAGIC_HARP)
             dn = "koto";
     }
+    if (Role_if(PM_CARTOMANCER)) {
+        actualn = Cartomancer_item_name(typ, actualn);
+    }
     /* generic items don't have an actual-name; we shouldn't ever be called
        for those; pacify static analyzer without resorting to impossible() */
     if (!actualn)
@@ -862,10 +906,32 @@ xname_flags(
         }
         break;
     case SCROLL_CLASS:
-        Strcpy(buf, "scroll");
+	if (Role_if(PM_CARTOMANCER)) {
+            Strcpy(buf, Cartomancer_rarity(typ));
+            if (obj->quan > 1) {
+                Strcat(buf, "s");
+                pluralize = FALSE;
+            }
+        } else {
+	    Strcpy(buf, "scroll");
+	}
         if (!dknown)
             break;
-        if (nn) {
+
+	/* Cartomancer special cards */
+        if (nn && obj->otyp == SCR_CREATE_MONSTER 
+               && obj->corpsenm != NON_PM) {
+            Strcat(buf, " - ");
+
+            /* Strcat(buf, mons[obj->corpsenm].mname); */
+            Strcat(buf, mons[obj->corpsenm].pmnames[NEUTRAL]);
+#if 0
+        } else if (nn && obj->otyp == SCR_ZAPPING 
+               && obj->corpsenm != NON_PM) {
+            Strcat(buf, " - ");
+            Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
+#endif
+	} else if (nn) {
             Strcat(buf, " of ");
             Strcat(buf, actualn);
         } else if (un) {
@@ -900,16 +966,23 @@ xname_flags(
                 Sprintf(buf, "%s book", dn);
             break;
             /* end of tribute */
-        } else if (!dknown) {
-            Strcpy(buf, "spellbook");
+	} else if (!dknown) {
+            Strcpy(buf, Role_if(PM_CARTOMANCER) 
+                ? "rulebook": "spellbook");
         } else if (nn) {
             if (typ != SPE_BOOK_OF_THE_DEAD)
-                Strcpy(buf, "spellbook of ");
+                /* Strcpy(buf, "spellbook of "); */
+		Strcpy(buf, Role_if(PM_CARTOMANCER)
+                    ? "rulebook of ": "spellbook of ");
             Strcat(buf, actualn);
         } else if (un) {
-            xcalled(buf, BUFSZ - PREFIX, "spellbook", un);
+            /* xcalled(buf, BUFSZ - PREFIX, "spellbook", un); */
+	    xcalled(buf, BUFSZ - PREFIX, Role_if(PM_CARTOMANCER)
+                ? "rulebook": "spellbook", un);
         } else
-            Sprintf(buf, "%s spellbook", dn);
+            /* Sprintf(buf, "%s spellbook", dn); */
+	    Sprintf(eos(buf), "%s %s", dn, Role_if(PM_CARTOMANCER)
+                ? "rulebook": "spellbook");
         break;
     case RING_CLASS:
         if (!dknown)
@@ -4719,7 +4792,7 @@ readobjnam_postparse3(struct _readobjnam_data *d)
     d->typ = 0;
 
     if (d->actualn) {
-        const struct Jitem *j = Japanese_items;
+        const struct Jitem *j = Role_if(PM_CARTOMANCER) ? Cartomancer_items : Japanese_items;
 
         while (j->item) {
             if (!strcmpi(d->actualn, j->name)) {
@@ -5387,6 +5460,19 @@ Japanese_item_name(int i, const char *ordinaryname)
 }
 
 const char *
+Cartomancer_item_name(int i, const char *ordinaryname)
+{
+    const struct Jitem *j = Cartomancer_items;
+
+    while (j->item) {
+        if (i == j->item)
+            return j->name;
+        j++;
+    }
+    return ordinaryname;
+}
+
+const char *
 armor_simple_name(struct obj *armor)
 {
     const char *result = 0;
@@ -5649,6 +5735,31 @@ safe_qbuf(
     }
     /* assert( strlen(qbuf) < QBUFSZ ); */
     return qbuf;
+}
+
+static const char*
+Cartomancer_rarity(int otyp)
+{
+    int price = objects[otyp].oc_cost;
+    if (otyp == SCR_CREATE_MONSTER)
+        return "summon card";
+#if 0
+    if (otyp == SCR_ZAPPING)
+        return "zap card";
+#endif
+
+    /* Don't show the rarity if we have identified the card.
+     * We could, but it takes up inventory real-estate. */
+    if (objects[otyp].oc_name_known)
+        return "card";
+
+    if (price < 100)
+        return "common card";
+    if (price < 200)
+        return "uncommon card";
+    if (price < 300)
+        return "rare card";
+    return "legendary card";
 }
 
 /*objnam.c*/
