@@ -1836,6 +1836,13 @@ poly_obj(struct obj *obj, int id)
             fixup_oil(otmp, obj);
         break;
 
+    case SCROLL_CLASS:
+        if (Role_if(PM_CARTOMANCER)) {
+            You("feel guilty about defacing a card!");
+            adjalign(-5);
+        }
+        break;
+
     case SPBOOK_CLASS:
         while (otmp->otyp == SPE_POLYMORPH)
             otmp->otyp = rnd_class(gb.bases[SPBOOK_CLASS], SPE_BLANK_PAPER);
