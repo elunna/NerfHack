@@ -97,3 +97,5 @@ util/*.exp
 warnings.log
 src/nerfhack
 order.sh
+ported_patches/
+*.patch
