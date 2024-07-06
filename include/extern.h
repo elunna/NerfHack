@@ -744,6 +744,8 @@ extern int dogfood(struct monst *, struct obj *) NONNULLPTRS;
 extern boolean tamedog(struct monst *, struct obj *) NONNULLARG1;
 extern void abuse_dog(struct monst *) NONNULLARG1;
 extern void wary_dog(struct monst *, boolean) NONNULLARG1;
+extern struct monst * make_msummoned(struct permonst *, struct monst *, boolean, coordxy, coordxy);
+
 
 /* ### dogmove.c ### */
 
@@ -2539,6 +2541,8 @@ extern boolean cant_revive(int *, boolean, struct obj *) NO_NNARGS;
 extern boolean create_particular(void);
 extern boolean create_particular_from_buffer(char*);
 extern void forget(int);
+extern void use_moncard(struct obj *, int, int);
+
 
 /* ### rect.c ### */
 

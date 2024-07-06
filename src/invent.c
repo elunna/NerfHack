@@ -4866,6 +4866,11 @@ mergable(
         && (obj->oeaten != otmp->oeaten || obj->orotten != otmp->orotten))
         return FALSE;
 
+    /* Prevent summon card from merging incorrectly */
+    if (obj->oclass == SCROLL_CLASS
+        && ((obj->corpsenm != NON_PM && obj->corpsenm != otmp->corpsenm)))
+        return FALSE;
+
     if (obj->dknown != otmp->dknown
         || (obj->bknown != otmp->bknown && !Role_if(PM_CLERIC) &&
             (Blind || Hallucination))

@@ -756,6 +756,7 @@ montraits(
         mtmp2->mblinded = 0;
         mtmp2->mstun = 0;
         mtmp2->mconf = 0;
+	mtmp2->msummoned = 0;
         /* when traits are for a shopkeeper, dummy monster 'mtmp' won't
            have necessary eshk data for replmon() -> replshk() */
         if (mtmp2->isshk) {
@@ -3361,8 +3362,8 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         /* force shapeshifter into its base form or mimic to unhide */
         normal_shape(mdef);
 
-        if (mdef->data == &mons[PM_CLAY_GOLEM]) {
-            if (canseemon(mdef))
+        if (mdef->data == &mons[PM_CLAY_GOLEM] || mdef->msummoned) {
+            if (canseemon(mdef) && !mdef->msummoned)
                 pline(writing_vanishes, s_suffix(mon_nam(mdef)));
             /* !allow_cancel_kill is for Magicbane, where clay golem
                will be killed somewhere back up the call/return chain... */

@@ -1055,8 +1055,12 @@ explmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
        the m_unleash() slack message, so deliver it here instead */
     if (was_leashed)
         Your("leash falls slack.");
-    if (magr->mtame) /* give this one even if it was visible */
+    if (magr->mtame && !magr->msummoned) /* give this one even if it was visible */
         You(brief_feeling, "melancholy");
+
+     /* KMH -- Player gets blame for flame/freezing sphere */
+    if (magr->msummoned && !(result & M_ATTK_DEF_DIED))
+        setmangry(mdef, TRUE);
 
     return result;
 }

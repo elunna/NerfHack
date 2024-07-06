@@ -750,7 +750,7 @@ minliquid(struct monst *mtmp)
     int res;
 
     /* set up flag for mondead() and xkilled() */
-    iflags.sad_feeling = (mtmp->mtame && !canseemon(mtmp));
+    iflags.sad_feeling = (mtmp->mtame && !mtmp->msummoned && !canseemon(mtmp));
     res = minliquid_core(mtmp);
     /* always clear the flag */
     iflags.sad_feeling = FALSE;
@@ -965,6 +965,7 @@ mcalcdistress(void)
 static void
 m_calcdistress(struct monst *mtmp)
 {
+    struct obj *obj, *otmp;
     /* must check non-moving monsters once/turn in case they managed
        to end up in water or lava; note: when not in liquid they regen,
        shape-shift, timeout temporary maladies just like other monsters */
@@ -1006,6 +1007,28 @@ m_calcdistress(struct monst *mtmp)
         }
     }
     
+    if (mtmp->msummoned && mtmp->msummoned == 1) {
+	if (canseemon(mtmp)) {
+	    if (Hallucination)
+		pline("%s %s", Monnam(mtmp), rn2(2)
+		    ? "folds in on itself!"
+		    : "explodes into multicolored polygons!");
+	    else
+		pline("%s %s", Monnam(mtmp), rn2(2)
+		    ? "winks out of existence."
+		    : "vanishes in a puff of smoke.");
+	}
+	for (obj = mtmp->minvent; obj; obj = otmp) {
+	    otmp = obj->nobj;
+	    /*obj_extract_self(obj);*/
+	    if (mtmp->mx) {
+		mdrop_obj(mtmp, obj, FALSE);
+	    }
+	}
+	mongone(mtmp);
+	return;
+    }
+
     if (mtmp->mprotection) {
         if (mtmp->mprottime-- == 0) {
             mtmp->mprotection--;
@@ -2958,6 +2981,7 @@ corpse_chance(
     boolean was_swallowed) /* digestion */
 {
     struct permonst *mdat = mon->data;
+    struct obj *otmp;
     int i, tmp;
 
     if (mdat == &mons[PM_VLAD_THE_IMPALER] || mdat->mlet == S_LICH
@@ -2975,6 +2999,38 @@ corpse_chance(
                   s_suffix(mon_nam(mon)));
         return FALSE;
     }
+
+    /* Anything killed while playing as a cartomancer has 
+     * a chance of leaving behind a card. */
+    if (Role_if(PM_CARTOMANCER) && !(mon->data->geno & G_UNIQ)
+          && !mon->mtame && !mon->msummoned && !rn2(3)) {
+        switch (rnd(2)) {
+#if 0 /* Pending zappable cards */
+            case 1: { /* Wand zap card */
+                int otyp;
+                do {
+                    otyp = rnd_class(WAN_LIGHT, WAN_DELUGE);
+                } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
+                
+                otmp = mksobj(SCR_ZAPPING, FALSE, FALSE);
+                otmp->corpsenm = otyp;
+                break;
+            }
+#endif
+            default: /* Monster summon card */
+                otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+                otmp->corpsenm = monsndx(mon->data);
+                break;
+        }
+        place_object(otmp, mon->mx, mon->my);
+        newsym(mon->mx, mon->my);
+        return FALSE;
+    }
+    
+    /* Spell-beings can't leave corpses */
+    if (mon->msummoned)
+        return FALSE;
+    
     /* Gas spores always explode upon death */
     for (i = 0; i < NATTK; i++) {
         if (mdat->mattk[i].aatyp == AT_BOOM) {
@@ -3165,7 +3221,7 @@ monkilled(
               *fltxt ? " by the " : "", fltxt);
     else
         /* sad feeling is deferred until after potential life-saving */
-        iflags.sad_feeling = mdef->mtame ? TRUE : FALSE;
+        iflags.sad_feeling = mdef->mtame ? TRUE : FALSE && !mdef->msummoned;
 
     /* no corpse if digested or disintegrated or flammable golem burnt up;
        no corpse for a paper golem means no scrolls; golems that rust or

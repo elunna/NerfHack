@@ -2367,8 +2367,9 @@ arti_invoke(struct obj *obj)
             break;
         }
 	case SUMMONING: {
-	    /* TODO: Update to temporary spell beings */
-            create_critters(rnd(10), (struct permonst *) 0, TRUE);
+	    for (int i = 0; i < rn1(7, 4); i++) {
+                (void) make_msummoned((struct permonst *) 0, &gy.youmonst, TRUE, u.ux, u.uy);
+            }
             break;
         }
         case LIGHTNING_BOLT: {

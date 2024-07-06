@@ -309,6 +309,8 @@ mon_regen(struct monst *mon, boolean digest_meal)
         mon->mhp++;
     if (mon->mspec_used)
         mon->mspec_used--;
+     if (mon->msummoned)
+        mon->msummoned--;
     if (mon->mreflecttime)
         mon->mreflecttime--;
     if (digest_meal) {

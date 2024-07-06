@@ -805,7 +805,7 @@ score_targ(struct monst *mtmp, struct monst *mtarg)
         }
         /* And pets will hesitate to attack vastly stronger foes.
            This penalty will be discarded if master's in trouble. */
-        if (mtarg->m_lev > mtmp_lev + 4L)
+        if (mtarg->m_lev > mtmp_lev + 4L && !mtmp->msummoned)
             score -= (mtarg->m_lev - mtmp_lev) * 20L;
         /* All things being the same, go for the beefiest monster. This
            bonus should not be large enough to override the pet's aversion
@@ -970,7 +970,7 @@ dog_move(
     struct edog *edog = (mtmp->mtame && has_edog(mtmp)) ? EDOG(mtmp) : 0;
     struct obj *obj = (struct obj *) 0;
     xint16 otyp;
-    boolean cursemsg[9], do_eat = FALSE;
+    boolean cursemsg[9], summoned, do_eat = FALSE;
     boolean better_with_displacing = FALSE;
     coordxy nix, niy;      /* position mtmp is (considering) moving to */
     coordxy nx, ny; /* temporary coordinates */
@@ -991,6 +991,14 @@ dog_move(
         impossible("dog_move for non-pet?");
         return MMOVE_NOTHING;
     }
+
+    /*
+     * Similar to Angels and Guardians are spell beings - temporary
+     * magical manifestations of the spellcaster's mind.
+     * They don't eat/pickup objects - only fight.
+     * But, they aren't dismissed by conflict.
+     */
+    summoned = !mtmp->msummoned;
 
     omx = mtmp->mx;
     omy = mtmp->my;
@@ -1015,7 +1023,7 @@ dog_move(
     cursemsg[0] = FALSE; /* lint suppression */
     info[0] = 0;         /* ditto */
 
-    if (edog) {
+    if (edog || summoned) {
         j = dog_invent(mtmp, edog, udist);
         if (j == 2)
             return MMOVE_DIED; /* died */

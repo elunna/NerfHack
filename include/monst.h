@@ -201,6 +201,7 @@ struct monst {
     char former_rank[25];  /* for bones' ghost rank in their former life */
 
     int meating;           /* monster is eating timeout */
+    int msummoned;         /* is a temporarily summoned being */
     int mreflecttime;      /* timeout for monster reflection spell */
     uchar mprotection;     /* monster protection spell */
     uchar mprottime;       /* timeout for monster protection spell */

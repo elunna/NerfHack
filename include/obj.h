@@ -442,6 +442,8 @@ struct obj {
      || (otmp)->otyp == CAN_OF_GREASE || (otmp)->otyp == MAGIC_MARKER        \
      || (otmp)->oclass == COIN_CLASS || (otmp)->oartifact == ART_ORB_OF_FATE \
      || (otmp)->otyp == CANDY_BAR || (otmp)->otyp == HAWAIIAN_SHIRT)
+#define is_moncard(otmp) \
+    (otmp->otyp == SCR_CREATE_MONSTER && otmp->corpsenm != NON_PM)
 
 /* special stones */
 #define is_graystone(obj)                                 \

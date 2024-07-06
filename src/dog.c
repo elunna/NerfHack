@@ -614,6 +614,12 @@ mon_catchup_elapsed_time(
         else
             mtmp->mfleetim -= imv;
     }
+    if (mtmp->msummoned) {
+        if (imv >= (int) mtmp->msummoned - 1)
+            mtmp->msummoned = 2;
+        else
+            mtmp->msummoned -= imv;
+    }
     if (mtmp->mreflecttime) {
         if (imv >= (int) mtmp->mreflecttime)
             mtmp->mreflecttime = 1;
@@ -1321,6 +1327,70 @@ abuse_dog(struct monst *mtmp)
         if (!mtmp->mtame)
             newsym(mtmp->mx, mtmp->my);
     }
+}
+
+/* Creates a temporary spell-being monster with a pre-determined
+ * lifetime. Returns the monst struct of the monster created, or
+ * a null pointer if unsuccessful.
+ *
+ * This being does not generate with items and does not
+ * count toward the monster's birth count, and it does not leave
+ * a corpse or give much XP.
+ *
+ * The msummoned must start with a lifespan. To determine this
+ * depends on knowing who cast it, so we need to receive the caster.
+ *
+ * (mnum, caster, tame, x, y)
+ */
+struct monst * make_msummoned(
+    struct permonst *pm,
+    struct monst *caster,
+    boolean tame,
+    coordxy x, coordxy y)
+{
+    struct monst *mtmp = (struct monst *) 0;
+    int trycnt = 100;
+    coord cc;
+    cc.x = x, cc.y = y;
+    do {
+        if (!pm)
+            pm = rndmonst();
+
+        /* MM_IGNOREWATER ? */
+        if (enexto(&cc, x, y, pm))
+            mtmp = makemon(pm, cc.x, cc.y,
+                           MM_EDOG | NO_MINVENT | MM_NOCOUNTBIRTH);
+    } while (!mtmp && --trycnt > 0);
+
+    if (!mtmp)
+        return (struct monst *) 0; /* genocided */
+
+    if (tame) {
+        initedog(mtmp);
+        mtmp->mtame = 10;
+        /* mtmp->uexp = 1; */ /* You get experience for its kills */
+        u.uconduct.pets++;
+    }
+    mtmp->msleeping = 0;
+    set_malign(mtmp); /* more alignment changes */
+    newsym(mtmp->mx, mtmp->my);
+
+    /* must wield weapon immediately since pets will otherwise drop it */
+    if (mtmp->mtame && attacktype(mtmp->data, AT_WEAP)) {
+        mtmp->weapon_check = NEED_HTH_WEAPON;
+        (void) mon_wield_item(mtmp);
+    }
+
+    /* Spell-being lifetime */
+    if (caster == &gy.youmonst)
+        mtmp->msummoned = 15 + u.ulevel * 4;
+    else
+        mtmp->msummoned = 15 + mtmp->m_lev * 4;
+
+    if (canseemon(mtmp)) {
+        pline("%s suddenly appears!", Amonnam(mtmp));
+    }
+    return mtmp;
 }
 
 /*dog.c*/

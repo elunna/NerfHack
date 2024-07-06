@@ -1601,6 +1601,12 @@ seffect_create_monster(struct obj **sobjp)
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
 
+    if (is_moncard(sobj) || (Role_if(PM_CARTOMANCER)
+                && sobj->otyp == SPE_CREATE_MONSTER)) {
+	use_moncard(sobj, u.ux, u.uy);
+	gk.known = TRUE;
+	return;
+    }
     if (create_critters(1 + ((confused || scursed) ? 12 : 0)
                         + ((sblessed || rn2(73)) ? 0 : rnd(4)),
                         confused ? &mons[PM_ACID_BLOB]
@@ -3303,4 +3309,25 @@ create_particular_from_buffer(char* bufp)
 
     return FALSE;
 }
+
+/* This handles a scroll of create monster that is keyed to a
+ * specific monster. Used when playing as a cartomancer */
+void
+use_moncard(
+    struct obj *sobj,
+    int x, int y)
+{
+    struct permonst *pm = sobj->corpsenm == NON_PM
+            ? rndmonst() : &mons[sobj->corpsenm];
+
+    (void) make_msummoned(pm, &gy.youmonst,
+                          sobj->cursed ? FALSE : TRUE, x, y);
+#if 0
+    if (sobj->oclass == SCROLL_CLASS) {
+        obj_extract_self(sobj);
+        obfree(sobj, (struct obj *) 0);
+    }
+#endif
+}
+
 /*read.c*/
