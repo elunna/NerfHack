@@ -12,7 +12,6 @@
 #define PAY_BROKE (-2)
 
 static void makekops(coord *);
-static void call_kops(struct monst *, boolean);
 static void kops_gone(boolean);
 
 #define NOTANGRY(mon) ((mon)->mpeaceful)
@@ -387,7 +386,7 @@ addupbill(struct monst *shkp)
     return total;
 }
 
-static void
+void
 call_kops(struct monst *shkp, boolean nearshop)
 {
     /* Keystone Kops srt@ucla */
