@@ -1110,6 +1110,9 @@ domonnoise(struct monst *mtmp)
             case PM_TOURIST:
                 verbl_msg = "Aloha.";
                 break;
+	    case PM_CARTOMANCER:
+                pline_msg = "informs you that their deck has no pathetic cards.";
+                break;
             default:
                 pline_msg = "discusses dungeon exploration.";
                 break;

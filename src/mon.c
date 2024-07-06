@@ -5665,6 +5665,7 @@ usmellmon(struct permonst *mdat)
             msg_given = TRUE;
             break;
         case PM_CAVE_DWELLER:
+	case PM_CARTOMANCER:
         case PM_BARBARIAN:
         case PM_NEANDERTHAL:
             You("smell body odor.");
