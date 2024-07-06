@@ -35,6 +35,7 @@ static int
 enermod(int en)
 {
     switch (Role_switch) {
+    case PM_CARTOMANCER:
     case PM_CLERIC:
     case PM_WIZARD:
         return (2 * en);

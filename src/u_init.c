@@ -57,6 +57,17 @@ static struct trobj Barbarian[] = {
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
+static struct trobj Cartomancer[] = {
+    { DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { SHURIKEN, 0, GEM_CLASS, 60, UNDEF_BLESS },
+    { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 4, UNDEF_BLESS },
+    { SCR_CREATE_MONSTER, 0, SCROLL_CLASS, 1, UNDEF_BLESS },
+    { SCR_CREATE_MONSTER, 1, SCROLL_CLASS, 1, UNDEF_BLESS },
+    { SCR_CREATE_MONSTER, 2, SCROLL_CLASS, 1, UNDEF_BLESS },
+    { 0, 0, 0, 0, 0 }
+};
 static struct trobj Cave_man[] = {
 #define C_AMMO 2
     { CLUB, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
@@ -296,6 +307,31 @@ static const struct def_skill Skill_B[] = {
     { P_RIDING, P_SKILLED },
     { P_TWO_WEAPON_COMBAT, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_MASTER },
+    { P_NONE, 0 }
+};
+static const struct def_skill Skill_Car[] = {
+    { P_DAGGER, P_EXPERT },	    /* Demote? Wizards already dominate dagger. */
+    { P_KNIFE, P_SKILLED },
+    { P_AXE, P_BASIC },		    /* Eliminate? */
+    { P_SHORT_SWORD, P_BASIC },
+    { P_CLUB, P_BASIC },
+    { P_MACE, P_BASIC },
+    { P_QUARTERSTAFF, P_BASIC },
+    { P_POLEARMS, P_BASIC },	    /* Eliminate? */
+    { P_SPEAR, P_BASIC },
+    { P_TRIDENT, P_BASIC },
+    { P_SLING, P_SKILLED },	    /* Demote? */
+    { P_DART, P_EXPERT },	    /* Demote? */
+    { P_SHURIKEN, P_EXPERT },
+    { P_ATTACK_SPELL, P_BASIC },
+    { P_HEALING_SPELL, P_BASIC },
+    { P_DIVINATION_SPELL, P_EXPERT },
+    { P_ENCHANTMENT_SPELL, P_SKILLED },
+    { P_ESCAPE_SPELL, P_SKILLED },
+    { P_MATTER_SPELL, P_SKILLED },
+    /* Riding feels too strong at expert - maybe skilled instead? */
+    { P_RIDING, P_EXPERT },         /* Card games on motorcycles. */
+    { P_BARE_HANDED_COMBAT, P_SKILLED }, /* Definitely demote */
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_C[] = {
@@ -632,6 +668,12 @@ u_init_role(void)
         knows_class(ARMOR_CLASS);
         skill_init(Skill_B);
         break;
+    case PM_CARTOMANCER:
+        ini_inv(Cartomancer);
+        skill_init(Skill_Car);
+        /* knows_object(PLAYING_CARD_DECK); */
+        /* knows_object(DECK_OF_FATE); */
+        break;
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
         ini_inv(Cave_man);
@@ -758,7 +800,7 @@ u_init_race(void)
          */
         if (Role_if(PM_CLERIC) || Role_if(PM_WIZARD)
             || Role_if(PM_HEALER) || Role_if(PM_ROGUE)
-            || Role_if(PM_ARCHEOLOGIST)) {
+            || Role_if(PM_ARCHEOLOGIST) || Role_if(PM_CARTOMANCER)) {
             static int trotyp[] = { WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP,
                                     BELL,         BUGLE,       LEATHER_DRUM };
             Instrument[0].trotyp = ROLL_FROM(trotyp);
@@ -1007,6 +1049,9 @@ restricted_spell_discipline(int otyp)
     case PM_BARBARIAN:
         skills = Skill_B;
         break;
+    case PM_CARTOMANCER:
+        skills = Skill_Car;
+        break;
     case PM_CAVE_DWELLER:
         skills = Skill_C;
         break;
@@ -1236,7 +1281,7 @@ static void
 ini_inv(struct trobj *trop)
 {
     struct obj *obj;
-    int otyp;
+    int otyp, i;
     boolean got_sp1 = FALSE; /* got a level 1 spellbook? */
 
     while (trop->trclass) {
@@ -1271,6 +1316,18 @@ ini_inv(struct trobj *trop)
          * was UNDEF_TYP or not after this. */
 
         otyp = ini_inv_obj_substitution(trop, obj);
+
+	/* Set up cartomancer cards */
+        if (Role_if(PM_CARTOMANCER) && obj->otyp == SCR_CREATE_MONSTER) {
+            do {
+                i = rn2(NUMMONS);
+            } while ((type_is_pname(&mons[i])
+                || (mons[i].geno & G_UNIQ)
+                || (mons[i].geno & G_NOGEN)));
+            obj->corpsenm = i;
+            if (rn2(2))
+                bless(obj);
+        }
 
         /* nudist gets no armor */
         if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS) {
