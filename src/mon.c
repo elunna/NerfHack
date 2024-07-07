@@ -3006,11 +3006,10 @@ corpse_chance(
     if (Role_if(PM_CARTOMANCER) && !(mon->data->geno & G_UNIQ)
           && !mon->mtame && !mon->msummoned && !rn2(CHANCE_CARD_DROP)) {
 	i = rnd(20);
-        switch (rnd(20)) {
+        switch (rnd(16)) {
             case 1:
             case 2:
-            case 3:
-            case 4: { /* Wand zap card. */ 
+            case 3: { /* Wand zap card. */ 
                 int otyp;
                 do {
                     otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
@@ -3019,9 +3018,9 @@ corpse_chance(
                 otmp->corpsenm = otyp;
                 break;
             }
+	    case 4:
 	    case 5:
-	    case 6: /* More ammo. This should be fairly rare since the player
-		can get a stack of 6 to 11. */
+	    case 6: /* More ammo. Player can get a stack of 6 to 11. */
 		otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
 		break;
             default: /* Monster summon card */
