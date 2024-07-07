@@ -793,6 +793,7 @@ m_initinv(struct monst *mtmp)
             (void) mongets(mtmp, SMALL_SHIELD);
             mkmonmoney(mtmp, (long) rn1(10, 20));
 	} else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
+	    /* Dal Zethire */
             for (cnt = rn2(3); cnt < 4; cnt++) {
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
                 curse(otmp);
