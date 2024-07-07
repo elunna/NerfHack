@@ -183,8 +183,10 @@ resist_reduce(int amount, int which)
     tmp = ceil((float) (amount * tmp));
 
     /* debug line */
+#if 0
     if (flags.showdamage && wizard)
         pline("(in: %d  out: %d)", amount, (int) tmp);
+#endif
     return (int) tmp;
 }
 
