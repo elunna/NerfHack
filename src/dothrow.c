@@ -636,7 +636,12 @@ hitfloor(
         }
         pline("%s %s the %s.", Doname2(obj), otense(obj, "hit"), surf);
     }
-
+    /* When Cartomancer throws card down */
+    if (is_moncard(obj)) {
+        use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
+        obfree(obj, (struct obj *) 0);
+        return;
+    }
     if (hero_breaks(obj, u.ux, u.uy, BRK_FROM_INV))
         return;
     if (ship_object(obj, u.ux, u.uy, FALSE))
@@ -1294,6 +1299,9 @@ toss_up(struct obj *obj, boolean hitsroof)
 
     if (obj->oclass == POTION_CLASS) {
         potionhit(&gy.youmonst, obj, POTHIT_HERO_THROW);
+    } else if (is_moncard(obj)) {
+        use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
+        obfree(obj, (struct obj *) 0);
     } else if (breaktest(obj)) {
         int blindinc;
 
@@ -1477,6 +1485,8 @@ throwit(struct obj *obj,
             impaired = (Confusion || Stunned || Blind
                         || Hallucination || Fumbling),
             tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
+
+    boolean carding = Role_if(PM_CARTOMANCER) && obj->otyp == SCR_CREATE_MONSTER;
 
     /* KMH -- Handle Plague here */
     if (uwep && uwep->oartifact == ART_PLAGUE &&
@@ -1672,6 +1682,13 @@ throwit(struct obj *obj,
 
         if (obj_gone)
             gt.thrownobj = (struct obj *) 0;
+    }
+
+    /* Cartomancer summon cards */
+    if (obj && gt.thrownobj && carding) {
+        use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
+        obfree(obj, (struct obj *) 0);
+        gt.thrownobj = (struct obj *) 0;
     }
 
     if (!gt.thrownobj) {
@@ -2163,6 +2180,10 @@ thitmonst(
                         ++tmp;
                 }
             }
+	} else if (is_moncard(obj)) {
+            use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
+            obfree(obj, (struct obj *) 0);
+            return 1;
         } else { /* thrown non-ammo or applied polearm/grapnel */
             if (otyp == BOOMERANG) /* arbitrary */
                 tmp += 4;
