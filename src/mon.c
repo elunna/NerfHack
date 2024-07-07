@@ -3000,23 +3000,30 @@ corpse_chance(
         return FALSE;
     }
 
+#define CHANCE_CARD_DROP 3
     /* Anything killed while playing as a cartomancer has 
      * a chance of leaving behind a card. */
     if (Role_if(PM_CARTOMANCER) && !(mon->data->geno & G_UNIQ)
-          && !mon->mtame && !mon->msummoned && !rn2(3)) {
-        switch (rnd(2)) {
-	    /* Wand zap card. Avoid wishing because it's too powerful and nothing because
-	     * it's useless. */
-            case 1: { 
+          && !mon->mtame && !mon->msummoned && !rn2(CHANCE_CARD_DROP)) {
+	i = rnd(20);
+        switch (rnd(20)) {
+            case 1:
+            case 2:
+            case 3:
+            case 4: { /* Wand zap card. */ 
                 int otyp;
                 do {
                     otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
                 } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
-                
                 otmp = mksobj(SCR_ZAPPING, FALSE, FALSE);
                 otmp->corpsenm = otyp;
                 break;
             }
+	    case 5: /* More ammo. This should be fairly rare since the player
+		can get a stack of 6 to 11. With these odds, they get a 1 in 20 chance
+		of more razor cards when a card drop does occur. */
+		otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
+		break;
             default: /* Monster summon card */
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
                 otmp->corpsenm = monsndx(mon->data);
@@ -3026,6 +3033,7 @@ corpse_chance(
         newsym(mon->mx, mon->my);
         return FALSE;
     }
+#undef CHANCE_CARD_DROP
     
     /* Spell-beings can't leave corpses */
     if (mon->msummoned)
