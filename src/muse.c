@@ -954,13 +954,23 @@ use_defensive(struct monst *mtmp)
             pm = fish = &mons[PM_ACID_BLOB];
         else if (is_pool(mtmp->mx, mtmp->my))
             fish = &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
+
+	/* Cartomancer effects */
+	if (is_moncard(otmp)) {
+            pm = &mons[otmp->corpsenm];
+            cnt = 1; /* Same as for player */
+        }
+
         mreadmsg(mtmp, otmp);
         while (cnt--) {
             /* `fish' potentially gives bias towards water locations;
                `pm' is what to actually create (0 => random) */
             if (!enexto(&cc, mtmp->mx, mtmp->my, fish))
                 break;
-            mon = makemon(pm, cc.x, cc.y, NO_MM_FLAGS);
+	    if (Role_if(PM_CARTOMANCER))
+                mon = make_msummoned(pm, mtmp, FALSE, cc.x, cc.y);
+	    else
+		mon = makemon(pm, cc.x, cc.y, NO_MM_FLAGS);
             if (mon && canspotmon(mon))
                 known = TRUE;
         }
