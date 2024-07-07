@@ -3748,6 +3748,11 @@ getprice(struct obj *obj, boolean shk_buying)
 {
     long tmp = (long) objects[obj->otyp].oc_cost;
 
+    /* Scale summon card price with monster difficulty */
+    if (obj->otyp == SCR_CREATE_MONSTER && obj->corpsenm != NON_PM) {
+        tmp = 10L * mons[obj->corpsenm].difficulty;
+    }
+
     if (obj->oartifact) {
         tmp = arti_cost(obj);
         if (shk_buying)
