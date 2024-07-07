@@ -159,6 +159,11 @@ WEAPON("dart", NoDes,
 WEAPON("shuriken", "throwing star",
        0, 1, 0, 35,   4,   5,  8,  6, 2, P,   -P_SHURIKEN, IRON, HI_METAL,
                                                         SHURIKEN),
+/* The cartomancer's shuriken. */
+WEAPON("razor card", NoDes,
+       1, 1, 0, 0,   1,   5,  6,  6, 1, P,   -P_SHURIKEN, PLASTIC, HI_METAL,
+                                                        RAZOR_CARD),
+
 WEAPON("boomerang", NoDes,
        1, 1, 0, 15,   5,  20,  9,  9, 0, B,   -P_BOOMERANG, WOOD, HI_WOOD,
                                                         BOOMERANG),

@@ -152,14 +152,10 @@ static struct Jitem Cartomancer_items[] = {
     /*{ LARGE_BOX, "deck box" },*/
     /*{ LOCK_PICK, "worthless card" },*/
     
-    { SHURIKEN, "razor card" },
     { BOOMERANG, "warped card" },
-    
     { HAWAIIAN_SHIRT, "graphic tee" },
-    
     { EXPENSIVE_CAMERA, "holographic card" },
     { CREDIT_CARD, "banned card" },
-    
     { SACK, "card bag" },
     { OILSKIN_SACK, "waterproof deckbox" },
     { BAG_OF_HOLDING, "professional deckbox" },
