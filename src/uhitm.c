@@ -1459,6 +1459,9 @@ hmon_hitmon_misc_obj(
         hmd->dmg = 1;
         break;
     case EXPENSIVE_CAMERA:
+	/* This is a holographic card for cartomancers */
+	if (Role_if(PM_CARTOMANCER))
+	    break;
         You("succeed in destroying %s.  Congratulations!",
             ysimple_name(obj));
         release_camera_demon(obj, u.ux, u.uy);

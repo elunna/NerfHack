@@ -1732,7 +1732,7 @@ ship_object(struct obj *otmp, coordxy x, coordxy y, boolean shop_floor_obj)
         const char *result;
 
         if (objects[otmp->otyp].oc_material == GLASS
-            || otmp->otyp == EXPENSIVE_CAMERA) {
+            || (otmp->otyp == EXPENSIVE_CAMERA && !Role_if(PM_CARTOMANCER))) {
             if (otmp->otyp == MIRROR)
                 change_luck(-2);
             result = "crash";

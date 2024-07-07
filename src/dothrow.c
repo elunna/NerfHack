@@ -2547,7 +2547,9 @@ breakobj(
         /* monster breathing isn't handled... [yet?] */
         break;
     case EXPENSIVE_CAMERA:
-        release_camera_demon(obj, x, y);
+	/* The camera is played as a holographic card for cartomancers - it can't break */
+	if (!Role_if(PM_CARTOMANCER))
+	    release_camera_demon(obj, x, y);
         break;
     case EGG:
         /* breaking your own eggs is bad luck */
@@ -2619,6 +2621,9 @@ breaktest(struct obj *obj)
         return TRUE;
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case EXPENSIVE_CAMERA:
+	if (Role_if(PM_CARTOMANCER))
+            return 0;
+        /* FALLTHROUGH */
     case POT_WATER: /* really, all potions */
     case EGG:
     case CREAM_PIE:
