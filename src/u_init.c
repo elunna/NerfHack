@@ -671,8 +671,8 @@ u_init_role(void)
     case PM_CARTOMANCER:
         ini_inv(Cartomancer);
         skill_init(Skill_Car);
-        /* knows_object(PLAYING_CARD_DECK); */
-        /* knows_object(DECK_OF_FATE); */
+        knows_object(PLAYING_CARD_DECK);
+        knows_object(DECK_OF_FATE);
         break;
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
