@@ -683,6 +683,15 @@ xname_flags(
                 obj->known = 1;
         }
     }
+
+    /* Cartomancers are masters of cards, they know everything about them. */
+    if (Role_if(PM_CARTOMANCER)) {
+        if (obj->otyp == RAZOR_CARD) {
+	    obj->known = 1;
+	    obj->bknown = 1;
+        }
+    }
+
     if (iflags.override_ID) {
         known = dknown = bknown = TRUE;
         nn = 1;
