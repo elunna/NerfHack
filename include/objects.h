@@ -161,7 +161,7 @@ WEAPON("shuriken", "throwing star",
                                                         SHURIKEN),
 /* The cartomancer's shuriken. */
 WEAPON("razor card", NoDes,
-       1, 1, 0, 0,   1,   5,  6,  6, 1, P,   -P_SHURIKEN, PLASTIC, HI_METAL,
+       1, 1, 0,  0,   1,   5,  6,  6, 2, P,   -P_SHURIKEN, PLASTIC, HI_METAL,
                                                         RAZOR_CARD),
 
 WEAPON("boomerang", NoDes,
