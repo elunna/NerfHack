@@ -29,6 +29,7 @@ cost(struct obj *otmp)
     case SCR_AMNESIA:
     case SCR_FIRE:
     case SCR_EARTH:
+    case SCR_ZAPPING:
         return 8;
     case SCR_DESTROY_ARMOR:
     case SCR_CREATE_MONSTER:
@@ -412,6 +413,13 @@ dowrite(struct obj *pen)
         /* 0: delivered in-game via external event (or randomly for fake mail);
            1: from bones or wishing; 2: written with marker */
         new_obj->spe = 2;
+#endif
+
+#if 0 /* TODO: Pending implementation of wand of wonder */
+    /* Only allow writing scrolls of zapping keyed to wonder */
+    if (new_obj->otyp == SCR_ZAPPING)
+        new_obj->corpsenm = WAN_WONDER;
+
 #endif
     /* unlike alchemy, for example, a successful result yields the
        specifically chosen item so hero recognizes it even if blind;

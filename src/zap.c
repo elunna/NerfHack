@@ -1838,6 +1838,11 @@ poly_obj(struct obj *obj, int id)
         break;
 
     case SCROLL_CLASS:
+	/* Avoid creating scrolls of zapping from polypiling.
+	 * Maybe cartomancers should be able to?? */
+	while (otmp->otyp == SCR_ZAPPING) {
+            otmp->otyp = rnd_class(SCR_ENCHANT_ARMOR, SCR_STINKING_CLOUD);
+        }
         if (Role_if(PM_CARTOMANCER)) {
             You("feel guilty about defacing a card!");
             adjalign(-5);
@@ -2489,6 +2494,10 @@ zappable(struct obj *wand)
     int wrestchance = (wand->blessed ? 7 
                                      : (wand->cursed ? WAND_WREST_CHANCE 
                                                      : 23));
+    /* Not a wand, but definitely zappable! */
+    if (wand->otyp == SCR_ZAPPING)
+        return TRUE;
+
     if (wand->spe < 0 || (wand->spe == 0 && rn2(wrestchance)))
         return 0;
     if (wand->spe == 0)
@@ -2576,6 +2585,10 @@ zap_ok(struct obj *obj)
 {
     if (obj && obj->oclass == WAND_CLASS)
         return GETOBJ_SUGGEST;
+    /* Cartomancers can 'zap' zapping cards. */
+    if (obj && obj->oclass == SCROLL_CLASS && obj->otyp == SCR_ZAPPING)
+        return GETOBJ_SUGGEST;
+
     return GETOBJ_EXCLUDE;
 }
 
@@ -2597,6 +2610,30 @@ dozap(void)
         return ECMD_CANCEL;
 
     check_unpaid(obj);
+
+    /* Handle zappable effect cards here */
+    if (obj->otyp == SCR_ZAPPING) {
+        struct obj *pseudo;
+        if (obj->corpsenm == NON_PM)
+            impossible("seffects: SCR_WAND_ZAP has no zap type!");
+
+        pseudo = mksobj(obj->corpsenm, FALSE, FALSE);
+        pseudo->blessed = pseudo->cursed = 0;
+        pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
+
+        if (!(objects[pseudo->otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
+            if (!Blind)
+                pline("%s glows and fades.", The(xname(obj)));
+        } else {
+            gc.current_wand = pseudo;
+            weffects(pseudo);
+            pseudo = gc.current_wand;
+            gc.current_wand = 0;
+        }
+        obfree(pseudo, NULL);
+        useup(obj);
+        return 1;
+    }
 
     need_dir = objects[obj->otyp].oc_dir != NODIR;
     if (!zappable(obj)) {

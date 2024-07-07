@@ -673,6 +673,7 @@ u_init_role(void)
         skill_init(Skill_Car);
         knows_object(PLAYING_CARD_DECK);
         knows_object(DECK_OF_FATE);
+        knows_object(SCR_ZAPPING);
         break;
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
@@ -1322,8 +1323,7 @@ ini_inv(struct trobj *trop)
             do {
                 i = rn2(NUMMONS);
             } while ((type_is_pname(&mons[i])
-                || (mons[i].geno & G_UNIQ)
-                || (mons[i].geno & G_NOGEN)));
+                || (mons[i].geno & G_UNIQ) || (mons[i].geno & G_NOGEN)));
             obj->corpsenm = i;
             if (rn2(2))
                 bless(obj);

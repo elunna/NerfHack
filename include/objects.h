@@ -1236,6 +1236,10 @@ SCROLL("punishment",            "VE FORBRYDERNE",  1,  15, 300,
                                                         SCR_PUNISHMENT),
 SCROLL("charging",                "EHCUM MEKCHA",  1,  15, 300,
                                                         SCR_CHARGING),
+/* The scroll of zapping is utilitized for cartomancers as zappable cards.
+ * It should not normally appear for other roles. */
+SCROLL("zapping",   	                "ZAP'EM",  1,   0,  50,
+							SCR_ZAPPING),
 SCROLL("stinking cloud",             "VELOX NEB",  1,  15, 300,
                                                         SCR_STINKING_CLOUD),
     /* Extra descriptions, shuffled into use at start of new game.

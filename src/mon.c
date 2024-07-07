@@ -3005,18 +3005,18 @@ corpse_chance(
     if (Role_if(PM_CARTOMANCER) && !(mon->data->geno & G_UNIQ)
           && !mon->mtame && !mon->msummoned && !rn2(3)) {
         switch (rnd(2)) {
-#if 0 /* Pending zappable cards */
-            case 1: { /* Wand zap card */
+	    /* Wand zap card. Avoid wishing because it's too powerful and nothing because
+	     * it's useless. */
+            case 1: { 
                 int otyp;
                 do {
-                    otyp = rnd_class(WAN_LIGHT, WAN_DELUGE);
+                    otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
                 } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
                 
                 otmp = mksobj(SCR_ZAPPING, FALSE, FALSE);
                 otmp->corpsenm = otyp;
                 break;
             }
-#endif
             default: /* Monster summon card */
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
                 otmp->corpsenm = monsndx(mon->data);

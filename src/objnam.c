@@ -919,18 +919,14 @@ xname_flags(
             break;
 
 	/* Cartomancer special cards */
-        if (nn && obj->otyp == SCR_CREATE_MONSTER 
-               && obj->corpsenm != NON_PM) {
+        if (nn && obj->otyp == SCR_CREATE_MONSTER && obj->corpsenm != NON_PM) {
             Strcat(buf, " - ");
-
             /* Strcat(buf, mons[obj->corpsenm].mname); */
             Strcat(buf, mons[obj->corpsenm].pmnames[NEUTRAL]);
-#if 0
         } else if (nn && obj->otyp == SCR_ZAPPING 
                && obj->corpsenm != NON_PM) {
             Strcat(buf, " - ");
             Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
-#endif
 	} else if (nn) {
             Strcat(buf, " of ");
             Strcat(buf, actualn);
@@ -5065,6 +5061,10 @@ readobjnam(char *bp, struct obj *no_wish)
     d.otmp = d.typ ? mksobj(d.typ, TRUE, FALSE) : mkobj(d.oclass, FALSE);
     d.typ = d.otmp->otyp, d.oclass = d.otmp->oclass; /* what we actually got */
 
+#if 0
+    if (typ == SCR_ZAPPING)
+        otmp->corpsenm = WAN_WONDER;
+#endif
     /* if player specified a reasonable count, maybe honor it;
        quantity for gold is handled elsewhere and d.cnt is 0 for it here */
     if (d.otmp->globby) {
@@ -5743,10 +5743,8 @@ Cartomancer_rarity(int otyp)
     int price = objects[otyp].oc_cost;
     if (otyp == SCR_CREATE_MONSTER)
         return "summon card";
-#if 0
     if (otyp == SCR_ZAPPING)
         return "zap card";
-#endif
 
     /* Don't show the rarity if we have identified the card.
      * We could, but it takes up inventory real-estate. */

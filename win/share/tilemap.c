@@ -127,7 +127,7 @@ struct tiles_used {
     char tilenam[MAX_TILENAM];
     char references[1024];
 };
-struct tiles_used *tilelist[2500] = { 0 };
+struct tiles_used *tilelist[3000] = { 0 };
 
 /* Some special tiles used for init of some things */
 int TILE_stone = 0,       /* will get set to correct tile later */

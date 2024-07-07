@@ -25,6 +25,7 @@ static void seffect_confuse_monster(struct obj **);
 static void seffect_scare_monster(struct obj **);
 static void seffect_remove_curse(struct obj **);
 static void seffect_create_monster(struct obj **);
+static void seffect_zapping(struct obj **);
 static void seffect_enchant_weapon(struct obj **);
 static void seffect_taming(struct obj **);
 static void seffect_genocide(struct obj **);
@@ -1619,6 +1620,30 @@ seffect_create_monster(struct obj **sobjp)
 }
 
 static void
+seffect_zapping(struct obj **sobjp)
+{
+    struct obj *sobj = *sobjp;
+    struct obj *pseudo;
+    if (sobj->corpsenm == NON_PM)
+	impossible("seffects: SCR_WAND_ZAP has no zap type!");
+
+    pseudo = mksobj(sobj->corpsenm, FALSE, FALSE);
+    pseudo->blessed = pseudo->cursed = 0;
+    pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
+
+    if (!(objects[pseudo->otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
+	if (!Blind)
+	    pline("%s glows and fades.", The(xname(sobj)));
+    } else {
+	gc.current_wand = pseudo;
+	weffects(pseudo);
+	pseudo = gc.current_wand;
+	gc.current_wand = 0;
+    }
+    obfree(pseudo, NULL);
+}
+
+static void
 seffect_enchant_weapon(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
@@ -2241,6 +2266,9 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
     case SPE_CREATE_MONSTER:
         seffect_create_monster(&sobj);
         break;
+    case SCR_ZAPPING:
+	seffect_zapping(&sobj);
+	break;
     case SCR_ENCHANT_WEAPON:
         seffect_enchant_weapon(&sobj);
         break;

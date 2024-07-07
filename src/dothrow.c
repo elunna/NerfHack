@@ -1488,6 +1488,20 @@ throwit(struct obj *obj,
 
     boolean carding = Role_if(PM_CARTOMANCER) && obj->otyp == SCR_CREATE_MONSTER;
 
+    /* Handle thrown effect cards here */
+    if (obj->otyp == SCR_ZAPPING) {
+        struct obj *pseudo = mksobj(obj->corpsenm, FALSE, FALSE);
+        pseudo->blessed = pseudo->cursed = 0;
+        pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
+        gc.current_wand = pseudo;
+        weffects(pseudo);
+        pseudo = gc.current_wand;
+        gc.current_wand = 0;
+        obfree(pseudo, NULL);
+        obfree(obj, (struct obj *) 0);
+        return;
+    }
+
     /* KMH -- Handle Plague here */
     if (uwep && uwep->oartifact == ART_PLAGUE &&
         ammo_and_launcher(obj, uwep) && is_poisonable(obj))
