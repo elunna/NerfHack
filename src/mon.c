@@ -3019,14 +3019,25 @@ corpse_chance(
                 otmp->corpsenm = otyp;
                 break;
             }
-	    case 5: /* More ammo. This should be fairly rare since the player
-		can get a stack of 6 to 11. With these odds, they get a 1 in 20 chance
-		of more razor cards when a card drop does occur. */
+	    case 5:
+	    case 6: /* More ammo. This should be fairly rare since the player
+		can get a stack of 6 to 11. */
 		otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
 		break;
             default: /* Monster summon card */
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
-                otmp->corpsenm = monsndx(mon->data);
+
+		/* Every once in a while, drop a totally random monster card. This
+		 * should keep things more interesting when slaying hordes of weenies.
+		 * The 1 in 15 odds come from old MtG booster packs typically being 15
+		 * cards and having 1 rare. 
+		 *
+		 * TODO: It may be worthwhile to look into rndmonnum_adj to encourage
+		 * higher level cards. */
+		if (!rn2(15))
+		    otmp->corpsenm = rndmonnum();
+		else
+		    otmp->corpsenm = monsndx(mon->data);
                 break;
         }
         place_object(otmp, mon->mx, mon->my);
