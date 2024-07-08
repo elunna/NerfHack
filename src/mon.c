@@ -3010,12 +3010,8 @@ corpse_chance(
             case 1:
             case 2:
             case 3: { /* Wand zap card. */ 
-                int otyp;
-                do {
-                    otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
-                } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
-                otmp = mksobj(SCR_ZAPPING, FALSE, FALSE);
-                otmp->corpsenm = otyp;
+		/* The zap type is handled in mkobj.c */
+                otmp = mksobj(SCR_ZAPPING, TRUE, FALSE);
                 break;
             }
 	    case 4:

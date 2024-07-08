@@ -1084,6 +1084,16 @@ mksobj_init(struct obj *otmp, boolean artif)
         if (otmp->otyp != SCR_MAIL)
 #endif
             blessorcurse(otmp, 4);
+
+	if (otmp->otyp == SCR_ZAPPING) {
+	    int otyp;
+	    do {
+		otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
+	    } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
+	    /* Wishing is excluded, but it's possible we might want to enable it against
+	     * extremely rare odds. */
+	    otmp->corpsenm = otyp;
+	}
         break;
     case SPBOOK_CLASS:
         otmp->spestudied = 0;
