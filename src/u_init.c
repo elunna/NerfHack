@@ -310,28 +310,22 @@ static const struct def_skill Skill_B[] = {
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_Car[] = {
-    { P_DAGGER, P_EXPERT },	    /* Demote? Wizards already dominate dagger. */
+    { P_DAGGER, P_BASIC},
     { P_KNIFE, P_SKILLED },
-    { P_AXE, P_BASIC },		    /* Eliminate? */
     { P_SHORT_SWORD, P_BASIC },
-    { P_CLUB, P_BASIC },
-    { P_MACE, P_BASIC },
-    { P_QUARTERSTAFF, P_BASIC },
-    { P_POLEARMS, P_BASIC },	    /* Eliminate? */
-    { P_SPEAR, P_BASIC },
-    { P_TRIDENT, P_BASIC },
-    { P_SLING, P_SKILLED },	    /* Demote? */
-    { P_DART, P_EXPERT },	    /* Demote? */
+    { P_QUARTERSTAFF, P_SKILLED},
+    { P_SLING, P_BASIC},
+    { P_DART, P_BASIC},	    
     { P_SHURIKEN, P_EXPERT },
+    { P_UNICORN_HORN, P_BASIC },
     { P_ATTACK_SPELL, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
     { P_DIVINATION_SPELL, P_EXPERT },
     { P_ENCHANTMENT_SPELL, P_SKILLED },
     { P_ESCAPE_SPELL, P_SKILLED },
     { P_MATTER_SPELL, P_SKILLED },
-    /* Riding feels too strong at expert - maybe skilled instead? */
-    { P_RIDING, P_EXPERT },         /* Card games on motorcycles. */
-    { P_BARE_HANDED_COMBAT, P_SKILLED }, /* Definitely demote */
+    { P_RIDING, P_SKILLED},         /* Card games on motorcycles. */
+    { P_BARE_HANDED_COMBAT, P_BASIC},
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_C[] = {
