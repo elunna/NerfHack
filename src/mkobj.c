@@ -44,6 +44,20 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
                                          { 3, RING_CLASS },
                                          { 1, AMULET_CLASS } };
 
+/* Cartomancers have lower odds of scrolls and wands because they get card drops.
+ * They have higher odds of food to compensate for less corpses. */
+static const struct icp cartprobs[] =  { { 10, WEAPON_CLASS },
+                                         { 10, ARMOR_CLASS },
+                                         { 30, FOOD_CLASS },
+                                         { 8, TOOL_CLASS },
+                                         { 8, GEM_CLASS },
+                                         { 16, POTION_CLASS },
+                                         { 8, SCROLL_CLASS },
+                                         { 4, SPBOOK_CLASS },
+                                         { 2, WAND_CLASS },
+                                         { 3, RING_CLASS },
+                                         { 1, AMULET_CLASS } };
+
 static const struct icp boxiprobs[] = { { 18, GEM_CLASS },
                                         { 15, FOOD_CLASS },
                                         { 18, POTION_CLASS },
@@ -287,7 +301,9 @@ mkobj(int oclass, boolean artif)
         const struct icp *iprobs = Is_rogue_level(&u.uz)
                                    ? (const struct icp *) rogueprobs
                                    : Inhell ? (const struct icp *) hellprobs
-                                            : (const struct icp *) mkobjprobs;
+					: Role_if(PM_CARTOMANCER)
+					? (const struct icp *) cartprobs
+					: (const struct icp *) mkobjprobs;
 
         for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
             continue;
