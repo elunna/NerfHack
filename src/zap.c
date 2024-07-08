@@ -3744,6 +3744,15 @@ weffects(struct obj *obj)
         disclose = TRUE;
     }
 
+    /* This obroken check is a hack so we don't identify misc wands when cartomancers 
+     * use scrolls of zapping. When zapping cards are used, they pseudo copy a wand zap
+     * effect - so we set obroken on the card to signal it's not really a wand. ;) */
+    if (disclose && !obj->obroken) {
+        learnwand(obj);
+        if (was_unkn)
+            more_experienced(0, 10);
+    }
+
     if (disclose) {
         learnwand(obj);
         if (was_unkn)
