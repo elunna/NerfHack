@@ -628,6 +628,286 @@ magic portal which brought you here."]],
          text = "\"Tell us, %p, have you fared well on your great quest?\"",
       },
    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Car = {
+      assignquest = {
+         synopsis = "[\"Find and defeat %n, recover %o, and return with it.\"]",
+         output = "text",
+         text = [["You have soundly defeated me, %p.  You are ready.
+
+"Just after you left to improve your deck, %n appeared and battled us
+into submission with his monster-summoning cards. The beasts you saw here
+are but a fraction of the horde he summoned. He stole the decks of many of
+your fellow students.
+
+"Worst of all, he stole from us %o, the most powerful of all known cards.
+If he should play a game with it, he could destroy the very fabric of
+reality.
+
+"You must find %i, and take back %o from %n. It is your destiny.
+
+"Please, %p, recover %o for us, and return it here. And remember: Believe in
+your cards, and they shall come through for you."]],
+      },
+      badalign = {
+         synopsis = "[\"You no longer follow the path of the %a.  Leave and seek answers.\"]",
+         output = "text",
+         text = [["Alas, %p, your skill with your cards is great, but you have yet to
+truly find love for your cards. Until you do this, you stand no chance
+against %n. Talk to your cards, and pray to %d for guidance. Only then may you
+return and face me again."]],
+      },
+      badlevel = {
+         synopsis = "[\"You are too inexperienced.  Come back when you are %Ra.\"]",
+         output = "text",
+         text = [["Alas, %p, you clearly love your cards, but your skill with them is still
+immature. Your loss to me tells me all I need to know.
+
+"Improve your deck, and pray to %d for guidance. Only then may you
+return and face me again."]],
+      },
+      discourage = {
+         "\"Trying to run away, %c? Cowardice no different than forfeit!\""
+         "\"Please, %c, you disappoint me! Your cards are worthless!\""
+         "\"You are running low on spell cards, %c. Will this be a victory by lack of a deck?\""
+         "\"%o is the perfect complement to my perfect deck!\""
+         "\"Tsk tsk tsk, %c. I really expected better from you.\""
+         "\"%lC only cast me from the school because I was too skillful!\""
+         "\"Love for your cards? Don't make me laugh. I shall defeat you through skill alone!\""
+         "\"Your mentor %l fell to me. What makes you think you will do any better?\""
+         "\"%d cannot help you now, %c.\""
+         "\"A mere %r cannot hope to defeat me.\""
+         "\"You fool! You cannot begin to imagine the cards that lurk in my deck!\""
+         "\"The rules are meaningless, for I hold all the cards!\""
+         "\"You look nervous, %c. Have you finally realized how outclassed you are?\""
+      },
+      encourage = {
+         "\"Remember, you must return with %o so that we may lift the curse from the silver bell.\""
+         "\"%oC is capable of summoning monsters, as well as turning the user into a powerful spellcaster.\""
+         "\"When you encounter %n, remember your training with me.\""
+         "\"Strike quickly, before %n can draw an opening hand.\""
+         "\"%n plays a deck focused on summoning snakes and nagas.\""
+         "\"If %o is played on the first turn, it may as well be over.\""
+         "\"Possessing %o is not the same as knowing how to use it. A card is only as powerful as the player behind it.\""
+         "\"Be careful, %n is a wily player.\""
+         "\"I would send some of my students with you, but few of them have their decks still intact.\""
+         "\"Play to your strengths, that is in a %a style.\""
+         "\"Use all of your spell cards against %n.\""
+
+      },
+      firsttime = {
+         synopsis = "[You arrive back at %H, but something is wrong here.]",
+         output = "text",
+         text = [[You find yourself standing in sight of %H. However, something is horribly wrong.
+Cards lay scattered about the ground like common trash, and strange shapes
+lumber about! The usual sounds of card games being played are oddly absent.]],
+      }
+      goal_first = {
+         synopsis = "[You enter an arena.  %nC is waiting for you.]",
+         output = "text",
+         text = [[You find yourself in an enormous arena, with a high, vaulted ceiling.
+It sounds as if a magnificent crowd is cheering, but no such crowd is present.
+
+Instead, %n is there, shuffling their deck and cackling.
+With a flick of their wrist, they draw seven cards. The game has begun.]],
+      },
+      goal_next = {
+         text = "Once again, you find yourself in %ns arena.",
+      },
+      gotit = {
+         synopsis = "[%oC belongs to you now.]",
+         output = "text",
+         text = [[As you pick up %o you realize it is the perfect complement to your
+spell cards. In fact, it is the perfect complement to any deck. No
+wonder it was banned.
+
+You realize that with this card, you can do anything.]],
+      },
+      guardtalk_after = {
+         "\"When %n sent his minions, they stole all of my rarest cards!\""
+         "\"You seem a much more experienced player than when we last met, %p.\""
+         "\"Have you collected any interesting cards during your journey?\""
+         "\"%p, you must defeat %n, for our sake.\""
+         "\"%lC was unable to defeat %n, although their game was mighty.\""
+         "\"Do you know what time it is?\""
+         "\"I look to %d for guidance in these hard times.\""
+         "\"What has become of %o?\""
+      },
+      guardtalk_before = {
+         "\"When %n sent his minions, they stole all of my rarest cards!\""
+         "\"You seem a much more experienced player than when we last met, %p.\""
+         "\"Have you collected any interesting cards during your journey?\""
+         "\"%lC was unable to defeat %n, although their game was mighty.\""
+         "\"Do you know what time it is?\""
+         "\"I look to %d for guidance in these hard times.\""
+         "\"What has become of %o?\""
+         "\"Please, %p, tell us the story of your game with %n. What cards did you use?\""
+      },
+      hasamulet = {
+         synopsis = "[\"Take the Amulet to the altar of %d on the Astral Plane and offer it.\"]",
+         output = "text",
+         text = [["I see you have the Amulet, %p.
+
+"There is no more time for friendly games. Here is what you must do:
+
+"Leave the dungeon behind.  The Amulet will then transport you
+into the Astral Planes, where you shall face the last, most terrible
+duel of all.
+
+"Sacrifice the Amulet on the altar, and become the greatest player of
+spell cards to have ever lived."]],
+      },
+      killed_nemesis = {
+         synopsis = "[%nC curses you, but you feel the overpowering aura of magic fading.]",
+         output = "text",
+         text = [["I see now," gasps %nC. "It was never about the power of the cards, or the skill of the player, but about the love the player has for
+their cards. Thank you, %c, you have taught me much."
+
+With that, %n collapses. They will never oppose you again.]],
+      },
+      leader_first = {
+         synopsis = "[\"You have returned.  We are in dire need of your help.\"]",
+         output = "text",
+         text = [["%pC, how good to see you!.
+
+"We are in dire need of your help, my %S.
+
+"But first, I must examine your cards, and determine if your deck is
+strong enough. Defeat me with your cards, and prove yourself worthy!"]],
+      },
+      leader_last = {
+         synopsis = "[\"You did not love your cards...\"]",
+         output = "text",
+         text = [[%pC!  You clearly have no love for your cards, and do not believe in them.
+
+"I expel you from %H!  Your performance brings me shame.""
+
+"You shall not see %H again."]],
+      },
+      leader_next = {
+         text = "\"gain, you return to us, %p.  I shall grant you a rematch.\"",
+      },
+      leader_other = {
+         text = "\"Ah, %p.  Come to try again? Perhaps you are worthier now.\"",
+      },
+      locate_first = {
+         synopsis = "[You %x many torn spell cards, and notice bones of previous students.]",
+         output = "text",
+         text = [[You descend in the basement cavern of the school. You %x a trail of torn
+spell cards, and you cannot help but to notice the numerous skeletons
+dressed in the garb of your school. Evidently you are not the first
+student to be sent after %n...]],
+      },
+      locate_next = {
+         text = "Yet again you have a chance to infiltrate %i.",
+      },
+      nemesis_first = {
+         synopsis = "[%nC brags about their prowess with spell cards.]",
+         output = "text",
+         text = [["Another pathetic student of %l, here to challenge me to a card game?
+I doubt you have even held a deck before! I shall battle you, and show
+you the true meaning of defeat!"]],
+      },
+      nemesis_next = {
+         text = "\"I have wasted too much time on you already.  Now, you shall die.\"",
+      },
+      nemesis_other = {
+         text = "\"You return yet again, %c!  Are you prepared for death now?\"",
+      },
+      nemesis_wantsit = {
+         text = [["I shall have %o back, you pitiful excuse for %ca.
+And your cards as well."]],
+      },
+      nexttime = {
+         text = [[Once again, you arrive back at %H.]],
+      },
+      offeredit = {
+         synopsis = "[Keep %o.  It will help in your quest for the Amulet of Yendor.]",
+         output = "text",
+         text = [[%lC sees the glimmer of %o in your deck. He offers to battle
+you, and you soundly defeat him.
+After you have won, he smiles and says:
+
+    Congratulations! You have done what I could not.
+    As a fellow competitor, I bow to your prowess.
+
+    Please, %p, keep %o and use it in your quest. You
+    are truly worthy to wield its power.]],
+      },
+      offeredit2 = {
+         synopsis = "[\"You keep %o.  Return to %Z to search for the Amulet.\"]",
+         output = "text",
+         text = [[%l gazes reverently at %o, then back at you.
+
+"You are its keeper now, and the time has come to resume your search
+for the Amulet.  %Z await your return through the
+magic portal which brought you here."]],
+      },
+      othertime = {
+         text = [[For some reason, you think that this may be the last time you will
+enter %H.]],
+      },
+      posthanks = {
+         text = "\"My deepest thanks, %p.\"",
+      },
+   },
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    Cav = {
       assignquest = {
          synopsis = "[Go beat %n.  Get %o.  Bring back.]",
