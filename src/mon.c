@@ -3037,9 +3037,10 @@ corpse_chance(
 		 * summon drops. Otherwise the player ends up with loads of crap cards in
 		 * their inventory they'll never play. We don't want to check this above
 		 * because the chance of zaps, ammo, or rare cards is still nice. */
-		    if (mon->data->mlevel < 2 && rn2(10))
+		    if (mon->data->mlevel < 2 && rn2(10)) {
+			delobj(otmp);
 			goto dropskip;
-		    else
+		    } else
 			otmp->corpsenm = monsndx(mon->data);
 		}
                 break;
