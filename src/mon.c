@@ -3031,13 +3031,23 @@ corpse_chance(
 		 * higher level cards. */
 		if (!rn2(15))
 		    otmp->corpsenm = rndmonnum();
-		else
-		    otmp->corpsenm = monsndx(mon->data);
+		else {
+		/* For very weak monsters (base lvl 0 or 1), I think we should skip most
+		 * summon drops. Otherwise the player ends up with loads of crap cards in
+		 * their inventory they'll never play. We don't want to check this above
+		 * because the chance of zaps, ammo, or rare cards is still nice. */
+		    if (mon->data->mlevel < 2 && rn2(10))
+			useup(otmp);	
+		    else
+			otmp->corpsenm = monsndx(mon->data);
+		}
                 break;
         }
-        place_object(otmp, mon->mx, mon->my);
-        newsym(mon->mx, mon->my);
-        return FALSE;
+	if (otmp) {
+	    place_object(otmp, mon->mx, mon->my);
+	    newsym(mon->mx, mon->my);
+	    return FALSE;
+	}
     }
 #undef CHANCE_CARD_DROP
     
