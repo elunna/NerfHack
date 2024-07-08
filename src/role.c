@@ -124,7 +124,7 @@ const struct Role roles[NUM_ROLES+1] = {
       PM_CARTOMANCER,
       NON_PM,
       PM_KING_OF_GAMES,
-      PM_STUDENT, /* Reusing students to avoid redundancy */
+      PM_DUELIST,
       PM_DAL_ZETHIRE,
       PM_COBRA,
       PM_GUARDIAN_NAGA,

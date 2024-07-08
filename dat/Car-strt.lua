@@ -58,15 +58,16 @@ des.door("locked",37,16)
 des.monster({id="King of Games", x=17, y=08})
 -- The treasure of the Lord of the Cards
 des.object("chest", 18, 05)
+
 -- students of the card training school
-des.monster({id="student", x=47, y=07})
-des.monster({id="student", x=47, y=13})
-des.monster({id="student", x=18, y=07})
-des.monster({id="student", x=19, y=13})
-des.monster({id="student", x=20, y=07})
-des.monster({id="student", x=21, y=13})
-des.monster({id="student", x=22, y=07})
-des.monster({id="student", x=23, y=13})
+des.monster({id="duelist", x=47, y=07})
+des.monster({id="duelist", x=47, y=13})
+des.monster({id="duelist", x=18, y=07})
+des.monster({id="duelist", x=19, y=13})
+des.monster({id="duelist", x=20, y=07})
+des.monster({id="duelist", x=21, y=13})
+des.monster({id="duelist", x=22, y=07})
+des.monster({id="duelist", x=23, y=13})
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
 -- Random traps

@@ -314,6 +314,17 @@ m_initweap(struct monst *mtmp)
                 if (rn2(3))
                     (void) mongets(mtmp, POT_HEALING);
                 break;
+	    case PM_DUELIST:
+		if (rn2(5))
+                    (void) mongets(mtmp, rn2(3) ? HAWAIIAN_SHIRT 
+                                                : LEATHER_CLOAK);
+                if (rn2(3))
+                    (void) mongets(mtmp, rn2(3) ? LOW_BOOTS : HIGH_BOOTS);
+		if (rn2(5))
+                    (void) mongets(mtmp, rn2(3) ? FEDORA 
+                                                : LEATHER_GLOVES);
+		m_initthrow(mtmp, RAZOR_CARD, rn1(12, 12));
+		break;
             case PM_CHIEFTAIN:
             case PM_PAGE:
             case PM_ROSHI:
