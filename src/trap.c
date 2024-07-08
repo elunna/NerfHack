@@ -1971,15 +1971,16 @@ trapeffect_grease_trap(
                 target->greased = 1;
         }
  
-		if (!(is_floater(mtmp->data) || is_flyer(mtmp->data)
-					|| (is_clinger(mtmp->data) && has_ceiling(&u.uz)))) { 
-			pline("%s slips in a puddle of grease and falls!", Monnam(mtmp)); 
-			thitm(0, mtmp, (struct obj *) 0, (rnd(4) + 1), FALSE);
-			if (!DEADMONSTER(mtmp))
-				paralyze_monst(mtmp, rnd(4) + 1);
-			else
-				return Trap_Killed_Mon; 
-		}
+	if (!(is_floater(mtmp->data) || is_flyer(mtmp->data)
+				|| (is_clinger(mtmp->data) && has_ceiling(&u.uz)))) { 
+	    if (canseemon(mtmp))	
+		pline("%s slips in a puddle of grease and falls!", Monnam(mtmp)); 
+	    thitm(0, mtmp, (struct obj *) 0, (rnd(4) + 1), FALSE);
+	    if (!DEADMONSTER(mtmp))
+		    paralyze_monst(mtmp, rnd(4) + 1);
+	    else
+		    return Trap_Killed_Mon; 
+	}
     }
     return Trap_Effect_Finished;
 }
