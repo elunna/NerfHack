@@ -628,31 +628,6 @@ magic portal which brought you here."]],
          text = "\"Tell us, %p, have you fared well on your great quest?\"",
       },
    },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    Car = {
       assignquest = {
          synopsis = "[\"Find and defeat %n, recover %o, and return with it.\"]",
@@ -691,32 +666,32 @@ immature. Your loss to me tells me all I need to know.
 return and face me again."]],
       },
       discourage = {
-         "\"Trying to run away, %c? Cowardice no different than forfeit!\""
-         "\"Please, %c, you disappoint me! Your cards are worthless!\""
-         "\"You are running low on spell cards, %c. Will this be a victory by lack of a deck?\""
-         "\"%o is the perfect complement to my perfect deck!\""
-         "\"Tsk tsk tsk, %c. I really expected better from you.\""
-         "\"%lC only cast me from the school because I was too skillful!\""
-         "\"Love for your cards? Don't make me laugh. I shall defeat you through skill alone!\""
-         "\"Your mentor %l fell to me. What makes you think you will do any better?\""
-         "\"%d cannot help you now, %c.\""
-         "\"A mere %r cannot hope to defeat me.\""
-         "\"You fool! You cannot begin to imagine the cards that lurk in my deck!\""
-         "\"The rules are meaningless, for I hold all the cards!\""
-         "\"You look nervous, %c. Have you finally realized how outclassed you are?\""
+         "\"Trying to run away, %c? Cowardice no different than forfeit!\"",
+         "\"Please, %c, you disappoint me! Your cards are worthless!\"",
+         "\"You are running low on spell cards, %c. Will this be a victory by lack of a deck?\"",
+         "\"%o is the perfect complement to my perfect deck!\"",
+         "\"Tsk tsk tsk, %c. I really expected better from you.\"",
+         "\"%lC only cast me from the school because I was too skillful!\"",
+         "\"Love for your cards? Don't make me laugh. I shall defeat you through skill alone!\"",
+         "\"Your mentor %l fell to me. What makes you think you will do any better?\"",
+         "\"%d cannot help you now, %c.\"",
+         "\"A mere %r cannot hope to defeat me.\"",
+         "\"You fool! You cannot begin to imagine the cards that lurk in my deck!\"",
+         "\"The rules are meaningless, for I hold all the cards!\"",
+         "\"You look nervous, %c. Have you finally realized how outclassed you are?\"",
       },
       encourage = {
-         "\"Remember, you must return with %o so that we may lift the curse from the silver bell.\""
-         "\"%oC is capable of summoning monsters, as well as turning the user into a powerful spellcaster.\""
-         "\"When you encounter %n, remember your training with me.\""
-         "\"Strike quickly, before %n can draw an opening hand.\""
-         "\"%n plays a deck focused on summoning snakes and nagas.\""
-         "\"If %o is played on the first turn, it may as well be over.\""
-         "\"Possessing %o is not the same as knowing how to use it. A card is only as powerful as the player behind it.\""
-         "\"Be careful, %n is a wily player.\""
-         "\"I would send some of my students with you, but few of them have their decks still intact.\""
-         "\"Play to your strengths, that is in a %a style.\""
-         "\"Use all of your spell cards against %n.\""
+         "\"Remember, you must return with %o so that we may lift the curse from the silver bell.\"",
+         "\"%oC is capable of summoning monsters, as well as turning the user into a powerful spellcaster.\"",
+         "\"When you encounter %n, remember your training with me.\"",
+         "\"Strike quickly, before %n can draw an opening hand.\"",
+         "\"%n plays a deck focused on summoning snakes and nagas.\"",
+         "\"If %o is played on the first turn, it may as well be over.\"",
+         "\"Possessing %o is not the same as knowing how to use it. A card is only as powerful as the player behind it.\"",
+         "\"Be careful, %n is a wily player.\"",
+         "\"I would send some of my students with you, but few of them have their decks still intact.\"",
+         "\"Play to your strengths, that is in a %a style.\"",
+         "\"Use all of your spell cards against %n.\"",
 
       },
       firsttime = {
@@ -725,7 +700,7 @@ return and face me again."]],
          text = [[You find yourself standing in sight of %H. However, something is horribly wrong.
 Cards lay scattered about the ground like common trash, and strange shapes
 lumber about! The usual sounds of card games being played are oddly absent.]],
-      }
+      },
       goal_first = {
          synopsis = "[You enter an arena.  %nC is waiting for you.]",
          output = "text",
@@ -748,24 +723,24 @@ wonder it was banned.
 You realize that with this card, you can do anything.]],
       },
       guardtalk_after = {
-         "\"When %n sent his minions, they stole all of my rarest cards!\""
-         "\"You seem a much more experienced player than when we last met, %p.\""
-         "\"Have you collected any interesting cards during your journey?\""
-         "\"%p, you must defeat %n, for our sake.\""
-         "\"%lC was unable to defeat %n, although their game was mighty.\""
-         "\"Do you know what time it is?\""
-         "\"I look to %d for guidance in these hard times.\""
-         "\"What has become of %o?\""
+         "\"When %n sent his minions, they stole all of my rarest cards!\"",
+         "\"You seem a much more experienced player than when we last met, %p.\"",
+         "\"Have you collected any interesting cards during your journey?\"",
+         "\"%p, you must defeat %n, for our sake.\"",
+         "\"%lC was unable to defeat %n, although their game was mighty.\"",
+         "\"Do you know what time it is?\"",
+         "\"I look to %d for guidance in these hard times.\"",
+         "\"What has become of %o?\"",
       },
       guardtalk_before = {
-         "\"When %n sent his minions, they stole all of my rarest cards!\""
-         "\"You seem a much more experienced player than when we last met, %p.\""
-         "\"Have you collected any interesting cards during your journey?\""
-         "\"%lC was unable to defeat %n, although their game was mighty.\""
-         "\"Do you know what time it is?\""
-         "\"I look to %d for guidance in these hard times.\""
-         "\"What has become of %o?\""
-         "\"Please, %p, tell us the story of your game with %n. What cards did you use?\""
+         "\"When %n sent his minions, they stole all of my rarest cards!\"",
+         "\"You seem a much more experienced player than when we last met, %p.\"",
+         "\"Have you collected any interesting cards during your journey?\"",
+         "\"%lC was unable to defeat %n, although their game was mighty.\"",
+         "\"Do you know what time it is?\"",
+         "\"I look to %d for guidance in these hard times.\"",
+         "\"What has become of %o?\"",
+         "\"Please, %p, tell us the story of your game with %n. What cards did you use?\"",
       },
       hasamulet = {
          synopsis = "[\"Take the Amulet to the altar of %d on the Astral Plane and offer it.\"]",
