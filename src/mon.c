@@ -3000,13 +3000,12 @@ corpse_chance(
         return FALSE;
     }
 
-#define CHANCE_CARD_DROP 3
+#define CHANCE_CARD_DROP 2
     /* Anything killed while playing as a cartomancer has 
      * a chance of leaving behind a card. */
     if (Role_if(PM_CARTOMANCER) && !(mon->data->geno & G_UNIQ)
           && !mon->mtame && !mon->msummoned && !rn2(CHANCE_CARD_DROP)) {
-	i = rnd(20);
-        switch (rnd(16)) {
+        switch (rnd(20)) {
             case 1:
             case 2:
             case 3: { /* Wand zap card. */ 
@@ -3015,22 +3014,21 @@ corpse_chance(
                 break;
             }
 	    case 4:
-	    case 5:
-	    case 6: /* More ammo. Player can get a stack of 6 to 11. */
+	    case 5: /* More ammo. Player can get a stack of 6 to 11. */
 		otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
 		break;
             default: /* Monster summon card */
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
 
-		/* Every once in a while, drop a totally random monster card. This
-		 * should keep things more interesting when slaying hordes of weenies.
+		/* Every once in a while, drop a strong monster card. This should keep
+		 * things more interesting when slaying hordes of weenies.
 		 * The odds come roughly from old MtG booster packs having 1 rare. 
 		 */
-		if (!rn2(10)) {
+		if (!rn2(3)) {
 		    /* otmp->corpsenm = rndmonnum(); */
 		    int tryct = 0;
 		    do
-			otmp->corpsenm = rndmonnum_adj(5, 10);
+			otmp->corpsenm = rndmonnum_adj(5 + u.ulevel, 10 + u.ulevel * 2);
 		    while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
 		} else {
 		/* For very weak monsters (base lvl 0 or 1), I think we should skip most
