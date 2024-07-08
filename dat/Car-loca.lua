@@ -10,11 +10,14 @@ des.level_init({ style="mines", fg=".", bg=" ", smoothed=true, joined=true, lit=
 
 -- Dungeon Description
 des.region(selection.area(00,00,75,19), "lit")
+
 -- Stairs
 des.stair("up")
 des.stair("down")
+
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
+
 -- Objects
 des.object()
 des.object()
@@ -31,6 +34,7 @@ des.object()
 des.object()
 des.object()
 des.object()
+
 -- Random traps
 des.trap()
 des.trap()
@@ -38,6 +42,7 @@ des.trap()
 des.trap()
 des.trap()
 des.trap()
+
 -- Random monsters.
 des.monster({id="guardian naga", x=17, y=07,peaceful=0})
 des.monster({id="guardian naga", x=18, y=08,peaceful=0})
@@ -57,6 +62,22 @@ des.monster({class="S",peaceful=0})
 des.monster({class="S",peaceful=0})
 des.monster({class="S",peaceful=0})
 des.monster({class="S",peaceful=0})
+
+des.monster({id="skeleton",peaceful=0})
+des.monster({id="skeleton",peaceful=0})
+des.monster({id="skeleton",peaceful=0})
+des.monster({id="skeleton",peaceful=0})
+des.monster({id="human zombie",peaceful=0})
+des.monster({id="human zombie",peaceful=0})
+des.monster({id="human zombie",peaceful=0})
+des.monster({id="human zombie",peaceful=0})
+
+des.object({ id="corpse",montype="duelist" })
+des.object({ id="corpse",montype="duelist" })
+des.object({ id="corpse",montype="duelist" })
+des.object({ id="corpse",montype="duelist" })
+des.object({ id="corpse",montype="cartomancer" })
+des.object({ id="corpse",montype="cartomancer" })
 
 --
 --	The "goal" level for the quest.

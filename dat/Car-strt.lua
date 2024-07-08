@@ -40,10 +40,13 @@ des.map([[
 ]]);
 -- Dungeon Description
 des.region(selection.area(00,00,75,19), "lit")
+
 -- Stairs
 des.stair("down", 17,07)
+
 -- Portal arrival point
 des.levregion({ region = {07,17,07,17}, exclude = {0,0,0,0}, type="branch" })
+
 -- Doors
 des.door("locked",24,09)
 des.door("locked",36,04)
@@ -54,8 +57,10 @@ des.door("locked",33,10)
 des.door("locked",38,10)
 des.door("locked",36,16)
 des.door("locked",37,16)
+
 -- The Lord of the Cards
 des.monster({id="King of Games", x=17, y=08})
+
 -- The treasure of the Lord of the Cards
 des.object("chest", 18, 05)
 
@@ -68,8 +73,10 @@ des.monster({id="duelist", x=20, y=07})
 des.monster({id="duelist", x=21, y=13})
 des.monster({id="duelist", x=22, y=07})
 des.monster({id="duelist", x=23, y=13})
+
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
+
 -- Random traps
 des.trap()
 des.trap()
@@ -77,6 +84,7 @@ des.trap()
 des.trap()
 des.trap()
 des.trap()
+
 -- Monsters summoned by Dal Zethire.
 des.monster({id="guardian naga", x=22, y=08,peaceful=0})
 des.monster({id="cobra", x=08, y=20,peaceful=0})

@@ -4,7 +4,6 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 des.level_flags("noflip")
---
 
 des.room({type="ordinary", 
         contents=function()
@@ -13,7 +12,6 @@ des.room({type="ordinary",
             des.monster({ class = "S", peaceful = 0 })
         end
 });
-
 
 des.room({type="ordinary", 
         contents=function()
