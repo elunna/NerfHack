@@ -415,12 +415,10 @@ dowrite(struct obj *pen)
         new_obj->spe = 2;
 #endif
 
-#if 0 /* TODO: Pending implementation of wand of wonder */
     /* Only allow writing scrolls of zapping keyed to wonder */
     if (new_obj->otyp == SCR_ZAPPING)
         new_obj->corpsenm = WAN_WONDER;
 
-#endif
     /* unlike alchemy, for example, a successful result yields the
        specifically chosen item so hero recognizes it even if blind;
        the exception is for being lucky writing an undiscovered scroll,

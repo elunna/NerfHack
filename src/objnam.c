@@ -5067,10 +5067,9 @@ readobjnam(char *bp, struct obj *no_wish)
     d.otmp = d.typ ? mksobj(d.typ, TRUE, FALSE) : mkobj(d.oclass, FALSE);
     d.typ = d.otmp->otyp, d.oclass = d.otmp->oclass; /* what we actually got */
 
-#if 0
-    if (typ == SCR_ZAPPING)
-        otmp->corpsenm = WAN_WONDER;
-#endif
+    if (d.typ == SCR_ZAPPING)
+        d.otmp->corpsenm = WAN_WONDER;
+
     /* if player specified a reasonable count, maybe honor it;
        quantity for gold is handled elsewhere and d.cnt is 0 for it here */
     if (d.otmp->globby) {

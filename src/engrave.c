@@ -16,6 +16,7 @@ struct _doengrave_ctx {
     boolean ptext;    /* TRUE if we must prompt for engrave text */
     boolean teleengr; /* TRUE if we move the old engraving */
     boolean zapwand;  /* TRUE if we remove a wand charge */
+    boolean wonder;   /* TRUE if the wand is a wand of wonder */
     boolean disprefresh; /* TRUE if the display needs a refresh */
     boolean frosted;  /* TRUE if engraving on ice */
     boolean adding;   /* TRUE if adding to existing engraving */
@@ -506,6 +507,7 @@ doengrave_ctx_init(struct _doengrave_ctx *de)
     de->ptext = TRUE;
     de->teleengr = FALSE;
     de->zapwand = FALSE;
+    de->wonder = FALSE;
     de->disprefresh = FALSE;
     de->adding = FALSE;
 
@@ -537,6 +539,14 @@ doengrave_ctx_init(struct _doengrave_ctx *de)
 static void
 doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
 {
+    boolean was_unkn = !objects[de->otmp->otyp].oc_name_known;
+
+    if (de->otmp->otyp == WAN_WONDER) {
+	de->otmp->otyp = WAN_LIGHT + rn2(WAN_LIGHTNING - WAN_LIGHT);
+	if (was_unkn)
+	    You("have found a wand of wonder!");
+	de->wonder = TRUE;
+    }
     switch (de->otmp->otyp) {
         /* DUST wands */
     default:
@@ -546,6 +556,8 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_CREATE_MONSTER:
     case WAN_WISHING:
     case WAN_ENLIGHTENMENT:
+	if (de->wonder)
+	    de->otmp->otyp = WAN_WONDER;
         zapnodir(de->otmp);
         break;
         /* IMMEDIATE wands */
@@ -685,7 +697,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_DIGGING:
         de->ptext = TRUE;
         de->type = ENGRAVE;
-        if (!objects[de->otmp->otyp].oc_name_known) {
+        if (was_unkn && !de->wonder) {
             if (flags.verbose)
                 pline("This %s is a wand of digging!", xname(de->otmp));
             de->preknown = TRUE;
@@ -704,7 +716,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_FIRE:
         de->ptext = TRUE;
         de->type = BURN;
-        if (!objects[de->otmp->otyp].oc_name_known) {
+        if (was_unkn && !de->wonder) {
             if (flags.verbose)
                 pline("This %s is a wand of fire!", xname(de->otmp));
             de->preknown = TRUE;
@@ -715,7 +727,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_LIGHTNING:
         de->ptext = TRUE;
         de->type = BURN;
-        if (!objects[de->otmp->otyp].oc_name_known) {
+        if (was_unkn && !de->wonder) {
             if (flags.verbose)
                 pline("This %s is a wand of lightning!", xname(de->otmp));
             de->preknown = TRUE;
@@ -736,7 +748,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             Sprintf(de->post_engr_text,
                     "The bugs on the %s seem to be covered with goo!",
                     surface(u.ux, u.uy));
-            if (!objects[de->otmp->otyp].oc_name_known) {
+	    if (was_unkn && !de->wonder) {
                 if (flags.verbose)
                     pline("This %s is a wand of corrosion!", xname(de->otmp));
                 de->preknown = TRUE;
@@ -1046,6 +1058,11 @@ doengrave(void)
      * End of implement setup
      */
 
+     /* Cleanup wand of wonder */
+    if (de->wonder) {
+        de->otmp->otyp = WAN_WONDER;
+        learnwand(de->otmp);
+    }
     /* Identify stylus */
     if (de->preknown) {
         learnwand(de->otmp);
