@@ -35,6 +35,7 @@ static const struct innate {
 
   car_abil[] = { { 1, &(HSearching), "perceptive", "unaware" },
                  { 7, &(HWarning), "in touch with the cards", "insensitive" },
+                 { 10, &(HFast), "quick", "slow" },
                  { 0, 0, 0, 0 } },
 
   cav_abil[] = { { 7, &(HFast), "quick", "slow" },
