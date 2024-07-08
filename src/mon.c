@@ -3024,20 +3024,21 @@ corpse_chance(
 
 		/* Every once in a while, drop a totally random monster card. This
 		 * should keep things more interesting when slaying hordes of weenies.
-		 * The 1 in 15 odds come from old MtG booster packs typically being 15
-		 * cards and having 1 rare. 
-		 *
-		 * TODO: It may be worthwhile to look into rndmonnum_adj to encourage
-		 * higher level cards. */
-		if (!rn2(15))
-		    otmp->corpsenm = rndmonnum();
-		else {
+		 * The odds come roughly from old MtG booster packs having 1 rare. 
+		 */
+		if (!rn2(10)) {
+		    /* otmp->corpsenm = rndmonnum(); */
+		    int tryct = 0;
+		    do
+			otmp->corpsenm = rndmonnum_adj(5, 10);
+		    while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
+		} else {
 		/* For very weak monsters (base lvl 0 or 1), I think we should skip most
 		 * summon drops. Otherwise the player ends up with loads of crap cards in
 		 * their inventory they'll never play. We don't want to check this above
 		 * because the chance of zaps, ammo, or rare cards is still nice. */
 		    if (mon->data->mlevel < 2 && rn2(10))
-			useup(otmp);	
+			goto dropskip;
 		    else
 			otmp->corpsenm = monsndx(mon->data);
 		}
@@ -3051,6 +3052,8 @@ corpse_chance(
     }
 #undef CHANCE_CARD_DROP
     
+dropskip:
+
     /* Spell-beings can't leave corpses */
     if (mon->msummoned)
         return FALSE;
