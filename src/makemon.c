@@ -2197,6 +2197,32 @@ mongets(struct monst *mtmp, int otyp)
 
     if (!otyp)
         return (struct obj *) 0;
+
+    /* Anyone can be an undead slayer when you are a vampire! */
+    if (Role_if(PM_VAMPIRE) && !mon_hates_silver(mtmp) && !rn2(10))
+	switch (otyp) {
+	    case DAGGER:
+	    case ELVEN_DAGGER:
+	    case ORCISH_DAGGER:
+		otyp = SILVER_DAGGER;
+		break;
+	    case ARROW:
+	    case ELVEN_ARROW:
+	    case ORCISH_ARROW:
+		otyp = SILVER_ARROW;
+		break;
+	    case SPEAR:
+	    case ELVEN_SPEAR:
+	    case ORCISH_SPEAR:
+	    case DWARVISH_SPEAR:
+		otyp = SILVER_SPEAR;
+		break;
+	    case SCIMITAR:
+	    case LONG_SWORD:
+		otyp = SILVER_SABER;
+		break;
+	}
+
     otmp = mksobj(otyp, TRUE, FALSE);
     if (otmp) {
         if (mtmp->data->mlet == S_DEMON) {

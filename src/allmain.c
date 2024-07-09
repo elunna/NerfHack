@@ -1308,8 +1308,7 @@ boolean
 vamp_can_regen(void)
 {
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
-        if (uwep && is_silver(uwep)
-            && !is_quest_artifact(uwep) && !uarmg)
+        if (uwep && is_silver(uwep) && !is_quest_artifact(uwep) && !uarmg)
             return 0;
         if (uarm && is_silver(uarm) && !uarmu)
             return 0;
@@ -1317,8 +1316,7 @@ vamp_can_regen(void)
             return 0;
         if (uarmc && is_silver(uarmc) && !uarmu && !uarm)
             return 0;
-        if (uarmh && is_silver(uarmh)
-            && !is_quest_artifact(uarmh))
+        if (uarmh && is_silver(uarmh) && !is_quest_artifact(uarmh))
             return 0;
         if (uarms && is_silver(uarms) && !uarmg)
             return 0;
@@ -1337,8 +1335,7 @@ vamp_can_regen(void)
             return 0;
         if (uchain && is_silver(uchain))
             return 0;
-        if (uswapwep && is_silver(uswapwep)
-            && u.twoweap && !uarmg)
+        if (uswapwep && is_silver(uswapwep) && u.twoweap && !uarmg)
             return 0;
     }
     return 1;
