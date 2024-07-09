@@ -4424,7 +4424,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
          */
         if (!strstri(d->bp, "wand ") && !strstri(d->bp, "spellbook ")
             && !strstri(d->bp, "gauntlets ") && !strstri(d->bp, "gloves ")
-            && !strstri(d->bp, "finger ")) {
+            && !strstri(d->bp, "finger ") /*&& !strstri(d->bp, "potion ")*/) {
             if ((d->p = strstri(d->bp, "tin of ")) != 0) {
                 if (!strcmpi(d->p + 7, "spinach")) {
                     d->contents = TIN_SPINACH;
@@ -4449,6 +4449,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         && strncmpi(d->bp, "master key", 10)  /* not the "master" rank */
         && strncmpi(d->bp, "dark souls", 10)  /* not the "Dark One" monster */
         && strncmpi(d->bp, "ninja-to", 8)     /* not the "ninja" rank */
+        && strncmpi(d->bp, "vampire blood", 13)     /* not the "vampire" monster*/
         && strncmpi(d->bp, "magenta", 7)) {   /* not the "mage" rank */
         const char *rest = 0;
 
