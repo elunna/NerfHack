@@ -99,3 +99,4 @@ src/nerfhack
 order.sh
 ported_patches/
 *.patch
+backtraces
