@@ -5689,6 +5689,15 @@ drown(void)
     }
     set_uinwater(1); /* u.uinwater = 1 */
     urgent_pline("You drown.");
+
+    /* [ALI] Vampires return to vampiric form on drowning.  */
+    if (Upolyd && !Unchanging && Race_if(PM_VAMPIRE)) {
+	rehumanize();
+	u.uinwater = 0;
+	You("fly up out of the water!");
+	return (TRUE);
+    }
+
     /* first pass is survivable by using up an amulet of life-saving or by
        answering no to "Die?" in explore|wizard mode; second pass can only
        be survivable via the latter */

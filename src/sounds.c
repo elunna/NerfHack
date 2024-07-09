@@ -752,10 +752,8 @@ domonnoise(struct monst *mtmp)
         /* vampire messages are varied by tameness, peacefulness, and time of
            night */
         boolean isnight = night();
-        boolean kindred = (Upolyd && (u.umonnum == PM_VAMPIRE
-                                      || u.umonnum == PM_VAMPIRE_LEADER
-                                      || u.umonnum == PM_VAMPIRE_MAGE));
-        boolean nightchild = (Upolyd && (u.umonnum == PM_WOLF
+        boolean kindred = maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE));
+	boolean nightchild = (Upolyd && (u.umonnum == PM_WOLF
                                          || u.umonnum == PM_WINTER_WOLF
                                          || u.umonnum == PM_WINTER_WOLF_CUB));
         const char *racenoun = (flags.female && gu.urace.individual.f)

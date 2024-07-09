@@ -90,7 +90,8 @@ enum prop_types {
     WITHERING         = 67,
     LIFESAVED         = 68,
     STOMPING          = 69,
-    STUN_RES          = 70
+    STUN_RES          = 70,
+    BREATHLESS        = 84,
 };
 #define LAST_PROP (STUN_RES)
 

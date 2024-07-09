@@ -1015,6 +1015,14 @@ dogfood(struct monst *mon, struct obj *obj)
             return TABU;
         }
 
+	/* vampires only "eat" very fresh corpses ...
+	 * Assume meat -> blood */
+	if (is_vampire(mptr)) {
+	    return (obj->otyp == CORPSE &&
+		    has_blood(&mons[obj->corpsenm]) && !obj->oeaten &&
+		peek_at_iced_corpse_age(obj) + 5 >= gm.moves) ?
+		DOGFOOD : TABU;
+	}
         switch (obj->otyp) {
         case TRIPE_RATION:
         case MEATBALL:

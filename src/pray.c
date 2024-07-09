@@ -2430,8 +2430,18 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
         rehumanize();
         u.lastprayresult = PRAY_BAD;
         /* no Half_physical_damage adjustment here */
-        losehp(rnd(20), "residual undead turning effect", KILLED_BY_AN);
-        exercise(A_CON, FALSE);
+        if (!Race_if(PM_VAMPIRE)) {
+            u.lastprayresult = PRAY_GOOD;
+            rehumanize();
+            losehp(rnd(20), "residual undead turning effect", KILLED_BY_AN);
+        } else {
+            u.lastprayresult = PRAY_BAD;
+            /* Starting vampires are inherently vampiric */
+            losehp(rnd(20), "residual undead turning effect", KILLED_BY_AN);
+            pline("You get the idea that %s will be of little help to you.",
+                  align_gname(alignment));
+            exercise(A_CON, FALSE);
+        }
         return 1;
     }
     if (Inhell) {

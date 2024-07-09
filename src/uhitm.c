@@ -68,6 +68,7 @@ static boolean mhurtle_to_doom(struct monst *, int,
                                struct permonst **) NONNULLARG13;
 static void first_weapon_hit(struct obj *) NONNULLARG1;
 static boolean shade_aware(struct obj *) NO_NNARGS;
+static boolean bite_monster(struct monst *);
 
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
 #define KILL_FAMILIARITY 20
@@ -1094,6 +1095,26 @@ hitum(struct monst *mon, struct attack *uattk)
             (void) passive(mon, secondwep, mhit, malive, AT_WEAP,
                            secondwep && !uswapwep);
     }
+
+    /* Tertiary bite attack for vampires */
+    if (malive && m_at(x, y) == mon && Race_if(PM_VAMPIRE) && !Upolyd) {
+        if ((uwep || (u.twoweap && uswapwep)) &&
+            maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)) &&
+            (is_rider(mon->data) || mon->data == &mons[PM_GREEN_SLIME] ||
+                touch_petrifies(mon->data)))
+            return malive;
+        tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
+                               &armorpenalty);
+        dieroll = rnd(20);
+        mhit = (tmp > dieroll || u.uswallow);
+        if (mhit) {
+            You("bite %s.", mon_nam(mon));
+            malive = damageum(mon, &mons[PM_VAMPIRE].mattk[1], 0) != 2;
+            (void) passive(mon, uswapwep, mhit, malive, AT_BITE, !uswapwep);
+            wakeup(mon, TRUE);
+        }
+    }
+
     gt.twohits = 0;
     return malive;
 }
@@ -2805,12 +2826,44 @@ mhitm_ad_drli(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    boolean unaffected = (resists_drli(mdef) || defended(mdef, AD_DRLI));
+    boolean V2V = is_vampire(magr->data) && is_vampire(mdef->data);
+
+    /* Bonus for attacking susceptible victims */ 
+    boolean vulnerable;
+    if (mdef == &gy.youmonst) 
+	vulnerable = u.usleep /*|| multi*/ || Confusion || u.utrap || u.ustuck;
+    else 
+	vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen || mdef->mconf || mdef->mtrapped;
+ 
+    boolean success = vulnerable ? rn2(3) : !rn2(3);
+
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (!rn2(3) && !(resists_drli(mdef) || defended(mdef, AD_DRLI))
-            && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE)
+		&& success && (!unaffected || V2V)) {
             mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
                                     * (usually 1d8) */
+
+	    /* Vampire draining bite. Player vampires are smart enough not 
+	     * to feed while biting if they might have trouble getting it down
+	     * */
+	    if (maybe_polyd(is_vampire(gy.youmonst.data),
+                Race_if(PM_VAMPIRE)) && mattk->aatyp == AT_BITE &&
+                has_blood(mdef->data) && u.uhunger <= 1420) {
+                /* For the life of a creature is in the blood
+                   (Lev 17:11) */
+		if (flags.verbose) {
+                    You("%s on the lifeblood.",
+                        vulnerable ? "feast" : "feed");
+                }
+                /* [ALI] Biting monsters does not count against
+                   eating conducts. The draining of life is
+                   considered to be primarily a non-physical
+                   effect */
+                lesshungry(mhm->damage * 6);
+            }
+
             pline("%s becomes weaker!", Monnam(mdef));
             if (mdef->mhpmax - mhm->damage > (int) mdef->m_lev) {
                 mdef->mhpmax -= mhm->damage;
@@ -2838,11 +2891,27 @@ mhitm_ad_drli(
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-        hitmsg(magr, mattk);
-        if (!rn2(3) && !Drain_resistance
-            && !mhitm_mgc_atk_negated(magr, mdef, TRUE)){
-            losexp("life drainage");
 
+        hitmsg(magr, mattk);
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success){
+
+	    if (mattk->aatyp == AT_BITE && (!unaffected || V2V)) {
+                /* if vampire biting (and also a pet) */
+                if (vulnerable)
+                    pline("%s gorges itself on your %s!",
+                              Monnam(magr), hliquid("blood"));
+                else
+                    Your("blood is being drained!");
+                if (magr->mtame && !magr->isminion)
+                    EDOG(magr)->hungrytime +=
+                            ((int) ((gy.youmonst.data)->cnutrit / 20) + 1);
+                losexp("life drainage");
+            }
+#if 0
+	    else {
+                monstseesu(M_SEEN_DRAIN);
+            }
+#endif
             /* unlike hitting with Stormbringer, wounded attacker doesn't
                heal any from the drained life */
         }
@@ -6468,6 +6537,11 @@ passive(
     int mhit = mhitb ? M_ATTK_HIT : M_ATTK_MISS;
     int malive = maliveb ? M_ATTK_HIT : M_ATTK_MISS;
 
+    if (mhit && aatyp == AT_BITE && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        if (bite_monster(mon))
+	    return 2; /* lifesaved */
+    }
+
     for (i = 0;; i++) {
         if (i >= NATTK)
             return (malive | mhit); /* no passive attacks */
@@ -7063,6 +7137,41 @@ stompable(struct monst *mon)
         return FALSE;
     /* Can't stomp monsters in the air */
     return grounded(mon->data);
+}
+
+/*
+ * Called when a vampire bites a monster.
+ * Returns TRUE if hero died and was lifesaved.
+ */
+
+static boolean
+bite_monster(struct monst *mon)
+{
+    switch(monsndx(mon->data)) {
+    case PM_LIZARD:
+        if (Stoned) fix_petrification();
+        break;
+    case PM_DEATH:
+    case PM_PESTILENCE:
+    case PM_FAMINE:
+        pline("Unfortunately, eating any of it is fatal.");
+        done_in_by(mon, CHOKING);
+        return TRUE;        /* lifesaved */
+
+    case PM_GREEN_SLIME:
+        if (!Unchanging && gy.youmonst.data != &mons[PM_FIRE_VORTEX] &&
+                gy.youmonst.data != &mons[PM_FIRE_ELEMENTAL] &&
+                gy.youmonst.data != &mons[PM_GREEN_SLIME]) {
+        You("don't feel very well.");
+        Slimed = 10L;
+        }
+        /* Fall through */
+    default:
+        if (acidic(mon->data) && Stoned)
+        fix_petrification();
+        break;
+    }
+    return FALSE;
 }
 
 /*uhitm.c*/

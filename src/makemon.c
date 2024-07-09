@@ -908,6 +908,29 @@ m_initinv(struct monst *mtmp)
                 begin_burn(otmp, FALSE);
         }
         break;
+    case S_VAMPIRE:
+        /* some vampires get an opera cloak */
+        if (rn2(12)) {
+	    int i;
+	    for (i = CLOAK_OF_PROTECTION; i < NUM_OBJECTS; i++) {
+		const char *zn;
+		if ((zn = OBJ_DESCR(objects[i])) && !strcmpi(zn, "opera cloak")) {
+		    if (!OBJ_NAME(objects[i]))
+			i = STRANGE_OBJECT;
+		    break;
+		}
+	    }
+	    if (i != NUM_OBJECTS)
+		(void) mongets(mtmp, i);
+	}
+        if (rn2(2)) {
+            if ((int) mtmp->m_lev > rn2(30))
+                (void) mongets(mtmp, POT_VAMPIRE_BLOOD);
+            else
+                (void) mongets(mtmp, POT_BLOOD);
+        }
+        break;
+
     default:
         break;
     }

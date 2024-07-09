@@ -2854,6 +2854,9 @@ hornoplenty(
             if (objects[obj->otyp].oc_magic) {
                 do {
                     obj->otyp = rnd_class(POT_BOOZE, POT_WATER);
+		      if (!rn2(131)) { /* this number is very large on purpose */
+                        obj->otyp = (!rn2(5)) ? POT_VAMPIRE_BLOOD : POT_BLOOD;
+                    }
                 } while (obj->otyp == POT_SICKNESS);
                 /* oil uses obj->age field differently from other potions */
                 if (obj->otyp == POT_OIL)

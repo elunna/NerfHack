@@ -24,6 +24,7 @@
      || nonliving(ptr) \
      || is_demon(ptr) \
      || is_angel(ptr) \
+     || ((ptr) == gy.youmonst.data && !Upolyd && Race_if(PM_VAMPIRE)) \
      || (ptr)->msound == MS_LEADER \
      || (ptr) == &mons[PM_MINOTAUR] \
      || (ptr) == &mons[PM_TITAN] \
@@ -284,7 +285,14 @@
 #define is_mind_flayer(ptr) \
     ((ptr) == &mons[PM_MIND_FLAYER] || (ptr) == &mons[PM_MASTER_MIND_FLAYER])
 
-#define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
+#define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE  \
+                     || ((ptr) == gy.youmonst.data &&       \
+                         !Upolyd && Race_if(PM_VAMPIRE)))
+
+/* For vampires */
+#define has_blood(ptr)	(!vegetarian(ptr) && \
+				   (ptr)->mlet != S_GOLEM && \
+				   (!is_undead(ptr) || is_vampire(ptr)))
 
 #define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN] \
                           || (ptr) == &mons[PM_SHADOW_OGRE])

@@ -104,6 +104,15 @@ static const struct innate {
   orc_abil[] = { { 1, &HPoison_resistance, "", "" },
                  { 0, 0, 0, 0 } },
 
+  vam_abil[] = { { 1, &HDrain_resistance, "", "" },
+                 { 1, &HPoison_resistance, "", "" },
+                 { 1, &HFlying, "", "" },
+		 { 1, &(HBreathless), "breathless", "full of air" },
+                 { 1, &(HRegeneration), "resilient", "less resilient" },
+                 { 1, &(HHunger), "", "" },
+		 { 9, &HSleep_resistance, "awake", "tired" },
+                 { 0, 0, 0, 0 } },
+
   hum_abil[] = { { 0, 0, 0, 0 } };
 
 static void exerper(void);
@@ -537,7 +546,9 @@ exerper(void)
         debugpline0("exerper: Hunger checks");
         switch (hs) {
         case SATIATED:
-            exercise(A_DEX, FALSE);
+	    /* Don't punish vampires for eating too much */
+            if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
+		exercise(A_DEX, FALSE);
             if (Role_if(PM_MONK))
                 exercise(A_WIS, FALSE);
             break;
@@ -843,6 +854,9 @@ check_innate_abil(long *ability, long frommask)
         case PM_HUMAN:
             abil = hum_abil;
             break;
+        case PM_VAMPIRE:
+            abil = vam_abil;
+            break;
         default:
             break;
         }
@@ -1022,6 +1036,9 @@ adjabil(int oldlevel, int newlevel)
         break;
     case PM_ORC:
         rabil = orc_abil;
+        break;
+    case PM_VAMPIRE:
+        rabil = vam_abil;
         break;
     case PM_HUMAN:
     case PM_DWARF:

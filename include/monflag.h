@@ -186,7 +186,7 @@ enum ms_sounds {
 #define MH_DWARF        0x00000020L
 #define MH_GNOME        0x00000040L
 #define MH_ORC          0x00000080L
-#define MH_DEMON        0x00000100L
+#define MH_VAMPIRE	0x00000100L
 #define MH_WERE         0x00000200L
 #define MH_GIANT        0x00000400L
 #define MH_UNDEAD       0x00000800L
@@ -195,6 +195,7 @@ enum ms_sounds {
 #define MH_OGRE         0x00004000L
 #define MH_JABBERWOCK   0x00008000L
 #define MH_ANGEL        0x00010000L
+#define MH_DEMON        0x00020000L
 
 #define MH_ANY          0x80000000L
 

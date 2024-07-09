@@ -800,6 +800,12 @@ polymon(int mntmp)
         make_stoned(0L, "You turn to stone!", 0, (char *) 0);
     }
 
+    if (uarmc && objdescr_is(uarmc, "opera cloak") &&
+        maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        ABON(A_CHA) -= 1;
+        disp.botl = 1;
+    }
+
     u.mtimedone = rn1(500, 500);
     u.umonnum = mntmp;
     set_uasmon();
@@ -819,6 +825,15 @@ polymon(int mntmp)
         /* make sure current is not higher than max (strip exceptional Str) */
         if (ABASE(A_STR) > AMAX(A_STR))
             ABASE(A_STR) = AMAX(A_STR);
+    }
+
+    if (uarmc && objdescr_is(uarmc, "opera cloak") &&
+        maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        You("%s very impressive in your %s.", Blind ||
+            (Invis && !See_invisible) ? "feel" : "look",
+            OBJ_DESCR(objects[uarmc->otyp]));
+        ABON(A_CHA) += 1;
+        disp.botl = 1;
     }
 
     if (Stone_resistance && Stoned) { /* parnes@eniac.seas.upenn.edu */

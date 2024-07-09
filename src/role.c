@@ -90,7 +90,7 @@ const struct Role roles[NUM_ROLES+1] = {
       S_OGRE,
       S_TROLL,
       ART_HEART_OF_AHRIMAN,
-      MH_HUMAN | MH_ORC | MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL
+      MH_HUMAN | MH_ORC | MH_DWARF | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL
           | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 16, 7, 7, 15, 16, 6 },
@@ -377,7 +377,7 @@ const struct Role roles[NUM_ROLES+1] = {
       S_NYMPH,
       S_NAGA,
       ART_MASTER_KEY_OF_THIEVERY,
-      MH_HUMAN | MH_ORC | MH_ELF | MH_GNOME | ROLE_MALE | ROLE_FEMALE
+      MH_HUMAN | MH_ORC | MH_ELF | MH_GNOME | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 7, 7, 10, 7, 6 },
@@ -593,7 +593,7 @@ const struct Role roles[NUM_ROLES+1] = {
       S_BAT,
       S_WRAITH,
       ART_EYE_OF_THE_AETHIOPICA,
-      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | ROLE_MALE | ROLE_FEMALE
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 10, 7, 7, 7, 7 },
@@ -716,6 +716,26 @@ const struct Race races[] = {
         /* Init   Lower  Higher */
         { 1, 0, 0, 1, 0, 0 }, /* Hit points */
         { 1, 0, 1, 0, 1, 0 }  /* Energy */
+    },
+    {
+        "vampire",
+        "vampiric",
+        "kindred",
+        "Vam",
+        { 0, 0 }, /* individual as a noun */
+        PM_VAMPIRE, /* PM_ as a male monster */
+        PM_HUMAN_MUMMY, /* PM_ as a mummy */
+        PM_HUMAN_ZOMBIE,/* PM_ as a zombie */
+        MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTER | ROLE_CHAOTIC, /* allowed variations */
+        MH_VAMPIRE, /* your own race's bit mask */
+        0, /* always peaceful */
+        MH_ELF | MH_GNOME | MH_DWARF | MH_ORC, /* always hostile */
+        /* Str Int Wis Dex Con Cha */
+        {  4,  0,  0,  4,  3,  4 }, /* min allowable */
+        { STR19(19), 18, 18, 20, 20, 20 }, /* max allowable */
+        /* Init   Lower  Higher */
+        {  3, 0,  0, 3,  2, 0 },	/* Hit points */
+        {  3, 0,  4, 0,  4, 0 }		/* Energy */
     },
     /* Array terminator */
     UNDEFINED_RACE,

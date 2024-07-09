@@ -46,7 +46,8 @@ static int offer_ok(struct obj *);
 static int tin_ok(struct obj *);
 
 /* also used to see if you're allowed to eat cats and dogs */
-#define CANNIBAL_ALLOWED() (Role_if(PM_CAVE_DWELLER) || Race_if(PM_ORC))
+#define CANNIBAL_ALLOWED() (Role_if(PM_CAVE_DWELLER) || Race_if(PM_ORC) \
+	|| Race_if(PM_VAMPIRE))
 
 /* see hunger states in hack.h - texts used on bottom line */
 const char *const hu_stat[] = {
@@ -92,6 +93,11 @@ is_edible(struct obj *obj)
         return (boolean)((obj->otyp == CORPSE
                           && !vegan(&mons[obj->corpsenm]))
                          || (obj->otyp == EGG));
+
+    /* As of this version of the game, vampires can only draw blood from
+       the living or potions of blood. */
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
+	return FALSE;
 
     if (u.umonnum == PM_GELATINOUS_CUBE && is_organic(obj)
         /* [g-cubes can eat containers and retain all contents
@@ -3548,6 +3554,13 @@ floorfood(
     struct permonst *uptr = gy.youmonst.data;
     boolean feeding = !strcmp(verb, "eat"),        /* corpsecheck==0 */
             offering = !strcmp(verb, "sacrifice"); /* corpsecheck==1 */
+
+     if (feeding && (is_vampire(gy.youmonst.data) || Race_if(PM_VAMPIRE))) {
+        You("can't eat.");
+        if (flags.verbose)
+            pline("You can feed on lifeblood by attacking and biting other monsters.");
+        return (struct obj *) 0;
+    }
 
     getobj_else = 0; /* haven't asked about floor food; is used to vary
                       * "you don't have anything [else] to eat" when

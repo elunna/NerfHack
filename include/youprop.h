@@ -273,10 +273,13 @@
     (HMagical_breathing || EMagical_breathing || amphibious(gy.youmonst.data))
 /* Get wet, may go under surface */
 
+#define HBreathless u.uprops[BREATHLESS].intrinsic
 #define Breathless \
-    (HMagical_breathing || EMagical_breathing || breathless(gy.youmonst.data))
+    (HMagical_breathing || EMagical_breathing \
+     || breathless(gy.youmonst.data) || HBreathless)
 
 #define Underwater (u.uinwater)
+
 /* Note that Underwater and u.uinwater are both used in code.
    The latter form is for later implementation of other in-water
    states, like swimming, wading, etc. */

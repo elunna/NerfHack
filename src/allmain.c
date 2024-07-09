@@ -166,6 +166,7 @@ void
 moveloop_core(void)
 {
     boolean monscanmove = FALSE;
+    boolean vamp_regen = vamp_can_regen();
 
 #ifdef SAFERHANGUP
     if (gp.program_state.done_hup)
@@ -464,6 +465,15 @@ moveloop_core(void)
         curs_on_u();
     }
 
+    if (vamp_regen != vamp_can_regen()) {
+	if (!Hallucination)
+	    You_feel("%s.", (vamp_regen) ? "itchy" : "relief");
+	else
+	    You_feel("%s.", (vamp_can_regen()) ? "semi-precious"
+					: "like you are no longer failing Organic Chemistry");
+	vamp_regen = vamp_can_regen();
+    }
+
     gc.context.move = 1;
 
     if (gm.multi >= 0 && go.occupation) {
@@ -616,6 +626,7 @@ regen_hp(int wtcap)
            once u.mh reached u.mhmax; that may have been convenient
            for the player, but it didn't make sense for gameplay...] */
         if (u.uhp < u.uhpmax
+	    && vamp_can_regen()
             /* Non-undead cannot regenerate in the valley */
             && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))
             && (encumbrance_ok || U_CAN_REGEN())) {
@@ -1291,5 +1302,46 @@ dump_glyphids(void)
 }
 #endif /* ENHANCED_SYMBOLS */
 #endif /* !NODUMPENUMS || ENHANCED_SYMBOLS */
+
+
+boolean
+vamp_can_regen(void)
+{
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        if (uwep && is_silver(uwep)
+            && !is_quest_artifact(uwep) && !uarmg)
+            return 0;
+        if (uarm && is_silver(uarm) && !uarmu)
+            return 0;
+        if (uarmu && is_silver(uarmu))
+            return 0;
+        if (uarmc && is_silver(uarmc) && !uarmu && !uarm)
+            return 0;
+        if (uarmh && is_silver(uarmh)
+            && !is_quest_artifact(uarmh))
+            return 0;
+        if (uarms && is_silver(uarms) && !uarmg)
+            return 0;
+        if (uarmg && is_silver(uarmg))
+            return 0;
+        if (uarmf && is_silver(uarmf))
+            return 0;
+        if (uleft && is_silver(uleft))
+            return 0;
+        if (uright && is_silver(uright))
+            return 0;
+        if (uamul && is_silver(uamul) && !is_quest_artifact(uamul)
+            && !uarmu && !uarm)
+            return 0;
+        if (ublindf && is_silver(ublindf))
+            return 0;
+        if (uchain && is_silver(uchain))
+            return 0;
+        if (uswapwep && is_silver(uswapwep)
+            && u.twoweap && !uarmg)
+            return 0;
+    }
+    return 1;
+}
 
 /*allmain.c*/

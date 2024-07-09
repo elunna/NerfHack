@@ -3036,7 +3036,7 @@ append_honorific(char *buf)
     };
 
     Strcat(buf, honored[rn2(SIZE(honored) - 1) + u.uevent.udemigod]);
-    if (is_vampire(gy.youmonst.data))
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
         Strcat(buf, (flags.female) ? " dark lady" : " dark lord");
     else if (maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         Strcat(buf, (flags.female) ? " hiril" : " hir");

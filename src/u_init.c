@@ -260,6 +260,10 @@ static struct inv_sub {
     { PM_GNOME, LOW_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, HIGH_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, LEATHER_ARMOR, GNOMISH_SUIT },
+    { PM_VAMPIRE, POT_FRUIT_JUICE, POT_BLOOD },
+    { PM_VAMPIRE, CLOVE_OF_GARLIC, POT_BLOOD },
+    { PM_VAMPIRE, FOOD_RATION, POT_VAMPIRE_BLOOD },
+    { PM_VAMPIRE, CRAM_RATION, POT_VAMPIRE_BLOOD },
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
@@ -887,6 +891,14 @@ u_init_race(void)
         set_skill_cap_minimum(P_SABER, P_SKILLED);
         break;
 
+    case PM_VAMPIRE:
+        knows_object(POT_VAMPIRE_BLOOD);
+        knows_object(POT_BLOOD);
+	/* Vampires start off with gods not as pleased, luck penalty */
+	adjalign(-5);
+	change_luck(-1);
+	break;
+
     default: /* impossible */
         break;
     }
@@ -1131,11 +1143,17 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_HUNGER
            || otyp == WAN_NOTHING
            /* orcs start with poison resistance */
-           || (otyp == RIN_POISON_RESISTANCE && Race_if(PM_ORC))
+           || (otyp == RIN_POISON_RESISTANCE && 
+	       (Race_if(PM_ORC) || Race_if(PM_VAMPIRE)))
            /* Monks don't use weapons */
            || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
            /* wizard patch -- they already have one */
            || (otyp == SPE_FORCE_BOLT && Role_if(PM_WIZARD))
+	    /* vampirics start with regeneration */
+           || (otyp == RIN_REGENERATION && Race_if(PM_VAMPIRE))
+	    /* items that will be silver for vampirics (rings/wands perhaps)
+	     * that can't become iron */
+	   || (Race_if(PM_VAMPIRE) && objects[otyp].oc_material == SILVER)
            /* powerful spells are either useless to
               low level players or unbalancing; also
               spells in restricted skill categories */
@@ -1327,6 +1345,11 @@ ini_inv(struct trobj *trop)
                 bless(obj);
         }
 
+        /* Create vampire blood */
+        if (gu.urace.mnum== PM_VAMPIRE && obj->otyp == FOOD_RATION) {
+            dealloc_obj(obj);
+            obj = mksobj(POT_VAMPIRE_BLOOD, TRUE, FALSE);
+        }
         /* nudist gets no armor */
         if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS) {
             dealloc_obj(obj);

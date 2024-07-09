@@ -35,6 +35,7 @@ static void peffect_gain_energy(struct obj *);
 static void peffect_oil(struct obj *);
 static void peffect_acid(struct obj *);
 static void peffect_polymorph(struct obj *);
+static void peffect_blood(struct obj *);
 static boolean H2Opotion_dip(struct obj *, struct obj *, boolean,
                              const char *);
 static short mixtype(struct obj *, struct obj *);
@@ -1474,6 +1475,77 @@ peffect_polymorph(struct obj *otmp)
     }
 }
 
+
+static void
+peffect_blood(struct obj *otmp)
+{
+   
+      gp.potion_unkn++;
+        u.uconduct.unvegan++;
+        if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+            violated_vegetarian();
+            if (otmp->cursed)
+                pline("Yecch!  This %s.", Hallucination
+                      ? "liquid could do with a good stir"
+                      : "blood has congealed");
+            else pline(Hallucination
+                      ? "The %s liquid stirs memories of home."
+                      : "The %s blood tastes delicious.",
+                      otmp->odiluted ? "watery" : "thick");
+            if (!otmp->cursed)
+                lesshungry((otmp->odiluted ? 1 : 2) *
+                           (otmp->otyp == POT_VAMPIRE_BLOOD ? 400 :
+                            otmp->blessed ? 100 : 30));
+            if (otmp->otyp == POT_VAMPIRE_BLOOD && otmp->blessed) {
+                int num = newhp();
+                if (Upolyd) {
+                    u.mhmax += num;
+                    u.mh += num;
+                } else {
+                    u.uhpmax += num;
+                    u.uhp += num;
+                }
+            }
+        } else if (otmp->otyp == POT_VAMPIRE_BLOOD) {
+            /* [CWC] fix conducts for potions of (vampire) blood -
+               doesn't use violated_vegetarian() to prevent
+               duplicated "you feel guilty" messages */
+            u.uconduct.unvegetarian++;
+            if (!Race_if(PM_VAMPIRE)) {
+                if (u.ualign.type == A_LAWFUL || Role_if(PM_MONK)) {
+                    You_feel("%sguilty about drinking such a vile liquid.",
+                             Role_if(PM_MONK) ? "especially " : "");
+                    u.ugangr++;
+                    adjalign(-15);
+                } else if (u.ualign.type == A_NEUTRAL) {
+                    You_feel("guilty.");
+                    adjalign(-3);
+                }
+                exercise(A_CON, FALSE);
+            }
+            if (Race_if(PM_VAMPIRE)) {
+                if (!Unchanging)
+                    rehumanize();
+                return;
+            } else if (!Unchanging) {
+                int successful_polymorph = FALSE;
+                if (otmp->blessed)
+                    successful_polymorph = polymon(PM_VAMPIRE_LEADER);
+                else if (otmp->cursed)
+                    successful_polymorph = polymon(PM_VAMPIRE_BAT);
+                else
+                    successful_polymorph = polymon(PM_VAMPIRE);
+                if (successful_polymorph)
+                    u.mtimedone = 0;	/* "Permament" change */
+            }
+        } else {
+            violated_vegetarian();
+            pline("Ugh.  That was vile.");
+            make_vomiting(Vomiting+d(10,8), TRUE);
+        }
+}
+
+
 int
 peffects(struct obj *otmp)
 {
@@ -1562,6 +1634,11 @@ peffects(struct obj *otmp)
     case POT_POLYMORPH:
         peffect_polymorph(otmp);
         break;
+    case POT_BLOOD:
+    case POT_VAMPIRE_BLOOD:
+        peffect_blood(otmp);
+        break;
+
     default:
         impossible("What a funny potion! (%u)", otmp->otyp);
         return 0;
@@ -2350,6 +2427,15 @@ potionbreathe(struct obj *obj)
         if (!rn2(7))
             (void) destroy_items(&gy.youmonst, AD_ACID, dmg);
         break;
+    case POT_BLOOD:
+    case POT_VAMPIRE_BLOOD:
+        if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+            exercise(A_WIS, FALSE);
+            You_feel("a %ssense of loss.",
+                     obj->otyp == POT_VAMPIRE_BLOOD ? "terrible " : "");
+        } else
+            exercise(A_CON, FALSE);
+        break;
     case POT_GAIN_LEVEL:
         more_experienced(5, 0);
         /* FALLTHRU */
@@ -2419,7 +2505,7 @@ mixtype(struct obj *o1, struct obj *o2)
         && (o2typ == POT_GAIN_LEVEL || o2typ == POT_GAIN_ENERGY
             || o2typ == POT_HEALING || o2typ == POT_EXTRA_HEALING
             || o2typ == POT_FULL_HEALING || o2typ == POT_ENLIGHTENMENT
-            || o2typ == POT_FRUIT_JUICE)) {
+            || o2typ == POT_FRUIT_JUICE || o2typ == POT_BLOOD)) {
         /* swap o1 and o2 */
         o1typ = o2->otyp;
         o2typ = o1->otyp;
@@ -2450,6 +2536,8 @@ mixtype(struct obj *o1, struct obj *o2)
         case POT_HALLUCINATION:
         case POT_BLINDNESS:
         case POT_CONFUSION:
+	case POT_BLOOD:
+	case POT_VAMPIRE_BLOOD:
             return POT_WATER;
         }
         break;
@@ -2491,6 +2579,10 @@ mixtype(struct obj *o1, struct obj *o2)
         case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
             return POT_SEE_INVISIBLE;
+	case POT_BLOOD:
+	    return POT_BLOOD;
+	case POT_VAMPIRE_BLOOD:
+	    return POT_VAMPIRE_BLOOD;
         }
         break;
     case POT_ENLIGHTENMENT:
