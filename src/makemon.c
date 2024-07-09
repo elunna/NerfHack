@@ -2221,6 +2221,12 @@ mongets(struct monst *mtmp, int otyp)
 	    case LONG_SWORD:
 		otyp = SILVER_SABER;
 		break;
+	    case SHORT_SWORD:
+	    case ELVEN_SHORT_SWORD:
+	    case ORCISH_SHORT_SWORD:
+	    case DWARVISH_SHORT_SWORD:
+		otyp = SILVER_SHORT_SWORD;
+		break;
 	}
 
     otmp = mksobj(otyp, TRUE, FALSE);
