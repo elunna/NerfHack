@@ -261,9 +261,7 @@ static struct inv_sub {
     { PM_GNOME, HIGH_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, LEATHER_ARMOR, GNOMISH_SUIT },
     { PM_VAMPIRE, POT_FRUIT_JUICE, POT_BLOOD },
-    { PM_VAMPIRE, CLOVE_OF_GARLIC, POT_BLOOD },
-    { PM_VAMPIRE, FOOD_RATION, POT_VAMPIRE_BLOOD },
-    { PM_VAMPIRE, CRAM_RATION, POT_VAMPIRE_BLOOD },
+    { PM_VAMPIRE, CLOVE_OF_GARLIC, SPRIG_OF_WOLFSBANE},
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
@@ -1346,7 +1344,8 @@ ini_inv(struct trobj *trop)
         }
 
         /* Create vampire blood */
-        if (gu.urace.mnum== PM_VAMPIRE && obj->otyp == FOOD_RATION) {
+        if (gu.urace.mnum== PM_VAMPIRE
+		&& (obj->otyp == FOOD_RATION || obj->otyp == CRAM_RATION)) {
             dealloc_obj(obj);
             obj = mksobj(POT_VAMPIRE_BLOOD, TRUE, FALSE);
         }
