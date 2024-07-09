@@ -831,6 +831,7 @@ peffect_water(struct obj *otmp)
     gp.potion_unkn++;
     if (mon_hates_blessings(&gy.youmonst) /* undead or demon */
         || u.ualign.type == A_CHAOTIC) {
+	int dice = Uevil_inherently ? 4 : 2;
         if (otmp->blessed) {
             pline("This burns like %s!", hliquid("acid"));
             exercise(A_CON, FALSE);
@@ -841,11 +842,11 @@ peffect_water(struct obj *otmp)
                     you_unwere(FALSE);
                 set_ulycn(NON_PM); /* cure lycanthropy */
             }
-            losehp(Maybe_Half_Phys(d(2, 6)), "potion of holy water",
+            losehp(Maybe_Half_Phys(d(dice, 6)), "potion of holy water",
                    KILLED_BY_AN);
         } else if (otmp->cursed) {
             You_feel("quite proud of yourself.");
-            healup(d(2, 6), 0, 0, 0);
+            healup(d(dice, 6), 0, 0, 0);
             if (ismnum(u.ulycn) && !Upolyd)
                 you_were();
             exercise(A_CON, TRUE);

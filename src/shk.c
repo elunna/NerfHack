@@ -590,7 +590,7 @@ rob_shop(struct monst *shkp)
     livelog_printf(LL_ACHIEVE, "stole %ld %s worth of merchandise from %s %s",
                    total, currency(total), s_suffix(shkname(shkp)),
                    shtypes[eshkp->shoptype - SHOPBASE].name);
-    if (!Role_if(PM_ROGUE)) /* stealing is unlawful */
+    if (!Role_if(PM_ROGUE) && !Uevil_inherently) /* stealing is unlawful */
         adjalign(-sgn(u.ualign.type));
 
     hot_pursuit(shkp);
@@ -4763,7 +4763,8 @@ pay_for_damage(const char *dmgstr, boolean cant_mollify)
         } else
             growl(shkp);
         hot_pursuit(shkp);
-        adjalign(-sgn(u.ualign.type));
+	if (!Uevil_inherently)
+	    adjalign(-sgn(u.ualign.type));
     }
 }
 

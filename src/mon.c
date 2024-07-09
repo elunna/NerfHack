@@ -3512,7 +3512,7 @@ xkilled(
            a corpse or animating a statue and usually will be hostile */
         && mndx != PM_HUMAN
         /* only applicable if hero is lawful or neutral */
-        && u.ualign.type != A_CHAOTIC) {
+        && u.ualign.type != A_CHAOTIC && !Uevil_inherently) {
         HTelepat &= ~INTRINSIC;
         change_luck(-2);
         You("murderer!");
@@ -3533,8 +3533,16 @@ xkilled(
 
     /* adjust alignment points */
     if (mtmp->m_id == gq.quest_status.leader_m_id) { /* REAL BAD! */
-        adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
-        u.ugangr += 7; /* instantly become "extremely" angry */
+        /* adjalign(-(u.ualign.record + (int) ALIGNLIM / 2)); */
+	if (!Uevil_inherently) {
+            if (canspotmon(mtmp))
+                You_feel("very guilty.");
+            else
+                You("have a vague sense of intense guilt.");
+            adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
+	    u.ugangr += 7; /* instantly become "extremely" angry */
+        }
+	/* Vampirics still get the luck hit */
         change_luck(-20);
         pline("That was %sa bad idea...",
               u.uevent.qcompleted ? "probably " : "");
@@ -3542,8 +3550,16 @@ xkilled(
         if (!gq.quest_status.killed_leader)
             adjalign((int) (ALIGNLIM / 4));
     } else if (mdat->msound == MS_GUARDIAN) { /* Bad */
-        adjalign(-(int) (ALIGNLIM / 8));
-        u.ugangr++;
+        /* adjalign(-(int) (ALIGNLIM / 8)); */
+	if (!Uevil_inherently) {
+            if (canspotmon(mtmp))
+                You_feel("guilty.");
+            else
+                You("have a vague sense of guilt.");
+            adjalign(-(int) (ALIGNLIM / 8));
+	    u.ugangr++;
+        }
+	/* Vampirics still get the luck hit */
         change_luck(-4);
         if (!Hallucination)
             pline("That was probably a bad idea...");
@@ -3557,11 +3573,28 @@ xkilled(
         if (mdat->maligntyp == A_NONE)
             adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
     } else if (mtmp->mtame) {
-        adjalign(-15); /* bad!! */
+	 if (Uevil_inherently) {
+            if (canspotmon(mtmp))
+                You_feel("guilty.");
+            else
+                You("have a vague sense of guilt.");
+            adjalign(-3); /* kinda bad, but it's how you roll */
+        } else {
+            if (canspotmon(mtmp))
+                You_feel("very guilty.");
+            else
+                You("have a vague sense of intense guilt.");
+            adjalign(-15); /* bad!! */
+        }
+
         /* your god is mighty displeased... */
         if (!Hallucination) {
-            Soundeffect(se_distant_thunder, 40);
-            You_hear("the rumble of distant thunder...");
+	     if (Uevil_inherently)
+		You_hear("sinister laughter off in the distance...");
+	    else {
+		Soundeffect(se_distant_thunder, 40);
+		You_hear("the rumble of distant thunder...");
+	    }
         } else {
             Soundeffect(se_applause, 40);
             You_hear("the studio audience applaud!");
@@ -3573,8 +3606,15 @@ xkilled(
                            mname ? ", " : "",
                            uhis(), pmname(mdat, Mgender(mtmp)));
         }
-    } else if (mtmp->mpeaceful)
-        adjalign(-5);
+    } else if (mtmp->mpeaceful) {
+	if (!Uevil_inherently) {
+            if (canspotmon(mtmp))
+                You_feel("guilty.");
+            else
+                You("have a vague sense of guilt.");
+            adjalign(-5);
+        }
+    }
 
     /* malign was already adjusted for u.ualign.type and randomization */
     adjalign(mtmp->malign);
@@ -4233,7 +4273,13 @@ peacefuls_respond(struct monst *mtmp)
                     } else {
                         mon->mpeaceful = 0;
                         newsym(mon->mx, mon->my);
-                        adjalign(-1);
+			if (!Uevil_inherently) {
+			    if (canspotmon(mon))
+				You_feel("guilty.");
+			    else
+				You("have a vague sense of guilt.");
+			    adjalign(-1);
+			}
                         if (!exclaimed)
                             pline("%s gets angry!", Monnam(mon));
                     }
@@ -4270,7 +4316,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
         /* only hypocritical if monster is vulnerable to Elbereth (or
            peaceful--not vulnerable but attacking it is hypocritical) */
         && (onscary(u.ux, u.uy, mtmp) || mtmp->mpeaceful)) {
-        You_feel("like a hypocrite.");
+
         /* AIS: Yes, I know alignment penalties and bonuses aren't balanced
            at the moment. This is about correct relative to other "small"
            penalties; it should be fairly large, as attacking while standing
@@ -4279,7 +4325,12 @@ setmangry(struct monst *mtmp, boolean via_attack)
            it's intentionally larger than the 1s and 2s that are normally
            given for this sort of thing. */
         /* reduce to 3 (average) when alignment is already very low */
-        adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
+	if (!Uevil_inherently) {
+            You_feel("like a hypocrite.");
+	    adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
+        } else
+            You_feel("clever."); /* no alignment penalty */
+
 
         if (!Blind)
             pline("The engraving beneath you fades.");

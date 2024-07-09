@@ -2079,9 +2079,14 @@ domove_swap_with_pet(struct monst *mtmp, coordxy x, coordxy y)
              * patron deity care at all, let alone enough to get mad?]
              */
             if (rn2(4)) {
-                You_feel("guilty about losing your pet like this.");
                 u.ugangr++;
-                adjalign(-15);
+		if (Uevil_inherently) {
+		    You_feel("somewhat guilty about losing your pet.");
+                    adjalign(-3);
+		} else {
+		    You_feel("guilty about losing your pet like this.");
+		    adjalign(-15);
+		}
             }
             break;
         default:

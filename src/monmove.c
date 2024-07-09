@@ -545,6 +545,16 @@ distfleeck(
                         !Is_astralevel(&u.uz)))) {
         *scared = 1;
         monflee(mtmp, rnd(rn2(7) ? 10 : 100), TRUE, TRUE);
+	if (Uevil_inherently /* && !context.coward */
+            && sengr_at("Elbereth", seescaryx, seescaryy, TRUE)) {
+            /* Followers of Moloch (and bloodsuckers )aren't supposed
+             * to hide behind other gods. */
+            You_feel("like a coward.");
+#if 0 /* Do we need this or is there a better way? */
+            context.coward = TRUE; /* once per move */
+#endif
+            adjalign(-5);
+        }
     } else
         *scared = 0;
 }
