@@ -91,9 +91,9 @@ enum prop_types {
     LIFESAVED         = 68,
     STOMPING          = 69,
     STUN_RES          = 70,
-    BREATHLESS        = 84,
+    BREATHLESS        = 71,
 };
-#define LAST_PROP (STUN_RES)
+#define LAST_PROP (BREATHLESS)
 
 /*** Where the properties come from ***/
 /* Definitions were moved here from obj.h and you.h */
