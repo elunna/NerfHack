@@ -5,20 +5,20 @@
 
 #include "hack.h"
 
-static void stoned_dialogue(void);
-static void vomiting_dialogue(void);
-static void sleep_dialogue(void);
-static void choke_dialogue(void);
-static void levitation_dialogue(void);
-static void slime_dialogue(void);
-static void slimed_to_death(struct kinfo *) NO_NNARGS;
-static void sickness_dialogue(void);
-static void phaze_dialogue(void);
-static void done_timeout(int, int);
-static void slip_or_trip(void);
-static void see_lamp_flicker(struct obj *, const char *) NONNULLPTRS;
-static void lantern_message(struct obj *) NONNULLARG1;
-static void cleanup_burn(ANY_P *, long) NONNULLARG1;
+staticfn void stoned_dialogue(void);
+staticfn void vomiting_dialogue(void);
+staticfn void sleep_dialogue(void);
+staticfn void choke_dialogue(void);
+staticfn void levitation_dialogue(void);
+staticfn void slime_dialogue(void);
+staticfn void slimed_to_death(struct kinfo *) NO_NNARGS;
+staticfn void sickness_dialogue(void);
+staticfn void phaze_dialogue(void);
+staticfn void done_timeout(int, int);
+staticfn void slip_or_trip(void);
+staticfn void see_lamp_flicker(struct obj *, const char *) NONNULLPTRS;
+staticfn void lantern_message(struct obj *) NONNULLARG1;
+staticfn void cleanup_burn(ANY_P *, long) NONNULLARG1;
 
 /* used by wizard mode #timeout and #wizintrinsic; order by 'interest'
    for timeout countdown, where most won't occur in normal play */
@@ -130,7 +130,7 @@ static NEARDATA const char *const stoned_texts[] = {
     "You are a statue."                 /* 1 */
 };
 
-static void
+staticfn void
 stoned_dialogue(void)
 {
     long i = (Stoned & TIMEOUT);
@@ -190,7 +190,7 @@ static NEARDATA const char *const vomiting_texts[] = {
     "are about to vomit."            /* 2 */
 };
 
-static void
+staticfn void
 vomiting_dialogue(void)
 {
     const char *txt = 0;
@@ -260,7 +260,7 @@ vomiting_dialogue(void)
     exercise(A_CON, FALSE);
 }
 
-static void
+staticfn void
 sleep_dialogue(void)
 {
     long i = (HSleepy & TIMEOUT);
@@ -287,7 +287,7 @@ static NEARDATA const char *const choke_texts2[] = {
     "You suffocate."
 };
 
-static void
+staticfn void
 choke_dialogue(void)
 {
     long i = (Strangled & TIMEOUT);
@@ -315,7 +315,7 @@ static NEARDATA const char *const sickness_texts[] = {
     "You are at Death's door.",
 };
 
-static void
+staticfn void
 sickness_dialogue(void)
 {
     long j = (Sick & TIMEOUT), i = j / 2L;
@@ -345,7 +345,7 @@ static NEARDATA const char *const levi_texts[] = {
     "You wobble unsteadily %s the %s."
 };
 
-static void
+staticfn void
 levitation_dialogue(void)
 {
     /* -1 because the last message comes via float_down() */
@@ -381,7 +381,7 @@ static NEARDATA const char *const slime_texts[] = {
     "You have become %s."             /* 1 */
 };
 
-static void
+staticfn void
 slime_dialogue(void)
 {
     long t = (Slimed & TIMEOUT), i = t / 2L;
@@ -449,7 +449,7 @@ burn_away_slime(void)
 }
 
 /* countdown timer for turning into green slime has run out; kill our hero */
-static void
+staticfn void
 slimed_to_death(struct kinfo *kptr)
 {
     uchar save_mvflags;
@@ -526,7 +526,7 @@ static NEARDATA const char *const phaze_texts[] = {
     "You are feeling rather flabby.",
 };
 
-static void
+staticfn void
 phaze_dialogue(void)
 {
     long i = ((HPasses_walls & TIMEOUT) / 2L);
@@ -541,7 +541,7 @@ phaze_dialogue(void)
 /* when a status timeout is fatal, keep the status line indicator shown
    during end of game rundown (and potential dumplog);
    timeout has already counted down to 0 by the time we get here */
-static void
+staticfn void
 done_timeout(int how, int which)
 {
     long *intrinsic_p = &u.uprops[which].intrinsic;
@@ -932,7 +932,7 @@ nh_timeout(void)
                     if ((inv_weight() > -500)) {
                         if (!Deaf)
                             You("make a lot of noise!");
-                        wake_nearby();
+                        wake_nearby(FALSE);
                     }
                 }
                 /* from outside means slippery ice/grease; don't reset
@@ -1078,7 +1078,7 @@ hatch_egg(anything *arg, long timeout)
                    while it's in your inventory */
                 if ((yours && !silent)
                     || (carried(egg) && mon->data->mlet == S_DRAGON)) {
-                    if (tamedog(mon, (struct obj *) 0)) {
+                    if (tamedog(mon, (struct obj *) 0, FALSE)) {
                         if (carried(egg) && mon->data->mlet != S_DRAGON)
                             mon->mtame = 20;
                     }
@@ -1242,7 +1242,7 @@ attach_fig_transform_timeout(struct obj *figurine)
 }
 
 /* give a fumble message */
-static void
+staticfn void
 slip_or_trip(void)
 {
     struct obj *otmp = vobj_at(u.ux, u.uy), *otmp2, *saddle;
@@ -1316,7 +1316,7 @@ slip_or_trip(void)
                combined move appear to be a single diagonal step. */
             if (!NODIAG(u.umonnum))
                 confdir(TRUE); /* sets u.dx and u.dy */
-            /* Only hurtle if the random directon won't move hero back
+            /* Only hurtle if the random direction won't move hero back
                to same spot where this move started. */
             if (u.ux + u.dx != u.ux0 || u.uy + u.dy != u.uy0)
                 hurtle(u.dx, u.dy, 1, FALSE);
@@ -1365,7 +1365,7 @@ slip_or_trip(void)
 }
 
 /* Print a lamp flicker message with tailer.  Only called if seen. */
-static void
+staticfn void
 see_lamp_flicker(struct obj *obj, const char *tailer)
 {
     switch (obj->where) {
@@ -1380,7 +1380,7 @@ see_lamp_flicker(struct obj *obj, const char *tailer)
 }
 
 /* Print a dimming message for brass lanterns.  Only called if seen. */
-static void
+staticfn void
 lantern_message(struct obj *obj)
 {
     /* from adventure */
@@ -1844,7 +1844,7 @@ end_burn(struct obj *obj, boolean timer_attached)
 /*
  * Cleanup a burning object if timer stopped.
  */
-static void
+staticfn void
 cleanup_burn(anything *arg, long expire_time)
 {
     struct obj *obj = arg->a_obj;
@@ -1970,14 +1970,14 @@ do_storms(void)
  *      Check whether object has a timer of type timer_type.
  */
 
-static const char *kind_name(short);
-static void print_queue(winid, timer_element *);
-static void insert_timer(timer_element *);
-static timer_element *remove_timer(timer_element **, short, ANY_P *);
-static void write_timer(NHFILE *, timer_element *);
-static boolean mon_is_local(struct monst *);
-static boolean timer_is_local(timer_element *);
-static int maybe_write_timer(NHFILE *, int, boolean);
+staticfn const char *kind_name(short);
+staticfn void print_queue(winid, timer_element *);
+staticfn void insert_timer(timer_element *);
+staticfn timer_element *remove_timer(timer_element **, short, ANY_P *);
+staticfn void write_timer(NHFILE *, timer_element *);
+staticfn boolean mon_is_local(struct monst *);
+staticfn boolean timer_is_local(timer_element *);
+staticfn int maybe_write_timer(NHFILE *, int, boolean);
 
 /* If defined, then include names when printing out the timer queue */
 #define VERBOSE_TIMER
@@ -2011,10 +2011,13 @@ static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
 };
 #undef TTAB
 
-static const char *
+staticfn const char *
 kind_name(short kind)
 {
     switch (kind) {
+    case TIMER_NONE:
+        impossible("no timer type");
+        return "none";
     case TIMER_LEVEL:
         return "level";
     case TIMER_GLOBAL:
@@ -2027,7 +2030,7 @@ kind_name(short kind)
     return "unknown";
 }
 
-static void
+staticfn void
 print_queue(winid win, timer_element *base)
 {
     timer_element *curr;
@@ -2235,6 +2238,7 @@ run_timers(void)
         if (curr->kind == TIMER_OBJECT)
             (curr->arg.a_obj)->timed--;
         (*timeout_funcs[curr->func_index].f)(&curr->arg, curr->timeout);
+        (void) memset((genericptr_t) curr, 0, sizeof(timer_element));
         free((genericptr_t) curr);
     }
 }
@@ -2251,7 +2255,7 @@ start_timer(
 {
     timer_element *gnu, *dup;
 
-    if (kind < 0 || kind >= NUM_TIMER_KINDS
+    if (kind <= TIMER_NONE || kind >= NUM_TIMER_KINDS
         || func_index < 0 || func_index >= NUM_TIME_FUNCS)
         panic("start_timer (%s: %d)", kind_name(kind), (int) func_index);
 
@@ -2309,6 +2313,7 @@ stop_timer(short func_index, anything *arg)
             (arg->a_obj)->timed--;
         if ((cleanup_func = timeout_funcs[doomed->func_index].cleanup) != 0)
             (*cleanup_func)(arg, timeout);
+        (void) memset((genericptr_t) doomed, 0, sizeof(timer_element));
         free((genericptr_t) doomed);
         return (timeout - gm.moves);
     }
@@ -2386,6 +2391,7 @@ obj_stop_timers(struct obj *obj)
                 gt.timer_base = curr->next;
             if ((cleanup_func = timeout_funcs[curr->func_index].cleanup) != 0)
                 (*cleanup_func)(&curr->arg, curr->timeout);
+            (void) memset((genericptr_t) curr, 0, sizeof(timer_element));
             free((genericptr_t) curr);
         } else {
             prev = curr;
@@ -2426,6 +2432,7 @@ spot_stop_timers(coordxy x, coordxy y, short func_index)
                 gt.timer_base = curr->next;
             if ((cleanup_func = timeout_funcs[curr->func_index].cleanup) != 0)
                 (*cleanup_func)(&curr->arg, curr->timeout);
+            (void) memset((genericptr_t) curr, 0, sizeof(timer_element));
             free((genericptr_t) curr);
         } else {
             prev = curr;
@@ -2459,7 +2466,7 @@ spot_time_left(coordxy x, coordxy y, short func_index)
 }
 
 /* Insert timer into the global queue */
-static void
+staticfn void
 insert_timer(timer_element *gnu)
 {
     timer_element *curr, *prev;
@@ -2475,7 +2482,7 @@ insert_timer(timer_element *gnu)
         gt.timer_base = gnu;
 }
 
-static timer_element *
+staticfn timer_element *
 remove_timer(
     timer_element **base,
     short func_index,
@@ -2497,7 +2504,7 @@ remove_timer(
     return curr;
 }
 
-static void
+staticfn void
 write_timer(NHFILE *nhfp, timer_element *timer)
 {
     anything arg_save;
@@ -2581,7 +2588,7 @@ obj_is_local(struct obj *obj)
  * Return TRUE if the given monster will stay on the level when the
  * level is saved.
  */
-static boolean
+staticfn boolean
 mon_is_local(struct monst *mon)
 {
     struct monst *curr;
@@ -2600,7 +2607,7 @@ mon_is_local(struct monst *mon)
  * Return TRUE if the timer is attached to something that will stay on the
  * level when the level is saved.
  */
-static boolean
+staticfn boolean
 timer_is_local(timer_element *timer)
 {
     switch (timer->kind) {
@@ -2624,7 +2631,7 @@ RESTORE_WARNING_UNREACHABLE_CODE
  * Part of the save routine.  Count up the number of timers that would
  * be written.  If write_it is true, actually write the timer.
  */
-static int
+staticfn int
 maybe_write_timer(NHFILE *nhfp, int range, boolean write_it)
 {
     int count = 0;
@@ -2691,6 +2698,7 @@ save_timers(NHFILE *nhfp, int range)
                     prev->next = curr->next;
                 else
                     gt.timer_base = curr->next;
+                (void) memset((genericptr_t) curr, 0, sizeof(timer_element));
                 free((genericptr_t) curr);
                 /* prev stays the same */
             } else {

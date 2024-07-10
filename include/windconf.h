@@ -80,7 +80,7 @@
                      */
 
 #define CONFIG_FILE ".nerfhackrc"
-#define CONFIG_TEMPLATE ".nerfhackrc.template"
+#define CONFIG_TEMPLATE "nerfhackrc.template"
 #define SYSCF_TEMPLATE "sysconf.template"
 #define SYMBOLS_TEMPLATE "symbols.template"
 #define GUIDEBOOK_FILE "Guidebook.txt"

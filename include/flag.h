@@ -1,4 +1,4 @@
-/* NetHack 3.7	flag.h	$NHDT-Date: 1707122958 2024/02/05 08:49:18 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.236 $ */
+/* NetHack 3.7	flag.h	$NHDT-Date: 1715979826 2024/05/17 21:03:46 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.246 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -197,6 +197,16 @@ struct debug_flags {
 #endif
 };
 
+enum windowcolors_windows {
+    wcolor_menu, wcolor_message, wcolor_status, wcolor_text,
+    WC_COUNT
+};
+
+struct windowcolors_struct {
+    char *fg;
+    char *bg;
+};
+
 struct accessibility_data {
     boolean accessiblemsg; /* use msg_loc for plined messages */
     coord msg_loc;         /* accessiblemsg: location */
@@ -223,6 +233,7 @@ struct accessibility_data {
  * and probably warrant a structure of their own elsewhere some day.
  */
 struct instance_flags {
+    boolean query_menu;    /* use a menu for yes/no queries */
     boolean debug_fuzzer;  /* fuzz testing */
     boolean defer_plname;  /* X11 hack: askname() might not set gp.plname */
     boolean herecmd_menu;  /* use menu when mouseclick on yourself */
@@ -247,6 +258,7 @@ struct instance_flags {
     int override_ID;       /* true to force full identification of objects */
     int parse_config_file_src;  /* hack for parse_config_line() */
     int purge_monsters;    /* # of dead monsters still on fmon list */
+    int raw_printed;       /* count of messages issued before window_inited */
     int suppress_price;    /* controls doname() for unpaid objects */
     unsigned  terrainmode; /* for getpos()'s autodescribe during #terrain */
 #define TER_MAP    0x01U
@@ -367,6 +379,8 @@ struct instance_flags {
     boolean wizmgender;      /* test gender info from core in window port */
     boolean msg_is_alert;    /* suggest windowport should grab player's attention
                               * and request <TAB> acknowlegement */
+    boolean customcolors;    /* support customcolors defined in glyphmap */
+    boolean customsymbols;   /* support customsymbols defined in glyphmap */
     /*
      * Window capability support.
      */
@@ -383,6 +397,7 @@ struct instance_flags {
     int wc_align_status;      /*  status win at top|bot|right|left   */
     int wc_align_message;     /* message win at top|bot|right|left   */
     int wc_vary_msgcount;     /* show more old messages at a time    */
+#if 0
     char *wc_foregrnd_menu; /* points to foregrnd color name for menu win   */
     char *wc_backgrnd_menu; /* points to backgrnd color name for menu win   */
     char *wc_foregrnd_message; /* points to foregrnd color name for msg win */
@@ -391,6 +406,9 @@ struct instance_flags {
     char *wc_backgrnd_status; /* points to backgrnd color name for status   */
     char *wc_foregrnd_text; /* points to foregrnd color name for text win   */
     char *wc_backgrnd_text; /* points to backgrnd color name for text win   */
+#else
+    struct windowcolors_struct wcolors[WC_COUNT];
+#endif
     char *wc_font_map;      /* points to font name for the map win */
     char *wc_font_message;  /* points to font name for message win */
     char *wc_font_status;   /* points to font name for status win  */
@@ -484,6 +502,7 @@ enum plnmsg_types {
     PLNMSG_ONE_ITEM_HERE,       /* "you see <single item> here" */
     PLNMSG_TOWER_OF_FLAME,      /* scroll of fire */
     PLNMSG_CAUGHT_IN_EXPLOSION, /* explode() feedback */
+    PLNMSG_ENVELOPED_IN_GAS,    /* create_gas_cloud() feedback */
     PLNMSG_OBJ_GLOWS,           /* "the <obj> glows <color>" */
     PLNMSG_OBJNAM_ONLY,         /* xname/doname only, for #tip */
     PLNMSG_OK_DONT_DIE,         /* overriding death in explore/wizard mode */

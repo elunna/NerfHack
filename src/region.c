@@ -37,8 +37,8 @@ boolean enter_force_field(genericptr,genericptr);
 NhRegion *create_force_field(coordxy,coordxy,int,long);
 #endif
 
-static void reset_region_mids(NhRegion *);
-static boolean is_hero_inside_gas_cloud(void);
+staticfn void reset_region_mids(NhRegion *);
+staticfn boolean is_hero_inside_gas_cloud(void);
 
 static const callback_proc callbacks[] = {
 #define INSIDE_GAS_CLOUD 0
@@ -875,7 +875,7 @@ region_stats(
 RESTORE_WARNING_FORMAT_NONLITERAL
 
 /* update monster IDs for region being loaded from bones; `ghostly' implied */
-static void
+staticfn void
 reset_region_mids(NhRegion *reg)
 {
     int i = 0, n = reg->n_monst;
@@ -1041,6 +1041,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
 {
     NhRegion *reg = (NhRegion *) p1;
     struct monst *mtmp = (struct monst *) p2;
+    /* struct monst *umon = mtmp ? mtmp : &gy.youmonst; */
     int dam = reg->arg.a_int;
 
     /*
@@ -1093,9 +1094,10 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
             mtmp += destroy_items(mtmp, AD_DCAY, dam);
         
         if (m_poisongas_ok(mtmp) != M_POISONGAS_OK) {
-            if (cansee(mtmp->mx, mtmp->my) && has_head(mtmp->data) 
-                && !breathless(mtmp->data)) {
-                pline("%s coughs!", Monnam(mtmp));
+            if (!is_silent(mtmp->data)) {
+                if (cansee(mtmp->mx, mtmp->my)
+                    || (distu(mtmp->mx, mtmp->my) < 8))
+                    pline("%s coughs!", Monnam(mtmp));
                 wake_nearto(mtmp->mx, mtmp->my, 2);
             }
             if (heros_fault(reg))
@@ -1121,7 +1123,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
     return FALSE; /* Monster is still alive */
 }
 
-static boolean
+staticfn boolean
 is_hero_inside_gas_cloud(void)
 {
     int i;
@@ -1153,6 +1155,13 @@ create_gas_cloud(coordxy x, coordxy y, int cloudsize, int damage)
     int curridx;
     int newidx = 1; /* initial spot is already taken */
     boolean inside_cloud = is_hero_inside_gas_cloud();
+
+    /* a single-point cloud on hero and it deals no damage.
+       probably a natural cause of being polyed. don't message about it */
+    if (!gc.context.mon_moving && u_at(x, y) && cloudsize == 1
+        && (!damage
+            || (damage && m_poisongas_ok(&gy.youmonst) == M_POISONGAS_OK)))
+        inside_cloud = TRUE;
 
     if (cloudsize > MAX_CLOUD_SIZE) {
         impossible("create_gas_cloud: cloud too large (%d)!", cloudsize);
@@ -1233,9 +1242,11 @@ create_gas_cloud(coordxy x, coordxy y, int cloudsize, int damage)
     cloud->glyph = cmap_to_glyph(damage ? S_poisoncloud : S_cloud);
     add_region(cloud);
 
-    if (!gi.in_mklev && !inside_cloud && is_hero_inside_gas_cloud())
+    if (!gi.in_mklev && !inside_cloud && is_hero_inside_gas_cloud()) {
         You("are enveloped in a cloud of %s!",
             damage ? "noxious gas" : "steam");
+        iflags.last_msg = PLNMSG_ENVELOPED_IN_GAS;
+    }
 
     return cloud;
 }

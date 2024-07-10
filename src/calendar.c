@@ -26,7 +26,7 @@
 #define LOCALTIME_type time_t *
 #endif
 
-static struct tm *getlt(void);
+staticfn struct tm *getlt(void);
 
 time_t
 getnow(void)
@@ -37,7 +37,7 @@ getnow(void)
     return datetime;
 }
 
-static struct tm *
+staticfn struct tm *
 getlt(void)
 {
     time_t date = getnow();
@@ -162,7 +162,7 @@ time_from_yyyymmddhhmmss(char *buf)
             timeresult = mktime(&t);
         }
         if (timeresult == (time_t) -1)
-	    ;
+            ;
 #if 0
 TODO: set_debugpline1, debugpline1 -> function pointer
             debugpline1("time_from_yyyymmddhhmmss(%s) would have returned -1",

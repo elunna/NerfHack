@@ -378,6 +378,16 @@ term_start_bgcolor(int bgcolor)
 }
 
 void
+term_start_extracolor(uint32 nhcolor UNUSED, uint16 color256idx UNUSED)
+{
+}
+
+void
+term_end_extracolor(void)
+{
+}
+
+void
 term_start_raw_bold(void)
 {
     standoutbeg();
@@ -483,7 +493,7 @@ tty_start_screen(void)
 void
 gr_init(void)
 {
-    windowprocs.wincap2 &= ~WC2_U_24BITCOLOR;
+    windowprocs.wincap2 &= ~WC2_EXTRACOLORS;
 #ifdef SCREEN_VGA
     if (iflags.usevga) {
         vga_Init();

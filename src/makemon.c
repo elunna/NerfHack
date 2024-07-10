@@ -1,4 +1,4 @@
-/* NetHack 3.7	makemon.c	$NHDT-Date: 1695327268 2023/09/21 20:14:28 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.227 $ */
+/* NetHack 3.7	makemon.c	$NHDT-Date: 1720128166 2024/07/04 21:22:46 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.249 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -14,17 +14,17 @@
     (mptr->mlet == S_HUMAN && Role_if(role_pm)   \
      && (mptr->msound == MS_LEADER || mptr->msound == MS_NEMESIS))
 
-static boolean uncommon(int);
-static int align_shift(struct permonst *);
-static int temperature_shift(struct permonst *);
-static boolean mk_gen_ok(int, unsigned, unsigned);
-static boolean wrong_elem_type(struct permonst *);
-static void m_initgrp(struct monst *, coordxy, coordxy, int, mmflags_nht);
-static void m_initthrow(struct monst *, int, int);
-static void m_initweap(struct monst *);
-static void m_initinv(struct monst *);
-static boolean makemon_rnd_goodpos(struct monst *, mmflags_nht, coord *);
-static void init_mextra(struct mextra *);
+staticfn boolean uncommon(int);
+staticfn int align_shift(struct permonst *);
+staticfn int temperature_shift(struct permonst *);
+staticfn boolean mk_gen_ok(int, unsigned, unsigned);
+staticfn boolean wrong_elem_type(struct permonst *);
+staticfn void m_initgrp(struct monst *, coordxy, coordxy, int, mmflags_nht);
+staticfn void m_initthrow(struct monst *, int, int);
+staticfn void m_initweap(struct monst *);
+staticfn void m_initinv(struct monst *);
+staticfn boolean makemon_rnd_goodpos(struct monst *, mmflags_nht, coord *);
+staticfn void init_mextra(struct mextra *);
 
 #define m_initsgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 3, mmf)
 #define m_initlgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 10, mmf)
@@ -32,7 +32,7 @@ static void init_mextra(struct mextra *);
 boolean
 is_home_elemental(struct permonst *ptr)
 {
-    if (ptr->mlet == S_ELEMENTAL)
+    if (ptr->mlet == S_ELEMENTAL) {
         switch (monsndx(ptr)) {
         case PM_AIR_ELEMENTAL:
             return Is_airlevel(&u.uz);
@@ -43,15 +43,16 @@ is_home_elemental(struct permonst *ptr)
         case PM_WATER_ELEMENTAL:
             return Is_waterlevel(&u.uz);
         default:
-	    break;
-	}
+            break;
+        }
+    }
     return FALSE;
 }
 
 /*
  * Return true if the given monster cannot exist on this elemental level.
  */
-static boolean
+staticfn boolean
 wrong_elem_type(struct permonst *ptr)
 {
     if (ptr->mlet == S_ELEMENTAL) {
@@ -74,7 +75,7 @@ wrong_elem_type(struct permonst *ptr)
 }
 
 /* make a group just like mtmp */
-static void
+staticfn void
 m_initgrp(struct monst *mtmp, coordxy x, coordxy y, int n, mmflags_nht mmflags)
 {
     coord mm;
@@ -140,8 +141,7 @@ m_initgrp(struct monst *mtmp, coordxy x, coordxy y, int n, mmflags_nht mmflags)
     }
 }
 
-static
-void
+staticfn void
 m_initthrow(struct monst *mtmp, int otyp, int oquan)
 {
     struct obj *otmp;
@@ -154,7 +154,7 @@ m_initthrow(struct monst *mtmp, int otyp, int oquan)
     (void) mpickobj(mtmp, otmp);
 }
 
-static void
+staticfn void
 m_initweap(struct monst *mtmp)
 {
     struct permonst *ptr = mtmp->data;
@@ -666,7 +666,7 @@ mkmonmoney(struct monst *mtmp, long amount)
     }
 }
 
-static void
+staticfn void
 m_initinv(struct monst *mtmp)
 {
     int cnt;
@@ -950,8 +950,9 @@ m_initinv(struct monst *mtmp)
 
 /* Note: for long worms, always call cutworm (cutworm calls clone_mon) */
 struct monst *
-clone_mon(struct monst *mon,
-          coordxy x, coordxy y) /* clone's preferred location or 0 (near mon) */
+clone_mon(
+    struct monst *mon,
+    coordxy x, coordxy y) /* clone's preferred location or 0 (near mon) */
 {
     coord mm;
     struct monst *m2;
@@ -1044,7 +1045,7 @@ clone_mon(struct monst *mon,
            However, tamedog() will not re-tame a tame dog, so m2
            must be made non-tame to get initialized properly. */
         m2->mtame = 0;
-        if (tamedog(m2, (struct obj *) 0)) {
+        if (tamedog(m2, (struct obj *) 0, FALSE)) {
             assert(has_edog(m2) && has_edog(mon));
             *EDOG(m2) = *EDOG(mon);
         }
@@ -1169,7 +1170,7 @@ newmonhp(struct monst *mon, int mndx)
 
 static const struct mextra zeromextra = DUMMY;
 
-static void
+staticfn void
 init_mextra(struct mextra *mex)
 {
     *mex = zeromextra;
@@ -1186,7 +1187,7 @@ newmextra(void)
     return mextra;
 }
 
-static boolean
+staticfn boolean
 makemon_rnd_goodpos(
     struct monst *mon,
     mmflags_nht gpflags,
@@ -1606,8 +1607,8 @@ makemon(
                     exclaim = TRUE;
             } else if (canseemon(mtmp)) {
                 /* mimic masquerading as furniture or object and not sensed */
-                mhidden_description(mtmp, FALSE, mbuf);
-                what = upstart(strsubst(mbuf, ", mimicking ", ""));
+                mhidden_description(mtmp, MHID_ARTICLE | MHID_ALTMON, mbuf);
+                what = upstart(mbuf);
             }
             if (what) {
                 set_msg_xy(mtmp->mx, mtmp->my);
@@ -1718,7 +1719,7 @@ create_critters(
     return known;
 }
 
-static boolean
+staticfn boolean
 uncommon(int mndx)
 {
     if (mons[mndx].geno & (G_NOGEN | G_UNIQ))
@@ -1736,7 +1737,7 @@ uncommon(int mndx)
  *      comparing the dungeon alignment and monster alignment.
  *      return an integer in the range of 0-5.
  */
-static int
+staticfn int
 align_shift(struct permonst *ptr)
 {
     static NEARDATA long oldmoves = 0L; /* != 1, starting value of moves */
@@ -1766,7 +1767,7 @@ align_shift(struct permonst *ptr)
 }
 
 /* return larger value if monster prefers the level temperature */
-static int
+staticfn int
 temperature_shift(struct permonst *ptr)
 {
     if (gl.level.flags.temperature
@@ -1861,7 +1862,7 @@ rndmonst_adj(int minadj, int maxadj)
 }
 
 /* decide whether it's ok to generate a candidate monster by mkclass() */
-static boolean
+staticfn boolean
 mk_gen_ok(int mndx, unsigned mvflagsmask, unsigned genomask)
 {
     struct permonst *ptr = &mons[mndx];
@@ -2157,11 +2158,11 @@ grow_up(struct monst *mtmp, struct monst *victim)
                            slightly less sexist if prepared for it...) */
                       : (fem && !mtmp->female) ? "female " : "",
                     pmname(ptr, fem));
-            pline("%s %s %s.", upstart(y_monnam(mtmp)),
-                  (fem != mtmp->female) ? "changes into"
-                                        : humanoid(ptr) ? "becomes"
-                                                        : "grows up into",
-                  an(buf));
+            pline_mon(mtmp, "%s %s %s.", YMonnam(mtmp),
+                      (fem != mtmp->female) ? "changes into"
+                                            : humanoid(ptr) ? "becomes"
+                                                            : "grows up into",
+                      an(buf));
         }
         set_mon_data(mtmp, ptr);
         if (mtmp->cham == oldtype && is_shapeshifter(ptr))

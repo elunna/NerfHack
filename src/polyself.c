@@ -21,14 +21,14 @@
 
 #include "hack.h"
 
-static void check_strangling(boolean);
-static void polyman(const char *, const char *);
-static void dropp(struct obj *);
-static void break_armor(void);
-static void drop_weapon(int);
-static int armor_to_dragon(int);
-static void newman(void);
-static void polysense(void);
+staticfn void check_strangling(boolean);
+staticfn void polyman(const char *, const char *);
+staticfn void dropp(struct obj *);
+staticfn void break_armor(void);
+staticfn void drop_weapon(int);
+staticfn int armor_to_dragon(int);
+staticfn void newman(void);
+staticfn void polysense(void);
 
 static const char no_longer_petrify_resistant[] =
     "No longer petrify-resistant, you";
@@ -158,7 +158,7 @@ steed_vs_stealth(void)
 }
 
 /* for changing into form that's immune to strangulation */
-static void
+staticfn void
 check_strangling(boolean on)
 {
     /* on -- maybe resume strangling */
@@ -190,7 +190,7 @@ check_strangling(boolean on)
 DISABLE_WARNING_FORMAT_NONLITERAL
 
 /* make a (new) human out of the player */
-static void
+staticfn void
 polyman(const char *fmt, const char *arg)
 {
     boolean sticking = (sticks(gy.youmonst.data) && u.ustuck && !u.uswallow),
@@ -322,7 +322,7 @@ livelog_newform(boolean viapoly, int oldgend, int newgend)
     }
 }
 
-static void
+staticfn void
 newman(void)
 {
     const char *newform;
@@ -1129,7 +1129,7 @@ uasmon_maxStr(void)
 }
 
 /* dropx() jacket for break_armor() */
-static void
+staticfn void
 dropp(struct obj *obj)
 {
     struct obj *otmp;
@@ -1154,7 +1154,7 @@ dropp(struct obj *obj)
     }
 }
 
-static void
+staticfn void
 break_armor(void)
 {
     struct obj *otmp;
@@ -1297,7 +1297,7 @@ break_armor(void)
     /* rings stay worn even when no hands */
 }
 
-static void
+staticfn void
 drop_weapon(int alone)
 {
     struct obj *otmp;
@@ -2228,7 +2228,7 @@ ugolemeffects(int damtype, int dam)
     }
 }
 
-static int
+staticfn int
 armor_to_dragon(int atyp)
 {
     switch (atyp) {
@@ -2273,7 +2273,7 @@ armor_to_dragon(int atyp)
 }
 
 /* some species have awareness of other species */
-static void
+staticfn void
 polysense(void)
 {
     short warnidx = NON_PM;

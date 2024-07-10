@@ -4,15 +4,15 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CEC5D360-8804-454F-8591-002184C23499}</ProjectGuid>
     <RootNamespace>NetHackW</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.20348.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="..\dirs.props" />
-  <Import Project="$(vsDir)default.props" />
+  <Import Project="..\default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="$(vsDir)NetHackProperties.props" />
-  <Import Project="$(vsDir)common.props" />
-  <Import Project="$(vsDir)files.props" />
+  <Import Project="..\NetHackProperties.props" />
+  <Import Project="..\common.props" />
+  <Import Project="..\files.props" />
   <PropertyGroup>
     <OutDir>$(BinDir)</OutDir>
   </PropertyGroup>
@@ -116,6 +116,7 @@
     <ClCompile Include="$(SrcDir)files.c" />
     <ClCompile Include="$(SrcDir)fountain.c" />
     <ClCompile Include="$(SrcDir)getpos.c" />
+    <ClCompile Include="$(SrcDir)glyphs.c" />
     <ClCompile Include="$(SrcDir)hack.c" />
     <ClCompile Include="$(SrcDir)invent.c" />
     <ClCompile Include="$(SrcDir)insight.c" />
@@ -348,7 +349,7 @@
     <ClInclude Include="$(IncDir)xwindowp.h" />
     <ClInclude Include="$(IncDir)you.h" />
     <ClInclude Include="$(IncDir)youprop.h" />
-    <ClInclude Include="$(vsDir)resource.h" />
+    <ClInclude Include="..\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)mnsel.bmp" />

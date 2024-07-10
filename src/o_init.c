@@ -1,24 +1,24 @@
-/* NetHack 3.7	o_init.c	$NHDT-Date: 1701720461 2023/12/04 20:07:41 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.79 $ */
+/* NetHack 3.7	o_init.c	$NHDT-Date: 1720391455 2024/07/07 22:30:55 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.87 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
-static void setgemprobs(d_level *);
-static void randomize_gem_colors(void);
-static void shuffle(int, int, boolean);
-static void shuffle_all(void);
-static int QSORTCALLBACK discovered_cmp(const genericptr, const genericptr);
-static char *sortloot_descr(int, char *);
-static char *disco_typename(int);
-static void disco_append_typename(char *, int);
-static void disco_output_sorted(winid, char **, int, boolean);
-static char *oclass_to_name(char, char *);
+staticfn void setgemprobs(d_level *);
+staticfn void randomize_gem_colors(void);
+staticfn void shuffle(int, int, boolean);
+staticfn void shuffle_all(void);
+staticfn int QSORTCALLBACK discovered_cmp(const genericptr, const genericptr);
+staticfn char *sortloot_descr(int, char *);
+staticfn char *disco_typename(int);
+staticfn void disco_append_typename(char *, int);
+staticfn void disco_output_sorted(winid, char **, int, boolean);
+staticfn char *oclass_to_name(char, char *);
 
 #ifdef TILES_IN_GLYPHMAP
 extern glyph_map glyphmap[MAX_GLYPH];
-static void shuffle_tiles(void);
+staticfn void shuffle_tiles(void);
 
 /* Shuffle tile assignments to match descriptions, so a red potion isn't
  * displayed with a blue tile and so on.
@@ -29,7 +29,7 @@ static void shuffle_tiles(void);
  * is restored.  So might as well do that the first time instead of writing
  * another routine.
  */
-static void
+staticfn void
 shuffle_tiles(void)
 {
     int i;
@@ -48,7 +48,7 @@ shuffle_tiles(void)
 }
 #endif /* TILES_IN_GLYPHMAP */
 
-static void
+staticfn void
 setgemprobs(d_level *dlev)
 {
     int j, first, lev, sum = 0;
@@ -79,7 +79,7 @@ setgemprobs(d_level *dlev)
 }
 
 /* some gems can have different colors */
-static void
+staticfn void
 randomize_gem_colors(void)
 {
 #define COPY_OBJ_DESCR(o_dst, o_src) \
@@ -107,7 +107,7 @@ randomize_gem_colors(void)
 }
 
 /* shuffle descriptions on objects o_low to o_high */
-static void
+staticfn void
 shuffle(int o_low, int o_high, boolean domaterial)
 {
     int i, j, num_to_shuffle;
@@ -192,8 +192,12 @@ init_objects(void)
     /* extra entry allows deriving the range of a class via
        bases[class] through bases[class+1]-1 for all classes
        (except for ILLOBJ_CLASS which is separated from WEAPON_CLASS
-       by generic objects) */
-    gb.bases[MAXOCLASSES] = NUM_OBJECTS;
+       by generic objects); second extra entry is to prevent an
+       explained crash in doclassdisco(), where the code ended up
+       attempting to process non-existent class MAXOCLASSES; the
+       [MAXOCLASSES+1] element gives that non-class 0 objects
+       when traversing objects[] from bases[X] through bases[X+1]-1 */
+    gb.bases[MAXOCLASSES] = gb.bases[MAXOCLASSES + 1] = NUM_OBJECTS;
     /* hypothetically someone might remove all objects of some class,
        or be adding a new class and not populated it yet, leaving gaps
        in bases[]; guarantee that there are no such gaps */
@@ -316,7 +320,7 @@ obj_shuffle_range(
 }
 
 /* randomize object descriptions */
-static void
+staticfn void
 shuffle_all(void)
 {
     /* entire classes; obj_shuffle_range() handles their exceptions */
@@ -520,7 +524,7 @@ static const short uniq_objs[] = {
 };
 
 /* discoveries qsort comparison function */
-static int QSORTCALLBACK
+staticfn int QSORTCALLBACK
 discovered_cmp(const genericptr v1, const genericptr v2)
 {
     const char *s1 = *(const char **) v1;
@@ -534,7 +538,7 @@ discovered_cmp(const genericptr v1, const genericptr v2)
     return res;
 }
 
-static char *
+staticfn char *
 sortloot_descr(int otyp, char *outbuf)
 {
     Loot sl_cookie;
@@ -566,8 +570,8 @@ sortloot_descr(int otyp, char *outbuf)
 #define DISCO_ALPHABYCLASS 2 /* alphabetized within each class */
 #define DISCO_ALPHABETIZED 3 /* alphabetized across all classes */
 /* also used in options.c (optfn_sortdiscoveries) */
-const char disco_order_let[] = "osca";
-const char *const disco_orders_descr[] = {
+static const char disco_order_let[] = "osca";
+static const char *const disco_orders_descr[] = {
     "by order of discovery within each class",
     "sortloot order (by class with some sub-class groupings)",
     "alphabetical within each class",
@@ -625,7 +629,7 @@ choose_disco_sort(
 }
 
 /* augment obj_typename() with explanation of Japanese item names */
-static char *
+staticfn char *
 disco_typename(int otyp)
 {
     char *result = obj_typename(otyp);
@@ -657,7 +661,7 @@ disco_typename(int otyp)
 }
 
 /* append typename(dis) to buf[], possibly truncating in the process */
-static void
+staticfn void
 disco_append_typename(char *buf, int dis)
 {
     unsigned len = (unsigned) strlen(buf);
@@ -681,7 +685,7 @@ disco_append_typename(char *buf, int dis)
 }
 
 /* sort and output sorted_lines to window and free the lines */
-static void
+staticfn void
 disco_output_sorted(winid tmpwin,
                     char **sorted_lines, int sorted_ct,
                     boolean lootsort)
@@ -761,7 +765,8 @@ dodiscovered(void) /* free after Robert Viduya */
                 if (oclass != prev_class) {
                     if ((alphabyclass || lootsort) && sorted_ct) {
                         /* output previous class */
-                        disco_output_sorted(tmpwin, sorted_lines, sorted_ct, lootsort);
+                        disco_output_sorted(tmpwin, sorted_lines, sorted_ct,
+                                            lootsort);
                         sorted_ct = 0;
                     }
                     if (!alphabetized || alphabyclass) {
@@ -803,7 +808,7 @@ dodiscovered(void) /* free after Robert Viduya */
 }
 
 /* lower case let_to_name() output, which differs from def_oc_syms[].name */
-static char *
+staticfn char *
 oclass_to_name(char oclass, char *buf)
 {
     char *s;
@@ -888,7 +893,7 @@ doclassdisco(void)
              i < NUM_OBJECTS && objects[i].oc_class == oclass; ++i)
             if ((dis = gd.disco[i]) != 0 && interesting_to_discover(dis)) {
                 if (!strchr(discosyms, c)) {
-                    Sprintf(eos(discosyms), "%c", c);
+                    (void) strkitten(discosyms, c);
                     if (!traditional) {
                         any.a_int = c;
                         add_menu(tmpwin, &nul_glyphinfo, &any,
@@ -985,6 +990,9 @@ doclassdisco(void)
         break;
     default:
         oclass = def_char_to_objclass(c);
+        /* this should never happen but has been observed via the fuzzer */
+        if (oclass == MAXOCLASSES)
+            impossible("doclassdisco: invalid object class '%s'", visctrl(c));
         Sprintf(buf, "Discovered %s in %s", let_to_name(oclass, FALSE, FALSE),
                 (flags.discosort == 'o') ? "order of discovery"
                 : (flags.discosort == 's') ? "'sortloot' order"

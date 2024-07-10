@@ -1,36 +1,36 @@
-/* NetHack 3.7	pray.c	$NHDT-Date: 1702349066 2023/12/12 02:44:26 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.205 $ */
+/* NetHack 3.7	pray.c	$NHDT-Date: 1712233483 2024/04/04 12:24:43 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.217 $ */
 /* Copyright (c) Benson I. Margulies, Mike Stephenson, Steve Linhart, 1989. */
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
-static int prayer_done(void);
-static void maybe_turn_mon_iter(struct monst *);
-static struct obj *worst_cursed_item(void);
-static int in_trouble(void);
-static void fix_curse_trouble(struct obj *, const char *);
-static void fix_worst_trouble(int);
-static void angrygods(aligntyp);
-static void at_your_feet(const char *);
-static void gcrownu(void);
-static void give_spell(void);
-static void pleased(aligntyp);
-static void godvoice(aligntyp, const char *);
-static void god_zaps_you(aligntyp);
-static void fry_by_god(aligntyp, boolean);
-static void gods_angry(aligntyp);
-static void gods_upset(aligntyp);
-static void consume_offering(struct obj *);
-static void offer_too_soon(aligntyp);
-static void offer_real_amulet(struct obj *, aligntyp); /* NORETURN */
-static void offer_fake_amulet(struct obj *, boolean, aligntyp);
-static void offer_different_alignment_altar(struct obj *, aligntyp);
-static void sacrifice_your_race(struct obj *, boolean, aligntyp);
-static int bestow_artifact(void);
-static void crackaltar(void);
-static boolean pray_revive(void);
-static boolean water_prayer(boolean);
-static boolean blocked_boulder(int, int);
+staticfn int prayer_done(void);
+staticfn void maybe_turn_mon_iter(struct monst *);
+staticfn struct obj *worst_cursed_item(void);
+staticfn int in_trouble(void);
+staticfn void fix_curse_trouble(struct obj *, const char *);
+staticfn void fix_worst_trouble(int);
+staticfn void angrygods(aligntyp);
+staticfn void at_your_feet(const char *);
+staticfn void gcrownu(void);
+staticfn void give_spell(void);
+staticfn void pleased(aligntyp);
+staticfn void godvoice(aligntyp, const char *);
+staticfn void god_zaps_you(aligntyp);
+staticfn void fry_by_god(aligntyp, boolean);
+staticfn void gods_angry(aligntyp);
+staticfn void gods_upset(aligntyp);
+staticfn void consume_offering(struct obj *);
+staticfn void offer_too_soon(aligntyp);
+staticfn void offer_real_amulet(struct obj *, aligntyp); /* NORETURN */
+staticfn void offer_fake_amulet(struct obj *, boolean, aligntyp);
+staticfn void offer_different_alignment_altar(struct obj *, aligntyp);
+staticfn void sacrifice_your_race(struct obj *, boolean, aligntyp);
+staticfn int bestow_artifact(void);
+staticfn void crackaltar(void);
+staticfn boolean pray_revive(void);
+staticfn boolean water_prayer(boolean);
+staticfn boolean blocked_boulder(int, int);
 
 /* simplify a few tests */
 #define Cursed_obj(obj, typ) ((obj) && (obj)->otyp == (typ) && (obj)->cursed)
@@ -196,7 +196,7 @@ stuck_in_wall(void)
  * 3.4.2: make an exception if polymorphed into a form which lacks
  * hands; that's a case where the ramifications override this doubt.
  */
-static int
+staticfn int
 in_trouble(void)
 {
     struct obj *otmp;
@@ -294,7 +294,7 @@ in_trouble(void)
 }
 
 /* select an item for TROUBLE_CURSED_ITEMS */
-static struct obj *
+staticfn struct obj *
 worst_cursed_item(void)
 {
     struct obj *otmp;
@@ -355,7 +355,7 @@ worst_cursed_item(void)
     return otmp;
 }
 
-static void
+staticfn void
 fix_curse_trouble(struct obj *otmp, const char *what)
 {
     if (!otmp) {
@@ -379,7 +379,7 @@ fix_curse_trouble(struct obj *otmp, const char *what)
     update_inventory();
 }
 
-static void
+staticfn void
 fix_worst_trouble(int trouble)
 {
     int i;
@@ -617,7 +617,7 @@ fix_worst_trouble(int trouble)
  * bathroom walls, but who is foiled by bathrobes." --Bertrand Russell, 1943
  * Divine wrath, dungeon walls, and armor follow the same principle.
  */
-static void
+staticfn void
 god_zaps_you(aligntyp resp_god)
 {
     if (u.uswallow) {
@@ -701,7 +701,7 @@ god_zaps_you(aligntyp resp_god)
     }
 }
 
-static void
+staticfn void
 fry_by_god(aligntyp resp_god, boolean via_disintegration)
 {
     You("%s!", !via_disintegration ? "fry to a crisp"
@@ -711,7 +711,7 @@ fry_by_god(aligntyp resp_god, boolean via_disintegration)
     done(DIED);
 }
 
-static void
+staticfn void
 angrygods(aligntyp resp_god)
 {
     int maxanger, new_ublesscnt;
@@ -798,7 +798,7 @@ angrygods(aligntyp resp_god)
 }
 
 /* helper to print "str appears at your feet", or appropriate */
-static void
+staticfn void
 at_your_feet(const char *str)
 {
     if (Blind)
@@ -823,7 +823,7 @@ wiz_crown(void)
     return 0;
 }
 
-static void
+staticfn void
 gcrownu(void)
 {
     struct obj *obj;
@@ -1133,7 +1133,7 @@ gcrownu(void)
     return;
 }
 
-static void
+staticfn void
 give_spell(void)
 {
     struct obj *otmp;
@@ -1204,7 +1204,7 @@ give_spell(void)
     return;
 }
 
-static void
+staticfn void
 pleased(aligntyp g_align)
 {
     /* don't use p_trouble, worst trouble may get fixed while praying */
@@ -1516,7 +1516,7 @@ pleased(aligntyp g_align)
 /* either blesses or curses water on the altar,
  * returns true if it found any water here.
  */
-static boolean
+staticfn boolean
 water_prayer(boolean bless_water)
 {
     struct obj *otmp;
@@ -1544,7 +1544,7 @@ water_prayer(boolean bless_water)
     return (boolean) (changed > 0L);
 }
 
-static void
+staticfn void
 godvoice(aligntyp g_align, const char *words)
 {
     const char *quot = "";
@@ -1558,14 +1558,14 @@ godvoice(aligntyp g_align, const char *words)
               ROLL_FROM(godvoices), quot, words, quot);
 }
 
-static void
+staticfn void
 gods_angry(aligntyp g_align)
 {
     godvoice(g_align, "Thou hast angered me.");
 }
 
 /* The g_align god is upset with you. */
-static void
+staticfn void
 gods_upset(aligntyp g_align)
 {
     if (g_align == u.ualign.type)
@@ -1575,7 +1575,7 @@ gods_upset(aligntyp g_align)
     angrygods(g_align);
 }
 
-static void
+staticfn void
 consume_offering(struct obj *otmp)
 {
     if (Hallucination)
@@ -1609,7 +1609,7 @@ consume_offering(struct obj *otmp)
 
 /* feedback when attempting to offer the Amulet on a "low altar" (not one of
    the high altars in the temples on the Astral Plane or Moloch's Sanctum) */
-static void
+staticfn void
 offer_too_soon(aligntyp altaralign)
 {
     if (altaralign == A_NONE && Inhell) {
@@ -1658,7 +1658,7 @@ desecrate_altar(boolean highaltar, aligntyp altaralign)
 /* offering the Amulet on a high altar (checked by caller) ends the game;
    we don't declare this 'NORETURN' because done() can return (if called
    with some reasons other than ASCENDED and ESCAPED) */
-static void
+staticfn void
 offer_real_amulet(struct obj *otmp, aligntyp altaralign)
 {
     static NEARDATA const char
@@ -1721,7 +1721,7 @@ offer_real_amulet(struct obj *otmp, aligntyp altaralign)
     /*NOTREACHED*/
 }
 
-static void
+staticfn void
 offer_fake_amulet(
     struct obj *otmp,
     boolean highaltar,
@@ -1758,7 +1758,7 @@ offer_fake_amulet(
 }
 
 /* possibly convert an altar's alignment or the hero's alignment */
-static void
+staticfn void
 offer_different_alignment_altar(
     struct obj *otmp,
     aligntyp altaralign)
@@ -1837,7 +1837,7 @@ offer_different_alignment_altar(
     }
 }
 
-static void
+staticfn void
 sacrifice_your_race(
     struct obj *otmp,
     boolean highaltar,
@@ -1920,7 +1920,7 @@ sacrifice_your_race(
         useupf(otmp, 1L);
 }
 
-static int
+staticfn int
 bestow_artifact(void)
 {
     struct rm *lev = &levl[u.ux][u.uy];
@@ -1988,7 +1988,7 @@ bestow_artifact(void)
  * Altars can also occasionally generate cracked, and they can crack from
  * being converted from one alignment to another.
  * */
-static void
+staticfn void
 crackaltar(void)
 {
     struct rm *lev = &levl[u.ux][u.uy];
@@ -2024,7 +2024,8 @@ dosacrifice(void)
     int value = 0;
 
     if (!on_altar() || u.uswallow) {
-        You("are not standing on an altar.");
+        You("are not %s an altar.",
+            (Levitation || Flying) ? "over" : "on");
         return ECMD_OK;
     } else if (Confusion || Stunned || Hallucination) {
         You("are too impaired to perform the rite.");
@@ -2303,7 +2304,7 @@ can_pray(boolean praying) /* false means no messages should be given */
 }
 
 /* return TRUE if praying revived a pet corpse */
-static boolean
+staticfn boolean
 pray_revive(void)
 {
     struct obj *otmp;
@@ -2400,7 +2401,7 @@ dopray(void)
     return ECMD_TIME;
 }
 
-static int
+staticfn int
 prayer_done(void) /* M. Stephenson (1.0.3b) */
 {
     aligntyp alignment = gp.p_aligntyp;
@@ -2411,7 +2412,7 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
         /* praying at an unaligned altar, not necessarily in Gehennom */
         You("%s diabolical laughter all around you...",
             !Deaf ? "hear" : "intuit");
-        wake_nearby();
+        wake_nearby(FALSE);
         adjalign(-2);
         exercise(A_WIS, FALSE);
         if (!Inhell) {
@@ -2483,7 +2484,7 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
 }
 
 /* iterable for undead turning by priest/knight */
-static void
+staticfn void
 maybe_turn_mon_iter(struct monst *mtmp)
 {
     /* 3.6.3: used to use cansee() here but the purpose is to prevent
@@ -2809,7 +2810,7 @@ altar_wrath(coordxy x, coordxy y)
 }
 
 /* assumes isok() at one space away, but not necessarily at two */
-static boolean
+staticfn boolean
 blocked_boulder(int dx, int dy)
 {
     struct obj *otmp;

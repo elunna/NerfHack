@@ -1,5 +1,5 @@
 \documentstyle[titlepage,longtable]{article}
-% NetHack 3.7  Guidebook.tex $NHDT-Date: 1699260377 2023/11/06 08:46:17 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.531 $ */
+% NetHack 3.7  Guidebook.tex $NHDT-Date: 1711040379 2024/03/21 16:59:39 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.562 $ */
 %+% we're still limping along in LaTeX 2.09 compatibility mode
 %-%\documentclass{article}
 %-%\usepackage{hyperref} % before longtable
@@ -48,7 +48,7 @@
 \author{Original version - Eric S. Raymond\\
 (Edited and expanded for 3.7.0 by Mike Stephenson and others)}
 %DO NOT REMOVE NH_DATESUB \date{DATE(%B %-d, %Y)}
-\date{February 29, 2024}
+\date{April 12, 2024}
 
 \maketitle
 
@@ -4436,8 +4436,31 @@ with tiles, generally displays a small plus-symbol beside the object
 on the top of the pile.
 %.lp
 \item[\ib{hitpointbar}]
-Show a hit point bar graph behind your name and title.
-Only available for TTY and Windows GUI, and only when statushilites is on.
+Show a hit point bar graph behind your name and title in the status
+display (default off).
+\\
+%.lp
+The ``curses'' interface supports it even if the status highlighting
+feature has been disabled when building the program.
+The ``tty'' and ``mswin'' (aka ``Windows GUI'') interfaces
+support it only if status highlighting is left enabled when building.
+You don't need to set up any highlighting rules in order to display
+the bar.
+If there is one for hitpoints in effect and it specifies color, that
+color will be used for the bar.
+However if it specifies video attributes, they will be ignored in
+favor of {\it inverse}.
+For tty and curses, {\it blink\/} will also be used if the current
+hitpoint value is at or below the {\it critical HP\/} threshold.
+\\
+%.lp
+The ``Qt'' interface also supports hitpointbar, by drawing
+a solid bar above the name and title with a hard-coded color scheme.
+(As of this writing, having the bar enabled unintentionally inhibits
+resizing the status panel.
+To resize that, use the {\tt \#optionsfull} command to toggle the
+{\it hitpointbar\/} option off, perform the resize while it's off, then
+use the same command to toggle it back on.)
 %.lp
 \item[\ib{horsename}]
 Name your starting horse (for example, ``{\tt horsename:Trigger}'').
@@ -4701,7 +4724,7 @@ are filled in at the end from the previous order.
 \item[\ib{paranoid\verb+_+confirmation}]
 A space separated list of specific situations where alternate
 prompting is desired.
-The default is ``{\it paranoid\verb+_+confirmation:pray swim}''.
+The default is ``{\it paranoid\verb+_+confirmation:pray swim trap}''.
 %.sd
 %.si
 \newlength{\pcwidth}
@@ -4905,6 +4928,9 @@ Using the `{\tt w}' (wield) command when already wielding
 something pushes the old item into your alternate weapon slot (default off).
 Likewise for the `{\tt a}' (apply) command if it causes the applied item to
 become wielded.  Persistent.
+%.lp
+\item[\ib{query\verb+_+menu}]
+Use a menu when asked specific yes/no queries, instead of a prompt.
 %.lp
 \item[\ib{quick\verb+_+farsight}]
 When set, usually prevents the ``you sense your surroundings'' message
@@ -5514,27 +5540,28 @@ and status windows but have room for two additional lines of inventory
 plus widen each inventory line by two columns.
 %.lp
 \item[\ib{windowcolors}]
-If {\it NetHack\/} can, it should display windows with the specified
-foreground/background colors.
-Windows GUI only.
-The format is
-\begin{verbatim}
-    OPTION=windowcolors:wintype foreground/background
-\end{verbatim}
-
-%.pg
-where wintype is one of {\it menu}, {\it message}, {\it status}, or {\it text}, and
-foreground and background are colors, either a hexadecimal {\it \#rrggbb},
+If {\it NetHack\/} can, it should display all windows of a particular style
+with the specified foreground and background colors.
+Windows GUI and curses windowport only.
+The format is\\
+{\tt ~~~~OPTION=windowcolors:}{\it style foreground\/}{\tt /}{\it background}\\
+where {\it style} is one of {\tt menu}, {\tt message}, {\tt status},
+or {\tt text}, and
+{\it foreground} and {\it background} are colors, either numeric (hash
+sign followed by three pairs of hexadecimal digits, {\it \#rrggbb\/}),
 one of the named colors ({\it black}, {\it red}, {\it green}, {\it brown},
 {\it blue}, {\it magenta}, {\it cyan}, {\it orange},
-{\it brightgreen}, {\it yellow}, {\it brightblue}, {\it brightmagenta},
-{\it brightcyan}, {\it white}, {\it trueblack}, {\it gray}, {\it purple},
+{\it bright-green}, {\it yellow}, {\it bright-blue}, {\it bright-magenta},
+{\it bright-cyan}, {\it white}, {\it gray}, {\it purple},
 {\it silver}, {\it maroon}, {\it fuchsia}, {\it lime}, {\it olive},
-{\it navy}, {\it teal}, {\it aqua}), or one of Windows UI colors ({\it activeborder},
-{\it activecaption}, {\it appworkspace}, {\it background}, {\it btnface}, {\it btnshadow},
-{\it btntext}, {\it captiontext}, {\it graytext}, {\it greytext}, {\it highlight},
+{\it navy}, {\it teal}, {\it aqua}),
+or (for Windows only) one of Windows UI colors ({\it trueblack},
+{\it activeborder}, {\it activecaption}, {\it appworkspace}, {\it background},
+{\it btnface}, {\it btnshadow}, {\it btntext}, {\it captiontext},
+{\it graytext}, {\it greytext}, {\it highlight},
 {\it highlighttext}, {\it inactiveborder}, {\it inactivecaption}, {\it menu},
-{\it menutext}, {\it scrollbar}, {\it window}, {\it windowframe}, {\it windowtext}).
+{\it menutext}, {\it scrollbar}, {\it window}, {\it windowframe},
+{\it windowtext}).
 
 %.lp
 \item[\ib{wraptext}]
@@ -5668,7 +5695,8 @@ possible to compile {\it NetHack\/} without regular expression support on
 a platform where
 there is no regular expression library. While this is not true of any modern
 platform, if your {\it NetHack\/} was built this way, patterns are instead glob
-patterns. This applies to Autopickup exceptions, Message types, Menu colors,
+patterns; regardless, this document refers to both as ``regular expressions.''
+This applies to Autopickup exceptions, Message types, Menu colors,
 and User sounds.
 
 %.hn 2
@@ -6065,7 +6093,7 @@ Each SOUND entry is broken down into the following parts:
 \elist
 
 %.lp ""
-The pattern should be a POSIX extended regular expression.
+The pattern should be a regular expression.
 
 For example:
 

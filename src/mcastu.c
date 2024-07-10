@@ -45,19 +45,19 @@ enum mcast_cleric_spells {
     CLC_HOBBLE
 };
 
-static void cursetxt(struct monst *, boolean);
-static int choose_magic_spell(struct monst *, int);
-static int choose_clerical_spell(struct monst *, int);
-static int m_cure_self(struct monst *, int);
-static void cast_wizard_spell(struct monst *, int, int);
-static void cast_cleric_spell(struct monst *, int, int);
-static boolean is_undirected_spell(unsigned int, int);
-static boolean spell_would_be_useless(struct monst *, unsigned int, int);
-static boolean is_entombed(coordxy, coordxy);
-static boolean counterspell(struct monst *, struct obj *);
+staticfn void cursetxt(struct monst *, boolean);
+staticfn int choose_magic_spell(struct monst *, int);
+staticfn int choose_clerical_spell(struct monst *, int);
+staticfn int m_cure_self(struct monst *, int);
+staticfn void cast_wizard_spell(struct monst *, int, int);
+staticfn void cast_cleric_spell(struct monst *, int, int);
+staticfn boolean is_undirected_spell(unsigned int, int);
+staticfn boolean spell_would_be_useless(struct monst *, unsigned int, int);
+staticfn boolean is_entombed(coordxy, coordxy);
+staticfn boolean counterspell(struct monst *, struct obj *);
 
 /* feedback when frustrated monster couldn't cast a spell */
-static void
+staticfn void
 cursetxt(struct monst *mtmp, boolean undirected)
 {
     if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)) {
@@ -75,8 +75,7 @@ cursetxt(struct monst *mtmp, boolean undirected)
         else
             point_msg = "at you, then curses";
 
-        pline_xy(mtmp->mx, mtmp->my,
-                 "%s points %s.", Monnam(mtmp), point_msg);
+        pline_mon(mtmp, "%s points %s.", Monnam(mtmp), point_msg);
     } else if ((!(gm.moves % 4) || !rn2(4))) {
         if (!Deaf)
             Norep("You hear a mumbled curse.");   /* Deaf-aware */
@@ -85,7 +84,7 @@ cursetxt(struct monst *mtmp, boolean undirected)
 
 /* convert a level-based random selection into a specific mage spell;
    inappropriate choices will be screened out by spell_would_be_useless() */
-static int
+staticfn int
 choose_magic_spell(struct monst* mtmp, int spellval)
 {
     /* for 3.4.3 and earlier, val greater than 22 selected default spell */
@@ -165,7 +164,7 @@ choose_magic_spell(struct monst* mtmp, int spellval)
 }
 
 /* convert a level-based random selection into a specific cleric spell */
-static int
+staticfn int
 choose_clerical_spell(struct monst* mtmp, int spellnum)
 {
     /* for 3.4.3 and earlier, num greater than 13 selected the default spell
@@ -275,7 +274,7 @@ castmu(
     }
 
     if (mattk->adtyp == AD_SPEL || mattk->adtyp == AD_CLRC) {
-        /* monst->m_lev is unsigned (uchar), permonst->mspec_used is int */
+        /* monst->m_lev is unsigned (uchar), monst->mspec_used is int */
         mtmp->mspec_used = (int) ((mtmp->m_lev < 8) ? (10 - mtmp->m_lev) : 2);
     }
 
@@ -291,7 +290,7 @@ castmu(
      */
     if (!foundyou && thinks_it_foundyou
         && !is_undirected_spell(mattk->adtyp, spellnum)) {
-        pline_xy(mtmp->mx, mtmp->my, "%s casts a spell at %s!",
+        pline_mon(mtmp, "%s casts a spell at %s!",
                  canseemon(mtmp) ? Monnam(mtmp) : "Something",
                  is_waterwall(mtmp->mux, mtmp->muy) ? "empty water"
                                                     : "thin air");
@@ -308,7 +307,7 @@ castmu(
         return M_ATTK_MISS;
     }
     if (canspotmon(mtmp) || !is_undirected_spell(mattk->adtyp, spellnum)) {
-        pline_xy(mtmp->mx, mtmp->my, "%s casts a spell%s!",
+        pline_mon(mtmp, "%s casts a spell%s!",
                  canspotmon(mtmp) ? Monnam(mtmp) : "Something",
                  is_undirected_spell(mattk->adtyp, spellnum) ? ""
                  : (Invis && !perceives(mtmp->data)
@@ -407,7 +406,7 @@ castmu(
     return ret;
 }
 
-static int
+staticfn int
 m_cure_self(struct monst *mtmp, int dmg)
 {
     if (mtmp->mhp < mtmp->mhpmax) {
@@ -598,8 +597,7 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
    If you modify either of these, be sure to change is_undirected_spell()
    and spell_would_be_useless().
  */
-static
-void
+staticfn void
 cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
 {
     int ml = min(mtmp->m_lev, 50);
@@ -926,7 +924,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-static void
+staticfn void
 cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 {
     int ml = min(mtmp->m_lev, 50);
@@ -1028,7 +1026,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
            do this before maybe blinding the hero via flashburn() */
         mon_spell_hits_spot(mtmp, AD_ELEC, u.ux, u.uy);
         /* blind hero; no effect if already blind */
-        (void) flashburn((long) rnd(100));
+        (void) flashburn((long) rnd(100), TRUE);
         break;
     }
     case CLC_CURSE_ITEMS:
@@ -1252,7 +1250,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 
 RESTORE_WARNING_FORMAT_NONLITERAL
 
-static boolean
+staticfn boolean
 is_undirected_spell(unsigned int adtyp, int spellnum)
 {
     if (adtyp == AD_SPEL) {
@@ -1290,7 +1288,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
 }
 
 /* Some spells are useless under some circumstances. */
-static boolean
+staticfn boolean
 spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
 {
     /* Some spells don't require the player to really be there and can be cast
@@ -1424,7 +1422,7 @@ buzzmu(struct monst *mtmp, struct attack *mattk)
 
 /* is (x,y) entombed (completely surrounded by boulders or nonwalkable spaces)?
  * note that (x,y) itself is not checked */
-static boolean
+staticfn boolean
 is_entombed(coordxy x, coordxy y)
 {
     coordxy xx, yy;
@@ -1438,7 +1436,7 @@ is_entombed(coordxy x, coordxy y)
     return TRUE;
 }
 
-static boolean
+staticfn boolean
 counterspell(struct monst *mtmp, struct obj *otmp) {
     if (otmp->cursed)
         return FALSE;

@@ -1,4 +1,4 @@
-/* NetHack 3.7	wintty.c	$NHDT-Date: 1708290310 2024/02/18 21:05:10 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.386 $ */
+/* NetHack 3.7	wintty.c	$NHDT-Date: 1717967340 2024/06/09 21:09:00 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.410 $ */
 /* Copyright (c) David Cohrs, 1991                                */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -16,6 +16,9 @@
 
 #ifdef TTY_GRAPHICS
 #include "dlb.h"
+
+/* leave this undefined; it produces bad screen output with rxvt-unicode */
+/*#define DECgraphicsOptimization*/
 
 #ifdef MAC
 #define MICRO /* The Mac is a MICRO only for this file, not in general! */
@@ -122,7 +125,7 @@ struct window_procs tty_procs = {
      | WC2_DARKGRAY | WC2_SUPPRESS_HIST | WC2_URGENT_MESG | WC2_STATUSLINES
      | WC2_U_UTF8STR | WC2_PETATTR
 #if !defined(NO_TERMS) || defined(WIN32CON)
-     | WC2_U_24BITCOLOR
+     | WC2_EXTRACOLORS
 #endif
     ),
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, /* color availability */
@@ -205,15 +208,10 @@ boolean GFlag = FALSE;
 boolean HE_resets_AS; /* see termcap.c */
 #endif
 
-#if defined(MICRO) || defined(WIN32CON)
-static const char to_continue[] = "to continue";
-#define getret() getreturn(to_continue)
-#else
-static void getret(void);
-#endif
 static void bail(const char *); /* __attribute__((noreturn)) */
 static void newclipping(coordxy, coordxy);
 static void new_status_window(void);
+static void getret(void);
 static void erase_menu_or_text(winid, struct WinDesc *, boolean);
 static void free_window_info(struct WinDesc *, boolean);
 static boolean toggle_menu_curr(winid, tty_menu_item *, int, boolean,
@@ -252,6 +250,7 @@ static void status_sanity_check(void);
 void g_pututf8(uint8 *utf8str);
 #endif
 
+static boolean calling_from_update_inventory = FALSE;
 #ifdef TTY_PERM_INVENT
 static struct tty_perminvent_cell emptyttycell = {
     0, 0, 0, { 0 }, NO_COLOR + 1
@@ -270,7 +269,6 @@ static long last_glyph_reset_when;
 #ifndef NOINVSYM /* invent.c */
 #define NOINVSYM '#'
 #endif
-static boolean calling_from_update_inventory = FALSE;
 static int ttyinv_create_window(int, struct WinDesc *);
 static void ttyinv_remove_data(struct WinDesc *, boolean);
 static void ttyinv_add_menu(winid, struct WinDesc *, char ch, int attr,
@@ -285,7 +283,7 @@ static void tty_invent_box_glyph_init(struct WinDesc *cw);
 static boolean assesstty(enum inv_modes, short *, short *,
                          long *, long *, long *, long *, long *);
 static void ttyinv_populate_slot(struct WinDesc *, int, int,
-                                 const char *, int32_t, int);
+                                 const char *, uint32, int);
 #endif /* TTY_PERM_INVENT */
 
 /*
@@ -539,6 +537,7 @@ tty_init_nhwindows(int *argcp UNUSED, char **argv UNUSED)
     /* to port dependant tty setup */
     tty_startup(&wid, &hgt);
     setftty(); /* calls start_screen */
+    term_curs_set(0);
 
     /* set up tty descriptor */
     ttyDisplay = (struct DisplayDesc *) alloc(sizeof (struct DisplayDesc));
@@ -766,10 +765,12 @@ tty_get_nh_event(void)
     return;
 }
 
-#if !defined(MICRO) && !defined(WIN32CON)
 static void
 getret(void)
 {
+#if defined(MICRO) || defined(WIN32CON)
+    getreturn("to continue");
+#else
     HUPSKIP();
     xputs("\n");
     if (flags.standout)
@@ -780,12 +781,14 @@ getret(void)
     if (flags.standout)
         standoutend();
     xwaitforspace(" ");
-}
 #endif
+    iflags.raw_printed = 0;
+}
 
 void
 tty_suspend_nhwindows(const char *str)
 {
+    term_curs_set(1);
     settty(str); /* calls end_screen, perhaps raw_print */
     if (!str)
         tty_raw_print(""); /* calls fflush(stdout) */
@@ -796,8 +799,17 @@ tty_resume_nhwindows(void)
 {
     gettty();
     setftty(); /* calls start_screen */
+    term_curs_set(0);
     docrt();
 }
+
+#ifdef CHANGE_COLOR
+char *
+tty_get_color_string(void)
+{
+    return (char *) 0;
+}
+#endif /* CHANGE_COLOR */
 
 void
 tty_exit_nhwindows(const char *str)
@@ -1554,7 +1566,14 @@ process_menu_window(winid window, struct WinDesc *cw)
             if (!counting && strchr(gacc, morc))
                 goto group_accel;
 
-            count = (count * 10L) + (long) (morc - '0');
+            {
+                long dgt = (long) (morc - '0');
+
+                /* count = (10 * count) + (morc - '0'); */
+                count = AppendLongDigit(count, dgt);
+                if (count < 0L) /* overflow */
+                    continue; /* reset_count is True */
+            }
             /*
              * It is debatable whether we should allow 0 to
              * start a count.  There is no difference if the
@@ -2024,7 +2043,7 @@ void
 tty_curs(
     winid window,
     int x, int y) /* not xchar: perhaps xchar is unsigned
-                                     * then curx-x would be unsigned too */
+                   * then curx-x would be unsigned too */
 {
     struct WinDesc *cw = 0;
     int cx = ttyDisplay->curx;
@@ -2040,10 +2059,9 @@ tty_curs(
 #if defined(TILES_IN_GLYPHMAP) && defined(MSDOS)
     adjust_cursor_flags(cw);
 #endif
-    cw->curx = --x; /* column 0 is never used */
-    cw->cury = y;
+
 #ifdef DEBUG
-    if (x < 0 || y < 0 || y >= cw->rows || x > cw->cols) {
+    if (x < 1 || y < 0 || y >= cw->rows || x > cw->cols) {
         const char *s = "[unknown type]";
 
         switch (cw->type) {
@@ -2066,17 +2084,21 @@ tty_curs(
             s = "[base window]";
             break;
         }
-        debugpline4("bad curs positioning win %d %s (%d,%d)", window, s, x, y);
-        /* This return statement caused a functional difference between
-           DEBUG and non-DEBUG operation, so it is being commented
-           out. It caused tty_curs() to fail to move the cursor to the
-           location it needed to be if the x,y range checks failed,
-           leaving the next piece of output to be displayed at whatever
-           random location the cursor happened to be at prior. */
-
-        /* return; */
+        /* avoid sending a line to the message window if we're complaining
+           about cursor positioning in message window; perhaps raw_printf?
+           this ought to be using impossible() so that someone might
+           actually see it */
+        if (cw->type != NHW_MESSAGE)
+            debugpline4("tty_curs: bad positioning win %d %s <%d,%d>",
+                        window, s, x, y);
+        /* don't try to fix up x,y here because then tty_curs() would
+           behave differently depending on whether DEBUG is defined;
+           garbage in, garbage out is the order of the day... */
     }
-#endif
+#endif /* DEBUG */
+    cw->curx = --x; /* column 0 is not used */
+    cw->cury = y;
+
     x += cw->offx;
     y += cw->offy;
 
@@ -3065,7 +3087,8 @@ ttyinv_add_menu(
         row = (slot % rows_per_side) + 1; /* +1: top border */
         /* side: left side panel or right side panel, not a window column */
         side = slot / rows_per_side;
-        ttyinv_populate_slot(cw, row, side, text, clr, startcolor_at);
+        ttyinv_populate_slot(cw, row, side, text,
+                             (uint32) clr, startcolor_at);
     }
     return;
 }
@@ -3218,8 +3241,8 @@ ttyinv_end_menu(int window, struct WinDesc *cw)
 static void
 ttyinv_render(winid window, struct WinDesc *cw)
 {
-    int row, col, slot, side, filled_count = 0, slot_limit,
-                              current_row_color = NO_COLOR;
+    int row, col, slot, side, filled_count = 0, slot_limit;
+    uint32 current_row_color = NO_COLOR;
     struct tty_perminvent_cell *cell;
     char invbuf[BUFSZ];
     boolean force_redraw = gp.program_state.in_docrt ? TRUE : FALSE,
@@ -3333,7 +3356,7 @@ ttyinv_populate_slot(
     int row,  /* 'row' within the window, not within screen */
     int side, /* 'side'==0 is left panel or ==1 is right panel */
     const char *text,
-    int32_t color,
+    uint32 color,
     int clroffset)
 {
     struct tty_perminvent_cell *cell;
@@ -3708,12 +3731,16 @@ g_putch(int in_ch)
         }
         (void) putchar((ch ^ 0x80)); /* Strip 8th bit */
     } else {
+        if (GFlag
+#ifdef DECgraphicsOptimization
         /* for DECgraphics, we only need to switch back from the line
            drawing character set to the normal one if 'ch' is a lowercase
            letter or one of a handful of punctuation characters (the
            range is contiguous but somewhat odd); deferring graph_off()
            now might allow skipping both it and next potential graph_on() */
-        if (GFlag && ch >= 0x5f && ch <= 0x7e) {
+            && ch >= 0x5f && ch <= 0x7e
+#endif
+            ) {
             graph_off();
             GFlag = FALSE;
         }
@@ -3801,11 +3828,9 @@ tty_print_glyph(
     boolean inverse_on = FALSE, underline_on = FALSE,
             colordone = FALSE, glyphdone = FALSE;
     boolean petattr = FALSE;
-    int ch, color;
+    int ch;
+    uint32 color;
     unsigned special;
-#ifdef ENHANCED_SYMBOLS
-    boolean color24bit_on = FALSE;
-#endif
 
     HUPSKIP();
 #ifdef CLIPPING
@@ -3833,27 +3858,25 @@ tty_print_glyph(
     }
 #endif
     if (iflags.use_color) {
+        ttyDisplay->colorflags = NH_BASIC_COLOR;
         if (color != ttyDisplay->color) {
             if (ttyDisplay->color != NO_COLOR)
                 term_end_color();
         }
-#ifdef ENHANCED_SYMBOLS
         /* we don't link with termcap.o if NO_TERMS is defined */
-        if ((tty_procs.wincap2 & WC2_U_24BITCOLOR) && SYMHANDLING(H_UTF8)
+        if ((tty_procs.wincap2 & WC2_EXTRACOLORS)
+            && glyphinfo->gm.customcolor != 0
             && iflags.colorcount >= 256
-#ifdef TTY_PERM_INVENT
-            && !calling_from_update_inventory
-#endif
-            && glyphinfo->gm.u && glyphinfo->gm.u->ucolor) {
-            if ((glyphinfo->gm.u->ucolor & NH_BASIC_COLOR) == 0) {
-                term_start_24bitcolor(glyphinfo->gm.u);
-                color24bit_on = TRUE;
+            && !calling_from_update_inventory) {
+            if ((glyphinfo->gm.customcolor & NH_BASIC_COLOR) == 0) {
+                term_start_extracolor(glyphinfo->gm.customcolor,
+                                      glyphinfo->gm.color256idx);
+                ttyDisplay->colorflags = 0;
                 colordone = TRUE;
             } else {
-                color = glyphinfo->gm.u->ucolor & ~NH_BASIC_COLOR;
+                color = COLORVAL(glyphinfo->gm.customcolor);
             }
         }
-#endif
         if (!colordone) {
             ttyDisplay->color = color;
             if (color != NO_COLOR)
@@ -3920,10 +3943,8 @@ tty_print_glyph(
             term_end_color();
             ttyDisplay->color = ttyDisplay->framecolor = NO_COLOR;
         }
-#ifdef ENHANCED_SYMBOLS
-        if (color24bit_on)
-            term_end_24bitcolor();
-#endif
+        if (ttyDisplay->colorflags != NH_BASIC_COLOR)
+            term_end_extracolor();
     }
     print_vt_code1(AVTC_GLYPH_END);
 
@@ -3939,6 +3960,21 @@ term_start_bgcolor(int color)
     /* placeholder for now */
 }
 #endif  /* !MSDOS && !WIN32 */
+
+void
+term_curs_set(int visibility UNUSED)
+{
+    /* nothing */
+}
+
+#ifdef CHANGE_COLOR
+void
+tty_change_color(int color UNUSED, long rgb UNUSED, int reverse UNUSED)
+{
+    /* nothing */
+}
+#endif /* CHANGE_COLOR */
+
 #endif  /* NO_TERMS */
 
 void
@@ -3947,6 +3983,8 @@ tty_raw_print(const char *str)
     HUPSKIP();
     if (ttyDisplay)
         ttyDisplay->rawprint++;
+    else if (*str)
+        iflags.raw_printed++;
     print_vt_code2(AVTC_SELECT_WINDOW, NHW_BASE);
 #if defined(MICRO) || defined(WIN32CON)
     msmsg("%s\n", str);
@@ -3962,6 +4000,8 @@ tty_raw_print_bold(const char *str)
     HUPSKIP();
     if (ttyDisplay)
         ttyDisplay->rawprint++;
+    else if (*str)
+        iflags.raw_printed++;
     print_vt_code2(AVTC_SELECT_WINDOW, NHW_BASE);
     term_start_raw_bold();
 #if defined(MICRO) || defined(WIN32CON)
@@ -3992,6 +4032,7 @@ tty_nhgetch(void)
 
     HUPSKIP_RESULT('\033');
     print_vt_code1(AVTC_INLINE_SYNC);
+    term_curs_set(1);
     (void) fflush(stdout);
     /* Note: if raw_print() and wait_synch() get called to report terminal
      * initialization problems, then wins[] and ttyDisplay might not be
@@ -4025,6 +4066,7 @@ tty_nhgetch(void)
         }
 #endif
     }
+    term_curs_set(0);
     if (!i)
         i = '\033'; /* map NUL to ESC since nethack doesn't expect NUL */
     else if (i == EOF)
@@ -4196,7 +4238,7 @@ static int condattr(long, unsigned long *);
 static unsigned long *tty_colormasks;
 static long tty_condition_bits;
 static struct tty_status_fields tty_status[2][MAXBLSTATS]; /* 2: NOW,BEFORE */
-static int hpbar_percent, hpbar_color;
+static int hpbar_percent, hpbar_crit_hp;
 extern const struct conditions_t conditions[CONDITION_COUNT];
 
 static const char *const encvals[3][6] = {
@@ -4284,7 +4326,7 @@ tty_status_init(void)
         tty_status[BEFORE][i] = tty_status[NOW][i];
     }
     tty_condition_bits = 0L;
-    hpbar_percent = 0, hpbar_color = NO_COLOR;
+    hpbar_percent = hpbar_crit_hp = 0;
 #endif /* STATUS_HILITES */
 
     /* let genl_status_init do most of the initialization */
@@ -4465,8 +4507,10 @@ tty_status_update(
         if (iflags.wc2_hitpointbar) {
             /* Special additional processing for hitpointbar */
             hpbar_percent = percent;
-            hpbar_color = (color & 0x00FF);
-            tty_status[NOW][BL_TITLE].color = hpbar_color;
+            hpbar_crit_hp = critically_low_hp(TRUE) ? 1 : 0;
+            tty_status[NOW][BL_TITLE].color = (color & 0x00FF);
+            attrmask = HL_INVERSE | (hpbar_crit_hp ? HL_BLINK : 0);
+            tty_status[NOW][BL_TITLE].attr = term_attr_fixup(attrmask);
             tty_status[NOW][BL_TITLE].dirty = TRUE;
         }
         break;
@@ -5048,7 +5092,7 @@ render_status(void)
                      */
                     /* hitpointbar using hp percent calculation */
                     int bar_len, bar_pos = 0;
-                    char bar[MAXCO], *bar2 = (char *) 0, savedch = '\0';
+                    char bar[30 + 1], *bar2 = (char *) 0, savedch = '\0';
                     boolean twoparts = (hpbar_percent < 100);
 
                     /* force exactly 30 characters, padded with spaces
@@ -5056,10 +5100,14 @@ render_status(void)
                     if (strlen(text) != 30) {
                         Sprintf(bar, "%-30.30s", text);
                         Strcpy(status_vals[BL_TITLE], bar);
-                    } else
+                    } else {
                         Strcpy(bar, text);
+                    }
+                    if (hpbar_crit_hp)
+                        repad_with_dashes(bar);
                     bar_len = (int) strlen(bar); /* always 30 */
                     tlth = bar_len + 2;
+                    attrmask = 0; /* for the second part only case: dead */
                     /* when at full HP, the whole title will be highlighted;
                        when injured or dead, there will be a second portion
                        which is not highlighted */
@@ -5076,19 +5124,25 @@ render_status(void)
                     }
                     tty_putstatusfield("[", x++, y);
                     if (*bar) { /* always True, unless twoparts+dead (0 HP) */
-                        term_start_attr(ATR_INVERSE);
-                        if (iflags.hilite_delta && hpbar_color != NO_COLOR)
-                            term_start_color(hpbar_color);
+                        coloridx = tty_status[NOW][BL_TITLE].color;
+                        attrmask = tty_status[NOW][BL_TITLE].attr;
+                        Begin_Attr(attrmask);
+                        if (iflags.hilite_delta && coloridx != NO_COLOR)
+                            term_start_color(coloridx);
                         tty_putstatusfield(bar, x, y);
                         x += (int) strlen(bar);
-                        if (iflags.hilite_delta && hpbar_color != NO_COLOR)
+                        if (iflags.hilite_delta && coloridx != NO_COLOR)
                             term_end_color();
-                        term_end_attr(ATR_INVERSE);
+                        End_Attr(attrmask);
                     }
-                    if (twoparts) { /* no highlighting for second part */
+                    if (twoparts) {
+                        if ((attrmask & HL_BLINK) != 0)
+                            term_start_attr(ATR_BLINK);
                         *bar2 = savedch;
                         tty_putstatusfield(bar2, x, y);
                         x += (int) strlen(bar2);
+                        if ((attrmask & HL_BLINK) != 0)
+                            term_end_attr(ATR_BLINK);
                     }
                     tty_putstatusfield("]", x++, y);
                 } else {
@@ -5227,9 +5281,6 @@ play_usersound_via_idx(int idx, int volume)
 #endif
 
 #undef RESIZABLE
-#ifdef getret
-#undef getret
-#endif
 #undef HUPSKIP
 #undef HUPSKIP_RESULT
 #undef ttypanic

@@ -1,16 +1,16 @@
-/* NetHack 3.7	worn.c	$NHDT-Date: 1707547726 2024/02/10 06:48:46 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.100 $ */
+/* NetHack 3.7	worn.c	$NHDT-Date: 1715109581 2024/05/07 19:19:41 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.109 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
-static void m_lose_armor(struct monst *, struct obj *, boolean) NONNULLPTRS;
-static void clear_bypass(struct obj *) NO_NNARGS;
-static void m_dowear_type(struct monst *, long, boolean, boolean) NONNULLARG1;
-static int extra_pref(struct monst *, struct obj *) NONNULLARG1;
+staticfn void m_lose_armor(struct monst *, struct obj *, boolean) NONNULLPTRS;
+staticfn void clear_bypass(struct obj *) NO_NNARGS;
+staticfn void m_dowear_type(struct monst *, long, boolean, boolean) NONNULLARG1;
+staticfn int extra_pref(struct monst *, struct obj *) NONNULLARG1;
 
-const struct worn {
+static const struct worn {
     long w_mask;
     struct obj **w_obj;
     const char *w_what; /* for failing sanity check's feedback */
@@ -43,6 +43,29 @@ const struct worn {
          : 0)
 /* note: monsters don't have clairvoyance, so dependency on hero's role here
    has no significant effect on their use of w_blocks() */
+
+/* calc the range of hero's unblind telepathy */
+void
+recalc_telepat_range(void)
+{
+    const struct worn *wp;
+    int nobjs = 0;
+
+    for (wp = worn; wp->w_mask; wp++) {
+        struct obj *oobj = *(wp->w_obj);
+
+        if (oobj && objects[oobj->otyp].oc_oprop == TELEPAT)
+            nobjs++;
+    }
+    /* count all artifacts with SPFX_ESP as one */
+    if (ETelepat & W_ART)
+        nobjs++;
+
+    if (nobjs)
+        u.unblind_telepat_range = (BOLT_LIM * BOLT_LIM) * nobjs;
+    else
+        u.unblind_telepat_range = -1;
+}
 
 /* Updated to use the extrinsic and blocked fields. */
 void
@@ -116,6 +139,7 @@ setworn(struct obj *obj, long mask)
         iflags.tux_penalty = (uarm && Role_if(PM_MONK) && gu.urole.spelarmr);
     }
     update_inventory();
+    recalc_telepat_range();
 }
 
 /* called e.g. when obj is destroyed */
@@ -154,6 +178,7 @@ setnotworn(struct obj *obj)
     if (!uarm)
         iflags.tux_penalty = FALSE;
     update_inventory();
+    recalc_telepat_range();
 }
 
 /* called when saving with FREEING flag set has just discarded inventory */
@@ -532,12 +557,7 @@ update_mon_extrinsics(
         case JUMPING:
             break;
         default:
-            /* 1 through 8 correspond to MR_xxx mask values */
-            if (which >= 1 && which <= 8) {
-                /* FIRE,COLD,SLEEP,DISINT,SHOCK,POISON,ACID,STONE */
-                mask = (uchar) (1 << (which - 1));
-                mon->mextrinsics |= (unsigned short) mask;
-            }
+            mon->mextrinsics |= (unsigned short) res_to_mr(which);
             break;
         }
     } else { /* off */
@@ -574,7 +594,7 @@ update_mon_extrinsics(
              * only one pass but a worn alchemy smock will be an
              * alternate source for either of those two resistances.
              */
-            mask = (uchar) (1 << (which - 1));
+            mask = res_to_mr(which);
             for (otmp = mon->minvent; otmp; otmp = otmp->nobj) {
                 if (otmp == obj || !otmp->owornmask)
                     continue;
@@ -716,7 +736,7 @@ m_dowear(struct monst *mon, boolean creation)
         m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
 }
 
-static void
+staticfn void
 m_dowear_type(
     struct monst *mon,
     long flag,               /* wornmask value */
@@ -951,7 +971,7 @@ which_armor(struct monst *mon, long flag)
 }
 
 /* remove an item of armor and then drop it */
-static void
+staticfn void
 m_lose_armor(
     struct monst *mon,
     struct obj *obj,
@@ -966,7 +986,7 @@ m_lose_armor(
 }
 
 /* clear bypass bits for an object chain, plus contents if applicable */
-static void
+staticfn void
 clear_bypass(struct obj *objchn)
 {
     struct obj *o;
@@ -998,6 +1018,7 @@ clear_bypasses(void)
     clear_bypass(gm.migrating_objs);
     clear_bypass(gl.level.buriedobjlist);
     clear_bypass(gb.billobjs);
+    clear_bypass(go.objs_deleted);
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
@@ -1243,7 +1264,7 @@ mon_break_armor(struct monst *mon, boolean polyspot)
 }
 
 /* bias a monster's preferences towards armor that has special benefits. */
-static int
+staticfn int
 extra_pref(struct monst *mon, struct obj *obj)
 {
     /* currently only does speed boots, but might be expanded if monsters

@@ -1,4 +1,4 @@
-/* NetHack 3.7  decl.h  $NHDT-Date: 1706079834 2024/01/24 07:03:54 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.355 $ */
+/* NetHack 3.7  decl.h  $NHDT-Date: 1720074483 2024/07/04 06:28:03 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.373 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2007. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -64,6 +64,9 @@ extern const char *fqn_prefix_names[PREFIX_COUNT];
 extern NEARDATA boolean has_strong_rngseed;
 extern struct engr *head_engr;
 
+/* used by coloratt.c, options.c, utf8map.c, windows.c */
+extern const char hexdd[33];
+
 /* material strings */
 extern const char *materialnm[];
 
@@ -81,6 +84,8 @@ extern const char ynchars[];
 extern const char ynqchars[];
 extern const char ynaqchars[];
 extern const char ynNaqchars[];
+extern const char rightleftchars[];
+extern const char hidespinchars[];
 extern NEARDATA long yn_number;
 extern struct restore_info restoreinfo;
 extern NEARDATA struct savefile_info sfcap, sfrestinfo, sfsaveinfo;
@@ -153,6 +158,11 @@ struct instance_globals_a {
     short *animal_list; /* list of PM values for animal monsters */
     int animal_list_count;
 
+#ifdef CHANGE_COLOR
+    /* options.c */
+    uint32 altpalette[CLR_MAX];
+#endif
+
     /* pickup.c */
     int A_first_hint; /* menustyle:Full plus 'A' response + !paranoid:A */
     int A_second_hint; /* menustyle:Full plus 'A' response + paranoid:A */
@@ -184,7 +194,7 @@ struct instance_globals_b {
 #endif
 
     /* decl.c */
-    int bases[MAXOCLASSES + 1];
+    int bases[MAXOCLASSES + 2]; /* make bases[MAXOCLASSES+1] available */
     coord bhitpos; /* place where throw or zap hits or stops */
     struct obj *billobjs; /* objects not yet paid for */
 
@@ -425,6 +435,12 @@ struct instance_globals_g {
     /* invent.c */
     long glyph_reset_timestamp;
 
+    /* nhlua.c */
+    boolean gmst_stored;
+    long gmst_moves;
+    struct obj *gmst_invent;
+    genericptr_t *gmst_ubak, *gmst_disco, *gmst_mvitals;
+
     /* pline.c */
     struct gamelog_line *gamelog;
 
@@ -507,6 +523,8 @@ struct instance_globals_j {
 };
 
 struct instance_globals_k {
+
+    coord kickedloc; /* location hero just kicked */
 
     /* decl.c */
     struct obj *kickedobj;     /* object in flight due to kicking */
@@ -719,6 +737,8 @@ struct instance_globals_n {
 
 struct instance_globals_o {
 
+    struct obj *objs_deleted;
+
     /* dbridge.c */
     struct entity occupants[ENTITIES];
 
@@ -748,6 +768,10 @@ struct instance_globals_o {
     boolean opt_need_redraw; /* for doset() */
     boolean opt_need_glyph_reset;
     boolean opt_need_promptstyle;
+    boolean opt_reset_customcolors;
+    boolean opt_reset_customsymbols;
+    boolean opt_update_basic_palette;
+    boolean opt_symset_changed;
 
     /* pickup.c */
     int oldcap; /* last encumbrance */
@@ -886,9 +910,8 @@ struct instance_globals_s {
 
     /* symbols.c */
     struct symsetentry symset[NUM_GRAPHICS];
-#ifdef ENHANCED_SYMBOLS
-    struct symset_customization sym_customizations[NUM_GRAPHICS + 1]; /* adds UNICODESET */
-#endif
+    /* adds UNICODESET */
+    struct symset_customization sym_customizations[NUM_GRAPHICS + 1][custom_count];
     nhsym showsyms[SYM_MAX]; /* symbols to be displayed */
 
     /* files.c */
@@ -917,6 +940,7 @@ struct instance_globals_s {
     boolean simple_options_help;
 
     /* pickup.c */
+    boolean sellobj_first; /* True => need sellobj_state(); False => don't */
     boolean shop_filter;
 
     /* pline.c */

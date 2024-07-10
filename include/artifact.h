@@ -69,6 +69,7 @@ enum invoke_prop_types {
     ENLIGHTENING,
     CREATE_AMMO,
     BANISH,
+    BLINDING_RAY,
     LIGHTNING_BOLT,
     SUMMONING,
 };

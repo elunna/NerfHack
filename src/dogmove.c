@@ -1,4 +1,4 @@
-/* NetHack 3.7	dogmove.c	$NHDT-Date: 1646688063 2022/03/07 21:21:03 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.112 $ */
+/* NetHack 3.7	dogmove.c	$NHDT-Date: 1713336326 2024/04/17 06:45:26 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.150 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -11,15 +11,15 @@
 #define DOG_WEAK        500
 #define DOG_STARVE      750
 
-static void dog_starve(struct monst *);
-static boolean dog_hunger(struct monst *, struct edog *);
-static int dog_invent(struct monst *, struct edog *, int);
-static int dog_goal(struct monst *, struct edog *, int, int, int);
-static struct monst *find_targ(struct monst *, int, int, int);
-static int find_friends(struct monst *, struct monst *, int);
-static struct monst *best_target(struct monst *);
-static long score_targ(struct monst *, struct monst *);
-static boolean can_reach_location(struct monst *, coordxy, coordxy, coordxy,
+staticfn void dog_starve(struct monst *);
+staticfn boolean dog_hunger(struct monst *, struct edog *);
+staticfn int dog_invent(struct monst *, struct edog *, int);
+staticfn int dog_goal(struct monst *, struct edog *, int, int, int);
+staticfn struct monst *find_targ(struct monst *, int, int, int);
+staticfn int find_friends(struct monst *, struct monst *, int);
+staticfn struct monst *best_target(struct monst *);
+staticfn long score_targ(struct monst *, struct monst *);
+staticfn boolean can_reach_location(struct monst *, coordxy, coordxy, coordxy,
                                   coordxy) NONNULLARG1;
 
 /* pick a carried item for pet to drop */
@@ -135,7 +135,7 @@ static NEARDATA const char nofetch[] = { BALL_CLASS, CHAIN_CLASS, ROCK_CLASS,
                                          0 };
 
 
-static void wantdoor(coordxy, coordxy, genericptr_t);
+staticfn void wantdoor(coordxy, coordxy, genericptr_t);
 
 boolean
 cursed_object_at(coordxy x, coordxy y)
@@ -314,7 +314,7 @@ dog_eat(struct monst *mtmp,
         if (obj->unpaid) {
             /* edible item owned by shop has been thrown or kicked
                by hero and caught by tame or food-tameable monst */
-            oprice = unpaid_cost(obj, TRUE);
+            oprice = unpaid_cost(obj, COST_CONTENTS);
             pline("That %s will cost you %ld %s.", objnambuf, oprice,
                   currency(oprice));
             /* m_consume_obj->delobj->obfree will handle actual shop billing update */
@@ -325,7 +325,7 @@ dog_eat(struct monst *mtmp,
     return (DEADMONSTER(mtmp)) ? 2 : 1;
 }
 
-static void
+staticfn void
 dog_starve(struct monst *mtmp)
 {
     if (mtmp->mleashed && mtmp != u.usteed)
@@ -339,7 +339,7 @@ dog_starve(struct monst *mtmp)
 }
 
 /* hunger effects -- returns TRUE on starvation */
-static boolean
+staticfn boolean
 dog_hunger(struct monst *mtmp, struct edog *edog)
 {
     if (gm.moves > edog->hungrytime + DOG_WEAK) {
@@ -377,7 +377,7 @@ dog_hunger(struct monst *mtmp, struct edog *edog)
 /* do something with object (drop, pick up, eat) at current position
  * returns 1 if object eaten (since that counts as dog's move), 2 if died
  */
-static int
+staticfn int
 dog_invent(struct monst *mtmp, struct edog *edog, int udist)
 {
     coordxy omx, omy;
@@ -462,7 +462,7 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
 
 /* set dog's goal -- gtyp, gx, gy;
    returns -1/0/1 (dog's desire to approach player) or -2 (abort move) */
-static int
+staticfn int
 dog_goal(
     struct monst *mtmp,
     struct edog *edog,
@@ -633,7 +633,7 @@ dog_goal(
 #undef FARAWAY
 }
 
-static struct monst *
+staticfn struct monst *
 find_targ(
     struct monst *mtmp,
     int dx, int dy,
@@ -677,7 +677,7 @@ find_targ(
     return targ;
 }
 
-static int
+staticfn int
 find_friends(struct monst *mtmp, struct monst *mtarg, int maxdist)
 {
     struct monst *pal;
@@ -721,7 +721,7 @@ find_friends(struct monst *mtmp, struct monst *mtarg, int maxdist)
     return 0;
 }
 
-static long
+staticfn long
 score_targ(struct monst *mtmp, struct monst *mtarg)
 {
     long score = 0L;
@@ -821,7 +821,7 @@ score_targ(struct monst *mtmp, struct monst *mtarg)
     return score;
 }
 
-static struct monst *
+staticfn struct monst *
 best_target(struct monst *mtmp)   /* Pet */
 {
     int dx, dy;
@@ -1025,8 +1025,8 @@ dog_move(
 
     if (edog || summoned) {
         j = dog_invent(mtmp, edog, udist);
-        if (j == 2)
-            return MMOVE_DIED; /* died */
+        if (j == 2 || mon_offmap(mtmp))
+            return DEADMONSTER(mtmp) ? MMOVE_DIED : MMOVE_DONE;
         else if (j == 1)
             goto newdogpos; /* eating something */
 
@@ -1163,6 +1163,12 @@ dog_move(
                 return MMOVE_DIED;
             return MMOVE_NOTHING;
         }
+
+        /* avoid a location hero just kicked */
+        if (m_avoid_kicked_loc(mtmp, nx, ny))
+            continue;
+        if (m_avoid_soko_push_loc(mtmp, nx, ny))
+            continue;
 
         {
             /* Dog avoids harmful traps, but perhaps it has to pass one
@@ -1350,7 +1356,7 @@ could_reach_item(struct monst *mon, coordxy nx, coordxy ny)
  * Since the maximum food distance is 5, this should never be more than 5
  * calls deep.
  */
-static boolean
+staticfn boolean
 can_reach_location(struct monst *mon, coordxy mx, coordxy my, coordxy fx, coordxy fy)
 {
     int i, j;
@@ -1386,7 +1392,7 @@ can_reach_location(struct monst *mon, coordxy mx, coordxy my, coordxy fx, coordx
 }
 
 /* do_clear_area client */
-static void
+staticfn void
 wantdoor(coordxy x, coordxy y, genericptr_t distance)
 {
     int ndist, *dist_ptr = (int *) distance;
@@ -1458,7 +1464,7 @@ quickmimic(struct monst *mtmp)
     if (trycnt == 0)
         idx = SIZE(qm) - 1;
 
-    Strcpy(buf, mon_nam(mtmp));
+    Strcpy(buf, y_monnam(mtmp)); /* "your <pet>" or "the <mon>" or "Fang" */
     spotted = canspotmon(mtmp);
     seeloc = cansee(mtmp->mx, mtmp->my);
 

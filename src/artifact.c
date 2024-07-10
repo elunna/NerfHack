@@ -1,4 +1,4 @@
-/* NetHack 3.7	artifact.c	$NHDT-Date: 1702064500 2023/12/08 19:41:40 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.214 $ */
+/* NetHack 3.7	artifact.c	$NHDT-Date: 1715889721 2024/05/16 20:02:01 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.236 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -14,24 +14,27 @@
  *        the contents, just the total size.
  */
 
-static struct artifact *get_artifact(struct obj *) NONNULL; /* never returns null */
+staticfn struct artifact *get_artifact(struct obj *) NONNULL; /* never returns null */
 
 /* #define get_artifact(o) \
     (((o) && ((o)->artifact > 0 && (o)->artifact < AFTER_LAST_ARTIFACT)) \
                              ? &artilist[(int) (o)->oartifact] \
                              : &artilist[ART_NONARTIFACT]) */
 
-static boolean bane_applies(const struct artifact *, struct monst *) NONNULLARG12;
-static int spec_applies(const struct artifact *, struct monst *) NONNULLARG12;
-static int invoke_ok(struct obj *);
-static int arti_invoke(struct obj *);
-static boolean Mb_hit(struct monst * magr, struct monst *mdef,
+staticfn boolean bane_applies(const struct artifact *, struct monst *)
+                                                                 NONNULLARG12;
+staticfn int spec_applies(const struct artifact *, struct monst *)
+                                                                 NONNULLARG12;
+staticfn int invoke_ok(struct obj *);
+staticfn void nothing_special(struct obj *) NONNULLARG1;
+staticfn int arti_invoke(struct obj *);
+staticfn boolean Mb_hit(struct monst * magr, struct monst *mdef,
                       struct obj *, int *, int, boolean, char *);
-static unsigned long abil_to_spfx(long *) NONNULLARG1;
-static uchar abil_to_adtyp(long *) NONNULLARG1;
-static int glow_strength(int);
-static boolean untouchable(struct obj *, boolean);
-static int count_surround_traps(coordxy, coordxy);
+staticfn unsigned long abil_to_spfx(long *) NONNULLARG1;
+staticfn uchar abil_to_adtyp(long *) NONNULLARG1;
+staticfn int glow_strength(int);
+staticfn boolean untouchable(struct obj *, boolean);
+staticfn int count_surround_traps(coordxy, coordxy);
 
 /* The amount added to the victim's total hit points to insure that the
    victim will be killed even after damage bonus/penalty adjustments.
@@ -69,10 +72,10 @@ static xint16 artidisco[NROFARTIFACTS];
  */
 static const struct arti_info zero_artiexist = {0}; /* all bits zero */
 
-static void hack_artifacts(void);
+staticfn void hack_artifacts(void);
 
 /* handle some special cases; must be called after u_init() */
-static void
+staticfn void
 hack_artifacts(void)
 {
     struct artifact *art;
@@ -744,6 +747,14 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
             ETelepat |= wp_mask;
         else
             ETelepat &= ~wp_mask;
+        recalc_telepat_range();
+        see_monsters();
+    }
+    if (spfx & SPFX_SEEINV) {
+        if (on)
+            ESee_invisible |= wp_mask;
+        else
+            ESee_invisible &= ~wp_mask;
         see_monsters();
     }
     if (spfx & SPFX_SEEINV) {
@@ -978,7 +989,7 @@ arti_immune(struct obj *obj, int dtyp)
                       || weap->cary.adtyp == dtyp);
 }
 
-static boolean
+staticfn boolean
 bane_applies(const struct artifact *oart, struct monst *mon)
 {
     struct artifact atmp;
@@ -994,7 +1005,7 @@ bane_applies(const struct artifact *oart, struct monst *mon)
 }
 
 /* decide whether an artifact's special attacks apply against mtmp */
-static int
+staticfn int
 spec_applies(const struct artifact *weap, struct monst *mtmp)
 {
     struct permonst *ptr;
@@ -1236,7 +1247,7 @@ static const char *const mb_verb[2][NUM_MB_INDICES] = {
 };
 
 /* called when someone is being hit by Magicbane */
-static boolean
+staticfn boolean
 Mb_hit(struct monst *magr, /* attacker */
        struct monst *mdef, /* defender */
        struct obj *mb,     /* Magicbane */
@@ -2081,7 +2092,7 @@ artifact_hit(
 RESTORE_WARNING_FORMAT_NONLITERAL
 
 /* getobj callback for object to be invoked */
-static int
+staticfn int
 invoke_ok(struct obj *obj)
 {
     if (!obj)
@@ -2116,14 +2127,23 @@ doinvoke(void)
     return arti_invoke(obj);
 }
 
-static int
+staticfn void
+nothing_special(struct obj *obj)
+{
+    if (carried(obj))
+        You_feel("a surge of power, but nothing seems to happen.");
+}
+
+staticfn int
 arti_invoke(struct obj *obj)
 {
-    const struct artifact *oart = get_artifact(obj);
+    const struct artifact *oart;
+
     if (!obj) {
         impossible("arti_invoke without obj");
         return ECMD_OK;
     }
+    oart = get_artifact(obj);
     if (oart == &artilist[ART_NONARTIFACT] || !oart->inv_prop) {
         if (obj->otyp == CRYSTAL_BALL)
             use_crystal_ball(&obj);
@@ -2172,8 +2192,10 @@ arti_invoke(struct obj *obj)
                              due to PermaBlind or eyeless polymorph;
                              vary the message in that situation */
                           && (HBlinded & ~TIMEOUT) != 0L) ? "slightly " : "");
-            else
-                goto nothing_special;
+            else {
+                nothing_special(obj);
+                return ECMD_TIME;
+            }
             if (healamt > 0) {
                 if (Upolyd)
                     u.mh += healamt;
@@ -2200,8 +2222,10 @@ arti_invoke(struct obj *obj)
                 u.uen += epboost;
                 disp.botl = TRUE;
                 You_feel("re-energized.");
-            } else
-                goto nothing_special;
+            } else {
+                nothing_special(obj);
+                return ECMD_TIME;
+            }
             break;
         }
         case UNTRAP: {
@@ -2260,7 +2284,8 @@ arti_invoke(struct obj *obj)
                 n = select_menu(tmpwin, PICK_ONE, &selected);
                 if (n <= 0) {
                     destroy_nhwindow(tmpwin);
-                    goto nothing_special;
+                    nothing_special(obj);
+                    return ECMD_TIME;
                 }
                 i = selected[0].item.a_int - 1;
                 free((genericptr_t) selected);
@@ -2295,8 +2320,10 @@ arti_invoke(struct obj *obj)
         case CREATE_AMMO: {
             struct obj *otmp = mksobj(ARROW, TRUE, FALSE);
 
-            if (!otmp)
-                goto nothing_special;
+            if (!otmp) {
+                nothing_special(obj);
+                return ECMD_TIME;
+            }
             otmp->blessed = obj->blessed;
             otmp->cursed = obj->cursed;
             otmp->bknown = obj->bknown;
@@ -2359,19 +2386,25 @@ arti_invoke(struct obj *obj)
             }
 
             if (nvanished) {
-                pline("%she demon%s disappear%s in a cloud of brimstone!",
-                      nstayed ? (nvanished > nstayed ? "Most of t" : "Some of t") : "T",
-                      nvanished > 1 ? "s" : "",
-                      nvanished > 1 ? "" : "s");
+                char subject[] = "demons";
+
+                if (nvanished == 1)
+                    *(eos(subject) - 1) = '\0'; /* remove 's' */
+                pline("%s %s %s in a cloud of brimstone!",
+                      nstayed ? ((nvanished > nstayed)
+                                 ? "Most of the"
+                                 : "Some of the")
+                              : "The",
+                      subject, vtense(subject, "disappear"));
             }
             break;
         }
-	case SUMMONING: {
-	    for (int i = 0; i < rn1(7, 4); i++) {
-                (void) make_msummoned((struct permonst *) 0, &gy.youmonst, TRUE, u.ux, u.uy);
+        case SUMMONING: {
+            for (int i = 0; i < rn1(7, 4); i++) {
+                    (void) make_msummoned((struct permonst *) 0, &gy.youmonst, TRUE, u.ux, u.uy);
+                }
+                break;
             }
-            break;
-        }
         case LIGHTNING_BOLT: {
             struct obj* pseudo = mksobj(WAN_LIGHTNING, FALSE, FALSE);
             pseudo->blessed = pseudo->cursed = 0;
@@ -2390,6 +2423,39 @@ arti_invoke(struct obj *obj)
             obfree(pseudo, NULL);
             break;
         }
+        case BLINDING_RAY:
+            if (getdir((char *) 0)) {
+                if (u.dx || u.dy) {
+                    do_blinding_ray(obj);
+                } else if (u.dz) {
+                    /* up or down => light this map spot; litroom() uses
+                       radius 0 for Sunsword, except on Rogue level where
+                       whole room gets lit and corridor spots remain unlit */
+                    litroom(TRUE, obj);
+                    pline("%s", ((!Blind && levl[u.ux][u.uy].lit
+                                  && !levl[u.ux][u.uy].waslit)
+                                 ? "It is lit here now."
+                                 : nothing_seems_to_happen));
+                } else { /* zapyourself() */
+                    boolean vulnerable = (u.umonnum == PM_GREMLIN);
+                    int damg = obj->blessed ? 15 : !obj->cursed ? 10 : 5;
+
+                    if (vulnerable) /* could be fatal if Unchanging */
+                        (void) lightdamage(obj, TRUE, 2 * damg);
+
+                    if (!flashburn((long) (damg + rnd(damg)), FALSE)
+                        && !vulnerable)
+                        pline("%s", nothing_seems_to_happen);
+                }
+            } else {
+                /* no direction picked */
+                pline("%s", Never_mind);
+                obj->age = gm.moves;
+            }
+            break;
+        default:
+            impossible("Unknown invoke power %d.", oart->inv_prop);
+            break;
         }
     } else {
         long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTI),
@@ -2413,10 +2479,8 @@ arti_invoke(struct obj *obj)
         }
 
         if ((eprop & ~W_ARTI) || iprop) {
- nothing_special:
             /* you had the property from some other source too */
-            if (carried(obj))
-                You_feel("a surge of power, but nothing seems to happen.");
+            nothing_special(obj);
             return ECMD_TIME;
         }
         switch (oart->inv_prop) {
@@ -2434,8 +2498,10 @@ arti_invoke(struct obj *obj)
                 (void) float_down(I_SPECIAL | TIMEOUT, W_ARTI);
             break;
         case INVIS:
-            if (BInvis || Blind)
-                goto nothing_special;
+            if (BInvis || Blind) {
+                nothing_special(obj);
+                return ECMD_TIME;
+            }
             newsym(u.ux, u.uy);
             if (on)
                 Your("body takes on a %s transparency...",
@@ -2554,7 +2620,7 @@ arti_cost(struct obj *otmp)
         return (20L * (long) objects[otmp->otyp].oc_cost);
 }
 
-static uchar
+staticfn uchar
 abil_to_adtyp(long *abil)
 {
     struct abil2adtyp_tag {
@@ -2580,7 +2646,7 @@ abil_to_adtyp(long *abil)
     return 0;
 }
 
-static unsigned long
+staticfn unsigned long
 abil_to_spfx(long *abil)
 {
     static const struct abil2spfx_tag {
@@ -2677,7 +2743,7 @@ static const char *const glow_verbs[] = {
 };
 
 /* relative strength that Sting is glowing (0..3), to select verb */
-static int
+staticfn int
 glow_strength(int count)
 {
     /* glow strength should also be proportional to proximity and
@@ -2840,7 +2906,7 @@ retouch_object(
    or an artifact which conveys something via being carried or which
    has an #invoke effect currently in operation undergoes a touch test;
    if it fails, it will be unworn/unwielded and maybe dropped */
-static boolean
+staticfn boolean
 untouchable(
     struct obj *obj, /* object to test; in invent or is steed's saddle */
     boolean drop_untouchable) /* whether to drop it if it can't be touched */
@@ -2950,7 +3016,7 @@ retouch_equipment(
         clear_bypasses(); /* reset upon final exit */
 }
 
-static int
+staticfn int
 count_surround_traps(coordxy x, coordxy y)
 {
     struct rm *levp;
@@ -3064,7 +3130,7 @@ is_art(struct obj *obj, int art)
                              ? &artilist[(int) (o)->oartifact] \
                              : &artilist[ART_NONARTIFACT]) */
 
-static struct artifact *
+staticfn struct artifact *
 get_artifact(struct obj *obj)
 {
     if (obj) {

@@ -1,31 +1,32 @@
-/* NetHack 3.7	mkobj.c	$NHDT-Date: 1704316444 2024/01/03 21:14:04 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.282 $ */
+/* NetHack 3.7	mkobj.c	$NHDT-Date: 1718999849 2024/06/21 19:57:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.299 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
-static boolean may_generate_eroded(struct obj *);
-static void mkobj_erosions(struct obj *);
-static void mkbox_cnts(struct obj *);
-static unsigned nextoid(struct obj *, struct obj *);
-static void mksobj_init(struct obj *, boolean);
-static int item_on_ice(struct obj *);
-static void shrinking_glob_gone(struct obj *);
-static void obj_timer_checks(struct obj *, coordxy, coordxy, int);
-static struct obj *save_mtraits(struct obj *, struct monst *);
-static void objlist_sanity(struct obj *, int, const char *);
-static void shop_obj_sanity(struct obj *, const char *);
-static void mon_obj_sanity(struct monst *, const char *);
-static void insane_obj_bits(struct obj *, struct monst *);
-static boolean nomerge_exception(struct obj *);
-static const char *where_name(struct obj *);
-static void insane_object(struct obj *, const char *, const char *,
+staticfn boolean may_generate_eroded(struct obj *);
+staticfn void mkobj_erosions(struct obj *);
+staticfn void mkbox_cnts(struct obj *);
+staticfn unsigned nextoid(struct obj *, struct obj *);
+staticfn void mksobj_init(struct obj *, boolean);
+staticfn int item_on_ice(struct obj *);
+staticfn void shrinking_glob_gone(struct obj *);
+staticfn void obj_timer_checks(struct obj *, coordxy, coordxy, int);
+staticfn void dealloc_obj_real(struct obj *);
+staticfn struct obj *save_mtraits(struct obj *, struct monst *);
+staticfn void objlist_sanity(struct obj *, int, const char *);
+staticfn void shop_obj_sanity(struct obj *, const char *);
+staticfn void mon_obj_sanity(struct monst *, const char *);
+staticfn void insane_obj_bits(struct obj *, struct monst *);
+staticfn boolean nomerge_exception(struct obj *);
+staticfn const char *where_name(struct obj *);
+staticfn void insane_object(struct obj *, const char *, const char *,
                           struct monst *);
-static void check_contained(struct obj *, const char *);
-static void check_glob(struct obj *, const char *);
-static void sanity_check_worn(struct obj *);
-static void init_oextra(struct oextra *);
+staticfn void check_contained(struct obj *, const char *);
+staticfn void check_glob(struct obj *, const char *);
+staticfn void sanity_check_worn(struct obj *);
+staticfn void init_oextra(struct oextra *);
 
 struct icp {
     int iprob;   /* probability of an item type */
@@ -89,7 +90,7 @@ static const struct icp hellprobs[] = { { 20, WEAPON_CLASS },
 
 static const struct oextra zerooextra = DUMMY;
 
-static void
+staticfn void
 init_oextra(struct oextra *oex)
 {
     *oex = zerooextra;
@@ -186,7 +187,7 @@ free_omailcmd(struct obj *otmp)
 }
 
 /* can object be generated eroded? */
-static boolean
+staticfn boolean
 may_generate_eroded(struct obj *otmp)
 {
     /* initial hero inventory */
@@ -216,7 +217,7 @@ may_generate_eroded(struct obj *otmp)
 }
 
 /* random chance of applying erosions/grease to object */
-static void
+staticfn void
 mkobj_erosions(struct obj *otmp)
 {
     if (may_generate_eroded(otmp)) {
@@ -328,7 +329,7 @@ mkobj(int oclass, boolean artif)
     return mksobj(i, TRUE, artif);
 }
 
-static void
+staticfn void
 mkbox_cnts(struct obj *box)
 {
     int n;
@@ -475,7 +476,7 @@ copy_oextra(struct obj *obj2, struct obj *obj1)
 }
 
 /*
- * Split obj so that it gets size gets reduced by num. The quantity num is
+ * Split stack so that its size gets reduced by num.  The quantity num is
  * put in the object structure delivered by this call.  The returned object
  * has its wornmask cleared and is positioned just following the original
  * in the nobj chain (and nexthere chain when on the floor).
@@ -556,7 +557,7 @@ next_ident(void)
 
 /* when splitting a stack that has o_id-based shop prices, pick an
    o_id value for the new stack that will maintain the same price */
-static unsigned
+staticfn unsigned
 nextoid(struct obj *oldobj, struct obj *newobj)
 {
     int olddif, newdif, trylimit = 256; /* limit of 4 suffices at present */
@@ -739,7 +740,7 @@ bill_dummy_object(struct obj *otmp)
     long cost = 0L;
 
     if (otmp->unpaid) {
-        cost = unpaid_cost(otmp, FALSE);
+        cost = unpaid_cost(otmp, COST_SINGLEOBJ);
         subfrombill(otmp, shop_keeper(*u.ushops));
     }
     dummy = newobj();
@@ -750,12 +751,12 @@ bill_dummy_object(struct obj *otmp)
     dummy->timed = 0;
     copy_oextra(dummy, otmp);
     if (has_omid(dummy))
-        free_omid(dummy); /* only one association with m_id*/
+        free_omid(dummy); /* only one association with m_id */
     if (Is_candle(dummy))
         dummy->lamplit = 0;
     dummy->owornmask = 0L; /* dummy object is not worn */
     addtobill(dummy, FALSE, TRUE, TRUE);
-    if (cost)
+    if (cost && dummy->where != OBJ_DELETED)
         alter_cost(dummy, -cost);
     /* no_charge is only valid for some locations */
     otmp->no_charge = (otmp->where == OBJ_FLOOR
@@ -892,7 +893,7 @@ unknow_object(struct obj *obj)
 }
 
 /* do some initialization to newly created object; otyp must already be set */
-static void
+staticfn void
 mksobj_init(struct obj *otmp, boolean artif)
 {
     int mndx, tryct;
@@ -1462,7 +1463,7 @@ enum obj_on_ice {
 };
 
 /* used by shrink_glob(); is 'item' or enclosing container on or under ice? */
-static int
+staticfn int
 item_on_ice(struct obj *item)
 {
     struct obj *otmp;
@@ -1692,7 +1693,7 @@ shrink_glob(
 }
 
 /* a glob has shrunk away to nothing; handle owornmask, then delete glob */
-static void
+staticfn void
 shrinking_glob_gone(struct obj *obj)
 {
     xint16 owhere = obj->where;
@@ -2173,7 +2174,7 @@ obj_attach_mid(struct obj *obj, unsigned int mid)
     return obj;
 }
 
-static struct obj *
+staticfn struct obj *
 save_mtraits(struct obj *obj, struct monst *mtmp)
 {
     if (mtmp->ispriest)
@@ -2471,7 +2472,7 @@ peek_at_iced_corpse_age(struct obj *otmp)
     return retval;
 }
 
-static void
+staticfn void
 obj_timer_checks(
     struct obj *otmp,
     coordxy x, coordxy y,
@@ -2573,7 +2574,8 @@ discard_minvent(struct monst *mtmp, boolean uncreate_artifacts)
 
 /*
  * Free obj from whatever list it is on in preparation for deleting it
- * or moving it elsewhere; obj->where will end up set to OBJ_FREE.
+ * or moving it elsewhere; obj->where will end up set to OBJ_FREE unless
+ * it is already OBJ_LUAFREE or OBJ_DELETED.
  * Doesn't handle unwearing of objects in hero's or monsters' inventories.
  *
  * Object positions:
@@ -2586,6 +2588,7 @@ discard_minvent(struct monst *mtmp, boolean uncreate_artifacts)
  *      OBJ_BURIED      level.buriedobjs chain
  *      OBJ_ONBILL      on gb.billobjs chain
  *      OBJ_LUAFREE     obj is dealloc'd from core, but still used by lua
+ *      OBJ_DELETED     obj has been deleted from play but not yet deallocated
  */
 void
 obj_extract_self(struct obj *obj)
@@ -2593,6 +2596,7 @@ obj_extract_self(struct obj *obj)
     switch (obj->where) {
     case OBJ_FREE:
     case OBJ_LUAFREE:
+    case OBJ_DELETED:
         break;
     case OBJ_FLOOR:
         remove_object(obj);
@@ -2771,14 +2775,19 @@ container_weight(struct obj *object)
 }
 
 /*
- * Deallocate the object.  _All_ objects should be run through here for
- * them to be deallocated.
+ * Mark object to be deallocated.  _All_ objects should be run through here
+ * for them to be deallocated.
  */
 void
 dealloc_obj(struct obj *obj)
 {
-    if (obj->where != OBJ_FREE && obj->where != OBJ_LUAFREE)
-        panic("dealloc_obj: obj not free");
+    if (obj->where == OBJ_DELETED) {
+        impossible("dealloc_obj: obj already deleted (type=%d)", obj->otyp);
+        return;
+    } else if (obj->where != OBJ_FREE && obj->where != OBJ_LUAFREE) {
+        panic("dealloc_obj: obj not free (type=%d, where=%d)",
+              obj->otyp, obj->where);
+    }
     if (obj->nobj)
         panic("dealloc_obj with nobj");
     if (obj->cobj)
@@ -2810,13 +2819,29 @@ dealloc_obj(struct obj *obj)
     if (obj == gk.kickedobj)
         gk.kickedobj = 0;
 
-    if (obj->oextra)
-        dealloc_oextra(obj);
+    /* if obj came from the most recent splitobj(), it's no longer eligible
+       for unsplitobj(); perform inline clear_splitobjs() */
+    if (obj->o_id == gc.context.objsplit.parent_oid
+        || obj->o_id == gc.context.objsplit.child_oid)
+        gc.context.objsplit.parent_oid = gc.context.objsplit.child_oid = 0;
+
     if (obj->lua_ref_cnt) {
         /* obj is referenced from a lua script, let lua gc free it */
         obj->where = OBJ_LUAFREE;
         return;
     }
+    /* mark object as deleted, put it into queue to be freed */
+    obj->where = OBJ_DELETED;
+    obj->nobj = go.objs_deleted;
+    go.objs_deleted = obj;
+}
+
+/* actually deallocate the object */
+staticfn void
+dealloc_obj_real(struct obj *obj)
+{
+    if (obj->oextra)
+        dealloc_oextra(obj);
 
     /* clear out of date information contained in the about-to-become
        stale memory so that potential used-after-freed bugs (should never
@@ -2825,6 +2850,22 @@ dealloc_obj(struct obj *obj)
        similar so this is mainly useful for ordinary malloc/free */
     *obj = cg.zeroobj;
     free((genericptr_t) obj);
+}
+
+/* free all the objects marked for deletion */
+void
+dobjsfree(void)
+{
+    struct obj *otmp;
+
+    while (go.objs_deleted) {
+        otmp = go.objs_deleted->nobj;
+        if (go.objs_deleted->where != OBJ_DELETED)
+            panic("dobjsfree: obj where is not OBJ_DELETED");
+        obj_extract_self(go.objs_deleted);
+        dealloc_obj_real(go.objs_deleted);
+        go.objs_deleted = otmp;
+    }
 }
 
 /* create an object from a horn of plenty; mirrors bagotricks(makemon.c) */
@@ -2984,6 +3025,7 @@ obj_sanity_check(void)
     objlist_sanity(gm.migrating_objs, OBJ_MIGRATING, "migrating sanity");
     objlist_sanity(gl.level.buriedobjlist, OBJ_BURIED, "buried sanity");
     objlist_sanity(gb.billobjs, OBJ_ONBILL, "bill sanity");
+    objlist_sanity(go.objs_deleted, OBJ_DELETED, "deleted object sanity");
 
     mon_obj_sanity(fmon, "minvent sanity");
     mon_obj_sanity(gm.migrating_mons, "migrating minvent sanity");
@@ -3015,7 +3057,7 @@ obj_sanity_check(void)
 }
 
 /* sanity check for objects on specified list (fobj, &c) */
-static void
+staticfn void
 objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
 {
     struct obj *obj;
@@ -3025,6 +3067,8 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
             insane_object(obj, ofmt0, mesg, (struct monst *) 0);
         if (obj->where == OBJ_INVENT && obj->how_lost != LOST_NONE) {
             char lostbuf[40];
+
+            /* %d: bitfield is unsigned but narrow, so promotes to int */
             Sprintf(lostbuf, "how_lost=%d obj in inventory!", obj->how_lost);
             insane_object(obj, ofmt0, lostbuf, (struct monst *) 0);
         }
@@ -3066,6 +3110,42 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
                 break;
             }
         }
+        if (obj->otyp == LEASH && obj->leashmon) {
+            char buf[BUFSZ];
+            struct monst *mtmp = find_mid(obj->leashmon, FM_FMON);
+
+            if (obj->where == OBJ_INVENT) {
+                if (!mtmp) { /* found leash with phantom mon */
+                    Sprintf(buf, "leashmon=%u no monst,",
+                            (unsigned) obj->leashmon);
+                    insane_object(obj, ofmt0, buf, (struct monst *) 0);
+                } else if (!mtmp->mleashed) { /* found leashed mon
+                                               * not flagged as leashed */
+                    Sprintf(buf, "leashmon=%u %s not leashed,",
+                            (unsigned) obj->leashmon, mon_pmname(mtmp));
+                    insane_object(obj, ofmt0, buf, (struct monst *) 0);
+                }
+
+            /* have to explicitly exclude migrating_objs because the
+               obj->migr_species field overlays obj->corpsenm just like
+               obj->leashmon does, so obj->leashmon and consequently 'mtmp'
+               might be inaccurate for any leash found on migrating_objs */
+            } else if (obj->where != OBJ_MIGRATING) {
+                struct monst *mtmp2 = (obj->where == OBJ_MINVENT)
+                                      ? obj->ocarry : (struct monst *) 0;
+
+                if (mtmp) { /* found monst leashed by non-invent leash */
+                    Sprintf(buf, "leashmon:%u %s leashed by %s leash,",
+                            (unsigned) obj->leashmon,
+                            mon_pmname(mtmp), where_name(obj));
+                    insane_object(obj, ofmt0, buf, mtmp2);
+                } else { /* found non-invent leash with m_id of phantom mon */
+                    Sprintf(buf, "leashmon:%u no monst for %s leash,",
+                            (unsigned) obj->leashmon, where_name(obj));
+                    insane_object(obj, ofmt0, buf, mtmp2);
+                }
+            }
+        }
         if (obj->globby)
             check_glob(obj, mesg);
         /* temporary flags that might have been set but which should
@@ -3078,7 +3158,7 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
 
 /* check obj->unpaid and obj->no_charge for shop sanity; caller has
    verified that at least one of them is set */
-static void
+staticfn void
 shop_obj_sanity(struct obj *obj, const char *mesg)
 {
     struct obj *otop;
@@ -3148,7 +3228,7 @@ shop_obj_sanity(struct obj *obj, const char *mesg)
 }
 
 /* sanity check for objects carried by all monsters in specified list */
-static void
+staticfn void
 mon_obj_sanity(struct monst *monlist, const char *mesg)
 {
     struct monst *mon;
@@ -3181,15 +3261,21 @@ mon_obj_sanity(struct monst *monlist, const char *mesg)
     }
 }
 
-static void
+staticfn void
 insane_obj_bits(struct obj *obj, struct monst *mon)
 {
-    unsigned o_in_use = obj->in_use, o_bypass = obj->bypass,
-             /* having obj->nomerge be set might be intentional */
-             o_nomerge = (obj->nomerge && !nomerge_exception(obj)),
-             /* next_boulder is only for object name formatting when
-                pushing boulders and should be reset by next sanity check */
-             o_boulder = (obj->otyp == BOULDER && obj->next_boulder);
+    unsigned o_in_use, o_bypass, o_nomerge, o_boulder;
+
+    if (obj->where == OBJ_DELETED)
+        return; /* skip bit checking for deleted objects */
+
+    o_in_use = obj->in_use;
+    o_bypass = obj->bypass;
+    /* having obj->nomerge be set might be intentional */
+    o_nomerge = (obj->nomerge && !nomerge_exception(obj));
+    /* next_boulder is only for object name formatting when pushing
+       boulders and should be reset by time of next sanity check */
+    o_boulder = (obj->otyp == BOULDER && obj->next_boulder);
 
     if (o_in_use || o_bypass || o_nomerge || o_boulder) {
         char infobuf[QBUFSZ];
@@ -3204,7 +3290,7 @@ insane_obj_bits(struct obj *obj, struct monst *mon)
 }
 
 /* does 'obj' use the 'nomerge' flag persistently? */
-static boolean
+staticfn boolean
 nomerge_exception(struct obj *obj)
 {
     /* special prize objects for achievement tracking are set 'nomerge'
@@ -3219,10 +3305,10 @@ nomerge_exception(struct obj *obj)
 static const char *const obj_state_names[NOBJ_STATES] = {
     "free", "floor", "contained", "invent",
     "minvent", "migrating", "buried", "onbill",
-    "luafree"
+    "luafree", "deleted",
 };
 
-static const char *
+staticfn const char *
 where_name(struct obj *obj)
 {
     static char unknown[32]; /* big enough to handle rogue 64-bit int */
@@ -3240,7 +3326,7 @@ where_name(struct obj *obj)
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-static void
+staticfn void
 insane_object(
     struct obj *obj,
     const char *fmt,
@@ -3283,11 +3369,13 @@ init_dummyobj(struct obj *obj, short otyp, long oquan)
          /* obj->dknown = 0; */
          /* suppress known except for amulets (needed for fakes & real AoY) */
          obj->known = (obj->oclass == AMULET_CLASS)
-                       ? obj->known
+                         ? obj->known
                          /* default is "on" for types which don't use it */
                          : !objects[otyp].oc_uses_known;
          obj->quan = oquan ? oquan : 1L;
          obj->corpsenm = NON_PM; /* suppress statue and figurine details */
+         if (obj->otyp == LEASH)
+             obj->leashmon = 0; /* overloads corpsenm, avoid NON_PM */
          if (obj->otyp == BOULDER)
              obj->next_boulder = 0; /* overloads corpsenm, avoid NON_PM */
          /* but suppressing fruit details leads to "bad fruit #0" */
@@ -3298,7 +3386,7 @@ init_dummyobj(struct obj *obj, short otyp, long oquan)
 }
 
 /* obj sanity check: check objects inside container */
-static void
+staticfn void
 check_contained(struct obj *container, const char *mesg)
 {
     struct obj *obj;
@@ -3344,7 +3432,7 @@ check_contained(struct obj *container, const char *mesg)
 }
 
 /* called when 'obj->globby' is set so we don't recheck it here */
-static void
+staticfn void
 check_glob(struct obj *obj, const char *mesg)
 {
 #define LOWEST_GLOB GLOB_OF_GRAY_OOZE
@@ -3371,7 +3459,7 @@ check_glob(struct obj *obj, const char *mesg)
 }
 
 /* check an object in hero's or monster's inventory which has worn mask set */
-static void
+staticfn void
 sanity_check_worn(struct obj *obj)
 {
 #if (NH_DEVEL_STATUS != NH_STATUS_RELEASED) || defined(DEBUG)

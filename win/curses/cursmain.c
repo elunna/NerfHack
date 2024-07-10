@@ -44,8 +44,8 @@ extern glyph_info mesg_gi;
 static void dummy_update_position_bar(char *);
 #endif
 #ifdef CHANGE_COLOR
-static void dummy_change_color(int, long, int);
-static char *dummy_get_color_string(void);
+static void curses_change_color(int, long, int);
+static char *curses_get_color_string(void);
 #endif
 
 /* Public functions for curses NetHack interface */
@@ -54,7 +54,7 @@ static char *dummy_get_color_string(void);
 struct window_procs curses_procs = {
     WPID(curses),
     (WC_ALIGN_MESSAGE | WC_ALIGN_STATUS | WC_COLOR | WC_INVERSE
-     | WC_HILITE_PET
+     | WC_HILITE_PET | WC_WINDOWCOLORS
 #ifdef NCURSES_MOUSE_VERSION /* (this macro name works for PDCURSES too) */
      | WC_MOUSE_SUPPORT
 #endif
@@ -63,6 +63,7 @@ struct window_procs curses_procs = {
 #ifdef CURSES_UNICODE
      | WC2_U_UTF8STR
 #endif
+     | WC2_EXTRACOLORS
 #ifdef SELECTSAVED
      | WC2_SELECTSAVED
 #endif
@@ -118,12 +119,12 @@ struct window_procs curses_procs = {
     curses_number_pad,
     curses_delay_output,
 #ifdef CHANGE_COLOR
-    dummy_change_color,
+    curses_change_color,
 #ifdef MAC /* old OS 9, not OSX */
     (void (*)(int)) 0,
     (short (*)(winid, char *)) 0,
 #endif
-    dummy_get_color_string,
+    curses_get_color_string,
 #endif
     curses_start_screen,
     curses_end_screen,
@@ -205,6 +206,12 @@ curses_init_nhwindows(
     }
 #endif
 #endif
+
+    /* if anything has already been output by nethack (for instance, warnings
+       about RC file issues), let the player acknowlege it before initscr()
+       erases the screen */
+    if (iflags.raw_printed)
+        curses_wait_synch();
 
 #ifdef XCURSES
     base_term = Xinitscr(*argcp, argv);
@@ -426,6 +433,12 @@ curses_create_nhwindow(int type)
 {
     winid wid = curses_get_wid(type);
 
+    if (curses_is_menu(wid))
+        curses_parse_wid_colors(MENU_WIN, iflags.wcolors[wcolor_menu].fg,
+                                iflags.wcolors[wcolor_menu].bg);
+    else if (curses_is_text(wid))
+        curses_parse_wid_colors(TEXT_WIN, iflags.wcolors[wcolor_text].fg,
+                                iflags.wcolors[wcolor_text].bg);
     if (curses_is_menu(wid) || curses_is_text(wid)) {
         curses_start_menu(wid, MENU_BEHAVE_STANDARD);
         curses_add_wid(wid);
@@ -846,6 +859,25 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
 void
 curses_wait_synch(void)
 {
+    if (iflags.raw_printed) {
+#ifndef PDCURSES
+        int chr;
+        /*
+         * If any message has been issued via raw_print(), make the user
+         * acknowledge it.  This might take place before initscr() so
+         * access to curses is limited.  [Despite that, there's probably
+         * a more curses-specific way to handle this. FIXME?]
+         */
+
+        (void) fprintf(stdout, "\nPress <return> to continue: ");
+        (void) fflush(stdout);
+        do {
+            chr = fgetc(stdin);
+        } while (chr > 0 && chr != C('j') && chr != C('m') && chr != '\033');
+#endif
+        iflags.raw_printed = 0;
+    }
+
     if (iflags.window_inited) {
         if (curses_got_output())
             (void) curses_more();
@@ -906,6 +938,7 @@ curses_print_glyph(
     int glyph;
     int ch;
     int color;
+    int nhcolor = 0;
     unsigned int special;
     int attr = -1;
 
@@ -913,6 +946,22 @@ curses_print_glyph(
     special = glyphinfo->gm.glyphflags;
     ch = glyphinfo->ttychar;
     color = glyphinfo->gm.sym.color;
+    /*  Extra color handling
+     *  FIQ: The curses library does not support truecolor, only the more limited 256
+     *  color mode. On top of this, the windowport only supports 16 color mode.
+     *  Thus, we only allow users to customize glyph colors to the basic NetHack
+     *  colors. */
+    if (glyphinfo->gm.customcolor != 0
+        && (curses_procs.wincap2 & WC2_EXTRACOLORS) != 0) {
+        if ((glyphinfo->gm.customcolor & NH_BASIC_COLOR) != 0) {
+            color = COLORVAL(glyphinfo->gm.customcolor);
+#if 0
+        } else {
+            /* 24-bit color, NH_BASIC_COLOR == 0 */
+            nhcolor = COLORVAL(glyphinfo->gm.customcolor);
+#endif
+        }
+    }
     if ((special & MG_PET) && iflags.hilite_pet) {
         attr = curses_convert_attr(iflags.wc2_petattr);
     }
@@ -933,7 +982,7 @@ curses_print_glyph(
 */
         if ((special & MG_OBJPILE) && iflags.hilite_pile) {
             if (iflags.wc_color)
-                color = 16 + (color * 2) + 1;
+                color = get_framecolor(color, CLR_BLUE);
             else /* if (iflags.use_inverse) */
                 attr = A_REVERSE;
         }
@@ -952,20 +1001,15 @@ curses_print_glyph(
         }
     }
 
+    curses_putch(wid, x, y, ch,
 #ifdef ENHANCED_SYMBOLS
-    if (SYMHANDLING(H_UTF8)
-        && glyphinfo->gm.u
-        && glyphinfo->gm.u->utf8str) {
-        curses_putch(wid, x, y, ch, glyphinfo->gm.u, color,
-                     bkglyphinfo->framecolor, attr);
-    } else {
-        curses_putch(wid, x, y, ch, NULL, color,
-                     bkglyphinfo->framecolor, attr);
-    }
-#else
-    curses_putch(wid, x, y, ch, color,
-                 bkglyphinfo->framecolor, attr);
+                 (SYMHANDLING(H_UTF8)
+                  && glyphinfo->gm.u && glyphinfo->gm.u->utf8str)
+                      ? glyphinfo->gm.u : NULL, 
 #endif
+                 (nhcolor != 0) ? nhcolor : color,
+                 bkglyphinfo->framecolor, attr);
+
 }
 
 /*
@@ -985,12 +1029,11 @@ curses_raw_print(const char *str)
 
     if (iflags.window_inited) {
         curses_message_win_puts(str, FALSE);
-    } else {
-        puts(str);
+        return;
     }
-#else
-    puts(str);
 #endif
+    puts(str);
+    iflags.raw_printed++;
 }
 
 /*
@@ -1262,13 +1305,21 @@ dummy_update_position_bar(char *arg UNUSED)
 
 #ifdef CHANGE_COLOR
 static void
-dummy_change_color(int a1 UNUSED, long a2 UNUSED, int a3 UNUSED)
+curses_change_color(int color, long rgb, int reverse UNUSED)
 {
-    return;
+    short r, g, b;
+
+    if (!can_change_color())
+        return;
+
+    r = (rgb >> 16) & 0xFF;
+    g = (rgb >> 8) & 0xFF;
+    b = rgb & 0xFF;
+    init_color(color % 16, r * 4, g * 4, b * 4);
 }
 
 static char *
-dummy_get_color_string(void)
+curses_get_color_string(void)
 {
     return (char *) 0;
 }

@@ -21,7 +21,7 @@ struct tty_perminvent_cell {
     Bitfield(text, 1);
     Bitfield(glyph, 1);
     union ttycellcontent content;
-    int32_t color;      /* adjusted color 0 = ignore
+    uint32 color;       /* adjusted color 0 = ignore
                          * 1-16             = NetHack color + 1
                          * 17..16,777,233   = 24-bit color  + 17
                          */
@@ -88,20 +88,21 @@ struct WinDesc {
 
 /* descriptor for tty-based displays -- all the per-display data */
 struct DisplayDesc {
-    short rows, cols; /* width and height of tty display */
-    short curx, cury; /* current cursor position on the screen */
-    int color; /* current color */
-    uint32 framecolor; /* current background color */
-    int attrs;         /* attributes in effect */
-    int toplin;        /* flag for topl stuff */
-    int rawprint;      /* number of raw_printed lines since synch */
-    int inmore;        /* non-zero if more() is active */
-    int inread;        /* non-zero if reading a character */
-    int intr;          /* non-zero if inread was interrupted */
-    winid lastwin;     /* last window used for I/O */
-    char dismiss_more; /* extra character accepted at --More-- */
-    int topl_utf8;     /* non-zero if utf8 in str */
-    int mixed;         /* we are processing mixed output */
+    short rows, cols;   /* width and height of tty display */
+    short curx, cury;   /* current cursor position on the screen */
+    uint32 color;        /* current color */
+    uint32 colorflags;   /* NH_BASIC_COLOR or 24-bit color */
+    uint32 framecolor;   /* current background color */
+    int attrs;          /* attributes in effect */
+    int toplin;         /* flag for topl stuff */
+    int rawprint;       /* number of raw_printed lines since synch */
+    int inmore;         /* non-zero if more() is active */
+    int inread;         /* non-zero if reading a character */
+    int intr;           /* non-zero if inread was interrupted */
+    winid lastwin;      /* last window used for I/O */
+    char dismiss_more;  /* extra character accepted at --More-- */
+    int topl_utf8;      /* non-zero if utf8 in str */
+    int mixed;          /* we are processing mixed output */
 };
 
 #endif /* WINDOW_STRUCTS */
@@ -188,10 +189,9 @@ extern void term_end_raw_bold(void);
 extern void term_end_color(void);
 extern void term_start_color(int color);
 extern void term_start_bgcolor(int color);
-#ifdef ENHANCED_SYMBOLS
-extern void term_start_24bitcolor(struct unicode_representation *);
-extern void term_end_24bitcolor(void); /* termcap.c, consoletty.c */
-#endif
+extern void term_start_extracolor(uint32, uint16);
+extern void term_end_extracolor(void); /* termcap.c, consoletty.c */
+extern void term_curs_set(int);
 
 /* ### topl.c ### */
 

@@ -1,4 +1,4 @@
-/* NetHack 3.7	hack.h	$NHDT-Date: 1701132211 2023/11/28 00:43:31 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.240 $ */
+/* NetHack 3.7	hack.h	$NHDT-Date: 1717878594 2024/06/08 20:29:54 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.257 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -309,6 +309,13 @@ enum cost_alteration_types {
     COST_DETERIORATE = 20, /* other material damage */
 };
 
+/* used by unpaid_cost(shk.h) */
+enum unpaid_cost_flags {
+    COST_NOCONTENTS = 0,
+    COST_CONTENTS   = 1,
+    COST_SINGLEOBJ  = 2,
+};
+
 /* read.c, create_particular() & create_particular_parse() */
 struct _create_particular_data {
     int quan;
@@ -413,9 +420,7 @@ enum earlyarg {
 #ifndef NODUMPENUMS
     , ARG_DUMPENUMS
 #endif
-#ifdef ENHANCED_SYMBOLS
     , ARG_DUMPGLYPHIDS
-#endif
 #ifdef WIN32
     , ARG_WINDOWS
 #endif
@@ -724,8 +729,9 @@ struct restore_info {
 };
 
 enum restore_stages {
-    REST_GSTATE = 1,    /* restoring current level and game state */
-    REST_LEVELS = 2,    /* restoring remainder of dungeon */
+    REST_GSTATE = 1, /* restoring game state + first pass of current level */
+    REST_LEVELS = 2, /* restoring remainder of dungeon */
+    REST_CURRENT_LEVEL = 3, /* final pass of restoring current level */
 };
 
 struct rogueroom {
@@ -770,6 +776,7 @@ struct sinfo {
     int exiting;                /* an exit handler is executing */
     int saving;                 /* creating a save file */
     int restoring;              /* reloading a save file */
+    int in_getlev;              /* in getlev() */
     int in_moveloop;            /* normal gameplay in progress */
     int in_impossible;          /* reporting a warning */
     int in_docrt;               /* in docrt(): redrawing the whole screen */
@@ -778,6 +785,7 @@ struct sinfo {
     int in_parseoptions;        /* in parseoptions */
     int in_role_selection;      /* role/race/&c selection menus in progress */
     int in_getlin;              /* inside interface getlin routine */
+    int in_sanity_check;        /* for impossible() during sanity checking */
     int config_error_ready;     /* config_error_add is ready, available */
     int beyond_savefile_load;   /* set when past savefile loading */
 #ifdef PANICLOG
@@ -946,13 +954,14 @@ typedef struct {
 #define ARTICLE_YOUR 3
 
 /* x_monnam() monster name suppress masks */
-#define SUPPRESS_IT 0x01
-#define SUPPRESS_INVISIBLE 0x02
+#define SUPPRESS_IT            0x01
+#define SUPPRESS_INVISIBLE     0x02
 #define SUPPRESS_HALLUCINATION 0x04
-#define SUPPRESS_SADDLE 0x08
-#define EXACT_NAME 0x0F
-#define SUPPRESS_NAME 0x10
-#define AUGMENT_IT 0x20 /* use "someone" or "something" instead of "it" */
+#define SUPPRESS_SADDLE        0x08
+#define SUPPRESS_MAPPEARANCE   0x10
+#define EXACT_NAME             0x1F
+#define SUPPRESS_NAME 0x20
+#define AUGMENT_IT    0x40 /* use "someone" or "something" instead of "it" */
 
 /* pline (et al) for a single string argument (suppress compiler warning) */
 #define pline1(cstr) pline("%s", cstr)
@@ -1105,6 +1114,11 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define GP_CHECKSCARY   0x00800000L /* check monster for onscary() */
 #define GP_AVOID_MONPOS 0x01000000L /* don't accept existing mon location */
 /* 25 bits used */
+
+/* flags for mhidden_description() (pager.c; used for mimics and hiders) */
+#define MHID_PREFIX  1 /* include ", mimicking " prefix */
+#define MHID_ARTICLE 2 /* include "a " or "an " after prefix */
+#define MHID_ALTMON  4 /* if mimicking a monster, include that */
 
 /* flags for make_corpse() and mkcorpstat(); 0..7 are recorded in obj->spe */
 #define CORPSTAT_NONE     0x00

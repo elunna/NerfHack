@@ -1,4 +1,4 @@
-/* NetHack 3.7	end.c	$NHDT-Date: 1709597568 2024/03/05 00:12:48 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.305 $ */
+/* NetHack 3.7	end.c	$NHDT-Date: 1720397752 2024/07/08 00:15:52 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.315 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -15,33 +15,29 @@
 #endif
 #include "dlb.h"
 
-
-/* add b to long a, convert wraparound to max value */
-#define nowrap_add(a, b) (a = ((a + b) < 0 ? LONG_MAX : (a + b)))
-
 #ifndef NO_SIGNAL
-static void done_intr(int);
+staticfn void done_intr(int);
 # if defined(UNIX) || defined(VMS) || defined(__EMX__)
-static void done_hangup(int);
+staticfn void done_hangup(int);
 # endif
 #endif
-static void disclose(int, boolean);
-static void get_valuables(struct obj *) NO_NNARGS;
-static void sort_valuables(struct valuable_data *, int);
-static void artifact_score(struct obj *, boolean, winid);
-static boolean fuzzer_savelife(int);
-ATTRNORETURN static void really_done(int) NORETURN;
-static void savelife(int);
-static boolean should_query_disclose_option(int, char *);
+staticfn void disclose(int, boolean);
+staticfn void get_valuables(struct obj *) NO_NNARGS;
+staticfn void sort_valuables(struct valuable_data *, int);
+staticfn void artifact_score(struct obj *, boolean, winid);
+staticfn boolean fuzzer_savelife(int);
+ATTRNORETURN staticfn void really_done(int) NORETURN;
+staticfn void savelife(int);
+staticfn boolean should_query_disclose_option(int, char *);
 #if defined(DUMPLOG) || defined(DUMPHTML)
-static void dump_plines(void);
+staticfn void dump_plines(void);
 extern void dump_start_screendump(void); /* defined in windows.c */
 extern void dump_end_screendump(void);
 #endif
-static void dump_everything(int, time_t);
-static void fixup_death(int);
-static int wordcount(char *);
-static void bel_copy1(char **, char *);
+staticfn void dump_everything(int, time_t);
+staticfn void fixup_death(int);
+staticfn int wordcount(char *);
+staticfn void bel_copy1(char **, char *);
 
 #if defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(WIN32)
 ATTRNORETURN extern void nethack_exit(int) NORETURN;
@@ -50,24 +46,6 @@ ATTRNORETURN extern void nethack_exit(int) NORETURN;
 #endif
 
 #define done_stopprint gp.program_state.stopprint
-
-#ifndef PANICTRACE
-# define NH_abort(x) NH_abort_
-#endif
-
-#ifdef AMIGA
-#define NH_abort_ Abort(0)
-#else
-#ifdef SYSV
-#define NH_abort_ (void) abort()
-#else
-#ifdef WIN32
-#define NH_abort_ win32_abort()
-#else
-#define NH_abort_ abort()
-#endif
-#endif /* !SYSV */
-#endif /* !AMIGA */
 
 /*
  * The order of these needs to match the macros in hack.h.
@@ -180,7 +158,7 @@ done2(void)
 #ifndef NO_SIGNAL
 /* called as signal() handler, so sent at least 1 arg */
 /*ARGSUSED*/
-static void
+staticfn void
 done_intr(int sig_unused UNUSED)
 {
     done_stopprint++;
@@ -195,7 +173,7 @@ done_intr(int sig_unused UNUSED)
 
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
 /* signal() handler */
-static void
+staticfn void
 done_hangup(int sig)
 {
 #ifdef HANGUPHANDLING
@@ -385,7 +363,7 @@ static const struct {
 
 /* clear away while-helpless when the cause of death caused that
    helplessness (ie, "petrified by <foo> while getting stoned") */
-static void
+staticfn void
 fixup_death(int how)
 {
     int i;
@@ -495,7 +473,7 @@ panic VA_DECL(const char *, str)
 
 RESTORE_WARNING_FORMAT_NONLITERAL
 
-static boolean
+staticfn boolean
 should_query_disclose_option(int category, char *defquery)
 {
     int idx;
@@ -537,7 +515,7 @@ should_query_disclose_option(int category, char *defquery)
 }
 
 #if defined(DUMPLOG) || defined(DUMPHTML)
-static void
+staticfn void
 dump_plines(void)
 {
     int i, j;
@@ -560,7 +538,7 @@ dump_plines(void)
 #endif  /* DUMPLOG */
 
 /*ARGSUSED*/
-static void
+staticfn void
 dump_everything(
     int how,     /* ASCENDED, ESCAPED, QUIT, etc */
     time_t when) /* date+time at end of game */
@@ -642,7 +620,7 @@ dump_everything(
 #endif
 }
 
-static void
+staticfn void
 disclose(int how, boolean taken)
 {
     char c = '\0', defquery;
@@ -726,7 +704,7 @@ disclose(int how, boolean taken)
 }
 
 /* try to get the player back in a viable state after being killed */
-static void
+staticfn void
 savelife(int how)
 {
     int uhpmin;
@@ -785,7 +763,7 @@ savelife(int how)
  * Get valuables from the given list.  Revised code: the list always remains
  * intact.
  */
-static void
+staticfn void
 get_valuables(struct obj *list) /* inventory or container contents */
 {
     struct obj *obj;
@@ -820,7 +798,7 @@ get_valuables(struct obj *list) /* inventory or container contents */
  *  Sort collected valuables, most frequent to least.  We could just
  *  as easily use qsort, but we don't care about efficiency here.
  */
-static void
+staticfn void
 sort_valuables(
     struct valuable_data list[],
     int size) /* max value is less than 20 */
@@ -848,11 +826,11 @@ sort_valuables(
  * odds_and_ends() was used for 3.6.0 and 3.6.1.
  * Schroedinger's Cat is handled differently as of 3.6.2.
  */
-static boolean odds_and_ends(struct obj *, int);
+staticfn boolean odds_and_ends(struct obj *, int);
 
 #define CAT_CHECK 2
 
-static boolean
+staticfn boolean
 odds_and_ends(struct obj *list, int what)
 {
     struct obj *otmp;
@@ -929,7 +907,7 @@ done_object_cleanup(void)
 }
 
 /* called twice; first to calculate total, then to list relevant items */
-static void
+staticfn void
 artifact_score(
     struct obj *list,
     boolean counting, /* true => add up points; false => display them */
@@ -946,7 +924,7 @@ artifact_score(
             value = arti_cost(otmp); /* zorkmid value */
             points = value * 5 / 2;  /* score value */
             if (counting) {
-                nowrap_add(u.urexp, points);
+                u.urexp = nowrap_add(u.urexp, points);
             } else {
                 discover_object(otmp->otyp, TRUE, FALSE);
                 otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = 1;
@@ -966,7 +944,7 @@ artifact_score(
 
 /* when dying while running the debug fuzzer, [almost] always keep going;
    True: forced survival; False: doomed unless wearing life-save amulet */
-static boolean
+staticfn boolean
 fuzzer_savelife(int how)
 {
     /*
@@ -974,15 +952,7 @@ fuzzer_savelife(int how)
      * 'done_seq' is maintained in done().
      */
     if (!gp.program_state.panicking
-        && how != PANICKED && how != TRICKED
-        /* Guard against getting stuck in a loop if we die in one of
-         * the few ways where life-saving isn't effective (cited case
-         * was burning in lava when the level was too full to allow
-         * teleporting to safety).  Skip the life-save attempt if we've
-         * died on the same move more than 100 times; give up instead.
-         * [Note: 100 deaths on the same move may seem excessive but it
-         * has been demonstrated that a limit of 20 was not enough.] */
-        && (gd.done_seq++ < gh.hero_seq + 100L)) {
+        && how != PANICKED && how != TRICKED) {
         savelife(how);
 
         /* periodically restore characteristics plus lost experience
@@ -1029,6 +999,18 @@ fuzzer_savelife(int how)
         /* clear stale cause of death info after life-saving */
         gk.killer.name[0] = '\0';
         gk.killer.format = 0;
+
+        /* Guard against getting stuck in a loop if we die in one of
+         * the few ways where life-saving isn't effective (cited case
+         * was burning in lava when the level was too full to allow
+         * teleporting to safety).  Deal with it by recreating
+         * the level, if we're in wizmode */
+        if (gd.done_seq++ > gh.hero_seq + 100L) {
+            if (!wizard)
+                return FALSE; /* can't deal with it */
+            cmdq_add_ec(CQ_CANNED, wiz_makemap);
+        }
+
         return TRUE;
     }
     return FALSE; /* panic or too many consecutive deaths */
@@ -1145,7 +1127,7 @@ done(int how)
 }
 
 /* separated from done() in order to specify the __noreturn__ attribute */
-static void
+staticfn void
 really_done(int how)
 {
     boolean taken;
@@ -1360,7 +1342,7 @@ really_done(int how)
         tmp += 50L * (long) (deepest - 1);
         if (deepest > 20)
             tmp += 1000L * (long) ((deepest > 30) ? 10 : deepest - 20);
-        nowrap_add(u.urexp, tmp);
+        u.urexp = nowrap_add(u.urexp, tmp);
 
         /* ascension gives a score bonus iff offering to original deity */
         if (how == ASCENDED && u.ualign.type == u.ualignbase[A_ORIGINAL]) {
@@ -1369,7 +1351,7 @@ really_done(int how)
             tmp = (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL])
                       ? u.urexp
                       : (u.urexp / 2L);
-            nowrap_add(u.urexp, tmp);
+            u.urexp = nowrap_add(u.urexp, tmp);
         }
     }
 
@@ -1477,7 +1459,7 @@ really_done(int how)
                 if (val->list[i].count != 0L) {
                     tmp = val->list[i].count
                           * (long) objects[val->list[i].typ].oc_cost;
-                    nowrap_add(u.urexp, tmp);
+                    u.urexp = nowrap_add(u.urexp, tmp);
                 }
 
         /* count the points for artifacts */
@@ -1490,7 +1472,7 @@ really_done(int how)
             while (mtmp) {
                 Sprintf(eos(pbuf), " and %s", mon_nam(mtmp));
                 if (mtmp->mtame)
-                    nowrap_add(u.urexp, mtmp->mhp);
+                    u.urexp = nowrap_add(u.urexp, mtmp->mhp);
                 mtmp = mtmp->nmon;
             }
             /* [it might be more robust to create a housecat and add it to
@@ -1499,7 +1481,7 @@ really_done(int how)
                 int mhp, m_lev = adj_lev(&mons[PM_HOUSECAT]);
 
                 mhp = d(m_lev, 8);
-                nowrap_add(u.urexp, mhp);
+                u.urexp = nowrap_add(u.urexp, mhp);
                 Strcat(eos(pbuf), " and Schroedinger's cat");
             }
             dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
@@ -1825,7 +1807,7 @@ restore_killers(NHFILE *nhfp)
     }
 }
 
-static int
+staticfn int
 wordcount(char *p)
 {
     int words = 0;
@@ -1841,7 +1823,7 @@ wordcount(char *p)
     return words;
 }
 
-static void
+staticfn void
 bel_copy1(char **inp, char *out)
 {
     char *in = *inp;
@@ -1967,12 +1949,15 @@ NH_abort(char *why USED_FOR_CRASHREPORT)
 
 #endif /* ?VMS */
     }
-
 #ifndef NO_SIGNAL
     panictrace_setsignals(FALSE);
 #endif
 #endif /* PANICTRACE */
-    NH_abort_;
+#ifdef WIN32
+    win32_abort();
+#else
+    abort();
+#endif
 }
 #undef USED_FOR_CRASHREPORT
 

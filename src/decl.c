@@ -1,4 +1,4 @@
-/* NetHack 3.7	decl.c	$NHDT-Date: 1706079841 2024/01/24 07:04:01 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.314 $ */
+/* NetHack 3.7	decl.c	$NHDT-Date: 1720074480 2024/07/04 06:28:00 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.334 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -51,7 +51,7 @@ const struct c_common_strings c_common_strings =
       { "mon", "you" }
 };
 
-const struct savefile_info default_sfinfo = {
+static const struct savefile_info default_sfinfo = {
 #ifdef NHSTDC
     0x00000000UL
 #else
@@ -92,6 +92,9 @@ const char *fqn_prefix_names[PREFIX_COUNT] = {
     "scoredir", "lockdir",  "sysconfdir", "configdir", "troubledir"
 };
 #endif
+
+/* used by coloratt.c, options.c, utf8map.c, windows.c */
+const char hexdd[33] = "00112233445566778899aAbBcCdDeEfF";
 
 /* x/y/z deltas for the 10 movement directions (8 compass pts, 2 down/up) */
 const schar xdir[N_DIRS_Z] = { -1, -1,  0,  1,  1,  1,  0, -1, 0,  0 };
@@ -135,6 +138,8 @@ const char ynchars[] = "yn";
 const char ynqchars[] = "ynq";
 const char ynaqchars[] = "ynaq";
 const char ynNaqchars[] = "yn#aq";
+const char rightleftchars[] = "rl";
+const char hidespinchars[] = "hsq";
 NEARDATA long yn_number = 0L;
 
 #ifdef PANICTRACE
@@ -143,7 +148,7 @@ const char *ARGV0;
 
 #define IVMAGIC 0xdeadbeef
 
-const struct Role urole_init_data = {
+static const struct Role urole_init_data = {
     { "Undefined", 0 },
     { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 },
       { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } },
@@ -168,7 +173,7 @@ const struct Role urole_init_data = {
     -3
 };
 
-const struct Race urace_init_data = {
+static const struct Race urace_init_data = {
     "something",
     "undefined",
     "something",
@@ -191,7 +196,7 @@ const struct Race urace_init_data = {
 
 struct display_hints disp = { 0 };
 
-const struct instance_globals_a g_init_a = {
+static const struct instance_globals_a g_init_a = {
     /* artifact.c */
     /* decl.c */
     UNDEFINED_PTR,  /* afternmv */
@@ -206,6 +211,11 @@ const struct instance_globals_a g_init_a = {
     /* mon.c */
     UNDEFINED_PTR, /* animal_list */
     UNDEFINED_VALUE, /* animal_list_count */
+#ifdef CHANGE_COLOR
+    /* options.c */
+    { 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U,
+      0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U },  /* altpalette[CLR_MAX] */
+#endif
     /* pickup.c */
     0, /* A_first_hint */
     0, /* A_second_hint */
@@ -221,7 +231,7 @@ const struct instance_globals_a g_init_a = {
     IVMAGIC  /* a_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_b g_init_b = {
+static const struct instance_globals_b g_init_b = {
     /* botl.c */
     { { { NULL, NULL, 0L, FALSE, FALSE, 0, 0U, { 0 }, { 0 }, NULL, 0, 0, 0
 #ifdef STATUS_HILITES
@@ -258,7 +268,7 @@ const struct instance_globals_b g_init_b = {
     IVMAGIC  /* b_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_c g_init_c = {
+static const struct instance_globals_c g_init_c = {
     UNDEFINED_VALUES, /* command_queue */
     /* botl.c */
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -310,7 +320,7 @@ const struct instance_globals_c g_init_c = {
     IVMAGIC  /* c_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_d g_init_d = {
+static const struct instance_globals_d g_init_d = {
     /* decl.c */
     0, /* doorindex */
     0L, /* done_money */
@@ -352,7 +362,7 @@ const struct instance_globals_d g_init_d = {
     IVMAGIC  /* d_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_e g_init_e = {
+static const struct instance_globals_e g_init_e = {
     /* cmd.c */
     WIN_ERR, /* en_win */
     FALSE, /* en_via_menu */
@@ -368,7 +378,7 @@ const struct instance_globals_e g_init_e = {
     IVMAGIC  /* e_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_f g_init_f = {
+static const struct instance_globals_f g_init_f = {
     /* decl.c */
     UNDEFINED_PTR, /* ftrap */
     { NULL }, /* fqn_prefix */
@@ -387,7 +397,7 @@ const struct instance_globals_f g_init_f = {
     IVMAGIC  /* f_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_g g_init_g = {
+static const struct instance_globals_g g_init_g = {
     /* display.c */
     { { { 0 } } }, /* gbuf */
     UNDEFINED_VALUES, /* gbuf_start */
@@ -407,6 +417,11 @@ const struct instance_globals_g g_init_g = {
     { UNDEFINED_VALUES }, /* gems */
     /* invent.c */
     0L,      /* glyph_reset_timestamp */
+    /* nhlua.c */
+    FALSE, /* gmst_stored */
+    0L, /* gmst_moves */
+    NULL, /* gmst_invent */
+    NULL, NULL, NULL, /* gmst_ubak, gmst_disco, gmst_mvitals */
     /* pline.c */
     UNDEFINED_PTR, /* gamelog */
     /* region.c */
@@ -419,7 +434,7 @@ const struct instance_globals_g g_init_g = {
     IVMAGIC  /* g_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_h g_init_h = {
+static const struct instance_globals_h g_init_h = {
     /* decl.c */
     NULL, /* hname */
     0, /* hackpid */
@@ -439,7 +454,7 @@ const struct instance_globals_h g_init_h = {
     IVMAGIC  /* h_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_i g_init_i = {
+static const struct instance_globals_i g_init_i = {
     /* decl.c */
     0, /* in_doagain */
     { 0, 0 } , /* inv_pos */
@@ -463,14 +478,15 @@ const struct instance_globals_i g_init_i = {
     IVMAGIC  /* i_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_j g_init_j = {
+static const struct instance_globals_j g_init_j = {
     /* apply.c */
     0,  /* jumping_is_magic */
     TRUE, /* havestate*/
     IVMAGIC  /* j_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_k g_init_k = {
+static const struct instance_globals_k g_init_k = {
+    { 0, 0 }, /* kickedloc */
     /* decl.c */
     UNDEFINED_PTR, /* kickedobj */
     DUMMY, /* killer */
@@ -480,7 +496,7 @@ const struct instance_globals_k g_init_k = {
     IVMAGIC  /* k_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_l g_init_l = {
+static const struct instance_globals_l g_init_l = {
     /* cmd.c */
     UNDEFINED_VALUE, /* last_command_count */
     /* decl.c */
@@ -536,7 +552,7 @@ const struct instance_globals_l g_init_l = {
     IVMAGIC  /* l_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_m g_init_m = {
+static const struct instance_globals_m g_init_m = {
     /* apply.c */
     0, /* mkot_trap_warn_count */
     /* botl.c */
@@ -589,7 +605,7 @@ const struct instance_globals_m g_init_m = {
     IVMAGIC  /* m_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_n g_init_n = {
+static const struct instance_globals_n g_init_n = {
     /* botl.c */
     0, /* now_or_before_idx */
     /* decl.c */
@@ -629,7 +645,8 @@ const struct instance_globals_n g_init_n = {
     IVMAGIC  /* n_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_o g_init_o = {
+static const struct instance_globals_o g_init_o = {
+    NULL, /* objs_deleted */
     /* dbridge.c */
     { { 0 } }, /* occupants */
     /* decl.c */
@@ -652,6 +669,10 @@ const struct instance_globals_o g_init_o = {
     FALSE, /* opt_need_redraw */
     FALSE, /* opt_need_glyph_reset */
     FALSE, /* opt_need_promptstyle */
+    FALSE, /* opt_reset_customcolors */
+    FALSE, /* opt_reset_customsymbols */
+    FALSE, /* opt_update_basic_palette */
+    FALSE, /* opt_symset_changed */
     /* pickup.c */
     0,  /* oldcap */
     /* restore.c */
@@ -669,7 +690,7 @@ const struct instance_globals_o g_init_o = {
     IVMAGIC  /* o_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_p g_init_p = {
+static const struct instance_globals_p g_init_p = {
     /* apply.c */
     -1, /* polearm_range_min */
     -1, /* polearm_range_max  */
@@ -709,14 +730,14 @@ const struct instance_globals_p g_init_p = {
     IVMAGIC  /* p_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_q g_init_q = {
+static const struct instance_globals_q g_init_q = {
     /* quest.c */
     DUMMY, /* quest_status */
     TRUE, /* havestate*/
     IVMAGIC  /* q_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_r g_init_r = {
+static const struct instance_globals_r g_init_r = {
     /* decl.c */
     { DUMMY }, /* rooms */
     /* symbols.c */
@@ -739,7 +760,7 @@ const struct instance_globals_r g_init_r = {
     IVMAGIC  /* r_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_s g_init_s = {
+static const struct instance_globals_s g_init_s = {
     /* artifact.c */
     0,  /* spec_dbon_applies */
     /* decl.c */
@@ -753,9 +774,7 @@ const struct instance_globals_s g_init_s = {
     { 0, 0 }, /* save_dlevel */
     /* symbols.c */
     { DUMMY }, /* symset */
-#ifdef ENHANCED_SYMBOLS
-    { { 0 } }, /* symset_customizations */
-#endif
+    { { { 0 } }, { { 0 } } }, /* symset_customizations */
     DUMMY, /* showsyms */
     /* files.c */
     0, /* symset_count */
@@ -776,6 +795,7 @@ const struct instance_globals_s g_init_s = {
     (struct menucoloring *) 0, /* save_colorings */
     FALSE, /* simple_options_help */
     /* pickup.c */
+    FALSE, /* sellobj_first */
     FALSE, /* shop_filter */
     /* pline.c */
 #ifdef DUMPLOG_CORE
@@ -799,7 +819,7 @@ const struct instance_globals_s g_init_s = {
     IVMAGIC  /* s_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_t g_init_t = {
+static const struct instance_globals_t g_init_t = {
     /* apply.c */
     UNDEFINED_VALUES, /* trapinfo */
     /* decl.c */
@@ -836,7 +856,7 @@ const struct instance_globals_t g_init_t = {
     IVMAGIC  /* t_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_u g_init_u = {
+static const struct instance_globals_u g_init_u = {
     /* botl.c */
     FALSE, /* update_all */
     /* decl.c */
@@ -851,7 +871,7 @@ const struct instance_globals_u g_init_u = {
     IVMAGIC  /* u_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_v g_init_v = {
+static const struct instance_globals_v g_init_v = {
     /* botl.c */
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, /* valset */
@@ -877,7 +897,7 @@ const struct instance_globals_v g_init_v = {
     IVMAGIC  /* v_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_w g_init_w = {
+static const struct instance_globals_w g_init_w = {
     /* decl.c */
     0, /* warn_obj_cnt */
     0L, /* wailmsg */
@@ -895,7 +915,7 @@ const struct instance_globals_w g_init_w = {
     IVMAGIC  /* w_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_x g_init_x = {
+static const struct instance_globals_x g_init_x = {
     /* decl.c */
     (COLNO - 1) & ~1, /* x_maze_max */
     /* lock.c */
@@ -912,7 +932,7 @@ const struct instance_globals_x g_init_x = {
     IVMAGIC  /* x_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_y g_init_y = {
+static const struct instance_globals_y g_init_y = {
     /* decl.c */
     (ROWNO - 1) & ~1, /* y_maze_max */
     DUMMY, /* youmonst */
@@ -929,7 +949,7 @@ const struct instance_globals_y g_init_y = {
     IVMAGIC  /* y_magic to validate that structure layout has been preserved */
 };
 
-const struct instance_globals_z g_init_z = {
+static const struct instance_globals_z g_init_z = {
     /* mon.c */
     FALSE, /* zombify */
     /* muse.c */

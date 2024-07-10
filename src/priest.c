@@ -9,8 +9,8 @@
 #define ALGN_SINNED (-4) /* worse than strayed (-1..-3) */
 #define ALGN_PIOUS 14    /* better than fervent (9..13) */
 
-static boolean histemple_at(struct monst *, coordxy, coordxy);
-static boolean has_shrine(struct monst *);
+staticfn boolean histemple_at(struct monst *, coordxy, coordxy);
+staticfn boolean has_shrine(struct monst *);
 
 void
 newepri(struct monst *mtmp)
@@ -91,6 +91,7 @@ move_special(struct monst *mtmp, boolean in_his_shop, schar appr,
             }
         }
     }
+#undef GDIST
     if (mtmp->ispriest && avoid && nix == omx && niy == omy
         && onlineu(omx, omy)) {
         /* might as well move closer as long it's going to stay
@@ -148,7 +149,7 @@ temple_occupied(char *array)
     return '\0';
 }
 
-static boolean
+staticfn boolean
 histemple_at(struct monst *priest, coordxy x, coordxy y)
 {
     return (boolean) (priest && priest->ispriest
@@ -377,7 +378,7 @@ p_coaligned(struct monst *priest)
     return (boolean) (u.ualign.type == mon_aligntyp(priest));
 }
 
-static boolean
+staticfn boolean
 has_shrine(struct monst *pri)
 {
     struct rm *lev;
@@ -910,5 +911,8 @@ restpriest(struct monst *mtmp, boolean ghostly)
             assign_level(&(EPRI(mtmp)->shrlevel), &u.uz);
     }
 }
+
+#undef ALGN_SINNED
+#undef ALGN_PIOUS
 
 /*priest.c*/

@@ -1,4 +1,4 @@
-/* NetHack 3.7	report.c	$NHDT-Date: 1709907875 2024/03/08 14:24:35 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.4 $ */
+/* NetHack 3.7	report.c	$NHDT-Date: 1710525914 2024/03/15 18:05:14 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.7 $ */
 /* Copyright (c) Kenneth Lorber, Kensington, Maryland, 2024 */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -45,7 +45,7 @@
 #  define HASH_CLEANUP(ctxp)
 #  define HASH_OFLAGS O_RDONLY
 #  define HASH_BINFILE_DECL char *binfile = argv[0];
-#  ifdef BETA
+#  if (NH_DEVEL_STATUS == NH_STATUS_BETA)
 #   define HASH_BINFILE \
     if (!binfile || !*binfile) {                                        \
         /* If this triggers, investigate CFBundleGetMainBundle */       \
@@ -64,13 +64,15 @@
 
 # ifdef __linux__
 #include "nhmd4.h"
+/* v0 is just to suppress compiler warnings about unreachable code */
 #  define HASH_CONTEXTPTR(CTXP) \
+    volatile int v0 = 0; \
     unsigned char tmp[NHMD4_DIGEST_LENGTH];     \
     NHMD4_CTX CTXP ## _;                        \
     NHMD4_CTX *CTXP = &CTXP ## _
-#  define HASH_INIT(ctxp) (nhmd4_init(ctxp), 0)
-#  define HASH_UPDATE(ctx, ptr, len) (nhmd4_update(ctx, ptr, len), 0)
-#  define HASH_FINISH(ctxp) (nhmd4_final(ctxp, tmp), 0)
+#  define HASH_INIT(ctxp) (nhmd4_init(ctxp), v0)
+#  define HASH_UPDATE(ctx, ptr, len) (nhmd4_update(ctx, ptr, len), v0)
+#  define HASH_FINISH(ctxp) (nhmd4_final(ctxp, tmp), v0)
 #  define HASH_RESULT_SIZE(ctxp) NHMD4_RESULTLEN
 #  define HASH_RESULT(ctx, inp) *inp = tmp
 #  define HASH_CLEANUP(ctxp)
@@ -144,7 +146,7 @@ crashreport_init(int argc UNUSED, char *argv[] UNUSED)
         goto skip;
     close(fd);
 
-    static const char hex[] = "0123456789abcdef";
+    static const char hexdigits[] = "0123456789abcdef";
     char *p = bid;
     unsigned char *in;
     HASH_RESULT(ctxp, &in);
@@ -156,8 +158,8 @@ crashreport_init(int argc UNUSED, char *argv[] UNUSED)
         cnt = (uint8) sizeof bid / 2 - 1;
     while (cnt) {
         /* sprintf(p, "%02x", *in++), p += 2; */
-        *p++ = hex[(*in >> 4) & 0x0f];
-        *p++ = hex[*in++ & 0x0f];
+        *p++ = hexdigits[(*in >> 4) & 0x0f];
+        *p++ = hexdigits[*in++ & 0x0f];
         --cnt;
     }
     *p = '\0';
@@ -217,7 +219,7 @@ crashreport_bidshow(void)
     mark = uend;                                \
     if (utmp >= urem)                           \
         goto full;                              \
-    strncpy(uend, str, utmp);                   \
+    memcpy(uend, str, utmp);			\
     uend += utmp; urem -= utmp;                 \
     *uend = '\0';
 
@@ -403,7 +405,7 @@ printf("ShellExecute returned: %p\n",rv);   // >32 is ok
         if (pid == 0) {
             char err[100];
 #  ifdef CRASHREPORT_EXEC_NOSTDERR
-	    int devnull;
+            int devnull;
                 /* Keep the output clean - firefox spews useless errors on
                  * my system. */
             (void) close(2);
@@ -414,9 +416,9 @@ printf("ShellExecute returned: %p\n",rv);   // >32 is ok
             Sprintf(err, "Can't start " CRASHREPORT ": %s", strerror(errno));
             raw_print(err);
 #  ifdef CRASHREPORT_EXEC_NOSTDERR
-	    (void) close(devnull);
+            (void) close(devnull);
 #  endif
-	    exit(1);
+            exit(1);
         } else {
             int status;
             errno = 0;
@@ -539,10 +541,16 @@ NH_panictrace_gdb(void)
 # endif /* !PANICTRACE_GDB */
 }
 
+#ifdef DUMPLOG_CORE
+#define USED_if_dumplog
+#else
+#define USED_if_dumplog UNUSED
+#endif
+
 /* lineno==0 gives the most recent message (e.g.
    "Do you want to call panic..." if called from #panic) */
 const char *
-get_saved_pline(int lineno)
+get_saved_pline(int lineno USED_if_dumplog)
 {
 #ifdef DUMPLOG_CORE
     int p;
@@ -563,6 +571,8 @@ get_saved_pline(int lineno)
 #endif /* DUMPLOG_CORE */
     return NULL;
 }
+
+#undef USED_if_dumplog
 
 # ifndef NO_SIGNAL
 /* called as signal() handler, so sent at least one arg */

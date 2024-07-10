@@ -1,4 +1,4 @@
-.\" $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.536 $ $NHDT-Date: 1699260377 2023/11/06 08:46:17 $
+.\" $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.574 $ $NHDT-Date: 1711040379 2024/03/21 16:59:39 $
 .\"
 .\" This is an excerpt from the 'roff' man page from the 'groff' package.
 .\"+--
@@ -46,7 +46,7 @@
 .ds f0 \*(vr
 .ds f1 \" empty
 .\"DO NOT REMOVE NH_DATESUB .ds f2 DATE(%B %-d, %Y)
-.ds f2 February 29, 2024
+.ds f2 April 12, 2024
 .
 .\" A note on some special characters:
 .\" \(lq = left double quote
@@ -4059,8 +4059,29 @@ In text windowing, text highlighting or inverse video is often used;
 with tiles, generally displays a small plus-symbol beside the object
 on the top of the pile.
 .lp hitpointbar
-Show a hit point bar graph behind your name and title.
-Only available for TTY and Windows GUI, and only when statushilites is on.
+Show a hit point bar graph behind your name and title in the status
+display (default off).
+.lp ""
+The \(lqcurses\(rq interface supports it even if the status highlighting
+feature has been disabled when building the program.
+The \(lqtty\(rq and \(lqmswin\(rq (aka \(lqWindows GUI\(rq) interfaces
+support it only if status highlighting is left enabled when building.
+You don't need to set up any highlighting rules in order to display
+the bar.
+If there is one for hitpoints in effect and it specifies color, that
+color will be used for the bar.
+However if it specifies video attributes, they will be ignored in
+favor of \fIinverse\fP.
+For tty and curses, \fIblink\fP will also be used if the current
+hitpoint value is at or below the \fIcritical HP\fP threshold.
+.lp ""
+The \(lqQt\(rq interface also supports hitpointbar, by drawing
+a solid bar above the name and title with a hard-coded color scheme.
+(As of this writing, having the bar enabled unintentionally inhibits
+resizing the status panel.
+To resize that, use the \f(CR#optionsfull\fP command to toggle the
+\fIhitpointbar\fP option off, perform the resize while it's off, then
+use the same command to toggle it back on.)
 .lp horsename
 Name your starting horse (for example \(lqhorsename:Trigger\(rq).
 Cannot be set with the \(oq\f(CRO\fP\(cq command.
@@ -4287,7 +4308,7 @@ symbols for the various object types.
 Any omitted types are filled in at the end from the previous order.
 .lp paranoid_confirmation
 A space separated list of specific situations where alternate
-prompting is desired.  The default is \(lqparanoid_confirmation:pray swim\(rq.
+prompting is desired.  The default is \(lqparanoid_confirmation:pray swim trap\(rq.
 .PS Were-change
 .PL Confirm
 for any prompts which are set to require \(lqyes\(rq rather than \(oqy\(cq,
@@ -4478,6 +4499,8 @@ something pushes the old item into your alternate weapon slot (default off).
 Likewise for the \(oqa\(cq (apply) command if it causes the applied item to
 become wielded.
 Persistent.
+.lp query_menu
+Use a menu when asked specific yes/no queries, instead of a prompt.
 .lp quick_farsight
 When set, usually prevents the \(lqyou sense your surroundings\(rq message
 where play pauses to allow you to browse the map whenever clairvoyance
@@ -4996,23 +5019,24 @@ setting the value to 3 or 4 instead will keep borders for the map, message,
 and status windows but have room for two additional lines of inventory
 plus widen each inventory line by two columns.
 .lp windowcolors
-If NetHack can, it should display windows with the specified
-foreground/background colors.
-Windows GUI only.
+If NetHack can, it should display all windows of a particular style
+with the specified foreground and background colors.
+Windows GUI and curses windowport only.
 The format is
 .si
-.lp "OPTION=windowcolors:wintype foreground/background"
+.lp "\f(CROPTION=windowcolors:\fIstyle foreground\f(CR/\fIbackground\fR"
 .ei
-.pg
-where wintype is one of \(lqmenu\(rq, \(lqmessage\(rq, \(lqstatus\(rq,
+.lp ""
+where \fIstyle\fP is one of \(lqmenu\(rq, \(lqmessage\(rq, \(lqstatus\(rq,
 or \(lqtext\(rq, and
-foreground and background are colors, either a hexadecimal \\'#rrggbb',
+\fIforeground\fP and \fIbackground\fP are colors, either numeric (hash
+sign followed by three pairs of hexadecimal digits, \fI#rrggbb\fP),
 one of the named colors (black, red, green, brown,
-blue, magenta, cyan, orange, brightgreen, yellow, brightblue,
-brightmagenta, brightcyan, white, trueblack, gray, purple,
+blue, magenta, cyan, orange, bright-green, yellow, bright-blue,
+bright-magenta, bright-cyan, white, gray, purple,
 silver, maroon, fuchsia, lime, olive, navy, teal, aqua),
-or one of Windows UI colors (activeborder, activecaption,
-appworkspace, background, btnface, btnshadow, btntext,
+or (for Windows only) one of Windows UI colors (trueblack, activeborder,
+activecaption, appworkspace, background, btnface, btnshadow, btntext,
 captiontext, graytext, greytext, highlight, highlighttext,
 inactiveborder, inactivecaption, menu, menutext, scrollbar,
 window, windowframe, windowtext).
@@ -5114,7 +5138,9 @@ Regular expressions are normally POSIX extended regular expressions. It is
 possible to compile NetHack without regular expression support on a platform
 where there is no regular expression library. While this is not true of any
 modern platform, if your NetHack was built this way, patterns are instead glob
-patterns. This applies to Autopickup exceptions, Message types, Menu colors,
+patterns; regardless, this document refers to both as \(oqregular
+expressions.\(cq
+This applies to Autopickup exceptions, Message types, Menu colors,
 and User sounds.
 .hn 2
 Configuring Autopickup Exceptions
@@ -5464,7 +5490,7 @@ the volume to be set while playing the sound file;
 optional; the index corresponding to a sound file.
 .PE
 .lp ""
-The pattern should be a POSIX extended regular expression.
+The pattern should be a regular expression.
 .pg
 For example:
 .sd

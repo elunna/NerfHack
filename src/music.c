@@ -28,15 +28,16 @@
 
 #include "hack.h"
 
-static void charm_snakes(int);
-static void calm_nymphs(int);
-static void charm_monsters(int);
-static const char *generic_lvl_desc(void);
-static int do_improvisation(struct obj *);
-static char *improvised_notes(boolean *);
+staticfn void awaken_scare(struct monst *, boolean);
+staticfn void charm_snakes(int);
+staticfn void calm_nymphs(int);
+staticfn void charm_monsters(int);
+staticfn const char *generic_lvl_desc(void);
+staticfn int do_improvisation(struct obj *);
+staticfn char *improvised_notes(boolean *);
 
 /* wake up monster, possibly scare it */
-static void
+staticfn void
 awaken_scare(struct monst *mtmp, boolean scary)
 {
     mtmp->msleeping = 0;
@@ -101,7 +102,7 @@ put_monsters_to_sleep(struct monst * caster, int distance)
  * Charm snakes in range.  Note that the snakes are NOT tamed.
  */
 
-static void
+staticfn void
 charm_snakes(int distance)
 {
     struct monst *mtmp;
@@ -135,7 +136,7 @@ charm_snakes(int distance)
  * Calm nymphs in range.
  */
 
-static void
+staticfn void
 calm_nymphs(int distance)
 {
     struct monst *mtmp;
@@ -192,7 +193,7 @@ awaken_soldiers(struct monst* bugler  /* monster that played instrument */)
 }
 
 /* Charm monsters in range.  Note that they may resist the spell. */
-static void
+staticfn void
 charm_monsters(int distance)
 {
     struct monst *mtmp, *mtmp2;
@@ -211,7 +212,7 @@ charm_monsters(int distance)
                one; do that even if mtmp resists in order to behave the same
                as a non-cursed scroll of taming or spell of charm monster */
             if (!resist(mtmp, TOOL_CLASS, 0, NOTELL) || mtmp->isshk)
-                (void) tamedog(mtmp, (struct obj *) 0);
+                (void) tamedog(mtmp, (struct obj *) 0, TRUE);
         }
     }
 }
@@ -471,7 +472,7 @@ do_earthquake(int force)
         }
 }
 
-static const char *
+staticfn const char *
 generic_lvl_desc(void)
 {
     if (Is_astralevel(&u.uz))
@@ -488,7 +489,7 @@ generic_lvl_desc(void)
         return "dungeon";
 }
 
-const char *beats[] = {
+static const char *beats[] = {
     "stepper", "one drop", "slow two", "triple stroke roll",
     "double shuffle", "half-time shuffle", "second line", "train"
 };
@@ -496,14 +497,14 @@ const char *beats[] = {
 /*
  * The player is trying to extract something from his/her instrument.
  */
-static int
+staticfn int
 do_improvisation(struct obj *instr)
 {
     int damage, mode, do_spec = !(Stunned || Confusion);
     struct obj itmp;
     boolean mundane = FALSE, same_old_song = FALSE;
     static char my_goto_song[] = {'C', '\0'},
-                *improvisation SOUNDLIBONLY = my_goto_song;
+                *improvisation = my_goto_song;
 
     itmp = *instr;
     itmp.oextra = (struct oextra *) 0; /* ok on this copy as instr maintains
@@ -729,10 +730,11 @@ do_improvisation(struct obj *instr)
         impossible("What a weird instrument (%d)!", instr->otyp);
         return 0;
     }
+    nhUse(improvisation);
     return 2; /* That takes time */
 }
 
-static char *
+staticfn char *
 improvised_notes(boolean *same_as_last_time)
 {
     static const char notes[7] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };

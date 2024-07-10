@@ -5,16 +5,16 @@
 
 #include "hack.h"
 
-static boolean rm_waslit(void);
-static void mkcavepos(coordxy, coordxy, int, boolean, boolean);
-static void mkcavearea(boolean);
-static boolean pick_can_reach(struct obj *, coordxy, coordxy) NONNULLARG1;
-static int dig(void);
-static void dig_up_grave(coord *);
-static boolean watchman_canseeu(struct monst *) NONNULLARG1;
-static int adj_pit_checks(coord *, char *) NONNULLARG2;
-static void pit_flow(struct trap *, schar);
-static boolean furniture_handled(coordxy, coordxy, boolean);
+staticfn boolean rm_waslit(void);
+staticfn void mkcavepos(coordxy, coordxy, int, boolean, boolean);
+staticfn void mkcavearea(boolean);
+staticfn boolean pick_can_reach(struct obj *, coordxy, coordxy) NONNULLARG1;
+staticfn int dig(void);
+staticfn void dig_up_grave(coord *);
+staticfn boolean watchman_canseeu(struct monst *) NONNULLARG1;
+staticfn int adj_pit_checks(coord *, char *) NONNULLARG2;
+staticfn void pit_flow(struct trap *, schar);
+staticfn boolean furniture_handled(coordxy, coordxy, boolean);
 
 /* Indices returned by dig_typ() */
 enum dig_types {
@@ -26,7 +26,7 @@ enum dig_types {
     DIGTYP_TREE
 };
 
-static boolean
+staticfn boolean
 rm_waslit(void)
 {
     coordxy x, y;
@@ -44,7 +44,7 @@ rm_waslit(void)
  * boulders in the name of a nice effect.  Vision will get fixed up again
  * immediately after the effect is complete.
  */
-static void
+staticfn void
 mkcavepos(coordxy x, coordxy y, int dist, boolean waslit, boolean rockit)
 {
     struct rm *lev;
@@ -84,7 +84,7 @@ mkcavepos(coordxy x, coordxy y, int dist, boolean waslit, boolean rockit)
     feel_newsym(x, y);
 }
 
-static void
+staticfn void
 mkcavearea(boolean rockit)
 {
     int dist;
@@ -137,7 +137,7 @@ mkcavearea(boolean rockit)
 }
 
 /* called when attempting to break a statue or boulder with a pick */
-static boolean
+staticfn boolean
 pick_can_reach(struct obj *pick, coordxy x, coordxy y)
 {
     struct trap *t = t_at(x, y);
@@ -260,7 +260,7 @@ dig_check(struct monst *madeby, boolean verbose, coordxy x, coordxy y)
     return TRUE;
 }
 
-static int
+staticfn int
 dig(void)
 {
     struct rm *lev;
@@ -315,7 +315,7 @@ dig(void)
             Soundeffect(se_bang_weapon_side, 100);
             pline("Bang!  You hit with the broad side of %s!",
                   the(xname(uwep)));
-            wake_nearby();
+            wake_nearby(FALSE);
             break;
         default:
             Your("swing misses its mark.");
@@ -515,14 +515,14 @@ dig(void)
 
         if (!gd.did_dig_msg) {
             You("hit the %s with all your might.", d_target[dig_target]);
-            wake_nearby();
+            wake_nearby(FALSE);
             gd.did_dig_msg = TRUE;
         }
     }
     return 1;
 }
 
-static boolean
+staticfn boolean
 furniture_handled(coordxy x, coordxy y, boolean madeby_u)
 {
     struct rm *lev = &levl[x][y];
@@ -680,7 +680,7 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
         else
             add_damage(x, y, heros_fault ? SHOP_PIT_COST : 0L);
         if (madeby_u)
-            wake_nearby();
+            wake_nearby(FALSE);
         /* in case we're digging down while encased in solid rock
            which is blocking levitation or flight */
         switch_terrain();
@@ -870,7 +870,7 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
     } else if (is_pool_or_lava(dig_x, dig_y)) {
         pline_The("%s sloshes furiously for a moment, then subsides.",
                   hliquid(is_lava(dig_x, dig_y) ? "lava" : "water"));
-        wake_nearby(); /* splashing */
+        wake_nearby(FALSE); /* splashing */
 
     } else if (old_typ == DRAWBRIDGE_DOWN
                || (is_drawbridge_wall(dig_x, dig_y) >= 0)) {
@@ -900,7 +900,7 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
              */
             Soundeffect(se_kadoom_boulder_falls_in, 60);
             pline("KADOOM!  The boulder falls in!");
-            wake_nearby();
+            wake_nearby(FALSE);
             (void) delfloortrap(ttmp);
         }
         delobj(boulder_here);
@@ -969,7 +969,7 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
     return retval;
 }
 
-static void
+staticfn void
 dig_up_grave(coord *cc)
 {
     struct obj *otmp;
@@ -1175,7 +1175,7 @@ use_pick_axe2(struct obj *obj)
                 gn.nomovemsg = "You pull free.";
             } else if (lev->typ == IRONBARS) {
                 pline("Clang!");
-                wake_nearby();
+                wake_nearby(FALSE);
             } else if (IS_WATERWALL(lev->typ)) {
                 pline("Splash!");
             } else if (lev->typ == LAVAWALL) {
@@ -1200,7 +1200,7 @@ use_pick_axe2(struct obj *obj)
                     if (vibrate)
                         losehp(Maybe_Half_Phys(2), "axing a hard object",
                                KILLED_BY);
-                    wake_nearby();
+                    wake_nearby(FALSE);
                 } else {
                     /* using a pick but dig_target is DIGTYPE_UNDIGGABLE
                        and there is at least one boulder or statue or both
@@ -1311,7 +1311,7 @@ use_pick_axe2(struct obj *obj)
     return ECMD_TIME;
 }
 
-static boolean
+staticfn boolean
 watchman_canseeu(struct monst *mtmp)
 {
     if (is_watch(mtmp->data) && mtmp->mcansee && m_canseeu(mtmp)
@@ -1711,7 +1711,7 @@ zap_dig(void)
  * you're zapping a wand of digging laterally while
  * down in the pit.
  */
-static int
+staticfn int
 adj_pit_checks(coord *cc, char *msg)
 {
     int ltyp;
@@ -1795,7 +1795,7 @@ adj_pit_checks(coord *cc, char *msg)
 /*
  * Ensure that all conjoined pits fill up.
  */
-static void
+staticfn void
 pit_flow(struct trap *trap, schar filltyp)
 {
     /*
@@ -1971,8 +1971,8 @@ bury_an_obj(struct obj *otmp, boolean *dealloced)
     obj_extract_self(otmp);
 
     under_ice = is_ice(otmp->ox, otmp->oy);
-    if (otmp->otyp == ROCK && !under_ice) {
-        /* merges into burying material */
+    if ((otmp->otyp == ROCK && !under_ice) || otmp->otyp == BOULDER) {
+        /* merges into burying material; boulder removal is for #wizbury */
         if (dealloced)
             *dealloced = TRUE;
         obfree(otmp, (struct obj *) 0);
@@ -1984,7 +1984,7 @@ bury_an_obj(struct obj *otmp, boolean *dealloced)
      */
     if (otmp->otyp == CORPSE) {
         ; /* should cancel timer if under_ice */
-    } else if ((under_ice ? otmp->oclass == POTION_CLASS : is_organic(otmp))
+    } else if ((under_ice ? (otmp->oclass == POTION_CLASS) : is_organic(otmp))
                && !obj_resists(otmp, 5, 95)) {
         (void) start_timer((under_ice ? 0L : 250L) + (long) rnd(250),
                            TIMER_OBJECT, ROT_ORGANIC, obj_to_any(otmp));
@@ -2241,14 +2241,45 @@ struct obj *otmp;
 int
 wiz_debug_cmd_bury(void)
 {
-    int x, y;
+    struct obj *otmp;
+    int x, y, before = 0, after = 0, diff;
 
     for (x = u.ux - 1; x <= u.ux + 1; x++)
-        for (y = u.uy - 1; y <= u.uy + 1; y++)
-            if (isok(x, y))
-                bury_objs(x, y);
+        for (y = u.uy - 1; y <= u.uy + 1; y++) {
+            if (!isok(x, y))
+                continue;
+            for (otmp = gl.level.objects[x][y]; otmp; otmp = otmp->nexthere)
+                ++before;
+
+            bury_objs(x, y);
+        }
+
+    if (before == 0) { /* there was nothing here */
+        pline("No objects here or adjacent to bury.");
+    } else {
+        for (x = u.ux - 1; x <= u.ux + 1; x++)
+            for (y = u.uy - 1; y <= u.uy + 1; y++) {
+                if (!isok(x, y))
+                    continue;
+                for (otmp = gl.level.objects[x][y]; otmp; otmp = otmp->nexthere)
+                    ++after;
+            }
+        diff = before - after;
+        /* will be 0 if only unburiable objects (The Amulet, &c) are present;
+           if uball got buried, uchain went away--count that as being buried */
+        if (diff == 0)
+            pline("No objects buried.");
+        else
+            pline("%d object%s buried.", diff, plur(diff));
+    }
     return ECMD_OK;
 }
 #endif /* DEBUG */
+
+#undef BY_YOU
+#undef BY_OBJECT
+/* for 'onefile' testing, leave STRIDENT defined so that the other instance
+   of it in pray.c will trigger a complaint if someone changes its value */
+/*#undef STRIDENT*/
 
 /*dig.c*/

@@ -1,4 +1,4 @@
-/* NetHack 3.7	cmd.c	$NHDT-Date: 1710029089 2024/03/10 00:04:49 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.712 $ */
+/* NetHack 3.7	cmd.c	$NHDT-Date: 1717967336 2024/06/09 21:08:56 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.729 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -94,63 +94,69 @@ extern int dozap(void);              /**/
 extern int doorganize(void);         /**/
 #endif /* DUMB */
 
-static int dosuspend_core(void);
-static int dosh_core(void);
-static int doherecmdmenu(void);
-static int dotherecmdmenu(void);
-static int doprev_message(void);
-static int timed_occupation(void);
-static boolean can_do_extcmd(const struct ext_func_tab *);
-static int dotravel(void);
-static int dotravel_target(void);
-static int doclicklook(void);
-static int domouseaction(void);
-static int doterrain(void);
-static boolean u_have_seen_whole_selection(struct selectionvar *);
-static boolean u_have_seen_bounds_selection(struct selectionvar *);
-static boolean u_can_see_whole_selection(struct selectionvar *);
-static int dolookaround_floodfill_findroom(coordxy, coordxy);
-static void lookaround_known_room(coordxy, coordxy);
+staticfn int dosuspend_core(void);
+staticfn int dosh_core(void);
+staticfn int doherecmdmenu(void);
+staticfn int dotherecmdmenu(void);
+staticfn int doprev_message(void);
+staticfn int timed_occupation(void);
+staticfn boolean can_do_extcmd(const struct ext_func_tab *);
+staticfn int dotravel(void);
+staticfn int dotravel_target(void);
+staticfn int doclicklook(void);
+staticfn boolean yn_menuable_resp(const char *);
+staticfn void yn_func_menu_opt(winid, char, const char *, char);
+staticfn boolean yn_function_menu(const char *, const char *, char, char *);
+staticfn int domouseaction(void);
+staticfn int doterrain(void);
+staticfn boolean u_have_seen_whole_selection(struct selectionvar *);
+staticfn boolean u_have_seen_bounds_selection(struct selectionvar *);
+staticfn boolean u_can_see_whole_selection(struct selectionvar *);
+staticfn int dolookaround_floodfill_findroom(coordxy, coordxy);
+staticfn void lookaround_known_room(coordxy, coordxy);
 
 #if defined(__BORLANDC__) && !defined(_WIN32)
 extern void show_borlandc_stats(winid);
 #endif
-static boolean accept_menu_prefix(const struct ext_func_tab *);
-static void reset_cmd_vars(boolean);
+staticfn boolean accept_menu_prefix(const struct ext_func_tab *);
+staticfn void reset_cmd_vars(boolean);
 
-static void mcmd_addmenu(winid, int, const char *);
-static int there_cmd_menu_self(winid, coordxy, coordxy, int *);
-static int there_cmd_menu_next2u(winid, coordxy, coordxy, int, int *);
-static int there_cmd_menu_far(winid, coordxy, coordxy, int);
-static int there_cmd_menu_common(winid, coordxy, coordxy, int, int *);
-static void act_on_act(int, coordxy, coordxy);
-static char there_cmd_menu(coordxy, coordxy, int);
-static char here_cmd_menu(void);
+staticfn void mcmd_addmenu(winid, int, const char *);
+staticfn int there_cmd_menu_self(winid, coordxy, coordxy, int *);
+staticfn int there_cmd_menu_next2u(winid, coordxy, coordxy, int, int *);
+staticfn int there_cmd_menu_far(winid, coordxy, coordxy, int);
+staticfn int there_cmd_menu_common(winid, coordxy, coordxy, int, int *);
+staticfn void act_on_act(int, coordxy, coordxy);
+staticfn char there_cmd_menu(coordxy, coordxy, int);
+staticfn char here_cmd_menu(void);
 
-static char readchar_core(coordxy *, coordxy *, int *);
-static int parse(void);
-static void show_direction_keys(winid, char, boolean);
-static boolean help_dir(char, uchar, const char *);
+staticfn char readchar_core(coordxy *, coordxy *, int *);
+staticfn int parse(void);
+staticfn void show_direction_keys(winid, char, boolean);
+staticfn boolean help_dir(char, uchar, const char *);
 
-static void handler_rebind_keys_add(boolean);
-static boolean bind_key_fn(uchar, int (*)(void));
-static void commands_init(void);
-static boolean keylist_func_has_key(const struct ext_func_tab *, boolean *);
-static int keylist_putcmds(winid, boolean, int, int, boolean *);
-static const char *spkey_name(int);
+staticfn void handler_rebind_keys_add(boolean);
+staticfn boolean bind_key_fn(uchar, int (*)(void));
+staticfn void commands_init(void);
+staticfn boolean keylist_func_has_key(const struct ext_func_tab *, boolean *);
+staticfn int keylist_putcmds(winid, boolean, int, int, boolean *);
+staticfn const char *spkey_name(int);
 
-static int (*timed_occ_fn)(void);
-static char *doc_extcmd_flagstr(winid, const struct ext_func_tab *);
+staticfn int (*timed_occ_fn)(void);
+staticfn char *doc_extcmd_flagstr(winid, const struct ext_func_tab *);
+staticfn int dummyfunction(void);
 
 static const char *readchar_queue = "";
 
-/* for rejecting attempts to use wizard mode commands */
+/* for rejecting attempts to use wizard mode commands
+ * Also used in wizcmds.c  */
 const char unavailcmd[] = "Unavailable command '%s'.";
+
 /* for rejecting #if !SHELL, !SUSPEND */
 static const char cmdnotavail[] = "'%s' command not available.";
 
 /* the #prevmsg command */
-static int
+staticfn int
 doprev_message(void)
 {
     (void) nh_doprev_message();
@@ -158,7 +164,7 @@ doprev_message(void)
 }
 
 /* Count down by decrementing multi */
-static int
+staticfn int
 timed_occupation(void)
 {
     (*timed_occ_fn)();
@@ -437,7 +443,7 @@ extcmd_initiator(void)
     return gc.Cmd.extcmd_char;
 }
 
-static boolean
+staticfn boolean
 can_do_extcmd(const struct ext_func_tab *extcmd)
 {
     int ecflags = extcmd->flags;
@@ -498,7 +504,7 @@ doextcmd(void)
 }
 
 /* format extended command flags for display */
-static char *
+staticfn char *
 doc_extcmd_flagstr(
     winid menuwin,
     const struct ext_func_tab *efp) /* if Null, add a footnote to the menu */
@@ -872,7 +878,7 @@ domonability(void)
     char c = '\0';
 
     if (might_hide && webmaker(uptr)) {
-        c = yn_function("Hide [h] or spin a web [s]?", "hsq", 'q', TRUE);
+        c = yn_function("Hide [h] or spin a web [s]?", hidespinchars, 'q', TRUE);
         if (c == 'q' || c == '\033')
             return ECMD_OK;
     }
@@ -1009,6 +1015,7 @@ makemap_prepost(boolean pre, boolean wiztower)
         set_uinwater(0); /* u.uinwater = 0 */
         u.uundetected = 0; /* not hidden, even if means are available */
         dmonsfree(); /* purge dead monsters from 'fmon' */
+        dobjsfree();
 
         /* discard current level; "saving" is used to release dynamic data */
         zero_nhfile(&tmpnhfp);  /* also sets fd to -1 as desired */
@@ -1045,7 +1052,8 @@ makemap_prepost(boolean pre, boolean wiztower)
 }
 
 /* temporary? hack, since level type codes aren't the same as screen
-   symbols and only the latter have easily accessible descriptions */
+   symbols and only the latter have easily accessible descriptions.
+   Also used by wizcmds.c */
 const char *levltyp[MAX_TYPE + 2] = {
     "stone", "vertical wall", "horizontal wall", "top-left corner wall",
     "top-right corner wall", "bottom-left corner wall",
@@ -1071,7 +1079,7 @@ levltyp_to_name(int typ)
 }
 
 /* #terrain command -- show known map, inspired by crawl's '|' command */
-static int
+staticfn int
 doterrain(void)
 {
     winid men;
@@ -1168,7 +1176,7 @@ doterrain(void)
 }
 
 /* has hero seen all locations in selection? */
-static boolean
+staticfn boolean
 u_have_seen_whole_selection(struct selectionvar *sel)
 {
     coordxy x, y;
@@ -1186,7 +1194,7 @@ u_have_seen_whole_selection(struct selectionvar *sel)
 }
 
 /* has hero seen all location of the rectangular outline in the selection */
-static boolean
+staticfn boolean
 u_have_seen_bounds_selection(struct selectionvar *sel)
 {
     coordxy x, y;
@@ -1219,7 +1227,7 @@ u_have_seen_bounds_selection(struct selectionvar *sel)
 }
 
 /* can hero currently see all locations in the selection */
-static boolean
+staticfn boolean
 u_can_see_whole_selection(struct selectionvar *sel)
 {
     coordxy x, y;
@@ -1236,7 +1244,7 @@ u_can_see_whole_selection(struct selectionvar *sel)
 }
 
 /* selection_floofill callback to get all locations in a room */
-static int
+staticfn int
 dolookaround_floodfill_findroom(coordxy x, coordxy y)
 {
     schar typ = levl[x][y].typ;
@@ -1249,7 +1257,7 @@ dolookaround_floodfill_findroom(coordxy x, coordxy y)
 }
 
 /* describe the room at x,y */
-static void
+staticfn void
 lookaround_known_room(coordxy x, coordxy y)
 {
     struct selectionvar *sel = selection_new();
@@ -1316,11 +1324,18 @@ dolookaround(void)
 
     iflags.getloc_filter = GFILTER_VIEW;
     for (y = 0; y < ROWNO; y++)
-        for (x = 1; x < COLNO; x++)
+        for (x = 1; x < COLNO; x++) {
+            int glyph, mapsym;
+            boolean iscorr = (corr_next2u
+                              && (glyph = glyph_at(x, y)) >= 0
+                              && glyph_is_cmap(glyph)
+                              && ((mapsym = glyph_to_cmap(glyph)) == S_corr
+                                   || mapsym == S_litcorr));
+
             if (!u_at(x, y)
-                && (gather_locs_interesting(x, y, GLOC_INTERESTING) ||
-                    (corr_next2u && (glyph_at(x,y) == cmap_to_glyph(S_corr)
-                                     || glyph_at(x,y) == cmap_to_glyph(S_litcorr))))) {
+                && (gather_locs_interesting(x, y, GLOC_INTERESTING)
+                    /* note: GLOC_INTERESTING catches S_engrcorr */
+                    || iscorr)) {
                 char buf[BUFSZ];
                 coord cc;
                 int sym = 0;
@@ -1330,6 +1345,7 @@ dolookaround(void)
                 do_screen_description(cc, TRUE, sym, buf, &firstmatch, NULL);
                 pline_xy(x, y, "%s.", firstmatch);
             }
+        }
 
     iflags.getloc_filter = tmp_getloc_filter;
     a11y.accessiblemsg = tmp_accessiblemsg;
@@ -1657,7 +1673,7 @@ struct ext_func_tab extcmdlist[] = {
     { '>',    "down", "go down a staircase",
               /* allows 'm' prefix (for move without autopickup) but not the
                  g/G/F movement modifiers; not flagged as MOVEMENTCMD because
-                 that would would suppress it from dokeylist output */
+                 that would suppress it from dokeylist output */
               dodown, CMD_M_PREFIX, NULL },
     { 'd',    "drop", "drop an item",
               dodrop, 0, NULL },
@@ -1716,7 +1732,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('l'), "loot", "loot a box on the floor",
               doloot, AUTOCOMPLETE | CMD_M_PREFIX, NULL },
     { '\0',   "migratemons",
-#ifdef DEBUG_MIGRATING_MONSTERS
+#ifdef DEBUG_MIGRATING_MONS
               "show migrating monsters and migrate N random ones",
 #else
               "show migrating monsters",
@@ -1764,7 +1780,7 @@ struct ext_func_tab extcmdlist[] = {
               doputon, 0, NULL },
     { 'q',    "quaff", "quaff (drink) something",
               dodrink, CMD_M_PREFIX, NULL },
-    { '\0', "quit", "exit without saving current game",
+    { '\0',   "quit", "exit without saving current game",
               done2, IFBURIED | AUTOCOMPLETE | GENERALCMD | NOFUZZERCMD,
               NULL },
     { 'Q',    "quiver", "select ammunition for quiver",
@@ -1813,7 +1829,8 @@ struct ext_func_tab extcmdlist[] = {
               doprtool, IFBURIED | CMD_M_PREFIX, NULL },
     { WEAPON_SYM, "seeweapon", "show the weapon currently wielded",
               doprwep, IFBURIED | CMD_M_PREFIX, NULL },
-    { '!', "shell", "leave game to enter a sub-shell ('exit' to come back)",
+    { '!',    "shell",
+              "leave game to enter a sub-shell ('exit' to come back)",
               dosh_core, (IFBURIED | GENERALCMD | NOFUZZERCMD
 #ifndef SHELL
                         | CMD_NOT_AVAILABLE
@@ -1903,6 +1920,8 @@ struct ext_func_tab extcmdlist[] = {
               dowizcast, IFBURIED | WIZMODECMD, NULL },
     { '\0',   "wizcrown", "become crowned",
               wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
+    { '\0',   "wizcustom", "show customized glyphs",
+              wiz_custom, IFBURIED | WIZMODECMD | NOFUZZERCMD, NULL },
     { C('e'), "wizdetect", "reveal hidden things within a small radius",
               wiz_detect, IFBURIED | WIZMODECMD, NULL },
 #if (NH_DEVEL_STATUS != NH_STATUS_RELEASED) || defined(DEBUG)
@@ -1954,56 +1973,56 @@ struct ext_func_tab extcmdlist[] = {
               dozap, 0, NULL },
     /* movement commands will be bound by reset_commands() */
     /* move or attack; accept m/g/G/F prefixes */
-    { '\0', "movewest", "move west (screen left)",
-            do_move_west, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
-    { '\0', "movenorthwest", "move northwest (screen upper left)",
-            do_move_northwest, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
-    { '\0', "movenorth", "move north (screen up)",
-            do_move_north, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
-    { '\0', "movenortheast", "move northeast (screen upper right)",
-            do_move_northeast, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
-    { '\0', "moveeast", "move east (screen right)",
-            do_move_east, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
-    { '\0', "movesoutheast", "move southeast (screen lower right)",
-            do_move_southeast, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
-    { '\0', "movesouth", "move south (screen down)",
-            do_move_south, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
-    { '\0', "movesouthwest", "move southwest (screen lower left)",
-            do_move_southwest, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
+    { '\0',   "movewest", "move west (screen left)",
+              do_move_west, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
+    { '\0',   "movenorthwest", "move northwest (screen upper left)",
+              do_move_northwest, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
+    { '\0',   "movenorth", "move north (screen up)",
+              do_move_north, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
+    { '\0',   "movenortheast", "move northeast (screen upper right)",
+              do_move_northeast, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
+    { '\0',   "moveeast", "move east (screen right)",
+              do_move_east, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
+    { '\0',   "movesoutheast", "move southeast (screen lower right)",
+              do_move_southeast, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
+    { '\0',   "movesouth", "move south (screen down)",
+              do_move_south, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
+    { '\0',   "movesouthwest", "move southwest (screen lower left)",
+              do_move_southwest, MOVEMENTCMD | CMD_MOVE_PREFIXES, NULL },
     /* rush; accept m prefix but not g/G/F */
-    { '\0', "rushwest", "rush west (screen left)",
-            do_rush_west, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "rushnorthwest", "rush northwest (screen upper left)",
-            do_rush_northwest, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "rushnorth", "rush north (screen up)",
-            do_rush_north, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "rushnortheast", "rush northeast (screen upper right)",
-            do_rush_northeast, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "rusheast", "rush east (screen right)",
-            do_rush_east, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "rushsoutheast", "rush southeast (screen lower right)",
-            do_rush_southeast, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "rushsouth", "rush south (screen down)",
-            do_rush_south, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "rushsouthwest", "rush southwest (screen lower left)",
-            do_rush_southwest, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "rushwest", "rush west (screen left)",
+              do_rush_west, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "rushnorthwest", "rush northwest (screen upper left)",
+              do_rush_northwest, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "rushnorth", "rush north (screen up)",
+              do_rush_north, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "rushnortheast", "rush northeast (screen upper right)",
+              do_rush_northeast, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "rusheast", "rush east (screen right)",
+              do_rush_east, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "rushsoutheast", "rush southeast (screen lower right)",
+              do_rush_southeast, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "rushsouth", "rush south (screen down)",
+              do_rush_south, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "rushsouthwest", "rush southwest (screen lower left)",
+              do_rush_southwest, MOVEMENTCMD | CMD_M_PREFIX, NULL },
     /* run; accept m prefix but not g/G/F */
-    { '\0', "runwest", "run west (screen left)",
-            do_run_west, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "runnorthwest", "run northwest (screen upper left)",
-            do_run_northwest, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "runnorth", "run north (screen up)",
-            do_run_north, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "runnortheast", "run northeast (screen upper right)",
-            do_run_northeast, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "runeast", "run east (screen right)",
-            do_run_east, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "runsoutheast", "run southeast (screen lower right)",
-            do_run_southeast, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "runsouth", "run south (screen down)",
-            do_run_south, MOVEMENTCMD | CMD_M_PREFIX, NULL },
-    { '\0', "runsouthwest", "run southwest (screen lower left)",
-            do_run_southwest, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "runwest", "run west (screen left)",
+              do_run_west, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "runnorthwest", "run northwest (screen upper left)",
+              do_run_northwest, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "runnorth", "run north (screen up)",
+              do_run_north, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "runnortheast", "run northeast (screen upper right)",
+              do_run_northeast, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "runeast", "run east (screen right)",
+              do_run_east, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "runsoutheast", "run southeast (screen lower right)",
+              do_run_southeast, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "runsouth", "run south (screen down)",
+              do_run_south, MOVEMENTCMD | CMD_M_PREFIX, NULL },
+    { '\0',   "runsouthwest", "run southwest (screen lower left)",
+              do_run_southwest, MOVEMENTCMD | CMD_M_PREFIX, NULL },
 
     /* internal commands: only used by game core, not available for user */
     { '\0', "clicklook", NULL, doclicklook, INTERNALCMD | MOUSECMD, NULL },
@@ -2042,7 +2061,7 @@ static const struct {
     { 0, (const char *) 0, FALSE }
 };
 
-int extcmdlist_length = SIZE(extcmdlist) - 1;
+static int extcmdlist_length = SIZE(extcmdlist) - 1;
 
 /* get entry i in the extended commands list. for windowport use. */
 struct ext_func_tab *
@@ -2061,7 +2080,8 @@ count_bind_keys(void)
     int i;
 
     for (i = 0; i < extcmdlist_length; i++)
-        if (extcmdlist[i].key && gc.Cmd.commands[extcmdlist[i].key] != &extcmdlist[i])
+        if (extcmdlist[i].key
+            && gc.Cmd.commands[extcmdlist[i].key] != &extcmdlist[i])
             nbinds++;
     return nbinds;
 }
@@ -2098,7 +2118,7 @@ get_changed_key_binds(strbuf_t *sbuf)
 }
 
 /* interactive key binding */
-static void
+staticfn void
 handler_rebind_keys_add(boolean keyfirst)
 {
     struct ext_func_tab *ec;
@@ -2350,7 +2370,8 @@ bind_mousebtn(int btn, const char *command)
     struct ext_func_tab *extcmd;
 
     if (btn < 1 || btn > NUM_MOUSE_BUTTONS) {
-        config_error_add("Wrong mouse button, valid are 1-%i", NUM_MOUSE_BUTTONS);
+        config_error_add("Wrong mouse button, valid are 1-%i",
+                         NUM_MOUSE_BUTTONS);
         return FALSE;
     }
     btn--;
@@ -2413,7 +2434,7 @@ bind_key(uchar key, const char *command)
 }
 
 /* bind key by ext cmd function */
-static boolean
+staticfn boolean
 bind_key_fn(uchar key, int (*fn)(void))
 {
     struct ext_func_tab *extcmd;
@@ -2431,7 +2452,7 @@ bind_key_fn(uchar key, int (*fn)(void))
 }
 
 /* initialize all keyboard commands */
-static void
+staticfn void
 commands_init(void)
 {
     struct ext_func_tab *extcmd;
@@ -2466,7 +2487,7 @@ commands_init(void)
 #endif
 }
 
-static boolean
+staticfn boolean
 keylist_func_has_key(const struct ext_func_tab *extcmd,
                      boolean *skip_keys_used) /* boolean keys_used[256] */
 {
@@ -2482,7 +2503,7 @@ keylist_func_has_key(const struct ext_func_tab *extcmd,
     return FALSE;
 }
 
-static int
+staticfn int
 keylist_putcmds(winid datawin, boolean docount,
                 int incl_flags, int excl_flags,
                 boolean *keys_used) /* boolean keys_used[256] */
@@ -2879,7 +2900,7 @@ bind_specialkey(uchar key, const char *command)
     return FALSE;
 }
 
-static const char *
+staticfn const char *
 spkey_name(int nhkf)
 {
     const char *name = 0;
@@ -2946,6 +2967,8 @@ parseautocomplete(char *autocomplete, boolean condition)
     /* find and modify the extended command */
     for (efp = extcmdlist; efp->ef_txt; efp++) {
         if (!strcmp(autocomplete, efp->ef_txt)) {
+            if (condition == ((efp->flags & AUTOCOMPLETE) ? FALSE : TRUE))
+                efp->flags |= AUTOCOMP_ADJ;
             if (condition)
                 efp->flags |= AUTOCOMPLETE;
             else
@@ -2958,6 +2981,22 @@ parseautocomplete(char *autocomplete, boolean condition)
     raw_printf("Bad autocomplete: invalid extended command '%s'.",
                autocomplete);
     wait_synch();
+}
+
+/* add changed autocompletions to the string buffer in config file format */
+void
+all_options_autocomplete(strbuf_t *sbuf)
+{
+    struct ext_func_tab *efp;
+    char buf[BUFSZ];
+
+    for (efp = extcmdlist; efp->ef_txt; efp++)
+        if ((efp->flags & AUTOCOMP_ADJ) != 0) {
+            Sprintf(buf, "AUTOCOMPLETE=%s%s\n",
+                    (efp->flags & AUTOCOMPLETE) ? "" : "!",
+                    efp->ef_txt);
+            strbuf_append(sbuf, buf);
+        }
 }
 
 /* save&clear the mouse button actions, or restore the saved ones */
@@ -3061,13 +3100,13 @@ reset_commands(boolean initial)
             /* phone_layout has been toggled */
             for (i = 0; i < 3; i++) {
                 c = '1' + i;             /* 1,2,3 <-> 7,8,9 */
-                cmdtmp = gc.Cmd.commands[c];              /* tmp = [1] */
+                cmdtmp = gc.Cmd.commands[c];                 /* tmp = [1] */
                 gc.Cmd.commands[c] = gc.Cmd.commands[c + 6]; /* [1] = [7] */
-                gc.Cmd.commands[c + 6] = cmdtmp;          /* [7] = tmp */
+                gc.Cmd.commands[c + 6] = cmdtmp;             /* [7] = tmp */
                 c = (M('1') & 0xff) + i; /* M-1,M-2,M-3 <-> M-7,M-8,M-9 */
-                cmdtmp = gc.Cmd.commands[c];              /* tmp = [M-1] */
-                gc.Cmd.commands[c] = gc.Cmd.commands[c + 6]; /* [M-1] = [M-7] */
-                gc.Cmd.commands[c + 6] = cmdtmp;          /* [M-7] = tmp */
+                cmdtmp = gc.Cmd.commands[c];                 /* tmp = [M-1] */
+                gc.Cmd.commands[c] = gc.Cmd.commands[c + 6]; /* [M-1]=[M-7] */
+                gc.Cmd.commands[c + 6] = cmdtmp;             /* [M-7] = tmp */
             }
         }
     } /*?initial*/
@@ -3147,7 +3186,7 @@ update_rest_on_space(void)
 /* commands which accept 'm' prefix to request menu operation or other
    alternate behavior; it's also overloaded for move-without-autopickup;
    there is no overlap between the two groups of commands */
-static boolean
+staticfn boolean
 accept_menu_prefix(const struct ext_func_tab *ec)
 {
     return (ec && ((ec->flags & CMD_M_PREFIX) != 0));
@@ -3235,7 +3274,7 @@ rnd_extcmd_idx(void)
     return rn2(extcmdlist_length + 1) - 1;
 }
 
-static void
+staticfn void
 reset_cmd_vars(boolean reset_cmdq)
 {
     gc.context.run = 0;
@@ -3262,6 +3301,7 @@ rhack(int key)
     struct _cmd_queue cq, *cmdq = NULL;
     const struct ext_func_tab *cmdq_ec = 0, *prefix_seen = 0;
     boolean was_m_prefix = FALSE;
+    int (*func)(void) = dummyfunction;
 
     iflags.menu_requested = FALSE;
     gc.context.nopick = 0;
@@ -3290,7 +3330,12 @@ rhack(int key)
     /* if there's no command, there's nothing to do except reset */
     if (!key || key == (char) 0377
         || key == gc.Cmd.spkeys[NHKF_ESC]) {
-        if (!key || key != gc.Cmd.spkeys[NHKF_ESC])
+        if (key == gc.Cmd.spkeys[NHKF_ESC])
+            /* don't perform next sanity check if player typed ESC for
+               the current command, similar to handling for CMD_INSANE
+               flag below (^P and ^R) */
+            iflags.sanity_no_check = iflags.sanity_check;
+        else
             nhbell();
         reset_cmd_vars(TRUE);
         return;
@@ -3300,7 +3345,7 @@ rhack(int key)
     gc.context.travel = gc.context.travel1 = 0;
     {
         const struct ext_func_tab *tlist;
-        int res, (*func)(void);
+        int res;
 
  do_cmdq_extcmd:
         if (cmdq_ec)
@@ -3399,8 +3444,8 @@ rhack(int key)
                            && gd.domove_attempting) {
                     /* not a movement command, but a move prefix earlier? */
                     ; /* just do nothing */
-                } else if (((gd.domove_attempting & (DOMOVE_RUSH | DOMOVE_WALK))
-                            != 0L)
+                } else if (((gd.domove_attempting
+                             & (DOMOVE_RUSH | DOMOVE_WALK)) != 0L)
                            && !gc.context.travel && !dxdy_moveok()) {
                     /* trying to move diagonally as a grid bug */
                     You_cant("get there from here...");
@@ -3441,8 +3486,14 @@ rhack(int key)
             }
             /* reset_cmd_vars() sets context.move to False so we might
                need to change it [back] to True */
-            if ((res & ECMD_TIME) != 0)
+            if ((res & ECMD_TIME) != 0) {
                 gc.context.move = TRUE;
+                if (func != dokick) {
+                    /* hero did something else than kicking a location;
+                       reset the location, so pets don't avoid it */
+                    gk.kickedloc.x = 0, gk.kickedloc.y = 0;
+                }
+            }
             return;
         }
         /* if we reach here, cmd wasn't found in cmdlist[] */
@@ -3713,7 +3764,7 @@ getdir(const char *s)
     return 1;
 }
 
-static void
+staticfn void
 show_direction_keys(
     winid win, /* should specify a window which is using a fixed-width font */
     char centerchar, /* '.' or '@' or ' ' */
@@ -3762,7 +3813,7 @@ show_direction_keys(
 /* explain choices if player has asked for getdir() help or has given
    an invalid direction after a prefix key ('F', 'g', 'm', &c), which
    might be bogus but could be up, down, or self when not applicable */
-static boolean
+staticfn boolean
 help_dir(
     char sym,
     uchar spkey, /* actual key; either prefix or ESC */
@@ -3925,7 +3976,7 @@ isok(coordxy x, coordxy y)
 }
 
 /* #herecmdmenu command */
-static int
+staticfn int
 doherecmdmenu(void)
 {
     char ch = here_cmd_menu();
@@ -3934,7 +3985,7 @@ doherecmdmenu(void)
 }
 
 /* #therecmdmenu command, a way to test there_cmd_menu without mouse */
-static int
+staticfn int
 dotherecmdmenu(void)
 {
     char ch;
@@ -4012,7 +4063,7 @@ enum menucmd {
     MCMD_TRAVEL,
 };
 
-static void
+staticfn void
 mcmd_addmenu(winid win, int act, const char *txt)
 {
     anything any;
@@ -4026,7 +4077,7 @@ mcmd_addmenu(winid win, int act, const char *txt)
 }
 
 /* command menu entries when targeting self */
-static int
+staticfn int
 there_cmd_menu_self(winid win, coordxy x, coordxy y, int *act UNUSED)
 {
     int K = 0;
@@ -4117,7 +4168,7 @@ there_cmd_menu_self(winid win, coordxy x, coordxy y, int *act UNUSED)
 }
 
 /* add entries to there_cmd_menu, when x,y is next to hero */
-static int
+staticfn int
 there_cmd_menu_next2u(
     winid win,
     coordxy x, coordxy y,
@@ -4217,7 +4268,7 @@ there_cmd_menu_next2u(
     return K;
 }
 
-static int
+staticfn int
 there_cmd_menu_far(winid win, coordxy x, coordxy y, int mod)
 {
     int K = 0;
@@ -4232,7 +4283,7 @@ there_cmd_menu_far(winid win, coordxy x, coordxy y, int mod)
     return K;
 }
 
-static int
+staticfn int
 there_cmd_menu_common(
     winid win,
     coordxy x, coordxy y,
@@ -4251,7 +4302,7 @@ there_cmd_menu_common(
 }
 
 /* queue up command(s) to perform #therecmdmenu action */
-static void
+staticfn void
 act_on_act(
     int act,                /* action */
     coordxy dx, coordxy dy) /* delta to adjacent spot (farther sometimes) */
@@ -4436,7 +4487,7 @@ act_on_act(
 
 /* offer choice of actions to perform at adjacent location <x,y>;
    a few choices can be farther away */
-static char
+staticfn char
 there_cmd_menu(coordxy x, coordxy y, int mod)
 {
     winid win;
@@ -4492,7 +4543,7 @@ there_cmd_menu(coordxy x, coordxy y, int mod)
     return ch;
 }
 
-static char
+staticfn char
 here_cmd_menu(void)
 {
     there_cmd_menu(u.ux, u.uy, CLICK_1);
@@ -4509,7 +4560,7 @@ click_to_cmd(coordxy x, coordxy y, int mod)
         cmdq_add_ec(CQ_CANNED, gc.Cmd.mousebtn[mod-1]->ef_funct);
 }
 
-static int
+staticfn int
 domouseaction(void)
 {
     coordxy x, y;
@@ -4642,7 +4693,10 @@ get_count(
         }
 
         if (digit(key)) {
-            cnt = 10L * cnt + (long) (key - '0');
+            long dgt = (long) (key - '0');
+
+            /* cnt = (10 * cnt) + (key - '0'); */
+            cnt = AppendLongDigit(cnt, dgt);
             if (cnt < 0L)
                 cnt = 0L;
             else if (maxcount > 0L && cnt > maxcount)
@@ -4686,8 +4740,10 @@ get_count(
     return key;
 }
 
-
-static int
+/* main command input routine when not repeating and not executing canned
+   commands; input comes via get_count() which collects repeat count if one
+   is present and returns next non-digit to us */
+staticfn int
 parse(void)
 {
     int foo;
@@ -4698,13 +4754,21 @@ parse(void)
     flush_screen(1); /* Flush screen buffer. Put the cursor on the hero. */
 
     /* affects readchar() behavior for ESC iff 'altmeta' option is On;
-       reset to 0 by readchar() */
+       is always reset to otherInp by readchar() */
     gp.program_state.input_state = commandInp;
+
     if (!gc.Cmd.num_pad || (foo = readchar()) == gc.Cmd.spkeys[NHKF_COUNT]) {
+        /* if 'num_pad' is On then readchar() has just reset input_state;
+           set it back to commandInp, so that get_count() supports 'altmeta';
+           otherwise "n<count>ESC<character>" becomes "n<count>ESC" (with
+           <character> not read from keyboard yet) rather than intended count
+           and meta keystroke "n<count>M-<character>" */
+        gp.program_state.input_state = commandInp;
+
         foo = get_count((char *) 0, '\0', LARGEST_INT,
                         &gc.command_count, GC_NOFLAGS);
-        gl.last_command_count = gc.command_count;
     }
+    gl.last_command_count = gc.command_count;
 
     if (foo == gc.Cmd.spkeys[NHKF_ESC]) { /* esc cancels count (TH) */
         clear_nhwindow(WIN_MESSAGE);
@@ -4791,7 +4855,7 @@ end_of_input(void)
 }
 #endif /* HANGUPHANDLING */
 
-static char
+staticfn char
 readchar_core(coordxy *x, coordxy *y, int *mod)
 {
     int sym;
@@ -4955,7 +5019,7 @@ do_stair_travel(char up_or_down)
 }
 
 /* '_' command, #travel, via keyboard rather than mouse click */
-static int
+staticfn int
 dotravel(void)
 {
     coord cc;
@@ -5006,7 +5070,7 @@ dotravel(void)
 }
 
 /* #retravel, travel to iflags.travelcc, which must be set */
-static int
+staticfn int
 dotravel_target(void)
 {
     if (!isok(iflags.travelcc.x, iflags.travelcc.y)) {
@@ -5039,7 +5103,7 @@ dotravel_target(void)
 }
 
 /* mouse click look command */
-static int
+staticfn int
 doclicklook(void)
 {
     if (!isok(gc.clicklook_cc.x, gc.clicklook_cc.y))
@@ -5049,6 +5113,79 @@ doclicklook(void)
     auto_describe(gc.clicklook_cc.x, gc.clicklook_cc.y);
 
     return ECMD_OK;
+}
+
+/* can we use menu entries to respond to a query? */
+staticfn boolean
+yn_menuable_resp(const char *resp)
+{
+    return iflags.query_menu && iflags.window_inited
+        && (resp == ynchars || resp == ynqchars || resp == ynaqchars
+            || resp == rightleftchars || resp == hidespinchars);
+}
+
+staticfn void
+yn_func_menu_opt(winid win, char key, const char *text, char def)
+{
+    anything any;
+
+    any = cg.zeroany;
+    any.a_char = key;
+    add_menu(win, &nul_glyphinfo, &any, key, 0,
+             ATR_NONE, NO_COLOR, text,
+             (def == key) ? MENU_ITEMFLAGS_SELECTED
+                          : MENU_ITEMFLAGS_NONE);
+
+}
+
+/* use a menu to ask a specific response to a query.
+   returns TRUE if the menu was shown to the user.
+   puts the response char into res. */
+staticfn boolean
+yn_function_menu(
+    const char *query,
+    const char *resp,
+    char def,
+    char *res)
+{
+    if (yn_menuable_resp(resp)) {
+        winid win = create_nhwindow(NHW_MENU);
+        menu_item *sel;
+        int n;
+        char keybuf[QBUFSZ];
+
+        start_menu(win, MENU_BEHAVE_STANDARD);
+        if (resp == rightleftchars) {
+            yn_func_menu_opt(win, 'r', "Right", def);
+            yn_func_menu_opt(win, 'l', "Left", def);
+        } else if (resp == hidespinchars) {
+            yn_func_menu_opt(win, 'h', "Hide", def);
+            yn_func_menu_opt(win, 's', "Spin a web", def);
+        } else {
+            yn_func_menu_opt(win, 'y', "Yes", def);
+            yn_func_menu_opt(win, 'n', "No", def);
+        }
+        if (resp == ynaqchars)
+            yn_func_menu_opt(win, 'a', "All", def);
+        if (resp == ynqchars || resp == ynaqchars || resp == hidespinchars)
+            yn_func_menu_opt(win, 'q', "Quit", def);
+        end_menu(win, query);
+        n = select_menu(win, PICK_ONE, &sel);
+        destroy_nhwindow(win);
+        if (n > 0) {
+            *res = sel[0].item.a_char;
+            /* two were selected? use the one that wasn't the default */
+            if (n > 1 && *res == def)
+                *res = sel[1].item.a_char;
+            free((genericptr_t) sel);
+        } else {
+            *res = def;
+        }
+        pline("%s %s", query, key2txt(*res, keybuf));
+        clear_nhwindow(WIN_MESSAGE);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 /*
@@ -5102,7 +5239,9 @@ yn_function(
             gp.pline_flags &= ~PLINE_SPEECH;
         }
 #endif
-        res = (*windowprocs.win_yn_function)(query, resp, def);
+        if (!yn_function_menu(query, resp, def, &res)) {
+            res = (*windowprocs.win_yn_function)(query, resp, def);
+        }
         if (addcmdq)
             cmdq_add_key(CQ_REPEAT, res);
     }
@@ -5117,6 +5256,18 @@ yn_function(
         dumplogmsg(dumplog_buf);
     }
 #endif
+    /* should not happen but cq.key has been observed to not obey 'resp';
+       do this after dumplog has recorded the potentially bad value */
+    if (resp && res && !strchr(resp, res)) {
+        /* this probably needs refinement since caller is expecting something
+           within 'resp' and ESC won't be (it could be present, but as a flag
+           for unshown possibilities rather than as acceptable input) */
+        int altres = def ? def : '\033';
+
+        impossible("yn_function() returned '%s'; using '%s' instead",
+                   visctrl(res), visctrl(altres));
+        res = altres;
+    }
     /* in case we're called via getdir() which sets input_state */
     gp.program_state.input_state = otherInp;
     return res;
@@ -5196,7 +5347,7 @@ paranoid_query(boolean be_paranoid, const char *prompt)
 }
 
 /* ^Z command, #suspend */
-static int
+staticfn int
 dosuspend_core(void)
 {
 #ifdef SUSPEND
@@ -5216,7 +5367,7 @@ dosuspend_core(void)
 }
 
 /* '!' command, #shell */
-static int
+staticfn int
 dosh_core(void)
 {
 #ifdef SHELL
@@ -5231,6 +5382,12 @@ dosh_core(void)
     Norep(cmdnotavail, "#shell");
 #endif
     return ECMD_OK;
+}
+
+staticfn int
+dummyfunction(void)
+{
+    return ECMD_CANCEL;
 }
 
 /*cmd.c*/

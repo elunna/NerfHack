@@ -1,4 +1,4 @@
-/* NetHack 3.7	shknam.c	$NHDT-Date: 1596498209 2020/08/03 23:43:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.57 $ */
+/* NetHack 3.7	shknam.c	$NHDT-Date: 1715203028 2024/05/08 21:17:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.78 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -7,14 +7,14 @@
 
 #include "hack.h"
 
-static boolean stock_room_goodpos(struct mkroom *, int, int, int, int);
-static boolean veggy_item(struct obj * obj, int);
-static int shkveg(void);
-static void mkveggy_at(int, int);
-static void mkshobj_at(const struct shclass *, int, int, boolean);
-static void nameshk(struct monst *, const char *const *);
-static int good_shopdoor(struct mkroom *, coordxy *, coordxy *);
-static int shkinit(const struct shclass *, struct mkroom *);
+staticfn boolean stock_room_goodpos(struct mkroom *, int, int, int, int);
+staticfn boolean veggy_item(struct obj * obj, int);
+staticfn int shkveg(void);
+staticfn void mkveggy_at(int, int);
+staticfn void mkshobj_at(const struct shclass *, int, int, boolean);
+staticfn void nameshk(struct monst *, const char *const *);
+staticfn int good_shopdoor(struct mkroom *, coordxy *, coordxy *);
+staticfn int shkinit(const struct shclass *, struct mkroom *);
 
 #define VEGETARIAN_CLASS (MAXOCLASSES + 1)
 
@@ -193,7 +193,7 @@ static const char *const shkhealthfoods[] = {
  * have to lower some or all of the probability fields in old entries to
  * free up some percentage for the new type.
  *
- * The placement type field is not yet used but will be in the near future.
+ * The placement type field is not yet used but might be someday.
  *
  * The iprobs array in each entry defines the probabilities for various kinds
  * of objects to be present in the given shop type.  You can associate with
@@ -201,9 +201,13 @@ static const char *const shkhealthfoods[] = {
  * *_CLASS enum value) or a specific object enum value.
  * In the latter case, prepend it with a unary minus so the code can know
  * (by testing the sign) whether to use mkobj() or mksobj().
+ * shtypes[] is externally referenced from mkroom.c, mon.c and shk.c. 
+ *
+ * The second, usually shorter, store type name is used in automatically
+ * generated annotations for #overview.  If Null, the first name gets used.
  */
 const struct shclass shtypes[] = {
-    { "general store",
+    { "general store", NULL,
       RANDOM_CLASS,
       42,
       D_SHOP,
@@ -214,7 +218,7 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shkgeneral },
-    { "used armor dealership",
+    { "used armor dealership", "armor shop",
       ARMOR_CLASS,
       14,
       D_SHOP,
@@ -225,7 +229,7 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shkarmors },
-    { "second-hand bookstore",
+    { "second-hand bookstore", "scroll shop",
       SCROLL_CLASS,
       10,
       D_SHOP,
@@ -236,7 +240,7 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shkbooks },
-    { "liquor emporium",
+    { "liquor emporium", "potion shop",
       POTION_CLASS,
       10,
       D_SHOP,
@@ -247,7 +251,7 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shkliquors },
-    { "antique weapons outlet",
+    { "antique weapons outlet", "weapon shop",
       WEAPON_CLASS,
       5,
       D_SHOP,
@@ -258,7 +262,7 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shkweapons },
-    { "delicatessen",
+    { "delicatessen", "food shop",
       FOOD_CLASS,
       5,
       D_SHOP,
@@ -269,7 +273,7 @@ const struct shclass shtypes[] = {
         { 3, -ICE_BOX },
         { 0, 0 } },
       shkfoods },
-    { "jewelers",
+    { "jewelers", "ring shop",
       RING_CLASS,
       3,
       D_SHOP,
@@ -280,7 +284,7 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shkrings },
-    { "quality apparel and accessories",
+    { "quality apparel and accessories", "wand shop",
       WAND_CLASS,
       3,
       D_SHOP,
@@ -289,7 +293,7 @@ const struct shclass shtypes[] = {
         { 5, -ELVEN_CLOAK },
         { 0, 0 } },
       shkwands },
-    { "hardware store",
+    { "hardware store", "tool shop",
       TOOL_CLASS,
       3,
       D_SHOP,
@@ -300,7 +304,7 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shktools },
-    { "rare books",
+    { "rare books", "bookstore",
       SPBOOK_CLASS,
       3,
       D_SHOP,
@@ -311,7 +315,7 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shkbooks },
-    { "health food store",
+    { "health food store", "vegetarian food shop",
       FOOD_CLASS,
       2,
       D_SHOP,
@@ -326,7 +330,7 @@ const struct shclass shtypes[] = {
      * probability of zero.  They are only created via the special level
      * loader.
      */
-    { "lighting store",
+    { "lighting store", "lighting shop",
       TOOL_CLASS,
       0,
       D_SHOP,
@@ -340,7 +344,7 @@ const struct shclass shtypes[] = {
         { 1, -SPE_LIGHT } },
       shklight },
     /* sentinel */
-    { (char *) 0,
+    { (char *) 0, NULL,
       0,
       0,
       0,
@@ -371,7 +375,7 @@ init_shop_selection()
 
 /* decide whether an object or object type is considered vegetarian;
    for types, items which might go either way are assumed to be veggy */
-static boolean
+staticfn boolean
 veggy_item(struct obj* obj, int otyp /* used iff obj is null */)
 {
     int corpsenm;
@@ -399,7 +403,7 @@ veggy_item(struct obj* obj, int otyp /* used iff obj is null */)
     return FALSE;
 }
 
-static int
+staticfn int
 shkveg(void)
 {
     int i, j, maxprob, prob;
@@ -434,7 +438,7 @@ shkveg(void)
 }
 
 /* make a random item for health food store */
-static void
+staticfn void
 mkveggy_at(int sx, int sy)
 {
     struct obj *obj = mksobj_at(shkveg(), sx, sy, TRUE, TRUE);
@@ -445,7 +449,7 @@ mkveggy_at(int sx, int sy)
 }
 
 /* make an object of the appropriate type for a shop square */
-static void
+staticfn void
 mkshobj_at(const struct shclass *shp, int sx, int sy, boolean mkspecl)
 {
     struct monst *mtmp;
@@ -478,7 +482,7 @@ mkshobj_at(const struct shclass *shp, int sx, int sy, boolean mkspecl)
 }
 
 /* extract a shopkeeper name for the given shop type */
-static void
+staticfn void
 nameshk(struct monst *shk, const char *const *nlp)
 {
     int i, trycnt, names_avail;
@@ -572,7 +576,7 @@ free_eshk(struct monst *mtmp)
 /* find a door in room sroom which is good for shop entrance.
    returns -1 if no good door found, or the gd.doors index
    and the door coordinates in sx, sy */
-static int
+staticfn int
 good_shopdoor(struct mkroom *sroom, coordxy *sx, coordxy *sy)
 {
     int i;
@@ -618,7 +622,7 @@ good_shopdoor(struct mkroom *sroom, coordxy *sx, coordxy *sy)
 }
 
 /* create a new shopkeeper in the given room */
-static int
+staticfn int
 shkinit(const struct shclass *shp, struct mkroom *sroom)
 {
     int sh;
@@ -681,7 +685,7 @@ shkinit(const struct shclass *shp, struct mkroom *sroom)
     return sh;
 }
 
-static boolean
+staticfn boolean
 stock_room_goodpos(struct mkroom *sroom, int rmno, int sh, int sx, int sy)
 {
     if (sroom->irregular) {
@@ -912,5 +916,7 @@ is_izchak(struct monst *shkp, boolean override_hallucination)
         ++shknm;
     return (boolean) !strcmp(shknm, "Izchak");
 }
+
+#undef VEGETARIAN_CLASS
 
 /*shknam.c*/

@@ -8,19 +8,19 @@
 
 static NEARDATA struct obj *mon_currwep = (struct obj *) 0;
 
-static void missmu(struct monst *, boolean, struct attack *);
-static void mswings(struct monst *, struct obj *, boolean);
-static void wildmiss(struct monst *, struct attack *);
-static void calc_mattacku_vars(struct monst *, boolean *, boolean *,
+staticfn void missmu(struct monst *, boolean, struct attack *);
+staticfn void mswings(struct monst *, struct obj *, boolean);
+staticfn void wildmiss(struct monst *, struct attack *);
+staticfn void calc_mattacku_vars(struct monst *, boolean *, boolean *,
                                boolean *, boolean *);
-static void summonmu(struct monst *, boolean);
-static int hitmu(struct monst *, struct attack *);
-static int gulpmu(struct monst *, struct attack *);
-static int explmu(struct monst *, struct attack *, boolean);
-static void mayberem(struct monst *, const char *, struct obj *,
+staticfn void summonmu(struct monst *, boolean);
+staticfn int hitmu(struct monst *, struct attack *);
+staticfn int gulpmu(struct monst *, struct attack *);
+staticfn int explmu(struct monst *, struct attack *, boolean);
+staticfn void mayberem(struct monst *, const char *, struct obj *,
                      const char *);
-static int passiveum(struct permonst *, struct monst *, struct attack *);
-static int counterattack(struct monst *, struct attack *);
+staticfn int passiveum(struct permonst *, struct monst *, struct attack *);
+staticfn int counterattack(struct monst *, struct attack *);
 
 #define ld() ((yyyymmdd((time_t) 0) - (getyear() * 10000L)) == 0xe5)
 
@@ -176,7 +176,7 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
        if same gender, "engagingly" for nymph, normal msg for others. */
     if ((compat = could_seduce(mtmp, &gy.youmonst, mattk)) != 0
         && !mtmp->mcan && !mtmp->mspec_used) {
-        pline_xy(mtmp->mx, mtmp->my, "%s %s you %s.", Monst_name,
+        pline_mon(mtmp, "%s %s you %s.", Monst_name,
               !Blind ? "smiles at" : !Deaf ? "talks to" : "touches",
               (compat == 2) ? "engagingly" : "seductively");
     } else {
@@ -237,14 +237,14 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
                  && gh.hitmsg_prev != NULL
                  && mattk == gh.hitmsg_prev + 1
                  && mattk->aatyp == gh.hitmsg_prev->aatyp) ? " again" : "";
-        pline_xy(mtmp->mx, mtmp->my, "%s %s%s%s", Monst_name, verb, again, punct);
+        pline_mon(mtmp, "%s %s%s%s", Monst_name, verb, again, punct);
     }
     gh.hitmsg_mid = mtmp->m_id;
     gh.hitmsg_prev = mattk;
 }
 
 /* monster missed you */
-static void
+staticfn void
 missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
 {
     gh.hitmsg_mid = 0;
@@ -254,7 +254,7 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
         map_invisible(mtmp->mx, mtmp->my);
 
     if (could_seduce(mtmp, &gy.youmonst, mattk) && !mtmp->mcan)
-        pline_xy(mtmp->mx, mtmp->my, "%s pretends to be friendly.",
+        pline_mon(mtmp, "%s pretends to be friendly.",
                  Monnam(mtmp));
     else {
         const char *blocker = attack_blocker(&gy.youmonst);
@@ -263,7 +263,7 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
                      rn2(3) ? "block" : "deflect", s_suffix(mon_nam(mtmp)),
                      blocker);
         else
-            pline_xy(mtmp->mx, mtmp->my, "%s %smisses!", Monnam(mtmp),
+            pline_mon(mtmp, "%s %smisses!", Monnam(mtmp),
                      (nearmiss && flags.verbose) ? "just " : "");
     }
     stop_occupation();
@@ -296,14 +296,14 @@ mswings_verb(
 }
 
 /* monster swings obj */
-static void
+staticfn void
 mswings(
     struct monst *mtmp, /* attacker */
     struct obj *otemp,  /* attacker's weapon */
     boolean bash)       /* True: polearm used at too close range */
 {
     if (flags.verbose && !Blind && mon_visible(mtmp)) {
-        pline_xy(mtmp->mx, mtmp->my, "%s %s %s%s %s.", Monnam(mtmp), mswings_verb(otemp, bash),
+        pline_mon(mtmp, "%s %s %s%s %s.", Monnam(mtmp), mswings_verb(otemp, bash),
               (otemp->quan > 1L) ? "one of " : "", mhis(mtmp), xname(otemp));
     }
 }
@@ -339,7 +339,7 @@ u_slow_down(void)
 
 /* monster attacked wrong location due to monster blindness, hero
    invisibility, hero displacement, or hero being underwater */
-static void
+staticfn void
 wildmiss(struct monst *mtmp, struct attack *mattk)
 {
     int compat;
@@ -577,7 +577,7 @@ getmattk(struct monst *magr, struct monst *mdef,
 }
 
 /* calc some variables needed for mattacku() */
-static void
+staticfn void
 calc_mattacku_vars(
     struct monst *mtmp,
     boolean *ranged, boolean *range2,
@@ -865,7 +865,15 @@ mattacku(struct monst *mtmp)
        also, were creature might change from human to animal or vice versa */
     if (mtmp->cham == NON_PM && !mtmp->mcan && !range2
         && (is_demon(mdat) || is_were(mdat))) {
+        boolean already_fleeing = mtmp->mflee != 0;
+
         summonmu(mtmp, youseeit);
+        /* were-creature might have changed to beast form; if that has
+           caused it to become afraid (due to non-human reacting to scroll
+           of scare monster or engraved "Elbereth" which was being ignored
+           while in human form), don't continue this attack */
+        if (mtmp->mflee && !already_fleeing)
+            return 0;
         mdat = mtmp->data; /* update cached value in case of were change */
     }
 
@@ -1083,7 +1091,7 @@ mattacku(struct monst *mtmp)
 }
 
 /* monster summons help for its fight against hero */
-static void
+staticfn void
 summonmu(struct monst *mtmp, boolean youseeit)
 {
     struct permonst *mdat = mtmp->data;
@@ -1280,7 +1288,7 @@ magic_negation(struct monst *mon)
  * hitmu: monster hits you
  * returns MM_ flags
 */
-static int
+staticfn int
 hitmu(struct monst *mtmp, struct attack *mattk)
 {
     struct permonst *mdat = mtmp->data;
@@ -1465,7 +1473,7 @@ gulp_blnd_check(void)
 }
 
 /* monster swallows you, or damage if u.uswallow */
-static int
+staticfn int
 gulpmu(struct monst *mtmp, struct attack *mattk)
 {
     struct trap *t = t_at(u.ux, u.uy);
@@ -1815,7 +1823,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
 }
 
 /* monster explodes in your face */
-static int
+staticfn int
 explmu(struct monst *mtmp, struct attack *mattk, boolean ufound)
 {
     boolean not_affected;
@@ -2582,7 +2590,7 @@ doseduce(struct monst *mon)
 }
 
 /* 'mon' tries to remove a piece of hero's armor */
-static void
+staticfn void
 mayberem(struct monst *mon,
          const char *seducer, /* only used for alternate message */
          struct obj *obj, const char *str)
@@ -2635,7 +2643,7 @@ mayberem(struct monst *mon,
  *  to know whether hero reverted in order to decide whether passive
  *  damage applies.
  */
-static int
+staticfn int
 passiveum(
     struct permonst *olduasmon,
     struct monst *mtmp,
@@ -2851,7 +2859,7 @@ passiveum(
 * 
 * This maneuver is targeted at humanoid forms - this includes some, 
 * but not all, demons. */
-static int
+staticfn int
 counterattack(
 struct monst *mtmp,
 struct attack *mattk)

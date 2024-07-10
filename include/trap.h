@@ -20,6 +20,7 @@ struct trap {
     coordxy tx, ty;
     d_level dst; /* destination for portals/holes/trapdoors */
     coord launch;
+#define teledest launch /* x,y destination for teleport traps, if > 0 */
     Bitfield(ttyp, 5);
     Bitfield(tseen, 1);
     Bitfield(once, 1);
@@ -126,5 +127,7 @@ enum trap_immunities {
                                || (ttyp) == POLY_TRAP)
 /* "transportation" traps */
 #define is_xport(ttyp) ((ttyp) >= TELEP_TRAP && (ttyp) <= MAGIC_PORTAL)
+#define fixed_tele_trap(t) ((t)->ttyp == TELEP_TRAP \
+                            && isok((t)->teledest.x,(t)->teledest.y))
 
 #endif /* TRAP_H */

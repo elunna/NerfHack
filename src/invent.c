@@ -10,45 +10,45 @@
 #define CONTAINED_SYM '>' /* designator for inside a container */
 #define HANDS_SYM '-'     /* hands|fingers|self depending on context */
 
-static void inuse_classify(Loot *, struct obj *);
-static char *loot_xname(struct obj *);
-static int invletter_value(char);
-static int QSORTCALLBACK sortloot_cmp(const genericptr, const genericptr);
-static void reorder_invent(void);
-static struct obj *addinv_core0(struct obj *, struct obj *,
+staticfn void inuse_classify(Loot *, struct obj *);
+staticfn char *loot_xname(struct obj *);
+staticfn int invletter_value(char);
+staticfn int QSORTCALLBACK sortloot_cmp(const genericptr, const genericptr);
+staticfn void reorder_invent(void);
+staticfn struct obj *addinv_core0(struct obj *, struct obj *,
                                                          boolean) NONNULLARG1;
-static void noarmor(boolean);
-static void invdisp_nothing(const char *, const char *);
-static boolean worn_wield_only(struct obj *);
-static char *cinv_doname(struct obj *);
-static char *cinv_ansimpleoname(struct obj *);
-static boolean only_here(struct obj *);
-static void compactify(char *);
-static boolean taking_off(const char *);
-static void mime_action(const char *);
-static char *getobj_hands_txt(const char *, char *);
-static int ckvalidcat(struct obj *);
-static int ckunpaid(struct obj *);
-static char *safeq_xprname(struct obj *);
-static char *safeq_shortxprname(struct obj *);
-static char display_pickinv(const char *, const char *, const char *,
+staticfn void noarmor(boolean);
+staticfn void invdisp_nothing(const char *, const char *);
+staticfn boolean worn_wield_only(struct obj *);
+staticfn char *cinv_doname(struct obj *);
+staticfn char *cinv_ansimpleoname(struct obj *);
+staticfn boolean only_here(struct obj *);
+staticfn void compactify(char *);
+staticfn boolean taking_off(const char *);
+staticfn void mime_action(const char *);
+staticfn char *getobj_hands_txt(const char *, char *);
+staticfn int ckvalidcat(struct obj *);
+staticfn int ckunpaid(struct obj *);
+staticfn char *safeq_xprname(struct obj *);
+staticfn char *safeq_shortxprname(struct obj *);
+staticfn char display_pickinv(const char *, const char *, const char *,
                             boolean, boolean, long *);
-static char display_used_invlets(char);
-static boolean this_type_only(struct obj *);
-static void dounpaid(int, int, int);
-static struct obj *find_unpaid(struct obj *, struct obj **);
-static void menu_identify(int);
-static boolean tool_being_used(struct obj *);
-static int adjust_ok(struct obj *);
-static int adjust_gold_ok(struct obj *);
-static int doorganize_core(struct obj *);
-static char obj_to_let(struct obj *);
-static boolean item_naming_classification(struct obj *, char *, char *);
-static int item_reading_classification(struct obj *, char *);
-static void ia_addmenu(winid, int, char, const char *);
-static void itemactions_pushkeys(struct obj *, int);
-static int itemactions(struct obj *);
-static int dispinv_with_action(char *, boolean, const char *);
+staticfn char display_used_invlets(char);
+staticfn boolean this_type_only(struct obj *);
+staticfn void dounpaid(int, int, int);
+staticfn struct obj *find_unpaid(struct obj *, struct obj **);
+staticfn void menu_identify(int);
+staticfn boolean tool_being_used(struct obj *);
+staticfn int adjust_ok(struct obj *);
+staticfn int adjust_gold_ok(struct obj *);
+staticfn int doorganize_core(struct obj *);
+staticfn char obj_to_let(struct obj *);
+staticfn boolean item_naming_classification(struct obj *, char *, char *);
+staticfn int item_reading_classification(struct obj *, char *);
+staticfn void ia_addmenu(winid, int, char, const char *);
+staticfn void itemactions_pushkeys(struct obj *, int);
+staticfn int itemactions(struct obj *);
+staticfn int dispinv_with_action(char *, boolean, const char *);
 
 /* enum and structs are defined in wintype.h */
 static win_request_info wri_info;
@@ -76,7 +76,7 @@ static const char *inuse_headers[] = { /* [4] shown first, [1] last */
 
 /* sortloot() classification for in-use sort;
    called at most once [per sort] for each object */
-static void
+staticfn void
 inuse_classify(Loot *sort_item, struct obj *obj)
 {
     long w_mask = (obj->owornmask & (W_ACCESSORY | W_WEAPONS | W_ARMOR));
@@ -315,7 +315,7 @@ loot_classify(Loot *sort_item, struct obj *obj)
 }
 
 /* sortloot() formatting routine; for alphabetizing, not shown to user */
-static char *
+staticfn char *
 loot_xname(struct obj *obj)
 {
     struct obj saveo;
@@ -397,7 +397,7 @@ loot_xname(struct obj *obj)
 }
 
 /* '$'==1, 'a'-'z'==2..27, 'A'-'Z'==28..53, '#'==54, catchall 55 */
-static int
+staticfn int
 invletter_value(char c)
 {
     return ('a' <= c && c <= 'z') ? (c - 'a' + 2)
@@ -408,7 +408,7 @@ invletter_value(char c)
 }
 
 /* qsort comparison routine for sortloot() */
-static int QSORTCALLBACK
+staticfn int QSORTCALLBACK
 sortloot_cmp(const genericptr vptr1, const genericptr vptr2)
 {
     struct sortloot_item *sli1 = (struct sortloot_item *) vptr1,
@@ -744,7 +744,7 @@ assigninvlet(struct obj *otmp)
 #define inv_rank(o) ((o)->invlet ^ 040)
 
 /* sort the inventory; used by addinv() and doorganize() */
-static void
+staticfn void
 reorder_invent(void)
 {
     struct obj *otmp, *prev, *next;
@@ -847,7 +847,7 @@ merged(struct obj **potmp, struct obj **pobj)
             otmp->owt = weight(otmp), otmp->bknown = 0;
         /* and puddings!!!1!!one! */
         else if (!Is_pudding(otmp))
-            otmp->owt += obj->owt;
+            otmp->owt = weight(otmp);
         if (!has_oname(otmp) && has_oname(obj))
             otmp = *potmp = oname(otmp, ONAME(obj), ONAME_SKIP_INVUPD);
         obj_extract_self(obj);
@@ -1022,7 +1022,7 @@ addinv_core2(struct obj *obj)
  * Add obj to the hero's inventory.  Make sure the object is "free".
  * Adjust hero attributes as necessary.
  */
-static struct obj *
+staticfn struct obj *
 addinv_core0(struct obj *obj, struct obj *other_obj,
              boolean update_perm_invent)
 {
@@ -1565,7 +1565,7 @@ g_at(coordxy x, coordxy y)
 }
 
 /* compact a string of inventory letters by dashing runs of letters */
-static void
+staticfn void
 compactify(char *buf)
 {
     int i1 = 1, i2 = 1;
@@ -1610,7 +1610,7 @@ splittable(struct obj *obj)
 }
 
 /* match the prompt for either 'T' or 'R' command */
-static boolean
+staticfn boolean
 taking_off(const char *action)
 {
     return !strcmp(action, "take off") || !strcmp(action, "remove") ||
@@ -1619,7 +1619,7 @@ taking_off(const char *action)
            !strcmp(action, "destroy");
 }
 
-static void
+staticfn void
 mime_action(const char *word)
 {
     char buf[BUFSZ];
@@ -1660,7 +1660,7 @@ any_obj_ok(struct obj *obj)
 }
 
 /* return string describing your hands based on action. */
-static char *
+staticfn char *
 getobj_hands_txt(const char *action, char *qbuf)
 {
     if (!strcmp(action, "grease")) {
@@ -2035,11 +2035,7 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 
 void
 silly_thing(const char *word,
-#ifdef OBSOLETE_HANDLING
             struct obj *otmp)
-#else
-            struct obj *otmp UNUSED)
-#endif
 {
 #ifdef OBSOLETE_HANDLING
     /* 'P','R' vs 'W','T' handling is obsolete */
@@ -2079,14 +2075,14 @@ silly_thing(const char *word,
 
 RESTORE_WARNING_FORMAT_NONLITERAL
 
-static int
+staticfn int
 ckvalidcat(struct obj *otmp)
 {
     /* use allow_category() from pickup.c */
     return (int) allow_category(otmp);
 }
 
-static int
+staticfn int
 ckunpaid(struct obj *otmp)
 {
     return (otmp->unpaid || (Has_contents(otmp) && count_unpaid(otmp->cobj)));
@@ -2123,7 +2119,7 @@ static struct xprnctx {
 } safeq_xprn_ctx;
 
 /* safe_qbuf() -> short_oname() callback */
-static char *
+staticfn char *
 safeq_xprname(struct obj *obj)
 {
     return xprname(obj, (char *) 0, safeq_xprn_ctx.let, safeq_xprn_ctx.dot,
@@ -2131,7 +2127,7 @@ safeq_xprname(struct obj *obj)
 }
 
 /* alternate safe_qbuf() -> short_oname() callback */
-static char *
+staticfn char *
 safeq_shortxprname(struct obj *obj)
 {
     return xprname(obj, ansimpleoname(obj), safeq_xprn_ctx.let,
@@ -2517,7 +2513,7 @@ identify(struct obj *otmp)
 }
 
 /* menu of unidentified objects; select and identify up to id_limit of them */
-static void
+staticfn void
 menu_identify(int id_limit)
 {
     menu_item *pick_list;
@@ -2729,7 +2725,7 @@ doperminv(void)
 }
 
 /* should of course only be called for things in invent */
-static char
+staticfn char
 obj_to_let(struct obj *obj)
 {
     if (!flags.invlet_constant) {
@@ -2844,6 +2840,7 @@ enum item_action_actions {
     IA_DROP_OBJ, /* 'd' */
     IA_EAT_OBJ, /* 'e' */
     IA_ENGRAVE_OBJ, /* 'E' */
+    IA_FIRE_OBJ, /* 'f' */
     IA_ADJUST_OBJ, /* 'i' #adjust inventory letter */
     IA_ADJUST_STACK, /* 'I' #adjust with count to split stack */
     IA_SACRIFICE, /* 'O' offer sacrifice */
@@ -2865,7 +2862,7 @@ enum item_action_actions {
 };
 
 /* construct text for the menu entries for IA_NAME_OBJ and IA_NAME_OTYP */
-static boolean
+staticfn boolean
 item_naming_classification(
     struct obj *obj,
     char *onamebuf,
@@ -2884,8 +2881,8 @@ item_naming_classification(
         Sprintf(onamebuf, "%s %s %s",
                 (!has_oname(obj) || !*ONAME(obj)) ? Name : Rename,
                 the_unique_obj(obj) ? "the"
-                : !is_plural(obj) ? "this"
-                  : "these",
+                : !is_plural(obj) ? "this specific"
+                  : "this stack of", /*"these",*/
                 simpleonames(obj));
     }
     if (call_ok(obj) == GETOBJ_SUGGEST) {
@@ -2905,7 +2902,7 @@ item_naming_classification(
 }
 
 /* construct text for the menu entries for IA_READ_OBJ */
-static int
+staticfn int
 item_reading_classification(struct obj *obj, char *outbuf)
 {
     int otyp = obj->otyp, res = IA_READ_OBJ;
@@ -2946,7 +2943,7 @@ item_reading_classification(struct obj *obj, char *outbuf)
     return res;
 }
 
-static void
+staticfn void
 ia_addmenu(winid win, int act, char let, const char *txt)
 {
     anything any;
@@ -2958,7 +2955,7 @@ ia_addmenu(winid win, int act, char let, const char *txt)
              ATR_NONE, clr, txt, MENU_ITEMFLAGS_NONE);
 }
 
-static void
+staticfn void
 itemactions_pushkeys(struct obj *otmp, int act)
 {
         switch (act) {
@@ -3005,6 +3002,9 @@ itemactions_pushkeys(struct obj *otmp, int act)
         case IA_ENGRAVE_OBJ:
             cmdq_add_ec(CQ_CANNED, doengrave);
             cmdq_add_key(CQ_CANNED, otmp->invlet);
+            break;
+        case IA_FIRE_OBJ:
+            cmdq_add_ec(CQ_CANNED, dofire);
             break;
         case IA_ADJUST_OBJ:
             cmdq_add_ec(CQ_CANNED, doorganize); /* #adjust */
@@ -3093,7 +3093,7 @@ itemactions_pushkeys(struct obj *otmp, int act)
 }
 
 /* Show menu of possible actions hero could do with item otmp */
-static int
+staticfn int
 itemactions(struct obj *otmp)
 {
     int n, act = IA_NONE;
@@ -3219,27 +3219,54 @@ itemactions(struct obj *otmp)
     /* d: drop item, works on everything except worn items; those will
        always have a takeoff/remove choice so we don't have to worry
        about the menu maybe being empty when 'd' is suppressed */
-    if (!already_worn)
-        ia_addmenu(win, IA_DROP_OBJ, 'd', "Drop this item");
+    if (!already_worn) {
+        Sprintf(buf, "Drop this %s", (otmp->quan > 1L) ? "stack" : "item");
+        ia_addmenu(win, IA_DROP_OBJ, 'd', buf);
+    }
 
     /* e: eat item */
-    if (otmp->otyp == TIN && uwep && uwep->otyp == TIN_OPENER)
-        ia_addmenu(win, IA_EAT_OBJ, 'e',
-                   "Open and eat this tin with your tin opener");
-    else if (otmp->otyp == TIN)
-        ia_addmenu(win, IA_EAT_OBJ, 'e', "Open and eat this tin");
-    else if (is_edible(otmp))
-        ia_addmenu(win, IA_EAT_OBJ, 'e', "Eat this item");
+    if (otmp->otyp == TIN) {
+        Sprintf(buf, "Open %s%s and eat the contents",
+                (otmp->quan > 1L) ? "one of these tins" : "this tin",
+                (otmp->otyp == TIN && uwep && uwep->otyp == TIN_OPENER)
+                ? " with your tin opener" : "");
+        ia_addmenu(win, IA_EAT_OBJ, 'e', buf);
+    } else if (is_edible(otmp)) {
+        Sprintf(buf, "Eat %s", (otmp->quan > 1L) ? "one of these" : "this");
+        ia_addmenu(win, IA_EAT_OBJ, 'e', buf);
+    }
 
     /* E: engrave with item */
-    if (otmp->otyp == TOWEL)
-        ia_addmenu(win, IA_ENGRAVE_OBJ, 'E', "Wipe the floor with this towel");
-    else if (otmp->otyp == MAGIC_MARKER)
-        ia_addmenu(win, IA_ENGRAVE_OBJ, 'E', "Scribble graffiti on the floor");
-    else if (otmp->oclass == WEAPON_CLASS || otmp->oclass == WAND_CLASS
-             || otmp->oclass == GEM_CLASS || otmp->oclass == RING_CLASS)
+    if (otmp->otyp == TOWEL) {
         ia_addmenu(win, IA_ENGRAVE_OBJ, 'E',
-                   "Write on the floor with this object");
+                   "Wipe the floor with this towel");
+    } else if (otmp->otyp == MAGIC_MARKER) {
+        ia_addmenu(win, IA_ENGRAVE_OBJ, 'E',
+                   "Scribble graffiti on the floor");
+    } else if (otmp->oclass == WEAPON_CLASS || otmp->oclass == WAND_CLASS
+             || otmp->oclass == GEM_CLASS || otmp->oclass == RING_CLASS) {
+        Sprintf(buf, "%s on the %s with %s",
+                (is_blade(otmp) || otmp->oclass == WAND_CLASS
+                 || ((otmp->oclass == GEM_CLASS || otmp->oclass == RING_CLASS)
+                     && objects[otmp->otyp].oc_tough)) ? "Engrave" : "Write",
+                surface(u.ux, u.uy),
+                (otmp->quan > 1L) ? "one of these items" : "this item");
+        ia_addmenu(win, IA_ENGRAVE_OBJ, 'E', buf);
+    }
+
+    /* f: fire quivered ammo */
+    if (otmp == uquiver) {
+        boolean shoot = ammo_and_launcher(otmp, uwep);
+
+        /* FIXME: see the multi-shot FIXME about "one of" for 't: throw' */
+        Sprintf(buf, "%s %s", shoot ? "Shoot" : "Throw",
+                (otmp->quan > 1L) ? "one of these" : "this");
+        if (shoot) {
+            assert(uwep != NULL);
+            Sprintf(eos(buf), " with your wielded %s", simpleonames(uwep));
+        }
+        ia_addmenu(win, IA_FIRE_OBJ, 'f', buf);
+    }
 
     /* i: #adjust inventory letter; gold can't be adjusted unless there
        is some in a slot other than '$' (which shouldn't be possible) */
@@ -3269,8 +3296,11 @@ itemactions(struct obj *otmp)
         /* FIXME: should also handle player owned container (so not
            flagged 'unpaid') holding shop owned items */
         && (mtmp = shop_keeper(*in_rooms(u.ux, u.uy, SHOPBASE))) != 0
-        && inhishop(mtmp))
-        ia_addmenu(win, IA_BUY_OBJ, 'p', "Buy this unpaid item");
+        && inhishop(mtmp)) {
+        Sprintf(buf, "Buy this unpaid %s",
+                (otmp->quan > 1L) ? "stack" : "item");
+        ia_addmenu(win, IA_BUY_OBJ, 'p', buf);
+    }
 
     /* P: put on accessory */
     if (!already_worn) {
@@ -3286,14 +3316,20 @@ itemactions(struct obj *otmp)
     }
 
     /* q: drink item */
-    if (otmp->oclass == POTION_CLASS)
-        ia_addmenu(win, IA_QUAFF_OBJ, 'q', "Quaff this potion");
+    if (otmp->oclass == POTION_CLASS) {
+        Sprintf(buf, "Quaff (drink) %s",
+                (otmp->quan > 1L) ? "one of these potions" : "this potion");
+        ia_addmenu(win, IA_QUAFF_OBJ, 'q', buf);
+    }
 
     /* Q: quiver throwable item */
     if ((otmp->oclass == GEM_CLASS || otmp->oclass == WEAPON_CLASS)
-        && otmp != uquiver)
-        ia_addmenu(win, IA_QUIVER_OBJ, 'Q',
-                   "Quiver this item for easy throwing");
+        && otmp != uquiver) {
+        Sprintf(buf, "Quiver this %s for easy %s with \'f\'ire",
+                (otmp->quan > 1L) ? "stack" : "item",
+                ammo_and_launcher(otmp, uwep) ? "shooting" : "throwing");
+        ia_addmenu(win, IA_QUIVER_OBJ, 'Q', buf);
+    }
 
     /* r: read item */
     if (item_reading_classification(otmp, buf) == IA_READ_OBJ)
@@ -3311,7 +3347,7 @@ itemactions(struct obj *otmp)
 
     /* t: throw item */
     if (!already_worn) {
-        const char *verb = ammo_and_launcher(otmp, uwep) ? "Shoot" : "Throw";
+        boolean shoot = ammo_and_launcher(otmp, uwep);
 
         /*
          * FIXME:
@@ -3321,10 +3357,17 @@ itemactions(struct obj *otmp)
          *  volley count and that could randomly yield 1 here and 2..N
          *  while throwing or vice versa.
          */
-        Sprintf(buf, "%s %s", verb,
+        Sprintf(buf, "%s %s%s", shoot ? "Shoot" : "Throw",
                 (otmp->quan == 1L) ? "this item"
                 : (otmp->otyp == GOLD_PIECE) ? "them"
-                  : "one of these");
+                  : "one of these",
+                /* if otmp is quivered, we've already listed
+                   'f - shoot|throw this item' as a choice;
+                   if 't' is duplicating that, say so ('t' and 'f'
+                   behavior differs for throwing a stack of gold) */
+                (otmp == uquiver && (otmp->otyp != GOLD_PIECE
+                                     || otmp->quan == 1L))
+                ? " (same as 'f')" : "");
         ia_addmenu(win, IA_THROW_OBJ, 't', buf);
     }
 
@@ -3347,17 +3390,28 @@ itemactions(struct obj *otmp)
 
     /* w: wield, hold in hands, works on everything but with different
        advice text; not mentioned for things that are already wielded */
-    if (otmp == uwep)
-        ;
-    else if (otmp->oclass == WEAPON_CLASS || is_weptool(otmp)
-             || is_wet_towel(otmp))
-        ia_addmenu(win, IA_WIELD_OBJ, 'w', "Wield this as your weapon");
-    else if (otmp->otyp == TIN_OPENER)
-        ia_addmenu(win, IA_WIELD_OBJ, 'w', "Hold the tin opener to open tins");
-    else if (!already_worn)
-        /* FIXME: there's no concept of "holding an item" that's any
-           different from having it in inventory; 'w' means wield as weapon */
-        ia_addmenu(win, IA_WIELD_OBJ, 'w', "Hold this item in your hands");
+    if (otmp == uwep || cantwield(gy.youmonst.data)) {
+        ; /* either already wielded or can't wield anything; skip 'w' */
+    } else if (otmp->oclass == WEAPON_CLASS || is_weptool(otmp)
+               || is_wet_towel(otmp) || otmp->otyp == HEAVY_IRON_BALL) {
+        Sprintf(buf, "Wield this %s as your weapon",
+                (otmp->quan > 1L) ? "stack" : "item");
+        ia_addmenu(win, IA_WIELD_OBJ, 'w', buf);
+    } else if (otmp->otyp == TIN_OPENER) {
+        ia_addmenu(win, IA_WIELD_OBJ, 'w',
+                   "Wield the tin opener to easily open tins");
+    } else if (!already_worn) {
+        /* originally this was using "hold this item in your hands" but
+           there's no concept of "holding an item", plus it unwields
+           whatever item you already have wielded so use "wield this item" */
+        Sprintf(buf, "Wield this %s in your %s",
+                (otmp->quan > 1L) ? "stack" : "item",
+                /* only two-handed weapons and unicorn horns care about
+                   pluralizing "hand" and they won't reach here, but plural
+                   sounds better when poly'd into something with "claw" */
+                makeplural(body_part(HAND)));
+        ia_addmenu(win, IA_WIELD_OBJ, 'w', buf);
+    }
 
     /* W: wear armor */
     if (!already_worn) {
@@ -3401,12 +3455,15 @@ itemactions(struct obj *otmp)
 
     /* z: Zap wand */
     if (otmp->oclass == WAND_CLASS)
-        ia_addmenu(win, IA_ZAP_OBJ, 'z', "Zap this wand to release its magic");
+        ia_addmenu(win, IA_ZAP_OBJ, 'z',
+                   "Zap this wand to release its magic");
 
     /* ?: Look up an item in the game's database */
-    if (ia_checkfile(otmp))
-        ia_addmenu(win, IA_WHATIS_OBJ, '/',
-                   "Look up information about this item");
+    if (ia_checkfile(otmp)) {
+        Sprintf(buf, "Look up information about %s",
+                (otmp->quan > 1L) ? "these" : "this");
+        ia_addmenu(win, IA_WHATIS_OBJ, '/', buf);
+    }
 
     Sprintf(buf, "Do what with %s?", the(cxname(otmp)));
     end_menu(win, buf);
@@ -3430,7 +3487,7 @@ itemactions(struct obj *otmp)
    order to preform context-sensitive item action on it; always returns 'ok';
    invent subsets specified by the ')', '[', '(', '=', '"', or '*' commands
    when they're invoked with the 'm' prefix (or without it for '*') */
-static int
+staticfn int
 dispinv_with_action(
     char *lets,                 /* list of invlet values to include */
     boolean use_inuse_ordering, /* affects sortloot() and header labels */
@@ -3485,7 +3542,7 @@ ddoinv(void)
  * next unpaid object is returned.  This routine recursively follows
  * containers.
  */
-static struct obj *
+staticfn struct obj *
 find_unpaid(struct obj *list, struct obj **last_found)
 {
     struct obj *obj;
@@ -3521,7 +3578,7 @@ free_pickinv_cache(void)
  * Internal function used by display_inventory and getobj that can display
  * inventory and return a count as well as a letter.
  */
-static char
+staticfn char
 display_pickinv(
     const char *lets,        /* non-compacted list of invlet values */
     const char *xtra_choice, /* non-object "bare hands" or "fingers" */
@@ -3927,7 +3984,7 @@ display_inventory(const char *lets, boolean want_reply)
  * Show what is current using inventory letters.
  *
  */
-static char
+staticfn char
 display_used_invlets(char avoidlet)
 {
     struct obj *otmp;
@@ -4113,7 +4170,7 @@ count_contents(
     return count;
 }
 
-static void
+staticfn void
 dounpaid(
     int count,       /* unpaid items in inventory */
     int floorcount,  /* unpaid items on floor (rare) */
@@ -4135,7 +4192,7 @@ dounpaid(
     }
     if  (otmp && !contnr) {
         /* 1 item; use pline instead of popup menu */
-        cost = unpaid_cost(otmp, FALSE);
+        cost = unpaid_cost(otmp, COST_NOCONTENTS);
         iflags.suppress_price++; /* suppress "(unpaid)" suffix */
         pline1(xprname(otmp, distant_name(otmp, doname),
                        carried(otmp) ? otmp->invlet : CONTAINED_SYM,
@@ -4161,7 +4218,7 @@ dounpaid(
                         classcount++;
                     }
 
-                    totcost += cost = unpaid_cost(otmp, FALSE);
+                    totcost += cost = unpaid_cost(otmp, COST_NOCONTENTS);
                     iflags.suppress_price++; /* suppress "(unpaid)" suffix */
                     putstr(win, 0, xprname(otmp, distant_name(otmp, doname),
                                            ilet, TRUE, cost, 0L));
@@ -4187,7 +4244,7 @@ dounpaid(
 
                 marker = (struct obj *) 0; /* haven't found any */
                 while (find_unpaid(otmp->cobj, &marker)) {
-                    totcost += cost = unpaid_cost(marker, FALSE);
+                    totcost += cost = unpaid_cost(marker, COST_NOCONTENTS);
                     contcost += cost;
                     if (otmp->cknown) {
                         iflags.suppress_price++; /* suppress "(unpaid)" sfx */
@@ -4252,7 +4309,7 @@ dounpaid(
 }
 
 
-static boolean
+staticfn boolean
 this_type_only(struct obj *obj)
 {
     boolean res = (obj->oclass == gt.this_type);
@@ -5023,7 +5080,7 @@ doprwep(void)
 }
 
 /* caller is responsible for checking !wearing_armor() */
-static void
+staticfn void
 noarmor(boolean report_uskin)
 {
     if (!uskin || !report_uskin) {
@@ -5143,7 +5200,7 @@ dopramulet(void)
 }
 
 /* is 'obj' a tool that's in use?  can't simply check obj->owornmask */
-static boolean
+staticfn boolean
 tool_being_used(struct obj *obj)
 {
     /*
@@ -5370,7 +5427,7 @@ check_invent_gold(const char *why) /* 'why' == caller in case of warning */
 }
 
 /* normal getobj callback for item to #adjust; excludes gold */
-static int
+staticfn int
 adjust_ok(struct obj *obj)
 {
     if (!obj || obj->oclass == COIN_CLASS)
@@ -5380,7 +5437,7 @@ adjust_ok(struct obj *obj)
 }
 
 /* getobj callback for item to #adjust if gold is wonky; allows gold */
-static int
+staticfn int
 adjust_gold_ok(struct obj *obj)
 {
     if (!obj)
@@ -5521,7 +5578,7 @@ adjust_split(void)
     return doorganize_core(obj);
 }
 
-static int
+staticfn int
 doorganize_core(struct obj *obj)
 {
     struct obj *otmp, *splitting, *bumped;
@@ -5635,7 +5692,7 @@ doorganize_core(struct obj *obj)
 
     collect = (let == obj->invlet);
     /* change the inventory and print the resulting item */
-    adj_type = collect ? "Collecting" : !splitting ? "Moving:" : "Splitting:";
+    adj_type = collect ? "Collecting:" : !splitting ? "Moving:" : "Splitting:";
 
     /*
      * don't use freeinv/addinv to avoid double-touching artifacts,
@@ -5643,7 +5700,8 @@ doorganize_core(struct obj *obj)
      */
     extract_nobj(obj, &gi.invent);
 
-    for (otmp = gi.invent; otmp;) {
+    for (otmp = gi.invent; otmp; ) {
+        otmpname = has_oname(otmp) ? ONAME(otmp) : (char *) 0;
         /* it's tempting to pull this outside the loop, but merged() could
            free ONAME(obj) [via obfree()] and replace it with ONAME(otmp) */
         objname = has_oname(obj) ? ONAME(obj) : (char *) 0;
@@ -5655,16 +5713,24 @@ doorganize_core(struct obj *obj)
                with compatible named ones; we only want that if it is
                the 'from' stack (obj) with a name and candidate (otmp)
                without one, not unnamed 'from' with named candidate. */
-            otmpname = has_oname(otmp) ? ONAME(otmp) : (char *) 0;
             if ((!otmpname || (objname && !strcmp(objname, otmpname)))
                 && merged(&otmp, &obj)) {
-                adj_type = "Merging:";
+                /*adj_type = "Collecting:"; //already set to this*/
                 obj = otmp;
                 otmp = otmp->nobj;
                 extract_nobj(obj, &gi.invent);
                 continue; /* otmp has already been updated */
             }
         } else if (otmp->invlet == let) {
+            /* Merging: when from and to are compatible */
+            if ((!otmpname || (objname && !strcmp(objname, otmpname)))
+                && merged(&otmp, &obj)) {
+                adj_type = "Merging:";
+                obj = otmp;
+                otmp = otmp->nobj;
+                extract_nobj(obj, &gi.invent);
+                break; /* otmp has been updated and we're done merging */
+            }
             /* Moving or splitting: don't merge extra compatible stacks.
                Found 'otmp' in destination slot; merge if compatible,
                otherwise bump whatever is there to an open slot. */
@@ -5732,7 +5798,7 @@ doorganize_core(struct obj *obj)
 }
 
 /* common to display_minventory and display_cinventory */
-static void
+staticfn void
 invdisp_nothing(const char *hdr, const char *txt)
 {
     winid win;
@@ -5751,7 +5817,7 @@ invdisp_nothing(const char *hdr, const char *txt)
 }
 
 /* query_objlist callback: return things that are worn or wielded */
-static boolean
+staticfn boolean
 worn_wield_only(struct obj *obj)
 {
 #if 1
@@ -5833,7 +5899,7 @@ display_minventory(
 
 /* format a container name for cinventory_display(), inserting "trapped"
    if that's appropriate */
-static char *
+staticfn char *
 cinv_doname(struct obj *obj)
 {
     char *result = doname(obj);
@@ -5865,7 +5931,7 @@ cinv_doname(struct obj *obj)
 }
 
 /* used by safe_qbuf() if the full doname() result is too long */
-static char *
+staticfn char *
 cinv_ansimpleoname(struct obj *obj)
 {
     char *result = ansimpleoname(obj);
@@ -5919,7 +5985,7 @@ display_cinventory(struct obj *obj)
 }
 
 
-static boolean
+staticfn boolean
 only_here(struct obj *obj)
 {
     return (obj->ox == go.only.x && obj->oy == go.only.y);

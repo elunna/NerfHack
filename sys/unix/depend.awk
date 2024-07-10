@@ -9,12 +9,18 @@
 #   ( cd src ; make all ; cp ../sys/unix/Makefile.src ./Makefile ; \
 #     make depend ; cp ./Makefile ../sys/unix/Makefile.src ; \
 #     cd .. ; sh sys/unix/setup.sh [sys/unix/hints/FOO] )
+# newer usage:
+#   cd sys/unix ; make -f Makefile.src updatedepend
 #
 # This awk program scans each file in sequence, looking for lines beginning
 # with `#include "' and recording the name inside the quotes.  For .h files,
 # that's all it does.  For each .c file, it writes out a make rule for the
 # corresponding .o file; dependencies in nested header files are propagated
 # to the .o target.
+#
+# Variables that can be set on the command line:
+#  -v dontsortdeps=1               do not sort the dependencies
+#  -v dontsortfules=1              do not sort the rules
 #
 # config.h and hack.h get special handling because of their heavy use;
 #	timestamps for them allow make to avoid rechecking dates on
@@ -31,7 +37,6 @@
 # zlib.h ditto
 #
 BEGIN		{ FS = "\""			#for `#include "X"', $2 is X
-		  dosort = 1
 		  special[++sp_cnt] = "../include/config.h"
 		  special[++sp_cnt] = "../include/hack.h"
 		  alt_deps["../include/extern.h"] = ""
@@ -74,7 +79,10 @@ FNR == 1	{ output_dep()			#finish previous file
 		  }
 		  deps[file] = deps[file] " " incl
 		}
-END		{ output_dep() }		#finish the last file
+END		{
+		    output_dep()		#finish the last file
+		    output_final()		#write output
+		}
 
 
 #
@@ -82,7 +90,29 @@ END		{ output_dep() }		#finish the last file
 # don't do anything (we've just been collecting their dependencies);
 # for .c files, output the `make' rule for corresponding .o file
 #
-function output_dep(				base, targ, moc)
+
+function output_dep(){
+  if(!dontsortrules){
+    worklist[++worklistctr] = file
+  } else {
+    output_final2()
+  }
+}
+
+function output_final(				x)
+{
+  if(!dontsortrules){
+    nhsort(worklist, 1, worklistctr, 1)
+    for(x=1;x<=worklistctr;x++){
+      file = worklist[x]
+      output_final2()
+    }
+  } else {
+    return
+  }
+}
+
+function output_final2(				base, targ, moc)
 {
   #get the file's base name (including suffix)
   base = file;  sub("^.+/", "", base)
@@ -143,8 +173,9 @@ function format_dep(target, source,		col, n, i, list, prefix, moc)
   #first: leading whitespace yields empty 1st element; not sure why moc
   #files duplicate the target as next element but we need to skip that too
   first = moc ? 3 : 2
-  if (dosort ){
-    nhsort(list, first, n)
+  source = list[first]
+  if (!dontsortdeps){
+    nhsort(list, first, n, 0)
   }
   for (i = first; i <= n; i++) {
     if (col + length(list[i]) >= (i < n ? 78 : 80) - 1) {
@@ -156,7 +187,6 @@ function format_dep(target, source,		col, n, i, list, prefix, moc)
   }
   printf("\n")				#terminate
   #write build command if first source entry has non-include path prefix
-  source = list[first]
   if (moc) {
     print "\t$(MOCPATH) -o $@ " source
   } else if (source ~ /\// && substr(source, 1, 11) != "../include/") {
@@ -205,11 +235,11 @@ function depend(inout, name, skip,		n, i, list)
 # sort list[first]..list[last]
 # Derived from: https://www.baeldung.com/linux/awk-begin-and-end-rules
 #
-function nhsort(list, first, last,			i,j,temp)
+function nhsort(list, first, last, cmpid,		i,j,temp)
 {
   for (i = first; i <= last-1; i++) {
     for (j = i+1; j <= last; j++) {
-      if (list[i] > list[j]) {
+      if (nhcmp(list[i], list[j], cmpid)) {
 	temp = list[i]
 	list[i] = list[j]
 	list[j] = temp
@@ -217,4 +247,42 @@ function nhsort(list, first, last,			i,j,temp)
     }
   }
 }
+
+function nhcmp(a,b,cmpid)
+{
+  if(cmpid == 0){		  # sort dependencies
+      # commented out entry (there can be only one) MUST be last
+    if (a ~ /^#/){ return 1}
+    if (b ~ /^#/){ return 0}
+      # 2 .c or .cpp files
+    if (a ~ /\.c(pp)?$/ && b ~ /\.c(pp)?$/ ){ return a > b }
+      # a .c or .cpp file and anything else
+    if (a ~ /\.c(pp)?$/){ return 0 }
+    if (b ~ /\.c(pp)?$/){ return 1 }
+      # default
+    return a > b
+  } else if(cmpid == 1){	  # sort rules
+      # 2 .h files
+    if (a ~ /\.h$/ && b ~ /\/.h$/){ return a > b }
+      # a .h and anything else
+    if (a ~ /\.h$/){ return 0 }
+    if (b ~ /\.h$/){ return 1 }
+      # 2 .c or .cpp files
+    if (a ~ /\.c(pp)?$/ && b ~ /\.c(pp)?$/ ){ return a > b }
+      # a .c or .cpp file and anything else
+    if (a ~ /\.c(pp)?$/){ return 0 }
+    if (b ~ /\.c(pp)?$/){ return 1 }
+      # 2 .moc files
+    if (a ~ /\.moc$/ && b ~ /\.moc$/){ return a > b }
+      # a .moc and anything else
+    if (a ~ /\.moc$/){ return 0 }
+    if (b ~ /\.moc$/){ return 1 }
+      # default
+    return a > b
+  } else {
+    print "internal error cmpid=" cmpid
+    exit 1
+  }
+}
+
 #depend.awk#

@@ -8,7 +8,7 @@
 #include <limits.h>
 #endif
 
-static int enermod(int);
+staticfn int enermod(int);
 
 long
 newuexp(int lev)
@@ -31,7 +31,7 @@ newuexp(int lev)
     return (320000L * ((long) (lev - 14)));
 }
 
-static int
+staticfn int
 enermod(int en)
 {
     switch (Role_switch) {

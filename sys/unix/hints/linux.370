@@ -43,6 +43,14 @@ endif
 GAMEUID  = $(USER)
 GAMEGRP  = games
 
+# This gives better backtraces by making all core functions global; this
+# works around a limitation in glibc's backtrace(3) function.
+# This will be turned on automatically with CRASHREPROT.
+# 1 to enable, 0 to disable
+USE_NOSTATICFN = 1
+# If you want CRASHREPORT but absolutely don't want NOSTATICFN, define this:
+#USE_NONOSTATICFN = 1
+
 #-----------------------------------------------------------------------------
 #-INCLUDE cross-pre1.370
 
@@ -77,6 +85,11 @@ endif  # WANT_WIN_QT
 ifeq "$(USE_ASAN)" "1"
 CFLAGS+=-fsanitize=address
 LFLAGS+=-fsanitize=address
+endif
+
+ifeq "$(USE_UBSAN)" "1"
+CFLAGS+=-fsanitize=undefined
+LFLAGS+=-fsanitize=undefined
 endif
 
 ifeq "$(USE_CURSESLIB)" "1"
@@ -133,6 +146,7 @@ NHCFLAGS+=-DCOMPRESS=\"/bin/gzip\" -DCOMPRESS_EXTENSION=\".gz\"
 #NHCFLAGS+=-DTTY_SOUND_ESCCODES
 #NHCFLAGS+=-DNO_CHRONICLE
 #NHCFLAGS+=-DLIVELOG
+#NHCFLAGS+=-DCHANGE_COLOR
 NHCFLAGS+=-DSELF_RECOVER
 ifdef WANT_WIN_CURSES
 ifeq "$(HAVE_NCURSESW)" "1"
@@ -318,7 +332,7 @@ VARFILEPERM = 0600
 VARDIRPERM = 0700
 CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
 MOREALL=$(MAKE) install
-else #!WANT_SOURCE_INTSALL
+else #!WANT_SOURCE_INSTALL
 #PREFIX=/usr
 PREFIX=$(wildcard ~)/nerfhack/install
 HACKDIR=$(PREFIX)/games/lib/nerfhackdir
@@ -337,6 +351,14 @@ ifneq "$(CCISCLANG)" ""
 # relevant lines in sysconf.
 POSTINSTALL+= sed -i -e 's;^GDBPATH=/usr/bin/gdb;\#GDBPATH=/usr/bin/gdb;' \
 		-e 's;PANICTRACE_GDB=1;PANICTRACE_GDB=0;' $(INSTDIR)/sysconf;
+endif
+
+ifeq 'USENONOSTATICFN' '1'
+CFLAGS += -DNONOSTATICFN
+else
+ifeq 'USE_NOSTATICFN' '1'
+CFLAGS += -DNOSTATICFN
+endif
 endif
 
 # Lua

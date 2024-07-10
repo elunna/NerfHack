@@ -1,4 +1,4 @@
-/* NetHack 3.7	role.c	$NHDT-Date: 1701132222 2023/11/28 00:43:42 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.94 $ */
+/* NetHack 3.7	role.c	$NHDT-Date: 1711734229 2024/03/29 17:43:49 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.100 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985-1999. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -758,10 +758,10 @@ const struct Align aligns[] = {
     { "evil", "unaligned", "Una", 0, A_NONE }
 };
 
-static int randrole_filtered(void);
-static char *promptsep(char *, int);
-static int role_gendercount(int);
-static int race_alignmentcount(int);
+staticfn int randrole_filtered(void);
+staticfn char *promptsep(char *, int);
+staticfn int role_gendercount(int);
+staticfn int race_alignmentcount(int);
 
 /* used by str2XXX() */
 static char NEARDATA randomstr[] = "random";
@@ -784,7 +784,7 @@ randrole(boolean for_display)
     return res;
 }
 
-static int
+staticfn int
 randrole_filtered(void)
 {
     int i, n = 0, set[SIZE(roles)];
@@ -1436,7 +1436,7 @@ clearrolefilter(int which)
     }
 }
 
-static char *
+staticfn char *
 promptsep(char *buf, int num_post_attribs)
 {
     const char *conjuct = "and ";
@@ -1451,7 +1451,7 @@ promptsep(char *buf, int num_post_attribs)
     return buf;
 }
 
-static int
+staticfn int
 role_gendercount(int rolenum)
 {
     int gendcount = 0;
@@ -1467,7 +1467,7 @@ role_gendercount(int rolenum)
     return gendcount;
 }
 
-static int
+staticfn int
 race_alignmentcount(int racenum)
 {
     int aligncount = 0;
@@ -1806,7 +1806,7 @@ role_selection_prolog(int which, winid where)
         else if ((allowmask & ROLE_ALIGNMASK) == AM_NEUTRAL)
             a = 1; /* aligns[neutral] */
         else if ((allowmask & ROLE_ALIGNMASK) == AM_CHAOTIC)
-            a = 2; /* alings[chaotic] */
+            a = 2; /* aligns[chaotic] */
     }
     if (c >= 0) {
         assert(IndexOkT(c, races));
@@ -1816,7 +1816,7 @@ role_selection_prolog(int which, winid where)
         else if ((allowmask & ROLE_ALIGNMASK) == AM_NEUTRAL)
             a = 1; /* aligns[neutral] */
         else if ((allowmask & ROLE_ALIGNMASK) == AM_CHAOTIC)
-            a = 2; /* alings[chaotic] */
+            a = 2; /* aligns[chaotic] */
         /* [c never forces gender] */
     }
     /* [g and a don't constrain anything sufficiently
@@ -2238,13 +2238,13 @@ genl_player_selection(void)
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
 /* ['#else' far below] */
 
-static boolean reset_role_filtering(void);
-static winid plsel_startmenu(int, int);
-static int maybe_skip_seps(int, int);
-static void setup_rolemenu(winid, boolean, int, int, int);
-static void setup_racemenu(winid, boolean, int, int, int);
-static void setup_gendmenu(winid, boolean, int, int, int);
-static void setup_algnmenu(winid, boolean, int, int, int);
+staticfn boolean reset_role_filtering(void);
+staticfn winid plsel_startmenu(int, int);
+staticfn int maybe_skip_seps(int, int);
+staticfn void setup_rolemenu(winid, boolean, int, int, int);
+staticfn void setup_racemenu(winid, boolean, int, int, int);
+staticfn void setup_gendmenu(winid, boolean, int, int, int);
+staticfn void setup_algnmenu(winid, boolean, int, int, int);
 
 /* try to reduce clutter in the code below... */
 #define ROLE flags.initrole
@@ -2770,7 +2770,7 @@ genl_player_setup(int screenheight)
     return result;
 }
 
-static boolean
+staticfn boolean
 reset_role_filtering(void)
 {
     winid win;
@@ -2819,7 +2819,7 @@ reset_role_filtering(void)
    tty-only to tty+curses+? made the role selection menu require two pages
    on a traditional 24-line tty; that wasn't fair to tty, so squeeze out
    some blank separator lines from the menu if that will make it fit on one */
-static int
+staticfn int
 maybe_skip_seps(int rows, int aspect)
 {
     int i, n = 0;
@@ -2848,7 +2848,7 @@ maybe_skip_seps(int rows, int aspect)
 }
 
 /* start a menu; show role aspects specified so far as a header line */
-static winid
+staticfn winid
 plsel_startmenu(int ttyrows, int aspect)
 {
     char qbuf[QBUFSZ];
@@ -2896,7 +2896,7 @@ plsel_startmenu(int ttyrows, int aspect)
 #undef ALGN
 
 /* add entries a-Archeologist, b-Barbarian, &c to menu being built in 'win' */
-static void
+staticfn void
 setup_rolemenu(
     winid win,
     boolean filtering, /* True => exclude filtered roles;
@@ -2947,7 +2947,7 @@ setup_rolemenu(
     }
 }
 
-static void
+staticfn void
 setup_racemenu(
     winid win,
     boolean filtering,
@@ -2985,7 +2985,7 @@ setup_racemenu(
     }
 }
 
-static void
+staticfn void
 setup_gendmenu(
     winid win,
     boolean filtering,
@@ -3021,7 +3021,7 @@ setup_gendmenu(
     }
 }
 
-static void
+staticfn void
 setup_algnmenu(
     winid win,
     boolean filtering,

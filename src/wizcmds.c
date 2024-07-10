@@ -1,4 +1,4 @@
-/* NetHack 3.7	wizcmds.c	$NHDT-Date: 1709675219 2024/03/05 21:46:59 $  $NHDT-Branch: keni-mdlib-followup $:$NHDT-Revision: 1.713 $ */
+/* NetHack 3.7	wizcmds.c	$NHDT-Date: 1716592982 2024/05/24 23:23:02 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.7 $ */
 /*-Copyright (c) Robert Patrick Rankin, 2024. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -8,21 +8,21 @@
 extern const char unavailcmd[];                  /* cmd.c [27] */
 extern const char *levltyp[MAX_TYPE + 2];          /* cmd.c */
 
-static int size_monst(struct monst *, boolean);
-static int size_obj(struct obj *);
-static void count_obj(struct obj *, long *, long *, boolean, boolean);
-static void obj_chain(winid, const char *, struct obj *, boolean, long *,
+staticfn int size_monst(struct monst *, boolean);
+staticfn int size_obj(struct obj *);
+staticfn void count_obj(struct obj *, long *, long *, boolean, boolean);
+staticfn void obj_chain(winid, const char *, struct obj *, boolean, long *,
                       long *);
-static void mon_invent_chain(winid, const char *, struct monst *, long *,
+staticfn void mon_invent_chain(winid, const char *, struct monst *, long *,
                              long *);
-static void mon_chain(winid, const char *, struct monst *, boolean, long *,
+staticfn void mon_chain(winid, const char *, struct monst *, boolean, long *,
                       long *);
-static void contained_stats(winid, const char *, long *, long *);
-static void misc_stats(winid, long *, long *);
-static void you_sanity_check(void);
-static void makemap_unmakemon(struct monst *, boolean);
-static int QSORTCALLBACK migrsort_cmp(const genericptr, const genericptr);
-static void list_migrating_mons(d_level *);
+staticfn void contained_stats(winid, const char *, long *, long *);
+staticfn void misc_stats(winid, long *, long *);
+staticfn void you_sanity_check(void);
+staticfn void makemap_unmakemon(struct monst *, boolean);
+staticfn int QSORTCALLBACK migrsort_cmp(const genericptr, const genericptr);
+staticfn void list_migrating_mons(d_level *);
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
@@ -537,7 +537,7 @@ wiz_panic(void)
     }
     if (paranoid_query(TRUE,
                        "Do you want to call panic() and end your game?"))
-        panic("Crash test.");
+        panic("Crash test (#panic).");
     return ECMD_OK;
 }
 
@@ -1098,7 +1098,7 @@ static const char template[] = "%-27s  %4ld  %6ld";
 static const char stats_hdr[] = "                             count  bytes";
 static const char stats_sep[] = "---------------------------  ----- -------";
 
-static int
+staticfn int
 size_obj(struct obj *otmp)
 {
     int sz = (int) sizeof (struct obj);
@@ -1116,7 +1116,7 @@ size_obj(struct obj *otmp)
     return sz;
 }
 
-static void
+staticfn void
 count_obj(struct obj *chain, long *total_count, long *total_size,
           boolean top, boolean recurse)
 {
@@ -1137,7 +1137,7 @@ count_obj(struct obj *chain, long *total_count, long *total_size,
 
 DISABLE_WARNING_FORMAT_NONLITERAL  /* RESTORE_WARNING follows wiz_show_stats */
 
-static void
+staticfn void
 obj_chain(
     winid win,
     const char *src,
@@ -1158,7 +1158,7 @@ obj_chain(
     }
 }
 
-static void
+staticfn void
 mon_invent_chain(
     winid win,
     const char *src,
@@ -1180,7 +1180,7 @@ mon_invent_chain(
     }
 }
 
-static void
+staticfn void
 contained_stats(
     winid win,
     const char *src,
@@ -1209,7 +1209,7 @@ contained_stats(
     }
 }
 
-static int
+staticfn int
 size_monst(struct monst *mtmp, boolean incl_wsegs)
 {
     int sz = (int) sizeof (struct monst);
@@ -1236,7 +1236,7 @@ size_monst(struct monst *mtmp, boolean incl_wsegs)
     return sz;
 }
 
-static void
+staticfn void
 mon_chain(
     winid win,
     const char *src,
@@ -1263,7 +1263,7 @@ mon_chain(
     }
 }
 
-static void
+staticfn void
 misc_stats(
     winid win,
     long *total_count, long *total_size)
@@ -1381,7 +1381,7 @@ misc_stats(
     }
 }
 
-static void
+staticfn void
 you_sanity_check(void)
 {
     struct monst *mtmp;
@@ -1400,6 +1400,24 @@ you_sanity_check(void)
         if (u.ustuck != mtmp)
             impossible("sanity_check: you over monster");
     }
+    /* [should we also check for (u.uhp < 1), (Upolyd && u.mh < 1),
+       and (u.uen < 0) here?] */
+    if (u.uhp > u.uhpmax) {
+        impossible("current hero health (%d) better than maximum? (%d)",
+                   u.uhp, u.uhpmax);
+        u.uhp = u.uhpmax;
+    }
+    if (Upolyd && u.mh > u.mhmax) {
+        impossible(
+              "current hero health as monster (%d) better than maximum? (%d)",
+                   u.mh, u.mhmax);
+        u.mh = u.mhmax;
+    }
+    if (u.uen > u.uenmax) {
+        impossible("current hero energy (%d) better than maximum? (%d)",
+                   u.uen, u.uenmax);
+        u.uen = u.uenmax;
+    }
 
     check_wornmask_slots();
     (void) check_invent_gold("invent");
@@ -1416,6 +1434,7 @@ sanity_check(void)
         iflags.sanity_no_check = FALSE;
         return;
     }
+    gp.program_state.in_sanity_check++;
     you_sanity_check();
     obj_sanity_check();
     timer_sanity_check();
@@ -1424,10 +1443,11 @@ sanity_check(void)
     bc_sanity_check();
     trap_sanity_check();
     engraving_sanity_check();
+    gp.program_state.in_sanity_check--;
 }
 
 /* qsort() comparison routine for use in list_migrating_mons() */
-static int QSORTCALLBACK
+staticfn int QSORTCALLBACK
 migrsort_cmp(const genericptr vptr1, const genericptr vptr2)
 {
     const struct monst *m1 = *(const struct monst **) vptr1,
@@ -1448,7 +1468,7 @@ migrsort_cmp(const genericptr vptr1, const genericptr vptr2)
 
 /* called by #migratemons; displays count of migrating monsters, optionally
    displays them as well */
-static void
+staticfn void
 list_migrating_mons(
     d_level *nextlevl) /* default destination for wiz_migrate_mons() */
 {
@@ -1790,13 +1810,13 @@ wiz_migrate_mons(void)
     list_migrating_mons(&tolevel);
 
 #ifdef DEBUG_MIGRATING_MONS
-    inbuf[0] = '\033', inbuf[1] = '\0';
+    inbuf[0] = inbuf[1] = '\0';
     if (tolevel.dnum || tolevel.dlevel)
         getlin("How many random monsters to migrate to next level? [0]",
                inbuf);
     else
         pline("Can't get there from here.");
-    if (*inbuf == '\033')
+    if (*inbuf == '\033' || *inbuf == '\0')
         return ECMD_OK;
 
     mcount = atoi(inbuf);
@@ -1837,6 +1857,103 @@ wiz_clear(void)
         pline("Eliminated %d monster%s.", gonecnt, plur(gonecnt));
     }
     return 0;
+}
+
+/* #wizcustom command to see glyphmap customizations */
+int
+wiz_custom(void)
+{
+    extern const char *const known_handling[];     /* symbols.c */
+
+    if (wizard) {
+        static const char wizcustom[] = "#wizcustom";
+        winid win;
+        char buf[BUFSZ], bufa[BUFSZ];  
+        int n;
+#if 0
+        int j, glyph;
+#endif
+        menu_item *pick_list = (menu_item *) 0;
+
+        if (!glyphid_cache_status())
+            fill_glyphid_cache();
+
+        win = create_nhwindow(NHW_MENU);
+        start_menu(win, MENU_BEHAVE_STANDARD);
+        add_menu_heading(win,
+                         "    glyph  glyph identifier                        "
+                         "     sym   clr customcolor unicode utf8");
+        Sprintf(bufa, "%s: colorcount=%ld %s", wizcustom,
+                (long) iflags.colorcount,
+                gs.symset[PRIMARYSET].name ? gs.symset[PRIMARYSET].name
+                                          : "default");
+        if (gc.currentgraphics == PRIMARYSET && gs.symset[PRIMARYSET].name)
+            Strcat(bufa, ", active");
+        if (gs.symset[PRIMARYSET].handling) {
+            Sprintf(eos(bufa), ", handler=%s",
+                    known_handling[gs.symset[PRIMARYSET].handling]);
+        }
+        Sprintf(buf, "%s", bufa);
+        wizcustom_glyphids(win);
+        end_menu(win, bufa);
+        n = select_menu(win, PICK_NONE, &pick_list);
+        destroy_nhwindow(win);
+#if 0
+        for (j = 0; j < n; ++j) {
+            glyph = pick_list[j].item.a_int - 1; /* -1: reverse +1 above */
+        }
+#endif
+        if (n >= 1)
+            free((genericptr_t) pick_list);
+        if (glyphid_cache_status())
+            free_glyphid_cache();
+        docrt();
+    } else
+        pline(unavailcmd, ecname_from_fn(wiz_custom));
+    return ECMD_OK;
+}
+
+void
+wizcustom_callback(winid win, int glyphnum, char *id)
+{
+    extern glyph_map glyphmap[MAX_GLYPH];
+    glyph_map *cgm;
+    int clr = NO_COLOR;
+    char buf[BUFSZ], bufa[BUFSZ], bufb[BUFSZ], bufc[BUFSZ], bufd[BUFSZ],
+        bufu[BUFSZ];
+    anything any;
+    uint8 *cp;
+
+    if (win && id) {
+        cgm = &glyphmap[glyphnum];
+        if (
+#ifdef ENHANCED_SYMBOLS
+            cgm->u ||
+#endif
+            cgm->customcolor != 0) {
+            Sprintf(bufa, "[%04d] %-44s", glyphnum, id);
+            Sprintf(bufb, "'\\%03d' %02d",
+                    gs.showsyms[cgm->sym.symidx], cgm->sym.color);
+            Sprintf(bufc, "%011lx", (unsigned long) cgm->customcolor);
+            bufu[0] = '\0';
+#ifdef ENHANCED_SYMBOLS
+            if (cgm->u && cgm->u->utf8str) {
+                Sprintf(bufu, "U+%04lx", (unsigned long) cgm->u->utf32ch);
+                cp = cgm->u->utf8str;
+                while (*cp) {
+                    Sprintf(bufd, " <%d>", (int) *cp);
+                    Strcat(bufu, bufd);
+                    cp++;
+                }
+            }
+#endif
+            any.a_int = glyphnum + 1; /* avoid 0 */
+            Snprintf(buf, sizeof buf, "%s %s %s %s", bufa, bufb, bufc, bufu);
+            add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, clr, buf,
+                     MENU_ITEMFLAGS_NONE);
+        }
+    }
+    return;
 }
 
 /*wizcmds.c*/

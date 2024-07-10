@@ -5,12 +5,12 @@
 
 #include "hack.h"
 
-static const char *equipname(struct obj *);
-static int unstolenarm(void);
-static int stealarm(void);
-static void worn_item_removal(struct monst *, struct obj *);
+staticfn const char *equipname(struct obj *);
+staticfn int unstolenarm(void);
+staticfn int stealarm(void);
+staticfn void worn_item_removal(struct monst *, struct obj *);
 
-static const char *
+staticfn const char *
 equipname(struct obj *otmp)
 {
     return ((otmp == uarmu) ? shirt_simple_name(otmp)
@@ -156,7 +156,7 @@ unresponsive(void)
 
 /* called via (*ga.afternmv)() when hero finishes taking off armor that
    was slated to be stolen but the thief died in the interim */
-static int
+staticfn int
 unstolenarm(void)
 {
     struct obj *obj;
@@ -174,7 +174,7 @@ unstolenarm(void)
 }
 
 /* finish stealing an item of armor which takes multiple turns to take off */
-static int
+staticfn int
 stealarm(void)
 {
     struct monst *mtmp;
@@ -315,7 +315,7 @@ remove_worn_item(
 }
 
 /* during theft of a worn item: remove_worn_item(), prefaced by a message */
-static void
+staticfn void
 worn_item_removal(
     struct monst *mon,
     struct obj *obj)
@@ -894,7 +894,7 @@ mdrop_obj(
     }
     /* obj_no_longer_held(obj); -- done by place_object */
     if (verbosely && cansee(omx, omy))
-        pline_xy(mon->mx, mon->my, "%s drops %s.", Monnam(mon), obj_name);
+        pline_mon(mon, "%s drops %s.", Monnam(mon), obj_name);
     if (!flooreffects(obj, omx, omy, "fall")) {
         place_object(obj, omx, omy);
         stackobj(obj);

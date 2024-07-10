@@ -6,15 +6,15 @@
     <ProjectGuid>{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>NetHack</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.20348.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="$(vsDir)default.props" />
+  <Import Project="..\default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="$(vsDir)NetHackProperties.props" />
-  <Import Project="$(vsDir)console.props" />
-  <Import Project="$(vsDir)common.props" />
-  <Import Project="$(vsDir)files.props" />
+  <Import Project="..\NetHackProperties.props" />
+  <Import Project="..\console.props" />
+  <Import Project="..\common.props" />
+  <Import Project="..\files.props" />
   <PropertyGroup>
     <OutDir>$(BinDir)</OutDir>
   </PropertyGroup>
@@ -107,6 +107,7 @@
     <ClCompile Include="$(SrcDir)files.c" />
     <ClCompile Include="$(SrcDir)fountain.c" />
     <ClCompile Include="$(SrcDir)getpos.c" />
+    <ClCompile Include="$(SrcDir)glyphs.c" />
     <ClCompile Include="$(SrcDir)hack.c" />
     <ClCompile Include="$(SrcDir)insight.c" />
     <ClCompile Include="$(SrcDir)invent.c" />

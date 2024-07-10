@@ -23,7 +23,6 @@
 #include "dlb.h"
 #include "hacklib.h"
 
-#include <ctype.h>
 #ifdef MAC
 #if defined(__SC__) || defined(__MRC__) /* MPW compilers */
 #define MPWTOOL
@@ -167,13 +166,12 @@ extern void objects_globals_init(void); /* objects.c */
 static char *name_file(const char *, const char *);
 static FILE *getfp(const char *, const char *, const char *, int);
 static void do_ext_makedefs(int, char **);
-#if 0
-static char *xcrypt(const char *);
-#endif
 static char *padline(char *, unsigned);
 static unsigned long read_rumors_file(const char *, int *,
                                       long *, unsigned long, unsigned);
-static void do_rnd_access_file(const char *, const char *, unsigned);
+static void rafile(int);
+static void do_rnd_access_file(const char *, const char *,
+                               const char *, unsigned);
 static boolean d_filter(char *);
 static boolean h_filter(char *);
 static void opt_out_words(char *, int *);
@@ -331,24 +329,14 @@ do_makedefs(char *options)
             break;
         case 's':
         case 'S':
-            /*
-             * post-3.6.5:
-             *  File must not be empty to avoid divide by 0
-             *  in core's rn2(), so provide a default entry.
-             */
-            do_rnd_access_file(EPITAPHFILE,
-                /* default epitaph:  parody of the default engraving */
-                               "No matter where I went, here I am.",
-                               MD_PAD_RUMORS); /* '_RUMORS' is correct here */
-            do_rnd_access_file(ENGRAVEFILE,
-                /* default engraving:  popularized by "The Adventures of
-                   Buckaroo Bonzai Across the 8th Dimension" but predates
-                   that 1984 movie; some attribute it to Confucius */
-                               "No matter where you go, there you are.",
-                               MD_PAD_RUMORS); /* '_RUMORS' used here too */
-            do_rnd_access_file(BOGUSMONFILE,
-                /* default bogusmon:  iconic monster that isn't in nethack */
-                               "grue", MD_PAD_BOGONS);
+            rafile('1');
+            rafile('2');
+            rafile('3');
+            break;
+        case '1':
+        case '2':
+        case '3':
+            rafile(*options);
             break;
 #if defined(OLD_MAKEDEFS_OPTIONS)
 	case 'o':
@@ -420,6 +408,37 @@ oldfunctionality(char sought)
     return "unknown";
 }
 #endif /* !OLD_MAKEDEFS_OPTIONS */
+
+static void
+rafile(int whichone)
+{
+    switch(whichone) {
+            /*
+             * post-3.6.5:
+             *  File must not be empty to avoid divide by 0
+             *  in core's rn2(), so provide a default entry.
+             */
+    case '1':
+            do_rnd_access_file(EPITAPHFILE, "epitaph",
+                /* default epitaph:  parody of the default engraving */
+                               "No matter where I went, here I am.",
+                               MD_PAD_RUMORS); /* '_RUMORS' is correct here */
+            break;
+    case '2':
+            do_rnd_access_file(ENGRAVEFILE, "engrave",
+                /* default engraving:  popularized by "The Adventures of
+                   Buckaroo Bonzai Across the 8th Dimension" but predates
+                   that 1984 movie; some attribute it to Confucius */
+                               "No matter where you go, there you are.",
+                               MD_PAD_RUMORS); /* '_RUMORS' used here too */
+            break;
+    case '3':
+            do_rnd_access_file(BOGUSMONFILE, "bogusmon",
+                /* default bogusmon:  iconic monster that isn't in nethack */
+                               "grue", MD_PAD_BOGONS);
+            break;
+    }
+}
 
 static char namebuf[1000];
 
@@ -977,28 +996,6 @@ grep0(FILE *inputfp0, FILE* outputfp0, int flg)
     return;
 }
 
-#if 0
-/* trivial text encryption routine which can't be broken with `tr' */
-static char *
-xcrypt(const char *str)
-{ /* slightly different version in src/hacklib.c */
-    static char buf[BUFSZ];
-    const char *p;
-    char *q;
-    int bitmask;
-
-    for (bitmask = 1, p = str, q = buf; *p; q++) {
-        *q = *p++;
-        if (*q & (32 | 64))
-            *q ^= bitmask;
-        if ((bitmask <<= 1) >= 32)
-            bitmask = 1;
-    }
-    *q = '\0';
-    return buf;
-}
-#endif
-
 static char *
 padline(char *line, unsigned padlength)
 {
@@ -1083,11 +1080,14 @@ read_rumors_file(
 static void
 do_rnd_access_file(
     const char *fname,
+    const char *basefname,
     const char *deflt_content,
     unsigned padlength)
 {
-    char *line, buf[BUFSZ], xbuf[BUFSZ];
+    char *line, buf[BUFSZ], xbuf[BUFSZ],
+         greptmp[8 + 1 + 3 + 1];
 
+    Sprintf(greptmp, "grep-%.3s.tmp", basefname);
     Sprintf(filename, DATA_IN_TEMPLATE, fname);
     Strcat(filename, ".txt");
     if (!(ifp = fopen(filename, RDTMODE))) {
@@ -1115,12 +1115,12 @@ do_rnd_access_file(
         Strcat(buf, "\n"); /* so make sure that the default one does too    */
     (void) fputs(xcrypt(padline(buf, padlength), xbuf), ofp);
 
-    tfp = getfp(DATA_TEMPLATE, "grep.tmp", WRTMODE, FLG_TEMPFILE);
+    tfp = getfp(DATA_TEMPLATE, greptmp, WRTMODE, FLG_TEMPFILE);
     grep0(ifp, tfp, FLG_TEMPFILE);
 #ifndef HAS_NO_MKSTEMP
     ifp = tfp;
 #else
-    ifp = getfp(DATA_TEMPLATE, "grep.tmp", RDTMODE, 0);
+    ifp = getfp(DATA_TEMPLATE, greptmp, RDTMODE, 0);
 #endif
     set_fgetline_context(NULL, FALSE, FALSE);
 
@@ -1135,7 +1135,7 @@ do_rnd_access_file(
     Fclose(ofp);
 
 #ifdef HAS_NO_MKSTEMP
-    delete_file(DATA_TEMPLATE, "grep.tmp");
+    delete_file(DATA_TEMPLATE, greptmp);
 #endif
     return;
 }
@@ -2063,8 +2063,9 @@ text-b/text-c           at fseek(0x01234567L + 456L)
 void
 do_dungeon(void)
 {
-    char *line;
+    char *line, greptmp[8 + 1 + 3 + 1];
 
+    Sprintf(greptmp, "grep-%.3s.tmp", "dun");
     Sprintf(filename, DATA_IN_TEMPLATE, DGN_I_FILE);
     if (!(ifp = fopen(filename, RDTMODE))) {
         perror(filename);
@@ -2083,12 +2084,12 @@ do_dungeon(void)
     }
     Fprintf(ofp, "%s", Dont_Edit_Data);
 
-    tfp = getfp(DATA_TEMPLATE, "grep.tmp", WRTMODE, FLG_TEMPFILE);
+    tfp = getfp(DATA_TEMPLATE, greptmp, WRTMODE, FLG_TEMPFILE);
     grep0(ifp, tfp, FLG_TEMPFILE);
 #ifndef HAS_NO_MKSTEMP
     ifp = tfp;
 #else
-    ifp = getfp(DATA_TEMPLATE, "grep.tmp", RDTMODE, 0);
+    ifp = getfp(DATA_TEMPLATE, greptmp, RDTMODE, 0);
 #endif
     set_fgetline_context(NULL, FALSE, TRUE);
     while ((line = fgetline(ifp)) != 0) {
@@ -2105,7 +2106,7 @@ do_dungeon(void)
     Fclose(ofp);
 
 #ifdef HAS_NO_MKSTEMP
-    delete_file(DATA_TEMPLATE, "grep.tmp");
+    delete_file(DATA_TEMPLATE, greptmp);
 #endif
     return;
 }
@@ -2202,7 +2203,7 @@ macronamelimit(char *name, int pref)
 void
 do_objs(void)
 {
-    int i, sum UNUSED = 0;
+    int i /*, sum = 0 */;
     char *c, *objnam;
     int nspell = 0;
     int prefix = 0;
@@ -2242,7 +2243,7 @@ do_objs(void)
             }
 #endif /*0*/
             class = objects[i].oc_class;
-            sum = 0;
+            /* sum = 0; */
         }
 
         for (c = objnam; *c; c++)
@@ -2315,7 +2316,7 @@ do_objs(void)
             Fprintf(ofp, "%s\t%d\n", macronamelimit(objnam, prefix), i);
         prefix = 0;
 
-        sum += objects[i].oc_prob;
+        /* sum += objects[i].oc_prob; */
 
         if (sumerr)
             break;

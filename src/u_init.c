@@ -1,4 +1,4 @@
-/* NetHack 3.7	u_init.c	$NHDT-Date: 1621131203 2021/05/16 02:13:23 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.75 $ */
+/* NetHack 3.7	u_init.c	$NHDT-Date: 1711165379 2024/03/23 03:42:59 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.106 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -13,20 +13,20 @@ struct trobj {
     Bitfield(trbless, 2);
 };
 
-static struct obj *ini_inv_mkobj_filter(int, boolean);
-static short ini_inv_obj_substitution(struct trobj *,
+staticfn struct obj *ini_inv_mkobj_filter(int, boolean);
+staticfn short ini_inv_obj_substitution(struct trobj *,
                                       struct obj *) NONNULLPTRS;
-static void ini_inv_adjust_obj(struct trobj *,
+staticfn void ini_inv_adjust_obj(struct trobj *,
                                struct obj *) NONNULLPTRS;
-static void ini_inv_use_obj(struct obj *) NONNULLARG1;
-static void ini_inv(struct trobj *) NONNULLARG1;
-static void knows_object(int);
-static void knows_class(char);
-static void set_skill_cap_minimum(int, int);
-static void u_init_role(void);
-static void u_init_race(void);
-static void u_init_carry_attr_boost(void);
-static boolean restricted_spell_discipline(int);
+staticfn void ini_inv_use_obj(struct obj *) NONNULLARG1;
+staticfn void ini_inv(struct trobj *) NONNULLARG1;
+staticfn void knows_object(int);
+staticfn void knows_class(char);
+staticfn void set_skill_cap_minimum(int, int);
+staticfn void u_init_role(void);
+staticfn void u_init_race(void);
+staticfn void u_init_carry_attr_boost(void);
+staticfn boolean restricted_spell_discipline(int);
 
 #define UNDEF_TYP 0
 #define UNDEF_SPE '\177'
@@ -184,8 +184,6 @@ static struct trobj Valkyrie[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Wizard[] = {
-#define W_MULTSTART 2
-#define W_MULTEND 6
     { QUARTERSTAFF, 1, WEAPON_CLASS, 1, 1 },
     { CLOAK_OF_PROTECTION, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS },
@@ -583,7 +581,7 @@ static const struct def_skill Skill_W[] = {
     { P_NONE, 0 }
 };
 
-static void
+staticfn void
 knows_object(int obj)
 {
     discover_object(obj, TRUE, FALSE);
@@ -592,7 +590,7 @@ knows_object(int obj)
 
 /* Know ordinary (non-magical) objects of a certain class,
    like all gems except the loadstone and luckstone. */
-static void
+staticfn void
 knows_class(char sym)
 {
     struct obj odummy, *o;
@@ -634,7 +632,7 @@ knows_class(char sym)
 }
 
 /* role-specific initializations */
-static void
+staticfn void
 u_init_role(void)
 {
     int i;
@@ -785,7 +783,7 @@ u_init_role(void)
 }
 
 /* race-specific initializations */
-static void
+staticfn void
 u_init_race(void)
 {
     switch (Race_switch) {
@@ -903,7 +901,7 @@ u_init_race(void)
 }
 
 /* boost STR and CON until hero can carry inventory */
-static void
+staticfn void
 u_init_carry_attr_boost(void)
 {
     /* make sure you can carry all you have - especially for Tourists */
@@ -918,7 +916,7 @@ u_init_carry_attr_boost(void)
 }
 
 /* Adjust a skill cap to a specified minimum. */
-void
+staticfn void
 set_skill_cap_minimum(int skill, int minimum)
 {
     if (P_MAX_SKILL(skill) < minimum) {
@@ -1003,6 +1001,8 @@ u_init(void)
      */
     u.nv_range = 1;
     u.xray_range = -1;
+    u.unblind_telepat_range = -1;
+
     /* OPTIONS:blind results in permanent blindness (unless overridden
        by the Eyes of the Overworld, which will clear 'u.uroleplay.blind'
        to void the conduct, but will leave the PermaBlind bit set so that
@@ -1045,7 +1045,7 @@ u_init(void)
 }
 
 /* skills aren't initialized, so we use the role-specific skill lists */
-static boolean
+staticfn boolean
 restricted_spell_discipline(int otyp)
 {
     const struct def_skill *skills;
@@ -1108,7 +1108,7 @@ restricted_spell_discipline(int otyp)
 }
 
 /* create random object of certain class, filtering out too powerful items */
-static struct obj *
+staticfn struct obj *
 ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
 {
     struct obj *obj;
@@ -1178,7 +1178,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
 
 /* substitute object with something else based on race.
    only changes otyp, and returns it. */
-static short
+staticfn short
 ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
 {
     if (gu.urace.mnum != PM_HUMAN) {
@@ -1202,7 +1202,7 @@ ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
     return obj->otyp;
 }
 
-static void
+staticfn void
 ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
 {
     if (trop->trclass == COIN_CLASS) {
@@ -1245,7 +1245,7 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
 }
 
 /* initial inventory: wear, wield, learn the spell/obj */
-static void
+staticfn void
 ini_inv_use_obj(struct obj *obj)
 {
     /* Make the type known if necessary */
@@ -1292,7 +1292,7 @@ ini_inv_use_obj(struct obj *obj)
         initialspell(obj);
 }
 
-static void
+staticfn void
 ini_inv(struct trobj *trop)
 {
     struct obj *obj;
@@ -1370,5 +1370,19 @@ ini_inv(struct trobj *trop)
         trop++;
     }
 }
+
+#undef UNDEF_TYP
+#undef UNDEF_SPE
+#undef UNDEF_BLESS
+#undef B_MAJOR
+#undef B_MINOR
+#undef C_AMMO
+#undef M_BOOK
+#undef RAN_BOW
+#undef RAN_TWO_ARROWS
+#undef RAN_ZERO_ARROWS
+#undef R_DAGGERS
+#undef S_ARROWS
+#undef T_DARTS
 
 /*u_init.c*/

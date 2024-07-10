@@ -17,24 +17,24 @@
 
 #include "hack.h"
 
-static boolean isbig(struct mkroom *);
-static struct mkroom *pick_room(boolean);
-static void mkshop(void), mkzoo(int), mkswamp(void);
-static void mk_zoo_thronemon(coordxy, coordxy);
-static void mktemple(void);
-static coord *shrine_pos(int);
-static struct permonst *morguemon(void);
-static struct permonst *squadmon(void);
-static struct permonst *realzoomon(void);
-static void save_room(NHFILE *, struct mkroom *);
-static void rest_room(NHFILE *, struct mkroom *);
-static boolean invalid_shop_shape(struct mkroom *sroom);
+staticfn boolean isbig(struct mkroom *);
+staticfn struct mkroom *pick_room(boolean);
+staticfn void mkshop(void), mkzoo(int), mkswamp(void);
+staticfn void mk_zoo_thronemon(coordxy, coordxy);
+staticfn void mktemple(void);
+staticfn coord *shrine_pos(int);
+staticfn struct permonst *morguemon(void);
+staticfn struct permonst *squadmon(void);
+staticfn struct permonst *realzoomon(void);
+staticfn void save_room(NHFILE *, struct mkroom *);
+staticfn void rest_room(NHFILE *, struct mkroom *);
+staticfn boolean invalid_shop_shape(struct mkroom *sroom);
 
 #define sq(x) ((x) * (x))
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
-static boolean
+staticfn boolean
 isbig(struct mkroom *sroom)
 {
     int area = (sroom->hx - sroom->lx + 1)
@@ -96,7 +96,7 @@ do_mkroom(int roomtype)
     }
 }
 
-static void
+staticfn void
 mkshop(void)
 {
     struct mkroom *sroom;
@@ -221,7 +221,7 @@ mkshop(void)
 }
 
 /* pick an unused room, preferably with only one door */
-static struct mkroom *
+staticfn struct mkroom *
 pick_room(boolean strict)
 {
     struct mkroom *sroom;
@@ -245,7 +245,7 @@ pick_room(boolean strict)
     return (struct mkroom *) 0;
 }
 
-static void
+staticfn void
 mkzoo(int type)
 {
     struct mkroom *sroom;
@@ -258,7 +258,7 @@ mkzoo(int type)
     }
 }
 
-static void
+staticfn void
 mk_zoo_thronemon(coordxy x, coordxy y)
 {
     int i = rnd(level_difficulty());
@@ -495,7 +495,7 @@ mkundead(
     gl.level.flags.graveyard = TRUE; /* reduced chance for undead corpse */
 }
 
-static struct permonst *
+staticfn struct permonst *
 morguemon(void)
 {
     int i = rn2(100), hd = rn2(level_difficulty());
@@ -550,7 +550,7 @@ antholemon(void)
                                              : &mons[mtyp]);
 }
 
-static void
+staticfn void
 mkswamp(void) /* Michiel Huisjes & Fred de Wilde */
 {
     struct mkroom *sroom;
@@ -600,7 +600,7 @@ mkswamp(void) /* Michiel Huisjes & Fred de Wilde */
     }
 }
 
-static coord *
+staticfn coord *
 shrine_pos(int roomno)
 {
     static coord buf;
@@ -621,7 +621,7 @@ shrine_pos(int roomno)
     return &buf;
 }
 
-static void
+staticfn void
 mktemple(void)
 {
     struct mkroom *sroom;
@@ -832,7 +832,7 @@ courtmon(void)
 }
 
 /* return real zoo monster types. */
-static struct permonst *
+staticfn struct permonst *
 realzoomon(void)
 {
     int i = rn2(60) + rn2(3 * level_difficulty());
@@ -867,7 +867,7 @@ static const struct {
                   { PM_CAPTAIN, 1 } };
 
 /* return soldier types. */
-static struct permonst *
+staticfn struct permonst *
 squadmon(void)
 {
     int sel_prob, i, cpro, mndx;
@@ -894,7 +894,7 @@ squadmon(void)
  * save_room : A recursive function that saves a room and its subrooms
  * (if any).
  */
-static void
+staticfn void
 save_room(NHFILE *nhfp, struct mkroom *r)
 {
     short i;
@@ -926,7 +926,7 @@ save_rooms(NHFILE *nhfp)
         save_room(nhfp, &gr.rooms[i]);
 }
 
-static void
+staticfn void
 rest_room(NHFILE *nhfp, struct mkroom *r)
 {
     short i;
@@ -1105,7 +1105,7 @@ cmap_to_type(int sym)
  * Note that the invalidity of the shape derives from the position of its door
  * already being chosen. It's quite possible that if the door were somewhere
  * else on the perimeter of this room, it would work fine as a shop.*/
-static boolean
+staticfn boolean
 invalid_shop_shape(struct mkroom *sroom)
 {
     coordxy x, y;

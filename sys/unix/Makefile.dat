@@ -104,13 +104,13 @@ oracles:	oracles.txt ../util/makedefs
 	../util/makedefs -h
 
 engrave:	engrave.txt ../util/makedefs
-	../util/makedefs -s
+	../util/makedefs -2
 
 epitaph:	epitaph.txt ../util/makedefs
-	../util/makedefs -s
+	../util/makedefs -1
 
 bogusmon:	bogusmon.txt ../util/makedefs
-	../util/makedefs -s
+	../util/makedefs -3
 
 options:	../util/makedefs
 	../util/makedefs -v

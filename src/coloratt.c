@@ -1,4 +1,4 @@
-/* NetHack 3.7	coloratt.c	$NHDT-Date: 1709559438 2024/03/04 13:37:18 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1 $ */
+/* NetHack 3.7	coloratt.c	$NHDT-Date: 1710792438 2024/03/18 20:07:18 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.2 $ */
 /* Copyright (c) Pasi Kallinen, 2024 */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -218,6 +218,10 @@ static struct nethack_color colortable[] = {
   { rgb_color, 153, 137, "white-smoke",             "#F5F5F5", 245, 245, 245 },
   { rgb_color, 154, 138, "white",                   "#FFFFFF", 255, 255, 255 },
 };
+
+#ifdef CHANGE_COLOR
+staticfn int32 alt_color_spec(const char *cp);
+#endif
 
 int32
 colortable_to_int32(struct nethack_color *cte)
@@ -507,13 +511,16 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 
 extern const char regex_id[]; /* from sys/share/<various>regex.{c,cpp} */
 
-/* True: temporarily replace menu color entries with a fake set of menu
-   colors, { "light blue"=light_blue, "blue"=blue, "red"=red, &c }, that
-   illustrates most colors for use when the pick-a-color menu is rendered;
-   suppresses black and white because one of those will likely be invisible
-   due to matching the background; False: restore user-specified colorings */
+/* set up a menu for picking a color, one that shows each name in its color;
+   overrides player's MENUCOLORS with a set of "blue"=blue, "red"=red, and
+   so forth; suppresses color for black and white because one of those will
+   likely be invisible due to matching the background; the alternate set of
+   MENUCOLORS is kept around for potential re-use */
 void
-basic_menu_colors(boolean load_colors)
+basic_menu_colors(
+    boolean load_colors) /* True: temporarily replace menu color entries with
+                          * a fake set of menu colors which match their names;
+                          * False: restore user-specified colorings */
 {
     if (load_colors) {
         /* replace normal menu colors with a set specifically for colors */
@@ -537,7 +544,9 @@ basic_menu_colors(boolean load_colors)
 
             /* this orders the patterns last-in/first-out; that means
                that the "light <foo>" variations come before the basic
-               "<foo>" ones, which is exactly what we want */
+               "<foo>" ones, which is exactly what we want (so that the
+               shorter basic names won't get false matches as substrings
+               of the longer ones) */
             for (i = 0; i < SIZE(colornames); ++i) {
                 if (!colornames[i].name) /* first alias entry has no name */
                     break;
@@ -703,17 +712,448 @@ count_menucolors(void)
 int32
 check_enhanced_colors(char *buf)
 {
+    char xtra = '\0'; /* used to catch trailing junk after "#rrggbb" */
+    unsigned r, g, b;
     int32 retcolor = -1, color;
 
     if ((color = match_str2clr(buf, TRUE)) != CLR_MAX)  {
         retcolor = color | NH_BASIC_COLOR;
+    } else if (sscanf(buf, "#%02x%02x%02x%c", &r, &g, &b, &xtra) >= 3) {
+        retcolor = !xtra ? (int32) ((r << 16) | (g << 8) | b) : -1;
     } else {
-        for (color = 0; color < SIZE(colortable); ++color) {
-            if (!strcmpi(buf, colortable[color].name))
-                retcolor = colortable_to_int32(&colortable[color]);
+        /* altbuf: allow user's "grey" to match colortable[]'s "gray";
+         * fuzzymatch(): ignore spaces, hyphens, and underscores so that
+         * space or underscore in user-supplied name will match hyphen
+         * [note: caller splits text at spaces so we won't see any here]
+         */
+        char *altbuf = NULL, *grey = strstri(buf, "grey");
+        ptrdiff_t greyoffset = grey ? (grey - buf) : -1;
+
+        if (greyoffset >= 0) {
+            altbuf = dupstr(buf);
+            /* use direct copy because strsubst() is case-sensitive */
+            /*(void) strncpy(&altbuf[greyoffset], "gray", 4);*/
+            (void) memcpy(altbuf + greyoffset, "gray", 4);
         }
+        for (color = 0; color < SIZE(colortable); ++color) {
+            if (fuzzymatch(buf, colortable[color].name, " -_", TRUE)
+                || (altbuf && fuzzymatch(altbuf, colortable[color].name,
+                                         " -_", TRUE))) {
+                retcolor = colortable_to_int32(&colortable[color]);
+                break;
+            }
+        }
+        if (altbuf)
+            free(altbuf);
     }
     return retcolor;
 }
 
+/* return the canonical name of a particular color */
+const char *
+wc_color_name(int32 colorindx)
+{
+    static char hexcolor[sizeof "#rrggbb"]; /* includes room for '\0' */
+    const char *result = "no-color";
 
+    if (colorindx >= 0) {
+        int32 basicindx = colorindx & ~NH_BASIC_COLOR;
+
+        /* if colorindx has NH_BASIC_COLOR bit set, basicindx won't,
+           so differing implies a basic color */
+        if (basicindx != colorindx) {
+            assert(basicindx < 16);
+            result = colortable[basicindx].name;
+        } else {
+            int indx;
+            long r = (colorindx >> 16) & 0x0000ff, /* shift rrXXXX to rr */
+                 g = (colorindx >> 8) & 0x0000ff,  /* shift XXggXX to gg */
+                 b = colorindx & 0x0000ff;         /* mask  XXXXbb to bb */
+
+            Snprintf(hexcolor, sizeof hexcolor, "#%02x%02x%02x",
+                     (uint8) r, (uint8) g, (uint8) b);
+            result = hexcolor;
+            /* override hex value if this is a named color */
+            for (indx = 16; indx < SIZE(colortable); ++indx)
+                if (colortable[indx].r == r
+                    && colortable[indx].g == g
+                    && colortable[indx].b == b) {
+                    result = colortable[indx].name;
+                    break;
+                }
+        }
+    }
+    return result;
+}
+
+/* hexdd[] is defined in decl.c */
+boolean
+onlyhexdigits(const char *buf)
+{
+    const char *dp = buf;
+
+    for (dp = buf; *dp; ++dp) {
+        if (!(strchr(hexdd, *dp) || *dp == '-'))
+            return FALSE;
+    }
+    return TRUE;
+}
+
+int32_t
+rgbstr_to_int32(const char *rgbstr)
+{
+    int r, g, b, milestone = 0;
+    char *cp, *c_r, *c_g, *c_b;
+    int32_t rgb = 0;
+    char buf[BUFSZ];
+    boolean dash = FALSE;
+
+
+    Snprintf(buf, sizeof buf, "%s",
+             rgbstr ? rgbstr : "");
+
+    if (*buf && onlyhexdigits(buf)) {
+        r = g = b = 0;
+        c_g = c_b = (char *) 0;
+        c_r = cp = buf;
+        while (*cp) {
+            if (digit(*cp) || *cp == '-') {
+                if (*cp == '-') {
+                    *cp = '\0';
+                    milestone++;
+                    dash = TRUE;
+                }
+                cp++;
+                if (dash) {
+                    if (milestone < 2)
+                        c_g = cp;
+                    else
+                        c_b = cp;
+                    dash = FALSE;
+                }
+            } else {
+                return -1L;
+            }
+        }
+        /* sanity checks */
+        if (c_r && c_g && c_b
+            && (strlen(c_r) > 0 && strlen(c_r) < 4)
+            && (strlen(c_g) > 0 && strlen(c_g) < 4)
+            && (strlen(c_b) > 0 && strlen(c_b) < 4)) {
+            r = atoi(c_r);
+            g = atoi(c_g);
+            b = atoi(c_b);
+            rgb = (r << 16) | (g << 8) | (b << 0);
+            return rgb;
+        }
+    } else if (*buf) {
+        /* perhaps an enhanced color name was used instead of rgb value? */
+        if ((rgb = check_enhanced_colors(buf)) != -1) {
+            return rgb;
+        }
+    }
+    return -1;
+}
+
+int
+set_map_customcolor(glyph_map *gmap, uint32 nhcolor)
+{
+    glyph_map *tmpgm = gmap;
+    uint32 closecolor = 0;
+    uint16 clridx = 0;
+
+    if (!tmpgm)
+        return 0;
+
+    gmap->customcolor = nhcolor;
+    if (closest_color(nhcolor, &closecolor, &clridx))
+        gmap->color256idx = clridx;
+    else
+        gmap->color256idx = 0;
+    return 1;
+}
+
+static struct {
+    int index;
+    uint32 value;
+} color_256_definitions[] = {
+    /* color values are from unnethack */
+    {  16, 0x000000 }, {  17, 0x00005f }, {  18, 0x000087 },
+    {  19, 0x0000af }, {  20, 0x0000d7 }, {  21, 0x0000ff },
+    {  22, 0x005f00 }, {  23, 0x005f5f }, {  24, 0x005f87 },
+    {  25, 0x005faf }, {  26, 0x005fd7 }, {  27, 0x005fff },
+    {  28, 0x008700 }, {  29, 0x00875f }, {  30, 0x008787 },
+    {  31, 0x0087af }, {  32, 0x0087d7 }, {  33, 0x0087ff },
+    {  34, 0x00af00 }, {  35, 0x00af5f }, {  36, 0x00af87 },
+    {  37, 0x00afaf }, {  38, 0x00afd7 }, {  39, 0x00afff },
+    {  40, 0x00d700 }, {  41, 0x00d75f }, {  42, 0x00d787 },
+    {  43, 0x00d7af }, {  44, 0x00d7d7 }, {  45, 0x00d7ff },
+    {  46, 0x00ff00 }, {  47, 0x00ff5f }, {  48, 0x00ff87 },
+    {  49, 0x00ffaf }, {  50, 0x00ffd7 }, {  51, 0x00ffff },
+    {  52, 0x5f0000 }, {  53, 0x5f005f }, {  54, 0x5f0087 },
+    {  55, 0x5f00af }, {  56, 0x5f00d7 }, {  57, 0x5f00ff },
+    {  58, 0x5f5f00 }, {  59, 0x5f5f5f }, {  60, 0x5f5f87 },
+    {  61, 0x5f5faf }, {  62, 0x5f5fd7 }, {  63, 0x5f5fff },
+    {  64, 0x5f8700 }, {  65, 0x5f875f }, {  66, 0x5f8787 },
+    {  67, 0x5f87af }, {  68, 0x5f87d7 }, {  69, 0x5f87ff },
+    {  70, 0x5faf00 }, {  71, 0x5faf5f }, {  72, 0x5faf87 },
+    {  73, 0x5fafaf }, {  74, 0x5fafd7 }, {  75, 0x5fafff },
+    {  76, 0x5fd700 }, {  77, 0x5fd75f }, {  78, 0x5fd787 },
+    {  79, 0x5fd7af }, {  80, 0x5fd7d7 }, {  81, 0x5fd7ff },
+    {  82, 0x5fff00 }, {  83, 0x5fff5f }, {  84, 0x5fff87 },
+    {  85, 0x5fffaf }, {  86, 0x5fffd7 }, {  87, 0x5fffff },
+    {  88, 0x870000 }, {  89, 0x87005f }, {  90, 0x870087 },
+    {  91, 0x8700af }, {  92, 0x8700d7 }, {  93, 0x8700ff },
+    {  94, 0x875f00 }, {  95, 0x875f5f }, {  96, 0x875f87 },
+    {  97, 0x875faf }, {  98, 0x875fd7 }, {  99, 0x875fff },
+    { 100, 0x878700 }, { 101, 0x87875f }, { 102, 0x878787 },
+    { 103, 0x8787af }, { 104, 0x8787d7 }, { 105, 0x8787ff },
+    { 106, 0x87af00 }, { 107, 0x87af5f }, { 108, 0x87af87 },
+    { 109, 0x87afaf }, { 110, 0x87afd7 }, { 111, 0x87afff },
+    { 112, 0x87d700 }, { 113, 0x87d75f }, { 114, 0x87d787 },
+    { 115, 0x87d7af }, { 116, 0x87d7d7 }, { 117, 0x87d7ff },
+    { 118, 0x87ff00 }, { 119, 0x87ff5f }, { 120, 0x87ff87 },
+    { 121, 0x87ffaf }, { 122, 0x87ffd7 }, { 123, 0x87ffff },
+    { 124, 0xaf0000 }, { 125, 0xaf005f }, { 126, 0xaf0087 },
+    { 127, 0xaf00af }, { 128, 0xaf00d7 }, { 129, 0xaf00ff },
+    { 130, 0xaf5f00 }, { 131, 0xaf5f5f }, { 132, 0xaf5f87 },
+    { 133, 0xaf5faf }, { 134, 0xaf5fd7 }, { 135, 0xaf5fff },
+    { 136, 0xaf8700 }, { 137, 0xaf875f }, { 138, 0xaf8787 },
+    { 139, 0xaf87af }, { 140, 0xaf87d7 }, { 141, 0xaf87ff },
+    { 142, 0xafaf00 }, { 143, 0xafaf5f }, { 144, 0xafaf87 },
+    { 145, 0xafafaf }, { 146, 0xafafd7 }, { 147, 0xafafff },
+    { 148, 0xafd700 }, { 149, 0xafd75f }, { 150, 0xafd787 },
+    { 151, 0xafd7af }, { 152, 0xafd7d7 }, { 153, 0xafd7ff },
+    { 154, 0xafff00 }, { 155, 0xafff5f }, { 156, 0xafff87 },
+    { 157, 0xafffaf }, { 158, 0xafffd7 }, { 159, 0xafffff },
+    { 160, 0xd70000 }, { 161, 0xd7005f }, { 162, 0xd70087 },
+    { 163, 0xd700af }, { 164, 0xd700d7 }, { 165, 0xd700ff },
+    { 166, 0xd75f00 }, { 167, 0xd75f5f }, { 168, 0xd75f87 },
+    { 169, 0xd75faf }, { 170, 0xd75fd7 }, { 171, 0xd75fff },
+    { 172, 0xd78700 }, { 173, 0xd7875f }, { 174, 0xd78787 },
+    { 175, 0xd787af }, { 176, 0xd787d7 }, { 177, 0xd787ff },
+    { 178, 0xd7af00 }, { 179, 0xd7af5f }, { 180, 0xd7af87 },
+    { 181, 0xd7afaf }, { 182, 0xd7afd7 }, { 183, 0xd7afff },
+    { 184, 0xd7d700 }, { 185, 0xd7d75f }, { 186, 0xd7d787 },
+    { 187, 0xd7d7af }, { 188, 0xd7d7d7 }, { 189, 0xd7d7ff },
+    { 190, 0xd7ff00 }, { 191, 0xd7ff5f }, { 192, 0xd7ff87 },
+    { 193, 0xd7ffaf }, { 194, 0xd7ffd7 }, { 195, 0xd7ffff },
+    { 196, 0xff0000 }, { 197, 0xff005f }, { 198, 0xff0087 },
+    { 199, 0xff00af }, { 200, 0xff00d7 }, { 201, 0xff00ff },
+    { 202, 0xff5f00 }, { 203, 0xff5f5f }, { 204, 0xff5f87 },
+    { 205, 0xff5faf }, { 206, 0xff5fd7 }, { 207, 0xff5fff },
+    { 208, 0xff8700 }, { 209, 0xff875f }, { 210, 0xff8787 },
+    { 211, 0xff87af }, { 212, 0xff87d7 }, { 213, 0xff87ff },
+    { 214, 0xffaf00 }, { 215, 0xffaf5f }, { 216, 0xffaf87 },
+    { 217, 0xffafaf }, { 218, 0xffafd7 }, { 219, 0xffafff },
+    { 220, 0xffd700 }, { 221, 0xffd75f }, { 222, 0xffd787 },
+    { 223, 0xffd7af }, { 224, 0xffd7d7 }, { 225, 0xffd7ff },
+    { 226, 0xffff00 }, { 227, 0xffff5f }, { 228, 0xffff87 },
+    { 229, 0xffffaf }, { 230, 0xffffd7 }, { 231, 0xffffff },
+    { 232, 0x080808 }, { 233, 0x121212 }, { 234, 0x1c1c1c },
+    { 235, 0x262626 }, { 236, 0x303030 }, { 237, 0x3a3a3a },
+    { 238, 0x444444 }, { 239, 0x4e4e4e }, { 240, 0x585858 },
+    { 241, 0x626262 }, { 242, 0x6c6c6c }, { 243, 0x767676 },
+    { 244, 0x808080 }, { 245, 0x8a8a8a }, { 246, 0x949494 },
+    { 247, 0x9e9e9e }, { 248, 0xa8a8a8 }, { 249, 0xb2b2b2 },
+    { 250, 0xbcbcbc }, { 251, 0xc6c6c6 }, { 252, 0xd0d0d0 },
+    { 253, 0xdadada }, { 254, 0xe4e4e4 }, { 255, 0xeeeeee },
+};
+
+/** Calculate the color distance between two colors.
+ *
+ * Algorithm taken from UnNetHack which took it from
+ * https://www.compuphase.com/cmetric.htm
+ **/
+
+int
+color_distance(uint32_t rgb1, uint32_t rgb2)
+{
+    int r1 = (rgb1 >> 16) & 0xFF;
+    int g1 = (rgb1 >> 8) & 0xFF;
+    int b1 = (rgb1) & 0xFF;
+    int r2 = (rgb2 >> 16) & 0xFF;
+    int g2 = (rgb2 >> 8) & 0xFF;
+    int b2 = (rgb2) & 0xFF;
+
+    int rmean = (r1 + r2) / 2;
+    int r = r1 - r2;
+    int g = g1 - g2;
+    int b = b1 - b2;
+    return ((((512 + rmean) * r * r) >> 8) + 4 * g * g
+            + (((767 - rmean) * b * b) >> 8));
+}
+
+boolean
+closest_color(uint32 lcolor, uint32 *closecolor, uint16 *clridx)
+{
+    int i, color_index = -1, similar = INT_MAX, current;
+    boolean retbool = FALSE;
+
+    for (i = 0; i < SIZE(color_256_definitions); i++) {
+        /* look for an exact match */
+        if (lcolor == color_256_definitions[i].value) {
+            color_index = i;
+            break;
+        }
+        /* find a close color match */
+        current = color_distance(lcolor, color_256_definitions[i].value);
+        if (current < similar) {
+            color_index = i;
+            similar = current;
+        }
+    }
+    if (closecolor && clridx && color_index >= 0) {
+        *closecolor = color_256_definitions[color_index].value;
+        *clridx = color_256_definitions[color_index].index;
+        retbool = TRUE;
+    }
+    return retbool;
+}
+
+uint32
+get_nhcolor_from_256_index(int idx)
+{
+    uint32 retcolor = NO_COLOR | NH_BASIC_COLOR;
+
+    if (IndexOk(idx, color_256_definitions))
+        retcolor = color_256_definitions[idx].value;
+    return retcolor;
+}
+
+#ifdef CHANGE_COLOR
+
+int
+count_alt_palette(void)
+{
+    int clr, clrcount = 0;
+
+    for (clr = 0; clr < CLR_MAX; ++clr) {
+        if (ga.altpalette[clr] != 0U)
+            clrcount++;
+    }
+    return clrcount;
+}
+
+int
+alternative_palette(char *op)
+{
+    char buf[BUFSZ], *c_colorid, *c_colorval, *cp;
+    int reslt = 0, coloridx = CLR_MAX;
+    long rgb = 0L;
+    boolean slash = FALSE;
+
+    if (!op)
+        return 0;
+
+    Snprintf(buf, sizeof buf, "%s", op);
+    c_colorval = (char *) 0;
+    c_colorid = cp = buf;
+    while (*cp) {
+        if (*cp == ':' || *cp == '/') {
+            if (*cp == '/') {
+                slash = TRUE;
+                *cp = '\0';
+            }
+        }
+        cp++;
+        if (slash) {
+            c_colorval = cp;
+            slash = FALSE;
+        }
+    }
+    /* some sanity checks */
+    if (c_colorid && *c_colorid == ' ')
+        c_colorid++;
+    if (c_colorval && *c_colorval == ' ')
+        c_colorval++;
+    if (c_colorid)
+        coloridx = match_str2clr(c_colorid, TRUE);
+
+    if (c_colorval && coloridx >= 0 && coloridx < CLR_MAX) {
+        rgb = rgbstr_to_int32(c_colorval);
+        if (rgb == -1) {
+            rgb = alt_color_spec(c_colorval);
+        }
+        if (rgb != -1) {
+            ga.altpalette[coloridx] = (uint32) rgb | NH_ALTPALETTE;
+            /* use COLORVAL(ga.altpalette[coloridx]) to get
+               the actual rgb value out of ga.altpalette[] */
+            reslt = 1;
+        }
+    }
+    return reslt;
+}
+
+void
+change_palette(void)
+{
+    int clridx;
+
+    for (clridx = 0; clridx < CLR_MAX; ++clridx) {
+        if (ga.altpalette[clridx] != 0) {
+            long rgb = (long) COLORVAL(ga.altpalette[clridx]);
+            (*windowprocs.win_change_color)(clridx, rgb, 0);
+        }
+    }
+}
+
+staticfn int32
+alt_color_spec(const char *str)
+{
+    static NEARDATA const char oct[] = "01234567", dec[] = "0123456789";
+    /* hexdd[] is defined in decl.c */
+
+    const char *dp, *cp = str;
+    int32 cval = -1;
+    int dcount, dlimit = 6;
+    boolean hexescape = FALSE, octescape = FALSE;
+
+    dcount = 0; /* for decimal, octal, hexadecimal cases */
+    hexescape =
+        (*cp == '\\' && cp[1] && (cp[1] == 'x' || cp[1] == 'X') && cp[2]);
+    if (!hexescape) {
+        octescape =
+            (*cp == '\\' && cp[1] && (cp[1] == 'o' || cp[1] == 'O') && cp[2]);
+    }
+
+    if (hexescape || octescape) {
+        cval = 0;
+        cp += 2;
+        if (octescape)
+            dlimit = 8;
+    } else if (*cp == '#' && cp[1]) {
+        hexescape = TRUE;
+        cval = 0;
+        cp += 1;
+    } else if (cp[1]) {
+        cval = 0;
+        dlimit = 8;
+    } else if (!cp[1]) {
+        if (strchr(dec, *cp) != 0) {
+            /* simple val, or nothing left for \ to escape */
+            cval = (*cp - '0');
+        }
+        dlimit = 1;
+        cp++;
+    }
+
+    while (*cp) {
+        if (!hexescape && !octescape && strchr(dec, *cp)) {
+            cval = (cval * 10) + (*cp - '0');
+        } else if (octescape && strchr(oct, *cp)) {
+            cval = (cval * 8) + (*cp - '0');
+        } else if (hexescape && (dp = strchr(hexdd, *cp)) != 0) {
+            cval = (cval * 16) + ((int) (dp - hexdd) / 2);
+        }
+        ++cp;
+        if (++dcount > dlimit) {
+            cval = -1;
+            break;
+        }
+    }
+    return cval;
+}
+#endif /* CHANGE_COLOR */
+
+/*coloratt.c*/

@@ -1,4 +1,4 @@
-/* NetHack 3.7	winX.c	$NHDT-Date: 1643491577 2022/01/29 21:26:17 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.110 $ */
+/* NetHack 3.7	winX.c	$NHDT-Date: 1717967337 2024/06/09 21:08:57 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.136 $ */
 /* Copyright (c) Dean Luick, 1992                                 */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -2219,8 +2219,15 @@ yn_key(Widget w, XEvent *event, String *params, Cardinal *num_params)
         } else {
             if (yn_getting_num) {
                 if (digit(ch)) {
+                    long dgt = (long) (ch - '0');
+
                     yn_ndigits++;
-                    yn_val = (yn_val * 10) + (long) (ch - '0');
+                    /* yn_val = (10 * yn_val) + (ch - '0'); */
+                    yn_val = AppendLongDigit(yn_val, dgt);
+                    if (yn_val < 0L) {
+                        yn_ndigits = 0;
+                        yn_val = 0;
+                    }
                     return; /* wait for more input */
                 }
                 if (yn_ndigits && (ch == '\b' || ch == 127 /*DEL*/)) {
@@ -2655,7 +2662,7 @@ init_standard_windows(void)
     XtSetArg(args[num_args], nhStr(XtNbottom), XtChainBottom); num_args++;
     XtSetValues(map_viewport, args, num_args);
 
-    /* Create the status window, with the form as it's parent. */
+    /* Create the status window, with the form as its parent. */
     status_win = find_free_window();
     wp = &window_list[status_win];
     wp->cursx = wp->cursy = wp->pixel_width = wp->pixel_height = 0;

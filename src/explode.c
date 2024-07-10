@@ -4,8 +4,8 @@
 
 #include "hack.h"
 
-static int explosionmask(struct monst *, uchar, char) NONNULLARG1;
-static void engulfer_explosion_msg(uchar, char);
+staticfn int explosionmask(struct monst *, uchar, char) NONNULLARG1;
+staticfn void engulfer_explosion_msg(uchar, char);
 
 /* Note: Arrays are column first, while the screen is row first */
 static const int explosion[3][3] = {
@@ -22,7 +22,7 @@ enum explode_action {
 };
 
 /* check if shield effects are needed for location affected by explosion */
-static int
+staticfn int
 explosionmask(
     struct monst *m, /* target monster (might be youmonst) */
     uchar adtyp,     /* damage type */
@@ -111,7 +111,7 @@ explosionmask(
     return res;
 }
 
-static void
+staticfn void
 engulfer_explosion_msg(uchar adtyp, char olet)
 {
     const char *adj = (char *) 0;
@@ -860,7 +860,10 @@ scatter(coordxy sx, coordxy sy,  /* location of objects to scatter */
                 gt.thrownobj = stmp->obj; /* mainly in case it kills hero */
                 gb.bhitpos.x = stmp->ox + stmp->dx;
                 gb.bhitpos.y = stmp->oy + stmp->dy;
-                typ = levl[gb.bhitpos.x][gb.bhitpos.y].typ;
+                if (isok(gb.bhitpos.x, gb.bhitpos.y))
+                    typ = levl[gb.bhitpos.x][gb.bhitpos.y].typ;
+                else
+                    typ = STONE;
                 if (!isok(gb.bhitpos.x, gb.bhitpos.y)) {
                     gb.bhitpos.x -= stmp->dx;
                     gb.bhitpos.y -= stmp->dy;

@@ -53,7 +53,7 @@ strbuf_empty(strbuf_t *strbuf)
     strbuf_init(strbuf);
 }
 
-/* strbuf_nl_to_crlf() converts all occurences of \n to \r\n */
+/* strbuf_nl_to_crlf() converts all occurrences of \n to \r\n */
 void
 strbuf_nl_to_crlf(strbuf_t *strbuf)
 {
@@ -97,11 +97,11 @@ Strlen_(
     return (unsigned) len;
 }
 
-static boolean pmatch_internal(const char *, const char *, boolean,
+staticfn boolean pmatch_internal(const char *, const char *, boolean,
                                const char *);
 /* guts of pmatch(), pmatchi(), and pmatchz();
    match a string against a pattern */
-static boolean
+staticfn boolean
 pmatch_internal(const char *patrn, const char *strng,
                 boolean ci,     /* True => case-insensitive,
                                    False => case-sensitive */

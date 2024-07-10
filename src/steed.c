@@ -1,4 +1,4 @@
-/* NetHack 3.7	steed.c	$NHDT-Date: 1702274036 2023/12/11 05:53:56 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.115 $ */
+/* NetHack 3.7	steed.c	$NHDT-Date: 1720128167 2024/07/04 21:22:47 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.121 $ */
 /* Copyright (c) Kevin Hugo, 1998-1999. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -9,8 +9,8 @@ static NEARDATA const char steeds[] = { S_QUADRUPED, S_UNICORN, S_ANGEL,
                                         S_CENTAUR,   S_DRAGON,  S_JABBERWOCK,
                                         '\0' };
 
-static boolean landing_spot(coord *, int, int);
-static void maybewakesteed(struct monst *);
+staticfn boolean landing_spot(coord *, int, int);
+staticfn void maybewakesteed(struct monst *);
 
 /* caller has decided that hero can't reach something while mounted */
 void
@@ -445,7 +445,7 @@ kick_steed(void)
  * room's walls, which is not what we want.
  * Adapted from mail daemon code.
  */
-static boolean
+staticfn boolean
 landing_spot(
     coord *spot, /* landing position (we fill it in) */
     int reason,
@@ -811,7 +811,7 @@ dismount_steed(
 
 /* when attempting to saddle or mount a sleeping steed, try to wake it up
    (for the saddling case, it won't be u.usteed yet) */
-static void
+staticfn void
 maybewakesteed(struct monst *steed)
 {
     int frozen = (int) steed->mfrozen;
@@ -870,12 +870,12 @@ stucksteed(boolean checkfeeding)
     if (steed) {
         /* check whether steed can move */
         if (helpless(steed)) {
-            pline("%s won't move!", upstart(y_monnam(steed)));
+            pline("%s won't move!", YMonnam(steed));
             return TRUE;
         }
         /* optionally check whether steed is in the midst of a meal */
         if (checkfeeding && steed->meating) {
-            pline("%s is still eating.", upstart(y_monnam(steed)));
+            pline("%s is still eating.", YMonnam(steed));
             return TRUE;
         }
     }

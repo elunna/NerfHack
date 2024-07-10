@@ -1,4 +1,4 @@
-/* NetHack 3.7  artilist.h      $NHDT-Date: 1596498526 2020/08/03 23:48:46 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.23 $ */
+/* NetHack 3.7  artilist.h      $NHDT-Date: 1710957374 2024/03/20 17:56:14 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.30 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -19,9 +19,10 @@ static const char *const artifact_names[] = {
 #elif defined(DUMP_ARTI_ENUM)
 #define A(nam, typ, s1, s2, mt, atk, dfn, cry, inv, al, cl, rac, \
           cost, clr, bn)                                         \
-        { ART_##bn, "ART_" #bn }
+    { ART_##bn, "ART_" #bn }
 #else
-/* in artifact.c, set up the actual artifact list structure */
+/* in artifact.c, set up the actual artifact list structure;
+   color field is for an artifact when it glows, not for the item itself */
 
 #define A(nam, typ, s1, s2, mt, atk, dfn, cry, inv, al, cl, rac, \
           cost, clr, bn)                                         \
@@ -125,7 +126,7 @@ static NEARDATA struct artifact artilist[] = {
     
     A("Sunsword", LONG_SWORD,
       (SPFX_RESTR | SPFX_DFLAGH), 0, MH_UNDEAD,
-      PHYS(5, 0), DFNS(AD_BLND), NO_CARY, 0,
+      PHYS(5, 0), DFNS(AD_BLND), NO_CARY, BLINDING_RAY,
       A_LAWFUL, NON_PM, NON_PM, 1500L, NO_COLOR, SUNSWORD),
 
     
@@ -420,7 +421,10 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), DFNS(AD_MAGM), NO_CARY, CONFLICT,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM, 2500L, NO_COLOR, SCEPTRE_OF_MIGHT),
 
-#if 0 /* OBSOLETE */
+#if 0 /* OBSOLETE -- from 3.1.0 to 3.2.x, this was quest artifact for the
+         * Elf role; in 3.3.0 elf became a race available to several roles
+         * and the Elf role along with its quest was eliminated; it's a bit
+         * overpowered to be an ordinary artifact so leave it excluded */
 A("The Palantir of Westernesse", CRYSTAL_BALL,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
       (SPFX_ESP | SPFX_REGEN | SPFX_HSPDAM), 0,
@@ -500,14 +504,14 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
      *  terminator; otyp must be zero
      */
     A(0, 0, 0, 0, 0, NO_ATTK, NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 0L,
-      0, TERMINATOR) /* 0 is CLR_BLACK rather than NO_COLOR but it doesn't matter here */
+      NO_COLOR, TERMINATOR)
 
 }; /* artilist[] (or artifact_names[]) */
 #endif
 
 #undef A
 
-#if !defined(MAKEDEFS_C) && !defined(MDLIB_C) && !defined(ARTI_ENUM)
+#ifdef NO_ATTK
 #undef NO_ATTK
 #undef NO_DFNS
 #undef DFNS

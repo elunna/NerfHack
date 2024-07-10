@@ -5,11 +5,11 @@
 
 #include "hack.h"
 
-static int pet_type(void);
-static struct permonst * pick_familiar_pm(struct obj *, boolean);
-static void set_mon_lastmove(struct monst *);
-static int mon_leave(struct monst *) NONNULLARG1;
-static boolean keep_mon_accessible(struct monst *);
+staticfn int pet_type(void);
+staticfn struct permonst * pick_familiar_pm(struct obj *, boolean);
+staticfn void set_mon_lastmove(struct monst *);
+staticfn int mon_leave(struct monst *) NONNULLARG1;
+staticfn boolean keep_mon_accessible(struct monst *);
 
 enum arrival {
     Before_you =  0, /* monsters kept on migrating_mons for accessibility;
@@ -63,7 +63,7 @@ initedog(struct monst *mtmp)
     u.uconduct.pets++;
 }
 
-static int
+staticfn int
 pet_type(void)
 {
     if (gu.urole.petnum != NON_PM)
@@ -76,7 +76,7 @@ pet_type(void)
         return  rn2(2) ? PM_KITTEN : PM_LITTLE_DOG;
 }
 
-static struct permonst *
+staticfn struct permonst *
 pick_familiar_pm(struct obj *otmp, boolean quietly)
 {
     struct permonst *pm = (struct permonst *) 0;
@@ -245,7 +245,7 @@ makedog(void)
     return  mtmp;
 }
 
-static void
+staticfn void
 set_mon_lastmove(struct monst *mtmp)
 {
     mtmp->mlstmv = gm.moves;
@@ -699,7 +699,7 @@ mon_catchup_elapsed_time(
 
 /* bookkeeping when mtmp is about to leave the current level;
    common to keepdogs() and migrate_to_level() */
-static int
+staticfn int
 mon_leave(struct monst *mtmp)
 {
     struct obj *obj;
@@ -738,7 +738,7 @@ mon_leave(struct monst *mtmp)
 
 /* when hero leaves a level, some monsters should be placed on the
    migrating_mons list instead of being stashed inside the level's file */
-static boolean
+staticfn boolean
 keep_mon_accessible(struct monst *mon)
 {
     /* the Wizard is kept accessible so that his harassment can fetch
@@ -1031,6 +1031,8 @@ dogfood(struct monst *mon, struct obj *obj)
         case ENORMOUS_MEATBALL:
             return carni ? DOGFOOD : MANFOOD;
         case EGG:
+            if (obj->corpsenm == PM_PYROLISK && !likes_fire(mptr))
+                return POISON;
             return carni ? CADAVER : MANFOOD;
         case CORPSE:
             if ((peek_at_iced_corpse_age(obj) + 50L <= gm.moves
@@ -1109,7 +1111,7 @@ dogfood(struct monst *mon, struct obj *obj)
  * on the original mtmp.  It now returns TRUE if the taming succeeded.
  */
 boolean
-tamedog(struct monst *mtmp, struct obj *obj)
+tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
 {
     /* reduce timed sleep or paralysis, leaving mtmp->mcanmove as-is
        (note: if mtmp is donning armor, this will reduce its busy time) */
@@ -1138,6 +1140,11 @@ tamedog(struct monst *mtmp, struct obj *obj)
         return FALSE;
     }
     /* worst case, at least it'll be peaceful. */
+    if (givemsg && !mtmp->mpeaceful && canspotmon(mtmp)) {
+        pline("%s seems %s.", Monnam(mtmp),
+              Hallucination ? "really chill" : "more amiable");
+        givemsg = FALSE; /* don't give another message below */
+    }
     mtmp->mpeaceful = 1;
     set_malign(mtmp);
     if (flags.moonphase == FULL_MOON && night() && rn2(6) && obj
@@ -1222,6 +1229,10 @@ tamedog(struct monst *mtmp, struct obj *obj)
             return TRUE; /* oops, it died... */
         /* `obj' is now obsolete */
     }
+
+    if (givemsg && canspotmon(mtmp))
+        pline("%s seems quite %s.", Monnam(mtmp),
+              Hallucination ? "approachable" : "friendly");
 
     newsym(mtmp->mx, mtmp->my);
     if (attacktype(mtmp->data, AT_WEAP)) {
