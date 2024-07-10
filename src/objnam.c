@@ -1239,7 +1239,7 @@ add_erosion_words(struct obj *obj, char *prefix)
                        : is_crackable(obj) ? "cracked "
                          : "burnt ");
     }
-    if (obj->oeroded2 && !iscrys && obj->oclass != FOOD_CLASS) {
+    if (obj->oeroded2 && !iscrys) {
         switch (obj->oeroded2) {
         case 2:
             Strcat(prefix, "very ");
@@ -1572,7 +1572,6 @@ doname_base(
     case FOOD_CLASS:
         if (obj->oeaten)
             Strcat(prefix, "partly eaten ");
-        add_erosion_words(obj, prefix);
         if (obj->otyp == CORPSE) {
             /* (quan == 1) => want corpse_xname() to supply article,
                (quan != 1) => already have count or "some" as prefix;
