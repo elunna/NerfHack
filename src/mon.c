@@ -723,6 +723,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_GIANT_ANT: case PM_KILLER_BEE: case PM_SOLDIER_ANT:
     case PM_FIRE_ANT: case PM_GIANT_BEETLE: case PM_QUEEN_BEE:
     case PM_LOCUST: case PM_GIANT_PRAYING_MANTIS:
+    case PM_ASSASSIN_BUG:
 
     case PM_QUIVERING_BLOB: case PM_ACID_BLOB: case PM_GELATINOUS_CUBE:
     case PM_CHICKATRICE: case PM_COCKATRICE: case PM_PYROLISK: 
