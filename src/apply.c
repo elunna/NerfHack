@@ -4901,7 +4901,8 @@ use_deck(struct obj *obj)
         }
         switch (index) {
             case 1: /* The Tower */
-                fortune_lev("vlad\'s tower", "Vlad the Impaler");
+		explode(u.ux, u.uy, 15, rnd(30), TOOL_CLASS, EXPL_MAGICAL);
+                explode(u.ux, u.uy, 11, rnd(30), TOOL_CLASS, EXPL_FIERY);
                 break;
             case 2: /* The Wheel of Fortune */
                 pline("Two more cards flip out of the deck.");
@@ -4925,8 +4926,8 @@ use_deck(struct obj *obj)
                 draws = 0;
                 break;
             case 4: /* The Fool */
-                adjattrib(A_WIS, -1, 0);
-                change_luck(-3);
+		(void) adjattrib(A_INT, -rnd(3), FALSE);
+                (void) adjattrib(A_WIS, -rnd(3), FALSE);
                 break;
             case 5: /* Death */
                 draws = 0;
@@ -4982,9 +4983,9 @@ use_deck(struct obj *obj)
                 break;
             case 8: /* The Hermit */
                 You_feel("like hiding!");
-                incr_itimeout(&HTeleportation, rn1(300, 300));
+		level_tele();
                 incr_itimeout(&HInvis, rn1(500, 500));
-                newsym(u.ux, u.uy);
+                aggravate();
                 break;
             case 9: /* The Hanged Man */
                 mtmp = makemon(&mons[PM_ROPE_GOLEM], u.ux, u.uy, NO_MM_FLAGS);
@@ -4993,10 +4994,11 @@ use_deck(struct obj *obj)
                 break;
             case 10: /* Justice */
                 if (u.ualign.abuse < (unsigned) -13 || u.ualign.record < 0) {
-                    You("will pay for your sins!");
-                    punish(obj);
-                    attrcurse();
-                    attrcurse();
+		    if (!Blind)
+			You("are frozen by the power of Justice!");
+		    else
+			You("can't seem to move!");
+		    nomul(-(rn1(30, 20)));
                 } else {
                     You("will be rewarded for your loyalty!");
                     if (Punished)
@@ -5004,9 +5006,10 @@ use_deck(struct obj *obj)
                 }
                 break;
             case 11: /* Temperance */
-                adjattrib(gu.urole.spelstat, 1, 0);
-                incr_itimeout(&Fixed_abil, rn1(500, 500));
                 break;
+		destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
+                destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
+		break;
                 /* cards before this point are bad, after this are good */
             case 12: /* The Lovers */
                 for (n = 0; n < 2; n++) {
