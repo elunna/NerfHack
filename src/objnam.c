@@ -149,16 +149,17 @@ static const struct Jitem Japanese_items[] = {
 };
 
 static struct Jitem Cartomancer_items[] = {
-    /*{ LARGE_BOX, "deck box" },*/
+    { LARGE_BOX, "deck box" },
+    { CHEST, "large deck box" },
     
     { BOOMERANG, "warped card" },
     { HAWAIIAN_SHIRT, "graphic tee" },
     { EXPENSIVE_CAMERA, "holographic card" },
     { CREDIT_CARD, "banned card" },
     { LOCK_PICK, "worthless card" },
-    { SACK, "card bag" },
-    { OILSKIN_SACK, "waterproof deckbox" },
-    { BAG_OF_HOLDING, "professional deckbox" },
+    { SACK, "backpack" },
+    { OILSKIN_SACK, "waterproof backpack" },
+    { BAG_OF_HOLDING, "backpack of holding" },
     { BAG_OF_TRICKS, "card trick bag" },
 
     { WORTHLESS_WHITE_GLASS, "worthless white token"},
