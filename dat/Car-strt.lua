@@ -96,8 +96,8 @@ des.monster({id="cobra",peaceful=0})
 des.monster({id="guardian naga", x=55, y=15,peaceful=0})
 des.monster({id="cobra",peaceful=0})
 des.monster({id="cobra",peaceful=0})
-des.monster({id="cobra",peaceful=0})
-des.monster({id="cobra",peaceful=0})
+des.monster({id="assassin bug",peaceful=0})
+des.monster({id="assassin bug",peaceful=0})
 
 --
 --	The "locate" level for the quest.

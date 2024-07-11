@@ -26,8 +26,8 @@ des.room({type="ordinary",
           des.object()
           des.trap()
           des.object()
-          des.monster("cobra")
-          des.monster("cobra")
+          des.monster("assassin bug")
+          des.monster("assassin bug")
         end
 });
 

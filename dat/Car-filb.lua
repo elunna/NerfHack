@@ -53,7 +53,7 @@ des.room({type="ordinary",
         contents=function()
           des.object()
           des.trap()
-          des.monster("pit viper")
+          des.monster("assassin bug")
         end
 });
 
