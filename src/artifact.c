@@ -825,12 +825,16 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
             u.xray_range = -1;
         gv.vision_full_recalc = 1;
     }
-    if ((spfx & SPFX_REFLECT) && (wp_mask & (W_WEP | W_SWAPWEP))) {
+
+    /* Some carried artifacts grant reflection */
+    if (((spfx & SPFX_REFLECT) && (wp_mask & (W_WEP | W_SWAPWEP)))
+		|| oart->cspfx & spfx & SPFX_REFLECT) {
         if (on)
             EReflecting |= wp_mask;
         else
             EReflecting &= ~wp_mask;
     }
+
     if (spfx & SPFX_PROTECT) {
         if (on)
             EProtection |= wp_mask;

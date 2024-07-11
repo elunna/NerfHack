@@ -2977,6 +2977,12 @@ mon_reflects(struct monst *mon, const char *str)
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "shimmering globe");
         return TRUE;
+    } else if (orefl->oartifact == ART_HOLOGRAPHIC_VOID_LILY) {
+        /* Due to any carried artifact which grants reflection, which shows as W_ART */
+        if (str)
+            pline(str, s_suffix(mon_nam(mon)), "card");
+        monstseesu(M_SEEN_REFL);
+        return TRUE;
     }
     return FALSE;
 }
@@ -3009,6 +3015,13 @@ ureflects(const char *fmt, const char *str)
     } else if (gy.youmonst.data == &mons[PM_SILVER_DRAGON]) {
         if (fmt && str)
             pline(fmt, str, "scales");
+        return TRUE;
+    } else if (EReflecting & W_ART) {
+        /* Only carried artifact which grants reflection is the Holographic Void Lily,
+	 * which shows as W_ART */
+        if (fmt && str)
+            pline(fmt, str, "card");
+        monstseesu(M_SEEN_REFL);
         return TRUE;
     }
     return FALSE;
