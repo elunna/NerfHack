@@ -15,7 +15,7 @@ NerfHack is intended to be a more difficult variant than Vanilla NetHack. By pul
 4) Introduce quality-of-life features
 5) Make it easy to variant-hop
 * The player should be able to easily transition from Vanilla NetHack to NerfHack. We hope players don't have to think too much about the changes. Most of the mechanics are designed to be understood intuitively based on game feedback.
-* Don't require the player to memorize or lookup large tables of information (ex: forging recipes, tinker mechanics, object materials, object properties, gem alchemy, potion fermentation, etc, etc)
+* Don't require the player to memorize or lookup large tables of information (ex: forging recipes, tinker mechanics, object materials, object properties, gem alchemy, potion fermentation, etc, etc, etc)
 * Don't change anything major in the interface or functionality.
 * Don't introduce any new #extended commands (other than wiz-mode tools)
 * Don't change any monster letters

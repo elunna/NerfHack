@@ -3700,7 +3700,7 @@
 
 
 
-          On MS-DOS, it is "defaults.nh" in the same folder as nethack.exe.
+          On MS-DOS, it is "defaults.nh" in the same folder as nerfhack.exe.
 
           Any line in the configuration file starting with `#'  is  treated
      as a comment and ignored.  Empty lines are ignored.

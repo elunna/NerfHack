@@ -114,7 +114,7 @@ void
 crashreport_init(int argc UNUSED, char *argv[] UNUSED)
 {
     static int once = 0;
-    if (once++) /* NetHackW.exe calls us twice */
+    if (once++) /* NerfHackW.exe calls us twice */
         return;
     HASH_BINFILE_DECL;
     HASH_PRAGMA_START

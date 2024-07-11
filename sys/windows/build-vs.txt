@@ -27,8 +27,8 @@ Prerequisite Requirements:
 This processes produces a zip file containing two executable
 versions:
 
-    a. A TTY and curses version of NetHack in nethack.exe
-    b. A Windows and curses graphical version in nethackw.exe.
+    a. A TTY and curses version of NetHack in nerfhack.exe
+    b. A Windows and curses graphical version in nerfhackw.exe.
 
 
 /---------------------------------------------\

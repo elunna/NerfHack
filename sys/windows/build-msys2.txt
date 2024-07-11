@@ -81,12 +81,12 @@ Building
 Two different versions of NetHack will be built for Windows from the
 command line using the Makefile approach:
     A tty port utilizing the Win32 Console I/O subsystem Console,
-    and a curses interface in an executabled called NetHack.exe.
-        NetHack
+    and a curses interface in an executabled called NerfHack.exe.
+        NerfHack
     A Win32 native port built on the Windows API Graphical NetHack,
-    and graphical curses in an executable called NetHackW.exe.
+    and graphical curses in an executable called NerfHackW.exe.
 
-The Makefile configurations will build both; NetHack.exe and NetHackW.exe
+The Makefile configurations will build both; NerfHack.exe and NerfHackW.exe
 and will be able to use the same datafiles, save files and bones files.
 
 Since the last official release of NetHack, compilers and computer

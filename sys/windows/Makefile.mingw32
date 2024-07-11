@@ -1081,7 +1081,7 @@ $(ONHW)/%.o: $(WSHR)/%.c $(NHLUAH) | $(ONHW)
 $(ONHW)/%.o: $(WCURSES)/%.c $(NHLUAH) | $(ONHW)
 	$(cc) $(CFLAGSW) $(PDCINCL) $< -o$@
 
-$(NHWRES): $(MSWIN)/NerfHackW.rc $(MSWIN)/NetHackW.exe.manifest \
+$(NHWRES): $(MSWIN)/NerfHackW.rc $(MSWIN)/NerfHackW.exe.manifest \
 		$(BMPS) $(WAV) $(MSWIN)/NetHack.ico | $(ONHW)
 	$(rc) --include-dir=$(MSWIN) $(RCFLAGS) -DVIA_MAKE --input=$< -o$@
 
@@ -1137,8 +1137,8 @@ $(ONH)/%.o: $(SRC)/%.c $(NHLUAH) | $(ONH)
 #==========================================
 TARGET_CPU = x64
 NHV=370
-PKGFILES = nethackrc.template Guidebook.txt license NetHack.exe NetHack.txt \
-        NetHackW.exe opthelp nhdat370 record symbols sysconf.template
+PKGFILES = nethackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
+        NerfHackW.exe opthelp nhdat370 record symbols sysconf.template
 FILESTOZIP = $(addprefix $(GAMEDIR)/, $(PKGFILES))
 MAINZIP = $(PkgDir)/nethack-$(NHV)-win-$(TARGET_CPU)-msys2.zip
 

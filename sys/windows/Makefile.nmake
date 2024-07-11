@@ -1556,7 +1556,7 @@ tileutil: $(U)gif2txt.exe $(U)gif2tx32.exe $(U)txt2ppm.exe
 $(OGUI)NetHackW.res: $(SRC)\tiles.bmp $(MSWIN)\nerfhackW.rc $(MSWIN)\NetHack.ico \
 	$(MSWIN)\mnsel.bmp $(MSWIN)\mnselcnt.bmp $(MSWIN)\mnunsel.bmp \
 	$(MSWIN)\petmark.bmp $(MSWIN)\pilemark.bmp $(MSWIN)\NetHack.ico \
-	$(MSWIN)\rip.bmp $(MSWIN)\splash.bmp $(MSWIN)\NetHackW.exe.manifest $(WAV)
+	$(MSWIN)\rip.bmp $(MSWIN)\splash.bmp $(MSWIN)\NerfHackW.exe.manifest $(WAV)
 	@echo Building resource file $@ from $**
 	$(rc) -nologo -r -fo$@ -i$(MSWIN) -i$(SndWavDir) -dNDEBUG -dVIA_MAKE $(RCFLAGS) $(MSWIN)\nerfhackW.rc
 
@@ -2288,10 +2288,10 @@ $(SndWavDir)\sa2_xplevelup.wav: $(SndWavDir)\sa2_xplevelup.uu $(U)uudecode.exe
 # packaging
 #===============================================================================
 
-PKGFILES = nethackrc.template Guidebook.txt license NetHack.exe NetHack.txt \
-	 NetHackW.exe opthelp nhdat370 record symbols sysconf.template
+PKGFILES = nethackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
+	 NerfHackW.exe opthelp nhdat370 record symbols sysconf.template
 FILESTOZIP = $(BinDir)\nethackrc.template $(BinDir)\Guidebook.txt $(BinDir)\license \
-	$(BinDir)\NetHack.exe $(BinDir)\NetHack.txt $(BinDir)\NetHackW.exe \
+	$(BinDir)\NerfHack.exe $(BinDir)\NetHack.txt $(BinDir)\NerfHackW.exe \
 	$(BinDir)\opthelp $(BinDir)\nhdat370 $(BinDir)\record \
 	$(BinDir)\symbols $(BinDir)\sysconf.template 
 DBGSYMS = NetHack.PDB NetHackW.PDB
@@ -2315,8 +2315,8 @@ binary:  envchk.tag libdir.tag ottydir$(TARGET_CPU).tag \
 		$(LUASRC)\lua.h $(PDCDEP) \
 		$(INCL)\nhlua.h $(OUTL)utility.tag \
 		$(DAT)\data $(DAT)\rumors $(DAT)\oracles $(DAT)\engrave \
-		$(DAT)\epitaph $(DAT)\bogusmon $(GAMEDIR)\NetHack.exe \
-		$(GAMEDIR)\NetHackW.exe $(GAMEDIRDLLS) binary.tag
+		$(DAT)\epitaph $(DAT)\bogusmon $(GAMEDIR)\NerfHack.exe \
+		$(GAMEDIR)\NerfHackW.exe $(GAMEDIRDLLS) binary.tag
 	@echo NetHack is up to date.
 
 #===============================================================================
@@ -2325,7 +2325,7 @@ binary:  envchk.tag libdir.tag ottydir$(TARGET_CPU).tag \
 
 spotless: clean
 	if exist $(GAMEDIR)\NerfHack.exe del $(GAMEDIR)\NerfHack.exe
-	if exist $(GAMEDIR)\NetHackW.exe del $(GAMEDIR)NetHackW.exe
+	if exist $(GAMEDIR)\NerfHackW.exe del $(GAMEDIR)NerfHackW.exe
 	if exist $(GAMEDIR)\NetHack.pdb del $(GAMEDIR)\NetHack.pdb
 	if exist $(GAMEDIR)\nhdat$(NHV) del $(GAMEDIR)\nhdat$(NHV)
 	if exist $(INCL)\date.h         del $(INCL)\date.h

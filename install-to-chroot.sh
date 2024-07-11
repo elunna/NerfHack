@@ -8,15 +8,15 @@
 
 # autonamed chroot directory. Can rename.
 DATESTAMP=`date +%Y%m%d-%H%M%S`
-NAO_CHROOT="/opt/nethack/chroot"
-NETHACK_GIT="/home/build/NetHack37"
+NAO_CHROOT="/opt/nerfhack/chroot"
+NETHACK_GIT="/home/build/NerfHack"
 # the user & group from dgamelaunch config file.
 USRGRP="games:games"
 # COMPRESS from include/config.h; the compression binary to copy. leave blank to skip.
 COMPRESSBIN="/bin/gzip"
 # fixed data to copy (leave blank to skip)
-NH_GIT="/home/build/NetHack37"
-# HACKDIR from include/config.h; aka nethack subdir inside chroot
+NH_GIT="/home/build/NerfHack"
+# HACKDIR from include/config.h; aka nerfhack subdir inside chroot
 NHSUBDIR="nh370.101-hdf"
 # VAR_PLAYGROUND from include/unixconf.h
 NH_VAR_PLAYGROUND="/nh370.101-hdf/var/"
@@ -52,7 +52,7 @@ chown "$USRGRP" "$NAO_CHROOT/dgldir/extrainfo-nh370"
 echo "Making $NAO_CHROOT/$NHSUBDIR"
 mkdir -p "$NAO_CHROOT/$NHSUBDIR"
 
-NETHACKBIN="$NETHACK_GIT/src/nethack"
+NETHACKBIN="$NETHACK_GIT/src/nerfhack"
 if [ -n "$NETHACKBIN" -a ! -e "$NETHACKBIN" ]; then
   errorexit "Cannot find NerfHack binary $NETHACKBIN"
 fi
@@ -62,7 +62,7 @@ if [ -n "$NETHACKBIN" -a -e "$NETHACKBIN" ]; then
   cd "$NAO_CHROOT/$NHSUBDIR"
   NHBINFILE="`basename $NETHACKBIN`-$DATESTAMP"
   cp "$NETHACKBIN" "$NHBINFILE"
-  ln -fs "$NHBINFILE" nethack
+  ln -fs "$NHBINFILE" nerfhack
   LIBS="$LIBS `findlibs $NETHACKBIN`"
   cd "$NAO_CHROOT"
 fi

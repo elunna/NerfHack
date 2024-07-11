@@ -2082,7 +2082,7 @@ Windows: when VIRTUAL_TERMINAL_SEQUENCES was not defined, the preprocessing
 Windows: original fix for GLYPH_UNEXPLORED background tile merging resulted
 	in a new issue where the map wasn't being cleared on level changes
 Windows: don't dupstr the return value of setlocale if it is NULL
-Windows: nethackw.exe calculated vertical spacing for menu items based on
+Windows: nerfhackw.exe calculated vertical spacing for menu items based on
 	the height of the tileset in use, even though the tiles in the
 	menu were drawn at the default height of 16 anyway; get rid of
 	the extraneous vertical spacing between menu rows
@@ -2312,7 +2312,7 @@ Windows: include commented-out 'PORTABLE_DEVICE_PATHS' in sysconf.template
 Windows: When there was no interesting background in get_bk_glyph()
 	in display.c, a default value of GLYPH_UNEXPLORED was returned to
 	the caller and then passed on to the interface; the graphical
-	Windows version, NetHackW.exe, was trying to use the tile mapped to
+	Windows version, NerfHackW.exe, was trying to use the tile mapped to
 	GLYPH_UNEXPLORED as a background tile to merge with the
 	foreground tile, so check for GLYPH_UNEXPLORED and bypass that
 Windows: fix range error detected by address sanitizer in plselInitDialog()
