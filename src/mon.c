@@ -6388,11 +6388,10 @@ mon_berserk(struct monst *mtmp)
     }
     wake_nearto(mtmp->mx, mtmp->my, 4 * 4);
     
-    /* Renewed vigor!
-     * Here we give the berserker a chance to instantly regenerate a roll
-     * of their entire HP. Looking through the codebase, I don't think this
-     * causes any problems or panics - but it might for the player! */
+    /* Renewed vigor!  */
     mtmp->mhp += rnd(mtmp->mhpmax);
+    if (mtmp->mhp > mtmp->mhpmax)
+	mtmp->mhp = mtmp->mhpmax;
     mtmp->mberserk = 1;
     mtmp->mflee = 0;
     /* If a monster goes berserk towards the player, but the hero can't retaliate
