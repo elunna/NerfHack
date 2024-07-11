@@ -5300,7 +5300,7 @@ static NEARDATA const char *names[] = {
 static NEARDATA const char *carnames[] = {
     0, "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
     "Comestibles", "Potions", "Spell Cards", "Rulebooks", "Wands", "Coins",
-    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms",
+    "Tokens/Dice", "Boulders/Statues", "Iron balls", "Chains", "Venoms",
 };
 static NEARDATA const char oth_symbols[] = { CONTAINED_SYM, '\0' };
 static NEARDATA const char *oth_names[] = { "Bagged/Boxed items" };

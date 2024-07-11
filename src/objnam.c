@@ -160,12 +160,20 @@ static struct Jitem Cartomancer_items[] = {
     { OILSKIN_SACK, "waterproof deckbox" },
     { BAG_OF_HOLDING, "professional deckbox" },
     { BAG_OF_TRICKS, "card trick bag" },
-#if 0
-    { LUCKSTONE, "lucky card" },
-    { LOADSTONE, "heavy card" },
-    { TOUCHSTONE, "siliceous card" },
-    { FLINT, "flint card" },
-#endif
+
+    { WORTHLESS_WHITE_GLASS, "worthless white token"},
+    { WORTHLESS_BLUE_GLASS, "worthless blue token"},
+    { WORTHLESS_RED_GLASS, "worthless red token"},
+    { WORTHLESS_YELLOWBROWN_GLASS, "worthless yellow-brown token"},
+    { WORTHLESS_ORANGE_GLASS, "worthless orange token"},
+    { WORTHLESS_YELLOW_GLASS, "worthless yellow token"},
+    { WORTHLESS_BLACK_GLASS, "worthless black token"},
+    { WORTHLESS_GREEN_GLASS, "worthless green token"},
+    { WORTHLESS_VIOLET_GLASS, "worthless violet token"},
+    { LUCKSTONE, "lucky dice" },
+    { LOADSTONE, "heavy dice" },
+    { TOUCHSTONE, "siliceous dice" },
+    { FLINT, "flint dice" },
     { 0, "" } 
 };
 
@@ -311,16 +319,20 @@ obj_typename(int otyp)
         if (nn) {
             Strcpy(buf, actualn);
             if (GemStone(otyp))
-                Strcat(buf, " stone");
+                Strcat(buf, Role_if(PM_CARTOMANCER) ? " token" : " stone");
             if (un) /* 3: length of " (" + ")" which will enclose 'dn' */
                 xcalled(buf, BUFSZ - (dn ? (int) strlen(dn) + 3 : 0), "", un);
             if (dn)
                 Sprintf(eos(buf), " (%s)", dn);
         } else {
             Strcpy(buf, dn ? dn : actualn);
-            if (ocl->oc_class == GEM_CLASS)
-                Strcat(buf,
-                       (ocl->oc_material == MINERAL) ? " stone" : " gem");
+            if (ocl->oc_class == GEM_CLASS) {
+		if (Role_if(PM_CARTOMANCER))
+		    Strcat(buf, (ocl->oc_material == MINERAL) ? " dice" : " token");
+		else	
+		    Strcat(buf, (ocl->oc_material == MINERAL) ? " stone" : " gem");
+
+	    }
             if (un)
                 xcalled(buf, BUFSZ, "", un);
         }
@@ -1010,7 +1022,9 @@ xname_flags(
             Sprintf(buf, "%s ring", dn);
         break;
     case GEM_CLASS: {
-        const char *rock = (ocl->oc_material == MINERAL) ? "stone" : "gem";
+        const char *rock = (ocl->oc_material == MINERAL)
+	    ? (Role_if(PM_CARTOMANCER) ? "dice" : "stone")
+	    : (Role_if(PM_CARTOMANCER) ? "token" : "gem");
 
         if (!dknown) {
             Strcpy(buf, rock);
@@ -1022,7 +1036,7 @@ xname_flags(
         } else {
             Strcpy(buf, actualn);
             if (GemStone(typ))
-                Strcat(buf, " stone");
+                Strcat(buf, Role_if(PM_CARTOMANCER) ? " token" : " stone");
         }
         break;
     } /* gem */
@@ -2584,13 +2598,15 @@ bare_artifactname(struct obj *obj)
 }
 
 static const char *const wrp[] = {
-    "wand",   "ring",      "potion",     "scroll",	"card", "gem",
+    "wand",   "ring",      "potion",     "scroll",	"card",
+    "gem",    "token",	   "dice",
     "amulet", "spellbook", "spell book", "rulebook",
     /* for non-specific wishes */
     "weapon", "armor",     "tool",       "food",   "comestible",
 };
 static const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
-                               SCROLL_CLASS, SCROLL_CLASS, GEM_CLASS,
+                               SCROLL_CLASS, SCROLL_CLASS,
+			       GEM_CLASS,    GEM_CLASS,	   GEM_CLASS,
 			       AMULET_CLASS,
                                SPBOOK_CLASS, SPBOOK_CLASS, SPBOOK_CLASS,
 			       WEAPON_CLASS, ARMOR_CLASS,  TOOL_CLASS,
