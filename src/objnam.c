@@ -155,6 +155,7 @@ static struct Jitem Cartomancer_items[] = {
     { BOOMERANG, "warped card" },
     { HAWAIIAN_SHIRT, "graphic tee" },
     { EXPENSIVE_CAMERA, "holographic card" },
+    { MIRROR, "shiny card" },
     { CREDIT_CARD, "banned card" },
     { LOCK_PICK, "worthless card" },
     { SACK, "backpack" },
