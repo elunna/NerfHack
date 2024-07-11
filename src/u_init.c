@@ -1177,7 +1177,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
 }
 
 /* substitute object with something else based on race.
-   only changes otyp, and returns it. */
+   also can change class, and returns it. */
 staticfn short
 ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
 {
@@ -1196,6 +1196,7 @@ ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
                             (trop->trotyp == UNDEF_TYP) ? "random " : "",
                             OBJ_NAME(objects[obj->otyp]));
                 obj->otyp = inv_subs[i].subs_otyp;
+		obj->oclass = objects[obj->otyp].oc_class;
                 break;
             }
     }
