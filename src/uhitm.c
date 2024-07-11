@@ -6233,8 +6233,19 @@ hmonas(struct monst *mon)
             if (uwep && gy.youmonst.data->mlet == S_LICH && !weapon_used)
                 goto use_weapon;
             /*FALLTHRU*/
-        case AT_KICK:
         case AT_BITE:
+	    /* [ALI] Vampires are also smart. They avoid biting
+             * monsters if doing so would be fatal */
+            if ((i > 0 && is_vampire(gy.youmonst.data))
+                /* ... unless they are impaired */
+                && ((!Stunned && !Confusion && !Hallucination)
+                    || is_rider(mon->data)
+                    || touch_petrifies(mon->data)
+                    || mon->data == &mons[PM_MEDUSA]
+                    || mon->data == &mons[PM_GREEN_SLIME]))
+                break;
+            /*FALLTHRU*/
+        case AT_KICK:
         case AT_STNG:
         case AT_BUTT:
         case AT_TENT:
@@ -7199,7 +7210,8 @@ bite_monster(struct monst *mon)
 {
     switch(monsndx(mon->data)) {
     case PM_LIZARD:
-        if (Stoned) fix_petrification();
+        if (Stoned)
+	    fix_petrification();
         break;
     case PM_DEATH:
     case PM_PESTILENCE:
@@ -7209,16 +7221,16 @@ bite_monster(struct monst *mon)
         return TRUE;        /* lifesaved */
 
     case PM_GREEN_SLIME:
-        if (!Unchanging && gy.youmonst.data != &mons[PM_FIRE_VORTEX] &&
-                gy.youmonst.data != &mons[PM_FIRE_ELEMENTAL] &&
-                gy.youmonst.data != &mons[PM_GREEN_SLIME]) {
+        if (!Unchanging && gy.youmonst.data != &mons[PM_FIRE_VORTEX]
+		&& gy.youmonst.data != &mons[PM_FIRE_ELEMENTAL]
+		&& gy.youmonst.data != &mons[PM_GREEN_SLIME]) {
         You("don't feel very well.");
         Slimed = 10L;
         }
         /* Fall through */
     default:
         if (acidic(mon->data) && Stoned)
-        fix_petrification();
+	    fix_petrification();
         break;
     }
     return FALSE;
