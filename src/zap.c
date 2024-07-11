@@ -6392,8 +6392,7 @@ maybe_destroy_item(
         }
         if (u_carry) { /* effects that happen only to the player */
             if (osym == POTION_CLASS && dmgtyp != AD_COLD
-                && (!breathless(gy.youmonst.data)
-                    || haseyes(gy.youmonst.data))) {
+                && (!Breathless || haseyes(gy.youmonst.data))) {
                 potionbreathe(obj);
             }
             if (obj->owornmask) { /* m_useup handles these for monster */

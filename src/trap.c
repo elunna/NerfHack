@@ -1624,7 +1624,7 @@ trapeffect_slp_gas_trap(
 {
     if (mtmp == &gy.youmonst) {
         seetrap(trap);
-        if (fully_resistant(SLEEP_RES) || breathless(gy.youmonst.data)) {
+        if (fully_resistant(SLEEP_RES) || Breathless) {
             You("are enveloped in a cloud of gas!");
             monstseesu(M_SEEN_SLEEP);
         } else {

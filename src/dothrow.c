@@ -2569,10 +2569,10 @@ breakobj(
                 levl[x][y].altarmask = AM_CHAOTIC;
             angry_priest();
         } else if (next2u(x, y)) {
-            if (!breathless(gy.youmonst.data) || haseyes(gy.youmonst.data)) {
+            if (!Breathless || haseyes(gy.youmonst.data)) {
                 /* wet towel protects both eyes and breathing */
                 if (obj->otyp != POT_WATER && !Half_gas_damage) {
-                    if (!breathless(gy.youmonst.data)) {
+                    if (!Breathless) {
                         /* [what about "familiar odor" when known?] */
                         You("smell a peculiar odor...");
                     } else {
