@@ -258,8 +258,12 @@ static struct inv_sub {
     { PM_GNOME, LOW_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, HIGH_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, LEATHER_ARMOR, GNOMISH_SUIT },
+        /* Create vampire blood */
     { PM_VAMPIRE, POT_FRUIT_JUICE, POT_BLOOD },
-    { PM_VAMPIRE, CLOVE_OF_GARLIC, SPRIG_OF_WOLFSBANE},
+    { PM_VAMPIRE, CLOVE_OF_GARLIC, POT_BLOOD },
+    { PM_VAMPIRE, FOOD_RATION, POT_BLOOD },
+    { PM_VAMPIRE, CRAM_RATION, POT_BLOOD },
+    { PM_VAMPIRE, LEMBAS_WAFER, POT_BLOOD },
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
@@ -1344,12 +1348,6 @@ ini_inv(struct trobj *trop)
                 bless(obj);
         }
 
-        /* Create vampire blood */
-        if (gu.urace.mnum== PM_VAMPIRE
-		&& (obj->otyp == FOOD_RATION || obj->otyp == CRAM_RATION)) {
-            dealloc_obj(obj);
-            obj = mksobj(POT_VAMPIRE_BLOOD, TRUE, FALSE);
-        }
         /* nudist gets no armor */
         if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS) {
             dealloc_obj(obj);
