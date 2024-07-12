@@ -628,7 +628,7 @@ hard_helmet(struct obj *obj)
     return (is_metallic(obj) || is_crackable(obj)) ? TRUE : FALSE;
 }
 
-staticfn int
+int
 Gloves_on(void)
 {
     long oldprop =
