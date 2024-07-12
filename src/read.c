@@ -478,7 +478,7 @@ doread(void)
             /* MTG */
             "Draw three cards, or force a monster to draw three cards.",
             "Turn any monster into an 3/3 newt.",
-            "Opponent loses next turn."
+            "Opponent loses next turn.",
             /* YGO */
             "Select and control one hostile monster.",
             "Draw two cards from your deck.",
