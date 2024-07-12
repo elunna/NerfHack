@@ -5006,7 +5006,6 @@ use_deck(struct obj *obj)
                 }
                 break;
             case 11: /* Temperance */
-                break;
 		destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
                 destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
 		break;
