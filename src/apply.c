@@ -53,7 +53,6 @@ staticfn boolean get_valid_jump_position(coordxy, coordxy);
 staticfn boolean get_valid_polearm_position(coordxy, coordxy);
 staticfn boolean find_poleable_mon(coord *, int, int);
 staticfn void use_deck(struct obj *);
-staticfn void fortune_lev(const char *, const char *);
 
 static const char
     no_elbow_room[] = "don't have enough elbow-room to maneuver.";
@@ -5095,25 +5094,6 @@ use_deck(struct obj *obj)
     useup_deck:
     pline_The("pack of cards vanishes in a puff of smoke.");
     useup(obj);
-    return;
-}
-
-
-void
-fortune_lev( const char *name, const char *txt)
-{
-    schar dep;
-    dep = lev_by_name(name);
-    if (!dep) { /* Perhaps the level doesn't exist? */
-        verbalize("The vision is hazy.");
-        return;
-    }
-
-    if (dep == depth(&u.uz))
-        verbalize("I see %s here.", txt);
-    else {
-        verbalize("I see %s on level %d.", txt, (int) dep);
-    }
     return;
 }
 
