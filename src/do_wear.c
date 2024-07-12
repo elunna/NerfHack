@@ -24,9 +24,9 @@ staticfn void on_msg(struct obj *);
 staticfn void toggle_stealth(struct obj *, long, boolean);
 staticfn int Armor_on(void);
 /* int Boots_on(void); -- moved to extern.h */
+/* int Gloves_on(void); -- moved to extern.h */
 staticfn int Cloak_on(void);
 staticfn int Helmet_on(void);
-staticfn int Gloves_on(void);
 staticfn int Shield_on(void);
 staticfn int Shirt_on(void);
 staticfn void dragon_armor_handling(struct obj *, boolean, boolean);
