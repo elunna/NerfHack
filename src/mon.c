@@ -3483,7 +3483,7 @@ monkilled(
               *fltxt ? " by the " : "", fltxt);
     else
         /* sad feeling is deferred until after potential life-saving */
-        iflags.sad_feeling = mdef->mtame ? TRUE : FALSE && !mdef->msummoned;
+        iflags.sad_feeling = (mdef->mtame && !mdef->msummoned) ? TRUE : FALSE;
 
     /* no corpse if digested or disintegrated or flammable golem burnt up;
        no corpse for a paper golem means no scrolls; golems that rust or
