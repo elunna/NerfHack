@@ -19,7 +19,6 @@ staticfn struct obj *touchfood(struct obj *);
 staticfn void do_reset_eat(void);
 staticfn void done_eating(boolean);
 staticfn void cprefx(int);
-staticfn boolean temp_givit(int, struct permonst *);
 staticfn void givit(int, struct permonst *);
 staticfn void eye_of_newt_buzz(void);
 staticfn void cpostfx(int);
@@ -986,14 +985,6 @@ should_givit(int type, struct permonst *ptr)
 
 #define MAX_GAIN 50
 #define MIN_GAIN 2
-staticfn boolean
-temp_givit(int type, struct permonst *ptr)
-{
-    int chance = (type == STONE_RES) ? 6 : (type == ACID_RES) ? 3 : 0;
-
-    return chance ? (ptr->mlevel > rn2(chance)) : FALSE;
-}
-
 /* givit() tries to give you an intrinsic based on the monster's level
  * and what type of intrinsic it is trying to give you.
  */
