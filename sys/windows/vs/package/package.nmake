@@ -4,7 +4,7 @@
 #  The version of the game this Makefile was designed for
 
 !IFNDEF NETHACK_VERSION
-NETHACK_VERSION="3.7.0"
+NETHACK_VERSION="2.0.0"
 !MESSAGE NETHACK_VERSION set to $(NETHACK_VERSION).
 !ELSE
 !MESSAGE NETHACK_VERSION set to $(NETHACK_VERSION) by caller.
@@ -65,7 +65,7 @@ default: packageall
 
 PKGFILES=Guidebook.txt license NerfHack.exe NetHack.txt \
 	 NerfHackW.exe opthelp nhdat370 record symbols.template sysconf.template \
-	nethackrc.template
+	nerfhackrc.template
 FILESTOZIP=$(VSBINDIR)\Guidebook.txt $(VSBINDIR)\license \
 	$(VSBINDIR)\NerfHack.exe $(VSBINDIR)\NetHack.txt $(VSBINDIR)\NerfHackW.exe \
 	$(VSBINDIR)\opthelp $(VSBINDIR)\nhdat370 $(VSBINDIR)\record \
@@ -104,8 +104,8 @@ $(VSBINDIR)\nhdat$(NHV): $(BinDir)\nhdat$(NHV)
 	copy /Y $(BinDir)\nhdat$(NHV) $@
 $(VSBINDIR)\symbols.template: $(BinDir)\symbols.template
 	copy /Y $(BinDir)\symbols.template $@
-$(VSBINDIR)\nethackrc.template: $(BinDir)\nethackrc.template
-	copy /Y $(BinDir)\nethackrc.template $@
+$(VSBINDIR)\nerfhackrc.template: $(BinDir)\nerfhackrc.template
+	copy /Y $(BinDir)\nerfhackrc.template $@
 $(VSBINDIR)\sysconf.template: $(BinDir)\sysconf.template
 	copy /Y $(BinDir)\sysconf.template $@
 $(VSBINDIR)\record:

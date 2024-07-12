@@ -141,7 +141,7 @@ override TARGET_CFLAGS = -c -O $(TOOLARCH) \
 	-I../outdated/sys/amiga -I../win/share \
 	$(LUAINCL) -DAMIGA -DTILES_IN_GLYPHMAP $(PDCURSESDEF) \
 	-DCROSSCOMPILE -DCROSSCOMPILE_TARGET -DCROSS_TO_AMIGA \
-	-DAMIGA_VERSION_STRING=\""VER: NetHack 3.7.0\""
+	-DAMIGA_VERSION_STRING=\""VER: NerfHack 2.0.0\""
 #	-DMICRO -DPATHLEN=31 -DFILENAME=80
 override TARGET_CXXFLAGS = $(TARGET_CFLAGS)
 ifeq "$(REGEXOBJ)" "$(TARGETPFX)cppregex.o"
@@ -179,7 +179,7 @@ override SYSOBJ = $(TARGETPFX)amidos.o $(TARGETPFX)amigst.o \
 override WINLIB=
 override LUALIB=
 override TOPLUALIB=
-override GAMEBIN = $(TARGETPFX)nethack
+override GAMEBIN = $(TARGETPFX)nerfhack
 override PACKAGE = amigapkg
 override PREGAME += mkdir -p $(TARGETDIR) ;
 override CLEANMORE += rm -r $(TARGETDIR) ;

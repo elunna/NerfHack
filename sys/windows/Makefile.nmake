@@ -2288,7 +2288,7 @@ $(SndWavDir)\sa2_xplevelup.wav: $(SndWavDir)\sa2_xplevelup.uu $(U)uudecode.exe
 # packaging
 #===============================================================================
 
-PKGFILES = nethackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
+PKGFILES = nerfhackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
 	 NerfHackW.exe opthelp nhdat370 record symbols sysconf.template
 FILESTOZIP = $(BinDir)\nethackrc.template $(BinDir)\Guidebook.txt $(BinDir)\license \
 	$(BinDir)\NerfHack.exe $(BinDir)\NetHack.txt $(BinDir)\NerfHackW.exe \

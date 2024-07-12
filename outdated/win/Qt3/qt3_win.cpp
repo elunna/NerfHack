@@ -139,7 +139,7 @@ extern "C" void play_sound_for_message(const char* str);
 // Warwick prefers it this way...
 #define QT_CHOOSE_RACE_FIRST
 
-static const char nh_attribution[] = "<center><big>NetHack</big>"
+static const char nh_attribution[] = "<center><big>NerfHack</big>"
 	"<br><small>a NetHack 3.7.0 variant by Erik Lunna</small></center>";
 
 static QString
@@ -149,13 +149,13 @@ aboutMsg()
     QString msg;
     msg.sprintf(
         // format
-        "Qt NetHack is a version of NetHack\n"
+        "Qt NerfHack is a version of NetHack\n"
         "built using"           // no newline
 #ifdef KDE
         " KDE and"              // ditto
 #endif
         " the Qt %d GUI toolkit.\n"
-        "\nThis is NetHack %s%s.\n"
+        "\nThis is NerfHack %s%s.\n"
         "\nNetHack's Qt interface originally developed by Warwick Allison.\n"
         "\n"
 #if 0

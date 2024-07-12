@@ -1,7 +1,7 @@
 # NetHack 3.7  config.nh       $NHDT-Date: 1596498144 2020/08/03 23:42:24 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.4 $
 # Copyright (c) 2016 by Pasi Kallinen
 # NetHack may be freely redistributed.  See license for details.
-# Sample config file for NetHack 3.7.0
+# Sample config file for NerfHack 2.0.0
 #
 # A '#' at the beginning of a line means the rest of the line is a comment.
 #
@@ -9,9 +9,9 @@
 # playing.
 #
 # Copy the contents of this file into
-# * %USERPROFILE%\nethack\.nerfhackrc on Windows
+# * %USERPROFILE%\nerfhack\.nerfhackrc on Windows
 # * ~/.nerfhackrc (Unix, linux, macOS)
-# * "NetHack Defaults" on pre-OSX Mac and BeOS
+# * "NerfHack Defaults" on pre-OSX Mac and BeOS
 # * defaults.nh, same folder as NerfHack.exe on DOS
 # * nerfhack.cnf on Amiga, Atari, OS/2, and VMS
 #
@@ -397,25 +397,25 @@
 # Note: On Windows HACKDIR defaults to the location of the NerfHack.exe or
 # NerfHackW.exe file so setting HACKDIR below to override that is not usually
 # necessary or recommended.
-#HACKDIR=c:\games\nethack
+#HACKDIR=c:\games\nerfhack
 
 # The location that level files in progress are stored
 # (default=HACKDIR, writable)
-#LEVELDIR=c:\nethack\levels
+#LEVELDIR=c:\nerfhack\levels
 
 # The location where saved games are kept (default=HACKDIR, writable)
-#SAVEDIR=c:\nethack\save
+#SAVEDIR=c:\nerfhack\save
 
 # The location that bones files are kept (default=HACKDIR, writable)
-#BONESDIR=c:\nethack\save
+#BONESDIR=c:\nerfhack\save
 
 # The location that file synchronization locks are stored
 # (default=HACKDIR, writable)
-#LOCKDIR=c:\nethack\levels
+#LOCKDIR=c:\nerfhack\levels
 
 # The location that a record of game aborts and self-diagnosed game problems
 # is kept (default=HACKDIR, writable)
-#TROUBLEDIR=c:\nethack\trouble
+#TROUBLEDIR=c:\nerfhack\trouble
 
 # Finnish keyboards might need these modifications uncommented. Windows GUI.
 # For  \, @, $, [, |
@@ -519,7 +519,7 @@
 
 # User sounds
 # Define the directory that contains the sound files
-#SOUNDDIR=C:\nethack\sounds\
+#SOUNDDIR=C:\nerfhack\sounds\
 # Define a sound mapping
 # SOUND=MESG "pattern" file volume
 #SOUND=MESG "KAABLAMM" explosion.wav 100
