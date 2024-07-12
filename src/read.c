@@ -16,7 +16,6 @@ staticfn int read_ok(struct obj *);
 staticfn void stripspe(struct obj *);
 staticfn void p_glow1(struct obj *);
 staticfn void p_glow2(struct obj *, const char *);
-staticfn void forget(int);
 staticfn int maybe_tame(struct monst *, struct obj *);
 staticfn boolean can_center_cloud(coordxy, coordxy);
 staticfn void display_stinking_cloud_positions(boolean);
