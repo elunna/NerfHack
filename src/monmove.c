@@ -22,7 +22,6 @@ staticfn boolean m_search_items(struct monst *, coordxy *, coordxy *, int *,
 staticfn int postmov(struct monst *, struct permonst *, coordxy, coordxy, int,
                               boolean, boolean, boolean, boolean);
 staticfn boolean leppie_avoidance(struct monst *);
-staticfn void leppie_stash(struct monst *);
 staticfn boolean m_balks_at_approaching(struct monst *);
 staticfn boolean stuff_prevents_passage(struct monst *);
 staticfn int vamp_shift(struct monst *, struct permonst *, boolean);
