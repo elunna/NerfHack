@@ -2977,7 +2977,7 @@ mon_reflects(struct monst *mon, const char *str)
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "shimmering globe");
         return TRUE;
-    } else if (orefl->oartifact == ART_HOLOGRAPHIC_VOID_LILY) {
+    } else if (orefl && orefl->oartifact == ART_HOLOGRAPHIC_VOID_LILY) {
         /* Due to any carried artifact which grants reflection, which shows as W_ART */
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "card");
