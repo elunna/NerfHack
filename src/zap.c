@@ -23,8 +23,6 @@ staticfn void zhitu(int, int, const char *, coordxy, coordxy) NO_NNARGS;
 staticfn void revive_egg(struct obj *) NONNULLARG1;
 staticfn boolean zap_steed(struct obj *) NONNULLARG1;
 staticfn void skiprange(int, int *, int *) NONNULLPTRS;
-staticfn void maybe_explode_trap(struct trap *, struct obj *,
-                               boolean *) NONNULLARG3;
 staticfn void zap_map(coordxy, coordxy, struct obj *) NONNULLARG3;
 staticfn int zap_hit(int, int);
 staticfn void disintegrate_mon(struct monst *, int, const char *) NONNULLARG1;
