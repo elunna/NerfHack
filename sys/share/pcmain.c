@@ -132,7 +132,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         run_from_desktop = FALSE;
     } else
 #endif
-        gh.hname = "NetHack"; /* used for syntax messages */
+        gh.hname = "NerfHack"; /* used for syntax messages */
 
     choose_windows(DEFAULT_WINDOW_SYS);
 
@@ -141,7 +141,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      * the game is exited.
      */
     if (getcwd(orgdir, sizeof orgdir) == (char *) 0)
-        error("NetHack: current directory path too long");
+        error("NerfHack: current directory path too long");
 #ifndef NO_SIGNAL
     signal(SIGINT,
            (SIG_RET_TYPE) nethack_exit); /* restore original directory */
@@ -205,7 +205,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
                         (char *) alloc(strlen(envp) + 10);
                     Strcpy(gf.fqn_prefix[SYSCONFPREFIX], envp);
                     append_slash(gf.fqn_prefix[SYSCONFPREFIX]);
-                    Strcat(gf.fqn_prefix[SYSCONFPREFIX], "NetHack\\");
+                    Strcat(gf.fqn_prefix[SYSCONFPREFIX], "NerfHack\\");
                 }
             }
 
@@ -348,7 +348,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 #endif
     if (!dlb_init()) {
         pline(
-            "%s\n%s\n%s\n%s\n\nNetHack was unable to open the required file "
+            "%s\n%s\n%s\n%s\n\nNerfHack was unable to open the required file "
             "\"%s\".%s",
             copyright_banner_line(1), copyright_banner_line(2),
             copyright_banner_line(3), copyright_banner_line(4), DLBFILE,

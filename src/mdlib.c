@@ -831,7 +831,7 @@ build_options(void)
 #if defined(MAKEDEFS_C) || defined(FOR_RUNTIME)
     {
         static const char *const lua_info[] = {
- "", "NetHack 3.7.* uses the 'Lua' interpreter to process some data:", "",
+ "", "NerfHack 2.0.* uses the 'Lua' interpreter to process some data:", "",
  "    :LUACOPYRIGHT:", "",
  /*        1         2         3         4         5         6         7
   1234567890123456789012345678901234567890123456789012345678901234567890123456

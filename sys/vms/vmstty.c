@@ -382,7 +382,7 @@ setctty(void)
     } else {
         raw_print("");
         errno = EVMSERR, vaxc$errno = status;
-        perror("NetHack(setctty: setmode)");
+        perror("NerfHack(setctty: setmode)");
         wait_synch();
     }
 }
@@ -418,7 +418,7 @@ gettty(void)
         if (!vms_ok(status)) {
             raw_print(""), err++;
             errno = EVMSERR, vaxc$errno = status;
-            perror("NetHack(gettty: $assign)");
+            perror("NerfHack(gettty: $assign)");
         }
         atexit(resettty); /* register an exit handler to reset things */
     }
@@ -429,7 +429,7 @@ gettty(void)
     if (!vms_ok(status)) {
         raw_print(""), err++;
         errno = EVMSERR, vaxc$errno = status;
-        perror("NetHack(gettty: sensemode)");
+        perror("NerfHack(gettty: sensemode)");
     }
     ospeed = sg.io.xmt_speed;
     erase_char = '\177'; /* <rubout>, aka <delete> */

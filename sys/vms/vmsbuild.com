@@ -454,7 +454,7 @@ $ milestone "<linking...>"
 $ link /EXECUTABLE=NerfHack.exe vmsmain.obj,date.obj-
         +[-.src]nethack.olb/library -
         +sys$disk:[-.lib.lua]lua546.olb/library
-$ milestone "NetHack"
+$ milestone "NerfHack"
 $     if c_opt.eq.o_LINK then  goto done	!"LINK" only
 $special:
 $!

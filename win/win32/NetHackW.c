@@ -193,7 +193,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         || (major == MIN_COMCTLMAJOR && minor < MIN_COMCTLMINOR)) {
         char buf2[TBUFSZ];
         Sprintf(buf2, "Common control library is outdated.\n%s %d.%d\n%s\n%s",
-                "NetHack requires at least version ", MIN_COMCTLMAJOR,
+                "NerfHack requires at least version ", MIN_COMCTLMAJOR,
                 MIN_COMCTLMINOR,
                 "For further information, refer to the installation notes at",
                 INSTALL_NOTES);

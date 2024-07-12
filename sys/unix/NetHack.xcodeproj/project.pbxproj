@@ -359,7 +359,7 @@
 		3186A3D721A4B14B0052BF02 /* cursinvt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cursinvt.h; path = ../../win/curses/cursinvt.h; sourceTree = "<group>"; };
 		3186A3D821A4B14B0052BF02 /* cursmisc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cursmisc.h; path = ../../win/curses/cursmisc.h; sourceTree = "<group>"; };
 		3186A3D921A4B14B0052BF02 /* curswins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = curswins.h; path = ../../win/curses/curswins.h; sourceTree = "<group>"; };
-		3189577121A1FCC100FB2ABE /* NetHack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetHack; sourceTree = BUILT_PRODUCTS_DIR; };
+		3189577121A1FCC100FB2ABE /* NerfHack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NerfHack; sourceTree = BUILT_PRODUCTS_DIR; };
 		3189577F21A1FDA400FB2ABE /* makedefs */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = makedefs; sourceTree = BUILT_PRODUCTS_DIR; };
 		31B8A30A21A20D730055BD01 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../include/config.h; sourceTree = "<group>"; };
 		31B8A30B21A20D8B0055BD01 /* makedefs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = makedefs.c; path = ../../util/makedefs.c; sourceTree = "<group>"; };
@@ -616,7 +616,7 @@
 		3189577221A1FCC100FB2ABE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3189577121A1FCC100FB2ABE /* NetHack */,
+				3189577121A1FCC100FB2ABE /* NerfHack */,
 				3189577F21A1FDA400FB2ABE /* makedefs */,
 				31B8A44A21A26A4B0055BD01 /* recover */,
 				31B8A45721A26A970055BD01 /* dlb */,
@@ -989,9 +989,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		3189577021A1FCC100FB2ABE /* NetHack */ = {
+		3189577021A1FCC100FB2ABE /* NerfHack */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3189577821A1FCC100FB2ABE /* Build configuration list for PBXNativeTarget "NetHack" */;
+			buildConfigurationList = 3189577821A1FCC100FB2ABE /* Build configuration list for PBXNativeTarget "NerfHack" */;
 			buildPhases = (
 				3189576D21A1FCC100FB2ABE /* Sources */,
 				3189576E21A1FCC100FB2ABE /* Frameworks */,
@@ -1009,9 +1009,9 @@
 				3192867621A3AAFE00325BEB /* PBXTargetDependency */,
 				3192867421A3AAFA00325BEB /* PBXTargetDependency */,
 			);
-			name = NetHack;
-			productName = NetHack;
-			productReference = 3189577121A1FCC100FB2ABE /* NetHack */;
+			name = NerfHack;
+			productName = NerfHack;
+			productReference = 3189577121A1FCC100FB2ABE /* NerfHack */;
 			productType = "com.apple.product-type.tool";
 		};
 		3189577E21A1FDA400FB2ABE /* makedefs */ = {
@@ -1120,7 +1120,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3189576C21A1FCC100FB2ABE /* Build configuration list for PBXProject "NetHack" */;
+			buildConfigurationList = 3189576C21A1FCC100FB2ABE /* Build configuration list for PBXProject "NerfHack" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -1133,7 +1133,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3189577021A1FCC100FB2ABE /* NetHack */,
+				3189577021A1FCC100FB2ABE /* NerfHack */,
 				3189577E21A1FDA400FB2ABE /* makedefs */,
 				31B8A44921A26A4B0055BD01 /* recover */,
 				31B8A45621A26A970055BD01 /* dlb */,
@@ -2163,7 +2163,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3189576C21A1FCC100FB2ABE /* Build configuration list for PBXProject "NetHack" */ = {
+		3189576C21A1FCC100FB2ABE /* Build configuration list for PBXProject "NerfHack" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3189577621A1FCC100FB2ABE /* Debug */,
@@ -2172,7 +2172,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3189577821A1FCC100FB2ABE /* Build configuration list for PBXNativeTarget "NetHack" */ = {
+		3189577821A1FCC100FB2ABE /* Build configuration list for PBXNativeTarget "NerfHack" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3189577921A1FCC100FB2ABE /* Debug */,

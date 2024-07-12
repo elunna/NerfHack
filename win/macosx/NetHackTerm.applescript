@@ -25,7 +25,7 @@ tell application "Terminal"
 	end if
 	
 	activate
-	#open new window and run NetHack in it
+	#open new window and run NerfHack in it
 	do script with command "clear;sleep 1;pwd;" & bundleAppPath & "/Contents/MacOS/nethack;echo '(press RETURN to exit)';awk '{exit}';exit"
 	set nhresult to result -- class is tab
 	set nhresrec to result as record

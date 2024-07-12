@@ -234,8 +234,8 @@ NetHackQtPlayerSelector::NetHackQtPlayerSelector(
      * [Play] is selected by default if [Name] is non-empty but grayed out
      *   if it is empty;
      * [Quit] is selected by default when [Name] is empty;
-     * ...stretch... is "NetHack x.y.z" in large text over
-     *   "by the NetHack DevTeam" is smaller text with blank space above
+     * ...stretch... is "NerfHack x.y.z" in large text over
+     *   "by the NerfHack DevTeam" is smaller text with blank space above
      *   and below the two lines of text.
      *
      * If currently selected race isn't allowed to be some roles, they'll

@@ -1067,7 +1067,7 @@ void NetHackQtMainWindow::doQuit(bool)
        the second choice (Quit) is the action for <return> or <space>;
        <escape> leaves the popup waiting for some other response;
        the &<char> settings for Alt+<char> shortcuts don't work on OSX */
-    int act = QMessageBox::information(this, "NetHack", info,
+    int act = QMessageBox::information(this, "NerfHack", info,
                                        "&Cancel and return to game",
                                        "&Quit without saving",
                                        0, 1);
