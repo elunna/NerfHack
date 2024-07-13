@@ -2847,6 +2847,18 @@
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 10, CLR_BLUE, COBRA),
+    MON(NAM("giant anaconda"), S_SNAKE, /* From EvilHack */
+        LVL(10, 6, 2, 0, 0), (G_GENO | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 2, 6),
+          ATTK(AT_HUGS, AD_WRAP, 2, 6),
+          ATTK(AT_HUGS, AD_PHYS, 4, 6),
+          ATTK(AT_ENGL, AD_DGST, 3, 6),
+          NO_ATTK, NO_ATTK),
+        SIZ(1600, 400, MS_HISS, MZ_HUGE), 0, 0,
+        M1_SWIM | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_CARNIVORE
+            | M1_OVIPAROUS | M1_NOTAKE,
+        M2_HOSTILE | M2_STRONG, M3_INFRAVISION,
+        NO_RACE, 13, CLR_BRIGHT_GREEN, GIANT_ANACONDA),
     /*
      * Trolls
      */

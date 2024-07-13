@@ -85,7 +85,7 @@ else
     des.monster({ id = "jaguar", coord=in_zoo:rndcoord(1), peaceful = 0})
 end
 des.monster({ id = "jaguar", coord=in_zoo:rndcoord(1), peaceful = 0})
-des.monster({ id = "python", coord=in_zoo:rndcoord(1), peaceful = 0})
+des.monster({ id = "giant anaconda", coord=in_zoo:rndcoord(1), peaceful = 0})
 if percent(85) then
     des.monster({ id = "mumak", coord=in_zoo:rndcoord(1), peaceful = 0})
 else
