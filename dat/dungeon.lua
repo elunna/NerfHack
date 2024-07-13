@@ -37,6 +37,12 @@ dungeon = {
             direction = "down",
          },
          {
+            name = "The Temple of Moloch",
+            base = 20,
+            range = 10,
+            direction = "down",
+         },
+         {
             name = "Fort Ludios",
             base = 18,
             range = 4,
@@ -232,6 +238,20 @@ dungeon = {
          {
             name = "tomb",
             bonetag = "Z",
+            base = -1
+         }
+      }
+   },
+   {
+      name = "The Temple of Moloch",
+      base = 1,
+      bonetag = "Y",
+      flags = { "mazelike" },
+      alignment = "chaotic",
+      levels = {
+         {
+            name = "mtemple",
+            bonetag = "Y",
             base = -1
          }
       }

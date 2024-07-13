@@ -133,6 +133,7 @@ typedef struct branch {
 #define Is_nemesis(x)       (Lcheck(x, &nemesis_level))
 #define Is_knox(x)          (Lcheck(x, &knox_level))
 #define Is_tomb(x)          (Lcheck(x, &tomb_level))
+#define Is_temple(x)        (Lcheck(x, &temple_level))
 #define Is_mineend_level(x) (Lcheck(x, &mineend_level))
 #define Is_sokoend_level(x) (Lcheck(x, &sokoend_level))
 

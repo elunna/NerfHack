@@ -799,6 +799,8 @@ wiz_map_levltyp(void)
             Strcat(dsc, " ludios");
         else if (Is_tomb(&u.uz))
             Strcat(dsc, " losttomb");
+        else if (Is_temple(&u.uz))
+            Strcat(dsc, " temple");
         else if (u.uz.dnum == 1)
             Strcat(dsc, " gehennom");
         else if (u.uz.dnum == tower_dnum)

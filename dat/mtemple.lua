@@ -5,140 +5,165 @@
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel");
+des.level_flags("mazelevel", "noflip");
 
-des.map({ halign = "center", valign = "center", map = [[
-             --------                     
-             |......|                     
-             |......|                     
-             |---.--|                     
-                 #                        
-                 #                        
-            |----S---|           --------|
-|------|    |........|           |.......|
-|......------........|------------.......|
-|......+.............+...........+.......|
-|......+.............+...........+.......|
-|......------........|------------.......|
-|------|    |........|           |.......|
-            |---S----|           --------|
-                #                         
-                #                         
-             |--.---|                     
-             |......|                     
-             |......|                     
-             --------                     
-]]});
---
-des.levregion({ region = {01,09,01,09}, exclude = {0,0,0,0}, type = "branch" })
-des.stair("up", 01, 09)
-des.door("locked", 7, 09)
-des.door("locked", 7, 10)
-des.door("locked", 21, 09)
-des.door("locked", 21, 10)
-des.door("locked", 33, 09)
-des.door("locked", 33, 10)
-des.trap("spiked pit")
-des.trap("spiked pit")
-des.trap("spiked pit")
-des.trap("spiked pit")
-des.trap("spiked pit")
-des.object("chest", 40, 09)
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.gold({x = 40, y = 09})
-des.object("?", 40, 09)
-des.object("?", 40, 09)
-des.object("?", 40, 09)
-des.object("?", 40, 09)
-des.object("!", 40, 09)
-des.object("!", 40, 09)
-des.object("!", 40, 09)
-des.object({x = 40, y = 09})
-des.object({x = 40, y = 09})
-des.object({x = 40, y = 09})
-des.object()
-des.object("chest", 16, 01)
-des.object({x = 16, y = 01})
-des.object({x = 16, y = 01})
-des.object({x = 16, y = 01})
-des.object("chest", 17, 18)
-des.object({x = 17, y = 18})
-des.object({x = 17, y = 18})
-des.object({x = 17, y = 18})
-des.object("chest", 40, 10)
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.gold({x = 40, y = 10})
-des.object("?", 40, 10)
-des.object("?", 40, 10)
-des.object("?", 40, 10)
-des.object("?", 40, 10)
-des.object("+", 40, 10)
-des.object("+", 40, 10)
-des.object("+", 40, 10)
-des.object("+", 40, 10)
-des.object({x = 40, y = 10})
-des.object({x = 40, y = 10})
-des.object({x = 40, y = 10})
-des.object({x = 40, y = 10})
-des.object({x = 40, y = 10})
-des.monster("L", 40, 9)
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("shadow")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("Z")
-des.monster("M")
-des.monster("M")
-des.monster("M")
-des.monster("M")
-des.monster("M")
-des.monster("M")
-des.monster("M")
-des.monster("M")
-des.monster("M")
-des.monster("M")
-des.monster("M")
+-- Ported from SLASH'EM by hackemslashem.
+-- This is the Temple of Moloch.
+-- Within lie priests, demons, and, most importantly.... candles!
+des.map([[
+            ----- ----- ----- ----- -----               
+            |...| |...| |...| |...| |...|               
+   ----------...---...---...---...---...|-|        -----
+   |...|..................................|        |...|
+   |...+..................................S########S...|
+   |...|..................................|        |...|
+   ----------...---...---...---...---...|-|        -----
+            |...| |...| |...| |...| |...|               
+            ----- ----- ----- ----- -----               
+]]);
+
+-- RANDOM_MONSTERS: '&','Z'
+
+des.region({ region={08,01,41,07}, lit=1, type="temple", filled=2 })
+
+des.region({ region={00,00,55,08}, lit=0, type="ordinary" })
+
+-- the altar of Moloch (making four will make four priests....)
+des.altar({ x=40, y=04, align="noalign",type="shrine" })
+des.altar({ x=40, y=04, align="noalign",type="shrine" })
+des.altar({ x=40, y=04, align="noalign",type="shrine" })
+des.altar({ x=40, y=04, align="noalign",type="shrine" })
+
+des.levregion({ region = {05,04,05,04}, type = "branch" })
+des.stair("up", 05, 04)
+des.door("locked", 7, 04)
+
+-- flanking the doorway....
+des.trap("spiked pit",06,03)
+des.trap("spiked pit",06,05)
+
+-- the treasure chamber!
+des.object("chest", 52, 03)
+des.object("wax candle", 52, 03)
+des.gold({x = 52, y = 03})
+des.gold({x = 52, y = 03})
+des.object({x = 52, y = 03})
+des.object({x = 52, y = 03})
+des.object({x = 52, y = 03})
+
+des.object("chest", 53, 03)
+des.object("wax candle", 53, 03)
+des.gold({x = 53, y = 03})
+des.gold({x = 53, y = 03})
+des.object({x = 53, y = 03})
+des.object({x = 53, y = 03})
+des.object({x = 53, y = 03})
+
+des.object("chest", 54, 03)
+des.object("wax candle", 54, 03)
+des.gold({x = 54, y = 03})
+des.gold({x = 54, y = 03})
+des.object({x = 54, y = 03})
+des.object({x = 54, y = 03})
+des.object({x = 54, y = 03})
+
+des.object("chest", 52, 04)
+des.object("wax candle", 52, 04)
+des.gold({x = 52, y = 04})
+des.gold({x = 52, y = 04})
+des.object({x = 52, y = 04})
+des.object({x = 52, y = 04})
+des.object({x = 52, y = 04})
+
+des.object("chest", 53, 04)
+des.object("wax candle", 53, 04)
+des.gold({x = 53, y = 04})
+des.gold({x = 53, y = 04})
+des.object({x = 53, y = 04})
+des.object({x = 53, y = 04})
+des.object({x = 53, y = 04})
+
+des.object("chest", 54, 04)
+des.object("wax candle", 54, 04)
+des.gold({x = 54, y = 04})
+des.gold({x = 54, y = 04})
+des.object({x = 54, y = 04})
+des.object({x = 54, y = 04})
+des.object({x = 54, y = 04})
+
+des.object("chest", 52, 05)
+des.object("wax candle", 52, 05)
+des.gold({x = 52, y = 05})
+des.gold({x = 52, y = 05})
+des.object({x = 52, y = 05})
+des.object({x = 52, y = 05})
+des.object({x = 52, y = 05})
+
+des.object("chest", 53, 05)
+des.object("wax candle", 53, 05)
+des.gold({x = 53, y = 05})
+des.gold({x = 53, y = 05})
+des.object({x = 53, y = 05})
+des.object({x = 53, y = 05})
+des.object({x = 53, y = 05})
+
+des.object("chest", 54, 05)
+des.object("wax candle", 54, 05)
+des.gold({x = 54, y = 05})
+des.gold({x = 54, y = 05})
+des.object({x = 54, y = 05})
+des.object({x = 54, y = 05})
+des.object({x = 54, y = 05})
+
+--  five gargoyles on either side, in the niches of the temple
+-- all should start asleep
+des.monster({id="gargoyle", x=15, y=01, peaceful=0})
+des.monster({id="gargoyle", x=21, y=01, peaceful=0})
+des.monster({id="gargoyle", x=27, y=01, peaceful=0})
+des.monster({id="gargoyle", x=33, y=01, peaceful=0})
+des.monster({id="gargoyle", x=39, y=01, peaceful=0})
+des.monster({id="gargoyle", x=15, y=08, peaceful=0})
+des.monster({id="gargoyle", x=21, y=08, peaceful=0})
+des.monster({id="gargoyle", x=27, y=08, peaceful=0})
+des.monster({id="gargoyle", x=33, y=08, peaceful=0})
+des.monster({id="gargoyle", x=39, y=08, peaceful=0})
+
+-- demons down by the altar...
+des.monster({id="bone devil",   x=37, y=02, peaceful=0})
+-- Replaced the babau with an ice devil
+des.monster({id="ice devil",    x=38, y=02, peaceful=0})
+des.monster({id="barbed devil", x=39, y=02, peaceful=0})
+des.monster({id="vrock",        x=37, y=06, peaceful=0})
+des.monster({id="horned devil", x=38, y=06, peaceful=0})
+des.monster({id="hezrou",       x=39, y=06, peaceful=0})
+
+-- a horde of zombies is also inside....
+des.monster({class="Z", x=17, y=03, peaceful=0})
+des.monster({class="Z", x=18, y=03, peaceful=0})
+des.monster({class="Z", x=19, y=03, peaceful=0})
+des.monster({class="Z", x=20, y=03, peaceful=0})
+des.monster({class="Z", x=21, y=03, peaceful=0})
+des.monster({class="Z", x=22, y=03, peaceful=0})
+des.monster({class="Z", x=23, y=03, peaceful=0})
+
+des.monster({class="Z", x=17, y=04, peaceful=0})
+des.monster({class="Z", x=18, y=04, peaceful=0})
+des.monster({class="Z", x=19, y=04, peaceful=0})
+des.monster({class="Z", x=20, y=04, peaceful=0})
+des.monster({class="Z", x=21, y=04, peaceful=0})
+des.monster({class="Z", x=22, y=04, peaceful=0})
+des.monster({class="Z", x=23, y=04, peaceful=0})
+
+des.monster({class="Z", x=17, y=05, peaceful=0})
+des.monster({class="Z", x=18, y=05, peaceful=0})
+des.monster({class="Z", x=19, y=05, peaceful=0})
+des.monster({class="Z", x=20, y=05, peaceful=0})
+des.monster({class="Z", x=21, y=05, peaceful=0})
+des.monster({class="Z", x=22, y=05, peaceful=0})
+des.monster({class="Z", x=23, y=05, peaceful=0})
+
+-- 2 more ghoul mages for good measure...
+des.monster({id="ghoul mage", x=34, y=04, peaceful=0})
+des.monster({id="ghoul mage", x=35, y=04, peaceful=0})
+
+des.engraving({06,04}, "engrave", "Those Not of Moloch, Begone!")
