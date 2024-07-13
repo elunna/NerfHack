@@ -548,7 +548,8 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\minetn-4.lua $(DAT)\minetn-5.lua $(DAT)\minetn-6.lua \
 	$(DAT)\minetn-7.lua $(DAT)\Mon-fila.lua $(DAT)\Mon-filb.lua \
 	$(DAT)\Mon-goal.lua $(DAT)\Mon-loca.lua $(DAT)\Mon-strt.lua \
-	$(DAT)\nhcore.lua   $(DAT)\nhlib.lua    $(DAT)\oracle.lua \
+	$(DAT)\nhcore.lua   $(DAT)\nhlib.lua    $(DAT)\oracle-1.lua \
+	$(DAT)\oracle-2.lua	$(DAT)\oracle-3.lua \
 	$(DAT)\orcus.lua    $(DAT)\Pri-fila.lua $(DAT)\Pri-filb.lua \
 	$(DAT)\Pri-goal.lua $(DAT)\Pri-loca.lua $(DAT)\Pri-strt.lua \
 	$(DAT)\quest.lua    $(DAT)\Ran-fila.lua $(DAT)\Ran-filb.lua \
