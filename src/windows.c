@@ -2251,6 +2251,9 @@ mk_dgl_extrainfo(void)
         if (Is_knox(&u.uz)) {
             Sprintf(tmpdng, "%s", "Knx");
             sortval += 245;
+        } else if (Is_tomb(&u.uz)) {
+            Sprintf(tmpdng, "%s", "Tom");
+            sortval += 245;
         } else if (In_quest(&u.uz)) {
             Sprintf(tmpdng, "%s%i", "Q", dunlev(&u.uz));
             sortval += 250 + (dunlev(&u.uz));

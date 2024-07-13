@@ -31,6 +31,12 @@ dungeon = {
             branchtype = "portal"
          },
          {
+            name = "The Lost Tomb",
+            base = 15,
+            range = 4,
+            direction = "down",
+         },
+         {
             name = "Fort Ludios",
             base = 18,
             range = 4,
@@ -212,6 +218,20 @@ dungeon = {
          {
             name = "knox",
             bonetag = "K",
+            base = -1
+         }
+      }
+   },
+   {
+      name = "The Lost Tomb",
+      base = 1,
+      bonetag = "Z",
+      flags = { "mazelike" },
+      alignment = "chaotic",
+      levels = {
+         {
+            name = "tomb",
+            bonetag = "Z",
             base = -1
          }
       }

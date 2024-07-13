@@ -333,7 +333,7 @@ static const struct instance_globals_d g_init_d = {
       {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0},
        0, 0, 0, 0, 0,
       {0}, {0}, {0},
-      {0}, {0}, {0} }, /* dungeon_topology */
+      {0}, {0}, {0}, {0} }, /* dungeon_topology */
     0, /* doors_alloc */
     NULL, /* doors */
     /* dig.c */

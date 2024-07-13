@@ -863,6 +863,7 @@ nhdat:	$(U)dlb_main.exe $(DAT)\data $(DAT)\oracles $(DAT)\options \
 	@echo wizard1.lua >>dlb.lst
 	@echo wizard2.lua >>dlb.lst
 	@echo wizard3.lua >>dlb.lst
+	@echo tomb.lua >>dlb.lst
 ! ELSE
 	@for %%N in (*.lua) do echo %%N >>dlb.lst
 ! ENDIF
