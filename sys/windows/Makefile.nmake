@@ -544,7 +544,8 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\knox.lua     $(DAT)\medusa-1.lua $(DAT)\medusa-2.lua \
 	$(DAT)\medusa-3.lua $(DAT)\medusa-4.lua $(DAT)\minefill.lua \
 	$(DAT)\minend-1.lua $(DAT)\minend-2.lua $(DAT)\minend-3.lua \
-	$(DAT)\minend-4.lua \
+	$(DAT)\minend-4.lua $(DAT)\minend-5.lua $(DAT)\minend-6.lua \
+	$(DAT)\minend-7.lua \
 	$(DAT)\minetn-1.lua $(DAT)\minetn-2.lua $(DAT)\minetn-3.lua \
 	$(DAT)\minetn-4.lua $(DAT)\minetn-5.lua $(DAT)\minetn-6.lua \
 	$(DAT)\minetn-7.lua $(DAT)\minetn-8.lua $(DAT)\minetn-9.lua \

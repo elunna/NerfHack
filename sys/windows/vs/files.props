@@ -73,6 +73,9 @@
     <Luafiles Include = "minend-2.lua"/>
     <Luafiles Include = "minend-3.lua"/>
     <Luafiles Include = "minend-4.lua"/>
+    <Luafiles Include = "minend-5.lua"/>
+    <Luafiles Include = "minend-6.lua"/>
+    <Luafiles Include = "minend-7.lua"/>
     <Luafiles Include = "minetn-1.lua"/>
     <Luafiles Include = "minetn-2.lua"/>
     <Luafiles Include = "minetn-3.lua"/>
