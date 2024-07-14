@@ -43,6 +43,7 @@ local special_levels = {
 "minend-1",
 "minend-2",
 "minend-3",
+"minend-4",
 "minetn-1",
 "minetn-2",
 "minetn-3",

@@ -444,7 +444,8 @@ LUALIST = air Arc-fila Arc-filb Arc-goal Arc-loca Arc-strt \
 	Hea-fila Hea-filb Hea-goal Hea-loca Hea-strt hellfill \
 	juiblex Kni-fila Kni-filb Kni-goal Kni-loca Kni-strt \
 	knox medusa-1 medusa-2 medusa-3 medusa-4 minefill \
-	minend-1 minend-2 minend-3 minetn-1 minetn-2 minetn-3 \
+	minend-1 minend-2 minend-3 minend-4 \
+	minetn-1 minetn-2 minetn-3 \
 	minetn-4 minetn-5 minetn-6 minetn-7 minetn-8 minetn-9 \
 	minetn-10 minetn-11 Mon-fila Mon-filb \
 	Mon-goal Mon-loca Mon-strt nhcore nhlib oracle \
