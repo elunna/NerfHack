@@ -865,6 +865,7 @@ destroy_drawbridge(coordxy x, coordxy y)
 {
     struct rm *lev1, *lev2;
     struct trap *t;
+    struct monst *mtmp;
     struct obj *otmp;
     coordxy x2, y2;
     int i;
@@ -987,6 +988,19 @@ destroy_drawbridge(coordxy x, coordxy y)
                    CRUSHING); /*no corpse*/
             if (levl[etmp1->ex][etmp1->ey].typ == MOAT)
                 do_entity(etmp1);
+        }
+    }
+    if (in_town(x, y)) {
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+            if (DEADMONSTER(mtmp))
+                continue;
+            if (is_watch(mtmp->data) && mtmp->mpeaceful
+                && couldsee(mtmp->mx, mtmp->my)) {
+                mon_yells(mtmp, "Halt, vandal!  You're under arrest!");
+                (void) angry_guards(FALSE);
+
+                break;
+            }
         }
     }
     nokiller();
