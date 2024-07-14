@@ -79,6 +79,10 @@
     <Luafiles Include = "minetn-5.lua"/>
     <Luafiles Include = "minetn-6.lua"/>
     <Luafiles Include = "minetn-7.lua"/>
+    <Luafiles Include = "minetn-8.lua"/>
+    <Luafiles Include = "minetn-9.lua"/>
+    <Luafiles Include = "minetn-10.lua"/>
+    <Luafiles Include = "minetn-11.lua"/>
     <Luafiles Include = "Mon-fila.lua"/>
     <Luafiles Include = "Mon-filb.lua"/>
     <Luafiles Include = "Mon-goal.lua"/>
