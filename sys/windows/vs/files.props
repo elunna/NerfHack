@@ -30,8 +30,6 @@
     <Luafiles Include = "Bar-loca.lua"/>
     <Luafiles Include = "Bar-strt.lua"/>
     <Luafiles Include = "bigrm-1.lua"/>
-    <Luafiles Include = "bigrm-10.lua"/>
-    <Luafiles Include = "bigrm-11.lua"/>
     <Luafiles Include = "bigrm-2.lua"/>
     <Luafiles Include = "bigrm-3.lua"/>
     <Luafiles Include = "bigrm-4.lua"/>
@@ -40,6 +38,10 @@
     <Luafiles Include = "bigrm-7.lua"/>
     <Luafiles Include = "bigrm-8.lua"/>
     <Luafiles Include = "bigrm-9.lua"/>
+    <Luafiles Include = "bigrm-10.lua"/>
+    <Luafiles Include = "bigrm-11.lua"/>
+    <Luafiles Include = "bigrm-12.lua"/>
+    <Luafiles Include = "bigrm-13.lua"/>
     <Luafiles Include = "castle.lua"/>
     <Luafiles Include = "Cav-fila.lua"/>
     <Luafiles Include = "Cav-filb.lua"/>
