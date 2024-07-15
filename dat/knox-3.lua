@@ -1,4 +1,4 @@
--- NetHack knox knox.lua	$NHDT-Date: 1652196027 2022/05/10 15:20:27 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.5 $
+-- NetHack knox knox-3.lua	$NHDT-Date: 1652196027 2022/05/10 15:20:27 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.5 $
 --	Copyright (c) 1989 by Jean-Christophe Collet
 --	Copyright (c) 1992 by Izchak Miller
 -- NetHack may be freely redistributed.  See license for details.
@@ -49,14 +49,11 @@ des.teleport_region({ region = {06,15,09,16}, dir="down" })
 des.region({ x1=62,y1=12,x2=75,y2=15, lit=1, type="throne", filled=1, irregular=1 })
 des.monster({ id = "Croesus", x=66, y=14, peaceful = 0 })
 
-
-
 --   50% chance each to move fort's entry secret door up one row
 if percent(50) then
    des.terrain(61,13, "S")
    des.terrain(61,14, "|")
 end
-
 
 --   The Vault
 function treasure_spot(x,y)
@@ -74,8 +71,6 @@ des.region({ region={62,05,75,10}, lit=1, type="ordinary" })
 local treasury = selection.area(62,05,75,10);
 treasury:iterate(treasure_spot);
 
-
-
 --   Vault entrance also varies
 if percent(50) then
    des.terrain(65,11, "|")
@@ -88,7 +83,6 @@ des.region({ region={01,10,05,13},lit=1,type="zoo",filled=1,irregular=1 })
 --   arrival chamber; needs to be a real room to control migrating monsters,
 --   and `unfilled' is a kludge to force an ordinary room to remain a room
 des.region({ region={04,15,07,16},lit=0,type="ordinary",arrival_room=true })
-
 
 -- TODO: Double check this, does it match knox-1??
 

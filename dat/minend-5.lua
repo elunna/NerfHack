@@ -1,11 +1,11 @@
--- NetHack mines minend-1.lua	$NHDT-Date: 1652196029 2022/05/10 15:20:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.3 $
+-- NetHack mines minend-5.lua	$NHDT-Date: 1652196029 2022/05/10 15:20:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.3 $
 --	Copyright (c) 1989-95 by Jean-Christophe Collet
 --	Copyright (c) 1991-95 by M. Stephenson
 -- NetHack may be freely redistributed.  See license for details.
 --
 -- Mine end level variant 5
 -- "Orc Temple" by Khor
--- Ported from EvilHack by hackemslashem
+-- Ported to 3.7 LUA (from EvilHack) by hackemslashem
 -- In this variant of the mines' end a group of orcs have found a randomly
 -- generated figurine of a demon and worship it. Slightly modified from
 -- the original.

@@ -5,7 +5,7 @@
 
 -- "Mini-Castle Town" - Original author unknown
 -- Ported to lua by Erik Lunna (NerfHack/Hack'EM)
-des.level_flags("inaccessibles")
+des.level_flags("noflip")
 des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=1,walled=true })
 des.map([[
 ----...}}}}}}}}}}}}}}}}}}}}}}}.--.---
@@ -44,7 +44,6 @@ des.region({ region={14,11,15,12}, lit=0, type="ordinary" })
 
 des.region({ region={17,10,19,12}, lit=1, type="tool shop", filled=1 })
 des.region({ region={23,10,25,12}, lit=1, type="shop", filled=1 })
-
 
 des.door("closed",4,6)
 des.door("closed",14,5)

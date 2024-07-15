@@ -3,15 +3,13 @@
 --	Copyright (c) 1991-95 by M. Stephenson
 -- NetHack may be freely redistributed.  See license for details.
 --
--- A tragic accident has occurred in Frontier Town....
---
--- Minetown variant 1
+-- Minetown variant 9
 -- Lavender Town -- Minetown, but spooky!
 -- By Kestrel Gregorich-Trevor
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "inaccessibles")
+des.level_flags("mazelevel", "noflip", "inaccessibles")
 
 des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=1,walled=true })
 
@@ -77,8 +75,6 @@ des.door("closed",13,07)
 des.door("closed",21,04)
 des.door("closed",25,08)
 des.door("closed",34,03)
-
-
 
 -- The shops
 des.region({ region={10,14, 12,16}, lit=1, type="tool shop", filled=1 })

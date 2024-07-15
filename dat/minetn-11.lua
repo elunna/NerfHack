@@ -33,9 +33,6 @@ des.map([[
                                |PPP--- ---PPPP| |            ------         
 ]]);
 
-
-
-
 des.region(selection.area(01,01,75,20),"lit")
 des.region({ region={2,4,4,6}, lit=1, type="candle shop", filled=1 })
 des.region({ region={15,4,19,6}, lit=1, type="shop", filled=1 })
@@ -72,7 +69,6 @@ des.door("closed",51,13)
 des.door("locked",58,06)
 des.door("locked",58,12)
 
-
 -- Traps
 -- Loose floorboard
 des.trap("board")
@@ -98,7 +94,6 @@ des.monster({ id = "watchman", x=50,y=15, peaceful = 1 })
 
 -- Watchdog
 des.monster({ id = "wolf", x=30,y=08, peaceful = 1 })
-
 
 -- Citizens
 des.monster({ id = "gnome", x=17,y=10, peaceful = 0 })
