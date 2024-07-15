@@ -76,7 +76,7 @@ dungeon = {
             base = 10,
             range = 3,
             chance = 40,
-            nlevels = 13
+            nlevels = 20
          },
          {
             name = "medusa",

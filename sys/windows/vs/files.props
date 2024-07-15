@@ -42,6 +42,13 @@
     <Luafiles Include = "bigrm-11.lua"/>
     <Luafiles Include = "bigrm-12.lua"/>
     <Luafiles Include = "bigrm-13.lua"/>
+    <Luafiles Include = "bigrm-14.lua"/>
+    <Luafiles Include = "bigrm-15.lua"/>
+    <Luafiles Include = "bigrm-16.lua"/>
+    <Luafiles Include = "bigrm-17.lua"/>
+    <Luafiles Include = "bigrm-18.lua"/>
+    <Luafiles Include = "bigrm-19.lua"/>
+    <Luafiles Include = "bigrm-20.lua"/>
     <Luafiles Include = "castle.lua"/>
     <Luafiles Include = "Cav-fila.lua"/>
     <Luafiles Include = "Cav-filb.lua"/>
