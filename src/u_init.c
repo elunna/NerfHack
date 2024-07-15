@@ -1150,6 +1150,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
            /* wizard patch -- they already have one */
            || (otyp == SPE_FORCE_BOLT && Role_if(PM_WIZARD))
+           || (otyp == SPE_MAGIC_MISSILE && Role_if(PM_WIZARD))
            /* vampirics start with regeneration */
            || (otyp == RIN_REGENERATION && Race_if(PM_VAMPIRE))
            /* items that will be silver for vampirics (rings/wands perhaps)
