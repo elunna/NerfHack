@@ -1120,9 +1120,8 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
 
     /*
      * For random objects, do not create certain overly powerful
-     * items: wand of wishing, ring of levitation, or the
-     * polymorph/polymorph control combination.  Specific objects,
-     * i.e. the discovery wishing, are still OK.
+     * items: wand of wishing, polymorph/polymorph control combination.
+     * Specific objects, i.e. the discovery wishing, are still OK.
      * Also, don't get a couple of really useless items.  (Note:
      * punishment isn't "useless".  Some players who start out with
      * one will immediately read it and use the iron ball as a
@@ -1133,7 +1132,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
 
     while (otyp == WAN_WISHING || otyp == gn.nocreate
            || otyp == gn.nocreate2 || otyp == gn.nocreate3
-           || otyp == gn.nocreate4 || otyp == RIN_LEVITATION
+           || otyp == gn.nocreate4
            /* 'useless' items */
            || otyp == POT_HALLUCINATION
            || otyp == POT_ACID
@@ -1151,11 +1150,11 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
            /* wizard patch -- they already have one */
            || (otyp == SPE_FORCE_BOLT && Role_if(PM_WIZARD))
-	    /* vampirics start with regeneration */
+           /* vampirics start with regeneration */
            || (otyp == RIN_REGENERATION && Race_if(PM_VAMPIRE))
-	    /* items that will be silver for vampirics (rings/wands perhaps)
-	     * that can't become iron */
-	   || (Race_if(PM_VAMPIRE) && objects[otyp].oc_material == SILVER)
+           /* items that will be silver for vampirics (rings/wands perhaps)
+           * that can't become iron */
+           || (Race_if(PM_VAMPIRE) && objects[otyp].oc_material == SILVER)
            /* powerful spells are either useless to
               low level players or unbalancing; also
               spells in restricted skill categories */
