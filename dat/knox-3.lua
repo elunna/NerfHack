@@ -296,6 +296,12 @@ des.monster("giant eel",22,15)
 des.monster("giant eel",29,07)
 des.monster("giant eel",35,14)
 
+-- Some companions for Croesus...
+des.monster("mermaid")
+des.monster("mermaid")
+des.monster("mermaid")
+des.monster("mermaid")
+
 -- The corner rooms treasures
 des.object("diamond",62,17)
 des.object("diamond",62,18)
