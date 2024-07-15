@@ -541,7 +541,8 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\Hea-loca.lua $(DAT)\Hea-strt.lua $(DAT)\hellfill.lua \
 	$(DAT)\juiblex.lua  $(DAT)\Kni-fila.lua $(DAT)\Kni-filb.lua \
 	$(DAT)\Kni-goal.lua $(DAT)\Kni-loca.lua $(DAT)\Kni-strt.lua \
-	$(DAT)\knox.lua     $(DAT)\medusa-1.lua $(DAT)\medusa-2.lua \
+	$(DAT)\knox-1.lua   $(DAT)\knox-2.lua   $(DAT)\knox-2.lua   \
+	$(DAT)\medusa-1.lua $(DAT)\medusa-2.lua \
 	$(DAT)\medusa-3.lua $(DAT)\medusa-4.lua $(DAT)\minefill.lua \
 	$(DAT)\minend-1.lua $(DAT)\minend-2.lua $(DAT)\minend-3.lua \
 	$(DAT)\minend-4.lua $(DAT)\minend-5.lua $(DAT)\minend-6.lua \

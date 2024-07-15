@@ -46,7 +46,7 @@ dungeon = {
             name = "Fort Ludios",
             base = 18,
             range = 4,
-            branchtype = "portal"
+            branchtype = "portal",
          },
          {
             name = "Gehennom",
@@ -225,7 +225,8 @@ dungeon = {
          {
             name = "knox",
             bonetag = "K",
-            base = -1
+            base = -1,
+            nlevels = 3,
          }
       }
    },
