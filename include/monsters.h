@@ -155,12 +155,12 @@
     MON(NAM("assassin bug"), S_ANT,                                  /* Slash'EM */
         LVL(12, 24, 4, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 4, 6),
-	  ATTK(AT_STNG, AD_DRST, 2, 8),
+	        ATTK(AT_STNG, AD_DRST, 1, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(100, 100, MS_SILENT, MZ_MEDIUM), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_CARNIVORE | M1_CONCEAL,
         M2_HOSTILE | M2_FLANK, M3_BERSERK, 
-        NO_RACE, 12, CLR_BLACK, ASSASSIN_BUG),
+        NO_RACE, 16, CLR_BLACK, ASSASSIN_BUG),
     /*
      * blobs
      */
