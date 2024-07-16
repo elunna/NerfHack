@@ -102,49 +102,19 @@ struct Jitem {
              && typ != OPAL)))
 
 static const struct Jitem Japanese_items[] = {
-    { BATTLE_AXE, "ono" },
-    { BROADSWORD, "ninja-to" },
-    { BRONZE_PLATE_MAIL, "tanko" },
-    { CLUB, "bokken" },
-    { CRYSTAL_PLATE_MAIL, "jade o-yoroi" },
-    { DAGGER, "kunai" },
-    { DART, "bo-shuriken" },
-    { DWARVISH_MATTOCK, "dwarvish zaghnal" },
-    { FLAIL, "nunchaku" },
-    { FOOD_RATION, "gunyoki" },
-    { GAUNTLETS_OF_FUMBLING, "kote of fumbling" },
-    { GAUNTLETS_OF_POWER, "kote of power" },
-    { GLAIVE, "naginata" },
-    { GUISARME, "kamayari" },
-    { HALBERD, "bisento" },
-    { HELMET, "kabuto" },
-    { KNIFE, "shito" },
-    { LANCE, "uma-yari" },
-    { LEATHER_GLOVES, "yugake" },
-    { LOCK_PICK, "osaku" },
-    { LONG_SWORD, "chokuto" },
-    { PLATE_MAIL, "o-yoroi" },
-    { POT_BOOZE, "sake" },
-    { QUARTERSTAFF, "bo" },
     { SHORT_SWORD, "wakizashi" },
-    { SHURIKEN, "hira-shuriken" },
-    { SPEAR, "yari" },
-    { SPLINT_MAIL, "dou-maru" },
-    { SILVER_DAGGER, "jade-hilted kunai" },
-    { SILVER_SPEAR, "jade-set yari" },
-    { TRIDENT, "magari yari" },
-    { TWO_HANDED_SWORD, "no-dachi" },
-    { WAR_HAMMER, "dai tsuchi" },
+    { BROADSWORD, "ninja-to" },
+    { FLAIL, "nunchaku" },
+    { GLAIVE, "naginata" },
+    { LOCK_PICK, "osaku" },
     { WOODEN_HARP, "koto" },
-    { WATER_WALKING_BOOTS, "mizugumo" },
-    { GRAPPLING_HOOK, "kaginawa" },
-    { BOW, "dai-kyu" }, /* Nethack-- */
-    { SMALL_SHIELD, "timbe" }, /* Nethack-- */
-    { PANCAKE, "okonomiyaki" },
-#if 0
-    { DOUGHNUT, "onigiri" }, /* 4kids dubbing */
-    { BASEBALL_BAT, "jo" },	/* Close enough, club is a bokken for now */
-#endif
+    { MAGIC_HARP, "magic koto" },
+    { KNIFE, "shito" },
+    { PLATE_MAIL, "tanko" },
+    { HELMET, "kabuto" },
+    { LEATHER_GLOVES, "yugake" },
+    { FOOD_RATION, "gunyoki" },
+    { POT_BOOZE, "sake" },
     { 0, "" }
 };
 
