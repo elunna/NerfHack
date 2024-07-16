@@ -79,7 +79,7 @@ des.door("closed",34,03)
 -- The shops
 des.region({ region={10,14, 12,16}, lit=1, type="tool shop", filled=1 })
 des.region({ region={26,07, 34,08}, lit=1, type="shop", filled=1 })
-des.region({ region={22,04, 24,06}, lit=1, type="candle shop", filled=1 })
+des.region({ region={22,04, 24,05}, lit=1, type="candle shop", filled=1 })
 des.region({ region={04,04, 07,07}, lit=1, type=monkfoodshop(), filled=1 })
 
 -- Wary citizens
