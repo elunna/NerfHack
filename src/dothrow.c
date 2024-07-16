@@ -2265,7 +2265,18 @@ thitmonst(
                 obfree(obj, (struct obj *) 0);
                 return 1;
             }
-            passive_obj(mon, obj, (struct attack *) 0);
+            if (mon->data == &mons[PM_ADHERER] && !DEADMONSTER(mon)) {
+                pline("The %s sticks to %s", xname(obj), mon_nam(mon));
+                
+                if (uwep && obj == uwep) {
+                    dropx(uwep);
+                    obj_extract_self(obj);
+                    add_to_minv(mon, obj);
+                } else 
+                    (void) mpickobj(mon, obj);
+                return 1;
+            } else 
+                passive_obj(mon, obj, (struct attack *) 0);
         } else {
             tmiss(obj, mon, TRUE);
             if (hmode == HMON_APPLIED)
