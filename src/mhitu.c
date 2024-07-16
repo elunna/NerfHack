@@ -2874,14 +2874,15 @@ struct attack *mattk)
         impossible("counterattack() with polyd-rogue!");
         return M_ATTK_HIT;
     }
-    /* Allow counterattacks on weapon, claw, and kick attacks. */
+    /* Allow counterattacks on weapon, bite, claw, and kick attacks. */
     if (mattk->aatyp != AT_WEAP 
-            && mattk->aatyp != AT_CLAW && mattk->aatyp != AT_KICK)
+            && mattk->aatyp != AT_BITE
+            && mattk->aatyp != AT_CLAW
+            && mattk->aatyp != AT_KICK)
         return M_ATTK_HIT;
     
     /* Restrictions */
-    if (!humanoid(mtmp->data)
-        || (uarm && is_heavy_metallic(uarm))
+    if ((uarm && is_heavy_metallic(uarm))
         || (uarms && objects[uarms->otyp].oc_bulky)
         || (near_capacity() > UNENCUMBERED)
         || (u.uhs >= WEAK)
