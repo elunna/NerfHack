@@ -17,16 +17,18 @@
 #define AT_TUCH 5   /* touches */
 #define AT_STNG 6   /* sting */
 #define AT_HUGS 7   /* crushing bearhug */
-#define AT_SPIT 10  /* spits substance - ranged */
-#define AT_ENGL 11  /* engulf (swallow or by a cloud) */
-#define AT_BREA 12  /* breath - ranged */
-#define AT_EXPL 13  /* explodes - proximity */
-#define AT_BOOM 14  /* explodes when killed */
-#define AT_GAZE 15  /* gaze - ranged */
-#define AT_TENT 16  /* tentacles */
+#define AT_SPIT 8  /* spits substance - ranged */
+#define AT_ENGL 9  /* engulf (swallow or by a cloud) */
+#define AT_BREA 10  /* breath - ranged */
+#define AT_EXPL 11  /* explodes - proximity */
+#define AT_BOOM 12  /* explodes when killed */
+#define AT_GAZE 13  /* gaze - ranged */
+#define AT_TENT 14  /* tentacles */
 
-#define AT_WEAP 254 /* uses weapon */
-#define AT_MAGC 255 /* uses magic spell(s) */
+#define AT_WEAP 15 /* uses weapon */
+#define AT_MAGC 16 /* uses magic spell(s) */
+
+#define LAST_AT AT_MAGC
 
 #define DISTANCE_ATTK_TYPE(atyp) ((atyp) == AT_SPIT \
                                   || (atyp) == AT_BREA \
@@ -91,13 +93,14 @@
 #define AD_DSRM 46  /* disarm the player (from SpliceHack) */
 #define AD_WEBS 47  /* entangles target in webbing (from EvilHack) */
 #define AD_LUCK 48  /* drain luck */
+#define AD_CLRC 49 /* random clerical spell */
+#define AD_SPEL 50 /* random magic spell */
+#define AD_RBRE 51 /* random breath weapon */
 
-#define AD_CLRC 240 /* random clerical spell */
-#define AD_SPEL 241 /* random magic spell */
-#define AD_RBRE 242 /* random breath weapon */
+#define AD_SAMU 52 /* hits, may steal Amulet (Wizard) */
+#define AD_CURS 53 /* random curse (ex. gremlin) */
 
-#define AD_SAMU 252 /* hits, may steal Amulet (Wizard) */
-#define AD_CURS 253 /* random curse (ex. gremlin) */
+#define LAST_AD AD_CURS
 
 struct mhitm_data {
     int damage;

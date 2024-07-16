@@ -2209,6 +2209,8 @@ extern char *bare_artifactname(struct obj *) NONNULL NONNULLARG1;
    arg1, and code path that leads to impossible(), preventing NONNULLARG1 */
 extern char *makeplural(const char *) NONNULL NO_NNARGS;
 extern char *makesingular(const char *) NONNULL NO_NNARGS;
+extern short name_to_otyp(const char *);
+extern boolean object_not_monster(const char *);
 /* readobjnam() can return NULL and  allows a NULL to trigger code path for
    random object */
 extern struct obj *readobjnam(char *, struct obj *) NO_NNARGS;
@@ -3028,6 +3030,7 @@ extern char force_learn_spell(short);
 extern int num_spells(void);
 extern void skill_based_spellbook_id(void);
 extern void spell_nag(void);
+extern const char *spelltypemnemonic(int);
 
 /* ### stairs.c ### */
 
@@ -3884,6 +3887,7 @@ extern void extract_from_minvent(struct monst *, struct obj *, boolean,
 
 /* ### write.c ### */
 
+extern int ink_cost(short);
 extern int dowrite(struct obj *) NONNULLARG1;
 
 /* ### zap.c ### */

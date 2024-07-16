@@ -3,7 +3,6 @@
 
 #include "hack.h"
 
-staticfn int cost(struct obj *) NONNULLARG1;
 staticfn boolean label_known(int, struct obj *) NO_NNARGS;
 staticfn int write_ok(struct obj *) NO_NNARGS;
 staticfn char *new_book_description(int, char *) NONNULL NONNULLPTRS;
@@ -11,13 +10,13 @@ staticfn char *new_book_description(int, char *) NONNULL NONNULLPTRS;
 /*
  * returns basecost of a scroll or a spellbook
  */
-staticfn int
-cost(struct obj *otmp)
+int
+ink_cost(short otyp)
 {
-    if (otmp->oclass == SPBOOK_CLASS)
-        return (10 * objects[otmp->otyp].oc_level);
+     if (objects[otyp].oc_class == SPBOOK_CLASS)
+        return (10 * objects[otyp].oc_level);
 
-    switch (otmp->otyp) {
+    switch (otyp) {
 #ifdef MAIL_STRUCTURES
     case SCR_MAIL:
         return 2;
@@ -282,7 +281,7 @@ dowrite(struct obj *pen)
     check_unpaid(pen);
 
     /* see if there's enough ink */
-    basecost = cost(new_obj);
+    basecost = ink_cost(new_obj->otyp);
     if (pen->spe < basecost / 2) {
         Your("marker is too dry to write that!");
         obfree(new_obj, (struct obj *) 0);

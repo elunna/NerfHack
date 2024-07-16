@@ -22,7 +22,7 @@ staticfn void cleanup_burn(ANY_P *, long) NONNULLARG1;
 
 /* used by wizard mode #timeout and #wizintrinsic; order by 'interest'
    for timeout countdown, where most won't occur in normal play */
-static const struct propname {
+const struct propname {
     int prop_num;
     const char *prop_name;
 } propertynames[] = {

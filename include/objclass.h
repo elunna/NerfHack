@@ -33,6 +33,8 @@ enum obj_material_types {
     MINERAL     = 21
 };
 
+#define NUM_MATERIAL_TYPES MINERAL
+
 enum obj_armor_types {
     ARM_SUIT   = 0,
     ARM_SHIELD = 1,        /* needed for special wear function */

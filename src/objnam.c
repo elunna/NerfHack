@@ -4482,14 +4482,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         }
     }
     /* Find corpse type w/o "of" (red dragon scale mail, yeti corpse) */
-    if (strncmpi(d->bp, "samurai sword", 13)  /* not the "samurai" monster! */
-        && strncmpi(d->bp, "wizard lock", 11) /* not the "wizard" monster! */
-        && strncmpi(d->bp, "death wand", 10)  /* 'of inversion', not Rider */
-        && strncmpi(d->bp, "master key", 10)  /* not the "master" rank */
-        && strncmpi(d->bp, "dark souls", 10)  /* not the "Dark One" monster */
-        && strncmpi(d->bp, "ninja-to", 8)     /* not the "ninja" rank */
-        && strncmpi(d->bp, "vampire blood", 13)     /* not the "vampire" monster*/
-        && strncmpi(d->bp, "magenta", 7)) {   /* not the "mage" rank */
+    if (!object_not_monster(d->bp)) {
         const char *rest = 0;
 
         if (d->mntmp < LOW_PM && strlen(d->bp) > 2
@@ -5795,6 +5788,115 @@ safe_qbuf(
     }
     /* assert( strlen(qbuf) < QBUFSZ ); */
     return qbuf;
+}
+
+/*
+ * Given a user-supplied string, try to match it to an object type.
+ * Very similar to rnd_otyp_by_namedesc, except it doesn't fall back on picking
+ * a random object if it can't find an appropriate one. Intended to be the
+ * object counterpart to name_to_mon.
+ * Only works on exact object names, since allowing it to work on randomized
+ * descriptions or user-called names would leak information to object lookup.
+ */
+short
+name_to_otyp(const char *in_str)
+{
+    short otyp;
+    int i;
+    char oclass = 0;
+
+    /* Search for class names: XXXXX potion, scroll of XXXXX.  Avoid */
+    /* false hits on, e.g., rings for "ring mail".
+     * This is lifted from readobjnam, and should probably be refactored into
+     * its own function but the existing logic in there is too tied up with
+     * readobjnam variables at the moment. */
+    if (strncmpi(in_str, "enchant ", 8)
+        && strncmpi(in_str, "destroy ", 8)
+        && strncmpi(in_str, "detect food", 11)
+        && strncmpi(in_str, "food detection", 14)
+        && strncmpi(in_str, "ring mail", 9)
+        && strncmpi(in_str, "studded armor", 21)
+        && strncmpi(in_str, "light armor", 13)
+        && strncmpi(in_str, "tooled horn", 11)
+        && strncmpi(in_str, "food ration", 11)
+        && strncmpi(in_str, "meat ring", 9)) {
+        for (i = 0; i < (int) (sizeof wrpsym); i++) {
+            int j = strlen(wrp[i]);
+            if (!strncmpi(in_str, wrp[i], j)) {
+                oclass = wrpsym[i];
+                if (oclass != AMULET_CLASS) {
+                    /* amulets don't consistently use "amulet of" */
+                    in_str += j;
+                    if (!strncmpi(in_str, " of ", 4))
+                        in_str += 4;
+                }
+                break;
+            }
+        }
+    }
+    /* if the player asked only for "ring", etc, that's not going to resolve to
+     * anything in this function, so safe to say the string matches no otyp. */
+    if (!(*in_str)) {
+        return STRANGE_OBJECT;
+    }
+
+    for (otyp = STRANGE_OBJECT + 1; otyp < NUM_OBJECTS; ++otyp) {
+        if (!OBJ_NAME(objects[otyp])) {
+            /* obj is nonexistent in this game */
+            continue;
+        }
+        else if (oclass && objects[otyp].oc_class != oclass) {
+            /* name might match, but the class is wrong, e.g. "scroll of light"
+             * becomes "light" which matches "wand of light" */
+            continue;
+        }
+        if (wishymatch(in_str, OBJ_NAME(objects[otyp]), TRUE)) {
+            return otyp;
+        }
+    }
+    /* try alternate spellings */
+    const struct alt_spellings *as;
+
+    for (as = spellings; as->sp != 0; as++) {
+        if (!strcmpi(in_str, as->sp)) {
+            return as->ob;
+        }
+    }
+    /* try Japanese names */
+    const struct Jitem *j;
+    for (j = Japanese_items; j->item != 0; j++) {
+        if (!strcmpi(in_str, j->name)) {
+            return j->item;
+        }
+    }
+    /* try fruits */
+    if (fruit_from_name(in_str, FALSE, NULL))
+        return SLIME_MOLD;
+    return STRANGE_OBJECT;
+}
+
+/* Return true if the input string clearly represents an object, not a monster.
+ */
+boolean
+object_not_monster(const char *str)
+{
+    const char *non_monster_strs[] = {
+        "samurai sword", /* not the "samurai" monster! */
+        "wizard lock",   /* not the "wizard" monster! */
+        "death wand",    /* 'of inversion', not Rider */
+        "skeleton key",  /* not the "skeleton" monster */
+        "master key",    /* not the "master" rank */
+        "ninja-to",      /* not the "ninja" rank */
+        "magenta",       /* not the "mage" rank */
+        "vampire blood"     /* not the "vampire" monster*/
+    };
+    int i;
+    for (i = 0; i < SIZE(non_monster_strs); ++i) {
+        if (!strncmpi(str, non_monster_strs[i], strlen(non_monster_strs[i]))) {
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 static const char*

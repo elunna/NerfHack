@@ -18,6 +18,8 @@ staticfn void look_at_object(char *, coordxy, coordxy, int) NONNULLARG1;
 staticfn void look_at_monster(char *, char *, struct monst *,
                                                coordxy, coordxy) NONNULLARG13;
 /* lookat() can return Null */
+staticfn void add_mon_info(winid, struct permonst *);
+staticfn void add_obj_info(winid, short);
 staticfn struct permonst *lookat(coordxy, coordxy, char *, char *) NONNULLPTRS;
 staticfn boolean checkfile(char *, struct permonst *, unsigned,
                                                             char *) NO_NNARGS;
@@ -795,6 +797,750 @@ ia_checkfile(struct obj *otmp)
     Strcpy(itemnam, singular(otmp, xname));
     return checkfile(itemnam, (struct permonst *) 0,
                      chkfilIaCheck | chkfilDontAsk, (char *) 0);
+
+}
+
+/* This is not the best place to put these arrays, but it's the only place that
+ * currently uses them.
+ * Make sure the order is the same as that defined in monattk.h!
+ */
+static const char * attacktypes[] = {
+    "passive",  /* AT_NONE 0 */
+    "claw",     /* AT_CLAW 1 */
+    "bite",     /* AT_BITE 2 */
+    "kick",     /* AT_KICK 3 */
+    "butt",     /* AT_BUTT 4 */
+    "touch",    /* AT_TUCH 5 */
+    "sting",    /* AT_STNG 6 */
+    "bearhug",  /* AT_HUGS 7 */
+    "spit",     /* AT_SPIT 10 */
+    "engulf",   /* AT_ENGL 11 */
+    "breath",   /* AT_BREA 12 */
+    "explode",  /* AT_EXPL 13 */
+    "explode on death", /* AT_BOOM 14 */
+    "gaze",     /*  AT_GAZE 15 */
+    "tentacle", /* AT_TENT 16 */
+    "weapon",   /* AT_WEAP 17 */
+    "spellcast" /* AT_MAGC 18 */
+};
+
+static const char * damagetypes[] = {
+    "physical",
+    "magic missile",
+    "fire",
+    "cold",
+    "sleep",
+    "disintegration",
+    "shock",
+    "strength poison",
+    "acid",
+    NULL, /* AD_SPC1 - not used */
+    NULL, /* AD_SPC2 - not used */
+    "blind",
+    "stun",
+    "slow",
+    "paralyze",
+    "level drain",
+    "energy drain",
+    "wound leg",
+    "petrify",
+    "sticky",
+    "steal gold",
+    "steal item",
+    "charm",
+    "teleport",
+    "rust",
+    "confuse",
+    "digest",
+    "heal",
+    "drown",
+    "lycanthropy",
+    "dexterity poison",
+    "constitution poison",
+    "eat brains",
+    "disease",
+    "decay",
+    "seduce",
+    "hallucination",
+    "Death special",
+    "Pestilence special",
+    "Famine special",
+    "slime",
+    "disenchant",
+    "corrode",
+    "polymorph",
+    "wither",
+    "tickle",
+    "disarm",
+    "webs",
+    "drain luck",
+    "clerical",
+    "arcane",
+    "random breath",
+    "steal Amulet",
+    "steal intrinsic",
+};
+
+/* Add some information to an encyclopedia window which is printing information
+ * about a monster. */
+staticfn void
+add_mon_info(winid datawin, struct permonst * pm)
+{
+    char buf[BUFSZ];
+    char buf2[BUFSZ];
+    int gen = pm->geno;
+    int freq = (gen & G_FREQ);
+    boolean uniq = !!(gen & G_UNIQ);
+    boolean hell = !!(gen & G_HELL);
+    boolean nohell = !!(gen & G_NOHELL);
+
+#define ADDRESIST(condition, str)                       \
+    if (condition) {                                    \
+        if (*buf)                                       \
+            Strcat(buf, ", ");                          \
+        Strcat(buf, str);                               \
+    }
+#define ADDMR(field, res, str)                          \
+    if (field & (res)) {                                \
+        if (*buf)                                       \
+            Strcat(buf, ", ");                          \
+        Strcat(buf, str);                               \
+    }
+#define APPENDC(cond, str)                              \
+    if (cond) {                                         \
+        if (*buf)                                       \
+            Strcat(buf, ", ");                          \
+        Strcat(buf, str);                               \
+    }
+#define MONPUTSTR(str) putstr(datawin, ATR_NONE, str)
+
+    /* differentiate the two forms of werecreatures */
+    Strcpy(buf2, "");
+    if (is_were(pm)) {
+        Sprintf(buf2, " (%s form)", pm->mlet == S_HUMAN ? "human" : "animal");
+    }
+
+    Snprintf(buf, BUFSZ, "Monster lookup for \"%s\"%s:", pm->pmnames[NEUTRAL],
+             buf2);
+    putstr(datawin, ATR_BOLD, buf);
+    MONPUTSTR("");
+
+    /* Misc */
+    Sprintf(buf, "Difficulty %d, speed %d, base level %d, base AC %d, magic saving throw %d, weight %d.",
+            pm->difficulty, pm->mmove, pm->mlevel, pm->ac, pm->mr, pm->cwt);
+    MONPUTSTR(buf);
+
+    /* Generation */
+    if (uniq)
+        Strcpy(buf, "Unique.");
+    else if (freq == 0)
+	    Strcpy(buf, "Not randomly generated.");
+    else
+        Sprintf(buf, "Normally %s%s, %s.",
+                hell ? "only appears in Gehennom" :
+                nohell ? "only appears outside Gehennom" :
+                "appears in any branch",
+                (gen & G_SGROUP) ? " in groups" :
+                (gen & G_LGROUP) ? " in large groups" : "",
+                freq >= 5 ? "very common" :
+                freq == 4 ? "common" :
+                freq == 3 ? "slightly rare" :
+                freq == 2 ? "rare" : "very rare");
+    MONPUTSTR(buf);
+
+    /* Resistances */
+    buf[0] = '\0';
+    ADDRESIST(pm_resistance(pm, MR_FIRE), "fire");
+    ADDRESIST(pm_resistance(pm, MR_COLD), "cold");
+    ADDRESIST(pm_resistance(pm, MR_SLEEP), "sleep");
+    ADDRESIST(pm_resistance(pm, MR_DISINT), "disintegration");
+    ADDRESIST(pm_resistance(pm, MR_ELEC), "shock");
+    ADDRESIST(pm_resistance(pm, MR_POISON), "poison");
+    ADDRESIST(pm_resistance(pm, MR_ACID), "acid");
+    ADDRESIST(pm_resistance(pm, MR_STONE), "petrification");
+    ADDRESIST(resists_drain(pm), "life-drain");
+    /* ADDRESIST(SICK_RES, "sickness"); */
+    ADDRESIST(resists_mgc(pm), "magic");
+    if (*buf) {
+        Snprintf(buf2, BUFSZ, "Resists %s.", buf);
+        MONPUTSTR(buf2);
+    } else {
+        MONPUTSTR("Has no resistances.");
+    }
+
+    /* Corpse conveyances */
+    buf[0] = '\0';
+    APPENDC(intrinsic_possible(FIRE_RES, pm), "fire");
+    APPENDC(intrinsic_possible(COLD_RES, pm), "cold");
+    APPENDC(intrinsic_possible(SHOCK_RES, pm), "shock");
+    APPENDC(intrinsic_possible(SLEEP_RES, pm), "sleep");
+    APPENDC(intrinsic_possible(POISON_RES, pm), "poison");
+    APPENDC(intrinsic_possible(DISINT_RES, pm), "disintegration");
+    if (*buf)
+        Strcat(buf, " resistance");
+    /* keep these separate because "fire, cold, temporary petrification
+     * resistance" looks weird */
+    APPENDC(intrinsic_possible(ACID_RES, pm), "temporary acid resistance");
+    APPENDC(intrinsic_possible(STONE_RES, pm),
+            "temporary petrification resistance");
+    APPENDC(intrinsic_possible(TELEPORT, pm), "teleportation");
+    APPENDC(intrinsic_possible(TELEPORT_CONTROL, pm), "teleport control");
+    APPENDC(intrinsic_possible(TELEPAT, pm), "telepathy");
+    
+    #if 0 /* Pending*/
+    APPENDC(intrinsic_possible(INTRINSIC_GAIN_STR, pm), "strength");
+    APPENDC(intrinsic_possible(INTRINSIC_GAIN_EN, pm), "magic energy");
+    #endif
+
+    /* There are a bunch of things that happen in cpostfx (levels for wraiths,
+     * stunning for bats...) but only count the ones that actually behave like
+     * permanent intrinsic gains.
+     * If you find yourself listing multiple things here for the same effect,
+     * that may indicate the property should be added to psuedo_intrinsics. */
+    APPENDC(pm == &mons[PM_DISPLACER_BEAST], "temporary displacement");
+    APPENDC(pm == &mons[PM_QUANTUM_MECHANIC], "speed or slowness");
+    APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
+            "intelligence");
+    if (is_were(pm)) {
+        /* Weres need a bit of special handling, since 1) you always get
+         * lycanthropy so "may convey" could imply the player might not contract
+         * it; 2) the animal forms are flagged as G_NOCORPSE, but still have a
+         * meaningless listed corpse nutrition value which shouldn't print. */
+        if (pm->mlet == S_HUMAN) {
+            Sprintf(buf2, "Provides %d nutrition when eaten.", pm->cnutrit);
+            MONPUTSTR(buf2);
+        }
+        MONPUTSTR("Corpse conveys lycanthropy.");
+    } else if (pm->mlet == S_PUDDING) {
+        if (*buf) {
+            Snprintf(buf2, BUFSZ, "May drop globs that convey %s.", buf);
+            MONPUTSTR(buf2);
+        } else {
+            MONPUTSTR("May drop globs.");
+        }
+    } else if (!(gen & G_NOCORPSE)) {
+        Sprintf(buf2, "Provides %d nutrition when eaten.", pm->cnutrit);
+        MONPUTSTR(buf2);
+        if (*buf) {
+            Snprintf(buf2, BUFSZ, "Corpse may convey %s.", buf);
+            MONPUTSTR(buf2);
+        } else
+            MONPUTSTR("Corpse conveys no intrinsics.");
+    } else
+        MONPUTSTR("Leaves no corpse.");
+
+    /* Flag descriptions */
+    buf[0] = '\0';
+    APPENDC(is_male(pm), "male");
+    APPENDC(pm->msize == MZ_TINY, "tiny");
+    APPENDC(pm->msize == MZ_SMALL, "small");
+    APPENDC(pm->msize == MZ_LARGE, "large");
+    APPENDC(pm->msize == MZ_HUGE, "huge");
+    APPENDC(pm->msize == MZ_GIGANTIC, "gigantic");
+    if (!(*buf)) {
+        /* for nonstandard sizes */
+        APPENDC(verysmall(pm), "small");
+        APPENDC(bigmonst(pm), "big");
+    }
+
+    /* inherent characteristics: "Monster is X." */
+    APPENDC(!(gen & G_GENO), "ungenocideable");
+    APPENDC(breathless(pm), "breathless");
+    if (!breathless(pm))
+        APPENDC(amphibious(pm), "amphibious");
+    APPENDC(amorphous(pm), "amorphous");
+    APPENDC(noncorporeal(pm), "incorporeal");
+    if (!noncorporeal(pm))
+        APPENDC(unsolid(pm), "unsolid");
+    APPENDC(acidic(pm), "acidic");
+    APPENDC(poisonous(pm), "poisonous");
+    APPENDC(regenerates(pm), "regenerating");
+    APPENDC(is_reviver(pm), "reviving");
+    APPENDC(is_floater(pm), "floating");
+    APPENDC(pm_invisible(pm), "invisible");
+    APPENDC(is_undead(pm), "undead");
+    if (!is_undead(pm))
+        APPENDC(nonliving(pm), "nonliving");
+    if (*buf) {
+        Snprintf(buf2, BUFSZ, "Is %s.", buf);
+        MONPUTSTR(buf2);
+        buf[0] = '\0';
+    }
+
+    /* inherent abilities: "Monster can X." */
+    APPENDC(hides_under(pm), "hide under objects");
+    APPENDC(pm->mlet == S_MIMIC, "mimic objects and terrain");
+    APPENDC(is_hider(pm) && !(pm->mlet == S_MIMIC), "hide on the ceiling");
+    APPENDC(is_swimmer(pm), "swim");
+    if (!is_floater(pm))
+        APPENDC(is_flyer(pm), "fly");
+    APPENDC(passes_walls(pm), "phase through walls");
+    APPENDC(can_teleport(pm), "teleport");
+    APPENDC(is_clinger(pm), "cling to the ceiling");
+    APPENDC(needspick(pm), "mine");
+    if (!needspick(pm))
+        APPENDC(tunnels(pm), "dig");
+    if (*buf) {
+        Snprintf(buf2, BUFSZ, "Can %s.", buf);
+        MONPUTSTR(buf2);
+        buf[0] = '\0';
+    }
+
+    /* Full-line remarks. */
+    if (touch_petrifies(pm))
+        MONPUTSTR("Petrifies by touch.");
+    if (perceives(pm))
+        MONPUTSTR("Can see invisible.");
+    if (control_teleport(pm))
+        MONPUTSTR("Has teleport control.");
+    if (your_race(pm))
+        MONPUTSTR("Is the same race as you.");
+    if (!(gen & G_NOCORPSE)) {
+        if (vegan(pm))
+            MONPUTSTR("May be eaten by vegans.");
+        else if (vegetarian(pm))
+            MONPUTSTR("May be eaten by vegetarians.");
+    }
+    Snprintf(buf, BUFSZ, "Is %sa valid polymorph form.",
+            polyok(pm) ? "" : "not ");
+    MONPUTSTR(buf);
+
+    MONPUTSTR("Attacks: ");
+    /* Attacks */
+    buf[0] = buf2[0] = '\0';
+    int i;
+    for (i = 0; i < 6; i++) {
+        char dicebuf[20]; /* should be a safe limit */
+        struct attack * attk = &(pm->mattk[i]);
+
+        if (attk->damn) {
+            Sprintf(dicebuf, "%dd%d", attk->damn, attk->damd);
+        } else if (attk->damd) {
+            Sprintf(dicebuf, "(level+1)d%d", attk->damd);
+        } else {
+            if (!attk->aatyp && !attk->adtyp) {
+                /* no attack in this slot */
+                continue;
+            } else {
+                /* real attack, but 0d0 damage */
+                dicebuf[0] = '\0';
+            }
+        }
+
+        Sprintf(buf2, "\t%s%s%s %s", dicebuf, ((*dicebuf) ? " " : ""),
+            attacktypes[attk->aatyp], damagetypes[attk->adtyp]);
+         MONPUTSTR(buf2);
+    }
+}
+#undef ADDPROP
+#undef ADDMR
+#undef APPENDC
+#undef MONPUTSTR
+
+/* Add some information to an encyclopedia window which is printing information
+ * about an object. */
+staticfn void
+add_obj_info(winid datawin, short otyp)
+{
+    struct objclass oc = objects[otyp];
+    char olet = oc.oc_class;
+    char buf[BUFSZ];
+    char buf2[BUFSZ];
+    const char* dir = (oc.oc_dir == NODIR ? "Non-directional"
+                                : (oc.oc_dir == IMMEDIATE ? "Beam"
+                                                          : "Ray"));
+
+#define OBJPUTSTR(str) putstr(datawin, ATR_NONE, str)
+#define ADDCLASSPROP(cond, str)            \
+    if (cond) {                             \
+        if (*buf) { Strcat(buf, ", "); }    \
+        Strcat(buf, str);                   \
+    }
+
+    Sprintf(buf, "Object lookup for \"%s\":", safe_typename(otyp));
+    putstr(datawin, ATR_BOLD, buf);
+    OBJPUTSTR("");
+
+    /* Object classes currently with no special messages here: amulets. */
+    boolean weptool = (olet == TOOL_CLASS && oc.oc_skill != P_NONE);
+    if (olet == WEAPON_CLASS || weptool) {
+        const int skill = oc.oc_skill;
+        if (skill >= 0) {
+            Sprintf(buf, "%s-handed weapon%s using the %s skill.",
+                    (oc.oc_bimanual ? "Two" : "Single"),
+                    (weptool ? "-tool" : ""),
+                    skill_name(skill));
+        }
+        else if (skill <= -P_BOW && oc.oc_skill >= -P_CROSSBOW) {
+            /* Minor assumption: the skill name will be the same as the launcher
+             * itself. Currently this is only bow and crossbow. */
+            Sprintf(buf, "Ammunition meant to be fired from a %s.",
+                    skill_name(-skill));
+        }
+        else {
+            Sprintf(buf, "Thrown missile using the %s skill.",
+                    skill_name(-skill));
+        }
+        OBJPUTSTR(buf);
+
+        const char* dmgtyp = "blunt";
+        if (oc.oc_dir & PIERCE) {
+            dmgtyp = "piercing";
+            if (oc.oc_dir & SLASH) {
+                dmgtyp = "piercing/slashing";
+            }
+        }
+        else if (oc.oc_dir & SLASH) {
+            dmgtyp = "slashing";
+        }
+        Sprintf(buf, "Deals %s damage.", dmgtyp);
+        OBJPUTSTR(buf);
+
+        /* Ugh. Can we just get rid of dmgval() and put its damage bonuses into
+         * the object class? */
+        const char* sdambon = "";
+        const char* ldambon = "";
+        switch (otyp) {
+        case IRON_CHAIN:
+        case CROSSBOW_BOLT:
+        case MACE:
+        case FLAIL:
+        case TRIDENT:
+            sdambon = "+1";
+            break;
+        case BATTLE_AXE:
+        case MORNING_STAR:
+        case BROADSWORD:
+        case ELVEN_BROADSWORD:
+        case RUNESWORD:
+        case BEC_DE_CORBIN:
+            sdambon = "+1d4";
+            break;
+        case WAR_HAMMER:
+            sdambon = "+1d6";
+            break;
+        }
+        /* and again, because /large/ damage is entirely separate. Bleah. */
+        switch (otyp) {
+        case CROSSBOW_BOLT:
+        case MORNING_STAR:
+        case PARTISAN:
+        case RUNESWORD:
+        case ELVEN_BROADSWORD:
+        case BROADSWORD:
+            ldambon = "+1";
+            break;
+        case FLAIL:
+            ldambon = "+1d4";
+            break;
+        case HALBERD:
+            ldambon = "+1d6";
+            break;
+        case WAR_HAMMER:
+            ldambon = "+1d8";
+            break;
+        case BATTLE_AXE:
+        case TRIDENT:
+            ldambon = "+2d4";
+            break;
+        case TSURUGI:
+        case DWARVISH_MATTOCK:
+        case TWO_HANDED_SWORD:
+            ldambon = "+2d6";
+            break;
+        }
+        Sprintf(buf,
+               "Damage: 1d%d%s versus small and 1d%d%s versus large monsters.",
+                oc.oc_wsdam, sdambon, oc.oc_wldam, ldambon);
+        OBJPUTSTR(buf);
+        Sprintf(buf, "Has a %s%d %s to hit.", (oc.oc_hitbon >= 0 ? "+" : ""),
+                oc.oc_hitbon, (oc.oc_hitbon >= 0 ? "bonus" : "penalty"));
+        OBJPUTSTR(buf);
+    }
+    if (olet == ARMOR_CLASS) {
+        /* Indexes here correspond to ARM_SHIELD, etc; not the W_* masks.
+         * Expects ARM_SUIT = 0, all the way up to ARM_SHIRT = 6. */
+        const char* armorslots[] = {
+            "torso", "shield", "helm", "gloves", "boots", "cloak", "shirt"
+        };
+        Sprintf(buf, "%s, worn in the %s slot.",
+                (oc.oc_bulky ? "Bulky armor" : "Armor"),
+                armorslots[oc.oc_armcat]);
+
+        OBJPUTSTR(buf);
+        Sprintf(buf, "Base AC %d, magic cancellation %d.",
+                oc.a_ac, oc.a_can);
+        OBJPUTSTR(buf);
+        Sprintf(buf, "Takes %d turn%s to put on or remove.",
+                oc.oc_delay, (oc.oc_delay == 1 ? "" : "s"));
+    }
+    if (olet == FOOD_CLASS) {
+        if (otyp == TIN || otyp == CORPSE) {
+            OBJPUTSTR("Comestible providing varied nutrition.");
+            OBJPUTSTR("Takes various amounts of turns to eat.");
+            OBJPUTSTR("May or may not be vegetarian.");
+        }
+        else {
+            Sprintf(buf, "Comestible providing %d nutrition.", oc.oc_nutrition);
+            OBJPUTSTR(buf);
+            Sprintf(buf, "Takes %d turn%s to eat.", oc.oc_delay,
+                    (oc.oc_delay == 1 ? "" : "s"));
+            OBJPUTSTR(buf);
+            /* TODO: put special-case VEGGY foods in a list which can be
+             * referenced by doeat(), so there's no second source for this. */
+            if (oc.oc_material == FLESH && otyp != EGG) {
+                OBJPUTSTR("Is not vegetarian.");
+            }
+            else {
+                /* is either VEGGY food or egg */
+                switch (otyp) {
+                case PANCAKE:
+                case FORTUNE_COOKIE:
+                case EGG:
+                case CREAM_PIE:
+                case CANDY_BAR:
+                case LUMP_OF_ROYAL_JELLY:
+                    OBJPUTSTR("Is vegetarian but not vegan.");
+                    break;
+                default:
+                    OBJPUTSTR("Is vegan.");
+                }
+            }
+        }
+    }
+    if (olet == POTION_CLASS) {
+        /* nothing special */
+        OBJPUTSTR("Potion.");
+    }
+    if (olet == SCROLL_CLASS) {
+        /* nothing special (ink is covered below) */
+        OBJPUTSTR("Scroll.");
+    }
+    if (olet == SPBOOK_CLASS) {
+        if (otyp == SPE_BLANK_PAPER) {
+            OBJPUTSTR("Spellbook.");
+        }
+        else if (otyp == SPE_NOVEL || otyp == SPE_BOOK_OF_THE_DEAD) {
+            OBJPUTSTR("Book.");
+        }
+        else {
+            Sprintf(buf, "Level %d spellbook, in the %s school. %s spell.",
+                    oc.oc_level, spelltypemnemonic(oc.oc_skill), dir);
+            OBJPUTSTR(buf);
+            Sprintf(buf, "Takes %d actions to read.", oc.oc_delay);
+            OBJPUTSTR(buf);
+        }
+    }
+    if (olet == WAND_CLASS) {
+        Sprintf(buf, "%s wand.", dir);
+        OBJPUTSTR(buf);
+    }
+    if (olet == RING_CLASS) {
+        OBJPUTSTR(oc.oc_charged ? "Chargeable ring." : "Ring.");
+        /* see material comment below; only show toughness status if this
+         * particular ring is already identified... */
+        if (oc.oc_tough && oc.oc_name_known) {
+            OBJPUTSTR("Is made of a hard material.");
+        }
+    }
+    if (olet == GEM_CLASS) {
+        if (oc.oc_material == MINERAL) {
+            OBJPUTSTR("Type of stone.");
+        }
+        else if (oc.oc_material == GLASS) {
+            OBJPUTSTR("Piece of colored glass.");
+        }
+        else {
+            OBJPUTSTR("Precious gem.");
+        }
+        /* can do unconditionally, these aren't randomized */
+        if (oc.oc_tough) {
+            OBJPUTSTR("Is made of a hard material.");
+        }
+    }
+    if (olet == TOOL_CLASS && !weptool) {
+        const char* subclass = "tool";
+        switch (otyp) {
+        case LARGE_BOX:
+        case CHEST:
+        case ICE_BOX:
+        case SACK:
+        case OILSKIN_SACK:
+        case BAG_OF_HOLDING:
+            subclass = "container";
+            break;
+        case SKELETON_KEY:
+        case LOCK_PICK:
+        case CREDIT_CARD:
+            subclass = "unlocking tool";
+            break;
+        case TALLOW_CANDLE:
+        case WAX_CANDLE:
+        case BRASS_LANTERN:
+        case OIL_LAMP:
+        case MAGIC_LAMP:
+            subclass = "light source";
+            break;
+        case LAND_MINE:
+        case BEARTRAP:
+            subclass = "trap which can be set";
+            break;
+        case TIN_WHISTLE:
+        case MAGIC_WHISTLE:
+        case BELL:
+        case LEATHER_DRUM:
+        case DRUM_OF_EARTHQUAKE:
+            subclass = "atonal instrument";
+            break;
+        case BUGLE:
+        case MAGIC_FLUTE:
+        case WOODEN_FLUTE:
+        case TOOLED_HORN:
+        case FIRE_HORN:
+        case FROST_HORN:
+        case WOODEN_HARP:
+        case MAGIC_HARP:
+            subclass = "tonal instrument";
+            break;
+        }
+        Sprintf(buf, "%s%s.", (oc.oc_charged ? "chargeable " : ""), subclass);
+        /* capitalize first letter of buf */
+        buf[0] -= ('a' - 'A');
+        OBJPUTSTR(buf);
+    }
+
+    /* cost, wt should go next */
+    Sprintf(buf, "Base cost %d, weighs %d aum.", oc.oc_cost, oc.oc_weight);
+    OBJPUTSTR(buf);
+
+    /* Scrolls or spellbooks: ink cost */
+    if (olet == SCROLL_CLASS || olet == SPBOOK_CLASS) {
+        if (otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER) {
+            OBJPUTSTR("Can be written on.");
+        }
+        else if (otyp == SPE_NOVEL || otyp == SPE_BOOK_OF_THE_DEAD) {
+            OBJPUTSTR("Cannot be written.");
+        }
+        else {
+            Sprintf(buf, "Takes %d to %d ink to write.",
+                    ink_cost(otyp) / 2, ink_cost(otyp) - 1);
+            OBJPUTSTR(buf);
+        }
+    }
+
+    /* power conferred */
+    extern const struct propname {
+        int prop_num;
+        const char* prop_name;
+    } propertynames[]; /* located in timeout.c */
+    if (oc.oc_oprop) {
+        int i;
+        for (i = 0; propertynames[i].prop_name; ++i) {
+            /* hack for alchemy smocks because everything about alchemy smocks
+             * is a hack */
+            if (propertynames[i].prop_num == ACID_RES
+                && otyp == ALCHEMY_SMOCK) {
+                OBJPUTSTR("Confers acid resistance.");
+                continue;
+            }
+            if (oc.oc_oprop == propertynames[i].prop_num) {
+                /* proper grammar */
+                const char* confers = "Makes you";
+                const char* effect = propertynames[i].prop_name;
+                switch (propertynames[i].prop_num) {
+                    /* special overrides because prop_name is bad */
+                    case STRANGLED:
+                        effect = "choke";
+                        break;
+                    case LIFESAVED:
+                        effect = "life saving";
+                        /* FALLTHRU */
+                    /* for things that don't work with "Makes you" */
+                    case GLIB:
+                    case WOUNDED_LEGS:
+                    case DETECT_MONSTERS:
+                    case SEE_INVIS:
+                    case HUNGER:
+                    case WARNING:
+                    /* don't do special warn_of_mon */
+                    case SEARCHING:
+                    case INFRAVISION:
+                    case AGGRAVATE_MONSTER:
+                    case CONFLICT:
+                    case JUMPING:
+                    case TELEPORT_CONTROL:
+                    case SWIMMING:
+                    case SLOW_DIGESTION:
+                    case HALF_SPDAM:
+                    case HALF_PHDAM:
+                    case REGENERATION:
+                    case ENERGY_REGENERATION:
+                    case WITHERING:
+                    case PROTECTION:
+                    case PROT_FROM_SHAPE_CHANGERS:
+                    case POLYMORPH_CONTROL:
+                    case FREE_ACTION:
+                    case FIXED_ABIL:
+                        confers = "Confers";
+                        break;
+                    default:
+                        break;
+                }
+                if (strstri(propertynames[i].prop_name, "resistance"))
+                    confers = "Confers";
+                Sprintf(buf, "%s %s.", confers, effect);
+                OBJPUTSTR(buf);
+            }
+        }
+    }
+
+    buf[0] = '\0';
+    ADDCLASSPROP(oc.oc_magic, "inherently magical");
+    ADDCLASSPROP(oc.oc_nowish, "not wishable");
+    if (*buf) {
+        Snprintf(buf2, BUFSZ, "Is %s.", buf);
+        OBJPUTSTR(buf2);
+    }
+
+    /* Material.
+     * Note that we should not show the material of certain objects if they are
+     * subject to description shuffling that includes materials. If the player
+     * has already discovered this object, though, then it's fine to show the
+     * material.
+     * Object classes where this may matter: rings, wands. All randomized tools
+     * share materials, and all scrolls and potions are the same material. */
+    if (!(olet == RING_CLASS || olet == WAND_CLASS) || oc.oc_name_known) {
+        /* char array converting materials to strings; if this is ever needed
+        * anywhere else it should be externified. Corresponds exactly to the
+        * materials defined in objclass.h.
+        * This is very similar to materialnm[], but the slight difference is
+        * that this is always the noun form whereas materialnm uses adjective
+        * forms; most materials have the same noun and adjective forms but two
+        * (wood/wooden, vegetable matter/organic) don't */
+        const char* mat_str = materialnm[oc.oc_material];
+        /* Two exceptions to materialnm, which uses adjectival forms: most of
+         * these work fine as nouns but two don't. */
+        if (oc.oc_material == WOOD) {
+            mat_str = "wood";
+        }
+        else if (oc.oc_material == VEGGY) {
+            mat_str = "vegetable matter";
+        }
+
+        Sprintf(buf, "Normally made of %s.", mat_str);
+        OBJPUTSTR(buf);
+    }
+
+    /* TODO: prevent obj lookup from displaying with monster database entry
+     * (e.g. scroll of light gives "light" monster database) */
+
+    /* Full-line remarks */
+    if (oc.oc_merge) {
+        OBJPUTSTR("Merges with identical items.");
+    }
+    if (oc.oc_unique) {
+        OBJPUTSTR("Unique item.");
+    }
 }
 
 /*
@@ -809,7 +1555,7 @@ ia_checkfile(struct obj *otmp)
  *
  * Returns True if an entry is found, False otherwise.
  */
-staticfn boolean
+boolean
 checkfile(
     char *inp, /* string to look up */
     struct permonst *pm, /* monster type to look up (overrides 'inp') */
@@ -818,14 +1564,15 @@ checkfile(
 {
     dlb *fp;
     char buf[BUFSZ], newstr[BUFSZ], givenname[BUFSZ];
-    char *ep, *dbase_str;
+    char *ep, *dbase_str, *dbase_str_with_material;
     boolean user_typed_name = (chkflags & chkfilUsrTyped) != 0,
             without_asking = (chkflags & chkfilDontAsk) != 0,
             ia_checking = (chkflags & chkfilIaCheck) != 0;
     unsigned long txt_offset = 0L;
     winid datawin = WIN_ERR;
     boolean res = FALSE;
-
+    short otyp, mat;
+    boolean lookat_mon = (pm != (struct permonst *) 0);
     fp = dlb_fopen(DATAFILE, "r");
     if (!fp) {
         pline("Cannot open 'data' file!");
@@ -925,6 +1672,27 @@ checkfile(
     if (!strncmp(dbase_str, "moist towel", 11))
         memcpy(dbase_str += 2, "wet", 3); /* skip "mo" replace "ist" */
 
+    /* Remove material, if it exists, but store the original value in
+     * dbase_str_with_material. It should be cut out of dbase_str as a prefix
+     * in order for the alt handling below to function properly.
+     * Note that this assumes that material is always the last thing that needs
+     * to be stripped out (e.g. it will not strip things out if dbase_str is
+     * "silver +0 sword").
+     * This is clunky in how it adds a third possibility that needs to be
+     * pmatch()'ed; a better future refactor of this code would be to collect an
+     * arbitrary number of possible strings as needed, then iterate through
+     * them. */
+    dbase_str_with_material = dbase_str;
+    for (mat = 1; mat < NUM_MATERIAL_TYPES; ++mat) {
+        unsigned int len = strlen(materialnm[mat]);
+        /* check for e.g. "gold " without constructing it as a string */
+        if (!strncmp(dbase_str, materialnm[mat], len) && strlen(dbase_str) > len
+            && dbase_str[len] == ' ') {
+            dbase_str_with_material = dbase_str;
+            dbase_str += len + 1;
+            break;
+        }
+    }
     /* Make sure the name is non-empty. */
     if (*dbase_str) {
         long pass1offset = -1L;
@@ -932,6 +1700,9 @@ checkfile(
         boolean yes_to_moreinfo, found_in_file, pass1found_in_file,
                 skipping_entry;
         char *sp, *ap, *alt = 0; /* alternate description */
+        char *encycl_matched = 0; /* which version of the string matched
+                                     (for later printing) */
+        char matcher[BUFSZ];      /* the string it matched against */
 
         /* adjust the input to remove "named " and "called " */
         if ((ep = strstri(dbase_str, " named ")) != 0) {
@@ -1008,13 +1779,25 @@ checkfile(
                     /* if we match a key that begins with "~", skip
                        this entry */
                     chk_skip = (*buf == '~') ? 1 : 0;
-                    if ((pass == 0 && pmatch(&buf[chk_skip], dbase_str))
-                        || (pass == 1 && alt && pmatch(&buf[chk_skip], alt))) {
+                    encycl_matched = (char *) 0;
+                    if (pass == 0) {
+                        if (pmatch(&buf[chk_skip], dbase_str_with_material)) {
+                            encycl_matched = dbase_str_with_material;
+                        }
+                        else if (pmatch(&buf[chk_skip], dbase_str)) {
+                            encycl_matched = dbase_str;
+                        }
+                    }
+                    else if (pass == 1 && alt && pmatch(&buf[chk_skip], alt)) {
+                        encycl_matched = alt;
+                    }
+                    if (encycl_matched) {
                         if (chk_skip) {
                             skipping_entry = TRUE;
                             continue;
                         } else {
                             found_in_file = TRUE;
+                            Strcpy(matcher, buf);
                             if (pass == 1)
                                 pass1found_in_file = TRUE;
                             break;
@@ -1022,11 +1805,9 @@ checkfile(
                     }
                 }
             }
+            long entry_offset, fseekoffset;
+            int entry_count, i;
             if (found_in_file) {
-                long entry_offset, fseekoffset;
-                int entry_count;
-                int i;
-
                 /* skip over other possible matches for the info */
                 do {
                     if (!dlb_fgets(buf, BUFSZ, fp))
@@ -1039,7 +1820,30 @@ checkfile(
                     pass1offset = fseekoffset;
                 else if (fseekoffset == pass1offset)
                     goto checkfile_done;
+            }
 
+            /* monster lookup: try to parse as a monster
+             * use dbase_str_with_material here; if it differs from
+             * dbase_str, then it's likely that dbase_str stripped off the
+             * "iron" from "iron golem" or something. */
+            if (!lookat_mon) {
+                pm = (struct permonst *) 0; /* just to be safe */
+                if (!object_not_monster(dbase_str_with_material)) {
+                    int mndx = name_to_mon(dbase_str_with_material, (int *) 0);
+                    if (mndx != NON_PM) {
+                        pm = &mons[mndx];
+                    }
+                }
+            }
+
+            /* object lookup: try to parse as an object, and try the material
+             * version of the string first */
+            otyp = name_to_otyp(dbase_str_with_material);
+            if (otyp == STRANGE_OBJECT) {
+                otyp = name_to_otyp(dbase_str);
+            }
+
+            /* prompt for more info (if using whatis to navigate the map) */
                 yes_to_moreinfo = FALSE;
                 if (!user_typed_name && !without_asking) {
                     char *entrytext = pass ? alt : dbase_str;
@@ -1054,46 +1858,103 @@ checkfile(
                         yes_to_moreinfo = TRUE;
                 }
 
+                /* finally, put the appropriate information into a window */
                 if (user_typed_name || without_asking || yes_to_moreinfo) {
-                    if (dlb_fseek(fp, fseekoffset, SEEK_SET) < 0) {
-                        pline("? Seek error on 'data' file!");
-                        goto checkfile_done;
-                    }
-                    res = TRUE;
-                    if (ia_checking)
-                        goto checkfile_done;
-
-                    datawin = create_nhwindow(NHW_MENU);
-                    for (i = 0; i < entry_count; i++) {
-                        /* room for 1-tab or 8-space prefix + BUFSZ-1 + \0 */
-                        char tabbuf[BUFSZ + 8], *tp;
-
-                        if (!dlb_fgets(tabbuf, BUFSZ, fp))
-                            goto bad_data_file;
-                        tp = tabbuf;
-                        if (!strchr(tp, '\n'))
-                            goto bad_data_file;
-                        (void) strip_newline(tp);
-                        /* text in this file is indented with one tab but
-                           someone modifying it might use spaces instead */
-                        if (*tp == '\t') {
-                            ++tp;
-                        } else if (*tp == ' ') {
-                            /* remove up to 8 spaces (we expect 8-column
-                               tab stops but user might have them set at
-                               something else so we don't require it) */
-                            do {
-                                ++tp;
-                            } while (tp < &tabbuf[8] && *tp == ' ');
-                        } else if (*tp) { /* empty lines are ok */
-                            goto bad_data_file;
+                      if (!found_in_file && !pm && otyp == STRANGE_OBJECT) {
+                    if ((user_typed_name && pass == 0 && !pass1found_in_file)
+                        || yes_to_moreinfo)
+                        pline("I don't have any information on those things.");
+                    /* don't print anything otherwise; we don't want it to e.g.
+                     * print a database entry and then print the above message.
+                     */
+                }
+                else {
+                    boolean do_obj_lookup = FALSE, do_mon_lookup = FALSE;
+                    if (pm) {
+                        do_mon_lookup = TRUE;
+                        if (!lookat_mon && otyp != STRANGE_OBJECT) {
+                            /* found matches for both and player is NOT looking
+                             * at a monster; ask which they want to see */
+                            /* TODO: this would ideally be better generalized so
+                             * that the caller could communicate that an object
+                             * is being looked at, too */
+                            pline("That matches both a monster and an object.");
+                            if (y_n("Show the monster information?") != 'y') {
+                                do_obj_lookup = TRUE;
+                                do_mon_lookup = FALSE;
+                            }
                         }
-                        /* if a tab after the leading one is found,
-                           convert tabs into spaces; the attributions
-                           at the end of quotes typically have them */
-                        if (strchr(tp, '\t') != 0)
-                            (void) tabexpand(tp);
-                        putstr(datawin, 0, tp);
+                    }
+                    else if (otyp != STRANGE_OBJECT) {
+                        do_obj_lookup = TRUE;
+                    }
+                    datawin = create_nhwindow(NHW_MENU);
+
+                    /* object lookup info */
+                    if (do_obj_lookup) {
+                        add_obj_info(datawin, otyp);
+                        putstr(datawin, 0, "");
+                    }
+                    /* monster lookup info */
+                    /* secondary to object lookup because there are some
+                     * monsters whose names are substrings of objects, like
+                     * "skeleton" and "skeleton key". */
+                    else if (do_mon_lookup) {
+                        add_mon_info(datawin, pm);
+                        if (is_were(pm)) {
+                            /* also do the alternate form */
+                            putstr(datawin, 0, "");
+                            add_mon_info(datawin,
+                                         &mons[counter_were(monsndx(pm))]);
+                        }
+                        putstr(datawin, 0, "");
+                    }
+                      /* encyclopedia entry */
+                    if (found_in_file) {
+                        char titlebuf[BUFSZ];
+                        if (dlb_fseek(fp, (long) txt_offset + entry_offset,
+                                        SEEK_SET) < 0) {
+                            pline("? Seek error on 'data' file!");
+                            (void) dlb_fclose(fp);
+                            return res;
+                        }
+
+                        Snprintf(titlebuf, BUFSZ,
+                                "Encyclopedia entry for \"%s\" (matched to \"%s\"):",
+                                encycl_matched, matcher);
+                        putstr(datawin, ATR_BOLD, titlebuf);
+                        putstr(datawin, ATR_NONE, "");
+                        for (i = 0; i < entry_count; i++) {
+                            /* room for 1-tab or 8-space prefix + BUFSZ-1 + \0 */
+                            char tabbuf[BUFSZ + 8], *tp;
+
+                            if (!dlb_fgets(tabbuf, BUFSZ, fp))
+                                goto bad_data_file;
+                            tp = tabbuf;
+                            if (!strchr(tp, '\n'))
+                                goto bad_data_file;
+                            (void) strip_newline(tp);
+                            /* text in this file is indented with one tab but
+                            someone modifying it might use spaces instead */
+                            if (*tp == '\t') {
+                                ++tp;
+                            } else if (*tp == ' ') {
+                                /* remove up to 8 spaces (we expect 8-column
+                                tab stops but user might have them set at
+                                something else so we don't require it) */
+                                do {
+                                    ++tp;
+                                } while (tp < &tabbuf[8] && *tp == ' ');
+                            } else if (*tp) { /* empty lines are ok */
+                                goto bad_data_file;
+                            }
+                            /* if a tab after the leading one is found,
+                            convert tabs into spaces; the attributions
+                            at the end of quotes typically have them */
+                            if (strchr(tp, '\t') != 0)
+                                (void) tabexpand(tp);
+                            putstr(datawin, 0, tp);
+                        }
                     }
                     display_nhwindow(datawin, FALSE);
                     destroy_nhwindow(datawin), datawin = WIN_ERR;
@@ -1780,7 +2641,7 @@ do_look(int mode, coord *click_cc)
                     break;
                 }
             if (*out_str)
-                (void) checkfile(out_str, pm, chkfilUsrTyped | chkfilDontAsk,
+                (void) checkfile(out_str, (struct permonst *) 0, chkfilUsrTyped | chkfilDontAsk,
                                  (char *) 0);
             return ECMD_OK;
           }
