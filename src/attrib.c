@@ -973,8 +973,7 @@ from_what(int propidx) /* special cases can have negative values */
                               ? ysimple_name(uarmf) /* speed boots */
                                 : EFast ? "worn equipment"
                                   : something);
-            else if (wizard
-                     && (obj = what_gives(&u.uprops[propidx].extrinsic)) != 0)
+            else if ((obj = what_gives(&u.uprops[propidx].extrinsic)) != 0)
                 Sprintf(buf, because_of, obj->oartifact
                                              ? bare_artifactname(obj)
                                              : ysimple_name(obj));
