@@ -1308,7 +1308,7 @@ slip_or_trip(void)
             && (!ice_only || !rn2(3))) {
             You("lose your balance.");
             dismount_steed(DISMOUNT_FELL);
-        } else if (!rn2(10 + ACURR(A_DEX))) {
+        } else if (!rn2(10 + ACURR(A_DEX)) && !In_sokoban(&u.uz)) {
             /* Maybe slip in a random direction.  This takes place after
                the hero has already changed location.  If the hero is
                in grid bug form, only allow forward hurtle, otherwise a
