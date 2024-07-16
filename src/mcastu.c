@@ -607,7 +607,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         return;
     }
 
-    if (u_wield_art(ART_SERENITY) && rn2(5)) {
+    if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY) && rn2(5)) {
         pline("%s shines and %s %s magic!", artiname(uwep->oartifact),
             !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
         /* TODO: Maybe more explicit astonishment? */
@@ -934,7 +934,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         return;
     }
     
-    if (u_wield_art(ART_SERENITY) && rn2(5)) {
+    if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY) && rn2(5)) {
         if (counterspell(mtmp, uwep))
             return;
     }
