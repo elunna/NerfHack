@@ -801,7 +801,6 @@ dopotion(struct obj *otmp)
 staticfn void
 peffect_restore_ability(struct obj *otmp)
 {
-    gp.potion_unkn++;
     if (otmp->cursed) {
         pline("Ulch!  This makes you feel mediocre!");
         return;
