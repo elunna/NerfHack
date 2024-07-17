@@ -20,6 +20,7 @@ staticfn void look_at_monster(char *, char *, struct monst *,
 /* lookat() can return Null */
 staticfn void add_mon_info(winid, struct permonst *);
 staticfn void add_obj_info(winid, short);
+staticfn void corpse_conveys(char *, struct permonst *);
 staticfn struct permonst *lookat(coordxy, coordxy, char *, char *) NONNULLPTRS;
 staticfn boolean checkfile(char *, struct permonst *, unsigned,
                                                             char *) NO_NNARGS;
@@ -893,6 +894,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     boolean uniq = !!(gen & G_UNIQ);
     boolean hell = !!(gen & G_HELL);
     boolean nohell = !!(gen & G_NOHELL);
+    boolean nogen = !!(gen & G_NOGEN);
 
 #define ADDRESIST(condition, str)                       \
     if (condition) {                                    \
@@ -939,6 +941,7 @@ add_mon_info(winid datawin, struct permonst * pm)
         Sprintf(buf, "Normally %s%s, %s.",
                 hell ? "only appears in Gehennom" :
                 nohell ? "only appears outside Gehennom" :
+                nogen ? "only appears specially" :
                 "appears in any branch",
                 (gen & G_SGROUP) ? " in groups" :
                 (gen & G_LGROUP) ? " in large groups" : "",
@@ -947,6 +950,11 @@ add_mon_info(winid datawin, struct permonst * pm)
                 freq == 3 ? "slightly rare" :
                 freq == 2 ? "rare" : "very rare");
     MONPUTSTR(buf);
+
+    if (gen & G_GENO)
+        MONPUTSTR("Can be genocided.");
+    else
+        MONPUTSTR("Can not be genocided.");
 
     /* Resistances */
     buf[0] = '\0';
@@ -959,8 +967,14 @@ add_mon_info(winid datawin, struct permonst * pm)
     ADDRESIST(pm_resistance(pm, MR_ACID), "acid");
     ADDRESIST(pm_resistance(pm, MR_STONE), "petrification");
     ADDRESIST(resists_drain(pm), "life-drain");
+
     /* ADDRESIST(SICK_RES, "sickness"); */
     ADDRESIST(resists_mgc(pm), "magic");
+#if 0 /* Pending */
+    ADDRESIST(resists_stun(pm), "stun");
+#endif
+    ADDRESIST(resists_death(pm), "death magic");
+
     if (*buf) {
         Snprintf(buf2, BUFSZ, "Resists %s.", buf);
         MONPUTSTR(buf2);
@@ -969,38 +983,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     }
 
     /* Corpse conveyances */
-    buf[0] = '\0';
-    APPENDC(intrinsic_possible(FIRE_RES, pm), "fire");
-    APPENDC(intrinsic_possible(COLD_RES, pm), "cold");
-    APPENDC(intrinsic_possible(SHOCK_RES, pm), "shock");
-    APPENDC(intrinsic_possible(SLEEP_RES, pm), "sleep");
-    APPENDC(intrinsic_possible(POISON_RES, pm), "poison");
-    APPENDC(intrinsic_possible(DISINT_RES, pm), "disintegration");
-    if (*buf)
-        Strcat(buf, " resistance");
-    /* keep these separate because "fire, cold, temporary petrification
-     * resistance" looks weird */
-    APPENDC(intrinsic_possible(ACID_RES, pm), "temporary acid resistance");
-    APPENDC(intrinsic_possible(STONE_RES, pm),
-            "temporary petrification resistance");
-    APPENDC(intrinsic_possible(TELEPORT, pm), "teleportation");
-    APPENDC(intrinsic_possible(TELEPORT_CONTROL, pm), "teleport control");
-    APPENDC(intrinsic_possible(TELEPAT, pm), "telepathy");
-    
-    #if 0 /* Pending*/
-    APPENDC(intrinsic_possible(INTRINSIC_GAIN_STR, pm), "strength");
-    APPENDC(intrinsic_possible(INTRINSIC_GAIN_EN, pm), "magic energy");
-    #endif
-
-    /* There are a bunch of things that happen in cpostfx (levels for wraiths,
-     * stunning for bats...) but only count the ones that actually behave like
-     * permanent intrinsic gains.
-     * If you find yourself listing multiple things here for the same effect,
-     * that may indicate the property should be added to psuedo_intrinsics. */
-    APPENDC(pm == &mons[PM_DISPLACER_BEAST], "temporary displacement");
-    APPENDC(pm == &mons[PM_QUANTUM_MECHANIC], "speed or slowness");
-    APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
-            "intelligence");
+    corpse_conveys(buf, pm);
     if (is_were(pm)) {
         /* Weres need a bit of special handling, since 1) you always get
          * lycanthropy so "may convey" could imply the player might not contract
@@ -1057,10 +1040,18 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(regenerates(pm), "regenerating");
     APPENDC(is_reviver(pm), "reviving");
     APPENDC(is_floater(pm), "floating");
+    APPENDC(pm->mmove == 0, "stationary");
     APPENDC(pm_invisible(pm), "invisible");
     APPENDC(is_undead(pm), "undead");
     if (!is_undead(pm))
         APPENDC(nonliving(pm), "nonliving");
+    APPENDC(telepathic(pm), "telepathic");
+    APPENDC(is_displacer(pm), "displaces monsters");
+    /* APPENDC(is_displaced(pm), "displaced"); */
+    APPENDC(keeps_distance(pm), "skittish");
+    APPENDC(is_accurate(pm), "accurate");
+    APPENDC(infravisible(pm), "infravisible");
+
     if (*buf) {
         Snprintf(buf2, BUFSZ, "Is %s.", buf);
         MONPUTSTR(buf2);
@@ -1077,6 +1068,10 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(passes_walls(pm), "phase through walls");
     APPENDC(can_teleport(pm), "teleport");
     APPENDC(is_clinger(pm), "cling to the ceiling");
+    APPENDC(is_jumper(pm), "jump");
+    APPENDC(is_outflanker(pm), "flank");
+    APPENDC(is_berserker(pm), "go berserk");
+    APPENDC(webmaker(pm), "spin webs");
     APPENDC(needspick(pm), "mine");
     if (!needspick(pm))
         APPENDC(tunnels(pm), "dig");
@@ -1089,6 +1084,8 @@ add_mon_info(winid datawin, struct permonst * pm)
     /* Full-line remarks. */
     if (touch_petrifies(pm))
         MONPUTSTR("Petrifies by touch.");
+    if (infravision(pm))
+        MONPUTSTR("Has infravision.");
     if (perceives(pm))
         MONPUTSTR("Can see invisible.");
     if (control_teleport(pm))
@@ -1214,6 +1211,7 @@ add_obj_info(winid datawin, short otyp)
         case ELVEN_BROADSWORD:
         case RUNESWORD:
         case BEC_DE_CORBIN:
+        case SCYTHE:
             sdambon = "+1d4";
             break;
         case WAR_HAMMER:
@@ -1231,6 +1229,7 @@ add_obj_info(winid datawin, short otyp)
             ldambon = "+1";
             break;
         case FLAIL:
+        case SCYTHE:
             ldambon = "+1d4";
             break;
         case HALBERD:
@@ -1250,7 +1249,7 @@ add_obj_info(winid datawin, short otyp)
             break;
         }
         Sprintf(buf,
-               "Damage: 1d%d%s versus small and 1d%d%s versus large monsters.",
+               "Damage: 1d%d%s vs small and 1d%d%s vs large monsters.",
                 oc.oc_wsdam, sdambon, oc.oc_wldam, ldambon);
         OBJPUTSTR(buf);
         Sprintf(buf, "Has a %s%d %s to hit.", (oc.oc_hitbon >= 0 ? "+" : ""),
@@ -1527,7 +1526,7 @@ add_obj_info(winid datawin, short otyp)
             mat_str = "vegetable matter";
         }
 
-        Sprintf(buf, "Normally made of %s.", mat_str);
+        Sprintf(buf, "Material: %s.", mat_str);
         OBJPUTSTR(buf);
     }
 
@@ -1566,8 +1565,8 @@ checkfile(
     char buf[BUFSZ], newstr[BUFSZ], givenname[BUFSZ];
     char *ep, *dbase_str, *dbase_str_with_material;
     boolean user_typed_name = (chkflags & chkfilUsrTyped) != 0,
-            without_asking = (chkflags & chkfilDontAsk) != 0,
-            ia_checking = (chkflags & chkfilIaCheck) != 0;
+            without_asking = (chkflags & chkfilDontAsk) != 0;
+            /*ia_checking = (chkflags & chkfilIaCheck) != 0*/
     unsigned long txt_offset = 0L;
     winid datawin = WIN_ERR;
     boolean res = FALSE;
@@ -3773,6 +3772,56 @@ dohistory(void)
 {
     display_file(HISTORY, TRUE);
     return ECMD_OK;
+}
+
+staticfn void
+corpse_conveys(char *buf, struct permonst * pm)
+{
+    int pct = max(5, (int) (pm->cwt / 90));
+#define ADDPCTRES(cond, amt, str)    \
+    if (cond) {                      \
+        if (*buf)                    \
+            Strcat(buf, ", ");       \
+        Sprintf(eos(buf), "%d%% %s", \
+                amt, str);           \
+    }
+#define APPENDC(cond, str)        \
+    if (cond) {                   \
+        if (*buf)                 \
+            Strcat(buf, ", ");    \
+        Strcat(buf, str);         \
+    }
+    /* Corpse conveyances */
+    buf[0] = '\0';
+    ADDPCTRES(intrinsic_possible(FIRE_RES, pm), pct, "fire");
+    ADDPCTRES(intrinsic_possible(COLD_RES, pm), pct, "cold");
+    ADDPCTRES(intrinsic_possible(SHOCK_RES, pm), pct, "shock");
+    ADDPCTRES(intrinsic_possible(SLEEP_RES, pm), pct, "sleep");
+    ADDPCTRES(intrinsic_possible(POISON_RES, pm), pct, "poison");
+    ADDPCTRES(intrinsic_possible(DISINT_RES, pm), pct, "disintegration");
+    /* acid, stone, and psionic resistance aren't currently conveyable */
+    if (*buf)
+        Strcat(buf, " resistance");
+    APPENDC(intrinsic_possible(TELEPORT, pm), "teleportation");
+    APPENDC(intrinsic_possible(TELEPORT_CONTROL, pm), "teleport control");
+    APPENDC(intrinsic_possible(TELEPAT, pm), "telepathy");
+     APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
+            "intelligence");
+    /* There are a bunch of things that happen in cpostfx (levels for wraiths,
+     * stunning for bats...) but only count the ones that actually behave like
+     * permanent intrinsic gains.
+     * If you find yourself listing multiple things here for the same effect,
+     * that may indicate the property should be added to psuedo_intrinsics. */
+    APPENDC(pm == &mons[PM_DISPLACER_BEAST], "temporary displacement");
+    APPENDC(pm == &mons[PM_QUANTUM_MECHANIC], "speed or slowness");
+    APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
+            "intelligence");
+       
+    #if 0 /* Pending*/
+    APPENDC(intrinsic_possible(INTRINSIC_GAIN_STR, pm), "strength");
+    APPENDC(intrinsic_possible(INTRINSIC_GAIN_EN, pm), "magic energy");
+    #endif
+
 }
 
 /*pager.c*/
