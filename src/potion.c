@@ -578,6 +578,43 @@ make_glib(int xtime)
 }
 
 void
+make_withering(long xtime, boolean talk)
+{
+    long old = (HWithering & TIMEOUT);
+    boolean was_withering = Withering, no_longer_withering;
+
+    if (Unaware)
+        talk = FALSE;
+
+    set_itimeout(&HWithering, xtime);
+    no_longer_withering = !Withering;
+    if ((xtime != 0L) ^ (old != 0L)) {
+        disp.botl = TRUE;
+        if (talk) {
+            if (old) {
+                if (no_longer_withering) {
+                    You("stop withering.");
+                }
+                else {
+                    Your("withering slows, but only briefly.");
+                }
+            }
+            else if (!was_withering) {
+                You("are withering away!");
+            }
+        }
+    }
+    else if (xtime > 0L) {
+        if (xtime > old) {
+            Your("withering speeds up!");
+        }
+        else {
+            Your("withering slows, but does not stop.");
+        }
+    }
+}
+
+void
 self_invis_message(void)
 {
     pline("%s %s.",
@@ -865,6 +902,8 @@ peffect_water(struct obj *otmp)
         if (otmp->blessed) {
             You_feel("full of awe.");
             make_sick(0L, (char *) 0, TRUE, SICK_ALL);
+            if (HWithering)
+                make_withering(0L, TRUE);
             exercise(A_WIS, TRUE);
             exercise(A_CON, TRUE);
             if (ismnum(u.ulycn))

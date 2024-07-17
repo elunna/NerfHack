@@ -2469,6 +2469,7 @@ extern void make_slimed(long, const char *) NO_NNARGS;
 extern void make_stoned(long, const char *, int, const char *) NO_NNARGS;
 extern void make_vomiting(long, boolean);
 extern void make_blinded(long, boolean);
+extern void make_withering(long, boolean);
 extern void toggle_blindness(void);
 extern boolean make_hallucinated(long, boolean, long);
 extern void make_deaf(long, boolean);
