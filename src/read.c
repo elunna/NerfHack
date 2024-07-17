@@ -2902,6 +2902,10 @@ do_genocide(
             rehumanize();
         }
         if (only_on_level) {
+            if (!Deaf)
+                You_hear("a sinister laughter in the distance...");
+            else
+                You_feel("a sinister presence in the background...");
             kill_monster_on_level(mndx);
         } else {
             kill_genocided_monsters();
