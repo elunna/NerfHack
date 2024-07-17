@@ -1806,12 +1806,15 @@ trapeffect_grease_trap(
 				losehp(Maybe_Half_Phys(d(2, 3)), "bucked off a steed that slipped on grease", KILLED_BY);
 				nomul(-rnd(4));
             } else {
-				if (rn2(10)) {
+				if (rn2(10) && !(objdescr_is(uarmf, "mud boots") 
+                        || uarmf->otyp == WATER_WALKING_BOOTS)) {
 					You("slip on a puddle of grease and crash on the floor!");
 					exercise(A_DEX, FALSE);
 					losehp(Maybe_Half_Phys(rnd(3)), "slipping on grease and falling", KILLED_BY);
 					nomul(-rnd(3));
-				}
+				} else {
+                    You("almost slip on a puddle of grease!");
+                }
 			}
 
 			/* This is not great - but FROMOUTSIDE is used by other 
