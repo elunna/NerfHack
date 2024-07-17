@@ -53,6 +53,7 @@ staticfn boolean get_valid_jump_position(coordxy, coordxy);
 staticfn boolean get_valid_polearm_position(coordxy, coordxy);
 staticfn boolean find_poleable_mon(coord *, int, int);
 staticfn void use_deck(struct obj *);
+staticfn int breakrocks(void);
 
 static const char
     no_elbow_room[] = "don't have enough elbow-room to maneuver.";
@@ -5095,6 +5096,44 @@ use_deck(struct obj *obj)
     pline_The("pack of cards vanishes in a puff of smoke.");
     useup(obj);
     return;
+}
+
+/* Occupation setup for breaking rocks */
+static struct rockinfo {
+    struct obj *tobj;
+} rockinfo;
+
+void
+reset_rocks()
+{
+    rockinfo.tobj = 0;
+}
+
+/* occupation callback for breaking rocks */
+staticfn int
+breakrocks(void)
+{
+    struct obj *otmp = rockinfo.tobj;
+    /* “The two most powerful warriors are patience and time.”
+     * --Leo Tolstoy */
+     if (!otmp) {
+        reset_rocks();
+        return 0;
+    } else if (!carried(otmp)) {
+        You("seem to have mislaid %s.", yname(otmp));
+        reset_rocks();
+        return 0;
+    } else if (otmp->qty == 1)) {
+        You("are out of rocks.");
+        reset_rocks();
+        return 0;
+    } else if (Hallucination) {
+        pline("%s %s must be faulty!",
+            is_plural(ows) ? "These" : "This", xname(ows));
+        reset_rocks();
+        return 0;
+    }
+
 }
 
 /*apply.c*/
