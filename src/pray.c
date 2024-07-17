@@ -1296,194 +1296,195 @@ pleased(aligntyp g_align)
        fixed or there were no troubles to begin with; hallucination
        won't be in effect so special handling for it is superfluous.
        Cavepersons are sometimes ignored by their god */
-    if (pat_on_head && (Role_if(PM_CAVE_DWELLER) ? rn2(10) : 1))
+    if (pat_on_head && (Role_if(PM_CAVE_DWELLER) ? rn2(10) : 1)) {
         switch (rn2((Luck + 6) >> 1)) {
-        case 0:
-            break;
-        case 1:
-            if (uwep && (welded(uwep) || uwep->oclass == WEAPON_CLASS
-                         || is_weptool(uwep))) {
-                char repair_buf[BUFSZ];
+            case 0:
+                break;
+            case 1:
+                if (uwep && (welded(uwep) || uwep->oclass == WEAPON_CLASS
+                            || is_weptool(uwep))) {
+                    char repair_buf[BUFSZ];
 
-                *repair_buf = '\0';
-                if (uwep->oeroded || uwep->oeroded2)
-                    Sprintf(repair_buf, " and %s now as good as new",
-                            otense(uwep, "are"));
-
-                if (uwep->cursed) {
-                    if (!Blind) {
-                        pline("%s %s%s.", Yobjnam2(uwep, "softly glow"),
-                              hcolor(NH_AMBER), repair_buf);
-                        iflags.last_msg = PLNMSG_OBJ_GLOWS;
-                    } else
-                        You_feel("the power of %s over %s.", u_gname(),
-                                 yname(uwep));
-                    uncurse(uwep);
-                    uwep->bknown = 1; /* ok to bypass set_bknown() */
                     *repair_buf = '\0';
-                } else if (!uwep->blessed) {
-                    if (!Blind) {
-                        pline("%s with %s aura%s.",
-                              Yobjnam2(uwep, "softly glow"),
-                              an(hcolor(NH_LIGHT_BLUE)), repair_buf);
-                        iflags.last_msg = PLNMSG_OBJ_GLOWS;
-                    } else
-                        You_feel("the blessing of %s over %s.", u_gname(),
-                                 yname(uwep));
-                    bless(uwep);
-                    uwep->bknown = 1; /* ok to bypass set_bknown() */
-                    *repair_buf = '\0';
-                }
+                    if (uwep->oeroded || uwep->oeroded2)
+                        Sprintf(repair_buf, " and %s now as good as new",
+                                otense(uwep, "are"));
 
-                /* fix any rust/burn/rot damage, but don't protect
-                   against future damage */
-                if (uwep->oeroded || uwep->oeroded2) {
-                    uwep->oeroded = uwep->oeroded2 = 0;
-                    /* only give this message if we didn't just bless
-                       or uncurse (which has already given a message) */
-                    if (*repair_buf)
-                        pline("%s as good as new!",
-                              Yobjnam2(uwep, Blind ? "feel" : "look"));
-                }
-                update_inventory();
-            }
-            break;
-        case 3:
-            /* takes 2 hints to get the music to enter the stronghold;
-               skip if you've solved it via mastermind or destroyed the
-               drawbridge (both set uopened_dbridge) or if you've already
-               travelled past the Valley of the Dead (gehennom_entered) */
-            if (!u.uevent.uopened_dbridge && !u.uevent.gehennom_entered) {
-                if (u.uevent.uheard_tune < 1) {
-                    godvoice(g_align, (char *) 0);
-                    SetVoice((struct monst *) 0, 0, 80, voice_deity);
-                    verbalize("Hark, %s!", is_human(gy.youmonst.data)
-                                               ? "mortal"
-                                               : "creature");
-                    SetVoice((struct monst *) 0, 0, 80, voice_deity);
-                    verbalize(
-                       "To enter the castle, thou must play the right tune!");
-                    u.uevent.uheard_tune++;
-                    break;
-                } else if (u.uevent.uheard_tune < 2) {
-                    Soundeffect(se_divine_music, 50);
-                    You_hear("a divine music...");
-                    pline("It sounds like:  \"%s\".", gt.tune);
-                    u.uevent.uheard_tune++;
-                    record_achievement(ACH_TUNE);
-                    break;
-                }
-            }
-            /*FALLTHRU*/
-        case 2:
-            if (!Blind)
-                You("are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
-            /* if any levels have been lost (and not yet regained),
-               treat this effect like blessed full healing */
-            if (u.ulevel < u.ulevelmax) {
-                u.ulevelmax -= 1; /* see potion.c */
-                pluslvl(FALSE);
-            } else {
-                u.uhpmax += 5;
-                if (u.uhpmax > u.uhppeak)
-                    u.uhppeak = u.uhpmax;
-                if (Upolyd)
-                    u.mhmax += 5;
-            }
-            u.uhp = u.uhpmax;
-            if (Upolyd)
-                u.mh = u.mhmax;
-            if (ABASE(A_STR) < AMAX(A_STR)) {
-                ABASE(A_STR) = AMAX(A_STR);
-                disp.botl = TRUE; /* before potential message */
-                (void) encumber_msg();
-            }
-            if (u.uhunger < 900)
-                init_uhunger();
-            /* luck couldn't have been negative at start of prayer because
-               the prayer would have failed, but might have been decremented
-               due to a timed event (delayed death of peaceful monster hit
-               by hero-created stinking cloud) during the praying interval */
-            if (u.uluck < 0)
-                u.uluck = 0;
-            /* superfluous; if hero was blinded we'd be handling trouble
-               rather than issuing a pat-on-head */
-            u.ucreamed = 0;
-            make_blinded(0L, TRUE);
-            disp.botl = TRUE;
-            break;
-        case 4: {
-            struct obj *otmp;
-            int any = 0;
-
-            if (Blind)
-                You_feel("the power of %s.", u_gname());
-            else
-                You("are surrounded by %s aura.", an(hcolor(NH_LIGHT_BLUE)));
-            for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
-                if (otmp->cursed
-                    && (otmp != uarmh /* [see worst_cursed_item()] */
-                        || uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT)) {
-                    if (!Blind) {
-                        pline("%s %s.", Yobjnam2(otmp, "softly glow"),
-                              hcolor(NH_AMBER));
-                        iflags.last_msg = PLNMSG_OBJ_GLOWS;
-                        otmp->bknown = 1; /* ok to bypass set_bknown() */
-                        ++any;
+                    if (uwep->cursed) {
+                        if (!Blind) {
+                            pline("%s %s%s.", Yobjnam2(uwep, "softly glow"),
+                                hcolor(NH_AMBER), repair_buf);
+                            iflags.last_msg = PLNMSG_OBJ_GLOWS;
+                        } else
+                            You_feel("the power of %s over %s.", u_gname(),
+                                    yname(uwep));
+                        uncurse(uwep);
+                        uwep->bknown = 1; /* ok to bypass set_bknown() */
+                        *repair_buf = '\0';
+                    } else if (!uwep->blessed) {
+                        if (!Blind) {
+                            pline("%s with %s aura%s.",
+                                Yobjnam2(uwep, "softly glow"),
+                                an(hcolor(NH_LIGHT_BLUE)), repair_buf);
+                            iflags.last_msg = PLNMSG_OBJ_GLOWS;
+                        } else
+                            You_feel("the blessing of %s over %s.", u_gname(),
+                                    yname(uwep));
+                        bless(uwep);
+                        uwep->bknown = 1; /* ok to bypass set_bknown() */
+                        *repair_buf = '\0';
                     }
-                    uncurse(otmp);
-                }
-            }
-            if (any)
-                update_inventory();
-            break;
-        }
-        case 5: {
-            static NEARDATA const char msg[] =
-                "\"and thus I grant thee the gift of %s!\"";
 
-            godvoice(u.ualign.type,
-                     "Thou hast pleased me with thy progress,");
-            if (!(HFast & INTRINSIC)) {
-                HFast |= FROMOUTSIDE;
-                pline(msg, "Speed");
-            } else if (!(HStealth & INTRINSIC)) {
-                HStealth |= FROMOUTSIDE;
-                pline(msg, "Stealth");
-            } else {
-                if (!(HProtection & INTRINSIC)) {
-                    HProtection |= FROMOUTSIDE;
-                    if (!u.ublessed)
-                        u.ublessed = 1;
-                } else if ((rn2(10) - u.ublessed >= 0) && (rn2(10) - u.ublessed >= 0))
-                    u.ublessed++;
+                    /* fix any rust/burn/rot damage, but don't protect
+                    against future damage */
+                    if (uwep->oeroded || uwep->oeroded2) {
+                        uwep->oeroded = uwep->oeroded2 = 0;
+                        /* only give this message if we didn't just bless
+                        or uncurse (which has already given a message) */
+                        if (*repair_buf)
+                            pline("%s as good as new!",
+                                Yobjnam2(uwep, Blind ? "feel" : "look"));
+                    }
+                    update_inventory();
+                }
+                break;
+            case 3:
+                /* takes 2 hints to get the music to enter the stronghold;
+                skip if you've solved it via mastermind or destroyed the
+                drawbridge (both set uopened_dbridge) or if you've already
+                travelled past the Valley of the Dead (gehennom_entered) */
+                if (!u.uevent.uopened_dbridge && !u.uevent.gehennom_entered) {
+                    if (u.uevent.uheard_tune < 1) {
+                        godvoice(g_align, (char *) 0);
+                        SetVoice((struct monst *) 0, 0, 80, voice_deity);
+                        verbalize("Hark, %s!", is_human(gy.youmonst.data)
+                                                ? "mortal"
+                                                : "creature");
+                        SetVoice((struct monst *) 0, 0, 80, voice_deity);
+                        verbalize(
+                        "To enter the castle, thou must play the right tune!");
+                        u.uevent.uheard_tune++;
+                        break;
+                    } else if (u.uevent.uheard_tune < 2) {
+                        Soundeffect(se_divine_music, 50);
+                        You_hear("a divine music...");
+                        pline("It sounds like:  \"%s\".", gt.tune);
+                        u.uevent.uheard_tune++;
+                        record_achievement(ACH_TUNE);
+                        break;
+                    }
+                }
+                /*FALLTHRU*/
+            case 2:
+                if (!Blind)
+                    You("are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
+                /* if any levels have been lost (and not yet regained),
+                treat this effect like blessed full healing */
+                if (u.ulevel < u.ulevelmax) {
+                    u.ulevelmax -= 1; /* see potion.c */
+                    pluslvl(FALSE);
+                } else {
+                    u.uhpmax += 5;
+                    if (u.uhpmax > u.uhppeak)
+                        u.uhppeak = u.uhpmax;
+                    if (Upolyd)
+                        u.mhmax += 5;
+                }
+                u.uhp = u.uhpmax;
+                if (Upolyd)
+                    u.mh = u.mhmax;
+                if (ABASE(A_STR) < AMAX(A_STR)) {
+                    ABASE(A_STR) = AMAX(A_STR);
+                    disp.botl = TRUE; /* before potential message */
+                    (void) encumber_msg();
+                }
+                if (u.uhunger < 900)
+                    init_uhunger();
+                /* luck couldn't have been negative at start of prayer because
+                the prayer would have failed, but might have been decremented
+                due to a timed event (delayed death of peaceful monster hit
+                by hero-created stinking cloud) during the praying interval */
+                if (u.uluck < 0)
+                    u.uluck = 0;
+                /* superfluous; if hero was blinded we'd be handling trouble
+                rather than issuing a pat-on-head */
+                u.ucreamed = 0;
+                make_blinded(0L, TRUE);
+                disp.botl = TRUE;
+                break;
+            case 4: {
+                struct obj *otmp;
+                int any = 0;
+
+                if (Blind)
+                    You_feel("the power of %s.", u_gname());
                 else
-                    break; /* Sorry... */
-                pline(msg, "my protection");
-            }
-            SetVoice((struct monst *) 0, 0, 80, voice_deity);
-            verbalize("Use it wisely in my name!");
-            break;
-        }
-        case 7:
-        case 8:
-			/* Crowning requires maximized luck */
-            if (u.ualign.record >= 0 && !u.uevent.uhand_of_elbereth && Luck == 13) {
-                gcrownu();
+                    You("are surrounded by %s aura.", an(hcolor(NH_LIGHT_BLUE)));
+                for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+                    if (otmp->cursed
+                        && (otmp != uarmh /* [see worst_cursed_item()] */
+                            || uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT)) {
+                        if (!Blind) {
+                            pline("%s %s.", Yobjnam2(otmp, "softly glow"),
+                                hcolor(NH_AMBER));
+                            iflags.last_msg = PLNMSG_OBJ_GLOWS;
+                            otmp->bknown = 1; /* ok to bypass set_bknown() */
+                            ++any;
+                        }
+                        uncurse(otmp);
+                    }
+                }
+                if (any)
+                    update_inventory();
                 break;
             }
-            /*FALLTHRU*/
-        case 6:
-            /* Cave dwellers don't mess around with spells, so do nothing */
-            if (Role_if(PM_CAVE_DWELLER))
+            case 5: {
+                static NEARDATA const char msg[] =
+                    "\"and thus I grant thee the gift of %s!\"";
+
+                godvoice(u.ualign.type,
+                        "Thou hast pleased me with thy progress,");
+                if (!(HFast & INTRINSIC)) {
+                    HFast |= FROMOUTSIDE;
+                    pline(msg, "Speed");
+                } else if (!(HStealth & INTRINSIC)) {
+                    HStealth |= FROMOUTSIDE;
+                    pline(msg, "Stealth");
+                } else {
+                    if (!(HProtection & INTRINSIC)) {
+                        HProtection |= FROMOUTSIDE;
+                        if (!u.ublessed)
+                            u.ublessed = 1;
+                    } else if ((rn2(10) - u.ublessed >= 0) && (rn2(10) - u.ublessed >= 0))
+                        u.ublessed++;
+                    else
+                        break; /* Sorry... */
+                    pline(msg, "my protection");
+                }
+                SetVoice((struct monst *) 0, 0, 80, voice_deity);
+                verbalize("Use it wisely in my name!");
                 break;
-            give_spell();
-            break;
-        default:
-            impossible("Confused deity!");
-            break;
+            }
+            case 7:
+            case 8:
+                /* Crowning requires maximized luck */
+                if (u.ualign.record >= 0 && !u.uevent.uhand_of_elbereth && Luck == 13) {
+                    gcrownu();
+                    break;
+                }
+                /*FALLTHRU*/
+            case 6:
+                /* Cave dwellers don't mess around with spells, so do nothing */
+                if (Role_if(PM_CAVE_DWELLER))
+                    break;
+                give_spell();
+                break;
+            default:
+                impossible("Confused deity!");
+                break;
+            }
         } else if (pat_on_head) {
-        You_feel("that %s is not entirely paying attention.",
+            You_feel("that %s is not entirely paying attention.",
                  align_gname(g_align));
     }
     u.ublesscnt = rnz(350);
@@ -1522,6 +1523,11 @@ water_prayer(boolean bless_water)
     struct obj *otmp;
     long changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
+
+    if (bless_water && Role_if(PM_CAVE_DWELLER) && !rn2(10)) {
+        You_feel("that someone upstairs is not entirely paying attention.");
+        return FALSE;
+    }
 
     for (otmp = gl.level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) {
         /* turn water into (un)holy water */
@@ -2316,6 +2322,11 @@ pray_revive(void)
 
     if (!otmp)
         return FALSE;
+
+    if (Role_if(PM_CAVE_DWELLER) && !rn2(10)) {
+        You_feel("your god was looking the other way...");
+        return FALSE;
+    }
 
     return (revive(otmp, TRUE) != NULL);
 }
