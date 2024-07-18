@@ -621,18 +621,18 @@ const struct Race races[] = {
         "human",
         "humanity",
         "Hum",
-        { "man", "woman" },
-        PM_HUMAN,
-        PM_HUMAN_MUMMY,
-        PM_HUMAN_ZOMBIE,
+        { "man", "woman" }, /* individual as a noun */
+        PM_HUMAN, /* PM_ as a male monster */
+        PM_HUMAN_MUMMY, /* PM_ as a mummy */
+        PM_HUMAN_ZOMBIE,/* PM_ as a zombie */
         MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
-            | ROLE_CHAOTIC,
-        MH_HUMAN,
-        0,
-        MH_GNOME | MH_ORC,
+            | ROLE_CHAOTIC, /* allowed variations */
+        MH_HUMAN, /* your own race's bit mask */
+        0, /* always peaceful */
+        MH_GNOME | MH_ORC, /* always hostile */
         /*    Str     Int Wis Dex Con Cha */
-        { 3, 3, 3, 3, 3, 3 },
-        { STR18(100), 18, 18, 18, 18, 18 },
+        { 3, 3, 3, 3, 3, 3 }, /* min allowable */
+        { STR18(100), 18, 18, 18, 18, 18 }, /* max allowable */
         /* Init   Lower  Higher */
         { 2, 0, 0, 2, 1, 0 }, /* Hit points */
         { 1, 0, 2, 0, 2, 0 }  /* Energy */
@@ -642,17 +642,17 @@ const struct Race races[] = {
         "elven",
         "elvenkind",
         "Elf",
-        { 0, 0 },
-        PM_ELF,
-        PM_ELF_MUMMY,
-        PM_ELF_ZOMBIE,
-        MH_ELF | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC | ROLE_NEUTRAL,
-        MH_ELF,
-        MH_ELF,
-        MH_ORC,
+        { 0, 0 }, /* individual as a noun */
+        PM_ELF, /* PM_ as a male monster */
+        PM_ELF_MUMMY, /* PM_ as a mummy */
+        PM_ELF_ZOMBIE,/* PM_ as a zombie */
+        MH_ELF | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC | ROLE_NEUTRAL, /* allowed variations */
+        MH_ELF,/* your own race's bit mask */
+        MH_ELF, /* always peaceful */
+        MH_ORC, /* always hostile */
         /*  Str    Int Wis Dex Con Cha */
-        { 3, 3, 3, 3, 3, 3 },
-        { 18, 20, 20, 18, 16, 18 },
+        { 3, 3, 3, 3, 3, 3 }, /* min allowable */
+        { 18, 20, 20, 18, 16, 18 }, /* max allowable */
         /* Init   Lower  Higher */
         { 1, 0, 0, 1, 1, 0 }, /* Hit points */
         { 2, 0, 3, 0, 3, 0 }  /* Energy */
@@ -662,17 +662,17 @@ const struct Race races[] = {
         "dwarven",
         "dwarvenkind",
         "Dwa",
-        { 0, 0 },
-        PM_DWARF,
-        PM_DWARF_MUMMY,
-        PM_DWARF_ZOMBIE,
-        MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL,
-        MH_DWARF,
-        MH_DWARF | MH_GNOME,
-        MH_ORC,
+        { 0, 0 }, /* individual as a noun */
+        PM_DWARF, /* PM_ as a male monster */
+        PM_DWARF_MUMMY, /* PM_ as a mummy */
+        PM_DWARF_ZOMBIE,/* PM_ as a zombie */
+        MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL, /* allowed variations */
+        MH_DWARF,/* your own race's bit mask */
+        MH_DWARF | MH_GNOME, /* always peaceful */
+        MH_ORC, /* always hostile */
         /*    Str     Int Wis Dex Con Cha */
-        { 3, 3, 3, 3, 3, 3 },
-        { STR18(100), 16, 16, 20, 20, 16 },
+        { 3, 3, 3, 3, 3, 3 }, /* min allowable */
+        { STR18(100), 16, 16, 20, 20, 16 }, /* max allowable */
         /* Init   Lower  Higher */
         { 4, 0, 0, 3, 2, 0 }, /* Hit points */
         { 0, 0, 0, 0, 0, 0 }  /* Energy */
@@ -682,17 +682,17 @@ const struct Race races[] = {
         "gnomish",
         "gnomehood",
         "Gno",
-        { 0, 0 },
-        PM_GNOME,
-        PM_GNOME_MUMMY,
-        PM_GNOME_ZOMBIE,
-        MH_GNOME | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL,
-        MH_GNOME,
-        MH_DWARF | MH_GNOME,
-        MH_HUMAN,
+        { 0, 0 },               /* individual as a noun */
+        PM_GNOME,               /* PM_ as a male monster */
+        PM_GNOME_MUMMY,         /* PM_ as a mummy */
+        PM_GNOME_ZOMBIE,        /* PM_ as a zombie */
+        MH_GNOME | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL, /* allowed variations */
+        MH_GNOME,               /* your own race's bit mask */
+        MH_DWARF | MH_GNOME, /* always peaceful */
+        MH_HUMAN, /* always hostile */
         /*  Str    Int Wis Dex Con Cha */
-        { 3, 3, 3, 3, 3, 3 },
-        { STR18(50), 19, 18, 18, 18, 18 },
+        { 3, 3, 3, 3, 3, 3 }, /* min allowable */
+        { STR18(50), 19, 18, 18, 18, 18 }, /* max allowable */
         /* Init   Lower  Higher */
         { 1, 0, 0, 1, 0, 0 }, /* Hit points */
         { 2, 0, 2, 0, 2, 0 }  /* Energy */
@@ -702,17 +702,17 @@ const struct Race races[] = {
         "orcish",
         "orcdom",
         "Orc",
-        { 0, 0 },
-        PM_ORC,
-        PM_ORC_MUMMY,
-        PM_ORC_ZOMBIE,
-        MH_ORC | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC,
-        MH_ORC,
-        0,
-        MH_HUMAN | MH_ELF | MH_DWARF,
+        { 0, 0 },               /* individual as a noun */
+        PM_ORC,                 /* PM_ as a male monster */
+        PM_ORC_MUMMY,           /* PM_ as a mummy */
+        PM_ORC_ZOMBIE,          /* PM_ as a zombie */
+        MH_ORC | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC, /* allowed variations */
+        MH_ORC,/* your own race's bit mask */
+        0,                      /* always peaceful */
+        MH_HUMAN | MH_ELF | MH_DWARF, /* always hostile */
         /*  Str    Int Wis Dex Con Cha */
-        { 3, 3, 3, 3, 3, 3 },
-        { STR18(50), 16, 16, 18, 18, 16 },
+        { 3, 3, 3, 3, 3, 3 },   /* min allowable */
+        { STR18(50), 16, 16, 18, 18, 16 }, /* max allowable */
         /* Init   Lower  Higher */
         { 1, 0, 0, 1, 0, 0 }, /* Hit points */
         { 1, 0, 1, 0, 1, 0 }  /* Energy */
@@ -722,13 +722,13 @@ const struct Race races[] = {
         "vampiric",
         "kindred",
         "Vam",
-        { 0, 0 }, /* individual as a noun */
-        PM_VAMPIRE, /* PM_ as a male monster */
-        PM_HUMAN_MUMMY, /* PM_ as a mummy */
-        PM_HUMAN_ZOMBIE,/* PM_ as a zombie */
+        { 0, 0 },               /* individual as a noun */
+        PM_VAMPIRE,             /* PM_ as a male monster */
+        PM_HUMAN_MUMMY,         /* PM_ as a mummy */
+        PM_HUMAN_ZOMBIE,        /* PM_ as a zombie */
         MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTER | ROLE_CHAOTIC, /* allowed variations */
-        MH_VAMPIRE, /* your own race's bit mask */
-        0, /* always peaceful */
+        MH_VAMPIRE,             /* your own race's bit mask */
+        0,                      /* always peaceful */
         MH_ELF | MH_GNOME | MH_DWARF | MH_ORC, /* always hostile */
         /* Str Int Wis Dex Con Cha */
         {  4,  3,  3,  3,  3,  3 }, /* min allowable */
