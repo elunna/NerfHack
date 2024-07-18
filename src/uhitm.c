@@ -6608,7 +6608,7 @@ passive(
         }
         break;
     case AD_ACID:
-        if (mhitb && rn2(2)) {
+        if (mhitb && m_next2u(mon) && rn2(2)) {
             if (Blind || !flags.verbose)
                 You("are splashed!");
             else
@@ -6715,7 +6715,7 @@ passive(
         }
         break;
     case AD_SLIM:
-        if (mhit && !mon->mcan && !rn2(3)) {
+        if (mhit && !mon->mcan && m_next2u(mon) && !rn2(3)) {
             pline("Its slime splashes onto you!");
             if (flaming(gy.youmonst.data)) {
                 pline_The("slime burns away!");
@@ -6758,6 +6758,8 @@ passive(
             }
             break;
         case AD_PLYS:
+            if (!m_next2u(mon))
+                break;
             if (ptr == &mons[PM_FLOATING_EYE]) {
                 if (!canseemon(mon)) {
                     break;
@@ -6833,7 +6835,7 @@ passive(
             }
             break;
         case AD_STUN: /* specifically yellow mold */
-            if (!Stunned)
+            if (!Stunned && m_next2u(mon))
                 make_stunned((long) tmp, TRUE);
             break;
         case AD_FIRE:
@@ -6852,6 +6854,11 @@ passive(
             }
             break;
         case AD_ELEC:
+            /* Here, if we skewer with a metal object, it should conduct. 
+             * Elven spears are wood, so do offer protection. */
+            if (!m_next2u(mon) && !is_metallic(weapon))
+                break;
+
             if (fully_resistant(SHOCK_RES)) {
                 shieldeff(u.ux, u.uy);
                 You_feel("a mild tingle.");
@@ -6865,6 +6872,9 @@ passive(
             mdamageu(mon, tmp);
             break;
         case AD_DISE:
+            if (!m_next2u(mon))
+                break;
+
             if (ptr == &mons[PM_GRAY_FUNGUS]) {
                 if (!Strangled && !Breathless) {
                     You("inhale a cloud of spores!");
