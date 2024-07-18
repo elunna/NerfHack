@@ -1807,8 +1807,10 @@ trapeffect_grease_trap(
 				losehp(Maybe_Half_Phys(d(2, 3)), "bucked off a steed that slipped on grease", KILLED_BY);
 				nomul(-rnd(4));
             } else {
-				if (rn2(10) && !(objdescr_is(uarmf, "mud boots") 
-                        || uarmf->otyp == WATER_WALKING_BOOTS)) {
+                if (uarmf && (objdescr_is(uarmf, "mud boots") 
+                        || uarmf->otyp == WATER_WALKING_BOOTS))
+                    Your("boots keep you from slipping on grease!");
+				else if (rn2(10)) {
 					You("slip on a puddle of grease and crash on the floor!");
 					exercise(A_DEX, FALSE);
 					losehp(Maybe_Half_Phys(rnd(3)), "slipping on grease and falling", KILLED_BY);
