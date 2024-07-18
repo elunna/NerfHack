@@ -1048,6 +1048,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(telepathic(pm), "telepathic");
     APPENDC(is_displacer(pm), "displaces monsters");
     /* APPENDC(is_displaced(pm), "displaced"); */
+    APPENDC(follows_you(pm), "follows you");
     APPENDC(keeps_distance(pm), "skittish");
     APPENDC(is_accurate(pm), "accurate");
     APPENDC(infravisible(pm), "infravisible");

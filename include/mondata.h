@@ -136,6 +136,7 @@
 #define metallivorous(ptr) (((ptr)->mflags1 & M1_METALLIVORE) != 0L)
 #define polyok(ptr) (((ptr)->mflags2 & M2_NOPOLY) == 0L)
 #define is_outflanker(ptr) (((ptr)->mflags2 & M2_FLANK) != 0)
+#define follows_you(ptr) (((ptr)->mflags2 & M2_STALK) != 0)
 #define is_shapeshifter(ptr) (((ptr)->mflags2 & M2_SHAPESHIFTER) != 0L)
 #define is_undead(ptr) (((ptr)->mhflags & MH_UNDEAD) != 0L)
 #define is_were(ptr) (((ptr)->mhflags & MH_WERE) != 0L)
