@@ -1637,6 +1637,12 @@ makemon(
         /* TODO: unify with teleport appears msg */
     }
 
+    /* Some checks */
+    if (is_unicorn(ptr) && sgn(u.ualign.type) != sgn(ptr->maligntyp)) {
+        if (mtmp->mpeaceful)
+            impossible("Peaceful non-aligned unicorn!");
+    }
+        
     return mtmp;
 }
 
