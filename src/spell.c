@@ -864,9 +864,11 @@ spell_hunger(int hungr)
     /* If hero is a wizard, their current intelligence
      * (bonuses + temporary + current)
      * affects hunger reduction in casting a spell.
-     * 1. int = 19+    1/4 hungr
-     * 2. int = 17-18  1/3 hungr
-     * 3. int = 1-14  normal reduction
+     * 1. int = 22+    1/6 hungr
+     * 2. int = 20-21  1/4 hungr
+     * 3. int = 18-19  1/2 hungr
+     * 4. int = 15-17  3/4 hungr
+     * 5. int = 1-14   normal reduction
      * The reason for this is:
      * a) Intelligence affects the amount of exertion
      * in thinking.
@@ -875,10 +877,14 @@ spell_hunger(int hungr)
      */
     if (Role_if(PM_WIZARD)) {
         int intel = acurr(A_INT);
-        if (intel >= 20)
+        if (intel >= 22)
+            return hungr / 6;
+        else if (intel >= 20)
             return hungr / 4;
         else if (intel >= 18)
             return hungr / 2;
+        else if (intel >= 15)
+            return hungr - (hungr / 4);
     }
     /* no adjustment */
     return hungr;
