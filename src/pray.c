@@ -830,48 +830,57 @@ gcrownu(void)
     const char *what;
     boolean already_exists, in_hand;
     short class_gift;
+    int given = 0;
+
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
-    /* Player gets up to 3 intrinsics granted */
+    /* Player gets up to 3 intrinsics granted. If they didn't receive ANY, they get a wish! */
+
     for (int i = 0; i < 3; i++) {
         switch (rnd(8)) {
         case 1:
-            if (!(HDisint_resistance & FROMOUTSIDE)) {
+            if (!(HDisint_resistance & FROMOUTSIDE || fully_resistant(DISINT_RES))) {
                 You_feel(Hallucination ? "totally together, man." : "very firm.");
                 incr_resistance(&HDisint_resistance, 100);
+                given++;
             }
             break;
         case 2:
-            if (!(HFire_resistance & FROMOUTSIDE)) {
+            if (!(HFire_resistance & FROMOUTSIDE || fully_resistant(FIRE_RES))) {
                 You(Hallucination ? "be chillin'." : "feel a momentary chill.");
                 incr_resistance(&HFire_resistance, 100);
+                given++;
             }
             break;
         case 3:
-            if (!(HCold_resistance & FROMOUTSIDE)) {
+            if (!(HCold_resistance & FROMOUTSIDE || fully_resistant(COLD_RES))) {
                 You_feel("full of hot air.");
                 incr_resistance(&HCold_resistance, 100);
+                given++;
             }
             break;
         case 4:
-            if (!(HShock_resistance & FROMOUTSIDE)) {
+            if (!(HShock_resistance & FROMOUTSIDE || fully_resistant(SHOCK_RES))) {
                 if (Hallucination)
                     You_feel("grounded in reality.");
                 else
                     Your("health currently feels amplified!");
                 incr_resistance(&HShock_resistance, 100);
+                given++;
             }
             break;
         case 5:
-            if (!(HSleep_resistance & FROMOUTSIDE)) {
+            if (!(HSleep_resistance & FROMOUTSIDE || fully_resistant(SLEEP_RES))) {
                 You_feel("wide awake.");
                 incr_resistance(&HSleep_resistance, 100);
+                given++;
             }
             break;
         case 6:
-            if (!(HPoison_resistance & FROMOUTSIDE)) {
+            if (!(HPoison_resistance & FROMOUTSIDE || fully_resistant(POISON_RES))) {
                 You_feel(Poison_resistance ? "especially healthy." : "healthy.");
                 incr_resistance(&HPoison_resistance, 100);
+                given++;
             }
             break;
         case 7:
@@ -881,6 +890,7 @@ gcrownu(void)
                              ? "secure from flashbacks"
                              : "less concerned about being harmed by acid");
                 HAcid_resistance |= FROMOUTSIDE;
+                given++;
             }
             break;
         case 8:
@@ -889,11 +899,20 @@ gcrownu(void)
                                     ? "unusually limber"
                                     : "less concerned about becoming petrified");
                 HStone_resistance |= FROMOUTSIDE;
+                given++;
             }
             break;
         }
     }
-    
+    if (!given) {
+         if (Role_if(PM_CAVE_DWELLER) && !rn2(10)) {
+            pline("Unfortunately, nothing happens.");
+        } else {
+            verbalize("Hark!  You have proven yourself worthy of this gift.");
+            makewish();
+        }
+    }
+
     godvoice(u.ualign.type, (char *) 0);
 
     class_gift = STRANGE_OBJECT;
