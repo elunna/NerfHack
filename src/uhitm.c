@@ -905,7 +905,12 @@ should_skewer(int range)
             return FALSE;
 
         mtmp = m_at(x, y);
-        if (mtmp && canspotmon(mtmp) && mtmp->mpeaceful)
+        /* Similar to pounding with polearms, we won't skewer if we can't see the spot.
+         * This prevents a lot of unintended attacks - both on peacefuls and hostiles 
+         * we cannot see. */
+        if (cansee(x, y))
+            bystanders = TRUE;
+        else if (mtmp && canspotmon(mtmp) && mtmp->mpeaceful)
             bystanders = TRUE;
     }
     if (bystanders) {
