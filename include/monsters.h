@@ -4636,7 +4636,7 @@
      * gold dragon, does not emit light.  Also does not fly.
      */
     MON(NAM("Chromatic Dragon"), S_DRAGON,
-        LVL(19, 20, -4, 30, -14), (G_NOGEN | G_UNIQ),
+        LVL(16, 12, -4, 30, -14), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_BREA, AD_RBRE, 6, 6),
           ATTK(AT_MAGC, AD_SPEL, 0, 0),
           ATTK(AT_CLAW, AD_SAMU, 2, 8),
@@ -4681,7 +4681,7 @@
             | M3_BERSERK,
         MH_GIANT, 23, CLR_GRAY, CYCLOPS),
     MON(NAM("Ixoth"), S_DRAGON,
-        LVL(18, 20, -4, 20, -14), (G_NOGEN | G_UNIQ),
+        LVL(15, 12, -4, 20, -14), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_BREA, AD_FIRE, 8, 6),
           ATTK(AT_BITE, AD_PHYS, 4, 8),
           ATTK(AT_MAGC, AD_SPEL, 0, 0),
