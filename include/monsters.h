@@ -549,7 +549,7 @@
         M1_NOHANDS | M1_POIS | M1_REGEN | M1_CARNIVORE,
         M2_NOPOLY | M2_HOSTILE,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_JUMPER,
-        MH_WERE, 13, CLR_ORANGE, WERETIGER),
+        MH_WERE, 13, CLR_RED, WERETIGER),
     /* From SLASH'EM with changes:
      * - They now count as a nasty and get infravision
      * - their traitorous nature has been removed */
@@ -3345,7 +3345,7 @@
         M1_HUMANOID | M1_POIS | M1_REGEN | M1_OMNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_COLLECT,
         M3_INFRAVISIBLE,
-        MH_WERE | MH_HUMAN, 11, CLR_ORANGE, HUMAN_WERETIGER),
+        MH_WERE | MH_HUMAN, 11, CLR_RED, HUMAN_WERETIGER),
     /* plain "elf" is a placeholder, not a normal monster */
     MON(NAM("elf"), S_HUMAN, /* for corpses */
         LVL(0, 12, 10, 2, -3), G_NOGEN,
