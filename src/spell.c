@@ -31,7 +31,8 @@
 /* These are the roles that specialize in spellcasting, they start with
  * spellbooks */
 #define primary_spellcaster() (Role_if(PM_HEALER) || Role_if(PM_CLERIC) \
-                               || Role_if(PM_MONK) || Role_if(PM_WIZARD))
+                               || Role_if(PM_MONK) || Role_if(PM_WIZARD) \
+                               || Role_if(PM_CARTOMANCER))
 struct chain_lightning_queue;
 struct chain_lightning_zap;
 
