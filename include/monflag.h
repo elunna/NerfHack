@@ -184,12 +184,12 @@ enum ms_sounds {
 
 /* Monster species -- must stay within ROLE_RACEMASK */
 /* Position is important for MH_HUMAN through MH_ORC - do not disturb!  */
-#define MH_HUMAN        0x00000008L 
+#define MH_HUMAN        0x00000008L
 #define MH_ELF          0x00000010L
 #define MH_DWARF        0x00000020L
 #define MH_GNOME        0x00000040L
 #define MH_ORC          0x00000080L
-#define MH_VAMPIRE	0x00000100L
+#define MH_VAMPIRE	   0x00000100L
 #define MH_WERE         0x00000200L
 #define MH_GIANT        0x00000400L
 #define MH_UNDEAD       0x00000800L
