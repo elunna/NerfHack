@@ -626,7 +626,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1250, 250, MS_GROWL, MZ_LARGE), 0, 0,
         M1_HUMANOID | M1_OMNIVORE, M2_STRONG | M2_COLLECT,
-        M3_INFRAVISIBLE | M3_INFRAVISION,
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
         NO_RACE, 5, CLR_BROWN, BUGBEAR),
     MON(NAMS("dwarf lord", "dwarf lady", "dwarf leader"), S_HUMANOID,
         LVL(4, 6, 10, 10, 5), (G_GENO | 2),

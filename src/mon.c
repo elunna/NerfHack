@@ -37,7 +37,6 @@ staticfn int wiz_force_cham_form(struct monst *);
 staticfn struct permonst *accept_newcham_form(struct monst *, int);
 staticfn void kill_eggs(struct obj *) NO_NNARGS;
 staticfn void pacify_guard(struct monst *);
-static void mon_berserk(struct monst *);
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
@@ -6365,10 +6364,10 @@ kill_monster_on_level(int mndx)
     }
 }
 
-static void
+void
 mon_berserk(struct monst *mtmp)
 {
-    if (noattacks(mtmp->data))
+    if (noattacks(mtmp->data) || !is_berserker(mtmp->data))
         return;
     if (helpless(mtmp))
         return;
@@ -6394,10 +6393,10 @@ mon_berserk(struct monst *mtmp)
     /* Renewed vigor!  */
     mtmp->mhp += rnd(mtmp->mhpmax);
     if (mtmp->mhp > mtmp->mhpmax)
-	mtmp->mhp = mtmp->mhpmax;
+	    mtmp->mhp = mtmp->mhpmax;
     mtmp->mberserk = 1;
     mtmp->mflee = 0;
-    /* If a monster goes berserk towards the player, but the hero can't retaliate
+    /* If a monster goes berserk towards the player but the hero can't retaliate,
      * it seems unfair and awkward. Make it so berserkers turn hostile. */
     mtmp->mpeaceful = 0;
     newsym(mtmp->mx, mtmp->my);

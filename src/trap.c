@@ -1599,6 +1599,7 @@ trapeffect_bear_trap(
                     You_hear("the roaring of an angry bear!");
                 }
             }
+            mon_berserk(mtmp);
         } else if (forcetrap) {
             if (in_sight) {
                 pline_mon(mtmp,
@@ -2664,6 +2665,8 @@ trapeffect_web(
                 seetrap(trap);
             }
             mtmp->mtrapped = tear_web ? 0 : 1;
+            if (!tear_web && rn2(3))
+                mon_berserk(mtmp);
             break;
             /* this list is fairly arbitrary; it deliberately
                excludes wumpus & giant/ettin zombies/mummies */
