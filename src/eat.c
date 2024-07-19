@@ -1092,7 +1092,7 @@ givit(int type, struct permonst *ptr)
         if (!(HTeleport_control & FROMOUTSIDE)) {
             You_feel(Hallucination ? "centered in your personal space."
                                    : "in control of yourself.");
-            HTeleport_control |= FROMOUTSIDE;
+            incr_itimeout(&HTeleport_control, rn1(250, 500));
         }
         break;
     case TELEPAT:
