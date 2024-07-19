@@ -18,6 +18,8 @@ staticfn void join_map_cleanup(void);
 staticfn void join_map(schar, schar);
 staticfn void finish_map(schar, schar, boolean, boolean, boolean);
 staticfn void remove_room(unsigned);
+staticfn void mkrivers(void);
+staticfn void makeriver(int, int, int, int);
 void mkmap(lev_init *);
 
 staticfn void
@@ -477,6 +479,20 @@ mkmap(lev_init *init_lev)
     if (join)
         join_map(bg_typ, fg_typ);
 
+   
+#if 0 /* EvilHack Mines*/
+    if (In_mines(&u.uz) && !In_hell(&u.uz) && !Is_branchlev(&u.uz)) {
+            if (rn2(u.uz.dlevel + 1))
+                mkrivers();
+    }
+#endif
+     /* Apply rivers to certain situations:
+      * - Caveman quest mines
+      */
+    if (In_quest(&u.uz) && Role_if(PM_CAVE_DWELLER)) {
+        mkrivers();
+    }
+
     finish_map(fg_typ, bg_typ, (boolean) lit, (boolean) walled,
                init_lev->icedpools);
     /* a walled, joined level is cavernous, not mazelike -dlc */
@@ -485,6 +501,139 @@ mkmap(lev_init *init_lev)
         gl.level.flags.is_cavernous_lev = TRUE;
     }
     free(gn.new_locations);
+}
+
+staticfn void
+mkrivers(void)
+{
+    int nriv = rn2(3) + 1;
+    while (nriv--) {
+        if (rn2(2))
+            makeriver(0, rn2(ROWNO), COLNO - 1, rn2(ROWNO));
+        else
+            makeriver(rn2(COLNO), 0, rn2(COLNO), ROWNO - 1);
+    }
+}
+
+staticfn void
+makeriver(int x1, int y1, int x2, int y2)
+{
+    int cx, cy;
+    int dx, dy;
+    int chance;
+    int count = 0;
+    int monstcount = rnd(4);
+
+    cx = x1;
+    cy = y1;
+
+    while (count++ < 2000) {
+      	int rnum = levl[cx][cy].roomno - ROOMOFFSET;
+      	chance = 0;
+        if (rnum >= 0 && gr.rooms[rnum].rtype != OROOM)
+            chance = 0;
+        else if (levl[cx][cy].typ == STAIRS)
+            chance = 0;
+        /* damp terrain replacing stairs currently isn't
+           possible as makeriver() is only called during
+           mines creation, but good to guard against should
+           makeriver() ever be called after mkstairs() */
+        else if (levl[cx][cy].typ == STAIRS)
+            chance = 0;
+        else if (levl[cx][cy].typ == CORR)
+            chance = 15;
+        else if (levl[cx][cy].typ == ROOM)
+            chance = 30;
+        else if (IS_ROCK(levl[cx][cy].typ))
+            chance = 100;
+
+        if (rn2(100) < chance && !t_at(cx, cy)) {
+            levl[cx][cy].typ = !rn2(3) ? POOL : MOAT;
+            levl[cx][cy].lit = 1;
+            
+      	}
+
+        if (cx == x2 && cy == y2)
+            break;
+
+        if (cx < x2 && !rn2(3))
+            dx = 1;
+        else if (cx > x2 && !rn2(3))
+            dx = -1;
+        else
+            dx = 0;
+
+        if (cy < y2 && !rn2(3))
+            dy = 1;
+        else if (cy > y2 && !rn2(3))
+            dy = -1;
+        else
+            dy = 0;
+
+        switch (rn2(16)) {
+            default:
+                break;
+            case 1: dx--; dy--;
+                break;
+            case 2: dx++; dy--;
+                break;
+            case 3: dx--; dy++;
+                break;
+            case 4: dx++; dy++;
+                break;
+            case 5: dy--;
+                break;
+            case 6: dy++;
+                break;
+            case 7: dx--;
+                break;
+            case 8: dx++;
+                break;
+      	}
+
+        if (dx < -1)
+            dx = -1;
+        else if (dx > 1)
+            dx = 1;
+        if (dy < -1)
+            dy = -1;
+        else if (dy > 1)
+            dy = 1;
+
+        cx += dx;
+        cy += dy;
+
+        if (cx < 0)
+            cx = 0;
+        else if (cx >= COLNO)
+            cx = COLNO - 1;
+        if (cy < 0)
+            cy = 0;
+        else if (cy >= ROWNO)
+            cy = ROWNO - 1;
+    }
+    /* Loop through and spawn some monsters. Since rivers are
+       currently only made in the gnomish mines, no need to
+       specify In_mines(&u.uz) */
+    count = 0;
+    while (count++ < 2000 && monstcount > 0) {
+        cx = 1 + rn2(COLNO - 2);
+        cy = 1 + rn2(ROWNO - 2);
+        if (levl[cx][cy].typ == POOL || levl[cx][cy].typ == MOAT) {
+            if (u.uz.dlevel >= 5) {
+                (void) makemon(rn2(20) ? &mons[PM_JELLYFISH +
+                                               rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)]
+                                       : rn2(8) ? &mons[PM_WATER_MOCCASIN]
+                                                : &mons[PM_WATER_TROLL], cx, cy, NO_MM_FLAGS);
+            } else {
+                (void) makemon(&mons[PM_JELLYFISH +
+                               rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)], cx, cy, NO_MM_FLAGS);
+            }
+            monstcount--;
+        }
+    }
+    if (!(levl[cx][cy].typ == POOL || levl[cx][cy].typ == MOAT))
+        maybe_unhide_at(cx, cy);
 }
 
 /*mkmap.c*/
