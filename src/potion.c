@@ -1543,8 +1543,7 @@ peffect_blood(struct obj *otmp)
                       otmp->odiluted ? "watery" : "thick");
             if (!otmp->cursed)
                 lesshungry((otmp->odiluted ? 1 : 2) *
-                           (otmp->otyp == POT_VAMPIRE_BLOOD ? 400 :
-                            otmp->blessed ? 100 : 30));
+                           (otmp->otyp == POT_VAMPIRE_BLOOD ? 400 : 200));
             if (otmp->otyp == POT_VAMPIRE_BLOOD && otmp->blessed) {
                 int num = newhp();
                 if (Upolyd) {
@@ -1584,6 +1583,7 @@ peffect_blood(struct obj *otmp)
                     successful_polymorph = polymon(PM_VAMPIRE_BAT);
                 else
                     successful_polymorph = polymon(PM_VAMPIRE);
+                
                 if (successful_polymorph)
                     u.mtimedone = 0;	/* "Permament" change */
             }
