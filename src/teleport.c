@@ -1127,7 +1127,7 @@ level_tele(void)
     if (iflags.debug_fuzzer)
         goto random_levtport;
     
-#if 0 /* Enable for branchport fuzz-testing */
+
     if (iflags.debug_fuzzer) {
         do {
             newlevel.dnum = rn2(gn.n_dgns);
@@ -1139,7 +1139,6 @@ level_tele(void)
         schedule_goto(&newlevel, UTOTYPE_NONE, (char *) 0, (char *) 0);
         return;
     }
-#endif
     
     if ((u.uhave.amulet || In_endgame(&u.uz) || In_sokoban(&u.uz))
         && !wizard) {
