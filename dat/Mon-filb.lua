@@ -3,58 +3,42 @@
 --	Copyright (c) 1991-2 by M. Stephenson
 -- NetHack may be freely redistributed.  See license for details.
 --
+des.level_init({ style = "solidfill", fg = " " });
+
+des.level_flags("mazelevel", "noflip");
+
+des.level_init({ style="mines", fg=".", bg=" ", smoothed=true, joined=true, lit=0, walled=true })
 
 --
-des.room({ type = "ordinary",
-           contents = function()
-              des.stair("up")
-              des.object()
-              des.monster({ class = "X", peaceful=0 })
-           end
-})
+des.stair("up")
+des.stair("down")
+--
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+--
+des.trap()
+des.trap()
+des.trap()
+des.trap()
+--
 
-des.room({ type = "ordinary",
-           contents = function()
-              des.object()
-              des.object()
-              des.monster({ class = "X", peaceful=0 })
-           end
-})
-
-des.room({ type = "ordinary",
-           contents = function()
-              des.object()
-              des.trap()
-              des.object()
-              des.monster({ class = "E", peaceful=0 })
-           end
-})
-
-des.room({ type = "ordinary",
-           contents = function()
-              des.stair("down")
-              des.object()
-              des.trap()
-              des.monster({ class = "E", peaceful=0 })
-              des.monster("earth elemental")
-           end
-})
-
-des.room({ type = "ordinary",
-           contents = function()
-              des.object()
-              des.object()
-              des.trap()
-              des.monster({ class = "X", peaceful=0 })
-           end
-})
-
-des.room({ type = "ordinary",
-           contents = function()
-              des.object()
-              des.trap()
-              des.monster("earth elemental")
-           end
-})
-
-des.random_corridors()
+des.monster({ class = "X", peaceful=0 })
+des.monster({ class = "X", peaceful=0 })
+des.monster({ class = "X", peaceful=0 })
+des.monster({ class = "X", peaceful=0 })
+des.monster({ class = "X", peaceful=0 })
+des.monster({ class = "E", peaceful=0 })
+des.monster({ id = "rock troll", peaceful=0 })
+des.monster("earth elemental")
+des.monster("earth elemental")
+des.monster("earth elemental")
+des.monster({ class = "E", peaceful=0 })

@@ -479,17 +479,11 @@ mkmap(lev_init *init_lev)
     if (join)
         join_map(bg_typ, fg_typ);
 
-   
-#if 0 /* EvilHack Mines*/
-    if (In_mines(&u.uz) && !In_hell(&u.uz) && !Is_branchlev(&u.uz)) {
-            if (rn2(u.uz.dlevel + 1))
-                mkrivers();
-    }
-#endif
-     /* Apply rivers to certain situations:
-      * - Caveman quest mines
-      */
-    if (In_quest(&u.uz) && Role_if(PM_CAVE_DWELLER)) {
+    /* Apply rivers to certain quest fill levels */
+    if (In_quest(&u.uz) && (Role_if(PM_CAVE_DWELLER) || Role_if(PM_BARBARIAN)
+        || Role_if(PM_RANGER) || Role_if(PM_TOURIST)
+        /* Added a minefill map to monk quest */
+        || Role_if(PM_MONK))) {
         mkrivers();
     }
 
