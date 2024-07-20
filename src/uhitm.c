@@ -6733,6 +6733,18 @@ passive(
             }
         }
         break;
+    case AD_HALU: /* specifically violet fungus */
+        /* Use the same values as breathing potion vapors. */
+        if (m_next2u(mon)) {
+            if (!Strangled && !Breathless) {
+                pline("You inhale a cloud of spores!");
+                (void) make_hallucinated((HHallucination & TIMEOUT) + rn1(20, 20), TRUE, 0L);
+            } else {
+                pline("A cloud of spores surrounds you!");
+            }
+        } else if (canseemon(mon))
+            pline_mon(mon, "puffs out a cloud of spores!");
+        break;
     default:
         break;
     }

@@ -2140,7 +2140,8 @@
         LVL(3, 1, 7, 0, 0), (G_GENO | 2),
         A(ATTK(AT_TUCH, AD_PHYS, 1, 4),
           ATTK(AT_TUCH, AD_STCK, 0, 0),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+          ATTK(AT_NONE, AD_HALU, 0, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(100, 100, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON,
         M1_BREATHLESS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
             | M1_NOTAKE,
