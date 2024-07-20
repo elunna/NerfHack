@@ -1843,20 +1843,18 @@ use_offensive(struct monst *mtmp)
         maxdmg += mattk->damn * mattk->damd; /* total up the possible damage for just swinging */
     }
 
-    /* If the monsters' combined damage from a melee attack exceeds nine, or if
+    /* If the monsters' combined damage from a melee attack exceeds 21 
+       (the average of an offensive wands 6d6), or if
        their wielded weapon is an artifact, use it if close enough. Exception
        being certain wands that can incapacitate or can already do significant
        damage. Because intelligent monsters know not to use a certain attack if
        they've seen that the player is resistant to it, the monster will switch
        offensive items appropriately */
-    if ((maxdmg > 9
+    if ((maxdmg > 21
          || (MON_WEP(mtmp) && MON_WEP(mtmp)->oartifact))
         && (monnear(mtmp, mtmp->mux, mtmp->muy)
             && gm.m.has_offense != MUSE_WAN_DEATH
-            && gm.m.has_offense != MUSE_WAN_SLEEP
-            && gm.m.has_offense != MUSE_WAN_FIRE
-            && gm.m.has_offense != MUSE_WAN_COLD
-            && gm.m.has_offense != MUSE_WAN_LIGHTNING)) {
+            && gm.m.has_offense != MUSE_WAN_SLEEP)) {
         return 0;
     }
     
