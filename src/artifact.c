@@ -2838,7 +2838,8 @@ retouch_object(
     if (touch_artifact(obj, &gy.youmonst)) {
         char buf[BUFSZ];
         int dmg = 0, tmp;
-        boolean ag = (objects[obj->otyp].oc_material == SILVER && Hate_silver),
+        boolean ag = ((objects[obj->otyp].oc_material == SILVER && Hate_silver) ||
+                (obj->otyp == CLOVE_OF_GARLIC && Race_if(PM_VAMPIRE))),
                 bane = bane_applies(get_artifact(obj), &gy.youmonst);
 
         /* nothing else to do if hero can successfully handle this object */
