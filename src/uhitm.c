@@ -6756,6 +6756,17 @@ passive(
         } else if (canseemon(mon))
             pline_mon(mon, "puffs out a cloud of spores!");
         break;
+     case AD_DISE: /* specifically gray fungus */
+        if (m_next2u(mon)) {
+            if (!Strangled && !Breathless && !Sick) {
+                You("inhale a cloud of spores!");
+                diseasemu(ptr);
+            } else {
+                pline("A cloud of spores surrounds you!");
+            }
+        } else if (canseemon(mon))
+            pline_mon(mon, "puffs out a cloud of spores!");
+        break;
     default:
         break;
     }
@@ -6889,20 +6900,6 @@ passive(
             monstunseesu(M_SEEN_ELEC);
             You("are jolted with electricity!");
             mdamageu(mon, tmp);
-            break;
-        case AD_DISE:
-            if (!m_next2u(mon))
-                break;
-
-            if (ptr == &mons[PM_GRAY_FUNGUS]) {
-                if (!Strangled && !Breathless) {
-                    You("inhale a cloud of spores!");
-                } else {
-                    pline("A cloud of spores surrounds you!");
-                    break;
-                }
-            }
-            diseasemu(ptr);
             break;
         default:
             break;
