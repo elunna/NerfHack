@@ -6733,10 +6733,21 @@ passive(
             }
         }
         break;
+    case AD_STUN: /* specifically yellow mold */
+        if (m_next2u(mon)) {
+            if (!Strangled && !Breathless && !Stunned) {
+                pline("You inhale a cloud of spores!");
+                make_stunned((long) tmp, TRUE);
+            } else {
+                pline("A cloud of spores surrounds you!");
+            }
+        } else if (canseemon(mon))
+            pline_mon(mon, "puffs out a cloud of spores!");
+        break;
     case AD_HALU: /* specifically violet fungus */
         /* Use the same values as breathing potion vapors. */
         if (m_next2u(mon)) {
-            if (!Strangled && !Breathless) {
+            if (!Strangled && !Breathless && !Hallucination) {
                 pline("You inhale a cloud of spores!");
                 (void) make_hallucinated((HHallucination & TIMEOUT) + rn1(20, 20), TRUE, 0L);
             } else {
@@ -6845,10 +6856,6 @@ passive(
                 if (mon->mhpmax > ((int) (mon->m_lev + 1) * 8))
                     (void) split_mon(mon, &gy.youmonst);
             }
-            break;
-        case AD_STUN: /* specifically yellow mold */
-            if (!Stunned && m_next2u(mon))
-                make_stunned((long) tmp, TRUE);
             break;
         case AD_FIRE:
             if (monnear(mon, u.ux, u.uy)) {
