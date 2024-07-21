@@ -261,7 +261,7 @@ static NEARDATA struct artifact artilist[] = {
     /*** Chaotic artifacts ***/
     
     /* From SLASH'EM */
-    A("Doomblade", ORCISH_SHORT_SWORD,
+    A("Doomblade", SHORT_SWORD,
       SPFX_RESTR, 0, 0,
       PHYS(0, 20), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 1000L, NO_COLOR, DOOMBLADE),
