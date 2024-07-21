@@ -177,6 +177,10 @@ mk_artifact(
         else if (u.ualign.type == A_CHAOTIC && m == ART_STORMBRINGER)
             continue;
         
+        /* Don't gift silver to vampires. */
+        if (Race_if(PM_VAMPIRE) && objects[a->otyp].oc_material == SILVER)
+            continue;
+        
         if (!by_align) {
             /* looking for a particular type of item; not producing a
                divine gift so we don't care about role's first choice */
