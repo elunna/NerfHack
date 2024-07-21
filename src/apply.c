@@ -2832,6 +2832,7 @@ apply_flint(struct obj *flint)
     /* One flint stone for each arrow. */
     if (num_flints >= arrows) {
         (obj->spe)++;
+        obj->known = 1; /* Unambiguous +1 here */
         You("lash flint tips to the %s.", xname(obj));
         
         if (arrows == num_flints)
