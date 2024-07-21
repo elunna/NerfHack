@@ -469,6 +469,9 @@ fill_zoo(struct mkroom *sroom)
     case BEEHIVE:
         gl.level.flags.has_beehive = 1;
         break;
+    case DRAGONLAIR:
+        gl.level.flags.has_lair = 1;
+        break;
     }
 }
 

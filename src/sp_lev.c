@@ -2742,6 +2742,9 @@ fill_special_room(struct mkroom *croom)
     case BEEHIVE:
         gl.level.flags.has_beehive = TRUE;
         break;
+    case DRAGONLAIR:
+        gl.level.flags.has_lair = TRUE;
+        break;
     case BARRACKS:
         gl.level.flags.has_barracks = TRUE;
         break;

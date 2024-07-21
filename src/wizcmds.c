@@ -757,6 +757,8 @@ wiz_map_levltyp(void)
             Strcat(dsc, " barracks");
         if (gl.level.flags.has_beehive)
             Strcat(dsc, " hive");
+        if (gl.level.flags.has_lair)
+            Strcat(dsc, " dragon lair");
         if (gl.level.flags.has_swamp)
             Strcat(dsc, " swamp");
         /* level flags */

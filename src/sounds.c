@@ -8,6 +8,7 @@ staticfn boolean throne_mon_sound(struct monst *);
 staticfn boolean beehive_mon_sound(struct monst *);
 staticfn boolean morgue_mon_sound(struct monst *);
 staticfn boolean zoo_mon_sound(struct monst *);
+staticfn boolean dlair_mon_sound(struct monst *);
 staticfn boolean temple_priest_sound(struct monst *);
 staticfn boolean mon_is_gecko(struct monst *);
 staticfn int domonnoise(struct monst *);
@@ -127,6 +128,32 @@ zoo_mon_sound(struct monst *mtmp)
     }
     return FALSE;
 }
+
+staticfn boolean
+dlair_mon_sound(struct monst *mtmp)
+{
+    if ((mtmp->data->mlet == S_DRAGON && is_flyer(mtmp->data))
+        && mon_in_room(mtmp, DRAGONLAIR)) {
+        int hallu = Hallucination ? 1 : 0;
+
+        switch (rn2(2) + hallu) {
+        case 0:
+            // Soundeffect(se_low_buzzing, 30);
+            You_hear("the rustling of gold and trinkets.");
+            break;
+        case 1:
+            // Soundeffect(se_angry_drone, 100);
+            You_hear("a deep growling.");
+            break;
+        case 2:
+            You_hear("sunshine on the wings of dragonflies!");
+            break;
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
+
 
 staticfn boolean
 temple_priest_sound(struct monst *mtmp)
@@ -315,6 +342,10 @@ dosounds(void)
     }
     if (gl.level.flags.has_zoo && !rn2(200)) {
         if (get_iter_mons(zoo_mon_sound))
+            return;
+    }
+    if (gl.level.flags.has_lair && !rn2(200)) {
+        if (get_iter_mons(dlair_mon_sound))
             return;
     }
     if (gl.level.flags.has_shop && !rn2(200)) {

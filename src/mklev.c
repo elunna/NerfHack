@@ -789,6 +789,7 @@ clear_level_structures(void)
     gl.level.flags.has_court = 0;
     gl.level.flags.has_morgue = gl.level.flags.graveyard = 0;
     gl.level.flags.has_beehive = 0;
+    gl.level.flags.has_lair = 0;
     gl.level.flags.has_barracks = 0;
     gl.level.flags.has_temple = 0;
     gl.level.flags.has_swamp = 0;

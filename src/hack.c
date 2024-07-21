@@ -3505,6 +3505,9 @@ check_special_room(boolean newlev)
                 case BEEHIVE:
                     gl.level.flags.has_beehive = 0;
                     break;
+                case DRAGONLAIR:
+                    gl.level.flags.has_lair = 0;
+                    break;
                 }
             }
             if (rt == COURT || rt == SWAMP || rt == MORGUE || rt == ZOO)
