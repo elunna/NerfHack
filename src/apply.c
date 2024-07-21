@@ -53,10 +53,16 @@ staticfn boolean get_valid_jump_position(coordxy, coordxy);
 staticfn boolean get_valid_polearm_position(coordxy, coordxy);
 staticfn boolean find_poleable_mon(coord *, int, int);
 staticfn void use_deck(struct obj *);
+staticfn void reset_rocks(void);
 staticfn int breakrocks(void);
 
 static const char
     no_elbow_room[] = "don't have enough elbow-room to maneuver.";
+
+static struct rockinfo {
+    struct obj *rubber;
+    struct obj *rubbee;
+} rockinfo;
 
 void
 do_blinding_ray(struct obj *obj)
@@ -2907,38 +2913,10 @@ use_stone(struct obj *tstone)
 
     /* break rocks and maybe get some flint out of them */
     if (obj->otyp == ROCK) {
-        int flint_made = rnd(10) - 9;
-        struct obj * flint = NULL;
-
-        if (Role_if(PM_CAVE_DWELLER)) {
-            /* experts on banging rocks together */
-            flint_made += 3;
-        }
-        else if (tstone->otyp == TOUCHSTONE) {
-            /* a rock can be broken on any other rock, but breaking it on a
-             * touchstone will yield the most */
-            flint_made += 2;
-        }
-        if (tstone->otyp == ROCK) {
-            You("bang two rocks together.");
-        } else {
-            You("bang %s%s on %s.", ((obj->quan > 1L) ? "one of " : ""),
-              the(xname(obj)), the(xname(tstone)));
-        }
-        pline_The("rock crumbles.");
-
-        if (flint_made <= 0) {
-            useup(obj);
-            return ECMD_TIME;
-        }
-        flint = mksobj(FLINT, TRUE, FALSE);
-        flint->quan = flint_made;
-        flint->owt = weight(flint);
-        makeknown(FLINT);
-        flint = hold_another_object(flint, "Oops!  %s out of your grasp!",
-                                    The(aobjnam(flint, "slip")),
-                                    (const char*) 0);
-        useup(obj);
+        rockinfo.rubber = tstone;
+        rockinfo.rubbee = obj;
+        You("start breaking rocks.");
+        set_occupation(breakrocks, "breaking rocks", 0);
         return ECMD_TIME;
     }
 
@@ -5099,41 +5077,75 @@ use_deck(struct obj *obj)
 }
 
 /* Occupation setup for breaking rocks */
-static struct rockinfo {
-    struct obj *tobj;
-} rockinfo;
 
-void
-reset_rocks()
+staticfn void
+reset_rocks(void)
 {
-    rockinfo.tobj = 0;
+    rockinfo.rubber = 0;
+    rockinfo.rubbee = 0;
 }
 
 /* occupation callback for breaking rocks */
 staticfn int
 breakrocks(void)
 {
-    struct obj *otmp = rockinfo.tobj;
+    struct obj *rubber = rockinfo.rubber;
+    struct obj *rubbee = rockinfo.rubbee;
+
     /* “The two most powerful warriors are patience and time.”
      * --Leo Tolstoy */
-     if (!otmp) {
+     if (!rubber && !rubbee) {
         reset_rocks();
         return 0;
-    } else if (!carried(otmp)) {
-        You("seem to have mislaid %s.", yname(otmp));
+    } else if (!carried(rubber) && !carried(rubbee)) {
+        You("seem to have mislaid %s.", !carried(rubber)
+            ? yname(rubber) : yname(rubbee));
         reset_rocks();
         return 0;
-    } else if (otmp->qty == 1)) {
+    } else if (rubbee->quan == 1) {
         You("are out of rocks.");
         reset_rocks();
         return 0;
     } else if (Hallucination) {
         pline("%s %s must be faulty!",
-            is_plural(ows) ? "These" : "This", xname(ows));
+            is_plural(rubber) ? "These" : "This", xname(rubber));
         reset_rocks();
         return 0;
     }
 
+    int flint_made = rnd(10) - 9;
+    struct obj *flint = NULL;
+
+    if (Role_if(PM_CAVE_DWELLER)) {
+        /* experts on banging rocks together */
+        flint_made += 3;
+    } else if (rubber->otyp == TOUCHSTONE) {
+        /* a rock can be broken on any other rock, but breaking it on a
+         * touchstone will yield the most */
+        flint_made += 2;
+    }
+
+    if (rubber->otyp == ROCK) {
+        You("bang two rocks together.");
+    } else {
+        You("bang %s%s on %s.", ((rubbee->quan > 1L) ? "one of " : ""),
+            the(xname(rubbee)), the(xname(rubber)));
+    }
+    pline_The("rock crumbles.");
+
+    if (flint_made <= 0) {
+        useup(rubbee);
+        return ECMD_TIME;
+    }
+    flint = mksobj(FLINT, TRUE, FALSE);
+    flint->quan = flint_made;
+    flint->owt = weight(flint);
+    makeknown(FLINT);
+    flint = hold_another_object(flint, "Oops!  %s out of your grasp!",
+                                The(aobjnam(flint, "slip")),
+                                (const char*) 0);
+    useup(rubbee);
+    return 1;
 }
 
 /*apply.c*/
