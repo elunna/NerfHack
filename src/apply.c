@@ -2792,9 +2792,11 @@ flint_ok(struct obj *obj)
 staticfn int
 apply_flint(struct obj *flint)
 {
-    struct obj *obj;
+    /* stack1 is for the retipped arrows and stack 2 is for
+     * the leftovers that didn't receive flint tips */
+    struct obj *stack1, *stack2 = NULL;
     char szwork[QBUFSZ];
-    int num_flints, arrows, i;
+    int num_flints, num_arrows, i;
 
     num_flints = flint->quan;
 
@@ -2806,43 +2808,47 @@ apply_flint(struct obj *flint)
     }
     
     Sprintf(szwork, "affix the stone%s to", plur(num_flints));
-    obj = getobj("affix the flint to", flint_ok, GETOBJ_PROMPT);
-    if (!obj)
+    stack1 = getobj("affix the flint to", flint_ok, GETOBJ_PROMPT);
+    if (!stack1)
         return ECMD_CANCEL;
 
     if (!u_handsy())
         return ECMD_TIME;
     
     /* can't make MIRV arrows; if they're +1, leave it be */
-    if (obj->spe > 0) {
+    if (stack1->spe > 0) {
         You("don't think you can make these any better than they are.");
         return ECMD_OK;
     }
 
-    arrows = obj->quan;
-
-    /* TODO: Rewrite so that we don't just reject the process if we don't have
-     * enough flint. Instead, split the arrows into two stacks, one stack for
-     * the arrows we'll enchant and another for the leftover arrows. We'll 
-     * have to use hold_another_object to see if we can hold the leftovers.
+    num_arrows = stack1->quan;
+    /* Don't just reject the process if we don't have enough flint. Instead, 
+     * split the arrows into two stacks, one stack for the arrows we'll 
+     * enchant and another for the leftover arrows. We'll have to use 
+     * hold_another_object to see if we can hold the leftovers.
      * This eliminates an annoying step where the player has to match up 
      * their arrows with the available flint.
      */
-    
-    /* One flint stone for each arrow. */
-    if (num_flints >= arrows) {
-        (obj->spe)++;
-        obj->known = 1; /* Unambiguous +1 here */
-        You("lash flint tips to the %s.", xname(obj));
-        
-        if (arrows == num_flints)
-            useupall(flint);
-        else
-            for (i = 0; i < arrows; i++)
-                useup(flint);
-    } else {
-        You("don't have enough flint to re-tip all of these %s.", xname(obj));
+    if (num_flints < num_arrows) {
+        stack2 = splitobj(stack1, (long) (num_arrows - num_flints));
+        obj_extract_self(stack2); /* free from inv */
     }
+
+    (stack1->spe)++;
+    stack1->known = 1; /* Unambiguous +1 here */
+
+    You("lash flint tips to the %s.", xname(stack1));
+    /* One flint stone for each arrow. */
+    if (num_arrows >= num_flints)
+        useupall(flint);
+    else
+        for (i = 0; i < num_arrows; i++)
+            useup(flint);
+    
+    if (stack2)
+        hold_another_object(stack2, "You drop %s!", doname(stack2), (const char *) 0);
+    // You("don't have enough flint to re-tip all of these %s.", xname(stack1));
+    
     return ECMD_TIME;
 }
 /* getobj callback for object to rub on a known touchstone */
