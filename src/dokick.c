@@ -46,9 +46,9 @@ kickdmg(struct monst *mon, boolean clumsy)
     if (thick_skinned(mon->data))
         dmg = 0;
 
-    if (uarmf && uarmf->otyp == KICKING_BOOTS)
+    if (uarmf && uarmf->otyp == KICKING_BOOTS) {
         dmg += 5;
-
+    }
     /* attacking a shade is normally useless */
     if (mon->data == &mons[PM_SHADE])
         dmg = 0;
@@ -1346,9 +1346,13 @@ dokick(void)
     gk.kickedloc.x = x, gk.kickedloc.y = y;
 
     /* KMH -- Kicking boots always succeed */
-    if (uarmf && uarmf->otyp == KICKING_BOOTS)
+    if (uarmf && uarmf->otyp == KICKING_BOOTS) {
         avrg_attrib = 99;
-    else
+        if (!objects[KICKING_BOOTS].oc_name_known) {
+            Your("boots seem to have some extra kick to them!");
+            makeknown(KICKING_BOOTS);
+        }
+    } else
         avrg_attrib = (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3;
 
     if (u.uswallow) {
