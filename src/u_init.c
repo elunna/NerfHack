@@ -325,7 +325,7 @@ static const struct def_skill Skill_Car[] = {
     { P_SLING, P_BASIC},
     { P_DART, P_BASIC},	    
     { P_SHURIKEN, P_EXPERT },
-    { P_UNICORN_HORN, P_BASIC },
+    { P_UNICORN_HORN, P_SKILLED },
     { P_ATTACK_SPELL, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
     { P_DIVINATION_SPELL, P_EXPERT },
