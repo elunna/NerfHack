@@ -266,7 +266,8 @@ attack_checks(
 
     if (mtmp->mundetected && !canseemon(mtmp)
         && !glyph_is_warning(glyph)
-        && (hides_under(mtmp->data) || mtmp->data->mlet == S_EEL)) {
+        && (hides_under(mtmp->data) || mtmp->data->mlet == S_EEL
+            || mtmp->data == &mons[PM_GREEN_SLIME])) {
         mtmp->mundetected = mtmp->msleeping = 0;
         newsym(mtmp->mx, mtmp->my);
         if (glyph_is_invisible(glyph)) {
