@@ -145,6 +145,7 @@ static struct Jitem Cartomancer_items[] = {
     { LUCKSTONE, "lucky dice" },
     { LOADSTONE, "heavy dice" },
     { TOUCHSTONE, "siliceous dice" },
+    { SLING_BULLET, "hard dice"},
     { FLINT, "flint dice" },
     { 0, "" } 
 };
@@ -300,9 +301,11 @@ obj_typename(int otyp)
             Strcpy(buf, dn ? dn : actualn);
             if (ocl->oc_class == GEM_CLASS) {
 		if (Role_if(PM_CARTOMANCER))
-		    Strcat(buf, (ocl->oc_material == MINERAL) ? " dice" : " token");
+		    Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
+                ? " dice" : " token");
 		else	
-		    Strcat(buf, (ocl->oc_material == MINERAL) ? " stone" : " gem");
+		    Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
+                ? " stone" : " gem");
 
 	    }
             if (un)
@@ -994,7 +997,7 @@ xname_flags(
             Sprintf(buf, "%s ring", dn);
         break;
     case GEM_CLASS: {
-        const char *rock = (ocl->oc_material == MINERAL)
+        const char *rock = (ocl->oc_material == MINERAL || typ == SLING_BULLET)
 	    ? (Role_if(PM_CARTOMANCER) ? "dice" : "stone")
 	    : (Role_if(PM_CARTOMANCER) ? "token" : "gem");
 

@@ -395,7 +395,7 @@ autoquiver(void)
             ; /* Skip it */
         } else if (otmp->otyp == ROCK
                    /* seen rocks or known flint or known glass */
-                   || (otmp->otyp == FLINT
+                   || ((otmp->otyp == FLINT || otmp->otyp == SLING_BULLET)
                        && objects[otmp->otyp].oc_name_known)
                    || (otmp->oclass == GEM_CLASS
                        && objects[otmp->otyp].oc_material == GLASS
@@ -2002,7 +2002,7 @@ should_mulch_missile(struct obj *obj)
 
     /* Flint and hard gems don't break easily */
     if (((obj->oclass == GEM_CLASS && objects[obj->otyp].oc_tough)
-         || obj->otyp == FLINT)
+         || obj->otyp == FLINT || obj->otyp == SLING_BULLET)
         && !rn2(2))
         broken = FALSE;
 

@@ -233,6 +233,7 @@ dmgval(struct obj *otmp, struct monst *mon)
         case RUNESWORD:
         case ELVEN_BROADSWORD:
         case BROADSWORD:
+        case SLING_BULLET:
             tmp++;
             break;
 
@@ -276,6 +277,7 @@ dmgval(struct obj *otmp, struct monst *mon)
         case FLAIL:
         case SPETUM:
         case TRIDENT:
+        case SLING_BULLET:
             tmp++;
             break;
 
@@ -518,7 +520,7 @@ static NEARDATA const int rwep[] = {
     DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
     SHURIKEN, YA, SILVER_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
     CROSSBOW_BOLT, SILVER_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, KNIFE,
-    FLINT, ROCK, LOADSTONE, LUCKSTONE, DART,
+    SLING_BULLET, FLINT, ROCK, LOADSTONE, LUCKSTONE, DART,
     /* BOOMERANG, */ CREAM_PIE
 };
 

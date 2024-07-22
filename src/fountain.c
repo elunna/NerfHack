@@ -276,6 +276,16 @@ dipforge(struct obj *obj)
         return;
     }
 
+    /* Forging sling bullets: */
+    if (obj->otyp == FLINT) {
+        You("place your flint stones in the forge.");
+        /* Maybe only 50% survive? */
+        obj->quan = (obj->quan / 2) + 1;
+        obj->otyp = SLING_BULLET;
+        obj->owt = weight(obj);
+        return;
+    }
+
 result:
     switch (rnd(30)) {
     case 6:
