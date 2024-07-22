@@ -395,7 +395,7 @@ hells = {
          end
       end
    end,
---]]
+
 
    -- 6: cold maze, with ice and water
    function ()
@@ -419,6 +419,7 @@ hells = {
       end
       des.terrain(outside_walls, " ");  -- return the outside back to solid wall
    end,
+   --]]
 
 };
 
