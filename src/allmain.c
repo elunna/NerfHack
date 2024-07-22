@@ -225,8 +225,8 @@ moveloop_core(void)
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
                 
-                /* Once you have the amulet, all hell breaks loose */
-                if (carrying(AMULET_OF_YENDOR) && !rn2(10) && !In_endgame(&u.uz)) {
+                /* Once you have performed the invocation, all hell breaks loose */
+                if (u.uevent.invoked && !rn2(15) && !In_endgame(&u.uz)) {
                     nasty((struct monst *) 0, TRUE);
                 }
                 
