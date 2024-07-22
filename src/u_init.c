@@ -681,6 +681,7 @@ u_init_role(void)
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
         ini_inv(Cave_man);
         skill_init(Skill_C);
+        knows_object(SLING_BULLET);
         break;
     case PM_HEALER:
         u.umoney0 = rn1(1000, 1001);
