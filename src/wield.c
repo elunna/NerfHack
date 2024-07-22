@@ -1052,8 +1052,8 @@ chwepon(struct obj *otmp, int amount)
         return 1;
     }
     /* there is a (soft) upper and lower limit to uwep->spe */
-    if (((uwep->spe > 5 && amount >= 0) || (uwep->spe < -5 && amount < 0))
-        && rn2(3)) {
+    if (((uwep->spe > WEP_ENCHANT_MAX && amount >= 0)
+          || (uwep->spe < -WEP_ENCHANT_MAX && amount < 0)) && rn2(3)) {
         if (!Blind)
             pline("%s %s for a while and then %s.",
                   Yobjnam2(uwep, "violently glow"), color,
@@ -1096,7 +1096,7 @@ chwepon(struct obj *otmp, int amount)
 
     /* an elven magic clue, cookie@keebler */
     /* weapons vibrate warningly when enchanted beyond a limit */
-    if (uwep->spe > 5)
+    if (uwep->spe > WEP_ENCHANT_MAX)
         pline("%s unexpectedly.", Yobjnam2(uwep, "suddenly vibrate"));
 
     return 1;

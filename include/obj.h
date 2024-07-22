@@ -45,7 +45,8 @@ struct obj {
     short otyp; /* object class number */
     unsigned owt;
     long quan; /* number of items */
-
+    
+#define WEP_ENCHANT_MAX 11
 #define SPE_LIM 99 /* abs(obj->spe) <= 99, cap for enchanted and charged
                     * objects (and others; named fruit index excepted) */
     schar spe; /* quality of weapon, weptool, armor, or some rings (+ or -);
