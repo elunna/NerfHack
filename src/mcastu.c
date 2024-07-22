@@ -1445,8 +1445,12 @@ counterspell(struct monst *mtmp, struct obj *otmp) {
           !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
 
     if (canseemon(mtmp)) {
-        pline("%s %s!", Monnam(mtmp),
-              rn2(2) ? "sputters" : rn2(2) ? "swears" : "curses");
+        if (mtmp->data == &mons[PM_THING_FROM_BELOW])
+            pline("%s %s!", Monnam(mtmp),
+              rn2(2) ? "sputters" : rn2(2) ? "spits" : "hisses");
+        else
+            pline("%s %s!", Monnam(mtmp),
+              rn2(2) ? "sputters" : rn2(2) ? "chokes" : "stutters");
     } else {
         You_hear("some cursing!");
     }
