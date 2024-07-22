@@ -5942,12 +5942,14 @@ m_is_steadfast(struct monst *mtmp)
     struct obj *otmp = is_u ? uwep : MON_WEP(mtmp);
     struct obj *shield = is_u ? uarms : which_armor(mtmp, W_ARMS);
 
+#if 0 /* These restrictions are - in my opinion - not fun. */
     /* must be on the ground (or in water) */
     if ((is_u ? (Flying || Levitation)
               : (is_flyer(mtmp->data) || is_floater(mtmp->data)))
         || Is_airlevel(&u.uz) /* air or cloud */
         || (Is_waterlevel(&u.uz) && !is_pool(u.ux, u.uy))) /* air bubble */
         return FALSE;
+#endif
 
     if (is_art(otmp, ART_GIANTSLAYER) || is_art(otmp, ART_LOAD_BRAND) 
         || (shield && shield->oartifact == ART_PRIDWEN))
