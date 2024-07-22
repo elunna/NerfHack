@@ -419,6 +419,10 @@ find_roll_to_hit(
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;
     
+    /* level adjustment. maxing out has some benefits */
+    if (u.ulevel > 20)
+        tmp += (u.ulevel - 20) / 2;
+
     /* Some races really don't like wearing other racial armor, if they
      * do they get a severe to-hit penalty */
     tmp -= count_hated_items() * 5;
