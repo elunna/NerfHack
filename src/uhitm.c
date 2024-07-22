@@ -5951,7 +5951,9 @@ m_is_steadfast(struct monst *mtmp)
         return FALSE;
 #endif
 
-    if (is_art(otmp, ART_GIANTSLAYER) || is_art(otmp, ART_LOAD_BRAND) 
+    if (is_art(otmp, ART_GIANTSLAYER)
+        || is_art(otmp, ART_LOAD_BRAND) 
+        || is_art(otmp, ART_SCEPTRE_OF_MIGHT) 
         || (shield && shield->oartifact == ART_PRIDWEN))
         return TRUE;
 
