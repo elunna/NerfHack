@@ -903,8 +903,9 @@ should_skewer(int range)
     }
     
     for (i = 0; i < range; i++) {
-        int x = u.ux + u.dx * (i+1);
-        int y = u.uy + u.dy * (i+1);
+        /* The +2 gets us one spot beyond the first monster. */
+        int x = u.ux + u.dx * (i + 2);
+        int y = u.uy + u.dy * (i + 2);
         struct monst *mtmp;
         if (!isok(x, y))
             return FALSE;
