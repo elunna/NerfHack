@@ -4186,8 +4186,17 @@ do_break_wand(struct obj *obj)
     case WAN_LOCKING:
     case WAN_PROBING:
     case WAN_ENLIGHTENMENT:
-    case WAN_SECRET_DOOR_DETECTION:
         pline(nothing_else_happens);
+        discard_broken_wand();
+        return ECMD_TIME;
+    case WAN_SECRET_DOOR_DETECTION:
+        /* Detects portals: We'll use the same odds UnNetHack has for 
+         * creating traps for breaking the other wands. */
+        if ((obj->spe > 2) && rn2(obj->spe - 2)) {
+            trap_detect((struct obj *) 0);
+            makeknown(obj->otyp);
+        } else
+            pline(nothing_else_happens);
         discard_broken_wand();
         return ECMD_TIME;
     case WAN_DEATH:
