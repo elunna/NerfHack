@@ -1748,6 +1748,13 @@ weapon_dam_bonus(struct obj *weapon)
         }
     }
 
+    /* add a little damage bonus for higher-level characters so the stronger monsters aren't too overpowered --Amy */
+	if (u.ulevel >= 10)
+        bonus += 1;
+    /* Post level 20 grants very juicy rewards: */
+    if (u.ulevel >= 20)
+        bonus += u.ulevel - 20;
+
     return bonus;
 }
 
