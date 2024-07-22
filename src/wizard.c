@@ -804,7 +804,7 @@ intervene(void)
         break;
     }
     case 5:
-        if (u.uevent.invoked) {
+        if (u.uevent.invoked && !In_endgame(&u.uz)) {
             pline_The("entire dungeon starts shaking around you!");
             do_earthquake((MAXULEV - 1) / 3 + 1);
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
