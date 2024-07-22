@@ -1069,6 +1069,7 @@ mksobj_init(struct obj *otmp, boolean artif)
             blessorcurse(otmp, 4);
             break;
         case BELL_OF_OPENING:
+            otmp->oerodeproof = 1;
             otmp->spe = 3;
             break;
         case MAGIC_FLUTE:
