@@ -248,6 +248,7 @@ explode(
             break;
         case PM_HEALER:
         case PM_KNIGHT:
+        case PM_CARTOMANCER:
             damu /= 2;
             break;
         default:
