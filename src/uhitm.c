@@ -6891,6 +6891,7 @@ passive(
                 monstunseesu(M_SEEN_FIRE);
                 You("are suddenly very hot!");
                 mdamageu(mon, tmp); /* fire damage */
+                burn_away_slime();
             }
             break;
         case AD_ELEC:
