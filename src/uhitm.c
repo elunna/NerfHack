@@ -4513,11 +4513,16 @@ mhitm_ad_tckl(struct monst *magr,
     struct attack *mattk,
     struct monst *mdef,
     struct mhitm_data *mhm)
-{
+{   
+    int armpro = magic_negation(mdef);
+    boolean no_effect = (magr != &gy.youmonst && magr->mcan) 
+                         || !(rn2(10) >= 3 * armpro);
+
     if (magr == &gy.youmonst) {
         /* uhitm */
         /* since hero can't be cancelled, only defender's armor applies */
-        if (mdef->mcanmove && !rn2(3) && mhm->damage < mdef->mhp) {
+        if (!no_effect && mdef->mcanmove && !rn2(3) 
+                && mhm->damage < mdef->mhp) {
             if (!Blind) 
                 You("mercilessly tickle %s!", mon_nam(mdef));
             mdef->mcanmove = 0;
@@ -4526,7 +4531,8 @@ mhitm_ad_tckl(struct monst *magr,
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (gm.multi >= 0 && !rn2(3)) {
+        if (!no_effect && gm.multi >= 0 && !rn2(3)) {
+            /* Free action doesn't offer much protection - MC offers more... */
             if (Free_action && !rn2(10))
                 You_feel("horrible tentacles probing your flesh!");
             else {
@@ -4542,7 +4548,7 @@ mhitm_ad_tckl(struct monst *magr,
         }
     } else {
         /* mhitm */
-        if (mdef->mcanmove) {
+        if (!no_effect && mdef->mcanmove) {
             if (gv.vis)
                 pline("%s mercilessly tickles %s.", Monnam(magr), mon_nam(mdef));
             mdef->mcanmove = 0;
