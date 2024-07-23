@@ -1160,8 +1160,11 @@ add_obj_info(winid datawin, short otyp)
     OBJPUTSTR("");
 
     /* Object classes currently with no special messages here: amulets. */
+
+    /* WEAPON INFO */
+
     boolean weptool = (olet == TOOL_CLASS && oc.oc_skill != P_NONE);
-    if (olet == WEAPON_CLASS || weptool) {
+    if (olet == WEAPON_CLASS || weptool || olet == GEM_CLASS) {
         const int skill = oc.oc_skill;
         if (skill >= 0) {
             Sprintf(buf, "%s-handed weapon%s using the %s skill.",
@@ -1174,8 +1177,10 @@ add_obj_info(winid datawin, short otyp)
              * itself. Currently this is only bow and crossbow. */
             Sprintf(buf, "Ammunition meant to be fired from a %s.",
                     skill_name(-skill));
-        }
-        else {
+        } else if (skill == -P_SLING) {
+            Sprintf(buf, "Ammunition meant to be fired from %s.",
+                    skill_name(-skill));
+        } else {
             Sprintf(buf, "Thrown missile using the %s skill.",
                     skill_name(-skill));
         }
