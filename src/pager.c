@@ -1208,49 +1208,65 @@ add_obj_info(winid datawin, short otyp)
         case CROSSBOW_BOLT:
         case MACE:
         case FLAIL:
+        case SPETUM:
         case TRIDENT:
+        case SLING_BULLET:
             sdambon = "+1";
             break;
         case BATTLE_AXE:
+        case BARDICHE:
+        case BILL_GUISARME:
+        case GUISARME:
+        case LUCERN_HAMMER:
         case MORNING_STAR:
+        case RANSEUR:
         case BROADSWORD:
         case ELVEN_BROADSWORD:
         case RUNESWORD:
-        case BEC_DE_CORBIN:
         case SCYTHE:
+        case VOULGE:
             sdambon = "+1d4";
             break;
         case WAR_HAMMER:
+        case ACID_VENOM:
             sdambon = "+1d6";
             break;
         }
         /* and again, because /large/ damage is entirely separate. Bleah. */
         switch (otyp) {
+        case IRON_CHAIN:
         case CROSSBOW_BOLT:
         case MORNING_STAR:
         case PARTISAN:
         case RUNESWORD:
         case ELVEN_BROADSWORD:
         case BROADSWORD:
+        case SLING_BULLET:
             ldambon = "+1";
             break;
         case FLAIL:
+        case RANSEUR:
         case SCYTHE:
+        case VOULGE:
             ldambon = "+1d4";
             break;
+        case ACID_VENOM:
         case HALBERD:
+        case SPETUM:
             ldambon = "+1d6";
             break;
         case WAR_HAMMER:
             ldambon = "+1d8";
             break;
         case BATTLE_AXE:
+        case BARDICHE:
         case TRIDENT:
             ldambon = "+2d4";
             break;
         case TSURUGI:
         case DWARVISH_MATTOCK:
         case TWO_HANDED_SWORD:
+        case HEAVY_SWORD:
             ldambon = "+2d6";
             break;
         }
@@ -1262,6 +1278,9 @@ add_obj_info(winid datawin, short otyp)
                 oc.oc_hitbon, (oc.oc_hitbon >= 0 ? "bonus" : "penalty"));
         OBJPUTSTR(buf);
     }
+
+    /* ARMOR INFO */
+
     if (olet == ARMOR_CLASS) {
         /* Indexes here correspond to ARM_SHIELD, etc; not the W_* masks.
          * Expects ARM_SUIT = 0, all the way up to ARM_SHIRT = 6. */
@@ -1279,6 +1298,9 @@ add_obj_info(winid datawin, short otyp)
         Sprintf(buf, "Takes %d turn%s to put on or remove.",
                 oc.oc_delay, (oc.oc_delay == 1 ? "" : "s"));
     }
+
+    /* COMESTIBLE INFO */
+
     if (olet == FOOD_CLASS) {
         if (otyp == TIN || otyp == CORPSE) {
             OBJPUTSTR("Comestible providing varied nutrition.");
@@ -1313,14 +1335,23 @@ add_obj_info(winid datawin, short otyp)
             }
         }
     }
+
+    /* POTION INFO */
+
     if (olet == POTION_CLASS) {
         /* nothing special */
         OBJPUTSTR("Potion.");
     }
+
+    /* SCROLL INFO */
+
     if (olet == SCROLL_CLASS) {
         /* nothing special (ink is covered below) */
         OBJPUTSTR("Scroll.");
     }
+
+    /* SPELLBOOK INFO */
+
     if (olet == SPBOOK_CLASS) {
         if (otyp == SPE_BLANK_PAPER) {
             OBJPUTSTR("Spellbook.");
@@ -1336,10 +1367,16 @@ add_obj_info(winid datawin, short otyp)
             OBJPUTSTR(buf);
         }
     }
+
+    /* WAND INFO */
+
     if (olet == WAND_CLASS) {
         Sprintf(buf, "%s wand.", dir);
         OBJPUTSTR(buf);
     }
+
+    /* RING INFO */
+
     if (olet == RING_CLASS) {
         OBJPUTSTR(oc.oc_charged ? "Chargeable ring." : "Ring.");
         /* see material comment below; only show toughness status if this
@@ -1348,6 +1385,9 @@ add_obj_info(winid datawin, short otyp)
             OBJPUTSTR("Is made of a hard material.");
         }
     }
+
+    /* GEM INFO */
+
     if (olet == GEM_CLASS) {
         if (oc.oc_material == MINERAL) {
             OBJPUTSTR("Type of stone.");
@@ -1363,6 +1403,9 @@ add_obj_info(winid datawin, short otyp)
             OBJPUTSTR("Is made of a hard material.");
         }
     }
+
+    /* TOOL INFO */
+
     if (olet == TOOL_CLASS && !weptool) {
         const char* subclass = "tool";
         switch (otyp) {
@@ -1415,10 +1458,12 @@ add_obj_info(winid datawin, short otyp)
     }
 
     /* cost, wt should go next */
+    
     Sprintf(buf, "Base cost %d, weighs %d aum.", oc.oc_cost, oc.oc_weight);
     OBJPUTSTR(buf);
 
     /* Scrolls or spellbooks: ink cost */
+
     if (olet == SCROLL_CLASS || olet == SPBOOK_CLASS) {
         if (otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER) {
             OBJPUTSTR("Can be written on.");
@@ -1434,6 +1479,7 @@ add_obj_info(winid datawin, short otyp)
     }
 
     /* power conferred */
+
     extern const struct propname {
         int prop_num;
         const char* prop_name;
