@@ -2151,6 +2151,10 @@ seffect_identify(struct obj **sobjp)
         if (Role_if(PM_ARCHEOLOGIST) && !scursed && cval > 0)
             ++cval;
         
+        /* Cavemen are not so great at knowledge... */
+        if (Role_if(PM_CAVE_DWELLER) && cval == 0)
+            cval = 1;
+
         identify_pack(cval, !already_known);
     } else {
         /* spell cast with inventory empty or scroll read when it's
