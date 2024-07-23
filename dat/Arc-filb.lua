@@ -9,6 +9,9 @@ des.room({ type = "ordinary",
               des.stair("up")
               des.object()
               des.monster("M")
+              if percent(50) then
+               des.object("giant anaconda")
+              end
            end
 })
 

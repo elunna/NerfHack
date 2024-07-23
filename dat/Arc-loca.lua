@@ -132,8 +132,19 @@ des.monster("S")
 des.monster("S")
 des.monster("S")
 des.monster("S")
-des.monster("S")
-des.monster("S")
+
+if percent(50) then
+    des.object("giant anaconda")
+ else
+    des.monster("S")
+ end
+
+if percent(50) then
+    des.object("giant anaconda")
+ else
+    des.monster("S")
+ end
+
 des.monster("M")
 des.monster("human mummy")
 des.monster("human mummy")
