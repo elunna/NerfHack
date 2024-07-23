@@ -1129,7 +1129,6 @@ mdamagem(
     if (!mhm.damage)
         return mhm.hitflags;
 
-    showdamage(mhm.damage, FALSE);
     mdef->mhp -= mhm.damage;
     if (mdef->mhp < 1) {
         if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
@@ -1221,7 +1220,6 @@ mon_poly(struct monst *magr, struct monst *mdef, int dmg)
                 pline("%s shudders!", Before);
 
             dmg += (mdef->mhpmax + 1) / 2;
-            showdamage(dmg, mdef == &gy.youmonst);
             mdef->mhp -= dmg;
             dmg = 0;
             if (DEADMONSTER(mdef)) {
@@ -1527,7 +1525,6 @@ passivemm(
         tmp = 0;
 
  assess_dmg:
-    showdamage(tmp, FALSE);
     if ((magr->mhp -= tmp) <= 0) {
         monkilled(magr, "", (int) mddat->mattk[i].adtyp);
         return (mdead | mhit | M_ATTK_AGR_DIED);
