@@ -1156,7 +1156,7 @@ newmonhp(struct monst *mon, int mndx)
         basehp = (int) mon->m_lev; /* minimum possible is one per level */
         mon->mhpmax = mon->mhp = d(basehp, 8);
         if (is_home_elemental(ptr))
-            mon->mhpmax = (mon->mhp *= 2); /* leave 'basehp' as-is */
+            mon->mhpmax = (mon->mhp *= 3); /* leave 'basehp' as-is */
     }
 
     /* if d(X,8) rolled a 1 all X times, give a boost;
