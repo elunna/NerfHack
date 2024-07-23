@@ -839,7 +839,7 @@ mattacku(struct monst *mtmp)
         tmp += 5;
         
     if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
-        tmp += 2;
+        tmp += 1;
     
     if (tmp <= 0)
         tmp = 1;
@@ -1393,8 +1393,8 @@ hitmu(struct monst *mtmp, struct attack *mattk)
          * */
         if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE) {
             if (gm.multi >= 0 && !rn2(5)) {
-                /* Free action is only half as effective - this is psychological */
-                if (Free_action && rn2(2)) {
+                /* Free action is not always effective - this is psychological */
+                if (Free_action && rn2(4)) {
                     You("momentarily stiffen.");
                 } else {
                     if (Blind)
@@ -1402,7 +1402,7 @@ hitmu(struct monst *mtmp, struct attack *mattk)
                     else
                         You("are terrified, and unable to move.");
                     gn.nomovemsg = You_can_move_again;
-                    nomul(-rnd(4));
+                    nomul(-rnd(3));
                     dynamic_multi_reason(mtmp, "terrified of a snake", FALSE);
                 }
             }
