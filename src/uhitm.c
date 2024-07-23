@@ -2204,7 +2204,7 @@ hmon_hitmon(
     /* Adapted "blood rage" skill from SpliceHack: When a barbarians health is 
      * below 50%, they get a damage boost for melee attacks. Instead of the skill level
      * in SpliceHack, we'll use the player's level divided by 5. This only kicks in after
-     * level 5 so it's not abuseable early game.
+     * level 3 so it's not abuseable early game.
      * 
      * The bonus is doubled if the player is below 1/4'th of their health.
      * */
@@ -2213,7 +2213,7 @@ hmon_hitmon(
         int bonus = (u.ulevel / 5 + 1) * (u.uhp < (u.uhpmax / 4) ? 2 : 1);
         hmd.dmg += bonus;
         if (wizard)
-            pline("Your rage strengthens your attack! [%d]", bonus);
+            pline("rage attack! [%d]", bonus);
         else if (!rn2(3)) {
             switch (rnd(5)) {
                 case 1: Your("rage strengthens your attack!"); break;
@@ -2223,7 +2223,7 @@ hmon_hitmon(
                 case 5: Your("assault is fueled with anger!"); break;
             }
         }
-            
+        wake_nearby(FALSE);
     }
     
     if (!hmd.already_killed) {
