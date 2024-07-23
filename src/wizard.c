@@ -844,7 +844,7 @@ wizdeadorgone(void)
     gc.context.no_of_wizards--;
     if (!u.uevent.udemigod) {
         u.uevent.udemigod = TRUE;
-        u.udg_cnt = rn1(250, 50);
+        u.udg_cnt = rn1(200, 40);
     }
 }
 
