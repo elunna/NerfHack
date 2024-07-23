@@ -196,7 +196,10 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
             verb = "butts";
             break;
         case AT_TUCH:
-            verb = "touches you";
+            if (mtmp->data == &mons[PM_GIANT_CENTIPEDE])
+                verb = " coils its body around you";
+            else
+                verb = "touches you";
             break;
         case AT_TENT:
             

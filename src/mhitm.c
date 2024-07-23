@@ -720,7 +720,10 @@ hitmm(
                 Snprintf(buf, sizeof buf, "%s butts", magr_name);
                 break;
             case AT_TUCH:
-                Snprintf(buf, sizeof buf, "%s touches", magr_name);
+                if (magr->data == &mons[PM_GIANT_CENTIPEDE])
+                    Snprintf(buf, sizeof buf, "%s coils its body around", magr_name);
+                else
+                    Snprintf(buf, sizeof buf, "%s touches", magr_name);
                 break;
             case AT_TENT:
                 Snprintf(buf, sizeof buf, "%s tentacles suck",

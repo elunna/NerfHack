@@ -1260,6 +1260,19 @@
             | M1_CONCEAL,
         M2_HOSTILE | M2_STRONG | M3_JUMPER, 0,
         NO_RACE, 8, CLR_BLUE, JUMPING_SPIDER),
+    /* Ported from EvilHack:
+     * in honor of our friend Grasshopper
+     * who always seems to be attacked by centipedes */
+    MON(NAM("giant centipede"), S_SPIDER, 
+        LVL(16, 24, -6, 0, 0), (G_GENO | 1),
+        A(ATTK(AT_BITE, AD_DRST, 6, 8), 
+          ATTK(AT_TUCH, AD_WRAP, 1, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(600, 300, MS_SILENT, MZ_LARGE), MR_POISON, MR_POISON,
+        M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE
+            | M1_THICK_HIDE,
+        M2_HOSTILE | M2_STRONG | M2_NASTY, M3_ACCURATE | M3_JUMPER,
+        NO_RACE, 20, CLR_ORANGE, GIANT_CENTIPEDE),
     /*
      * trappers, lurkers, &c
      * Note:  prior to 3.7, these were defined to do AD_DGST damage,
