@@ -1251,7 +1251,7 @@
         NO_RACE, 8, CLR_RED, SCORPION),
     /* From SpliceHack */
     MON(NAM("jumping spider"), S_SPIDER,
-        LVL(6, 15, 4, 0, 0), (G_GENO | 1),
+        LVL(6, 15, 4, 0, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_DRST, 2, 4), 
           ATTK(AT_TUCH, AD_WEBS, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
