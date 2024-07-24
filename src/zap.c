@@ -2624,13 +2624,9 @@ zapnodir(struct obj *obj)
 staticfn void
 backfire(struct obj *otmp)
 {
-    int dmg;
-
     otmp->in_use = TRUE; /* in case losehp() is fatal */
     pline("%s suddenly explodes!", The(xname(otmp)));
-    dmg = d(otmp->spe + 2, 6);
-    losehp(Maybe_Half_Phys(dmg), "exploding wand", KILLED_BY_AN);
-    useupall(otmp);
+    wand_explode(otmp, FALSE);
 }
 
 /* getobj callback for object to zap */

@@ -787,6 +787,7 @@ recharge(struct obj *obj, int curse_bless)
         n = (int) obj->recharged;
         if (n > 0 && (obj->otyp == WAN_WISHING
                       || (n * n * n > rn2(7 * 7 * 7)))) { /* recharge_limit */
+            pline_The("%s suddenly detonates!", xname(obj));
             wand_explode(obj, rnd(lim));
             return;
         }
@@ -806,6 +807,7 @@ recharge(struct obj *obj, int curse_bless)
             else
                 obj->spe++;
             if (obj->otyp == WAN_WISHING && obj->spe > 3) {
+                pline_The("%s suddenly detonates!", xname(obj));
                 wand_explode(obj, 1);
                 return;
             }
@@ -2493,51 +2495,112 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
     return TRUE;
 }
 
-/* overcharging any wand or zapping/engraving cursed wand */
+/* user-specified 'applying' as well as wands exploding by accident
+ * during use (called by backfire() in zap.c)
+ *
+ * If the effect is directly recognisable as pertaining to a 
+ * specific wand, the wand should be makeknown()
+ * Otherwise, if there is an ambiguous or indirect but visible effect
+ * the wand should be allowed to be named by the user.
+ *
+ * If there is no obvious effect,  do nothing. (Should this be changed
+ * to letting the user call that type of wand?)
+ *
+ * hero_broke is nonzero if the user initiated the action that caused
+ * the wand to explode (zapping or applying).
+ */
 void
 wand_explode(struct obj* obj, int chg /* recharging */)
 {
-    const char *expl = !chg ? "suddenly" : "vibrates violently and";
-    int dmg, n, k;
+    int dmg, charges, dmg_multiplier, expltype = EXPL_MAGICAL;
 
     /* number of damage dice */
     if (!chg)
         chg = 2; /* zap/engrave adjustment */
-    n = obj->spe + chg;
-    if (n < 2)
-        n = 2; /* arbitrary minimum */
+    charges = obj->spe + chg;
+    if (charges < 2)
+        charges = 2; /* arbitrary minimum */
+    
     /* size of damage dice */
     switch (obj->otyp) {
     case WAN_WISHING:
-        k = 12;
+        dmg_multiplier = 12;
         break;
     case WAN_CANCELLATION:
     case WAN_DEATH:
     case WAN_POLYMORPH:
     case WAN_UNDEAD_TURNING:
-        k = 10;
+        dmg_multiplier = 10;
         break;
     case WAN_COLD:
+        expltype = EXPL_FROSTY;
+        dmg_multiplier = 8;
+        break;
     case WAN_FIRE:
+        expltype = EXPL_FIERY;
+        dmg_multiplier = 8;
+        break;
+    case WAN_POISON_GAS:
+        expltype = EXPL_NOXIOUS;
+        dmg_multiplier = 8;
+        break;
+    case WAN_CORROSION:
+        expltype = EXPL_WET;
+        dmg_multiplier = 8;
+        break;
     case WAN_LIGHTNING:
     case WAN_MAGIC_MISSILE:
-    case WAN_POISON_GAS:
-    case WAN_CORROSION:
-        k = 8;
-        break;
-    case WAN_NOTHING:
-        k = 4;
+        dmg_multiplier = 8;
         break;
     default:
-        k = 6;
+        dmg_multiplier = 6;
         break;
     }
+
+    if (obj->otyp == WAN_STRIKING) {
+        /* we want this before the explosion instead of at the very end */
+        Soundeffect(se_wall_of_force, 65);
+        pline("A wall of force smashes down around you!");
+        dmg = d(1 + obj->spe, 6); /* normally 2d12 */
+    } else if (obj->otyp == WAN_NOTHING)
+        dmg = 0;
+    else
+        dmg = d(charges, dmg_multiplier);
+        
     /* inflict damage and destroy the wand */
-    dmg = d(n, k);
+    
+    broken_wand_explode(obj, dmg * 2, expltype);
+
+    /* Couple janky exceptions */
+    switch (obj->otyp) {
+    case WAN_NOTHING:
+        pline("Nothing happens.");
+        break;
+    case WAN_OPENING:
+        if (u.ustuck) {
+            release_hold();
+            if (obj->dknown)
+                makeknown(WAN_OPENING);
+        }
+        break;
+    case WAN_SECRET_DOOR_DETECTION:
+        /* Detects portals: We'll use the same odds UnNetHack has for 
+         * creating traps for breaking the other wands. */
+        if ((obj->spe > 2) && rn2(obj->spe - 2)) {
+            trap_detect((struct obj *) 0);
+            makeknown(obj->otyp);
+        }
+        break;
+    }
+    
+
+    #if 0
     obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
     pline("%s %s explodes!", Yname2(obj), expl);
     losehp(Maybe_Half_Phys(dmg), "exploding wand", KILLED_BY_AN);
     useup(obj);
+    #endif
+
     /* obscure side-effect */
     exercise(A_STR, FALSE);
 }
