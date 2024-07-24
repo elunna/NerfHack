@@ -367,6 +367,7 @@ pick_lock(
     struct obj *otmp;
     char qbuf[QBUFSZ];
     boolean autounlock = (rx != 0 || container != NULL);
+    boolean credit_card_slipped;
 
     /* 'pick' might be Null [called by do_loot_cont() for AUTOUNLOCK_UNTRAP] */
     if (!pick) {
@@ -540,11 +541,21 @@ pick_lock(
                     if (carried(pick))
                         useup(pick);
                     else
-                    delobj(pick);
+                        delobj(pick);
                     nomul(0);
                     return PICKLOCK_DID_NOTHING;
                 }
-                
+
+                if (picktyp == CREDIT_CARD && (Fumbling || pick->cursed)
+                    /* Inverse of xNetHack - very high odds for unfavorable conditions */
+                    && rn2(Fumbling ? ACURR(A_DEX) * 2
+                                    : ((ACURR(A_DEX) + 3) / 4))) {
+                    Your("%s slips through the crack!", xname(pick));
+                    obj_extract_self(pick);
+                    add_to_container(gx.xlock.box, pick);
+                    return PICKLOCK_DID_NOTHING;
+                }
+
                 gx.xlock.box = otmp;
                 gx.xlock.door = 0;
                 break;
@@ -654,20 +665,39 @@ pick_lock(
             default:
                 ch = 0;
             }
-                /* Cursed or eroded locking tool will break on use */
-                if ((pick->cursed || pick->oeroded || pick->oeroded2)
-                    && !rn2(3) && picktyp != STETHOSCOPE && !pick->oartifact) {
-                    pline("As you start to %s the door, your %s breaks!",
-                          ((door->doormask & D_LOCKED) ? "unlock" : "lock"),
-                          xname(pick));
-                    if (carried(pick))
-                        useup(pick);
-                    else
-                        delobj(pick);
-                    nomul(0);
+            /* Cursed or eroded locking tool will break on use */
+            if ((pick->cursed || pick->oeroded || pick->oeroded2)
+                && !rn2(3) && picktyp != STETHOSCOPE && !pick->oartifact) {
+                pline("As you start to %s the door, your %s breaks!",
+                        ((door->doormask & D_LOCKED) ? "unlock" : "lock"),
+                        xname(pick));
+                if (carried(pick))
+                    useup(pick);
+                else
+                    delobj(pick);
+                nomul(0);
+                return PICKLOCK_DID_NOTHING;
+            }
+            
+            if (picktyp == CREDIT_CARD && (Fumbling || pick->cursed)
+                /* Inverse of xNetHack - very high odds for unfavorable conditions */
+                && rn2(Fumbling ? ACURR(A_DEX) * 2
+                                : ((ACURR(A_DEX) + 3) / 4))) {
+                coordxy doorx = u.ux + u.dx, doory = u.uy + u.dy, behind_x, behind_y;
+                if (gx.xlock.door) {
+                    behind_x = doorx + (gx.xlock.door->horizontal ? 0 : u.dx);
+                    behind_y = doory + (gx.xlock.door->horizontal ? u.dy : 0);
+                    credit_card_slipped = isok(behind_x, behind_y)
+                                        && SPACE_POS(levl[behind_x][behind_y].typ);
+                }
+                if (credit_card_slipped) {
+                    Your("%s slips through the crack!", xname(pick));
+                    obj_extract_self(pick);
+                    place_object(pick, behind_x, behind_y);
                     return PICKLOCK_DID_NOTHING;
                 }
-                
+            }
+            
             gx.xlock.door = door;
             gx.xlock.box = 0;
         }

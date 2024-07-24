@@ -3438,6 +3438,7 @@ static const struct alt_spellings {
     const char *sp;
     int ob;
 } spellings[] = {
+    { "credit card", CREDIT_CARD },
     { "pickax", PICK_AXE },
     { "whip", BULLWHIP },
     { "saber", SILVER_SABER },
