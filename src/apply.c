@@ -41,7 +41,6 @@ staticfn boolean can_grapple_location(coordxy, coordxy);
 staticfn void display_grapple_positions(boolean);
 staticfn int use_grapple(struct obj *);
 staticfn void discard_broken_wand(void);
-staticfn void broken_wand_explode(struct obj *, int, int);
 staticfn int do_break_wand(struct obj *);
 staticfn int apply_ok(struct obj *);
 staticfn int flip_through_book(struct obj *);
@@ -4096,7 +4095,7 @@ discard_broken_wand(void)
     nomul(0);
 }
 
-staticfn void
+void
 broken_wand_explode(struct obj *obj, int dmg, int expltype)
 {
     explode(u.ux, u.uy, -(obj->otyp), dmg, WAND_CLASS, expltype);
@@ -4108,16 +4107,9 @@ broken_wand_explode(struct obj *obj, int dmg, int expltype)
 staticfn int
 do_break_wand(struct obj *obj)
 {
-#define BY_OBJECT ((struct monst *) 0)
     static const char nothing_else_happens[] = "But nothing else happens...";
-    int i;
-    coordxy x, y;
-    struct monst *mon;
-    int dmg, damage;
-    boolean affects_objects;
-    boolean shop_damage = FALSE;
-    boolean fillmsg = FALSE;
-    char confirm[QBUFSZ], buf[BUFSZ];
+    int dmg;
+    char confirm[QBUFSZ];
     boolean is_fragile = (objdescr_is(obj, "balsa")
                           || objdescr_is(obj, "glass"));
 
@@ -4169,7 +4161,6 @@ do_break_wand(struct obj *obj)
     obj->ox = u.ux;
     obj->oy = u.uy;
     dmg = obj->spe * 4;
-    affects_objects = FALSE;
 
     switch (obj->otyp) {
     case WAN_OPENING:
@@ -4181,11 +4172,7 @@ do_break_wand(struct obj *obj)
             return ECMD_TIME;
         }
         /*FALLTHRU*/
-    case WAN_WISHING:
     case WAN_NOTHING:
-    case WAN_LOCKING:
-    case WAN_PROBING:
-    case WAN_ENLIGHTENMENT:
         pline(nothing_else_happens);
         discard_broken_wand();
         return ECMD_TIME;
@@ -4199,15 +4186,19 @@ do_break_wand(struct obj *obj)
             pline(nothing_else_happens);
         discard_broken_wand();
         return ECMD_TIME;
+
+    case WAN_WISHING:
+        broken_wand_explode(obj, dmg * 12, EXPL_MAGICAL);
+        return ECMD_TIME;
     case WAN_DEATH:
     case WAN_LIGHTNING:
         broken_wand_explode(obj, dmg * 4, EXPL_MAGICAL);
         return ECMD_TIME;
+    case WAN_CORROSION:
+        broken_wand_explode(obj, dmg * 4, EXPL_WET);
+        return ECMD_TIME;
     case WAN_FIRE:
         broken_wand_explode(obj, dmg * 2, EXPL_FIERY);
-        return ECMD_TIME;
-    case WAN_CORROSION:
-        broken_wand_explode(obj, dmg * 3, EXPL_WET);
         return ECMD_TIME;
     case WAN_POISON_GAS:
         broken_wand_explode(obj, dmg * 2, EXPL_NOXIOUS);
@@ -4216,8 +4207,14 @@ do_break_wand(struct obj *obj)
         broken_wand_explode(obj, dmg * 2, EXPL_FROSTY);
         return ECMD_TIME;
     case WAN_MAGIC_MISSILE:
+        broken_wand_explode(obj, dmg * 2, EXPL_MAGICAL);
+        return ECMD_TIME;
+    case WAN_LOCKING:
+    case WAN_PROBING:
+    case WAN_ENLIGHTENMENT:
         broken_wand_explode(obj, dmg, EXPL_MAGICAL);
         return ECMD_TIME;
+
     case WAN_STRIKING:
         /* we want this before the explosion instead of at the very end */
         Soundeffect(se_wall_of_force, 65);
@@ -4228,7 +4225,6 @@ do_break_wand(struct obj *obj)
     case WAN_POLYMORPH:
     case WAN_TELEPORTATION:
     case WAN_UNDEAD_TURNING:
-        affects_objects = TRUE;
         break;
     default:
         break;
@@ -4241,6 +4237,33 @@ do_break_wand(struct obj *obj)
        surrounding targets (or underlying objects) got affected yet.] */
     explode(obj->ox, obj->oy, -(obj->otyp), rnd(dmg), WAND_CLASS,
             EXPL_MAGICAL);
+    exploding_wand_efx(obj);
+    discard_broken_wand();
+    return ECMD_TIME;
+}
+
+
+void exploding_wand_efx(struct obj *obj)
+{
+#define BY_OBJECT ((struct monst *) 0)
+    int i;
+    coordxy x, y;
+    struct monst *mon;
+    int damage;
+    boolean affects_objects = FALSE;
+    boolean shop_damage = FALSE;
+    boolean fillmsg = FALSE;
+    char buf[BUFSZ];
+
+    /* I believe elemental damage is handled in explode.c */
+    switch (obj->otyp) {
+    case WAN_CANCELLATION:
+    case WAN_POLYMORPH:
+    case WAN_TELEPORTATION:
+    case WAN_UNDEAD_TURNING:
+    case WAN_STRIKING:
+        affects_objects = TRUE;
+    }
 
     /* prepare for potential feedback from polymorph... */
     zapsetup();
@@ -4345,9 +4368,6 @@ do_break_wand(struct obj *obj)
 
     if (obj->otyp == WAN_LIGHT)
         litroom(TRUE, obj); /* only needs to be done once */
-
-    discard_broken_wand();
-    return ECMD_TIME;
 #undef BY_OBJECT
 }
 

@@ -816,6 +816,7 @@ doengrave_sfx_item(struct _doengrave_ctx *de)
         if (zappable(de->otmp)) {
             check_unpaid(de->otmp);
             if (de->otmp->cursed && !rn2(WAND_BACKFIRE_CHANCE)) {
+                pline_The("%s suddenly detonates!", xname(de->otmp));
                 wand_explode(de->otmp, 0);
                 de->ret = ECMD_TIME;
                 return FALSE;
