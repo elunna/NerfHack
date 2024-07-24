@@ -1536,7 +1536,7 @@ rloc_pos_ok(
     yy = mtmp->my;
     if (!xx) {
         /* no current location (migrating monster arrival) */
-        if (svd.dndest.nlx && On_W_tower_level(&u.uz))
+        if (svd.dndest.nlx)
             return (((yy & 2) != 0)
                     /* inside xor not within */
                     ^ !within_bounded_area(x, y, svd.dndest.nlx, svd.dndest.nly,
@@ -1745,13 +1745,12 @@ rloc(
     if (mtmp->iswiz && mtmp->mx) { /* Wizard, not just arriving */
         stairway *stway;
 
-        if (!In_W_tower(u.ux, u.uy, &u.uz)) {
-            stway = stairway_find_forwiz(FALSE, TRUE);
-        } else if (!stairway_find_forwiz(TRUE, FALSE)) { /* bottom of tower */
-            stway = stairway_find_forwiz(TRUE, TRUE);
-        } else {
-            stway = stairway_find_forwiz(TRUE, FALSE);
-        }
+        /* this is the logic of stairway_find_forwiz(); that function is now
+         * deleted since it doesn't need to handle embedded Wizard tower */
+        while (stway && !(stway->isladder == FALSE
+                          && stway->up && stway->tolev.dnum == u.uz.dnum))
+            stway = stway->next;
+
 
         x = stway ? stway->sx : 0;
         y = stway ? stway->sy : 0;

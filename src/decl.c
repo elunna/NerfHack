@@ -916,14 +916,55 @@ static const struct instance_globals_saved_c init_svc = {
     DUMMY,                               /* context */
 };
 
+/* hackemslashem - the labels are here for our protection. */
 static const struct instance_globals_saved_d init_svd = {
     /* dungeon.c */
-    { { {0},{0},{0},{0}, 0, {0}, 0, 0, 0, 0, 0 } }, /* dungeons */
-    { {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0},
-    {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0},
-    0, 0, 0, 0, 0,
-    {0}, {0}, {0},
-    {0}, {0}, {0}, {0}, {0} },                     /* dungeon_topology */
+    { { {0}, /* The Dungeons of Doom */
+        {0}, /* Gehennom */
+        {0}, /* The Gnomish Mines*/
+        {0}, /* The Quest */
+        0,   /* Sokoban */
+        {0}, /* Fort Ludios */
+        0,   /* The Lost Tomb */
+        0,   /* The Temple of Moloch */
+        0,   /* Vlad's Tower */
+        0,   /* The Wizard's Tower */
+        0,   /* The Elemental Planes */
+    } }, /* dungeons */
+    { {0}, /* d_oracle_level */
+      {0}, /* d_bigroom_level */
+      {0}, /* d_rogue_level */
+      {0}, /* d_medusa_level */
+      {0}, /* d_stronghold_level */
+      {0}, /* d_valley_level */
+      {0}, /* d_wiz1_level */
+      {0}, /* d_wiz2_level */
+      {0}, /* d_wiz3_level */
+      {0}, /* d_juiblex_level */
+      {0}, /* d_orcus_level*/
+      {0}, /* d_baalzebub_level */
+      {0}, /* d_asmodeus_level */
+      {0}, /* d_portal_level */
+      {0}, /* d_sanctum_level */
+      {0}, /* d_earth_level */
+      {0}, /* d_water_level */
+      {0}, /* d_fire_level */
+      {0}, /* d_air_level */
+      {0}, /* d_astral_level*/
+      0,   /* d_tower_dnum */
+      0,   /* d_sokoban_dnum */
+      0,   /* d_mines_dnum*/
+      0,   /* d_quest_dnum*/
+      0,   /* d_tutorial_dnum*/
+      {0}, /* d_qstart_level */
+      {0}, /* d_qlocate_level */
+      {0}, /* d_nemesis_level */
+      {0}, /* d_knox_level */
+      {0}, /* d_tomb_level */
+      {0}, /* d_temple_level */
+      {0}, /* d_mineend_level*/
+      {0}  /* d_sokoend_level*/
+    },                     /* dungeon_topology */
     /* decl.c */
     { 0, 0, 0, 0, 0, 0, 0, 0 },          /* dndest */
     NULL,                                /* doors */

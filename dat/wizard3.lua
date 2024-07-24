@@ -5,11 +5,7 @@
 --
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "noflip")
-
-local tmpbounds = selection.match("-");
-local bnds = tmpbounds:bounds();
-local bounds2 = selection.fillrect(bnds.lx, bnds.ly + 1, bnds.hx - 2, bnds.hy - 1);
+des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "solidify", "noflip")
 
 local wiz3 = des.map({ halign = "center", valign = "center", map = [[
 ----------------------------x
@@ -26,12 +22,7 @@ local wiz3 = des.map({ halign = "center", valign = "center", map = [[
 |.....|.........|..|.......|x
 ----------------------------x
 ]], contents = function(rm)
-   des.levregion({ type="stair-up", region={01,00,79,20}, region_islev=1, exclude={0,0,28,12} })
-   des.levregion({ type="stair-down", region={01,00,79,20}, region_islev=1, exclude={0,0,28,12} })
-   des.levregion({ type="branch", region={01,00,79,20}, region_islev=1, exclude={0,0,28,12} })
-   des.teleport_region({ region={01,00,79,20}, region_islev=1, exclude={0,0,27,12} })
    des.levregion({ region={25,11,25,11}, type="portal", name="castle" });
-   des.mazewalk(28,09,"east")
    des.region({ region={07,03, 15,11}, lit=0 ,type="morgue", filled=2 })
    des.region({ region={17,06, 18,11}, lit=0, type="beehive", filled=1 })
    -- make the entry chamber a real room; it affects monster arrival
@@ -85,6 +76,3 @@ local wiz3 = des.map({ halign = "center", valign = "center", map = [[
    des.object("\"", 11, 07)
 end
 });
-
-local protected = bounds2:negate() | wiz3;
-hell_tweaks(protected);

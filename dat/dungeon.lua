@@ -55,6 +55,12 @@ dungeon = {
             branchtype = "no_down"
          },
          {
+            name = "The Wizard's Tower",
+            chainlevel = "castle",
+            base = 0,
+            branchtype = "portal"
+         },
+         {
             name = "The Elemental Planes",
             base = 1,
             branchtype = "no_down",
@@ -86,24 +92,6 @@ dungeon = {
             alignment = "chaotic"
          },
          {
-            name = "wizard1",
-            base = -4,
-            range = 1
-         },
-         {
-            name = "wizard2",
-            bonetag = "X",
-            chainlevel = "wizard1",
-            base = 1
-         },
-         {
-            name = "wizard3",
-            bonetag = "Y",
-            chainlevel = "wizard1",
-            base = 2
-         },
-         
-         {
             name = "castle",
             base = -1
          }
@@ -123,7 +111,7 @@ dungeon = {
             base = 2,
             range = 2,
             direction = "up"
-         }
+         },
       },
       levels = {
          {
@@ -277,6 +265,30 @@ dungeon = {
          },
          {
             name = "tower3",
+            base = 3
+         },
+      }
+   },
+   {
+      name = "The Wizard's Tower",
+      bonetag = "W",
+      base = 3,
+      flags = { "mazelike" },
+      alignment = "unaligned",
+      entry = -1,
+      levels = {
+         {
+            name = "wizard1",
+            base = 1
+         },
+         {
+            name = "wizard2",
+            bonetag = "X",
+            base = 2
+         },
+         {
+            name = "wizard3",
+            bonetag = "Y",
             base = 3
          },
       }

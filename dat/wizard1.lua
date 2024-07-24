@@ -8,11 +8,7 @@
 -- Keeping the Moat for old-time's sake
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "noflip")
-
-local tmpbounds = selection.match("-");
-local bnds = tmpbounds:bounds();
-local bounds2 = selection.fillrect(bnds.lx, bnds.ly + 1, bnds.hx - 2, bnds.hy - 1);
+des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "solidify", "noflip")
 
 local wiz1 = des.map({ halign = "center", valign = "center", map = [[
 ----------------------------x
@@ -29,17 +25,12 @@ local wiz1 = des.map({ halign = "center", valign = "center", map = [[
 |..|.......S...............|x
 ----------------------------x
 ]], contents = function(rm)
-   des.levregion({ type="stair-up", region={01,00,79,20}, region_islev=1, exclude={0,0,28,12} })
-   des.levregion({ type="stair-down", region={01,00,79,20}, region_islev=1, exclude={0,0,28,12} })
-   des.levregion({ type="branch", region={01,00,79,20}, region_islev=1, exclude={0,0,28,12} })
-   des.teleport_region({ region={01,00,79,20}, region_islev=1, exclude={0,0,27,12} })
    des.region({ region={12,01, 20,09}, lit=0, type="morgue", filled=2, contents=function()
                    local sdwall = { "south", "west", "east" };
                    des.door({ wall = sdwall[math.random(1, #sdwall)], state = "secret" });
    end })
    -- another region to constrain monster arrival
    des.region({ region={01,01, 10,11}, lit=0, type="ordinary", arrival_room=true })
-   des.mazewalk(28,05,"east")
    des.ladder("down", 06,05)
    -- Non diggable walls
    -- Walls inside the moat stay diggable
@@ -101,6 +92,3 @@ local wiz1 = des.map({ halign = "center", valign = "center", map = [[
    des.object("+")
 end
 });
-
-local protected = bounds2:negate() | wiz1;
-hell_tweaks(protected);

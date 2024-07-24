@@ -155,14 +155,12 @@ int
 wiz_makemap(void)
 {
     if (wizard) {
-        boolean was_in_W_tower = In_W_tower(u.ux, u.uy, &u.uz);
-
-        makemap_prepost(TRUE, was_in_W_tower);
+        makemap_prepost(TRUE, FALSE);
         /* create a new level; various things like bestowing a guardian
            angel on Astral or setting off alarm on Ft.Ludios are handled
            by goto_level(do.c) so won't occur for replacement levels */
         mklev();
-        makemap_prepost(FALSE, was_in_W_tower);
+        makemap_prepost(FALSE, FALSE);
     } else {
         pline(unavailcmd, ecname_from_fn(wiz_makemap));
     }

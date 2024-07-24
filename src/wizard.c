@@ -381,7 +381,7 @@ tactics(struct monst *mtmp)
         /* if wounded, hole up on or near the stairs (to block them) */
         choose_stairs(&sx, &sy, FALSE);
         mtmp->mavenge = 1; /* covetous monsters attack while fleeing */
-        if (In_W_tower(mx, my, &u.uz)
+        if (On_W_tower_level(&u.uz)
             || (mtmp->iswiz && !sx && !mon_has_amulet(mtmp))) {
             if (!rn2(3 + mtmp->mhp / 10))
                 (void) rloc(mtmp, RLOC_MSG);
@@ -463,18 +463,12 @@ RESTORE_WARNINGS
 
 /* are there any monsters mon could aggravate? */
 boolean
-has_aggravatables(struct monst *mon)
+has_aggravatables(struct monst *mon UNUSED)
 {
     struct monst *mtmp;
-    boolean in_w_tower = In_W_tower(mon->mx, mon->my, &u.uz);
-
-    if (in_w_tower != In_W_tower(u.ux, u.uy, &u.uz))
-        return FALSE;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
-            continue;
-        if (in_w_tower != In_W_tower(mtmp->mx, mtmp->my, &u.uz))
             continue;
         if ((mtmp->mstrategy & STRAT_WAITFORU) != 0 || helpless(mtmp))
             return TRUE;
@@ -486,12 +480,8 @@ void
 aggravate(void)
 {
     struct monst *mtmp;
-    boolean in_w_tower = In_W_tower(u.ux, u.uy, &u.uz);
-
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
-            continue;
-        if (in_w_tower != In_W_tower(mtmp->mx, mtmp->my, &u.uz))
             continue;
         mtmp->mstrategy &= ~(STRAT_WAITFORU | STRAT_APPEARMSG);
         mtmp->msleeping = 0;

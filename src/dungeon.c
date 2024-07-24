@@ -1572,23 +1572,12 @@ u_on_newpos(coordxy x, coordxy y)
 void
 u_on_rndspot(int upflag)
 {
-    int up = (upflag & 1), was_in_W_tower = (upflag & 2);
-
     /*
      * Place the hero at a random location within the relevant region.
      * place_lregion(xTELE) -> put_lregion_here(xTELE) -> u_on_newpos()
      * Unspecified region (.lx == 0) defaults to entire level.
      */
-    if (was_in_W_tower && On_W_tower_level(&u.uz))
-        /* Stay inside the Wizard's tower when feasible.
-           We use the W Tower's exclusion region for the
-           destination instead of its enclosing region.
-           Note: up vs down doesn't matter in this case
-           because both specify the same exclusion area. */
-        place_lregion(svd.dndest.nlx, svd.dndest.nly,
-                      svd.dndest.nhx, svd.dndest.nhy,
-                      0, 0, 0, 0, LR_DOWNTELE, (d_level *) 0);
-    else if (up)
+    if (upflag)
         place_lregion(svu.updest.lx, svu.updest.ly,
                       svu.updest.hx, svu.updest.hy,
                       svu.updest.nlx, svu.updest.nly,
@@ -1637,14 +1626,10 @@ Can_fall_thru(d_level *lev)
  * Checks for amulets and such must be done elsewhere.
  */
 boolean
-Can_rise_up(coordxy x, coordxy y, d_level *lev)
+Can_rise_up(coordxy x UNUSED, coordxy y UNUSED, d_level *lev)
 {
     stairway *stway = stairway_find_special_dir(FALSE);
 
-    /* can't rise up from inside the top of the Wizard's tower */
-    if (In_endgame(lev)
-        || (Is_wiz1_level(lev) && In_W_tower(x, y, lev)))
-        return FALSE;
     return (boolean) (lev->dlevel > 1
                       || (svd.dungeons[lev->dnum].entry_lev == 1
                           && ledger_no(lev) != 1
@@ -1883,25 +1868,6 @@ On_W_tower_level(d_level *lev)
                       || Is_wiz3_level(lev));
 }
 
-/* is <x,y> of `lev' inside the Wizard's tower? */
-boolean
-In_W_tower(coordxy x, coordxy y, d_level *lev)
-{
-    if (!On_W_tower_level(lev))
-        return FALSE;
-    if (!svd.dndest.nlx) {
-        impossible("No boundary for Wizard's Tower?");
-        return FALSE;
-    }
-    /*
-     * Both of the exclusion regions for arriving via level teleport
-     * (from above or below) define the tower's boundary.
-     *  assert( svu.updest.nIJ == svd.dndest.nIJ for I={l|h},J={x|y} );
-     */
-    return (boolean) within_bounded_area(x, y, svd.dndest.nlx, svd.dndest.nly,
-                                         svd.dndest.nhx, svd.dndest.nhy);
-}
-
 /* are you in one of the Hell levels? */
 boolean
 In_hell(d_level *lev)
@@ -2022,25 +1988,6 @@ level_difficulty(void)
              * The same applies to Vlad's Tower, although the increment
              * there is inconsequential compared to overall depth.
              */
-#if 0
-        /*
-         * The inside of the Wizard's Tower is also effectively a
-         * builds-up area, reached from a portal an arbitrary distance
-         * below rather than stairs 1 level beneath the entry level.
-         */
-        else if (On_W_tower_level(&u.uz) && In_W_tower(some_X, some_Y, &u.uz))
-            res += (fakewiz1.dlevel - u.uz.dlevel);
-            /*
-             * Handling this properly would need more information here:
-             * an inside/outside flag, or coordinates to calculate it.
-             * Unfortunately level difficulty may be wanted before
-             * coordinates have been chosen so simply extending this
-             * routine to take extra arguments is not sufficient to cope.
-             * The difference beyond naive depth-from-surface is small
-             * relative to the overall depth, so just ignore complications
-             * posed by W_tower.
-             */
-#endif /*0*/
     }
     /* ring of aggravate monster */
     if (EAggravate_monster)
@@ -2429,8 +2376,10 @@ recbranch_mapseen(d_level *source, d_level *dest)
         return;
 
     if ((mptr = find_mapseen(source)) != 0) {
+#if 0 /* Yes - we are allowing 2 branches on the castle. */
         if (mptr->br && br != mptr->br)
             impossible("Two branches on the same level?");
+#endif
         mptr->br = br;
     } else {
         impossible("Can't note branch for unseen level (%d, %d)",

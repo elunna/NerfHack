@@ -5918,12 +5918,10 @@ lspo_wallify(lua_State *L)
 int
 lspo_reset_level(lua_State *L)
 {
-    boolean wtower = In_W_tower(u.ux, u.uy, &u.uz);
-
     iflags.lua_testing = TRUE;
     if (L)
         create_des_coder();
-    makemap_prepost(TRUE, wtower);
+    makemap_prepost(TRUE, FALSE);
     gi.in_mklev = TRUE;
     oinit(); /* assign level dependent obj probabilities */
     clear_level_structures();
@@ -5934,7 +5932,6 @@ lspo_reset_level(lua_State *L)
 int
 lspo_finalize_level(lua_State *L)
 {
-    boolean wtower = In_W_tower(u.ux, u.uy, &u.uz);
     int i;
 
     if (L)
@@ -5979,7 +5976,7 @@ lspo_finalize_level(lua_State *L)
         fill_special_room(&svr.rooms[i]);
     }
 
-    makemap_prepost(FALSE, wtower);
+    makemap_prepost(FALSE, FALSE);
     iflags.lua_testing = FALSE;
     return 0;
 }
