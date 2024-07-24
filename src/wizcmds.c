@@ -545,8 +545,7 @@ wiz_panic(void)
 int
 wiz_fuzzer(void)
 {
-    if (paranoid_query(TRUE, "Do you want to start fuzz testing?"))
-        iflags.debug_fuzzer = TRUE; /* Thoth, take the reins */
+    iflags.debug_fuzzer = TRUE; /* Thoth, take the reins */
     return ECMD_OK;
 }
 
