@@ -127,7 +127,7 @@ precheck(struct monst *mon, struct obj *obj)
     }
     if (obj->oclass == WAND_CLASS && obj->cursed
         && !rn2(WAND_BACKFIRE_CHANCE)) {
-        int dam = d(obj->spe + 2, 6);
+        int dam = d(obj->spe + 2, 8);
 
         /* 3.6.1: no Deaf filter; 'if' message doesn't warrant it, 'else'
            message doesn't need it since You_hear() has one of its own */
