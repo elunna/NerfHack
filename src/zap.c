@@ -2626,7 +2626,7 @@ backfire(struct obj *otmp)
 {
     otmp->in_use = TRUE; /* in case losehp() is fatal */
     pline("%s suddenly explodes!", The(xname(otmp)));
-    wand_explode(otmp, FALSE);
+    wand_explode(otmp, FALSE, &gy.youmonst);
 }
 
 /* getobj callback for object to zap */

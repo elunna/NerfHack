@@ -126,8 +126,8 @@ precheck(struct monst *mon, struct obj *obj)
         }
     }
     if (obj->oclass == WAND_CLASS && obj->cursed
-        && !rn2(WAND_BACKFIRE_CHANCE)) {
-        int dam = d(obj->spe + 2, 8);
+        /* Monsters should know better, we are less forgiving to them... */
+        && !rn2(WAND_BACKFIRE_CHANCE / 2)) {
 
         /* 3.6.1: no Deaf filter; 'if' message doesn't warrant it, 'else'
            message doesn't need it since You_hear() has one of its own */
@@ -144,13 +144,7 @@ precheck(struct monst *mon, struct obj *obj)
                      (mdistu(mon) <= range * range)
                         ? "nearby" : "in the distance");
         }
-        m_useup(mon, obj);
-        showdamage(dam, FALSE);
-        mon->mhp -= dam;
-        if (DEADMONSTER(mon)) {
-            monkilled(mon, "", AD_RBRE);
-            return 1;
-        }
+        wand_explode(obj, 0, mon);
         gm.m.has_defense = gm.m.has_offense = gm.m.has_misc = 0;
         /* Only one needed to be set to 0 but the others are harmless */
     }
