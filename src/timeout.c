@@ -1901,7 +1901,8 @@ do_storms(void)
         pline("Kaboom!!!  Boom!!  Boom!!");
         incr_itimeout(&HDeaf, rn1(20, 30));
         disp.botl = TRUE;
-        if (!u.uinvulnerable) {
+        if (!u.uinvulnerable 
+            || !(uamul && uamul->oartifact == ART_AMULET_OF_STORMS)) {
             stop_occupation();
             nomul(-3);
             gm.multi_reason = "hiding from thunderstorm";

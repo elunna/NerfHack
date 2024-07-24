@@ -4647,6 +4647,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         && strncmpi(d->bp, "leather armor", 13)
         && strncmpi(d->bp, "tooled horn", 11)
         && strncmpi(d->bp, "food ration", 11)
+        && strncmpi(d->bp, "amulet of storms", 16)
         && strncmpi(d->bp, "meat ring", 9))
         for (i = 0; i < (int) (sizeof wrpsym); i++) {
             int j = Strlen(wrp[i]);
@@ -5822,6 +5823,7 @@ name_to_otyp(const char *in_str)
         && strncmpi(in_str, "light armor", 13)
         && strncmpi(in_str, "tooled horn", 11)
         && strncmpi(in_str, "food ration", 11)
+        && strncmpi(in_str, "amulet of storms", 16)
         && strncmpi(in_str, "meat ring", 9)) {
         for (i = 0; i < (int) (sizeof wrpsym); i++) {
             int j = strlen(wrp[i]);

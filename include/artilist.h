@@ -260,6 +260,12 @@ static NEARDATA struct artifact artilist[] = {
    
     /*** Chaotic artifacts ***/
     
+    /* From xNetHack */
+    A("The Amulet of Storms", AMULET_OF_FLYING,
+      (SPFX_RESTR | SPFX_DEFN), 0, 0,
+      NO_ATTK, DFNS(AD_ELEC), NO_CARY, 0, 
+      A_CHAOTIC, NON_PM, NON_PM, 600L, NO_COLOR, AMULET_OF_STORMS),
+
     /* From SLASH'EM */
     A("Doomblade", SHORT_SWORD,
       SPFX_RESTR, 0, 0,
