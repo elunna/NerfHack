@@ -10,7 +10,7 @@ des.room({ type = "ordinary",
               des.object()
               des.monster("M")
               if percent(50) then
-               des.object("giant anaconda")
+               des.object("monster anaconda")
               end
            end
 })

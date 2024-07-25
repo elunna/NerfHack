@@ -115,7 +115,7 @@ des.monster("M", 20, 17)
 des.monster("S", 67, 02)
 
 if percent(50) then
-   des.object("giant anaconda")
+   des.monster("giant anaconda")
 else
    des.monster("S")
 end
