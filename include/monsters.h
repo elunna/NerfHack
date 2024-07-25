@@ -4262,6 +4262,28 @@
         M1_HUMANOID | M1_SLITHY | M1_THICK_HIDE | M1_POIS | M1_CARNIVORE,
         M2_STALK | M2_HOSTILE | M2_COLLECT | M2_MAGIC, M3_INFRAVISIBLE,
         NO_RACE, 12, CLR_ORANGE, SALAMANDER),
+    MON(NAM("velociraptor"), S_LIZARD, 
+        LVL(14, 24, 5, 0, 0), (G_NOGEN | G_SGROUP | 3),
+        A(ATTK(AT_BITE, AD_PHYS, 1, 6), 
+          ATTK(AT_CLAW, AD_PHYS, 2, 8),
+          ATTK(AT_CLAW, AD_PHYS, 2, 8), 
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 400, MS_GROWL, MZ_MEDIUM), 0, 0,
+        M1_ANIMAL | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_NOTAKE,
+        M2_STRONG | M2_HOSTILE | M2_FLANK | M2_NASTY, M3_JUMPER,
+        NO_RACE, 14, HI_OVERLORD, VELOCIRAPTOR),
+    MON(NAM("T-Rex"), S_LIZARD, 
+        LVL(22, 15, 5, 0, 0), (G_NOGEN | 2),
+        A(ATTK(AT_BITE, AD_PHYS, 5, 10), 
+          ATTK(AT_BITE, AD_PHYS, 1, 4),
+          ATTK(AT_BITE, AD_PHYS, 1, 4), 
+          ATTK(AT_ENGL, AD_DGST, 1, 10),
+          NO_ATTK, NO_ATTK),
+        SIZ(WT_DRAGON, 500, MS_ROAR, MZ_HUGE), 0, 0,
+        M1_ANIMAL | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_OVIPAROUS
+          | M1_NOTAKE,
+        M2_STRONG | M2_HOSTILE | M2_NASTY, M3_INFRAVISIBLE | M3_BERSERK, 
+        NO_RACE, 18, HI_LORD, T_REX),
 
     /*
      * dummy monster needed for visual interface

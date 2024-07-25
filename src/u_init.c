@@ -682,6 +682,9 @@ u_init_role(void)
         ini_inv(Cave_man);
         skill_init(Skill_C);
         knows_object(SLING_BULLET);
+        /* For cavemen, extinct monsters are generated. */
+        mons[PM_VELOCIRAPTOR].geno &= ~(G_NOGEN);
+        mons[PM_T_REX].geno &= ~(G_NOGEN);
         break;
     case PM_HEALER:
         u.umoney0 = rn1(1000, 1001);
