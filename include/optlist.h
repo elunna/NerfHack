@@ -310,6 +310,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTB(fixinv, Advanced, 0, opt_out, set_in_game,
            On, Yes, No, No, NoAlias, &flags.invlet_constant, Term_False,
            "inventory items keep their letters")
+    NHOPTB(flipsoko, Advanced, 0, opt_in, set_in_game,
+           On, Yes, No, No, NoAlias, &flags.flipsoko, Term_False,
+           "allow flipping of Sokoban levels")
     NHOPTC(font_map, Advanced, 40, opt_in, set_gameview,
                 Yes, Yes, Yes, No, NoAlias, "font to use in the map window")
     NHOPTC(font_menu, Advanced, 40, opt_in, set_gameview,

@@ -942,6 +942,9 @@ void
 flip_level_rnd(int flp, boolean extras)
 {
     int c = 0;
+    
+    if (In_sokoban(&u.uz) && !flags.flipsoko)
+        return;
 
     /* TODO?
      *  Might change rn2(2) to !rn2(3) or (rn2(5) < 2) in order to bias
