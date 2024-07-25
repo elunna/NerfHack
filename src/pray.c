@@ -706,8 +706,8 @@ fry_by_god(aligntyp resp_god, boolean via_disintegration)
 {
     You("%s!", !via_disintegration ? "fry to a crisp"
                                    : "disintegrate into a pile of dust");
-    gk.killer.format = KILLED_BY;
-    Sprintf(gk.killer.name, "the wrath of %s", align_gname(resp_god));
+    svk.killer.format = KILLED_BY;
+    Sprintf(svk.killer.name, "the wrath of %s", align_gname(resp_god));
     done(DIED);
 }
 
@@ -721,7 +721,7 @@ angrygods(aligntyp resp_god)
     u.ublessed = 0; /* lose divine protection */
 
     if (u.ualign.type == resp_god) {
-        u.lastprayed = gm.moves;
+        u.lastprayed = svm.moves;
         u.lastprayresult = PRAY_ANGER;
         u.reconciled = REC_NONE;
     }
@@ -1177,7 +1177,7 @@ give_spell(void)
                 || carrying(MAGIC_MARKER))
                 break;
         }
-        otmp->otyp = rnd_class(gb.bases[SPBOOK_CLASS], SPE_BLANK_PAPER);
+        otmp->otyp = rnd_class(svb.bases[SPBOOK_CLASS], SPE_BLANK_PAPER);
     }
     /*
      * 25% chance of learning the spell directly instead of
@@ -1387,7 +1387,7 @@ pleased(aligntyp g_align)
                     } else if (u.uevent.uheard_tune < 2) {
                         Soundeffect(se_divine_music, 50);
                         You_hear("a divine music...");
-                        pline("It sounds like:  \"%s\".", gt.tune);
+                        pline("It sounds like:  \"%s\".", svt.tune);
                         u.uevent.uheard_tune++;
                         record_achievement(ACH_TUNE);
                         break;
@@ -1521,8 +1521,8 @@ pleased(aligntyp g_align)
        of nutrition will be required.  The increase gets throttled if
        it ever reaches 32K so that configurations using 16-bit ints are
        still viable. */
-    if (gm.moves > 100000L) {
-        long incr = (gm.moves - 100000L) / 100L,
+    if (svm.moves > 100000L) {
+        long incr = (svm.moves - 100000L) / 100L,
              largest_ublesscnt_incr = (long) (LARGEST_INT - u.ublesscnt);
 
         if (incr > largest_ublesscnt_incr)
@@ -1548,7 +1548,7 @@ water_prayer(boolean bless_water)
         return FALSE;
     }
 
-    for (otmp = gl.level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) {
+    for (otmp = svl.level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) {
         /* turn water into (un)holy water */
         if (otmp->otyp == POT_WATER
             && (bless_water ? !otmp->blessed : !otmp->cursed)) {
@@ -1707,8 +1707,8 @@ offer_real_amulet(struct obj *otmp, aligntyp altaralign)
         /*[apparently shrug/snarl can be sensed without being seen]*/
         pline("%s shrugs and retains dominion over %s,", Moloch, u_gname());
         pline("then mercilessly snuffs out your life.");
-        Sprintf(gk.killer.name, "%s indifference", s_suffix(Moloch));
-        gk.killer.format = KILLED_BY;
+        Sprintf(svk.killer.name, "%s indifference", s_suffix(Moloch));
+        svk.killer.format = KILLED_BY;
         done(DIED);
         /* life-saved (or declined to die in wizard/explore mode) */
         pline("%s snarls and tries again...", Moloch);
@@ -1776,7 +1776,7 @@ offer_fake_amulet(
         } else { /* value < 0 */
             gods_upset(altaralign);
         }
-        u.lastprayed = gm.moves;
+        u.lastprayed = svm.moves;
         u.lastprayresult = PRAY_ANGER;
         u.reconciled = REC_NONE;
     }
@@ -1801,13 +1801,13 @@ offer_different_alignment_altar(
             /* Beware, Conversion is costly */
             change_luck(-3);
             u.ublesscnt += 300;
-            u.lastprayed = gm.moves;
+            u.lastprayed = svm.moves;
             u.lastprayresult = PRAY_CONV;
             u.reconciled = REC_NONE;
         } else {
             u.ugangr += 3;
             adjalign(-5);
-            u.lastprayed = gm.moves;
+            u.lastprayed = svm.moves;
             u.lastprayresult = PRAY_ANGER;
             u.reconciled = REC_NONE;
             pline("%s rejects your sacrifice!", a_gname());
@@ -1976,7 +1976,7 @@ bestow_artifact(void)
             godvoice(u.ualign.type, "Use my gift wisely!");
             u.ugifts++;
             u.ublesscnt = rnz(300 + (50 * u.ugifts));
-            u.lastprayed = gm.moves;
+            u.lastprayed = svm.moves;
             u.lastprayresult = PRAY_GIFT;
             u.reconciled = REC_NONE;
             exercise(A_WIS, TRUE);
@@ -2106,7 +2106,7 @@ dosacrifice(void)
             return ECMD_TIME;
 
         if (otmp->corpsenm == PM_ACID_BLOB
-            || (gm.moves <= peek_at_iced_corpse_age(otmp) + 50)) {
+            || (svm.moves <= peek_at_iced_corpse_age(otmp) + 50)) {
             value = mons[otmp->corpsenm].difficulty + 1;
             if (otmp->oeaten)
                 value = eaten_stat(value, otmp);
@@ -2334,7 +2334,7 @@ pray_revive(void)
 {
     struct obj *otmp;
 
-    for (otmp = gl.level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+    for (otmp = svl.level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
         if (otmp->otyp == CORPSE && has_omonst(otmp)
             && OMONST(otmp)->mtame && !OMONST(otmp)->isminion)
             break;
@@ -2385,7 +2385,7 @@ dopray(void)
     if (!can_pray(TRUE))
         return ECMD_OK;
 
-    u.lastprayed = gm.moves;
+    u.lastprayed = svm.moves;
     u.lastprayresult = PRAY_INPROG;
     u.reconciled = REC_NONE;
     
@@ -2847,7 +2847,7 @@ blocked_boulder(int dx, int dy)
     int nx, ny;
     long count = 0L;
 
-    for (otmp = gl.level.objects[u.ux + dx][u.uy + dy]; otmp;
+    for (otmp = svl.level.objects[u.ux + dx][u.uy + dy]; otmp;
          otmp = otmp->nexthere) {
         if (otmp->otyp == BOULDER)
             count += otmp->quan;

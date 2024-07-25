@@ -41,7 +41,7 @@ dowatersnakes(void)
     int num = rn1(5, 2);
     struct monst *mtmp;
 
-    if (!(gm.mvitals[PM_WATER_MOCCASIN].mvflags & G_GONE)) {
+    if (!(svm.mvitals[PM_WATER_MOCCASIN].mvflags & G_GONE)) {
         if (!Blind) {
             pline("An endless stream of %s pours forth!",
                   Hallucination ? makeplural(rndmonnam(NULL)) : "snakes");
@@ -66,7 +66,7 @@ dowaterdemon(void)
 {
     struct monst *mtmp;
 
-    if (!(gm.mvitals[PM_WATER_DEMON].mvflags & G_GONE)) {
+    if (!(svm.mvitals[PM_WATER_DEMON].mvflags & G_GONE)) {
         if ((mtmp = makemon(&mons[PM_WATER_DEMON], u.ux, u.uy,
                             MM_NOMSG)) != 0) {
             if (!Blind)
@@ -96,9 +96,9 @@ dowaternymph(void)
 {
     struct monst *mtmp;
 
-    if (!(gm.mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
-        && (mtmp = makemon(&mons[PM_WATER_NYMPH], u.ux, u.uy, MM_NOMSG))
-               != 0) {
+    if (!(svm.mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
+        && (mtmp = makemon(&mons[PM_WATER_NYMPH], u.ux, u.uy,
+                            MM_NOMSG)) != 0) {
         if (!Blind)
             You("attract %s!", a_monnam(mtmp));
         else
@@ -122,7 +122,7 @@ dolavademon(void)
 {
     struct monst *mtmp;
 
-    if (!(gm.mvitals[PM_LAVA_DEMON].mvflags & G_GONE)) {
+    if (!(svm.mvitals[PM_LAVA_DEMON].mvflags & G_GONE)) {
         if ((mtmp = makemon(&mons[PM_LAVA_DEMON], u.ux, u.uy,
                             MM_NOMSG)) != 0) {
             if (!Blind)
@@ -180,7 +180,7 @@ gush(coordxy x, coordxy y, genericptr_t poolcnt)
     levl[x][y].flags = 0;
     /* No kelp! */
     del_engr_at(x, y);
-    water_damage_chain(gl.level.objects[x][y], TRUE);
+    water_damage_chain(svl.level.objects[x][y], TRUE);
 
     if ((mtmp = m_at(x, y)) != 0)
         (void) minliquid(mtmp);
@@ -830,7 +830,7 @@ drinksink(void)
         /* boiling water burns considered fire damage */
         break;
     case 3:
-        if (gm.mvitals[PM_SEWER_RAT].mvflags & G_GONE)
+        if (svm.mvitals[PM_SEWER_RAT].mvflags & G_GONE)
             pline_The("sink seems quite dirty.");
         else {
             mtmp = makemon(&mons[PM_SEWER_RAT], u.ux, u.uy, MM_NOMSG);
@@ -880,7 +880,7 @@ drinksink(void)
         break;
     case 7:
         pline_The("%s moves as though of its own will!", hliquid("water"));
-        if ((gm.mvitals[PM_WATER_ELEMENTAL].mvflags & G_GONE)
+        if ((svm.mvitals[PM_WATER_ELEMENTAL].mvflags & G_GONE)
             || !makemon(&mons[PM_WATER_ELEMENTAL], u.ux, u.uy, MM_NOMSG))
             pline("But it quiets down.");
         break;
@@ -1091,7 +1091,7 @@ drinkforge(void)
     case 2:
     case 3:
         pline_The("%s moves as though of its own will!", hliquid("lava"));
-        if ((gm.mvitals[PM_FIRE_ELEMENTAL].mvflags & G_GONE)
+        if ((svm.mvitals[PM_FIRE_ELEMENTAL].mvflags & G_GONE)
             || !makemon(&mons[PM_FIRE_ELEMENTAL], u.ux, u.uy, MM_NOMSG))
             pline("But it settles down.");
         break;

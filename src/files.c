@@ -650,7 +650,7 @@ create_levelfile(int lev, char errbuf[])
 #endif /* MICRO || WIN32 */
 
         if (nhfp->fd >= 0)
-            gl.level_info[lev].flags |= LFILE_EXISTS;
+            svl.level_info[lev].flags |= LFILE_EXISTS;
         else if (errbuf) /* failure explanation */
             Sprintf(errbuf,
                     "Cannot create file \"%s\" for level %d (errno %d).",
@@ -708,10 +708,10 @@ delete_levelfile(int lev)
      * Level 0 might be created by port specific code that doesn't
      * call create_levfile(), so always assume that it exists.
      */
-    if (lev == 0 || (gl.level_info[lev].flags & LFILE_EXISTS)) {
+    if (lev == 0 || (svl.level_info[lev].flags & LFILE_EXISTS)) {
         set_levelfile_name(gl.lock, lev);
         (void) unlink(fqname(gl.lock, LEVELPREFIX, 0));
-        gl.level_info[lev].flags &= ~LFILE_EXISTS;
+        svl.level_info[lev].flags &= ~LFILE_EXISTS;
     }
 }
 
@@ -721,7 +721,7 @@ clearlocks(void)
     int x;
 
 #ifdef HANGUPHANDLING
-    if (gp.program_state.preserve_locks)
+    if (program_state.preserve_locks)
         return;
 #endif
 #ifndef NO_SIGNAL
@@ -731,7 +731,7 @@ clearlocks(void)
 #endif
 #endif /* NO_SIGNAL */
     /* can't access maxledgerno() before dungeons are created -dlc */
-    for (x = (gn.n_dgns ? maxledgerno() : 0); x >= 0; x--)
+    for (x = (svn.n_dgns ? maxledgerno() : 0); x >= 0; x--)
         delete_levelfile(x); /* not all levels need be present */
 
 #ifdef WHEREIS_FILE
@@ -773,14 +773,14 @@ set_whereisfile(void)
 {
     char *p = (char *) strstr(whereis_file, "%n");
     if (p) {
-        int new_whereis_len = strlen(whereis_file) + strlen(gp.plname) - 2; /* %n */
+        int new_whereis_len = strlen(whereis_file) + strlen(svp.plname) - 2; /* %n */
         char *new_whereis_fn = (char *) alloc((unsigned)(new_whereis_len + 1));
         char *q = new_whereis_fn;
         strncpy(q, whereis_file, p - whereis_file);
         q += p - whereis_file;
-        strncpy(q, gp.plname, strlen(gp.plname) + 1);
+        strncpy(q, svp.plname, strlen(svp.plname) + 1);
         regularize(q);
-        q[strlen(gp.plname)] = '\0';
+        q[strlen(svp.plname)] = '\0';
         q += strlen(q);
         p += 2;   /* skip "%n" */
         strncpy(q, p, strlen(p));
@@ -796,21 +796,21 @@ write_whereis(boolean playing) /* < True if game is running */
 {
     FILE* fp;
     char whereis_work[511];
-    if (!gp.program_state.something_worth_saving)
+    if (!program_state.something_worth_saving)
         return;
     if (strstr(whereis_file, "%n"))
         set_whereisfile();
 
     /* construct the whereis string */
     Sprintf(whereis_work, "player=%s:depth=%d:dnum=%d:dname=%s:",
-            gp.plname,
+            svp.plname,
             depth(&u.uz),
             u.uz.dnum,
-            gd.dungeons[u.uz.dnum].dname);
+            svd.dungeons[u.uz.dnum].dname);
     Sprintf(eos(whereis_work), "hp=%d:maxhp=%d:turns=%ld:score=%ld:",
             u.uhp,
             u.uhpmax,
-            gm.moves,
+            svm.moves,
 #ifdef SCORE_ON_BOTL
             botl_score()
 #else
@@ -829,7 +829,7 @@ write_whereis(boolean playing) /* < True if game is running */
             0L,
 #endif
             u.uhave.amulet ? 1 : 0,
-            u.uevent.ascended ? 2 : *gk.killer.name ? 1 : 0);
+            u.uevent.ascended ? 2 : *svk.killer.name ? 1 : 0);
     Sprintf(eos(whereis_work), "playing=%d\n",
             playing);
 
@@ -863,7 +863,7 @@ touch_whereis(void)
 void
 delete_whereis(void)
 {
-    if (gp.program_state.something_worth_saving) {
+    if (program_state.something_worth_saving) {
         /* if we have valid data to write, just write it but specify that the
          * game isn't active ("playing=0") */
         write_whereis(FALSE);
@@ -914,7 +914,7 @@ set_bonesfile_name(char *file, d_level *lev)
     dptr = eos(file);
     /* when this naming scheme was adopted, 'filecode' was one letter;
        3.3.0 turned it into a three letter string for quest levels */
-    Sprintf(dptr, "%c%s", gd.dungeons[lev->dnum].boneid,
+    Sprintf(dptr, "%c%s", svd.dungeons[lev->dnum].boneid,
             In_quest(lev) ? gu.urole.filecode : "0");
     if ((sptr = Is_special(lev)) != 0)
         Sprintf(eos(dptr), ".%c", sptr->boneid);
@@ -1076,7 +1076,7 @@ compress_bonesfile(void)
 
 /* ----------  BEGIN SAVE FILE HANDLING ----------- */
 
-/* set savefile name in OS-dependent manner from pre-existing gp.plname,
+/* set savefile name in OS-dependent manner from pre-existing svp.plname,
  * avoiding troublesome characters */
 void
 set_savefile_name(boolean regularize_it)
@@ -1090,7 +1090,7 @@ set_savefile_name(boolean regularize_it)
 #endif
 
 #ifdef VMS
-    Sprintf(gs.SAVEF, "[.save]%d%s", getuid(), gp.plname);
+    Sprintf(gs.SAVEF, "[.save]%d%s", getuid(), svp.plname);
     regoffset = 7;
     indicator_spot = 1;
     postappend = ";1";
@@ -1102,9 +1102,9 @@ set_savefile_name(boolean regularize_it)
         const char *legal = okchars;
 
         ++legal; /* skip '*' wildcard character */
-        (void) fname_encode(legal, '%', gp.plname, tmp, sizeof tmp);
+        (void) fname_encode(legal, '%', svp.plname, tmp, sizeof tmp);
     } else {
-        Sprintf(tmp, "%s", gp.plname);
+        Sprintf(tmp, "%s", svp.plname);
     }
     if (strlen(tmp) < (SAVESIZE - 1))
         Strcpy(gs.SAVEF, tmp);
@@ -1114,7 +1114,7 @@ set_savefile_name(boolean regularize_it)
     regularize_it = FALSE;
 #endif
 #ifdef UNIX
-    Sprintf(gs.SAVEF, "save/%d%s", (int) getuid(), gp.plname);
+    Sprintf(gs.SAVEF, "save/%d%s", (int) getuid(), svp.plname);
     regoffset = 5;
     indicator_spot = 2;
 #endif
@@ -1122,7 +1122,7 @@ set_savefile_name(boolean regularize_it)
     if (strlen(gs.SAVEP) < (SAVESIZE - 1))
         Strcpy(gs.SAVEF, gs.SAVEP);
     if (strlen(gs.SAVEF) < (SAVESIZE - 1))
-        (void) strncat(gs.SAVEF, gp.plname, (SAVESIZE - strlen(gs.SAVEF)));
+        (void) strncat(gs.SAVEF, svp.plname, (SAVESIZE - strlen(gs.SAVEF)));
 #endif
 #if defined(MICRO) && !defined(VMS) && !defined(WIN32) && !defined(MSDOS)
     if (strlen(gs.SAVEP) < (SAVESIZE - 1))
@@ -1135,11 +1135,11 @@ set_savefile_name(boolean regularize_it)
     {
         int i = strlen(gs.SAVEP);
 #ifdef AMIGA
-        /* gp.plname has to share space with gs.SAVEP and ".sav" */
-        (void) strncat(gs.SAVEF, gp.plname,
+        /* svp.plname has to share space with gs.SAVEP and ".sav" */
+        (void) strncat(gs.SAVEF, svp.plname,
                        FILENAME - i - strlen(SAVE_EXTENSION));
 #else
-        (void) strncat(gs.SAVEF, gp.plname, 8);
+        (void) strncat(gs.SAVEF, svp.plname, 8);
 #endif
         regoffset = i;
     }
@@ -1233,7 +1233,7 @@ create_savefile(void)
         nhfp->fieldlevel = FALSE;
         nhfp->ftype = NHF_SAVEFILE;
         nhfp->mode = WRITING;
-        if (gp.program_state.in_self_recover || do_historical) {
+        if (program_state.in_self_recover || do_historical) {
             do_historical = TRUE;       /* force it */
             nhfp->structlevel = TRUE;
             nhfp->fieldlevel = FALSE;
@@ -1287,7 +1287,7 @@ open_savefile(void)
         nhfp->fieldlevel = FALSE;
         nhfp->ftype = NHF_SAVEFILE;
         nhfp->mode = READING;
-        if (gp.program_state.in_self_recover || do_historical) {
+        if (program_state.in_self_recover || do_historical) {
             do_historical = TRUE;       /* force it */
             nhfp->structlevel = TRUE;
             nhfp->fieldlevel = FALSE;
@@ -1469,7 +1469,7 @@ get_saved_games(void)
         char **files = 0;
         int i, count_failures = 0;
 
-        Strcpy(gp.plname, "*");
+        Strcpy(svp.plname, "*");
         set_savefile_name(FALSE);
 #if defined(ZLIB_COMP)
         Strcat(gs.SAVEF, COMPRESS_EXTENSION);
@@ -1504,7 +1504,7 @@ get_saved_games(void)
 
                 if (r) {
                     /* rename file if it is not named as expected */
-                    Strcpy(gp.plname, r);
+                    Strcpy(svp.plname, r);
                     set_savefile_name(TRUE);
                     fq_new_save = fqname(gs.SAVEF, SAVEPREFIX, 0);
                     fq_old_save = fqname(files[i], SAVEPREFIX, 1);
@@ -1566,7 +1566,7 @@ get_saved_games(void)
     }
 #endif
 #ifdef VMS
-    Strcpy(gp.plname, "*");
+    Strcpy(svp.plname, "*");
     set_savefile_name(FALSE);
     j = vms_get_saved_games(gs.SAVEF, &result);
 #endif /* VMS */
@@ -2007,7 +2007,7 @@ static struct flock sflock; /* for unlocking, same as above */
 #endif
 
 #if defined(HANGUPHANDLING)
-#define HUP if (!gp.program_state.done_hup)
+#define HUP if (!program_state.done_hup)
 #else
 #define HUP
 #endif
@@ -2860,7 +2860,7 @@ cnf_line_TROUBLEDIR(char *bufp)
 staticfn boolean
 cnf_line_NAME(char *bufp)
 {
-    (void) strncpy(gp.plname, bufp, PL_NSIZ - 1);
+    (void) strncpy(svp.plname, bufp, PL_NSIZ - 1);
     return TRUE;
 }
 
@@ -2952,17 +2952,6 @@ cnf_line_DUMPLOGFILE(char *bufp)
 }
 
 staticfn boolean
-cnf_line_DUMPHTMLFILE(char *bufp)
-{
-#ifdef DUMPHTML
-    if (sysopt.dumphtmlfile)
-        free((genericptr_t) sysopt.dumphtmlfile);
-    sysopt.dumphtmlfile = dupstr(bufp);
-#endif /*DUMPHTML*/
-    return TRUE;
-}
-
-staticfn boolean
 cnf_line_DUMPLOGURL(char *bufp)
 {
 #ifdef DUMPLOG
@@ -2970,6 +2959,16 @@ cnf_line_DUMPLOGURL(char *bufp)
         free((genericptr_t) sysopt.dumplogurl);
     sysopt.dumplogurl = dupstr(bufp);
 #endif /*DUMPLOG*/
+    return TRUE;
+}
+staticfn boolean
+cnf_line_DUMPHTMLFILE(char *bufp)
+{
+#ifdef DUMPHTML
+    if (sysopt.dumphtmlfile)
+        free((genericptr_t) sysopt.dumphtmlfile);
+    sysopt.dumphtmlfile = dupstr(bufp);
+#endif /*DUMPHTML*/
     return TRUE;
 }
 
@@ -3603,7 +3602,7 @@ config_error_init(boolean from_file, const char *sourcename, boolean secure)
 
     tmp->next = config_error_data;
     config_error_data = tmp;
-    gp.program_state.config_error_ready = TRUE;
+    program_state.config_error_ready = TRUE;
 }
 
 staticfn boolean
@@ -3669,7 +3668,7 @@ config_erradd(const char *buf)
     punct = c_eos((char *) buf) - 1; /* eos(buf)-1 is valid */
     punct = strchr(".!?", *punct) ? "" : ".";
 
-    if (!gp.program_state.config_error_ready) {
+    if (!program_state.config_error_ready) {
         /* either very early, where pline() will use raw_print(), or
            player gave bad value when prompted by interactive 'O' command */
         pline("%s%s%s", !iflags.window_inited ? "config_error_add: " : "",
@@ -3731,7 +3730,7 @@ config_error_done(void)
     }
     config_error_data = tmp->next;
     free(tmp);
-    gp.program_state.config_error_ready = (config_error_data != 0);
+    program_state.config_error_ready = (config_error_data != 0);
     return n;
 }
 
@@ -4134,14 +4133,14 @@ read_wizkit(void)
     if (!wizard || !(fp = fopen_wizkit_file()))
         return;
 
-    gp.program_state.wizkit_wishing = 1;
+    program_state.wizkit_wishing = 1;
     config_error_init(TRUE, "WIZKIT", FALSE);
 
     parse_conf_file(fp, proc_wizkit_line);
     (void) fclose(fp);
 
     config_error_done();
-    gp.program_state.wizkit_wishing = 0;
+    program_state.wizkit_wishing = 0;
 
     return;
 }
@@ -4351,13 +4350,13 @@ paniclog(
 #ifdef PANICLOG
     FILE *lfile;
 
-    if (!gp.program_state.in_paniclog) {
-        gp.program_state.in_paniclog = 1;
+    if (!program_state.in_paniclog) {
+        program_state.in_paniclog = 1;
         lfile = fopen_datafile(PANICLOG, "a", TROUBLEPREFIX);
         if (lfile) {
 #ifdef PANICLOG_FMT2
             (void) fprintf(lfile, "%ld %s: %s %s\n",
-                           ubirthday, (gp.plname[0] ? gp.plname : "(none)"),
+                           ubirthday, (svp.plname[0] ? svp.plname : "(none)"),
                            type, reason);
 #else
             char buf[BUFSZ];
@@ -4372,7 +4371,7 @@ paniclog(
 #endif /* !PANICLOG_FMT2 */
             (void) fclose(lfile);
         }
-        gp.program_state.in_paniclog = 0;
+        program_state.in_paniclog = 0;
     }
 #endif /* PANICLOG */
     return;
@@ -4479,9 +4478,9 @@ recover_savefile(void)
     /*
      * Set a flag for the savefile routines to know the
      * circumstances and act accordingly:
-     *    gp.program_state.in_self_recover
+     *    program_state.in_self_recover
      */
-    gp.program_state.in_self_recover = TRUE;
+    program_state.in_self_recover = TRUE;
     set_savefile_name(TRUE);
     snhfp = create_savefile();
     if (!snhfp) {
@@ -4589,11 +4588,11 @@ recover_savefile(void)
         close_nhfile(gnhfp);
         close_nhfile(snhfp);
         close_nhfile(lnhfp);
-        gp.program_state.in_self_recover = FALSE;
+        program_state.in_self_recover = FALSE;
         delete_savefile();
         return FALSE;
     }
-    /* we don't clear gp.program_state.in_self_recover here, we
+    /* we don't clear program_state.in_self_recover here, we
        leave it as a flag to reload the structlevel savefile
        in the caller. The caller should then clear it. */
     return TRUE;
@@ -4945,7 +4944,7 @@ reveal_paths(void)
 #define TITLESCOPE 2
 #define PASSAGESCOPE 3
 
-#define MAXPASSAGES SIZE(gc.context.novel.pasg) /* 20 */
+#define MAXPASSAGES SIZE(svc.context.novel.pasg) /* 20 */
 
 staticfn int choose_passage(int, unsigned);
 
@@ -4963,32 +4962,32 @@ choose_passage(int passagecnt, /* total of available passages */
 
     /* if a different book or we've used up all the passages already,
        reset in order to have all 'passagecnt' passages available */
-    if (oid != gc.context.novel.id || gc.context.novel.count == 0) {
+    if (oid != svc.context.novel.id || svc.context.novel.count == 0) {
         int i, range = passagecnt, limit = MAXPASSAGES;
 
-        gc.context.novel.id = oid;
+        svc.context.novel.id = oid;
         if (range <= limit) {
             /* collect all of the N indices */
-            gc.context.novel.count = passagecnt;
+            svc.context.novel.count = passagecnt;
             for (idx = 0; idx < MAXPASSAGES; idx++)
-                gc.context.novel.pasg[idx] = (xint16) ((idx < passagecnt)
+                svc.context.novel.pasg[idx] = (xint16) ((idx < passagecnt)
                                                    ? idx + 1 : 0);
         } else {
             /* collect MAXPASSAGES of the N indices */
-            gc.context.novel.count = MAXPASSAGES;
+            svc.context.novel.count = MAXPASSAGES;
             for (idx = i = 0; i < passagecnt; ++i, --range)
                 if (range > 0 && rn2(range) < limit) {
-                    gc.context.novel.pasg[idx++] = (xint16) (i + 1);
+                    svc.context.novel.pasg[idx++] = (xint16) (i + 1);
                     --limit;
                 }
         }
     }
 
-    idx = rn2(gc.context.novel.count);
-    res = (int) gc.context.novel.pasg[idx];
+    idx = rn2(svc.context.novel.count);
+    res = (int) svc.context.novel.pasg[idx];
     /* move the last slot's passage index into the slot just used
        and reduce the number of passages available */
-    gc.context.novel.pasg[idx] = gc.context.novel.pasg[--gc.context.novel.count];
+    svc.context.novel.pasg[idx] = svc.context.novel.pasg[--svc.context.novel.count];
     return res;
 }
 
@@ -5217,10 +5216,10 @@ livelog_add(long ll_type, const char *str)
                        "gender=%s"   LLOG_SEP  "align=%s"      LLOG_SEP
                        "turns=%ld"   LLOG_SEP  "starttime=%ld" LLOG_SEP
                        "curtime=%ld" LLOG_SEP  "message=%s"    LLOG_EOL,
-                       (ll_type & sysopt.livelog), gp.plname,
+                       (ll_type & sysopt.livelog), svp.plname,
                        gu.urole.filecode, gu.urace.filecode,
                        genders[gindx].filecode, aligns[aindx].filecode,
-                       gm.moves, timet_to_seconds(ubirthday),
+                       svm.moves, timet_to_seconds(ubirthday),
                        timet_to_seconds(now), str);
         (void) fclose(livelogfile);
         unlock_file(LIVELOGFILE);

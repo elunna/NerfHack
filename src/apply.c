@@ -234,7 +234,7 @@ its_dead(coordxy rx, coordxy ry, int *resp, struct obj *stethoscope)
 
     /* Set only one of corpse, statue, and egg based on which is the topmost. */
     corpse = statue = egg = NULL;
-    for (otmp = gl.level.objects[rx][ry]; otmp; otmp = otmp->nexthere) {
+    for (otmp = svl.level.objects[rx][ry]; otmp; otmp = otmp->nexthere) {
         /* can't reach corpse on floor */
         if (otmp->otyp == CORPSE && floor) {
             corpse = otmp;
@@ -392,8 +392,8 @@ use_stethoscope(struct obj *obj)
     if (!getdir((char *) 0))
         return ECMD_CANCEL;
 
-    res = (gh.hero_seq == gc.context.stethoscope_seq) ? ECMD_TIME : ECMD_OK;
-    gc.context.stethoscope_seq = gh.hero_seq;
+    res = (gh.hero_seq == svc.context.stethoscope_seq) ? ECMD_TIME : ECMD_OK;
+    svc.context.stethoscope_seq = gh.hero_seq;
 
     gb.bhitpos.x = u.ux, gb.bhitpos.y = u.uy; /* tentative, reset below */
     gn.notonhead = u.uswallow;
@@ -1276,9 +1276,9 @@ use_bell(struct obj **optr)
     } else if (ordinary) {
         if (obj->cursed && !rn2(4)
             /* note: once any of them are gone, we stop all of them */
-            && !(gm.mvitals[PM_WOOD_NYMPH].mvflags & G_GONE)
-            && !(gm.mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
-            && !(gm.mvitals[PM_MOUNTAIN_NYMPH].mvflags & G_GONE)
+            && !(svm.mvitals[PM_WOOD_NYMPH].mvflags & G_GONE)
+            && !(svm.mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
+            && !(svm.mvitals[PM_MOUNTAIN_NYMPH].mvflags & G_GONE)
             && (mtmp = makemon(mkclass(S_NYMPH, 0), u.ux, u.uy,
                                NO_MINVENT | MM_NOMSG)) != 0) {
             You("summon %s!", a_monnam(mtmp));
@@ -1322,7 +1322,7 @@ use_bell(struct obj **optr)
 
         } else if (invoking) {
             pline("%s an unsettling shrill sound...", Tobjnam(obj, "issue"));
-            obj->age = gm.moves;
+            obj->age = svm.moves;
             learno = TRUE;
             wakem = TRUE;
 
@@ -2531,7 +2531,7 @@ fig_transform(anything *arg, long timeout)
         impossible("null figurine in fig_transform()");
         return;
     }
-    silent = (timeout != gm.moves); /* happened while away */
+    silent = (timeout != svm.moves); /* happened while away */
     okay_spot = get_obj_location(figurine, &cc.x, &cc.y, 0);
     if (figurine->where == OBJ_INVENT || figurine->where == OBJ_MINVENT)
         okay_spot = enexto(&cc, cc.x, cc.y, &mons[figurine->corpsenm]);
@@ -2546,7 +2546,7 @@ fig_transform(anything *arg, long timeout)
     mtmp = make_familiar(figurine, cc.x, cc.y, TRUE);
     if (mtmp) {
         char and_vanish[BUFSZ];
-        struct obj *mshelter = gl.level.objects[mtmp->mx][mtmp->my];
+        struct obj *mshelter = svl.level.objects[mtmp->mx][mtmp->my];
 
         /* [m_monnam() yields accurate mon type, overriding hallucination] */
         Sprintf(monnambuf, "%s", an(m_monnam(mtmp)));
@@ -2675,7 +2675,7 @@ use_figurine(struct obj **optr)
             return ECMD_OK;
     }
     if (!getdir((char *) 0)) {
-        gc.context.move = gm.multi = 0;
+        svc.context.move = gm.multi = 0;
         return ECMD_CANCEL;
     }
     x = u.ux + u.dx;
@@ -3304,7 +3304,7 @@ use_whip(struct obj *obj)
             /* Have a shot at snaring something on the floor.  A flyer
                can reach the floor so could just pick an item up, but
                allow snagging by whip too. */
-            otmp = gl.level.objects[u.ux][u.uy];
+            otmp = svl.level.objects[u.ux][u.uy];
             if (otmp && otmp->otyp == CORPSE
                 && (otmp->corpsenm == PM_HORSE
                     || otmp->corpsenm == little_to_big(PM_HORSE) /* warhorse */
@@ -3634,7 +3634,7 @@ use_pole(struct obj *obj, boolean autohit)
     int res = ECMD_OK, typ, max_range, min_range, glyph;
     coord cc;
     struct monst *mtmp;
-    struct monst *hitm = gc.context.polearm.hitmon;
+    struct monst *hitm = svc.context.polearm.hitmon;
 
     /* Are you allowed to use the pole? */
     if (u.uswallow) {
@@ -3715,19 +3715,19 @@ use_pole(struct obj *obj, boolean autohit)
         return ECMD_FAIL;
     }
 
-    gc.context.polearm.hitmon = (struct monst *) 0;
+    svc.context.polearm.hitmon = (struct monst *) 0;
     /* Attack the monster there */
     gb.bhitpos = cc;
     if ((mtmp = m_at(gb.bhitpos.x, gb.bhitpos.y)) != (struct monst *) 0) {
         if (attack_checks(mtmp, uwep)) /* can attack proceed? */
             /* no, abort the attack attempt; result depends on
                res: 1 => polearm became wielded, 0 => already wielded;
-               gc.context.move: 1 => discovered hidden monster at target spot,
+               svc.context.move: 1 => discovered hidden monster at target spot,
                0 => answered 'n' to "Really attack?" prompt */
-            return res | (gc.context.move ? ECMD_TIME : ECMD_OK);
+            return res | (svc.context.move ? ECMD_TIME : ECMD_OK);
         if (overexertion())
             return ECMD_TIME; /* burn nutrition; maybe pass out */
-        gc.context.polearm.hitmon = mtmp;
+        svc.context.polearm.hitmon = mtmp;
         check_caitiff(mtmp);
         gn.notonhead = (gb.bhitpos.x != mtmp->mx || gb.bhitpos.y != mtmp->my);
         (void) thitmonst(mtmp, uwep);
@@ -4027,7 +4027,7 @@ use_grapple(struct obj *obj)
         /* FIXME -- untrap needs to deal with non-adjacent traps */
         break;
     case 1: /* Object */
-        if ((otmp = gl.level.objects[cc.x][cc.y]) != 0) {
+        if ((otmp = svl.level.objects[cc.x][cc.y]) != 0) {
             You("snag an object from the %s!", surface(cc.x, cc.y));
             (void) pickup_object(otmp, 1L, FALSE);
             /* If pickup fails, leave it alone */
@@ -4278,7 +4278,7 @@ void exploding_wand_efx(struct obj *obj)
         if (obj->otyp == WAN_DIGGING) {
             schar typ;
 
-            if (dig_check(BY_OBJECT, FALSE, x, y)) {
+            if (dig_check(BY_OBJECT, x, y) < DIGCHECK_FAILED) {
                 if (IS_WALL(levl[x][y].typ) || IS_DOOR(levl[x][y].typ)) {
                     /* normally, pits and holes don't anger guards, but they
                      * do if it's a wall or door that's being dug */
@@ -4325,7 +4325,7 @@ void exploding_wand_efx(struct obj *obj)
                 (void) bhitm(mon, obj);
                 /* if (disp.botl) bot(); */
             }
-            if (affects_objects && gl.level.objects[x][y]) {
+            if (affects_objects && svl.level.objects[x][y]) {
                 (void) bhitpile(obj, bhito, x, y, 0);
                 if (disp.botl)
                     bot(); /* potion effects */
@@ -4343,7 +4343,7 @@ void exploding_wand_efx(struct obj *obj)
              * of obj->bypass in the zap code to accomplish that last case
              * since it's also used by retouch_equipment() for polyself.)
              */
-            if (affects_objects && gl.level.objects[x][y]) {
+            if (affects_objects && svl.level.objects[x][y]) {
                 (void) bhitpile(obj, bhito, x, y, 0);
                 if (disp.botl)
                     bot(); /* potion effects */
@@ -4984,8 +4984,8 @@ use_deck(struct obj *obj)
                 }
 
                 /* No protection = dead */
-                Sprintf(gk.killer.name, "the card of Death");
-                gk.killer.format = NO_KILLER_PREFIX;
+                Sprintf(svk.killer.name, "the card of Death");
+                svk.killer.format = NO_KILLER_PREFIX;
                 done(DIED);
                 break;
             case 6: /* Judgment */

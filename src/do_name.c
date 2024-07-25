@@ -1,4 +1,4 @@
-/* NetHack 3.7	do_name.c	$NHDT-Date: 1720128164 2024/07/04 21:22:44 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.319 $ */
+/* NetHack 3.7	do_name.c	$NHDT-Date: 1720895738 2024/07/13 18:35:38 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.320 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -220,7 +220,7 @@ do_mgivenname(void)
             mtmp = u.usteed;
         } else {
             pline("This %s creature is called %s and cannot be renamed.",
-                  beautiful(), gp.plname);
+                  beautiful(), svp.plname);
             return;
         }
     } else
@@ -779,7 +779,7 @@ const char *
 rndghostname(void)
 {
     return rn2(7) ? ROLL_FROM(ghostnames)
-                  : (const char *) gp.plname;
+                  : (const char *) svp.plname;
 }
 
 /*
@@ -849,7 +849,7 @@ x_monnam(
     if (mtmp == &gy.youmonst)
         return strcpy(buf, "you"); /* ignore article, "invisible", &c */
 
-    if (gp.program_state.gameover)
+    if (program_state.gameover)
         suppress |= SUPPRESS_HALLUCINATION;
     if (article == ARTICLE_YOUR && !mtmp->mtame)
         article = ARTICLE_THE;
@@ -867,7 +867,7 @@ x_monnam(
     do_hallu = Hallucination && !(suppress & SUPPRESS_HALLUCINATION);
     do_invis = mtmp->minvis && !(suppress & SUPPRESS_INVISIBLE);
     do_it = !canspotmon(mtmp) && article != ARTICLE_YOUR
-            && !gp.program_state.gameover && mtmp != u.usteed
+            && !program_state.gameover && mtmp != u.usteed
             && !engulfing_u(mtmp) && !(suppress & SUPPRESS_IT);
     do_saddle = !(suppress & SUPPRESS_SADDLE);
     do_mappear = mappear_as_mon && !(suppress & SUPPRESS_MAPPEARANCE);
@@ -880,8 +880,11 @@ x_monnam(
     /* unseen monsters, etc.; usually "it" but sometimes more specific;
        when hallucinating, the more specific values might be inverted */
     if (do_it) {
+        /* !is_animal excludes all Y; !mindless excludes Z, M, \' */
+        boolean s_one = humanoid(mdat) && !is_animal(mdat) && !mindless(mdat);
+
         Strcpy(buf, !augment_it ? "it"
-                    : (!do_hallu ? humanoid(mdat) : !rn2(2)) ? "someone"
+                    : (!do_hallu ? s_one : !rn2(2)) ? "someone"
                       : "something");
         return buf;
     }
@@ -1274,7 +1277,7 @@ minimal_monnam(struct monst *mon, boolean ckloc)
                 fmt_ptr((genericptr_t) mon->data),
                 fmt_ptr((genericptr_t) &mons[NUMMONS]));
     } else if (ckloc && ptr == &mons[PM_LONG_WORM] && mon->mx
-               && gl.level.monsters[mon->mx][mon->my] != mon) {
+               && svl.level.monsters[mon->mx][mon->my] != mon) {
         Sprintf(outbuf, "%s <%d,%d>",
                 pmname(&mons[PM_LONG_WORM_TAIL], Mgender(mon)),
                 mon->mx, mon->my);
@@ -1498,7 +1501,7 @@ const char *
 hliquid(
     const char *liquidpref) /* use as-is when not hallucintg (unless empty) */
 {
-    boolean hallucinate = Hallucination && !gp.program_state.gameover;
+    boolean hallucinate = Hallucination && !program_state.gameover;
 
     if (hallucinate || !liquidpref || !*liquidpref) {
         int indx, count = SIZE(hliquids);

@@ -194,7 +194,7 @@ breakchestlock(struct obj *box, boolean destroyit)
                 useup(otmp);
             }
             if (box->otyp == ICE_BOX && otmp->otyp == CORPSE) {
-                otmp->age = gm.moves - otmp->age; /* actual age */
+                otmp->age = svm.moves - otmp->age; /* actual age */
                 start_corpse_timeout(otmp);
             }
             place_object(otmp, u.ux, u.uy);
@@ -446,7 +446,7 @@ pick_lock(
 
         count = 0;
         c = 'n'; /* in case there are no boxes here */
-        for (otmp = gl.level.objects[cc.x][cc.y]; otmp;
+        for (otmp = svl.level.objects[cc.x][cc.y]; otmp;
              otmp = otmp->nexthere) {
             /* autounlock on boxes: only the one that was just discovered to
                be locked; don't include any other boxes which might be here */
@@ -605,7 +605,7 @@ pick_lock(
             /* this is probably only relevant when blind */
             feel_location(cc.x, cc.y);
             if (door->glyph != oldglyph
-                || gl.lastseentyp[cc.x][cc.y] != oldlastseentyp)
+                || svl.lastseentyp[cc.x][cc.y] != oldlastseentyp)
                 res = PICKLOCK_LEARNED_SOMETHING;
 
             if (is_drawbridge_wall(cc.x, cc.y) >= 0)
@@ -702,7 +702,7 @@ pick_lock(
             gx.xlock.box = 0;
         }
     }
-    gc.context.move = 0;
+    svc.context.move = 0;
     gx.xlock.chance = ch;
     gx.xlock.picktyp = picktyp;
     gx.xlock.magic_key = is_magic_key(&gy.youmonst, pick);
@@ -769,7 +769,7 @@ doforce(void)
 
     /* A lock is made only for the honest man, the thief will break it. */
     gx.xlock.box = (struct obj *) 0;
-    for (otmp = gl.level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+    for (otmp = svl.level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
         if (Is_box(otmp)) {
             if (otmp->obroken || !otmp->olocked) {
                 /* force doname() to omit known "broken" or "unlocked"
@@ -890,7 +890,7 @@ doopen_indir(coordxy x, coordxy y)
 
         newsym(cc.x, cc.y);
         if (door->glyph != oldglyph
-            || gl.lastseentyp[cc.x][cc.y] != oldlastseentyp)
+            || svl.lastseentyp[cc.x][cc.y] != oldlastseentyp)
             res = ECMD_TIME; /* learned something */
     }
 
@@ -1054,7 +1054,7 @@ doclose(void)
         schar oldlastseentyp = update_mapseen_for(x, y);
 
         feel_location(x, y);
-        if (door->glyph != oldglyph || gl.lastseentyp[x][y] != oldlastseentyp)
+        if (door->glyph != oldglyph || svl.lastseentyp[x][y] != oldlastseentyp)
             res = ECMD_TIME; /* learned something */
     }
 

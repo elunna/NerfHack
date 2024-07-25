@@ -76,7 +76,7 @@ cursetxt(struct monst *mtmp, boolean undirected)
             point_msg = "at you, then curses";
 
         pline_mon(mtmp, "%s points %s.", Monnam(mtmp), point_msg);
-    } else if ((!(gm.moves % 4) || !rn2(4))) {
+    } else if ((!(svm.moves % 4) || !rn2(4))) {
         if (!Deaf)
             Norep("You hear a mumbled curse.");   /* Deaf-aware */
     }
@@ -438,14 +438,14 @@ touch_of_death(struct monst *mtmp)
         u.mh = 0;
         rehumanize(); /* fatal iff Unchanging */
     } else if (drain >= u.uhpmax) {
-        gk.killer.format = KILLED_BY;
-        Strcpy(gk.killer.name, kbuf);
+        svk.killer.format = KILLED_BY;
+        Strcpy(svk.killer.name, kbuf);
         done(DIED);
     } else {
         u.uhpmax -= drain;
         losehp(dmg, kbuf, KILLED_BY);
     }
-    gk.killer.name[0] = '\0'; /* not killed if we get here... */
+    svk.killer.name[0] = '\0'; /* not killed if we get here... */
 }
 
 /* give a reason for death by some monster spells */
@@ -684,7 +684,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         }
         break;
     case MGC_CLONE_WIZ:
-        if (mtmp->iswiz && gc.context.no_of_wizards == 1) {
+        if (mtmp->iswiz && svc.context.no_of_wizards == 1) {
             pline("Double Trouble...");
             clonewiz();
             dmg = 0;
@@ -766,7 +766,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             losestr(rnd(dmg),
                     death_inflicted_by(kbuf, "strength loss", mtmp),
                     KILLED_BY);
-            gk.killer.name[0] = '\0'; /* not killed if we get here... */
+            svk.killer.name[0] = '\0'; /* not killed if we get here... */
             monstunseesu(M_SEEN_MAGR);
         }
         dmg = 0;
@@ -963,15 +963,15 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
             dmg = (dmg + 1) / 2;
         if (u.umonnum == PM_IRON_GOLEM) {
             You("rust!");
-            Strcpy(gk.killer.name, "rusted away");
-            gk.killer.format = NO_KILLER_PREFIX;
+            Strcpy(svk.killer.name, "rusted away");
+            svk.killer.format = NO_KILLER_PREFIX;
             rehumanize();
             dmg = 0; /* prevent further damage after rehumanization */
         }
         erode_armor(&gy.youmonst, ERODE_RUST);
         /* since inventory items aren't affected, don't include this */
         /* make floor items wet */
-        water_damage_chain(gl.level.objects[u.ux][u.uy], TRUE);
+        water_damage_chain(svl.level.objects[u.ux][u.uy], TRUE);
         break;
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
@@ -1335,7 +1335,7 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             if (!is_undead(mtmp->data) && !is_demon(mtmp->data))
                 return TRUE;
         }
-        if ((!mtmp->iswiz || gc.context.no_of_wizards > 1)
+        if ((!mtmp->iswiz || svc.context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
         /* aggravation (global wakeup) when everyone is already active */

@@ -1810,7 +1810,7 @@ seffect_light(struct obj **sobjp)
     } else {
         int pm = scursed ? PM_BLACK_LIGHT : PM_YELLOW_LIGHT;
 
-        if ((gm.mvitals[pm].mvflags & G_GONE)) {
+        if ((svm.mvitals[pm].mvflags & G_GONE)) {
             pline("Tiny lights sparkle in the air momentarily.");
         } else {
             /* surround with cancelled tame lights which won't explode */
@@ -1890,7 +1890,7 @@ seffect_amnesia(struct obj **sobjp)
     forget((!sblessed ? ALL_SPELLS : 0));
     if (Hallucination) /* Ommmmmm! */
         Your("mind releases itself from mundane concerns.");
-    else if (!strncmpi(gp.plname, "Maud", 4))
+    else if (!strncmpi(svp.plname, "Maud", 4))
         pline("As your mind turns inward on itself,"
               " you forget everything else.");
     else if (rn2(2))
@@ -2177,7 +2177,7 @@ seffect_magic_mapping(struct obj **sobjp)
     int cval;
 
     if (is_scroll) {
-        if (gl.level.flags.nommap) {
+        if (svl.level.flags.nommap) {
             Your("mind is filled with crazy lines!");
             if (Hallucination)
                 pline("Wow!  Modern art.");
@@ -2198,7 +2198,7 @@ seffect_magic_mapping(struct obj **sobjp)
         gk.known = TRUE;
     }
 
-    if (gl.level.flags.nommap) {
+    if (svl.level.flags.nommap) {
         Your("%s spins as %s blocks the spell!", body_part(HEAD),
              something);
         make_confused(HConfusion + rnd(30), FALSE);
@@ -2734,12 +2734,12 @@ litroom(
         int rx, ry;
 
         if (rnum >= 0) {
-            for (rx = gr.rooms[rnum].lx - 1; rx <= gr.rooms[rnum].hx + 1; rx++)
-                for (ry = gr.rooms[rnum].ly - 1;
-                     ry <= gr.rooms[rnum].hy + 1; ry++)
+            for (rx = svr.rooms[rnum].lx - 1; rx <= svr.rooms[rnum].hx + 1; rx++)
+                for (ry = svr.rooms[rnum].ly - 1;
+                     ry <= svr.rooms[rnum].hy + 1; ry++)
                     set_lit(rx, ry,
                             (genericptr_t) (on ? &is_lit : (char *) 0));
-            gr.rooms[rnum].rlit = on;
+            svr.rooms[rnum].rlit = on;
         }
         /* hallways remain dark on the rogue level */
     } else if (is_art(obj, ART_SUNSWORD)) {
@@ -2890,7 +2890,7 @@ do_genocide(
             }
 #endif
             mndx = name_to_mon(buf, (int *) 0);
-            if (mndx == NON_PM || (gm.mvitals[mndx].mvflags & G_GENOD)) {
+            if (mndx == NON_PM || (svm.mvitals[mndx].mvflags & G_GENOD)) {
                 pline("Such creatures %s exist in this world.",
                       (mndx == NON_PM) ? "do not" : "no longer");
                 continue;
@@ -2952,7 +2952,7 @@ do_genocide(
     if (how & REALLY) {
         if (only_on_level) {
             livelog_printf(LL_GENOCIDE, "genocided %s on a level in %s",
-                           makeplural(buf), gd.dungeons[u.uz.dnum].dname);
+                           makeplural(buf), svd.dungeons[u.uz.dnum].dname);
         } else if (!num_genocides())
             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
                            "performed %s first genocide (%s)",
@@ -2962,7 +2962,7 @@ do_genocide(
 
         /* setting no-corpse affects wishing and random tin generation */
         if (!only_on_level) {
-            gm.mvitals[mndx].mvflags |= (G_GENOD | G_NOCORPSE);
+            svm.mvitals[mndx].mvflags |= (G_GENOD | G_NOCORPSE);
         }
         pline("Wiped out %s%s%s.", which,
               (*which != 'a') ? buf : makeplural(buf),
@@ -2971,22 +2971,22 @@ do_genocide(
         if (killplayer) {
             u.uhp = -1;
             if (how & PLAYER) {
-                gk.killer.format = KILLED_BY;
-                Strcpy(gk.killer.name, "genocidal confusion");
+                svk.killer.format = KILLED_BY;
+                Strcpy(svk.killer.name, "genocidal confusion");
             } else if (how & ONTHRONE) {
                 /* player selected while on a throne */
-                gk.killer.format = KILLED_BY_AN;
-                Strcpy(gk.killer.name, "imperious order");
+                svk.killer.format = KILLED_BY_AN;
+                Strcpy(svk.killer.name, "imperious order");
             } else { /* selected player deliberately, not confused */
-                gk.killer.format = KILLED_BY_AN;
-                Strcpy(gk.killer.name, "scroll of genocide");
+                svk.killer.format = KILLED_BY_AN;
+                Strcpy(svk.killer.name, "scroll of genocide");
             }
 
             /* Polymorphed characters will die as soon as they're rehumanized.
              */
             /* KMH -- Unchanging prevents rehumanization */
             if (Upolyd && ptr != gy.youmonst.data) {
-                delayed_killer(POLYMORPH, gk.killer.format, gk.killer.name);
+                delayed_killer(POLYMORPH, svk.killer.format, svk.killer.name);
                 You_feel("%s inside.", udeadinside());
             } else
                 done(GENOCIDED);
@@ -3007,12 +3007,12 @@ do_genocide(
         int cnt = 0, census = monster_census(FALSE);
 
         if (!(mons[mndx].geno & G_UNIQ)
-            && !(gm.mvitals[mndx].mvflags & (G_GENOD | G_EXTINCT)))
+            && !(svm.mvitals[mndx].mvflags & (G_GENOD | G_EXTINCT)))
             for (i = rn1(3, 4); i > 0; i--) {
                 if (!makemon(ptr, u.ux, u.uy, NO_MINVENT | MM_NOMSG))
                     break; /* couldn't make one */
                 ++cnt;
-                if (gm.mvitals[mndx].mvflags & G_EXTINCT)
+                if (svm.mvitals[mndx].mvflags & G_EXTINCT)
                     break; /* just made last one */
             }
         if (cnt) {

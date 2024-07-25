@@ -363,7 +363,7 @@ enlightenment(
     if (ge.en_via_menu)
         start_menu(ge.en_win, MENU_BEHAVE_STANDARD);
 
-    Strcpy(tmpbuf, gp.plname);
+    Strcpy(tmpbuf, svp.plname);
     *tmpbuf = highc(*tmpbuf); /* same adjustment as bottom line */
     /* as in background_enlightenment, when poly'd we need to use the saved
        gender in u.mfemale rather than the current you-as-monster gender */
@@ -432,7 +432,7 @@ enlightenment(
                 u.lastprayresult == PRAY_ANGER ? "angered your god" :
                 u.lastprayresult == PRAY_CONV ? "converted to a new god" :
                 "prayed",
-                gm.moves - u.lastprayed);
+                svm.moves - u.lastprayed);
         enl_msg(buf, "", "", "", "");
         if (u.lastprayresult == PRAY_GOOD) {
             enl_msg("That prayer was well received", "", "", "", "");
@@ -572,7 +572,7 @@ background_enlightenment(int unused_mode UNUSED, int final)
                      way sooner (in other words, didn't start that way) */
                   ? (!final ? "now " : "belatedly ")
                   /* atheist (ignored in very early game) */
-                  : (!u.uconduct.gnostic && gm.moves > 1000L)
+                  : (!u.uconduct.gnostic && svm.moves > 1000L)
                      ? "nominally "
                      /* lastly, normal case */
                      : "",
@@ -637,13 +637,13 @@ background_enlightenment(int unused_mode UNUSED, int final)
                  !strncmp(tmpbuf, "Plane", 5) ? "Elemental " : "", tmpbuf);
     } else if (Is_knox(&u.uz)) {
         /* this gives away the fact that the knox branch is only 1 level */
-        Sprintf(buf, "on the %s level", gd.dungeons[u.uz.dnum].dname);
+        Sprintf(buf, "on the %s level", svd.dungeons[u.uz.dnum].dname);
         /* TODO? maybe phrase it differently when actually inside the fort,
            if we're able to determine that (not trivial) */
     } else {
         char dgnbuf[QBUFSZ];
 
-        Strcpy(dgnbuf, gd.dungeons[u.uz.dnum].dname);
+        Strcpy(dgnbuf, svd.dungeons[u.uz.dnum].dname);
         if (!strncmpi(dgnbuf, "The ", 4))
             *dgnbuf = lowc(*dgnbuf);
         Sprintf(tmpbuf, "level %d",
@@ -659,11 +659,11 @@ background_enlightenment(int unused_mode UNUSED, int final)
     you_are(buf, "");
 
     /* this is shown even if the 'time' option is off */
-    if (gm.moves == 1L) {
+    if (svm.moves == 1L) {
         you_have("just started your adventure", "");
     } else {
         /* 'turns' grates on the nerves in this context... */
-        Sprintf(buf, "the dungeon %ld turn%s ago", gm.moves, plur(gm.moves));
+        Sprintf(buf, "the dungeon %ld turn%s ago", svm.moves, plur(svm.moves));
         /* same phrasing for current and final: "entered" is unconditional */
         enlght_line(You_, "entered ", buf, "");
     }
@@ -975,7 +975,7 @@ status_enlightenment(int mode, int final)
                       /* if hero dies while dismounting, u.usteed will still
                          be set; we want to ignore steed in that situation */
                       && !(final == ENL_GAMEOVERDEAD
-                           && !strcmp(gk.killer.name, "riding accident")));
+                           && !strcmp(svk.killer.name, "riding accident")));
     const char *steedname = (!Riding ? (char *) 0
                       : x_monnam(u.usteed,
                                  u.usteed->mtame ? ARTICLE_YOUR : ARTICLE_THE,
@@ -1643,41 +1643,41 @@ attributes_enlightenment(
         you_are("telepathic", from_what(TELEPAT));
     if (Warning)
         you_are("warned", from_what(WARNING));
-    if (Warn_of_mon && gc.context.warntype.obj) {
+    if (Warn_of_mon && svc.context.warntype.obj) {
         Sprintf(buf, "aware of the presence of %s",
-                (gc.context.warntype.obj & MH_HUMAN) ? "humans"
-                : (gc.context.warntype.obj & MH_ELF) ? "elves"
-                : (gc.context.warntype.obj & MH_ORC) ? "orcs"
-                : (gc.context.warntype.obj & MH_DEMON) ? "demons"
-                : (gc.context.warntype.obj & MH_UNDEAD) ? "undead"
-                : (gc.context.warntype.obj & MH_WERE) ? "lycanthropes"
-                : (gc.context.warntype.obj & MH_DRAGON) ? "dragons"
-                : (gc.context.warntype.obj & MH_TROLL) ? "trolls"
-                : (gc.context.warntype.obj & MH_OGRE) ? "ogres" 
-                : (gc.context.warntype.obj & MH_GIANT) ? "giants" 
-                : (gc.context.warntype.obj & MH_JABBERWOCK) ? "jabberwocks"
+                (svc.context.warntype.obj & MH_HUMAN) ? "humans"
+                : (svc.context.warntype.obj & MH_ELF) ? "elves"
+                : (svc.context.warntype.obj & MH_ORC) ? "orcs"
+                : (svc.context.warntype.obj & MH_DEMON) ? "demons"
+                : (svc.context.warntype.obj & MH_UNDEAD) ? "undead"
+                : (svc.context.warntype.obj & MH_WERE) ? "lycanthropes"
+                : (svc.context.warntype.obj & MH_DRAGON) ? "dragons"
+                : (svc.context.warntype.obj & MH_TROLL) ? "trolls"
+                : (svc.context.warntype.obj & MH_OGRE) ? "ogres" 
+                : (svc.context.warntype.obj & MH_GIANT) ? "giants" 
+                : (svc.context.warntype.obj & MH_JABBERWOCK) ? "jabberwocks"
                                                             : something);
         you_are(buf, from_what(WARN_OF_MON));
     }
-    if (Warn_of_mon && gc.context.warntype.polyd) {
+    if (Warn_of_mon && svc.context.warntype.polyd) {
         Sprintf(buf, "aware of the presence of %s",
-                ((gc.context.warntype.polyd & (MH_HUMAN | MH_ELF))
+                ((svc.context.warntype.polyd & (MH_HUMAN | MH_ELF))
                  == (MH_HUMAN | MH_ELF)) ? "humans and elves"
-                    : (gc.context.warntype.polyd & MH_HUMAN) ? "humans"
-                    : (gc.context.warntype.polyd & MH_ELF) ? "elves"
-                    : (gc.context.warntype.polyd & MH_ORC) ? "orcs"
-                    : (gc.context.warntype.polyd & MH_DEMON) ? "demons"
-                    : (gc.context.warntype.polyd & MH_UNDEAD) ? "undead"
-                    : (gc.context.warntype.polyd & MH_WERE) ? "lycanthropes"
-                    : (gc.context.warntype.polyd & MH_DRAGON) ? "dragons"
-                    : (gc.context.warntype.polyd & MH_TROLL) ? "trolls"
-                    : (gc.context.warntype.polyd & MH_OGRE) ? "ogres"
-                    : (gc.context.warntype.polyd & MH_GIANT) ? "giants"
-                    : (gc.context.warntype.polyd & MH_JABBERWOCK) ? "jabberwocks"
+                    : (svc.context.warntype.polyd & MH_HUMAN) ? "humans"
+                    : (svc.context.warntype.polyd & MH_ELF) ? "elves"
+                    : (svc.context.warntype.polyd & MH_ORC) ? "orcs"
+                    : (svc.context.warntype.polyd & MH_DEMON) ? "demons"
+                    : (svc.context.warntype.polyd & MH_UNDEAD) ? "undead"
+                    : (svc.context.warntype.polyd & MH_WERE) ? "lycanthropes"
+                    : (svc.context.warntype.polyd & MH_DRAGON) ? "dragons"
+                    : (svc.context.warntype.polyd & MH_TROLL) ? "trolls"
+                    : (svc.context.warntype.polyd & MH_OGRE) ? "ogres"
+                    : (svc.context.warntype.polyd & MH_GIANT) ? "giants"
+                    : (svc.context.warntype.polyd & MH_JABBERWOCK) ? "jabberwocks"
                     : "certain monsters");
         you_are(buf, "");
     }
-    warnspecies =  gc.context.warntype.speciesidx;
+    warnspecies =  svc.context.warntype.speciesidx;
     if (Warn_of_mon && ismnum(warnspecies)) {
         Sprintf(buf, "aware of the presence of %s",
                 makeplural(mons[warnspecies].pmnames[NEUTRAL]));
@@ -2023,7 +2023,7 @@ attributes_enlightenment(
             Sprintf(buf, "Fruit #%d ", f->fid);
             enl_msg(buf, "is ", "was ", f->fname, "");
         }
-        enl_msg("The current fruit ", "is ", "was ", gp.pl_fruit, "");
+        enl_msg("The current fruit ", "is ", "was ", svp.pl_fruit, "");
         Sprintf(buf, "%d", flags.made_fruit);
         enl_msg("The made fruit flag ", "is ", "was ", buf, "");
     }
@@ -2111,7 +2111,7 @@ youhiding(boolean via_enlghtmt, /* enlightenment line vs topl message */
             if (is_pool(u.ux, u.uy))
                 Sprintf(bp, " in the %s", waterbody_name(u.ux, u.uy));
         } else if (hides_under(gy.youmonst.data)) {
-            struct obj *o = gl.level.objects[u.ux][u.uy];
+            struct obj *o = svl.level.objects[u.ux][u.uy];
 
             if (o)
                 Sprintf(bp, " underneath %s", ansimpleoname(o));
@@ -2517,7 +2517,7 @@ record_achievement(schar achidx)
     /* avoid livelog for achievements recorded during final disclosure:
        nudist and blind-from-birth; also ascension which is suppressed
        by this gets logged separately in really_done() */
-    if (gp.program_state.gameover)
+    if (program_state.gameover)
         return;
 
     if (absidx >= ACH_RNK1 && absidx <= ACH_RNK8) {
@@ -2530,8 +2530,8 @@ record_achievement(schar achidx)
                || achidx == ACH_MINE_PRIZE) {
         /* need to supply extra information for these two */
         short otyp = ((achidx == ACH_SOKO_PRIZE)
-                      ? gc.context.achieveo.soko_prize_otyp
-                      : gc.context.achieveo.mines_prize_otyp);
+                      ? svc.context.achieveo.soko_prize_otyp
+                      : svc.context.achieveo.mines_prize_otyp);
 
         /* note: OBJ_NAME() works here because both "bag of holding" and
            "amulet of reflection" are fully named in their objects[] entry
@@ -2763,8 +2763,8 @@ vanqsort_cmp(
         break;
     case VANQ_COUNT_H_L:
     case VANQ_COUNT_L_H:
-        died1 = gm.mvitals[indx1].died;
-        died2 = gm.mvitals[indx2].died;
+        died1 = svm.mvitals[indx1].died;
+        died2 = svm.mvitals[indx2].died;
         res = died2 - died1; /* dead count high to low */
         if (flags.vanq_sortmode == VANQ_COUNT_L_H)
             res = -res; /* dead count low to high */
@@ -2839,7 +2839,7 @@ dovanquished(void)
 #define UniqCritterIndx(mndx) \
     ((mons[mndx].geno & G_UNIQ) != 0 && mndx != PM_HIGH_CLERIC)
 
-#define done_stopprint gp.program_state.stopprint
+#define done_stopprint program_state.stopprint
 
 void
 list_vanquished(char defquery, boolean ask)
@@ -2862,7 +2862,7 @@ list_vanquished(char defquery, boolean ask)
     /* get totals first */
     ntypes = 0;
     for (i = LOW_PM; i < NUMMONS; i++) {
-        if ((nkilled = (int) gm.mvitals[i].died) == 0)
+        if ((nkilled = (int) svm.mvitals[i].died) == 0)
             continue;
         mindx[ntypes++] = i;
         total_killed += (long) nkilled;
@@ -2901,7 +2901,7 @@ list_vanquished(char defquery, boolean ask)
             qsort((genericptr_t) mindx, ntypes, sizeof *mindx, vanqsort_cmp);
             for (ni = 0; ni < ntypes; ni++) {
                 i = mindx[ni];
-                nkilled = gm.mvitals[i].died;
+                nkilled = svm.mvitals[i].died;
                 mlet = mons[i].mlet;
                 if (class_header && mlet != prev_mlet) {
                     Strcpy(buf, def_monsyms[(int) mlet].explain);
@@ -2974,7 +2974,7 @@ list_vanquished(char defquery, boolean ask)
      * still in progress, so use present tense via pline(), or for dumplog
      * which needs putstr() and past tense.
      */
-    } else if (!gp.program_state.gameover) {
+    } else if (!program_state.gameover) {
         /* #vanquished rather than final disclosure, so pline() is ok */
         pline("No creatures have been vanquished.");
 #if defined(DUMPLOG) || defined(DUMPHTML)
@@ -2991,7 +2991,7 @@ num_genocides(void)
     int i, n = 0;
 
     for (i = LOW_PM; i < NUMMONS; ++i) {
-        if (gm.mvitals[i].mvflags & G_GENOD) {
+        if (svm.mvitals[i].mvflags & G_GENOD) {
             ++n;
             if (UniqCritterIndx(i))
                 impossible("unique creature '%d: %s' genocided?",
@@ -3010,7 +3010,7 @@ num_extinct(void)
     for (i = LOW_PM; i < NUMMONS; ++i) {
         if (UniqCritterIndx(i))
             continue;
-        if ((gm.mvitals[i].mvflags & G_GONE) == G_EXTINCT)
+        if ((svm.mvitals[i].mvflags & G_GONE) == G_EXTINCT)
             ++n;
     }
     return n;
@@ -3031,7 +3031,7 @@ num_gone(int mvflags, int *mindx)
         if (UniqCritterIndx(i))
             continue;
 
-        if ((gm.mvitals[i].mvflags & mflg) != 0)
+        if ((svm.mvitals[i].mvflags & mflg) != 0)
             mindx[n++] = i;
     }
     return n;
@@ -3049,7 +3049,7 @@ list_genocided(char defquery, boolean ask)
     char buf[BUFSZ];
     boolean genoing, /* prompting for genocide or class genocide */
             dumping; /* for DUMPLOG; doesn't need to be conditional */
-    boolean both = (gp.program_state.gameover || wizard || discover);
+    boolean both = (program_state.gameover || wizard || discover);
 
     dumping = (defquery == 'd');
     genoing = (defquery == 'g');
@@ -3133,7 +3133,7 @@ list_genocided(char defquery, boolean ask)
                  * clear.  During normal play, 'mndx' won't be in the
                  * collected list unless that bit is set.
                  */
-                if ((gm.mvitals[mndx].mvflags & G_GONE) == G_EXTINCT)
+                if ((svm.mvitals[mndx].mvflags & G_GONE) == G_EXTINCT)
                     Strcat(buf, " (extinct)");
                 putstr(klwin, 0, buf);
             }
@@ -3153,7 +3153,7 @@ list_genocided(char defquery, boolean ask)
         }
 
     /* See the comment for similar code near the end of list_vanquished(). */
-    } else if (!gp.program_state.gameover) {
+    } else if (!program_state.gameover) {
         /* #genocided rather than final disclosure, so pline() is ok and
            extinction has been ignored */
         pline("No creatures have been genocided%s.", genoing ? " yet" : "");
@@ -3186,18 +3186,18 @@ doborn(void)
 
     putstr(datawin, 0, "died born");
     for (i = LOW_PM; i < NUMMONS; i++)
-        if (gm.mvitals[i].born || gm.mvitals[i].died
-            || (gm.mvitals[i].mvflags & G_GONE) != 0) {
+        if (svm.mvitals[i].born || svm.mvitals[i].died
+            || (svm.mvitals[i].mvflags & G_GONE) != 0) {
             Sprintf(buf, fmt,
-                    gm.mvitals[i].died, gm.mvitals[i].born,
-                    ((gm.mvitals[i].mvflags & G_GONE) == G_EXTINCT) ? 'E'
-                    : ((gm.mvitals[i].mvflags & G_GONE) == G_GENOD) ? 'G'
-                      : ((gm.mvitals[i].mvflags & G_GONE) != 0) ? 'X'
+                    svm.mvitals[i].died, svm.mvitals[i].born,
+                    ((svm.mvitals[i].mvflags & G_GONE) == G_EXTINCT) ? 'E'
+                    : ((svm.mvitals[i].mvflags & G_GONE) == G_GENOD) ? 'G'
+                      : ((svm.mvitals[i].mvflags & G_GONE) != 0) ? 'X'
                         : ' ',
                     mons[i].pmnames[NEUTRAL]);
             putstr(datawin, 0, buf);
-            nborn += gm.mvitals[i].born;
-            ndied += gm.mvitals[i].died;
+            nborn += svm.mvitals[i].born;
+            ndied += svm.mvitals[i].died;
         }
 
     putstr(datawin, 0, "");
@@ -3500,7 +3500,7 @@ ustatusline(void)
         Strcat(info, mon_nam(u.ustuck));
     }
 
-    pline("Status of %s (%s):  Level %d  HP %d(%d)  AC %d%s.", gp.plname,
+    pline("Status of %s (%s):  Level %d  HP %d(%d)  AC %d%s.", svp.plname,
           piousness(FALSE, align_str(u.ualign.type)),
           Upolyd ? mons[u.umonnum].mlevel : u.ulevel, Upolyd ? u.mh : u.uhp,
           Upolyd ? u.mhmax : u.uhpmax, u.uac, info);

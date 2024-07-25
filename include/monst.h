@@ -220,7 +220,7 @@ struct monst {
 /* dead monsters stay on the fmon list until dmonsfree() at end of turn */
 #define DEADMONSTER(mon) ((mon)->mhp < 1)
 
-#define is_starting_pet(mon) ((mon)->m_id == gc.context.startingpet_mid)
+#define is_starting_pet(mon) ((mon)->m_id == svc.context.startingpet_mid)
 #define is_vampshifter(mon) ((mon)->cham == PM_VLAD_THE_IMPALER)
 #define vampshifted(mon) (is_vampshifter((mon)) && !is_vampire((mon)->data))
 /* Vlad might be vampshifted so just checking monst->data is insufficient */
@@ -232,7 +232,7 @@ struct monst {
 #define mundisplaceable(mon) \
     ((mon)->ispriest || (mon)->isshk                    \
      || (mon)->isgd || (mon)->data == &mons[PM_ORACLE]  \
-     || (mon)->m_id == gq.quest_status.leader_m_id)
+     || (mon)->m_id == svq.quest_status.leader_m_id)
 
 /* mimic appearances that block vision/light */
 #define is_lightblocker_mappear(mon) \

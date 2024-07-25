@@ -253,8 +253,8 @@ join_map_cleanup(void)
     for (x = 1; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++)
             levl[x][y].roomno = NO_ROOM;
-    gn.nroom = gn.nsubroom = 0;
-    gr.rooms[gn.nroom].hx = gs.subrooms[gn.nsubroom].hx = -1;
+    svn.nroom = gn.nsubroom = 0;
+    svr.rooms[svn.nroom].hx = gs.subrooms[gn.nsubroom].hx = -1;
 }
 
 staticfn void
@@ -274,12 +274,12 @@ join_map(schar bg_typ, schar fg_typ)
                 gm.min_rx = gm.max_rx = i;
                 gm.min_ry = gm.max_ry = j;
                 gn.n_loc_filled = 0;
-                flood_fill_rm(i, j, gn.nroom + ROOMOFFSET, FALSE, FALSE);
+                flood_fill_rm(i, j, svn.nroom + ROOMOFFSET, FALSE, FALSE);
                 if (gn.n_loc_filled > 3) {
                     add_room(gm.min_rx, gm.min_ry, gm.max_rx, gm.max_ry,
                              FALSE, OROOM, TRUE);
-                    gr.rooms[gn.nroom - 1].irregular = TRUE;
-                    if (gn.nroom >= (MAXNROFROOMS * 2))
+                    svr.rooms[svn.nroom - 1].irregular = TRUE;
+                    if (svn.nroom >= (MAXNROFROOMS * 2))
                         goto joinm;
                 } else {
                     /*
@@ -289,7 +289,7 @@ join_map(schar bg_typ, schar fg_typ)
                     for (sx = gm.min_rx; sx <= gm.max_rx; sx++)
                         for (sy = gm.min_ry; sy <= gm.max_ry; sy++)
                             if ((int) levl[sx][sy].roomno
-                                == gn.nroom + ROOMOFFSET) {
+                                == svn.nroom + ROOMOFFSET) {
                                 levl[sx][sy].typ = bg_typ;
                                 levl[sx][sy].roomno = NO_ROOM;
                             }
@@ -304,8 +304,8 @@ join_map(schar bg_typ, schar fg_typ)
      * so don't call sort_rooms(), which can screw up the roomno's
      * validity in the levl structure.
      */
-    for (croom = &gr.rooms[0], croom2 = croom + 1;
-         croom2 < &gr.rooms[gn.nroom]; ) {
+    for (croom = &svr.rooms[0], croom2 = croom + 1;
+         croom2 < &svr.rooms[svn.nroom]; ) {
         /* pick random starting and end locations for "corridor" */
         if (!somexy(croom, &sm) || !somexy(croom2, &em)) {
             /* ack! -- the level is going to be busted */
@@ -352,8 +352,8 @@ finish_map(
                     || (bg_typ == TREE && levl[i][j].typ == bg_typ)
                     || (walled && IS_WALL(levl[i][j].typ)))
                     levl[i][j].lit = TRUE;
-        for (i = 0; i < gn.nroom; i++)
-            gr.rooms[i].rlit = 1;
+        for (i = 0; i < svn.nroom; i++)
+            svr.rooms[i].rlit = 1;
     }
     /* light lava even if everything's otherwise unlit;
        ice might be frozen pool rather than frozen moat */
@@ -385,8 +385,8 @@ remove_rooms(int lx, int ly, int hx, int hy)
     int i;
     struct mkroom *croom;
 
-    for (i = gn.nroom - 1; i >= 0; --i) {
-        croom = &gr.rooms[i];
+    for (i = svn.nroom - 1; i >= 0; --i) {
+        croom = &svr.rooms[i];
         if (croom->hx < lx || croom->lx >= hx || croom->hy < ly
             || croom->ly >= hy)
             continue; /* no overlap */
@@ -415,8 +415,8 @@ remove_rooms(int lx, int ly, int hx, int hy)
 staticfn void
 remove_room(unsigned int roomno)
 {
-    struct mkroom *croom = &gr.rooms[roomno];
-    struct mkroom *maxroom = &gr.rooms[--gn.nroom];
+    struct mkroom *croom = &svr.rooms[roomno];
+    struct mkroom *maxroom = &svr.rooms[--svn.nroom];
     int i, j;
     unsigned oroomno;
 
@@ -427,7 +427,7 @@ remove_room(unsigned int roomno)
         *croom = *maxroom;
 
         /* since maxroom moved, update affected level roomno values */
-        oroomno = gn.nroom + ROOMOFFSET;
+        oroomno = svn.nroom + ROOMOFFSET;
         roomno += ROOMOFFSET;
         for (i = croom->lx; i <= croom->hx; ++i)
             for (j = croom->ly; j <= croom->hy; ++j) {
@@ -491,8 +491,8 @@ mkmap(lev_init *init_lev)
                init_lev->icedpools);
     /* a walled, joined level is cavernous, not mazelike -dlc */
     if (walled && join) {
-        gl.level.flags.is_maze_lev = FALSE;
-        gl.level.flags.is_cavernous_lev = TRUE;
+        svl.level.flags.is_maze_lev = FALSE;
+        svl.level.flags.is_cavernous_lev = TRUE;
     }
     free(gn.new_locations);
 }
@@ -524,7 +524,7 @@ makeriver(int x1, int y1, int x2, int y2)
     while (count++ < 2000) {
       	int rnum = levl[cx][cy].roomno - ROOMOFFSET;
       	chance = 0;
-        if (rnum >= 0 && gr.rooms[rnum].rtype != OROOM)
+        if (rnum >= 0 && svr.rooms[rnum].rtype != OROOM)
             chance = 0;
         else if (levl[cx][cy].typ == STAIRS)
             chance = 0;
