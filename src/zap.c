@@ -4423,7 +4423,7 @@ bhit(
             if ((weapon == KICKED_WEAPON) && is_pool_or_lava(x, y))
                 break;
             if (IS_SINK(typ) && weapon != FLASHED_LIGHT)
-                break; /* physical objects fall onto sink / forge */
+                break; /* physical objects fall onto sink */
         }
         /* limit range of ball so hero won't make an invalid move */
         if (weapon == THROWN_WEAPON && range > 0
@@ -5747,7 +5747,6 @@ zap_over_floor(
                     obj_ice_effects(x, y, TRUE);
                 }
             } /* ?WATER */
-
         } else if (is_ice(x, y)) {
             long melt_time;
 
@@ -5757,6 +5756,12 @@ zap_over_floor(
                 spot_stop_timers(x, y, MELT_ICE_AWAY);
                 start_melt_ice_timeout(x, y, melt_time);
             }
+        } else if (IS_FORGE(lev->typ)) {
+            create_gas_cloud(x, y, rnd(3), 0); /* 1..3, no damage */
+            if (see_it)
+                pline("Steam billows from the forge.");
+            rangemod -= 1;
+            coolforge(u.ux, u.uy);
         }
         break; /* ZT_COLD */
 

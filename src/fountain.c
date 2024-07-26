@@ -1067,6 +1067,19 @@ blowupforge(coordxy x, coordxy y)
 }
 
 void
+coolforge(int x, int y)
+{
+    if (cansee(x, y) || (x == u.ux && y == u.uy))
+        pline_The("lava in the forge cools and solidifies.");
+    levl[x][y].typ = ROOM, levl[x][y].flags = 0;
+    levl[x][y].doormask = 0;
+    set_levltyp(x, y, ROOM); /* updates level.flags.nforges */
+    newsym(x, y);
+    maybe_unhide_at(x, y);
+}
+
+
+void
 drinkforge(void)
 {
     if (Levitation) {
