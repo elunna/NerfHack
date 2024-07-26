@@ -913,6 +913,10 @@ mksobj_init(struct obj *otmp, boolean artif)
         if (is_poisonable(otmp) && !rn2(100))
             otmp->opoisoned = 1;
 
+        /* Occasionally just get a really high enchantment. */
+        if (otmp->spe == 0 && !rn2(23))
+            otmp->spe = rne(2) * rnd(3) + 1;
+
         if (artif && !rn2(20 + (10 * nartifact_exist())))
             otmp = mk_artifact(otmp, (aligntyp) A_NONE);
         break;
