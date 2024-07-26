@@ -4263,8 +4263,8 @@ m_respond(struct monst *mtmp)
          * of the time. */
         nazgul_shriek(mtmp);
     }
-    if (mtmp->data == &mons[PM_BLACK_DRAGON] && !mtmp->mcan && !mtmp->mtame
-        && mtmp->mspec_used == 0 && !rn2(3)) {
+    if ((mtmp->data == &mons[PM_BLACK_DRAGON] || mtmp->data == &mons[PM_T_REX])
+        && !mtmp->mcan && !mtmp->mtame && mtmp->mspec_used == 0 && !rn2(3)) {
         /* Same notes as above for Nazgul also apply. */
         dragon_roar(mtmp);
     }
@@ -4356,10 +4356,7 @@ dragon_roar(struct monst *mtmp)
 {
     boolean cansee = canseemon(mtmp);
     struct monst *bystander;
-    
-    if (mtmp->data != &mons[PM_BLACK_DRAGON])
-        impossible("%d attempting dragon_roar!", mtmp->mnum);
-            
+ 
     if (!m_cansee(mtmp, u.ux, u.uy) && rn2(4)) {
         mtmp->mspec_used = rn1(20, 20);
         return;
@@ -4382,6 +4379,7 @@ dragon_roar(struct monst *mtmp)
             if (u.usleep)
                 unmul("You are shocked awake!");
 
+            /* Might be a t-rex too... but that is Fine(TM) */
             if (uwep && uwep->oartifact == ART_DRAGONBANE) {
                 pline("By the power of Dragonbane, you hold firm!");
             } else if (rn2(100) >= ACURR(A_CHA)) {
