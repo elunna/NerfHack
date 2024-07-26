@@ -3645,6 +3645,7 @@ zap_updown(struct obj *obj) /* wand or spell, nonnull */
             pline1(nothing_happens);
         } else if (u.dz < 0) { /* we should do more... */
             pline("Blood drips on your %s.", body_part(FACE));
+            add_blood(u.ux, u.uy, PM_HUMAN);
         } else if (u.dz > 0 && !OBJ_AT(u.ux, u.uy)) {
             /*
             Print this message only if there wasn't an engraving

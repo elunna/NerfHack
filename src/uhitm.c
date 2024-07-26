@@ -2866,34 +2866,36 @@ mhitm_ad_drli(
     if (mdef == &gy.youmonst) 
 	vulnerable = u.usleep /*|| multi*/ || Confusion || u.utrap || u.ustuck;
     else 
-	vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen || mdef->mconf || mdef->mtrapped;
+	vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
+                || mdef->mconf || mdef->mtrapped;
  
     boolean success = vulnerable ? rn2(3) : !rn2(3);
 
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (!mhitm_mgc_atk_negated(magr, mdef, TRUE)
-		&& success && (!unaffected || V2V)) {
+		      && success && (!unaffected || V2V)) {
             mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
                                     * (usually 1d8) */
 
-	    /* Vampire draining bite. Player vampires are smart enough not 
-	     * to feed while biting if they might have trouble getting it down
-	     * */
-	    if (maybe_polyd(is_vampire(gy.youmonst.data),
+            /* Vampire draining bite. Player vampires are smart enough not 
+             * to feed while biting if they might have trouble getting it down
+             */
+            if (maybe_polyd(is_vampire(gy.youmonst.data),
                 Race_if(PM_VAMPIRE)) && mattk->aatyp == AT_BITE &&
                 has_blood(mdef->data) && u.uhunger <= 1420) {
                 /* For the life of a creature is in the blood
-                   (Lev 17:11) */
-		if (flags.verbose) {
+                (Lev 17:11) */
+                if (flags.verbose) {
                     You("%s on the lifeblood.",
                         vulnerable ? "feast" : "feed");
                 }
                 /* [ALI] Biting monsters does not count against
-                   eating conducts. The draining of life is
-                   considered to be primarily a non-physical
-                   effect */
+                eating conducts. The draining of life is
+                considered to be primarily a non-physical
+                effect */
                 lesshungry(mhm->damage * 6);
+                add_blood(u.ux, u.uy, PM_HUMAN);
             }
 
             pline("%s becomes weaker!", Monnam(mdef));
@@ -2925,9 +2927,9 @@ mhitm_ad_drli(
         /* mhitu */
 
         hitmsg(magr, mattk);
-        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success){
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success) {
 
-	    if (mattk->aatyp == AT_BITE && (!unaffected || V2V)) {
+	        if (mattk->aatyp == AT_BITE && (!unaffected || V2V)) {
                 /* if vampire biting (and also a pet) */
                 if (vulnerable)
                     pline("%s gorges itself on your %s!",
@@ -2938,6 +2940,7 @@ mhitm_ad_drli(
                     EDOG(magr)->hungrytime +=
                             ((int) ((gy.youmonst.data)->cnutrit / 20) + 1);
                 losexp("life drainage");
+                add_blood(magr->mx, magr->my, PM_HUMAN);
             }
 #if 0
 	    else {
@@ -2976,6 +2979,7 @@ mhitm_ad_drli(
                heal any from the drained life */
         }
     }
+
     /* Ice devils' cold sting has some troublesome side effects */
     if (monsndx(magr->data) == PM_ICE_DEVIL) {
         if (mhm->damage == 0 && !rn2(5)) /* damage == 0: cold resistance */

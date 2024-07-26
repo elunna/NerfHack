@@ -597,6 +597,9 @@ extern int warning_of(struct monst *) NONNULLARG1;
 extern void map_glyphinfo(coordxy, coordxy, int, unsigned, glyph_info *) NONNULLPTRS;
 extern void reset_glyphmap(enum glyphmap_change_triggers trigger);
 extern int fn_cmap_to_glyph(int);
+extern void add_blood(int, int, int);
+extern int blood_color(int);
+extern void wipe_blood(int, int);
 
 /* ### do.c ### */
 

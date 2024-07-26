@@ -1886,6 +1886,7 @@ sacrifice_your_race(
         /* curse the lawful/neutral altar */
         pline_The("altar is stained with %s blood.", gu.urace.adj);
         levl[u.ux][u.uy].altarmask = AM_CHAOTIC;
+        add_blood(u.ux, u.uy, gu.urace.mnum);
         newsym(u.ux, u.uy); /* in case Invisible to self */
         angry_priest();
     } else {
@@ -1900,6 +1901,7 @@ sacrifice_your_race(
                     an(hcolor(NH_BLACK)));
             levl[u.ux][u.uy].typ = ROOM;
             levl[u.ux][u.uy].altarmask = 0;
+            add_blood(u.ux, u.uy, gu.urace.mnum);
             newsym(u.ux, u.uy);
             angry_priest();
             demonless_msg = "cloud dissipates";
@@ -1908,6 +1910,7 @@ sacrifice_your_race(
             pline_The("blood covers the altar!");
             change_luck(altaralign == A_NONE ? -2 : 2);
             demonless_msg = "blood coagulates";
+            add_blood(u.ux, u.uy, gu.urace.mnum);
         }
         if ((pm = dlord(altaralign)) != NON_PM
             && (dmon = makemon(&mons[pm], u.ux, u.uy, MM_NOMSG))

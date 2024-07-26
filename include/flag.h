@@ -269,6 +269,7 @@ struct instance_flags {
 #define TER_FULL   0x10U   /* explore|wizard mode view full map */
 #define TER_DETECT 0x20U   /* detect_foo magic rather than #terrain */
     boolean bgcolors;      /* display background colors on a map position */
+    boolean bloodless;     /* suppress blood splatters - not drawn, still described */
     boolean getloc_moveskip;
     boolean getloc_travelmode;
     boolean getloc_usemenu;

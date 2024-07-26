@@ -1005,6 +1005,11 @@ doengrave(void)
     }
 
     if (de->otmp == &hands_obj) {
+        if (levl[u.ux][u.uy].splatpm) {
+            pline("It's too bloody to write here!");
+            de->ret = ECMD_CANCEL;
+            goto doengr_exit;
+        }
         Strcat(strcpy(de->fbuf, "your "), body_part(FINGERTIP));
         de->writer = de->fbuf;
     } else {

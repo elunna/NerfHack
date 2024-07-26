@@ -2545,6 +2545,7 @@ map_glyphinfo(
     glyph_info *glyphinfo)
 {
     int offset;
+    boolean drawblood = TRUE;
     boolean is_you = (u_at(x, y)
                       /* verify hero or steed (not something underneath
                          when hero is invisible without see invisible,
@@ -2658,6 +2659,26 @@ map_glyphinfo(
                     glyphinfo->gm.sym.color = rn2(3) ? CLR_GREEN
                                               : rn2(3) ? CLR_BROWN : CLR_BLUE;
             }
+        }
+
+        /* blood overrides other colors */
+        switch (glyph_to_cmap(glyph)) {
+        case S_cloud:
+        case S_poisoncloud:
+        case S_fountain:
+        case S_water:
+        case S_pool:
+            drawblood = FALSE;
+            break;
+        default:
+            break;
+        }
+        if (glyph_is_trap(glyph) || glyph_is_monster(glyph))
+            drawblood = FALSE;
+        
+        if (drawblood && levl[x][y].splatpm 
+                && cansee(x, y) && !iflags.bloodless) {
+            glyphinfo->gm.sym.color = blood_color(levl[x][y].splatpm);
         }
     }
 
@@ -3095,6 +3116,7 @@ reset_glyphmap(enum glyphmap_change_triggers trigger)
             }
             gmap->glyphflags |= MG_MALE;
         }
+
         /* This was requested by a blind player to enhance screen reader use
          */
         if (sysopt.accessibility == 1 && (gmap->glyphflags & MG_PET) != 0) {
@@ -3833,6 +3855,29 @@ getroomtype(coordxy x, coordxy y)
     }
     /* not a room */
     return OROOM;
+}
+
+void
+add_blood(int x, int y, int pm) {
+    levl[x][y].splatpm = pm;
+    newsym_force(x, y);
+}
+
+int
+blood_color(int pm) {
+    /* Orcs have black blood */
+    if (pm >= PM_ORC && pm <= PM_ORC_CAPTAIN)
+        return CLR_BLACK;
+    return CLR_RED;
+}
+
+void
+wipe_blood(int x, int y) {
+    if (levl[x][y].splatpm) {
+        levl[x][y].splatpm = 0;
+        newsym(x, y);
+    }
+    return;
 }
 
 /* for 'onefile' processing where end of this file isn't necessarily the

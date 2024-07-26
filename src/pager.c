@@ -643,6 +643,7 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
     struct monst *mtmp = (struct monst *) 0;
     struct permonst *pm = (struct permonst *) 0;
     int glyph;
+    boolean printed_blood = FALSE;
 
     buf[0] = monbuf[0] = '\0';
     glyph = glyph_at(x, y);
@@ -751,13 +752,20 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
         case S_cloud:
             Strcpy(buf,
                    Is_airlevel(&u.uz) ? "cloudy area" : "fog/vapor cloud");
+            printed_blood = TRUE;
+            break;
+        case S_poisoncloud: 
+            Strcpy(buf, "poison cloud");
+            printed_blood = TRUE; 
             break;
         case S_pool:
         case S_water: /* was Plane of Water, now that or "wall of water" */
         case S_lava:
         case S_lavawall:
         case S_ice: /* for hallucination; otherwise defsyms[] would be fine */
+            Sprintf(eos(buf), (levl[x][y].splatpm) ? "bloody " : "");
             Strcpy(buf, waterbody_name(x, y));
+            printed_blood = TRUE;
             break;
         case S_engroom:
         case S_engrcorr:
@@ -782,6 +790,10 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
             break;
         }
     }
+     if (!pm && cansee(x, y) && levl[x][y].splatpm && !printed_blood && !u_at(x, y))
+        Sprintf(eos(buf), " covered in %s blood",
+                Hallucination ? rndmonnam(NULL) : 
+                              mons[levl[x][y].splatpm].pmnames[NEUTRAL]);
     return (pm && !Hallucination) ? pm : (struct permonst *) 0;
 }
 

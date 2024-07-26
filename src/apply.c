@@ -203,6 +203,13 @@ use_towel(struct obj *obj)
     Your("%s and %s are already clean.", body_part(FACE),
          makeplural(body_part(HAND)));
 
+    /* Allow player to wipe blood off the floor */
+    if (levl[u.ux][u.uy].splatpm && y_n("Wipe the blood off the ground?") == 'y') {
+        You("cleanse the blood.");
+        wipe_blood(u.ux, u.uy);
+        return ECMD_TIME;
+    }
+
     /* Allow player to remove grease */
     otmp = getobj("clean", any_obj_ok, GETOBJ_PROMPT);
     if (!otmp)

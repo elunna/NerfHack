@@ -208,6 +208,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTB(blind, Advanced, 0, opt_in, set_in_config,
            Off, Yes, No, No, "permablind", &u.uroleplay.blind, Term_False,
            "your character is permanently blind")
+    NHOPTB(bloodless, Advanced, 0, opt_in, set_in_game,
+           Off, Yes, No, No, "bloodless", &iflags.bloodless, Term_False,
+           "bloody tiles are not drawn but still described")
     NHOPTB(bones, Advanced, 0, opt_out, set_in_config,
            On, Yes, No, No, NoAlias, &flags.bones, Term_False,
            "allow loading bones files")

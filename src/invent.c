@@ -4638,6 +4638,7 @@ look_here(
             picked_some = (lookhere_flags & LOOKHERE_PICKED_SOME) != 0,
             /* skip 'dfeature' if caller used describe_decor() to show it */
             skip_dfeature = (lookhere_flags & LOOKHERE_SKIP_DFEATURE) != 0;
+    boolean bloody = levl[u.ux][u.uy].splatpm;
 
     /* default pile_limit is 5; a value of 0 means "never skip"
        (and 1 effectively forces "always skip") */
@@ -4743,6 +4744,9 @@ look_here(
 
         /* hardcoded "is" worked here because "iron bars" is actually
            "set of iron bars"; use vtense() instead of relying on that */
+        if (bloody)
+            Sprintf(fbuf, "There %s bloody %s here.", vtense(dfeature, "are"), dfeature);
+        else
         Sprintf(fbuf, "There %s %s here.", vtense(dfeature, "are"), dfeature);
     }
 
@@ -4751,8 +4755,13 @@ look_here(
         if (dfeature && !skip_dfeature)
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
-        if (!skip_objects && (Blind || !dfeature))
-            You("%s no objects here.", verb);
+        if (!skip_objects && (Blind || !dfeature)) {
+            if (bloody) 
+                There("is %s blood splattered on the floor.", 
+                      mons[levl[u.ux][u.uy].splatpm].pmnames[NEUTRAL]);
+            else
+                You("%s no objects here.", verb);
+        }
         return (!!Blind ? ECMD_TIME : ECMD_OK);
     }
     /* we know there is something here */
