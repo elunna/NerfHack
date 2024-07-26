@@ -1060,6 +1060,10 @@ chwepon(struct obj *otmp, int amount)
                   otense(uwep, "evaporate"));
         else
             pline("%s.", Yobjnam2(uwep, "evaporate"));
+        
+        /* It blows up... */
+        explode(u.ux, u.uy, ZT_MAGIC_MISSILE, dmgval(uwep, &gy.youmonst) + rnd(12),
+            TOOL_CLASS, EXPL_MAGICAL);
 
         useupall(uwep); /* let all of them disappear */
         return 1;

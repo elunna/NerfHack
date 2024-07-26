@@ -4915,7 +4915,7 @@ use_deck(struct obj *obj)
         }
         switch (index) {
             case 1: /* The Tower */
-		explode(u.ux, u.uy, 15, rnd(30), TOOL_CLASS, EXPL_MAGICAL);
+		        explode(u.ux, u.uy, 15, rnd(30), TOOL_CLASS, EXPL_MAGICAL);
                 explode(u.ux, u.uy, 11, rnd(30), TOOL_CLASS, EXPL_FIERY);
                 break;
             case 2: /* The Wheel of Fortune */
