@@ -61,8 +61,14 @@ des.grave({ coord = graveyard:rndcoord(1) });
 des.grave({ coord = graveyard:rndcoord(1) });
 des.grave({ coord = graveyard:rndcoord(1) });
 des.monster({ id = "skeleton", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
-des.monster({ class = "Z", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
-des.monster({ class = "Z", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
+-- In SpliceHack, there were 2 random Z, but these could generate something like
+-- a ghoul mage or more skeletons. We'll limit the difficulty to an occasional giant zombie.
+des.monster({ id = "human zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
+if percent(75) then
+	des.monster({ id = "human zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
+else
+	des.monster({ id = "giant zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
+end
 
 -- Doors
 des.door("closed",26,14)
