@@ -42,6 +42,7 @@ staticfn void seffect_teleportation(struct obj **);
 staticfn void seffect_gold_detection(struct obj **);
 staticfn void seffect_food_detection(struct obj **);
 staticfn void seffect_identify(struct obj **);
+staticfn void seffect_knowledge(struct obj **);
 staticfn void seffect_magic_mapping(struct obj **);
 #ifdef MAIL_STRUCTURES
 staticfn void seffect_mail(struct obj **);
@@ -51,6 +52,7 @@ staticfn void do_stinking_cloud(struct obj *, boolean);
 staticfn boolean create_particular_parse(char *,
                                        struct _create_particular_data *);
 staticfn boolean create_particular_creation(struct _create_particular_data *);
+staticfn void specified_id(void);
 
 staticfn boolean
 learnscrolltyp(short scrolltyp)
@@ -2108,6 +2110,77 @@ seffect_food_detection(struct obj **sobjp)
         *sobjp = 0; /* nothing detected: strange_feeling -> useup */
 }
 
+
+
+staticfn void
+seffect_knowledge(struct obj **sobjp)
+{
+    struct obj *sobj = *sobjp;
+    struct obj *otmp;
+    int otyp = sobj->otyp;
+    int oclass;
+    int tries = 0, qty = 1;
+    boolean sblessed = sobj->blessed;
+    boolean scursed = sobj->cursed;
+    boolean confused = (Confusion != 0);
+    boolean already_known = (objects[otyp].oc_name_known);
+
+    /* known = TRUE; -- handled inline here */
+    /* use up the scroll first, before learnscrolltyp() -> makeknown()
+        performs perm_invent update; also simplifies empty invent check */
+    useup(sobj);
+    *sobjp = 0; /* it's gone */
+
+    if (confused) {
+        if (!already_known)
+            You("know this to be a knowledge scroll.");
+        return;
+    } else if (scursed) {
+        You("start studying the scroll, but it confounds you...");
+        make_confused(HConfusion + rnd(50), FALSE);
+        return;
+    }
+    /* Archeologists are great at research. */
+    if (Role_if(PM_ARCHEOLOGIST) && !scursed)
+        specified_id();
+
+    if (!already_known)
+        (void) learnscrolltyp(SCR_KNOWLEDGE);
+
+    /* Get a random bonus based on luck. */
+    if (sblessed && !rnl(5) == 0)
+        qty++;
+    
+     static const int extra_classes[] = {
+        WEAPON_CLASS,
+        ARMOR_CLASS,
+        TOOL_CLASS,
+        GEM_CLASS,
+        SCROLL_CLASS,
+        SPBOOK_CLASS,
+        POTION_CLASS,
+        RING_CLASS,
+        AMULET_CLASS,
+        WAND_CLASS,
+    };
+
+    /* Identify a random magical item. */
+    do {
+        oclass = ROLL_FROM(extra_classes);
+        otmp = mkobj(oclass, FALSE);
+        if (objects[otmp->otyp].oc_magic && !objects[otmp->otyp].oc_name_known) {
+            makeknown(otmp->otyp);
+            You("now know more about %s.", makeplural(simple_typename(otmp->otyp)));
+            qty--;
+        }
+        obfree(otmp, NULL); /* Destroy the item*/
+        tries++;
+    } while (tries < 10000 && qty > 0);
+
+    if (qty > 0)
+        You("feel like you might already know everything...");
+}
+
 staticfn void
 seffect_identify(struct obj **sobjp)
 {
@@ -2322,6 +2395,9 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
     case SCR_FOOD_DETECTION:
     case SPE_DETECT_FOOD:
         seffect_food_detection(&sobj);
+        break;
+    case SCR_KNOWLEDGE:
+        seffect_knowledge(&sobj);
         break;
     case SCR_IDENTIFY:
     case SPE_IDENTIFY:
@@ -3463,6 +3539,49 @@ use_moncard(
         obfree(sobj, (struct obj *) 0);
     }
 #endif
+}
+
+staticfn void
+specified_id(void)
+{
+    static char buf[BUFSZ] = DUMMY;
+    char promptbuf[BUFSZ];
+    char bufcpy[BUFSZ];
+    short otyp;
+    int tries = 0;
+    
+    promptbuf[0] = '\0';
+    if (flags.verbose)
+        You("may learn about any non-artifact.");
+retry:
+    Strcpy(promptbuf, "What non-artifact do you want to learn about");
+    Strcat(promptbuf, "?");
+    getlin(promptbuf, buf);
+    (void) mungspaces(buf);
+    if (buf[0] == '\033') {
+        buf[0] = '\0';
+    }
+    strcpy(bufcpy, buf);
+    otyp = name_to_otyp(buf);
+    if (otyp == STRANGE_OBJECT) {
+        pline("No specific object of that name exists.");
+        if (++tries < 5)
+            goto retry;
+        pline1(thats_enough_tries);
+        if (!otyp)
+            return; /* for safety; should never happen */
+    }
+    if (objects[otyp].oc_name_known) {
+        You("already know what that object looks like.");
+        if (++tries < 5)
+            goto retry;
+        pline1(thats_enough_tries);
+        if (!otyp)
+            return;
+    }
+    (void) makeknown(otyp);
+    You("now know more about %s.", makeplural(simple_typename(otyp)));
+    update_inventory();
 }
 
 /*read.c*/
