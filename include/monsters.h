@@ -1985,7 +1985,7 @@
     /* disintegration breath is actually all or nothing, not 1d255 */
     MON(NAM("black dragon"), S_DRAGON,
         LVL(15, 20, -1, 20, -6), (G_GENO | 2),
-        A(ATTK(AT_BREA, AD_DISN, 1, 255),
+        A(ATTK(AT_BREA, AD_DISN, 12, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
