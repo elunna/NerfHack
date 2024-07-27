@@ -4263,9 +4263,11 @@ m_respond(struct monst *mtmp)
          * of the time. */
         nazgul_shriek(mtmp);
     }
+
+    /* For this we don't rely on mspec_used because that can interfere with 
+     * breath attacks/other ranged attacks. */
     if ((mtmp->data == &mons[PM_BLACK_DRAGON] || mtmp->data == &mons[PM_T_REX])
-        && !mtmp->mcan && !mtmp->mtame && mtmp->mspec_used == 0 && !rn2(3)) {
-        /* Same notes as above for Nazgul also apply. */
+        && !mtmp->mcan && !mtmp->mtame && !rn2(30)) {
         dragon_roar(mtmp);
     }
 }
@@ -4357,12 +4359,8 @@ dragon_roar(struct monst *mtmp)
     boolean cansee = canseemon(mtmp);
     struct monst *bystander;
  
-    if (!m_cansee(mtmp, u.ux, u.uy) && rn2(4)) {
-        mtmp->mspec_used = rn1(20, 20);
+    if (!m_cansee(mtmp, u.ux, u.uy))
         return;
-    }
-    
-    mtmp->mspec_used = rn1(10, 5);
 
     if (!Deaf && !Underwater) {
         if (distu(mtmp->mx, mtmp->my) > 100) {
