@@ -4787,6 +4787,7 @@ zhitu(
         }
         break;
     case ZT_SLEEP:
+        /* Partial resistance is handled in fall_asleep. */
         if (fully_resistant(SLEEP_RES)) {
             shieldeff(u.ux, u.uy);
             You("don't feel sleepy.");
@@ -4803,18 +4804,21 @@ zhitu(
             boolean disn_prot = inventory_resistance_check(AD_DISN);
 
             if (disn_prot) {
+                /* Items are protected */
                 You("are not disintegrated.");
                 monstseesu(M_SEEN_DISINT);
                 break;
             } else if (fully_resistant(DISINT_RES)) {
+                /* Items are NOT protected */
                 You("are not disintegrated.");
                 monstseesu(M_SEEN_DISINT);
             } else if (Reflecting) {
+                /* Items are protected */
                 You("aren't disintegrated, but that hurts!");
                 monstunseesu(M_SEEN_DISINT);
+                dam = resist_reduce(dam, DISINT_RES);
                 break;
             }
-            dam = resist_reduce(d(6, 6), DISINT_RES);
 
             if (uarms) {
                 /* destroy shield; other possessions are safe */
@@ -4835,6 +4839,12 @@ zhitu(
                 if (uarmu)
                     (void) destroy_arm(uarmu, FALSE, TRUE);
             }
+
+            if (how_resistant(DISINT_RES) >= 50)
+                break;
+            /* fall through. not having enough disintegration
+             * resistance can still get you disintegrated */
+
         } else if (resists_death(gy.youmonst.data)) {
             shieldeff(sx, sy);
             You("seem unaffected.");
@@ -4892,11 +4902,13 @@ zhitu(
         }
         break;
     case ZT_POISON_GAS:
+        /* Partial resistance is handled in poisoned() */
         if (!Reflecting) {
             poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
         }
         break;
     case ZT_ACID:
+        /* No partial resistance for acid. */
         if (Acid_resistance) {
             pline_The("%s doesn't hurt.", hliquid("acid"));
             monstseesu(M_SEEN_ACID);
