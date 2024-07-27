@@ -4299,14 +4299,17 @@ nazgul_shriek(struct monst *mtmp)
      * not hear it - you don't really see its face, so you can tell the shriek
      * is coming from it only if you can hear it. Also no messages for if it's
      * cancelled - feebly croaking rather ruins the image. */
-    if (!Deaf && !Underwater) {
+    if (!Deaf) {
         if (distu(mtmp->mx, mtmp->my) > 100) {
             if (cansee)
                 pline("%s emits a fell cry.", Monnam(mtmp));
             else
                 pline("A distant fell cry pierces the air.");
         } else {
-            if (cansee)
+            if (Underwater) {
+                You_hear("a  muffled shriek.");
+                return;
+            } else if (cansee)
                 pline("%s shrieks!", Monnam(mtmp));
             else
                 pline("A fell shriek reverberates nearby!");
@@ -4362,14 +4365,17 @@ dragon_roar(struct monst *mtmp)
     if (!m_cansee(mtmp, u.ux, u.uy))
         return;
 
-    if (!Deaf && !Underwater) {
+    if (!Deaf) {
         if (distu(mtmp->mx, mtmp->my) > 100) {
             if (cansee)
                 pline("%s emits a terrifying roar.", Monnam(mtmp));
             else
                 pline("A distant roar echos through the dungeon.");
         } else {
-            if (cansee)
+            if (Underwater) {
+                You_hear("a  muffled roar.");
+                return;
+            } else if (cansee)
                 pline("%s roars!", Monnam(mtmp));
             else
                 pline("A booming roar reverberates nearby!");
