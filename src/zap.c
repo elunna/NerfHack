@@ -1630,7 +1630,7 @@ do_osshock(struct obj *obj)
     if (gp.poly_zapped < 0) {
         /* some may metamorphosize */
         for (i = obj->quan; i; i--)
-            if (!rn2(Luck + 7)) {
+            if (!rn2((Luck > -7 ? Luck : -6) + 7)) {
                 gp.poly_zapped = objects[obj->otyp].oc_material;
                 break;
             }
