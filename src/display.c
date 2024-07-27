@@ -2675,7 +2675,8 @@ map_glyphinfo(
         }
         if (glyph_is_trap(glyph) || glyph_is_monster(glyph))
             drawblood = FALSE;
-        
+        if (glyph_is_object(glyph) && !glyph_is_body(glyph))
+            drawblood = FALSE;
         if (drawblood && levl[x][y].splatpm 
                 && cansee(x, y) && !iflags.bloodless) {
             glyphinfo->gm.sym.color = blood_color(levl[x][y].splatpm);
