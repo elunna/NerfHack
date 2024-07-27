@@ -2457,6 +2457,9 @@ use_unicorn_horn(struct obj **optr)
         chance++;
     if (P_SKILL(P_UNICORN_HORN) == P_EXPERT)
         chance += 2;
+
+    if (chance > 9)
+        chance = 9;
 #endif
     
     /* fix [some of] the troubles */
