@@ -100,7 +100,7 @@ dungeon = {
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 4,
+      base = 8,
       range = 3,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
@@ -109,7 +109,7 @@ dungeon = {
          {
             name = "Vlad's Tower",
             base = 2,
-            range = 2,
+            range = 8,
             direction = "up"
          },
       },
