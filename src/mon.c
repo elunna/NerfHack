@@ -6393,12 +6393,29 @@ mon_berserk(struct monst *mtmp)
         return;
     if (helpless(mtmp))
         return;
+
     /* Serenity blocks berserkers */
     if (u_wield_art(ART_SERENITY)) {
         if (!rn2(3))
             pline("%s moans sadly!", Monnam(mtmp));
         return;
     }
+    /*  
+     * As a distant callback to traitorous monsters, berserking also untames 
+     * your pet. Use similar checks as betrayed().
+     */
+    if (mtmp->mtame) {
+        if (!rn2(3) && rn2(22) > mtmp->mtame /* Roll against tameness */
+              /* Pet is at less than 1/6 HP */
+              && mtmp->mhp < (mtmp->mhpmax / 6)) {
+            if (canseemon(mtmp))
+                pline("%s turns on you!", Monnam(mtmp));
+            else
+                You_feel("uneasy about %s.", y_monnam(mtmp));
+        } else
+            return;
+    }
+
     if (canseemon(mtmp) && humanoid(mtmp->data)
         && !mindless(mtmp->data)) {
         pline("%s flies into a berserker rage!", Monnam(mtmp));
@@ -6420,7 +6437,7 @@ mon_berserk(struct monst *mtmp)
     mtmp->mflee = 0;
     /* If a monster goes berserk towards the player but the hero can't retaliate,
      * it seems unfair and awkward. Make it so berserkers turn hostile. */
-    mtmp->mpeaceful = 0;
+    mtmp->mpeaceful = mtmp->mtame = 0;
     newsym(mtmp->mx, mtmp->my);
 }
 
