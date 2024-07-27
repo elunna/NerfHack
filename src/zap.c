@@ -4802,18 +4802,20 @@ zhitu(
         if (abstyp == ZT_BREATH(ZT_DEATH)) {
             boolean disn_prot = inventory_resistance_check(AD_DISN);
 
-            if (fully_resistant(DISINT_RES)) {
+            if (disn_prot) {
                 You("are not disintegrated.");
                 monstseesu(M_SEEN_DISINT);
                 break;
-            } else if (disn_prot) {
-                break;
+            } else if (fully_resistant(DISINT_RES)) {
+                You("are not disintegrated.");
+                monstseesu(M_SEEN_DISINT);
             } else if (Reflecting) {
                 You("aren't disintegrated, but that hurts!");
-                dam = resist_reduce(d(6, 6), DISINT_RES);
+                monstunseesu(M_SEEN_DISINT);
                 break;
             }
-            monstunseesu(M_SEEN_DISINT);
+            dam = resist_reduce(d(6, 6), DISINT_RES);
+
             if (uarms) {
                 /* destroy shield; other possessions are safe */
                 (void) destroy_arm(uarms, FALSE, TRUE);
