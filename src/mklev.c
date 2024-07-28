@@ -758,7 +758,7 @@ void
 clear_level_structures(void)
 {
     static struct rm zerorm = { GLYPH_UNEXPLORED,
-                                0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     coordxy x, y;
     struct rm *lev;
 
