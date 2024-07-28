@@ -970,6 +970,20 @@ mattacku(struct monst *mtmp)
             if (!range2 && (!MON_WEP(mtmp) || mtmp->mconf || Conflict
                             || !touch_petrifies(gy.youmonst.data))) {
                 if (foundyou) {
+                    /* if our hero is sized tiny/small and unencumbered,
+                       they have a decent chance of evading a zombie's
+                       bite attack */
+                    if (is_zombie(mtmp->data) && mattk->aatyp == AT_BITE
+                        && (gy.youmonst.data)->msize <= MZ_SMALL
+                        && is_animal(gy.youmonst.data)
+                        && (near_capacity() == UNENCUMBERED)
+                        && !(Confusion || Stunned || Punished || gm.multi < 0
+                             || Wounded_legs || Stoned || Fumbling) && rn2(3)) {
+                        You("nimbly %s %s bite!",
+                            rn2(2) ? "dodge" : "evade", s_suffix(mon_nam(mtmp)));
+                        return 0; /* attack stops */
+                    }
+
                     if (tmp > (j = rnd(20 + i))) {
                         if (unsolid(gy.youmonst.data)
                             && failed_grab(mtmp, &gy.youmonst, mattk))

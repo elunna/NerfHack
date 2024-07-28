@@ -3610,13 +3610,21 @@ mhitm_ad_drst(
         int ptmp = A_STR;  /* A_STR == 0 */
         char buf[BUFSZ];
 
+        /* Sometimes zombies will bite the player's legs if they are low on
+         * health (and likely crawling...) */
+        if (is_zombie(magr->data) && (magr->mhp < (magr->mhpmax / 2)
+            && !rn2(5))) {
+            mhitm_ad_legs(magr, mattk, mdef, mhm);
+            return;
+        }
+
         switch (mattk->adtyp) {
         case AD_DRST: ptmp = A_STR; break;
         case AD_DRDX: ptmp = A_DEX; break;
         case AD_DRCO: ptmp = A_CON; break;
         }
         hitmsg(magr, mattk);
-        if (!negated && !rn2(8)) {
+        if ((!negated || is_zombie(magr->data)) && !rn2(8)) {
             Sprintf(buf, "%s %s", s_suffix(Monnam(magr)),
                     mpoisons_subj(magr, mattk));
             poisoned(buf, ptmp, pmname(pa, Mgender(magr)), 30, FALSE);
@@ -5045,6 +5053,7 @@ mhitm_ad_legs(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    boolean zombie = is_zombie(magr->data);
     if (magr == &gy.youmonst) {
         /* uhitm */
 #if 0
@@ -5077,12 +5086,13 @@ mhitm_ad_legs(
             if (uarmf) {
                 if (rn2(2) && (uarmf->otyp == LOW_BOOTS
                                || uarmf->otyp == IRON_SHOES)) {
-                    pline("%s pricks the exposed part of your %s %s!",
-                          Monst_name, sidestr, leg);
+                    pline("%s %s the exposed part of your %s %s!",
+                          Monst_name, zombie ? "bites" : "pricks",
+                          sidestr, leg);
                 } else if (!objdescr_is(uarmf, "jungle boots") && !rn2(5)) {
                     /* Jungle boots protect from this wounding */
-                    pline("%s pricks through your %s boot!", Monst_name,
-                          sidestr);
+                    pline("%s %s through your %s boot!", Monst_name,
+                        zombie ? "bites" : "pricks", sidestr);
                 } else {
                     pline("%s scratches your %s boot!", Monst_name,
                           sidestr);
@@ -5090,7 +5100,8 @@ mhitm_ad_legs(
                     return;
                 }
             } else
-                pline("%s pricks your %s %s!", Monst_name, sidestr, leg);
+                pline("%s %s your %s %s!", Monst_name,
+                    zombie ? "bites" : "pricks", sidestr, leg);
 
             set_wounded_legs(side, rnd(60 - ACURR(A_DEX)));
             exercise(A_STR, FALSE);
