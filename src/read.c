@@ -33,6 +33,7 @@ staticfn int wep_enchant_range(int);
 staticfn void seffect_taming(struct obj **);
 staticfn void seffect_genocide(struct obj **);
 staticfn void seffect_light(struct obj **);
+staticfn void seffect_cloning(struct obj **);
 staticfn void seffect_charging(struct obj **);
 staticfn void seffect_amnesia(struct obj **);
 staticfn void seffect_fire(struct obj **);
@@ -1893,6 +1894,173 @@ seffect_light(struct obj **sobjp)
 }
 
 staticfn void
+seffect_cloning(struct obj **sobjp)
+{
+    struct obj *sobj = *sobjp;
+    struct obj *otmp;
+    struct obj *otmp2;
+    struct monst *mtmp;
+    int otyp = sobj->otyp;
+    int otyp2;
+    boolean sblessed = sobj->blessed;
+    boolean scursed = sobj->cursed;
+    boolean confused = (Confusion != 0);
+    boolean already_known = (sobj->oclass == SPBOOK_CLASS /* spell */
+                             || objects[otyp].oc_name_known);
+    if (!already_known)
+        learnscroll(sobj);
+
+    if (confused) {
+        if (!Hallucination) {
+            You("clone yourself!");
+        } else {
+            You("realize that you have been a clone all along!");
+        }
+        if (Upolyd)
+            mtmp = cloneu();
+        else {
+            int mndx = monsndx(gy.youmonst.data);
+            
+            if (svm.mvitals[mndx].mvflags & G_EXTINCT) {
+                You("momentarily feel like your kind has no future.");
+                return;
+            }
+            
+            mtmp = makemon(&mons[mndx], u.ux, u.uy,
+                           sblessed ? (NO_MINVENT | MM_EDOG) 
+                                    : (scursed ? (NO_MINVENT | MM_ANGRY) : NO_MINVENT));
+            if (!mtmp) {
+                pline("Never mind.");
+                return;
+            }
+            if (sblessed) {
+                initedog(mtmp);
+                u.uconduct.pets++;
+            } else if (!scursed) {
+                mtmp->mpeaceful = 1; 
+            }
+            
+            mtmp->mcloned = 1;
+            mtmp = christen_monst(mtmp, svp.plname);
+            mtmp->m_lev = u.ulevel;
+            mtmp->mhpmax = u.uhpmax;
+            mtmp->mhp = u.uhp;
+            newsym(mtmp->mx, mtmp->my);
+            disp.botl = 1;
+        }
+    } else {
+        if (!already_known)
+            You("have found a scroll of cloning!");
+        otmp = getobj("clone", any_obj_ok, GETOBJ_PROMPT);
+        if (!otmp) {
+            pline("Never mind.");
+            return;
+        }
+        /* Unique/abusable items */
+        if (otmp->otyp == BELL_OF_OPENING) {
+            otyp2 = BELL;
+        } else if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
+            otyp2 = WAX_CANDLE;
+        } else if (otmp->otyp == AMULET_OF_YENDOR) {
+            otyp2 = FAKE_AMULET_OF_YENDOR;
+        } else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) {
+            otyp2 = SPE_BLANK_PAPER;
+        } else {
+            otyp2 = otmp->otyp;
+        }
+        otmp2 = mksobj_at(otyp2, u.ux, u.uy, FALSE, FALSE);
+        
+        if (!otmp2) 
+            impossible("Invalid cloned object?");
+        
+        /* beatitude */
+        if (scursed) 
+            curse(otmp2);
+        else {
+            otmp2->blessed = otmp->blessed;
+            otmp2->cursed = otmp->cursed;
+        }
+
+        /* charge / enchantment */
+        if (sblessed) 
+            otmp2->spe = otmp->spe;
+        else 
+            otmp2->spe = min(otmp->spe, 0);
+        
+        /* If an unpaid item is cloned, that item also inherits the cost 
+         and unpaid status. Otherwise, we could have the shopkeeper charge,
+         but this seems a bit more elegant. */
+        // otmp2->unpaid = otmp->unpaid;
+        // otmp2->no_charge = otmp->no_charge;
+
+        /* other properties */
+        otmp2->oeroded = otmp->oeroded;
+        otmp2->oeroded2 = otmp->oeroded2;
+        otmp2->oerodeproof = otmp->oerodeproof;
+        otmp2->olocked = otmp->olocked;
+        otmp2->obroken = otmp->obroken;
+        otmp2->otrapped = otmp->otrapped;
+        otmp2->recharged = otmp->recharged;
+        otmp2->lamplit = otmp->lamplit;
+        otmp2->globby = otmp->globby;
+        otmp2->greased = otmp->greased;
+        otmp2->corpsenm = otmp->corpsenm;
+        otmp2->oeaten = otmp->oeaten;
+        otmp2->opoisoned = otmp->opoisoned;
+        
+        /* For slime mold names. We also don't want to copy
+         * an artifact name over. We could try to mangle the 
+         * name like #name does for already existing artifacts,
+         * but this seems fine too. */
+        if (otmp->oextra && !otmp->oartifact)
+            otmp2->oextra = otmp->oextra;
+
+        /* but suppressing fruit details leads to "bad fruit #0" */
+        if (otmp2->otyp == SLIME_MOLD)
+            otmp2->spe = svc.context.current_fruit;
+
+        /* Prevent exploits */
+        if (otmp2->otyp == WAN_WISHING) {
+            otmp2->otyp = WAN_WONDER;
+            otmp2->spe = rn1(10, 15);
+        } else if (otmp2->otyp == MAGIC_LAMP) {
+            otmp2->otyp = OIL_LAMP;
+        } else if (otmp2->otyp == SCR_CLONING) {
+            otmp2->otyp = SCR_BLANK_PAPER;
+        } else if (otmp2->otyp == MAGIC_MARKER) {
+            otmp2->otyp = ATHAME;
+            if (sblessed)
+                otmp2->spe = rnd(otmp->spe / 10);
+        }
+
+        /* Prevent any weird class conversion errors */
+        otmp2->oclass = objects[otmp2->otyp].oc_class;
+        otmp2->quan = 1;
+        
+        /* Weight could change due to material/type */
+        otmp2->owt = weight(otmp2);
+
+        /* cartomancers feel guilty for counterfeiting */
+        if (Role_if(PM_CARTOMANCER) && otmp2->oclass == SCROLL_CLASS) {
+            You("feel incredibly guilty about forging a card!");
+            adjalign(-10);
+            if (u.uevent.qcompleted)
+                call_kops((struct monst *) 0, FALSE);
+        }
+
+        obj_extract_self(otmp2);
+
+        /* You clone it, you buy it! */
+        if (otmp->unpaid)
+            addtobill(otmp2, FALSE, FALSE, FALSE);
+
+        (void) hold_another_object(otmp2, "Whoops! %s out of your grasp.",
+                                The(aobjnam(otmp2, "tumbles")),
+                                (const char *) 0);
+    }
+}
+
+staticfn void
 seffect_charging(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
@@ -2507,6 +2675,9 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
     case SCR_IDENTIFY:
     case SPE_IDENTIFY:
         seffect_identify(&sobj);
+        break;
+    case SCR_CLONING:
+        seffect_cloning(&sobj);
         break;
     case SCR_CHARGING:
         seffect_charging(&sobj);

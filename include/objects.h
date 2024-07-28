@@ -1250,6 +1250,9 @@ SCROLL("earth",                          "KIRJE",  1,  18, 200,
                                                         SCR_EARTH),
 SCROLL("punishment",            "VE FORBRYDERNE",  1,  15, 300,
                                                         SCR_PUNISHMENT),
+SCROLL("cloning",               "TOYL ENT RUBLE",  1,   5, 300, 
+                                                        SCR_CLONING),
+            /* Fire burn and cauldron bubble. */
 SCROLL("charging",                "EHCUM MEKCHA",  1,  15, 300,
                                                         SCR_CHARGING),
 /* The scroll of zapping is utilitized for cartomancers as zappable cards.

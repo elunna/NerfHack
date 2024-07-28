@@ -1263,6 +1263,7 @@ rnd_defensive_item(struct monst *mtmp)
 #define MUSE_POT_POLYMORPH_THROW 25
 #define MUSE_WAN_POISON_GAS     26
 #define MUSE_WAN_CORROSION      27
+#define MUSE_SCR_CLONING        28
 
 staticfn boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -1495,6 +1496,13 @@ find_offensive(struct monst *mtmp)
         if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_BLINDNESS;
+        }
+        nomore(MUSE_SCR_CLONING);
+        if (obj->otyp == SCR_CLONING
+            && distu(mtmp->mx, mtmp->my) < 32
+            && mtmp->mcansee && haseyes(mtmp->data)) {
+            gm.m.offensive = obj;
+            gm.m.has_offense = MUSE_SCR_CLONING;
         }
         nomore(MUSE_SCR_STINKING_CLOUD)
         if (obj->otyp == SCR_STINKING_CLOUD && m_canseeu(mtmp)
@@ -1992,6 +2000,28 @@ use_offensive(struct monst *mtmp)
         otmp->spe--;
         return 1;
     } /* case MUSE_CAMERA */
+    case MUSE_SCR_CLONING: {
+        /* We won't bother with confused - scrolls of cloning always clone 
+         * the monster iteself. */
+        struct monst *mtmp2;
+        boolean vis = cansee(mtmp->mx, mtmp->my);
+        mreadmsg(mtmp, otmp);
+        /* Rodney can use this - but follows same rules as Double Trouble */
+        if (mtmp->iswiz && svc.context.no_of_wizards == 1) {
+            pline("Double Trouble...");
+            clonewiz();
+        } else if (type_is_pname(mtmp->data)) {
+            /* Other uniques - no limit. */
+            if ((mtmp2 = makemon(&mons[mtmp->mnum], u.ux, u.uy, MM_NOWAIT)) != 0) {
+                mtmp2->msleeping = mtmp2->mtame 
+                    = mtmp2->mpeaceful = 0;
+                pline("%s multiplies!", Monnam(mtmp));
+            }
+        } else if (clone_mon(mtmp, 0, 0) && vis)
+            pline("%s multiplies!", Monnam(mtmp));
+        m_useup(mtmp, otmp);
+        return 2;
+    } /* case MUSE_SCR_CLONING */
 #if 0
     case MUSE_SCR_FIRE: {
         boolean vis = cansee(mtmp->mx, mtmp->my);
