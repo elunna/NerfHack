@@ -1142,6 +1142,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == POT_HALLUCINATION
            || otyp == POT_ACID
            || otyp == SCR_AMNESIA
+           || otyp == SCR_WATER
            || otyp == SCR_FIRE
            || otyp == SCR_BLANK_PAPER
            || otyp == SPE_BLANK_PAPER

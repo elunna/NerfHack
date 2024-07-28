@@ -16,6 +16,8 @@ staticfn int read_ok(struct obj *);
 staticfn void stripspe(struct obj *);
 staticfn void p_glow1(struct obj *);
 staticfn void p_glow2(struct obj *, const char *);
+staticfn void flood_space(coordxy, coordxy, genericptr);
+staticfn void unflood_space(coordxy, coordxy, genericptr);
 staticfn int maybe_tame(struct monst *, struct obj *);
 staticfn boolean can_center_cloud(coordxy, coordxy);
 staticfn void display_stinking_cloud_positions(boolean);
@@ -37,6 +39,7 @@ staticfn void seffect_fire(struct obj **);
 staticfn void seffect_earth(struct obj **);
 staticfn void seffect_punishment(struct obj **);
 staticfn void seffect_stinking_cloud(struct obj **);
+staticfn void seffect_water(struct obj **);
 staticfn void seffect_blank_paper(struct obj **);
 staticfn void seffect_teleportation(struct obj **);
 staticfn void seffect_gold_detection(struct obj **);
@@ -1144,6 +1147,55 @@ display_stinking_cloud_positions(boolean on_off)
     }
 }
 
+/* Flood a space. This is a callback function. */
+staticfn void
+flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
+{
+    struct monst *mtmp;
+    struct trap *ttmp;
+
+    /* Don't create on the player's space unless poolcnt is -1. */
+    if ((* (int*)poolcnt) != -1 && x == u.ux && y == u.uy)
+        return;
+
+    /* Create them only on regular terrain, never underneath boulders or next
+     * to doors, weighted towards spaces near the player. */
+    if (nexttodoor(x, y) || rn2(1 + distmin(u.ux, u.uy, x, y))
+        || sobj_at(BOULDER, x, y) || levl[x][y].typ != ROOM)
+        return;
+
+    /* Never create if there's an immovable trap here. */
+    ttmp = t_at(x, y);
+    if (ttmp && !delfloortrap(ttmp))
+        return;
+
+    /* create pool */
+    levl[x][y].typ = POOL;
+    del_engr_at(x, y);
+    water_damage_chain(svl.level.objects[x][y], FALSE);
+    mtmp = m_at(x, y);
+    if (mtmp)
+        minliquid(mtmp);
+    newsym(x, y);
+    (* (int*)poolcnt)++;
+}
+
+/* Unflood (dry up) a space. This is a callback function. */
+staticfn void
+unflood_space(coordxy x, coordxy y, genericptr_t drycnt)
+{
+    if ((levl[x][y].typ != POOL) &&
+        (levl[x][y].typ != MOAT) &&
+        (levl[x][y].typ != WATER) &&
+        (levl[x][y].typ != FOUNTAIN))
+            return;
+
+    /* Get rid of a pool at x, y */
+    levl[x][y].typ = ROOM;
+    newsym(x, y);
+    (* (int*)drycnt)++;
+}
+
 staticfn void
 seffect_enchant_armor(struct obj **sobjp)
 {
@@ -2057,6 +2109,59 @@ seffect_stinking_cloud(struct obj **sobjp)
 }
 
 staticfn void
+seffect_water(struct obj **sobjp)
+{
+    struct obj *sobj = *sobjp;
+    boolean sblessed = sobj->blessed;
+    boolean confused = (Confusion != 0);
+    int range = 4 + (2 * bcsign(sobj));
+    if (confused) {
+        int dried_up = 0;
+        do_clear_area(u.ux, u.uy, range, unflood_space, &dried_up);
+        if (dried_up) {
+            gk.known = TRUE;
+            if (Hallucination)
+                pline("Oh no! Dehydration!");
+            else
+                pline("You are suddenly very dry!");
+        } else {
+            pline("The air around you suddenly feels very dry.");
+        }
+    } else {
+        int madepools = 0;
+        int x, y, safe_pos = 0;
+        do_clear_area(u.ux, u.uy, range, flood_space, &madepools);
+
+        if (madepools) {
+            gk.known = TRUE;
+            if (Hallucination)
+                pline("A totally gnarly wave comes in!");
+            else
+                pline("A flood surges through the area!");
+        } else {
+            pline("The air around you suddenly feels very humid.");
+        }
+
+        /* check if there are safe tiles around the player */
+        for (x = u.ux - 1; x <= u.ux + 1; x++) {
+            for (y = u.uy - 1; y <= u.uy + 1; y++) {
+                if (x != u.ux && y != u.uy &&
+                    goodpos(x, y, &gy.youmonst, 0)) {
+                    safe_pos++;
+                }
+            }
+        }
+
+        /* cursed and uncursed might put a water tile on
+         * player's position */
+        if (!sblessed && safe_pos > 0) {
+            madepools = -1;
+            flood_space(u.ux, u.uy, &madepools);
+        }
+    }
+}
+
+staticfn void
 seffect_blank_paper(struct obj **sobjp UNUSED)
 {
     if (Blind)
@@ -2424,6 +2529,9 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
         break;
     case SCR_STINKING_CLOUD:
         seffect_stinking_cloud(&sobj);
+        break;
+    case SCR_WATER:
+        seffect_water(&sobj);
         break;
     default:
         impossible("What weird effect is this? (%u)", otyp);

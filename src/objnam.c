@@ -3490,6 +3490,7 @@ static const struct alt_spellings {
     { "load stone", LOADSTONE },
     { "touch stone", TOUCHSTONE },
     { "flintstone", FLINT },
+    { "scroll of flood", SCR_WATER }, /* unnethack name for it */
     
     /* Community abbreviations */
     { "BoH", BAG_OF_HOLDING },

@@ -2251,7 +2251,7 @@ mkgrave(struct mkroom *croom)
     int tryct = 0;
     struct obj *otmp;
     boolean dobell = !rn2(10);
-
+    boolean dowater = !dobell && !rn2(11);
     if (croom->rtype != OROOM)
         return;
 
@@ -2259,7 +2259,9 @@ mkgrave(struct mkroom *croom)
         return;
 
     /* Put a grave at <m.x,m.y> */
-    make_grave(m.x, m.y, dobell ? "Saved by the bell!" : (char *) 0);
+    make_grave(m.x, m.y, dobell ? "Saved by the bell!"
+        : dowater ? "Apres moi, le deluge."
+        : (char *) 0);
 
     /* Possibly fill it with objects */
     if (!rn2(3)) {
@@ -2288,6 +2290,9 @@ mkgrave(struct mkroom *croom)
     /* Leave a bell, in case we accidentally buried someone alive */
     if (dobell)
         (void) mksobj_at(BELL, m.x, m.y, TRUE, FALSE);
+    else if (dowater) {
+        (void) mksobj_at(SCR_WATER, m.x, m.y, TRUE, FALSE);
+    }
     return;
 }
 
