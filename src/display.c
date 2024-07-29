@@ -2661,22 +2661,12 @@ map_glyphinfo(
             }
         }
 
-        /* blood overrides other colors */
-        switch (glyph_to_cmap(glyph)) {
-        case S_cloud:
-        case S_poisoncloud:
-        case S_fountain:
-        case S_water:
-        case S_pool:
+        /* Blood only colors the floor features, walls, and doors.
+         * If we color things like objects or corpses, it's confusing.
+         */
+        if (gmap->sym.symidx > S_brdnladder + SYM_OFF_P)
             drawblood = FALSE;
-            break;
-        default:
-            break;
-        }
-        if (glyph_is_trap(glyph) || glyph_is_monster(glyph))
-            drawblood = FALSE;
-        if (glyph_is_object(glyph) && !glyph_is_body(glyph))
-            drawblood = FALSE;
+
         if (drawblood && levl[x][y].splatpm 
                 && cansee(x, y) && !iflags.bloodless) {
             glyphinfo->gm.sym.color = blood_color(levl[x][y].splatpm);
