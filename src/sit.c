@@ -97,6 +97,16 @@ throne_sit_effect(void)
             if (u.uluck + rn2(5) < 0) {
                 You_feel("your luck is changing.");
                 change_luck(1);
+            } else {
+                  /* overall this equates to a 1.5% chance for a wish */
+                if (!rn2(5)) {
+                    makewish();
+                    /* no farming thrones for multiple wishes */
+                    levl[u.ux][u.uy].typ = ROOM, levl[u.ux][u.uy].flags = 0;
+                    pline_The("throne vanishes in a puff of logic.");
+                    newsym(u.ux, u.uy);
+                } else
+                    change_luck(-1); /* oops */
             }
             break;
         case 7:
