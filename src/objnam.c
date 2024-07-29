@@ -5439,7 +5439,6 @@ readobjnam(char *bp, struct obj *no_wish)
         /* name==aname => wished for artifact (otmp->oartifact => got it) */
         if (d.otmp->oartifact || d.name == aname) {
             d.otmp->quan = 1L;
-            u.uconduct.wisharti++; /* KMH, conduct */
         }
     }
 
@@ -5458,14 +5457,15 @@ readobjnam(char *bp, struct obj *no_wish)
     }
     
     /* more wishing abuse: charge them for the wish anyway! */
-    if (d.otmp->oartifact && rn2(u.uconduct.wisharti) && !wizard) {
+    if (d.otmp->oartifact && rn2(u.uconduct.wisharti + 1) && !wizard) {
         artifact_exists(d.otmp, safe_oname(d.otmp), FALSE, ONAME_NO_FLAGS);
         obfree(d.otmp, (struct obj *) 0);
         d.otmp = &hands_obj;
         pline("For a moment, you feel %s in your %s, but it disappears!",
               something, makeplural(body_part(HAND)));
         return d.otmp;
-    }
+    } else if (d.otmp->oartifact)
+        u.uconduct.wisharti++; /* KMH, conduct */
 
     if (d.halfeaten && d.otmp->oclass == FOOD_CLASS) {
         unsigned nut = obj_nutrition(d.otmp);
