@@ -2577,7 +2577,8 @@ map_glyphinfo(
             /* for showrace, non-human hero is displayed by the symbol of
                corresponding type of monster rather than by '@' (handled
                by newsym()); we change the color to same as human hero */
-            glyphinfo->gm.sym.color = HI_DOMESTIC;
+            // glyphinfo->gm.sym.color = HI_DOMESTIC;
+            ;
         }
         /* accessibility
           This unchanging display character for hero was requested by
