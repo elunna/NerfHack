@@ -202,6 +202,14 @@ in_trouble(void)
     struct obj *otmp;
     int i;
 
+    /* Cavepersons get another flavor kick: their god is
+     * also a bit primitive, so they get a chance of
+     * their god being asleep at the switch. Give a little 
+     * break for major troubles.
+     */
+    if (!rn2(13) && Role_if(PM_CAVE_DWELLER))
+        return 0;
+
     /*
      * major troubles
      */
@@ -249,12 +257,10 @@ in_trouble(void)
 
     /*
      * minor troubles...
-     * Cavepersons get another flavor kick: their god is
-     * also a bit primitive, so they get a 10% chance of
-     * their god being asleep at the switch
      */
     if (!rn2(10) && Role_if(PM_CAVE_DWELLER))
         return 0;
+
     if (Punished || (u.utrap && u.utraptype == TT_BURIEDBALL))
         return TROUBLE_PUNISHED;
     if (Cursed_obj(uarmg, GAUNTLETS_OF_FUMBLING)
