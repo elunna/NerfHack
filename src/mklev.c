@@ -902,7 +902,7 @@ fill_ordinary_room(
         mksink(croom);
     if (!rn2(60))
         mkaltar(croom);
-    if (!rn2(60))
+    if (!rn2(111))
         mkforge(croom);
     x = 80 - (depth(&u.uz) * 2);
     if (x < 2)
