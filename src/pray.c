@@ -1154,7 +1154,8 @@ gcrownu(void)
     add_weapon_skill(1);
     
     /* The altar can't handle the transference of all that power! */
-    crackaltar();
+    if (rn2(13))
+        crackaltar();
     return;
 }
 
@@ -1849,8 +1850,9 @@ offer_different_alignment_altar(
                        (3 * ALIGNLIM) / (temple_occupied(u.urooms)
                                              ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
-                crackaltar();
-            } else if (!rn2(3))
+                if (!rn2(3))
+                    crackaltar();
+            } else if (!rn2(13))
                 crackaltar();
             
             /* anger priest; test handles bones files */
