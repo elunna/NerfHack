@@ -2281,6 +2281,7 @@ seffect_water(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
     boolean sblessed = sobj->blessed;
+    boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
     int range = 4 + (2 * bcsign(sobj));
     if (confused) {
@@ -2297,19 +2298,9 @@ seffect_water(struct obj **sobjp)
         }
     } else {
         int madepools = 0;
+        int stilldry = -1;
         int x, y, safe_pos = 0;
         do_clear_area(u.ux, u.uy, range, flood_space, &madepools);
-
-        if (madepools) {
-            gk.known = TRUE;
-            if (Hallucination)
-                pline("A totally gnarly wave comes in!");
-            else
-                pline("A flood surges through the area!");
-        } else {
-            pline("The air around you suddenly feels very humid.");
-        }
-
         /* check if there are safe tiles around the player */
         for (x = u.ux - 1; x <= u.ux + 1; x++) {
             for (y = u.uy - 1; y <= u.uy + 1; y++) {
@@ -2319,12 +2310,23 @@ seffect_water(struct obj **sobjp)
                 }
             }
         }
-
         /* cursed and uncursed might put a water tile on
          * player's position */
         if (!sblessed && safe_pos > 0) {
-            madepools = -1;
-            flood_space(u.ux, u.uy, &madepools);
+            if (scursed || rnl(10) > 5)
+                flood_space(u.ux, u.uy, &stilldry);
+        }
+        if (madepools || !stilldry) {
+            gk.known = TRUE;
+            if (Hallucination)
+                pline("A totally gnarly wave comes in!");
+            else
+                pline("A flood surges through the area!");
+        } else {
+            pline("The air around you suddenly feels very humid.");
+        }
+         if (!stilldry && !Wwalking && !Flying && !Levitation) {
+                drown();
         }
     }
 }
