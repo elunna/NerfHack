@@ -519,7 +519,6 @@ explode(
                 }
 
                 if ((explmask[i][j] & EXPL_MON) != 0) {
-                    showdamage(itemdmg, FALSE);
                     /* damage from ring/wand explosion isn't itself
                      * electrical in nature, nor is damage from freezing potion
                      * really cold in nature, nor is damage from boiling potion
@@ -555,7 +554,6 @@ explode(
                         mdam *= 2;
                     else if (resists_fire(mtmp) && adtyp == AD_COLD)
                         mdam *= 2;
-                    showdamage(mdam + itemdmg, FALSE);
                     mtmp->mhp -= mdam + itemdmg;
                 }
                 if (DEADMONSTER(mtmp)) {

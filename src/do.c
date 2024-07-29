@@ -205,7 +205,6 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
                         /* normally we'd use ohitmon() but it can call
                            drop_throw() which calls flooreffects() */
                         damage = dmgval(obj, mtmp);
-                        showdamage(damage, FALSE);
                         mtmp->mhp -= damage;
                         if (DEADMONSTER(mtmp)) {
                             if (canspotmon(mtmp))

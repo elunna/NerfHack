@@ -2822,7 +2822,6 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
                           xname(helmet), mhim(mtmp));
             }
         }
-        showdamage(mdmg, FALSE);
         mtmp->mhp -= mdmg;
         if (DEADMONSTER(mtmp)) {
             if (byu) {

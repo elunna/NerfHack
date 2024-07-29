@@ -354,10 +354,7 @@ mattackm(
         ftmp = (int) ((magr->m_lev - 4) / 2) + 4;
         tmp += ftmp;
         if (canseemon(magr)) {
-            if (flags.showdamage)
-                pline("%s flanks %s. [-%dAC]", Monnam(magr), mon_nam(mdef), ftmp);
-            else
-                pline("%s flanks %s.", Monnam(magr), mon_nam(mdef));
+            pline("%s flanks %s.", Monnam(magr), mon_nam(mdef));
         }
     }
 

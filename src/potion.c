@@ -2163,7 +2163,6 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))
                     wake_nearto(tx, ty, mon->data->mlevel * 10);
-                showdamage(dmg, FALSE);
                 mon->mhp -= dmg;
                 if (DEADMONSTER(mon)) {
                     if (your_fault)
