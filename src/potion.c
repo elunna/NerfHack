@@ -705,6 +705,16 @@ dodrink(void)
             }
             ++drink_ok_extra;
         }
+         /* Or a toilet? */
+        if (IS_TOILET(levl[u.ux][u.uy].typ)
+            /* not as low as floor level but similar restrictions apply */
+            && can_reach_floor(FALSE)) {
+            if (y_n("Drink from the toilet?") == 'y') {
+                drinktoilet();
+                return ECMD_TIME;
+            }
+            ++drink_ok_extra;
+        }
         /* Or a forge? */
         if (IS_FORGE(levl[u.ux][u.uy].typ)
             /* not as low as floor level but similar restrictions apply */
@@ -2717,8 +2727,9 @@ dodip(void)
             at_fountain = IS_FOUNTAIN(here), 
             at_forge = IS_FORGE(here),
             at_sink = IS_SINK(here),
+            at_toilet = IS_TOILET(here),
             at_here = (!iflags.menu_requested
-                       && (at_pool || at_fountain || at_sink));
+                       && (at_pool || at_fountain || at_sink || at_toilet));
 
     obj = getobj("dip", at_here ? dip_hands_ok : dip_ok, GETOBJ_PROMPT);
     if (!obj)
@@ -2785,6 +2796,16 @@ dodip(void)
                 if (!is_hands)
                     obj->pickup_prev = 0;
                 dipsink(obj);
+                return ECMD_TIME;
+            }
+            ++drink_ok_extra;
+        } else if (at_toilet) {
+            Snprintf(qbuf, sizeof(qbuf), "%s%s into the toilet?", Dip_,
+                     flags.verbose ? obuf : shortestname);
+            if (y_n(qbuf) == 'y') {
+                if (!is_hands)
+                    obj->pickup_prev = 0;
+                diptoilet(obj);
                 return ECMD_TIME;
             }
             ++drink_ok_extra;

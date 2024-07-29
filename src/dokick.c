@@ -817,6 +817,8 @@ kickstr(char *buf, const char *kickobjnam)
         what = "a headstone";
     else if (IS_SINK(gm.maploc->typ))
         what = "a sink";
+    else if (IS_TOILET(gm.maploc->typ))
+        what = "a toilet";
     else if (IS_ALTAR(gm.maploc->typ))
         what = "an altar";
     else if (IS_DRAWBRIDGE(gm.maploc->typ))
@@ -970,6 +972,8 @@ kick_door(coordxy x, coordxy y, int avrg_attrib)
 staticfn int
 kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
 {
+    char buf[BUFSZ];
+
     if (gm.maploc->typ == SDOOR) {
         if (!Levitation && rn2(30) < avrg_attrib) {
             cvt_sdoor_to_door(gm.maploc); /* ->typ = DOOR */
@@ -1260,6 +1264,111 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
         kick_ouch(x, y, "");
         return ECMD_TIME;
     }
+    if (IS_TOILET(gm.maploc->typ)) {
+        if (Levitation) {
+            kick_dumb(x, y);
+            return ECMD_TIME;
+        }
+
+        if (rn2(5)) {
+            Soundeffect(se_klunk_pipe, 60);
+            switch (rnd(14)) {
+            case 1: 
+                pline("Plunk! The toilet seat swings open and shut.");
+                break;
+            case 2:
+                pline("Blintz! The toilet handle rattles sharply.");
+                break;
+            case 3:
+                pline("Foompa! The tank lid pops up momentarily.");
+                break;
+            default:
+                pline("Klunk!");
+            }
+            exercise(A_DEX, TRUE);
+            return 1;
+        }
+
+        /* Kicking can always generate sewage with cockroaches. */
+        if (!rn2(17)) {
+            /* Spew some sewage out */
+            dogushforth(FALSE);
+            if (create_critters(rn1(2, 3), &mons[PM_GIANT_COCKROACH], TRUE)) {
+                if (!Blind) {
+                    if (!Hallucination)
+                        pline("Eww! Some cockroaches crawl out of the toilet!");
+                    else
+                        pline(
+                            "Oh my god! Invasion of the body snatchers!");
+                } else
+                    You_hear("hear something scurrying around you!");
+            }
+            exercise(A_DEX, TRUE);
+            return 1;
+        }
+
+        /* Instead of black pudding (like sink) - brown seems appropriate. */
+        if (!(gm.maploc->looted & S_LPOOPY) && !rn2(3)
+                && !(svm.mvitals[PM_BROWN_PUDDING].mvflags & G_GONE)) {
+            if (Blind)
+                You_hear("a gushing sound.");
+            else
+                pline("A %s ooze gushes up from the drain!",
+                    hcolor(NH_AMBER));
+            (void) makemon(&mons[PM_BROWN_PUDDING], x, y, NO_MM_FLAGS);
+            exercise(A_DEX, TRUE);
+            newsym(x, y);
+            gm.maploc->looted |= S_LPOOPY;
+            return 1;
+        }
+
+        /* Instead of rings - we can get small tools (weighing under 10) */
+        if (!rn2(3)) {
+            struct obj *otmp = NULL;
+            int cnt;
+
+            if (Blind && Deaf)
+                Sprintf(buf, " %s", body_part(FACE));
+            else
+                buf[0] = '\0';
+            pline("%s%s%s.", !Deaf ? "Flupp! " : "",
+                !Blind  ? "Muddy waste pops up from the drain"
+                : !Deaf ? "You hear a sloshing sound" /* Deaf-aware */
+                        : "Something splashes you in the", buf);
+
+            if (!(gm.maploc->looted & S_LTOOL)) { /* once per sink */
+                for (cnt = 3; cnt > 0 && (otmp = mkobj(TOOL_CLASS, FALSE)); cnt--) {
+                    if (otmp->owt < 15 && !objects[otmp->otyp].oc_big)
+                        break;
+                    You_hear("a loud %s in the plumbing.",
+                        !rn2(2) ? "clank" : "clunk");
+                    if (cnt > 1) {
+                        obfree(otmp, (struct obj *) 0);
+                        otmp = (struct obj *) 0;
+                    }
+                }
+                if (otmp->owt > 15) {
+                    pline_The("toilet groans... It fractures as an object bursts out!");
+                    breaktoilet(x, y);
+                } else if (!Blind)
+                    You_see("something floating in the bowl.");
+                
+                place_object(otmp, x, y);
+                newsym(x, y);
+                exercise(A_DEX, TRUE);
+                exercise(A_WIS, TRUE); /* a discovery! */
+                gm.maploc->looted |= S_LTOOL;
+            }
+            return 1;
+        }
+        if (!rn2(7)) {
+            breaktoilet(x, y);
+            return 1;
+        }
+        kick_ouch(x, y, "");
+        return ECMD_TIME;
+    }
+
     if (gm.maploc->typ == STAIRS || gm.maploc->typ == LADDER
         || IS_STWALL(gm.maploc->typ)) {
         if (!IS_STWALL(gm.maploc->typ) && gm.maploc->ladder == LA_DOWN) {

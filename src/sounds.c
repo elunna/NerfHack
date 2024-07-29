@@ -260,6 +260,13 @@ dosounds(void)
         };
         You_hear1(sink_msg[rn2(2) + hallu]);
     }
+    if (svl.level.flags.ntoilets && !rn2(300)) {
+        static const char *const toilet_msg[3] = {
+            "running water.", "a flushing noise.", 
+            "the jiggling of a handle.",
+        };
+        You_hear1(toilet_msg[rn2(2) + hallu]);
+    }
     if (svl.level.flags.has_court && !rn2(200)) {
         if (get_iter_mons(throne_mon_sound))
             return;

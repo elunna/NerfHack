@@ -116,6 +116,17 @@
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE, M2_HOSTILE,
         M3_INFRAVISIBLE,
         NO_RACE, 6, CLR_RED, FIRE_ANT),
+    /* Ported from EvilHack just for toilets :) */
+    MON(NAM("giant cockroach"), S_ANT,
+        LVL(4, 16, 3, 0, 0), (G_GENO | G_NOGEN),
+        A(ATTK(AT_BITE, AD_DRCO, 2, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(100, 100, MS_SILENT, MZ_SMALL), MR_POISON, 0,
+        M1_ANIMAL | M1_NOHANDS | M1_CONCEAL | M1_OVIPAROUS | M1_CARNIVORE
+            | M1_CLING,
+        /* Cockroaches don't fly very far, so they'll just jump. */
+        M2_HOSTILE, M3_JUMPER,
+        NO_RACE, 6, CLR_GREEN, GIANT_COCKROACH),
     MON(NAM("giant beetle"), S_ANT,
         LVL(5, 6, 4, 0, 0), (G_GENO | 3),
         A(ATTK(AT_BITE, AD_PHYS, 3, 6),

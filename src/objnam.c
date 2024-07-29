@@ -3694,6 +3694,13 @@ wizterrainwish(struct _readobjnam_data *d)
         lev->looted = d->looted ? (S_LPUDDING | S_LDWASHER | S_LRING) : 0;
         pline("A sink.");
         madeterrain = TRUE;
+    } else if (!BSTRCMPI(bp, p - 6, "toilet")) {
+        lev->typ = TOILET;
+        if (oldtyp != TOILET)
+            svl.level.flags.ntoilets++;
+        lev->looted = d->looted ? (S_LPOOPY | S_LTOOL) : 0;
+        pline("A toilet.");
+        madeterrain = TRUE;
 
     /* ("water" matches "potion of water" rather than terrain) */
     } else if (!BSTRCMPI(bp, p - 4, "pool")
@@ -3976,7 +3983,8 @@ wizterrainwish(struct _readobjnam_data *d)
         }
 
         /* fixups for replaced terrain that aren't handled above */
-        if (IS_FOUNTAIN(oldtyp) || IS_SINK(oldtyp) || IS_FORGE(oldtyp))
+        if (IS_FOUNTAIN(oldtyp) || IS_SINK(oldtyp) 
+            || IS_TOILET(oldtyp) || IS_FORGE(oldtyp))
             count_level_features(); /* update level.flags.nfountains,nsinks */
         if (!is_ice(x, y))
             spot_stop_timers(x, y, MELT_ICE_AWAY);

@@ -386,6 +386,25 @@ dosit(void)
         You(sit_message, defsyms[S_sink].explanation);
         Your("%s gets wet.",
              humanoid(gy.youmonst.data) ? "rump" : "underside");
+    } else if (IS_TOILET(typ)) {
+        You(sit_message, defsyms[S_toilet].explanation);
+
+        if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
+            breaktoilet(u.ux, u.uy);
+        } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
+            pline("Vampires have no use of such things.");
+        else if (!Sick && u.uhs > 0)
+            You("don't have to go...");
+        else {
+            if (Role_if(PM_BARBARIAN) || Role_if(PM_CAVE_DWELLER))
+                You("miss...");
+            else
+                You("grunt.");
+            if (Sick)
+                make_sick(0L, (char *) 0, TRUE, SICK_ALL);
+            if (u.uhs == 0)
+                morehungry(rn2(400) + 200);
+        }
     } else if (IS_FORGE(typ)) {
         You(sit_message, defsyms[S_forge].explanation);
         burn_away_slime();

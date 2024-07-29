@@ -354,6 +354,7 @@ static const struct {
                 { '{', FOUNTAIN },
                 { '\\', THRONE },
                 { 'K', SINK },
+                { 'U', TOILET },
                 { '}', MOAT },
                 { 'P', POOL },
                 { 'L', LAVAPOOL },
@@ -591,6 +592,11 @@ nhl_getmap(lua_State *L)
             nhl_add_table_entry_bool(L, "dishwasher",
                                      (levl[x][y].flags & S_LDWASHER));
             nhl_add_table_entry_bool(L, "ring", (levl[x][y].flags & S_LRING));
+        } else if (IS_TOILET(levl[x][y].typ)) {
+            nhl_add_table_entry_bool(L, "poopy",
+                                     (levl[x][y].flags & S_LPOOPY));
+            nhl_add_table_entry_bool(L, "tool",
+                                     (levl[x][y].flags & S_LTOOL));
         }
         /* TODO: drawbridges, walls, ladders, room=>ICED_xxx */
 

@@ -1418,7 +1418,7 @@ static const struct qmchoices {
     { PM_HOUSECAT, 0, PM_DOG, M_AP_MONSTER },
     { PM_LARGE_CAT, 0, PM_LARGE_DOG, M_AP_MONSTER },
     { PM_HOUSECAT, 0, PM_GIANT_RAT, M_AP_MONSTER },
-    { 0, S_DOG, S_sink, M_AP_FURNITURE }, /* sorry, no fire hydrants */
+    { 0, S_DOG, S_toilet, M_AP_FURNITURE }, /* sorry, no fire hydrants */
     { 0, 0, TRIPE_RATION, M_AP_OBJECT }, /* leave this at end */
 };
 

@@ -4089,9 +4089,10 @@ there_cmd_menu_self(winid win, coordxy x, coordxy y, int *act UNUSED)
     if (!u_at(x, y))
         return K;
 
-    if ((IS_FOUNTAIN(typ) || IS_SINK(typ)) && can_reach_floor(FALSE)) {
+    if ((IS_FOUNTAIN(typ) || IS_SINK(typ) || IS_TOILET(typ)) && can_reach_floor(FALSE)) {
         Sprintf(buf, "Drink from the %s",
-                defsyms[IS_FOUNTAIN(typ) ? S_fountain : S_sink].explanation);
+                defsyms[IS_FOUNTAIN(typ) ? S_fountain 
+                    : IS_TOILET(typ) ? S_toilet : S_sink].explanation);
         mcmd_addmenu(win, MCMD_QUAFF, buf), ++K;
     }
     if (IS_FORGE(typ))
@@ -4583,6 +4584,7 @@ domouseaction(void)
         if (x == 0 && y == 0) {
             /* here */
             if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)
+                || IS_TOILET(levl[u.ux][u.uy].typ)
                 || IS_SINK(levl[u.ux][u.uy].typ)) {
                 cmdq_add_ec(CQ_CANNED, dodrink);
                 return ECMD_OK;

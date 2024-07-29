@@ -36,6 +36,7 @@
      || nonliving(ptr) \
      || is_demon(ptr) \
      || is_rider(ptr) \
+     || (ptr) == &mons[PM_GIANT_COCKROACH]   \
      || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
      || (ptr) == &mons[PM_GREEN_DRAGON]        \
      || (ptr) == &mons[PM_LOCUST])

@@ -85,15 +85,16 @@ enum levl_typ_types {
     FORGE     = 29,
     THRONE    = 30,
     SINK      = 31,
-    GRAVE     = 32,
-    ALTAR     = 33,
-    ICE       = 34,
-    DRAWBRIDGE_DOWN = 35,
-    AIR       = 36,
-    CLOUD     = 37,
+    TOILET    = 32,
+    GRAVE     = 33,
+    ALTAR     = 34,
+    ICE       = 35,
+    DRAWBRIDGE_DOWN = 36,
+    AIR       = 37,
+    CLOUD     = 38,
 
-    MAX_TYPE  = 38,
-    MATCH_WALL = 39,
+    MAX_TYPE  = 39,
+    MATCH_WALL = 40,
     INVALID_TYPE = 127
 };
 
@@ -119,6 +120,7 @@ enum levl_typ_types {
 #define IS_FOUNTAIN(typ) ((typ) == FOUNTAIN)
 #define IS_FORGE(typ) ((typ) == FORGE)
 #define IS_SINK(typ) ((typ) == SINK)
+#define IS_TOILET(typ) ((typ) == TOILET)
 #define IS_GRAVE(typ) ((typ) == GRAVE)
 #define IS_ALTAR(typ) ((typ) == ALTAR)
 #define IS_DRAWBRIDGE(typ) \
@@ -202,6 +204,12 @@ enum levl_typ_types {
 #define S_LPUDDING 1
 #define S_LDWASHER 2
 #define S_LRING 4
+
+/*
+ * Toilets have 2 different types of loot that shouldn't be abused
+ */
+#define S_LPOOPY 1
+#define S_LTOOL 2
 
 /*
  * The four directions for a DrawBridge.
@@ -392,7 +400,8 @@ struct cemetery {
 struct levelflags {
     uchar nfountains; /* number of fountains on level */
     uchar nsinks;     /* number of sinks on the level */
-    uchar nforges;  /* number of forges on the level */
+    uchar ntoilets;   /* number of toilets on the level */
+    uchar nforges;    /* number of forges on the level */
     /* Several flags that give hints about what's on the level */
     Bitfield(has_shop, 1);
     Bitfield(has_vault, 1);

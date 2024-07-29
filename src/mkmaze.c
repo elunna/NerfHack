@@ -94,6 +94,7 @@ set_levltyp(coordxy x, coordxy y, schar newtyp)
                 spot_stop_timers(x, y, MELT_ICE_AWAY);
             if ((IS_FOUNTAIN(oldtyp) != IS_FOUNTAIN(newtyp))
                 || (IS_SINK(oldtyp) != IS_SINK(newtyp))
+                || (IS_TOILET(oldtyp) != IS_TOILET(newtyp))
                 || (IS_FORGE(oldtyp) != IS_FORGE(newtyp)))
                 /* level.flags.nfountains,nsinks, etc */
                 count_level_features(); 

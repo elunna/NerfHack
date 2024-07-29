@@ -202,6 +202,7 @@ start: Blank
         S_throne: \032
         S_tlcorn: \032
         S_tlwall: \032
+				S_toilet: \032
         S_tool: \032
         S_trap_door: \032
         S_trapper: \032
@@ -268,6 +269,7 @@ start: IBMgraphics
 	S_forge   : \xf4		# meta-t, integral top half
 	S_fountain: \xf4		# meta-t, integral top half
 	S_sink: \xf4			# meta-t, integral top half
+	S_toilet: \xf4			# meta-t, integral top half
 	S_pool: \xf7			# meta-w, approx. equals
 	S_ice: \xfa			# meta-z, centered dot
 	S_lava: \xf7			# meta-w, approx. equals

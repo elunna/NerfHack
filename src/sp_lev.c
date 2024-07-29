@@ -4778,10 +4778,10 @@ nhl_abs_coord(lua_State *L)
 int
 lspo_feature(lua_State *L)
 {
-    static const char *const features[] = { "fountain", "forge", "sink", "pool",
-                                            "throne", "tree", NULL };
-    static const int features2i[] = { FOUNTAIN, FORGE, SINK, POOL,
-                                      THRONE, TREE, STONE };
+    static const char *const features[] = { "fountain", "forge", "sink", "toilet", 
+                                            "pool", "throne", "tree", NULL };
+    static const int features2i[] = { FOUNTAIN, FORGE, SINK, TOILET,
+                                      POOL, THRONE, TREE, STONE };
     coordxy x, y;
     int typ;
     int argc = lua_gettop(L);
@@ -4847,6 +4847,10 @@ lspo_feature(lua_State *L)
         l_table_getset_feature_flag(L, x, y, "pudding", S_LPUDDING);
         l_table_getset_feature_flag(L, x, y, "dishwasher", S_LDWASHER);
         l_table_getset_feature_flag(L, x, y, "ring", S_LRING);
+        break;
+    case TOILET:
+        l_table_getset_feature_flag(L, x, y, "poopy", S_LPOOPY);
+        l_table_getset_feature_flag(L, x, y, "tool", S_LTOOL);
         break;
     case THRONE:
         l_table_getset_feature_flag(L, x, y, "looted", T_LOOTED);

@@ -586,6 +586,8 @@ furniture_handled(coordxy x, coordxy y, boolean madeby_u)
         dryup(x, y, madeby_u);
     } else if (IS_SINK(lev->typ)) {
         breaksink(x, y);
+    } else if (IS_TOILET(lev->typ)) {
+        breaktoilet(x, y);
     } else if (IS_FORGE(lev->typ)) {
         breakforge(x, y);
     } else if (lev->typ == DRAWBRIDGE_DOWN
@@ -1820,6 +1822,9 @@ adj_pit_checks(coord *cc, char *msg)
 #endif
     } else if (IS_SINK(ltyp)) {
         Strcpy(msg, "A tangled mass of plumbing remains below the sink.");
+        return FALSE;
+    } else if (IS_TOILET(ltyp)) {
+        Strcpy(msg, "A tangled mass of plumbing remains below the toilet.");
         return FALSE;
     } else if (IS_FORGE(ltyp)) {
         Strcpy(msg, "A volcanic vent remains below the forge.");

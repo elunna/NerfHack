@@ -15,6 +15,7 @@ staticfn void generate_stairs(void);
 staticfn void mkfount(struct mkroom *);
 staticfn boolean find_okay_roompos(struct mkroom *, coord *) NONNULLARG12;
 staticfn void mksink(struct mkroom *);
+staticfn void mktoilet(struct mkroom *);
 staticfn void mkaltar(struct mkroom *);
 staticfn void mkgrave(struct mkroom *);
 staticfn void mkinvpos(coordxy, coordxy, int);
@@ -733,7 +734,8 @@ count_level_features(void)
 {
     coordxy x, y;
     svl.level.flags.nfountains 
-        = svl.level.flags.nsinks 
+        = svl.level.flags.nsinks
+        = svl.level.flags.ntoilets 
         = svl.level.flags.nforges = 0;
     
     for (y = 0; y < ROWNO; y++)
@@ -746,6 +748,8 @@ count_level_features(void)
                 svl.level.flags.nforges++;
             else if (typ == SINK)
                 svl.level.flags.nsinks++;
+            else if (typ == TOILET)
+                svl.level.flags.ntoilets++;
         }
 }
 
@@ -783,6 +787,7 @@ clear_level_structures(void)
     svl.level.flags.nfountains = 0;
     svl.level.flags.nforges = 0;
     svl.level.flags.nsinks = 0;
+    svl.level.flags.ntoilets = 0;
     svl.level.flags.has_shop = 0;
     svl.level.flags.has_vault = 0;
     svl.level.flags.has_zoo = 0;
@@ -898,12 +903,18 @@ fill_ordinary_room(
         goto skip_nonrogue;
     if (!rn2(10))
         mkfount(croom);
-    if (!rn2(60))
+    if (!rn2(60)) {
         mksink(croom);
+        /* Very rare pairing */
+        if (!rn2(256))
+            mktoilet(croom);
+    }
     if (!rn2(60))
         mkaltar(croom);
     if (!rn2(111))
         mkforge(croom);
+    if (!rn2(127))
+        mktoilet(croom);
     x = 80 - (depth(&u.uz) * 2);
     if (x < 2)
         x = 2;
@@ -2218,6 +2229,22 @@ mksink(struct mkroom *croom)
 
     svl.level.flags.nsinks++;
 }
+
+staticfn void
+mktoilet(struct mkroom *croom)
+{
+    coord m;
+
+    if (!find_okay_roompos(croom, &m))
+        return;
+
+    /* Put a toilet at m.x, m.y */
+    if (!set_levltyp(m.x, m.y, TOILET))
+        return;
+
+    svl.level.flags.ntoilets++;
+}
+
 
 staticfn void
 mkaltar(struct mkroom *croom)

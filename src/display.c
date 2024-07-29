@@ -2309,6 +2309,9 @@ back_to_glyph(coordxy x, coordxy y)
     case SINK:
         idx = S_sink;
         break;
+     case TOILET:
+        idx = S_toilet;
+        break;
     case ALTAR:
         idx = S_altar;  /* not really used */
         bypass_glyph = altar_to_glyph(ptr->altarmask);
@@ -2940,6 +2943,10 @@ reset_glyphmap(enum glyphmap_change_triggers trigger)
                     if (sym == gs.showsyms[S_fountain + SYM_OFF_P])
                         spec_cmap = MG_BW_SINK;
                     break;
+                case S_toilet:
+                    if (sym == gs.showsyms[S_fountain + SYM_OFF_P])
+                        spec_cmap = MG_BW_SINK;
+                    break;
                 }
                 gmap->glyphflags |= spec_cmap;
             } else if (has_rogue_color) {
@@ -3145,8 +3152,8 @@ static const char *const type_names[MAX_TYPE] = {
     "SDOOR", "SCORR", "POOL", "MOAT", "WATER", "DRAWBRIDGE_UP", "LAVAPOOL",
     "LAVAWALL",
     "IRON_BARS", "DOOR", "CORR", "ROOM", "STAIRS", "LADDER", "FOUNTAIN",
-    "FORGE", "THRONE", "SINK", "GRAVE", "ALTAR", "ICE", "DRAWBRIDGE_DOWN",
-    "AIR", "CLOUD"
+    "FORGE", "THRONE", "SINK", "TOILET", "GRAVE", "ALTAR", "ICE", 
+    "DRAWBRIDGE_DOWN", "AIR", "CLOUD"
 };
 
 staticfn const char *

@@ -799,6 +799,44 @@ breaksink(coordxy x, coordxy y)
     newsym(x, y);
 }
 
+void
+breaktoilet(coordxy x, coordxy y)
+{
+    register int num = rn1(5, 2);
+    struct monst *mtmp;
+    
+    if (cansee(x, y) || (x == u.ux && y == u.uy))
+        pline_The("toilet suddenly shatters!");
+    else
+        You_hear("something shatter!");
+    /* updates level.flags.ntoilets and level.flags.nfountains */
+    set_levltyp(x, y, FOUNTAIN);
+    levl[x][y].looted = 0;
+    levl[x][y].blessedftn = 0;
+    SET_FOUNTAIN_LOOTED(x, y);
+    newsym(x, y);
+    
+    if (!rn2(3)) {
+        if (!(svm.mvitals[PM_BABY_CROCODILE].mvflags & G_GONE)) {
+            if (!Blind) {
+                if (!Hallucination) 
+                    pline("Oh no! Crocodiles come out from the pipes!");
+                else
+                    pline("Oh no! Tons of poopies!");
+            } else
+                You_hear("something scuttling around you!");
+            while (num-- > 0) {
+                /* Since toilet can be broken by ranged means, generate 
+                 * around the broken toilet */
+                if ((mtmp = makemon(&mons[PM_BABY_CROCODILE], x, y, NO_MM_FLAGS))
+                    && t_at(mtmp->mx, mtmp->my))
+                    (void) mintrap(mtmp, NO_TRAP_FLAGS);
+            }
+        } else
+            pline_The("sewers seem strangely quiet.");
+    }
+}
+
 /* quaff from a sink while standing on its location */
 void
 drinksink(void)
@@ -1078,7 +1116,6 @@ coolforge(int x, int y)
     maybe_unhide_at(x, y);
 }
 
-
 void
 drinkforge(void)
 {
@@ -1112,6 +1149,119 @@ drinkforge(void)
         pline("You take a sip of molten lava.");
         u.uhunger += rnd(5);
     }
+}
+
+void
+drinktoilet(void)
+{
+    if (Levitation) {
+        floating_above("toilet");
+        return;
+    }
+    if ((gy.youmonst.data->mlet == S_DOG) && (rn2(5))) {
+        pline_The("toilet water is quite refreshing!");
+        u.uhunger += 10;
+        return;
+    }
+
+#if 0 /* Relic of HackEM */
+    if (LarvaCarrier) {
+        You_feel("as if your body is your own again.");
+        make_carrier(0L, FALSE);
+    }
+#endif
+
+    switch (rn2(9)) {
+    case 0: 
+        if (svm.mvitals[PM_SEWER_RAT].mvflags & G_GONE)
+            pline_The("toilet seems quite dirty.");
+        else {
+            static NEARDATA struct monst *mtmp;
+
+            mtmp = makemon(&mons[PM_SEWER_RAT], u.ux, u.uy, NO_MM_FLAGS);
+            pline("Eek!  There's %s in the toilet!",
+                Blind ? "something squirmy" : a_monnam(mtmp));
+        }
+        break;
+    case 1: 
+        breaktoilet(u.ux, u.uy);
+        break;
+    case 2: 
+        pline("Something begins to crawl out of the toilet!");
+        if (svm.mvitals[PM_BROWN_PUDDING].mvflags & G_GONE
+                || !makemon(&mons[PM_BROWN_PUDDING], 
+                u.ux, u.uy, NO_MM_FLAGS))
+            pline("But it slithers back out of sight.");
+        break;
+    case 3:
+        /* New effect borrowed from EvilHack's sewage quaffing. Yech. */
+        pline("This %s is foul!", hliquid("sewage"));
+        if (how_resistant(SICK_RES) == 100) {
+            You_feel("mildly nauseous.");
+            losehp(rnd(4), "upset stomach", KILLED_BY_AN);
+        }
+        poisoned("sewage", A_STR, "drinking raw sewage",
+                            rnd(10) + rn1(4, 3), FALSE);
+        exercise(A_CON, FALSE);
+        break;
+    case 4: 
+        if (svm.mvitals[PM_BABY_CROCODILE].mvflags & G_GONE)
+            pline_The("toilet smells fishy.");
+        else {
+            static NEARDATA struct monst *mtmp;
+            mtmp = makemon(&mons[PM_BABY_CROCODILE], u.ux,
+                     u.uy, NO_MM_FLAGS);
+            pline("Egad!  There's %s in the toilet!",
+                Blind ? "something squirmy" :
+                a_monnam(mtmp));
+        }
+        break;
+    default: 
+        pline("Gaggg... this tastes like sewage!  You vomit.");
+        morehungry(rn1(30 - ACURR(A_CON), 11));
+        vomit();
+    }
+}
+
+void
+diptoilet(struct obj *obj)
+{
+    int er;
+    boolean is_hands = (obj == &hands_obj);
+    
+    if (Levitation) {
+        floating_above("toilet");
+        return;
+    }
+
+    if (is_hands || obj == uarmg) {
+        er = wash_hands();
+        You("would rather not wash your %s there.",
+            makeplural(body_part(HAND)));
+        return;
+    } else {
+        er = water_damage(obj, NULL, TRUE);
+    }
+
+    if (obj->otyp == POT_ACID && er != ER_DESTROYED) {
+        /* Acid and water don't mix */
+        useup(obj);
+        return;
+    } 
+
+    if (is_poisonable(obj)) {
+        if (flags.verbose)
+            You("cover it in filth.");
+        obj->opoisoned = TRUE;
+        update_inventory();
+    }
+    if (obj->oclass == FOOD_CLASS) {
+        if (flags.verbose)
+            pline("My! It certainly looks tastier now...");
+        obj->orotten = TRUE;
+    }
+    if (flags.verbose)
+        pline("Yuck!");
 }
 
 /*fountain.c*/

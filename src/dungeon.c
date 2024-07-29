@@ -2795,7 +2795,7 @@ init_mapseen(d_level *lev)
 #define OF_INTEREST(feat) \
     ((feat).nfount || (feat).nsink || (feat).nthrone || (feat).naltar   \
      || (feat).ngrave || (feat).ntree || (feat).nshop || (feat).ntemple) \
-     || (feat).nforge
+     || (feat).nforge || (feat).ntoilet
   /* || (feat).water || (feat).ice || (feat).lava */
 
 /* returns true if this level has something interesting to print out */
@@ -2923,6 +2923,11 @@ count_feat_lastseentyp(
                 count = mptr->feat.nsink + 1;
                 if (count <= 3)
                     mptr->feat.nsink = count;
+                break;
+            case TOILET:
+                count = mptr->feat.ntoilet + 1;
+                if (count <= 3)
+                    mptr->feat.ntoilet = count;
                 break;
             case FORGE:
                 count = mptr->feat.nforge + 1;
@@ -3548,6 +3553,7 @@ print_mapseen(
         ADDNTOBUF("fountain", mptr->feat.nfount);
         ADDNTOBUF("forge", mptr->feat.nforge);
         ADDNTOBUF("sink", mptr->feat.nsink);
+        ADDNTOBUF("toilet", mptr->feat.ntoilet);
         ADDNTOBUF("grave", mptr->feat.ngrave);
         ADDNTOBUF("tree", mptr->feat.ntree);
 #if 0

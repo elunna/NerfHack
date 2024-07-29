@@ -4594,6 +4594,8 @@ dfeature_at(coordxy x, coordxy y, char *buf)
         dfeature = "pool of water";
     else if (IS_SINK(ltyp))
         cmap = S_sink; /* "sink" */
+    else if (IS_TOILET(ltyp))
+        cmap = S_toilet; /* "toilet" */
     else if (IS_ALTAR(ltyp)) {
         Sprintf(altbuf, "%s%saltar to %s (%s)",
                 levl[x][y].cracked ? "cracked " : "",

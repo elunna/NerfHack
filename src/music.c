@@ -296,9 +296,13 @@ do_earthquake(int force)
                 if (cansee(x, y))
                     pline_The("kitchen sink falls%s.", into_a_chasm);
                 goto do_pit;
+            case TOILET:
+                if (cansee(x, y))
+                    pline_The("toilet falls%s.", into_a_chasm);
+                goto do_pit;
             case FORGE:
                 if (cansee(x, y))
-                    pline_The("forge falls into a chasm.");
+                    pline_The("forge falls%s.", into_a_chasm);
                 goto do_pit;
             case ALTAR:
                 amsk = altarmask_at(x, y);
