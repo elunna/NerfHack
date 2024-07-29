@@ -939,8 +939,10 @@ dochug(struct monst *mtmp)
 
         switch (status) { /* for pets, cases 0 and 3 are equivalent */
         case MMOVE_NOMOVES:
+            /* This is a soft reversion of 82f0b1e8e from 3.7.
+             * Monsters should never attack while scared or fleeing. */
             if (scared)
-                panicattk = TRUE;
+                panicattk = FALSE;
             /*FALLTHRU*/
         case MMOVE_NOTHING: /* no movement, but it can still attack you */
         case MMOVE_DONE: /* absolutely no movement */
