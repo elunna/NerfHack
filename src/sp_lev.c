@@ -943,8 +943,11 @@ flip_level_rnd(int flp, boolean extras)
 {
     int c = 0;
     
-    if (In_sokoban(&u.uz) && !flags.flipsoko)
+    if (In_sokoban(&u.uz) && flags.noflipsoko) {
+        /* Forcing non-flipped Soko *DOES* break the rules - mmmmkay? */
+        sokoban_guilt();
         return;
+    }
 
     /* TODO?
      *  Might change rn2(2) to !rn2(3) or (rn2(5) < 2) in order to bias

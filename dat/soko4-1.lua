@@ -20,6 +20,7 @@
 --   Being pulled by a thrown iron ball.
 --   Hurtling through the air from Newton's 3rd law.
 --   Squeezing past boulders when naked or as a giant.
+--   Disabling the "noflipsoko" option when generating a new puzzle.
 -- These actions are not permitted:
 --   Moving diagonally between two boulders and/or walls.
 --   Pushing a boulder diagonally.
