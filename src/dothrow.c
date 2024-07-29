@@ -2325,7 +2325,7 @@ thitmonst(
         potionhit(mon, obj, POTHIT_HERO_THROW);
         return 1;
 
-    } else if (befriend_with_obj(mon->data, obj)
+    } else if ((befriend_with_obj(mon->data, obj) && !obj->cursed)
                || (mon->mtame && dogfood(mon, obj) <= ACCFOOD)) {
         if (tamedog(mon, obj, TRUE)) {
             return 1; /* obj is gone */

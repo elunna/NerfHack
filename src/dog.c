@@ -976,6 +976,10 @@ dogfood(struct monst *mon, struct obj *obj)
          * predicate tests against it will fail */
         fptr = &mons[(ismnum(fx)) ? fx : NUMMONS];
 
+        /* Cursed food doesn't work - only for undead or demons. */
+        if (obj->cursed && !is_undead(fptr) && !is_demon(fptr))
+            return TABU;
+        
         if (obj->otyp == CORPSE && is_rider(fptr))
             return TABU;
         if ((obj->otyp == CORPSE || obj->otyp == EGG)
