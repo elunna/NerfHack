@@ -1179,7 +1179,7 @@ cpostfx(int pm)
     if (mons[pm].mlet == S_TROLL) {
         if (!Regeneration)
             You_feel("invigorated!");
-        incr_itimeout(&HRegeneration, d(2, 6));
+        incr_itimeout(&HRegeneration, d(8, 6));
     }
 
     switch (pm) {
