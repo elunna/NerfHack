@@ -4326,7 +4326,7 @@ nazgul_shriek(struct monst *mtmp)
                 pline("A distant fell cry pierces the air.");
         } else {
             if (Underwater) {
-                You_hear("a  muffled shriek.");
+                You_hear("a muffled shriek.");
                 return;
             } else if (cansee)
                 pline("%s shrieks!", Monnam(mtmp));
@@ -6396,8 +6396,12 @@ mon_berserk(struct monst *mtmp)
 
     /* Serenity blocks berserkers */
     if (u_wield_art(ART_SERENITY)) {
-        if (!rn2(3))
-            pline("%s moans sadly!", Monnam(mtmp));
+        if (!rn2(3)) {
+            if (!canseemon(mtmp) || distu(mtmp->mx, mtmp->my) > 100)
+                You_hear("a distant %s.", rn2(4) ? "moan" : "whimper");
+            else
+                pline("%s %s sadly!", Monnam(mtmp), rn2(4) ? "moans" : "whimpers");
+        }
         return;
     }
     /*  
@@ -6424,7 +6428,7 @@ mon_berserk(struct monst *mtmp)
     } else {
         You_hear("an enraged %s %s!",
                  !rn2(3) ? "roar" : rn2(2) ? "bellow" : "howl",
-                 (distu(mtmp->mx, mtmp->my) > (6 * 6)
+                 (distu(mtmp->mx, mtmp->my) > 36
                       ? "in the distance" : "nearby"));
     }
     wake_nearto(mtmp->mx, mtmp->my, 4 * 4);
