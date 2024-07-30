@@ -4741,15 +4741,15 @@ look_here(
             /* thawing ice ("solid ice", "thin ice", &c) */
             || ((p = strchr(dfeature, ' ')) != 0 && !strcmpi(p, " ice")))
             article = 0;
-        if (article == 1)
+        if (article == 1 && !bloody)
             dfeature = an(dfeature);
 
         /* hardcoded "is" worked here because "iron bars" is actually
            "set of iron bars"; use vtense() instead of relying on that */
         if (bloody)
-            Sprintf(fbuf, "There %s bloody %s here.", vtense(dfeature, "are"), dfeature);
+            Sprintf(fbuf, "There is a bloody %s here.", dfeature);
         else
-        Sprintf(fbuf, "There %s %s here.", vtense(dfeature, "are"), dfeature);
+            Sprintf(fbuf, "There %s %s here.", vtense(dfeature, "are"), dfeature);
     }
 
     if (!otmp || is_lava(u.ux, u.uy)

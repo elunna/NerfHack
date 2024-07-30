@@ -2665,10 +2665,11 @@ map_glyphinfo(
             }
         }
 
-        /* Blood only colors the floor features, walls, and doors.
+        /* Blood only colors the floor features, walls, doors, 
+         * and furniture.
          * If we color things like objects or corpses, it's confusing.
          */
-        if (gmap->sym.symidx > S_brdnladder + SYM_OFF_P)
+        if (gmap->sym.symidx > S_ice + SYM_OFF_P)
             drawblood = FALSE;
 
         if (drawblood && levl[x][y].splatpm 
