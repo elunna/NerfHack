@@ -2288,7 +2288,7 @@ eataccessory(struct obj *otmp)
             return; /* died from sink fall */
     }
     otmp->known = otmp->dknown = 1; /* by taste */
-    if (!rn2(otmp->oclass == RING_CLASS ? 3 : 5)) {
+    if (rn2(otmp->oclass == RING_CLASS ? 3 : 5)) {
         switch (otmp->otyp) {
         default:
             if (!objects[typ].oc_oprop)
@@ -2297,10 +2297,9 @@ eataccessory(struct obj *otmp)
             if (!(u.uprops[objects[typ].oc_oprop].intrinsic & FROMOUTSIDE))
                 accessory_has_effect(otmp);
 
-            u.uprops[objects[typ].oc_oprop].intrinsic |= FROMOUTSIDE;
-
             switch (typ) {
             case RIN_SEE_INVISIBLE:
+                incr_itimeout(&HSee_invisible, rnd(750) + 750);
                 set_mimic_blocking();
                 see_monsters();
                 if (Invis && !oldprop && !ESee_invisible
@@ -2311,6 +2310,7 @@ eataccessory(struct obj *otmp)
                 }
                 break;
             case RIN_INVISIBILITY:
+                incr_itimeout(&HInvis, rnd(750) + 750);
                 if (!oldprop && !EInvis && !BInvis && !See_invisible
                     && !Blind) {
                     newsym(u.ux, u.uy);
@@ -2319,7 +2319,84 @@ eataccessory(struct obj *otmp)
                     makeknown(typ);
                 }
                 break;
+            case RIN_TELEPORT_CONTROL:
+                incr_itimeout(&HTeleport_control, rnd(750) + 750);
+                if (!oldprop && !ETeleport_control) {
+                    You_feel(Hallucination ? "centered in your personal space."
+                                   : "in control of yourself.");
+                    makeknown(typ);
+                }
+                break;
+            case RIN_TELEPORTATION:
+                incr_itimeout(&HTeleportation, rnd(750) + 750);
+                if (!oldprop && !ETeleportation) {
+                     if (!HTeleportation)
+                        You_feel(Hallucination ? "diffuse." : "very jumpy.");
+                    else
+                        You_feel(Hallucination ? "diffuser." : "more jumpy.");
+                    makeknown(typ);
+                }
+                break;
+            case RIN_POLYMORPH:
+                incr_itimeout(&HPolymorph, rnd(750) + 750);
+                if (!oldprop && !EPolymorph) {
+                    You_feel(Hallucination ? "multiple personalities." : "very fluid.");
+                    makeknown(typ);
+                }
+                break;
+            case RIN_POLYMORPH_CONTROL:
+                incr_itimeout(&HPolymorph_control, rnd(750) + 750);
+                if (!oldprop && !EPolymorph_control) {
+                    You_feel(Hallucination ? "centered in your personal space."
+                                   : "in control of yourself.");
+                    makeknown(typ);
+                }
+                break;
+
+
+            case RIN_REGENERATION:
+                incr_itimeout(&HRegeneration, rnd(750) + 750);
+                if (!Regeneration)
+                    You_feel("invigorated!");
+                makeknown(typ);
+                break;
+            case RIN_HUNGER:
+                incr_itimeout(&HHunger, rnd(750) + 750);
+                if (!Hunger)
+                    You_feel("ravenous!");
+                makeknown(typ);
+                break;
+            case RIN_SEARCHING:
+                incr_itimeout(&HSearching, rnd(750) + 750);
+                if (!Searching)
+                    You_feel("perceptive!");
+                makeknown(typ);
+                break;
+            case RIN_WARNING:
+                incr_itimeout(&HWarning, rnd(750) + 750);
+                if (!Warning)
+                    You_feel("sensitive!");
+                makeknown(typ);
+                see_monsters();
+                break;
+            case RIN_STEALTH:
+                incr_itimeout(&HStealth, rnd(750) + 750);
+                if (!Stealth)
+                    You_feel("stealthy!");
+                makeknown(typ);
+                see_monsters();
+                break;
+
+            case RIN_CONFLICT:
+                incr_itimeout(&HConflict, rnd(750) + 750);
+                if (!Conflict)
+                    You_feel("like a rabble rouser!");
+                makeknown(typ);
+                break;
+
             case RIN_PROTECTION_FROM_SHAPE_CHAN:
+                incr_itimeout(&HProtection_from_shape_changers,
+                    rnd(750) + 750); /* No message */
                 rescham();
                 break;
             case RIN_LEVITATION:
@@ -2330,6 +2407,32 @@ eataccessory(struct obj *otmp)
                     incr_itimeout(&HLevitation, d(10, 20));
                     makeknown(typ);
                 }
+                break;
+            case RIN_AGGRAVATE_MONSTER:
+                incr_itimeout(&HAggravate_monster,
+                    rnd(750) + 750); /* No message */
+                break;
+
+            case AMULET_OF_ESP:
+                makeknown(typ);
+                if (!HTelepat)
+                    You_feel(Hallucination ? "in touch with the cosmos."
+                                    : "a strange mental acuity.");
+                else
+                    You_feel(Hallucination ? "more in touch with the cosmos."
+                                        : "more mentally acute.");
+                incr_itimeout(&HTelepat, rn1(750, 1250));
+                /* If blind, make sure monsters show up. */
+                if (Blind)
+                    see_monsters();
+                break;
+            case AMULET_OF_MAGICAL_BREATHING:
+                incr_itimeout(&HMagical_breathing,
+                    rnd(750) + 1250); /* No message */
+                break;
+
+            default:
+                u.uprops[objects[typ].oc_oprop].intrinsic |= FROMOUTSIDE;
                 break;
             } /* inner switch */
             break; /* default case of outer switch */
@@ -2402,16 +2505,30 @@ eataccessory(struct obj *otmp)
 
             if (!(HSleepy & FROMOUTSIDE))
                 accessory_has_effect(otmp);
-            HSleepy |= FROMOUTSIDE;
+            incr_itimeout(&HSleepy, rnd(1250) + 750);
             /* might also be wearing one; use shorter of two timeouts */
             if (newnap < oldnap || oldnap == 0L)
                 HSleepy = (HSleepy & ~TIMEOUT) | newnap;
             break;
         }
+        case AMULET_OF_FLYING:
+            float_vs_flight(); /* block flying if levitating */
+            boolean already_flying = !!Flying;;
+            incr_itimeout(&HFlying, rnd(1250) + 750);
+
+            if (!already_flying) {
+                disp.botl = TRUE; /* status: 'Fly' On */
+                You("are now in flight.");
+            }
+            break;
+        case AMULET_OF_REFLECTION:
+            incr_itimeout(&HReflecting, rnd(1250) + 750);
+            if (!Blind)
+                pline("A shimmering %s surrounds you!", 
+                    Hallucination ? "bubble" : "globe");
+            break;
         case RIN_SUSTAIN_ABILITY:
         case AMULET_OF_LIFE_SAVING:
-        case AMULET_OF_FLYING:
-        case AMULET_OF_REFLECTION: /* nice try */
             /* can't eat Amulet of Yendor or fakes,
              * and no oc_prop even if you could -3.
              */

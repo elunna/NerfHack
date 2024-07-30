@@ -666,6 +666,11 @@ nh_timeout(void)
         }
     }
 
+      /* Give a small warning that spell-based reflection is running out. */
+    if (HReflecting == 20 && !Blind)
+        pline("The shimmering globe around you is starting to fade.");
+
+
     if (u.ugallop) {
         if (--u.ugallop == 0L && u.usteed)
             pline("%s stops galloping.", Monnam(u.usteed));
@@ -963,6 +968,72 @@ nh_timeout(void)
             case REGENERATION:
                 if (!Regeneration)
                     You_feel("enervated.");
+                break;
+            case HUNGER:
+                if (!Hunger)
+                    Your("%s feels more at ease.", body_part(STOMACH));
+                break;
+            case SEARCHING:
+                if (!Searching)
+                    You_feel("less aware.");
+                break;
+            case WARNING:
+                /* No warning for losing warning.*/
+                see_monsters();
+                break;
+            case STEALTH:
+                if (!Stomping) {
+                    boolean riding = (u.usteed != NULL);
+                    You("%s%s are noisy.", riding ? "and " : "sure",
+                        riding ? x_monnam(u.usteed, ARTICLE_YOUR, (char *) NULL,
+                                        (SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION),
+                                        FALSE)
+                            : "");
+                }
+                break;
+            case CONFLICT:
+                if (!Conflict) {
+                    You_feel("the tension decrease around you.");
+                    stop_occupation();
+                }
+                break;
+            case POLYMORPH:
+                if (!Polymorph) {
+                    You_feel(Hallucination ? "Pollyanna leave the building."
+                                           : "less fluid.");
+                    stop_occupation();
+                }
+                break;
+            case POLYMORPH_CONTROL:
+                if (!Polymorph_control) {
+                    You_feel(Hallucination ? "like anything could happen."
+                                           : "less in control of yourself.");
+                    stop_occupation();
+                }
+                break;
+            case PROT_FROM_SHAPE_CHANGERS:
+                /* No message */
+                restartcham();
+                break;
+            case MAGICAL_BREATHING:
+                You_feel(Hallucination ? "your gills disappear."
+                                           : "more afraid of water.");
+                if (Underwater) {
+                    if (!cant_drown(gy.youmonst.data) && !Swimming) {
+                        You("suddenly inhale an unhealthy amount of %s!",
+                            hliquid("water"));
+                        stop_occupation();
+                        (void) drown();
+                    }
+                    return;
+                }
+                break;
+            case REFLECTING:
+                if (!Blind) {
+                    pline_The("shimmering %s around you flickers and vanishes!",
+                        Hallucination ? "bubble" : "globe");
+                    stop_occupation();
+                }
                 break;
             }
         }
