@@ -2754,7 +2754,11 @@ dodip(void)
          * getobj: "What do you want to dip <the object> into? [xyz or ?*] "
          */
         if (is_hands) {
-            Snprintf(obuf, sizeof(obuf), "your %s",
+            if (HFumbling & I_SPECIAL)
+                Snprintf(obuf, sizeof(obuf), "your %s",
+                        makeplural(body_part(FOOT)));
+            else
+                Snprintf(obuf, sizeof(obuf), "your %s",
                      makeplural(body_part(HAND)));
         } else {
             Strcpy(obuf, short_oname(obj, doname, thesimpleoname,

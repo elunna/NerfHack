@@ -769,18 +769,28 @@ wash_hands(void)
     const char *hands = makeplural(body_part(HAND));
     int res = ER_NOTHING;
     boolean was_glib = !!Glib;
+    boolean was_goopy = !!(HFumbling & I_SPECIAL);
 
-    You("wash your %s%s in the %s.", uarmg ? "gloved " : "", hands,
-        hliquid("water"));
-    if (Glib) {
-        make_glib(0);
-        Your("%s are no longer slippery.", fingers_or_gloves(TRUE));
+    if (was_goopy) {
+          pline("You wash the goop off your %s.", 
+              uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
+        HFumbling &= ~I_SPECIAL;
+        HFumbling = 0;
+        if (uarmf)
+            res = water_damage(uarmf, (const char *) 0, TRUE);
+    } else {
+        You("wash your %s%s in the %s.", uarmg ? "gloved " : "", hands,
+            hliquid("water"));
+        if (Glib) {
+            make_glib(0);
+            Your("%s are no longer slippery.", fingers_or_gloves(TRUE));
+        }
+        if (uarmg)
+            res = water_damage(uarmg, (const char *) 0, TRUE);
     }
-    if (uarmg)
-        res = water_damage(uarmg, (const char *) 0, TRUE);
-    /* not what ER_GREASED is for, but the checks in dipfountain just
-       compare the result to ER_DESTROYED and ER_NOTHING, so it works */
-    if (was_glib && res == ER_NOTHING)
+     /* not what ER_GREASED is for, but the checks in dipfountain just
+        compare the result to ER_DESTROYED and ER_NOTHING, so it works */
+    if ((was_glib || was_goopy) && res == ER_NOTHING)
         res = ER_GREASED;
     return res;
 }
