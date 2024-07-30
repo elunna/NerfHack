@@ -436,6 +436,16 @@
             | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
         NO_RACE, 10, HI_ZAP, SHOCKING_SPHERE),
+    MON(NAM("acid sphere"), S_EYE,
+        LVL(7, 13, 4, 0, 0), (G_NOCORPSE | 2),
+        A(ATTK(AT_EXPL, AD_ACID, 4, 6),
+          ATTK(AT_BOOM, AD_ACID, 4, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(10, 10, MS_SILENT, MZ_SMALL), MR_ACID, MR_ACID,
+        M1_FLY | M1_BREATHLESS | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
+            | M1_NOTAKE,
+        M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
+        NO_RACE, 10, CLR_YELLOW, ACID_SPHERE),
     /* From SLASH'EM */
     MON(NAM("bloodshot eye"), S_EYE,
         LVL(6, 3, 4, 0, 0), (G_NOHELL | G_GENO | 1),

@@ -1400,6 +1400,7 @@ msummon_environ(struct permonst *mptr, const char **cloud)
     case PM_FOG_CLOUD:
     case PM_ICE_VORTEX:
     case PM_FREEZING_SPHERE:
+    case PM_ACID_SPHERE:
         what = "vapor";
         break;
     case PM_STEAM_VORTEX:
