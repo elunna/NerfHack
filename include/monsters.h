@@ -425,7 +425,7 @@
         M1_FLY | M1_BREATHLESS | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
             | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
-        NO_RACE, 9, CLR_RED, FLAMING_SPHERE),
+        NO_RACE, 10, CLR_RED, FLAMING_SPHERE),
     MON(NAM("shocking sphere"), S_EYE,
         LVL(6, 13, 4, 0, 0), (G_NOCORPSE | 2),
         A(ATTK(AT_EXPL, AD_ELEC, 4, 6),
@@ -435,7 +435,7 @@
         M1_FLY | M1_BREATHLESS | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
             | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
-        NO_RACE, 10, HI_ZAP, SHOCKING_SPHERE),
+        NO_RACE, 11, HI_ZAP, SHOCKING_SPHERE),
     MON(NAM("acid sphere"), S_EYE,
         LVL(7, 13, 4, 0, 0), (G_NOCORPSE | 2),
         A(ATTK(AT_EXPL, AD_ACID, 4, 6),
@@ -445,7 +445,7 @@
         M1_FLY | M1_BREATHLESS | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
             | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
-        NO_RACE, 10, CLR_YELLOW, ACID_SPHERE),
+        NO_RACE, 11, CLR_YELLOW, ACID_SPHERE),
     /* From SLASH'EM */
     MON(NAM("bloodshot eye"), S_EYE,
         LVL(6, 3, 4, 0, 0), (G_NOHELL | G_GENO | 1),
