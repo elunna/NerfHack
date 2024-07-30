@@ -607,16 +607,9 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         return;
     }
 
-    if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY) && rn2(5)) {
-        pline("%s shines and %s %s magic!", artiname(uwep->oartifact),
-            !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
-        /* TODO: Maybe more explicit astonishment? */
-        if (canseemon(mtmp)) {
-            pline("%s curses!", Monnam(mtmp));
-        } else {
-            You_hear("some cursing!");
-        }
-        return;
+    if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY)) {
+        if (counterspell(mtmp, uwep))
+            return;
     }
     
     switch (spellnum) {
@@ -934,7 +927,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         return;
     }
     
-    if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY) && rn2(5)) {
+    if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY)) {
         if (counterspell(mtmp, uwep))
             return;
     }
@@ -1440,9 +1433,18 @@ staticfn boolean
 counterspell(struct monst *mtmp, struct obj *otmp) {
     if (otmp->cursed)
         return FALSE;
+    /* Only counter monsters we can see/sense. */
+    if (!canspotmon(mtmp))
+        return FALSE;
+    /* Only counter monsters within ~13-14 squares. */
+    if (dist2(u.ux, u.uy, mtmp->mx, mtmp->my) > 192)
+        return FALSE;
 
-    pline("%s shines and %s %s magic!", artiname(uwep->oartifact),
-          !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
+    if (!rn2(5))
+        return FALSE;
+    pline("%s %s and %s %s magic!", 
+        (Blind ? "vibrates" : "glows"), artiname(uwep->oartifact),
+        !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
 
     if (canseemon(mtmp)) {
         if (mtmp->data == &mons[PM_THING_FROM_BELOW])
