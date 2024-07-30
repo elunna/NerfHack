@@ -46,7 +46,7 @@ des.object()
 des.object()
 
 
-# Rubble
+-- Rubble
 for i = 1,math.random(2, 6) do
     des.object("boulder")
 end
