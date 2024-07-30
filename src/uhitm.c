@@ -6139,7 +6139,7 @@ mhitm_knockback(
         if (DEADMONSTER(magr))
             *hitflags |= M_ATTK_AGR_DIED;
     }
-
+    wake_nearto(magr->mx, magr->my, 5 * 5);
     return TRUE;
 }
 
