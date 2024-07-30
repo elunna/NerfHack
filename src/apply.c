@@ -4640,7 +4640,7 @@ doapply(void)
             obj = (struct obj *) 0; /* not gone yet but behave as if it was */
         break;
     case FLINT:
-        if (Role_if(PM_CAVE_DWELLER)
+        if (Role_if(PM_CAVE_DWELLER) && carrying(ARROW)
             && y_n("Affix your flint to some arrows?") == 'y')
             res = apply_flint(obj);
         else
