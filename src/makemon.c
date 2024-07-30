@@ -132,6 +132,7 @@ m_initgrp(struct monst *mtmp, coordxy x, coordxy y, int n, mmflags_nht mmflags)
                 mon->mpeaceful = FALSE;
                 mon->mavenge = 0;
                 set_malign(mon);
+                newsym(mon->mx, mon->my);
                 /* Undo the second peace_minded() check in makemon(); if the
                  * monster turned out to be peaceful the first time we
                  * didn't create it at all; we don't want a second check.
