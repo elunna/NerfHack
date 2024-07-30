@@ -1268,6 +1268,7 @@ seffect_enchant_armor(struct obj **sobjp)
             costly_alteration(otmp, COST_DEGRD);
         }
         otmp->oerodeproof = new_erodeproof ? 1 : 0;
+        makeknown(SCR_ENCHANT_ARMOR);
         return;
     }
     /* sometimes armor can be enchanted to a higher limit than usual */
@@ -1329,6 +1330,7 @@ seffect_enchant_armor(struct obj **sobjp)
         otmp->lamplit = was_lit;
         if (old_light)
             maybe_adjust_light(otmp, old_light);
+        makeknown(SCR_ENCHANT_ARMOR);
         return;
     }
     pline("%s %s%s%s%s for a %s.", Yname2(otmp),
