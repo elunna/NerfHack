@@ -2499,7 +2499,7 @@ maybe_fall_onto_weapon(void)
         if (!is_slash(uwep) && !is_pierce(uwep))
             return;
         
-        if (Fumbling || rnl(10) >= ACURR(A_DEX)) {
+        if (Fumbling || rnd(8) > ACURR(A_DEX)) {
             You("fumble and fall onto %s", Doname2(uwep));
             losehp(Maybe_Half_Phys(dmgval(uwep, &gy.youmonst)), 
                 "falling onto your own weapon", KILLED_BY);
@@ -2509,7 +2509,7 @@ maybe_fall_onto_weapon(void)
         if (!is_slash(uswapwep) && !is_pierce(uswapwep))
             return;
 
-        if (Fumbling || rnl(10) >= ACURR(A_DEX)) {
+        if (Fumbling || rnd(8) > ACURR(A_DEX)) {
             You("fumble and fall onto %s", Doname2(uswapwep));
             losehp(Maybe_Half_Phys(dmgval(uswapwep, &gy.youmonst)), 
                 "falling onto your own weapon", KILLED_BY);
