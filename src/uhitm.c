@@ -6831,7 +6831,9 @@ passive(
                 }
                 if (mon->mcansee) {
                     if (ureflects("%s gaze is partially reflected by your %s.",
-                                  s_suffix(Monnam(mon))) && !Free_action) {
+                                  s_suffix(Monnam(mon))) && !Free_action 
+                                  /* Quite rare if luck is 8 or higher */
+                                  && rnl(10) > 5) {
                         You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
                         nomul(-rnd(6));
                         dynamic_multi_reason(mon, "frozen", TRUE);
