@@ -264,7 +264,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
     /* <0,0> is used by musical scaring to check for the above;
      * it doesn't care about scrolls or engravings or dungeon branch */
     if (x == 0 && y == 0)
-        return TRUE;
+        return Aggravate_monster ? FALSE : TRUE;
 
     /* should this still be true for defiled/molochian altars? */
     if (IS_ALTAR(levl[x][y].typ)
@@ -454,6 +454,10 @@ monflee(
     if (mtmp->mberserk)
         return;
     
+    /* Monsters won't flee while you have aggravate mon. */
+    if (Aggravate_monster)
+        return;
+    
     if (mtmp == u.ustuck)
         release_hero(mtmp); /* expels/unstuck */
 
@@ -547,9 +551,10 @@ distfleeck(
                         /* don't warn due to fleeing monsters about
 				         * the right temple on Astral */
                         !Is_astralevel(&u.uz)))) {
-        *scared = 1;
+        *scared = Aggravate_monster ? 0 : 1;
         monflee(mtmp, rnd(rn2(7) ? 10 : 100), TRUE, TRUE);
-	if (Uevil_inherently /* && !context.coward */
+	
+        if (Uevil_inherently /* && !context.coward */
             && sengr_at("Elbereth", seescaryx, seescaryy, TRUE)) {
             /* Followers of Moloch (and bloodsuckers )aren't supposed
              * to hide behind other gods. */
