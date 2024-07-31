@@ -2365,6 +2365,9 @@ trapeffect_pit(
                            ? "stumbled into a pit of iron spikes"
                            : "fell into a pit of iron spikes",
                        NO_KILLER_PREFIX);
+                
+                maybe_fall_onto_weapon();
+
                 if (!rn2(6))
                     poisoned("spikes", A_STR,
                              (conj_pit || adj_pit || deliberate)

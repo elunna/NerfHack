@@ -1809,6 +1809,9 @@ goto_level(
                            ga.at_ladder ? "falling off a ladder"
                                      : "tumbling down a flight of stairs",
                            KILLED_BY);
+
+                maybe_fall_onto_weapon();
+
                 selftouch("Falling, you");
             } else { /* ordinary descent */
                 if (flags.verbose)
@@ -1997,6 +2000,7 @@ goto_level(
 
         dmg = Maybe_Half_Phys(dmg);
         losehp(dmg, "falling down a mine shaft", KILLED_BY);
+        maybe_fall_onto_weapon();
     }
 
     (void) pickup(1);
@@ -2483,6 +2487,33 @@ heal_legs(
            feedback, then able to carry less when back on foot]. */
         if (how == 0)
             (void) encumber_msg();
+    }
+}
+
+/* Extra weapon damage for fumbling or low dex.
+ */
+void
+maybe_fall_onto_weapon(void)
+{
+    if (uwep && rn2(3)) {
+        if (!is_slash(uwep) && !is_pierce(uwep))
+            return;
+        
+        if (Fumbling || rnl(10) >= ACURR(A_DEX)) {
+            You("fumble and fall onto %s", Doname2(uwep));
+            losehp(Maybe_Half_Phys(dmgval(uwep, &gy.youmonst)), 
+                "falling onto your own weapon", KILLED_BY);
+        }
+        return;
+    } else if (u.twoweap && uswapwep && rn2(3)) {
+        if (!is_slash(uswapwep) && !is_pierce(uswapwep))
+            return;
+
+        if (Fumbling || rnl(10) >= ACURR(A_DEX)) {
+            You("fumble and fall onto %s", Doname2(uswapwep));
+            losehp(Maybe_Half_Phys(dmgval(uswapwep, &gy.youmonst)), 
+                "falling onto your own weapon", KILLED_BY);
+        }
     }
 }
 
