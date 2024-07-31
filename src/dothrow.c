@@ -164,13 +164,13 @@ throw_obj(struct obj *obj, int shotlimit)
         && (is_ammo(obj) ? matching_launcher(obj, uwep)
                          /* otherwise any stackable (non-ammo) weapon */
                          : obj->oclass == WEAPON_CLASS)
-        && !(Confusion || Stunned)) {
+        && !(Confusion || Stunned || Fumbling )) {
         /* some roles don't get a volley bonus until becoming expert */
         weakmultishot = (Role_if(PM_WIZARD) || Role_if(PM_CLERIC)
                          || (Role_if(PM_HEALER) && skill != P_KNIFE)
                          || (Role_if(PM_TOURIST) && skill != -P_DART)
                          /* poor dexterity also inhibits multishot */
-                         || Fumbling || ACURR(A_DEX) <= 6);
+                         || ACURR(A_DEX) <= 6);
 
         /* Bonus if the player is proficient in this weapon... */
         switch (P_SKILL(weapon_type(obj))) {
