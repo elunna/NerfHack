@@ -724,6 +724,9 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         break;
     }
     case MGC_AGGRAVATION:
+        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+            incr_itimeout(&HAggravate_monster, rnd(250) + 50); 
+        }
         You_feel("that monsters are aware of your presence.");
         aggravate();
         dmg = 0;
