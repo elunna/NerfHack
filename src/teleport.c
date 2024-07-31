@@ -14,6 +14,7 @@ staticfn void rloc_to_core(struct monst *, coordxy, coordxy, unsigned);
 staticfn void mvault_tele(struct monst *);
 staticfn boolean m_blocks_teleporting(struct monst *);
 staticfn stairway *stairway_find_forwiz(boolean, boolean);
+staticfn void teleport_pain(void);
 
 /* does monster block others from teleporting? */
 staticfn boolean
@@ -1124,10 +1125,14 @@ level_tele(void)
     char buf[BUFSZ];
     boolean force_dest = FALSE;
 
+     /* Level teleports in Gehennom (including Vlad's/Wizards tower) are
+      * not prevented, but the magic is resisted and inflicts pain. */
+    boolean tele_pain = On_W_tower_level(&u.uz) || In_tower(&u.uz) 
+        || In_hell(&u.uz);
+
     if (iflags.debug_fuzzer)
         goto random_levtport;
     
-
     if (iflags.debug_fuzzer) {
         do {
             newlevel.dnum = rn2(svn.n_dgns);
@@ -1189,6 +1194,10 @@ level_tele(void)
 
                 newlevel.dnum = destdnum;
                 newlevel.dlevel = destlev;
+
+                if (tele_pain)
+                    teleport_pain();
+
                 if (In_endgame(&newlevel) && !In_endgame(&u.uz)) {
                     struct obj *amu;
 
@@ -1249,6 +1258,10 @@ level_tele(void)
             newlev = newlev + svd.dungeons[u.uz.dnum].depth_start - 1;
     } else { /* involuntary level tele */
  random_levtport:
+
+        if (tele_pain)
+            teleport_pain();
+
         newlev = random_teleport_level();
         if (newlev == depth(&u.uz)) {
             You1(shudder_for_moment);
@@ -2204,6 +2217,18 @@ u_teleport_mon(struct monst *mtmp, boolean give_feedback)
     else
         (void) rloc(mtmp, RLOC_MSG);
     return TRUE;
+}
+
+staticfn void
+teleport_pain(void)
+{
+    pline("A dark field of force rips through you!");
+    u.uhp /= 3;
+    if (u.uhp < 1)
+        u.uhp = 1;		/* be generous */
+    u.uen /= 5;
+    if (u.uen < 1)
+        u.uen = 1;
 }
 
 /*teleport.c*/
