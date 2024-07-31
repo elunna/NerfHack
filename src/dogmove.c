@@ -1111,7 +1111,9 @@ dog_move(
              */
             int balk = mtmp->m_lev + ((5 * mtmp->mhp) / mtmp->mhpmax) - 2;
 
-            if ((int) mtmp2->m_lev >= balk
+            if (EAggravate_monster)
+                ; /* No checks for extrinsic aggravate mon */
+            else if ((int) mtmp2->m_lev >= balk
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                     && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
                     && (perceives(mtmp->data) || !mtmp2->minvis))
