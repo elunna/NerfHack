@@ -136,6 +136,15 @@ setuwep(struct obj *obj)
         rescham();
     } 
     
+    /* Serenity suppresses aggravate monster. */
+    if (is_art(olduwep, ART_SERENITY)) {
+        BAggravate_monster &= ~W_WEP;
+    }
+    if (uwep && u_wield_art(ART_SERENITY)) {
+        BAggravate_monster |= W_WEP;
+    } 
+    
+
     /* Hated items decrease AC and affect to-hit */
     if (uwep && hates_item(&gy.youmonst, uwep)) {
         find_ac();

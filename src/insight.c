@@ -1757,7 +1757,11 @@ attributes_enlightenment(
                            ? " if not wearing stomping boots" : ""));
         enl_msg(You_, "would be", "would have been", buf, "");
     }
-    if (Aggravate_monster)
+
+    if (BAggravate_monster) /* Currently only Serenity does this.*/
+        enl_msg("Serenity ", "is preventing", "prevented", 
+            " monsters from being aggravated", "");
+    else if (Aggravate_monster)
         enl_msg("You aggravate", "", "d", " monsters",
                 from_what(AGGRAVATE_MONSTER));
     if (Conflict)

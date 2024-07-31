@@ -214,7 +214,9 @@
 
 #define HAggravate_monster u.uprops[AGGRAVATE_MONSTER].intrinsic
 #define EAggravate_monster u.uprops[AGGRAVATE_MONSTER].extrinsic
-#define Aggravate_monster (HAggravate_monster || EAggravate_monster)
+#define BAggravate_monster u.uprops[AGGRAVATE_MONSTER].blocked
+#define Aggravate_monster ((HAggravate_monster || EAggravate_monster) \
+    && !BAggravate_monster)
 
 #define HConflict u.uprops[CONFLICT].intrinsic
 #define EConflict u.uprops[CONFLICT].extrinsic
