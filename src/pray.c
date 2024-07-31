@@ -1470,23 +1470,19 @@ pleased(aligntyp g_align)
 
                 godvoice(u.ualign.type,
                         "Thou hast pleased me with thy progress,");
-                if (!(HFast & INTRINSIC)) {
-                    HFast |= FROMOUTSIDE;
-                    pline(msg, "Speed");
-                } else if (!(HStealth & INTRINSIC)) {
-                    HStealth |= FROMOUTSIDE;
-                    pline(msg, "Stealth");
-                } else {
-                    if (!(HProtection & INTRINSIC)) {
-                        HProtection |= FROMOUTSIDE;
-                        if (!u.ublessed)
-                            u.ublessed = 1;
-                    } else if ((rn2(10) - u.ublessed >= 0) && (rn2(10) - u.ublessed >= 0))
-                        u.ublessed++;
-                    else
-                        break; /* Sorry... */
-                    pline(msg, "my protection");
-                }
+
+                /* NerfHack: No other intrinsics granted here */
+
+                if (!(HProtection & INTRINSIC)) {
+                    HProtection |= FROMOUTSIDE;
+                    if (!u.ublessed)
+                        u.ublessed = 1;
+                } else if ((rn2(10) - u.ublessed >= 0) && (rn2(10) - u.ublessed >= 0))
+                    u.ublessed++;
+                else
+                    break; /* Sorry... */
+                pline(msg, "my protection");
+            
                 SetVoice((struct monst *) 0, 0, 80, voice_deity);
                 verbalize("Use it wisely in my name!");
                 break;
