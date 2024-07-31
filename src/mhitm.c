@@ -1035,7 +1035,7 @@ explmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
 
     /* monster explosion types which actually create an explosion */
     if (mattk->adtyp == AD_FIRE || mattk->adtyp == AD_COLD
-        || mattk->adtyp == AD_ELEC) {
+        || mattk->adtyp == AD_ELEC || mattk->adtyp == AD_ACID) {
         mon_explodes(magr, mattk);
     } else {
         mon_explodes_nodmg(magr, mattk);

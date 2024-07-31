@@ -5611,6 +5611,7 @@ explum(struct monst *mdef, struct attack *mattk)
     case AD_COLD:
     case AD_FIRE:
     case AD_ELEC:
+    case AD_ACID:
         /* See comment in mon_explodes() and in zap.c for an explanation
            of this math.  Here, the player is causing the explosion, so it
            should be in the +20 to +29 range instead of negative. */

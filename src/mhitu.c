@@ -1894,6 +1894,7 @@ explmu(struct monst *mtmp, struct attack *mattk, boolean ufound)
     case AD_COLD:
     case AD_FIRE:
     case AD_ELEC:
+    case AD_ACID:
         mon_explodes(mtmp, mattk);
         break;
     case AD_BLND:

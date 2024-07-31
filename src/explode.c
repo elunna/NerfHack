@@ -1021,6 +1021,8 @@ adtyp_to_expltype(const int adtyp)
     case AD_PEST:
     case AD_PHYS: /* gas spore */
         return EXPL_NOXIOUS;
+    case AD_ACID:
+        return EXPL_WET;
     default:
         impossible("adtyp_to_expltype: bad explosion type %d", adtyp);
         return EXPL_FIERY;
