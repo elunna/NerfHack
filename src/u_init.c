@@ -319,20 +319,18 @@ static const struct def_skill Skill_B[] = {
 };
 static const struct def_skill Skill_Car[] = {
     { P_DAGGER, P_BASIC},
-    { P_KNIFE, P_SKILLED },
-    { P_SHORT_SWORD, P_BASIC },
-    { P_SABER, P_BASIC },
+    { P_KNIFE, P_BASIC },
     { P_QUARTERSTAFF, P_SKILLED},
     { P_SLING, P_BASIC},
-    { P_DART, P_BASIC},	    
+    { P_DART, P_BASIC},
     { P_SHURIKEN, P_EXPERT },
     { P_UNICORN_HORN, P_SKILLED },
     { P_ATTACK_SPELL, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
     { P_DIVINATION_SPELL, P_EXPERT },
     { P_ENCHANTMENT_SPELL, P_SKILLED },
-    { P_ESCAPE_SPELL, P_SKILLED },
-    { P_MATTER_SPELL, P_SKILLED },
+    { P_ESCAPE_SPELL, P_BASIC },
+    { P_MATTER_SPELL, P_BASIC },
     { P_RIDING, P_SKILLED},         /* Card games on motorcycles. */
     { P_BARE_HANDED_COMBAT, P_BASIC},
     { P_NONE, 0 }
