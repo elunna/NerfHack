@@ -830,7 +830,7 @@ cprefx(int pm)
         if (!CANNIBAL_ALLOWED()) {
             You_feel("that eating the %s was a bad idea.",
                      mons[pm].pmnames[NEUTRAL]);
-            HAggravate_monster |= FROMOUTSIDE;
+            incr_itimeout(&HAggravate_monster, rnd(2500) + 5000); 
         }
         break;
     case PM_LIZARD:
