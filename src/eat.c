@@ -777,7 +777,7 @@ maybe_cannibal(int pm, boolean allowmsg)
                 You("have a bad feeling deep inside.");
             You("cannibal!  You will regret this!");
         }
-        HAggravate_monster |= FROMOUTSIDE;
+        incr_itimeout(&HAggravate_monster, rnd(5000) + 10000); 
         change_luck(-rn1(4, 2)); /* -5..-2 */
         return TRUE;
     }
