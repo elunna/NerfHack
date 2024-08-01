@@ -281,15 +281,15 @@ dipforge(struct obj *obj)
         You("place your flint stone%s in the forge.", obj->quan > 1 ? "s" : "");
         /* Only some survive - subject to extreme variance */
         if (obj->quan == 1) {
-            if (rn2(3))
+            if (!rn2(3))
                 obj->quan = 1;
             else {
                 Your("flint stone is incinerated!");
                 useup(obj);
                 return;
             }
-        } else 
-            obj->quan = rnd(obj->quan / 2 + 1);
+        } else
+            obj->quan = obj->quan / 3 + rn2(obj->quan / 3 + 1);
         obj->otyp = SLING_BULLET;
         obj->owt = weight(obj);
         return;
