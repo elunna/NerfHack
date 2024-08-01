@@ -7276,7 +7276,7 @@ bite_monster(struct monst *mon)
     switch(monsndx(mon->data)) {
     case PM_LIZARD:
         if (Stoned)
-	    fix_petrification();
+	        fix_petrification();
         break;
     case PM_DEATH:
     case PM_PESTILENCE:
@@ -7287,15 +7287,15 @@ bite_monster(struct monst *mon)
 
     case PM_GREEN_SLIME:
         if (!Unchanging && gy.youmonst.data != &mons[PM_FIRE_VORTEX]
-		&& gy.youmonst.data != &mons[PM_FIRE_ELEMENTAL]
-		&& gy.youmonst.data != &mons[PM_GREEN_SLIME]) {
-        You("don't feel very well.");
-        Slimed = 10L;
+              && gy.youmonst.data != &mons[PM_FIRE_ELEMENTAL]
+              && gy.youmonst.data != &mons[PM_GREEN_SLIME]) {
+            You("don't feel very well.");
+            Slimed = 10L;
         }
         /* Fall through */
     default:
         if (acidic(mon->data) && Stoned)
-	    fix_petrification();
+	        fix_petrification();
         break;
     }
     return FALSE;

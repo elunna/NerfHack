@@ -37,11 +37,14 @@ staticfn boolean restricted_spell_discipline(int);
  */
 
 static struct trobj Archeologist[] = {
+    #define A_BOOK 4
     /* if adventure has a name...  idea from tan@uvm-gen */
     { BULLWHIP, 2, WEAPON_CLASS, 1, UNDEF_BLESS },
     { LEATHER_JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 3, 0 },
+    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1 },        
+	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS },
     { SCR_KNOWLEDGE, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS },
     { PICK_AXE, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS },
     { TINNING_KIT, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS },
@@ -646,6 +649,14 @@ u_init_role(void)
      * skew the results if we use rn2(2)...  --KAA
      */
     case PM_ARCHEOLOGIST:
+    	switch (rnd(5)) {   
+		    case 1: Archeologist[A_BOOK].trotyp = SPE_DETECT_FOOD; break;
+		    case 2: Archeologist[A_BOOK].trotyp = SPE_DETECT_MONSTERS; break;
+		    case 3: Archeologist[A_BOOK].trotyp = SPE_LIGHT; break;
+		    case 4: Archeologist[A_BOOK].trotyp = SPE_KNOCK; break;
+		    case 5: Archeologist[A_BOOK].trotyp = SPE_WIZARD_LOCK; break;
+		    default: break;
+		}
         ini_inv(Archeologist);
         if (!rn2(10))
             ini_inv(Tinopener);
@@ -655,7 +666,6 @@ u_init_role(void)
         knows_object(TOUCHSTONE);
         knows_object(DWARVISH_MATTOCK);
         skill_init(Skill_A);
-        
         break;
     case PM_BARBARIAN:
         if (rn2(100) >= 50) { /* see above comment */
