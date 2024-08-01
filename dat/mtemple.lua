@@ -43,77 +43,96 @@ des.trap("spiked pit",06,03)
 des.trap("spiked pit",06,05)
 
 -- the treasure chamber!
-des.object("chest", 52, 03)
-des.object("wax candle", 52, 03)
-des.gold({x = 52, y = 03})
-des.gold({x = 52, y = 03})
-des.object({x = 52, y = 03})
-des.object({x = 52, y = 03})
-des.object({x = 52, y = 03})
-
-des.object("chest", 53, 03)
-des.object("wax candle", 53, 03)
-des.gold({x = 53, y = 03})
-des.gold({x = 53, y = 03})
-des.object({x = 53, y = 03})
-des.object({x = 53, y = 03})
-des.object({x = 53, y = 03})
-
-des.object("chest", 54, 03)
-des.object("wax candle", 54, 03)
-des.gold({x = 54, y = 03})
-des.gold({x = 54, y = 03})
-des.object({x = 54, y = 03})
-des.object({x = 54, y = 03})
-des.object({x = 54, y = 03})
-
-des.object("chest", 52, 04)
-des.object("wax candle", 52, 04)
-des.gold({x = 52, y = 04})
-des.gold({x = 52, y = 04})
-des.object({x = 52, y = 04})
-des.object({x = 52, y = 04})
-des.object({x = 52, y = 04})
-
-des.object("chest", 53, 04)
-des.object("wax candle", 53, 04)
-des.gold({x = 53, y = 04})
-des.gold({x = 53, y = 04})
-des.object({x = 53, y = 04})
-des.object({x = 53, y = 04})
-des.object({x = 53, y = 04})
-
-des.object("chest", 54, 04)
-des.object("wax candle", 54, 04)
-des.gold({x = 54, y = 04})
-des.gold({x = 54, y = 04})
-des.object({x = 54, y = 04})
-des.object({x = 54, y = 04})
-des.object({x = 54, y = 04})
-
-des.object("chest", 52, 05)
-des.object("wax candle", 52, 05)
-des.gold({x = 52, y = 05})
-des.gold({x = 52, y = 05})
-des.object({x = 52, y = 05})
-des.object({x = 52, y = 05})
-des.object({x = 52, y = 05})
-
-des.object("chest", 53, 05)
-des.object("wax candle", 53, 05)
-des.gold({x = 53, y = 05})
-des.gold({x = 53, y = 05})
-des.object({x = 53, y = 05})
-des.object({x = 53, y = 05})
-des.object({x = 53, y = 05})
-
-des.object("chest", 54, 05)
-des.object("wax candle", 54, 05)
-des.gold({x = 54, y = 05})
-des.gold({x = 54, y = 05})
-des.object({x = 54, y = 05})
-des.object({x = 54, y = 05})
-des.object({x = 54, y = 05})
+des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 03,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 03,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 03,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 04,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 04,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 04,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 05,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 05,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 05,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
 
 --  five gargoyles on either side, in the niches of the temple
 -- all should start asleep
