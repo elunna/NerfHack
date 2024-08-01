@@ -3610,10 +3610,8 @@ mhitm_ad_drst(
         int ptmp = A_STR;  /* A_STR == 0 */
         char buf[BUFSZ];
 
-        /* Sometimes zombies will bite the player's legs if they are low on
-         * health (and likely crawling...) */
-        if (is_zombie(magr->data) && (magr->mhp < (magr->mhpmax / 2)
-            && !rn2(5))) {
+        /* Sometimes zombies will bite the player's legs (likely crawling...) */
+        if (is_zombie(magr->data) && !rn2(5)) {
             mhitm_ad_legs(magr, mattk, mdef, mhm);
             return;
         }
