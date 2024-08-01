@@ -423,6 +423,14 @@ look_at_monster(
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
 
+    /* Intimate knowledge */
+    if (mtmp->mtame && mtmp->mconf)
+        Strcat(buf, ", confused");
+    if (mtmp->mtame && mtmp->mstun)
+        Strcat(buf, ", stunned");
+    if (mtmp->mtame && mtmp->mblinded)
+        Strcat(buf, ", blinded");
+
     if (canseemon(mtmp) && !Blind) {
         if (mtmp->misc_worn_check & W_ARMOR) {
             int base_ac = 0, arm_ct = 0;
