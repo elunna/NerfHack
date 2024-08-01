@@ -798,7 +798,8 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
             break;
         }
     }
-     if (!pm && cansee(x, y) && levl[x][y].splatpm && !printed_blood && !u_at(x, y))
+    if (!pm && cansee(x, y) && levl[x][y].splatpm
+            && !printed_blood && !u_at(x, y))
         Sprintf(eos(buf), " covered in %s blood",
                 Hallucination ? rndmonnam(NULL) : 
                               mons[levl[x][y].splatpm].pmnames[NEUTRAL]);
@@ -2417,7 +2418,10 @@ do_screen_description(
                                     || alt_i == S_lava
                                     || alt_i == S_lavawall
                                     || alt_i == S_ice))
-                || alt_i == S_engroom || alt_i == S_engrcorr
+                || alt_i == S_engroom 
+                || alt_i == S_engrcorr
+                || alt_i == S_bars
+                || IS_WALL(alt_i) || IS_DOOR(alt_i)
                 || alt_i == S_grave) /* 'need_to_look' to report engraving */
                 need_to_look = TRUE;
         }
