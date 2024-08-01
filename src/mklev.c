@@ -906,14 +906,14 @@ fill_ordinary_room(
     if (!rn2(60)) {
         mksink(croom);
         /* Very rare pairing */
-        if (!rn2(256))
+        if (!rn2(60))
             mktoilet(croom);
     }
     if (!rn2(60))
         mkaltar(croom);
-    if (!rn2(111))
+    if (!rn2(120))
         mkforge(croom);
-    if (!rn2(127))
+    if (!rn2(120))
         mktoilet(croom);
     x = 80 - (depth(&u.uz) * 2);
     if (x < 2)
