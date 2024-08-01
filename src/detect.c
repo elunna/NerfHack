@@ -501,8 +501,10 @@ food_detect(struct obj *sobj)
             docrt();
             You("sense a lack of %s nearby.", what);
             if (sobj && sobj->blessed) {
-                if (!u.uedibility)
+                if (!u.uedibility) {
                     Your("%s starts to tingle.", body_part(NOSE));
+                    learnscroll(sobj);
+                }
                 u.uedibility = 1;
             }
         } else if (sobj) {
@@ -519,6 +521,8 @@ food_detect(struct obj *sobj)
                 strange_feeling(sobj, buf);
                 flags.beginner = savebeginner;
                 u.uedibility = 1;
+                if (!savebeginner)
+                    learnscroll(sobj);
             } else
                 strange_feeling(sobj, buf);
         }
@@ -527,8 +531,10 @@ food_detect(struct obj *sobj)
         gk.known = TRUE;
         You("%s %s nearby.", sobj ? "smell" : "sense", what);
         if (sobj && sobj->blessed) {
-            if (!u.uedibility)
+            if (!u.uedibility) {
                 Your("%s starts to tingle.", body_part(NOSE));
+                learnscroll(sobj);
+            }
             u.uedibility = 1;
         }
     } else {
@@ -568,6 +574,7 @@ food_detect(struct obj *sobj)
                 u.uedibility = 1;
             } else
                 Your("%s tingles and you smell %s.", body_part(NOSE), what);
+            learnscroll(sobj);
         } else
             You("sense %s.", what);
         exercise(A_WIS, TRUE);

@@ -2385,6 +2385,8 @@ seffect_food_detection(struct obj **sobjp)
 
     if (food_detect(sobj))
         *sobjp = 0; /* nothing detected: strange_feeling -> useup */
+    else if (!objects[sobj->otyp].oc_name_known)
+        (void) learnscrolltyp(SCR_FOOD_DETECTION);
 }
 
 
