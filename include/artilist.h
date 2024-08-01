@@ -121,7 +121,7 @@ static NEARDATA struct artifact artilist[] = {
          */
     A("Snickersnee", KATANA,
       SPFX_RESTR, 0, 0,
-      PHYS(0, 8), NO_DFNS, NO_CARY,
+      PHYS(0, 8), DFNS(AD_STUN), NO_CARY,
       0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L, NO_COLOR, SNICKERSNEE),
     
     A("Sunsword", LONG_SWORD,
