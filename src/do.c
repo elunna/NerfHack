@@ -2012,10 +2012,15 @@ goto_level(
 void
 hellish_smoke_mesg(void)
 {
-    if (svl.level.flags.temperature)
-        pline("It is %s here.",
+    if (svl.level.flags.temperature) {
+        if (Hallucination && svl.level.flags.temperature > 0)
+            pline_The("heat is on!");
+        else if (Hallucination && svl.level.flags.temperature < 0)
+            pline("Brrr!");
+        else
+            pline("It is %s here.",
               svl.level.flags.temperature > 0 ? "hot" : "cold");
-
+    }
     if (In_hell(&u.uz) && svl.level.flags.temperature > 0)
         You("%s smoke...",
               olfaction(gy.youmonst.data) ? "smell" : "sense");
@@ -2032,8 +2037,12 @@ temperature_change_msg(schar prev_temperature)
             pline_The("heat %s gone.",
                       In_hell(&u.uz0)
                       ? "and smoke are" : "is");
-        else if (prev_temperature < 0)
-            You("are out of the cold.");
+        else if (prev_temperature < 0) {
+            if (Hallucination)
+                pline("Ahh! Summertime!.");
+            else
+                You("are out of the cold.");
+        }
     }
 }
 
