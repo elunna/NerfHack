@@ -371,11 +371,11 @@ WEAPON("mace", NoDes,
                                                         MACE),
         /* +1 small */
 WEAPON("morning star", NoDes,
-       1, 0, 0, 12, 120,  10,  4,  6, 0, B,   P_MORNING_STAR, IRON, HI_METAL,
+       1, 0, 0, 12,  50,  10,  4,  6, 0, B,   P_MORNING_STAR, IRON, HI_METAL,
                                                         MORNING_STAR),
         /* +d4 small, +1 large */
 WEAPON("war hammer", NoDes,
-       1, 0, 1, 15,  50,   5,  6,  8, 0, B,   P_HAMMER, IRON, HI_METAL,
+       1, 0, 1, 15, 120,   5,  6,  8, 0, B,   P_HAMMER, IRON, HI_METAL,
                                                         WAR_HAMMER),
         /* +1 small */
 WEAPON("club", NoDes,
