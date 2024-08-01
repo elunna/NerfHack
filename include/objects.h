@@ -1642,7 +1642,7 @@ ROCK("flint", "gray",      0,  10,   2,  1, 6, 6, 0, 10, 7, MINERAL, CLR_GRAY,
 ROCK("sling bullet", "shiny",
                            0,  10,   2, 10, 6, 6, 0, 10, 7, IRON, HI_METAL,
                                                                  SLING_BULLET),
-ROCK("rock", NoDes,         1, 100, 10,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY,
+ROCK("rock", NoDes,         1, 100,  4,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY,
                                                                     ROCK),
 #undef GEM
 #undef ROCK
