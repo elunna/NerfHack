@@ -2045,9 +2045,8 @@ seffect_cloning(struct obj **sobjp)
         /* cartomancers feel guilty for counterfeiting */
         if (Role_if(PM_CARTOMANCER) && otmp2->oclass == SCROLL_CLASS) {
             You("feel incredibly guilty about forging a card!");
-            adjalign(-10);
-            if (u.uevent.qcompleted)
-                call_kops((struct monst *) 0, FALSE);
+            adjalign(-20);
+            change_luck(-5);
         }
 
         obj_extract_self(otmp2);

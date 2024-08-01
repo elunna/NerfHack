@@ -1876,7 +1876,8 @@ poly_obj(struct obj *obj, int id)
         }
         if (Role_if(PM_CARTOMANCER)) {
             You("feel guilty about defacing a card!");
-            adjalign(-5);
+            adjalign(-10);
+            change_luck(-2);
         }
         break;
 

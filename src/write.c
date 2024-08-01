@@ -291,16 +291,11 @@ dowrite(struct obj *pen)
         return ECMD_TIME;
     }
 
-
     /* cartomancers feel guilty for counterfeiting */
     if (Role_if(PM_CARTOMANCER) && paper->oclass == SCROLL_CLASS) {
         You("feel incredibly guilty about forging a card!");
-        adjalign(-10);
-
-	/* After the quest - the Kops will be called in. After all, your status as a 
-	 * notorious player has been elevated and you have a reputation to live up to! */
-        if (u.uevent.qcompleted)
-            call_kops((struct monst *) 0, FALSE);
+        adjalign(-20);
+        change_luck(-5);
     }
 
     /* we're really going to write now, so calculate cost
