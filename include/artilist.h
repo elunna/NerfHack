@@ -173,7 +173,7 @@ static NEARDATA struct artifact artilist[] = {
     A("Keolewa", CLUB,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       ELEC(5, 8), DFNS(AD_ELEC), NO_CARY, 0,
-      A_NEUTRAL, NON_PM, NON_PM, 2000L, NO_COLOR, KEOLEWA),
+      A_NEUTRAL, PM_CAVE_DWELLER, NON_PM, 2000L, NO_COLOR, KEOLEWA),
     
     /*Magicbane is a bit different!  Its magic fanfare unbalances victims 
      * in addition to doing some damage.
