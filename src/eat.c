@@ -61,7 +61,8 @@ staticfn int tin_ok(struct obj *);
 /* non-rotting non-corpses; unlike lizard corpses, these items will behave
    as if rotten if they are cursed (fortune cookies handled elsewhere) */
 #define nonrotting_food(otyp) \
-    ((otyp) == LEMBAS_WAFER || (otyp) == CRAM_RATION)
+    ((otyp) == LEMBAS_WAFER || (otyp) == CRAM_RATION \
+     || (otyp) == EUCALYPTUS_LEAF)
 
 /* see hunger states in hack.h - texts used on bottom line
    Also used in botl.c and insight.c  */
