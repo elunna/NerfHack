@@ -367,6 +367,8 @@ result:
     case 23:
         if (!is_metallic(obj))
             goto lava;
+        if (greatest_erosion(obj) > 0)
+            goto lava;
          /* One-time erodeproofing of an item */
         if (!levl[u.ux][u.uy].looted && !obj->oerodeproof
                 && !is_supermaterial(obj)) {
