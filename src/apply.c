@@ -2274,7 +2274,7 @@ tinnable(struct obj *corpse)
 staticfn void
 use_tinning_kit(struct obj *obj)
 {
-    struct obj *corpse, *can;
+    struct obj *corpse, *can, *bld;
     struct permonst *mptr;
 
     /* This takes only 1 move.  If this is to be changed to take many
@@ -2318,6 +2318,47 @@ use_tinning_kit(struct obj *obj)
     }
     consume_obj_charge(obj, TRUE);
 
+    long age = peek_at_iced_corpse_age(corpse);
+    long rotted = (svm.moves - age) / (10L + rn2(20));
+    boolean bottleable = rotted <= 0 &&
+	      (peek_at_iced_corpse_age(corpse) + 5) >= svm.moves;
+
+    if (Race_if(PM_VAMPIRE)
+            && mons[corpse->corpsenm].cnutrit 
+            && !(svm.mvitals[corpse->corpsenm].mvflags & G_NOCORPSE)
+            && has_blood(&mons[corpse->corpsenm])) {
+
+        if (!bottleable) {
+            if (y_n("This corpse does not have blood.  Tin it?") == 'y')
+                goto tinit;
+        } else if (mons[corpse->corpsenm].msize < MZ_MEDIUM) {
+            if (y_n("This corpse is too small to bottle.  Tin it?") == 'y')
+                goto tinit;
+        } else if ((bld = mksobj(POT_BLOOD, FALSE, FALSE)) != 0) {
+			static const char you_buy_it[] = "You bottle it, you bought it!";
+
+			bld->corpsenm = corpse->corpsenm;
+			bld->cursed = obj->cursed;
+			bld->blessed = obj->blessed;
+			bld->known = 1;
+			/* bld->selfmade = TRUE; */
+			if (carried(corpse)) {
+				if (corpse->unpaid)
+					verbalize(you_buy_it);
+				useup(corpse);
+			} else {
+                if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
+                    verbalize(you_buy_it);
+			    useupf(corpse, 1L);
+			}
+			bld = hold_another_object(bld, "You make, but cannot pick up, %s.",
+						  doname(bld), (const char *)0);
+		} else
+            impossible("Bottling failed.");
+        return;
+	}
+
+tinit:
     if ((can = mksobj(TIN, FALSE, FALSE)) != 0) {
         static const char you_buy_it[] = "You tin it, you bought it!";
 
