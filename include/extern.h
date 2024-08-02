@@ -2510,6 +2510,10 @@ extern int hardly_resistant(int);
 extern int resist_reduce(int, int);
 extern void incr_resistance(long *, int);
 extern void decr_resistance(long *, int);
+extern short mixtype(struct obj *, struct obj *);
+extern const char * gem_to_potion(int);
+extern int potion_to_gem(int);
+extern int figure_out_potion(const char *);
 
 /* ### pray.c ### */
 

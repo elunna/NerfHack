@@ -38,7 +38,6 @@ staticfn void peffect_polymorph(struct obj *);
 staticfn void peffect_blood(struct obj *);
 staticfn boolean H2Opotion_dip(struct obj *, struct obj *, boolean,
                              const char *);
-staticfn short mixtype(struct obj *, struct obj *);
 staticfn int dip_ok(struct obj *);
 staticfn int dip_hands_ok(struct obj *);
 staticfn void hold_potion(struct obj *, const char *, const char *,
@@ -2590,13 +2589,94 @@ const struct PotionRecipe potionrecipes[] = {
     { 0, 0, 0, 0 }
 };
 
+
+const char *
+gem_to_potion(int otyp)
+{
+    /* Note: you can't create smoky, milky or clear potions */
+    switch (otyp) {
+    case AGATE:
+        return "swirly";
+    case AMBER:
+        return "amber";  /* yellowish brown */
+    case AMETHYST:
+        return "magenta"; /* violet */
+    case AQUAMARINE:
+        return "cyan";
+    case BLACK_OPAL:
+        return "black"; /* black */
+    case CHRYSOBERYL:
+        return "golden";
+    case CITRINE:
+        return "yellow"; /* yellow */
+    case EMERALD:
+        return "emerald"; /* green */
+    case FLUORITE:
+        return "white";
+    case GARNET:
+        return "pink";
+    case JACINTH:
+        return "orange"; /* orange */
+    case JADE:
+        return "dark green";
+    case JASPER:
+        return "puce";
+    case JET:
+        return "dark";
+    case OBSIDIAN:
+        return "effervescent";
+    case OPAL:
+        return "cloudy";
+    case RUBY:
+        return "ruby"; /* red */
+    case SAPPHIRE:
+        return "indigo"; /* blue */
+    case TOPAZ:
+        return "brown";
+    case TURQUOISE:
+        return "sky blue";
+    case DIAMOND: /* won't dissolve */
+    default:
+        return NULL;
+    }
+}
+
+int
+potion_to_gem(int potion_otyp)
+{
+    const char *result;
+    int i;
+    for (i = svb.bases[GEM_CLASS]; i <= JADE; i++) {
+        result = gem_to_potion(i);
+        if (result && !strcmp(result, OBJ_DESCR(objects[potion_otyp])))
+            return i;
+    }
+    return 0;
+}
+
+int
+figure_out_potion(const char *pot_descr)
+{
+    int typ;
+
+    /* find a potion that matches the description */
+    for (typ = svb.bases[POTION_CLASS];
+         objects[typ].oc_class == POTION_CLASS; typ++) {
+        if (strcmp(pot_descr, OBJ_DESCR(objects[typ])) == 0) {
+            return typ;
+        }
+    }
+    return 0;
+}
+
 /* returns the potion type when o1 is dipped in o2 */
-staticfn short
+short
 mixtype(struct obj *o1, struct obj *o2)
 {
     int o1typ = o1->otyp, o2typ = o2->otyp;
     const struct PotionRecipe *recipe;
-
+    const char *potion_descr;
+    
     /* cut down on the number of cases below */
     if (o1->oclass == POTION_CLASS
         && (o2typ == POT_GAIN_LEVEL || o2typ == POT_GAIN_ENERGY
@@ -2614,6 +2694,19 @@ mixtype(struct obj *o1, struct obj *o2)
         }
     }
     
+    /* MRKR: Extra alchemical effects. */
+    if (o2->otyp == POT_ACID && o1->oclass == GEM_CLASS) {
+        if (o1->otyp == DILITHIUM_CRYSTAL) {     /* white */
+            /* explodes - special treatment in dodip */
+            /* here we just want to return something non-zero */
+            return POT_WATER;
+        }
+        potion_descr = gem_to_potion(o1->otyp);
+        if (potion_descr) {
+           return figure_out_potion(potion_descr);
+        }
+    }
+
     return STRANGE_OBJECT;
 }
 

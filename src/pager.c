@@ -1168,7 +1168,10 @@ add_obj_info(winid datawin, short otyp)
                                 : (oc.oc_dir == IMMEDIATE ? "Beam"
                                                           : "Ray"));
     const struct PotionRecipe *precipe;
-    boolean has_recipes = FALSE;
+    struct obj dummy = { 0 };
+    const char* identified_potion_name;
+    boolean potion_known, has_recipes = FALSE;
+    int i;
 
 #define OBJPUTSTR(str) putstr(datawin, ATR_NONE, str)
 #define ADDCLASSPROP(cond, str)            \
@@ -1507,7 +1510,6 @@ add_obj_info(winid datawin, short otyp)
         const char* prop_name;
     } propertynames[]; /* located in timeout.c */
     if (oc.oc_oprop) {
-        int i;
         for (i = 0; propertynames[i].prop_name; ++i) {
             /* hack for alchemy smocks because everything about alchemy smocks
              * is a hack */
@@ -1616,11 +1618,7 @@ add_obj_info(winid datawin, short otyp)
     }
 
     /* potion alchemy */
-    #if 0
-    has_recipes = FALSE;
-    if (reveal_info) { 
-    }
-    #endif
+    /* This can involve potions, gems, unicorn horn */
     for (precipe = potionrecipes; precipe->result_typ; precipe++) {
         if (otyp == precipe->typ1 || otyp == precipe->typ2
             || otyp == precipe->result_typ) {
@@ -1634,6 +1632,61 @@ add_obj_info(winid datawin, short otyp)
                     OBJ_NAME(objects[precipe->typ2]),
                     OBJ_NAME(objects[precipe->result_typ]),
                     precipe->chance == 1 ? "" : " (1/3)" );
+            OBJPUTSTR(buf);
+        }
+    }
+
+    /* gem alchemy */
+
+    if (olet == GEM_CLASS) {
+        struct obj *potion = mksobj(POT_ACID, FALSE, FALSE);
+        struct obj *gem = mksobj(otyp, FALSE, FALSE);
+        short mixture = mixtype(gem, potion);
+        obfree(potion, (struct obj *)0);
+        obfree(gem, (struct obj *)0);
+        
+        if (otyp == DILITHIUM_CRYSTAL) {
+            OBJPUTSTR("");
+            OBJPUTSTR("Gem alchemy recipes (#dip):");
+            OBJPUTSTR( "  dilithium crystal + acid = an explosion.");
+        } else if (mixture > 0) {
+            OBJPUTSTR("");
+            OBJPUTSTR("Gem alchemy recipes (#dip):");
+            identified_potion_name = OBJ_NAME(objects[mixture]);
+            potion_known = objects[mixture].oc_name_known;
+            Sprintf(buf, "  %-13s + acid = %s potion.",
+                    OBJ_NAME(objects[otyp]),
+                    an(OBJ_DESCR(objects[mixture])));
+            if (potion_known && identified_potion_name) {
+                Sprintf(eos(buf) - 1, " (%s).", identified_potion_name);
+            }
+            OBJPUTSTR(buf);
+        }
+    }
+    
+    if ((otyp == POT_ACID 
+            /*|| (usr_text && !strcmp(usr_text, "gem alchemy"))*/)) {
+        OBJPUTSTR("");
+        OBJPUTSTR("Gem alchemy recipes (#dip):");
+        for (i = svb.bases[GEM_CLASS]; i <= JADE; i++) {
+            const char *result = gem_to_potion(i);
+            if (i == DILITHIUM_CRYSTAL)
+                OBJPUTSTR("  dilithium crystal + acid = an explosion");
+            else if (result) {
+                struct obj *potion = mksobj(figure_out_potion(result), FALSE, FALSE);
+                Sprintf(buf, "  %-13s + acid = %s",
+                        OBJ_NAME(objects[i]),   /* The gem */
+                        xname(potion));         /* The potion */
+                OBJPUTSTR(buf);
+                obfree(potion, (struct obj *)0);
+            }
+        }
+    } else if (olet == POTION_CLASS) {
+        int gem = potion_to_gem(otyp);
+        if (gem) {
+            OBJPUTSTR("");
+            Sprintf(buf, "  %-13s + acid = %s.",
+                OBJ_NAME(objects[gem]), an(singular(&dummy, xname)));
             OBJPUTSTR(buf);
         }
     }
