@@ -2484,36 +2484,38 @@ use_unicorn_horn(struct obj **optr)
     if (val_limit > trouble_count)
         val_limit = trouble_count;
 #else	/* KMH's new success rate */
-    /*
+    /* Updated from SLASH'EM
      * blessed:  Tries all problems, each with chance given below.
      * uncursed: Tries one problem, with chance given below.
-     * ENCHANT  +0 or less  +1   +2   +3   +4   +5   +6 or more
-     * CHANCE       30%     40%  50%  60%  70%  80%     90%
+     * ENCHANT  +0  +1  +2  +3  +4  +5  +6  +7  +8  +9  +10 +11 +12 or more
+     * CHANCE   30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90%
      */
     val_limit = (obj && obj->blessed) ? trouble_count : 1;
+
     if (obj && obj->spe > 0)
-        chance = (obj->spe < 6) ? (obj->spe + 3) : 9;
-    else
-        chance = Role_if(PM_HEALER) ? 5 : 3;
+        chance = (obj->spe < 12) ? (obj->spe + 6) : 18;
+   
+    /* Healer bonus */
+    if (Role_if(PM_HEALER))
+        chance += 2;
     
     /* Skill in unicorn horn has an impact on success */
-    if (P_SKILL(P_UNICORN_HORN) < P_BASIC && !Role_if(PM_HEALER))
-        chance--;
     if (P_SKILL(P_UNICORN_HORN) == P_BASIC)
-        chance++;
+        chance += 3;
     if (P_SKILL(P_UNICORN_HORN) == P_SKILLED)
-        chance++;
+        chance += 5;
     if (P_SKILL(P_UNICORN_HORN) == P_EXPERT)
-        chance += 2;
+        chance += 8;
 
-    if (chance > 9)
-        chance = 9;
+    /* Ceiling is still 90% success rate*/
+    if (chance > 18)
+        chance = 18;
 #endif
     
     /* fix [some of] the troubles */
     for (val = 0; val < val_limit; val++) {
         idx = trouble_list[val];
-        if (rn2(10) < chance) { /* KMH */
+        if (rn2(20) < chance) { /* KMH */
             switch (idx) {
             case SICK:
                 make_sick(0L, (char *) 0, TRUE, SICK_ALL);
