@@ -1168,7 +1168,6 @@ add_obj_info(winid datawin, short otyp)
                                 : (oc.oc_dir == IMMEDIATE ? "Beam"
                                                           : "Ray"));
     const struct PotionRecipe *precipe;
-    struct obj dummy = { 0 };
     const char* identified_potion_name;
     boolean potion_known, has_recipes = FALSE;
     int i;
@@ -1681,13 +1680,15 @@ add_obj_info(winid datawin, short otyp)
                 obfree(potion, (struct obj *)0);
             }
         }
-    } else if (olet == POTION_CLASS) {
+    } else if (olet == POTION_CLASS && objects[otyp].oc_name_known) {
         int gem = potion_to_gem(otyp);
         if (gem) {
+            struct obj *potion = mksobj(otyp, FALSE, FALSE);
             OBJPUTSTR("");
             Sprintf(buf, "  %-13s + acid = %s.",
-                OBJ_NAME(objects[gem]), an(singular(&dummy, xname)));
+                OBJ_NAME(objects[gem]),xname(potion));
             OBJPUTSTR(buf);
+            obfree(potion, (struct obj *)0);
         }
     }
     

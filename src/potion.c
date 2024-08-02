@@ -2695,7 +2695,7 @@ mixtype(struct obj *o1, struct obj *o2)
     }
     
     /* MRKR: Extra alchemical effects. */
-    if (o2->otyp == POT_ACID && o1->oclass == GEM_CLASS) {
+    if (o1->oclass == GEM_CLASS && o2->otyp == POT_ACID) {
         if (o1->otyp == DILITHIUM_CRYSTAL) {     /* white */
             /* explodes - special treatment in dodip */
             /* here we just want to return something non-zero */
@@ -2706,7 +2706,7 @@ mixtype(struct obj *o1, struct obj *o2)
            return figure_out_potion(potion_descr);
         }
     }
-
+    
     return STRANGE_OBJECT;
 }
 
@@ -3241,7 +3241,7 @@ potion_dip(struct obj *obj, struct obj *potion)
     }
 
     potion->in_use = FALSE; /* didn't go poof */
-    if ((obj->otyp == UNICORN_HORN || obj->otyp == AMETHYST)
+    if ((obj->otyp == UNICORN_HORN || obj->oclass == GEM_CLASS)
         && (mixture = mixtype(obj, potion)) != STRANGE_OBJECT) {
         char oldbuf[BUFSZ], newbuf[BUFSZ];
         short old_otyp = potion->otyp;
@@ -3260,6 +3260,40 @@ potion_dip(struct obj *obj, struct obj *potion)
         } else
             singlepotion = potion;
 
+           /* MRKR: Gems dissolve in acid to produce new potions */
+        if (obj->oclass == GEM_CLASS && potion->otyp == POT_ACID) {
+            struct obj *singlegem = (obj->quan > 1L ?  splitobj(obj, 1L) : obj);
+            
+            if (potion->otyp == POT_ACID &&
+                (obj->otyp == DILITHIUM_CRYSTAL || potion->cursed || !rn2(30))) {
+                /* Just to keep them on their toes */
+
+                if (Hallucination && obj->otyp == DILITHIUM_CRYSTAL) {
+                    /* Thanks to Robin Johnson */
+                    pline("Warning, Captain!  The warp core has been breached!");
+                }
+                pline("BOOM! %s explodes!", The(xname(singlegem)));
+                if (obj->otyp == DILITHIUM_CRYSTAL) {
+                    tele();
+                }
+                exercise(A_STR, FALSE);
+                if (!Breathless || haseyes(gy.youmonst.data)) {
+                    potionbreathe(singlepotion);
+                }
+                useup(singlegem);
+                useup(singlepotion);
+                /* MRKR: an alchemy smock ought to be */
+                /* some protection against this: */
+                losehp(how_resistant(ACID_RES) > 50 ? rnd(5) : rnd(10), "alchemic blast", KILLED_BY_AN);
+
+                return 1;
+            }
+
+            pline("%s dissolves in %s.", The(xname(singlegem)), the(xname(singlepotion)));
+            makeknown(POT_ACID);
+            useup(singlegem);
+        }
+        
         costly_alteration(singlepotion, COST_NUTRLZ);
         singlepotion->otyp = mixture;
         singlepotion->blessed = 0;
