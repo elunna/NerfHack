@@ -1167,6 +1167,8 @@ add_obj_info(winid datawin, short otyp)
     const char* dir = (oc.oc_dir == NODIR ? "Non-directional"
                                 : (oc.oc_dir == IMMEDIATE ? "Beam"
                                                           : "Ray"));
+    const struct PotionRecipe *precipe;
+    boolean has_recipes = FALSE;
 
 #define OBJPUTSTR(str) putstr(datawin, ATR_NONE, str)
 #define ADDCLASSPROP(cond, str)            \
@@ -1612,6 +1614,30 @@ add_obj_info(winid datawin, short otyp)
     if (oc.oc_unique) {
         OBJPUTSTR("Unique item.");
     }
+
+    /* potion alchemy */
+    #if 0
+    has_recipes = FALSE;
+    if (reveal_info) { 
+    }
+    #endif
+    for (precipe = potionrecipes; precipe->result_typ; precipe++) {
+        if (otyp == precipe->typ1 || otyp == precipe->typ2
+            || otyp == precipe->result_typ) {
+            if (!has_recipes) {
+                OBJPUTSTR("");
+                OBJPUTSTR("Potion alchemy recipes (#dip):");
+                has_recipes = TRUE;
+            }
+            Sprintf(buf, "  %-13s + %-13s = %s%s",
+                    OBJ_NAME(objects[precipe->typ1]),
+                    OBJ_NAME(objects[precipe->typ2]),
+                    OBJ_NAME(objects[precipe->result_typ]),
+                    precipe->chance == 1 ? "" : " (1/3)" );
+            OBJPUTSTR(buf);
+        }
+    }
+    
 }
 
 /*

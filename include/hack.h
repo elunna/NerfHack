@@ -154,6 +154,15 @@ enum bodypart_types {
     STOMACH   = 18
 };
 
+struct PotionRecipe {
+    short result_typ;
+    short typ1;
+    short typ2;
+    int chance;
+};
+
+extern const struct PotionRecipe potionrecipes[]; /* table of fusions */
+
 #define MAX_BMASK 4
 
 struct bubble {
