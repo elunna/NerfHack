@@ -1169,6 +1169,7 @@ add_obj_info(winid datawin, short otyp)
                                 : (oc.oc_dir == IMMEDIATE ? "Beam"
                                                           : "Ray"));
     const struct PotionRecipe *precipe;
+    const struct ForgeRecipe *recipe;
     const char* identified_potion_name;
     boolean potion_known, has_recipes = FALSE;
     int i;
@@ -1615,6 +1616,23 @@ add_obj_info(winid datawin, short otyp)
     }
     if (oc.oc_unique) {
         OBJPUTSTR("Unique item.");
+    }
+
+    /* forge recipes */
+    for (recipe = fusions; recipe->result_typ; recipe++) {
+        if (otyp == recipe->typ1 || otyp == recipe->typ2
+            || otyp == recipe->result_typ) {
+            if (!has_recipes) {
+                OBJPUTSTR("");
+                OBJPUTSTR("Forging recipes (#craft):");
+                has_recipes = TRUE;
+            }
+            Sprintf(buf, "  %d %s + %d %s = %s", 
+                    recipe->quan_typ1, OBJ_NAME(objects[recipe->typ1]), 
+                    recipe->quan_typ2, OBJ_NAME(objects[recipe->typ2]),
+                    OBJ_NAME(objects[recipe->result_typ]));
+            OBJPUTSTR(buf);
+        }
     }
 
     /* potion alchemy */

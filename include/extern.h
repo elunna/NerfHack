@@ -1115,6 +1115,7 @@ extern void dipsink(struct obj *) NONNULLARG1;
 extern void sink_backs_up(coordxy, coordxy);
 extern void drinkforge(void);
 extern void dipforge(struct obj *);
+extern int doforging(void);
 extern void breakforge(coordxy, coordxy);
 extern void coolforge(int, int);
 extern void drinktoilet(void);

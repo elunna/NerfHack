@@ -154,6 +154,16 @@ enum bodypart_types {
     STOMACH   = 18
 };
 
+struct ForgeRecipe {
+    short result_typ;
+    short typ1;
+    short typ2;
+    int quan_typ1;
+    int quan_typ2;
+};
+
+extern const struct ForgeRecipe fusions[]; /* table of fusions */
+
 struct PotionRecipe {
     short result_typ;
     short typ1;

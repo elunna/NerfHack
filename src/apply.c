@@ -4447,6 +4447,8 @@ void exploding_wand_efx(struct obj *obj)
 staticfn int
 apply_ok(struct obj *obj)
 {
+    uchar here = levl[u.ux][u.uy].typ;
+    
     if (!obj)
         return GETOBJ_EXCLUDE;
 
@@ -4465,6 +4467,9 @@ apply_ok(struct obj *obj)
         return GETOBJ_DOWNPLAY;
     
     /* certain weapons */
+    if (obj->otyp == WAR_HAMMER && IS_FORGE(here))
+        return GETOBJ_SUGGEST;
+
     if (obj->oclass == WEAPON_CLASS
         && (is_pick(obj) || is_axe(obj) || is_pole(obj)
             || obj->otyp == BULLWHIP))
@@ -4545,6 +4550,15 @@ doapply(void)
 
     if (obj->oclass == COIN_CLASS)
         return flip_coin(obj);
+
+    if (obj->otyp == WAR_HAMMER) {
+        if (!IS_FORGE(levl[u.ux][u.uy].typ)) {
+            You("need to be at a forge to use the hammer.");
+            return ECMD_OK;
+        }
+        doforging();
+        return ECMD_TIME;
+    }
 
     switch (obj->otyp) {
     case BLINDFOLD:
