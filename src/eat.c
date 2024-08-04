@@ -2575,8 +2575,14 @@ eataccessory(struct obj *otmp)
                 pline("A shimmering %s surrounds you!", 
                     Hallucination ? "bubble" : "globe");
             break;
-        case RIN_SUSTAIN_ABILITY:
         case AMULET_OF_LIFE_SAVING:
+            if (u.usaving_grace && Luck > 0 && !rn2(2)) {
+                You("are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
+                u.usaving_grace = 0;
+                break;
+            }
+        case RIN_SUSTAIN_ABILITY:
+        
             /* can't eat Amulet of Yendor or fakes,
              * and no oc_prop even if you could -3.
              */
