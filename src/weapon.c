@@ -150,7 +150,7 @@ hitval(struct obj *otmp, struct monst *mon)
     boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
 
     if (Is_weapon)
-        tmp += otmp->spe;
+        tmp += (otmp->spe > 0) ? rn2(otmp->spe + 1) : otmp->spe;
 
     /* Put weapon specific "to hit" bonuses in below: */
     tmp += objects[otmp->otyp].oc_hitbon;
