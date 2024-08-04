@@ -1185,8 +1185,55 @@ cpostfx(int pm)
 
     switch (pm) {
     case PM_WRAITH:
-        if (rnd(40) <= u.ulevel)
+        switch(rnd(10)) {
+        case 1:
+            You("feel that was a bad idea.");
+            /* NerfHack is a little less harsh here. */
+            if (Luck < 0)
+                losexp("eating a wraith corpse");
+            else
+                change_luck(-1);
+            break;
+        case 2:
+            You("don't feel so good ...");
+            if (Upolyd) {
+                u.mhmax -= 4;
+                if (u.mhmax < 1)
+                    u.mhmax = 1;
+            } else {
+                u.uhpmax -= 4;
+                if (u.uhpmax < 1)
+                    u.uhpmax = 1;
+            }
+            u.uenmax -= 8;
+            if (u.uenmax < 1)
+                u.uenmax = 1;
+            u.uen -= 8;
+            if (u.uen < 0)
+                u.uen = 0;
+            losehp(4, "eating a wraith corpse", KILLED_BY);
+            break;
+        case 3:
+        case 4:
+            You("feel something strange for a moment.");
+            break;
+        case 5:
+            You("feel physically and mentally stronger!");
+            if (Upolyd) {
+                u.mhmax += 4;
+                u.mh = u.mhmax;
+            } else {
+                u.uhpmax += 4;
+                u.uhp = u.uhpmax;
+            }
+            u.uenmax += 8;
+            u.uen = u.uenmax;
+            break;
+        default:
+            You("feel that was a smart thing to do.");
             pluslvl(FALSE);
+            break;
+        }
         break;
     case PM_HUMAN_WERERAT:
         catch_lycanthropy = PM_WERERAT;
