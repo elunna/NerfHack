@@ -584,18 +584,30 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         goto default_1;
     case PM_WHITE_UNICORN:
     case PM_GRAY_UNICORN:
-    case PM_BLACK_UNICORN:
+    case PM_BLACK_UNICORN: {
+        /* The chance of a unicorn dropping a horn goes down with each
+         * unicorn killed:
+               0 killed = 1 in 1 (100%) chance of a unicorn horn
+               1 killed = 1 in 2 chance
+               2 killed = 1 in 3 chance, and so on.
+         */
+        int killedu = DEAD_UNICORNS + 1;
         if (mtmp->mrevived && rn2(2)) {
             if (canseemon(mtmp))
                 pline_mon(mtmp,
                       "%s recently regrown horn crumbles to dust.",
                       s_suffix(Monnam(mtmp)));
-        } else {
+        } else if (!rn2(killedu)) {
             obj = mksobj_at(UNICORN_HORN, x, y, TRUE, FALSE);
             if (obj && mtmp->mrevived)
                 obj->degraded_horn = 1;
+        } else {
+            if (canseemon(mtmp))
+            pline_mon(mtmp, "%s horn crumbles to dust.",
+                    s_suffix(Monnam(mtmp)));
         }
         goto default_1;
+    }
     case PM_LONG_WORM:
         (void) mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
         goto default_1;

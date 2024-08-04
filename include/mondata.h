@@ -368,4 +368,8 @@
                              || (ptr) == &mons[PM_ORC_SHAMAN] \
                              || (ptr) == &mons[PM_ALCHEMIST])
 
+#define DEAD_UNICORNS ((int) svm.mvitals[PM_WHITE_UNICORN].died \
+                        + (int) svm.mvitals[PM_GRAY_UNICORN].died \
+                        + (int) svm.mvitals[PM_BLACK_UNICORN].died)
+
 #endif /* MONDATA_H */
