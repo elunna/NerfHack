@@ -37,6 +37,8 @@ staticfn int wiz_force_cham_form(struct monst *);
 staticfn struct permonst *accept_newcham_form(struct monst *, int);
 staticfn void kill_eggs(struct obj *) NO_NNARGS;
 staticfn void pacify_guard(struct monst *);
+staticfn void unpoly_monster(struct monst *);
+
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
@@ -1242,25 +1244,25 @@ m_calcdistress(struct monst *mtmp)
     }
     
     if (mtmp->msummoned && mtmp->msummoned == 1) {
-	if (canseemon(mtmp)) {
-	    if (Hallucination)
-		pline("%s %s", Monnam(mtmp), rn2(2)
-		    ? "folds in on itself!"
-		    : "explodes into multicolored polygons!");
-	    else
-		pline("%s %s", Monnam(mtmp), rn2(2)
-		    ? "winks out of existence."
-		    : "vanishes in a puff of smoke.");
-	}
-	for (obj = mtmp->minvent; obj; obj = otmp) {
-	    otmp = obj->nobj;
-	    /*obj_extract_self(obj);*/
-	    if (mtmp->mx) {
-		mdrop_obj(mtmp, obj, FALSE);
-	    }
-	}
-	mongone(mtmp);
-	return;
+        if (canseemon(mtmp)) {
+            if (Hallucination)
+            pline("%s %s", Monnam(mtmp), rn2(2)
+                ? "folds in on itself!"
+                : "explodes into multicolored polygons!");
+            else
+            pline("%s %s", Monnam(mtmp), rn2(2)
+                ? "winks out of existence."
+                : "vanishes in a puff of smoke.");
+        }
+        for (obj = mtmp->minvent; obj; obj = otmp) {
+            otmp = obj->nobj;
+            /*obj_extract_self(obj);*/
+            if (mtmp->mx) {
+            mdrop_obj(mtmp, obj, FALSE);
+            }
+        }
+        mongone(mtmp);
+        return;
     }
 
     if (mtmp->mprotection) {
@@ -2920,13 +2922,17 @@ lifesaved_monster(struct monst *mtmp)
 {
     boolean surviver;
     struct obj *lifesave = mlifesaver(mtmp);
+    int visible = (u.uswallow && u.ustuck == mtmp)
+                    || cansee(mtmp->mx, mtmp->my);
 
     if (lifesave) {
         /* not canseemon; amulets are on the head, so you don't want
          * to show this for a long worm with only a tail visible.
          * Nor do you check invisibility, because glowing and
          * disintegrating amulets are always visible. */
-        if (cansee(mtmp->mx, mtmp->my)) {
+        /* [ALI] Always treat swallower as visible for consistency */
+		/* with unpoly_monster(). */
+        if (visible) {
             pline("But wait...");
             pline("%s medallion begins to glow!", s_suffix(Monnam(mtmp)));
             makeknown(AMULET_OF_LIFE_SAVING);
@@ -3130,6 +3136,12 @@ mondead(struct monst *mtmp)
     iflags.sad_feeling = FALSE;
 
     mtmp->mhp = 0; /* in case caller hasn't done this */
+
+    /* WAC First check that monster can unpoly */
+	unpoly_monster(mtmp);
+	if (mtmp->mhp > 0)
+        return;
+
     lifesaved_monster(mtmp);
     if (!DEADMONSTER(mtmp))
         return;
@@ -6453,6 +6465,79 @@ mon_berserk(struct monst *mtmp)
      * it seems unfair and awkward. Make it so berserkers turn hostile. */
     mtmp->mpeaceful = mtmp->mtame = 0;
     newsym(mtmp->mx, mtmp->my);
+}
+
+staticfn void
+unpoly_monster(struct monst *mtmp)
+{
+	int visible;
+
+    /* [ALI] Always treat swallower as visible so that the message
+     * indicating that the monster hasn't died comes _before_ any
+     * message about breaking out of the "new" monster.
+     */
+    visible = (u.uswallow && u.ustuck == mtmp)
+                || cansee(mtmp->mx,mtmp->my);
+    mtmp->mhp = mtmp->mhpmax;
+    if (visible)
+        pline("But wait...");
+
+    if (is_were(mtmp->data) && !is_human(mtmp->data) && rn2(7)) {
+        new_were(mtmp);
+        return;
+    }
+
+    if (is_changeling(mtmp) && mtmp->cham != NON_PM && rn2(7)) {
+        int mndx = mtmp->cham;
+
+        /* this only happens if shapeshifted */
+        if (mndx >= LOW_PM && mndx != monsndx(mtmp->data)
+            && !(svm.mvitals[mndx].mvflags & G_GENOD)) {
+            char buf[BUFSZ];
+            boolean in_door = (amorphous(mtmp->data)
+                               && closed_door(mtmp->mx, mtmp->my)),
+                /* alternate message phrasing for some monster types */
+                spec_mon = (nonliving(mtmp->data)
+                            || noncorporeal(mtmp->data)
+                            || amorphous(mtmp->data)),
+                spec_death = (gd.disintegested /* disintegrated or digested */
+                              || noncorporeal(mtmp->data)
+                              || amorphous(mtmp->data));
+
+            /* construct a format string before transformation;
+               will be capitalized when used, expects one %s arg */
+            Snprintf(buf, sizeof buf,
+                 "%s suddenly %s and rises as %%s!",
+                 x_monnam(mtmp, ARTICLE_THE,
+                          spec_mon ? (char *) 0 : "seemingly dead",
+                          (SUPPRESS_INVISIBLE | SUPPRESS_IT), FALSE),
+                 spec_death ? "reconstitutes" : "transforms");
+            mtmp->mcanmove = 1;
+            mtmp->mfrozen = 0;
+            if (mtmp->mhpmax <= 0)
+                mtmp->mhpmax = 10;
+            mtmp->mhp = mtmp->mhpmax;
+
+            if (mtmp == u.ustuck) {
+                if (u.uswallow)
+                    expels(mtmp, mtmp->data, FALSE);
+                else
+                    uunstick();
+            }
+            if (in_door) {
+                coord new_xy;
+                if (enexto(&new_xy, mtmp->mx, mtmp->my, &mons[mndx])) {
+                    rloc_to(mtmp, new_xy.x, new_xy.y);
+                }
+            }
+            newcham(mtmp, &mons[mndx], NO_NC_FLAGS);
+            return;
+        }
+    } else {
+        if (visible)
+            pline("%s shudders!", Monnam(mtmp));
+        mtmp->mhp = 0;
+    }
 }
 
 /*mon.c*/

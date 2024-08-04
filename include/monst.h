@@ -226,7 +226,10 @@ struct monst {
 /* Vlad might be vampshifted so just checking monst->data is insufficient */
 #define is_Vlad(m) ((m)->data == &mons[PM_VLAD_THE_IMPALER]  \
                     || (m)->cham == PM_VLAD_THE_IMPALER)
-
+#define is_changeling(mon)                                          \
+    ((mon)->cham == PM_CHAMELEON || (mon)->cham == PM_DOPPELGANGER  \
+     || (mon)->cham == PM_SANDESTIN)
+     
 /* monsters which cannot be displaced: temple priests, shopkeepers,
    vault guards, the Oracle, quest leader */
 #define mundisplaceable(mon) \
