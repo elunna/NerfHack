@@ -2221,7 +2221,7 @@
         M1_BREATHLESS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
             | M1_NOTAKE | M1_POIS,
         M2_HOSTILE | M2_NEUTER, 0,
-        NO_RACE, 5, CLR_GRAY, GRAY_FUNGUS),
+        NO_RACE, 5, CLR_BLACK, GRAY_FUNGUS),
     /*
      * Gnomes
      *  Unlike plain human|elf|orc, plain "gnome" is an ordinary monster.
