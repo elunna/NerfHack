@@ -6478,15 +6478,22 @@ unpoly_monster(struct monst *mtmp)
      */
     visible = (u.uswallow && u.ustuck == mtmp)
                 || cansee(mtmp->mx,mtmp->my);
+
+    if (!is_were(mtmp->data) && !is_changeling(mtmp))
+        return;
+
     mtmp->mhp = mtmp->mhpmax;
+    
     if (visible)
         pline("But wait...");
 
+    /* Revert werefoo */
     if (is_were(mtmp->data) && !is_human(mtmp->data) && rn2(7)) {
         new_were(mtmp);
         return;
     }
 
+    /* Revert shapechangers */
     if (is_changeling(mtmp) && mtmp->cham != NON_PM && rn2(7)) {
         int mndx = mtmp->cham;
 
