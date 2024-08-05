@@ -83,7 +83,6 @@ were_beastie(int pm)
     case PM_WERERAT:
     case PM_SEWER_RAT:
     case PM_GIANT_RAT:
-    case PM_RABID_RAT:
         return PM_WERERAT;
     case PM_WEREJACKAL:
     case PM_JACKAL:
@@ -169,7 +168,7 @@ were_summon(
         case PM_WERERAT:
         case PM_HUMAN_WERERAT:
             typ = rn2(3) ? PM_SEWER_RAT
-                         : rn2(3) ? PM_GIANT_RAT : PM_RABID_RAT;
+                         : rn2(3) ? PM_GIANT_RAT : PM_WERERAT;
             if (genbuf)
                 Strcpy(genbuf, "rat");
             break;

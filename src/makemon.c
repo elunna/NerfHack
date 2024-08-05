@@ -991,6 +991,7 @@ clone_mon(
     m2->mundetected = 0;
     m2->mtrapped = 0;
     m2->mcloned = 1;
+    m2->mrabid = 1;
     m2->minvent = (struct obj *) 0; /* objects don't clone */
     m2->mleashed = 0;
     /* Max HP the same, but current HP halved for both.  The caller
@@ -1638,12 +1639,22 @@ makemon(
         /* TODO: unify with teleport appears msg */
     }
 
+    /* Small portion of eligible monsters can spawn rabid. */
+    if (mtmp->data->mlet == S_HUMAN)
+        ; /* Although humans can get infected with rabid, we
+           * won't generate them rabid to avoid insane 
+           * concentrations of rabid soldiers in Ludios or Castle */
+    else if ((mtmp->mnum == PM_COYOTE || is_bat(mtmp->data)) 
+            && !rn2(10))
+        mon_rabid(mtmp, FALSE);
+    else if (!rn2(200 - level_difficulty()) && !mtmp->mtame)
+        mon_rabid(mtmp, FALSE);
+
     /* Some checks */
     if (is_unicorn(ptr) && sgn(u.ualign.type) != sgn(ptr->maligntyp)) {
         if (mtmp->mpeaceful)
             impossible("Peaceful non-aligned unicorn!");
     }
-        
     return mtmp;
 }
 

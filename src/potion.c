@@ -301,6 +301,42 @@ make_sick(long xtime,
 }
 
 void
+make_rabid(long xtime, const char *msg, int killedby, const char *killername)
+{
+    long old = Rabid;
+
+#if 0   /* tell player even if hero is unconscious */
+    if (Unaware)
+        msg = 0;
+#endif
+
+    if (xtime > 0L) {
+        if (Sick_resistance)
+            return;
+#if 0
+        if (!old) /* newly rabid */
+            You_feel("strangely aggressive.");
+#endif
+        set_itimeout(&Rabid, xtime);
+        if ((xtime != 0L) ^ (old != 0L)) {
+            // disp.botl = TRUE;
+            if (msg)
+                pline("%s", msg);
+        }
+    } else if (old) {
+        /* was sick, now not */
+        You_feel("healthy and calm again!");
+        Rabid = 0L;
+        // disp.botl = TRUE;
+    }
+
+    if (!Rabid)
+        dealloc_killer(find_delayed_killer(RABID));
+     else if (!old)
+        delayed_killer(RABID, killedby, killername);
+}
+
+void
 make_slimed(long xtime, const char *msg)
 {
     long old = Slimed;
@@ -675,6 +711,11 @@ dodrink(void)
 
     if (Strangled) {
         pline("If you can't breathe air, how can you drink liquid?");
+        return ECMD_OK;
+    }
+
+    if (Rabid && (Rabid & TIMEOUT) < 60) {
+        pline("Just the thought of drinking liquids makes you sick");
         return ECMD_OK;
     }
 
@@ -1741,6 +1782,7 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
     if (curesick) {
         make_vomiting(0L, TRUE);
         make_sick(0L, (char *) 0, TRUE, SICK_ALL);
+        make_rabid(0L, (char *) 0, 0, (char *) 0);
     }
     disp.botl = TRUE;
     return;

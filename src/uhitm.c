@@ -308,7 +308,7 @@ attack_checks(
     if (flags.confirm && mtmp->mpeaceful
         && !Confusion && !Hallucination && !Stunned) {
         /* Intelligent chaotic weapons (Stormbringer) want blood */
-        if (is_art(wep, ART_STORMBRINGER)) {
+        if (is_art(wep, ART_STORMBRINGER) || Rabid) {
             go.override_confirmation = TRUE;
             return FALSE;
         }
@@ -540,7 +540,7 @@ do_attack(struct monst *mtmp)
      */
     /* Intelligent chaotic weapons (Stormbringer) want blood */
     if (is_safemon(mtmp) && !svc.context.forcefight) {
-        if (!u_wield_art(ART_STORMBRINGER)) {
+        if (!u_wield_art(ART_STORMBRINGER) && !Rabid) {
             /* There are some additional considerations: this won't work
              * if in a shop or Punished or you miss a random roll or
              * if you can walk thru walls and your pet cannot (KAA) or
@@ -723,8 +723,12 @@ known_hitum(
     if (go.override_confirmation) {
         /* this may need to be generalized if weapons other than
            Stormbringer acquire similar anti-social behavior... */
-        if (flags.verbose)
-            Your("bloodthirsty blade attacks!");
+        if (flags.verbose) {
+            if (weapon && weapon->oartifact == ART_STORMBRINGER)
+                Your("bloodthirsty blade attacks!");
+            else if (Rabid)
+                You("cannot stop yourself from attacking!");
+        }
     }
 
     if (!*mhit) {
@@ -4596,6 +4600,29 @@ do_stone_u(struct monst *mtmp)
     return 0;
 }
 
+boolean
+do_rabid_u(struct monst *mtmp)
+{
+    /* We can't become _more_ rabid. */
+    if (Rabid)
+        return FALSE;
+    if (Sick_resistance) {
+        You_feel("slightly aggressive.");
+        return FALSE;
+    } else {
+        int kformat = KILLED_BY_AN;
+        const char *kname = pmname(mtmp->data, Mgender(mtmp));
+
+        if (mtmp->data->geno & G_UNIQ) {
+            if (!type_is_pname(mtmp->data))
+                kname = the(kname);
+            kformat = KILLED_BY;
+        }
+        make_rabid(80L + (long) rn1(ACURR(A_CON) * 2, 20), (char *) 0, kformat, kname);
+        return TRUE;
+    }
+}
+
 void
 do_stone_mon(
     struct monst *magr,
@@ -4903,8 +4930,7 @@ mhitm_ad_were(
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!rn2(4) && u.ulycn == NON_PM
-            && is_vampire(gy.youmonst.data)
+        if (!rn2(4) && u.ulycn == NON_PM && is_vampire(gy.youmonst.data)
             && !Protection_from_shape_changers && !defends(AD_WERE, uwep)
             && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
             urgent_pline("You feel feverish.");
@@ -4914,6 +4940,45 @@ mhitm_ad_were(
         }
     } else {
         /* mhitm */
+        mhitm_ad_phys(magr, mattk, mdef, mhm);
+        if (mhm->done)
+            return;
+    }
+}
+
+void
+mhitm_ad_rabd(
+    struct monst *magr, struct attack *mattk,
+    struct monst *mdef, struct mhitm_data *mhm)
+{
+    if (magr == &gy.youmonst) {
+        /* uhitm - infect other mon */
+        if (!mdef->mrabid && can_become_rabid(mdef->data)) {
+            mon_rabid(mdef, TRUE);
+            return;
+        }
+
+        mhitm_ad_phys(magr, mattk, mdef, mhm);
+        if (mhm->done)
+            return;
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu - you infected */
+        hitmsg(magr, mattk);
+        if (!rn2(4) && !Rabid && can_become_rabid(gy.youmonst.data)
+                && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
+            if (!Sick_resistance)
+                urgent_pline("You feel like going rabid!");
+            exercise(A_CON, FALSE);
+            do_rabid_u(magr);
+        } else
+            mhitm_ad_phys(magr, mattk, mdef, mhm);
+    } else {
+        /* mhitm - infect other mon */
+        if (!magr->mcan && !mdef->mrabid && can_become_rabid(mdef->data)) {
+            mon_rabid(mdef, TRUE);
+            return;
+        }
+
         mhitm_ad_phys(magr, mattk, mdef, mhm);
         if (mhm->done)
             return;
@@ -5493,6 +5558,7 @@ mhitm_adtyping(
     case AD_STUN: mhitm_ad_stun(magr, mattk, mdef, mhm); break;
     case AD_LEGS: mhitm_ad_legs(magr, mattk, mdef, mhm); break;
     case AD_WERE: mhitm_ad_were(magr, mattk, mdef, mhm); break;
+    case AD_RABD: mhitm_ad_rabd(magr, mattk, mdef, mhm); break;
     case AD_HEAL: mhitm_ad_heal(magr, mattk, mdef, mhm); break;
     case AD_PHYS: mhitm_ad_phys(magr, mattk, mdef, mhm); break;
     case AD_FIRE: mhitm_ad_fire(magr, mattk, mdef, mhm); break;

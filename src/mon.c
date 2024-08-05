@@ -107,6 +107,12 @@ sanity_check_single_mon(
         if (mtmp->mtame && !mtmp->mpeaceful)
             impossible("tame %s is not peaceful (%s)",
                        pmname(mptr, Mgender(mtmp)), msg);
+        if (mtmp->mrabid && mtmp->mpeaceful)
+            impossible("rabid %s is peaceful (%s)",
+                       pmname(mptr, Mgender(mtmp)), msg);
+        if (mtmp->mrabid && mtmp->mtame)
+            impossible("rabid %s is tame (%s)",
+                       pmname(mptr, Mgender(mtmp)), msg);
     }
     if (mtmp->isshk && !has_eshk(mtmp))
         impossible("shk without eshk (%s)", msg);
@@ -783,7 +789,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_ROTHE: case PM_MUMAK: case PM_LEOCROTTA: case PM_WUMPUS:
     case PM_TITANOTHERE: case PM_BALUCHITHERIUM: case PM_MASTODON:
     case PM_LANDSHARK:
-    case PM_SEWER_RAT: case PM_GIANT_RAT: case PM_RABID_RAT:
+    case PM_SEWER_RAT: case PM_GIANT_RAT:
     case PM_WERERAT:
 
     case PM_ROCK_MOLE: case PM_WOODCHUCK:
@@ -2526,6 +2532,10 @@ mm_aggression(
        when trying to attack you  */
     if (magr->mberserk && !magr->mpeaceful
         && !rn2(3) && m_canseeu(magr))
+        return ALLOW_M | ALLOW_TM;
+    
+    /* Rabies wants to spread... */
+    if (magr->mrabid && !mdef->mrabid && can_become_rabid(mdef->data))
         return ALLOW_M | ALLOW_TM;
     
     /* Various other combinations such as dog vs cat, cat vs rat, and
@@ -6457,6 +6467,21 @@ mon_berserk(struct monst *mtmp)
     mtmp->mflee = 0;
     /* If a monster goes berserk towards the player but the hero can't retaliate,
      * it seems unfair and awkward. Make it so berserkers turn hostile. */
+    mtmp->mpeaceful = mtmp->mtame = 0;
+    newsym(mtmp->mx, mtmp->my);
+}
+
+void
+mon_rabid(struct monst *mtmp, boolean noisy)
+{
+    if (noattacks(mtmp->data) || !can_become_rabid(mtmp->data))
+        return;
+
+    if (canseemon(mtmp) && noisy) {
+        pline("%s starts frothing at the mouth!", Monnam(mtmp));
+    }
+    mtmp->mrabid = 1;
+    mtmp->mflee = 0;
     mtmp->mpeaceful = mtmp->mtame = 0;
     newsym(mtmp->mx, mtmp->my);
 }

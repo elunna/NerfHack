@@ -98,7 +98,7 @@ experience(struct monst *mtmp, int nk)
     int i, tmp, tmp2;
 
     if (mtmp->msummoned)
-	return 1; /* Spell beings only grant 1XP */
+	    return 1; /* Spell beings only grant 1XP */
 
     tmp = 1 + mtmp->m_lev * mtmp->m_lev;
 
@@ -139,6 +139,10 @@ experience(struct monst *mtmp, int nk)
             tmp += 1000;
     }
 
+    /* For rabid monsters, a little extra*/
+    if (mtmp->mrabid)
+        tmp += (2 * mtmp->m_lev);
+    
     /*  For certain "extra nasty" monsters, give even more */
     if (extra_nasty(ptr))
         tmp += (7 * mtmp->m_lev);

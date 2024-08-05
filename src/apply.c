@@ -2466,6 +2466,8 @@ use_unicorn_horn(struct obj **optr)
         prop_trouble(STUNNED);
     if (TimedTrouble(HDeaf))
         prop_trouble(DEAF);
+    if (TimedTrouble(Rabid))
+        prop_trouble(RABID);
 
     if (trouble_count == 0) {
         pline1(nothing_happens);
@@ -2543,6 +2545,10 @@ use_unicorn_horn(struct obj **optr)
                 break;
             case DEAF:
                 make_deaf(0L, TRUE);
+                did_prop++;
+                break;
+            case RABID:
+                make_rabid(0L, (char *) 0, 0, (char *) 0);
                 did_prop++;
                 break;
             default:

@@ -41,6 +41,21 @@
      || (ptr) == &mons[PM_GREEN_DRAGON]        \
      || (ptr) == &mons[PM_LOCUST])
 
+#define can_become_rabid(ptr) \
+    ((is_animal(ptr) || humanoid(ptr)) \
+        && !is_rider(ptr) \
+        && !is_angel(ptr) \
+        && !is_demon(ptr) \
+        && !is_were(ptr) \
+        && !is_undead(ptr) \
+        && !nonliving(ptr) \
+        && !unique_corpstat(ptr) \
+        && (ptr)->msound != MS_LEADER \
+        && ptr != &mons[PM_DEEP_ONE] \
+        && ptr != &mons[PM_DEEPER_ONE] \
+        && ptr != &mons[PM_DEEPEST_ONE] \
+        && ptr != &mons[PM_SHADOW_OGRE])
+
 /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
 #define resists_mgc(ptr) \
     (dmgtype(ptr, AD_MAGM) || ptr == &mons[PM_BABY_GRAY_DRAGON] \

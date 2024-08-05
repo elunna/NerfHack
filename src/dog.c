@@ -166,7 +166,7 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
             chance = otmp->blessed ? 0 : !otmp->cursed ? 1 : 2;
         /* 0,1,2:  b=80%,10,10; nc=10%,80,10; c=10%,10,80 */
 
-        if (non_tameable(mtmp->data))
+        if (non_tameable(mtmp->data) || mtmp->mrabid)
             chance = 2;
         
         if (chance > 0) {
@@ -1123,7 +1123,7 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
     if (mtmp->msleeping)
         wake_nearto(mtmp->mx, mtmp->my, 1); /* [different from wakeup()] */
 
-    if (non_tameable(mtmp->data))
+    if (non_tameable(mtmp->data) || mtmp->mrabid)
         return FALSE;
 
     if (mtmp->mberserk) {

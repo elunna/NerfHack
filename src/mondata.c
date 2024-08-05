@@ -401,7 +401,8 @@ mstrength(struct permonst *ptr)
     for (i = 0; i < NATTK; i++) {
         tmp2 = ptr->mattk[i].adtyp;
         if ((tmp2 == AD_DRLI) || (tmp2 == AD_STON) || (tmp2 == AD_DRST)
-            || (tmp2 == AD_DRDX) || (tmp2 == AD_DRCO) || (tmp2 == AD_WERE))
+            || (tmp2 == AD_DRDX) || (tmp2 == AD_DRCO) || (tmp2 == AD_WERE)
+            || (tmp2 == AD_RABD))
             n += 2;
         else if (strcmp(ptr->pmnames[NEUTRAL], "grid bug"))
             n += (tmp2 != AD_PHYS);

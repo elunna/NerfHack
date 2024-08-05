@@ -2212,6 +2212,8 @@ arti_invoke(struct obj *obj)
                 make_withering(0L, TRUE);
             if (Sick)
                 make_sick(0L, (char *) 0, FALSE, SICK_ALL);
+            if (Rabid)
+                make_rabid(0L, (char *) 0, 0, (char *) 0);
             if (Slimed)
                 make_slimed(0L, (char *) 0);
             if (BlindedTimeout > creamed)

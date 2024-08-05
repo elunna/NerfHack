@@ -93,12 +93,13 @@
 #define AD_DSRM 46  /* disarm the player (from SpliceHack) */
 #define AD_WEBS 47  /* entangles target in webbing (from EvilHack) */
 #define AD_LUCK 48  /* drain luck */
-#define AD_CLRC 49 /* random clerical spell */
-#define AD_SPEL 50 /* random magic spell */
-#define AD_RBRE 51 /* random breath weapon */
+#define AD_RABD 49  /* cause rabies */
+#define AD_CLRC 50  /* random clerical spell */
+#define AD_SPEL 51  /* random magic spell */
+#define AD_RBRE 52  /* random breath weapon */
 
-#define AD_SAMU 52 /* hits, may steal Amulet (Wizard) */
-#define AD_CURS 53 /* random curse (ex. gremlin) */
+#define AD_SAMU 53  /* hits, may steal Amulet (Wizard) */
+#define AD_CURS 54  /* random curse (ex. gremlin) */
 
 #define LAST_AD AD_CURS
 

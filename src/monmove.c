@@ -258,7 +258,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
         || mtmp->data->mlet == S_HUMAN || unique_corpstat(mtmp->data)
         || (mtmp->isshk && inhishop(mtmp))
         || (mtmp->ispriest && inhistemple(mtmp))
-        || mtmp->mberserk)
+        || mtmp->mberserk || mtmp->mrabid)
         return FALSE;
 
     /* <0,0> is used by musical scaring to check for the above;
@@ -308,6 +308,7 @@ mon_regen(struct monst *mon, boolean digest_meal)
 {
     if (mon->mhp < mon->mhpmax
         && (!Is_valley(&u.uz) || is_undead(mon->data))
+        && !mon->mrabid
         && (svm.moves % 20 == 0 || regenerates(mon->data))
            && !mon->mwither)
         mon->mhp++;
@@ -451,7 +452,7 @@ monflee(
         return;
 
     /* Berserking monsters are too busy berserking to flee */
-    if (mtmp->mberserk)
+    if (mtmp->mberserk || mtmp->mrabid)
         return;
     
     /* Monsters won't flee while you have aggravate mon. */
@@ -782,7 +783,7 @@ dochug(struct monst *mtmp)
 
     /* Cease conflict-induced swallow/grab if conflict has ended. Releasing
        the hero in this way uses up the monster's turn. */
-    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf && !Conflict) {
+    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf && !mtmp->mrabid && !Conflict) {
         release_hero(mtmp);
         return 0;
     }
@@ -1300,7 +1301,7 @@ m_avoid_kicked_loc(struct monst *mtmp, coordxy nx, coordxy ny)
 {
     if ((mtmp->mpeaceful || mtmp->mtame)
         && mtmp->mcansee
-        && !mtmp->mconf && !mtmp->mstun
+        && !mtmp->mconf && !mtmp->mstun && !mtmp->mrabid
         && !Conflict
         && isok(gk.kickedloc.x, gk.kickedloc.y)
         && nx == gk.kickedloc.x && ny == gk.kickedloc.y
@@ -1316,7 +1317,7 @@ m_avoid_soko_push_loc(struct monst *mtmp, coordxy nx, coordxy ny)
 {
     if (Sokoban
         && (mtmp->mpeaceful || mtmp->mtame)
-        && !mtmp->mconf && !mtmp->mstun
+        && !mtmp->mconf && !mtmp->mstun && !mtmp->mrabid
         && !Conflict
         && (dist2(nx, ny, u.ux, u.uy) == 4)
         && sobj_at(BOULDER, nx + sgn(u.ux - nx), ny + sgn(u.uy - ny)))
@@ -1941,7 +1942,7 @@ not_special:
             appr = -1;
 
         /* ... unless they are currently berserk */
-        if (mtmp->mberserk)
+        if (mtmp->mberserk || mtmp->mrabid)
             appr = 1;
         
         if (!should_see && can_track(ptr)) {

@@ -158,7 +158,7 @@
  */
 #define _is_safemon(mon) \
     (flags.safe_dog && (mon)->mpeaceful && canspotmon(mon)              \
-     && !Confusion && !Hallucination && !Stunned)
+     && !Confusion && !Hallucination && !Stunned && !Rabid)
 
 /*
  * canseeself()

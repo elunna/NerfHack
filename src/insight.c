@@ -1077,6 +1077,8 @@ status_enlightenment(int mode, int final)
                 you_are("terminally sick from food poisoning", "");
         }
     }
+    if (Rabid)
+        you_are("going rabid", "");
     if (Withering)
         you_are("withering away", "");
     if (Vomiting)
@@ -1853,8 +1855,13 @@ attributes_enlightenment(
         you_can("walk through walls", from_what(PASSES_WALLS));
 
     /*** Physical attributes ***/
-    if (Regeneration)
-        enl_msg("You regenerate", "", "d", "", from_what(REGENERATION));
+    if (Regeneration) {
+        if (!Rabid)
+            enl_msg("You regenerate", "", "d", "", from_what(REGENERATION));
+        else 
+            enl_msg(You_, "will regenerate", "would have regenerated",
+                    " if not rabid", "");
+    }
     if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
     if (u.uhitinc) {

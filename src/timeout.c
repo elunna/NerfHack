@@ -9,6 +9,7 @@ staticfn void stoned_dialogue(void);
 staticfn void vomiting_dialogue(void);
 staticfn void sleep_dialogue(void);
 staticfn void choke_dialogue(void);
+staticfn void rabid_dialogue(void);
 staticfn void levitation_dialogue(void);
 staticfn void slime_dialogue(void);
 staticfn void slimed_to_death(struct kinfo *) NO_NNARGS;
@@ -31,6 +32,7 @@ const struct propname {
     { SLIMED, "becoming slime" },
     { STRANGLED, "strangling" },
     { SICK, "fatally sick" },
+    { RABID, "going rabid" },
     { STUNNED, "stunned" },
     { CONFUSION, "confused" },
     { HALLUC, "hallucinating" },
@@ -307,6 +309,50 @@ choke_dialogue(void)
         }
     }
     exercise(A_STR, FALSE);
+}
+
+static NEARDATA const char *const rabid_texts[] = {
+    "are having violent thoughts.",      /* 100 */
+    "can't stand the thought of water.", /* 60 */
+    "can't seem to think straight.",     /* 40 */
+    "feel like giving in to the rage.",  /* 20 */
+    "are starting to see red.",          /* 10 */
+    ""
+};
+
+staticfn void
+rabid_dialogue(void)
+{
+    const char *txt = 0;
+    long v = (Rabid & TIMEOUT);
+
+    /* note: nhtimeout() hasn't decremented timed properties for the
+       current turn yet, so we use Vomiting-1 here */
+    switch ((int) (v - 1L)) {
+    case 100:
+        txt = rabid_texts[0];
+        break;
+    case 60:
+        txt = rabid_texts[1];
+        break;
+    case 40:
+        txt = rabid_texts[2];
+        make_confused((HConfusion & TIMEOUT) + 40L, FALSE);
+        if (gm.multi > 0)
+            nomul(0);
+        break;
+    case 20:
+        txt = rabid_texts[3];
+        break;
+    case 10:
+        txt = rabid_texts[4];
+        break;
+    default:
+        break;
+    }
+    if (txt)
+        You1(txt);
+    exercise(A_CON, FALSE);
 }
 
 static NEARDATA const char *const sickness_texts[] = {
@@ -635,6 +681,8 @@ nh_timeout(void)
         vomiting_dialogue();
     if (Strangled)
         choke_dialogue();
+    if (Rabid)
+        rabid_dialogue();
     if (Sick)
         sickness_dialogue();
     if (HLevitation & TIMEOUT)
@@ -734,6 +782,30 @@ nh_timeout(void)
                 done_timeout(POISONING, SICK);
                 u.usick_type = 0;
                 break;
+            case RABID:
+                urgent_pline("You die from rabies.");
+                if (kptr && kptr->name[0]) {
+                    svk.killer.format = kptr->format;
+                    Strcpy(svk.killer.name, kptr->name);
+                } else {
+                    svk.killer.format = KILLED_BY_AN;
+                    svk.killer.name[0] = 0; /* take the default */
+                }
+                dealloc_killer(kptr);
+
+                if ((m_idx = name_to_mon(svk.killer.name,
+                                         (int *) 0)) >= LOW_PM) {
+                    if (type_is_pname(&mons[m_idx])) {
+                        svk.killer.format = KILLED_BY;
+                    } else if (mons[m_idx].geno & G_UNIQ) {
+                        Strcpy(svk.killer.name, the(svk.killer.name));
+                        svk.killer.format = KILLED_BY;
+                    }
+                }
+                done_timeout(POISONING, SICK);
+                u.usick_type = 0;
+                break;
+
             case WITHERING:
                 You("are no longer withering away.");
                 disp.botl = TRUE;

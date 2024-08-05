@@ -967,13 +967,21 @@ mattacku(struct monst *mtmp)
         case AT_TUCH:
         case AT_BUTT:
         case AT_TENT:
+            /* Rabid monsters have their first attack replaced with a rabid bite */
+            if (mtmp->mrabid && i == 0 && !range2 ) {
+                if (mattk->aatyp != AT_BITE)
+                    mattk->aatyp = AT_BITE;
+                mattk->adtyp = AD_RABD;
+            }
+
             if (!range2 && (!MON_WEP(mtmp) || mtmp->mconf || Conflict
                             || !touch_petrifies(gy.youmonst.data))) {
                 if (foundyou) {
                     /* if our hero is sized tiny/small and unencumbered,
                        they have a decent chance of evading a zombie's
                        bite attack */
-                    if (is_zombie(mtmp->data) && mattk->aatyp == AT_BITE
+                    if ((is_zombie(mtmp->data) || mtmp->mrabid)
+                        && mattk->aatyp == AT_BITE
                         && (gy.youmonst.data)->msize <= MZ_SMALL
                         && is_animal(gy.youmonst.data)
                         && (near_capacity() == UNENCUMBERED)

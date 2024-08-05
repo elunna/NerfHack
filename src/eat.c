@@ -2757,6 +2757,8 @@ fpostfx(struct obj *otmp)
     case EUCALYPTUS_LEAF:
         if (Sick && !otmp->cursed)
             make_sick(0L, (char *) 0, TRUE, SICK_ALL);
+        if (Rabid && !otmp->cursed)
+            make_rabid(0L, (char *) 0, 0, (char *) 0);
         if (Vomiting && !otmp->cursed)
             make_vomiting(0L, TRUE);
         break;

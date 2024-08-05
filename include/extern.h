@@ -1468,6 +1468,7 @@ extern int bagotricks(struct obj *, boolean, int *);
 extern boolean propagate(int, boolean, boolean);
 extern void summon_furies(int);
 extern void mon_berserk(struct monst *);
+extern void mon_rabid(struct monst *, boolean);
 
 /* ### mcastu.c ### */
 
@@ -2477,6 +2478,7 @@ extern void incr_itimeout(long *, int) NONNULLARG1;
 extern void make_confused(long, boolean);
 extern void make_stunned(long, boolean);
 extern void make_sick(long, const char *, boolean, int) NO_NNARGS;
+extern void make_rabid(long, const char *, int, const char *) NO_NNARGS;
 extern void make_slimed(long, const char *) NO_NNARGS;
 extern void make_stoned(long, const char *, int, const char *) NO_NNARGS;
 extern void make_vomiting(long, boolean);
@@ -3393,6 +3395,8 @@ extern void mhitm_ad_ston(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_were(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
+extern void mhitm_ad_rabd(struct monst *, struct attack *, struct monst *,
+                          struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_heal(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_stun(struct monst *, struct attack *, struct monst *,
@@ -3414,6 +3418,7 @@ extern void mhitm_ad_webs(struct monst *, struct attack *, struct monst *,
 extern void mhitm_adtyping(struct monst *, struct attack *, struct monst *,
                            struct mhitm_data *) NONNULLPTRS;
 extern boolean do_stone_u(struct monst *) NONNULLARG1;
+extern boolean do_rabid_u(struct monst *) NONNULLARG1;
 extern void do_stone_mon(struct monst *, struct attack *, struct monst *,
                          struct mhitm_data *) NONNULLARG134;
 extern int damageum(struct monst *, struct attack *, int) NONNULLARG12;

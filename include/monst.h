@@ -160,7 +160,8 @@ struct monst {
     Bitfield(mtemplit, 1);  /* temporarily seen; only valid during bhit() */
     Bitfield(meverseen, 1); /* mon has been seen at some point */
     Bitfield(mwither_from_u, 1); /* is withering due to player */
-    Bitfield(mberserk, 1);   /* monster is berserk */
+    Bitfield(mberserk, 1);  /* monster is berserking */
+    Bitfield(mrabid, 1);    /* monster is rabid */
     Bitfield(mspotted, 1);  /* mon is currently seen by hero */
                 
     uchar mwither;          /* withering; amount of turns left till recovery */

@@ -74,11 +74,12 @@ static const char *const godvoices[] = {
  * order to have the values be meaningful.
  */
 
-#define TROUBLE_STONED 15
-#define TROUBLE_SLIMED 14
-#define TROUBLE_STRANGLED 13
-#define TROUBLE_LAVA 12
-#define TROUBLE_SICK 11
+#define TROUBLE_STONED 16
+#define TROUBLE_SLIMED 15
+#define TROUBLE_STRANGLED 14
+#define TROUBLE_LAVA 13
+#define TROUBLE_SICK 12
+#define TROUBLE_RABID 11
 #define TROUBLE_WITHERING 10
 #define TROUBLE_STARVING 9
 #define TROUBLE_REGION 8 /* stinking cloud */
@@ -223,6 +224,8 @@ in_trouble(void)
         return TROUBLE_LAVA;
     if (Sick)
         return TROUBLE_SICK;
+    if (Rabid)
+        return TROUBLE_RABID;
     if (Withering)
         return TROUBLE_WITHERING;
     /* Yes, TROUBLE_STARVING is returned twice; being Fainting at low HP is
@@ -428,6 +431,10 @@ fix_worst_trouble(int trouble)
     case TROUBLE_SICK:
         You_feel("better.");
         make_sick(0L, (char *) 0, FALSE, SICK_ALL);
+        break;
+    case TROUBLE_RABID:
+        You_feel("better.");
+        make_rabid(0L, (char *) 0, 0, (char *) 0);
         break;
     case TROUBLE_WITHERING:
         You("stop withering.");

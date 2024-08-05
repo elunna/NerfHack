@@ -2311,7 +2311,8 @@ slippery_ice_fumbling(void)
 boolean
 u_maybe_impaired(void)
 {
-    return (Stunned || (Confusion && !rn2(5)));
+    return (Stunned || (Confusion && !rn2(5))
+                    || (Rabid && !rn2(11)));
 }
 
 /* change movement dir if impaired. return TRUE if can't move */

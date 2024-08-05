@@ -456,7 +456,7 @@ find_defensive(struct monst *mtmp, boolean tryescape)
      * is_unicorn() doesn't include it; the class differs and it has
      * no interest in gems.
      */
-    if (mtmp->mconf || mtmp->mstun || !mtmp->mcansee) {
+    if (mtmp->mconf || mtmp->mstun || mtmp->mrabid ||!mtmp->mcansee) {
         obj = 0;
         if (!nohands(mtmp->data)) {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
