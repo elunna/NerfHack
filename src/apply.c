@@ -2492,7 +2492,8 @@ use_unicorn_horn(struct obj **optr)
      * ENCHANT  +0  +1  +2  +3  +4  +5  +6  +7  +8  +9  +10 +11 +12 or more
      * CHANCE   30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90%
      */
-    val_limit = (obj && obj->blessed) ? trouble_count : 1;
+    val_limit = (obj && (obj->blessed || Role_if(PM_HEALER))) 
+                ? trouble_count : 1;
 
     if (obj && obj->spe > 0)
         chance = (obj->spe < 12) ? (obj->spe + 6) : 18;
