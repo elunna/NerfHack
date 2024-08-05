@@ -113,6 +113,15 @@ sanity_check_single_mon(
         if (mtmp->mrabid && mtmp->mtame)
             impossible("rabid %s is tame (%s)",
                        pmname(mptr, Mgender(mtmp)), msg);
+        if (mtmp->mberserk && mtmp->mpeaceful)
+            impossible("berserking %s is peaceful (%s)",
+                       pmname(mptr, Mgender(mtmp)), msg);
+        if (mtmp->mberserk && mtmp->mtame)
+            impossible("berserking %s is tame (%s)",
+                       pmname(mptr, Mgender(mtmp)), msg);
+        if (mtmp->mberserk && mtmp->mflee)
+            impossible("berserking %s is fleeing (%s)",
+                       pmname(mptr, Mgender(mtmp)), msg);
     }
     if (mtmp->isshk && !has_eshk(mtmp))
         impossible("shk without eshk (%s)", msg);
