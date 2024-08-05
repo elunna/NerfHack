@@ -1291,6 +1291,12 @@ cancel_item(struct obj *obj)
             costly_alteration(obj, COST_CANCEL);
             obj->spe = cancelled_spe;
         }
+        
+        if (obj->otyp == UNICORN_HORN && !obj->degraded_horn) {
+            obj->degraded_horn = 1;
+            costly_alteration(obj, COST_CANCEL);
+        }
+
         switch (obj->oclass) {
         case SCROLL_CLASS:
             costly_alteration(obj, COST_CANCEL);

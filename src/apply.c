@@ -2404,6 +2404,17 @@ use_unicorn_horn(struct obj **optr)
     int chance;	/* KMH */
     struct obj *obj = (optr ? *optr : (struct obj *) 0);
 
+    if (obj && obj->degraded_horn) {
+        if (rn2(10)) {
+            pline_The("%s emits a weak fizzle.", xname(obj));;
+        } else {
+            pline_The("%s crumbles in your %s!",
+                xname(obj), makeplural(body_part(HAND)));
+            useup(obj);
+        }
+        return;
+    }
+
     if (obj && obj->cursed) {
         long lcount = (long) rn1(90, 10);
 

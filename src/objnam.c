@@ -1232,6 +1232,9 @@ add_erosion_words(struct obj *obj, char *prefix)
 
     rknown = (iflags.override_ID == 0) ? obj->rknown : TRUE;
 
+    if (obj->degraded_horn)
+        Strcat(prefix, "degraded ");
+    
     if (!is_damageable(obj) && !iscrys)
         return;
 
