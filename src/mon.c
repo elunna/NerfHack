@@ -608,7 +608,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
                1 killed = 1 in 2 chance
                2 killed = 1 in 3 chance, and so on.
          */
-        int killedu = DEAD_UNICORNS + 1;
+        int killedu = DEAD_UNICORNS;
         if (mtmp->mrevived && rn2(2)) {
             if (canseemon(mtmp))
                 pline_mon(mtmp,
