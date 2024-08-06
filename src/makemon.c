@@ -991,7 +991,7 @@ clone_mon(
     m2->mundetected = 0;
     m2->mtrapped = 0;
     m2->mcloned = 1;
-    m2->mrabid = 1;
+    m2->mrabid = mon->mrabid;
     m2->minvent = (struct obj *) 0; /* objects don't clone */
     m2->mleashed = 0;
     /* Max HP the same, but current HP halved for both.  The caller
