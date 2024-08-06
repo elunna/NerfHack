@@ -1214,9 +1214,9 @@ ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
                             (trop->trotyp == UNDEF_TYP) ? "random " : "",
                             OBJ_NAME(objects[obj->otyp]));
                 obj->otyp = inv_subs[i].subs_otyp;
-		obj->oclass = objects[obj->otyp].oc_class;
-                break;
-            }
+		    obj->oclass = objects[obj->otyp].oc_class;
+            break;
+        }
     }
     return obj->otyp;
 }

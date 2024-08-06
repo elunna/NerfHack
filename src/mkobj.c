@@ -980,6 +980,21 @@ mksobj_init(struct obj *otmp, boolean artif)
             assign_candy_wrapper(otmp);
             break;
         default:
+            /* Food is generally useless for a vampire, so let's 
+             * give them a little break. We'll let most regular 
+             * food rations turn into potions of blood instead. */
+            if (Role_if(PM_VAMPIRE) && rn2(10)) {
+                switch (otmp->otyp) {
+                case FOOD_RATION:
+                case CRAM_RATION:
+                case K_RATION:
+                case C_RATION:
+                case LEMBAS_WAFER:
+                    otmp->otyp = POT_BLOOD;
+                    otmp->oclass = objects[otmp->otyp].oc_class;
+                    otmp->owt = weight(otmp);
+                }
+            }
             break;
         }
         if (Is_pudding(otmp)) {
@@ -1109,7 +1124,7 @@ mksobj_init(struct obj *otmp, boolean artif)
 	if (otmp->otyp == SCR_ZAPPING) {
 	    int otyp;
 	    do {
-		otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
+		    otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
 	    } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
 	    /* Wishing is excluded, but it's possible we might want to enable it against
 	     * extremely rare odds. */
