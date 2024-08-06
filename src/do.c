@@ -2039,7 +2039,7 @@ temperature_change_msg(schar prev_temperature)
                       ? "and smoke are" : "is");
         else if (prev_temperature < 0) {
             if (Hallucination)
-                pline("Ahh! Summertime!.");
+                pline("Ahh! Summertime!");
             else
                 You("are out of the cold.");
         }
