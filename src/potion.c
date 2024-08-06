@@ -1579,70 +1579,72 @@ peffect_polymorph(struct obj *otmp)
 staticfn void
 peffect_blood(struct obj *otmp)
 {
-   
-      gp.potion_unkn++;
-        u.uconduct.unvegan++;
-        if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
-            violated_vegetarian();
-            if (otmp->cursed)
-                pline("Yecch!  This %s.", Hallucination
-                      ? "liquid could do with a good stir"
-                      : "blood has congealed");
-            else pline(Hallucination
-                      ? "The %s liquid stirs memories of home."
-                      : "The %s blood tastes delicious.",
-                      otmp->odiluted ? "watery" : "thick");
-            if (!otmp->cursed)
-                lesshungry((otmp->odiluted ? 1 : 2) *
-                           (otmp->otyp == POT_VAMPIRE_BLOOD ? 400 : 200));
-            if (otmp->otyp == POT_VAMPIRE_BLOOD && otmp->blessed) {
-                int num = newhp();
-                if (Upolyd) {
-                    u.mhmax += num;
-                    u.mh += num;
-                } else {
-                    u.uhpmax += num;
-                    u.uhp += num;
-                }
+    gp.potion_unkn++;
+    u.uconduct.unvegan++;
+
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        violated_vegetarian();
+        if (otmp->cursed)
+            pline("Yecch!  This %s.", Hallucination
+                    ? "liquid could do with a good stir"
+                    : "blood has congealed");
+        else pline(Hallucination
+                    ? "The %s liquid stirs memories of home."
+                    : "The %s blood tastes delicious.",
+                    otmp->odiluted ? "watery" : "thick");
+        if (!otmp->blessed)
+            lesshungry((otmp->odiluted ? 1 : 2) *
+                        (otmp->otyp == POT_VAMPIRE_BLOOD ? 400 : 200));
+        else
+            pline("This blood is tainted by holiness!");
+        if (otmp->otyp == POT_VAMPIRE_BLOOD && otmp->cursed) {
+            int num = newhp();
+            if (Upolyd) {
+                u.mhmax += num;
+                u.mh += num;
+            } else {
+                u.uhpmax += num;
+                u.uhp += num;
             }
-        } else if (otmp->otyp == POT_VAMPIRE_BLOOD) {
-            /* [CWC] fix conducts for potions of (vampire) blood -
-               doesn't use violated_vegetarian() to prevent
-               duplicated "you feel guilty" messages */
-            u.uconduct.unvegetarian++;
-            if (!Race_if(PM_VAMPIRE)) {
-                if (u.ualign.type == A_LAWFUL || Role_if(PM_MONK)) {
-                    You_feel("%sguilty about drinking such a vile liquid.",
-                             Role_if(PM_MONK) ? "especially " : "");
-                    u.ugangr++;
-                    adjalign(-15);
-                } else if (u.ualign.type == A_NEUTRAL) {
-                    You_feel("guilty.");
-                    adjalign(-3);
-                }
-                exercise(A_CON, FALSE);
-            }
-            if (Race_if(PM_VAMPIRE)) {
-                if (!Unchanging)
-                    rehumanize();
-                return;
-            } else if (!Unchanging) {
-                int successful_polymorph = FALSE;
-                if (otmp->blessed)
-                    successful_polymorph = polymon(PM_VAMPIRE_LEADER);
-                else if (otmp->cursed)
-                    successful_polymorph = polymon(PM_VAMPIRE_BAT);
-                else
-                    successful_polymorph = polymon(PM_VAMPIRE);
-                
-                if (successful_polymorph)
-                    u.mtimedone = 0;	/* "Permament" change */
-            }
-        } else {
-            violated_vegetarian();
-            pline("Ugh.  That was vile.");
-            make_vomiting(Vomiting+d(10,8), TRUE);
         }
+    } else if (otmp->otyp == POT_VAMPIRE_BLOOD) {
+        /* [CWC] fix conducts for potions of (vampire) blood -
+            doesn't use violated_vegetarian() to prevent
+            duplicated "you feel guilty" messages */
+        u.uconduct.unvegetarian++;
+        if (!Race_if(PM_VAMPIRE)) {
+            if (u.ualign.type == A_LAWFUL || Role_if(PM_MONK)) {
+                You_feel("%sguilty about drinking such a vile liquid.",
+                            Role_if(PM_MONK) ? "especially " : "");
+                u.ugangr++;
+                adjalign(-15);
+            } else if (u.ualign.type == A_NEUTRAL) {
+                You_feel("guilty.");
+                adjalign(-3);
+            }
+            exercise(A_CON, FALSE);
+        }
+        if (Race_if(PM_VAMPIRE)) {
+            if (!Unchanging)
+                rehumanize();
+            return;
+        } else if (!Unchanging) {
+            int successful_polymorph = FALSE;
+            if (otmp->blessed)
+                successful_polymorph = polymon(PM_VAMPIRE_LEADER);
+            else if (otmp->cursed)
+                successful_polymorph = polymon(PM_VAMPIRE_BAT);
+            else
+                successful_polymorph = polymon(PM_VAMPIRE);
+            
+            if (successful_polymorph)
+                u.mtimedone = 0;	/* "Permament" change */
+        }
+    } else {
+        violated_vegetarian();
+        pline("Ugh.  That was vile.");
+        make_vomiting(Vomiting + d(10, 8), TRUE);
+    }
 }
 
 
