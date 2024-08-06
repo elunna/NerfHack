@@ -6345,7 +6345,8 @@ hmonas(struct monst *mon)
                     || is_rider(mon->data)
                     || touch_petrifies(mon->data)
                     || mon->data == &mons[PM_MEDUSA]
-                    || mon->data == &mons[PM_GREEN_SLIME]))
+                    || mon->data == &mons[PM_GREEN_SLIME]
+                    || noncorporeal(mon->data)))
                 break;
             /*FALLTHRU*/
         case AT_KICK:
