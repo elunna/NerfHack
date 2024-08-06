@@ -5600,6 +5600,7 @@ zap_over_floor(
     struct trap *t;
     struct rm *lev = &levl[x][y];
     boolean see_it = cansee(x, y), yourzap;
+    boolean moncast = exploding_wand_typ == MON_CASTBALL;
     int rangemod = 0, damgtype = zaptype(type) % 10;
     boolean lavawall = (lev->typ == LAVAWALL);
 
@@ -5825,7 +5826,7 @@ zap_over_floor(
 
     /* set up zap text for possible door feedback; for exploding wand, we
        want "the blast" rather than "your blast" even if hero caused it */
-    yourzap = (type >= 0 && !exploding_wand_typ);
+    yourzap = (type >= 0 && !exploding_wand_typ && !moncast);
     zapverb = "blast"; /* breath attack or wand explosion */
     if (!exploding_wand_typ) {
         int ztype = zaptype(type); /* 0..29 for both hero and monsters */
@@ -5918,7 +5919,7 @@ zap_over_floor(
         }
         if (new_doormask >= 0) { /* door gets broken */
             if (*in_rooms(x, y, SHOPBASE)) {
-                if (type >= 0) {
+                if (type >= 0 && !moncast) {
                     add_damage(x, y, SHOP_DOOR_COST);
                     *shopdamage = TRUE;
                 } else /* caused by monster */
@@ -5941,7 +5942,7 @@ zap_over_floor(
     }
 
     if (OBJ_AT(x, y) && damgtype == ZT_FIRE)
-        if (burn_floor_objects(x, y, FALSE, type > 0) && couldsee(x, y)) {
+        if (burn_floor_objects(x, y, FALSE, (type > 0 && !moncast)) && couldsee(x, y)) {
             newsym(x, y);
             You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
         }
@@ -5953,7 +5954,7 @@ zap_over_floor(
         }
     
     if (!ignoremon && (mon = m_at(x, y)) != 0)
-        wakeup(mon, (type >= 0) ? TRUE : FALSE);
+        wakeup(mon, (type >= 0 && !moncast) ? TRUE : FALSE);
     return rangemod;
 }
 

@@ -55,6 +55,7 @@ staticfn boolean is_undirected_spell(unsigned int, int);
 staticfn boolean spell_would_be_useless(struct monst *, unsigned int, int);
 staticfn boolean is_entombed(coordxy, coordxy);
 staticfn boolean counterspell(struct monst *, struct obj *);
+staticfn boolean mcast_dist_ok(struct monst *);
 
 /* feedback when frustrated monster couldn't cast a spell */
 staticfn void
@@ -601,7 +602,6 @@ staticfn void
 cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
 {
     int ml = min(mtmp->m_lev, 50);
-    int orig_dmg = 0;
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
         impossible("cast directed wizard spell (%d) with dmg=0?", spellnum);
         return;
@@ -648,23 +648,17 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         break;
     }
     case MGC_ACID_BLAST:
-        orig_dmg = dmg = d((ml / 2) + 4, 6);
-        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+        dmg = d((ml / 2) + 4, 8);
+        if (mcast_dist_ok(mtmp)) {
             pline("%s douses you in a torrent of acid!", Monnam(mtmp));
+            explode(u.ux, u.uy, ZT_ACID, dmg,
+                MON_CASTBALL, EXPL_WET);
+
             if (Acid_resistance) {
                 shieldeff(u.ux, u.uy);
                 pline("The acid doesn't harm you.");
                 monstseesu(M_SEEN_ACID);
-                dmg = 0;
             }
-            if (rn2(u.twoweap ? 2 : 3))
-                acid_damage(uwep);
-            if (u.twoweap && rn2(2))
-                acid_damage(uswapwep);
-            if (rn2(4))
-                erode_armor(&gy.youmonst, ERODE_CORRODE);
-            if (!rn2(2))
-                (void) destroy_items(&gy.youmonst, AD_ACID, orig_dmg);
         } else {
             if (canseemon(mtmp)) {
                 pline("%s blasts the %s with %s and curses!",
@@ -673,8 +667,9 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             } else {
                 You_hear("some cursing!");
             }
-            dmg = 0;
         }
+        /* damage is handled by explode() */
+        dmg = 0;
         break;
     case MGC_CLONE_WIZ:
         if (mtmp->iswiz && svc.context.no_of_wizards == 1) {
@@ -807,23 +802,19 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
     case MGC_FIRE_BOLT:
         /* hotwire these to only go off if the critter can see you
          * to avoid bugs WRT the Eyes and detect monsters */
-        orig_dmg = dmg = d((ml / 5) + 1, 8);
-        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+        dmg = d((ml / 5) + 1, 8);
+         if (mcast_dist_ok(mtmp)) {
             pline("%s blasts you with a bolt of fire!", Monnam(mtmp));
+
+            explode(u.ux, u.uy, ZT_FIRE, dmg,
+                MON_CASTBALL, EXPL_FIERY);
+
             if (fully_resistant(FIRE_RES)) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_FIRE);
-                dmg = 0;
             } else {
-                dmg = resist_reduce(dmg, FIRE_RES);
                 monstunseesu(M_SEEN_FIRE);
             }
-            if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
-            burn_away_slime();
-            (void) burnarmor(&gy.youmonst);
-            (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
-            ignite_items(gi.invent);
         } else {
             if (canseemon(mtmp)) {
                 pline("%s blasts the %s with fire and curses!",
@@ -831,24 +822,23 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             } else {
                 You_hear("some cursing!");
             }
-            dmg = 0;
         }
+        dmg = 0; /* damage is handled by explode() */
         break;
     case MGC_ICE_BOLT:
-        orig_dmg = dmg = d((ml / 5) + 1, 8);
-        if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
+        dmg = d((ml / 5) + 1, 8);
+         if (mcast_dist_ok(mtmp)) {
             pline("%s blasts you with a bolt of cold!", Monnam(mtmp));
+
+            explode(u.ux, u.uy, ZT_COLD, dmg,
+                MON_CASTBALL, EXPL_FROSTY);
+
             if (fully_resistant(COLD_RES)) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_COLD);
-                dmg = 0;
             } else {
-                resist_reduce(dmg, COLD_RES);
                 monstunseesu(M_SEEN_COLD);
             }
-            if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
-            (void) destroy_items(&gy.youmonst, AD_COLD, orig_dmg);
         } else {
             if (canseemon(mtmp)) {
                 pline("%s blasts the %s with cold and curses!",
@@ -856,8 +846,8 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             } else {
                 You_hear("some cursing!");
             }
-            dmg = 0;
         }
+        dmg = 0; /* damage is handled by explode() */
         break;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
@@ -1459,6 +1449,19 @@ counterspell(struct monst *mtmp, struct obj *otmp) {
     } else {
         You_hear("some cursing!");
     }
+    return TRUE;
+}
+
+staticfn boolean
+mcast_dist_ok(struct monst *mtmp)
+{
+    if (!m_canseeu(mtmp))
+        return FALSE;
+    if (distu(mtmp->mx, mtmp->my) > 192)
+        return FALSE;
+    /* Sometimes allow them to cast at close range. */
+    if (distu(mtmp->mx, mtmp->my) <= 2 && rn2(5))
+        return FALSE;
     return TRUE;
 }
 

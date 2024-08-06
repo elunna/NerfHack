@@ -517,6 +517,9 @@ explode(
                     (void) burnarmor(mtmp);
                     ignite_items(mtmp->minvent);
                 }
+                if (adtyp == AD_ACID) {
+                    erode_armor(mtmp, ERODE_CORRODE);
+                }
 
                 if ((explmask[i][j] & EXPL_MON) != 0) {
                     /* damage from ring/wand explosion isn't itself
@@ -583,7 +586,7 @@ explode(
                             adtyp = AD_RBRE; /* no corpse */
                         monkilled(mtmp, "", (int) adtyp);
                     }
-                } else if (!svc.context.mon_moving) {
+                } else if (!svc.context.mon_moving && olet != MON_CASTBALL) {
                     /* all affected monsters, even if mdef is set */
                     setmangry(mtmp, TRUE);
                 }
@@ -617,6 +620,16 @@ explode(
         if (adtyp == AD_FIRE) {
             (void) burnarmor(&gy.youmonst);
             ignite_items(gi.invent);
+        }
+        if (adtyp == AD_ACID) {
+             if (rn2(u.twoweap ? 2 : 3))
+                acid_damage(uwep);
+            if (u.twoweap && rn2(2))
+                acid_damage(uswapwep);
+            if (rn2(4))
+                erode_armor(&gy.youmonst, ERODE_CORRODE);
+            if (!rn2(2))
+                (void) destroy_items(&gy.youmonst, AD_ACID, damu);
         }
         (void) destroy_items(&gy.youmonst, (int) adtyp, dam); /* not damu */
 
@@ -671,6 +684,9 @@ explode(
                     Snprintf(svk.killer.name, sizeof svk.killer.name,
                              "caught %sself in %s own %s", uhim(),
                              uhis(), str);
+                 } else if (olet == MON_CASTBALL) {
+                    svk.killer.format = KILLED_BY_AN;
+                    Strcpy(svk.killer.name, str);
                 } else if (adtyp == AD_FIRE && olet == DOOR_TRAP) {
                     svk.killer.format = KILLED_BY_AN;
                     Strcpy(svk.killer.name, str);
