@@ -1794,7 +1794,7 @@ trapeffect_grease_trap(
     
     if (mtmp == &gy.youmonst) {
         /* Make fumbling (like stepping in a puddle grease) */
-        if (!Levitation && !Flying) {
+        if (!Levitation && !Flying && !rn2(2)) {
  
             /* Usually fall off steed if riding */
             if (u.usteed) {
@@ -1827,6 +1827,7 @@ trapeffect_grease_trap(
 			old = (HFumbling & TIMEOUT);
 			HFumbling &= ~TIMEOUT;
 			HFumbling += old + rnd(3);
+            return Trap_Effect_Finished;
         }
 
         if (trap->once && trap->tseen && !rn2(15)) {
