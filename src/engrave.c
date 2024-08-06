@@ -1004,6 +1004,14 @@ doengrave(void)
         goto doengr_exit;
     }
 
+    if (u.ustuck && (de->otmp == &hands_obj 
+                    || de->otmp->oclass == WEAPON_CLASS
+                    || de->otmp->oclass == TOOL_CLASS)) { 
+        You("are too busy being held to engrave!");
+        de->ret = ECMD_CANCEL;
+        goto doengr_exit;
+    }
+
     if (de->otmp == &hands_obj) {
         if (levl[u.ux][u.uy].splatpm) {
             pline("It's too bloody to write here!");
