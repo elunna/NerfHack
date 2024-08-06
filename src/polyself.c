@@ -852,6 +852,10 @@ polymon(int mntmp)
             make_slimed(0L, (char *) 0);
         }
     }
+    if (Rabid && !can_become_rabid(gy.youmonst.data)) {
+        You("no longer feel rabid.");
+        make_rabid(0L, (char *) 0, 0, (char *) 0);
+    }
     check_strangling(FALSE); /* maybe stop strangling */
     if (nohands(gy.youmonst.data))
         make_glib(0);

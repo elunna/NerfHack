@@ -312,11 +312,11 @@ choke_dialogue(void)
 }
 
 static NEARDATA const char *const rabid_texts[] = {
-    "are having violent thoughts.",      /* 100 */
-    "can't stand the thought of water.", /* 60 */
-    "can't seem to think straight.",     /* 40 */
-    "feel like giving in to the rage.",  /* 20 */
-    "are starting to see red.",          /* 10 */
+    "are starting to have violent thoughts.", /* 100 */
+    "are starting to foam at the mouth.",     /* 60 */
+    "can't stand the thought of water.",      /* 40 */
+    "feel like biting everything you see.",   /* 20 */
+    "are starting to see red.",               /* 10 */
     ""
 };
 
@@ -337,15 +337,16 @@ rabid_dialogue(void)
         break;
     case 40:
         txt = rabid_texts[2];
-        make_confused((HConfusion & TIMEOUT) + 40L, FALSE);
-        if (gm.multi > 0)
-            nomul(0);
+
         break;
     case 20:
         txt = rabid_texts[3];
         break;
     case 10:
         txt = rabid_texts[4];
+        make_confused((HConfusion & TIMEOUT) + 20L, FALSE);
+        if (gm.multi > 0)
+            nomul(0);
         break;
     default:
         break;

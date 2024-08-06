@@ -714,8 +714,8 @@ dodrink(void)
         return ECMD_OK;
     }
 
-    if (Rabid && (Rabid & TIMEOUT) < 60) {
-        pline("Just the thought of drinking liquids makes you sick");
+    if (Rabid && (Rabid & TIMEOUT) < 40) {
+        pline("Just the thought of drinking liquids makes you sick.");
         return ECMD_OK;
     }
 
