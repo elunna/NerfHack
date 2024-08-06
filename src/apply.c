@@ -4171,6 +4171,7 @@ broken_wand_explode(struct obj *obj, int dmg, int expltype)
 {
     explode(u.ux, u.uy, -(obj->otyp), dmg, WAND_CLASS, expltype);
     makeknown(obj->otyp); /* explode describes the effect */
+    obj->in_use = FALSE;
     discard_broken_wand();
 }
 
