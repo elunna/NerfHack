@@ -5253,6 +5253,7 @@ breakrocks(void)
         You("bang %s%s on %s.", ((rubbee->quan > 1L) ? "one of " : ""),
             the(xname(rubbee)), the(xname(rubber)));
     }
+    wake_nearby(FALSE);
     pline_The("rock crumbles.");
 
     if (flint_made <= 0) {
