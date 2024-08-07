@@ -18,6 +18,7 @@ staticfn void mksink(struct mkroom *);
 staticfn void mktoilet(struct mkroom *);
 staticfn void mkaltar(struct mkroom *);
 staticfn void mkgrave(struct mkroom *);
+staticfn void mktree(struct mkroom *);
 staticfn void mkinvpos(coordxy, coordxy, int);
 staticfn int mkinvk_check_wall(coordxy x, coordxy y);
 staticfn void mk_knox_portal(coordxy, coordxy);
@@ -891,16 +892,17 @@ fill_ordinary_room(
             && !occupied(pos.x, pos.y))
             (void) maketrap(pos.x, pos.y, WEB);
     }
-    /* put traps and mimics inside */
-    x = 8 - (level_difficulty() / 6);
-    if (x <= 1)
-        x = 2;
-    while (!rn2(x) && (++trycnt < 1000))
-        mktrap(0, MKTRAP_NOFLAGS, croom, (coord *) 0);
-    if (!rn2(3) && somexyspace(croom, &pos))
-        (void) mkgold(0L, pos.x, pos.y);
     if (Is_rogue_level(&u.uz))
         goto skip_nonrogue;
+
+    /* maybe place some dungeon features inside
+     * This should go first because it's capable of creating non-ACCESSIBLE
+     * terrain types; we don't want to embed any monsters, objects, or traps
+     * in a tree.
+     * [3.7]: Most or all of the below functions use somexyspace, which
+     * attempts to find a ROOM, CORR or ICE square, all of which are
+     * ACCESSIBLE. */
+    
     if (!rn2(10))
         mkfount(croom);
     if (!rn2(60)) {
@@ -915,11 +917,22 @@ fill_ordinary_room(
         mkforge(croom);
     if (!rn2(120))
         mktoilet(croom);
+    if (!rn2(30 + (depth(&u.uz) * 5)))
+        mktree(croom);
     x = 80 - (depth(&u.uz) * 2);
     if (x < 2)
         x = 2;
     if (!rn2(x))
         mkgrave(croom);
+
+    /* put traps and mimics inside */
+    x = 8 - (level_difficulty() / 6);
+    if (x <= 1)
+        x = 2;
+    while (!rn2(x) && (++trycnt < 1000))
+        mktrap(0, MKTRAP_NOFLAGS, croom, (coord *) 0);
+    if (!rn2(3) && somexyspace(croom, &pos))
+        (void) mkgold(0L, pos.x, pos.y);
 
     /* put statues inside */
     if (!rn2(20) && somexyspace(croom, &pos))
@@ -2321,6 +2334,20 @@ mkgrave(struct mkroom *croom)
         (void) mksobj_at(SCR_WATER, m.x, m.y, TRUE, FALSE);
     }
     return;
+}
+
+staticfn void
+mktree(struct mkroom *croom)
+{
+    coord m;
+
+    if (croom->rtype != OROOM)
+        return;
+
+    if (!find_okay_roompos(croom, &m))
+        return;
+
+    set_levltyp(m.x, m.y, TREE);
 }
 
 /*
