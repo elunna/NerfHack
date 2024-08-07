@@ -1058,6 +1058,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     if (!noncorporeal(pm))
         APPENDC(unsolid(pm), "unsolid");
     APPENDC(acidic(pm), "acidic");
+    APPENDC(thick_skinned(pm), "thick-skinned");
     APPENDC(poisonous(pm), "poisonous");
     APPENDC(regenerates(pm), "regenerating");
     APPENDC(is_reviver(pm), "reviving");
