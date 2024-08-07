@@ -1426,6 +1426,9 @@ trapeffect_rocktrap(
             if (!harmless) {
                 losehp(Maybe_Half_Phys(dmg), "falling rock", KILLED_BY_AN);
                 exercise(A_STR, FALSE);
+
+                if (dmg > 6)
+                    make_stunned((HStun & TIMEOUT) + (long) d(dmg, 2), TRUE);
             }
         }
     } else {
