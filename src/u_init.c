@@ -95,6 +95,7 @@ static struct trobj Healer[] = {
     { SPE_EXTRA_HEALING, 0, SPBOOK_CLASS, 1, 1 },
     { SPE_STONE_TO_FLESH, 0, SPBOOK_CLASS, 1, 1 },
     { APPLE, 0, FOOD_CLASS, 5, 0 },
+    { EUCALYPTUS_LEAF, 0, FOOD_CLASS, 2, 0 },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Knight[] = {
