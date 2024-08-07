@@ -1952,7 +1952,19 @@ trapeffect_grease_trap(
         struct obj *target;
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
-       		
+       	
+        if (!(is_floater(mtmp->data) || is_flyer(mtmp->data)
+                    || (is_clinger(mtmp->data) && has_ceiling(&u.uz))) && !rn2(2)) { 
+            if (canseemon(mtmp))	
+                pline("%s slips in a puddle of grease and falls!", Monnam(mtmp)); 
+            thitm(0, mtmp, (struct obj *) 0, (rnd(4) + 1), FALSE);
+            if (!DEADMONSTER(mtmp))
+                paralyze_monst(mtmp, rnd(4) + 1);
+            else
+                return Trap_Killed_Mon;
+            return Trap_Effect_Finished;
+        }
+
         if (trap->once && trap->tseen && !rn2(15)) {
             if (in_sight && see_it)
                 pline("A broken hose pops out at %s!",
@@ -2002,17 +2014,6 @@ trapeffect_grease_trap(
             else if ((target = which_armor(mtmp, W_ARMU)) != 0)
                 target->greased = 1;
         }
- 
-	if (!(is_floater(mtmp->data) || is_flyer(mtmp->data)
-				|| (is_clinger(mtmp->data) && has_ceiling(&u.uz)))) { 
-	    if (canseemon(mtmp))	
-		pline("%s slips in a puddle of grease and falls!", Monnam(mtmp)); 
-	    thitm(0, mtmp, (struct obj *) 0, (rnd(4) + 1), FALSE);
-	    if (!DEADMONSTER(mtmp))
-		    paralyze_monst(mtmp, rnd(4) + 1);
-	    else
-		    return Trap_Killed_Mon; 
-	}
     }
     return Trap_Effect_Finished;
 }
