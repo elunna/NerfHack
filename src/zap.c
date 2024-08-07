@@ -437,6 +437,37 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                           d(3, otyp == SPE_EXTRA_HEALING ? 8 : 4), TELL);
         }
         break;
+    case SPE_CURE_SICKNESS:
+        if (mtmp->mrabid || mtmp->mwither) {
+            wake = FALSE;
+            if (canseemon(mtmp)) {
+                if (mtmp->mwither)
+                    pline("%s is no longer withering away.", Monnam(mtmp));
+                if (mtmp->mrabid)
+                    pline("%s is no longer frothing at the mouth.", Monnam(mtmp));
+            }
+            if (mtmp->mtame || mtmp->mpeaceful) {
+                if (Role_if(PM_HEALER)) {
+                    adjalign(1);
+                } else if (!mtmp->mtame) {
+                    adjalign(sgn(u.ualign.type));
+                }
+            }
+            mtmp->mrabid = mtmp->mwither = 0;
+        } else if (is_zombie(mtmp->data)) {
+            if (!DEADMONSTER(mtmp)) {
+                dmg = d(1, 8);
+                if (dbldam)
+                    dmg *= 2;
+                if (otyp == SPE_CURE_SICKNESS)
+                    dmg = spell_damage_bonus(dmg);
+                if (canseemon(mtmp))
+                    pline("%s shudders in agony!", Monnam(mtmp));
+            }
+        }
+        if (mtmp->mpeaceful && !is_zombie(mtmp->data))
+            helpful_gesture = TRUE;
+        break;
     case WAN_LIGHT: /* (broken wand) */
         if (flash_hits_mon(mtmp, otmp)) {
             learn_it = TRUE;
@@ -2427,7 +2458,8 @@ bhito(struct obj *obj, struct obj *otmp)
         case WAN_NOTHING:
         case SPE_HEALING:
         case SPE_EXTRA_HEALING:
-	case WAN_WONDER:
+        case SPE_CURE_SICKNESS:
+	    case WAN_WONDER:
             res = 0;
             break;
         case SPE_STONE_TO_FLESH:
@@ -3033,6 +3065,24 @@ zapyourself(struct obj *obj, boolean ordinary)
         healup(d(healing_skill, obj->otyp == SPE_EXTRA_HEALING ? 8 : 4), 0, FALSE,
                (obj->blessed || obj->otyp == SPE_EXTRA_HEALING));
         You_feel("%sbetter.", obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
+        break;
+     case SPE_CURE_SICKNESS:
+        if (is_zombie(gy.youmonst.data)) {
+            You("shudder in agony!");
+            damage = d(1, 8) * 2;
+            exercise(A_CON, FALSE);
+        } else {
+            if (Sick)
+                You("are no longer ill.");
+            if (Slimed)
+                make_slimed(0L, "The slime disappears!");
+            if (Withering) {
+                set_itimeout(&HWithering, (long) 0);
+                if (!Withering)
+                    You("are no longer withering away.");
+            }
+        }
+        healup(0, 0, TRUE, FALSE);
         break;
     case WAN_LIGHT: /* (broken wand) */
         /* assert( !ordinary ); */
