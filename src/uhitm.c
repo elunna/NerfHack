@@ -4454,12 +4454,13 @@ mhitm_ad_halu(
     struct monst *mdef, struct mhitm_data *mhm)
 {
     mhm->damage = 0;
+    boolean thirdeye = magr->mnum == PM_THIRD_EYE;
 
     /* Currently this code assumes this is an AT_EXPL attack (the only such
      * attack currently implemented). Make something break if some other
      * hallucination attack gets implemented, so that the below can be revised.
      */
-    if (mattk->aatyp != AT_EXPL) {
+    if (mattk->aatyp != AT_EXPL && mattk->aatyp != AT_GAZE) {
         impossible("Non-explosion AD_HALU attack; behavior is unimplemented");
         return;
     }
@@ -4470,7 +4471,8 @@ mhitm_ad_halu(
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (gv.vis && canseemon(mdef))
-            pline("%s is affected by your flash of light!", Monnam(mdef));
+            pline("%s is affected by your %s!", Monnam(mdef),
+                thirdeye ? "gaze" : "flash of light");
         mdef->mconf = 1;
         mdef->mstrategy &= ~STRAT_WAITFORU;
     } else if (mdef == &gy.youmonst) {

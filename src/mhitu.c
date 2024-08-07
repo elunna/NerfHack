@@ -2119,6 +2119,27 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
+    case AD_HALU:
+        if (mcanseeu && !mtmp->mspec_used && rn2(5)) {
+            if (cancelled) {
+                react = 2; /* "puzzled" */
+                already = (mtmp->mstun != 0);
+            } else if (wearing_eyes) {
+                if (!rn2(4))
+                    pline("%s protect you from %s strange gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                break;
+            } else {
+                int halu = d(2, 6);
+
+                mtmp->mspec_used = mtmp->mspec_used + (halu + rn2(6));
+                pline("%s stares through you!", Monnam(mtmp));
+                make_hallucinated(HHallucination + (long) halu,
+                                        TRUE, 0L);
+                stop_occupation();
+            }
+        }
+        break;
     case AD_BLND:
         if (canseemon(mtmp) && !resists_blnd(&gy.youmonst)
             && mdistu(mtmp) <= BOLT_LIM * BOLT_LIM) {

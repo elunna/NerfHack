@@ -927,8 +927,9 @@ peffect_water(struct obj *otmp)
     }
     gp.potion_unkn++;
     if (mon_hates_blessings(&gy.youmonst) /* undead or demon */
-        || u.ualign.type == A_CHAOTIC) {
-	int dice = Uevil_inherently ? 4 : 2;
+            || u.ualign.type == A_CHAOTIC) {
+	    int dice = Uevil_inherently ? 4 : 2;
+        
         if (otmp->blessed) {
             pline("This burns like %s!", hliquid("acid"));
             exercise(A_CON, FALSE);

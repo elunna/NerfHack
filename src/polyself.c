@@ -1662,6 +1662,7 @@ dogaze(void)
         && adtyp != AD_FIRE 
         && adtyp != AD_BLND 
         && adtyp != AD_TLPT
+        && adtyp != AD_HALU
         && adtyp != AD_STUN) {
         impossible("gaze attack %d?", adtyp);
         return ECMD_OK;
@@ -1713,7 +1714,7 @@ dogaze(void)
                 /* No reflection check for consistency with when a monster
                  * gazes at *you*--only medusa gaze gets reflected then.
                  */
-                if (adtyp == AD_CONF) {
+                if (adtyp == AD_CONF || adtyp == AD_HALU) {
                     if (!mtmp->mconf)
                         Your("gaze confuses %s!", mon_nam(mtmp));
                     else
