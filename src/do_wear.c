@@ -268,10 +268,15 @@ Boots_off(void)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
-
+    
     if (hates_item(&gy.youmonst, uarmf))
         You_feel("more comfortable now.");
     
+    if (uarmf && uarmf->oartifact == ART_MAYHEM) {
+        You_feel("the commotion recede.");
+        EConflict &= ~W_ARMF;
+    }
+
     svc.context.takeoff.mask &= ~W_ARMF;
     /* For levitation, float_down() returns if Levitation, so we
      * must do a setworn() _before_ the levitation case.
@@ -298,10 +303,7 @@ Boots_off(void)
         }
         break;
     case STOMPING_BOOTS:
-        if (uarmf && uarmf->oartifact == ART_MAYHEM) {
-            You_feel("the spiritual commotion recede.");
-            EConflict &= ~W_ARMF;
-        } else if (!Levitation && !Flying) {
+        if (!Levitation && !Flying) {
             Your("footsteps become considerably less violent.");
             makeknown(otyp);
         }
