@@ -980,21 +980,6 @@ mksobj_init(struct obj *otmp, boolean artif)
             assign_candy_wrapper(otmp);
             break;
         default:
-            /* Food is generally useless for a vampire, so let's 
-             * give them a little break. We'll let most regular 
-             * food rations turn into potions of blood instead. */
-            if (Role_if(PM_VAMPIRE) && rn2(10)) {
-                switch (otmp->otyp) {
-                case FOOD_RATION:
-                case CRAM_RATION:
-                case K_RATION:
-                case C_RATION:
-                case LEMBAS_WAFER:
-                    otmp->otyp = POT_BLOOD;
-                    otmp->oclass = objects[otmp->otyp].oc_class;
-                    otmp->owt = weight(otmp);
-                }
-            }
             break;
         }
         if (Is_pudding(otmp)) {
@@ -1240,6 +1225,24 @@ mksobj(int otyp, boolean init, boolean artif)
 {
     struct obj *otmp;
     char let = objects[otyp].oc_class;
+
+    /* Food is generally useless for a vampire, so let's 
+     * give them a little break. We'll let most regular 
+     * food rations turn into potions of blood instead. */
+    if (Role_if(PM_VAMPIRE) && rn2(10)) {
+        switch (otyp) {
+        case FOOD_RATION:
+        case CRAM_RATION:
+        case TRIPE_RATION:
+        case K_RATION:
+        case C_RATION:
+            otyp = rn2(100) ? POT_BLOOD : POT_VAMPIRE_BLOOD;
+            break;
+        case LEMBAS_WAFER:
+            otyp = POT_VAMPIRE_BLOOD;
+            break;
+        }
+    }
 
     otmp = newobj();
     *otmp = cg.zeroobj;
