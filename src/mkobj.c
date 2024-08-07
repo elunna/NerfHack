@@ -1229,17 +1229,16 @@ mksobj(int otyp, boolean init, boolean artif)
     /* Food is generally useless for a vampire, so let's 
      * give them a little break. We'll let most regular 
      * food rations turn into potions of blood instead. */
-    if (Role_if(PM_VAMPIRE) && rn2(10)) {
+    if (Race_if(PM_VAMPIRE) && rn2(10)) {
         switch (otyp) {
         case FOOD_RATION:
         case CRAM_RATION:
         case TRIPE_RATION:
         case K_RATION:
         case C_RATION:
-            otyp = rn2(100) ? POT_BLOOD : POT_VAMPIRE_BLOOD;
-            break;
         case LEMBAS_WAFER:
-            otyp = POT_VAMPIRE_BLOOD;
+            otyp = rn2(100) ? POT_BLOOD : POT_VAMPIRE_BLOOD;
+            let = objects[otyp].oc_class;
             break;
         }
     }
