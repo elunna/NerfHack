@@ -7647,7 +7647,7 @@ sink_into_lava(void)
 void
 sokoban_guilt(void)
 {
-    if (Sokoban) {
+    if (Sokoban && svc.context.achieveo.soko_prize_oid) {
         u.uconduct.sokocheat++;
         change_luck(-1);
         /*
