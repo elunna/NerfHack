@@ -7287,6 +7287,9 @@ hates_item(struct monst *mtmp, struct obj *otmp)
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN)) 
                     : is_human(mtmp->data))
         return (is_gnomish_obj(otmp));
+    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_VAMPIRE)) 
+                : is_vampire(mtmp->data))
+        return (is_gnomish_obj(otmp));
     return FALSE;
 }
 
