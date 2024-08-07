@@ -103,13 +103,12 @@ des.replace_terrain({ region={3,1, 75,06}, fromterrain=".", toterrain="I", chanc
 -- Rewards
 
 local pt = selection.rndcoord(place);
-if percent(50) then
-   des.object({ id="bag of holding", coord=pt,
-		buc="not-cursed", achievement=1 });
-else
-   des.object({ id="amulet of reflection", coord=pt,
-		buc="not-cursed", achievement=1 });
-end
+local prizes = { { id = "bag of holding" },
+                 { id = "amulet of reflection"},
+                 { id = "cloak of magic resistance"},
+                 { id = "magic marker"} }
+shuffle(prizes)
+des.object({ id = prizes[1].id, coord=pt, buc="not-cursed", achievement=1 });
 des.engraving({ coord = pt, type = "burn", text = "Elbereth" });
 des.object({ id = "scroll of scare monster", coord = pt, buc = "cursed" });
 
