@@ -67,6 +67,13 @@ precheck(struct monst *mon, struct obj *obj)
         static const char *const empty = "The potion turns out to be empty.";
         struct monst *mtmp;
 
+        /* Rabid monsters can't stand the thought of drinking liquids.
+         * Should there be a message?
+         * Should they throw the potion on the ground in disgust? */
+        if (mon->mrabid) {
+            return 0;
+        }
+        
         if (objdescr_is(obj, "milky")) {
             if (!(svm.mvitals[PM_GHOST].mvflags & G_GONE)
                 && !rn2(POTION_OCCUPANT_CHANCE(svm.mvitals[PM_GHOST].born))) {
