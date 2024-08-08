@@ -847,10 +847,11 @@ gcrownu(void)
 
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
-    /* Player gets up to 3 intrinsics granted. If they didn't receive ANY, they get a wish! */
+    /* Player gets up to 3 intrinsics granted.
+     * If they didn't receive ANY, they get a wish! */
 
     for (int i = 0; i < 3; i++) {
-        switch (rnd(8)) {
+        switch (rnd(9)) {
         case 1:
             if (!(HDisint_resistance & FROMOUTSIDE || fully_resistant(DISINT_RES))) {
                 You_feel(Hallucination ? "totally together, man." : "very firm.");
@@ -912,6 +913,13 @@ gcrownu(void)
                                     ? "unusually limber"
                                     : "less concerned about becoming petrified");
                 HStone_resistance |= FROMOUTSIDE;
+                given++;
+            }
+            break;
+        case 10:
+            if (!(HSick_resistance & FROMOUTSIDE)) {
+                You_feel(Hallucination ? "the jab, man." : "immune.");
+                HSick_resistance |= FROMOUTSIDE;
                 given++;
             }
             break;
