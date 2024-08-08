@@ -418,6 +418,19 @@ m_cure_self(struct monst *mtmp, int dmg)
             mtmp->mhp = mtmp->mhpmax;
         dmg = 0;
     }
+    /* Cure other ailments that players spells are capable of. */
+    if (mtmp->mblinded)
+        mcureblindness(mtmp, TRUE);
+    if (mtmp->mdiseased || mtmp->mrabid) {
+        mtmp->mdiseased = mtmp->mrabid = 0;
+        if (canseemon(mtmp))
+            pline("%s is no longer ill.", Monnam(mtmp));
+    }
+    if (mtmp->mwither) {
+        mtmp->mwither = 0;
+        pline("%s is no longer withering away.", Monnam(mtmp));
+    }
+
     return dmg;
 }
 
@@ -1309,7 +1322,8 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
         if (mtmp->mpeaceful && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* healing when already healed */
-        if (mtmp->mhp == mtmp->mhpmax && spellnum == MGC_CURE_SELF)
+        if (spellnum == MGC_CURE_SELF && (mtmp->mhp == mtmp->mhpmax 
+            && !mtmp->mdiseased && !mtmp->mwither && !mtmp->mblinded))
             return TRUE;
         /* don't summon monsters if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
