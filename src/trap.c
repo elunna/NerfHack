@@ -6195,7 +6195,7 @@ disarm_grease_trap(struct trap *ttmp) /* Erik Lunna */
     if (fails < 2)
         return fails;
     You("disarm the grease trap!");
-    cnv_trap_obj(RUBBER_HOSE, 1, ttmp, FALSE);
+    cnv_trap_obj(!rn2(10) ? CAN_OF_GREASE : RUBBER_HOSE, 1, ttmp, FALSE);
     return 1;
 }
 
