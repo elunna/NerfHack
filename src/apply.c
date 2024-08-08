@@ -51,7 +51,8 @@ staticfn boolean is_valid_jump_pos(coordxy, coordxy, int, boolean);
 staticfn boolean get_valid_jump_position(coordxy, coordxy);
 staticfn boolean get_valid_polearm_position(coordxy, coordxy);
 staticfn boolean find_poleable_mon(coord *, int, int);
-staticfn void use_deck(struct obj *);
+staticfn void playing_card_deck(struct obj *);
+staticfn void deck_of_fate(struct obj *);
 staticfn void reset_rocks(void);
 staticfn int breakrocks(void);
 
@@ -4686,8 +4687,10 @@ doapply(void)
         return use_tin_opener(obj); /* Can break */
         break;
     case PLAYING_CARD_DECK:
+        playing_card_deck(obj);
+        break;
     case DECK_OF_FATE:
-        use_deck(obj);
+        deck_of_fate(obj);
         return 1; /* Deck of fate might get used up */
     case FIGURINE:
         res = use_figurine(&obj);
@@ -4909,32 +4912,39 @@ check_mon_jump(struct monst *mtmp, int x, int y)
     return TRUE;
 }
 
-
 static const int GOOD_CARDS = 12;
 static NEARDATA const char *tarotnames[] = {
-        "the Tower", "the Wheel of Fortune", "the Devil", "the Fool",
-        "Death", "Judgment", "the Emperor", "the Hermit",
-        "the Hanged Man", "Justice", "Temperance", "the Lovers",
-        "the Magician", "Strength", "the High Priestess", "the Hierophant",
-        "the Empress", "the Chariot", "the Sun", "the Moon",
-        "the Star", "the World" };
-static NEARDATA const char *cardnames[] = {
-        "ace", "two", "three", "four", "five",
-        "six", "seven", "eight", "nine", "ten",
-        "jack", "queen", "king" };
-static NEARDATA const char *cardsuits[] = {
-        "diamonds", "hearts", "clubs", "spades" };
+    "the Tower",            /* 1 - bad */
+    "the Wheel of Fortune", /* 2 - meh, +3-5 cards */
+    "the Devil",            /* 3 - bad, stop */
+    "the Fool",             /* 4 - bad */
+    "Death",                /* 5 - bad, stop */
+    "Judgment",             /* 6 - bad */
+    "the Emperor",          /* 7 - bad */
+    "the Hermit",           /* 8 - meh? */
+    "the Hanged Man",       /* 9 - meh? */
+    "Justice",              /* 10 - bad */
+    "Temperance",           /* 11 - bad */
+    "the Lovers",           /* 12 - good */
+    "the Magician",         /* 13 - good */
+    "Strength",             /* 14 - good */
+    "the High Priestess",   /* 15 - good */
+    "the Hierophant",       /* 16 - good */
+    "the Empress",          /* 17 - good */
+    "the Chariot",          /* 18 - good */
+    "the Sun",              /* 19 - good */
+    "the Moon",             /* 20 - good */
+    "the Star",             /* 21 - good */
+    "the World"             /* 22 - good, stop */
+};          
 
-void
-use_deck(struct obj *obj)
+staticfn void
+deck_of_fate(struct obj *obj)
 {
-    char buf[BUFSZ];
     long draws;
-    int index, pm, n;
-    boolean goodcards = FALSE;
-    boolean badcards = FALSE;
+    int index, pm, n, terr;
+    boolean goodcards = FALSE, badcards = FALSE;
     struct monst *mtmp;
-    int terr;
 
     if (obj->blessed || Role_if(PM_CARTOMANCER)) {
         goodcards = TRUE;
@@ -4942,49 +4952,10 @@ use_deck(struct obj *obj)
         badcards = TRUE;
     }
 
-    if (obj->otyp == PLAYING_CARD_DECK) {
-        int card_luck;
-        /* messages are reversed for cursed decks */
-        card_luck = badcards ? 13 - Luck : Luck;
-
-        You("draw a hand of five cards.");
-        if (Blind)
-            pline("No telling how good it is...");
-        else if (card_luck <= 0)
-            pline("It's not very good...");
-        else if (card_luck < 5)
-            pline("Two pair!");
-        else if (card_luck < 13)
-            pline("Full house!");
-        else if (card_luck >= 13)
-            pline("Wow, a straight flush!");
-
-        /*
-         * If blessed, indicate the luck value directly.  The high card or
-         * kicker (depending on the hand) corresponds to the current value of
-         * Luck, with a one meaning Luck == 1 and a king meaning Luck == 13.
-         */
-        if (goodcards && Luck > 0 && !Blind)
-            pline_The("%s is the %s of %s.", Luck < 5 ? "kicker" : "high card",
-                      cardnames[Luck-1], cardsuits[rn2(4)]);
-
-        return;
-    }
-
-    /* deck of fate */
-    makeknown(obj->otyp);
-    getlin("How many cards will you draw?", buf);
-
-    if (sscanf(buf, "%ld", &draws) != 1)
-        draws = 0L;
-    if (draws > 5)
-        draws = 5;
-    if (strlen(buf) <= 0L || draws <= 0L) {
-        You("decide not to try your luck.");
-        goto useup_deck;
-    }
-
+    draws = 5; /* Go big or go home... */
     You("begin to draw from the deck of fate...");
+    makeknown(obj->otyp);
+
     for ( ; draws > 0; draws--) {
         index = rnd(22);
 
@@ -4998,7 +4969,8 @@ use_deck(struct obj *obj)
             You("draw a card.");
         else {
             /* Good cards end with `!', bad cards end with `...' */
-            You("draw %s%s", tarotnames[index-1], index < GOOD_CARDS ? "..." : "!");
+            You("draw %s%s", tarotnames[index - 1],
+                 index < GOOD_CARDS ? "..." : "!");
         }
 
         switch (index) {
@@ -5007,25 +4979,27 @@ use_deck(struct obj *obj)
             explode(u.ux, u.uy, 11, rnd(30), TOOL_CLASS, EXPL_FIERY);
             break;
         case 2: /* The Wheel of Fortune */
-            pline("Two more cards flip out of the deck.");
             draws += 2;
+            if (Role_if(PM_CARTOMANCER))
+                draws += rnd(3);
+            pline("%ld more cards flip out of the deck.", draws);
             break;
         case 3: /* The Devil */
+            draws = 0;
             if (!Blind)
                 pline("Moloch's visage on the card grins at you.");
-            if (Luck < 0 && (pm = dlord(A_NONE)) != NON_PM) {
+            if (Luck <= 0 && (pm = dlord(A_NONE)) != NON_PM) {
                 mtmp = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS);
             } else {
                 pm = ndemon(u.ualign.type);
                 mtmp = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS);
             }
 
-            if (!Blind && mtmp)
+            if (!Blind && mtmp) {
                 pline("%s appears from a cloud of noxious smoke!", Monnam(mtmp));
-            else
+                newsym(mtmp->mx, mtmp->my);
+            } else
                 pline("Something stinks!");
-            newsym(mtmp->mx, mtmp->my);
-            draws = 0;
             break;
         case 4: /* The Fool */
             (void) adjattrib(A_INT, -rnd(3), FALSE);
@@ -5038,7 +5012,7 @@ use_deck(struct obj *obj)
             else
                 pline("A bony hand gently stops you from drawing further.");
 
-            if (/*Death_resistance || */resists_death(gy.youmonst.data)) {
+            if (resists_death(gy.youmonst.data)) {
                 shieldeff(u.ux, u.uy);
                 pline(nonliving(gy.youmonst.data)
                         ? "You seem no more dead than before."
@@ -5106,7 +5080,6 @@ use_deck(struct obj *obj)
                 if (Punished)
                     unpunish();
                 else { /* Divine protection */
-
                     if (!(HProtection & INTRINSIC)) {
                         HProtection |= FROMOUTSIDE;
                         if (!u.ublessed)
@@ -5120,7 +5093,9 @@ use_deck(struct obj *obj)
             destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
             destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
             break;
-            /* cards before this point are bad, after this are good */
+        
+        /* cards before this point are mostly bad, after this are mostly good */
+        
         case 12: /* The Lovers */
             for (n = 0; n < 2; n++) {
                 mtmp = makemon(&mons[PM_AMOROUS_DEMON], u.ux, u.uy, NO_MM_FLAGS);
@@ -5175,8 +5150,7 @@ use_deck(struct obj *obj)
             level_tele();
             break;
         case 19: /* The Sun */
-            You("are bathed in warmth.");
-            /* as praying */
+            You("are bathed in warmth."); /* as praying */
             if (!(HProtection & INTRINSIC)) {
                 HProtection |= FROMOUTSIDE;
                 if (!u.ublessed)
@@ -5195,16 +5169,59 @@ use_deck(struct obj *obj)
             identify_pack(0, FALSE);
             break;
         case 22: /* The World */
+            draws = 0;
             makewish();
             break;
         default:
-            impossible("use_deck: drew out-of-bounds tarot card");
+            impossible("deck_of_fate: drew out-of-bounds tarot card");
         }
     }
 
-    useup_deck:
-    pline_The("pack of cards vanishes in a puff of smoke.");
+    if (!Blind)
+        pline_The("pack of cards vanishes in a puff of smoke.");
+    else
+        You_hear("a poof.");
     useup(obj);
+    return;
+}
+
+static NEARDATA const char *cardnames[] = {
+        "ace", "two", "three", "four", "five",
+        "six", "seven", "eight", "nine", "ten",
+        "jack", "queen", "king" };
+static NEARDATA const char *cardsuits[] = {
+        "diamonds", "hearts", "clubs", "spades" };
+
+staticfn void
+playing_card_deck(struct obj *obj)
+{
+    int card_luck;
+    boolean goodcards = obj->blessed || Role_if(PM_CARTOMANCER);
+    /* messages are reversed for cursed decks */
+    card_luck = obj->cursed ? 13 - Luck : Luck;
+
+    You("draw a hand of five cards.");
+    if (Blind) {
+        pline("No telling how good it is...");
+        return;
+    } else if (card_luck <= 0)
+        pline("It's not very good...");
+    else if (card_luck < 5)
+        pline("Two pair!");
+    else if (card_luck < 13)
+        pline("Full house!");
+    else if (card_luck >= 13)
+        pline("Wow, a straight flush!");
+
+    /*
+        * If blessed, indicate the luck value directly.  The high card or
+        * kicker (depending on the hand) corresponds to the current value of
+        * Luck, with a one meaning Luck == 1 and a king meaning Luck == 13.
+        */
+    if (goodcards&& Luck > 0)
+        pline_The("%s is the %s of %s.", Luck < 5 ? "kicker" : "high card",
+                    cardnames[Luck-1], cardsuits[rn2(4)]);
+
     return;
 }
 
