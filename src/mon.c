@@ -6538,8 +6538,6 @@ unpoly_monster(struct monst *mtmp)
 
     if (!is_were(mtmp->data) && !is_changeling(mtmp))
         return;
-
-    mtmp->mhp = mtmp->mhpmax;
     
     if (visible)
         pline("But wait...");
