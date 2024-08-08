@@ -1931,6 +1931,9 @@ trapeffect_grease_trap(
 
             /* Grease a random item */
             for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+                /* Any other objects that should never be greased? */
+                if (otmp->oclass == COIN_CLASS)
+                    continue;
                 if (!rn2(7)) {
                     grease_hits(otmp);
                     if (!is_worn(otmp)) {
