@@ -308,6 +308,7 @@ mquaffmsg(struct monst *mtmp, struct obj *otmp)
 #define MUSE_POT_FULL_HEALING 18
 #define MUSE_LIZARD_CORPSE 19
 #define MUSE_WAN_UNDEAD_TURNING 20 /* also an offensive item */
+#define MUSE_EUCALYPTUS_LEAF 21
 
 /*
 #define MUSE_INNATE_TPT 9999
@@ -336,6 +337,13 @@ m_use_healing(struct monst *mtmp)
         gm.m.defensive = obj;
         gm.m.has_defense = MUSE_POT_HEALING;
         return TRUE;
+    }
+    if (mtmp->mrabid || mtmp->mdiseased) {
+        if ((obj = m_carrying(mtmp, EUCALYPTUS_LEAF)) != 0) {
+            gm.m.defensive = obj;
+            gm.m.has_defense = MUSE_EUCALYPTUS_LEAF;
+            return TRUE;
+        }
     }
     return FALSE;
 }
@@ -456,7 +464,8 @@ find_defensive(struct monst *mtmp, boolean tryescape)
      * is_unicorn() doesn't include it; the class differs and it has
      * no interest in gems.
      */
-    if (mtmp->mconf || mtmp->mstun || mtmp->mrabid ||!mtmp->mcansee) {
+    if (mtmp->mconf || mtmp->mstun || mtmp->mrabid 
+                    || mtmp->mdiseased || !mtmp->mcansee) {
         obj = 0;
         if (!nohands(mtmp->data)) {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
@@ -467,6 +476,35 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             gm.m.defensive = obj;
             gm.m.has_defense = MUSE_UNICORN_HORN;
             return TRUE;
+        }
+    }
+
+    if (mtmp->mrabid || mtmp->mdiseased) {
+        for (obj = mtmp->minvent; obj; obj = obj->nobj) {
+            if (!nohands(mtmp->data)) {
+                if (obj && obj->otyp == POT_HEALING && !obj->cursed)
+                    break;
+                if (obj && obj->otyp == POT_FULL_HEALING) {
+                    gm.m.defensive = obj;
+                    gm.m.has_defense = MUSE_POT_FULL_HEALING;
+                    return TRUE;
+                } else if (obj && obj->otyp == POT_EXTRA_HEALING
+                           && !obj->cursed) {
+                    gm.m.defensive = obj;
+                    gm.m.has_defense = MUSE_POT_EXTRA_HEALING;
+                    return TRUE;
+                } else if (obj && obj->otyp == POT_HEALING
+                           && obj->blessed) {
+                    gm.m.defensive = obj;
+                    gm.m.has_defense = MUSE_POT_HEALING;
+                    return TRUE;
+                }
+            }
+            if (obj && obj->otyp == EUCALYPTUS_LEAF) {
+                gm.m.defensive = obj;
+                gm.m.has_defense = MUSE_EUCALYPTUS_LEAF;
+                return TRUE;
+            }
         }
     }
 
@@ -499,8 +537,8 @@ find_defensive(struct monst *mtmp, boolean tryescape)
      * These would be hard to combine because of the control flow.
      * Pestilence won't use healing even when blind.
      */
-    if (!mtmp->mcansee && !nohands(mtmp->data)
-        && mtmp->data != &mons[PM_PESTILENCE]) {
+    if ((!mtmp->mcansee || mtmp->mrabid || mtmp->mdiseased)
+            && mtmp->data != &mons[PM_PESTILENCE]) {
         if (m_use_healing(mtmp))
             return TRUE;
     }
@@ -722,6 +760,12 @@ find_defensive(struct monst *mtmp, boolean tryescape)
                 gm.m.has_defense = MUSE_WAN_CREATE_MONSTER;
             }
         }
+        nomore(MUSE_EUCALYPTUS_LEAF);
+        if ((mtmp->mrabid || mtmp->mdiseased)
+            && obj->otyp == EUCALYPTUS_LEAF) {
+            gm.m.defensive = obj;
+            gm.m.has_defense = MUSE_EUCALYPTUS_LEAF;
+        }
         nomore(MUSE_SCR_CREATE_MONSTER);
         if (obj->otyp == SCR_CREATE_MONSTER) {
             gm.m.defensive = obj;
@@ -810,6 +854,10 @@ use_defensive(struct monst *mtmp)
         }
         if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
+        } else if (mtmp->mrabid || mtmp->mdiseased) {
+            mtmp->mrabid = mtmp->mdiseased = 0;
+            if (vismon)
+                pline("%s is no longer ill.", Monnam(mtmp));
         } else if (mtmp->mconf || mtmp->mstun) {
             mtmp->mconf = mtmp->mstun = 0;
             if (vismon)
@@ -1136,8 +1184,13 @@ use_defensive(struct monst *mtmp)
         mtmp->mhp += i;
         if (mtmp->mhp > mtmp->mhpmax)
             mtmp->mhp = ++mtmp->mhpmax;
-        if (!otmp->cursed && !mtmp->mcansee)
+        if (!otmp->cursed && !mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
+        } else if (otmp->blessed && (mtmp->mrabid || mtmp->mdiseased)) {
+            if (vismon)
+                pline("%s is no longer ill.", Monnam(mtmp));
+            mtmp->mrabid = mtmp->mdiseased = 0;
+        }
         if (vismon)
             pline("%s looks better.", Monnam(mtmp));
         if (oseen)
@@ -1150,8 +1203,13 @@ use_defensive(struct monst *mtmp)
         mtmp->mhp += i;
         if (mtmp->mhp > mtmp->mhpmax)
             mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 5 : 2));
-        if (!mtmp->mcansee)
+        if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
+        } else if (!otmp->cursed && (mtmp->mrabid || mtmp->mdiseased)) {
+            if (vismon)
+                pline("%s is no longer ill.", Monnam(mtmp));
+            mtmp->mrabid = mtmp->mdiseased = 0;
+        }
         if (vismon)
             pline("%s looks much better.", Monnam(mtmp));
         if (oseen)
@@ -1163,8 +1221,13 @@ use_defensive(struct monst *mtmp)
         if (otmp->otyp == POT_SICKNESS)
             unbless(otmp); /* Pestilence */
         mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 8 : 4));
-        if (!mtmp->mcansee && otmp->otyp != POT_SICKNESS)
+        if (!mtmp->mcansee && otmp->otyp != POT_SICKNESS) {
             mcureblindness(mtmp, vismon);
+        } else if (mtmp->mrabid || mtmp->mdiseased) {
+            if (vismon)
+                pline("%s is no longer ill.", Monnam(mtmp));
+            mtmp->mrabid = mtmp->mdiseased = 0;
+        }
         if (vismon)
             pline("%s looks completely healed.", Monnam(mtmp));
         if (oseen)
@@ -1172,6 +1235,10 @@ use_defensive(struct monst *mtmp)
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_LIZARD_CORPSE:
+        /* not actually called for its unstoning effect */
+        mon_consume_unstone(mtmp, otmp, FALSE, FALSE);
+        return 2;
+    case MUSE_EUCALYPTUS_LEAF:
         /* not actually called for its unstoning effect */
         mon_consume_unstone(mtmp, otmp, FALSE, FALSE);
         return 2;
@@ -3097,7 +3164,8 @@ mon_consume_unstone(
             food = obj->otyp == CORPSE || tinned,
             acid = obj->otyp == POT_ACID
                    || (food && acidic(&mons[obj->corpsenm])),
-            lizard = food && obj->corpsenm == PM_LIZARD;
+            lizard = food && obj->corpsenm == PM_LIZARD,
+            leaf = obj->otyp == EUCALYPTUS_LEAF;
     int nutrit = food ? dog_nutrition(mon, obj) : 0; /* also sets meating */
 
     /* give a "<mon> is slowing down" message and also remove
@@ -3150,6 +3218,12 @@ mon_consume_unstone(
         mon->mstun = 0;
         if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s seems steadier now.", Monnam(mon));
+    }
+    if (leaf && (mon->mrabid || mon->mdiseased)) {
+        mon->mrabid = 0;
+        mon->mdiseased = 0;
+        if (vis)
+            pline("%s is no longer ill.", Monnam(mon));
     }
     if (mon->mtame && !mon->isminion && nutrit > 0) {
         struct edog *edog = EDOG(mon);

@@ -790,7 +790,10 @@ montraits(
         mtmp2->mblinded = 0;
         mtmp2->mstun = 0;
         mtmp2->mconf = 0;
-	mtmp2->msummoned = 0;
+	    mtmp2->msummoned = 0;
+        mtmp2->mwither = 0;
+        mtmp2->mdiseased = 0;
+        mtmp2->mrabid = 0;
         /* when traits are for a shopkeeper, dummy monster 'mtmp' won't
            have necessary eshk data for replmon() -> replshk() */
         if (mtmp2->isshk) {

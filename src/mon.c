@@ -1231,6 +1231,23 @@ m_calcdistress(struct monst *mtmp)
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
     
+    /* diseased monsters can die as well... */
+    if (mtmp->mdiseased && mtmp->mdiseasetime <= 1) {
+        if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
+            mtmp->mdiseased = 0;
+        } else {
+            if (canseemon(mtmp))
+                pline("%s dies from %s infection.",
+                        Monnam(mtmp), noit_mhis(mtmp));
+            mtmp->mdiseased = 0;
+            mtmp->mhp = -1;
+            if (mtmp->mdiseabyu)
+                xkilled(mtmp, XKILL_GIVEMSG);
+            else
+                mondied(mtmp);
+        }
+    }
+
     /* Berserkers go wild if their HP is getting low */
     if (is_berserker(mtmp->data) && (mtmp->mhp < (mtmp->mhpmax / 2)) 
         && !mtmp->mberserk && !rn2(5)) {
@@ -1519,7 +1536,7 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
         unpunish(); /* frees uchain */
     } else {
         boolean deadmimic, slimer;
-        int poly, grow, heal, eyes, mstone, vis = canseemon(mtmp);
+        int poly, grow, heal, eyes, mstone, unsick, vis = canseemon(mtmp);
         int corpsenm = (otmp->otyp == CORPSE ? otmp->corpsenm : NON_PM);
 
         deadmimic = (otmp->otyp == CORPSE && (corpsenm == PM_SMALL_MIMIC
@@ -1531,6 +1548,8 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
         heal = mhealup(otmp);
         eyes = (otmp->otyp == CARROT);
         mstone = mstoning(otmp);
+        unsick = (otmp->otyp == EUCALYPTUS_LEAF
+              && (mtmp->mrabid || mtmp->mdiseased));
         delobj(otmp); /* munch */
         if (poly || slimer) {
             struct permonst *ptr = slimer ? &mons[PM_GREEN_SLIME] : 0;
@@ -1562,6 +1581,11 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
             explode(mtmp->mx, mtmp->my, -11, d(3, 6), 0, EXPL_FIERY);
         if (corpsenm != NON_PM)
             mon_givit(mtmp, &mons[corpsenm]);
+        if (unsick) {
+            mtmp->mrabid = 0, mtmp->mdiseased = 0;
+            if (vis)
+                pline("%s is no longer ill.", Monnam(mtmp));
+        }
     }
 }
 

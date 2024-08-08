@@ -2099,6 +2099,11 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             }
             if (cureblind)
                 mcureblindness(mon, canseemon(mon));
+            if (mon->mrabid || mon->mdiseased) {
+                    if (canseemon(mon))
+                        pline("%s is no longer ill.", Monnam(mon));
+                    mon->mrabid = mon->mdiseased = 0;
+            }
             break;
         case POT_SICKNESS:
             if (mon->data == &mons[PM_PESTILENCE])

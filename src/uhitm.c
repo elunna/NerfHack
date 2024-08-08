@@ -5293,25 +5293,44 @@ mhitm_ad_dise(
     struct monst *mdef, struct mhitm_data *mhm)
 {
     struct permonst *pa = magr->data, *pd = mdef->data;
-
+    boolean unaffected = resists_sick(mdef->data) || defended(mdef, AD_DISE);
+    
     if (magr == &gy.youmonst) {
-        /* uhitm; hero can't polymorph into anything with this attack so
-           this won't happen; if it could, it would be the same as the
-           mhitm case except for messaging */
-        goto mhitm_dise;
+        if (!unaffected) {
+            if (mdef->mdiseasetime)
+                mdef->mdiseasetime -= rnd(3);
+            else
+                mdef->mdiseasetime = rn1(9, 6);
+            if (canseemon(mdef))
+                pline("%s looks %s.", Monnam(mdef),
+                      mdef->mdiseased ? "even worse" : "diseased");
+            mdef->mdiseased = 1;
+            mdef->mdiseabyu = TRUE;
+        }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
         if (!diseasemu(pa))
             mhm->damage = 0;
     } else {
- mhitm_dise:
-        /* mhitm; protected monsters use the same criteria as for poly'd
-           hero gaining sick resistance combined with any hero wielding a
-           weapon or wearing dragon scales/mail that guards against disease */
         if (pd->mlet == S_FUNGUS || is_ghoul(pd) || defended(mdef, AD_DISE))
             mhm->damage = 0;
-        /* else does ordinary damage */
+        
+        if (unaffected) {
+            if (gv.vis && canseemon(mdef))
+                pline("%s resists infection.", Monnam(mdef));
+            mhm->damage = 0;
+        } else {
+            if (mdef->mdiseasetime)
+                mdef->mdiseasetime -= rnd(3);
+            else
+                mdef->mdiseasetime = rn1(9, 6);
+            if (gv.vis && canseemon(mdef))
+                pline("%s looks %s.", Monnam(mdef),
+                      mdef->mdiseased ? "even worse" : "diseased");
+            mdef->mdiseased = 1;
+            mdef->mdiseabyu = FALSE;
+        }
     }
 }
 

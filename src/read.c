@@ -3717,6 +3717,14 @@ create_particular_creation(
             mtmp->mundetected = 1;
         if (d->sleeping)
             mtmp->msleeping = 1;
+        if (d->diseased
+            && !(resists_sick(mtmp->data) || defended(mtmp, AD_DISE))) {
+            mtmp->mdiseased = 1;
+            mtmp->mdiseasetime = rn1(9, 6);
+        }
+        if (d->rabid && can_become_rabid(mtmp->data)) {
+            mtmp->mrabid = 1;
+        }
         /* if asking for 'hidden', show location of every created monster
            that can't be seen--whether that's due to successfully hiding
            or vision issues (line-of-sight, invisibility, blindness) */

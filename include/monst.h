@@ -147,6 +147,8 @@ struct monst {
     Bitfield(mcanmove, 1);  /* paralysis, similar to mblinded */
 
     Bitfield(mconf, 1);     /* confused */
+    Bitfield(mdiseased, 1); /* monsters infected with disease */
+    Bitfield(mdiseabyu, 1); /* monsters infected by you */
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */
     Bitfield(mleashed, 1);  /* monster is on a leash */
@@ -203,6 +205,7 @@ struct monst {
 
     int meating;           /* monster is eating timeout */
     int msummoned;         /* is a temporarily summoned being */
+    int mdiseasetime;      /* diseased timer */
     int mreflecttime;      /* timeout for monster reflection spell */
     uchar mprotection;     /* monster protection spell */
     uchar mprottime;       /* timeout for monster protection spell */

@@ -3370,6 +3370,8 @@ mstatusline(struct monst *mtmp)
         Strcat(info, ", blind");
     if (mtmp->mstun)
         Strcat(info, ", stunned");
+    if (mtmp->mdiseased)
+        Strcat(info, ", dying from disease");
     if (mtmp->msleeping)
         Strcat(info, ", asleep");
 #if 0 /* unfortunately mfrozen covers temporary sleep and being busy
