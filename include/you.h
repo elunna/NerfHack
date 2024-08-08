@@ -458,6 +458,7 @@ struct you {
 #define LUCKMIN (-10) /* minimum value of u.uluck */
     schar uhitinc;
     schar udaminc;
+    long  uhealbonus;        /* KMH -- Healing bonus from healthstones */
     schar uac;
 #define AC_MAX    99  /* abs(u.uac) <= 99; likewise for monster AC */
     uchar uspellprot;        /* protection by SPE_PROTECTION */

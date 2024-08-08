@@ -4727,6 +4727,7 @@ doapply(void)
         return res; /* Might useup the flint */
         break;
     case LUCKSTONE:
+    case HEALTHSTONE:
     case LOADSTONE:
     case TOUCHSTONE:
     case ROCK:

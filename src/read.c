@@ -1600,6 +1600,7 @@ seffect_remove_curse(struct obj **sobjp)
                 }
             }
             if (sblessed || wornmask || obj->otyp == LOADSTONE
+                || obj->otyp == HEALTHSTONE
                 /* this treats an in-use leash as a worn item but does not
                    do the same for lit lamp/candle [seems inconsistent] */
                 || (obj->otyp == LEASH && obj->leashmon)) {

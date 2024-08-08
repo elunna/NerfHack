@@ -587,7 +587,7 @@ regen_pw(int wtcap)
 staticfn void
 regen_hp(int wtcap)
 {
-    int heal = 0;
+    int efflev, effcon, heal = 0;
     boolean reached_full = FALSE,
             encumbrance_ok = (wtcap < MOD_ENCUMBER || !u.umoved);
 
@@ -622,12 +622,26 @@ regen_hp(int wtcap)
            once u.mh reached u.mhmax; that may have been convenient
            for the player, but it didn't make sense for gameplay...] */
         if (u.uhp < u.uhpmax
-	        && vamp_can_regen() && !Rabid
+	        && vamp_can_regen() 
+            && !Rabid
             /* Non-undead cannot regenerate in the valley */
             && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))
             && (encumbrance_ok || U_CAN_REGEN())) {
-            heal = (u.ulevel + (int)ACURR(A_CON)) > rn2(100);
+            
+            /*
+             * KMH, balance patch -- New regeneration code
+             * Healthstones have been added, which alter your effective
+             * experience level and constitution (-2 cursed, +1 uncursed,
+             * +2 blessed) for the basis of regeneration calculations.
+             */
+            efflev = u.ulevel + u.uhealbonus;
+            effcon = (int) ACURR(A_CON) + u.uhealbonus;
 
+#if 0       /* 3.7 version */
+            heal = (u.ulevel + (int) ACURR(A_CON)) > rn2(100);
+#else
+            heal = (efflev + effcon) > rn2(100);
+#endif
             if (U_CAN_REGEN())
                 heal += 1;
             if (Sleepy && u.usleep)

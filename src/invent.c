@@ -1016,6 +1016,10 @@ addinv_core2(struct obj *obj)
          * for correct calculation */
         set_moreluck();
     }
+    
+    /* KMH, balance patch -- recalculate health if you've gained healthstones */
+    if (obj->otyp == HEALTHSTONE)
+        recalc_health();
 }
 
 /*
@@ -1347,6 +1351,9 @@ freeinv_core(struct obj *obj)
     } else if (confers_luck(obj)) {
         set_moreluck();
         disp.botl = TRUE;
+    }  else if (obj->otyp == HEALTHSTONE) {
+        /* KMH, balance patch -- recalculate health if you've lost healthstones */
+        recalc_health();
     } else if (obj->otyp == FIGURINE && obj->timed) {
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(obj));
     }

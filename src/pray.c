@@ -359,6 +359,8 @@ worst_cursed_item(void)
                 continue;
             if (otmp->otyp == LOADSTONE || confers_luck(otmp))
                 break;
+            if (otmp->otyp == HEALTHSTONE)
+                break;
         }
     }
     return otmp;

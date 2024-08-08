@@ -2020,6 +2020,16 @@ attributes_enlightenment(
             enl_msg("Good luck ", "times", "timed", " out slowly for you", "");
     }
     
+    /* KMH, balance patch -- healthstones affect health */
+	if (u.uhealbonus) {
+		Sprintf(buf, "%s health", u.uhealbonus > 0 ? "extra" : "reduced");
+	    if (wizard)
+            Sprintf(eos(buf), " (%ld)", u.uhealbonus);
+		you_have(buf, "");
+	} else if (wizard) 
+        enl_msg("Your health bonus ", "is", "was", " zero", "");
+
+    
 #ifdef DEBUG
     /* named fruit debugging (doesn't really belong here...); to enable,
        include 'fruit' in DEBUGFILES list (even though it isn't a file...) */

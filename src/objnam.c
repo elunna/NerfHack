@@ -3494,6 +3494,7 @@ static const struct alt_spellings {
     { "touch stone", TOUCHSTONE },
     { "flintstone", FLINT },
     { "scroll of flood", SCR_WATER }, /* unnethack name for it */
+    { "health stone", HEALTHSTONE },
     
     /* Community abbreviations */
     { "BoH", BAG_OF_HOLDING },

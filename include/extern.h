@@ -187,6 +187,7 @@ extern struct obj *has_magic_key(struct monst *);
 extern boolean is_art(struct obj *, int);
 extern boolean non_wishable_artifact(struct obj *);
 extern int arti_align(int);
+
 /* ### attrib.c ### */
 
 extern boolean adjattrib(int, int, int);
@@ -199,6 +200,7 @@ extern void change_luck(schar);
 extern int stone_luck(boolean);
 extern boolean has_luckitem(void);
 extern void set_moreluck(void);
+extern void recalc_health(void);
 extern void restore_attrib(void);
 extern void exercise(int, boolean);
 extern void exerchk(void);
