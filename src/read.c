@@ -3520,7 +3520,7 @@ create_particular_parse(
     d->randmonst = FALSE;
     d->maketame = d->makepeaceful = d->makehostile = FALSE;
     d->sleeping = d->saddled = d->invisible = FALSE;
-
+    d->rabid = d->diseased = FALSE;
     /* quantity */
     if (digit(*bufp)) {
         d->quan = atoi(bufp);
@@ -3573,10 +3573,14 @@ create_particular_parse(
     } else if (!strncmpi(bufp, "hostile ", 8)) {
         bufp += 8;
         d->makehostile = TRUE;
-    } else if (!strncmpi(bufp, "rabid ", 6)) {
+    }
+    
+    if (!strncmpi(bufp, "rabid ", 6)) {
         bufp += 6;
         d->rabid = TRUE;
-    } else if (!strncmpi(bufp, "diseased ", 9)) {
+    }
+    
+    if (!strncmpi(bufp, "diseased ", 9)) {
         bufp += 9;
         d->diseased = TRUE;
     }
@@ -3729,12 +3733,15 @@ create_particular_creation(
             mtmp->mdiseasetime = rn1(9, 6);
         }
         if (d->rabid && can_become_rabid(mtmp->data)) {
-            if (d->makepeaceful)
-                pline("Cannot create peaceful rabid monster!");
-            else if (d->maketame)
-                pline("Cannot create tame rabid monster!");
-            else
-                mtmp->mrabid = 1;
+            if (mtmp->mpeaceful) {
+                mtmp->mpeaceful = 0; /* Doesn't co-exist with rabid */
+                newsym(mtmp->mx, mtmp->my);
+            }
+            if (mtmp->mtame) {
+                mtmp->mtame = 0; /* Doesn't co-exist with rabid */
+                newsym(mtmp->mx, mtmp->my);
+            }
+            mtmp->mrabid = 1;
         }
         /* if asking for 'hidden', show location of every created monster
            that can't be seen--whether that's due to successfully hiding
