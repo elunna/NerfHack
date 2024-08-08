@@ -309,6 +309,7 @@ mquaffmsg(struct monst *mtmp, struct obj *otmp)
 #define MUSE_LIZARD_CORPSE 19
 #define MUSE_WAN_UNDEAD_TURNING 20 /* also an offensive item */
 #define MUSE_EUCALYPTUS_LEAF 21
+#define MUSE_POT_RESTORE_ABILITY 22
 
 /*
 #define MUSE_INNATE_TPT 9999
@@ -543,6 +544,17 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             return TRUE;
     }
 
+    if (mtmp->mcan && !nohands(mtmp->data)) {
+        /* TODO? maybe only monsters for whom cancellation actually matters
+         * should bother fixing it -- for a monster without any abilities that
+         * are affected by cancellation, why bother drinking the potion? */
+        if ((obj = m_carrying(mtmp, POT_RESTORE_ABILITY)) != 0) {
+            gm.m.defensive = obj;
+            gm.m.has_defense = MUSE_POT_RESTORE_ABILITY;
+            return TRUE;
+        }
+    }
+
     /* monsters aren't given wands of undead turning but if they
        happen to have picked one up, use it against corpse wielder;
        when applicable, use it now even if 'mtmp' isn't wounded */
@@ -765,6 +777,11 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             && obj->otyp == EUCALYPTUS_LEAF) {
             gm.m.defensive = obj;
             gm.m.has_defense = MUSE_EUCALYPTUS_LEAF;
+        }
+        nomore(MUSE_POT_RESTORE_ABILITY);
+        if (mtmp->mcan && obj->otyp == POT_RESTORE_ABILITY) {
+            gm.m.defensive = obj;
+            gm.m.has_defense = MUSE_POT_RESTORE_ABILITY;
         }
         nomore(MUSE_SCR_CREATE_MONSTER);
         if (obj->otyp == SCR_CREATE_MONSTER) {
@@ -1241,6 +1258,15 @@ use_defensive(struct monst *mtmp)
     case MUSE_EUCALYPTUS_LEAF:
         /* not actually called for its unstoning effect */
         mon_consume_unstone(mtmp, otmp, FALSE, FALSE);
+        return 2;
+     case MUSE_POT_RESTORE_ABILITY:
+        mquaffmsg(mtmp, otmp);
+        mtmp->mcan = 0;
+        if (canseemon(mtmp))
+            pline("%s looks revitalized.", Monnam(mtmp));
+        if (oseen)
+            makeknown(otmp->otyp);
+        m_useup(mtmp, otmp);
         return 2;
     case 0:
         return 0; /* i.e. an exploded wand */
