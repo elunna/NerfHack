@@ -3624,6 +3624,7 @@ mhitm_ad_drst(
         switch (mattk->adtyp) {
         case AD_DRST: ptmp = A_STR; break;
         case AD_DRDX: ptmp = A_DEX; break;
+        case AD_RABD: /* All rabid monsters attack like the old "rabid rat" */
         case AD_DRCO: ptmp = A_CON; break;
         }
         hitmsg(magr, mattk);
@@ -4959,29 +4960,27 @@ mhitm_ad_rabd(
             mon_rabid(mdef, TRUE);
             return;
         }
-
-        mhitm_ad_phys(magr, mattk, mdef, mhm);
+        mhitm_ad_drst(magr, mattk, mdef, mhm);
         if (mhm->done)
             return;
     } else if (mdef == &gy.youmonst) {
         /* mhitu - you infected */
-        hitmsg(magr, mattk);
         if (!rn2(4) && !Rabid && can_become_rabid(gy.youmonst.data)
                 && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
+            hitmsg(magr, mattk);
             if (!Sick_resistance)
                 urgent_pline("You feel like going rabid!");
             exercise(A_CON, FALSE);
             do_rabid_u(magr);
         } else
-            mhitm_ad_phys(magr, mattk, mdef, mhm);
+            mhitm_ad_drst(magr, mattk, mdef, mhm);
     } else {
         /* mhitm - infect other mon */
         if (!magr->mcan && !mdef->mrabid && can_become_rabid(mdef->data)) {
             mon_rabid(mdef, TRUE);
             return;
         }
-
-        mhitm_ad_phys(magr, mattk, mdef, mhm);
+        mhitm_ad_drst(magr, mattk, mdef, mhm);
         if (mhm->done)
             return;
     }

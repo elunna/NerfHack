@@ -3573,6 +3573,12 @@ create_particular_parse(
     } else if (!strncmpi(bufp, "hostile ", 8)) {
         bufp += 8;
         d->makehostile = TRUE;
+    } else if (!strncmpi(bufp, "rabid ", 6)) {
+        bufp += 6;
+        d->rabid = TRUE;
+    } else if (!strncmpi(bufp, "diseased ", 9)) {
+        bufp += 9;
+        d->diseased = TRUE;
     }
     /* decide whether a valid monster was chosen */
     if (wizard && (!strcmp(bufp, "*") || !strcmp(bufp, "random"))) {
@@ -3723,7 +3729,12 @@ create_particular_creation(
             mtmp->mdiseasetime = rn1(9, 6);
         }
         if (d->rabid && can_become_rabid(mtmp->data)) {
-            mtmp->mrabid = 1;
+            if (d->makepeaceful)
+                pline("Cannot create peaceful rabid monster!");
+            else if (d->maketame)
+                pline("Cannot create tame rabid monster!");
+            else
+                mtmp->mrabid = 1;
         }
         /* if asking for 'hidden', show location of every created monster
            that can't be seen--whether that's due to successfully hiding

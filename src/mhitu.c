@@ -642,6 +642,7 @@ mattacku(struct monst *mtmp)
     struct attack *mattk, alt_attk;
     int i, j = 0, tmp, ftmp, sum[NATTK];
     struct permonst *mdat = mtmp->data;
+    boolean did_rabid;
     /*
      * ranged: Is it near you?  Affects your actions.
      * ranged2: Does it think it's near you?  Affects its actions.
@@ -959,6 +960,18 @@ mattacku(struct monst *mtmp)
                 && mattk->adtyp == AD_DRIN))
             continue;
 
+        /* Rabid monsters have an additional rabid bite attack added at the end.
+         * For now, we won't check if anything "can bite", we'll assume that
+         * anything that can contract rabies can also bite. If something slips
+         * through, we'll exclude it from can_become_rabid.
+         */
+        if (mtmp->mrabid && !mattk->aatyp && !did_rabid && !range2) {
+            if (mattk->aatyp != AT_BITE)
+                mattk->aatyp = AT_BITE;
+            mattk->adtyp = AD_RABD;
+            did_rabid = TRUE;
+        }
+
         switch (mattk->aatyp) {
         case AT_CLAW: /* "hand to hand" attacks */
         case AT_KICK:
@@ -967,13 +980,6 @@ mattacku(struct monst *mtmp)
         case AT_TUCH:
         case AT_BUTT:
         case AT_TENT:
-            /* Rabid monsters have their first attack replaced with a rabid bite */
-            if (mtmp->mrabid && i == 0 && !range2 ) {
-                if (mattk->aatyp != AT_BITE)
-                    mattk->aatyp = AT_BITE;
-                mattk->adtyp = AD_RABD;
-            }
-
             if (!range2 && (!MON_WEP(mtmp) || mtmp->mconf || Conflict
                             || !touch_petrifies(gy.youmonst.data))) {
                 if (foundyou) {
