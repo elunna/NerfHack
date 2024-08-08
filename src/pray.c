@@ -2064,9 +2064,10 @@ crackaltar(void)
     struct rm *lev = &levl[u.ux][u.uy];
     if (lev->cracked && !Is_astralevel(&u.uz)) {
         /* don't leave loose ends.. */
+        set_levltyp(u.ux, u.uy, ROOM);
         lev->looted = 0;
         lev->cracked = 0;
-        lev->typ = ROOM;
+
         Soundeffect(se_crash_throne_destroyed, 60);
         if (Blind && !Deaf)
             pline("CRACK!  Something loudly crumbles.");
@@ -2078,7 +2079,8 @@ crackaltar(void)
     } else {
         lev->cracked = 1;
         if (Blind && !Deaf)
-            You_hear("something cracking.");
+            You_hear(Hallucination ? "Snap! Crackle! Pop!"
+                                   : "something cracking.");
         else {
             pline("A large crack forms in the middle of the altar...");
         }

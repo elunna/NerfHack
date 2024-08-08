@@ -736,8 +736,9 @@ count_level_features(void)
     coordxy x, y;
     svl.level.flags.nfountains 
         = svl.level.flags.nsinks
-        = svl.level.flags.ntoilets 
-        = svl.level.flags.nforges = 0;
+        = svl.level.flags.ntoilets
+        = svl.level.flags.nforges
+        = svl.level.flags.naltars= 0;
     
     for (y = 0; y < ROWNO; y++)
         for (x = 1; x < COLNO; x++) {
@@ -751,6 +752,8 @@ count_level_features(void)
                 svl.level.flags.nsinks++;
             else if (typ == TOILET)
                 svl.level.flags.ntoilets++;
+            else if (typ == ALTAR)
+                svl.level.flags.naltars++;
         }
 }
 
@@ -789,6 +792,7 @@ clear_level_structures(void)
     svl.level.flags.nforges = 0;
     svl.level.flags.nsinks = 0;
     svl.level.flags.ntoilets = 0;
+    svl.level.flags.naltars = 0;
     svl.level.flags.has_shop = 0;
     svl.level.flags.has_vault = 0;
     svl.level.flags.has_zoo = 0;
@@ -2280,7 +2284,8 @@ mkaltar(struct mkroom *croom)
     levl[m.x][m.y].altarmask = Align2amask(al);
     
     /* Sometimes they are in poor condition */
-    if (!rn2(4) || level_difficulty() > 15)
+    if (!rn2(4) || level_difficulty() > 15 
+                || svl.level.flags.naltars > 1)
         levl[m.x][m.y].cracked = 1;
 }
 

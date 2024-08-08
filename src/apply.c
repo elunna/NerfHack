@@ -4987,6 +4987,7 @@ use_deck(struct obj *obj)
     You("begin to draw from the deck of fate...");
     for ( ; draws > 0; draws--) {
         index = rnd(22);
+
         /* wishes and disasters can be modified through BCU */
         if (badcards && index > 1) {
             index--;
@@ -4999,196 +5000,196 @@ use_deck(struct obj *obj)
             /* Good cards end with `!', bad cards end with `...' */
             You("draw %s%s", tarotnames[index-1], index < GOOD_CARDS ? "..." : "!");
         }
+
         switch (index) {
-            case 1: /* The Tower */
-		        explode(u.ux, u.uy, 15, rnd(30), TOOL_CLASS, EXPL_MAGICAL);
-                explode(u.ux, u.uy, 11, rnd(30), TOOL_CLASS, EXPL_FIERY);
-                break;
-            case 2: /* The Wheel of Fortune */
-                pline("Two more cards flip out of the deck.");
-                draws += 2;
-                break;
-            case 3: /* The Devil */
-                if (!Blind)
-                    pline("Moloch's visage on the card grins at you.");
-                if (Luck < 0 && (pm = dlord(A_NONE)) != NON_PM) {
-                    mtmp = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS);
-                } else {
-                    pm = ndemon(u.ualign.type);
-                    mtmp = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS);
-                }
+        case 1: /* The Tower */
+            explode(u.ux, u.uy, 15, rnd(30), TOOL_CLASS, EXPL_MAGICAL);
+            explode(u.ux, u.uy, 11, rnd(30), TOOL_CLASS, EXPL_FIERY);
+            break;
+        case 2: /* The Wheel of Fortune */
+            pline("Two more cards flip out of the deck.");
+            draws += 2;
+            break;
+        case 3: /* The Devil */
+            if (!Blind)
+                pline("Moloch's visage on the card grins at you.");
+            if (Luck < 0 && (pm = dlord(A_NONE)) != NON_PM) {
+                mtmp = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS);
+            } else {
+                pm = ndemon(u.ualign.type);
+                mtmp = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS);
+            }
 
-                if (!Blind && mtmp)
-                    pline("%s appears from a cloud of noxious smoke!", Monnam(mtmp));
-                else
-                    pline("Something stinks!");
-                newsym(mtmp->mx, mtmp->my);
-                draws = 0;
-                break;
-            case 4: /* The Fool */
-		(void) adjattrib(A_INT, -rnd(3), FALSE);
-                (void) adjattrib(A_WIS, -rnd(3), FALSE);
-                break;
-            case 5: /* Death */
-                draws = 0;
-                if (!Blind)
-                    pline("A skeletal hand appears upon the deck, stopping your draws.");
-                else
-                    pline("A bony hand gently stops you from drawing further.");
+            if (!Blind && mtmp)
+                pline("%s appears from a cloud of noxious smoke!", Monnam(mtmp));
+            else
+                pline("Something stinks!");
+            newsym(mtmp->mx, mtmp->my);
+            draws = 0;
+            break;
+        case 4: /* The Fool */
+            (void) adjattrib(A_INT, -rnd(3), FALSE);
+            (void) adjattrib(A_WIS, -rnd(3), FALSE);
+            break;
+        case 5: /* Death */
+            draws = 0;
+            if (!Blind)
+                pline("A skeletal hand appears upon the deck, stopping your draws.");
+            else
+                pline("A bony hand gently stops you from drawing further.");
 
-                if (/*Death_resistance || */resists_death(gy.youmonst.data)) {
+            if (/*Death_resistance || */resists_death(gy.youmonst.data)) {
+                shieldeff(u.ux, u.uy);
+                pline(nonliving(gy.youmonst.data)
+                        ? "You seem no more dead than before."
+                        : "You are unaffected.");
+                break;
+            } else if (Invulnerable) {
+                pline("You are unaffected.");
+                break;
+            } else if (Hallucination) {
+                You("have an out of body experience.");
+                break;
+            } else if (Antimagic) {
+                int dmg = d(8, 6);
+                /* Magic resistance or half spell damage will
+                    cut this in half */
+                if (Antimagic || Half_spell_damage) {
                     shieldeff(u.ux, u.uy);
-                    pline(nonliving(gy.youmonst.data)
-                            ? "You seem no more dead than before."
-                            : "You are unaffected.");
-                    break;
-                } else if (Invulnerable) {
-                    pline("You are unaffected.");
-                    break;
-                } else if (Hallucination) {
-                    You("have an out of body experience.");
-                    break;
-                } else if (Antimagic) {
-                    int dmg = d(8, 6);
-                    /* Magic resistance or half spell damage will
-                       cut this in half */
-                    if (Antimagic || Half_spell_damage) {
-                        shieldeff(u.ux, u.uy);
-                        monstseesu(M_SEEN_MAGR);
-                        dmg /= 2;
-                    }
-                    You_feel("drained...");
-                    u.uhpmax -= dmg / 3 + rn2(5);
-                    losehp(dmg, "touch of death", KILLED_BY_AN);
-                    break;
+                    monstseesu(M_SEEN_MAGR);
+                    dmg /= 2;
                 }
+                You_feel("drained...");
+                u.uhpmax -= dmg / 3 + rn2(5);
+                losehp(dmg, "touch of death", KILLED_BY_AN);
+                break;
+            }
 
-                if (!u.usaving_grace && Luck > 0) {
-                    pline("A graceful force intervenes - the hand retreats!");
-                    u.usaving_grace = TRUE;
-                    break;
-                }
+            if (!u.usaving_grace && Luck > 0) {
+                pline("A graceful force intervenes - the hand retreats!");
+                u.usaving_grace = TRUE;
+                break;
+            }
 
-                /* No protection = dead */
-                Sprintf(svk.killer.name, "the card of Death");
-                svk.killer.format = NO_KILLER_PREFIX;
-                done(DIED);
-                break;
-            case 6: /* Judgment */
-                punish(obj);
-                break;
-            case 7: /* The Emperor */
-                attrcurse();
-                attrcurse();
-                break;
-            case 8: /* The Hermit */
-                You_feel("like hiding!");
-		level_tele();
-                incr_itimeout(&HInvis, rn1(500, 500));
-                aggravate();
-                break;
-            case 9: /* The Hanged Man */
-                mtmp = makemon(&mons[PM_ROPE_GOLEM], u.ux, u.uy, NO_MM_FLAGS);
-                if (!Blind && mtmp)
-                    pline("A hangman arrives!");
-                break;
-            case 10: /* Justice */
-                if (u.ualign.abuse < (unsigned) -13 || u.ualign.record < 0) {
-		    if (!Blind)
-			You("are frozen by the power of Justice!");
-		    else
-			You("can't seem to move!");
-		    nomul(-(rn1(30, 20)));
-                } else {
-                    You("will be rewarded for your loyalty!");
-                    if (Punished)
-                        unpunish();
-                }
-                break;
-            case 11: /* Temperance */
-		destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
-                destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
-		break;
-                /* cards before this point are bad, after this are good */
-            case 12: /* The Lovers */
-                for (n = 0; n < 2; n++) {
-                    mtmp = makemon(&mons[PM_AMOROUS_DEMON], u.ux, u.uy, NO_MM_FLAGS);
-                    if (mtmp)
-                        mtmp->mpeaceful = 1;
-                }
-                if (!Deaf && mtmp)
-                    You_hear("infernal giggling.");
-                break;
-            case 13: /* The Magician */
+            /* No protection = dead */
+            Sprintf(svk.killer.name, "the card of Death");
+            svk.killer.format = NO_KILLER_PREFIX;
+            done(DIED);
+            break;
+        case 6: /* Judgment */
+            punish(obj);
+            break;
+        case 7: /* The Emperor */
+            attrcurse();
+            attrcurse();
+            break;
+        case 8: /* The Hermit */
+            You_feel("like hiding!");
+            level_tele();
+            incr_itimeout(&HInvis, rn1(500, 500));
+            aggravate();
+            break;
+        case 9: /* The Hanged Man */
+            mtmp = makemon(&mons[PM_ROPE_GOLEM], u.ux, u.uy, NO_MM_FLAGS);
+            if (!Blind && mtmp)
+                pline("A hangman arrives!");
+            break;
+        case 10: /* Justice */
+            if (u.ualign.abuse < (unsigned) -13 || u.ualign.record < 0) {
                 if (!Blind)
-                    pline_The("figure on the card winks.");
-                if (u.uevent.udemigod)
-                    resurrect();
-                else {
-                    u.uenmax += rn1(20, 10);
-                    u.uen = u.uenmax;
-                }
-                break;
-            case 14: /* Strength */
-                (void) adjattrib(A_STR, rn1(5, 4), FALSE);
-                break;
-            case 15: /* The High Priestess */
-                You_feel("more devout.");
-                u.ualign.abuse = 0; /* Clear past sins! */
-                adjalign(10);
-                break;
-            case 16: /* The Hierophant */
-                terr = levl[u.ux][u.uy].typ;
-                if (terr == ROOM) {
-                    if (!Blind)
-                        pline_The("%s beneath you reshapes itself into an altar!",
-                                  surface(u.ux, u.uy));
-                    else
-                        You_feel("the %s beneath you shift and reform!",
-                                 surface(u.ux, u.uy));
-                    levl[u.ux][u.uy].typ = ALTAR;
-                } else
-                    You_feel("a twinge of anxiety.");
-                break;
-            case 17: /* The Empress */
-                terr = levl[u.ux][u.uy].typ;
-                if (terr == ROOM /*|| terr == GRASS */|| terr == CORR) {
-                    if (!Blind)
-                        Your("throne arrives.");
-                    levl[u.ux][u.uy].typ = THRONE;
-                } else
-                    You_feel("quite lordly.");
-                break;
-            case 18: /* The Chariot */
-                incr_itimeout(&HTeleport_control, 1);
-                level_tele();
-                break;
-            case 19: /* The Sun */
-                You("are bathed in warmth.");
-                /* as praying */
-                if (!(HProtection & INTRINSIC)) {
-                    HProtection |= FROMOUTSIDE;
-                    if (!u.ublessed)
-                        u.ublessed = rn1(3, 2);
-                } else
-                    u.ublessed += 1;
-                break;
-            case 20: /* The Moon */
-                change_luck(7);
-                if (Luck < 0) {
-                    Your("luck is beginning to change...");
-                } else {
-                    You("feel lucky!");
-                }
-                break;
-            case 21: /* The Star */
-                identify_pack(0, FALSE);
-                break;
-            case 22: /* The World */
-                makewish();
-                break;
-            default:
-                impossible("use_deck: drew out-of-bounds tarot card");
+                    You("are frozen by the power of Justice!");
+                else
+                    You("can't seem to move!");
+                nomul(-(rn1(30, 20)));
+            } else {
+                You("will be rewarded for your loyalty!");
+                if (Punished)
+                    unpunish();
+            }
+            break;
+        case 11: /* Temperance */
+            destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
+            destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
+            break;
+            /* cards before this point are bad, after this are good */
+        case 12: /* The Lovers */
+            for (n = 0; n < 2; n++) {
+                mtmp = makemon(&mons[PM_AMOROUS_DEMON], u.ux, u.uy, NO_MM_FLAGS);
+                if (mtmp)
+                    mtmp->mpeaceful = 1;
+            }
+            if (!Deaf && mtmp)
+                You_hear("infernal giggling.");
+            break;
+        case 13: /* The Magician */
+            if (!Blind)
+                pline_The("figure on the card winks.");
+            if (u.uevent.udemigod)
+                resurrect();
+            else {
+                u.uenmax += rn1(20, 10);
+                u.uen = u.uenmax;
+            }
+            break;
+        case 14: /* Strength */
+            (void) adjattrib(A_STR, rn1(5, 4), FALSE);
+            break;
+        case 15: /* The High Priestess */
+            You_feel("more devout.");
+            u.ualign.abuse = 0; /* Clear past sins! */
+            adjalign(10);
+            break;
+        case 16: /* The Hierophant */
+            terr = levl[u.ux][u.uy].typ;
+            if (terr == ROOM) {
+                if (!Blind)
+                    pline_The("%s beneath you reshapes itself into an altar!",
+                                surface(u.ux, u.uy));
+                else
+                    You_feel("the %s beneath you shift and reform!",
+                                surface(u.ux, u.uy));
+                set_levltyp(u.ux, u.uy, ALTAR);
+            } else
+                You_feel("a twinge of anxiety.");
+            break;
+        case 17: /* The Empress */
+            terr = levl[u.ux][u.uy].typ;
+            if (terr == ROOM /*|| terr == GRASS */|| terr == CORR) {
+                if (!Blind)
+                    Your("throne arrives.");
+                levl[u.ux][u.uy].typ = THRONE;
+            } else
+                You_feel("quite lordly.");
+            break;
+        case 18: /* The Chariot */
+            incr_itimeout(&HTeleport_control, 1);
+            level_tele();
+            break;
+        case 19: /* The Sun */
+            You("are bathed in warmth.");
+            /* as praying */
+            if (!(HProtection & INTRINSIC)) {
+                HProtection |= FROMOUTSIDE;
+                if (!u.ublessed)
+                    u.ublessed = rn1(3, 2);
+            } else
+                u.ublessed += 1;
+            break;
+        case 20: /* The Moon */
+            change_luck(7);
+            if (Luck < 0)
+                Your("luck is beginning to change...");
+            else
+                You("feel lucky!");
+            break;
+        case 21: /* The Star */
+            identify_pack(0, FALSE);
+            break;
+        case 22: /* The World */
+            makewish();
+            break;
+        default:
+            impossible("use_deck: drew out-of-bounds tarot card");
         }
     }
 

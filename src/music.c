@@ -474,6 +474,8 @@ do_earthquake(int force)
                 break;
             }
         }
+    /* level.flags.nfountains,nsinks, etc */
+    count_level_features(); 
 }
 
 staticfn const char *

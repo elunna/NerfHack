@@ -95,6 +95,7 @@ set_levltyp(coordxy x, coordxy y, schar newtyp)
             if ((IS_FOUNTAIN(oldtyp) != IS_FOUNTAIN(newtyp))
                 || (IS_SINK(oldtyp) != IS_SINK(newtyp))
                 || (IS_TOILET(oldtyp) != IS_TOILET(newtyp))
+                || (IS_ALTAR(oldtyp) != IS_ALTAR(newtyp))
                 || (IS_FORGE(oldtyp) != IS_FORGE(newtyp)))
                 /* level.flags.nfountains,nsinks, etc */
                 count_level_features(); 

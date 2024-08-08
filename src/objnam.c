@@ -3800,6 +3800,7 @@ wizterrainwish(struct _readobjnam_data *d)
         lev->altarmask = Align2amask(al); /* overlays 'flags' */
         pline("%s altar.", An(align_str(al)));
         madeterrain = TRUE;
+        svl.level.flags.naltars++;
     } else if (!BSTRCMPI(bp, p - 5, "grave")
                || !BSTRCMPI(bp, p - 9, "headstone")) {
         make_grave(x, y, (char *) 0);

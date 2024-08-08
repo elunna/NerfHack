@@ -738,9 +738,12 @@ wiz_map_levltyp(void)
         if (svl.level.flags.nsinks)
             Sprintf(eos(dsc), " %c:%d", defsyms[S_sink].sym,
                     (int) svl.level.flags.nsinks);
-         if (svl.level.flags.ntoilets)
+        if (svl.level.flags.ntoilets)
             Sprintf(eos(dsc), " %c:%d", defsyms[S_toilet].sym,
                     (int) svl.level.flags.ntoilets);
+        if (svl.level.flags.naltars)
+            Sprintf(eos(dsc), " %c:%d", defsyms[S_altar].sym,
+                    (int) svl.level.flags.naltars);
         if (svl.level.flags.has_vault)
             Strcat(dsc, " vault");
         if (svl.level.flags.has_shop)

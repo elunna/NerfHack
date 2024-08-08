@@ -402,6 +402,7 @@ struct levelflags {
     uchar nsinks;     /* number of sinks on the level */
     uchar ntoilets;   /* number of toilets on the level */
     uchar nforges;    /* number of forges on the level */
+    uchar naltars;    /* number of forges on the level */
     /* Several flags that give hints about what's on the level */
     Bitfield(has_shop, 1);
     Bitfield(has_vault, 1);

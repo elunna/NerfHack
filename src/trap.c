@@ -6170,6 +6170,7 @@ disarm_holdingtrap(struct trap *ttmp)
 }
 
 
+/* convert a rust trap into a fountain */
 staticfn int
 disarm_rust_trap(struct trap *ttmp) /* Paul Sonier */
 {
@@ -6179,9 +6180,11 @@ disarm_rust_trap(struct trap *ttmp) /* Paul Sonier */
         return fails;
     You("disarm the water trap!");
     deltrap(ttmp);
-    levl[x][y].typ = FOUNTAIN;
-    newsym(x, y);
-    svl.level.flags.nfountains++;
+    /* updates level.flags.nfountains */
+    set_levltyp(x, y, FOUNTAIN);
+    levl[x][y].looted = 0;
+    levl[x][y].blessedftn = 0;
+    SET_FOUNTAIN_LOOTED(x, y);
     return 1;
 }
 
