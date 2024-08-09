@@ -4977,7 +4977,7 @@ deck_of_fate(struct obj *obj)
         switch (index) {
         case 1: /* The Tower */
             explode(u.ux, u.uy, BZ_U_SPELL(ZT_LIGHTNING), rnd(30), TOOL_CLASS, EXPL_MAGICAL);
-            explode(u.ux, u.uy, BZ_U_SPELL(ZT_FIRE), rnd(30), TOOL_CLASS, EXPL_FIERY);
+            explode(u.ux, u.uy, BZ_U_SPELL(ZT_ACID), rnd(30), TOOL_CLASS, EXPL_WET);
             break;
         case 2: /* The Wheel of Fortune */
             draws += 2;
