@@ -2864,7 +2864,7 @@ zapyourself(struct obj *obj, boolean ordinary)
 
     case SPE_FIREBALL:
         You("explode a fireball on top of yourself!");
-        explode(u.ux, u.uy, 11, d(6, 6), WAND_CLASS, EXPL_FIERY);
+        explode(u.ux, u.uy, BZ_U_SPELL(ZT_FIRE), d(6, 6), WAND_CLASS, EXPL_FIERY);
         break;
     case WAN_FIRE:
     case FIRE_HORN:

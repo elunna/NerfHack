@@ -2659,7 +2659,7 @@ breakobj(
     if (!fracture)
         delobj(obj);
     if (explosion)
-        explode(x, y, -11, d(3, 6), 0, EXPL_FIERY);
+        explode(x, y, BZ_M_SPELL(ZT_FIRE), d(3, 6), 0, EXPL_FIERY);
     return 1;
 }
 

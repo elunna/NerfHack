@@ -1616,7 +1616,7 @@ hmon_hitmon_misc_obj(
                     place_object(obj, mon->mx, mon->my);
             } else if (obj->corpsenm == PM_PYROLISK) {
                 useup_eggs(obj);
-                explode(mon->mx, mon->my, -11, d(3, 6), 0, EXPL_FIERY);
+                explode(mon->mx, mon->my, BZ_M_SPELL(ZT_FIRE), d(3, 6), 0, EXPL_FIERY);
                 hmd->doreturn = TRUE;
                 hmd->retval = !DEADMONSTER(mon);
                 return;

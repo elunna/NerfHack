@@ -3451,7 +3451,7 @@ muse_unslime(
             dmg = (2 * (rn1(3, 3) + 2 * bcsign(obj)) + 1) / 3;
             m_useup(mon, obj); /* before explode() */
             /* -11 => monster's fireball */
-            explode(mon->mx, mon->my, -11, dmg, SCROLL_CLASS,
+            explode(mon->mx, mon->my, BZ_M_SPELL(ZT_FIRE), dmg, SCROLL_CLASS,
                     /* by_you: override -11 for mon but not others */
                     by_you ? -EXPL_FIERY : EXPL_FIERY);
             dmg = 0; /* damage has been applied by explode() */

@@ -2166,7 +2166,7 @@ fprefx(struct obj *otmp)
     case EGG:
         if (otmp->corpsenm == PM_PYROLISK) {
             useup(otmp);
-            explode(u.ux, u.uy, -11, d(3, 6), 0, EXPL_FIERY);
+            explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), d(3, 6), 0, EXPL_FIERY);
             return FALSE;
         } else if (stale_egg(otmp)) {
             pline("Ugh.  Rotten egg."); /* perhaps others like it */
