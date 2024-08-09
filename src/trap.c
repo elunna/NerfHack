@@ -1830,6 +1830,8 @@ trapeffect_grease_trap(
 			old = (HFumbling & TIMEOUT);
 			HFumbling &= ~TIMEOUT;
 			HFumbling += old + rnd(3);
+            seetrap(trap);
+            trap->once = 1;
             return Trap_Effect_Finished;
         }
 
