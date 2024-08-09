@@ -6187,6 +6187,7 @@ disarm_rust_trap(struct trap *ttmp) /* Paul Sonier */
     levl[x][y].looted = 0;
     levl[x][y].blessedftn = 0;
     SET_FOUNTAIN_LOOTED(x, y);
+    newsym(x, y);
     return 1;
 }
 
