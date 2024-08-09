@@ -30,7 +30,12 @@ staticfn void use_trap(struct obj *);
 staticfn int flint_ok(struct obj *);
 staticfn int apply_flint(struct obj *);
 staticfn int touchstone_ok(struct obj *);
+staticfn int whetstone_ok(struct obj *);
+staticfn int liquid_ok(struct obj *);
 staticfn int use_stone(struct obj *);
+staticfn int use_whetstone(struct obj *, struct obj *);
+staticfn void reset_whetstone(void);
+staticfn int set_whetstone(void);
 staticfn int set_trap(void); /* occupation callback */
 staticfn void display_polearm_positions(boolean);
 staticfn int use_cream_pie(struct obj *);
@@ -2922,6 +2927,7 @@ apply_flint(struct obj *flint)
     
     return ECMD_TIME;
 }
+
 /* getobj callback for object to rub on a known touchstone */
 staticfn int
 touchstone_ok(struct obj *obj)
@@ -2943,6 +2949,34 @@ touchstone_ok(struct obj *obj)
     return GETOBJ_DOWNPLAY;
 }
 
+/* getobj callback for object to rub on a known whetstone */
+staticfn int
+whetstone_ok(struct obj *obj)
+{
+    if (!obj)
+        return GETOBJ_EXCLUDE;
+
+    if (obj->oclass == WEAPON_CLASS)
+        return GETOBJ_SUGGEST;
+
+    return GETOBJ_DOWNPLAY;
+}
+
+/* getobj callback for water to rub on a known whetstone */
+staticfn int
+liquid_ok(struct obj *obj)
+{
+    if (!obj)
+        return GETOBJ_EXCLUDE;
+
+    if (obj->oclass != POTION_CLASS)
+        return GETOBJ_EXCLUDE;
+
+    if (obj->otyp == POT_WATER)
+        return GETOBJ_SUGGEST;
+
+    return GETOBJ_DOWNPLAY;
+}
 
 /* touchstones - by Ken Arnold */
 staticfn int
@@ -2956,17 +2990,22 @@ use_stone(struct obj *tstone)
     const char *streak_color;
     char stonebuf[QBUFSZ];
     int oclass, i, j;
-    boolean known;
+    boolean known, whetting;
 
     /* in case it was acquired while blinded */
     if (!Blind)
         tstone->dknown = 1;
     known = (tstone->otyp == TOUCHSTONE && tstone->dknown
               && objects[TOUCHSTONE].oc_name_known);
+    whetting = tstone && tstone->otyp == WHETSTONE 
+            && objects[WHETSTONE].oc_name_known;
+
     Sprintf(stonebuf, "rub on the stone%s", plur(tstone->quan));
     /* when the touchstone is fully known, don't bother listing extra
        junk as likely candidates for rubbing */
-    if ((obj = getobj(stonebuf, known ? touchstone_ok : any_obj_ok,
+    if ((obj = getobj(stonebuf, whetting ? whetstone_ok 
+                                    : known ? touchstone_ok 
+                                        : any_obj_ok,
                       GETOBJ_PROMPT)) == 0)
         return ECMD_CANCEL;
 
@@ -3017,6 +3056,10 @@ use_stone(struct obj *tstone)
         && objects[obj->otyp].oc_material != MINERAL)
         oclass = RANDOM_CLASS; /* something that's neither gem nor ring */
 
+    if (tstone->otyp == WHETSTONE 
+            && (oclass == WEAPON_CLASS || is_weptool(obj))) {
+        return use_whetstone(tstone, obj);
+    }
     switch (oclass) {
     case GEM_CLASS: /* these have class-specific handling below */
     case RING_CLASS:
@@ -4730,6 +4773,7 @@ doapply(void)
     case HEALTHSTONE:
     case LOADSTONE:
     case TOUCHSTONE:
+    case WHETSTONE:
     case ROCK:
         res = use_stone(obj);
         break;
@@ -5300,5 +5344,240 @@ breakrocks(void)
     useup(rubbee);
     return 1;
 }
+
+static struct whetstoneinfo {
+    struct obj *tobj, *wsobj;
+    int time_needed;
+} whetstoneinfo;
+
+
+void
+reset_whetstone(void)
+{
+    whetstoneinfo.tobj = 0;
+    whetstoneinfo.wsobj = 0;
+}
+
+/* occupation callback */
+staticfn int
+set_whetstone(void)
+{
+    struct obj *otmp = whetstoneinfo.tobj, *ows = whetstoneinfo.wsobj;
+    int chance;
+    /* “The two most powerful warriors are patience and time.”
+     * --Leo Tolstoy
+     */
+    if (!otmp || !ows) {
+        reset_whetstone();
+        return 0;
+    } else if (!carried(otmp) || !carried(ows)) {
+        You("seem to have mislaid %s.",
+              !carried(otmp) ? yname(otmp) : yname(ows));
+        reset_whetstone();
+        return 0;
+    }
+
+    if (ows->cursed) {
+        /* Cursed whetstones will damage the applied weapon.
+
+            To balance this out - we will not force the player through the same
+            period of occupation required to get a positive effect. The bad effect
+            will be instantaneous.
+        */
+        if (rn2(2))
+            erode_obj(otmp, NULL, ERODE_RUST, EF_GREASE | EF_DESTROY);
+        else 
+            erode_obj(otmp, NULL, ERODE_CORRODE, EF_GREASE | EF_DESTROY);
+        reset_whetstone();
+        return 0;
+    }
+
+    if (--whetstoneinfo.time_needed > 0) {
+        int adj = 2;
+        if (Blind)
+            adj--;
+        if (Fumbling)
+            adj--;
+        if (Confusion)
+            adj--;
+        if (Stunned) 
+            adj--;
+        if (Hallucination) 
+            adj--;
+        
+        if (adj > 0)
+            whetstoneinfo.time_needed -= adj;
+        return 1;
+    }
+
+    /* No artifact "resist" penalty (Most artifacts are fixed anyway) */
+    chance = 4 - (ows->blessed) + (ows->cursed*2);
+
+    if (ows->blessed && otmp->cursed) {
+        /* If our whetstone is blessed, we can remove a curse */
+        pline("%s %s for a moment.", Yname2(ows),
+            otense(ows, Blind ? "warm" : "glow"));
+        uncurse(otmp);
+    }
+    
+if (!rn2(chance) && (ows->otyp == WHETSTONE)) {
+
+	    /* Remove erosion first, then sharpen dull edges */
+        int erosion = (int) greatest_erosion(otmp);
+
+        if (erosion > 0) {
+            if (otmp->oeroded)
+                otmp->oeroded--;    /* Remove rust */
+            else if (otmp->oeroded2)
+                otmp->oeroded2--;    /* Remove corrosion */
+
+            erosion = (int) greatest_erosion(otmp);
+
+            /* More custom messages for how much erosion is left. */
+            if (erosion >= 3) {
+                You("repair some of the damage, but there is still work to be done.");
+            } else if (erosion >= 2) {
+                if (Blind)
+                    pline("%s %s starting to feel better.", Yname2(otmp), (otmp->quan > 1 ? "are": "is"));
+                else
+                    pline("%s %s starting to look better.", Yname2(otmp), (otmp->quan > 1 ? "are": "is"));
+            } else {
+                pline("%s %s%s now.", Yname2(otmp),
+                    (Blind ? "probably " : (erosion ? "almost " : "")),
+                    otense(otmp, "shine"));
+            }
+
+        } else if (otmp->spe < 0) {
+            otmp->spe++;
+            pline("%s %s %ssharper now.%s", Yname2(otmp),
+                otense(otmp, Blind ? "feel" : "look"),
+                (otmp->spe >= 0 ? "much " : ""),
+                Blind ? "  (Ow!)" : "");
+
+        }
+        makeknown(WHETSTONE);
+        reset_whetstone();
+
+    } else {
+        if (Hallucination) {
+        pline("%s %s must be faulty!",
+            is_plural(ows) ? "These" : "This", xname(ows));
+        } else {
+            pline("%s", Blind ? "Pheww!  This is hard work!" :
+                        "There are no visible effects despite your efforts.");
+        }
+        reset_whetstone();
+    }
+
+    return 0;
+}
+
+/* use stone on obj. the stone doesn't necessarily need to be a whetstone. */
+staticfn int
+use_whetstone(struct obj *stone, struct obj *obj)
+{
+    const char *occutext = "sharpening";
+    int tmptime = (15 + (rnl(13) * 5)) * obj->quan;
+    register struct obj *potion;
+    boolean fail_use = TRUE;
+    register struct trap *trap = t_at(u.ux, u.uy);
+    boolean is_rusttrap = trap != 0 && trap->ttyp == RUST_TRAP;
+
+    /* Cavemen are good with rocks, so they can do the job in half the time.
+     */
+    if (Role_if(PM_CAVE_DWELLER))
+        tmptime /= 2;
+
+    if (u.ustuck && sticks(gy.youmonst.data)) {
+        You("should let go of %s first.", mon_nam(u.ustuck));
+    } else if ((welded(uwep) && (uwep != stone))
+               || (uswapwep && u.twoweap && welded(uswapwep)
+                   && (uswapwep != obj))) {
+        You("need both hands free.");
+    } else if (nohands(gy.youmonst.data)) {
+        You_cant("handle %s with your %s.", an(xname(stone)),
+                 makeplural(body_part(HAND)));
+    } else if (verysmall(gy.youmonst.data)) {
+        You("are too small to use %s effectively.", an(xname(stone)));
+    } else if (!is_pool(u.ux, u.uy) && !IS_FOUNTAIN(levl[u.ux][u.uy].typ)
+               && (!is_rusttrap)
+               && !IS_TOILET(levl[u.ux][u.uy].typ)
+               && !IS_SINK(levl[u.ux][u.uy].typ)) {
+        /* A player can use a potion of water if on hand. */
+        if (carrying(POT_WATER)) {
+            char buf[QBUFSZ];
+            Sprintf(buf, "wet the %s with", xname(stone));
+            potion = getobj(buf, liquid_ok, GETOBJ_PROMPT);
+            if (!potion) {
+                fail_use = TRUE;
+            } else if (potion->otyp == POT_WATER) {
+                fail_use = FALSE;
+                if (!rn2(7)) {
+                    /* 1 in 7 chance of using up the potion regardless of outcome */
+                    useup(potion);
+                    pline_The("%s absorbs your water!", xname(stone));
+                }
+            } else {
+                pline("That isn't water!");
+            }
+        } else
+            You("need some water when you use that.");
+    } else if (Levitation && !Lev_at_will && !u.uinwater) {
+        You_cant("reach the water.");
+    } else {
+        fail_use = FALSE;
+    }
+    if (fail_use) {
+        reset_whetstone();
+        return 0;
+    }
+
+    if (stone == whetstoneinfo.wsobj && obj == whetstoneinfo.tobj
+        && carried(obj) && carried(stone)) {
+        You("resume %s %s.", occutext, yname(obj));
+        set_occupation(set_whetstone, occutext, 0);
+        return 1;
+    }
+
+    if (obj) {
+        int ttyp = obj->otyp;
+        boolean isweapon = (obj->oclass == WEAPON_CLASS || is_weptool(obj));
+        boolean isedged =
+            (is_pick(obj) || (objects[ttyp].oc_dir & (PIERCE | SLASH)));
+
+        makeknown(stone->otyp);
+        
+        if (obj == &cg.zeroobj) {
+            You("file your nails.");
+        } else if (!is_metallic(obj)) {
+            pline("That would ruin the %s %s.",
+                  materialnm[objects[ttyp].oc_material], xname(obj));
+            return 0;
+        } else if (!isweapon || !isedged) {
+            pline("%s not something you can sharpen.",
+                  is_plural(obj) ? "They are" : "It is");
+            return 0;
+        } else if (obj->spe > 0
+                   && !obj->oeroded && !obj->oeroded2) {
+            pline("%s %s sharp and pointy enough.",
+                  is_plural(obj) ? "They" : "It",
+                  otense(obj, Blind ? "feel" : "look"));
+            return 0;
+        } else {
+            if (stone->cursed) {
+                tmptime *= 2;
+            }
+            whetstoneinfo.time_needed = tmptime;
+            whetstoneinfo.tobj = obj;
+            whetstoneinfo.wsobj = stone;
+            You("start %s %s.", occutext, yname(obj));
+            set_occupation(set_whetstone, occutext, 0);
+        }
+    } else
+        You("wave %s in the %s.", the(xname(stone)),
+            (IS_POOL(levl[u.ux][u.uy].typ) && Underwater) ? "water" : "air");
+    return 1;
+}
+
 
 /*apply.c*/

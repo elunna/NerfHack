@@ -439,6 +439,7 @@ struct obj {
      || (obj)->otyp == LOADSTONE \
      || (obj)->otyp == FLINT \
      || (obj)->otyp == HEALTHSTONE \
+     || (obj)->otyp == WHETSTONE \
      || (obj)->otyp == TOUCHSTONE)
 
 /* misc helpers, simple enough to be macros */
