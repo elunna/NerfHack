@@ -403,7 +403,8 @@ dosit(void)
             breaktoilet(u.ux, u.uy);
         } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
             pline("Vampires have no use of such things.");
-        else if (!Sick && u.uhs > 0)
+        else if (!Sick && u.uhs > 0
+                && (Upolyd ? u.mh == u.mhmax : u.uhp == u.uhpmax))
             You("don't have to go...");
         else {
             if (Role_if(PM_BARBARIAN) || Role_if(PM_CAVE_DWELLER))
@@ -414,6 +415,11 @@ dosit(void)
                 make_sick(0L, (char *) 0, TRUE, SICK_ALL);
             if (u.uhs == 0)
                 morehungry(rn2(400) + 200);
+            /* Like the fourk bench */
+            if (Upolyd)
+                u.mh = u.mhmax;
+            else
+                u.uhp = u.uhpmax;;
         }
     } else if (IS_FORGE(typ)) {
         You(sit_message, defsyms[S_forge].explanation);
