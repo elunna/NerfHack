@@ -460,10 +460,6 @@ monflee(
     if (mtmp->mberserk || mtmp->mrabid)
         return;
     
-    /* Monsters won't flee while you have aggravate mon. */
-    if (Aggravate_monster)
-        return;
-    
     if (mtmp == u.ustuck)
         release_hero(mtmp); /* expels/unstuck */
 
@@ -557,7 +553,7 @@ distfleeck(
                         /* don't warn due to fleeing monsters about
 				         * the right temple on Astral */
                         !Is_astralevel(&u.uz)))) {
-        *scared = Aggravate_monster ? 0 : 1;
+        *scared = 1;
         monflee(mtmp, rnd(rn2(7) ? 10 : 100), TRUE, TRUE);
 	
         if (Uevil_inherently /* && !context.coward */

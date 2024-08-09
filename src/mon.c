@@ -1613,6 +1613,7 @@ meatmetal(struct monst *mtmp)
         /* Don't eat indigestible/choking/inappropriate objects */
         if ((mtmp->data == &mons[PM_RUST_MONSTER] && !is_rustprone(otmp))
             || (otmp->otyp == AMULET_OF_STRANGULATION)
+            || (otmp->otyp == FOULSTONE)
             || (otmp->otyp == RIN_SLOW_DIGESTION))
             continue;
         if (is_metallic(otmp) && !obj_resists(otmp, 5, 95)
@@ -1724,6 +1725,7 @@ meatobj(struct monst* mtmp) /* for gelatinous cubes */
                    /* redundant due to non-organic composition but
                       included for emphasis */
                    || (otmp->otyp == AMULET_OF_STRANGULATION
+                       || otmp->otyp == FOULSTONE
                        || otmp->otyp == RIN_SLOW_DIGESTION)
                    /* cockatrice corpses handled above; this
                       touch_petrifies() check catches eggs */

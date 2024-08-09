@@ -165,6 +165,7 @@ moveloop_core(void)
 {
     boolean monscanmove = FALSE;
     boolean vamp_regen = vamp_can_regen();
+    struct obj *fstone;
 
 #ifdef SAFERHANGUP
     if (program_state.done_hup)
@@ -292,6 +293,14 @@ moveloop_core(void)
                     interrupt_multi("You are slowly withering away.");
                 }
 
+                /* Foulstones sometimes emit stench */
+                if ((fstone = carrying(FOULSTONE))) {
+                    if (fstone->blessed && !rn2(100))
+                        iter_mons(garlic_breath);
+                    else if (fstone->cursed && !rn2(100))
+                        create_gas_cloud(u.ux, u.uy, 1, 4);
+                }
+                
                 /* moving around while encumbered is hard work */
                 if (mvl_wtcap > MOD_ENCUMBER && u.umoved) {
                     if (!(mvl_wtcap < EXT_ENCUMBER ? svm.moves % 30

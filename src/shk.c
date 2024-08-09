@@ -778,7 +778,8 @@ u_entered_shop(char *enterstring)
         int cnt;
         const char *tool;
         struct obj *pick = carrying(PICK_AXE),
-                   *mattock = carrying(DWARVISH_MATTOCK);
+                   *mattock = carrying(DWARVISH_MATTOCK),
+                   *foul = carrying(FOULSTONE);
 
         if (pick || mattock) {
             cnt = 1;               /* so far */
@@ -813,6 +814,21 @@ u_entered_shop(char *enterstring)
                       tool, plur(cnt));
             }
             should_block = TRUE;
+        } else if (foul) {
+            should_block = TRUE;
+            tool = "stinky rock";
+            if (!Deaf && !muteshk(shkp)) {
+                SetVoice(shkp, 0, 80, 0);
+                verbalize(not_upset
+                              ? "Will you please leave your %s%s outside?"
+                              : "Leave the %s%s outside.",
+                          tool, plur(foul->quan));
+            } else {
+                pline("%s %s to let you in with your %s%s.",
+                      Shknam(shkp),
+                      not_upset ? "is hesitant" : "refuses",
+                      tool, plur(foul->quan));
+            }
         } else if (u.usteed) {
             if (!Deaf && !muteshk(shkp)) {
                 SetVoice(shkp, 0, 80, 0);
@@ -3869,6 +3885,13 @@ sellobj(
 
     offer = ltmp + cltmp;
 
+    if (obj->otyp == FOULSTONE) {
+        if (rn2(2))
+            verbalize("I'm not buying that stinky thing!");
+        else
+            verbalize("Your %s reeks, get it out of here!", xname(obj));
+    }
+
     /* get one case out of the way: nothing to sell, and no gold */
     if (!(isgold || cgold)
         && ((offer + gltmp) == 0L || gs.sell_how == SELL_DONTSELL)) {
@@ -4901,6 +4924,7 @@ shk_move(struct monst *shkp)
             uondoor = u_at(eshkp->shd.x, eshkp->shd.y);
             if (uondoor) {
                 badinv = (carrying(PICK_AXE) || carrying(DWARVISH_MATTOCK)
+                          || carrying(FOULSTONE)
                           || (Fast && (sobj_at(PICK_AXE, u.ux, u.uy)
                                   || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy))));
                 if (satdoor && badinv)
@@ -5511,6 +5535,10 @@ shk_chat(struct monst *shkp)
         pline("%s %s that %s is watching you carefully.", Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "warns you" : "indicates",
               noit_mhe(shkp));
+    } else if (carrying(FOULSTONE)) {
+         pline("%s %s that you stink and should leave immediately.",
+              Shknam(shkp),
+              (!Deaf && !muteshk(shkp)) ? "reminds you" : "indicates");
     } else if ((shkmoney = money_cnt(shkp->minvent)) < 50L) {
         pline("%s %s that business is bad.",
               Shknam(shkp),

@@ -26,7 +26,6 @@ staticfn void consume_tin(const char *);
 staticfn void start_tin(struct obj *);
 staticfn int eatcorpse(struct obj *);
 staticfn void start_eating(struct obj *, boolean);
-staticfn void garlic_breath(struct monst *);
 staticfn boolean fprefx(struct obj *);
 staticfn void fpostfx(struct obj *);
 staticfn int bite(void);
@@ -2145,7 +2144,7 @@ eating_glob(struct obj *glob)
 }
 
 /* scare nearby monster when hero eats garlic */
-staticfn void
+void
 garlic_breath(struct monst *mtmp)
 {
     if (olfaction(mtmp->data) && distu(mtmp->mx, mtmp->my) < 7)

@@ -1864,6 +1864,8 @@ attributes_enlightenment(
     }
     if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
+     if (carrying(FOULSTONE))
+        you_have("a foul stench emanating", "from your pack");
     if (u.uhitinc) {
         (void) enlght_combatinc("to hit", u.uhitinc, final, buf);
         if (iflags.tux_penalty && !Upolyd)

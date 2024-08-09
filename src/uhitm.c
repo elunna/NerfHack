@@ -6592,6 +6592,9 @@ hmonas(struct monst *mon)
                     Your("attempt to %s %s is futile.",
                          (mattk->adtyp == AD_DGST ? "engulf" : "surround"),
                          mon_nam(mon));
+                } else if (m_carrying(mon, FOULSTONE)) {
+                    You("%s something foul on the %s, yuk!", 
+                        olfaction(gy.youmonst.data) ? "smell" : "taste", mon_nam(mon));
                 } else if (failed_grab(&gy.youmonst, mon, mattk)) {
                     ; /* non-shade miss; message already given */
                 } else {

@@ -1202,7 +1202,7 @@ dog_move(
         if (edog) {
             boolean can_reach_food = could_reach_item(mtmp, nx, ny);
             for (obj = svl.level.objects[nx][ny]; obj; obj = obj->nexthere) {
-                if (obj->cursed) {
+                if (obj->cursed || obj->otyp == FOULSTONE) {
                     cursemsg[i] = TRUE;
                 } else if (can_reach_food
                            && (otyp = dogfood(mtmp, obj)) < MANFOOD

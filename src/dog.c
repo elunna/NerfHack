@@ -1084,6 +1084,7 @@ dogfood(struct monst *mon, struct obj *obj)
         }
     default:
         if (obj->otyp == AMULET_OF_STRANGULATION
+            || obj->otyp == FOULSTONE
             || obj->otyp == RIN_SLOW_DIGESTION)
             return TABU;
         if (mon_hates_silver(mon) && objects[obj->otyp].oc_material == SILVER)

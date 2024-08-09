@@ -3014,6 +3014,12 @@ use_stone(struct obj *tstone)
         return ECMD_OK;
     }
 
+    if (tstone->otyp == FOULSTONE || obj->otyp == FOULSTONE) {
+        /* TODO: Handle a message here depending on sight/hearing/smell */
+        create_gas_cloud(u.ux, u.uy, 1, 4);
+        makeknown(FOULSTONE);
+        return ECMD_TIME;
+    }
     if (tstone->otyp == TOUCHSTONE && tstone->cursed
         && obj->oclass == GEM_CLASS && !is_graystone(obj)
         && !obj_resists(obj, 80, 100)) {
@@ -4774,6 +4780,7 @@ doapply(void)
     case LOADSTONE:
     case TOUCHSTONE:
     case WHETSTONE:
+    case FOULSTONE:
     case ROCK:
         res = use_stone(obj);
         break;

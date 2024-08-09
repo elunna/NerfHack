@@ -1667,7 +1667,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     switch (mattk->adtyp) {
     case AD_DGST:
         physical_damage = TRUE;
-        if (Slow_digestion) {
+        if (Slow_digestion || carrying(FOULSTONE)) {
             /* Messages are handled below */
             u.uswldtim = 0;
             tmp = 0;
@@ -1875,7 +1875,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                        : enfolds(mtmp->data) ? "released"
                          : "expelled");
         if (flags.verbose
-            && (digests(mtmp->data) && Slow_digestion))
+            && (digests(mtmp->data) && (Slow_digestion || carrying(FOULSTONE))))
             pline("Obviously %s doesn't like your taste.", mon_nam(mtmp));
         expels(mtmp, mtmp->data, FALSE);
     }
