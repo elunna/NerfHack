@@ -87,6 +87,10 @@ do_blinding_ray(struct obj *obj)
 staticfn int
 use_camera(struct obj *obj)
 {
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return ECMD_OK;
+    }
     if (Underwater) {
         pline("Using your camera underwater would void the warranty.");
         return ECMD_OK;
@@ -855,6 +859,10 @@ use_leash(struct obj *obj)
                  noit_mon_nam(u.ustuck));
         return ECMD_OK;
     }
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return ECMD_OK;
+    }
     if (!obj->leashmon && number_leashed() >= MAXLEASHED) {
         You("cannot leash any more pets.");
         return ECMD_OK;
@@ -1088,6 +1096,11 @@ use_mirror(struct obj *obj)
     unsigned how_seen;
     char mlet;
     boolean vis, invis_mirror, useeit, monable;
+    
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return ECMD_OK;
+    }
 
     if (!getdir((char *) 0))
         return ECMD_CANCEL;
@@ -1458,6 +1471,10 @@ use_candle(struct obj **optr)
     char qbuf[QBUFSZ], qsfx[QBUFSZ], *q;
     boolean was_lamplit;
 
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return;
+    }
     if (u.uswallow) {
         You(no_elbow_room);
         return;
@@ -1697,6 +1714,10 @@ use_lamp(struct obj *obj)
                        : (obj->otyp == BRASS_LANTERN) ? "lantern"
                          : NULL;
 
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return;
+    }
     /*
      * When blind, lamps' and candles' on/off state can be distinguished
      * by heat.  For brass lantern assume that there is an on/off switch
@@ -1771,6 +1792,10 @@ light_cocktail(struct obj **optr)
 
     if (u.uswallow) {
         You(no_elbow_room);
+        return;
+    }
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
         return;
     }
 
@@ -1854,6 +1879,10 @@ dorub(void)
 
     if (nohands(gy.youmonst.data)) {
         You("aren't able to rub anything without hands.");
+        return ECMD_OK;
+    }
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
         return ECMD_OK;
     }
     obj = getobj("rub", rub_ok, GETOBJ_NOFLAGS);
@@ -2283,6 +2312,10 @@ use_tinning_kit(struct obj *obj)
     struct obj *corpse, *can, *bld;
     struct permonst *mptr;
 
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return;
+    }
     /* This takes only 1 move.  If this is to be changed to take many
      * moves, we've got to deal with decaying corpses...
      */
@@ -3215,6 +3248,8 @@ use_trap(struct obj *otmp)
 
     if (nohands(gy.youmonst.data))
         what = "without hands";
+    else if (!freehand())
+        what = "with welded %s", makeplural(body_part(HAND));
     else if (Stunned)
         what = "while stunned";
     else if (u.uswallow)
@@ -4681,6 +4716,10 @@ doapply(void)
         /* MRKR: Every Australian knows that a gum leaf makes an excellent
          * whistle, especially if your pet is a tame kangaroo named Skippy.
          */
+        if (!freehand()) {
+            Your("%s are occupied!", makeplural(body_part(HAND)));
+            break;
+        }
         if (obj->blessed) {
             use_magic_whistle(obj);
             /* sometimes the blessing will be worn off */
@@ -4858,6 +4897,10 @@ unfixable_trouble_count(boolean is_horn)
 staticfn int
 flip_through_book(struct obj *obj)
 {
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return ECMD_OK;
+    }
     if (Underwater) {
         You("don't want to get the pages even more soggy, do you?");
         return ECMD_OK;
@@ -4915,6 +4958,10 @@ flip_coin(struct obj *obj)
     struct obj *otmp = obj;
     boolean lose_coin = FALSE;
 
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return ECMD_OK;
+    }
     You("flip %s.", an(singular(obj, xname)));
     if (Underwater) {
         pline("It tumbles away.");
@@ -4997,6 +5044,11 @@ deck_of_fate(struct obj *obj)
     int index, pm, n, terr;
     boolean goodcards = FALSE, badcards = FALSE;
     struct monst *mtmp;
+
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return;
+    }
 
     if (obj->cursed) {
         badcards = TRUE;
@@ -5253,6 +5305,11 @@ playing_card_deck(struct obj *obj)
     boolean goodcards = obj->blessed || Role_if(PM_CARTOMANCER);
     /* messages are reversed for cursed decks */
     card_luck = obj->cursed ? 13 - Luck : Luck;
+
+    if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return;
+    }
 
     You("draw a hand of five cards.");
     if (Blind) {

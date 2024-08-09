@@ -405,6 +405,9 @@ pick_lock(
     if (nohands(gy.youmonst.data)) {
         You_cant("hold %s -- you have no hands!", doname(pick));
         return PICKLOCK_DID_NOTHING;
+    } else if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return PICKLOCK_DID_NOTHING;
     } else if (u.uswallow) {
         You_cant("%sunlock %s.", (picktyp == CREDIT_CARD) ? "" : "lock or ",
                  mon_nam(u.ustuck));

@@ -785,7 +785,12 @@ do_play_instrument(struct obj *instr)
         You("are incapable of playing %s.", thesimpleoname(instr));
         return ECMD_OK;
     }
-
+    /* We can only bang with welded hands, not hold other instruments. */
+    if (!freehand() && !(instr->otyp == LEATHER_DRUM
+            || instr->otyp == DRUM_OF_EARTHQUAKE)) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return ECMD_OK;
+    }
     /* eroded instruments can break */
     if (!instr->oartifact && erosion_level > 0 
             && rnd(7) <= erosion_level) {

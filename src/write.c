@@ -119,6 +119,9 @@ dowrite(struct obj *pen)
     if (nohands(gy.youmonst.data)) {
         You("need hands to be able to write!");
         return ECMD_OK;
+    } else if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return ECMD_OK;
     } else if (Glib) {
         pline("%s from your %s.", Tobjnam(pen, "slip"),
               fingers_or_gloves(FALSE));
