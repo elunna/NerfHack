@@ -306,11 +306,16 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
 void
 mon_regen(struct monst *mon, boolean digest_meal)
 {
+    struct obj *mstone = m_carrying(mon, HEALTHSTONE);
+
     if (mon->mhp < mon->mhpmax
+        && (svm.moves % 20 == 0 
+            || regenerates(mon->data)
+            || (mstone && !mstone->cursed))
+        /* Below are conditions which prevent regen */
         && (!Is_valley(&u.uz) || is_undead(mon->data))
         && !mon->mrabid
-        && (svm.moves % 20 == 0 || regenerates(mon->data))
-           && !mon->mwither)
+        && !mon->mwither)
         mon->mhp++;
     if (mon->mspec_used)
         mon->mspec_used--;
