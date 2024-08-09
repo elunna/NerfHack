@@ -1199,8 +1199,7 @@ add_obj_info(winid datawin, short otyp)
                     (oc.oc_bimanual ? "Two" : "Single"),
                     (weptool ? "-tool" : ""),
                     skill_name(skill));
-        }
-        else if (skill <= -P_BOW && oc.oc_skill >= -P_CROSSBOW) {
+        } else if (skill <= -P_BOW && oc.oc_skill >= -P_CROSSBOW) {
             /* Minor assumption: the skill name will be the same as the launcher
              * itself. Currently this is only bow and crossbow. */
             Sprintf(buf, "Ammunition meant to be fired from a %s.",
@@ -1220,8 +1219,7 @@ add_obj_info(winid datawin, short otyp)
             if (oc.oc_dir & SLASH) {
                 dmgtyp = "piercing/slashing";
             }
-        }
-        else if (oc.oc_dir & SLASH) {
+        } else if (oc.oc_dir & SLASH) {
             dmgtyp = "slashing";
         }
         Sprintf(buf, "Deals %s damage.", dmgtyp);
@@ -1334,8 +1332,7 @@ add_obj_info(winid datawin, short otyp)
             OBJPUTSTR("Comestible providing varied nutrition.");
             OBJPUTSTR("Takes various amounts of turns to eat.");
             OBJPUTSTR("May or may not be vegetarian.");
-        }
-        else {
+        } else {
             Sprintf(buf, "Comestible providing %d nutrition.", oc.oc_nutrition);
             OBJPUTSTR(buf);
             Sprintf(buf, "Takes %d turn%s to eat.", oc.oc_delay,
@@ -1345,8 +1342,7 @@ add_obj_info(winid datawin, short otyp)
              * referenced by doeat(), so there's no second source for this. */
             if (oc.oc_material == FLESH && otyp != EGG) {
                 OBJPUTSTR("Is not vegetarian.");
-            }
-            else {
+            } else {
                 /* is either VEGGY food or egg */
                 switch (otyp) {
                 case PANCAKE:
@@ -1383,11 +1379,9 @@ add_obj_info(winid datawin, short otyp)
     if (olet == SPBOOK_CLASS) {
         if (otyp == SPE_BLANK_PAPER) {
             OBJPUTSTR("Spellbook.");
-        }
-        else if (otyp == SPE_NOVEL || otyp == SPE_BOOK_OF_THE_DEAD) {
+        } else if (otyp == SPE_NOVEL || otyp == SPE_BOOK_OF_THE_DEAD) {
             OBJPUTSTR("Book.");
-        }
-        else {
+        } else {
             Sprintf(buf, "Level %d spellbook, in the %s school. %s spell.",
                     oc.oc_level, spelltypemnemonic(oc.oc_skill), dir);
             OBJPUTSTR(buf);
@@ -1419,11 +1413,9 @@ add_obj_info(winid datawin, short otyp)
     if (olet == GEM_CLASS) {
         if (oc.oc_material == MINERAL) {
             OBJPUTSTR("Type of stone.");
-        }
-        else if (oc.oc_material == GLASS) {
+        } else if (oc.oc_material == GLASS) {
             OBJPUTSTR("Piece of colored glass.");
-        }
-        else {
+        } else {
             OBJPUTSTR("Precious gem.");
         }
         /* can do unconditionally, these aren't randomized */
@@ -1495,11 +1487,9 @@ add_obj_info(winid datawin, short otyp)
     if (olet == SCROLL_CLASS || olet == SPBOOK_CLASS) {
         if (otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER) {
             OBJPUTSTR("Can be written on.");
-        }
-        else if (otyp == SPE_NOVEL || otyp == SPE_BOOK_OF_THE_DEAD) {
+        } else if (otyp == SPE_NOVEL || otyp == SPE_BOOK_OF_THE_DEAD) {
             OBJPUTSTR("Cannot be written.");
-        }
-        else {
+        } else {
             Sprintf(buf, "Takes %d to %d ink to write.",
                     ink_cost(otyp) / 2, ink_cost(otyp) - 1);
             OBJPUTSTR(buf);
@@ -1512,6 +1502,7 @@ add_obj_info(winid datawin, short otyp)
         int prop_num;
         const char* prop_name;
     } propertynames[]; /* located in timeout.c */
+
     if (oc.oc_oprop) {
         for (i = 0; propertynames[i].prop_name; ++i) {
             /* hack for alchemy smocks because everything about alchemy smocks
@@ -1559,6 +1550,8 @@ add_obj_info(winid datawin, short otyp)
                     case POLYMORPH_CONTROL:
                     case FREE_ACTION:
                     case FIXED_ABIL:
+                    case STOMPING:
+                    case FLYING:
                         confers = "Confers";
                         break;
                     default:
@@ -1570,6 +1563,24 @@ add_obj_info(winid datawin, short otyp)
                 OBJPUTSTR(buf);
             }
         }
+    }
+    /* Misc powers */
+    if (otyp == GAUNTLETS_OF_FORCE) {
+        OBJPUTSTR("Increases damage; can easily force open doors or locks.");
+        OBJPUTSTR("Allows you to break boulders and iron bars.");
+    }
+    if (otyp == LUCKSTONE) {
+        OBJPUTSTR("Confers luck.");
+    }
+    if (otyp == FOULSTONE) {
+        OBJPUTSTR("Confers aggravate monster and stench.");
+    }
+    if (otyp == ROCK) {
+        OBJPUTSTR("Can be broken to produce flint stones.");
+    }
+    if (otyp == FLINT) {
+        OBJPUTSTR("Can be applied to arrows for extra damage (only cave dwellers).");
+        OBJPUTSTR("Can be rubbed on iron to produce monster-scaring sparks.");
     }
 
     buf[0] = '\0';
@@ -1600,8 +1611,7 @@ add_obj_info(winid datawin, short otyp)
          * these work fine as nouns but two don't. */
         if (oc.oc_material == WOOD) {
             mat_str = "wood";
-        }
-        else if (oc.oc_material == VEGGY) {
+        } else if (oc.oc_material == VEGGY) {
             mat_str = "vegetable matter";
         }
 
