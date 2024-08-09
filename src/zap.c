@@ -2694,6 +2694,9 @@ dozap(void)
     if (nohands(gy.youmonst.data)) {
         You("aren't able to zap anything in your current form.");
         return ECMD_OK;
+    } else if (!freehand()) {
+        Your("%s are occupied!", makeplural(body_part(HAND)));
+        return ECMD_OK;
     }
     if (check_capacity((char *) 0))
         return ECMD_OK;
