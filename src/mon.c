@@ -4648,12 +4648,10 @@ setmangry(struct monst *mtmp, boolean via_attack)
            it's intentionally larger than the 1s and 2s that are normally
            given for this sort of thing. */
         /* reduce to 3 (average) when alignment is already very low */
-	if (!Uevil_inherently) {
+        if (!Uevil_inherently) {
             You_feel("like a hypocrite.");
-	    adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
-        } else
-            You_feel("clever."); /* no alignment penalty */
-
+            adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
+        } /* no alignment penalty for vampires */
 
         if (!Blind)
             pline("The engraving beneath you fades.");
