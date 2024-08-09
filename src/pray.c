@@ -1845,6 +1845,12 @@ offer_different_alignment_altar(
             boolean shrine;
 
             You_feel("the power of %s increase.", u_gname());
+            if (rnl(u.ulevel) > 3) {
+		    	/* KMH -- Only a chance of this happening */
+				You("feel %s is very angry at you!", a_gname());                    
+				summon_minion(altaralign, FALSE);
+				summon_minion(altaralign, FALSE);
+		    }
             exercise(A_WIS, TRUE);
             change_luck(1);
             shrine = on_shrine();
@@ -1863,6 +1869,7 @@ offer_different_alignment_altar(
                        (3 * ALIGNLIM) / (temple_occupied(u.urooms)
                                              ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
+                summon_minion(altaralign, FALSE);
                 if (!rn2(3))
                     crackaltar();
             } else if (!rn2(13))
