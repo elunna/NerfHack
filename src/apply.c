@@ -4947,10 +4947,10 @@ deck_of_fate(struct obj *obj)
     boolean goodcards = FALSE, badcards = FALSE;
     struct monst *mtmp;
 
-    if (obj->blessed || Role_if(PM_CARTOMANCER)) {
-        goodcards = TRUE;
-    } else if (obj->cursed) {
+    if (obj->cursed) {
         badcards = TRUE;
+    } else if (obj->blessed || Role_if(PM_CARTOMANCER)) {
+        goodcards = TRUE;
     }
 
     draws = 5; /* Go big or go home... */
@@ -5093,6 +5093,8 @@ deck_of_fate(struct obj *obj)
         case 11: /* Temperance */
             destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
             destroy_arm(some_armor(&gy.youmonst), FALSE, TRUE);
+            badcards = TRUE;
+            goodcards = FALSE;
             break;
         
         /* cards before this point are mostly bad, after this are mostly good */
