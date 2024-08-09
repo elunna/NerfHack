@@ -469,7 +469,7 @@ set_moreluck(void)
 
 /* KMH, balance patch -- new function for healthstones */
 void
-recalc_health()
+recalc_health(void)
 {
     register struct obj *otmp;
 
