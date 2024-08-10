@@ -2628,6 +2628,9 @@ find_ac(void)
     }
 }
 
+/* NerfHack updates:
+ * cursed rings can fall off, unless wearing gloves
+ */
 void
 glibr(void)
 {
@@ -2636,10 +2639,10 @@ glibr(void)
     boolean leftfall, rightfall, wastwoweap = FALSE;
     const char *otherwep = 0, *thiswep, *which, *hand;
 
-    leftfall = (uleft && !uleft->cursed
+    leftfall = (uleft /* && !uleft->cursed */
                 && (!uwep || !(welded(uwep) && ULEFTY)
                     || !bimanual(uwep)));
-    rightfall = (uright && !uright->cursed
+    rightfall = (uright /* && !uright->cursed */
                 && (!uwep || !(welded(uwep) && URIGHTY)
                     || !bimanual(uwep)));
 /*
