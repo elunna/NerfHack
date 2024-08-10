@@ -116,8 +116,11 @@
 #define Stoned u.uprops[STONED].intrinsic
 #define Strangled u.uprops[STRANGLED].intrinsic
 #define Vomiting u.uprops[VOMITING].intrinsic
-#define Glib u.uprops[GLIB].intrinsic
 #define Slimed u.uprops[SLIMED].intrinsic /* [Tom] */
+
+#define HGlib u.uprops[GLIB].intrinsic
+#define EGlib (uarmg && uarmg->greased)
+#define Glib (HGlib || EGlib)
 
 /* Hallucination is solely a timeout */
 #define HHallucination u.uprops[HALLUC].intrinsic

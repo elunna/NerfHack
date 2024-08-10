@@ -991,6 +991,8 @@ wash_hands(void)
             hliquid("water"));
         if (Glib) {
             make_glib(0);
+            if (uarmg)
+                uarmg->greased = 0;
             Your("%s are no longer slippery.", fingers_or_gloves(TRUE));
         }
         if (uarmg)

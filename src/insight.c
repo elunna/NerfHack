@@ -1203,7 +1203,7 @@ status_enlightenment(int mode, int final)
     if (Glib) {
         Sprintf(buf, "slippery %s", fingers_or_gloves(TRUE));
         if (wizard)
-            Sprintf(eos(buf), " (%ld)", (Glib & TIMEOUT));
+            Sprintf(eos(buf), " (%ld)", (HGlib & TIMEOUT));
         you_have(buf, "");
     }
     if (Fumbling) {

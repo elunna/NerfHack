@@ -1486,7 +1486,8 @@ doname_base(
                 /* slippery fingers is an intrinsic condition of the hero
                    rather than extrinsic condition of objects, but gloves
                    are described as slippery when hero has slippery fingers */
-                if (obj == uarmg && Glib) /* just appended "(something)",
+                if (obj == uarmg && (HGlib && !uarmg->greased))
+                                          /* just appended "(something)",
                                            * replace paren, changing that
                                            * to be "(something; slippery)" */
                     Concat(bp,  1, "; slippery)");

@@ -373,7 +373,7 @@ fix_curse_trouble(struct obj *otmp, const char *what)
         impossible("fix_curse_trouble: nothing to uncurse.");
         return;
     }
-    if (otmp == uarmg && Glib) {
+    if (otmp == uarmg && HGlib) {
         make_glib(0);
         Your("%s are no longer slippery.", gloves_simple_name(uarmg));
         if (!otmp->cursed)

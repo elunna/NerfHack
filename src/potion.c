@@ -605,8 +605,8 @@ make_deaf(long xtime, boolean talk)
 void
 make_glib(int xtime)
 {
-    disp.botl |= (!Glib ^ !!xtime);
-    set_itimeout(&Glib, xtime);
+    disp.botl |= (!HGlib ^ !!xtime);
+    set_itimeout(&HGlib, xtime);
     /* may change "(being worn)" to "(being worn; slippery)" or vice versa */
     if (uarmg)
         update_inventory();
@@ -2029,7 +2029,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                 explode_oil(obj, u.ux, u.uy);
             } else {
                 pline("Yuck!  You're covered in oil!");
-                if (!Glib)
+                if (!HGlib)
                     make_glib(rn1(5, 5));
                 if (obj->dknown)
                     makeknown(POT_OIL);
@@ -3207,7 +3207,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         } else if (potion->cursed) {
             pline_The("potion spills and covers your %s with oil.",
                       fingers_or_gloves(TRUE));
-            make_glib((int) (Glib & TIMEOUT) + d(2, 10));
+            make_glib((int) (HGlib & TIMEOUT) + d(2, 10));
         } else if (obj->oclass != WEAPON_CLASS && !is_weptool(obj)) {
             /* the following cases apply only to weapons */
             goto more_dips;

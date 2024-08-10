@@ -1890,7 +1890,7 @@ trapeffect_grease_trap(
             if (uarmg) {
                 grease_hits(uarmg);
             }
-            old = (Glib & TIMEOUT);
+            old = (HGlib & TIMEOUT);
             make_glib((int) old + rn1(6, 10)); /* + 10..15 */
             break;
         case 2:
@@ -1901,7 +1901,7 @@ trapeffect_grease_trap(
             if (uarmg) {
                 grease_hits(uarmg);
             }
-            old = (Glib & TIMEOUT);
+            old = (HGlib & TIMEOUT);
             make_glib((int) old + rn1(6, 10)); /* + 3..12 */
             break;
         case 3:

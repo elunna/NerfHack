@@ -137,7 +137,7 @@ use_towel(struct obj *obj)
 
         switch (rn2(3)) {
         case 2:
-            old = (Glib & TIMEOUT);
+            old = (HGlib & TIMEOUT);
             make_glib((int) old + rn1(10, 3)); /* + 3..12 */
             Your("%s %s!", makeplural(body_part(HAND)),
                  (old ? "are filthier than ever" : "get slimy"));
@@ -176,7 +176,7 @@ use_towel(struct obj *obj)
         }
     }
 
-    if (Glib) {
+    if (HGlib) {
         make_glib(0);
         You("wipe off your %s.",
             !uarmg ? makeplural(body_part(HAND)) : gloves_simple_name(uarmg));
@@ -1755,7 +1755,7 @@ use_lamp(struct obj *obj)
         if ((obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP) && !rn2(3)) {
             pline_The("lamp spills and covers your %s with oil.",
                       fingers_or_gloves(TRUE));
-            make_glib((int) (Glib & TIMEOUT) + d(2, 10));
+            make_glib((int) (HGlib & TIMEOUT) + d(2, 10));
         } else if (!Blind) {
             pline("%s for a moment, then %s.", Tobjnam(obj, "flicker"),
                   otense(obj, "die"));
@@ -2865,7 +2865,7 @@ use_grease(struct obj *obj)
             return ECMD_OK;
         consume_obj_charge(obj, TRUE);
 
-        oldglib = (int) (Glib & TIMEOUT);
+        oldglib = (int) (HGlib & TIMEOUT);
         if (otmp != &hands_obj) {
             You("cover %s with a thick layer of grease.", yname(otmp));
             otmp->greased = 1;
