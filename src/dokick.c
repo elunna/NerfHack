@@ -1391,6 +1391,7 @@ dokick(void)
     int glyph, oldglyph = -1;
     struct monst *mtmp;
     boolean no_kick = FALSE;
+    boolean kboots = uarmf && uarmf->otyp == KICKING_BOOTS;
 
     if (nolimbs(gy.youmonst.data) || slithy(gy.youmonst.data)) {
         You("have no legs to kick with.");
@@ -1406,7 +1407,7 @@ dokick(void)
         } else {
             return ECMD_OK;
         }
-    } else if (Wounded_legs) {
+    } else if (Wounded_legs && !kboots) {
         legs_in_no_shape("kicking", FALSE);
         no_kick = TRUE;
     } else if (near_capacity() > SLT_ENCUMBER) {
