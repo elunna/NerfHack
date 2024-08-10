@@ -4232,6 +4232,7 @@ bhit(
     boolean shopdoor = FALSE, point_blank = TRUE;
     boolean in_skip = FALSE, allow_skip = FALSE;
     boolean tethered_weapon = FALSE;
+    boolean in_pit = u.utraptype == TT_PIT;
     int skiprange_start = 0, skiprange_end = 0, skipcount = 0;
     struct obj *was_returning =
         (iflags.returning_missile == obj) ? obj : (struct obj *) 0;
@@ -4251,6 +4252,10 @@ bhit(
         allow_skip = !rn2(3);
     }
 
+    /* Being in a pit limits our range to whatever is next to the pit */
+    if (in_pit)
+        range = 1;
+    
     if (weapon == FLASHED_LIGHT) {
         tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
     } else if (weapon == THROWN_TETHERED_WEAPON && obj) {
@@ -5256,6 +5261,9 @@ dobuzz(
     int range, fltyp = zaptype(type), damgtype = fltyp % 10;
     coordxy lsx, lsy;
     struct monst *mon;
+    struct monst *zapper;
+    struct trap *ttmp;
+
     coord save_bhitpos;
     boolean shopdamage = FALSE,
             fireball = (type == ZT_SPELL(ZT_FIRE)), /* set once */
@@ -5291,6 +5299,18 @@ dobuzz(
     range = rn1(7, 7);
     if (dx == 0 && dy == 0)
         range = 1;
+
+    /* Being in a pit limits zap range to 1 */
+    zapper = m_at(sx, sy);
+    if (zapper == &gy.youmonst) {
+        if (u.utraptype == TT_PIT)
+            range = 1;
+    } else if (zapper && zapper->mtrapped) {
+        ttmp = t_at(zapper->mx, zapper->my);
+        if (ttmp && is_pit(ttmp->ttyp))
+            range = 1;
+    }
+
     save_bhitpos = gb.bhitpos;
 
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, hdmgtype));

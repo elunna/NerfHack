@@ -1845,8 +1845,16 @@ mbhit(
     struct obj *obj)              /* 2nd arg to fhitm/fhito */
 {
     struct monst *mtmp;
+    struct trap *ttmp;
     uchar ltyp;
     int ddx, ddy, otyp = obj->otyp;
+
+    /* Monsters in pits can only zap a range of 1. */
+    if (mon->mtrapped) {
+        ttmp = t_at(mon->mx, mon->my);
+        if (ttmp && is_pit(ttmp->ttyp))
+            range = 1;
+    }
 
     gb.bhitpos.x = mon->mx;
     gb.bhitpos.y = mon->my;
