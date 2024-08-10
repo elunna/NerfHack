@@ -1791,7 +1791,7 @@ trapeffect_rust_trap(
  * sources of fumbling. In timeout.c we check if this is I_SPECIAL
  * and reset it for a while or until it's wiped off by a towel.
  */
-staticfn void
+void
 make_feet_greasy(void)
 {
     long old;
