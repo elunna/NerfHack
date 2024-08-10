@@ -2545,8 +2545,13 @@ use_unicorn_horn(struct obj **optr)
     val_limit = (obj && (obj->blessed || Role_if(PM_HEALER))) 
                 ? trouble_count : 1;
 
-    if (obj && obj->spe > 0)
+    if (!obj)
+        impossible("use_unicorn_horn with null obj?");
+
+    if (obj->spe > 0)
         chance = (obj->spe < 12) ? (obj->spe + 6) : 18;
+    else
+        chance = 6;
    
     /* Healer bonus */
     if (Role_if(PM_HEALER))
