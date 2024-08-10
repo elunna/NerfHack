@@ -740,6 +740,7 @@ extern int dowear(void);
 extern int doputon(void);
 extern void find_ac(void);
 extern void glibr(void);
+extern void ck_greased_rings(void);
 extern struct obj *some_armor(struct monst *) NONNULLARG1;
 extern struct obj *stuck_ring(struct obj *, int);
 extern struct obj *unchanger(void);

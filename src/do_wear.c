@@ -2733,6 +2733,34 @@ glibr(void)
     }
 }
 
+/* Mostly duplicated from above glibr */
+void
+ck_greased_rings(void)
+{
+    struct obj *otmp;
+    boolean leftfall = (uleft && uleft->greased),
+            rightfall = (uright && uright->greased);
+
+    if (!uarmg && (leftfall || rightfall) && !nolimbs(gy.youmonst.data)) {
+        Your("%s off your %s.",
+             (leftfall && rightfall) ? "rings slip" : "ring slips",
+             (leftfall && rightfall) ? fingers_or_gloves(FALSE)
+                                     : body_part(FINGER));
+        if (leftfall) {
+            otmp = uleft;
+            Ring_off(uleft);
+            dropx(otmp);
+            cmdq_clear(CQ_CANNED);
+        }
+        if (rightfall) {
+            otmp = uright;
+            Ring_off(uright);
+            dropx(otmp);
+            cmdq_clear(CQ_CANNED);
+        }
+    }
+}
+
 struct obj *
 some_armor(struct monst *victim)
 {

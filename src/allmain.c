@@ -258,6 +258,8 @@ moveloop_core(void)
 
                 if (Glib)
                     glibr();
+                ck_greased_rings();
+                
                 nh_timeout();
                 run_regions();
 
