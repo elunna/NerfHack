@@ -772,7 +772,7 @@ extern boolean tamedog(struct monst *, struct obj *, boolean) NONNULLARG1;
 extern void abuse_dog(struct monst *) NONNULLARG1;
 extern void wary_dog(struct monst *, boolean) NONNULLARG1;
 extern struct monst * make_msummoned(struct permonst *, struct monst *, boolean, coordxy, coordxy);
-
+extern void check_dogs(void);
 
 /* ### dogmove.c ### */
 

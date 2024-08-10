@@ -262,6 +262,7 @@ moveloop_core(void)
                 
                 nh_timeout();
                 run_regions();
+                check_dogs();
 
                 if (u.ublesscnt)
                     u.ublesscnt--;

@@ -11,6 +11,14 @@ staticfn void set_mon_lastmove(struct monst *);
 staticfn int mon_leave(struct monst *) NONNULLARG1;
 staticfn boolean keep_mon_accessible(struct monst *);
 
+struct Node {
+    struct monst *dog;
+    struct Node* next;
+};
+
+staticfn void add_node(struct Node **, struct monst *);
+staticfn void rm_node(struct Node **, struct monst *);
+
 enum arrival {
     Before_you =  0, /* monsters kept on migrating_mons for accessibility;
                       * they haven't actually left their level */
@@ -1413,6 +1421,107 @@ struct monst * make_msummoned(
         pline("%s suddenly appears!", Amonnam(mtmp));
     }
     return mtmp;
+}
+
+/* Helper Function to build a linked list of pets */
+staticfn void add_node(struct Node** head, struct monst *dog)
+{
+    struct Node* new_node
+        = (struct Node*) malloc(sizeof(struct Node));
+    new_node->dog = dog;
+    new_node->next = NULL;
+    /* in case this is the first node make the new_node as
+     the head of the LinkedList */
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+    /* Create a pointer to iterate till the last node */
+    struct Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+}
+
+/* Given a reference (pointer to pointer) to the head of a 
+   list and a dog, deletes the first occurrence of dog in 
+   linked list */
+void rm_node(struct Node** head_ref, struct monst *dog) 
+{ 
+    struct Node *temp = *head_ref, *prev; 
+  
+    /* If head node itself holds the dog to be deleted */
+    if (temp != NULL && temp->dog == dog) { 
+        *head_ref = temp->next;
+        free(temp);
+        return; 
+    } 
+  
+    /* Search for the dog to be deleted, keep track of the 
+       previous node as we need to change 'prev->next'  */
+    while (temp != NULL && temp->dog != dog) { 
+        prev = temp; 
+        temp = temp->next; 
+    } 
+
+    if (temp == NULL) 
+        return; 
+  
+    prev->next = temp->next; 
+    free(temp);
+} 
+
+/* Ported from EvilHack with modifications.
+ * If you have too many pets on the level, untame the weakest ones.
+ * The strength of the pet is measured by m_lev.
+ */
+void
+check_dogs(void)
+{
+    /* The Astral Plane is still very unfriendly to pets. */
+    int numdogs = 0, maxdogs = ACURR(A_CHA) / (Is_astralevel(&u.uz) ? 8 : 4);
+    struct Node* head = NULL;
+    
+    /* Create a linked list of all pets */
+    for (struct monst *d = fmon; d; d = d->nmon)
+        if (d->mtame && !d->msummoned) {
+            add_node(&head, d);
+            numdogs++;
+        }
+
+    do {
+        int ties = 1;
+        struct monst *weakest = 0;
+        struct Node* nextdog = head;
+
+        while (nextdog != NULL) {
+            /* never untame steed, but it still counts towards total pets */
+            if (nextdog->dog == u.usteed)
+                continue;
+            if (!weakest) {
+                weakest = nextdog->dog;
+            } else if (nextdog->dog->m_lev < weakest->m_lev) {
+                weakest = nextdog->dog;
+                ties = 1;
+            } else if (nextdog->dog->m_lev == weakest->m_lev) {
+                if (!rn2(++ties))
+                    weakest = nextdog->dog;
+            }
+            nextdog = nextdog->next;
+        }
+
+        if (weakest) {
+            weakest->mtame = 0;
+            /* become hostile from abuse or random chance. */
+            if (rn2(EDOG(weakest)->abuse + 1) || !rn2(3))
+                weakest->mpeaceful = 0;
+            if (weakest->mleashed)
+                m_unleash(weakest, TRUE);
+            rm_node(&head, weakest);
+            --numdogs;
+        }
+    } while (numdogs > maxdogs);
 }
 
 /*dog.c*/
