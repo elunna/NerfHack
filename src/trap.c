@@ -73,6 +73,7 @@ staticfn boolean adj_nonconjoined_pit(struct trap *);
 staticfn int try_lift(struct monst *, struct trap *, int, boolean);
 staticfn int help_monster_out(struct monst *, struct trap *);
 staticfn void untrap_box(struct obj *, boolean, boolean);
+
 #if 0
 staticfn void join_adjacent_pits(struct trap *);
 #endif
@@ -1785,6 +1786,21 @@ trapeffect_rust_trap(
     return Trap_Effect_Finished;
 }
 
+
+/* This is not great - but FROMOUTSIDE is used by other 
+ * sources of fumbling. In timeout.c we check if this is I_SPECIAL
+ * and reset it for a while or until it's wiped off by a towel.
+ */
+staticfn void
+make_feet_greasy(void)
+{
+    long old;
+    HFumbling |= (I_SPECIAL);
+    old = (HFumbling & TIMEOUT);
+    HFumbling &= ~TIMEOUT;
+    HFumbling += old + rnd(3);
+}
+
 staticfn int
 trapeffect_grease_trap(
     struct monst *mtmp,
@@ -1823,13 +1839,7 @@ trapeffect_grease_trap(
                 }
 			}
 
-			/* This is not great - but FROMOUTSIDE is used by other 
-			 * sources of fumbling. In timeout.c we check if this is I_SPECIAL
-			 * and reset it for a while or until it's wiped off by a towel. */
-			HFumbling |= (I_SPECIAL);
-			old = (HFumbling & TIMEOUT);
-			HFumbling &= ~TIMEOUT;
-			HFumbling += old + rnd(3);
+            make_feet_greasy();
             seetrap(trap);
             trap->once = 1;
             return Trap_Effect_Finished;
@@ -1882,43 +1892,31 @@ trapeffect_grease_trap(
                 Shield_off();
                 dropx(otmp);
             }
-            if (u.twoweap) {
+            if (u.twoweap)
                 grease_hits(uswapwep);
-            } else if (uwep && bimanual(uwep)) {
+            else if (uwep && bimanual(uwep))
                 grease_hits(uwep);
-            }
-            if (uarmg) {
+            if (uarmg)
                 grease_hits(uarmg);
-            }
             old = (HGlib & TIMEOUT);
             make_glib((int) old + rn1(6, 10)); /* + 10..15 */
             break;
         case 2:
             pline("%s your right %s!", A_gush_of_grease_hits, body_part(ARM));
-            if (uwep && bimanual(uwep)) {
+            if (uwep && bimanual(uwep))
                 grease_hits(uwep);
-            }
             if (uarmg) {
                 grease_hits(uarmg);
+                grease_hits(uarmg); /* Two chances for good measure */
             }
-            old = (HGlib & TIMEOUT);
-            make_glib((int) old + rn1(6, 10)); /* + 3..12 */
             break;
         case 3:
             pline("%s your %s!", A_gush_of_grease_hits, body_part(FOOT));
             if (uarmf) {
                 grease_hits(uarmf);
-                if (objdescr_is(uarmf, "buckled boots")) {
-                    Your("%s stay strapped tight to your feet.",
-                         xname(uarmf));
-                } else {
-                    otmp = uarmf;
-                    Your("%s slip off your %s.", xname(otmp),
-                         makeplural(body_part(FOOT)));
-                    Boots_off();
-                    dropx(otmp);
-                }
+                grease_hits(uarmf); /* Two chances for good measure */
             }
+            make_feet_greasy();
             break;
         default:
             pline("%s you!", A_gush_of_grease_hits);
@@ -1947,13 +1945,13 @@ trapeffect_grease_trap(
                 }
             }
             
-            if (uarmc) {
+            if (uarmc)
                 grease_hits(uarmc);
-            } else if (uarm) {
+            else if (uarm)
                 grease_hits(uarm);
-            } else if (uarmu) {
+            else if (uarmu)
                 grease_hits(uarmu);
-            }
+            
         }
         update_inventory();
     } else {

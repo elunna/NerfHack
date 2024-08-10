@@ -62,6 +62,15 @@ fingers_or_gloves(boolean check_gloves)
             : makeplural(body_part(FINGER))); /* "fingers" */
 }
 
+/* plural "feet" or optionally "boots" */
+const char *
+feet_or_boots(boolean check_boots)
+{
+    return ((check_boots && uarmf)
+            ? boots_simple_name(uarmg)
+            : makeplural(body_part(FOOT))); /* "feet" */
+}
+
 void
 off_msg(struct obj *otmp)
 {
@@ -259,6 +268,9 @@ Boots_on(void)
         uarmf->known = 1; /* boots' +/- evident because of status line AC */
         update_inventory();
     }
+    if (uarmf && uarmf->greased && uarmf->otyp != FUMBLE_BOOTS)
+        make_feet_greasy();
+        
     return 0;
 }
 
@@ -2147,6 +2159,13 @@ canwearobj(struct obj *otmp, long *mask, boolean noisy)
                       c_boots); /* makeplural(body_part(FOOT)) yields
                                    "rear hooves" which sounds odd */
             err++;
+        } else if (GreasedFeet || GreasedBoots) {
+            /* prevent slippery feet from transferring to booted feet */
+            if (noisy)
+                Your("%s are too slippery to pull on %s.",
+                     feet_or_boots(FALSE), boots_simple_name(otmp));
+            make_glib((int) (HGlib & TIMEOUT) + d(8, 4));
+            err++;
         } else if (u.utrap
                    && (u.utraptype == TT_BEARTRAP || u.utraptype == TT_INFLOOR
                        || u.utraptype == TT_LAVA
@@ -2834,6 +2853,12 @@ select_off(struct obj *otmp)
         } else if (u.utrap && u.utraptype == TT_INFLOOR) {
             You("are stuck in the %s, and cannot pull your %s out.",
                 surface(u.ux, u.uy), makeplural(body_part(FOOT)));
+            return 0;
+        } else if (GreasedFeet || GreasedBoots) {
+            pline("%s %s are too slippery to take off.",
+                  uarmg->unpaid ? "The" : "Your", /* simplified Shk_Your() */
+                  boots_simple_name(uarmf));
+            make_glib((int) (HGlib & TIMEOUT) + d(8, 4));
             return 0;
         }
     }

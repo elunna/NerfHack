@@ -136,7 +136,9 @@
 
 #define HFumbling u.uprops[FUMBLING].intrinsic
 #define EFumbling u.uprops[FUMBLING].extrinsic
-#define Fumbling (HFumbling || EFumbling)
+#define GreasedBoots (uarmf && uarmf->greased)
+#define GreasedFeet (HFumbling & I_SPECIAL)
+#define Fumbling (HFumbling || EFumbling || GreasedBoots)
 
 /* HWounded_legs indicates whether wounded leg(s) condition exists and
    holds the timeout for recovery; EWounded_legs uses the worn-ring bits

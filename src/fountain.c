@@ -984,8 +984,10 @@ wash_hands(void)
               uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
         HFumbling &= ~I_SPECIAL;
         HFumbling = 0;
-        if (uarmf)
+        if (uarmf) {
+            uarmf->greased = 0;
             res = water_damage(uarmf, (const char *) 0, TRUE);
+        }
     } else {
         You("wash your %s%s in the %s.", uarmg ? "gloved " : "", hands,
             hliquid("water"));

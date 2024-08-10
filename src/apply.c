@@ -198,11 +198,13 @@ use_towel(struct obj *obj)
         if (is_wet_towel(obj))
             dry_a_towel(obj, -1, drying_feedback);
         return ECMD_TIME;
-    } else if (HFumbling & I_SPECIAL) {
+    } else if (GreasedFeet || GreasedBoots) {
         pline("You've got the goop off your %s.", 
               uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
         HFumbling &= ~I_SPECIAL;
         HFumbling = 0;
+        if (uarmf)
+            uarmf->greased = 0;
         if (rn2(3) && !obj->greased) {
             Your("towel gets covered in grease!");
             obj->greased = 1;
@@ -2874,6 +2876,8 @@ use_grease(struct obj *obj)
                 pline("Some of the grease gets all over your %s.",
                       fingers_or_gloves(TRUE));
             }
+            if (otmp == uarmf && uarmf->greased)
+                make_feet_greasy();
         } else {
             make_glib(oldglib + rn1(11, 5)); /* + 5..15 */
             You("coat your %s with grease.", fingers_or_gloves(TRUE));

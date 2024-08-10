@@ -704,6 +704,7 @@ extern const char *obj_pmname(struct obj *) NONNULLARG1;
 /* ### do_wear.c ### */
 
 extern const char *fingers_or_gloves(boolean);
+extern const char *feet_or_boots(boolean);
 extern void off_msg(struct obj *) NONNULLARG1;
 extern void toggle_displacement(struct obj *, long, boolean);
 extern void set_wear(struct obj *);
@@ -3311,6 +3312,7 @@ extern const char * trapname(int, boolean);
 extern void ignite_items(struct obj *) NO_NNARGS;
 extern void trap_ice_effects(coordxy x, coordxy y, boolean ice_is_melting);
 extern void trap_sanity_check(void);
+extern void make_feet_greasy(void);
 
 /* ### u_init.c ### */
 
