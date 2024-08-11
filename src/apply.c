@@ -5178,6 +5178,7 @@ deck_of_fate(struct obj *obj)
             mtmp = makemon(&mons[PM_ROPE_GOLEM], u.ux, u.uy, NO_MM_FLAGS);
             if (!Blind && mtmp)
                 pline("A hangman arrives!");
+            change_luck(-1);
             break;
         case 10: /* Justice */
             if (u.ualign.abuse < (unsigned) -13 || u.ualign.record < 0) {
