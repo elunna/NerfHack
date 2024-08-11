@@ -795,7 +795,7 @@ m_initinv(struct monst *mtmp)
                 (void) mongets(mtmp, POT_HEALING);
                 /*FALLTHRU*/
             case 3:
-                (void) mongets(mtmp, WAN_STRIKING);
+                (void) mongets(mtmp, WAN_SLEEP);
             }
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_CLERIC)) {
