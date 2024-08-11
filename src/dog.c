@@ -1480,6 +1480,9 @@ check_dogs(void)
             numdogs++;
         }
 
+    if (numdogs <= maxdogs)
+        return;
+
     do {
         int ties = 1;
         struct monst *weakest = 0;
