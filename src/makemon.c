@@ -797,6 +797,23 @@ m_initinv(struct monst *mtmp)
             case 3:
                 (void) mongets(mtmp, WAN_SLEEP);
             }
+
+            /* MAJOR fall through ... */
+            switch (rnd(4)) {
+			case 1:
+                (void) mongets(mtmp, POT_HEALING);
+                /*FALLTHRU*/
+			case 2:
+                (void) mongets(mtmp, POT_EXTRA_HEALING);
+                /*FALLTHRU*/
+			case 3:
+                (void) mongets(mtmp, SCR_TELEPORTATION);
+                /*FALLTHRU*/
+			case 4:
+                (void) mongets(mtmp, WAN_TELEPORTATION);
+                /*FALLTHRU*/
+		    }
+
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_CLERIC)) {
             (void) mongets(mtmp, rn2(7) ? ROBE
