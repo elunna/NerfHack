@@ -998,6 +998,12 @@ clone_mon(
 
     m2 = newmonst();
     *m2 = *mon; /* copy condition of old monster */
+    
+    /* Make sure no worn masks are active */
+    m2->misc_worn_check = 0L;
+    m2->weapon_check = NEED_WEAPON;
+    m2->mw = (struct obj *) 0;
+
     m2->mextra = (struct mextra *) 0;
     m2->nmon = fmon;
     fmon = m2;
