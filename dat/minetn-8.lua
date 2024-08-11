@@ -90,7 +90,7 @@ des.monster({ id = "ape", coord=in_zoo:rndcoord(1), peaceful = 0})
 -- Just 1 big bad (by request of hothraxxa)
 if percent(50) then
     des.monster({ id = "mumak", coord=in_zoo:rndcoord(1), peaceful = 0})
-else if percent(85) then
+elseif percent(85) then
     des.monster({ id = "giant anaconda", coord=in_zoo:rndcoord(1), peaceful = 0})
 else
     des.monster({ id = "mastodon", coord=in_zoo:rndcoord(1), peaceful = 0})
