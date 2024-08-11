@@ -5169,8 +5169,9 @@ deck_of_fate(struct obj *obj)
             break;
         case 8: /* The Hermit */
             You_feel("like hiding!");
-            level_tele();
-            incr_itimeout(&HInvis, rn1(500, 500));
+            tele();
+			incr_itimeout(&HInvis, rn1(500, 500));
+			newsym(u.ux, u.uy);
             aggravate();
             break;
         case 9: /* The Hanged Man */
@@ -5250,7 +5251,7 @@ deck_of_fate(struct obj *obj)
             break;
         case 17: /* The Empress */
             terr = levl[u.ux][u.uy].typ;
-            if (terr == ROOM /*|| terr == GRASS */|| terr == CORR) {
+            if (terr == ROOM || terr == CORR) {
                 if (!Blind)
                     Your("throne arrives.");
                 levl[u.ux][u.uy].typ = THRONE;
