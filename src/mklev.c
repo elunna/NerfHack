@@ -884,18 +884,6 @@ fill_ordinary_room(
     if (croom->needfill != FILL_NORMAL)
         return;
 
-    /* put a sleeping monster inside */
-    /* Note: monster may be on the stairs. This cannot be
-       avoided: maybe the player fell through a trap door
-       while a monster was on the stairs. Conclusion:
-       we have to check for monsters on the stairs anyway. */
-
-    if ((u.uhave.amulet || !rn2(3)) && somexyspace(croom, &pos)) {
-        tmonst = makemon((struct permonst *) 0, pos.x, pos.y, MM_NOGRP);
-        if (tmonst && tmonst->data == &mons[PM_GIANT_SPIDER]
-            && !occupied(pos.x, pos.y))
-            (void) maketrap(pos.x, pos.y, WEB);
-    }
     if (Is_rogue_level(&u.uz))
         goto skip_nonrogue;
 
@@ -935,6 +923,19 @@ fill_ordinary_room(
         x = 2;
     while (!rn2(x) && (++trycnt < 1000))
         mktrap(0, MKTRAP_NOFLAGS, croom, (coord *) 0);
+
+    /* put a sleeping monster inside */
+    /* Note: monster may be on the stairs. This cannot be
+       avoided: maybe the player fell through a trap door
+       while a monster was on the stairs. Conclusion:
+       we have to check for monsters on the stairs anyway. */
+
+    if ((u.uhave.amulet || !rn2(3)) && somexyspace(croom, &pos)) {
+        tmonst = makemon((struct permonst *) 0, pos.x, pos.y, MM_NOGRP);
+        if (tmonst && tmonst->data == &mons[PM_GIANT_SPIDER]
+            && !occupied(pos.x, pos.y))
+            (void) maketrap(pos.x, pos.y, WEB);
+    }
     if (!rn2(3) && somexyspace(croom, &pos))
         (void) mkgold(0L, pos.x, pos.y);
 
