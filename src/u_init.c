@@ -31,7 +31,7 @@ staticfn boolean restricted_spell_discipline(int);
 #define UNDEF_TYP 0
 #define UNDEF_SPE '\177'
 #define UNDEF_BLESS 2
-
+#define CURSED 3
 /*
  *      Initial inventory for the various roles.
  */
@@ -126,13 +126,16 @@ static struct trobj Monk[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Priest[] = {
+    #define P_BOOK 7
+    #define P_POT 3
     { MACE, 1, WEAPON_CLASS, 1, 1 },
     { ROBE, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_WATER, 0, POTION_CLASS, 4, 1 }, /* holy water */
     { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 4, 1 },
     { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 1 },
-    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS },
+    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS },
+    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Ranger[] = {
@@ -263,7 +266,7 @@ static struct inv_sub {
     { PM_GNOME, LOW_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, HIGH_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, LEATHER_ARMOR, GNOMISH_SUIT },
-        /* Create vampire blood */
+    /* Create vampire blood */
     { PM_VAMPIRE, POT_FRUIT_JUICE, POT_VAMPIRE_BLOOD },
     { PM_VAMPIRE, CLOVE_OF_GARLIC, POT_VAMPIRE_BLOOD },
     { PM_VAMPIRE, FOOD_RATION, POT_VAMPIRE_BLOOD },
@@ -737,6 +740,14 @@ u_init_role(void)
         break;
     }
     case PM_CLERIC: /* priest/priestess */
+        if (Race_if(PM_VAMPIRE)) {
+            /* This works very well for vampires, but it's also indirectly
+             * related to the dazzle technique from SLASH'EM. */
+            Priest[P_BOOK].trotyp = SPE_CONFUSE_MONSTER;
+            /* Unholy instead of holy */
+            Priest[P_POT].trbless = CURSED;
+        }
+
         ini_inv(Priest);
         if (!rn2(10))
             ini_inv(Lamp);
@@ -1245,7 +1256,7 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
             obj->cknown = obj->lknown = 1;
             obj->otrapped = 0;
         }
-        obj->cursed = 0;
+        obj->cursed = (trop->trbless == CURSED);
         if (obj->opoisoned && u.ualign.type != A_CHAOTIC)
             obj->opoisoned = 0;
         if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS) {
@@ -1266,8 +1277,14 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
                 obj->spe = rne(3);
         }
         if (trop->trbless != UNDEF_BLESS)
-            obj->blessed = trop->trbless;
+            obj->blessed = (trop->trbless == 1);
 
+        /* Vampires like their blood to be unholy. */
+        if (obj->otyp == POT_BLOOD || obj->otyp == POT_VAMPIRE_BLOOD) {
+            curse(obj);
+            if (trop->trquan > 4L)
+                trop->trquan = 4L;
+        }
     }
     /* defined after setting otyp+quan + blessedness */
     obj->owt = weight(obj);
@@ -1361,7 +1378,7 @@ ini_inv(struct trobj *trop)
 
         otyp = ini_inv_obj_substitution(trop, obj);
 
-	/* Set up cartomancer cards */
+	    /* Set up cartomancer cards */
         if (Role_if(PM_CARTOMANCER) && obj->otyp == SCR_CREATE_MONSTER) {
             do {
                 i = rn2(NUMMONS);
@@ -1372,13 +1389,14 @@ ini_inv(struct trobj *trop)
                 bless(obj);
         }
 
-        /* nudist gets no armor */
-        if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS) {
+        /* nudist gets no armor, vampires get no food */
+        if ((u.uroleplay.nudist && obj->oclass == ARMOR_CLASS)
+            || (Race_if(PM_VAMPIRE) && obj->oclass == FOOD_CLASS)) {
             dealloc_obj(obj);
             trop++;
             continue;
         }
-
+        
         ini_inv_adjust_obj(trop, obj);
         obj = addinv(obj);
 
@@ -1397,6 +1415,7 @@ ini_inv(struct trobj *trop)
 #undef UNDEF_TYP
 #undef UNDEF_SPE
 #undef UNDEF_BLESS
+#undef UNDEF_CURSED
 #undef B_MAJOR
 #undef B_MINOR
 #undef C_AMMO
