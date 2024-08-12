@@ -317,7 +317,7 @@ mquaffmsg(struct monst *mtmp, struct obj *otmp)
 #define MUSE_WAN_UNDEAD_TURNING 20 /* also an offensive item */
 #define MUSE_EUCALYPTUS_LEAF 21
 #define MUSE_POT_RESTORE_ABILITY 22
-
+#define MUSE_POT_VAMPIRE_BLOOD   23
 /*
 #define MUSE_INNATE_TPT 9999
  * We cannot use this.  Since monsters get unlimited teleportation, if they
@@ -353,6 +353,13 @@ m_use_healing(struct monst *mtmp)
             return TRUE;
         }
     }
+    if (is_vampire(mtmp->data) &&
+        (obj = m_carrying(mtmp, POT_VAMPIRE_BLOOD)) !=0) {
+        gm.m.defensive = obj;
+        gm.m.has_defense = MUSE_POT_VAMPIRE_BLOOD;
+        return TRUE;
+    }
+
     return FALSE;
 }
 
@@ -766,6 +773,11 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             if (obj->otyp == POT_HEALING) {
                 gm.m.defensive = obj;
                 gm.m.has_defense = MUSE_POT_HEALING;
+            }
+            nomore(MUSE_POT_VAMPIRE_BLOOD);
+            if(is_vampire(mtmp->data) && obj->otyp == POT_VAMPIRE_BLOOD) {
+                gm.m.defensive = obj;
+                gm.m.has_defense = MUSE_POT_VAMPIRE_BLOOD;
             }
         } else { /* Pestilence */
             nomore(MUSE_POT_FULL_HEALING);
@@ -1256,6 +1268,20 @@ use_defensive(struct monst *mtmp)
             pline("%s looks completely healed.", Monnam(mtmp));
         if (oseen)
             makeknown(otmp->otyp);
+        m_useup(mtmp, otmp);
+        return 2;
+     case MUSE_POT_VAMPIRE_BLOOD:
+        mquaffmsg(mtmp, otmp);
+        if (!otmp->blessed) {
+            i = rnd(8) + rnd(2);
+            mtmp->mhp += i;
+            mtmp->mhpmax += i;
+            if (vismon)
+                pline("%s looks full of life.", Monnam(mtmp));
+        } else if (vismon)
+            pline("%s discards the congealed blood in disgust.", Monnam(mtmp));
+        if (oseen)
+            makeknown(POT_VAMPIRE_BLOOD);
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_LIZARD_CORPSE:
