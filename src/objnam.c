@@ -1738,12 +1738,15 @@ doname_base(
         if (obj->known) {
             ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj) 
                      + race_bonus(obj) + misc_bonus(obj));
-        } else {
+        } 
+#if 0 /* This leaks info for cloaks, etc */
+        else {
             /* Don't factor in racial bonus if we don't know the identity.
              * This would leak info for elven boots. */
             ConcatF1(bp, 0, " [%dAC]", UNK_ARM_BONUS(obj)
                      /*+ race_bonus(obj)*/ + misc_bonus(obj));
         }
+#endif
     }
 
     if (obj->oclass == WEAPON_CLASS) {
