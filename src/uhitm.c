@@ -6060,6 +6060,14 @@ attack_blocker(struct monst *mdef)
     }
     if (selected < 0) /* no blockers */
         return (const char *) 0;
+
+     /* train shield skill if the shield made a block
+      * TODO: Not ideal for this to be here, but for now the only
+      * call to attack_blocker for the player is in mhitu.
+      */
+    if (mdef == &gy.youmonst && armasks[selected] == W_ARMS)
+        use_skill(P_SHIELD, 1);
+
     if (armasks[selected] == BLOCKED_BODY)
         return mdef->data->mlet == S_DRAGON ? "scaly hide" : "thick hide";
     else if (armasks[selected] == BLOCKED_PROT)

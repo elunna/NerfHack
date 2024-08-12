@@ -265,10 +265,6 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
             pline_xy(mtmp->mx, mtmp->my, "You %s %s attack with your %s.",
                      rn2(3) ? "block" : "deflect", s_suffix(mon_nam(mtmp)),
                      blocker);
-            
-            /* train shield skill if the shield made a block */
-            if (blocker == uarms)
-                use_skill(P_SHIELD, 1);
         } else
             pline_mon(mtmp, "%s %smisses!", Monnam(mtmp),
                      (nearmiss && flags.verbose) ? "just " : "");
