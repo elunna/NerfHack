@@ -2665,6 +2665,10 @@ doturn(void)
     /* Knights & Priest(esse)s only please */
     const char *Gname;
 
+    if (Race_if(PM_VAMPIRE)) {
+        You("shudder at the thought.");
+        return ECMD_OK;
+    }
     if (!Role_if(PM_CLERIC) && !Role_if(PM_KNIGHT)) {
         /* Try to use the "turn undead" spell. */
         if (known_spell(SPE_TURN_UNDEAD))
