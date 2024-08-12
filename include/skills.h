@@ -61,9 +61,10 @@ enum p_skills {
     /* Other types of combat */
     P_BARE_HANDED_COMBAT = 35, /* actually weaponless; gloves are ok */
     P_TWO_WEAPON_COMBAT  = 36, /* pair of weapons, one in each hand */
-    P_RIDING             = 37, /* How well you control your steed */
+    P_SHIELD             = 37, /* How well you use a shield */
+    P_RIDING             = 38, /* How well you control your steed */
 
-    P_NUM_SKILLS         = 38
+    P_NUM_SKILLS         = 39
 };
 
 #define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */

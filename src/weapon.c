@@ -19,20 +19,21 @@ staticfn void skill_advance(int);
 
 /* Categories whose names don't come from OBJ_NAME(objects[type])
  */
-#define PN_BARE_HANDED (-1) /* includes martial arts */
-#define PN_TWO_WEAPONS (-2)
-#define PN_RIDING (-3)
-#define PN_POLEARMS (-4)
-#define PN_SABER (-5)
-#define PN_HAMMER (-6)
-#define PN_WHIP (-7)
-#define PN_ATTACK_SPELL (-8)
-#define PN_HEALING_SPELL (-9)
-#define PN_DIVINATION_SPELL (-10)
-#define PN_ENCHANTMENT_SPELL (-11)
-#define PN_CLERIC_SPELL (-12)
-#define PN_ESCAPE_SPELL (-13)
-#define PN_MATTER_SPELL (-14)
+#define PN_BARE_HANDED          (-1) /* includes martial arts */
+#define PN_TWO_WEAPONS          (-2)
+#define PN_SHIELD               (-3)
+#define PN_RIDING               (-4)
+#define PN_POLEARMS             (-5)
+#define PN_SABER                (-6)
+#define PN_HAMMER               (-7)
+#define PN_WHIP                 (-8)
+#define PN_ATTACK_SPELL         (-9)
+#define PN_HEALING_SPELL        (-10)
+#define PN_DIVINATION_SPELL     (-11)
+#define PN_ENCHANTMENT_SPELL    (-12)
+#define PN_CLERIC_SPELL         (-13)
+#define PN_ESCAPE_SPELL         (-14)
+#define PN_MATTER_SPELL         (-15)
 
 static NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     /* Weapon */
@@ -44,14 +45,14 @@ static NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     PN_ATTACK_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
     PN_ENCHANTMENT_SPELL, PN_CLERIC_SPELL, PN_ESCAPE_SPELL, PN_MATTER_SPELL,
     /* Other */
-    PN_BARE_HANDED, PN_TWO_WEAPONS, PN_RIDING
+    PN_BARE_HANDED, PN_TWO_WEAPONS, PN_SHIELD, PN_RIDING
 };
 
 /* note: entry [0] isn't used */
 static NEARDATA const char *const odd_skill_names[] = {
     "no skill", "bare hands", /* use barehands_or_martial[] instead */
-    "two weapon combat", "riding", "polearms", "saber", "hammer", "whip",
-    "attack spells", "healing spells", "divination spells",
+    "two weapon combat", "shield", "riding", "polearms", "saber", "hammer",
+    "whip", "attack spells", "healing spells", "divination spells",
     "enchantment spells", "clerical spells", "escape spells", "matter spells",
 };
 /* indexed via is_martial() */
@@ -76,7 +77,8 @@ give_may_advance_msg(int skill)
              (skill == P_NONE) ? ""
                  : (skill <= P_LAST_WEAPON) ? "weapon "
                      : (skill <= P_LAST_SPELL) ? "spell casting "
-                         : "fighting ");
+                        : (skill == P_SHIELD) ? "defensive "
+                            : "fighting ");
     handle_tip(TIP_ENHANCE);
 }
 
@@ -1835,6 +1837,11 @@ skill_init(const struct def_skill *class_skill)
             P_ADVANCE(skill) = practice_needed_to_advance(P_SKILL(skill) - 1);
         }
     }
+
+    /* Roles that can reach expert or master in shield skill
+       already have a basic understanding of how to use them */
+    if (Role_if(PM_KNIGHT) || Role_if(PM_VALKYRIE))
+        P_SKILL(P_SHIELD) = P_BASIC;
 
     /* each role has a special spell; allow at least basic for its type
        (despite the function name, this works for spell skills too) */

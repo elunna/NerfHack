@@ -2537,8 +2537,6 @@ find_ac(void)
         uac -= (ARM_BONUS(uarmh) + race_bonus(uarmh));
     if (uarmf)
         uac -= (ARM_BONUS(uarmf) + race_bonus(uarmf));
-    if (uarms)
-        uac -= (ARM_BONUS(uarms) + race_bonus(uarms));
     if (uarmg)
         uac -= ARM_BONUS(uarmg);
     if (uarmu)
@@ -2549,6 +2547,20 @@ find_ac(void)
         uac -= uright->spe;
     if (uamul && uamul->otyp == AMULET_OF_GUARDING)
         uac -= 2; /* fixed amount; main benefit is to MC */
+    
+    /* Extra skill for shield */
+    if (uarms) {
+        uac -= (ARM_BONUS(uarms) + race_bonus(uarms));
+        if (P_SKILL(P_SHIELD) == P_BASIC)
+            uac -= 1;
+        else if (P_SKILL(P_SHIELD) == P_SKILLED)
+            uac -= 3;
+        else if (P_SKILL(P_SHIELD) == P_EXPERT)
+            uac -= 5;
+        else if (P_SKILL(P_SHIELD) == P_MASTER)
+            uac -= 8;
+
+    }
 
     /* combat boots give +1 AC */
     if (uarmf && misc_bonus(uarmf)) 

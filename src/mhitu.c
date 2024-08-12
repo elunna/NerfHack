@@ -261,11 +261,15 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
                  Monnam(mtmp));
     else {
         const char *blocker = attack_blocker(&gy.youmonst);
-        if (blocker && !rn2(5))
+        if (blocker && !rn2(5)) {
             pline_xy(mtmp->mx, mtmp->my, "You %s %s attack with your %s.",
                      rn2(3) ? "block" : "deflect", s_suffix(mon_nam(mtmp)),
                      blocker);
-        else
+            
+            /* train shield skill if the shield made a block */
+            if (blocker == uarms)
+                use_skill(P_SHIELD, 1);
+        } else
             pline_mon(mtmp, "%s %smisses!", Monnam(mtmp),
                      (nearmiss && flags.verbose) ? "just " : "");
     }
@@ -1005,8 +1009,11 @@ mattacku(struct monst *mtmp)
                         if (mattk->aatyp != AT_KICK
                             || !thick_skinned(gy.youmonst.data))
                             sum[i] = hitmu(mtmp, mattk);
-                    } else
+                    } else {
                         missmu(mtmp, (tmp == j), mattk);
+                        if (uarms && !rn2(3))
+                            use_skill(P_SHIELD, 1);
+                    }
                 } else {
                     wildmiss(mtmp, mattk);
                     /* skip any remaining non-spell attacks */
@@ -1047,6 +1054,8 @@ mattacku(struct monst *mtmp)
                         sum[i] = gulpmu(mtmp, mattk);
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
+                        if (uarms && !rn2(3) && rn2(8) <= uarms->spe)
+                            use_skill(P_SHIELD, 1);
                     }
                 } else if (digests(mtmp->data)) {
                     pline("%s gulps some air!", Monnam(mtmp));
@@ -1110,8 +1119,11 @@ mattacku(struct monst *mtmp)
                     }
                     if (tmp > (j = gm.mhitu_dieroll = rnd(20 + i))) {
                         sum[i] = hitmu(mtmp, mattk);
-                    } else
+                    } else {
                         missmu(mtmp, (tmp == j), mattk);
+                        if (uarms && !rn2(3) && rn2(8) <= uarms->spe)
+                            use_skill(P_SHIELD, 1);
+                    }
                     /* KMH -- Don't accumulate to-hit bonuses */
                     if (mon_currwep)
                         tmp -= hittmp;

@@ -70,6 +70,7 @@ staticfn boolean mhurtle_to_doom(struct monst *, int,
 staticfn void first_weapon_hit(struct obj *) NONNULLARG1;
 staticfn boolean shade_aware(struct obj *) NO_NNARGS;
 staticfn boolean bite_monster(struct monst *);
+staticfn int shield_dmg(struct obj *, struct monst *);
 
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
 #define KILL_FAMILIARITY 20
@@ -1034,8 +1035,13 @@ hitum(struct monst *mon, struct attack *uattk)
     boolean malive, wep_was_destroyed = FALSE;
     struct obj *wepbefore = uwep,
         *secondwep = u.twoweap ? uswapwep : (struct obj *) 0;
+    struct obj *wearshield = uarms;
     int tmp, dieroll, mhit, armorpenalty, wtype, attknum = 0,
         x = u.ux + u.dx, y = u.uy + u.dy, oldumort = u.umortality;
+
+    int bash_chance = (P_SKILL(P_SHIELD) == P_MASTER    ? !rn2(10) :
+                       P_SKILL(P_SHIELD) == P_EXPERT    ? !rn2(13) :
+                       P_SKILL(P_SHIELD) == P_SKILLED   ? !rn2(17) : !rn2(25));
 
     /* Cleaver attacks three spots, 'mon' and one on either side of 'mon';
        it can't be part of dual-wielding but we guard against that anyway;
@@ -1129,6 +1135,24 @@ hitum(struct monst *mon, struct attack *uattk)
             (void) passive(mon, uswapwep, mhit, malive, AT_BITE, !uswapwep);
             wakeup(mon, TRUE);
         }
+    }
+
+    /* random shield bash if wearing a shield and are skilled
+       in using shields */
+    if (bash_chance && wearshield && P_SKILL(P_SHIELD) >= P_BASIC
+        && !(gm.multi < 0 || u.umortality > oldumort
+             || u.uinwater || !malive || m_at(x, y) != mon)
+        /* suppress bashes with 'F' */
+        && !svc.context.forcefight) {
+        tmp = find_roll_to_hit(mon, uattk->aatyp, wearshield, &attknum,
+                               &armorpenalty);
+        dieroll = rnd(20);
+        mhit = (tmp > dieroll || u.uswallow);
+        malive = known_hitum(mon, wearshield, &mhit, tmp, armorpenalty, uattk,
+                             dieroll);
+        /* second passive counter-attack only occurs if second attack hits */
+        if (mhit)
+            (void) passive(mon, wearshield, mhit, malive, AT_WEAP, FALSE);
     }
 
     gt.twohits = 0;
@@ -1492,6 +1516,27 @@ hmon_hitmon_misc_obj(
     struct obj *obj)    /* obj is not NULL */
 {
     switch (obj->otyp) {
+    case SMALL_SHIELD:
+    case ELVEN_SHIELD:
+    case URUK_HAI_SHIELD:
+    case ORCISH_SHIELD:
+    case LARGE_SHIELD:
+    case DWARVISH_ROUNDSHIELD:
+    case SHIELD_OF_REFLECTION:
+    case ANTI_MAGIC_SHIELD:
+        if (obj == uarms && is_shield(obj)) {
+            hmd->dmg = shield_dmg(obj, mon);
+            You("bash %s with %s%s",
+                mon_nam(mon), ysimple_name(obj),
+                canseemon(mon) ? exclam(hmd->dmg) : ".");
+        }
+        #if 0 /* TODO: Handle silver shield damage */
+        if (mon_hates_material(mon, obj->material)) {
+            /* dmgval() already added damage, but track hated_obj */
+            hated_obj = obj;
+        }
+        #endif 
+        break;
     case BOULDER:         /* 1d20 */
     case HEAVY_IRON_BALL: /* 1d25 */
     case IRON_CHAIN:      /* 1d4+1 */
@@ -7393,6 +7438,31 @@ bite_monster(struct monst *mon)
         break;
     }
     return FALSE;
+}
+
+staticfn int
+shield_dmg(struct obj *obj, struct monst *mon)
+{
+    int tmp;
+    if (uarms && P_SKILL(P_SHIELD) >= P_BASIC) {
+        /* dmgval for shields is just one point,
+           plus whatever material damage applies */
+        tmp = dmgval(obj, mon);
+
+        /* add extra damage based on the type
+           of shield */
+        if (obj->otyp == SMALL_SHIELD 
+            || obj->otyp == HIDE_SHIELD)
+            tmp += rn2(3) + 1;
+        else
+            tmp += rn2(6) + 2;
+
+        /* sprinkle on a bit more damage if
+           shield skill is high enough */
+        if (P_SKILL(P_SHIELD) >= P_EXPERT)
+            tmp += rnd(4);
+    }
+    return tmp;
 }
 
 /*uhitm.c*/

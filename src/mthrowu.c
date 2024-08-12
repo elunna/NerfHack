@@ -110,9 +110,15 @@ thitu(
         if (Blind || !flags.verbose) {
             pline("It misses.");
         } else if (u.uac + tlev <= dieroll - 2) {
-            if (onm != onmbuf)
-                Strcpy(onmbuf, onm); /* [modifiable buffer for upstart()] */
-            pline("%s %s you.", upstart(onmbuf), vtense(onmbuf, "miss"));
+            if (uarms && rn2(2)) {
+                Your("%s %s %s.", simple_typename(uarms->otyp),
+                     (rn2(2) ? "blocks" : "deflects"), onm);
+                use_skill(P_SHIELD, 1);
+            } else {
+                if (onm != onmbuf)
+                    Strcpy(onmbuf, onm); /* [modifiable buffer for upstart()] */
+                pline("%s %s you.", upstart(onmbuf), vtense(onmbuf, "miss"));
+            }
         } else
             You("are almost hit by %s.", onm);
         return 0;
