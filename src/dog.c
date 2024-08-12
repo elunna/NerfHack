@@ -18,6 +18,7 @@ struct Node {
 
 staticfn void add_node(struct Node **, struct monst *);
 staticfn void rm_node(struct Node **, struct monst *);
+staticfn void rm_doglist(struct Node **);
 
 enum arrival {
     Before_you =  0, /* monsters kept on migrating_mons for accessibility;
@@ -1437,13 +1438,13 @@ staticfn void add_node(struct Node** head, struct monst *dog)
 /* Given a reference (pointer to pointer) to the head of a 
    list and a dog, deletes the first occurrence of dog in 
    linked list */
-void rm_node(struct Node** head_ref, struct monst *dog) 
+void rm_node(struct Node** head, struct monst *dog) 
 { 
-    struct Node *temp = *head_ref, *prev; 
+    struct Node *temp = *head, *prev; 
   
     /* If head node itself holds the dog to be deleted */
     if (temp != NULL && temp->dog == dog) { 
-        *head_ref = temp->next;
+        *head = temp->next;
         free(temp);
         return; 
     } 
@@ -1461,6 +1462,21 @@ void rm_node(struct Node** head_ref, struct monst *dog)
     prev->next = temp->next; 
     free(temp);
 } 
+
+/* Remove the linked list */
+staticfn void 
+rm_doglist(struct Node** head)
+{
+    struct Node* current = *head;
+    struct Node* next = NULL;
+ 
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    *head = NULL;
+}
 
 /* Ported from EvilHack with modifications.
  * If you have too many pets on the level, untame the weakest ones.
@@ -1481,7 +1497,7 @@ check_dogs(void)
         }
 
     if (numdogs <= maxdogs)
-        return;
+        goto donedog;
 
     do {
         int ties = 1;
@@ -1515,6 +1531,8 @@ check_dogs(void)
             --numdogs;
         }
     } while (numdogs > maxdogs);
+donedog:
+    rm_doglist(&head);
 }
 
 /*dog.c*/
