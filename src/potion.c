@@ -1589,7 +1589,8 @@ peffect_blood(struct obj *otmp)
             pline("Yecch!  This %s.", Hallucination
                     ? "liquid could do with a good stir"
                     : "blood has congealed");
-        else pline(Hallucination
+        else
+            pline(Hallucination
                     ? "The %s liquid stirs memories of home."
                     : "The %s blood tastes delicious.",
                     otmp->odiluted ? "watery" : "thick");

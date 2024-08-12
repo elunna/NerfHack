@@ -1106,15 +1106,20 @@ mksobj_init(struct obj *otmp, boolean artif)
 #endif
             blessorcurse(otmp, 4);
 
-	if (otmp->otyp == SCR_ZAPPING) {
-	    int otyp;
-	    do {
-		    otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
-	    } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
-	    /* Wishing is excluded, but it's possible we might want to enable it against
-	     * extremely rare odds. */
-	    otmp->corpsenm = otyp;
-	}
+        /* Cursed potions of blood are more nutritious for V,
+        * this lightens the early game pressure a bit. */
+        if (otmp->otyp == POT_BLOOD && !rn2(4))
+            curse(otmp);
+
+        if (otmp->otyp == SCR_ZAPPING) {
+            int otyp;
+            do {
+                otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
+            } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
+            /* Wishing is excluded, but it's possible we might want to enable it against
+            * extremely rare odds. */
+            otmp->corpsenm = otyp;
+        }
         break;
     case SPBOOK_CLASS:
         otmp->spestudied = 0;
