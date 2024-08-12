@@ -111,7 +111,6 @@ static const struct innate {
                  { 1, &HFlying, "", "" },
 		         { 1, &(HBreathless), "breathless", "full of air" },
                  { 1, &(HRegeneration), "resilient", "less resilient" },
-                 { 5, &(HHunger), "ravenous", "content" },
 		         { 9, &HSleep_resistance, "awake", "tired" },
                  { 0, 0, 0, 0 } },
 
