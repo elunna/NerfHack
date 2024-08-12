@@ -1713,7 +1713,7 @@
         SIZ(800, 250, MS_ATHOL, MZ_LARGE), 0, 0,
         M1_FLY | M1_ANIMAL | M1_CARNIVORE, M2_HOSTILE | M2_FLANK | M2_STRONG,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
-        NO_RACE, 8, CLR_GRAY, ATHOL),
+        NO_RACE, 12, CLR_GRAY, ATHOL),
     /* From SLASH'EM with changes:
      * - Increased bite and sting damage. They can now flank.
      * - Removed traitorous nature */
