@@ -4302,6 +4302,11 @@ getprice(struct obj *obj, boolean shk_buying)
     case POTION_CLASS:
         if (obj->otyp == POT_WATER && !obj->blessed && !obj->cursed)
             tmp = 0L;
+        /* vampire hunger check, (2-4)*cost */
+        if (Race_if(PM_VAMPIRE) &&
+                (obj->otyp == POT_BLOOD || obj->otyp == POT_VAMPIRE_BLOOD))
+            if (u.uhs >= HUNGRY && !shk_buying)
+                tmp *= (long) u.uhs;
         break;
     case ARMOR_CLASS:
     case WEAPON_CLASS:
