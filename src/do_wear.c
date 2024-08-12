@@ -795,6 +795,7 @@ Shield_on(void)
     case DWARVISH_ROUNDSHIELD:
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
+    case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
         break;
     default:
@@ -838,6 +839,7 @@ Shield_off(void)
     case DWARVISH_ROUNDSHIELD:
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
+    case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
         break;
     default:

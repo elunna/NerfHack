@@ -1521,6 +1521,7 @@ hmon_hitmon_misc_obj(
     case URUK_HAI_SHIELD:
     case ORCISH_SHIELD:
     case LARGE_SHIELD:
+    case TOWER_SHIELD:
     case DWARVISH_ROUNDSHIELD:
     case SHIELD_OF_REFLECTION:
     case ANTI_MAGIC_SHIELD:
@@ -7452,8 +7453,10 @@ shield_dmg(struct obj *obj, struct monst *mon)
         /* add extra damage based on the type
            of shield */
         if (obj->otyp == SMALL_SHIELD 
-            || obj->otyp == HIDE_SHIELD)
+            || obj->otyp == ANTI_MAGIC_SHIELD)
             tmp += rn2(3) + 1;
+        else if (obj->otyp == TOWER_SHIELD)
+            tmp += rn2(12) + 1;
         else
             tmp += rn2(6) + 2;
 
