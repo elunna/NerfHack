@@ -1576,7 +1576,6 @@ peffect_polymorph(struct obj *otmp)
     }
 }
 
-
 staticfn void
 peffect_blood(struct obj *otmp)
 {
@@ -1585,20 +1584,20 @@ peffect_blood(struct obj *otmp)
 
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         violated_vegetarian();
-        if (otmp->cursed)
+        if (otmp->blessed) {
             pline("Yecch!  This %s.", Hallucination
                     ? "liquid could do with a good stir"
                     : "blood has congealed");
-        else
+            return;
+        } else
             pline(Hallucination
                     ? "The %s liquid stirs memories of home."
                     : "The %s blood tastes delicious.",
                     otmp->odiluted ? "watery" : "thick");
-        if (!otmp->blessed)
-            lesshungry((otmp->odiluted ? 1 : 2) *
-                        (otmp->otyp == POT_VAMPIRE_BLOOD ? 400 : 200));
-        else
-            pline("This blood is tainted by holiness!");
+
+        lesshungry((otmp->odiluted ? 1 : 2) *
+                    (otmp->otyp == POT_VAMPIRE_BLOOD ? 400 : 200));
+
         if (otmp->otyp == POT_VAMPIRE_BLOOD && otmp->cursed) {
             int num = newhp();
             if (Upolyd) {
@@ -1614,6 +1613,7 @@ peffect_blood(struct obj *otmp)
             doesn't use violated_vegetarian() to prevent
             duplicated "you feel guilty" messages */
         u.uconduct.unvegetarian++;
+        
         if (!Race_if(PM_VAMPIRE)) {
             if (u.ualign.type == A_LAWFUL || Role_if(PM_MONK)) {
                 You_feel("%sguilty about drinking such a vile liquid.",
