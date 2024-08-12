@@ -942,7 +942,7 @@ m_initinv(struct monst *mtmp)
                 (void) mongets(mtmp, i);
         }
         if (rn2(2)) {
-            if ((int) mtmp->m_lev > rn2(30))
+            if ((int) mtmp->m_lev > rn2(25))
                 (void) mongets(mtmp, POT_VAMPIRE_BLOOD);
             else
                 (void) mongets(mtmp, POT_BLOOD);
