@@ -1052,16 +1052,17 @@ hitum(struct monst *mon, struct attack *uattk)
         && (uwep->cursed || should_cleave()))
         return hitum_cleave(mon, uattk);
 
-    /* Spears at expert can skewer through the enemy, hitting the one behind.
+    /* Spears at expert (and tridents at skilled) can skewer through
+     * the enemy, hitting the one behind.
      * We'll grant this ability solely to the player for now.
-     * We are using thitmonst which is also used for throwing items, but maybe
+     * We are using thitmonst, which is also used for throwing items, but maybe
      * there is a better way.
      */
-    if (uwep && is_spear(uwep)
-        && !u.twoweap && !u.uswallow && !u.ustuck
-        && ((wtype = uwep_skill_type()) != P_NONE
-        && P_SKILL(wtype) >= P_EXPERT)
-        /* If the spear is cursed, it doesn't care about who it hits */
+    if (uwep && !u.twoweap && !u.uswallow && !u.ustuck
+        && ((wtype = uwep_skill_type()) != P_NONE)
+        && ((is_spear(uwep) && P_SKILL(wtype) >= P_EXPERT)
+            || (uwep->otyp == TRIDENT && P_SKILL(wtype) >= P_SKILLED))
+        /* If the weapon is cursed, it doesn't care about who it hits */
         && (uwep->cursed || should_skewer(1))) {
         return hitum_skewer(mon, uwep, uattk);
     }
