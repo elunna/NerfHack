@@ -2911,14 +2911,15 @@ mhitm_ad_drli(
     struct monst *mdef, struct mhitm_data *mhm)
 {
     boolean unaffected = (resists_drli(mdef) || defended(mdef, AD_DRLI));
-    boolean V2V = is_vampire(magr->data) && is_vampire(mdef->data);
+    boolean V2V = is_vampire(magr->data) && is_vampire(mdef->data)
+        && !defended(mdef, AD_DRLI);
 
     /* Bonus for attacking susceptible victims */ 
     boolean vulnerable;
     if (mdef == &gy.youmonst) 
-	vulnerable = u.usleep /*|| multi*/ || Confusion || u.utrap || u.ustuck;
+	    vulnerable = u.usleep || gm.multi || Confusion || u.utrap || u.ustuck;
     else 
-	vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
+	    vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
                 || mdef->mconf || mdef->mtrapped;
  
     boolean success = vulnerable ? rn2(3) : !rn2(3);
