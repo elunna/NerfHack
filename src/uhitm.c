@@ -7466,7 +7466,7 @@ shield_dmg(struct obj *obj, struct monst *mon)
             || obj->otyp == ANTI_MAGIC_SHIELD)
             tmp += rn2(3) + 1;
         else if (obj->otyp == TOWER_SHIELD)
-            tmp += rn2(12) + 1;
+            tmp += rn2(12) + 2;
         else
             tmp += rn2(6) + 2;
 
