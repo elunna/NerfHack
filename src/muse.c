@@ -2217,8 +2217,8 @@ use_offensive(struct monst *mtmp)
         mreadmsg(mtmp, otmp);
         if (oseen)
             makeknown(otmp->otyp);
-        (void) create_gas_cloud(mtmp->mux, mtmp->muy, 3 + bcsign(otmp),
-                                8 + 4 * bcsign(otmp));
+        (void) create_gas_cloud(mtmp->mux, mtmp->muy, 15 + 10 * bcsign(otmp),
+                        8 + 4 * bcsign(otmp));
         m_useup(mtmp, otmp);
         return 2;
     case 0:
