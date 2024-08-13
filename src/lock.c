@@ -367,7 +367,7 @@ pick_lock(
     struct obj *otmp;
     char qbuf[QBUFSZ];
     boolean autounlock = (rx != 0 || container != NULL);
-    boolean credit_card_slipped;
+    boolean credit_card_slipped = FALSE;
 
     /* 'pick' might be Null [called by do_loot_cont() for AUTOUNLOCK_UNTRAP] */
     if (!pick) {

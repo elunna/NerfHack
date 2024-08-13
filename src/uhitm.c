@@ -7454,7 +7454,7 @@ bite_monster(struct monst *mon)
 staticfn int
 shield_dmg(struct obj *obj, struct monst *mon)
 {
-    int tmp;
+    int tmp = 0;
     if (uarms && P_SKILL(P_SHIELD) >= P_BASIC) {
         /* dmgval for shields is just one point,
            plus whatever material damage applies */

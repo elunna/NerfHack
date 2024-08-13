@@ -1756,7 +1756,7 @@ rloc(
     }
 
     if (mtmp->iswiz && mtmp->mx) { /* Wizard, not just arriving */
-        stairway *stway;
+        stairway *stway = (stairway *) 0;
 
         /* this is the logic of stairway_find_forwiz(); that function is now
          * deleted since it doesn't need to handle embedded Wizard tower */

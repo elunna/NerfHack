@@ -1694,8 +1694,8 @@ add_obj_info(winid datawin, short otyp)
         }
     }
     
-    if ((otyp == POT_ACID 
-            /*|| (usr_text && !strcmp(usr_text, "gem alchemy"))*/)) {
+    if (otyp == POT_ACID 
+            /*|| (usr_text && !strcmp(usr_text, "gem alchemy"))*/) {
         OBJPUTSTR("");
         OBJPUTSTR("Gem alchemy recipes (#dip):");
         for (i = svb.bases[GEM_CLASS]; i <= JADE; i++) {

@@ -2427,7 +2427,7 @@ seffect_knowledge(struct obj **sobjp)
         (void) learnscrolltyp(SCR_KNOWLEDGE);
 
     /* Get a random bonus based on luck. */
-    if (sblessed && !rnl(5) == 0)
+    if (sblessed && rnl(5) == 0)
         qty++;
     
      static const int extra_classes[] = {
