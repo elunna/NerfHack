@@ -2143,9 +2143,9 @@ use_offensive(struct monst *mtmp)
             clonewiz();
         } else if (type_is_pname(mtmp->data)) {
             /* Other uniques - no limit. */
-            if ((mtmp2 = makemon(&mons[mtmp->mnum], u.ux, u.uy, MM_NOWAIT)) != 0) {
-                mtmp2->msleeping = mtmp2->mtame 
-                    = mtmp2->mpeaceful = 0;
+            if ((mtmp2 = makemon(&mons[mtmp->mnum], 
+                    mtmp->mx, mtmp->my, MM_NOWAIT)) != 0) {
+                mtmp2->msleeping = mtmp2->mtame = mtmp2->mpeaceful = 0;
                 pline("%s multiplies!", Monnam(mtmp));
             }
         } else if (clone_mon(mtmp, 0, 0) && vis)
