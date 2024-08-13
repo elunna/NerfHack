@@ -1007,7 +1007,7 @@ mattacku(struct monst *mtmp)
                             sum[i] = hitmu(mtmp, mattk);
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
-                        if (uarms && !rn2(3))
+                        if (uarms && rn2(3) && rn2(8) <= uarms->spe)
                             use_skill(P_SHIELD, 1);
                     }
                 } else {
@@ -1050,7 +1050,7 @@ mattacku(struct monst *mtmp)
                         sum[i] = gulpmu(mtmp, mattk);
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
-                        if (uarms && !rn2(3) && rn2(8) <= uarms->spe)
+                        if (uarms && rn2(3) && rn2(8) <= uarms->spe)
                             use_skill(P_SHIELD, 1);
                     }
                 } else if (digests(mtmp->data)) {
@@ -1117,7 +1117,7 @@ mattacku(struct monst *mtmp)
                         sum[i] = hitmu(mtmp, mattk);
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
-                        if (uarms && !rn2(3) && rn2(8) <= uarms->spe)
+                        if (uarms && rn2(3) && rn2(8) <= uarms->spe)
                             use_skill(P_SHIELD, 1);
                     }
                     /* KMH -- Don't accumulate to-hit bonuses */
