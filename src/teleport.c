@@ -1154,6 +1154,12 @@ level_tele(void)
         char qbuf[BUFSZ];
         int trycnt = 0;
 
+        if (tele_pain) {
+            You_feel("a powerful force arise as you prepare to teleport.");
+            if (y_n("Continue teleporting?") != 'y')
+                return;
+        }
+
         Strcpy(qbuf, "To what level do you want to teleport?");
         do {
             if (iflags.menu_requested) {
@@ -1194,10 +1200,7 @@ level_tele(void)
 
                 newlevel.dnum = destdnum;
                 newlevel.dlevel = destlev;
-
-                if (tele_pain)
-                    teleport_pain();
-
+                
                 if (In_endgame(&newlevel) && !In_endgame(&u.uz)) {
                     struct obj *amu;
 
@@ -1212,8 +1215,12 @@ level_tele(void)
                     }
                 }
                 force_dest = TRUE;
-            } else if ((newlev = lev_by_name(buf)) == 0)
+            } else if ((newlev = lev_by_name(buf)) == 0) {
                 newlev = atoi(buf);
+            }
+
+            if (tele_pain)
+                    teleport_pain();
         } while (!newlev && !digit(buf[0])
                  && (buf[0] != '-' || !digit(buf[1])) && trycnt < 10);
 
