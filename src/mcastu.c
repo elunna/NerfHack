@@ -55,7 +55,6 @@ staticfn boolean is_undirected_spell(unsigned int, int);
 staticfn boolean spell_would_be_useless(struct monst *, unsigned int, int);
 staticfn boolean is_entombed(coordxy, coordxy);
 staticfn boolean counterspell(struct monst *, struct obj *);
-staticfn boolean mcast_dist_ok(struct monst *);
 
 /* feedback when frustrated monster couldn't cast a spell */
 staticfn void

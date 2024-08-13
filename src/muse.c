@@ -1631,9 +1631,9 @@ find_offensive(struct monst *mtmp)
             gm.m.has_offense = MUSE_SCR_CLONING;
         }
         nomore(MUSE_SCR_STINKING_CLOUD)
-        if (obj->otyp == SCR_STINKING_CLOUD && m_canseeu(mtmp)
-            && distu(mtmp->mx, mtmp->my) < 32
-            && !m_seenres(mtmp, M_SEEN_POISON)) {
+        if (obj->otyp == SCR_STINKING_CLOUD
+            && m_canseeu(mtmp) && haseyes(mtmp->data)
+            && mcast_dist_ok(mtmp) && !m_seenres(mtmp, M_SEEN_POISON)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_SCR_STINKING_CLOUD;
         }
@@ -1711,16 +1711,13 @@ find_offensive(struct monst *mtmp)
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_CAMERA;
         }
-#if 0
         nomore(MUSE_SCR_FIRE);
-        if (obj->otyp == SCR_FIRE && resists_fire(mtmp)
-            && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
-            && mtmp->mcansee && haseyes(mtmp->data)
-            && !m_seenres(mtmp, M_SEEN_FIRE)) {
+        if (obj->otyp == SCR_FIRE 
+            && m_canseeu(mtmp) && haseyes(mtmp->data)
+            && mcast_dist_ok(mtmp) && !m_seenres(mtmp, M_SEEN_FIRE)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_SCR_FIRE;
         }
-#endif /* 0 */
     }
     return (boolean) !!gm.m.has_offense;
 #undef nomore
@@ -2156,59 +2153,22 @@ use_offensive(struct monst *mtmp)
         m_useup(mtmp, otmp);
         return 2;
     } /* case MUSE_SCR_CLONING */
-#if 0
     case MUSE_SCR_FIRE: {
+        /* Similar to the scroll of stinking cloud, we simply hand wave and
+         * let monsters read this as if it were blessed. */
         boolean vis = cansee(mtmp->mx, mtmp->my);
-
+        int dam, cval;
+        cval = bcsign(otmp);
+        dam = (2 * (rn1(3, 3) + 2 * cval) + 1) / 3;;
         mreadmsg(mtmp, otmp);
         if (mtmp->mconf) {
             if (vis)
                 pline("Oh, what a pretty fire!");
-        } else {
-            struct monst *mtmp2;
-            int num;
-
-            if (vis)
-                pline_The("scroll erupts in a tower of flame!");
-            shieldeff(mtmp->mx, mtmp->my);
-            pline("%s is uninjured.", Monnam(mtmp));
-            (void) destroy_mitem(mtmp, SCROLL_CLASS, AD_FIRE);
-            (void) destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
-            (void) destroy_mitem(mtmp, POTION_CLASS, AD_FIRE);
-            ignite_items(mtmp->minvent);
-            num = (2 * (rn1(3, 3) + 2 * bcsign(otmp)) + 1) / 3;
-            if (fully_resistant(FIRE_RES))
-                You("are not harmed.");
-            num = resist_reduce(num, FIRE_RES);
-            burn_away_slime();
-            if (Half_spell_damage)
-                num = (num + 1) / 2;
-            else
-                losehp(num, "scroll of fire", KILLED_BY_AN);
-            for (mtmp2 = fmon; mtmp2; mtmp2 = mtmp2->nmon) {
-                if (DEADMONSTER(mtmp2))
-                    continue;
-                if (mtmp == mtmp2)
-                    continue;
-                if (dist2(mtmp2->mx, mtmp2->my, mtmp->mx, mtmp->my) < 3) {
-                    if (resists_fire(mtmp2))
-                        continue;
-                    showdamage(num, FALSE);
-                    mtmp2->mhp -= num;
-                    if (resists_cold(mtmp2)) {
-                        showdamage(3 * num, FALSE);
-                        mtmp2->mhp -= 3 * num;
-                    }
-                    if (DEADMONSTER(mtmp2)) {
-                        mondied(mtmp2);
-                        break;
-                    }
-                }
-            }
-        }
+            /* TODO: deal 1 damage */
+        } else
+            explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
         return 2;
-    }
-#endif /* 0 */
+    } /* case MUSE_SCR_FIRE */
     case MUSE_POT_PARALYSIS:
     case MUSE_POT_BLINDNESS:
     case MUSE_POT_HALLUCINATION:

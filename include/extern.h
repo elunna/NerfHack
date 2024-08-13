@@ -1485,6 +1485,7 @@ extern char *death_inflicted_by(char *, const char *,
                                 struct monst *) NONNULLARG12;
 extern int buzzmu(struct monst *, struct attack *) NONNULLARG12;
 extern int m_destroy_armor(struct monst *, struct monst *);
+extern boolean mcast_dist_ok(struct monst *);
 
 /* ### mdlib.c ### */
 
