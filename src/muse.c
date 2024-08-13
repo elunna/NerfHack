@@ -2166,7 +2166,7 @@ use_offensive(struct monst *mtmp)
                 pline("Oh, what a pretty fire!");
             /* TODO: deal 1 damage */
         } else
-            explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
+            explode(mtmp->mux, mtmp->muy, BZ_M_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
         return 2;
     } /* case MUSE_SCR_FIRE */
     case MUSE_POT_PARALYSIS:
