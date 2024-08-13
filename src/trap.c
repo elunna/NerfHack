@@ -1376,6 +1376,7 @@ trapeffect_rocktrap(
     struct obj *otmp;
     boolean harmless = FALSE;
     boolean drop_boulder = rnd(level_difficulty()) > 10;
+    int old_mhp;
 
     if (mtmp == &gy.youmonst) {
         if (trap->once && trap->tseen && !rn2(15)) {
@@ -1450,8 +1451,17 @@ trapeffect_rocktrap(
         otmp = t_missile(drop_boulder ? BOULDER : ROCK, trap);
         if (in_sight)
             seetrap(trap);
+        old_mhp = mtmp->mhp;
         if (thitm(0, mtmp, otmp, drop_boulder ? rn1(7, 25) : d(2, 6), FALSE))
             trapkilled = TRUE;
+        
+        /* Stun if damage was over 6. */
+        if (!trapkilled && (old_mhp - mtmp->mhp) > 6) {
+            if (canseemon(mtmp))
+                pline("%s %s for a moment.", Monnam(mtmp),
+                        makeplural(stagger(mtmp->data, "stagger")));
+            mtmp->mstun = 1;
+        }
 
         return trapkilled ? Trap_Killed_Mon : mtmp->mtrapped
             ? Trap_Caught_Mon : Trap_Effect_Finished;
