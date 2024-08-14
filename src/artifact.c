@@ -1092,7 +1092,7 @@ spec_abon(struct obj *otmp, struct monst *mon)
 
     if (weap != &artilist[ART_NONARTIFACT]
             && weap->attk.damn && spec_applies(weap, mon))
-        return rnd((int) weap->attk.damn);
+        return -rnd((int) weap->attk.damn);
     return 0;
 }
 

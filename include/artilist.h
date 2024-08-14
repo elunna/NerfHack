@@ -102,7 +102,7 @@ static NEARDATA struct artifact artilist[] = {
     /* From SLASH'EM */
     A("Quick Blade", SILVER_SHORT_SWORD,
       SPFX_RESTR, 0, 0,
-      PHYS(9, 2), NO_DFNS, NO_CARY, 0, 
+      PHYS(0, 2), NO_DFNS, NO_CARY, 0, 
       A_LAWFUL, NON_PM, NON_PM, 1000L, NO_COLOR, QUICK_BLADE),
 
     A("Serenity", SILVER_SPEAR,
