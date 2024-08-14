@@ -2901,7 +2901,7 @@ select_off(struct obj *otmp)
             return 0;
         } else if (GreasedFeet || GreasedBoots) {
             pline("%s %s are too slippery to take off.",
-                  uarmg->unpaid ? "The" : "Your", /* simplified Shk_Your() */
+                  uarmf->unpaid ? "The" : "Your", /* simplified Shk_Your() */
                   boots_simple_name(uarmf));
             make_glib((int) (HGlib & TIMEOUT) + d(8, 4));
             return 0;
