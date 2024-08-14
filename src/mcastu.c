@@ -1465,7 +1465,7 @@ counterspell(struct monst *mtmp, struct obj *otmp) {
     return TRUE;
 }
 
-staticfn boolean
+boolean
 mcast_dist_ok(struct monst *mtmp)
 {
     if (!m_canseeu(mtmp))
