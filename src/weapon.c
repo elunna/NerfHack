@@ -1759,7 +1759,7 @@ weapon_dam_bonus(struct obj *weapon)
         bonus += 1;
     /* Post level 20 grants very juicy rewards: */
     if (u.ulevel >= 20)
-        bonus += u.ulevel - 20;
+        bonus += rn2(u.ulevel - 20 + 1);
 
     return bonus;
 }
