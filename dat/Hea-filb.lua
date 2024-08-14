@@ -39,7 +39,7 @@ des.monster({ id = dragons[3], peaceful=0 })
 des.monster({ id = dragons[4], peaceful=0 })
 
 des.monster("wererat")
-des.monster("wererat")
+des.monster("chickenrat")
 des.monster({ class = "r", peaceful=0 })
 des.monster({ class = "r", peaceful=0 })
 des.monster("giant eel")
