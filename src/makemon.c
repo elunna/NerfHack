@@ -179,7 +179,9 @@ m_initweap(struct monst *mtmp)
         if (rn2(2))
             (void) mongets(mtmp, (mm != PM_ETTIN) ? BOULDER : CLUB);
         if ((mm != PM_ETTIN) && !rn2(5))
-            (void) mongets(mtmp, rn2(2) ? TWO_HANDED_SWORD : BATTLE_AXE);
+            (void) mongets(mtmp, rn2(2) ? TWO_HANDED_SWORD 
+                                        : rn2(4) ? BATTLE_AXE
+                                            : WAR_HAMMER);
         break;
     case S_IMP:
         if (mm == PM_REDCAP) {
@@ -187,7 +189,7 @@ m_initweap(struct monst *mtmp)
             case 0: (void) mongets(mtmp, TWO_HANDED_SWORD); break;
             case 1: (void) mongets(mtmp, BATTLE_AXE); break;
             case 2: (void) mongets(mtmp, DWARVISH_MATTOCK); break;
-            case 3: (void) mongets(mtmp, BROADSWORD); break;
+            case 3: (void) mongets(mtmp, WAR_HAMMER); break;
             default:
                 (void) mongets(mtmp, SCYTHE);
             }
