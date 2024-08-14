@@ -993,10 +993,7 @@ void
 splatter_burning_oil(coordxy x, coordxy y, boolean diluted_oil)
 {
     int dmg = d(diluted_oil ? 3 : 4, 4);
-
-/* ZT_SPELL(ZT_FIRE) = ZT_SPELL(AD_FIRE-1) = 10+(2-1) = 11 */
-#define ZT_SPELL_O_FIRE 11 /* value kludge, see zap.c */
-    explode(x, y, ZT_SPELL_O_FIRE, dmg, BURNING_OIL, EXPL_FIERY);
+    explode(x, y, ZT_SPELL(ZT_FIRE), dmg, BURNING_OIL, EXPL_FIERY);
 }
 
 /* lit potion of oil is exploding; extinguish it as a light source before

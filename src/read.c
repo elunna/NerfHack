@@ -2187,9 +2187,7 @@ seffect_fire(struct obj **sobjp)
             burn_away_slime();
         }
     }
-#define ZT_SPELL_O_FIRE 11 /* explained in splatter_burning_oil(explode.c) */
-    explode(cc.x, cc.y, ZT_SPELL_O_FIRE, dam, SCROLL_CLASS, EXPL_FIERY);
-#undef ZT_SPELL_O_FIRE
+    explode(cc.x, cc.y, ZT_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
 }
 
 staticfn void
