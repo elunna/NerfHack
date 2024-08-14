@@ -1284,24 +1284,28 @@ hmon_hitmon_weapon_melee(
            let it also hit from behind or shatter foes' weapons */
         || (hmd->hand_to_hand && is_art(obj, ART_CLEAVER))) {
         ; /* no special bonuses */
-    } else if ((is_giant(hmd->mdat) || is_ettin(hmd->mdat)) && uslinging()
-               && !unique_corpstat(hmd->mdat)
-               && hmd->thrown == HMON_THROWN
-               && ammo_and_launcher(obj, uwep)
-               && P_SKILL(P_SLING) >= P_SKILLED && hmd->dieroll == 1
-               && !rn2(P_SKILL(P_SLING) == P_SKILLED ? 2 : 1)) {
-        /* With a critical hit, a skilled slinger can bring down
-         * even the mightiest of giants. */
-        hmd->dmg = mon->mhp + 100;
-        if (canseemon(mon))
-            pline("%s crushes %s forehead!", The(mshot_xname(obj)),
-                  s_suffix(mon_nam(mon)));
-        hmd->hittxt = TRUE;
-        /* Same as above; account for negative udaminc and skill
-         * damage penalties. (In the really odd situation where for
-         * some reason being Skilled+ gives a penalty?) */
-        hmd->get_dmg_bonus = FALSE;
-        hmd->dmg -= weapon_dam_bonus(uwep);
+    } else if (uslinging() && hmd->thrown == HMON_THROWN
+               && ammo_and_launcher(obj, uwep)) {
+        if (is_giant(hmd->mdat)
+            && !unique_corpstat(hmd->mdat)
+            && ((uwep->oartifact == ART_DAVID_S_SLING) ||
+                (P_SKILL(P_SLING) >= P_SKILLED && hmd->dieroll == 1
+                && !rn2(P_SKILL(P_SLING) == P_SKILLED ? 2 : 1)))) {
+            /* With a critical hit, a skilled slinger can bring down
+            * even the mightiest of giants. */
+            hmd->dmg = mon->mhp + 100;
+            if (canseemon(mon))
+                pline("%s crushes %s forehead!", The(mshot_xname(obj)),
+                    s_suffix(mon_nam(mon)));
+            hmd->hittxt = TRUE;
+            /* Same as above; account for negative udaminc and skill
+            * damage penalties. (In the really odd situation where for
+            * some reason being Skilled+ gives a penalty?) */
+            hmd->get_dmg_bonus = FALSE;
+            hmd->dmg -= weapon_dam_bonus(uwep);
+        } else if (uwep->oartifact == ART_DAVID_S_SLING) {
+            hmd->dmg += 6;
+        }
     } else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd
                /* Allow 3.4.3 backstab damage for the first thrown weapon. */
                && (hmd->hand_to_hand || gm.m_shot.i == 1)) {
