@@ -984,8 +984,11 @@ from_what(int propidx) /* special cases can have negative values */
                           : ((EFast & W_ARMF) != 0L && uarmf->dknown
                              && objects[uarmf->otyp].oc_name_known)
                               ? ysimple_name(uarmf) /* speed boots */
-                                : EFast ? "worn equipment"
-                                  : something);
+                                : (uwep && uwep->oartifact == ART_QUICK_BLADE) 
+                                    ? "Quick Blade" 
+                                    : EFast 
+                                        ? "worn equipment"
+                                        : something);
             else if ((obj = what_gives(&u.uprops[propidx].extrinsic)) != 0)
                 Sprintf(buf, because_of, obj->oartifact
                                              ? bare_artifactname(obj)

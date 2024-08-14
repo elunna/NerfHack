@@ -1091,8 +1091,14 @@ spec_abon(struct obj *otmp, struct monst *mon)
        always return 0 for any artifact which has that attribute */
 
     if (weap != &artilist[ART_NONARTIFACT]
-            && weap->attk.damn && spec_applies(weap, mon))
+            && weap->attk.damn && spec_applies(weap, mon)) {
+
+        /* Quick Blade is an exception we want to preserve from SLASH'EM */
+        if (weap == &artilist[ART_QUICK_BLADE])
+            return rnd(9);
+        
         return -rnd((int) weap->attk.damn);
+        }
     return 0;
 }
 
