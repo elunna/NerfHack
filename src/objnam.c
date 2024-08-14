@@ -2973,6 +2973,7 @@ makeplural(const char *oldstr)
         static const char *const already_plural[] = {
             "ae",  /* algae, larvae, &c */
             "eaux", /* chateaux, gateaux */
+            "dice",
             "matzot", 0,
         };
 
