@@ -1027,7 +1027,7 @@ add_mon_info(winid datawin, struct permonst * pm)
         Sprintf(buf2, "Provides %d nutrition when eaten.", pm->cnutrit);
         MONPUTSTR(buf2);
         if (*buf) {
-            Snprintf(buf2, BUFSZ, "Corpse may convey %s.", buf);
+            Snprintf(buf2, BUFSZ, "Corpse conveys %s.", buf);
             MONPUTSTR(buf2);
         } else
             MONPUTSTR("Corpse conveys no intrinsics.");
@@ -3961,7 +3961,7 @@ dohistory(void)
 staticfn void
 corpse_conveys(char *buf, struct permonst * pm)
 {
-    int pct = max(5, (int) (pm->cwt / 90));
+    int pct = max(1, (int) (pm->cwt / 180));
 #define ADDPCTRES(cond, amt, str)    \
     if (cond) {                      \
         if (*buf)                    \

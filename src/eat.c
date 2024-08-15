@@ -1003,8 +1003,7 @@ givit(int type, struct permonst *ptr)
     const char *adj;
     long increase;
 
-    increase = (ptr->cwt / 90);
-    increase = (increase / 2) + rnd((increase / 2) + 1);
+    increase = max(1, (ptr->cwt / 180));
     
     if (increase < MIN_GAIN)
         increase = MIN_GAIN;
