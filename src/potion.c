@@ -3342,6 +3342,7 @@ potion_dip(struct obj *obj, struct obj *potion)
 
             pline("%s dissolves in %s.", The(xname(singlegem)), the(xname(singlepotion)));
             makeknown(POT_ACID);
+            makeknown(singlegem->otyp);
             useup(singlegem);
         }
         
