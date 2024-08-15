@@ -140,14 +140,19 @@ des.object({ id = "statue", x=38, y=15, montype="orc shaman", historic=1 })
 des.object("chest", 61, 2)
 des.object("chest", 63, 2)
 
-des.altar({ x=48, y=02, align="noalign",type="shrine" })
-des.altar({ x=48, y=16, align="noalign",type="shrine" })
-des.altar({ x=56, y=09, align="noalign",type="shrine" })
+-- des.altar({ x=48, y=02, align="noalign",type="shrine" })
+-- des.altar({ x=48, y=16, align="noalign",type="shrine" })
+-- des.altar({ x=56, y=09, align="noalign",type="shrine" })
+
+des.object({ id = "statue", x=48, y=02, montype="horned devil", historic=1 })
+des.object({ id = "statue", x=48, y=16, montype="pit fiend", historic=1 })
+des.object({ id = "statue", x=56, y=56, montype="vrock", historic=1 })
 
 -- A hidden elven temple from the days of old before this
 -- site had been overrun by orcs. Chance that some elves
 -- are barracaded inside.
-des.altar({ x=62, y=02, align="noncoaligned",type="shrine" })
+-- des.altar({ x=62, y=02, align="noncoaligned",type="shrine" })
+des.object({ id = "statue", x=56, y=56, montype="Elvenking", historic=1 })
 des.engraving({ x=62, y=02, type = "burn", text = "Elbereth" });
 
 des.monster({ id = "elven cleric", x=61, y=03 })
