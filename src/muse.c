@@ -3163,12 +3163,46 @@ munstone(struct monst *mon, boolean by_you)
 {
     struct obj *obj;
     boolean tinok;
+    boolean spellcaster =
+        attacktype_fordmg(mon->data, AT_MAGC, AD_SPEL) 
+        || attacktype_fordmg(mon->data, AT_MAGC, AD_CLRC);
 
     if (resists_ston(mon))
         return FALSE;
     if (mon->meating || helpless(mon))
         return FALSE;
     mon->mstrategy &= ~STRAT_WAITFORU;
+
+   if (spellcaster && !mon->mcan && !mon->mspec_used 
+        && !mon->mconf && mon->m_lev >= 5) {
+        struct obj *otmp, *onext, *pseudo;
+
+        pseudo = mksobj(SPE_STONE_TO_FLESH, FALSE, FALSE);
+        pseudo->blessed = pseudo->cursed = 0;
+        mon->mspec_used = mon->mspec_used + rn2(7);
+        if (canspotmon(mon))
+            pline("%s casts a spell!", canspotmon(mon)
+                  ? Monnam(mon) : Something);
+        if (canspotmon(mon)) {
+            if (Hallucination)
+                pline("Look!  The Pillsbury Doughboy!");
+            else
+                pline("%s seems limber!", Monnam(mon));
+        }
+
+        for (otmp = mon->minvent; otmp; otmp = onext) {
+            onext = otmp->nobj;
+            mon->misc_worn_check &= ~otmp->owornmask;
+            update_mon_extrinsics(mon, otmp, FALSE, TRUE);
+            otmp->owornmask = 0L; /* obfree() expects this */
+            (void) bhito(otmp, pseudo);
+        }
+        obfree(pseudo, (struct obj *) 0);
+        // mon->mlstmv = monstermoves; /* it takes a turn */
+        mon->mlstmv = svm.moves;
+        return TRUE;
+    }
+
 
     tinok = mcould_eat_tin(mon);
     for (obj = mon->minvent; obj; obj = obj->nobj) {
