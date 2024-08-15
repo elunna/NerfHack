@@ -1004,11 +1004,15 @@ mksobj_init(struct obj *otmp, boolean artif)
         break;
     case GEM_CLASS:
         otmp->corpsenm = 0; /* LOADSTONE hack */
-        if (otmp->otyp == LOADSTONE || otmp->otyp == HEALTHSTONE)
+        if (otmp->otyp == LOADSTONE
+            || otmp->otyp == HEALTHSTONE
+            || otmp->otyp == FOULSTONE)
             curse(otmp);
         else if (otmp->otyp == ROCK)
             otmp->quan = (long) rn1(6, 6);
-        else if (otmp->otyp != LUCKSTONE && otmp->otyp != HEALTHSTONE && !rn2(6))
+        else if (otmp->otyp != LUCKSTONE 
+            && otmp->otyp != HEALTHSTONE 
+            && otmp->otyp != FOULSTONE && !rn2(6))
             otmp->quan = 2L;
         else
             otmp->quan = 1L;
