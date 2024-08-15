@@ -1304,7 +1304,7 @@ hmon_hitmon_weapon_melee(
             hmd->get_dmg_bonus = FALSE;
             hmd->dmg -= weapon_dam_bonus(uwep);
         } else if (uwep->oartifact == ART_DAVID_S_SLING) {
-            hmd->dmg += 6;
+            hmd->dmg += rnd(6);
         }
     } else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd
                /* Allow 3.4.3 backstab damage for the first thrown weapon. */
