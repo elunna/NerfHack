@@ -2142,14 +2142,20 @@ potionhit(struct monst *mon, struct obj *obj, int how)
         }
         case POT_SLEEPING:
             /* wakeup() doesn't rouse victims of temporary sleep */
-            if (sleep_monst(mon, rnd(12), POTION_CLASS)) {
+            if (has_free_action(mon)) {
+                pline("%s stiffens momentarily.", Monnam(mon));
+                break;
+            } else if (sleep_monst(mon, rnd(12), POTION_CLASS)) {
                 pline("%s falls asleep.", Monnam(mon));
                 slept_monst(mon);
             }
             break;
         case POT_PARALYSIS:
-            if (mon->mcanmove) {
-                /* effect will last 3-24 turns */
+            if (has_free_action(mon)) {
+                pline("%s stiffens momentarily.", Monnam(mon));
+                break;
+            } else if (mon->mcanmove) {
+               /* effect will last 3-24 turns */
                 paralyze_monst(mon, rnd(22) + 2);
             }
             break;

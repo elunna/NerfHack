@@ -3976,7 +3976,8 @@ mhitm_ad_plys(
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (!rn2(3) && mhm->damage < mdef->mhp
-            && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
+            && !mhitm_mgc_atk_negated(magr, mdef, TRUE)
+            && !has_free_action(mdef)) {
             if (!Blind)
                 pline("%s is frozen by you!", Monnam(mdef));
             paralyze_monst(mdef, rnd(10));
@@ -4004,7 +4005,8 @@ mhitm_ad_plys(
     } else {
         /* mhitm */
         if (mdef->mcanmove && !rn2(3)
-            && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
+            && !mhitm_mgc_atk_negated(magr, mdef, TRUE)
+            && !has_free_action(mdef)) {
             if (gv.vis && canspotmon(mdef)) {
                 char buf[BUFSZ];
 
@@ -4601,7 +4603,8 @@ mhitm_ad_tckl(struct monst *magr,
         /* uhitm */
         /* since hero can't be cancelled, only defender's armor applies */
         if (!no_effect && mdef->mcanmove && !rn2(3) 
-                && mhm->damage < mdef->mhp) {
+                && mhm->damage < mdef->mhp
+                && !has_free_action(mdef)) {
             if (!Blind) 
                 You("mercilessly tickle %s!", mon_nam(mdef));
             mdef->mcanmove = 0;
@@ -4627,7 +4630,7 @@ mhitm_ad_tckl(struct monst *magr,
         }
     } else {
         /* mhitm */
-        if (!no_effect && mdef->mcanmove) {
+        if (!no_effect && mdef->mcanmove && !has_free_action(mdef)) {
             if (gv.vis)
                 pline("%s mercilessly tickles %s.", Monnam(magr), mon_nam(mdef));
             mdef->mcanmove = 0;

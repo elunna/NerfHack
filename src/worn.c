@@ -545,8 +545,11 @@ update_mon_extrinsics(
         case TELEPAT:
             mon->mextrinsics |= MR2_TELEPATHY;
             break;
-         case WWALKING:
+        case WWALKING:
             mon->mextrinsics |= MR2_WATERWALK;
+            break;
+        case FREE_ACTION:
+            mon->mextrinsics |= MR2_FREE_ACTION;
             break;
         /* properties handled elsewhere */
         case ANTIMAGIC:
@@ -590,8 +593,11 @@ update_mon_extrinsics(
         case TELEPAT:
             mon->mextrinsics &= ~(MR2_TELEPATHY);
             break;
-          case WWALKING:
+        case WWALKING:
             mon->mextrinsics &= ~(MR2_WATERWALK);
+            break;
+        case FREE_ACTION:
+            mon->mextrinsics &= ~(MR2_FREE_ACTION);
             break;
         case FIRE_RES:
         case COLD_RES:
