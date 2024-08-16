@@ -16,18 +16,26 @@
 #define immune_poisongas(ptr) ((ptr) == &mons[PM_HEZROU]        \
                                || (ptr) == &mons[PM_VROCK])
 
-#define has_reflection(mon) \
-    ((mon_resistancebits(mon) & MR2_REFLECTION) != 0)
-#define has_telepathy(mon) (telepathic(mon->data) \
-     || (mon_resistancebits(mon) & MR2_TELEPATHY) != 0)
+#define can_levitate(mon) \
+    ((mon_resistancebits(mon) & MR2_LEVITATE) != 0)
+#define can_fly(mon) \
+    ((mon_resistancebits(mon) & MR2_FLYING) != 0)
 #define can_wwalk(mon) \
     ((mon_resistancebits(mon) & MR2_WATERWALK) != 0)
 #define can_jump(mon) \
     ((mon_resistancebits(mon) & MR2_JUMPING) != 0)
+#define has_seeinv(mon) \
+    ((mon_resistancebits(mon) & MR2_SEE_INVIS) != 0)
+#define has_magicbreath(mon) \
+    ((mon_resistancebits(mon) & MR2_MAGBREATH) != 0)
 #define has_displacement(mon) \
     ((mon_resistancebits(mon) & MR2_DISPLACED) != 0)
-#define can_levitate(mon) \
-    ((mon_resistancebits(mon) & MR2_LEVITATE) != 0)
+#define has_strength(mon) \
+    ((mon_resistancebits(mon) & MR2_STRENGTH) != 0)
+#define has_telepathy(mon) (telepathic(mon->data) \
+     || (mon_resistancebits(mon) & MR2_TELEPATHY) != 0)
+#define has_reflection(mon) \
+    ((mon_resistancebits(mon) & MR2_REFLECTION) != 0)
 #define has_free_action(mon) \
     ((mon_resistancebits(mon) & MR2_FREE_ACTION) != 0)
 
