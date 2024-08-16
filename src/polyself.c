@@ -1960,8 +1960,8 @@ domindblast(void)
             continue;
         if (mindless(mtmp->data))
             continue;
-        u_sen = telepathic(mtmp->data) && !mtmp->mcansee;
-        if (u_sen || (telepathic(mtmp->data) && rn2(2)) || !rn2(10)) {
+        u_sen = has_telepathy(mtmp) && !mtmp->mcansee;
+        if (u_sen || (has_telepathy(mtmp) && rn2(2)) || !rn2(10)) {
             dmg = rnd(15);
             /* wake it up first, to bring hidden monster out of hiding;
                but in case it is currently peaceful, don't make it hostile
@@ -1970,7 +1970,7 @@ domindblast(void)
             wakeup(mtmp, (dmg > mtmp->mhp) ? TRUE : FALSE);
             You("lock in on %s %s.", s_suffix(mon_nam(mtmp)),
                 u_sen ? "telepathy"
-                : telepathic(mtmp->data) ? "latent telepathy"
+                : has_telepathy(mtmp) ? "latent telepathy"
                   : "mind");
             showdamage(dmg, FALSE);
             mtmp->mhp -= dmg;

@@ -636,7 +636,7 @@ mind_blast(struct monst *mtmp)
             continue;
         if (m2 == mtmp)
             continue;
-        if ((telepathic(m2->data) && (rn2(2) || m2->mblinded)) || !rn2(10)) {
+        if ((has_telepathy(m2) && (rn2(2) || m2->mblinded)) || !rn2(10)) {
             /* wake it up first, to bring hidden monster out of hiding */
             wakeup(m2, FALSE);
             if (cansee(m2->mx, m2->my))
@@ -2274,9 +2274,16 @@ set_apparxy(struct monst *mtmp)
     /* pet knows your smell; grabber still has hold of you; monsters which
        know where you are don't suddenly forget, if you haven't moved away */
     if (mtmp->mtame || mtmp == u.ustuck || u_at(mx, my)) {
-            mtmp->mux = u.ux;
-            mtmp->muy = u.uy;
-            return;
+        mtmp->mux = u.ux;
+        mtmp->muy = u.uy;
+        return;
+    }
+
+    /* monster can see you via cooperative telepathy */
+    if (has_telepathy(mtmp) && (HTelepat || ETelepat)) {
+        mtmp->mux = u.ux;
+        mtmp->muy = u.uy;
+        return;
     }
 
     notseen = (!mtmp->mcansee || (Invis && !perceives(mtmp->data)));

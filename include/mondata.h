@@ -164,9 +164,19 @@
 #define can_teleport(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
 #define control_teleport(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)
 #define telepathic(ptr)                                                \
-    ((ptr) == &mons[PM_FLOATING_EYE] \
-     || (ptr) == &mons[PM_MIND_FLAYER] \
-     || (ptr) == &mons[PM_MASTER_MIND_FLAYER])
+    ((ptr) == &mons[PM_FLOATING_EYE]            \
+     || (ptr) == &mons[PM_MIND_FLAYER]          \
+     || (ptr) == &mons[PM_MASTER_MIND_FLAYER]   \
+     || (ptr) == &mons[PM_KOBOLD_SHAMAN]        \
+     || (ptr) == &mons[PM_ORC_SHAMAN]           \
+     || (ptr) == &mons[PM_ELVEN_CLERIC]         \
+     || (ptr) == &mons[PM_GNOMISH_WIZARD]       \
+     || (ptr) == &mons[PM_ALHOON]               \
+     || (ptr) == &mons[PM_SHAMAN_KARNOV]        \
+     || (ptr) == &mons[PM_ORACLE]               \
+     || (ptr) == &mons[PM_GHOUL_MAGE]           \
+     || (ptr) == &mons[PM_OGRE_MAGE]            \
+     || (ptr) == &mons[PM_VAMPIRE_MAGE])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
 #define poisonous(ptr) (((ptr)->mflags1 & M1_POIS) != 0L)

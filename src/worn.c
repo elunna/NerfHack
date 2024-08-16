@@ -542,6 +542,9 @@ update_mon_extrinsics(
         case JUMPING:
             mon->mextrinsics |= MR2_JUMPING;
             break;
+        case TELEPAT:
+            mon->mextrinsics |= MR2_TELEPATHY;
+            break;
         /* properties handled elsewhere */
         case ANTIMAGIC:
         case REFLECTING:
@@ -550,7 +553,6 @@ update_mon_extrinsics(
         /* properties which have no effect for monsters */
         case CLAIRVOYANT:
         case STEALTH:
-        case TELEPAT:
             break;
         /* properties which should have an effect but aren't implemented */
         case LEVITATION:
@@ -582,6 +584,9 @@ update_mon_extrinsics(
             break;
         case JUMPING:
             mon->mextrinsics &= ~(MR2_JUMPING);
+            break;
+        case TELEPAT:
+            mon->mextrinsics &= ~(MR2_TELEPATHY);
             break;
         case FIRE_RES:
         case COLD_RES:
@@ -806,14 +811,18 @@ m_dowear_type(
             if (obj->oclass != AMULET_CLASS
                 || (obj->otyp != AMULET_OF_LIFE_SAVING
                     && obj->otyp != AMULET_OF_REFLECTION
+                    && obj->otyp != AMULET_OF_ESP
                     && obj->otyp != AMULET_OF_GUARDING))
                 continue;
             /* for 'best' to be non-Null, it must be an amulet of guarding;
                life-saving and reflection don't get here due to early return
                and other amulets of guarding can't be any better */
-            if (!best || obj->otyp != AMULET_OF_GUARDING) {
+            if (!best
+                || obj->otyp != AMULET_OF_ESP
+                || obj->otyp != AMULET_OF_GUARDING) {
                 best = obj;
-                if (best->otyp != AMULET_OF_GUARDING)
+                if (best->otyp != AMULET_OF_GUARDING
+                    && best->otyp != AMULET_OF_ESP)
                     goto outer_break; /* life-saving or reflection; use it */
             }
             continue; /* skip post-switch armor handling */
