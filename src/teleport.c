@@ -2036,7 +2036,7 @@ mlevel_tele_trap(
             if (trap)
                 seetrap(trap);
         }
-        if (is_xport(tt) && !control_teleport(mtmp->data))
+        if (is_xport(tt) && !mon_prop(mtmp, TELEPORT_CONTROL))
             mtmp->mconf = 1;
         migrate_to_level(mtmp, ledger_no(&tolevel), migrate_typ, (coord *) 0);
         return Trap_Moved_Mon; /* no longer on this level */
@@ -2218,7 +2218,7 @@ u_teleport_mon(struct monst *mtmp, boolean give_feedback)
         unstuck(mtmp);
         if (!rloc(mtmp, RLOC_MSG))
             m_into_limbo(mtmp);
-    } else if ((is_rider(mtmp->data) || control_teleport(mtmp->data))
+    } else if ((is_rider(mtmp->data) || mon_prop(mtmp, TELEPORT_CONTROL))
                && rn2(13) && enexto(&cc, u.ux, u.uy, mtmp->data))
         rloc_to(mtmp, cc.x, cc.y);
     else
