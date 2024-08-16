@@ -1714,7 +1714,16 @@ dogaze(void)
                 /* No reflection check for consistency with when a monster
                  * gazes at *you*--only medusa gaze gets reflected then.
                  */
-                if (adtyp == AD_CONF || adtyp == AD_HALU) {
+                if (adtyp == AD_CONF) {
+                    if (!mtmp->mconf)
+                        Your("gaze confuses %s!", mon_nam(mtmp));
+                    else
+                        pline("%s is getting more and more confused.",
+                              Monnam(mtmp));
+                    mtmp->mconf = 1;
+
+                
+                } else if (adtyp == AD_HALU && !mon_prop(mtmp, HALLUC_RES)) {
                     if (!mtmp->mconf)
                         Your("gaze confuses %s!", mon_nam(mtmp));
                     else

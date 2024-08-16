@@ -4528,6 +4528,8 @@ mhitm_ad_halu(
 
     if (magr == &gy.youmonst) {
         /* uhitm */
+        if (mon_prop(mdef, HALLUC_RES))
+            return;
         if (gv.vis && canseemon(mdef))
             pline("%s is affected by your %s!", Monnam(mdef),
                 thirdeye ? "gaze" : "flash of light");
@@ -4538,7 +4540,8 @@ mhitm_ad_halu(
         /* handled in mon_explodes_nodmg */
     } else {
         /* mhitm */
-        if (gv.vis && canseemon(mdef))
+        if (gv.vis && canseemon(mdef)
+            && !mon_prop(mdef, HALLUC_RES))
             pline("%s looks %sconfused.", Monnam(mdef),
                   mdef->mconf ? "more " : "");
         mdef->mconf = 1;

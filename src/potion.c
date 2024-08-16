@@ -2128,7 +2128,8 @@ potionhit(struct monst *mon, struct obj *obj, int how)
         case POT_CONFUSION:
         case POT_BOOZE:
         case POT_HALLUCINATION:
-            if (!resist(mon, POTION_CLASS, 0, NOTELL))
+            if (!resist(mon, POTION_CLASS, 0, NOTELL)
+                && !mon_prop(mon, HALLUC_RES))
                 mon->mconf = TRUE;
             break;
         case POT_INVISIBILITY: {
