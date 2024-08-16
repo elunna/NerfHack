@@ -557,7 +557,7 @@ update_mon_extrinsics(
         case JUMPING:
             break;
         default:
-            mon->mextrinsics |= (unsigned short) res_to_mr(which);
+            mon->mextrinsics |= (unsigned long) res_to_mr(which);
             break;
         }
     } else { /* off */
@@ -606,7 +606,7 @@ update_mon_extrinsics(
                     break;
             }
             if (!otmp)
-                mon->mextrinsics &= ~((unsigned short) mask);
+                mon->mextrinsics &= ~((unsigned long) mask);
             break;
         default:
             break;

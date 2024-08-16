@@ -1558,7 +1558,7 @@ give_u_to_m_resistances(struct monst *mtmp)
        add each to the mintrinsics field for the given monster */
     for (intr = FIRE_RES; intr <= STONE_RES; intr++) {
         if ((u.uprops[intr].intrinsic & INTRINSIC) != 0L) {
-            mtmp->mintrinsics |= (unsigned short) res_to_mr(intr);
+            mtmp->mintrinsics |= (unsigned long) res_to_mr(intr);
         }
     }
 }

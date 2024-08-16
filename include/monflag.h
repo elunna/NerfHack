@@ -61,14 +61,14 @@ enum ms_sounds {
 
 };
 
-#define MR_FIRE         0x01 /* resists fire */
-#define MR_COLD         0x02 /* resists cold */
-#define MR_SLEEP        0x04 /* resists sleep */
-#define MR_DISINT       0x08 /* resists disintegration */
-#define MR_ELEC         0x10 /* resists electricity */
-#define MR_POISON       0x20 /* resists poison */
-#define MR_ACID         0x40 /* resists acid */
-#define MR_STONE        0x80 /* resists petrification */
+#define MR_FIRE         0x00000001L /* resists fire */
+#define MR_COLD         0x00000002L /* resists cold */
+#define MR_SLEEP        0x00000004L /* resists sleep */
+#define MR_DISINT       0x00000008L /* resists disintegration */
+#define MR_ELEC         0x00000010L /* resists electricity */
+#define MR_POISON       0x00000020L /* resists poison */
+#define MR_ACID         0x00000040L /* resists acid */
+#define MR_STONE        0x00000080L /* resists petrification */
 /* NB: the above resistances correspond to the first 8 hero properties in
    prop_types (FIRE_RES through STONE_RES), which can be converted to their
    MR_foo equivalents with the macro res_to_mr() defined in prop.h */
@@ -76,14 +76,18 @@ enum ms_sounds {
 /* other conveyances: teleport, teleport control, telepathy */
 
 /* individual resistances */
-#define MR2_SEE_INVIS   0x0100 /* see invisible */
-#define MR2_LEVITATE    0x0200 /* levitation */
-#define MR2_WATERWALK   0x0400 /* water walking */
-#define MR2_MAGBREATH   0x0800 /* magical breathing */
-#define MR2_DISPLACED   0x1000 /* displaced */
-#define MR2_STRENGTH    0x2000 /* gauntlets of power */
-#define MR2_FUMBLING    0x4000 /* clumsy */
-#define MR2_REFLECTION  0x8000 /* has reflection */
+#define MR2_LEVITATE    0x00000100L /* levitation */
+#define MR2_FLYING      0x00000200L /* flying */
+#define MR2_WATERWALK   0x00000400L /* water walking */
+#define MR2_JUMPING     0x00000800L /* can jump */
+#define MR2_SEE_INVIS   0x00001000L /* see invisible */
+#define MR2_MAGBREATH   0x00002000L /* magical breathing */
+#define MR2_DISPLACED   0x00004000L /* displaced */
+#define MR2_STRENGTH    0x00008000L /* gauntlets of power */
+#define MR2_FUMBLING    0x00010000L /* clumsy */
+#define MR2_TELEPATHY   0x00020000L /* telepathic */
+#define MR2_REFLECTION  0x00040000L /* has reflection */
+#define MR2_FREE_ACTION 0x00080000L /* has free action */
 
 #define M1_FLY          0x00000001L /* can fly or float */
 #define M1_SWIM         0x00000002L /* can traverse water */

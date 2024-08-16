@@ -1863,7 +1863,7 @@ void
 mon_give_prop(struct monst *mtmp, int prop)
 {
     const char *msg = NULL;
-    unsigned short intrinsic = 0; /* MR_* constant */
+    unsigned long intrinsic = 0; /* MR_* constant */
 
     /* Pets don't have all the fields that the hero does, so they can't get all
        the same intrinsics. If it happens to choose strength gain or teleport

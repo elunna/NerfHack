@@ -18,6 +18,18 @@
 
 #define has_reflection(mon) \
     ((mon_resistancebits(mon) & MR2_REFLECTION) != 0)
+#define has_telepathy(mon) (telepathic(mon->data) \
+     || (mon_resistancebits(mon) & MR2_TELEPATHY) != 0)
+#define can_wwalk(mon) \
+    ((mon_resistancebits(mon) & MR2_WATERWALK) != 0)
+#define can_jump(mon) \
+    ((mon_resistancebits(mon) & MR2_JUMPING) != 0)
+#define has_displacement(mon) \
+    ((mon_resistancebits(mon) & MR2_DISPLACED) != 0)
+#define can_levitate(mon) \
+    ((mon_resistancebits(mon) & MR2_LEVITATE) != 0)
+#define has_free_action(mon) \
+    ((mon_resistancebits(mon) & MR2_FREE_ACTION) != 0)
 
 #define resists_death(ptr) \
     (dmgtype((ptr), AD_DETH) \
@@ -78,6 +90,7 @@
 #define is_jumper(ptr) (((ptr)->mflags3 & M3_JUMPER) != 0L)
 #define is_flyer(ptr) (((ptr)->mflags1 & M1_FLY) != 0L)
 #define is_floater(ptr) ((ptr)->mlet == S_EYE || (ptr)->mlet == S_LIGHT)
+
 /* clinger: piercers, mimics, wumpus -- generally don't fall down holes */
 #define is_clinger(ptr) (((ptr)->mflags1 & M1_CLING) != 0L)
 #define grounded(ptr) (!is_flyer(ptr) && !is_floater(ptr) \
@@ -143,7 +156,8 @@
 #define can_teleport(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
 #define control_teleport(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)
 #define telepathic(ptr)                                                \
-    ((ptr) == &mons[PM_FLOATING_EYE] || (ptr) == &mons[PM_MIND_FLAYER] \
+    ((ptr) == &mons[PM_FLOATING_EYE] \
+     || (ptr) == &mons[PM_MIND_FLAYER] \
      || (ptr) == &mons[PM_MASTER_MIND_FLAYER])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
