@@ -1271,7 +1271,7 @@ add_erosion_words(struct obj *obj, char *prefix)
     if (rknown && obj->oerodeproof)
         Strcat(prefix, iscrys ? "fixed "
                        : is_rustprone(obj) ? "rustproof "
-                         : is_corrodeable(obj) ? "corrodeproof "
+                         : is_corrodeable(obj) ? "fixed "
                            : is_flammable(obj) ? "fireproof "
                              : is_crackable(obj) ? "tempered " /* hardened */
                                : "");
