@@ -663,9 +663,8 @@ do_attack(struct monst *mtmp)
     }
 
     if (Underwater
-        && (!u.ustuck && !u.uswallow)
-        && (!grounded(mtmp->data))
-        && (!mtmp->minvis)
+        && !u.ustuck && !u.uswallow  && !mtmp->minvis
+        && (!grounded(mtmp->data) || can_wwalk(mtmp))
         && is_pool(mtmp->mx, mtmp->my)) {
         char pnambuf[BUFSZ];
 

@@ -545,6 +545,9 @@ update_mon_extrinsics(
         case TELEPAT:
             mon->mextrinsics |= MR2_TELEPATHY;
             break;
+         case WWALKING:
+            mon->mextrinsics |= MR2_WATERWALK;
+            break;
         /* properties handled elsewhere */
         case ANTIMAGIC:
         case REFLECTING:
@@ -557,7 +560,6 @@ update_mon_extrinsics(
         /* properties which should have an effect but aren't implemented */
         case LEVITATION:
         case FLYING:
-        case WWALKING:
             break;
         /* properties which maybe should have an effect but don't */
         case FUMBLING:
@@ -587,6 +589,9 @@ update_mon_extrinsics(
             break;
         case TELEPAT:
             mon->mextrinsics &= ~(MR2_TELEPATHY);
+            break;
+          case WWALKING:
+            mon->mextrinsics &= ~(MR2_WATERWALK);
             break;
         case FIRE_RES:
         case COLD_RES:
@@ -1341,6 +1346,8 @@ extra_pref(struct monst *mon, struct obj *obj)
         if (obj->otyp == CLOAK_OF_DISPLACEMENT && !has_displacement(mon))
             return 30;
         if (obj->otyp == JUMPING_BOOTS && !can_jump(mon))
+            return 10;
+        if (obj->otyp == WWALKING && !can_wwalk(mon))
             return 10;
     }
         return 0;

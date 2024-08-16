@@ -2285,7 +2285,7 @@ set_apparxy(struct monst *mtmp)
         mtmp->muy = u.uy;
         return;
     }
-
+    
     notseen = (!mtmp->mcansee || (Invis && !perceives(mtmp->data)));
     notthere = (Displaced && mtmp->data != &mons[PM_DISPLACER_BEAST]);
     /* add cases as required.  eg. Displacement ... */

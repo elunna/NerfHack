@@ -1017,7 +1017,7 @@ minliquid_core(struct monst *mtmp)
 
     /* [ceiling clingers are handled below] */
     inpool = (is_pool(mtmp->mx, mtmp->my)
-              && (!(is_flyer(mtmp->data) || is_floater(mtmp->data))
+              && (!(is_flyer(mtmp->data) || is_floater(mtmp->data) || can_wwalk(mtmp))
                   /* there's no "above the surface" on the plane of water */
                   || Is_waterlevel(&u.uz)));
     inlava = (is_lava(mtmp->mx, mtmp->my)
@@ -1114,7 +1114,8 @@ minliquid_core(struct monst *mtmp)
          * water damage to dead monsters' inventory, but survivors need to
          * be handled here.  Swimmers are able to protect their stuff...
          */
-        if ((waterwall || !is_clinger(mtmp->data)) && !cant_drown(mtmp->data)) {
+        if ((waterwall || (!is_clinger(mtmp->data) && !can_wwalk(mtmp)))
+            && !cant_drown(mtmp->data)) {
             /* like hero with teleport intrinsic or spell, teleport away
                if possible */
             if (can_teleport(mtmp->data) && !tele_restrict(mtmp)) {
@@ -2310,7 +2311,7 @@ mfndpos(
 
     nodiag = NODIAG(mdat - mons);
     wantpool = (mdat->mlet == S_EEL);
-    poolok = ((!Is_waterlevel(&u.uz) && m_in_air(mon))
+    poolok = ((!Is_waterlevel(&u.uz) && (m_in_air(mon) || can_wwalk(mon)))
               || (is_swimmer(mdat) && !wantpool));
     /* note: floating eye is the only is_floater() so this could be
        simplified, but then adding another floater would be error prone */
