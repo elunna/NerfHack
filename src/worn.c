@@ -844,6 +844,7 @@ m_dowear_type(
                     && obj->otyp != AMULET_OF_REFLECTION
                     && obj->otyp != AMULET_OF_ESP
                     && obj->otyp != AMULET_VERSUS_POISON
+                    && obj->otyp != AMULET_OF_FLYING
                     && obj->otyp != AMULET_OF_GUARDING))
                 continue;
             /* for 'best' to be non-Null, it must be an amulet of guarding;
@@ -852,10 +853,12 @@ m_dowear_type(
             if (!best
                 || obj->otyp != AMULET_OF_ESP
                 || obj->otyp != AMULET_VERSUS_POISON
+                || obj->otyp != AMULET_OF_FLYING
                 || obj->otyp != AMULET_OF_GUARDING) {
                 best = obj;
                 if (best->otyp != AMULET_OF_GUARDING
                     && best->otyp != AMULET_VERSUS_POISON
+                    && best->otyp != AMULET_OF_FLYING
                     && best->otyp != AMULET_OF_ESP)
                     goto outer_break; /* life-saving or reflection; use it */
             }
