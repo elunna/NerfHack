@@ -6989,7 +6989,7 @@ passive(
                         nomul(-rnd(6));
                         dynamic_multi_reason(mon, "frozen", TRUE);
                         gn.nomovemsg = 0;
-                    } else if (Hallucination && rn2(4)) {
+                    } else if (Hallucination) {
                         /* [it's the hero who should be getting paralyzed
                            and isn't; this message describes the monster's
                            reaction rather than the hero's escape] */
