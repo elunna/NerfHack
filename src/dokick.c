@@ -270,7 +270,7 @@ kick_monster(struct monst *mon, coordxy x, coordxy y)
             if (mon->mx != x || mon->my != y) {
                 (void) unmap_invisible(x, y);
                 pline("%s %s, %s evading your %skick.", Monnam(mon),
-                      (can_teleport(mon->data) && !noteleport_level(mon))
+                      (mon_prop(mon, TELEPORT) && !noteleport_level(mon))
                           ? "teleports"
                           : is_floater(mon->data)
                                 ? "floats"

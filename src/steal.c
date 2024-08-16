@@ -818,7 +818,7 @@ stealamulet(struct monst *mtmp)
         Strcpy(buf, doname(otmp));
         (void) mpickobj(mtmp, otmp); /* could merge and free otmp but won't */
         pline("%s steals %s!", Some_Monnam(mtmp), buf);
-        if (can_teleport(mtmp->data) && !tele_restrict(mtmp))
+        if (mon_prop(mtmp, TELEPORT) && !tele_restrict(mtmp))
             (void) rloc(mtmp, RLOC_MSG);
         (void) encumber_msg();
     }

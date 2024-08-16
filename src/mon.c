@@ -1068,7 +1068,7 @@ minliquid_core(struct monst *mtmp)
         if (!is_clinger(mtmp->data) && !likes_lava(mtmp->data)) {
             /* not fair...?  hero doesn't automatically teleport away
                from lava, just from water */
-            if (can_teleport(mtmp->data) && !tele_restrict(mtmp)) {
+            if (mon_prop(mtmp, TELEPORT) && !tele_restrict(mtmp)) {
                 if (rloc(mtmp, RLOC_MSG))
                     return 0;
             }
@@ -1118,7 +1118,7 @@ minliquid_core(struct monst *mtmp)
             && !cant_drown(mtmp->data)) {
             /* like hero with teleport intrinsic or spell, teleport away
                if possible */
-            if (can_teleport(mtmp->data) && !tele_restrict(mtmp)) {
+            if (mon_prop(mtmp, TELEPORT) && !tele_restrict(mtmp)) {
                 if (rloc(mtmp, RLOC_MSG))
                     return 0;
             }

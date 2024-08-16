@@ -26,6 +26,7 @@ staticfn boolean m_balks_at_approaching(struct monst *);
 staticfn boolean stuff_prevents_passage(struct monst *);
 staticfn int vamp_shift(struct monst *, struct permonst *, boolean);
 staticfn void maybe_spin_web(struct monst *);
+staticfn boolean decide_to_teleport(struct monst *);
 
 /* a11y: give a message when monster moved */
 staticfn void
@@ -747,7 +748,7 @@ dochug(struct monst *mtmp)
         mtmp->mstun = 0;
 
     /* Some monsters teleport. Teleportation costs a turn. */
-    if (mtmp->mflee && !rn2(40) && can_teleport(mdat) && !mtmp->iswiz
+    if (mtmp->mflee && !rn2(40) && mon_prop(mtmp, TELEPORT) && !mtmp->iswiz
         && !noteleport_level(mtmp)) {
         (void) rloc(mtmp, RLOC_MSG);
         return 0;
@@ -1867,12 +1868,15 @@ m_move(struct monst *mtmp, int after)
     }
 
     /* teleport if that lies in our nature */
-    if (ptr == &mons[PM_TENGU] && !rn2(5) && !mtmp->mcan
-        && !tele_restrict(mtmp)) {
-        if (mtmp->mhp < 7 || mtmp->mpeaceful || rn2(2))
+    if ((mon_prop(mtmp, TELEPORT) || (ptr == &mons[PM_TENGU] && !mtmp->mcan))
+          && !rn2(ptr == &mons[PM_TENGU] ? 5 : 85)
+          && !((mtmp->isshk || mtmp->ispriest) && mtmp->mpeaceful)
+          && !tele_restrict(mtmp)) {
+        if (!decide_to_teleport(mtmp) || rn2(2))
             (void) rloc(mtmp, RLOC_MSG);
         else
             mnexto(mtmp, RLOC_MSG);
+            
         return postmov(mtmp, ptr, omx, omy, MMOVE_MOVED,
                        seenflgs, can_tunnel, can_unlock, can_open);
     }
@@ -2464,5 +2468,16 @@ vamp_shift(
     }
     return reslt;
 }
+
+/* Returns true if a monster wants to teleport to a specific location */
+staticfn boolean
+decide_to_teleport(struct monst *mtmp)
+{
+    if (!mon_prop(mtmp, TELEPORT_CONTROL))
+        return FALSE; /* No choice */
+    /* Fleeing/peaceful non-pets just want to go anywhere but here */
+    return (!((mtmp->mhp < 7 || mtmp->mflee || mtmp->mpeaceful) && !mtmp->mtame));
+}
+
 
 /*monmove.c*/

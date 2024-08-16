@@ -1260,7 +1260,7 @@ mon_poly(struct monst *magr, struct monst *mdef, int dmg)
                           !was_seen ? "" : " and disappears");
             }
             dmg = 0;
-            if (can_teleport(magr->data)) {
+            if (mon_prop(magr, TELEPORT)) {
                 if (magr == &gy.youmonst)
                     tele();
                 else if (!tele_restrict(magr))
