@@ -1143,7 +1143,7 @@ check_in_air(struct monst *mtmp, unsigned trflags)
             plunged = (trflags & (TOOKPLUNGE | VIASITTING)) != 0;
 
     return ((trflags & HURTLING) != 0
-            || (is_you ? Levitation : is_floater(mtmp->data))
+            || (is_you ? Levitation : mon_prop(mtmp, LEVITATION))
             || ((is_you ? Flying : is_flyer(mtmp->data)) && !plunged));
 }
 
@@ -1969,7 +1969,7 @@ trapeffect_grease_trap(
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
        	
-        if (!(is_floater(mtmp->data) || is_flyer(mtmp->data)
+        if (!(mon_prop(mtmp, LEVITATION) || is_flyer(mtmp->data)
                     || (is_clinger(mtmp->data) && has_ceiling(&u.uz))) && !rn2(2)) { 
             if (canseemon(mtmp))	
                 pline("%s slips in a puddle of grease and falls!", Monnam(mtmp)); 
@@ -3353,7 +3353,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
            hanging to the ceiling */
         if (Sokoban && (is_pit(ttype) || is_hole(ttype)))
             return TRAP_NOT_IMMUNE;
-        if (is_floater(pm) || is_flyer(pm)
+        if (mon_prop(mon, LEVITATION) || is_flyer(pm)
             || (is_clinger(pm) && has_ceiling(&u.uz)))
             return TRAP_CLEARLY_IMMUNE;
         else if (is_you && (Levitation || Flying))
@@ -4544,7 +4544,7 @@ float_up(void)
     } else {
         You("start to float in the air!");
     }
-    if (u.usteed && !is_floater(u.usteed->data) && !is_flyer(u.usteed->data)) {
+    if (u.usteed && !mon_prop(u.usteed, LEVITATION) && !is_flyer(u.usteed->data)) {
         if (Lev_at_will) {
             pline("%s magically floats up!", Monnam(u.usteed));
         } else {
@@ -4688,7 +4688,7 @@ float_down(
                     if (u.usteed)
                         dismount_steed(DISMOUNT_FELL);
                     selftouch("As you fall, you");
-                } else if (u.usteed && (is_floater(u.usteed->data)
+                } else if (u.usteed && (mon_prop(u.usteed, LEVITATION)
                                         || is_flyer(u.usteed->data))) {
                     You("settle more firmly in the saddle.");
                 } else if (Hallucination) {

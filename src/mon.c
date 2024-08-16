@@ -1017,11 +1017,11 @@ minliquid_core(struct monst *mtmp)
 
     /* [ceiling clingers are handled below] */
     inpool = (is_pool(mtmp->mx, mtmp->my)
-              && (!(is_flyer(mtmp->data) || is_floater(mtmp->data) || can_wwalk(mtmp))
+              && (!(is_flyer(mtmp->data) || mon_prop(mtmp, LEVITATION) || can_wwalk(mtmp))
                   /* there's no "above the surface" on the plane of water */
                   || Is_waterlevel(&u.uz)));
     inlava = (is_lava(mtmp->mx, mtmp->my)
-              && !(is_flyer(mtmp->data) || is_floater(mtmp->data)));
+              && !(is_flyer(mtmp->data) || mon_prop(mtmp, LEVITATION)));
     infountain = IS_FOUNTAIN(levl[mtmp->mx][mtmp->my].typ);
 
     /* Flying and levitation keeps our steed out of the liquid
@@ -2279,7 +2279,7 @@ boolean
 m_in_air(struct monst *mtmp)
 {
     return (is_flyer(mtmp->data)
-            || is_floater(mtmp->data)
+            || mon_prop(mtmp, LEVITATION)
             || (is_clinger(mtmp->data)
                 && has_ceiling(&u.uz) && mtmp->mundetected));
 }

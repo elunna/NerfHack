@@ -1634,13 +1634,14 @@ get_atkdam_type(int adtyp)
     return adtyp;
 }
 
-
 boolean
 mon_prop(struct monst *mon, int prop)
 {
     struct obj *o;
     int adtyp = 0;
     /* First, check if prop has a corresponding monflag */
+    if (prop == LEVITATION && (is_floater(mon->data)))
+        return TRUE;
     if (prop == REGENERATION && regenerates(mon->data))
         return TRUE;
     if (prop == SEE_INVIS && perceives(mon->data))

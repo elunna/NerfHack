@@ -2296,7 +2296,7 @@ slippery_ice_fumbling(void)
     if (on_ice) {
         if ((uarmf && objdescr_is(uarmf, "snow boots"))
             || resists_cold(iceskater) || Flying
-            || is_floater(iceskater->data) || is_clinger(iceskater->data)
+            || mon_prop(iceskater, LEVITATION) || is_clinger(iceskater->data)
             || is_whirly(iceskater->data)) {
             on_ice = FALSE;
         } else if (!rn2(fully_resistant(COLD_RES) ? 3 : 2)) {

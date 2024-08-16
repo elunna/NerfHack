@@ -272,7 +272,7 @@ kick_monster(struct monst *mon, coordxy x, coordxy y)
                 pline("%s %s, %s evading your %skick.", Monnam(mon),
                       (mon_prop(mon, TELEPORT) && !noteleport_level(mon))
                           ? "teleports"
-                          : is_floater(mon->data)
+                          : mon_prop(mon, LEVITATION)
                                 ? "floats"
                                 : is_flyer(mon->data) ? "swoops"
                                                       : (nolimbs(mon->data)

@@ -313,7 +313,7 @@ mount_steed(
     }
 
     /* Is the player impaired? */
-    if (!force && !is_floater(ptr) && !is_flyer(ptr) && Levitation
+    if (!force && !mon_prop(mtmp, LEVITATION) && !is_flyer(ptr) && Levitation
         && !Lev_at_will) {
         You("cannot reach %s.", mon_nam(mtmp));
         return (FALSE);
@@ -346,7 +346,7 @@ mount_steed(
     /* Success */
     maybewakesteed(mtmp);
     if (!force) {
-        if (Levitation && !is_floater(ptr) && !is_flyer(ptr))
+        if (Levitation && !mon_prop(mtmp, LEVITATION) && !is_flyer(ptr))
             /* Must have Lev_at_will at this point */
             pline("%s magically floats up!", Monnam(mtmp));
         You("mount %s.", mon_nam(mtmp));
