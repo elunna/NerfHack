@@ -452,7 +452,7 @@ doforging(void)
 
     /* next, the proper tool to do the job */
     if (!uwep || uwep->otyp != WAR_HAMMER) {
-        pline("You'll need a hammer to forge successfully.");
+        pline("You need to be wielding a hammer to forge successfully.");
         return 0;
     }
 
