@@ -6986,7 +6986,7 @@ passive(
                                   /* Quite rare if luck is 8 or higher */
                                   && rnl(10) > 5) {
                         You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
-                        nomul(-rnd(6));
+                        nomul(-rnd(2));
                         dynamic_multi_reason(mon, "frozen", TRUE);
                         gn.nomovemsg = 0;
                     } else if (Hallucination) {
