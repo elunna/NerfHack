@@ -172,13 +172,15 @@ mk_mplayer(struct permonst *ptr, coordxy x, coordxy y, boolean special)
                 helm = STRANGE_OBJECT;
             break;
         case PM_CARTOMANCER:
-            weapon = !rn2(3) ? RAZOR_CARD : STRANGE_OBJECT;
+            weapon = rn2(2) ? QUARTERSTAFF : STRANGE_OBJECT;
             armor = ROBE;
             if (rn2(2))
                 cloak = CLOAK_OF_MAGIC_RESISTANCE;
             if (rn2(4))
                 helm = HELM_OF_BRILLIANCE;
             shield = STRANGE_OBJECT;
+            (void) mongets(mtmp, SCR_CREATE_MONSTER);
+            (void) mongets(mtmp, SCR_CREATE_MONSTER);
             (void) mongets(mtmp, SCR_CREATE_MONSTER);
             break;
         case PM_CAVE_DWELLER:

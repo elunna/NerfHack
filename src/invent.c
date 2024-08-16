@@ -5336,10 +5336,8 @@ let_to_name(char let, boolean unpaid, boolean showsym)
     unsigned len;
 
     if (oclass) {
-	 if (Role_if(PM_CARTOMANCER))
-            class_name = carnames[oclass];
-        else
-	    class_name = names[oclass];
+        class_name = Role_if(PM_CARTOMANCER) 
+            ? carnames[oclass] : names[oclass];
     } else if ((pos = strchr(oth_symbols, let)) != 0)
         class_name = oth_names[pos - oth_symbols];
     else

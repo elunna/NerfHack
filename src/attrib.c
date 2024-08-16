@@ -824,7 +824,7 @@ role_abil(int r)
     } roleabils[] = {
         { PM_ARCHEOLOGIST, arc_abil },
         { PM_BARBARIAN, bar_abil },
-	{ PM_CARTOMANCER, car_abil },
+	    { PM_CARTOMANCER, car_abil },
         { PM_CAVE_DWELLER, cav_abil },
         { PM_HEALER, hea_abil },
         { PM_KNIGHT, kni_abil },

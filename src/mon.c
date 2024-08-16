@@ -3299,43 +3299,41 @@ corpse_chance(
     if (Role_if(PM_CARTOMANCER) && !(mon->data->geno & G_UNIQ)
           && !mon->mtame && !mon->msummoned && !rn2(CHANCE_CARD_DROP)) {
         switch (rnd(20)) {
-            case 1:
-            case 2:
-            case 3: { /* Wand zap card. */ 
-		/* The zap type is handled in mkobj.c */
-                otmp = mksobj(SCR_ZAPPING, TRUE, FALSE);
-                break;
-            }
+        case 1:
+        case 2:
+        case 3: /* Wand zap card. */ 
+		    /* The zap type is handled in mkobj.c */
+            otmp = mksobj(SCR_ZAPPING, TRUE, FALSE);
+            break;
 	    case 4:
 	    case 5: /* More ammo. Player can get a stack of 6 to 11. */
-		otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
-		break;
-            default: /* Monster summon card */
-                otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+		    otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
+		    break;
+        default: /* Monster summon card */
+            otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
 
-		/* Every once in a while, drop a strong monster card. This should keep
-		 * things more interesting when slaying hordes of weenies.
-		 * The odds come roughly from old MtG booster packs having 1 rare. 
-		 */
-		if (!rn2(3)) {
-		    /* otmp->corpsenm = rndmonnum(); */
-		    int tryct = 0;
-		    do
-			otmp->corpsenm = rndmonnum_adj(5 + u.ulevel, 10 + u.ulevel * 2);
-		    while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
-		} else {
-		/* For very weak monsters (base lvl 0 or 1), I think we should skip most
-		 * summon drops. Otherwise the player ends up with loads of crap cards in
-		 * their inventory they'll never play. We don't want to check this above
-		 * because the chance of zaps, ammo, or rare cards is still nice. */
-		    if (mon->data->mlevel < 2 && rn2(10)) {
-			delobj(otmp);
-			goto dropskip;
-		    } else
-			otmp->corpsenm = monsndx(mon->data);
-		}
-                break;
-        }
+            /* Every once in a while, drop a strong monster card. This should
+             * keep things more interesting when slaying hordes of weenies.
+             * The odds come roughly from old MtG booster packs having 1 rare. 
+             */
+            if (!rn2(3)) {
+                int tryct = 0;
+                do
+                    otmp->corpsenm = rndmonnum_adj(5 + u.ulevel, 10 + u.ulevel * 2);
+                while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
+            } else {
+                /* For very weak monsters (base lvl 0 or 1), I think we should skip most
+                * summon drops. Otherwise the player ends up with loads of crap cards in
+                * their inventory they'll never play. We don't want to check this above
+                * because the chance of zaps, ammo, or rare cards is still nice. */
+                if (mon->data->mlevel < 3 && rn2(10)) {
+                    delobj(otmp);
+                    goto dropskip;
+                } else
+                    otmp->corpsenm = monsndx(mon->data);
+            }
+            break;
+    }
 	if (otmp) {
 	    place_object(otmp, mon->mx, mon->my);
 	    newsym(mon->mx, mon->my);
@@ -6152,7 +6150,7 @@ usmellmon(struct permonst *mdat)
             msg_given = TRUE;
             break;
         case PM_CAVE_DWELLER:
-	case PM_CARTOMANCER:
+	    case PM_CARTOMANCER:
         case PM_BARBARIAN:
         case PM_NEANDERTHAL:
             You("smell body odor.");

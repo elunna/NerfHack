@@ -1383,7 +1383,9 @@ ini_inv(struct trobj *trop)
             do {
                 i = rn2(NUMMONS);
             } while ((type_is_pname(&mons[i])
-                || (mons[i].geno & G_UNIQ) || (mons[i].geno & G_NOGEN)));
+                || (mons[i].geno & G_UNIQ)
+                || (mons[i].geno & G_NOGEN)));
+            
             obj->corpsenm = i;
             if (rn2(2))
                 bless(obj);

@@ -500,18 +500,19 @@ doread(void)
         } else {
             if (flags.verbose)
                 pline("It reads:");
-	     if (Role_if(PM_CARTOMANCER)) {
+            if (Role_if(PM_CARTOMANCER)) {
                 pline("\"%s\"",
-                      scroll->oartifact
-                      ? tcg_msgs[SIZE(tcg_msgs) - 1]
-                      : tcg_msgs[scroll->o_id % (SIZE(tcg_msgs) - 1)]);
-	     } else {
-		pline("\"%s\"",
-		    scroll->oartifact
-			? card_msgs[SIZE(card_msgs) - 1]
-			: card_msgs[scroll->o_id % (SIZE(card_msgs) - 1)]);
-	    }
+                    scroll->oartifact
+                    ? tcg_msgs[SIZE(tcg_msgs) - 1]
+                    : tcg_msgs[scroll->o_id % (SIZE(tcg_msgs) - 1)]);
+            } else {
+                pline("\"%s\"",
+                    scroll->oartifact
+                    ? card_msgs[SIZE(card_msgs) - 1]
+                    : card_msgs[scroll->o_id % (SIZE(card_msgs) - 1)]);
+            }
         }
+
         /* Make a credit card number */
         pline("\"%d0%d %ld%d1 0%d%d0\"%s",
               (((int) scroll->o_id % 89) + 10),
@@ -664,13 +665,13 @@ doread(void)
             if (Hallucination)
                 pline("Being so trippy, you screw up...");
             else {
-		if (Role_if(PM_CARTOMANCER))
+                if (Role_if(PM_CARTOMANCER))
                     pline("Being confused, you %s the rules text...",
-                          silently ? "misunderstand" : "misread");
+                        silently ? "misunderstand" : "misread");
                 else
                     pline("Being confused, you %s the magic words...",
-                          silently ? "misunderstand" : "mispronounce");
-	    }
+                        silently ? "misunderstand" : "mispronounce");
+            }
         }
     }
     if (!seffects(scroll)) {
@@ -2337,10 +2338,10 @@ seffect_blank_paper(struct obj **sobjp UNUSED)
     if (Blind)
         You("don't remember there being any magic words on this scroll.");
     else {
-	if (Role_if(PM_CARTOMANCER))
+        if (Role_if(PM_CARTOMANCER))
             pline("This card is useless!");
         else
-	    pline("This scroll seems to be blank.");
+            pline("This scroll seems to be blank.");
     }
     gk.known = TRUE;
 }
@@ -2578,11 +2579,11 @@ seffect_mail(struct obj **sobjp)
     switch (sobj->spe) {
     case 2:
         /* "stamped scroll" created via magic marker--without a stamp */
-	if (Role_if(PM_CARTOMANCER))
-            pline("The rules on this card read \"Discard upon use\".");
+        if (Role_if(PM_CARTOMANCER))
+                pline("The rules on this card read \"Discard upon use\".");
         else
-	    pline("This scroll is marked \"%s\".",
-		odd ? "Postage Due" : "Return to Sender");
+            pline("This scroll is marked \"%s\".",
+            odd ? "Postage Due" : "Return to Sender");
         break;
     case 1:
         /* scroll of mail obtained from bones file or from wishing;

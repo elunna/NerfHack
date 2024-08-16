@@ -302,9 +302,9 @@ mkobj(int oclass, boolean artif)
         const struct icp *iprobs = Is_rogue_level(&u.uz)
                                    ? (const struct icp *) rogueprobs
                                    : Inhell ? (const struct icp *) hellprobs
-					: Role_if(PM_CARTOMANCER)
-					? (const struct icp *) cartprobs
-					: (const struct icp *) mkobjprobs;
+                                   : Role_if(PM_CARTOMANCER)
+                                   ? (const struct icp *) cartprobs
+                                   : (const struct icp *) mkobjprobs;
 
         for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
             continue;

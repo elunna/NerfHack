@@ -244,9 +244,8 @@ obj_typename(int otyp)
         if (otyp == WOODEN_HARP || otyp == MAGIC_HARP)
             dn = "koto";
     }
-    if (Role_if(PM_CARTOMANCER)) {
+    if (Role_if(PM_CARTOMANCER))
         actualn = Cartomancer_item_name(otyp, actualn);
-    }
 
     /* generic items don't have an actual-name; we shouldn't ever be called
        for those; pacify static analyzer without resorting to impossible() */
@@ -300,14 +299,13 @@ obj_typename(int otyp)
         } else {
             Strcpy(buf, dn ? dn : actualn);
             if (ocl->oc_class == GEM_CLASS) {
-		if (Role_if(PM_CARTOMANCER))
-		    Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
-                ? " dice" : " token");
-		else	
-		    Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
-                ? " stone" : " gem");
-
-	    }
+                if (Role_if(PM_CARTOMANCER))
+                    Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
+                        ? " dice" : " token");
+                else	
+                    Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
+                        ? " stone" : " gem");
+            }
             if (un)
                 xcalled(buf, BUFSZ, "", un);
         }
@@ -325,12 +323,6 @@ obj_typename(int otyp)
     if (dn)
         Sprintf(eos(buf), " (%s)", dn);
    
-#if 0 /* Do we need this? */
-    if (Role_if(PM_CARTOMANCER)) {
-        buf = (char *) replace(buf, "scroll", "card");
-        buf = (char *) replace(buf, "spellbook", "rulebook");
-    }
-#endif
     return buf;
 }
 
@@ -649,9 +641,9 @@ xname_flags(
         if (typ == WOODEN_HARP || typ == MAGIC_HARP)
             dn = "koto";
     }
-    if (Role_if(PM_CARTOMANCER)) {
+    if (Role_if(PM_CARTOMANCER))
         actualn = Cartomancer_item_name(typ, actualn);
-    }
+
     /* generic items don't have an actual-name; we shouldn't ever be called
        for those; pacify static analyzer without resorting to impossible() */
     if (!actualn)
@@ -688,8 +680,8 @@ xname_flags(
     /* Cartomancers are masters of cards, they know everything about them. */
     if (Role_if(PM_CARTOMANCER)) {
         if (obj->otyp == RAZOR_CARD) {
-	    obj->known = 1;
-	    obj->bknown = 1;
+            obj->known = 1;
+            obj->bknown = 1;
         }
     }
 
@@ -912,28 +904,26 @@ xname_flags(
         }
         break;
     case SCROLL_CLASS:
-	if (Role_if(PM_CARTOMANCER)) {
+        if (Role_if(PM_CARTOMANCER)) {
             Strcpy(buf, Cartomancer_rarity(typ));
             if (obj->quan > 1) {
                 Strcat(buf, "s");
                 pluralize = FALSE;
             }
-        } else {
-	    Strcpy(buf, "scroll");
-	}
+        } else
+            Strcpy(buf, "scroll");
         if (!dknown)
             break;
 
-	/* Cartomancer special cards */
+        /* Cartomancer special cards */
         if (nn && obj->otyp == SCR_CREATE_MONSTER && obj->corpsenm != NON_PM) {
             Strcat(buf, " - ");
-            /* Strcat(buf, mons[obj->corpsenm].mname); */
             Strcat(buf, mons[obj->corpsenm].pmnames[NEUTRAL]);
         } else if (nn && obj->otyp == SCR_ZAPPING 
-               && obj->corpsenm != NON_PM) {
+                && obj->corpsenm != NON_PM) {
             Strcat(buf, " - ");
             Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
-	} else if (nn) {
+        } else if (nn) {
             Strcat(buf, " of ");
             Strcat(buf, actualn);
         } else if (un) {
@@ -968,22 +958,19 @@ xname_flags(
                 Sprintf(buf, "%s book", dn);
             break;
             /* end of tribute */
-	} else if (!dknown) {
+	    } else if (!dknown) {
             Strcpy(buf, Role_if(PM_CARTOMANCER) 
                 ? "rulebook": "spellbook");
         } else if (nn) {
             if (typ != SPE_BOOK_OF_THE_DEAD)
-                /* Strcpy(buf, "spellbook of "); */
-		Strcpy(buf, Role_if(PM_CARTOMANCER)
+		    Strcpy(buf, Role_if(PM_CARTOMANCER)
                     ? "rulebook of ": "spellbook of ");
             Strcat(buf, actualn);
         } else if (un) {
-            /* xcalled(buf, BUFSZ - PREFIX, "spellbook", un); */
-	    xcalled(buf, BUFSZ - PREFIX, Role_if(PM_CARTOMANCER)
+	        xcalled(buf, BUFSZ - PREFIX, Role_if(PM_CARTOMANCER)
                 ? "rulebook": "spellbook", un);
         } else
-            /* Sprintf(buf, "%s spellbook", dn); */
-	    Sprintf(eos(buf), "%s %s", dn, Role_if(PM_CARTOMANCER)
+	        Sprintf(eos(buf), "%s %s", dn, Role_if(PM_CARTOMANCER)
                 ? "rulebook": "spellbook");
         break;
     case RING_CLASS:
@@ -998,8 +985,8 @@ xname_flags(
         break;
     case GEM_CLASS: {
         const char *rock = (ocl->oc_material == MINERAL || typ == SLING_BULLET)
-	    ? (Role_if(PM_CARTOMANCER) ? "dice" : "stone")
-	    : (Role_if(PM_CARTOMANCER) ? "token" : "gem");
+                            ? (Role_if(PM_CARTOMANCER) ? "dice" : "stone")
+                                : (Role_if(PM_CARTOMANCER) ? "token" : "gem");
 
         if (!dknown) {
             Strcpy(buf, rock);
@@ -4851,7 +4838,9 @@ readobjnam_postparse3(struct _readobjnam_data *d)
     d->typ = 0;
 
     if (d->actualn) {
-        const struct Jitem *j = Role_if(PM_CARTOMANCER) ? Cartomancer_items : Japanese_items;
+        const struct Jitem *j = Role_if(PM_CARTOMANCER) 
+                                        ? Cartomancer_items 
+                                            : Japanese_items;
 
         while (j->item) {
             if (!strcmpi(d->actualn, j->name)) {

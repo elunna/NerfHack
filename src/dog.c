@@ -229,7 +229,7 @@ makedog(void)
             petname = "Hachi"; /* Shibuya Station */
         if (Role_if(PM_BARBARIAN))
             petname = "Idefix"; /* Obelix */
-	if (Role_if(PM_CARTOMANCER))
+        if (Role_if(PM_CARTOMANCER))
             petname = "Joey"; /* Obscure SpliceHack reference (tm) */
         if (Role_if(PM_RANGER))
             petname = "Sirius"; /* Orion's dog */

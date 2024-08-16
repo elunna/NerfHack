@@ -1495,7 +1495,8 @@ throwit(struct obj *obj,
                         || Hallucination || Fumbling),
             tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
 
-    boolean carding = Role_if(PM_CARTOMANCER) && obj->otyp == SCR_CREATE_MONSTER;
+    boolean carding = Role_if(PM_CARTOMANCER) 
+                      && obj->otyp == SCR_CREATE_MONSTER;
 
     /* Handle thrown effect cards here */
     if (obj->otyp == SCR_ZAPPING) {
@@ -2686,9 +2687,9 @@ breaktest(struct obj *obj)
         return TRUE;
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case EXPENSIVE_CAMERA:
-	if (Role_if(PM_CARTOMANCER))
+        if (Role_if(PM_CARTOMANCER))
             return 0;
-        /* FALLTHROUGH */
+    /* FALLTHROUGH */
     case POT_WATER: /* really, all potions */
     case EGG:
     case CREAM_PIE:

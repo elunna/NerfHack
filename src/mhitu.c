@@ -1587,7 +1587,8 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                                  : "surges",
                          buf);
             dismount_steed(DISMOUNT_ENGULFED);
-	} else if (mtmp->data == &mons[PM_FIRE_VORTEX] && Role_if(PM_CARTOMANCER)) {
+	    } else if (mtmp->data == &mons[PM_FIRE_VORTEX] 
+            && Role_if(PM_CARTOMANCER)) {
             pline("That tornado\'s carrying a car!"); /* Sonic 06 */
         } else {
             urgent_pline("%s %s!", Monnam(mtmp),

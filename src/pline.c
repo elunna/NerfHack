@@ -227,9 +227,8 @@ vpline(const char *line, va_list the_args)
         dumplogmsg(line);
 #endif
 
-    if (Role_if(PM_CARTOMANCER)) {
+    if (Role_if(PM_CARTOMANCER))
         line = cartsay(line);
-    }
 
     /* use raw_print() if we're called too early (or perhaps too late
        during shutdown) or if we're being called recursively (probably
