@@ -310,7 +310,7 @@ mon_regen(struct monst *mon, boolean digest_meal)
 
     if (mon->mhp < mon->mhpmax
         && (svm.moves % 20 == 0 
-            || regenerates(mon->data)
+            || mon_prop(mon, REGENERATION)
             || (mstone && !mstone->cursed))
         /* Below are conditions which prevent regen */
         && (!Is_valley(&u.uz) || is_undead(mon->data))

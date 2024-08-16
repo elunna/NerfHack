@@ -695,7 +695,7 @@ mon_catchup_elapsed_time(
 
     /* recover lost hit points */
     if (!mtmp->mwither) {
-        if (!regenerates(mtmp->data))
+        if (!mon_prop(mtmp, REGENERATION))
             imv /= 20;
         if (mtmp->mhp + imv >= mtmp->mhpmax)
             mtmp->mhp = mtmp->mhpmax;
