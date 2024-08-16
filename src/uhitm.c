@@ -5262,6 +5262,13 @@ mhitm_ad_dgst(
         int num;
         struct obj *obj;
 
+        if (mon_prop(mdef, SLOW_DIGESTION)) {
+            if (gv.vis)
+                pline("%s hurriedly expels %s from it's mouth!",
+                    Monnam(magr), mon_nam(mdef));
+            mhm->hitflags = M_ATTK_MISS;
+            return;
+        }
         /* eating a Rider or its corpse is fatal */
         if (is_rider(pd)) {
             if (gv.vis && canseemon(magr))
@@ -5880,6 +5887,13 @@ gulpum(struct monst *mdef, struct attack *mattk)
             start_engulf(mdef);
             switch (mattk->adtyp) {
             case AD_DGST:
+                /* slow digestion protects against engulfing */
+                if (mon_prop(mdef, SLOW_DIGESTION)) {
+                    You("hurriedly regurgitate the indigestible %s.", m_monnam(mdef));
+                    end_engulf();
+                    return M_ATTK_MISS;
+                }
+
                 /* eating a Rider or its corpse is fatal */
                 if (is_rider(pd)) {
                     pline("Unfortunately, digesting any of it is fatal.");

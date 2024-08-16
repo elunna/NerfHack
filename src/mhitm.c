@@ -924,7 +924,7 @@ gulpmm(
     coordxy ax, ay, dx, dy;
     int status;
     struct obj *obj;
-
+    
     if (!engulf_target(magr, mdef))
         return M_ATTK_MISS;
 

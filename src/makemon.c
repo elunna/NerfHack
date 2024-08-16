@@ -395,6 +395,13 @@ m_initweap(struct monst *mtmp)
             otmp->oerodeproof = TRUE;
             otmp->spe = 0;
             (void) mpickobj(mtmp, otmp);
+
+            /* some insurance against purple worms */
+            if (on_level(&astral_level, &u.uz) && !rn2(3)) {
+                otmp = mksobj(RIN_SLOW_DIGESTION, FALSE, FALSE);
+                (void) mpickobj(mtmp, otmp);
+                m_dowear(mtmp, FALSE);
+            }
         }
         break;
     case S_GNOME:
@@ -823,6 +830,12 @@ m_initinv(struct monst *mtmp)
                                                  : CLOAK_OF_MAGIC_RESISTANCE);
             (void) mongets(mtmp, SMALL_SHIELD);
             mkmonmoney(mtmp, (long) rn1(10, 20));
+
+            /* some insurance against 'purple rain' */
+            if (on_level(&astral_level, &u.uz) && rn2(2)) {
+                (void) mongets(mtmp, RIN_SLOW_DIGESTION);
+                m_dowear(mtmp, FALSE);
+            }
 	    } else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
 	        /* Dal Zethire */
             for (cnt = rn2(3); cnt < 4; cnt++) {
@@ -866,8 +879,12 @@ m_initinv(struct monst *mtmp)
         }
         break;
     case S_LICH:
-        if (ptr == &mons[PM_MASTER_LICH] && !rn2(13))
-            (void) mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
+        if (ptr == &mons[PM_MASTER_LICH]) {
+            if (!rn2(13))
+                (void) mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
+            if (!rn2(3))
+                 (void) mongets(mtmp, RIN_SLOW_DIGESTION);
+        }
         else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
             otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
                           rn2(13) ? FALSE : TRUE);
@@ -876,6 +893,9 @@ m_initinv(struct monst *mtmp)
             if (!rn2(4))
                 otmp->oerodeproof = 1;
             (void) mpickobj(mtmp, otmp);
+
+            if (!rn2(3))
+                 (void) mongets(mtmp, RIN_SLOW_DIGESTION);
         }
         break;
     case S_MUMMY:
@@ -949,6 +969,8 @@ m_initinv(struct monst *mtmp)
             else
                 (void) mongets(mtmp, POT_BLOOD);
         }
+        if (ptr == &mons[PM_VAMPIRE_MAGE] && !rn2(4))
+            (void) mongets(mtmp, RIN_SLOW_DIGESTION);
         break;
 
     default:
