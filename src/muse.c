@@ -1390,6 +1390,7 @@ rnd_defensive_item(struct monst *mtmp)
 #define MUSE_WAN_POISON_GAS     26
 #define MUSE_WAN_CORROSION      27
 #define MUSE_SCR_CLONING        28
+#define MUSE_WAN_SLOW_MONSTER 29
 
 staticfn boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -1613,6 +1614,12 @@ find_offensive(struct monst *mtmp)
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_WAN_TELEPORTATION;
         }
+        nomore(MUSE_WAN_SLOW_MONSTER);
+        if (obj->otyp == WAN_SLOW_MONSTER && obj->spe > 0
+            && HFast) {
+            gm.m.offensive = obj;
+            gm.m.has_offense = MUSE_WAN_SLOW_MONSTER;
+        }
         nomore(MUSE_POT_PARALYSIS);
         if (obj->otyp == POT_PARALYSIS && gm.multi >= 0) {
             gm.m.offensive = obj;
@@ -1820,6 +1827,14 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
         }
         if (learnit)
             makeknown(WAN_UNDEAD_TURNING);
+        break;
+     case WAN_SLOW_MONSTER:
+        if (hits_you) {
+            u_slow_down();
+            learnit = gz.zap_oseen;
+        }
+        if (learnit)
+            makeknown(WAN_SLOW_MONSTER);
         break;
     default:
         break;
@@ -2059,6 +2074,7 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_UNDEAD_TURNING:
     case MUSE_WAN_STRIKING:
     case MUSE_WAN_CANCELLATION:
+    case MUSE_WAN_SLOW_MONSTER:
         gz.zap_oseen = oseen;
         mzapwand(mtmp, otmp, FALSE);
         gm.m_using = TRUE;
@@ -2277,6 +2293,8 @@ rnd_offensive_item(struct monst *mtmp)
         return SCR_STINKING_CLOUD;
     case 14:
         return WAN_CANCELLATION;
+    case 15:
+        return WAN_SLOW_MONSTER;
     }
     /*NOTREACHED*/
     return 0;
@@ -2985,7 +3003,8 @@ searches_for_item(struct monst *mon, struct obj *obj)
             return (boolean) (mons[monsndx(mon->data)].difficulty < 6);
         if (objects[typ].oc_dir == RAY || typ == WAN_STRIKING
             || typ == WAN_UNDEAD_TURNING || typ == WAN_CANCELLATION
-            || typ == WAN_TELEPORTATION || typ == WAN_CREATE_MONSTER)
+            || typ == WAN_TELEPORTATION || typ == WAN_CREATE_MONSTER
+            || typ == WAN_SLOW_MONSTER)
             return TRUE;
         break;
     case POTION_CLASS:
