@@ -151,7 +151,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_ATTK | SPFX_HPHDAM 
         | SPFX_WARN | SPFX_DFLAGH), 0, MH_GIANT, 
       PHYS(5, 0), NO_DFNS, NO_CARY, 0, 
-      A_NEUTRAL, NON_PM, NON_PM, 2000L, NO_COLOR, DAVID_S_SLING),
+      A_NEUTRAL, NON_PM, NON_PM, 2000L, CLR_RED, DAVID_S_SLING),
 
     /* From SLASH'EM with changes: removed the Luck bonus and replaced it MC1
      * protection. */
