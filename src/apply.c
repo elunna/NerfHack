@@ -1188,7 +1188,7 @@ use_mirror(struct obj *obj)
 #define SEENMON (MONSEEN_NORMAL | MONSEEN_SEEINVIS | MONSEEN_INFRAVIS)
     how_seen = vis ? howmonseen(mtmp) : 0;
     /* whether monster is able to use its vision-based capabilities */
-    monable = !mtmp->mcan && (!mtmp->minvis || perceives(mtmp->data));
+    monable = !mtmp->mcan && (!mtmp->minvis || mon_prop(mtmp, SEE_INVIS));
     mlet = mtmp->data->mlet;
     if (mtmp->msleeping) {
         if (vis)
@@ -1197,7 +1197,7 @@ use_mirror(struct obj *obj)
     } else if (!mtmp->mcansee) {
         if (vis)
             pline("%s can't see anything right now.", Monnam(mtmp));
-    } else if (invis_mirror && !perceives(mtmp->data)) {
+    } else if (invis_mirror && !mon_prop(mtmp, SEE_INVIS)) {
         if (vis)
             pline("%s fails to notice your %s.", Monnam(mtmp), mirror);
         /* infravision doesn't produce an image in the mirror */
@@ -1258,7 +1258,7 @@ use_mirror(struct obj *obj)
             (void) rloc(mtmp, RLOC_MSG);
     } else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
                && !is_demon(mtmp->data)
-               && (!mtmp->minvis || perceives(mtmp->data)) && rn2(5)) {
+               && (!mtmp->minvis || mon_prop(mtmp, SEE_INVIS)) && rn2(5)) {
         boolean do_react = TRUE;
 
         if (mtmp->mfrozen) {
@@ -1277,7 +1277,7 @@ use_mirror(struct obj *obj)
     } else if (!Blind) {
         if (mtmp->minvis && !See_invisible)
             ;
-        else if ((mtmp->minvis && !perceives(mtmp->data))
+        else if ((mtmp->minvis && !mon_prop(mtmp, SEE_INVIS))
                  /* redundant: can't get here if these are true */
                  || !haseyes(mtmp->data) || gn.notonhead || !mtmp->mcansee)
             pline("%s doesn't seem to notice %s reflection.", Monnam(mtmp),

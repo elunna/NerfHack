@@ -666,7 +666,7 @@ find_targ(
 
         if ((targ = m_at(curx, cury)) != 0) {
             /* Is the monster visible to the pet? */
-            if ((!targ->minvis || perceives(mtmp->data)) && !targ->mundetected
+            if ((!targ->minvis || mon_prop(mtmp, SEE_INVIS)) && !targ->mundetected
                 /* if a long worm, only accept the head as a target */
                 && targ->mx == curx && targ->my == cury) /* not tail */
                 break;
@@ -708,7 +708,7 @@ find_friends(struct monst *mtmp, struct monst *mtarg, int maxdist)
         if (pal) {
             if (pal->mtame) {
                 /* Pet won't notice invisible pets */
-                if (!pal->minvis || perceives(mtmp->data))
+                if (!pal->minvis || mon_prop(mtmp, SEE_INVIS))
                     return 1;
             } else {
                 /* Quest leaders and guardians are always seen */
@@ -1116,7 +1116,7 @@ dog_move(
             else if ((int) mtmp2->m_lev >= balk
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                     && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
-                    && (perceives(mtmp->data) || !mtmp2->minvis))
+                    && (mon_prop(mtmp, SEE_INVIS) || !mtmp2->minvis))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
                 || (mtmp2->data == &mons[PM_YELLOW_MOLD] && rn2(10))
                 || (mtmp2->data == &mons[PM_GRAY_FUNGUS] 

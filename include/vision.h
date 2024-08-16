@@ -43,12 +43,12 @@ enum ls_sources {
 
 #if 0
 #define m_canseeu(m) \
-    ((!Invis || perceives((m)->data))                      \
-     && !(u.uburied || (m)->mburied)                       \
+    ((!Invis || mon_prop(m, SEE_INVIS))                      \
+     && !(u.uburied || (m)->mburied)                         \
      && couldsee((m)->mx, (m)->my))
 #else   /* without 'uburied' and 'mburied' */
 #define m_canseeu(m) \
-    ((!Invis || perceives((m)->data))                      \
+    ((!Invis || mon_prop(m, SEE_INVIS))                      \
      && couldsee((m)->mx, (m)->my))
 #endif
 

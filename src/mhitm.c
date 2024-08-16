@@ -827,7 +827,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
 
     if (magr->mcan || !mdef->mcansee
         || (archon ? resists_blnd(mdef) : !magr->mcansee)
-        || (magr->minvis && !perceives(mdef->data)) || mdef->msleeping) {
+        || (magr->minvis && !mon_prop(mdef, SEE_INVIS)) || mdef->msleeping) {
         if (gv.vis && canspotmon(mdef))
             pline("but nothing happens.");
         return M_ATTK_MISS;
@@ -843,7 +843,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
                                       "The gaze is reflected away by %s %s.");
                 return M_ATTK_MISS;
             }
-            if (mdef->minvis && !perceives(magr->data)) {
+            if (mdef->minvis && !mon_prop(magr, SEE_INVIS)) {
                 if (canseemon(magr)) {
                     pline(
                       "%s doesn't seem to notice that %s gaze was reflected.",
@@ -1460,7 +1460,7 @@ passivemm(
                 tmp = 127;
             if (mddat == &mons[PM_FLOATING_EYE]) {
                 if (magr->mcansee && haseyes(madat) && mdef->mcansee
-                    && (perceives(madat) || !mdef->minvis)) {
+                    && (mon_prop(magr, SEE_INVIS) || !mdef->minvis)) {
                     /* construct format string; guard against '%' in Monnam */
                     Strcpy(buf, s_suffix(Monnam(mdef)));
                     (void) strNsubst(buf, "%", "%%", 0);

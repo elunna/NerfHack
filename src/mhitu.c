@@ -350,7 +350,7 @@ wildmiss(struct monst *mtmp, struct attack *mattk)
     int compat;
     const char *Monst_name; /* Monnam(), deferred until after early returns */
     /* expected reasons for wildmiss() */
-    boolean unotseen = (!mtmp->mcansee || (Invis && !perceives(mtmp->data))),
+    boolean unotseen = (!mtmp->mcansee || (Invis && !mon_prop(mtmp, SEE_INVIS))),
             unotthere = (Displaced != 0), usubmerged = (Underwater != 0);
 
     /* the reasons for wildmiss end up getting checked twice so that the
@@ -863,7 +863,7 @@ mattacku(struct monst *mtmp)
     tmp += mtmp->m_lev;
     if (gm.multi < 0)
         tmp += 4;
-    if ((Invis && !perceives(mdat)) || !mtmp->mcansee)
+    if ((Invis && !mon_prop(mtmp, SEE_INVIS)) || !mtmp->mcansee)
         tmp -= 2;
     if (mtmp->mtrapped)
         tmp -= 2;
@@ -1977,7 +1977,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
      * in melee range, we allow for an easy hit (otherwise, the 
      * blinking eye will simply linger awkwardly next to the player...)
      * */
-    if (mcanseeu && Invis && !perceives(mtmp->data)
+    if (mcanseeu && Invis && !mon_prop(mtmp, SEE_INVIS)
         && !m_next2u(mtmp) && rn2(11)) {
         if (!rn2(23)) /* Don't spam this. */
             pline("%s looks around searchingly...", Monnam(mtmp));
@@ -2336,7 +2336,7 @@ could_seduce(
         defperc = (See_invisible != 0);
         gendef = poly_gender();
     } else {
-        defperc = perceives(mdef->data);
+        defperc = mon_prop(mdef, SEE_INVIS);
         gendef = gender(mdef);
     }
 
@@ -2859,7 +2859,7 @@ passiveum(
                 tmp = 127;
             if (u.umonnum == PM_FLOATING_EYE) {
                 if (mtmp->mcansee && haseyes(mtmp->data) && rn2(3)
-                    && (perceives(mtmp->data) || !Invis)) {
+                    && (mon_prop(mtmp, SEE_INVIS) || !Invis)) {
                     if (Blind) {
                         pline("As a blind %s, you cannot defend yourself.",
                               pmname(gy.youmonst.data,
