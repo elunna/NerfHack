@@ -1642,6 +1642,8 @@ mon_prop(struct monst *mon, int prop)
     /* First, check if prop has a corresponding monflag */
     if (prop == LEVITATION && (is_floater(mon->data)))
         return TRUE;
+    if (prop == FLYING && (is_flyer(mon->data)))
+        return TRUE;
     if (prop == REGENERATION && regenerates(mon->data))
         return TRUE;
     if (prop == SEE_INVIS && perceives(mon->data))

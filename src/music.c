@@ -256,7 +256,7 @@ do_earthquake(int force)
                         if (cansee(x, y)) {
                             pline("%s is shaken loose from the ceiling!",
                                   Amonnam(mtmp));
-                        } else if (!is_flyer(mtmp->data)) {
+                        } else if (!mon_prop(mtmp, FLYING)) {
                             Soundeffect(se_thump, 50);
                             You_hear("a thump.");
                         }
@@ -375,7 +375,7 @@ do_earthquake(int force)
                 /* We have to check whether monsters or hero falls into a
                    new pit....  Note: if we get here, chasm is non-Null. */
                 if (mtmp) {
-                    if (!is_flyer(mtmp->data) && !is_clinger(mtmp->data)) {
+                    if (!mon_prop(mtmp, FLYING) && !is_clinger(mtmp->data)) {
                         boolean m_already_trapped = mtmp->mtrapped;
 
                         mtmp->mtrapped = 1;

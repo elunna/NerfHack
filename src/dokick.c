@@ -154,7 +154,7 @@ kick_monster(struct monst *mon, coordxy x, coordxy y)
     setmangry(mon, TRUE);
 
     if (Levitation && !rn2(3) && verysmall(mon->data)
-        && !is_flyer(mon->data)) {
+        && !mon_prop(mon, FLYING)) {
         pline("Floating in the air, you miss wildly!");
         exercise(A_DEX, FALSE);
         (void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
@@ -274,7 +274,7 @@ kick_monster(struct monst *mon, coordxy x, coordxy y)
                           ? "teleports"
                           : mon_prop(mon, LEVITATION)
                                 ? "floats"
-                                : is_flyer(mon->data) ? "swoops"
+                                : mon_prop(mon, FLYING) ? "swoops"
                                                       : (nolimbs(mon->data)
                                                          || slithy(mon->data))
                                                             ? "slides"

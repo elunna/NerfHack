@@ -5202,7 +5202,8 @@ mhitm_ad_legs(
          * general very good at considering height--most short monsters
          * still _can_ attack you when you're flying or mounted.
          */
-        if ((u.usteed || Levitation || Flying) && !is_flyer(magr->data)) {
+        if ((u.usteed || Levitation || Flying)
+            && !mon_prop(magr, FLYING)) {
             pline("%s tries to reach your %s %s!", Monst_name, sidestr, leg);
             mhm->damage = 0;
         } else if (magr->mcan) {

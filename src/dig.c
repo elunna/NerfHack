@@ -752,10 +752,10 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
             if (oldobjs != newobjs) /* something unearthed */
                 (void) pickup(1);   /* detects pit */
         } else if (mtmp) {
-            if (is_flyer(mtmp->data) || mon_prop(mtmp, LEVITATION)) {
+            if (mon_prop(mtmp, FLYING) || mon_prop(mtmp, LEVITATION)) {
                 if (canseemon(mtmp))
                     pline("%s %s over the pit.", Monnam(mtmp),
-                          (is_flyer(mtmp->data)) ? "flies" : "floats");
+                          (mon_prop(mtmp, FLYING)) ? "flies" : "floats");
             } else if (mtmp != madeby)
                 (void) mintrap(mtmp, NO_TRAP_FLAGS);
         }

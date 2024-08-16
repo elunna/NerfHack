@@ -556,6 +556,11 @@ update_mon_extrinsics(
             if (!unseen)
                 pline("%s starts to float in the air!", Monnam(mon));
             break;
+        case FLYING:
+            mon->mextrinsics |= MR2_FLYING;
+            if (!unseen)
+                pline("%s starts to fly!", Monnam(mon));
+            break;
         /* properties handled elsewhere */
         case ANTIMAGIC:
         case REFLECTING:
@@ -566,8 +571,7 @@ update_mon_extrinsics(
         case STEALTH:
             break;
         /* properties which should have an effect but aren't implemented */
-        case FLYING:
-            break;
+
         /* properties which maybe should have an effect but don't */
         case FUMBLING:
             break;
@@ -607,6 +611,12 @@ update_mon_extrinsics(
             mon->mextrinsics &= ~(MR2_LEVITATE);
             if (!unseen)
                 pline("%s floats gently back to the %s.",
+                      Monnam(mon), surface(mon->mx, mon->my));
+            break;
+        case FLYING:
+            mon->mextrinsics &= ~(MR2_FLYING);
+            if (!unseen)
+                pline("%s lands gently back to the %s.",
                       Monnam(mon), surface(mon->mx, mon->my));
             break;
         case FIRE_RES:

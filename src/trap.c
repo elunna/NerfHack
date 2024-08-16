@@ -1144,7 +1144,7 @@ check_in_air(struct monst *mtmp, unsigned trflags)
 
     return ((trflags & HURTLING) != 0
             || (is_you ? Levitation : mon_prop(mtmp, LEVITATION))
-            || ((is_you ? Flying : is_flyer(mtmp->data)) && !plunged));
+            || ((is_you ? Flying : mon_prop(mtmp, FLYING)) && !plunged));
 }
 
 /* is trap ttmp harmless to monster mtmp? */
@@ -1969,7 +1969,7 @@ trapeffect_grease_trap(
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
        	
-        if (!(mon_prop(mtmp, LEVITATION) || is_flyer(mtmp->data)
+        if (!(mon_prop(mtmp, LEVITATION) || mon_prop(mtmp, FLYING)
                     || (is_clinger(mtmp->data) && has_ceiling(&u.uz))) && !rn2(2)) { 
             if (canseemon(mtmp))	
                 pline("%s slips in a puddle of grease and falls!", Monnam(mtmp)); 
@@ -3164,7 +3164,7 @@ trapeffect_spear_trap(
         /* update steed position, if it exists, since it might die */
         mtmp->mx = mtmp->mx;
         mtmp->my = mtmp->my;
-        if (is_flyer(mtmp->data)) {
+        if (mon_prop(mtmp, FLYING)) {
             if (in_sight)
                 pline("The spear isn't long enough to reach %s.",
                       mon_nam(mtmp));
@@ -3353,7 +3353,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
            hanging to the ceiling */
         if (Sokoban && (is_pit(ttype) || is_hole(ttype)))
             return TRAP_NOT_IMMUNE;
-        if (mon_prop(mon, LEVITATION) || is_flyer(pm)
+        if (mon_prop(mon, LEVITATION) || mon_prop(mon, FLYING)
             || (is_clinger(pm) && has_ceiling(&u.uz)))
             return TRAP_CLEARLY_IMMUNE;
         else if (is_you && (Levitation || Flying))
@@ -3707,9 +3707,9 @@ steedintrap(struct trap *trap, struct obj *otmp)
         break;
     case SPEAR_TRAP:
         pline("The spear stabs %s%s!",
-              (is_flyer(steed->data) || Levitation || Flying) ? "at " : "",
+              (mon_prop(steed, FLYING) || Levitation || Flying) ? "at " : "",
               mon_nam(steed));
-        if (is_flyer(steed->data) || Levitation || Flying) {
+        if (mon_prop(steed, FLYING) || Levitation || Flying) {
             pline("But it isn't long enough to reach %s.", mon_nam(steed));
             break;
         } else if (thick_skinned(steed->data)) {
@@ -4544,7 +4544,8 @@ float_up(void)
     } else {
         You("start to float in the air!");
     }
-    if (u.usteed && !mon_prop(u.usteed, LEVITATION) && !is_flyer(u.usteed->data)) {
+    if (u.usteed && !mon_prop(u.usteed, LEVITATION)
+        && !mon_prop(u.usteed, FLYING)) {
         if (Lev_at_will) {
             pline("%s magically floats up!", Monnam(u.usteed));
         } else {
@@ -4689,7 +4690,7 @@ float_down(
                         dismount_steed(DISMOUNT_FELL);
                     selftouch("As you fall, you");
                 } else if (u.usteed && (mon_prop(u.usteed, LEVITATION)
-                                        || is_flyer(u.usteed->data))) {
+                                        || mon_prop(u.usteed, FLYING))) {
                     You("settle more firmly in the saddle.");
                 } else if (Hallucination) {
                     pline("Bummer!  You've %s.",

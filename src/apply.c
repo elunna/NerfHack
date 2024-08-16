@@ -1639,7 +1639,7 @@ splash_lit(struct obj *obj)
             useeit = get_obj_location(obj, &x, &y, 0) && cansee(x, y);
             uhearit = couldsee(x, y) && distu(x, y) < 5 * 5;
             dunk = (is_pool(mtmp->mx, mtmp->my)
-                    && ((!is_flyer(mtmp->data) && !mon_prop(mtmp, LEVITATION))
+                    && ((!mon_prop(mtmp, FLYING) && !mon_prop(mtmp, LEVITATION))
                         || Is_waterlevel(&u.uz)));
             snuff = FALSE;
             if (useeit)

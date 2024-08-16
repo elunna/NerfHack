@@ -65,7 +65,7 @@ throne_mon_sound(struct monst *mtmp)
 staticfn boolean
 beehive_mon_sound(struct monst *mtmp)
 {
-    if ((mtmp->data->mlet == S_ANT && is_flyer(mtmp->data))
+    if ((mtmp->data->mlet == S_ANT && mon_prop(mtmp, FLYING))
         && mon_in_room(mtmp, BEEHIVE)) {
         int hallu = Hallucination ? 1 : 0;
 
@@ -134,7 +134,7 @@ zoo_mon_sound(struct monst *mtmp)
 staticfn boolean
 dlair_mon_sound(struct monst *mtmp)
 {
-    if ((mtmp->data->mlet == S_DRAGON && is_flyer(mtmp->data))
+    if ((mtmp->data->mlet == S_DRAGON && mon_prop(mtmp, FLYING))
         && mon_in_room(mtmp, DRAGONLAIR)) {
         int hallu = Hallucination ? 1 : 0;
 

@@ -1017,11 +1017,11 @@ minliquid_core(struct monst *mtmp)
 
     /* [ceiling clingers are handled below] */
     inpool = (is_pool(mtmp->mx, mtmp->my)
-              && (!(is_flyer(mtmp->data) || mon_prop(mtmp, LEVITATION) || can_wwalk(mtmp))
+              && (!(mon_prop(mtmp, FLYING) || mon_prop(mtmp, LEVITATION) || can_wwalk(mtmp))
                   /* there's no "above the surface" on the plane of water */
                   || Is_waterlevel(&u.uz)));
     inlava = (is_lava(mtmp->mx, mtmp->my)
-              && !(is_flyer(mtmp->data) || mon_prop(mtmp, LEVITATION)));
+              && !(mon_prop(mtmp, FLYING) || mon_prop(mtmp, LEVITATION)));
     infountain = IS_FOUNTAIN(levl[mtmp->mx][mtmp->my].typ);
 
     /* Flying and levitation keeps our steed out of the liquid
@@ -2278,7 +2278,7 @@ mon_allowflags(struct monst *mtmp)
 boolean
 m_in_air(struct monst *mtmp)
 {
-    return (is_flyer(mtmp->data)
+    return (mon_prop(mtmp, FLYING)
             || mon_prop(mtmp, LEVITATION)
             || (is_clinger(mtmp->data)
                 && has_ceiling(&u.uz) && mtmp->mundetected));
@@ -3985,7 +3985,7 @@ vamp_stone(struct monst *mtmp)
                              (SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION
                               | SUPPRESS_INVISIBLE | SUPPRESS_IT), FALSE),
                     amorphous(mtmp->data) ? "coalesces on the"
-                       : is_flyer(mtmp->data) ? "drops to the"
+                       : mon_prop(mtmp, FLYING) ? "drops to the"
                           : "writhes on the",
                     surface(x, y));
             mtmp->mcanmove = 1;

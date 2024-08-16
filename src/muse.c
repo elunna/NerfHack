@@ -1017,7 +1017,7 @@ use_defensive(struct monst *mtmp)
             pline("%s has made a hole in the %s.", Monnam(mtmp),
                   surface(mtmp->mx, mtmp->my));
             pline("%s %s through...", Monnam(mtmp),
-                  is_flyer(mtmp->data) ? "dives" : "falls");
+                  mon_prop(mtmp, FLYING) ? "dives" : "falls");
         } else if (!Deaf) {
             Soundeffect(se_crash_through_floor, 100);
             You_hear("%s crash through the %s.", something,
