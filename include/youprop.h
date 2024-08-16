@@ -208,7 +208,8 @@
 
 #define HDisplaced u.uprops[DISPLACED].intrinsic /* timed from corpse */
 #define EDisplaced u.uprops[DISPLACED].extrinsic /* worn cloak */
-#define Displaced (HDisplaced || EDisplaced)
+#define Displaced (HDisplaced || EDisplaced \
+                              || is_displaced(gy.youmonst.data))
 
 #define HStealth u.uprops[STEALTH].intrinsic
 #define EStealth u.uprops[STEALTH].extrinsic

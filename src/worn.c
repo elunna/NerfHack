@@ -536,6 +536,9 @@ update_mon_extrinsics(
             gi.in_mklev = save_in_mklev;
             break;
         }
+        case DISPLACED:
+            mon->mextrinsics |= MR2_DISPLACED;
+            break;
         /* properties handled elsewhere */
         case ANTIMAGIC:
         case REFLECTING:
@@ -552,7 +555,6 @@ update_mon_extrinsics(
         case WWALKING:
             break;
         /* properties which maybe should have an effect but don't */
-        case DISPLACED:
         case FUMBLING:
         case JUMPING:
             break;
@@ -573,6 +575,9 @@ update_mon_extrinsics(
             gi.in_mklev = save_in_mklev;
             break;
         }
+        case DISPLACED:
+            mon->mextrinsics &= ~(MR2_DISPLACED);
+            break;
         case FIRE_RES:
         case COLD_RES:
         case SLEEP_RES:
@@ -1318,7 +1323,9 @@ extra_pref(struct monst *mon, struct obj *obj)
      */
     if (obj) {
         if (obj->otyp == SPEED_BOOTS && mon->permspeed != MFAST)
-        return 20;
+            return 20;
+        if (obj->otyp == CLOAK_OF_DISPLACEMENT && !has_displacement(mon))
+            return 30;
     }
         return 0;
 }

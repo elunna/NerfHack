@@ -651,6 +651,12 @@ do_attack(struct monst *mtmp)
         return FALSE;
     }
 
+    if ((is_displaced(mtmp->data) || has_displacement(mtmp))
+        && !u.uswallow && !rn2(2)) {
+        pline("The image of %s shimmers and vanishes!", mon_nam(mtmp));
+        return FALSE;
+    }
+
     if (Underwater && !is_pool(mtmp->mx, mtmp->my)) {
         ; /* no attack, hero will still attempt to move onto solid ground */
         return FALSE;
@@ -664,9 +670,7 @@ do_attack(struct monst *mtmp)
         char pnambuf[BUFSZ];
 
         /* Don't allow forcefighting flying monsters. This can cause the
-         * flyer to displace into the hero's position without moving the hero.
-         * This solution still let's rogue's exercise their thievery skills
-         * underwater as well. This solution was created by terrapin. */
+         * flyer to displace into the hero's position without moving the hero. */
         if (svc.context.forcefight) {
             You("flail wildly.");
             return FALSE;
