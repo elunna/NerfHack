@@ -697,6 +697,8 @@ void
 m_dowear(struct monst *mon, boolean creation)
 {
     boolean can_wear_armor;
+    struct obj *mw;
+    boolean cursed_glove;
 
 #define RACE_EXCEPTION TRUE
     /* Note the restrictions here are the same as in dowear in do_wear.c
@@ -714,7 +716,26 @@ m_dowear(struct monst *mon, boolean creation)
 
     m_dowear_type(mon, W_AMUL, creation, FALSE);
     can_wear_armor = !cantweararm(mon->data); /* for suit, cloak, shirt */
-                                              
+
+    mw = MON_WEP(mon);
+    cursed_glove = (which_armor(mon, W_ARMG)
+			    && which_armor(mon, W_ARMG)->cursed);
+
+
+    /* Two ring per monster; ring takes up a "hand" slot
+     * - can't put on rings with cursed gloves
+     * - can't put on a right ring with a cursed weapon
+     * - can't put on a left ring with a cursed two-handed weapon
+     */
+    boolean cursed_wep = mw && mw->cursed && mw->otyp != CORPSE;
+    boolean open_ringr = which_armor(mon, W_RINGR) == (struct obj *) 0;
+
+    if (!(cursed_wep && bimanual(mw)) && !cursed_glove && !open_ringr)
+        m_dowear_type(mon, W_RINGL, creation, FALSE);
+
+    if (!cursed_wep && !cursed_glove)
+        m_dowear_type(mon, W_RINGR, creation, FALSE);
+
     /* can't put on shirt if already wearing suit */
     if (can_wear_armor && !(mon->misc_worn_check & W_ARM))
         m_dowear_type(mon, W_ARMU, creation, FALSE);
@@ -727,6 +748,7 @@ m_dowear(struct monst *mon, boolean creation)
     m_dowear_type(mon, W_ARMH, creation, FALSE);
     if (!MON_WEP(mon) || !bimanual(MON_WEP(mon)))
         m_dowear_type(mon, W_ARMS, creation, FALSE);
+
     m_dowear_type(mon, W_ARMG, creation, FALSE);
     if (!slithy(mon->data) && mon->data->mlet != S_CENTAUR)
         m_dowear_type(mon, W_ARMF, creation, FALSE);
@@ -835,6 +857,30 @@ m_dowear_type(
             if (mon->data->msize == MZ_SMALL && obj->otyp != GNOMISH_SUIT)
                 continue;
             if (mon->data->msize > MZ_SMALL && obj->otyp == GNOMISH_SUIT)
+                continue;
+            break;
+        case W_RINGL:
+        case W_RINGR:
+            /* Monsters can put on only the following rings. */
+            if (obj->oclass != RING_CLASS)
+                continue;
+            if (obj->otyp != RIN_INVISIBILITY
+                && obj->otyp != RIN_SEE_INVISIBLE
+                && obj->otyp != RIN_FIRE_RESISTANCE
+                && obj->otyp != RIN_COLD_RESISTANCE
+                && obj->otyp != RIN_POISON_RESISTANCE
+                && obj->otyp != RIN_SHOCK_RESISTANCE
+                && obj->otyp != RIN_REGENERATION
+                && obj->otyp != RIN_POLYMORPH
+                && obj->otyp != RIN_TELEPORTATION
+                && obj->otyp != RIN_TELEPORT_CONTROL
+                && obj->otyp != RIN_SLOW_DIGESTION
+                && obj->otyp != RIN_INCREASE_DAMAGE
+                && obj->otyp != RIN_INCREASE_ACCURACY
+                && obj->otyp != RIN_GAIN_STRENGTH
+                && obj->otyp != RIN_PROTECTION
+                && obj->otyp != RIN_LEVITATION
+                && obj->otyp != RIN_FREE_ACTION)
                 continue;
             break;
         }
@@ -1272,9 +1318,9 @@ extra_pref(struct monst *mon, struct obj *obj)
      */
     if (obj) {
         if (obj->otyp == SPEED_BOOTS && mon->permspeed != MFAST)
-            return 20;
+        return 20;
     }
-    return 0;
+        return 0;
 }
 
 /*
