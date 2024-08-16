@@ -3177,4 +3177,39 @@ arti_align(int oartifact)
     return artilist[oartifact].alignment;
 }
 
+/* Finds a matching SPFX for a prop - used in mondata.c */
+staticfn unsigned long
+arti_prop_spfx(int prop)
+{
+    switch (prop) {
+        case FLYING:
+            return SPFX_FLYING;
+        case WARNING:
+            return SPFX_WARN;
+        case HALLUC_RES:
+            return SPFX_HALRES;
+        case TELEPAT:
+            return SPFX_ESP;
+        case STEALTH:
+            return SPFX_STLTH;
+        case REGENERATION:
+            return SPFX_REGEN;
+        case HALF_SPDAM:
+            return SPFX_HSPDAM;
+        case HALF_PHDAM:
+            return SPFX_HPHDAM;
+        case TELEPORT_CONTROL:
+            return SPFX_TCTRL;
+        case REFLECTING:
+            return SPFX_REFLECT;
+        case MAGICAL_BREATHING:
+            return SPFX_BREATHE;
+        case SEE_INVIS:
+            return SPFX_SEEINV;
+        case DISPLACED:
+            return SPFX_DISPLAC;
+    }
+     return 0L;
+}
+
 /*artifact.c*/

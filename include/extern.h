@@ -1883,6 +1883,8 @@ extern int get_atkdam_type(int);
 #if (NH_DEVEL_STATUS != NH_STATUS_RELEASED) || defined(DEBUG)
 extern int mstrength(struct permonst *) NONNULLARG1;
 #endif
+extern boolean mon_prop(struct monst *, int) NONNULLARG1;
+extern unsigned long arti_prop_spfx(int);
 
 /* ### monmove.c ### */
 

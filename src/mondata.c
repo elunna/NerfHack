@@ -1634,4 +1634,45 @@ get_atkdam_type(int adtyp)
     return adtyp;
 }
 
+
+boolean
+mon_prop(struct monst *mon, int prop)
+{
+    struct obj *o;
+    int adtyp = 0;
+    /* First, check if prop has a corresponding monflag */
+    if (prop == REGENERATION && regenerates(mon->data))
+        return TRUE;
+    if (prop == SEE_INVIS && perceives(mon->data))
+        return TRUE;
+    if (prop == TELEPORT && can_teleport(mon->data) && !mon->mcan)
+        return TRUE;
+    if (prop == TELEPORT_CONTROL && 
+        (control_teleport(mon->data) || is_covetous(mon->data)))
+        return TRUE;
+    if (prop == TELEPAT && telepathic(mon->data))
+        return TRUE;
+    if (prop == JUMPING && is_unicorn(mon->data))
+        return TRUE;
+    if (prop == ANTIMAGIC)
+        return resists_magm(mon); /* just in case */
+    if (prop == HALLUC_RES)
+        adtyp = AD_HALU;
+
+    int tspfx = arti_prop_spfx(prop);
+
+    /* Now check for extrinsics */
+    for (o = mon->minvent; o; o = o->nobj) {
+         /* Check carried */
+        if (defends_when_carried(adtyp, o))
+            return TRUE;
+        if ((o->owornmask && objects[o->otyp].oc_oprop == prop)
+            || defends(adtyp, o)
+            || (tspfx && spec_ability(o, tspfx))) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 /*mondata.c*/
