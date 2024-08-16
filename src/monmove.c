@@ -1838,7 +1838,7 @@ m_move(struct monst *mtmp, int after)
     
     /* jump toward the player if that lies in our nature, can see the player,
      * and isn't otherwise incapacitated in some way */
-    if ((is_jumper(ptr)) && m_canseeu(mtmp)
+    if ((can_jump(mtmp) || is_jumper(ptr)) && m_canseeu(mtmp)
         && !(mtmp->mflee || mtmp->mconf || mtmp->mstun || mtmp->msleeping
              || in_your_sanctuary(&gy.youmonst, u.ux, u.uy))) {
         int dist = dist2(mtmp->mx, mtmp->my, u.ux, u.uy);

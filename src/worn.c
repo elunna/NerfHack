@@ -539,6 +539,9 @@ update_mon_extrinsics(
         case DISPLACED:
             mon->mextrinsics |= MR2_DISPLACED;
             break;
+        case JUMPING:
+            mon->mextrinsics |= MR2_JUMPING;
+            break;
         /* properties handled elsewhere */
         case ANTIMAGIC:
         case REFLECTING:
@@ -556,7 +559,6 @@ update_mon_extrinsics(
             break;
         /* properties which maybe should have an effect but don't */
         case FUMBLING:
-        case JUMPING:
             break;
         default:
             mon->mextrinsics |= (unsigned long) res_to_mr(which);
@@ -577,6 +579,9 @@ update_mon_extrinsics(
         }
         case DISPLACED:
             mon->mextrinsics &= ~(MR2_DISPLACED);
+            break;
+        case JUMPING:
+            mon->mextrinsics &= ~(MR2_JUMPING);
             break;
         case FIRE_RES:
         case COLD_RES:
@@ -1326,6 +1331,8 @@ extra_pref(struct monst *mon, struct obj *obj)
             return 20;
         if (obj->otyp == CLOAK_OF_DISPLACEMENT && !has_displacement(mon))
             return 30;
+        if (obj->otyp == JUMPING_BOOTS && !can_jump(mon))
+            return 10;
     }
         return 0;
 }
