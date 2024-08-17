@@ -3330,8 +3330,16 @@ corpse_chance(
                 if (mon->data->mlevel < 3 && rn2(10)) {
                     delobj(otmp);
                     goto dropskip;
-                } else
-                    otmp->corpsenm = monsndx(mon->data);
+                } else {
+                    /* Most of the time we get here, we'll grant a sphere card - 
+                     * these are more fun to play and they act as a callback to the 
+                     * summon sphere spells in SLASH'EM. */
+                    if (rn2(5))
+                        otmp->corpsenm = PM_FREEZING_SPHERE 
+                            + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE + 1);
+                    else
+                        otmp->corpsenm = monsndx(mon->data);
+                }
             }
             break;
     }
