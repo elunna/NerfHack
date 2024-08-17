@@ -1322,7 +1322,7 @@ m_calcdistress(struct monst *mtmp)
         mtmp->mextrinsics &= ~(MR2_REFLECTION);
     }
     /* possibly polymorph shapechangers and lycanthropes */
-    if (ismnum(mtmp->cham))
+    if (ismnum(mtmp->cham) || mon_prop(mtmp, POLYMORPH))
         decide_to_shapeshift(mtmp);
     were_change(mtmp);
 
@@ -5577,7 +5577,7 @@ accept_newcham_form(struct monst *mon, int mndx)
         return mdat;
     /* shapeshifters are rejected by polyok() but allow a shapeshifter
        to take on its 'natural' form */
-    if (is_shapeshifter(mdat)
+    if ((is_shapeshifter(mdat) || mon_prop(mon, POLYMORPH))
         && ismnum(mon->cham) && mdat == &mons[mon->cham])
         return mdat;
     /* polyok() rules out M2_PNAME, MH_WERE, and all humans except Kops */

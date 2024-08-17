@@ -1659,6 +1659,8 @@ mon_prop(struct monst *mon, int prop)
         return TRUE;
     if (prop == ANTIMAGIC)
         return resists_magm(mon); /* just in case */
+    if (prop == POLYMORPH && is_shapeshifter(mon->data))
+        return TRUE;
     if (prop == HALLUC_RES)
         adtyp = AD_HALU;
 
