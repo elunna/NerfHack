@@ -578,6 +578,8 @@ maketrap(coordxy x, coordxy y, int typ)
                         ttmp->launch_otyp = -ZT_BREATH(ZT_ACID);
                     else if (!rn2(5))
                         ttmp->launch_otyp = -ZT_SPELL(ZT_SLEEP);
+                    else if (!rn2(5))
+                        ttmp->launch_otyp = -ZT_BREATH(ZT_STUN);
                     ok = 1;
                 }
             }

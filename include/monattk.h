@@ -53,10 +53,10 @@
 #define AD_DRST 7   /* drains str (poison) */
 /* End of partial resistances */
 #define AD_ACID 8   /* acid damage */
-#define AD_SPC1 9   /* for extension of buzz() */
+#define AD_STUN 9   /* stun damage */
 #define AD_SPC2 10  /* for extension of buzz() */
 #define AD_BLND 11  /* blinds (yellow light) */
-#define AD_STUN 12  /* stuns */
+#define AD_SPC1 12  /* placeholder */
 #define AD_SLOW 13  /* slows */
 #define AD_PLYS 14  /* paralyses */
 #define AD_DRLI 15  /* drains life levels (Vampire) */

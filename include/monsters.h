@@ -1965,7 +1965,7 @@
      * The scale-mail confers stun resistance. */
     MON(NAM("shimmering dragon"), S_DRAGON,
         LVL(16, 20, -8, 20, 4), (G_GENO | 2),
-        A(ATTK(AT_BREA, AD_MAGM, 4, 6),
+        A(ATTK(AT_BREA, AD_STUN, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),

@@ -61,6 +61,10 @@
      || (ptr) == &mons[PM_GREEN_DRAGON]        \
      || (ptr) == &mons[PM_LOCUST])
 
+#define resists_stun(ptr) \
+    ((ptr) == &mons[PM_BABY_SHIMMERING_DRAGON] \
+     || (ptr) == &mons[PM_SHIMMERING_DRAGON])
+
 /* The general guideline is that a mammal-type monster can become rabid. */
 #define can_become_rabid(ptr) \
     ((is_animal(ptr) || humanoid(ptr)) \

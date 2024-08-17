@@ -876,7 +876,7 @@ static const char * damagetypes[] = {
     "shock",
     "strength poison",
     "acid",
-    NULL, /* AD_SPC1 - not used */
+    "stun",
     NULL, /* AD_SPC2 - not used */
     "blind",
     "stun",

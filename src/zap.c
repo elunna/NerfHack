@@ -51,17 +51,17 @@ static const char are_blinded_by_the_flash[] = "are blinded by the flash!";
 static const char *const flash_types[] = {
     "magic missile", /* Wands must be 0-9 */
     "bolt of fire", "bolt of cold", "sleep ray", "death ray",
-    "bolt of lightning", "poison gas", "acid stream", "", "",
+    "bolt of lightning", "poison gas", "acid stream", "stun beam", "",
 
     "magic missile", /* Spell equivalents must be 10-19 */
     "fireball", "cone of cold", "sleep ray", "finger of death",
     "bolt of lightning", /* there is no spell, used for retribution */
-    "blast of poison gas", "blast of acid", "", "",
+    "blast of poison gas", "blast of acid", "disorienting blast", "",
 
     "blast of missiles", /* Dragon breath equivalents 20-29*/
     "blast of fire", "blast of frost", "blast of sleep gas",
     "blast of disintegration", "blast of lightning",
-    "blast of poison gas", "blast of acid", "", ""
+    "blast of poison gas", "blast of acid", "disorienting blast", ""
 };
 
 /* convert monster zap/spell/breath value to hero zap/spell/breath value */
@@ -4778,6 +4778,15 @@ zhitm(
         if (!rn2(6))
             erode_armor(mon, ERODE_CORRODE);
         break;
+    case ZT_STUN:
+        if (resists_stun(mon->data) || defended(mon, AD_STUN)) {
+            sho_shieldeff = TRUE;
+            break;
+        }
+        tmp = d(nd, 6);
+        if (!mon->mstun)
+            mon->mstun = 1;
+        break;
     }
     if (sho_shieldeff)
         shieldeff(mon->mx, mon->my);
@@ -4997,6 +5006,16 @@ zhitu(
             if (!rn2(6))
                 erode_armor(&gy.youmonst, ERODE_CORRODE);
         }
+        break;
+    case ZT_STUN:
+        /* will still take physical damage from the force of
+           the breath attack, even if stun resistant */
+        dam = d(nd, 6);
+        if (Half_physical_damage)
+            dam = (dam + 1) / 2;
+        if (Stun_resistance)
+            shieldeff(sx, sy); /* resistance handled in make_stunned() */
+        make_stunned((HStun & TIMEOUT) + (long) dam / (Reflecting ? 4 : 2), TRUE);
         break;
     }
 

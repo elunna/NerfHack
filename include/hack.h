@@ -1461,8 +1461,10 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define ZT_LIGHTNING (AD_ELEC - 1)
 #define ZT_POISON_GAS (AD_DRST - 1)
 #define ZT_ACID (AD_ACID - 1)
-/* 8 and 9 are currently unassigned */
+#define ZT_STUN (AD_STUN - 1)
+/* 9 is currently unassigned */
 
+#define MAX_AD (AD_STUN)
 #define LAST_WAND (WAN_CORROSION)
 
 #define ZT_WAND(x) (x)

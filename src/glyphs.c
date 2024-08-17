@@ -978,7 +978,8 @@ parse_id(const char *id, struct find_struct *findwhat)
                     } else if (glyph_is_cmap_zap(glyph)) {
                         static const char *const zap_texts[] = {
                             "missile", "fire",      "frost",      "sleep",
-                            "death",   "lightning", "poison gas", "acid"
+                            "death",   "lightning", "poison gas", "acid",
+                            "stun"
                         };
 
                         j = (glyph - GLYPH_ZAP_OFF);
