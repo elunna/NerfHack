@@ -375,8 +375,11 @@ look_at_monster(
 {
     char *name, monnambuf[BUFSZ];
     boolean accurate = !Hallucination;
+    boolean weartxt = FALSE;
     char *mwounds = mon_wounds(mtmp, TRUE, FALSE);
-
+    struct obj *otmp;
+    struct obj *gloves = which_armor(mtmp, W_ARMG);
+                
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
               : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
@@ -436,7 +439,6 @@ look_at_monster(
         if (mtmp->misc_worn_check & W_ARMOR) {
             int base_ac = 0, arm_ct = 0;
             long atype;
-            struct obj *otmp;
 
             for (atype = W_ARM; atype & W_ARMOR; atype <<= 1) {
                 if (!(otmp = which_armor(mtmp, atype)))
@@ -451,10 +453,28 @@ look_at_monster(
             Sprintf(eos(buf), ", wearing %s%sarmor",
                     arm_ct > 4 ? "full " : arm_ct < 3 ? "some " : "",
                     base_ac > 9 ? "heavy " : base_ac < 6 ? "light " : "");
+            weartxt = TRUE;
         }
+
+        
+        /* Check accessories */
+        if ((otmp = which_armor(mtmp, W_AMUL))) {
+            Sprintf(eos(buf), "%s%s", weartxt ? ", " : "wearing ", xname(otmp));
+            weartxt = TRUE;
+        }
+        /* Are gloves covering their rings? */
+        if (!gloves) {
+            if ((otmp = which_armor(mtmp, W_RINGL)))
+                Sprintf(eos(buf), ", %s", xname(otmp));
+            if ((otmp = which_armor(mtmp, W_RINGR)))
+                Sprintf(eos(buf), ", %s", xname(otmp));
+        }
+
         if (MON_WEP(mtmp))
-            Sprintf(eos(buf), ", wielding %s",
+            Sprintf(eos(buf), "; wielding %s",
                     ansimpleoname(MON_WEP(mtmp)));
+
+
     }
     if (mtmp->mtrapped && cansee(mtmp->mx, mtmp->my)) {
         struct trap *t = t_at(mtmp->mx, mtmp->my);
