@@ -1095,40 +1095,8 @@ dog_move(
         if ((info[i] & ALLOW_M) && MON_AT(nx, ny)) {
             int mstatus;
             struct monst *mtmp2 = m_at(nx, ny);
-            /* weight the audacity of the pet to attack a differently-leveled
-             * foe based on its fraction of max HP:
-             *       100%: up to level + 2
-             * 80% and up: up to level + 1
-             * 60% to 80%: up to level
-             * 40% to 60%: up to level - 1
-             * 25% to 40%: up to level - 2
-             *  below 25%: won't attack peacefuls of any level (different case)
-             *  below 20%: up to level - 3
-             *
-             * note that balk's maximum value is +3, as it is the lowest level
-             * the pet will balk at attacking rather than the highest level
-             * they are willing to attack; note the >= used when comparing it.
-             */
-            int balk = mtmp->m_lev + ((5 * mtmp->mhp) / mtmp->mhpmax) - 2;
 
-            if (EAggravate_monster)
-                ; /* No checks for extrinsic aggravate mon */
-            else if ((int) mtmp2->m_lev >= balk
-                || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
-                    && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
-                    && (mon_prop(mtmp, SEE_INVIS) || !mtmp2->minvis))
-                || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
-                || (mtmp2->data == &mons[PM_YELLOW_MOLD] && rn2(10))
-                || (mtmp2->data == &mons[PM_GRAY_FUNGUS] 
-                    && !(resists_sick(mtmp->data) || defended(mtmp, AD_DISE)))
-                || (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
-                || ((mtmp->mhp * 4 < mtmp->mhpmax
-                     || mtmp2->data->msound == MS_GUARDIAN
-                     || mtmp2->data->msound == MS_LEADER) && mtmp2->mpeaceful
-                    && !Conflict)
-                || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp))
-                || (attacktype(mtmp2->data, AT_BOOM)
-                    && distu(mtmp2->mx, mtmp2->my) < 3))
+            if (!acceptable_pet_target(mtmp, mtmp2, FALSE))
                 continue;
 
             if (after)
@@ -1505,5 +1473,67 @@ quickmimic(struct monst *mtmp)
 #undef DOG_HUNGRY
 #undef DOG_WEAK
 #undef DOG_STARVE
+
+
+
+boolean
+acceptable_pet_target(
+    struct monst *mtmp, /* your pet */
+    struct monst *mtmp2, /* the potential target */
+    boolean ranged)
+{
+    /* from xNetHack...
+     * weigh the audacity of the pet to attack a differently-leveled
+     * foe based on its fraction of max HP:
+     *       100%:  up to level + 2
+     * 80% and up:  up to level + 1
+     * 60% to 80%:  up to same level
+     * 40% to 60%:  up to level - 1
+     * 25% to 40%:  up to level - 2
+     *  below 25%:  prevented from attacking at all by a different case
+     */
+    int balk = mtmp->m_lev + ((5 * mtmp->mhp) / mtmp->mhpmax) - 2;
+    boolean grudge = FALSE;
+
+    /* Grudges override level checks. */
+    if ((mm_aggression(mtmp, mtmp2) & ALLOW_M)
+        || mtmp->msummoned) {
+        grudge = TRUE;
+        balk = mtmp2->m_lev + 1;
+    }
+
+    if (EAggravate_monster)
+        return TRUE; /* No checks for extrinsic aggravate mon */
+
+    boolean scared = (!ranged && (int)mtmp2->m_lev >= balk);
+    
+    boolean bad_eye = (!ranged && mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
+            && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
+            && (mon_prop(mtmp, SEE_INVIS) || !mtmp2->minvis));
+
+    boolean vs_passive = (!ranged && (mtmp2->data == &mons[PM_GELATINOUS_CUBE]
+                                   || mtmp2->data == &mons[PM_ADHERER]
+                                   || mtmp2->data == &mons[PM_YELLOW_MOLD]
+                                   || mtmp2->data == &mons[PM_GREEN_SLIME]) && rn2(10));
+
+    boolean passive_kill = (!ranged && max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp);
+
+    boolean vs_stoner = (!ranged && touch_petrifies(mtmp2->data) 
+            && !(resists_ston(mtmp) || defended(mtmp, AD_STON)));
+
+    boolean vs_dise = (!ranged 
+            && (mtmp2->data == &mons[PM_GRAY_FUNGUS]) 
+            && !(resists_sick(mtmp->data) || defended(mtmp, AD_DISE)));
+
+    boolean vs_peaceful = (mtmp->mhp * 4 < mtmp->mhpmax 
+            || mtmp2->data->msound == MS_GUARDIAN || mtmp2->data->msound == MS_LEADER)
+                    && mtmp2->mpeaceful && !grudge && !Conflict;
+
+    boolean vs_boomer = (attacktype(mtmp2->data, AT_BOOM)
+            && distu(mtmp2->mx, mtmp2->my) < 3);
+
+    return !(scared || bad_eye || vs_passive || passive_kill
+              || vs_stoner || vs_dise || vs_peaceful || vs_boomer);
+}
 
 /*dogmove.c*/

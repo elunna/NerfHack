@@ -698,8 +698,27 @@ mattacku(struct monst *mtmp)
             gn.notonhead = FALSE;
             return !!(mattackm(u.usteed, mtmp) & M_ATTK_DEF_DIED);
         }
-        if (u.usteed->mtame >= 15)
-            return !!(mattackm(u.usteed, mtmp) & M_ATTK_DEF_DIED);
+        /* steed will attack on the players behalf without waiting
+           for the player or itself to be attacked first if the steed
+           is loyal or greater. mspec_used is utilized to prevent the
+           steed from getting an indefinite number of attacks on
+           multiple targets if each target is killed */
+        if (u.usteed->mtame >= 15 && u.usteed->mspec_used == 0) {
+            if (!acceptable_pet_target(u.usteed, mtmp, FALSE)) {
+                return 0;
+            } else {
+                int steed_attack = mattackm(u.usteed, mtmp);
+
+                /* first target is killed */
+                if (steed_attack & M_ATTK_DEF_DIED) {
+                    /* stop attack against 2nd, 3rd, 4th, etc
+                       targets in the same round if they exist */
+                    u.usteed->mspec_used = 1;
+                    return 1;
+                }
+                return 0;
+            }
+        }
     }
 
     if (u.uundetected && !range2 && foundyou && !u.uswallow) {

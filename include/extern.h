@@ -786,6 +786,7 @@ extern int dog_move(struct monst *, int) NONNULLARG1;
 extern boolean could_reach_item(struct monst *, coordxy, coordxy) NONNULLARG1;
 extern void finish_meating(struct monst *) NONNULLARG1;
 extern void quickmimic(struct monst *) NONNULLARG1;
+extern boolean acceptable_pet_target(struct monst *, struct monst *, boolean);
 
 /* ### dokick.c ### */
 
@@ -1475,6 +1476,7 @@ extern boolean propagate(int, boolean, boolean);
 extern void summon_furies(int);
 extern void mon_berserk(struct monst *);
 extern void mon_rabid(struct monst *, boolean);
+extern long mm_aggression(struct monst *, struct monst *);
 
 /* ### mcastu.c ### */
 
