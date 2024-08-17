@@ -518,10 +518,8 @@ DRGN_ARMR("gold dragon scale mail",    1, 0,           900, 6, HI_GOLD,
                                                     GOLD_DRAGON_SCALE_MAIL),
 DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 1200, 6, DRAGON_SILVER,
                                                     SILVER_DRAGON_SCALE_MAIL),
-#if 0 /* DEFERRED */
-DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 6, CLR_CYAN,
+DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 1, CLR_CYAN,
                                                 SHIMMERING_DRAGON_SCALE_MAIL),
-#endif
 DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,    900, 6, CLR_RED,
                                                     RED_DRAGON_SCALE_MAIL),
 DRGN_ARMR("white dragon scale mail",   1, COLD_RES,    900, 6, CLR_WHITE,
@@ -545,10 +543,8 @@ DRGN_ARMR("gold dragon scales",        0, 0,           500, 9, HI_GOLD,
                                                         GOLD_DRAGON_SCALES),
 DRGN_ARMR("silver dragon scales",      0, REFLECTING,  700, 9, DRAGON_SILVER,
                                                         SILVER_DRAGON_SCALES),
-#if 0 /* DEFERRED */
-DRGN_ARMR("shimmering dragon scales",  0, DISPLACED,   700, 9, CLR_CYAN,
+DRGN_ARMR("shimmering dragon scales",  0, DISPLACED,   700, 7, CLR_CYAN,
                                                     SHIMMERING_DRAGON_SCALES),
-#endif
 DRGN_ARMR("red dragon scales",         0, FIRE_RES,    500, 9, CLR_RED,
                                                         RED_DRAGON_SCALES),
 DRGN_ARMR("white dragon scales",       0, COLD_RES,    500, 9, CLR_WHITE,

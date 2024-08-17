@@ -901,6 +901,9 @@ dragon_armor_handling(
     boolean puton,      /* True: on, False: off */
     boolean on_purpose) /* voluntary removal; not applicable for putting on */
 {
+    long oldprop = uarm
+        ? u.uprops[objects[uarm->otyp].oc_oprop].extrinsic & ~WORN_ARMOR : 0L;
+
     if (!otmp)
         return;
 
@@ -979,6 +982,16 @@ dragon_armor_handling(
             ESlow_digestion |= W_ARM;
         } else {
             ESlow_digestion &= ~W_ARM;
+        }
+        break;
+    case SHIMMERING_DRAGON_SCALES:
+    case SHIMMERING_DRAGON_SCALE_MAIL:
+        if (puton) {
+            toggle_displacement(uarm, oldprop, TRUE);
+            EStun_resistance |= W_ARM;
+        } else {
+            toggle_displacement(otmp, oldprop, FALSE);
+            EStun_resistance &= ~W_ARM;
         }
         break;
     default:

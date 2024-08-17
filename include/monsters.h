@@ -1840,10 +1840,8 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
         MH_DRAGON, 7, DRAGON_SILVER, BABY_SILVER_DRAGON),
-#if 0 /* DEFERRED */
-    /* [see "shimmering dragon" below] */
     MON(NAM("baby shimmering dragon"), S_DRAGON,
-        LVL(4, 9, -4, 10, 4), (G_NOHELL | G_GENO | 1),
+        LVL(5, 9, -4, 10, 4), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_STUN, 1, 6),
           ATTK(AT_CLAW, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1851,7 +1849,6 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS | M2_STALK, 0,
         MH_DRAGON, 7, CLR_CYAN, BABY_SHIMMERING_DRAGON),
-#endif
     MON(NAM("baby red dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, -4), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_FIRE, 1, 6),
@@ -1963,26 +1960,23 @@
             | M2_STALK,
         0,
         MH_DRAGON, 20, DRAGON_SILVER, SILVER_DRAGON),
-#if 0 /* DEFERRED */
-    /* shimmering scales/scale-mail would confer displacement when worn by
-       the hero, so shimmering dragon ought to be displaced (hero who can
-       see one might misjudge its location) but monster displacement hasn't
-       been implemented so we don't include it */
+    /* Shimmering dragons are displaced.
+     * Shimmering scales/scale-mail confer displacement.
+     * The scale-mail confers stun resistance. */
     MON(NAM("shimmering dragon"), S_DRAGON,
-        LVL(15, 20, -4, 20, 4), (G_GENO | 2),
+        LVL(16, 20, -8, 20, 4), (G_GENO | 2),
         A(ATTK(AT_BREA, AD_MAGM, 4, 6),
-          ATTK(AT_BITE, AD_PHYS, 2, 8),
-          ATTK(AT_CLAW, AD_PHYS, 1, 4),
-          ATTK(AT_CLAW, AD_PHYS, 1, 4),
+          ATTK(AT_BITE, AD_PHYS, 3, 8),
+          ATTK(AT_CLAW, AD_PHYS, 2, 4),
+          ATTK(AT_CLAW, AD_PHYS, 2, 4),
           NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
-          | M1_CARNIVORE | M1_TPORT_CNTRL,
+          | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
             | M2_STALK,
         0,
         MH_DRAGON, 20, CLR_CYAN, SHIMMERING_DRAGON),
-#endif
     /* red dragon has infravision and can be seen via infravision. 
      * It also berserks */
     MON(NAM("red dragon"), S_DRAGON,
