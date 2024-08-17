@@ -564,7 +564,6 @@ maketrap(coordxy x, coordxy y, int typ)
                 if (isok(lx, ly) && IS_STWALL(levl[lx][ly].typ)) {
                     ttmp->launch.x = lx;
                     ttmp->launch.y = ly;
-                    /* no AD_DISN, thanks */
                     ttmp->launch_otyp = -ZT_SPELL(ZT_MAGIC_MISSILE);
                     if (!rn2(15))
                         ttmp->launch_otyp = -ZT_BREATH(ZT_LIGHTNING);
@@ -580,6 +579,8 @@ maketrap(coordxy x, coordxy y, int typ)
                         ttmp->launch_otyp = -ZT_SPELL(ZT_SLEEP);
                     else if (!rn2(5))
                         ttmp->launch_otyp = -ZT_BREATH(ZT_STUN);
+                    else if (!rn2(13))
+                        ttmp->launch_otyp = -ZT_BREATH(AD_DISN); /* Oops! */
                     ok = 1;
                 }
             }
