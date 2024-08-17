@@ -9,6 +9,7 @@ staticfn void m_lose_armor(struct monst *, struct obj *, boolean) NONNULLPTRS;
 staticfn void clear_bypass(struct obj *) NO_NNARGS;
 staticfn void m_dowear_type(struct monst *, long, boolean, boolean) NONNULLARG1;
 staticfn int extra_pref(struct monst *, struct obj *) NONNULLARG1;
+staticfn boolean threatens_dmgtype(int);
 
 static const struct worn {
     long w_mask;
@@ -1365,24 +1366,123 @@ mon_break_armor(struct monst *mon, boolean polyspot)
     return;
 }
 
-/* bias a monster's preferences towards armor that has special benefits. */
+/* bias a monster's preferences towards armor that has special benefits.
+ * Adapted from EvilHack.
+ */
 staticfn int
 extra_pref(struct monst *mon, struct obj *obj)
 {
-    /* currently only does speed boots, but might be expanded if monsters
-     * get to use more armor abilities
-     */
-    if (obj) {
-        if (obj->otyp == SPEED_BOOTS && mon->permspeed != MFAST)
-            return 20;
-        if (obj->otyp == CLOAK_OF_DISPLACEMENT && !has_displacement(mon))
-            return 30;
-        if (obj->otyp == JUMPING_BOOTS && !can_jump(mon))
-            return 10;
-        if (obj->otyp == WWALKING && !can_wwalk(mon))
-            return 10;
-    }
+    struct obj *old;
+    int rc = 1;
+
+    if (!obj)
         return 0;
+
+    if (objects[obj->otyp].oc_oprop == ANTIMAGIC
+            && !(resists_magm(mon) || defended(mon, AD_MAGM)))
+        return 50;
+    if (objects[obj->otyp].oc_oprop == REFLECTING
+            && !mon_reflects(mon, (char *) 0))
+        return 40;
+    if (objects[obj->otyp].oc_oprop == STOMPING
+            && !mon_prop(mon, STOMPING))
+        return 35;
+    if (objects[obj->otyp].oc_oprop == DISPLACED
+            && !has_displacement(mon))
+        return 30;
+    if (objects[obj->otyp].oc_oprop == FREE_ACTION
+            && !has_free_action(mon))
+        return 30;
+    if (objects[obj->otyp].oc_oprop == FAST
+            && mon->permspeed != MFAST)
+        return 20;
+    if (objects[obj->otyp].oc_oprop == FLYING
+        && !can_jump(mon))
+        return 15;
+    if (objects[obj->otyp].oc_oprop == LEVITATION
+            && grounded(mon->data))
+        return 10;
+    if (objects[obj->otyp].oc_oprop == STUN_RES
+            && !mon_prop(mon, STUN_RES))
+        return 15;
+    if (objects[obj->otyp].oc_oprop == JUMPING
+            && !can_jump(mon))
+        return 10;
+    if (objects[obj->otyp].oc_oprop == WWALKING
+            && !can_wwalk(mon))
+        return 10;
+    if (obj->oclass != RING_CLASS)
+        return 0;
+
+    /* Find out whether the monster already has some resistance. */
+    old = which_armor(mon, W_RINGL);
+    if (old)
+        update_mon_extrinsics(mon, old, FALSE, TRUE);
+    old = which_armor(mon, W_RINGR);
+    if (old)
+        update_mon_extrinsics(mon, old, FALSE, TRUE);
+
+    /* This list should match the list in m_dowear_type. */
+    switch (obj->otyp) {
+    case RIN_FIRE_RESISTANCE:
+        if (!(resists_fire(mon) || defended(mon, AD_FIRE)))
+            rc = threatens_dmgtype(AD_FIRE) ? 25 : 5;
+        break;
+    case RIN_COLD_RESISTANCE:
+        if (!(resists_cold(mon) || defended(mon, AD_COLD)))
+            rc = threatens_dmgtype(AD_COLD) ? 25 : 5;
+        break;
+    case RIN_POISON_RESISTANCE:
+        if (!(resists_poison(mon) || defended(mon, AD_DRST)))
+            rc = threatens_dmgtype(AD_DRST) ? 25 : 5;
+        break;
+    case RIN_SHOCK_RESISTANCE:
+        if (!(resists_elec(mon) || defended(mon, AD_ELEC)))
+            rc = threatens_dmgtype(AD_ELEC) ? 25 : 5;
+        break;
+    case RIN_REGENERATION:
+        rc = !mon_prop(mon, REGENERATION) ? 25 : 5;
+        break;
+    case RIN_INVISIBILITY:
+        if (mon->mtame || mon->mpeaceful)
+            /* for tame or peaceful monsters make reservations  */
+            rc = See_invisible ? 10 : 0;
+        else
+            rc = 30;
+        break;
+    case RIN_INCREASE_DAMAGE:
+    case RIN_INCREASE_ACCURACY:
+    case RIN_PROTECTION:
+        if (obj->spe > 0)
+            rc = 10 + 3 * (obj->spe);
+        else
+            rc = 0;
+        break;
+    case RIN_TELEPORTATION:
+        if (!mon_prop(mon, TELEPORT))
+            rc = obj->cursed ? 5 : 15;
+        break;
+    case RIN_TELEPORT_CONTROL:
+        if (!mon_prop(mon, TELEPORT_CONTROL))
+            rc = mon_prop(mon, TELEPORT) ? 20 : 5;
+        break;
+    case RIN_SLOW_DIGESTION:
+        rc = dmgtype(gy.youmonst.data, AD_DGST) ? 35 : 25;
+        break;
+    case RIN_LEVITATION:
+        rc = grounded(mon->data) ? 20 : 0;
+        break;
+    case RIN_FREE_ACTION:
+        rc = 30;
+        break;
+    }
+    old = which_armor(mon, W_RINGL);
+    if (old)
+        update_mon_extrinsics(mon, old, TRUE, TRUE);
+    old = which_armor(mon, W_RINGR);
+    if (old)
+        update_mon_extrinsics(mon, old, TRUE, TRUE);
+    return rc;
 }
 
 /*
@@ -1457,5 +1557,19 @@ extract_from_minvent(
 }
 
 #undef w_blocks
+
+/* Checks a player's weapons and attack types from poly form.
+ * Should we check pets too? 
+ */
+staticfn boolean threatens_dmgtype(int adtyp)
+{
+    if (dmgtype(gy.youmonst.data, adtyp))
+        return TRUE;
+    if (uwep && uwep->oartifact && attacks(adtyp, uwep))
+        return TRUE;
+    if (uswapwep && uwep->oartifact && attacks(adtyp, uswapwep))
+        return TRUE;
+    return FALSE;
+}
 
 /*worn.c*/

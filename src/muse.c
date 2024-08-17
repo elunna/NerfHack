@@ -2993,7 +2993,9 @@ searches_for_item(struct monst *mon, struct obj *obj)
         || mon->data == &mons[PM_GHOST]) /* don't loot bones piles */
         return FALSE;
 
-    if (typ == WAN_MAKE_INVISIBLE || typ == POT_INVISIBILITY)
+    if (typ == WAN_MAKE_INVISIBLE 
+        || typ == POT_INVISIBILITY
+        || typ == RIN_INVISIBILITY)
         return (boolean) (!mon->minvis && !mon->invis_blkd
                           && !attacktype(mon->data, AT_GAZE));
     if (typ == WAN_SPEED_MONSTER || typ == POT_SPEED)
@@ -3007,32 +3009,51 @@ searches_for_item(struct monst *mon, struct obj *obj)
             return (boolean) !mon_prop(mon, LEVITATION);
         if (typ == WAN_POLYMORPH)
             return (boolean) (mons[monsndx(mon->data)].difficulty < 6);
-        if (objects[typ].oc_dir == RAY || typ == WAN_STRIKING
-            || typ == WAN_UNDEAD_TURNING || typ == WAN_CANCELLATION
-            || typ == WAN_TELEPORTATION || typ == WAN_CREATE_MONSTER
+        if (objects[typ].oc_dir == RAY
+            || typ == WAN_STRIKING
+            || typ == WAN_UNDEAD_TURNING
+            || typ == WAN_CANCELLATION
+            || typ == WAN_TELEPORTATION
+            || typ == WAN_CREATE_MONSTER
             || typ == WAN_SLOW_MONSTER)
             return TRUE;
         break;
     case POTION_CLASS:
-        if (typ == POT_HEALING || typ == POT_EXTRA_HEALING
-            || typ == POT_FULL_HEALING || typ == POT_POLYMORPH
-            || typ == POT_GAIN_LEVEL || typ == POT_PARALYSIS
-            || typ == POT_SLEEPING || typ == POT_ACID || typ == POT_CONFUSION
-            || typ == POT_HALLUCINATION || typ == POT_OIL)
+        if (typ == POT_HEALING
+            || typ == POT_EXTRA_HEALING
+            || typ == POT_FULL_HEALING
+            || typ == POT_POLYMORPH
+            || typ == POT_GAIN_LEVEL
+            || typ == POT_PARALYSIS
+            || typ == POT_SLEEPING
+            || typ == POT_ACID
+            || typ == POT_CONFUSION
+            || typ == POT_HALLUCINATION
+            || typ == POT_OIL
+            || (typ == POT_RESTORE_ABILITY && mon->mcan)
+            || (typ == POT_VAMPIRE_BLOOD && is_vampire(mon->data)))
             return TRUE;
         if (typ == POT_BLINDNESS && !attacktype(mon->data, AT_GAZE))
             return TRUE;
         break;
     case SCROLL_CLASS:
-        if (typ == SCR_TELEPORTATION || typ == SCR_CREATE_MONSTER
-            || typ == SCR_EARTH || typ == SCR_FIRE || typ == SCR_REMOVE_CURSE
-            || (typ == SCR_STINKING_CLOUD && mon->mcansee))
+        if (typ == SCR_TELEPORTATION
+            || typ == SCR_CREATE_MONSTER
+            || typ == SCR_EARTH 
+            || typ == SCR_FIRE 
+            || typ == SCR_REMOVE_CURSE
+            || typ == SCR_CLONING
+            || typ == SCR_STINKING_CLOUD)
             return TRUE;
         break;
     case AMULET_CLASS:
         if (typ == AMULET_OF_LIFE_SAVING)
             return (boolean) !(nonliving(mon->data) || is_vampshifter(mon));
-        if (typ == AMULET_OF_REFLECTION || typ == AMULET_OF_GUARDING)
+        if (typ == AMULET_OF_REFLECTION
+            || typ == AMULET_OF_FLYING
+            || typ == AMULET_OF_ESP
+            || typ == AMULET_VERSUS_POISON
+            || typ == AMULET_OF_GUARDING)
             return TRUE;
         break;
     case TOOL_CLASS:
@@ -3068,6 +3089,41 @@ searches_for_item(struct monst *mon, struct obj *obj)
                                   && cures_stoning(mon, obj, TRUE)));
         if (typ == EGG && ismnum(obj->corpsenm))
             return (boolean) touch_petrifies(&mons[obj->corpsenm]);
+        break;
+     case RING_CLASS:
+        /* Should match the list in m_dowear_type.
+         * Uniques don't go for invisibility or teleportation;
+         * it would probably be a waste of time. */
+        if (typ == RIN_PROTECTION
+            || typ == RIN_INCREASE_DAMAGE || typ == RIN_INCREASE_ACCURACY)
+            return (obj->spe > 0);
+        if (typ == RIN_SEE_INVISIBLE)
+            return (!mon_prop(mon, SEE_INVIS));
+        if (typ == RIN_FIRE_RESISTANCE)
+            return (!(resists_fire(mon) || defended(mon, AD_FIRE)));
+        if (typ == RIN_COLD_RESISTANCE)
+            return (!(resists_cold(mon) || defended(mon, AD_COLD)));
+        if (typ == RIN_SHOCK_RESISTANCE)
+            return (!(resists_elec(mon) || defended(mon, AD_ELEC)));
+        if (typ == RIN_POISON_RESISTANCE)
+            return (!(resists_poison(mon) || defended(mon, AD_DRST)));
+        if (typ == RIN_SLOW_DIGESTION)
+            return (!mon_prop(mon, SLOW_DIGESTION));
+        if (typ == RIN_REGENERATION)
+            return (!mon_prop(mon, REGENERATION));
+        if (typ == RIN_LEVITATION)
+            return (grounded(mon->data));
+        if (typ == RIN_FREE_ACTION)
+            return TRUE;
+        /* Below this line are off-limits to uniques */
+        if (mon->data->geno & G_UNIQ)
+            return (FALSE);
+        if (typ == RIN_INVISIBILITY)
+            return !(mon->minvis);
+        if (typ == RIN_TELEPORTATION)
+            return (!mon_prop(mon, TELEPORT));
+        if (typ == RIN_TELEPORT_CONTROL)
+            return (!mon_prop(mon, TELEPORT_CONTROL));
         break;
     default:
         break;
