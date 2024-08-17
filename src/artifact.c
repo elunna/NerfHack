@@ -3178,7 +3178,7 @@ arti_align(int oartifact)
 }
 
 /* Finds a matching SPFX for a prop - used in mondata.c */
-staticfn unsigned long
+unsigned long
 arti_prop_spfx(int prop)
 {
     switch (prop) {
