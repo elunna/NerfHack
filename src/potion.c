@@ -1086,7 +1086,7 @@ peffect_paralysis(struct obj *otmp)
         else
             Your("%s are frozen to the %s!", makeplural(body_part(FOOT)),
                  surface(u.ux, u.uy));
-        nomul(-(rn1(10, 25 - 12 * bcsign(otmp))));
+        nomul(-(rn1(otmp->odiluted ? 5 : 10, 25 - 12 * bcsign(otmp))));
         gm.multi_reason = "frozen by a potion";
         gn.nomovemsg = You_can_move_again;
         exercise(A_DEX, FALSE);
@@ -2156,8 +2156,9 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                 pline("%s stiffens momentarily.", Monnam(mon));
                 break;
             } else if (mon->mcanmove) {
-               /* effect will last 3-24 turns */
-                paralyze_monst(mon, rnd(22) + 2);
+              /* effect will last 3-24 turns, or 1-12 turns if diluted */
+                paralyze_monst(mon, rnd(obj->odiluted ? 12 : 22)
+                               + (obj->odiluted ? 0 : 2));
             }
             break;
         case POT_SPEED:
