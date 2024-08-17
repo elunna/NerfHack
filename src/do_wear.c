@@ -910,7 +910,6 @@ dragon_armor_handling(
     switch (otmp->otyp) {
         /* grey: no extra effect */
         /* silver: no extra effect */
-    case BLACK_DRAGON_SCALES:
     case BLACK_DRAGON_SCALE_MAIL:
         if (puton) {
             EDrain_resistance |= W_ARM;
@@ -918,7 +917,6 @@ dragon_armor_handling(
             EDrain_resistance &= ~W_ARM;
         }
         break;
-    case BLUE_DRAGON_SCALES:
     case BLUE_DRAGON_SCALE_MAIL:
         if (puton) {
             if (!Very_fast)
@@ -930,7 +928,6 @@ dragon_armor_handling(
                 You("slow down.");
         }
         break;
-    case GREEN_DRAGON_SCALES:
     case GREEN_DRAGON_SCALE_MAIL:
         if (puton) {
             ESick_resistance |= W_ARM;
@@ -940,7 +937,6 @@ dragon_armor_handling(
             ERegeneration &= ~W_ARM;
         }
         break;
-    case RED_DRAGON_SCALES:
     case RED_DRAGON_SCALE_MAIL:
         if (puton) {
             EInfravision |= W_ARM;
@@ -949,13 +945,11 @@ dragon_armor_handling(
         }
         see_monsters();
         break;
-    case GOLD_DRAGON_SCALES:
     case GOLD_DRAGON_SCALE_MAIL:
         (void) make_hallucinated((long) !puton,
                                  program_state.restoring ? FALSE : TRUE,
                                  W_ARM);
         break;
-    case ORANGE_DRAGON_SCALES:
     case ORANGE_DRAGON_SCALE_MAIL:
         if (puton) {
             Free_action |= W_ARM;
@@ -963,7 +957,6 @@ dragon_armor_handling(
             Free_action &= ~W_ARM;
         }
         break;
-    case YELLOW_DRAGON_SCALES:
     case YELLOW_DRAGON_SCALE_MAIL:
         if (puton) {
             EStone_resistance |= W_ARM;
@@ -976,7 +969,6 @@ dragon_armor_handling(
             wielding_corpse(uswapwep, otmp, on_purpose);
         }
         break;
-    case WHITE_DRAGON_SCALES:
     case WHITE_DRAGON_SCALE_MAIL:
         if (puton) {
             ESlow_digestion |= W_ARM;
@@ -984,14 +976,18 @@ dragon_armor_handling(
             ESlow_digestion &= ~W_ARM;
         }
         break;
-    case SHIMMERING_DRAGON_SCALES:
     case SHIMMERING_DRAGON_SCALE_MAIL:
         if (puton) {
-            toggle_displacement(uarm, oldprop, TRUE);
             EStun_resistance |= W_ARM;
         } else {
-            toggle_displacement(otmp, oldprop, FALSE);
             EStun_resistance &= ~W_ARM;
+        }
+        /* FALLTHROUGH */
+    case SHIMMERING_DRAGON_SCALES:
+          if (puton) {
+            toggle_displacement(uarm, oldprop, TRUE);
+        } else {
+            toggle_displacement(otmp, oldprop, FALSE);
         }
         break;
     default:
