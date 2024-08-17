@@ -1680,4 +1680,17 @@ mon_prop(struct monst *mon, int prop)
     return FALSE;
 }
 
+/* Helper function to find rings of increase damage/accuracy or
+ * rings of gain strength and calculate the bonus/penalty for
+ * a monster. */
+int
+mring_bon(struct monst *mtmp, int otyp)
+{
+	struct obj *o;
+    int bonus = 0;
+	for (o = mtmp->minvent; o; o = o->nobj)
+	     if (o->owornmask && o->otyp == otyp)
+	        bonus += o->spe;
+    return bonus;
+}
 /*mondata.c*/

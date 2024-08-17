@@ -1885,6 +1885,7 @@ extern int mstrength(struct permonst *) NONNULLARG1;
 #endif
 extern boolean mon_prop(struct monst *, int) NONNULLARG1;
 extern unsigned long arti_prop_spfx(int);
+extern int mring_bon(struct monst *, int) NONNULLARG1;
 
 /* ### monmove.c ### */
 

@@ -753,6 +753,12 @@ m_throw(
                         hitv += mon->m_lev + 1;
                     }
                     
+                    /* Find rings of increase accuracy */
+                    hitv += mring_bon(mon, RIN_INCREASE_ACCURACY);
+
+                    /* Find rings of increase damage */
+                    dam += mring_bon(mon, RIN_INCREASE_DAMAGE);
+
                     if (dam < 1)
                         dam = 1;
                     hitu = thitu(hitv, dam, &singleobj, (char *) 0);

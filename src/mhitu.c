@@ -887,6 +887,9 @@ mattacku(struct monst *mtmp)
             You("are being flanked!");
     }
 
+    /* find rings of increase accuracy */
+    tmp += mring_bon(mtmp, RIN_INCREASE_ACCURACY);
+
     /* make eels visible the moment they hit/miss us */
     if (mdat->mlet == S_EEL && mtmp->minvis && cansee(mtmp->mx, mtmp->my)) {
         mtmp->minvis = 0;
@@ -1403,12 +1406,15 @@ hitmu(struct monst *mtmp, struct attack *mattk)
     mhm.damage = d((int) mattk->damn, (int) mattk->damd);
     if ((is_undead(mdat) || is_vampshifter(mtmp)) && midnight())
         mhm.damage += d((int) mattk->damn, (int) mattk->damd); /* extra dmg */
-
-    mhitm_adtyping(mtmp, mattk, &gy.youmonst, &mhm);
-
+    
     /* Handle berserkers */
     if (mtmp->mberserk)
         mhm.damage += d((int) mattk->damn, (int) mattk->damd);
+
+    /* find rings of increase damage */
+    mhm.damage += mring_bon(mtmp, RIN_INCREASE_DAMAGE);
+    
+    mhitm_adtyping(mtmp, mattk, &gy.youmonst, &mhm);
 
     /* Morning star and flail critical hits */
     mon_currwep = MON_WEP(mtmp);

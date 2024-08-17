@@ -349,6 +349,9 @@ mattackm(
     if (is_accurate(pa))
         tmp += 5;
     
+    /* find rings of increase accuracy */
+    tmp += mring_bon(magr, RIN_INCREASE_ACCURACY);
+    
     if (calculate_flankers(magr, mdef)) {
         /* Scale with monster difficulty */
         ftmp = (int) ((magr->m_lev - 4) / 2) + 4;
@@ -1126,12 +1129,15 @@ mdamagem(
             return M_ATTK_AGR_DIED;
         }
     }
-
-    mhitm_adtyping(magr, mattk, mdef, &mhm);
     
     /* Handle berserkers */
     if (magr->mberserk)
         mhm.damage += d((int) mattk->damn, (int) mattk->damd);
+    
+    /* find rings of increase damage */
+    mhm.damage += mring_bon(magr, RIN_INCREASE_DAMAGE);
+    
+    mhitm_adtyping(magr, mattk, mdef, &mhm);
     
     if (mhitm_knockback(magr, mdef, mattk, &mhm.hitflags,
                         (MON_WEP(magr) != 0))

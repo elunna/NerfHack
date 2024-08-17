@@ -1458,6 +1458,12 @@ extra_pref(struct monst *mon, struct obj *obj)
         else
             rc = 0;
         break;
+    case RIN_GAIN_STRENGTH:
+        if (obj->spe > 0)
+            rc = 10;
+        else
+            rc = 0;
+        break;
     case RIN_TELEPORTATION:
         if (!mon_prop(mon, TELEPORT))
             rc = obj->cursed ? 5 : 15;
