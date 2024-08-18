@@ -1178,6 +1178,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == SPE_BLANK_PAPER
            || otyp == RIN_AGGRAVATE_MONSTER
            || otyp == RIN_HUNGER
+           || otyp == RIN_SLEEPING
            || otyp == WAN_NOTHING
            /* orcs start with poison resistance */
            || (otyp == RIN_POISON_RESISTANCE && 

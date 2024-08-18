@@ -2549,6 +2549,7 @@ eataccessory(struct obj *otmp)
             /* no message--this gives no permanent effect */
             choke(otmp);
             break;
+        case RIN_SLEEPING:
         case AMULET_OF_RESTFUL_SLEEP: { /* another bad idea! */
             long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
 

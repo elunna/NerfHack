@@ -609,6 +609,9 @@ dosinkring(struct obj *obj)
         Soundeffect(se_drain_noises, 50);
         You_hear("loud noises coming from the drain.");
         break;
+    case RIN_SLEEPING:		/* ALI */
+        You_hear("loud snores coming from the drain.");
+        break;
     case RIN_SUSTAIN_ABILITY: /* KMH */
         pline_The("%s flow seems fixed.", hliquid("water"));
         break;

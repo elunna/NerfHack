@@ -1410,6 +1410,16 @@ Ring_on(struct obj *obj)
             }
         }
         break;
+    case RIN_SLEEPING: {
+        long newnap = (long) rnd(100);
+        long oldnap = (HSleepy & TIMEOUT);
+
+        /* avoid clobbering FROMOUTSIDE bit, which might have
+           gotten set by previously eating one of these amulets */
+        if (newnap < oldnap || oldnap == 0L)
+            HSleepy = (HSleepy & ~TIMEOUT) | newnap;
+        break;
+    }
     }
 }
 
@@ -1511,6 +1521,12 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
          */
         restartcham();
         break;
+    case RIN_SLEEPING:
+        /* Copied from Amulet of Restful Sleep */
+        /* HSleepy = 0L; -- avoid clobbering FROMOUTSIDE bit */
+        if (!ESleepy && !(HSleepy & ~TIMEOUT))
+            HSleepy &= ~TIMEOUT; /* clear timeout bits */
+        return;
     }
 }
 

@@ -1199,6 +1199,7 @@ mksobj_init(struct obj *otmp, boolean artif)
         } else if (rn2(10) && (otmp->otyp == RIN_TELEPORTATION
                                || otmp->otyp == RIN_POLYMORPH
                                || otmp->otyp == RIN_AGGRAVATE_MONSTER
+                               || otmp->otyp == RIN_SLEEPING
                                || otmp->otyp == RIN_HUNGER || !rn2(9))) {
             curse(otmp);
         }
