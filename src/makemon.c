@@ -810,7 +810,7 @@ m_initinv(struct monst *mtmp)
             /* MAJOR fall through ... */
             switch (rnd(4)) {
 			case 1:
-                (void) mongets(mtmp, POT_HEALING);
+                (void) mongets(mtmp, POT_REFLECTION);
                 /*FALLTHRU*/
 			case 2:
                 (void) mongets(mtmp, POT_EXTRA_HEALING);

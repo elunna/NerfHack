@@ -27,7 +27,6 @@ staticfn void dropp(struct obj *);
 staticfn void break_armor(void);
 staticfn void drop_weapon(int);
 staticfn int armor_to_dragon(int);
-staticfn void newman(void);
 staticfn void polysense(void);
 
 static const char no_longer_petrify_resistant[] =
@@ -322,7 +321,7 @@ livelog_newform(boolean viapoly, int oldgend, int newgend)
     }
 }
 
-staticfn void
+void
 newman(void)
 {
     const char *newform;

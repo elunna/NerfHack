@@ -38,6 +38,8 @@
     ((mon_resistancebits(mon) & MR2_REFLECTION) != 0)
 #define has_free_action(mon) \
     ((mon_resistancebits(mon) & MR2_FREE_ACTION) != 0)
+#define has_phasing(mon) \
+    ((mon_resistancebits(mon) & MR2_PHASING) != 0)
 
 #define resists_death(ptr) \
     (dmgtype((ptr), AD_DETH) \

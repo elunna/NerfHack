@@ -1319,6 +1319,13 @@ m_calcdistress(struct monst *mtmp)
                   s_suffix(Monnam(mtmp)));
         mtmp->mextrinsics &= ~(MR2_REFLECTION);
     }
+
+    if (has_phasing(mtmp) && mtmp->mphasetime <= 1) {
+        if (canseemon(mtmp))
+            pline("%s looks less hazy.",
+                  Monnam(mtmp));
+        mtmp->mextrinsics &= ~(MR2_PHASING);
+    }
     /* possibly polymorph shapechangers and lycanthropes */
     if (ismnum(mtmp->cham) || mon_prop(mtmp, POLYMORPH))
         decide_to_shapeshift(mtmp);

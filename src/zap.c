@@ -3395,6 +3395,12 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     mdef->mextrinsics &= ~(MR2_REFLECTION);
                     mdef->mreflecttime = 0;
                 }
+                if (has_phasing(mdef)) {
+                    if (canseemon(mdef))
+                        pline("%s looks less hazy.", Monnam(mdef));
+                    mdef->mextrinsics &= ~(MR2_PHASING);
+                    mdef->mphasetime = 0;
+                }
             }
         }
 
@@ -3424,6 +3430,14 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     u.usptime = u.uspmtime = u.uspellprot = 0;
                     disp.botl = 1; /* potential AC change */
                     find_ac();
+                }
+                if (HReflecting > 0) {
+                    pline_The("shimmering globe around you disappears.");
+                    HReflecting = 0;
+                }
+                if (HPasses_walls > 0) {
+                    You("feel more solid.");
+                    HPasses_walls = 0;
                 }
             }
         }
@@ -3456,12 +3470,18 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                                   hcolor(NH_GOLDEN), mon_nam(mdef), "disappears");
                     mdef->mprotection = mdef->mprottime = 0;
                 }
-                 if (has_reflection(mdef)) {
+                if (has_reflection(mdef)) {
                     if (canseemon(mdef))
                         pline("%s shimmering globe disappears.",
                               s_suffix(Monnam(mdef)));
                     mdef->mextrinsics &= ~(MR2_REFLECTION);
                     mdef->mreflecttime = 0;
+                }
+                if (has_phasing(mdef)) {
+                    if (canseemon(mdef))
+                        pline("%s looks less hazy.", Monnam(mdef));
+                    mdef->mextrinsics &= ~(MR2_PHASING);
+                    mdef->mphasetime = 0;
                 }
             }
 

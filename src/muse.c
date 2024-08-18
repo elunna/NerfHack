@@ -324,6 +324,7 @@ mquaffmsg(struct monst *mtmp, struct obj *otmp)
 #define MUSE_EUCALYPTUS_LEAF 21
 #define MUSE_POT_RESTORE_ABILITY 22
 #define MUSE_POT_VAMPIRE_BLOOD   23
+#define MUSE_POT_PHASING   24
 /*
 #define MUSE_INNATE_TPT 9999
  * We cannot use this.  Since monsters get unlimited teleportation, if they
@@ -807,6 +808,11 @@ find_defensive(struct monst *mtmp, boolean tryescape)
         if (mtmp->mcan && obj->otyp == POT_RESTORE_ABILITY) {
             gm.m.defensive = obj;
             gm.m.has_defense = MUSE_POT_RESTORE_ABILITY;
+        }
+        nomore(MUSE_POT_PHASING);
+        if (!passes_walls(mtmp->data) && obj->otyp == POT_PHASING) {
+            gm.m.defensive = obj;
+            gm.m.has_defense = MUSE_POT_PHASING;
         }
         nomore(MUSE_SCR_CREATE_MONSTER);
         if (obj->otyp == SCR_CREATE_MONSTER) {
@@ -1298,11 +1304,21 @@ use_defensive(struct monst *mtmp)
         /* not actually called for its unstoning effect */
         mon_consume_unstone(mtmp, otmp, FALSE, FALSE);
         return 2;
-     case MUSE_POT_RESTORE_ABILITY:
+    case MUSE_POT_RESTORE_ABILITY:
         mquaffmsg(mtmp, otmp);
         mtmp->mcan = 0;
         if (canseemon(mtmp))
             pline("%s looks revitalized.", Monnam(mtmp));
+        if (oseen)
+            makeknown(otmp->otyp);
+        m_useup(mtmp, otmp);
+        return 2;
+    case MUSE_POT_PHASING:
+        mquaffmsg(mtmp, otmp);
+        mtmp->mextrinsics |= MR2_PHASING;
+        mtmp->mphasetime += rn1(5, 15);
+        if (canseemon(mtmp))
+            pline("%s turns hazy!", Monnam(mtmp));
         if (oseen)
             makeknown(otmp->otyp);
         m_useup(mtmp, otmp);
@@ -2318,6 +2334,7 @@ rnd_offensive_item(struct monst *mtmp)
 #define MUSE_BAG 10
 #define MUSE_SCR_REMOVE_CURSE 11
 #define MUSE_FIGURINE 12
+#define MUSE_POT_REFLECT 13
 
 boolean
 find_misc(struct monst *mtmp)
@@ -2461,6 +2478,11 @@ find_misc(struct monst *mtmp)
             && mons[monsndx(mdat)].difficulty < 6) {
             gm.m.misc = obj;
             gm.m.has_misc = MUSE_POT_POLYMORPH;
+        }
+        nomore(MUSE_POT_REFLECT);
+        if (obj->otyp == POT_REFLECTION && !mon_prop(mtmp, REFLECTING)) {
+            gm.m.misc = obj;
+            gm.m.has_misc = MUSE_POT_REFLECT;
         }
         nomore(MUSE_SCR_REMOVE_CURSE);
         if (obj->otyp == SCR_REMOVE_CURSE) {
@@ -2742,6 +2764,18 @@ use_misc(struct monst *mtmp)
             mon_adjust_speed(mtmp, 1, otmp);
             m_useup(mtmp, otmp);
             return 2;
+        case MUSE_POT_REFLECT:
+            mquaffmsg(mtmp, otmp);
+            mtmp->mextrinsics |= MR2_REFLECTION;
+            mtmp->mreflecttime = otmp->blessed 
+                ? rn1(50, otmp->odiluted ? 100 : 250)
+                : rn1(10, otmp->odiluted ? 50 : 100);
+            if (canseemon(mtmp) && !Blind)
+                pline("%s is covered in a silvery sheen!", Monnam(mtmp));
+            if (oseen)
+                makeknown(otmp->otyp);
+            m_useup(mtmp, otmp);
+            return 2;
         case MUSE_WAN_POLYMORPH:
             mzapwand(mtmp, otmp, TRUE);
             (void) newcham(mtmp, muse_newcham_mon(mtmp),
@@ -2944,7 +2978,7 @@ rnd_misc_item(struct monst *mtmp)
     if (!rn2(40) && !nonliving(pm) && !is_vampshifter(mtmp))
         return AMULET_OF_LIFE_SAVING;
 
-    switch (rn2(3)) {
+    switch (rn2(4)) {
     case 0:
         if (mtmp->isgd)
             return 0;
@@ -2955,6 +2989,8 @@ rnd_misc_item(struct monst *mtmp)
         return rn2(6) ? POT_INVISIBILITY : WAN_MAKE_INVISIBLE;
     case 2:
         return POT_GAIN_LEVEL;
+    case 3:
+        return POT_REFLECTION;
     }
     /*NOTREACHED*/
     return 0;
@@ -3000,6 +3036,8 @@ searches_for_item(struct monst *mon, struct obj *obj)
                           && !attacktype(mon->data, AT_GAZE));
     if (typ == WAN_SPEED_MONSTER || typ == POT_SPEED)
         return (boolean) (mon->mspeed != MFAST);
+     if (typ == POT_REFLECTION)
+        return !mon_prop(mon, REFLECTING);
 
     switch (obj->oclass) {
     case WAND_CLASS:
@@ -3030,6 +3068,8 @@ searches_for_item(struct monst *mon, struct obj *obj)
             || typ == POT_CONFUSION
             || typ == POT_HALLUCINATION
             || typ == POT_OIL
+            || typ == POT_REFLECTION
+            || typ == POT_PHASING
             || (typ == POT_RESTORE_ABILITY && mon->mcan)
             || (typ == POT_VAMPIRE_BLOOD && is_vampire(mon->data)))
             return TRUE;
@@ -3194,6 +3234,11 @@ ureflects(const char *fmt, const char *str)
             makeknown(SHIELD_OF_REFLECTION);
         }
         return TRUE;
+    } else if (HReflecting) {
+        if (fmt && str)
+            pline(fmt, str, "magical shield");
+        monstseesu(M_SEEN_REFL);
+        return TRUE;
     } else if (EReflecting & (W_WEP | W_SWAPWEP)) {
         /* Due to wielded artifact weapon */
         if (fmt && str)
@@ -3214,8 +3259,8 @@ ureflects(const char *fmt, const char *str)
             pline(fmt, str, "scales");
         return TRUE;
     } else if (EReflecting & W_ART) {
-        /* Only carried artifact which grants reflection is the Holographic Void Lily,
-	 * which shows as W_ART */
+        /* Only carried artifact which grants reflection is
+         * the Holographic Void Lily, which shows as W_ART */
         if (fmt && str)
             pline(fmt, str, "card");
         monstseesu(M_SEEN_REFL);

@@ -24,6 +24,8 @@ staticfn int peffect_object_detection(struct obj *);
 staticfn void peffect_sickness(struct obj *);
 staticfn void peffect_confusion(struct obj *);
 staticfn void peffect_gain_ability(struct obj *);
+staticfn void peffect_reflection(struct obj *);
+staticfn void peffect_phasing(struct obj *);
 staticfn void peffect_speed(struct obj *);
 staticfn void peffect_blindness(struct obj *);
 staticfn void peffect_gain_level(struct obj *);
@@ -1289,6 +1291,51 @@ peffect_gain_ability(struct obj *otmp)
 }
 
 staticfn void
+peffect_reflection(struct obj *otmp)
+{
+    if (otmp->cursed) {
+        pline("For some reason, you feel your presence is known.");
+        gp.potion_unkn++;
+        aggravate();
+
+        set_itimeout(&HReflecting, 0);
+    } else {
+        if (!Blind)
+            You("are covered in a mirror-like sheen!");
+        else
+            You_feel("a tingly sensation all around you!");
+
+        if (otmp->blessed) {
+            incr_itimeout(&HReflecting, rn1(50, otmp->odiluted ? 100 : 250));
+        } else {
+            incr_itimeout(&HReflecting, rn1(10, otmp->odiluted ? 50 : 100));
+        }
+    }
+}
+
+staticfn void
+peffect_phasing(struct obj *otmp)
+{
+    if (otmp->cursed) {
+        pline("It\'s like drinking glue!");
+        gp.potion_unkn++;
+        set_itimeout(&HPasses_walls, 0);
+        newman();
+    } else {
+        if (!Blind)
+            You("appear to turn a little hazy!");
+        else
+            You_feel("like you could walk through anything!");
+
+        if (otmp->blessed) {
+            incr_itimeout(&HPasses_walls, rn1(50, otmp->odiluted ? 100 : 250));
+        } else {
+            incr_itimeout(&HPasses_walls, rn1(10, otmp->odiluted ? 50 : 100));
+        }
+    }
+}
+
+staticfn void
 peffect_speed(struct obj *otmp)
 {
     boolean is_speed = (otmp->otyp == POT_SPEED);
@@ -1743,7 +1790,12 @@ peffects(struct obj *otmp)
     case POT_VAMPIRE_BLOOD:
         peffect_blood(otmp);
         break;
-
+    case POT_REFLECTION:
+        peffect_reflection(otmp);
+        break;
+    case POT_PHASING:
+        peffect_phasing(otmp);
+        break;
     default:
         impossible("What a funny potion! (%u)", otmp->otyp);
         return 0;
@@ -2166,6 +2218,22 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             angermon = FALSE;
             mon_adjust_speed(mon, 1, obj);
             break;
+        case POT_REFLECTION:
+            angermon = FALSE;
+            if (canseemon(mon))
+                pline("A shimmering globe appears around %s!", mon_nam(mon));
+            /* monster reflection is handled in mon_reflects() */
+            mon->mextrinsics |= MR2_REFLECTION;
+            mon->mreflecttime = rn1(5, 15);
+            
+            break;
+        case POT_PHASING:
+            angermon = FALSE;
+            if (canseemon(mon))
+                pline("%s turns a little hazy!", Monnam(mon));
+            mon->mextrinsics |= MR2_PHASING;
+            mon->mphasetime += rn1(5, 15);
+            break;
         case POT_BLINDNESS:
             if (haseyes(mon->data) && !mon_perma_blind(mon)) {
                 int btmp = 64 + rn2(32)
@@ -2493,6 +2561,19 @@ potionbreathe(struct obj *obj)
         incr_itimeout(&HFast, rnd(10));
         exercise(A_DEX, TRUE);
         break;
+     case POT_REFLECTION:
+        You("are covered in a mirror-like sheen!");
+        incr_itimeout(&HReflecting, rn1(5, 15));
+        unambiguous = TRUE;
+        break;
+    case POT_PHASING:
+        if (!Blind)
+            You("appear to turn a little hazy!");
+        else
+            You_feel("a little thinner!");
+        incr_itimeout(&HPasses_walls, (long) (d(4, 4) + 6)); /* 8..20 */
+        unambiguous = TRUE;
+        break;
     case POT_BLINDNESS:
         if (!Blind && !Unaware) {
             pline("It suddenly gets dark.");
@@ -2626,6 +2707,7 @@ const struct PotionRecipe potionrecipes[] = {
     { POT_ENLIGHTENMENT,    POT_GAIN_ENERGY, POT_CONFUSION,  3 },
     { POT_SEE_INVISIBLE,    POT_GAIN_LEVEL, POT_FRUIT_JUICE, 1 },
     { POT_SEE_INVISIBLE,    POT_GAIN_ENERGY, POT_FRUIT_JUICE,   1 },
+    { POT_REFLECTION,       POT_SEE_INVISIBLE, POT_INVISIBILITY, 1 },
     { POT_HALLUCINATION,    POT_GAIN_LEVEL, POT_BOOZE,       1 },
     { POT_HALLUCINATION,    POT_GAIN_ENERGY, POT_BOOZE,      1 },
     { POT_SICKNESS,         POT_SICKNESS, POT_FRUIT_JUICE,   1 },

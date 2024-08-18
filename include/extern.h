@@ -2482,6 +2482,7 @@ extern int poly_gender(void);
 extern void ugolemeffects(int, int);
 extern boolean ugenocided(void);
 extern const char *udeadinside(void);
+extern void newman(void);
 
 /* ### potion.c ### */
 

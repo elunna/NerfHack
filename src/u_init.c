@@ -213,6 +213,8 @@ static struct trobj OilPotion[] = { { POT_OIL, 1, POTION_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
 static struct trobj PoisonPotion[] = { { POT_SICKNESS, 0, POTION_CLASS, 2, 0 },
                                        { 0, 0, 0, 0, 0 } };
+static struct trobj PhasePotion[] = { { POT_PHASING, 0, POTION_CLASS, 1, 0 },
+                                       { 0, 0, 0, 0, 0 } };
 static struct trobj Blindfold[] = { { BLINDFOLD, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
 static struct trobj Instrument[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0 },
@@ -690,6 +692,8 @@ u_init_role(void)
         break;
     case PM_CARTOMANCER:
         ini_inv(Cartomancer);
+        if (!rn2(3))
+            ini_inv(PhasePotion);
         skill_init(Skill_Car);
         knows_object(PLAYING_CARD_DECK);
         knows_object(DECK_OF_FATE);

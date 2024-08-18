@@ -88,6 +88,7 @@ enum ms_sounds {
 #define MR2_TELEPATHY   0x00020000L /* telepathic */
 #define MR2_REFLECTION  0x00040000L /* has reflection */
 #define MR2_FREE_ACTION 0x00080000L /* has free action */
+#define MR2_PHASING     0x00100000L /* has phasing */
 
 #define M1_FLY          0x00000001L /* can fly or float */
 #define M1_SWIM         0x00000002L /* can traverse water */
