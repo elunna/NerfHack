@@ -2401,12 +2401,16 @@ eataccessory(struct obj *otmp)
                     makeknown(typ);
                 }
                 break;
-
-
             case RIN_REGENERATION:
                 incr_itimeout(&HRegeneration, rnd(750) + 750);
                 if (!Regeneration)
                     You_feel("invigorated!");
+                makeknown(typ);
+                break;
+            case RIN_WITHERING:
+                incr_itimeout(&HWithering, rnd(750) + 750);
+                if (!Withering)
+                    You("start withering away!");
                 makeknown(typ);
                 break;
             case RIN_HUNGER:

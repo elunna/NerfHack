@@ -1420,6 +1420,12 @@ Ring_on(struct obj *obj)
             HSleepy = (HSleepy & ~TIMEOUT) | newnap;
         break;
     }
+    case RIN_WITHERING:
+        if (!oldprop) {
+            You("begin to wither away!");
+            disp.botl = TRUE;
+        }
+        break;
     }
 }
 
@@ -1527,6 +1533,11 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
         if (!ESleepy && !(HSleepy & ~TIMEOUT))
             HSleepy &= ~TIMEOUT; /* clear timeout bits */
         return;
+    case RIN_WITHERING:
+        if (!Withering) {
+            You("are no longer withering away.");
+            disp.botl = TRUE;
+        }
     }
 }
 

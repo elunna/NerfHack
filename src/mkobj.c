@@ -1200,6 +1200,7 @@ mksobj_init(struct obj *otmp, boolean artif)
                                || otmp->otyp == RIN_POLYMORPH
                                || otmp->otyp == RIN_AGGRAVATE_MONSTER
                                || otmp->otyp == RIN_SLEEPING
+                               || otmp->otyp == RIN_WITHERING
                                || otmp->otyp == RIN_HUNGER || !rn2(9))) {
             curse(otmp);
         }
