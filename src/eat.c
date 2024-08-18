@@ -2163,7 +2163,10 @@ fprefx(struct obj *otmp)
     switch (otmp->otyp) {
     case EGG:
         if (otmp->corpsenm == PM_PYROLISK) {
-            useup(otmp);
+            if (carried(otmp))
+                useup(otmp);
+            else
+                useupf(otmp, 1L);
             explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), d(3, 6), 0, EXPL_FIERY);
             return FALSE;
         } else if (stale_egg(otmp)) {
@@ -3102,8 +3105,8 @@ doeat(void)
 
 
     if (otmp == svc.context.victual.piece) {
-        boolean one_bite_left
-            = (svc.context.victual.usedtime + 1 >= svc.context.victual.reqtime);
+        boolean one_bite_left = (svc.context.victual.usedtime + 1
+                                 >= svc.context.victual.reqtime);
 
         /* If they weren't able to choke, they don't suddenly become able to
          * choke just because they were interrupted.  On the other hand, if

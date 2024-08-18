@@ -1,4 +1,4 @@
-/* NetHack 3.7	hack.c	$NHDT-Date: 1720128165 2024/07/04 21:22:45 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.449 $ */
+/* NetHack 3.7	hack.c	$NHDT-Date: 1723410639 2024/08/11 21:10:39 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.452 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -9,6 +9,7 @@
 /* #define DEBUG */ /* uncomment for debugging */
 
 staticfn boolean could_move_onto_boulder(coordxy, coordxy);
+staticfn void moverock_done(coordxy, coordxy);
 staticfn int moverock(void);
 staticfn void dosinkfall(void);
 staticfn boolean findtravelpath(int);
@@ -154,6 +155,15 @@ could_move_onto_boulder(coordxy sx, coordxy sy)
     return squeezeablylightinvent();
 }
 
+staticfn void
+moverock_done(coordxy sx, coordxy sy)
+{
+    struct obj *otmp;
+    for (otmp = svl.level.objects[sx][sy]; otmp; otmp = otmp->nexthere)
+        if (otmp->otyp == BOULDER)
+            otmp->next_boulder = 0; /* resume normal xname() for this obj */
+}
+
 staticfn int
 moverock(void)
 {
@@ -163,7 +173,6 @@ moverock(void)
     struct monst *mtmp, *shkp;
     const char *what;
     boolean costly, firstboulder = TRUE;
-    int res = 0;
 
     sx = u.ux + u.dx, sy = u.uy + u.dy; /* boulder starting position */
     while ((otmp = sobj_at(BOULDER, sx, sy)) != 0) {
@@ -172,8 +181,8 @@ moverock(void)
             pline("That feels like a boulder.");
             map_object(otmp, TRUE);
             nomul(0);
-            res = -1;
-            goto moverock_done;
+            moverock_done(sx, sy);
+            return -1;
         }
 
         /* when otmp->next_boulder is 1, xname() will format it as
@@ -199,6 +208,7 @@ moverock(void)
            reveals an unseen boulder or lack of remembered, unseen monster */
         if (svc.context.nopick) {
             int oldglyph = glyph_at(sx, sy); /* before feel_location() */
+            int res;
 
             feel_location(sx, sy); /* same for all 3 if/else-if/else cases */
             if (throws_rocks(gy.youmonst.data)) {
@@ -223,7 +233,8 @@ moverock(void)
                     svc.context.door_opened = svc.context.move = TRUE;
                 res = -1; /* don't move to <sx,sy>, so no soko guilt */
             }
-            goto moverock_done; /* stop further push attempts */
+            moverock_done(sx, sy); /* stop further push attempts */
+            return res;
         }
         if (Levitation || Is_airlevel(&u.uz)) {
             /* FIXME?  behavior in an air bubble on the water level should
@@ -234,8 +245,8 @@ moverock(void)
                 feel_location(sx, sy);
             You("don't have enough leverage to push %s.", the(xname(otmp)));
             /* Give them a chance to climb over it? */
-            res = -1;
-            goto moverock_done;
+            moverock_done(sx, sy);
+            return -1;
         }
         if (verysmall(gy.youmonst.data) && !u.usteed) {
             if (Blind)
@@ -263,8 +274,8 @@ moverock(void)
 
             if (revive_nasty(rx, ry,
                              "You sense movement on the other side.")) {
-                res = -1;
-                goto moverock_done;
+                moverock_done(sx, sy);
+                return -1;
             }
 
             if (mtmp && !noncorporeal(mtmp->data)
@@ -309,6 +320,7 @@ moverock(void)
             if (ttmp) {
                 int newlev = 0; /* lint suppression */
                 d_level dest;
+                int res;
 
                 /* if a trap operates on the boulder, don't attempt
                    to move any others at this location; return -1
@@ -338,7 +350,8 @@ moverock(void)
                         if (cansee(rx, ry))
                             newsym(rx, ry);
                         res = sobj_at(BOULDER, sx, sy) ? -1 : 0;
-                        goto moverock_done;
+                        moverock_done(sx, sy);
+                        return res;
                     }
                     break;
                 case SPIKED_PIT:
@@ -355,7 +368,8 @@ moverock(void)
                     if (mtmp && !Blind)
                         newsym(rx, ry);
                     res = sobj_at(BOULDER, sx, sy) ? -1 : 0;
-                    goto moverock_done;
+                    moverock_done(sx, sy);
+                    return res;
                 case HOLE:
                 case TRAPDOOR:
                     Soundeffect(se_kerplunk_boulder_gone, 40);
@@ -379,7 +393,8 @@ moverock(void)
                     if (cansee(rx, ry))
                         newsym(rx, ry);
                     res = sobj_at(BOULDER, sx, sy) ? -1 : 0;
-                    goto moverock_done;
+                    moverock_done(sx, sy);
+                    return res;
                 case LEVEL_TELEP:
                     /* 20% chance of picking current level; 100% chance for
                        that if in single-level branch (Knox) or in endgame */
@@ -410,7 +425,8 @@ moverock(void)
                     }
                     seetrap(ttmp);
                     res = sobj_at(BOULDER, sx, sy) ? -1 : 0;
-                    goto moverock_done;
+                    moverock_done(sx, sy);
+                    return res;
                 default:
                     break; /* boulder not affected by this trap */
                 }
@@ -543,19 +559,13 @@ moverock(void)
                 sokoban_guilt();
                 break;
             } else {
-                res = -1;
-                goto moverock_done;
+                moverock_done(sx, sy);
+                return -1;
             }
         }
     }
-    res = 0;
-
- moverock_done:
-    for (otmp = svl.level.objects[sx][sy]; otmp; otmp = otmp->nexthere)
-        if (otmp->otyp == BOULDER)
-            otmp->next_boulder = 0; /* resume normal xname() for this obj */
-
-    return res;
+    moverock_done(sx, sy);
+    return 0;
 }
 
 /*
@@ -2531,11 +2541,12 @@ domove_core(void)
 {
     struct monst *mtmp;
     struct rm *tmpr;
+    NhRegion *newreg, *oldreg;
     coordxy x, y;
     struct trap *trap = NULL;
     int glyph;
     coordxy chainx = 0, chainy = 0,
-          ballx = 0, bally = 0;         /* ball&chain new positions */
+            ballx = 0, bally = 0;       /* ball&chain new positions */
     int bc_control = 0;                 /* control for ball&chain */
     boolean cause_delay = FALSE,        /* dragging ball will skip a move */
             displaceu = FALSE;          /* involuntary swap */
@@ -2637,11 +2648,47 @@ domove_core(void)
     if (u_rooted())
         return;
 
-    /* maybe ask player for confirmation before walking into known traps */
-    if (ParanoidTrap && (trap = t_at(x, y)) != 0 && trap->tseen
+    /* treat entering a visible gas cloud region like entering a trap;
+       there could be a known trap as well as a region at the target spot;
+       if so, ask about entring the region first; even though this could
+       lead to two consecutive confirmation prompts, the situation seems to
+       be too uncommon to warrant a separate case with combined trap+region
+       confirmation */
+    if (ParanoidTrap && !Blind && !Stunned && !Confusion && !Hallucination
+        /* skip if player used 'm' prefix or is moving recklessly */
         && (!svc.context.nopick || svc.context.run)
-        && !Stunned && !Confusion
+        /* check for region(s) */
+        && (newreg = visible_region_at(x, y)) != 0
+        && ((oldreg = visible_region_at(u.ux, u.uy)) == 0
+            /* if moving from one region into another, only ask for
+               confirmation if the one potentially being entered inflicts
+               damage (poison gas) and the one being exited doesn't (vapor) */
+            || (reg_damg(newreg) > 0 && reg_damg(oldreg) == 0))
+        /* check whether attempted move will be viable */
         && test_move(u.ux, u.uy, u.dx, u.dy, TEST_MOVE)
+        /* we don't override confirmation for poison resistance since the
+           region also hinders hero's vision even if/when no damage is done */
+        ) {
+        char qbuf[QBUFSZ];
+
+        Snprintf(qbuf, sizeof qbuf, "%s into that %s cloud?",
+                 locomotion(gy.youmonst.data, "step"),
+                 (reg_damg(newreg) > 0) ? "poison gas" : "vapor");
+        if (!paranoid_query(ParanoidConfirm, upstart(qbuf))) {
+            nomul(0);
+            svc.context.move = 0;
+            return;
+        }
+    }
+    /* maybe ask player for confirmation before walking into known traps */
+    if (ParanoidTrap && !Stunned && !Confusion
+        /* skip if player used 'm' prefix or is moving recklessly */
+        && (!svc.context.nopick || svc.context.run)
+        /* check for discovered trap */
+        && (trap = t_at(x, y)) != 0 && trap->tseen
+        /* check whether attempted move will be viable */
+        && test_move(u.ux, u.uy, u.dx, u.dy, TEST_MOVE)
+        /* override confirmation if the trap is harmless to the hero */
         && (immune_to_trap(&gy.youmonst, trap->ttyp) != TRAP_CLEARLY_IMMUNE
             /* Hallucination: all traps still show as ^, but the
                hero can't tell what they are, so treat as dangerous */

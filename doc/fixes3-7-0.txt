@@ -1,4 +1,4 @@
-NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1457 $ $NHDT-Date: 1721684298 2024/07/22 21:38:18 $
+NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1464 $ $NHDT-Date: 1723945837 2024/08/18 01:50:37 $
 
 General Fixes and Modified Features
 -----------------------------------
@@ -1454,6 +1454,10 @@ when there was a trap on a no-dig level, the floor beneath it was always
 the #terrain command didn't know how to cope with visible gas/cloud regions;
 	treat as traps as far as player choice of whether to show or hide;
 	if/when a spot contains both region and trap, show the trap
+region expiration reported "the gas cloud around you dissipates" even when the
+	hero was swallowed
+reduce shopkeeper's innate speed from 18 to 16 so that a hasted shopkeeper
+	doesn't always get 2 moves per turn
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2005,6 +2009,12 @@ if peaceful monsters react when seeing hero attack a peaceful monster, don't
 farlook of water/lava location listed wall of lava before molten lava; because
 	of that, lava was omitted ("molten" suppressed to reduce vebosity,
 	resulting in "lava" which got skipped as substring of "wall of lava")
+having #terrain display gas cloud regions as if they were traps didn't work
+	for monsters in such regions that are shown when adjacent to hero or
+	sensed via ESP
+when a monster within a gas cloud was displayed on the map because the hero
+	was next to it, it remained displayed if hero moved away
+eating a pyrolisk egg on the floor triggered an "object lost" panic
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -2543,6 +2553,8 @@ paranoid_confirm:swim to prevent accidental dunking into dangerous liquids;
 paranoid_confirm:trap to confirm entering a known trap unless it is harmless;
 	like revised paranoid_confirm:pray, requires y/n response; add
 	paranoid_confirm:Confirm to require yes/no instead
+extend 'paranoid_confirm:trap' to request confirmation when entering visible
+	gas cloud regions
 paranoid_confirm:Autoall to confirm picking 'A' in menustyle:Full filter menu
 looking at a monster will indicate whether it is asleep, and waking up a
 	monster yields a message

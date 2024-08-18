@@ -103,3 +103,4 @@ order.sh
 ported_patches/
 *.patch
 backtraces
+submodules/CHKSUMS.tmp

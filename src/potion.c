@@ -42,6 +42,7 @@ staticfn int dip_ok(struct obj *);
 staticfn int dip_hands_ok(struct obj *);
 staticfn void hold_potion(struct obj *, const char *, const char *,
                         const char *);
+staticfn void poof(struct obj *);
 staticfn int potion_dip(struct obj *obj, struct obj *potion);
 
 /* used to indicate whether quaff or dip has skipped an opportunity to
@@ -2993,6 +2994,14 @@ dip_into(void)
     return potion_dip(obj, potion);
 }
 
+staticfn void
+poof(struct obj *potion)
+{
+    if (potion->dknown)
+        trycall(potion);
+    useup(potion);
+}
+
 /* called by dodip() or dip_into() after obj and potion have been chosen */
 staticfn int
 potion_dip(struct obj *obj, struct obj *potion)
@@ -3017,8 +3026,10 @@ potion_dip(struct obj *obj, struct obj *potion)
         boolean useeit = !Blind || (obj == ublindf && Blindfolded_only);
         const char *obj_glows = Yobjnam2(obj, "glow");
 
-        if (H2Opotion_dip(potion, obj, useeit, obj_glows))
-            goto poof;
+        if (H2Opotion_dip(potion, obj, useeit, obj_glows)) {
+            poof(potion);
+            return ECMD_TIME;
+        }
     } else if (obj->otyp == POT_POLYMORPH || potion->otyp == POT_POLYMORPH) {
         /* some objects can't be polymorphed */
         if (obj_unpolyable(obj->otyp == POT_POLYMORPH ? potion : obj)) {
@@ -3052,7 +3063,8 @@ potion_dip(struct obj *obj, struct obj *potion)
                 return ECMD_TIME;
             } else {
                 pline1(nothing_seems_to_happen);
-                goto poof;
+                poof(potion);
+                return ECMD_TIME;
             }
         }
         potion->in_use = FALSE; /* didn't go poof */
@@ -3179,7 +3191,8 @@ potion_dip(struct obj *obj, struct obj *potion)
     if (potion->otyp == POT_WATER && obj->otyp == TOWEL) {
         pline_The("towel soaks it up!");
         /* wetting towel already done via water_damage() in H2Opotion_dip */
-        goto poof;
+        poof(potion);
+        return ECMD_TIME;
     }
 
     if (is_poisonable(obj)) {
@@ -3193,19 +3206,23 @@ potion_dip(struct obj *obj, struct obj *potion)
             pline("%s forms a coating on %s.", buf, the(xname(obj)));
             obj->opoisoned = TRUE;
             makeknown(POT_SICKNESS);
-            goto poof;
+            poof(potion);
+            return ECMD_TIME;
         } else if (obj->opoisoned && (potion->otyp == POT_HEALING
                                       || potion->otyp == POT_EXTRA_HEALING
                                       || potion->otyp == POT_FULL_HEALING)) {
             pline("A coating wears off %s.", the(xname(obj)));
             obj->opoisoned = 0;
-            goto poof;
+            poof(potion);
+            return ECMD_TIME;
         }
     }
 
     if (potion->otyp == POT_ACID) {
-        if (erode_obj(obj, 0, ERODE_CORRODE, EF_GREASE | EF_DESTROY) != ER_NOTHING)
-            goto poof;
+        if (erode_obj(obj, 0, ERODE_CORRODE, EF_GREASE | EF_DESTROY) != ER_NOTHING) {
+            poof(potion);
+            return ECMD_TIME;
+        }
     }
 
     if (potion->otyp == POT_OIL) {
@@ -3399,12 +3416,6 @@ potion_dip(struct obj *obj, struct obj *potion)
     }
 
     pline("Interesting...");
-    return ECMD_TIME;
-
- poof:
-    if (potion->dknown)
-        trycall(potion);
-    useup(potion);
     return ECMD_TIME;
 }
 
