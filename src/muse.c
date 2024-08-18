@@ -1413,6 +1413,7 @@ rnd_defensive_item(struct monst *mtmp)
 #define MUSE_WAN_CORROSION      27
 #define MUSE_SCR_CLONING        28
 #define MUSE_WAN_SLOW_MONSTER 29
+#define MUSE_WAN_DRAINING 30
 
 staticfn boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -1553,6 +1554,13 @@ find_offensive(struct monst *mtmp)
                 && !m_seenres(mtmp, M_SEEN_MAGR)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_DEATH;
+            }
+            nomore(MUSE_WAN_DRAINING);
+            if (obj->otyp == WAN_DRAINING && obj->spe > 0
+                && !resists_drain(gy.youmonst.data)
+                && !m_seenres(mtmp, M_SEEN_REFL)) {
+                gm.m.offensive = obj;
+                gm.m.has_offense = MUSE_WAN_DRAINING;
             }
             nomore(MUSE_WAN_SLEEP);
             if (obj->otyp == WAN_SLEEP && obj->spe > 0 && gm.multi >= 0
@@ -2030,6 +2038,7 @@ use_offensive(struct monst *mtmp)
     
     switch (gm.m.has_offense) {
     case MUSE_WAN_DEATH:
+    case MUSE_WAN_DRAINING:
     case MUSE_WAN_SLEEP:
     case MUSE_WAN_FIRE:
     case MUSE_WAN_COLD:
@@ -2306,7 +2315,7 @@ rnd_offensive_item(struct monst *mtmp)
     case 9:
         return WAN_SLEEP;
     case 10:
-        return rn2(30) ? WAN_FIRE : POT_OIL;
+        return rn2(3) ? WAN_FIRE : POT_OIL;
     case 11:
         return WAN_COLD;
     case 12:
@@ -2314,7 +2323,7 @@ rnd_offensive_item(struct monst *mtmp)
     case 13:
         return SCR_STINKING_CLOUD;
     case 14:
-        return WAN_CANCELLATION;
+        return rn2(3) ? WAN_CANCELLATION : WAN_DRAINING;
     case 15:
         return WAN_SLOW_MONSTER;
     }

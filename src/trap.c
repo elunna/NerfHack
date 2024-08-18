@@ -579,6 +579,8 @@ maketrap(coordxy x, coordxy y, int typ)
                         ttmp->launch_otyp = -ZT_SPELL(ZT_SLEEP);
                     else if (!rn2(5))
                         ttmp->launch_otyp = -ZT_BREATH(ZT_STUN);
+                    else if (!rn2(5))
+                        ttmp->launch_otyp = -ZT_BREATH(ZT_DRAIN);
                     else if (!rn2(13))
                         ttmp->launch_otyp = -ZT_BREATH(AD_DISN); /* Oops! */
                     ok = 1;

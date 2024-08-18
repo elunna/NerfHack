@@ -601,6 +601,28 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             de->dengr = TRUE;
         }
         break;
+    case WAN_DRAINING:	/* KMH */
+        if (de->oep) {
+            /*
+            * [ALI] Wand of draining give messages like
+            * either polymorph or cancellation/make
+            * invisible depending on whether the
+            * old engraving is completely wiped or not.
+            * Note: Blindness has slightly different
+            * effect than with wand of polymorph.
+            */
+            u_wipe_engr(5);
+            de->oep = engr_at(u.ux,u.uy);
+            if (!Blind) {
+                if (!de->oep)
+                    pline_The("engraving on the %s vanishes!", surface(u.ux, u.uy));
+                else {
+                    strcpy(de->buf, de->oep->engr_txt[actual_text]);
+                    de->dengr = TRUE;
+                }
+            }
+        }
+        break;
     case WAN_PROBING:
         Sprintf(de->post_engr_text, "You probe the bugs on the floor.");
         de->postknown = TRUE;

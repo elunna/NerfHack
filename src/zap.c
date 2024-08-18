@@ -37,6 +37,7 @@ staticfn int maybe_destroy_item(struct monst *, struct obj *, int) NONNULLPTRS;
 staticfn boolean destroyable(struct obj *, int);
 
 staticfn void wishcmdassist(int);
+staticfn void drain_floor_objects(coordxy, coordxy, boolean);
 
 #define M_IN_WATER(ptr) ((ptr)->mlet == S_EEL || cant_drown(ptr))
 
@@ -49,19 +50,41 @@ static const char are_blinded_by_the_flash[] = "are blinded by the flash!";
  * use -39..-30 rather than -9..-0 because -0 is ambiguous (same as 0).
  */
 static const char *const flash_types[] = {
-    "magic missile", /* Wands must be 0-9 */
-    "bolt of fire", "bolt of cold", "sleep ray", "death ray",
-    "bolt of lightning", "poison gas", "acid stream", "stun beam", "",
+    /* Wands must be 0-9 */
+    "magic missile",        
+    "bolt of fire",         /* 01 */
+    "bolt of cold",         /* 02 */
+    "sleep ray",            /* 03 */
+    "death ray",            /* 04 */
+    "bolt of lightning",    /* 05 */
+    "poison gas",           /* 06 */
+    "acid stream",          /* 07 */
+    "drain beam",           /* 08 */
+    "stun beam",            /* 09 */
 
-    "magic missile", /* Spell equivalents must be 10-19 */
-    "fireball", "cone of cold", "sleep ray", "finger of death",
-    "bolt of lightning", /* there is no spell, used for retribution */
-    "blast of poison gas", "blast of acid", "disorienting blast", "",
+    /* Spell equivalents must be 10-19 */
+    "magic missile",        /* 10 */
+    "fireball",             /* 11 */
+    "cone of cold",         /* 12 */
+    "sleep ray",            /* 13 */
+     "finger of death",     /* 14 */
+    "bolt of lightning",    /* 15 (no spell, used for retribution) */
+    "blast of poison gas",  /* 16 */
+    "blast of acid",        /* 17 */
+    "blast of necrotic energy", /* 18 */
+    "disorienting blast",   /* 19 */
 
-    "blast of missiles", /* Dragon breath equivalents 20-29*/
-    "blast of fire", "blast of frost", "blast of sleep gas",
-    "blast of disintegration", "blast of lightning",
-    "blast of poison gas", "blast of acid", "disorienting blast", ""
+    /* Dragon breath equivalents 20-29*/
+    "blast of missiles",    /* 20 */
+    "blast of fire",        /* 21 */
+    "blast of frost",       /* 22 */
+    "blast of sleep gas",   /* 23 */
+    "blast of disintegration", /* 24 */
+    "blast of lightning",   /* 25 */
+    "blast of poison gas",  /* 26 */
+    "blast of acid",        /* 27 */
+    "blast of necrotic energy", /* 28 */
+    "disorienting blast",   /* 29 */
 };
 
 /* convert monster zap/spell/breath value to hero zap/spell/breath value */
@@ -4798,6 +4821,31 @@ zhitm(
         if (!rn2(6))
             erode_armor(mon, ERODE_CORRODE);
         break;
+    case ZT_DRAIN:
+        if (resists_drli(mon) || defended(mon, AD_DRLI)) {
+            sho_shieldeff = TRUE;
+            tmp = 0;
+            break;
+        } 
+        tmp = rnd(8);
+        if (spellcaster)
+            tmp = spell_damage_bonus(tmp);
+        if (mon->mhpmax - tmp > (int) mon->m_lev) {
+            mon->mhpmax -= tmp;
+        } else {
+            /* limit floor of mhpmax reduction to current m_lev + 1;
+                avoid increasing it if somehow already less than that */
+            if (mon->mhpmax > (int) mon->m_lev)
+                mon->mhpmax = (int) mon->m_lev + 1;
+        }
+        /* !m_lev: level 0 monster is killed regardless of hit points
+            rather than drop to level -1; note: some non-living creatures
+            (golems, vortices) are subject to life-drain */
+        if (mon->m_lev == 0)
+            tmp = MAGIC_COOKIE;
+        else
+            mon->m_lev--;
+        break;
     case ZT_STUN:
         if (resists_stun(mon->data) || defended(mon, AD_STUN)) {
             sho_shieldeff = TRUE;
@@ -5027,6 +5075,32 @@ zhitu(
                 erode_armor(&gy.youmonst, ERODE_CORRODE);
         }
         break;
+    case ZT_DRAIN: {
+        const char *life = nonliving(gy.youmonst.data) ? "animating force"
+                                                    : "life";
+        /* will still take physical damage from the force of
+           the breath attack, even if drain resistant */
+        dam = rnd(8);
+        if (Half_physical_damage)
+            dam = (dam + 1) / 2;
+        if (Drain_resistance) {
+            ugolemeffects(AD_DRLI, d(nd, 6));
+            dam = 0;
+            break;
+        }
+
+        if (Reflecting) {
+            You("feel drained...");
+            u.uhpmax -= dam / 2 + rn2(5);
+        } else {
+            if (Blind)
+                You_feel("a necrotic force draining your %s!", life);
+            else
+                pline_The("necrotic ray drains your %s!", life);
+            losexp("life drainage");
+        }
+        break;
+    }
     case ZT_STUN:
         /* will still take physical damage from the force of
            the breath attack, even if stun resistant */
@@ -5148,8 +5222,6 @@ burn_floor_objects(
     return cnt;
 }
 
-
-
 /*
  * Disintegrate boulders on floor at position x,y;
  * return the number of objects burned
@@ -5206,6 +5278,21 @@ disintegrate_floor_objects(
         }
     }
     return cnt;
+}
+
+/*
+ * drain objects on floor at position x,y; no return needed.
+ */
+staticfn void
+drain_floor_objects(
+    coordxy x, coordxy y,
+    boolean u_caused)
+{
+    struct obj *obj, *obj2;
+    for (obj = svl.level.objects[x][y]; obj; obj = obj2) {
+        obj2 = obj->nexthere;
+        drain_item(obj, u_caused);
+    }
 }
 
 /* will zap/spell/breath attack score a hit against armor class `ac'? */
@@ -5417,7 +5504,7 @@ dobuzz(
                     int tmp = zhitm(mon, type, nd, &otmp);
 
                     if (is_rider(mon->data)
-                        && abs(type) == ZT_BREATH(ZT_DEATH)) {
+                        && abs(type) == ZT_BREATH(ZT_DEATH)) { /* disintegration */
                         if (canseemon(mon)) {
                             hit(flash_str(fltyp, FALSE), mon, ".");
                             pline("%s disintegrates.", Monnam(mon));
@@ -5466,6 +5553,25 @@ dobuzz(
                             /* normal non-fatal hit */
                             if (say || canseemon(mon)) {
                                 hit(flash_str(fltyp, FALSE), mon, exclam(tmp));
+                                if ((resists_magm(mon) || defended(mon, AD_MAGM))
+                                    && damgtype == ZT_DEATH
+                                    && abs(type) != ZT_BREATH(ZT_DEATH)) { /* death */
+                                    if (canseemon(mon))
+                                        pline("%s resists the death magic, but appears drained!",
+                                              Monnam(mon));
+                                }
+                                if (damgtype == ZT_DRAIN) {
+                                    const char *life = nonliving(mon->data) ? "animating force"
+                                                                            : "life";
+
+                                    if (canseemon(mon)) {
+                                        if (resists_drli(mon) || defended(mon, AD_DRLI))
+                                            pline("%s appears unaffected.", Monnam(mon));
+                                        else
+                                            pline_The("blast draws the %s from %s!",
+                                                      life, mon_nam(mon));
+                                    }
+                                }
                                 print_mon_wounded(mon, saved_mhp);
                             }
                         } else {
@@ -6068,6 +6174,10 @@ zap_over_floor(
             newsym(x, y);
         }
     
+    if (OBJ_AT(x, y) && damgtype == ZT_DRAIN) {
+        drain_floor_objects(x, y, (type > 0 && !moncast));
+    
+    }
     if (!ignoremon && (mon = m_at(x, y)) != 0)
         wakeup(mon, (type >= 0 && !moncast) ? TRUE : FALSE);
     return rangemod;

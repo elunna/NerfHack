@@ -979,7 +979,7 @@ parse_id(const char *id, struct find_struct *findwhat)
                         static const char *const zap_texts[] = {
                             "missile", "fire",      "frost",      "sleep",
                             "death",   "lightning", "poison gas", "acid",
-                            "stun"
+                            "drain", "stun"
                         };
 
                         j = (glyph - GLYPH_ZAP_OFF);

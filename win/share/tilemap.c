@@ -103,7 +103,7 @@ const char *expl_texts[] = {
 const char *zap_texts[] = {
     "missile", "fire",      "frost",      "sleep",
     "death",   "lightning", "poison gas", "acid",
-    "stun"
+    "drain", "stun"
 };
 
 enum tilesrc { monsters_file, objects_file, other_file, generated };
@@ -128,7 +128,7 @@ struct tiles_used {
     char tilenam[MAX_TILENAM];
     char references[1024];
 };
-struct tiles_used *tilelist[3000] = { 0 };
+struct tiles_used *tilelist[3500] = { 0 };
 
 /* Some special tiles used for init of some things */
 int TILE_stone = 0,       /* will get set to correct tile later */

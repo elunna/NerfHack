@@ -64,6 +64,10 @@ explosionmask(
             if (Acid_resistance)
                 res = EXPL_HERO;
             break;
+        case AD_DRLI:
+            if (Drain_resistance)
+                res = EXPL_HERO;
+            break;
         default:
             impossible("explosion type %d?", adtyp);
             break;
@@ -103,6 +107,10 @@ explosionmask(
             if (resists_acid(m))
                 res = EXPL_MON;
             break;
+        case AD_DRLI:
+            if (resists_drain(m->data))
+                res = EXPL_MON;
+            break;
         default:
             impossible("explosion type %d?", adtyp);
             break;
@@ -139,6 +147,9 @@ engulfer_explosion_msg(uchar adtyp, char olet)
         case AD_ACID:
             adj = "an upset stomach";
             break;
+        case AD_DRLI:
+            adj = "diarrhea";
+            break;
         default:
             adj = "fried";
             break;
@@ -166,6 +177,9 @@ engulfer_explosion_msg(uchar adtyp, char olet)
             break;
         case AD_ACID:
             adj = "burned";
+            break;
+        case AD_DRLI:
+            adj = "drained";
             break;
         default:
             adj = "fried";
@@ -346,6 +360,10 @@ explode(
         case 7:
             adstr = "splash of acid";
             adtyp = AD_ACID;
+            break;
+        case 8:
+            adstr = "blast of necrotic energy";
+            adtyp = AD_DRLI;
             break;
         default:
             impossible("explosion base type %d?", type);
@@ -1022,6 +1040,7 @@ adtyp_to_expltype(const int adtyp)
     case AD_SPEL:
     case AD_DREN:
     case AD_ENCH:
+    case AD_DRLI:
         return EXPL_MAGICAL;
     case AD_FIRE:
         return EXPL_FIERY;

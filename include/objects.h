@@ -1506,6 +1506,7 @@ WAND("speed monster",   "brass", 50, 150, 1, IMMEDIATE, COPPER, HI_COPPER,
                                                     WAN_SPEED_MONSTER),
 WAND("undead turning", "copper", 50, 150, 1, IMMEDIATE, COPPER, HI_COPPER,
                                                     WAN_UNDEAD_TURNING),
+
 WAND("polymorph",      "silver", 45, 200, 1, IMMEDIATE, SILVER, HI_SILVER,
                                                     WAN_POLYMORPH),
 WAND("cancellation", "platinum", 45, 200, 1, IMMEDIATE, PLATINUM, CLR_WHITE,
@@ -1537,6 +1538,9 @@ WAND("poison gas",  "octagonal", 25, 175, 1, RAY, GLASS, HI_METAL,
                                                     WAN_POISON_GAS),
 WAND("corrosion",    "twisted",  30, 200, 1, RAY, WOOD,  HI_WOOD,
                                                     WAN_CORROSION),
+WAND("draining",      "ceramic", 20, 175, 1, RAY, GLASS,  HI_MINERAL,
+                                                    WAN_DRAINING),
+
 /* extra descriptions, shuffled into use at start of new game */
 WAND(NoDes,             "forked",  0, 150, 1, 0, WOOD, HI_WOOD, WAN1),
 WAND(NoDes,             "spiked",  0, 150, 1, 0, IRON, HI_METAL, WAN2),

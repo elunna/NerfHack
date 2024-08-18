@@ -1627,7 +1627,7 @@ get_atkdam_type(int adtyp)
         static const int rnd_breath_typ[] = {
             AD_MAGM, AD_FIRE, AD_COLD, AD_SLEE,
             AD_DISN, AD_ELEC, AD_DRST, AD_ACID,
-            AD_STUN };
+            AD_DRLI, AD_STUN };
         return ROLL_FROM(rnd_breath_typ);
     }
     return adtyp;

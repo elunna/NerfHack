@@ -1461,11 +1461,13 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define ZT_LIGHTNING (AD_ELEC - 1)
 #define ZT_POISON_GAS (AD_DRST - 1)
 #define ZT_ACID (AD_ACID - 1)
+#define ZT_DRAIN (AD_DRLI - 1)
 #define ZT_STUN (AD_STUN - 1)
+
 /* 9 is currently unassigned */
 
 #define MAX_AD (AD_STUN)
-#define LAST_WAND (WAN_CORROSION)
+#define LAST_WAND (WAN_DRAINING)
 
 #define ZT_WAND(x) (x)
 #define ZT_SPELL(x) (10 + (x))
@@ -1473,7 +1475,7 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 
 #define is_hero_spell(type) ((type) >= 10 && (type) < 20)
 /* macros for dobuzz() type */
-#define BZ_VALID_ADTYP(adtyp) ((adtyp) >= AD_MAGM && (adtyp) <= AD_SPC2)
+#define BZ_VALID_ADTYP(adtyp) ((adtyp) >= AD_MAGM && (adtyp) <= MAX_AD)
 
 #define BZ_OFS_AD(adtyp) (abs((adtyp) - AD_MAGM) % 10)
 #define BZ_OFS_WAN(otyp) (abs((otyp) - WAN_MAGIC_MISSILE) % 10)

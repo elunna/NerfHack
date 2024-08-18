@@ -2888,6 +2888,7 @@ wand_explode(struct obj* obj, int chg /* recharging */, struct monst *mon)
         break;
     case WAN_CANCELLATION:
     case WAN_DEATH:
+    case WAN_DRAINING:
     case WAN_POLYMORPH:
     case WAN_UNDEAD_TURNING:
         dmg_multiplier = 10;

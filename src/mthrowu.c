@@ -21,8 +21,8 @@ staticfn int m_lined_up(struct monst *, struct monst *) NONNULLARG12;
  */
 static NEARDATA const char *breathwep[] = {
     "fragments", "fire", "frost", "sleep gas", "a disintegration blast",
-    "lightning", "poison gas", "acid", "a disorienting blast",
-    "strange breath #9"
+    "lightning", "poison gas", "acid", "a necrotic blast", 
+    "a disorienting blast",
 };
 
 /* hallucinatory ray types */

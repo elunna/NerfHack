@@ -53,53 +53,51 @@
 #define AD_DRST 7   /* drains str (poison) */
 /* End of partial resistances */
 #define AD_ACID 8   /* acid damage */
-#define AD_STUN 9   /* stun damage */
-#define AD_SPC2 10  /* for extension of buzz() */
+#define AD_DRLI 9   /* drains life levels (Vampire) */
+#define AD_STUN 10  /* stun damage */
 #define AD_BLND 11  /* blinds (yellow light) */
-#define AD_SPC1 12  /* placeholder */
-#define AD_SLOW 13  /* slows */
-#define AD_PLYS 14  /* paralyses */
-#define AD_DRLI 15  /* drains life levels (Vampire) */
-#define AD_DREN 16  /* drains magic energy */
-#define AD_LEGS 17  /* damages legs (xan) */
-#define AD_STON 18  /* petrifies (Medusa, cockatrice) */
-#define AD_STCK 19  /* sticks to you (mimic) */
-#define AD_SGLD 20  /* steals gold (leppie) */
-#define AD_SITM 21  /* steals item (nymphs) */
-#define AD_SEDU 22  /* seduces & steals multiple items */
-#define AD_TLPT 23  /* teleports you (Quantum Mech.) */
-#define AD_RUST 24  /* rusts armour (Rust Monster)*/
-#define AD_CONF 25  /* confuses (Umber Hulk) */
-#define AD_DGST 26  /* digests opponent (trapper, etc.) */
-#define AD_HEAL 27  /* heals opponent's wounds (nurse) */
-#define AD_WRAP 28  /* special "stick" for eels */
-#define AD_WERE 29  /* confers lycanthropy */
-#define AD_DRDX 30  /* drains dexterity (quasit) */
-#define AD_DRCO 31  /* drains constitution */
-#define AD_DRIN 32  /* drains intelligence (mind flayer) */
-#define AD_DISE 33  /* confers diseases */
-#define AD_DCAY 34  /* decays organics (brown Pudding) */
-#define AD_SSEX 35  /* Succubus seduction (extended) */
-#define AD_HALU 36  /* causes hallucination */
-#define AD_DETH 37  /* for Death only */
-#define AD_PEST 38  /* for Pestilence only */
-#define AD_FAMN 39  /* for Famine only */
-#define AD_SLIM 40  /* turns you into green slime */
-#define AD_ENCH 41  /* remove enchantment (disenchanter) */
-#define AD_CORR 42  /* corrode armor (black pudding) */
-#define AD_POLY 43  /* polymorph the target (genetic engineer) */
-#define AD_WTHR 44  /* withering (from xNetHack/EvilHack, for mummies) */
-#define AD_TCKL 45  /* tickle (from SLASH'EM, for nightgaunts) */
-#define AD_DSRM 46  /* disarm the player (from SpliceHack) */
-#define AD_WEBS 47  /* entangles target in webbing (from EvilHack) */
-#define AD_LUCK 48  /* drain luck */
-#define AD_RABD 49  /* cause rabies */
-#define AD_CLRC 50  /* random clerical spell */
-#define AD_SPEL 51  /* random magic spell */
-#define AD_RBRE 52  /* random breath weapon */
+#define AD_SLOW 12  /* slows */
+#define AD_PLYS 13  /* paralyses */
+#define AD_DREN 14  /* drains magic energy */
+#define AD_LEGS 15  /* damages legs (xan) */
+#define AD_STON 16  /* petrifies (Medusa, cockatrice) */
+#define AD_STCK 17  /* sticks to you (mimic) */
+#define AD_SGLD 18  /* steals gold (leppie) */
+#define AD_SITM 19  /* steals item (nymphs) */
+#define AD_SEDU 20  /* seduces & steals multiple items */
+#define AD_TLPT 21  /* teleports you (Quantum Mech.) */
+#define AD_RUST 22  /* rusts armour (Rust Monster)*/
+#define AD_CONF 23  /* confuses (Umber Hulk) */
+#define AD_DGST 24  /* digests opponent (trapper, etc.) */
+#define AD_HEAL 25  /* heals opponent's wounds (nurse) */
+#define AD_WRAP 26  /* special "stick" for eels */
+#define AD_WERE 27  /* confers lycanthropy */
+#define AD_DRDX 28  /* drains dexterity (quasit) */
+#define AD_DRCO 29  /* drains constitution */
+#define AD_DRIN 30  /* drains intelligence (mind flayer) */
+#define AD_DISE 31  /* confers diseases */
+#define AD_DCAY 32  /* decays organics (brown Pudding) */
+#define AD_SSEX 33  /* Succubus seduction (extended) */
+#define AD_HALU 34  /* causes hallucination */
+#define AD_DETH 35  /* for Death only */
+#define AD_PEST 36  /* for Pestilence only */
+#define AD_FAMN 37  /* for Famine only */
+#define AD_SLIM 38  /* turns you into green slime */
+#define AD_ENCH 39  /* remove enchantment (disenchanter) */
+#define AD_CORR 40  /* corrode armor (black pudding) */
+#define AD_POLY 41  /* polymorph the target (genetic engineer) */
+#define AD_WTHR 42  /* withering (from xNetHack/EvilHack, for mummies) */
+#define AD_TCKL 43  /* tickle (from SLASH'EM, for nightgaunts) */
+#define AD_DSRM 44  /* disarm the player (from SpliceHack) */
+#define AD_WEBS 45  /* entangles target in webbing (from EvilHack) */
+#define AD_LUCK 46  /* drain luck */
+#define AD_RABD 47  /* cause rabies */
+#define AD_CLRC 48  /* random clerical spell */
+#define AD_SPEL 49  /* random magic spell */
+#define AD_RBRE 50  /* random breath weapon */
 
-#define AD_SAMU 53  /* hits, may steal Amulet (Wizard) */
-#define AD_CURS 54  /* random curse (ex. gremlin) */
+#define AD_SAMU 51  /* hits, may steal Amulet (Wizard) */
+#define AD_CURS 52  /* random curse (ex. gremlin) */
 
 #define LAST_AD AD_CURS
 
