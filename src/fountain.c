@@ -393,23 +393,46 @@ const struct ForgeRecipe fusions[] = {
     /* Only samurai can forge these: */
     { KATANA,               LONG_SWORD,         LONG_SWORD,     1, 1 },
     { TSURUGI,              TWO_HANDED_SWORD,   KATANA,         1, 1 },
-    /* Any role can forge the rest */
-    { DAGGER,               ARROW,              KNIFE,          2, 1 },
+    /* Dwarvish items - only dwarves can forge */
+    { DWARVISH_MATTOCK,     PICK_AXE,           DWARVISH_SHORT_SWORD, 1, 1 },
+    { DWARVISH_SHORT_SWORD, DWARVISH_SPEAR,     SHORT_SWORD,    1, 1 },
+    { DWARVISH_SPEAR,       ARROW,              SPEAR,          10, 1 },
+    { DWARVISH_IRON_HELM,   HELMET,             DWARVISH_SHORT_SWORD, 1, 1 },
+    { DWARVISH_MITHRIL_COAT, CHAIN_MAIL,        DWARVISH_ROUNDSHIELD, 1, 1 },
+    { DWARVISH_ROUNDSHIELD, LARGE_SHIELD,       DWARVISH_IRON_HELM, 1, 1 },
+
+#if 0 /* Should we port these? */
+    { DWARVISH_BEARDED_AXE, AXE,                DWARVISH_SHORT_SWORD, 1, 1 },
+    { DWARVISH_BOOTS,       GAUNTLETS,          DWARVISH_SHORT_SWORD, 1, 1 },
+#endif
+    /* Orcish items - only orcs can forge */
     { ORCISH_DAGGER,        ORCISH_ARROW,       KNIFE,          2, 1 },
-    { KNIFE,                ARROW,              DART,           2, 2 },
-    { STILETTO,             DAGGER,             KNIFE,          2, 1 },
+    { ORCISH_SHORT_SWORD,   ORCISH_SPEAR,       ORCISH_DAGGER,  1, 1 },
+    { ORCISH_SPEAR,         ORCISH_ARROW,       ORCISH_DAGGER,  10, 1 },
+    { ORCISH_HELM,          DENTED_POT,         ORCISH_DAGGER,  1, 1 },
+    { ORCISH_CHAIN_MAIL,    RING_MAIL,          ORCISH_SHIELD,  1, 1 },  
+    { ORCISH_RING_MAIL,     ORCISH_SHIELD,      ORCISH_HELM,    1, 1 },
+    { ORCISH_SHIELD,        ORCISH_HELM,        ORCISH_BOOTS,   1, 1 },
+    { ORCISH_BOOTS,         ORCISH_HELM,        ORCISH_SHORT_SWORD, 1, 1 },
+#if 0 /* Should we port these too? */
+    { ORCISH_SCIMITAR,      KNIFE,              ORCISH_SHORT_SWORD, 1, 1 },
+    { ORCISH_LONG_SWORD,    ORCISH_SHORT_SWORD, ORCISH_SHORT_SWORD, 1, 1 },
+    { ORCISH_MORNING_STAR,  MACE,               ORCISH_DAGGER, 1, 1 },
+#endif
+
+    /* Any role can forge the rest */
+    { DAGGER,               ARROW,              KNIFE,          5, 1 },
+    { KNIFE,                ARROW,              DART,           5, 2 },
+    { STILETTO,             DAGGER,             KNIFE,          5, 1 },
     { AXE,                  DAGGER,             SPEAR,          1, 1 },
     { BATTLE_AXE,           AXE,                BROADSWORD,     1, 1 },
     { SHORT_SWORD,          HELMET,             DAGGER,         1, 1 },
-    { ORCISH_SHORT_SWORD,   ORCISH_SPEAR,       ORCISH_DAGGER,  1, 1 },
-    { DWARVISH_SHORT_SWORD, DWARVISH_SPEAR,     SHORT_SWORD,    1, 1 },
     { SCIMITAR,             KNIFE,              SHORT_SWORD,    1, 1 },
     { BROADSWORD,           SCIMITAR,           SHORT_SWORD,    1, 1 },
     { LONG_SWORD,           SHORT_SWORD,        SHORT_SWORD,    1, 1 },
     { TWO_HANDED_SWORD,     LONG_SWORD,         BROADSWORD,     1, 1 },
-    { DWARVISH_MATTOCK,     PICK_AXE,           DWARVISH_SHORT_SWORD, 1, 1 },
     { WAR_HAMMER,           MACE,               FLAIL,          1, 1 },
-    { SILVER_DAGGER,        SILVER_ARROW,       DAGGER,         2, 1 },
+    { SILVER_DAGGER,        SILVER_ARROW,       DAGGER,         5, 1 },
     { SILVER_SPEAR,         SILVER_DAGGER,      SPEAR,          1, 1 },
     { SILVER_SABER,         SILVER_DAGGER,      SCIMITAR,       1, 1 },
     { SILVER_SHORT_SWORD,   SILVER_DAGGER,      SHORT_SWORD,    1, 1 },
@@ -529,6 +552,12 @@ doforging(void)
     } else if (!Role_if(PM_SAMURAI)
           && (objtype == KATANA || objtype == TSURUGI)) {
         You("need the mastery of a samurai to accomplish that.");
+        return 1;
+    } else if (is_dwarvish_obj(objtype) && !Race_if(PM_DWARF)) {
+        pline("Only a true dwarf would have the skills for that...");
+        return 1;
+    } else if (is_orcish_obj(objtype) && !Race_if(PM_ORC)) {
+        pline("Only an orc would be willing to forge that...");
         return 1;
     } else if (objtype) {
         /* success */

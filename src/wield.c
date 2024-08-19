@@ -159,11 +159,11 @@ setuwep(struct obj *obj)
     } 
 
     /* Hated items decrease AC and affect to-hit */
-    if (uwep && hates_item(&gy.youmonst, uwep)) {
+    if (uwep && hates_item(&gy.youmonst, uwep->otyp)) {
         find_ac();
         disp.botl = TRUE;
         You_feel("awkward wielding %s...", yname(uwep));
-    } else if (olduwep && hates_item(&gy.youmonst, olduwep)) {
+    } else if (olduwep && hates_item(&gy.youmonst, olduwep->otyp)) {
         find_ac();
         disp.botl = TRUE;
         You_feel("more comfortable now.");
@@ -334,8 +334,8 @@ setuswapwep(struct obj *obj)
     struct obj *olduswapwep = uswapwep;
     setworn(obj, W_SWAPWEP);
     /* Hated items decrease AC and affect to-hit */
-    if (!u.twoweap && olduswapwep && hates_item(&gy.youmonst, olduswapwep)) {
-        if (!(uwep && hates_item(&gy.youmonst, uwep)))
+    if (!u.twoweap && olduswapwep && hates_item(&gy.youmonst, olduswapwep->otyp)) {
+        if (!(uwep && hates_item(&gy.youmonst, uwep->otyp)))
             You_feel("more relaxed now.");
     }
     return;
@@ -902,13 +902,13 @@ set_twoweap(boolean on_off)
         set_artifact_intrinsic(uswapwep, on_off, W_SWAPWEP);
     }
     
-    if (on_off && uswapwep && hates_item(&gy.youmonst,uswapwep) 
-        && !hates_item(&gy.youmonst, uwep)) {
+    if (on_off && uswapwep && hates_item(&gy.youmonst,uswapwep->otyp) 
+        && !hates_item(&gy.youmonst, uwep->otyp)) {
         find_ac();
         disp.botl = TRUE;
         You_feel("strange wielding %s...", yname(uswapwep));
-    } else if (!on_off && uswapwep && hates_item(&gy.youmonst, uswapwep) 
-               && !hates_item(&gy.youmonst,uwep))
+    } else if (!on_off && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp) 
+               && !hates_item(&gy.youmonst, uwep->otyp))
         You_feel("more comfortable now.");
 }
 

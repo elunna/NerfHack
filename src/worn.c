@@ -705,13 +705,13 @@ find_mac(struct monst *mon)
                 base -= ARM_BONUS(obj);
             
             /* Racial bonuses */
-            if (is_orc(mon->data) && is_orcish_armor(obj))
+            if (is_orc(mon->data) && is_orcish_armor(obj->otyp))
                 base -= 2;
-            else if (is_gnome(mon->data) && is_gnomish_armor(obj))
+            else if (is_gnome(mon->data) && is_gnomish_armor(obj->otyp))
                 base -= 2;
-            else if (is_elf(mon->data) && is_elven_armor(obj))
+            else if (is_elf(mon->data) && is_elven_armor(obj->otyp))
                 base -= 1;
-            else if (is_dwarf(mon->data) && is_dwarvish_armor(obj))
+            else if (is_dwarf(mon->data) && is_dwarvish_armor(obj->otyp))
                 base -= 1;
             /* since ARM_BONUS is positive, subtracting it increases AC */
         }
@@ -835,7 +835,7 @@ m_dowear_type(
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         /* Don't select items our race isn't compatible with */
-        if (hates_item(mon, obj))
+        if (hates_item(mon, obj->otyp))
             continue;
         
         switch (flag) {
@@ -1506,7 +1506,7 @@ racial_exception(struct monst *mon, struct obj *obj)
 
     /* Acceptable Exceptions: */
     /* Allow hobbits to wear elven armor - LoTR */
-    if (ptr == &mons[PM_HOBBIT] && is_elven_armor(obj))
+    if (ptr == &mons[PM_HOBBIT] && is_elven_armor(obj->otyp))
         return 1;
     if (is_gnome(ptr) && obj->otyp == GNOMISH_SUIT)
         return 1;

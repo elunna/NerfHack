@@ -432,36 +432,36 @@ find_roll_to_hit(
     if (tmp && !rn2(5)) {
         switch (rnd(7)) {
         case 1:
-            if (uarm && hates_item(&gy.youmonst, uarm))
+            if (uarm && hates_item(&gy.youmonst, uarm->otyp))
                 Your("%s is awkward for combat.", aobjnam(uarm, (char *) 0));
             break;
         case 2:
-            if (uarmc && hates_item(&gy.youmonst, uarmc))
+            if (uarmc && hates_item(&gy.youmonst, uarmc->otyp))
                 Your("%s is unbearable for combat.",
                      aobjnam(uarmc, (char *) 0));
             break;
         case 3:
-            if (uarmh && hates_item(&gy.youmonst, uarmh))
+            if (uarmh && hates_item(&gy.youmonst, uarmh->otyp))
                 Your("%s is annoying to fight in.",
                      aobjnam(uarmh, (char *) 0));
             break;
         case 4:
-            if (uarmf && hates_item(&gy.youmonst, uarmf))
+            if (uarmf && hates_item(&gy.youmonst, uarmf->otyp))
                 Your("%s are uncomfortable to fight in.",
                      aobjnam(uarmf, (char *) 0));
             break;
         case 5:
-            if (uarms && hates_item(&gy.youmonst, uarms))
+            if (uarms && hates_item(&gy.youmonst, uarms->otyp))
                 Your("%s is clunky to fight with.",
                      aobjnam(uarms, (char *) 0));
             break;
         case 6:
-            if (uwep && hates_item(&gy.youmonst, uwep))
+            if (uwep && hates_item(&gy.youmonst, uwep->otyp))
                 You("struggle trying to fight with your strange %s.",
                     aobjnam(uwep, (char *) 0));
             break;
         case 7:
-            if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep))
+            if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp))
                 You("struggle trying to fight with your strange %s.",
                     aobjnam(uswapwep, (char *) 0));
             break;
@@ -7371,32 +7371,32 @@ light_hits_gremlin(struct monst *mon, int dmg)
 * Humans are not too picky, they only dislike orcish and gnomish armor
 * Hobbits will tolerate elven and dwarven armor but never orcish. */
 boolean
-hates_item(struct monst *mtmp, struct obj *otmp)
+hates_item(struct monst *mtmp, int otyp)
 {
     boolean is_you = (mtmp == &gy.youmonst);
         
     if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)) 
                     : is_elf(mtmp->data))
-        return (is_orcish_obj(otmp) || is_dwarvish_obj(otmp)
-                || is_gnomish_obj(otmp));
+        return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
+                || is_gnomish_obj(otyp));
     else if (is_you ? maybe_polyd(is_dwarf(gy.youmonst.data), Race_if(PM_DWARF)) 
                     : is_dwarf(mtmp->data))
-        return (is_orcish_obj(otmp) || is_elven_obj(otmp)
-                || is_gnomish_obj(otmp));
+        return (is_orcish_obj(otyp) || is_elven_obj(otyp)
+                || is_gnomish_obj(otyp));
     else if (is_you ? maybe_polyd(is_gnome(gy.youmonst.data), Race_if(PM_GNOME)) 
                     : is_gnome(mtmp->data))
-        return (is_orcish_obj(otmp) || is_dwarvish_obj(otmp)
-                || is_elven_obj(otmp));
+        return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
+                || is_elven_obj(otyp));
     else if (is_you ? maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC)) 
                     : is_orc(mtmp->data))
-        return (is_dwarvish_obj(otmp) || is_elven_obj(otmp)
-                || is_gnomish_obj(otmp));
+        return (is_dwarvish_obj(otyp) || is_elven_obj(otyp)
+                || is_gnomish_obj(otyp));
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN)) 
                     : is_human(mtmp->data))
-        return (is_gnomish_obj(otmp));
+        return (is_gnomish_obj(otyp));
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_VAMPIRE)) 
                 : is_vampire(mtmp->data))
-        return (is_gnomish_obj(otmp));
+        return (is_gnomish_obj(otyp));
     return FALSE;
 }
 
@@ -7406,19 +7406,19 @@ count_hated_items(void)
 {
     int count = 0;
     
-    if (uarm && hates_item(&gy.youmonst, uarm))
+    if (uarm && hates_item(&gy.youmonst, uarm->otyp))
         count++;
-    if (uarmc && hates_item(&gy.youmonst, uarmc))
+    if (uarmc && hates_item(&gy.youmonst, uarmc->otyp))
         count++;
-    if (uarmh && hates_item(&gy.youmonst, uarmh))
+    if (uarmh && hates_item(&gy.youmonst, uarmh->otyp))
         count++;
-    if (uarmf && hates_item(&gy.youmonst, uarmf))
+    if (uarmf && hates_item(&gy.youmonst, uarmf->otyp))
         count++;
-    if (uarms && hates_item(&gy.youmonst, uarms))
+    if (uarms && hates_item(&gy.youmonst, uarms->otyp))
         count++;
-    if (uwep && hates_item(&gy.youmonst, uwep))
+    if (uwep && hates_item(&gy.youmonst, uwep->otyp))
         count++;
-    if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep))
+    if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp))
         count++;
     return count;
 }

@@ -517,7 +517,7 @@ oselect(struct monst *mtmp, int type)
             continue;
         
         /* Don't select items our race isn't compatible with */
-        if (hates_item(mtmp, otmp))
+        if (hates_item(mtmp, otmp->otyp))
             continue;
         
         return otmp;

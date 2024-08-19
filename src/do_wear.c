@@ -192,7 +192,7 @@ Boots_on(void)
     long oldprop =
         u.uprops[objects[uarmf->otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
-    if (hates_item(&gy.youmonst, uarmf))
+    if (hates_item(&gy.youmonst, uarmf->otyp))
         You_feel("uncomfortable wearing these boots.");
     
     switch (uarmf->otyp) {
@@ -281,7 +281,7 @@ Boots_off(void)
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
     
-    if (hates_item(&gy.youmonst, uarmf))
+    if (hates_item(&gy.youmonst, uarmf->otyp))
         You_feel("more comfortable now.");
     
     if (uarmf && uarmf->oartifact == ART_MAYHEM) {
@@ -370,7 +370,7 @@ Cloak_on(void)
     long oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
-    if (hates_item(&gy.youmonst, uarmc))
+    if (hates_item(&gy.youmonst, uarmc->otyp))
         You_feel("uncomfortable wearing this cloak.");
     
     switch (uarmc->otyp) {
@@ -443,7 +443,7 @@ Cloak_off(void)
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
     boolean was_opera = (otmp && objdescr_is(otmp, "opera cloak"));
 
-    if (hates_item(&gy.youmonst, uarmc))
+    if (hates_item(&gy.youmonst, uarmc->otyp))
         You_feel("more comfortable now.");
     
     svc.context.takeoff.mask &= ~W_ARMC;
@@ -500,7 +500,7 @@ Cloak_off(void)
 staticfn int
 Helmet_on(void)
 {
-    if (hates_item(&gy.youmonst, uarmh))
+    if (hates_item(&gy.youmonst, uarmh->otyp))
         You_feel("uncomfortable wearing this helmet.");
     
     switch (uarmh->otyp) {
@@ -587,7 +587,7 @@ Helmet_off(void)
 {
     svc.context.takeoff.mask &= ~W_ARMH;
     
-    if (hates_item(&gy.youmonst, uarmh))
+    if (hates_item(&gy.youmonst, uarmh->otyp))
         You_feel("more comfortable now.");
     
     switch (uarmh->otyp) {
@@ -780,7 +780,7 @@ Gloves_off(void)
 staticfn int
 Shield_on(void)
 {
-    if (hates_item(&gy.youmonst, uarms))
+    if (hates_item(&gy.youmonst, uarms->otyp))
         You_feel("uncomfortable wearing that shield.");
     
     /* no shield currently requires special handling when put on, but we
@@ -826,7 +826,7 @@ Shield_off(void)
     
     svc.context.takeoff.mask &= ~W_ARMS;
 
-    if (hates_item(&gy.youmonst, uarms))
+    if (hates_item(&gy.youmonst, uarms->otyp))
         You_feel("more comfortable now.");
     
     /* no shield currently requires special handling when taken off, but we
@@ -1006,7 +1006,7 @@ Armor_on(void)
     }
     if (Role_if(PM_MONK))
         You_feel("extremely uncomfortable wearing such armor.");
-    else if (hates_item(&gy.youmonst, uarm))
+    else if (hates_item(&gy.youmonst, uarm->otyp))
         You_feel("uncomfortable wearing such armor.");
     
     dragon_armor_handling(uarm, TRUE, TRUE);
@@ -1033,7 +1033,7 @@ Armor_off(void)
     svc.context.takeoff.cancelled_don = FALSE;
     if (Role_if(PM_MONK))
         You_feel("much more comfortable and free now.");
-    else if (hates_item(&gy.youmonst, otmp))
+    else if (hates_item(&gy.youmonst, otmp->otyp))
         You_feel("more comfortable now.");
     
     /* taking off yellow dragon scales/mail might be fatal; arti_light
@@ -3597,19 +3597,19 @@ race_bonus(struct obj *obj)
     * larger bonus to compensate their sub-standard equipment, lack of equipment,
     * and the stats-challenged orc itself. Taken from SporkHack.
     */
-    if (Race_if(PM_ORC) && is_orcish_armor(obj))
+    if (Race_if(PM_ORC) && is_orcish_armor(obj->otyp))
         return 2;
-    if (Race_if(PM_GNOME) && is_gnomish_armor(obj))
+    if (Race_if(PM_GNOME) && is_gnomish_armor(obj->otyp))
         return 2;
-    if (Race_if(PM_ELF) && is_elven_armor(obj))
+    if (Race_if(PM_ELF) && is_elven_armor(obj->otyp))
         return 1;
-    if (Race_if(PM_DWARF) && is_dwarvish_armor(obj))
+    if (Race_if(PM_DWARF) && is_dwarvish_armor(obj->otyp))
         return 1;
 
     /* Racial preferences in armor. Some races really hate wearing the armor
     * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
     * too. For each piece of hated armor, the player gets a +2AC penalty. */
-    if (hates_item(&gy.youmonst, obj))
+    if (hates_item(&gy.youmonst, obj->otyp))
         return -2;
 
     return 0;

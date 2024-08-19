@@ -350,55 +350,55 @@ struct obj {
 #define Dragon_to_scales(pm) (GRAY_DRAGON_SCALES + (pm - mons))
 
 /* Elven gear */
-#define is_elven_armor(otmp) \
-    ((otmp)->otyp == ELVEN_LEATHER_HELM \
-     || (otmp)->otyp == ELVEN_MITHRIL_COAT \
-     || (otmp)->otyp == ELVEN_CLOAK \
-     || (otmp)->otyp == ELVEN_SHIELD \
-     || (otmp)->otyp == ELVEN_BOOTS)
-#define is_elven_weapon(otmp) \
-    ((otmp)->otyp == ELVEN_ARROW \
-     || (otmp)->otyp == ELVEN_SPEAR \
-     || (otmp)->otyp == ELVEN_DAGGER \
-     || (otmp)->otyp == ELVEN_SHORT_SWORD \
-     || (otmp)->otyp == ELVEN_BROADSWORD \
-     || (otmp)->otyp == ELVEN_BOW)
-#define is_elven_obj(otmp) (is_elven_armor(otmp) || is_elven_weapon(otmp))
+#define is_elven_armor(otyp) \
+    (otyp == ELVEN_LEATHER_HELM \
+     || otyp == ELVEN_MITHRIL_COAT \
+     || otyp == ELVEN_CLOAK \
+     || otyp == ELVEN_SHIELD \
+     || otyp == ELVEN_BOOTS)
+#define is_elven_weapon(otyp) \
+    (otyp == ELVEN_ARROW \
+     || otyp == ELVEN_SPEAR \
+     || otyp == ELVEN_DAGGER \
+     || otyp == ELVEN_SHORT_SWORD \
+     || otyp == ELVEN_BROADSWORD \
+     || otyp == ELVEN_BOW)
+#define is_elven_obj(otyp) (is_elven_armor(otyp) || is_elven_weapon(otyp))
 
 /* Orcish gear */
-#define is_orcish_armor(otmp) \
-    ((otmp)->otyp == ORCISH_HELM \
-     || (otmp)->otyp == ORCISH_BOOTS \
-     || (otmp)->otyp == ORCISH_CHAIN_MAIL \
-     || (otmp)->otyp == ORCISH_RING_MAIL \
-     || (otmp)->otyp == ORCISH_CLOAK \
-     || (otmp)->otyp == URUK_HAI_SHIELD \
-     || (otmp)->otyp == ORCISH_SHIELD)
-#define is_orcish_weapon(otmp) \
-    ((otmp)->otyp == ORCISH_ARROW \
-     || (otmp)->otyp == ORCISH_SPEAR \
-     || (otmp)->otyp == ORCISH_DAGGER \
-     || (otmp)->otyp == ORCISH_SHORT_SWORD \
-     || (otmp)->otyp == ORCISH_BOW)
-#define is_orcish_obj(otmp) (is_orcish_armor(otmp) || is_orcish_weapon(otmp))
+#define is_orcish_armor(otyp) \
+    (otyp == ORCISH_HELM \
+     || otyp == ORCISH_BOOTS \
+     || otyp == ORCISH_CHAIN_MAIL \
+     || otyp == ORCISH_RING_MAIL \
+     || otyp == ORCISH_CLOAK \
+     || otyp == URUK_HAI_SHIELD \
+     || otyp == ORCISH_SHIELD)
+#define is_orcish_weapon(otyp) \
+    (otyp == ORCISH_ARROW \
+     || otyp == ORCISH_SPEAR \
+     || otyp == ORCISH_DAGGER \
+     || otyp == ORCISH_SHORT_SWORD \
+     || otyp == ORCISH_BOW)
+#define is_orcish_obj(otyp) (is_orcish_armor(otyp) || is_orcish_weapon(otyp))
 
 /* Dwarvish gear */
-#define is_dwarvish_armor(otmp) \
-    ((otmp)->otyp == DWARVISH_IRON_HELM \
-     || (otmp)->otyp == DWARVISH_MITHRIL_COAT \
-     || (otmp)->otyp == DWARVISH_CLOAK \
-     || (otmp)->otyp == DWARVISH_ROUNDSHIELD)
-#define is_dwarvish_weapon(otmp) \
-     ((otmp)->otyp == DWARVISH_SPEAR \
-     || (otmp)->otyp == DWARVISH_SHORT_SWORD \
-     || (otmp)->otyp == DWARVISH_MATTOCK)
-#define is_dwarvish_obj(otmp) (is_dwarvish_armor(otmp) \
-                                   || is_dwarvish_weapon(otmp))
+#define is_dwarvish_armor(otyp) \
+    (otyp == DWARVISH_IRON_HELM \
+     || otyp == DWARVISH_MITHRIL_COAT \
+     || otyp == DWARVISH_CLOAK \
+     || otyp == DWARVISH_ROUNDSHIELD)
+#define is_dwarvish_weapon(otyp) \
+     (otyp == DWARVISH_SPEAR \
+     || otyp == DWARVISH_SHORT_SWORD \
+     || otyp == DWARVISH_MATTOCK)
+#define is_dwarvish_obj(otyp) (is_dwarvish_armor(otyp) \
+                                   || is_dwarvish_weapon(otyp))
 /* Gnomish gear */
-#define is_gnomish_obj(otmp) (is_gnomish_armor(otmp))
-#define is_gnomish_armor(otmp)	((otmp)->otyp == GNOMISH_HELM \
-				|| (otmp)->otyp == GNOMISH_BOOTS \
-				|| (otmp)->otyp == GNOMISH_SUIT)
+#define is_gnomish_obj(otyp) (is_gnomish_armor(otyp))
+#define is_gnomish_armor(otyp)	(otyp == GNOMISH_HELM \
+				|| otyp == GNOMISH_BOOTS \
+				|| otyp == GNOMISH_SUIT)
 
 /* Light sources */
 #define Is_candle(otmp) \
