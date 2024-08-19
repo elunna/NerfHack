@@ -2691,12 +2691,13 @@ breaktest(struct obj *obj)
             return 0;
     /* FALLTHROUGH */
     case POT_WATER: /* really, all potions */
-    case EGG:
     case CREAM_PIE:
     case MELON:
     case ACID_VENOM:
     case BLINDING_VENOM:
         return TRUE;
+     case EGG:
+        return (obj->corpsenm != PM_PHOENIX);
     default:
         return FALSE;
     }

@@ -1720,9 +1720,24 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 250, MS_ATHOL, MZ_LARGE), 0, 0,
-        M1_FLY | M1_ANIMAL | M1_CARNIVORE, M2_HOSTILE | M2_FLANK | M2_STRONG,
+        M1_FLY | M1_ANIMAL | M1_CARNIVORE,
+        M2_HOSTILE | M2_FLANK | M2_STRONG,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
         NO_RACE, 12, CLR_GRAY, ATHOL),
+    /* From SpliceHack with updates:*/
+    MON(NAM("phoenix"), S_BAT,
+        LVL(15, 20, -7, 20, 7), (G_GENO | G_NOCORPSE | 2),
+        A(ATTK(AT_BITE, AD_PHYS, 2, 6), 
+          ATTK(AT_CLAW, AD_PHYS, 3, 6),
+          ATTK(AT_CLAW, AD_PHYS, 3, 6), 
+          ATTK(AT_BOOM, AD_FIRE, 8, 6),
+          NO_ATTK, NO_ATTK),
+        SIZ(40, 20, MS_SQAWK, MZ_SMALL), MR_FIRE, MR_FIRE,
+        M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE 
+          | M1_OVIPAROUS | M1_SEE_INVIS,
+        M2_WANDER | M2_STALK | M2_NASTY | M2_NOPOLY,
+        M3_INFRAVISIBLE | M3_INFRAVISION,
+        NO_RACE, 15, CLR_ORANGE, PHOENIX),
     /* From SLASH'EM with changes:
      * - Increased bite and sting damage. They can now flank.
      * - Removed traitorous nature */
@@ -1736,8 +1751,8 @@
         SIZ(1600, 100, MS_SQEEK, MZ_MEDIUM), MR_SLEEP | MR_POISON | MR_COLD, 0,
         M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE 
             | M1_SEE_INVIS | M1_OMNIVORE,
-        M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG | M2_COLLECT | M2_MAGIC
-            | M2_FLANK,
+        M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG | M2_COLLECT
+          | M2_MAGIC | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 15, CLR_YELLOW, BYAKHEE),
     /* From SLASH'EM with changes:

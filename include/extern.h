@@ -3227,6 +3227,8 @@ extern void timer_stats(const char *, char *, long *, long *) NONNULLPTRS;
 extern void relink_timers(boolean);
 extern int wiz_timeout_queue(void);
 extern void timer_sanity_check(void);
+extern void hatch_faster(struct obj *);
+
 
 /* ### topten.c ### */
 

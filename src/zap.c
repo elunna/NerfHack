@@ -272,6 +272,14 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             if (polyspot)
                 for (obj = mtmp->minvent; obj; obj = obj->nobj)
                     bypass_obj(obj);
+            
+            /* Phoenixes resist polymorph by just dying and exploding */
+            if (mtmp->data == &mons[PM_PHOENIX]) {
+                shieldeff(mtmp->mx, mtmp->my);
+                mtmp->mhp = 0;
+                killed(mtmp);
+                break;
+            }
 
             /* natural shapechangers aren't affected by system shock
                (unless protection from shapechangers is interfering
@@ -1251,6 +1259,15 @@ cancel_item(struct obj *obj)
 {
     int otyp = obj->otyp;
 
+    if (otyp == EGG) {
+        /* sterilized */
+        if (obj->corpsenm != -1 && (rn2(100) < mons[obj->corpsenm].mr)) {
+            kill_egg(obj);
+            obj->corpsenm = NON_PM;
+        } else
+            pline("The egg resists!");
+    }
+
     if (carried(obj)) {
         /* handle items being worn by hero */
         switch (otyp) {
@@ -1750,6 +1767,12 @@ poly_obj(struct obj *obj, int id)
 
     if (obj->otyp == BOULDER)
         sokoban_guilt();
+
+    /* Prevent polymorphing phoenix eggs because otherwise when a 
+     * phoenix explodes from poly beams, the egg is also polyd. */
+    if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX)
+        return obj;
+
     if (id == STRANGE_OBJECT) { /* preserve symbol */
         int try_limit = 3;
         unsigned magic_obj = objects[obj->otyp].oc_magic;
@@ -2490,6 +2513,12 @@ bhito(struct obj *obj, struct obj *otmp)
             break;
         case SPE_STONE_TO_FLESH:
             res = stone_to_flesh_obj(obj);
+            break;
+        case SPE_FIREBALL:
+        case WAN_FIRE:
+            if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
+                hatch_faster(obj);
+            }
             break;
         default:
             impossible("What an interesting effect (%d)", otmp->otyp);
@@ -5174,6 +5203,12 @@ burn_floor_objects(
 
     for (obj = svl.level.objects[x][y]; obj; obj = obj2) {
         obj2 = obj->nexthere;
+
+        if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
+            hatch_faster(obj);
+            continue;
+        }
+
         if (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS
             || (obj->oclass == FOOD_CLASS
                 && obj->otyp == GLOB_OF_GREEN_SLIME)) {
@@ -6553,9 +6588,12 @@ maybe_destroy_item(
                 dindx = 1; /* boil and explode */
                 dmg = (obj->owt + 19) / 20;
                 break;
+            } else if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
+                hatch_faster(obj);
+            } else {
+                dindx = 7;
+                skip++;
             }
-            dindx = 7;
-            skip++;
             break;
         case RING_CLASS: /* wooden rings */
         case WAND_CLASS: /* wooden wands */

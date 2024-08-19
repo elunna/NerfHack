@@ -210,6 +210,7 @@
 #define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
 /* Jabberwocks not considered to have beaks because they have "jaws". */
 #define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] || \
+                       (ptr) == &mons[PM_PHOENIX] || \
                        (ptr) == &mons[PM_VROCK])
 #define is_giant(ptr) (((ptr)->mhflags & MH_GIANT) != 0L)
 #define is_ettin(ptr) \
@@ -330,6 +331,7 @@
 /* could probably add more */
 #define likes_fire(ptr)                                                  \
     ((ptr) == &mons[PM_FIRE_VORTEX] || (ptr) == &mons[PM_FLAMING_SPHERE] \
+     || (ptr) == &mons[PM_PHOENIX] \
      || likes_lava(ptr))
 
 #define touch_petrifies(ptr) \

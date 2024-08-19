@@ -270,6 +270,16 @@ dog_eat(struct monst *mtmp,
         boolean seeobj = cansee(mtmp->mx, mtmp->my),
                 sawpet = cansee(x, y) && mon_visible(mtmp);
 
+        if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
+            if (seeobj || sawpet)
+                pline_The("%s starts cracking as %s attempts to devour it!", 
+                    makesingular(xname(obj)), noit_Monnam(mtmp));
+            else
+                You_hear("something cracking.");
+            hatch_faster(obj);
+            return 1;
+        }
+
         /* Observe the action if either the food location or the pet
            itself is in view.  When pet which was in view moves to an
            unseen spot to eat the food there, avoid referring to that

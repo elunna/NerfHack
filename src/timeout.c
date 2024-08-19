@@ -2931,4 +2931,10 @@ relink_timers(boolean ghostly)
     }
 }
 
+void hatch_faster(struct obj *obj) {
+    /* For phoenix eggs */
+    kill_egg(obj);
+    attach_egg_hatch_timeout(obj, 1L);
+}
+
 /*timeout.c*/

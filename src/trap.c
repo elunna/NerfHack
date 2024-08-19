@@ -5152,6 +5152,12 @@ lava_damage(struct obj *obj, coordxy x, coordxy y)
 {
     int otyp = obj->otyp;
 
+    if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
+        pline_The("egg starts to hatch!");
+        hatch_faster(obj);
+        return FALSE;
+    }
+
     /* the Amulet, invocation items, and Rider corpses are never destroyed
        (let Book of the Dead fall through to fire_damage() to get feedback) */
     if (obj_resists(obj, 0, 0) && otyp != SPE_BOOK_OF_THE_DEAD)

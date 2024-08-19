@@ -46,6 +46,7 @@ static NEARDATA const int nasties[] = {
     PM_SILVER_DRAGON, PM_ORANGE_DRAGON, PM_GREEN_DRAGON,
     PM_YELLOW_DRAGON, PM_GUARDIAN_NAGA, PM_FIRE_GIANT,
     PM_ALEAX, PM_COUATL, PM_HORNED_DEVIL, PM_BARBED_DEVIL,
+    PM_PHOENIX,
     /* (Archons, titans, ki-rin, and golden nagas are suitably nasty, but
        they're summoners so would aggravate excessive summoning) */
 };

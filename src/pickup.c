@@ -2751,6 +2751,15 @@ in_container(struct obj *obj)
          */
         pline("%s cannot be confined in such trappings.", The(xname(obj)));
         return 0;
+    } else if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
+        if (!Blind)
+            pline_The("%s start%s cracking as you attempt to confine %s!",
+                  xname(obj), obj->quan > 1 ? "" : "s",
+                  obj->quan > 1 ? "them" : "it");
+        else
+            You_hear("something cracking.");
+        hatch_faster(obj);
+        return 0;
     } else if (obj->otyp == LEASH && obj->leashmon != 0) {
         pline("%s attached to your pet.", Tobjnam(obj, "are"));
         return 0;
