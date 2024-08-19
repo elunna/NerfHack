@@ -5392,7 +5392,8 @@ dobuzz(
 
     coord save_bhitpos;
     boolean shopdamage = FALSE,
-            fireball = (type == ZT_SPELL(ZT_FIRE)), /* set once */
+            fireball = (type == ZT_SPELL(ZT_FIRE) 
+                     || type == BZ_M_SPELL(ZT_FIRE)), /* set once */
             gas_hit = FALSE; /* will be set during each iteration */
     struct obj *otmp;
     int spell_type;
@@ -5595,7 +5596,9 @@ dobuzz(
             }
         } else if (u_at(sx, sy) && range >= 0) {
             nomul(0);
-            if (u.usteed && !rn2(3) && !mon_reflects(u.usteed, (char *) 0)) {
+            if (fireball) /* The buck stops here. */
+                break;
+            else if (u.usteed && !rn2(3) && !mon_reflects(u.usteed, (char *) 0)) {
                 mon = u.usteed;
                 goto buzzmonst;
             } else if (zap_hit((int) u.uac, 0)) {

@@ -54,7 +54,7 @@ static NEARDATA const unsigned wizapp[] = {
     PM_HUMAN,      PM_WATER_DEMON,  PM_VAMPIRE,       PM_RED_DRAGON,
     PM_TROLL,      PM_UMBER_HULK,   PM_XORN,          PM_XAN,
     PM_COCKATRICE, PM_FLOATING_EYE, PM_GUARDIAN_NAGA, PM_TRAPPER,
-    PM_LAVA_DEMON, PM_GIANT_CENTIPEDE, 
+    PM_LAVA_DEMON, PM_GIANT_CENTIPEDE, PM_REVENANT, 
 };
 
 /* If you've found the Amulet, make the Wizard appear after some time */

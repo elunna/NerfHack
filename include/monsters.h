@@ -3259,6 +3259,20 @@
         M2_WANDER | M2_HOSTILE | M2_STRONG | M2_COLLECT | M2_NASTY | M2_FLANK,
         M3_INFRAVISION,
         MH_UNDEAD, 14, CLR_WHITE, SKELETON),
+    /* Adapted from EvilHack with some DOOM injected. */
+    MON(NAM("revenant"), S_ZOMBIE,
+        LVL(12, 9, 1, 30, 0), (G_GENO | G_NOCORPSE | G_NOHELL | 1),
+        A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
+          ATTK(AT_TUCH, AD_PLYS, 1, 6),
+          ATTK(AT_MAGC, AD_FIRE, 2, 12), 
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(300, 5, MS_BONES, MZ_HUMAN),
+        MR_COLD | MR_SLEEP | MR_POISON | MR_STONE, 0,
+        M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_THICK_HIDE,
+        M2_WANDER | M2_HOSTILE | M2_STRONG | M2_COLLECT
+            | M2_NASTY,
+        M3_INFRAVISION, 
+        MH_UNDEAD, 15, CLR_BRIGHT_BLUE, REVENANT),
     /*
      * golems
      */

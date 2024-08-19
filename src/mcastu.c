@@ -1405,7 +1405,7 @@ buzzmu(struct monst *mtmp, struct attack *mattk)
         cursetxt(mtmp, FALSE);
         return M_ATTK_MISS;
     }
-    if (lined_up(mtmp) && rn2(3)) {
+    if (lined_up(mtmp) && !rn2(3)) {
         nomul(0);
         if (canseemon(mtmp))
             pline("%s zaps you with a %s!", Monnam(mtmp),
