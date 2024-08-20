@@ -1563,38 +1563,30 @@ attributes_enlightenment(
 
     Sprintf(buf, "%d%% fire resistant (intrinsic)", intrinsic_res(FIRE_RES));
     you_are(buf, "");
-    if (extrinsic_res(FIRE_RES))
-        you_are("fire resistant", from_what(FIRE_RES));
-    item_resistance_message(AD_FIRE, " protected from fire", final);
-
     Sprintf(buf, "%d%% cold resistant (intrinsic)", intrinsic_res(COLD_RES));
     you_are(buf, "");
-    if (extrinsic_res(COLD_RES))
-        you_are("cold resistant", from_what(COLD_RES));
-    item_resistance_message(AD_COLD, " protected from cold", final);
-
     Sprintf(buf, "%d%% sleep resistant (intrinsic)", intrinsic_res(SLEEP_RES));
     you_are(buf, "");
-    if (extrinsic_res(SLEEP_RES))
-        you_are(buf, from_what(SLEEP_RES));
-
     Sprintf(buf, "%d%% disintegration resistant (intrinsic)", intrinsic_res(DISINT_RES));
     you_are(buf, "");
-    if (extrinsic_res(DISINT_RES))
-        you_are("disintegration resistant", from_what(DISINT_RES));
-    item_resistance_message(AD_DISN, " protected from disintegration", final);
-
     Sprintf(buf, "%d%% shock resistant (intrinsic)", intrinsic_res(SHOCK_RES));
     you_are(buf, "");
-    if (extrinsic_res(SHOCK_RES))
-        you_are("shock resistant", from_what(SHOCK_RES));
-    item_resistance_message(AD_ELEC, " protected from electric shocks", final);
-
     Sprintf(buf, "%d%% poison resistant (intrinsic)", intrinsic_res(POISON_RES));
     you_are(buf, "");
+
+    if (extrinsic_res(FIRE_RES))
+        you_are("fire resistant", from_what(FIRE_RES));
+    if (extrinsic_res(COLD_RES))
+        you_are("cold resistant", from_what(COLD_RES));
+    if (extrinsic_res(SLEEP_RES))
+        you_are(buf, from_what(SLEEP_RES));
+    if (extrinsic_res(DISINT_RES))
+        you_are("disintegration resistant", from_what(DISINT_RES));
+    if (extrinsic_res(SHOCK_RES))
+        you_are("shock resistant", from_what(SHOCK_RES));
     if (extrinsic_res(POISON_RES))
         you_are("poison resistant", from_what(POISON_RES));
-    
+
     /* End of partial intrinsic resistances */
     
     if (Acid_resistance) {
@@ -1603,6 +1595,12 @@ attributes_enlightenment(
                 "acid resistant");
         you_are(buf, from_what(ACID_RES));
     }
+
+    /* Group these together for readability */
+    item_resistance_message(AD_FIRE, " protected from fire", final);
+    item_resistance_message(AD_COLD, " protected from cold", final);
+    item_resistance_message(AD_DISN, " protected from disintegration", final);
+    item_resistance_message(AD_ELEC, " protected from electric shocks", final);
     item_resistance_message(AD_ACID, " protected from acid", final);
     
     if (Drain_resistance)
