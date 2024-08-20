@@ -224,10 +224,10 @@ mkobj_erosions(struct obj *otmp)
         /* A small fraction of non-artifact items will generate eroded or
          * possibly erodeproof. An item that generates eroded will never be
          * erodeproof, and vice versa. */
-        if (!rn2(100) || (is_dwarvish_obj(otmp) && !rn2(5))) {
+        if (!rn2(100) || (is_dwarvish_obj(otmp->otyp) && !rn2(5))) {
             otmp->oerodeproof = 1;
         } else {
-            if ((!rn2(80) || (is_orcish_obj(otmp) && rn2(3)))
+            if ((!rn2(80) || (is_orcish_obj(otmp->otyp) && rn2(3)))
                 && (is_flammable(otmp) || is_rustprone(otmp)
                     || is_crackable(otmp))) {
                 do {
