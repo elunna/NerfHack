@@ -1514,7 +1514,7 @@ peffect_levitation(struct obj *otmp)
 staticfn void
 peffect_gain_energy(struct obj *otmp)
 {
-    int num;
+    int max_change, current_change;
 
     if (otmp->cursed)
         You_feel("lackluster.");
@@ -1530,15 +1530,27 @@ peffect_gain_energy(struct obj *otmp)
      *      uncursed: +2..12 max (+ 7   avg), +6..36 current (+21   avg)
      *      cursed:   -1.. 6 max (- 3.5 avg), -3..18 current (-10.5 avg)
      */
-    num = d(otmp->blessed ? 3 : !otmp->cursed ? 2 : 1, 6);
-    if (otmp->cursed)
-        num = -num; /* subtract instead of add when cursed */
-    u.uenmax += num;
+    
+    /* Updated effect from xNetHack */
+    if (otmp->blessed) {
+        max_change = d(3, 6);
+        current_change = 2 * u.uenmax / 5;
+    } else if(!otmp->cursed) {
+        max_change = d(2, 6);
+        current_change = u.uenmax / 4;
+    } else {
+        max_change = -1 * d(1, 6);
+        current_change = 3 * max_change;
+    }
+    if (current_change < 3 * max_change) {
+        current_change = 3 * max_change;
+    }
+    u.uenmax += max_change;
     if (u.uenmax > u.uenpeak)
         u.uenpeak = u.uenmax;
     else if (u.uenmax <= 0)
         u.uenmax = 0;
-    u.uen += 3 * num;
+    u.uen += current_change;
     if (u.uen > u.uenmax)
         u.uen = u.uenmax;
     else if (u.uen <= 0)
@@ -2703,6 +2715,7 @@ const struct PotionRecipe potionrecipes[] = {
     { POT_FULL_HEALING,     POT_GAIN_ENERGY, POT_EXTRA_HEALING, 1 },
     { POT_GAIN_ABILITY,     POT_GAIN_LEVEL, POT_FULL_HEALING,1 },
     { POT_GAIN_ABILITY,     POT_GAIN_ENERGY, POT_FULL_HEALING,  1 },
+    { POT_GAIN_ENERGY,      POT_GAIN_ABILITY, POT_FULL_HEALING,  1 },
     { POT_ENLIGHTENMENT,    POT_GAIN_LEVEL, POT_CONFUSION,   3 },
     { POT_ENLIGHTENMENT,    POT_GAIN_ENERGY, POT_CONFUSION,  3 },
     { POT_SEE_INVISIBLE,    POT_GAIN_LEVEL, POT_FRUIT_JUICE, 1 },
