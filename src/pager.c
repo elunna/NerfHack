@@ -1182,6 +1182,7 @@ staticfn void
 add_obj_info(winid datawin, short otyp)
 {
     struct objclass oc = objects[otyp];
+    struct damage_info_t damage_info;
     char olet = oc.oc_class;
     char buf[BUFSZ];
     char buf2[BUFSZ];
@@ -1192,7 +1193,12 @@ add_obj_info(winid datawin, short otyp)
     const struct ForgeRecipe *recipe;
     const char* identified_potion_name;
     boolean potion_known, has_recipes = FALSE;
+    boolean reveal_info = oc.oc_name_known;
     int i;
+
+    struct obj dummy = { 0 }; /* For weapon info */
+    dummy.otyp = otyp;
+    dummy.oclass = oc.oc_class;
 
 #define OBJPUTSTR(str) putstr(datawin, ATR_NONE, str)
 #define ADDCLASSPROP(cond, str)            \
@@ -1210,6 +1216,7 @@ add_obj_info(winid datawin, short otyp)
     /* WEAPON INFO */
 
     boolean weptool = (olet == TOOL_CLASS && oc.oc_skill != P_NONE);
+
     if (olet == WEAPON_CLASS || weptool || olet == GEM_CLASS) {
         const int skill = oc.oc_skill;
         if (skill >= 0) {
@@ -1245,82 +1252,36 @@ add_obj_info(winid datawin, short otyp)
 
         /* Ugh. Can we just get rid of dmgval() and put its damage bonuses into
          * the object class? */
-        const char* sdambon = "";
-        const char* ldambon = "";
-        switch (otyp) {
-        case IRON_CHAIN:
-        case CROSSBOW_BOLT:
-        case MACE:
-        case FLAIL:
-        case SPETUM:
-        case TRIDENT:
-        case SLING_BULLET:
-            sdambon = "+1";
-            break;
-        case BATTLE_AXE:
-        case BARDICHE:
-        case BILL_GUISARME:
-        case GUISARME:
-        case LUCERN_HAMMER:
-        case MORNING_STAR:
-        case RANSEUR:
-        case BROADSWORD:
-        case ELVEN_BROADSWORD:
-        case RUNESWORD:
-        case SCYTHE:
-        case VOULGE:
-            sdambon = "+1d4";
-            break;
-        case WAR_HAMMER:
-        case ACID_VENOM:
-            sdambon = "+1d6";
-            break;
+        damage_info = dmgval_info(&dummy);
+    
+        if (reveal_info) {
+            Sprintf(buf,
+                    "Damage:  1d%d%s versus small and 1d%d%s versus large monsters.",
+                    damage_info.damage_small, damage_info.bonus_small,
+                    damage_info.damage_large, damage_info.bonus_large);
+            OBJPUTSTR(buf);
+        } else {
+            Sprintf(buf, "Damage:  Unknown (identification required)");
+            OBJPUTSTR(buf);
         }
-        /* and again, because /large/ damage is entirely separate. Bleah. */
-        switch (otyp) {
-        case IRON_CHAIN:
-        case CROSSBOW_BOLT:
-        case MORNING_STAR:
-        case PARTISAN:
-        case RUNESWORD:
-        case ELVEN_BROADSWORD:
-        case BROADSWORD:
-        case SLING_BULLET:
-            ldambon = "+1";
-            break;
-        case FLAIL:
-        case RANSEUR:
-        case SCYTHE:
-        case VOULGE:
-            ldambon = "+1d4";
-            break;
-        case ACID_VENOM:
-        case HALBERD:
-        case SPETUM:
-            ldambon = "+1d6";
-            break;
-        case WAR_HAMMER:
-            ldambon = "+1d8";
-            break;
-        case BATTLE_AXE:
-        case BARDICHE:
-        case TRIDENT:
-            ldambon = "+2d4";
-            break;
-        case TSURUGI:
-        case DWARVISH_MATTOCK:
-        case TWO_HANDED_SWORD:
-        case HEAVY_SWORD:
-            ldambon = "+2d6";
-            break;
+        
+        if (damage_info.buc_damage)
+            OBJPUTSTR(damage_info.buc_damage);
+        if (damage_info.axe_damage)
+            OBJPUTSTR(damage_info.axe_damage);
+        if (damage_info.light_damage)
+            OBJPUTSTR(damage_info.light_damage);
+        if (damage_info.mat_damage)
+            OBJPUTSTR(damage_info.mat_damage);
+        if (damage_info.hate_damage)
+            OBJPUTSTR(damage_info.hate_damage);
+
+        if (reveal_info) {
+            Sprintf(buf, "Has a %s%d %s to hit.",
+                    (oc.oc_hitbon >= 0 ? "+" : ""), oc.oc_hitbon,
+                    (oc.oc_hitbon >= 0 ? "bonus" : "penalty"));
+            OBJPUTSTR(buf);
         }
-        Sprintf(buf,
-               "Damage: 1d%d%s vs small and 1d%d%s vs large monsters.",
-                oc.oc_wsdam, sdambon, oc.oc_wldam, ldambon);
-        OBJPUTSTR(buf);
-        Sprintf(buf, "Has a %s%d %s to hit.", (oc.oc_hitbon >= 0 ? "+" : ""),
-                oc.oc_hitbon, (oc.oc_hitbon >= 0 ? "bonus" : "penalty"));
-        OBJPUTSTR(buf);
     }
 
     /* ARMOR INFO */

@@ -16,6 +16,7 @@ staticfn boolean could_advance(int);
 staticfn boolean peaked_skill(int);
 staticfn int slots_required(int);
 staticfn void skill_advance(int);
+staticfn int dmgval_core(struct obj*, struct monst*, struct damage_info_t*);
 
 /* Categories whose names don't come from OBJ_NAME(objects[type])
  */
@@ -211,24 +212,47 @@ hitval(struct obj *otmp, struct monst *mon)
  * released.  Let's see if the weapon table stays the same.  --KAA
  * October 2000: It didn't.  Oh, well.
  */
+int
+dmgval(struct obj *otmp, struct monst *mon)
+{
+    struct damage_info_t ignored = {0};
+    return dmgval_core(otmp, mon, &ignored);
+}
+
+struct damage_info_t
+dmgval_info(struct obj *otmp)
+{
+    struct damage_info_t damage_info = {0};
+    damage_info.bonus_small = "";
+    damage_info.bonus_large = "";
+    (void) dmgval_core(otmp, NULL, &damage_info);
+    return damage_info;
+}
 
 /*
  *      dmgval returns an integer representing the damage bonuses
  *      of "otmp" against the monster.
  */
-int
-dmgval(struct obj *otmp, struct monst *mon)
+staticfn int
+dmgval_core(
+    struct obj *otmp,
+    struct monst *mon,
+    struct damage_info_t *damage_info)
 {
     int tmp = 0, otyp = otmp->otyp;
-    struct permonst *ptr = mon->data;
+    struct permonst *ptr = mon ? mon->data : NULL;
     boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
 
     if (otyp == CREAM_PIE)
         return 0;
 
-    if (bigmonst(ptr)) {
-        if (objects[otyp].oc_wldam)
+    /* Damage vs large monsters */
+
+    if (ptr == NULL || bigmonst(ptr)) {
+        if (objects[otyp].oc_wldam) {
             tmp = rnd(objects[otyp].oc_wldam);
+            damage_info->damage_large = objects[otyp].oc_wldam;
+        }
         switch (otyp) {
         case IRON_CHAIN:
         case CROSSBOW_BOLT:
@@ -239,6 +263,7 @@ dmgval(struct obj *otmp, struct monst *mon)
         case BROADSWORD:
         case SLING_BULLET:
             tmp++;
+            damage_info->bonus_large = "+1";
             break;
 
         case FLAIL:
@@ -246,22 +271,26 @@ dmgval(struct obj *otmp, struct monst *mon)
         case SCYTHE:
         case VOULGE:
             tmp += rnd(4);
+            damage_info->bonus_large = "+1d4";
             break;
 
         case ACID_VENOM:
         case HALBERD:
         case SPETUM:
             tmp += rnd(6);
+            damage_info->bonus_large = "+1d6";
             break;
 
         case WAR_HAMMER:
             tmp += rnd(8);
+            damage_info->bonus_large = "+1d8";
             break;
 
         case BATTLE_AXE:
         case BARDICHE:
         case TRIDENT:
             tmp += d(2, 4);
+            damage_info->bonus_large = "+2d4";
             break;
 
         case TSURUGI:
@@ -269,11 +298,18 @@ dmgval(struct obj *otmp, struct monst *mon)
         case TWO_HANDED_SWORD:
         case HEAVY_SWORD:
             tmp += d(2, 6);
+            damage_info->bonus_large = "+2d6";
             break;
         }
-    } else {
-        if (objects[otyp].oc_wsdam)
+    }
+
+    /* Damage vs small monsters */
+    
+    if (ptr == NULL || !bigmonst(ptr)) {
+        if (objects[otyp].oc_wsdam) {
             tmp = rnd(objects[otyp].oc_wsdam);
+            damage_info->damage_small = objects[otyp].oc_wsdam;
+        }
         switch (otyp) {
         case IRON_CHAIN:
         case CROSSBOW_BOLT:
@@ -283,6 +319,7 @@ dmgval(struct obj *otmp, struct monst *mon)
         case TRIDENT:
         case SLING_BULLET:
             tmp++;
+            damage_info->bonus_small = "+1";
             break;
 
         case BATTLE_AXE:
@@ -298,11 +335,13 @@ dmgval(struct obj *otmp, struct monst *mon)
         case SCYTHE:
         case VOULGE:
             tmp += rnd(4);
+            damage_info->bonus_small = "+1d4";
             break;
 
         case WAR_HAMMER:
         case ACID_VENOM:
             tmp += rnd(6);
+            damage_info->bonus_small = "+1d6";
             break;
         }
     }
@@ -313,15 +352,15 @@ dmgval(struct obj *otmp, struct monst *mon)
             tmp = 0;
     }
 
-    if (objects[otyp].oc_material <= LEATHER && thick_skinned(ptr))
+    if (objects[otyp].oc_material <= LEATHER && ptr && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
     
-    if (otmp->oclass == GEM_CLASS && thick_skinned(ptr))
+    if (otmp->oclass == GEM_CLASS && ptr && thick_skinned(ptr))
         /* pebbles don't penetrate */
         tmp = 0;
     
-    if (ptr == &mons[PM_SHADE] && !shade_glare(otmp))
+    if (ptr && ptr == &mons[PM_SHADE] && !shade_glare(otmp))
         tmp = 0;
 
     /* "very heavy iron ball"; weight increase is in increments */
@@ -344,14 +383,22 @@ dmgval(struct obj *otmp, struct monst *mon)
         || otmp->oclass == CHAIN_CLASS) {
         int bonus = 0;
 
-        if (otmp->blessed && mon_hates_blessings(mon))
+        if (otmp->blessed && mon && mon_hates_blessings(mon))
             bonus += rnd(4);
-        if (is_axe(otmp) && is_wooden(ptr))
-            bonus += rnd(4);
-        if (objects[otyp].oc_material == SILVER && mon_hates_silver(mon))
+        if (is_axe(otmp)) {
+            if (ptr && is_wooden(ptr))
+                bonus += rnd(4);
+            damage_info->axe_damage = "\t+1d4 against wood golems.";
+        }
+        if (objects[otyp].oc_material == SILVER && mon && mon_hates_silver(mon)) {
             bonus += rnd(20);
-        if (artifact_light(otmp) && otmp->lamplit && hates_light(ptr))
+            damage_info->hate_damage = "\t+1d20 against silver hating monsters.";
+        }
+        if (artifact_light(otmp) && otmp->lamplit && ptr && hates_light(ptr)) {
             bonus += rnd(8);
+            damage_info->light_damage =
+                "\tAdditional 1d8 against light hating monsters.";
+        }
 
         /* if the weapon is going to get a double damage bonus, adjust
            this bonus so that effectively it's added after the doubling */
@@ -362,7 +409,7 @@ dmgval(struct obj *otmp, struct monst *mon)
     }
 
     if (tmp > 0) {
-        int mac = (mon != &cg.zeromonst) ? find_mac(mon) : 10;
+        int mac = (mon && mon != &cg.zeromonst) ? find_mac(mon) : 10;
         /* It's debatable whether a rusted blunt instrument
            should do less damage than a pristine one, since
            it will hit with essentially the same impact, but
