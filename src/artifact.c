@@ -621,6 +621,10 @@ defends_when_carried(int adtyp, struct obj *otmp)
 {
     const struct artifact *weap;
 
+    /* NO_CARY can look like AD_PHYS, very important to avoid this. */
+    if (!adtyp)
+        return FALSE;
+
     if ((weap = get_artifact(otmp)) != &artilist[ART_NONARTIFACT])
         return (boolean) (weap->cary.adtyp == adtyp);
     return FALSE;

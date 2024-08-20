@@ -1667,14 +1667,15 @@ mon_prop(struct monst *mon, int prop)
 
     /* Now check for extrinsics */
     for (o = mon->minvent; o; o = o->nobj) {
-         /* Check carried */
+        /* Check carried */
         if (defends_when_carried(adtyp, o))
             return TRUE;
-        if ((o->owornmask && objects[o->otyp].oc_oprop == prop)
-            || defends(adtyp, o)
-            || (tspfx && spec_ability(o, tspfx))) {
+        if (o->owornmask && (objects[o->otyp].oc_oprop == prop))
             return TRUE;
-        }
+        if (o->owornmask && defends(adtyp, o))
+            return TRUE;
+        if (tspfx && spec_ability(o, tspfx))
+            return TRUE;
     }
     return FALSE;
 }
