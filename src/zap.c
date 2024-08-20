@@ -4867,6 +4867,8 @@ zhitm(
             if (mon->mhpmax > (int) mon->m_lev)
                 mon->mhpmax = (int) mon->m_lev + 1;
         }
+        if (mon->mhp > mon->mhpmax)
+            mon->mhp = mon->mhpmax;
         /* !m_lev: level 0 monster is killed regardless of hit points
             rather than drop to level -1; note: some non-living creatures
             (golems, vortices) are subject to life-drain */
