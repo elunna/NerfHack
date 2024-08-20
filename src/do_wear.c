@@ -1423,6 +1423,7 @@ Ring_on(struct obj *obj)
     case RIN_WITHERING:
         if (!oldprop) {
             You("begin to wither away!");
+            makeknown(RIN_WITHERING);
             disp.botl = TRUE;
         }
         break;
