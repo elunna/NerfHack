@@ -1322,11 +1322,7 @@ peffect_phasing(struct obj *otmp)
         set_itimeout(&HPasses_walls, 0);
         newman();
     } else {
-        if (!Blind)
-            You("appear to turn a little hazy!");
-        else
-            You_feel("like you could walk through anything!");
-
+        You_feel("much thinner!");
         if (otmp->blessed) {
             incr_itimeout(&HPasses_walls, rn1(50, otmp->odiluted ? 100 : 250));
         } else {
