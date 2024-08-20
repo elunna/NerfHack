@@ -2506,8 +2506,7 @@ heal_legs(
     }
 }
 
-/* Extra weapon damage for fumbling or low dex.
- */
+/* Extra weapon damage for fumbling or low dex. */
 void
 maybe_fall_onto_weapon(void)
 {
@@ -2516,7 +2515,7 @@ maybe_fall_onto_weapon(void)
             return;
         
         if (Fumbling || rnd(8) > ACURR(A_DEX)) {
-            You("fumble and fall onto %s", Doname2(uwep));
+            You("fumble and fall onto %s", yname(uwep));
             losehp(Maybe_Half_Phys(dmgval(uwep, &gy.youmonst)), 
                 "falling onto your own weapon", KILLED_BY);
         }
@@ -2526,7 +2525,7 @@ maybe_fall_onto_weapon(void)
             return;
 
         if (Fumbling || rnd(8) > ACURR(A_DEX)) {
-            You("fumble and fall onto %s", Doname2(uswapwep));
+            You("fumble and fall onto %s", yname(uswapwep));
             losehp(Maybe_Half_Phys(dmgval(uswapwep, &gy.youmonst)), 
                 "falling onto your own weapon", KILLED_BY);
         }
