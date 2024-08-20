@@ -2690,7 +2690,9 @@ map_glyphinfo(
          * and furniture.
          * If we color things like objects or corpses, it's confusing.
          */
-        if (gmap->sym.symidx > S_ice + SYM_OFF_P || gmap->sym.symidx == S_fountain)
+        if (gmap->sym.symidx > S_ice + SYM_OFF_P
+            || gmap->sym.symidx == S_fountain
+            || gmap->sym.symidx == S_magic_portal)
             drawblood = FALSE;
 
         if (drawblood && levl[x][y].splatpm 
