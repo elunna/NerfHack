@@ -668,11 +668,12 @@ xname_flags(
     
     /* rangers of a certain level/skill auto-know ammo enchantments */
     if (Role_if(PM_RANGER)) {
-        if (obj->oclass == WEAPON_CLASS
-              && P_SKILL(-objects[obj->otyp].oc_skill) >= P_BASIC) {
-            if (u.ulevel >= 10 && is_ammo(obj))
+        if (obj->oclass == WEAPON_CLASS) {
+            if (u.ulevel >= 10 && is_ammo(obj)
+                && P_SKILL(-objects[obj->otyp].oc_skill) >= P_BASIC )
                 obj->known = 1;
-            else if (u.ulevel >= 7 && is_launcher(obj))
+            else if (u.ulevel >= 7 && is_launcher(obj)
+                && P_SKILL(objects[obj->otyp].oc_skill) >= P_BASIC)
                 obj->known = 1;
         }
     } 
@@ -681,7 +682,7 @@ xname_flags(
      * it takes to train up now. Similar to rangers, you need to be XP10+
      */
     else if (u.ulevel >= 10 && obj->oclass == WEAPON_CLASS
-        && P_SKILL(-objects[obj->otyp].oc_skill) >= P_EXPERT)
+        && P_SKILL(objects[obj->otyp].oc_skill) >= P_EXPERT)
         obj->known = 1;
 
     /* Cartomancers are masters of cards, they know everything about them. */
