@@ -5293,6 +5293,7 @@ water_damage(
     boolean force)    /* if True, skip luck-based protection check */
 {
     boolean in_invent = obj && carried(obj), described = FALSE;
+    int num_disintegrate = 0;
 
     if (!obj)
         return ER_NOTHING;
@@ -5369,15 +5370,28 @@ water_damage(
             obj->dknown = 0;
             obj->spe = 0;
         } else {
-            /* 1/3'rd of scrolls damaged by water disintegrate */
+            /* About 1/3'rd of scrolls damaged by water disintegrate.
+             * For stacks, be more generous */
+            if (obj->quan > 1)
+                num_disintegrate = rn2(obj->quan / 3 + 1);
+            
             if (in_invent)
                 Your("%s %s.", ostr, vtense(ostr, "disintegrate"));
             else 
-                pline(obj->quan == 1 ?
+                pline(num_disintegrate == 1 ?
                                  "A scroll disintegrates." :
-                                 "Some scrolls disintegrate.");
-            setnotworn(obj);
-            delobj(obj);
+                                 "Some scrolls fade and disintegrate.");
+            
+            if (obj->quan == num_disintegrate) {
+                setnotworn(obj);
+                delobj(obj);
+            } else {
+                obj->quan -= num_disintegrate;
+                obj->otyp = SCR_BLANK_PAPER;
+                obj->dknown = 0;
+                obj->spe = 0;
+                obj->owt = weight(obj);
+            }
             if (in_invent)
                 update_inventory();
             return ER_DESTROYED;
