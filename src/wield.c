@@ -144,14 +144,16 @@ setuwep(struct obj *obj)
         BAggravate_monster |= W_WEP;
     } 
     
-    /* Quick Blade grants speed. */
-    if (is_art(olduwep, ART_QUICK_BLADE)) {
+    /* These grant speed. */
+    if (is_art(olduwep, ART_QUICK_BLADE) 
+        || is_art(olduwep, ART_TSURUGI_OF_MURAMASA)) {
         EFast &= ~W_WEP;
         if (!Very_fast ) {
             You_feel("yourself slow down%s.", Fast ? " a bit" : "");
         }
     }
-    if (uwep && u_wield_art(ART_QUICK_BLADE)) {
+    if (uwep && (u_wield_art(ART_QUICK_BLADE)
+        || u_wield_art(ART_TSURUGI_OF_MURAMASA))) {
         if (!Very_fast)
             You_feel("yourself speed up%s.",
                      HFast ? " a bit more" : "");
