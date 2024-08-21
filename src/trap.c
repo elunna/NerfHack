@@ -6239,7 +6239,6 @@ disarm_grease_trap(struct trap *ttmp) /* Erik Lunna */
     return 1;
 }
 
-
 staticfn int
 disarm_spear_trap(struct trap *ttmp) /* Erik Lunna */
 {
@@ -6650,6 +6649,8 @@ untrap(
                     return disarm_shooting_trap(ttmp, DART);
                 case ARROW_TRAP:
                     return disarm_shooting_trap(ttmp, ARROW);
+                case ROCKTRAP:
+                    return disarm_shooting_trap(ttmp, ROCK);
                 case SPEAR_TRAP:
                     return disarm_spear_trap(ttmp);
                 case RUST_TRAP:
