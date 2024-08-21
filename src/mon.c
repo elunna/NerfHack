@@ -3591,6 +3591,10 @@ monkilled(
 
     if (!DEADMONSTER(mdef))
         return; /* life-saved */
+
+    if (mdef->data == &mons[PM_GAS_SPORE])
+        create_gas_cloud(mdef->mx, mdef->my, 3, rnd(8));
+
     /* extra message if pet golem is completely destroyed;
        if not visible, this will follow "you have a sad feeling" */
     if (mdef->mtame) {
@@ -3751,6 +3755,9 @@ xkilled(
 
     mdat = mtmp->data; /* note: mondead can change mtmp->data */
     mndx = monsndx(mdat);
+
+    if (mtmp->data == &mons[PM_GAS_SPORE])
+        create_gas_cloud(mtmp->mx, mtmp->my, 3, rnd(8));
 
     if (gs.stoned) {
         gs.stoned = FALSE;
