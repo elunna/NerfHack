@@ -5373,11 +5373,14 @@ water_damage(
             /* About 1/3'rd of scrolls damaged by water disintegrate.
              * For stacks, be more generous */
             if (obj->quan > 1)
-                num_disintegrate = rn2(obj->quan / 3 + 1);
+                num_disintegrate = rnd(obj->quan / 2 + 1);
             
-            if (in_invent)
-                Your("%s %s.", ostr, vtense(ostr, "disintegrate"));
-            else 
+            if (in_invent) {
+                if (num_disintegrate == obj->quan)
+                    Your("%s %s.", ostr, vtense(ostr, "disintegrate"));
+                else
+                    pline("Some of your %s %s.", ostr, vtense(ostr, "disintegrate"));
+            } else 
                 pline(num_disintegrate == 1 ?
                                  "A scroll disintegrates." :
                                  "Some scrolls fade and disintegrate.");
@@ -5386,10 +5389,10 @@ water_damage(
                 setnotworn(obj);
                 delobj(obj);
             } else {
-                obj->quan -= num_disintegrate;
                 obj->otyp = SCR_BLANK_PAPER;
                 obj->dknown = 0;
                 obj->spe = 0;
+                obj->quan -= num_disintegrate;
                 obj->owt = weight(obj);
             }
             if (in_invent)
