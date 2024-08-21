@@ -47,16 +47,16 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
 
 /* Cartomancers have lower odds of scrolls and wands because they get card drops.
  * They have higher odds of food to compensate for less corpses. */
-static const struct icp cartprobs[] =  { { 10, WEAPON_CLASS },
-                                         { 10, ARMOR_CLASS },
+static const struct icp cartprobs[] =  { { 14, WEAPON_CLASS },
+                                         { 14, ARMOR_CLASS },
                                          { 30, FOOD_CLASS },
                                          { 8, TOOL_CLASS },
                                          { 8, GEM_CLASS },
-                                         { 16, POTION_CLASS },
+                                         { 11, POTION_CLASS },
                                          { 8, SCROLL_CLASS },
-                                         { 4, SPBOOK_CLASS },
+                                         { 2, SPBOOK_CLASS },
                                          { 2, WAND_CLASS },
-                                         { 3, RING_CLASS },
+                                         { 2, RING_CLASS },
                                          { 1, AMULET_CLASS } };
 
 static const struct icp boxiprobs[] = { { 18, GEM_CLASS },

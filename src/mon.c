@@ -6634,7 +6634,7 @@ card_drop(struct monst *mon)
     if (mon->mtame || mon->msummoned)
         return FALSE;
     
-    if (rn2(3))
+    if (rn2(2))
         return FALSE;
 
     switch (rnd(20)) {
@@ -6645,8 +6645,7 @@ card_drop(struct monst *mon)
         otmp = mksobj(SCR_ZAPPING, TRUE, FALSE);
         break;
     case 4:
-    case 5:
-    case 6: /* More ammo. Player can get a stack of 6 to 11. */
+    case 5: /* More ammo. Player can get a stack of 6 to 11. */
         otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
         break;
     default: /* Monster summon card */
