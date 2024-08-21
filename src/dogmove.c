@@ -1484,8 +1484,6 @@ quickmimic(struct monst *mtmp)
 #undef DOG_WEAK
 #undef DOG_STARVE
 
-
-
 boolean
 acceptable_pet_target(
     struct monst *mtmp, /* your pet */
@@ -1505,15 +1503,18 @@ acceptable_pet_target(
     int balk = mtmp->m_lev + ((5 * mtmp->mhp) / mtmp->mhpmax) - 2;
     boolean grudge = FALSE;
 
-    /* Grudges override level checks. */
-    if ((mm_aggression(mtmp, mtmp2) & ALLOW_M)
-        || mtmp->msummoned) {
-        grudge = TRUE;
-        balk = mtmp2->m_lev + 1;
-    }
+    /* Spell minions are fearless */
+    if (mtmp->msummoned)
+        return TRUE;
 
     if (EAggravate_monster)
         return TRUE; /* No checks for extrinsic aggravate mon */
+
+    /* Grudges override level checks. */
+    if ((mm_aggression(mtmp, mtmp2) & ALLOW_M)) {
+        grudge = TRUE;
+        balk = mtmp2->m_lev + 1;
+    }
 
     boolean scared = (!ranged && (int)mtmp2->m_lev >= balk);
     
