@@ -1741,10 +1741,11 @@ find_offensive(struct monst *mtmp)
         }
         nomore(MUSE_CAMERA);
         if (obj->otyp == EXPENSIVE_CAMERA
-            && ((!Blind && !resists_blnd(&gy.youmonst))
+            && ((!Blind
+                && !(resists_blnd(&gy.youmonst) || defended(&gy.youmonst, AD_BLND)))
                 || hates_light(gy.youmonst.data))
-            && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
-            && obj->spe > 0 && !rn2(6)) {
+            && lined_up(mtmp)
+            && obj->spe > 0 && !rn2(3)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_CAMERA;
         }
@@ -2161,15 +2162,26 @@ use_offensive(struct monst *mtmp)
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     } /* case MUSE_SCR_EARTH */
     case MUSE_CAMERA: {
+        if (Blind)
+            return 0;
+
         if (Hallucination) {
             SetVoice(mtmp, 0, 80, 0);
             verbalize("Say cheese!");
-        } else if (!Blind) {
+        } else if (m_next2u(mtmp)) {
             pline("%s takes a picture of you with %s!",
                   Monnam(mtmp), an(xname(otmp)));
+        } else {
+             pline("%s takes a picture of you!", Monnam(mtmp));
         }
+        /* TODO: To enable this as a ranged attack for monsters, 
+         * can we use do_blinding_ray but mangle u.dx and u.dy?
+         * Probably more trouble than it's worth, but we would
+         * get the nice flashing animation...
+         */
         gm.m_using = TRUE;
-        if (!Blind && !resists_blnd(&gy.youmonst)) {
+        if (!Blind && !(resists_blnd(&gy.youmonst)
+                || defended(&gy.youmonst, AD_BLND))) {
             You("are blinded by the flash of light!");
             make_blinded(BlindedTimeout + (long) rnd(1 + 50), FALSE);
         }
