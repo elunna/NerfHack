@@ -1119,7 +1119,9 @@ mksobj_init(struct obj *otmp, boolean artif)
             int otyp;
             do {
                 otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
-            } while (otyp == WAN_WISHING || otyp == WAN_NOTHING);
+            } while (otyp == WAN_WISHING
+                    || otyp == WAN_CREATE_MONSTER /* Already plenty of summon cards. */
+                    || otyp == WAN_NOTHING);
             /* Wishing is excluded, but it's possible we might want to enable it against
             * extremely rare odds. */
             otmp->corpsenm = otyp;
