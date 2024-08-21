@@ -38,6 +38,7 @@ staticfn void kill_eggs(struct obj *) NO_NNARGS;
 staticfn void pacify_guard(struct monst *);
 staticfn void unpoly_monster(struct monst *);
 staticfn int cham_depth_appropriate(struct monst *);
+staticfn boolean card_drop(struct monst *);
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -3285,7 +3286,6 @@ corpse_chance(
     boolean was_swallowed) /* digestion */
 {
     struct permonst *mdat = mon->data;
-    struct obj *otmp;
     int i, tmp, x, y;
 
     if (mdat == &mons[PM_VLAD_THE_IMPALER] || mdat->mlet == S_LICH
@@ -3305,64 +3305,9 @@ corpse_chance(
         return FALSE;
     }
 
-#define CHANCE_CARD_DROP 2
-    /* Anything killed while playing as a cartomancer has 
-     * a chance of leaving behind a card. */
-    if (Role_if(PM_CARTOMANCER) && !(mon->data->geno & G_UNIQ)
-          && !mon->mtame && !mon->msummoned && !rn2(CHANCE_CARD_DROP)) {
-        switch (rnd(20)) {
-        case 1:
-        case 2:
-        case 3: /* Wand zap card. */ 
-		    /* The zap type is handled in mkobj.c */
-            otmp = mksobj(SCR_ZAPPING, TRUE, FALSE);
-            break;
-	    case 4:
-	    case 5: /* More ammo. Player can get a stack of 6 to 11. */
-		    otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
-		    break;
-        default: /* Monster summon card */
-            otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
-
-            /* Every once in a while, drop a strong monster card. This should
-             * keep things more interesting when slaying hordes of weenies.
-             * The odds come roughly from old MtG booster packs having 1 rare. 
-             */
-            if (!rn2(3)) {
-                int tryct = 0;
-                do
-                    otmp->corpsenm = rndmonnum_adj(5 + u.ulevel, 10 + u.ulevel * 2);
-                while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
-            } else {
-                /* For very weak monsters (base lvl 0 or 1), I think we should skip most
-                * summon drops. Otherwise the player ends up with loads of crap cards in
-                * their inventory they'll never play. We don't want to check this above
-                * because the chance of zaps, ammo, or rare cards is still nice. */
-                if (mon->data->mlevel < 3 && rn2(10)) {
-                    delobj(otmp);
-                    goto dropskip;
-                } else {
-                    /* Most of the time we get here, we'll grant a sphere card - 
-                     * these are more fun to play and they act as a callback to the 
-                     * summon sphere spells in SLASH'EM. */
-                    if (rn2(5))
-                        otmp->corpsenm = PM_FREEZING_SPHERE 
-                            + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE + 1);
-                    else
-                        otmp->corpsenm = monsndx(mon->data);
-                }
-            }
-            break;
-    }
-	if (otmp) {
-	    place_object(otmp, mon->mx, mon->my);
-	    newsym(mon->mx, mon->my);
-	    return FALSE;
-	}
-    }
-#undef CHANCE_CARD_DROP
-    
-dropskip:
+    if (Role_if(PM_CARTOMANCER))
+        if (card_drop(mon))
+            return FALSE;
 
     /* Spell-beings can't leave corpses */
     if (mon->msummoned)
@@ -6672,4 +6617,77 @@ cham_depth_appropriate(struct monst *mon)
         return 1;
     return n;
 }
+
+/* Anything killed while playing as a cartomancer has 
+ * a chance of leaving behind a card.
+ * Return TRUE if a card was dropped, otherwise FALSE.
+ */
+staticfn boolean
+card_drop(struct monst *mon)
+{
+    struct obj *otmp;
+
+    /* No potential for a unique card. */
+    if (mon->data->geno & G_UNIQ)
+        return FALSE;
+    
+    if (mon->mtame || mon->msummoned)
+        return FALSE;
+    
+    if (rn2(3))
+        return FALSE;
+
+    switch (rnd(20)) {
+    case 1:
+    case 2:
+    case 3: /* Wand zap card. */ 
+        /* The zap type is handled in mkobj.c */
+        otmp = mksobj(SCR_ZAPPING, TRUE, FALSE);
+        break;
+    case 4:
+    case 5:
+    case 6: /* More ammo. Player can get a stack of 6 to 11. */
+        otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
+        break;
+    default: /* Monster summon card */
+        otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+
+        /* Every once in a while, drop a strong monster card. This should
+         * keep things more interesting when slaying hordes of weenies.
+         * The odds come roughly from old MtG booster packs having 1 rare. 
+         */
+        if (!rn2(3)) {
+            int tryct = 0;
+            do
+                otmp->corpsenm = rndmonnum_adj(5 + u.ulevel, 7 + u.ulevel * 2);
+            while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
+        } else {
+            /* For very weak monsters (base lvl 0 or 1), skip most summon drops.
+             * Otherwise the player ends up with loads of crap cards in
+             * their inventory they'll never play. We don't want to check this above
+             * because the chance of zaps, ammo, or rare cards is still nice. */
+            if (mon->data->mlevel < 3 && rn2(10)) {
+                delobj(otmp);
+                return FALSE;
+            } else {
+                /* Most of the time we get here, we'll grant a sphere card - 
+                 * these are more fun to play and they act as a callback to the 
+                 * summon sphere spells in SLASH'EM. */
+                if (rn2(5))
+                    otmp->corpsenm = PM_FREEZING_SPHERE 
+                        + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE + 1);
+                else
+                    otmp->corpsenm = monsndx(mon->data);
+            }
+        }
+        break;
+    }
+	if (otmp) {
+	    place_object(otmp, mon->mx, mon->my);
+	    newsym(mon->mx, mon->my);
+	    return TRUE;
+	}
+    return FALSE;
+}
+
 /*mon.c*/
