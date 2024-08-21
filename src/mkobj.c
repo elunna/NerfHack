@@ -1250,6 +1250,7 @@ mksobj(int otyp, boolean init, boolean artif)
         case CANDY_BAR:
         case MELON:
         case FORTUNE_COOKIE:
+        case POT_FRUIT_JUICE:
             otyp = rn2(10) ? POT_BLOOD : POT_VAMPIRE_BLOOD;
             let = objects[otyp].oc_class;
             break;
