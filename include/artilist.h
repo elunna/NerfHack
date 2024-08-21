@@ -430,7 +430,7 @@ static NEARDATA struct artifact artilist[] = {
     A("The Sceptre of Might", MACE,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN
         | SPFX_NOWISH), 0, 0,
-      PHYS(5, 0), DFNS(AD_MAGM), NO_CARY, CONFLICT,
+      PHYS(5, 0), NO_DFNS, CARY(AD_MAGM), CONFLICT,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM, 2500L, NO_COLOR, SCEPTRE_OF_MIGHT),
 
 #if 0 /* OBSOLETE -- from 3.1.0 to 3.2.x, this was quest artifact for the
