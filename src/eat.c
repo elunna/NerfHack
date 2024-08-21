@@ -1995,7 +1995,11 @@ eatcorpse(struct obj *otmp)
     svc.context.victual.reqtime
         = 3 + ((!glob ? mons[mnum].cwt : otmp->owt) >> 6);
 
-    if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten || !rn2(7))) {
+    if (!tp && !nonrotting_corpse(mnum) 
+            && (otmp->orotten
+                /* Come on, blessed food being equally susceptible to rotting
+                 * is just stupid. --Amy */
+                || (!rn2(7) && (!otmp->blessed || !rn2(7))))) {
         if (rottenfood(otmp)) {
             otmp->orotten = TRUE;
             otmp = touchfood(otmp);
