@@ -1110,7 +1110,8 @@ spec_abon(struct obj *otmp, struct monst *mon)
         if (weap == &artilist[ART_QUICK_BLADE])
             return rnd(9);
         
-        return -(rnd((int) weap->attk.damn * 2));
+        /* Artifacts are legendarily difficulty to handle... */
+        return -((int) weap->attk.damn * 2);
         }
     return 0;
 }
