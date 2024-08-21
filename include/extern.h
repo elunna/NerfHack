@@ -725,6 +725,7 @@ extern int Boots_off(void);
 extern int Cloak_off(void);
 extern int Shield_off(void);
 extern int Shirt_off(void);
+extern void dragon_armor_handling(struct obj *, boolean, boolean);
 extern void Amulet_off(void);
 extern void Ring_on(struct obj *) NONNULLARG1;
 extern void Ring_off(struct obj *) NONNULLARG1;

@@ -584,8 +584,6 @@ defends(int adtyp, struct obj *otmp)
         switch (adtyp) {
         case AD_MAGM: /* magic missiles => general magic resistance */
             return (otyp == GRAY_DRAGON_SCALES);
-        case AD_HALU: /* confers hallucination resistance */
-            return (otyp == GOLD_DRAGON_SCALES);
         case AD_FIRE:
       /*case AD_BLND: -- gives infravision but does not prevent blindness */
             return (otyp == RED_DRAGON_SCALES); /* red but not gold */
@@ -593,20 +591,30 @@ defends(int adtyp, struct obj *otmp)
       /*case AD_FAMN: -- slows digestion but does not override Famine */
             return (otyp == WHITE_DRAGON_SCALES); /* white but not silver */
         case AD_DRST: /* drain strength => poison */
-        case AD_DISE: /* blocks disease but not slime */
             return (otyp == GREEN_DRAGON_SCALES);
         case AD_SLEE: /* sleep */
-        case AD_PLYS: /* paralysis => free action */
             return (otyp == ORANGE_DRAGON_SCALES);
         case AD_DISN: /* disintegration */
-        case AD_DRLI: /* level drain resistance */
             return (otyp == BLACK_DRAGON_SCALES);
         case AD_ELEC: /* electricity == lightning */
-        case AD_SLOW: /* confers speed so blocks speed removal */
             return (otyp == BLUE_DRAGON_SCALES);
         case AD_ACID:
-        case AD_STON: /* petrification resistance */
             return (otyp == YELLOW_DRAGON_SCALES);
+
+        /* Secondary resistances for dragon scale-mail */
+
+        case AD_HALU: /* confers hallucination resistance */
+            return (otmp->otyp == GOLD_DRAGON_SCALE_MAIL);
+        case AD_DISE: /* blocks disease but not slime */
+            return (otmp->otyp == GREEN_DRAGON_SCALE_MAIL);
+        case AD_PLYS: /* paralysis => free action */
+            return (otmp->otyp == ORANGE_DRAGON_SCALE_MAIL);
+        case AD_DRLI: /* level drain resistance */
+            return (otmp->otyp == BLACK_DRAGON_SCALE_MAIL);
+        case AD_SLOW: /* confers speed so blocks speed removal */
+            return (otmp->otyp == BLUE_DRAGON_SCALE_MAIL);
+        case AD_STON: /* petrification resistance */
+            return (otmp->otyp == YELLOW_DRAGON_SCALE_MAIL);
         default:
             /* SILVER_DRAGON_SCALES don't resist any particular attack type */
             break;

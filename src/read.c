@@ -1311,7 +1311,9 @@ seffect_enchant_armor(struct obj **sobjp)
 
         /* dragon scales get turned into dragon scale mail */
         pline("%s merges and hardens!", Yname2(otmp));
+        
         setworn((struct obj *) 0, W_ARM);
+
         /* assumes same order */
         otmp->otyp += GRAY_DRAGON_SCALE_MAIL - GRAY_DRAGON_SCALES;
         otmp->lamplit = 0; /* don't want bless() or uncurse() to adjust
@@ -1326,6 +1328,7 @@ seffect_enchant_armor(struct obj **sobjp)
             uncurse(otmp);
         otmp->known = 1;
         setworn(otmp, W_ARM);
+        dragon_armor_handling(otmp, TRUE, TRUE);
         if (otmp->unpaid)
             alter_cost(otmp, 0L); /* shop bill */
         otmp->lamplit = was_lit;

@@ -29,7 +29,6 @@ staticfn int Cloak_on(void);
 staticfn int Helmet_on(void);
 staticfn int Shield_on(void);
 staticfn int Shirt_on(void);
-staticfn void dragon_armor_handling(struct obj *, boolean, boolean);
 staticfn void Amulet_on(void);
 staticfn void learnring(struct obj *, boolean);
 staticfn void adjust_attrib(struct obj *, int, int);
@@ -895,7 +894,7 @@ Shirt_off(void)
 }
 
 /* handle extra abilities for hero wearing dragon scale armor */
-staticfn void
+void
 dragon_armor_handling(
     struct obj *otmp,   /* armor being put on or taken off */
     boolean puton,      /* True: on, False: off */
