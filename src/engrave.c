@@ -395,11 +395,10 @@ make_engr_at(
     if (!strcmp(s, "Elbereth")) {
         /* engraving "Elbereth":  if done when making a level, it creates
            an old-style Elbereth that deters monsters when any objects are
-           present; otherwise (done by the player), exercises wisdom */
+           present; NerfHack update - no longer exercises wisdom */
         if (gi.in_mklev) {
             ep->guardobjects = 1;
         } else {
-            exercise(A_WIS, TRUE);
             u.uconduct.elbereth++;
         }
     }
