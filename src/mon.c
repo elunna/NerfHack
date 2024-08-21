@@ -6626,12 +6626,18 @@ staticfn boolean
 card_drop(struct monst *mon)
 {
     struct obj *otmp;
+    struct permonst *ptr = mon->data;
 
     /* No potential for a unique card. */
-    if (mon->data->geno & G_UNIQ)
+    if (ptr->geno & G_UNIQ)
         return FALSE;
     
-    if (mon->mtame || mon->msummoned)
+    if (mon->mtame || mon->msummoned || mon->mrevived || mon->mcloned)
+        return FALSE;
+
+    /* Prevent farmable card-drops for monsters that can revive or come back. */
+    if (is_zombie(ptr) || is_troll(ptr) 
+        || ptr == &mons[PM_PHOENIX])
         return FALSE;
     
     if (rn2(2))
@@ -6665,7 +6671,7 @@ card_drop(struct monst *mon)
              * Otherwise the player ends up with loads of crap cards in
              * their inventory they'll never play. We don't want to check this above
              * because the chance of zaps, ammo, or rare cards is still nice. */
-            if (mon->data->mlevel < 3 && rn2(10)) {
+            if (ptr->mlevel < 3 && rn2(10)) {
                 delobj(otmp);
                 return FALSE;
             } else {
@@ -6676,7 +6682,7 @@ card_drop(struct monst *mon)
                     otmp->corpsenm = PM_FREEZING_SPHERE 
                         + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE + 1);
                 else
-                    otmp->corpsenm = monsndx(mon->data);
+                    otmp->corpsenm = monsndx(ptr);
             }
         }
         break;
