@@ -37,6 +37,7 @@ staticfn struct permonst *accept_newcham_form(struct monst *, int);
 staticfn void kill_eggs(struct obj *) NO_NNARGS;
 staticfn void pacify_guard(struct monst *);
 staticfn void unpoly_monster(struct monst *);
+staticfn int cham_depth_appropriate(struct monst *);
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -1331,7 +1332,8 @@ m_calcdistress(struct monst *mtmp)
         mtmp->mextrinsics &= ~(MR2_PHASING);
     }
     /* possibly polymorph shapechangers and lycanthropes */
-    if (ismnum(mtmp->cham) || mon_prop(mtmp, POLYMORPH))
+    if ((ismnum(mtmp->cham) || mon_prop(mtmp, POLYMORPH))
+          && !rn2(cham_depth_appropriate(mtmp)))
         decide_to_shapeshift(mtmp);
     were_change(mtmp);
 
@@ -6633,4 +6635,41 @@ unpoly_monster(struct monst *mtmp)
     }
 }
 
+/* Depth-appropriateness check for shape changers.  This allows
+ * shape changers to hold depth-appropriate forms for much longer
+ * than they can sustain out-of-depth forms.  The rules:
+ *  -   The monster has a 1/n chance to change form each turn,
+ *      where n is the number cham_depth_appropriate() returns.
+ *  -   Werefoo, because their form is predetermined, have the
+ *      same chance regardless of level.  For now, we'll stick
+ *      with n=6, which will give them unchanged/vanilla behavior.
+ *  -   Otherwise, n can range from 1 (form is so out of depth,
+ *      it must immediately change) to 15 (form is completely
+ *      appropriate at this depth and can be held for a while).
+ *  -   Player experience doesn't matter, only level depth.
+ *  -   Rather than calculating minimum and maximum difficulty
+ *      as rndmonst() does, we just have a single target difficulty,
+ *      and being closer to it yields higher chances of holding
+ *      the form for longer.
+ */
+staticfn int
+cham_depth_appropriate(struct monst *mon)
+{
+    int d = (In_endgame(&u.uz) 
+                ? depth(&sanctum_level)
+                : depth(&u.uz)) / 2;
+    int s = mons[monsndx(mon->data)].difficulty;
+    int n = 15 - abs(d - s);
+
+    if (is_were(mon->data))
+         /* More frequent change than for the player is justified, because the
+            player only observes monsters for short periods of time, relatively.
+            If non-player werecreatures only changed form as often as the player
+            does, you'd basically never see it happen.  If player lycanthropes
+            changed as often as monsters, it'd make the game unplayable. */
+        return (flags.moonphase == FULL_MOON) ? 4 : 10;
+    if (n < 1)
+        return 1;
+    return n;
+}
 /*mon.c*/
