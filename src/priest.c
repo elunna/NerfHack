@@ -627,9 +627,11 @@ priest_talk(struct monst *priest)
         return;
     } else {
         long offer;
+        long suggested = u.ulevel * 400;
 
-        pline("%s asks you for a contribution for the temple.",
-              Monnam(priest));
+        pline("%s asks you for a contribution for the temple, %s suggests %ldzm.",
+              Monnam(priest), mhe(priest), suggested);
+
         if ((offer = bribe(priest)) == 0) {
             SetVoice(priest, 0, 80, 0);
             verbalize("Thou shalt regret thine action!");
@@ -683,10 +685,13 @@ priest_talk(struct monst *priest)
             }
         }
     }
+
+    char pronounbuf[10];
+
     /* The priest never carries cash; it might get stolen! */
     if ((gypgold = findgold(priest->minvent)) != 0) {
         if (canspotmon(priest))
-            pline("%s gold %s.", s_suffix(Monnam(priest)),
+            pline("%s gold %s.",  upstart(strcpy(pronounbuf, mhim(priest))),
                   canseemon(priest) ? "vanishes" : "seems to vanish");
         obj_extract_self(gypgold);
         obfree(gypgold, (struct obj *) 0);
