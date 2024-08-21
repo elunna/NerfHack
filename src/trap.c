@@ -5376,7 +5376,7 @@ water_damage(
                 num_disintegrate = rnd(obj->quan / 2 + 1);
             
             if (in_invent) {
-                if (num_disintegrate == obj->quan)
+                if (num_disintegrate == obj->quan || obj->quan == 1)
                     Your("%s %s.", ostr, vtense(ostr, "disintegrate"));
                 else
                     pline("Some of your %s %s.", ostr, vtense(ostr, "disintegrate"));
