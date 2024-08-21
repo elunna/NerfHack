@@ -427,7 +427,6 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, NO_DFNS, NO_CARY, SUMMONING,
       A_CHAOTIC, PM_CARTOMANCER, NON_PM, 7000L, NO_COLOR, HOLOGRAPHIC_VOID_LILY),
 
-    /* Changes: Now gets a flat +3 damage bonus */
     A("The Sceptre of Might", MACE,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN
         | SPFX_NOWISH), 0, 0,
