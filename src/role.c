@@ -172,7 +172,7 @@ const struct Role roles[NUM_ROLES+1] = {
       S_SNAKE,
       S_NAGA,
       ART_HOLOGRAPHIC_VOID_LILY,
-      MH_HUMAN | MH_DWARF | MH_ELF | MH_GNOME | MH_VAMPIRE
+      MH_HUMAN | MH_DWARF | MH_ELF | MH_GNOME
 	  | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 10, 7, 7, 7, 7 },
