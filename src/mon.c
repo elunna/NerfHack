@@ -4838,7 +4838,12 @@ normal_shape(struct monst *mon)
         unsigned mcan = mon->mcan;
 
         (void) newcham(mon, &mons[mcham], NC_SHOW_MSG);
-        mon->cham = NON_PM;
+
+        /* Don't erase monsters info still wearing a 
+         * ring of polymorph */
+        if (!mon_prop(mon, POLYMORPH))
+            mon->cham = NON_PM;
+        
         /* newcham() may uncancel a polymorphing monster; override that */
         if (mcan)
             mon->mcan = 1;
@@ -4990,7 +4995,8 @@ rescham(void)
 staticfn void
 m_restartcham(struct monst *mtmp)
 {
-    if (!mtmp->mcan)
+    /* Preserve mon base form for monsters with poly rings*/
+    if (!mtmp->mcan && !mon_prop(mtmp, POLYMORPH))
         mtmp->cham = pm_to_cham(monsndx(mtmp->data));
     if (mtmp->data->mlet == S_MIMIC && mtmp->msleeping) {
         set_mimic_sym(mtmp);
@@ -5230,6 +5236,9 @@ decide_to_shapeshift(struct monst *mon)
     int mndx;
     unsigned was_female = mon->female;
     boolean dochng = FALSE;
+
+    if (Protection_from_shape_changers)
+        return;
 
     if (!is_vampshifter(mon)) {
         /* regular shapeshifter; 'ptr' is Null */
@@ -5651,7 +5660,7 @@ newcham(
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
             if (mtmp->cham != NON_PM)
                 mtmp->mcan = 0;
-        }
+        }            
     }
 
     if (msg) {
@@ -6541,29 +6550,28 @@ mon_rabid(struct monst *mtmp, boolean noisy)
 staticfn void
 unpoly_monster(struct monst *mtmp)
 {
-	int visible;
-
     /* [ALI] Always treat swallower as visible so that the message
      * indicating that the monster hasn't died comes _before_ any
      * message about breaking out of the "new" monster.
      */
-    visible = (u.uswallow && u.ustuck == mtmp)
+	int visible = (u.uswallow && u.ustuck == mtmp)
                 || cansee(mtmp->mx,mtmp->my);
+    boolean shifter = is_changeling(mtmp) || mon_prop(mtmp, POLYMORPH);
 
-    if (!is_were(mtmp->data) && !is_changeling(mtmp))
+    if (!is_were(mtmp->data) && !shifter)
         return;
     
     if (visible)
         pline("But wait...");
 
     /* Revert werefoo */
-    if (is_were(mtmp->data) && !is_human(mtmp->data) && rn2(7)) {
+    if (is_were(mtmp->data) && !is_human(mtmp->data) && rn2(13)) {
         new_were(mtmp);
         return;
     }
 
     /* Revert shapechangers */
-    if (is_changeling(mtmp) && mtmp->cham != NON_PM && rn2(7)) {
+    if (shifter && mtmp->cham != NON_PM && rn2(13)) {
         int mndx = mtmp->cham;
 
         /* this only happens if shapeshifted */

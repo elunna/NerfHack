@@ -562,6 +562,12 @@ update_mon_extrinsics(
             if (!unseen)
                 pline("%s starts to fly!", Monnam(mon));
             break;
+        case POLYMORPH:
+            /* To make them act like shapechangers, set mcham so the original
+             * form is preserved. */
+            if (!is_shapeshifter(mon->data) && mon->cham == -1)
+                mon->cham = mon->mnum;
+            break;
         /* properties handled elsewhere */
         case ANTIMAGIC:
         case REFLECTING:
@@ -619,6 +625,10 @@ update_mon_extrinsics(
             if (!unseen)
                 pline("%s lands gently back to the %s.",
                       Monnam(mon), surface(mon->mx, mon->my));
+            break;
+        case POLYMORPH:
+            if (!is_shapeshifter(mon->data) && !mon_prop(mon, POLYMORPH))
+                normal_shape(mon);
             break;
         case FIRE_RES:
         case COLD_RES:
