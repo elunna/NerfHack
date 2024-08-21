@@ -1306,7 +1306,8 @@ doengrave(void)
                 more_experienced(0, 10);
         }
     }
-    if (de->doblind && !resists_blnd(&gy.youmonst)) {
+    if (de->doblind && !(resists_blnd(&gy.youmonst)
+            || defended(&gy.youmonst, AD_BLND))) {
         You("are blinded by the flash!");
         make_blinded((long) rnd(50), FALSE);
         if (!Blind)

@@ -2182,8 +2182,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         }
         break;
     case AD_BLND:
-        if (canseemon(mtmp) && !resists_blnd(&gy.youmonst)
-            && mdistu(mtmp) <= BOLT_LIM * BOLT_LIM) {
+        if (canseemon(mtmp) && mdistu(mtmp) <= BOLT_LIM * BOLT_LIM) {
             if (cancelled) {
                 react = rn1(2, 2); /* "puzzled" || "dazzled" */
                 already = (mtmp->mcansee == 0);
@@ -2191,7 +2190,10 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                    giving the "seems puzzled/dazzled" message that often */
                 if (mtmp->mcan && mtmp->data == &mons[PM_ARCHON] && rn2(5))
                     react = -1;
-            } else {
+            } else if (defended(&gy.youmonst, AD_BLND)) {
+                Your("armor protects you from %s blinding gaze.",
+                    s_suffix(mon_nam(mtmp)));
+            } else if (!resists_blnd(&gy.youmonst)) {
                 int blnd = d((int) mattk->damn, (int) mattk->damd);
 
                 You("are blinded by %s radiance!", s_suffix(mon_nam(mtmp)));

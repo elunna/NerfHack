@@ -3293,7 +3293,10 @@ lightdamage(
 boolean
 flashburn(long duration, boolean via_lightning)
 {
-    if (!resists_blnd(&gy.youmonst)) {
+    if (defended(&gy.youmonst, AD_BLND)) {
+        Your("armor reflects the flash!");
+        return FALSE;
+    } else if (!resists_blnd(&gy.youmonst)) {
         You(are_blinded_by_the_flash);
         make_blinded(duration, FALSE);
         if (!Blind)
@@ -4818,7 +4821,7 @@ zhitm(
             tmp = 0;
             /* can still blind the monster */
         }
-        if (!resists_blnd(mon)
+        if (!(resists_blnd(mon) || defended(mon, AD_BLND))
             && !(type > 0 && engulfing_u(mon))
             && nd > 2) {
             /* sufficiently powerful lightning blinds monsters */

@@ -3528,7 +3528,8 @@ mhitm_ad_blnd(
         mhm->damage = 0;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-        if (can_blnd(magr, mdef, mattk->aatyp, (struct obj *) 0)) {
+        if (can_blnd(magr, mdef, mattk->aatyp, (struct obj *) 0)
+                && !defended(mdef, AD_BLND)) {
             if (!Blind)
                 pline("%s blinds you!", Monnam(magr));
             make_blinded(BlindedTimeout + (long) mhm->damage, FALSE);

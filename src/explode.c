@@ -1178,7 +1178,9 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
     if (affects_you) {
         switch(mattk->adtyp) {
         case AD_BLND:
-            if (!resists_blnd(&gy.youmonst)) {
+            if (defended(&gy.youmonst, AD_BLND)) {
+                Your("armor reflects the explosion of light!");
+            } else if (!resists_blnd(&gy.youmonst)) {
                 /* sometimes you're affected even if it's invisible */
                 if (mon_visible(magr) || (rnd(severity /= 2) > u.ulevel)) {
                     You("are blinded by a blast of light!");

@@ -585,7 +585,6 @@ defends(int adtyp, struct obj *otmp)
         case AD_MAGM: /* magic missiles => general magic resistance */
             return (otyp == GRAY_DRAGON_SCALES);
         case AD_FIRE:
-      /*case AD_BLND: -- gives infravision but does not prevent blindness */
             return (otyp == RED_DRAGON_SCALES); /* red but not gold */
         case AD_COLD:
       /*case AD_FAMN: -- slows digestion but does not override Famine */
@@ -615,6 +614,8 @@ defends(int adtyp, struct obj *otmp)
             return (otmp->otyp == BLUE_DRAGON_SCALE_MAIL);
         case AD_STON: /* petrification resistance */
             return (otmp->otyp == YELLOW_DRAGON_SCALE_MAIL);
+        case AD_BLND: /* Blinding light resistance */
+            return (otmp->otyp == SILVER_DRAGON_SCALE_MAIL);
         default:
             /* SILVER_DRAGON_SCALES don't resist any particular attack type */
             break;

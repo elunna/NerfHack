@@ -251,7 +251,7 @@ can_blnd(
         /* light-based attacks may be cancelled or resisted */
         if (magr && magr->mcan)
             return FALSE;
-        return !resists_blnd(mdef);
+        return !(resists_blnd(mdef) || defended(mdef, AD_BLND));
 
     case AT_WEAP:
     case AT_SPIT:
