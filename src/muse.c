@@ -51,6 +51,107 @@ staticfn boolean green_mon(struct monst *);
 staticfn int muse_wonder(void);
 staticfn int muse_createmonster(struct monst *, struct obj *);
 
+
+/* Defines for various types of stuff.  The order in which monsters prefer
+ * to use them is determined by the order of the code logic, not the
+ * numerical order in which they are defined.
+ */
+
+/* Dungeon feature*/
+#define MUSE_TRAPDOOR               1 /* Defensive */
+#define MUSE_TELEPORT_TRAP          2 /* Defensive */
+#define MUSE_UPSTAIRS               3 /* Defensive */
+#define MUSE_DOWNSTAIRS             4 /* Defensive */
+#define MUSE_UP_LADDER              5 /* Defensive */
+#define MUSE_DN_LADDER              6 /* Defensive */
+#define MUSE_SSTAIRS                7 /* Defensive */
+#define MUSE_POLY_TRAP              8
+
+/* Wands */
+
+#define MUSE_WAN_MAGIC_MISSILE      101 /* Offensive */
+#define MUSE_WAN_FIRE               102 /* Offensive */
+#define MUSE_WAN_COLD               103 /* Offensive */
+#define MUSE_WAN_SLEEP              104 /* Offensive */
+#define MUSE_WAN_DEATH              105 /* Offensive */
+#define MUSE_WAN_LIGHTNING          106 /* Offensive */
+#define MUSE_WAN_POISON_GAS         107 /* Offensive */
+#define MUSE_WAN_CORROSION          108 /* Offensive */
+#define MUSE_WAN_DRAINING           109 /* Offensive */
+#define MUSE_WAN_STUNNING           110 /* Offensive */
+    /* Wand of stunning is not a real wand,
+     * the effect is for wands of wonder */
+#define MUSE_WAN_CREATE_MONSTER     111 /* Both def & off */
+#define MUSE_WAN_WONDER             112 /* Offensive */
+#define MUSE_WAN_STRIKING           113 /* Offensive */
+#define MUSE_WAN_SLOW_MONSTER       114 /* Offensive */
+#define MUSE_WAN_UNDEAD_TURNING     115 /* Both def & off */
+#define MUSE_WAN_POLYMORPH          116 /* Both def & off */
+#define MUSE_WAN_CANCELLATION       117 /* Offensive */
+#define MUSE_WAN_TELEPORTATION      118 //* Both def & off */
+#define MUSE_WAN_TELEPORTATION_SELF 119 /* Defensive */
+#define MUSE_WAN_DIGGING            120 /* Defensive */
+#define MUSE_WAN_SPEED_MONSTER      121 /* misc */
+#define MUSE_WAN_MAKE_INVISIBLE     122 /* misc */
+
+/* Scrolls */
+
+#define MUSE_SCR_CREATE_MONSTER     200 /* Defensive */
+#define MUSE_SCR_TELEPORTATION      201 /* Defensive */
+#define MUSE_SCR_FIRE               202 /* Offensive */
+#define MUSE_SCR_EARTH              203 /* Offensive */
+#define MUSE_SCR_CLONING            204 /* Offensive */
+#define MUSE_SCR_STINKING_CLOUD     205 /* Offensive */
+#define MUSE_SCR_REMOVE_CURSE       206 /* misc */
+/* TODO: scroll of water? */
+/* TODO: scroll/card of zapping */
+
+/* Potions */
+
+#define MUSE_POT_PHASING            300 /* Defensive */
+#define MUSE_POT_RESTORE_ABILITY    301 /* Defensive */
+#define MUSE_POT_CONFUSION          302 /* Offensive */
+#define MUSE_POT_BLINDNESS          303 /* Offensive */
+#define MUSE_POT_PARALYSIS          304 /* Offensive */
+#define MUSE_POT_HALLUCINATION      305 /* Offensive */
+#define MUSE_POT_HEALING            306 /* Defensive */
+#define MUSE_POT_EXTRA_HEALING      307 /* Defensive */
+#define MUSE_POT_FULL_HEALING       308 /* Defensive */
+#define MUSE_POT_VAMPIRE_BLOOD      309 /* Defensive */
+#define MUSE_POT_SLEEPING           310 /* Offensive */
+#define MUSE_POT_POLYMORPH_THROW    311 /* Offensive */
+#define MUSE_POT_ACID               312 /* Offensive */
+#define MUSE_POT_OIL                313  /* Offensive */
+#define MUSE_POT_GAIN_LEVEL         314 /* misc */
+#define MUSE_POT_INVISIBILITY       315 /* misc */
+#define MUSE_POT_SPEED              316 /* misc */
+#define MUSE_POT_POLYMORPH          317 /* misc */
+#define MUSE_POT_REFLECT            318
+/* potion of see invisibile? */
+/* Potion of sickness? */
+
+/* Misc items */
+
+#define MUSE_LIZARD_CORPSE          401 /* Defensive */
+#define MUSE_EUCALYPTUS_LEAF        402 /* Defensive */
+#define MUSE_BUGLE                  403 /* Defensive */
+#define MUSE_UNICORN_HORN           404 /* Defensive */
+#define MUSE_FROST_HORN             405 /* Offensive */
+#define MUSE_FIRE_HORN              406 /* Offensive */
+#define MUSE_CAMERA                 407 /* Offensive */
+#define MUSE_MAGIC_FLUTE            408 /* Offensive */
+#define MUSE_BULLWHIP               409 /* misc */
+#define MUSE_BAG                    410 /* misc */
+#define MUSE_FIGURINE               411 /* misc */
+
+/* #define MUSE_INNATE_TPT 9999
+ * We cannot use this.  Since monsters get unlimited teleportation, if they
+ * were allowed to teleport at will you could never catch them.  Instead,
+ * assume they only teleport at random times, despite the inconsistency
+ * that if you polymorph into one you teleport at will.
+ */
+
+
 /* Any preliminary checks which may result in the monster being unable to use
  * the item.  Returns 0 if nothing happened, 2 if the monster can't do
  * anything (i.e. it teleported) and 1 if it's dead.
@@ -298,42 +399,6 @@ mquaffmsg(struct monst *mtmp, struct obj *otmp)
         You_hear("a chugging sound.");
     }
 }
-
-/* Defines for various types of stuff.  The order in which monsters prefer
- * to use them is determined by the order of the code logic, not the
- * numerical order in which they are defined.
- */
-#define MUSE_SCR_TELEPORTATION 1
-#define MUSE_WAN_TELEPORTATION_SELF 2
-#define MUSE_POT_HEALING 3
-#define MUSE_POT_EXTRA_HEALING 4
-#define MUSE_WAN_DIGGING 5
-#define MUSE_TRAPDOOR 6
-#define MUSE_TELEPORT_TRAP 7
-#define MUSE_UPSTAIRS 8
-#define MUSE_DOWNSTAIRS 9
-#define MUSE_WAN_CREATE_MONSTER 40  /* Can also be used offensively */
-#define MUSE_SCR_CREATE_MONSTER 11
-#define MUSE_UP_LADDER 12
-#define MUSE_DN_LADDER 13
-#define MUSE_SSTAIRS 14
-#define MUSE_WAN_TELEPORTATION 15
-#define MUSE_BUGLE 16
-#define MUSE_UNICORN_HORN 17
-#define MUSE_POT_FULL_HEALING 18
-#define MUSE_LIZARD_CORPSE 19
-#define MUSE_WAN_UNDEAD_TURNING 20 /* also an offensive item */
-#define MUSE_EUCALYPTUS_LEAF 21
-#define MUSE_POT_RESTORE_ABILITY 22
-#define MUSE_POT_VAMPIRE_BLOOD   23
-#define MUSE_POT_PHASING   24
-/*
-#define MUSE_INNATE_TPT 9999
- * We cannot use this.  Since monsters get unlimited teleportation, if they
- * were allowed to teleport at will you could never catch them.  Instead,
- * assume they only teleport at random times, despite the inconsistency
- * that if you polymorph into one you teleport at will.
- */
 
 staticfn boolean
 m_use_healing(struct monst *mtmp)
@@ -1373,40 +1438,6 @@ rnd_defensive_item(struct monst *mtmp)
     return 0;
 }
 
-#define MUSE_WAN_DEATH 1
-#define MUSE_WAN_SLEEP 2
-#define MUSE_WAN_FIRE 3
-#define MUSE_WAN_COLD 4
-#define MUSE_WAN_LIGHTNING 5
-#define MUSE_WAN_MAGIC_MISSILE 6
-#define MUSE_WAN_STRIKING 7
-#define MUSE_SCR_FIRE 8
-#define MUSE_POT_PARALYSIS 9
-#define MUSE_POT_BLINDNESS 10
-#define MUSE_POT_CONFUSION 11
-#define MUSE_FROST_HORN 12
-#define MUSE_FIRE_HORN 13
-#define MUSE_POT_ACID 14
-#define MUSE_WAN_TELEPORTATION 15
-#define MUSE_POT_SLEEPING 16
-#define MUSE_SCR_EARTH 17
-#define MUSE_CAMERA 18
-#define MUSE_POT_HALLUCINATION 19
-/*#define MUSE_WAN_UNDEAD_TURNING 20*/ /* also a defensive item so don't
-                                     * redefine; nonconsecutive value is ok */
-#define MUSE_POT_OIL 21
-#define MUSE_MAGIC_FLUTE 22
-#define MUSE_SCR_STINKING_CLOUD 23
-#define MUSE_WAN_CANCELLATION 24
-#define MUSE_POT_POLYMORPH_THROW 25
-#define MUSE_WAN_POISON_GAS     26
-#define MUSE_WAN_CORROSION      27
-#define MUSE_SCR_CLONING        28
-#define MUSE_WAN_SLOW_MONSTER 29
-#define MUSE_WAN_DRAINING 30
-#define MUSE_WAN_WONDER 31
-#define MUSE_WAN_POLYMORPH 32 /* also a defensive item */
-#define MUSE_WAN_STUNNING 33 /* Not a real wand, for wands of wonder */
 
 staticfn boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -2399,20 +2430,6 @@ rnd_offensive_item(struct monst *mtmp)
     /*NOTREACHED*/
     return 0;
 }
-
-#define MUSE_POT_GAIN_LEVEL 1
-#define MUSE_WAN_MAKE_INVISIBLE 2
-#define MUSE_POT_INVISIBILITY 3
-#define MUSE_POLY_TRAP 4
-// #define MUSE_WAN_POLYMORPH 5
-#define MUSE_POT_SPEED 6
-#define MUSE_WAN_SPEED_MONSTER 7
-#define MUSE_BULLWHIP 8
-#define MUSE_POT_POLYMORPH 9
-#define MUSE_BAG 10
-#define MUSE_SCR_REMOVE_CURSE 11
-#define MUSE_FIGURINE 12
-#define MUSE_POT_REFLECT 13
 
 boolean
 find_misc(struct monst *mtmp)
