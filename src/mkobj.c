@@ -1118,7 +1118,7 @@ mksobj_init(struct obj *otmp, boolean artif)
         if (otmp->otyp == SCR_ZAPPING) {
             int otyp;
             do {
-                otyp = rnd_class(WAN_LIGHT, WAN_CORROSION);
+                otyp = rnd_class(WAN_LIGHT, LAST_WAND);
             } while (otyp == WAN_WISHING
                     || otyp == WAN_CREATE_MONSTER /* Already plenty of summon cards. */
                     || otyp == WAN_NOTHING);
