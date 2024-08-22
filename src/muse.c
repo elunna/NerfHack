@@ -48,6 +48,8 @@ staticfn boolean muse_unslime(struct monst *, struct obj *, struct trap *,
                             boolean);
 staticfn int cures_sliming(struct monst *, struct obj *);
 staticfn boolean green_mon(struct monst *);
+staticfn int muse_wonder(void);
+staticfn int muse_createmonster(struct monst *, struct obj *);
 
 /* Any preliminary checks which may result in the monster being unable to use
  * the item.  Returns 0 if nothing happened, 2 if the monster can't do
@@ -310,7 +312,7 @@ mquaffmsg(struct monst *mtmp, struct obj *otmp)
 #define MUSE_TELEPORT_TRAP 7
 #define MUSE_UPSTAIRS 8
 #define MUSE_DOWNSTAIRS 9
-#define MUSE_WAN_CREATE_MONSTER 10
+#define MUSE_WAN_CREATE_MONSTER 40  /* Can also be used offensively */
 #define MUSE_SCR_CREATE_MONSTER 11
 #define MUSE_UP_LADDER 12
 #define MUSE_DN_LADDER 13
@@ -1041,21 +1043,9 @@ use_defensive(struct monst *mtmp)
         mbhit(mtmp, rn1(8, 6), mbhitm, bhito, otmp);
         gm.m_using = FALSE;
         return 2;
-    case MUSE_WAN_CREATE_MONSTER: {
-        coord cc;
-        struct monst *mon;
-        /* pm: 0 => random, eel => aquatic, croc => amphibious */
-        struct permonst *pm = !is_pool(mtmp->mx, mtmp->my) ? 0
-                            : &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
-
-        if (!enexto(&cc, mtmp->mx, mtmp->my, pm))
-            return 0;
-        mzapwand(mtmp, otmp, FALSE);
-        mon = makemon((struct permonst *) 0, cc.x, cc.y, NO_MM_FLAGS);
-        if (mon && canspotmon(mon) && oseen)
-            makeknown(WAN_CREATE_MONSTER);
-        return 2;
-    }
+    case MUSE_WAN_CREATE_MONSTER:
+        return muse_createmonster(mtmp, otmp);
+        break;
     case MUSE_SCR_CREATE_MONSTER: {
         coord cc;
         struct permonst *pm = 0, *fish = 0;
@@ -1072,8 +1062,8 @@ use_defensive(struct monst *mtmp)
         else if (is_pool(mtmp->mx, mtmp->my))
             fish = &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
 
-	/* Cartomancer effects */
-	if (is_moncard(otmp)) {
+        /* Cartomancer effects */
+        if (is_moncard(otmp)) {
             pm = &mons[otmp->corpsenm];
             cnt = 1; /* Same as for player */
         }
@@ -1414,6 +1404,9 @@ rnd_defensive_item(struct monst *mtmp)
 #define MUSE_SCR_CLONING        28
 #define MUSE_WAN_SLOW_MONSTER 29
 #define MUSE_WAN_DRAINING 30
+#define MUSE_WAN_WONDER 31
+#define MUSE_WAN_POLYMORPH 32 /* also a defensive item */
+#define MUSE_WAN_STUNNING 33 /* Not a real wand, for wands of wonder */
 
 staticfn boolean
 linedup_chk_corpse(coordxy x, coordxy y)
@@ -1650,6 +1643,11 @@ find_offensive(struct monst *mtmp)
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_WAN_SLOW_MONSTER;
         }
+        nomore(MUSE_WAN_WONDER);
+        if (obj->otyp == WAN_WONDER && obj->spe > 0) {
+            gm.m.offensive = obj;
+            gm.m.has_offense = MUSE_WAN_WONDER;
+        }
         nomore(MUSE_POT_PARALYSIS);
         if (obj->otyp == POT_PARALYSIS && gm.multi >= 0) {
             gm.m.offensive = obj;
@@ -1867,6 +1865,48 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
         if (learnit)
             makeknown(WAN_SLOW_MONSTER);
         break;
+    case WAN_POLYMORPH:
+        if (hits_you) {
+            if (Antimagic) {
+                shieldeff(u.ux, u.uy);
+                You_feel("momentarily different.");
+                monstseesu(M_SEEN_MAGR);
+                if (gz.zap_oseen)
+                    makeknown(otmp->otyp);
+            } else if (!Unchanging) {
+                if (gz.zap_oseen)
+                    makeknown(otmp->otyp);
+                polyself(FALSE);
+            }
+        } else if (resists_magm(mtmp) || defended(mtmp, AD_MAGM)) {
+            /* magic resistance protects from polymorph traps, so make
+               it guard against involuntary polymorph attacks too... */
+            shieldeff(mtmp->mx, mtmp->my);
+        } else if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
+            struct obj *obj;
+            /* dropped inventory shouldn't be hit by this zap */
+            for (obj = mtmp->minvent; obj; obj = obj->nobj)
+                bypass_obj(obj);
+            /* natural shapechangers aren't affected by system shock
+               (unless protection from shapechangers is interfering
+               with their metabolism...) */
+            if (!is_shapeshifter(mtmp->data) && !rn2(25)) {
+                if (canseemon(mtmp)) {
+                    pline("%s shudders!", Monnam(mtmp));
+                    if (gz.zap_oseen)
+                        makeknown(otmp->otyp);
+                }
+                if (canseemon(mtmp))
+                    pline("%s is killed!", Monnam(mtmp));
+                mtmp->mhp = 0;
+                if (DEADMONSTER(mtmp))
+                    mondied(mtmp);
+            } else if (newcham(mtmp, (struct permonst *) 0, NC_SHOW_MSG)) {
+                if (!Hallucination && gz.zap_oseen)
+                    makeknown(otmp->otyp);
+            }
+        }
+        break;
     default:
         break;
     }
@@ -2001,8 +2041,9 @@ mbhit(
 int
 use_offensive(struct monst *mtmp)
 {
-    int i, maxdmg = 0;
     struct obj *otmp = gm.m.offensive;
+    int i, maxdmg = 0;
+    int otyp = otmp->otyp;
     boolean oseen;
     struct attack* mattk;
 
@@ -2010,7 +2051,12 @@ use_offensive(struct monst *mtmp)
     if (otmp->oclass != POTION_CLASS && (i = precheck(mtmp, otmp)) != 0)
         return i;
     oseen = canseemon(mtmp);
-    
+
+    /* Handle wand of wonder */
+    boolean wonder = gm.m.has_offense == MUSE_WAN_WONDER;
+    if (wonder)
+        otyp = muse_wonder();
+
     /* From SporkHack (modified): some monsters would be better served if they
        were to melee attack instead using whatever offensive item they possess
        (read: master mind flayer zapping a wand of striking at the player repeatedly
@@ -2047,18 +2093,22 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_MAGIC_MISSILE:
     case MUSE_WAN_CORROSION:
     case MUSE_WAN_POISON_GAS:
+    case MUSE_WAN_STUNNING:
         mzapwand(mtmp, otmp, FALSE);
         if (oseen)
             makeknown(otmp->otyp);
         gm.m_using = TRUE;
         gc.current_wand = otmp;
         gb.buzzer = mtmp;
-        buzz(BZ_M_WAND(BZ_OFS_WAN(otmp->otyp)),
-             (otmp->otyp == WAN_MAGIC_MISSILE) ? 2 : 6, mtmp->mx, mtmp->my,
+        buzz(BZ_M_WAND(BZ_OFS_WAN(otyp)),
+             (otyp == WAN_MAGIC_MISSILE || otyp == (WAN_DRAINING + 1)) 
+                ? 2 : 6, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         gb.buzzer = 0;
         gc.current_wand = 0;
         gm.m_using = FALSE;
+        // if (wonder)
+        //     otmp->otyp = WAN_WONDER;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_FIRE_HORN:
     case MUSE_FROST_HORN:
@@ -2107,12 +2157,17 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_STRIKING:
     case MUSE_WAN_CANCELLATION:
     case MUSE_WAN_SLOW_MONSTER:
+    case MUSE_WAN_POLYMORPH:
         gz.zap_oseen = oseen;
         mzapwand(mtmp, otmp, FALSE);
         gm.m_using = TRUE;
+        if (wonder)
+            otmp->otyp = otyp;
         mbhit(mtmp, rn1(8, 6), mbhitm, bhito, otmp);
         /* note: 'otmp' might have been destroyed (drawbridge destruction) */
         gm.m_using = FALSE;
+        if (wonder)
+            otmp->otyp = WAN_WONDER;
         return 2;
     case MUSE_SCR_EARTH: {
         /* TODO: handle steeds */
@@ -2280,6 +2335,8 @@ use_offensive(struct monst *mtmp)
                         8 + 4 * bcsign(otmp));
         m_useup(mtmp, otmp);
         return 2;
+    case MUSE_WAN_CREATE_MONSTER:
+        return muse_createmonster(mtmp, otmp);
     case 0:
         return 0; /* i.e. an exploded wand */
     default:
@@ -2347,7 +2404,7 @@ rnd_offensive_item(struct monst *mtmp)
 #define MUSE_WAN_MAKE_INVISIBLE 2
 #define MUSE_POT_INVISIBILITY 3
 #define MUSE_POLY_TRAP 4
-#define MUSE_WAN_POLYMORPH 5
+// #define MUSE_WAN_POLYMORPH 5
 #define MUSE_POT_SPEED 6
 #define MUSE_WAN_SPEED_MONSTER 7
 #define MUSE_BULLWHIP 8
@@ -3768,6 +3825,114 @@ green_mon(struct monst *mon)
     }
     return FALSE;
 #endif
+}
+
+staticfn int
+muse_wonder(void)
+{
+    int wondertemp;
+
+    while (gm.m.has_offense == MUSE_WAN_WONDER) {
+        /* Choose a random wand */
+        wondertemp = WAN_LIGHT + rn2(LAST_WAND - WAN_LIGHT);
+
+        /* Be a little lenient... */
+        if (wondertemp == WAN_DEATH && rn2(2))
+            wondertemp = WAN_DRAINING;
+
+        switch (wondertemp) {
+        case WAN_DEATH:
+            gm.m.has_offense = MUSE_WAN_DEATH;
+            break;
+        case WAN_DRAINING: 
+            gm.m.has_offense = MUSE_WAN_DRAINING;
+            break;
+        case WAN_SLEEP: 
+            gm.m.has_offense = MUSE_WAN_SLEEP;
+            break;
+        case WAN_FIRE: 
+            gm.m.has_offense = MUSE_WAN_FIRE;
+            break;
+        case WAN_COLD: 
+            gm.m.has_offense = MUSE_WAN_COLD;
+            break;
+        case WAN_LIGHTNING: 
+            gm.m.has_offense = MUSE_WAN_LIGHTNING;
+            break;
+        case WAN_MAGIC_MISSILE: 
+            gm.m.has_offense = MUSE_WAN_MAGIC_MISSILE;
+            break;
+        case WAN_CORROSION: 
+            gm.m.has_offense = MUSE_WAN_CORROSION;
+            break;
+        case WAN_POISON_GAS: 
+            gm.m.has_offense = MUSE_WAN_POISON_GAS;
+            break;
+        case WAN_TELEPORTATION: 
+            gm.m.has_offense = MUSE_WAN_TELEPORTATION;
+            break;
+        case WAN_UNDEAD_TURNING:
+            gm.m.has_offense = MUSE_WAN_UNDEAD_TURNING;
+            break;
+        case WAN_STRIKING: 
+            gm.m.has_offense = MUSE_WAN_STRIKING;
+            break;
+        case WAN_CANCELLATION: 
+            gm.m.has_offense = MUSE_WAN_CANCELLATION;
+            break;
+        case WAN_SLOW_MONSTER: 
+            gm.m.has_offense = MUSE_WAN_SLOW_MONSTER;
+            break;
+        case WAN_POLYMORPH:
+            /* Monsters can only get poly zaps here via
+             * wands of wonder, so they are rare. */
+            gm.m.has_offense = MUSE_WAN_POLYMORPH;
+            break;
+        case WAN_CREATE_MONSTER: 
+            gm.m.has_offense = MUSE_WAN_CREATE_MONSTER;
+            break;
+
+        /* Some of these could be crafted to their own effects, but for now
+         * having them default to stun ray reduces the chances of other
+         * really nasty effects (ie: death, polymorph, cancellation, etc) */
+        case WAN_ENLIGHTENMENT:
+        case WAN_PROBING:
+        case WAN_SECRET_DOOR_DETECTION:
+        case WAN_LIGHT:
+        case WAN_OPENING:
+        case WAN_LOCKING:
+        case WAN_DIGGING:
+        case WAN_MAKE_INVISIBLE:
+        case WAN_SPEED_MONSTER:
+        case WAN_WISHING:
+            /* This is a weird kludge until we (maybe) implement wands 
+             * of stunning */
+            gm.m.has_offense = MUSE_WAN_STUNNING;
+            wondertemp = WAN_DRAINING + 1;
+            break;
+        default:
+            ;  /* Sorry monsters, no wishes for you. */
+        }
+    }
+    return wondertemp;
+}
+
+staticfn int
+muse_createmonster(struct monst *mtmp, struct obj *otmp)
+{
+    coord cc;
+    struct monst *mon;
+    /* pm: 0 => random, eel => aquatic, croc => amphibious */
+    struct permonst *pm = !is_pool(mtmp->mx, mtmp->my) ? 0
+                        : &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
+
+    if (!enexto(&cc, mtmp->mx, mtmp->my, pm))
+        return 0;
+    mzapwand(mtmp, otmp, FALSE);
+    mon = makemon((struct permonst *) 0, cc.x, cc.y, NO_MM_FLAGS);
+    if (mon && canspotmon(mon) && canseemon(mtmp))
+        makeknown(WAN_CREATE_MONSTER);
+    return 2;
 }
 
 /*muse.c*/

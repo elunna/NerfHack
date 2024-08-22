@@ -3873,10 +3873,6 @@ weffects(struct obj *obj)
         if (wondertemp == WAN_NOTHING) {
             wondertemp = WAN_DEATH;
         }
-        /* Give a little mapping for divination related effects */
-        if (wondertemp == WAN_SECRET_DOOR_DETECTION || wondertemp == WAN_ENLIGHTENMENT
-            || wondertemp == WAN_PROBING) {
-        }
 
         obj->otyp = wondertemp;
         otyp = wondertemp;
