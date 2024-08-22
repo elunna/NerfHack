@@ -2109,9 +2109,13 @@ thitmonst(
        to cross-aligned unicorns changes Luck by random amount;
        throwing worthless glass doesn't affect Luck but doesn't anger them;
        3.7: treat rocks and gray stones as attacks rather than like glass
-       and also treat gems or glass shot via sling as attacks */
-    if (obj->oclass == GEM_CLASS && is_unicorn(mon->data)
-        && objects[obj->otyp].oc_material != MINERAL && !uslinging()) {
+       and also treat gems or glass shot via sling as attacks.
+       NerfHack: Also treat any cursed gems as attacks. */
+    if (obj->oclass == GEM_CLASS
+        && is_unicorn(mon->data)
+        && objects[obj->otyp].oc_material != MINERAL
+        && !uslinging()
+        && !obj->cursed) {
         if (helpless(mon)) {
             tmiss(obj, mon, FALSE);
             return 0;
@@ -2203,7 +2207,7 @@ thitmonst(
                         ++tmp;
                 }
             }
-	} else if (is_moncard(obj)) {
+	    } else if (is_moncard(obj)) {
             use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
             obfree(obj, (struct obj *) 0);
             return 1;
