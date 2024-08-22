@@ -930,6 +930,10 @@ dragon_armor_handling(
     case GREEN_DRAGON_SCALE_MAIL:
         if (puton) {
             ESick_resistance |= W_ARM;
+            if (Sick) {
+                You_feel("cured.  What a relief!");
+                Sick = 0L;
+            }
             ERegeneration |= W_ARM;
         } else {
             ESick_resistance &= ~W_ARM;
@@ -962,7 +966,7 @@ dragon_armor_handling(
             if (Stoned) {
                 make_stoned(0L, "You no longer seem to be petrifying.", 0,
                         (char *) 0);
-        }
+            }
         } else {
             EStone_resistance &= ~W_ARM;
 
@@ -982,6 +986,12 @@ dragon_armor_handling(
     case SHIMMERING_DRAGON_SCALE_MAIL:
         if (puton) {
             EStun_resistance |= W_ARM;
+            if (Stunned) {
+                You_feel("%s now.",
+                        Hallucination ? "less wobbly"
+                                    : "a bit steadier");
+                Stunned = 0L;
+            }
         } else {
             EStun_resistance &= ~W_ARM;
         }
