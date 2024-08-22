@@ -959,6 +959,10 @@ dragon_armor_handling(
     case YELLOW_DRAGON_SCALE_MAIL:
         if (puton) {
             EStone_resistance |= W_ARM;
+            if (Stoned) {
+                make_stoned(0L, "You no longer seem to be petrifying.", 0,
+                        (char *) 0);
+        }
         } else {
             EStone_resistance &= ~W_ARM;
 
