@@ -240,6 +240,25 @@
         M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_OVIPAROUS,
         M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 8, CLR_RED, PYROLISK),
+    /* From ancient lore, the cockatrice and basilisk were virtually
+     * the same creature, with just some slight differences in their origin.
+     * Taking some creative license here. Bottom line, the basilisk template
+     * is a larger, faster and all-around more deadly version of the cockatrice.
+     * (ported from EvilHack) */
+    MON(NAM("basilisk"), S_COCKATRICE,
+        LVL(12, 12, -10, 70, -5), (G_GENO | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 2, 4),
+          ATTK(AT_TUCH, AD_STON, 1, 6),
+          ATTK(AT_TUCH, AD_STON, 1, 6),
+          ATTK(AT_CLAW, AD_PHYS, 2, 8),
+          ATTK(AT_NONE, AD_STON, 0, 0),
+          NO_ATTK),
+        SIZ(90, 50, MS_HISS, MZ_MEDIUM), MR_POISON | MR_SLEEP | MR_STONE,
+        MR_POISON | MR_STONE,
+        M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_THICK_HIDE,
+        M2_HOSTILE | M2_LORD | M2_STRONG | M2_NASTY,
+        M3_ACCURATE | M3_INFRAVISIBLE,
+        NO_RACE, 16, CLR_BRIGHT_GREEN, BASILISK),
     /*
      * dogs & other canines
      */
