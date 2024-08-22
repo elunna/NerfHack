@@ -334,10 +334,11 @@ mpoisons_subj(struct monst *mtmp, struct attack *mattk)
 void
 u_slow_down(void)
 {
+    boolean had_speed = !!HFast;
     HFast = 0L;
-    if (!Fast)
+    if (!Fast && had_speed)
         You("slow down.");
-    else /* speed boots */
+    else if (had_speed) /* speed boots */
         Your("quickness feels less natural.");
     exercise(A_DEX, FALSE);
 }
