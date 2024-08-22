@@ -338,8 +338,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_WARN | SPFX_DFLAGH), 0, MH_ORC,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ELF, 2000L, CLR_BRIGHT_BLUE, ORCRIST),
-                                 
-    
+
     /*** Unaligned artifacts ***/
     
     /* Changes: Now grants warning vs dragons and can instakill dragons */
@@ -418,7 +417,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH), 
       (SPFX_FLYING | SPFX_DISPLAC), 0,
       /* this stone does double damage if used as a projectile weapon */
-      PHYS(5, 0), NO_DFNS, NO_CARY, 0,
+      PHYS(5, 0), NO_DFNS, NO_CARY, UNCURSE_INVK,
       A_NEUTRAL, PM_BARBARIAN, NON_PM, 2500L, NO_COLOR, HEART_OF_AHRIMAN),
 
     A("The Holographic Void Lily", CREDIT_CARD,

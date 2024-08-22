@@ -72,6 +72,7 @@ enum invoke_prop_types {
     BLINDING_RAY,
     LIGHTNING_BOLT,
     SUMMONING,
+    UNCURSE_INVK,
 };
 
 /* clang-format on */

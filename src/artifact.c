@@ -2258,6 +2258,13 @@ arti_invoke(struct obj *obj)
             }
             break;
         }
+        case UNCURSE_INVK:{
+            struct obj pseudo = cg.zeroobj;
+            pseudo.blessed = 1;
+            pseudo.otyp = SCR_REMOVE_CURSE;
+            (void) seffects(&pseudo);
+            break;
+        }
         case UNTRAP: {
             if (!untrap(TRUE, 0, 0, (struct obj *) 0)) {
                 obj->age = 0; /* don't charge for changing their mind */
