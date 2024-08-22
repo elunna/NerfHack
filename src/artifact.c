@@ -689,9 +689,13 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         mask = &EDrain_resistance;
     else if (dtyp == AD_ACID)
         mask = &EAcid_resistance;
-    else if (dtyp == AD_ACID)
-        mask = &EAcid_resistance;
-    else if (dtyp == AD_STUN) {
+    else if (dtyp == AD_DISE) {
+        mask = &ESick_resistance;
+        if (Sick) {
+            You_feel("cured.  What a relief!");
+            Sick = 0L;
+        }
+    } else if (dtyp == AD_STUN) {
         mask = &EStun_resistance;
         if (Stunned) {
             You_feel("%s now.",
@@ -1075,6 +1079,8 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
             return !(yours ? Stone_resistance : resists_ston(mtmp));
         case AD_ACID:
             return !(yours ? Acid_resistance : resists_acid(mtmp));
+        case AD_DISE:
+            return !(yours ? Sick_resistance : resists_sick(mtmp->data));
         default:
             impossible("Weird weapon special attack.");
         }
@@ -1609,6 +1615,68 @@ artifact_hit(
         }
         return realizes_damage;
     }
+
+    /* Seventh basic attack - disease */
+    if (attacks(AD_DISE, otmp)) {
+        boolean elf = youdefend ? maybe_polyd(is_elf(gy.youmonst.data),
+                                              Race_if(PM_ELF))
+                                : is_elf(mdef->data);
+        boolean no_sick = youdefend ? Sick_resistance
+                                    : (resists_sick(mdef->data)
+                                       || defended(mdef, AD_DISE));
+        if (youattack) {
+            if (Role_if(PM_SAMURAI)) {
+                You("dishonorably use a diseased weapon!");
+                adjalign(-sgn(u.ualign.type));
+            } else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) {
+                You_feel("like an evil coward for using a diseased weapon.");
+                adjalign(Role_if(PM_KNIGHT) ? -10 : -1);
+            }
+        }
+        if (realizes_damage) {
+            /* currently the only object that uses this is Grimtooth */
+            pline_The("filthy dagger %s %s%c",
+                      no_sick ? "hits"
+                              : rn2(2) ? "contaminates" : "infects",
+                      hittee, !gs.spec_dbon_applies ? '.' : '!');
+        }
+
+        if (!rn2(10) && elf) {
+            if (show_instakill)
+                pline("The cruel blade penetrates %s soft flesh, disemboweling %s!",
+                    youdefend ? "your" : s_suffix(mon_nam(mdef)),
+                    youdefend ? "you" : noit_mhim(mdef));
+            if (youdefend) {
+                losehp((Upolyd ? u.mh : u.uhp) + 1, "disemboweled by Grimtooth",
+                       NO_KILLER_PREFIX);
+            } else { /* you or mon hit monster */
+                if (youattack) {
+                    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+                } else {
+                    monkilled(mdef, (char *) 0, AD_DISE);
+                }
+            }
+            return TRUE;
+        }
+
+        if (youdefend && !rn2(5)) {
+            diseasemu(mdef->data);
+        } else if (!youdefend) {
+            mdef->mdiseasetime = rnd(10) + 5;
+            if (!no_sick && !rn2(5)) {
+                if (canseemon(mdef))
+                    pline("%s looks %s.", Monnam(mdef),
+                          mdef->mdiseased ? "even worse" : "diseased");
+                mdef->mdiseased = 1;
+                if (u_wield_art(ART_GRIMTOOTH))
+                    mdef->mdiseabyu = TRUE;
+                else
+                    mdef->mdiseabyu = FALSE;
+            }
+        }
+        return realizes_damage;
+    }
+
     if (attacks(AD_MAGM, otmp)) {
         if (realizes_damage)
             pline_The("imaginary widget hits%s %s%c",
@@ -2673,6 +2741,7 @@ abil_to_adtyp(long *abil)
         { &EPoison_resistance, AD_DRST },
         { &EDrain_resistance, AD_DRLI },
         { &EStun_resistance, AD_STUN },
+        { &ESick_resistance, AD_DISE },
     };
     int k;
 

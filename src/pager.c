@@ -423,6 +423,8 @@ look_at_monster(
     
     if (mtmp->mwither)
         Strcat(buf, ", withering");
+    if (mtmp->mdiseased)
+        Strcat(buf, ", diseased");
     
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
