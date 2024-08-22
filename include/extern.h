@@ -132,6 +132,7 @@ extern void fig_transform(union any *, long) NONNULLARG1;
 extern int unfixable_trouble_count(boolean);
 extern boolean check_mon_jump(struct monst *, int, int);
 extern void broken_wand_explode(struct obj *, int, int);
+extern void discard_broken_wand(void);
 extern void exploding_wand_efx(struct obj *);
 
 /* ### artifact.c ### */

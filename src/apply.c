@@ -45,7 +45,6 @@ staticfn int grapple_range(void);
 staticfn boolean can_grapple_location(coordxy, coordxy);
 staticfn void display_grapple_positions(boolean);
 staticfn int use_grapple(struct obj *);
-staticfn void discard_broken_wand(void);
 staticfn int do_break_wand(struct obj *);
 staticfn int apply_ok(struct obj *);
 staticfn int flip_through_book(struct obj *);
@@ -4255,7 +4254,7 @@ use_grapple(struct obj *obj)
     return ECMD_TIME;
 }
 
-staticfn void
+void
 discard_broken_wand(void)
 {
     struct obj *obj;

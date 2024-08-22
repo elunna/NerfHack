@@ -2932,17 +2932,25 @@ wand_explode(struct obj* obj, int chg /* recharging */, struct monst *mon)
         dmg = 0;
     else
         dmg = d(charges, dmg_multiplier);
-        
+    
     /* inflict damage and destroy the wand */
-    if (hero_broke)
-        broken_wand_explode(obj, dmg * 2, expltype);
-    else {
+    if (hero_broke) {
+        freeinv(obj);       /* hide it from destroy_items instead... */
+        setnotworn(obj);    /* so we need to do this ourselves */
+        explode(u.ux, u.uy, -(obj->otyp), dmg * 2, WAND_CLASS, expltype);
+        exploding_wand_efx(obj);
+        makeknown(obj->otyp); /* explode describes the effect */
+        obj->in_use = FALSE;
+        discard_broken_wand();
+    } else {
         int otyp = obj->otyp;
         /* Useup before monster is possibly killed. */
-        m_useup(mon, obj);
         explode(mon->mx, mon->my, -(otyp), dmg * 2, WAND_CLASS, expltype);
+        exploding_wand_efx(obj);
         makeknown(obj->otyp); /* explode describes the effect */
+        m_useup(mon, obj);
     }
+    
     /* Couple janky exceptions */
     switch (obj->otyp) {
     case WAN_NOTHING:
