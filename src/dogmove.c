@@ -1502,11 +1502,17 @@ acceptable_pet_target(
      */
     int balk = mtmp->m_lev + ((5 * mtmp->mhp) / mtmp->mhpmax) - 2;
     boolean grudge = FALSE;
+    boolean close_sphere = (mtmp->mtame && attacktype(mtmp->data, AT_BOOM)
+            && distu(mtmp->mx, mtmp->my) < 3);
 
     /* Spell minions are fearless */
-    if (mtmp->msummoned)
+    if (mtmp->msummoned) {
+        /* Cartomancers get a lot of sphere cards, so let's make 
+         * them a litte more user friendly. */
+        if (close_sphere && rn2(10))
+            return FALSE;
         return TRUE;
-
+    }
     if (EAggravate_monster)
         return TRUE; /* No checks for extrinsic aggravate mon */
 
