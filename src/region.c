@@ -300,13 +300,10 @@ add_region(NhRegion *reg)
     for (i = reg->bounding_box.lx; i <= reg->bounding_box.hx; i++)
         for (j = reg->bounding_box.ly; j <= reg->bounding_box.hy; j++) {
             struct monst *mtmp;
-            boolean is_inside = FALSE;
-
             /* Some regions can cross the level boundaries */
             if (!isok(i, j))
                 continue;
             if (inside_region(reg, i, j)) {
-                is_inside = TRUE;
                 /* if there's a monster here, add it to the region */
                 if ((mtmp = m_at(i, j)) != 0
 #if 0
