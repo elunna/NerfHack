@@ -892,6 +892,8 @@ u_init_race(void)
                                     FIGURINE, CAN_OF_GREASE, CREDIT_CARD,
                                     TOWEL, };
             Xtra_Tool[0].trotyp = ROLL_FROM(trotyp);
+            if (Xtra_Tool[0].trotyp == CAN_OF_GREASE)
+                Xtra_Tool[0].trspe = rn1(21, 5); /* Same as mkobj.c */
             ini_inv(Xtra_Tool);
         } else {
             ini_inv(OilPotion);
