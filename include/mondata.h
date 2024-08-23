@@ -265,7 +265,7 @@
 #define likes_magic(ptr) (((ptr)->mflags2 & M2_MAGIC) != 0L)
 #define webmaker(ptr) \
     ((ptr) == &mons[PM_CAVE_SPIDER] \
-     || (ptr) == &mons[PM_JUMPING_SPIDER] \
+     || (ptr) == &mons[PM_PHASE_SPIDER] \
      || (ptr) == &mons[PM_GIANT_SPIDER])
 #define is_unicorn(ptr) ((ptr)->mlet == S_UNICORN && likes_gems(ptr))
 #define is_longworm(ptr)                                                   \

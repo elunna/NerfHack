@@ -1294,17 +1294,16 @@
             | M1_CARNIVORE,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 8, CLR_RED, SCORPION),
-    /* From SpliceHack */
-    MON(NAM("jumping spider"), S_SPIDER,
-        LVL(6, 15, 4, 0, 0), (G_GENO | G_SGROUP | 1),
-        A(ATTK(AT_BITE, AD_DRST, 2, 4), 
+    MON(NAM("phase spider"), S_SPIDER,                               /* Slash'EM */
+        LVL(8, 12, -2, 0, -4), (G_GENO | G_SGROUP | 1),
+        A(ATTK(AT_BITE, AD_DRST, 3, 8),
           ATTK(AT_TUCH, AD_WEBS, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(100, 100, MS_SILENT, MZ_MEDIUM), MR_POISON, MR_POISON,
-        M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE
-            | M1_CONCEAL,
-        M2_HOSTILE | M2_STRONG | M3_JUMPER, 0,
-        NO_RACE, 8, CLR_BLUE, JUMPING_SPIDER),
+        SIZ(100, 100, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_TPORT
+            | M1_CARNIVORE | M1_WALLWALK,
+        M2_HOSTILE | M2_STRONG, 0,
+        NO_RACE, 10, CLR_BLUE, PHASE_SPIDER),
     /* Ported from EvilHack:
      * in honor of our friend Grasshopper
      * who always seems to be attacked by centipedes */
