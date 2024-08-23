@@ -95,11 +95,10 @@ struct Jitem {
 
 /* true for gems/rocks that should have " stone" appended to their names */
 #define GemStone(typ)                                                  \
-    (typ == FLINT                                                      \
-     || (objects[typ].oc_material == GEMSTONE                          \
+    (objects[typ].oc_material == GEMSTONE                          \
          && (typ != DILITHIUM_CRYSTAL && typ != RUBY && typ != DIAMOND \
              && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
-             && typ != OPAL)))
+             && typ != OPAL))
 
 static const struct Jitem Japanese_items[] = {
     { SHORT_SWORD, "wakizashi" },
@@ -3491,6 +3490,7 @@ static const struct alt_spellings {
     { "load stone", LOADSTONE },
     { "touch stone", TOUCHSTONE },
     { "flintstone", FLINT },
+    { "flint", FLINT },
     { "scroll of flood", SCR_WATER }, /* unnethack name for it */
     { "health stone", HEALTHSTONE },
     
