@@ -6664,8 +6664,11 @@ card_drop(struct monst *mon)
          */
         if (!rn2(3)) {
             int tryct = 0;
+            int min_lev = 2 + u.ulevel;
+            /* Try to restrain overly powerful drops, but allow them once in a while. */
+            int max_lev = 5 + u.ulevel * (!rn2(10) ? 2 : 1);
             do
-                otmp->corpsenm = rndmonnum_adj(5 + u.ulevel, 7 + u.ulevel * 2);
+                otmp->corpsenm = rndmonnum_adj(min_lev, max_lev);
             while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
         } else {
             /* For very weak monsters (base lvl 0 or 1), skip most summon drops.
