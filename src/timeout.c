@@ -1301,6 +1301,17 @@ hatch_egg(anything *arg, long timeout)
                 You_see("%s hatch.", monnambuf);
                 redraw = TRUE; /* update egg's map location */
             }
+            if (is_pool(x, y) && !cant_drown(mon->data)) {
+                if (cansee_hatchspot) /* This will probably never trigger... */
+                    pline_mon(mon, "%s drowns.", Monnam(mon));
+                
+                /* An additional way to dispose of phoenix eggs. 
+                 * They cannot rise from the ashes in water. */
+                if (mon->data == &mons[PM_PHOENIX])
+                    mon->mcan = 1;
+                mondied(mon); /* ok to leave corpse despite water */
+            }
+
             break;
         case OBJ_MINVENT:
             if (cansee_hatchspot) {
