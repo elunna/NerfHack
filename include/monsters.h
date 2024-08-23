@@ -2693,7 +2693,7 @@
         NO_RACE, 17, CLR_GREEN, GUARDIAN_NAGA),
     /* From SpliceHack */
     MON(NAM("ha-naga"), S_NAGA,
-        LVL(20, 18, -4, 70, -2), (G_GENO | G_HELL | 1),
+        LVL(20, 18, -4, 70, -2), (G_GENO | 1),
         A(ATTK(AT_SPIT, AD_DRST, 3, 6),
           ATTK(AT_BITE, AD_PLYS, 2, 3),
           ATTK(AT_MAGC, AD_SPEL, 5, 6),
@@ -2783,7 +2783,7 @@
         M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 6, CLR_BROWN, BROWN_PUDDING),
     MON(NAM("green slime"), S_PUDDING,
-        LVL(6, 13, 6, 0, 0), (G_HELL | G_GENO | G_NOCORPSE | 1),
+        LVL(6, 13, 6, 0, 0), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_TUCH, AD_SLIM, 1, 4),
           ATTK(AT_NONE, AD_SLIM, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2793,7 +2793,7 @@
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID | M1_POIS | M1_CLING
             | M1_HIDE,
         M2_HOSTILE | M2_NEUTER, 0,
-        NO_RACE, 8, CLR_GREEN, GREEN_SLIME),
+        NO_RACE, 14, CLR_GREEN, GREEN_SLIME),
     MON(NAM("like-like"), S_PUDDING,
         LVL(6, 10, 8, 0, 0), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_DCAY, 4, 4),
@@ -2866,13 +2866,13 @@
         M3_INFRAVISIBLE,
         NO_RACE, 8, CLR_BROWN, RUST_MONSTER),
     MON(NAM("disenchanter"), S_RUSTMONST,
-        LVL(12, 12, -10, 0, -3), (G_HELL | G_GENO | 2),
+        LVL(12, 12, -10, 0, -3), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_ENCH, 4, 4),
           ATTK(AT_NONE, AD_ENCH, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(750, 200, MS_GROWL, MZ_LARGE), 0, 0, M1_ANIMAL | M1_CARNIVORE,
         M2_HOSTILE, M3_INFRAVISIBLE,
-        NO_RACE, 14, CLR_BLUE, DISENCHANTER),
+        NO_RACE, 16, CLR_BLUE, DISENCHANTER),
     /*
      * Snakes
      *  Note: in the real world, most snakes are oviparous but some aren't;
