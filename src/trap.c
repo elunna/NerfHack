@@ -6256,20 +6256,7 @@ disarm_spear_trap(struct trap *ttmp) /* Erik Lunna */
      * CHANCE: 14.3%	28.2%	42.1%	56.1%	70.0%
      */
     if (rnl(7) == 0) {
-        switch (rn2(4)) {
-        case 0:
-            cnv_trap_obj(SPEAR, 1, ttmp, FALSE);
-            break;
-        case 1:
-            cnv_trap_obj(ELVEN_SPEAR, 1, ttmp, FALSE);
-            break;
-        case 2:
-            cnv_trap_obj(ORCISH_SPEAR, 1, ttmp, FALSE);
-            break;
-        case 3:
-            cnv_trap_obj(DWARVISH_SPEAR, 1, ttmp, FALSE);
-            break;
-        }
+        cnv_trap_obj(SPEAR + rn2(4), 1, ttmp, FALSE);
     } else {
         You("broke %s spear during your efforts.", which);
         deltrap(ttmp);
@@ -7859,6 +7846,177 @@ trap_sanity_check(void)
         if (ttmp->ttyp <= NO_TRAP || ttmp->ttyp >= TRAPNUM)
             impossible("trap sanity: type (%i)", ttmp->ttyp);
         ttmp = ttmp->ntrap;
+    }
+}
+
+void
+trigger_trap_with_polearm(
+    struct trap *trap, 
+    coord cc,
+    struct obj *pole)
+{
+    struct obj *otmp;
+    boolean see_trap = FALSE;
+    
+    switch (trap->ttyp) {
+    case ARROW_TRAP:
+    case DART_TRAP:
+    case ROCKTRAP:
+        if (trap->once && !rn2(15)) {
+            if (trap->ttyp == ROCKTRAP) {
+                pline("A trap door in %s opens, but nothing falls out.",
+                        the(ceiling(cc.x, cc.y)));
+            } else {
+                You_hear((trap->ttyp == DART_TRAP) ?
+                            "a soft click" : "a loud click.");
+            }
+            deltrap(trap);
+        } else {
+            see_trap = TRUE;
+            otmp = mksobj((trap->ttyp == ROCKTRAP) ? ROCK :
+                            (trap->ttyp == DART_TRAP) ? DART :
+                            ((Inhell && !rn2(3)) ? SILVER_ARROW : ARROW),
+                            TRUE, FALSE);
+            otmp->quan = 1L;
+            otmp->owt = weight(otmp);
+            if (trap->ttyp == ROCKTRAP)
+                pline("A trap door in %s opens and %s falls out.",
+                        the(ceiling(cc.x,cc.y)), an(xname(otmp)));
+            else
+                pline("%s shoots out at your %s.",
+                        (trap->ttyp == DART_TRAP) ? "A little dart" :
+                        "An arrow", xname(pole));
+            if (trap->ttyp != DART_TRAP)
+                otmp->opoisoned = 0;
+            place_object(otmp, cc.x, cc.y);
+            stackobj(otmp);
+        }
+        break;
+    case SPEAR_TRAP:
+        pline("A spear shoots up from a hole in the ground!");
+
+        if (trap->once && !rn2(15)) {
+            if (rnl(7) == 0) {
+                You("knock a spear loose!");
+                cnv_trap_obj(SPEAR + rn2(4), 1, trap, FALSE);
+            } else {
+                You("break it!");
+                deltrap(trap);
+            }
+            newsym(cc.x, cc.y);
+        } else {
+            see_trap = TRUE;
+        }
+        break;
+    case SQKY_BOARD:
+        pline("You prod %s squeaky board.", trap->once ? "a" : "the");
+        see_trap = TRUE;
+        wake_nearby(TRUE);
+        break;
+    case BEAR_TRAP:
+    case WEB:
+        pline("Your %s gets caught in the %s.", xname(pole), 
+            trap->ttyp == WEB ? "web" : "bear trap");
+        trap->once = 1;
+        setuwep(NULL);
+        obj_extract_self(pole);
+        place_object(pole, cc.x, cc.y);
+        update_inventory();
+        if (trap->ttyp == BEAR_TRAP) {
+            makeknown(BEARTRAP);
+            cnv_trap_obj(BEARTRAP, 1, trap, FALSE);
+        }
+        newsym(cc.x, cc.y);
+        break;
+    case LANDMINE:
+        trap->ttyp = PIT;
+        pline("KAABLAMM!!!");
+        newsym(cc.x, cc.y);
+        break;
+    case ROLLING_BOULDER_TRAP:
+        pline("Click.");
+        if (!launch_obj(BOULDER, trap->launch.x, trap->launch.y,
+                        trap->launch2.x, trap->launch2.y,
+                        ROLL | LAUNCH_KNOWN)) {
+            deltrap(trap);
+            newsym(cc.x, cc.y);
+            pline("No boulder was released.");
+        } else {
+            see_trap = TRUE;
+        }
+        break;
+    case SLP_GAS_TRAP:
+        if (!Blind) {
+            pline("The trap releases a puff of gas!");
+        }
+        see_trap = TRUE;
+        break;
+    case RUST_TRAP:
+        pline("%s your %s!",
+                        A_gush_of_water_hits, xname(pole));
+        water_damage(pole, xname(pole), TRUE);
+        update_inventory();
+        see_trap = TRUE;
+        break;
+    case GREASE_TRAP:
+        pline("%s your %s!",
+                        A_gush_of_grease_hits, xname(pole));
+        pole->greased = 1;
+        update_inventory();
+        see_trap = TRUE;
+        break;
+    case FIRE_TRAP:
+        pline("A burst of flame scorches your %s!", xname(pole));
+        (void) erode_obj(pole, xname(pole), ERODE_BURN,
+                                     EF_GREASE | EF_DESTROY);
+        update_inventory();
+        see_trap = TRUE;
+        break;
+    case COLD_TRAP:
+        if (!Blind) {
+            pline("The trap releases a gust of freezing mist!");
+        } else {
+            You_feel("a gust of cold wind!");
+        }
+        see_trap = TRUE;
+        break;
+    case LEVEL_TELEP:
+    case TELEP_TRAP: {
+        int tx, ty, tryct = 200;
+        do {
+            tx = rn2(COLNO);
+            ty = rn2(ROWNO);
+        } while (tryct-- && !goodpos(tx, ty, NULL, NO_MM_FLAGS));
+        pline("Your %s disappears!", xname(pole));
+        setuwep(NULL);
+        obj_extract_self(pole);
+        place_object(pole, tx, ty);
+        see_trap = TRUE;
+        break;
+    }   
+    case STATUE_TRAP:
+        activate_statue_trap(trap, cc.x, cc.y, FALSE);
+        break;
+    case POLY_TRAP:
+        break; /* Should the item get polyd? */
+    case MAGIC_BEAM_TRAP:
+        if (!Deaf)
+            You_hear("a soft click.");
+        dobuzz(trap->launch_otyp, 8, trap->launch.x, trap->launch.y,
+            sgn(trap->tx - trap->launch.x), sgn(trap->ty - trap->launch.y),
+            FALSE);
+        if (!Blind)
+            see_trap = TRUE;
+        break;
+
+    default:
+        pline("Nothing seems to happen.");
+    }
+
+    if (see_trap) {
+        trap->once = 1;
+        trap->tseen = 1;
+        newsym(cc.x, cc.y);
     }
 }
 

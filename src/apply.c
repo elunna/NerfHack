@@ -3806,6 +3806,7 @@ use_pole(struct obj *obj, boolean autohit)
     coord cc;
     struct monst *mtmp;
     struct monst *hitm = svc.context.polearm.hitmon;
+    struct trap *ttmp;
 
     /* Are you allowed to use the pole? */
     if (u.uswallow) {
@@ -3918,6 +3919,8 @@ use_pole(struct obj *obj, boolean autohit)
             pline(thump, "statue");
             wake_nearto(gb.bhitpos.x, gb.bhitpos.y, 25);
         }
+    } else if ((ttmp = t_at(cc.x, cc.y))) {
+        trigger_trap_with_polearm(ttmp, cc, uwep);
     } else {
         /* no monster here and no statue seen or remembered here */
         (void) unmap_invisible(gb.bhitpos.x, gb.bhitpos.y);
@@ -5660,6 +5663,5 @@ use_whetstone(struct obj *stone, struct obj *obj)
             (IS_POOL(levl[u.ux][u.uy].typ) && Underwater) ? "water" : "air");
     return 1;
 }
-
 
 /*apply.c*/
