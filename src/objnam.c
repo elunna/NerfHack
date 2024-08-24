@@ -5135,7 +5135,7 @@ readobjnam(char *bp, struct obj *no_wish)
     d.typ = d.otmp->otyp, d.oclass = d.otmp->oclass; /* what we actually got */
 
     if (d.typ == SCR_ZAPPING)
-        d.otmp->corpsenm = WAN_WONDER;
+        d.otmp->corpsenm = mk_zapcard();
 
     /* if player specified a reasonable count, maybe honor it;
        quantity for gold is handled elsewhere and d.cnt is 0 for it here */

@@ -1701,6 +1701,7 @@ extern struct obj *obj_absorb(struct obj **, struct obj **);
 extern struct obj *obj_meld(struct obj **, struct obj **);
 extern void pudding_merge_message(struct obj *, struct obj *) NONNULLARG12;
 extern struct obj *init_dummyobj(struct obj *, short, long);
+extern int mk_zapcard(void);
 
 /* ### mkroom.c ### */
 

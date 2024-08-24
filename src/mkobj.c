@@ -1116,15 +1116,7 @@ mksobj_init(struct obj *otmp, boolean artif)
             curse(otmp);
 
         if (otmp->otyp == SCR_ZAPPING) {
-            int otyp;
-            do {
-                otyp = rnd_class(WAN_LIGHT, LAST_WAND);
-            } while (otyp == WAN_WISHING
-                    || otyp == WAN_CREATE_MONSTER /* Already plenty of summon cards. */
-                    || otyp == WAN_NOTHING);
-            /* Wishing is excluded, but it's possible we might want to enable it against
-            * extremely rare odds. */
-            otmp->corpsenm = otyp;
+            otmp->corpsenm = mk_zapcard();
         }
         break;
     case SPBOOK_CLASS:
@@ -3899,6 +3891,20 @@ pudding_merge_message(struct obj *otmp, struct obj *otmp2)
         Soundeffect(se_faint_sloshing, 25);
         You_hear("a faint sloshing sound.");
     }
+}
+
+int
+mk_zapcard()
+{
+    int otyp;
+    do {
+        otyp = rnd_class(WAN_LIGHT, LAST_WAND);
+    } while (otyp == WAN_WISHING
+            || otyp == WAN_CREATE_MONSTER /* Already plenty of summon cards. */
+            || otyp == WAN_NOTHING);
+    /* Wishing is excluded, but it's possible we might want to enable it against
+    * extremely rare odds. */
+    return otyp;
 }
 
 /*mkobj.c*/
