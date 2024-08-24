@@ -1491,6 +1491,7 @@ throwit(struct obj *obj,
     struct monst *mon;
     int range, urange;
     boolean crossbowing,
+            boomeranging = FALSE,
             impaired = (Confusion || Stunned || Blind
                         || Hallucination || Fumbling),
             tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
@@ -1598,10 +1599,13 @@ throwit(struct obj *obj,
         return;
 
     } else if (obj->otyp == BOOMERANG && !Underwater) {
+        boomeranging = TRUE;
         if (Is_airlevel(&u.uz) || Levitation)
             hurtle(-u.dx, -u.dy, 1, TRUE);
+
         mon = boomhit(obj, u.dx, u.dy);
         iflags.returning_missile = 0; /* has returned or isn't going to */
+
         if (mon == &gy.youmonst) { /* the thing was caught */
             exercise(A_DEX, TRUE);
             obj = return_throw_to_inv(obj, wep_mask, twoweap, oldslot);
@@ -1686,7 +1690,7 @@ throwit(struct obj *obj,
         }
     }
 
-    if (mon) {
+    if (mon && !boomeranging) {
         boolean obj_gone;
 
         if (mon->isshk && obj->where == OBJ_MINVENT && obj->ocarry == mon) {

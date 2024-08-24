@@ -4624,6 +4624,7 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
     int boom; /* showsym[] index  */
     struct monst *mtmp;
     boolean counterclockwise = URIGHTY; /* ULEFTY => clockwise */
+    boolean obj_gone = FALSE;
 
     /* counterclockwise traversal patterns, from @ to 1 then on through to 9
      *  ..........................54.................................
@@ -4641,8 +4642,11 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
     gb.bhitpos.x = u.ux;
     gb.bhitpos.y = u.uy;
     boom = counterclockwise ? S_boomleft : S_boomright;
+
     i = (int) xytod(dx, dy);
     tmp_at(DISP_FLASH, cmap_to_glyph(boom));
+
+    /* Boomerangs take 10 steps to leave and return */
     for (ct = 0; ct < 10; ct++) {
         i = DIR_CLAMP(i);
         boom = (S_boomleft + S_boomright - boom); /* toggle */
@@ -4651,22 +4655,38 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
         dy = ydir[i];
         gb.bhitpos.x += dx;
         gb.bhitpos.y += dy;
+
+        
         if (!isok(gb.bhitpos.x, gb.bhitpos.y)) {
             gb.bhitpos.x -= dx;
             gb.bhitpos.y -= dy;
             break;
         }
+
+        /* Did it hit a monster? */
         if ((mtmp = m_at(gb.bhitpos.x, gb.bhitpos.y)) != 0) {
             m_respond(mtmp);
-            tmp_at(DISP_END, 0);
-            return mtmp;
+
+            /* Because I want boomerangs to be handled more like Secret of
+             * Mana, ie, they just pass through multiple enemies but only stop
+             * when hitting a wall, we handle the attacks here instead */
+            obj_gone = thitmonst(mtmp, obj);
+
+            if (mtmp == &gy.youmonst || obj_gone) {
+                tmp_at(DISP_END, 0);
+                return mtmp;
+            }
         }
+
+        /* Did it hit something solid, ie: tree, wall */
         if (!ZAP_POS(levl[gb.bhitpos.x][gb.bhitpos.y].typ)
             || closed_door(gb.bhitpos.x, gb.bhitpos.y)) {
             gb.bhitpos.x -= dx;
             gb.bhitpos.y -= dy;
             break;
         }
+
+        /* Did it return to us? */
         if (u_at(gb.bhitpos.x, gb.bhitpos.y)) { /* ct == 9 */
             if (Fumbling || rn2(20) >= ACURR(A_DEX)) {
                 /* we hit ourselves */
@@ -4682,6 +4702,7 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
         }
         tmp_at(gb.bhitpos.x, gb.bhitpos.y);
         nh_delay_output();
+
         if (IS_SINK(levl[gb.bhitpos.x][gb.bhitpos.y].typ)) {
             Soundeffect(se_boomerang_klonk, 75);
             if (!Deaf)
