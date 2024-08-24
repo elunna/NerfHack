@@ -6783,7 +6783,7 @@ passive(
 
     if (mhit && aatyp == AT_BITE && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         if (bite_monster(mon))
-	    return 2; /* lifesaved */
+	        return 2; /* lifesaved */
     }
 
     for (i = 0;; i++) {

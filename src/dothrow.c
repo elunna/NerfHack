@@ -2288,8 +2288,12 @@ thitmonst(
                 } else 
                     (void) mpickobj(mon, obj);
                 return 1;
-            } else 
+            } else {
+                /* Thrown projectiles above +7 have a high chance of dulling. */
+                if (obj->spe > 7 && rn2(obj->spe))
+                    obj->spe -= obj->spe > 10 ? 2 : 1;
                 passive_obj(mon, obj, (struct attack *) 0);
+            }
         } else {
             tmiss(obj, mon, TRUE);
             if (hmode == HMON_APPLIED)
