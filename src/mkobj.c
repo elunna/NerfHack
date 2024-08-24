@@ -3894,7 +3894,7 @@ pudding_merge_message(struct obj *otmp, struct obj *otmp2)
 }
 
 int
-mk_zapcard()
+mk_zapcard(void)
 {
     int otyp;
     do {

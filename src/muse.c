@@ -275,7 +275,8 @@ mzapwand(
     struct obj *otmp,
     boolean self)
 {
-    if (otmp->spe < 1) {
+    boolean zapcard = otmp->otyp == SCR_ZAPPING;
+    if (otmp->spe < 1 && !zapcard) {
         impossible("Mon zapping wand with %d charges?", otmp->spe);
         return;
     }
@@ -289,12 +290,15 @@ mzapwand(
     } else if (self) {
         pline("%s with %s!",
               monverbself(mtmp, Monnam(mtmp), "zap", (char *) 0),
-              doname(otmp));
+              zapcard ? "a zap card" : doname(otmp));
     } else {
-        pline("%s zaps %s!", Monnam(mtmp), an(xname(otmp)));
+        pline("%s %s %s!", Monnam(mtmp), 
+        zapcard ? "plays" : "zaps",
+        zapcard ? "a zap card" : an(xname(otmp)));
         stop_occupation();
     }
-    otmp->spe -= 1;
+    if (!zapcard)
+        otmp->spe -= 1;
 }
 
 /* similar to mzapwand() but for magical horns (only instrument mons play) */
@@ -1572,70 +1576,77 @@ find_offensive(struct monst *mtmp)
 #define nomore(x)       if (gm.m.has_offense == x) continue;
     /* this picks the last viable item rather than prioritizing choices */
     for (obj = mtmp->minvent; obj; obj = obj->nobj) {
+        int otyp = obj->otyp;
+        boolean can_zap = ((obj->oclass == WAND_CLASS && obj->spe > 0)
+                || otyp == SCR_ZAPPING);
+
+        if (otyp == SCR_ZAPPING)
+            otyp = obj->corpsenm;
+
         if (!reflection_skip) {
             nomore(MUSE_WAN_DEATH);
-            if (obj->otyp == WAN_DEATH && obj->spe > 0
+            if (otyp == WAN_DEATH && can_zap
                 && !m_seenres(mtmp, M_SEEN_MAGR)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_DEATH;
             }
             nomore(MUSE_WAN_DRAINING);
-            if (obj->otyp == WAN_DRAINING && obj->spe > 0
+            if (otyp == WAN_DRAINING && can_zap
                 && !resists_drain(gy.youmonst.data)
                 && !m_seenres(mtmp, M_SEEN_REFL)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_DRAINING;
             }
             nomore(MUSE_WAN_SLEEP);
-            if (obj->otyp == WAN_SLEEP && obj->spe > 0 && gm.multi >= 0
+            if (otyp == WAN_SLEEP && can_zap && gm.multi >= 0
                 && !m_seenres(mtmp, M_SEEN_SLEEP)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_SLEEP;
             }
             nomore(MUSE_WAN_CORROSION);
-            if (obj->otyp == WAN_CORROSION && obj->spe > 0
+            if (otyp == WAN_CORROSION && can_zap
                 && !m_seenres(mtmp, M_SEEN_ACID)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_CORROSION;
             }
             nomore(MUSE_WAN_FIRE);
-            if (obj->otyp == WAN_FIRE && obj->spe > 0
+            if (otyp == WAN_FIRE && can_zap
                 && !m_seenres(mtmp, M_SEEN_FIRE)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_FIRE;
             }
             nomore(MUSE_FIRE_HORN);
-            if (obj->otyp == FIRE_HORN && obj->spe > 0 && can_blow(mtmp)
+            if (otyp == FIRE_HORN && obj->spe > 0 && can_blow(mtmp)
                 && !m_seenres(mtmp, M_SEEN_FIRE)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_FIRE_HORN;
             }
             nomore(MUSE_WAN_COLD);
-            if (obj->otyp == WAN_COLD && obj->spe > 0
+            if (otyp == WAN_COLD && can_zap
                 && !m_seenres(mtmp, M_SEEN_COLD)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_COLD;
             }
             nomore(MUSE_FROST_HORN);
-            if (obj->otyp == FROST_HORN && obj->spe > 0 && can_blow(mtmp)
+            if (otyp == FROST_HORN && obj->spe > 0 && can_blow(mtmp)
                 && !m_seenres(mtmp, M_SEEN_COLD)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_FROST_HORN;
             }
             nomore(MUSE_WAN_LIGHTNING);
-            if (obj->otyp == WAN_LIGHTNING && obj->spe > 0
+            if (otyp == WAN_LIGHTNING && can_zap
                 && !m_seenres(mtmp, M_SEEN_ELEC)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_LIGHTNING;
             }
             nomore(MUSE_WAN_POISON_GAS);
-            if (obj->otyp == WAN_POISON_GAS && obj->spe > 0 
+            if (otyp == WAN_POISON_GAS && can_zap
                 && !m_seenres(mtmp, M_SEEN_POISON)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_POISON_GAS;
             }
             nomore(MUSE_WAN_MAGIC_MISSILE);
-            if (obj->otyp == WAN_MAGIC_MISSILE && obj->spe > 0
+            if (otyp == WAN_MAGIC_MISSILE && can_zap
                 && !m_seenres(mtmp, M_SEEN_MAGR)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_MAGIC_MISSILE;
@@ -1644,18 +1655,18 @@ find_offensive(struct monst *mtmp)
         nomore(MUSE_WAN_UNDEAD_TURNING);
         m_use_undead_turning(mtmp, obj);
         nomore(MUSE_WAN_STRIKING);
-        if (obj->otyp == WAN_STRIKING && obj->spe > 0
+        if (otyp == WAN_STRIKING && can_zap
             && !m_seenres(mtmp, M_SEEN_MAGR)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_WAN_STRIKING;
         }
         nomore(MUSE_WAN_CANCELLATION);
-        if (obj->otyp == WAN_CANCELLATION && obj->spe > 0) {
+        if (otyp == WAN_CANCELLATION && can_zap) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_WAN_CANCELLATION;
         }
         nomore(MUSE_WAN_TELEPORTATION);
-        if (obj->otyp == WAN_TELEPORTATION && obj->spe > 0
+        if (otyp == WAN_TELEPORTATION && can_zap
             /* don't give controlled hero a free teleport */
             && !Teleport_control
             /* same hack as MUSE_WAN_TELEPORTATION_SELF */
@@ -1669,70 +1680,70 @@ find_offensive(struct monst *mtmp)
             gm.m.has_offense = MUSE_WAN_TELEPORTATION;
         }
         nomore(MUSE_WAN_SLOW_MONSTER);
-        if (obj->otyp == WAN_SLOW_MONSTER && obj->spe > 0
+        if (otyp == WAN_SLOW_MONSTER && can_zap
             && HFast) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_WAN_SLOW_MONSTER;
         }
         nomore(MUSE_WAN_WONDER);
-        if (obj->otyp == WAN_WONDER && obj->spe > 0) {
+        if (otyp == WAN_WONDER && can_zap) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_WAN_WONDER;
         }
         nomore(MUSE_POT_PARALYSIS);
-        if (obj->otyp == POT_PARALYSIS && gm.multi >= 0) {
+        if (otyp == POT_PARALYSIS && gm.multi >= 0) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_PARALYSIS;
         }
         nomore(MUSE_POT_BLINDNESS);
-        if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
+        if (otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_BLINDNESS;
         }
         nomore(MUSE_SCR_CLONING);
-        if (obj->otyp == SCR_CLONING
+        if (otyp == SCR_CLONING
             && distu(mtmp->mx, mtmp->my) < 32
             && mtmp->mcansee && haseyes(mtmp->data)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_SCR_CLONING;
         }
         nomore(MUSE_SCR_STINKING_CLOUD)
-        if (obj->otyp == SCR_STINKING_CLOUD
+        if (otyp == SCR_STINKING_CLOUD
             && m_canseeu(mtmp) && haseyes(mtmp->data)
             && mcast_dist_ok(mtmp) && !m_seenres(mtmp, M_SEEN_POISON)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_SCR_STINKING_CLOUD;
         }
         nomore(MUSE_POT_HALLUCINATION);
-        if (obj->otyp == POT_HALLUCINATION && !attacktype(mtmp->data, AT_GAZE)) {
+        if (otyp == POT_HALLUCINATION && !attacktype(mtmp->data, AT_GAZE)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_HALLUCINATION;
         }
         nomore(MUSE_POT_POLYMORPH_THROW);
-        if (obj->otyp == POT_POLYMORPH
+        if (otyp == POT_POLYMORPH
             && !m_seenres(mtmp, M_SEEN_MAGR)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_POLYMORPH_THROW;
         }
         nomore(MUSE_POT_CONFUSION);
-        if (obj->otyp == POT_CONFUSION) {
+        if (otyp == POT_CONFUSION) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_CONFUSION;
         }
         nomore(MUSE_POT_SLEEPING);
-        if (obj->otyp == POT_SLEEPING
+        if (otyp == POT_SLEEPING
             && !m_seenres(mtmp, M_SEEN_SLEEP)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_SLEEPING;
         }
         nomore(MUSE_POT_ACID);
-        if (obj->otyp == POT_ACID
+        if (otyp == POT_ACID
             && !m_seenres(mtmp, M_SEEN_ACID)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_POT_ACID;
         }
         nomore(MUSE_POT_OIL);
-        if (obj->otyp == POT_OIL
+        if (otyp == POT_OIL
             && !m_seenres(mtmp, M_SEEN_FIRE)
             /* don't throw oil if point-blank AND mtmp is low on HP AND mtmp is
              * not fire resistant */
@@ -1743,7 +1754,7 @@ find_offensive(struct monst *mtmp)
             gm.m.has_offense = MUSE_POT_OIL;
         }
         nomore(MUSE_MAGIC_FLUTE);
-        if (obj->otyp == MAGIC_FLUTE && !u.usleep && !rn2(3)
+        if (otyp == MAGIC_FLUTE && !u.usleep && !rn2(3)
             && obj->spe > 0 && gm.multi >= 0) {
             int dist = dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy);
             if (dist <= mtmp->m_lev * 5) {
@@ -1756,7 +1767,7 @@ find_offensive(struct monst *mtmp)
          * are in wand or throwing range (in other words, always lined_up())
          */
         nomore(MUSE_SCR_EARTH);
-        if (obj->otyp == SCR_EARTH
+        if (otyp == SCR_EARTH
             && (hard_helmet(helmet) || mtmp->mconf
                 || amorphous(mtmp->data) || passes_walls(mtmp->data)
                 || noncorporeal(mtmp->data) || unsolid(mtmp->data)
@@ -1769,7 +1780,7 @@ find_offensive(struct monst *mtmp)
             gm.m.has_offense = MUSE_SCR_EARTH;
         }
         nomore(MUSE_CAMERA);
-        if (obj->otyp == EXPENSIVE_CAMERA
+        if (otyp == EXPENSIVE_CAMERA
             && ((!Blind
                 && !(resists_blnd(&gy.youmonst) || defended(&gy.youmonst, AD_BLND)))
                 || hates_light(gy.youmonst.data))
@@ -1779,7 +1790,7 @@ find_offensive(struct monst *mtmp)
             gm.m.has_offense = MUSE_CAMERA;
         }
         nomore(MUSE_SCR_FIRE);
-        if (obj->otyp == SCR_FIRE 
+        if (otyp == SCR_FIRE 
             && m_canseeu(mtmp) && haseyes(mtmp->data)
             && mcast_dist_ok(mtmp) && !m_seenres(mtmp, M_SEEN_FIRE)) {
             gm.m.offensive = obj;
@@ -1796,6 +1807,9 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
     int tmp;
     boolean reveal_invis = FALSE, learnit = FALSE,
             hits_you = (mtmp == &gy.youmonst);
+    boolean zapcard = gc.current_wand 
+                   && gc.current_wand->otyp == SCR_ZAPPING;
+    const char *otxt = zapcard ? "card" : "wand";
 
     if (!hits_you && otmp->otyp != WAN_UNDEAD_TURNING) {
         mtmp->msleeping = 0;
@@ -1814,14 +1828,14 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
                 learnit = TRUE;
             } else if (rnd(20) < 10 + u.uac) {
                 monstunseesu(M_SEEN_MAGR); /* mons see hero not resisting */
-                pline_The("wand hits you!");
+                pline_The("%s hits you!", otxt);
                 tmp = d(2, 12);
                 if (Half_spell_damage)
                     tmp = (tmp + 1) / 2;
-                losehp(tmp, "wand", KILLED_BY_AN);
+                losehp(tmp, otxt, KILLED_BY_AN);
                 learnit = TRUE;
             } else {
-                pline_The("wand misses you.");
+                pline_The("%s misses you.", otxt);
             }
             stop_occupation();
             nomul(0);
@@ -1832,16 +1846,16 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
             learnit = TRUE;
         } else if (rnd(20) < 10 + find_mac(mtmp)) {
             tmp = d(2, 12);
-            hit("wand", mtmp, exclam(tmp));
+            hit(otxt, mtmp, exclam(tmp));
             (void) resist(mtmp, otmp->oclass, tmp, TELL);
             learnit = TRUE;
         } else {
-            miss("wand", mtmp);
+            miss(otxt, mtmp);
         }
         /* need to see the wand being zapped and also the spot where the
            target is hit; don't have to see the target itself though */
-        if (learnit && gz.zap_oseen && (hits_you
-                                        || cansee(mtmp->mx, mtmp->my)))
+        if (learnit && gz.zap_oseen && !zapcard
+            && (hits_you || cansee(mtmp->mx, mtmp->my)))
             makeknown(WAN_STRIKING);
         break;
     case WAN_TELEPORTATION:
@@ -2076,6 +2090,7 @@ use_offensive(struct monst *mtmp)
     int i, maxdmg = 0;
     int otyp = otmp->otyp;
     boolean oseen;
+    boolean zapcard = otmp->otyp == SCR_ZAPPING;
     struct attack* mattk;
 
     /* offensive potions are not drunk, they're thrown */
@@ -2087,6 +2102,9 @@ use_offensive(struct monst *mtmp)
     boolean wonder = gm.m.has_offense == MUSE_WAN_WONDER;
     if (wonder)
         otyp = muse_wonder();
+
+    if (zapcard)
+        otyp = otmp->corpsenm;
 
     /* From SporkHack (modified): some monsters would be better served if they
        were to melee attack instead using whatever offensive item they possess
@@ -2126,11 +2144,16 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_POISON_GAS:
     case MUSE_WAN_STUNNING:
         mzapwand(mtmp, otmp, FALSE);
-        if (oseen)
+        if (oseen && !zapcard)
             makeknown(otmp->otyp);
         gm.m_using = TRUE;
         gc.current_wand = otmp;
         gb.buzzer = mtmp;
+        
+        /* Could be fatal to mon, useup before it could be dropped. */
+        if (zapcard)
+            m_useup(mtmp, otmp);
+
         buzz(BZ_M_WAND(BZ_OFS_WAN(otyp)),
              (otyp == WAN_MAGIC_MISSILE || otyp == (WAN_DRAINING + 1)) 
                 ? 2 : 6, mtmp->mx, mtmp->my,
@@ -2138,8 +2161,6 @@ use_offensive(struct monst *mtmp)
         gb.buzzer = 0;
         gc.current_wand = 0;
         gm.m_using = FALSE;
-        // if (wonder)
-        //     otmp->otyp = WAN_WONDER;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_FIRE_HORN:
     case MUSE_FROST_HORN:
@@ -2189,17 +2210,35 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_CANCELLATION:
     case MUSE_WAN_SLOW_MONSTER:
     case MUSE_WAN_POLYMORPH:
+    {
+        struct obj* pseudo;
         gz.zap_oseen = oseen;
         mzapwand(mtmp, otmp, FALSE);
         gm.m_using = TRUE;
         if (wonder)
             otmp->otyp = otyp;
-        mbhit(mtmp, rn1(8, 6), mbhitm, bhito, otmp);
+
+        /* This is ugly but it's cleaner than the alternative */
+        if (zapcard) {
+            pseudo = mksobj(otyp, FALSE, FALSE);
+            pseudo->blessed = pseudo->cursed = 0;
+            gc.current_wand = otmp; /* For wand of striking descriptions */
+        }
+
+        mbhit(mtmp, rn1(8, 6), mbhitm, bhito, zapcard ? pseudo : otmp);
         /* note: 'otmp' might have been destroyed (drawbridge destruction) */
         gm.m_using = FALSE;
         if (wonder)
             otmp->otyp = WAN_WONDER;
+
+        if (zapcard) {
+            m_useup(mtmp, otmp);
+            /* Cleanup the temp wand */
+            obfree(pseudo, NULL);
+            gc.current_wand = 0;
+        }
         return 2;
+    }
     case MUSE_SCR_EARTH: {
         /* TODO: handle steeds */
         coordxy x, y;
