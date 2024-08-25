@@ -985,10 +985,9 @@ should_givit(int type, struct permonst *ptr)
         chance = 1;
         break;
     default:
-        chance = 15;
+        chance = 1; /* the rest use the new system, give it to them all the time */
         break;
     }
-    /* TODO: Double check this */
     return (ptr->mlevel <= rn2(chance));
 }
 

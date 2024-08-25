@@ -83,9 +83,6 @@ des.region({ region={01,10,05,13},lit=1,type="zoo",filled=1,irregular=1 })
 --   arrival chamber; needs to be a real room to control migrating monsters,
 --   and `unfilled' is a kludge to force an ordinary room to remain a room
 des.region({ region={04,15,07,16},lit=0,type="ordinary",arrival_room=true })
-
--- TODO: Double check this, does it match knox-1??
-
 --   3.6.2:  Entering level carrying a lit candle would show the whole entry
 --   chamber except for its top right corner even though some of the revealed
 --   spots are farther away than that is.  This is because the lit treasure zoo
