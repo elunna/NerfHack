@@ -607,7 +607,25 @@ xcalled(
 char *
 xname(struct obj *obj)
 {
-    return xname_flags(obj, CXN_NORMAL);
+    struct obj *hobj = 0;
+    static char bufr[BUFSZ];
+    char *buf = &(bufr[PREFIX]);   /* leave room for "17 -3 " */
+
+	if (Hallucination && !program_state.gameover) {
+		hobj = mkobj(obj->oclass, 0);
+		hobj->quan = obj->quan;
+		/* WAC clean up */
+		buf = xname_flags(hobj, CXN_NORMAL);
+		/* fix a VERY aggravating bug that could corrupt saves 
+         * with obj_is_local and timer errors --Amy */
+        if (Has_contents(hobj))
+            delete_contents(hobj);
+		obj_extract_self(hobj);
+		dealloc_obj(hobj);
+
+		return (buf);
+	} else
+        return xname_flags(obj, CXN_NORMAL);
 }
 
 staticfn char *
