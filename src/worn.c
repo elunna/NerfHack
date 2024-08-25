@@ -704,6 +704,7 @@ int
 find_mac(struct monst *mon)
 {
     struct obj *obj;
+    struct obj *monwep = MON_WEP(mon);
     int base = mon->data->ac - mon->mprotection;
     long mwflags = mon->misc_worn_check;
 
@@ -713,7 +714,8 @@ find_mac(struct monst *mon)
                 base -= 2; /* fixed amount, not impacted by erosion */
             else
                 base -= ARM_BONUS(obj);
-            
+            /* since ARM_BONUS is positive, subtracting it increases AC */
+
             /* Racial bonuses */
             if (is_orc(mon->data) && is_orcish_armor(obj->otyp))
                 base -= 2;
@@ -723,9 +725,14 @@ find_mac(struct monst *mon)
                 base -= 1;
             else if (is_dwarf(mon->data) && is_dwarvish_armor(obj->otyp))
                 base -= 1;
-            /* since ARM_BONUS is positive, subtracting it increases AC */
+            
+            
         }
     }
+    /* Bonus for polearms still applies for monsters! */
+    if (monwep && is_pole(monwep) && monwep->otyp != LANCE)
+        base -= misc_bonus(monwep);
+
     /* same cap as for hero [find_ac(do_wear.c)] */
     if (abs(base) > AC_MAX)
         base = sgn(base) * AC_MAX;

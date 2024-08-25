@@ -2578,8 +2578,8 @@ find_ac(void)
     int mvl_wtcap = near_capacity();
     
     /* Polearms AC bonus */
-    if (uwep && is_pole(uwep))
-        uac -= 2;
+    if (uwep && is_pole(uwep) && uwep->otyp != LANCE)
+        uac -= misc_bonus(uwep);
     
     if (uarm)
         uac -= (ARM_BONUS(uarm) + race_bonus(uarm));
@@ -3638,7 +3638,7 @@ misc_bonus(struct obj *obj)
     if (objdescr_is(obj, "padded gloves"))
         return 1;
     if (is_pole(obj))
-        return 2;
+        return obj->owt / 30;
     return 0;
 }
 /*do_wear.c*/

@@ -1742,7 +1742,7 @@ doname_base(
     }
 
     if (obj->oclass == WEAPON_CLASS) {
-        if (is_pole(obj) && obj->known)
+        if (is_pole(obj) && obj->otyp != LANCE && obj->known)
             ConcatF1(bp, 0, " [%dAC]", misc_bonus(obj));
     }
     
