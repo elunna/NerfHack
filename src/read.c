@@ -1157,7 +1157,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     struct trap *ttmp;
 
     /* Don't create on the player's space unless poolcnt is -1. */
-    if ((* (int*)poolcnt) != -1 && x == u.ux && y == u.uy)
+    if ((* (int*)poolcnt) != -1 && u_at(x, y))
         return;
 
     /* Create them only on regular terrain, never underneath boulders or next

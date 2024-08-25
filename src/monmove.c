@@ -1889,7 +1889,7 @@ m_move(struct monst *mtmp, int after)
         if (!calculate_flankers(mtmp, &gy.youmonst)) {
             for (fi = u.ux - 1; fi <= u.ux + 1; fi++) {
                 for (fj = u.uy - 1; fj <= u.uy + 1; fj++) {
-                    if (fi == u.ux && fj == u.uy)
+                    if (u_at(fi, fj))
                         continue;
                     if (fi == mtmp->mx && fj == mtmp->my)
                         continue;

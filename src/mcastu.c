@@ -896,7 +896,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
                         continue;
                     if (!SPACE_POS(levl[x][y].typ))
                         continue;
-                    if (x == u.ux && y == u.uy)
+                    if (u_at(x, y))
                         continue;
                     if (rn2(5))
                         drop_boulder_on_monster(x, y, FALSE, FALSE);

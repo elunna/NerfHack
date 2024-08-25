@@ -2506,10 +2506,10 @@ arti_invoke(struct obj *obj)
         }
         case SUMMONING: {
             for (int i = 0; i < rn1(7, 4); i++) {
-                    (void) make_msummoned((struct permonst *) 0, &gy.youmonst, TRUE, u.ux, u.uy);
-                }
-                break;
+                (void) make_msummoned((struct permonst *) 0, &gy.youmonst, TRUE, u.ux, u.uy);
             }
+            break;
+        }
         case LIGHTNING_BOLT: {
             struct obj* pseudo = mksobj(WAN_LIGHTNING, FALSE, FALSE);
             pseudo->blessed = pseudo->cursed = 0;

@@ -3996,7 +3996,7 @@ dotherecmdmenu(void)
     iflags.getdir_click = CLICK_1 | CLICK_2; /* allow 'far' click */
 
     if (isok(x, y)) {
-        if (x == u.ux && y == u.uy)
+        if (u_at(x, y))
             ch = here_cmd_menu();
         else
             ch = there_cmd_menu(x, y, iflags.getdir_click);

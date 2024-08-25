@@ -3997,7 +3997,7 @@ crawl_destination(coordxy x, coordxy y)
         return FALSE;
 
     /* orthogonal movement is unrestricted when destination is ok */
-    if (x == u.ux || y == u.uy)
+    if (u_at(x, y))
         return TRUE;
 
     /* diagonal movement has some restrictions */

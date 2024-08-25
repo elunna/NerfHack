@@ -1056,7 +1056,7 @@ breaktoilet(coordxy x, coordxy y)
     register int num = rn1(5, 2);
     struct monst *mtmp;
     
-    if (cansee(x, y) || (x == u.ux && y == u.uy))
+    if (cansee(x, y) || u_at(x, y))
         pline_The("toilet suddenly shatters!");
     else
         You_hear("something shatter!");
@@ -1332,7 +1332,7 @@ sink_backs_up(coordxy x, coordxy y)
 void
 breakforge(coordxy x, coordxy y)
 {
-    if (cansee(x, y) || (x == u.ux && y == u.uy))
+    if (cansee(x, y) || u_at(x, y))
         pline_The("forge splits in two as molten lava rushes forth!");
     levl[x][y].doormask = 0;
     /* replace the forge with ordinary floor */
@@ -1343,7 +1343,7 @@ breakforge(coordxy x, coordxy y)
 staticfn void
 blowupforge(coordxy x, coordxy y)
 {
-    if (cansee(x, y) || (x == u.ux && y == u.uy))
+    if (cansee(x, y) || u_at(x, y))
         pline_The("forge rumbles, then explodes!  Molten lava splashes everywhere!");
     levl[x][y].flags = 0;
     levl[x][y].doormask = 0;
@@ -1358,7 +1358,7 @@ blowupforge(coordxy x, coordxy y)
 void
 coolforge(int x, int y)
 {
-    if (cansee(x, y) || (x == u.ux && y == u.uy))
+    if (cansee(x, y) || u_at(x, y))
         pline_The("lava in the forge cools and solidifies.");
     levl[x][y].typ = ROOM, levl[x][y].flags = 0;
     levl[x][y].doormask = 0;
