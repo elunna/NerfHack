@@ -1,4 +1,4 @@
-/* NetHack 3.7	insight.c	$NHDT-Date: 1713334807 2024/04/17 06:20:07 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.112 $ */
+/* NetHack 3.7	insight.c	$NHDT-Date: 1724094296 2024/08/19 19:04:56 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.115 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -2775,6 +2775,14 @@ vanqsort_cmp(
         }
         res = mcls1 - mcls2; /* class */
         if (res == 0) {
+            /* Riders are in the same class as major demons; group Riders
+               at the start of that class regardless of secondary ordering;
+               res -1 => #1 is a Rider, #2 isn't;
+                    0 => both riders or both major demons;
+                   +1 => #2 is a Rider, #1 isn't */
+            res = is_rider(&mons[indx2]) - is_rider(&mons[indx1]);
+            if (res)
+                break;
             mlev1 = mons[indx1].mlevel;
             mlev2 = mons[indx2].mlevel;
             res = mlev1 - mlev2; /* mlevel low to high */
@@ -2852,7 +2860,8 @@ set_vanq_order(boolean for_vanq)
 int
 dovanquished(void)
 {
-    list_vanquished(iflags.menu_requested ? 'a' : 'y', FALSE);
+    list_vanquished(iflags.menu_requested ? 'A' : 'y', FALSE);
+    iflags.menu_requested = FALSE;
     return ECMD_OK;
 }
 
@@ -2862,6 +2871,7 @@ dovanquished(void)
 
 #define done_stopprint program_state.stopprint
 
+/* used for #vanquished and end of game disclosure and end of game dumplog */
 void
 list_vanquished(char defquery, boolean ask)
 {
@@ -2872,12 +2882,25 @@ list_vanquished(char defquery, boolean ask)
     winid klwin;
     short mindx[NUMMONS];
     char c, buf[BUFSZ], buftoo[BUFSZ];
-    boolean dumping; /* for DUMPLOG; doesn't need to be conditional */
+    /* 'A' is only supplied by 'm #vanquished'; 'd' is only supplied by
+       dump_everything() when writing dumplog, so won't happen if built
+       without '#define DUMPLOG' but there's no need for conditionals here */
+    boolean force_sort = (defquery == 'A'),
+            dumping = (defquery == 'd');
 
-    dumping = (defquery == 'd');
-    if (dumping) {
+    /* normally we don't ask about sort order for the vanquished list unless
+       it contains at least two entries; however, if player has used explicit
+       'm #vanquished', choose order no matter what it contains so far */
+    if (force_sort) { /* iflags.menu_requested via dovanquished() */
+        /* choose value for vanq_sortmode via menu; ESC cancels choosing
+           sort order but continues with vanquishd monsters display */
+        (void) set_vanq_order(TRUE);
+    }
+    if (dumping || force_sort) {
+        /* switch from 'A' or 'd' to 'y'; 'ask' is already False for the
+           cases that might supply 'A' or 'd' */
         defquery = 'y';
-        ask = FALSE; /* redundant; caller passes False with defquery=='d' */
+        ask = FALSE; /* redundant */
     }
 
     /* get totals first */
@@ -2894,12 +2917,26 @@ list_vanquished(char defquery, boolean ask)
      */
     if (ntypes != 0) {
         char mlet, prev_mlet = 0; /* used as small integer, not character */
-        boolean class_header, uniq_header, was_uniq = FALSE;
+        boolean class_header, uniq_header, Rider,
+                was_uniq = FALSE, special_hdr = FALSE;
 
-        c = ask ? yn_function(
-                            "Do you want an account of creatures vanquished?",
-                              ynaqchars, defquery, TRUE)
-                : defquery;
+        if (ask) {
+            char allow_yn[10];
+
+            if (ntypes > 1) {
+                Strcpy(allow_yn, ynaqchars);
+            } else {
+                Strcpy(allow_yn, ynqchars); /* don't include 'a', but */
+                Strcat(allow_yn, "\033a");  /* allow user to answer 'a' */
+                if (defquery == 'a') /* potential default from 'disclose' */
+                    defquery = 'y';
+            }
+            c = yn_function("Do you want an account of creatures vanquished?",
+                            allow_yn, defquery, TRUE);
+        } else {
+            c = defquery;
+        }
+
         if (c == 'q')
             done_stopprint++;
         if (c == 'y' || c == 'a') {
@@ -2923,9 +2960,17 @@ list_vanquished(char defquery, boolean ask)
             for (ni = 0; ni < ntypes; ni++) {
                 i = mindx[ni];
                 nkilled = svm.mvitals[i].died;
+                Rider = is_rider(&mons[i]);
                 mlet = mons[i].mlet;
-                if (class_header && mlet != prev_mlet) {
-                    Strcpy(buf, def_monsyms[(int) mlet].explain);
+                if (class_header
+                    && (mlet != prev_mlet || (special_hdr && !Rider))) {
+                    if (!Rider) {
+                        Strcpy(buf, def_monsyms[(int) mlet].explain);
+                        special_hdr = FALSE;
+                    } else {
+                        Strcpy(buf, "Rider");
+                        special_hdr = TRUE;
+                    }
                     /* 'ask' implies final disclosure, where highlighting
                        of various header lines is suppressed */
                     putstr(klwin, ask ? ATR_NONE : iflags.menu_headings.attr,
@@ -3348,7 +3393,7 @@ mstatusline(struct monst *mtmp)
     if (mtmp->data == &mons[PM_LONG_WORM]) {
         int segndx, nsegs = count_wsegs(mtmp);
 
-        /* the worm code internals don't consider the head of be one of
+        /* the worm code internals don't consider the head to be one of
            the worm's segments, but we count it as such when presenting
            worm feedback to the player */
         if (!nsegs) {
@@ -3369,8 +3414,10 @@ mstatusline(struct monst *mtmp)
         Strcat(info, ", eating");
     /* a stethoscope exposes mimic before getting here so this
        won't be relevant for it, but wand of probing doesn't */
-    if (mtmp->mundetected || mtmp->m_ap_type)
-        mhidden_description(mtmp, MHID_PREFIX | MHID_ARTICLE | MHID_ALTMON,
+    if (mtmp->mundetected || mtmp->m_ap_type
+        || visible_region_at(gb.bhitpos.x, gb.bhitpos.y))
+        mhidden_description(mtmp,
+                       MHID_PREFIX | MHID_ARTICLE | MHID_ALTMON | MHID_REGION,
                             eos(info));
     if (mtmp->mcan)
         Strcat(info, ", cancelled");
@@ -3458,7 +3505,9 @@ mstatusline(struct monst *mtmp)
 void
 ustatusline(void)
 {
+    NhRegion *reg;
     char info[BUFSZ];
+    size_t ln;
 
     info[0] = '\0';
     if (Sick) {
@@ -3513,15 +3562,29 @@ ustatusline(void)
         Strcat(info, Very_fast ? ", very fast" : ", fast");
     if (u.uundetected)
         Strcat(info, ", concealed");
+    else if (U_AP_TYPE != M_AP_NOTHING)
+        Strcat(info, ", disguised");
     if (Invis)
         Strcat(info, ", invisible");
     if (u.ustuck) {
-        if (sticks(gy.youmonst.data))
-            Strcat(info, ", holding ");
-        else
+        if (u.uswallow)
+            Strcat(info, digests(u.ustuck->data) ? ", being digested by "
+                                                 : ", engulfed by ");
+        else if (!sticks(gy.youmonst.data))
             Strcat(info, ", held by ");
-        Strcat(info, mon_nam(u.ustuck));
+        else
+            Strcat(info, ", holding ");
+        /* FIXME? a_monnam() uses x_monnam() which has a special case that
+           forces "the" instead of "a" when formatting u.ustuck while hero
+           is swallowed; we don't really want that here but it isn't worth
+           fiddling with just for self-probing while engulfed */
+        Strcat(info, a_monnam(u.ustuck));
     }
+    if (!u.uswallow
+        && (reg = visible_region_at(u.ux, u.uy)) != 0
+        && (ln = strlen(info)) < sizeof info)
+        Snprintf(eos(info), sizeof info - ln, ", in a cloud of %s",
+                 reg_damg(reg) ? "poison gas" : "vapor");
 
     pline("Status of %s (%s):  Level %d  HP %d(%d)  AC %d%s.", svp.plname,
           piousness(FALSE, align_str(u.ualign.type)),

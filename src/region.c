@@ -447,12 +447,20 @@ run_regions(void)
         }
     }
 
-    if (gg.gas_cloud_diss_within)
+    if (gg.gas_cloud_diss_within) {
         pline_The("gas cloud around you dissipates.");
-    if (gg.gas_cloud_diss_seen)
-        You_see("%s dissipate.",
-                gg.gas_cloud_diss_seen == 1
-                ? "a gas cloud" : "some gas clouds");
+        /* normally won't see additional dissipation when within */
+        /* FIXME? this assumes that additional dissipation is close by */
+        if (u.xray_range <= 1)
+            gg.gas_cloud_diss_seen = 0;
+        gg.gas_cloud_diss_within = FALSE;
+    }
+    if (gg.gas_cloud_diss_seen) {
+        You_see("%s gas cloud%s dissipate.",
+                (gg.gas_cloud_diss_seen == 1) ? "a" : "some",
+                plur(gg.gas_cloud_diss_seen));
+        gg.gas_cloud_diss_seen = 0;
+    }
 }
 
 /*
@@ -658,6 +666,7 @@ visible_region_summary(winid win)
     NhRegion *reg;
     char buf[BUFSZ], typbuf[QBUFSZ];
     int i, damg, hdr_done = 0;
+    const char *fldsep = iflags.menu_tab_sep ? "\t" : "  ";
 
     for (i = 0; i < svn.n_regions; i++) {
         reg = gr.regions[i];
@@ -683,8 +692,8 @@ visible_region_summary(winid win)
             Sprintf(typbuf, "poison gas (%d)", damg);
         else
             Strcpy(typbuf, "vapor");
-        Sprintf(eos(buf), "  %-16s", typbuf);
-        Sprintf(eos(buf), "  @[%d,%d..%d,%d]",
+        Sprintf(eos(buf), "%s%-16s", fldsep, typbuf);
+        Sprintf(eos(buf), "%s@[%d,%d..%d,%d]", fldsep,
                 reg->bounding_box.lx, reg->bounding_box.ly,
                 reg->bounding_box.hx, reg->bounding_box.hy);
         putstr(win, 0, buf);
@@ -1084,11 +1093,13 @@ expire_gas_cloud(genericptr_t p1, genericptr_t p2 UNUSED)
                     if (pass == 1) {
                         if (!does_block(x, y, &levl[x][y]))
                             unblock_point(x, y);
-                        if (u_at(x, y) && !u.uswallow)
-                            gg.gas_cloud_diss_within = TRUE;
                     } else { /* pass==2 */
-                        if (cansee(x, y))
-                            gg.gas_cloud_diss_seen++;
+                        if (!u.uswallow) {
+                            if (u_at(x, y))
+                                gg.gas_cloud_diss_within = TRUE;
+                            else if (cansee(x, y))
+                                gg.gas_cloud_diss_seen++;
+                        }
                     }
                 }
             }

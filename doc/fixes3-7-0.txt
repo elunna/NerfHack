@@ -1456,6 +1456,8 @@ the #terrain command didn't know how to cope with visible gas/cloud regions;
 	if/when a spot contains both region and trap, show the trap
 region expiration reported "the gas cloud around you dissipates" even when the
 	hero was swallowed
+region expiration could report "the gas cloud around you dissipates" and also
+	"you see a gas cloud dissipate" for the same cloud spot
 reduce shopkeeper's innate speed from 18 to 16 so that a hasted shopkeeper
 	doesn't always get 2 moves per turn
 
@@ -2588,6 +2590,8 @@ for ranger characters, shooting any type of arrow while wielding the Longbow
 change the #vanquished command from debug-only to general user command
 add 'sortvanquished' option to be able to set the preferred sort order without
 	using 'm #vanquished' and to have it persist across save/restore
+when sorting vanquished monsters by monster class, treat the Riders as a
+	separate class from major demons
 add #genocided command
 have 'I u' mention whether there are any unpaid items on the floor (unusual
 	but not impossible); it doesn't itemize them or show shop price
