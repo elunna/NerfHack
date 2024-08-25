@@ -38,27 +38,72 @@ staticfn int dmgval_core(struct obj*, struct monst*, struct damage_info_t*);
 
 static NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     /* Weapon */
-    0, DAGGER, KNIFE, AXE, PICK_AXE, SHORT_SWORD, BROADSWORD, LONG_SWORD,
-    TWO_HANDED_SWORD, PN_SABER, CLUB, MACE, MORNING_STAR, FLAIL, PN_HAMMER,
-    QUARTERSTAFF, PN_POLEARMS, SPEAR, TRIDENT, LANCE, BOW, SLING, CROSSBOW,
-    DART, SHURIKEN, BOOMERANG, PN_WHIP, UNICORN_HORN,
+    0, 
+    DAGGER, 
+    KNIFE, 
+    AXE, 
+    PICK_AXE, 
+    SHORT_SWORD, 
+    BROADSWORD, 
+    LONG_SWORD,
+    TWO_HANDED_SWORD, 
+    PN_SABER, 
+    CLUB, 
+    MACE, 
+    MORNING_STAR, 
+    FLAIL, 
+    PN_HAMMER,
+    QUARTERSTAFF,
+    PN_POLEARMS, 
+    SPEAR, 
+    TRIDENT, 
+    LANCE, 
+    BOW,
+    SLING, 
+    CROSSBOW,
+    DART, 
+    SHURIKEN, 
+    BOOMERANG, 
+    PN_WHIP, 
+    UNICORN_HORN,
     /* Spell */
-    PN_ATTACK_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
-    PN_ENCHANTMENT_SPELL, PN_CLERIC_SPELL, PN_ESCAPE_SPELL, PN_MATTER_SPELL,
+    PN_ATTACK_SPELL,
+    PN_HEALING_SPELL, 
+    PN_DIVINATION_SPELL,
+    PN_ENCHANTMENT_SPELL, 
+    PN_CLERIC_SPELL, 
+    PN_ESCAPE_SPELL, 
+    PN_MATTER_SPELL,
     /* Other */
-    PN_BARE_HANDED, PN_TWO_WEAPONS, PN_SHIELD, PN_RIDING
+    PN_BARE_HANDED, 
+    PN_TWO_WEAPONS, 
+    PN_SHIELD, 
+    PN_RIDING
 };
 
 /* note: entry [0] isn't used */
 static NEARDATA const char *const odd_skill_names[] = {
-    "no skill", "bare hands", /* use barehands_or_martial[] instead */
-    "two weapon combat", "shield", "riding", "polearms", "saber", "hammer",
-    "whip", "attack spells", "healing spells", "divination spells",
-    "enchantment spells", "clerical spells", "escape spells", "matter spells",
+    "no skill", 
+    "bare hands", /* use barehands_or_martial[] instead */
+    "two weapon combat", 
+    "shield", 
+    "riding", 
+    "polearms",
+    "saber", 
+    "hammer",
+    "whip", 
+    "attack spells", 
+    "healing spells", 
+    "divination spells",
+    "enchantment spells",
+    "clerical spells", 
+    "escape spells", 
+    "matter spells",
 };
 /* indexed via is_martial() */
 static NEARDATA const char *const barehands_or_martial[] = {
-    "bare handed combat", "martial arts"
+    "bare handed combat", 
+    "martial arts"
 };
 
 #define P_NAME(type)                                    \
@@ -573,19 +618,49 @@ oselect(struct monst *mtmp, int type)
 
 /* TODO: have monsters use aklys' throw-and-return */
 static NEARDATA const int rwep[] = {
-    DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
-    SHURIKEN, YA, SILVER_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
-    CROSSBOW_BOLT, SILVER_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, KNIFE,
-    SLING_BULLET, FLINT, ROCK, LOADSTONE, LUCKSTONE, DART,
-    /* BOOMERANG, */ CREAM_PIE
+    DWARVISH_SPEAR,
+    SILVER_SPEAR, 
+    ELVEN_SPEAR, 
+    SPEAR, 
+    ORCISH_SPEAR, 
+    JAVELIN,
+    SHURIKEN, 
+    YA, 
+    SILVER_ARROW, 
+    ELVEN_ARROW, 
+    ARROW, 
+    ORCISH_ARROW,
+    CROSSBOW_BOLT,
+    SILVER_DAGGER,
+    ELVEN_DAGGER,
+    DAGGER,
+    ORCISH_DAGGER,
+    KNIFE,
+    SLING_BULLET,
+    FLINT,
+    ROCK,
+    LOADSTONE,
+    LUCKSTONE,
+    DART,
+    /* BOOMERANG, */
+    CREAM_PIE
 };
 
-static NEARDATA const int pwep[] = { SCYTHE,
-                                     BARDICHE,      HALBERD,  SPETUM,
-                                     BILL_GUISARME, VOULGE,   RANSEUR,
-                                     GUISARME,      GLAIVE,   LUCERN_HAMMER,
-                                     BEC_DE_CORBIN, FAUCHARD, PARTISAN,
-                                     LANCE };
+static NEARDATA const int pwep[] = { 
+    SCYTHE,
+    BARDICHE,      
+    HALBERD,  
+    SPETUM,
+    BILL_GUISARME, 
+    VOULGE,   
+    RANSEUR,
+    GUISARME,      
+    GLAIVE,   
+    LUCERN_HAMMER,
+    BEC_DE_CORBIN, 
+    FAUCHARD, 
+    PARTISAN,
+    LANCE };
 
 /* select a ranged weapon for the monster */
 struct obj *
