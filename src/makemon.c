@@ -595,7 +595,7 @@ m_initweap(struct monst *mtmp)
             otmp = mksobj(WAR_HAMMER, FALSE, FALSE);
             otmp->spe = rnd(5) + 8;
             otmp->oeroded = otmp->oeroded2 = 0;
-            /* TODO: Name this hammer Matalotok */
+            oname(otmp, "Matalotok", ONAME_VIA_NAMING);
             (void) mpickobj(mtmp, otmp);
             (void) mongets(mtmp, BOULDER);
             break;
