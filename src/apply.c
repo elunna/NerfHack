@@ -3063,11 +3063,18 @@ use_stone(struct obj *tstone)
     }
 
     if (tstone->otyp == FOULSTONE || obj->otyp == FOULSTONE) {
-        /* TODO: Handle a message here depending on sight/hearing/smell */
+        if (olfaction(gy.youmonst.data))
+            if (Hallucination)
+                You("smell something awful.");
+            else
+                pline("Did somebody step on a duck?");
+        else if (!Deaf)
+            You_hear(Hallucination ? "breaking wind." : "a light puff.");
         create_gas_cloud(u.ux, u.uy, 1, 4);
         makeknown(FOULSTONE);
         return ECMD_TIME;
     }
+    
     if (tstone->otyp == TOUCHSTONE && tstone->cursed
         && obj->oclass == GEM_CLASS && !is_graystone(obj)
         && !obj_resists(obj, 80, 100)) {
