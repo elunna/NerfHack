@@ -2041,8 +2041,6 @@ trapeffect_grease_trap(
 
 /* Helper function for the grease trap effects.
  * The chance of an item being greased is always 50%.
- * TODO: Add handling for item slipping
- * TODO: Add monster item handling
  */
 staticfn void
 grease_hits(struct obj *otmp)
@@ -7726,10 +7724,6 @@ maybe_finish_sokoban(void)
                things like breaking boulders or jumping will no longer
                be given, and restrictions on diagonal moves are lifted */
             Sokoban = 0; /* clear svl.level.flags.sokoban_rules */
-            /*
-             * TODO: give some feedback about solving the sokoban puzzle
-             * (perhaps say "congratulations" in Japanese?).
-             */
 
             /* log the completion event regardless of whether or not
                any normal in-game feedback has just been given */

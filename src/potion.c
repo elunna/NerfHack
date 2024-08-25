@@ -1185,7 +1185,6 @@ peffect_sickness(struct obj *otmp)
                     : "contaminated potion");
             if (!Fixed_abil) {
                 poisontell(typ, FALSE);
-                /* TODO: Double check this resist_reduce */
                 (void) adjattrib(typ,
                                  -resist_reduce(rn1(4, 3), POISON_RES) +1, 1);
             }

@@ -104,7 +104,6 @@ staticfn int muse_createmonster(struct monst *, struct obj *);
 #define MUSE_SCR_STINKING_CLOUD     205 /* Offensive */
 #define MUSE_SCR_REMOVE_CURSE       206 /* misc */
 /* TODO: scroll of water? */
-/* TODO: scroll/card of zapping */
 
 /* Potions */
 
@@ -127,7 +126,6 @@ staticfn int muse_createmonster(struct monst *, struct obj *);
 #define MUSE_POT_SPEED              316 /* misc */
 #define MUSE_POT_POLYMORPH          317 /* misc */
 #define MUSE_POT_REFLECT            318
-/* potion of see invisibile? */
 /* Potion of sickness? */
 
 /* Misc items */
@@ -2299,11 +2297,6 @@ use_offensive(struct monst *mtmp)
         } else {
              pline("%s takes a picture of you!", Monnam(mtmp));
         }
-        /* TODO: To enable this as a ranged attack for monsters, 
-         * can we use do_blinding_ray but mangle u.dx and u.dy?
-         * Probably more trouble than it's worth, but we would
-         * get the nice flashing animation...
-         */
         gm.m_using = TRUE;
         if (!Blind && !(resists_blnd(&gy.youmonst)
                 || defended(&gy.youmonst, AD_BLND))) {
