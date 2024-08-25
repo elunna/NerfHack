@@ -1392,6 +1392,14 @@ hmon_hitmon_weapon_melee(
                   makeplural(stagger(mon->data, "stagger")));
         mon->mstun = 1;
         hmd->dmg += rnd(6); /* Bonus damage */
+    } else if (hmd->dieroll == 1 && obj == uwep
+               && (wtype == P_WHIP && P_SKILL(wtype) >= P_BASIC)
+                   && Role_if(PM_ARCHEOLOGIST) && is_animal(mon->data)) {
+        /* Archeologists can occasionally crack the whip on animals. */
+        You("crack %s at %s!", xname(uwep), mon_nam(mon));
+        hmd->hittxt = TRUE;
+        monflee(mon, d(2, 4), FALSE, FALSE);
+        hmd->dmg += rnd(3); /* Bonus damage */
     } else if (obj == uwep && u.twoweap
         && Role_if(PM_SAMURAI) 
         && uwep->otyp == KATANA 
