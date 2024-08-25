@@ -78,10 +78,13 @@
         && !nonliving(ptr) \
         && !unique_corpstat(ptr) \
         && (ptr)->msound != MS_LEADER \
-        && (ptr)->mlet != S_GREMLIN \
         && ptr != &mons[PM_DEEP_ONE] \
         && ptr != &mons[PM_DEEPER_ONE] \
-        && ptr != &mons[PM_DEEPEST_ONE])
+        && ptr != &mons[PM_DEEPEST_ONE] \
+        /* These pose complex problems if they become rabid... */ \
+        && ptr != &mons[PM_ALIGNED_CLERIC] \
+        && ptr != &mons[PM_HIGH_CLERIC] \
+        && ptr != &mons[PM_SHOPKEEPER])
 
 /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
 #define resists_mgc(ptr) \
