@@ -2341,7 +2341,12 @@ use_offensive(struct monst *mtmp)
         if (mtmp->mconf) {
             if (vis)
                 pline("Oh, what a pretty fire!");
-            /* TODO: deal 1 damage */
+            mtmp->mhp -= 1;
+            if (DEADMONSTER(mtmp)) {
+                if (vis)
+                    pline("%s dies!", Monnam(mtmp));
+                mondead(mtmp);
+            }
         } else
             explode(mtmp->mux, mtmp->muy, BZ_M_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
         return 2;
