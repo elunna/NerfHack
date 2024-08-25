@@ -532,6 +532,8 @@ silver_sears(struct monst *magr UNUSED, struct monst *mdef,
                : ((silverhit & W_RINGL) != 0L) ? "left "
                  : "right ",
              rings, vtense(rings, "sear"), mon_nam(mdef));
+    } else if ((silverhit & W_ARMS) != 0L) {
+        Your("silver shield sears %s!", mon_nam(mdef));
     }
 }
 

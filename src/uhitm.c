@@ -1542,17 +1542,11 @@ hmon_hitmon_misc_obj(
     case SHIELD_OF_REFLECTION:
     case ANTI_MAGIC_SHIELD:
         if (obj == uarms && is_shield(obj)) {
-            hmd->dmg = shield_dmg(obj, mon);
             You("bash %s with %s%s",
                 mon_nam(mon), ysimple_name(obj),
                 canseemon(mon) ? exclam(hmd->dmg) : ".");
+            hmd->dmg = shield_dmg(obj, mon);
         }
-        #if 0 /* TODO: Handle silver shield damage */
-        if (mon_hates_material(mon, obj->material)) {
-            /* dmgval() already added damage, but track hated_obj */
-            hated_obj = obj;
-        }
-        #endif 
         break;
     case BOULDER:         /* 1d20 */
     case HEAVY_IRON_BALL: /* 1d25 */
@@ -7492,10 +7486,13 @@ staticfn int
 shield_dmg(struct obj *obj, struct monst *mon)
 {
     int tmp = 0;
+    long silverhit = 0L;
+
     if (uarms && P_SKILL(P_SHIELD) >= P_BASIC) {
         /* dmgval for shields is just one point,
            plus whatever material damage applies */
         tmp = dmgval(obj, mon);
+        tmp += special_dmgval(&gy.youmonst, mon, W_ARMS, &silverhit);
 
         /* add extra damage based on the type
            of shield */
@@ -7512,6 +7509,8 @@ shield_dmg(struct obj *obj, struct monst *mon)
         if (P_SKILL(P_SHIELD) >= P_EXPERT)
             tmp += rnd(4);
     }
+    if (silverhit)
+        silver_sears(&gy.youmonst, mon, silverhit);
     return tmp;
 }
 
