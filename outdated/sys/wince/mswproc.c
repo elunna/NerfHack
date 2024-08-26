@@ -1243,7 +1243,7 @@ mswin_raw_print(const char *str)
     logDebug("mswin_raw_print(%s)\n", str);
     if (str && *str)
         MessageBox(GetNHApp()->hMainWnd, NH_A2W(str, wbuf, sizeof(wbuf)),
-                   TEXT("NetHack"), MB_OK);
+                   TEXT("NerfHack"), MB_OK);
 }
 
 /*
@@ -1258,7 +1258,7 @@ mswin_raw_print_bold(const char *str)
     logDebug("mswin_raw_print_bold(%s)\n", str);
     if (str && *str)
         MessageBox(GetNHApp()->hMainWnd, NH_A2W(str, wbuf, sizeof(wbuf)),
-                   TEXT("NetHack"), MB_OK);
+                   TEXT("NerfHack"), MB_OK);
 }
 
 /*

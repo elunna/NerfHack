@@ -703,7 +703,7 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
        Qt would change the action name behind our backs; do it explicitly */
     actn = game->addAction("Preferences...", this, SLOT(doQtSettings(bool)));
     actn->setMenuRole(QWidgetAction::PreferencesRole);
-    /* we also want a "Quit NetHack" entry in the application menu;
+    /* we also want a "Quit NerfHack" entry in the application menu;
        when "_Quit-without-saving" was called "Quit" it got intercepted
        for that, but now this needs to be added separately; we'll use a
        handy menu and let the interception put it in the intended place;

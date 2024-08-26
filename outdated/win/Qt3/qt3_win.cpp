@@ -3554,7 +3554,7 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
     addToolBar(toolbar);
     menubar = menuBar();
 
-    setCaption("Qt NetHack");
+    setCaption("Qt NerfHack");
     if ( qt_compact_mode )
 	setIcon(QPixmap(nh_icon_small));
     else
@@ -3858,7 +3858,7 @@ void NetHackQtMainWindow::doMenuItem(int id)
 	qt_settings->show();
 	break;
       case 2000:
-	QMessageBox::about(this,  "About Qt NetHack", aboutMsg());
+	QMessageBox::about(this,  "About Qt NerfHack", aboutMsg());
 	break;
       case 3000: {
 	    QDialog dlg(this,0,TRUE);
@@ -4038,8 +4038,8 @@ void NetHackQtMainWindow::keyPressEvent(QKeyEvent* event)
 void NetHackQtMainWindow::closeEvent(QCloseEvent* e)
 {
     if ( program_state.something_worth_saving ) {
-	switch ( QMessageBox::information( this, "NetHack",
-	    "This will end your NetHack session",
+	switch ( QMessageBox::information( this, "NerfHack",
+	    "This will end your NerfHack session",
 	    "&Save", "&Cancel", 0, 1 ) )
 	{
 	    case 0:
@@ -4985,7 +4985,7 @@ char NetHackQtBind::qt_yn_function(const char *question, const char *choices, CH
 #ifdef USE_POPUPS
 	// Improve some special-cases (DIRKS 08/02/23)
 	if (strcmp (choices,"ynq") == 0) {
-	    switch (QMessageBox::information (qApp->mainWidget(),"NetHack",question,"&Yes","&No","&Quit",0,2))
+	    switch (QMessageBox::information (qApp->mainWidget(),"NerfHack",question,"&Yes","&No","&Quit",0,2))
 	    {
 	      case 0: return 'y'; 
 	      case 1: return 'n'; 
@@ -4994,7 +4994,7 @@ char NetHackQtBind::qt_yn_function(const char *question, const char *choices, CH
 	}
 
 	if (strcmp (choices,"yn") == 0) {
-	    switch (QMessageBox::information(qApp->mainWidget(),"NetHack",question,"&Yes", "&No",0,1))
+	    switch (QMessageBox::information(qApp->mainWidget(),"NerfHack",question,"&Yes", "&No",0,1))
 	    {
 	      case 0: return 'y';
 	      case 1: return 'n'; 

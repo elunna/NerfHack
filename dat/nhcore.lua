@@ -121,11 +121,11 @@ end
 -- Callback functions
 nhcore = {
     -- start_new_game called once, when starting a new game
-    -- after "Welcome to NetHack" message has been given.
+    -- after "Welcome to NerfHack" message has been given.
     -- start_new_game = function() nh.pline("NEW GAME!"); end,
 
     -- restore_old_game called once, when restoring a saved game
-    -- after "Welcome back to NetHack" message has been given.
+    -- after "Welcome back to NerfHack" message has been given.
     -- restore_old_game = function() nh.pline("RESTORED OLD GAME!"); end,
 
     -- moveloop_turn is called once per turn.

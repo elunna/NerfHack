@@ -341,7 +341,7 @@ init_menu_nhcolors(struct xwindow *wp)
 
     for (color = 0; color < CLR_MAX; color++) {
         Sprintf(clr_name, "nethack.%s.%s", wtn, mapCLR_to_res[color]);
-        Sprintf(clrclass, "NetHack.%s.%s", wtn_up, mapCLR_to_res[color]);
+        Sprintf(clrclass, "NerfHack.%s.%s", wtn_up, mapCLR_to_res[color]);
 
         if (!XrmGetResource(rDB, clr_name, clrclass, ret_type, &value)) {
             Sprintf(clr_name, "nethack.map.%s", mapCLR_to_res[color]);
@@ -1604,9 +1604,9 @@ X11_init_nhwindows(int *argcp, char **argv)
 
     num_args = 0;
     XtSetArg(args[num_args], XtNallowShellResize, True); num_args++;
-    XtSetArg(args[num_args], XtNtitle, "NetHack"); num_args++;
+    XtSetArg(args[num_args], XtNtitle, "NerfHack"); num_args++;
 
-    toplevel = XtAppInitialize(&app_context, "NetHack",     /* application  */
+    toplevel = XtAppInitialize(&app_context, "NerfHack",     /* application  */
                                (XrmOptionDescList) 0, 0,    /* options list */
                                argcp, (String *) argv,      /* command line */
                                default_resource_data, /* fallback resources */

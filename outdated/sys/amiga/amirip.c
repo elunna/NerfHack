@@ -233,7 +233,7 @@ time_t when;
     cno = 1;
     tomb_line = TEXT_TOP;
     tomb_text("This release");
-    tomb_text("of NetHack");
+    tomb_text("of NerfHack");
     tomb_text("is dedicated");
     tomb_text("to the");
     tomb_text("memory of");

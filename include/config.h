@@ -90,7 +90,7 @@
 #define BEOS_GRAPHICS             /* (optional) */
 #define DEFAULT_WINDOW_SYS "BeOS" /* "tty" */
 #ifndef HACKDIR                   /* override the default hackdir below */
-#define HACKDIR "/boot/apps/NetHack"
+#define HACKDIR "/boot/apps/NerfHack"
 #endif
 #endif
 
