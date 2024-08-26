@@ -2770,10 +2770,22 @@ dozap(void)
         pseudo = mksobj(obj->corpsenm, FALSE, FALSE);
         pseudo->blessed = pseudo->cursed = 0;
         pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
+        need_dir = objects[pseudo->otyp].oc_dir != NODIR;
 
-        if (!(objects[pseudo->otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
+        if (need_dir && !getdir((char *) 0)) {
             if (!Blind)
                 pline("%s glows and fades.", The(xname(obj)));
+        } else if (need_dir && (!u.dx && !u.dy && !u.dz)) {
+            if ((damage = zapyourself(pseudo, TRUE)) != 0) {
+                char buf[BUFSZ];
+
+                if (pseudo->otyp == WAN_STRIKING) { /* physical damage source */
+                    damage = Maybe_Half_Phys(damage);
+                }
+                Sprintf(buf, "zapped %sself with %s",
+                        uhim(), killer_xname(obj));
+                losehp(damage, buf, NO_KILLER_PREFIX);
+            }
         } else {
             gc.current_wand = pseudo;
             weffects(pseudo);
