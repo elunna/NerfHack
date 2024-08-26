@@ -784,6 +784,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_GAS_SPORE: 
     case PM_FLOATING_EYE: 
     case PM_FREEZING_SPHERE:
+    case PM_STINKING_SPHERE:
     case PM_FLAMING_SPHERE: 
     case PM_SHOCKING_SPHERE:
     case PM_ACID_SPHERE:

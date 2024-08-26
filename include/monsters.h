@@ -435,6 +435,18 @@
             | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_INFRAVISIBLE,
         NO_RACE, 9, CLR_WHITE, FREEZING_SPHERE),
+    MON(NAM("stinking sphere"), S_EYE,
+        LVL(6, 13, 4, 0, 0), (G_NOCORPSE | G_GENO | 2),
+        A(ATTK(AT_EXPL, AD_PHYS, 4, 6),
+          ATTK(AT_BOOM, AD_PHYS, 4, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(10, 10, MS_SILENT, MZ_SMALL), 0, 0,
+        M1_FLY | M1_BREATHLESS | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS
+            | M1_NOTAKE,
+        M2_HOSTILE | M2_NEUTER,
+        /* let them see through/in stinking cloud */
+        M3_INFRAVISIBLE | M3_INFRAVISION,
+        NO_RACE, 9, CLR_GREEN, STINKING_SPHERE),
     MON(NAM("flaming sphere"), S_EYE,
         LVL(6, 13, 4, 0, 0), (G_NOCORPSE | 2),
         A(ATTK(AT_EXPL, AD_FIRE, 4, 6),
