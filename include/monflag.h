@@ -36,29 +36,28 @@ enum ms_sounds {
     MS_IMITATE  = 22,   /* imitates others (leocrotta) */
     MS_WERE     = 23,   /* lycanthrope in human form */
     MS_ORC      = 24,   /* intelligent brutes */
+    MS_GROAN    = 25,   /* zombies groan */
+    MS_ATHOL    = 26,   /* athols; howls like a shrieker */
     /* from here onward, speech can be comprehended */
-    MS_HUMANOID = 25,   /* generic traveling companion */
-    MS_ARREST   = 26,   /* "Stop in the name of the law!" (Kops) */
-    MS_SOLDIER  = 27,   /* army and watchmen expressions */
-    MS_GUARD    = 28,   /* "Please drop that gold and follow me." */
-    MS_DJINNI   = 29,   /* "Thank you for freeing me!" */
-    MS_NURSE    = 30,   /* "Take off your shirt, please." */
-    MS_SEDUCE   = 31,   /* "Hello, sailor." (Nymphs) */
-    MS_VAMPIRE  = 32,   /* vampiric seduction, Vlad's exclamations */
-    MS_BRIBE    = 33,   /* asks for money, or berates you */
-    MS_CUSS     = 34,   /* berates (demons) or intimidates (Wiz) */
-    MS_RIDER    = 35,   /* astral level special monsters */
-    MS_LEADER   = 36,   /* your class leader */
-    MS_NEMESIS  = 37,   /* your nemesis */
-    MS_GUARDIAN = 38,   /* your leader's guards */
-    MS_SELL     = 39,   /* demand payment, complain about shoplifters */
-    MS_ORACLE   = 40,   /* do a consultation */
-    MS_PRIEST   = 41,   /* ask for contribution; do cleansing */
-    MS_SPELL    = 42,   /* spellcaster not matching any of the above */
-    MS_BOAST    = 43,   /* giants */
-    MS_GROAN    = 44,   /* zombies groan */
-    MS_ATHOL    = 45,   /* athols; howls like a shrieker */
-
+    MS_HUMANOID = 27,   /* generic traveling companion */
+    MS_ARREST   = 28,   /* "Stop in the name of the law!" (Kops) */
+    MS_SOLDIER  = 29,   /* army and watchmen expressions */
+    MS_GUARD    = 30,   /* "Please drop that gold and follow me." */
+    MS_DJINNI   = 31,   /* "Thank you for freeing me!" */
+    MS_NURSE    = 32,   /* "Take off your shirt, please." */
+    MS_SEDUCE   = 33,   /* "Hello, sailor." (Nymphs) */
+    MS_VAMPIRE  = 34,   /* vampiric seduction, Vlad's exclamations */
+    MS_BRIBE    = 35,   /* asks for money, or berates you */
+    MS_CUSS     = 36,   /* berates (demons) or intimidates (Wiz) */
+    MS_RIDER    = 37,   /* astral level special monsters */
+    MS_LEADER   = 38,   /* your class leader */
+    MS_NEMESIS  = 39,   /* your nemesis */
+    MS_GUARDIAN = 40,   /* your leader's guards */
+    MS_SELL     = 41,   /* demand payment, complain about shoplifters */
+    MS_ORACLE   = 42,   /* do a consultation */
+    MS_PRIEST   = 43,   /* ask for contribution; do cleansing */
+    MS_SPELL    = 44,   /* spellcaster not matching any of the above */
+    MS_BOAST    = 45,   /* giants */
 };
 
 #define MR_FIRE         0x00000001L /* resists fire */
