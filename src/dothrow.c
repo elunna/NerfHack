@@ -2184,8 +2184,10 @@ thitmonst(
 
     dieroll = rnd(20);
 
-    if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
-        || obj->oclass == GEM_CLASS) {
+    if (obj->oclass == WEAPON_CLASS
+            || is_weptool(obj)
+            || obj->oclass == GEM_CLASS
+            || is_moncard(obj)) {
         if (hmode == HMON_KICKED) {
             /* throwing adjustments and weapon skill bonus don't apply */
             tmp -= (is_ammo(obj) ? 5 : 3);
@@ -2211,13 +2213,11 @@ thitmonst(
                         ++tmp;
                 }
             }
-	    } else if (is_moncard(obj)) {
-            use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
-            obfree(obj, (struct obj *) 0);
-            return 1;
         } else { /* thrown non-ammo or applied polearm/grapnel */
             if (otyp == BOOMERANG) /* arbitrary */
                 tmp += 4;
+            if (is_moncard(obj))
+                tmp += 4; /* Give a little help */
             else if (throwing_weapon(obj)) /* meant to be thrown */
                 tmp += 2;
             else if (obj == gt.thrownobj) /* not meant to be thrown */
@@ -2250,10 +2250,43 @@ thitmonst(
                     hitmon_bardiche(mon, obj);
                 }
             }
-            if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
+            
+            if (is_moncard(obj)) {
+                /* Spheres explode on contact! */
+                if (is_boomer(obj->corpsenm)) {
+                    #if 0
+                    if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                        pline("%s explodes in a ball of fire!", Doname2(obj));
+                    else
+                        You_hear("an explosion");
+                    #endif
+                    switch (obj->corpsenm) {
+                        case PM_FREEZING_SPHERE:
+                            explode(gb.bhitpos.x, gb.bhitpos.y,
+                                ZT_SPELL(ZT_COLD), d(4, 6), WEAPON_CLASS, EXPL_FROSTY);
+                            break;
+                        case PM_FLAMING_SPHERE:
+                            explode(gb.bhitpos.x, gb.bhitpos.y,
+                                ZT_SPELL(ZT_FIRE), d(4, 6), WEAPON_CLASS, EXPL_FIERY);
+                            break;
+                        case PM_SHOCKING_SPHERE:
+                            explode(gb.bhitpos.x, gb.bhitpos.y,
+                                ZT_SPELL(ZT_LIGHTNING), d(4, 6), WEAPON_CLASS, EXPL_MAGICAL);
+                            break;
+                        case PM_ACID_SPHERE:
+                            explode(gb.bhitpos.x, gb.bhitpos.y,
+                                ZT_SPELL(ZT_ACID), d(4, 6), WEAPON_CLASS, EXPL_WET);
+                            break;
+                    }
+                } else
+                    use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
+                obfree(obj, (struct obj *) 0);
+                return 1;
+            } else if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
                 if (mon->wormno)
                     cutworm(mon, gb.bhitpos.x, gb.bhitpos.y, chopper);
             }
+
             exercise(A_DEX, TRUE);
 
             /* Detonate bolts shot by Hellfire */
