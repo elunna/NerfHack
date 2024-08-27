@@ -93,6 +93,7 @@ agate*
 	rock.
 		[ The Columbia Encyclopedia, Sixth Edition ]
 alchemy
+gem alchemy
 	By and large, the only skill the alchemists of Ankh-Morpork had
 	discovered so far was the ability to turn gold into less gold.
 		[ Moving Pictures, by Terry Pratchett ]
@@ -189,6 +190,10 @@ amulet of yendor
 	immortality to the adventurer who can deliver it from the
 	depths of Moloch's Sanctum and offer it on the appropriate high
 	altar on the Astral Plane.
+amulet of esp
+	ESP is an abbreviation for Extra-Sensory Perception; that is,
+	perception not gained through the five traditionally-attested
+	senses: hearing, feeling, sight, taste and smell.
 angel*
 	He answered and said unto them, he that soweth the good seed
 	is the Son of man; the field is the world, and the good seed
@@ -239,6 +244,10 @@ ant
 	fiercely as its small, distant cousin.  Various varieties
 	exist, and they are known and feared for their relentless
 	persecution of their victims.
+antigulp
+	Creator of SpliceHack. Likes working with undocumented code
+	and making sandwiches. If your game crashes, she is almost
+	certainly to blame.
 anu
 	Anu was the Babylonian god of the heavens, the monarch of
 	the north star.  He was the oldest of the Babylonian gods,
@@ -366,6 +375,8 @@ asmodeus
 	Asmodeus often figures as the spirit of matrimonial jealousy
 	or unhappiness.
 		[ Brewer's Concise Dictionary of Phrase and Fable ]
+assassin bug
+	Even lowly vermin are capable of feats of deceit.
 athame
 	The consecrated ritual knife of a Wiccan initiate (one of four
 	basic tools, together with the wand, chalice and pentacle).
@@ -627,7 +638,7 @@ ooze
 	penguins and slithering over the glistening floor that it and its
 	kind had swept so evilly free of all litter.
 		[ At the Mountains of Madness, by H.P. Lovecraft ]
-bloodshot eye
+third eye
 blinking eye
 	The eyes are the windows to your soul.
 		[ William Shakespeare ]
@@ -1015,6 +1026,17 @@ large box
 	glittering cascade, they gave forth the sound of hail beating
 	against the windowpanes.
 		[ The Count of Monte Cristo, by Alexandre Dumas ]
+chicken
+	C - That's the way it begins
+	H - Is the next letter in
+	I - Is the middle of the word
+	C - You've already heard
+	K - That's the name of the hen
+	E - Now you're nearing the N
+	N - And that's the end
+
+	C - H - I - C - K - E - N, that's the way you spell chicken!
+		[Unknown]
 chickatrice
 	This beastie is the recently-hatched broodling of a cockatrice, a
 	creature feared by adventurers great and small for its petrifying
@@ -1136,6 +1158,16 @@ c*ckatrice
 	sicken and die.
 	  [ Mythical Beasts, by Deirdre Headon (The Leprechaun Library)
 		and other sources ]
+*cockroach
+	i do not see why men
+	should be so proud
+	insects have the more
+	ancient lineage
+	according to the scientists
+	insects were insects
+	when man was only
+	a burbling whatsit
+		[ archy and mehitabel, by Don Marquis ]
 *coin
 ~creeping coins
 *coins
@@ -1365,6 +1397,12 @@ lord of the foocubi
 	For love is no part of the dreamworld. Love belongs to Desire,
 	and Desire is always cruel.
 		[ The Sandman, by Neil Gaiman ]
+* of the cards
+dal z*
+	Kaiba: Draw your last pathetic card so I can end this, Yugi!
+	Yami Yugi: My Grandpa's deck has no pathetic cards, Kaiba.
+	But it does have... the unstoppable exodia!
+		[ Yu Gi Oh ]
 dark one
 	... But he ruled rather by force and fear, if they might
 	avail; and those who perceived his shadow spreading over the
@@ -1504,6 +1542,13 @@ dilithium*
 	although it is doubtful that it would possess the more fantastic
 	properties ascribed to dilithium.
 		[ The Mineralogy of Star Trek, by Jeffrey de Fourestier ]
+dinosaur
+velociraptor
+t-rex
+	Dinosaurs are a diverse group of reptiles of the clade Dinosauria.
+	They first appeared during the Triassic period, between 243 and 231
+	million years ago, although the exact origin and timing of the evolution
+	of dinosaurs is the
 dingo
 	A wolflike wild dog, Canis dingo, of Australia, having a
 	reddish- or yellowish-brown coat, believed to have been
@@ -2076,15 +2121,27 @@ fortune cookie
 	There! Much better."
 		[ The Mark of Athena, by Rick Riordan ]
 forge
-	Vulcan: You were woont to say that the beating of hammers made
-	your head ake, and the smoake of the forge your eies water, and
-	euery coale was a blocke in your way.  You weepe rose water,
-	when you aske, and spitte vinegar, when you haue obteined.  What
-	would you now, with new arrowes? [...] But I will not chide Venus.
-	Come Cyclops, my wife must haue her will: let vs doe that in earth,
-	which the Gods cannot vndoe in heauen.
-	Venus: Gramercie sweete Vulcan: to your worke!
-		[ Sapho and Phao, by John Lyly ]
+craft
+cookbook
+fusions
+    The #craft command: Getting Started
+
+    1) Find a forge.
+    2) Find a hammer, any will do.
+    3) Find two gemstone or metallic objects from recipe.
+       Use the object lookup (select the item from your
+       inventory) to see any forging recipes related to
+       your selected item.
+    4) Put both of those objects into the forge whilst
+       wielding your hammer (apply the hammer at the forge).
+    5) Start forging.  If successful, you'll forge a brand
+       new object.
+
+    Make sure your secondary object has the enchantments
+	you want to carry over to your newly forged creation.
+
+    Don't try to forge things you know you shouldn't.
+		[The Blacksmith's Cookbook]
 fountain
 	Rest! This little Fountain runs
 	Thus for aye: -- It never stays
@@ -3875,6 +3932,11 @@ mercury
 	Roman god of commerce, trade and travellers.  He is commonly
 	depicted carrying a caduceus (a staff with two snakes
 	intertwining around it) and a purse.
+merfolk
+merman
+mermaid
+	A tail is far from the only thing preventing a human from
+	living beneath the sea.
 *mimic
 	The ancestors of the modern day chameleon, these creatures can
 	assume the form of anything in their surroundings.  They may
@@ -4489,6 +4551,12 @@ pelias
 	Pelias cryptically.  "You see my fleshy guise, he saw my naked
 	soul."
 	 [ Conan the Usurper, by Robert E. Howard and L. Sprague de Camp ]
+	war against nations, spread scandal or confess love.  Paper,
+phoenix
+	There are three conditions to terrify someone: One, the monster
+	can't speak. Two, the monster has to be unidentifiable. Three,
+	it's meaningless if the monster can die.
+		[ The Garden of Sinners ]
 pick*ax*
 broad pick
 	The mine is full of holes;
@@ -4568,27 +4636,73 @@ potion of sickness
 polearm
 * polearm
 partisan
-ranseur
 spetum
-glaive
-halberd
 bardiche
 angled poleaxe
 long poleaxe
-voulge
 pole cleaver
-fauchard
 pole sickle
 guisarme
 bill-guisarme
 lucern hammer
-bec de corbin
 	Many of the weapons of the Middle Ages were poled or long-shafted
 	arms.  Unlike the ancient spear or javelin, however, they were not
 	intended to be thrown.  Some were devices with simple single- or
 	double-edged blades and nothing more, while others combined
 	the pick, spear, and hammer or axe all in one weapon.
 		[ Heraldry and Armor of the Middle Ages, by Marvin H. Pakula ]
+fauchard
+	This weapon is a development of the scythe or sickle. Set
+	upon a long pole, the curving blade of a fauchard can be
+	used for both cutting and thrusting. The weapon offers little
+	in the way of parrying or catching/holding and has no provision
+	for dismounting opponents, though it is quite useful for crippling
+	their mounts.
+bec de corbin
+	A peasant pole-arm, the bec de corbin's crow-beak blade
+	was designed to puncture the heavy plate armor common to
+	upper-class warriors. In this weapon the beak is the major
+	feature. This is backed by a flat hammer head or clawed head,
+	with a short and bladelike spike at the opposite end.
+glaive
+	The glaive is a knife-bladed spear. It has the thrusting
+	function of the spear, and the secondary cutting function of
+	the convex blade of the knife. The weapon was rapidly enlarged
+	in the blade in order to give it a greater cutting function as
+	well as a cleaving attack. As with a spear or fauchard, however,
+	it is not overly effective at holding opponents back, nor does
+	it have the piercing or dismounting capabilities.
+halberd
+	This form of a pole axe is seen as a convex-headed broad axe
+	in early examples, but the head is set at a convenient angle,
+	considering the point where the blade is most likely to impact
+	upon an enemy. This alone makes it quite distinct from an
+	ordinary long-hafted axe. The whole weapon reaches 8 feet in length,
+	and is nearly always topped with a long spear point and backed by
+	a spike, which was often angled or hooked slightly downward.
+	The spear point is, of course, designed to keep opponents at bay
+	and deliver a thrusting attack (this proves quite useless when
+	opposing mounted knights armed with lances). The opposing spike was
+	for penetration of heavy plate armor, with a secondary function as a
+	hook for dismounting opponents.
+ranseur
+	A variant of the pike, the ranseur has a thin, double-edged
+	primary blade. Secondary blades are backward-hooking projections
+	set well below the large central blade, forming a crown-shape.
+	The spearing function of the weapon is apparent, and the
+	deflection includes the trapping of opponent weapons in the space
+	below the main blade, where a twist of the shaft would apply
+	pressure from it or the secondary projections to either break the
+	caught weapon or disarm its wielder. Additionally, the side
+	projections provide both a means of holding an opponent at long
+	range or of pulling mounted opponents off their steed.
+voulge
+	Place a hefty cleaver at the end of a long, stout shaft, and
+	the leverage which the pole gives the wielder will enable him
+	to cleave through armor. The voulge has no provision to keep
+	the enemy at a distance in its basic model, but with the top
+	front or back edge is ground down so as to provide a pointed,
+	dagger-like tip, the weapon assumes a more complete form.
 polymorph trap
 	One morning, as Gregor Samsa was waking up from anxious dreams,
 	he discovered that in bed he had been changed into a monstrous
@@ -4828,6 +4942,16 @@ quit*
 	          be cast into the Flaming Pit of Death.
 		[ Snow Day, directed by Chris Koch,
 		  written by Will McRobb and Chris Viscardi ]
+rabid *
+	It would perhaps not be amiss to point out that he had always
+	tried to be a good dog.  He had tried to do all the things his
+	MAN and his WOMAN, and most of all his BOY, had asked or
+	expected of him.  He would have died for them, if that had been
+	required.  He had never wanted to kill anybody.  He had been
+	struck by something, possibly destiny, or fate, or only a
+	degenerative nerve disease called rabies. Free will was not a
+	factor.
+		[ Cujo, by Stephen King ]
 raijin
 raiden
 	The Japanese god of thunder (rai) and lightning (den).  He
@@ -4886,6 +5010,15 @@ red cap
 	tyranny or wicked deeds and is known for soaking his cap in the blood
 	of his victims.
 		[ Wikipedia, the free encyclopedia ]
+revenant
+	Will rose.  Ser Waymar Royce stood over him.  His fine clothes were
+	a tatter, his face a ruin.  A shard from his sword transfixed the
+	blind white pupil of his left eye.  The right eye was open.  The pupil
+	burned blue.  It saw.  The broken sword fell from nerveless fingers.
+	Will closed his eyes to pray.  Long, elegant hands brushed his cheek,
+	then tightened around his throat.  They were gloved in the finest
+	moleskin and sticky with blood, yet the touch was icy cold.
+		[ A Game of Thrones, by George R. R. Martin ]
 ~*invisibility
 ring
 * ring
