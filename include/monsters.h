@@ -1718,7 +1718,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_SQEEK, MZ_SMALL), 0, 0,
         M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE | M1_SEE_INVIS,
-        M2_WANDER | M2_HOSTILE | M2_FLANK, M3_INFRAVISIBLE,
+        M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 5, CLR_CYAN, ZOO_BAT),
     MON(NAM("raven"), S_BAT,
         LVL(4, 20, 6, 0, 0), (G_GENO | 2),
@@ -1771,7 +1771,7 @@
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 15, CLR_ORANGE, PHOENIX),
     /* From SLASH'EM with changes:
-     * - Increased bite and sting damage. They can now flank.
+     * - Increased bite and sting damage.
      * - Removed traitorous nature */
     MON(NAM("byakhee"), S_BAT,
         LVL(11, 20, 1, 25, -4), (G_GENO | 2 | G_SGROUP),
@@ -1784,11 +1784,11 @@
         M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE 
             | M1_SEE_INVIS | M1_OMNIVORE,
         M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG | M2_COLLECT
-          | M2_MAGIC | M2_FLANK,
+          | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 15, CLR_YELLOW, BYAKHEE),
     /* From SLASH'EM with changes:
-     * - Added a weapon attack and a sting attack. They can now flank.
+     * - Added a weapon attack and a sting attack.
      * - Their paralyzing tickle is no longer protected from by possessing
      *   Free Action and it is unaffected by magic cancellation. However,the
      *   length of paralysis when it does occur was reduced. */
@@ -1804,7 +1804,7 @@
         M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE 
             | M1_SEE_INVIS | M1_OMNIVORE | M1_NOEYES,
         M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG 
-            | M2_COLLECT | M2_MAGIC | M2_FLANK,
+            | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 19, HI_LORD, NIGHTGAUNT),
     /*
@@ -2429,7 +2429,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 200, MS_ARREST, MZ_HUMAN), 0, 0, 
         M1_HUMANOID | M1_CARNIVORE,
-        M2_WANDER | M2_HOSTILE | M2_MALE | M2_COLLECT | M2_FLANK,
+        M2_HOSTILE | M2_MALE | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE,
         MH_HUMAN, 3, CLR_BLUE, KEYSTONE_KOP),
     MON(NAM("Kop Sergeant"), S_KOP,
@@ -3292,7 +3292,7 @@
          SIZ(400, 50, MS_SILENT, MZ_SMALL), MR_COLD | MR_SLEEP | MR_POISON, 0,
          M1_BREATHLESS | M1_HUMANOID | M1_POIS | M1_OMNIVORE
              | M1_TUNNEL | M1_NEEDPICK ,
-         M2_WANDER | M2_HOSTILE | M2_COLLECT | M2_MAGIC | M2_FLANK,
+         M2_WANDER | M2_HOSTILE | M2_COLLECT | M2_MAGIC,
          M3_INFRAVISION,
          MH_UNDEAD, 14, CLR_BLACK, GHOUL_MAGE),
     MON(NAM("skeleton"), S_ZOMBIE,
@@ -3303,7 +3303,7 @@
         SIZ(300, 5, MS_BONES, MZ_HUMAN),
         MR_COLD | MR_SLEEP | MR_POISON | MR_STONE, 0,
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_THICK_HIDE,
-        M2_WANDER | M2_HOSTILE | M2_STRONG | M2_COLLECT | M2_NASTY | M2_FLANK,
+        M2_WANDER | M2_HOSTILE | M2_STRONG | M2_COLLECT | M2_NASTY,
         M3_INFRAVISION,
         MH_UNDEAD, 14, CLR_WHITE, SKELETON),
     /* Adapted from EvilHack with some DOOM injected. */
@@ -3776,7 +3776,7 @@
         M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_HUMANOID | M1_UNSOLID
             | M1_SEE_INVIS,
         M2_NOPOLY | M2_WANDER | M2_STALK | M2_HOSTILE
-            | M2_NASTY | M2_FLANK,
+            | M2_NASTY,
         M3_INFRAVISION,
         MH_UNDEAD, 14, CLR_BLACK, SHADE),
     /*
