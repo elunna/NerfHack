@@ -13,7 +13,6 @@ staticfn void vault_tele(void);
 staticfn void rloc_to_core(struct monst *, coordxy, coordxy, unsigned);
 staticfn void mvault_tele(struct monst *);
 staticfn boolean m_blocks_teleporting(struct monst *);
-staticfn stairway *stairway_find_forwiz(boolean, boolean);
 staticfn void teleport_pain(void);
 
 /* does monster block others from teleporting? */
@@ -1732,17 +1731,6 @@ rloc_to_flag(
     unsigned rlocflags)
 {
     rloc_to_core(mtmp, x, y, rlocflags);
-}
-
-staticfn stairway *
-stairway_find_forwiz(boolean isladder, boolean up)
-{
-    stairway *stway = gs.stairs;
-
-    while (stway && !(stway->isladder == isladder
-                      && stway->up == up && stway->tolev.dnum == u.uz.dnum))
-        stway = stway->next;
-    return stway;
 }
 
 /* place a monster at a random location, typically due to teleport;
