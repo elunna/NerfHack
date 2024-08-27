@@ -917,7 +917,10 @@ xname_flags(
                     && (obj->blessed || obj->cursed)) {
                     Strcat(buf, obj->blessed ? "holy " : "unholy ");
                 }
-                Strcat(buf, actualn);
+                if (Hallucination && !rn2(3))
+                    Strcat(buf, hliquid("water"));
+                else
+                    Strcat(buf, actualn);
             } else {
                 xcalled(buf, BUFSZ - PREFIX, "", un);
             }
