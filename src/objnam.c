@@ -1423,7 +1423,10 @@ doname_base(
         /* allow 'blessed clear potion' if we don't know it's holy water;
          * always allow "uncursed potion of water"
          */
-        if (obj->cursed)
+        if (Hallucination && !rn2(3)) {
+            Strcat(prefix, hcolor(NH_BLACK));
+            Strcat(prefix, " ");
+        } else if (obj->cursed)
             Strcat(prefix, "cursed ");
         else if (obj->blessed)
             Strcat(prefix, "blessed ");
