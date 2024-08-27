@@ -3408,6 +3408,11 @@ mondead(struct monst *mtmp)
     if (mtmp->data == &mons[PM_STEAM_VORTEX])
         create_gas_cloud(mtmp->mx, mtmp->my, rn2(10) + 5, 0); /* harmless */
 
+    if (mtmp->data == &mons[PM_GAS_SPORE])
+        create_gas_cloud(mtmp->mx, mtmp->my, 3, rnd(8));
+    if (mtmp->data == &mons[PM_STINKING_SPHERE])
+        create_gas_cloud(mtmp->mx, mtmp->my, 3 + rn2(2), 2 + rnd(8));
+
     /* dead vault guard is actually kept at coordinate <0,0> until
        his temporary corridor to/from the vault has been removed;
        need to do this after life-saving and before m_detach() */
@@ -3745,9 +3750,6 @@ monkilled(
     if (!DEADMONSTER(mdef))
         return; /* life-saved */
 
-    if (mdef->data == &mons[PM_GAS_SPORE])
-        create_gas_cloud(mdef->mx, mdef->my, 3, rnd(8));
-
     /* extra message if pet golem is completely destroyed;
        if not visible, this will follow "you have a sad feeling" */
     if (mdef->mtame) {
@@ -3908,9 +3910,6 @@ xkilled(
 
     mdat = mtmp->data; /* note: mondead can change mtmp->data */
     mndx = monsndx(mdat);
-
-    if (mtmp->data == &mons[PM_GAS_SPORE])
-        create_gas_cloud(mtmp->mx, mtmp->my, 3, rnd(8));
 
     if (gs.stoned) {
         gs.stoned = FALSE;

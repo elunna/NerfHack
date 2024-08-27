@@ -1941,6 +1941,7 @@ explmu(struct monst *mtmp, struct attack *mattk, boolean ufound)
     }
 
     switch (mattk->adtyp) {
+    case AD_PHYS:
     case AD_COLD:
     case AD_FIRE:
     case AD_ELEC:
