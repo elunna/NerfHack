@@ -1155,7 +1155,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     struct monst *mtmp;
     struct trap *ttmp;
     int xx = u.ux, yy = u.uy;
-    if (gc.current_wand && gc.current_wand->otyp == SCR_WATER) {
+    if (gc.current_wand && gc.current_wand->otyp == SCR_FLOOD) {
          xx = gc.current_wand->ox;
          yy = gc.current_wand->oy;
     }
@@ -2321,7 +2321,7 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
         int stilldry = -1;
         int x, y, safe_pos = 0;
         do_clear_area(wx, wy, range, flood_space, &madepools);
-        
+
         /* check if there are safe tiles around the user */
         for (x = wx - 1; x <= wx + 1; x++) {
             for (y = wy - 1; y <= wy + 1; y++) {
@@ -2725,7 +2725,7 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
     case SCR_STINKING_CLOUD:
         seffect_stinking_cloud(&sobj);
         break;
-    case SCR_WATER:
+    case SCR_FLOOD:
         seffect_water(&sobj, &gy.youmonst);
         break;
     default:

@@ -103,7 +103,7 @@ staticfn int muse_createmonster(struct monst *, struct obj *);
 #define MUSE_SCR_CLONING            204 /* Offensive */
 #define MUSE_SCR_STINKING_CLOUD     205 /* Offensive */
 #define MUSE_SCR_REMOVE_CURSE       206 /* misc */
-#define MUSE_SCR_WATER              207 /* Defensive */
+#define MUSE_SCR_FLOOD              207 /* Defensive */
 
 /* Potions */
 
@@ -829,13 +829,13 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             }
         }
 
-        nomore(MUSE_SCR_WATER);
-        if (obj->otyp == SCR_WATER && mtmp->mcansee
+        nomore(MUSE_SCR_FLOOD);
+        if (obj->otyp == SCR_FLOOD && mtmp->mcansee
             && haseyes(mtmp->data)
             && !(Flying || Levitation) /* This is obvious to monsters */
             && distu(mtmp->mx, mtmp->my) < (7*7)) {
             gm.m.defensive = obj;
-            gm.m.has_defense = MUSE_SCR_WATER;
+            gm.m.has_defense = MUSE_SCR_FLOOD;
         }
 
         if (mtmp->data != &mons[PM_PESTILENCE]) {
@@ -1061,7 +1061,7 @@ use_defensive(struct monst *mtmp)
         obfree(otmp, (struct obj *) 0);
         return 2;
     }
-    case MUSE_SCR_WATER:
+    case MUSE_SCR_FLOOD:
         if (otmp->quan > 1L)
             otmp = splitobj(otmp, 1L);
 
@@ -3267,7 +3267,7 @@ searches_for_item(struct monst *mon, struct obj *obj)
             || typ == SCR_CREATE_MONSTER
             || typ == SCR_EARTH 
             || typ == SCR_FIRE
-            || typ == SCR_WATER
+            || typ == SCR_FLOOD
             || typ == SCR_REMOVE_CURSE
             || typ == SCR_CLONING
             || typ == SCR_STINKING_CLOUD)

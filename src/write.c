@@ -28,7 +28,7 @@ ink_cost(short otyp)
     case SCR_AMNESIA:
     case SCR_FIRE:
     case SCR_EARTH:
-     case SCR_WATER:
+    case SCR_FLOOD:
     case SCR_ZAPPING:
         return 8;
     case SCR_DESTROY_ARMOR:

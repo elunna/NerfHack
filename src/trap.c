@@ -5355,7 +5355,7 @@ water_damage(
             */
         return ER_NOTHING;
     } else if (obj->oclass == SCROLL_CLASS) {
-        if (obj->otyp == SCR_BLANK_PAPER || obj->otyp == SCR_WATER
+        if (obj->otyp == SCR_BLANK_PAPER || obj->otyp == SCR_FLOOD
 #ifdef MAIL_STRUCTURES
             || obj->otyp == SCR_MAIL
 #endif

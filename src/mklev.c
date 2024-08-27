@@ -2337,7 +2337,7 @@ mkgrave(struct mkroom *croom)
     if (dobell)
         (void) mksobj_at(BELL, m.x, m.y, TRUE, FALSE);
     else if (dowater) {
-        (void) mksobj_at(SCR_WATER, m.x, m.y, TRUE, FALSE);
+        (void) mksobj_at(SCR_FLOOD, m.x, m.y, TRUE, FALSE);
     }
     return;
 }
