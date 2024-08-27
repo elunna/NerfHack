@@ -916,7 +916,7 @@ dochug(struct monst *mtmp)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || (Conflict && !mtmp->iswiz)
         || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful
-        || (nearby && !mtmp->mpeaceful && is_outflanker(mtmp->data) && !rn2(2))) {
+        || (nearby && !mtmp->mpeaceful && is_outflanker(mtmp->data) && rn2(3))) {
 
         /* Possibly cast an undirected spell if not attacking you */
         /* note that most of the time castmu() will pick a directed
@@ -1714,8 +1714,8 @@ postmov(
 int
 m_move(struct monst *mtmp, int after)
 {
-    int appr, fi, fj;
-    coordxy ggx, ggy, nix, niy;
+    int appr;
+    coordxy ggx = 0, ggy = 0, nix, niy;
     xint16 chcnt;
     boolean can_tunnel = 0;
     boolean can_open = 0, can_unlock = 0 /*, doorbuster = 0 */;
@@ -1882,27 +1882,16 @@ m_move(struct monst *mtmp, int after)
     }
 
     /* if smart enough, then attempt to outflank the player.
-     We do this by modifying the ggx and ggy coords.  */
-    if (!mtmp->mpeaceful && is_outflanker(ptr)
-            && monnear(mtmp, u.ux, u.uy)) {
-
+     * We do this by modifying the ggx and ggy coords.  */
+    if (!mtmp->mpeaceful && is_outflanker(ptr) && mdistu(mtmp) < (7 * 7)) {
+        /* Are it currently flanking?  If not, find a flanking position */
         if (!calculate_flankers(mtmp, &gy.youmonst)) {
-            for (fi = u.ux - 1; fi <= u.ux + 1; fi++) {
-                for (fj = u.uy - 1; fj <= u.uy + 1; fj++) {
-                    if (u_at(fi, fj))
-                        continue;
-                    if (fi == mtmp->mx && fj == mtmp->my)
-                        continue;
-                    if (isok(fi, fj) && !MON_AT(fi, fj))
-                        continue;
-                    /* Set our goal position */
-                    ggx = fi + (2 * (u.ux - fi));
-                    ggy = fj + (2 * (u.uy - fj));
-                    if (monnear(mtmp, ggx, ggy)) {
-                        goto not_special;
-                    }
-                }
-            }
+            coord fcc = find_flanking_pos(mtmp, &gy.youmonst);
+            if (fcc.x == 0 && fcc.y == 0)
+                goto not_special;
+            /* Set our goal position */
+            ggx = fcc.x;
+            ggy = fcc.y;
             goto not_special;
         } else {
             ggx = 0;
@@ -1913,14 +1902,15 @@ m_move(struct monst *mtmp, int after)
         }
     }
 
-
 not_special:
     if (u.uswallow && !mtmp->mflee && u.ustuck != mtmp)
         return MMOVE_MOVED;
     omx = mtmp->mx;
     omy = mtmp->my;
-    ggx = mtmp->mux;
-    ggy = mtmp->muy;
+    if (!ggx)
+        ggx = mtmp->mux;
+    if (!ggy)
+        ggy = mtmp->muy;
     appr = mtmp->mflee ? -1 : 1;
     
     if (mtmp->mconf || mtmp->mstun || engulfing_u(mtmp)) {

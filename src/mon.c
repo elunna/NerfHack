@@ -6606,6 +6606,71 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
     }
 }
 
+/* Currrently we'll assume mdef is only the player */
+coord
+find_flanking_pos(struct monst *magr, struct monst *mdef)
+{
+    int best_dist = 20;
+    int adj_x, adj_y, /* Positions to check around the target*/
+        fx, fy, /* Potential flanking positions*/
+        dx, dy; /* Offsets from the target */
+    coord bestcc, oldcc;
+
+    bestcc.x = 0;
+    bestcc.y = 0;
+    /* Temporarily store monsters x/y coords so we can check.
+     * This can probably be optimised... */
+    oldcc.x = magr->mx;
+    oldcc.y = magr->my;
+
+    /* Search every square adjacent to mdef.
+     * If we find a monster (potential flanker), calculate
+     * the distance. If it's the best option yet, save it.
+
+    */
+    for (dx = -1; dx <= 1; dx++) {
+        for (dy = -1; dy <= 1; dy++) {
+            adj_x = u.ux + dx;
+            adj_y = u.uy + dy;
+
+            if (!isok(adj_x, adj_y))
+                continue;
+            if (u_at(adj_x, adj_y))
+                continue;
+
+            if (MON_AT(adj_x, adj_y)) {
+                /* Find the opposite position that flanks with this mon */
+                fx = u.ux + (dx * -1);
+                fy = u.uy + (dy * -1);
+
+                if (!isok(fx, fy))
+                    continue;
+                if (!goodpos(fx, fy, magr, 0))
+                    continue;
+                if (MON_AT(fx, fy)) /* Someone is already there */
+                    continue;
+
+                /* Validate the potential flanking position. */
+                magr->mx = fx;
+                magr->my = fy;
+                if (calculate_flankers(magr, &gy.youmonst)) {
+                    if (mdistu(magr) < best_dist) {
+                        bestcc.x = fx;
+                        bestcc.y = fy;
+                        best_dist = mdistu(magr);
+                    }
+                }
+            }
+        }
+    }
+
+    /* Reset mon coords */
+    magr->mx = oldcc.x;
+    magr->my = oldcc.y;
+    /* If no good position found, bestcc x and y are just 0. */
+    return bestcc;
+}
+
 /**
  * Kills every member of the specified monster species on the current
  * level.

@@ -1823,6 +1823,7 @@ extern boolean usmellmon(struct permonst *);
 extern void mimic_hit_msg(struct monst *, short);
 extern void adj_erinys(unsigned);
 extern boolean calculate_flankers(struct monst *, struct monst *);
+extern coord find_flanking_pos(struct monst *, struct monst *);
 
 /* ### mondata.c ### */
 
