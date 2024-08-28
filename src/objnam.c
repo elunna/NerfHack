@@ -95,10 +95,11 @@ struct Jitem {
 
 /* true for gems/rocks that should have " stone" appended to their names */
 #define GemStone(typ)                                                  \
-    (objects[typ].oc_material == GEMSTONE                          \
+    (typ == FLINT                                                      \
+     || (objects[typ].oc_material == GEMSTONE                          \
          && (typ != DILITHIUM_CRYSTAL && typ != RUBY && typ != DIAMOND \
              && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
-             && typ != OPAL))
+             && typ != OPAL)))
 
 static const struct Jitem Japanese_items[] = {
     { SHORT_SWORD, "wakizashi" },
@@ -145,7 +146,6 @@ static struct Jitem Cartomancer_items[] = {
     { LOADSTONE, "heavy dice" },
     { TOUCHSTONE, "siliceous dice" },
     { SLING_BULLET, "hard dice"},
-    { FLINT, "flint dice" },
     { 0, "" } 
 };
 
@@ -237,13 +237,14 @@ obj_typename(int otyp)
     const char *dn = OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
     int nn = ocl->oc_name_known;
+    boolean carto = Role_if(PM_CARTOMANCER);
 
     if (Role_if(PM_SAMURAI)) {
         actualn = Japanese_item_name(otyp, actualn);
         if (otyp == WOODEN_HARP || otyp == MAGIC_HARP)
             dn = "koto";
     }
-    if (Role_if(PM_CARTOMANCER))
+    if (carto)
         actualn = Cartomancer_item_name(otyp, actualn);
 
     /* generic items don't have an actual-name; we shouldn't ever be called
@@ -260,14 +261,14 @@ obj_typename(int otyp)
         Strcpy(buf, "potion");
         break;
     case SCROLL_CLASS:
-	Strcpy(buf, Role_if(PM_CARTOMANCER) ? "card": "scroll");
+	Strcpy(buf, carto ? "card": "scroll");
         break;
     case WAND_CLASS:
         Strcpy(buf, "wand");
         break;
     case SPBOOK_CLASS:
         if (otyp != SPE_NOVEL) {
-	    Strcpy(buf, Role_if(PM_CARTOMANCER) ? "rulebook": "spellbook");
+	    Strcpy(buf, carto ? "rulebook": "spellbook");
         } else {
             Strcpy(buf, !nn ? "book" : "novel");
             nn = 0;
@@ -290,7 +291,8 @@ obj_typename(int otyp)
         if (nn) {
             Strcpy(buf, actualn);
             if (GemStone(otyp))
-                Strcat(buf, Role_if(PM_CARTOMANCER) ? " token" : " stone");
+                Strcat(buf, !carto ? " stone" : otyp == FLINT
+                                              ? " dice" : " token");
             if (un) /* 3: length of " (" + ")" which will enclose 'dn' */
                 xcalled(buf, BUFSZ - (dn ? (int) strlen(dn) + 3 : 0), "", un);
             if (dn)
@@ -298,7 +300,7 @@ obj_typename(int otyp)
         } else {
             Strcpy(buf, dn ? dn : actualn);
             if (ocl->oc_class == GEM_CLASS) {
-                if (Role_if(PM_CARTOMANCER))
+                if (carto)
                     Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
                         ? " dice" : " token");
                 else	
@@ -643,6 +645,7 @@ xname_flags(
     const char *dn = OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
     boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
+    boolean carto = Role_if(PM_CARTOMANCER);
     boolean known, dknown, bknown;
 
     gx.xnamep = nextobuf();
@@ -658,7 +661,7 @@ xname_flags(
         if (typ == WOODEN_HARP || typ == MAGIC_HARP)
             dn = "koto";
     }
-    if (Role_if(PM_CARTOMANCER))
+    if (carto)
         actualn = Cartomancer_item_name(typ, actualn);
 
     /* generic items don't have an actual-name; we shouldn't ever be called
@@ -703,7 +706,7 @@ xname_flags(
         obj->known = 1;
 
     /* Cartomancers are masters of cards, they know everything about them. */
-    if (Role_if(PM_CARTOMANCER) && obj->otyp == RAZOR_CARD) {
+    if (carto && obj->otyp == RAZOR_CARD) {
         obj->known = 1;
         obj->bknown = 1;
     }
@@ -930,7 +933,7 @@ xname_flags(
         }
         break;
     case SCROLL_CLASS:
-        if (Role_if(PM_CARTOMANCER)) {
+        if (carto) {
             Strcpy(buf, Cartomancer_rarity(typ));
             if (obj->quan > 1) {
                 Strcat(buf, "s");
@@ -985,19 +988,15 @@ xname_flags(
             break;
             /* end of tribute */
 	    } else if (!dknown) {
-            Strcpy(buf, Role_if(PM_CARTOMANCER) 
-                ? "rulebook": "spellbook");
+            Strcpy(buf, carto ? "rulebook": "spellbook");
         } else if (nn) {
             if (typ != SPE_BOOK_OF_THE_DEAD)
-		    Strcpy(buf, Role_if(PM_CARTOMANCER)
-                    ? "rulebook of ": "spellbook of ");
+		    Strcpy(buf, carto ? "rulebook of ": "spellbook of ");
             Strcat(buf, actualn);
         } else if (un) {
-	        xcalled(buf, BUFSZ - PREFIX, Role_if(PM_CARTOMANCER)
-                ? "rulebook": "spellbook", un);
+	        xcalled(buf, BUFSZ - PREFIX, carto ? "rulebook": "spellbook", un);
         } else
-	        Sprintf(eos(buf), "%s %s", dn, Role_if(PM_CARTOMANCER)
-                ? "rulebook": "spellbook");
+	        Sprintf(eos(buf), "%s %s", dn, carto ? "rulebook": "spellbook");
         break;
     case RING_CLASS:
         if (!dknown)
@@ -1011,8 +1010,8 @@ xname_flags(
         break;
     case GEM_CLASS: {
         const char *rock = (ocl->oc_material == MINERAL || typ == SLING_BULLET)
-                            ? (Role_if(PM_CARTOMANCER) ? "dice" : "stone")
-                                : (Role_if(PM_CARTOMANCER) ? "token" : "gem");
+                            ? (carto ? "dice" : "stone")
+                                : (carto ? "token" : "gem");
 
         if (!dknown) {
             Strcpy(buf, rock);
@@ -1024,7 +1023,9 @@ xname_flags(
         } else {
             Strcpy(buf, actualn);
             if (GemStone(typ))
-                Strcat(buf, Role_if(PM_CARTOMANCER) ? " token" : " stone");
+                // Strcat(buf, carto ? " token" : " stone");
+                Strcat(buf, !carto ? " stone" : typ == FLINT
+                                              ? " dice" : " token");
         }
         break;
     } /* gem */
@@ -3514,7 +3515,6 @@ static const struct alt_spellings {
     { "load stone", LOADSTONE },
     { "touch stone", TOUCHSTONE },
     { "flintstone", FLINT },
-    { "flint", FLINT },
     { "scroll of water", SCR_FLOOD }, /* xnethack name for it */
     { "health stone", HEALTHSTONE },
     
