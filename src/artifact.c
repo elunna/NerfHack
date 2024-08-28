@@ -376,6 +376,7 @@ find_artifact(struct obj *otmp)
         where = ((otmp->where == OBJ_FLOOR)
                  ?  ((inside_shop(otmp->ox, otmp->oy) != NO_ROOM)
                      ? " in a shop"
+                     : In_quest(&u.uz) ? " on the quest"
                      : " on the floor")
                  /* artifacts aren't created in containers but could be
                     inside one if it comes from a bones level */
