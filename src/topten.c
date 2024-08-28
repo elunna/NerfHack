@@ -1380,6 +1380,10 @@ get_rnd_toptenentry(void)
     FILE *rfile;
     struct toptenentry *tt;
     static struct toptenentry tt_buf;
+    
+    /* Prevent the below impossible while fuzzing. */
+    if (iflags.debug_fuzzer)
+        return NULL;
 
     rfile = fopen_datafile(RECORD, "r", SCOREPREFIX);
     if (!rfile) {
