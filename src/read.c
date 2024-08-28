@@ -2963,6 +2963,7 @@ wand_explode(struct obj* obj, int chg /* recharging */, struct monst *mon)
         /* Useup before monster is possibly killed. */
         m_useup(mon, obj);
         explode(mon->mx, mon->my, -(otyp), dmg * 2, WAND_CLASS, expltype);
+        
         exploding_wand_efx(obj);
         makeknown(obj->otyp); /* explode describes the effect */
         

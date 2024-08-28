@@ -4438,6 +4438,10 @@ void exploding_wand_efx(struct obj *obj)
     boolean fillmsg = FALSE;
     char buf[BUFSZ];
 
+    /* Ray wands are already handled in explode.c */
+    if (objects[obj->otyp].oc_dir == RAY)
+        return;
+
     /* I believe elemental damage is handled in explode.c */
     switch (obj->otyp) {
     case WAN_CANCELLATION:
