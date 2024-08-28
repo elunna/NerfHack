@@ -450,6 +450,8 @@ look_at_monster(
         Strcat(buf, ", withering");
     if (mtmp->mdiseased)
         Strcat(buf, ", diseased");
+    if (mtmp->mreflecttime)
+        Strcat(buf, ", reflecting");
     
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
