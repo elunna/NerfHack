@@ -1075,9 +1075,7 @@ use_defensive(struct monst *mtmp)
         seffect_water(&otmp, mtmp);
         /* otmp used up in seffect_water() */
         gc.current_wand = 0;
-        if (DEADMONSTER(mtmp))
-            return 1;
-        return 2;
+        return (DEADMONSTER(mtmp)) ? 1 : 2;
         break;
     case MUSE_WAN_DIGGING:
         m_flee(mtmp);
@@ -2376,7 +2374,7 @@ use_offensive(struct monst *mtmp)
             }
         } else
             explode(mtmp->mux, mtmp->muy, BZ_M_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
-        return 2;
+        return (DEADMONSTER(mtmp)) ? 1 : 2;
     } /* case MUSE_SCR_FIRE */
     case MUSE_POT_PARALYSIS:
     case MUSE_POT_BLINDNESS:
@@ -2420,7 +2418,7 @@ use_offensive(struct monst *mtmp)
             if (minvptr == otmp && otmp->lamplit)
                 end_burn(otmp, TRUE);
         }
-        return 2;
+        return (DEADMONSTER(mtmp)) ? 1 : 2;
     }
     case MUSE_SCR_STINKING_CLOUD:
         mreadmsg(mtmp, otmp);
@@ -2429,7 +2427,7 @@ use_offensive(struct monst *mtmp)
         (void) create_gas_cloud(mtmp->mux, mtmp->muy, 15 + 10 * bcsign(otmp),
                         8 + 4 * bcsign(otmp));
         m_useup(mtmp, otmp);
-        return 2;
+        return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_WAN_CREATE_MONSTER:
         return muse_createmonster(mtmp, otmp);
     case 0:
