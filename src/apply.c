@@ -4715,8 +4715,18 @@ doapply(void)
         res = use_grease(obj);
         break;
     case LOCK_PICK:
+        if (uwep && welded(uwep)) { 
+            You("need both %s free!", makeplural(body_part(HAND)));
+            return ECMD_OK;
+        }
+        /* FALLTHROUGH */
     case CREDIT_CARD:
     case SKELETON_KEY:
+        /* Lockpicking requires a free hand. */
+        if (!freehand() || (uwep && welded(uwep))) { 
+            Your("%s are occupied!", makeplural(body_part(HAND)));
+            return ECMD_OK;
+        }
         res = (pick_lock(obj, 0, 0, NULL) != 0) ? ECMD_TIME : ECMD_OK;
         return res;
     case PICK_AXE:
