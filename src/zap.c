@@ -1366,8 +1366,11 @@ cancel_item(struct obj *obj)
             obj->spe = cancelled_spe;
         }
         
-        if (obj->otyp == UNICORN_HORN && !obj->degraded_horn) {
-            obj->degraded_horn = 1;
+        if (obj->otyp == UNICORN_HORN) {
+            if (obj->spe <= 0 && !obj->degraded_horn)
+                obj->degraded_horn = 1;
+            else
+                obj->spe--;
             costly_alteration(obj, COST_CANCEL);
         }
 
