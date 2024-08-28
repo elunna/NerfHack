@@ -5266,8 +5266,12 @@ yn_function(
            for unshown possibilities rather than as acceptable input) */
         int altres = def ? def : '\033';
 
+#if 0 /* TODO: Fix this - for now I'm disabling this impossible
+       * because it clobs up the fuzzer */
         impossible("yn_function() returned '%s'; using '%s' instead",
                    visctrl(res), visctrl(altres));
+#endif
+
         res = altres;
     }
     /* in case we're called via getdir() which sets input_state */
