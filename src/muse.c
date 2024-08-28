@@ -261,8 +261,9 @@ precheck(struct monst *mon, struct obj *obj)
         wand_explode(obj, 0, mon);
         gm.m.has_defense = gm.m.has_offense = gm.m.has_misc = 0;
         /* Only one needed to be set to 0 but the others are harmless */
+        return (DEADMONSTER(mon)) ? 1 : 2;
     }
-    return 0;
+    return 0;   
 }
 
 /* when a monster zaps a wand give a message, deduct a charge, and if it
