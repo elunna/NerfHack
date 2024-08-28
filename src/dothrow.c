@@ -2610,7 +2610,7 @@ breakobj(
     case POT_WATER:      /* really, all potions */
         obj->in_use = 1; /* in case it's fatal */
         if (obj->otyp == POT_OIL && obj->lamplit) {
-            explode_oil(obj, x, y);
+            explode_oil(obj, x, y, hero_caused);
 	    } else if ((obj->otyp == POT_VAMPIRE_BLOOD || obj->otyp == POT_BLOOD) &&
                    am != AM_CHAOTIC && am != AM_NONE) {
             /* ALI: If blood is spilt on a lawful or

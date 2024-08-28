@@ -1008,16 +1008,26 @@ scatter(coordxy sx, coordxy sy,  /* location of objects to scatter */
  * For now, just perform a "regular" explosion.
  */
 void
-splatter_burning_oil(coordxy x, coordxy y, boolean diluted_oil)
+splatter_burning_oil(
+    coordxy x,
+    coordxy y,
+    boolean diluted_oil,
+    boolean hero_caused)
 {
     int dmg = d(diluted_oil ? 3 : 4, 4);
-    explode(x, y, ZT_SPELL(ZT_FIRE), dmg, BURNING_OIL, EXPL_FIERY);
+    explode(x, y, 
+        hero_caused ? ZT_SPELL(ZT_FIRE) : BZ_M_SPELL(ZT_FIRE),
+        dmg, BURNING_OIL, EXPL_FIERY);
 }
 
 /* lit potion of oil is exploding; extinguish it as a light source before
    possibly killing the hero and attempting to save bones */
 void
-explode_oil(struct obj *obj, coordxy x, coordxy y)
+explode_oil(
+    struct obj *obj,
+    coordxy x,
+    coordxy y,
+    boolean hero_caused)
 {
     boolean diluted_oil = obj->odiluted;
 
@@ -1026,7 +1036,7 @@ explode_oil(struct obj *obj, coordxy x, coordxy y)
     end_burn(obj, TRUE);
     if (cansee(x, y))
         makeknown(obj->otyp);
-    splatter_burning_oil(x, y, diluted_oil);
+    splatter_burning_oil(x, y, diluted_oil, hero_caused);
 }
 
 /* Convert a damage type into an explosion display type. */
