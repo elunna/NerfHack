@@ -333,13 +333,7 @@ setuqwep(struct obj *obj)
 void
 setuswapwep(struct obj *obj)
 {
-    struct obj *olduswapwep = uswapwep;
     setworn(obj, W_SWAPWEP);
-    /* Hated items decrease AC and affect to-hit */
-    if (!u.twoweap && olduswapwep && hates_item(&gy.youmonst, olduswapwep->otyp)) {
-        if (!(uwep && hates_item(&gy.youmonst, uwep->otyp)))
-            You_feel("more relaxed now.");
-    }
     return;
 }
 
