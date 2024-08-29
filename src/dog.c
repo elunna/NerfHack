@@ -1283,7 +1283,7 @@ wary_dog(struct monst *mtmp, boolean was_dead)
     if (edog && (edog->killed_by_u == 1 || edog->abuse > 2)) {
         mtmp->mpeaceful = mtmp->mtame = 0;
         if (edog->abuse >= 0 && edog->abuse < 10)
-            if (!rn2(edog->abuse + 1))
+            if (!rn2(edog->abuse + 1) && !mtmp->mrabid)
                 mtmp->mpeaceful = 1;
         if (!quietly && cansee(mtmp->mx, mtmp->my)) {
             if (haseyes(gy.youmonst.data)) {
