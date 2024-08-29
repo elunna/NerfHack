@@ -441,4 +441,9 @@
                         + (int) svm.mvitals[PM_GRAY_UNICORN].died \
                         + (int) svm.mvitals[PM_BLACK_UNICORN].died)
 
+/* Corpse intrinsic stats */
+#define MAX_GAIN 25
+#define MIN_GAIN 2
+#define percent_granted(ptr) ((ptr)->cwt / 120)
+
 #endif /* MONDATA_H */

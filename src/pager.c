@@ -3970,7 +3970,7 @@ dohistory(void)
 staticfn void
 corpse_conveys(char *buf, struct permonst * pm)
 {
-    int pct = max(1, (int) (pm->cwt / 180));
+    int pct = max(MIN_GAIN, min(MAX_GAIN, percent_granted(pm)));
 #define ADDPCTRES(cond, amt, str)    \
     if (cond) {                      \
         if (*buf)                    \

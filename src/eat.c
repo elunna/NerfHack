@@ -991,8 +991,7 @@ should_givit(int type, struct permonst *ptr)
     return (ptr->mlevel <= rn2(chance));
 }
 
-#define MAX_GAIN 50
-#define MIN_GAIN 2
+
 /* givit() tries to give you an intrinsic based on the monster's level
  * and what type of intrinsic it is trying to give you.
  */
@@ -1002,7 +1001,7 @@ givit(int type, struct permonst *ptr)
     const char *adj;
     long increase;
 
-    increase = max(1, (ptr->cwt / 180));
+    increase = max(MIN_GAIN, min(MAX_GAIN, percent_granted(ptr)));
     
     if (increase < MIN_GAIN)
         increase = MIN_GAIN;
