@@ -1590,7 +1590,7 @@ staticfn boolean threatens_dmgtype(int adtyp)
         return TRUE;
     if (uwep && uwep->oartifact && attacks(adtyp, uwep))
         return TRUE;
-    if (uswapwep && uwep->oartifact && attacks(adtyp, uswapwep))
+    if (uswapwep && uswapwep->oartifact && attacks(adtyp, uswapwep))
         return TRUE;
     return FALSE;
 }
