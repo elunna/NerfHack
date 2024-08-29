@@ -5465,6 +5465,9 @@ mhitm_ad_sedu(
         case 0:
             return;
         default:
+            if (DEADMONSTER(magr))
+                impossible("dead stealer after steal()!");
+            
             if (!is_animal(magr->data) && !tele_restrict(magr))
                 (void) rloc(magr, RLOC_MSG);
             if (is_animal(magr->data) && *buf) {
