@@ -4780,7 +4780,7 @@ look_here(
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
         if (!skip_objects && (Blind || !dfeature)) {
-            if (bloody) 
+            if (bloody && !is_pool(u.ux, u.uy)) 
                 There("is %s blood splattered on the floor.", 
                       mons[levl[u.ux][u.uy].splatpm].pmnames[NEUTRAL]);
             else
