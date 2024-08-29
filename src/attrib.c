@@ -407,6 +407,9 @@ poisoned(
             poisontell(typ, TRUE);
     }
 
+    if (u.uhp > u.uhpmax)
+        u.uhp = u.uhpmax; /* Safeguard vs RNG */
+
     if (u.uhp < 1) {
         svk.killer.format = kprefix;
         Strcpy(svk.killer.name, pkiller);
