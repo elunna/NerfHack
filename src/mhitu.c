@@ -616,7 +616,10 @@ calc_mattacku_vars(
     boolean *ranged, boolean *range2,
     boolean *foundyou, boolean *youseeit)
 {
-    *ranged = (mdistu(mtmp) > 3);
+    /* Will monsters use ranged or melee attacks against you? */
+    *ranged = (mdistu(mtmp) > 3) 
+        || ((attacktype(mtmp->data, AT_BREA) || attacktype(mtmp->data, AT_SPIT))
+            && !mtmp->mspec_used && (!mtmp->mcan || rn2(3)));
     *range2 = !monnear(mtmp, mtmp->mux, mtmp->muy);
     *foundyou = u_at(mtmp->mux, mtmp->muy);
     *youseeit = canseemon(mtmp);
@@ -675,6 +678,7 @@ mattacku(struct monst *mtmp)
         u.ustuck->mux = u.ux;
         u.ustuck->muy = u.uy;
         range2 = 0;
+        ranged = FALSE;
         foundyou = 1;
         if (u.uinvulnerable)
             return 0; /* stomachs can't hurt you! */
@@ -1093,12 +1097,12 @@ mattacku(struct monst *mtmp)
             }
             break;
         case AT_BREA:
-            if (range2)
+            if (ranged)
                 sum[i] = breamu(mtmp, mattk);
             /* Note: breamu takes care of displacement */
             break;
         case AT_SPIT:
-            if (range2)
+            if (ranged)
                 sum[i] = spitmu(mtmp, mattk);
             /* Note: spitmu takes care of displacement */
             break;
