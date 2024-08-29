@@ -9,7 +9,7 @@ Debug-Mode Quick Reference:
 ^W  ==  make a wish for an item or a trap or a limited subset of terrain
 ^X  ==  show status, attributes, and characteristics (extended enlightenment)
 
-#debugfuzzer    == set game to run on autopilot; keeps going until failure;
+#fuzz           == set game to run on autopilot; keeps going until failure;
                    escalates impossible warnings to panic
 #levelchange    == set hero's experience level
 #lightsources   == show mobile light sources

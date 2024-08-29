@@ -1666,7 +1666,7 @@ struct ext_func_tab extcmdlist[] = {
               doclose, 0, NULL },
     { M('C'), "conduct", "list voluntary challenges you have maintained",
               doconduct, IFBURIED | AUTOCOMPLETE | GENERALCMD, NULL },
-    { '\0',   "debugfuzzer", "start the fuzz tester",
+    { '\0',   "fuzz", "start the fuzz tester",
               wiz_fuzzer, IFBURIED | WIZMODECMD | NOFUZZERCMD, NULL },
     { M('d'), "dip", "dip an object into something",
               dodip, AUTOCOMPLETE | CMD_M_PREFIX, NULL },

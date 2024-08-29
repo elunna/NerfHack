@@ -1277,7 +1277,7 @@ Autocompletes.
 Default key is \(oqM-C\(cq.
 .lp ""
 See the section below entitled \(lqConduct\(rq for details.
-.lp #debugfuzzer
+.lp #fuzz
 Start the fuzz tester.
 Debug mode only.
 .lp "#dip     "

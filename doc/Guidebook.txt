@@ -1324,7 +1324,7 @@
 
 
 
-     #debugfuzzer
+     #fuzz
           Start the fuzz tester.  Debug mode only.
 
      #dip
