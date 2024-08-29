@@ -1490,6 +1490,8 @@ is_stormy_monster(struct monst *mtmp)
 static void
 pacify_with_words(struct monst *mtmp)
 {
+    if (mtmp->mrabid) /* No chance... */
+        return;
     pline("%s recognizes your amulet.", Monnam(mtmp));
     You("manage to calm %s.",
          genders[pronoun_gender(mtmp, PRONOUN_HALLU)].him);

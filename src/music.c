@@ -109,7 +109,7 @@ charm_snakes(int distance)
     int could_see_mon, was_peaceful;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-        if (DEADMONSTER(mtmp))
+        if (DEADMONSTER(mtmp) || mtmp->mrabid)
             continue;
         if (mtmp->data->mlet == S_SNAKE && mtmp->mcanmove
             && mdistu(mtmp) < distance) {
@@ -142,7 +142,7 @@ calm_nymphs(int distance)
     struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-        if (DEADMONSTER(mtmp))
+        if (DEADMONSTER(mtmp) || mtmp->mrabid)
             continue;
         if (mtmp->data->mlet == S_NYMPH && mtmp->mcanmove
             && mdistu(mtmp) < distance) {

@@ -6148,6 +6148,7 @@ reward_untrap(struct trap *ttmp, struct monst *mtmp)
     if (!ttmp->madeby_u) {
         if (rnl(10) < 8 && !mtmp->mpeaceful && !helpless(mtmp)
             && !mtmp->mfrozen && !mindless(mtmp->data)
+            && !mtmp->mberserk && !mtmp->mrabid
             && !unique_corpstat(mtmp->data)
             && mtmp->data->mlet != S_HUMAN) {
             mtmp->mpeaceful = 1;
@@ -6358,7 +6359,7 @@ try_lift(
               stuff ? "carrying too much" : "too heavy");
         if (!ttmp->madeby_u && !mtmp->mpeaceful && mtmp->mcanmove
             && !mindless(mtmp->data) && mtmp->data->mlet != S_HUMAN
-            && rnl(10) < 3) {
+            && !mtmp->mberserk && !mtmp->mrabid && rnl(10) < 3) {
             mtmp->mpeaceful = 1;
             set_malign(mtmp); /* reset alignment */
             pline("%s thinks it was nice of you to try.", Monnam(mtmp));
