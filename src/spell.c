@@ -387,6 +387,13 @@ learn(void)
         svc.context.spbook.delay++;
         return 1; /* still busy */
     }
+
+    /* Spellbook destroyed while reading? */
+    if (!book) {
+        pline("Where did the spellbook go?");
+        return 0;
+    }
+    
     exercise(A_WIS, TRUE); /* you're studying. */
     booktype = book->otyp;
     if (booktype == SPE_BOOK_OF_THE_DEAD) {
