@@ -575,4 +575,35 @@ struct damage_info_t {
     const char* light_damage;
 };
 
+/* This struct holds detailed stats about an artifact .
+ * Filled in artifact_info() and used in the pokedex.
+ */
+
+#define INTRINSICS 20
+
+struct art_info_t {
+    const char* name;
+    const char* alignment;
+    boolean intelligent;
+    boolean restricted;
+    boolean nogen;
+    boolean speaks;
+    boolean beheads;
+    boolean vscross;
+    int cost;
+    const char* role;
+    const char* race;
+    const char *wielded[INTRINSICS];
+    const char *carried[INTRINSICS];
+    char* wield_res;
+    char* wield_warn;
+    char* carr_res;
+    const char* invoke;
+    char* attack;
+    char* hates;
+    const char* xattack;
+    const char* xinfo;
+    char* dbldmg;
+};
+
 #endif /* OBJ_H */

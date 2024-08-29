@@ -188,6 +188,8 @@ extern struct obj *has_magic_key(struct monst *);
 extern boolean is_art(struct obj *, int);
 extern boolean non_wishable_artifact(struct obj *);
 extern int arti_align(int);
+extern struct obj *get_faux_artifact_obj(const char *);
+extern struct art_info_t artifact_info(int);
 
 /* ### attrib.c ### */
 
@@ -1893,6 +1895,8 @@ extern int mstrength(struct permonst *) NONNULLARG1;
 extern boolean mon_prop(struct monst *, int) NONNULLARG1;
 extern unsigned long arti_prop_spfx(int);
 extern int mring_bon(struct monst *, int) NONNULLARG1;
+extern const char *mon_race_name(unsigned);
+
 
 /* ### monmove.c ### */
 

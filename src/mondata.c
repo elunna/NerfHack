@@ -1689,4 +1689,31 @@ mring_bon(struct monst *mtmp, int otyp)
     return bonus;
 }
 
+/* Monster race or type name mapping from MH_ values in monflag.h, used for glow warnings. */
+const char *
+mon_race_name(unsigned mhflag)
+{
+    static const char* mrnames[] = {
+        "", /* Kludges here to accomodate the rolerace mask */
+        "",
+        "",
+        "human", 
+        "elf", 
+        "dwarf", 
+        "gnome", 
+        "orc", 
+        "vampire",
+        "lycanthrope",
+        "giant",
+        "undead",
+        "dragon",
+        "troll",
+        "ogre",
+        "jabberwock",
+        "angelic being",
+        "demon",
+    };
+    return mrnames[mhflag];
+}
+
 /*mondata.c*/

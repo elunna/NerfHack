@@ -19,10 +19,10 @@ staticfn void look_at_monster(char *, char *, struct monst *,
                                                coordxy, coordxy) NONNULLARG13;
 /* lookat() can return Null */
 staticfn void add_mon_info(winid, struct permonst *);
-staticfn void add_obj_info(winid, short);
+staticfn void add_obj_info(winid, struct obj *, short);
 staticfn void corpse_conveys(char *, struct permonst *);
 staticfn struct permonst *lookat(coordxy, coordxy, char *, char *) NONNULLPTRS;
-staticfn boolean checkfile(char *, struct permonst *, unsigned,
+staticfn boolean checkfile(struct obj *, char *, struct permonst *, unsigned,
                                                             char *) NO_NNARGS;
 staticfn int add_cmap_descr(int, int, int, int, coord,
                           const char *, const char *,
@@ -870,7 +870,7 @@ ia_checkfile(struct obj *otmp)
 
     /* singular() of xname() of otmp is what "/i" looks up */
     Strcpy(itemnam, singular(otmp, xname));
-    return checkfile(itemnam, (struct permonst *) 0,
+    return checkfile(otmp, itemnam, (struct permonst *) 0,
                      chkfilIaCheck | chkfilDontAsk, (char *) 0);
 
 }
@@ -1212,9 +1212,9 @@ add_mon_info(winid datawin, struct permonst * pm)
 /* Add some information to an encyclopedia window which is printing information
  * about an object. */
 staticfn void
-add_obj_info(winid datawin, short otyp)
+add_obj_info(winid datawin, struct obj *obj, short otyp)
 {
-    struct objclass oc = objects[otyp];
+    struct objclass oc = obj ? objects[obj->otyp] : objects[otyp];
     struct damage_info_t damage_info;
     char olet = oc.oc_class;
     char buf[BUFSZ];
@@ -1225,9 +1225,15 @@ add_obj_info(winid datawin, short otyp)
     const struct PotionRecipe *precipe;
     const struct ForgeRecipe *recipe;
     const char* identified_potion_name;
-    boolean potion_known, has_recipes = FALSE,
-        reveal_info = oc.oc_name_known;
+    boolean wielded, carried, potion_known, has_recipes = FALSE,
+        /* If it's an artifact, we always have it in obj. */
+        is_artifact = obj && obj->oartifact,
+        reveal_info = oc.oc_name_known || is_artifact;
     int i;
+
+    if (!otyp && obj) {
+        otyp = obj->otyp;
+    }
 
     struct obj dummy = { 0 }; /* For weapon info */
     dummy.otyp = otyp;
@@ -1758,6 +1764,121 @@ add_obj_info(winid datawin, short otyp)
         }
     }
 
+    /* ARTIFACT PROPERTIES */
+
+    if (is_artifact) {
+        struct art_info_t a_info = artifact_info(obj->oartifact);
+
+        /* Make it look like it fits with the first section */
+        Sprintf(buf, "Base Cost: %d ", a_info.cost);
+        OBJPUTSTR(buf);
+
+        OBJPUTSTR("");
+        Sprintf(buf, "~~~ Artifact: %s ~~~", a_info.name);
+        OBJPUTSTR(buf);
+
+        Sprintf(buf, "Type: %s ", OBJ_NAME(objects[obj->otyp]));
+        OBJPUTSTR(buf);
+
+        Sprintf(buf, "Alignment: %s ", a_info.alignment);
+        OBJPUTSTR(buf);
+        if (a_info.intelligent) {
+            OBJPUTSTR("Intelligent");
+        }
+        if (a_info.speaks) {
+            OBJPUTSTR("Capable of speaking");
+        }
+        if (a_info.restricted) {
+            OBJPUTSTR("Restricted (cannot be #named)");
+        }
+        if (a_info.nogen) {
+            OBJPUTSTR("Does not generate randomly.");
+        }
+
+        Sprintf(buf, "Associated class/role: %s/%s ",
+                a_info.role, a_info.race) ;
+        OBJPUTSTR(buf);
+
+        if (artifact_light(obj)) {
+            OBJPUTSTR("Artifact light source");
+        }
+
+        if (a_info.attack) {
+            OBJPUTSTR("Special attack(s):");
+            Sprintf(buf, "\t%s ", a_info.attack);
+            OBJPUTSTR(buf);
+
+            if (a_info.beheads)
+                OBJPUTSTR("\tbeheads");
+            if (a_info.vscross)
+                OBJPUTSTR("\tbonus vs cross-aligned monsters");
+            if (a_info.dbldmg) {
+                Sprintf(buf, "\t%s ", a_info.dbldmg);
+                OBJPUTSTR(buf);
+            }
+            if (a_info.xattack) {
+                Sprintf(buf, "\t%s ", a_info.xattack);
+                OBJPUTSTR(buf);
+            }
+        }
+
+        if (a_info.hates) {
+            Sprintf(buf, "Bane vs: %s ", a_info.hates);
+            OBJPUTSTR(buf);
+        }
+
+        wielded = FALSE;
+        OBJPUTSTR("While wielded/worn:");
+        if (a_info.wield_res) {
+            Sprintf(buf, "\t%s", a_info.wield_res);
+            OBJPUTSTR(buf);
+        }
+        if (a_info.wield_warn) {
+            Sprintf(buf, "\t%s", a_info.wield_warn);
+            OBJPUTSTR(buf);
+        }
+        for (i = 0; i < INTRINSICS; i++) {
+            if (a_info.wielded[i]) {
+                Sprintf(buf, "\t%s", a_info.wielded[i]);
+                OBJPUTSTR(buf);
+                wielded = TRUE;
+            }
+        }
+        if (!wielded && !a_info.wield_res && !a_info.wield_warn)
+            OBJPUTSTR("\tNone");
+
+        carried = FALSE;
+        OBJPUTSTR("While carried:");
+        if (a_info.carr_res) {
+            Sprintf(buf, "\t%s", a_info.carr_res);
+            OBJPUTSTR(buf);
+        }
+        for (i = 0; i < INTRINSICS; i++) {
+            if (a_info.carried[i]) {
+                Sprintf(buf, "\t%s", a_info.carried[i]);
+                OBJPUTSTR(buf);
+                carried = TRUE;
+            }
+        }
+        if (!carried && !a_info.carr_res)
+            OBJPUTSTR("\tNone");
+
+        Sprintf(buf, "When #invoked: %s ", a_info.invoke);
+        OBJPUTSTR(buf);
+
+        if (a_info.xinfo) {
+            OBJPUTSTR(a_info.xinfo);
+        }
+        /* Free some of these manually */
+        free(a_info.wield_warn);
+        free(a_info.wield_res);
+        free(a_info.carr_res);
+        free(a_info.attack);
+        free(a_info.dbldmg);
+        free(a_info.hates);
+    }
+
+
 }
 
 /*
@@ -1774,6 +1895,7 @@ add_obj_info(winid datawin, short otyp)
  */
 boolean
 checkfile(
+    struct obj *obj,
     char *inp, /* string to look up */
     struct permonst *pm, /* monster type to look up (overrides 'inp') */
     unsigned chkflags,
@@ -1785,6 +1907,7 @@ checkfile(
     boolean user_typed_name = (chkflags & chkfilUsrTyped) != 0,
             without_asking = (chkflags & chkfilDontAsk) != 0;
             /*ia_checking = (chkflags & chkfilIaCheck) != 0*/
+    boolean obj_free = FALSE;
     unsigned long txt_offset = 0L;
     winid datawin = WIN_ERR;
     boolean res = FALSE;
@@ -2052,6 +2175,39 @@ checkfile(
                 }
             }
 
+
+            if (obj) {
+                /* catches inventory lookup */
+                otyp = obj->otyp;
+            } else {
+                /* obj will be null for ground lookup with ;: and searches with /?
+                 * object lookup: try to parse as an object, and try the material
+                 * version of the string first */
+                otyp = name_to_otyp(dbase_str_with_material);
+                /* If alt is something, we have a named object or artifact */
+                if (!alt && otyp == STRANGE_OBJECT) {
+                    /* catches search for "longsword" */
+                    otyp = name_to_otyp(dbase_str);
+                }
+
+                if (otyp == STRANGE_OBJECT) {
+                    /* catches inventory lookup and /? search for stormbringer */
+                    struct obj *obj_lookup;
+                    if (user_typed_name)
+                        obj_lookup = get_faux_artifact_obj(dbase_str_with_material);
+                    else
+                        obj_lookup = get_faux_artifact_obj(alt);
+
+                    otyp = obj_lookup ? obj_lookup->otyp : STRANGE_OBJECT;
+
+                    /* we got a matching artifact for the lookup */
+                    if (otyp != STRANGE_OBJECT && obj_lookup) {
+                        obj = obj_lookup;
+                        obj_free = TRUE;
+                    }
+                }
+            }
+
             /* object lookup: try to parse as an object, and try the material
              * version of the string first */
             otyp = name_to_otyp(dbase_str_with_material);
@@ -2076,7 +2232,8 @@ checkfile(
 
             /* finally, put the appropriate information into a window */
             if (user_typed_name || without_asking || yes_to_moreinfo) {
-                if (!found_in_file && !pm && otyp == STRANGE_OBJECT) {
+                if (!found_in_file && !pm
+                            && (obj == NULL && otyp == STRANGE_OBJECT)) {
                     if ((user_typed_name && pass == 0 && !pass1found_in_file)
                         || yes_to_moreinfo)
                         pline("I don't have any information on those things.");
@@ -2105,8 +2262,8 @@ checkfile(
                     datawin = create_nhwindow(NHW_MENU);
 
                     /* object lookup info */
-                    if (do_obj_lookup) {
-                        add_obj_info(datawin, otyp);
+                    if (do_obj_lookup || obj) {
+                        add_obj_info(datawin, obj, otyp);
                         putstr(datawin, 0, "");
                     }
                     /* monster lookup info */
@@ -2187,6 +2344,8 @@ checkfile(
     if (datawin != WIN_ERR)
         destroy_nhwindow(datawin);
     (void) dlb_fclose(fp);
+    if (obj_free)
+        obfree(obj, (struct obj *) 0);
     return res;
 }
 
@@ -2862,8 +3021,8 @@ do_look(int mode, coord *click_cc)
                     break;
                 }
             if (*out_str)
-                (void) checkfile(out_str, (struct permonst *) 0,
-                    chkfilUsrTyped | chkfilDontAsk, (char *) 0);
+                (void) checkfile(invobj, out_str, (struct permonst *) 0,
+                   chkfilUsrTyped | chkfilDontAsk, (char *) 0);
             return ECMD_OK;
           }
         case '?':
@@ -2877,7 +3036,7 @@ do_look(int mode, coord *click_cc)
                 return ECMD_OK;
 
             if (out_str[1]) { /* user typed in a complete string */
-                (void) checkfile(out_str, pm,  chkfilUsrTyped | chkfilDontAsk,
+                (void) checkfile(NULL, out_str, pm,  chkfilUsrTyped | chkfilDontAsk,
                                  (char *) 0);
                 return ECMD_OK;
             }
@@ -2973,7 +3132,7 @@ do_look(int mode, coord *click_cc)
 
                 supplemental_name[0] = '\0';
                 Strcpy(temp_buf, firstmatch);
-                (void) checkfile(temp_buf, pm,
+                (void) checkfile(NULL, temp_buf, pm,
                                  (ans == LOOK_VERBOSE) ? chkfilDontAsk
                                                        : chkfilNone,
                                  supplemental_name);

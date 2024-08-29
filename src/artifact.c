@@ -35,6 +35,7 @@ staticfn uchar abil_to_adtyp(long *) NONNULLARG1;
 staticfn int glow_strength(int);
 staticfn boolean untouchable(struct obj *, boolean);
 staticfn int count_surround_traps(coordxy, coordxy);
+staticfn const char *adtyp_str(int, boolean);
 
 /* The amount added to the victim's total hit points to insure that the
    victim will be killed even after damage bonus/penalty adjustments.
@@ -3299,6 +3300,304 @@ arti_prop_spfx(int prop)
             return SPFX_DISPLAC;
     }
      return 0L;
+}
+
+/* create an obj containing otyp and oartifact from a name.
+ * this is used when looking up artifact names in pager.c
+ * Modeled after artifact_name */
+struct obj *
+get_faux_artifact_obj(const char *name)
+{
+    struct obj *obj = 0;
+    const struct artifact *a;
+    register const char *aname;
+    int index = 1;
+
+    if (!strncmpi(name, "the ", 4))
+        name += 4;
+
+    for (a = artilist + 1; a->otyp; a++) {
+        aname = a->name;
+        if (!strncmpi(aname, "the ", 4))
+            aname += 4;
+        if (!strcmpi(name, aname)) {
+            obj = mksobj(a->otyp, TRUE, FALSE);
+            obj->otyp = a->otyp;
+            obj->oartifact = index;
+            break;
+        }
+        index++;
+    }
+    return obj;
+}
+
+
+struct art_info_t
+artifact_info(int anum)
+{
+    struct art_info_t art_info = { 0 };
+    char buf[QBUFSZ];
+    art_info.name = artiname(anum);
+    art_info.alignment = align_str(artilist[anum].alignment);
+    art_info.cost = artilist[anum].cost;
+    art_info.role = (artilist[anum].role == NON_PM)
+                        ? "None" : mons[artilist[anum].role].pmnames[NEUTRAL];
+    art_info.race = (artilist[anum].race == NON_PM)
+                        ? "None" : mons[artilist[anum].race].pmnames[NEUTRAL];
+    art_info.intelligent = (artilist[anum].spfx & SPFX_INTEL) != 0;
+    art_info.restricted = (artilist[anum].spfx & SPFX_RESTR) != 0;
+    art_info.nogen = (artilist[anum].spfx & SPFX_NOGEN) != 0;
+    art_info.speaks = (artilist[anum].spfx & SPFX_SPEAK) != 0;
+    art_info.beheads = (artilist[anum].spfx & SPFX_BEHEAD) != 0;
+    art_info.vscross = (artilist[anum].spfx & SPFX_DALIGN) != 0;
+
+
+    /* Hated/Targeted Monster */
+    if ((artilist[anum].mtype)) {
+        int i;
+        buf[0] = '\0';
+
+        for (i = 0; i < 32; i++) {
+            if (artilist[anum].mtype & (1 << i)) {
+                strcat(buf, makeplural(mon_race_name(i)));
+                Strcat(buf, " ");
+            }
+        }
+        art_info.hates = malloc(100);
+        strcpy(art_info.hates, buf);
+    }
+
+    /* Special attacks */
+    if (artilist[anum].attk.adtyp
+          || artilist[anum].attk.damn || artilist[anum].attk.damd) {
+        Sprintf(buf, "%s, -%d to-hit, +1d%d damage",
+                adtyp_str(artilist[anum].attk.adtyp, FALSE),
+                artilist[anum].attk.damn,
+                artilist[anum].attk.damd);
+        art_info.attack = malloc(100);
+        strcpy(art_info.attack, buf);
+
+        /* Does this deal double damage? */
+        if (artilist[anum].attk.damd == 0) {
+            art_info.dbldmg = malloc(100);
+            if (art_info.hates) {
+                Sprintf(buf, "double damage vs %s", art_info.hates);
+                strcpy(art_info.dbldmg, buf);
+            } else
+                strcpy(art_info.dbldmg, "deals double damage");
+        }
+    } else
+        art_info.attack = NULL;
+
+    /* Granted while wielded. */
+    if (artilist[anum].defn.adtyp) {
+        Sprintf(buf, "%s", adtyp_str(artilist[anum].defn.adtyp, TRUE));
+        art_info.wield_res = malloc(100);
+        strcpy(art_info.wield_res, buf);
+    }
+
+    if ((artilist[anum].spfx & SPFX_SEARCH) != 0)
+        art_info.wielded[0] = "searching";
+    if ((artilist[anum].spfx & SPFX_HALRES) != 0)
+        art_info.wielded[1] = "hallucination resistance";
+    if ((artilist[anum].spfx & SPFX_ESP) != 0)
+        art_info.wielded[2] = "telepathy";
+    if ((artilist[anum].spfx & SPFX_STLTH) != 0)
+        art_info.wielded[3] = "stealth";
+    if ((artilist[anum].spfx & SPFX_REGEN) != 0)
+        art_info.wielded[4] = "regeneration";
+    if ((artilist[anum].spfx & SPFX_EREGEN) != 0)
+        art_info.wielded[5] = "energy regeneration";
+    if ((artilist[anum].spfx & SPFX_HSPDAM) != 0)
+        art_info.wielded[6] = "half spell damage";
+    if ((artilist[anum].spfx & SPFX_HPHDAM) != 0)
+        art_info.wielded[7] = "half physical damage";
+    if ((artilist[anum].spfx & SPFX_TCTRL) != 0)
+        art_info.wielded[8] = "teleport control";
+    if ((artilist[anum].spfx & SPFX_LUCK) != 0)
+        art_info.wielded[9] = "luck";
+    if ((artilist[anum].spfx & SPFX_XRAY) != 0)
+        art_info.wielded[10] = "astral vision";
+    if ((artilist[anum].spfx & SPFX_REFLECT) != 0)
+        art_info.wielded[11] = "reflection";
+    if ((artilist[anum].spfx & SPFX_PROTECT) != 0)
+        art_info.wielded[12] = "protection";
+    if ((artilist[anum].spfx & SPFX_BREATHE) != 0)
+        art_info.wielded[13] = "magical breathing";
+
+    if ((artilist[anum].spfx & SPFX_WARN) != 0) {
+        if ((artilist[anum].spfx & SPFX_DFLAGH) != 0) {
+            Sprintf(buf, "warning against %s ", art_info.hates);
+            art_info.wield_warn = malloc(100);
+            strcpy(art_info.wield_warn, buf);
+        } else {
+            if (!art_info.wield_warn) art_info.wield_warn = malloc(100);
+            strcpy(art_info.wield_warn, "warning");
+        }
+    }
+    /* Granted while carried. */
+    if (artilist[anum].cary.adtyp) {
+        Sprintf(buf, "%s", adtyp_str(artilist[anum].cary.adtyp, TRUE));
+        art_info.carr_res = malloc(100);
+        strcpy(art_info.carr_res, buf);
+    }
+    if ((artilist[anum].cspfx & SPFX_SEARCH) != 0)
+        art_info.carried[0] = "searching";
+    if ((artilist[anum].cspfx & SPFX_HALRES) != 0)
+        art_info.carried[1] = "hallucination resistance";
+    if ((artilist[anum].cspfx & SPFX_ESP) != 0)
+        art_info.carried[2] = "telepathy";
+    if ((artilist[anum].cspfx & SPFX_STLTH) != 0)
+        art_info.carried[3] = "stealth";
+    if ((artilist[anum].cspfx & SPFX_REGEN) != 0)
+        art_info.carried[4] = "regeneration";
+    if ((artilist[anum].cspfx & SPFX_EREGEN) != 0)
+        art_info.carried[5] = "energy regeneration";
+    if ((artilist[anum].cspfx & SPFX_HSPDAM) != 0)
+        art_info.carried[6] = "half spell damage";
+    if ((artilist[anum].cspfx & SPFX_HPHDAM) != 0)
+        art_info.carried[7] = "half physical damage";
+    if ((artilist[anum].cspfx & SPFX_TCTRL) != 0)
+        art_info.carried[8] = "teleport control";
+    if ((artilist[anum].cspfx & SPFX_LUCK) != 0)
+        art_info.carried[9] = "luck";
+    if ((artilist[anum].cspfx & SPFX_XRAY) != 0)
+        art_info.carried[10] = "astral vision";
+    if ((artilist[anum].cspfx & SPFX_REFLECT) != 0)
+        art_info.carried[11] = "reflection";
+    if ((artilist[anum].cspfx & SPFX_PROTECT) != 0)
+        art_info.carried[12] = "protection";
+    if ((artilist[anum].cspfx & SPFX_BREATHE) != 0)
+        art_info.carried[13] = "magical breathing";
+    if ((artilist[anum].cspfx & SPFX_WARN) != 0)
+        art_info.carried[14] = "warning";
+
+    switch (artilist[anum].inv_prop) {
+    case TAMING: art_info.invoke = "Taming"; break;
+    case HEALING: art_info.invoke = "Healing"; break;
+    case ENERGY_BOOST: art_info.invoke = "Energy Boost"; break;
+    case UNTRAP: art_info.invoke = "Untrap"; break;
+    case CHARGE_OBJ: art_info.invoke = "Charge Object"; break;
+    case LEV_TELE: art_info.invoke = "Level Teleport"; break;
+    case CREATE_PORTAL: art_info.invoke = "Branchport"; break;
+    case ENLIGHTENING: art_info.invoke = "Enlightenment"; break;
+    case CREATE_AMMO: art_info.invoke = "Create Ammo"; break;
+    case SUMMONING: art_info.invoke = "Summon a horde of spell beings"; break;
+    case LIGHTNING_BOLT: art_info.invoke = "Lightning Bolt"; break;
+    case CONFLICT: art_info.invoke = "Conflict"; break;
+    case LEVITATION: art_info.invoke = "Levitation"; break;
+    case INVIS: art_info.invoke = "Invisibility"; break;
+    case FLYING: art_info.invoke = "Flying"; break;
+    case WWALKING: art_info.invoke = "Water Walking"; break;
+
+    default:
+        art_info.invoke = "None"; break;
+    }
+
+    /* Extra hard-coded info (not possible to automate into the lookup) */
+    switch (anum) {
+    case ART_DEMONBANE:
+        art_info.wielded[16] = "angers demons princes and lords";
+        art_info.wielded[17] = "blocks demon gating";
+        break;
+    case ART_EXCALIBUR:
+        art_info.wielded[16] = "angers demons princes and lords";
+        break;
+    case ART_CLEAVER:
+        art_info.xattack = "wide slashing arc";
+        break;
+    case ART_MAGICBANE:
+        art_info.wielded[16] = "negates curses";
+        break;
+    case ART_MIRRORBRIGHT:
+        art_info.wielded[16] = "does not impede spellcasting";
+        break;
+    case ART_DOOMBLADE:
+        art_info.xattack = "bonus damage";
+        break;
+    case ART_GRIMTOOTH:
+        art_info.xattack = "sickness attack";
+        break;
+    case ART_PLAGUE:
+        art_info.xattack = "auto-poisons arrows";
+        break;
+    case ART_ORCRIST:
+        art_info.xattack = "instakills orcs";
+        break;
+    case ART_SERPENT_S_TONGUE:
+        art_info.xattack = "always poisoned";
+        break;
+    case ART_STING:
+        art_info.xattack = "instakills orcs";
+        break;
+    case ART_OGRESMASHER:
+        art_info.wielded[16] = "boosts constitution";
+        break;
+    case ART_ORIGIN:
+        art_info.wielded[16] = "boosts spellcasting";
+        break;
+    case ART_TROLLSBANE:
+        art_info.wielded[16] = "Prevents troll revival";
+        break;
+    case ART_MITRE_OF_HOLINESS:
+        art_info.wielded[16] = "1/2 physical damage from undead and demons (Priests only)";
+        art_info.wielded[17] = "allows #pray and turn undead in Gehennom";
+        break;
+#if 0
+    case ART_ELFRIST:
+        art_info.xattack = "instakills elves";
+        break;
+    case ART_BALMUNG:
+        art_info.xattack = "Shreds armor";
+        /*Balmung always resists destruction */
+        break;
+    case ART_MYSTIC_EYES:
+        art_info.wielded[16] = "confers Death Vision";
+        art_info.wielded[17] = "confers hallucination";
+        break;
+    case ART_LUCKLESS_FOLLY:
+        art_info.xinfo = "cursed luck bonuses";
+        break;
+    case ART_TREASURY_OF_PROTEUS:
+        art_info.xinfo = "polymorphs contents";
+        art_info.carried[17] = "negates curses";
+        break;
+#endif
+    default:
+        art_info.xinfo = "";
+    }
+
+    return art_info;
+}
+
+staticfn const char *
+adtyp_str(int adtyp, boolean defend)
+{
+    switch (adtyp) {
+        case AD_ACID: return defend ? "acid resistance" : "acid";
+        case AD_BLND: return defend ? "blinding resistance" : "blinding";
+        case AD_COLD: return defend ? "cold resistance" : "cold";
+        case AD_DETH: return defend ? "death resistance" : "death";
+        case AD_DISE: return defend ? "sickness resistance" : "disease";
+        case AD_DISN: return defend ? "disintegration resistance" : "disintegration";
+        case AD_DREN: return "drain energy";
+        case AD_DRLI: return defend ? "drain resistance" : "drain life";
+        case AD_DRST: return defend ? "poison resistance" : "poison";
+        case AD_ELEC: return defend ? "shock resistance" : "shock";
+        case AD_FIRE: return defend ? "fire resistance" : "fire";
+        case AD_MAGM: return defend ? "magic resistance" : "magic missile";
+        case AD_PHYS: return "physical";
+        case AD_PLYS: return defend ? "free action" : "paralyze";
+        case AD_SLEE: return defend ? "sleep resistance" : "sleep";
+        case AD_SLOW: return "slow";
+        case AD_STON: return defend ? "petrification resistance" : "petrification";
+        case AD_STUN: return defend ? "stun resistance" : "stuns/magic";
+        case AD_WEBS: return "webs";
+        case AD_WERE: return defend ? "lycanthropy resistance" : "lycanthropy";
+        case AD_WTHR: return defend ? "withering resistance" : "withering";
+        default:impossible("adtyp_str: Bad AD_TYPE! [%d]", adtyp);
+    }
+    return "";
 }
 
 /*artifact.c*/
