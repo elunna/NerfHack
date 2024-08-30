@@ -27,7 +27,6 @@ staticfn void offer_fake_amulet(struct obj *, boolean, aligntyp);
 staticfn void offer_different_alignment_altar(struct obj *, aligntyp);
 staticfn void sacrifice_your_race(struct obj *, boolean, aligntyp);
 staticfn int bestow_artifact(void);
-staticfn void crackaltar(void);
 staticfn boolean pray_revive(void);
 staticfn boolean water_prayer(boolean);
 staticfn boolean blocked_boulder(int, int);
@@ -1915,6 +1914,7 @@ sacrifice_your_race(
         pline_The("altar is stained with %s blood.", gu.urace.adj);
         levl[u.ux][u.uy].altarmask = AM_CHAOTIC;
         add_blood(u.ux, u.uy, gu.urace.mnum);
+        crackaltar();
         newsym(u.ux, u.uy); /* in case Invisible to self */
         angry_priest();
     } else {
@@ -1939,6 +1939,8 @@ sacrifice_your_race(
             change_luck(altaralign == A_NONE ? -2 : 2);
             demonless_msg = "blood coagulates";
             add_blood(u.ux, u.uy, gu.urace.mnum);
+            if (u.ualign.type != A_CHAOTIC)
+                crackaltar();
         }
         if ((pm = dlord(altaralign)) != NON_PM
             && (dmon = makemon(&mons[pm], u.ux, u.uy, MM_NOMSG))
@@ -2067,7 +2069,7 @@ bestow_artifact(void)
  * Altars can also occasionally generate cracked, and they can crack from
  * being converted from one alignment to another.
  * */
-staticfn void
+void
 crackaltar(void)
 {
     struct rm *lev = &levl[u.ux][u.uy];
