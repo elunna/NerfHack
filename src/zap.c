@@ -3040,7 +3040,9 @@ zapyourself(struct obj *obj, boolean ordinary)
     case SPE_CANCELLATION:
         (void) cancel_monst(&gy.youmonst, obj, TRUE, TRUE, TRUE);
         break;
-
+    case WAN_DRAINING:	/* KMH */
+        makeknown(obj->otyp);
+        /* FALLTHROUGH */
     case SPE_DRAIN_LIFE:
         if (!Drain_resistance) {
             learn_it = TRUE; /* (no effect for spells...) */
