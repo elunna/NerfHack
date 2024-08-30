@@ -191,6 +191,10 @@ resetobjs(struct obj *ochain, boolean restore)
             } else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) {
                 otmp->otyp = SPE_BLANK_PAPER;
                 curse(otmp);
+            } else if (any_quest_artifact(otmp)) {
+                 /* Quest artifacts become ordinary objects - sorry not sorry. */
+                otmp->oartifact = 0;
+                free_oname(otmp);
             }
         }
     }
