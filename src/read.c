@@ -1196,6 +1196,7 @@ unflood_space(coordxy x, coordxy y, genericptr_t drycnt)
 
     /* Get rid of a pool at x, y */
     levl[x][y].typ = ROOM;
+    maybe_unhide_at(x, y);
     newsym(x, y);
     (* (int*)drycnt)++;
 }
