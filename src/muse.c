@@ -3389,8 +3389,7 @@ mon_reflects(struct monst *mon, const char *str)
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "armor");
         return TRUE;
-    } else if (mon->data == &mons[PM_SILVER_DRAGON]
-               || mon->data == &mons[PM_CHROMATIC_DRAGON]) {
+    } else if (innate_reflector(mon->data)) {
         /* Silver dragons only reflect when mature; babies do not */
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "scales");

@@ -169,6 +169,9 @@
 #define eggs_in_water(ptr) \
     (lays_eggs(ptr) && (ptr)->mlet == S_EEL && is_swimmer(ptr))
 #define regenerates(ptr) (((ptr)->mflags1 & M1_REGEN) != 0L)
+#define innate_reflector(ptr) \
+    ((ptr) == &mons[PM_SILVER_DRAGON]            \
+    || (ptr) == &mons[PM_CHROMATIC_DRAGON])
 #define perceives(ptr) (((ptr)->mflags1 & M1_SEE_INVIS) != 0L)
 #define can_teleport(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
 #define control_teleport(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)

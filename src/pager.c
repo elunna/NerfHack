@@ -1145,6 +1145,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_berserker(pm), "go berserk");
     APPENDC(webmaker(pm), "spin webs");
     APPENDC(needspick(pm), "mine");
+    APPENDC(innate_reflector(pm), "has reflective scales");
     if (!needspick(pm))
         APPENDC(tunnels(pm), "dig");
     if (*buf) {
