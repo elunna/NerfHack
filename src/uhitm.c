@@ -7101,7 +7101,7 @@ passive(
         case AD_ELEC:
             /* Here, if we skewer with a metal object, it should conduct. 
              * Elven spears are wood, so do offer protection. */
-            if (!m_next2u(mon) && !is_metallic(weapon))
+            if (!m_next2u(mon) && (weapon && !is_metallic(weapon)))
                 break;
 
             if (fully_resistant(SHOCK_RES)) {
