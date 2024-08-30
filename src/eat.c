@@ -1945,7 +1945,8 @@ eatcorpse(struct obj *otmp)
     }
 
     /* 3.7: globs don't become tainted, they shrink away */
-    if (!glob && !stoneable && !slimeable && rotted > 5L) {
+    if ((!glob && !stoneable && !slimeable && rotted > 5L)
+        || mnum == PM_GRAVE_TROLL) {
         boolean cannibal = maybe_cannibal(mnum, FALSE);
 
         /* tp++; -- early return makes this unnecessary */
