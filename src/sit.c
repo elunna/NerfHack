@@ -315,6 +315,8 @@ dosit(void)
         goto in_water;
     }
 
+    u_wipe_engr(rnd(5));
+    
     if (OBJ_AT(u.ux, u.uy)
         /* ensure we're not standing on the precipice */
         && !(uteetering_at_seen_pit(trap) || uescaped_shaft(trap))) {
