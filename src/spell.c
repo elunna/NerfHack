@@ -1264,7 +1264,7 @@ spelleffects_check(int spell, int *res, int *energy)
 {
     int chance;
     boolean confused = (Confusion != 0);
-
+    boolean wearing_antimagic = uarms && uarms->otyp == ANTI_MAGIC_SHIELD;
     *energy = 0;
 
     /*
@@ -1380,7 +1380,7 @@ spelleffects_check(int spell, int *res, int *energy)
     }
 
     chance = percent_success(spell);
-    if (confused || (rnd(100) > chance)) {
+    if (confused || wearing_antimagic || (rnd(100) > chance)) {
         You("fail to cast the spell correctly.");
         u.uen -= *energy / 2;
         disp.botl = TRUE;
