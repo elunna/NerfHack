@@ -604,6 +604,8 @@ static const struct def_skill Skill_W[] = {
 staticfn void
 knows_object(int obj)
 {
+    if (u.uroleplay.pauper)
+        return;
     discover_object(obj, TRUE, FALSE);
     objects[obj].oc_pre_discovered = 1; /* not a "discovery" */
 }
@@ -615,6 +617,9 @@ knows_class(char sym)
 {
     struct obj odummy, *o;
     int ct;
+
+    if (u.uroleplay.pauper)
+        return;
 
     odummy = cg.zeroobj;
     odummy.oclass = sym;
@@ -1352,6 +1357,9 @@ ini_inv(struct trobj *trop)
     struct obj *obj;
     int otyp, i;
     boolean got_sp1 = FALSE; /* got a level 1 spellbook? */
+
+    if (u.uroleplay.pauper) /* pauper gets no items */
+        return;
 
     while (trop->trclass) {
         otyp = (int) trop->trotyp;

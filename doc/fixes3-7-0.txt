@@ -1460,6 +1460,10 @@ region expiration could report "the gas cloud around you dissipates" and also
 	"you see a gas cloud dissipate" for the same cloud spot
 reduce shopkeeper's innate speed from 18 to 16 so that a hasted shopkeeper
 	doesn't always get 2 moves per turn
+when a secret corridor was discovered by wand of secret door detection or by
+	wizard mode ^E and converted into a regular corridor, if there was a
+	formerly embedded object at the spot, presence of the object would be
+	forgotten unless within range of a light source
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2660,6 +2664,9 @@ if hero is punished or tethered to a buried iron ball and has no inventory (or
 	during streaming video
 'query_menu' option to use a menu when asked certain yes/no questions
 pyrolisk eggs explode when broken
+pauper-option to start the character with no possessions
+wand of secret door detection, spell of detect unseen, and wizard mode ^E now
+	flash the cursor at each location where detection finds something
 
 
 Platform- and/or Interface-Specific New Features

@@ -249,7 +249,8 @@ magic_map_background(coordxy x, coordxy y, int show)
         else if (lev->typ == CORR && glyph == cmap_to_glyph(S_litcorr))
             glyph = cmap_to_glyph(S_corr);
     }
-    if (svl.level.flags.hero_memory)
+    if (svl.level.flags.hero_memory
+        && (glyph_is_unexplored(lev->glyph) || glyph_is_cmap(lev->glyph)))
         lev->glyph = glyph;
     if (show)
         show_glyph(x, y, glyph);
@@ -992,6 +993,8 @@ newsym(coordxy x, coordxy y)
             if (see_self)
                 display_self();
         } else {
+            boolean show = FALSE;
+
             see_it = mon && (mon_visible(mon)
                              || (!worm_tail && (tp_sensemon(mon)
                                                 || MATCH_WARN_OF_MON(mon))));
@@ -1004,7 +1007,7 @@ newsym(coordxy x, coordxy y)
                     if (tt == BEAR_TRAP || is_pit(tt) || tt == WEB)
                         trap->tseen = 1;
                 }
-                _map_location(x, y, 0); /* map under the monster */
+                _map_location(x, y, show); /* map under the monster */
                 /* also gets rid of any invisibility glyph */
                 display_monster(x, y, mon,
                                 see_it ? PHYSICALLY_SEEN : DETECTED,
@@ -1131,6 +1134,8 @@ tether_glyph(coordxy x, coordxy y)
  *
  * DISP_BEAM   - Display the given glyph at each location, but do not erase
  *               any until the close call.
+ * DISP_ALL    - Same as DISP_BEAM except glyph is shown at the specified
+ *               spot even when that spot can't be seen.
  * DISP_TETHER - Display a tether glyph at each location, and the tethered
  *               object at the farthest location, but do not erase any
  *               until the return trip or close.
@@ -1288,7 +1293,7 @@ flash_glyph_at(coordxy x, coordxy y, int tg, int rpt)
     rpt *= 2; /* two loop iterations per 'count' */
     glyph[0] = tg;
     glyph[1] = (svl.level.flags.hero_memory) ? levl[x][y].glyph
-                                         : back_to_glyph(x, y);
+                                             : back_to_glyph(x, y);
     /* even iteration count (guaranteed) ends with glyph[1] showing;
        caller might want to override that, but no newsym() calls here
        in case caller has tinkered with location visibility */
@@ -1989,13 +1994,14 @@ show_glyph(coordxy x, coordxy y, int glyph)
         && !program_state.in_getlev
         && (oldglyph != glyph || gg.gbuf[y][x].gnew)) {
         int c = glyph_to_cmap(glyph);
+
         if ((glyph_is_nothing(oldglyph) || glyph_is_unexplored(oldglyph)
              || is_cmap_furniture(c))
             && !is_cmap_wall(c) && !is_cmap_room(c)) {
             if ((a11y.mon_notices && glyph_is_monster(glyph))
                 || (glyph_is_monster(oldglyph))
                 || u_at(x, y)) {
-                /* nothing */
+                ; /* nothing */
             } else {
                 show_glyph_change = TRUE;
             }
