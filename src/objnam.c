@@ -697,15 +697,7 @@ xname_flags(
                 obj->known = 1;
         }
     } 
-    /* Allow anyone who gets expert in a weapon skill to identify those
-     * weapons easily. We can easily justify this with the extra effort
-     * it takes to train up now. Similar to rangers, you need to be XP10+
-     */
-    else if (u.ulevel >= 10 && obj->oclass == WEAPON_CLASS 
-        && !is_ammo(obj) && P_SKILL(objects[obj->otyp].oc_skill) >= P_EXPERT) {
-        obj->known = 1;
-    }
-
+  
     /* Cartomancers are masters of cards, they know everything about them. */
     if (carto && obj->otyp == RAZOR_CARD) {
         obj->known = 1;

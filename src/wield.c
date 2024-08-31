@@ -102,10 +102,13 @@ setuwep(struct obj *obj)
 
     if (obj == uwep)
         return; /* necessary to not set gu.unweapon */
+
+
     /* This message isn't printed in the caller because it happens
      * *whenever* Sunsword is unwielded, from whatever cause.
      */
     setworn(obj, W_WEP);
+
     if (uwep == obj && artifact_light(olduwep) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind)
@@ -221,6 +224,7 @@ ready_weapon(struct obj *wep)
     int res = ECMD_OK;
     boolean was_twoweap = u.twoweap, had_wep = (uwep != 0);
 
+
     if (!wep) {
         /* No weapon */
         if (uwep) {
@@ -240,6 +244,17 @@ ready_weapon(struct obj *wep)
     } else if (!retouch_object(&wep, FALSE)) {
         res = ECMD_TIME; /* takes a turn even though it doesn't get wielded */
     } else {
+        /* Allow anyone who gets expert in a weapon skill to identify those
+         * weapons easily as soon as they wield them. We can easily justify
+         * this with the extra effort it takes to train up now. Similar to
+         * rangers, you need to be XP10+ 
+         * Check this before setworn so the enchantment shows up in the
+         * wear message. */
+        if (wep && wep->oclass == WEAPON_CLASS && u.ulevel >= 10
+            && !is_ammo(wep) && P_SKILL(objects[wep->otyp].oc_skill) >= P_EXPERT) {
+            wep->known = 1;
+        }
+
         /* Weapon WILL be wielded after this point */
         res = is_curved(wep) ? ECMD_OK : ECMD_TIME;
         if (will_weld(wep)) {
