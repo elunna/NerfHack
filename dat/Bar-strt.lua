@@ -37,12 +37,14 @@ des.map([[
 ]]);
 
 -- the forest beyond the river
-des.replace_terrain({ region={37,00, 59,19}, fromterrain=".", toterrain="T", chance=5 })
-des.replace_terrain({ region={60,00, 64,19}, fromterrain=".", toterrain="T", chance=10 })
-des.replace_terrain({ region={65,00, 75,19}, fromterrain=".", toterrain="T", chance=20 })
+des.replace_terrain({ region={33,00, 43,19}, fromterrain=".", toterrain="T", chance=20 })
+des.replace_terrain({ region={44,00, 55,19}, fromterrain=".", toterrain="T", chance=40 })
+des.replace_terrain({ region={56,00, 75,19}, fromterrain=".", toterrain="T", chance=80 })
+
 -- guarantee a path and free spot for the portal
-des.terrain(selection.randline(selection.new(), 37,7, 62,02, 7), ".")
-des.terrain({62,02}, ".")
+des.terrain(selection.randline(selection.new(), 33,7, 73,15, 3), ".")
+des.terrain(selection.randline(selection.new(), 33,7, 73,15, 3), ".")
+des.terrain({73,15}, ".")
 
 -- Dungeon Description
 des.region(selection.area(00,00,75,19), "lit")
@@ -58,7 +60,7 @@ des.region(selection.area(22,14,24,15), "lit")
 -- Stairs
 des.stair("down", 09,09)
 -- Portal arrival point
-des.levregion({ region = {62,02,62,02}, type="branch" })
+des.levregion({ region = {73,15,73,15}, type="branch" })
 -- Doors
 des.door("locked",12,05)
 des.door("locked",12,09)
@@ -85,7 +87,7 @@ des.monster("chieftain", 14, 09)
 des.monster("chieftain", 16, 05)
 des.monster("chieftain", 16, 09)
 -- Non diggable walls
-des.non_diggable(selection.area(00,00,75,19))
+des.non_diggable(selection.area(00,00,33,19))
 -- One trap to keep the ogres at bay.
 des.trap("spiked pit",37,07)
 -- Eels in the river
