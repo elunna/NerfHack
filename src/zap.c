@@ -7141,6 +7141,11 @@ makewish(void)
     /* TODO? maybe generate a second event describing what was received since
        these just echo player's request rather than show actual result */
 
+    /* The NeverEnding Story II: The Next Chapter: Bastian loses a 
+     * memory every time he makes a wish. Be careful with those wishes... */
+    if (Luck < 0)
+        forget(rnd(4));
+
     const char *verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),
                *oops_msg = (u.uswallow
                             ? "Oops!  %s out of your reach!"
