@@ -71,9 +71,8 @@ amulet(void)
     if (!u.uhave.amulet)
         return;
 #endif
-    if ((((amu = uamul) != 0 && amu->otyp == AMULET_OF_YENDOR)
-         || ((amu = uwep) != 0 && amu->otyp == AMULET_OF_YENDOR))
-        && !rn2(15)) {
+    amu = carrying(AMULET_OF_YENDOR);
+    if (amu && !rn2(15)) {
         for (ttmp = gf.ftrap; ttmp; ttmp = ttmp->ntrap) {
             if (ttmp->ttyp == MAGIC_PORTAL) {
                 int du = distu(ttmp->tx, ttmp->ty);
