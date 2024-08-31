@@ -3411,11 +3411,17 @@ gethungry(void)
             u.uhunger--;
         if (near_capacity() > SLT_ENCUMBER)
             u.uhunger--;
+        /* Cursed rings burn hunger too */
+        if (uright && uright->cursed && rn2(2))
+            u.uhunger--;
     } else { /* even */
         if (Hunger)
             u.uhunger--;
         /* Conflict uses up food too */
         if (HConflict || (EConflict & (~W_ARTI)))
+            u.uhunger--;
+        /* Cursed rings burn hunger too */
+        if (uleft && uleft->cursed && rn2(2))
             u.uhunger--;
         /*
          * +0 charged rings don't do anything, so don't affect hunger.
