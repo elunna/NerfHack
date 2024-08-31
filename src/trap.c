@@ -7117,6 +7117,8 @@ chest_trap(
             pline("A cloud of %s gas billows from %s.",
                   Blind ? ROLL_FROM(blindgas) : rndcolor(),
                   the(xname(obj)));
+            if (Breathless)
+                break;
             if (!Stunned) {
                 if (Hallucination)
                     pline("What a groovy feeling!");
