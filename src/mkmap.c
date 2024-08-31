@@ -480,8 +480,11 @@ mkmap(lev_init *init_lev)
         join_map(bg_typ, fg_typ);
 
     /* Apply rivers to certain quest fill levels */
-    if (In_quest(&u.uz) && (Role_if(PM_CAVE_DWELLER) || Role_if(PM_BARBARIAN)
-        || Role_if(PM_RANGER) || Role_if(PM_TOURIST)
+    if (In_quest(&u.uz) && !Is_qstart(&u.uz) && !Is_nemesis(&u.uz)
+        && (Role_if(PM_CAVE_DWELLER) 
+        || Role_if(PM_BARBARIAN)
+        || Role_if(PM_RANGER)
+        || Role_if(PM_TOURIST)
         /* Added a minefill map to monk quest */
         || Role_if(PM_MONK))) {
         mkrivers();
