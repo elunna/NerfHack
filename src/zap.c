@@ -219,6 +219,13 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             }
         }
         break;
+    case SPE_CHARM_MONSTER:
+        /* Pacification only available at lower skills */
+        if (!resist(mtmp, otmp->oclass, 0, NOTELL) || mtmp->isshk)
+            (void) tamedog(mtmp, otmp, TRUE);
+        helpful_gesture = TRUE;
+        ret = 1;
+        break;
     case WAN_SPEED_MONSTER:
         if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
             if (disguised_mimic)

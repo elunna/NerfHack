@@ -1135,6 +1135,12 @@ dogfood(struct monst *mon, struct obj *obj)
 boolean
 tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
 {
+    /* Spell of charm monster is limited at unskilled and basic - 
+     * it can only pacify. */
+    boolean unskilled_charmer = obj 
+        && obj->otyp == SPE_CHARM_MONSTER
+        && P_SKILL(P_ENCHANTMENT_SPELL) < P_SKILLED;
+
     /* reduce timed sleep or paralysis, leaving mtmp->mcanmove as-is
        (note: if mtmp is donning armor, this will reduce its busy time) */
     if (mtmp->mfrozen)
@@ -1174,6 +1180,9 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
         else if (!(Upolyd && sticks(gy.youmonst.data)))
             unstuck(mtmp);
     }
+
+    if (unskilled_charmer)
+        return FALSE;
 
     /* feeding it treats makes it tamer */
     if (mtmp->mtame && obj) {

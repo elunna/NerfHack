@@ -18,7 +18,6 @@ staticfn void p_glow1(struct obj *);
 staticfn void p_glow2(struct obj *, const char *);
 staticfn void flood_space(coordxy, coordxy, genericptr);
 staticfn void unflood_space(coordxy, coordxy, genericptr);
-staticfn int maybe_tame(struct monst *, struct obj *);
 staticfn boolean can_center_cloud(coordxy, coordxy);
 staticfn void display_stinking_cloud_positions(boolean);
 staticfn void seffect_enchant_armor(struct obj **);
@@ -1078,7 +1077,7 @@ forget(int howmuch)
 }
 
 /* monster is hit by scroll of taming's effect */
-staticfn int
+int
 maybe_tame(struct monst *mtmp, struct obj *sobj)
 {
     int was_tame = mtmp->mtame;
@@ -2669,13 +2668,12 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
         seffect_create_monster(&sobj);
         break;
     case SCR_ZAPPING:
-	seffect_zapping(&sobj);
-	break;
+        seffect_zapping(&sobj);
+        break;
     case SCR_ENCHANT_WEAPON:
         seffect_enchant_weapon(&sobj);
         break;
     case SCR_TAMING:
-    case SPE_CHARM_MONSTER:
         seffect_taming(&sobj);
         break;
     case SCR_GENOCIDE:

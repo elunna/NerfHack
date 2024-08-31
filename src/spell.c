@@ -1475,6 +1475,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_MAGIC_MISSILE:
     case SPE_KNOCK:
     case SPE_SLOW_MONSTER:
+    case SPE_CHARM_MONSTER:
     case SPE_WIZARD_LOCK:
     case SPE_DIG:
     case SPE_TURN_UNDEAD:
@@ -1536,7 +1537,6 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         if (role_skill >= P_SKILLED)
             pseudo->blessed = 1;
     /*FALLTHRU*/
-    case SPE_CHARM_MONSTER:
     case SPE_MAGIC_MAPPING:
     case SPE_CREATE_MONSTER:
         (void) seffects(pseudo);
