@@ -1562,6 +1562,7 @@ seffect_remove_curse(struct obj **sobjp)
                 : "the power of the Force against you!"));
 
     if (scursed) {
+        rndcurse();
         pline_The("scroll disintegrates.");
     } else {
         /* 3.7: this used to use a straight
