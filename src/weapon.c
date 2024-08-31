@@ -1088,11 +1088,14 @@ mwepgone(struct monst *mon)
 int
 abon(void)
 {
-    int sbon;
-    int str = ACURR(A_STR), dex = ACURR(A_DEX);
-
+    int sbon = 0, dex = ACURR(A_DEX);
     if (Upolyd)
         return (adj_lev(&mons[u.umonnum]) - 3);
+
+#if 0 /* Strength should not give a to-hit bonus; 
+       * the encumbrance system is already there to address that.*/
+    int str = ACURR(A_STR), dex = ACURR(A_DEX);
+
     if (str < 6)
         sbon = -2;
     else if (str < 8)
@@ -1105,6 +1108,7 @@ abon(void)
         sbon = 2;
     else
         sbon = 3;
+#endif
 
     /* Game tuning kludge: make it a bit easier for a low level character to
      * hit */
