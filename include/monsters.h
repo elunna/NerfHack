@@ -3133,7 +3133,7 @@
         SIZ(1200, 700, MS_ROAR, MZ_MEDIUM),
         MR_FIRE | MR_COLD | MR_STONE, MR_STONE,
         M1_BREATHLESS | M1_WALLWALK | M1_THICK_HIDE | M1_METALLIVORE,
-        M2_HOSTILE | M2_STRONG, 0,
+        M2_HOSTILE | M2_STRONG | M2_FLANK, 0,
         NO_RACE, 11, CLR_BROWN, XORN),
     /*
      * Apelike beasts
