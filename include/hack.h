@@ -1395,7 +1395,10 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define WAND_WREST_CHANCE 121
 #define BALL_IN_MON (u.uswallow && uball && uball->where == OBJ_FREE)
 #define CHAIN_IN_MON (u.uswallow && uchain && uchain->where == OBJ_FREE)
-#define NODIAG(monnum) ((monnum) == PM_GRID_BUG || (monnum) == PM_LIKE_LIKE)
+#define NODIAG(monnum) \
+    ((monnum) == PM_GRID_BUG \
+    || (monnum) == PM_LIKE_LIKE \
+    || (monnum) == PM_PHASE_SPIDER)
 
 /* Flags to control menus */
 #define MENUTYPELEN sizeof("traditional ")
