@@ -831,6 +831,12 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
         case S_engrcorr:
             Strcpy(buf, "engraving");
             break;
+        case S_fountain:
+            if (Role_if(PM_WIZARD) && levl[x][y].blessedftn == 1)
+                Strcpy(buf, "magic fountain");
+            else
+                Strcpy(buf, defsyms[symidx].explanation);
+            break;
         case S_stone:
             if (!levl[x][y].seenv) {
                 Strcpy(buf, "unexplored");
