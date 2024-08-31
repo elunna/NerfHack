@@ -56,7 +56,7 @@ staticfn boolean water_turbulence(coordxy *, coordxy *);
      || HWwalking)
 #define Known_lwalking \
     (Known_wwalking && Fire_resistance \
-     && uarmf->oerodeproof && uarmf->rknown)
+     && uarmf && uarmf->oerodeproof && uarmf->rknown)
 
 /* mode values for findtravelpath() */
 #define TRAVP_TRAVEL 0
