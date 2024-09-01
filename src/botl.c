@@ -669,7 +669,7 @@ const struct conditions_t conditions[] = {
 struct condtests_t condtests[CONDITION_COUNT] = {
     /* id, useropt, opt_in or out, enabled, configchoice, testresult;
        default value for enabled is !opt_in but can get changed via options */
-    { bl_bareh,     "barehanded",  opt_in,  FALSE, FALSE, FALSE },
+    { bl_bareh,     "barehanded",  opt_out, FALSE, FALSE, FALSE },
     { bl_blind,     "blind",       opt_out, TRUE,  FALSE, FALSE },
     { bl_busy,      "busy",        opt_in,  FALSE, FALSE, FALSE },
     { bl_conf,      "conf",        opt_out, TRUE,  FALSE, FALSE },
@@ -677,7 +677,7 @@ struct condtests_t condtests[CONDITION_COUNT] = {
     { bl_elf_iron,  "iron",        opt_out, TRUE,  FALSE, FALSE },
     { bl_fly,       "fly",         opt_out, TRUE,  FALSE, FALSE },
     { bl_foodpois,  "foodPois",    opt_out, TRUE,  FALSE, FALSE },
-    { bl_glowhands, "glowhands",   opt_in,  FALSE, FALSE, FALSE },
+    { bl_glowhands, "glowhands",   opt_out, FALSE, FALSE, FALSE },
     { bl_grab,      "grab",        opt_out, TRUE,  FALSE, FALSE },
     { bl_hallu,     "hallucinat",  opt_out, TRUE,  FALSE, FALSE },
     { bl_held,      "held",        opt_in,  FALSE, FALSE, FALSE },
@@ -697,7 +697,7 @@ struct condtests_t condtests[CONDITION_COUNT] = {
     { bl_tethered,  "tethered",    opt_in,  FALSE, FALSE, FALSE },
     { bl_trapped,   "trap",        opt_in,  FALSE, FALSE, FALSE },
     { bl_unconsc,   "unconscious", opt_in,  FALSE, FALSE, FALSE },
-    { bl_woundedl,  "woundedlegs", opt_in,  FALSE, FALSE, FALSE },
+    { bl_woundedl,  "woundedlegs", opt_out, FALSE, FALSE, FALSE },
     { bl_holding,   "holding",     opt_in,  FALSE, FALSE, FALSE },
     { bl_wither,    "withering",   opt_out, TRUE,  FALSE, FALSE },
 };
