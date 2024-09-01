@@ -529,11 +529,11 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
                   : uattk ? "your" : s_suffix(mon_nam(mattk)));
             return 0; /* no effect */
         } else if (oatmp->oerodeproof) {
-            if (!udefend && !canseemon(mdef)) {
+            if (!udefend && !canseemon(mdef) && olfaction(gy.youmonst.data)) {
                 You("smell something strange.");
             } else if (!Blind) {
                 pline("%s glows brown for a moment.", Yname2(oatmp));
-            } else {
+            } else if (olfaction(gy.youmonst.data)) {
                 pline("%s briefly emits an odd smell.", Yname2(oatmp));
             }
             oatmp->oerodeproof = 0;
@@ -798,7 +798,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             make_stunned(1L, FALSE);
         } else {
             if (!Stun_resistance)
-            You(Stunned ? "struggle to keep your balance." : "reel...");
+                You(Stunned ? "struggle to keep your balance." : "reel...");
             dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
@@ -820,7 +820,6 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         dmg = d((ml / 5) + 1, 8);
          if (mcast_dist_ok(mtmp)) {
             pline("%s blasts you with a bolt of fire!", Monnam(mtmp));
-
             explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dmg,
                 MON_CASTBALL, EXPL_FIERY);
 
@@ -844,7 +843,6 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         dmg = d((ml / 5) + 1, 8);
          if (mcast_dist_ok(mtmp)) {
             pline("%s blasts you with a bolt of cold!", Monnam(mtmp));
-
             explode(u.ux, u.uy, BZ_M_SPELL(ZT_COLD), dmg,
                 MON_CASTBALL, EXPL_FROSTY);
 
@@ -1215,9 +1213,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         break;
     case CLC_PROTECTION: {
         int natac = find_mac(mtmp) + mtmp->mprotection;
-        int loglev = 0;
-        int gain = 0;
-
+        int loglev = 0, gain = 0;
         dmg = 0;
 
         for (; ml > 0; ml /= 2)
@@ -1448,15 +1444,13 @@ staticfn boolean
 counterspell(struct monst *mtmp, struct obj *otmp) {
     if (otmp->cursed)
         return FALSE;
-    /* Only counter monsters we can see/sense. */
     if (!canspotmon(mtmp))
         return FALSE;
-    /* Only counter monsters within ~13-14 squares. */
     if (dist2(u.ux, u.uy, mtmp->mx, mtmp->my) > 192)
         return FALSE;
-
     if (!rn2(5))
         return FALSE;
+    
     pline("%s %s and %s %s magic!", 
         (Blind ? "vibrates" : "glows"), artiname(uwep->oartifact),
         !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));

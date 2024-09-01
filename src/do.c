@@ -311,11 +311,11 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
     } else if ((obj->oclass == POTION_CLASS || obj->oclass == SCROLL_CLASS) 
                && svl.level.flags.temperature > 0
                && (levl[x][y].typ == ROOM || levl[x][y].typ == CORR)) {
-        /* Potions/scrolls are sometimes destroyed when landing on very hot
-           ground. The basic odds are 50% for nonblessed potions and
-           30% for blessed potions; if you have handled the object
-           (i.e. it is or was yours), these odds are adjusted by Luck
-           (each Luck point affects them by 2%). Artifact items
+        /* Potions and scrolls are sometimes destroyed when landing on 
+           very hot ground. The basic odds are 50% for nonblessed
+           potions and 30% for blessed potions; if you have handled the
+           object (i.e. it is or was yours), these odds are adjusted by
+           Luck (each Luck point affects them by 2%). Artifact items
            would not be affected, if any existed.
 
            Oil is not affected because its boiling point (and flash
@@ -1369,6 +1369,7 @@ int
 doup(void)
 {
     stairway *stway = stairway_at(u.ux,u.uy);
+
     set_move_cmd(DIR_UP, 0);
 
     if (u_rooted())
@@ -1379,6 +1380,7 @@ doup(void)
         climb_pit();
         return ECMD_TIME;
     }
+
     if (!stway || (stway && !stway->up)) {
         if (do_stair_travel('<')) {
             return ECMD_TIME;
@@ -1387,7 +1389,6 @@ doup(void)
             return ECMD_OK;
         }
     }
-
     if (stucksteed(TRUE)) {
         return ECMD_OK;
     }

@@ -1623,9 +1623,9 @@ staticfn boolean
 taking_off(const char *action)
 {
     return !strcmp(action, "take off") || !strcmp(action, "remove") ||
-           /* choosing armor to destroy is also "taking it off", so should
-            * only use worn armor pieces */
-           !strcmp(action, "destroy");
+        /* choosing armor to destroy is also "taking it off", so should
+        * only use worn armor pieces */
+        !strcmp(action, "destroy");
 }
 
 staticfn void

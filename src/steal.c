@@ -471,7 +471,7 @@ steal(struct monst *mtmp, char *objnambuf)
        the odds that an attempt at stealing it may fail */
     if (otmp && (otmp->greased || otmp->otyp == OILSKIN_CLOAK 
                  || otmp->otyp == OILSKIN_SACK)
-        && (!otmp->cursed || rn2(4))) {
+             && (!otmp->cursed || rn2(4))) {
         pline("%s %s slip off of your %s %s!", s_suffix(Monnam(mtmp)),
               makeplural(mbodypart(mtmp, HAND)),
               otmp->greased ? "greased" : "slippery",
@@ -715,14 +715,12 @@ static boolean
 is_stealable_item(struct obj *obj, struct monst *mtmp)
 {
     /* the Wizard is not allowed to steal the player's quest artifact */
-    if (mtmp->iswiz && is_quest_artifact(obj)) {
+    if (mtmp->iswiz && is_quest_artifact(obj))
         return FALSE;
-    }
 
     /* every other quest artifact is fine */
-    if (any_quest_artifact(obj)) {
+    if (any_quest_artifact(obj))
         return TRUE;
-    }
 
     return FALSE;
 }

@@ -168,9 +168,9 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     struct obj *obj;
     boolean disguised_mimic = (mtmp->data->mlet == S_MIMIC
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
-    int healing_skill = ((P_SKILL(P_HEALING_SPELL) >= P_EXPERT)
-                         ? 10 : (P_SKILL(P_HEALING_SPELL) == P_SKILLED)
-                           ? 8 : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
+    int healing_skill = ((P_SKILL(P_HEALING_SPELL) >= P_EXPERT) ? 10
+                        : (P_SKILL(P_HEALING_SPELL) == P_SKILLED) ? 8
+                        : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
 
     if (engulfing_u(mtmp))
         reveal_invis = FALSE;
@@ -1965,14 +1965,15 @@ poly_obj(struct obj *obj, int id)
 	/* Avoid creating scrolls of zapping from polypiling.
 	 * Maybe cartomancers should be able to?? */
 	while (otmp->otyp == SCR_ZAPPING) {
-            otmp->otyp = rnd_class(SCR_ENCHANT_ARMOR, SCR_STINKING_CLOUD);
-        }
-        if (Role_if(PM_CARTOMANCER)) {
-            You("feel guilty about defacing a card!");
-            adjalign(-10);
-            change_luck(-2);
-        }
-        break;
+        otmp->otyp = rnd_class(SCR_ENCHANT_ARMOR, SCR_STINKING_CLOUD);
+    }
+
+    if (Role_if(PM_CARTOMANCER)) {
+        You("feel guilty about defacing a card!");
+        adjalign(-10);
+        change_luck(-2);
+    }
+    break;
 
     case SPBOOK_CLASS:
         while (otmp->otyp == SPE_POLYMORPH)
@@ -2888,9 +2889,9 @@ zapyourself(struct obj *obj, boolean ordinary)
     boolean wonder = FALSE;
     int damage = 0;
     int orig_dmg = 0; /* for passing to destroy_items() */
-    int healing_skill = ((P_SKILL(P_HEALING_SPELL) >= P_EXPERT)
-                         ? 10 : (P_SKILL(P_HEALING_SPELL) == P_SKILLED)
-                           ? 8 : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
+    int healing_skill = ((P_SKILL(P_HEALING_SPELL) >= P_EXPERT) ? 10
+                        : (P_SKILL(P_HEALING_SPELL) == P_SKILLED) ? 8
+                        : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
 
     if (obj->otyp == WAN_WONDER) {
         /* obroken check here prevents false ID for zapping cards of wonder */
@@ -3037,11 +3038,11 @@ zapyourself(struct obj *obj, boolean ordinary)
             pline("Some of the missiles bounce off!");
             damage = (damage + 1) / 2;
             monstseesu(M_SEEN_MAGR);
-        } else
+        } else {
             monstunseesu(M_SEEN_MAGR);
+        }
         if (Half_spell_damage) { /* stacks with Antimagic */
             damage = (damage + 1) / 2;
-        
         }
         break;
 
@@ -3548,9 +3549,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     You("sense a wave of energy dissipate around %s.",
                         mon_nam(mdef));
                 return FALSE;
-            }
-
-            else {
+            } else {
                 if (!mdef->mcan && canseemon(mdef))
                     pline("Magical energies are absorbed from %s.", mon_nam(mdef));
                 if (mdef->mprotection) {
@@ -3612,14 +3611,6 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     pline("%s!", Yobjnam2(otmp, "resist"));
                     continue;
                 }
-#if 0
-                if (((otmp->oartifact && spec_ability(otmp, SPFX_INTEL))
-                     || obj_resists(otmp, 0, 0))
-                    && rn2(10) < 8) {
-                    pline("%s!", Tobjnam(otmp, "resist"));
-                    continue;
-                }
-#endif
                 cancel_item(otmp);
             }
             if (youdefend) {
@@ -3958,8 +3949,8 @@ weffects(struct obj *obj)
     }
 
     /* This obroken check is a hack so we don't identify misc wands when cartomancers 
-     * use scrolls of zapping. When zapping cards are used, they pseudo copy a wand zap
-     * effect - so we set obroken on the card to signal it's not really a wand. ;) */
+     * use scrolls of zapping. When zapping cards are used, they pseudo-copy a wand zap
+     * effect - so we set obroken on the card to flag it's not really a wand. */
     if (disclose && !obj->obroken) {
         learnwand(obj);
         if (was_unkn)
@@ -4680,7 +4671,6 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
     gb.bhitpos.x = u.ux;
     gb.bhitpos.y = u.uy;
     boom = counterclockwise ? S_boomleft : S_boomright;
-
     i = (int) xytod(dx, dy);
     tmp_at(DISP_FLASH, cmap_to_glyph(boom));
 
@@ -4694,7 +4684,6 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
         gb.bhitpos.x += dx;
         gb.bhitpos.y += dy;
 
-        
         if (!isok(gb.bhitpos.x, gb.bhitpos.y)) {
             gb.bhitpos.x -= dx;
             gb.bhitpos.y -= dy;
@@ -4783,7 +4772,7 @@ zhitm(
             /* it would be nice to have "Some missiles bounce off" here but that
              * would appear before the hit message and look weird */
         }
-        /* no Half_spell_damage for monsters */
+        /* no half_spell_damage for monsters */
         break;
     case ZT_FIRE:
         if (resists_fire(mon) || defended(mon, AD_FIRE)) {
@@ -5606,7 +5595,7 @@ dobuzz(
                                             "But it reflects from %s %s!");
                         gas_hit = FALSE;
                     }
-                    /* water is reflected but doesn't bounce */
+                    /* reflected but doesn't bounce */
                     if (damgtype == ZT_POISON_GAS)
                         range = 0;
                     dx = -dx;
@@ -6275,22 +6264,20 @@ zap_over_floor(
             }
         }
     }
-
+    
     if (OBJ_AT(x, y) && damgtype == ZT_FIRE)
         if (burn_floor_objects(x, y, FALSE, (type > 0 && !moncast)) && couldsee(x, y)) {
             newsym(x, y);
             You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
         }
-    
-    if (OBJ_AT(x, y) && abs(type) == ZT_BREATH(ZT_DEATH))
+    if (OBJ_AT(x, y) && abs(type) == ZT_BREATH(ZT_DEATH)) {
         if (disintegrate_floor_objects(x, y, TRUE, type > 0) 
               && couldsee(x, y)) {
             newsym(x, y);
         }
-    
+    }
     if (OBJ_AT(x, y) && damgtype == ZT_DRAIN) {
         drain_floor_objects(x, y, (type > 0 && !moncast));
-    
     }
     if (!ignoremon && (mon = m_at(x, y)) != 0)
         wakeup(mon, (type >= 0 && !moncast) ? TRUE : FALSE);
@@ -6454,7 +6441,6 @@ destroyable(struct obj *obj, int adtyp)
     } else if (adtyp == AD_ACID) {
         return is_corrodeable(obj);
     }
-    
     return FALSE;
 }
 

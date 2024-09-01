@@ -741,7 +741,7 @@ count_level_features(void)
         = svl.level.flags.nsinks
         = svl.level.flags.ntoilets
         = svl.level.flags.nforges
-        = svl.level.flags.naltars= 0;
+        = svl.level.flags.naltars = 0;
     
     for (y = 0; y < ROWNO; y++)
         for (x = 1; x < COLNO; x++) {
@@ -1700,9 +1700,8 @@ dodoor(coordxy x, coordxy y, struct mkroom *aroom)
     xint8 doortyp = DOOR;
     schar u_depth = depth(&u.uz);
     int r = rn2(35);
-    if (u_depth > 3 && (r * r) < u_depth - 3) {
+    if (u_depth > 3 && (r * r) < u_depth - 3)
         doortyp = SDOOR;
-    }
     dosdoor(x, y, aroom, doortyp);
 }
 
@@ -2274,7 +2273,6 @@ mktoilet(struct mkroom *croom)
     svl.level.flags.ntoilets++;
 }
 
-
 staticfn void
 mkaltar(struct mkroom *croom)
 {
@@ -2347,9 +2345,8 @@ mkgrave(struct mkroom *croom)
     /* Leave a bell, in case we accidentally buried someone alive */
     if (dobell)
         (void) mksobj_at(BELL, m.x, m.y, TRUE, FALSE);
-    else if (dowater) {
+    else if (dowater)
         (void) mksobj_at(SCR_FLOOD, m.x, m.y, TRUE, FALSE);
-    }
     return;
 }
 

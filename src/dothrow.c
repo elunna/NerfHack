@@ -62,7 +62,6 @@ multishot_class_bonus(
             multishot++;
         break;
     case PM_ROGUE:
-        /* added knives! */
         if (skill == P_DAGGER || skill == P_KNIFE)
             multishot++;
         break;
@@ -201,14 +200,7 @@ throw_obj(struct obj *obj, int shotlimit)
                     && uwep->otyp == ORCISH_BOW)
                     multishot++;
                 break;
-            case PM_GNOME:
-#if 0 /* Bonus damage is applied instead */
-            
-                /* arbitrary; there isn't any gnome-specific gear */
-                if (skill == -P_CROSSBOW)
-                    multishot++;
-                break;
-#endif
+            case PM_GNOME: /* Bonus damage is applied instead */
             case PM_HUMAN:
             case PM_DWARF:
             default:
@@ -638,7 +630,7 @@ hitfloor(
         }
         pline("%s %s the %s.", Doname2(obj), otense(obj, "hit"), surf);
     }
-    /* When Cartomancer throws card down */
+    /* Cartomancer can throw summon cards downward */
     if (is_moncard(obj)) {
         use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
         obfree(obj, (struct obj *) 0);
@@ -1503,7 +1495,7 @@ throwit(struct obj *obj,
     boolean carding = Role_if(PM_CARTOMANCER) 
                       && obj->otyp == SCR_CREATE_MONSTER;
 
-    /* Handle thrown effect cards here */
+    /* Handle thrown zap cards here */
     if (obj->otyp == SCR_ZAPPING) {
         struct obj *pseudo = mksobj(obj->corpsenm, FALSE, FALSE);
         pseudo->blessed = pseudo->cursed = 0;
@@ -1609,10 +1601,8 @@ throwit(struct obj *obj,
         boomeranging = TRUE;
         if (Is_airlevel(&u.uz) || Levitation)
             hurtle(-u.dx, -u.dy, 1, TRUE);
-
         mon = boomhit(obj, u.dx, u.dy);
         iflags.returning_missile = 0; /* has returned or isn't going to */
-
         if (mon == &gy.youmonst) { /* the thing was caught */
             exercise(A_DEX, TRUE);
             obj = return_throw_to_inv(obj, wep_mask, twoweap, oldslot);
@@ -2262,12 +2252,6 @@ thitmonst(
             if (is_moncard(obj)) {
                 /* Spheres explode on contact! */
                 if (is_boomer(obj->corpsenm)) {
-                    #if 0
-                    if (cansee(gb.bhitpos.x, gb.bhitpos.y))
-                        pline("%s explodes in a ball of fire!", Doname2(obj));
-                    else
-                        You_hear("an explosion");
-                    #endif
                     switch (obj->corpsenm) {
                         case PM_FREEZING_SPHERE:
                             explode(gb.bhitpos.x, gb.bhitpos.y,
@@ -2340,7 +2324,7 @@ thitmonst(
             } else {
                 /* Thrown projectiles above +7 have a high chance of dulling. */
                 if (obj->spe > 7 && rn2(obj->spe))
-                    obj->spe -= obj->spe > 10 ? 2 : 1;
+                    obj->spe -= (obj->spe > 10 ? 2 : 1);
                 passive_obj(mon, obj, (struct attack *) 0);
             }
         } else {
@@ -2623,8 +2607,9 @@ breakobj(
         obj->in_use = 1; /* in case it's fatal */
         if (obj->otyp == POT_OIL && obj->lamplit) {
             explode_oil(obj, x, y, hero_caused);
-	    } else if ((obj->otyp == POT_VAMPIRE_BLOOD || obj->otyp == POT_BLOOD) &&
-                   am != AM_CHAOTIC && am != AM_NONE) {
+	    } else if ((obj->otyp == POT_VAMPIRE_BLOOD 
+                 || obj->otyp == POT_BLOOD)
+            && am != AM_CHAOTIC && am != AM_NONE) {
             /* ALI: If blood is spilt on a lawful or
              * neutral altar the effect is similar to
              * human sacrifice. There's no effect on
@@ -2668,7 +2653,7 @@ breakobj(
         /* monster breathing isn't handled... [yet?] */
         break;
     case EXPENSIVE_CAMERA:
-	/* The camera is played as a holographic card for cartomancers - it can't break */
+	/* Holographic card for cartomancers - can't break */
 	if (!Role_if(PM_CARTOMANCER))
 	    release_camera_demon(obj, x, y);
         break;
@@ -2850,8 +2835,8 @@ throw_gold(struct obj *obj)
         /* see if the gold has a place to move into */
         odx = u.ux + u.dx;
         ody = u.uy + u.dy;
-        if (!isok(odx, ody)
-            || !ZAP_POS(levl[odx][ody].typ) || closed_door(odx, ody)) {
+        if (!isok(odx, ody) || !ZAP_POS(levl[odx][ody].typ) 
+            || closed_door(odx, ody)) {
             gb.bhitpos.x = u.ux;
             gb.bhitpos.y = u.uy;
         } else {
@@ -2892,20 +2877,20 @@ ranseur_hit(struct monst *mon)
     const char *The_ransuer = canseemon(mon) ? "The ranseur" : "A ranseur";
     const char *hand = body_part(HAND);
     
+    if (!mwep)
+        return;
+
     if (mwep && mwep->otyp == HEAVY_IRON_BALL) {
         pline("%s fails to budge %s.", The_ransuer, the(xname(mwep)));
         return;
     }
-    if (!mwep)
-        return;
-    
+
     if (!hityou) {
         obj_extract_self(mwep);
         possibly_unwield(mon, FALSE);
         setmnotwielded(mon, mwep);
         You("knock %s %s to the %s!", s_suffix(mon_nam(mon)),
             xname(mwep), surface(mon->mx, mon->my));
-
         place_object(mwep, mon->mx, mon->my);
         stackobj(mwep);
     } else { /* You are hit */
@@ -2925,16 +2910,15 @@ ranseur_hit(struct monst *mon)
     }
 }
 
+#define FATAL_DAMAGE_MODIFIER 200
 staticfn void
 hitmon_bardiche(
     struct monst *mon,
     struct obj *obj)    /* obj is not NULL */
 {
-    /* 1 in 100 chance of beheading */
-#if 0
-    if (rn2(100))
+    if (rn2(100)) /* 1 in 100 chance of beheading */
         return;
-#endif
+
     /* Same checks as for Vorpal */
     if (!has_head(mon->data) || gn.notonhead || u.uswallow) {
         pline("Somehow, you miss %s wildly.", mon_nam(mon));
@@ -2949,8 +2933,7 @@ hitmon_bardiche(
     pline("You %s %s %s clean off with the %s!", rn2(2) ? "slice" : "chop",
           s_suffix(mon_nam(mon)), mbodypart(mon, HEAD), xname(obj));
 
-    /* #define FATAL_DAMAGE_MODIFIER 200 */
-    int dmg = 2 * mon->mhp + 200;
+    int dmg = 2 * mon->mhp + FATAL_DAMAGE_MODIFIER;
     showdamage(dmg, FALSE);
     mon->mhp -= dmg;
     

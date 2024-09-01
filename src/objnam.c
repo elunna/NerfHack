@@ -323,7 +323,6 @@ obj_typename(int otyp)
         xcalled(buf, BUFSZ - (dn ? (int) strlen(dn) + 3 : 0), "", un);
     if (dn)
         Sprintf(eos(buf), " (%s)", dn);
-   
     return buf;
 }
 
@@ -613,6 +612,10 @@ xname(struct obj *obj)
     static char bufr[BUFSZ];
     char *buf = &(bufr[PREFIX]);   /* leave room for "17 -3 " */
 
+    /* SLASH'EM style item hallucination.
+     * This actually creates temporary random objects
+     * to mix up the item descriptions. As a result,
+     * we have disabled auto-pickup while hallucinating. */
 	if (Hallucination && !program_state.gameover) {
 		hobj = mkobj(obj->oclass, 0);
 		hobj->quan = obj->quan;
@@ -624,7 +627,6 @@ xname(struct obj *obj)
             delete_contents(hobj);
 		obj_extract_self(hobj);
 		dealloc_obj(hobj);
-
 		return (buf);
 	} else
         return xname_flags(obj, CXN_NORMAL);
@@ -686,7 +688,7 @@ xname_flags(
     if (Role_if(PM_CLERIC))
         obj->bknown = 1; /* avoid set_bknown() to bypass update_inventory() */
     
-    /* rangers of a certain level/skill auto-know ammo enchantments */
+    /* rangers of a certain level/skill intuit ammo enchantments */
     if (Role_if(PM_RANGER)) {
         if (obj->oclass == WEAPON_CLASS) {
             if (u.ulevel >= 10 && is_ammo(obj)
@@ -698,7 +700,7 @@ xname_flags(
         }
     } 
   
-    /* Cartomancers are masters of cards, they know everything about them. */
+    /* Cartomancers grow to become card masters. */
     if (carto && obj->otyp == RAZOR_CARD && u.ulevel > 6) {
         obj->known = 1;
         if (u.ulevel > 14)
@@ -947,7 +949,7 @@ xname_flags(
             Strcat(buf, " - ");
             Strcat(buf, mons[obj->corpsenm].pmnames[NEUTRAL]);
         } else if (nn && obj->otyp == SCR_ZAPPING 
-                && obj->corpsenm != NON_PM) {
+                      && obj->corpsenm != NON_PM) {
             Strcat(buf, " - ");
             Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
         } else if (nn) {
@@ -1021,7 +1023,6 @@ xname_flags(
         } else {
             Strcpy(buf, actualn);
             if (GemStone(typ))
-                // Strcat(buf, carto ? " token" : " stone");
                 Strcat(buf, !carto ? " stone" : typ == FLINT
                                               ? " dice" : " token");
         }
@@ -1756,15 +1757,7 @@ doname_base(
         if (obj->known) {
             ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj) 
                      + race_bonus(obj) + misc_bonus(obj));
-        } 
-#if 0 /* This leaks info for cloaks, etc */
-        else {
-            /* Don't factor in racial bonus if we don't know the identity.
-             * This would leak info for elven boots. */
-            ConcatF1(bp, 0, " [%dAC]", UNK_ARM_BONUS(obj)
-                     /*+ race_bonus(obj)*/ + misc_bonus(obj));
         }
-#endif
     }
 
     if (obj->oclass == WEAPON_CLASS) {
@@ -1808,7 +1801,6 @@ doname_base(
         /* append remainder of original prefix */
         Strcat(prefix, tmpbuf);
     }
-
 
     /* Archeologists have built-in price identification.
      * (leave precious stones out - they have the touchstone anyway) */
@@ -2612,13 +2604,11 @@ static const char *const wrp[] = {
     /* for non-specific wishes */
     "weapon", "armor",     "tool",       "food",   "comestible",
 };
-static const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
-                               SCROLL_CLASS, SCROLL_CLASS,
-			       GEM_CLASS,    GEM_CLASS,	   GEM_CLASS,
-			       AMULET_CLASS,
-                               SPBOOK_CLASS, SPBOOK_CLASS, SPBOOK_CLASS,
-			       WEAPON_CLASS, ARMOR_CLASS,  TOOL_CLASS,
-			       FOOD_CLASS,  FOOD_CLASS };
+static const char wrpsym[] = {
+    WAND_CLASS, RING_CLASS, POTION_CLASS, SCROLL_CLASS, SCROLL_CLASS,
+    GEM_CLASS, GEM_CLASS, GEM_CLASS,
+    AMULET_CLASS, SPBOOK_CLASS, SPBOOK_CLASS, SPBOOK_CLASS,
+    WEAPON_CLASS, ARMOR_CLASS,  TOOL_CLASS, FOOD_CLASS, FOOD_CLASS };
 
 /* return form of the verb (input plural) if xname(otmp) were the subject */
 char *
@@ -3526,6 +3516,7 @@ static const struct alt_spellings {
     { "flintstone", FLINT },
     { "scroll of water", SCR_FLOOD }, /* xnethack name for it */
     { "health stone", HEALTHSTONE },
+    { "foul stone", FOULSTONE},
     
     /* Community abbreviations */
     { "BoH", BAG_OF_HOLDING },
@@ -4512,7 +4503,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
          */
         if (!strstri(d->bp, "wand ") && !strstri(d->bp, "spellbook ")
             && !strstri(d->bp, "gauntlets ") && !strstri(d->bp, "gloves ")
-            && !strstri(d->bp, "finger ") /*&& !strstri(d->bp, "potion ")*/) {
+            && !strstri(d->bp, "finger ")) {
             if ((d->p = strstri(d->bp, "tin of ")) != 0) {
                 if (!strcmpi(d->p + 7, "spinach")) {
                     d->contents = TIN_SPINACH;
@@ -4878,8 +4869,8 @@ readobjnam_postparse3(struct _readobjnam_data *d)
 
     if (d->actualn) {
         const struct Jitem *j = Role_if(PM_CARTOMANCER) 
-                                        ? Cartomancer_items 
-                                            : Japanese_items;
+                                ? Cartomancer_items 
+                                : Japanese_items;
 
         while (j->item) {
             if (!strcmpi(d->actualn, j->name)) {
@@ -5144,11 +5135,9 @@ readobjnam(char *bp, struct obj *no_wish)
     }
 
     /* Batteries not included. */
-    
     if (d.typ == SCALE_MAIL && d.mntmp >= PM_GRAY_DRAGON
         && d.mntmp <= PM_YELLOW_DRAGON)
         d.typ = FIRST_DRAGON_SCALES + d.mntmp - FIRST_DRAGON;
-    
     if (d.typ >= FIRST_DRAGON_SCALES && d.typ <= LAST_DRAGON_SCALES
         && d.spe != 0) {
         d.spe = 0;
@@ -5928,8 +5917,7 @@ name_to_otyp(const char *in_str)
     return STRANGE_OBJECT;
 }
 
-/* Return true if the input string clearly represents an object, not a monster.
- */
+/* Return true if the input string represents an object, not a monster. */
 boolean
 object_not_monster(const char *str)
 {

@@ -345,8 +345,7 @@ map_object(struct obj *obj, int show)
         
         /* Rangers have excellent vision */
         int r = Role_if(PM_RANGER) ? 16
-                : (u.xray_range > 2) ? u.xray_range 
-                : 2;
+                : (u.xray_range > 2) ? u.xray_range : 2;
         /* neardist produces a small square with rounded corners */
         int neardist = (r * r) * 2 - r; /* same as r*r + r*(r-1) */
 
@@ -2340,7 +2339,7 @@ back_to_glyph(coordxy x, coordxy y)
     case SINK:
         idx = S_sink;
         break;
-     case TOILET:
+    case TOILET:
         idx = S_toilet;
         break;
     case ALTAR:
@@ -2612,7 +2611,7 @@ map_glyphinfo(
                corresponding type of monster rather than by '@' (handled
                by newsym()); we change the color to same as human hero */
             // glyphinfo->gm.sym.color = HI_DOMESTIC;
-            ;
+            ; /* Hero's color reflects their race. */
         }
         /* accessibility
           This unchanging display character for hero was requested by
@@ -2646,7 +2645,7 @@ map_glyphinfo(
 
     /* isok is used because this is sometimes called with 0,0 */
     if (iflags.use_color && isok(x, y)) {
-                /* colored walls - some of these are handled as separate glyphs in
+        /* colored walls - some of these are handled as separate glyphs in
          * wallcolors[] and don't appear here; currently no glyphs exist for all
          * the other interesting types of walls */
         if (gmap->sym.symidx >= S_vwall + SYM_OFF_P
@@ -3149,7 +3148,6 @@ reset_glyphmap(enum glyphmap_change_triggers trigger)
             }
             gmap->glyphflags |= MG_MALE;
         }
-
         /* This was requested by a blind player to enhance screen reader use
          */
         if (sysopt.accessibility == 1 && (gmap->glyphflags & MG_PET) != 0) {

@@ -858,8 +858,14 @@ u_init_race(void)
         if (Role_if(PM_CLERIC) || Role_if(PM_WIZARD)
             || Role_if(PM_HEALER) || Role_if(PM_ROGUE)
             || Role_if(PM_ARCHEOLOGIST) || Role_if(PM_CARTOMANCER)) {
-            static int trotyp[] = { WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP,
-                                    BELL,         BUGLE,       LEATHER_DRUM };
+            static int trotyp[] = {
+                WOODEN_FLUTE,
+                TOOLED_HORN,
+                WOODEN_HARP,
+                BELL,
+                BUGLE,
+                LEATHER_DRUM
+            };
             Instrument[0].trotyp = ROLL_FROM(trotyp);
             ini_inv(Instrument);
         }
@@ -905,9 +911,15 @@ u_init_race(void)
          * Tourists already get many of these tools...
          **/
         if (!Role_if(PM_TOURIST) && rn2(2)) {
-            static int trotyp[] = { TIN_OPENER, WAX_CANDLE, TALLOW_CANDLE,
-                                    FIGURINE, CAN_OF_GREASE, CREDIT_CARD,
-                                    TOWEL, };
+            static int trotyp[] = {
+                TIN_OPENER, 
+                WAX_CANDLE, 
+                TALLOW_CANDLE,
+                FIGURINE, 
+                CAN_OF_GREASE, 
+                CREDIT_CARD,
+                TOWEL
+            };
             Xtra_Tool[0].trotyp = ROLL_FROM(trotyp);
             if (Xtra_Tool[0].trotyp == CAN_OF_GREASE)
                 Xtra_Tool[0].trspe = rn1(21, 5); /* Same as mkobj.c */
@@ -926,7 +938,7 @@ u_init_race(void)
         /* compensate for generally inferior equipment */
         if (!Role_if(PM_WIZARD))
             ini_inv(Xtra_food);
-        /* Orcs are naughty and carry poison */
+        /* Orcs carry poison */
         ini_inv(PoisonPotion);
         /* Orcs can recognize all orcish objects */
         knows_object(ORCISH_SHORT_SWORD, FALSE);
@@ -950,10 +962,10 @@ u_init_race(void)
     case PM_VAMPIRE:
         knows_object(POT_VAMPIRE_BLOOD, FALSE);
         knows_object(POT_BLOOD, FALSE);
-	/* Vampires start off with gods not as pleased, luck penalty */
-	adjalign(-5);
-	change_luck(-1);
-	break;
+        /* Vampires start off with gods not as pleased, luck penalty */
+        adjalign(-5);
+        change_luck(-1);
+        break;
 
     default: /* impossible */
         break;
@@ -1370,7 +1382,8 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
             obj->blessed = (trop->trbless == 1);
 
         /* Vampires like their blood to be unholy. */
-        if (obj->otyp == POT_BLOOD || obj->otyp == POT_VAMPIRE_BLOOD) {
+        if (obj->otyp == POT_BLOOD
+            || obj->otyp == POT_VAMPIRE_BLOOD) {
             curse(obj);
             if (trop->trquan > 4L)
                 trop->trquan = 4L;

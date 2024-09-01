@@ -1721,8 +1721,6 @@ dogaze(void)
                         pline("%s is getting more and more confused.",
                               Monnam(mtmp));
                     mtmp->mconf = 1;
-
-                
                 } else if (adtyp == AD_HALU && !mon_prop(mtmp, HALLUC_RES)) {
                     if (!mtmp->mconf)
                         Your("gaze confuses %s!", mon_nam(mtmp));
@@ -1761,7 +1759,7 @@ dogaze(void)
                         mtmp->mcansee = 0;
                         mtmp->mblinded = rnd(50);
                         mtmp->mstun = 1;
-                        if(DEADMONSTER(mtmp))
+                        if (DEADMONSTER(mtmp))
                             killed(mtmp);
                     }
                 } else if (adtyp == AD_STUN) {

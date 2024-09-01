@@ -171,9 +171,8 @@ precheck(struct monst *mon, struct obj *obj)
         /* Rabid monsters can't stand the thought of drinking liquids.
          * Should there be a message?
          * Should they throw the potion on the ground in disgust? */
-        if (mon->mrabid) {
+        if (mon->mrabid)
             return 0;
-        }
         
         if (objdescr_is(obj, "milky")) {
             if (!(svm.mvitals[PM_GHOST].mvflags & G_GONE)
@@ -193,7 +192,7 @@ precheck(struct monst *mon, struct obj *obj)
                               mon_nam(mon),
                               Hallucination ? rndmonnam(NULL)
                                             : (const char *) "ghost");
-                         if (has_free_action(mon)) {
+                        if (has_free_action(mon)) {
                             pline("%s stiffens momentarily.", Monnam(mon));
                         } else {
                             pline("%s is frightened to death, and unable to move.",
@@ -431,7 +430,7 @@ m_use_healing(struct monst *mtmp)
         }
     }
     if (is_vampire(mtmp->data) &&
-        (obj = m_carrying(mtmp, POT_VAMPIRE_BLOOD)) !=0) {
+        (obj = m_carrying(mtmp, POT_VAMPIRE_BLOOD)) != 0) {
         gm.m.defensive = obj;
         gm.m.has_defense = MUSE_POT_VAMPIRE_BLOOD;
         return TRUE;
@@ -834,7 +833,7 @@ find_defensive(struct monst *mtmp, boolean tryescape)
         if (obj->otyp == SCR_FLOOD && mtmp->mcansee
             && haseyes(mtmp->data)
             && !(Flying || Levitation) /* This is obvious to monsters */
-            && distu(mtmp->mx, mtmp->my) < (7*7)) {
+            && distu(mtmp->mx, mtmp->my) < (5*5)) {
             gm.m.defensive = obj;
             gm.m.has_defense = MUSE_SCR_FLOOD;
         }
@@ -879,7 +878,7 @@ find_defensive(struct monst *mtmp, boolean tryescape)
         }
         nomore(MUSE_EUCALYPTUS_LEAF);
         if ((mtmp->mrabid || mtmp->mdiseased)
-            && obj->otyp == EUCALYPTUS_LEAF) {
+              && obj->otyp == EUCALYPTUS_LEAF) {
             gm.m.defensive = obj;
             gm.m.has_defense = MUSE_EUCALYPTUS_LEAF;
         }
@@ -1077,7 +1076,6 @@ use_defensive(struct monst *mtmp)
         /* otmp used up in seffect_water() */
         gc.current_wand = 0;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
-        break;
     case MUSE_WAN_DIGGING:
         m_flee(mtmp);
         mzapwand(mtmp, otmp, FALSE);
@@ -1726,7 +1724,7 @@ find_offensive(struct monst *mtmp)
         }
         nomore(MUSE_SCR_CLONING);
         if (otyp == SCR_CLONING
-            && distu(mtmp->mx, mtmp->my) < 32
+            && distu(mtmp->mx, mtmp->my) < (7*7)
             && mtmp->mcansee && haseyes(mtmp->data)) {
             gm.m.offensive = obj;
             gm.m.has_offense = MUSE_SCR_CLONING;
@@ -1806,7 +1804,8 @@ find_offensive(struct monst *mtmp)
         nomore(MUSE_CAMERA);
         if (otyp == EXPENSIVE_CAMERA
             && ((!Blind
-                && !(resists_blnd(&gy.youmonst) || defended(&gy.youmonst, AD_BLND)))
+                && !(resists_blnd(&gy.youmonst)
+                || defended(&gy.youmonst, AD_BLND)))
                 || hates_light(gy.youmonst.data))
             && lined_up(mtmp)
             && obj->spe > 0 && !rn2(3)) {
@@ -2100,7 +2099,8 @@ mbhit(
             gb.bhitpos.y -= ddy;
             break;
         }
-        maybe_explode_trap(t_at(x, y), obj, &gz.zap_oseen); /* note: ttmp might be now gone */
+        maybe_explode_trap(t_at(x, y), obj, &gz.zap_oseen);
+        /* note: ttmp might be now gone */
     }
 }
 
@@ -2138,7 +2138,8 @@ use_offensive(struct monst *mtmp)
        in melee range, don't give priority to the offensive item */
     for (i = 0; i < NATTK; i++) {
         mattk = &mtmp->data->mattk[i];
-        maxdmg += mattk->damn * mattk->damd; /* total up the possible damage for just swinging */
+        /* total up the possible damage for just swinging */
+        maxdmg += mattk->damn * mattk->damd;
     }
 
     /* If the monsters' combined damage from a melee attack exceeds 21 
@@ -2207,8 +2208,7 @@ use_offensive(struct monst *mtmp)
             pline("%s plays a %s!", Monnam(mtmp), xname(otmp));
             if (!Deaf)
                 pline("%s produces %s music.", Monnam(mtmp), music);
-        }
-        else {
+        } else {
             You_hear("%s music being played.", music);
         }
         gm.m_using = TRUE;
@@ -2652,7 +2652,7 @@ find_misc(struct monst *mtmp)
         }
         nomore(MUSE_SCR_REMOVE_CURSE);
         if (obj->otyp == SCR_REMOVE_CURSE) {
-            register struct obj *otmp;
+            struct obj *otmp;
             for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
                 if (otmp->cursed &&
                     ((otmp->otyp == LOADSTONE || otmp->otyp == FOULSTONE)
@@ -2837,8 +2837,8 @@ use_misc(struct monst *mtmp)
         else if (!Deaf)
             You("hear a figurine being activated.");
         /* activating a figurine provides one way to exceed the
-            maximum number of the target critter created--unless
-            it has a special limit (erinys, Nazgul) */
+           maximum number of the target critter created--unless
+           it has a special limit (erinys, Nazgul) */
         if ((svm.mvitals[mndx].mvflags & G_EXTINCT)
             && mbirth_limit(mndx) != MAXMONNO) {
             pline("... but the figurine refused.");
@@ -2961,8 +2961,6 @@ use_misc(struct monst *mtmp)
             makeknown(POT_POLYMORPH);
         return 2;
     case MUSE_POT_SICKNESS:
-        /* Does mon have projectiles they can poison? */
-
         /* Does mon have a weapon wielded they can poison? */
         otmp2 = MON_WEP(mtmp);
         if (!otmp2)
@@ -2976,6 +2974,7 @@ use_misc(struct monst *mtmp)
             m_useup(mtmp, otmp);
         } else 
             return 0;
+        /* TODO: Does mon have projectiles they can poison? */
         return 2;
     case MUSE_SCR_REMOVE_CURSE: {
         struct obj *obj;
@@ -2994,10 +2993,12 @@ use_misc(struct monst *mtmp)
             if (obj->oclass == COIN_CLASS)
                 continue;
             if (otmp->blessed || otmp->owornmask
-                || obj->otyp == LOADSTONE) {
+                || obj->otyp == LOADSTONE
+                || obj->otyp == FOULSTONE) {
                 if (mtmp->mconf)
                     blessorcurse(obj, 2);
-                else uncurse(obj);
+                else
+                    uncurse(obj);
             }
         }
         m_useup(mtmp, otmp);
@@ -3510,8 +3511,7 @@ munstone(struct monst *mon, boolean by_you)
             (void) bhito(otmp, pseudo);
         }
         obfree(pseudo, (struct obj *) 0);
-        // mon->mlstmv = monstermoves; /* it takes a turn */
-        mon->mlstmv = svm.moves;
+        mon->mlstmv = svm.moves; /* it takes a turn */
         return TRUE;
     }
 
@@ -4020,7 +4020,7 @@ muse_wonder(void)
             wondertemp = WAN_DRAINING + 1;
             break;
         default:
-            ;  /* Sorry monsters, no wishes for you. */
+            ;
         }
     }
     return wondertemp;

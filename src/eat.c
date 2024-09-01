@@ -109,10 +109,9 @@ is_edible(struct obj *obj)
                           && !vegan(&mons[obj->corpsenm]))
                          || (obj->otyp == EGG));
 
-    /* As of this version of the game, vampires can only draw blood from
-       the living or potions of blood. */
+    /* Vampires can only draw blood from the living or potions of blood. */
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
-	return FALSE;
+	    return FALSE;
 
     if (u.umonnum == PM_GELATINOUS_CUBE && is_organic(obj)
         /* [g-cubes can eat containers and retain all contents
@@ -1008,19 +1007,18 @@ givit(int type, struct permonst *ptr)
     if (increase > MAX_GAIN)
         increase = MAX_GAIN;
     
-    if (increase == 40) {
+    if (increase == 24)
         adj = "much";
-    } else if (increase > 24) {
+    else if (increase > 16)
         adj = "significantly";
-    } else if (increase > 16) {
+    else if (increase > 8)
         adj = "considerably";
-    } else if (increase > 8) {
+    else if (increase > 4)
         adj = "somewhat";
-    } else if (increase > 4) {
+    else if (increase > 2)
         adj = "a bit";
-    } else {
+    else
         adj = "slightly";
-    }
 
     switch (type) {
     /* All these use the new system, which is based on corpse weight. */
@@ -1090,7 +1088,7 @@ givit(int type, struct permonst *ptr)
         if (!HTeleportation)
             You_feel(Hallucination ? "diffuse." : "very jumpy.");
         else
-            You_feel(Hallucination ? "diffuser." : "more jumpy.");
+            You_feel(Hallucination ? "loopy." : "more jumpy.");
         incr_itimeout(&HTeleportation, rn1(250, 500));
         break;
     case TELEPORT_CONTROL:
@@ -1185,7 +1183,6 @@ cpostfx(int pm)
         switch(rnd(10)) {
         case 1:
             You("feel that was a bad idea.");
-            /* NerfHack is a little less harsh here. */
             if (Luck < 0)
                 losexp("eating a wraith corpse");
             else
@@ -1248,7 +1245,7 @@ cpostfx(int pm)
         break;
     case PM_STALKER: {
         boolean was_invis = !!Invis;
-        incr_itimeout(&HInvis, (long) rn1(200, 200));
+        incr_itimeout(&HInvis, (long) rn1(100, 50));
         if (!was_invis && !Blind && !BInvis) {
             self_invis_message();
         }
@@ -1346,7 +1343,7 @@ cpostfx(int pm)
         break;
     case PM_PHASE_SPIDER:
         if (!Passes_walls)
-            You("feel much thinner!");
+            You("feel %s!", Hallucination ? "phasey" : "hazy");
         incr_itimeout(&HPasses_walls, (long) (d(4, 4) + 6)); /* 8..20 */
         break;
     case PM_DISENCHANTER:
@@ -1469,9 +1466,8 @@ violated_vegetarian(void)
 {
     u.uconduct.unvegetarian++;
     if (Role_if(PM_MONK)) {
-        if (u.uconduct.unvegetarian <= 10) {
+        if (u.uconduct.unvegetarian <= 10)
             You_feel("guilty.");
-        }
         adjalign(-1);
     }
     return;
@@ -1998,8 +1994,8 @@ eatcorpse(struct obj *otmp)
 
     if (!tp && !nonrotting_corpse(mnum) 
             && (otmp->orotten
-                /* Come on, blessed food being equally susceptible to rotting
-                 * is just stupid. --Amy */
+                /* Come on, blessed food being equally susceptible
+                 * to rotting is just stupid. --Amy */
                 || (!rn2(7) && (!otmp->blessed || !rn2(7))))) {
         if (rottenfood(otmp)) {
             otmp->orotten = TRUE;
@@ -2240,7 +2236,8 @@ fprefx(struct obj *otmp)
             pline("My, this is a %s %s!",
                   Hallucination ? "primo" : "yummy",
                   singular(otmp, xname));
-        } else if (otmp->otyp == APPLE && otmp->cursed && !fully_resistant(SLEEP_RES)) {
+        } else if (otmp->otyp == APPLE && otmp->cursed
+            && !fully_resistant(SLEEP_RES)) {
             ; /* skip core joke; feedback deferred til fpostfx() */
 
 #if defined(MAC) || defined(MACOS)
@@ -2343,6 +2340,9 @@ eataccessory(struct obj *otmp)
             return; /* died from sink fall */
     }
     otmp->known = otmp->dknown = 1; /* by taste */
+
+    /* Note: because eating jewelery has been heavily nerfed,
+     * the odds of getting results has been inverted. */
     if (rn2(otmp->oclass == RING_CLASS ? 3 : 5)) {
         switch (otmp->otyp) {
         default:
@@ -2884,11 +2884,13 @@ edibility_prompts(struct obj *otmp)
         /* Rotten */
         Snprintf(buf, sizeof buf, "%s like %s could be rotten!",
                  foodsmell, it_or_they);
-    } else if (cadaver && poisonous(&mons[mnum]) && !fully_resistant(POISON_RES)) {
+    } else if (cadaver && poisonous(&mons[mnum])
+        && !fully_resistant(POISON_RES)) {
         /* poisonous */
         Snprintf(buf, sizeof buf, "%s like %s might be poisonous!",
                  foodsmell, it_or_they);
-    } else if (otmp->otyp == APPLE && otmp->cursed && !fully_resistant(SLEEP_RES)) {
+    } else if (otmp->otyp == APPLE && otmp->cursed
+        && !fully_resistant(SLEEP_RES)) {
         /* causes sleep, for long enough to be dangerous */
         Snprintf(buf, sizeof buf, "%s like %s might have been poisoned.",
                  foodsmell, it_or_they);
@@ -3806,7 +3808,7 @@ floorfood(
     boolean feeding = !strcmp(verb, "eat"),        /* corpsecheck==0 */
             offering = !strcmp(verb, "sacrifice"); /* corpsecheck==1 */
 
-     if (feeding && (is_vampire(gy.youmonst.data) || Race_if(PM_VAMPIRE))) {
+    if (feeding && (is_vampire(gy.youmonst.data) || Race_if(PM_VAMPIRE))) {
         You("can't eat.");
         if (flags.verbose)
             pline("You can feed on lifeblood by attacking and biting other monsters.");

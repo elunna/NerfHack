@@ -2420,8 +2420,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
     if (taking && !mtmp->minvent) {
         pline("%s isn't carrying anything.", Monnam(mtmp));
         return 0;
-    }
-    else if (!taking && !gi.invent) {
+    } else if (!taking && !gi.invent) {
         You("aren't carrying anything.");
         return 0;
     }
@@ -2495,8 +2494,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
                  * whatever reason, we should continue instead. It remains to
                  * be seen which is the more common scenario. */
                 continue;
-            }
-            else if (carryamt < maxquan) {
+            } else if (carryamt < maxquan) {
                 pline("%s can only carry %s of %s.", Monnam(mtmp),
                       carryamt > 1 ? "some" : "one", yname(otmp));
                 maxquan = carryamt;
@@ -2516,8 +2514,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
             /* Possible extension: if you give edible food to a pet, it should
              * eat it directly. But that should probably go into the pet AI
              * code, not here. */
-        }
-        else {
+        } else {
             /* cursed weapons, armor, accessories, etc treated the same */
             if ((otmp->cursed && (unwornmask & ~W_WEAPONS))
                 || mwelded(otmp)) {
@@ -2538,8 +2535,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
                             thesimpleoname(otmp), mon_nam(mtmp));
                     /* unstrapping a saddle takes additional time */
                     time_taken += rn2(3);
-                }
-                else {
+                } else {
                 pline("%s %s %s %s.", Monnam(mtmp),
                       m_delay > 1 ? "begins removing" : "removes",
                       mhis(mtmp), xname(otmp));
@@ -2584,8 +2580,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
                 instapetrify(corpse_xname(otmp, (const char *) 0,
                              CXN_ARTICLE));
                 break; /* if life-saved, stop taking items */
-            }
-            else if (mtmp_would_ston) {
+            } else if (mtmp_would_ston) {
                 minstapetrify(mtmp, TRUE);
                 break;
             }
@@ -2605,8 +2600,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
 int
 loot_mon(struct monst *mtmp, int *passed_info, boolean *mon_interact)
 {
-    int c = -1;
-    int timepassed = 0;
+    int c = -1, timepassed = 0;
     char qbuf[QBUFSZ];
 
     /* 3.4.0 introduced ability to pick things up from swallower's stomach */
@@ -2621,22 +2615,21 @@ loot_mon(struct monst *mtmp, int *passed_info, boolean *mon_interact)
          * and hostile monsters. */
         if (passed_info)
             *passed_info = 1;
+
         Sprintf(qbuf, "Do you want to take something from %s?", mon_nam(mtmp));
         if ((c = yn_function(qbuf, ynqchars, 'n', TRUE)) == 'y') {
             if (mon_interact)
                 *mon_interact = TRUE;
             return exchange_objects_with_mon(mtmp, TRUE);
-        }
-        else if (c == 'q') {
+        } else if (c == 'q')
             return 0;
-        }
+
         Sprintf(qbuf, "Do you want to give something to %s?", mon_nam(mtmp));
         if ((c = yn_function(qbuf, ynqchars, 'n', TRUE)) == 'y') {
             if (mon_interact)
                 *mon_interact = TRUE;
             return exchange_objects_with_mon(mtmp, FALSE);
-        }
-        else { /* 'n' or 'q' */
+        } else { /* 'n' or 'q' */
             return 0;
         }
     }
@@ -2840,16 +2833,14 @@ in_container(struct obj *obj)
         urgent_pline(
               "As you put %s inside, you are blasted by a magical explosion!",
                      doname(obj));
-        
         /* did not actually insert obj yet */
         if (was_unpaid)
             addtobill(obj, FALSE, FALSE, TRUE);
         
         /* At least ID the wand and give some experience for losing a bag of
          * holding this way. */
-        if (obj->otyp == WAN_CANCELLATION) {
+        if (obj->otyp == WAN_CANCELLATION)
             makeknown(obj->otyp);
-        }
         
         if (obj->otyp == BAG_OF_HOLDING) /* one bag of holding into another */
             do_boh_explosion(obj, (boolean) (obj->where == OBJ_FLOOR));
@@ -2935,7 +2926,8 @@ out_container(struct obj *obj)
     if ((res = lift_object(obj, gc.current_container, &count, FALSE)) <= 0)
         return res;
 
-    if (obj->quan != count && obj->otyp != LOADSTONE && obj->otyp != FOULSTONE)
+    if (obj->quan != count && obj->otyp != LOADSTONE
+                           && obj->otyp != FOULSTONE)
         obj = splitobj(obj, count);
 
     /* Remove the object from the list. */
@@ -3953,7 +3945,8 @@ tipcontainer(struct obj *box) /* or bag */
             boolean prevent_explosion = explosive_combo
                                         && !Confusion && !Hallucination
                                         && (Is_mbag(otmp) 
-                                            || (otmp->otyp == WAN_CANCELLATION && otmp->spe > 0))
+                                            || (otmp->otyp == WAN_CANCELLATION 
+                                            && otmp->spe > 0))
                                         && objects[otmp->otyp].oc_name_known 
                                         && otmp->dknown 
                                         && targetbox->otyp == BAG_OF_HOLDING;

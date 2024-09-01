@@ -3205,8 +3205,7 @@ recalc_mapseen(void)
 }
 
 /*ARGUSED*/
-/* valley and sanctum levels get automatic annotation once their temple
-   is entered */
+/* valley and sanctum levels get automatic annotation once temple is entered */
 void
 mapseen_temple(
     struct monst *priest UNUSED) /* not used; might be useful someday */

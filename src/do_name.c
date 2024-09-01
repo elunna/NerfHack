@@ -997,8 +997,7 @@ x_monnam(
                              (boolean) mtmp->female));
         Strcat(buf, lcase(pbuf));
         name_at_start = FALSE;
-    } else if (is_rider(mdat)
-               && (distu(mtmp->mx, mtmp->my) > 2)
+    } else if (is_rider(mdat) && (distu(mtmp->mx, mtmp->my) > 2)
                && !canseemon(mtmp)) {
         Strcat(buf, "Rider");
         name_at_start = FALSE;
@@ -1683,14 +1682,12 @@ mon_wounds(struct monst *mon,
     const char *adverb, *adjective;
 
     /* Cases where you can't see wounds. */
-    if (!clarity
-        && (!Role_if(PM_HEALER) || !canseemon(mon)
+    if (!clarity && (!Role_if(PM_HEALER) || !canseemon(mon)
             || (u.uswallow && mon == u.ustuck && Blind))) {
         return NULL;
     }
-    if (DEADMONSTER(mon)) {
+    if (DEADMONSTER(mon))
         return NULL;
-    }
     
     if (mon->mhp == mon->mhpmax) {
         Sprintf(outbuf, "uninjured%s", addspace ? " " : "");
@@ -1750,13 +1747,10 @@ print_mon_wounded(struct monst *mon, int pre_wound_hp)
         impossible("print_mon_wounded: null mon!");
         return;
     }
-    if (!Role_if(PM_HEALER)) {
+    if (!Role_if(PM_HEALER))
         return;  /* optimization; redundant with healer check in mon_wounds */
-    }
-    if (mon->mhp == pre_wound_hp && !Hallucination) {
-        /* impossible for adjective to change */
-        return;
-    }
+    if (mon->mhp == pre_wound_hp && !Hallucination)
+        return; /* impossible for adjective to change */
 
     mcurrhp = mon->mhp;
     mon->mhp = pre_wound_hp;
@@ -1765,8 +1759,7 @@ print_mon_wounded(struct monst *mon, int pre_wound_hp)
 
     m_curr_wounds = mon_wounds(mon, FALSE, FALSE);
 
-    if (m_curr_wounds != NULL
-        && (Hallucination || m_old_wounds == NULL
+    if (m_curr_wounds != NULL && (Hallucination || m_old_wounds == NULL
             || strcmp(m_old_wounds, m_curr_wounds))) {
         pline("%s is %s.", Monnam(mon), m_curr_wounds);
     }

@@ -1863,7 +1863,7 @@ attributes_enlightenment(
     }
     if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
-     if (carrying(FOULSTONE))
+    if (carrying(FOULSTONE))
         you_have("a foul stench emanating", " from your pack");
     if (u.uhitinc) {
         (void) enlght_combatinc("to hit", u.uhitinc, final, buf);
@@ -1990,6 +1990,9 @@ attributes_enlightenment(
     if ((uwep && uwep->oartifact == ART_GIANTSLAYER)
         || (uswapwep && uswapwep->oartifact == ART_GIANTSLAYER))
         you_have("steadfastness", " from Giantslayer");
+    if ((uwep && uwep->oartifact == ART_SCEPTRE_OF_MIGHT)
+        || (uswapwep && uswapwep->oartifact == ART_SCEPTRE_OF_MIGHT))
+        you_have("steadfastness", " from the Sceptre of Might");
     else if ((uwep && uwep->oartifact == ART_LOAD_BRAND)
         || (uswapwep && uswapwep->oartifact == ART_LOAD_BRAND))
         you_have("steadfastness", " from Load Brand");

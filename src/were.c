@@ -201,7 +201,6 @@ were_summon(
                 *visible += 1;
             if (!yours && !rn2(4))
                 mon_rabid(mtmp, FALSE);
-
         }
         if (yours && mtmp)
             (void) tamedog(mtmp, (struct obj *) 0, FALSE);

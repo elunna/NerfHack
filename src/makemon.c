@@ -321,15 +321,15 @@ m_initweap(struct monst *mtmp)
                     (void) mongets(mtmp, POT_HEALING);
                 break;
 	    case PM_DUELIST:
-		if (rn2(5))
-                    (void) mongets(mtmp, rn2(3) ? HAWAIIAN_SHIRT 
-                                                : LEATHER_CLOAK);
-                if (rn2(3))
-                    (void) mongets(mtmp, rn2(3) ? LOW_BOOTS : HIGH_BOOTS);
-		if (rn2(5))
-                    (void) mongets(mtmp, rn2(3) ? FEDORA 
-                                                : LEATHER_GLOVES);
-		m_initthrow(mtmp, RAZOR_CARD, rn1(12, 12));
+            if (rn2(5))
+                (void) mongets(mtmp, rn2(3) ? HAWAIIAN_SHIRT 
+                                                    : LEATHER_CLOAK);
+            if (rn2(3))
+                (void) mongets(mtmp, rn2(3) ? LOW_BOOTS : HIGH_BOOTS);
+            if (rn2(5))
+                (void) mongets(mtmp, rn2(3) ? FEDORA 
+                                            : LEATHER_GLOVES);
+            m_initthrow(mtmp, RAZOR_CARD, rn1(12, 12));
 		break;
             case PM_CHIEFTAIN:
             case PM_PAGE:
@@ -1696,7 +1696,7 @@ makemon(
          * won't generate them rabid to avoid insane 
          * concentrations of rabid soldiers in Ludios or Castle */
             && mtmp->data->mlet != S_HUMAN) {
-        if (mtmp->mnum == PM_CHICKENRAT)
+        if (mtmp->mnum == PM_CHICKENRAT) /* Always rabid */
             mon_rabid(mtmp, FALSE);
         else if ((mtmp->mnum == PM_COYOTE || is_bat(mtmp->data)) 
                 && !rn2(10))
@@ -1949,8 +1949,7 @@ mk_gen_ok(int mndx, unsigned mvflagsmask, unsigned genomask)
         return FALSE;
     if (is_placeholder(ptr))
         return FALSE;
-    if (Is_mineend_level(&u.uz) 
-        && ptr == &mons[PM_VAMPIRE_MAGE])
+    if (Is_mineend_level(&u.uz) && ptr == &mons[PM_VAMPIRE_MAGE])
         return FALSE;
     if (In_mines(&u.uz)
         && (ptr == &mons[PM_ALHOON]

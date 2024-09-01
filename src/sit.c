@@ -102,7 +102,8 @@ throne_sit_effect(void)
                 if (!rn2(5)) {
                     makewish();
                     /* no farming thrones for multiple wishes */
-                    levl[u.ux][u.uy].typ = ROOM, levl[u.ux][u.uy].flags = 0;
+                    set_levltyp(u.ux, u.uy, ROOM);
+                    levl[u.ux][u.uy].flags = 0;
                     pline_The("throne vanishes in a puff of logic.");
                     newsym(u.ux, u.uy);
                 } else
@@ -405,12 +406,12 @@ dosit(void)
 
         if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
             breaktoilet(u.ux, u.uy);
-        } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
+        } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
             pline("Vampires have no use of such things.");
-        else if (!Sick && u.uhs > 0
-                && (Upolyd ? u.mh == u.mhmax : u.uhp == u.uhpmax))
+        } else if (!Sick && u.uhs > 0
+                && (Upolyd ? u.mh == u.mhmax : u.uhp == u.uhpmax)) {
             You("don't have to go...");
-        else {
+        } else {
             if (Role_if(PM_BARBARIAN) || Role_if(PM_CAVE_DWELLER))
                 You("miss...");
             else
@@ -453,7 +454,8 @@ dosit(void)
             return ECMD_TIME;
         }
         pline_The("%s burns you!", hliquid("lava"));
-        losehp(resist_reduce(d(8, 10), FIRE_RES) + d(2, 10), /* lava damage */
+        losehp(resist_reduce(d(8, 10),
+               FIRE_RES) + d(2, 10), /* lava damage */
                "sitting on lava", KILLED_BY);
     } else if (is_ice(u.ux, u.uy)) {
         You(sit_message, defsyms[S_ice].explanation);
@@ -486,7 +488,7 @@ rndcurse(void)
         return;
     }
     if (u_wield_art(ART_LOAD_BRAND) && rn2(20)) {
-        You(mal_aura, "the dense sword");
+        You(mal_aura, "the heavy sword");
         return;
     }
     if (Antimagic) {

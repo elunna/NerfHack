@@ -223,9 +223,8 @@ moveloop_core(void)
                 
 #if 0 /* Disabled - this makes ascension too sloggy. */
                 /* Once you have performed the invocation, all hell breaks loose */
-                if (u.uevent.invoked && !rn2(15) && !In_endgame(&u.uz)) {
+                if (u.uevent.invoked && !rn2(15) && !In_endgame(&u.uz))
                     nasty((struct monst *) 0, TRUE);
-                }
 #endif
                 u_calc_moveamt(mvl_wtcap);
                 settrack();
@@ -667,7 +666,7 @@ regen_hp(int wtcap)
 
 #if 0       /* 3.7 version */
             heal = (u.ulevel + (int) ACURR(A_CON)) > rn2(100);
-#else
+#else       /* NerfHack version */
             heal = (efflev + effcon) > rn2(100);
 #endif
             if (U_CAN_REGEN())
@@ -675,7 +674,7 @@ regen_hp(int wtcap)
             if (Sleepy && u.usleep)
                 heal++;
 
-            if (heal && !(Withering && heal > 0)) {
+            if (heal && !Withering) {
                 disp.botl = TRUE;
                 u.uhp += heal;
                 if (u.uhp > u.uhpmax)
@@ -1353,6 +1352,16 @@ vamp_can_regen(void)
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         if (uwep && is_silver(uwep) && !is_quest_artifact(uwep) && !uarmg)
             return 0;
+        if (uarms && is_silver(uarms) && !uarmg)
+            return 0;
+        if (uleft && is_silver(uleft))
+            return 0;
+        if (uright && is_silver(uright))
+            return 0;
+        if (uswapwep && is_silver(uswapwep) && u.twoweap && !uarmg)
+            return 0;
+
+#if 0 /* Unnecessary checks - no object materials */
         if (uarm && is_silver(uarm) && !uarmu)
             return 0;
         if (uarmu && is_silver(uarmu))
@@ -1361,15 +1370,9 @@ vamp_can_regen(void)
             return 0;
         if (uarmh && is_silver(uarmh) && !is_quest_artifact(uarmh))
             return 0;
-        if (uarms && is_silver(uarms) && !uarmg)
-            return 0;
         if (uarmg && is_silver(uarmg))
             return 0;
         if (uarmf && is_silver(uarmf))
-            return 0;
-        if (uleft && is_silver(uleft))
-            return 0;
-        if (uright && is_silver(uright))
             return 0;
         if (uamul && is_silver(uamul) && !is_quest_artifact(uamul)
             && !uarmu && !uarm)
@@ -1378,8 +1381,7 @@ vamp_can_regen(void)
             return 0;
         if (uchain && is_silver(uchain))
             return 0;
-        if (uswapwep && is_silver(uswapwep) && u.twoweap && !uarmg)
-            return 0;
+#endif
     }
     return 1;
 }

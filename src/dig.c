@@ -1065,7 +1065,7 @@ dig_up_grave(coord *cc)
     }
 
     /* -1: force default case for empty grave */
-    what_happens = levl[dig_x][dig_y].emptygrave ? -1 : rn2(5);
+    what_happens = levl[dig_x][dig_y].emptygrave ? -1 : rn2(6);
     switch (what_happens) {
     case 0:
     case 1:
@@ -2038,7 +2038,7 @@ bury_an_obj(struct obj *otmp, boolean *dealloced)
     if (otmp->lamplit && otmp->otyp != POT_OIL)
         end_burn(otmp, TRUE);
 
-    if (otmp->otyp == EGG && otmp->corpsenm == PM_PHOENIX && !rn2(3)) {
+    if (otmp->otyp == EGG && otmp->corpsenm == PM_PHOENIX && rn2(3)) {
         pline_The("%s start%s cracking as you attempt to bury %s!",
                   xname(otmp), otmp->quan > 1 ? "" : "s",
                   otmp->quan > 1 ? "them" : "it");

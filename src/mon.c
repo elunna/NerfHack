@@ -603,9 +603,9 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BLACK_UNICORN: {
         /* The chance of a unicorn dropping a horn goes down with each
          * unicorn killed:
-               0 killed = 1 in 1 (100%) chance of a unicorn horn
-               1 killed = 1 in 2 chance
-               2 killed = 1 in 3 chance, and so on.
+         *   0 killed = 1 in 1 (100%) chance of a unicorn horn
+         *   1 killed = 1 in 2 chance
+         *   2 killed = 1 in 3 chance, and so on.
          */
         int killedu = DEAD_UNICORNS;
         if (mtmp->mrevived && rn2(2)) {
@@ -1223,9 +1223,11 @@ minliquid_core(struct monst *mtmp)
 
     /* [ceiling clingers are handled below] */
     inpool = (is_pool(mtmp->mx, mtmp->my)
-              && (!(mon_prop(mtmp, FLYING) || mon_prop(mtmp, LEVITATION) || can_wwalk(mtmp))
+              && (!(mon_prop(mtmp, FLYING)
+                  || mon_prop(mtmp, LEVITATION)
+                  || can_wwalk(mtmp))
                   /* there's no "above the surface" on the plane of water */
-                  || Is_waterlevel(&u.uz)));
+                || Is_waterlevel(&u.uz)));
     inlava = (is_lava(mtmp->mx, mtmp->my)
               && !(mon_prop(mtmp, FLYING) || mon_prop(mtmp, LEVITATION)));
     infountain = IS_FOUNTAIN(levl[mtmp->mx][mtmp->my].typ);
@@ -1499,7 +1501,6 @@ m_calcdistress(struct monst *mtmp)
             otmp = obj->nobj;
             if (mtmp->mx)
                 mdrop_obj(mtmp, obj, FALSE);
-            
         }
         mongone(mtmp);
         return;
@@ -1535,6 +1536,7 @@ m_calcdistress(struct monst *mtmp)
                   Monnam(mtmp));
         mtmp->mextrinsics &= ~(MR2_PHASING);
     }
+
     /* possibly polymorph shapechangers and lycanthropes */
     if ((ismnum(mtmp->cham) || mon_prop(mtmp, POLYMORPH))
           && !rn2(cham_depth_appropriate(mtmp)))
@@ -2788,7 +2790,8 @@ mm_aggression(
         return ALLOW_M | ALLOW_TM;
     
     /* Rabies wants to spread... */
-    if (magr->mrabid && !mdef->mrabid && can_become_rabid(mdef->data))
+    if (magr->mrabid 
+            && !mdef->mrabid && can_become_rabid(mdef->data))
         return ALLOW_M | ALLOW_TM;
     
     /* Various other combinations such as dog vs cat, cat vs rat, and
@@ -3411,7 +3414,7 @@ mondead(struct monst *mtmp)
 
     if (mtmp->data == &mons[PM_GAS_SPORE])
         create_gas_cloud(mtmp->mx, mtmp->my, 3, rnd(8));
-    if (mtmp->data == &mons[PM_STINKING_SPHERE])
+    else if (mtmp->data == &mons[PM_STINKING_SPHERE])
         create_gas_cloud(mtmp->mx, mtmp->my, 3 + rn2(2), 2 + rnd(8));
 
     /* dead vault guard is actually kept at coordinate <0,0> until
@@ -3515,9 +3518,8 @@ corpse_chance(
         return FALSE;
     }
 
-    if (Role_if(PM_CARTOMANCER))
-        if (card_drop(mon))
-            return FALSE;
+    if (Role_if(PM_CARTOMANCER) && card_drop(mon))
+        return FALSE;
 
     /* Spell-beings can't leave corpses */
     if (mon->msummoned)
@@ -4023,32 +4025,33 @@ xkilled(
     /* adjust alignment points */
     if (mtmp->m_id == svq.quest_status.leader_m_id) { /* REAL BAD! */
         /* adjalign(-(u.ualign.record + (int) ALIGNLIM / 2)); */
-	if (!Uevil_inherently) {
+        if (!Uevil_inherently) {
             if (canspotmon(mtmp))
                 You_feel("very guilty.");
             else
                 You("have a vague sense of intense guilt.");
             adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
-	    u.ugangr += 7; /* instantly become "extremely" angry */
+            u.ugangr += 7; /* instantly become "extremely" angry */
         }
-	/* Vampirics still get the luck hit */
+        
+        /* Vampirics still get the luck hit */
         change_luck(-20);
         pline("That was %sa bad idea...",
-              u.uevent.qcompleted ? "probably " : "");
+                u.uevent.qcompleted ? "probably " : "");
     } else if (mdat->msound == MS_NEMESIS) { /* Real good! */
         if (!svq.quest_status.killed_leader)
             adjalign((int) (ALIGNLIM / 4));
     } else if (mdat->msound == MS_GUARDIAN) { /* Bad */
         /* adjalign(-(int) (ALIGNLIM / 8)); */
-	if (!Uevil_inherently) {
+	    if (!Uevil_inherently) {
             if (canspotmon(mtmp))
                 You_feel("guilty.");
             else
                 You("have a vague sense of guilt.");
             adjalign(-(int) (ALIGNLIM / 8));
-	    u.ugangr++;
+	        u.ugangr++;
         }
-	/* Vampirics still get the luck hit */
+	    /* Vampirics still get the luck hit */
         change_luck(-4);
         if (!Hallucination)
             pline("That was probably a bad idea...");
@@ -4062,7 +4065,7 @@ xkilled(
         if (mdat->maligntyp == A_NONE)
             adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
     } else if (mtmp->mtame) {
-	 if (Uevil_inherently) {
+	    if (Uevil_inherently) {
             if (canspotmon(mtmp))
                 You_feel("guilty.");
             else
@@ -4078,12 +4081,12 @@ xkilled(
 
         /* your god is mighty displeased... */
         if (!Hallucination) {
-	     if (Uevil_inherently)
-		You_hear("sinister laughter off in the distance...");
-	    else {
-		Soundeffect(se_distant_thunder, 40);
-		You_hear("the rumble of distant thunder...");
-	    }
+            if (Uevil_inherently)
+                You_hear("sinister laughter off in the distance...");
+            else {
+                Soundeffect(se_distant_thunder, 40);
+                You_hear("the rumble of distant thunder...");
+            }
         } else {
             Soundeffect(se_applause, 40);
             You_hear("the studio audience applaud!");
@@ -4096,7 +4099,7 @@ xkilled(
                            uhis(), pmname(mdat, Mgender(mtmp)));
         }
     } else if (mtmp->mpeaceful) {
-	if (!Uevil_inherently) {
+        if (!Uevil_inherently) {
             if (canspotmon(mtmp))
                 You_feel("guilty.");
             else
@@ -4561,11 +4564,11 @@ nazgul_shriek(struct monst *mtmp)
             if (Underwater) {
                 You_hear("a muffled shriek.");
                 return;
-            } else if (cansee)
+            } else if (cansee) {
                 pline("%s shrieks!", Monnam(mtmp));
-            else
+            } else {
                 pline("A fell shriek reverberates nearby!");
-
+            }
             if (u.usleep)
                 unmul("You are shocked awake!");
 
@@ -4627,11 +4630,11 @@ dragon_roar(struct monst *mtmp)
             if (Underwater) {
                 You_hear("a  muffled roar.");
                 return;
-            } else if (cansee)
+            } else if (cansee) {
                 pline("%s roars!", Monnam(mtmp));
-            else
+            } else {
                 pline("A booming roar reverberates nearby!");
-
+            }
             if (u.usleep)
                 unmul("You are shocked awake!");
 
@@ -6504,9 +6507,9 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
 {
     struct monst* flanker;
     boolean grudge, youflanker, youattack, youdefend;
-    int ax, ay; /* Attacker coords */
-    int dx, dy; /* Defender coords */
-    int fx, fy; /* Flanker coords */
+    int ax, ay, /* Attacker coords */
+        dx, dy, /* Defender coords */
+        fx, fy; /* Flanker coords */
     grudge = youflanker = youattack = youdefend = FALSE;
     
     if (magr == &gy.youmonst)
@@ -6712,7 +6715,7 @@ kill_monster_on_level(int mndx)
             continue;
         
         /* Genocides are throttled for the endgame, sorry... */
-        if (In_endgame(&u.uz) && rn2(4))
+        if (In_endgame(&u.uz) && rn2(5))
             continue;
         
         tmp_mndx = monsndx(mtmp->data);
@@ -6775,6 +6778,7 @@ mon_berserk(struct monst *mtmp)
 	    mtmp->mhp = mtmp->mhpmax;
     mtmp->mberserk = 1;
     mtmp->mflee = 0;
+
     /* If a monster goes berserk towards the player but the hero can't retaliate,
      * it seems unfair and awkward. Make it so berserkers turn hostile. */
     mtmp->mpeaceful = mtmp->mtame = 0;
@@ -6787,9 +6791,9 @@ mon_rabid(struct monst *mtmp, boolean noisy)
     if (noattacks(mtmp->data) || !can_become_rabid(mtmp->data))
         return;
 
-    if (canseemon(mtmp) && noisy) {
+    if (canseemon(mtmp) && noisy)
         pline("%s starts frothing at the mouth!", Monnam(mtmp));
-    }
+    
     mtmp->mrabid = 1;
     mtmp->mflee = 0;
     mtmp->mpeaceful = mtmp->mtame = 0;

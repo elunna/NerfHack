@@ -140,11 +140,10 @@ dlair_mon_sound(struct monst *mtmp)
 
         switch (rn2(2) + hallu) {
         case 0:
-            // Soundeffect(se_low_buzzing, 30);
+            /* TODO: Sound effects? */
             You_hear("the rustling of gold and trinkets.");
             break;
         case 1:
-            // Soundeffect(se_angry_drone, 100);
             You_hear("a deep growling.");
             break;
         case 2:
@@ -792,7 +791,8 @@ domonnoise(struct monst *mtmp)
         /* vampire messages are varied by tameness, peacefulness, and time of
            night */
         boolean isnight = night();
-        boolean kindred = maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE));
+        boolean kindred = maybe_polyd(is_vampire(gy.youmonst.data),
+                                      Race_if(PM_VAMPIRE));
 	boolean nightchild = (Upolyd && (u.umonnum == PM_WOLF
                                          || u.umonnum == PM_WINTER_WOLF
                                          || u.umonnum == PM_WINTER_WOLF_CUB));
@@ -1018,8 +1018,7 @@ domonnoise(struct monst *mtmp)
         Soundeffect(se_bone_rattle, 60);
         if (Hallucination) {
             pline("%s plays a xylophone solo.", Monnam(mtmp));
-        }
-        else {
+        } else {
             pline("%s rattles noisily.", Monnam(mtmp));
             You("freeze for a moment.");
             nomul(-2);
@@ -1325,7 +1324,7 @@ dochat(void)
         return ECMD_OK;
     }
     if (u.uswallow) {
-          if (uamul && uamul->oartifact == ART_AMULET_OF_STORMS
+        if (uamul && uamul->oartifact == ART_AMULET_OF_STORMS
             && is_stormy_monster(u.ustuck)) {
             pacify_with_words(u.ustuck);
             return ECMD_OK;
@@ -1476,12 +1475,10 @@ dochat(void)
 static boolean
 is_stormy_monster(struct monst *mtmp)
 {
-    /* already peaceful */
     if (mtmp->mpeaceful)
         return FALSE;
 
-    /* not a "true" stormy monster (but shapeshifters currently turned into one
-     * are okay) */
+    /* not a "true" stormy monster */
     if (mtmp->iswiz || is_vampshifter(mtmp))
         return FALSE;
 

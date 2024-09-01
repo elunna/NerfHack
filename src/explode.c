@@ -232,9 +232,8 @@ explode(
     boolean you_exploding = (olet == MON_EXPLODE && type >= 0);
     boolean didmsg = FALSE;
 
-    if (olet == FORGE_EXPLODE) { /* exploding forges */
+    if (olet == FORGE_EXPLODE) /* exploding forges */
         exploding_wand_typ = type;
-    }
     
     if (olet == WAND_CLASS) { /* retributive strike */
         /* 'type' is passed as (wand's object type * -1); save
@@ -535,9 +534,8 @@ explode(
                     (void) burnarmor(mtmp);
                     ignite_items(mtmp->minvent);
                 }
-                if (adtyp == AD_ACID) {
+                if (adtyp == AD_ACID)
                     erode_armor(mtmp, ERODE_CORRODE);
-                }
 
                 if ((explmask[i][j] & EXPL_MON) != 0) {
                     /* Damage from ring/wand explosion isn't itself
@@ -640,7 +638,7 @@ explode(
             ignite_items(gi.invent);
         }
         if (adtyp == AD_ACID) {
-             if (rn2(u.twoweap ? 2 : 3))
+            if (rn2(u.twoweap ? 2 : 3))
                 acid_damage(uwep);
             if (u.twoweap && rn2(2))
                 acid_damage(uswapwep);
@@ -1085,13 +1083,13 @@ mon_explodes(
     int dmg, type;
     struct obj *obj;
 
-    if (mattk->damn) {
+    if (mattk->damn)
         dmg = d((int) mattk->damn, (int) mattk->damd);
-    } else if (mattk->damd) {
+    else if (mattk->damd)
         dmg = d((int) mon->data->mlevel + 1, (int) mattk->damd);
-    } else {
+    else
         dmg = 0;
-    }
+    
 
     if (mattk->adtyp == AD_PHYS) {
         type = PHYS_EXPL_TYPE;
@@ -1108,9 +1106,8 @@ mon_explodes(
     /* Kill it now so it won't appear to be caught in its own explosion.
      * Must check to see if already dead - which happens if this is called
      * from an AT_BOOM attack upon death. */
-    if (!DEADMONSTER(mon)) {
+    if (!DEADMONSTER(mon))
         mondead(mon);
-    }
     
     /* Cancelled monsters can't explode. */
     if (mon->mcan)
@@ -1125,7 +1122,7 @@ mon_explodes(
     if (mon->data == &mons[PM_PHOENIX] && !mon->mcan) {
         explode(mon->mx, mon->my, -1, dmg, MON_EXPLODE, EXPL_FIERY);
         /* eggs have to be done here instead of in the corpse
-            function because otherwise the explosion destroys the egg */
+           function because otherwise the explosion destroys the egg */
         obj = mksobj_at(EGG, mon->mx, mon->my, TRUE, FALSE);
         obj->corpsenm = PM_PHOENIX;
         obj->blessed = TRUE;
@@ -1164,13 +1161,12 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
 
     for (y = cy - 1; y <= cy + 1; y++) {
         for (x = cx - 1; x <= cx + 1; x++) {
-            if (x == cx && y == cy)
+            if (x == cx && y == cy) {
                 continue; /* doesn't affect itself */
-            else if (u_at(x, y)) {
+            } else if (u_at(x, y)) {
                 affects_you = TRUE;
                 continue; /* handled below */
-            }
-            else if ((mdef = m_at(x, y)) != (struct monst *) 0) {
+            } else if ((mdef = m_at(x, y)) != (struct monst *) 0) {
                 switch(mattk->adtyp) {
                 case AD_BLND:
                     if (!resists_blnd(mdef)) {
@@ -1188,6 +1184,7 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
             }
         }
     }
+    
     /* affect the player last, so that they can see other monsters getting
      * affected by it before they go blind or start hallucinating */
     if (affects_you) {

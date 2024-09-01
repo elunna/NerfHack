@@ -45,8 +45,7 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
                                          { 3, RING_CLASS },
                                          { 1, AMULET_CLASS } };
 
-/* Cartomancers have lower odds of scrolls and wands because they get card drops.
- * They have higher odds of food to compensate for less corpses. */
+/* Cartomancers have a different dynamic with card drops. */
 static const struct icp cartprobs[] =  { { 14, WEAPON_CLASS },
                                          { 14, ARMOR_CLASS },
                                          { 30, FOOD_CLASS },
@@ -997,7 +996,8 @@ mksobj_init(struct obj *otmp, boolean artif)
                need to perform any fix up and returns glob->owt as-is */
             otmp->owt = objects[otmp->otyp].oc_weight;
             otmp->known = otmp->dknown = 1;
-            otmp->corpsenm = PM_GRAY_OOZE + (otmp->otyp - GLOB_OF_GRAY_OOZE);
+            otmp->corpsenm = PM_GRAY_OOZE
+                           + (otmp->otyp - GLOB_OF_GRAY_OOZE);
             start_glob_timeout(otmp, 0L);
         } else {
             if (otmp->otyp != CORPSE && otmp->otyp != MEAT_RING
@@ -1116,10 +1116,8 @@ mksobj_init(struct obj *otmp, boolean artif)
         * this lightens the early game pressure a bit. */
         if (otmp->otyp == POT_BLOOD && !rn2(4))
             curse(otmp);
-
-        if (otmp->otyp == SCR_ZAPPING) {
+        if (otmp->otyp == SCR_ZAPPING)
             otmp->corpsenm = mk_zapcard();
-        }
         break;
     case SPBOOK_CLASS:
         otmp->spestudied = 0;
@@ -1179,18 +1177,14 @@ mksobj_init(struct obj *otmp, boolean artif)
              */
             if (rn2(10)) {
                 /* For 81% of rings that were already cursed, and for 40.5%
-                 * of rings that were uncursed, make enchantment negative.
-                 */
+                 * of rings that were uncursed, make enchantment negative. */
                 if (rn2(10) && (otmp->cursed || (!bcsign(otmp) && !rn2(3))))
                     multiplier = -1;
-            }
-            else if (!rn2(5)) {
+            } else if (!rn2(5)) {
                 /* 2% of all charged rings are +0 */
                 multiplier = 0;
-            }
-            else if (!rn2(2)) {
-                /* 4% of all charged rings are made negative, even blessed
-                 * ones */
+            }  if (!rn2(2)) {
+                /* 4% of all charged rings are made negative, even blessed */
                 multiplier = -1;
             }
             /* use rne(2) to get higher values; nobody really likes
@@ -2945,9 +2939,9 @@ hornoplenty(
             if (objects[obj->otyp].oc_magic) {
                 do {
                     obj->otyp = rnd_class(POT_BOOZE, POT_WATER);
-		      if (!rn2(131)) { /* this number is very large on purpose */
+                    /* this number is very large on purpose */
+                    if (!rn2(131))
                         obj->otyp = (!rn2(5)) ? POT_VAMPIRE_BLOOD : POT_BLOOD;
-                    }
                 } while (obj->otyp == POT_SICKNESS);
                 /* oil uses obj->age field differently from other potions */
                 if (obj->otyp == POT_OIL)

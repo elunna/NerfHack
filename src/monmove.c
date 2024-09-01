@@ -274,6 +274,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
     /* <0,0> is used by musical scaring to check for the above;
      * it doesn't care about scrolls or engravings or dungeon branch */
     if (x == 0 && y == 0)
+        /* Monsters don't respect musical scaring when aggravated */
         return Aggravate_monster ? FALSE : TRUE;
 
     /* should this still be true for defiled/molochian altars? */
@@ -318,18 +319,16 @@ mon_regen(struct monst *mon, boolean digest_meal)
 {
     struct obj *mstone = m_carrying(mon, HEALTHSTONE);
 
-    if (mon->mhp < mon->mhpmax
-        && (svm.moves % 20 == 0 
+    if (mon->mhp < mon->mhpmax && (svm.moves % 20 == 0 
             || mon_prop(mon, REGENERATION)
             || (mstone && !mstone->cursed))
         /* Below are conditions which prevent regen */
         && (!Is_valley(&u.uz) || is_undead(mon->data))
-        && !mon->mrabid
-        && !mon->mwither)
+        && !mon->mrabid && !mon->mwither)
         mon->mhp++;
     if (mon->mspec_used)
         mon->mspec_used--;
-     if (mon->msummoned)
+    if (mon->msummoned)
         mon->msummoned--;
     if (mon->mreflecttime)
         mon->mreflecttime--;
@@ -569,7 +568,7 @@ distfleeck(
 	
         if (Uevil_inherently /* && !context.coward */
             && sengr_at("Elbereth", seescaryx, seescaryy, TRUE)) {
-            /* Followers of Moloch (and bloodsuckers )aren't supposed
+            /* Followers of Moloch (and bloodsuckers) aren't supposed
              * to hide behind other gods. */
             You_feel("like a coward.");
 #if 0 /* Do we need this or is there a better way? */
@@ -774,9 +773,9 @@ dochug(struct monst *mtmp)
     if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
         m_respond(mtmp);
     /* Athols have a greater range than shriekers */
-    if (mdat->msound == MS_ATHOL \
-        && !um_dist(mtmp->mx, mtmp->my, 3) && couldsee(mtmp->mx, mtmp->my)) {
-        /* Make the athooling less frequent so it's not excessive. */
+    if (mdat->msound == MS_ATHOL
+            && !um_dist(mtmp->mx, mtmp->my, 3)
+            && couldsee(mtmp->mx, mtmp->my)) {
         if (!rn2(10))
             m_respond(mtmp);
     }
@@ -795,7 +794,8 @@ dochug(struct monst *mtmp)
 
     /* Cease conflict-induced swallow/grab if conflict has ended. Releasing
        the hero in this way uses up the monster's turn. */
-    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf && !mtmp->mrabid && !Conflict) {
+    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf 
+        && !mtmp->mrabid && !Conflict) {
         release_hero(mtmp);
         return 0;
     }
@@ -825,7 +825,7 @@ dochug(struct monst *mtmp)
     if (mtmp->data == &mons[PM_ALCHEMIST] && !m_carrying(mtmp, POT_ACID) 
             && !rn2(20)) {
         if (canseemon(mtmp))
-            pline("%s alchemizes something!", Monnam(mtmp));
+            pline("%s mixes some potions together!", Monnam(mtmp));
         else 
             You_hear("giggling.");
         (void) mongets(mtmp, POT_ACID);
@@ -926,7 +926,8 @@ dochug(struct monst *mtmp)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || (Conflict && !mtmp->iswiz)
         || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful
-        || (nearby && !mtmp->mpeaceful && is_outflanker(mtmp->data) && rn2(3))) {
+        || (nearby && !mtmp->mpeaceful 
+            && is_outflanker(mtmp->data) && rn2(3))) {
 
         /* Possibly cast an undirected spell if not attacking you */
         /* note that most of the time castmu() will pick a directed
@@ -1858,7 +1859,6 @@ m_move(struct monst *mtmp, int after)
     }
 #endif
 
-    
     /* jump toward the player if that lies in our nature, can see the player,
      * and isn't otherwise incapacitated in some way */
     if ((can_jump(mtmp) || is_jumper(ptr)) && m_canseeu(mtmp)
@@ -1866,7 +1866,7 @@ m_move(struct monst *mtmp, int after)
              || in_your_sanctuary(&gy.youmonst, u.ux, u.uy))) {
         int dist = dist2(mtmp->mx, mtmp->my, u.ux, u.uy);
         
-        if (!mtmp->mpeaceful && !rn2(3) && dist <= 20 && dist > 8) {
+        if (!mtmp->mpeaceful && !rn2(3) && dist <= 20 && dist >= (3*3)) {
             int x = u.ux - mtmp->mx;
             int y = u.uy - mtmp->my;
             if (x < 0)
@@ -1890,7 +1890,9 @@ m_move(struct monst *mtmp, int after)
     }
 
     /* teleport if that lies in our nature */
-    if ((mon_prop(mtmp, TELEPORT) || (ptr == &mons[PM_TENGU] && !mtmp->mcan))
+    if ((mon_prop(mtmp, TELEPORT)
+            || (ptr == &mons[PM_TENGU]
+          && !mtmp->mcan))
           && !rn2(ptr == &mons[PM_TENGU] ? 5 : 85)
           && !((mtmp->isshk || mtmp->ispriest) && mtmp->mpeaceful)
           && !tele_restrict(mtmp)) {
@@ -1958,7 +1960,7 @@ not_special:
         if (m_balks_at_approaching(mtmp))
             appr = -1;
 
-        /* ... unless they are currently berserk */
+        /* ... unless they are currently berserk or are rabid */
         if (mtmp->mberserk || mtmp->mrabid)
             appr = 1;
         
@@ -2489,8 +2491,8 @@ decide_to_teleport(struct monst *mtmp)
     if (!mon_prop(mtmp, TELEPORT_CONTROL))
         return FALSE; /* No choice */
     /* Fleeing/peaceful non-pets just want to go anywhere but here */
-    return (!((mtmp->mhp < 7 || mtmp->mflee || mtmp->mpeaceful) && !mtmp->mtame));
+    return (!((mtmp->mhp < 7 || mtmp->mflee 
+        || mtmp->mpeaceful) && !mtmp->mtame));
 }
-
 
 /*monmove.c*/

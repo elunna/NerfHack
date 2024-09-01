@@ -484,7 +484,6 @@ look_at_monster(
                     base_ac > 9 ? "heavy " : base_ac < 6 ? "light " : "");
             weartxt = TRUE;
         }
-
         
         /* Check accessories */
         if ((otmp = which_armor(mtmp, W_AMUL))) {
@@ -502,8 +501,6 @@ look_at_monster(
         if (MON_WEP(mtmp))
             Sprintf(eos(buf), "; wielding %s",
                     ansimpleoname(MON_WEP(mtmp)));
-
-
     }
     if (mtmp->mtrapped && cansee(mtmp->mx, mtmp->my)) {
         struct trap *t = t_at(mtmp->mx, mtmp->my);
@@ -1124,7 +1121,6 @@ add_mon_info(winid datawin, struct permonst * pm)
         APPENDC(nonliving(pm), "nonliving");
     APPENDC(telepathic(pm), "telepathic");
     APPENDC(is_displacer(pm), "displaces monsters");
-    /* APPENDC(is_displaced(pm), "displaced"); */
     APPENDC(follows_you(pm), "follows you");
     APPENDC(keeps_distance(pm), "skittish");
     APPENDC(is_accurate(pm), "accurate");
@@ -1205,7 +1201,7 @@ add_mon_info(winid datawin, struct permonst * pm)
 
         Sprintf(buf2, "\t%s%s%s %s", dicebuf, ((*dicebuf) ? " " : ""),
             attacktypes[attk->aatyp], damagetypes[attk->adtyp]);
-         MONPUTSTR(buf2);
+        MONPUTSTR(buf2);
     }
 }
 #undef ADDPROP
@@ -1229,8 +1225,8 @@ add_obj_info(winid datawin, short otyp)
     const struct PotionRecipe *precipe;
     const struct ForgeRecipe *recipe;
     const char* identified_potion_name;
-    boolean potion_known, has_recipes = FALSE;
-    boolean reveal_info = oc.oc_name_known;
+    boolean potion_known, has_recipes = FALSE,
+        reveal_info = oc.oc_name_known;
     int i;
 
     struct obj dummy = { 0 }; /* For weapon info */
@@ -1288,8 +1284,6 @@ add_obj_info(winid datawin, short otyp)
         Sprintf(buf, "Deals %s damage.", dmgtyp);
         OBJPUTSTR(buf);
 
-        /* Ugh. Can we just get rid of dmgval() and put its damage bonuses into
-         * the object class? */
         damage_info = dmgval_info(&dummy);
     
         if (reveal_info) {
@@ -2006,14 +2000,13 @@ checkfile(
                     if (pass == 0) {
                         if (pmatch(&buf[chk_skip], dbase_str_with_material)) {
                             encycl_matched = dbase_str_with_material;
-                        }
-                        else if (pmatch(&buf[chk_skip], dbase_str)) {
+                        } else if (pmatch(&buf[chk_skip], dbase_str)) {
                             encycl_matched = dbase_str;
                         }
-                    }
-                    else if (pass == 1 && alt && pmatch(&buf[chk_skip], alt)) {
+                    } else if (pass == 1 && alt && pmatch(&buf[chk_skip], alt)) {
                         encycl_matched = alt;
                     }
+
                     if (encycl_matched) {
                         if (chk_skip) {
                             skipping_entry = TRUE;
@@ -2067,48 +2060,46 @@ checkfile(
             }
 
             /* prompt for more info (if using whatis to navigate the map) */
-                yes_to_moreinfo = FALSE;
-                if (!user_typed_name && !without_asking) {
-                    char *entrytext = pass ? alt : dbase_str;
-                    char question[QBUFSZ];
-                    Strcpy(question, "More info about \"");
-                    /* +2 => length of "\"?" */
-                    copynchars(eos(question), entrytext,
-                               (int) (sizeof question - 1
-                                      - (strlen(question) + 2)));
-                    Strcat(question, "\"?");
-                    if (y_n(question) == 'y')
-                        yes_to_moreinfo = TRUE;
-                }
+            yes_to_moreinfo = FALSE;
+            if (!user_typed_name && !without_asking) {
+                char *entrytext = pass ? alt : dbase_str;
+                char question[QBUFSZ];
+                Strcpy(question, "More info about \"");
+                /* +2 => length of "\"?" */
+                copynchars(eos(question), entrytext,
+                            (int) (sizeof question - 1
+                                    - (strlen(question) + 2)));
+                Strcat(question, "\"?");
+                if (y_n(question) == 'y')
+                    yes_to_moreinfo = TRUE;
+            }
 
-                /* finally, put the appropriate information into a window */
-                if (user_typed_name || without_asking || yes_to_moreinfo) {
-                      if (!found_in_file && !pm && otyp == STRANGE_OBJECT) {
+            /* finally, put the appropriate information into a window */
+            if (user_typed_name || without_asking || yes_to_moreinfo) {
+                if (!found_in_file && !pm && otyp == STRANGE_OBJECT) {
                     if ((user_typed_name && pass == 0 && !pass1found_in_file)
                         || yes_to_moreinfo)
                         pline("I don't have any information on those things.");
                     /* don't print anything otherwise; we don't want it to e.g.
-                     * print a database entry and then print the above message.
-                     */
-                }
-                else {
+                    * print a database entry and then print the above message.
+                    */
+                } else {
                     boolean do_obj_lookup = FALSE, do_mon_lookup = FALSE;
                     if (pm) {
                         do_mon_lookup = TRUE;
                         if (!lookat_mon && otyp != STRANGE_OBJECT) {
                             /* found matches for both and player is NOT looking
-                             * at a monster; ask which they want to see */
+                            * at a monster; ask which they want to see */
                             /* TODO: this would ideally be better generalized so
-                             * that the caller could communicate that an object
-                             * is being looked at, too */
+                            * that the caller could communicate that an object
+                            * is being looked at, too */
                             pline("That matches both a monster and an object.");
                             if (y_n("Show the monster information?") != 'y') {
                                 do_obj_lookup = TRUE;
                                 do_mon_lookup = FALSE;
                             }
                         }
-                    }
-                    else if (otyp != STRANGE_OBJECT) {
+                    } else if (otyp != STRANGE_OBJECT) {
                         do_obj_lookup = TRUE;
                     }
                     datawin = create_nhwindow(NHW_MENU);
@@ -2120,19 +2111,20 @@ checkfile(
                     }
                     /* monster lookup info */
                     /* secondary to object lookup because there are some
-                     * monsters whose names are substrings of objects, like
-                     * "skeleton" and "skeleton key". */
+                    * monsters whose names are substrings of objects, like
+                    * "skeleton" and "skeleton key". */
                     else if (do_mon_lookup) {
                         add_mon_info(datawin, pm);
                         if (is_were(pm)) {
                             /* also do the alternate form */
                             putstr(datawin, 0, "");
                             add_mon_info(datawin,
-                                         &mons[counter_were(monsndx(pm))]);
+                                        &mons[counter_were(monsndx(pm))]);
                         }
                         putstr(datawin, 0, "");
                     }
-                      /* encyclopedia entry */
+                    
+                    /* encyclopedia entry */
                     if (found_in_file) {
                         char titlebuf[BUFSZ];
                         if (dlb_fseek(fp, (long) txt_offset + entry_offset,
@@ -2576,8 +2568,10 @@ do_screen_description(
                 || alt_i == S_bars
                 || alt_i == S_tree
                 || IS_WALL(alt_i) || IS_DOOR(alt_i)
-                || alt_i == S_grave) /* 'need_to_look' to report engraving */
+                || alt_i == S_grave) {
+                /* 'need_to_look' to report engraving */
                 need_to_look = TRUE;
+            }
         }
     }
 
@@ -2868,8 +2862,8 @@ do_look(int mode, coord *click_cc)
                     break;
                 }
             if (*out_str)
-                (void) checkfile(out_str, (struct permonst *) 0, chkfilUsrTyped | chkfilDontAsk,
-                                 (char *) 0);
+                (void) checkfile(out_str, (struct permonst *) 0,
+                    chkfilUsrTyped | chkfilDontAsk, (char *) 0);
             return ECMD_OK;
           }
         case '?':
@@ -4031,7 +4025,7 @@ corpse_conveys(char *buf, struct permonst * pm)
     APPENDC(intrinsic_possible(TELEPORT, pm), "teleportation");
     APPENDC(intrinsic_possible(TELEPORT_CONTROL, pm), "teleport control");
     APPENDC(intrinsic_possible(TELEPAT, pm), "telepathy");
-     APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
+    APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
             "intelligence");
     /* There are a bunch of things that happen in cpostfx (levels for wraiths,
      * stunning for bats...) but only count the ones that actually behave like

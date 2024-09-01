@@ -136,8 +136,9 @@ dolavademon(void)
                       "%s grants you protection from fire!", mhe(mtmp));
                 incr_resistance(&HFire_resistance, 100);
                 mongone(mtmp);
-            } else if (t_at(mtmp->mx, mtmp->my))
+            } else if (t_at(mtmp->mx, mtmp->my)) {
                 (void) mintrap(mtmp, NO_TRAP_FLAGS);
+            }
         }
     } else
         pline_The("forge violently spews lava for a moment, then settles.");
@@ -389,7 +390,6 @@ lava:
 /* forging recipes - first object is the end result
    of combining objects two and three */
 const struct ForgeRecipe fusions[] = {
-    /* weapons */
     /* Only samurai can forge these: */
     { KATANA,               LONG_SWORD,         LONG_SWORD,     1, 1 },
     { TSURUGI,              TWO_HANDED_SWORD,   KATANA,         1, 1 },
@@ -494,8 +494,8 @@ doforging(void)
         You("need more than one object.");
         return 0;
     } else if (!(is_metallic(obj2) || obj1->otyp == ROCK)) {
-        /* secondary object should also be gemstone or metallic */
-        pline_The("secondary object must be metallic, mineral, or gemstone.");
+        /* secondary object should also be metallic */
+        pline_The("secondary object must be metallic or mineral.");
         return 0;
     }
 
@@ -503,6 +503,7 @@ doforging(void)
     if (obj1 == obj2) {
         You_cant("combine an object with itself!");
         return 0;
+
     /* not that the Amulet of Yendor or invocation items would
        ever be part of a forging recipe, but these should be
        protected in any case */
@@ -542,6 +543,7 @@ doforging(void)
             break;
         }
     }
+
     if (!objtype) {
         /* if the objects used do not match the recipe array,
             the forging process fails */
@@ -566,8 +568,6 @@ doforging(void)
             the(xname(obj1)), the(xname(obj2)));
         pline("Raising your %s, you begin to forge the objects together...",
                 xname(uwep));
-
-        /* Make sure material is correct with new item */
 
         /* if objects are enchanted or have charges,
             carry that over, and use the greater of the two */
@@ -623,6 +623,7 @@ doforging(void)
                 output->quan += 1L;
 
         }
+
         output->owt = weight(output);
         You("have successfully forged %s.", doname(output));
         update_inventory();
@@ -1009,8 +1010,8 @@ wash_hands(void)
     boolean was_goopy = !!(HFumbling & I_SPECIAL);
 
     if (was_goopy) {
-          pline("You wash the goop off your %s.", 
-              uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
+        pline("You wash the goop off your %s.", 
+            uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
         HFumbling &= ~I_SPECIAL;
         HFumbling = 0;
         if (uarmf) {
@@ -1053,7 +1054,7 @@ breaksink(coordxy x, coordxy y)
 void
 breaktoilet(coordxy x, coordxy y)
 {
-    register int num = rn1(5, 2);
+    int num = rn1(5, 2);
     struct monst *mtmp;
     
     if (cansee(x, y) || u_at(x, y))
@@ -1131,19 +1132,19 @@ drinksink(void)
         break;
     case 4:
         for (;;) {
-	    /* use Luck here instead of u.uluck */
+	        /* use Luck here instead of u.uluck */
             if (!rn2(13) && ((Luck >= 0 && maybe_polyd(is_vampire(gy.youmonst.data),
 				Race_if(PM_VAMPIRE)))
-			|| (Luck <= 0 && !maybe_polyd(is_vampire(gy.youmonst.data),
+			    || (Luck <= 0 && !maybe_polyd(is_vampire(gy.youmonst.data),
 				Race_if(PM_VAMPIRE))))) {
                 otmp = mksobj(POT_VAMPIRE_BLOOD, FALSE, FALSE);
             } else {
-		otmp = mkobj(POTION_CLASS, FALSE);
-		if (otmp->otyp != POT_WATER)
-		    break;
-		/* reject water and try again */
-		obfree(otmp, (struct obj *) 0);
-	    }
+                otmp = mkobj(POTION_CLASS, FALSE);
+                if (otmp->otyp != POT_WATER)
+                    break;
+                /* reject water and try again */
+                obfree(otmp, (struct obj *) 0);
+            }
         }
         otmp->cursed = otmp->blessed = 0;
         pline("Some %s liquid flows from the faucet.",
@@ -1335,7 +1336,7 @@ breakforge(coordxy x, coordxy y)
     if (cansee(x, y) || u_at(x, y))
         pline_The("forge splits in two as molten lava rushes forth!");
     levl[x][y].doormask = 0;
-    /* replace the forge with ordinary floor */
+    /* replace the forge with lava */
     set_levltyp(x, y, LAVAPOOL); /* updates level.flags.nforges */
     newsym(x, y);
 }
@@ -1349,7 +1350,7 @@ blowupforge(coordxy x, coordxy y)
     levl[x][y].doormask = 0;
     
     /* replace the forge with ordinary floor */
-    set_levltyp(x, y, ROOM); /* updates level.flags.nforges */
+    set_levltyp(x, y, LAVAPOOL); /* updates level.flags.nforges */
     explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), resist_reduce(rnd(30), FIRE_RES),
             FORGE_EXPLODE, EXPL_FIERY);
     newsym(x, y);
@@ -1360,9 +1361,9 @@ coolforge(int x, int y)
 {
     if (cansee(x, y) || u_at(x, y))
         pline_The("lava in the forge cools and solidifies.");
-    levl[x][y].typ = ROOM, levl[x][y].flags = 0;
     levl[x][y].doormask = 0;
     set_levltyp(x, y, ROOM); /* updates level.flags.nforges */
+    levl[x][y].flags = 0;
     newsym(x, y);
     maybe_unhide_at(x, y);
 }
@@ -1415,13 +1416,6 @@ drinktoilet(void)
         return;
     }
 
-#if 0 /* Relic of HackEM */
-    if (LarvaCarrier) {
-        You_feel("as if your body is your own again.");
-        make_carrier(0L, FALSE);
-    }
-#endif
-
     switch (rn2(9)) {
     case 0: 
         if (svm.mvitals[PM_SEWER_RAT].mvflags & G_GONE)
@@ -1456,9 +1450,9 @@ drinktoilet(void)
         exercise(A_CON, FALSE);
         break;
     case 4: 
-        if (svm.mvitals[PM_BABY_CROCODILE].mvflags & G_GONE)
+        if (svm.mvitals[PM_BABY_CROCODILE].mvflags & G_GONE) {
             pline_The("toilet smells fishy.");
-        else {
+        } else {
             static NEARDATA struct monst *mtmp;
             mtmp = makemon(&mons[PM_BABY_CROCODILE], u.ux,
                      u.uy, NO_MM_FLAGS);

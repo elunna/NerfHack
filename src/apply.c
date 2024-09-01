@@ -124,6 +124,7 @@ use_towel(struct obj *obj)
 {
     struct obj *otmp;
     boolean drying_feedback = (obj == uwep);
+    char szwork[QBUFSZ];
 
     if (!freehand()) {
         You("have no free %s!", body_part(HAND));
@@ -215,10 +216,13 @@ use_towel(struct obj *obj)
          makeplural(body_part(HAND)));
 
     /* Allow player to wipe blood off the floor */
-    if (levl[u.ux][u.uy].splatpm && y_n("Wipe the blood off the ground?") == 'y') {
-        You("cleanse the blood.");
-        wipe_blood(u.ux, u.uy);
-        return ECMD_TIME;
+    if (levl[u.ux][u.uy].splatpm) {
+        Sprintf(szwork, "Wipe the blood off the %s?", surface(u.ux, u.uy));
+        if (y_n(szwork) == 'y') {
+            You("cleanse the blood.");
+            wipe_blood(u.ux, u.uy);
+            return ECMD_TIME;
+        }
     }
 
     /* Allow player to remove grease */
@@ -231,10 +235,10 @@ use_towel(struct obj *obj)
         pline("That item is not greased!");
         return ECMD_CANCEL;
     }
-    You("remove the grimy grease from %s", yobjnam(otmp, (char *) 0));
+    You("remove the grime from %s", yobjnam(otmp, (char *) 0));
     otmp->greased = 0;
     if (!rn2(2)) {
-        Your("towel gets covered in grease.");
+        Your("towel gets covered in grease!");
         obj->greased = 1;
     }
     return ECMD_OK;
@@ -278,12 +282,10 @@ its_dead(coordxy rx, coordxy ry, int *resp, struct obj *stethoscope)
         return FALSE; /* nothing to do */
 
     } else if (Hallucination) {
-        if (egg) {
+        if (egg)
             pline("This is indubitably a %s egg!", rndmonnam(NULL));
-        }
-        else if (statue) {
+        else if (statue)
             Strcpy(buf, "You're both stoned");
-        }
         /* else corpse... */
         else if (corpse->quan == 1L && !more_corpses) {
             int gndr = 2; /* neuter: "it" */
@@ -341,14 +343,12 @@ its_dead(coordxy rx, coordxy ry, int *resp, struct obj *stethoscope)
         if (stethoscope->blessed) {
             if (stale_egg(egg) || egg->corpsenm == NON_PM) {
                 pline("The egg doesn't make any noise at all.");
-            }
-            else {
+            } else {
                 You("listen to the egg and guess... %s!",
                     mons[egg->corpsenm].pmnames[NEUTRAL]);
             egg->known = 1;
-        }
-        }
-        else {
+            }
+        } else {
             You("can't quite tell what's inside the egg.");
         }
         return TRUE;
@@ -1226,11 +1226,10 @@ use_mirror(struct obj *obj)
                is by wearing a magical object that grants it. Floating
                eyes can't wear anything, but we'll future-proof this
                now in case other sources of free action are added */
-            if (has_free_action(mtmp)) {
+            if (has_free_action(mtmp))
                 pline("%s stiffens momentarily.", Monnam(mtmp));
-            } else {
+            else
                 pline("%s is frozen by its reflection.", Monnam(mtmp));
-            }
         } else if (!has_free_action(mtmp))
             You_hear("%s stop moving.", something);
         if (has_free_action(mtmp))
@@ -1640,7 +1639,8 @@ splash_lit(struct obj *obj)
             useeit = get_obj_location(obj, &x, &y, 0) && cansee(x, y);
             uhearit = couldsee(x, y) && distu(x, y) < 5 * 5;
             dunk = (is_pool(mtmp->mx, mtmp->my)
-                    && ((!mon_prop(mtmp, FLYING) && !mon_prop(mtmp, LEVITATION))
+                    && ((!mon_prop(mtmp, FLYING) 
+                        && !mon_prop(mtmp, LEVITATION))
                         || Is_waterlevel(&u.uz)));
             snuff = FALSE;
             if (useeit)
@@ -1911,9 +1911,9 @@ dorub(void)
             pline("Sorry, I don't know how to use that.");
             return ECMD_OK;
         }
-        } else if (obj->otyp == LUMP_OF_ROYAL_JELLY) {
-            return use_royal_jelly(&obj);
-    } 
+    } else if (obj->otyp == LUMP_OF_ROYAL_JELLY) {
+        return use_royal_jelly(&obj);
+    }
     
     if (obj != uwep) {
         if (wield_tool(obj, "rub")) {
@@ -2138,8 +2138,7 @@ jump(int magic) /* 0=Physical, otherwise skill level */
                     case 1: yelp(u.usteed); break;
                     default: whimper(u.usteed); break;
                 }
-        }
-        else
+        } else
             You("trip over your own %s.", makeplural(body_part(FOOT)));
         return 1;
     } else if (u.uswallow) {
@@ -2221,10 +2220,9 @@ jump(int magic) /* 0=Physical, otherwise skill level */
                 if (uarmf && objdescr_is(uarmf, "jungle boots")) {
                     losehp(rnd(10), "jumping out of a bear trap", KILLED_BY);
                     set_wounded_legs(side, rn1(100, 50));
-                    for (bootdamage = d(1, 5); bootdamage >= 0; bootdamage--)  {
+                    for (bootdamage = d(1, 5); bootdamage >= 0; bootdamage--)
                         drain_item(uarmf, TRUE);
-                    Your("boots are damaged!");
-                    }
+                    Your("boots are damaged!"); /* Don't repeat this... */
                 } else {
                     losehp(Maybe_Half_Phys(d(5, 6)),
                            "jumping out of a bear trap", KILLED_BY);
@@ -2372,6 +2370,8 @@ use_tinning_kit(struct obj *obj)
     }
     consume_obj_charge(obj, TRUE);
 
+    /* Vampires can tin blood from corpses - from SlashTHEM.
+     * TODO: Factor this out to it's own function. */
     long age = peek_at_iced_corpse_age(corpse);
     long rotted = (svm.moves - age) / (10L + rn2(20));
     boolean bottleable = rotted <= 0 &&
@@ -2395,7 +2395,6 @@ use_tinning_kit(struct obj *obj)
 			bld->cursed = obj->cursed;
 			bld->blessed = obj->blessed;
 			bld->known = 1;
-			/* bld->selfmade = TRUE; */
 			if (carried(corpse)) {
 				if (corpse->unpaid)
 					verbalize(you_buy_it);
@@ -2550,9 +2549,8 @@ use_unicorn_horn(struct obj **optr)
     val_limit = rn2(d(2, (obj && obj->blessed) ? 4 : 2));
     if (val_limit > trouble_count)
         val_limit = trouble_count;
-#else	/* KMH's new success rate */
-    /* Updated from SLASH'EM
-     * blessed:  Tries all problems, each with chance given below.
+#else	/* hackemslashem's new success rate */
+    /* blessed:  Tries all problems, each with chance given below.
      * uncursed: Tries one problem, with chance given below.
      * ENCHANT  +0  +1  +2  +3  +4  +5  +6  +7  +8  +9  +10 +11 +12 or more
      * CHANCE   30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90%
@@ -2565,11 +2563,9 @@ use_unicorn_horn(struct obj **optr)
     else
         chance = 6;
    
-    /* Healer bonus */
     if (Role_if(PM_HEALER))
         chance += 2;
     
-    /* Skill in unicorn horn has an impact on success */
     if (P_SKILL(P_UNICORN_HORN) == P_BASIC)
         chance += 3;
     if (P_SKILL(P_UNICORN_HORN) == P_SKILLED)
@@ -2629,8 +2625,7 @@ use_unicorn_horn(struct obj **optr)
     if (did_prop) {
         disp.botl = TRUE;
         /* Successfully using the unicorn horn exercises skill.
-         * We'll grant a significant skill boost since the unihorn was nerfed
-         * so heavily. */
+         * Grant lots of skill points since the unihorn was nerfed. */
         use_skill(P_UNICORN_HORN, 5);
     } else
         pline("%s", nothing_seems_to_happen);
@@ -2938,7 +2933,7 @@ apply_flint(struct obj *flint)
     }
     
     Sprintf(szwork, "affix the stone%s to", plur(num_flints));
-    stack1 = getobj("affix the flint to", flint_ok, GETOBJ_PROMPT);
+    stack1 = getobj(szwork, flint_ok, GETOBJ_PROMPT);
     if (!stack1)
         return ECMD_CANCEL;
 
@@ -2947,7 +2942,7 @@ apply_flint(struct obj *flint)
     
     /* can't make MIRV arrows; if they're +1, leave it be */
     if (stack1->spe > 0) {
-        You("don't think you can make these any better than they are.");
+        You("don't think you can make any more improvements.");
         return ECMD_OK;
     }
 
@@ -2976,9 +2971,8 @@ apply_flint(struct obj *flint)
             useup(flint);
     
     if (stack2)
-        hold_another_object(stack2, "You drop %s!", doname(stack2), (const char *) 0);
-    // You("don't have enough flint to re-tip all of these %s.", xname(stack1));
-    
+        hold_another_object(stack2, "You drop %s!",
+            doname(stack2), (const char *) 0);
     return ECMD_TIME;
 }
 
@@ -3099,7 +3093,10 @@ use_stone(struct obj *tstone)
     if (obj->otyp == ROCK) {
         rockinfo.rubber = tstone;
         rockinfo.rubbee = obj;
-        You("start breaking rocks.");
+        if (Hallucination)
+            pline("Let's rock!");
+        else
+            You("start breaking rocks.");
         set_occupation(breakrocks, "breaking rocks", 0);
         return ECMD_TIME;
     }
@@ -3112,8 +3109,7 @@ use_stone(struct obj *tstone)
         return ECMD_TIME;
     }
 
-    do_scratch = FALSE;
-    make_sparks = FALSE;
+    do_scratch = make_sparks = FALSE;
     streak_color = 0;
 
     oclass = obj->oclass;
@@ -3214,11 +3210,7 @@ use_stone(struct obj *tstone)
             if (u.uswallow) {
                 /* Not even the thing you're inside can see your piddly spark. */
                 pline("That's not going to make it any brighter in here.");
-                if (!rn2(3)) {
-                    Your("flint stone crumbles!");
-                    useup(tstone);
-                }
-                return ECMD_TIME;
+                goto spark_done;
             }
             /* Fire scares monsters */
             for (i = u.ux - 1; i < u.ux + 2; i++) {
@@ -3244,6 +3236,8 @@ use_stone(struct obj *tstone)
                     }
                 }
             }
+
+spark_done:
             if (!rn2(3)) {
                 Your("flint stone crumbles!");
                 useup(tstone);
@@ -4365,8 +4359,8 @@ do_break_wand(struct obj *obj)
         discard_broken_wand();
         return ECMD_TIME;
     case WAN_SECRET_DOOR_DETECTION:
-        /* Detects portals: We'll use the same odds UnNetHack has for 
-         * creating traps for breaking the other wands. */
+        /* Detects portals: Use the same UnNetHack odds for 
+         * creating traps when breaking wands. */
         if ((obj->spe > 2) && rn2(obj->spe - 2)) {
             trap_detect((struct obj *) 0);
             makeknown(obj->otyp);
@@ -4439,16 +4433,16 @@ void exploding_wand_efx(struct obj *obj)
     coordxy x, y;
     struct monst *mon;
     int damage;
-    boolean affects_objects = FALSE;
-    boolean shop_damage = FALSE;
-    boolean fillmsg = FALSE;
+    boolean affects_objects = FALSE,
+            shop_damage = FALSE,
+            fillmsg = FALSE;
     char buf[BUFSZ];
 
-    /* Ray wands are already handled in explode.c */
+    /* Ray wands are handled in explode.c */
     if (objects[obj->otyp].oc_dir == RAY)
         return;
 
-    /* I believe elemental damage is handled in explode.c */
+    /* Elemental damage is handled in explode.c */
     switch (obj->otyp) {
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:
@@ -4675,7 +4669,7 @@ doapply(void)
 
     if (obj->otyp == WAR_HAMMER) {
         if (!IS_FORGE(levl[u.ux][u.uy].typ)) {
-            You("need to be at a forge to use the hammer.");
+            You("need to be at a forge to use a hammer.");
             return ECMD_OK;
         }
         doforging();
@@ -5051,9 +5045,8 @@ check_mon_jump(struct monst *mtmp, int x, int y)
         ax = 0;
     traj = jAny;
     
-    if (!walk_path(&mc, &tc, check_jump, (genericptr_t) & traj)) {
+    if (!walk_path(&mc, &tc, check_jump, (genericptr_t) & traj))
         return FALSE;
-    }
     return TRUE;
 }
 
@@ -5385,7 +5378,7 @@ playing_card_deck(struct obj *obj)
         * kicker (depending on the hand) corresponds to the current value of
         * Luck, with a one meaning Luck == 1 and a king meaning Luck == 13.
         */
-    if (goodcards&& Luck > 0)
+    if (goodcards && Luck > 0)
         pline_The("%s is the %s of %s.", Luck < 5 ? "kicker" : "high card",
                     cardnames[Luck-1], cardsuits[rn2(4)]);
 

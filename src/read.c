@@ -1158,9 +1158,11 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     struct trap *ttmp;
     int xx = u.ux, yy = u.uy;
     if (gc.current_wand && gc.current_wand->otyp == SCR_FLOOD) {
-         xx = gc.current_wand->ox;
-         yy = gc.current_wand->oy;
+        xx = gc.current_wand->ox;
+        yy = gc.current_wand->oy;
     }
+    if (!isok(xx, yy))
+        return;
 
     /* Don't create on the user's space unless poolcnt is -1. */
     if ((* (int*)poolcnt) != -1 && x == xx && y == yy)
@@ -1175,9 +1177,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     if (ttmp && !delfloortrap(ttmp))
         return;
 
-    /* create pool */
-    levl[x][y].typ = POOL;
-    levl[x][y].flags = 0;
+    set_levltyp(x, y, POOL);
     del_engr_at(x, y);
     water_damage_chain(svl.level.objects[x][y], FALSE);
 
@@ -1192,12 +1192,13 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
 staticfn void
 unflood_space(coordxy x, coordxy y, genericptr_t drycnt)
 {
-    if (levl[x][y].typ != POOL && levl[x][y].typ != MOAT
-        && levl[x][y].typ != WATER && levl[x][y].typ != FOUNTAIN)
-            return;
+    if (levl[x][y].typ != POOL 
+        && levl[x][y].typ != MOAT
+        && levl[x][y].typ != WATER
+        && levl[x][y].typ != FOUNTAIN)
+        return;
 
-    /* Get rid of a pool at x, y */
-    levl[x][y].typ = ROOM;
+    set_levltyp(x, y, ROOM);
     maybe_unhide_at(x, y);
     newsym(x, y);
     (* (int*)drycnt)++;
@@ -1218,23 +1219,23 @@ seffect_enchant_armor(struct obj **sobjp)
     boolean old_erodeproof, new_erodeproof;
     boolean already_known = objects[sobj->otyp].oc_name_known;
 
-     if (already_known) {
-         for (i = 0; i < 5; i++) {
-             otmp = getobj("enchant", enchant_ok, GETOBJ_NOFLAGS);
-             if (!otmp) {
+    if (already_known) {
+        for (i = 0; i < 5; i++) {
+            otmp = getobj("enchant", enchant_ok, GETOBJ_NOFLAGS);
+            if (!otmp) {
                 if (y_n("Really forfeit this scroll?") == 'y')
                     break;
                 else
                     continue;
-             } else if (otmp && otmp->oclass != ARMOR_CLASS) {
-                 You("must select armor to enchant.");
-                 otmp = (struct obj *) 0;
-             } else if (otmp && !(otmp->owornmask & W_ARMOR)) {
-                 You("cannot enchant armor that is not worn.");
-                 otmp = (struct obj *) 0;
-             } else
-                 break; /* Success! */
-         }
+            } else if (otmp && otmp->oclass != ARMOR_CLASS) {
+                You("must select armor to enchant.");
+                otmp = (struct obj *) 0;
+            } else if (otmp && !(otmp->owornmask & W_ARMOR)) {
+                You("cannot enchant armor that is not worn.");
+                otmp = (struct obj *) 0;
+            } else
+                break; /* Success! */
+        }
      } else {
          otmp = some_armor(&gy.youmonst);
      }
@@ -1317,9 +1318,7 @@ seffect_enchant_armor(struct obj **sobjp)
 
         /* dragon scales get turned into dragon scale mail */
         pline("%s merges and hardens!", Yname2(otmp));
-        
         setworn((struct obj *) 0, W_ARM);
-
         /* assumes same order */
         otmp->otyp += GRAY_DRAGON_SCALE_MAIL - GRAY_DRAGON_SCALES;
         otmp->lamplit = 0; /* don't want bless() or uncurse() to adjust
@@ -1669,9 +1668,9 @@ seffect_create_monster(struct obj **sobjp)
 
     if (is_moncard(sobj) || (Role_if(PM_CARTOMANCER)
                 && sobj->otyp == SPE_CREATE_MONSTER)) {
-	use_moncard(sobj, u.ux, u.uy);
-	gk.known = TRUE;
-	return;
+        use_moncard(sobj, u.ux, u.uy);
+        gk.known = TRUE;
+        return;
     }
     if (create_critters(1 + ((confused || scursed) ? 12 : 0)
                         + ((sblessed || rn2(73)) ? 0 : rnd(4)),
@@ -1690,20 +1689,20 @@ seffect_zapping(struct obj **sobjp)
     struct obj *sobj = *sobjp;
     struct obj *pseudo;
     if (sobj->corpsenm == NON_PM)
-	impossible("seffects: SCR_WAND_ZAP has no zap type!");
+	    impossible("seffects: SCR_WAND_ZAP has no zap type!");
 
     pseudo = mksobj(sobj->corpsenm, FALSE, FALSE);
     pseudo->blessed = pseudo->cursed = 0;
     pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
 
     if (!(objects[pseudo->otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
-	if (!Blind)
-	    pline("%s glows and fades.", The(xname(sobj)));
+        if (!Blind)
+            pline("%s glows and fades.", The(xname(sobj)));
     } else {
-	gc.current_wand = pseudo;
-	weffects(pseudo);
-	pseudo = gc.current_wand;
-	gc.current_wand = 0;
+        gc.current_wand = pseudo;
+        weffects(pseudo);
+        pseudo = gc.current_wand;
+        gc.current_wand = 0;
     }
     obfree(pseudo, NULL);
 }
@@ -1755,9 +1754,10 @@ seffect_enchant_weapon(struct obj **sobjp)
         uwep->oerodeproof = new_erodeproof ? 1 : 0;
         return;
     }
-    /* Adjusted max weapon enchantment. For more exciting hacking 'n slashing
-     * we will allow the new 'soft' limit to be 11. This 
-    */
+    /* Adjusted max weapon enchantment. For more exciting hackin 'n slashin
+     * we will allow the new 'soft' limit to be 11. 
+     * This allows weapons to be safely enchanted up to 13 if the player
+     * hits a +2 when the weapon is +11. */
     if (!chwepon(sobj, scursed ? -1
                  : !uwep ? 1
                  : (uwep->spe >= (WEP_ENCHANT_MAX + 2)) ? !rn2(uwep->spe)
@@ -1909,8 +1909,8 @@ seffect_cloning(struct obj **sobjp)
     boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
-    boolean already_known = (sobj->oclass == SPBOOK_CLASS /* spell */
-                             || objects[otyp].oc_name_known);
+    boolean already_known = objects[otyp].oc_name_known;
+
     if (!already_known)
         learnscroll(sobj);
 
@@ -1990,12 +1990,6 @@ seffect_cloning(struct obj **sobjp)
             otmp2->spe = otmp->spe;
         else 
             otmp2->spe = min(otmp->spe, 0);
-        
-        /* If an unpaid item is cloned, that item also inherits the cost 
-         and unpaid status. Otherwise, we could have the shopkeeper charge,
-         but this seems a bit more elegant. */
-        // otmp2->unpaid = otmp->unpaid;
-        // otmp2->no_charge = otmp->no_charge;
 
         /* other properties */
         otmp2->oeroded = otmp->oeroded;
@@ -2053,6 +2047,8 @@ seffect_cloning(struct obj **sobjp)
 
         obj_extract_self(otmp2);
 
+        /* If an unpaid item is cloned, that item also inherits the cost 
+         * and unpaid status. */
         /* You clone it, you buy it! */
         if (otmp->unpaid)
             addtobill(otmp2, FALSE, FALSE, FALSE);
@@ -2402,8 +2398,6 @@ seffect_food_detection(struct obj **sobjp)
         (void) learnscrolltyp(SCR_FOOD_DETECTION);
 }
 
-
-
 staticfn void
 seffect_knowledge(struct obj **sobjp)
 {
@@ -2444,15 +2438,9 @@ seffect_knowledge(struct obj **sobjp)
         qty++;
     
      static const int extra_classes[] = {
-        WEAPON_CLASS,
-        ARMOR_CLASS,
-        TOOL_CLASS,
-        GEM_CLASS,
-        SCROLL_CLASS,
-        SPBOOK_CLASS,
-        POTION_CLASS,
-        RING_CLASS,
-        AMULET_CLASS,
+        WEAPON_CLASS,   ARMOR_CLASS,    TOOL_CLASS,
+        GEM_CLASS,      SCROLL_CLASS,   SPBOOK_CLASS,
+        POTION_CLASS,   RING_CLASS,     AMULET_CLASS,
         WAND_CLASS,
     };
 
@@ -2570,7 +2558,7 @@ seffect_magic_mapping(struct obj **sobjp)
         return;
     }
     pline("A map coalesces in your mind!");
-    cval = ((scursed) && !confused);
+    cval = (scursed && !confused);
     if (cval)
         HConfusion = 1; /* to screw up map */
     notice_mon_off();
@@ -2594,10 +2582,10 @@ seffect_mail(struct obj **sobjp)
     case 2:
         /* "stamped scroll" created via magic marker--without a stamp */
         if (Role_if(PM_CARTOMANCER))
-                pline("The rules on this card read \"Discard upon use\".");
+            pline("The rules on this card read \"Discard upon use\".");
         else
             pline("This scroll is marked \"%s\".",
-            odd ? "Postage Due" : "Return to Sender");
+                odd ? "Postage Due" : "Return to Sender");
         break;
     case 1:
         /* scroll of mail obtained from bones file or from wishing;
@@ -2938,11 +2926,12 @@ wand_explode(struct obj* obj, int chg /* recharging */, struct monst *mon)
             pline("A wall of force smashes down around you!");
         }
         dmg = d(1 + obj->spe, 6); /* normally 2d12 */
-    } else if (obj->otyp == WAN_NOTHING)
+    } else if (obj->otyp == WAN_NOTHING) {
         dmg = 0;
-    else
+    } else {
         dmg = d(charges, dmg_multiplier);
-    
+    }
+
     /* inflict damage and destroy the wand */
     if (hero_broke) {
         freeinv(obj);       /* hide it from destroy_items instead... */
@@ -2960,7 +2949,6 @@ wand_explode(struct obj* obj, int chg /* recharging */, struct monst *mon)
         
         exploding_wand_efx(obj);
         makeknown(obj->otyp); /* explode describes the effect */
-        
     }
     
     /* Couple janky exceptions */
@@ -3146,7 +3134,7 @@ litroom(
                 radius = 11;
             }
         } else if (obj && obj->oclass == SPBOOK_CLASS) {
-            /* Spell scales with ability but cap at 7 so the scroll is still superior. */
+            /* Spell scales with ability; scroll is still superior. */
             radius = min(7, 2 + (P_SKILL(P_DIVINATION_SPELL) - 1) * 2);
         } else {
             radius = 5;
@@ -3742,7 +3730,7 @@ create_particular_creation(
             if (iflags.wc_underline_peacefuls)
                 /* mpeaceful is only set here, so the previous calls to newsym
                  * will make it look like the monster isn't peaceful. */
-            newsym(mtmp->mx, mtmp->my);
+                newsym(mtmp->mx, mtmp->my);
         }
         if (d->saddled && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
             struct obj *otmp = mksobj(SADDLE, TRUE, FALSE);
@@ -3854,15 +3842,15 @@ create_particular_from_buffer(char* bufp)
 {
     struct _create_particular_data d;
     
-    if (create_particular_parse(bufp, &d)) {
+    if (create_particular_parse(bufp, &d))
         return create_particular_creation(&d);
-    }
 
     return FALSE;
 }
 
 /* This handles a scroll of create monster that is keyed to a
- * specific monster. Used when playing as a cartomancer */
+ * specific monster. Used when playing as a cartomancer.
+ * Caller uses up card. */
 void
 use_moncard(
     struct obj *sobj,
@@ -3873,12 +3861,6 @@ use_moncard(
 
     (void) make_msummoned(pm, &gy.youmonst,
                           sobj->cursed ? FALSE : TRUE, x, y);
-#if 0
-    if (sobj->oclass == SCROLL_CLASS) {
-        obj_extract_self(sobj);
-        obfree(sobj, (struct obj *) 0);
-    }
-#endif
 }
 
 staticfn void
@@ -3893,6 +3875,7 @@ specified_id(void)
     promptbuf[0] = '\0';
     if (flags.verbose)
         You("may learn about any non-artifact.");
+    
 retry:
     Strcpy(promptbuf, "What non-artifact do you want to learn about");
     Strcat(promptbuf, "?");
@@ -3901,6 +3884,7 @@ retry:
     if (buf[0] == '\033') {
         buf[0] = '\0';
     }
+    
     strcpy(bufcpy, buf);
     otyp = name_to_otyp(buf);
     if (otyp == STRANGE_OBJECT) {

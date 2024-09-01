@@ -796,17 +796,16 @@ get_hint(void)
             "Just when you thought NetHack couldn't get any harder...",
             "What do you mean altars crack!?  GAME OVER MAN!",
             "NerfHack IS the One True Variant.",
-            "Not everything is nerfed here... Just sayin'...",
+            "Not everything is nerfed here... Just sayin'",
             "So you wanna be a hero eh?",
-            "The more you die, the more you live.",
-            "Don't fight the nerfs, fight the RNG.",
+            "The more you die, the more you live!",
+            "Don't Hate the Game, Hate the RNG!",
             "Embrace the nerfs!",
             "The pudding is a lie!",
             "Have you heard? Toilets are the new sinks!",
-            "It's a long, dark road to ascension, but well worth it.",
             "Gentlemen, you can't fight in here. This is NerfHack!",
             "Is that NerfHack in your pocket or are you just glad to see me?",
-            "I love the smell of NerfHack in the morning.",
+            "I love the smell of nerfs in the morning.",
             "I have come here to chew bubble gum and NerfHack...",
             "You can't handle the NerfHack!",
             "Keep your friends close, but your devs closer.",
@@ -815,18 +814,17 @@ get_hint(void)
             "I feel the need... the need for NerfHack!",
             "You're the disease, and NerfHack is the cure.",
             "That Dev Deserves His Revenge.",
-            "The first rule of NerfHack is: you do not talk about NerfHack.",
             "Fear leads to anger. Anger leads to hate. Hate leads to NerfHack.",
             "I'm not a smart man... but I know what NerfHack is.",
             "If there's any kind of magic in this world… it must be NerfHack!",
-            "They may take our lives, but they'll never take our NerfHack!",
+            "They may take our lives, but they'll never take our nerfs!",
             "I got a fever! And the only prescription.. is more NerfHack!",
             "I'm sure there's a reason for all the nerfs... I wouldn't want to change anything.",
             "Just when you thought it was safe to go back in the dungeon...",
             "And then... They forced me to play NerfHack!",
             "I knows the difference between nerfs and buffs; I just don't give a damn.",
             "So you're having a bad day? Don't blame NerfHack!",
-            "The InterHack Principle... is a lie!",
+            "The InterHack Principle is a lie!",
             "Dying is the easy part!"
             "Welcome to NerfHack: Where hope goes to die."
             "Because winning is overrated."
@@ -843,7 +841,7 @@ get_hint(void)
             "Your biggest enemy? Hope."
             "Every death is a lesson you'll forget immediately."
             "Get nerfed, stay nerfed."
-            "This dungeon runs you."
+            "This dungeon runs *you*."
             "You've played hard games. Now play the hardest.",
             "Permadeath? More like perma-sad.",
             "The RNG is not your friend. It's your nemesis.",
@@ -857,7 +855,7 @@ get_hint(void)
             "NerfHack: Giving you fewer chances than life itself.",
             "Did you bring your will to live? You'll need it.",
             "If you can't handle the heat, the fireballs will do it for you.",
-            "It's not ‘game over.' It's ‘game never had a chance.'",
+            "It's not 'game over.' It's 'game never had a chance.'",
             "Achievement unlocked: Almost survived.",
             "Every decision is the wrong one.",
             "NerfHack: Because we couldn't make it any harder.",
@@ -866,7 +864,6 @@ get_hint(void)
             "You've entered the dungeon. Your dignity stays behind.",
             "You're gonna need a bigger inventory… but you won't get one.",
             "In NerfHack, no one can hear you scream.",
-            "Frankly, my dear, you won't survive.",
             "Here's looking at you, kid. Now watch yourself die.",
             "I'll be back… but not for long.",
             "May the nerfs be ever in your favor.",

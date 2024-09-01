@@ -1143,7 +1143,6 @@ level_tele(void)
         schedule_goto(&newlevel, UTOTYPE_NONE, (char *) 0, (char *) 0);
         return;
     }
-    
     if ((u.uhave.amulet || In_endgame(&u.uz) || In_sokoban(&u.uz))
         && !wizard) {
         You_feel("very disoriented for a moment.");
@@ -1154,7 +1153,7 @@ level_tele(void)
         int trycnt = 0;
 
         if (tele_pain) {
-            You_feel("a powerful force arise as you prepare to teleport.");
+            You_feel("a powerful force confront you.");
             if (y_n("Continue teleporting?") != 'y')
                 return;
         }
@@ -1199,7 +1198,6 @@ level_tele(void)
 
                 newlevel.dnum = destdnum;
                 newlevel.dlevel = destlev;
-                
                 if (In_endgame(&newlevel) && !In_endgame(&u.uz)) {
                     struct obj *amu;
 
@@ -1219,7 +1217,7 @@ level_tele(void)
             }
 
             if (tele_pain)
-                    teleport_pain();
+                teleport_pain();
         } while (!newlev && !digit(buf[0])
                  && (buf[0] != '-' || !digit(buf[1])) && trycnt < 10);
 

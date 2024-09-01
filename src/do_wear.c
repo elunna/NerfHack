@@ -330,8 +330,6 @@ Boots_off(void)
     case FLYING_BOOTS: {
         /* Copied from AMULET_OF_FLYING */
         boolean was_flying = !!Flying;
-
-        /* remove amulet 'early' to determine whether Flying changes */
         setworn((struct obj *) 0, W_ARMF);
         float_vs_flight(); /* probably not needed here */
         if (was_flying && !Flying) {
@@ -486,7 +484,7 @@ Cloak_off(void)
     default:
         impossible(unknown_type, c_cloak, otyp);
     }
-        /* vampires get a charisma bonus when wearing an opera cloak */
+    /* vampires get a charisma bonus when wearing an opera cloak */
     if (was_opera &&
         maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         ABON(A_CHA) -= 1;
@@ -993,7 +991,7 @@ dragon_armor_handling(
         }
         /* FALLTHROUGH */
     case SHIMMERING_DRAGON_SCALES:
-          if (puton) {
+        if (puton) {
             toggle_displacement(uarm, oldprop, TRUE);
         } else {
             toggle_displacement(otmp, oldprop, FALSE);
@@ -2607,7 +2605,6 @@ find_ac(void)
             uac -= 5;
         else if (P_SKILL(P_SHIELD) == P_MASTER)
             uac -= 8;
-
     }
 
     /* combat boots give +1 AC */
@@ -2660,8 +2657,7 @@ find_ac(void)
         uac = uac + mvl_wtcap * 4;
     }
     
-    /* Wounded legs also bad.
-     * Scale this with weight for some real potency */
+    /* Wounded legs also bad; scales with weight */
     if (Wounded_legs)
         uac += (inv_weight() + weight_cap()) / 100;
     
@@ -2688,9 +2684,7 @@ find_ac(void)
     }
 }
 
-/* NerfHack updates:
- * cursed rings can fall off, unless wearing gloves
- */
+/* cursed rings can fall off, unless wearing gloves */
 void
 glibr(void)
 {
@@ -2699,17 +2693,10 @@ glibr(void)
     boolean leftfall, rightfall, wastwoweap = FALSE;
     const char *otherwep = 0, *thiswep, *which, *hand;
 
-    leftfall = (uleft /* && !uleft->cursed */
-                && (!uwep || !(welded(uwep) && ULEFTY)
+    leftfall = (uleft && (!uwep || !(welded(uwep) && ULEFTY)
                     || !bimanual(uwep)));
-    rightfall = (uright /* && !uright->cursed */
-                && (!uwep || !(welded(uwep) && URIGHTY)
+    rightfall = (uright && (!uwep || !(welded(uwep) && URIGHTY)
                     || !bimanual(uwep)));
-/*
-    leftfall = (uleft && !uleft->cursed
-                && (!uwep || !welded(uwep) || !bimanual(uwep)));
-    rightfall = (uright && !uright->cursed && (!welded(uwep)));
-*/
 
     if (!uarmg && (leftfall || rightfall) && !nolimbs(gy.youmonst.data)) {
         /* changed so cursed rings don't fall off, GAN 10/30/86 */
@@ -3386,9 +3373,8 @@ destroy_arm(
     if (choose) {
         ochoice = getobj("destroy", takeoff_ok, GETOBJ_PROMPT);
         /* prevent player from selecting non-worn armor */
-        if (ochoice && (ochoice->owornmask & W_ARMOR)) {
+        if (ochoice && (ochoice->owornmask & W_ARMOR))
             atmp = ochoice;
-        }
     }
     
     /*
@@ -3617,8 +3603,8 @@ race_bonus(struct obj *obj)
         return 1;
 
     /* Racial preferences in armor. Some races really hate wearing the armor
-    * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
-    * too. For each piece of hated armor, the player gets a +2AC penalty. */
+     * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
+     * too. For each piece of hated armor, the player gets a +2AC penalty. */
     if (hates_item(&gy.youmonst, obj->otyp))
         return -2;
 

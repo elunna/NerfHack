@@ -791,6 +791,7 @@ do_play_instrument(struct obj *instr)
         Your("%s are occupied!", makeplural(body_part(HAND)));
         return ECMD_OK;
     }
+
     /* eroded instruments can break */
     if (!instr->oartifact && erosion_level > 0 
             && rnd(7) <= erosion_level) {
@@ -854,12 +855,6 @@ do_play_instrument(struct obj *instr)
                         record_achievement(ACH_TUNE);
                         if (levl[x][y].typ == DRAWBRIDGE_DOWN) {
                             if (!rn2(5)) {
-                                /* Future improvement: if flags is ever
-                                 * expanded beyond 5 bits, could set a
-                                 * bit here to make the mechanism
-                                 * continue to be stuck until some
-                                 * condition is met, such as
-                                 * opening/closing magic used on it */
                                 pline_The( "mechanism seems to get jammed.");
                                 pline("It won't close.");
                                 return ECMD_TIME;

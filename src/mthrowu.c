@@ -21,7 +21,7 @@ staticfn int m_lined_up(struct monst *, struct monst *) NONNULLARG12;
  */
 static NEARDATA const char *breathwep[] = {
     "fragments", "fire", "frost", "sleep gas", "a disintegration blast",
-    "lightning", "poison gas", "acid", "a necrotic blast", 
+    "lightning", "poison gas", "acid", "a necrotic blast",
     "a disorienting blast",
 };
 
@@ -144,10 +144,8 @@ thitu(
                (potions deliberately thrown at hero are handled by m_throw) */
             potionhit(&gy.youmonst, obj, POTHIT_OTHER_THROW);
             *objp = obj = 0; /* potionhit() uses up the potion */
-
-
-            /* 1 in 100 chance of beheading */
         } else if (obj->otyp == BARDICHE && !rn2(100)) {
+             /* 1 in 100 chance of beheading */
             static const char *const behead_msg[2] = { "beheads",
                                                        "decapitates" };
             if (!has_head(gy.youmonst.data)) {
@@ -212,13 +210,13 @@ drop_throw(
     }
 
     /* D: Detonate crossbow bolts from Hellfire if they hit */
-    if (ohit && mon_launcher && mon_launcher->oartifact == ART_HELLFIRE
-        && is_ammo(obj) && ammo_and_launcher(obj, mon_launcher)) {
+    if (ohit && mon_launcher
+        && mon_launcher->oartifact == ART_HELLFIRE
+        && is_ammo(obj)
+        && ammo_and_launcher(obj, mon_launcher)) {
         explode(x, y, BZ_M_SPELL(ZT_FIRE), d(2, 6),
                 WEAPON_CLASS, EXPL_FIERY);
-        
-        /* D: Exploding bolts will be destroyed */
-        broken = TRUE;
+        broken = TRUE; /* D: Exploding bolts will be destroyed */
     }
     
     if (broken) {
@@ -639,7 +637,8 @@ m_throw(
     singleobj->owornmask = 0; /* threw one of multiple weapons in hand? */
     
     /* D: Special launcher effects */
-    if (mwep && is_ammo(singleobj) && ammo_and_launcher(singleobj, mwep)) {
+    if (mwep && is_ammo(singleobj)
+          && ammo_and_launcher(singleobj, mwep)) {
         if (mwep->oartifact == ART_PLAGUE && is_poisonable(singleobj))
             singleobj->opoisoned = 1;
         /* D: Hellfire is handled in drop_throw */
@@ -741,7 +740,7 @@ m_throw(
                     
                     /* Plague physical bonus */
                     if (MON_WEP(mon) && MON_WEP(mon)->oartifact == ART_PLAGUE 
-                        &&  objects[singleobj->otyp].oc_skill == P_BOW)
+                        && objects[singleobj->otyp].oc_skill == P_BOW)
                         dam += rnd(7);
                     
                     if (bigmonst(gy.youmonst.data))
@@ -749,18 +748,16 @@ m_throw(
                     hitv += 8 + singleobj->spe;
                     
                     /* M3_ACCURATE monsters get a significant bonus here */
-                    if (is_accurate(mon->data)) {
+                    if (is_accurate(mon->data))
                         hitv += mon->m_lev + 1;
-                    }
                     
                     /* Find rings of increase accuracy */
                     hitv += mring_bon(mon, RIN_INCREASE_ACCURACY);
 
                     /* Find rings of increase damage */
                     dam += mring_bon(mon, RIN_INCREASE_DAMAGE);
+                    dam = (dam < 1) ? 1 : dam;
 
-                    if (dam < 1)
-                        dam = 1;
                     hitu = thitu(hitv, dam, &singleobj, (char *) 0);
                 }
             }

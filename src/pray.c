@@ -227,8 +227,6 @@ in_trouble(void)
         return TROUBLE_RABID;
     if (Withering)
         return TROUBLE_WITHERING;
-    /* Yes, TROUBLE_STARVING is returned twice; being Fainting at low HP is
-     * worse than being Weak at low HP */
     if (u.uhs >= WEAK)
         return TROUBLE_STARVING;
     if (region_danger())
@@ -917,7 +915,7 @@ gcrownu(void)
                 given++;
             }
             break;
-        case 10:
+        case 9:
             if (!(HSick_resistance & FROMOUTSIDE)) {
                 You_feel(Hallucination ? "the jab, man." : "immune.");
                 HSick_resistance |= FROMOUTSIDE;
@@ -926,6 +924,7 @@ gcrownu(void)
             break;
         }
     }
+
     if (!given) {
          if (Role_if(PM_CAVE_DWELLER) && !rn2(10)) {
             pline("Unfortunately, nothing happens.");
@@ -1506,7 +1505,8 @@ pleased(aligntyp g_align)
             case 7:
             case 8:
                 /* Crowning requires maximized luck */
-                if (u.ualign.record >= 0 && !u.uevent.uhand_of_elbereth && Luck == 13) {
+                if (u.ualign.record >= PIOUS && Luck == 13
+                    && !u.uevent.uhand_of_elbereth) {
                     gcrownu();
                     break;
                 }
@@ -2049,11 +2049,11 @@ bestow_artifact(void)
             }
             
             /* If more than 2 gifts have been granted, the altar can crack. */
-            if ((u.ugifts > 2 && !rn2(2)) 
+            if ((u.ugifts > 2 && !rn2(2))
                 /* If the player is already crowned, it definitely cracks. */
-                    || u.uevent.uhand_of_elbereth
+                || u.uevent.uhand_of_elbereth
                 /* If the altar is already cracked - sorry... */
-                    || lev->cracked) 
+                || lev->cracked) 
                 crackaltar();
             return TRUE;
         }
@@ -2097,6 +2097,7 @@ crackaltar(void)
         }
     }
 }
+
 /* the #offer command - sacrifice something to the gods */
 int
 dosacrifice(void)
@@ -2443,9 +2444,9 @@ dopray(void)
     /* Praying to the Porcelain God */
     if (IS_TOILET(levl[u.ux][u.uy].typ) && !Levitation) {
         /* Unlike normal prayer, we need to be on the ground and
-            preferably quite close to the toilet. If we are levitating
-            we will skip straight to standard prayer since the player
-            already went through a prompt. */
+           preferably quite close to the toilet. If we are levitating
+           we will skip straight to standard prayer since the player
+           already went through a prompt. */
         You("pray to the Porcelain God.");
         
         if (!Sick && !HConfusion && !HStun && !Vomiting) {
@@ -2553,7 +2554,6 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
             losehp(rnd(20), "residual undead turning effect", KILLED_BY_AN);
         } else {
             u.lastprayresult = PRAY_BAD;
-            /* Starting vampires are inherently vampiric */
             losehp(rnd(20), "residual undead turning effect", KILLED_BY_AN);
             pline("You get the idea that %s will be of little help to you.",
                   align_gname(alignment));

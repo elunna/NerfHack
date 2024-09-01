@@ -4248,7 +4248,7 @@ staticfn long
 getprice(struct obj *obj, boolean shk_buying)
 {
     long tmp = (long) objects[obj->otyp].oc_cost;
-
+    
     /* Scale summon card price with monster difficulty */
     if (obj->otyp == SCR_CREATE_MONSTER && obj->corpsenm != NON_PM) {
         tmp = 10L * mons[obj->corpsenm].difficulty;
@@ -5313,8 +5313,8 @@ pay_for_damage(const char *dmgstr, boolean cant_mollify)
         } else
             growl(shkp);
         hot_pursuit(shkp);
-	if (!Uevil_inherently)
-	    adjalign(-sgn(u.ualign.type));
+        if (!Uevil_inherently)
+            adjalign(-sgn(u.ualign.type));
     }
 }
 
@@ -5557,7 +5557,7 @@ shk_chat(struct monst *shkp)
               (!Deaf && !muteshk(shkp)) ? "warns you" : "indicates",
               noit_mhe(shkp));
     } else if (carrying(FOULSTONE)) {
-         pline("%s %s that you stink and should leave immediately.",
+        pline("%s %s that you stink and should leave immediately.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "reminds you" : "indicates");
     } else if ((shkmoney = money_cnt(shkp->minvent)) < 50L) {

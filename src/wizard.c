@@ -595,17 +595,17 @@ nasty(struct monst *summoner, boolean centered_on_stairs)
         s_cls = summoner ? summoner->data->mlet : 0;
         difcap = summoner ? summoner->data->difficulty : 0; /* spellcasters */
         castalign = summoner ? sgn(summoner->data->maligntyp) : 0;
-	tmp = (u.ulevel > 3) ? u.ulevel/3 : 1;
-	/* if we don't have a casting monster, nasties appear around hero,
-	 * ...unless we're being called with the 'stairs' flag to block the
-	 * adventurer's return with the amulet */
-	if (centered_on_stairs) {
-            choose_stairs(&sx, &sy, FALSE);
-            bypos.x = sx;
-            bypos.y = sy;
-	} else {
-            bypos.x = u.ux;
-            bypos.y = u.uy;
+        tmp = (u.ulevel > 3) ? u.ulevel/3 : 1;
+        /* if we don't have a casting monster, nasties appear around hero,
+        * ...unless we're being called with the 'stairs' flag to block the
+        * adventurer's return with the amulet */
+        if (centered_on_stairs) {
+                choose_stairs(&sx, &sy, FALSE);
+                bypos.x = sx;
+                bypos.y = sy;
+        } else {
+                bypos.x = u.ux;
+                bypos.y = u.uy;
         }
         for (i = rnd(tmp); i > 0 && count < MAXNASTIES; --i) {
             /* Of the 44 nasties[], 10 are lawful, 14 are chaotic,

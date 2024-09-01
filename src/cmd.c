@@ -920,9 +920,9 @@ domonability(void)
     } else if (is_unicorn(uptr)) {
         use_unicorn_horn((struct obj **) 0);
         return ECMD_TIME;
-    } else if (gy.youmonst.data->msound == MS_SHRIEK 
-               || gy.youmonst.data->msound == MS_ATHOL) {
-        if (gy.youmonst.data->msound == MS_SHRIEK)
+    } else if (uptr->msound == MS_SHRIEK 
+               || uptr->msound == MS_ATHOL) {
+        if (uptr->msound == MS_SHRIEK)
             You("shriek.");
         else
             You("howl 'athool!'");
@@ -4962,8 +4962,7 @@ readchar_poskey(coordxy *x, coordxy *y, int *mod)
 static int
 find_remembered_stairs(boolean upstairs, coord *cc)
 {
-    int k, x, y;
-    int stair, sladder, sbranch;
+    int k, x, y, stair, sladder, sbranch;
     int found_stairs = 0;
     if (upstairs) {
         stair = S_upstair;
@@ -4994,8 +4993,7 @@ find_remembered_stairs(boolean upstairs, coord *cc)
             if (levl[x][y].seenv) {
                 k = back_to_glyph(x, y);
 
-                if (glyph_is_cmap(k) &&
-                    (glyph_to_cmap(k) == stair
+                if (glyph_is_cmap(k) && (glyph_to_cmap(k) == stair
                      || glyph_to_cmap(k) == sladder
                      || glyph_to_cmap(k) == sbranch)) {
                     if (found_stairs == 0) {
@@ -5007,7 +5005,6 @@ find_remembered_stairs(boolean upstairs, coord *cc)
             }
         }
     }
-
     return found_stairs;
 }
 

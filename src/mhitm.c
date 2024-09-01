@@ -88,7 +88,7 @@ missmm(
                     rn2(3) ? "blocks" : "deflects");
             pline("%s %s attack.", buf, s_suffix(mon_nam_too(magr, mdef)));
         }
-        else  {
+        else {
            pline("%s %s %s.", Monnam(magr),
                  (magr->mcan || !could_seduce(magr, mdef, mattk)) ? "misses"
                      : "pretends to be friendly to",
@@ -354,7 +354,6 @@ mattackm(
     tmp += mring_bon(magr, RIN_INCREASE_ACCURACY);
     
     if (calculate_flankers(magr, mdef)) {
-        /* Scale with monster difficulty */
         ftmp = flank_bonus(magr);
         tmp += ftmp;
         if (canseemon(magr)) {
@@ -408,7 +407,7 @@ mattackm(
        one because repeating the same failing hit (or even an ordinary
        tentacle miss) is very verbose and makes the flayer look stupid.
        
-       NerfHack updates: Assume the mind flayer is intelligent and won't
+       NerfHack: Assume mind flayer is intelligent and won't
        self destruct on cockatrices, etc. */
     gs.skipdrin = touch_petrifies(mdef->data)
         && !(mdef->mconf || mdef->mstun || mdef->mrabid || Conflict); 
@@ -741,9 +740,9 @@ hitmm(
             case AT_BITE:
                 Snprintf(buf, sizeof(buf), "%s %s", magr_name,
                          has_beak(magr->data) ? "pecks" : "bites");
-                    break;
-                case AT_KICK:
-                    Snprintf(buf, sizeof(buf), "%s kicks", magr_name);
+                break;
+            case AT_KICK:
+                Snprintf(buf, sizeof(buf), "%s kicks", magr_name);
                 break;
             case AT_STNG:
                 Snprintf(buf, sizeof buf, "%s stings", magr_name);

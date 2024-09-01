@@ -410,8 +410,7 @@ dmgval_core(
         tmp = 0;
     
     if (otmp->oclass == GEM_CLASS && ptr && thick_skinned(ptr))
-        /* pebbles don't penetrate */
-        tmp = 0;
+        tmp = 0; /* pebbles don't penetrate */
     
     if (ptr && ptr == &mons[PM_SHADE] && !shade_glare(otmp))
         tmp = 0;
@@ -1262,7 +1261,6 @@ skill_training_percent(int skill)
     return percent;
 }
 
-
 /* copy the skill level name into the given buffer */
 char *
 skill_level_name(int level, char *buf)
@@ -1893,7 +1891,8 @@ weapon_dam_bonus(struct obj *weapon)
         }
     }
 
-    /* add a little damage bonus for higher-level characters so the stronger monsters aren't too overpowered --Amy */
+    /* add a little damage bonus for higher-level characters so
+     * the stronger monsters aren't too overpowered --Amy */
 	if (u.ulevel >= 10)
         bonus += 1;
     /* Post level 20 grants very juicy rewards: */

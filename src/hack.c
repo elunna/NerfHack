@@ -1134,6 +1134,7 @@ test_move(
                 if (still_chewing(x, y))
                     return FALSE;
             } else if (svc.context.run || moverock() < 0)
+                /* Don't move boulders if we are running. */
                 return FALSE;
         } else if (mode == TEST_TRAV) {
             struct obj *obj;
@@ -2119,13 +2120,13 @@ domove_swap_with_pet(struct monst *mtmp, coordxy x, coordxy y)
              */
             if (rn2(4)) {
                 u.ugangr++;
-		if (Uevil_inherently) {
-		    You_feel("somewhat guilty about losing your pet.");
+                if (Uevil_inherently) {
+                    You_feel("somewhat guilty about losing your pet.");
                     adjalign(-3);
-		} else {
-		    You_feel("guilty about losing your pet like this.");
-		    adjalign(-15);
-		}
+                } else {
+                    You_feel("guilty about losing your pet like this.");
+                    adjalign(-15);
+                }
             }
             break;
         default:
@@ -2941,7 +2942,7 @@ maybe_smudge_engr(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
         if ((x2 != x1 || y2 != y1)
                 && (ep = engr_at(x2, y2)) && ep->engr_type != HEADSTONE)
             wipe_engr_at(x2, y2, rnd(5), FALSE);
-        /* Wipe away any blood on the floor */
+        /* Maybe wipe away blood on the floor */
         if (levl[x1][y1].splatpm && !rn2(20))
             wipe_blood(x1, y1);
     }

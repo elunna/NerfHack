@@ -86,7 +86,7 @@ static const char *const a_your[2] = { "a", "your" };
 static const char *const A_Your[2] = { "A", "Your" };
 static const char tower_of_flame[] = "tower of flame";
 static const char *const A_gush_of_water_hits = "A gush of water hits";
-static const char *const A_gush_of_grease_hits = "A gush of grease hits";
+static const char *const A_gush_of_grease_hits = "A glob of grease hits";
 static const char *const blindgas[6] = { "humid",   "odorless",
                                          "pungent", "chilling",
                                          "acrid",   "biting" };
@@ -325,9 +325,9 @@ erode_obj(
 
         return ER_DAMAGED;
     } else if (ef_flags & EF_DESTROY
-               /* Don't let the player easily rust away the ball and chain
-                * from punishment! */
-               && otmp != uball && otmp != uchain) {
+            /* Don't let the player easily rust away the ball and chain
+            * from punishment! */
+            && otmp != uball && otmp != uchain) {
         otmp->in_use = 1; /* in case of hangup during message w/ --More-- */
         if (uvictim || vismon || visobj) {
             char actbuf[BUFSZ];
@@ -1476,7 +1476,7 @@ trapeffect_rocktrap(
             trapkilled = TRUE;
         
         /* Stun if damage was over 6. */
-        if (!trapkilled && (old_mhp - mtmp->mhp) > 6) {
+        if (!trapkilled && (old_mhp - mtmp->mhp) > 6 && !mtmp->mstun) {
             if (canseemon(mtmp))
                 pline("%s %s for a moment.", Monnam(mtmp),
                         makeplural(stagger(mtmp->data, "stagger")));
@@ -1842,7 +1842,7 @@ trapeffect_grease_trap(
     struct obj *otmp;
     
     if (mtmp == &gy.youmonst) {
-        /* Make fumbling (like stepping in a puddle grease) */
+        /* Stepping in a puddle grease */
         if (!Levitation && !Flying && !rn2(2)) {
  
             /* Usually fall off steed if riding */
@@ -1853,7 +1853,7 @@ trapeffect_grease_trap(
                 otmp = which_armor(u.usteed, W_SADDLE);
                 otmp->greased = 1;
                 dismount_steed(DISMOUNT_FELL);
-				losehp(Maybe_Half_Phys(d(2, 3)), "bucked off a steed that slipped on grease", KILLED_BY);
+				losehp(Maybe_Half_Phys(d(2, 3)), "bucked off a greased steed", KILLED_BY);
 				nomul(-rnd(4));
             } else {
                 if (uarmf && (objdescr_is(uarmf, "mud boots") 
@@ -1868,7 +1868,6 @@ trapeffect_grease_trap(
                     You("almost slip on a puddle of grease!");
                 }
 			}
-
             make_feet_greasy();
             seetrap(trap);
             trap->once = 1;
@@ -2324,7 +2323,7 @@ trapeffect_pit(
         }
         if (uarmf && objdescr_is(uarmf, "hiking boots") && !Sokoban
             && !plunged && !u.usteed && !Blind) {
-            pline("With your hiking boots, you effortlessly maneuver around the pit!");
+            You("effortlessly hike around the pit!");
             if (Fumbling && rn2(2))
                 ; /* You are still clumsy */
             else
@@ -2858,7 +2857,7 @@ trapeffect_anti_magic(
                but isn't cumulative if hero has more than one */
             if (Half_physical_damage || Half_spell_damage)
                 dmgval2 += rnd(4);
-            /* give Magicbane wielder dose of own medicine */
+            /* give magic staff wielders a dose of own medicine */
             if (u_wield_art(ART_MAGICBANE) || u_wield_art(ART_ORIGIN))
                 dmgval2 += rnd(4);
             /* having an artifact--other than own quest one--which
@@ -3000,7 +2999,7 @@ trapeffect_poly_trap(
                 seetrap(trap);
             if (!rn2(7)) {
                 if (in_sight)
-                    pline("The polymorph trap evaporates in a puff of mist!");
+                    pline("The polymorph trap folds in on itself!");
                 deltrap(trap);
             }
         }
@@ -3134,7 +3133,6 @@ trapeffect_landmine(
 }
 #undef MINE_TRIGGER_WT
 
-
 staticfn int
 trapeffect_spear_trap(
     struct monst* mtmp,
@@ -3208,7 +3206,6 @@ trapeffect_spear_trap(
                : mtmp->mtrapped ? Trap_Caught_Mon
                                 : Trap_Effect_Finished;
     }
-    
     return Trap_Effect_Finished;
 }
 
@@ -5020,7 +5017,7 @@ domagictrap(void)
             HConfusion = save_conf;
             break;
         }
-        case 21: { /* Destroy armor - ZOMG */
+        case 21: { /* Destroy armor! */
             m_destroy_armor((struct monst *) 0, &gy.youmonst);
             break;
         }
@@ -5330,7 +5327,7 @@ water_damage(
         wet_a_towel(obj, -rnd(7 - obj->spe), TRUE);
         return ER_NOTHING;
     } else if (obj->greased) {
-        if (!rn2(3)) {
+        if (!rn2(2)) {
             obj->greased = 0;
             if (in_invent) {
                 pline_The("grease on %s washes off.", yname(obj));
@@ -5702,16 +5699,14 @@ drown(void)
      * calling it. If water walking boots prevent the player from falling in,
      * they should become identified. */
     if (Wwalking) {
-        if (u.uinwater) {
+        if (u.uinwater)
             impossible("drown: in water but also water walking?");
-        }
         /* maybe we were called because the hero moved or fell into a pool; if
          * so, assuming the only source of water walking is water walking
          * boots, identify them. */
         if (uarmf 
             && uarmf->otyp == WATER_WALKING_BOOTS
             && !objects[WATER_WALKING_BOOTS].oc_name_known) {
-            
             Your("boots don't sink into the water!");
             makeknown(WATER_WALKING_BOOTS);
         }
@@ -5822,14 +5817,6 @@ drown(void)
     }
     set_uinwater(1); /* u.uinwater = 1 */
     urgent_pline("You drown.");
-
-    /* [ALI] Vampires return to vampiric form on drowning.  */
-    if (Upolyd && !Unchanging && Race_if(PM_VAMPIRE)) {
-	rehumanize();
-	u.uinwater = 0;
-	You("fly up out of the water!");
-	return (TRUE);
-    }
 
     /* first pass is survivable by using up an amulet of life-saving or by
        answering no to "Die?" in explore|wizard mode; second pass can only
@@ -6226,7 +6213,6 @@ disarm_holdingtrap(struct trap *ttmp)
     return 1;
 }
 
-
 /* convert a rust trap into a fountain */
 staticfn int
 disarm_rust_trap(struct trap *ttmp) /* Paul Sonier */
@@ -6239,6 +6225,7 @@ disarm_rust_trap(struct trap *ttmp) /* Paul Sonier */
     deltrap(ttmp);
     /* updates level.flags.nfountains */
     set_levltyp(x, y, FOUNTAIN);
+    /* Never create a magic fountain */
     levl[x][y].looted = 0;
     levl[x][y].blessedftn = 0;
     SET_FOUNTAIN_LOOTED(x, y);
@@ -7468,7 +7455,6 @@ lava_effects(void)
     /* only applicable for water walking */
     const int dmg = resist_reduce(d(6, 6), FIRE_RES); 
     
-
     if (iflags.in_lava_effects) {
         debugpline0("Skipping recursive lava_effects().");
         return FALSE;

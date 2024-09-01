@@ -293,7 +293,6 @@ read_engr_at(coordxy x, coordxy y)
     struct engr *ep = engr_at(x, y);
     const char *eloc = surface(x, y);
     int sensed = 0;
-    
         
     /* Sensing an engraving does not require sight,
      * nor does it necessarily imply comprehension (literacy).
@@ -395,10 +394,11 @@ make_engr_at(
     if (!strcmp(s, "Elbereth")) {
         /* engraving "Elbereth":  if done when making a level, it creates
            an old-style Elbereth that deters monsters when any objects are
-           present; NerfHack update - no longer exercises wisdom */
+           present; */
         if (gi.in_mklev) {
             ep->guardobjects = 1;
         } else {
+            /* NerfHack update - no longer exercises wisdom */
             u.uconduct.elbereth++;
         }
     }
@@ -541,10 +541,10 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     boolean was_unkn = !objects[de->otmp->otyp].oc_name_known;
 
     if (de->otmp->otyp == WAN_WONDER) {
-	de->otmp->otyp = WAN_LIGHT + rn2(WAN_LIGHTNING - WAN_LIGHT);
-	if (was_unkn)
-	    You("have found a wand of wonder!");
-	de->wonder = TRUE;
+	    de->otmp->otyp = WAN_LIGHT + rn2(WAN_LIGHTNING - WAN_LIGHT);
+        if (was_unkn)
+            You("have found a wand of wonder!");
+        de->wonder = TRUE;
     }
     switch (de->otmp->otyp) {
         /* DUST wands */
@@ -555,8 +555,8 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_CREATE_MONSTER:
     case WAN_WISHING:
     case WAN_ENLIGHTENMENT:
-	if (de->wonder)
-	    de->otmp->otyp = WAN_WONDER;
+        if (de->wonder)
+            de->otmp->otyp = WAN_WONDER;
         zapnodir(de->otmp);
         break;
         /* IMMEDIATE wands */
@@ -642,7 +642,8 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_MAGIC_MISSILE:
         de->ptext = TRUE;
         if (!Blind) {
-            Sprintf(de->post_engr_text, "The %s is riddled by bullet holes!",
+            Sprintf(de->post_engr_text,
+                    "The %s is riddled by bullet holes!",
                     surface(u.ux, u.uy));
             de->postknown = TRUE;
         } else if (!Deaf) {
@@ -733,7 +734,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
         }
         Strcpy(de->post_engr_text,
                (Blind && !Deaf) ? "You hear drilling!" /* Deaf-aware */
-               : Blind          ? "You feel tremors."
+               : Blind ? "You feel tremors."
                : IS_GRAVE(levl[u.ux][u.uy].typ)
                    ? "Chips fly out from the headstone."
                : de->frosted ? "Ice chips fly up from the ice surface!"
@@ -777,7 +778,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             Sprintf(de->post_engr_text,
                     "The bugs on the %s seem to be covered with goo!",
                     surface(u.ux, u.uy));
-	    if (was_unkn && !de->wonder) {
+            if (was_unkn && !de->wonder) {
                 if (flags.verbose)
                     pline("This %s is a wand of corrosion!", xname(de->otmp));
                 de->preknown = TRUE;

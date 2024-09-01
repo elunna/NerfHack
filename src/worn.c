@@ -726,8 +726,6 @@ find_mac(struct monst *mon)
                 base -= 1;
             else if (is_dwarf(mon->data) && is_dwarvish_armor(obj->otyp))
                 base -= 1;
-            
-            
         }
     }
     /* Bonus for polearms still applies for monsters! */
@@ -785,7 +783,6 @@ m_dowear(struct monst *mon, boolean creation)
     mw = MON_WEP(mon);
     cursed_glove = (which_armor(mon, W_ARMG)
 			    && which_armor(mon, W_ARMG)->cursed);
-
 
     /* Two ring per monster; ring takes up a "hand" slot
      * - can't put on rings with cursed gloves

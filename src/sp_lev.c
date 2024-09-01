@@ -946,7 +946,7 @@ flip_level_rnd(int flp, boolean extras)
     int c = 0;
     
     if (In_sokoban(&u.uz) && flags.noflipsoko) {
-        /* Forcing non-flipped Soko *DOES* break the rules - mmmmkay? */
+        /* Forcing non-flipped Sokoban breaks the rules. */
         sokoban_guilt();
         return;
     }
@@ -1716,7 +1716,7 @@ create_door(room_door *dd, struct mkroom *broom)
                 else
                     dd->mask = D_CLOSED;
                 if (dd->mask != D_ISOPEN
-                    && level_difficulty() >= 10 && !rn2(25))
+                    && level_difficulty() >= 8 && !rn2(25))
                     dd->mask |= D_TRAPPED;
             } else
                 dd->mask = D_NODOOR;
@@ -1726,7 +1726,7 @@ create_door(room_door *dd, struct mkroom *broom)
             else
                 dd->mask = D_CLOSED;
 
-            if (level_difficulty() >= 10 && !rn2(20))
+            if (level_difficulty() >= 8 && !rn2(20))
                 dd->mask |= D_TRAPPED;
         }
     }
@@ -3892,33 +3892,33 @@ static const struct {
     const char *name;
     int type;
 } room_types[] = {
-    { "ordinary", OROOM },
-    { "themed", THEMEROOM },
-    { "throne", COURT },
-    { "swamp", SWAMP },
-    { "vault", VAULT },
-    { "beehive", BEEHIVE },
-    { "morgue", MORGUE },
-    { "barracks", BARRACKS },
-    { "zoo", ZOO },
-    { "realzoo", REALZOO },
-    { "delphi", DELPHI },
-    { "temple", TEMPLE },
-    { "anthole", ANTHOLE },
-    { "cocknest", COCKNEST },
-    { "leprehall", LEPREHALL },
-    { "shop", SHOPBASE },
-    { "armor shop", ARMORSHOP },
-    { "scroll shop", SCROLLSHOP },
-    { "potion shop", POTIONSHOP },
-    { "weapon shop", WEAPONSHOP },
-    { "food shop", FOODSHOP },
-    { "ring shop", RINGSHOP },
-    { "wand shop", WANDSHOP },
-    { "tool shop", TOOLSHOP },
-    { "book shop", BOOKSHOP },
-    { "health food shop", FODDERSHOP },
-    { "candle shop", CANDLESHOP },
+    { "ordinary",           OROOM },
+    { "themed",             THEMEROOM },
+    { "throne",             COURT },
+    { "swamp",              SWAMP },
+    { "vault",              VAULT },
+    { "beehive",            BEEHIVE },
+    { "morgue",             MORGUE },
+    { "barracks",           BARRACKS },
+    { "zoo",                ZOO },
+    { "realzoo",            REALZOO },
+    { "delphi",             DELPHI },
+    { "temple",             TEMPLE },
+    { "anthole",            ANTHOLE },
+    { "cocknest",           COCKNEST },
+    { "leprehall",          LEPREHALL },
+    { "shop",               SHOPBASE },
+    { "armor shop",         ARMORSHOP },
+    { "scroll shop",        SCROLLSHOP },
+    { "potion shop",        POTIONSHOP },
+    { "weapon shop",        WEAPONSHOP },
+    { "food shop",          FOODSHOP },
+    { "ring shop",          RINGSHOP },
+    { "wand shop",          WANDSHOP },
+    { "tool shop",          TOOLSHOP },
+    { "book shop",          BOOKSHOP },
+    { "health food shop",   FODDERSHOP },
+    { "candle shop",        CANDLESHOP },
     { 0, 0 }
 };
 

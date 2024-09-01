@@ -515,12 +515,7 @@ mkrivers(void)
 staticfn void
 makeriver(int x1, int y1, int x2, int y2)
 {
-    int cx, cy;
-    int dx, dy;
-    int chance;
-    int count = 0;
-    int monstcount = rnd(4);
-
+    int cx, cy, dx, dy, chance, count = 0, monstcount = rnd(4);
     cx = x1;
     cy = y1;
 
@@ -547,7 +542,6 @@ makeriver(int x1, int y1, int x2, int y2)
         if (rn2(100) < chance && !t_at(cx, cy)) {
             levl[cx][cy].typ = !rn2(3) ? POOL : MOAT;
             levl[cx][cy].lit = 1;
-            
       	}
 
         if (cx == x2 && cy == y2)
@@ -568,8 +562,7 @@ makeriver(int x1, int y1, int x2, int y2)
             dy = 0;
 
         switch (rn2(16)) {
-            default:
-                break;
+            default: break;
             case 1: dx--; dy--;
                 break;
             case 2: dx++; dy--;
@@ -592,6 +585,7 @@ makeriver(int x1, int y1, int x2, int y2)
             dx = -1;
         else if (dx > 1)
             dx = 1;
+        
         if (dy < -1)
             dy = -1;
         else if (dy > 1)
@@ -604,6 +598,7 @@ makeriver(int x1, int y1, int x2, int y2)
             cx = 0;
         else if (cx >= COLNO)
             cx = COLNO - 1;
+        
         if (cy < 0)
             cy = 0;
         else if (cy >= ROWNO)
@@ -621,10 +616,12 @@ makeriver(int x1, int y1, int x2, int y2)
                 (void) makemon(rn2(20) ? &mons[PM_JELLYFISH +
                                                rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)]
                                        : rn2(8) ? &mons[PM_WATER_MOCCASIN]
-                                                : &mons[PM_WATER_TROLL], cx, cy, NO_MM_FLAGS);
+                                                : &mons[PM_WATER_TROLL], 
+                                                cx, cy, NO_MM_FLAGS);
             } else {
                 (void) makemon(&mons[PM_JELLYFISH +
-                               rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)], cx, cy, NO_MM_FLAGS);
+                               rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)], 
+                               cx, cy, NO_MM_FLAGS);
             }
             monstcount--;
         }

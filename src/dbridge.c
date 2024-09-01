@@ -999,7 +999,6 @@ destroy_drawbridge(coordxy x, coordxy y)
                 && couldsee(mtmp->mx, mtmp->my)) {
                 mon_yells(mtmp, "Halt, vandal!  You're under arrest!");
                 (void) angry_guards(FALSE);
-
                 break;
             }
         }

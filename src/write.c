@@ -294,7 +294,7 @@ dowrite(struct obj *pen)
         return ECMD_TIME;
     }
 
-    /* cartomancers feel guilty for counterfeiting */
+    /* Cartomancer rules */
     if (Role_if(PM_CARTOMANCER) && paper->oclass == SCROLL_CLASS) {
         You("feel incredibly guilty about forging a card!");
         adjalign(-20);

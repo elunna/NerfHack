@@ -115,8 +115,7 @@ setuwep(struct obj *obj)
         && (u_wield_art(ART_OGRESMASHER)
             || is_art(olduwep, ART_OGRESMASHER)))
         disp.botl = TRUE;
-    if (uwep == obj
-        && (u_wield_art(ART_GIANTSLAYER)
+    if (uwep == obj && (u_wield_art(ART_GIANTSLAYER)
             || is_art(olduwep, ART_GIANTSLAYER)))
         disp.botl = TRUE;
 
@@ -855,12 +854,14 @@ can_twoweapon(void)
         pline("%s isn't one-handed.", Yname2(otmp));
     } else if (uarms) {
         You_cant("use two weapons while wearing a shield.");
-    /* Adapted from EvilHack:
-     * Allow two-weaponing with an artifact, but not if they are of
-     * opposite alignements. As expected, neutral artifacts don't care */
+    /* Adapted from EvilHack: Allow two-weaponing with an artifact,
+     * but not if they are of opposite alignements. As expected,
+     * neutral artifacts don't care */
     } else if (uswapwep->oartifact
-               && ((is_lawful_artifact(uswapwep) && is_chaotic_artifact(uwep))
-                   || (is_chaotic_artifact(uswapwep) && is_lawful_artifact(uwep)))) {
+               && ((is_lawful_artifact(uswapwep)
+                        && is_chaotic_artifact(uwep))
+                   || (is_chaotic_artifact(uswapwep)
+                        && is_lawful_artifact(uwep)))) {
         pline("%s being held second to %s!",
               Yobjnam2(uswapwep, "resist"), artiname(uwep->oartifact));
     } else if (uswapwep->otyp == CORPSE && cant_wield_corpse(uswapwep)) {
@@ -944,7 +945,6 @@ dotwoweapon(void)
         }
         set_twoweap(TRUE); /* u.twoweap = TRUE */
         update_inventory();
-
         return (rnd(20) > ACURR(A_DEX)) ? ECMD_TIME : ECMD_OK;
     }
     return ECMD_OK;

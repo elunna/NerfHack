@@ -69,7 +69,7 @@ static const struct innate {
 
   ran_abil[] = { { 1, &(HSearching), "", "" },
                  { 7, &(HStealth), "stealthy", "" },
-                 { 15, &(HSee_invisible), "insightful", "ignorant" },
+                 { 15, &(HSee_invisible), "insightful", "obtuse" },
                  { 0, 0, 0, 0 } },
 
   rog_abil[] = { { 1, &(HStealth), "", "" },
@@ -97,7 +97,7 @@ static const struct innate {
   dwa_abil[] = { { 0, 0, 0, 0 } },
 
   elf_abil[] = { { 4, &HSleep_resistance, "awake", "tired" },
-                 { 8, &(HSee_invisible), "insightful", "ignorant" },
+                 { 8, &(HSee_invisible), "insightful", "obtuse" },
                  { 0, 0, 0, 0 } },
 
   gno_abil[] = { { 5, &(HStealth), "stealthy", "" },
@@ -372,8 +372,7 @@ poisoned(
     i = !fatal ? 1 : rn2(fatal + (thrown_weapon ? 20 : 0));
     if (i == 0 && typ != A_CHA) {
         /* sometimes survivable instant kill */
-        loss = 6 + d(4, 6);
-        loss = resist_reduce(loss, POISON_RES);
+        loss = resist_reduce(6 + d(4, 6), POISON_RES);
         if (u.uhp <= loss) {
             u.uhp = -1;
             disp.botl = TRUE;
@@ -408,7 +407,7 @@ poisoned(
     }
 
     if (u.uhp > u.uhpmax)
-        u.uhp = u.uhpmax; /* Safeguard vs RNG */
+        u.uhp = u.uhpmax; /* Safeguard */
 
     if (u.uhp < 1) {
         svk.killer.format = kprefix;
@@ -450,10 +449,11 @@ stone_luck(boolean include_uncursed)
 
 boolean
 has_luckitem(void) {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
-        if (confers_luck(otmp)) return TRUE;
+        if (confers_luck(otmp))
+            return TRUE;
     return FALSE;
 }
 
@@ -473,7 +473,7 @@ set_moreluck(void)
 void
 recalc_health(void)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     u.uhealbonus = 0;
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
@@ -564,9 +564,9 @@ exerper(void)
         debugpline0("exerper: Hunger checks");
         switch (hs) {
         case SATIATED:
-	    /* Don't punish vampires for eating too much */
+	        /* Don't punish vampires for eating too much */
             if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
-		        exercise(A_DEX, FALSE);
+                exercise(A_DEX, FALSE);
             if (Role_if(PM_MONK) || Role_if(PM_SAMURAI))
                 exercise(A_WIS, FALSE);
             break;
@@ -1417,6 +1417,5 @@ uhpmax(void)
 {
     return (Upolyd ? u.mhmax : u.uhpmax);
 }
-
 
 /*attrib.c*/

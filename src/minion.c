@@ -323,19 +323,6 @@ demon_talk(struct monst *mtmp)
         return 0;
     } else {
         
-#if 0
-        /* make sure that the demand is unmeetable if the monster
-           has the Amulet, preventing monster from being satisfied
-           and removed from the game (along with said Amulet...) */
-        /* [actually the Amulet is safe; it would be dropped when
-           mongone() gets rid of the monster; force combat anyway;
-           also make it unmeetable if the player is Deaf, to simplify
-           handling that case as player-won't-pay] */
-        if (mon_has_amulet(mtmp) || Deaf)
-            /* 125: 5*25 in case hero has maximum possible charisma */
-            demand = cash + (long) rn1(1000, 125);
-#endif
-        
         if (!Deaf)
             pline("%s demands %ld %s for safe passage.",
                   Amonnam(mtmp), demand, currency(demand));

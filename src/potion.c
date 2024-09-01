@@ -87,13 +87,13 @@ incr_itimeout(long *which, int incr)
     set_itimeout(which, itimeout_incr(*which, incr));
 }
 
-/* increase a partial-resistance intrinsic by XX%
- * ...will automatically cap at 100% */
+/* increase a partial-resistance intrinsic by XX% */
 void
 incr_resistance(long* which, int incr)
 {
     long oldval = *which & TIMEOUT;
 
+    /* cap at 100% */
     if (oldval + incr > 100)
         oldval = 100;
     else
@@ -304,33 +304,25 @@ make_sick(long xtime,
 }
 
 void
-make_rabid(long xtime, const char *msg, int killedby, const char *killername)
+make_rabid(long xtime, 
+    const char *msg, 
+    int killedby, 
+    const char *killername)
 {
     long old = Rabid;
-
-#if 0   /* tell player even if hero is unconscious */
-    if (Unaware)
-        msg = 0;
-#endif
-
     if (xtime > 0L) {
         if (Sick_resistance)
             return;
-#if 0
-        if (!old) /* newly rabid */
-            You_feel("strangely aggressive.");
-#endif
         set_itimeout(&Rabid, xtime);
         if ((xtime != 0L) ^ (old != 0L)) {
-            // disp.botl = TRUE;
+            disp.botl = TRUE;
             if (msg)
                 pline("%s", msg);
         }
     } else if (old) {
-        /* was sick, now not */
         You_feel("healthy and calm again!");
         Rabid = 0L;
-        // disp.botl = TRUE;
+        disp.botl = TRUE;
     }
 
     if (!Rabid)
@@ -1252,8 +1244,7 @@ peffect_gain_ability(struct obj *otmp)
             if (ABASE(i) < ABASE(lowest)) {
                 lowest = i;
                 nlowest = 1;
-            }
-            else if (ABASE(i) == ABASE(lowest)) {
+            } else if (ABASE(i) == ABASE(lowest)) {
                 nlowest++;
                 if (!rn2(nlowest + 1))
                     lowest = i;
@@ -1261,8 +1252,7 @@ peffect_gain_ability(struct obj *otmp)
             if (ABASE(i) > ABASE(highest)) {
                 highest = i;
                 nhighest = 1;
-            }
-            else if (ABASE(i) == ABASE(highest)) {
+            } else if (ABASE(i) == ABASE(highest)) {
                 nhighest++;
                 if (!rn2(nhighest + 1))
                     highest = i;
@@ -1615,10 +1605,6 @@ peffect_acid(struct obj *otmp)
     }
     if (Stoned)
         fix_petrification();
-    
-    if (!rn2(3))
-        erode_armor(&gy.youmonst, ERODE_CORRODE);
-    
     gp.potion_unkn++; /* holy/unholy water can burn like acid too */
 }
 
@@ -1709,7 +1695,6 @@ peffect_blood(struct obj *otmp)
         make_vomiting(Vomiting + d(10, 8), TRUE);
     }
 }
-
 
 int
 peffects(struct obj *otmp)
@@ -1828,8 +1813,7 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
             u.uhp += nhp;
             if (u.uhp > u.uhpmax) {
                 /* hard upper limit (copied from nurse care)
-                 * Use the max level of 30 otherwise early characters get
-                 * cheated. */
+                 * Use max level of 30 so early max HP gain is possible. */
                 if (u.uhpmax < 5 * MAXULEV + d(2 * MAXULEV, 10)) {
                     u.uhpmax += nxtra;
                 } else {
@@ -2167,9 +2151,9 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             if (cureblind)
                 mcureblindness(mon, canseemon(mon));
             if (mon->mrabid || mon->mdiseased) {
-                    if (canseemon(mon))
-                        pline("%s is no longer ill.", Monnam(mon));
-                    mon->mrabid = mon->mdiseased = 0;
+                if (canseemon(mon))
+                    pline("%s is no longer ill.", Monnam(mon));
+                mon->mrabid = mon->mdiseased = 0;
             }
             break;
         case POT_SICKNESS:
@@ -2238,7 +2222,6 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             /* monster reflection is handled in mon_reflects() */
             mon->mextrinsics |= MR2_REFLECTION;
             mon->mreflecttime = rn1(5, 15);
-            
             break;
         case POT_PHASING:
             angermon = FALSE;
@@ -2428,9 +2411,8 @@ potionbreathe(struct obj *obj)
                 if (++i >= A_MAX)
                     i = 0;
             }
-            if (cansmell) {
+            if (cansmell)
                 pline("Wow!  That potion smells good!");
-            }
         }
         break;
     case POT_GAIN_ENERGY:
@@ -2506,16 +2488,13 @@ potionbreathe(struct obj *obj)
             if (!make_hallucinated(itimeout_incr(HHallucination, rn1(20, 20)),
                                    TRUE, 0L)) {
                 /* either hallu is blocked, or we were already hallucinating */
-                if (Hallucination) {
+                if (Hallucination)
                     pline("The cosmicness around you exacerbates.");
-                }
-                else {
+                else
                     pline("You have a momentary vision.");
-                }
             }
             unambiguous = TRUE;
-        }
-        else {
+        } else {
             pline("Nothing seems to happen.");
         }
         break;
@@ -2542,9 +2521,8 @@ potionbreathe(struct obj *obj)
         }
         break;
     case POT_PARALYSIS:
-        if (!Free_action) {
+        if (!Free_action)
             pline("%s seems to be holding you.", Something);
-        }
         nomul(-rnd(5));
         gm.multi_reason = "frozen by a potion";
         gn.nomovemsg = You_can_move_again;
@@ -2564,12 +2542,11 @@ potionbreathe(struct obj *obj)
         unambiguous = TRUE;
         break;
     case POT_SPEED:
-        if (Fast) {
+        if (Fast)
             Your("legs get a bit more energy.");
-        }
-        else {
+        else
             Your("knees seem more flexible now.");
-        }
+
         unambiguous = TRUE;
         incr_itimeout(&HFast, rnd(10));
         exercise(A_DEX, TRUE);
@@ -2606,8 +2583,7 @@ potionbreathe(struct obj *obj)
             if (obj->blessed && gy.youmonst.data == &mons[u.ulycn]) {
                 you_unwere(FALSE);
                 unambiguous = TRUE;
-            }
-            else if (obj->cursed && !Upolyd) {
+            } else if (obj->cursed && !Upolyd) {
                 you_were();
                 unambiguous = TRUE;
             }
@@ -2627,7 +2603,7 @@ potionbreathe(struct obj *obj)
                     makeplural(body_part(LUNG)));
             showdamage(dmg, TRUE);
             losehp(dmg, "acid fumes", KILLED_BY);
-        exercise(A_CON, FALSE);
+            exercise(A_CON, FALSE);
             unambiguous = TRUE;
         }
         if (rn2(u.twoweap ? 2 : 3))
@@ -2645,8 +2621,9 @@ potionbreathe(struct obj *obj)
             exercise(A_WIS, FALSE);
             You_feel("a %ssense of loss.",
                      obj->otyp == POT_VAMPIRE_BLOOD ? "terrible " : "");
-        } else
+        } else {
             exercise(A_CON, FALSE);
+        }
         break;
     case POT_GAIN_LEVEL:
         more_experienced(5, 0);
@@ -2660,9 +2637,8 @@ potionbreathe(struct obj *obj)
         unambiguous = TRUE;
         break;
     case POT_SEE_INVISIBLE:
-        if (!obj->cursed) {
+        if (!obj->cursed)
             make_blinded(0L, TRUE);
-        }
         if (!See_invisible) {
             You("think you saw something invisible, but it vanished.");
             unambiguous = TRUE;
@@ -2740,7 +2716,9 @@ const struct PotionRecipe potionrecipes[] = {
     { POT_OIL,              POT_WATER, POT_OIL,                 1 },
     { POT_RESTORE_ABILITY,  POT_SICKNESS, POT_HEALING,          1 },
 
-    /* More complicated recipes */
+    /* More complicated recipes 
+     * These need to come after the simple recipes otherwise some
+     * recipes do not work. */
     { POT_GAIN_LEVEL,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 6 in 10 chance */
     { STRANGE_OBJECT,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 3 in 10 chance */
 
@@ -2749,8 +2727,6 @@ const struct PotionRecipe potionrecipes[] = {
 
     { POT_BOOZE,            POT_GAIN_ENERGY, POT_CONFUSION,     6 }, /* 6 in 10 chance */
     { POT_ENLIGHTENMENT,    POT_GAIN_ENERGY, POT_CONFUSION,     3 }, /* 3 in 10 chance */
-
-
     { 0, 0, 0, 0 }
 };
 
@@ -2885,7 +2861,7 @@ mixtype(struct obj *o1, struct obj *o2)
         }
         potion_descr = gem_to_potion(o1->otyp);
         if (potion_descr) {
-           return figure_out_potion(potion_descr);
+            return figure_out_potion(potion_descr);
         }
     }
     
@@ -3184,7 +3160,7 @@ potion_dip(struct obj *obj, struct obj *potion)
                     makeknown(POT_POLYMORPH);
                 return ECMD_TIME;
             } else if (obj->otyp != save_otyp 
-                || obj->dknown != save_dknown) {
+                    || obj->dknown != save_dknown) {
                 if (potion->dknown)
                     makeknown(POT_POLYMORPH);
                 useup(potion);
@@ -3504,7 +3480,9 @@ potion_dip(struct obj *obj, struct obj *potion)
                 useup(singlepotion);
                 /* MRKR: an alchemy smock ought to be */
                 /* some protection against this: */
-                losehp(how_resistant(ACID_RES) > 50 ? rnd(5) : rnd(10), "alchemic blast", KILLED_BY_AN);
+                losehp(how_resistant(ACID_RES) > 50
+                    ? rnd(5) 
+                    : rnd(10), "alchemic blast", KILLED_BY_AN);
 
                 return 1;
             }

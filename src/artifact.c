@@ -376,7 +376,7 @@ find_artifact(struct obj *otmp)
         where = ((otmp->where == OBJ_FLOOR)
                  ?  ((inside_shop(otmp->ox, otmp->oy) != NO_ROOM)
                      ? " in a shop"
-                     : In_quest(&u.uz) ? " on the quest"
+                     : In_quest(&u.uz) ? " in the quest"
                      : " on the floor")
                  /* artifacts aren't created in containers but could be
                     inside one if it comes from a bones level */
@@ -630,7 +630,7 @@ defends_when_carried(int adtyp, struct obj *otmp)
 {
     const struct artifact *weap;
 
-    /* NO_CARY can look like AD_PHYS, very important to avoid this. */
+    /* NO_CARY has same value as AD_PHYS, very important to avoid this. */
     if (!adtyp)
         return FALSE;
 
@@ -1563,9 +1563,7 @@ artifact_hit(
         if (!rn2(4)) {
             int itemdmg = destroy_items(mdef, AD_FIRE, *dmgptr);
             if (!youdefend)
-                /* kludge for destroy_items only dealing damage if it's the
-                 * player */
-                *dmgptr += itemdmg;
+                *dmgptr += itemdmg; /* item destruction dmg */
             ignite_items(mdef->minvent);
         }
         return realizes_damage;
@@ -1590,7 +1588,7 @@ artifact_hit(
         if (!rn2(4)) {
             int itemdmg = destroy_items(mdef, AD_COLD, *dmgptr);
             if (!youdefend)
-                *dmgptr += itemdmg; /* same kludge as above */
+                *dmgptr += itemdmg; /* item destruction dmg */
         }
         return realizes_damage;
     }
@@ -1611,12 +1609,12 @@ artifact_hit(
         if (!rn2(5)) {
             int itemdmg = destroy_items(mdef, AD_ELEC, *dmgptr);
             if (!youdefend)
-                *dmgptr += itemdmg;
+                *dmgptr += itemdmg; /* item destruction dmg */
         }
         return realizes_damage;
     }
 
-    /* Seventh basic attack - disease */
+    /* disease attack  */
     if (attacks(AD_DISE, otmp)) {
         boolean elf = youdefend ? maybe_polyd(is_elf(gy.youmonst.data),
                                               Race_if(PM_ELF))
@@ -1727,7 +1725,7 @@ artifact_hit(
                           Monnam(magr), mon_nam(mdef));
                     *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 }
-            } else if (youdefend &&is_dragon(gy.youmonst.data) && instakill) {
+            } else if (youdefend && is_dragon(gy.youmonst.data) && instakill) {
                 pline("The gleaming blade cuts your head off!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
@@ -1737,16 +1735,16 @@ artifact_hit(
             return TRUE;
         case ART_WEREBANE:
             if (youattack && is_were(mdef->data) && instakill) {
-                pline("The silver saber explodes in flame!");
+                pline("The silver saber sinks deep into %s!", mon_nam(mdef));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (!youattack && !youdefend
                        && magr && is_were(mdef->data) && instakill) {
                 if (canseemon(magr))
-                    pline("The silver saber explodes in flame!");
+                    pline("The silver saber sinks deep into %s!", mon_nam(mdef));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (youdefend && is_were(gy.youmonst.data) && instakill) {
                 if (canseemon(magr))
-                    pline("The silver saber explodes in flame!");
+                    pline("The silver saber sinks deep into your heart!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form */
             } else {
@@ -2326,7 +2324,7 @@ arti_invoke(struct obj *obj)
             }
             break;
         }
-        case UNCURSE_INVK:{
+        case UNCURSE_INVK: {
             struct obj pseudo = cg.zeroobj;
             pseudo.blessed = 1;
             pseudo.otyp = SCR_REMOVE_CURSE;
@@ -2515,13 +2513,12 @@ arti_invoke(struct obj *obj)
             pseudo->blessed = pseudo->cursed = 0;
             /* type is a "spell of lightning bolt" which doesn't actually
              * exist: 10 + AD_ELEC - 1 */
-            if(!getdir(NULL) || (!u.dx && !u.dy && !u.dz)) {
+            if (!getdir(NULL) || (!u.dx && !u.dy && !u.dz)) {
                 int damage = zapyourself(pseudo, TRUE);
                 if (damage > 0) {
                     losehp(damage, "struck by lightning", NO_KILLER_PREFIX);
                 }
-            }
-            else {
+            } else {
                 /* don't use weffects - we want higher damage than that */
                 buzz(ZT_SPELL(ZT_LIGHTNING), 8, u.ux, u.uy, u.dx, u.dy);
             }

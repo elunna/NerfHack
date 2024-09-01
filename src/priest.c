@@ -686,9 +686,8 @@ priest_talk(struct monst *priest)
         }
     }
 
-    char pronounbuf[10];
-
     /* The priest never carries cash; it might get stolen! */
+    char pronounbuf[10];
     if ((gypgold = findgold(priest->minvent)) != 0) {
         if (canspotmon(priest))
             pline("%s gold %s.",  upstart(strcpy(pronounbuf, mhim(priest))),
@@ -696,7 +695,6 @@ priest_talk(struct monst *priest)
         obj_extract_self(gypgold);
         obfree(gypgold, (struct obj *) 0);
     }
-    /*m_useup(priest, gypgold);*/
 }
 
 struct monst *

@@ -766,7 +766,7 @@ nhassert_failed(const char *expression, const char *filepath, int line)
                expression, filename, line);
 }
 
-/*Ben Collver's fixes*/
+/* Ben Collver's fixes */
 const char *
 replace(const char *st, const char *orig, const char *repl)
 {

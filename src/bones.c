@@ -192,7 +192,7 @@ resetobjs(struct obj *ochain, boolean restore)
                 otmp->otyp = SPE_BLANK_PAPER;
                 curse(otmp);
             } else if (any_quest_artifact(otmp)) {
-                 /* Quest artifacts become ordinary objects - sorry not sorry. */
+                /* Quest artifacts become ordinary objects - sorry not sorry. */
                 otmp->oartifact = 0;
                 free_oname(otmp);
             }
@@ -303,9 +303,8 @@ drop_upon_death(
             obj_shudders(otmp);
             do_osshock(otmp);
         } else {
-            if (rn2(5)) {
+            if (rn2(5))
                 otmp = poly_obj(otmp, STRANGE_OBJECT);
-            }
             if (mtmp)
                 (void) add_to_minv(mtmp, otmp);
             else if (cont)

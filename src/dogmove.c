@@ -534,7 +534,7 @@ dog_goal(
                 if (!could_reach_item(mtmp, nx, ny)
                     || !can_reach_location(mtmp, mtmp->mx, mtmp->my, nx, ny))
                     continue;
-                /* skip always shop food and other items if chastised */
+                /* skip shop food and other items */
                 if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge 
                                     && costly_spot(obj->ox, obj->oy)))
                     continue;
@@ -677,7 +677,8 @@ find_targ(
 
         if ((targ = m_at(curx, cury)) != 0) {
             /* Is the monster visible to the pet? */
-            if ((!targ->minvis || mon_prop(mtmp, SEE_INVIS)) && !targ->mundetected
+            if ((!targ->minvis || mon_prop(mtmp, SEE_INVIS))
+                && !targ->mundetected
                 /* if a long worm, only accept the head as a target */
                 && targ->mx == curx && targ->my == cury) /* not tail */
                 break;

@@ -1195,7 +1195,7 @@ static const short grownups[][2] = {
     { PM_BABY_GRAY_DRAGON, PM_GRAY_DRAGON },
     { PM_BABY_GOLD_DRAGON, PM_GOLD_DRAGON },
     { PM_BABY_SILVER_DRAGON, PM_SILVER_DRAGON },
-    {PM_BABY_SHIMMERING_DRAGON, PM_SHIMMERING_DRAGON},
+    { PM_BABY_SHIMMERING_DRAGON, PM_SHIMMERING_DRAGON },
     { PM_BABY_RED_DRAGON, PM_RED_DRAGON },
     { PM_BABY_WHITE_DRAGON, PM_WHITE_DRAGON },
     { PM_BABY_ORANGE_DRAGON, PM_ORANGE_DRAGON },
@@ -1460,19 +1460,14 @@ olfaction(struct permonst *mdat)
 boolean
 is_fleshy(const struct permonst *ptr)
 {
-    if (vegetarian(ptr)) {
-        /* vegetarian monsters generally don't have flesh */
+    if (vegetarian(ptr))
         return FALSE;
-    }
-    if (noncorporeal(ptr)) {
-        /* these certainly don't have flesh */
+    if (noncorporeal(ptr))
         return FALSE;
-    }
-    if (!nonliving(ptr)) {
-        /* nonvegetarian, alive monsters generally do */
+    if (!nonliving(ptr))
         return TRUE;
-    }
-    if (ptr->mlet == S_MUMMY || ptr->mlet == S_VAMPIRE
+    if (ptr->mlet == S_MUMMY
+        || ptr->mlet == S_VAMPIRE
         || (ptr->mlet == S_ZOMBIE && ptr != &mons[PM_SKELETON])
         || ptr == &mons[PM_FLESH_GOLEM]) {
         /* Exceptions: non-living monsters that do have flesh */
@@ -1693,4 +1688,5 @@ mring_bon(struct monst *mtmp, int otyp)
 	        bonus += o->spe;
     return bonus;
 }
+
 /*mondata.c*/

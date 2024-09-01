@@ -339,8 +339,8 @@ rabid_dialogue(void)
         txt = rabid_texts[1];
         break;
     case 40:
+        /* After this point the player cannot drink liquids. */
         txt = rabid_texts[2];
-
         break;
     case 20:
         txt = rabid_texts[3];
@@ -721,8 +721,7 @@ nh_timeout(void)
     if (u.combotime) {
         u.combotime--;
         if (!u.combotime)
-            Your("combo ability is ready to use!");
-    
+            Your("combo ability is ready to use! ['Z'");
     }
 
     /* Give a small warning that spell-based reflection is running out. */
@@ -815,7 +814,6 @@ nh_timeout(void)
                 done_timeout(POISONING, SICK);
                 u.usick_type = 0;
                 break;
-
             case WITHERING:
                 You("are no longer withering away.");
                 disp.botl = TRUE;
@@ -1027,9 +1025,9 @@ nh_timeout(void)
                 HFumbling &= ~FROMOUTSIDE;
                 /* I_SPECIAL means from grease */
                 if (HFumbling & I_SPECIAL && !rn2(20)) {
-                        pline_The("goop wears off of your %s",
-                                  makeplural(body_part(FOOT)));
-                        HFumbling &= ~I_SPECIAL;
+                    pline_The("goop wears off of your %s",
+                                makeplural(body_part(FOOT)));
+                    HFumbling &= ~I_SPECIAL;
                 }
                 
                 if (Fumbling)

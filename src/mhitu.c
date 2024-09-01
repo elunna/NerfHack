@@ -43,12 +43,10 @@ weaphitmsg(struct obj *weap, struct monst *magr) {
          * things in a piercing or slashing way, but blunt verbs also don't work
          * super well, so just default to "hit" */
         ;
-    }
-    else if (objects[weap->otyp].oc_skill == P_WHIP || is_wet_towel(weap)) {
+    } else if (objects[weap->otyp].oc_skill == P_WHIP || is_wet_towel(weap)) {
         verbpool[verbidx++] = "whip";
         verbpool[verbidx++] = "lash";
-    }
-    else if (blunt && (!(pierce || slash) || rn2(2))) {
+    } else if (blunt && (!(pierce || slash) || rn2(2))) {
         if (objects[weap->otyp].oc_skill == P_CLUB)
             verbpool[verbidx++] = "club";
         if (objects[weap->otyp].oc_skill == P_MACE
@@ -62,16 +60,14 @@ weaphitmsg(struct obj *weap, struct monst *magr) {
         verbpool[verbidx++] = "bash";
         verbpool[verbidx++] = "whack";
         verbpool[verbidx++] = "smack";
-    }
-    else if (pierce && (!slash || rn2(2))) {
+    } else if (pierce && (!slash || rn2(2))) {
         if (is_blade(weap))
             verbpool[verbidx++] = "stab";
         verbpool[verbidx++] = "jab";
         verbpool[verbidx++] = "pierce";
         verbpool[verbidx++] = "impale";
         verbpool[verbidx++] = "gore";
-    }
-    else if (slash) {
+    } else if (slash) {
         if ((uhitm && Role_if(PM_BARBARIAN))
             || magr->data == &mons[PM_BARBARIAN])
             verbpool[verbidx++] = "smite";
@@ -84,8 +80,7 @@ weaphitmsg(struct obj *weap, struct monst *magr) {
         verbpool[verbidx++] = "rend";
         verbpool[verbidx++] = "gash";
         verbpool[verbidx++] = "lacerate";
-    }
-    else {
+    } else {
         /* this should only ever happen if someone defines a weapon/weptool with
          * no oc_dir flags */
         impossible("strange weapon type %d for hit message", weap->otyp);
@@ -202,7 +197,6 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
                 verb = "touches you";
             break;
         case AT_TENT:
-            
             if (mtmp->data == &mons[PM_MEDUSA]) {
                 verb = "snakes bite you";
             } else {
@@ -618,7 +612,8 @@ calc_mattacku_vars(
 {
     /* Will monsters use ranged or melee attacks against you? */
     *ranged = (mdistu(mtmp) > 3) 
-        || ((attacktype(mtmp->data, AT_BREA) || attacktype(mtmp->data, AT_SPIT))
+        || ((attacktype(mtmp->data, AT_BREA)
+              || attacktype(mtmp->data, AT_SPIT))
             && !mtmp->mspec_used && (!mtmp->mcan || rn2(3)));
     *range2 = !monnear(mtmp, mtmp->mux, mtmp->muy);
     *foundyou = u_at(mtmp->mux, mtmp->muy);
@@ -872,7 +867,7 @@ mattacku(struct monst *mtmp)
     }
 
     if (!range2 && marmf && marmf->otyp == STOMPING_BOOTS 
-        && stompable(&gy.youmonst)) {
+                         && stompable(&gy.youmonst)) {
         pline("%s stomps on you!", Monnam(mtmp));
         makeknown(marmf->otyp);
         if (Upolyd && !Unchanging) {
@@ -905,7 +900,6 @@ mattacku(struct monst *mtmp)
         tmp = 1;
 
     if (!u.uswallow && calculate_flankers(mtmp, &gy.youmonst)) {
-        /* Scale with monster difficulty */
         ftmp = flank_bonus(mtmp);
         tmp += ftmp;
         if (flags.showdamage)
@@ -992,7 +986,7 @@ mattacku(struct monst *mtmp)
                 && mattk->adtyp == AD_DRIN))
             continue;
         
-        /* Rabid monsters have an additional rabid bite attack added at the end.
+        /* Rabid monsters have an additional rabid bite attack.
          * For now, we won't check if anything "can bite", we'll assume that
          * anything that can contract rabies can also bite. If something slips
          * through, we'll exclude it from can_become_rabid.
@@ -1327,12 +1321,12 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
         }
         return TRUE;
     } else if (mattk->adtyp == AD_WRAP
-               /* 50% chance (with a luck bonus) of slipping free with mud boots. 
-                * Doesn't apply to brain attacks or cursed boots. */
-               && ((uarmf && !uarmf->cursed && objdescr_is(uarmf, "mud boots"))
-                   /* Gnomes are good at slipping free */
-               || (maybe_polyd(is_gnome(gy.youmonst.data), Race_if(PM_GNOME))))
-               && rnl(10) < 5) {
+            /* 50% chance (with a luck bonus) of slipping free with mud boots. 
+            * Doesn't apply to brain attacks or cursed boots. */
+            && ((uarmf && !uarmf->cursed && objdescr_is(uarmf, "mud boots"))
+                /* Gnomes are good at slipping free */
+            || (maybe_polyd(is_gnome(gy.youmonst.data), Race_if(PM_GNOME))))
+            && rnl(10) < 5) {
         pline("%s %s you, but you quickly free yourself!",
               Monnam(mtmp), (mattk->adtyp == AD_WRAP && !is_sal)
                                 ? "swings itself around" : "grabs");
@@ -1499,12 +1493,9 @@ hitmu(struct monst *mtmp, struct attack *mattk)
             mhm.damage -= (mhm.damage + 1) / 2;
         
         /* Archeologists are deathly afraid of snakes -
-         * They have a paralyzing fear of them.
-         * 
          * This handled a bit differently from the AD_PLYS attacks - 
          * it's a bit weaker. If it was as strong as most paralyze 
-         * attacks, arcs probably wouldn't stand a chance...
-         * */
+         * attacks, arcs probably wouldn't stand a chance... */
         if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE) {
             if (gm.multi >= 0 && !rn2(5)) {
                 /* Free action is not always effective - this is psychological */
@@ -2015,18 +2006,18 @@ gazemu(struct monst *mtmp, struct attack *mattk)
 
     /* Invisibility Protection: If the player character is currently
      * invisible, they should anticipate a reasonable number of avoided
-     * gazes during gaze attacks. In the previous implementation, a 
+     * gazes during gaze attacks. In vanilla NetHack's implementation, a 
      * gazing monster would achieve 100% accuracy regardless of the 
      * player's visibility status, and whether or not the monster had 
      * the ability to see invisible. To address this, we are now 
      * adopting the same detection odds as in the 'monmove' function, 
      * which employs a 1 in 11 chance of a random hit. If the gazer is
-     * in melee range, we allow for an easy hit (otherwise, the 
-     * blinking eye will simply linger awkwardly next to the player...)
-     * */
+     * in melee range, we allow for an easy hit (otherwise, gazers
+     * will simply linger awkwardly next to the player...)
+     */
     if (mcanseeu && Invis && !mon_prop(mtmp, SEE_INVIS)
         && !m_next2u(mtmp) && rn2(11)) {
-        if (!rn2(23)) /* Don't spam this. */
+        if (!rn2(13)) /* Don't spam this. */
             pline("%s looks around searchingly...", Monnam(mtmp));
         mcanseeu = 0;
     }
@@ -2287,8 +2278,9 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                /* mtmp->mspec_used = mtmp->mspec_used + 3 + rn2(8);*/
                 pline("%s %s you!", Monnam(mtmp),
                       rn2(2) ? "locks eyes with" : "glares ominously at");
-                change_luck(-1);
-                You_feel("unlucky.");
+                int dmg = d((int) mattk->damn, (int) mattk->damd);
+                change_luck(-dmg);
+                You_feel("%sunlucky.", dmg > 1 ? "very " : "");
                 stop_occupation();
             }
         }
@@ -3017,9 +3009,7 @@ passiveum(
 * There are many restrictions: the wielded weapon must be a dagger
 * or knife. The rogue must also be free to execute their counters.
 * They must also be free of physically straining conditions.
-* 
-* This maneuver is targeted at humanoid forms - this includes some, 
-* but not all, demons. */
+*/
 staticfn int
 counterattack(
 struct monst *mtmp,
@@ -3048,8 +3038,7 @@ struct attack *mattk)
         || (near_capacity() > UNENCUMBERED)
         || (u.uhs >= WEAK)
         || !m_next2u(mtmp)
-        || Fumbling 
-        || Unaware
+        || Fumbling || Unaware
         || !uwep)
         return M_ATTK_HIT;
 
@@ -3121,6 +3110,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
     
     /* Damage is always at least 4d6, but scales with monster level. */
     int dmg = d(min(magr->m_lev, 4), 6);
+
     /* Monsters don't have a Dex stat; use their speed as a proxy
      * (it used to use a to-hit roll with defender's AC penalized at 3, which
      * was in line with D&D rules but made piercers utterly meaningless for
@@ -3178,8 +3168,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
         if (youdefend) {
             You("are hit by %s!",
                 x_monnam(magr, ARTICLE_A, "falling", 0, TRUE));
-        }
-        else {
+        } else {
             pline("%s is hit by a falling piercer%s!",
                   Monnam(mdef), youattack ? " (you)" : "");
         }

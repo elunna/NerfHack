@@ -13,7 +13,7 @@
    eligible to reread the spellbook and regain 100% retention (the threshold
    used to be 1000 turns, which was 10% of the original 10000 turn retention
    period but didn't get adjusted when that period got doubled to 20000) */
-#define KEEN 10000
+#define KEEN        10000
 #define CAST_BOOST 	  500	/* memory increase for successful casting */
 #define MAX_KNOW 	(KEEN * 2) /* Absolute Max timeout */
 
@@ -2499,7 +2499,6 @@ int cast_from_book(struct obj *spellbook)
     if (rejectcasting())
         return ECMD_OK;
 
-    /* KMH -- Simplified this code */
     if (booktype == SPE_BLANK_PAPER) {
         pline("This book is all blank.");
         makeknown(booktype);
@@ -2525,13 +2524,11 @@ int cast_from_book(struct obj *spellbook)
         return ECMD_TIME;
     }
 
-    /* Spell effects */
     res = spelleffects(spellbook->otyp, FALSE, TRUE);
-
 
     /* Casting uses up a charge */
     if (res)
-        spellbook->spe--;
+        consume_obj_charge(spellbook, TRUE);
 
     /* Book gets used up when no charges remain. */
     if (spellbook->spe <= 0) {
@@ -2539,7 +2536,6 @@ int cast_from_book(struct obj *spellbook)
             pline("%s vanishes in a puff of smoke.", Yname2(spellbook));
         useup(spellbook);
     }
-
     return ECMD_TIME;
 }
 
@@ -2564,10 +2560,8 @@ cartomancer_combo(void)
     }
     if (u.uen < 5)
         You("need at least 5 energy to start a combo.");
-    /* Level 5:   2 cards
-       Level 10:  3 cards
-       Level 15:  4 cards
-       Level 20+: 5 cards
+    /* Level 5:   2 cards       Level 10:  3 cards
+       Level 15:  4 cards       Level 20+: 5 cards
     */
     combos = min(5, max(2, (u.ulevel / 5) + 1));
 
@@ -2589,8 +2583,7 @@ cartomancer_combo(void)
             break;
     }
     pline("Your combo ends.");
-    // u.combotime = rn1(500, 1000); /* tech timeout */
-    u.combotime = rn1(10, 5); /* tech timeout */
+    u.combotime = rn1(500, 1000); /* tech timeout */
     return 1;
 }
 
