@@ -1946,7 +1946,7 @@ seffect_cloning(struct obj **sobjp)
             if (sblessed) {
                 initedog(mtmp);
                 u.uconduct.pets++;
-            } else if (!scursed) {
+            } else if (!scursed && !mtmp->mrabid) {
                 mtmp->mpeaceful = 1; 
             }
             
