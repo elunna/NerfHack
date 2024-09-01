@@ -743,6 +743,7 @@ mattacku(struct monst *mtmp)
             if (!enexto(&cc, u.ux, u.uy, gy.youmonst.data)
                 /* a fish won't voluntarily swap positions
                    when it's in water and hero is over land */
+                || mtmp->mtrapped /* Hard to displace when trapped */
                 || (mtmp->data->mlet == S_EEL
                     && is_pool(mtmp->mx, mtmp->my)
                     && !is_pool(u.ux, u.uy))) {
@@ -760,6 +761,7 @@ mattacku(struct monst *mtmp)
             /* put mtmp at hero's spot and move hero to <cc.x,.y> */
             newsym(mtmp->mx, mtmp->my); /* finish removal */
             place_monster(mtmp, u.ux, u.uy);
+
             if (mtmp->wormno) {
                 worm_move(mtmp);
                 /* tail hasn't grown, so if it now occupies <cc.x,.y>
