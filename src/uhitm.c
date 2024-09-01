@@ -395,7 +395,7 @@ find_roll_to_hit(
 
     if (calculate_flankers(&gy.youmonst, mtmp)) {
         /* Scale with monster difficulty */
-        ftmp = (int) ((u.ulevel - 4) / 2) + 4;
+        ftmp = flank_bonus(&gy.youmonst);
         tmp += ftmp;
         if (flags.showdamage)
             You("flank %s. [-%dAC]", mon_nam(mtmp), ftmp);

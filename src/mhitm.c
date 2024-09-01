@@ -354,7 +354,7 @@ mattackm(
     
     if (calculate_flankers(magr, mdef)) {
         /* Scale with monster difficulty */
-        ftmp = (int) ((magr->m_lev - 4) / 2) + 4;
+        ftmp = flank_bonus(magr);
         tmp += ftmp;
         if (canseemon(magr)) {
             pline("%s flanks %s.", Monnam(magr), mon_nam(mdef));

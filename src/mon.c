@@ -6671,6 +6671,26 @@ find_flanking_pos(struct monst *magr, struct monst *mdef)
     return bestcc;
 }
 
+#define MIN_FLANK_BONUS 4
+#define MAX_FLANK_BONUS 20
+/* Natural flankers get a much higher bonus that normal monsters that just
+ * happen to be in the flanking position.
+ * Some roles (the more fighting oriented ones) are also natural flankers */
+int flank_bonus(struct monst *mtmp)
+{
+    int fbon;
+    boolean isyou = (mtmp == &gy.youmonst);
+    if (is_outflanker(mtmp->data)) {
+        fbon = isyou ? (u.ulevel + 4) : mtmp->m_lev + 4;
+    } else {
+        fbon = isyou ? ((int) (u.ulevel - 4) / 2 + 2) 
+                     : (int) ((mtmp->m_lev - 4) / 2 + 2);
+    }
+    fbon = min(fbon, MAX_FLANK_BONUS);
+    fbon = max(fbon, MIN_FLANK_BONUS);
+    return fbon;
+}
+
 /**
  * Kills every member of the specified monster species on the current
  * level.

@@ -903,7 +903,7 @@ mattacku(struct monst *mtmp)
 
     if (!u.uswallow && calculate_flankers(mtmp, &gy.youmonst)) {
         /* Scale with monster difficulty */
-        ftmp = (int) ((mtmp->m_lev - 4) / 2) + 4;
+        ftmp = flank_bonus(mtmp);
         tmp += ftmp;
         if (flags.showdamage)
             You("are being flanked! [-%dAC]", ftmp);
