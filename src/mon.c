@@ -6608,14 +6608,13 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
 
 /* Currrently we'll assume mdef is only the player */
 coord
-find_flanking_pos(struct monst *magr, struct monst *mdef)
+find_flanking_pos(struct monst *magr, struct monst *mdef UNUSED)
 {
-    int best_dist = 20;
+    int best_dist = 999;
     int adj_x, adj_y, /* Positions to check around the target*/
         fx, fy, /* Potential flanking positions*/
         dx, dy; /* Offsets from the target */
     coord bestcc, oldcc;
-
     bestcc.x = 0;
     bestcc.y = 0;
     /* Temporarily store monsters x/y coords so we can check.
@@ -6623,11 +6622,9 @@ find_flanking_pos(struct monst *magr, struct monst *mdef)
     oldcc.x = magr->mx;
     oldcc.y = magr->my;
 
-    /* Search every square adjacent to mdef.
-     * If we find a monster (potential flanker), calculate
-     * the distance. If it's the best option yet, save it.
-
-    */
+    /* Search every square adjacent to mdef for potential flankers.
+     * For each, find the complementary flanking position and calculate
+     * the distance. If it's the best option yet, save it. */
     for (dx = -1; dx <= 1; dx++) {
         for (dy = -1; dy <= 1; dy++) {
             adj_x = u.ux + dx;
@@ -6639,6 +6636,9 @@ find_flanking_pos(struct monst *magr, struct monst *mdef)
                 continue;
 
             if (MON_AT(adj_x, adj_y)) {
+                if (magr->mx == adj_x && magr->my == adj_y)
+                    continue; /* Can't flank with self...*/
+
                 /* Find the opposite position that flanks with this mon */
                 fx = u.ux + (dx * -1);
                 fy = u.uy + (dy * -1);
@@ -6653,6 +6653,8 @@ find_flanking_pos(struct monst *magr, struct monst *mdef)
                 /* Validate the potential flanking position. */
                 magr->mx = fx;
                 magr->my = fy;
+                /* Now by temporarily placing our attacker at the potential
+                 * flanking position, we can see if it will work. */
                 if (calculate_flankers(magr, &gy.youmonst)) {
                     if (mdistu(magr) < best_dist) {
                         bestcc.x = fx;
