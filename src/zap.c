@@ -5020,7 +5020,9 @@ zhitu(
             fall_asleep(-d(nd, 25), TRUE); /* sleep ray */
         }
         break;
-    case ZT_DEATH:
+    case ZT_DEATH: {
+        int drain;
+
         if (abstyp == ZT_BREATH(ZT_DEATH)) {
             boolean disn_prot = inventory_resistance_check(AD_DISN);
 
@@ -5081,11 +5083,16 @@ zhitu(
             }
             if (Reflecting) {
                 You("feel a little drained...");
-                u.uhpmax -= (dam / 3 + rn2(5)) / 2;
+                drain = (dam / 3 + rn2(5)) / 2;
             } else {
                 You("feel drained...");
-                u.uhpmax -= dam / 3 + rn2(5);
-            }
+                drain = dam / 3 + rn2(5);
+            }   
+            if (Upolyd)
+                u.mhmax -= min(drain, u.mhmax - 1);
+            else
+                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
+
             break;
         } else if (Reflecting && !Antimagic) {
             dam = d(4, 6);
@@ -5095,7 +5102,11 @@ zhitu(
                 dam /= 2;
             }
             You("feel drained...");
-            u.uhpmax -= dam / 3 + rn2(5);
+            drain = dam / 3 + rn2(5);
+            if (Upolyd)
+                u.mhmax -= min(drain, u.mhmax - 1);
+            else
+                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
 	    break;
 	}
         monstunseesu(M_SEEN_MAGR);
@@ -5105,6 +5116,7 @@ zhitu(
         u.ugrave_arise = (type == -ZT_BREATH(ZT_DEATH)) ? -3 : NON_PM;
         done(DIED);
         return; /* lifesaved */
+    }
     case ZT_LIGHTNING:
         orig_dam = d(nd, 6);
         if (fully_resistant(SHOCK_RES)) {
@@ -5166,7 +5178,11 @@ zhitu(
 
         if (Reflecting) {
             You("feel drained...");
-            u.uhpmax -= dam / 2 + rn2(5);
+            int drain = dam / 3 + rn2(5);
+            if (Upolyd)
+                u.mhmax -= min(drain, u.mhmax - 1);
+            else
+                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
         } else {
             if (Blind)
                 You_feel("a necrotic force draining your %s!", life);

@@ -455,7 +455,7 @@ touch_of_death(struct monst *mtmp)
         Strcpy(svk.killer.name, kbuf);
         done(DIED);
     } else {
-        u.uhpmax -= drain;
+        setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
         losehp(dmg, kbuf, KILLED_BY);
     }
     svk.killer.name[0] = '\0'; /* not killed if we get here... */

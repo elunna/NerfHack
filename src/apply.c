@@ -5178,7 +5178,12 @@ deck_of_fate(struct obj *obj)
                     dmg /= 2;
                 }
                 You_feel("drained...");
-                u.uhpmax -= dmg / 3 + rn2(5);
+                int drain = dmg / 3 + rn2(5);
+                if (Upolyd) {
+                    u.mhmax -= min(drain, u.mhmax - 1);
+                } else {
+                    setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
+                }
                 losehp(dmg, "touch of death", KILLED_BY_AN);
                 break;
             }

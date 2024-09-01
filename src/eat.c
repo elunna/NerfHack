@@ -1180,7 +1180,8 @@ cpostfx(int pm)
     }
 
     switch (pm) {
-    case PM_WRAITH:
+    case PM_WRAITH: {
+        int uhpmin = minuhpmax(1);
         switch(rnd(10)) {
         case 1:
             You("feel that was a bad idea.");
@@ -1193,21 +1194,13 @@ cpostfx(int pm)
         case 2:
             You("don't feel so good ...");
             if (Upolyd) {
-                u.mhmax -= 4;
-                if (u.mhmax < 1)
-                    u.mhmax = 1;
+                u.mhmax -= min(rnd(4), u.mhmax - 1);
             } else {
-                u.uhpmax -= 4;
-                if (u.uhpmax < 1)
-                    u.uhpmax = 1;
+                if (u.uhpmax > uhpmin)
+                    setuhpmax(max(u.uhpmax - rnd(4), uhpmin));
             }
-            u.uenmax -= 8;
-            if (u.uenmax < 1)
-                u.uenmax = 1;
-            u.uen -= 8;
-            if (u.uen < 0)
-                u.uen = 0;
-            losehp(4, "eating a wraith corpse", KILLED_BY);
+            drain_en(rnd(8), FALSE);
+            losehp(rnd(4), "eating a wraith corpse", KILLED_BY);
             break;
         case 3:
         case 4:
@@ -1216,13 +1209,13 @@ cpostfx(int pm)
         case 5:
             You("feel physically and mentally stronger!");
             if (Upolyd) {
-                u.mhmax += 4;
+                u.mhmax += rnd(4);
                 u.mh = u.mhmax;
             } else {
-                u.uhpmax += 4;
+                u.uhpmax += rnd(4);
                 u.uhp = u.uhpmax;
             }
-            u.uenmax += 8;
+            u.uenmax += rnd(8);
             u.uen = u.uenmax;
             break;
         default:
@@ -1230,6 +1223,7 @@ cpostfx(int pm)
             pluslvl(FALSE);
             break;
         }
+    }
         break;
     case PM_HUMAN_WERERAT:
         catch_lycanthropy = PM_WERERAT;
