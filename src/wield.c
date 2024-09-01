@@ -102,13 +102,10 @@ setuwep(struct obj *obj)
 
     if (obj == uwep)
         return; /* necessary to not set gu.unweapon */
-
-
     /* This message isn't printed in the caller because it happens
      * *whenever* Sunsword is unwielded, from whatever cause.
      */
     setworn(obj, W_WEP);
-
     if (uwep == obj && artifact_light(olduwep) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind)
@@ -140,12 +137,10 @@ setuwep(struct obj *obj)
     } 
     
     /* Serenity suppresses aggravate monster. */
-    if (is_art(olduwep, ART_SERENITY)) {
+    if (is_art(olduwep, ART_SERENITY))
         BAggravate_monster &= ~W_WEP;
-    }
-    if (uwep && u_wield_art(ART_SERENITY)) {
+    if (uwep && u_wield_art(ART_SERENITY))
         BAggravate_monster |= W_WEP;
-    } 
     
     /* These grant speed. */
     if (is_art(olduwep, ART_QUICK_BLADE) 
@@ -223,7 +218,6 @@ ready_weapon(struct obj *wep)
     /* Separated function so swapping works easily */
     int res = ECMD_OK;
     boolean was_twoweap = u.twoweap, had_wep = (uwep != 0);
-
 
     if (!wep) {
         /* No weapon */
@@ -558,6 +552,10 @@ doswapweapon(void)
 
     if (u.twoweap && !can_twoweapon())
         untwoweapon();
+
+    /* Avoid infinite command loops, clear doagain keystrokes */
+    cmdq_clear(CQ_CANNED);
+    cmdq_clear(CQ_REPEAT);
 
     /* Never use a turn when swapping */
     return 0;
