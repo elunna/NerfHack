@@ -263,10 +263,20 @@ moveloop_core(void)
                 /* Foulstones sometimes emit stench:
                  * This must go before run_regions, otherwise the cloud is ignored */
                 if ((fstone = carrying(FOULSTONE))) {
-                    if (fstone->blessed && !rn2(100))
+                    if (fstone->blessed && !rn2(100)) {
+                        if (!Deaf && rn2(3))
+                            You_hear(Hallucination ? "breaking wind." 
+                                                   : "a light puff.");
                         iter_mons(garlic_breath);
-                    else if (fstone->cursed && !rn2(100))
+                    } else if (fstone->cursed && !rn2(100)) {
+                        if (olfaction(gy.youmonst.data) && !rn2(3)) {
+                            if (!Hallucination)
+                                You("smell something awful.");
+                            else
+                                pline("Did somebody step on a duck?");
+                        }
                         create_gas_cloud(u.ux, u.uy, 1, 4);
+                    }
                 }
 
                 nh_timeout();

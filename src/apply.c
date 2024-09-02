@@ -3064,7 +3064,7 @@ use_stone(struct obj *tstone)
 
     if (tstone->otyp == FOULSTONE || obj->otyp == FOULSTONE) {
         if (olfaction(gy.youmonst.data))
-            if (Hallucination)
+            if (!Hallucination)
                 You("smell something awful.");
             else
                 pline("Did somebody step on a duck?");
