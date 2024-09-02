@@ -1346,7 +1346,7 @@ freeinv_core(struct obj *obj)
         set_artifact_intrinsic(obj, 0, W_ART);
     }
 
-    if (obj->otyp == LOADSTONE) {
+    if (obj->otyp == LOADSTONE || obj->otyp == FOULSTONE) {
         curse(obj);
     } else if (confers_luck(obj)) {
         set_moreluck();
@@ -1612,7 +1612,8 @@ compactify(char *buf)
 boolean
 splittable(struct obj *obj)
 {
-    return !((obj->otyp == LOADSTONE && obj->cursed)
+    return !(((obj->otyp == LOADSTONE || obj->otyp == FOULSTONE)
+                && obj->cursed)
              || (obj == uwep && welded(uwep)));
 }
 
@@ -2030,7 +2031,8 @@ getobj(
             /* don't split a stack of cursed loadstones */
             if (splittable(otmp))
                 otmp = splitobj(otmp, cnt);
-            else if (otmp->otyp == LOADSTONE && otmp->cursed)
+            else if ((otmp->otyp == LOADSTONE || otmp->otyp == FOULSTONE)
+                    && otmp->cursed)
                 /* kludge for canletgo()'s can't-drop-this message */
                 otmp->corpsenm = (int) cnt;
         }

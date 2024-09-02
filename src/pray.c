@@ -356,9 +356,8 @@ worst_cursed_item(void)
         for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
             if (!otmp->cursed)
                 continue;
-            if (otmp->otyp == LOADSTONE || confers_luck(otmp))
-                break;
-            if (otmp->otyp == HEALTHSTONE)
+            if (otmp->otyp == LOADSTONE || confers_luck(otmp)
+                || otmp->otyp == HEALTHSTONE || otmp->otyp == FOULSTONE)
                 break;
         }
     }

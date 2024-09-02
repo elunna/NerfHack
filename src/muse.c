@@ -2654,7 +2654,8 @@ find_misc(struct monst *mtmp)
         if (obj->otyp == SCR_REMOVE_CURSE) {
             register struct obj *otmp;
             for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-                if (otmp->cursed && (otmp->otyp == LOADSTONE
+                if (otmp->cursed &&
+                    ((otmp->otyp == LOADSTONE || otmp->otyp == FOULSTONE)
                         || otmp->owornmask)) {
                     gm.m.misc = obj;
                     gm.m.has_misc = MUSE_SCR_REMOVE_CURSE;

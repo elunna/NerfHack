@@ -5524,7 +5524,9 @@ emergency_disrobe(boolean *lostsome)
                  * for obvious reasons.  Also, any item in the midst
                  * of being taken off or stolen.
                  */
-                if (!((obj->otyp == LOADSTONE && obj->cursed) || obj == uamul
+                if (!(((obj->otyp == LOADSTONE || obj->otyp == FOULSTONE) 
+                        && obj->cursed) 
+                      || obj == uamul
                       || obj == uleft || obj == uright || obj == ublindf
                       || obj == uarm || obj == uarmc || obj == uarmg
                       || obj == uarmf || obj == uarmu

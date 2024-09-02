@@ -1855,7 +1855,8 @@ pickup_object(
     /* What's left of the special case for gold :-) */
     if (obj->oclass == COIN_CLASS)
         disp.botl = TRUE;
-    if (obj->quan != count && obj->otyp != LOADSTONE)
+    if (obj->quan != count && obj->otyp != LOADSTONE
+                           && obj->otyp != FOULSTONE)
         obj = splitobj(obj, count);
 
     obj->how_lost = LOST_NONE;
@@ -2736,9 +2737,9 @@ in_container(struct obj *obj)
         Norep("You cannot %s %s you are wearing.",
               Icebox ? "refrigerate" : "stash", something);
         return 0;
-    } else if ((obj->otyp == LOADSTONE) && obj->cursed) {
+    } else if ((obj->otyp == LOADSTONE || obj->otyp == FOULSTONE) 
+            && obj->cursed) {
         set_bknown(obj, 1);
-        makeknown(obj->otyp);	/* unambiguously a loadstone */
         pline_The("stone%s won't leave your person.", plur(obj->quan));
         return 0;
     } else if (obj->otyp == AMULET_OF_YENDOR
@@ -2928,7 +2929,7 @@ out_container(struct obj *obj)
     if ((res = lift_object(obj, gc.current_container, &count, FALSE)) <= 0)
         return res;
 
-    if (obj->quan != count && obj->otyp != LOADSTONE)
+    if (obj->quan != count && obj->otyp != LOADSTONE && obj->otyp != FOULSTONE)
         obj = splitobj(obj, count);
 
     /* Remove the object from the list. */

@@ -766,7 +766,8 @@ canletgo(struct obj *obj, const char *word)
         }
         return FALSE;
     }
-    if (obj->otyp == LOADSTONE && obj->cursed) {
+    if ((obj->otyp == LOADSTONE || obj->otyp == FOULSTONE)
+            && obj->cursed) {
         /* getobj() kludge sets corpsenm to user's specified count
            when refusing to split a stack of cursed loadstones */
         if (*word) {
@@ -779,7 +780,6 @@ canletgo(struct obj *obj, const char *word)
         }
         obj->corpsenm = 0; /* reset */
         set_bknown(obj, 1);
-        makeknown(obj->otyp);	/* unambiguously a loadstone */
         return FALSE;
     }
     if (obj->otyp == LEASH && obj->leashmon != 0) {
@@ -1034,7 +1034,8 @@ menudrop_split(struct obj *otmp, long cnt)
     if (cnt && cnt < otmp->quan) {
         if (welded(otmp)) {
             ; /* don't split */
-        } else if (otmp->otyp == LOADSTONE && otmp->cursed) {
+        } else if ((otmp->otyp == LOADSTONE || otmp->otyp == FOULSTONE)
+            && otmp->cursed) {
             /* same kludge as getobj(), for canletgo()'s use */
             otmp->corpsenm = (int) cnt; /* don't split */
         } else {
