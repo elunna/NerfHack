@@ -5128,23 +5128,26 @@ deck_of_fate(struct obj *obj)
                 draws += rnd(3);
             pline("%ld more cards flip out of the deck.", draws);
             break;
-        case 3: /* The Devil */
+        case 3: { /* The Devil */
             draws = 0;
+            int dnum;
             if (!Blind)
                 pline("Moloch's visage on the card grins at you.");
             if (Luck <= 0 && (pm = dlord(A_NONE)) != NON_PM) {
                 mtmp = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS);
             } else {
-                pm = ndemon(u.ualign.type);
-                mtmp = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS);
+                dnum = ndemon(A_NONE);
+                if (dnum != NON_PM)
+                    mtmp = makemon(&mons[dnum], u.ux, u.uy, NO_MM_FLAGS);
             }
 
             if (!Blind && mtmp) {
                 pline("%s appears from a cloud of noxious smoke!", Monnam(mtmp));
                 newsym(mtmp->mx, mtmp->my);
-            } else
+            } else if (olfaction(gy.youmonst.data))
                 pline("Something stinks!");
             break;
+        }
         case 4: /* The Fool */
             (void) adjattrib(A_INT, -rnd(3), FALSE);
             (void) adjattrib(A_WIS, -rnd(3), FALSE);
