@@ -6351,7 +6351,7 @@ hmonas(struct monst *mon)
 
     /* [see mattackm(mhitm.c)] */
     gs.skipdrin = touch_petrifies(mon->data) 
-        && (!Confusion || Stunned || Hallucination || Rabid); 
+        && !(Confusion || Stunned || Hallucination || Rabid); 
 
     for (i = 0; i < NATTK; i++) {
         /* sum[i] = M_ATTK_MISS; -- now done above */

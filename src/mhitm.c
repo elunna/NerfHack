@@ -410,8 +410,7 @@ mattackm(
        NerfHack updates: Assume the mind flayer is intelligent and won't
        self destruct on cockatrices, etc. */
     gs.skipdrin = touch_petrifies(mdef->data)
-        && (!mdef->mconf || !mdef->mstun || Conflict); 
-
+        && !(mdef->mconf || mdef->mstun || mdef->mrabid || Conflict); 
 
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) {

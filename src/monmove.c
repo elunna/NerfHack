@@ -1200,6 +1200,11 @@ m_balks_at_approaching(struct monst *mtmp)
     if (keeps_distance(mtmp->data))
         return TRUE;
     
+    /* Do they recognize you are dangerous? */
+    if (humanoid(mtmp->data) &&
+        !acceptable_pet_target(mtmp, &gy.youmonst, ranged_attk(mtmp->data)))
+        return TRUE;
+
     /* has ammo+launcher */
     if (m_has_launcher_and_ammo(mtmp))
         return TRUE;

@@ -968,7 +968,7 @@ mattacku(struct monst *mtmp)
 
     /* [see mattackm(mhitm.c)] */
     gs.skipdrin = touch_petrifies(gy.youmonst.data) 
-        && (!mtmp->mconf || !mtmp->mstun || Conflict); 
+        && !(mtmp->mconf || mtmp->mstun || mtmp->mrabid || Conflict); 
     firstfoundyou = foundyou;
 
     for (i = 0; i < NATTK; i++) {
@@ -990,7 +990,7 @@ mattacku(struct monst *mtmp)
             || (gs.skipdrin && mattk->aatyp == AT_TENT
                 && mattk->adtyp == AD_DRIN))
             continue;
-
+        
         /* Rabid monsters have an additional rabid bite attack added at the end.
          * For now, we won't check if anything "can bite", we'll assume that
          * anything that can contract rabies can also bite. If something slips
@@ -1116,6 +1116,13 @@ mattacku(struct monst *mtmp)
                     thrwmu(mtmp);
             } else {
                 int hittmp = 0;
+
+                /* Intelligent monsters avoid dumb deaths */
+                if (humanoid(mtmp->data) && gs.skipdrin 
+                    && !MON_WEP(mtmp) && !which_armor(mtmp, W_ARMG)) {
+                    monflee(mtmp, rn1(9, 2), TRUE, TRUE);
+                    continue;
+                }
 
                 /* Rare but not impossible.  Normally the monster
                  * wields when 2 spaces away, but it can be
