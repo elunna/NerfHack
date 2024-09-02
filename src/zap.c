@@ -6409,7 +6409,8 @@ destroyable(struct obj *obj, int adtyp)
     }
     if (adtyp == AD_FIRE) {
         /* fire-magic items are immune */
-        if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL) {
+        if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL
+            || obj->otyp == POT_REFLECTION) {
             return FALSE;
         }
         if (obj->oclass == POTION_CLASS
@@ -6420,7 +6421,7 @@ destroyable(struct obj *obj, int adtyp)
     } else if (adtyp == AD_COLD) {
         /* non-water potions don't freeze and shatter */
         if (obj->oclass == POTION_CLASS && obj->otyp != POT_ACID
-            && obj->otyp != POT_OIL) {
+            && obj->otyp != POT_OIL && obj->otyp != POT_REFLECTION) {
             return TRUE;
         }
     } else if (adtyp == AD_ELEC) {
