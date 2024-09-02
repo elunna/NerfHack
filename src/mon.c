@@ -6921,7 +6921,12 @@ card_drop(struct monst *mon)
     /* No potential for a unique card. */
     if (ptr->geno & G_UNIQ)
         return FALSE;
-    
+
+    /* Prevent drops in impossible places
+       (fuzzer once picked up a card dropped by a guard at (0, 0)) */
+    if (!isok(mon->mx, mon->my))
+        return FALSE;
+
     if (mon->mtame || mon->msummoned || mon->mrevived || mon->mcloned)
         return FALSE;
 
