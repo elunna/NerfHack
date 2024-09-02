@@ -477,7 +477,7 @@ mattackm(
                 tmp -= hitval(mwep, mdef);
 
             if ((is_displaced(mdef->data) || has_displacement(mdef))
-                && rn2(4)) {
+                 && !helpless(mdef) && !mdef->mtrapped && rn2(4)) {
                 if (gv.vis && canspotmon(mdef))
                     pline("%s attacks the displaced image of %s.",
                           Monnam(magr), mon_nam(mdef));
