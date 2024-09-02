@@ -405,8 +405,13 @@ mattackm(
     /* controls whether a mind flayer uses all of its tentacle-for-DRIN
        attacks; when fighting a headless monster, stop after the first
        one because repeating the same failing hit (or even an ordinary
-       tentacle miss) is very verbose and makes the flayer look stupid */
-    gs.skipdrin = FALSE;
+       tentacle miss) is very verbose and makes the flayer look stupid.
+       
+       NerfHack updates: Assume the mind flayer is intelligent and won't
+       self destruct on cockatrices, etc. */
+    gs.skipdrin = touch_petrifies(mdef->data)
+        && (!mdef->mconf || !mdef->mstun || Conflict); 
+
 
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) {

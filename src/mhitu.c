@@ -966,7 +966,9 @@ mattacku(struct monst *mtmp)
             return (offended == 1);
     }
 
-    gs.skipdrin = FALSE; /* [see mattackm(mhitm.c)] */
+    /* [see mattackm(mhitm.c)] */
+    gs.skipdrin = touch_petrifies(gy.youmonst.data) 
+        && (!mtmp->mconf || !mtmp->mstun || Conflict); 
     firstfoundyou = foundyou;
 
     for (i = 0; i < NATTK; i++) {

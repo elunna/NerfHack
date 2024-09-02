@@ -6349,7 +6349,9 @@ hmonas(struct monst *mon)
     multi_claw = (multi_claw > 1); /* switch from count to yes/no */
     gt.twohits = 0;
 
-    gs.skipdrin = FALSE; /* [see mattackm(mhitm.c)] */
+    /* [see mattackm(mhitm.c)] */
+    gs.skipdrin = touch_petrifies(mon->data) 
+        && (!Confusion || Stunned || Hallucination || Rabid); 
 
     for (i = 0; i < NATTK; i++) {
         /* sum[i] = M_ATTK_MISS; -- now done above */
