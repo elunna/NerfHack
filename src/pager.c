@@ -1568,6 +1568,7 @@ add_obj_info(winid datawin, short otyp)
                     case FIXED_ABIL:
                     case STOMPING:
                     case FLYING:
+                    case REFLECTING:
                         confers = "Confers";
                         break;
                     default:
@@ -1598,6 +1599,28 @@ add_obj_info(winid datawin, short otyp)
         OBJPUTSTR("Can be applied to arrows for extra damage (only cave dwellers).");
         OBJPUTSTR("Can be rubbed on iron to produce monster-scaring sparks.");
     }
+    if (otyp == SILVER_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Protects from bright lights.");
+    else if (otyp == GOLD_DRAGON_SCALES || otyp == GOLD_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Permanent light source.");
+    else if (otyp == GOLD_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers hallucination resistance.");
+    else if (otyp == SHIMMERING_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers stun resistance.");
+    else if (otyp == RED_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers infravision.");
+    else if (otyp == WHITE_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers slow digestion.");
+    else if (otyp == ORANGE_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers free action.");
+    else if (otyp == BLACK_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers level drain resistance.");
+    else if (otyp == BLUE_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers very fast speed.");
+    else if (otyp == GREEN_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers regeneration and sickness resistance.");
+    else if (otyp == YELLOW_DRAGON_SCALE_MAIL)
+        OBJPUTSTR("Confers petrification resistance.");
 
     buf[0] = '\0';
     ADDCLASSPROP(oc.oc_magic, "inherently magical");

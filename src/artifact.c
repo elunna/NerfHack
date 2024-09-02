@@ -618,7 +618,6 @@ defends(int adtyp, struct obj *otmp)
         case AD_BLND: /* Blinding light resistance */
             return (otmp->otyp == SILVER_DRAGON_SCALE_MAIL);
         default:
-            /* SILVER_DRAGON_SCALES don't resist any particular attack type */
             break;
         }
     }
