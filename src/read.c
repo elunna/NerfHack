@@ -1371,8 +1371,10 @@ seffect_enchant_armor(struct obj **sobjp)
         cap_spe(otmp); /* make sure that it doesn't exceed SPE_LIM */
         s = otmp->spe - oldspe; /* cap_spe() might have throttled 's' */
         
-        if (otmp->otyp == GAUNTLETS_OF_FORCE)
+        if (otmp->otyp == GAUNTLETS_OF_FORCE) {
             setworn(otmp, W_ARMG);
+            Gloves_on();
+        }
         
         if (s) /* skip if it got changed to 0 */
             adj_abon(otmp, s); /* adjust armor bonus for Dex or Int+Wis */
