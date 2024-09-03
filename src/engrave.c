@@ -659,23 +659,31 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             Sprintf(de->post_engr_text, "The bugs on the %s stop moving!",
                     surface(u.ux, u.uy));
             /* automatically use the process of elimination */
-            if (objects[WAN_SLEEP].oc_name_known
-                || objects[WAN_DEATH].oc_name_known) {
+            if ((objects[WAN_SLEEP].oc_name_known 
+                  && objects[WAN_POISON_GAS].oc_name_known)
+                || (objects[WAN_DEATH].oc_name_known 
+                  && objects[WAN_POISON_GAS].oc_name_known)) {
                 de->postknown = TRUE;
             }
         }
         break;
     case WAN_POISON_GAS:
-        if (Hallucination)
+        if (Hallucination) {
             Sprintf(de->post_engr_text, "The bugs on the %s cough!",
                     surface(u.ux, u.uy));
-        else if (!Blind)
+            de->postknown = TRUE;
+        } else if (!Blind) {
             Sprintf(de->post_engr_text, "The bugs on the %s stop moving!",
                     surface(u.ux, u.uy));
-        else if (!Deaf)
+            if (objects[WAN_SLEEP].oc_name_known 
+                  && objects[WAN_DEATH].oc_name_known)
+                de->postknown = TRUE;
+        } else if (!Deaf) {
             Strcpy(de->post_engr_text, "Something sprays from the wand.");
+            de->postknown = TRUE;
+        }
         create_gas_cloud(u.ux, u.uy, 1, 4);
-        de->postknown = TRUE;
+        
         break;
     case WAN_COLD:
         if (!Blind)
