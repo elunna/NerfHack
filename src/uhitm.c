@@ -1322,7 +1322,7 @@ hmon_hitmon_weapon_melee(
             You("strike %s from behind!", mon_nam(mon));
         }
         if (u.twoweap)
-            hmd->dmg += rnd(u.ulevel / 2) + 1;
+            hmd->dmg += rnd(u.ulevel / 2 + 1);
         else
             hmd->dmg += rnd(u.ulevel);
         hmd->hittxt = TRUE;
