@@ -1981,7 +1981,7 @@ staticfn int
 bestow_artifact(void)
 {
     struct rm *lev = &levl[u.ux][u.uy];
-    int nchance = u.ulevel + 6;
+    int nchance = u.ulevel + 12;
     int arti_gift_odds = 8 + (2 * u.ugifts);
     
     /* you were already in pretty good standing
@@ -1989,24 +1989,24 @@ bestow_artifact(void)
     * The player can gain an artifact;
     * The chance goes down as the number of artifacts goes up.
     *
-    * From SporkHack (heavily modified):
+    * From SporkHack and EvilHack (heavily modified):
     * Note that no artifact is guaranteed; it's still subject to the
     * chances of generating one of those in the first place. These
     * are just the chances that an artifact will even be considered
     * as a gift.
     *
-    * level  4: 10% chance
-    * level  9: 20% chance
-    * level 12: 30% chance
-    * level 14: 40% chance
-    * level 17: 50% chance
-    * level 19: 60% chance
-    * level 21: 70% chance
-    * level 23: 80% chance
-    * level 24: 90% chance
-    * level 26 or greater: 100% chance
+    * level  4: 20% chance
+    * level  6: 30% chance
+    * level  8: 40% chance
+    * level 11: 50% chance
+    * level 13: 60% chance
+    * level 15: 70% chance
+    * level 17: 80% chance
+    * level 18: 90% chance
+    * level 20 or greater: 100% chance
+
     */
-    if (u.ulevel > 2 && u.uluck >= 0 
+    if (u.ulevel > 3 && u.uluck >= 0 
          && rn2(10) < (int) ((nchance * nchance) / 100)
          && !rn2(arti_gift_odds)) {
         struct obj *otmp;
