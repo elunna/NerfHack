@@ -393,6 +393,7 @@ const struct ForgeRecipe fusions[] = {
     /* Only samurai can forge these: */
     { KATANA,               LONG_SWORD,         LONG_SWORD,     1, 1 },
     { TSURUGI,              TWO_HANDED_SWORD,   KATANA,         1, 1 },
+    { SHURIKEN,             DART,               DAGGER,         2, 1 },
     /* Dwarvish items - only dwarves can forge */
     { DWARVISH_MATTOCK,     PICK_AXE,           DWARVISH_SHORT_SWORD, 1, 1 },
     { DWARVISH_SHORT_SWORD, DWARVISH_SPEAR,     SHORT_SWORD,    1, 1 },
@@ -400,11 +401,6 @@ const struct ForgeRecipe fusions[] = {
     { DWARVISH_IRON_HELM,   HELMET,             DWARVISH_SHORT_SWORD, 1, 1 },
     { DWARVISH_MITHRIL_COAT, CHAIN_MAIL,        DWARVISH_ROUNDSHIELD, 1, 1 },
     { DWARVISH_ROUNDSHIELD, LARGE_SHIELD,       DWARVISH_IRON_HELM, 1, 1 },
-
-#if 0 /* Should we port these? */
-    { DWARVISH_BEARDED_AXE, AXE,                DWARVISH_SHORT_SWORD, 1, 1 },
-    { DWARVISH_BOOTS,       GAUNTLETS,          DWARVISH_SHORT_SWORD, 1, 1 },
-#endif
     /* Orcish items - only orcs can forge */
     { ORCISH_DAGGER,        ORCISH_ARROW,       KNIFE,          2, 1 },
     { ORCISH_SHORT_SWORD,   ORCISH_SPEAR,       ORCISH_DAGGER,  1, 1 },
@@ -414,12 +410,6 @@ const struct ForgeRecipe fusions[] = {
     { ORCISH_RING_MAIL,     ORCISH_SHIELD,      ORCISH_HELM,    1, 1 },
     { ORCISH_SHIELD,        ORCISH_HELM,        ORCISH_BOOTS,   1, 1 },
     { ORCISH_BOOTS,         ORCISH_HELM,        ORCISH_SHORT_SWORD, 1, 1 },
-#if 0 /* Should we port these too? */
-    { ORCISH_SCIMITAR,      KNIFE,              ORCISH_SHORT_SWORD, 1, 1 },
-    { ORCISH_LONG_SWORD,    ORCISH_SHORT_SWORD, ORCISH_SHORT_SWORD, 1, 1 },
-    { ORCISH_MORNING_STAR,  MACE,               ORCISH_DAGGER, 1, 1 },
-#endif
-
     /* Any role can forge the rest */
     { DAGGER,               ARROW,              KNIFE,          5, 1 },
     { KNIFE,                ARROW,              DART,           5, 2 },
@@ -454,6 +444,14 @@ const struct ForgeRecipe fusions[] = {
     { BEC_DE_CORBIN,        WAR_HAMMER,         SPEAR,          1, 1 },
     /* Ammo */
     { SLING_BULLET,         ROCK,               DART,           3, 1 },
+
+#if 0 /* Should we port these? */
+    { DWARVISH_BEARDED_AXE, AXE,                DWARVISH_SHORT_SWORD, 1, 1 },
+    { DWARVISH_BOOTS,       GAUNTLETS,          DWARVISH_SHORT_SWORD, 1, 1 },
+    { ORCISH_SCIMITAR,      KNIFE,              ORCISH_SHORT_SWORD, 1, 1 },
+    { ORCISH_LONG_SWORD,    ORCISH_SHORT_SWORD, ORCISH_SHORT_SWORD, 1, 1 },
+    { ORCISH_MORNING_STAR,  MACE,               ORCISH_DAGGER, 1, 1 },
+#endif
     { 0, 0, 0, 0, 0 }
 };
 
@@ -550,7 +548,8 @@ doforging(void)
         You("fail to combine these two objects.");
         return 1;
     } else if (!Role_if(PM_SAMURAI)
-          && (objtype == KATANA || objtype == TSURUGI)) {
+          && (objtype == KATANA || objtype == TSURUGI
+            || objtype == SHURIKEN)) {
         You("need the mastery of a samurai to accomplish that.");
         return 1;
     } else if (is_dwarvish_obj(objtype) && !Race_if(PM_DWARF)) {
