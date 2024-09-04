@@ -3152,6 +3152,9 @@ litroom(
             } else { /* uncursed gets a much larger area than previously */
                 radius = 11;
             }
+        } else if (obj && obj->oclass == SPBOOK_CLASS) {
+            /* Spell scales with ability but cap at 7 so the scroll is still superior. */
+            radius = min(7, 2 + (P_SKILL(P_DIVINATION_SPELL) - 1) * 2);
         } else {
             radius = 5;
         }
