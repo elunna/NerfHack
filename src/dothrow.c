@@ -1492,6 +1492,7 @@ throwit(struct obj *obj,
     int range, urange;
     boolean crossbowing,
             boomeranging = FALSE,
+            cursed_launcher = (ammo_and_launcher(obj, uwep) && uwep->cursed),
             impaired = (Confusion || Stunned || Blind
                         || Hallucination || Fumbling),
             tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
@@ -1520,8 +1521,11 @@ throwit(struct obj *obj,
     
     gn.notonhead = FALSE; /* reset potentially stale value */
 
+    /* Retaining the !rn2(7) checks raises the chance of 
+       slipping if multiple bad conditions exist. */
     if (((obj->cursed && !rn2(7))
          || (obj->greased && !rn2(7))
+         || (cursed_launcher && !rn2(7))
          || (hates_item(&gy.youmonst, obj->otyp) && !rn2(7)))
         && (u.dx || u.dy)) {
         boolean slipok = TRUE;
