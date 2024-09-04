@@ -521,7 +521,7 @@ extern int use_pick_axe2(struct obj *) NONNULLARG1;
 extern boolean mdig_tunnel(struct monst *) NONNULLARG1;
 extern void draft_message(boolean);
 extern void watch_dig(struct monst *, coordxy, coordxy, boolean);
-extern void zap_dig(void);
+extern void zap_dig(int);
 extern struct obj *bury_an_obj(struct obj *, boolean *) NONNULLARG1;
 extern void bury_objs(int, int);
 extern void unearth_objs(int, int);

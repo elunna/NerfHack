@@ -1560,7 +1560,7 @@ draft_message(boolean unexpected)
 
 /* digging via wand zap or spell cast */
 void
-zap_dig(void)
+zap_dig(int otyp)
 {
     struct rm *room;
     struct monst *mtmp;
@@ -1634,7 +1634,8 @@ zap_dig(void)
         pitdig = TRUE;
         diridx = xytod(u.dx, u.dy);
     }
-    digdepth = rn1(18, 8);
+    /* The spell is roughly half as effective. */
+    digdepth = otyp == SPE_DIG ? rn1(8, 4) : rn1(18, 8);
     tmp_at(DISP_BEAM, cmap_to_glyph(S_digbeam));
     while (--digdepth >= 0) {
         if (!isok(zx, zy))

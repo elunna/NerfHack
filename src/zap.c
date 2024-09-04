@@ -3930,7 +3930,7 @@ weffects(struct obj *obj)
         /* neither immediate nor directionless */
 
         if (otyp == WAN_DIGGING || otyp == SPE_DIG)
-            zap_dig();
+            zap_dig(otyp);
         else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_FINGER_OF_DEATH)
             ubuzz(BZ_U_SPELL(BZ_OFS_SPE(otyp)), u.ulevel / 2 + 1);
         else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)

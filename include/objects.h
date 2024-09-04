@@ -1333,7 +1333,7 @@ SCROLL("blank paper", "unlabeled",  0,  28,  60, SCR_BLANK_PAPER),
    parchment or vellum spellbook break vegetarian conduct, as it should.) */
 #define PAPER LEATHER /* override enum for use in SPELL() expansion */
 SPELL("dig",             "parchment",
-      P_MATTER_SPELL,      20,  6, 5, 1, RAY, HI_LEATHER, SPE_DIG),
+      P_MATTER_SPELL,      20,  6, 3, 1, RAY, HI_LEATHER, SPE_DIG),
 MARKER(FIRST_SPELL, SPE_DIG)
 /* magic missile ... finger of death must be in this order; see buzz() */
 SPELL("magic missile",   "vellum",
