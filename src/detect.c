@@ -1424,15 +1424,20 @@ show_map_spot(coordxy x, coordxy y, boolean cnf)
 }
 
 void
-do_mapping(void)
+do_mapping(int skill)
 {
     int zx, zy;
     boolean unconstrained;
 
     unconstrained = unconstrain_map();
     for (zx = 1; zx < COLNO; zx++)
-        for (zy = 0; zy < ROWNO; zy++)
+        for (zy = 0; zy < ROWNO; zy++) {
+            /* Scale effectiveness with spellcasting ability. */
+            if (skill && rn2(7 - (skill-1)*2))
+                continue;
+
             show_map_spot(zx, zy, Confusion);
+        }
 
     if (!svl.level.flags.hero_memory || unconstrained) {
         flush_screen(1);                 /* flush temp screen */

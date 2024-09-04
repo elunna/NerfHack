@@ -3950,7 +3950,7 @@ interesting_room(void)
         pline("%s in this room contains a partial map of the dungeon!",
               An(art[rn2(SIZE(art))]));
         HConfusion = 1;
-        do_mapping();
+        do_mapping(0);
         HConfusion = 0;
         break;
     case 5:

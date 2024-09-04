@@ -186,7 +186,7 @@ wiz_map(void)
         for (ep = head_engr; ep != 0; ep = ep->nxt_engr) {
             map_engraving(ep, TRUE);
         }
-        do_mapping();
+        do_mapping(0);
         notice_mon_on();
         HConfusion = save_Hconf;
         HHallucination = save_Hhallu;

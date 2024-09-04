@@ -152,7 +152,7 @@ throne_sit_effect(void)
                                   FALSE);
                 } else {
                     pline("An image forms in your mind.");
-                    do_mapping();
+                    do_mapping(4);
                 }
             } else {
                 /* avoid "vision clears" if hero can't see */

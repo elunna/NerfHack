@@ -489,7 +489,7 @@ extern int trap_detect(struct obj *);
 extern const char *level_distance(d_level *) NONNULL NONNULLARG1;
 extern void use_crystal_ball(struct obj **) NONNULLARG1;
 extern void show_map_spot(coordxy, coordxy, boolean);
-extern void do_mapping(void);
+extern void do_mapping(int);
 extern void do_vicinity_map(struct obj *);
 extern void cvt_sdoor_to_door(struct rm *) NONNULLARG1;
 extern int findit(void);

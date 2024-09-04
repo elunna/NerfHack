@@ -2578,11 +2578,11 @@ seffect_magic_mapping(struct obj **sobjp)
         return;
     }
     pline("A map coalesces in your mind!");
-    cval = (scursed && !confused);
+    cval = ((scursed) && !confused);
     if (cval)
         HConfusion = 1; /* to screw up map */
     notice_mon_off();
-    do_mapping();
+    do_mapping(is_scroll ? 0 : P_SKILL(P_ENCHANTMENT_SPELL));
     notice_mon_on();
     if (cval) {
         HConfusion = 0; /* restore */
