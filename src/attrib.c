@@ -1159,7 +1159,7 @@ newhp(void)
 
         /* Cavemen get a tiny HP boost if they've remained illiterate,
          * as well as a tiny wisdom boost.  The longer they remain
-         * illiterate, the bigger the HP boost gets (capped at d3)
+         * illiterate, the bigger the HP boost gets (capped at d4)
          */
         if (Role_if(PM_CAVE_DWELLER)) {
             tempnum = 0;
@@ -1168,8 +1168,10 @@ newhp(void)
                     tempnum += 1;
                 else if (u.ulevel < 8)
                     tempnum += rnd(2);
-                else
+                else if (u.ulevel < 16)
                     tempnum += rnd(3);
+                else
+                    tempnum += rnd(4);
                 exercise(A_WIS, TRUE);
             }
             hp += tempnum;
