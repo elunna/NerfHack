@@ -3399,9 +3399,10 @@ gethungry(void)
      */
     accessorytime = rn2(20); /* rn2(20) replaces (int) (svm.moves % 20L) */
     if (accessorytime % 2) { /* odd */
-        /* Regeneration uses up food, unless due to an artifact */
-        if ((HRegeneration & ~FROMFORM)
-            || (ERegeneration & ~(W_ARTI | W_WEP)))
+         /* Regeneration uses up food when injured, unless due to an artifact */
+        if (HRegeneration || (((ERegeneration & ~W_ART) &&
+                               (ERegeneration != W_WEP || !uwep->oartifact)) &&
+                              (uhp() < uhpmax())))
             u.uhunger--;
         if (near_capacity() > SLT_ENCUMBER)
             u.uhunger--;
