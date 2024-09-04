@@ -663,7 +663,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         dmg = d((ml / 2) + 4, 8);
         if (mcast_dist_ok(mtmp)) {
             pline("%s douses you in a torrent of acid!", Monnam(mtmp));
-            explode(u.ux, u.uy, ZT_ACID, dmg,
+            explode(u.ux, u.uy, BZ_M_SPELL(ZT_ACID), dmg,
                 MON_CASTBALL, EXPL_WET);
 
             if (Acid_resistance) {
@@ -818,7 +818,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
          if (mcast_dist_ok(mtmp)) {
             pline("%s blasts you with a bolt of fire!", Monnam(mtmp));
 
-            explode(u.ux, u.uy, ZT_FIRE, dmg,
+            explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dmg,
                 MON_CASTBALL, EXPL_FIERY);
 
             if (fully_resistant(FIRE_RES)) {
@@ -842,7 +842,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
          if (mcast_dist_ok(mtmp)) {
             pline("%s blasts you with a bolt of cold!", Monnam(mtmp));
 
-            explode(u.ux, u.uy, ZT_COLD, dmg,
+            explode(u.ux, u.uy, BZ_M_SPELL(ZT_COLD), dmg,
                 MON_CASTBALL, EXPL_FROSTY);
 
             if (fully_resistant(COLD_RES)) {

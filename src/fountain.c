@@ -1350,7 +1350,7 @@ blowupforge(coordxy x, coordxy y)
     
     /* replace the forge with ordinary floor */
     set_levltyp(x, y, ROOM); /* updates level.flags.nforges */
-    explode(u.ux, u.uy, ZT_FIRE, resist_reduce(rnd(30), FIRE_RES),
+    explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), resist_reduce(rnd(30), FIRE_RES),
             FORGE_EXPLODE, EXPL_FIERY);
     newsym(x, y);
 }

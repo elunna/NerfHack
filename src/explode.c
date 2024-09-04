@@ -604,7 +604,7 @@ explode(
                             adtyp = AD_RBRE; /* no corpse */
                         monkilled(mtmp, "", (int) adtyp);
                     }
-                } else if (!svc.context.mon_moving && olet != MON_CASTBALL) {
+                } else if (!svc.context.mon_moving) {
                     /* all affected monsters, even if mdef is set */
                     setmangry(mtmp, TRUE);
                 }

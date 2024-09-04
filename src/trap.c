@@ -7344,7 +7344,8 @@ b_trapped(const char *item, int bodypart)
 
     Soundeffect(se_kaboom, 80);
     pline("KABOOM!!  %s was booby-trapped!", The(item));
-    explode(u.ux, u.uy, ZT_FIRE, resist_reduce(dmg, FIRE_RES),
+    explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), 
+            resist_reduce(dmg, FIRE_RES),
             DOOR_TRAP, EXPL_FIERY);
     scatter(u.ux, u.uy, dmg,
             VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, 0);
