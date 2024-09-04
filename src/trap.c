@@ -2712,7 +2712,7 @@ trapeffect_web(
             tear_web = TRUE;
             break;
         }
-        if (tear_web) {
+        if (tear_web && !helpless(mtmp)) {
             if (in_sight)
                 pline_mon(mtmp,
                      "%s tears through %s spider web!", Monnam(mtmp),
