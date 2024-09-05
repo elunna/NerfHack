@@ -1008,7 +1008,7 @@ dog_move(
      * They don't eat/pickup objects - only fight.
      * But, they aren't dismissed by conflict.
      */
-    summoned = !mtmp->msummoned;
+    summoned = mtmp->msummoned;
 
     omx = mtmp->mx;
     omy = mtmp->my;
