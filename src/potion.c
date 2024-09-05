@@ -895,6 +895,7 @@ peffect_restore_ability(struct obj *otmp)
                 pluslvl(FALSE);
             } while (u.ulevel < u.ulevelmax && otmp->blessed && --num_levels);
         }
+        heal_legs(0);
     }
 }
 
