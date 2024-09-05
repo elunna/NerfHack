@@ -484,13 +484,16 @@ moverock(void)
             } else {
                 newsym(sx, sy);
             }
-            /* maybe adjust bill if boulder was pushed across shop boundary */
+            /* maybe adjust bill if boulder was pushed across shop boundary;
+               normally otmp->unpaid would not apply because otmp isn't in hero's
+               inventory, but addtobill() sets it and subfrombill() clears it */
             if (costly && !costly_spot(rx, ry)) {
+                /* pushing from inside the shop to its boundary (or free spot) */
                 addtobill(otmp, FALSE, FALSE, FALSE);
             } else if (!costly && costly_spot(rx, ry) && otmp->unpaid
-                       && ((shkp = shop_keeper(*in_rooms(rx, ry, SHOPBASE)))
-                           != 0)
+                       && ((shkp = shop_keeper(*in_rooms(rx, ry, SHOPBASE))) != 0)
                        && onshopbill(otmp, shkp, TRUE)) {
+                /* [can this case actually happen?] */
                 subfrombill(otmp, shkp);
             } else if (otmp->unpaid
                        && (shkp = find_objowner(otmp, sx, sy)) != 0
@@ -548,16 +551,17 @@ moverock(void)
                        Sokoban rules because on next step you could go
                        past it without pushing it to plug a pit or hole */
                     sokoban_guilt();
-                    break;
                 }
-                break;
+                moverock_done(sx, sy);
+                return 0;
             }
 
             if (could_move_onto_boulder(sx, sy)) {
                 pline(
                    "However, you can squeeze yourself into a small opening.");
                 sokoban_guilt();
-                break;
+                moverock_done(sx, sy);
+                return 0;
             } else {
                 moverock_done(sx, sy);
                 return -1;

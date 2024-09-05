@@ -1,4 +1,4 @@
-/* NetHack 3.7	u_init.c	$NHDT-Date: 1711165379 2024/03/23 03:42:59 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.106 $ */
+/* NetHack 3.7	u_init.c	$NHDT-Date: 1725227809 2024/09/01 21:56:49 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.111 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -20,11 +20,12 @@ staticfn void ini_inv_adjust_obj(struct trobj *,
                                struct obj *) NONNULLPTRS;
 staticfn void ini_inv_use_obj(struct obj *) NONNULLARG1;
 staticfn void ini_inv(struct trobj *) NONNULLARG1;
-staticfn void knows_object(int);
+staticfn void knows_object(int, boolean);
 staticfn void knows_class(char);
 staticfn void set_skill_cap_minimum(int, int);
 staticfn void u_init_role(void);
 staticfn void u_init_race(void);
+staticfn void pauper_reinit(void);
 staticfn void u_init_carry_attr_boost(void);
 staticfn boolean restricted_spell_discipline(int);
 
@@ -602,9 +603,9 @@ static const struct def_skill Skill_W[] = {
 };
 
 staticfn void
-knows_object(int obj)
+knows_object(int obj, boolean override_pauper)
 {
-    if (u.uroleplay.pauper)
+    if (u.uroleplay.pauper && !override_pauper)
         return;
     discover_object(obj, TRUE, FALSE);
     objects[obj].oc_pre_discovered = 1; /* not a "discovery" */
@@ -652,7 +653,7 @@ knows_class(char sym)
         }
 
         if (objects[ct].oc_class == sym && !objects[ct].oc_magic)
-            knows_object(ct);
+            knows_object(ct, FALSE);
     }
 }
 
@@ -661,6 +662,12 @@ staticfn void
 u_init_role(void)
 {
     int i;
+
+    /* the program used to check moves<=1 && invent==NULL do decide whether
+       a new game has started, but due to the 'pauper' option/conduct, can't
+       rely on invent becoming non-Null anymore; instead, initialize moves
+       to 0 instead of 1 and then set it to 1 here, where invent init occurs */
+    svm.moves = 1L;
 
     switch (Role_switch) {
     /* rn2(100) > 50 necessary for some choices because some
@@ -681,9 +688,11 @@ u_init_role(void)
             ini_inv(Tinopener);
         else if (!rn2(4))
             ini_inv(Lamp);
-        knows_object(SACK);
-        knows_object(TOUCHSTONE);
-        knows_object(DWARVISH_MATTOCK);
+        knows_object(SACK, FALSE);
+        knows_object(TOUCHSTONE, FALSE); /* FALSE: don't override pauper here,
+                                          * but TOUCHSTONE will be made known
+                                          * in pauper_reinit() */
+        knows_object(DWARVISH_MATTOCK, FALSE);
         skill_init(Skill_A);
         break;
     case PM_BARBARIAN:
@@ -703,15 +712,15 @@ u_init_role(void)
         if (!rn2(3))
             ini_inv(PhasePotion);
         skill_init(Skill_Car);
-        knows_object(PLAYING_CARD_DECK);
-        knows_object(DECK_OF_FATE);
-        knows_object(SCR_ZAPPING);
+        knows_object(PLAYING_CARD_DECK, FALSE);
+        knows_object(DECK_OF_FATE, FALSE);
+        knows_object(SCR_ZAPPING, TRUE);
         break;
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
         ini_inv(Cave_man);
         skill_init(Skill_C);
-        knows_object(SLING_BULLET);
+        knows_object(SLING_BULLET, FALSE);
         /* For cavemen, extinct monsters are generated. */
         mons[PM_VELOCIRAPTOR].geno &= ~(G_NOGEN);
         mons[PM_T_REX].geno &= ~(G_NOGEN);
@@ -721,8 +730,8 @@ u_init_role(void)
         ini_inv(Healer);
         if (!rn2(25))
             ini_inv(Lamp);
-        knows_object(POT_FULL_HEALING);
-        knows_object(HEALTHSTONE);	/* KMH */
+        knows_object(POT_FULL_HEALING, FALSE);
+        knows_object(HEALTHSTONE, FALSE);	/* KMH */
         skill_init(Skill_H);
         break;
     case PM_KNIGHT:
@@ -744,7 +753,7 @@ u_init_role(void)
             ini_inv(Lamp);
         knows_class(ARMOR_CLASS);
         /* sufficiently martial-arts oriented item to ignore language issue */
-        knows_object(SHURIKEN);
+        knows_object(SHURIKEN, FALSE);
         skill_init(Skill_Mon);
         break;
     }
@@ -782,7 +791,8 @@ u_init_role(void)
         ini_inv(Rogue);
         if (!rn2(5))
             ini_inv(Blindfold);
-        knows_object(SACK);
+        knows_object(SACK, FALSE); /* FALSE: don't override pauper here, but sack
+                                    * will be made known in pauper_reinit() */
         knows_class(WEAPON_CLASS); /* daggers only */
         skill_init(Skill_R);
         break;
@@ -799,7 +809,9 @@ u_init_role(void)
             if (objects[i].oc_magic) /* skip "magic koto" */
                 continue;
             if (Japanese_item_name(i, (const char *) 0))
-                knows_object(i);
+                /* we don't override pauper here because that would give
+                   samarai an advantage of knowing several items in advance */
+                knows_object(i, FALSE);
         }
         skill_init(Skill_S);
         break;
@@ -854,17 +866,17 @@ u_init_race(void)
         }
 
         /* Elves can recognize all elvish objects */
-        knows_object(ELVEN_SHORT_SWORD);
-        knows_object(ELVEN_ARROW);
-        knows_object(ELVEN_BOW);
-        knows_object(ELVEN_SPEAR);
-        knows_object(ELVEN_DAGGER);
-        knows_object(ELVEN_BROADSWORD);
-        knows_object(ELVEN_MITHRIL_COAT);
-        knows_object(ELVEN_LEATHER_HELM);
-        knows_object(ELVEN_SHIELD);
-        knows_object(ELVEN_BOOTS);
-        knows_object(ELVEN_CLOAK);
+        knows_object(ELVEN_SHORT_SWORD, FALSE);
+        knows_object(ELVEN_ARROW, FALSE);
+        knows_object(ELVEN_BOW, FALSE);
+        knows_object(ELVEN_SPEAR, FALSE);
+        knows_object(ELVEN_DAGGER, FALSE);
+        knows_object(ELVEN_BROADSWORD, FALSE);
+        knows_object(ELVEN_MITHRIL_COAT, FALSE);
+        knows_object(ELVEN_LEATHER_HELM, FALSE);
+        knows_object(ELVEN_SHIELD, FALSE);
+        knows_object(ELVEN_BOOTS, FALSE);
+        knows_object(ELVEN_CLOAK, FALSE);
         
         /* All elves have a natural affinity for enchantments */
         set_skill_cap_minimum(P_ENCHANTMENT_SPELL, P_BASIC);
@@ -872,22 +884,22 @@ u_init_race(void)
 
     case PM_DWARF:
         /* Dwarves can recognize all dwarvish objects */
-        knows_object(DWARVISH_SPEAR);
-        knows_object(DWARVISH_SHORT_SWORD);
-        knows_object(DWARVISH_MATTOCK);
-        knows_object(DWARVISH_IRON_HELM);
-        knows_object(DWARVISH_MITHRIL_COAT);
-        knows_object(DWARVISH_CLOAK);
-        knows_object(DWARVISH_ROUNDSHIELD);
+        knows_object(DWARVISH_SPEAR, FALSE);
+        knows_object(DWARVISH_SHORT_SWORD, FALSE);
+        knows_object(DWARVISH_MATTOCK, FALSE);
+        knows_object(DWARVISH_IRON_HELM, FALSE);
+        knows_object(DWARVISH_MITHRIL_COAT, FALSE);
+        knows_object(DWARVISH_CLOAK, FALSE);
+        knows_object(DWARVISH_ROUNDSHIELD, FALSE);
         
         /* All dwarves have skill with digging tools */
         set_skill_cap_minimum(P_PICK_AXE, P_SKILLED);
         break;
 
     case PM_GNOME:
-        knows_object(GNOMISH_HELM);
-        knows_object(GNOMISH_BOOTS);
-        knows_object(GNOMISH_SUIT);
+        knows_object(GNOMISH_HELM, FALSE);
+        knows_object(GNOMISH_BOOTS, FALSE);
+        knows_object(GNOMISH_SUIT, FALSE);
         u.nv_range = 2;
         
         /* Gnomes get an interesting tool. 
@@ -903,7 +915,7 @@ u_init_race(void)
             ini_inv(Xtra_Tool);
         } else {
             ini_inv(OilPotion);
-            knows_object(POT_OIL);
+            knows_object(POT_OIL, FALSE);
         }
         
         /* All gnomes are familiar with crossbows and aklyses */
@@ -918,27 +930,27 @@ u_init_race(void)
         /* Orcs are naughty and carry poison */
         ini_inv(PoisonPotion);
         /* Orcs can recognize all orcish objects */
-        knows_object(ORCISH_SHORT_SWORD);
-        knows_object(ORCISH_ARROW);
-        knows_object(ORCISH_BOW);
-        knows_object(ORCISH_SPEAR);
-        knows_object(ORCISH_DAGGER);
-        knows_object(ORCISH_CHAIN_MAIL);
-        knows_object(ORCISH_RING_MAIL);
-        knows_object(ORCISH_HELM);
-        knows_object(ORCISH_SHIELD);
-        knows_object(URUK_HAI_SHIELD);
-        knows_object(ORCISH_CLOAK);
-        knows_object(ORCISH_BOOTS);
-        knows_object(POT_SICKNESS);
+        knows_object(ORCISH_SHORT_SWORD, FALSE);
+        knows_object(ORCISH_ARROW, FALSE);
+        knows_object(ORCISH_BOW, FALSE);
+        knows_object(ORCISH_SPEAR, FALSE);
+        knows_object(ORCISH_DAGGER, FALSE);
+        knows_object(ORCISH_CHAIN_MAIL, FALSE);
+        knows_object(ORCISH_RING_MAIL, FALSE);
+        knows_object(ORCISH_HELM, FALSE);
+        knows_object(ORCISH_SHIELD, FALSE);
+        knows_object(URUK_HAI_SHIELD, FALSE);
+        knows_object(ORCISH_CLOAK, FALSE);
+        knows_object(ORCISH_BOOTS, FALSE);
+        knows_object(POT_SICKNESS, FALSE);
         
         /* All orcs are familiar with scimitars */
         set_skill_cap_minimum(P_SABER, P_SKILLED);
         break;
 
     case PM_VAMPIRE:
-        knows_object(POT_VAMPIRE_BLOOD);
-        knows_object(POT_BLOOD);
+        knows_object(POT_VAMPIRE_BLOOD, FALSE);
+        knows_object(POT_BLOOD, FALSE);
 	/* Vampires start off with gods not as pleased, luck penalty */
 	adjalign(-5);
 	change_luck(-1);
@@ -947,6 +959,67 @@ u_init_race(void)
     default: /* impossible */
         break;
     }
+}
+
+/* for 'pauper' aka 'unpreparsed'; take away any skills (bare-handed combat,
+   riding) that are better than unskilled; learn the book (without carrying
+   it or knowing its spell yet) for some key spells */
+staticfn void
+pauper_reinit(void)
+{
+    int skill, preknown = STRANGE_OBJECT;
+
+    if (!u.uroleplay.pauper)
+        return;
+
+    for (skill = 0; skill < P_NUM_SKILLS; skill++)
+        if (P_SKILL(skill) > P_UNSKILLED) {
+            P_SKILL(skill) = P_UNSKILLED;
+            P_ADVANCE(skill) = 0;
+        }
+    /* pauper has lost out on initial skills, but provide some unspent skill
+       credits to make up for that */
+    u.weapon_slots = 2;
+
+    /* paupers don't know any spells yet, but several roles will recognize
+       the spellbook for a key spell (not necessarily that role's special
+       spell); "supply chests" on the first few levels provide a fairly
+       high chance to find the book; some other roles know a non-book item */
+    switch (Role_switch) {
+    case PM_HEALER:
+        preknown = SPE_HEALING;
+        break;
+    case PM_CLERIC:
+    case PM_KNIGHT:
+    case PM_MONK:
+        preknown = SPE_PROTECTION;
+        break;
+    case PM_WIZARD:
+        preknown = SPE_FORCE_BOLT;
+        break;
+    case PM_ARCHEOLOGIST:
+        preknown = TOUCHSTONE;
+        break;
+    case PM_CAVE_DWELLER:
+        preknown = FLINT;
+        break;
+    case PM_ROGUE:
+    case PM_TOURIST:
+        preknown = SACK;
+        break;
+    case PM_SAMURAI:
+        /* food ration isn't interesting to discover, but put "gunyoki" into
+           discoveries list for players who might not recognize what it is */
+        preknown = FOOD_RATION;
+        break;
+    default:
+    case PM_BARBARIAN:
+    case PM_RANGER:
+    case PM_VALKYRIE:
+        break;
+    }
+    if (preknown != STRANGE_OBJECT)
+        knows_object(preknown, TRUE);
 }
 
 /* boost STR and CON until hero can carry inventory */
@@ -1061,6 +1134,8 @@ u_init(void)
 
     u_init_role();
     u_init_race();
+    if (u.uroleplay.pauper)
+        pauper_reinit();
 
     /* roughly based on distribution in human population */
     u.uhandedness = rn2(10) ? RIGHT_HANDED : LEFT_HANDED;
@@ -1087,9 +1162,9 @@ u_init(void)
         u.uen = u.uenmax = u.uenpeak = u.ueninc[u.ulevel] = SPELL_LEV_PW(1);
 
     /* Quality-of-Life */
-    knows_object(POT_WATER);
-    knows_object(SCR_BLANK_PAPER);
-    knows_object(SCR_IDENTIFY);
+    knows_object(POT_WATER, FALSE);
+    knows_object(SCR_BLANK_PAPER, FALSE);
+    knows_object(SCR_IDENTIFY, FALSE);
     return;
 }
 

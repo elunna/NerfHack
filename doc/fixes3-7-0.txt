@@ -1,4 +1,4 @@
-NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1464 $ $NHDT-Date: 1723945837 2024/08/18 01:50:37 $
+NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1472 $ $NHDT-Date: 1725143669 2024/08/31 22:34:29 $
 
 General Fixes and Modified Features
 -----------------------------------
@@ -1162,6 +1162,8 @@ prevent hug attacks and touch or engulf attacks for wrap, stick-to, and
 	vortices, a few others) or against worm tails
 wand of speed gives temporary speed, potion gives intrinsic
 some monsters (riders, shopkeepers, priests, quest leader) can break boulders
+if hero owes shop for a boulder and shopkeeper breaks it, continue to bill hero
+	for the boulder rather than switching to the resulting rocks
 corpse-eating monsters will go out of their way to eat corpses on the floor
 warnings via impossible() would be unseen if message suppression via ESC at
 	--More-- prompt was in effect
@@ -1464,6 +1466,7 @@ when a secret corridor was discovered by wand of secret door detection or by
 	wizard mode ^E and converted into a regular corridor, if there was a
 	formerly embedded object at the spot, presence of the object would be
 	forgotten unless within range of a light source
+when poly'd into a giant, kicking a closed door always succeeds in breaking it
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2021,6 +2024,11 @@ having #terrain display gas cloud regions as if they were traps didn't work
 when a monster within a gas cloud was displayed on the map because the hero
 	was next to it, it remained displayed if hero moved away
 eating a pyrolisk egg on the floor triggered an "object lost" panic
+core object creation and the curses interface's window handling both became
+	confused by the 'pauper' option/conduct because they assumed that invent
+	being Null meant that the game hadn't started yet
+wizards were discovering unread spellbooks whenever any skill was advanced; do so
+	only when a spell skill is advanced
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository

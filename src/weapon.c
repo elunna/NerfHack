@@ -1,4 +1,4 @@
-/* NetHack 3.7	weapon.c	$NHDT-Date: 1723318730 2024/08/10 19:38:50 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.127 $ */
+/* NetHack 3.7	weapon.c	$NHDT-Date: 1725227810 2024/09/01 21:56:50 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.128 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -1378,7 +1378,11 @@ skill_advance(int skill)
         P_SKILL(skill) >= P_MAX_SKILL(skill) ? "most" : "more",
         P_NAME(skill));
 
-    skill_based_spellbook_id();
+    /* wizards discover spellbook IDs depending on spell 'school' skill limits;
+       this allows them to successfully write books for unknown spells without
+       the Luck bias they used to have over other roles */
+    if (skill >= P_FIRST_SPELL && skill <= P_LAST_SPELL)
+        skill_based_spellbook_id();
 }
 
 static const struct skill_range {
@@ -1974,7 +1978,8 @@ skill_init(const struct def_skill *class_skill)
        (despite the function name, this works for spell skills too) */
     unrestrict_weapon_skill(spell_skilltype(gu.urole.spelspec));
 
-    skill_based_spellbook_id();
+    if (!u.uroleplay.pauper) /* paupers lack advanced access to books */
+        skill_based_spellbook_id();
 }
 
 void
