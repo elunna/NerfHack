@@ -651,7 +651,8 @@ do_attack(struct monst *mtmp)
         return FALSE;
     }
 
-    if ((is_displaced(mtmp->data) || has_displacement(mtmp))
+    if (((is_displaced(mtmp->data) && !mtmp->mcan) 
+            || has_displacement(mtmp))
         && !helpless(mtmp) && !mtmp->mtrapped
         && !u.uswallow && !rn2(2)) {
         pline("The image of %s shimmers and vanishes!", mon_nam(mtmp));
