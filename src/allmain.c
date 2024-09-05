@@ -221,11 +221,12 @@ moveloop_core(void)
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
                 
+#if 0 /* Disabled - this makes ascension too sloggy. */
                 /* Once you have performed the invocation, all hell breaks loose */
                 if (u.uevent.invoked && !rn2(15) && !In_endgame(&u.uz)) {
                     nasty((struct monst *) 0, TRUE);
                 }
-                
+#endif
                 u_calc_moveamt(mvl_wtcap);
                 settrack();
 
