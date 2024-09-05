@@ -1043,6 +1043,9 @@ set_skill_cap_minimum(int skill, int minimum)
 {
     if (P_MAX_SKILL(skill) < minimum) {
         P_MAX_SKILL(skill) = minimum;
+        
+        if (P_SKILL(skill) == P_ISRESTRICTED) /* skill pre-set */
+            P_SKILL(skill) = P_UNSKILLED;
     }
 }
 
