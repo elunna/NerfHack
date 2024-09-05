@@ -2001,7 +2001,7 @@ hmon_hitmon_stagger(
 {
     /* Gauntlets of force occasionally hit hard */
    boolean forcegloves = uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE 
-                          && !rn2(40);
+                          && !rn2(20);
     /* VERY small chance of stunning opponent if unarmed. */
     if ((rnd(100) < P_SKILL(P_BARE_HANDED_COMBAT) || forcegloves)
          && !bigmonst(hmd->mdat) && !thick_skinned(hmd->mdat)) {

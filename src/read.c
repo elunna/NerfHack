@@ -1358,24 +1358,12 @@ seffect_enchant_armor(struct obj **sobjp)
         uncurse(otmp);
     if (s) {
         int oldspe = otmp->spe;
-        /* GoF act as a ring of increase damage, so we need to remove them 
-         * and put them back on to recalculate the damage bonus. */
-        if (otmp->otyp == GAUNTLETS_OF_FORCE)
-            Gloves_off();
-        
         /* despite being schar, it shouldn't be possible for spe to wrap
            here because it has been capped at 99 and s is quite small;
            however, might need to change s if it takes spe past 99 */
-       
         otmp->spe += s;
         cap_spe(otmp); /* make sure that it doesn't exceed SPE_LIM */
         s = otmp->spe - oldspe; /* cap_spe() might have throttled 's' */
-        
-        if (otmp->otyp == GAUNTLETS_OF_FORCE) {
-            setworn(otmp, W_ARMG);
-            Gloves_on();
-        }
-        
         if (s) /* skip if it got changed to 0 */
             adj_abon(otmp, s); /* adjust armor bonus for Dex or Int+Wis */
         gk.known = otmp->known;

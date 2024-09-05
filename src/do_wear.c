@@ -649,6 +649,7 @@ Gloves_on(void)
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
+    case GAUNTLETS_OF_FORCE:
         break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
@@ -660,9 +661,6 @@ Gloves_on(void)
         break;
     case GAUNTLETS_OF_DEXTERITY:
         adj_abon(uarmg, uarmg->spe);
-        break;
-    case GAUNTLETS_OF_FORCE:
-        u.udaminc += uarmg->spe;
         break;
     default:
         impossible(unknown_type, c_gloves, uarmg->otyp);
@@ -726,6 +724,7 @@ Gloves_off(void)
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
+    case GAUNTLETS_OF_FORCE:
         break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
@@ -738,9 +737,6 @@ Gloves_off(void)
     case GAUNTLETS_OF_DEXTERITY:
         if (!svc.context.takeoff.cancelled_don)
             adj_abon(uarmg, -uarmg->spe);
-        break;
-    case GAUNTLETS_OF_FORCE:
-        u.udaminc -= uarmg->spe;
         break;
     default:
         impossible(unknown_type, c_gloves, uarmg->otyp);

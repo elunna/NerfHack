@@ -1583,8 +1583,8 @@ add_obj_info(winid datawin, short otyp)
     }
     /* Misc powers */
     if (otyp == GAUNTLETS_OF_FORCE) {
-        OBJPUTSTR("Increases damage; can easily force open doors or locks.");
-        OBJPUTSTR("Allows you to break boulders and iron bars.");
+        OBJPUTSTR("Force open doors or locks, break boulders and iron bars.");
+        OBJPUTSTR("Occasionally stuns enemies in hand-to-hand combat.");
     }
     if (otyp == LUCKSTONE) {
         OBJPUTSTR("Confers luck.");
