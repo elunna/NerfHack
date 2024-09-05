@@ -1389,7 +1389,8 @@ abuse_dog(struct monst *mtmp)
  *
  * (mnum, caster, tame, x, y)
  */
-struct monst * make_msummoned(
+struct monst *
+make_msummoned(
     struct permonst *pm,
     struct monst *caster,
     boolean tame,
@@ -1417,6 +1418,8 @@ struct monst * make_msummoned(
         mtmp->mtame = 10;
         /* mtmp->uexp = 1; */ /* You get experience for its kills */
         u.uconduct.pets++;
+    } else {
+        mtmp->mpeaceful = 0;
     }
     mtmp->msleeping = 0;
     set_malign(mtmp); /* more alignment changes */
