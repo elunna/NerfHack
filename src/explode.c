@@ -1083,23 +1083,19 @@ mon_explodes(struct monst *mon, struct attack *mattk)
 
     if (mattk->damn) {
         dmg = d((int) mattk->damn, (int) mattk->damd);
-    }
-    else if (mattk->damd) {
+    } else if (mattk->damd) {
         dmg = d((int) mon->data->mlevel + 1, (int) mattk->damd);
-    }
-    else {
+    } else {
         dmg = 0;
     }
 
     if (mattk->adtyp == AD_PHYS) {
         type = PHYS_EXPL_TYPE;
-    }
-    else if (mattk->adtyp >= AD_MAGM && mattk->adtyp <= MAX_AD) {
+    } else if (mattk->adtyp >= AD_MAGM && mattk->adtyp <= MAX_AD) {
         /* The -1, +20, *-1 math is to set it up as a 'monster breath' type for
          * the explosions (it isn't, but this is the closest analogue). */
         type = -((mattk->adtyp - 1) + 20);
-    }
-    else {
+    } else {
         impossible("unknown type for mon_explode %d", mattk->adtyp);
         return;
     }
@@ -1110,6 +1106,10 @@ mon_explodes(struct monst *mon, struct attack *mattk)
     if (!DEADMONSTER(mon)) {
         mondead(mon);
     }
+    
+    /* Cancelled monsters can't explode. */
+    if (!mon->mcan)
+        return;
 
     /* This might end up killing you, too; you never know...
      * also, it is used in explode() messages */
