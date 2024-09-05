@@ -22,7 +22,7 @@ local wiz3 = des.map({ halign = "center", valign = "center", map = [[
 |.....|.........|..|.......|x
 ----------------------------x
 ]], contents = function(rm)
-   des.levregion({ region={25,11,25,11}, type="portal", name="castle" });
+   -- des.levregion({ region={25,11,25,11}, type="portal", name="castle" });
    des.region({ region={07,03, 15,11}, lit=0 ,type="morgue", filled=2 })
    des.region({ region={17,06, 18,11}, lit=0, type="beehive", filled=1 })
    -- make the entry chamber a real room; it affects monster arrival
