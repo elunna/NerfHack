@@ -1539,7 +1539,9 @@ check_dogs(void)
             nextdog = nextdog->next;
         }
 
-        if (weakest) {
+        /* The only pet that doesn't have an EDOG should 
+         * be the guardian angel granted on the Astral Plane.*/
+        if (weakest && EDOG(weakest)) {
             weakest->mtame = 0;
             /* become hostile from abuse or random chance. */
             if (rn2(EDOG(weakest)->abuse + 1) || !rn2(3))
