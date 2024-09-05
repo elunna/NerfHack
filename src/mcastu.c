@@ -1140,7 +1140,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
                  makeplural(body_part(LEG)));
 
             if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
-                set_wounded_legs(side, rn1(100, 50));
+                set_wounded_legs(side, rn1(15, 15));
         }
         break;
     }
