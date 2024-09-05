@@ -1855,8 +1855,7 @@ pickup_object(
     /* What's left of the special case for gold :-) */
     if (obj->oclass == COIN_CLASS)
         disp.botl = TRUE;
-    if (obj->quan != count && obj->otyp != LOADSTONE
-                           && obj->otyp != FOULSTONE)
+    if (obj->quan != count && obj->otyp != LOADSTONE)
         obj = splitobj(obj, count);
 
     obj->how_lost = LOST_NONE;
