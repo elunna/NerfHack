@@ -2447,6 +2447,10 @@ legs_in_no_shape(const char *for_what, /* jumping, kicking, riding */
 void
 set_wounded_legs(long side, int timex)
 {
+    /* Sustain ability protects our legs */
+    if (Fixed_abil)
+        return;
+
     /* KMH -- STEED
      * If you are riding, your steed gets the wounded legs instead.
      * You still call this function, but don't lose hp.
