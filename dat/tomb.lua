@@ -68,13 +68,13 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 40, y = 09,
                 des.object("?")
                 des.object("?")
                 des.object("?")
+                des.object("?")
                 des.object("!")
                 des.object("!")
                 des.object("!")
-                des.object()
-                des.object()
-                des.object()
-                des.object()
+                des.object("!")
+                des.object("/")
+                des.object("=")
              end
 });
 
@@ -84,9 +84,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 16, y = 01,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("?")
+                des.object("!")
+                des.object("*")
              end
 });
 
@@ -96,9 +96,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 17, y = 18,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("?")
+                des.object("!")
+                des.object("/")
              end
 });
 
@@ -120,14 +120,14 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 40, y = 10,
                 des.object("?")
                 des.object("?")
                 des.object("?")
+                des.object("?")
                 des.object("+")
                 des.object("+")
                 des.object("+")
                 des.object("+")
-                des.object()
-                des.object()
-                des.object()
-                des.object()
+                des.object("*")
+                des.object("(")
+                des.object("/")
              end
 });
 
