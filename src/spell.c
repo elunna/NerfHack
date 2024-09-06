@@ -61,6 +61,7 @@ staticfn void display_spell_target_positions(boolean);
 staticfn boolean spell_aim_step(genericptr_t, coordxy, coordxy);
 staticfn void propagate_chain_lightning(struct chain_lightning_queue *,
             struct chain_lightning_zap);
+staticfn int repair_ok(struct obj *);
 
 /* The roles[] table lists the role-specific values for tuning
  * percent_success().
@@ -1580,6 +1581,35 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         if (!(jump(max(role_skill, 1)) & ECMD_TIME))
             pline1(nothing_happens);
         break;
+    case SPE_REPAIR: {
+        struct obj *otmp = (struct obj *) 0;
+        /* removes one level of erosion (both types) for an item */
+        if (role_skill >= P_BASIC)
+            otmp = getobj("repair", repair_ok, GETOBJ_PROMPT);
+        else
+            otmp = some_armor(&gy.youmonst);
+        
+        if (otmp && greatest_erosion(otmp) > 0) {
+            if (Blind)
+                Your("%s feels warmer for a brief moment.",
+                        xname(otmp));
+            else
+                Your("%s glows faintly golden for a moment.",
+                        xname(otmp));
+            if (role_skill >= P_SKILLED) {
+                otmp->oeroded = otmp->oeroded2 = 0;
+            } else {
+                if (otmp->oeroded > 0)
+                    otmp->oeroded--;
+                if (otmp->oeroded2 > 0)
+                    otmp->oeroded2--;
+            }
+            update_inventory();
+        } else {
+            pline1(nothing_happens);
+        }
+        break;
+    }
     case SPE_CHAIN_LIGHTNING:
         cast_chain_lightning();
         break;
@@ -2423,6 +2453,22 @@ spell_nag(void)
             Your("%s spell is fading!", spellname(i));
         }
     }
+}
+
+/* getobj callback for object to repair */
+staticfn int
+repair_ok(struct obj *obj)
+{
+    if (!obj)
+        return GETOBJ_EXCLUDE;
+
+    if (obj->oclass == COIN_CLASS)
+        return GETOBJ_EXCLUDE;
+
+    if (obj->oeroded || obj->oeroded2)
+        return GETOBJ_SUGGEST;
+
+    return GETOBJ_EXCLUDE;
 }
 
 /*spell.c*/
