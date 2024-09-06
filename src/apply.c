@@ -2830,16 +2830,18 @@ staticfn int
 grease_ok(struct obj *obj)
 {
     if (!obj)
-        return GETOBJ_SUGGEST;
-
+        return GETOBJ_EXCLUDE;
+    
     if (obj->oclass == COIN_CLASS)
         return GETOBJ_EXCLUDE;
 
     if (inaccessible_equipment(obj, (const char *) 0, FALSE))
         return GETOBJ_EXCLUDE_INACCESS;
-
-    /* Possible extension: don't suggest greasing objects which are already
-     * greased. */
+    
+    /* don't suggest greasing objects which are already greased. */
+    if (obj->greased)
+        return GETOBJ_EXCLUDE;
+    
     return GETOBJ_SUGGEST;
 }
 
@@ -2903,7 +2905,7 @@ staticfn int
 flint_ok(struct obj *obj)
 {
     if (!obj)
-        return GETOBJ_SUGGEST;
+        return GETOBJ_EXCLUDE;
 
     /* can only stick flint to arrows */
     if (obj->otyp < ARROW || obj->otyp > YA) {
