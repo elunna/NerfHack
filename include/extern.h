@@ -3055,6 +3055,7 @@ extern void l_register_des(lua_State *) NONNULLARG1;
 
 extern void book_cursed(struct obj *) NONNULLARG1;
 extern int study_book(struct obj *) NONNULLARG1;
+extern int cast_from_book(struct obj *) NONNULLARG1;
 extern void book_disappears(struct obj *) NONNULLARG1;
 extern void book_substitution(struct obj *, struct obj *) NONNULLARG12;
 extern void age_spells(void);

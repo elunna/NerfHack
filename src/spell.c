@@ -31,8 +31,7 @@
 /* These are the roles that specialize in spellcasting, they start with
  * spellbooks */
 #define primary_spellcaster() (Role_if(PM_HEALER) || Role_if(PM_CLERIC) \
-                               || Role_if(PM_MONK) || Role_if(PM_WIZARD) \
-                               || Role_if(PM_CARTOMANCER))
+                               || Role_if(PM_MONK) || Role_if(PM_WIZARD))
 struct chain_lightning_queue;
 struct chain_lightning_zap;
 
@@ -736,7 +735,10 @@ getspell(int *spell_no)
     struct _cmd_queue cq, *cmdq;
 
     if (spellid(0) == NO_SPELL) {
-        You("don't know any spells right now.");
+        if (Role_if(PM_CARTOMANCER))
+            pline("Cartomancers cannot learn spells, but they can read rulebooks.");
+        else
+            You("don't know any spells right now.");
         return FALSE;
     }
     if (rejectcasting())
@@ -1401,13 +1403,14 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     int energy = 0, damage, n;
     int otyp, skill, role_skill, res = ECMD_OK;
     boolean physical_damage = FALSE;
+    boolean cartcast = Role_if(PM_CARTOMANCER);
     struct obj *pseudo;
     coord cc;
 
     if (!force && spelleffects_check(spell, &res, &energy))
         return res;
 
-    u.uen -= energy;
+    u.uen -= cartcast ? 0 : energy;
     disp.botl = TRUE;
     /* pseudo is a temporary "false" object containing the spell stats */
     pseudo = mksobj(force ? spell : spellid(spell), FALSE, FALSE);
@@ -1419,7 +1422,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
      */
     otyp = pseudo->otyp;
     skill = spell_skilltype(otyp);
-    role_skill = P_SKILL(skill);
+    role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(skill);
 
     switch (otyp) {
     /*
@@ -2065,7 +2068,10 @@ dovspell(void)
     struct spell spl_tmp;
 
     if (spellid(0) == NO_SPELL) {
-        You("don't know any spells right now.");
+        if (Role_if(PM_CARTOMANCER))
+            pline("Cartomancers cannot learn spells, but they can read rulebooks.");
+        else
+            You("don't know any spells right now.");
     } else {
         while (dospellmenu("Currently known spells",
                            SPELLMENU_VIEW, &splnum)) {
@@ -2360,6 +2366,9 @@ initialspell(struct obj *obj)
 {
     int i, otyp = obj->otyp;
 
+    if (Role_if(PM_CARTOMANCER))
+        return;
+
     for (i = 0; i < MAXSPELL; i++)
         if (spellid(i) == NO_SPELL || spellid(i) == otyp)
             break;
@@ -2469,6 +2478,81 @@ repair_ok(struct obj *obj)
         return GETOBJ_SUGGEST;
 
     return GETOBJ_EXCLUDE;
+}
+
+/* Cartomancers have an entirely different approach to spellcasting.
+ * They deal with "rulebooks", not spellbooks.
+ * They merely need to glance at the rules to be able to cast the
+ * spell at expert. The reading only takes one turn. If no charges
+ * are left on the rulebook, it is used up.
+ */
+int cast_from_book(struct obj *spellbook)
+{
+    int res;
+    short booktype = spellbook->otyp;
+
+    if (rejectcasting())
+        return ECMD_OK;
+
+    /* KMH -- Simplified this code */
+    if (booktype == SPE_BLANK_PAPER) {
+        pline("This book is all blank.");
+        makeknown(booktype);
+        return 1;
+    }
+
+    if (!Confusion && !fully_resistant(SLEEP_RES)
+            && objdescr_is(spellbook, "dull")) {
+        const char *eyes;
+        int dullbook = rnd(25) - ACURR(A_WIS);
+        
+        if (dullbook > 0) {
+            eyes = body_part(EYE);
+            if (eyecount(gy.youmonst.data) > 1)
+                eyes = makeplural(eyes);
+            pline("This book is so dull that you can't keep your %s open.",
+                eyes);
+            dullbook += rnd(2 * objects[booktype].oc_level);
+            fall_asleep(-dullbook, TRUE);
+            return ECMD_TIME;
+        }
+    }
+
+    /* Cursed books still have bad effects */
+    if (spellbook->cursed) {
+        boolean gone = cursed_book(spellbook);
+        if (gone || !rn2(3)) {
+            if (!gone)
+                pline_The("spellbook crumbles to dust!");
+            useup(spellbook);
+            return ECMD_TIME;
+        }
+    } else if (Confusion) {
+        if (!confused_book(spellbook)) {
+            spellbook->in_use = FALSE;
+        }
+        nomul(svc.context.spbook.delay);
+        gm.multi_reason = "reading a book";
+        gn.nomovemsg = 0;
+        return ECMD_TIME;
+    }
+
+    /* Spell effects */
+    res = spelleffects(spellbook->otyp, FALSE, TRUE);
+
+
+    /* Casting uses up a charge */
+    if (res)
+        spellbook->spe--;
+
+    /* Book gets used up when no charges remain. */
+    if (spellbook->spe <= 0) {
+        if (!Blind)
+            pline("%s vanishes in a puff of smoke.", Yname2(spellbook));
+        useup(spellbook);
+    }
+
+    return ECMD_TIME;
 }
 
 /*spell.c*/

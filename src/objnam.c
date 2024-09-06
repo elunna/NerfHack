@@ -1578,6 +1578,7 @@ doname_base(
             goto charges;
         break;
     case WAND_CLASS:
+    case SPBOOK_CLASS:
         add_erosion_words(obj, prefix);
  charges:
         if (known)

@@ -338,11 +338,7 @@ static const struct def_skill Skill_Car[] = {
     { P_UNICORN_HORN, P_SKILLED },
     { P_ATTACK_SPELL, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
-    { P_DIVINATION_SPELL, P_EXPERT },
-    { P_ENCHANTMENT_SPELL, P_SKILLED },
-    { P_CLERIC_SPELL, P_SKILLED },  /* special spell is create monster */
-    { P_ESCAPE_SPELL, P_BASIC },
-    { P_MATTER_SPELL, P_BASIC },
+    /* Cartomancers don't get skill in spellcasting - they have rulebooks. */
     { P_RIDING, P_EXPERT},         /* Card games on motorcycles. */
     { P_BARE_HANDED_COMBAT, P_BASIC},
     { P_NONE, 0 }
@@ -651,8 +647,11 @@ knows_class(char sym)
             if (Role_if(PM_ROGUE) && (objects[o->otyp].oc_skill != P_DAGGER))
                 continue;
         }
-
-        if (objects[ct].oc_class == sym && !objects[ct].oc_magic)
+        /* Let cartomancers start knowing all rulebooks. */
+        if (sym == SPBOOK_CLASS && Role_if(PM_CARTOMANCER)
+            && objects[ct].oc_class == sym)
+            knows_object(ct, FALSE);
+        else if (objects[ct].oc_class == sym && !objects[ct].oc_magic)
             knows_object(ct, FALSE);
     }
 }
@@ -715,6 +714,7 @@ u_init_role(void)
         knows_object(PLAYING_CARD_DECK, FALSE);
         knows_object(DECK_OF_FATE, FALSE);
         knows_object(SCR_ZAPPING, TRUE);
+        knows_class(SPBOOK_CLASS); /* all rulebooks */
         break;
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */

@@ -1206,7 +1206,7 @@ give_spell(void)
      * receiving the book for it, unless it's already well known.
      * The chance is not influenced by whether hero is illiterate.
      */
-    if (otmp->otyp != SPE_BLANK_PAPER && !rn2(4)
+    if (otmp->otyp != SPE_BLANK_PAPER && !rn2(4) && !Role_if(PM_CARTOMANCER)
         && (spe_knowledge = known_spell(otmp->otyp)) != spe_Fresh) {
         /* force_learn_spell() should only return '\0' if the book
            is blank paper or the spell is known and has retention

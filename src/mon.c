@@ -1487,20 +1487,19 @@ m_calcdistress(struct monst *mtmp)
     if (mtmp->msummoned && mtmp->msummoned == 1) {
         if (canseemon(mtmp)) {
             if (Hallucination)
-            pline("%s %s", Monnam(mtmp), rn2(2)
-                ? "folds in on itself!"
-                : "explodes into multicolored polygons!");
+                pline("%s %s", Monnam(mtmp), rn2(2)
+                    ? "folds in on itself!"
+                    : "explodes into multicolored polygons!");
             else
-            pline("%s %s", Monnam(mtmp), rn2(2)
-                ? "winks out of existence."
-                : "vanishes in a puff of smoke.");
+                pline("%s %s", Monnam(mtmp), rn2(2)
+                    ? "winks out of existence."
+                    : "vanishes in a puff of smoke.");
         }
         for (obj = mtmp->minvent; obj; obj = otmp) {
             otmp = obj->nobj;
-            /*obj_extract_self(obj);*/
-            if (mtmp->mx) {
-            mdrop_obj(mtmp, obj, FALSE);
-            }
+            if (mtmp->mx)
+                mdrop_obj(mtmp, obj, FALSE);
+            
         }
         mongone(mtmp);
         return;
