@@ -4287,6 +4287,9 @@ getprice(struct obj *obj, boolean shk_buying)
             tmp -= (3L / 2L) + 1L;
     }
 
+    if (obj->odiluted && shk_buying)
+        tmp /= 2L;
+    
     switch (obj->oclass) {
     case FOOD_CLASS:
         tmp += corpsenm_price_adj(obj);
