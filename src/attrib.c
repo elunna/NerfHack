@@ -567,7 +567,7 @@ exerper(void)
 	    /* Don't punish vampires for eating too much */
             if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
 		        exercise(A_DEX, FALSE);
-            if (Role_if(PM_MONK))
+            if (Role_if(PM_MONK) || Role_if(PM_SAMURAI))
                 exercise(A_WIS, FALSE);
             break;
         case NOT_HUNGRY:
