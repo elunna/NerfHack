@@ -1764,7 +1764,7 @@ doname_base(
         if (is_pole(obj) && obj->otyp != LANCE && obj->known)
             ConcatF1(bp, 0, " [%dAC]", misc_bonus(obj));
     }
-    
+
     /* treat 'restoring' like suppress_price because shopkeeper and
        bill might not be available yet while restore is in progress
        (objects won't normally be formatted during that time, but if
@@ -1802,6 +1802,14 @@ doname_base(
         Strcat(prefix, tmpbuf);
     }
 
+
+    /* Archeologists have built-in price identification.
+     * (leave precious stones out - they have the touchstone anyway) */
+    if (Role_if(PM_ARCHEOLOGIST) && !objects[obj->otyp].oc_name_known
+        && !is_unpaid(obj) && obj->oclass != GEM_CLASS) {
+        ConcatF1(bp, 0, " ($%ld)", (long) objects[obj->otyp].oc_cost);
+    }
+    
     /* show weight for items (debug tourist info);
        "aum" is stolen from Crawl's "Arbitrary Unit of Measure" */
     if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {
