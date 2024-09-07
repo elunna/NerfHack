@@ -641,7 +641,7 @@ doread(void)
                              : something);
 
     if (scroll->oclass == SPBOOK_CLASS) {
-        if (Role_if(PM_CARTOMANCER) && !scroll->otyp == SPE_NOVEL)
+        if (Role_if(PM_CARTOMANCER) && scroll->otyp != SPE_NOVEL)
             return cast_from_book(scroll) ? ECMD_TIME : ECMD_OK;
         else
             return study_book(scroll) ? ECMD_TIME : ECMD_OK;
