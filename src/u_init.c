@@ -226,10 +226,6 @@ static struct trobj Xtra_Tool[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0 },
                                      { 0, 0, 0, 0, 0 } };
 static struct trobj Xtra_food[] = { { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 2, 0},
                                     { 0, 0, 0, 0, 0 } };
-static struct trobj Leash[] = { { LEASH, 0, TOOL_CLASS, 1, 0 },
-                                { 0, 0, 0, 0, 0 } };
-static struct trobj Towel[] = { { TOWEL, 0, TOOL_CLASS, 1, 0 },
-                                { 0, 0, 0, 0, 0 } };
 static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0 },
                                   { 0, 0, 0, 0, 0 } };
 static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0 },
