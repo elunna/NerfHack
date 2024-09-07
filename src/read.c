@@ -1302,6 +1302,7 @@ seffect_enchant_armor(struct obj **sobjp)
               otense(otmp, "evaporate"));
         remove_worn_item(otmp, FALSE);
         useup(otmp);
+        exercise(A_WIS, FALSE);
         return;
     }
     s = scursed ? -1

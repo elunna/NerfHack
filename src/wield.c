@@ -1097,6 +1097,7 @@ chwepon(struct obj *otmp, int amount)
             TOOL_CLASS, EXPL_MAGICAL);
 
         useupall(uwep); /* let all of them disappear */
+        exercise(A_WIS, FALSE);
         return 1;
     }
     if (!Blind) {
