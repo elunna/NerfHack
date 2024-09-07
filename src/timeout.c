@@ -162,9 +162,11 @@ stoned_dialogue(void)
         break;
     case 3: /* limbs turned to stone */
         stop_occupation();
-        nomul(-3); /* can't move anymore */
-        gm.multi_reason = "getting stoned";
-        gn.nomovemsg = You_can_move_again; /* not unconscious */
+        if (!Free_action) {
+            nomul(-3); /* can't move anymore */
+            gm.multi_reason = "getting stoned";
+            gn.nomovemsg = You_can_move_again; /* not unconscious */
+        }
         /* "your limbs have turned to stone" so terminate wounded legs */
         if (Wounded_legs && !u.usteed)
             heal_legs(2);
