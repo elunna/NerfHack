@@ -11,7 +11,7 @@ des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "noflip", "inaccessibles")
 
-des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=1,walled=true })
+des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=0,walled=true })
 
 des.map([[
 .......................................
