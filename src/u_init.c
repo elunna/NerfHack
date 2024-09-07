@@ -649,7 +649,8 @@ knows_class(char sym)
         }
         /* Let cartomancers start knowing all rulebooks. */
         if (sym == SPBOOK_CLASS && Role_if(PM_CARTOMANCER)
-            && objects[ct].oc_class == sym)
+            && objects[ct].oc_class == sym
+            && ct != SPE_NOVEL && ct != SPE_BOOK_OF_THE_DEAD)
             knows_object(ct, FALSE);
         else if (objects[ct].oc_class == sym && !objects[ct].oc_magic)
             knows_object(ct, FALSE);
