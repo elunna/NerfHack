@@ -857,7 +857,8 @@ dipfountain(struct obj *obj)
 
         if (u.ualign.type != A_LAWFUL || !Role_if(PM_KNIGHT)) {
             /* Ha!  Trying to cheat her. */
-            pline("A freezing mist rises from the %s and envelopes the sword.",
+            pline("A freezing mist rises from the %s"
+                  " and envelopes the sword.",
                   hliquid("water"));
             pline_The("fountain disappears!");
             curse(obj);

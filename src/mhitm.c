@@ -1191,7 +1191,8 @@ mdamagem(
             } else if (pd == &mons[PM_WRAITH]) {
                 (void) grow_up(magr, (struct monst *) 0);
                 /* don't grow up twice */
-                return (M_ATTK_DEF_DIED | (!DEADMONSTER(magr) ? 0 : M_ATTK_AGR_DIED));
+                return (M_ATTK_DEF_DIED
+                        | (!DEADMONSTER(magr) ? 0 : M_ATTK_AGR_DIED));
             } else if (pd == &mons[PM_NURSE]) {
                 magr->mhp = magr->mhpmax;
             }
@@ -1199,7 +1200,8 @@ mdamagem(
         }
         /* caveat: above digestion handling doesn't keep `pa' up to date */
 
-        return (M_ATTK_DEF_DIED | (grow_up(magr, mdef) ? 0 : M_ATTK_AGR_DIED));
+        return (M_ATTK_DEF_DIED
+                | (grow_up(magr, mdef) ? 0 : M_ATTK_AGR_DIED));
     }
     return (mhm.hitflags == M_ATTK_AGR_DIED) ? M_ATTK_AGR_DIED : M_ATTK_HIT;
 }
@@ -1367,7 +1369,8 @@ mswingsm(
 {
     if (flags.verbose && !Blind && mon_visible(magr)) {
         boolean bash = (is_pole(otemp)
-                        && dist2(magr->mx, magr->my, mdef->mx, mdef->my) <= 2);
+                        && (dist2(magr->mx, magr->my, mdef->mx, mdef->my)
+                            <= 2));
 
         pline("%s %s %s%s %s at %s.", Monnam(magr), mswings_verb(otemp, bash),
               (otemp->quan > 1L) ? "one of " : "", mhis(magr), xname(otemp),

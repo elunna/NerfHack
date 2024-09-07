@@ -179,7 +179,7 @@ m_break_boulder(struct monst *mtmp, coordxy x, coordxy y)
            an item not in hero's inventory can have its unpaid flag set;
            if the boulder isn't already on the bill, don't charge for it */
         if (otmp->unpaid) {
-            /* remove original from bill and add cloned copy to used-up bill */
+            /* remove original from bill + add cloned copy to used-up bill */
             bill_dummy_object(otmp);
         }
         /* fracturing keeps otmp, changing its otyp from BOULDER to ROCK */
@@ -208,8 +208,8 @@ watch_on_duty(struct monst *mtmp)
             }
         } else if (is_digging()) {
             /* chewing, wand/spell of digging are checked elsewhere */
-            watch_dig(mtmp, svc.context.digging.pos.x, svc.context.digging.pos.y,
-                      FALSE);
+            watch_dig(mtmp, svc.context.digging.pos.x,
+                      svc.context.digging.pos.y, FALSE);
         }
     }
 }
@@ -491,7 +491,8 @@ monflee(
                sleep and temporary paralysis, so both conditions
                receive the same alternate message */
             if (!mtmp->mcanmove || !mtmp->data->mmove) {
-                pline_mon(mtmp, "%s seems to flinch.", Adjmonnam(mtmp, "immobile"));
+                pline_mon(mtmp, "%s seems to flinch.",
+                          Adjmonnam(mtmp, "immobile"));
             } else if (flees_light(mtmp)) {
                 if (Unaware) {
                     /* tell the player even if the hero is unconscious */
@@ -1622,7 +1623,8 @@ postmov(
                     Soundeffect(se_door_crash_open, 50);
                     if (flags.verbose) {
                         if (canseeit && canspotmon(mtmp)) {
-                            pline_mon(mtmp, "%s smashes down a door.", Monnam(mtmp));
+                            pline_mon(mtmp, "%s smashes down a door.",
+                                      Monnam(mtmp));
                         } else if (canseeit) {
                             You_see("a door crash open.");
                         } else if (!Deaf) {
@@ -1644,7 +1646,8 @@ postmov(
                 && (dmgtype(ptr, AD_RUST) || dmgtype(ptr, AD_CORR)
                     || metallivorous(ptr))) {
                 if (canseemon(mtmp))
-                    pline_mon(mtmp, "%s eats through the iron bars.", Monnam(mtmp));
+                    pline_mon(mtmp, "%s eats through the iron bars.",
+                              Monnam(mtmp));
                 dissolve_bars(mtmp->mx, mtmp->my);
                 return MMOVE_DONE;
             } else if (flags.verbose && canseemon(mtmp))
@@ -1968,7 +1971,8 @@ not_special:
     if ((!mtmp->mpeaceful || !rn2(10)) && (!Is_rogue_level(&u.uz))) {
         boolean in_line = (lined_up(mtmp)
              && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)
-                 <= (throws_rocks(gy.youmonst.data) ? 20 : ACURRSTR / 2 + 1)));
+                 <= (throws_rocks(gy.youmonst.data) ? 20
+                                                    : (ACURRSTR / 2 + 1))));
 
         if (appr != 1 || !in_line) {
             /* Monsters in combat won't pick stuff up, avoiding the

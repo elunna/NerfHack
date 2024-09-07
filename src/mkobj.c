@@ -1158,8 +1158,8 @@ mksobj_init(struct obj *otmp, boolean artif)
         } else if (otmp->otyp == WAN_WONDER) {
             otmp->spe = rn1(10, 15);
         } else
-            otmp->spe = rn1(5, 
-            (objects[otmp->otyp].oc_dir == NODIR) ? 15 : 8);
+            otmp->spe = rn1(5,             
+                            (objects[otmp->otyp].oc_dir == NODIR) ? 15 : 8);
         blessorcurse(otmp, 17);
         otmp->recharged = 0; /* used to control recharging */
         break;
@@ -2165,9 +2165,10 @@ mkcorpstat(
 
         otmp->corpsenm = monsndx(ptr);
         otmp->owt = weight(otmp);
-        if (otmp->otyp == CORPSE && (gz.zombify || otmp->zombie_corpse
+        if (otmp->otyp == CORPSE
+            && (gz.zombify || otmp->zombie_corpse
                                      || special_corpse(old_corpsenm)
-                                     || special_corpse(otmp->corpsenm))) {
+                || special_corpse(otmp->corpsenm))) {
             obj_stop_timers(otmp);
             if (mtmp && is_reviver(mtmp->data) && !is_rider(mtmp->data)
                 && mtmp->mcan) {
@@ -2537,7 +2538,8 @@ obj_timer_checks(
 
             /* mark the corpse as being on ice */
             otmp->on_ice = 1;
-            debugpline3("%s is now on ice at <%d,%d>.", The(xname(otmp)), x, y);
+            debugpline3("%s is now on ice at <%d,%d>.",
+                        The(xname(otmp)), x, y);
             /* Adjust the time remaining */
             tleft *= ROT_ICE_ADJUSTMENT;
             restart_timer = TRUE;

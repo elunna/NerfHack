@@ -1297,7 +1297,8 @@ dodown(void)
             return ECMD_TIME;
         } else if (!trap || !is_hole(trap->ttyp)
                    || !Can_fall_thru(&u.uz) || !trap->tseen) {
-            if (flags.autodig && !svc.context.nopick && uwep && is_pick(uwep)) {
+            if (flags.autodig && !svc.context.nopick
+                && uwep && is_pick(uwep)) {
                 return use_pick_axe2(uwep);
             } else if (do_stair_travel('>')) {
                 return ECMD_TIME;
@@ -2058,7 +2059,8 @@ temperature_change_msg(schar prev_temperature)
 void
 maybe_lvltport_feedback(void)
 {
-    if (gd.dfr_post_msg && !strncmpi(gd.dfr_post_msg, "You materialize", 15)) {
+    if (gd.dfr_post_msg
+        && !strncmpi(gd.dfr_post_msg, "You materialize", 15)) {
         /* "You materialize on a different level." */
         pline("%s", gd.dfr_post_msg);
         free((genericptr_t) gd.dfr_post_msg), gd.dfr_post_msg = 0;
@@ -2080,8 +2082,10 @@ final_level(void)
 
 /* change levels at the end of this turn, after monsters finish moving */
 void
-schedule_goto(d_level *tolev, int utotype_flags,
-              const char *pre_msg, const char *post_msg)
+schedule_goto(
+    d_level *tolev,
+    int utotype_flags,
+    const char *pre_msg, const char *post_msg)
 {
     /* UTOTYPE_DEFERRED is used, so UTOTYPE_NONE can trigger deferred_goto() */
     u.utotype = utotype_flags | UTOTYPE_DEFERRED;
@@ -2165,9 +2169,9 @@ revive_corpse(struct obj *corpse)
         struct monst *mtmp2;
 
         container = corpse->ocontainer;
-        mtmp2 = get_container_location(container, &container_where, (int *) 0);
-        /* container_where is the outermost container's location even if
-         * nested */
+        mtmp2 = get_container_location(container, &container_where,
+                                       (int *) 0);
+        /* container_where is outermost container's location even if nested */
         if (container_where == OBJ_MINVENT && mtmp2)
             mcarry = mtmp2;
     }

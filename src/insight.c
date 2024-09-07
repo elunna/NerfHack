@@ -106,7 +106,8 @@ static struct ll_achieve_msg achieve_msg [] = {
 #define you_are(attr, ps) enl_msg(You_, are, were, (attr), (ps))
 #define you_have(attr, ps) enl_msg(You_, have, had, (attr), (ps))
 #define you_can(attr, ps) enl_msg(You_, can, could, (attr), (ps))
-#define you_have_been(goodthing) enl_msg(You_, have_been, were, (goodthing), "")
+#define you_have_been(goodthing) \
+    enl_msg(You_, have_been, were, (goodthing), "")
 #define you_have_never(badthing) \
     enl_msg(You_, have_never, never, (badthing), "")
 #define you_have_X(something) \
@@ -393,7 +394,6 @@ enlightenment(
         /* intrinsics and other traditional enlightenment feedback */
         attributes_enlightenment(mode, final);
     }
-    
     /* Stuff related to #pray */
 
     enlght_out("");
@@ -663,7 +663,8 @@ background_enlightenment(int unused_mode UNUSED, int final)
         you_have("just started your adventure", "");
     } else {
         /* 'turns' grates on the nerves in this context... */
-        Sprintf(buf, "the dungeon %ld turn%s ago", svm.moves, plur(svm.moves));
+        Sprintf(buf, "the dungeon %ld turn%s ago",
+                svm.moves, plur(svm.moves));
         /* same phrasing for current and final: "entered" is unconditional */
         enlght_line(You_, "entered ", buf, "");
     }
@@ -2051,6 +2052,20 @@ attributes_enlightenment(
 #endif
 
     {
+        static const char *verbchoices[2][2] = {
+            { "might avoid", "have avoided" },
+            { "could have avoided", "avoided" },
+        };
+        /* u.usaving_grace will always be 0 or 1; final is 0 (game in
+           progress), 1 (game over, survived), or 2 (game over, died) */
+        const char *verb = verbchoices[!!final][u.usaving_grace];
+
+        /* 'verb' has already been set for present or past but enl_msg()
+           needs it twice, one for in progress, the other for game over */
+        enl_msg(You_, verb, verb, " a one-shot death via saving-grace", "");
+    }
+
+    {
         const char *p;
 
         buf[0] = '\0';
@@ -2943,7 +2958,7 @@ list_vanquished(char defquery, boolean ask)
         if (c == 'q')
             done_stopprint++;
         if (c == 'y' || c == 'a') {
-            if (c == 'a' && ntypes > 1) { /* ask player to choose sort order */
+            if (c == 'a' && ntypes > 1) { /* ask user to choose sort order */
                 /* choose value for vanq_sortmode via menu; ESC cancels list
                    of vanquished monsters but does not set 'done_stopprint' */
                 if (set_vanq_order(TRUE) < 0)

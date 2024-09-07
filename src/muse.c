@@ -3910,7 +3910,8 @@ green_mon(struct monst *mon)
         /* approximation */
         if (strstri(ptr->pmnames[NEUTRAL], "green")
             || (ptr->pmnames[MALE] && strstri(ptr->pmnames[MALE], "green"))
-            || (ptr->pmnames[FEMALE] && strstri(ptr->pmnames[FEMALE], "green")))
+            || (ptr->pmnames[FEMALE]
+                && strstri(ptr->pmnames[FEMALE], "green")))
             return TRUE;
         switch (monsndx(ptr)) {
         case PM_FOREST_CENTAUR:
