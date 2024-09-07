@@ -387,10 +387,15 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     case SPE_KNOCK:
         wake = FALSE; /* don't want immediate counterattack */
         if (mtmp == u.ustuck) {
-            /* zapping either holder/holdee or self [zapyourself()] will
-               release hero from holder's grasp or holdee from hero's grasp */
-            release_hold();
-            learn_it = TRUE;
+            if (otyp == SPE_KNOCK) {
+                You("knock on the inside of %s, but nothing seems to happen.",
+                    mon_nam(u.ustuck));
+            } else {
+                /* zapping either holder/holdee or self [zapyourself()] will
+                release hero from holder's grasp or holdee from hero's grasp */
+                release_hold();
+                learn_it = TRUE;
+            }
 
         /* zap which hits steed will only release saddle if it
            doesn't hit a holding or falling trap; playability
