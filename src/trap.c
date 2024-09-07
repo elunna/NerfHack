@@ -1381,8 +1381,12 @@ trapeffect_rocktrap(
 {
     struct obj *otmp;
     boolean harmless = FALSE;
+    int dropqty = min(1, level_difficulty() / 4);
     boolean drop_boulder = rnd(level_difficulty()) > 10;
     int old_mhp;
+
+    if (drop_boulder)
+        dropqty = min(1, dropqty / 2);
 
     if (mtmp == &gy.youmonst) {
         if (trap->once && trap->tseen && !rn2(15)) {
@@ -1391,52 +1395,62 @@ trapeffect_rocktrap(
             deltrap(trap);
             newsym(u.ux, u.uy);
         } else {
-            int dmg;
-            trap->once = 1;
-            feeltrap(trap);
-            if (drop_boulder) {
-                dmg = rn1(7, 25);
-                otmp = t_missile(BOULDER, trap);
-            } else {
-                dmg = d(2, 6);
-                otmp = t_missile(ROCK, trap);
-            }
-            
-            place_object(otmp, u.ux, u.uy);
-
-            pline("A trap door in %s opens and %s falls on your %s!",
-                  the(ceiling(u.ux, u.uy)), an(xname(otmp)), body_part(HEAD));
-            if (uarmh) {
-                /* normally passes_rocks() would protect against a falling
-                   rock, but not when wearing a helmet */
-                if (passes_rocks(gy.youmonst.data)) {
-                    pline("Unfortunately, you are wearing %s.",
-                          an(helm_simple_name(uarmh))); /* helm or hat */
-                    dmg = 2;
-                } else if (hard_helmet(uarmh) && otmp->otyp == BOULDER) {
-                    Your("helmet only slightly protects you.");
-                    dmg -= 2;
-                } else if (hard_helmet(uarmh)) {
-                    pline("Fortunately, you are wearing a hard helmet.");
-                    dmg = 2;
-                } else if (flags.verbose) {
-                    pline("%s does not protect you.", Yname2(uarmh));
+            /* TODO: Find a more elegant way to work with singular vs plural here. */
+            if (dropqty > 1)
+                pline("A trap door in %s opens and some %s fall on your %s!",
+                    the(ceiling(u.ux, u.uy)), drop_boulder ? "boulders" : "rocks",
+                    body_part(HEAD));
+            else
+                pline("A trap door in %s opens and a %s falls on your %s!",
+                    the(ceiling(u.ux, u.uy)), drop_boulder ? "boulder" : "rock",
+                    body_part(HEAD));
+           
+            for (int i = 0; i < dropqty; i++) {
+                int dmg;
+                trap->once = 1;
+                feeltrap(trap);
+                if (drop_boulder) {
+                    dmg = rn1(7, 25);
+                    otmp = t_missile(BOULDER, trap);
+                } else {
+                    dmg = d(2, 6);
+                    otmp = t_missile(ROCK, trap);
                 }
-            } else if (passes_rocks(gy.youmonst.data)) {
-                pline("It passes harmlessly through you.");
-                harmless = TRUE;
-            }
-            if (!Blind)
-                otmp->dknown = 1;
-            stackobj(otmp);
-            newsym(u.ux, u.uy); /* map the rock */
+                
+                place_object(otmp, u.ux, u.uy);
 
-            if (!harmless) {
-                losehp(Maybe_Half_Phys(dmg), "falling rock", KILLED_BY_AN);
-                exercise(A_STR, FALSE);
+                if (uarmh) {
+                    /* normally passes_rocks() would protect against a falling
+                    rock, but not when wearing a helmet */
+                    if (passes_rocks(gy.youmonst.data)) {
+                        pline("Unfortunately, you are wearing %s.",
+                            an(helm_simple_name(uarmh))); /* helm or hat */
+                        dmg = 2;
+                    } else if (hard_helmet(uarmh) && otmp->otyp == BOULDER) {
+                        Your("helmet only slightly protects you.");
+                        dmg -= 2;
+                    } else if (hard_helmet(uarmh)) {
+                        pline("Fortunately, you are wearing a hard helmet.");
+                        dmg = 2;
+                    } else if (flags.verbose) {
+                        pline("%s does not protect you.", Yname2(uarmh));
+                    }
+                } else if (passes_rocks(gy.youmonst.data)) {
+                    pline("It passes harmlessly through you.");
+                    harmless = TRUE;
+                }
+                if (!Blind)
+                    otmp->dknown = 1;
+                stackobj(otmp);
+                newsym(u.ux, u.uy); /* map the rock */
 
-                if (dmg > 6)
-                    make_stunned((HStun & TIMEOUT) + (long) d(dmg, 2), TRUE);
+                if (!harmless) {
+                    losehp(Maybe_Half_Phys(dmg), "falling rock", KILLED_BY_AN);
+                    exercise(A_STR, FALSE);
+
+                    if (dmg > 6)
+                        make_stunned((HStun & TIMEOUT) + (long) d(dmg, 2), TRUE);
+                }
             }
         }
     } else {
