@@ -1254,7 +1254,8 @@ add_obj_info(winid datawin, short otyp)
 
     boolean weptool = (olet == TOOL_CLASS && oc.oc_skill != P_NONE);
 
-    if (olet == WEAPON_CLASS || weptool || olet == GEM_CLASS) {
+    if (olet == WEAPON_CLASS || weptool || olet == GEM_CLASS
+        || otyp == BOULDER) {
         const int skill = oc.oc_skill;
         if (skill >= 0) {
             Sprintf(buf, "%s-handed weapon%s using the %s skill.",

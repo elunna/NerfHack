@@ -1691,7 +1691,9 @@ ROCK("rock", NoDes,         1, 100,  4,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY,
  */
 OBJECT(OBJ("boulder", NoDes),
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, P_NONE, MINERAL), 0,
-       ROCK_CLASS, 100, 0, 6000, 0, 20, 20, 0, 0, 2000, HI_MINERAL, BOULDER),
+       /* Boulders used to deal 1d20, now they deal 1+5d4. 
+        * other 5d4 is handled in dmgval() */
+       ROCK_CLASS, 100, 0, 6000, 0, 1, 1, 0, 0, 2000, HI_MINERAL, BOULDER),
 OBJECT(OBJ("statue", NoDes),
        BITS(1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, P_NONE, MINERAL), 0,
        ROCK_CLASS, 900, 0, 2500, 0, 20, 20, 0, 0, 2500, CLR_WHITE, STATUE),

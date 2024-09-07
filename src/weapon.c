@@ -345,6 +345,10 @@ dmgval_core(
             tmp += d(2, 6);
             damage_info->bonus_large = "+2d6";
             break;
+        case BOULDER:
+            tmp += d(5, 4);
+            damage_info->bonus_large = "+5d4";
+            break;
         }
     }
 
@@ -387,6 +391,10 @@ dmgval_core(
         case ACID_VENOM:
             tmp += rnd(6);
             damage_info->bonus_small = "+1d6";
+            break;
+        case BOULDER:
+            tmp += d(5, 4);
+            damage_info->bonus_small = "+5d4";
             break;
         }
     }
