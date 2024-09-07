@@ -1228,7 +1228,7 @@ POTION("vampire blood",     "blood-red",  1, 0, 0,  300, CLR_RED,
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, PAPER),    \
            0, SCROLL_CLASS, prob, 0, 5, cost, 0, 0, 0, 0, 6, \
            HI_PAPER, sn)
-SCROLL("enchant armor",              "ZELGO MER",  1,  63,  80,
+SCROLL("enchant armor",              "ZELGO MER",  1,  63, 200,
                                                         SCR_ENCHANT_ARMOR),
 SCROLL("destroy armor",         "JUYED AWK YACC",  1,  45, 100,
                                                         SCR_DESTROY_ARMOR),
@@ -1236,9 +1236,9 @@ SCROLL("confuse monster",                 "NR 9",  1,  53, 100,
                                                         SCR_CONFUSE_MONSTER),
 SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA",  1,  35, 100,
                                                         SCR_SCARE_MONSTER),
-SCROLL("remove curse",             "PRATYAVAYAH",  1,  65,  80,
+SCROLL("remove curse",             "PRATYAVAYAH",  1,  65, 300,
                                                         SCR_REMOVE_CURSE),
-SCROLL("enchant weapon",         "DAIYEN FOOELS",  1,  80,  60,
+SCROLL("enchant weapon",         "DAIYEN FOOELS",  1,  80, 200,
                                                         SCR_ENCHANT_WEAPON),
 SCROLL("create monster",       "LEP GEX VEN ZEA",  1,  45, 200,
                                                         SCR_CREATE_MONSTER),
@@ -1317,7 +1317,7 @@ XTRA_SCROLL_LABEL("STRC PRST SKRZ KRK", SC20), /* Czech and Slovak
 #ifdef MAIL_STRUCTURES
 SCROLL("mail",          "stamped",  0,   0,   0, SCR_MAIL),
 #endif
-SCROLL("blank paper", "unlabeled",  0,  28,  60, SCR_BLANK_PAPER),
+SCROLL("blank paper", "unlabeled",  0,  28,  50, SCR_BLANK_PAPER),
 #undef SCROLL
 
 /* spellbooks ... */
