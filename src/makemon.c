@@ -1691,7 +1691,7 @@ makemon(
     }
 
     /* Small portion of eligible monsters can spawn rabid. */
-    if (!mtmp->mpeaceful && !mtmp->mpeaceful && !flags.beginner
+    if (!mtmp->mpeaceful && !mtmp->mtame && !flags.beginner
         /* Although humans can get infected with rabid, we
          * won't generate them rabid to avoid insane 
          * concentrations of rabid soldiers in Ludios or Castle */
@@ -1701,7 +1701,7 @@ makemon(
         else if ((mtmp->mnum == PM_COYOTE || is_bat(mtmp->data)) 
                 && !rn2(10))
             mon_rabid(mtmp, FALSE);
-        else if (!rn2(200 - level_difficulty()) && !mtmp->mtame)
+        else if (!rn2(127 - level_difficulty()))
             mon_rabid(mtmp, FALSE);
     }
    
