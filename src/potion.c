@@ -3364,12 +3364,26 @@ potion_dip(struct obj *obj, struct obj *potion)
     if (potion->otyp == POT_RESTORE_ABILITY && !potion->cursed
         && erosion_matters(obj) && (obj->oeroded || obj->oeroded2)) {
         obj->oeroded = obj->oeroded2 = 0;
+        costly_alteration(obj, COST_DEGRD);
         pline("%s as good as new!", Yobjnam2(obj, Blind ? "feel" : "look"));
         if (potion->dknown)
             makeknown(POT_RESTORE_ABILITY);
         useup(potion);
         return ECMD_TIME;
     }
+
+    /* erodeproofing items */
+    if (potion->otyp == POT_REFLECTION && !potion->cursed
+        && erosion_matters(obj) && !obj->oerodeproof) {
+        obj->oerodeproof = 1;
+        costly_alteration(obj, COST_DEGRD);
+        pline("%s more durable!", Yobjnam2(obj, Blind ? "feel" : "look"));
+        if (potion->dknown)
+            makeknown(POT_REFLECTION);
+        useup(potion);
+        return ECMD_TIME;
+    }
+
  more_dips:
 
     /* Allow filling of MAGIC_LAMPs to prevent identification by player */
