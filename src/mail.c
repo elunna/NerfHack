@@ -808,17 +808,17 @@ get_hint(void)
             "Is that NerfHack in your pocket or are you just glad to see me?",
             "I love the smell of NerfHack in the morning.",
             "I have come here to chew bubble gum and NerfHack...",
-            "You can’t handle the NerfHack!",
+            "You can't handle the NerfHack!",
             "Keep your friends close, but your devs closer.",
-            "Toto, I’ve got a feeling we’re not in NetHack anymore.",
-            "There’s no crying in NerfHack!",
+            "Toto, I've got a feeling we're not in NetHack anymore.",
+            "There's no crying in NerfHack!",
             "I feel the need... the need for NerfHack!",
             "You're the disease, and NerfHack is the cure.",
             "That Dev Deserves His Revenge.",
             "The first rule of NerfHack is: you do not talk about NerfHack.",
             "Fear leads to anger. Anger leads to hate. Hate leads to NerfHack.",
             "I'm not a smart man... but I know what NerfHack is.",
-            "If there’s any kind of magic in this world… it must be NerfHack!",
+            "If there's any kind of magic in this world… it must be NerfHack!",
             "They may take our lives, but they'll never take our NerfHack!",
             "I got a fever! And the only prescription.. is more NerfHack!",
             "I'm sure there's a reason for all the nerfs... I wouldn't want to change anything.",
@@ -826,7 +826,59 @@ get_hint(void)
             "And then... They forced me to play NerfHack!",
             "I knows the difference between nerfs and buffs; I just don't give a damn.",
             "So you're having a bad day? Don't blame NerfHack!",
-            "The InterHack Principle... is a lie!"
+            "The InterHack Principle... is a lie!",
+            "Dying is the easy part!"
+            "Welcome to NerfHack: Where hope goes to die."
+            "Because winning is overrated."
+            "You didn't need that weapon anyway."
+            "Survival is optional, suffering is mandatory!"
+            "The dungeon hates you — and it's personal."
+            "If you think you're good, NerfHack thinks you're hilarious."
+            "Nerfed to perfection, frustration guaranteed."
+            "Your only reward is pain — enjoy!"
+            "You'll never be ready for this nerf."
+            "Luck won't save you. Neither will skill."
+            "NerfHack: The grind grinds back."
+            "Hard mode? That's just the tutorial."
+            "Your biggest enemy? Hope."
+            "Every death is a lesson you'll forget immediately."
+            "Get nerfed, stay nerfed."
+            "This dungeon runs you."
+            "You've played hard games. Now play the hardest.",
+            "Permadeath? More like perma-sad.",
+            "The RNG is not your friend. It's your nemesis.",
+            "Congratulations! You've survived the first room….",
+            "NerfHack: Where min-maxxing is a myth.",
+            "Just when you think you've got it, DYWYPI?",
+            "Prepare to lose. A lot. No, seriously.",
+            "Your best run? Probably just a glitch.",
+            "The only thing balanced here is your frustration level.",
+            "Because sometimes winning just feels wrong.",
+            "NerfHack: Giving you fewer chances than life itself.",
+            "Did you bring your will to live? You'll need it.",
+            "If you can't handle the heat, the fireballs will do it for you.",
+            "It's not ‘game over.' It's ‘game never had a chance.'",
+            "Achievement unlocked: Almost survived.",
+            "Every decision is the wrong one.",
+            "NerfHack: Because we couldn't make it any harder.",
+            "Is it bad luck, or are you just bad? Probably both.",
+            "Surviving is a fluke. Dying is inevitable.",
+            "You've entered the dungeon. Your dignity stays behind.",
+            "You're gonna need a bigger inventory… but you won't get one.",
+            "In NerfHack, no one can hear you scream.",
+            "Frankly, my dear, you won't survive.",
+            "Here's looking at you, kid. Now watch yourself die.",
+            "I'll be back… but not for long.",
+            "May the nerfs be ever in your favor.",
+            "Houston, we have a problem… it's called NerfHack.",
+            "You can't nerf the truth!",
+            "Why so serious? You're just going to die anyway.",
+            "The force is weak with this one.",
+            "Hasta la vista, progress!",
+            "There's no place like a trap-filled home.",
+            "The first rule of NerfHack: You don't survive NerfHack.",
+            "Life finds a way… but not in NerfHack.",
+
     };
 
     return hint[rn2(SIZE(hint))];
