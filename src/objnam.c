@@ -927,6 +927,10 @@ xname_flags(
         break;
     case SCROLL_CLASS:
         if (carto) {
+            if (obj->otyp == SCR_BLANK_PAPER) {
+                Strcat(buf, "blank card");
+                break;
+            }
             Strcpy(buf, Cartomancer_rarity(typ));
             if (obj->quan > 1) {
                 Strcat(buf, "s");
