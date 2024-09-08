@@ -2561,8 +2561,12 @@ cartomancer_combo(void)
         You("cannot use your combo ability yet.");
         return 0;
     }
-
-    combos = max(5, min(2, (5 + u.ulevel) / 2));
+    /* Level 5:   2 cards
+       Level 10:  3 cards
+       Level 15:  4 cards
+       Level 20+: 5 cards
+    */
+    combos = max(5, min(2, ((u.ulevel-5) / 5 + 1)));
     
     pline("You unleash a wicked combo! [max %d cards]", combos);
     for (i = 0; i < combos ; i++) {
