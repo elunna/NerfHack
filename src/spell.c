@@ -61,6 +61,7 @@ staticfn boolean spell_aim_step(genericptr_t, coordxy, coordxy);
 staticfn void propagate_chain_lightning(struct chain_lightning_queue *,
             struct chain_lightning_zap);
 staticfn int repair_ok(struct obj *);
+staticfn int cartomancer_combo(void);
 
 /* The roles[] table lists the role-specific values for tuning
  * percent_success().
@@ -737,10 +738,7 @@ getspell(int *spell_no)
     struct _cmd_queue cq, *cmdq;
 
     if (spellid(0) == NO_SPELL) {
-        if (Role_if(PM_CARTOMANCER))
-            pline("Cartomancers cannot learn spells, but they can read rulebooks.");
-        else
-            You("don't know any spells right now.");
+        You("don't know any spells right now.");
         return FALSE;
     }
     if (rejectcasting())
@@ -835,6 +833,10 @@ int
 docast(void)
 {
     int spell_no;
+
+    if (Role_if(PM_CARTOMANCER)) {
+        return cartomancer_combo();
+    }
 
     if (getspell(&spell_no)) {
         cmdq_add_key(CQ_REPEAT, spellet(spell_no));
@@ -2539,6 +2541,40 @@ int cast_from_book(struct obj *spellbook)
     }
 
     return ECMD_TIME;
+}
+
+/* The card combo tech takes the place of spellcasting for the cartomancer.
+ * Enables them to cast multiple cards at the same time
+ */
+int
+cartomancer_combo(void)
+{
+    int i, combos;
+
+    /* In SpliceHack, the Card Combo tech was granted at level 5. */
+    if (u.ulevel < 5) {
+        You("are not skilled enough to combo cards yet.");
+        return 0;
+    }
+    if (u.combotime) {
+        You("cannot use your combo ability yet.");
+        return 0;
+    }
+
+    combos = max(5, min(2, (5 + u.ulevel) / 2));
+    
+    pline("You unleash a wicked combo! [max %d cards]", combos);
+    for (i = 0; i < combos ; i++) {
+        if (!doread()) {
+            if (i == 0) /* Don't waste it. */
+                return 0;
+            break;
+        }
+    }
+    pline("Your combo ends.");
+    // u.combotime = rn1(500, 1000); /* tech timeout */
+    u.combotime = rn1(10, 5); /* tech timeout */
+    return 1;
 }
 
 /*spell.c*/

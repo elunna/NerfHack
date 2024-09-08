@@ -474,6 +474,7 @@ struct you {
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
     int ublessed, ublesscnt; /* blessing/duration from #pray */
+    int combotime;              /* Timeout for last cartomancer combo */
     int lastprayed;
     uchar lastprayresult, reconciled;
 #define PRAY_NONE   0

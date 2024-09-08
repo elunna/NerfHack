@@ -718,6 +718,13 @@ nh_timeout(void)
         }
     }
 
+    if (u.combotime) {
+        u.combotime--;
+        if (!u.combotime)
+            Your("combo ability is ready to use!");
+    
+    }
+
     /* Give a small warning that spell-based reflection is running out. */
     if (HReflecting == 20 && !Blind)
         pline("The shimmering globe around you is starting to fade.");
