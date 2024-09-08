@@ -2550,6 +2550,7 @@ int
 cartomancer_combo(void)
 {
     int i, combos;
+    long result;
 
     /* In SpliceHack, the Card Combo tech was granted at level 5. */
     if (u.ulevel < 5) {
@@ -2565,7 +2566,8 @@ cartomancer_combo(void)
     
     pline("You unleash a wicked combo! [max %d cards]", combos);
     for (i = 0; i < combos ; i++) {
-        if (!doread()) {
+        result = doread();
+        if (result != ECMD_TIME) {
             if (i == 0) /* Don't waste it. */
                 return 0;
             break;
