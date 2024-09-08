@@ -4360,6 +4360,9 @@ bhit(
     if (in_pit)
         range = 1;
     
+    if (obj && (obj->otyp == SPE_KNOCK || obj->otyp == SPE_WIZARD_LOCK))
+        range = 1;
+
     if (weapon == FLASHED_LIGHT) {
         tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
     } else if (weapon == THROWN_TETHERED_WEAPON && obj) {
