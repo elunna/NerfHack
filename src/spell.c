@@ -2544,7 +2544,8 @@ int cast_from_book(struct obj *spellbook)
 }
 
 /* The card combo tech takes the place of spellcasting for the cartomancer.
- * Enables them to cast multiple cards at the same time
+ * Enables them to cast multiple cards at the same time.
+ * First card costs 5 energy. Further cards cost 20 energy per card.
  */
 int
 cartomancer_combo(void)
@@ -2561,13 +2562,15 @@ cartomancer_combo(void)
         You("cannot use your combo ability yet.");
         return 0;
     }
+    if (u.uen < 5)
+        You("need at least 5 energy to start a combo.");
     /* Level 5:   2 cards
        Level 10:  3 cards
        Level 15:  4 cards
        Level 20+: 5 cards
     */
-    combos = max(5, min(2, ((u.ulevel-5) / 5 + 1)));
-    
+    combos = min(5, max(2, (u.ulevel / 5) + 1));
+
     pline("You unleash a wicked combo! [max %d cards]", combos);
     for (i = 0; i < combos ; i++) {
         result = doread();
@@ -2576,6 +2579,14 @@ cartomancer_combo(void)
                 return 0;
             break;
         }
+        u.uen -= i == 0 ? 5 : 20;
+        disp.botl = TRUE;
+        if (u.uen <= 0) {
+            u.uen = 0;
+            break;
+        }
+        if (u.uen < 20)
+            break;
     }
     pline("Your combo ends.");
     // u.combotime = rn1(500, 1000); /* tech timeout */
