@@ -212,7 +212,7 @@ makedog(void)
     const char *petname;
     int pettype;
 
-    if (gp.preferred_pet == 'n')
+    if (gp.preferred_pet == 'n' || Role_if(PM_CARTOMANCER))
         return ((struct monst *) 0);
 
     pettype = pet_type();
@@ -1192,6 +1192,11 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
     }
 
     if (unskilled_charmer)
+        return FALSE;
+
+    /* Cartomancers are incapable of taming real pets, they 
+     * work only with spell beings. */
+    if (Role_if(PM_CARTOMANCER) && !mtmp->msummoned)
         return FALSE;
 
     /* feeding it treats makes it tamer */
