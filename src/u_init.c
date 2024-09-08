@@ -339,7 +339,6 @@ static const struct def_skill Skill_Car[] = {
     { P_ATTACK_SPELL, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
     /* Cartomancers don't get skill in spellcasting - they have rulebooks. */
-    { P_RIDING, P_EXPERT},         /* Card games on motorcycles. */
     { P_BARE_HANDED_COMBAT, P_BASIC},
     { P_NONE, 0 }
 };
