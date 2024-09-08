@@ -2504,23 +2504,6 @@ int cast_from_book(struct obj *spellbook)
         return 1;
     }
 
-    if (!Confusion && !fully_resistant(SLEEP_RES)
-            && objdescr_is(spellbook, "dull")) {
-        const char *eyes;
-        int dullbook = rnd(25) - ACURR(A_WIS);
-        
-        if (dullbook > 0) {
-            eyes = body_part(EYE);
-            if (eyecount(gy.youmonst.data) > 1)
-                eyes = makeplural(eyes);
-            pline("This book is so dull that you can't keep your %s open.",
-                eyes);
-            dullbook += rnd(2 * objects[booktype].oc_level);
-            fall_asleep(-dullbook, TRUE);
-            return ECMD_TIME;
-        }
-    }
-
     /* Cursed books still have bad effects */
     if (spellbook->cursed) {
         boolean gone = cursed_book(spellbook);
