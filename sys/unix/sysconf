@@ -207,9 +207,8 @@ OPTIONS=number_pad:0
 OPTIONS=sortloot:full
 OPTIONS=time
 
-
 # For fuzzing
-BIND=v:wizmakemap
+BIND=~:wizmakemap
 
 # For bug-finding
 OPTIONS=sanity_check
