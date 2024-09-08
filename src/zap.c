@@ -2791,7 +2791,10 @@ dozap(void)
         if (need_dir && !getdir((char *) 0)) {
             if (!Blind)
                 pline("%s glows and fades.", The(xname(obj)));
-        } else if (need_dir && (!u.dx && !u.dy && !u.dz)) {
+        } else if  (need_dir && ((!u.dx && !u.dy && !u.dz) 
+                || (obj->cursed && !rn2(WAND_BACKZAP_CHANCE)))) {
+            if (u.dx || u.dy || u.dz)
+                pline("%s backfires!", The(xname(obj)));
             if ((damage = zapyourself(pseudo, TRUE)) != 0) {
                 char buf[BUFSZ];
 
