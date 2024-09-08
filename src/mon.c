@@ -6677,7 +6677,7 @@ find_flanking_pos(struct monst *magr, struct monst *mdef UNUSED)
 }
 
 #define MIN_FLANK_BONUS 4
-#define MAX_FLANK_BONUS 20
+#define MAX_FLANK_BONUS 30
 /* Natural flankers get a much higher bonus that normal monsters that just
  * happen to be in the flanking position.
  * Some roles (the more fighting oriented ones) are also natural flankers */
