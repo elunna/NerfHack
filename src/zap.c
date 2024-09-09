@@ -2893,7 +2893,8 @@ zapyourself(struct obj *obj, boolean ordinary)
                            ? 8 : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
 
     if (obj->otyp == WAN_WONDER) {
-        if (!obj->dknown)
+        /* obroken check here prevents false ID for zapping cards of wonder */
+        if (!obj->dknown && !obj->obroken)
             You("have found a wand of wonder!");
         switch (rn2(7)) {
         /* Not a complete list, just some interesting effects. */
@@ -3911,7 +3912,8 @@ weffects(struct obj *obj)
         otyp = wondertemp;
         wonder = TRUE;
         disclose = TRUE;
-        if (was_unkn)
+        /* See below for why we are using obroken. */
+        if (was_unkn && !obj->obroken)
             You("have found a wand of wonder!");
     }
 
