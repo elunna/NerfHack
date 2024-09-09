@@ -1113,7 +1113,7 @@ mon_explodes(
     }
     
     /* Cancelled monsters can't explode. */
-    if (!mon->mcan)
+    if (mon->mcan)
         return;
 
     /* This might end up killing you, too; you never know...
