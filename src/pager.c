@@ -1701,7 +1701,8 @@ add_obj_info(winid datawin, short otyp)
                     OBJ_NAME(objects[precipe->typ1]),
                     OBJ_NAME(objects[precipe->typ2]),
                     OBJ_NAME(objects[precipe->result_typ]),
-                    precipe->chance == 1 ? "" : " (1/3)" );
+                    precipe->chance == 3 ? " (3/10)"
+                    : precipe->chance == 6 ? " (6/10)" : "");
             OBJPUTSTR(buf);
         }
     }

@@ -2708,42 +2708,47 @@ potionbreathe(struct obj *obj)
 
 /* potion alchemy recipes */
 const struct PotionRecipe potionrecipes[] = {
-    /* ranged weapons */
-    { POT_EXTRA_HEALING,    POT_SPEED, POT_HEALING,          1 },
-    { POT_EXTRA_HEALING,    POT_GAIN_LEVEL, POT_HEALING,     1 },
-    { POT_EXTRA_HEALING,    POT_GAIN_ENERGY, POT_HEALING,    1 },
-    { POT_FULL_HEALING,     POT_GAIN_LEVEL, POT_EXTRA_HEALING, 1 },
+    /* More complicated recipes */
+    { POT_GAIN_LEVEL,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 6 in 10 chance */
+    { STRANGE_OBJECT,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 3 in 10 chance */
+
+    { POT_BOOZE,            POT_GAIN_LEVEL, POT_CONFUSION,      6 }, /* 6 in 10 chance */
+    { POT_ENLIGHTENMENT,    POT_GAIN_LEVEL, POT_CONFUSION,      3 }, /* 3 in 10 chance */
+
+    { POT_BOOZE,            POT_GAIN_ENERGY, POT_CONFUSION,     6 }, /* 6 in 10 chance */
+    { POT_ENLIGHTENMENT,    POT_GAIN_ENERGY, POT_CONFUSION,     3 }, /* 3 in 10 chance */
+
+    /* Standard recipes */
+    { POT_EXTRA_HEALING,    POT_SPEED, POT_HEALING,             1 },
+    { POT_EXTRA_HEALING,    POT_GAIN_LEVEL, POT_HEALING,        1 },
+    { POT_EXTRA_HEALING,    POT_GAIN_ENERGY, POT_HEALING,       1 },
+    { POT_FULL_HEALING,     POT_GAIN_LEVEL, POT_EXTRA_HEALING,  1 },
     { POT_FULL_HEALING,     POT_GAIN_ENERGY, POT_EXTRA_HEALING, 1 },
-    { POT_GAIN_ABILITY,     POT_GAIN_LEVEL, POT_FULL_HEALING,1 },
+    { POT_GAIN_ABILITY,     POT_GAIN_LEVEL, POT_FULL_HEALING,   1 },
     { POT_GAIN_ABILITY,     POT_GAIN_ENERGY, POT_FULL_HEALING,  1 },
     { POT_GAIN_ENERGY,      POT_GAIN_ABILITY, POT_FULL_HEALING,  1 },
-    { POT_ENLIGHTENMENT,    POT_GAIN_LEVEL, POT_CONFUSION,   3 },
-    { POT_ENLIGHTENMENT,    POT_GAIN_ENERGY, POT_CONFUSION,  3 },
-    { POT_SEE_INVISIBLE,    POT_GAIN_LEVEL, POT_FRUIT_JUICE, 1 },
+    { POT_SEE_INVISIBLE,    POT_GAIN_LEVEL, POT_FRUIT_JUICE,    1 },
     { POT_SEE_INVISIBLE,    POT_GAIN_ENERGY, POT_FRUIT_JUICE,   1 },
     { POT_REFLECTION,       POT_SEE_INVISIBLE, POT_INVISIBILITY, 1 },
-    { POT_HALLUCINATION,    POT_GAIN_LEVEL, POT_BOOZE,       1 },
-    { POT_HALLUCINATION,    POT_GAIN_ENERGY, POT_BOOZE,      1 },
-    { POT_SICKNESS,         POT_SICKNESS, POT_FRUIT_JUICE,   1 },
+    { POT_HALLUCINATION,    POT_GAIN_LEVEL, POT_BOOZE,          1 },
+    { POT_HALLUCINATION,    POT_GAIN_ENERGY, POT_BOOZE,         1 },
+    { POT_SICKNESS,         POT_SICKNESS, POT_FRUIT_JUICE,      1 },
     { POT_CONFUSION,        POT_ENLIGHTENMENT, POT_BOOZE,       1 },
     { POT_BOOZE,            POT_ENLIGHTENMENT, POT_FRUIT_JUICE, 1 },
     { POT_BOOZE,            POT_SPEED, POT_FRUIT_JUICE,         1 },
-    { POT_BOOZE,            POT_GAIN_LEVEL, POT_CONFUSION,   1 },
-    { POT_BOOZE,            POT_GAIN_ENERGY, POT_CONFUSION,  1 },
-    { POT_GAIN_LEVEL,       POT_ENLIGHTENMENT, POT_LEVITATION, 3 },
-    { POT_BLOOD,            POT_BLOOD, POT_FRUIT_JUICE,      1 },
-    { POT_VAMPIRE_BLOOD,    POT_BLOOD, POT_VAMPIRE_BLOOD,    1 },
+    { POT_BLOOD,            POT_BLOOD, POT_FRUIT_JUICE,         1 },
+    { POT_VAMPIRE_BLOOD,    POT_BLOOD, POT_VAMPIRE_BLOOD,       1 },
     { POT_VAMPIRE_BLOOD,    POT_VAMPIRE_BLOOD, POT_FRUIT_JUICE, 1 },
     { POT_VAMPIRE_BLOOD,    POT_FRUIT_JUICE, POT_VAMPIRE_BLOOD, 1 },
-    { POT_FRUIT_JUICE,      UNICORN_HORN, POT_SICKNESS,      1 },
-    { POT_FRUIT_JUICE,      AMETHYST,     POT_BOOZE,         1 },
-    { POT_WATER,            UNICORN_HORN, POT_HALLUCINATION, 1 },
-    { POT_WATER,            UNICORN_HORN, POT_BLINDNESS,     1 },
-    { POT_WATER,            UNICORN_HORN, POT_CONFUSION,     1 },
-    { POT_WATER,            UNICORN_HORN, POT_BLOOD,         1 },
-    { POT_WATER,            UNICORN_HORN, POT_VAMPIRE_BLOOD, 1 },
-    { POT_OIL,              POT_WATER, POT_OIL,              1 },
-    { POT_RESTORE_ABILITY,  POT_SICKNESS, POT_HEALING,       1 },
+    { POT_FRUIT_JUICE,      UNICORN_HORN, POT_SICKNESS,         1 },
+    { POT_FRUIT_JUICE,      AMETHYST,     POT_BOOZE,            1 },
+    { POT_WATER,            UNICORN_HORN, POT_HALLUCINATION,    1 },
+    { POT_WATER,            UNICORN_HORN, POT_BLINDNESS,        1 },
+    { POT_WATER,            UNICORN_HORN, POT_CONFUSION,        1 },
+    { POT_WATER,            UNICORN_HORN, POT_BLOOD,            1 },
+    { POT_WATER,            UNICORN_HORN, POT_VAMPIRE_BLOOD,    1 },
+    { POT_OIL,              POT_WATER, POT_OIL,                 1 },
+    { POT_RESTORE_ABILITY,  POT_SICKNESS, POT_HEALING,          1 },
     { 0, 0, 0, 0 }
 };
 
@@ -2832,6 +2837,7 @@ short
 mixtype(struct obj *o1, struct obj *o2)
 {
     int o1typ = o1->otyp, o2typ = o2->otyp;
+    int roll;
     const struct PotionRecipe *recipe;
     const char *potion_descr;
     
@@ -2844,11 +2850,27 @@ mixtype(struct obj *o1, struct obj *o2)
         o1typ = o2->otyp;
         o2typ = o1->otyp;
     }
-
+    
+    /* 3 recipes don't fit into this algorithm well:
+     *  potion of confusion + potion of gain level 
+     *  potion of confusion + potion of gain energy
+     *  potion of enlightenment + potion of levitation
+     *  Handle these specifically when they arise.
+     */
     for (recipe = potionrecipes; recipe->result_typ; recipe++) {
         if ((o1typ == recipe->typ1 && o2typ == recipe->typ2)) {
-            if (recipe->chance == 1 || !rn2(recipe->chance))
+            /* Handle special recipes */
+            if (recipe->chance == 6) { /* 6 in 10 */
+                roll = rnd(10);
+                if (roll <= recipe->chance)
+                    return recipe->result_typ;
+                if (roll == 1) /* 1 in 10 chance of alchemical blast */
+                    return ACID_VENOM; /* Signals the blast*/
+                /* The 3 in 10 case is handled later in the recipe list. */
+            } else {
                 return recipe->result_typ;
+            }
+            
         }
     }
     
@@ -3205,7 +3227,8 @@ potion_dip(struct obj *obj, struct obj *potion)
         useup(potion); /* now gone */
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
-        if (obj->cursed || obj->otyp == POT_ACID || !rn2(10)) {
+        if (obj->cursed || obj->otyp == POT_ACID
+            || mixture == ACID_VENOM || !rn2(10)) {
             /* it would be better to use up the whole stack in advance
                of the message, but we can't because we need to keep it
                around for potionbreathe() [and we can't set obj->in_use
