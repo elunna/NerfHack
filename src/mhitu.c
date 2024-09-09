@@ -1451,7 +1451,9 @@ hitmu(struct monst *mtmp, struct attack *mattk)
 
     /* find rings of increase damage */
     mhm.damage += mring_bon(mtmp, RIN_INCREASE_DAMAGE);
-    
+    if (mhm.damage < 1)
+        mhm.damage = 1;
+
     mhitm_adtyping(mtmp, mattk, &gy.youmonst, &mhm);
 
     /* Morning star and flail critical hits */

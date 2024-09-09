@@ -1143,7 +1143,9 @@ mdamagem(
     
     /* find rings of increase damage */
     mhm.damage += mring_bon(magr, RIN_INCREASE_DAMAGE);
-    
+    if (mhm.damage < 1)
+        mhm.damage = 1;
+
     mhitm_adtyping(magr, mattk, mdef, &mhm);
     
     if (mhitm_knockback(magr, mdef, mattk, &mhm.hitflags,
