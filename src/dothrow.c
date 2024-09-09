@@ -2273,6 +2273,10 @@ thitmonst(
                             explode(gb.bhitpos.x, gb.bhitpos.y,
                                 ZT_SPELL(ZT_COLD), d(4, 6), WEAPON_CLASS, EXPL_FROSTY);
                             break;
+                        case PM_STINKING_SPHERE:
+                            explode(gb.bhitpos.x, gb.bhitpos.y,
+                                ZT_SPELL(ZT_POISON_GAS), d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
+                            break;
                         case PM_FLAMING_SPHERE:
                             explode(gb.bhitpos.x, gb.bhitpos.y,
                                 ZT_SPELL(ZT_FIRE), d(4, 6), WEAPON_CLASS, EXPL_FIERY);
