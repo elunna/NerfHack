@@ -1423,6 +1423,10 @@ make_msummoned(
 
     if (tame) {
         initedog(mtmp);
+
+        /* This is a bit weird and forced, but so is the way msummoned stuff works... */
+        if (mtmp->mrabid)
+            mtmp->mrabid = 0;
         mtmp->mtame = 10;
         /* mtmp->uexp = 1; */ /* You get experience for its kills */
         u.uconduct.pets++;
