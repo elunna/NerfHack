@@ -3234,7 +3234,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         useup(potion); /* now gone */
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
-        if (obj->cursed || obj->otyp == POT_ACID
+        if (obj->cursed || potion->cursed || obj->otyp == POT_ACID
             || mixture == ACID_VENOM || !rn2(10)) {
             /* it would be better to use up the whole stack in advance
                of the message, but we can't because we need to keep it
