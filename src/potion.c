@@ -1432,7 +1432,8 @@ staticfn void
 peffect_full_healing(struct obj *otmp)
 {
     You_feel("completely healed.");
-    healup(400, (4 + 4 * bcsign(otmp)) / (otmp->odiluted ? 2 : 1), !otmp->cursed, TRUE);
+    healup((otmp->odiluted ? 200 : 400),
+        (4 + 4 * bcsign(otmp)) / (otmp->odiluted ? 2 : 1), !otmp->cursed, TRUE);
     /* Restore one lost level if blessed */
     if (otmp->blessed && !otmp->odiluted && u.ulevel < u.ulevelmax) {
             /* when multiple levels have been lost, drinking
