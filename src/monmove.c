@@ -1045,6 +1045,11 @@ mon_would_take_item(struct monst *mtmp, struct obj *otmp)
 {
     int pctload = (curr_mon_load(mtmp) * 100) / max_mon_load(mtmp);
 
+    if (hates_item(mtmp, otmp->otyp))
+        return FALSE;
+    /* Perhaps only gnomes would like gnomish items? */
+    if (is_gnomish_obj(otmp->otyp) && mtmp->data->msize > MZ_SMALL)
+        return FALSE;
     if (otmp == uball || otmp == uchain)
         return FALSE;
     if (mtmp->mtame && otmp->cursed)
