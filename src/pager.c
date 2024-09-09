@@ -488,7 +488,7 @@ look_at_monster(
         
         /* Check accessories */
         if ((otmp = which_armor(mtmp, W_AMUL))) {
-            Sprintf(eos(buf), "%s%s", weartxt ? ", " : "wearing ", xname(otmp));
+            Sprintf(eos(buf), "%s%s", weartxt ? ", " : " wearing ", xname(otmp));
             weartxt = TRUE;
         }
         /* Are gloves covering their rings? */
