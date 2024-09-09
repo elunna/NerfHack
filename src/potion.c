@@ -909,7 +909,8 @@ peffect_hallucination(struct obj *otmp)
         gp.potion_nothing++;
     }
     (void) make_hallucinated(itimeout_incr(HHallucination,
-                                           rn1(200, 600 - 300 * bcsign(otmp))),
+                                           rn1(200, 600 - 300 * bcsign(otmp))
+                                           / (otmp->odiluted ? 2 : 1)),
                              TRUE, 0L);
     if ((otmp->blessed && !rn2(3)) || (!otmp->cursed && !rn2(6))) {
         You("perceive yourself...");
@@ -1033,7 +1034,8 @@ peffect_invisibility(struct obj *otmp)
     } else {
         self_invis_message();
     }
-    incr_itimeout(&HInvis, rnd(1000) + 250 * (bcsign(otmp) + 2));
+    incr_itimeout(&HInvis, (rnd(1000) + 250 * (bcsign(otmp) + 2)) 
+            / (otmp->odiluted ? 2 : 1));
     newsym(u.ux, u.uy); /* update position */
     if (otmp->cursed) {
         pline("For some reason, you feel your presence is known.");
@@ -1106,7 +1108,7 @@ peffect_sleeping(struct obj *otmp)
     } else {
         You("suddenly fall asleep!");
         monstunseesu(M_SEEN_SLEEP);
-        fall_asleep(-rn1(10, 25 - 12 * bcsign(otmp)), TRUE);
+        fall_asleep(-rn1(10, 25 - 12 * bcsign(otmp)) / (otmp->odiluted ? 2 : 1), TRUE);
     }
 }
 
@@ -1125,7 +1127,7 @@ peffect_monster_detection(struct obj *otmp)
         else if (otmp->oclass == SPBOOK_CLASS)
             i = rn1(40, 21);
         else /* potion */
-            i = rn2(100) + 100;
+            i = (rn2(100) + 100) / (otmp->odiluted ? 2 : 1);
         incr_itimeout(&HDetect_monsters, i);
         for (x = 1; x < COLNO; x++) {
             for (y = 0; y < ROWNO; y++) {
@@ -1221,9 +1223,8 @@ peffect_confusion(struct obj *otmp)
             pline("Huh, What?  Where am I?");
     } else
         gp.potion_nothing++;
-    make_confused(itimeout_incr(HConfusion,
-                                rn1(7, 16 - 8 * bcsign(otmp))),
-                  FALSE);
+    make_confused(itimeout_incr(HConfusion, rn1(7, 16 - 8 * bcsign(otmp))
+                                                / (otmp->odiluted ? 2 : 1)), FALSE);
 }
 
 staticfn void
@@ -1343,7 +1344,7 @@ peffect_speed(struct obj *otmp)
         return;
     }
 
-    speed_up(rn1(10, 100 + 60 * bcsign(otmp)));
+    speed_up(rn1(10, 100 + 60 * bcsign(otmp)) / (otmp->odiluted ? 2 : 1));
 
     /* non-cursed potion grants intrinsic speed */
     if (is_speed && !otmp->cursed && !(HFast & INTRINSIC)) {
@@ -1357,8 +1358,8 @@ peffect_blindness(struct obj *otmp)
 {
     if (Blind || ((HBlinded || EBlinded) && BBlinded))
         gp.potion_nothing++;
-    make_blinded(itimeout_incr(BlindedTimeout,
-                               rn1(200, 250 - 125 * bcsign(otmp))),
+    make_blinded(itimeout_incr(BlindedTimeout, rn1(200, 250 - 125 * bcsign(otmp)) 
+                                                    / (otmp->odiluted ? 2 : 1)),
                  (boolean) !Blind);
 }
 
@@ -1406,8 +1407,8 @@ staticfn void
 peffect_healing(struct obj *otmp)
 {
     You_feel("better.");
-    healup(8 + d(4 + 2 * bcsign(otmp), 4), !otmp->cursed ? 1 : 0,
-           !!otmp->blessed, !otmp->cursed);
+    healup(d(10 + 2 * bcsign(otmp), 4) / (otmp->odiluted ? 2 : 1),
+           !otmp->cursed ? 1 : 0, !!otmp->blessed, !otmp->cursed);
     exercise(A_CON, TRUE);
 }
 
@@ -1415,9 +1416,9 @@ staticfn void
 peffect_extra_healing(struct obj *otmp)
 {
     You_feel("much better.");
-    healup(16 + d(4 + 2 * bcsign(otmp), 8),
-           otmp->blessed ? 5 : !otmp->cursed ? 2 : 0, !otmp->cursed,
-           TRUE);
+    healup(d(10 + 2 * bcsign(otmp), 8) / (otmp->odiluted ? 2 : 1),
+           (otmp->blessed ? 5 : !otmp->cursed ? 2 : 0) / (otmp->odiluted ? 2 : 1),
+           !otmp->cursed, TRUE);
     (void) make_hallucinated(0L, TRUE, 0L);
     exercise(A_CON, TRUE);
     exercise(A_STR, TRUE);
@@ -1431,11 +1432,11 @@ staticfn void
 peffect_full_healing(struct obj *otmp)
 {
     You_feel("completely healed.");
-    healup(400, 4 + 4 * bcsign(otmp), !otmp->cursed, TRUE);
+    healup(400, (4 + 4 * bcsign(otmp)) / (otmp->odiluted ? 2 : 1), !otmp->cursed, TRUE);
     /* Restore one lost level if blessed */
-    if (otmp->blessed && u.ulevel < u.ulevelmax) {
-        /* when multiple levels have been lost, drinking
-           multiple potions will only get half of them back */
+    if (otmp->blessed && !otmp->odiluted && u.ulevel < u.ulevelmax) {
+            /* when multiple levels have been lost, drinking
+               multiple potions will only get half of them back */
         u.ulevelmax -= 1;
         pluslvl(FALSE);
     }
@@ -1494,12 +1495,14 @@ peffect_levitation(struct obj *otmp)
         }
     } else if (otmp->blessed) {
         /* at this point, timeout is already at least 1 */
-        incr_itimeout(&HLevitation, rn1(50, 250));
+        incr_itimeout(&HLevitation, rn1(50, 250) 
+                                        / (otmp->odiluted ? 2 : 1));
         /* can descend at will (stop levitating via '>') provided timeout
            is the only factor (ie, not also wearing Lev ring or boots) */
         HLevitation |= I_SPECIAL;
     } else /* timeout is already at least 1 */
-        incr_itimeout(&HLevitation, rn1(140, 10));
+        incr_itimeout(&HLevitation, rn1(otmp->odiluted ? 70 : 140, 10) 
+                                        / (otmp->odiluted ? 2 : 1));
 
     if (Levitation && IS_SINK(levl[u.ux][u.uy].typ))
         spoteffects(FALSE);
@@ -1529,13 +1532,13 @@ peffect_gain_energy(struct obj *otmp)
     
     /* Updated effect from xNetHack */
     if (otmp->blessed) {
-        max_change = d(3, 6);
-        current_change = 2 * u.uenmax / 5;
+        max_change = d(3, otmp->odiluted ? 3 : 6);
+        current_change = (otmp->odiluted ? 1 : 2) * u.uenmax / 5;
     } else if(!otmp->cursed) {
-        max_change = d(2, 6);
+        max_change = d(2, otmp->odiluted ? 3 : 6);
         current_change = u.uenmax / 4;
     } else {
-        max_change = -1 * d(1, 6);
+        max_change = -1 * d(1, otmp->odiluted ? 3 : 6);
         current_change = 3 * max_change;
     }
     if (current_change < 3 * max_change) {
@@ -1604,7 +1607,8 @@ peffect_acid(struct obj *otmp)
         pline("This burns%s!",
               otmp->blessed ? " a little" : otmp->cursed ? " a lot"
                                                          : " like acid");
-        dmg = d(otmp->cursed ? 2 : 1, otmp->blessed ? 4 : 8);
+        dmg = d(otmp->cursed ? 2 : 1, otmp->blessed ? 4 : 8)
+                / (otmp->odiluted ? 2 : 1);
         losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
         exercise(A_CON, FALSE);
     }
