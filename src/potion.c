@@ -3140,6 +3140,13 @@ potion_dip(struct obj *obj, struct obj *potion)
         return ECMD_OK;
     }
 
+	if (potion->otyp != POT_WATER && obj->otyp == POT_WATER) {
+        /* swap roles, to ensure symmetry */
+        struct obj *otmp = potion;
+        potion = obj;
+        obj = otmp;
+	} 
+
     obj->pickup_prev = 0; /* no longer 'recently picked up' */
     potion->in_use = TRUE; /* assume it will be used up */
     if (potion->otyp == POT_WATER) {
