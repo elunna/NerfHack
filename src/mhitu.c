@@ -3168,6 +3168,8 @@ piercer_hit(struct monst *magr, struct monst *mdef)
             breakobj(helm, u.ux, u.uy, FALSE, TRUE);
              /* The helmet absorbed some damage. */
             dmg -= 11;
+            if (dmg < 1)
+                dmg = 1;
         } else if (hard_helmet(helm)) {
             pline("%s partially diverts the blow.", Yname2(helm));
             dmg = (dmg + 1) / 2;
@@ -3187,12 +3189,10 @@ piercer_hit(struct monst *magr, struct monst *mdef)
     } else {
         mdef->mhp -= dmg;
         if (mdef->mhp < 1) {
-            if (youattack) {
+            if (youattack)
                 killed(mdef);
-            }
-            else {
+            else
                 monkilled(mdef, "", AD_PHYS);
-            }
         }
     }
 }
