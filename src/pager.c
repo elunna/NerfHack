@@ -2574,6 +2574,7 @@ do_screen_description(
                 || alt_i == S_engroom 
                 || alt_i == S_engrcorr
                 || alt_i == S_bars
+                || alt_i == S_tree
                 || IS_WALL(alt_i) || IS_DOOR(alt_i)
                 || alt_i == S_grave) /* 'need_to_look' to report engraving */
                 need_to_look = TRUE;
