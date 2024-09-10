@@ -312,6 +312,7 @@ mattackm(
     struct obj *mwep;
     struct obj *marmf = which_armor(magr, W_ARMF);
     struct permonst *pa, *pd;
+    boolean did_rabid = FALSE;
 
     if (!magr || !mdef)
         return M_ATTK_MISS; /* mike@genat */
@@ -326,7 +327,7 @@ mattackm(
         return M_ATTK_MISS;
 
     if (marmf && marmf->otyp == STOMPING_BOOTS && stompable(mdef)
-        && distmin(magr->mx,magr->my,mdef->mx,mdef->my) <= 1) {
+        && distmin(magr->mx, magr->my, mdef->mx, mdef->my) <= 1) {
         if (canseemon(magr)) {
             pline("%s stomps on %s!", Monnam(magr), mon_nam(mdef));
             makeknown(marmf->otyp);
@@ -423,6 +424,15 @@ mattackm(
             continue;
         mwep = (struct obj *) 0;
         attk = 1;
+
+        /* Extra attack for rabid monster */
+        if (magr->mrabid && !mattk->aatyp && !did_rabid 
+            && distmin(magr->mx, magr->my, mdef->mx, mdef->my) <= 1) {
+            if (mattk->aatyp != AT_BITE)
+                mattk->aatyp = AT_BITE;
+            mattk->adtyp = AD_RABD;
+            did_rabid = TRUE;
+        }
 
         switch (mattk->aatyp) {
         case AT_WEAP: /* "hand to hand" attacks */

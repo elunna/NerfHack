@@ -646,7 +646,7 @@ mattacku(struct monst *mtmp)
     struct attack *mattk, alt_attk;
     int i, j = 0, tmp, ftmp, sum[NATTK];
     struct permonst *mdat = mtmp->data;
-    boolean did_rabid;
+    boolean did_rabid = FALSE;
     /*
      * ranged: Is it near you?  Affects your actions.
      * ranged2: Does it think it's near you?  Affects its actions.

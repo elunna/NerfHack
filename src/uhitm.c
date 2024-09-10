@@ -6332,6 +6332,7 @@ hmonas(struct monst *mon)
     int i, tmp, dieroll, armorpenalty, sum[NATTK],
         dhit = 0, attknum = 0, multi_claw = 0, multi_weap = 0;
     boolean monster_survived;
+    boolean did_rabid = FALSE;
 
     /* not used here but umpteen mhitm_ad_xxxx() need this */
     gv.vis = (canseemon(mon) || m_next2u(mon));
@@ -6342,6 +6343,15 @@ hmonas(struct monst *mon)
     for (i = 0; i < NATTK; i++) {
         sum[i] = M_ATTK_MISS;
         mattk = getmattk(&gy.youmonst, mon, i, sum, &alt_attk);
+
+         /* Extra attack for rabid monster */
+        if (Rabid && !mattk->aatyp && !did_rabid) {
+            if (mattk->aatyp != AT_BITE)
+                mattk->aatyp = AT_BITE;
+            mattk->adtyp = AD_RABD;
+            did_rabid = TRUE;
+        }
+
         if (mattk->aatyp == AT_WEAP)
             ++multi_weap;
         if (mattk->aatyp == AT_WEAP
