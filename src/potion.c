@@ -2708,16 +2708,6 @@ potionbreathe(struct obj *obj)
 
 /* potion alchemy recipes */
 const struct PotionRecipe potionrecipes[] = {
-    /* More complicated recipes */
-    { POT_GAIN_LEVEL,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 6 in 10 chance */
-    { STRANGE_OBJECT,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 3 in 10 chance */
-
-    { POT_BOOZE,            POT_GAIN_LEVEL, POT_CONFUSION,      6 }, /* 6 in 10 chance */
-    { POT_ENLIGHTENMENT,    POT_GAIN_LEVEL, POT_CONFUSION,      3 }, /* 3 in 10 chance */
-
-    { POT_BOOZE,            POT_GAIN_ENERGY, POT_CONFUSION,     6 }, /* 6 in 10 chance */
-    { POT_ENLIGHTENMENT,    POT_GAIN_ENERGY, POT_CONFUSION,     3 }, /* 3 in 10 chance */
-
     /* Standard recipes */
     { POT_EXTRA_HEALING,    POT_SPEED, POT_HEALING,             1 },
     { POT_EXTRA_HEALING,    POT_GAIN_LEVEL, POT_HEALING,        1 },
@@ -2749,6 +2739,18 @@ const struct PotionRecipe potionrecipes[] = {
     { POT_WATER,            UNICORN_HORN, POT_VAMPIRE_BLOOD,    1 },
     { POT_OIL,              POT_WATER, POT_OIL,                 1 },
     { POT_RESTORE_ABILITY,  POT_SICKNESS, POT_HEALING,          1 },
+
+    /* More complicated recipes */
+    { POT_GAIN_LEVEL,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 6 in 10 chance */
+    { STRANGE_OBJECT,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 3 in 10 chance */
+
+    { POT_BOOZE,            POT_GAIN_LEVEL, POT_CONFUSION,      6 }, /* 6 in 10 chance */
+    { POT_ENLIGHTENMENT,    POT_GAIN_LEVEL, POT_CONFUSION,      3 }, /* 3 in 10 chance */
+
+    { POT_BOOZE,            POT_GAIN_ENERGY, POT_CONFUSION,     6 }, /* 6 in 10 chance */
+    { POT_ENLIGHTENMENT,    POT_GAIN_ENERGY, POT_CONFUSION,     3 }, /* 3 in 10 chance */
+
+
     { 0, 0, 0, 0 }
 };
 
