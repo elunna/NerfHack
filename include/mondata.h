@@ -210,6 +210,7 @@
 #define is_ogre(ptr) (((ptr)->mhflags & MH_OGRE) != 0L)
 #define is_boomer(ptr)                          \
     (  (ptr) == PM_FREEZING_SPHERE              \
+    || (ptr) == PM_STINKING_SPHERE              \
     || (ptr) == PM_FLAMING_SPHERE               \
     || (ptr) == PM_SHOCKING_SPHERE              \
     || (ptr) == PM_ACID_SPHERE)
