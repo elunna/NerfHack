@@ -956,6 +956,9 @@ autopick(
     int follow,            /* how to follow the object list */
     menu_item **pick_list) /* list of objects and counts to pick up */
 {
+    if (Hallucination)
+        return 0;
+    
     menu_item *pi; /* pick item */
     struct obj *curr;
     int n;
