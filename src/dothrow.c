@@ -2203,7 +2203,7 @@ thitmonst(
             if (!ammo_and_launcher(obj, uwep)) {
                 tmp -= 4;
             } else {
-                tmp += max(7, uwep->spe) - greatest_erosion(uwep);
+                tmp += min(7, uwep->spe) - greatest_erosion(uwep);
                 tmp += weapon_hit_bonus(uwep);
                 if (uwep->oartifact)
                     tmp += spec_abon(uwep, mon);
