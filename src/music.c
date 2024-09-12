@@ -615,6 +615,7 @@ do_improvisation(struct obj *instr)
         Hero_playnotes(obj_to_instr(&itmp), improvisation, 50);
         if (do_spec)
             charm_snakes(u.ulevel * 3);
+        makeknown_msg(WOODEN_FLUTE);
         exercise(A_DEX, TRUE);
         break;
     case FIRE_HORN:  /* Idem wand of fire */
@@ -655,6 +656,7 @@ do_improvisation(struct obj *instr)
         Hero_playnotes(obj_to_instr(&itmp), improvisation, 80);
         awaken_monsters(u.ulevel * 30);
         exercise(A_WIS, FALSE);
+        makeknown_msg(TOOLED_HORN);
         break;
     case BUGLE: /* Awaken & attract soldiers */
         if (!Deaf)
@@ -695,6 +697,7 @@ do_improvisation(struct obj *instr)
         if (do_spec)
             calm_nymphs(u.ulevel * 3);
         exercise(A_DEX, TRUE);
+        makeknown_msg(WOODEN_HARP);
         break;
     case DRUM_OF_EARTHQUAKE: /* create several pits */
         /* a drum of earthquake does not cause deafness
