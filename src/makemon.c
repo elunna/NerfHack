@@ -846,10 +846,13 @@ m_initinv(struct monst *mtmp)
                 curse(otmp);
                 (void) mpickobj(mtmp, otmp);
             }
-            (void) mongets(mtmp, SCR_FIRE);
             (void) mongets(mtmp, SCR_EARTH);
             (void) mongets(mtmp, SCR_TELEPORTATION);
             (void) mongets(mtmp, EXPENSIVE_CAMERA);
+            (void) mongets(mtmp, SCR_FIRE);
+            otmp = mksobj(rnd_class(RIN_ADORNMENT, RIN_PROTECTION_FROM_SHAPE_CHAN),
+                              FALSE, FALSE);
+            (void) mpickobj(mtmp, otmp);
         } else if (quest_mon_represents_role(ptr, PM_MONK)) {
             (void) mongets(mtmp, rn2(11) ? ROBE : CLOAK_OF_MAGIC_RESISTANCE);
         }
