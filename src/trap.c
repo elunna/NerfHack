@@ -403,15 +403,7 @@ grease_protect(
     } else if (victim == &gy.youmonst || vismon) {
         pline("%s %s", Yobjnam2(otmp, "are"), txt);
     }
-    if (!rn2(2)) {
-        otmp->greased = 0;
-        if (carried(otmp)) {
-            pline_The("grease dissolves.");
-            update_inventory();
-        }
-        return TRUE;
-    }
-    return FALSE;
+    return maybe_grease_off(otmp);
 }
 
 /* create a "living" statue at x,y */
@@ -8023,6 +8015,22 @@ trigger_trap_with_polearm(
         trap->tseen = 1;
         newsym(cc.x, cc.y);
     }
+}
+
+/* Helper function to handle grease wearing off a greased object. */
+boolean
+maybe_grease_off(struct obj *otmp)
+{
+    if (otmp->greased && !rn2(2)) {
+        otmp->greased = 0;
+        if (carried(otmp)) {
+            if (!Blind)
+                pline_The("grease dissolves.");
+            update_inventory();
+        }
+        return TRUE;
+    }
+    return FALSE;
 }
 
 /*trap.c*/

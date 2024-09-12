@@ -3617,10 +3617,7 @@ use_whip(struct obj *obj)
             }
             if (gotit && otmp->greased) {
                 gotit = FALSE; /* can't pull it free */
-                if (otmp->greased && !rn2(2)) {
-                    pline_The("grease wears off.");
-                    otmp->greased = 0;
-                }
+                maybe_grease_off(otmp);
             }
                 
             if (gotit) {

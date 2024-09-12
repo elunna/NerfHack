@@ -2549,10 +2549,7 @@ m_slips_free(struct monst *mdef, struct attack *mattk)
                 ? xname(obj)
                 : cloak_simple_name(obj));
 
-        if (obj->greased && !rn2(2)) {
-            pline_The("grease wears off.");
-            obj->greased = 0;
-        }
+        maybe_grease_off(obj);
         return TRUE;
     }
     return FALSE;
@@ -2653,11 +2650,7 @@ steal_it(struct monst *mdef, struct attack *mattk)
               (otmp->greased || objects[otmp->otyp].oc_name_known)
                   ? xname(otmp)
                   : cloak_simple_name(otmp));
-
-        if (otmp->greased && !rn2(2)) {
-            pline_The("grease wears off.");
-            otmp->greased = 0;
-        }
+        maybe_grease_off(otmp);
         return;
     }
 
@@ -5525,11 +5518,7 @@ mhitm_ad_sedu(
                               ? xname(obj)
                               : cloak_simple_name(obj));
                 }
-                if (obj->greased && !rn2(2)) {
-                    if (canseemon(mdef))
-                        pline_The("grease wears off.");
-                    obj->greased = 0;
-                }
+                maybe_grease_off(obj);
                 return;
             }
             if (u.usteed == mdef && obj == which_armor(mdef, W_SADDLE))

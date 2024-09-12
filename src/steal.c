@@ -478,12 +478,7 @@ steal(struct monst *mtmp, char *objnambuf)
               (otmp->greased || objects[otmp->otyp].oc_name_known)
                   ? xname(otmp)
                   : cloak_simple_name(otmp));
-        
-        if (otmp->greased && !rn2(2)) {
-            pline_The("grease wears off.");
-            otmp->greased = 0;
-            update_inventory();
-        }
+        maybe_grease_off(otmp);
         return 1; /* let them flee */
     }
 
@@ -782,12 +777,7 @@ stealamulet(struct monst *mtmp)
             pline("%s %s slip off of your greased %s!", s_suffix(Monnam(mtmp)),
                   makeplural(mbodypart(mtmp, HAND)),
                   xname(otmp));
-            
-            if (otmp->greased && !rn2(2)) {
-                pline_The("grease wears off.");
-                otmp->greased = 0;
-                update_inventory();
-            }
+            maybe_grease_off(otmp);
             return;
         }
         /* take off outer gear if we're targeting [hypothetical]

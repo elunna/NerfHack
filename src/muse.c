@@ -3081,10 +3081,8 @@ use_misc(struct monst *mtmp)
             }
             if (!where_to) {
                 pline_The("whip slips free."); /* not `The_whip' */
-                if (freegrease && !rn2(3)) {
-                    pline_The("grease wears off.");
-                    obj->greased = 0;
-                }
+                if (freegrease)
+                    maybe_grease_off(obj);
                 return 1;
             } else if (where_to == 3 && mon_hates_silver(mtmp)
                        && objects[obj->otyp].oc_material == SILVER) {

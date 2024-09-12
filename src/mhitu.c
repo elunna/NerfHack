@@ -1313,12 +1313,7 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
               (obj->greased || objects[obj->otyp].oc_name_known)
                   ? xname(obj)
                   : cloak_simple_name(obj));
-
-        if (obj->greased && !rn2(3)) {
-            pline_The("grease wears off.");
-            obj->greased = 0;
-            update_inventory();
-        }
+        maybe_grease_off(obj);
         return TRUE;
     } else if (mattk->adtyp == AD_WRAP
             /* 50% chance (with a luck bonus) of slipping free with mud boots. 
