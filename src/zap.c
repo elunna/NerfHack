@@ -6108,7 +6108,8 @@ zap_over_floor(
             if (see_it)
                 pline("Steam billows from the forge.");
             rangemod -= 1;
-            coolforge(u.ux, u.uy);
+            if (!rn2(3))
+                coolforge(u.ux, u.uy);
         }
         break; /* ZT_COLD */
 
