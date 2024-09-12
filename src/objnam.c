@@ -145,6 +145,8 @@ static struct Jitem Cartomancer_items[] = {
     { LUCKSTONE, "lucky dice" },
     { LOADSTONE, "heavy dice" },
     { TOUCHSTONE, "siliceous dice" },
+    { FOULSTONE, "stinky dice" },
+    { WHETSTONE, "sharpening dice" },
     { SLING_BULLET, "hard dice"},
     { 0, "" } 
 };
