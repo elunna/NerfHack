@@ -1471,7 +1471,6 @@ drinktoilet(void)
 void
 diptoilet(struct obj *obj)
 {
-    int er;
     boolean is_hands = (obj == &hands_obj);
     
     if (Levitation) {
@@ -1480,19 +1479,23 @@ diptoilet(struct obj *obj)
     }
 
     if (is_hands || obj == uarmg) {
-        er = wash_hands();
+        wash_hands();
         You("would rather not wash your %s there.",
             makeplural(body_part(HAND)));
         return;
-    } else {
-        er = water_damage(obj, NULL, TRUE);
-    }
-
-    if (obj->otyp == POT_ACID && er != ER_DESTROYED) {
+    } else if (obj->otyp == POT_ACID ) {
         /* Acid and water don't mix */
-        useup(obj);
-        return;
-    } 
+        wake_nearto(u.ux, u.uy, (BOLT_LIM + 1) * (BOLT_LIM + 1));
+        exercise(A_STR, FALSE);
+        if (!Breathless || haseyes(gy.youmonst.data))
+            potionbreathe(obj);
+        useupall(obj);
+        losehp(1 + rnd(9), /* not physical damage */
+                "alchemic blast", KILLED_BY_AN);
+        breaktoilet(u.ux, u.uy);
+    } else {
+        water_damage(obj, NULL, TRUE);
+    }
 
     if (is_poisonable(obj)) {
         if (flags.verbose)
