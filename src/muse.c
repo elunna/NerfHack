@@ -1309,7 +1309,9 @@ use_defensive(struct monst *mtmp)
         return 2;
     case MUSE_POT_HEALING:
         mquaffmsg(mtmp, otmp);
-        i = d(6 + 2 * bcsign(otmp), 4);
+        i = 8 + d(4 + 2 * bcsign(otmp), 4);
+        i /= (otmp->odiluted ? 2 : 1);
+
         mtmp->mhp += i;
         if (mtmp->mhp > mtmp->mhpmax)
             mtmp->mhp = ++mtmp->mhpmax;
@@ -1328,7 +1330,9 @@ use_defensive(struct monst *mtmp)
         return 2;
     case MUSE_POT_EXTRA_HEALING:
         mquaffmsg(mtmp, otmp);
-        i = d(6 + 2 * bcsign(otmp), 8);
+        i = 16 + d(4 + 2 * bcsign(otmp), 8);
+        i /= (otmp->odiluted ? 2 : 1);
+
         mtmp->mhp += i;
         if (mtmp->mhp > mtmp->mhpmax)
             mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 5 : 2));
@@ -1397,7 +1401,7 @@ use_defensive(struct monst *mtmp)
     case MUSE_POT_PHASING:
         mquaffmsg(mtmp, otmp);
         mtmp->mextrinsics |= MR2_PHASING;
-        mtmp->mphasetime += rn1(5, 15);
+        mtmp->mphasetime += rn1(50, otmp->odiluted ? 100 : 250);
         if (canseemon(mtmp))
             pline("%s turns hazy!", Monnam(mtmp));
         if (oseen)
