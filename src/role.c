@@ -24,7 +24,7 @@
  *
  * God names use a leading underscore to flag goddesses.
  */
-const struct Role roles[NUM_ROLES+1] = {
+const struct Role roles[NUM_ROLES + 1] = {
     { { "Archeologist", 0 },
       { { "Digger", 0 },
         { "Field Worker", 0 },
@@ -39,34 +39,35 @@ const struct Role roles[NUM_ROLES+1] = {
       "Arc",
       "the College of Archeology",
       "the Tomb of the Toltec Kings",
-      PM_ARCHEOLOGIST,
-      NON_PM,
-      PM_LORD_CARNARVON,
-      PM_STUDENT,
-      PM_MINION_OF_HUHETOTL,
-      NON_PM,
-      PM_HUMAN_MUMMY,
-      S_SNAKE,
-      S_MUMMY,
-      ART_ORB_OF_DETECTION,
+      PM_ARCHEOLOGIST,              /* role */
+      NON_PM,                       /* preferred pet */
+      PM_LORD_CARNARVON,            /* quest leader */
+      PM_STUDENT,                   /* quest guardians */
+      PM_MINION_OF_HUHETOTL,        /* quest nemesis */
+      NON_PM,                       /* quest enemies */
+      PM_HUMAN_MUMMY,               /* quest enemies */
+      S_SNAKE,                      /* quest enemies by class */
+      S_MUMMY,                      /* quest enemies by class */
+      ART_ORB_OF_DETECTION,         /* quest artifact */
       MH_HUMAN | MH_DWARF | MH_GNOME | MH_ELF | MH_VAMPIRE | MH_ORC
           | ROLE_MALE | ROLE_FEMALE
           | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 7, 10, 10, 7, 7, 7 },
-      { 20, 20, 20, 10, 20, 10 },
+      { 7, 10, 10, 7, 7, 7 },       /* lowest initial attributes */
+      { 20, 20, 20, 10, 20, 10 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 11, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      14, /* Energy */
-      10,
-      5,
-      0,
-      2,
-      10,
-      A_INT,
-      SPE_MAGIC_MAPPING,
-      -4 },
+      { 11, 0, 0, 8, 1, 0 },        /* hp advancement */
+      { 1, 0, 0, 1, 0, 1 },         /* energy advancement */
+      14,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      5,                            /* base penalty */
+      0,                            /* healing spells (-bonus) */
+      2,                            /* shield penalty */
+      10,                           /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      SPE_MAGIC_MAPPING,            /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Barbarian", 0 },
       { { "Plunderer", "Plunderess" },
         { "Pillager", 0 },
@@ -81,33 +82,34 @@ const struct Role roles[NUM_ROLES+1] = {
       "Bar",
       "the Camp of the Duali Tribe",
       "the Duali Oasis",
-      PM_BARBARIAN,
-      NON_PM,
-      PM_PELIAS,
-      PM_CHIEFTAIN,
-      PM_THOTH_AMON,
-      PM_OGRE,
-      PM_TROLL,
-      S_OGRE,
-      S_TROLL,
-      ART_HEART_OF_AHRIMAN,
+      PM_BARBARIAN,                 /* role */
+      NON_PM,                       /* preferred pet */
+      PM_PELIAS,                    /* quest leader */
+      PM_CHIEFTAIN,                 /* quest guardians */
+      PM_THOTH_AMON,                /* quest nemesis */
+      PM_OGRE,                      /* quest enemies */
+      PM_TROLL,                     /* quest enemies */
+      S_OGRE,                       /* quest enemies by class */
+      S_TROLL,                      /* quest enemies by class */
+      ART_HEART_OF_AHRIMAN,         /* quest artifact */
       MH_HUMAN | MH_ORC | MH_DWARF | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL
           | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 16, 7, 7, 15, 16, 6 },
-      { 30, 6, 7, 20, 30, 7 },
+      { 16, 7, 7, 15, 16, 6 },      /* lowest initial attributes */
+      { 30, 6, 7, 20, 30, 7 },      /* distribution of initial */
       /* Init   Lower  Higher */
-      { 14, 0, 0, 10, 2, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      10, /* Energy */
-      10,
-      14,
-      0,
-      0,
-      8,
-      A_INT,
-      SPE_HASTE_SELF,
-      -4 },
+      { 14, 0, 0, 10, 2, 0 },       /* hp advancement */
+      { 1, 0, 0, 1, 0, 1 },         /* energy advancement */
+      10,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      14,                           /* base penalty */
+      0,                            /* healing spells (-bonus) */
+      0,                            /* shield penalty */
+      8,                            /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      SPE_HASTE_SELF,               /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Caveman", "Cavewoman" },
       { { "Troglodyte", 0 },
         { "Aborigine", 0 },
@@ -122,33 +124,34 @@ const struct Role roles[NUM_ROLES+1] = {
       "Cav",
       "the Caves of the Ancestors",
       "the Dragon's Lair",
-      PM_CAVE_DWELLER,
-      PM_LITTLE_DOG,
-      PM_SHAMAN_KARNOV,
-      PM_NEANDERTHAL,
-      PM_CHROMATIC_DRAGON,
-      PM_BUGBEAR,
-      PM_HILL_GIANT,
-      S_HUMANOID,
-      S_GIANT,
-      ART_SCEPTRE_OF_MIGHT,
+      PM_CAVE_DWELLER,              /* role */
+      PM_LITTLE_DOG,                /* preferred pet */
+      PM_SHAMAN_KARNOV,             /* quest leader */
+      PM_NEANDERTHAL,               /* quest guardians */
+      PM_CHROMATIC_DRAGON,          /* quest nemesis */
+      PM_BUGBEAR,                   /* quest enemies */
+      PM_HILL_GIANT,                /* quest enemies */
+      S_HUMANOID,                   /* quest enemies by class */
+      S_GIANT,                      /* quest enemies by class */
+      ART_SCEPTRE_OF_MIGHT,         /* quest artifact */
       MH_HUMAN | MH_DWARF | MH_GNOME | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL
           | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      { 10, 7, 7, 7, 8, 6 },
-      { 30, 6, 7, 20, 30, 7 },
+      { 10, 7, 7, 7, 8, 6 },        /* lowest initial attributes */
+      { 30, 6, 7, 20, 30, 7 },      /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 14, 0, 0, 8, 2, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      10, /* Energy */
-      0,
-      12,
-      0,
-      1,
-      8,
-      A_INT,
-      0,
-      -4 },
+      { 14, 0, 0, 8, 2, 0 },        /* hp advancement */
+      { 1, 0, 0, 1, 0, 1 },         /* energy advancement */
+      10,                           /* cutoff xp level */
+      0,                            /* initial alignment record */
+      /* Spellcasting stats */
+      12,                           /* base penalty */
+      0,                            /* healing spells (-bonus) */
+      1,                            /* shield penalty */
+      8,                            /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      0,                            /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Cartomancer", 0 },
       { { "Learner", 0 },
         { "Shuffler", 0 },
@@ -163,33 +166,34 @@ const struct Role roles[NUM_ROLES+1] = {
       "Car",
       "the Card Training School",
       "the Great Card Arena",
-      PM_CARTOMANCER,
-      NON_PM,
-      PM_KING_OF_GAMES,
-      PM_DUELIST,
-      PM_DAL_ZETHIRE,
-      PM_COBRA,
-      PM_GUARDIAN_NAGA,
-      S_SNAKE,
-      S_NAGA,
-      ART_HOLOGRAPHIC_VOID_LILY,
+      PM_CARTOMANCER,               /* role */
+      NON_PM,                       /* no starting pet */
+      PM_KING_OF_GAMES,             /* quest leader */
+      PM_DUELIST,                   /* quest guardians */
+      PM_DAL_ZETHIRE,               /* quest nemesis */
+      PM_COBRA,                     /* quest enemies */
+      PM_GUARDIAN_NAGA,             /* quest enemies */
+      S_SNAKE,                      /* quest enemies by class */
+      S_NAGA,                       /* quest enemies by class */
+      ART_HOLOGRAPHIC_VOID_LILY,    /* quest artifact */
       MH_HUMAN | MH_DWARF | MH_ELF | MH_GNOME
 	  | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 7, 10, 7, 7, 7, 7 },
-      { 10, 30, 10, 20, 20, 10 },
+      { 7, 10, 7, 7, 7, 7 },        /* lowest initial attributes */
+      { 10, 30, 10, 20, 20, 10 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 10, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 4, 3, 0, 2, 0, 3 },
-      12, /* Energy */
-      0,
-      1,
-      0,
-      3,
-      10,
-      A_INT,
-      0,
-      -4 },
+      { 10, 0, 0, 8, 1, 0 },        /* hp advancement */
+      { 4, 3, 0, 2, 0, 3 },         /* energy advancement */
+      12,                           /* cutoff xp level */
+      0,                            /* initial alignment record */
+      /* Spellcasting stats */
+      1,                            /* base penalty */
+      0,                            /* healing spells (-bonus) */
+      3,                            /* shield penalty */
+      10,                           /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      0,                            /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Healer", 0 },
       { { "Rhizotomist", 0 },
         { "Empiric", 0 },
@@ -204,32 +208,33 @@ const struct Role roles[NUM_ROLES+1] = {
       "Hea",
       "the Temple of Epidaurus",
       "the Temple of Coeus",
-      PM_HEALER,
-      NON_PM,
-      PM_HIPPOCRATES,
-      PM_ATTENDANT,
-      PM_CYCLOPS,
-      PM_GIANT_RAT,
-      PM_SNAKE,
-      S_RODENT,
-      S_YETI,
-      ART_STAFF_OF_AESCULAPIUS,
+      PM_HEALER,                    /* role */
+      NON_PM,                       /* preferred pet */
+      PM_HIPPOCRATES,               /* quest leader */
+      PM_ATTENDANT,                 /* quest guardians */
+      PM_CYCLOPS,                   /* quest nemesis */
+      PM_GIANT_RAT,                 /* quest enemies */
+      PM_SNAKE,                     /* quest enemies */
+      S_RODENT,                     /* quest enemies by class */
+      S_YETI,                       /* quest enemies by class */
+      ART_STAFF_OF_AESCULAPIUS,     /* quest artifact */
       MH_HUMAN | MH_GNOME | MH_ELF | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      { 7, 7, 13, 7, 11, 16 },
-      { 15, 20, 20, 15, 25, 5 },
+      { 7, 7, 13, 7, 11, 16 },      /* lowest initial attributes */
+      { 15, 20, 20, 15, 25, 5 },    /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 11, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 1, 4, 0, 1, 0, 2 },
-      20, /* Energy */
-      10,
-      3,
-      -3,
-      2,
-      10,
-      A_WIS,
-      SPE_CURE_SICKNESS,
-      -4 },
+      { 11, 0, 0, 8, 1, 0 },        /* hp advancement */
+      { 1, 4, 0, 1, 0, 2 },         /* energy advancement */
+      20,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      3,                            /* base penalty */
+      -3,                           /* healing spells (-bonus) */
+      2,                            /* shield penalty */
+      10,                           /* metal armor penalty */
+      A_WIS,                        /* spellcasting stat */
+      SPE_CURE_SICKNESS,            /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Knight", 0 },
       { { "Gallant", 0 },
         { "Esquire", 0 },
@@ -244,32 +249,33 @@ const struct Role roles[NUM_ROLES+1] = {
       "Kni",
       "Camelot Castle",
       "the Isle of Glass",
-      PM_KNIGHT,
-      PM_PONY,
-      PM_KING_ARTHUR,
-      PM_PAGE,
-      PM_IXOTH,
-      PM_QUASIT,
-      PM_OCHRE_JELLY,
-      S_IMP,
-      S_JELLY,
-      ART_MAGIC_MIRROR_OF_MERLIN,
+      PM_KNIGHT,                    /* role */
+      PM_PONY,                      /* preferred pet */
+      PM_KING_ARTHUR,               /* quest leader */
+      PM_PAGE,                      /* quest guardians */
+      PM_IXOTH,                     /* quest nemesis */
+      PM_QUASIT,                    /* quest enemies */
+      PM_OCHRE_JELLY,               /* quest enemies */
+      S_IMP,                        /* quest enemies by class */
+      S_JELLY,                      /* quest enemies by class */
+      ART_MAGIC_MIRROR_OF_MERLIN,   /* quest artifact */
       MH_HUMAN | MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL,
       /* Str Int Wis Dex Con Cha */
-      { 13, 7, 14, 8, 10, 17 },
-      { 30, 15, 15, 10, 20, 10 },
+      { 13, 7, 14, 8, 10, 17 },     /* lowest initial attributes */
+      { 30, 15, 15, 10, 20, 10 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 14, 0, 0, 8, 2, 0 }, /* Hit points */
-      { 1, 4, 0, 1, 0, 2 },
-      10, /* Energy */
-      10,
-      8,
-      -2,
-      0,
-      9,
-      A_WIS,
-      SPE_TURN_UNDEAD,
-      -4 },
+      { 14, 0, 0, 8, 2, 0 },        /* hp advancement */
+      { 1, 4, 0, 1, 0, 2 },         /* energy advancement */
+      10,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      8,                            /* base penalty */
+      -2,                           /* healing spells (-bonus) */
+      0,                            /* shield penalty */
+      9,                            /* metal armor penalty */
+      A_WIS,                        /* spellcasting stat */
+      SPE_TURN_UNDEAD,              /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Monk", 0 },
       { { "Candidate", 0 },
         { "Novice", 0 },
@@ -284,33 +290,34 @@ const struct Role roles[NUM_ROLES+1] = {
       "Mon",
       "the Monastery of Chan-Sune",
       "the Monastery of the Earth-Lord",
-      PM_MONK,
-      NON_PM,
-      PM_GRAND_MASTER,
-      PM_ABBOT,
-      PM_MASTER_KAEN,
-      PM_EARTH_ELEMENTAL,
-      PM_XORN,
-      S_ELEMENTAL,
-      S_XORN,
-      ART_EYES_OF_THE_OVERWORLD,
+      PM_MONK,                      /* role */
+      NON_PM,                       /* preferred pet */
+      PM_GRAND_MASTER,              /* quest leader */
+      PM_ABBOT,                     /* quest guardians */
+      PM_MASTER_KAEN,               /* quest nemesis */
+      PM_EARTH_ELEMENTAL,           /* quest enemies */
+      PM_XORN,                      /* quest enemies */
+      S_ELEMENTAL,                  /* quest enemies by class */
+      S_XORN,                       /* quest enemies by class */
+      ART_EYES_OF_THE_OVERWORLD,    /* quest artifact */
       MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
           | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 10, 7, 8, 8, 7, 7 },
-      { 25, 10, 20, 20, 15, 10 },
+      { 10, 7, 8, 8, 7, 7 },        /* lowest initial attributes */
+      { 25, 10, 20, 20, 15, 10 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 12, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 2, 2, 0, 2, 0, 2 },
-      10, /* Energy */
-      10,
-      8,
-      -2,
-      2,
-      20,
-      A_WIS,
-      SPE_RESTORE_ABILITY,
-      -4 },
+      { 12, 0, 0, 8, 1, 0 },        /* hp advancement */
+      { 2, 2, 0, 2, 0, 2 },         /* energy advancement */
+      10,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      8,                            /* base penalty */
+      -2,                           /* healing spells (-bonus) */
+      2,                            /* shield penalty */
+      20,                           /* metal armor penalty */
+      A_WIS,                        /* spellcasting stat */
+      SPE_RESTORE_ABILITY,          /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Priest", "Priestess" },
       { { "Aspirant", 0 },
         { "Acolyte", 0 },
@@ -325,33 +332,34 @@ const struct Role roles[NUM_ROLES+1] = {
       "Pri",
       "the Great Temple",
       "the Temple of Nalzok",
-      PM_CLERIC,
-      NON_PM,
-      PM_ARCH_PRIEST,
-      PM_ACOLYTE,
-      PM_NALZOK,
-      PM_HUMAN_ZOMBIE,
-      PM_WRAITH,
-      S_ZOMBIE,
-      S_WRAITH,
-      ART_MITRE_OF_HOLINESS,
+      PM_CLERIC,                    /* role */
+      NON_PM,                       /* preferred pet */
+      PM_ARCH_PRIEST,               /* quest leader */
+      PM_ACOLYTE,                   /* quest guardians */
+      PM_NALZOK,                    /* quest nemesis */
+      PM_HUMAN_ZOMBIE,              /* quest enemies */
+      PM_WRAITH,                    /* quest enemies */
+      S_ZOMBIE,                     /* quest enemies by class */
+      S_WRAITH,                     /* quest enemies by class */
+      ART_MITRE_OF_HOLINESS,        /* quest artifact */
       MH_HUMAN | MH_ELF | MH_ORC | MH_DWARF | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE 
           | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 7, 7, 10, 7, 7, 7 },
-      { 15, 10, 30, 15, 20, 10 },
+      { 7, 7, 10, 7, 7, 7 },        /* lowest initial attributes */
+      { 15, 10, 30, 15, 20, 10 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 12, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 4, 3, 0, 2, 0, 2 },
-      10, /* Energy */
-      0,
-      3,
-      -2,
-      2,
-      10,
-      A_WIS,
-      SPE_REMOVE_CURSE,
-      -4 },
+      { 12, 0, 0, 8, 1, 0 },        /* hp advancement */
+      { 4, 3, 0, 2, 0, 2 },         /* energy advancement */
+      10,                           /* cutoff xp level */
+      0,                            /* initial alignment record */
+      /* Spellcasting stats */
+      3,                            /* base penalty */
+      -2,                           /* healing spells (-bonus) */
+      2,                            /* shield penalty */
+      10,                           /* metal armor penalty */
+      A_WIS,                        /* spellcasting stat */
+      SPE_REMOVE_CURSE,             /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     /* Note:  Rogue precedes Ranger so that use of `-R' on the command line
        retains its traditional meaning. */
     { { "Rogue", 0 },
@@ -368,33 +376,34 @@ const struct Role roles[NUM_ROLES+1] = {
       "Rog",
       "the Thieves' Guild Hall",
       "the Assassins' Guild Hall",
-      PM_ROGUE,
-      NON_PM,
-      PM_MASTER_OF_THIEVES,
-      PM_THUG,
-      PM_MASTER_ASSASSIN,
-      PM_LEPRECHAUN,
-      PM_GUARDIAN_NAGA,
-      S_NYMPH,
-      S_NAGA,
-      ART_MASTER_KEY_OF_THIEVERY,
+      PM_ROGUE,                     /* role */
+      NON_PM,                       /* preferred pet */
+      PM_MASTER_OF_THIEVES,         /* quest leader */
+      PM_THUG,                      /* quest guardians */
+      PM_MASTER_ASSASSIN,           /* quest nemesis */
+      PM_LEPRECHAUN,                /* quest enemies */
+      PM_GUARDIAN_NAGA,             /* quest enemies */
+      S_NYMPH,                      /* quest enemies by class */
+      S_NAGA,                       /* quest enemies by class */
+      ART_MASTER_KEY_OF_THIEVERY,   /* quest artifact */
       MH_HUMAN | MH_ORC | MH_ELF | MH_GNOME | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 7, 7, 7, 10, 7, 6 },
-      { 20, 10, 10, 30, 20, 10 },
+      { 7, 7, 7, 10, 7, 6 },        /* lowest initial attributes */
+      { 20, 10, 10, 30, 20, 10 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 10, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      11, /* Energy */
-      10,
-      8,
-      0,
-      1,
-      9,
-      A_INT,
-      SPE_DETECT_TREASURE,
-      -4 },
+      { 10, 0, 0, 8, 1, 0 },        /* hp advancement */
+      { 1, 0, 0, 1, 0, 1 },         /* energy advancement */
+      11,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      8,                            /* base penalty */
+      0,                            /* healing spells (-bonus) */
+      1,                            /* shield penalty */
+      9,                            /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      SPE_DETECT_TREASURE,          /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Ranger", 0 },
       {
 #if 0 /* OBSOLETE */
@@ -423,33 +432,35 @@ const struct Role roles[NUM_ROLES+1] = {
       "Ran",
       "Orion's camp",
       "the cave of the wumpus",
-      PM_RANGER,
-      PM_LITTLE_DOG /* Orion & canis major */,
-      PM_ORION,
-      PM_HUNTER,
-      PM_SCORPIUS,
-      PM_FOREST_CENTAUR,
-      PM_SCORPION,
-      S_CENTAUR,
-      S_SPIDER,
-      ART_LONGBOW_OF_DIANA,
+      PM_RANGER,                    /* role */
+      PM_LITTLE_DOG,                /* preferred pet */
+        /* Orion & canis major */
+      PM_ORION,                     /* quest leader */
+      PM_HUNTER,                    /* quest guardians */
+      PM_SCORPIUS,                  /* quest nemesis */
+      PM_FOREST_CENTAUR,            /* quest enemies */
+      PM_SCORPION,                  /* quest enemies */
+      S_CENTAUR,                    /* quest enemies by class */
+      S_SPIDER,                     /* quest enemies by class */
+      ART_LONGBOW_OF_DIANA,         /* quest artifact */
       MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | ROLE_MALE | ROLE_FEMALE
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 13, 13, 13, 9, 13, 7 },
-      { 30, 10, 10, 20, 20, 10 },
+      { 13, 13, 13, 9, 13, 7 },     /* lowest initial attributes */
+      { 30, 10, 10, 20, 20, 10 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 13, 0, 0, 6, 1, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      12, /* Energy */
-      10,
-      9,
-      2,
-      1,
-      10,
-      A_INT,
-      SPE_INVISIBILITY,
-      -4 },
+      { 13, 0, 0, 6, 1, 0 },        /* hp advancement */
+      { 1, 0, 0, 1, 0, 1 },         /* energy advancement */
+      12,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      9,                            /* base penalty */
+      2,                            /* healing spells (-bonus) */
+      1,                            /* shield penalty */
+      10,                           /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      SPE_INVISIBILITY,             /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Samurai", 0 },
       { { "Hatamoto", 0 },       /* Banner Knight */
         { "Ronin", 0 },          /* no allegiance */
@@ -464,32 +475,33 @@ const struct Role roles[NUM_ROLES+1] = {
       "Sam",
       "the Castle of the Taro Clan",
       "the Shogun's Castle",
-      PM_SAMURAI,
-      PM_LITTLE_DOG,
-      PM_LORD_SATO,
-      PM_ROSHI,
-      PM_ASHIKAGA_TAKAUJI,
-      PM_WOLF,
-      PM_STALKER,
-      S_DOG,
-      S_ELEMENTAL,
-      ART_TSURUGI_OF_MURAMASA,
+      PM_SAMURAI,                   /* role */
+      PM_LITTLE_DOG,                /* preferred pet */
+      PM_LORD_SATO,                 /* quest leader */
+      PM_ROSHI,                     /* quest guardians */
+      PM_ASHIKAGA_TAKAUJI,          /* quest nemesis */
+      PM_WOLF,                      /* quest enemies */
+      PM_STALKER,                   /* quest enemies */
+      S_DOG,                        /* quest enemies by class */
+      S_ELEMENTAL,                  /* quest enemies by class */
+      ART_TSURUGI_OF_MURAMASA,      /* quest artifact */
       MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL,
       /* Str Int Wis Dex Con Cha */
-      { 10, 8, 7, 10, 17, 6 },
-      { 30, 10, 8, 30, 14, 8 },
+      { 10, 8, 7, 10, 17, 6 },      /* lowest initial attributes */
+      { 30, 10, 8, 30, 14, 8 },     /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 13, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      11, /* Energy */
-      10,
-      10,
-      0,
-      0,
-      8,
-      A_INT,
-      SPE_CLAIRVOYANCE,
-      -4 },
+      { 13, 0, 0, 8, 1, 0 },        /* hp advancement */
+      { 1, 0, 0, 1, 0, 1 },         /* energy advancement */
+      11,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      10,                           /* base penalty */
+      0,                            /* healing spells (-bonus) */
+      0,                            /* shield penalty */
+      8,                            /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      SPE_CLAIRVOYANCE,             /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Tourist", 0 },
       { { "Rambler", 0 },
         { "Sightseer", 0 },
@@ -504,32 +516,33 @@ const struct Role roles[NUM_ROLES+1] = {
       "Tou",
       "Ankh-Morpork",
       "the Thieves' Guild Hall",
-      PM_TOURIST,
-      NON_PM,
-      PM_TWOFLOWER,
-      PM_GUIDE,
-      PM_MASTER_OF_THIEVES,
-      PM_GIANT_SPIDER,
-      PM_FOREST_CENTAUR,
-      S_SPIDER,
-      S_CENTAUR,
-      ART_YENDORIAN_EXPRESS_CARD,
+      PM_TOURIST,                   /* role */
+      NON_PM,                       /* preferred pet */
+      PM_TWOFLOWER,                 /* quest leader */
+      PM_GUIDE,                     /* quest guardians */
+      PM_MASTER_OF_THIEVES,         /* quest nemesis */
+      PM_GIANT_SPIDER,              /* quest enemies */
+      PM_FOREST_CENTAUR,            /* quest enemies */
+      S_SPIDER,                     /* quest enemies by class */
+      S_CENTAUR,                    /* quest enemies by class */
+      ART_YENDORIAN_EXPRESS_CARD,   /* quest artifact */
       MH_HUMAN | MH_GNOME | MH_ELF | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      { 7, 10, 6, 7, 7, 10 },
-      { 15, 10, 10, 15, 30, 20 },
+      { 7, 10, 6, 7, 7, 10 },       /* lowest initial attributes */
+      { 15, 10, 10, 15, 30, 20 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 8, 0, 0, 8, 0, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      14, /* Energy */
-      0,
-      5,
-      1,
-      2,
-      10,
-      A_INT,
-      SPE_CHARM_MONSTER,
-      -4 },
+      { 8, 0, 0, 8, 0, 0 },         /* hp advancement */
+      { 1, 0, 0, 1, 0, 1 },         /* energy advancement */
+      14,                           /* cutoff xp level */
+      0,                            /* initial alignment record */
+      /* Spellcasting stats */
+      5,                            /* base penalty */
+      1,                            /* healing spells (-bonus) */
+      2,                            /* shield penalty */
+      10,                           /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      SPE_CHARM_MONSTER,            /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Valkyrie", 0 },
       { { "Stripling", 0 },
         { "Skirmisher", 0 },
@@ -544,32 +557,33 @@ const struct Role roles[NUM_ROLES+1] = {
       "Val",
       "the Shrine of Destiny",
       "the cave of Surtur",
-      PM_VALKYRIE,
-      NON_PM /*PM_WINTER_WOLF_CUB*/,
-      PM_NORN,
-      PM_WARRIOR,
-      PM_LORD_SURTUR,
-      PM_FIRE_ANT,
-      PM_FIRE_GIANT,
-      S_ANT,
-      S_GIANT,
-      ART_ORB_OF_FATE,
+      PM_VALKYRIE,                  /* role */
+      NON_PM /*PM_WINTER_WOLF_CUB*/, /* preferred pet */
+      PM_NORN,                      /* quest leader */
+      PM_WARRIOR,                   /* quest guardians */
+      PM_LORD_SURTUR,               /* quest nemesis */
+      PM_FIRE_ANT,                  /* quest enemies */
+      PM_FIRE_GIANT,                /* quest enemies */
+      S_ANT,                        /* quest enemies by class */
+      S_GIANT,                      /* quest enemies by class */
+      ART_ORB_OF_FATE,              /* quest artifact */
       MH_HUMAN | MH_DWARF | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      { 10, 7, 7, 7, 10, 7 },
-      { 30, 6, 7, 20, 30, 7 },
+      { 10, 7, 7, 7, 10, 7 },       /* lowest initial attributes */
+      { 30, 6, 7, 20, 30, 7 },      /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 14, 0, 0, 8, 2, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      10, /* Energy */
-      0,
-      10,
-      -2,
-      0,
-      9,
-      A_WIS,
-      SPE_CONE_OF_COLD,
-      -4 },
+      { 14, 0, 0, 8, 2, 0 },        /* hp advancement */
+      { 1, 0, 0, 1, 0, 1 },         /* energy advancement */
+      10,                           /* cutoff xp level */
+      0,                            /* initial alignment record */
+      /* Spellcasting stats */
+      10,                           /* base penalty */
+      -2,                           /* healing spells (-bonus) */
+      0,                            /* shield penalty */
+      9,                            /* metal armor penalty */
+      A_WIS,                        /* spellcasting stat */
+      SPE_CONE_OF_COLD,             /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Wizard", 0 },
       { { "Evoker", 0 },
         { "Conjurer", 0 },
@@ -584,33 +598,34 @@ const struct Role roles[NUM_ROLES+1] = {
       "Wiz",
       "the Lonely Tower",
       "the Tower of Darkness",
-      PM_WIZARD,
-      PM_KITTEN,
-      PM_NEFERET_THE_GREEN,
-      PM_APPRENTICE,
-      PM_DARK_ONE,
-      PM_VAMPIRE_BAT,
-      PM_XORN,
-      S_BAT,
-      S_WRAITH,
-      ART_EYE_OF_THE_AETHIOPICA,
+      PM_WIZARD,                    /* role */
+      PM_KITTEN,                    /* preferred pet */
+      PM_NEFERET_THE_GREEN,         /* quest leader */
+      PM_APPRENTICE,                /* quest guardians */
+      PM_DARK_ONE,                  /* quest nemesis */
+      PM_VAMPIRE_BAT,               /* quest enemies */
+      PM_XORN,                      /* quest enemies */
+      S_BAT,                        /* quest enemies by class */
+      S_WRAITH,                     /* quest enemies by class */
+      ART_EYE_OF_THE_AETHIOPICA,    /* quest artifact */
       MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 7, 10, 7, 7, 7, 7 },
-      { 10, 30, 10, 20, 20, 10 },
+      { 7, 10, 7, 7, 7, 7 },        /* lowest initial attributes */
+      { 10, 30, 10, 20, 20, 10 },   /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 10, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 4, 3, 0, 2, 0, 3 },
-      12, /* Energy */
-      0,
-      1,
-      0,
-      3,
-      10,
-      A_INT,
-      SPE_MAGIC_MISSILE,
-      -4 },
+      { 10, 0, 0, 8, 1, 0 },        /* hp advancement */
+      { 4, 3, 0, 2, 0, 3 },         /* energy advancement */
+      12,                           /* cutoff xp level */
+      0,                            /* initial alignment record */
+      /* Spellcasting stats */
+      1,                            /* base penalty */
+      0,                            /* healing spells (-bonus) */
+      3,                            /* shield penalty */
+      10,                           /* metal armor penalty */
+      A_INT,                        /* spellcasting stat */
+      SPE_MAGIC_MISSILE,            /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     /* Array terminator */
     UNDEFINED_ROLE,
 };
