@@ -424,7 +424,11 @@ dosit(void)
             if (Upolyd)
                 u.mh = u.mhmax;
             else
-                u.uhp = u.uhpmax;;
+                u.uhp = u.uhpmax;
+            /* Luck based chance of toilet breaking, very low with positive luck */
+            if (rnl(4) == 3)
+                breaktoilet(u.ux, u.uy);
+
         }
     } else if (IS_FORGE(typ)) {
         You(sit_message, defsyms[S_forge].explanation);
