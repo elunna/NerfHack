@@ -902,8 +902,7 @@ fill_ordinary_room(
         mkfount(croom);
     if (!rn2(60)) {
         mksink(croom);
-        /* Very rare pairing */
-        if (!rn2(60))
+        if (!rn2(15))
             mktoilet(croom);
     }
     if (!rn2(60))
