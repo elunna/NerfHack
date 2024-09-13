@@ -2870,7 +2870,7 @@ use_misc(struct monst *mtmp)
                 if (vismon) {
                     pline("%s rises up, through the %s!", Monnam(mtmp),
                             ceiling(mtmp->mx, mtmp->my));
-                    trycall(otmp);
+                    makeknown(POT_GAIN_LEVEL);
                 }
                 m_useup(mtmp, otmp);
                 migrate_to_level(mtmp, ledger_no(&tolevel), MIGR_RANDOM,
@@ -2880,7 +2880,7 @@ use_misc(struct monst *mtmp)
                 skipmsg:
                 if (vismon) {
                     pline("%s looks uneasy.", Monnam(mtmp));
-                    trycall(otmp);
+                    makeknown(POT_GAIN_LEVEL);
                 }
                 m_useup(mtmp, otmp);
                 return 2;
@@ -2988,9 +2988,7 @@ use_misc(struct monst *mtmp)
                 You("feel as though %s needs some help.", mon_nam(mtmp));
             else
                 You("feel like someone is helping %s.", mon_nam(mtmp));
-            if (!objects[SCR_REMOVE_CURSE].oc_name_known
-                && !objects[SCR_REMOVE_CURSE].oc_uname)
-                docall(otmp);
+            makeknown(SCR_REMOVE_CURSE);
         }
         for (obj = mtmp->minvent; obj; obj = obj->nobj) {
             /* gold isn't subject to cursing and blessing */
@@ -3785,7 +3783,7 @@ muse_unslime(
             if (cansee(mon->mx, mon->my))
                 pline("Oh, what a pretty fire!");
             if (vis)
-                trycall(obj);
+                makeknown(SCR_FIRE);
             m_useup(mon, obj); /* after trycall() */
             vis = FALSE;       /* skip makeknown() below */
             res = FALSE;       /* failed to cure sliming */
