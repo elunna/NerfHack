@@ -254,7 +254,7 @@ its_dead(coordxy rx, coordxy ry, int *resp, struct obj *stethoscope)
     struct obj *corpse, *statue, *egg, *otmp;
     boolean floor = can_reach_floor(TRUE); /* levitation or unskilled riding */
 
-    /* Set only one of corpse, statue, and egg based on which is the topmost. */
+    /* Set only one of corpse, statue, and egg based on which is the topmost.*/
     corpse = statue = egg = NULL;
     for (otmp = svl.level.objects[rx][ry]; otmp; otmp = otmp->nexthere) {
         /* can't reach corpse on floor */
@@ -435,7 +435,7 @@ use_stethoscope(struct obj *obj)
             You_hear("faint splashing.");
         } else if (u.dz < 0 || !can_reach_floor(TRUE)) {
             cant_reach_floor(u.ux, u.uy, (u.dz < 0), TRUE);
-	} else if (its_dead(u.ux, u.uy, &res, obj)) {
+    } else if (its_dead(u.ux, u.uy, &res, obj)) {
             ; /* message already given */
         } else if (Is_stronghold(&u.uz)) {
             Soundeffect(se_crackling_of_hellfire, 35);
@@ -2375,7 +2375,7 @@ use_tinning_kit(struct obj *obj)
     long age = peek_at_iced_corpse_age(corpse);
     long rotted = (svm.moves - age) / (10L + rn2(20));
     boolean bottleable = rotted <= 0 &&
-	      (peek_at_iced_corpse_age(corpse) + 5) >= svm.moves;
+          (peek_at_iced_corpse_age(corpse) + 5) >= svm.moves;
 
     if (Race_if(PM_VAMPIRE)
             && mons[corpse->corpsenm].cnutrit 
@@ -2389,27 +2389,27 @@ use_tinning_kit(struct obj *obj)
             if (y_n("This corpse is too small to bottle.  Tin it?") == 'y')
                 goto tinit;
         } else if ((bld = mksobj(POT_BLOOD, FALSE, FALSE)) != 0) {
-			static const char you_buy_it[] = "You bottle it, you bought it!";
+            static const char you_buy_it[] = "You bottle it, you bought it!";
 
-			bld->corpsenm = corpse->corpsenm;
-			bld->cursed = obj->cursed;
-			bld->blessed = obj->blessed;
-			bld->known = 1;
-			if (carried(corpse)) {
-				if (corpse->unpaid)
-					verbalize(you_buy_it);
-				useup(corpse);
-			} else {
+            bld->corpsenm = corpse->corpsenm;
+            bld->cursed = obj->cursed;
+            bld->blessed = obj->blessed;
+            bld->known = 1;
+            if (carried(corpse)) {
+                if (corpse->unpaid)
+                    verbalize(you_buy_it);
+                useup(corpse);
+            } else {
                 if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
                     verbalize(you_buy_it);
-			    useupf(corpse, 1L);
-			}
-			bld = hold_another_object(bld, "You make, but cannot pick up, %s.",
-						  doname(bld), (const char *)0);
-		} else
+                useupf(corpse, 1L);
+            }
+            bld = hold_another_object(bld, "You make, but cannot pick up, %s.",
+                          doname(bld), (const char *)0);
+        } else
             impossible("Bottling failed.");
         return;
-	}
+    }
 
 tinit:
     if ((can = mksobj(TIN, FALSE, FALSE)) != 0) {
@@ -2454,7 +2454,7 @@ use_unicorn_horn(struct obj **optr)
 #define PROP_COUNT 7           /* number of properties we're dealing with */
     int idx, val, val_limit, trouble_count, unfixable_trbl, did_prop;
     int trouble_list[PROP_COUNT];
-    int chance;	/* KMH */
+    int chance;    /* KMH */
     struct obj *obj = (optr ? *optr : (struct obj *) 0);
 
     if (obj && obj->degraded_horn) {
@@ -2539,7 +2539,7 @@ use_unicorn_horn(struct obj **optr)
     } else if (trouble_count > 1)
         shuffle_int_array(trouble_list, trouble_count);
 
-#if 0	/* Old NetHack success rate */
+#if 0    /* Old NetHack success rate */
     /*
      *  Chances for number of troubles to be fixed
      *               0      1      2      3      4      5      6      7
@@ -2549,7 +2549,7 @@ use_unicorn_horn(struct obj **optr)
     val_limit = rn2(d(2, (obj && obj->blessed) ? 4 : 2));
     if (val_limit > trouble_count)
         val_limit = trouble_count;
-#else	/* hackemslashem's new success rate */
+#else    /* hackemslashem's new success rate */
     /* blessed:  Tries all problems, each with chance given below.
      * uncursed: Tries one problem, with chance given below.
      * ENCHANT  +0  +1  +2  +3  +4  +5  +6  +7  +8  +9  +10 +11 +12 or more
@@ -5207,8 +5207,8 @@ deck_of_fate(struct obj *obj)
         case 8: /* The Hermit */
             You_feel("like hiding!");
             tele();
-			incr_itimeout(&HInvis, rn1(500, 500));
-			newsym(u.ux, u.uy);
+            incr_itimeout(&HInvis, rn1(500, 500));
+            newsym(u.ux, u.uy);
             aggravate();
             break;
         case 9: /* The Hanged Man */
@@ -5531,7 +5531,7 @@ set_whetstone(void)
     
 if (!rn2(chance) && (ows->otyp == WHETSTONE)) {
 
-	    /* Remove erosion first, then sharpen dull edges */
+        /* Remove erosion first, then sharpen dull edges */
         int erosion = (int) greatest_erosion(otmp);
 
         if (erosion > 0) {

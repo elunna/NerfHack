@@ -793,7 +793,7 @@ void NetHackQtStatusWindow::updateStats()
         hunger.setIcon(u.uhs ? p_hungry : p_satiated, qhung.toLower());
         hunger.setLabel(qhung, NetHackQtLabelledIcon::NoNum, qt_uhs);
         hunger.ForceResize();
-	++k, hunger.show();
+    ++k, hunger.show();
     }
     long encindx = (long) near_capacity();
     const char *enc = enc_stat[encindx];
@@ -806,7 +806,7 @@ void NetHackQtStatusWindow::updateStats()
         encumber.setIcon(p_encumber[encindx - 1], QString(enc).toLower());
         encumber.setLabel(enc, NetHackQtLabelledIcon::NoNum, encindx);
         encumber.ForceResize();
-	++k, encumber.show();
+    ++k, encumber.show();
     }
 
     if (Stoned) ++k, stoned.show(); else stoned.hide();
@@ -814,19 +814,19 @@ void NetHackQtStatusWindow::updateStats()
     if (Strangled) ++k, strngld.show(); else strngld.hide();
     if (Sick) {
         /* FoodPois or TermIll or both */
-	if (u.usick_type & SICK_VOMITABLE) { /* food poisoning */
-	    ++k, sick_fp.show();
-	} else {
-	    sick_fp.hide();
-	}
-	if (u.usick_type & SICK_NONVOMITABLE) { /* terminally ill */
-	    ++k, sick_il.show();
-	} else {
-	    sick_il.hide();
-	}
+    if (u.usick_type & SICK_VOMITABLE) { /* food poisoning */
+        ++k, sick_fp.show();
     } else {
-	sick_fp.hide();
-	sick_il.hide();
+        sick_fp.hide();
+    }
+    if (u.usick_type & SICK_NONVOMITABLE) { /* terminally ill */
+        ++k, sick_il.show();
+    } else {
+        sick_il.hide();
+    }
+    } else {
+    sick_fp.hide();
+    sick_il.hide();
     }
     if (Stunned) ++k, stunned.show(); else stunned.hide();
     if (Confusion) ++k, confused.show(); else confused.hide();
@@ -855,10 +855,10 @@ void NetHackQtStatusWindow::updateStats()
         vers.hide();
 
     if (Upolyd) {
-	buf = nh_capitalize_words(pmname(&mons[u.umonnum],
+    buf = nh_capitalize_words(pmname(&mons[u.umonnum],
                                   ::flags.female ? FEMALE : MALE));
     } else {
-	buf = rank_of(u.ulevel, svp.pl_character[0], ::flags.female);
+    buf = rank_of(u.ulevel, svp.pl_character[0], ::flags.female);
     }
     QString buf2;
     char buf3[BUFSZ];
@@ -867,7 +867,7 @@ void NetHackQtStatusWindow::updateStats()
     name.setLabel(buf2, NetHackQtLabelledIcon::NoNum, u.ulevel);
 
     if (!describe_level(buf3, 0)) {
-	Sprintf(buf3, "%s, level %d",
+    Sprintf(buf3, "%s, level %d",
                 svd.dungeons[u.uz.dnum].dname, ::depth(&u.uz));
     }
     dlevel.setLabel(buf3);
@@ -1010,60 +1010,60 @@ void NetHackQtStatusWindow::updateStats()
 #endif /* SCORE_ON_BOTL */
 
     if (first_set) {
-	first_set=false;
+    first_set=false;
 
         /*
          * Default compareMode is BiggerIsBetter:  an increased value
          * is an improvement.
          */
-	name.highlightWhenChanging();
+    name.highlightWhenChanging();
         dlevel.highlightWhenChanging();
             dlevel.setCompareMode(NeitherIsBetter);
 
-	str.highlightWhenChanging();
-	dex.highlightWhenChanging();
-	con.highlightWhenChanging();
-	intel.highlightWhenChanging();
-	wis.highlightWhenChanging();
-	cha.highlightWhenChanging();
+    str.highlightWhenChanging();
+    dex.highlightWhenChanging();
+    con.highlightWhenChanging();
+    intel.highlightWhenChanging();
+    wis.highlightWhenChanging();
+    cha.highlightWhenChanging();
 
-	hp.highlightWhenChanging();
-	power.highlightWhenChanging();
+    hp.highlightWhenChanging();
+    power.highlightWhenChanging();
         ac.highlightWhenChanging();
             ac.setCompareMode(SmallerIsBetter);
-	level.highlightWhenChanging();
-	gold.highlightWhenChanging();
+    level.highlightWhenChanging();
+    gold.highlightWhenChanging();
 
         // don't highlight 'time' because it changes almost continuously
         // [if we did highlight it, we wouldn't show increase as 'Better']
         //time.highlightWhenChanging(); time.setCompareMode(NeitherIsBetter);
-	score.highlightWhenChanging();
+    score.highlightWhenChanging();
 
         align.highlightWhenChanging();
             align.setCompareMode(NeitherIsBetter);
 
-	hunger.highlightWhenChanging();
+    hunger.highlightWhenChanging();
             hunger.setCompareMode(SmallerIsBetter);
-	encumber.highlightWhenChanging();
+    encumber.highlightWhenChanging();
             encumber.setCompareMode(SmallerIsBetter);
-	stoned.highlightWhenChanging();
-	slimed.highlightWhenChanging();
-	strngld.highlightWhenChanging();
-	sick_fp.highlightWhenChanging();
-	sick_il.highlightWhenChanging();
-	stunned.highlightWhenChanging();
-	confused.highlightWhenChanging();
-	hallu.highlightWhenChanging();
-	blind.highlightWhenChanging();
-	deaf.highlightWhenChanging();
+    stoned.highlightWhenChanging();
+    slimed.highlightWhenChanging();
+    strngld.highlightWhenChanging();
+    sick_fp.highlightWhenChanging();
+    sick_il.highlightWhenChanging();
+    stunned.highlightWhenChanging();
+    confused.highlightWhenChanging();
+    hallu.highlightWhenChanging();
+    blind.highlightWhenChanging();
+    deaf.highlightWhenChanging();
         // the default behavior is to highlight a newly shown condition
         // as "worse" but that isn't appropriate for 'other' conds;
         // NetHackQtLabelledIcon::show() uses NeitherIsBetter to handle it
-	lev.highlightWhenChanging();
+    lev.highlightWhenChanging();
             lev.setCompareMode(NeitherIsBetter);
-	fly.highlightWhenChanging();
+    fly.highlightWhenChanging();
             fly.setCompareMode(NeitherIsBetter);
-	ride.highlightWhenChanging();
+    ride.highlightWhenChanging();
             ride.setCompareMode(NeitherIsBetter);
         // not a true status condition; doesn't change (unless 'showvers'
         // gets toggled or 'versinfo' is modified) so doesn't get highlighted

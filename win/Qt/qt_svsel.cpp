@@ -117,7 +117,7 @@ int NetHackQtSavedGameSelector::choose()
 {
 #if defined(QWS) // probably safe with Qt 3, too (where show!=exec in QDialog).
     if ( qt_compact_mode )
-	showMaximized();
+    showMaximized();
 #endif
     return exec() - 2;
 }

@@ -133,7 +133,7 @@ des.monster("stalker")
 des.monster("stalker")
 des.monster("stalker")
 
---	"guards" for the central courtyard.
+--    "guards" for the central courtyard.
 des.monster({ id = "samurai", x=30, y=05, peaceful=0 })
 des.monster({ id = "samurai", x=31, y=05, peaceful=0 })
 des.monster({ id = "samurai", x=32, y=05, peaceful=0 })

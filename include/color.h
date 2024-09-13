@@ -8,7 +8,7 @@
 /*
  * The color scheme used is tailored for an IBM PC.  It consists of the
  * standard 8 colors, followed by their bright counterparts.  There are
- * exceptions, these are listed below.	Bright black doesn't mean very
+ * exceptions, these are listed below.    Bright black doesn't mean very
  * much, so it is used as the "default" foreground color of the screen.
  */
 #define CLR_BLACK 0

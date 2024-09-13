@@ -22,7 +22,7 @@ des.map({ halign = "half-left", valign = "center", map = [[
 ]] });
 -- Random places are the 10 niches
 local place = { {05,01},{09,01},{13,01},{03,03},{15,03},
-	   {03,07},{15,07},{05,09},{09,09},{13,09} }
+       {03,07},{15,07},{05,09},{09,09},{13,09} }
 
 des.levregion({ type="branch", region={02,05,02,05} })
 des.ladder("up", 05,07)

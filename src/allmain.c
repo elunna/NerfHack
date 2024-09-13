@@ -222,7 +222,6 @@ moveloop_core(void)
                                    NO_MM_FLAGS);
                 
 #if 0 /* Disabled - this makes ascension too sloggy. */
-                /* Once you have performed the invocation, all hell breaks loose */
                 if (u.uevent.invoked && !rn2(15) && !In_endgame(&u.uz))
                     nasty((struct monst *) 0, TRUE);
 #endif
@@ -261,7 +260,7 @@ moveloop_core(void)
                 ck_greased_rings();
                 
                 /* Foulstones sometimes emit stench:
-                 * This must go before run_regions, otherwise the cloud is ignored */
+                 * must go before run_regions */
                 if ((fstone = carrying(FOULSTONE))) {
                     if (fstone->blessed && !rn2(100)) {
                         if (!Deaf && rn2(3))

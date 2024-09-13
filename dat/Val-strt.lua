@@ -4,10 +4,10 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 --
---	The "start" level for the quest.
+--    The "start" level for the quest.
 --
---	Here you meet your (besieged) class leader, the Norn,
---	and receive your quest assignment.
+--    Here you meet your (besieged) class leader, the Norn,
+--    and receive your quest assignment.
 --
 
 des.level_flags("mazelevel", "noteleport", "hardfloor", "icedpools", "noflip")

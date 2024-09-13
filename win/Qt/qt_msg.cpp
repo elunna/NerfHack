@@ -56,7 +56,7 @@ void NetHackQtMessageWindow::updateFont()
 {
     list->setFont(qt_settings->normalFont());
     if ( map )
-	map->setFont(qt_settings->normalFont());
+    map->setFont(qt_settings->normalFont());
 }
 
 void NetHackQtMessageWindow::Scroll(int dx UNUSED, int dy UNUSED)
@@ -71,7 +71,7 @@ void NetHackQtMessageWindow::Clear()
         NetHackQtMessageWindow::unhighlight_mesgs();
 
     if (map)
-	map->clearMessages();
+    map->clearMessages();
 }
 
 void NetHackQtMessageWindow::ClearMessages()
@@ -83,8 +83,8 @@ void NetHackQtMessageWindow::ClearMessages()
 void NetHackQtMessageWindow::Display(bool block)
 {
     if (changed) {
-	list->repaint();
-	changed=false;
+    list->repaint();
+    changed=false;
     }
     if (block) {
         // we don't care what the response is here
@@ -100,10 +100,10 @@ const char * NetHackQtMessageWindow::GetStr(bool init)
     QListWidgetItem *item = list->item(currgetmsg++);
     if (item) {
         QString str = item->text();
-	if (str.toLatin1().length() < (int) sizeof historybuf) {
+    if (str.toLatin1().length() < (int) sizeof historybuf) {
             return strcpy(historybuf, str.toLatin1().constData());
             //raw_printf("getstr[%d]='%s'", currgetmsg, result);
-	}
+    }
     }
     return NULL;
 }
@@ -116,9 +116,9 @@ void NetHackQtMessageWindow::PutStr(int attr, const QString& text)
     // as a symbol
     QString text2;
     if (text.mid(1, 3) == "   ") {
-	text2 = QChar(cp437(text.at(0).unicode())) + text.mid(1);
+    text2 = QChar(cp437(text.at(0).unicode())) + text.mid(1);
     } else {
-	text2 = text;
+    text2 = text;
     }
 
 #if 0
@@ -163,7 +163,7 @@ void NetHackQtMessageWindow::PutStr(int attr, const QString& text)
 #endif
 
     if (list->count() >= (int) ::iflags.msg_history)
-	delete list->item(0);
+    delete list->item(0);
     list->addItem(text2);
     /* assert( list->count() > 0 ); */
 
@@ -179,7 +179,7 @@ void NetHackQtMessageWindow::PutStr(int attr, const QString& text)
     }
 
     if (map)
-	map->putMessage(attr, text2);
+    map->putMessage(attr, text2);
 }
 
 // append to the last message; usually the user's answer to a prompt

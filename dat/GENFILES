@@ -14,9 +14,9 @@
 #foreach $des (<$dir*.des>){
 #    open IN, "<", $des or warn("Can't open $des: $!");
 #    while(<IN>){
-#	m/^(MAZE|LEVEL):\s*"(.*?)"/ && do {
-#	    print "F $2.lev\n";
-#	};
+#    m/^(MAZE|LEVEL):\s*"(.*?)"/ && do {
+#        print "F $2.lev\n";
+#    };
 #    }
 #    close IN;
 #}

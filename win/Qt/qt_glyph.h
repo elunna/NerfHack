@@ -18,12 +18,12 @@ class NetHackQtGlyphs {
 public:
         bool no_tiles;
 
-	NetHackQtGlyphs();
+    NetHackQtGlyphs();
 
-	int width() const { return size.width(); }
-	int height() const { return size.height(); }
-	void toggleSize();
-	void setSize(int w, int h);
+        int width() const { return size.width(); }
+        int height() const { return size.height(); }
+        void toggleSize();
+        void setSize(int w, int h);
 
         void drawGlyph(QPainter &, int glyph, int tileidx,
                        int pixelx, int pixely,
@@ -37,10 +37,10 @@ public:
         QPixmap reversed_pixmap(int glyphindx, int tileidx);
 
 private:
-	QImage img;
-	QPixmap pm,pm1, pm2;
-	QSize size;
-	int tiles_per_row;
+        QImage img;
+        QPixmap pm,pm1, pm2;
+        QSize size;
+        int tiles_per_row;
         //QTransform *mirrormatrix;
 };
 

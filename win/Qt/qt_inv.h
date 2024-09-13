@@ -15,14 +15,14 @@ enum drawWornFlag { dollNoFlag = 0, dollUnused = 1, dollReverse = 2 };
 
 class NetHackQtInvUsageWindow : public QWidget {
 public:
-	NetHackQtInvUsageWindow(QWidget* parent);
-	virtual ~NetHackQtInvUsageWindow();
-	virtual void paintEvent(QPaintEvent*);
-	virtual QSize sizeHint(void) const;
+        NetHackQtInvUsageWindow(QWidget* parent);
+        virtual ~NetHackQtInvUsageWindow();
+        virtual void paintEvent(QPaintEvent*);
+        virtual QSize sizeHint(void) const;
 
 protected:
         virtual bool event(QEvent *event);
-	virtual void mousePressEvent(QMouseEvent *event);
+        virtual void mousePressEvent(QMouseEvent *event);
 
 private:
         void drawWorn(QPainter &painter, obj *nhobj, int x, int y,

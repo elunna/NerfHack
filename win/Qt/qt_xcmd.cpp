@@ -489,12 +489,12 @@ void NetHackQtExtCmdRequestor::keyPressEvent(QKeyEvent *event)
         prompt->setText("#"); // reset to empty ('#' is always present)
         enableButtons();
     } else if (uc == '\b' || uc == '\177') {
-	if (promptstr != "#")
-	    prompt->setText(promptstr.left(promptstr.size() - 1));
+    if (promptstr != "#")
+        prompt->setText(promptstr.left(promptstr.size() - 1));
         enableButtons();
     } else if ((uc < ' ' && !(uc == '\n' || uc == '\r'))
                || uc > std::max('z', 'Z')) {
-	reject(); // done()
+    reject(); // done()
     } else {
         /*
          * <return> or <space> is necessary if one command is a
@@ -550,9 +550,9 @@ void NetHackQtExtCmdRequestor::keyPressEvent(QKeyEvent *event)
                         break;
                     matchindx = i;
                 }
-	    }
-	}
-	if (matches == 1) {
+        }
+    }
+    if (matches == 1) {
             done(matchindx + 1);
         } else if (checkexact) {
             // <return> or <space> without a pending exact match; cancel
@@ -579,12 +579,12 @@ int NetHackQtExtCmdRequestor::get()
     // Add any keys presently buffered to the prompt
     setResult(xcmdNone);
     while (NetHackQtBind::qt_kbhit() && result() == xcmdNone) {
-	int ch = NetHackQtBind::qt_nhgetch();
-	QKeyEvent event(QEvent::KeyPress, 0, Qt::NoModifier, QChar(ch));
-	keyPressEvent(&event);
+    int ch = NetHackQtBind::qt_nhgetch();
+    QKeyEvent event(QEvent::KeyPress, 0, Qt::NoModifier, QChar(ch));
+    keyPressEvent(&event);
     }
     if (result() == xcmdNone)
-	exec();
+    exec();
 
     int ret = result() - 1;
     return ret;

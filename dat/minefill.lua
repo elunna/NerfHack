@@ -5,10 +5,10 @@
 --
 --
 
---	The "fill" level for the mines.
+--    The "fill" level for the mines.
 --
---	This level is used to fill out any levels not occupied by
---	specific levels.
+--    This level is used to fill out any levels not occupied by
+--    specific levels.
 --
 des.level_init({ style = "solidfill", fg = " " });
 

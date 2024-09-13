@@ -80,11 +80,11 @@ void NetHackQtLabelledIcon::initHighlight()
 void NetHackQtLabelledIcon::setLabel(const QString &t, bool lower)
 {
     if (!label) {
-	label=new QLabel(this);
-	label->setFont(font());
+    label=new QLabel(this);
+    label->setFont(font());
     }
     if (label->text() != t) {
-	label->setText(t);
+    label->setText(t);
         ForceResize();
         if (comp_mode != NoCompare) {
             highlight((comp_mode == NeitherIsBetter) ? hl_changd
@@ -105,9 +105,9 @@ void NetHackQtLabelledIcon::setLabel(const QString& t, long v, long cv,
 {
     QString buf;
     if (v==NoNum) {
-	buf = "";
+    buf = "";
     } else {
-	buf = nh_qsprintf("%ld", v);
+    buf = nh_qsprintf("%ld", v);
     }
     setLabel(t + buf + tail, cv < prev_value);
     prev_value=cv;
@@ -147,7 +147,7 @@ void NetHackQtLabelledIcon::show()
     // Fly, Lev, and Ride are set NeitherIsBetter so that when
     // they appear they won't be classified as worse.
     if (isHidden() && comp_mode != NoCompare)
-	highlight((comp_mode != NeitherIsBetter) ? hl_worse : hl_changd);
+    highlight((comp_mode != NeitherIsBetter) ? hl_worse : hl_changd);
     QWidget::show();
 }
 
@@ -162,8 +162,8 @@ QSize NetHackQtLabelledIcon::sizeHint() const
     iconsize = icon->sizeHint();
     textsize = label->sizeHint();
     return QSize(
-	std::max(iconsize.width(), textsize.width()),
-	iconsize.height() + textsize.height());
+    std::max(iconsize.width(), textsize.width()),
+    iconsize.height() + textsize.height());
 }
 
 QSize NetHackQtLabelledIcon::minimumSizeHint() const
@@ -177,8 +177,8 @@ QSize NetHackQtLabelledIcon::minimumSizeHint() const
     iconsize = icon->minimumSizeHint();
     textsize = label->minimumSizeHint();
     return QSize(
-	std::max(iconsize.width(), textsize.width()),
-	iconsize.height() + textsize.height());
+    std::max(iconsize.width(), textsize.width()),
+    iconsize.height() + textsize.height());
 }
 
 void NetHackQtLabelledIcon::highlightWhenChanging()
@@ -240,10 +240,10 @@ void NetHackQtLabelledIcon::resizeEvent(QResizeEvent*)
     int icoy=(h>height() ? height()-labh-icoh : height()/2-h/2);
     int laby=icoy+icoh;
     if (icon) {
-	icon->setGeometry(0,icoy,width(),icoh);
+    icon->setGeometry(0,icoy,width(),icoh);
     }
     if (label) {
-	label->setGeometry(0,laby,width(),labh);
+    label->setGeometry(0,laby,width(),labh);
     }
 }
 

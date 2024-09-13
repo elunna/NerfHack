@@ -13,7 +13,7 @@
 long getpid(void);
 long
 getpid(){
-	return 0;
+    return 0;
 }
 #endif
 

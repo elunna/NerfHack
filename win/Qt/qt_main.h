@@ -48,18 +48,18 @@ class NetHackQtWindow;
 //
 
 class NetHackQtMainWindow : public KTopLevelWidget {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	NetHackQtMainWindow(NetHackQtKeyBuffer&);
+    NetHackQtMainWindow(NetHackQtKeyBuffer&);
 
-	void AddMessageWindow(NetHackQtMessageWindow* window);
-	NetHackQtMessageWindow * GetMessageWindow();
-	void AddMapWindow(NetHackQtMapWindow2* window);
-	void AddStatusWindow(NetHackQtStatusWindow* window);
-	void RemoveWindow(NetHackQtWindow* window);
-	void updateInventory();
+    void AddMessageWindow(NetHackQtMessageWindow* window);
+    NetHackQtMessageWindow * GetMessageWindow();
+    void AddMapWindow(NetHackQtMapWindow2* window);
+    void AddStatusWindow(NetHackQtStatusWindow* window);
+    void RemoveWindow(NetHackQtWindow* window);
+    void updateInventory();
 
-	void fadeHighlighting(bool before_key);
+    void fadeHighlighting(bool before_key);
 
         void FuncAsCommand(int (*func)(void));
         // this is unconditional in case qt_main.h comes before qt_set.h
@@ -70,52 +70,52 @@ public:
 #endif
 
 public slots:
-	void doMenuItem(QAction *);
-	void doQtSettings(bool);
-	void doAbout(bool);
+    void doMenuItem(QAction *);
+    void doQtSettings(bool);
+    void doAbout(bool);
         void doQuit(bool);
-	//RLC void doGuidebook(bool);
+    //RLC void doGuidebook(bool);
         void doKeys(const char *);
-	void doKeys(const QString&);
+    void doKeys(const QString&);
 
 protected:
-	virtual void resizeEvent(QResizeEvent*);
-	virtual void keyPressEvent(QKeyEvent*);
-	virtual void keyReleaseEvent(QKeyEvent* event);
-	virtual void closeEvent(QCloseEvent*);
+    virtual void resizeEvent(QResizeEvent*);
+    virtual void keyPressEvent(QKeyEvent*);
+    virtual void keyReleaseEvent(QKeyEvent* event);
+    virtual void closeEvent(QCloseEvent*);
 
 private slots:
-	void layout();
-	void raiseMap();
-	void zoomMap();
-	void raiseMessages();
-	void raiseStatus();
+    void layout();
+    void raiseMap();
+    void zoomMap();
+    void raiseMessages();
+    void raiseStatus();
 #ifdef CTRL_V_HACK
         void CtrlV();
 #endif
 
 private:
-	void ShowIfReady();
+    void ShowIfReady();
         void AddToolButton(QToolBar *toolbar, QSignalMapper *sm,
                            const char *name, int (*func)(void), QPixmap xpm);
         static bool ok_for_command();
 
 #ifdef KDE
-	KMenuBar* menubar;
+    KMenuBar* menubar;
 #else
-	QMenuBar* menubar;
+    QMenuBar* menubar;
 #endif
-	NetHackQtMessageWindow* message;
-	NetHackQtMapWindow2* map;
-	NetHackQtStatusWindow* status;
-	NetHackQtInvUsageWindow* invusage;
+    NetHackQtMessageWindow* message;
+    NetHackQtMapWindow2* map;
+    NetHackQtStatusWindow* status;
+    NetHackQtInvUsageWindow* invusage;
 
-	QSplitter *hsplitter;
-	QSplitter *vsplitter;
+    QSplitter *hsplitter;
+    QSplitter *vsplitter;
 
-	NetHackQtKeyBuffer& keysink;
-	QStackedWidget* stack;
-	int dirkey;
+    NetHackQtKeyBuffer& keysink;
+    QStackedWidget* stack;
+    int dirkey;
 };
 
 } // namespace nethack_qt_

@@ -38,9 +38,9 @@ des.map([[
 -- The town is creepy. Therefore, the town is dark.
 des.region(selection.area(01,01,37,18), "unlit")
 des.levregion({ type="stair-up", region={01,03,20,19}, region_islev=1,
-		exclude={00,01,37,17} });
+        exclude={00,01,37,17} });
 des.levregion({ type="stair-down", region={61,03,75,19}, region_islev=1,
-		exclude={00,01,37,17} })
+        exclude={00,01,37,17} })
 
 -- A few fountains.
 des.feature("fountain",05,11)
@@ -65,9 +65,9 @@ des.monster({ id = "skeleton", coord=graveyard:rndcoord(1), peaceful = 0, asleep
 -- a ghoul mage or more skeletons. We'll limit the difficulty to an occasional giant zombie.
 des.monster({ id = "human zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
 if percent(75) then
-	des.monster({ id = "human zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
+    des.monster({ id = "human zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
 else
-	des.monster({ id = "giant zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
+    des.monster({ id = "giant zombie", coord=graveyard:rndcoord(1), peaceful = 0, asleep = 1})
 end
 
 -- Doors

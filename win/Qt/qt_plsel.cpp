@@ -87,37 +87,37 @@ static const char nh_attribution[] = "<br><center><big>NerfHack %1</big>"
 class NhPSListViewItem : public QTableWidgetItem {
 public:
     NhPSListViewItem( QTableWidget* parent UNUSED, const QString& name ) :
-	QTableWidgetItem(name)
+    QTableWidgetItem(name)
     {
     }
 
     void setGlyph(int g, int tileidx)
     {
-	NetHackQtGlyphs& glyphs = qt_settings->glyphs();
-	int gw = glyphs.width();
-	int gh = glyphs.height();
-	QPixmap pm(gw,gh);
-	QPainter p(&pm);
+    NetHackQtGlyphs& glyphs = qt_settings->glyphs();
+    int gw = glyphs.width();
+    int gh = glyphs.height();
+    QPixmap pm(gw,gh);
+    QPainter p(&pm);
         glyphs.drawGlyph(p, g, tileidx, 0, 0, false);
-	p.end();
-	setIcon(QIcon(pm));
-	//RLC setHeight(std::max(pm.height()+1,height()));
+    p.end();
+    setIcon(QIcon(pm));
+    //RLC setHeight(std::max(pm.height()+1,height()));
     }
 
 #if 0 //RLC
     void paintCell( QPainter *p, const QColorGroup &cg,
-		    int column, int width, int alignment )
+            int column, int width, int alignment )
     {
-	if ( isSelectable() ) {
-	    QTableWidgetItem::paintCell( p, cg, column, width, alignment );
-	} else {
-	    QColorGroup disabled(
-		cg.foreground().light(),
-		cg.button().light(),
-		cg.light(), cg.dark(), cg.mid(),
-		Qt::gray, cg.base() );
-	    QTableWidgetItem::paintCell( p, disabled, column, width, alignment );
-	}
+    if ( isSelectable() ) {
+        QTableWidgetItem::paintCell( p, cg, column, width, alignment );
+    } else {
+        QColorGroup disabled(
+        cg.foreground().light(),
+        cg.button().light(),
+        cg.light(), cg.dark(), cg.mid(),
+        Qt::gray, cg.base() );
+        QTableWidgetItem::paintCell( p, disabled, column, width, alignment );
+    }
     }
 #endif
 };
@@ -125,66 +125,66 @@ public:
 class NhPSListViewRole : public NhPSListViewItem {
 public:
     NhPSListViewRole( QTableWidget* parent, int id ) :
-	NhPSListViewItem(parent,
+    NhPSListViewItem(parent,
 #ifdef QT_CHOOSE_RACE_FIRST // Lowerize - looks better
-	    QString(roles[id].name.m).toLower()
+        QString(roles[id].name.m).toLower()
 #else
-	    roles[id].name.m
+        roles[id].name.m
 #endif
-	)
+    )
     {
-	glyph_info gi;
-	int glyph = monnum_to_glyph(roles[id].mnum, MALE);
-	map_glyphinfo(0, 0, glyph, 0, &gi);
-	setGlyph(glyph, gi.gm.tileidx);
+    glyph_info gi;
+    int glyph = monnum_to_glyph(roles[id].mnum, MALE);
+    map_glyphinfo(0, 0, glyph, 0, &gi);
+    setGlyph(glyph, gi.gm.tileidx);
     }
 };
 
 class NhPSListViewRace : public NhPSListViewItem {
 public:
     NhPSListViewRace( QTableWidget* parent, int id ) :
-	NhPSListViewItem(parent,
+    NhPSListViewItem(parent,
 #ifdef QT_CHOOSE_RACE_FIRST // Capitalize - looks better
-	    str_titlecase(races[id].noun)
+        str_titlecase(races[id].noun)
 #else
-	    races[id].noun
+        races[id].noun
 #endif
-	)
+    )
     {
-	glyph_info gi;
-	int glyph = monnum_to_glyph(races[id].mnum, MALE);
-	map_glyphinfo(0, 0, glyph, 0, &gi);
-	setGlyph(glyph, gi.gm.tileidx);
+    glyph_info gi;
+    int glyph = monnum_to_glyph(races[id].mnum, MALE);
+    map_glyphinfo(0, 0, glyph, 0, &gi);
+    setGlyph(glyph, gi.gm.tileidx);
     }
 };
 
 class NhPSListView : public QTableWidget {
 public:
     NhPSListView( QWidget* parent ) :
-	QTableWidget(parent)
+    QTableWidget(parent)
     {
-	setColumnCount(1);
-	verticalHeader()->hide();
+    setColumnCount(1);
+    verticalHeader()->hide();
 #if QT_VERSION >= 0x050000
-	horizontalHeader()->setSectionsClickable(false);
+    horizontalHeader()->setSectionsClickable(false);
 #else
-	horizontalHeader()->setClickable(false);
+    horizontalHeader()->setClickable(false);
 #endif
     }
 
     QSizePolicy sizePolicy() const
     {
-	return QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    return QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     }
 
     QSize minimumSizeHint() const
     {
-	return sizeHint();
+    return sizeHint();
     }
 
     QSize sizeHint() const
     {
-	return QSize(columnWidth(0), QTableWidget::sizeHint().height());
+    return QSize(columnWidth(0), QTableWidget::sizeHint().height());
     }
 };
 
@@ -203,25 +203,25 @@ NetHackQtPlayerSelector::NetHackQtPlayerSelector(
 {
     /*
                0              1              2
-	  + Name --------------------------------------+
-	0 |                                            |
-	  + -------------------------------------------+
-	  + Race ----+   + Role ----+   + Gender ------+
-	  | human    |   | Archeolog|   |  * Male      |
-	1 | elf      |   | Barbarian|   |  * Female    |
-	  | dwarf    |   |          |   +--------------+
-	  | gnome    |   |          |
-	  | orc      |   |          |   + Alignment ---+
-	2 |          |   |  .       |   |  * Lawful    |
-	  |          |   |  .       |   |  * Neutral   |
-	  |          |   |  .       |   |  * Chaotic   |
-	  |          |   |          |   +--------------+
-	3 |          |   |          |   ...stretch...
-	  |          |   |          |
-	4 |          |   | Valkyrie |   [    Random    ]
-	5 |          |   | Wizard   |   [     Play     ]
-	6 |          |   |          |   [     Quit     ]
-	  +----------+   +----------+
+      + Name --------------------------------------+
+    0 |                                            |
+      + -------------------------------------------+
+      + Race ----+   + Role ----+   + Gender ------+
+      | human    |   | Archeolog|   |  * Male      |
+    1 | elf      |   | Barbarian|   |  * Female    |
+      | dwarf    |   |          |   +--------------+
+      | gnome    |   |          |
+      | orc      |   |          |   + Alignment ---+
+    2 |          |   |  .       |   |  * Lawful    |
+      |          |   |  .       |   |  * Neutral   |
+      |          |   |  .       |   |  * Chaotic   |
+      |          |   |          |   +--------------+
+    3 |          |   |          |   ...stretch...
+      |          |   |          |
+    4 |          |   | Valkyrie |   [    Random    ]
+    5 |          |   | Wizard   |   [     Play     ]
+    6 |          |   |          |   [     Quit     ]
+      +----------+   +----------+
      *
      * Both Race and Role entries are actually two-part:  an icon (the map
      *   tile for the corresponding monster) and text (race or role name);
@@ -306,7 +306,7 @@ NetHackQtPlayerSelector::NetHackQtPlayerSelector(
 
     // XXX QListView unsorted goes in rev.
     for (nrole=0; roles[nrole].name.m; nrole++)
-	;
+    ;
     role->setRowCount(nrole);
     for (i = 0; i < nrole; ++i) {
         item = new QTableWidgetItem();
@@ -317,7 +317,7 @@ NetHackQtPlayerSelector::NetHackQtPlayerSelector(
     }
 
     for (nrace=0; races[nrace].noun; nrace++)
-	;
+    ;
     race->setRowCount(nrace);
     for (i = 0; i < nrace; ++i) {
         item = new QTableWidgetItem();
@@ -354,9 +354,9 @@ NetHackQtPlayerSelector::NetHackQtPlayerSelector(
     genderbox->layout()->addWidget(gendlabel);
     gender = new QRadioButton*[ROLE_GENDERS];
     for (i=0; i<ROLE_GENDERS; i++) {
-	gender[i] = new QRadioButton( genders[i].adj, genderbox );
-	genderbox->layout()->addWidget(gender[i]);
-	gendergroup->addButton(gender[i], i);
+    gender[i] = new QRadioButton( genders[i].adj, genderbox );
+    genderbox->layout()->addWidget(gender[i]);
+    gendergroup->addButton(gender[i], i);
     }
     connect(gendergroup, SIGNAL(buttonClicked(int)),
             this, SLOT(selectGender(int)));
@@ -365,9 +365,9 @@ NetHackQtPlayerSelector::NetHackQtPlayerSelector(
     alignbox->layout()->addWidget(alignlabel);
     alignment = new QRadioButton*[ROLE_ALIGNS];
     for (i=0; i<ROLE_ALIGNS; i++) {
-	alignment[i] = new QRadioButton( aligns[i].adj, alignbox );
-	alignbox->layout()->addWidget(alignment[i]);
-	aligngroup->addButton(alignment[i], i);
+    alignment[i] = new QRadioButton( aligns[i].adj, alignbox );
+    alignbox->layout()->addWidget(alignment[i]);
+    aligngroup->addButton(alignment[i], i);
     }
     connect(aligngroup, SIGNAL(buttonClicked(int)),
             this, SLOT(selectAlignment(int)));
@@ -474,17 +474,17 @@ void NetHackQtPlayerSelector::Randomize()
     // Randomize race and role, unless specified in config
     int ro = flags.initrole;
     if (ro == ROLE_NONE || ro == ROLE_RANDOM) {
-	ro = rn2(nrole);
-	if (flags.initrole != ROLE_RANDOM) {
-	    fully_specified_role = false;
-	}
+    ro = rn2(nrole);
+    if (flags.initrole != ROLE_RANDOM) {
+        fully_specified_role = false;
+    }
     }
     int ra = flags.initrace;
     if (ra == ROLE_NONE || ra == ROLE_RANDOM) {
-	ra = rn2(nrace);
-	if (flags.initrace != ROLE_RANDOM) {
-	    fully_specified_role = false;
-	}
+    ra = rn2(nrace);
+    if (flags.initrace != ROLE_RANDOM) {
+        fully_specified_role = false;
+    }
     }
 
     // make sure we have a valid combination, honoring
@@ -493,46 +493,46 @@ void NetHackQtPlayerSelector::Randomize()
 #ifdef QT_CHOOSE_RACE_FIRST
     choose_race_first = true;
     if (flags.initrole >= 0 && flags.initrace < 0) {
-	choose_race_first = false;
+    choose_race_first = false;
     }
 #else
     choose_race_first = false;
     if (flags.initrace >= 0 && flags.initrole < 0) {
-	choose_race_first = true;
+    choose_race_first = true;
     }
 #endif
     while (!validrace(ro,ra)) {
-	if (choose_race_first) {
-	    ro = rn2(nrole);
-	    if (flags.initrole != ROLE_RANDOM) {
-	        fully_specified_role = false;
-	    }
-	} else {
-	    ra = rn2(nrace);
-	    if (flags.initrace != ROLE_RANDOM) {
-	        fully_specified_role = false;
-	    }
-	}
+    if (choose_race_first) {
+        ro = rn2(nrole);
+        if (flags.initrole != ROLE_RANDOM) {
+            fully_specified_role = false;
+        }
+    } else {
+        ra = rn2(nrace);
+        if (flags.initrace != ROLE_RANDOM) {
+            fully_specified_role = false;
+        }
+    }
     }
 
     int g = flags.initgend;
     if (g < 0) {
-	g = rn2(ROLE_GENDERS);
-	fully_specified_role = false;
+    g = rn2(ROLE_GENDERS);
+    fully_specified_role = false;
     }
     while (!validgend(ro,ra,g)) {
-	g = rn2(ROLE_GENDERS);
+    g = rn2(ROLE_GENDERS);
     }
     gender[g]->setChecked(true);
     selectGender(g);
 
     int a = flags.initalign;
     if (a < 0) {
-	a = rn2(ROLE_ALIGNS);
-	fully_specified_role = false;
+    a = rn2(ROLE_ALIGNS);
+    fully_specified_role = false;
     }
     while (!validalign(ro,ra,a)) {
-	a = rn2(ROLE_ALIGNS);
+    a = rn2(ROLE_ALIGNS);
     }
     alignment[a]->setChecked(true);
     selectAlignment(a);
@@ -586,17 +586,17 @@ void NetHackQtPlayerSelector::selectRole(int crow, int ccol,
     QTableWidgetItem *i = role->currentItem();
     QTableWidgetItem *valid = 0;
     for (int j = 0; roles[j].name.m; ++j) {
-	if (!valid && (ra < 0 || validrace(j, ra))) {
+    if (!valid && (ra < 0 || validrace(j, ra))) {
             valid = role->item(j, 0);
             break;
         }
     }
     if (!validrace(role->currentRow(), ra))
-	i = valid;
+    i = valid;
     role->setCurrentItem(i, 0);
     for (int j = 0; roles[j].name.m; ++j) {
-	item = role->item(j, 0);
-	item->setSelected(item == i);
+    item = role->item(j, 0);
+    item->setSelected(item == i);
         /* used to call setFlags here, but setupOthers() -> selectGender()
            (and selectAlignment()) -> populate_roles() takes care of that */
     }
@@ -626,16 +626,16 @@ void NetHackQtPlayerSelector::selectRace(int crow, int ccol,
     QTableWidgetItem *i = race->currentItem();
     QTableWidgetItem *valid = 0;
     for (int j = 0; races[j].noun; ++j) {
-	if (!valid && (ro < 0 || validrace(ro, j))) {
+    if (!valid && (ro < 0 || validrace(ro, j))) {
             valid = race->item(j, 0);
             break;
         }
     }
     if (!validrace(ro, race->currentRow()))
-	i = valid;
+    i = valid;
     for (int j = 0; races[j].noun; ++j) {
-	item = race->item(j, 0);
-	item->setSelected(item == i);
+    item = race->item(j, 0);
+    item->setSelected(item == i);
         /* used to call setFlags here, but setupOthers() -> selectGender()
            (and selectAlignment()) -> populate_races() takes care of that */
     }
@@ -656,32 +656,32 @@ void NetHackQtPlayerSelector::setupOthers()
     int c=0;
     int j;
     for (j=0; j<ROLE_GENDERS; j++) {
-	bool v = validgend(ro,ra,j);
-	if ( gender[j]->isChecked() )
-	    c = j;
-	gender[j]->setEnabled(v);
-	if ( valid<0 && v ) valid = j;
+    bool v = validgend(ro,ra,j);
+    if ( gender[j]->isChecked() )
+        c = j;
+    gender[j]->setEnabled(v);
+    if ( valid<0 && v ) valid = j;
     }
     if ( !validgend(ro,ra,c) )
-	c = valid;
+    c = valid;
     int k;
     for (k=0; k<ROLE_GENDERS; k++) {
-	gender[k]->setChecked(c==k);
+    gender[k]->setChecked(c==k);
     }
     selectGender(c);
 
     valid=-1;
     for (j=0; j<ROLE_ALIGNS; j++) {
-	bool v = validalign(ro,ra,j);
-	if ( alignment[j]->isChecked() )
-	    c = j;
-	alignment[j]->setEnabled(v);
-	if ( valid<0 && v ) valid = j;
+    bool v = validalign(ro,ra,j);
+    if ( alignment[j]->isChecked() )
+        c = j;
+    alignment[j]->setEnabled(v);
+    if ( valid<0 && v ) valid = j;
     }
     if ( !validalign(ro,ra,c) )
-	c = valid;
+    c = valid;
     for (k=0; k<ROLE_ALIGNS; k++) {
-	alignment[k]->setChecked(c==k);
+    alignment[k]->setChecked(c==k);
     }
     selectAlignment(c);
 }
@@ -720,12 +720,12 @@ bool NetHackQtPlayerSelector::Choose()
 
 #if defined(QWS) // probably safe with Qt 3, too (where show!=exec in QDialog).
     if ( qt_compact_mode ) {
-	showMaximized();
+    showMaximized();
     } else
 #endif
     {
-	adjustSize();
-	centerOnMain(this);
+    adjustSize();
+    centerOnMain(this);
     }
 
     if ( exec() ) {
@@ -733,9 +733,9 @@ bool NetHackQtPlayerSelector::Choose()
         flags.initrole = role->currentRow();
         flags.initgend = chosen_gend;
         flags.initalign = chosen_align;
-	return true;
+    return true;
     } else {
-	return false;
+    return false;
     }
 }
 

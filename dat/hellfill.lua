@@ -4,10 +4,10 @@
 --
 --
 
---	The "fill" level for gehennom.
+--    The "fill" level for gehennom.
 --
---	This level is used to fill out any levels not occupied by
---	specific levels.
+--    This level is used to fill out any levels not occupied by
+--    specific levels.
 --
 
 function hellobjects()

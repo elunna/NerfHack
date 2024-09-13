@@ -1223,10 +1223,10 @@ menu_display_page(
         for (count = 0; count < num_lines; count++) {
             tmpstr = curses_break_str(menu->prompt, menu->width, count + 1);
             curses_menu_color_attr(win, curses_menu_promptstyle.color,
-			             curses_menu_promptstyle.attr, ON);
+                         curses_menu_promptstyle.attr, ON);
             mvwprintw(win, count + 1, 1, "%s", tmpstr);
             curses_menu_color_attr(win, curses_menu_promptstyle.color,
-			             curses_menu_promptstyle.attr, OFF);
+                         curses_menu_promptstyle.attr, OFF);
             free(tmpstr);
         }
     }
@@ -1297,12 +1297,12 @@ menu_display_page(
             start_col += 2;
         }
 #endif
-	color = menu_item_ptr->color;
+    color = menu_item_ptr->color;
         if (color == NO_COLOR)
             color = NONE;
-	attr = menu_item_ptr->attr;
-	/* attr is already a curses attr (A_ not ATR_) */
-	if (color != NONE || attr != A_NORMAL)
+    attr = menu_item_ptr->attr;
+    /* attr is already a curses attr (A_ not ATR_) */
+    if (color != NONE || attr != A_NORMAL)
             curses_menu_color_attr(win, color, attr, ON);
 
         num_lines = curses_num_lines(menu_item_ptr->str, entry_cols);

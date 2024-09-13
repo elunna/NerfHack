@@ -103,9 +103,9 @@ bool NetHackQtStringRequestor::Get(char *buffer, int maxchar, int minchar)
 
     if (result()) {
         str_copy(buffer, input.text().toLatin1().constData(), maxchar);
-	return true;
+    return true;
     } else {
-	return false;
+    return false;
     }
 }
 

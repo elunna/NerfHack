@@ -20,7 +20,7 @@ des.map({ halign = "half-left", valign = "center", map = [[
 ]] });
 -- Random places are the 10 niches
 local place = { {03,01},{07,01},{11,01},{01,03},{13,03},
-	   {01,07},{13,07},{03,09},{07,09},{11,09} }
+       {01,07},{13,07},{03,09},{07,09},{11,09} }
 shuffle(place)
 
 des.ladder("up", 11,05)

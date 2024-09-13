@@ -6,10 +6,10 @@
 --
 -- File created 2/01/18 by NullCGT
 --
---	The "start" level for the quest.
+--    The "start" level for the quest.
 --
---	Here you meet your (besieged) class leader, Shaman Karnov
---	and receive your quest assignment.
+--    Here you meet your (besieged) class leader, Shaman Karnov
+--    and receive your quest assignment.
 --
 des.level_init({ style = "solidfill", fg = " " });
 
@@ -100,8 +100,8 @@ des.monster({id="assassin bug",peaceful=0})
 des.monster({id="assassin bug",peaceful=0})
 
 --
---	The "locate" level for the quest.
+--    The "locate" level for the quest.
 --
---	Here you have to find the arena to go
---	further towards your assigned quest.
+--    Here you have to find the arena to go
+--    further towards your assigned quest.
 --

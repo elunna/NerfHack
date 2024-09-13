@@ -18,7 +18,7 @@ BEGIN {
     # }
     if($^O eq "MSWin32"){
         $DS = quotemeta('\\');
-	$PDS = '\\';
+    $PDS = '\\';
     }
     $gitdir = `git rev-parse --git-dir`;
     chomp $gitdir;

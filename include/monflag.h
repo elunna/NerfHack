@@ -174,7 +174,7 @@ enum ms_sounds {
 #define M3_INFRAVISIBLE 0x0200 /* visible by infravision */
 #define M3_DISPLACES    0x0400 /* moves monsters out of its way */
 #define M3_JUMPER       0x0800 /* can jump at the player */
-#define M3_NOTAME	0x1000 /* Cannot be tamed */
+#define M3_NOTAME       0x1000 /* Cannot be tamed */
 #define M3_BERSERK      0x2000 /* extremely indiscriminate in its attacks */
 #define M3_ACCURATE     0x4000 /* gets an accuracy bonus to hit */
 
@@ -193,7 +193,7 @@ enum ms_sounds {
 #define MH_DWARF        0x00000020L
 #define MH_GNOME        0x00000040L
 #define MH_ORC          0x00000080L
-#define MH_VAMPIRE	   0x00000100L
+#define MH_VAMPIRE      0x00000100L
 #define MH_WERE         0x00000200L
 #define MH_GIANT        0x00000400L
 #define MH_UNDEAD       0x00000800L

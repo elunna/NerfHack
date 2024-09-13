@@ -14,30 +14,30 @@ extern uchar keyValue(QKeyEvent *key_event);
 
 class NetHackQtKeyBuffer {
 public:
-	NetHackQtKeyBuffer();
+    NetHackQtKeyBuffer();
 
-	bool Empty() const;
-	bool Full() const;
+    bool Empty() const;
+    bool Full() const;
 
-	void Put(int k, int ascii, uint state);
-	void Put(char a);
-	void Put(const char* str);
-	int GetKey();
-	int GetAscii();
-	Qt::KeyboardModifiers GetState();
+    void Put(int k, int ascii, uint state);
+    void Put(char a);
+    void Put(const char* str);
+    int GetKey();
+    int GetAscii();
+    Qt::KeyboardModifiers GetState();
 
-	int TopKey() const;
-	int TopAscii() const;
-	Qt::KeyboardModifiers TopState() const;
+    int TopKey() const;
+    int TopAscii() const;
+    Qt::KeyboardModifiers TopState() const;
 
         void Drain();
 
 private:
-	enum { maxkey=64 };
-	int key[maxkey];
-	int ascii[maxkey];
-	Qt::KeyboardModifiers state[maxkey];
-	int in,out;
+    enum { maxkey=64 };
+    int key[maxkey];
+    int ascii[maxkey];
+    Qt::KeyboardModifiers state[maxkey];
+    int in,out;
 };
 
 } // namespace nethack_qt_

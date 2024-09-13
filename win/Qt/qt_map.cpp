@@ -184,14 +184,14 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
     uint32 framecolor;
 
     if (Is_rogue_level(&u.uz) || iflags.wc_ascii_map) {
-	// You enter a VERY primitive world!
+    // You enter a VERY primitive world!
 
-	painter.setClipRect( event->rect() ); // (normally we don't clip)
-	painter.fillRect( event->rect(), Qt::black );
+    painter.setClipRect( event->rect() ); // (normally we don't clip)
+    painter.fillRect( event->rect(), Qt::black );
 
-	if (!rogue_font)
+    if (!rogue_font)
             SetupTextmapFont(painter);
-	painter.setFont(*rogue_font);
+    painter.setFont(*rogue_font);
 
         for (int j = garea.top(); j <= garea.bottom(); j++) {
             for (int i = garea.left(); i <= garea.right(); i++) {
@@ -261,15 +261,15 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
                                     qt_settings->glyphs().width() - 1,
                                     qt_settings->glyphs().height() - 1);
                 }
-	    }
-	}
+        }
+    }
     }
 
     if (garea.contains(cursor)) {
-	if (Is_rogue_level(&u.uz)) {
-	    painter.setPen( Qt::white );
-	} else {
-	    int hp = !Upolyd ? u.uhp : u.mh,
+    if (Is_rogue_level(&u.uz)) {
+        painter.setPen( Qt::white );
+    } else {
+        int hp = !Upolyd ? u.uhp : u.mh,
                 hpmax = !Upolyd ? u.uhpmax :  u.mhmax,
                 hp100 = hpmax ? (hp * 100 / hpmax) : 100;
 
@@ -285,19 +285,19 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
                 painter.setPen(Qt::yellow);
             else
                 painter.setPen(Qt::white);
-	}
+    }
 
-	painter.drawRect(cursor.x() * gW, cursor.y() * gH, gW - 1, gH - 1);
+    painter.drawRect(cursor.x() * gW, cursor.y() * gH, gW - 1, gH - 1);
     }
 
 #if 0
     if (area.intersects(messages_rect)) {
-	painter.setPen(Qt::black);
+    painter.setPen(Qt::black);
         painter.drawText(viewport.contentsX() + 1, viewport.contentsY() + 1,
                          viewport.width(), 0,
                          (Qt::TextWordWrap | Qt::AlignTop
                           | Qt::AlignLeft | Qt::TextDontClip), messages);
-	painter.setPen(Qt::white);
+    painter.setPen(Qt::white);
         painter.drawText(viewport.contentsX(), viewport.contentsY(),
                          viewport.width(), 0,
                          (Qt::TextWordWrap | Qt::AlignTop
@@ -312,14 +312,14 @@ bool NetHackQtMapViewport::DrawWalls(QPainter& painter, int x, int y,
                                      int w, int h, unsigned short ch)
 {
     enum wallbits {
-	w_left      = 0x01,
-	w_right     = 0x02,
-	w_up        = 0x04,
-	w_down      = 0x08,
-	w_sq_top    = 0x10,
-	w_sq_bottom = 0x20,
-	w_sq_left   = 0x40,
-	w_sq_right  = 0x80
+    w_left      = 0x01,
+    w_right     = 0x02,
+    w_up        = 0x04,
+    w_down      = 0x08,
+    w_sq_top    = 0x10,
+    w_sq_bottom = 0x20,
+    w_sq_left   = 0x40,
+    w_sq_right  = 0x80
     };
     unsigned linewidth;
     unsigned walls;
@@ -333,156 +333,156 @@ bool NetHackQtMapViewport::DrawWalls(QPainter& painter, int x, int y,
     walls = 0;
     switch (ch) {
     case 0x2500: // box drawings light horizontal
-	walls = w_left | w_right;
-	break;
+    walls = w_left | w_right;
+    break;
     case 0x2502: // box drawings light vertical
-	walls = w_up | w_down;
-	break;
+    walls = w_up | w_down;
+    break;
     case 0x250C: // box drawings light down and right
-	walls = w_down | w_right;
-	break;
+    walls = w_down | w_right;
+    break;
     case 0x2510: // box drawings light down and left
-	walls = w_down | w_left;
-	break;
+    walls = w_down | w_left;
+    break;
     case 0x2514: // box drawings light up and right
-	walls = w_up | w_right;
-	break;
+    walls = w_up | w_right;
+    break;
     case 0x2518: // box drawings light up and left
-	walls = w_up | w_left;
-	break;
+    walls = w_up | w_left;
+    break;
     case 0x251C: // box drawings light vertical and right
-	walls = w_up | w_down | w_right;
-	break;
+    walls = w_up | w_down | w_right;
+    break;
     case 0x2524: // box drawings light vertical and left
-	walls = w_up | w_down | w_left;
-	break;
+    walls = w_up | w_down | w_left;
+    break;
     case 0x252C: // box drawings light down and horizontal
-	walls = w_down | w_left | w_right;
-	break;
+    walls = w_down | w_left | w_right;
+    break;
     case 0x2534: // box drawings light up and horizontal
-	walls = w_up | w_left | w_right;
-	break;
+    walls = w_up | w_left | w_right;
+    break;
     case 0x253C: // box drawings light vertical and horizontal
-	walls = w_up | w_down | w_left | w_right;
-	break;
+    walls = w_up | w_down | w_left | w_right;
+    break;
     }
 
     if (walls != 0) {
-	x1 = x + w / 2;
-	switch (walls & (w_up | w_down)) {
-	case w_up:
-	    painter.drawLine(x1, y, x1, y + h / 2);
-	    break;
-	case w_down:
-	    painter.drawLine(x1, y + h / 2, x1, y + h - 1);
-	    break;
-	case w_up | w_down:
-	    painter.drawLine(x1, y, x1, y + h - 1);
-	    break;
-	}
+    x1 = x + w / 2;
+    switch (walls & (w_up | w_down)) {
+    case w_up:
+        painter.drawLine(x1, y, x1, y + h / 2);
+        break;
+    case w_down:
+        painter.drawLine(x1, y + h / 2, x1, y + h - 1);
+        break;
+    case w_up | w_down:
+        painter.drawLine(x1, y, x1, y + h - 1);
+        break;
+    }
 
-	y1 = y + h / 2;
-	switch (walls & (w_left | w_right)) {
-	case w_left:
-	    painter.drawLine(x, y1, x + w / 2, y1);
-	    break;
-	case w_right:
-	    painter.drawLine(x + w / 2, y1, x + w - 1, y1);
-	    break;
-	case w_left | w_right:
-	    painter.drawLine(x, y1, x + w - 1, y1);
-	    break;
-	}
+    y1 = y + h / 2;
+    switch (walls & (w_left | w_right)) {
+    case w_left:
+        painter.drawLine(x, y1, x + w / 2, y1);
+        break;
+    case w_right:
+        painter.drawLine(x + w / 2, y1, x + w - 1, y1);
+        break;
+    case w_left | w_right:
+        painter.drawLine(x, y1, x + w - 1, y1);
+        break;
+    }
 
-	return true;
+    return true;
     }
 
     // Double walls
     walls = 0;
     switch (ch) {
     case 0x2550: // box drawings double horizontal
-	walls = w_left | w_right | w_sq_top | w_sq_bottom;
-	break;
+    walls = w_left | w_right | w_sq_top | w_sq_bottom;
+    break;
     case 0x2551: // box drawings double vertical
-	walls = w_up | w_down | w_sq_left | w_sq_right;
-	break;
+    walls = w_up | w_down | w_sq_left | w_sq_right;
+    break;
     case 0x2554: // box drawings double down and right
-	walls = w_down | w_right | w_sq_top | w_sq_left;
-	break;
+    walls = w_down | w_right | w_sq_top | w_sq_left;
+    break;
     case 0x2557: // box drawings double down and left
-	walls = w_down | w_left | w_sq_top | w_sq_right;
-	break;
+    walls = w_down | w_left | w_sq_top | w_sq_right;
+    break;
     case 0x255A: // box drawings double up and right
-	walls = w_up | w_right | w_sq_bottom | w_sq_left;
-	break;
+    walls = w_up | w_right | w_sq_bottom | w_sq_left;
+    break;
     case 0x255D: // box drawings double up and left
-	walls = w_up | w_left | w_sq_bottom | w_sq_right;
-	break;
+    walls = w_up | w_left | w_sq_bottom | w_sq_right;
+    break;
     case 0x2560: // box drawings double vertical and right
-	walls = w_up | w_down | w_right | w_sq_left;
-	break;
+    walls = w_up | w_down | w_right | w_sq_left;
+    break;
     case 0x2563: // box drawings double vertical and left
-	walls = w_up | w_down | w_left | w_sq_right;
-	break;
+    walls = w_up | w_down | w_left | w_sq_right;
+    break;
     case 0x2566: // box drawings double down and horizontal
-	walls = w_down | w_left | w_right | w_sq_top;
-	break;
+    walls = w_down | w_left | w_right | w_sq_top;
+    break;
     case 0x2569: // box drawings double up and horizontal
-	walls = w_up | w_left | w_right | w_sq_bottom;
-	break;
+    walls = w_up | w_left | w_right | w_sq_bottom;
+    break;
     case 0x256C: // box drawings double vertical and horizontal
-	walls = w_up | w_down | w_left | w_right;
-	break;
+    walls = w_up | w_down | w_left | w_right;
+    break;
     }
 
     if (walls != 0) {
-	x1 = x + w / 2 - linewidth;
-	x2 = x + w / 2 + linewidth;
-	x3 = x + w - 1;
-	y1 = y + h / 2 - linewidth;
-	y2 = y + h / 2 + linewidth;
-	y3 = y + h - 1;
-	if (walls & w_up) {
-	    painter.drawLine(x1, y, x1, y1);
-	    painter.drawLine(x2, y, x2, y1);
-	}
-	if (walls & w_down) {
-	    painter.drawLine(x1, y2, x1, y3);
-	    painter.drawLine(x2, y2, x2, y3);
-	}
-	if (walls & w_left) {
-	    painter.drawLine(x, y1, x1, y1);
-	    painter.drawLine(x, y2, x1, y2);
-	}
-	if (walls & w_right) {
-	    painter.drawLine(x2, y1, x3, y1);
-	    painter.drawLine(x2, y2, x3, y2);
-	}
-	if (walls & w_sq_top) {
-	    painter.drawLine(x1, y1, x2, y1);
-	}
-	if (walls & w_sq_bottom) {
-	    painter.drawLine(x1, y2, x2, y2);
-	}
-	if (walls & w_sq_left) {
-	    painter.drawLine(x1, y1, x1, y2);
-	}
-	if (walls & w_sq_right) {
-	    painter.drawLine(x2, y1, x2, y2);
-	}
+    x1 = x + w / 2 - linewidth;
+    x2 = x + w / 2 + linewidth;
+    x3 = x + w - 1;
+    y1 = y + h / 2 - linewidth;
+    y2 = y + h / 2 + linewidth;
+    y3 = y + h - 1;
+    if (walls & w_up) {
+        painter.drawLine(x1, y, x1, y1);
+        painter.drawLine(x2, y, x2, y1);
+    }
+    if (walls & w_down) {
+        painter.drawLine(x1, y2, x1, y3);
+        painter.drawLine(x2, y2, x2, y3);
+    }
+    if (walls & w_left) {
+        painter.drawLine(x, y1, x1, y1);
+        painter.drawLine(x, y2, x1, y2);
+    }
+    if (walls & w_right) {
+        painter.drawLine(x2, y1, x3, y1);
+        painter.drawLine(x2, y2, x3, y2);
+    }
+    if (walls & w_sq_top) {
+        painter.drawLine(x1, y1, x2, y1);
+    }
+    if (walls & w_sq_bottom) {
+        painter.drawLine(x1, y2, x2, y2);
+    }
+    if (walls & w_sq_left) {
+        painter.drawLine(x1, y1, x1, y2);
+    }
+    if (walls & w_sq_right) {
+        painter.drawLine(x2, y1, x2, y2);
+    }
 
-	return true;
+    return true;
     }
 
     // Solid blocks
     if (0x2591 <= ch && ch <= 0x2593) {
-	unsigned shade = ch - 0x2590;
-	QColor rgb(painter.pen().color());
+    unsigned shade = ch - 0x2590;
+    QColor rgb(painter.pen().color());
         QColor rgb2(rgb.red() * shade / 4,
                     rgb.green() * shade / 4,
                     rgb.blue() * shade / 4);
-	painter.fillRect(x, y, w, h, rgb2);
-	return true;
+    painter.fillRect(x, y, w, h, rgb2);
+    return true;
     }
 
     return false;
@@ -554,14 +554,14 @@ void NetHackQtMapViewport::Display(bool block)
         gH = qt_settings->glyphs().height();
 
     for (int i = 0; i < change.clusters(); i++) {
-	const QRect& chg = change[i];
-	repaint(chg.x() * gW, chg.y() * gH,
+    const QRect& chg = change[i];
+    repaint(chg.x() * gW, chg.y() * gH,
                 chg.width() * gW, chg.height() * gH);
     }
     change.clear();
 
     if (block) {
-	yn_function("Press a key when done viewing", NULL, '\0', TRUE);
+    yn_function("Press a key when done viewing", NULL, '\0', TRUE);
     }
 }
 
@@ -649,7 +649,7 @@ void NetHackQtMapWindow2::clearMessages()
 void NetHackQtMapWindow2::putMessage(int attr UNUSED, const QString& text)
 {
     if (!messages.isEmpty())
-	messages += "\n";
+    messages += "\n";
     messages += QString(text).replace(QChar(0x200B), "");
 #if 0
     QFontMetrics fm = fontMetrics();
@@ -737,7 +737,7 @@ NetHackQtMapWindow::NetHackQtMapWindow(NetHackQtClickBuffer& click_sink) :
 
     connect(qt_settings,SIGNAL(tilesChanged()),this,SLOT(updateTiles()));
     connect(&viewport, SIGNAL(contentsMoving(int,int)), this,
-		SLOT(moveMessages(int,int)));
+        SLOT(moveMessages(int,int)));
 
     updateTiles();
     //setFocusPolicy(Qt::StrongFocus);
@@ -761,7 +761,7 @@ void NetHackQtMapWindow::clearMessages()
 void NetHackQtMapWindow::putMessage(int attr, const QString& text)
 {
     if ( !messages.isEmpty() )
-	messages += "\n";
+    messages += "\n";
     messages += QString(text).replace(QChar(0x200B), "");
     QFontMetrics fm = fontMetrics();
     messages_rect = fm.boundingRect(viewport.contentsX(), viewport.contentsY(),
@@ -786,8 +786,8 @@ void NetHackQtMapWindow::updateTiles()
     viewport.horizontalScrollBar()->setPageStep(gw);
     /*
     viewport.setMaximumSize(
-	gw*COLNO + viewport.verticalScrollBar()->width(),
-	gh*ROWNO + viewport.horizontalScrollBar()->height()
+    gw*COLNO + viewport.verticalScrollBar()->width(),
+    gh*ROWNO + viewport.horizontalScrollBar()->height()
     );
     */
     viewport.updateScrollBars();
@@ -815,12 +815,12 @@ QWidget* NetHackQtMapWindow::Widget()
 void NetHackQtMapWindow::Scroll(int dx, int dy)
 {
     if (viewport.horizontalScrollBar()->isVisible()) {
-	while (dx<0) { viewport.horizontalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepSub); dx++; }
-	while (dx>0) { viewport.horizontalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepAdd); dx--; }
+    while (dx<0) { viewport.horizontalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepSub); dx++; }
+    while (dx>0) { viewport.horizontalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepAdd); dx--; }
     }
     if (viewport.verticalScrollBar()->isVisible()) {
-	while (dy<0) { viewport.verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepSub); dy++; }
-	while (dy>0) { viewport.verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepAdd); dy--; }
+    while (dy<0) { viewport.verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepSub); dy++; }
+    while (dy>0) { viewport.verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepAdd); dy--; }
     }
 }
 
@@ -857,9 +857,9 @@ void NetHackQtMapWindow::clickCursor()
 void NetHackQtMapWindow::mousePressEvent(QMouseEvent* event)
 {
     clicksink.Put(
-	event->pos().x()/qt_settings->glyphs().width(),
-	event->pos().y()/qt_settings->glyphs().height(),
-	event->button()==Qt::LeftButton ? CLICK_1 : CLICK_2
+    event->pos().x()/qt_settings->glyphs().width(),
+    event->pos().y()/qt_settings->glyphs().height(),
+    event->button()==Qt::LeftButton ? CLICK_1 : CLICK_2
     );
     qApp->exit();
 }
@@ -869,10 +869,10 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
     QRect area=event->rect();
     QRect garea;
     garea.setCoords(
-	std::max(0,area.left()/qt_settings->glyphs().width()),
-	std::max(0,area.top()/qt_settings->glyphs().height()),
-	std::min(COLNO-1,area.right()/qt_settings->glyphs().width()),
-	std::min(ROWNO-1,area.bottom()/qt_settings->glyphs().height())
+    std::max(0,area.left()/qt_settings->glyphs().width()),
+    std::max(0,area.top()/qt_settings->glyphs().height()),
+    std::min(COLNO-1,area.right()/qt_settings->glyphs().width()),
+    std::min(ROWNO-1,area.bottom()/qt_settings->glyphs().height())
     );
 
     QPainter painter;
@@ -880,42 +880,42 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
     painter.begin(this);
 
     if (is_rogue_level(&u.uz) || iflags.wc_ascii_map) {
-	// You enter a VERY primitive world!
+    // You enter a VERY primitive world!
 
-	painter.setClipRect( event->rect() ); // (normally we don't clip)
-	painter.fillRect( event->rect(), Qt::black );
+    painter.setClipRect( event->rect() ); // (normally we don't clip)
+    painter.fillRect( event->rect(), Qt::black );
 
-	if ( !rogue_font ) {
-	    // Find font...
-	    int pts = 5;
-	    QString fontfamily = iflags.wc_font_map
-		? iflags.wc_font_map : "Courier";
-	    bool bold = false;
-	    if ( fontfamily.right(5).toLower() == "-bold" ) {
-		fontfamily.truncate(fontfamily.length()-5);
-		bold = true;
-	    }
-	    while ( pts < 32 ) {
-		QFont f(fontfamily, pts, bold ? QFont::Bold : QFont::Normal);
-		painter.setFont(QFont(fontfamily, pts));
-		QFontMetrics fm = painter.fontMetrics();
-		if ( fm.width("M") > qt_settings->glyphs().width() )
-		    break;
-		if ( fm.height() > qt_settings->glyphs().height() )
-		    break;
-		pts++;
-	    }
-	    rogue_font = new QFont(fontfamily,pts-1);
-	}
-	painter.setFont(*rogue_font);
+    if ( !rogue_font ) {
+        // Find font...
+        int pts = 5;
+        QString fontfamily = iflags.wc_font_map
+        ? iflags.wc_font_map : "Courier";
+        bool bold = false;
+        if ( fontfamily.right(5).toLower() == "-bold" ) {
+        fontfamily.truncate(fontfamily.length()-5);
+        bold = true;
+        }
+        while ( pts < 32 ) {
+        QFont f(fontfamily, pts, bold ? QFont::Bold : QFont::Normal);
+        painter.setFont(QFont(fontfamily, pts));
+        QFontMetrics fm = painter.fontMetrics();
+        if ( fm.width("M") > qt_settings->glyphs().width() )
+            break;
+        if ( fm.height() > qt_settings->glyphs().height() )
+            break;
+        pts++;
+        }
+        rogue_font = new QFont(fontfamily,pts-1);
+    }
+    painter.setFont(*rogue_font);
 
-	for (int j=garea.top(); j<=garea.bottom(); j++) {
-	    for (int i=garea.left(); i<=garea.right(); i++) {
-		unsigned short g=Glyph(i,j);
-		uint32 color = Glyphcolor(i,j);
+    for (int j=garea.top(); j<=garea.bottom(); j++) {
+        for (int i=garea.left(); i<=garea.right(); i++) {
+        unsigned short g=Glyph(i,j);
+        uint32 color = Glyphcolor(i,j);
                 uint32 framecolor = GlyphFramecolor(i,j);
-		char32_t ch = Glyphttychar(i,j);
-		unsigned special = Glyphflags(i,j);
+        char32_t ch = Glyphttychar(i,j);
+        unsigned special = Glyphflags(i,j);
 
                 if (framecolor != NO_COLOR) {
                     painter.fillRect(i*qt_settings->glyphs().width(),
@@ -924,16 +924,16 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
                                      qt_settings->glyphs().height()-1,
                                      nhcolor_to_pen(framecolor).color());
                 }               
-		painter.setPen( Qt::green );
-		painter.setPen( nhcolor_to_pen(color) );
-		painter.drawText(
-		    i*qt_settings->glyphs().width(),
-		    j*qt_settings->glyphs().height(),
-		    qt_settings->glyphs().width(),
-		    qt_settings->glyphs().height(),
-		    Qt::AlignCenter,
-		    QString(QChar(ch)).left(1)
-		);
+        painter.setPen( Qt::green );
+        painter.setPen( nhcolor_to_pen(color) );
+        painter.drawText(
+            i*qt_settings->glyphs().width(),
+            j*qt_settings->glyphs().height(),
+            qt_settings->glyphs().width(),
+            qt_settings->glyphs().height(),
+            Qt::AlignCenter,
+            QString(QChar(ch)).left(1)
+        );
                 if ((special & MG_PET) != 0 && ::iflags.hilite_pet) {
                     painter.drawPixmap(QPoint(i*qt_settings->glyphs().width(),
                                              j*qt_settings->glyphs().height()),
@@ -956,11 +956,11 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
 
         painter.setFont(font());
     } else {
-	for (int j=garea.top(); j<=garea.bottom(); j++) {
-	    for (int i=garea.left(); i<=garea.right(); i++) {
-		unsigned short g=Glyph(i,j);
-		unsigned special = Glyphflags(i,j);
-		unsigned short tileidx = Glyphtileidx(i,j);
+    for (int j=garea.top(); j<=garea.bottom(); j++) {
+        for (int i=garea.left(); i<=garea.right(); i++) {
+        unsigned short g=Glyph(i,j);
+        unsigned special = Glyphflags(i,j);
+        unsigned short tileidx = Glyphtileidx(i,j);
                 uint32 framecolor = GlyphFramecolor(i,j);
 
                 qt_settings->glyphs().drawCell(painter, g, tileidx, i, j);
@@ -981,20 +981,20 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
                                      qt_settings->glyphs().width()-1,
                                      qt_settings->glyphs().height()-1);
                 }
-	    }
-	}
+        }
+    }
     }
 
     if (garea.contains(cursor)) {
-	if (Is_rogue_level(&u.uz)) {
-	    painter.setPen( Qt::white );
-	} else {
-	    int hp100;
-	    if (Upolyd) {
-		hp100=u.mhmax ? u.mh*100/u.mhmax : 100;
-	    } else {
-		hp100=u.uhpmax ? u.uhp*100/u.uhpmax : 100;
-	    }
+    if (Is_rogue_level(&u.uz)) {
+        painter.setPen( Qt::white );
+    } else {
+        int hp100;
+        if (Upolyd) {
+        hp100=u.mhmax ? u.mh*100/u.mhmax : 100;
+        } else {
+        hp100=u.uhpmax ? u.uhp*100/u.uhpmax : 100;
+        }
 
             if (hp100 > 75)
                 painter.setPen(Qt::white);
@@ -1006,7 +1006,7 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
                 painter.setPen(Qt::red);
             else
                 painter.setPen(Qt::magenta);
-	}
+    }
 
         painter.drawRect(cursor.x() * qt_settings->glyphs().width(),
                          cursor.y() * qt_settings->glyphs().height(),
@@ -1015,12 +1015,12 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
     }
 
     if (area.intersects(messages_rect)) {
-	painter.setPen(Qt::black);
+    painter.setPen(Qt::black);
         painter.drawText(viewport.contentsX() + 1, viewport.contentsY() + 1,
                          viewport.width(), 0,
                          (Qt::TextWordWrap | Qt::AlignTop
                           | Qt::AlignLeft | Qt::TextDontClip), messages);
-	painter.setPen(Qt::white);
+    painter.setPen(Qt::white);
         painter.drawText(viewport.contentsX(), viewport.contentsY(),
                          viewport.width(), 0,
                          (Qt::TextWordWrap | Qt::AlignTop
@@ -1033,19 +1033,19 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
 void NetHackQtMapWindow::Display(bool block)
 {
     for (int i=0; i<change.clusters(); i++) {
-	const QRect& ch=change[i];
-	repaint(
-	    ch.x()*qt_settings->glyphs().width(),
-	    ch.y()*qt_settings->glyphs().height(),
-	    ch.width()*qt_settings->glyphs().width(),
-	    ch.height()*qt_settings->glyphs().height()
-	);
+    const QRect& ch=change[i];
+    repaint(
+        ch.x()*qt_settings->glyphs().width(),
+        ch.y()*qt_settings->glyphs().height(),
+        ch.width()*qt_settings->glyphs().width(),
+        ch.height()*qt_settings->glyphs().height()
+    );
     }
 
     change.clear();
 
     if (block) {
-	yn_function("Press a key when done viewing",0,'\0');
+    yn_function("Press a key when done viewing",0,'\0');
     }
 }
 

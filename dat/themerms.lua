@@ -354,8 +354,8 @@ themerooms = {
       des.room({ type = "themed", w = 5 + nh.rn2(3)*2, h = 5 + nh.rn2(3)*2,
                  contents = function(rm)
                     des.room({ type = "themed",
-			       x = (rm.width - 1) / 2, y = (rm.height - 1) / 2,
-			       w = 1, h = 1, joined = false,
+                   x = (rm.width - 1) / 2, y = (rm.height - 1) / 2,
+                   w = 1, h = 1, joined = false,
                                contents = function()
                                   if (percent(50)) then
                                      local mons = { "M", "V", "L", "Z" };
@@ -382,7 +382,7 @@ themerooms = {
                     local feature = { "C", "L", "I", "P", "T" };
                     shuffle(feature);
                     des.terrain((rm.width - 1) / 2, (rm.height - 1) / 2,
-				feature[1]);
+                feature[1]);
                  end
       });
    end,
@@ -682,11 +682,11 @@ xx|.....|xx
      local box
      if itmcls[ "material" ] == 19 then                         -- GLASS==19
          -- item is made of glass so explicitly force chest to be unlocked
-	 box = des.object({ id = "chest", coord = chest_spots[1],
+     box = des.object({ id = "chest", coord = chest_spots[1],
                             olocked = "no" });
      else
          -- item isn't made of glass; accept random locked/unlocked state
-	 box = des.object({ id = "chest", coord = chest_spots[1] });
+     box = des.object({ id = "chest", coord = chest_spots[1] });
      end;
      box:addcontent(itm);
 

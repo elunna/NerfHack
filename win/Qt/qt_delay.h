@@ -11,14 +11,14 @@ namespace nethack_qt_ {
 
 class NetHackQtDelay : QObject {
 private:
-	int msec;
+    int msec;
     int m_timer;
     QEventLoop m_loop;
 
 public:
-	NetHackQtDelay(int ms);
-	void wait();
-	virtual void timerEvent(QTimerEvent* timer);
+    NetHackQtDelay(int ms);
+    void wait();
+    virtual void timerEvent(QTimerEvent* timer);
 };
 
 } // namespace nethack_qt_

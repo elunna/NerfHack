@@ -17,9 +17,9 @@ size_t str_copy(char *dest, const char *src, size_t max)
     size_t len = 0;
     if (max != 0) {
         len = strlen(src);
-	if (len > max - 1) {
-	    len = max - 1;
-	}
+    if (len > max - 1) {
+        len = max - 1;
+    }
         memcpy(dest, src, len);
         dest[len] = '\0';
     }
@@ -37,7 +37,7 @@ QString nh_capitalize_words(const QString& str)
 {
     QStringList words = str.split(" ");
     for (size_t i = 0; i < (size_t) words.size(); ++i) {
-	words[i] = str_titlecase(words[i]);
+    words[i] = str_titlecase(words[i]);
     }
     return words.join(" ");
 }

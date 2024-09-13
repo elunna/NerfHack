@@ -118,24 +118,24 @@ NetHackQtSettings::NetHackQtSettings() :
 
     // Tile/font sizes read from .nerfhackrc
     if (qt_tilewidth != NULL) {
-	tilewidth.setValue(atoi(qt_tilewidth));
-	free(qt_tilewidth);
+    tilewidth.setValue(atoi(qt_tilewidth));
+    free(qt_tilewidth);
         qt_tilewidth = NULL;
     }
     if (qt_tileheight != NULL) {
-	tileheight.setValue(atoi(qt_tileheight));
-	free(qt_tileheight);
+    tileheight.setValue(atoi(qt_tileheight));
+    free(qt_tileheight);
         qt_tileheight = NULL;
     }
     if (qt_fontsize != NULL) {
-	switch (tolower(qt_fontsize[0])) {
-	  case 'h': default_fontsize = 0; break;
-	  case 'l': default_fontsize = 1; break;
-	  case 'm': default_fontsize = 2; break;
-	  case 's': default_fontsize = 3; break;
-	  case 't': default_fontsize = 4; break;
-	}
-	free(qt_fontsize);
+    switch (tolower(qt_fontsize[0])) {
+      case 'h': default_fontsize = 0; break;
+      case 'l': default_fontsize = 1; break;
+      case 'm': default_fontsize = 2; break;
+      case 's': default_fontsize = 3; break;
+      case 't': default_fontsize = 4; break;
+    }
+    free(qt_fontsize);
         qt_fontsize = NULL;
     }
 
@@ -254,13 +254,13 @@ void NetHackQtSettings::setGlyphSize(bool which UNUSED)
 {
     QSize n = QSize(tilewidth.value(),tileheight.value());
     if ( othersize.isValid() ) {
-	tilewidth.blockSignals(true);
-	tileheight.blockSignals(true);
-	tilewidth.setValue(othersize.width());
-	tileheight.setValue(othersize.height());
-	tileheight.blockSignals(false);
-	tilewidth.blockSignals(false);
-	resizeTiles();
+    tilewidth.blockSignals(true);
+    tileheight.blockSignals(true);
+    tilewidth.setValue(othersize.width());
+    tileheight.setValue(othersize.height());
+    tileheight.blockSignals(false);
+    tilewidth.blockSignals(false);
+    resizeTiles();
     }
     othersize = n;
 }

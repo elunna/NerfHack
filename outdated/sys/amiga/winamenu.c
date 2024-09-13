@@ -480,7 +480,7 @@ menu_item **retmip;
     /* Make sure there are no selections left over from last time. */
 /* XXX potential problem for preselection if this is really needed */
   for( amip = cw->menu.items; amip; amip = amip->next )
-	amip->selected = 0;
+    amip->selected = 0;
 #endif
 
     DisplayData(win, topidx);

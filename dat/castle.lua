@@ -5,14 +5,14 @@
 --
 -- This is the stronghold level :
 -- there are several ways to enter it :
---	- opening the drawbridge (wand of opening, knock spell, playing
---	  the appropriate tune)
+--    - opening the drawbridge (wand of opening, knock spell, playing
+--      the appropriate tune)
 --
---	- enter via the back entry (this suppose a ring of levitation, boots
---	  of water walking, etc.)
+--    - enter via the back entry (this suppose a ring of levitation, boots
+--      of water walking, etc.)
 --
 -- Note : If you don't play the right tune, you get indications like in the
---	 MasterMind game...
+--     MasterMind game...
 --
 -- To motivate the player : there are 4 storerooms (armors, weapons, food and
 -- gems) and a wand of wishing in one of the 4 towers...

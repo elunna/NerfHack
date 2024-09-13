@@ -10,12 +10,12 @@
 namespace nethack_qt_ {
 
 class NetHackQtYnDialog : QDialog {
-	Q_OBJECT
+    Q_OBJECT
 private:
-	QString question;
-	const char* choices;
-	char def;
-	char keypress;
+    QString question;
+    const char* choices;
+    char def;
+    char keypress;
         bool allow_count;
         QLineEdit *le;
         QPushButton *y_btn;
@@ -24,16 +24,16 @@ private:
         char alt_answer[26 + 1], alt_result[26 + 1];
 
 protected:
-	virtual void keyPressEvent(QKeyEvent*);
+    virtual void keyPressEvent(QKeyEvent*);
         void AltChoice(char answer, char result);
 
 private slots:
-	void doneItem(int);
+    void doneItem(int);
 
 public:
-	NetHackQtYnDialog(QWidget *,const QString&,const char*,char);
+    NetHackQtYnDialog(QWidget *,const QString&,const char*,char);
 
-	char Exec();
+    char Exec();
 };
 
 } // namespace nethack_qt_

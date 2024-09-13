@@ -11,18 +11,18 @@ namespace nethack_qt_ {
 
 class NetHackQtRIP : public QWidget {
 private:
-	static QPixmap* pixmap;
-	char** line;
-	int riplines;
+    static QPixmap* pixmap;
+    char** line;
+    int riplines;
 
 public:
-	NetHackQtRIP(QWidget* parent);
+    NetHackQtRIP(QWidget* parent);
 
-	void setLines(char** l, int n);
+    void setLines(char** l, int n);
 
 protected:
-	virtual void paintEvent(QPaintEvent* event);
-	QSize sizeHint() const;
+    virtual void paintEvent(QPaintEvent* event);
+    QSize sizeHint() const;
 };
 
 } // namespace nethack_qt_

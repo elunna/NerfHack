@@ -13,10 +13,10 @@ namespace nethack_qt_ {
 
 class NetHackQtStringRequestor : QDialog {
 private:
-	QLabel prompt;
-	NetHackQtLineEdit input;
-	QPushButton* okay;
-	QPushButton* cancel;
+    QLabel prompt;
+    NetHackQtLineEdit input;
+    QPushButton* okay;
+    QPushButton* cancel;
 
 public:
         NetHackQtStringRequestor(QWidget *parent, const char *p,

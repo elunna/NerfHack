@@ -11,9 +11,9 @@ namespace nethack_qt_ {
 
 class NetHackQtSavedGameSelector : public QDialog {
 public:
-	NetHackQtSavedGameSelector(const char** saved);
+    NetHackQtSavedGameSelector(const char** saved);
 
-	int choose();
+    int choose();
 };
 
 } // namespace nethack_qt_

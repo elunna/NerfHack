@@ -14,21 +14,21 @@ namespace nethack_qt_ {
 class NetHackQtMapWindow2;
 
 class NetHackQtMessageWindow : QScrollArea, public NetHackQtWindow {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	NetHackQtMessageWindow();
-	~NetHackQtMessageWindow();
+    NetHackQtMessageWindow();
+    ~NetHackQtMessageWindow();
 
-	virtual QWidget* Widget();
-	virtual void Clear();
-	virtual void Display(bool block);
+    virtual QWidget* Widget();
+    virtual void Clear();
+    virtual void Display(bool block);
         virtual const char *GetStr(bool init);
-	virtual void PutStr(int attr, const QString& text);
+    virtual void PutStr(int attr, const QString& text);
 
-	void Scroll(int dx, int dy);
+    void Scroll(int dx, int dy);
         void ClearMessages();
 
-	void setMap(NetHackQtMapWindow2*);
+    void setMap(NetHackQtMapWindow2*);
 
         void RehighlightPrompt();
         bool hilit_mesgs();
@@ -41,11 +41,11 @@ private:
         QScrollArea *scrollarea;
         bool changed;
         int currgetmsg;
-	NetHackQtMapWindow2* map;
-	char historybuf[BUFSZ];
+    NetHackQtMapWindow2* map;
+    char historybuf[BUFSZ];
 
 private slots:
-	void updateFont();
+    void updateFont();
 };
 
 } // namespace nethack_qt_

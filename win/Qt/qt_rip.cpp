@@ -35,9 +35,9 @@ static void
 tryload(QPixmap& pm, const char* fn)
 {
     if (!pm.load(fn)) {
-	QString msg;
-	msg = nh_qsprintf("Cannot load \"%s\"", fn);
-	QMessageBox::warning(NetHackQtBind::mainWidget(), "IO Error", msg);
+    QString msg;
+    msg = nh_qsprintf("Cannot load \"%s\"", fn);
+    QMessageBox::warning(NetHackQtBind::mainWidget(), "IO Error", msg);
     }
 }
 
@@ -45,8 +45,8 @@ NetHackQtRIP::NetHackQtRIP(QWidget* parent) :
     QWidget(parent)
 {
     if (!pixmap) {
-	pixmap=new QPixmap;
-	tryload(*pixmap, PIXMAPDIR "/rip.xpm");
+    pixmap=new QPixmap;
+    tryload(*pixmap, PIXMAPDIR "/rip.xpm");
     }
     riplines=0;
     resize(pixmap->width(),pixmap->height());
@@ -67,19 +67,19 @@ QSize NetHackQtRIP::sizeHint() const
 void NetHackQtRIP::paintEvent(QPaintEvent* event UNUSED)
 {
     if ( riplines ) {
-	int pix_x=(width()-pixmap->width())/2;
-	int pix_y=(height()-pixmap->height())/2;
+    int pix_x=(width()-pixmap->width())/2;
+    int pix_y=(height()-pixmap->height())/2;
 
-	// XXX positions based on RIP image
-	int rip_text_x=pix_x+156;
-	int rip_text_y=pix_y+67;
-	int rip_text_h=94/riplines;
+    // XXX positions based on RIP image
+    int rip_text_x=pix_x+156;
+    int rip_text_y=pix_y+67;
+    int rip_text_h=94/riplines;
 
-	QPainter painter;
-	painter.begin(this);
-	painter.drawPixmap(pix_x,pix_y,*pixmap);
-	for (int i=0; i<riplines; i++) {
-	    painter.drawText(rip_text_x-i/2,rip_text_y+i*rip_text_h, 1,1,
+    QPainter painter;
+    painter.begin(this);
+    painter.drawPixmap(pix_x,pix_y,*pixmap);
+    for (int i=0; i<riplines; i++) {
+        painter.drawText(rip_text_x-i/2,rip_text_y+i*rip_text_h, 1,1,
 #if __cplusplus >= 202002L
                 static_cast<int>(Qt::TextDontClip)
                     | static_cast<int>(Qt::AlignHCenter),
@@ -87,8 +87,8 @@ void NetHackQtRIP::paintEvent(QPaintEvent* event UNUSED)
                 Qt::TextDontClip|Qt::AlignHCenter,
 #endif
                line[i]);
-	}
-	painter.end();
+    }
+    painter.end();
     }
 }
 

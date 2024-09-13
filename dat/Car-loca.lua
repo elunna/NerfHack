@@ -75,9 +75,9 @@ des.object({ id="corpse",montype="cartomancer" })
 des.object({ id="corpse",montype="cartomancer" })
 
 --
---	The "goal" level for the quest.
+--    The "goal" level for the quest.
 --
---	Here you meet Dal Zethire your nemesis monster.  You have to
---	defeat Dal Zethire in combat to gain the artifact you have
---	been assigned to retrieve.
+--    Here you meet Dal Zethire your nemesis monster.  You have to
+--    defeat Dal Zethire in combat to gain the artifact you have
+--    been assigned to retrieve.
 --

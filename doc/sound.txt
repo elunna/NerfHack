@@ -18,13 +18,13 @@ of this document.
 NetHack may be freely redistributed.  See license for details.
 
 Contents:
-	I.    Sound trigger types and terminology
-	II.   Interface Specification
-	III.  Global variables
-	IV.   Other related routines
-	V.    Game Startup and Soundlib Activation Sequencing
-	VI.   Conventions
-	VII.  Implementation and Multiple Soundlib Support
+    I.    Sound trigger types and terminology
+    II.   Interface Specification
+    III.  Global variables
+    IV.   Other related routines
+    V.    Game Startup and Soundlib Activation Sequencing
+    VI.   Conventions
+    VII.  Implementation and Multiple Soundlib Support
 
 I.  Sound Trigger Types and Terminology
 
@@ -359,10 +359,10 @@ use the following guidelines:
 2) When declaring your soundlib interface functions, precede the
    function names with your unique prefix.  For example,
 
-	void myprefix_init_nhsound()
-	{
-	    /* code for initializing the underlying sound library */
-	}
+    void myprefix_init_nhsound()
+    {
+        /* code for initializing the underlying sound library */
+    }
 
    When/if calling one your own soundlib functions from within your
    soundlib code (one calling another), we suggest calling the

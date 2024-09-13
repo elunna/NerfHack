@@ -89,16 +89,16 @@ NetHackQtGlyphs::NetHackQtGlyphs()
     }
 
     if (iflags.wc_tile_width)
-	tilefile_tile_W = iflags.wc_tile_width;
+    tilefile_tile_W = iflags.wc_tile_width;
     else if (iflags.wc_ascii_map)
-	tilefile_tile_W = 16;
+    tilefile_tile_W = 16;
     else
-	tilefile_tile_W = img.width() / tiles_per_row;
+    tilefile_tile_W = img.width() / tiles_per_row;
 
     if (iflags.wc_tile_height)
-	tilefile_tile_H = iflags.wc_tile_height;
+    tilefile_tile_H = iflags.wc_tile_height;
     else
-	tilefile_tile_H = tilefile_tile_W;
+    tilefile_tile_H = tilefile_tile_W;
 
     setSize(tilefile_tile_W, tilefile_tile_H);
 }
@@ -116,7 +116,7 @@ NetHackQtGlyphs::drawGlyph(
 #if 0
         int tile = glyph2tile[glyph];
 #else
-	int tile = tileidx;
+    int tile = tileidx;
 #endif
         int px = (tile % tiles_per_row) * width();
         int py = tile / tiles_per_row * height();
@@ -244,33 +244,33 @@ NetHackQtGlyphs::reversed_pixmap(
 void NetHackQtGlyphs::setSize(int w, int h)
 {
     if (size == QSize(w, h))
-	return;
+    return;
     size = QSize(w, h);
     if (!w || !h)
-	return; // Still not decided
+    return; // Still not decided
 
     if (size == pm1.size()) { // not zoomed
-	pm = pm1;
-	return;
+    pm = pm1;
+    return;
     }
     if (size == pm2.size()) { // zoomed
-	pm = pm2;
-	return;
+    pm = pm2;
+    return;
     }
 
     bool was1 = (size == pm1.size());
     if (w == tilefile_tile_W && h == tilefile_tile_H) {
-	pm.convertFromImage(img);
+    pm.convertFromImage(img);
     } else {
-	QApplication::setOverrideCursor(Qt::WaitCursor);
-	QImage scaled = img.scaled(
-	    w * img.width() / tilefile_tile_W,
-	    h * img.height() / tilefile_tile_H,
-	    Qt::IgnoreAspectRatio,
-	    Qt::FastTransformation
-	);
-	pm.convertFromImage(scaled, Qt::ThresholdDither | Qt::PreferDither);
-	QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QImage scaled = img.scaled(
+        w * img.width() / tilefile_tile_W,
+        h * img.height() / tilefile_tile_H,
+        Qt::IgnoreAspectRatio,
+        Qt::FastTransformation
+    );
+    pm.convertFromImage(scaled, Qt::ThresholdDither | Qt::PreferDither);
+    QApplication::restoreOverrideCursor();
     }
     (was1 ? pm2 : pm1) = pm;
 }

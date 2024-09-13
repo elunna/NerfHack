@@ -94,14 +94,14 @@ BEGIN
         MENUITEM "Info on what a given &key does", IDM_HELP_INFO_KEY
         MENUITEM "List of game &options",       IDM_HELP_OPTIONS
         MENUITEM "&Longer list of game options", IDM_HELP_OPTIONS_LONG
-	// { dispfile_optmenu, "Using the %s command to set options." } //"'O'"
-	// { dokeylist, "Full list of keyboard commands." }
+    // { dispfile_optmenu, "Using the %s command to set options." } //"'O'"
+    // { dokeylist, "Full list of keyboard commands." }
         MENUITEM "List of e&xtended commands",  IDM_HELP_EXTCMD
-	// { domenucontrols, "List menu control keys." }
+    // { domenucontrols, "List menu control keys." }
         MENUITEM "The &NetHack license",        IDM_HELP_LICENSE
-	// { docontact, "Support information." }
+    // { docontact, "Support information." }
         MENUITEM "NerfHack for &Windows help",   IDM_HELP_PORTHELP
-	// { dispfile_debughelp, "List of wizard-mode commands." }
+    // { dispfile_debughelp, "List of wizard-mode commands." }
     END
 END
 

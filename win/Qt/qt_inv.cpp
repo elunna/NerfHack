@@ -277,7 +277,7 @@ QSize NetHackQtInvUsageWindow::sizeHint(void) const
 #endif
         return QSize(w, h);
     } else {
-	return QWidget::sizeHint();
+    return QWidget::sizeHint();
     }
 }
 

@@ -12,38 +12,38 @@ namespace nethack_qt_ {
 class NetHackQtKeyBuffer;
 
 class NetHackQtPlayerSelector : private QDialog {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	enum { R_None=-1, R_Quit=-2, R_Rand=-3 };
+    enum { R_None=-1, R_Quit=-2, R_Rand=-3 };
 
-	NetHackQtPlayerSelector(NetHackQtKeyBuffer&);
+    NetHackQtPlayerSelector(NetHackQtKeyBuffer&);
 
 public slots:
-	void Quit();
-	void Random();
+    void Quit();
+    void Random();
         void Randomize();
         void plnamePlayVsQuit();
 
         void populate_roles();
         void populate_races();
 
-	void selectName(const QString& n);
-	void selectRole(int current, int, int previous, int);
-	void selectRace(int current, int, int previous, int);
-	void setupOthers();
-	void selectGender(int);
-	void selectAlignment(int);
+    void selectName(const QString& n);
+    void selectRole(int current, int, int previous, int);
+    void selectRace(int current, int, int previous, int);
+    void setupOthers();
+    void selectGender(int);
+    void selectAlignment(int);
 
 public:
-	bool Choose();
+    bool Choose();
 
 private:
-	QTableWidget* role;
-	QTableWidget* race;
-	QRadioButton **gender;
-	QRadioButton **alignment;
+    QTableWidget* role;
+    QTableWidget* race;
+    QRadioButton **gender;
+    QRadioButton **alignment;
 
-	bool fully_specified_role;
+    bool fully_specified_role;
         int chosen_gend;
         int chosen_align;
         int cleric_role_row;

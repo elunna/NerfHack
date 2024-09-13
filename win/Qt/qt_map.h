@@ -15,18 +15,18 @@ namespace nethack_qt_ {
 class NetHackQtClickBuffer;
 
 class NetHackQtMapViewport : public QWidget {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	NetHackQtMapViewport(NetHackQtClickBuffer& click_sink);
-	~NetHackQtMapViewport(void);
+    NetHackQtMapViewport(NetHackQtClickBuffer& click_sink);
+    ~NetHackQtMapViewport(void);
 
 protected:
-	virtual void paintEvent(QPaintEvent* event);
+    virtual void paintEvent(QPaintEvent* event);
         bool DrawWalls(QPainter& painter, int x, int y,
                        int w, int h, unsigned short ch);
-	virtual QSize sizeHint() const;
-	virtual QSize minimumSizeHint() const;
-	virtual void mousePressEvent(QMouseEvent* event);
+    virtual QSize sizeHint() const;
+    virtual QSize minimumSizeHint() const;
+    virtual void mousePressEvent(QMouseEvent* event);
 
 private:
         QFont *rogue_font;
@@ -60,45 +60,45 @@ private:
         NetHackQtClickBuffer &clicksink;
         Clusterizer change;
 
-	void clickCursor();
-	void Clear();
-	void Display(bool block);
-	void CursorTo(int x,int y);
-	void PrintGlyph(int x,int y, const glyph_info *glyphinfo, const glyph_info *bkglyphinfo);
-	void Changed(int x, int y);
-	void updateTiles();
+    void clickCursor();
+    void Clear();
+    void Display(bool block);
+    void CursorTo(int x,int y);
+    void PrintGlyph(int x,int y, const glyph_info *glyphinfo, const glyph_info *bkglyphinfo);
+    void Changed(int x, int y);
+    void updateTiles();
         void SetupTextmapFont(QPainter &painter);
 
-	// NetHackQtMapWindow2 passes through many calls to the viewport
-	friend class NetHackQtMapWindow2;
+    // NetHackQtMapWindow2 passes through many calls to the viewport
+    friend class NetHackQtMapWindow2;
 };
 
 class NetHackQtMapWindow2 : public QScrollArea, public NetHackQtWindow {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	NetHackQtMapWindow2(NetHackQtClickBuffer& click_sink);
-	void clearMessages();
-	void putMessage(int attr, const QString& text);
-	void clickCursor();
-	virtual QWidget *Widget();
+    NetHackQtMapWindow2(NetHackQtClickBuffer& click_sink);
+    void clearMessages();
+    void putMessage(int attr, const QString& text);
+    void clickCursor();
+    virtual QWidget *Widget();
 
-	virtual void Clear();
-	virtual void Display(bool block);
-	virtual void CursorTo(int x,int y);
-	virtual void PutStr(int attr, const QString& text);
-	virtual void ClipAround(int x,int y);
-	virtual void PrintGlyph(int x,int y, const glyph_info *glyphinfo, const glyph_info *bkglyphinfo);
+    virtual void Clear();
+    virtual void Display(bool block);
+    virtual void CursorTo(int x,int y);
+    virtual void PutStr(int attr, const QString& text);
+    virtual void ClipAround(int x,int y);
+    virtual void PrintGlyph(int x,int y, const glyph_info *glyphinfo, const glyph_info *bkglyphinfo);
 
 signals:
-	void resized();
+    void resized();
 
 private slots:
-	void updateTiles();
+    void updateTiles();
 
 private:
-	NetHackQtMapViewport *m_viewport;
-	QRect messages_rect;
-	QString messages;
+    NetHackQtMapViewport *m_viewport;
+    QRect messages_rect;
+    QString messages;
 };
 
 } // namespace nethack_qt_

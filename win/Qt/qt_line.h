@@ -11,10 +11,10 @@ namespace nethack_qt_ {
 
 class NetHackQtLineEdit : public QLineEdit {
 public:
-	NetHackQtLineEdit();
-	NetHackQtLineEdit(QWidget* parent, const char* name);
+    NetHackQtLineEdit();
+    NetHackQtLineEdit(QWidget* parent, const char* name);
 
-	void fakeEvent(int key, int ascii, Qt::KeyboardModifiers state);
+    void fakeEvent(int key, int ascii, Qt::KeyboardModifiers state);
 };
 
 } // namespace nethack_qt_

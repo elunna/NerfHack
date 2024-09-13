@@ -99,10 +99,10 @@ des.monster({ id = "fire giant", peaceful = 0 })
 des.monster({ class = "H", peaceful = 0 })
 
 --
---	The "fill" levels for the quest.
+--    The "fill" levels for the quest.
 --
---	These levels are used to fill out any levels not occupied by specific
---	levels as defined above. "filla" is the upper filler, between the
---	start and locate levels, and "fillb" the lower between the locate
---	and goal levels.
+--    These levels are used to fill out any levels not occupied by specific
+--    levels as defined above. "filla" is the upper filler, between the
+--    start and locate levels, and "fillb" the lower between the locate
+--    and goal levels.
 --

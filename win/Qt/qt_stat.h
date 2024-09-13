@@ -13,58 +13,58 @@
 namespace nethack_qt_ {
 
 class NetHackQtStatusWindow : QWidget, public NetHackQtWindow {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	NetHackQtStatusWindow();
+    NetHackQtStatusWindow();
 
-	virtual QWidget* Widget();
+    virtual QWidget* Widget();
 
-	virtual void Clear();
-	virtual void Display(bool block);
-	virtual void CursorTo(int x,int y);
-	virtual void PutStr(int attr, const QString& text);
+    virtual void Clear();
+    virtual void Display(bool block);
+    virtual void CursorTo(int x,int y);
+    virtual void PutStr(int attr, const QString& text);
 
-	void fadeHighlighting();
+    void fadeHighlighting();
 
 protected:
-	virtual void mousePressEvent(QMouseEvent *event);
-	//RLC void resizeEvent(QResizeEvent*);
+    virtual void mousePressEvent(QMouseEvent *event);
+    //RLC void resizeEvent(QResizeEvent*);
 
 private slots:
-	void doUpdate();
+    void doUpdate();
 
 private:
-	enum { hilight_time=1 };
+    enum { hilight_time=1 };
 
-	QPixmap p_str;
-	QPixmap p_dex;
-	QPixmap p_con;
-	QPixmap p_int;
-	QPixmap p_wis;
-	QPixmap p_cha;
+    QPixmap p_str;
+    QPixmap p_dex;
+    QPixmap p_con;
+    QPixmap p_int;
+    QPixmap p_wis;
+    QPixmap p_cha;
 
-	QPixmap p_chaotic;
-	QPixmap p_neutral;
-	QPixmap p_lawful;
+    QPixmap p_chaotic;
+    QPixmap p_neutral;
+    QPixmap p_lawful;
         QPixmap p_blank2; // conditionally used for vertical spacing
 
-	QPixmap p_satiated;
-	QPixmap p_hungry;
-	QPixmap p_encumber[5];
+    QPixmap p_satiated;
+    QPixmap p_hungry;
+    QPixmap p_encumber[5];
 
-	QPixmap p_stoned;
-	QPixmap p_slimed;
-	QPixmap p_strngld;
-	QPixmap p_sick_fp;
-	QPixmap p_sick_il;
-	QPixmap p_stunned;
-	QPixmap p_confused;
-	QPixmap p_hallu;
-	QPixmap p_blind;
-	QPixmap p_deaf;
-	QPixmap p_lev;
-	QPixmap p_fly;
-	QPixmap p_ride;
+    QPixmap p_stoned;
+    QPixmap p_slimed;
+    QPixmap p_strngld;
+    QPixmap p_sick_fp;
+    QPixmap p_sick_il;
+    QPixmap p_stunned;
+    QPixmap p_confused;
+    QPixmap p_hallu;
+    QPixmap p_blind;
+    QPixmap p_deaf;
+    QPixmap p_lev;
+    QPixmap p_fly;
+    QPixmap p_ride;
         QPixmap p_vers; // version, when shown, is like a pseudo-condition
 
         /*
@@ -79,12 +79,12 @@ private:
 
         /* the six characteristics; each is shown with a 40x40 icon above
            and a text label below, so implicitly two rows */
-	NetHackQtLabelledIcon str;
-	NetHackQtLabelledIcon dex;
-	NetHackQtLabelledIcon con;
-	NetHackQtLabelledIcon intel;
-	NetHackQtLabelledIcon wis;
-	NetHackQtLabelledIcon cha;
+    NetHackQtLabelledIcon str;
+    NetHackQtLabelledIcon dex;
+    NetHackQtLabelledIcon con;
+    NetHackQtLabelledIcon intel;
+    NetHackQtLabelledIcon wis;
+    NetHackQtLabelledIcon cha;
 
         /* five various status fields, some showing two values, shown as
            a row of text only; 'exp' used to be a separate field but is
@@ -115,19 +115,19 @@ private:
         NetHackQtLabelledIcon hunger;   // blank if 'normal'
         NetHackQtLabelledIcon encumber; // blank if 'unencumbered' ('normal')
         /* zero or more status conditions; in major, minor, 'other' order */
-	NetHackQtLabelledIcon stoned;
-	NetHackQtLabelledIcon slimed;
-	NetHackQtLabelledIcon strngld;
-	NetHackQtLabelledIcon sick_fp;
-	NetHackQtLabelledIcon sick_il;
-	NetHackQtLabelledIcon stunned;
-	NetHackQtLabelledIcon confused;
-	NetHackQtLabelledIcon hallu;
-	NetHackQtLabelledIcon blind;
-	NetHackQtLabelledIcon deaf;
-	NetHackQtLabelledIcon lev;
-	NetHackQtLabelledIcon fly;
-	NetHackQtLabelledIcon ride;
+    NetHackQtLabelledIcon stoned;
+    NetHackQtLabelledIcon slimed;
+    NetHackQtLabelledIcon strngld;
+    NetHackQtLabelledIcon sick_fp;
+    NetHackQtLabelledIcon sick_il;
+    NetHackQtLabelledIcon stunned;
+    NetHackQtLabelledIcon confused;
+    NetHackQtLabelledIcon hallu;
+    NetHackQtLabelledIcon blind;
+    NetHackQtLabelledIcon deaf;
+    NetHackQtLabelledIcon lev;
+    NetHackQtLabelledIcon fly;
+    NetHackQtLabelledIcon ride;
         /* to right of conditions, right justified */
         NetHackQtLabelledIcon vers;   // version
 
@@ -137,8 +137,8 @@ private:
         QFrame vline1; // for statuslines:2, between Cha and Alignment
         QFrame vline2; // for statuslines:2, padding between Gold and Time
 
-	int cursy;
-	bool first_set;
+    int cursy;
+    bool first_set;
         bool alreadyfullhp;
 
         // for some fields, we need to know more than just "changed since
@@ -150,9 +150,9 @@ private:
 
         QHBoxLayout *InitHitpointBar();
         void HitpointBar();
-	void nullOut();
-	void updateStats();
-	void checkTurnEvents();
+    void nullOut();
+    void updateStats();
+    void checkTurnEvents();
 };
 
 } // namespace nethack_qt_

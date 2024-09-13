@@ -117,11 +117,11 @@ echo "Copying libraries:" $LIBS
 for lib in $LIBS; do
         mkdir -p "$NAO_CHROOT`dirname $lib`"
         if [ -f "$NAO_CHROOT$lib" ]
-	then
-		echo "$NAO_CHROOT$lib already exists - skipping."
-	else
-		cp $lib "$NAO_CHROOT$lib"
-	fi
+  then
+    echo "$NAO_CHROOT$lib already exists - skipping."
+  else
+    cp $lib "$NAO_CHROOT$lib"
+  fi
 done
 
 echo "Finished."

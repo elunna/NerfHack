@@ -29,26 +29,26 @@ public:
         virtual void setFont(const QFont &);
         //QString labelText() { return QString(this->label->text()); }
 
-	void highlightWhenChanging();
+        void highlightWhenChanging();
         void setCompareMode(int newmode);
-	void dissipateHighlight();
+        void dissipateHighlight();
         void ForceResize();
 
-	virtual void show();
-	virtual QSize sizeHint() const;
-	virtual QSize minimumSizeHint() const;
+        virtual void show();
+        virtual QSize sizeHint() const;
+        virtual QSize minimumSizeHint() const;
 
         QLabel *label;
         QLabel *icon;
 
 protected:
-	void resizeEvent(QResizeEvent*);
+        void resizeEvent(QResizeEvent*);
 
 private:
-	void initHighlight();
-	void setAlignments();
-	void highlight(const QString& highlight);
-	void unhighlight();
+        void initHighlight();
+        void setAlignments();
+        void highlight(const QString& highlight);
+        void unhighlight();
 
         int comp_mode;          /* compareMode; default is BiggerIsBetter */
         long prev_value;

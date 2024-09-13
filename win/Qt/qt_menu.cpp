@@ -68,7 +68,7 @@ int NetHackQtMenuListBox::TotalWidth() const
     int width = 0;
 
     for (int col = 0; col < columnCount(); ++col) {
-	width += columnWidth(col);
+    width += columnWidth(col);
     }
     return width;
 }
@@ -78,7 +78,7 @@ int NetHackQtMenuListBox::TotalHeight() const
     int row, rowheight, height = 0;
 
     for (row = 0; row < rowCount(); ++row) {
-	height += rowHeight(row);
+    height += rowHeight(row);
     }
     // 20: arbitrary; should always have at least 1 row so it shouldn't matter
     rowheight = (row > 0) ? rowHeight(row - 1) : 20;
@@ -264,16 +264,16 @@ void NetHackQtMenuWindow::AddMenu(int glyph, const ANY_P *identifier,
 {
     bool presel = (itemflags & MENU_ITEMFLAGS_SELECTED) != 0;
     if (!ch && identifier->a_void!=0) {
-	// Supply a keyboard accelerator.  Limited supply.
+    // Supply a keyboard accelerator.  Limited supply.
         static char accel[]
                     = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	if (accel[next_accel]) {
-	    ch=accel[next_accel++];
-	}
+    if (accel[next_accel]) {
+        ch=accel[next_accel++];
+    }
     }
 
     if ((int)itemlist.size() < itemcount+1) {
-	itemlist.resize(itemcount*4+10);
+    itemlist.resize(itemcount*4+10);
     }
     itemlist[itemcount].glyph = glyph;
     itemlist[itemcount].identifier = *identifier;
@@ -287,12 +287,12 @@ void NetHackQtMenuWindow::AddMenu(int glyph, const ANY_P *identifier,
     itemlist[itemcount].count = -1L;
     // Display the boulder symbol correctly
     if (str.left(8) == "boulder\t") {
-	int bracket = str.indexOf('[');
-	if (bracket != -1) {
-	    itemlist[itemcount].str = str.left(bracket+1)
-		+ QChar(cp437(str.at(bracket+1).unicode()))
-		+ str.mid(bracket+2);
-	}
+    int bracket = str.indexOf('[');
+    if (bracket != -1) {
+        itemlist[itemcount].str = str.left(bracket+1)
+        + QChar(cp437(str.at(bracket+1).unicode()))
+        + str.mid(bracket+2);
+    }
     }
     ++itemcount;
 
@@ -368,7 +368,7 @@ int NetHackQtMenuWindow::SelectMenu(int h, MENU_ITEM_P **menu_list)
         }
         return n;
     } else {
-	return -1;
+    return -1;
     }
 }
 
@@ -382,7 +382,7 @@ void NetHackQtMenuWindow::PadMenuColumns(bool split_descr)
                                     biggestcount);
     int col0width_int = (int) fm.QFM_WIDTH(col0width_str) + MENU_WIDTH_SLOP;
     if (col0width_int > table->columnWidth(0))
-	WidenColumn(0, col0width_int);
+    WidenColumn(0, col0width_int);
 
     // If the description (column 4) is a tab separated list, split
     // it into fields and figure out how wide each field should be.
@@ -545,7 +545,7 @@ static const char *color_name(const QColor q)
 void NetHackQtMenuWindow::SetTwiAttr(QTableWidgetItem *twi, int color, int attr)
 {
     if (color != NO_COLOR) {
-	twi->setForeground(colors[color].q);
+    twi->setForeground(colors[color].q);
     }
 
     if (attr != ATR_NONE) {
@@ -599,10 +599,10 @@ void NetHackQtMenuWindow::AddRow(int row, const MenuItem& mi)
     glyph_info gi;
 
     if (mi.Selectable() && how != PICK_NONE) {
-	// Count
-	twi = new QTableWidgetItem("");
-	table->setItem(row, 0, twi);
-	twi->setFlags(Qt::ItemIsEnabled);
+    // Count
+    twi = new QTableWidgetItem("");
+    table->setItem(row, 0, twi);
+    twi->setFlags(Qt::ItemIsEnabled);
 #if 0   // active count field now widened as needed rather than preset
         WidenColumn(0, fm.QFM_WIDTH("999999") + MENU_WIDTH_SLOP);
 #else
@@ -610,41 +610,41 @@ void NetHackQtMenuWindow::AddRow(int row, const MenuItem& mi)
 #endif
 
         // Check box, set if pre-selected
-	QCheckBox *cb = new QCheckBox();
+    QCheckBox *cb = new QCheckBox();
         cb->setChecked(mi.preselected);
-	cb->setFocusPolicy(Qt::NoFocus);
+    cb->setFocusPolicy(Qt::NoFocus);
         // CheckboxClicked() will call ToggleSelect() for item whose checkbox
         // gets clicked upon
         connect(cb, SIGNAL(clicked(bool)), this, SLOT(CheckboxClicked(bool)));
-	table->setCellWidget(row, 1, cb);
-	WidenColumn(1, cb->width());
+    table->setCellWidget(row, 1, cb);
+    WidenColumn(1, cb->width());
     }
     if (mi.glyph != NO_GLYPH) {
-	// Icon
-	map_glyphinfo(0, 0, mi.glyph, 0, &gi);
-	QPixmap pm(qt_settings->glyphs().glyph(mi.glyph, gi.gm.tileidx));
-	twi = new QTableWidgetItem(QIcon(pm), "");
-	table->setItem(row, 2, twi);
-	twi->setFlags(Qt::ItemIsEnabled);
-	WidenColumn(2, pm.width());
+    // Icon
+    map_glyphinfo(0, 0, mi.glyph, 0, &gi);
+    QPixmap pm(qt_settings->glyphs().glyph(mi.glyph, gi.gm.tileidx));
+    twi = new QTableWidgetItem(QIcon(pm), "");
+    table->setItem(row, 2, twi);
+    twi->setFlags(Qt::ItemIsEnabled);
+    WidenColumn(2, pm.width());
     }
 
     QString letter, text(mi.str);
     if (mi.ch != 0) {
-	// Letter specified
-	letter = QString(mi.ch) + " - ";
+    // Letter specified
+    letter = QString(mi.ch) + " - ";
     } else {
-	// Letter is left blank, except for skills display when # and * are
-	// presented (note: they're just displayed, not become selectors)
-	if (text.startsWith("    ")) {
-	    // If mi.str starts with "    ", it's meant to line up with lines
-	    // that have a letter; we don't want that here
-	    text = text.mid(4);
-	} else if (text.startsWith("   #") || text.startsWith("   *")) {
-	    // Put the * or # in the letter column
-	    letter = text.left(4);
-	    text = text.mid(4);
-	}
+    // Letter is left blank, except for skills display when # and * are
+    // presented (note: they're just displayed, not become selectors)
+    if (text.startsWith("    ")) {
+        // If mi.str starts with "    ", it's meant to line up with lines
+        // that have a letter; we don't want that here
+        text = text.mid(4);
+    } else if (text.startsWith("   #") || text.startsWith("   *")) {
+        // Put the * or # in the letter column
+        letter = text.left(4);
+        text = text.mid(4);
+    }
     }
     twi = new QTableWidgetItem(letter);
     table->setItem(row, 3, twi);
@@ -671,21 +671,21 @@ void NetHackQtMenuWindow::WidenColumn(int column, int width)
     // need to add a bit so the whole column displays
     width += 7;
     if (table->columnWidth(column) < width) {
-	table->setColumnWidth(column, width);
+    table->setColumnWidth(column, width);
     }
 }
 
 void NetHackQtMenuWindow::InputCount(char key)
 {
     if (key == '\b' || key == '\177' || how == PICK_NONE) {
-	if (counting) {
-	    if (countstr.isEmpty())
-		ClearCount();
-	    else
-		countstr = countstr.mid(0, countstr.size() - 1);
-	}
+    if (counting) {
+        if (countstr.isEmpty())
+        ClearCount();
+        else
+        countstr = countstr.mid(0, countstr.size() - 1);
+    }
     } else {
-	counting = true;
+    counting = true;
         // starting a count (enforced by caller) with '#' is optional;
         // if used, show visible '0'
         if (key == '#')
@@ -695,10 +695,10 @@ void NetHackQtMenuWindow::InputCount(char key)
         // leading zeroes--they won't affect the outcome, just look odd
         else if (key > '0' && countstr == "0")
             countstr = "";
-	countstr += QChar(key);
+    countstr += QChar(key);
     }
     if (counting)
-	prompt.setText("Count: " + countstr);
+    prompt.setText("Count: " + countstr);
 }
 
 void NetHackQtMenuWindow::ClearCount(void)
@@ -859,10 +859,10 @@ void NetHackQtMenuWindow::Search()
     char line[BUFSZ];
     line[0] = '\0'; /* for EDIT_GETLIN */
     if (requestor.Get(line)) {
-	for (int i=0; i<itemcount; i++) {
-	    if (itemlist[i].str.contains(line, Qt::CaseInsensitive))
-		ToggleSelect(i, false);
-	}
+    for (int i=0; i<itemcount; i++) {
+        if (itemlist[i].str.contains(line, Qt::CaseInsensitive))
+        ToggleSelect(i, false);
+    }
     }
     searching = false;
 }
@@ -1050,17 +1050,17 @@ void NetHackQtTextWindow::UseRIP(int how, time_t when)
 {
 // Code from X11 windowport
 #define STONE_LINE_LEN 16    /* # chars that fit on one line */
-#define NAME_LINE  0	/* line # for player name */
-#define GOLD_LINE  1	/* line # for amount of gold */
-#define DEATH_LINE 2	/* line # for death description */
-#define YEAR_LINE  6	/* line # for year */
+#define NAME_LINE  0    /* line # for player name */
+#define GOLD_LINE  1    /* line # for amount of gold */
+#define DEATH_LINE 2    /* line # for death description */
+#define YEAR_LINE  6    /* line # for year */
 
     static char **rip_line = 0;
     if (!rip_line) {
-	rip_line=new char*[YEAR_LINE+1];
-	for (int i=0; i<YEAR_LINE+1; i++) {
-	    rip_line[i]=new char[STONE_LINE_LEN+1];
-	}
+    rip_line=new char*[YEAR_LINE+1];
+    for (int i=0; i<YEAR_LINE+1; i++) {
+        rip_line[i]=new char[STONE_LINE_LEN+1];
+    }
     }
 
     /* Follows same algorithm as genl_outrip() */
@@ -1098,23 +1098,23 @@ void NetHackQtTextWindow::UseRIP(int how, time_t when)
 
     /* Put death type on stone */
     for (line = DEATH_LINE, dpx = buf; line < YEAR_LINE; ++line) {
-	char tmpchar;
-	int i, i0 = (int) strlen(dpx);
+    char tmpchar;
+    int i, i0 = (int) strlen(dpx);
 
-	if (i0 > STONE_LINE_LEN) {
-	    for (i = STONE_LINE_LEN; (i > 0) && (i0 > STONE_LINE_LEN); --i)
-		if (dpx[i] == ' ')
+    if (i0 > STONE_LINE_LEN) {
+        for (i = STONE_LINE_LEN; (i > 0) && (i0 > STONE_LINE_LEN); --i)
+        if (dpx[i] == ' ')
                     i0 = i;
-	    if (!i)
+        if (!i)
                 i0 = STONE_LINE_LEN;
-	}
-	tmpchar = dpx[i0];
-	dpx[i0] = 0;
-	(void) str_copy(rip_line[line], dpx, STONE_LINE_LEN + 1);
-	if (tmpchar != ' ') {
-	    dpx[i0] = tmpchar;
-	    dpx= &dpx[i0];
-	} else {
+    }
+    tmpchar = dpx[i0];
+    dpx[i0] = 0;
+    (void) str_copy(rip_line[line], dpx, STONE_LINE_LEN + 1);
+    if (tmpchar != ' ') {
+        dpx[i0] = tmpchar;
+        dpx= &dpx[i0];
+    } else {
             dpx= &dpx[i0 + 1];
         }
     }
@@ -1147,24 +1147,24 @@ void NetHackQtTextWindow::Display(bool block UNUSED)
         PutStr(ATR_NONE, "");
 
     if (str_fixed) {
-	lines->setFont(qt_settings->normalFixedFont());
+    lines->setFont(qt_settings->normalFixedFont());
     } else {
-	lines->setFont(qt_settings->normalFont());
+    lines->setFont(qt_settings->normalFont());
     }
 
     /* int h=0; */
     if (use_rip) {
-	/* h+=rip.height(); */
-	(void) rip.height();
-	ok.hide();
-	search.hide();
-	rip.show();
+    /* h+=rip.height(); */
+    (void) rip.height();
+    ok.hide();
+    search.hide();
+    rip.show();
     } else {
-	/* h+=ok.height()*2 + 7; */
-	(void) ok.height(); 
-	ok.show();
-	search.show();
-	rip.hide();
+    /* h+=ok.height()*2 + 7; */
+    (void) ok.height(); 
+    ok.show();
+    search.show();
+    rip.hide();
     }
 #if QT_VERSION < 0x060000
     QSize screensize = QApplication::desktop()->size();
@@ -1173,13 +1173,13 @@ void NetHackQtTextWindow::Display(bool block UNUSED)
 #endif
     int mh = screensize.height()*3/5;
     if ( (qt_compact_mode && lines->TotalHeight() > mh) || use_rip ) {
-	// big, so make it fill
-	showMaximized();
+    // big, so make it fill
+    showMaximized();
     } else {
-	move(0, 0);
-	adjustSize();
-	centerOnMain(this);
-	show();
+    move(0, 0);
+    adjustSize();
+    centerOnMain(this);
+    show();
     }
 
     lines->clearSelection(); // affects [Search]

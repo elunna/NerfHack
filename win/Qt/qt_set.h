@@ -17,7 +17,7 @@ class NetHackQtGlyphs;
 class NetHackQtMainWindow;
 
 class NetHackQtSettings : public QDialog {
-	Q_OBJECT
+    Q_OBJECT
 public:
         int tileWidth = 16, tileHeight = 16;
 #ifdef ENHANCED_PAPERDOLL
@@ -27,54 +27,54 @@ public:
         bool xcmd_by_row = false;
         int xcmd_set = 0; // all_cmds
 
-	// dialog box for Qt-specific settings
-	NetHackQtSettings();
+    // dialog box for Qt-specific settings
+    NetHackQtSettings();
 
         void updateXcmd(bool by_row, int which_set);
 
-	NetHackQtGlyphs& glyphs();
-	const QFont& normalFont();
-	const QFont& normalFixedFont();
-	const QFont& largeFont();
+    NetHackQtGlyphs& glyphs();
+    const QFont& normalFont();
+    const QFont& normalFixedFont();
+    const QFont& largeFont();
         const QFont& smallFont();
 
-	bool ynInMessages();
+    bool ynInMessages();
 
 signals:
-	void fontChanged();
-	void tilesChanged();
+    void fontChanged();
+    void tilesChanged();
 
 public slots:
-	void toggleGlyphSize();
-	void setGlyphSize(bool);
+    void toggleGlyphSize();
+    void setGlyphSize(bool);
 #ifdef ENHANCED_PAPERDOLL
-	void toggleDollShown();
+    void toggleDollShown();
         void setDollShown(bool);
         void resizeDoll();
 #endif
 
 private:
-	QSettings settings;
+    QSettings settings;
 
-	QCheckBox whichsize;
-	QSpinBox tilewidth;
-	QSpinBox tileheight;
-	QLabel widthlbl;
-	QLabel heightlbl;
-	QSize othersize;
+    QCheckBox whichsize;
+    QSpinBox tilewidth;
+    QSpinBox tileheight;
+    QLabel widthlbl;
+    QLabel heightlbl;
+    QSize othersize;
 #ifdef ENHANCED_PAPERDOLL
-	QCheckBox dollshown;
-	QSpinBox dollwidth;
-	QSpinBox dollheight;
-	QLabel dollwidthlbl;
-	QLabel dollheightlbl;
+    QCheckBox dollshown;
+    QSpinBox dollwidth;
+    QSpinBox dollheight;
+    QLabel dollwidthlbl;
+    QLabel dollheightlbl;
 #endif
 
-	QComboBox fontsize;
+    QComboBox fontsize;
 
         QFont normal, normalfixed, large, small;
 
-	NetHackQtGlyphs* theglyphs;
+    NetHackQtGlyphs* theglyphs;
 #if 0
         void updateInventory()
         {
@@ -84,8 +84,8 @@ private:
 #endif
 
 private slots:
-	void resizeTiles();
-	void changedFont();
+    void resizeTiles();
+    void changedFont();
 };
 
 extern NetHackQtSettings* qt_settings;

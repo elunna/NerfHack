@@ -8,11 +8,11 @@
 /*
  * The list of standard (C99 unless noted otherwise) header files:
  *
- * <assert.h>	         Conditionally compiled macro that calls abort if its
+ * <assert.h>            Conditionally compiled macro that calls abort if its
  *                       argument evaluates to zero
  * <complex.h> (C99)     Complex number arithmetic
- * <ctype.h>	         Functions to categorize single characters
- * <errno.h>	         Macros reporting error conditions
+ * <ctype.h>             Functions to categorize single characters
+ * <errno.h>             Macros reporting error conditions
  * <fenv.h> (C99)        Floating-point environment
  * <float.h>             Limits of floating-point types
  * <inttypes.h> (C99)    Format conversion of integer types

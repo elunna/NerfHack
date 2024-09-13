@@ -114,9 +114,9 @@ des.monster({ id = "weretiger tiger", peaceful=0 })
 des.wallify()
 
 --
---	The "goal" level for the quest.
+--    The "goal" level for the quest.
 --
---	Here you meet Tiamat your nemesis monster.  You have to
---	defeat Tiamat in combat to gain the artifact you have
---	been assigned to retrieve.
+--    Here you meet Tiamat your nemesis monster.  You have to
+--    defeat Tiamat in combat to gain the artifact you have
+--    been assigned to retrieve.
 --

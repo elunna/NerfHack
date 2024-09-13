@@ -41,7 +41,7 @@ The public NetHack git repository is available (read-only) at:
     https://sourceforge.net/p/nethack/NetHack/
 
 Branches:
-NetHack-3.6.0	The 3.6.0 release code and subsequent fixes and additions.
+NetHack-3.6.0    The 3.6.0 release code and subsequent fixes and additions.
 ------------------------------------------------------------------------------
 3. bug reporting
 Please use the form at http://www.nethack.org/common/contact.html (or send
@@ -61,62 +61,62 @@ NOTE: The following instructions require perl.  If you do not have perl on
 A. If you have never set up git on this machine before:
    (This assumes you will only be using git for NetHack.  If you are going to
    use it for other projects as well, think before you type.)
-	Tell git what name (or nickname) and email address to use for you:
-		git config --global user.name "MY NAME"
-		git config --global user.email USER@EXAMPLE.COM
+    Tell git what name (or nickname) and email address to use for you:
+        git config --global user.name "MY NAME"
+        git config --global user.email USER@EXAMPLE.COM
    You probably want to set up a credential cache.
-	macOS (10 or greater):
-	    git config --global credential.helper osxkeychain
-	Linux:
-	    (This will vary by distribution.)
-	    cd /usr/share/doc/git/contrib/credentail/libsecret
-	    sudo apt-get install libglib-2.0-dev libsecret-1-dev
-	    sudo make
-	    git config --global credential.helper `pwd`/git-credential-libsecret
-		OR
-	    sudo yum install git-credential-libsecret
-	    git config --global credential.helper /usr/libexec/git-core/git-credential-libsecret
-	Windows: (The following three assume that Git for Windows is already installed on
-	          the underlying Windows system https://git-scm.com/download/win):
-	    git config --global credential.helper store
+    macOS (10 or greater):
+           git config --global credential.helper osxkeychain
+    Linux:
+        (This will vary by distribution.)
+        cd /usr/share/doc/git/contrib/credentail/libsecret
+        sudo apt-get install libglib-2.0-dev libsecret-1-dev
+        sudo make
+        git config --global credential.helper `pwd`/git-credential-libsecret
+        OR
+        sudo yum install git-credential-libsecret
+        git config --global credential.helper /usr/libexec/git-core/git-credential-libsecret
+    Windows: (The following three assume that Git for Windows is already installed on
+              the underlying Windows system https://git-scm.com/download/win):
+        git config --global credential.helper store
           MSYS2 UCRT64 bash shell:
             git config --global credential.helper "/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
-	  Windows Subsystem for Linux 2 (WSL2) bash shell:
+      Windows Subsystem for Linux 2 (WSL2) bash shell:
             git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
 B. Specify the prefix for variable substitution:
    (This assumes you are not a member of DevTeam or any variant's development
    team.  If you are, this may be wrong.  Look for more specific documentation.
    For example, this file uses "MINE" for the substitution prefix - this will
    almost always be wrong if you are working with someone else.)
-	Decide where you want to put this info; it should NOT be inside the
-	tree you cloned from git.  I use ~/nethack/GITADDDIR; for that base,
-	create the needed directories and edit the file:
-		~/nethack/GITADDDIR/DOTGIT/PRE
-	Put this in it (if your OS is not Unix-like you may need to change
-	the first line):
-		#!/bin/sh
-		git config nethack.substprefix MINE
-	Now make it executable:
-		chmod +x ~/nethack/GITADDDIR/DOTGIT/PRE
+    Decide where you want to put this info; it should NOT be inside the
+    tree you cloned from git.  I use ~/nethack/GITADDDIR; for that base,
+    create the needed directories and edit the file:
+        ~/nethack/GITADDDIR/DOTGIT/PRE
+    Put this in it (if your OS is not Unix-like you may need to change
+    the first line):
+        #!/bin/sh
+        git config nethack.substprefix MINE
+    Now make it executable:
+        chmod +x ~/nethack/GITADDDIR/DOTGIT/PRE
 C. Configure the repository:
-	- cd to the top level of the repository
-	- tell the repository about the directory you created above:
-		git config nethack.gitadddir FULL_PATH_TO_GITADDDIR
-	   so for the example above:
-		git config nethack.gitadddir ~/nethack/GITADDDIR
-	- do the automated setup:
-		perl DEVEL/nhgitset.pl
-	  If it complains, fix what it complains about.  nhgitset.pl accepts
-	  the following options:
-		-v verbose
-		-n dry run
+    - cd to the top level of the repository
+    - tell the repository about the directory you created above:
+        git config nethack.gitadddir FULL_PATH_TO_GITADDDIR
+       so for the example above:
+        git config nethack.gitadddir ~/nethack/GITADDDIR
+    - do the automated setup:
+        perl DEVEL/nhgitset.pl
+      If it complains, fix what it complains about.  nhgitset.pl accepts
+      the following options:
+        -v verbose
+        -n dry run
    You can re-run nhgitset.pl as often as needed; occasionally we will
    update it (or something it installs) and you will need to run it again
    so the changes take effect.
 D. aliases
    Two aliases are installed by nhgitset.pl:
-	nhadd
-	nhcommit
+    nhadd
+    nhcommit
    These two commands take the same options as the normal git add and commit
    commands but perform RCS/CVS-style variable substitution.
 
@@ -124,13 +124,13 @@ D. aliases
    of the commands.
 
    Supported substitutions:
-	MINE-Date	the commit time and date
+    MINE-Date    the commit time and date
    Experimental substitutions:
-	MINE-Revision	CVS style revision number
-	MINE-Branch	the current git branch
+    MINE-Revision       CVS style revision number
+    MINE-Branch    the current git branch
 
    For direct access to the substitution mechanism, use:
-	nhsub
+    nhsub
 
    See the section "nhadd/nhcommit" for details on those aliases.
    Run "perldoc DEVEL/hooksdir/nhsub" for details on nhsub.
@@ -139,22 +139,22 @@ That's it.  If you need to do something more when setting up your repository,
 keep reading.  Otherwise, you are done with this section.
 
 1) to run your own hooks in addition to ours:
-	name your hook
-		WHEN-HOOKNAME
-	where WHEN is
-		PRE	(run your code before the NetHack hook)
-		POST	(run your code after the NetHack hook)
-	and HOOKNAME is the normal git name of the hook.
+    name your hook
+        WHEN-HOOKNAME
+    where WHEN is
+        PRE    (run your code before the NetHack hook)
+        POST    (run your code after the NetHack hook)
+    and HOOKNAME is the normal git name of the hook.
    Make sure the hooks are executable (chmod +x ...).
    Be sure to test carefully since the composition of two bits of code may or
    may not do what you want.
 2) to install other bits on setup:
-	Put additional files in the GITADDDIR tree.  Use "DOTGIT" instead of
-	".git".  If a file called PRE, POST, or INSTEAD exists in a
-	subdirectory of GITADDDIR, it is run before the copy, after the copy,
-	or instead of the copy.  No copy operation is attempted in the DOTGIT
-	directory; use a script and standard git commands to change the
-	contents as needed.
+    Put additional files in the GITADDDIR tree.  Use "DOTGIT" instead of
+    ".git".  If a file called PRE, POST, or INSTEAD exists in a
+    subdirectory of GITADDDIR, it is run before the copy, after the copy,
+    or instead of the copy.  No copy operation is attempted in the DOTGIT
+    directory; use a script and standard git commands to change the
+    contents as needed.
 3) NB: In all namespaces, anything that matches m/^nh/i or m/^nethack/i is
    reserved.
 ------------------------------------------------------------------------------
@@ -162,15 +162,15 @@ keep reading.  Otherwise, you are done with this section.
 A. Introduction
    We have implemented an RCS/CVS/SVN style variable expansion mechanism.
    References of either of the formats:
-	$PREFIX-VARNAME$
-	$PREFIX-VARNAME: VALUE $
+    $PREFIX-VARNAME$
+    $PREFIX-VARNAME: VALUE $
    will be handled (if enabled).
 
    The PREFIX is the value in the git config variable nethack.substprefix.
    VARNAME is one of:
-	Date
-	Branch (experimental)
-	Revision (experimental)
+    Date
+    Branch (experimental)
+    Revision (experimental)
    other names will give a warning.
 
 B. Enabling variable expansion
@@ -179,7 +179,7 @@ B. Enabling variable expansion
    To enable variable expansion:
         pattern NHSUBST
    To disable variable expansion:
-	pattern -NHSUBST
+    pattern -NHSUBST
 
    More information: "git help gitattributes"
 
@@ -194,10 +194,10 @@ C. Oddities
 D. Using your own hooks
    You can use your own hooks - put them in .git/hooks as usual BUT name them
    as follows:
-	WHEN-HOOKNAME
+    WHEN-HOOKNAME
    where WHEN is:
-	PRE	(execute the code before the NetHack hook)
-	POST	(execute the code after the NetHack hook)
+    PRE    (execute the code before the NetHack hook)
+    POST    (execute the code after the NetHack hook)
    and HOOKNAME is the normal git name for the hook.
 
    Test carefully - interactions between hooks can be nasty.

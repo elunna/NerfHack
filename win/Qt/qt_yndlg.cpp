@@ -82,79 +82,79 @@ char NetHackQtYnDialog::Exec()
     QString enable;
     if ( qt_compact_mode && !choices ) {
         ch = "";
-	// expand choices from prompt
-	// ##### why isn't choices set properly???
+    // expand choices from prompt
+    // ##### why isn't choices set properly???
         int c = question.indexOf(QChar('['));
-	qlabel = QString(question).left(c);
-	if ( c >= 0 ) {
-	    c++;
-	    if ( question[c] == '-' )
-		ch.append(question[c++]);
-	    unsigned from=0;
+    qlabel = QString(question).left(c);
+    if ( c >= 0 ) {
+        c++;
+        if ( question[c] == '-' )
+        ch.append(question[c++]);
+        unsigned from=0;
             while (c < question.size()
                    && question[c] != ']' && question[c] != ' ') {
-		if ( question[c] == '-' ) {
-		    from = question[c - 1].cell();
-		} else if ( from != 0 ) {
-		    for (unsigned f=from+1; QChar(f)<=question[c]; f++)
-			ch.append(QChar(f));
-		    from = 0;
-		} else {
-		    ch.append(question[c]);
-		    from = 0;
-		}
-		c++;
-	    }
-	    if ( question[c] == ' ' ) {
-		while ( c < question.size() && question[c] != ']' ) {
-		    if ( question[c] == '*' || question[c] == '?' )
-			ch.append(question[c]);
-		    c++;
-		}
-	    }
-	}
-	if ( question.indexOf("what direction") >= 0 ) {
-	    // We replace this regardless, since sometimes you get choices.
-	    const char* d = gc.Cmd.dirchars;
-	    enable=ch;
-	    ch="";
-	    ch.append(d[1]);
-	    ch.append(d[2]);
-	    ch.append(d[3]);
-	    ch.append(d[0]);
-	    ch.append('.');
-	    ch.append(d[4]);
-	    ch.append(d[7]);
-	    ch.append(d[6]);
-	    ch.append(d[5]);
-	    ch.append(d[8]);
-	    ch.append(d[9]);
-//	    ch_per_line = 3;
-	    def = ' ';
-	} else {
-	    // Hmm... they'll have to use a virtual keyboard
-	}
+        if ( question[c] == '-' ) {
+            from = question[c - 1].cell();
+        } else if ( from != 0 ) {
+            for (unsigned f=from+1; QChar(f)<=question[c]; f++)
+            ch.append(QChar(f));
+            from = 0;
+        } else {
+            ch.append(question[c]);
+            from = 0;
+        }
+        c++;
+        }
+        if ( question[c] == ' ' ) {
+        while ( c < question.size() && question[c] != ']' ) {
+            if ( question[c] == '*' || question[c] == '?' )
+            ch.append(question[c]);
+            c++;
+        }
+        }
+    }
+    if ( question.indexOf("what direction") >= 0 ) {
+        // We replace this regardless, since sometimes you get choices.
+        const char* d = gc.Cmd.dirchars;
+        enable=ch;
+        ch="";
+        ch.append(d[1]);
+        ch.append(d[2]);
+        ch.append(d[3]);
+        ch.append(d[0]);
+        ch.append('.');
+        ch.append(d[4]);
+        ch.append(d[7]);
+        ch.append(d[6]);
+        ch.append(d[5]);
+        ch.append(d[8]);
+        ch.append(d[9]);
+//        ch_per_line = 3;
+        def = ' ';
+    } else {
+        // Hmm... they'll have to use a virtual keyboard
+    }
     } else {
         ch = QString::fromLatin1(choices);
-	qlabel = question.replace(QChar(0x200B), QString(""));
+    qlabel = question.replace(QChar(0x200B), QString(""));
     }
     if (!ch.isNull()) {
-	QVBoxLayout *vb = new QVBoxLayout;
+    QVBoxLayout *vb = new QVBoxLayout;
         bool bigq = (qlabel.length() > (qt_compact_mode ? 40 : 60));
         if (bigq) {
             QLabel *q = new QLabel(qlabel, this);
-	    q->setAlignment(Qt::AlignLeft);
-	    q->setWordWrap(true);
-	    q->setMargin(4);
-	    vb->addWidget(q);
-	}
-	QGroupBox *group = new QGroupBox(bigq ? QString() : qlabel, this);
-	vb->addWidget(group);
-	QHBoxLayout *groupbox = new QHBoxLayout();
-	group->setLayout(groupbox);
-	QButtonGroup *bgroup = new QButtonGroup(group);
+        q->setAlignment(Qt::AlignLeft);
+        q->setWordWrap(true);
+        q->setMargin(4);
+        vb->addWidget(q);
+    }
+    QGroupBox *group = new QGroupBox(bigq ? QString() : qlabel, this);
+    vb->addWidget(group);
+    QHBoxLayout *groupbox = new QHBoxLayout();
+    group->setLayout(groupbox);
+    QButtonGroup *bgroup = new QButtonGroup(group);
 
-	int nchoices=ch.length();
+    int nchoices=ch.length();
         // note: is_ynaq covers nyaq too because the choices string is
         // "ynaq" for both; only the default differs; likewise for nyNaq
         bool is_ynaq = (ch == QString("ynaq") // [Yes ][ No ][All ][Stop]
@@ -165,12 +165,12 @@ char NetHackQtYnDialog::Exec()
              is_lr  = (ch == QString(lrq));   // [ Left ][Right ]
 
 #if 0
-	const int margin=8;
-	const int gutter=8;
-	const int extra=fontMetrics().height(); // Extra for group
-	int x=margin, y=extra+margin;
+    const int margin=8;
+    const int gutter=8;
+    const int extra=fontMetrics().height(); // Extra for group
+    int x=margin, y=extra+margin;
 #endif
-	int butheight = fontMetrics().height() * 2 + 5,
+    int butheight = fontMetrics().height() * 2 + 5,
             butwidth = (butheight - 5) * ((is_ynq || is_lr) ? 3
                                           : (is_ynaq || is_yn) ? 2 : 1) + 5;
         if (butwidth == butheight) { // square, enough room for C or ^C
@@ -288,9 +288,9 @@ char NetHackQtYnDialog::Exec()
                 x += butwidth + gutter;
             }
 #endif
-	    groupbox->addWidget(button);
-	    bgroup->addButton(button, i);
-	}
+        groupbox->addWidget(button);
+        bgroup->addButton(button, i);
+    }
 
         connect(bgroup, SIGNAL(buttonClicked(int)), this, SLOT(doneItem(int)));
 
@@ -302,22 +302,22 @@ char NetHackQtYnDialog::Exec()
             le = new QLineEdit();
             groupbox->insertWidget(2, le); // [n] became #2, Count label is #1
             le->setPlaceholderText(QString("#")); // grayed out
-	}
+    }
         // add an invisible right-most field to left justify the buttons
         groupbox->addStretch(80);
 
-	setLayout(vb);
-	adjustSize();
-	centerOnMain(this);
-	show();
-	char choice=0;
-	char ch_esc=0;
+    setLayout(vb);
+    adjustSize();
+    centerOnMain(this);
+    show();
+    char choice=0;
+    char ch_esc=0;
         for (int i = 0; i < ch.length(); ++i) {
             if (ch[i].cell() == 'q')
                 ch_esc = 'q';
             else if (!ch_esc && ch[i].cell() == 'n')
                 ch_esc = 'n';
-	}
+    }
 
         //
         // When a count is allowed, clicking on the count widget then
@@ -350,23 +350,23 @@ char NetHackQtYnDialog::Exec()
         keypress = choice;
 
     } else {
-	QLabel label(qlabel,this);
-	QPushButton cancel("Dismiss",this);
+    QLabel label(qlabel,this);
+    QPushButton cancel("Dismiss",this);
 #if __cplusplus >= 202002L
-	label.setFrameStyle(static_cast<int>(QFrame::Box)
+    label.setFrameStyle(static_cast<int>(QFrame::Box)
                                 | static_cast<int>(QFrame::Sunken));
 #else
-	label.setFrameStyle(QFrame::Box|QFrame::Sunken);
+    label.setFrameStyle(QFrame::Box|QFrame::Sunken);
 #endif
-	label.setAlignment(Qt::AlignCenter);
-	label.resize(fontMetrics().QFM_WIDTH(qlabel)+60,30+fontMetrics().height());
-	cancel.move(width()/2-cancel.width()/2,label.geometry().bottom()+8);
-	connect(&cancel,SIGNAL(clicked()),this,SLOT(reject()));
-	centerOnMain(this);
-	setResult(-1);
-	show();
-	keypress = '\033';
-	exec();
+    label.setAlignment(Qt::AlignCenter);
+    label.resize(fontMetrics().QFM_WIDTH(qlabel)+60,30+fontMetrics().height());
+    cancel.move(width()/2-cancel.width()/2,label.geometry().bottom()+8);
+    connect(&cancel,SIGNAL(clicked()),this,SLOT(reject()));
+    centerOnMain(this);
+    setResult(-1);
+    show();
+    keypress = '\033';
+    exec();
     }
     return keypress;
 }
@@ -393,7 +393,7 @@ void NetHackQtYnDialog::keyPressEvent(QKeyEvent *event)
         this->done(1);
 
     } else {
-	int where = QString::fromLatin1(choices).indexOf(QChar(keypress));
+    int where = QString::fromLatin1(choices).indexOf(QChar(keypress));
 
         if (allow_count && strchr("#0123456789", keypress)) {
             if (keypress == '#') {
@@ -412,12 +412,12 @@ void NetHackQtYnDialog::keyPressEvent(QKeyEvent *event)
             // change default button from 'n' to 'y'
             if (y_btn)
                 y_btn->setDefault(true);
-	} else if (where != -1) {
+    } else if (where != -1) {
             this->done(where + 1000);
 
-	} else {
-	    QDialog::keyPressEvent(event);
-	}
+    } else {
+        QDialog::keyPressEvent(event);
+    }
     }
 }
 
