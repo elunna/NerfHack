@@ -901,7 +901,7 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
     coordxy dig_x, dig_y;
     boolean nohole, retval = FALSE;
     enum digcheck_result dig_check_result;
- 
+
     if (!cc) {
         dig_x = u.ux;
         dig_y = u.uy;
@@ -1092,7 +1092,7 @@ dig_up_grave(coord *cc)
                 pline("%s!", Hallucination ? "Grave party!"
                                            : "Something was sleeping here");
             break;
-        } 
+        }
         /* FALLTHROUGH */
     default:
         /* No corpse */

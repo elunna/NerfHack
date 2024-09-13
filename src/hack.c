@@ -1706,11 +1706,11 @@ disturb_buried_zombies(coordxy x, coordxy y)
 {
     struct obj *otmp;
     long t;
-    
+
     /* Give hothraxxa a break ;) */
     if (In_sokoban(&u.uz))
         return;
-    
+
     for (otmp = svl.level.buriedobjlist; otmp; otmp = otmp->nobj) {
         if (otmp->otyp == CORPSE && otmp->timed
             && otmp->ox >= x - 1 && otmp->ox <= x + 1
@@ -1873,7 +1873,7 @@ domove_attackmon_at(
         || ((hides_under(mtmp->data) || mtmp->data->mlet == S_EEL)
             && !is_safemon(mtmp))) {
         /* target monster might decide to switch places with you... */
-        *displaceu = (((is_displaced(mtmp->data) && !mtmp->mcan) 
+        *displaceu = (((is_displaced(mtmp->data) && !mtmp->mcan)
                         || has_displacement(mtmp))
                       && !rn2(2)
                       && mtmp->mux == u.ux0 && mtmp->muy == u.uy0
@@ -1900,7 +1900,7 @@ staticfn boolean
 domove_fight_ironbars(coordxy x, coordxy y)
 {
     unsigned breakflags = (BRK_BY_HERO | BRK_FROM_INV | BRK_MELEE);
-    
+
     if (svc.context.forcefight && levl[x][y].typ == IRONBARS) {
         if (uwep) {
             struct obj *obj = uwep;
@@ -2188,7 +2188,7 @@ domove_fight_empty(coordxy x, coordxy y)
                 return TRUE;
             }
             /* force fight at boulder while wearing gauntlets of force */
-            if (svc.context.forcefight 
+            if (svc.context.forcefight
                     && boulder && boulder->otyp == BOULDER) {
                 You("smash %s!", cansee(boulder->ox, boulder->oy)
                                     ? "the boulder" : "something");
@@ -3944,7 +3944,7 @@ interesting_room(void)
     /* Carving message */
     switch (rnd(7)) {
     case 1:
-        pline("%s %s on the ceiling portrays %s.", 
+        pline("%s %s on the ceiling portrays %s.",
               An(adjectives[rn2(SIZE(adjectives))]), art[rn2(SIZE(art))],
               an(carvemon));
         /* Art can inspire in different ways */
@@ -4202,9 +4202,9 @@ saving_grace(int dmg)
 }
 
 /* Print the amount of damage inflicted */
-/* KMH -- Centralized to one function 
+/* KMH -- Centralized to one function
 * Damage to the player will be in parentheses "(3)"
-* Damage to the monster will be brackets "[3]" 
+* Damage to the monster will be brackets "[3]"
 * */
 void
 showdamage(int dmg, boolean you)
@@ -4245,7 +4245,7 @@ losehp(int n, const char *knam, schar k_format)
     n = saving_grace(n);
     u.uhp -= n;
     showdamage(n, TRUE);
-    
+
     if (u.uhp > u.uhpmax)
         u.uhpmax = u.uhp; /* perhaps n was negative */
     if (u.uhp < 1) {
@@ -4300,9 +4300,9 @@ weight_cap(void)
                 carrcap -= 100;
             if (EWounded_legs & RIGHT_SIDE)
                 carrcap -= 100;
-            
+
             /* these carrcap modifiers only make sense if you have feet on the ground */
-            if (uarmf && objdescr_is(uarmf, "hiking boots")) 
+            if (uarmf && objdescr_is(uarmf, "hiking boots"))
                 carrcap += 100;
         }
     }

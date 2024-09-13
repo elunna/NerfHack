@@ -629,7 +629,7 @@ nh_timeout(void)
          * neither is affected if you don't have a luckstone.
          * Luck is based at 0 usually, +1 if a full moon and -1 on Friday 13th
          */
-        if ((has_luckitem() || base_dist > 15) 
+        if ((has_luckitem() || base_dist > 15)
                                && (!time_luck
                                || (time_luck > 0 && u.uluck > baseluck)
                                || (time_luck < 0 && u.uluck < baseluck))) {
@@ -660,7 +660,7 @@ nh_timeout(void)
              *  19      25
              *  20      0
              */
-            
+
             int slow_timeout = 25 * ((20 - base_dist) * (20 - base_dist));
             timeout = slow_timeout;
         }
@@ -1029,7 +1029,7 @@ nh_timeout(void)
                                 makeplural(body_part(FOOT)));
                     HFumbling &= ~I_SPECIAL;
                 }
-                
+
                 if (Fumbling)
                     incr_itimeout(&HFumbling, rnd(20));
 
@@ -1311,8 +1311,8 @@ hatch_egg(anything *arg, long timeout)
             if (is_pool(x, y) && !cant_drown(mon->data)) {
                 if (cansee_hatchspot) /* This will probably never trigger... */
                     pline_mon(mon, "%s drowns.", Monnam(mon));
-                
-                /* An additional way to dispose of phoenix eggs. 
+
+                /* An additional way to dispose of phoenix eggs.
                  * They cannot rise from the ashes in water. */
                 if (mon->data == &mons[PM_PHOENIX])
                     mon->mcan = 1;
@@ -2063,7 +2063,7 @@ do_storms(void)
         pline("Kaboom!!!  Boom!!  Boom!!");
         incr_itimeout(&HDeaf, rn1(20, 30));
         disp.botl = TRUE;
-        if (!u.uinvulnerable 
+        if (!u.uinvulnerable
             || !(uamul && uamul->oartifact == ART_AMULET_OF_STORMS)) {
             stop_occupation();
             nomul(-3);

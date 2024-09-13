@@ -54,7 +54,7 @@ static NEARDATA struct artifact artilist[] = {
      * 1.  The more useful the artifact, the better its cost.
      * 2.  Quest artifacts are highly valued.
      * 3.  Chaotic artifacts are inflated due to scarcity (and balance).
-     * 
+     *
      * The combination of SPFX_WARN+SPFX_DFLAGH+MH_value will trigger
      * EWarn_of_mon for all monsters that have the MH_value flag.
      * For example, Sting and Orcrist will warn of MH_ORC monsters.
@@ -65,46 +65,46 @@ static NEARDATA struct artifact artilist[] = {
       0, 0, 0, NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 0L, NO_COLOR, NONARTIFACT),
 
-    
+
     /*** Lawful artifacts ***/
-    
-    
+
+
     /* From SpliceHack: Some "worse" sacrifice gifts are needed to avoid
      * making #offer overpowered. Used to be PM_KNIGHT. */
     A("Carnwennan", KNIFE,
       (SPFX_RESTR | SPFX_SEARCH | SPFX_STLTH), 0, 0,
       PHYS(3, 8), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 400L, NO_COLOR, CARNWENNAN),
-    
+
     A("Demonbane", MACE,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_DEMON,
       PHYS(5, 0), NO_DFNS, NO_CARY, BANISH,
       A_LAWFUL, PM_CLERIC, NON_PM, 2500L, CLR_RED, DEMONBANE),
-    
+
     /* Excalibur it no longer available to any lawful character when dipping
      * in fountains - only lawful knights can be blessed with it. */
-    A("Excalibur", LONG_SWORD, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN 
+    A("Excalibur", LONG_SWORD, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN
                                 | SPFX_INTEL | SPFX_SEARCH),
       0, 0, PHYS(5, 10), DRLI(0, 0), NO_CARY, 0,
       A_LAWFUL, PM_KNIGHT, NON_PM, 4000L, NO_COLOR, EXCALIBUR),
-    
+
     A("Grayswandir", SILVER_SABER,
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 8000L, NO_COLOR, GRAYSWANDIR),
-    
+
     /* From SpliceHack: Shield of King Arthur.
      * This shield now grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
       (SPFX_RESTR | SPFX_HPHDAM | SPFX_DEFN), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 1500L, NO_COLOR, PRIDWEN),
-    
+
     /* From SLASH'EM */
     A("Quick Blade", SILVER_SHORT_SWORD,
       SPFX_RESTR, 0, 0,
       /* +d9 to-hit bonus handled in artifact.c:spec_abon */
-      PHYS(0, 2), NO_DFNS, NO_CARY, 0, 
+      PHYS(0, 2), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 1000L, NO_COLOR, QUICK_BLADE),
 
     A("Serenity", SILVER_SPEAR,
@@ -125,33 +125,33 @@ static NEARDATA struct artifact artilist[] = {
       SPFX_RESTR, 0, 0,
       PHYS(0, 8), DFNS(AD_STUN), NO_CARY,
       0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L, NO_COLOR, SNICKERSNEE),
-    
+
     A("Sunsword", LONG_SWORD,
       (SPFX_RESTR | SPFX_DFLAGH), 0, MH_UNDEAD,
       PHYS(5, 0), DFNS(AD_BLND), NO_CARY, BLINDING_RAY,
       A_LAWFUL, NON_PM, NON_PM, 1500L, NO_COLOR, SUNSWORD),
 
-    
+
     /*** Neutral artifacts ***/
-    
+
     /* From SlashTHEM with changes:
      * In THEM, this was a neutral cloak of protection that granted luck,
-     * drain resistance, and warning. Now it is a cloak of invisibility that 
+     * drain resistance, and warning. Now it is a cloak of invisibility that
      * grants drain resistance and warning. Luck was removed. */
     A("Blackshroud", CLOAK_OF_INVISIBILITY,
       (SPFX_RESTR | SPFX_WARN), 0, 0,
       NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 1500L, NO_COLOR, BLACKSHROUD),
-    
+
     A("Cleaver", BATTLE_AXE,
       SPFX_RESTR, 0, 0,
       PHYS(3, 6), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_BARBARIAN, NON_PM, 1500L, NO_COLOR, CLEAVER),
-    
-    A("David's Sling", SLING, 
-      (SPFX_RESTR | SPFX_ATTK | SPFX_HPHDAM 
-        | SPFX_WARN | SPFX_DFLAGH), 0, MH_GIANT, 
-      PHYS(5, 0), NO_DFNS, NO_CARY, 0, 
+
+    A("David's Sling", SLING,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_HPHDAM
+        | SPFX_WARN | SPFX_DFLAGH), 0, MH_GIANT,
+      PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 2000L, CLR_RED, DAVID_S_SLING),
 
     /* From SLASH'EM with changes: removed the Luck bonus and replaced it MC1
@@ -160,13 +160,13 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_STLTH | SPFX_PROTECT), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, DELUDER),
-    
+
     /* From SLASH'EM with changes: This now grants warning vs undead */
     A("Disrupter", MACE,
       (SPFX_RESTR | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       PHYS(5, 30), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 500L, CLR_RED, DISRUPTER),
-    
+
     /* When wielded:
      * - grants warning vs giants and instakills giants
      * - grants steadfastness
@@ -176,30 +176,30 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_GIANT,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 200L, CLR_RED, GIANTSLAYER),
-    
+
     /* From EvilHack */
     A("Keolewa", CLUB,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       ELEC(5, 8), DFNS(AD_ELEC), NO_CARY, 0,
       A_NEUTRAL, PM_CAVE_DWELLER, NON_PM, 2000L, NO_COLOR, KEOLEWA),
-    
-    /*Magicbane is a bit different!  Its magic fanfare unbalances victims 
+
+    /*Magicbane is a bit different!  Its magic fanfare unbalances victims
      * in addition to doing some damage.
      * - Magicbane was changed from an athame to a quarterstaff. */
     A("Magicbane", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       STUN(3, 4), DFNS(AD_MAGM), NO_CARY, 0,
       A_NEUTRAL, PM_WIZARD, NON_PM, 3500L, NO_COLOR, MAGICBANE),
-    
+
     /* From SLASH'EM with changes:
      * - Now doesn't impede spellcasting when worn
      * - It acts as a light source.
      * - It is not the healers first sacrifice gift as it was in SLASH'EM */
-    A("Mirrorbright", SHIELD_OF_REFLECTION, 
+    A("Mirrorbright", SHIELD_OF_REFLECTION,
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
-      NO_ATTK, NO_DFNS, NO_CARY, 0, 
+      NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, MIRRORBRIGHT),
-    
+
     /*
      *      Mjollnir can be thrown when wielded if hero has 25 Strength
      *      (usually via gauntlets of power but possible with rings of
@@ -211,50 +211,50 @@ static NEARDATA struct artifact artilist[] = {
      *
      *      Monsters don't throw Mjollnir regardless of strength (not even
      *      fake-player valkyries).
-     *      
+     *
      * Changes from vanilla:
      * - The warhammer is now 2-handed and deals 2d6 vs small, 2d8 vs large
      * - Can be invoked for a lightning bolt
      */
     A("Mjollnir", WAR_HAMMER, /* Mjo:llnir */
       (SPFX_RESTR | SPFX_ATTK), 0, 0,
-      ELEC(5, 24), NO_DFNS, NO_CARY, 
+      ELEC(5, 24), NO_DFNS, NO_CARY,
       LIGHTNING_BOLT,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, NO_COLOR, MJOLLNIR),
-    
+
     /* From SLASH6/slashem-up/SlashTHEM */
     A("Mouser\'s Scalpel", RAPIER,
       SPFX_RESTR, 0, 0,
       PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 600L, NO_COLOR, MOUSER_S_SCALPEL),
-    
+
     /* From SlashTHEM with changes:  In SlashTHEM this is a neutral robe that
-     * confers hallucination resistance and acid resistance when worn. It 
+     * confers hallucination resistance and acid resistance when worn. It
      * also granted protection, but was removed since the robe already has MC2.
      * */
     A("Snakeskin", ROBE,
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
       NO_ATTK, DFNS(AD_ACID), NO_CARY, 0,
       A_NEUTRAL, 0, NON_PM, 1700L, NO_COLOR, SNAKESKIN),
-    
+
     /* From SpliceHack */
-    A("The End", SCYTHE, 
+    A("The End", SCYTHE,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
-      COLD(3, 20), DFNS(AD_DRLI), NO_CARY, 0, 
+      COLD(3, 20), DFNS(AD_DRLI), NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 6000L, NO_COLOR, THE_END),
-    
+
     /* Two problems:
      *  1) doesn't let trolls regenerate heads,
      *  2) doesn't give unusual message for 2-headed monsters (but allowing
      *  those at all causes more problems than worth the effort).
-     *  
+     *
      *  Changes:
      *  - Now grants see invisible when wielded
      *  - Provides warning vs jabberwocks
      *  - Increased rate of beheading from 5% to 10%
      */
     A("Vorpal Blade", LONG_SWORD,
-      (SPFX_RESTR | SPFX_BEHEAD | SPFX_SEEINV | SPFX_WARN | SPFX_DFLAGH), 
+      (SPFX_RESTR | SPFX_BEHEAD | SPFX_SEEINV | SPFX_WARN | SPFX_DFLAGH),
       0, MH_JABBERWOCK,
       PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 4000L, CLR_RED, VORPAL_BLADE),
@@ -264,14 +264,14 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_STLTH | SPFX_LUCK), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, WHISPERFEET),
-    
-   
+
+
     /*** Chaotic artifacts ***/
-    
+
     /* From xNetHack */
     A("The Amulet of Storms", AMULET_OF_FLYING,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
-      NO_ATTK, DFNS(AD_ELEC), NO_CARY, 0, 
+      NO_ATTK, DFNS(AD_ELEC), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 600L, NO_COLOR, AMULET_OF_STORMS),
 
     /* From SLASH'EM */
@@ -279,7 +279,7 @@ static NEARDATA struct artifact artilist[] = {
       SPFX_RESTR, 0, 0,
       PHYS(0, 20), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 1000L, NO_COLOR, DOOMBLADE),
-    
+
     /*
      *      Grimtooth glows in warning when elves are present, but its
      *      damage bonus applies to all targets rather than just elves
@@ -289,26 +289,26 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_ATTK | SPFX_WARN | SPFX_DFLAGH), 0, MH_ELF,
       DISE(5, 6), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ORC, 1500L, CLR_RED, GRIMTOOTH),
-    
+
     /* From SLASH'EM */
     A("Hellfire", CROSSBOW,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
       PHYS(5, 7), DFNS(AD_FIRE), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 4000L, NO_COLOR, HELLFIRE),
-    
+
     /* Debut artifact in NerfHack */
     A("Mayhem", STOMPING_BOOTS,
       (SPFX_RESTR | SPFX_DEFN | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 5000L, NO_COLOR, MAYHEM),
-    
+
     /* From SLASH'EM: Instead of granting poison resistance, this grants
      * sickness resistance instead. */
     A("Plague", BOW,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
       PHYS(5, 7), DFNS(AD_DISE), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 4000L, NO_COLOR, PLAGUE),
-    
+
     /* From SpliceHack */
     A("Poseidon\'s Trident", TRIDENT,
       (SPFX_RESTR | SPFX_BREATHE), 0, 0,
@@ -320,13 +320,13 @@ static NEARDATA struct artifact artilist[] = {
       SPFX_RESTR, 0, 0,
       PHYS(2,0), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 400L, NO_COLOR, SERPENT_S_TONGUE),
-    
+
     /* Same alignment as elves */
     A("Sting", ELVEN_DAGGER,
       (SPFX_WARN | SPFX_DFLAGH), 0, MH_ORC,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ELF, 800L, CLR_BRIGHT_BLUE, STING),
-    
+
     /* Stormbringer only has a 2 because it can drain a level,
      * providing 8 more. */
     A("Stormbringer", RUNESWORD,
@@ -341,31 +341,31 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, PM_ELF, 2000L, CLR_BRIGHT_BLUE, ORCRIST),
 
     /*** Unaligned artifacts ***/
-    
+
     /* Changes: Now grants warning vs dragons and can instakill dragons */
     A("Dragonbane", BROADSWORD,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_REFLECT | SPFX_WARN), 0, MH_DRAGON,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 500L, CLR_RED, DRAGONBANE),
-    
+
     /* Changes: Now can instakill flammable monsters and green slime */
     A("Fire Brand", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       FIRE(5, 0), DFNS(AD_FIRE), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, FIRE_BRAND),
-    
+
     /* Changes: Now can instakill water elementals */
     A("Frost Brand", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       COLD(5, 0), DFNS(AD_COLD), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, FROST_BRAND),
-    
+
     /* Debut artifact in NerfHack */
     A("Load Brand", HEAVY_SWORD,
       (SPFX_RESTR | SPFX_PROTECT | SPFX_HPHDAM),
       0, 0, PHYS(5, 40), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, LOAD_BRAND),
-    
+
     /* Changes: Now grants warning vs ogres and can instakill ogres */
     A("Ogresmasher", WAR_HAMMER,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0,
@@ -378,7 +378,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_TCTRL), 0, 0,
       PHYS(2, 6), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 500L, NO_COLOR, ORIGIN),
-    
+
     /* Debut artifact in NerfHack.
      * Provides see invisible, searching, and stun resistance.
      * With these glasses - you CAN handle the Truth! */
@@ -386,14 +386,14 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_SEEINV | SPFX_SEARCH), 0, 0,
       NO_ATTK, DFNS(AD_STUN), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, LENSES_OF_TRUTH),
-    
+
     /* Changes: Now grants regeneration, warning vs trolls and can instakill
      * trolls */
     A("Trollsbane", MORNING_STAR,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_REGEN | SPFX_WARN), 0, MH_TROLL,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 1000L, CLR_RED, TROLLSBANE),
-    
+
     /* Changes: Now grants protection from shapechangers, warning vs werefoo
      * and can instakill werefoo */
     A("Werebane", SILVER_SABER,
@@ -401,12 +401,12 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), DFNS(AD_WERE), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 1500L, CLR_RED, WEREBANE),
 
-    
+
     /*
      *      The artifacts for the quest dungeon, all self-willed.
      */
 
-    
+
     A("The Orb of Detection", CRYSTAL_BALL,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
       (SPFX_ESP | SPFX_HSPDAM), 0,
@@ -415,7 +415,7 @@ static NEARDATA struct artifact artilist[] = {
 
     /* Instead of stealth, this grants displacement and flying when carried */
     A("The Heart of Ahriman", LUCKSTONE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH), 
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
       (SPFX_FLYING | SPFX_DISPLAC), 0,
       /* this stone does double damage if used as a projectile weapon */
       PHYS(5, 0), NO_DFNS, NO_CARY, UNCURSE_INVK,
@@ -440,7 +440,7 @@ static NEARDATA struct artifact artilist[] = {
 A("The Palantir of Westernesse", CRYSTAL_BALL,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
       (SPFX_ESP | SPFX_REGEN | SPFX_HSPDAM), 0,
-      NO_ATTK, NO_DFNS, NO_CARY, TAMING,        
+      NO_ATTK, NO_DFNS, NO_CARY, TAMING,
       A_CHAOTIC, NON_PM , PM_ELF, 8000L, NO_COLOR, PALANTIR_OF_WESTERNESSE ),
 #endif
 
@@ -462,7 +462,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       A_NEUTRAL, PM_MONK, NON_PM, 2500L, NO_COLOR, EYES_OF_THE_OVERWORLD),
 
     A("The Mitre of Holiness", HELM_OF_BRILLIANCE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_DFLAGH | SPFX_INTEL | SPFX_PROTECT 
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_DFLAGH | SPFX_INTEL | SPFX_PROTECT
        | SPFX_NOWISH),
       0, MH_UNDEAD,
       NO_ATTK, NO_DFNS, CARY(AD_FIRE), ENERGY_BOOST,
@@ -470,7 +470,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
 
     /* Changes: Now grants physical damage reduction */
     A("The Longbow of Diana", BOW,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT | SPFX_HPHDAM 
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT | SPFX_HPHDAM
         | SPFX_NOWISH),
       SPFX_ESP, 0,
       PHYS(5, 0), NO_DFNS, NO_CARY, CREATE_AMMO,

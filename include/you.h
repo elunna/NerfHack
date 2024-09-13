@@ -488,7 +488,7 @@ struct you {
 #define REC_NONE    0
 #define REC_REC     1
 #define REC_MOL     2
-    
+
     long umoney0;
     long uspare1;
     long uexp, urexp;        /* exper pts for gaining levels and for score */

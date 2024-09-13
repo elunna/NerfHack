@@ -1319,7 +1319,7 @@ really_done(int how)
              * or not withering was the actual cause of death; dying while
              * withering is assumed to just wither the rest of the body without
              * any vitality to stop it) */
-            corpse = mk_named_object(CORPSE, &mons[mnum], u.ux, u.uy, 
+            corpse = mk_named_object(CORPSE, &mons[mnum], u.ux, u.uy,
                                      svp.plname);
         }
         Sprintf(pbuf, "%s, ", svp.plname);

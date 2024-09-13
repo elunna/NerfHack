@@ -23,8 +23,8 @@ newuexp(int lev)
         for (int i = 0; i < lev - 10; i++)
             newlev *= 1.5;
         res = 10000L * newlev;
-        
-        if (lev > 10) 
+
+        if (lev > 10)
             res = res - (res % 1000); /* Trim off small digits */
         return res;
     }
@@ -142,7 +142,7 @@ experience(struct monst *mtmp, int nk)
     /* For rabid monsters, a little extra*/
     if (mtmp->mrabid)
         tmp += (2 * mtmp->m_lev);
-    
+
     /*  For certain "extra nasty" monsters, give even more */
     if (extra_nasty(ptr))
         tmp += (7 * mtmp->m_lev);

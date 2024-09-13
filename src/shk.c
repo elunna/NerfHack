@@ -4248,7 +4248,7 @@ staticfn long
 getprice(struct obj *obj, boolean shk_buying)
 {
     long tmp = (long) objects[obj->otyp].oc_cost;
-   
+
     /* Scale summon card price with monster difficulty */
     if (obj->otyp == SCR_CREATE_MONSTER && obj->corpsenm != NON_PM) {
         tmp = 10L * mons[obj->corpsenm].difficulty;
@@ -4274,7 +4274,7 @@ getprice(struct obj *obj, boolean shk_buying)
         tmp /= (long) (obj->oeroded2 + 1);
     if (obj->odiluted && shk_buying)
         tmp /= 2L;
-    
+
     switch (obj->oclass) {
     case FOOD_CLASS:
         tmp += corpsenm_price_adj(obj);

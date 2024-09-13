@@ -51,7 +51,7 @@ static const char are_blinded_by_the_flash[] = "are blinded by the flash!";
  */
 static const char *const flash_types[] = {
     /* Wands must be 0-9 */
-    "magic missile",        
+    "magic missile",
     "bolt of fire",         /* 01 */
     "bolt of cold",         /* 02 */
     "sleep ray",            /* 03 */
@@ -279,7 +279,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             if (polyspot)
                 for (obj = mtmp->minvent; obj; obj = obj->nobj)
                     bypass_obj(obj);
-            
+
             /* Phoenixes resist polymorph by just dying and exploding */
             if (mtmp->data == &mons[PM_PHOENIX]) {
                 shieldeff(mtmp->mx, mtmp->my);
@@ -1373,7 +1373,7 @@ cancel_item(struct obj *obj)
             costly_alteration(obj, COST_CANCEL);
             obj->spe = cancelled_spe;
         }
-        
+
         if (obj->otyp == UNICORN_HORN) {
             if (obj->spe <= 0 && !obj->degraded_horn)
                 obj->degraded_horn = 1;
@@ -1775,7 +1775,7 @@ poly_obj(struct obj *obj, int id)
     if (obj->otyp == BOULDER)
         sokoban_guilt();
 
-    /* Prevent polymorphing phoenix eggs because otherwise when a 
+    /* Prevent polymorphing phoenix eggs because otherwise when a
      * phoenix explodes from poly beams, the egg is also polyd. */
     if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX)
         return obj;
@@ -1818,7 +1818,7 @@ poly_obj(struct obj *obj, int id)
     if (obj->spe > 0) {
         otmp->spe = rn2(obj->spe);
     }
-    
+
 #ifdef MAIL_STRUCTURES
     /* You can't send yourself 100 mail messages and then
      * polymorph them into useful scrolls
@@ -1853,7 +1853,7 @@ poly_obj(struct obj *obj, int id)
             otmp->otyp = POT_BOOZE + rn2(5);
         break;
     }
-    
+
     /* avoid abusing eggs laid by you */
     if (obj->otyp == EGG && obj->spe) {
         int mnum, tryct = 100;
@@ -2629,8 +2629,8 @@ bhitpile(
 int
 zappable(struct obj *wand)
 {
-    int wrestchance = (wand->blessed ? 7 
-                                     : (wand->cursed ? WAND_WREST_CHANCE 
+    int wrestchance = (wand->blessed ? 7
+                                     : (wand->cursed ? WAND_WREST_CHANCE
                                                      : 23));
     /* Not a wand, but definitely zappable! */
     if (wand->otyp == SCR_ZAPPING)
@@ -2662,7 +2662,7 @@ void
 zapnodir(struct obj *obj)
 {
     boolean known = FALSE;
-    
+
     /* This code for wonder seems redundant, but is actually necessary
        in order to catch various cases for engraving and keeping wands
        from being identified erroneously. */
@@ -2792,7 +2792,7 @@ dozap(void)
         if (need_dir && !getdir((char *) 0)) {
             if (!Blind)
                 pline("%s glows and fades.", The(xname(obj)));
-        } else if  (need_dir && ((!u.dx && !u.dy && !u.dz) 
+        } else if  (need_dir && ((!u.dx && !u.dy && !u.dz)
                 || (obj->cursed && !rn2(WAND_BACKZAP_CHANCE)))) {
             if (u.dx || u.dy || u.dz)
                 pline("%s backfires!", The(xname(obj)));
@@ -2830,7 +2830,7 @@ dozap(void)
         if (!Blind)
             pline("%s glows and fades.", The(xname(obj)));
         /* make him pay for knowing !NODIR */
-    } else if (need_dir && ((!u.dx && !u.dy && !u.dz) 
+    } else if (need_dir && ((!u.dx && !u.dy && !u.dz)
                 || (obj->cursed && !rn2(WAND_BACKZAP_CHANCE)))) {
         if (u.dx || u.dy || u.dz)
             pline("%s backfires!", The(xname(obj)));
@@ -3428,7 +3428,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
     boolean youdefend = (mdef == &gy.youmonst);
     int onum = 0, oindex = 0, cnt = 0;
     struct obj *otmp;
-    
+
     if (youdefend ? (!youattack && Antimagic)
                   : resist(mdef, obj->oclass, 0, NOTELL))
         return FALSE; /* resisted cancellation */
@@ -3439,7 +3439,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
 
     if (obj->otyp == WAN_CANCELLATION)
         makeknown(obj->otyp);
-    
+
     if (self_cancel) { /* 1st cancel inventory */
         for (otmp = (youdefend ? gi.invent : mdef->minvent); otmp;
              otmp = otmp->nobj)
@@ -3462,7 +3462,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         /* player attacking monster */
         if (youattack) {
             if (rn2(10) && (otmp = which_armor(mdef, W_ARM))
-                && (otmp->otyp == GRAY_DRAGON_SCALES 
+                && (otmp->otyp == GRAY_DRAGON_SCALES
                     || otmp->otyp == GRAY_DRAGON_SCALE_MAIL)) {
                 shieldeff(mdef->mx, mdef->my);
                 if (canseemon(mdef))
@@ -3513,7 +3513,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                 return FALSE;
             } else {
                 You(!Hallucination? "are covered in sparkling lights!"
-                                   : "are enveloped by psychedelic fireworks!");    
+                                   : "are enveloped by psychedelic fireworks!");
                 if (u.uspellprot) {
                     pline_The("%s haze around you disappears.",
                               hcolor(NH_GOLDEN));
@@ -3948,7 +3948,7 @@ weffects(struct obj *obj)
         disclose = TRUE;
     }
 
-    /* This obroken check is a hack so we don't identify misc wands when cartomancers 
+    /* This obroken check is a hack so we don't identify misc wands when cartomancers
      * use scrolls of zapping. When zapping cards are used, they pseudo-copy a wand zap
      * effect - so we set obroken on the card to flag it's not really a wand. */
     if (disclose && !obj->obroken) {
@@ -4352,7 +4352,7 @@ bhit(
     /* Being in a pit limits our range to whatever is next to the pit */
     if (in_pit)
         range = 1;
-    
+
     if (obj && (obj->otyp == SPE_KNOCK || obj->otyp == SPE_WIZARD_LOCK))
         range = 1;
 
@@ -4403,7 +4403,7 @@ bhit(
             range = 0;
             break;
         }
-        
+
         /* WATER aka "wall of water" stops items */
         if (IS_WATERWALL(typ) || typ == LAVAWALL) {
             if (weapon == THROWN_WEAPON || weapon == KICKED_WEAPON)
@@ -4902,7 +4902,7 @@ zhitm(
             sho_shieldeff = TRUE;
             tmp = 0;
             break;
-        } 
+        }
         tmp = rnd(8);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
@@ -4970,7 +4970,7 @@ zhitu(
         } else {
             monstunseesu(M_SEEN_MAGR);
         }
-        /* Half spell damage stacks with Antimagic, 
+        /* Half spell damage stacks with Antimagic,
          * but is already counted after this switch */
         break;
     case ZT_FIRE:
@@ -5090,7 +5090,7 @@ zhitu(
             } else {
                 You("feel drained...");
                 drain = dam / 3 + rn2(5);
-            }   
+            }
             if (Upolyd)
                 u.mhmax -= min(drain, u.mhmax - 1);
             else
@@ -5337,7 +5337,7 @@ disintegrate_floor_objects(
     long i, scrquan, delquan;
     char buf1[BUFSZ], buf2[BUFSZ];
     int cnt = 0;
-    
+
     for (obj = svl.level.objects[x][y]; obj; obj = obj2) {
         obj2 = obj->nexthere;
         if (obj->otyp == BOULDER) {
@@ -5492,7 +5492,7 @@ dobuzz(
 
     coord save_bhitpos;
     boolean shopdamage = FALSE,
-            fireball = (type == ZT_SPELL(ZT_FIRE) 
+            fireball = (type == ZT_SPELL(ZT_FIRE)
                      || type == BZ_M_SPELL(ZT_FIRE)), /* set once */
             gas_hit = FALSE; /* will be set during each iteration */
     struct obj *otmp;
@@ -6265,14 +6265,14 @@ zap_over_floor(
             }
         }
     }
-    
+
     if (OBJ_AT(x, y) && damgtype == ZT_FIRE)
         if (burn_floor_objects(x, y, FALSE, (type > 0 && !moncast)) && couldsee(x, y)) {
             newsym(x, y);
             You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
         }
     if (OBJ_AT(x, y) && abs(type) == ZT_BREATH(ZT_DEATH)) {
-        if (disintegrate_floor_objects(x, y, TRUE, type > 0) 
+        if (disintegrate_floor_objects(x, y, TRUE, type > 0)
               && couldsee(x, y)) {
             newsym(x, y);
         }
@@ -6609,7 +6609,7 @@ maybe_destroy_item(
     /* lint suppression */
     dmg = dindx = 0;
     quan = 0L;
-    
+
     /* external worn item protects inventory? */
     if (u_carry && inventory_resistance_check(dmgtyp))
         return 0;
@@ -6734,7 +6734,7 @@ maybe_destroy_item(
 
         if (!cnt)
             return 0;
-        
+
         if (u_carry || vis) {
             mult = (cnt == 1L) ? ((quan == 1L) ? "" /* 1 of 1 */
                                   : "One of ")      /* 1 of N */
@@ -6870,7 +6870,7 @@ destroy_items(
      * second pass to handle the destruction.]
      */
     bypass_objlist(*objchn, FALSE); /* clear bypass bit for invent */
-                                    
+
     while ((obj = nxt_unbypassed_obj(*objchn)) != 0) {
         if (!destroyable(obj, dmgtyp))
             continue; /* this dmg type can't destroy this obj */
@@ -7159,7 +7159,7 @@ makewish(void)
     /* TODO? maybe generate a second event describing what was received since
        these just echo player's request rather than show actual result */
 
-    /* The NeverEnding Story II: The Next Chapter: Bastian loses a 
+    /* The NeverEnding Story II: The Next Chapter: Bastian loses a
      * memory every time he makes a wish. Be careful with those wishes... */
     if (Luck < 0 && !(wizard || iflags.debug_fuzzer))
         forget(rnd(4));

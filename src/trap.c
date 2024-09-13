@@ -689,7 +689,7 @@ fall_through(
                   || (ceiling_hider(gy.youmonst.data) && u.uundetected))
                  && !(ftflags & TOOKPLUNGE))) {
         dont_fall = "don't fall in.";
-    } else if (Role_if(PM_ARCHEOLOGIST) && uwep && uwep->otyp == BULLWHIP) {       
+    } else if (Role_if(PM_ARCHEOLOGIST) && uwep && uwep->otyp == BULLWHIP) {
         pline("But thanks to your trusty whip ...");
         dont_fall = "don't fall in.";
     } else if (gy.youmonst.data->msize >= MZ_HUGE) {
@@ -863,7 +863,7 @@ animate_statue(
         set_malign(mon);
     }
     newsym(mon->mx, mon->my);
-    
+
     comes_to_life = !canspotmon(mon) ? "disappears"
                     : golem_xform ? "turns into flesh"
                       : (nonliving(mon->data) || is_vampshifter(mon))
@@ -1188,7 +1188,7 @@ m_harmless_trap(struct monst *mtmp, struct trap *ttmp)
             return TRUE;
         break;
     case COLD_TRAP:
-        break; /* Affects cold resistant monsters too */ 
+        break; /* Affects cold resistant monsters too */
     case PIT:
         /*FALLTHRU*/
     case SPIKED_PIT:
@@ -1396,7 +1396,7 @@ trapeffect_rocktrap(
                 pline("A trap door in %s opens and a %s falls on your %s!",
                     the(ceiling(u.ux, u.uy)), drop_boulder ? "boulder" : "rock",
                     body_part(HEAD));
-           
+
             for (int i = 0; i < dropqty; i++) {
                 int dmg;
                 trap->once = 1;
@@ -1408,7 +1408,7 @@ trapeffect_rocktrap(
                     dmg = d(2, 6);
                     otmp = t_missile(ROCK, trap);
                 }
-                
+
                 place_object(otmp, u.ux, u.uy);
 
                 if (uarmh) {
@@ -1466,7 +1466,7 @@ trapeffect_rocktrap(
         old_mhp = mtmp->mhp;
         if (thitm(0, mtmp, otmp, drop_boulder ? rn1(7, 25) : d(2, 6), FALSE))
             trapkilled = TRUE;
-        
+
         /* Stun if damage was over 6. */
         if (!trapkilled && (old_mhp - mtmp->mhp) > 6 && !mtmp->mstun) {
             if (canseemon(mtmp))
@@ -1809,7 +1809,7 @@ trapeffect_rust_trap(
 }
 
 
-/* This is not great - but FROMOUTSIDE is used by other 
+/* This is not great - but FROMOUTSIDE is used by other
  * sources of fumbling. In timeout.c we check if this is I_SPECIAL
  * and reset it for a while or until it's wiped off by a towel.
  */
@@ -1832,11 +1832,11 @@ trapeffect_grease_trap(
     long old;
     int blindinc;
     struct obj *otmp;
-    
+
     if (mtmp == &gy.youmonst) {
         /* Stepping in a puddle grease */
         if (!Levitation && !Flying && !rn2(2)) {
- 
+
             /* Usually fall off steed if riding */
             if (u.usteed) {
                 pline("%s clops into a puddle of grease and slips!",
@@ -1848,7 +1848,7 @@ trapeffect_grease_trap(
 				losehp(Maybe_Half_Phys(d(2, 3)), "bucked off a greased steed", KILLED_BY);
 				nomul(-rnd(4));
             } else {
-                if (uarmf && (objdescr_is(uarmf, "mud boots") 
+                if (uarmf && (objdescr_is(uarmf, "mud boots")
                         || uarmf->otyp == WATER_WALKING_BOOTS))
                     Your("boots keep you from slipping on grease!");
 				else if (rn2(10)) {
@@ -1869,7 +1869,7 @@ trapeffect_grease_trap(
         if (trap->once && trap->tseen && !rn2(15)) {
             if (!Blind)
                 pline("A broken hose pops out of %s!", the(surface(u.ux, u.uy)));
-            else 
+            else
                 You_hear("a soft click.");
             deltrap(trap);
             newsym(u.ux, u.uy);
@@ -1877,7 +1877,7 @@ trapeffect_grease_trap(
         }
         seetrap(trap);
         trap->once = 1;
-        
+
         switch (rn2(5)) {
         case 0:
             pline("%s you on the %s!", A_gush_of_grease_hits, body_part(HEAD));
@@ -1945,7 +1945,7 @@ trapeffect_grease_trap(
             otmp = carrying(TOWEL);
             if (otmp && !rn2(2))
                 grease_hits(otmp);
-            
+
             /* Hit the quiver too */
             if (uquiver && !rn2(2))
                 grease_hits(uquiver);
@@ -1965,25 +1965,25 @@ trapeffect_grease_trap(
                     }
                 }
             }
-            
+
             if (uarmc)
                 grease_hits(uarmc);
             else if (uarm)
                 grease_hits(uarm);
             else if (uarmu)
                 grease_hits(uarmu);
-            
+
         }
         update_inventory();
     } else {
         struct obj *target;
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
-       	
+
         if (!(mon_prop(mtmp, LEVITATION) || mon_prop(mtmp, FLYING)
-                    || (is_clinger(mtmp->data) && has_ceiling(&u.uz))) && !rn2(2)) { 
-            if (canseemon(mtmp))	
-                pline("%s slips in a puddle of grease and falls!", Monnam(mtmp)); 
+                    || (is_clinger(mtmp->data) && has_ceiling(&u.uz))) && !rn2(2)) {
+            if (canseemon(mtmp))
+                pline("%s slips in a puddle of grease and falls!", Monnam(mtmp));
             thitm(0, mtmp, (struct obj *) 0, (rnd(4) + 1), FALSE);
             if (!DEADMONSTER(mtmp))
                 paralyze_monst(mtmp, rnd(4) + 1);
@@ -2000,7 +2000,7 @@ trapeffect_grease_trap(
             newsym(mtmp->mx, mtmp->my);
             return Trap_Is_Gone;
         }
-        
+
         if (in_sight)
             seetrap(trap);
         trap->once = 1;
@@ -2018,7 +2018,7 @@ trapeffect_grease_trap(
                       mon_nam(mtmp), mbodypart(mtmp, ARM));
             if ((target = which_armor(mtmp, W_ARMS)) != 0)
                 target->greased = 1;
-            
+
             target = MON_WEP(mtmp);
             if (target && bimanual(target))
                 target->greased = 1;
@@ -2219,7 +2219,7 @@ trapeffect_cold_trap(
             if (u.uhp > u.uhpmax)
                 u.uhp = u.uhpmax, disp.botl = TRUE;
         }
-        
+
         if (!dmg) {
             if (!lost_resistance)
                 You("are uninjured.");
@@ -2392,7 +2392,7 @@ trapeffect_pit(
                            ? "stumbled into a pit of iron spikes"
                            : "fell into a pit of iron spikes",
                        NO_KILLER_PREFIX);
-                
+
                 maybe_fall_onto_weapon();
 
                 if (!rn2(6))
@@ -2819,7 +2819,7 @@ trapeffect_magicbeam_trap(
                FALSE);
         if (DEADMONSTER(mtmp))
             trapkilled = TRUE;
-        
+
         return trapkilled ? Trap_Killed_Mon : mtmp->mtrapped
                                               ? Trap_Caught_Mon : Trap_Effect_Finished;
     }
@@ -3140,7 +3140,7 @@ trapeffect_spear_trap(
                   mon_nam(u.usteed));
         else
             pline("A spear shoots up from a hole in the ground at you!");
-        
+
         if (u.usteed) {
             /* trap hits steed instead of you */
             (void) steedintrap(trap, (struct obj *) 0);
@@ -3435,7 +3435,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
         if (is_you)
             return TRAP_NOT_IMMUNE;
         /** Any firey/watery monsters will burn or wash away grease instantly.
-          * TODO: Flesh this out a bit more. Add an is_firey macro. Consider 
+          * TODO: Flesh this out a bit more. Add an is_firey macro. Consider
           * making non-solid monsters immune also? Also check the polyd state
           * of the player?
           **/
@@ -5366,7 +5366,7 @@ water_damage(
             || obj->otyp == SCR_MAIL
 #endif
            ) return 0;
-        
+
         if (rn2(3)) {
             if (in_invent)
                 Your("%s %s.", ostr, vtense(ostr, "fade"));
@@ -5378,17 +5378,17 @@ water_damage(
              * For stacks, be more generous */
             if (obj->quan > 1)
                 num_disintegrate = rnd(obj->quan / 2 + 1);
-            
+
             if (in_invent) {
                 if (num_disintegrate == obj->quan || obj->quan == 1)
                     Your("%s %s.", ostr, vtense(ostr, "disintegrate"));
                 else
                     pline("Some of your %s %s.", ostr, vtense(ostr, "disintegrate"));
-            } else 
+            } else
                 pline(num_disintegrate == 1 ?
                                  "A scroll disintegrates." :
                                  "Some scrolls fade and disintegrate.");
-            
+
             if (obj->quan == num_disintegrate) {
                 setnotworn(obj);
                 delobj(obj);
@@ -5403,7 +5403,7 @@ water_damage(
                 update_inventory();
             return ER_DESTROYED;
         }
-        
+
         if (in_invent)
             update_inventory();
         return ER_DAMAGED;
@@ -5530,8 +5530,8 @@ emergency_disrobe(boolean *lostsome)
                  * for obvious reasons.  Also, any item in the midst
                  * of being taken off or stolen.
                  */
-                if (!(((obj->otyp == LOADSTONE || obj->otyp == FOULSTONE) 
-                        && obj->cursed) 
+                if (!(((obj->otyp == LOADSTONE || obj->otyp == FOULSTONE)
+                        && obj->cursed)
                       || obj == uamul
                       || obj == uleft || obj == uright || obj == ublindf
                       || obj == uarm || obj == uarmc || obj == uarmg
@@ -5696,7 +5696,7 @@ drown(void)
         /* maybe we were called because the hero moved or fell into a pool; if
          * so, assuming the only source of water walking is water walking
          * boots, identify them. */
-        if (uarmf 
+        if (uarmf
             && uarmf->otyp == WATER_WALKING_BOOTS
             && !objects[WATER_WALKING_BOOTS].oc_name_known) {
             Your("boots don't sink into the water!");
@@ -6244,7 +6244,7 @@ disarm_spear_trap(struct trap *ttmp) /* Erik Lunna */
     coord trapxy;
     trapxy.x = ttmp->tx;
     trapxy.y = ttmp->ty;
-    
+
     if (fails < 2)
         return fails;
     You("disarm %s spear trap!", which);
@@ -7341,7 +7341,7 @@ b_trapped(const char *item, int bodypart)
 
     Soundeffect(se_kaboom, 80);
     pline("KABOOM!!  %s was booby-trapped!", The(item));
-    explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), 
+    explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE),
             resist_reduce(dmg, FIRE_RES),
             DOOR_TRAP, EXPL_FIERY);
     scatter(u.ux, u.uy, dmg,
@@ -7445,8 +7445,8 @@ lava_effects(void)
     unsigned protect_oid = 0;
     int burncount = 0, burnmesgcount = 0;
     /* only applicable for water walking */
-    const int dmg = resist_reduce(d(6, 6), FIRE_RES); 
-    
+    const int dmg = resist_reduce(d(6, 6), FIRE_RES);
+
     if (iflags.in_lava_effects) {
         debugpline0("Skipping recursive lava_effects().");
         return FALSE;
@@ -7501,7 +7501,7 @@ lava_effects(void)
      * (3.7: that assumption is no longer true, but having boots be the first
      * thing to come into contact with lava makes sense.)
      */
-    if (uarmf && is_flammable(uarmf) && !uarmf->oerodeproof 
+    if (uarmf && is_flammable(uarmf) && !uarmf->oerodeproof
             && uarmf->in_use) {
         obj = uarmf;
         pline("%s into flame!", Yobjnam2(obj, "burst"));
@@ -7848,13 +7848,13 @@ trap_sanity_check(void)
 
 void
 trigger_trap_with_polearm(
-    struct trap *trap, 
+    struct trap *trap,
     coord cc,
     struct obj *pole)
 {
     struct obj *otmp;
     boolean see_trap = FALSE;
-    
+
     switch (trap->ttyp) {
     case ARROW_TRAP:
     case DART_TRAP:
@@ -7912,7 +7912,7 @@ trigger_trap_with_polearm(
         break;
     case BEAR_TRAP:
     case WEB:
-        pline("Your %s gets caught in the %s.", xname(pole), 
+        pline("Your %s gets caught in the %s.", xname(pole),
             trap->ttyp == WEB ? "web" : "bear trap");
         trap->once = 1;
         setuwep(NULL);
@@ -7990,7 +7990,7 @@ trigger_trap_with_polearm(
         place_object(pole, tx, ty);
         see_trap = TRUE;
         break;
-    }   
+    }
     case STATUE_TRAP:
         activate_statue_trap(trap, cc.x, cc.y, FALSE);
         break;

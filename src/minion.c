@@ -125,7 +125,7 @@ msummon(struct monst *mon)
         atyp = rn2(3) - 1; /* Random alignment */
         dtype =  !rn2(2) ? dprince(atyp) : dlord(atyp);
         cnt = 1;
-    }    
+    }
 
     if (dtype == NON_PM)
         return 0;
@@ -310,7 +310,7 @@ demon_talk(struct monst *mtmp)
             (void) rloc(mtmp, RLOC_MSG);
         return 1;
     }
-    
+
     /* Bribable monsters are very greedy, and don't care how much gold you
      * appear to be carrying. */
     cash = money_cnt(gi.invent);
@@ -322,7 +322,7 @@ demon_talk(struct monst *mtmp)
         set_malign(mtmp);
         return 0;
     } else {
-        
+
         if (!Deaf)
             pline("%s demands %ld %s for safe passage.",
                   Amonnam(mtmp), demand, currency(demand));

@@ -1853,7 +1853,7 @@ wiz_migrate_mons(void)
 int
 wiz_clear(void)
 {
-    /* Can't let the fuzzer use this otherwise vault guards might die on 
+    /* Can't let the fuzzer use this otherwise vault guards might die on
      * (0, 0) and weird things happen */
     if (wizard && !iflags.debug_fuzzer) {
         register struct monst *mtmp, *mtmp2;
@@ -1880,7 +1880,7 @@ wiz_custom(void)
     if (wizard) {
         static const char wizcustom[] = "#wizcustom";
         winid win;
-        char buf[BUFSZ], bufa[BUFSZ];  
+        char buf[BUFSZ], bufa[BUFSZ];
         int n;
 #if 0
         int j, glyph;

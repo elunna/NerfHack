@@ -1208,7 +1208,7 @@ decl_globals_init(void)
     gv.valuables[1].size = SIZE(ga.amulets);
     gv.valuables[2].list = NULL;
     gv.valuables[2].size = 0;
-    
+
 #if 0
     MAGICCHECK(g_init);
 #endif

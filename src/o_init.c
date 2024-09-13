@@ -1133,11 +1133,11 @@ makeknown_msg(int otyp)
     boolean was_known, now_known;
     char oclass = objects[otyp].oc_class;
     schar osubtyp = objects[otyp].oc_subtyp;
-    
+
     was_known = objects[otyp].oc_name_known;
     makeknown(otyp);
     now_known = objects[otyp].oc_name_known;
-    
+
     if (flags.verbose && !was_known && now_known) {
         if (otyp == LENSES ||
             (oclass == ARMOR_CLASS &&

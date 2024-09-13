@@ -466,10 +466,10 @@ steal(struct monst *mtmp, char *objnambuf)
             goto retry;
         goto cant_take;
     }
-    
+
     /* greased objects are difficult to get a grip on, hence
        the odds that an attempt at stealing it may fail */
-    if (otmp && (otmp->greased || otmp->otyp == OILSKIN_CLOAK 
+    if (otmp && (otmp->greased || otmp->otyp == OILSKIN_CLOAK
                  || otmp->otyp == OILSKIN_SACK)
              && (!otmp->cursed || rn2(4))) {
         pline("%s %s slip off of your %s %s!", s_suffix(Monnam(mtmp)),
@@ -683,7 +683,7 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
         /* for hero owned object on shop floor, mtmp is taking possession
            and if it's eventually dropped in a shop, shk will claim it */
         otmp->no_charge = 0;
-        
+
         /* if otmp has flags set for how it left hero's inventory, change
            those flags; if thrown, now stolen and autopickup might override
            pickup_types and autopickup exceptions based on 'pickup_stolen'

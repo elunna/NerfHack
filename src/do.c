@@ -134,7 +134,7 @@ boulder_hits_pool(
                     hliquid("lava"), fully_resistant(FIRE_RES) ? '.' : '!');
                 burn_away_slime();
                 dmg = resist_reduce(d(3, 6), FIRE_RES);
-                
+
                 losehp(Maybe_Half_Phys(dmg), /* lava damage */
                        "molten lava", KILLED_BY);
             } else if (!fills_up && flags.verbose
@@ -308,10 +308,10 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
     } else if (svc.context.mon_moving && IS_ALTAR(levl[x][y].typ)
                && cansee(x,y)) {
         doaltarobj(obj);
-    } else if ((obj->oclass == POTION_CLASS || obj->oclass == SCROLL_CLASS) 
+    } else if ((obj->oclass == POTION_CLASS || obj->oclass == SCROLL_CLASS)
                && svl.level.flags.temperature > 0
                && (levl[x][y].typ == ROOM || levl[x][y].typ == CORR)) {
-        /* Potions and scrolls are sometimes destroyed when landing on 
+        /* Potions and scrolls are sometimes destroyed when landing on
            very hot ground. The basic odds are 50% for nonblessed
            potions and 30% for blessed potions; if you have handled the
            object (i.e. it is or was yours), these odds are adjusted by
@@ -609,7 +609,7 @@ dosinkring(struct obj *obj)
         Soundeffect(se_drain_noises, 50);
         You_hear("loud noises coming from the drain.");
         break;
-    case RIN_SLEEPING:		/* ALI */
+    case RIN_SLEEPING: /* ALI */
         You_hear("loud snores coming from the drain.");
         break;
     case RIN_WITHERING:
@@ -1803,7 +1803,7 @@ goto_level(
                     You("fly down %s.",
                         ga.at_ladder ? "along the ladder" : "the stairs");
             } else if (near_capacity() > UNENCUMBERED
-                       || Punished || Fumbling 
+                       || Punished || Fumbling
                        || Stunned || (Confusion && !rn2(5))) {
                 You("fall down the %s.", ga.at_ladder ? "ladder" : "stairs");
                 if (Punished) {
@@ -2523,10 +2523,10 @@ maybe_fall_onto_weapon(void)
     if (uwep && rn2(3)) {
         if (!is_slash(uwep) && !is_pierce(uwep))
             return;
-        
+
         if (Fumbling || rnd(8) > ACURR(A_DEX)) {
             You("fumble and fall onto %s", yname(uwep));
-            losehp(Maybe_Half_Phys(dmgval(uwep, &gy.youmonst)), 
+            losehp(Maybe_Half_Phys(dmgval(uwep, &gy.youmonst)),
                 "falling onto your own weapon", KILLED_BY);
         }
         return;
@@ -2536,7 +2536,7 @@ maybe_fall_onto_weapon(void)
 
         if (Fumbling || rnd(8) > ACURR(A_DEX)) {
             You("fumble and fall onto %s", yname(uswapwep));
-            losehp(Maybe_Half_Phys(dmgval(uswapwep, &gy.youmonst)), 
+            losehp(Maybe_Half_Phys(dmgval(uswapwep, &gy.youmonst)),
                 "falling onto your own weapon", KILLED_BY);
         }
     }

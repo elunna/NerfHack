@@ -920,13 +920,13 @@ domonability(void)
     } else if (is_unicorn(uptr)) {
         use_unicorn_horn((struct obj **) 0);
         return ECMD_TIME;
-    } else if (uptr->msound == MS_SHRIEK 
+    } else if (uptr->msound == MS_SHRIEK
                || uptr->msound == MS_ATHOL) {
         if (uptr->msound == MS_SHRIEK)
             You("shriek.");
         else
             You("howl 'athool!'");
-        
+
         if (u.uburied)
             pline("Unfortunately sound does not carry well through rock.");
         else
@@ -4106,7 +4106,7 @@ there_cmd_menu_self(winid win, coordxy x, coordxy y, int *act UNUSED)
 
     if ((IS_FOUNTAIN(typ) || IS_SINK(typ) || IS_TOILET(typ)) && can_reach_floor(FALSE)) {
         Sprintf(buf, "Drink from the %s",
-                defsyms[IS_FOUNTAIN(typ) ? S_fountain 
+                defsyms[IS_FOUNTAIN(typ) ? S_fountain
                     : IS_TOILET(typ) ? S_toilet : S_sink].explanation);
         mcmd_addmenu(win, MCMD_QUAFF, buf), ++K;
     }
@@ -4973,7 +4973,7 @@ find_remembered_stairs(boolean upstairs, coord *cc)
         sladder = S_dnladder;
         sbranch = S_brdnstair;
     }
-    
+
     /* Prefer already marked travel positions. */
     x = iflags.travelcc.x;
     y = iflags.travelcc.y;

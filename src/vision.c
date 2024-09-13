@@ -189,7 +189,7 @@ does_block(int x, int y, struct rm *lev)
     if (visible_region_at(x, y))
         return 2;
 #endif
-        
+
 #ifdef DEBUG
     } /* gs.seethru */
 #endif

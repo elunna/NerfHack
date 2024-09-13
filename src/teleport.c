@@ -1126,12 +1126,12 @@ level_tele(void)
 
      /* Level teleports in Gehennom (including Vlad's/Wizards tower) are
       * not prevented, but the magic is resisted and inflicts pain. */
-    boolean tele_pain = On_W_tower_level(&u.uz) || In_tower(&u.uz) 
+    boolean tele_pain = On_W_tower_level(&u.uz) || In_tower(&u.uz)
         || In_hell(&u.uz);
 
     if (iflags.debug_fuzzer)
         goto random_levtport;
-    
+
     if (iflags.debug_fuzzer) {
         do {
             newlevel.dnum = rn2(svn.n_dgns);

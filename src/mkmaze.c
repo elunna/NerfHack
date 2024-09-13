@@ -98,7 +98,7 @@ set_levltyp(coordxy x, coordxy y, schar newtyp)
                 || (IS_ALTAR(oldtyp) != IS_ALTAR(newtyp))
                 || (IS_FORGE(oldtyp) != IS_FORGE(newtyp)))
                 /* level.flags.nfountains,nsinks, etc */
-                count_level_features(); 
+                count_level_features();
 
             return TRUE;
         }

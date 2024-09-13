@@ -539,7 +539,7 @@ pick_lock(
                     ch /= 2;
 
                 /* Cursed or eroded locking tools can break on use */
-                if ((pick->cursed || pick->oeroded || pick->oeroded2) 
+                if ((pick->cursed || pick->oeroded || pick->oeroded2)
                     && !rn2(3)
                     && picktyp != STETHOSCOPE && !pick->oartifact) {
                     pline("As you start to %s the %s, your %s breaks!",
@@ -685,7 +685,7 @@ pick_lock(
                 nomul(0);
                 return PICKLOCK_DID_NOTHING;
             }
-            
+
             if (picktyp == CREDIT_CARD && (Fumbling || pick->cursed)
                 /* Inverse of xNetHack - very high odds for unfavorable conditions */
                 && rn2(Fumbling ? ACURR(A_DEX) * 2
@@ -704,7 +704,7 @@ pick_lock(
                     return PICKLOCK_DID_NOTHING;
                 }
             }
-            
+
             gx.xlock.door = door;
             gx.xlock.box = 0;
         }

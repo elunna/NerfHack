@@ -261,7 +261,7 @@ dosounds(void)
     }
     if (svl.level.flags.ntoilets && !rn2(300)) {
         static const char *const toilet_msg[3] = {
-            "running water.", "a flushing noise.", 
+            "running water.", "a flushing noise.",
             "the jiggling of a handle.",
         };
         You_hear1(toilet_msg[rn2(2) + hallu]);
@@ -1285,7 +1285,7 @@ domonnoise(struct monst *mtmp)
                and without quotation marks */
             char tmpbuf[BUFSZ];
             pline1(ucase(strcpy(tmpbuf, verbl_msg)));
-            SetVoice((struct monst *) 0, 0, 80, voice_death); 
+            SetVoice((struct monst *) 0, 0, 80, voice_death);
             sound_speak(tmpbuf);
         } else {
             SetVoice(mtmp, 0, 80, 0);
@@ -2246,14 +2246,14 @@ set_voice(
     if (gv.voice.nameid)
         free((genericptr_t) gv.voice.nameid);
     gv.voice.gender = gender;
-    gv.voice.serialno = mtmp ? mtmp->m_id 
+    gv.voice.serialno = mtmp ? mtmp->m_id
                              : ((moreinfo & voice_talking_artifact) != 0)  ? 3
                                  : ((moreinfo & voice_deity) != 0) ? 4 : 2;
     gv.voice.tone = tone;
     gv.voice.volume = volume;
     gv.voice.moreinfo = moreinfo;
     gv.voice.nameid = (const char *) 0;
-    gp.pline_flags |= PLINE_SPEECH; 
+    gp.pline_flags |= PLINE_SPEECH;
 #endif
 }
 
@@ -2290,7 +2290,7 @@ sound_speak(const char *text SPEECHONLY)
             *cpdst = '\0';
         }
         (*soundprocs.sound_verbal)(buf, gv.voice.gender, gv.voice.tone,
-                                   gv.voice.volume, gv.voice.moreinfo); 
+                                   gv.voice.volume, gv.voice.moreinfo);
     }
 #endif
 }

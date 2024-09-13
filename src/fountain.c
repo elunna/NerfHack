@@ -233,7 +233,7 @@ dipforge(struct obj *obj)
         floating_above("forge");
         return;
     }
-    
+
     burn_away_slime();
 
     /* Dipping something you're still wearing into a forge filled with
@@ -406,7 +406,7 @@ const struct ForgeRecipe fusions[] = {
     { ORCISH_SHORT_SWORD,   ORCISH_SPEAR,       ORCISH_DAGGER,  1, 1 },
     { ORCISH_SPEAR,         ORCISH_ARROW,       ORCISH_DAGGER,  10, 1 },
     { ORCISH_HELM,          DENTED_POT,         ORCISH_DAGGER,  1, 1 },
-    { ORCISH_CHAIN_MAIL,    RING_MAIL,          ORCISH_SHIELD,  1, 1 },  
+    { ORCISH_CHAIN_MAIL,    RING_MAIL,          ORCISH_SHIELD,  1, 1 },
     { ORCISH_RING_MAIL,     ORCISH_SHIELD,      ORCISH_HELM,    1, 1 },
     { ORCISH_SHIELD,        ORCISH_HELM,        ORCISH_BOOTS,   1, 1 },
     { ORCISH_BOOTS,         ORCISH_HELM,        ORCISH_SHORT_SWORD, 1, 1 },
@@ -529,7 +529,7 @@ doforging(void)
     }
 
     /* start the forging process */
- 
+
     for (recipe = fusions; recipe->result_typ; recipe++) {
         if ((obj1->otyp == recipe->typ1
                 && obj2->otyp == recipe->typ2
@@ -583,7 +583,7 @@ doforging(void)
         if (obj1->oerodeproof || obj2->oerodeproof) {
             output->oerodeproof = 1;
         }
-        
+
         /* transfer curses and blessings from secondary object */
         output->cursed = obj2->cursed;
         output->blessed = obj2->blessed;
@@ -613,7 +613,7 @@ doforging(void)
             delobj(obj1);
         if (obj2->quan <= 0)
             delobj(obj2);
-        
+
         /* forged object is created */
         output = addinv(output);
         /* prevent large stacks of ammo-type weapons */
@@ -1010,7 +1010,7 @@ wash_hands(void)
     boolean was_goopy = !!(HFumbling & I_SPECIAL);
 
     if (was_goopy) {
-        pline("You wash the goop off your %s.", 
+        pline("You wash the goop off your %s.",
             uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
         HFumbling &= ~I_SPECIAL;
         HFumbling = 0;
@@ -1056,7 +1056,7 @@ breaktoilet(coordxy x, coordxy y)
 {
     int num = rn1(5, 2);
     struct monst *mtmp;
-    
+
     if (cansee(x, y) || u_at(x, y))
         pline_The("toilet suddenly shatters!");
     else
@@ -1067,18 +1067,18 @@ breaktoilet(coordxy x, coordxy y)
     levl[x][y].blessedftn = 0;
     SET_FOUNTAIN_LOOTED(x, y);
     newsym(x, y);
-    
+
     if (!rn2(3)) {
         if (!(svm.mvitals[PM_BABY_CROCODILE].mvflags & G_GONE)) {
             if (!Blind) {
-                if (!Hallucination) 
+                if (!Hallucination)
                     pline("Oh no! Crocodiles come out from the pipes!");
                 else
                     pline("Oh no! Tons of poopies!");
             } else
                 You_hear("something scuttling around you!");
             while (num-- > 0) {
-                /* Since toilet can be broken by ranged means, generate 
+                /* Since toilet can be broken by ranged means, generate
                  * around the broken toilet */
                 if ((mtmp = makemon(&mons[PM_BABY_CROCODILE], x, y, NO_MM_FLAGS))
                     && t_at(mtmp->mx, mtmp->my))
@@ -1348,7 +1348,7 @@ blowupforge(coordxy x, coordxy y)
         pline_The("forge rumbles, then explodes!  Molten lava splashes everywhere!");
     levl[x][y].flags = 0;
     levl[x][y].doormask = 0;
-    
+
     /* replace the forge with ordinary floor */
     set_levltyp(x, y, LAVAPOOL); /* updates level.flags.nforges */
     explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), resist_reduce(rnd(30), FIRE_RES),
@@ -1375,7 +1375,7 @@ drinkforge(void)
         floating_above("forge");
         return;
     }
-    
+
     if (!likes_fire(gy.youmonst.data)) {
         pline("Molten lava incinerates its way down your gullet...");
         losehp(Upolyd ? u.mh : u.uhp, "trying to drink molten lava", KILLED_BY);
@@ -1417,7 +1417,7 @@ drinktoilet(void)
     }
 
     switch (rn2(9)) {
-    case 0: 
+    case 0:
         if (svm.mvitals[PM_SEWER_RAT].mvflags & G_GONE)
             pline_The("toilet seems quite dirty.");
         else {
@@ -1428,13 +1428,13 @@ drinktoilet(void)
                 Blind ? "something squirmy" : a_monnam(mtmp));
         }
         break;
-    case 1: 
+    case 1:
         breaktoilet(u.ux, u.uy);
         break;
-    case 2: 
+    case 2:
         pline("Something begins to crawl out of the toilet!");
         if (svm.mvitals[PM_BROWN_PUDDING].mvflags & G_GONE
-                || !makemon(&mons[PM_BROWN_PUDDING], 
+                || !makemon(&mons[PM_BROWN_PUDDING],
                 u.ux, u.uy, NO_MM_FLAGS))
             pline("But it slithers back out of sight.");
         break;
@@ -1449,7 +1449,7 @@ drinktoilet(void)
                             rnd(10) + rn1(4, 3), FALSE);
         exercise(A_CON, FALSE);
         break;
-    case 4: 
+    case 4:
         if (svm.mvitals[PM_BABY_CROCODILE].mvflags & G_GONE) {
             pline_The("toilet smells fishy.");
         } else {
@@ -1461,7 +1461,7 @@ drinktoilet(void)
                 a_monnam(mtmp));
         }
         break;
-    default: 
+    default:
         pline("Gaggg... this tastes like sewage!  You vomit.");
         morehungry(rn1(30 - ACURR(A_CON), 11));
         vomit();
@@ -1472,7 +1472,7 @@ void
 diptoilet(struct obj *obj)
 {
     boolean is_hands = (obj == &hands_obj);
-    
+
     if (Levitation) {
         floating_above("toilet");
         return;

@@ -173,7 +173,7 @@ precheck(struct monst *mon, struct obj *obj)
          * Should they throw the potion on the ground in disgust? */
         if (mon->mrabid)
             return 0;
-        
+
         if (objdescr_is(obj, "milky")) {
             if (!(svm.mvitals[PM_GHOST].mvflags & G_GONE)
                 && !rn2(POTION_OCCUPANT_CHANCE(svm.mvitals[PM_GHOST].born))) {
@@ -262,7 +262,7 @@ precheck(struct monst *mon, struct obj *obj)
         /* Only one needed to be set to 0 but the others are harmless */
         return (DEADMONSTER(mon)) ? 1 : 2;
     }
-    return 0;   
+    return 0;
 }
 
 /* when a monster zaps a wand give a message, deduct a charge, and if it
@@ -290,7 +290,7 @@ mzapwand(
               monverbself(mtmp, Monnam(mtmp), "zap", (char *) 0),
               zapcard ? "a zap card" : doname(otmp));
     } else {
-        pline("%s %s %s!", Monnam(mtmp), 
+        pline("%s %s %s!", Monnam(mtmp),
         zapcard ? "plays" : "zaps",
         zapcard ? "a zap card" : an(xname(otmp)));
         stop_occupation();
@@ -555,7 +555,7 @@ find_defensive(struct monst *mtmp, boolean tryescape)
      * is_unicorn() doesn't include it; the class differs and it has
      * no interest in gems.
      */
-    if (mtmp->mconf || mtmp->mstun || mtmp->mrabid 
+    if (mtmp->mconf || mtmp->mstun || mtmp->mrabid
                     || mtmp->mdiseased || !mtmp->mcansee) {
         obj = 0;
         if (!nohands(mtmp->data)) {
@@ -1070,7 +1070,7 @@ use_defensive(struct monst *mtmp)
         otmp->ox = mtmp->mx;
         otmp->oy = mtmp->my;
         gc.current_wand = otmp;
-        
+
         mreadmsg(mtmp, otmp); /* sets otmp->dknown if !Blind or !Deaf */
         seffect_water(&otmp, mtmp);
         /* otmp used up in seffect_water() */
@@ -1817,7 +1817,7 @@ find_offensive(struct monst *mtmp)
             gm.m.has_offense = MUSE_CAMERA;
         }
         nomore(MUSE_SCR_FIRE);
-        if (otyp == SCR_FIRE 
+        if (otyp == SCR_FIRE
             && m_canseeu(mtmp) && haseyes(mtmp->data)
             && mcast_dist_ok(mtmp) && !m_seenres(mtmp, M_SEEN_FIRE)) {
             gm.m.offensive = obj;
@@ -1834,7 +1834,7 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
     int tmp;
     boolean reveal_invis = FALSE, learnit = FALSE,
             hits_you = (mtmp == &gy.youmonst);
-    boolean zapcard = gc.current_wand 
+    boolean zapcard = gc.current_wand
                    && gc.current_wand->otyp == SCR_ZAPPING;
     const char *otxt = zapcard ? "card" : "wand";
 
@@ -2146,7 +2146,7 @@ use_offensive(struct monst *mtmp)
         maxdmg += mattk->damn * mattk->damd;
     }
 
-    /* If the monsters' combined damage from a melee attack exceeds 21 
+    /* If the monsters' combined damage from a melee attack exceeds 21
        (the average of an offensive wands 6d6), or if
        their wielded weapon is an artifact, use it if close enough. Exception
        being certain wands that can incapacitate or can already do significant
@@ -2160,7 +2160,7 @@ use_offensive(struct monst *mtmp)
             && gm.m.has_offense != MUSE_WAN_SLEEP)) {
         return 0;
     }
-    
+
     switch (gm.m.has_offense) {
     case MUSE_WAN_DEATH:
     case MUSE_WAN_DRAINING:
@@ -2178,13 +2178,13 @@ use_offensive(struct monst *mtmp)
         gm.m_using = TRUE;
         gc.current_wand = otmp;
         gb.buzzer = mtmp;
-        
+
         /* Could be fatal to mon, useup before it could be dropped. */
         if (zapcard)
             m_useup(mtmp, otmp);
 
         buzz(BZ_M_WAND(BZ_OFS_WAN(otyp)),
-             (otyp == WAN_MAGIC_MISSILE || otyp == (WAN_DRAINING + 1)) 
+             (otyp == WAN_MAGIC_MISSILE || otyp == (WAN_DRAINING + 1))
                 ? 2 : 6, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         gb.buzzer = 0;
@@ -2339,7 +2339,7 @@ use_offensive(struct monst *mtmp)
         return 1;
     } /* case MUSE_CAMERA */
     case MUSE_SCR_CLONING: {
-        /* We won't bother with confused - scrolls of cloning always clone 
+        /* We won't bother with confused - scrolls of cloning always clone
          * the monster iteself. */
         struct monst *mtmp2;
         boolean vis = cansee(mtmp->mx, mtmp->my);
@@ -2350,7 +2350,7 @@ use_offensive(struct monst *mtmp)
             clonewiz();
         } else if (type_is_pname(mtmp->data)) {
             /* Other uniques - no limit. */
-            if ((mtmp2 = makemon(&mons[mtmp->mnum], 
+            if ((mtmp2 = makemon(&mons[mtmp->mnum],
                     mtmp->mx, mtmp->my, MM_NOWAIT)) != 0) {
                 mtmp2->msleeping = mtmp2->mtame = mtmp2->mpeaceful = 0;
                 pline("%s multiplies!", Monnam(mtmp));
@@ -2939,7 +2939,7 @@ use_misc(struct monst *mtmp)
     case MUSE_POT_REFLECT:
         mquaffmsg(mtmp, otmp);
         mtmp->mextrinsics |= MR2_REFLECTION;
-        mtmp->mreflecttime = otmp->blessed 
+        mtmp->mreflecttime = otmp->blessed
             ? rn1(50, otmp->odiluted ? 100 : 250)
             : rn1(10, otmp->odiluted ? 50 : 100);
         if (canseemon(mtmp) && !Blind)
@@ -2976,7 +2976,7 @@ use_misc(struct monst *mtmp)
                 xname(otmp2), xname(otmp));
             otmp2->opoisoned = TRUE;
             m_useup(mtmp, otmp);
-        } else 
+        } else
             return 0;
         /* TODO: Does mon have projectiles they can poison? */
         return 2;
@@ -3215,7 +3215,7 @@ searches_for_item(struct monst *mon, struct obj *obj)
         || mon->data == &mons[PM_GHOST]) /* don't loot bones piles */
         return FALSE;
 
-    if (typ == WAN_MAKE_INVISIBLE 
+    if (typ == WAN_MAKE_INVISIBLE
         || typ == POT_INVISIBILITY
         || typ == RIN_INVISIBILITY)
         return (boolean) (!mon->minvis && !mon->invis_blkd
@@ -3266,7 +3266,7 @@ searches_for_item(struct monst *mon, struct obj *obj)
     case SCROLL_CLASS:
         if (typ == SCR_TELEPORTATION
             || typ == SCR_CREATE_MONSTER
-            || typ == SCR_EARTH 
+            || typ == SCR_EARTH
             || typ == SCR_FIRE
             || typ == SCR_FLOOD
             || typ == SCR_REMOVE_CURSE
@@ -3477,7 +3477,7 @@ munstone(struct monst *mon, boolean by_you)
     struct obj *obj;
     boolean tinok;
     boolean spellcaster =
-        attacktype_fordmg(mon->data, AT_MAGC, AD_SPEL) 
+        attacktype_fordmg(mon->data, AT_MAGC, AD_SPEL)
         || attacktype_fordmg(mon->data, AT_MAGC, AD_CLRC);
 
     if (resists_ston(mon))
@@ -3486,7 +3486,7 @@ munstone(struct monst *mon, boolean by_you)
         return FALSE;
     mon->mstrategy &= ~STRAT_WAITFORU;
 
-   if (spellcaster && !mon->mcan && !mon->mspec_used 
+   if (spellcaster && !mon->mcan && !mon->mspec_used
         && !mon->mconf && mon->m_lev >= 5) {
         struct obj *otmp, *onext, *pseudo;
 
@@ -3953,43 +3953,43 @@ muse_wonder(void)
         case WAN_DEATH:
             gm.m.has_offense = MUSE_WAN_DEATH;
             break;
-        case WAN_DRAINING: 
+        case WAN_DRAINING:
             gm.m.has_offense = MUSE_WAN_DRAINING;
             break;
-        case WAN_SLEEP: 
+        case WAN_SLEEP:
             gm.m.has_offense = MUSE_WAN_SLEEP;
             break;
-        case WAN_FIRE: 
+        case WAN_FIRE:
             gm.m.has_offense = MUSE_WAN_FIRE;
             break;
-        case WAN_COLD: 
+        case WAN_COLD:
             gm.m.has_offense = MUSE_WAN_COLD;
             break;
-        case WAN_LIGHTNING: 
+        case WAN_LIGHTNING:
             gm.m.has_offense = MUSE_WAN_LIGHTNING;
             break;
-        case WAN_MAGIC_MISSILE: 
+        case WAN_MAGIC_MISSILE:
             gm.m.has_offense = MUSE_WAN_MAGIC_MISSILE;
             break;
-        case WAN_CORROSION: 
+        case WAN_CORROSION:
             gm.m.has_offense = MUSE_WAN_CORROSION;
             break;
-        case WAN_POISON_GAS: 
+        case WAN_POISON_GAS:
             gm.m.has_offense = MUSE_WAN_POISON_GAS;
             break;
-        case WAN_TELEPORTATION: 
+        case WAN_TELEPORTATION:
             gm.m.has_offense = MUSE_WAN_TELEPORTATION;
             break;
         case WAN_UNDEAD_TURNING:
             gm.m.has_offense = MUSE_WAN_UNDEAD_TURNING;
             break;
-        case WAN_STRIKING: 
+        case WAN_STRIKING:
             gm.m.has_offense = MUSE_WAN_STRIKING;
             break;
-        case WAN_CANCELLATION: 
+        case WAN_CANCELLATION:
             gm.m.has_offense = MUSE_WAN_CANCELLATION;
             break;
-        case WAN_SLOW_MONSTER: 
+        case WAN_SLOW_MONSTER:
             gm.m.has_offense = MUSE_WAN_SLOW_MONSTER;
             break;
         case WAN_POLYMORPH:
@@ -3997,7 +3997,7 @@ muse_wonder(void)
              * wands of wonder, so they are rare. */
             gm.m.has_offense = MUSE_WAN_POLYMORPH;
             break;
-        case WAN_CREATE_MONSTER: 
+        case WAN_CREATE_MONSTER:
             gm.m.has_offense = MUSE_WAN_CREATE_MONSTER;
             break;
 
@@ -4014,7 +4014,7 @@ muse_wonder(void)
         case WAN_MAKE_INVISIBLE:
         case WAN_SPEED_MONSTER:
         case WAN_WISHING:
-            /* This is a weird kludge until we (maybe) implement wands 
+            /* This is a weird kludge until we (maybe) implement wands
              * of stunning */
             gm.m.has_offense = MUSE_WAN_STUNNING;
             wondertemp = WAN_DRAINING + 1;

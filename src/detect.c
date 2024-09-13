@@ -2407,7 +2407,7 @@ reveal_terrain(
     browse_map(which_subset, "anything of interest");
 
     map_redisplay();
-    
+
     return;
 }
 

@@ -578,7 +578,7 @@ restgamestate(NHFILE *nhfp)
         /* savefile has wizard or explore mode, but player is no longer
            authorized to access either; can't downgrade mode any further, so
            fail restoration. */
-        u.uhp = 0; 
+        u.uhp = 0;
     }
 
     if (nhfp->structlevel)

@@ -367,7 +367,7 @@ enum digcheck_result {
     DIGCHECK_FAIL_OBJ_POOL_OR_TRAP
 };
 
-    
+
 
 /* Dismount: causes for why you are no longer riding */
 enum dismount_types {

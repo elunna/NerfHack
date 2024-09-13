@@ -875,7 +875,7 @@ bot_via_windowport(void)
 
     /* Magic negation */
     gb.blstats[idx][BL_MC].a.a_int = magic_negation(&gy.youmonst);
-    
+
     /* Monster level (if Upolyd) */
     gb.blstats[idx][BL_HD].a.a_int = Upolyd ? (int) mons[u.umonnum].mlevel : 0;
 

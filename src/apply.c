@@ -199,7 +199,7 @@ use_towel(struct obj *obj)
             dry_a_towel(obj, -1, drying_feedback);
         return ECMD_TIME;
     } else if (GreasedFeet || GreasedBoots) {
-        pline("You've got the goop off your %s.", 
+        pline("You've got the goop off your %s.",
               uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
         HFumbling &= ~I_SPECIAL;
         HFumbling = 0;
@@ -1098,7 +1098,7 @@ use_mirror(struct obj *obj)
     unsigned how_seen;
     char mlet;
     boolean vis, invis_mirror, useeit, monable;
-    
+
     if (!freehand()) {
         Your("%s are occupied!", makeplural(body_part(HAND)));
         return ECMD_OK;
@@ -1639,7 +1639,7 @@ splash_lit(struct obj *obj)
             useeit = get_obj_location(obj, &x, &y, 0) && cansee(x, y);
             uhearit = couldsee(x, y) && distu(x, y) < 5 * 5;
             dunk = (is_pool(mtmp->mx, mtmp->my)
-                    && ((!mon_prop(mtmp, FLYING) 
+                    && ((!mon_prop(mtmp, FLYING)
                         && !mon_prop(mtmp, LEVITATION))
                         || Is_waterlevel(&u.uz)));
             snuff = FALSE;
@@ -1882,7 +1882,7 @@ rub_ok(struct obj *obj)
 
     if (obj->otyp == ROCK || obj->otyp == FLINT)
         return GETOBJ_DOWNPLAY;
-    
+
     return GETOBJ_EXCLUDE;
 }
 
@@ -1914,7 +1914,7 @@ dorub(void)
     } else if (obj->otyp == LUMP_OF_ROYAL_JELLY) {
         return use_royal_jelly(&obj);
     }
-    
+
     if (obj != uwep) {
         if (wield_tool(obj, "rub")) {
             cmdq_add_ec(CQ_CANNED, dorub);
@@ -2214,9 +2214,9 @@ jump(int magic) /* 0=Physical, otherwise skill level */
             case TT_BEARTRAP:
                 side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
                 You("rip yourself free of the bear trap!  Ouch!");
-                
-                /* Jungle boots protect us from wounding, but also take the 
-                 * brunt of the damage. */ 
+
+                /* Jungle boots protect us from wounding, but also take the
+                 * brunt of the damage. */
                 if (uarmf && objdescr_is(uarmf, "jungle boots")) {
                     losehp(rnd(10), "jumping out of a bear trap", KILLED_BY);
                     set_wounded_legs(side, rn1(100, 50));
@@ -2378,7 +2378,7 @@ use_tinning_kit(struct obj *obj)
           (peek_at_iced_corpse_age(corpse) + 5) >= svm.moves;
 
     if (Race_if(PM_VAMPIRE)
-            && mons[corpse->corpsenm].cnutrit 
+            && mons[corpse->corpsenm].cnutrit
             && !(svm.mvitals[corpse->corpsenm].mvflags & G_NOCORPSE)
             && has_blood(&mons[corpse->corpsenm])) {
 
@@ -2555,17 +2555,17 @@ use_unicorn_horn(struct obj **optr)
      * ENCHANT  +0  +1  +2  +3  +4  +5  +6  +7  +8  +9  +10 +11 +12 or more
      * CHANCE   30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90%
      */
-    val_limit = (obj && (obj->blessed || Role_if(PM_HEALER))) 
+    val_limit = (obj && (obj->blessed || Role_if(PM_HEALER)))
                 ? trouble_count : 1;
 
     if (obj && obj->spe > 0)
         chance = (obj->spe < 12) ? (obj->spe + 6) : 18;
     else
         chance = 6;
-   
+
     if (Role_if(PM_HEALER))
         chance += 2;
-    
+
     if (P_SKILL(P_UNICORN_HORN) == P_BASIC)
         chance += 3;
     if (P_SKILL(P_UNICORN_HORN) == P_SKILLED)
@@ -2577,7 +2577,7 @@ use_unicorn_horn(struct obj **optr)
     if (chance > 18)
         chance = 18;
 #endif
-    
+
     /* fix [some of] the troubles */
     for (val = 0; val < val_limit; val++) {
         idx = trouble_list[val];
@@ -2830,17 +2830,17 @@ grease_ok(struct obj *obj)
 {
     if (!obj)
         return GETOBJ_EXCLUDE;
-    
+
     if (obj->oclass == COIN_CLASS)
         return GETOBJ_EXCLUDE;
 
     if (inaccessible_equipment(obj, (const char *) 0, FALSE))
         return GETOBJ_EXCLUDE_INACCESS;
-    
+
     /* don't suggest greasing objects which are already greased. */
     if (obj->greased)
         return GETOBJ_EXCLUDE;
-    
+
     return GETOBJ_SUGGEST;
 }
 
@@ -2931,7 +2931,7 @@ apply_flint(struct obj *flint)
         dropx(flint);
         return ECMD_TIME;
     }
-    
+
     Sprintf(szwork, "affix the stone%s to", plur(num_flints));
     stack1 = getobj(szwork, flint_ok, GETOBJ_PROMPT);
     if (!stack1)
@@ -2939,7 +2939,7 @@ apply_flint(struct obj *flint)
 
     if (!u_handsy())
         return ECMD_TIME;
-    
+
     /* can't make MIRV arrows; if they're +1, leave it be */
     if (stack1->spe > 0) {
         You("don't think you can make any more improvements.");
@@ -2947,11 +2947,11 @@ apply_flint(struct obj *flint)
     }
 
     num_arrows = stack1->quan;
-    /* Don't just reject the process if we don't have enough flint. Instead, 
-     * split the arrows into two stacks, one stack for the arrows we'll 
-     * enchant and another for the leftover arrows. We'll have to use 
+    /* Don't just reject the process if we don't have enough flint. Instead,
+     * split the arrows into two stacks, one stack for the arrows we'll
+     * enchant and another for the leftover arrows. We'll have to use
      * hold_another_object to see if we can hold the leftovers.
-     * This eliminates an annoying step where the player has to match up 
+     * This eliminates an annoying step where the player has to match up
      * their arrows with the available flint.
      */
     if (num_flints < num_arrows) {
@@ -2969,7 +2969,7 @@ apply_flint(struct obj *flint)
     else
         for (i = 0; i < num_arrows; i++)
             useup(flint);
-    
+
     if (stack2)
         hold_another_object(stack2, "You drop %s!",
             doname(stack2), (const char *) 0);
@@ -3045,14 +3045,14 @@ use_stone(struct obj *tstone)
         tstone->dknown = 1;
     known = (tstone->otyp == TOUCHSTONE && tstone->dknown
               && objects[TOUCHSTONE].oc_name_known);
-    whetting = tstone && tstone->otyp == WHETSTONE 
+    whetting = tstone && tstone->otyp == WHETSTONE
             && objects[WHETSTONE].oc_name_known;
 
     Sprintf(stonebuf, "rub on the stone%s", plur(tstone->quan));
     /* when the touchstone is fully known, don't bother listing extra
        junk as likely candidates for rubbing */
-    if ((obj = getobj(stonebuf, whetting ? whetstone_ok 
-                                    : known ? touchstone_ok 
+    if ((obj = getobj(stonebuf, whetting ? whetstone_ok
+                                    : known ? touchstone_ok
                                         : any_obj_ok,
                       GETOBJ_PROMPT)) == 0)
         return ECMD_CANCEL;
@@ -3074,7 +3074,7 @@ use_stone(struct obj *tstone)
         makeknown(FOULSTONE);
         return ECMD_TIME;
     }
-    
+
     if (tstone->otyp == TOUCHSTONE && tstone->cursed
         && obj->oclass == GEM_CLASS && !is_graystone(obj)
         && !obj_resists(obj, 80, 100)) {
@@ -3119,7 +3119,7 @@ use_stone(struct obj *tstone)
         && objects[obj->otyp].oc_material != MINERAL)
         oclass = RANDOM_CLASS; /* something that's neither gem nor ring */
 
-    if (tstone->otyp == WHETSTONE 
+    if (tstone->otyp == WHETSTONE
             && (oclass == WEAPON_CLASS || is_weptool(obj))) {
         return use_whetstone(tstone, obj);
     }
@@ -3619,7 +3619,7 @@ use_whip(struct obj *obj)
                 gotit = FALSE; /* can't pull it free */
                 maybe_grease_off(otmp);
             }
-                
+
             if (gotit) {
                 obj_extract_self(otmp);
                 possibly_unwield(mtmp, FALSE);
@@ -4355,7 +4355,7 @@ do_break_wand(struct obj *obj)
         discard_broken_wand();
         return ECMD_TIME;
     case WAN_SECRET_DOOR_DETECTION:
-        /* Detects portals: Use the same UnNetHack odds for 
+        /* Detects portals: Use the same UnNetHack odds for
          * creating traps when breaking wands. */
         if ((obj->spe > 2) && rn2(obj->spe - 2)) {
             trap_detect((struct obj *) 0);
@@ -4560,7 +4560,7 @@ staticfn int
 apply_ok(struct obj *obj)
 {
     uchar here = levl[u.ux][u.uy].typ;
-    
+
     if (!obj)
         return GETOBJ_EXCLUDE;
 
@@ -4577,7 +4577,7 @@ apply_ok(struct obj *obj)
 
     if (obj->otyp == ROCK || obj->otyp == FLINT)
         return GETOBJ_DOWNPLAY;
-    
+
     /* certain weapons */
     if (obj->otyp == WAR_HAMMER && IS_FORGE(here))
         return GETOBJ_SUGGEST;
@@ -4715,7 +4715,7 @@ doapply(void)
         res = use_grease(obj);
         break;
     case LOCK_PICK:
-        if (uwep && welded(uwep)) { 
+        if (uwep && welded(uwep)) {
             You("need both %s free!", makeplural(body_part(HAND)));
             return ECMD_OK;
         }
@@ -4723,7 +4723,7 @@ doapply(void)
     case CREDIT_CARD:
     case SKELETON_KEY:
         /* Lockpicking requires a free hand. */
-        if (!freehand() || (uwep && welded(uwep))) { 
+        if (!freehand() || (uwep && welded(uwep))) {
             Your("%s are occupied!", makeplural(body_part(HAND)));
             return ECMD_OK;
         }
@@ -5033,14 +5033,14 @@ check_mon_jump(struct monst *mtmp, int x, int y)
     coord mc, tc;
     mc.x = mtmp->mx, mc.y = mtmp->my;
     tc.x = x, tc.y = y; /* target */
-                        
+
     /* traj: flatten out the trajectory => some diagonals re-classified */
     if (ax >= 2 * ay)
         ay = 0;
     else if (ay >= 2 * ax)
         ax = 0;
     traj = jAny;
-    
+
     if (!walk_path(&mc, &tc, check_jump, (genericptr_t) & traj))
         return FALSE;
     return TRUE;
@@ -5070,7 +5070,7 @@ static NEARDATA const char *tarotnames[] = {
     "the Moon",             /* 20 - good */
     "the Star",             /* 21 - good */
     "the World"             /* 22 - good, stop */
-};          
+};
 
 staticfn void
 deck_of_fate(struct obj *obj)
@@ -5244,9 +5244,9 @@ deck_of_fate(struct obj *obj)
             badcards = TRUE;
             goodcards = FALSE;
             break;
-        
+
         /* cards before this point are mostly bad, after this are mostly good */
-        
+
         case 12: /* The Lovers */
             for (n = 0; n < 2; n++) {
                 mtmp = makemon(&mons[PM_AMOROUS_DEMON], u.ux, u.uy, NO_MM_FLAGS);
@@ -5495,7 +5495,7 @@ set_whetstone(void)
         */
         if (rn2(2))
             erode_obj(otmp, NULL, ERODE_RUST, EF_GREASE | EF_DESTROY);
-        else 
+        else
             erode_obj(otmp, NULL, ERODE_CORRODE, EF_GREASE | EF_DESTROY);
         reset_whetstone();
         return 0;
@@ -5509,11 +5509,11 @@ set_whetstone(void)
             adj--;
         if (Confusion)
             adj--;
-        if (Stunned) 
+        if (Stunned)
             adj--;
-        if (Hallucination) 
+        if (Hallucination)
             adj--;
-        
+
         if (adj > 0)
             whetstoneinfo.time_needed -= adj;
         return 1;
@@ -5528,7 +5528,7 @@ set_whetstone(void)
             otense(ows, Blind ? "warm" : "glow"));
         uncurse(otmp);
     }
-    
+
 if (!rn2(chance) && (ows->otyp == WHETSTONE)) {
 
         /* Remove erosion first, then sharpen dull edges */
@@ -5655,7 +5655,7 @@ use_whetstone(struct obj *stone, struct obj *obj)
             (is_pick(obj) || (objects[ttyp].oc_dir & (PIERCE | SLASH)));
 
         makeknown(stone->otyp);
-        
+
         if (obj == &cg.zeroobj) {
             You("file your nails.");
         } else if (!is_metallic(obj)) {

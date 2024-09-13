@@ -121,7 +121,7 @@ static const struct Jitem Japanese_items[] = {
 static struct Jitem Cartomancer_items[] = {
     { LARGE_BOX, "deck box" },
     { CHEST, "large deck box" },
-    
+
     { BOOMERANG, "warped card" },
     { HAWAIIAN_SHIRT, "graphic tee" },
     { EXPENSIVE_CAMERA, "holographic card" },
@@ -148,7 +148,7 @@ static struct Jitem Cartomancer_items[] = {
     { FOULSTONE, "stinky dice" },
     { WHETSTONE, "sharpening dice" },
     { SLING_BULLET, "hard dice"},
-    { 0, "" } 
+    { 0, "" }
 };
 
 static const char *Cartomancer_rarity(int otyp);
@@ -305,7 +305,7 @@ obj_typename(int otyp)
                 if (carto)
                     Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
                         ? " dice" : " token");
-                else	
+                else
                     Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
                         ? " stone" : " gem");
             }
@@ -623,7 +623,7 @@ xname(struct obj *obj)
 		hobj->quan = obj->quan;
 		/* WAC clean up */
 		buf = xname_flags(hobj, CXN_NORMAL);
-		/* fix a VERY aggravating bug that could corrupt saves 
+		/* fix a VERY aggravating bug that could corrupt saves
          * with obj_is_local and timer errors --Amy */
         if (Has_contents(hobj))
             delete_contents(hobj);
@@ -689,7 +689,7 @@ xname_flags(
         obj->dknown = 1;
     if (Role_if(PM_CLERIC))
         obj->bknown = 1; /* avoid set_bknown() to bypass update_inventory() */
-    
+
     /* rangers of a certain level/skill intuit ammo enchantments */
     if (Role_if(PM_RANGER)) {
         if (obj->oclass == WEAPON_CLASS) {
@@ -700,8 +700,8 @@ xname_flags(
                 && P_SKILL(objects[obj->otyp].oc_skill) >= P_BASIC)
                 obj->known = 1;
         }
-    } 
-  
+    }
+
     /* Cartomancers grow to become card masters. */
     if (carto && obj->otyp == RAZOR_CARD && u.ulevel > 6) {
         obj->known = 1;
@@ -950,7 +950,7 @@ xname_flags(
         if (nn && obj->otyp == SCR_CREATE_MONSTER && obj->corpsenm != NON_PM) {
             Strcat(buf, " - ");
             Strcat(buf, mons[obj->corpsenm].pmnames[NEUTRAL]);
-        } else if (nn && obj->otyp == SCR_ZAPPING 
+        } else if (nn && obj->otyp == SCR_ZAPPING
                       && obj->corpsenm != NON_PM) {
             Strcat(buf, " - ");
             Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
@@ -1249,7 +1249,7 @@ add_erosion_words(struct obj *obj, char *prefix)
 
     if (obj->degraded_horn && obj->otyp == UNICORN_HORN)
         Strcat(prefix, "degraded ");
-    
+
     if (!is_damageable(obj) && !iscrys)
         return;
 
@@ -1346,7 +1346,7 @@ doname_base(
             discover_object(obj->otyp,TRUE,FALSE);
         }
     }
-    
+
     /* 'bp' will be within an obuf[] rather than at the start of one,
        usually (but not always) pointing at &obuf[PREFIX];
        gx.xnamep always points to the start of that buffer;
@@ -1357,7 +1357,7 @@ doname_base(
     assert(bp_end >= bp_eos); /* ok provided xname() bounds checking works */
     /* size_t cast: convert signed ptrdiff_t to unsigned size_t */
     bpspaceleft = (size_t) (bp_end - bp_eos);
-    
+
     if (iflags.override_ID) {
         known = dknown = cknown = bknown = lknown = TRUE;
     } else {
@@ -1757,7 +1757,7 @@ doname_base(
 
     if (obj->oclass == ARMOR_CLASS) {
         if (obj->known) {
-            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj) 
+            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj)
                      + race_bonus(obj) + misc_bonus(obj));
         }
     }
@@ -1810,12 +1810,12 @@ doname_base(
         && !is_unpaid(obj) && obj->oclass != GEM_CLASS) {
         ConcatF1(bp, 0, " ($%ld)", (long) objects[obj->otyp].oc_cost);
     }
-    
+
     /* show weight for items (debug tourist info);
        "aum" is stolen from Crawl's "Arbitrary Unit of Measure" */
     if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {
         ConcatF1(bp, 0, " {%u aum}", obj->owt);
-        
+
         /* ConcatF1(bp) updates bp_eos and bpspaceleft but we're done
            with them now; add a fake use so compiler won't complain
            about a variable assignment that won't be subsequently used */
@@ -3519,7 +3519,7 @@ static const struct alt_spellings {
     { "scroll of water", SCR_FLOOD }, /* xnethack name for it */
     { "health stone", HEALTHSTONE },
     { "foul stone", FOULSTONE},
-    
+
     /* Community abbreviations */
     { "BoH", BAG_OF_HOLDING },
     { "CoMR", CLOAK_OF_MAGIC_RESISTANCE },
@@ -4012,7 +4012,7 @@ wizterrainwish(struct _readobjnam_data *d)
         }
 
         /* fixups for replaced terrain that aren't handled above */
-        if (IS_FOUNTAIN(oldtyp) || IS_SINK(oldtyp) 
+        if (IS_FOUNTAIN(oldtyp) || IS_SINK(oldtyp)
             || IS_TOILET(oldtyp) || IS_FORGE(oldtyp))
             count_level_features(); /* update level.flags.nfountains,nsinks */
         if (!is_ice(x, y))
@@ -4870,8 +4870,8 @@ readobjnam_postparse3(struct _readobjnam_data *d)
     d->typ = 0;
 
     if (d->actualn) {
-        const struct Jitem *j = Role_if(PM_CARTOMANCER) 
-                                ? Cartomancer_items 
+        const struct Jitem *j = Role_if(PM_CARTOMANCER)
+                                ? Cartomancer_items
                                 : Japanese_items;
 
         while (j->item) {
@@ -5492,7 +5492,7 @@ readobjnam(char *bp, struct obj *no_wish)
         d.otmp = &hands_obj;
         return (struct obj *) 0;
     }
-    
+
     /* more wishing abuse: charge them for the wish anyway! */
     if (d.otmp->oartifact && rn2(u.uconduct.wisharti + 1) && !wizard) {
         artifact_exists(d.otmp, safe_oname(d.otmp), FALSE, ONAME_NO_FLAGS);

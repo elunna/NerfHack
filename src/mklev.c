@@ -737,12 +737,12 @@ void
 count_level_features(void)
 {
     coordxy x, y;
-    svl.level.flags.nfountains 
+    svl.level.flags.nfountains
         = svl.level.flags.nsinks
         = svl.level.flags.ntoilets
         = svl.level.flags.nforges
         = svl.level.flags.naltars = 0;
-    
+
     for (y = 0; y < ROWNO; y++)
         for (x = 1; x < COLNO; x++) {
             int typ = levl[x][y].typ;
@@ -897,7 +897,7 @@ fill_ordinary_room(
      * [3.7]: Most or all of the below functions use somexyspace, which
      * attempts to find a ROOM, CORR or ICE square, all of which are
      * ACCESSIBLE. */
-    
+
     if (!rn2(10))
         mkfount(croom);
     if (!rn2(60)) {
@@ -1107,7 +1107,7 @@ fill_ordinary_room(
     /* Maybe decorate the walls */
     if (croom->rtype == OROOM && depth(&u.uz) > 1 && !rn2(27))
         croom->rtype = ARTROOM;
-    
+
  skip_nonrogue:
     if (!rn2(3) && somexyspace(croom, &pos)) {
         (void) mkobj_at(RANDOM_CLASS, pos.x, pos.y, TRUE);
@@ -1256,7 +1256,7 @@ makelevel(void)
         else if (u_depth > 9 && !rn2(5)
                  && !(svm.mvitals[PM_KILLER_BEE].mvflags & G_GONE))
             do_mkroom(BEEHIVE);
-        else if (u_depth > 9 && !rn2(7)) 
+        else if (u_depth > 9 && !rn2(7))
             do_mkroom(REALZOO);
         else if (u_depth > 11 && !rn2(6))
             do_mkroom(MORGUE);
@@ -2291,9 +2291,9 @@ mkaltar(struct mkroom *croom)
     /* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
     al = rn2((int) A_LAWFUL + 2) - 1;
     levl[m.x][m.y].altarmask = Align2amask(al);
-    
+
     /* Sometimes they are in poor condition */
-    if (!rn2(4) || level_difficulty() > 15 
+    if (!rn2(4) || level_difficulty() > 15
                 || svl.level.flags.naltars > 1)
         levl[m.x][m.y].cracked = 1;
 }

@@ -517,11 +517,11 @@ livelog_printf(long ll_type, const char *line, ...)
 {
     char gamelogbuf[BUFSZ * 2];
     va_list the_args;
-    
+
     /* Don't livelog in explore mode - prevents server spam */
     if (discover)
         return;
-    
+
     va_start(the_args, line);
     (void) vsnprintf(gamelogbuf, sizeof gamelogbuf, line, the_args);
     va_end(the_args);

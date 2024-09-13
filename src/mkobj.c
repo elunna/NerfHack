@@ -884,11 +884,11 @@ unknow_object(struct obj *obj)
 
     obj->bknown = obj->rknown = 0;
     obj->cknown = obj->lknown = 0;
-    
+
     /* Always reveal erodeproof status */
     if (is_rustprone(obj) || is_corrodeable(obj) || is_flammable(obj))
-        obj->rknown = 1; 
-    
+        obj->rknown = 1;
+
     /* for an existing object, awareness of charges or enchantment has
        gone poof...  [object types which don't use the known flag have
        it set True for some reason] */
@@ -1160,7 +1160,7 @@ mksobj_init(struct obj *otmp, boolean artif)
         } else if (otmp->otyp == WAN_WONDER) {
             otmp->spe = rn1(10, 15);
         } else
-            otmp->spe = rn1(5,             
+            otmp->spe = rn1(5,
                             (objects[otmp->otyp].oc_dir == NODIR) ? 15 : 8);
         blessorcurse(otmp, 17);
         otmp->recharged = 0; /* used to control recharging */
@@ -1231,8 +1231,8 @@ mksobj(int otyp, boolean init, boolean artif)
     struct obj *otmp;
     char let = objects[otyp].oc_class;
 
-    /* Food is generally useless for a vampire, so let's 
-     * give them a little break. We'll let most regular 
+    /* Food is generally useless for a vampire, so let's
+     * give them a little break. We'll let most regular
      * food rations turn into potions of blood instead. */
     if (Race_if(PM_VAMPIRE) && rn2(10)) {
         switch (otyp) {
@@ -1453,7 +1453,7 @@ start_corpse_timeout(struct obj *body)
             }
         }
         /* corpse of an actual zombie */
-    } else if (body->zombie_corpse && !body->norevive 
+    } else if (body->zombie_corpse && !body->norevive
                && !In_sokoban(&u.uz)) {
         /* Priests have a chance to put down zombies for good. */
         static const char *const holy_msg[4] = {
@@ -1481,7 +1481,7 @@ start_corpse_timeout(struct obj *body)
         action = ZOMBIFY_MON;
         when = rn1(15, 5); /* 5..19 */
     }
-    
+
     (void) start_timer(when, TIMER_OBJECT, action, obj_to_any(body));
 }
 
@@ -2363,10 +2363,10 @@ is_rottable(struct obj *otmp)
      */
     if (objects[otyp].oc_oprop == POISON_RES)
         return FALSE;
-    
+
     if (otmp->oclass == FOOD_CLASS)
         return FALSE;
-    
+
     return (boolean) (objects[otyp].oc_material <= WOOD
                       && objects[otyp].oc_material != LIQUID);
 }

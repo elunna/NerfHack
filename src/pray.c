@@ -204,7 +204,7 @@ in_trouble(void)
 
     /* Cavepersons get another flavor kick: their god is
      * also a bit primitive, so they get a chance of
-     * their god being asleep at the switch. Give a little 
+     * their god being asleep at the switch. Give a little
      * break for major troubles.
      */
     if (!rn2(13) && Role_if(PM_CAVE_DWELLER))
@@ -908,7 +908,7 @@ gcrownu(void)
             break;
         case 8:
             if (!(HStone_resistance & FROMOUTSIDE)) {
-                You_feel("%s.", Hallucination 
+                You_feel("%s.", Hallucination
                                     ? "unusually limber"
                                     : "less concerned about becoming petrified");
                 HStone_resistance |= FROMOUTSIDE;
@@ -1081,13 +1081,13 @@ gcrownu(void)
         } else if (!already_exists) {
             if (Role_if(PM_CLERIC)) {
                 obj = mksobj(WAR_HAMMER, FALSE, FALSE);
-                obj = oname(obj, artiname(PRIEST_GIFT), 
+                obj = oname(obj, artiname(PRIEST_GIFT),
                             ONAME_GIFT | ONAME_KNOW_ARTI);
                 obj->spe = 1;
                 at_your_feet("A hammer");
             } else {
                 obj = mksobj(LONG_SWORD, FALSE, FALSE);
-                obj = oname(obj, artiname(ART_VORPAL_BLADE), 
+                obj = oname(obj, artiname(ART_VORPAL_BLADE),
                             ONAME_GIFT | ONAME_KNOW_ARTI);
                 obj->spe = 1;
                 at_your_feet("A sword");
@@ -1167,7 +1167,7 @@ gcrownu(void)
     /* lastly, confer an extra skill slot/credit beyond the
        up-to-29 you can get from gaining experience levels */
     add_weapon_skill(1);
-    
+
     /* The altar can't handle the transference of all that power! */
     if (rn2(13))
         crackaltar();
@@ -1497,7 +1497,7 @@ pleased(aligntyp g_align)
                 else
                     break; /* Sorry... */
                 pline(msg, "my protection");
-            
+
                 SetVoice((struct monst *) 0, 0, 80, voice_deity);
                 verbalize("Use it wisely in my name!");
                 break;
@@ -1846,7 +1846,7 @@ offer_different_alignment_altar(
             You_feel("the power of %s increase.", u_gname());
             if (rnl(u.ulevel) > 3) {
 		    	/* KMH -- Only a chance of this happening */
-				You("feel %s is very angry at you!", a_gname());                    
+				You("feel %s is very angry at you!", a_gname());
 				summon_minion(altaralign, FALSE);
 				summon_minion(altaralign, FALSE);
 		    }
@@ -1864,7 +1864,7 @@ offer_different_alignment_altar(
                                    : (const char *) "gray"));
 
             if (rnl(u.ulevel) > 6 && u.ualign.record > 0
-                && rnd(u.ualign.record) > 
+                && rnd(u.ualign.record) >
                        (3 * ALIGNLIM) / (temple_occupied(u.urooms)
                                              ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
@@ -1873,7 +1873,7 @@ offer_different_alignment_altar(
                     crackaltar();
             } else if (!rn2(13))
                 crackaltar();
-            
+
             /* anger priest; test handles bones files */
             if ((pri = findpriest(temple_occupied(u.urooms)))
                 && !p_coaligned(pri))
@@ -1984,7 +1984,7 @@ bestow_artifact(void)
     struct rm *lev = &levl[u.ux][u.uy];
     int nchance = u.ulevel + 12;
     int arti_gift_odds = 8 + (2 * u.ugifts);
-    
+
     /* you were already in pretty good standing
     *
     * The player can gain an artifact;
@@ -2007,7 +2007,7 @@ bestow_artifact(void)
     * level 20 or greater: 100% chance
 
     */
-    if (u.ulevel > 3 && u.uluck >= 0 
+    if (u.ulevel > 3 && u.uluck >= 0
          && rn2(10) < (int) ((nchance * nchance) / 100)
          && !rn2(arti_gift_odds)) {
         struct obj *otmp;
@@ -2047,13 +2047,13 @@ bestow_artifact(void)
                 makeknown(otmp->otyp);
                 discover_artifact(otmp->oartifact);
             }
-            
+
             /* If more than 2 gifts have been granted, the altar can crack. */
             if ((u.ugifts > 2 && !rn2(2))
                 /* If the player is already crowned, it definitely cracks. */
                 || u.uevent.uhand_of_elbereth
                 /* If the altar is already cracked - sorry... */
-                || lev->cracked) 
+                || lev->cracked)
                 crackaltar();
             return TRUE;
         }
@@ -2065,7 +2065,7 @@ bestow_artifact(void)
  * If an already cracked altar cracks again, it is destroyed forever.
  * Altars only crack from gifting if you have received more than 2 gifts
  * or if you are already crowned.
- * 
+ *
  * Altars can also occasionally generate cracked, and they can crack from
  * being converted from one alignment to another.
  * */
@@ -2448,7 +2448,7 @@ dopray(void)
            we will skip straight to standard prayer since the player
            already went through a prompt. */
         You("pray to the Porcelain God.");
-        
+
         if (!Sick && !HConfusion && !HStun && !Vomiting) {
             pline("He ignores your pleas.");
             return 1;
@@ -2464,10 +2464,10 @@ dopray(void)
             make_confused(0L, TRUE);
         if (HStun)
             make_stunned(0L, TRUE);
-        
+
         return 1;
     }
-    
+
     /* set up p_type and p_alignment */
     if (!can_pray(TRUE))
         return ECMD_OK;
@@ -2475,7 +2475,7 @@ dopray(void)
     u.lastprayed = svm.moves;
     u.lastprayresult = PRAY_INPROG;
     u.reconciled = REC_NONE;
-    
+
     if (wizard && gp.p_type >= 0) {
         static const char forcesuccess[] = "Force the gods to be pleased?";
 

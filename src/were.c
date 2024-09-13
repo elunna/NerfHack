@@ -28,7 +28,7 @@ were_change(struct monst *mon)
                     howler = "jackal";
                     howl = "howling";
                     break;
-                case PM_HUMAN_WERETIGER:	
+                case PM_HUMAN_WERETIGER:
                     howler = "tiger";
                     howl = "yowling";
                     break;
@@ -66,9 +66,9 @@ counter_were(int pm)
         return PM_HUMAN_WERERAT;
     case PM_HUMAN_WERERAT:
         return PM_WERERAT;
-    case PM_WERETIGER:        
+    case PM_WERETIGER:
         return PM_HUMAN_WERETIGER;
-    case PM_HUMAN_WERETIGER:  
+    case PM_HUMAN_WERETIGER:
         return PM_WERETIGER;
     default:
         return NON_PM;
@@ -188,7 +188,7 @@ were_summon(
         case PM_WERETIGER:
         case PM_HUMAN_WERETIGER:
             typ = rn2(5) ? PM_JAGUAR : PM_TIGER;
-            if (genbuf) 
+            if (genbuf)
                 Strcpy(genbuf, "large cat");
             break;
         default:

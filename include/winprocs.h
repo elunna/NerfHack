@@ -10,7 +10,7 @@
 #include "color.h"
 #endif
 
-enum wp_ids { wp_tty = 1, wp_X11, wp_Qt, wp_mswin, wp_curses, 
+enum wp_ids { wp_tty = 1, wp_X11, wp_Qt, wp_mswin, wp_curses,
               wp_chainin, wp_chainout, wp_safestartup, wp_shim,
               wp_hup, wp_guistubs, wp_ttystubs,
 #ifdef OUTDATED_STUFF
@@ -131,7 +131,7 @@ extern
 /* 3.7: There are real add_menu() and select_menu
  *      in the core now.
  *      add_menu does some common activities, such as menu_colors.
- *      select_menu does some before and after activities. 
+ *      select_menu does some before and after activities.
  *      add_menu() and select_menu() are in windows.c
  */
 /* #define add_menu (*windowprocs.win_add_menu) */
@@ -193,10 +193,10 @@ extern
 #define ctrl_nhwindow (*windowprocs.win_ctrl_nhwindow)
 
 /*
- * 
+ *
  */
 #define WPID(name) #name, wp_##name
-#define WPIDMINUS(name) "-" #name, wp_##name 
+#define WPIDMINUS(name) "-" #name, wp_##name
 
 /*
  * WINCAP

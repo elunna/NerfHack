@@ -182,7 +182,7 @@ m_initweap(struct monst *mtmp)
         if (rn2(2))
             (void) mongets(mtmp, (mm != PM_ETTIN) ? BOULDER : CLUB);
         if ((mm != PM_ETTIN) && !rn2(5))
-            (void) mongets(mtmp, rn2(2) ? TWO_HANDED_SWORD 
+            (void) mongets(mtmp, rn2(2) ? TWO_HANDED_SWORD
                                         : rn2(4) ? BATTLE_AXE
                                             : WAR_HAMMER);
         break;
@@ -196,13 +196,13 @@ m_initweap(struct monst *mtmp)
             default:
                 (void) mongets(mtmp, SCYTHE);
             }
-            
+
             /* They also traditionally get slings */
             otmp = mongets(mtmp, SLING_BULLET);
             otmp->quan = 6 + rnd(6);
             otmp->owt = weight(otmp);
             (void) mongets(mtmp, SLING);
-            
+
             if (rn2(2))
                 (void) mongets(mtmp, ELVEN_LEATHER_HELM);
             if (rn2(2))
@@ -322,12 +322,12 @@ m_initweap(struct monst *mtmp)
                 break;
 	    case PM_DUELIST:
             if (rn2(5))
-                (void) mongets(mtmp, rn2(3) ? HAWAIIAN_SHIRT 
+                (void) mongets(mtmp, rn2(3) ? HAWAIIAN_SHIRT
                                                     : LEATHER_CLOAK);
             if (rn2(3))
                 (void) mongets(mtmp, rn2(3) ? LOW_BOOTS : HIGH_BOOTS);
             if (rn2(5))
-                (void) mongets(mtmp, rn2(3) ? FEDORA 
+                (void) mongets(mtmp, rn2(3) ? FEDORA
                                             : LEATHER_GLOVES);
             m_initthrow(mtmp, RAZOR_CARD, rn1(12, 12));
 		break;
@@ -1029,7 +1029,7 @@ clone_mon(
 
     m2 = newmonst();
     *m2 = *mon; /* copy condition of old monster */
-    
+
     /* Make sure no worn masks are active */
     m2->misc_worn_check = 0L;
     m2->weapon_check = NEED_WEAPON;
@@ -1461,7 +1461,7 @@ makemon(
 
     place_monster(mtmp, x, y);
     mtmp->mcansee = mtmp->mcanmove = TRUE;
-    mtmp->seen_resistance = M_SEEN_NOTHING; 
+    mtmp->seen_resistance = M_SEEN_NOTHING;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
     if ((mmflags & MM_MINVIS) != 0) /* for ^G */
         mon_set_minvis(mtmp); /* call after place_monster() */
@@ -1696,18 +1696,18 @@ makemon(
     /* Small portion of eligible monsters can spawn rabid. */
     if (!mtmp->mpeaceful && !mtmp->mtame && !flags.beginner
         /* Although humans can get infected with rabid, we
-         * won't generate them rabid to avoid insane 
+         * won't generate them rabid to avoid insane
          * concentrations of rabid soldiers in Ludios or Castle */
             && mtmp->data->mlet != S_HUMAN) {
         if (mtmp->mnum == PM_CHICKENRAT) /* Always rabid */
             mon_rabid(mtmp, FALSE);
-        else if ((mtmp->mnum == PM_COYOTE || is_bat(mtmp->data)) 
+        else if ((mtmp->mnum == PM_COYOTE || is_bat(mtmp->data))
                 && !rn2(10))
             mon_rabid(mtmp, FALSE);
         else if (!rn2(127 - level_difficulty()))
             mon_rabid(mtmp, FALSE);
     }
-   
+
     /* Some checks */
     if (is_unicorn(ptr) && sgn(u.ualign.type) != sgn(ptr->maligntyp)) {
         if (mtmp->mpeaceful)
@@ -2407,8 +2407,8 @@ peace_minded(struct permonst *ptr)
 	/* Less trouble for the player. Note: aligned unicorns will still be peaceful, their
 	 * mpeaceful flag is set after the initial check. */
 	if (In_sokoban(&u.uz))
-		return FALSE; 
- 
+		return FALSE;
+
     if (always_peaceful(ptr))
         return TRUE;
     if (always_hostile(ptr))
@@ -2474,7 +2474,7 @@ set_malign(struct monst *mtmp)
         if (mal != A_NONE)
             mal *= 5;
         /* make priests of Moloch hostile */
-        if (mal == A_NONE) 
+        if (mal == A_NONE)
             mtmp->mpeaceful = 0;
     }
 

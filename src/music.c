@@ -475,7 +475,7 @@ do_earthquake(int force)
             }
         }
     /* level.flags.nfountains,nsinks, etc */
-    count_level_features(); 
+    count_level_features();
 }
 
 staticfn const char *
@@ -535,11 +535,11 @@ do_improvisation(struct obj *instr)
         mode |= PLAY_CONFUSED;
     if (Hallucination)
         mode |= PLAY_HALLU;
-    
+
     /* Erosion doesn't do the music any favors */
     if (instr->oeroded || instr->oeroded2)
         mode |= rn2(2) ? PLAY_STUNNED : PLAY_CONFUSED;
-    
+
     if (!rn2(2)) {
         /*
          * TEMPORARY?  for multiple impairments, don't always
@@ -747,7 +747,7 @@ staticfn char *
 improvised_notes(boolean *same_as_last_time)
 {
     static const char notes[7] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
-    /* target buffer has to be in svc.context, otherwise saving game 
+    /* target buffer has to be in svc.context, otherwise saving game
      * between improvised recitals would not be able to maintain
      * the same_as_last_time context. */
 
@@ -796,7 +796,7 @@ do_play_instrument(struct obj *instr)
     }
 
     /* eroded instruments can break */
-    if (!instr->oartifact && erosion_level > 0 
+    if (!instr->oartifact && erosion_level > 0
             && rnd(7) <= erosion_level) {
         You("start playing %s.", yname(instr));
         pline("The %s suddenly breaks!", xname(instr));

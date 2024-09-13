@@ -1658,9 +1658,9 @@ dogaze(void)
             break;
         }
     }
-    if (adtyp != AD_CONF 
-        && adtyp != AD_FIRE 
-        && adtyp != AD_BLND 
+    if (adtyp != AD_CONF
+        && adtyp != AD_FIRE
+        && adtyp != AD_BLND
         && adtyp != AD_TLPT
         && adtyp != AD_HALU
         && adtyp != AD_STUN) {

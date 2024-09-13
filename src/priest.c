@@ -662,7 +662,7 @@ priest_talk(struct monst *priest)
                       (theft by gremlin clears the intrinsic but not
                       its former magnitude, making it recoverable) */
                    && (!(HProtection & INTRINSIC)
-                       || ((rn2(10) - u.ublessed >= 0) 
+                       || ((rn2(10) - u.ublessed >= 0)
                            && (rn2(10) - u.ublessed >= 0)))) { /* p^2 */
             SetVoice(priest, 0, 80, 0);
             verbalize("Thou hast been rewarded for thy devotion.");

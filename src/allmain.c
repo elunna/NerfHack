@@ -220,7 +220,7 @@ moveloop_core(void)
                          : 70))
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
-                
+
 #if 0 /* Disabled - this makes ascension too sloggy. */
                 if (u.uevent.invoked && !rn2(15) && !In_endgame(&u.uz))
                     nasty((struct monst *) 0, TRUE);
@@ -258,13 +258,13 @@ moveloop_core(void)
                 if (Glib)
                     glibr();
                 ck_greased_rings();
-                
+
                 /* Foulstones sometimes emit stench:
                  * must go before run_regions */
                 if ((fstone = carrying(FOULSTONE))) {
                     if (fstone->blessed && !rn2(100)) {
                         if (!Deaf && rn2(3))
-                            You_hear(Hallucination ? "breaking wind." 
+                            You_hear(Hallucination ? "breaking wind."
                                                    : "a light puff.");
                         iter_mons(garlic_breath);
                     } else if (fstone->cursed && !rn2(100)) {
@@ -582,7 +582,7 @@ void
 moveloop(boolean resuming)
 {
     moveloop_preamble(resuming);
-    
+
     for (;;) {
         moveloop_core();
     }
@@ -648,12 +648,12 @@ regen_hp(int wtcap)
            once u.mh reached u.mhmax; that may have been convenient
            for the player, but it didn't make sense for gameplay...] */
         if (u.uhp < u.uhpmax
-	        && vamp_can_regen() 
+	        && vamp_can_regen()
             && !Rabid
             /* Non-undead cannot regenerate in the valley */
             && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))
             && (encumbrance_ok || U_CAN_REGEN())) {
-            
+
             /*
              * KMH, balance patch -- New regeneration code
              * Healthstones have been added, which alter your effective

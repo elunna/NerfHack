@@ -404,7 +404,7 @@ invletter_value(char c)
            : ('A' <= c && c <= 'Z') ? (c - 'A' + 2 + 26)
              : (c == '$') ? 1
                : (c == '#') ? 1 + invlet_basic + 1
-                 : 1 + invlet_basic + 1 + 1; /* none of the above 
+                 : 1 + invlet_basic + 1 + 1; /* none of the above
                                               * (shouldn't happen) */
 }
 
@@ -1017,7 +1017,7 @@ addinv_core2(struct obj *obj)
          * for correct calculation */
         set_moreluck();
     }
-    
+
     /* KMH, balance patch -- recalculate health if you've gained healthstones */
     if (obj->otyp == HEALTHSTONE)
         recalc_health();
@@ -4792,8 +4792,8 @@ look_here(
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
         if (!skip_objects && (Blind || !dfeature)) {
-            if (bloody && !is_pool(u.ux, u.uy)) 
-                There("is %s blood splattered on the floor.", 
+            if (bloody && !is_pool(u.ux, u.uy))
+                There("is %s blood splattered on the floor.",
                       mons[levl[u.ux][u.uy].splatpm].pmnames[NEUTRAL]);
             else
                 You("%s no objects here.", verb);
@@ -5364,7 +5364,7 @@ let_to_name(char let, boolean unpaid, boolean showsym)
     unsigned len;
 
     if (oclass) {
-        class_name = Role_if(PM_CARTOMANCER) 
+        class_name = Role_if(PM_CARTOMANCER)
             ? carnames[oclass] : names[oclass];
     } else if ((pos = strchr(oth_symbols, let)) != 0)
         class_name = oth_names[pos - oth_symbols];

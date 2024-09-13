@@ -97,7 +97,7 @@ choose_magic_spell(struct monst* mtmp, int spellval)
             return MGC_ENTOMB;
         return MGC_CURE_SELF;
     }
-    
+
     switch (spellval) {
     case 24:
     case 23:
@@ -496,7 +496,7 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
     boolean mtrap = !mattk;
     int erodelvl = rnd(3);
     struct obj *oatmp;
-    
+
     if (udefend ? Antimagic
                 : (resists_magm(mdef) || defended(mdef, AD_MAGM))) {
         if (udefend) {
@@ -516,7 +516,7 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
                     pline("%s shines brightly.", The(xname(oatmp)));
                 pline("%s is immune to %s destructive magic.",
                       The(xname(oatmp)),
-                      mtrap ? "the trap's" 
+                      mtrap ? "the trap's"
                       : uattk ? "your" : s_suffix(mon_nam(mattk)));
             }
             return 0;
@@ -525,7 +525,7 @@ m_destroy_armor(struct monst *mattk, struct monst *mdef)
                 pline("%s glimmers brightly.", Yname2(oatmp));
             pline("%s is immune to %s destructive magic.",
                   Yname2(oatmp),
-                  mtrap ? "the trap's" 
+                  mtrap ? "the trap's"
                   : uattk ? "your" : s_suffix(mon_nam(mattk)));
             return 0; /* no effect */
         } else if (oatmp->oerodeproof) {
@@ -626,7 +626,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         if (counterspell(mtmp, uwep))
             return;
     }
-    
+
     switch (spellnum) {
     case MGC_DEATH_TOUCH:
         pline("Oh no, %s's using the touch of death!", mhe(mtmp));
@@ -735,7 +735,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
     }
     case MGC_AGGRAVATION:
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
-            incr_itimeout(&HAggravate_monster, rnd(250) + 50); 
+            incr_itimeout(&HAggravate_monster, rnd(250) + 50);
         }
         You_feel("that monsters are aware of your presence.");
         aggravate();
@@ -938,7 +938,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         impossible("cast directed cleric spell (%d) with dmg=0?", spellnum);
         return;
     }
-    
+
     if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY)) {
         if (counterspell(mtmp, uwep))
             return;
@@ -946,7 +946,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
 
     switch (spellnum) {
     case CLC_BLIGHT: {
-        /* This could use is_fleshy(), but that would make a large set 
+        /* This could use is_fleshy(), but that would make a large set
          * of monsters immune like fungus, blobs, and jellies. */
         boolean no_effect = nonliving(gy.youmonst.data);
 
@@ -1305,10 +1305,10 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
     if (adtyp == AD_SPEL) {
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
         if (mtmp->mpeaceful
-            && (spellnum == MGC_AGGRAVATION 
+            && (spellnum == MGC_AGGRAVATION
                 || spellnum == MGC_SUMMON_MONS
                 || spellnum == MGC_CALL_UNDEAD
-                || spellnum == MGC_EVIL_EYE 
+                || spellnum == MGC_EVIL_EYE
                 || spellnum == MGC_CLONE_WIZ))
             return TRUE;
         /* haste self when already fast */
@@ -1326,7 +1326,7 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
         if (mtmp->mpeaceful && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* healing when already healed */
-        if (spellnum == MGC_CURE_SELF && (mtmp->mhp == mtmp->mhpmax 
+        if (spellnum == MGC_CURE_SELF && (mtmp->mhp == mtmp->mhpmax
             && !mtmp->mdiseased && !mtmp->mwither && !mtmp->mblinded))
             return TRUE;
         /* don't summon monsters if it doesn't think you're around */
@@ -1364,7 +1364,7 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             return TRUE;
         }
         if ((spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT
-             || spellnum == MGC_ACID_BLAST) 
+             || spellnum == MGC_ACID_BLAST)
             && (mtmp->mpeaceful || u.uinvulnerable)) {
             return TRUE;
         }
@@ -1378,7 +1378,7 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
     } else if (adtyp == AD_CLRC) {
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */
-        if (mtmp->mpeaceful && (spellnum == CLC_INSECTS 
+        if (mtmp->mpeaceful && (spellnum == CLC_INSECTS
                                 || spellnum == CLC_HOBBLE
                                 || spellnum == CLC_BLIGHT))
             return TRUE;
@@ -1450,8 +1450,8 @@ counterspell(struct monst *mtmp, struct obj *otmp) {
         return FALSE;
     if (!rn2(5))
         return FALSE;
-    
-    pline("%s %s and %s %s magic!", 
+
+    pline("%s %s and %s %s magic!",
         (Blind ? "vibrates" : "glows"), artiname(uwep->oartifact),
         !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
 

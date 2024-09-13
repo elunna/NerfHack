@@ -108,7 +108,7 @@ toggle_stealth(
 {
     if (on ? gi.initial_don : svc.context.takeoff.cancelled_don)
         return;
-    
+
     if (Stomping && on) {
         pline("This %s will not silence your stomping!", xname(obj));
         makeknown(obj->otyp);
@@ -193,7 +193,7 @@ Boots_on(void)
 
     if (hates_item(&gy.youmonst, uarmf->otyp))
         You_feel("uncomfortable wearing these boots.");
-    
+
     switch (uarmf->otyp) {
     case LOW_BOOTS:
     case ORCISH_BOOTS:
@@ -245,7 +245,7 @@ Boots_on(void)
         float_vs_flight(); /* block flying if levitating */
         if (Flying) {
             boolean already_flying;
-            
+
             /* to determine whether this flight is new we have to muck
                about in the Flying intrinsic (actually extrinsic) */
             EFlying &= ~W_ARMF;
@@ -269,7 +269,7 @@ Boots_on(void)
     }
     if (uarmf && uarmf->greased && uarmf->otyp != FUMBLE_BOOTS)
         make_feet_greasy();
-        
+
     return 0;
 }
 
@@ -279,10 +279,10 @@ Boots_off(void)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
-    
+
     if (hates_item(&gy.youmonst, uarmf->otyp))
         You_feel("more comfortable now.");
-    
+
     if (uarmf && uarmf->oartifact == ART_MAYHEM) {
         You_feel("the commotion recede.");
         EConflict &= ~W_ARMF;
@@ -369,7 +369,7 @@ Cloak_on(void)
 
     if (hates_item(&gy.youmonst, uarmc->otyp))
         You_feel("uncomfortable wearing this cloak.");
-    
+
     switch (uarmc->otyp) {
     case ORCISH_CLOAK:
     case DWARVISH_CLOAK:
@@ -442,7 +442,7 @@ Cloak_off(void)
 
     if (hates_item(&gy.youmonst, uarmc->otyp))
         You_feel("more comfortable now.");
-    
+
     svc.context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
     setworn((struct obj *) 0, W_ARMC);
@@ -499,7 +499,7 @@ Helmet_on(void)
 {
     if (hates_item(&gy.youmonst, uarmh->otyp))
         You_feel("uncomfortable wearing this helmet.");
-    
+
     switch (uarmh->otyp) {
     case FEDORA:
     case HELMET:
@@ -583,10 +583,10 @@ int
 Helmet_off(void)
 {
     svc.context.takeoff.mask &= ~W_ARMH;
-    
+
     if (hates_item(&gy.youmonst, uarmh->otyp))
         You_feel("more comfortable now.");
-    
+
     switch (uarmh->otyp) {
     case FEDORA:
     case HELMET:
@@ -775,7 +775,7 @@ Shield_on(void)
 {
     if (hates_item(&gy.youmonst, uarms->otyp))
         You_feel("uncomfortable wearing that shield.");
-    
+
     /* no shield currently requires special handling when put on, but we
        keep this uncommented in case somebody adds a new one which does
        [reflection is handled by setting u.uprops[REFLECTION].extrinsic
@@ -794,7 +794,7 @@ Shield_on(void)
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
     }
-    
+
     /* Mirrorbright requires extra handling since it emits light when worn;*/
     if (artifact_light(uarms) && !uarms->lamplit) {
         begin_burn(uarms, FALSE);
@@ -803,7 +803,7 @@ Shield_on(void)
                   Yname2(uarms), otense(uarms, "begin"),
                   arti_light_description(uarms));
     }
-    
+
     if (!uarms->known) {
         uarms->known = 1; /* shield's +/- evident because of status line AC */
         update_inventory();
@@ -816,12 +816,12 @@ Shield_off(void)
 {
     struct obj *otmp = uarms;
     boolean was_arti_light = otmp && otmp->lamplit && artifact_light(otmp);
-    
+
     svc.context.takeoff.mask &= ~W_ARMS;
 
     if (hates_item(&gy.youmonst, uarms->otyp))
         You_feel("more comfortable now.");
-    
+
     /* no shield currently requires special handling when taken off, but we
        keep this uncommented in case somebody adds a new one which does */
     switch (uarms->otyp) {
@@ -1015,7 +1015,7 @@ Armor_on(void)
         You_feel("extremely uncomfortable wearing such armor.");
     else if (hates_item(&gy.youmonst, uarm->otyp))
         You_feel("uncomfortable wearing such armor.");
-    
+
     dragon_armor_handling(uarm, TRUE, TRUE);
     /* gold DSM requires extra handling since it emits light when worn;
        do that after the special armor handling */
@@ -1042,7 +1042,7 @@ Armor_off(void)
         You_feel("much more comfortable and free now.");
     else if (hates_item(&gy.youmonst, otmp->otyp))
         You_feel("more comfortable now.");
-    
+
     /* taking off yellow dragon scales/mail might be fatal; arti_light
        comes from gold dragon scales/mail so they don't overlap, but
        conceptually the non-fatal change should be done before the
@@ -1074,7 +1074,7 @@ Armor_gone(void)
     svc.context.takeoff.cancelled_don = FALSE;
     if (Role_if(PM_MONK))
         You_feel("much more comfortable and free now.");
-    
+
     /* losing yellow dragon scales/mail might be fatal; arti_light
        comes from gold dragon scales/mail so they don't overlap, but
        conceptually the non-fatal change should be done before the
@@ -2570,11 +2570,11 @@ find_ac(void)
     /* armor class from worn gear */
     int dex_adjust_ac;
     int mvl_wtcap = near_capacity();
-    
+
     /* Polearms AC bonus */
     if (uwep && is_pole(uwep) && uwep->otyp != LANCE)
         uac -= misc_bonus(uwep);
-    
+
     if (uarm)
         uac -= (ARM_BONUS(uarm) + race_bonus(uarm));
     if (uarmc)
@@ -2593,7 +2593,7 @@ find_ac(void)
         uac -= uright->spe;
     if (uamul && uamul->otyp == AMULET_OF_GUARDING)
         uac -= 2; /* fixed amount; main benefit is to MC */
-    
+
     /* Extra skill for shield */
     if (uarms) {
         uac -= (ARM_BONUS(uarms) + race_bonus(uarms));
@@ -2608,10 +2608,10 @@ find_ac(void)
     }
 
     /* combat boots give +1 AC */
-    if (uarmf && misc_bonus(uarmf)) 
+    if (uarmf && misc_bonus(uarmf))
         uac -= misc_bonus(uarmf);
     /* padded gloves give +1 AC */
-    if (uarmg && misc_bonus(uarmg)) 
+    if (uarmg && misc_bonus(uarmg))
         uac -= misc_bonus(uarmg);
 
     /* armor class from other sources */
@@ -2619,7 +2619,7 @@ find_ac(void)
         uac -= u.ublessed;
     uac -= u.uspellprot;
 
-    
+
     /* Dexterity affects your base AC */
     dex_adjust_ac = 0;
     if (ACURR(A_DEX) <= 6)
@@ -2638,7 +2638,7 @@ find_ac(void)
         dex_adjust_ac -= 4;
     else if (ACURR(A_DEX) >= 24)
         dex_adjust_ac -= 5;
-    
+
     /* Wearing certain types of body armor negates any
      * beneficial dexterity bonus. So does being
      * encumbered in any way.
@@ -2648,19 +2648,19 @@ find_ac(void)
         if (dex_adjust_ac < 0)
             dex_adjust_ac = 0;
     }
-    
+
     uac = uac + dex_adjust_ac;
-    
-    /* Being encumbered incurs an AC penalty. 
+
+    /* Being encumbered incurs an AC penalty.
      * The penalty matches the level of encumbrance. */
     if (mvl_wtcap > UNENCUMBERED) {
         uac = uac + mvl_wtcap * 4;
     }
-    
+
     /* Wounded legs also bad; scales with weight */
     if (Wounded_legs)
         uac += (inv_weight() + weight_cap()) / 100;
-    
+
     /* put a cap on armor class [3.7: was +127,-128, now reduced to +/- 99 */
     if (abs(uac) > AC_MAX)
         uac = sgn(uac) * AC_MAX;
@@ -3376,7 +3376,7 @@ destroy_arm(
         if (ochoice && (ochoice->owornmask & W_ARMOR))
             atmp = ochoice;
     }
-    
+
     /*
      * Note: if the cloak resisted, then the suit or shirt underneath
      * wouldn't be impacted either. Likewise, if the suit resisted, the

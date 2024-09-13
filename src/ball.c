@@ -912,9 +912,9 @@ drop_ball(coordxy x, coordxy y)
             case TT_BEARTRAP:
                 side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
                 pline("%s%s!", pullmsg, "bear trap");
-                
-                /* Jungle boots protect us from wounding, but also take the 
-                 * brunt of the damage. */ 
+
+                /* Jungle boots protect us from wounding, but also take the
+                 * brunt of the damage. */
                 if (uarmf && objdescr_is(uarmf, "jungle boots")) {
                     losehp(rnd(10),
                            "leg damage from being pulled out of a bear trap",

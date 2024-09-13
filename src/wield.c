@@ -123,7 +123,7 @@ setuwep(struct obj *obj)
         pline("Your mind is flooded with magical knowledge.");
     else if (is_art(olduwep, ART_ORIGIN))
         You_feel("less in touch with your magical abilities.");
-    
+
     /* Werebane grants protection from shape-changers.
      * Handled with this method because we ran out of SPFX fields. */
     if (is_art(olduwep, ART_WEREBANE)) {
@@ -133,16 +133,16 @@ setuwep(struct obj *obj)
     if (uwep && u_wield_art(ART_WEREBANE)) {
         EProtection_from_shape_changers |= W_WEP;
         rescham();
-    } 
-    
+    }
+
     /* Serenity suppresses aggravate monster. */
     if (is_art(olduwep, ART_SERENITY))
         BAggravate_monster &= ~W_WEP;
     if (uwep && u_wield_art(ART_SERENITY))
         BAggravate_monster |= W_WEP;
-    
+
     /* These grant speed. */
-    if (is_art(olduwep, ART_QUICK_BLADE) 
+    if (is_art(olduwep, ART_QUICK_BLADE)
         || is_art(olduwep, ART_TSURUGI_OF_MURAMASA)) {
         EFast &= ~W_WEP;
         if (!Very_fast ) {
@@ -155,7 +155,7 @@ setuwep(struct obj *obj)
             You_feel("yourself speed up%s.",
                      HFast ? " a bit more" : "");
         EFast |= W_WEP;
-    } 
+    }
 
     /* Hated items decrease AC and affect to-hit */
     if (uwep && hates_item(&gy.youmonst, uwep->otyp)) {
@@ -240,7 +240,7 @@ ready_weapon(struct obj *wep)
         /* Allow anyone who gets expert in a weapon skill to identify those
          * weapons easily as soon as they wield them. We can easily justify
          * this with the extra effort it takes to train up now. Similar to
-         * rangers, you need to be XP10+ 
+         * rangers, you need to be XP10+
          * Check this before setworn so the enchantment shows up in the
          * wear message. */
         if (wep && wep->oclass == WEAPON_CLASS && u.ulevel >= 10
@@ -517,7 +517,7 @@ int
 doswapweapon(void)
 {
     struct obj *oldwep, *oldswap;
-    
+
     /* May we attempt this? */
     gm.multi = 0;
     if (cantwield(gy.youmonst.data)) {
@@ -907,17 +907,17 @@ void
 set_twoweap(boolean on_off)
 {
     u.twoweap = on_off;
-    
+
     if (uswapwep && uswapwep->oartifact) {
         set_artifact_intrinsic(uswapwep, on_off, W_SWAPWEP);
     }
-    
-    if (on_off && uswapwep && hates_item(&gy.youmonst,uswapwep->otyp) 
+
+    if (on_off && uswapwep && hates_item(&gy.youmonst,uswapwep->otyp)
         && !hates_item(&gy.youmonst, uwep->otyp)) {
         find_ac();
         disp.botl = TRUE;
         You_feel("strange wielding %s...", yname(uswapwep));
-    } else if (!on_off && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp) 
+    } else if (!on_off && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp)
                && !hates_item(&gy.youmonst, uwep->otyp))
         You_feel("more comfortable now.");
 }
@@ -1091,7 +1091,7 @@ chwepon(struct obj *otmp, int amount)
                   otense(uwep, "evaporate"));
         else
             pline("%s.", Yobjnam2(uwep, "evaporate"));
-        
+
         /* It blows up... */
         explode(u.ux, u.uy, ZT_MAGIC_MISSILE, dmgval(uwep, &gy.youmonst) + rnd(12),
             TOOL_CLASS, EXPL_MAGICAL);

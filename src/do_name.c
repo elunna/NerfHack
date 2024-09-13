@@ -1688,7 +1688,7 @@ mon_wounds(struct monst *mon,
     }
     if (DEADMONSTER(mon))
         return NULL;
-    
+
     if (mon->mhp == mon->mhpmax) {
         Sprintf(outbuf, "uninjured%s", addspace ? " " : "");
         return outbuf;

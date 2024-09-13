@@ -12,7 +12,7 @@
  */
 /* Resistances to troubles */
 enum prop_types {
-    /* Beginning of partial resistances: order is important. 
+    /* Beginning of partial resistances: order is important.
      * See explode.c and monattk.h */
     FIRE_RES          =  1,
     COLD_RES          =  2,

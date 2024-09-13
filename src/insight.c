@@ -453,7 +453,7 @@ enlightenment(
     } else {
         enl_msg("You ", "have ", "had ", "never prayed", "");
 	}
-    
+
     enlght_out(""); /* separator */
     enlght_out("Miscellaneous:");
     /* reminder to player and/or information for dumplog */
@@ -1559,7 +1559,7 @@ attributes_enlightenment(
 
     if (u_wield_art(ART_SERENITY))
         you_are("countering spells", " because of Serenity");
-    
+
     /* Partial intrinsic resistances */
 
     Sprintf(buf, "%d%% fire resistant (intrinsic)", intrinsic_res(FIRE_RES));
@@ -1589,7 +1589,7 @@ attributes_enlightenment(
         you_are("poison resistant", from_what(POISON_RES));
 
     /* End of partial intrinsic resistances */
-    
+
     if (Acid_resistance) {
         Sprintf(buf, "%.20s%.30s",
                 temp_resist(ACID_RES) ? "temporarily " : "",
@@ -1603,13 +1603,13 @@ attributes_enlightenment(
     item_resistance_message(AD_DISN, " protected from disintegration", final);
     item_resistance_message(AD_ELEC, " protected from electric shocks", final);
     item_resistance_message(AD_ACID, " protected from acid", final);
-    
+
     if (Drain_resistance)
         you_are("level-drain resistant", from_what(DRAIN_RES));
-    
+
     if (Sick_resistance)
         you_are("immune to sickness", from_what(SICK_RES));
-    
+
     if (Stone_resistance) {
         Sprintf(buf, "%.20s%.30s",
                 temp_resist(STONE_RES) ? "temporarily " : "",
@@ -1619,11 +1619,11 @@ attributes_enlightenment(
 
     if (Stun_resistance)
         you_are("stun resistant", from_what(STUN_RES));
-    
+
     if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));
-    
+
     if (u.uedibility)
         you_can("recognize detrimental food", "");
 
@@ -1654,8 +1654,8 @@ attributes_enlightenment(
                 : (svc.context.warntype.obj & MH_WERE) ? "lycanthropes"
                 : (svc.context.warntype.obj & MH_DRAGON) ? "dragons"
                 : (svc.context.warntype.obj & MH_TROLL) ? "trolls"
-                : (svc.context.warntype.obj & MH_OGRE) ? "ogres" 
-                : (svc.context.warntype.obj & MH_GIANT) ? "giants" 
+                : (svc.context.warntype.obj & MH_OGRE) ? "ogres"
+                : (svc.context.warntype.obj & MH_GIANT) ? "giants"
                 : (svc.context.warntype.obj & MH_JABBERWOCK) ? "jabberwocks"
                                                             : something);
         you_are(buf, from_what(WARN_OF_MON));
@@ -1743,24 +1743,24 @@ attributes_enlightenment(
         you_are("visible", from_what(-INVIS));
     if (Displaced)
         you_are("displaced", from_what(DISPLACED));
-    
+
     if (Stomping) {
         you_are("stomping", from_what(STOMPING));
     }
-    
+
     if (Stealth) {
         you_are("stealthy", from_what(STEALTH));
     } else if (BStealth && (HStealth || EStealth)) {
         Sprintf(buf, " stealthy%s",
                 (BStealth == FROMOUTSIDE)
-                    ? " if not mounted" 
-                    : ((BStealth == I_SPECIAL) 
+                    ? " if not mounted"
+                    : ((BStealth == I_SPECIAL)
                            ? " if not wearing stomping boots" : ""));
         enl_msg(You_, "would be", "would have been", buf, "");
     }
 
     if (BAggravate_monster) /* Currently only Serenity does this.*/
-        enl_msg("Serenity ", "is preventing", "prevented", 
+        enl_msg("Serenity ", "is preventing", "prevented",
             " monsters from being aggravated", "");
     else if (Aggravate_monster)
         enl_msg("You aggravate", "", "d", " monsters",
@@ -1857,7 +1857,7 @@ attributes_enlightenment(
     if (Regeneration) {
         if (!Rabid)
             enl_msg("You regenerate", "", "d", "", from_what(REGENERATION));
-        else 
+        else
             enl_msg(You_, "will regenerate", "would have regenerated",
                     " if not rabid", "");
     }
@@ -2000,7 +2000,7 @@ attributes_enlightenment(
         you_have("steadfastness", " from Pridwen");
     else if (m_carrying(&gy.youmonst, LOADSTONE))
         you_have("steadfastness", " from a loadstone");
-    
+
     /*** Miscellany ***/
     if (Luck) {
         ltmp = abs((int) Luck);
@@ -2023,17 +2023,17 @@ attributes_enlightenment(
         if (ltmp >= 0)
             enl_msg("Good luck ", "times", "timed", " out slowly for you", "");
     }
-    
+
     /* KMH, balance patch -- healthstones affect health */
 	if (u.uhealbonus) {
 		Sprintf(buf, "%s health", u.uhealbonus > 0 ? "extra" : "reduced");
 	    if (wizard)
             Sprintf(eos(buf), " (%ld)", u.uhealbonus);
 		you_have(buf, "");
-	} else if (wizard) 
+	} else if (wizard)
         enl_msg("Your health bonus ", "is", "was", " zero", "");
 
-    
+
 #ifdef DEBUG
     /* named fruit debugging (doesn't really belong here...); to enable,
        include 'fruit' in DEBUGFILES list (even though it isn't a file...) */
@@ -2313,7 +2313,7 @@ show_conduct(int final)
                 plur(u.uconduct.altars));
         you_have_X(buf);
     }
-    
+
     /* only report Sokoban conduct if the Sokoban branch has been entered */
     if (sokoban_in_play()) {
         const char *presentverb = "have violated", *pastverb = "violated";

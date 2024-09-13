@@ -313,7 +313,7 @@ mount_steed(
     }
 
     /* Is the player impaired? */
-    if (!force && !mon_prop(mtmp, LEVITATION) 
+    if (!force && !mon_prop(mtmp, LEVITATION)
         && !mon_prop(mtmp, FLYING) && Levitation && !Lev_at_will) {
         You("cannot reach %s.", mon_nam(mtmp));
         return (FALSE);

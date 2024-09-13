@@ -214,7 +214,7 @@
 
 #define HStealth u.uprops[STEALTH].intrinsic
 #define EStealth u.uprops[STEALTH].extrinsic
-/* BStealth has FROMOUTSIDE set if mounted on non-flying steed 
+/* BStealth has FROMOUTSIDE set if mounted on non-flying steed
  *          or I_SPECIAL if stomping boots are being worn. */
 #define BStealth u.uprops[STEALTH].blocked
 #define Stealth ((HStealth || EStealth) && !BStealth)

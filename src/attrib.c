@@ -286,7 +286,7 @@ poison_strdmg(int strloss, int dmg, const char *knam, schar k_format)
     /* strloss may be 0 due to 100% poison resistance */
     if (strloss > 0)
         losestr(strloss, knam, k_format);
-    
+
     dmg = resist_reduce(dmg, POISON_RES);
     if (dmg > 0)
         losehp(dmg, knam, k_format);
@@ -398,9 +398,9 @@ poisoned(
     } else {
         /* attribute loss; if typ is A_STR, reduction in current and
            maximum HP will occur once strength has dropped down to 3 */
-        loss = (thrown_weapon || !fatal) 
+        loss = (thrown_weapon || !fatal)
                    ? 1 : resist_reduce(d(2, 2), POISON_RES); /* was rn1(3,3) */
-  
+
         /* check that a stat change was made */
         if (adjattrib(typ, -loss, 1))
             poisontell(typ, TRUE);
@@ -478,7 +478,7 @@ recalc_health(void)
     u.uhealbonus = 0;
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == HEALTHSTONE)
-            u.uhealbonus += otmp->quan * 
+            u.uhealbonus += otmp->quan *
                             (otmp->blessed ? 2 : otmp->cursed ? -2 : 1);
     return;
 }
@@ -987,9 +987,9 @@ from_what(int propidx) /* special cases can have negative values */
                           : ((EFast & W_ARMF) != 0L && uarmf->dknown
                              && objects[uarmf->otyp].oc_name_known)
                               ? ysimple_name(uarmf) /* speed boots */
-                                : (uwep && uwep->oartifact == ART_QUICK_BLADE) 
-                                    ? "Quick Blade" 
-                                    : EFast 
+                                : (uwep && uwep->oartifact == ART_QUICK_BLADE)
+                                    ? "Quick Blade"
+                                    : EFast
                                         ? "worn equipment"
                                         : something);
             else if ((obj = what_gives(&u.uprops[propidx].extrinsic)) != 0)
@@ -1006,7 +1006,7 @@ from_what(int propidx) /* special cases can have negative values */
             else if (propidx == FUMBLING && (HFumbling & I_SPECIAL))
                 Sprintf(buf, " due to goop covering your %s",
                         makeplural(body_part(FOOT)));
-            
+
             /* remove some verbosity and/or redundancy */
             if ((p = strstri(buf, " pair of ")) != 0)
                 copynchars(p + 1, p + 9, BUFSZ); /* overlapping buffers ok */

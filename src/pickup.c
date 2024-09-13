@@ -958,7 +958,7 @@ autopick(
 {
     if (Hallucination)
         return 0;
-    
+
     menu_item *pi; /* pick item */
     struct obj *curr;
     int n;
@@ -1960,7 +1960,7 @@ int
 encumber_msg(void)
 {
     int newcap = near_capacity();
-    
+
     if (go.oldcap < newcap) {
         switch (newcap) {
         case 1:
@@ -2446,9 +2446,9 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
         boolean mtmp_would_ston = (!taking && petri
                                    && !which_armor(mtmp, W_ARMG)
                                    && !resists_ston(mtmp));
-        boolean unpaid = otmp->unpaid 
+        boolean unpaid = otmp->unpaid
                 || (!otmp->no_charge && costly_spot(u.ux, u.uy));
-        
+
         /* Clear inapplicable wornmask bits */
         unwornmask &= ~(W_ART | W_ARTI | W_QUIVER);
 
@@ -2459,7 +2459,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
                 continue;
             }
             if (unpaid) {
-                pline("A mysterious force prevents you from giving away %s...", 
+                pline("A mysterious force prevents you from giving away %s...",
                       yname(otmp));
                 continue;
             }
@@ -2727,7 +2727,7 @@ in_container(struct obj *obj)
         pline("That would be an interesting topological exercise.");
         return 0;
     } else if ((Is_mbag(obj) || (obj->otyp == WAN_CANCELLATION && obj->spe > 0))
-            && objects[obj->otyp].oc_name_known && obj->dknown 
+            && objects[obj->otyp].oc_name_known && obj->dknown
             && gc.current_container->otyp == BAG_OF_HOLDING
             && !Confusion && !Hallucination) {
         pline("That combination is a little too explosive.");
@@ -2736,7 +2736,7 @@ in_container(struct obj *obj)
         Norep("You cannot %s %s you are wearing.",
               Icebox ? "refrigerate" : "stash", something);
         return 0;
-    } else if ((obj->otyp == LOADSTONE || obj->otyp == FOULSTONE) 
+    } else if ((obj->otyp == LOADSTONE || obj->otyp == FOULSTONE)
             && obj->cursed) {
         set_bknown(obj, 1);
         pline_The("stone%s won't leave your person.", plur(obj->quan));
@@ -2836,12 +2836,12 @@ in_container(struct obj *obj)
         /* did not actually insert obj yet */
         if (was_unpaid)
             addtobill(obj, FALSE, FALSE, TRUE);
-        
+
         /* At least ID the wand and give some experience for losing a bag of
          * holding this way. */
         if (obj->otyp == WAN_CANCELLATION)
             makeknown(obj->otyp);
-        
+
         if (obj->otyp == BAG_OF_HOLDING) /* one bag of holding into another */
             do_boh_explosion(obj, (boolean) (obj->where == OBJ_FLOOR));
         obfree(obj, (struct obj *) 0);
@@ -3938,23 +3938,23 @@ tipcontainer(struct obj *box) /* or bag */
                 addtobill(otmp, FALSE, FALSE, TRUE);
                 iflags.suppress_price++; /* doname formatting */
             }
-            
-            boolean explosive_combo = targetbox 
-                                      && Is_mbag(targetbox) 
+
+            boolean explosive_combo = targetbox
+                                      && Is_mbag(targetbox)
                                       && mbag_explodes(otmp, 0);
             boolean prevent_explosion = explosive_combo
                                         && !Confusion && !Hallucination
-                                        && (Is_mbag(otmp) 
-                                            || (otmp->otyp == WAN_CANCELLATION 
+                                        && (Is_mbag(otmp)
+                                            || (otmp->otyp == WAN_CANCELLATION
                                             && otmp->spe > 0))
-                                        && objects[otmp->otyp].oc_name_known 
-                                        && otmp->dknown 
+                                        && objects[otmp->otyp].oc_name_known
+                                        && otmp->dknown
                                         && targetbox->otyp == BAG_OF_HOLDING;
-            
+
             if (prevent_explosion)
-                You("flick %s away from the %s.", ansimpleoname(otmp), 
+                You("flick %s away from the %s.", ansimpleoname(otmp),
                     xname(targetbox));
-            
+
             if (targetbox && !prevent_explosion) {
                 if (explosive_combo) {
                     livelog_printf(LL_ACHIEVE,

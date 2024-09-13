@@ -44,7 +44,7 @@ static struct trobj Archeologist[] = {
     { LEATHER_JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 3, 0 },
-    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1 },        
+    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1 },
 	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS },
     { SCR_KNOWLEDGE, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS },
     { PICK_AXE, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS },
@@ -664,7 +664,7 @@ u_init_role(void)
      * skew the results if we use rn2(2)...  --KAA
      */
     case PM_ARCHEOLOGIST:
-    	switch (rnd(5)) {   
+    	switch (rnd(5)) {
 		    case 1: Archeologist[A_BOOK].trotyp = SPE_DETECT_FOOD; break;
 		    case 2: Archeologist[A_BOOK].trotyp = SPE_DETECT_MONSTERS; break;
 		    case 3: Archeologist[A_BOOK].trotyp = SPE_LIGHT; break;
@@ -874,7 +874,7 @@ u_init_race(void)
         knows_object(ELVEN_SHIELD, FALSE);
         knows_object(ELVEN_BOOTS, FALSE);
         knows_object(ELVEN_CLOAK, FALSE);
-        
+
         /* All elves have a natural affinity for enchantments */
         set_skill_cap_minimum(P_ENCHANTMENT_SPELL, P_BASIC);
         break;
@@ -888,7 +888,7 @@ u_init_race(void)
         knows_object(DWARVISH_MITHRIL_COAT, FALSE);
         knows_object(DWARVISH_CLOAK, FALSE);
         knows_object(DWARVISH_ROUNDSHIELD, FALSE);
-        
+
         /* All dwarves have skill with digging tools */
         set_skill_cap_minimum(P_PICK_AXE, P_SKILLED);
         break;
@@ -898,17 +898,17 @@ u_init_race(void)
         knows_object(GNOMISH_BOOTS, FALSE);
         knows_object(GNOMISH_SUIT, FALSE);
         u.nv_range = 2;
-        
-        /* Gnomes get an interesting tool. 
+
+        /* Gnomes get an interesting tool.
          * Tourists already get many of these tools...
          **/
         if (!Role_if(PM_TOURIST) && rn2(2)) {
             static int trotyp[] = {
-                TIN_OPENER, 
-                WAX_CANDLE, 
+                TIN_OPENER,
+                WAX_CANDLE,
                 TALLOW_CANDLE,
-                FIGURINE, 
-                CAN_OF_GREASE, 
+                FIGURINE,
+                CAN_OF_GREASE,
                 CREDIT_CARD,
                 TOWEL
             };
@@ -920,7 +920,7 @@ u_init_race(void)
             ini_inv(OilPotion);
             knows_object(POT_OIL, FALSE);
         }
-        
+
         /* All gnomes are familiar with crossbows and aklyses */
         set_skill_cap_minimum(P_CROSSBOW, P_SKILLED);
         set_skill_cap_minimum(P_CLUB, P_BASIC);
@@ -946,7 +946,7 @@ u_init_race(void)
         knows_object(ORCISH_CLOAK, FALSE);
         knows_object(ORCISH_BOOTS, FALSE);
         knows_object(POT_SICKNESS, FALSE);
-        
+
         /* All orcs are familiar with scimitars */
         set_skill_cap_minimum(P_SABER, P_SKILLED);
         break;
@@ -1046,7 +1046,7 @@ set_skill_cap_minimum(int skill, int minimum)
 {
     if (P_MAX_SKILL(skill) < minimum) {
         P_MAX_SKILL(skill) = minimum;
-        
+
         if (P_SKILL(skill) == P_ISRESTRICTED) /* skill pre-set */
             P_SKILL(skill) = P_UNSKILLED;
     }
@@ -1273,7 +1273,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_WITHERING
            || otyp == WAN_NOTHING
            /* orcs start with poison resistance */
-           || (otyp == RIN_POISON_RESISTANCE && 
+           || (otyp == RIN_POISON_RESISTANCE &&
 	       (Race_if(PM_ORC) || Race_if(PM_VAMPIRE)))
            /* Monks don't use weapons */
            || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
@@ -1483,7 +1483,7 @@ ini_inv(struct trobj *trop)
             } while ((type_is_pname(&mons[i])
                 || (mons[i].geno & G_UNIQ)
                 || (mons[i].geno & G_NOGEN)));
-            
+
             obj->corpsenm = i;
             if (rn2(2))
                 bless(obj);
@@ -1496,7 +1496,7 @@ ini_inv(struct trobj *trop)
             trop++;
             continue;
         }
-        
+
         ini_inv_adjust_obj(trop, obj);
         obj = addinv(obj);
 

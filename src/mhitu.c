@@ -611,7 +611,7 @@ calc_mattacku_vars(
     boolean *foundyou, boolean *youseeit)
 {
     /* Will monsters use ranged or melee attacks against you? */
-    *ranged = (mdistu(mtmp) > 3) 
+    *ranged = (mdistu(mtmp) > 3)
         || ((attacktype(mtmp->data, AT_BREA)
               || attacktype(mtmp->data, AT_SPIT))
             && !mtmp->mspec_used && (!mtmp->mcan || rn2(3)));
@@ -656,7 +656,7 @@ mattacku(struct monst *mtmp)
     boolean ranged, range2, foundyou, firstfoundyou, youseeit,
             skipnonmagc = FALSE;
     struct obj * marmf = which_armor(mtmp, W_ARMF);
-    
+
     calc_mattacku_vars(mtmp, &ranged, &range2, &foundyou, &youseeit);
 
     if (!ranged)
@@ -866,7 +866,7 @@ mattacku(struct monst *mtmp)
         return 0;
     }
 
-    if (!range2 && marmf && marmf->otyp == STOMPING_BOOTS 
+    if (!range2 && marmf && marmf->otyp == STOMPING_BOOTS
                          && stompable(&gy.youmonst)) {
         pline("%s stomps on you!", Monnam(mtmp));
         makeknown(marmf->otyp);
@@ -889,13 +889,13 @@ mattacku(struct monst *mtmp)
         tmp -= 2;
     if (mtmp->mtrapped)
         tmp -= 2;
-    
+
     if (is_accurate(mdat)) /* M3_ACCURATE monsters get a to-hit bonus */
         tmp += 5;
-        
+
     if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
         tmp += 1;
-    
+
     if (tmp <= 0)
         tmp = 1;
 
@@ -962,8 +962,8 @@ mattacku(struct monst *mtmp)
     }
 
     /* [see mattackm(mhitm.c)] */
-    gs.skipdrin = touch_petrifies(gy.youmonst.data) 
-        && !(mtmp->mconf || mtmp->mstun || mtmp->mrabid || Conflict); 
+    gs.skipdrin = touch_petrifies(gy.youmonst.data)
+        && !(mtmp->mconf || mtmp->mstun || mtmp->mrabid || Conflict);
     firstfoundyou = foundyou;
 
     for (i = 0; i < NATTK; i++) {
@@ -985,7 +985,7 @@ mattacku(struct monst *mtmp)
             || (gs.skipdrin && mattk->aatyp == AT_TENT
                 && mattk->adtyp == AD_DRIN))
             continue;
-        
+
         /* Rabid monsters have an additional rabid bite attack.
          * For now, we won't check if anything "can bite", we'll assume that
          * anything that can contract rabies can also bite. If something slips
@@ -1113,7 +1113,7 @@ mattacku(struct monst *mtmp)
                 int hittmp = 0;
 
                 /* Intelligent monsters avoid dumb deaths */
-                if (humanoid(mtmp->data) && gs.skipdrin 
+                if (humanoid(mtmp->data) && gs.skipdrin
                     && !MON_WEP(mtmp) && !which_armor(mtmp, W_ARMG)) {
                     monflee(mtmp, rn1(9, 2), TRUE, TRUE);
                     continue;
@@ -1289,7 +1289,7 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
 {
     struct obj *obj;
     boolean is_sal = mtmp->data == &mons[PM_SALAMANDER];
-    
+
     /* greased armor does not protect against AT_ENGL+AD_WRAP */
     if (mattk->aatyp == AT_ENGL)
         return FALSE;
@@ -1316,7 +1316,7 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
         maybe_grease_off(obj);
         return TRUE;
     } else if (mattk->adtyp == AD_WRAP
-            /* 50% chance (with a luck bonus) of slipping free with mud boots. 
+            /* 50% chance (with a luck bonus) of slipping free with mud boots.
             * Doesn't apply to brain attacks or cursed boots. */
             && ((uarmf && !uarmf->cursed && objdescr_is(uarmf, "mud boots"))
                 /* Gnomes are good at slipping free */
@@ -1433,7 +1433,7 @@ hitmu(struct monst *mtmp, struct attack *mattk)
     mhm.damage = d((int) mattk->damn, (int) mattk->damd);
     if ((is_undead(mdat) || is_vampshifter(mtmp)) && midnight())
         mhm.damage += d((int) mattk->damn, (int) mattk->damd); /* extra dmg */
-    
+
     /* Handle berserkers */
     if (mtmp->mberserk)
         mhm.damage += d((int) mattk->damn, (int) mattk->damd);
@@ -1458,7 +1458,7 @@ hitmu(struct monst *mtmp, struct attack *mattk)
         make_stunned((HStun & TIMEOUT) + (long) mhm.damage, TRUE);
         mhm.damage += rnd(6);
     }
-    
+
     (void) mhitm_knockback(mtmp, &gy.youmonst, mattk, &mhm.hitflags,
                            (MON_WEP(mtmp) != 0));
 
@@ -1486,10 +1486,10 @@ hitmu(struct monst *mtmp, struct attack *mattk)
             || (Role_if(PM_CLERIC) && uarmh && is_quest_artifact(uarmh)
                 && mon_hates_blessings(mtmp)))
             mhm.damage -= (mhm.damage + 1) / 2;
-        
+
         /* Archeologists are deathly afraid of snakes -
-         * This handled a bit differently from the AD_PLYS attacks - 
-         * it's a bit weaker. If it was as strong as most paralyze 
+         * This handled a bit differently from the AD_PLYS attacks -
+         * it's a bit weaker. If it was as strong as most paralyze
          * attacks, arcs probably wouldn't stand a chance... */
         if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE) {
             if (gm.multi >= 0 && !rn2(5)) {
@@ -1507,7 +1507,7 @@ hitmu(struct monst *mtmp, struct attack *mattk)
                 }
             }
         }
-        
+
         if (mhm.permdmg) { /* Death's life force drain */
             int lowerlimit, *hpmax_p;
             /*
@@ -1619,7 +1619,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                                  : "surges",
                          buf);
             dismount_steed(DISMOUNT_ENGULFED);
-	    } else if (mtmp->data == &mons[PM_FIRE_VORTEX] 
+	    } else if (mtmp->data == &mons[PM_FIRE_VORTEX]
             && Role_if(PM_CARTOMANCER)) {
             pline("That tornado\'s carrying a car!"); /* Sonic 06 */
         } else {
@@ -1828,7 +1828,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                 tmp = resist_reduce(tmp, FIRE_RES);
                 if (hardly_resistant(FIRE_RES))
                     You("are burning to a crisp!");
-                else    
+                else
                     You("are burning!");
                 monstunseesu(M_SEEN_FIRE);
             }
@@ -1995,17 +1995,17 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     boolean wearing_eyes = ublindf
                             && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD;
     boolean foundyou = (u.ux == mtmp->mux && u.uy == mtmp->muy);
-    
+
     if (m_seenres(mtmp, cvt_adtyp_to_mseenres(mattk->adtyp)))
         return M_ATTK_MISS;
 
     /* Invisibility Protection: If the player character is currently
      * invisible, they should anticipate a reasonable number of avoided
-     * gazes during gaze attacks. In vanilla NetHack's implementation, a 
-     * gazing monster would achieve 100% accuracy regardless of the 
-     * player's visibility status, and whether or not the monster had 
-     * the ability to see invisible. To address this, we are now 
-     * adopting the same detection odds as in the 'monmove' function, 
+     * gazes during gaze attacks. In vanilla NetHack's implementation, a
+     * gazing monster would achieve 100% accuracy regardless of the
+     * player's visibility status, and whether or not the monster had
+     * the ability to see invisible. To address this, we are now
+     * adopting the same detection odds as in the 'monmove' function,
      * which employs a 1 in 11 chance of a random hit. If the gazer is
      * in melee range, we allow for an easy hit (otherwise, gazers
      * will simply linger awkwardly next to the player...)
@@ -2016,7 +2016,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             pline("%s looks around searchingly...", Monnam(mtmp));
         mcanseeu = 0;
     }
-    
+
     /* Displacement protection */
     if (mcanseeu && Displaced && (!foundyou || rn2(11))) {
         if (!rn2(13)) /* Don't spam this. */
@@ -2024,16 +2024,16 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                   Monnam(mtmp));
         mcanseeu = 0;
     }
-    
+
     /* Darkness protection: If we are on a dark square and the gazer doesn't
-     * have infravision and we are infravisible and they are not right next 
+     * have infravision and we are infravisible and they are not right next
      * to us, we should reasonably expect they can't "gaze" at us. */
     if (!levl[u.ux][u.uy].lit
         && !(infravisible(gy.youmonst.data) && infravision(mtmp->data))
         && !m_next2u(mtmp) && rn2(5)) {
         mcanseeu = 0;
     }
-        
+
     is_medusa = (mtmp->data == &mons[PM_MEDUSA]);
     reflectable = (Reflecting && couldsee(mtmp->mx, mtmp->my) && is_medusa);
     /* assumes that hero has to see monster's gaze in order to be
@@ -2792,7 +2792,7 @@ passiveum(
 
     if (Role_if(PM_ROGUE) && !Upolyd)
         return counterattack(mtmp, mattk);
-    
+
     /*
      * mattk      == mtmp's attack that hit you;
      * oldu_mattk == your passive counterattack (even if mtmp's attack
@@ -2998,9 +2998,9 @@ passiveum(
     return M_ATTK_HIT;
 }
 
-/* Rogue have the potential for counter-attacks. The attack will simply 
+/* Rogue have the potential for counter-attacks. The attack will simply
 * use the standard attack of their primary weapon.
-* 
+*
 * There are many restrictions: the wielded weapon must be a dagger
 * or knife. The rogue must also be free to execute their counters.
 * They must also be free of physically straining conditions.
@@ -3011,7 +3011,7 @@ struct monst *mtmp,
 struct attack *mattk)
 {
     int wtype;
-    
+
     if (!Role_if(PM_ROGUE)) {
         impossible("counterattack() with non-rogue!");
         return M_ATTK_HIT;
@@ -3021,12 +3021,12 @@ struct attack *mattk)
         return M_ATTK_HIT;
     }
     /* Allow counterattacks on weapon, bite, claw, and kick attacks. */
-    if (mattk->aatyp != AT_WEAP 
+    if (mattk->aatyp != AT_WEAP
             && mattk->aatyp != AT_BITE
             && mattk->aatyp != AT_CLAW
             && mattk->aatyp != AT_KICK)
         return M_ATTK_HIT;
-    
+
     /* Restrictions */
     if ((uarm && is_heavy_metallic(uarm))
         || (uarms && objects[uarms->otyp].oc_bulky)
@@ -3054,7 +3054,7 @@ struct attack *mattk)
             default:
                 break;
         }
-        
+
         if (rn2(100) < chance) {
             You("counterattack!");
             (void) thitmonst(mtmp, uwep);
@@ -3102,7 +3102,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
     boolean youattack = (magr == &gy.youmonst);
     boolean youdefend = (mdef == &gy.youmonst);
     int helm_res;
-    
+
     /* Damage is always at least 4d6, but scales with monster level. */
     int dmg = d(min(magr->m_lev, 4), 6);
 
@@ -3114,7 +3114,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
      * enough not to take damage) */
     int mac = find_mac(mdef);
     struct obj *helm = which_armor(mdef, W_ARMH);
-    
+
     if (youdefend && Half_physical_damage)
         dmg = (dmg + 1) / 2;
 
@@ -3137,7 +3137,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
         return;
     } else if (helm && hard_helmet(helm)) {
         helm_res = 11 + helm->spe * 6;
-        /* These things now quite frequently destroy hard helmets - 
+        /* These things now quite frequently destroy hard helmets -
          * they are piercers after all! */
         if (!helm->oartifact && dmg > helm_res) {
             pline("%s is pierced and breaks apart!", Yname2(helm));

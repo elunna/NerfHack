@@ -98,7 +98,7 @@ incr_resistance(long* which, int incr)
         oldval = 100;
     else
         oldval += incr;
-    
+
     *which &= ~TIMEOUT;
     *which |= (oldval | HAVEPARTIAL);
 }
@@ -177,9 +177,9 @@ resist_reduce(int amount, int which)
     float tmp = 100 - how_resistant(which);
 
     tmp /= 100;
-    /* Take the ceiling so that the player doesn't benefit from fractional 
+    /* Take the ceiling so that the player doesn't benefit from fractional
      * resistance.
-     * Example: If a player has 2% fire resistance and they are hit by a 
+     * Example: If a player has 2% fire resistance and they are hit by a
      * flaming sphere for 16 damage, they take the full 16.
      * 2% of 16 = .32. This should not be enough to count for 1 HP.
      */
@@ -304,9 +304,9 @@ make_sick(long xtime,
 }
 
 void
-make_rabid(long xtime, 
-    const char *msg, 
-    int killedby, 
+make_rabid(long xtime,
+    const char *msg,
+    int killedby,
     const char *killername)
 {
     long old = Rabid;
@@ -926,7 +926,7 @@ peffect_water(struct obj *otmp)
     if (mon_hates_blessings(&gy.youmonst) /* undead or demon */
             || u.ualign.type == A_CHAOTIC) {
 	    int dice = Uevil_inherently ? 4 : 2;
-        
+
         if (otmp->blessed) {
             pline("This burns like %s!", hliquid("acid"));
             exercise(A_CON, FALSE);
@@ -1505,7 +1505,7 @@ peffect_levitation(struct obj *otmp)
         }
     } else if (otmp->blessed) {
         /* at this point, timeout is already at least 1 */
-        amt = rn1(50, 250) 
+        amt = rn1(50, 250)
                 / (otmp->odiluted ? 2 : 1);
         incr_itimeout(&HLevitation, amt);
         /* can descend at will (stop levitating via '>') provided timeout
@@ -1542,7 +1542,7 @@ peffect_gain_energy(struct obj *otmp)
      *      uncursed: +2..12 max (+ 7   avg), +6..36 current (+21   avg)
      *      cursed:   -1.. 6 max (- 3.5 avg), -3..18 current (-10.5 avg)
      */
-    
+
     /* Updated effect from xNetHack */
     if (otmp->blessed) {
         max_change = d(3, otmp->odiluted ? 3 : 6);
@@ -1685,7 +1685,7 @@ peffect_blood(struct obj *otmp)
             doesn't use violated_vegetarian() to prevent
             duplicated "you feel guilty" messages */
         u.uconduct.unvegetarian++;
-        
+
         if (!Race_if(PM_VAMPIRE)) {
             if (u.ualign.type == A_LAWFUL || Role_if(PM_MONK)) {
                 You_feel("%sguilty about drinking such a vile liquid.",
@@ -1710,7 +1710,7 @@ peffect_blood(struct obj *otmp)
                 successful_polymorph = polymon(PM_VAMPIRE_BAT);
             else
                 successful_polymorph = polymon(PM_VAMPIRE);
-            
+
             if (successful_polymorph)
                 u.mtimedone = 0;	/* "Permament" change */
         }
@@ -2319,7 +2319,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                 acid_damage(MON_WEP(mon));
             if (!rn2(3))
                 dmg += destroy_items(mon, AD_ACID, dmg);
-            
+
             if (!resists_acid(mon) && !resist(mon, POTION_CLASS, 0, NOTELL)) {
                 pline("%s %s in pain!", Monnam(mon),
                       is_silent(mon->data) ? "writhes" : "shrieks");
@@ -2392,7 +2392,7 @@ potionbreathe(struct obj *obj)
         (eyes > 1 ? makeplural(body_part(EYE)) : body_part(EYE));
     unsigned already_in_use = obj->in_use;
     int dmg;
-    
+
     if (!breathe) {
         /* currently only acid affects eyes */
         if (eyes && obj->otyp == POT_ACID && !Acid_resistance) {
@@ -2745,7 +2745,7 @@ const struct PotionRecipe potionrecipes[] = {
     { POT_OIL,              POT_WATER, POT_OIL,                 1 },
     { POT_RESTORE_ABILITY,  POT_SICKNESS, POT_HEALING,          1 },
 
-    /* More complicated recipes 
+    /* More complicated recipes
      * These need to come after the simple recipes otherwise some
      * recipes do not work. */
     { POT_GAIN_LEVEL,       POT_ENLIGHTENMENT, POT_LEVITATION,  6 }, /* 6 in 10 chance */
@@ -2847,7 +2847,7 @@ mixtype(struct obj *o1, struct obj *o2)
     int roll;
     const struct PotionRecipe *recipe;
     const char *potion_descr;
-    
+
     /* cut down on the number of cases below */
     if (o1->oclass == POTION_CLASS
         && (o2typ == POT_GAIN_LEVEL || o2typ == POT_GAIN_ENERGY
@@ -2857,9 +2857,9 @@ mixtype(struct obj *o1, struct obj *o2)
         o1typ = o2->otyp;
         o2typ = o1->otyp;
     }
-    
+
     /* 3 recipes don't fit into this algorithm well:
-     *  potion of confusion + potion of gain level 
+     *  potion of confusion + potion of gain level
      *  potion of confusion + potion of gain energy
      *  potion of enlightenment + potion of levitation
      *  Handle these specifically when they arise.
@@ -2877,10 +2877,10 @@ mixtype(struct obj *o1, struct obj *o2)
             } else {
                 return recipe->result_typ;
             }
-            
+
         }
     }
-    
+
     /* MRKR: Extra alchemical effects. */
     if (o1->oclass == GEM_CLASS && o2->otyp == POT_ACID) {
         if (o1->otyp == DILITHIUM_CRYSTAL) {     /* white */
@@ -2893,7 +2893,7 @@ mixtype(struct obj *o1, struct obj *o2)
             return figure_out_potion(potion_descr);
         }
     }
-    
+
     return STRANGE_OBJECT;
 }
 
@@ -2960,7 +2960,7 @@ dodip(void)
     const char *shortestname; /* last resort obj name for prompt */
     uchar here = levl[u.ux][u.uy].typ;
     boolean is_hands, at_pool = is_pool(u.ux, u.uy),
-            at_fountain = IS_FOUNTAIN(here), 
+            at_fountain = IS_FOUNTAIN(here),
             at_forge = IS_FORGE(here),
             at_sink = IS_SINK(here),
             at_toilet = IS_TOILET(here),
@@ -3152,7 +3152,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         struct obj *otmp = potion;
         potion = obj;
         obj = otmp;
-	} 
+	}
 
     obj->pickup_prev = 0; /* no longer 'recently picked up' */
     potion->in_use = TRUE; /* assume it will be used up */
@@ -3188,7 +3188,7 @@ potion_dip(struct obj *obj, struct obj *potion)
                 if (potion->dknown)
                     makeknown(POT_POLYMORPH);
                 return ECMD_TIME;
-            } else if (obj->otyp != save_otyp 
+            } else if (obj->otyp != save_otyp
                     || obj->dknown != save_dknown) {
                 if (potion->dknown)
                     makeknown(POT_POLYMORPH);
@@ -3488,7 +3488,7 @@ potion_dip(struct obj *obj, struct obj *potion)
            /* MRKR: Gems dissolve in acid to produce new potions */
         if (obj->oclass == GEM_CLASS && potion->otyp == POT_ACID) {
             struct obj *singlegem = (obj->quan > 1L ?  splitobj(obj, 1L) : obj);
-            
+
             if (potion->otyp == POT_ACID &&
                 (obj->otyp == DILITHIUM_CRYSTAL || potion->cursed || !rn2(30))) {
                 /* Just to keep them on their toes */
@@ -3510,7 +3510,7 @@ potion_dip(struct obj *obj, struct obj *potion)
                 /* MRKR: an alchemy smock ought to be */
                 /* some protection against this: */
                 losehp(how_resistant(ACID_RES) > 50
-                    ? rnd(5) 
+                    ? rnd(5)
                     : rnd(10), "alchemic blast", KILLED_BY_AN);
 
                 return 1;
@@ -3521,7 +3521,7 @@ potion_dip(struct obj *obj, struct obj *potion)
             makeknown(singlegem->otyp);
             useup(singlegem);
         }
-        
+
         costly_alteration(singlepotion, COST_NUTRLZ);
         singlepotion->otyp = mixture;
         singlepotion->blessed = 0;

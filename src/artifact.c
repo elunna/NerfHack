@@ -165,7 +165,7 @@ mk_artifact(
             continue;
         if ((a->spfx & SPFX_NOGEN) || unique)
             continue;
-        
+
         /* Crowning gifts should not be granted during the normal course
          * of #offering */
         if (Role_if(PM_CLERIC) && m == ART_MJOLLNIR)
@@ -176,11 +176,11 @@ mk_artifact(
             continue;
         else if (u.ualign.type == A_CHAOTIC && m == ART_STORMBRINGER)
             continue;
-        
+
         /* Don't gift silver to vampires. */
         if (Race_if(PM_VAMPIRE) && objects[a->otyp].oc_material == SILVER)
             continue;
-        
+
         if (!by_align) {
             /* looking for a particular type of item; not producing a
                divine gift so we don't care about role's first choice */
@@ -743,7 +743,7 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         else
             ESearching &= ~wp_mask;
     }
-    
+
     if (otmp->oartifact == ART_ORB_OF_DETECTION) {
         if (on) {
             HClairvoyant |= wp_mask;
@@ -1115,7 +1115,7 @@ spec_abon(struct obj *otmp, struct monst *mon)
         /* Quick Blade is an exception we want to preserve from SLASH'EM */
         if (weap == &artilist[ART_QUICK_BLADE])
             return rnd(9);
-        
+
         /* Artifacts are legendarily difficulty to handle... */
         return -((int) weap->attk.damn * 2);
         }
@@ -1503,7 +1503,7 @@ artifact_hit(
     int time = 1; /* For Mouser's Scalpel */
     int instakill = 0;
     struct artifact *atmp;
-    
+
     Strcpy(hittee, youdefend ? you : mon_nam(mdef));
 
     /* The following takes care of most of the damage, but not all--
@@ -1546,7 +1546,7 @@ artifact_hit(
 
             if (Slimed && (youattack || youdefend))
                 burn_away_slime();
-            
+
             if (completelyburns(mdef->data) || is_wooden(mdef->data)
                 || mdef->data == &mons[PM_GREEN_SLIME]) {
                 if (youdefend) {
@@ -1573,7 +1573,7 @@ artifact_hit(
             pline_The("ice-cold blade %s %s%c",
                       !gs.spec_dbon_applies ? "hits" : "freezes", hittee,
                       !gs.spec_dbon_applies ? '.' : '!');
-        
+
         if (mdef->data == &mons[PM_WATER_ELEMENTAL]) {
             if (youdefend) {
                 You("explode into shards of ice!");
@@ -1698,7 +1698,7 @@ artifact_hit(
 
     /* Bane instakills */
     atmp = &artilist[(unsigned char) otmp->oartifact];
-    
+
     if (atmp->spfx & (SPFX_DFLAGH | SPFX_DCLAS)) {
         instakill = !rn2(5); /* 20% chance of instakill for some artifacts */
         switch (otmp->oartifact) {
@@ -1909,7 +1909,7 @@ artifact_hit(
             break;
         }
     }
-    
+
     /* We really want "on a natural 20" but Nethack does it in */
     /* reverse from AD&D. */
     if (spec_ability(otmp, SPFX_BEHEAD)) {
@@ -2014,10 +2014,10 @@ artifact_hit(
             }
         }
     }
-    
+
     /* Credits to BarclayII for Mouser's Scalpel rename and mechanic */
     if (otmp->oartifact == ART_MOUSER_S_SCALPEL && dieroll < 10
-        && !Confusion && !Stunned) { 
+        && !Confusion && !Stunned) {
         /* faster than a speeding bullet is the Gray Mouser... */
         There("is a flurry of blows!");
         /* I suppose this could theoretically continue forever... */
@@ -2026,7 +2026,7 @@ artifact_hit(
             time++;
             dieroll = rn2(11);
         } while (dieroll < 5);
-        
+
         switch (time) {
         case 1:
             pline_The("rapier strikes %s!", hittee);
@@ -2043,7 +2043,7 @@ artifact_hit(
         }
         return TRUE;
     }
-    
+
     if (otmp->oartifact == ART_SERPENT_S_TONGUE) {
         otmp->dknown = TRUE;
         pline_The("twisted blade poisons %s!",
@@ -2073,15 +2073,15 @@ artifact_hit(
             break;
         case 10:
             pline_The("poison was deadly...");
-            *dmgptr = 2 * (youdefend 
-                               ? Upolyd 
+            *dmgptr = 2 * (youdefend
+                               ? Upolyd
                                      ? u.mh : u.uhp : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
             break;
         }
         *dmgptr = resist_reduce(*dmgptr, POISON_RES);
         return TRUE;
     }
-    
+
     if (otmp->oartifact == ART_DOOMBLADE && dieroll < 6) {
         if (verysmall(mdef->data)) {
             if (youattack)
@@ -2091,7 +2091,7 @@ artifact_hit(
                       Monnam(magr), hittee);
         } else {
             if (youattack)
-                You("plunge the %s deeply into %s!", 
+                You("plunge the %s deeply into %s!",
                     artiname(otmp->oartifact), mon_nam(mdef));
             else
                 pline("%s plunges the %s deeply into %s!",
@@ -2100,7 +2100,7 @@ artifact_hit(
         *dmgptr += rnd(4) * 5;
         return TRUE;
     }
-    
+
     if (spec_ability(otmp, SPFX_DRLI)) {
         /* some non-living creatures (golems, vortices) are vulnerable to
            life drain effects so can get "<Arti> draws the <life>" feedback */
@@ -2404,7 +2404,7 @@ arti_invoke(struct obj *obj)
              */
             newlev.dnum = i;
             newlev.dlevel = svd.dungeons[i].entry_lev;
-            
+
             if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
                 || newlev.dnum == u.uz.dnum || !next_to_u()) {
                 You_feel("very disoriented for a moment.");
@@ -2673,10 +2673,10 @@ artifact_light(struct obj *obj)
         && (obj->owornmask & W_ARM) != 0L)
         return TRUE;
 
-    if (obj && is_art(obj, ART_MIRRORBRIGHT) 
+    if (obj && is_art(obj, ART_MIRRORBRIGHT)
             && (obj->owornmask & W_ARMS) != 0L)
         return TRUE;
-    
+
     return (boolean) ((get_artifact(obj) != &artilist[ART_NONARTIFACT])
                       && is_art(obj, ART_SUNSWORD));
 }

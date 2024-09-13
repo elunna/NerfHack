@@ -342,7 +342,7 @@ map_object(struct obj *obj, int show)
         /* these 'r' and 'neardist' calculations match distant_name(objnam.c)
            and see_nearby_objects(below); we assume that this is a lone
            object or a pile-top, not something below the top of a pile */
-        
+
         /* Rangers have excellent vision */
         int r = Role_if(PM_RANGER) ? 16
                 : (u.xray_range > 2) ? u.xray_range : 2;
@@ -2695,7 +2695,7 @@ map_glyphinfo(
             }
         }
 
-        /* Blood only colors the floor features, walls, doors, 
+        /* Blood only colors the floor features, walls, doors,
          * and furniture.
          * If we color things like objects or corpses, it's confusing.
          */
@@ -2703,7 +2703,7 @@ map_glyphinfo(
             || gmap->sym.symidx == S_magic_portal)
             drawblood = FALSE;
 
-        if (drawblood && levl[x][y].splatpm 
+        if (drawblood && levl[x][y].splatpm
                 && cansee(x, y) && !iflags.bloodless) {
             glyphinfo->gm.sym.color = blood_color(levl[x][y].splatpm);
         }
@@ -3184,7 +3184,7 @@ static const char *const type_names[MAX_TYPE] = {
     "SDOOR", "SCORR", "POOL", "MOAT", "WATER", "DRAWBRIDGE_UP", "LAVAPOOL",
     "LAVAWALL",
     "IRON_BARS", "DOOR", "CORR", "ROOM", "STAIRS", "LADDER", "FOUNTAIN",
-    "FORGE", "THRONE", "SINK", "TOILET", "GRAVE", "ALTAR", "ICE", 
+    "FORGE", "THRONE", "SINK", "TOILET", "GRAVE", "ALTAR", "ICE",
     "DRAWBRIDGE_DOWN", "AIR", "CLOUD"
 };
 

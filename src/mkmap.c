@@ -481,7 +481,7 @@ mkmap(lev_init *init_lev)
 
     /* Apply rivers to certain quest fill levels */
     if (In_quest(&u.uz) && !Is_qstart(&u.uz) && !Is_nemesis(&u.uz)
-        && (Role_if(PM_CAVE_DWELLER) 
+        && (Role_if(PM_CAVE_DWELLER)
         || Role_if(PM_BARBARIAN)
         || Role_if(PM_RANGER)
         || Role_if(PM_TOURIST)
@@ -585,7 +585,7 @@ makeriver(int x1, int y1, int x2, int y2)
             dx = -1;
         else if (dx > 1)
             dx = 1;
-        
+
         if (dy < -1)
             dy = -1;
         else if (dy > 1)
@@ -598,7 +598,7 @@ makeriver(int x1, int y1, int x2, int y2)
             cx = 0;
         else if (cx >= COLNO)
             cx = COLNO - 1;
-        
+
         if (cy < 0)
             cy = 0;
         else if (cy >= ROWNO)
@@ -616,11 +616,11 @@ makeriver(int x1, int y1, int x2, int y2)
                 (void) makemon(rn2(20) ? &mons[PM_JELLYFISH +
                                                rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)]
                                        : rn2(8) ? &mons[PM_WATER_MOCCASIN]
-                                                : &mons[PM_WATER_TROLL], 
+                                                : &mons[PM_WATER_TROLL],
                                                 cx, cy, NO_MM_FLAGS);
             } else {
                 (void) makemon(&mons[PM_JELLYFISH +
-                               rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)], 
+                               rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)],
                                cx, cy, NO_MM_FLAGS);
             }
             monstcount--;

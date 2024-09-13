@@ -40,7 +40,7 @@ kickdmg(struct monst *mon, boolean clumsy)
 
   if (uarmf && uarmf->otyp == KICKING_BOOTS)
         dmg += 5;
-    
+
     /* excessive wt affects dex, so it affects dmg */
     if (clumsy)
         dmg /= 2;
@@ -1280,7 +1280,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
         if (rn2(5)) {
             Soundeffect(se_klunk_pipe, 60);
             switch (rnd(14)) {
-            case 1: 
+            case 1:
                 pline("Plunk! The toilet seat swings open and shut.");
                 break;
             case 2:
@@ -1359,7 +1359,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
                     breaktoilet(x, y);
                 } else if (!Blind)
                     You_see("something floating in the bowl.");
-                
+
                 place_object(otmp, x, y);
                 newsym(x, y);
                 exercise(A_DEX, TRUE);
@@ -1552,9 +1552,9 @@ dokick(void)
         glyph = glyph_at(x, y);
 
         /* A non-reliable way to clean off your feet. */
-        if (HFumbling & I_SPECIAL && !rn2(20) 
+        if (HFumbling & I_SPECIAL && !rn2(20)
               && !noncorporeal(mtmp->data)) {
-            pline("The grease on your %s wears off.", 
+            pline("The grease on your %s wears off.",
                 uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
             HFumbling &= ~I_SPECIAL;
             HFumbling = 0;

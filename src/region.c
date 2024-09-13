@@ -1133,7 +1133,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
             erode_armor(&gy.youmonst, ERODE_ROT);
         if (!rn2(3))
             (void) destroy_items(&gy.youmonst, AD_DCAY, dam);
-        
+
         if (m_poisongas_ok(&gy.youmonst) == M_POISONGAS_OK)
             return FALSE;
         if (!Blind) {
@@ -1142,7 +1142,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         }
         if (Breathless)
             return FALSE;
-        
+
         if (!fully_resistant(POISON_RES)) {
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
@@ -1168,7 +1168,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
             erode_armor(mtmp, ERODE_ROT);
         if (!rn2(3))
             mtmp += destroy_items(mtmp, AD_DCAY, dam);
-        
+
         if (m_poisongas_ok(mtmp) != M_POISONGAS_OK) {
             if (!is_silent(mtmp->data)) {
                 if (cansee(mtmp->mx, mtmp->my)

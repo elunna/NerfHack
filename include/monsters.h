@@ -107,7 +107,7 @@
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK, 0,
         NO_RACE, 6, CLR_BLUE, SOLDIER_ANT),
-    MON(NAM("fire ant"), S_ANT, 
+    MON(NAM("fire ant"), S_ANT,
         LVL(3, 18, 3, 10, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4),
           ATTK(AT_BITE, AD_FIRE, 2, 4),
@@ -145,16 +145,16 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK, 0,
         NO_RACE, 9, CLR_GREEN, GIANT_PRAYING_MANTIS),
-    MON(NAM("queen bee"), S_ANT, 
+    MON(NAM("queen bee"), S_ANT,
         LVL(9, 24, -4, 0, 0), (G_GENO | G_NOGEN),
         A(ATTK(AT_STNG, AD_DRST, 1, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1, 5, MS_BUZZ, MZ_TINY), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_FLY | M1_NOHANDS | M1_OVIPAROUS | M1_POIS,
-        M2_HOSTILE | M2_FEMALE | M2_PRINCE, M3_DISPLACES, 
+        M2_HOSTILE | M2_FEMALE | M2_PRINCE, M3_DISPLACES,
         NO_RACE, 12, HI_LORD, QUEEN_BEE),
     /* From SporkHack */
-    MON(NAM("locust"), S_ANT, 
+    MON(NAM("locust"), S_ANT,
         LVL(9, 12, 0, 0, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 8),
           ATTK(AT_STNG, AD_DISE, 1, 4),
@@ -166,11 +166,11 @@
     MON(NAM("assassin bug"), S_ANT,                                  /* Slash'EM */
         LVL(12, 24, 4, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 4, 6),
-            ATTK(AT_STNG, AD_DRST, 1, 8),
+          ATTK(AT_STNG, AD_DRST, 1, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(100, 100, MS_SILENT, MZ_MEDIUM), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_CARNIVORE | M1_CONCEAL,
-        M2_HOSTILE | M2_FLANK, M3_BERSERK, 
+        M2_HOSTILE | M2_FLANK, M3_BERSERK,
         NO_RACE, 16, CLR_BLACK, ASSASSIN_BUG),
     /*
      * blobs
@@ -574,7 +574,7 @@
         A(ATTK(AT_BREA, AD_SLEE, 1, 6),
           ATTK(AT_BITE, AD_DRST, 1, 3),
           ATTK(AT_BITE, AD_DRST, 1, 3),
-          ATTK(AT_BITE, AD_DRST, 1, 3), 
+          ATTK(AT_BITE, AD_DRST, 1, 3),
           NO_ATTK, NO_ATTK),
         SIZ(750, 400, MS_GROWL, MZ_LARGE), MR_SLEEP, MR_SLEEP,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE,
@@ -595,9 +595,9 @@
      * - they now have infravision and can jump in tiger form */
     MON(NAM("weretiger"), S_FELINE,
         LVL(10, 12, 6, 20, -7), (G_NOGEN | G_NOCORPSE),
-        A(ATTK(AT_BITE, AD_WERE, 2, 6), 
+        A(ATTK(AT_BITE, AD_WERE, 2, 6),
           ATTK(AT_CLAW, AD_PHYS, 2, 7),
-          ATTK(AT_CLAW, AD_PHYS, 2, 7), 
+          ATTK(AT_CLAW, AD_PHYS, 2, 7),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(600, 300, MS_GROWL, MZ_LARGE), MR_POISON, 0,
         M1_NOHANDS | M1_POIS | M1_REGEN | M1_CARNIVORE,
@@ -776,11 +776,11 @@
      * sickly gray in color. Alhoon are basically a cross between an arch-
      * lich and a master mind flayer - not as many tentacle attacks, but
      * they can employ the lich frost touch attack and can cast spells.
-     * They are flagged as MH_UNDEAD and enjoy all of the benefits and 
+     * They are flagged as MH_UNDEAD and enjoy all of the benefits and
      * weaknesses that come with being undead. They are very rare, and
      * typically will only be found in Gehennom.'
      * Changes from EvilHack:
-     * - Alhoons are no longer covetous, instead 
+     * - Alhoons are no longer covetous, instead
      * - their speed was raised from 9 to 15 */
     MON(NAM("alhoon"), S_HUMANOID,
         LVL(26, 15, -6, 90, -15), (G_HELL | G_GENO | G_NOCORPSE | 1),
@@ -841,8 +841,8 @@
           ATTK(AT_CLAW, AD_DRDX, 1, 4),
           ATTK(AT_BITE, AD_PHYS, 1, 4),
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(200, 200, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON, 
-        M1_REGEN | M1_SEE_INVIS, M2_STALK, M3_INFRAVISIBLE | M3_INFRAVISION, 
+        SIZ(200, 200, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_REGEN | M1_SEE_INVIS, M2_STALK, M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 9, CLR_BLUE, QUASIT),
     MON(NAM("tengu"), S_IMP,
         LVL(6, 13, 5, 30, 7), (G_GENO | 3),
@@ -986,7 +986,7 @@
         A(ATTK(AT_CLAW, AD_SITM, 0, 0),
           ATTK(AT_CLAW, AD_SEDU, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(600, 300, MS_SEDUCE, MZ_HUMAN), 0, 0, 
+        SIZ(600, 300, MS_SEDUCE, MZ_HUMAN), 0, 0,
         M1_HUMANOID | M1_TPORT | M1_HERBIVORE,
         M2_HOSTILE | M2_FEMALE | M2_COLLECT, M3_INFRAVISIBLE,
         NO_RACE, 5, CLR_GREEN, WOOD_NYMPH),
@@ -1119,16 +1119,16 @@
      */
     MON(NAM("diamond piercer"), S_PIERCER,
         LVL(12, 1, 0, 0, 0), (G_GENO | 1),
-        A(ATTK(AT_BITE, AD_PHYS, 8, 6), 
+        A(ATTK(AT_BITE, AD_PHYS, 8, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 300, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_FIRE, 0,
         M1_CLING | M1_HIDE | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_CARNIVORE
             | M1_NOTAKE | M1_MINDLESS,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 12, CLR_BLUE, DIAMOND_PIERCER),
-    MON(NAM("god piercer"), S_PIERCER, 
+    MON(NAM("god piercer"), S_PIERCER,
         LVL(20, 1, 0, 0, 3), (G_GENO | 1),
-        A(ATTK(AT_BITE, AD_PHYS, 16, 6), 
+        A(ATTK(AT_BITE, AD_PHYS, 16, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
         SIZ(400, 300, MS_SILENT, MZ_MEDIUM),
@@ -1319,9 +1319,9 @@
     /* Ported from EvilHack:
      * in honor of our friend Grasshopper
      * who always seems to be attacked by centipedes */
-    MON(NAM("giant centipede"), S_SPIDER, 
+    MON(NAM("giant centipede"), S_SPIDER,
         LVL(16, 24, -6, 0, 0), (G_GENO | 1),
-        A(ATTK(AT_BITE, AD_DRST, 6, 8), 
+        A(ATTK(AT_BITE, AD_DRST, 6, 8),
           ATTK(AT_TUCH, AD_WRAP, 1, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(600, 300, MS_SILENT, MZ_LARGE), MR_POISON, MR_POISON,
@@ -1563,7 +1563,6 @@
         NO_RACE, 7, CLR_BLACK, BLACK_LIGHT),
     /* From SpliceHack with changes:
      * - Raised their level from 2 to 3, reduced frequency from 4 to 2
-     * - 
      */
     MON(NAM("will-o'-the-wisp"), S_LIGHT,
         LVL(3, 9, 2, 0, 0), (G_NOCORPSE | G_SGROUP | G_GENO | 2),
@@ -1590,27 +1589,27 @@
         M1_ANIMAL | M1_HUMANOID | M1_CARNIVORE, M2_HOSTILE | M2_STRONG,
         M3_INFRAVISIBLE | M3_JUMPER | M3_BERSERK,
         NO_RACE, 11, CLR_BROWN, ZRUTY),
-    MON(NAM("velociraptor"), S_ZRUTY, 
+    MON(NAM("velociraptor"), S_ZRUTY,
         LVL(14, 24, 5, 0, 0), (G_NOGEN | G_SGROUP | 3),
-        A(ATTK(AT_BITE, AD_PHYS, 1, 6), 
+        A(ATTK(AT_BITE, AD_PHYS, 1, 6),
           ATTK(AT_CLAW, AD_PHYS, 2, 8),
-          ATTK(AT_CLAW, AD_PHYS, 2, 8), 
+          ATTK(AT_CLAW, AD_PHYS, 2, 8),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_GROWL, MZ_MEDIUM), 0, 0,
         M1_ANIMAL | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_NOTAKE,
         M2_STRONG | M2_HOSTILE | M2_FLANK | M2_NASTY, M3_JUMPER,
         NO_RACE, 14, HI_OVERLORD, VELOCIRAPTOR),
-    MON(NAM("T-Rex"), S_ZRUTY, 
+    MON(NAM("T-Rex"), S_ZRUTY,
         LVL(22, 15, 5, 0, 0), (G_NOGEN | 2),
-        A(ATTK(AT_BITE, AD_PHYS, 5, 10), 
+        A(ATTK(AT_BITE, AD_PHYS, 5, 10),
           ATTK(AT_BITE, AD_PHYS, 1, 4),
-          ATTK(AT_BITE, AD_PHYS, 1, 4), 
+          ATTK(AT_BITE, AD_PHYS, 1, 4),
           ATTK(AT_ENGL, AD_DGST, 1, 10),
           NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 500, MS_ROAR, MZ_HUGE), 0, 0,
         M1_ANIMAL | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_OVIPAROUS
           | M1_NOTAKE,
-        M2_STRONG | M2_HOSTILE | M2_NASTY, M3_INFRAVISIBLE | M3_BERSERK, 
+        M2_STRONG | M2_HOSTILE | M2_NASTY, M3_INFRAVISIBLE | M3_BERSERK,
         NO_RACE, 18, HI_LORD, T_REX),
     /*
      * Angels and other lawful minions
@@ -1735,7 +1734,7 @@
           ATTK(AT_BITE, AD_DRST, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 20, MS_SQEEK, MZ_SMALL), MR_SLEEP | MR_POISON, 0,
-        M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_REGEN 
+        M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_REGEN
             | M1_OMNIVORE | M1_SEE_INVIS,
         M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 7, CLR_BLACK, VAMPIRE_BAT),
@@ -1748,7 +1747,7 @@
      * - Like shriekers they occasionally shriek and aggravate monsters */
     MON(NAM("athol"), S_BAT,
         LVL(7, 20, 7, 0, 0), (G_GENO | G_SGROUP | 1),
-        A(ATTK(AT_BITE, AD_PHYS, 1, 10), 
+        A(ATTK(AT_BITE, AD_PHYS, 1, 10),
           ATTK(AT_CLAW, AD_PHYS, 2, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 250, MS_ATHOL, MZ_LARGE), 0, 0,
@@ -1759,13 +1758,13 @@
     /* From SpliceHack with updates:*/
     MON(NAM("phoenix"), S_BAT,
         LVL(15, 20, -7, 20, 7), (G_GENO | G_NOCORPSE | 2),
-        A(ATTK(AT_BITE, AD_PHYS, 2, 6), 
+        A(ATTK(AT_BITE, AD_PHYS, 2, 6),
           ATTK(AT_CLAW, AD_PHYS, 3, 6),
-          ATTK(AT_CLAW, AD_PHYS, 3, 6), 
+          ATTK(AT_CLAW, AD_PHYS, 3, 6),
           ATTK(AT_BOOM, AD_FIRE, 8, 6),
           NO_ATTK, NO_ATTK),
         SIZ(40, 20, MS_SQAWK, MZ_SMALL), MR_FIRE, MR_FIRE,
-        M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE 
+        M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE
           | M1_OVIPAROUS | M1_SEE_INVIS,
         M2_WANDER | M2_STALK | M2_NASTY | M2_NOPOLY,
         M3_INFRAVISIBLE | M3_INFRAVISION,
@@ -1778,10 +1777,10 @@
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
-          ATTK(AT_STNG, AD_STUN, 1, 6), 
+          ATTK(AT_STNG, AD_STUN, 1, 6),
           NO_ATTK, NO_ATTK),
         SIZ(1600, 100, MS_SQEEK, MZ_MEDIUM), MR_SLEEP | MR_POISON | MR_COLD, 0,
-        M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE 
+        M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE
             | M1_SEE_INVIS | M1_OMNIVORE,
         M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG | M2_COLLECT
           | M2_MAGIC,
@@ -1795,15 +1794,15 @@
     MON(NAM("nightgaunt"), S_BAT,
         LVL(15, 20, -2, 50, -6), (G_GENO | 2 | G_SGROUP),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6),
-          ATTK(AT_CLAW, AD_TCKL, 1, 6), 
           ATTK(AT_CLAW, AD_TCKL, 1, 6),
-          ATTK(AT_STNG, AD_PHYS, 1, 10), 
+          ATTK(AT_CLAW, AD_TCKL, 1, 6),
+          ATTK(AT_STNG, AD_PHYS, 1, 10),
           NO_ATTK, NO_ATTK),
-        SIZ(1300, 100, MS_SQEEK, MZ_MEDIUM), 
+        SIZ(1300, 100, MS_SQEEK, MZ_MEDIUM),
         MR_SLEEP | MR_POISON | MR_COLD, MR_COLD,
-        M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE 
+        M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE
             | M1_SEE_INVIS | M1_OMNIVORE | M1_NOEYES,
-        M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG 
+        M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG
             | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 19, HI_LORD, NIGHTGAUNT),
@@ -1849,7 +1848,7 @@
      * 'tilemap' assumes that shimmering dragon follows silver dragon.]
      *
      * Dragons are all lawful or chaotic; This affects monster generation on
-     * some special levels. Baby dragons cannot confer intrinsics, to avoid 
+     * some special levels. Baby dragons cannot confer intrinsics, to avoid
      * polyself/egg abuse.
      *
      * As reptiles, dragons are cold-blooded and thus aren't seen with
@@ -1869,7 +1868,7 @@
     MON(NAM("baby gold dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, 4), (G_NOHELL | G_GENO | 1),
         /* The bite attack is the lesser version of
-         * the adult's fire breath attack. */ 
+         * the adult's fire breath attack. */
         A(ATTK(AT_BITE, AD_FIRE, 1, 6),
           ATTK(AT_CLAW, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2024,7 +2023,7 @@
             | M2_STALK,
         0,
         MH_DRAGON, 20, CLR_CYAN, SHIMMERING_DRAGON),
-    /* red dragon has infravision and can be seen via infravision. 
+    /* red dragon has infravision and can be seen via infravision.
      * It also berserks */
     MON(NAM("red dragon"), S_DRAGON,
         LVL(15, 20, -1, 20, -4), (G_GENO | 2),
@@ -2331,7 +2330,7 @@
         SIZ(2250, 750, MS_BOAST, MZ_HUGE), MR_FIRE, MR_FIRE,
         M1_HUMANOID | M1_CARNIVORE,
         M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_JEWELS,
-        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK, 
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
         MH_GIANT, 11, CLR_YELLOW, FIRE_GIANT),
     MON(NAM("frost giant"), S_GIANT,
         LVL(10, 12, 3, 10, -3), (G_NOHELL | G_GENO | G_SGROUP | 1),
@@ -2428,7 +2427,7 @@
         LVL(3, 10, 10, 10, 9), (G_LGROUP | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(WT_HUMAN, 200, MS_ARREST, MZ_HUMAN), 0, 0, 
+        SIZ(WT_HUMAN, 200, MS_ARREST, MZ_HUMAN), 0, 0,
         M1_HUMANOID | M1_CARNIVORE,
         M2_HOSTILE | M2_MALE | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE,
@@ -2469,7 +2468,7 @@
           ATTK(AT_MAGC, AD_SPEL, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1200, 100, MS_MUMBLE, MZ_HUMAN),
-        MR_COLD | MR_SLEEP | MR_POISON, MR_COLD, 
+        MR_COLD | MR_SLEEP | MR_POISON, MR_COLD,
         M1_BREATHLESS | M1_HUMANOID | M1_POIS | M1_REGEN,
         M2_HOSTILE | M2_MAGIC, M3_INFRAVISION,
         MH_UNDEAD, 14, CLR_BROWN, LICH),
@@ -2521,7 +2520,7 @@
           ATTK(AT_TUCH, AD_WTHR, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(650, 50, MS_SILENT, MZ_SMALL), MR_COLD | MR_SLEEP | MR_POISON, 0,
-        M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_POIS, M2_HOSTILE, 
+        M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_POIS, M2_HOSTILE,
         M3_INFRAVISION,
         MH_UNDEAD | MH_GNOME, 5, CLR_RED, GNOME_MUMMY),
     MON(NAM("orc mummy"), S_MUMMY,
@@ -2607,7 +2606,7 @@
      * */
     MON(NAM("troll mummy"), S_MUMMY,
         LVL(9, 14, 3, 30, -8), (G_GENO | G_NOCORPSE | 1),
-        A(ATTK(AT_CLAW, AD_WTHR, 6, 4), 
+        A(ATTK(AT_CLAW, AD_WTHR, 6, 4),
           ATTK(AT_CLAW, AD_PHYS, 4, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 375, MS_SILENT, MZ_HUGE),
@@ -2615,8 +2614,8 @@
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_REGEN | M1_POIS,
         M2_HOSTILE | M2_STRONG | M2_STALK | M2_JEWELS,
         M3_INFRAVISION,
-        MH_UNDEAD | MH_TROLL, 11, CLR_BROWN, TROLL_MUMMY),  
-    
+        MH_UNDEAD | MH_TROLL, 11, CLR_BROWN, TROLL_MUMMY),
+
     /*
      * Nagas
      */
@@ -2711,7 +2710,7 @@
           ATTK(AT_MAGC, AD_SPEL, 5, 6),
           ATTK(AT_HUGS, AD_PHYS, 4, 8),
           NO_ATTK, NO_ATTK),
-        SIZ(3200, 800, MS_MUMBLE, MZ_GIGANTIC), 
+        SIZ(3200, 800, MS_MUMBLE, MZ_GIGANTIC),
         MR_POISON | MR_ACID | MR_FIRE, MR_POISON,
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_OVIPAROUS | M1_POIS
             | M1_OMNIVORE | M1_FLY,
@@ -2755,10 +2754,10 @@
         M2_STRONG | M2_PRINCE | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK | M3_ACCURATE,
         MH_OGRE, 11, HI_LORD, OGRE_TYRANT),
-    MON(NAM("shadow ogre"), S_OGRE, 
+    MON(NAM("shadow ogre"), S_OGRE,
         LVL(13, 14, 0, 60, -7), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 5),
-          ATTK(AT_TUCH, AD_DRLI, 3, 5), 
+          ATTK(AT_TUCH, AD_DRLI, 3, 5),
           ATTK(AT_HUGS, AD_PHYS, 1, 8),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1700, 750, MS_GRUNT, MZ_LARGE), MR_POISON, 0,
@@ -2850,7 +2849,7 @@
         M3_INFRAVISIBLE,
         NO_RACE, 14, CLR_GREEN, GENETIC_ENGINEER),
     /* From SpliceHack with changes
-     * - Alchemists spawn with 2 potions of acid. When they run out, they 
+     * - Alchemists spawn with 2 potions of acid. When they run out, they
      *   are able to produce more at random intervals.
      * - In Splice they started with 1d3 random potions as well, but that has
      *   been removed and they instead death drop 1 random potion.
@@ -3284,7 +3283,7 @@
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID,
         M2_STALK | M2_HOSTILE | M2_STRONG, M3_INFRAVISION,
         MH_UNDEAD | MH_GIANT, 9, CLR_CYAN, GIANT_ZOMBIE),
-    MON(NAM("ghoul mage"), S_ZOMBIE, 
+    MON(NAM("ghoul mage"), S_ZOMBIE,
          LVL(10, 12, 4, 10, -4), (G_GENO | G_NOCORPSE | 1),
          A(ATTK(AT_CLAW, AD_PLYS, 1, 3),
            ATTK(AT_CLAW, AD_PHYS, 1, 4),
@@ -3312,14 +3311,14 @@
         LVL(12, 9, 1, 30, 0), (G_GENO | G_NOCORPSE | G_NOHELL | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
           ATTK(AT_TUCH, AD_PLYS, 1, 6),
-          ATTK(AT_MAGC, AD_FIRE, 2, 12), 
+          ATTK(AT_MAGC, AD_FIRE, 2, 12),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(300, 5, MS_BONES, MZ_HUMAN),
         MR_COLD | MR_SLEEP | MR_POISON | MR_STONE, 0,
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_THICK_HIDE,
         M2_WANDER | M2_HOSTILE | M2_STRONG | M2_COLLECT
             | M2_NASTY,
-        M3_INFRAVISION, 
+        M3_INFRAVISION,
         MH_UNDEAD, 15, CLR_BRIGHT_BLUE, REVENANT),
     /*
      * golems
@@ -3465,7 +3464,7 @@
         A(ATTK(AT_WEAP, AD_PHYS, 3, 4),
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(WT_HUMAN, 400, MS_GROWL, MZ_HUMAN), 
+        SIZ(WT_HUMAN, 400, MS_GROWL, MZ_HUMAN),
         MR_POISON, 0,
         M1_HUMANOID | M1_POIS | M1_REGEN | M1_OMNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_COLLECT,
@@ -3707,7 +3706,7 @@
     MON(NAM("Wizard of Yendor"), S_HUMAN,
         LVL(30, 12, -8, 100, A_NONE), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
-          ATTK(AT_CLAW, AD_SAMU, 2, 12), 
+          ATTK(AT_CLAW, AD_SAMU, 2, 12),
           ATTK(AT_MAGC, AD_SPEL, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_CUSS, MZ_HUMAN), MR_FIRE | MR_POISON,
@@ -4273,17 +4272,17 @@
         NO_RACE, 10, CLR_BRIGHT_BLUE, ELECTRIC_EEL),
     /* SpliceHack + SlashTHEM
      * In Splice these serve as the base form for the merfolk player race.
-     * Most of the stats were pulled from THEM. 
+     * Most of the stats were pulled from THEM.
      * */
     MON(NAMS("merman", "mermaid", "merfolk"), S_EEL,
         LVL(9, 15, 4, 10, -10), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
-          ATTK(AT_CLAW, AD_SITM, 0, 0), 
-          ATTK(AT_CLAW, AD_SEDU, 0, 0), 
+          ATTK(AT_CLAW, AD_SITM, 0, 0),
+          ATTK(AT_CLAW, AD_SEDU, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_ELF, 350, MS_HUMANOID, MZ_HUMAN), MR_SLEEP, 0,
         M1_HUMANOID | M1_OMNIVORE | M1_SWIM | M1_AMPHIBIOUS | M1_OVIPAROUS,
-        M2_COLLECT | M2_HOSTILE, 
+        M2_COLLECT | M2_HOSTILE,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 12, CLR_BRIGHT_GREEN, MERMAID),
     MON(NAM("kraken"), S_EEL,
@@ -4297,7 +4296,7 @@
         M1_SWIM | M1_AMPHIBIOUS | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 22, CLR_RED, KRAKEN),
-    /* From SpliceHack with changes 
+    /* From SpliceHack with changes
      * - Raised its MR from 0 to 95
      */
     MON(NAM("thing from below"), S_EEL,
@@ -4305,12 +4304,12 @@
         A(ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_MAGC, AD_SPEL, 4, 4),
           ATTK(AT_HUGS, AD_WRAP, 2, 6),
-          ATTK(AT_BITE, AD_PHYS, 5, 4), 
+          ATTK(AT_BITE, AD_PHYS, 5, 4),
           NO_ATTK, NO_ATTK),
         SIZ(1800, 1000, MS_SILENT, MZ_GIGANTIC), 0, 0,
         M1_SWIM | M1_AMPHIBIOUS | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE
             | M1_SEE_INVIS,
-        M2_NOPOLY | M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE, 
+        M2_NOPOLY | M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 34, HI_LORD, THING_FROM_BELOW),
     /*
      * lizards, &c
@@ -4429,7 +4428,7 @@
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_STRONG | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE,
-          MH_HUMAN, 12, HI_DOMESTIC, CARTOMANCER),
+        MH_HUMAN, 12, HI_DOMESTIC, CARTOMANCER),
     MON(NAMS("caveman", "cavewoman", "cave dweller"), S_HUMAN,
         LVL(10, 12, 10, 0, 1), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
@@ -4561,14 +4560,14 @@
     MON(NAM("King of Games"), S_HUMAN,
         LVL(20, 16, 0, 60, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
-            ATTK(AT_MAGC, AD_SPEL, 4, 8),
+          ATTK(AT_MAGC, AD_SPEL, 4, 8),
           ATTK(AT_MAGC, AD_SPEL, 4, 8),
           NO_ATTK, NO_ATTK, NO_ATTK),
-         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN), 0, 0,
-         M1_HUMANOID | M1_OMNIVORE,
-         M2_NOPOLY | M2_PEACEFUL | M2_STRONG | M2_COLLECT | M2_MAGIC | M2_MALE,
-         M3_CLOSE | M3_INFRAVISIBLE,
-     MH_HUMAN, 24, HI_LORD, KING_OF_GAMES),
+        SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN), 0, 0,
+        M1_HUMANOID | M1_OMNIVORE,
+        M2_NOPOLY | M2_PEACEFUL | M2_STRONG | M2_COLLECT | M2_MAGIC | M2_MALE,
+        M3_CLOSE | M3_INFRAVISIBLE,
+        MH_HUMAN, 24, HI_LORD, KING_OF_GAMES),
     MON(NAM("Shaman Karnov"), S_HUMAN,
         LVL(20, 15, 0, 90, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
@@ -4823,7 +4822,7 @@
           ATTK(AT_CLAW, AD_PHYS, 3, 4),
           ATTK(AT_CLAW, AD_SAMU, 3, 4),
           NO_ATTK),
-        SIZ(WT_DRAGON, 1600, MS_NEMESIS, MZ_GIGANTIC), 
+        SIZ(WT_DRAGON, 1600, MS_NEMESIS, MZ_GIGANTIC),
         MR_FIRE | MR_STONE | MR_POISON, MR_FIRE,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_SEE_INVIS,
         M2_NOPOLY | M2_MALE | M2_PNAME | M2_HOSTILE | M2_STRONG | M2_NASTY

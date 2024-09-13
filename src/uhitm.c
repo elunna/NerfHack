@@ -380,7 +380,7 @@ find_roll_to_hit(
             + u.uhitinc
             + maybe_polyd(gy.youmonst.data->mlevel,
         (u.ulevel > 20 ? 20 : u.ulevel));
-    
+
     /* some actions should occur only once during multiple attacks */
     if (!(*attk_count)++) {
         /* knight's chivalry or samurai's giri */
@@ -424,7 +424,7 @@ find_roll_to_hit(
     if (is_orc(mtmp->data)
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;
-    
+
     /* level adjustment. maxing out has some benefits */
     if (u.ulevel > 20)
         tmp += rn2((u.ulevel - 20) / 2 + 1);
@@ -432,7 +432,7 @@ find_roll_to_hit(
     /* Some races really don't like wearing other racial armor, if they
      * do they get a severe to-hit penalty */
     tmp -= count_hated_items() * 5;
-    
+
     /* Feedback for wearing items your race hates. */
     if (tmp && !rn2(5)) {
         switch (rnd(7)) {
@@ -472,14 +472,14 @@ find_roll_to_hit(
             break;
         }
     }
-    
+
     /* Accurate monster bonus */
     if (is_accurate(gy.youmonst.data) || (!Upolyd && Race_if(PM_ELF))) {
-        /* This doesn't mirror monster behavior, but that is fine. 
+        /* This doesn't mirror monster behavior, but that is fine.
          * Scale with levels, capped at level 20 at +5. */
         tmp += u.ulevel < 20 ? u.ulevel / 4 : 5;
     }
-    
+
     /* encumbrance: with a lot of luggage, your agility diminishes */
     if ((tmp2 = near_capacity()) != 0)
         tmp -= (tmp2 * 2) - 1;
@@ -500,9 +500,9 @@ find_roll_to_hit(
     }
 
     /* combat boots give +1 to-hit */
-    if (uarmf && objdescr_is(uarmf, "combat boots")) 
+    if (uarmf && objdescr_is(uarmf, "combat boots"))
         tmp += 1;
-    
+
     /* fencing gloves increase weapon accuracy when you have a free off-hand */
     if (weapon && !bimanual(weapon) && !which_armor(mtmp, W_ARMS)) {
         struct obj * otmp = which_armor(mtmp, W_ARMG);
@@ -656,7 +656,7 @@ do_attack(struct monst *mtmp)
         return FALSE;
     }
 
-    if (((is_displaced(mtmp->data) && !mtmp->mcan) 
+    if (((is_displaced(mtmp->data) && !mtmp->mcan)
             || has_displacement(mtmp))
         && !helpless(mtmp) && !mtmp->mtrapped
         && !u.uswallow && !rn2(2)) {
@@ -916,7 +916,7 @@ should_skewer(int range)
         impossible("should_skewer: unknown target direction");
         return FALSE; /* better safe than sorry */
     }
-    
+
     for (i = 0; i < range; i++) {
         /* The +2 gets us one spot beyond the first monster. */
         int x = u.ux + u.dx * (i + 2);
@@ -927,7 +927,7 @@ should_skewer(int range)
 
         mtmp = m_at(x, y);
         /* Similar to pounding with polearms, we won't skewer if we can't see the spot.
-         * This prevents a lot of unintended attacks - both on peacefuls and hostiles 
+         * This prevents a lot of unintended attacks - both on peacefuls and hostiles
          * we cannot see. */
         if (!cansee(x, y))
             bystanders = TRUE;
@@ -971,12 +971,12 @@ hitum_skewer(
     for (count = 1; count < range; count++) {
         struct monst *mtmp;
         int tx, ty, tmp, dieroll, mhit, attknum = 0, armorpenalty;
-        
+
         tx = x + count * u.dx, ty = y + count * u.dy; /* current target location */
         if (!isok(tx, ty))
             continue;
         mtmp = m_at(tx, ty);
-        
+
         if (!mtmp) {
             if (glyph_is_invisible(levl[tx][ty].glyph))
                 (void) unmap_invisible(tx, ty);
@@ -990,16 +990,16 @@ hitum_skewer(
         mhit = (tmp > dieroll);
         gb.bhitpos.x = tx, gb.bhitpos.y = ty; /* normally set by do_attack() */
         gn.notonhead = (mtmp->mx != tx || mtmp->my != ty);
-        
+
         /* Use the second monster so we don't repeat this message too much. */
         if (count == 2 && mhit && canseemon(mtmp))
             Your("%s skewers through %s!", xname(obj), mon_nam(target));
-        
+
         (void) known_hitum(mtmp, uwep, &mhit, tmp, armorpenalty,
                            uattk, dieroll);
         (void) passive(mtmp, uwep, mhit, !DEADMONSTER(mtmp), AT_WEAP, !uwep);
 
-        /* stop attacking if hero missed or weapon is gone 
+        /* stop attacking if hero missed or weapon is gone
          * or hero got paralyzed or killed (and then life-saved)
          * by passive counter-attack */
         if (!uwep || gm.multi < 0 || u.umortality > umort || !mhit)
@@ -1088,7 +1088,7 @@ hitum(struct monst *mon, struct attack *uattk)
         && (uwep->cursed || should_skewer(2))) {
         return hitum_skewer(mon, uwep, uattk);
     }
-    
+
     /* 0: single hit, 1: first of two hits; affects strength bonus and
        silver rings; known_hitum() -> hmon() -> hmon_hitmon() will copy
        gt.twohits into struct _hitmon_data hmd.twohits */
@@ -1134,8 +1134,8 @@ hitum(struct monst *mon, struct attack *uattk)
     if (malive && m_at(x, y) == mon && Race_if(PM_VAMPIRE) && !Upolyd) {
         if ((uwep || (u.twoweap && uswapwep)) &&
             maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)) &&
-                (is_rider(mon->data) 
-                || mon->data == &mons[PM_GREEN_SLIME] 
+                (is_rider(mon->data)
+                || mon->data == &mons[PM_GREEN_SLIME]
                 || touch_petrifies(mon->data)))
             return malive;
         tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
@@ -1282,13 +1282,13 @@ hmon_hitmon_weapon_melee(
 {
     int wtype;
     struct obj *monwep;
-    
+
     /* "normal" weapon usage */
     hmd->use_weapon_skill = TRUE;
     hmd->dmg = dmgval(obj, mon);
     /* a non-hit doesn't exercise proficiency */
     hmd->train_weapon_skill = (hmd->dmg > 0);
-    
+
     /* special attack actions */
     wtype = uwep_skill_type();
     if (!hmd->train_weapon_skill || mon == u.ustuck
@@ -1321,7 +1321,7 @@ hmon_hitmon_weapon_melee(
     } else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd
             /* Allow 3.4.3 backstab damage for the first thrown weapon. */
             && (hmd->hand_to_hand || gm.m_shot.i == 1)) {
-        
+
         /* Rogues can use stilettos quite proficiently */
         if (obj->otyp == STILETTO && hmd->hand_to_hand) {
             You("stab %s in the back!", mon_nam(mon));
@@ -1391,7 +1391,7 @@ hmon_hitmon_weapon_melee(
                    && P_SKILL(wtype) >= P_SKILLED)
                    && has_head(mon->data)
                    && !(noncorporeal(mon->data) || amorphous(mon->data))) {
-        /* Flails and morning stars get a bonus head-bonk stun 
+        /* Flails and morning stars get a bonus head-bonk stun
          * on critical hits. Must be at least skills and fighting
          * in melee. */
         You("bash %s on the head with your %s!", mon_nam(mon), xname(uwep));
@@ -1410,8 +1410,8 @@ hmon_hitmon_weapon_melee(
         monflee(mon, d(2, 4), FALSE, FALSE);
         hmd->dmg += rnd(2); /* Bonus damage */
     } else if (obj == uwep && u.twoweap
-        && Role_if(PM_SAMURAI) 
-        && uwep->otyp == KATANA 
+        && Role_if(PM_SAMURAI)
+        && uwep->otyp == KATANA
         && weapon_type(uswapwep) == P_SHORT_SWORD) {
         /* Two-heavens technique */
         hmd->dmg += rnd(P_SKILL(P_TWO_WEAPON_COMBAT));
@@ -1443,7 +1443,7 @@ hmon_hitmon_weapon_melee(
         && ammo_and_launcher(obj, uwep)) {
         hmd->dmg += rnd(7);
     }
-    
+
     if (hmd->material == SILVER && mon_hates_silver(mon)) {
         hmd->silvermsg = hmd->silverobj = TRUE;
     }
@@ -1468,7 +1468,7 @@ hmon_hitmon_weapon_melee(
             else if (Race_if(PM_ELF) && obj->otyp == ELVEN_ARROW
                      && uwep->otyp == ELVEN_BOW)
                 hmd->dmg++;
-            
+
             /* dnethack style crossbow bonuses */
             if (uwep->otyp == CROSSBOW) {
                 if (P_SKILL(P_CROSSBOW) == P_SKILLED)
@@ -1478,7 +1478,7 @@ hmon_hitmon_weapon_melee(
                 if (Race_if(PM_GNOME))
                     hmd->dmg += rnd(3);
             }
-            
+
             hmd->train_weapon_skill = (hmd->dmg > 0);
         }
     }
@@ -1498,7 +1498,7 @@ hmon_hitmon_weapon(
         /* or strike with a missile in your hand... */
         || (!hmd->thrown && (is_missile(obj) || is_ammo(obj)))
         /* or use a pole at short range and not mounted... */
-        || (!hmd->thrown && !u.usteed 
+        || (!hmd->thrown && !u.usteed
             && (is_pole(obj) && obj->otyp != SCYTHE))
         /* or throw a missile without the proper bow... */
         || (is_ammo(obj) && (hmd->thrown != HMON_THROWN
@@ -2009,7 +2009,7 @@ hmon_hitmon_stagger(
     struct obj *obj UNUSED)
 {
     /* Gauntlets of force occasionally hit hard */
-    boolean forcegloves = uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE 
+    boolean forcegloves = uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE
                           && !rn2(20);
     /* VERY small chance of stunning opponent if unarmed. */
     if ((rnd(100) < P_SKILL(P_BARE_HANDED_COMBAT) || forcegloves)
@@ -2151,7 +2151,7 @@ hmon_hitmon_msg_lightobj(
 
     if (DEADMONSTER(mon))
         return;
-    
+
     if (canspotmon(mon)) {
         if (hmd->saved_oname[0]) {
             Sprintf(emitlightobjbuf,
@@ -2251,7 +2251,7 @@ hmon_hitmon(
 
     if (hmd.ispoisoned)
         hmon_hitmon_poison(&hmd, mon, obj);
-    
+
     if (hmd.dmg < 1) {
         boolean mon_is_shade = (mon->data == &mons[PM_SHADE]);
 
@@ -2271,18 +2271,18 @@ hmon_hitmon(
         hmon_hitmon_stagger(&hmd, mon, obj);
     }
 
-    /* Adapted "blood rage" skill from SpliceHack: When a barbarians health is 
+    /* Adapted "blood rage" skill from SpliceHack: When a barbarians health is
      * below 50%, they get a damage boost for melee attacks. Instead of the skill level
      * in SpliceHack, we'll use the player's level divided by 5. This only kicks in after
      * level 3 so it's not abuseable early game.
-     * 
+     *
      * The bonus is doubled if the player is below 1/4'th of their health.
      * */
-    if (Role_if(PM_BARBARIAN) 
-            && u.ulevel > 3 
+    if (Role_if(PM_BARBARIAN)
+            && u.ulevel > 3
             && (u.uhp < (u.uhpmax / 2))
-            && !thrown 
-            && !Upolyd 
+            && !thrown
+            && !Upolyd
             && rn2(3)) {
         int bonus = (u.ulevel / 5 + 1) * (u.uhp < (u.uhpmax / 4) ? 2 : 1);
         hmd.dmg += bonus;
@@ -2299,7 +2299,7 @@ hmon_hitmon(
         }
         wake_nearby(FALSE);
     }
-    
+
     if (!hmd.already_killed) {
         if (obj && (obj == uwep || (obj == uswapwep && u.twoweap))
             /* known_hitum 'what counts as a weapon' criteria */
@@ -2365,7 +2365,7 @@ hmon_hitmon(
        (via 'thrownobj'; if swallowed, it gets added to engulfer's
        minvent and might merge with a stack that's already there)] */
     /* already_killed and poiskilled won't apply for Trollsbane */
-    
+
     if (hmd.needpoismsg)
         pline_The("poison doesn't seem to affect %s.", mon_nam(mon));
     if (hmd.poiskilled) {
@@ -2930,14 +2930,14 @@ mhitm_ad_drli(
     boolean V2V = is_vampire(magr->data) && is_vampire(mdef->data)
         && !defended(mdef, AD_DRLI);
 
-    /* Bonus for attacking susceptible victims */ 
+    /* Bonus for attacking susceptible victims */
     boolean vulnerable;
-    if (mdef == &gy.youmonst) 
+    if (mdef == &gy.youmonst)
 	    vulnerable = u.usleep || gm.multi || Confusion || u.utrap || u.ustuck;
-    else 
+    else
 	    vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
                 || mdef->mconf || mdef->mtrapped;
- 
+
     boolean success = vulnerable ? rn2(3) : !rn2(3);
 
     if (magr == &gy.youmonst) {
@@ -2947,7 +2947,7 @@ mhitm_ad_drli(
             mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
                                     * (usually 1d8) */
 
-            /* Vampire draining bite. Player vampires are smart enough not 
+            /* Vampire draining bite. Player vampires are smart enough not
              * to feed while biting if they might have trouble getting it down
              */
             if (maybe_polyd(is_vampire(gy.youmonst.data),
@@ -3295,7 +3295,7 @@ mhitm_ad_acid(
     struct monst *mdef, struct mhitm_data *mhm)
 {
     int dmg = mhm->damage;
-    
+
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (resists_acid(mdef) || defended(mdef, AD_ACID))
@@ -4361,7 +4361,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
                 Your("withering speeds up!");
             else
                 You("begin to wither away!");
-            
+
             incr_itimeout(&HWithering, withertime);
             if (lose_maxhp) {
                 if (Upolyd && u.mhmax > 1) {
@@ -4380,7 +4380,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
         if (!no_effect) {
             if (canseemon(mdef))
                 pline("%s is withering away!", Monnam(mdef));
-            
+
             if (mdef->mwither + withertime > UCHAR_MAX) {
                 mdef->mwither = UCHAR_MAX;
             } else {
@@ -4569,7 +4569,7 @@ mhitm_ad_dsrm(struct monst *magr, struct attack *mattk,
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        
+
         otmp = MON_WEP(magr);
         if (otmp) {
             pline("%s's %s sticks to you!", Monnam(magr), xname(otmp));
@@ -4604,18 +4604,18 @@ mhitm_ad_tckl(struct monst *magr,
     struct attack *mattk,
     struct monst *mdef,
     struct mhitm_data *mhm)
-{   
+{
     int armpro = magic_negation(mdef);
-    boolean no_effect = (magr != &gy.youmonst && magr->mcan) 
+    boolean no_effect = (magr != &gy.youmonst && magr->mcan)
                          || !(rn2(10) >= 3 * armpro);
 
     if (magr == &gy.youmonst) {
         /* uhitm */
         /* since hero can't be cancelled, only defender's armor applies */
-        if (!no_effect && mdef->mcanmove && !rn2(3) 
+        if (!no_effect && mdef->mcanmove && !rn2(3)
                 && mhm->damage < mdef->mhp
                 && !has_free_action(mdef)) {
-            if (!Blind) 
+            if (!Blind)
                 You("mercilessly tickle %s!", mon_nam(mdef));
             mdef->mcanmove = 0;
             mdef->mfrozen = rnd(6);
@@ -4628,9 +4628,9 @@ mhitm_ad_tckl(struct monst *magr,
             if (Free_action && !rn2(10))
                 You_feel("horrible tentacles probing your flesh!");
             else {
-                if (Blind) 
+                if (Blind)
                     You("are mercilessly tickled!");
-                else 
+                else
                     You("are mercilessly tickled by %s!", mon_nam(magr));
                 gn.nomovemsg = 0;	/* default: "you can move again" */
                 nomul(-rnd(6));
@@ -5369,7 +5369,7 @@ mhitm_ad_dise(
 {
     struct permonst *pa = magr->data, *pd = mdef->data;
     boolean unaffected = resists_sick(mdef->data) || defended(mdef, AD_DISE);
-    
+
     if (magr == &gy.youmonst) {
         if (!unaffected) {
             if (mdef->mdiseasetime)
@@ -5390,7 +5390,7 @@ mhitm_ad_dise(
     } else {
         if (pd->mlet == S_FUNGUS || is_ghoul(pd) || defended(mdef, AD_DISE))
             mhm->damage = 0;
-        
+
         if (unaffected) {
             if (gv.vis && canseemon(mdef))
                 pline("%s resists infection.", Monnam(mdef));
@@ -5471,7 +5471,7 @@ mhitm_ad_sedu(
         default:
             if (DEADMONSTER(magr))
                 impossible("dead stealer after steal()!");
-            
+
             if (!is_animal(magr->data) && !tele_restrict(magr))
                 (void) rloc(magr, RLOC_MSG);
             if (is_animal(magr->data) && *buf) {
@@ -6157,8 +6157,8 @@ m_is_steadfast(struct monst *mtmp)
 #endif
 
     if (is_art(otmp, ART_GIANTSLAYER)
-        || is_art(otmp, ART_LOAD_BRAND) 
-        || is_art(otmp, ART_SCEPTRE_OF_MIGHT) 
+        || is_art(otmp, ART_LOAD_BRAND)
+        || is_art(otmp, ART_SCEPTRE_OF_MIGHT)
         || (shield && is_art(otmp, ART_PRIDWEN)))
         return TRUE;
 
@@ -6223,7 +6223,7 @@ mhitm_knockback(
               || mattk->aatyp == AT_BUTT
               || (mattk->aatyp == AT_WEAP && !weapon_used))))
         return FALSE;
-    
+
     /* needs a solid physical hit */
     if (unsolid(magr->data))
         return FALSE;
@@ -6361,8 +6361,8 @@ hmonas(struct monst *mon)
     gt.twohits = 0;
 
     /* [see mattackm(mhitm.c)] */
-    gs.skipdrin = touch_petrifies(mon->data) 
-        && !(Confusion || Stunned || Hallucination || Rabid); 
+    gs.skipdrin = touch_petrifies(mon->data)
+        && !(Confusion || Stunned || Hallucination || Rabid);
 
     for (i = 0; i < NATTK; i++) {
         /* sum[i] = M_ATTK_MISS; -- now done above */
@@ -6696,7 +6696,7 @@ hmonas(struct monst *mon)
                          (mattk->adtyp == AD_DGST ? "engulf" : "surround"),
                          mon_nam(mon));
                 } else if (m_carrying(mon, FOULSTONE)) {
-                    You("%s something foul on the %s, yuk!", 
+                    You("%s something foul on the %s, yuk!",
                         olfaction(gy.youmonst.data) ? "smell" : "taste", mon_nam(mon));
                 } else if (failed_grab(&gy.youmonst, mon, mattk)) {
                     ; /* non-shade miss; message already given */
@@ -7028,7 +7028,7 @@ passive(
                 }
                 if (mon->mcansee) {
                     if (ureflects("%s gaze is partially reflected by your %s.",
-                                  s_suffix(Monnam(mon))) && !Free_action 
+                                  s_suffix(Monnam(mon))) && !Free_action
                                   /* Quite rare if luck is 8 or higher */
                                   && rnl(10) > 5) {
                         You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
@@ -7396,27 +7396,27 @@ boolean
 hates_item(struct monst *mtmp, int otyp)
 {
     boolean is_you = (mtmp == &gy.youmonst);
-        
-    if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)) 
+
+    if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))
                     : is_elf(mtmp->data))
         return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
                 || is_gnomish_obj(otyp));
-    else if (is_you ? maybe_polyd(is_dwarf(gy.youmonst.data), Race_if(PM_DWARF)) 
+    else if (is_you ? maybe_polyd(is_dwarf(gy.youmonst.data), Race_if(PM_DWARF))
                     : is_dwarf(mtmp->data))
         return (is_orcish_obj(otyp) || is_elven_obj(otyp)
                 || is_gnomish_obj(otyp));
-    else if (is_you ? maybe_polyd(is_gnome(gy.youmonst.data), Race_if(PM_GNOME)) 
+    else if (is_you ? maybe_polyd(is_gnome(gy.youmonst.data), Race_if(PM_GNOME))
                     : is_gnome(mtmp->data))
         return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
                 || is_elven_obj(otyp));
-    else if (is_you ? maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC)) 
+    else if (is_you ? maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))
                     : is_orc(mtmp->data))
         return (is_dwarvish_obj(otyp) || is_elven_obj(otyp)
                 || is_gnomish_obj(otyp));
-    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN)) 
+    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN))
                     : is_human(mtmp->data))
         return (is_gnomish_obj(otyp));
-    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_VAMPIRE)) 
+    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_VAMPIRE))
                 : is_vampire(mtmp->data))
         return (is_gnomish_obj(otyp));
     return FALSE;
@@ -7427,7 +7427,7 @@ int
 count_hated_items(void)
 {
     int count = 0;
-    
+
     if (uarm && hates_item(&gy.youmonst, uarm->otyp))
         count++;
     if (uarmc && hates_item(&gy.youmonst, uarmc->otyp))
@@ -7454,7 +7454,7 @@ stompable(struct monst *mon)
         return FALSE;
     /* Small monsters have a very small chance of getting stomped too */
     if (mon->data->msize == MZ_SMALL && rn2(40))
-        return FALSE; 
+        return FALSE;
     /* Can't stomp monsters in water */
     if (is_pool(mon->mx, mon->my))
         return FALSE;
@@ -7513,7 +7513,7 @@ shield_dmg(struct obj *obj, struct monst *mon)
         tmp += special_dmgval(&gy.youmonst, mon, W_ARMS, &silverhit);
 
         /* extra damage based on the type of shield */
-        if (obj->otyp == SMALL_SHIELD 
+        if (obj->otyp == SMALL_SHIELD
             || obj->otyp == ANTI_MAGIC_SHIELD)
             tmp += rn2(3) + 1;
         else if (obj->otyp == TOWER_SHIELD)

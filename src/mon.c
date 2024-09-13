@@ -753,392 +753,392 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_KILLER_BEE:
     case PM_SOLDIER_ANT:
     case PM_FIRE_ANT:
-    case PM_GIANT_BEETLE: 
+    case PM_GIANT_BEETLE:
     case PM_QUEEN_BEE:
-    case PM_LOCUST: 
+    case PM_LOCUST:
     case PM_GIANT_PRAYING_MANTIS:
-    case PM_ASSASSIN_BUG: 
+    case PM_ASSASSIN_BUG:
     case PM_GIANT_COCKROACH:
-    case PM_QUIVERING_BLOB: 
-    case PM_ACID_BLOB: 
+    case PM_QUIVERING_BLOB:
+    case PM_ACID_BLOB:
     case PM_GELATINOUS_CUBE:
-    case PM_CHICKATRICE: 
-    case PM_COCKATRICE: 
+    case PM_CHICKATRICE:
+    case PM_COCKATRICE:
     case PM_PYROLISK:
     case PM_BASILISK:
-    case PM_JACKAL: 
-    case PM_FOX: 
-    case PM_COYOTE: 
+    case PM_JACKAL:
+    case PM_FOX:
+    case PM_COYOTE:
     case PM_WEREJACKAL:
-    case PM_LITTLE_DOG: 
-    case PM_DINGO: 
-    case PM_DOG: 
+    case PM_LITTLE_DOG:
+    case PM_DINGO:
+    case PM_DOG:
     case PM_LARGE_DOG:
     case PM_WOLF:
-    case PM_WEREWOLF: 
+    case PM_WEREWOLF:
     case PM_WINTER_WOLF_CUB:
-    case PM_WARG: 
-    case PM_WINTER_WOLF: 
+    case PM_WARG:
+    case PM_WINTER_WOLF:
     case PM_HELL_HOUND_PUP:
     case PM_HELL_HOUND:
-    case PM_GAS_SPORE: 
-    case PM_FLOATING_EYE: 
+    case PM_GAS_SPORE:
+    case PM_FLOATING_EYE:
     case PM_FREEZING_SPHERE:
     case PM_STINKING_SPHERE:
-    case PM_FLAMING_SPHERE: 
+    case PM_FLAMING_SPHERE:
     case PM_SHOCKING_SPHERE:
     case PM_ACID_SPHERE:
-    case PM_GLOWING_EYE: 
-    case PM_THIRD_EYE: 
+    case PM_GLOWING_EYE:
+    case PM_THIRD_EYE:
     case PM_BLINKING_EYE:
-    case PM_KITTEN: 
-    case PM_HOUSECAT: 
-    case PM_JAGUAR: 
+    case PM_KITTEN:
+    case PM_HOUSECAT:
+    case PM_JAGUAR:
     case PM_LYNX:
-    case PM_PANTHER: 
-    case PM_LARGE_CAT:  
+    case PM_PANTHER:
+    case PM_LARGE_CAT:
     case PM_TIGER:
-    case PM_KAMADAN: 
+    case PM_KAMADAN:
     case PM_WERETIGER:
-    case PM_DISPLACER_BEAST: 
+    case PM_DISPLACER_BEAST:
     case PM_GREMLIN:
-    case PM_GARGOYLE: 
+    case PM_GARGOYLE:
     case PM_WINGED_GARGOYLE:
-    case PM_HOBBIT: 
-    case PM_DWARF: 
-    case PM_BUGBEAR: 
+    case PM_HOBBIT:
+    case PM_DWARF:
+    case PM_BUGBEAR:
     case PM_DWARF_LEADER:
     case PM_DWARF_RULER:
-    case PM_MIND_FLAYER: 
+    case PM_MIND_FLAYER:
     case PM_MASTER_MIND_FLAYER:
-    case PM_DEEP_ONE: 
-    case PM_DEEPER_ONE: 
-    case PM_DEEPEST_ONE: 
+    case PM_DEEP_ONE:
+    case PM_DEEPER_ONE:
+    case PM_DEEPEST_ONE:
     case PM_ALHOON:
     case PM_MANES:
-    case PM_HOMUNCULUS: 
-    case PM_IMP: 
-    case PM_LEMURE: 
+    case PM_HOMUNCULUS:
+    case PM_IMP:
+    case PM_LEMURE:
     case PM_QUASIT:
-    case PM_TENGU: 
+    case PM_TENGU:
     case PM_REDCAP:
-    case PM_BLUE_JELLY: 
+    case PM_BLUE_JELLY:
     case PM_SPOTTED_JELLY:
-    case PM_OCHRE_JELLY: 
-    case PM_KOBOLD: 
+    case PM_OCHRE_JELLY:
+    case PM_KOBOLD:
     case PM_LARGE_KOBOLD:
-    case PM_KOBOLD_LEADER: 
-    case PM_KOBOLD_SHAMAN: 
+    case PM_KOBOLD_LEADER:
+    case PM_KOBOLD_SHAMAN:
     case PM_LEPRECHAUN:
-    case PM_SMALL_MIMIC: 
-    case PM_LARGE_MIMIC: 
+    case PM_SMALL_MIMIC:
+    case PM_LARGE_MIMIC:
     case PM_GIANT_MIMIC:
-    case PM_WOOD_NYMPH: 
-    case PM_WATER_NYMPH: 
+    case PM_WOOD_NYMPH:
+    case PM_WATER_NYMPH:
     case PM_MOUNTAIN_NYMPH:
-    case PM_GOBLIN: 
-    case PM_HOBGOBLIN: 
-    case PM_ORC: 
+    case PM_GOBLIN:
+    case PM_HOBGOBLIN:
+    case PM_ORC:
     case PM_HILL_ORC:
-    case PM_MORDOR_ORC: 
-    case PM_URUK_HAI: 
+    case PM_MORDOR_ORC:
+    case PM_URUK_HAI:
     case PM_ORC_SHAMAN:
     case PM_ORC_CAPTAIN:
     case PM_ROCK_PIERCER:
-    case PM_IRON_PIERCER: 
+    case PM_IRON_PIERCER:
     case PM_GLASS_PIERCER:
-    case PM_DIAMOND_PIERCER: 
+    case PM_DIAMOND_PIERCER:
     case PM_GOD_PIERCER:
-    case PM_ROTHE: 
-    case PM_MUMAK: 
-    case PM_LEOCROTTA: 
+    case PM_ROTHE:
+    case PM_MUMAK:
+    case PM_LEOCROTTA:
     case PM_WUMPUS:
-    case PM_TITANOTHERE: 
-    case PM_BALUCHITHERIUM: 
+    case PM_TITANOTHERE:
+    case PM_BALUCHITHERIUM:
     case PM_MASTODON:
     case PM_LANDSHARK:
-    case PM_SEWER_RAT: 
+    case PM_SEWER_RAT:
     case PM_GIANT_RAT:
-    case PM_WERERAT: 
+    case PM_WERERAT:
     case PM_CHICKENRAT:
-    case PM_ROCK_MOLE: 
+    case PM_ROCK_MOLE:
     case PM_WOODCHUCK:
-    case PM_CAVE_SPIDER: 
-    case PM_CENTIPEDE: 
+    case PM_CAVE_SPIDER:
+    case PM_CENTIPEDE:
     case PM_GIANT_SPIDER:
-    case PM_SCORPION: 
-    case PM_PHASE_SPIDER: 
+    case PM_SCORPION:
+    case PM_PHASE_SPIDER:
     case PM_GIANT_CENTIPEDE:
-    case PM_LURKER_ABOVE: 
+    case PM_LURKER_ABOVE:
     case PM_TRAPPER:
-    case PM_PONY: 
-    case PM_HORSE: 
+    case PM_PONY:
+    case PM_HORSE:
     case PM_WARHORSE:
-    case PM_FOG_CLOUD: 
-    case PM_DUST_VORTEX: 
+    case PM_FOG_CLOUD:
+    case PM_DUST_VORTEX:
     case PM_ICE_VORTEX:
     case PM_ENERGY_VORTEX:
-    case PM_STEAM_VORTEX: 
+    case PM_STEAM_VORTEX:
     case PM_FIRE_VORTEX:
-    case PM_BABY_LONG_WORM: 
+    case PM_BABY_LONG_WORM:
     case PM_BABY_PURPLE_WORM:
     case PM_PURPLE_WORM:
-    case PM_GRID_BUG: 
+    case PM_GRID_BUG:
     case PM_XAN:
-    case PM_YELLOW_LIGHT: 
-    case PM_BLACK_LIGHT: 
+    case PM_YELLOW_LIGHT:
+    case PM_BLACK_LIGHT:
     case PM_WILL_O__THE_WISP:
-    case PM_ZRUTY: 
-    case PM_COUATL: 
-    case PM_ALEAX: 
+    case PM_ZRUTY:
+    case PM_COUATL:
+    case PM_ALEAX:
     case PM_ANGEL:
-    case PM_KI_RIN: 
+    case PM_KI_RIN:
     case PM_ARCHON:
-    case PM_BAT: 
-    case PM_GIANT_BAT: 
-    case PM_RAVEN: 
+    case PM_BAT:
+    case PM_GIANT_BAT:
+    case PM_RAVEN:
     case PM_VAMPIRE_BAT:
-    case PM_ZOO_BAT: 
-    case PM_ATHOL: 
-    case PM_BYAKHEE: 
+    case PM_ZOO_BAT:
+    case PM_ATHOL:
+    case PM_BYAKHEE:
     case PM_NIGHTGAUNT:
     case PM_PHOENIX:
-    case PM_PLAINS_CENTAUR: 
-    case PM_FOREST_CENTAUR: 
+    case PM_PLAINS_CENTAUR:
+    case PM_FOREST_CENTAUR:
     case PM_MOUNTAIN_CENTAUR:
-    case PM_BABY_GRAY_DRAGON: 
+    case PM_BABY_GRAY_DRAGON:
     case PM_BABY_GOLD_DRAGON:
-    case PM_BABY_SILVER_DRAGON: 
+    case PM_BABY_SILVER_DRAGON:
     case PM_BABY_RED_DRAGON:
-    case PM_BABY_WHITE_DRAGON: 
+    case PM_BABY_WHITE_DRAGON:
     case PM_BABY_ORANGE_DRAGON:
-    case PM_BABY_BLACK_DRAGON: 
+    case PM_BABY_BLACK_DRAGON:
     case PM_BABY_BLUE_DRAGON:
-    case PM_BABY_GREEN_DRAGON: 
+    case PM_BABY_GREEN_DRAGON:
     case PM_BABY_YELLOW_DRAGON:
     case PM_BABY_SHIMMERING_DRAGON:
-    case PM_STALKER: 
-    case PM_AIR_ELEMENTAL: 
+    case PM_STALKER:
+    case PM_AIR_ELEMENTAL:
     case PM_FIRE_ELEMENTAL:
-    case PM_EARTH_ELEMENTAL: 
+    case PM_EARTH_ELEMENTAL:
     case PM_WATER_ELEMENTAL:
-    case PM_LICHEN: 
-    case PM_BROWN_MOLD: 
+    case PM_LICHEN:
+    case PM_BROWN_MOLD:
     case PM_YELLOW_MOLD:
-    case PM_GREEN_MOLD: 
-    case PM_RED_MOLD: 
+    case PM_GREEN_MOLD:
+    case PM_RED_MOLD:
     case PM_SHRIEKER:
-    case PM_VIOLET_FUNGUS: 
+    case PM_VIOLET_FUNGUS:
     case PM_GRAY_FUNGUS:
-    case PM_GNOME: 
-    case PM_GNOME_LEADER: 
+    case PM_GNOME:
+    case PM_GNOME_LEADER:
     case PM_GNOMISH_WIZARD:
     case PM_GNOME_RULER:
-    case PM_GIANT: 
-    case PM_STONE_GIANT: 
+    case PM_GIANT:
+    case PM_STONE_GIANT:
     case PM_HILL_GIANT:
-    case PM_FIRE_GIANT: 
-    case PM_FROST_GIANT: 
+    case PM_FIRE_GIANT:
+    case PM_FROST_GIANT:
     case PM_ETTIN:
-    case PM_STORM_GIANT: 
+    case PM_STORM_GIANT:
     case PM_TITAN:
-    case PM_MINOTAUR: 
-    case PM_JABBERWOCK: 
+    case PM_MINOTAUR:
+    case PM_JABBERWOCK:
     case PM_KEYSTONE_KOP:
-    case PM_KOP_SERGEANT: 
-    case PM_KOP_LIEUTENANT: 
+    case PM_KOP_SERGEANT:
+    case PM_KOP_LIEUTENANT:
     case PM_KOP_KAPTAIN:
-    case PM_LICH: 
+    case PM_LICH:
     case PM_DEMILICH:
-    case PM_MASTER_LICH: 
+    case PM_MASTER_LICH:
     case PM_ARCH_LICH:
     case PM_ADHERER:
-    case PM_RED_NAGA_HATCHLING: 
+    case PM_RED_NAGA_HATCHLING:
     case PM_BLACK_NAGA_HATCHLING:
-    case PM_GOLDEN_NAGA_HATCHLING: 
+    case PM_GOLDEN_NAGA_HATCHLING:
     case PM_GUARDIAN_NAGA_HATCHLING:
-    case PM_RED_NAGA: 
-    case PM_BLACK_NAGA: 
+    case PM_RED_NAGA:
+    case PM_BLACK_NAGA:
     case PM_GOLDEN_NAGA:
-    case PM_GUARDIAN_NAGA: 
+    case PM_GUARDIAN_NAGA:
     case PM_HA_NAGA:
-    case PM_OGRE: 
-    case PM_OGRE_LEADER: 
+    case PM_OGRE:
+    case PM_OGRE_LEADER:
     case PM_OGRE_TYRANT:
-    case PM_OGRE_MAGE: 
+    case PM_OGRE_MAGE:
     case PM_SHADOW_OGRE:
-    case PM_QUANTUM_MECHANIC: 
+    case PM_QUANTUM_MECHANIC:
     case PM_GENETIC_ENGINEER:
-    case PM_RUST_MONSTER: 
+    case PM_RUST_MONSTER:
     case PM_DISENCHANTER:
-    case PM_GARTER_SNAKE: 
-    case PM_SNAKE: 
+    case PM_GARTER_SNAKE:
+    case PM_SNAKE:
     case PM_WATER_MOCCASIN:
-    case PM_PYTHON: 
-    case PM_PIT_VIPER: 
-    case PM_COBRA: 
+    case PM_PYTHON:
+    case PM_PIT_VIPER:
+    case PM_COBRA:
     case PM_GIANT_ANACONDA:
-    case PM_TROLL: 
-    case PM_ICE_TROLL: 
-    case PM_ROCK_TROLL: 
+    case PM_TROLL:
+    case PM_ICE_TROLL:
+    case PM_ROCK_TROLL:
     case PM_WATER_TROLL:
-    case PM_OLOG_HAI: 
+    case PM_OLOG_HAI:
     case PM_GRAVE_TROLL:
-    case PM_UMBER_HULK: 
+    case PM_UMBER_HULK:
     case PM_VLAD_THE_IMPALER:
-    case PM_BARROW_WIGHT: 
-    case PM_WRAITH: 
+    case PM_BARROW_WIGHT:
+    case PM_WRAITH:
     case PM_NAZGUL:
-    case PM_XORN: 
-    case PM_MONKEY: 
-    case PM_APE: 
+    case PM_XORN:
+    case PM_MONKEY:
+    case PM_APE:
     case PM_OWLBEAR:
-    case PM_YETI: 
-    case PM_CARNIVOROUS_APE: 
+    case PM_YETI:
+    case PM_CARNIVOROUS_APE:
     case PM_SASQUATCH:
     case PM_GHOUL:
     case PM_SKELETON:
     case PM_GHOUL_MAGE:
     case PM_REVENANT:
-    case PM_STRAW_GOLEM: 
+    case PM_STRAW_GOLEM:
     case PM_FLESH_GOLEM:
-    case PM_HUMAN: 
-    case PM_HUMAN_WERERAT: 
+    case PM_HUMAN:
+    case PM_HUMAN_WERERAT:
     case PM_HUMAN_WEREJACKAL:
-    case PM_HUMAN_WEREWOLF: 
+    case PM_HUMAN_WEREWOLF:
     case PM_HUMAN_WERETIGER:
-    case PM_ELF: 
+    case PM_ELF:
     case PM_WOODLAND_ELF:
-    case PM_GREEN_ELF: 
-    case PM_GREY_ELF: 
+    case PM_GREEN_ELF:
+    case PM_GREY_ELF:
     case PM_ELF_NOBLE:
-    case PM_ELVEN_MONARCH: 
+    case PM_ELVEN_MONARCH:
     case PM_ELVEN_CLERIC:
-    case PM_DOPPELGANGER: 
+    case PM_DOPPELGANGER:
     case PM_SHOPKEEPER:
-    case PM_GUARD: 
-    case PM_PRISONER: 
+    case PM_GUARD:
+    case PM_PRISONER:
     case PM_ORACLE:
-    case PM_ALIGNED_CLERIC: 
+    case PM_ALIGNED_CLERIC:
     case PM_HIGH_CLERIC:
-    case PM_SOLDIER: 
-    case PM_SERGEANT: 
+    case PM_SOLDIER:
+    case PM_SERGEANT:
     case PM_NURSE:
-    case PM_LIEUTENANT: 
-    case PM_CAPTAIN: 
+    case PM_LIEUTENANT:
+    case PM_CAPTAIN:
     case PM_WATCHMAN:
     case PM_WATCH_CAPTAIN:
-    case PM_MEDUSA: 
-    case PM_WIZARD_OF_YENDOR: 
+    case PM_MEDUSA:
+    case PM_WIZARD_OF_YENDOR:
     case PM_CROESUS:
-    case PM_GHOST: 
-    case PM_SHADE: 
+    case PM_GHOST:
+    case PM_SHADE:
     case PM_SHADOW:
     case PM_WATER_DEMON:
-    case PM_AMOROUS_DEMON: 
+    case PM_AMOROUS_DEMON:
     case PM_HORNED_DEVIL:
-    case PM_ERINYS: 
-    case PM_BARBED_DEVIL: 
-    case PM_MARILITH: 
+    case PM_ERINYS:
+    case PM_BARBED_DEVIL:
+    case PM_MARILITH:
     case PM_VROCK:
-    case PM_HEZROU: 
-    case PM_BONE_DEVIL: 
-    case PM_ICE_DEVIL: 
+    case PM_HEZROU:
+    case PM_BONE_DEVIL:
+    case PM_ICE_DEVIL:
     case PM_NALFESHNEE:
-    case PM_PIT_FIEND: 
-    case PM_SANDESTIN: 
-    case PM_BALROG: 
+    case PM_PIT_FIEND:
+    case PM_SANDESTIN:
+    case PM_BALROG:
     case PM_JUIBLEX:
-    case PM_YEENOGHU: 
-    case PM_ORCUS: 
-    case PM_GERYON: 
+    case PM_YEENOGHU:
+    case PM_ORCUS:
+    case PM_GERYON:
     case PM_DISPATER:
-    case PM_BAALZEBUB: 
-    case PM_ASMODEUS: 
+    case PM_BAALZEBUB:
+    case PM_ASMODEUS:
     case PM_DEMOGORGON:
     case PM_LAVA_DEMON:
-    case PM_BUER: 
-    case PM_KOSTCHTCHIE: 
+    case PM_BUER:
+    case PM_KOSTCHTCHIE:
     case PM_BAPHOMET:
-    case PM_LOLTH: 
-    case PM_MALCANTHET: 
+    case PM_LOLTH:
+    case PM_MALCANTHET:
     case PM_MEPHISTOPHOLES:
-    case PM_DEATH: 
-    case PM_PESTILENCE: 
+    case PM_DEATH:
+    case PM_PESTILENCE:
     case PM_FAMINE:
-    case PM_MAIL_DAEMON: 
+    case PM_MAIL_DAEMON:
     case PM_DJINNI:
-    case PM_JELLYFISH: 
-    case PM_PIRANHA: 
-    case PM_SHARK: 
+    case PM_JELLYFISH:
+    case PM_PIRANHA:
+    case PM_SHARK:
     case PM_GIANT_EEL:
-    case PM_ELECTRIC_EEL: 
+    case PM_ELECTRIC_EEL:
     case PM_KRAKEN:
-    case PM_MERMAID: 
+    case PM_MERMAID:
     case PM_THING_FROM_BELOW:
-    case PM_NEWT: 
-    case PM_GECKO: 
-    case PM_IGUANA: 
+    case PM_NEWT:
+    case PM_GECKO:
+    case PM_IGUANA:
     case PM_BABY_CROCODILE:
-    case PM_LIZARD: 
-    case PM_CHAMELEON: 
+    case PM_LIZARD:
+    case PM_CHAMELEON:
     case PM_CROCODILE:
-    case PM_SALAMANDER: 
-    case PM_VELOCIRAPTOR: 
+    case PM_SALAMANDER:
+    case PM_VELOCIRAPTOR:
     case PM_T_REX:
     case PM_LONG_WORM_TAIL:
-    case PM_ARCHEOLOGIST: 
-    case PM_BARBARIAN: 
+    case PM_ARCHEOLOGIST:
+    case PM_BARBARIAN:
     case PM_CAVE_DWELLER:
-    case PM_HEALER: 
-    case PM_KNIGHT: 
-    case PM_MONK: 
+    case PM_HEALER:
+    case PM_KNIGHT:
+    case PM_MONK:
     case PM_CLERIC:
-    case PM_RANGER: 
-    case PM_ROGUE: 
-    case PM_SAMURAI: 
+    case PM_RANGER:
+    case PM_ROGUE:
+    case PM_SAMURAI:
     case PM_TOURIST:
-    case PM_VALKYRIE: 
-    case PM_WIZARD: 
+    case PM_VALKYRIE:
+    case PM_WIZARD:
     case PM_CARTOMANCER:
-    case PM_LORD_CARNARVON: 
-    case PM_PELIAS: 
+    case PM_LORD_CARNARVON:
+    case PM_PELIAS:
     case PM_SHAMAN_KARNOV:
-    case PM_HIPPOCRATES: 
-    case PM_KING_ARTHUR: 
+    case PM_HIPPOCRATES:
+    case PM_KING_ARTHUR:
     case PM_GRAND_MASTER:
-    case PM_ARCH_PRIEST: 
-    case PM_ORION: 
+    case PM_ARCH_PRIEST:
+    case PM_ORION:
     case PM_MASTER_OF_THIEVES:
-    case PM_LORD_SATO: 
-    case PM_TWOFLOWER: 
+    case PM_LORD_SATO:
+    case PM_TWOFLOWER:
     case PM_NORN:
-    case PM_NEFERET_THE_GREEN: 
+    case PM_NEFERET_THE_GREEN:
     case PM_MINION_OF_HUHETOTL:
-    case PM_THOTH_AMON: 
-    case PM_CHROMATIC_DRAGON: 
+    case PM_THOTH_AMON:
+    case PM_CHROMATIC_DRAGON:
     case PM_CYCLOPS:
-    case PM_IXOTH: 
-    case PM_MASTER_KAEN: 
+    case PM_IXOTH:
+    case PM_MASTER_KAEN:
     case PM_NALZOK:
-    case PM_SCORPIUS: 
-    case PM_MASTER_ASSASSIN: 
+    case PM_SCORPIUS:
+    case PM_MASTER_ASSASSIN:
     case PM_ASHIKAGA_TAKAUJI:
-    case PM_LORD_SURTUR: 
-    case PM_DARK_ONE: 
+    case PM_LORD_SURTUR:
+    case PM_DARK_ONE:
     case PM_STUDENT:
-    case PM_CHIEFTAIN: 
-    case PM_NEANDERTHAL: 
+    case PM_CHIEFTAIN:
+    case PM_NEANDERTHAL:
     case PM_ATTENDANT:
-    case PM_PAGE: 
-    case PM_ABBOT: 
-    case PM_ACOLYTE: 
+    case PM_PAGE:
+    case PM_ABBOT:
+    case PM_ACOLYTE:
     case PM_HUNTER:
-    case PM_THUG: 
-    case PM_NINJA: 
-    case PM_ROSHI: 
+    case PM_THUG:
+    case PM_NINJA:
+    case PM_ROSHI:
     case PM_GUIDE:
-    case PM_WARRIOR: 
+    case PM_WARRIOR:
     case PM_APPRENTICE:
     case PM_KING_OF_GAMES:
     case PM_DAL_ZETHIRE:
@@ -1244,7 +1244,7 @@ minliquid_core(struct monst *mtmp)
      * keep going down, and when it gets to 1 hit point the clone
      * function will fail.
      */
-    if (mtmp->data == &mons[PM_GREMLIN] 
+    if (mtmp->data == &mons[PM_GREMLIN]
         && (inpool || infountain) &&
         (mtmp->mtame || !mtmp->mpeaceful) && rn2(3)) {
         if (split_mon(mtmp, (struct monst *) 0))
@@ -1392,7 +1392,7 @@ mcalcmove(
     /* various monsters get a slight bump in speed when in their natural element */
     if (is_pool(mon->mx, mon->my) && is_fast_underwater(mon->data))
         mmove = (4 * mmove + 2) / 3;
-    
+
     if (mon == u.usteed && u.ugallop && svc.context.mv) {
         /* increase movement by a factor of 1.5; also increase variance of
            movement speed (if it's naturally 24, we don't want it to always
@@ -1437,11 +1437,11 @@ m_calcdistress(struct monst *mtmp)
         if (minliquid(mtmp))
             return;
     }
-    
+
     /* regenerate hit points - note that if withering, they won't gain hp,
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
-    
+
     /* diseased monsters can die as well... */
     if (mtmp->mdiseased && mtmp->mdiseasetime <= 1) {
         if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
@@ -1460,11 +1460,11 @@ m_calcdistress(struct monst *mtmp)
     }
 
     /* Berserkers go wild if their HP is getting low */
-    if (is_berserker(mtmp->data) && (mtmp->mhp < (mtmp->mhpmax / 2)) 
+    if (is_berserker(mtmp->data) && (mtmp->mhp < (mtmp->mhpmax / 2))
         && !mtmp->mberserk && !rn2(5)) {
         mon_berserk(mtmp);
     }
-    
+
     /* wither away */
     if (mtmp->mwither) {
         mtmp->mhp -= (rnd(2) - (regenerates(mtmp->data) ? 1 : 0));
@@ -1485,7 +1485,7 @@ m_calcdistress(struct monst *mtmp)
             mtmp->mwither_from_u = FALSE; /* clear player responsibility */
         }
     }
-    
+
     if (mtmp->msummoned && mtmp->msummoned == 1) {
         if (canseemon(mtmp)) {
             if (Hallucination)
@@ -1522,7 +1522,7 @@ m_calcdistress(struct monst *mtmp)
                                       ? 20 : 10;
         }
     }
-    
+
     if (has_reflection(mtmp) && mtmp->mreflecttime <= 1) {
         if (canseemon(mtmp))
             pline("%s shimmering globe disappears.",
@@ -2347,8 +2347,8 @@ can_carry(struct monst *mtmp, struct obj *otmp)
     int iquan, otyp = otmp->otyp, newload = otmp->owt;
     struct permonst *mdat = mtmp->data;
     short nattk = 0;
-    boolean shopgood = (otmp->unpaid 
-                        || (otmp->where == OBJ_FLOOR && !otmp->no_charge 
+    boolean shopgood = (otmp->unpaid
+                        || (otmp->where == OBJ_FLOOR && !otmp->no_charge
                             && costly_spot(otmp->ox, otmp->oy)));
 
     if (notake(mdat))
@@ -2388,11 +2388,11 @@ can_carry(struct monst *mtmp, struct obj *otmp)
     /* steeds don't pick up stuff (to avoid shop abuse) */
     if (mtmp == u.usteed)
         return 0;
-    
+
     /* Pets cannot pick up shop items */
     if (mtmp->mtame && shopgood)
         return 0;
-    
+
     if (mtmp->isshk)
         return iquan; /* no limit */
     if (mtmp->mpeaceful && !mtmp->mtame && otmp->where != OBJ_INVENT)
@@ -2782,18 +2782,18 @@ mm_aggression(
     if ((mndx == PM_PURPLE_WORM || mndx == PM_BABY_PURPLE_WORM)
         && mdef->data == &mons[PM_SHRIEKER])
         return ALLOW_M | ALLOW_TM;
-    
+
     /* berserk monsters sometimes lash out at everything
        when trying to attack you  */
     if (magr->mberserk && !magr->mpeaceful
         && !rn2(3) && m_canseeu(magr))
         return ALLOW_M | ALLOW_TM;
-    
+
     /* Rabies wants to spread... */
-    if (magr->mrabid 
+    if (magr->mrabid
             && !mdef->mrabid && can_become_rabid(mdef->data))
         return ALLOW_M | ALLOW_TM;
-    
+
     /* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */
@@ -3524,7 +3524,7 @@ corpse_chance(
     /* Spell-beings can't leave corpses */
     if (mon->msummoned)
         return FALSE;
-    
+
     /* Gas spores always explode upon death */
     for (i = 0; i < NATTK; i++) {
         if (mdat->mattk[i].aatyp == AT_BOOM) {
@@ -3574,7 +3574,7 @@ corpse_chance(
         else
             /* Splatter scales with size, occasional BIG splats. */
             spatters = rn2(10) ? mdat->msize : mdat->msize * 2;
-        
+
         for (; spatters > 0; spatters--) {
             x = mon->mx - 1 + rn2(3);
             y = mon->my - 1 + rn2(3);
@@ -4033,7 +4033,7 @@ xkilled(
             adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
             u.ugangr += 7; /* instantly become "extremely" angry */
         }
-        
+
         /* Vampirics still get the luck hit */
         change_luck(-20);
         pline("That was %sa bad idea...",
@@ -4519,7 +4519,7 @@ m_respond(struct monst *mtmp)
         nazgul_shriek(mtmp);
     }
 
-    /* For this we don't rely on mspec_used because that can interfere with 
+    /* For this we don't rely on mspec_used because that can interfere with
      * breath attacks/other ranged attacks. */
     if ((mtmp->data == &mons[PM_BLACK_DRAGON] || mtmp->data == &mons[PM_T_REX])
         && !mtmp->mcan && !mtmp->mtame && !rn2(30)) {
@@ -4535,10 +4535,10 @@ nazgul_shriek(struct monst *mtmp)
 {
     boolean cansee = canseemon(mtmp);
     struct monst *bystander;
-    
+
     if (mtmp->data != &mons[PM_NAZGUL])
         impossible("%d attempting nazgul_shriek!", mtmp->mnum);
-            
+
     /* they will not shriek often when they can't see the player
      * uses m_cansee rather than m_canseeu because the latter is blocked by
      * Invis and is based on the hero being able to see the monster; neither of
@@ -4616,7 +4616,7 @@ dragon_roar(struct monst *mtmp)
 {
     boolean cansee = canseemon(mtmp);
     struct monst *bystander;
- 
+
     if (!m_cansee(mtmp, u.ux, u.uy))
         return;
 
@@ -4652,7 +4652,7 @@ dragon_roar(struct monst *mtmp)
 
     /* Monster effects */
     wake_nearto(mtmp->mx, mtmp->my, 8 * 8);
-    
+
     for (bystander = fmon; bystander; bystander = bystander->nmon) {
         if (dist2(bystander->mx, bystander->my, mtmp->mx, mtmp->my) > 100)
             continue;
@@ -4867,7 +4867,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
     if (is_berserker(mtmp->data) && !mtmp->mberserk && rn2(3)) {
         mon_berserk(mtmp);
     }
-        
+
     /* attacking your own quest leader will anger his or her guardians */
     if (mtmp->data == &mons[quest_info(MS_LEADER)])
         qst_guardians_respond();
@@ -4912,7 +4912,7 @@ wakeup(struct monst *mtmp, boolean via_attack)
         boolean was_peaceful = mtmp->mpeaceful;
 
         /* To preserve the classic behavior of stealth, we will weight the
-         * chance of growling against luck. Good luck is highly rewarded, 
+         * chance of growling against luck. Good luck is highly rewarded,
          * bad luck is punished.
          * LUCK:   −11	   −8	  −5	 −2	  0    +2 and higher
          * CHANCE: 61.3%  49.1%	 36.9%	24.7%	12.5%     0.3%
@@ -5004,11 +5004,11 @@ normal_shape(struct monst *mon)
 
         (void) newcham(mon, &mons[mcham], NC_SHOW_MSG);
 
-        /* Don't erase monsters info still wearing a 
+        /* Don't erase monsters info still wearing a
          * ring of polymorph */
         if (!mon_prop(mon, POLYMORPH))
             mon->cham = NON_PM;
-        
+
         /* newcham() may uncancel a polymorphing monster; override that */
         if (mcan)
             mon->mcan = 1;
@@ -5825,7 +5825,7 @@ newcham(
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
             if (mtmp->cham != NON_PM)
                 mtmp->mcan = 0;
-        }            
+        }
     }
 
     if (msg) {
@@ -6457,7 +6457,7 @@ void
 adj_erinys(unsigned abuse)
 {
     struct permonst *pm = &mons[PM_ERINYS];
-    
+
     if (abuse > 5L) {
         pm->mflags1 |= M1_SEE_INVIS;
     }
@@ -6511,7 +6511,7 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
         dx, dy, /* Defender coords */
         fx, fy; /* Flanker coords */
     grudge = youflanker = youattack = youdefend = FALSE;
-    
+
     if (magr == &gy.youmonst)
         youattack = TRUE;
     if (mdef == &gy.youmonst)
@@ -6543,10 +6543,10 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
 
     /* Find the flanker, if one happens to exist.
      * The flanker must "sandwich" the defender.
-     * 
+     *
      * a..  .a.  ..a  ...  f..  .f.  ..f  ...
      * .d.  .d.  .d.  fda  .d.  .d.  .d.  adf
-     * ..f  .f.  f..  ...  ..a  .a.  a..  ...  
+     * ..f  .f.  f..  ...  ..a  .a.  a..  ...
      */
     if (dx > ax)
         fx = ax + 2;
@@ -6579,13 +6579,13 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
     /* Depending on who the attacker and flanker are, return a boolean. */
     if (youflanker) {
         if (!canseemon(mdef) || Hallucination || Confusion
-            || Punished || Fumbling || Wounded_legs || Stunned 
+            || Punished || Fumbling || Wounded_legs || Stunned
             || Unaware) /* Unaware includes fainted, sleeping, and periods
                          * when we are otherwise incapacitated */
             return FALSE;
     } else if (!flanker || !flanker->mcanmove || flanker->msleeping
                || flanker->mflee || flanker->mconf || flanker->mtrapped
-               || flanker->mstun || flanker->meating 
+               || flanker->mstun || flanker->meating
                || flanker->mundetected
                /* hidden mimics can't help flank - gives away their position */
                || (flanker->data->mlet == S_MIMIC && flanker->mappearance)) {
@@ -6606,7 +6606,7 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
     } else if (youflanker) {
         return magr->mtame && !mdef->mpeaceful;
     } else {
-        /* If you are not involved in the flanking, then flanking can 
+        /* If you are not involved in the flanking, then flanking can
          * still occur if the defender and flanker have a grudge vs each other. */
         return grudge;
     }
@@ -6691,7 +6691,7 @@ int flank_bonus(struct monst *mtmp)
     if (is_outflanker(mtmp->data)) {
         fbon = isyou ? (u.ulevel + 4) : mtmp->m_lev + 4;
     } else {
-        fbon = isyou ? ((int) (u.ulevel - 4) / 2 + 2) 
+        fbon = isyou ? ((int) (u.ulevel - 4) / 2 + 2)
                      : (int) ((mtmp->m_lev - 4) / 2 + 2);
     }
     fbon = min(fbon, MAX_FLANK_BONUS);
@@ -6708,16 +6708,16 @@ kill_monster_on_level(int mndx)
 {
     struct monst *mtmp, *mtmp2;
     int tmp_mndx;
-    
+
     for (mtmp = fmon; mtmp; mtmp = mtmp2) {
         mtmp2 = mtmp->nmon;
         if (DEADMONSTER(mtmp))
             continue;
-        
+
         /* Genocides are throttled for the endgame, sorry... */
         if (In_endgame(&u.uz) && rn2(5))
             continue;
-        
+
         tmp_mndx = monsndx(mtmp->data);
         if (mndx == tmp_mndx) {
             mondead(mtmp);
@@ -6743,8 +6743,8 @@ mon_berserk(struct monst *mtmp)
         }
         return;
     }
-    /*  
-     * As a distant callback to traitorous monsters, berserking also untames 
+    /*
+     * As a distant callback to traitorous monsters, berserking also untames
      * your pet. Use similar checks as betrayed().
      */
     if (mtmp->mtame) {
@@ -6771,7 +6771,7 @@ mon_berserk(struct monst *mtmp)
                       ? "in the distance" : "nearby"));
     }
     wake_nearto(mtmp->mx, mtmp->my, 4 * 4);
-    
+
     /* Renewed vigor!  */
     mtmp->mhp += rnd(mtmp->mhpmax);
     if (mtmp->mhp > mtmp->mhpmax)
@@ -6793,7 +6793,7 @@ mon_rabid(struct monst *mtmp, boolean noisy)
 
     if (canseemon(mtmp) && noisy)
         pline("%s starts frothing at the mouth!", Monnam(mtmp));
-    
+
     mtmp->mrabid = 1;
     mtmp->mflee = 0;
     mtmp->mpeaceful = mtmp->mtame = 0;
@@ -6813,7 +6813,7 @@ unpoly_monster(struct monst *mtmp)
 
     if (!is_were(mtmp->data) && !shifter)
         return;
-    
+
     if (visible)
         pline("But wait...");
 
@@ -6897,7 +6897,7 @@ unpoly_monster(struct monst *mtmp)
 staticfn int
 cham_depth_appropriate(struct monst *mon)
 {
-    int d = (In_endgame(&u.uz) 
+    int d = (In_endgame(&u.uz)
                 ? depth(&sanctum_level)
                 : depth(&u.uz)) / 2;
     int s = mons[monsndx(mon->data)].difficulty;
@@ -6915,7 +6915,7 @@ cham_depth_appropriate(struct monst *mon)
     return n;
 }
 
-/* Anything killed while playing as a cartomancer has 
+/* Anything killed while playing as a cartomancer has
  * a chance of leaving behind a card.
  * Return TRUE if a card was dropped, otherwise FALSE.
  */
@@ -6938,17 +6938,17 @@ card_drop(struct monst *mon)
         return FALSE;
 
     /* Prevent farmable card-drops for monsters that can revive or come back. */
-    if (is_zombie(ptr) || is_troll(ptr) 
+    if (is_zombie(ptr) || is_troll(ptr)
         || ptr == &mons[PM_PHOENIX])
         return FALSE;
-    
+
     if (rn2(2))
         return FALSE;
 
     switch (rnd(20)) {
     case 1:
     case 2:
-    case 3: /* Wand zap card. */ 
+    case 3: /* Wand zap card. */
         /* The zap type is handled in mkobj.c */
         otmp = mksobj(SCR_ZAPPING, TRUE, FALSE);
         break;
@@ -6961,7 +6961,7 @@ card_drop(struct monst *mon)
 
         /* Every once in a while, drop a strong monster card. This should
          * keep things more interesting when slaying hordes of weenies.
-         * The odds come roughly from old MtG booster packs having 1 rare. 
+         * The odds come roughly from old MtG booster packs having 1 rare.
          */
         if (!rn2(3)) {
             int tryct = 0;
@@ -6980,11 +6980,11 @@ card_drop(struct monst *mon)
                 delobj(otmp);
                 return FALSE;
             } else {
-                /* Most of the time we get here, we'll grant a sphere card - 
-                 * these are more fun to play and they act as a callback to the 
+                /* Most of the time we get here, we'll grant a sphere card -
+                 * these are more fun to play and they act as a callback to the
                  * summon sphere spells in SLASH'EM. */
                 if (rn2(5))
-                    otmp->corpsenm = PM_FREEZING_SPHERE 
+                    otmp->corpsenm = PM_FREEZING_SPHERE
                         + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE + 1);
                 else
                     otmp->corpsenm = monsndx(ptr);

@@ -342,7 +342,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_ZOMBIE,                     /* quest enemies by class */
       S_WRAITH,                     /* quest enemies by class */
       ART_MITRE_OF_HOLINESS,        /* quest artifact */
-      MH_HUMAN | MH_ELF | MH_ORC | MH_DWARF | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE 
+      MH_HUMAN | MH_ELF | MH_ORC | MH_DWARF | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE
           | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 7, 10, 7, 7, 7 },        /* lowest initial attributes */

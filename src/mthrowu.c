@@ -201,7 +201,7 @@ drop_throw(
 {
     boolean broken;
     struct obj *mon_launcher = gm.marcher ? MON_WEP(gm.marcher) : NULL;
-    
+
     if (obj->otyp == CREAM_PIE || obj->oclass == VENOM_CLASS
         || (ohit && obj->otyp == EGG)) {
         broken = TRUE;
@@ -218,7 +218,7 @@ drop_throw(
                 WEAPON_CLASS, EXPL_FIERY);
         broken = TRUE; /* D: Exploding bolts will be destroyed */
     }
-    
+
     if (broken) {
         delobj(obj);
     } else {
@@ -635,7 +635,7 @@ m_throw(
     gt.thrownobj = singleobj;
 
     singleobj->owornmask = 0; /* threw one of multiple weapons in hand? */
-    
+
     /* D: Special launcher effects */
     if (mwep && is_ammo(singleobj)
           && ammo_and_launcher(singleobj, mwep)) {
@@ -643,7 +643,7 @@ m_throw(
             singleobj->opoisoned = 1;
         /* D: Hellfire is handled in drop_throw */
     }
-    
+
     if (!canseemon(mon))
         clear_dknown(singleobj); /* singleobj->dknown = 0; */
 
@@ -734,23 +734,23 @@ m_throw(
                             dam++;
                     }
                     /* Hellfire physical bonus */
-                    if (MON_WEP(mon) && MON_WEP(mon)->oartifact == ART_HELLFIRE 
+                    if (MON_WEP(mon) && MON_WEP(mon)->oartifact == ART_HELLFIRE
                         && singleobj->otyp == CROSSBOW_BOLT)
                         dam += rnd(7);
-                    
+
                     /* Plague physical bonus */
-                    if (MON_WEP(mon) && MON_WEP(mon)->oartifact == ART_PLAGUE 
+                    if (MON_WEP(mon) && MON_WEP(mon)->oartifact == ART_PLAGUE
                         && objects[singleobj->otyp].oc_skill == P_BOW)
                         dam += rnd(7);
-                    
+
                     if (bigmonst(gy.youmonst.data))
                         hitv++;
                     hitv += 8 + singleobj->spe;
-                    
+
                     /* M3_ACCURATE monsters get a significant bonus here */
                     if (is_accurate(mon->data))
                         hitv += mon->m_lev + 1;
-                    
+
                     /* Find rings of increase accuracy */
                     hitv += mring_bon(mon, RIN_INCREASE_ACCURACY);
 
@@ -1117,7 +1117,7 @@ thrwmu(struct monst *mtmp)
         hitv += 8 + otmp->spe;
         if (dam < 1)
             dam = 1;
-        
+
         if (thitu(hitv, dam, &otmp, (char *) 0)
             && otmp->otyp == RANSEUR && !rn2(10)) {
             ranseur_hit(&gy.youmonst);

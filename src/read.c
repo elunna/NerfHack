@@ -1066,7 +1066,7 @@ forget(int howmuch)
             see_monsters(); /* Can't sense mons anymore! */
         Your("senses fail!");
     }
-    
+
     /* Forget some skills. */
     drain_weapon_skill(rnd(howmuch ? 5 : 3));
 
@@ -1192,7 +1192,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
 staticfn void
 unflood_space(coordxy x, coordxy y, genericptr_t drycnt)
 {
-    if (levl[x][y].typ != POOL 
+    if (levl[x][y].typ != POOL
         && levl[x][y].typ != MOAT
         && levl[x][y].typ != WATER
         && levl[x][y].typ != FOUNTAIN)
@@ -1239,7 +1239,7 @@ seffect_enchant_armor(struct obj **sobjp)
      } else {
          otmp = some_armor(&gy.youmonst);
      }
-     
+
     if (!otmp) {
         strange_feeling(sobj, !Blind
                         ? "Your skin glows then fades."
@@ -1391,14 +1391,14 @@ seffect_destroy_armor(struct obj **sobjp)
     boolean confused = (Confusion != 0);
     boolean old_erodeproof, new_erodeproof;
     boolean already_known = objects[sobj->otyp].oc_name_known;
-    
+
     /* player is prompted to choose what to destroy when:
      * - the scroll is blessed
      * - the scroll is cursed, player is confused, and have it id'd
      * - they must also actually be wearing armor */
     boolean gets_choice = (otmp && (sblessed
                                || (scursed && confused && already_known)));
-    
+
     if (confused) {
         if (gets_choice) {
             pline("This is a scroll of destroy armor.");
@@ -1730,7 +1730,7 @@ seffect_enchant_weapon(struct obj **sobjp)
                 pline("%s for a moment.", Yobjnam2(uwep, "shimmer"));
             return;
         }
-        
+
         if (Blind) {
             uwep->rknown = sobj->bknown;
             Your("weapon feels warm for a moment.");
@@ -1755,7 +1755,7 @@ seffect_enchant_weapon(struct obj **sobjp)
         return;
     }
     /* Adjusted max weapon enchantment. For more exciting hackin 'n slashin
-     * we will allow the new 'soft' limit to be 11. 
+     * we will allow the new 'soft' limit to be 11.
      * This allows weapons to be safely enchanted up to 13 if the player
      * hits a +2 when the weapon is +11. */
     if (!chwepon(sobj, scursed ? -1
@@ -1768,13 +1768,13 @@ seffect_enchant_weapon(struct obj **sobjp)
         cap_spe(uwep);
 }
 
-/* Helper function to regular how enchant weapon bonuses are distributed. 
+/* Helper function to regular how enchant weapon bonuses are distributed.
  * I couldn't figure out a simple formula to calculate this without giving
  * too much enchantment to the player. My goal was to allow the player to roll
  * a d2 from 11, so that max 13 is possible, but difficult to reach.
  *
- * There is a long stretch from 4 to 11 where the player can only get +d2 
- * enchantment. This is by design. If we let them roll d3 or even d4, that 
+ * There is a long stretch from 4 to 11 where the player can only get +d2
+ * enchantment. This is by design. If we let them roll d3 or even d4, that
  * destroys the item scarcity.
 */
 staticfn int
@@ -1842,11 +1842,11 @@ seffect_genocide(struct obj **sobjp)
     if (!already_known)
         You("have found a scroll of genocide!");
     gk.known = TRUE;
-    
+
     if (In_endgame(&u.uz)) {
         sblessed = 0; /* No dungeon-wide genos in endgame */
     }
-    
+
     do_genocide((!scursed) | (2 * !!Confusion), !sblessed);
 }
 
@@ -1924,14 +1924,14 @@ seffect_cloning(struct obj **sobjp)
             mtmp = cloneu();
         else {
             int mndx = monsndx(gy.youmonst.data);
-            
+
             if (svm.mvitals[mndx].mvflags & G_EXTINCT) {
                 You("momentarily feel like your kind has no future.");
                 return;
             }
-            
+
             mtmp = makemon(&mons[mndx], u.ux, u.uy,
-                           sblessed ? (NO_MINVENT | MM_EDOG) 
+                           sblessed ? (NO_MINVENT | MM_EDOG)
                                     : (scursed ? (NO_MINVENT | MM_ANGRY) : NO_MINVENT));
             if (!mtmp) {
                 pline("Never mind.");
@@ -1941,9 +1941,9 @@ seffect_cloning(struct obj **sobjp)
                 initedog(mtmp);
                 u.uconduct.pets++;
             } else if (!scursed && !mtmp->mrabid) {
-                mtmp->mpeaceful = 1; 
+                mtmp->mpeaceful = 1;
             }
-            
+
             mtmp->mcloned = 1;
             mtmp = christen_monst(mtmp, svp.plname);
             mtmp->m_lev = u.ulevel;
@@ -1973,12 +1973,12 @@ seffect_cloning(struct obj **sobjp)
             otyp2 = otmp->otyp;
         }
         otmp2 = mksobj_at(otyp2, u.ux, u.uy, FALSE, FALSE);
-        
-        if (!otmp2) 
+
+        if (!otmp2)
             impossible("Invalid cloned object?");
-        
+
         /* beatitude */
-        if (scursed) 
+        if (scursed)
             curse(otmp2);
         else {
             otmp2->blessed = otmp->blessed;
@@ -1986,9 +1986,9 @@ seffect_cloning(struct obj **sobjp)
         }
 
         /* charge / enchantment */
-        if (sblessed) 
+        if (sblessed)
             otmp2->spe = otmp->spe;
-        else 
+        else
             otmp2->spe = min(otmp->spe, 0);
 
         /* other properties */
@@ -2005,9 +2005,9 @@ seffect_cloning(struct obj **sobjp)
         otmp2->corpsenm = otmp->corpsenm;
         otmp2->oeaten = otmp->oeaten;
         otmp2->opoisoned = otmp->opoisoned;
-        
+
         /* For slime mold names. We also don't want to copy
-         * an artifact name over. We could try to mangle the 
+         * an artifact name over. We could try to mangle the
          * name like #name does for already existing artifacts,
          * but this seems fine too. */
         if (otmp->oextra && !otmp->oartifact)
@@ -2034,7 +2034,7 @@ seffect_cloning(struct obj **sobjp)
         /* Prevent any weird class conversion errors */
         otmp2->oclass = objects[otmp2->otyp].oc_class;
         otmp2->quan = 1;
-        
+
         /* Weight could change due to material/type */
         otmp2->owt = weight(otmp2);
 
@@ -2047,7 +2047,7 @@ seffect_cloning(struct obj **sobjp)
 
         obj_extract_self(otmp2);
 
-        /* If an unpaid item is cloned, that item also inherits the cost 
+        /* If an unpaid item is cloned, that item also inherits the cost
          * and unpaid status. */
         /* You clone it, you buy it! */
         if (otmp->unpaid)
@@ -2338,7 +2338,7 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
                 pline("A flood surges through the area!");
         } else {
             pline("The air around you suddenly feels very humid.");
-        }        
+        }
     }
 }
 
@@ -2436,7 +2436,7 @@ seffect_knowledge(struct obj **sobjp)
     /* Get a random bonus based on luck. */
     if (sblessed && rnl(5) == 0)
         qty++;
-    
+
      static const int extra_classes[] = {
         WEAPON_CLASS,   ARMOR_CLASS,    TOOL_CLASS,
         GEM_CLASS,      SCROLL_CLASS,   SPBOOK_CLASS,
@@ -2487,7 +2487,7 @@ seffect_identify(struct obj **sobjp)
             You("identify this as an identify scroll.");
         else if (!already_known)
             pline("This is an identify scroll.");
-        
+
         if (!already_known)
             (void) learnscrolltyp(SCR_IDENTIFY);
         if (confused || (scursed && !already_known))
@@ -2505,7 +2505,7 @@ seffect_identify(struct obj **sobjp)
         /* Archeologists are great at research. */
         if (Role_if(PM_ARCHEOLOGIST) && !scursed && cval > 0)
             ++cval;
-        
+
         /* Cavemen are not so great at knowledge... */
         if (Role_if(PM_CAVE_DWELLER) && cval == 0)
             cval = 1;
@@ -2858,7 +2858,7 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
 /* user-specified 'applying' as well as wands exploding by accident
  * during use (called by backfire() in zap.c)
  *
- * If the effect is directly recognisable as pertaining to a 
+ * If the effect is directly recognisable as pertaining to a
  * specific wand, the wand should be makeknown()
  * Otherwise, if there is an ambiguous or indirect but visible effect
  * the wand should be allowed to be named by the user.
@@ -2881,7 +2881,7 @@ wand_explode(struct obj* obj, int chg /* recharging */, struct monst *mon)
     charges = obj->spe + chg;
     if (charges < 2)
         charges = 2; /* arbitrary minimum */
-    
+
     /* size of damage dice */
     switch (obj->otyp) {
     case WAN_WISHING:
@@ -2946,11 +2946,11 @@ wand_explode(struct obj* obj, int chg /* recharging */, struct monst *mon)
         /* Useup before monster is possibly killed. */
         m_useup(mon, obj);
         explode(mon->mx, mon->my, -(otyp), dmg * 2, WAND_CLASS, expltype);
-        
+
         exploding_wand_efx(obj);
         makeknown(obj->otyp); /* explode describes the effect */
     }
-    
+
     /* Couple janky exceptions */
     switch (obj->otyp) {
     case WAN_NOTHING:
@@ -2965,7 +2965,7 @@ wand_explode(struct obj* obj, int chg /* recharging */, struct monst *mon)
         }
         break;
     case WAN_SECRET_DOOR_DETECTION:
-        /* Detects portals: We'll use the same odds UnNetHack has for 
+        /* Detects portals: We'll use the same odds UnNetHack has for
          * creating traps for breaking the other wands. */
         if (hero_broke && (obj->spe > 2) && rn2(obj->spe - 2)) {
             trap_detect((struct obj *) 0);
@@ -3195,7 +3195,7 @@ do_genocide(
     struct permonst *ptr;
     const char *which;
     const char *on_this_level;
-    
+
     if (how & PLAYER) {
         mndx = u.umonster; /* non-polymorphed mon num */
         ptr = &mons[mndx];
@@ -3593,12 +3593,12 @@ create_particular_parse(
         bufp += 8;
         d->makehostile = TRUE;
     }
-    
+
     if (!strncmpi(bufp, "rabid ", 6)) {
         bufp += 6;
         d->rabid = TRUE;
     }
-    
+
     if (!strncmpi(bufp, "diseased ", 9)) {
         bufp += 9;
         d->diseased = TRUE;
@@ -3841,7 +3841,7 @@ boolean
 create_particular_from_buffer(char* bufp)
 {
     struct _create_particular_data d;
-    
+
     if (create_particular_parse(bufp, &d))
         return create_particular_creation(&d);
 
@@ -3871,11 +3871,11 @@ specified_id(void)
     char bufcpy[BUFSZ];
     short otyp;
     int tries = 0;
-    
+
     promptbuf[0] = '\0';
     if (flags.verbose)
         You("may learn about any non-artifact.");
-    
+
 retry:
     Strcpy(promptbuf, "What non-artifact do you want to learn about");
     Strcat(promptbuf, "?");
@@ -3884,7 +3884,7 @@ retry:
     if (buf[0] == '\033') {
         buf[0] = '\0';
     }
-    
+
     strcpy(bufcpy, buf);
     otyp = name_to_otyp(buf);
     if (otyp == STRANGE_OBJECT) {

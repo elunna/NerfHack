@@ -293,7 +293,7 @@ read_engr_at(coordxy x, coordxy y)
     struct engr *ep = engr_at(x, y);
     const char *eloc = surface(x, y);
     int sensed = 0;
-        
+
     /* Sensing an engraving does not require sight,
      * nor does it necessarily imply comprehension (literacy).
      */
@@ -647,7 +647,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
                     surface(u.ux, u.uy));
             de->postknown = TRUE;
         } else if (!Deaf) {
-            Sprintf(de->post_engr_text, "You hear %s", Hallucination 
+            Sprintf(de->post_engr_text, "You hear %s", Hallucination
                                                            ? "fireworks!"
                                                            : "gunfire!");
             de->postknown = TRUE;
@@ -660,9 +660,9 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             Sprintf(de->post_engr_text, "The bugs on the %s stop moving!",
                     surface(u.ux, u.uy));
             /* automatically use the process of elimination */
-            if ((objects[WAN_SLEEP].oc_name_known 
+            if ((objects[WAN_SLEEP].oc_name_known
                   && objects[WAN_POISON_GAS].oc_name_known)
-                || (objects[WAN_DEATH].oc_name_known 
+                || (objects[WAN_DEATH].oc_name_known
                   && objects[WAN_POISON_GAS].oc_name_known)) {
                 de->postknown = TRUE;
             }
@@ -676,7 +676,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
         } else if (!Blind) {
             Sprintf(de->post_engr_text, "The bugs on the %s stop moving!",
                     surface(u.ux, u.uy));
-            if (objects[WAN_SLEEP].oc_name_known 
+            if (objects[WAN_SLEEP].oc_name_known
                   && objects[WAN_DEATH].oc_name_known)
                 de->postknown = TRUE;
         } else if (!Deaf) {
@@ -684,7 +684,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
             de->postknown = TRUE;
         }
         create_gas_cloud(u.ux, u.uy, 1, 4);
-        
+
         break;
     case WAN_COLD:
         if (!Blind)
@@ -1034,9 +1034,9 @@ doengrave(void)
         goto doengr_exit;
     }
 
-    if (u.ustuck && (de->otmp == &hands_obj 
+    if (u.ustuck && (de->otmp == &hands_obj
                     || de->otmp->oclass == WEAPON_CLASS
-                    || de->otmp->oclass == TOOL_CLASS)) { 
+                    || de->otmp->oclass == TOOL_CLASS)) {
         You("are too busy being held to engrave!");
         de->ret = ECMD_CANCEL;
         goto doengr_exit;

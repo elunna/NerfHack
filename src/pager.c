@@ -404,7 +404,7 @@ look_at_monster(
     char *mwounds = mon_wounds(mtmp, TRUE, FALSE);
     struct obj *otmp;
     struct obj *gloves = which_armor(mtmp, W_ARMG);
-                
+
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
               : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
@@ -445,14 +445,14 @@ look_at_monster(
         Strcat(buf, ", fleeing");
     else if (mtmp->mberserk)
         Strcat(buf, ", berserking");
-    
+
     if (mtmp->mwither)
         Strcat(buf, ", withering");
     if (mtmp->mdiseased)
         Strcat(buf, ", diseased");
     if (mtmp->mreflecttime)
         Strcat(buf, ", reflecting");
-    
+
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
 
@@ -484,7 +484,7 @@ look_at_monster(
                     base_ac > 9 ? "heavy " : base_ac < 6 ? "light " : "");
             weartxt = TRUE;
         }
-        
+
         /* Check accessories */
         if ((otmp = which_armor(mtmp, W_AMUL))) {
             Sprintf(eos(buf), "%s%s", weartxt ? ", " : " wearing ", xname(otmp));
@@ -811,9 +811,9 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
                    Is_airlevel(&u.uz) ? "cloudy area" : "fog/vapor cloud");
             printed_blood = TRUE;
             break;
-        case S_poisoncloud: 
+        case S_poisoncloud:
             Strcpy(buf, "poison cloud");
-            printed_blood = TRUE; 
+            printed_blood = TRUE;
             break;
         case S_pool:
         case S_water: /* was Plane of Water, now that or "wall of water" */
@@ -856,7 +856,7 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
     if (!pm && cansee(x, y) && levl[x][y].splatpm
             && !printed_blood && !u_at(x, y))
         Sprintf(eos(buf), " covered in %s blood",
-                Hallucination ? rndmonnam(NULL) : 
+                Hallucination ? rndmonnam(NULL) :
                               mons[levl[x][y].splatpm].pmnames[NEUTRAL]);
     return (pm && !Hallucination) ? pm : (struct permonst *) 0;
 }
@@ -1285,7 +1285,7 @@ add_obj_info(winid datawin, short otyp)
         OBJPUTSTR(buf);
 
         damage_info = dmgval_info(&dummy);
-    
+
         if (reveal_info) {
             Sprintf(buf,
                     "Damage:  1d%d%s versus small and 1d%d%s versus large monsters.",
@@ -1296,7 +1296,7 @@ add_obj_info(winid datawin, short otyp)
             Sprintf(buf, "Damage:  Unknown (identification required)");
             OBJPUTSTR(buf);
         }
-        
+
         if (damage_info.buc_damage)
             OBJPUTSTR(damage_info.buc_damage);
         if (damage_info.axe_damage)
@@ -1489,7 +1489,7 @@ add_obj_info(winid datawin, short otyp)
     }
 
     /* cost, wt should go next */
-    
+
     Sprintf(buf, "Base cost %d, weighs %d aum.", oc.oc_cost, oc.oc_weight);
     OBJPUTSTR(buf);
 
@@ -1673,8 +1673,8 @@ add_obj_info(winid datawin, short otyp)
                 OBJPUTSTR("Forging recipes (#craft):");
                 has_recipes = TRUE;
             }
-            Sprintf(buf, "  %d %s + %d %s = %s", 
-                    recipe->quan_typ1, OBJ_NAME(objects[recipe->typ1]), 
+            Sprintf(buf, "  %d %s + %d %s = %s",
+                    recipe->quan_typ1, OBJ_NAME(objects[recipe->typ1]),
                     recipe->quan_typ2, OBJ_NAME(objects[recipe->typ2]),
                     OBJ_NAME(objects[recipe->result_typ]));
             OBJPUTSTR(buf);
@@ -1709,7 +1709,7 @@ add_obj_info(winid datawin, short otyp)
         short mixture = mixtype(gem, potion);
         obfree(potion, (struct obj *)0);
         obfree(gem, (struct obj *)0);
-        
+
         if (otyp == DILITHIUM_CRYSTAL) {
             OBJPUTSTR("");
             OBJPUTSTR("Gem alchemy recipes (#dip):");
@@ -1728,8 +1728,8 @@ add_obj_info(winid datawin, short otyp)
             OBJPUTSTR(buf);
         }
     }
-    
-    if (otyp == POT_ACID 
+
+    if (otyp == POT_ACID
             /*|| (usr_text && !strcmp(usr_text, "gem alchemy"))*/) {
         OBJPUTSTR("");
         OBJPUTSTR("Gem alchemy recipes (#dip):");
@@ -1757,7 +1757,7 @@ add_obj_info(winid datawin, short otyp)
             obfree(potion, (struct obj *)0);
         }
     }
-    
+
 }
 
 /*
@@ -2123,7 +2123,7 @@ checkfile(
                         }
                         putstr(datawin, 0, "");
                     }
-                    
+
                     /* encyclopedia entry */
                     if (found_in_file) {
                         char titlebuf[BUFSZ];
@@ -2563,7 +2563,7 @@ do_screen_description(
                                     || alt_i == S_lava
                                     || alt_i == S_lavawall
                                     || alt_i == S_ice))
-                || alt_i == S_engroom 
+                || alt_i == S_engroom
                 || alt_i == S_engrcorr
                 || alt_i == S_bars
                 || alt_i == S_tree
@@ -4036,7 +4036,7 @@ corpse_conveys(char *buf, struct permonst * pm)
     APPENDC(pm == &mons[PM_QUANTUM_MECHANIC], "speed or slowness");
     APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
             "intelligence");
-       
+
     #if 0 /* Pending*/
     APPENDC(intrinsic_possible(INTRINSIC_GAIN_STR, pm), "strength");
     APPENDC(intrinsic_possible(INTRINSIC_GAIN_EN, pm), "magic energy");

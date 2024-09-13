@@ -56,7 +56,7 @@ staticfn int tin_ok(struct obj *);
     ((mnum) == PM_LIZARD || (mnum) == PM_LICHEN \
      || is_rider(&mons[mnum])                   \
      || (mnum) == PM_ACID_BLOB)
-     
+
 /* non-rotting non-corpses; unlike lizard corpses, these items will behave
    as if rotten if they are cursed (fortune cookies handled elsewhere) */
 #define nonrotting_food(otyp) \
@@ -776,7 +776,7 @@ maybe_cannibal(int pm, boolean allowmsg)
                 You("have a bad feeling deep inside.");
             You("cannibal!  You will regret this!");
         }
-        incr_itimeout(&HAggravate_monster, rnd(5000) + 10000); 
+        incr_itimeout(&HAggravate_monster, rnd(5000) + 10000);
         change_luck(-rn1(4, 2)); /* -5..-2 */
         return TRUE;
     }
@@ -829,7 +829,7 @@ cprefx(int pm)
         if (!CANNIBAL_ALLOWED()) {
             You_feel("that eating the %s was a bad idea.",
                      mons[pm].pmnames[NEUTRAL]);
-            incr_itimeout(&HAggravate_monster, rnd(2500) + 5000); 
+            incr_itimeout(&HAggravate_monster, rnd(2500) + 5000);
         }
         break;
     case PM_LIZARD:
@@ -1001,12 +1001,12 @@ givit(int type, struct permonst *ptr)
     long increase;
 
     increase = max(MIN_GAIN, min(MAX_GAIN, percent_granted(ptr)));
-    
+
     if (increase < MIN_GAIN)
         increase = MIN_GAIN;
     if (increase > MAX_GAIN)
         increase = MAX_GAIN;
-    
+
     if (increase == 24)
         adj = "much";
     else if (increase > 16)
@@ -1401,7 +1401,7 @@ cpostfx(int pm)
                 continue;
             givit(i, ptr);
         }
- 
+
         /* if something was chosen, give it now (givit() might fail) */
         if (tmp == -1)
             gainstr((struct obj *) 0, 0, TRUE);
@@ -1992,7 +1992,7 @@ eatcorpse(struct obj *otmp)
     svc.context.victual.reqtime
         = 3 + ((!glob ? mons[mnum].cwt : otmp->owt) >> 6);
 
-    if (!tp && !nonrotting_corpse(mnum) 
+    if (!tp && !nonrotting_corpse(mnum)
             && (otmp->orotten
                 /* Come on, blessed food being equally susceptible
                  * to rotting is just stupid. --Amy */
@@ -2067,9 +2067,9 @@ eatcorpse(struct obj *otmp)
 
     /* Eating slimy or oily corpses makes your fingers slippery.
        Note: Snakes are not slimy. */
-    if ((amorphous(&mons[mnum]) || slithy(&mons[mnum]) 
-        || mons[mnum].mlet == S_BLOB) 
-            && mons[mnum].mlet != S_SNAKE && mons[mnum].mlet != S_NAGA 
+    if ((amorphous(&mons[mnum]) || slithy(&mons[mnum])
+        || mons[mnum].mlet == S_BLOB)
+            && mons[mnum].mlet != S_SNAKE && mons[mnum].mlet != S_NAGA
             && mons[mnum].mlet != S_MIMIC && !rn2(5)) {
         pline("Eating this %s corpse makes your %s %s slippery.",
               amorphous(&mons[mnum]) ? "glibbery" : "slimy",
@@ -2077,7 +2077,7 @@ eatcorpse(struct obj *otmp)
               Glib ? "even more" : "very");
         make_glib(rn1(11, 5));
     }
-    
+
     return retcode;
 }
 
@@ -2584,7 +2584,7 @@ eataccessory(struct obj *otmp)
         case AMULET_OF_REFLECTION:
             incr_itimeout(&HReflecting, rnd(1250) + 750);
             if (!Blind)
-                pline("A shimmering %s surrounds you!", 
+                pline("A shimmering %s surrounds you!",
                     Hallucination ? "bubble" : "globe");
             break;
         case AMULET_OF_LIFE_SAVING:
@@ -2594,7 +2594,7 @@ eataccessory(struct obj *otmp)
                 break;
             }
         case RIN_SUSTAIN_ABILITY:
-        
+
             /* can't eat Amulet of Yendor or fakes,
              * and no oc_prop even if you could -3.
              */
@@ -3064,7 +3064,7 @@ doeat(void)
         return ECMD_OK;
     } else if (otmp->otyp == EGG && otmp->corpsenm == PM_PHOENIX){
         if (!Blind)
-            pline_The("%s starts cracking as you attempt to devour it!", 
+            pline_The("%s starts cracking as you attempt to devour it!",
                   makesingular(xname(otmp)));
         else
             You_hear("something cracking.");
@@ -3335,7 +3335,7 @@ use_tin_opener(struct obj *obj)
         nomul(0);
         return 0;
     }
-    
+
     start_tin(otmp);
     return ECMD_TIME;
 }

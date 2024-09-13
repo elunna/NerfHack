@@ -345,14 +345,14 @@ mattackm(
         tmp += 4;
         mdef->msleeping = 0;
     }
-    
+
     /* M3_ACCURATE monsters get a to-hit bonus */
     if (is_accurate(pa))
         tmp += 5;
-    
+
     /* find rings of increase accuracy */
     tmp += mring_bon(magr, RIN_INCREASE_ACCURACY);
-    
+
     if (calculate_flankers(magr, mdef)) {
         ftmp = flank_bonus(magr);
         tmp += ftmp;
@@ -406,11 +406,11 @@ mattackm(
        attacks; when fighting a headless monster, stop after the first
        one because repeating the same failing hit (or even an ordinary
        tentacle miss) is very verbose and makes the flayer look stupid.
-       
+
        NerfHack: Assume mind flayer is intelligent and won't
        self destruct on cockatrices, etc. */
     gs.skipdrin = touch_petrifies(mdef->data)
-        && !(mdef->mconf || mdef->mstun || mdef->mrabid || Conflict); 
+        && !(mdef->mconf || mdef->mstun || mdef->mrabid || Conflict);
 
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) {
@@ -425,7 +425,7 @@ mattackm(
         attk = 1;
 
         /* Extra attack for rabid monster */
-        if (magr->mrabid && !mattk->aatyp && !did_rabid 
+        if (magr->mrabid && !mattk->aatyp && !did_rabid
             && distmin(magr->mx, magr->my, mdef->mx, mdef->my) <= 1) {
             if (mattk->aatyp != AT_BITE)
                 mattk->aatyp = AT_BITE;
@@ -485,7 +485,7 @@ mattackm(
             if (mwep)
                 tmp -= hitval(mwep, mdef);
 
-            if (((is_displaced(mdef->data) && !mdef->mcan) 
+            if (((is_displaced(mdef->data) && !mdef->mcan)
                     || has_displacement(mdef))
                  && !helpless(mdef) && !mdef->mtrapped && rn2(4)) {
                 if (gv.vis && canspotmon(mdef))
@@ -527,7 +527,7 @@ mattackm(
         case AT_HUGS: /* automatic if prev two attacks succeed */
             strike = (i >= 2 && res[i - 1] == M_ATTK_HIT
                       && res[i - 2] == M_ATTK_HIT);
-            if (((is_displaced(mdef->data) && mdef->mcan) 
+            if (((is_displaced(mdef->data) && mdef->mcan)
                     || has_displacement(mdef))
                 && rn2(4)) {
                 if (gv.vis && canspotmon(mdef))
@@ -942,7 +942,7 @@ gulpmm(
     coordxy ax, ay, dx, dy;
     int status;
     struct obj *obj;
-    
+
     if (!engulf_target(magr, mdef))
         return M_ATTK_MISS;
 
@@ -1145,18 +1145,18 @@ mdamagem(
             return M_ATTK_AGR_DIED;
         }
     }
-    
+
     /* Handle berserkers */
     if (magr->mberserk)
         mhm.damage += d((int) mattk->damn, (int) mattk->damd);
-    
+
     /* find rings of increase damage */
     mhm.damage += mring_bon(magr, RIN_INCREASE_DAMAGE);
     if (mhm.damage < 1)
         mhm.damage = 1;
 
     mhitm_adtyping(magr, mattk, mdef, &mhm);
-    
+
     if (mhitm_knockback(magr, mdef, mattk, &mhm.hitflags,
                         (MON_WEP(magr) != 0))
         && ((mhm.hitflags & (M_ATTK_DEF_DIED | M_ATTK_HIT)) != 0

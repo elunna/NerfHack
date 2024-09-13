@@ -225,7 +225,7 @@ throw_obj(struct obj *obj, int shotlimit)
             && (int) ACURRSTR < (Race_if(PM_GNOME) ? 16 : 18))
             multishot = rnd(multishot);
 #endif
-        
+
         multishot = rnd(multishot);
         if ((long) multishot > obj->quan)
             multishot = (int) obj->quan;
@@ -1492,7 +1492,7 @@ throwit(struct obj *obj,
                         || Hallucination || Fumbling),
             tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
 
-    boolean carding = Role_if(PM_CARTOMANCER) 
+    boolean carding = Role_if(PM_CARTOMANCER)
                       && obj->otyp == SCR_CREATE_MONSTER;
 
     /* Handle thrown zap cards here */
@@ -1513,10 +1513,10 @@ throwit(struct obj *obj,
     if (uwep && uwep->oartifact == ART_PLAGUE &&
         ammo_and_launcher(obj, uwep) && is_poisonable(obj))
         obj->opoisoned = 1;
-    
+
     gn.notonhead = FALSE; /* reset potentially stale value */
 
-    /* Retaining the !rn2(7) checks raises the chance of 
+    /* Retaining the !rn2(7) checks raises the chance of
        slipping if multiple bad conditions exist. */
     if (((obj->cursed && !rn2(7))
          || (obj->greased && !rn2(7))
@@ -2066,9 +2066,9 @@ thitmonst(
         tmp += (ACURR(A_DEX) - 14);
 
     /* combat boots give +1 to-hit for thrown */
-    if (uarmf && objdescr_is(uarmf, "combat boots")) 
+    if (uarmf && objdescr_is(uarmf, "combat boots"))
         tmp += 1;
-    
+
     /* Modify to-hit depending on distance; but keep it sane.
      * Polearms get a distance penalty even when wielded; it's
      * hard to hit at a distance.
@@ -2148,7 +2148,7 @@ thitmonst(
                 /* ...or any special item, if you've made him angry */
                 || !mon->mpeaceful) {
                 /* give an explanation for keeping the item only if leader is
-                   not doing it out of anger */ 
+                   not doing it out of anger */
                 if (mon->mpeaceful && !Deaf) {
                     /* just in case, identify the object so its name will
                        appear in the message */
@@ -2164,7 +2164,7 @@ thitmonst(
                 (void) mpickobj(mon, obj);
             } else {
                 /* under normal circumstances, leader will say something and
-                   then return the item to the hero */ 
+                   then return the item to the hero */
                 boolean next2u = monnear(mon, u.ux, u.uy);
 
                 finish_quest(obj); /* acknowledge quest completion */
@@ -2248,7 +2248,7 @@ thitmonst(
                     hitmon_bardiche(mon, obj);
                 }
             }
-            
+
             if (is_moncard(obj)) {
                 /* Spheres explode on contact! */
                 if (is_boomer(obj->corpsenm)) {
@@ -2313,12 +2313,12 @@ thitmonst(
             }
             if (mon->data == &mons[PM_ADHERER] && !DEADMONSTER(mon)) {
                 pline("The %s sticks to %s", xname(obj), mon_nam(mon));
-                
+
                 if (uwep && obj == uwep) {
                     dropx(uwep);
                     obj_extract_self(obj);
                     add_to_minv(mon, obj);
-                } else 
+                } else
                     (void) mpickobj(mon, obj);
                 return 1;
             } else {
@@ -2607,7 +2607,7 @@ breakobj(
         obj->in_use = 1; /* in case it's fatal */
         if (obj->otyp == POT_OIL && obj->lamplit) {
             explode_oil(obj, x, y, hero_caused);
-	    } else if ((obj->otyp == POT_VAMPIRE_BLOOD 
+	    } else if ((obj->otyp == POT_VAMPIRE_BLOOD
                  || obj->otyp == POT_BLOOD)
             && am != AM_CHAOTIC && am != AM_NONE) {
             /* ALI: If blood is spilt on a lawful or
@@ -2835,7 +2835,7 @@ throw_gold(struct obj *obj)
         /* see if the gold has a place to move into */
         odx = u.ux + u.dx;
         ody = u.uy + u.dy;
-        if (!isok(odx, ody) || !ZAP_POS(levl[odx][ody].typ) 
+        if (!isok(odx, ody) || !ZAP_POS(levl[odx][ody].typ)
             || closed_door(odx, ody)) {
             gb.bhitpos.x = u.ux;
             gb.bhitpos.y = u.uy;
@@ -2869,14 +2869,14 @@ throw_gold(struct obj *obj)
 
 
 /* Ranseurs can push off weapons and shields */
-void 
+void
 ranseur_hit(struct monst *mon)
 {
     boolean hityou = (mon == &gy.youmonst);
     struct obj *mwep = hityou ? uwep : MON_WEP(mon);
     const char *The_ransuer = canseemon(mon) ? "The ranseur" : "A ranseur";
     const char *hand = body_part(HAND);
-    
+
     if (!mwep)
         return;
 
@@ -2936,7 +2936,7 @@ hitmon_bardiche(
     int dmg = 2 * mon->mhp + FATAL_DAMAGE_MODIFIER;
     showdamage(dmg, FALSE);
     mon->mhp -= dmg;
-    
+
     if (is_reviver(mon->data) && !is_rider(mon->data)
         && !mlifesaver(mon)) {
         mon->mcan = 1;

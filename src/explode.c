@@ -234,7 +234,7 @@ explode(
 
     if (olet == FORGE_EXPLODE) /* exploding forges */
         exploding_wand_typ = type;
-    
+
     if (olet == WAND_CLASS) { /* retributive strike */
         /* 'type' is passed as (wand's object type * -1); save
            object type and convert 'type' itself to zap-type */
@@ -468,7 +468,7 @@ explode(
             didmsg = TRUE;
         }
     }
-    
+
     if (!Deaf && !didmsg && olet != DOOR_TRAP)
         pline("Boom!");
 
@@ -656,14 +656,14 @@ explode(
                that victim might have been killed when hit by the blast) */
             if (grabbing && dist2((int) grabxy.x, (int) grabxy.y, x, y) <= 2)
                 damu *= 2;
-            
+
             /* Damage reduction for partial resistances.
-             * Brittle - if the order of monattk.h AD types or the 
+             * Brittle - if the order of monattk.h AD types or the
              * prop.h prop_types ever changes, this needs updating.
              * */
             if (adtyp >= AD_FIRE && adtyp <= AD_DRST)
                 damu = resist_reduce(damu, adtyp - 1);
-                       
+
             /* hero does not get same fire-resistant vs cold and
                cold-resistant vs fire double damage as monsters [why not?] */
             if (Upolyd)
@@ -845,7 +845,7 @@ scatter(coordxy sx, coordxy sy,  /* location of objects to scatter */
                 if (cansee(sx, sy)) {
                     pline("%s.", Tobjnam(otmp, "crumble"));
                 } else {
-                    Soundeffect(se_stone_crumbling, 100); 
+                    Soundeffect(se_stone_crumbling, 100);
                     You_hear("stone crumbling.");
                 }
                 (void) break_statue(otmp);
@@ -1015,7 +1015,7 @@ splatter_burning_oil(
     boolean hero_caused)
 {
     int dmg = d(diluted_oil ? 3 : 4, 4);
-    explode(x, y, 
+    explode(x, y,
         hero_caused ? ZT_SPELL(ZT_FIRE) : BZ_M_SPELL(ZT_FIRE),
         dmg, BURNING_OIL, EXPL_FIERY);
 }
@@ -1089,7 +1089,7 @@ mon_explodes(
         dmg = d((int) mon->data->mlevel + 1, (int) mattk->damd);
     else
         dmg = 0;
-    
+
 
     if (mattk->adtyp == AD_PHYS) {
         type = PHYS_EXPL_TYPE;
@@ -1108,7 +1108,7 @@ mon_explodes(
      * from an AT_BOOM attack upon death. */
     if (!DEADMONSTER(mon))
         mondead(mon);
-    
+
     /* Cancelled monsters can't explode. */
     if (mon->mcan)
         return;
@@ -1128,7 +1128,7 @@ mon_explodes(
         obj->blessed = TRUE;
         obj->quan = 1;
         attach_egg_hatch_timeout(obj, 10L);
-    } else 
+    } else
         explode(mon->mx, mon->my, type, dmg, MON_EXPLODE,
                 adtyp_to_expltype(mattk->adtyp));
 
@@ -1184,7 +1184,7 @@ mon_explodes_nodmg(struct monst *magr, struct attack *mattk)
             }
         }
     }
-    
+
     /* affect the player last, so that they can see other monsters getting
      * affected by it before they go blind or start hallucinating */
     if (affects_you) {

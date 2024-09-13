@@ -3986,7 +3986,7 @@ extern int spell_damage_bonus(int);
 extern const char *exclam(int force) NONNULL;
 extern void hit(const char *, struct monst *, const char *) NONNULLPTRS;
 extern void miss(const char *, struct monst *) NONNULLPTRS;
-extern void maybe_explode_trap(struct trap *, struct obj *, 
+extern void maybe_explode_trap(struct trap *, struct obj *,
                                boolean *) NONNULLARG3;
 extern struct monst *bhit(coordxy, coordxy, int, enum bhit_call_types,
                           int(*)(struct monst *, struct obj *),

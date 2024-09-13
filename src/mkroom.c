@@ -87,8 +87,8 @@ do_mkroom(int roomtype)
         case ANTHOLE:
             mkzoo(ANTHOLE);
             break;
-        case DRAGONLAIR: 
-            mkzoo(DRAGONLAIR); 
+        case DRAGONLAIR:
+            mkzoo(DRAGONLAIR);
             break;
         default:
             impossible("Tried to make a room of type %d.", roomtype);
@@ -348,7 +348,7 @@ fill_zoo(struct mkroom *sroom)
                                    && svd.doors[sh].y == sy + 1))))
                 continue;
             /* don't place monster on explicitly placed throne */
-            if ((type == COURT || type == GIANTCOURT) 
+            if ((type == COURT || type == GIANTCOURT)
                     && IS_THRONE(levl[sx][sy].typ))
                 continue;
             mon = makemon((type == COURT) ? courtmon() :

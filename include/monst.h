@@ -165,7 +165,7 @@ struct monst {
     Bitfield(mberserk, 1);  /* monster is berserking */
     Bitfield(mrabid, 1);    /* monster is rabid */
     Bitfield(mspotted, 1);  /* mon is currently seen by hero */
-                
+
     uchar mwither;          /* withering; amount of turns left till recovery */
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
 
@@ -234,7 +234,7 @@ struct monst {
 #define is_changeling(mon)                                          \
     ((mon)->cham == PM_CHAMELEON || (mon)->cham == PM_DOPPELGANGER  \
      || (mon)->cham == PM_SANDESTIN)
-     
+
 /* monsters which cannot be displaced: temple priests, shopkeepers,
    vault guards, the Oracle, quest leader */
 #define mundisplaceable(mon) \

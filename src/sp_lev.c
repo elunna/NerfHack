@@ -944,7 +944,7 @@ void
 flip_level_rnd(int flp, boolean extras)
 {
     int c = 0;
-    
+
     if (In_sokoban(&u.uz) && flags.noflipsoko) {
         /* Forcing non-flipped Sokoban breaks the rules. */
         sokoban_guilt();
@@ -4782,7 +4782,7 @@ nhl_abs_coord(lua_State *L)
 int
 lspo_feature(lua_State *L)
 {
-    static const char *const features[] = { "fountain", "forge", "sink", "toilet", 
+    static const char *const features[] = { "fountain", "forge", "sink", "toilet",
                                             "pool", "throne", "tree", NULL };
     static const int features2i[] = { FOUNTAIN, FORGE, SINK, TOILET,
                                       POOL, THRONE, TREE, STONE };

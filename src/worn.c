@@ -165,7 +165,7 @@ setnotworn(struct obj *obj)
             *(wp->w_obj) = (struct obj *) 0;
             p = objects[obj->otyp].oc_oprop;
             u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
-            monstunseesu_prop(p); /* remove this extrinsic from seenres */ 
+            monstunseesu_prop(p); /* remove this extrinsic from seenres */
             obj->owornmask &= ~wp->w_mask;
             if (wp->w_mask & W_ARMOR)
                 /* this function can technically be called with wielded or
@@ -852,7 +852,7 @@ m_dowear_type(
         /* Don't select items our race isn't compatible with */
         if (hates_item(mon, obj->otyp))
             continue;
-        
+
         switch (flag) {
         case W_AMUL:
             if (obj->oclass != AMULET_CLASS
@@ -1580,7 +1580,7 @@ extract_from_minvent(
 #undef w_blocks
 
 /* Checks a player's weapons and attack types from poly form.
- * Should we check pets too? 
+ * Should we check pets too?
  */
 staticfn boolean threatens_dmgtype(int adtyp)
 {

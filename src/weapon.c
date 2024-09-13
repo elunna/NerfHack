@@ -38,71 +38,71 @@ staticfn int dmgval_core(struct obj*, struct monst*, struct damage_info_t*);
 
 static NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     /* Weapon */
-    0, 
-    DAGGER, 
-    KNIFE, 
-    AXE, 
-    PICK_AXE, 
-    SHORT_SWORD, 
-    BROADSWORD, 
+    0,
+    DAGGER,
+    KNIFE,
+    AXE,
+    PICK_AXE,
+    SHORT_SWORD,
+    BROADSWORD,
     LONG_SWORD,
-    TWO_HANDED_SWORD, 
-    PN_SABER, 
-    CLUB, 
-    MACE, 
-    MORNING_STAR, 
-    FLAIL, 
+    TWO_HANDED_SWORD,
+    PN_SABER,
+    CLUB,
+    MACE,
+    MORNING_STAR,
+    FLAIL,
     PN_HAMMER,
     QUARTERSTAFF,
-    PN_POLEARMS, 
-    SPEAR, 
-    TRIDENT, 
-    LANCE, 
+    PN_POLEARMS,
+    SPEAR,
+    TRIDENT,
+    LANCE,
     BOW,
-    SLING, 
+    SLING,
     CROSSBOW,
-    DART, 
-    SHURIKEN, 
-    BOOMERANG, 
-    PN_WHIP, 
+    DART,
+    SHURIKEN,
+    BOOMERANG,
+    PN_WHIP,
     UNICORN_HORN,
     /* Spell */
     PN_ATTACK_SPELL,
-    PN_HEALING_SPELL, 
+    PN_HEALING_SPELL,
     PN_DIVINATION_SPELL,
-    PN_ENCHANTMENT_SPELL, 
-    PN_CLERIC_SPELL, 
-    PN_ESCAPE_SPELL, 
+    PN_ENCHANTMENT_SPELL,
+    PN_CLERIC_SPELL,
+    PN_ESCAPE_SPELL,
     PN_MATTER_SPELL,
     /* Other */
-    PN_BARE_HANDED, 
-    PN_TWO_WEAPONS, 
-    PN_SHIELD, 
+    PN_BARE_HANDED,
+    PN_TWO_WEAPONS,
+    PN_SHIELD,
     PN_RIDING
 };
 
 /* note: entry [0] isn't used */
 static NEARDATA const char *const odd_skill_names[] = {
-    "no skill", 
+    "no skill",
     "bare hands", /* use barehands_or_martial[] instead */
-    "two weapon combat", 
-    "shield", 
-    "riding", 
+    "two weapon combat",
+    "shield",
+    "riding",
     "polearms",
-    "saber", 
+    "saber",
     "hammer",
-    "whip", 
-    "attack spells", 
-    "healing spells", 
+    "whip",
+    "attack spells",
+    "healing spells",
     "divination spells",
     "enchantment spells",
-    "clerical spells", 
-    "escape spells", 
+    "clerical spells",
+    "escape spells",
     "matter spells",
 };
 /* indexed via is_martial() */
 static NEARDATA const char *const barehands_or_martial[] = {
-    "bare handed combat", 
+    "bare handed combat",
     "martial arts"
 };
 
@@ -216,7 +216,7 @@ hitval(struct obj *otmp, struct monst *mon)
 
     if (otmp->otyp == SCIMITAR && u.usteed)
         tmp += 4;
-    
+
     /* trident is highly effective against swimmers */
     if (otmp->otyp == TRIDENT && is_swimmer(ptr)) {
         if (is_pool(mon->mx, mon->my))
@@ -353,7 +353,7 @@ dmgval_core(
     }
 
     /* Damage vs small monsters */
-    
+
     if (ptr == NULL || !bigmonst(ptr)) {
         if (objects[otyp].oc_wsdam) {
             tmp = rnd(objects[otyp].oc_wsdam);
@@ -408,10 +408,10 @@ dmgval_core(
     if (objects[otyp].oc_material <= LEATHER && ptr && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
-    
+
     if (otmp->oclass == GEM_CLASS && ptr && thick_skinned(ptr))
         tmp = 0; /* pebbles don't penetrate */
-    
+
     if (ptr && ptr == &mons[PM_SHADE] && !shade_glare(otmp))
         tmp = 0;
 
@@ -613,11 +613,11 @@ oselect(struct monst *mtmp, int type)
 
         if (!can_touch_safely(mtmp, otmp))
             continue;
-        
+
         /* Don't select items our race isn't compatible with */
         if (hates_item(mtmp, otmp->otyp))
             continue;
-        
+
         return otmp;
     }
     return (struct obj *) 0;
@@ -626,16 +626,16 @@ oselect(struct monst *mtmp, int type)
 /* TODO: have monsters use aklys' throw-and-return */
 static NEARDATA const int rwep[] = {
     DWARVISH_SPEAR,
-    SILVER_SPEAR, 
-    ELVEN_SPEAR, 
-    SPEAR, 
-    ORCISH_SPEAR, 
+    SILVER_SPEAR,
+    ELVEN_SPEAR,
+    SPEAR,
+    ORCISH_SPEAR,
     JAVELIN,
-    SHURIKEN, 
-    YA, 
-    SILVER_ARROW, 
-    ELVEN_ARROW, 
-    ARROW, 
+    SHURIKEN,
+    YA,
+    SILVER_ARROW,
+    ELVEN_ARROW,
+    ARROW,
     ORCISH_ARROW,
     CROSSBOW_BOLT,
     SILVER_DAGGER,
@@ -653,19 +653,19 @@ static NEARDATA const int rwep[] = {
     CREAM_PIE
 };
 
-static NEARDATA const int pwep[] = { 
+static NEARDATA const int pwep[] = {
     SCYTHE,
-    BARDICHE,      
-    HALBERD,  
+    BARDICHE,
+    HALBERD,
     SPETUM,
-    BILL_GUISARME, 
-    VOULGE,   
+    BILL_GUISARME,
+    VOULGE,
     RANSEUR,
-    GUISARME,      
-    GLAIVE,   
+    GUISARME,
+    GLAIVE,
     LUCERN_HAMMER,
-    BEC_DE_CORBIN, 
-    FAUCHARD, 
+    BEC_DE_CORBIN,
+    FAUCHARD,
     PARTISAN,
     LANCE };
 
@@ -1099,7 +1099,7 @@ abon(void)
     if (Upolyd)
         return (adj_lev(&mons[u.umonnum]) - 3);
 
-#if 0 /* Strength should not give a to-hit bonus; 
+#if 0 /* Strength should not give a to-hit bonus;
        * the encumbrance system is already there to address that.*/
     int str = ACURR(A_STR), dex = ACURR(A_DEX);
 

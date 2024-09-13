@@ -272,7 +272,7 @@ dog_eat(struct monst *mtmp,
 
         if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
             if (seeobj || sawpet)
-                pline_The("%s starts cracking as %s attempts to devour it!", 
+                pline_The("%s starts cracking as %s attempts to devour it!",
                     makesingular(xname(obj)), noit_Monnam(mtmp));
             else
                 You_hear("something cracking.");
@@ -431,8 +431,8 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
                 && could_reach_item(mtmp, obj->ox, obj->oy))
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
-            boolean shopgood = (obj->unpaid 
-                    || (obj->where == OBJ_FLOOR && !obj->no_charge 
+            boolean shopgood = (obj->unpaid
+                    || (obj->where == OBJ_FLOOR && !obj->no_charge
                     && costly_spot(obj->ox, obj->oy)));
             carryamt = can_carry(mtmp, obj);
             if (carryamt > 0 && !obj->cursed && !shopgood
@@ -535,7 +535,7 @@ dog_goal(
                     || !can_reach_location(mtmp, mtmp->mx, mtmp->my, nx, ny))
                     continue;
                 /* skip shop food and other items */
-                if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge 
+                if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge
                                     && costly_spot(obj->ox, obj->oy)))
                     continue;
                 if (otyp < MANFOOD) {
@@ -1512,7 +1512,7 @@ acceptable_pet_target(
 
     /* Spell minions are fearless */
     if (mtmp->msummoned) {
-        /* Cartomancers get a lot of sphere cards, so let's make 
+        /* Cartomancers get a lot of sphere cards, so let's make
          * them a litte more user friendly. */
         if (close_sphere && rn2(10))
             return FALSE;
@@ -1528,7 +1528,7 @@ acceptable_pet_target(
     }
 
     boolean scared = (!ranged && (int)mtmp2->m_lev >= balk);
-    
+
     boolean bad_eye = (!ranged && mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
             && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
             && (mon_prop(mtmp, SEE_INVIS) || !mtmp2->minvis));
@@ -1540,14 +1540,14 @@ acceptable_pet_target(
 
     boolean passive_kill = (!ranged && max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp);
 
-    boolean vs_stoner = (!ranged && touch_petrifies(mtmp2->data) 
+    boolean vs_stoner = (!ranged && touch_petrifies(mtmp2->data)
             && !(resists_ston(mtmp) || defended(mtmp, AD_STON)));
 
-    boolean vs_dise = (!ranged 
-            && (mtmp2->data == &mons[PM_GRAY_FUNGUS]) 
+    boolean vs_dise = (!ranged
+            && (mtmp2->data == &mons[PM_GRAY_FUNGUS])
             && !(resists_sick(mtmp->data) || defended(mtmp, AD_DISE)));
 
-    boolean vs_peaceful = (mtmp->mhp * 4 < mtmp->mhpmax 
+    boolean vs_peaceful = (mtmp->mhp * 4 < mtmp->mhpmax
             || mtmp2->data->msound == MS_GUARDIAN || mtmp2->data->msound == MS_LEADER)
                     && mtmp2->mpeaceful && !grudge && !Conflict;
 

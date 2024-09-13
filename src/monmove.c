@@ -138,7 +138,7 @@ m_can_break_boulder(struct monst *mtmp)
             && (is_rider(mtmp->data)
                 || (MON_WEP(mtmp) && is_pick(MON_WEP(mtmp)))
             || (!mtmp->mspec_used
-                && (mtmp->isshk 
+                && (mtmp->isshk
                         || mtmp->ispriest
                         || (mtmp->data->msound == MS_LEADER)))));
 }
@@ -319,7 +319,7 @@ mon_regen(struct monst *mon, boolean digest_meal)
 {
     struct obj *mstone = m_carrying(mon, HEALTHSTONE);
 
-    if (mon->mhp < mon->mhpmax && (svm.moves % 20 == 0 
+    if (mon->mhp < mon->mhpmax && (svm.moves % 20 == 0
             || mon_prop(mon, REGENERATION)
             || (mstone && !mstone->cursed))
         /* Below are conditions which prevent regen */
@@ -468,7 +468,7 @@ monflee(
     /* Berserking monsters are too busy berserking to flee */
     if (mtmp->mberserk || mtmp->mrabid)
         return;
-    
+
     if (mtmp == u.ustuck)
         release_hero(mtmp); /* expels/unstuck */
 
@@ -565,7 +565,7 @@ distfleeck(
                         !Is_astralevel(&u.uz)))) {
         *scared = 1;
         monflee(mtmp, rnd(rn2(7) ? 10 : 100), TRUE, TRUE);
-	
+
         if (Uevil_inherently /* && !context.coward */
             && sengr_at("Elbereth", seescaryx, seescaryy, TRUE)) {
             /* Followers of Moloch (and bloodsuckers) aren't supposed
@@ -794,7 +794,7 @@ dochug(struct monst *mtmp)
 
     /* Cease conflict-induced swallow/grab if conflict has ended. Releasing
        the hero in this way uses up the monster's turn. */
-    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf 
+    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf
         && !mtmp->mrabid && !Conflict) {
         release_hero(mtmp);
         return 0;
@@ -822,11 +822,11 @@ dochug(struct monst *mtmp)
     }
 
     /* Alchemists will occasionally alchemize more acid */
-    if (mtmp->data == &mons[PM_ALCHEMIST] && !m_carrying(mtmp, POT_ACID) 
+    if (mtmp->data == &mons[PM_ALCHEMIST] && !m_carrying(mtmp, POT_ACID)
             && !rn2(20)) {
         if (canseemon(mtmp))
             pline("%s mixes some potions together!", Monnam(mtmp));
-        else 
+        else
             You_hear("giggling.");
         (void) mongets(mtmp, POT_ACID);
         if (rn2(2))
@@ -926,7 +926,7 @@ dochug(struct monst *mtmp)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || (Conflict && !mtmp->iswiz)
         || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful
-        || (nearby && !mtmp->mpeaceful 
+        || (nearby && !mtmp->mpeaceful
             && is_outflanker(mtmp->data) && rn2(3))) {
 
         /* Possibly cast an undirected spell if not attacking you */
@@ -981,7 +981,7 @@ dochug(struct monst *mtmp)
                 create_gas_cloud(start.x, start.y, 1, 8);
             else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
                 create_gas_cloud(start.x, start.y, 1, 0); /* harmless vapor */
-            
+
             /* if confused grabber has wandered off, let go */
             if (mtmp == u.ustuck && !m_next2u(mtmp))
                 unstuck(mtmp);
@@ -1215,7 +1215,7 @@ m_balks_at_approaching(struct monst *mtmp)
     /* "skittish" behavior */
     if (keeps_distance(mtmp->data))
         return TRUE;
-    
+
     /* Do they recognize you are dangerous? */
     if (humanoid(mtmp->data) &&
         !acceptable_pet_target(mtmp, &gy.youmonst, ranged_attk(mtmp->data)))
@@ -1234,10 +1234,10 @@ m_balks_at_approaching(struct monst *mtmp)
     if (ranged_attk(mtmp->data)
         && ((mtmp->mhp < (mtmp->mhpmax + 1) / 4)
             || !mtmp->mspec_used)) {
-        /* Most breathing monsters prefer melee more often: 
+        /* Most breathing monsters prefer melee more often:
          * dragons, nagas, golems, etc. This also serves to make altar
-         * sacrifice a bit more convenient. Otherwise, they never sit 
-         * still long enough to die on the altar and we can't pick up 
+         * sacrifice a bit more convenient. Otherwise, they never sit
+         * still long enough to die on the altar and we can't pick up
          * nagas or dragons :/ */
         if ((mtmp->data->mlet == S_DRAGON || mtmp->data->mlet == S_NAGA
              || mtmp->data->mlet == S_GOLEM)
@@ -1865,7 +1865,7 @@ m_move(struct monst *mtmp, int after)
         && !(mtmp->mflee || mtmp->mconf || mtmp->mstun || mtmp->msleeping
              || in_your_sanctuary(&gy.youmonst, u.ux, u.uy))) {
         int dist = dist2(mtmp->mx, mtmp->my, u.ux, u.uy);
-        
+
         if (!mtmp->mpeaceful && !rn2(3) && dist <= 20 && dist >= (3*3)) {
             int x = u.ux - mtmp->mx;
             int y = u.uy - mtmp->my;
@@ -1900,7 +1900,7 @@ m_move(struct monst *mtmp, int after)
             (void) rloc(mtmp, RLOC_MSG);
         else
             mnexto(mtmp, RLOC_MSG);
-            
+
         return postmov(mtmp, ptr, omx, omy, MMOVE_MOVED,
                        seenflgs, can_tunnel, can_unlock, can_open);
     }
@@ -1936,7 +1936,7 @@ not_special:
     if (!ggy)
         ggy = mtmp->muy;
     appr = mtmp->mflee ? -1 : 1;
-    
+
     if (mtmp->mconf || mtmp->mstun || engulfing_u(mtmp)) {
         appr = 0;
     } else {
@@ -1963,7 +1963,7 @@ not_special:
         /* ... unless they are currently berserk or are rabid */
         if (mtmp->mberserk || mtmp->mrabid)
             appr = 1;
-        
+
         if (!should_see && can_track(ptr)) {
             coord *cp;
 
@@ -2304,7 +2304,7 @@ set_apparxy(struct monst *mtmp)
         mtmp->muy = u.uy;
         return;
     }
-    
+
     notseen = (!mtmp->mcansee || (Invis && !mon_prop(mtmp, SEE_INVIS)));
     notthere = (Displaced && mtmp->data != &mons[PM_DISPLACER_BEAST]);
     /* add cases as required.  eg. Displacement ... */
@@ -2491,7 +2491,7 @@ decide_to_teleport(struct monst *mtmp)
     if (!mon_prop(mtmp, TELEPORT_CONTROL))
         return FALSE; /* No choice */
     /* Fleeing/peaceful non-pets just want to go anywhere but here */
-    return (!((mtmp->mhp < 7 || mtmp->mflee 
+    return (!((mtmp->mhp < 7 || mtmp->mflee
         || mtmp->mpeaceful) && !mtmp->mtame));
 }
 

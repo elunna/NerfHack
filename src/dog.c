@@ -110,7 +110,7 @@ pick_familiar_pm(struct obj *otmp, boolean quietly)
         pm = &mons[pet_type()];
     } else {
         pm = rndmonst();
-        
+
         /* These would not make good familiars */
         if (pm->mflags3 & M3_NOTAME)
             pm = (struct permonst *) 0;
@@ -177,7 +177,7 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
 
         if (non_tameable(mtmp->data) || mtmp->mrabid)
             chance = 2;
-        
+
         if (chance > 0) {
             mtmp->mtame = 0;   /* not tame after all */
             u.uconduct.pets--; /* doesn't count as creating a pet */
@@ -996,10 +996,10 @@ dogfood(struct monst *mon, struct obj *obj)
         return TABU;
 
     /* skip shop food and other items */
-    if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge 
+    if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge
                         && costly_spot(obj->ox, obj->oy)))
         return TABU;
-                        
+
     switch (obj->oclass) {
     case FOOD_CLASS:
         fx = (obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG)
@@ -1013,7 +1013,7 @@ dogfood(struct monst *mon, struct obj *obj)
         /* Cursed food doesn't work - only for undead or demons. */
         if (obj->cursed && !is_undead(fptr) && !is_demon(fptr))
             return TABU;
-        
+
         if (obj->otyp == CORPSE && is_rider(fptr))
             return TABU;
         if ((obj->otyp == CORPSE || obj->otyp == EGG)
@@ -1150,9 +1150,9 @@ dogfood(struct monst *mon, struct obj *obj)
 boolean
 tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
 {
-    /* Spell of charm monster is limited at unskilled and basic - 
+    /* Spell of charm monster is limited at unskilled and basic -
      * it can only pacify. */
-    boolean unskilled_charmer = obj 
+    boolean unskilled_charmer = obj
         && obj->otyp == SPE_CHARM_MONSTER
         && P_SKILL(P_ENCHANTMENT_SPELL) < P_SKILLED;
 
@@ -1199,7 +1199,7 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
     if (unskilled_charmer)
         return FALSE;
 
-    /* Cartomancers are incapable of taming real pets, they 
+    /* Cartomancers are incapable of taming real pets, they
      * work only with spell beings. */
     if (Role_if(PM_CARTOMANCER) && !mtmp->msummoned)
         return FALSE;
@@ -1481,41 +1481,41 @@ staticfn void add_node(struct Node** head, struct monst *dog)
     current->next = new_node;
 }
 
-/* Given a reference (pointer to pointer) to the head of a 
-   list and a dog, deletes the first occurrence of dog in 
+/* Given a reference (pointer to pointer) to the head of a
+   list and a dog, deletes the first occurrence of dog in
    linked list */
-void rm_node(struct Node** head, struct monst *dog) 
-{ 
-    struct Node *temp = *head, *prev; 
-  
+void rm_node(struct Node** head, struct monst *dog)
+{
+    struct Node *temp = *head, *prev;
+
     /* If head node itself holds the dog to be deleted */
-    if (temp != NULL && temp->dog == dog) { 
+    if (temp != NULL && temp->dog == dog) {
         *head = temp->next;
         free(temp);
-        return; 
-    } 
-  
-    /* Search for the dog to be deleted, keep track of the 
-       previous node as we need to change 'prev->next'  */
-    while (temp != NULL && temp->dog != dog) { 
-        prev = temp; 
-        temp = temp->next; 
-    } 
+        return;
+    }
 
-    if (temp == NULL) 
-        return; 
-  
-    prev->next = temp->next; 
+    /* Search for the dog to be deleted, keep track of the
+       previous node as we need to change 'prev->next'  */
+    while (temp != NULL && temp->dog != dog) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL)
+        return;
+
+    prev->next = temp->next;
     free(temp);
-} 
+}
 
 /* Remove the linked list */
-staticfn void 
+staticfn void
 rm_doglist(struct Node** head)
 {
     struct Node* current = *head;
     struct Node* next = NULL;
- 
+
     while (current != NULL) {
         next = current->next;
         free(current);
@@ -1534,7 +1534,7 @@ check_dogs(void)
     /* The Astral Plane is still very unfriendly to pets. */
     int numdogs = 0, maxdogs = ACURR(A_CHA) / (Is_astralevel(&u.uz) ? 8 : 4);
     struct Node* head = NULL;
-    
+
     /* Create a linked list of all pets */
     for (struct monst *d = fmon; d; d = d->nmon)
         if (d->mtame && !d->msummoned) {
@@ -1566,7 +1566,7 @@ check_dogs(void)
             nextdog = nextdog->next;
         }
 
-        /* The only pet that doesn't have an EDOG should 
+        /* The only pet that doesn't have an EDOG should
          * be the guardian angel granted on the Astral Plane.*/
         if (weakest && EDOG(weakest)) {
             weakest->mtame = 0;

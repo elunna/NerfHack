@@ -454,7 +454,7 @@ hates_silver(struct permonst *ptr)
 {
     return (boolean) (is_were(ptr) || is_vampire(ptr) || is_demon(ptr)
                       || ptr == &mons[PM_SHADE]
-                      || (ptr->mlet == S_IMP && ptr != &mons[PM_TENGU] 
+                      || (ptr->mlet == S_IMP && ptr != &mons[PM_TENGU]
                           && ptr != &mons[PM_REDCAP]));
 }
 
@@ -1644,7 +1644,7 @@ mon_prop(struct monst *mon, int prop)
         return TRUE;
     if (prop == TELEPORT && can_teleport(mon->data) && !mon->mcan)
         return TRUE;
-    if (prop == TELEPORT_CONTROL && 
+    if (prop == TELEPORT_CONTROL &&
         (control_teleport(mon->data) || is_covetous(mon->data)))
         return TRUE;
     if (prop == TELEPAT && telepathic(mon->data))

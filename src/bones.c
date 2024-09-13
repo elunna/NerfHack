@@ -297,7 +297,7 @@ drop_upon_death(
 
         if (rn2(5))
             curse(otmp);
-        
+
         /* A bit of randomization for the bones log peekers */
         if (rn2(7)) {
             obj_shudders(otmp);
