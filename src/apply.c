@@ -5078,7 +5078,7 @@ deck_of_fate(struct obj *obj)
     long draws;
     int index, pm, n, terr;
     boolean goodcards = FALSE, badcards = FALSE;
-    struct monst *mtmp;
+    struct monst *mtmp = NULL;
 
     if (!freehand()) {
         Your("%s are occupied!", makeplural(body_part(HAND)));
