@@ -393,7 +393,7 @@ GITPREFIX = -DNETHACK_GIT_PREFIX=\"$(GIT_PREFIX)\"
 
 #===============-=================================================
 # LUA library
-# Official source for Lua is http://www.lua.org/ftp/lua-5.4.6.tar.gz
+# Official source for Lua is https://www.lua.org/ftp/lua-5.4.6.tar.gz
 #
 # Source for the NetHack repository submodule in ../submodules/lua
 # is https://github.com/lua/lua.git
@@ -402,7 +402,7 @@ GITPREFIX = -DNETHACK_GIT_PREFIX=\"$(GIT_PREFIX)\"
 # Location of LUA
 #
 # Original source needs to be obtained from:
-#    http://www.lua.org/ftp/lua-5.4.6.tar.gz
+#    https://www.lua.org/ftp/lua-5.4.6.tar.gz
 #
 #    This build assumes that the LUA sources are located
 #    at the specified location. If they are actually elsewhere
@@ -1388,7 +1388,7 @@ $(PDCURSES_TOP)\curses.h:
 #	git submodule update --remote ../submodules/$(PDCDIST)
 
 !ELSE  # GIT_AVAILABLE no
-CURLLUASRC=http://www.lua.org/ftp/lua-5.4.6.tar.gz
+CURLLUASRC=https://www.lua.org/ftp/lua-5.4.6.tar.gz
 CURLLUADST=lua-5.4.6.tar.gz
 
 #CURLPDCSRC=https://github.com/wmcbrine/PDCurses/archive/refs/tags/3.9.zip
@@ -1805,8 +1805,8 @@ fetch-Lua: fetch-actual-Lua
 fetch-actual-Lua:
 	@if not exist $(LIBDIR)\*.* mkdir $(LIBDIR)
 	cd $(LIBDIR)
-	curl -R -O http://www.lua.org/ftp/lua-$(LUAVER).tar.gz
-	tar zxf lua-$(LUAVER).tar.gz
+	curl -R -O https://www.lua.org/ftp/lua-$(LUAVER).tar.gz
+	tar -xzf lua-$(LUAVER).tar.gz
 	if exist lua-$(LUAVER).tar.gz del lua-$(LUAVER).tar.gz
 	if exist lua-$(LUAVER).tar del lua-$(LUAVER).tar
 	cd ..\src
