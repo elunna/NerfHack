@@ -1486,7 +1486,7 @@ staticfn void add_node(struct Node** head, struct monst *dog)
    linked list */
 void rm_node(struct Node** head, struct monst *dog)
 {
-    struct Node *temp = *head, *prev;
+    struct Node *temp = *head, *prev = NULL;
 
     /* If head node itself holds the dog to be deleted */
     if (temp != NULL && temp->dog == dog) {
