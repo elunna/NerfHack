@@ -854,8 +854,7 @@
         NO_RACE, 7, CLR_CYAN, TENGU),
     /* From SpliceHack with changes:
      *  - They now berserk and they don't leave any corpses.
-     *  - Their starting gear includes a selection of strong weapons, sling
-     *      & flint, and armor.
+     *  - Their starting gear includes a selection of strong weapons
      */
     MON(NAM("redcap"), S_IMP,
         LVL(10, 15, 2, 30, 7), (G_GENO | 1 | G_NOCORPSE),

@@ -162,8 +162,6 @@ struct conditionals_t {
 #endif
     /* commented out in monst.c at present */
     { MON_GLYPH, PM_BLINKING_EYE, "beholder" },
-    { MON_GLYPH, PM_BABY_SILVER_DRAGON, "baby shimmering dragon" },
-    { MON_GLYPH, PM_SILVER_DRAGON, "shimmering dragon" },
     { MON_GLYPH, PM_JABBERWOCK, "vorpal jabberwock" },
 #ifndef CHARON /* not supported yet */
     { MON_GLYPH, PM_CROESUS, "Charon" },
@@ -178,8 +176,6 @@ struct conditionals_t {
     { MON_GLYPH, PM_CHROMATIC_DRAGON, "Goblin King" },
     { MON_GLYPH, PM_NEANDERTHAL, "High-elf" },
     /* objects commented out in objects.c at present */
-    { OBJ_GLYPH, SILVER_DRAGON_SCALE_MAIL, "shimmering dragon scale mail" },
-    { OBJ_GLYPH, SILVER_DRAGON_SCALES, "shimmering dragon scales" },
 /* allow slime mold to look like slice of pizza, since we
  * don't know what a slime mold should look like when renamed anyway
  */
