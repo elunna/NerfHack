@@ -820,7 +820,7 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
         case S_lava:
         case S_lavawall:
         case S_ice: /* for hallucination; otherwise defsyms[] would be fine */
-            Sprintf(eos(buf), (levl[x][y].splatpm) ? "bloody " : "");
+            Sprintf(eos(buf), "%s", (levl[x][y].splatpm) ? "bloody " : "");
             Strcpy(buf, waterbody_name(x, y));
             printed_blood = TRUE;
             break;
@@ -2021,8 +2021,8 @@ checkfile(
                     }
                 }
             }
-            long entry_offset, fseekoffset;
-            int entry_count, i;
+            long entry_offset = 0L, fseekoffset;
+            int entry_count= 0, i;
             if (found_in_file) {
                 /* skip over other possible matches for the info */
                 do {

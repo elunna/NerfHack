@@ -690,7 +690,8 @@ pick_lock(
                 /* Inverse of xNetHack - very high odds for unfavorable conditions */
                 && rn2(Fumbling ? ACURR(A_DEX) * 2
                                 : ((ACURR(A_DEX) + 3) / 4))) {
-                coordxy doorx = u.ux + u.dx, doory = u.uy + u.dy, behind_x, behind_y;
+                coordxy doorx = u.ux + u.dx, doory = u.uy + u.dy,
+                                behind_x = -1, behind_y = -1;
                 if (gx.xlock.door) {
                     behind_x = doorx + (gx.xlock.door->horizontal ? 0 : u.dx);
                     behind_y = doory + (gx.xlock.door->horizontal ? u.dy : 0);
