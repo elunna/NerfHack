@@ -3744,7 +3744,7 @@ find_poleable_mon(coord *pos, int min_range, int max_range)
     for (x = lo_x; x <= hi_x; ++x) {
         for (y = lo_y; y <= hi_y; ++y) {
             if (distu(x, y) < min_range || distu(x, y) > max_range
-                || !isok(x, y) || !cansee(x, y))
+                || !isok(x, y) || !couldsee(x, y))
                 continue;
             glyph = glyph_at(x, y);
             if (!impaired
@@ -3775,8 +3775,7 @@ get_valid_polearm_position(coordxy x, coordxy y)
 
     return (isok(x, y) && distu(x, y) >= gp.polearm_range_min
             && distu(x, y) <= gp.polearm_range_max
-            && (cansee(x, y) || (couldsee(x, y)
-                                 && glyph_is_poleable(glyph))));
+            && (cansee(x, y) || glyph_is_poleable(glyph)));
 }
 
 staticfn void
