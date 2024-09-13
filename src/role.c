@@ -558,7 +558,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       "the Shrine of Destiny",
       "the cave of Surtur",
       PM_VALKYRIE,                  /* role */
-      NON_PM /*PM_WINTER_WOLF_CUB*/, /* preferred pet */
+      PM_WINTER_WOLF_CUB,           /* preferred pet */
       PM_NORN,                      /* quest leader */
       PM_WARRIOR,                   /* quest guardians */
       PM_LORD_SURTUR,               /* quest nemesis */
