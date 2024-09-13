@@ -298,7 +298,7 @@ On the HOST, here are the mandatory things that have to be built.
                                  util/panic.c
                    purpose:      For packaging up many files that are
                                  required components of the TARGET game
-                                 into a single nhdat or nhdat370 combined
+                                 into a single nhdat or nhdat200 combined
                                  file
 
           util/uudecode

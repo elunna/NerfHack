@@ -64,11 +64,11 @@ default: packageall
 #===============================================================================
 
 PKGFILES=Guidebook.txt license NerfHack.exe NetHack.txt \
-	 NerfHackW.exe opthelp nhdat370 record symbols.template sysconf.template \
+	 NerfHackW.exe opthelp nhdat200 record symbols.template sysconf.template \
 	nerfhackrc.template
 FILESTOZIP=$(VSBINDIR)\Guidebook.txt $(VSBINDIR)\license \
 	$(VSBINDIR)\NerfHack.exe $(VSBINDIR)\NetHack.txt $(VSBINDIR)\NerfHackW.exe \
-	$(VSBINDIR)\opthelp $(VSBINDIR)\nhdat370 $(VSBINDIR)\record \
+	$(VSBINDIR)\opthelp $(VSBINDIR)\nhdat200 $(VSBINDIR)\record \
 	$(VSBINDIR)\symbols.template $(VSBINDIR)\sysconf.template $(VSBINDIR)\nerfhackrc.template
 DBGSYMS = NetHack.PDB NetHackW.PDB
 PDBTOZIP = ..\NetHack\symbols\$(Configuration)\$(Platform)\NetHack.PDB \
