@@ -555,7 +555,6 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\minetn-4.lua $(DAT)\minetn-5.lua $(DAT)\minetn-6.lua \
 	$(DAT)\minetn-7.lua $(DAT)\minetn-8.lua $(DAT)\minetn-9.lua \
 	$(DAT)\minetn-10.lua $(DAT)\minetn-11.lua \
-	
 	$(DAT)\Mon-fila.lua $(DAT)\Mon-filb.lua \
 	$(DAT)\Mon-goal.lua $(DAT)\Mon-loca.lua $(DAT)\Mon-strt.lua \
 	$(DAT)\nhcore.lua   $(DAT)\nhlib.lua    $(DAT)\oracle-1.lua \
