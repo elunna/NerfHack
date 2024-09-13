@@ -995,6 +995,11 @@ dogfood(struct monst *mon, struct obj *obj)
     if (mon->msummoned)
         return TABU;
 
+    /* skip shop food and other items */
+    if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge 
+                        && costly_spot(obj->ox, obj->oy)))
+        return TABU;
+                        
     switch (obj->oclass) {
     case FOOD_CLASS:
         fx = (obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG)
