@@ -45,7 +45,7 @@ Executing NetHack on your machine
            tar -xf nethack-370-win-x64.zip
 
         MSYS2 bash shell:
-           /c/Windows/System32/tar -xf nethack-370-win-x64.zip
+           /c/Windows/System32/tar -xf nerfhack-370-win-x64.zip
 
     Run NerfHack.exe or NerfHackW.exe from the folder where you unzipped.
 
@@ -56,20 +56,20 @@ Executing NetHack on your machine
     reference the file as follows:
 
         From Windows cmd command prompt:
-        %USERPROFILE%\nethack\.nethackrc
+        %USERPROFILE%\nerfhack\.nerfhackrc
 
         From Windows powershell:
-        $env:USERPROFILE\nethack\.nethackrc
+        $env:USERPROFILE\nerfhack\.nerfhackrc
 
         From MSYS2 bash shell:
-        $USERPROFILE/nethack/.nethackrc
+        $USERPROFILE/nerfhack/.nerfhackrc
 
 
         From Windows powershell:
-        $env:USERPROFILE\nethack\.nethackrc
+        $env:USERPROFILE\nerfhack\.nerfhackrc
 
         From MSYS2 bash shell:
-        $USERPROFILE/nethack/.nethackrc
+        $USERPROFILE/nerfhack/.nerfhackrc
 
 
     If you want to see where NerfHack expects to find the other files it

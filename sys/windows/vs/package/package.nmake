@@ -69,7 +69,7 @@ PKGFILES=Guidebook.txt license NerfHack.exe NetHack.txt \
 FILESTOZIP=$(VSBINDIR)\Guidebook.txt $(VSBINDIR)\license \
 	$(VSBINDIR)\NerfHack.exe $(VSBINDIR)\NetHack.txt $(VSBINDIR)\NerfHackW.exe \
 	$(VSBINDIR)\opthelp $(VSBINDIR)\nhdat370 $(VSBINDIR)\record \
-	$(VSBINDIR)\symbols.template $(VSBINDIR)\sysconf.template $(VSBINDIR)\nethackrc.template
+	$(VSBINDIR)\symbols.template $(VSBINDIR)\sysconf.template $(VSBINDIR)\nerfhackrc.template
 DBGSYMS = NetHack.PDB NetHackW.PDB
 PDBTOZIP = ..\NetHack\symbols\$(Configuration)\$(Platform)\NetHack.PDB \
 	   ..\NetHackW\symbols\$(Configuration)\$(Platform)\NetHackW.PDB
