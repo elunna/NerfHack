@@ -2123,6 +2123,10 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                                    : obj->cursed ? " a lot" : "");
                 dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
                 losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
+                if (!rn2(3))
+                    erode_armor(&gy.youmonst, ERODE_CORRODE);
+                if (!rn2(3))
+                    dmg += destroy_items(&gy.youmonst, AD_ACID, dmg);
             }
             break;
         }
