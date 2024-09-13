@@ -70,9 +70,9 @@ FILESTOZIP=$(VSBINDIR)\Guidebook.txt $(VSBINDIR)\license \
 	$(VSBINDIR)\NerfHack.exe $(VSBINDIR)\NetHack.txt $(VSBINDIR)\NerfHackW.exe \
 	$(VSBINDIR)\opthelp $(VSBINDIR)\nhdat200 $(VSBINDIR)\record \
 	$(VSBINDIR)\symbols.template $(VSBINDIR)\sysconf.template $(VSBINDIR)\nerfhackrc.template
-DBGSYMS = NetHack.PDB NetHackW.PDB
-PDBTOZIP = ..\NetHack\symbols\$(Configuration)\$(Platform)\NetHack.PDB \
-	   ..\NetHackW\symbols\$(Configuration)\$(Platform)\NetHackW.PDB
+DBGSYMS = NerfHack.PDB NerfHackW.PDB
+PDBTOZIP = ..\NetHack\symbols\$(Configuration)\$(Platform)\NerfHack.PDB \
+	   ..\NetHackW\symbols\$(Configuration)\$(Platform)\NerfHackW.PDB
 MAINZIP = $(VSPACKAGEDIR)\nethack-$(NHV)-win-$(PlatformShortName).zip
 DBGSYMZIP = $(VSPACKAGEDIR)\nethack-$(NHV)-win-$(PlatformShortName)-debugsymbols.zip
 

@@ -1537,8 +1537,8 @@ binary.tag: 	$(DAT)\data $(DAT)\rumors $(DAT)\oracles $(DLB) \
 	if exist $(DAT)\symbols copy $(DAT)\symbols $(GAMEDIR)\symbols
 	if exist $(DOC)\guidebook.txt copy $(DOC)\guidebook.txt $(GAMEDIR)\Guidebook.txt
 	if exist $(DOC)\nethack.txt copy $(DOC)\nethack.txt $(GAMEDIR)\NetHack.txt
-	@if exist $(GAMEDIR)\NetHack.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHack.PDB to conserve space
-	@if exist $(GAMEDIR)\NetHackW.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHackW.PDB to conserve space
+	@if exist $(GAMEDIR)\NerfHack.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NerfHack.PDB to conserve space
+	@if exist $(GAMEDIR)\NerfHackW.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NerfHackW.PDB to conserve space
 	-if exist $(MSWSYS)\nerfhackrc.template copy $(MSWSYS)\nerfhackrc.template   $(GAMEDIR)
 	-if not exist $(GAMEDIR)\record. goto>$(GAMEDIR)\record.
 	echo binary built > $@
@@ -2309,8 +2309,8 @@ FILESTOZIP = $(BinDir)\nerfhackrc.template $(BinDir)\Guidebook.txt $(BinDir)\lic
 	$(BinDir)\NerfHack.exe $(BinDir)\NetHack.txt $(BinDir)\NerfHackW.exe \
 	$(BinDir)\opthelp $(BinDir)\nhdat200 $(BinDir)\record \
 	$(BinDir)\symbols $(BinDir)\sysconf.template 
-DBGSYMS = NetHack.PDB NetHackW.PDB
-PDBTOZIP = $(BinDir)\NetHack.PDB $(BinDir)\NetHackW.PDB
+DBGSYMS = NerfHack.PDB NerfHackW.PDB
+PDBTOZIP = $(BinDir)\NerfHack.PDB $(BinDir)\NerfHackW.PDB
 MAINZIP = $(PkgDir)\nethack-$(NHV)-win-$(TARGET_CPU).zip
 DBGSYMZIP = $(PkgDir)\nethack-$(NHV)-win-$(TARGET_CPU)-debugsymbols.zip
 
@@ -2341,7 +2341,7 @@ binary:  envchk.tag libdir.tag ottydir$(TARGET_CPU).tag \
 spotless: clean
 	if exist $(GAMEDIR)\NerfHack.exe del $(GAMEDIR)\NerfHack.exe
 	if exist $(GAMEDIR)\NerfHackW.exe del $(GAMEDIR)NerfHackW.exe
-	if exist $(GAMEDIR)\NetHack.pdb del $(GAMEDIR)\NetHack.pdb
+	if exist $(GAMEDIR)\NerfHack.PDB del $(GAMEDIR)\NerfHack.PDB
 	if exist $(GAMEDIR)\nhdat$(NHV) del $(GAMEDIR)\nhdat$(NHV)
 	if exist $(INCL)\date.h         del $(INCL)\date.h
 	if exist $(INCL)\onames.h       del $(INCL)\onames.h
