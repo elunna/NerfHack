@@ -7161,7 +7161,7 @@ makewish(void)
 
     /* The NeverEnding Story II: The Next Chapter: Bastian loses a 
      * memory every time he makes a wish. Be careful with those wishes... */
-    if (Luck < 0)
+    if (Luck < 0 && !(wizard || iflags.debug_fuzzer))
         forget(rnd(4));
 
     const char *verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),
