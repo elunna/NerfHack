@@ -7,7 +7,7 @@ do match statue entry when looking up "statue of a <foo>" when foo happens
 	to precede statue in the database; likewise for figurines
 initialize random number generator before processing user configuration file
 	(random role selection always selected tourist)
-support "character:X" and "role:X" in NETHACKOPTIONS as well as in config file
+support "character:X" and "role:X" in NERFHACKOPTIONS as well as in config file
 allow colon as an alternative to equals sign for `OPTIONS:whatever' and
 	equals sign as an alternative to colon for `pickup_types=?!="$'
 make rndexp (blessed gain level) be safe for 16 bit integer configurations

@@ -3671,7 +3671,7 @@
      level's drawbridge or can be given to you via prayer boon.
 
           Blind, Deaf, and Nudist are also conducts, and they can  only  be
-     enabled  by setting the correspondingly named option in NETHACKOPTIONS
+     enabled  by setting the correspondingly named option in NERFHACKOPTIONS
      or run-time configuration file prior to game start.  In  the  case  of
      Blind and Deaf, the option also enforces the conduct.  They aren't re-
      ally significant accomplishments  unless/until  you  make  substantial
@@ -3700,7 +3700,7 @@
 
 
 
-     file, or in the NETHACKOPTIONS environment variable.  Some versions of
+     file, or in the NERFHACKOPTIONS environment variable.  Some versions of
      NetHack also have front-end programs that allow you to set options be-
      fore starting the game or a global configuration for  system  adminis-
      trators.
@@ -3935,9 +3935,9 @@
 
 
 
-     9.3.  Using the NETHACKOPTIONS environment variable
+     9.3.  Using the NERFHACKOPTIONS environment variable
 
-          The  NETHACKOPTIONS variable is a comma-separated list of initial
+          The  NERFHACKOPTIONS variable is a comma-separated list of initial
      values for the various options.  Some can only be turned  on  or  off.
      You turn one of these on by adding the name of the option to the list,
      and turn it off by typing a `!' or "no" before the name.  Others  take
@@ -3950,17 +3950,17 @@
      on,  legacy  is off, character name is set to "Blue Meanie", and named
      fruit is set to "lime", you would enter the command
 
-     % setenv NETHACKOPTIONS "color,\!leg,name:Blue Meanie,fruit:lime"
+     % setenv NERFHACKOPTIONS "color,\!leg,name:Blue Meanie,fruit:lime"
 
      in csh (note the need to escape the `!' since  it's  special  to  that
      shell), or the pair of commands
 
-     $ NETHACKOPTIONS="color,!leg,name:Blue Meanie,fruit:lime"
-     $ export NETHACKOPTIONS
+     $ NERFHACKOPTIONS="color,!leg,name:Blue Meanie,fruit:lime"
+     $ export NERFHACKOPTIONS
 
      in sh, ksh, or bash.
 
-          The  NETHACKOPTIONS value is effectively the same as a single OP-
+          The  NERFHACKOPTIONS value is effectively the same as a single OP-
      TIONS directive in a configuration file.  The "OPTIONS=" prefix is im-
      plied  and  comma  separated options are processed from right to left.
 
@@ -3978,7 +3978,7 @@
      Other types of configuration directives such as BIND  or  MSGTYPE  are
      not allowed.
 
-          Instead  of a comma-separated list of options, NETHACKOPTIONS can
+          Instead  of a comma-separated list of options, NERFHACKOPTIONS can
      be set to the full name of a configuration file you want to  use.   If
      that  full  name  doesn't start with a slash, precede it with `@' (at-
      sign) to let NetHack know that the rest is intended as  a  file  name.
@@ -5158,7 +5158,7 @@
        When used, it should be the first option set since its  value  might
        enable  or  disable  the availability of various other options.  For
        multiple lines in a configuration file, that would be the first non-
-       comment  line.   For  a comma-separated list in NETHACKOPTIONS or an
+       comment  line.   For  a comma-separated list in NERFHACKOPTIONS or an
        OPTIONS line in a configuration file, that would  be  the  rightmost
        option in the list.
 
@@ -5364,7 +5364,7 @@
        moving some fields to different lines to eliminate one  whole  line,
        reducing the height needed.  (If NetHack has been built using a ver-
        sion of Qt older than qt-5.9, statuslines can only  be  set  in  the
-       run-time  configuration  file or via NETHACKOPTIONS, not during play
+       run-time  configuration  file or via NERFHACKOPTIONS, not during play
        with the `O' command.)
 
      term_cols  and

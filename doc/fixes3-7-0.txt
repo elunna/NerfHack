@@ -1092,7 +1092,7 @@ throwing recoil while levitating could send hero out of shop while carrying
 if punished and iron ball was cursed and wielded--so welded to hand--falling
 	when doors would drop it instead of keeping it welded
 if player's run-time config file had OPTIONS=role:Val and the environment had
-	NETHACKOPTIONS='role:!Val' the hero would be a Val instead of !Val
+	NERFHACKOPTIONS='role:!Val' the hero would be a Val instead of !Val
 sleeping or unconscious hero attacked by Medusa would meet her gaze
 if a trap killed both the hero's steed and the hero an impossible "dmonsfree:
 	N+1 removed doesn't match N pending" warning could occur
@@ -1821,7 +1821,7 @@ with color Off and the screen symbol for ice the same as for floor, the black
 command line processing interleaved with options file processing is complex:
 	a recent change to make 'color' show up for tty in the short options
 	menu resulted in 'nethack --windowtype:X11' running X11 with ascii map
-	('NETHACKOPTIONS=windowtype:X11 nethack' continued to default to tiles)
+	('NERFHACKOPTIONS=windowtype:X11 nethack' continued to default to tiles)
 when the Astral level got created, any fake player character monsters that
 	were seen or sensed when created were reported as "<mon> suddenly
 	appears!" rather than be treated as part of level's initial population
@@ -1976,12 +1976,12 @@ map didn't show adjacent monsters if they were inside a gas region unless
 	they were seen via telepathy or extended monster detection, but they
 	were described as if visible in messages (combat, for instance)
 OPTIONS=symset:blank and symset:plain didn't load the specified symbols if
-	used from the RC file or NETHACKOPTIONS
+	used from the RC file or NERFHACKOPTIONS
 for OPTIONS=symset:blank, S_engroom (engraving on a room floor spot) and
 	S_engrcorr (engraving on a corridor spot) retained their default
 	symbols ('`' and '#', respectively) instead of switching to space
 setting perm_invent in RC file before setting windowtype (whether later in
-	that file or via NETHACKOPTIONS) could result in it staying False
+	that file or via NERFHACKOPTIONS) could result in it staying False
 	depending upon whether the default windowtype supported it
 if hero was wielding potion(s) of unholy water and a magic trap gave its
 	remove curse effect, scroll of remove curse would become discovered
@@ -2129,7 +2129,7 @@ X11: was still initializing map to 'stone' instead of 'unexplored' after they
 	became separate glyphs
 X11: for text map without color, add support for black&white ice; draw it in
 	inverse video to distinguish from ordinary floor
-X11: if perm_invent is set in NETHACKOPTIONS or config file, start with the
+X11: if perm_invent is set in NERFHACKOPTIONS or config file, start with the
 	persistent inventory window displayed
 X11: use visctrl(response) when X11_yn_function() echoes prompt+response in
 	message window
@@ -2737,7 +2737,7 @@ tty: if a message is marked urgent, override message suppression initiated
 Unix: can define NOSUSPEND in config.h or src/Makefile's CFLAGS to prevent
 	unixconf.h from enabling SUSPEND without need to modify unixconf.h
 Unix: support --nethackrc=filename on the command line; same effect as
-	NETHACKOPTIONS='@filename' but leaves NETHACKOPTIONS available for
+	NERFHACKOPTIONS='@filename' but leaves NERFHACKOPTIONS available for
 	specifying options; --no-nethackrc is same as --nethackrc=/dev/null
 Windows: implement MSGHANDLER (pr #749 by argrath)
 Windows: Add configuration to support Curses on WinGUI (pr #1028 by chasonr) 

@@ -46,7 +46,7 @@ DESCRIPTION
        be  worth  a lot of gold when brought to the exit.  There is a 10% pen-
        alty for getting yourself killed.
 
-       The environment variable NETHACKOPTIONS can be used to initialize  many
+       The environment variable NERFHACKOPTIONS can be used to initialize  many
        run-time  options.   The  ?  command  provides  a  description of these
        options and syntax.  (The -dec and -ibm command line options are  mutu-
        ally  exclusive  and  are equivalent to the decgraphics and ibmgraphics
@@ -62,7 +62,7 @@ DESCRIPTION
        defaults.nh in NetHack's directory (folder), while on VMS|OpenVMS it is
        nerfhack.ini in your home directory.  The default configuration file may
        be  overridden  via  the  --nerfhackrc:rc-file command line option or by
-       setting NETHACKOPTIONS in your environment to a string consisting of an
+       setting NERFHACKOPTIONS in your environment to a string consisting of an
        @ character followed by the path and filename.
 
        The  -u  playername option supplies the answer to the question "Who are
@@ -263,10 +263,10 @@ ENVIRONMENT
        MAILREADER              Replacement for default reader
                                (probably /bin/mail or /usr/ucb/mail).
        NETHACKDIR or HACKDIR   Playground.
-       NETHACKOPTIONS          String predefining several NetHack options.
+       NERFHACKOPTIONS          String predefining several NetHack options.
 
-       If the same option is specified in both NETHACKOPTIONS and .nerfhackrc,
-       the value assigned in NETHACKOPTIONS takes precedence.
+       If the same option is specified in both NERFHACKOPTIONS and .nerfhackrc,
+       the value assigned in NERFHACKOPTIONS takes precedence.
 
        SHOPTYPE and SPLEVTYPE can be used in debugging (wizard) mode.
        DEBUGFILES can be used if the program was built with 'DEBUG' enabled.

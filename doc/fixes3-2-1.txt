@@ -78,7 +78,7 @@ oilskin cloaks allow defender to slip away from grabbing attacker
 make reading the cursed Book of the Dead riskier
 enchanting stat-affecting armor now identifies it
 fix crash caused by specifying "pickup_types" without a value in config file
-	or NETHACKOPTIONS (avoid attempt to use menu prior to interface init)
+	or NERFHACKOPTIONS (avoid attempt to use menu prior to interface init)
 kicking at empty lit corridor with lit_corridor enabled doesn't redraw as unlit
 when starting out with an oil lamp, make pre-discovered potions of oil show up
 	in the discoveries list so that their varying description is available

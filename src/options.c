@@ -99,7 +99,7 @@ enum option_phases {
     builtin_opt=1,/* compiled-in default value of an option */
     syscf_opt,    /* sysconf setting of an option, overrides builtin */
     rc_file_opt,  /* player's run-time config file setting, overrides syscf */
-    environ_opt,  /* player's environment NETHACKOPTIONS, overrides rc_file */
+    environ_opt,  /* player's environment NERFHACKOPTIONS, overrides rc_file */
     cmdline_opt,  /* program invocation command-line, overrides environ */
     play_opt,     /* 'O' command, interactively set so overrides all */
     num_opt_phases
@@ -4849,7 +4849,7 @@ optfn_windowtype(
          * For user, making it be first in a config file is trivial, use
          * OPTIONS=windowtype:Foo
          * as the first non-comment line of the file.
-         * Making it first in NETHACKOPTIONS requires it to be at the
+         * Making it first in NERFHACKOPTIONS requires it to be at the
          * _end_ because comma-separated option strings are processed from
          * right to left.
          */
@@ -6625,7 +6625,7 @@ rejectoption(const char *optname)
 #ifdef MICRO
     pline("\"%s\" settable only from %s.", optname, configfile);
 #else
-    pline("%s can be set only from NETHACKOPTIONS or %s.", optname,
+    pline("%s can be set only from NERFHACKOPTIONS or %s.", optname,
           configfile);
 #endif
 }
@@ -6960,11 +6960,11 @@ initoptions_init(void)
          * FIXME?  This continues even if setting windowtype to player's
          * specified value fails.  It doesn't lock the windowtype in
          * that situation though, so the game will use whatever is in
-         * RC/NETHACKOPTIONS or resort to DEFAULT_WINDOW_SYS.
+         * RC/NERFHACKOPTIONS or resort to DEFAULT_WINDOW_SYS.
          */
         if (windowprocs.name
             && !strcmpi(windowprocs.name, gc.cmdline_windowsys))
-            /* ignore any windowtype:foo in RC file or NETHACKOPTIONS */
+            /* ignore any windowtype:foo in RC file or NERFHACKOPTIONS */
             iflags.windowtype_locked = TRUE;
         /* shouldn't need cmdline_windowsys beyond here */
         free((genericptr_t) gc.cmdline_windowsys),
@@ -7106,19 +7106,19 @@ initoptions_init(void)
 
 /*
  *  Process user's run-time configuration file:
- *    get value of NETHACKOPTIONS;
+ *    get value of NERFHACKOPTIONS;
  *    if command line specified -nerfhackrc=filename, use that;
- *      if NETHACKOPTIONS is present,
+ *      if NERFHACKOPTIONS is present,
  *        honor it if it has a list of options to set
  *        or ignore it if it specifies a file name;
- *    else if not specified on command line and NETHACKOPTIONS names a file,
+ *    else if not specified on command line and NERFHACKOPTIONS names a file,
  *      use that as the config file;
- *      no extra options (normal use of NETHACKOPTIONS) will be set;
- *    otherwise (not on command line and either no NETHACKOPTIONS or that
+ *      no extra options (normal use of NERFHACKOPTIONS) will be set;
+ *    otherwise (not on command line and either no NERFHACKOPTIONS or that
  *        isn't a file name),
  *      pass Null to read_config_file() so that it will read ~/.nerfhackrc
  *        by default,
- *      then process the value of NETHACKOPTIONS as extra options.
+ *      then process the value of NERFHACKOPTIONS as extra options.
  */
 void
 initoptions_finish(void)
@@ -7130,7 +7130,7 @@ initoptions_finish(void)
 
     /* getenv() instead of nhgetenv(): let total length of options be long;
        parseoptions() will check each individually */
-    envname = "NETHACKOPTIONS";
+    envname = "NERFHACKOPTIONS";
     opts = getenv(envname);
     if (!opts) {
         /* fall back to original name; discouraged */
@@ -7143,9 +7143,9 @@ initoptions_finish(void)
         nameval = gc.cmdline_rcfile;
         xtraopts = opts;
         if (opts && (*opts == '/' || *opts == '\\' || *opts == '@'))
-            xtraopts = 0; /* NETHACKOPTIONS is a file name; ignore it */
+            xtraopts = 0; /* NERFHACKOPTIONS is a file name; ignore it */
     } else if (opts && (*opts == '/' || *opts == '\\' || *opts == '@')) {
-        /* NETHACKOPTIONS is a file name; use that instead of the default */
+        /* NERFHACKOPTIONS is a file name; use that instead of the default */
         if (*opts == '@')
             ++opts; /* @filename */
         namesrc = envname;
@@ -7154,7 +7154,7 @@ initoptions_finish(void)
     } else
 #endif /* !MAC */
     /*else*/ {
-        /* either no NETHACKOPTIONS or it wasn't a file name;
+        /* either no NERFHACKOPTIONS or it wasn't a file name;
            read the default configuration file */
         nameval = namesrc = 0;
         xtraopts = opts;
@@ -7177,7 +7177,7 @@ initoptions_finish(void)
     (void) read_config_file(nameval, set_in_config);
     config_error_done();
     if (xtraopts) {
-        /* NETHACKOPTIONS is present and not a file name */
+        /* NERFHACKOPTIONS is present and not a file name */
         go.opt_phase = environ_opt;
         config_error_init(FALSE, envname, FALSE);
         (void) parseoptions(xtraopts, TRUE, FALSE);
@@ -9227,11 +9227,11 @@ static const char *opt_intro[] = {
 #define CONFIG_SLOT 3 /* fill in next value at run-time */
     (char *) 0,
 #if !defined(MICRO) && !defined(MAC)
-    "or use `NETHACKOPTIONS=\"<options>\"' in your environment",
+    "or use `NERFHACKOPTIONS=\"<options>\"' in your environment",
 #endif
     "(<options> is a list of options separated by commas)",
 #ifdef VMS
-    "-- for example, $ DEFINE NETHACKOPTIONS \"noautopickup,fruit:kumquat\"",
+    "-- for example, $ DEFINE NERFHACKOPTIONS \"noautopickup,fruit:kumquat\"",
 #endif
     "or press \"O\" while playing and use the menu.",
     "",

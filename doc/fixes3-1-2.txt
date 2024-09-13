@@ -86,7 +86,7 @@ don't create doors over pits and trap doors when using a wand of locking
 fix mapping when you drop objects while following the guard out of a vault
 
 X11: some status didn't show up after restore
-UNIX: fix potential security hole accessing file through NETHACKOPTIONS setuid
+UNIX: fix potential security hole accessing file through NERFHACKOPTIONS setuid
 VMS: disable installed privileges when assigning i/o channel to terminal,
 	opening termcap, or accessing user-specified config file
 Amiga: invalid showscore and numberpad options inserted by frontend
