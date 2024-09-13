@@ -2239,7 +2239,7 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_SLOW_MONSTER:
     case MUSE_WAN_POLYMORPH:
     {
-        struct obj* pseudo;
+        struct obj* pseudo = NULL;
         gz.zap_oseen = oseen;
         mzapwand(mtmp, otmp, FALSE);
         gm.m_using = TRUE;
@@ -3939,7 +3939,7 @@ green_mon(struct monst *mon)
 staticfn int
 muse_wonder(void)
 {
-    int wondertemp;
+    int wondertemp = 0;
 
     while (gm.m.has_offense == MUSE_WAN_WONDER) {
         /* Choose a random wand */
