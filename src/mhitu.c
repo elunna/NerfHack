@@ -3020,6 +3020,11 @@ struct attack *mattk)
         impossible("counterattack() with polyd-rogue!");
         return M_ATTK_HIT;
     }
+    
+    /* Counterattacks use energy */
+    if (u.uen < 5)
+        return M_ATTK_HIT;
+
     /* Allow counterattacks on weapon, bite, claw, and kick attacks. */
     if (mattk->aatyp != AT_WEAP
             && mattk->aatyp != AT_BITE
@@ -3058,6 +3063,7 @@ struct attack *mattk)
         if (rn2(100) < chance) {
             You("counterattack!");
             (void) thitmonst(mtmp, uwep);
+            u.uen -= 5;
             if (DEADMONSTER(mtmp))
                 return M_ATTK_AGR_DIED;
             return M_ATTK_AGR_DONE;
