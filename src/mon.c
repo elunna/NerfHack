@@ -6917,6 +6917,11 @@ cham_depth_appropriate(struct monst *mon)
 
 /* Anything killed while playing as a cartomancer has
  * a chance of leaving behind a card.
+ *
+ * Card drops get less frequent as the difficulty level increases.
+ * If we don't do this, the player gets overrun with cards at a
+ * certain point. The tradeoff is that as the player levels up or
+ * goes deeper, the strength of the cards also increases.
  * Return TRUE if a card was dropped, otherwise FALSE.
  */
 staticfn boolean
@@ -6924,6 +6929,8 @@ card_drop(struct monst *mon)
 {
     struct obj *otmp;
     struct permonst *ptr = mon->data;
+    int difficulty = (level_difficulty() + u.ulevel) / 2;
+    int chance = (difficulty / 5) + 1;
 
     /* No potential for a unique card. */
     if (ptr->geno & G_UNIQ)
@@ -6942,7 +6949,10 @@ card_drop(struct monst *mon)
         || ptr == &mons[PM_PHOENIX])
         return FALSE;
 
-    if (rn2(2))
+    if (chance < 2)
+        chance = 2;
+
+    if (rn2(chance))
         return FALSE;
 
     switch (rnd(20)) {
