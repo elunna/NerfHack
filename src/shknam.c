@@ -187,6 +187,14 @@ static const char *const shkhealthfoods[] = {
     "=Zennia",  "=Zoe",      "=Zora",    0
 };
 
+static const char *const shkjunk[] = {
+    /* Silly names, clown names */
+    "=Spiffy",  "=Bonko",   "=Binky",       "=Tubby",   "=Zippy",
+    "=Jumbo",   "=Mittens", "=Chuckles",    "=Bam Bam", "=Larry",
+    "=Curly",   "=Moe",     "=Zaff",        "=Punky",   "=Zonko",
+    0
+};
+
 /*
  * To add new shop types, all that is necessary is to edit the shtypes[]
  * array.  See mkroom.h for the structure definition.  Typically, you'll
@@ -209,7 +217,7 @@ static const char *const shkhealthfoods[] = {
 const struct shclass shtypes[] = {
     { "general store", NULL,
       RANDOM_CLASS,
-      42,
+      37,
       D_SHOP,
       { { 100, RANDOM_CLASS },
         { 0, 0 },
@@ -326,6 +334,20 @@ const struct shclass shtypes[] = {
         { 2, -SCR_FOOD_DETECTION },
         { 1, -LUMP_OF_ROYAL_JELLY } },
       shkhealthfoods },
+    { "pawn shop", "junk shop",
+      RANDOM_CLASS,
+      5,
+      D_SHOP,
+      { { 64, RANDOM_CLASS },
+        { 5, -WAN_WONDER },
+        { 5, -WAN_NOTHING },
+        { 5, -RUBBER_HOSE },
+        { 5, -BAG_OF_TRICKS },
+        { 5, -IRON_CHAIN },
+        { 5, -TIN_OPENER },
+        { 5, -SCR_BLANK_PAPER },
+        { 1, -RIN_ADORNMENT } },
+      shkjunk },
     /* Shops below this point are "unique".  That is they must all have a
      * probability of zero.  They are only created via the special level
      * loader.
