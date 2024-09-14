@@ -2089,6 +2089,7 @@ thitmonst(
             tmp -= 3;
             break;
         case LEATHER_GLOVES:
+        case GAUNTLETS_OF_SWIMMING:
             break;
         case GAUNTLETS_OF_DEXTERITY: /* these gloves were made with archers in mind */
             tmp += 1;

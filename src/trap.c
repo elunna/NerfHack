@@ -5753,7 +5753,14 @@ drown(void)
                 else
                     You("touch bottom.");
             }
+        } else if (uarmg
+            && uarmg->otyp == GAUNTLETS_OF_SWIMMING
+            && !objects[GAUNTLETS_OF_SWIMMING].oc_name_known
+            && !(Amphibious || HSwimming)) {
+            pline("Hey! You can swim!");
+            makeknown(GAUNTLETS_OF_SWIMMING);
         }
+
         if (Punished) {
             unplacebc();
             placebc();

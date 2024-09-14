@@ -653,6 +653,12 @@ Gloves_on(void)
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             incr_itimeout(&HFumbling, rnd(20));
         break;
+    case GAUNTLETS_OF_SWIMMING:
+        if (u.uinwater) {
+           pline("Hey! You can swim!");
+           spoteffects(TRUE);
+        }
+        break;
     case GAUNTLETS_OF_POWER:
         makeknown(uarmg->otyp);
         disp.botl = TRUE; /* taken care of in attrib.c */
@@ -727,6 +733,12 @@ Gloves_off(void)
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             HFumbling = EFumbling = 0;
+        break;
+    case GAUNTLETS_OF_SWIMMING:
+        if (u.uinwater && !Swimming) {
+           You("begin to thrash about!");
+           spoteffects(TRUE);
+        }
         break;
     case GAUNTLETS_OF_POWER:
         makeknown(uarmg->otyp);
