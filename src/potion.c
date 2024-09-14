@@ -3170,7 +3170,7 @@ potion_dip(struct obj *obj, struct obj *potion)
             pline1(nothing_happens);
         } else {
             short save_otyp = obj->otyp;
-            int save_dknown = obj->dknown;
+            int save_dknown = (int) obj->dknown;
 
             /* KMH, conduct */
             if (!u.uconduct.polypiles++)
@@ -3189,7 +3189,7 @@ potion_dip(struct obj *obj, struct obj *potion)
                     makeknown(POT_POLYMORPH);
                 return ECMD_TIME;
             } else if (obj->otyp != save_otyp
-                    || obj->dknown != save_dknown) {
+                    || obj->dknown != (int) save_dknown) {
                 if (potion->dknown)
                     makeknown(POT_POLYMORPH);
                 useup(potion);
