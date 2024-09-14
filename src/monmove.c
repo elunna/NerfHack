@@ -1076,7 +1076,7 @@ mon_would_take_item(struct monst *mtmp, struct obj *otmp)
     if (throws_rocks(mtmp->data) && otmp->otyp == BOULDER
         && pctload < 50 && !Sokoban)
         return TRUE;
-    if (mtmp->data == &mons[PM_GELATINOUS_CUBE]
+    if (is_bigeater(mtmp->data)
         && otmp->oclass != ROCK_CLASS && otmp->oclass != BALL_CLASS
         && !(otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm])))
         return TRUE;
@@ -1692,7 +1692,7 @@ postmov(
             }
 
             /* Maybe a cube ate just about anything */
-            if (ptr == &mons[PM_GELATINOUS_CUBE]) {
+            if (is_bigeater(ptr)) {
                 if ((etmp = meatobj(mtmp)) >= 2)
                     return etmp; /* it died or got forced off the level */
             }

@@ -1028,7 +1028,7 @@ mu_maybe_destroy_web(
     struct permonst *mptr = mtmp->data;
 
     if (amorphous(mptr) || is_whirly(mptr) || flaming(mptr)
-        || unsolid(mptr) || mptr == &mons[PM_GELATINOUS_CUBE]) {
+        || unsolid(mptr) || is_bigeater(mptr)) {
         coordxy x = trap->tx;
         coordxy y = trap->ty;
 
@@ -3397,7 +3397,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
     case WEB:
         /* most of this code is lifted from mu_maybe_destroy_web */
         if (webmaker(pm) || amorphous(pm) || is_whirly(pm) || flaming(pm)
-            || unsolid(pm) || pm == &mons[PM_GELATINOUS_CUBE])
+            || unsolid(pm) || is_bigeater(pm))
             return TRAP_CLEARLY_IMMUNE;
         return TRAP_NOT_IMMUNE;
     case ANTI_MAGIC:

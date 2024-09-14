@@ -972,6 +972,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_OGRE_TYRANT:
     case PM_OGRE_MAGE:
     case PM_SHADOW_OGRE:
+    case PM_SHOGGOTH:
     case PM_QUANTUM_MECHANIC:
     case PM_GENETIC_ENGINEER:
     case PM_RUST_MONSTER:
@@ -1705,7 +1706,7 @@ movemon(void)
 void
 meatbox(struct monst *mon, struct obj *otmp)
 {
-    boolean engulf_contents = (mon->data == &mons[PM_GELATINOUS_CUBE]);
+    boolean engulf_contents = (is_bigeater(mon->data));
     int x = mon->mx, y = mon->my;
     struct obj *cobj;
 

@@ -398,8 +398,9 @@
 #define vegetarian(ptr) \
     (vegan(ptr)         \
      || ((ptr)->mlet == S_PUDDING \
-         && ((ptr) != &mons[PM_BLACK_PUDDING] \
-            && (ptr) != &mons[PM_LIKE_LIKE])))
+        && ((ptr) != &mons[PM_BLACK_PUDDING] \
+        && ((ptr) != &mons[PM_SHOGGOTH]) \
+        && (ptr) != &mons[PM_LIKE_LIKE])))
 
 #define corpse_eater(ptr)                    \
     (ptr == &mons[PM_PURPLE_WORM]            \
@@ -445,6 +446,10 @@
 #define DEAD_UNICORNS ((int) svm.mvitals[PM_WHITE_UNICORN].died \
                         + (int) svm.mvitals[PM_GRAY_UNICORN].died \
                         + (int) svm.mvitals[PM_BLACK_UNICORN].died)
+
+/* instantly eats any organic object it comes into contact with */
+#define is_bigeater(ptr) \
+    ((ptr) == &mons[PM_GELATINOUS_CUBE] || (ptr) == &mons[PM_SHOGGOTH])
 
 /* Corpse intrinsic stats */
 #define MAX_GAIN 25

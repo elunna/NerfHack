@@ -2868,6 +2868,23 @@
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID,
         M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 12, CLR_BLACK, BLACK_PUDDING),
+    MON(NAM("shoggoth"), S_PUDDING,
+        LVL(18, 15, -5, 25, -5), (G_GENO | 1),
+        A(ATTK(AT_CLAW, AD_PHYS, 4, 8),
+          ATTK(AT_ENGL, AD_ACID, 4, 8),
+          ATTK(AT_TUCH, AD_CORR, 0, 0),
+          ATTK(AT_NONE, AD_CORR, 0, 0),
+          NO_ATTK, NO_ATTK),
+        SIZ(2500, 500, MS_SILENT, MZ_LARGE),
+        MR_COLD | MR_ELEC | MR_POISON | MR_ACID | MR_STONE,
+        MR_COLD | MR_ELEC | MR_POISON,
+        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
+            | M1_OMNIVORE | M1_ACID | M1_HIDE | M1_REGEN | M1_METALLIVORE
+            | M1_MINDLESS,
+        M2_HOSTILE | M2_NEUTER | M2_STALK | M2_NASTY | M2_STRONG
+            | M2_COLLECT | M2_MAGIC,
+        M3_INFRAVISION,
+        NO_RACE, 25, CLR_BLACK, SHOGGOTH),
     /*
      * Quantum mechanics
      */

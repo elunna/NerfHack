@@ -113,7 +113,7 @@ is_edible(struct obj *obj)
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
 	    return FALSE;
 
-    if (u.umonnum == PM_GELATINOUS_CUBE && is_organic(obj)
+    if (is_bigeater(gy.youmonst.data) && is_organic(obj)
         /* [g-cubes can eat containers and retain all contents
             as engulfed items, but poly'd player can't do that] */
         && !Has_contents(obj))
