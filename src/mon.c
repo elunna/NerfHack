@@ -1005,6 +1005,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_SKELETON:
     case PM_GHOUL_MAGE:
     case PM_REVENANT:
+    case PM_GUG:
     case PM_STRAW_GOLEM:
     case PM_FLESH_GOLEM:
     case PM_HUMAN:

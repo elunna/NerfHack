@@ -3360,6 +3360,20 @@
             | M2_NASTY,
         M3_INFRAVISION,
         MH_UNDEAD, 15, CLR_BRIGHT_BLUE, REVENANT),
+    MON(NAM("gug"), S_ZOMBIE,
+        LVL(15, 18, 5, 15, -4), (G_GENO | G_NOCORPSE | 1 | G_LGROUP),
+        A(ATTK(AT_CLAW, AD_PHYS, 2, 6),
+          ATTK(AT_CLAW, AD_PHYS, 2, 6),
+          ATTK(AT_BITE, AD_PLYS, 3, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1800, 150, MS_SILENT, MZ_MEDIUM),
+        MR_COLD | MR_SLEEP | MR_POISON, 0,
+        M1_HUMANOID | M1_POIS | M1_TUNNEL | M1_NEEDPICK | M1_THICK_HIDE
+            | M1_CARNIVORE,
+        M2_WANDER | M2_HOSTILE | M2_STRONG | M2_STALK | M2_COLLECT
+            | M2_MAGIC,
+        M3_INFRAVISION,
+        MH_UNDEAD, 18, CLR_BLACK, GUG),
     /*
      * golems
      */
