@@ -6980,9 +6980,9 @@ card_drop(struct monst *mon)
          * keep things more interesting when slaying hordes of weenies.
          * The odds come roughly from old MtG booster packs having 1 rare.
          */
-        if (!rn2(3)) {
+        if (!rn2(2)) {
             int tryct = 0;
-            int min_lev = 2 + u.ulevel;
+            int min_lev = 1;
             /* Try to restrain overly powerful drops, but allow them once in a while. */
             int max_lev = 5 + u.ulevel * (!rn2(10) ? 2 : 1);
             do
