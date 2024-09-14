@@ -969,6 +969,10 @@ should_givit(int type, struct permonst *ptr)
 {
     int chance;
 
+    /* Compensate for more plentiful fungi */
+    if (ptr->mlet == S_FUNGUS)
+        return 50;
+
     /* some intrinsics are easier to get than others */
     switch (type) {
     case TELEPORT:
@@ -1169,6 +1173,10 @@ cpostfx(int pm)
        gold, clean up now to avoid `eatmbuf' memory leak */
     if (ge.eatmbuf)
         (void) eatmdone();
+
+     /* Compensate for more plentiful fungi */
+    if (mons[pm].mlet == S_FUNGUS && rn2(3))
+        return;
 
     /* put anything not based on specific species here */
     if (mons[pm].mlet == S_TROLL) {
