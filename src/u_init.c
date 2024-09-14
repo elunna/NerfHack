@@ -63,8 +63,8 @@ static struct trobj Barbarian[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cartomancer[] = {
-    { DAGGER, 1, WEAPON_CLASS, 1, 0 },
-    { RAZOR_CARD, 0, WEAPON_CLASS, 40, 1 },
+#define T_CARDS 0
+    { RAZOR_CARD, 0, WEAPON_CLASS, 40, UNDEF_BLESS }, /* quan is variable */
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { MEAT_STICK, 0, FOOD_CLASS, 2, 0 },
     { CANDY_BAR, 0, FOOD_CLASS, 2, 0 },
@@ -697,6 +697,7 @@ u_init_role(void)
         skill_init(Skill_B);
         break;
     case PM_CARTOMANCER:
+        Cartomancer[T_CARDS].trquan = rn1(21, 40); /* 40..60 */
         ini_inv(Cartomancer);
         if (!rn2(3))
             ini_inv(PhasePotion);
