@@ -160,7 +160,7 @@ m_break_boulder(struct monst *mtmp, coordxy x, coordxy y)
             if (mtmp->data->msound == MS_NEMESIS) {
                 /* Increment the mavenge counter, but don't
                  * affect mspec_used. */
-                if (rnd(100) > mtmp->mavenge) {
+                if (rnd(100) > (int) mtmp->mavenge) {
                     mtmp->mavenge++;
                     return;
                 }
