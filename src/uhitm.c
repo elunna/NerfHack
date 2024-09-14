@@ -6996,6 +6996,16 @@ passive(
         break;
     }
 
+    /* All fungi can propogate when agitated, 
+     * brown mold already can do this. */
+    if (malive && !mon->mcan && mon->data->mlet == S_FUNGUS
+        && ptr->mattk[i].adtyp != AD_COLD && rn2(3)) {
+        mon->mhp += 2;
+        if (mon->mhpmax < mon->mhp)
+            mon->mhpmax = mon->mhp;
+        (void) split_mon(mon,(struct monst *) 0);
+    }
+
     /*  These only affect you if they still live.
      */
     if (malive && !mon->mcan && rn2(3)) {

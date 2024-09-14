@@ -971,7 +971,7 @@ should_givit(int type, struct permonst *ptr)
 
     /* Compensate for more plentiful fungi */
     if (ptr->mlet == S_FUNGUS)
-        return 50;
+        return 25;
 
     /* some intrinsics are easier to get than others */
     switch (type) {
@@ -1175,7 +1175,7 @@ cpostfx(int pm)
         (void) eatmdone();
 
      /* Compensate for more plentiful fungi */
-    if (mons[pm].mlet == S_FUNGUS && rn2(3))
+    if (mons[pm].mlet == S_FUNGUS && rn2(4))
         return;
 
     /* put anything not based on specific species here */
