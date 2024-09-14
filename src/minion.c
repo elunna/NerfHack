@@ -340,6 +340,7 @@ demon_talk(struct monst *mtmp)
             pline("%s gets angry...", Amonnam(mtmp));
             mtmp->mpeaceful = 0;
             set_malign(mtmp);
+            newsym(mtmp->mx, mtmp->my);
             return 0;
         }
     }
