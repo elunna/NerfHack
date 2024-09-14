@@ -1290,7 +1290,8 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
               spells in restricted skill categories */
            || (obj->oclass == SPBOOK_CLASS
                && (objects[otyp].oc_level > (got_level1_spellbook ? 3 : 1)
-                   || restricted_spell_discipline(otyp)))
+                   || (restricted_spell_discipline(otyp)
+                        && !Role_if(PM_CARTOMANCER))))
            || otyp == SPE_NOVEL) {
         dealloc_obj(obj);
         if (++trycnt > 1000) {
