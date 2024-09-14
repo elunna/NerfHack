@@ -1398,6 +1398,7 @@ makemon(
                  /* in Sokoban, don't accept a giant on first try;
                     after that, boulder carriers are fair game */
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
+                     || (ptr == &mons[PM_VOLATILE_MUSHROOM] && inside_shop(x, y))
                      || !goodpos(x, y, &fakemon, gpflags)));
         mndx = monsndx(ptr);
     }
