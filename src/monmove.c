@@ -128,7 +128,10 @@ mon_yells(struct monst *mon, const char *shout)
     }
 }
 
-/* can monster mtmp break boulders? */
+/* can monster mtmp break boulders?
+ * The quest nemesis *can* break boulders, but 
+ * only after reaching a certain frustration level
+ * tracked by mavenge. */
 boolean
 m_can_break_boulder(struct monst *mtmp)
 {
@@ -140,6 +143,7 @@ m_can_break_boulder(struct monst *mtmp)
             || (!mtmp->mspec_used
                 && (mtmp->isshk
                         || mtmp->ispriest
+                        || (mtmp->data->msound == MS_NEMESIS)
                         || (mtmp->data->msound == MS_LEADER)))));
 }
 
@@ -152,6 +156,15 @@ m_break_boulder(struct monst *mtmp, coordxy x, coordxy y)
 
     if (m_can_break_boulder(mtmp) && ((otmp = sobj_at(BOULDER, x, y)) != 0)) {
         if (!is_rider(mtmp->data)) {
+
+            if (mtmp->data->msound == MS_NEMESIS) {
+                /* Increment the mavenge counter, but don't
+                 * affect mspec_used. */
+                if (rnd(100) > mtmp->mavenge) {
+                    mtmp->mavenge++;
+                    return;
+                }
+            }
             if (distu(mtmp->mx, mtmp->my) < 4 * 4) {
                 if (canspotmon(mtmp))
                     set_msg_xy(mtmp->mx, mtmp->my);
