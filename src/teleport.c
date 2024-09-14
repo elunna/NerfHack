@@ -2221,13 +2221,21 @@ u_teleport_mon(struct monst *mtmp, boolean give_feedback)
 staticfn void
 teleport_pain(void)
 {
+    int uhpmin = minuhpmax(1);
+    int dmg = u.uhp / 3;
     pline("A dark field of force rips through you!");
-    u.uhp /= 3;
-    if (u.uhp < 1)
-        u.uhp = 1;		/* be generous */
+    losehp(dmg, "ripped apart by a force field", KILLED_BY);
+
+    if (Upolyd) {
+        u.mhmax -= min(rnd(8), u.mhmax - 1);
+    } else {
+        if (u.uhpmax > uhpmin)
+            setuhpmax(max(u.uhpmax - rnd(8), uhpmin));
+    }
     u.uen /= 5;
     if (u.uen < 1)
         u.uen = 1;
+    drain_en(rnd(8), FALSE);
 }
 
 /*teleport.c*/
