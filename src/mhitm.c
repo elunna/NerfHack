@@ -230,7 +230,7 @@ mdisplacem(
     gv.vis = (canspotmon(magr) && canspotmon(mdef));
 
     if (touch_petrifies(pd) && !resists_ston(magr)) {
-        if (!which_armor(magr, W_ARMG)) {
+        if (!safegloves(which_armor(magr, W_ARMG))) {
             if (poly_when_stoned(pa)) {
                 mon_to_stone(magr);
                 return M_ATTK_HIT; /* no damage during the polymorph */

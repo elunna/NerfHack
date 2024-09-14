@@ -265,7 +265,7 @@ query_classes(
 staticfn boolean
 fatal_corpse_mistake(struct obj *obj, boolean remotely)
 {
-    if (uarmg || remotely || obj->otyp != CORPSE
+    if (safegloves(uarmg) || remotely || obj->otyp != CORPSE
         || !touch_petrifies(&mons[obj->corpsenm]) || Stone_resistance)
         return FALSE;
 
@@ -2444,7 +2444,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
         boolean petri = (otmp->otyp == CORPSE
                          && touch_petrifies(&mons[otmp->corpsenm]));
         boolean mtmp_would_ston = (!taking && petri
-                                   && !which_armor(mtmp, W_ARMG)
+                                   && !safegloves(which_armor(mtmp, W_ARMG))
                                    && !resists_ston(mtmp));
         boolean unpaid = otmp->unpaid
                 || (!otmp->no_charge && costly_spot(u.ux, u.uy));

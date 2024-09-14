@@ -3307,7 +3307,7 @@ searches_for_item(struct monst *mon, struct obj *obj)
         break;
     case FOOD_CLASS:
         if (typ == CORPSE)
-            return (boolean) (((mon->misc_worn_check & W_ARMG) != 0L
+            return (boolean) ((safegloves(which_armor(mon, W_ARMG))
                                && touch_petrifies(&mons[obj->corpsenm]))
                               || (!resists_ston(mon)
                                   && cures_stoning(mon, obj, FALSE)));

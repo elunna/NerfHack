@@ -185,7 +185,8 @@ cant_wield_corpse(struct obj *obj)
 {
     char kbuf[BUFSZ];
 
-    if (uarmg || obj->otyp != CORPSE || !touch_petrifies(&mons[obj->corpsenm])
+    if (safegloves(uarmg) || obj->otyp != CORPSE
+        || !touch_petrifies(&mons[obj->corpsenm])
         || Stone_resistance)
         return FALSE;
 

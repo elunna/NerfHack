@@ -64,7 +64,7 @@ use_saddle(struct obj *otmp)
         return ECMD_TIME;
     }
     ptr = mtmp->data;
-    if (touch_petrifies(ptr) && !uarmg && !Stone_resistance) {
+    if (touch_petrifies(ptr) && !safegloves(uarmg) && !Stone_resistance) {
         char kbuf[BUFSZ];
 
         You("touch %s.", mon_nam(mtmp));

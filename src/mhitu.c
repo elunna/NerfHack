@@ -1114,7 +1114,8 @@ mattacku(struct monst *mtmp)
 
                 /* Intelligent monsters avoid dumb deaths */
                 if (humanoid(mtmp->data) && gs.skipdrin
-                    && !MON_WEP(mtmp) && !which_armor(mtmp, W_ARMG)) {
+                    && !MON_WEP(mtmp)
+                    && !safegloves(which_armor(mtmp, W_ARMG))) {
                     monflee(mtmp, rn1(9, 2), TRUE, TRUE);
                     continue;
                 }

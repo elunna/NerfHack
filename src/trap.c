@@ -4493,7 +4493,7 @@ mselftouch(
         minstapetrify(mon, byplayer);
         /* if life-saved, might not be able to continue wielding */
         if (!DEADMONSTER(mon)
-            && !which_armor(mon, W_ARMG) && !resists_ston(mon))
+            && !safegloves(which_armor(mon, W_ARMG)) && !resists_ston(mon))
             mwepgone(mon);
     }
 }
@@ -6409,7 +6409,7 @@ help_monster_out(
     }
 
     /* is it a cockatrice?... */
-    if (touch_petrifies(mtmp->data) && !uarmg && !Stone_resistance) {
+    if (touch_petrifies(mtmp->data) && !safegloves(uarmg) && !Stone_resistance) {
         const char *mtmp_pmname = mon_pmname(mtmp);
 
         You("grab the trapped %s using your bare %s.",

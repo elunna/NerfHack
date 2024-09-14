@@ -135,7 +135,8 @@ throw_obj(struct obj *obj, int shotlimit)
         goto unsplit_stack;
     }
     u_wipe_engr(2);
-    if (!uarmg && obj->otyp == CORPSE && touch_petrifies(&mons[obj->corpsenm])
+    if (!safegloves(uarmg) && obj->otyp == CORPSE
+        && touch_petrifies(&mons[obj->corpsenm])
         && !Stone_resistance) {
         You("throw %s with your bare %s.",
             corpse_xname(obj, (const char *) 0, CXN_PFX_THE),
@@ -2090,6 +2091,7 @@ thitmonst(
             break;
         case LEATHER_GLOVES:
         case GAUNTLETS_OF_SWIMMING:
+        case ROGUE_S_GLOVES:
             break;
         case GAUNTLETS_OF_DEXTERITY: /* these gloves were made with archers in mind */
             tmp += 1;

@@ -443,6 +443,8 @@ struct obj {
      || (obj)->otyp == TOUCHSTONE)
 
 /* misc helpers, simple enough to be macros */
+#define safegloves(otmp) (otmp && !objdescr_is(otmp, "fingerless gloves"))
+
 #define is_flimsy(otmp)                           \
     (objects[(otmp)->otyp].oc_material <= LEATHER \
      || (otmp)->otyp == RUBBER_HOSE)

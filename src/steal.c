@@ -634,7 +634,7 @@ steal(struct monst *mtmp, char *objnambuf)
                      && touch_petrifies(&mons[otmp->corpsenm]));
     otmp->how_lost = LOST_STOLEN;
     (void) mpickobj(mtmp, otmp); /* may free otmp */
-    if (could_petrify && !(mtmp->misc_worn_check & W_ARMG)) {
+    if (could_petrify && !safegloves(which_armor(mtmp, W_ARMG))) {
         minstapetrify(mtmp, TRUE);
         return -1;
     }

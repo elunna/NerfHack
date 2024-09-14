@@ -2343,7 +2343,7 @@ use_tinning_kit(struct obj *obj)
         return;
     }
     mptr = &mons[corpse->corpsenm];
-    if (touch_petrifies(mptr) && !Stone_resistance && !uarmg) {
+    if (touch_petrifies(mptr) && !Stone_resistance && !safegloves(uarmg)) {
         char kbuf[BUFSZ];
         const char *corpse_name = an(cxname(corpse));
 
@@ -3656,7 +3656,8 @@ use_whip(struct obj *obj)
                     /* right into your inventory */
                     You("snatch %s!", yname(otmp));
                     if (otmp->otyp == CORPSE
-                        && touch_petrifies(&mons[otmp->corpsenm]) && !uarmg
+                        && touch_petrifies(&mons[otmp->corpsenm])
+                        && !safegloves(uarmg)
                         && !Stone_resistance
                         && !(poly_when_stoned(gy.youmonst.data)
                              && polymon(PM_STONE_GOLEM))) {

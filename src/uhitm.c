@@ -2604,7 +2604,7 @@ demonpet(void)
 staticfn boolean
 theft_petrifies(struct obj *otmp)
 {
-    if (uarmg || otmp->otyp != CORPSE
+    if (safegloves(uarmg) || otmp->otyp != CORPSE
         || !touch_petrifies(&mons[otmp->corpsenm]) || Stone_resistance)
         return FALSE;
 
@@ -6870,11 +6870,12 @@ passive(
                 protector = W_ARMG;
 
             if (protector == 0L /* no protection */
-                || (protector == W_ARMG && !uarmg
+                || (protector == W_ARMG && !safegloves(uarmg)
                     && !uwep && !wep_was_destroyed)
                 || (protector == W_ARMF && !uarmf)
                 || (protector == W_ARMH && !uarmh)
-                || (protector == (W_ARMC | W_ARMG) && (!uarmc || !uarmg))) {
+                || (protector == (W_ARMC | W_ARMG) 
+                    && (!uarmc|| !safegloves(uarmg)))) {
                 if (!Stone_resistance
                     && !(poly_when_stoned(gy.youmonst.data)
                          && polymon(PM_STONE_GOLEM))) {

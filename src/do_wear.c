@@ -648,6 +648,7 @@ Gloves_on(void)
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
     case GAUNTLETS_OF_FORCE:
+    case ROGUE_S_GLOVES:
         break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
@@ -729,6 +730,7 @@ Gloves_off(void)
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
     case GAUNTLETS_OF_FORCE:
+    case ROGUE_S_GLOVES:
         break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
