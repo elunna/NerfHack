@@ -1,4 +1,4 @@
-/* NetHack 3.7	dogmove.c	$NHDT-Date: 1713336326 2024/04/17 06:45:26 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.150 $ */
+/* NetHack 3.7	dogmove.c	$NHDT-Date: 1725733007 2024/09/07 18:16:47 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.156 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -327,7 +327,7 @@ dog_eat(struct monst *mtmp,
             oprice = unpaid_cost(obj, COST_CONTENTS);
             pline("That %s will cost you %ld %s.", objnambuf, oprice,
                   currency(oprice));
-            /* m_consume_obj -> delobj -> obfree will actual handle shop
+            /* m_consume_obj() -> delobj() -> obfree() will handle the shop
                billing update */
         }
         m_consume_obj(mtmp, obj);
@@ -682,7 +682,7 @@ find_targ(
                 /* if a long worm, only accept the head as a target */
                 && targ->mx == curx && targ->my == cury) /* not tail */
                 break;
-            /* If the pet can't see it, it assumes it aint there */
+            /* If the pet can't see it, it assumes it ain't there */
             targ = 0;
         }
     }

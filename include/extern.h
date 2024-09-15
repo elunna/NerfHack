@@ -9,7 +9,7 @@
  * The placements of the NONNULLARG* and NONNULLPTRS macros were done
  * using the following rules:
  * These were the rules that were followed when determining which function
- * parameters should be nonnul, and which are nullable:
+ * parameters should be nonnull, and which are nullable:
  *
  *   1. If the first use of, or reference to, the pointer parameter in the
  *      function is a dereference, then the parameter will be considered
@@ -1172,6 +1172,7 @@ extern void purge_all_custom_entries(void);
 extern void dump_glyphids(void);
 extern void clear_all_glyphmap_colors(void);
 extern void reset_customcolors(void);
+extern int glyph_to_cmap(int);
 
 /* ### hack.c ### */
 
@@ -1199,7 +1200,7 @@ extern void impact_disturbs_zombies(struct obj *, boolean) NONNULLARG1;
 extern void disturb_buried_zombies(coordxy, coordxy);
 extern boolean u_maybe_impaired(void);
 extern const char *u_locomotion(const char *) NONNULLARG1;
-extern void handle_tip(int);
+extern boolean handle_tip(int);
 extern void domove(void);
 extern void runmode_delay_output(void);
 extern void overexert_hp(void);

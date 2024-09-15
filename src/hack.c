@@ -11,6 +11,7 @@
 staticfn boolean could_move_onto_boulder(coordxy, coordxy);
 staticfn void moverock_done(coordxy, coordxy);
 staticfn int moverock(void);
+staticfn int moverock_core(coordxy, coordxy);
 staticfn void dosinkfall(void);
 staticfn boolean findtravelpath(int);
 staticfn boolean trapmove(coordxy, coordxy, struct trap *);
@@ -168,21 +169,31 @@ moverock_done(coordxy sx, coordxy sy)
 staticfn int
 moverock(void)
 {
-    coordxy rx, ry, sx, sy;
+    coordxy sx, sy;
+    int ret;
+
+    sx = u.ux + u.dx, sy = u.uy + u.dy; /* boulder starting position */
+    ret = moverock_core(sx, sy);
+    moverock_done(sx, sy);
+    return ret;
+}
+
+staticfn int
+moverock_core(coordxy sx, coordxy sy)
+{
+    coordxy rx, ry;
     struct obj *otmp;
     struct trap *ttmp;
     struct monst *mtmp, *shkp;
     const char *what;
     boolean costly, firstboulder = TRUE;
 
-    sx = u.ux + u.dx, sy = u.uy + u.dy; /* boulder starting position */
     while ((otmp = sobj_at(BOULDER, sx, sy)) != 0) {
 
         if (Blind && glyph_to_obj(glyph_at(sx, sy)) != BOULDER) {
             pline("That feels like a boulder.");
             map_object(otmp, TRUE);
             nomul(0);
-            moverock_done(sx, sy);
             return -1;
         }
 
@@ -234,7 +245,6 @@ moverock(void)
                     svc.context.door_opened = svc.context.move = TRUE;
                 res = -1; /* don't move to <sx,sy>, so no soko guilt */
             }
-            moverock_done(sx, sy); /* stop further push attempts */
             return res;
         }
         if (Levitation || Is_airlevel(&u.uz)) {
@@ -246,7 +256,6 @@ moverock(void)
                 feel_location(sx, sy);
             You("don't have enough leverage to push %s.", the(xname(otmp)));
             /* Give them a chance to climb over it? */
-            moverock_done(sx, sy);
             return -1;
         }
         if (verysmall(gy.youmonst.data) && !u.usteed) {
@@ -275,7 +284,6 @@ moverock(void)
 
             if (revive_nasty(rx, ry,
                              "You sense movement on the other side.")) {
-                moverock_done(sx, sy);
                 return -1;
             }
 
@@ -321,7 +329,6 @@ moverock(void)
             if (ttmp) {
                 int newlev = 0; /* lint suppression */
                 d_level dest;
-                int res;
 
                 /* if a trap operates on the boulder, don't attempt
                    to move any others at this location; return -1
@@ -350,9 +357,7 @@ moverock(void)
                         fill_pit(u.ux, u.uy);
                         if (cansee(rx, ry))
                             newsym(rx, ry);
-                        res = sobj_at(BOULDER, sx, sy) ? -1 : 0;
-                        moverock_done(sx, sy);
-                        return res;
+                        return sobj_at(BOULDER, sx, sy) ? -1 : 0;
                     }
                     break;
                 case SPIKED_PIT:
@@ -368,9 +373,7 @@ moverock(void)
                     }
                     if (mtmp && !Blind)
                         newsym(rx, ry);
-                    res = sobj_at(BOULDER, sx, sy) ? -1 : 0;
-                    moverock_done(sx, sy);
-                    return res;
+                    return sobj_at(BOULDER, sx, sy) ? -1 : 0;
                 case HOLE:
                 case TRAPDOOR:
                     Soundeffect(se_kerplunk_boulder_gone, 40);
@@ -393,9 +396,7 @@ moverock(void)
                     levl[rx][ry].candig = 1;
                     if (cansee(rx, ry))
                         newsym(rx, ry);
-                    res = sobj_at(BOULDER, sx, sy) ? -1 : 0;
-                    moverock_done(sx, sy);
-                    return res;
+                    return sobj_at(BOULDER, sx, sy) ? -1 : 0;
                 case LEVEL_TELEP:
                     /* 20% chance of picking current level; 100% chance for
                        that if in single-level branch (Knox) or in endgame */
@@ -425,9 +426,7 @@ moverock(void)
                         otmp->owornmask = (long) MIGR_RANDOM;
                     }
                     seetrap(ttmp);
-                    res = sobj_at(BOULDER, sx, sy) ? -1 : 0;
-                    moverock_done(sx, sy);
-                    return res;
+                    return sobj_at(BOULDER, sx, sy) ? -1 : 0;
                 default:
                     break; /* boulder not affected by this trap */
                 }
@@ -561,7 +560,6 @@ moverock(void)
                        past it without pushing it to plug a pit or hole */
                     sokoban_guilt();
                 }
-                moverock_done(sx, sy);
                 return 0;
             }
 
@@ -569,15 +567,12 @@ moverock(void)
                 pline(
                    "However, you can squeeze yourself into a small opening.");
                 sokoban_guilt();
-                moverock_done(sx, sy);
                 return 0;
             } else {
-                moverock_done(sx, sy);
                 return -1;
             }
         }
     }
-    moverock_done(sx, sy);
     return 0;
 }
 
@@ -1753,25 +1748,26 @@ u_simple_floortyp(coordxy x, coordxy y)
     return ROOM;
 }
 
-/* maybe show a helpful gameplay tip? */
-void
+/* maybe show a helpful gameplay tip? returns True if tip gets shown */
+boolean
 handle_tip(int tip)
 {
     if (!flags.tips)
-        return;
+        return FALSE;
 
     if (tip >= 0 && tip < NUM_TIPS && !svc.context.tips[tip]) {
         svc.context.tips[tip] = TRUE;
+        /* the "Tip:" prefix is a hint to use of OPTIONS=!tips to suppress */
         switch (tip) {
         case TIP_ENHANCE:
-            pline("(Use the #enhance command to advance them.)");
+            pline("(Tip: use the #enhance command to advance them.)");
             break;
         case TIP_SWIM:
-            pline("(Use '%s' prefix to step in if you really want to.)",
+            pline("(Tip: use '%s' prefix to step in if you really want to.)",
                   visctrl(cmd_from_func(do_reqmenu)));
             break;
         case TIP_UNTRAP_MON:
-            pline("(Perhaps #untrap would help?)");
+            pline("(Tip: perhaps #untrap would help?)");
             break;
         case TIP_GETPOS:
             l_nhcore_call(NHCORE_GETPOS_TIP);
@@ -1780,7 +1776,9 @@ handle_tip(int tip)
             impossible("Unknown tip in handle_tip(%i)", tip);
             break;
         }
+        return TRUE;
     }
+    return FALSE;
 }
 
 /* Is it dangerous for hero to move to x,y due to water or lava? */
@@ -1816,7 +1814,7 @@ swim_move_danger(coordxy x, coordxy y)
                 You("avoid %s into the %s.",
                     ing_suffix(u_locomotion("step")),
                     waterbody_name(x, y));
-                handle_tip(TIP_SWIM);
+                (void) handle_tip(TIP_SWIM);
                 return TRUE;
             }
         }
@@ -2057,7 +2055,7 @@ domove_swap_with_pet(struct monst *mtmp, coordxy x, coordxy y)
             which = just_an(anbuf, what); /* "a " or "an " */
         }
         You("stop.  %s can't move out of %s%s.", YMonnam(mtmp), which, what);
-        handle_tip(TIP_UNTRAP_MON);
+        (void) handle_tip(TIP_UNTRAP_MON);
         didnt_move = TRUE;
     } else if (mtmp->mpeaceful
                && (!goodpos(u.ux0, u.uy0, mtmp, 0)
@@ -2708,6 +2706,11 @@ domove_core(void)
         /* check for discovered trap */
         && (trap = t_at(x, y)) != 0 && trap->tseen
         /* check whether attempted move will be viable */
+    /*
+     * FIXME:
+     *  this will result in "Really step into trap?" if there is a
+     *  peaceful or tame monster already there.
+     */
         && test_move(u.ux, u.uy, u.dx, u.dy, TEST_MOVE)
         /* override confirmation if the trap is harmless to the hero */
         && (immune_to_trap(&gy.youmonst, trap->ttyp) != TRAP_CLEARLY_IMMUNE
@@ -4184,8 +4187,9 @@ saving_grace(int dmg)
            we might invent one, or perhaps use LL_LIFESAVE, but surviving
            certain death (or preserving worn amulet of life saving) via
            saving-grace feels like breaking a conduct; not sure how best
-           to phrase this though... */
-        livelog_printf(LL_CONDUCT, "%s (%d damage, %d/%d HP)",
+           to phrase this though; classifying it as a spoiler will hide it
+           from #chronicle during play but show it to livelog observers */
+        livelog_printf(LL_CONDUCT | LL_SPOILER, "%s (%d damage, %d/%d HP)",
                        "survived one-shot death via saving-grave",
                        dmg, u.uhp, u.uhpmax);
 

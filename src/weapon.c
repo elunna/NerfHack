@@ -127,7 +127,7 @@ give_may_advance_msg(int skill)
                      : (skill <= P_LAST_SPELL) ? "spell casting "
                         : (skill == P_SHIELD) ? "defensive "
                             : "fighting ");
-    handle_tip(TIP_ENHANCE);
+    (void) handle_tip(TIP_ENHANCE);
 }
 
 /* weapon's skill category name for use as generalized description of weapon;
