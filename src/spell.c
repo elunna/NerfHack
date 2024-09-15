@@ -1452,7 +1452,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
                         }
                     } else {
                         explode(u.dx, u.dy,
-                                otyp - SPE_MAGIC_MISSILE + 10,
+                                ZT_SPELL(otyp - SPE_MAGIC_MISSILE),
                                 spell_damage_bonus(u.ulevel / 2 + 1), 0,
                                 (otyp == SPE_CONE_OF_COLD)
                                    ? EXPL_FROSTY
