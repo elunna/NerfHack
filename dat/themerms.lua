@@ -70,7 +70,7 @@ themeroom_fills = {
 
    -- Spider nest
    function(rm)
-      local spooders = nh.level_difficulty() > 8;
+      local spooders = nh.level_difficulty() > 5;
       local locs = selection.room():percentage(30);
       local func = function(x,y)
          des.trap({ type = "web", x = x, y = y,
@@ -770,7 +770,7 @@ function is_eligible(room, mkrm)
    local t = type(room);
    local diff = nh.level_difficulty();
    
-   if (nh.level_difficulty() < 5) then
+   if (nh.level_difficulty() < 3) then
         return false
    end
    
