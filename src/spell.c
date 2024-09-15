@@ -1472,7 +1472,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         } else if (role_skill >= P_SKILLED) {
             /* player said not to cast advanced spell; return up to half of the
              * magical energy */
-            u.uen += rnd(energy / 2);
+            u.uen += rnd(energy / 2 + 1);
         }
         /*FALLTHRU*/
 
