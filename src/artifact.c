@@ -1118,7 +1118,7 @@ spec_abon(struct obj *otmp, struct monst *mon)
             return rnd(9);
 
         /* Artifacts are legendarily difficulty to handle... */
-        return -((int) weap->attk.damn * 2);
+        return -((int) weap->attk.damn);
         }
     return 0;
 }
@@ -3350,7 +3350,6 @@ artifact_info(int anum)
     art_info.speaks = (artilist[anum].spfx & SPFX_SPEAK) != 0;
     art_info.beheads = (artilist[anum].spfx & SPFX_BEHEAD) != 0;
     art_info.vscross = (artilist[anum].spfx & SPFX_DALIGN) != 0;
-
 
     /* Hated/Targeted Monster */
     if ((artilist[anum].mtype)) {
