@@ -6984,7 +6984,7 @@ card_drop(struct monst *mon)
          */
         if (!rn2(3)) {
             int tryct = 0;
-            int min_lev = 1;
+            int min_lev = 3;
             /* Try to restrain overly powerful drops, but allow them once in a while. */
             int max_lev = 5 + u.ulevel * (!rn2(10) ? 2 : 1);
             do
