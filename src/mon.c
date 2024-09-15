@@ -6958,6 +6958,8 @@ card_drop(struct monst *mon)
 
     if (chance < 2)
         chance = 2;
+    if (chance > 10)
+        chance = 10;
 
     if (rn2(chance))
         return FALSE;
