@@ -4939,7 +4939,7 @@ domagictrap(void)
                 You_feel("a little more %s now.",
                          HInvis ? "obvious" : "hidden");
             }
-            set_itimeout(&HInvis, HInvis ? 0 : rnd(1000) + 1000);
+            set_itimeout(&HInvis, HInvis ? 0 : rnd(2500) + 2500);
             newsym(u.ux, u.uy);
             break;
         case 12: /* a flash of fire */
