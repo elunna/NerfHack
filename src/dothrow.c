@@ -2087,7 +2087,8 @@ thitmonst(
             tmp -= 2;
             break;
         case GAUNTLETS_OF_FUMBLING:
-            tmp -= 3;
+            /* you're fumbling and shouldn't really even be able to throw */
+            tmp -= 9;
             break;
         case LEATHER_GLOVES:
         case GAUNTLETS_OF_SWIMMING:
