@@ -6982,7 +6982,7 @@ card_drop(struct monst *mon)
          * keep things more interesting when slaying hordes of weenies.
          * The odds come roughly from old MtG booster packs having 1 rare.
          */
-        if (!rn2(2)) {
+        if (!rn2(3)) {
             int tryct = 0;
             int min_lev = 1;
             /* Try to restrain overly powerful drops, but allow them once in a while. */
@@ -7002,7 +7002,7 @@ card_drop(struct monst *mon)
                 /* Most of the time we get here, we'll grant a sphere card -
                  * these are more fun to play and they act as a callback to the
                  * summon sphere spells in SLASH'EM. */
-                if (rn2(5))
+                if (rn2(2))
                     otmp->corpsenm = PM_FREEZING_SPHERE
                         + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE + 1);
                 else
