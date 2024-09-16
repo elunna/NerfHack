@@ -878,7 +878,8 @@ u_init_race(void)
         knows_object(ELVEN_CLOAK, FALSE);
 
         /* All elves have a natural affinity for enchantments */
-        set_skill_cap_minimum(P_ENCHANTMENT_SPELL, P_BASIC);
+        if (!Role_if(PM_CARTOMANCER))
+            set_skill_cap_minimum(P_ENCHANTMENT_SPELL, P_BASIC);
         break;
 
     case PM_DWARF:
