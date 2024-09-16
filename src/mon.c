@@ -716,8 +716,12 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         break;
     case PM_PAPER_GOLEM:
         num = rnd(4);
-        while (num--)
-            obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
+        while (num--) {
+            if (Role_if(PM_CARTOMANCER))
+                (void) card_drop(mtmp);
+            else
+                obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
+        }
         free_mgivenname(mtmp);
         break;
     /* expired puddings will congeal into a large blob;
