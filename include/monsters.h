@@ -1510,7 +1510,7 @@
         SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE,
         M2_HOSTILE, 0,
-        NO_RACE, 1, CLR_WHITE, MAGGOT),
+        NO_RACE, 4, CLR_WHITE, MAGGOT),
     MON(NAM("baby long worm"), S_WORM,
         LVL(5, 3, 5, 0, 0), G_GENO,
         A(ATTK(AT_BITE, AD_PHYS, 1, 4),
