@@ -1489,6 +1489,13 @@ static const char *const currencies[] = {
     "sporebuck",             /* Spore */
     "Triganic Pu",           /* The Hitchhiker's Guide to the Galaxy */
     "woolong",               /* Cowboy Bebop */
+    "schmeckle",             /* Rick and Morty (and below) */
+    "brapple",
+    "blemflarck",
+    "galactic credit",
+    "flurbo",
+    "smidgen",
+    "glem",
     "zorkmid",               /* Zork, NetHack */
 };
 
