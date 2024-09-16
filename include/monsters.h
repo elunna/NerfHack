@@ -91,6 +91,16 @@
         SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE, M2_HOSTILE, 0,
         NO_RACE, 4, CLR_BROWN, GIANT_ANT),
+    /* Created when maggots infest corpses. A little stronger than
+     * the SpliceHack version, but also does not generate randomly. */
+    MON(NAM("giant fly"), S_ANT,
+        LVL(2, 18, 3, 0, 0), (G_GENO | G_NOGEN),
+        A(ATTK(AT_BITE, AD_PHYS, 1, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(10, 10, MS_BUZZ, MZ_TINY), 0, 0,
+        M1_ANIMAL | M1_FLY | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE ,
+        M2_HOSTILE | M2_WANDER, 0,
+        NO_RACE, 3, CLR_ORANGE, GIANT_FLY),
     MON(NAM("killer bee"), S_ANT,
         LVL(1, 18, -1, 0, 0), (G_GENO | G_LGROUP | 2),
         A(ATTK(AT_STNG, AD_DRST, 1, 3),
@@ -1490,6 +1500,17 @@
     /*
      * worms
      */
+
+    /* Maggots are from SLASH'EM, but have the infest mechanic from SpliceHack.
+     * So they can consume corpses to create giant flies. */
+    MON(NAM("maggot"), S_WORM,
+        LVL(2, 9, 5, 0, 0), (G_GENO | G_SGROUP | 2),
+        A(ATTK(AT_BITE, AD_PHYS, 1, 3),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
+        M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE,
+        M2_HOSTILE, 0,
+        NO_RACE, 1, CLR_WHITE, MAGGOT),
     MON(NAM("baby long worm"), S_WORM,
         LVL(5, 3, 5, 0, 0), G_GENO,
         A(ATTK(AT_BITE, AD_PHYS, 1, 4),

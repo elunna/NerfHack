@@ -750,6 +750,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
 
 #if (NH_DEVEL_STATUS != NH_STATUS_RELEASED)
     case PM_GIANT_ANT:
+    case PM_GIANT_FLY:
     case PM_KILLER_BEE:
     case PM_SOLDIER_ANT:
     case PM_FIRE_ANT:
@@ -881,6 +882,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_ENERGY_VORTEX:
     case PM_STEAM_VORTEX:
     case PM_FIRE_VORTEX:
+    case PM_MAGGOT:
     case PM_BABY_LONG_WORM:
     case PM_BABY_PURPLE_WORM:
     case PM_PURPLE_WORM:
@@ -2789,6 +2791,12 @@ mm_aggression(
     if ((mndx == PM_PURPLE_WORM || mndx == PM_BABY_PURPLE_WORM)
         && mdef->data == &mons[PM_SHRIEKER])
         return ALLOW_M | ALLOW_TM;
+
+    /* Maggots tend to eat ghoul food, angering the ghouls... */
+    if ((mndx == PM_GHOUL || mndx == PM_GHOUL_MAGE)
+        && mdef->data == &mons[PM_MAGGOT])
+        return ALLOW_M | ALLOW_TM;
+
 
     /* berserk monsters sometimes lash out at everything
        when trying to attack you  */

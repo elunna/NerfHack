@@ -27,6 +27,7 @@ staticfn boolean stuff_prevents_passage(struct monst *);
 staticfn int vamp_shift(struct monst *, struct permonst *, boolean);
 staticfn void maybe_spin_web(struct monst *);
 staticfn boolean decide_to_teleport(struct monst *);
+staticfn void minfestcorpse(struct monst *);
 
 /* a11y: give a message when monster moved */
 staticfn void
@@ -129,7 +130,7 @@ mon_yells(struct monst *mon, const char *shout)
 }
 
 /* can monster mtmp break boulders?
- * The quest nemesis *can* break boulders, but 
+ * The quest nemesis *can* break boulders, but
  * only after reaching a certain frustration level
  * tracked by mavenge. */
 boolean
@@ -1772,6 +1773,11 @@ m_move(struct monst *mtmp, int after)
             finish_meating(mtmp);
         return MMOVE_DONE; /* still eating */
     }
+
+        /* Maggots infest corpses. */
+    if (ptr == &mons[PM_MAGGOT])
+        minfestcorpse(mtmp);
+
     if (hides_under(ptr) && OBJ_AT(mtmp->mx, mtmp->my)
         && can_hide_under_obj(svl.level.objects[mtmp->mx][mtmp->my])
         && rn2(10))
@@ -2495,6 +2501,48 @@ decide_to_teleport(struct monst *mtmp)
     /* Fleeing/peaceful non-pets just want to go anywhere but here */
     return (!((mtmp->mhp < 7 || mtmp->mflee
         || mtmp->mpeaceful) && !mtmp->mtame));
+}
+
+/* Based on meatcorpse */
+void
+minfestcorpse(struct monst *mtmp)
+{
+    register struct obj *otmp;
+    coord cc;
+    /* If a pet, eating is handled separately, in dog.c */
+    if (mtmp->mtame)
+        return;
+
+    /* Infest topmost corpse if possible */
+    for (otmp = svl.level.objects[mtmp->mx][mtmp->my];
+        otmp; otmp = otmp->nexthere)
+
+        if (otmp->otyp == CORPSE && !otmp->oeroded) {
+            /* touch sensitive items */
+            if (otmp->otyp == CORPSE && is_rider(&mons[otmp->corpsenm])) {
+                /* Rider corpse isn't just inedible; can't engulf it either */
+                if (cansee(mtmp->mx, mtmp->my) && flags.verbose)
+                    pline("%s attempts to infest %s!", Monnam(mtmp),
+                      distant_name(otmp,doname));
+                (void) revive_corpse(otmp);
+                return;
+            }
+            if (cansee(mtmp->mx,mtmp->my) && flags.verbose)
+                pline("%s infests %s!", Monnam(mtmp),
+                    distant_name(otmp,doname));
+            else if (!Deaf && flags.verbose)
+                You_hear("an unsettling writhing noise.");
+
+            mon_givit(mtmp, &mons[otmp->corpsenm]);
+
+            if (mtmp->data == &mons[PM_MAGGOT]) {
+                if (enexto(&cc, mtmp->mx, mtmp->my, &mons[PM_GIANT_FLY]))
+                    makemon(&mons[PM_GIANT_FLY ], cc.x, cc.y, NO_MINVENT);
+            }
+            delobj(otmp);
+            break; /* only eat one at a time... */
+        }
+    newsym(mtmp->mx, mtmp->my);
 }
 
 /*monmove.c*/
