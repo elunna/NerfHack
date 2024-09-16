@@ -3537,13 +3537,6 @@ corpse_chance(
         return FALSE;
     }
 
-    if (Role_if(PM_CARTOMANCER) && card_drop(mon))
-        return FALSE;
-
-    /* Spell-beings can't leave corpses */
-    if (mon->msummoned)
-        return FALSE;
-
     /* Gas spores always explode upon death */
     for (i = 0; i < NATTK; i++) {
         if (mdat->mattk[i].aatyp == AT_BOOM) {
@@ -3601,6 +3594,13 @@ corpse_chance(
                 add_blood(x, y, mon->mnum);
         }
     }
+
+    /* Spell-beings can't leave corpses or cards  */
+    if (mon->msummoned)
+        return FALSE;
+
+    if (Role_if(PM_CARTOMANCER) && card_drop(mon))
+        return FALSE;
 
     /* must duplicate this below check in xkilled() since it results in
      * creating no objects as well as no corpse
