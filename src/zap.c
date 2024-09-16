@@ -3265,6 +3265,11 @@ zapyourself(struct obj *obj, boolean ordinary)
         } while (didmerge);
         break;
     }
+    case SPE_CHARM_MONSTER:
+        /* Is there any effect that would make sense other than YAFM? */
+        learn_it = TRUE;
+        You("charm yourself.");
+        break;
     default:
         impossible("zapyourself: object %d used?", obj->otyp);
         break;
