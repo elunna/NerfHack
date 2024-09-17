@@ -721,7 +721,7 @@ nh_timeout(void)
     if (u.combotime) {
         u.combotime--;
         if (!u.combotime)
-            Your("combo ability is ready to use! ['Z'");
+            Your("combo ability is ready to use! [Access via 'Z']");
     }
 
     /* Give a small warning that spell-based reflection is running out. */
