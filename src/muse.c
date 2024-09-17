@@ -49,6 +49,7 @@ staticfn boolean muse_unslime(struct monst *, struct obj *, struct trap *,
 staticfn int cures_sliming(struct monst *, struct obj *);
 staticfn boolean green_mon(struct monst *);
 staticfn int muse_wonder(void);
+staticfn boolean reflectable_offense(void);
 staticfn int muse_createmonster(struct monst *, struct obj *);
 
 
@@ -2650,7 +2651,9 @@ find_misc(struct monst *mtmp)
             gm.m.has_misc = MUSE_POT_POLYMORPH;
         }
         nomore(MUSE_POT_REFLECT);
-        if (obj->otyp == POT_REFLECTION && !mon_prop(mtmp, REFLECTING)) {
+        if (obj->otyp == POT_REFLECTION && !mtmp->mpeaceful
+            && m_canseeu(mtmp) && reflectable_offense() &&
+            !mon_prop(mtmp, REFLECTING)) {
             gm.m.misc = obj;
             gm.m.has_misc = MUSE_POT_REFLECT;
         }
@@ -4024,6 +4027,49 @@ muse_wonder(void)
         }
     }
     return wondertemp;
+}
+
+/* Do you have some sort of reflectable ray attack available? */
+staticfn boolean
+reflectable_offense(void)
+{
+    struct obj *otmp;
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+        switch (otmp->otyp) {
+            /* ray-based wands */
+            case WAN_MAGIC_MISSILE:
+            case WAN_FIRE:
+            case WAN_COLD:
+            case WAN_SLEEP:
+            case WAN_DEATH:
+            case WAN_LIGHTNING:
+            case WAN_POISON_GAS:
+            case WAN_CORROSION:
+            case WAN_DRAINING:
+            case FROST_HORN:
+            case FIRE_HORN:
+                if (otmp->spe > 0)
+                    return TRUE;
+        }
+    }
+
+    /* Can they know what spells you have?
+     * There is no other way to track that... */
+    if (known_spell(SPE_MAGIC_MISSILE) >= spe_Fresh)
+        return TRUE;
+    if (known_spell(SPE_CONE_OF_COLD) >= spe_Fresh)
+        return TRUE;
+    if (known_spell(SPE_SLEEP) >= spe_Fresh)
+        return TRUE;
+    if (known_spell(SPE_FINGER_OF_DEATH) >= spe_Fresh)
+        return TRUE;
+
+    /* Are you polyd into something with a ray breath? */
+    if (Upolyd && attacktype(gy.youmonst.data, AT_BREA)) {
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
 staticfn int
