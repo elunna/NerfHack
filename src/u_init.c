@@ -698,6 +698,15 @@ u_init_role(void)
         skill_init(Skill_B);
         break;
     case PM_CARTOMANCER:
+
+        /* Cards only weigh 1 for Cartomancers */
+        for (int s = SCR_ENCHANT_ARMOR; s < SCR_STINKING_CLOUD; s++)
+            objects[s].oc_weight = 1;
+
+        /* Rulebooks weigh 5 for Cartomancers */
+        for (int s = SPE_DIG; s < SPE_CHAIN_LIGHTNING; s++)
+            objects[s].oc_weight = 5;
+
         Cartomancer[T_CARDS].trquan = rn1(21, 40); /* 40..60 */
         ini_inv(Cartomancer);
         if (!rn2(3))
@@ -707,6 +716,7 @@ u_init_role(void)
         knows_object(DECK_OF_FATE, FALSE);
         knows_object(SCR_ZAPPING, TRUE);
         knows_class(SPBOOK_CLASS); /* all rulebooks */
+
         break;
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
