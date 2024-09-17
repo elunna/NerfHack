@@ -1710,10 +1710,11 @@ makemon(
             mon_rabid(mtmp, FALSE);
         else if (!rn2(127 - level_difficulty()))
             mon_rabid(mtmp, FALSE);
-    } else if (mtmp->mnum == PM_CHICKENRAT) { /* Always rabid */
+    }
+    if (mtmp->mnum == PM_CHICKENRAT) { /* Always rabid */
         mon_rabid(mtmp, FALSE);
     }
-    
+
     /* Some checks */
     if (is_unicorn(ptr) && sgn(u.ualign.type) != sgn(ptr->maligntyp)) {
         if (mtmp->mpeaceful)
