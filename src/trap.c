@@ -2251,12 +2251,13 @@ trapeffect_cold_trap(
                     pline("%s is uninjured.", Monnam(mtmp));
             }
         } else {
-            if (thitm(0, mtmp, (struct obj *) 0, dmg, FALSE))
+            if (thitm(0, mtmp, (struct obj *) 0, dmg, FALSE)) {
                 trapkilled = TRUE;
-            else
-                /* we know mhp is at least `dmg' below mhpmax,
-                   so no (mhp > mhpmax) check is needed here */
+            } else {
                 mtmp->mhpmax -= rn2(dmg + 1);
+                assert(mtmp->mhpmax >= mtmp->mhp); /* mon->mhpmax > 1 */
+                assert(mtmp->mhpmax > 0); /* mon->mhpmax > 1 */
+            }
         }
         if (rn2(3)) {
             int xtradmg = destroy_items(mtmp, AD_COLD, dmg);
