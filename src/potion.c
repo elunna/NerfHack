@@ -975,7 +975,6 @@ staticfn void
 peffect_booze(struct obj *otmp)
 {
     int amt = d(2 + u.uhs, 8) / (otmp->odiluted ? 2 : 1);
-    gp.potion_unkn++;
     pline("Ooph!  This tastes like %s%s!",
           otmp->odiluted ? "watered down " : "",
           Hallucination ? "dandelion wine" : "liquid fire");
