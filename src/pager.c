@@ -1975,6 +1975,8 @@ checkfile(
         dbase_str += 9;
     if (!strncmp(dbase_str, "invisible ", 10))
         dbase_str += 10;
+    if (!strncmp(dbase_str, "rabid ", 6))
+        dbase_str += 6;
     if (!strncmp(dbase_str, "saddled ", 8))
         dbase_str += 8;
     if (!strncmp(dbase_str, "blessed ", 8))
