@@ -199,7 +199,7 @@ were_summon(
             total++;
             if (canseemon(mtmp))
                 *visible += 1;
-            if (!yours && !rn2(4))
+            if (!yours && !rn2(8))
                 mon_rabid(mtmp, FALSE);
         }
         if (yours && mtmp)
