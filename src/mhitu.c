@@ -599,7 +599,24 @@ getmattk(
             attk->damd = 6;
 
     }
-
+    /* Rabid monsters get an extra 1d6 rabid inducing bite. If the
+     * defender is already rabid, this is instead later converted
+     * to a constitution draining poison bite. I'm using the last possible
+     * attack so there aren't as many complications, and the monster will
+     * become more threatening with an extra attack.
+     *
+     * For now, we won't check if anything "can bite", we'll assume that
+     * anything that can contract rabies can also bite. If something slips
+     * through, we'll exclude it from can_become_rabid.
+     */
+    else if (magr->mrabid && indx == (NATTK-1)) {
+        *alt_attk_buf = *attk;
+        attk = alt_attk_buf;
+        attk->aatyp = AT_BITE;
+        attk->adtyp = AD_RABD;
+        attk->damn = 1;
+        attk->damd = 6;
+    }
     return attk;
 }
 
@@ -641,7 +658,6 @@ mattacku(struct monst *mtmp)
     struct attack *mattk, alt_attk;
     int i, j = 0, tmp, ftmp, sum[NATTK];
     struct permonst *mdat = mtmp->data;
-    boolean did_rabid = FALSE;
     /*
      * ranged: Is it near you?  Affects your actions.
      * ranged2: Does it think it's near you?  Affects its actions.
@@ -985,19 +1001,7 @@ mattacku(struct monst *mtmp)
             || (gs.skipdrin && mattk->aatyp == AT_TENT
                 && mattk->adtyp == AD_DRIN))
             continue;
-
-        /* Rabid monsters have an additional rabid bite attack.
-         * For now, we won't check if anything "can bite", we'll assume that
-         * anything that can contract rabies can also bite. If something slips
-         * through, we'll exclude it from can_become_rabid.
-         */
-        if (mtmp->mrabid && !mattk->aatyp && !did_rabid && !range2) {
-            if (mattk->aatyp != AT_BITE)
-                mattk->aatyp = AT_BITE;
-            mattk->adtyp = AD_RABD;
-            did_rabid = TRUE;
-        }
-
+        
         switch (mattk->aatyp) {
         case AT_CLAW: /* "hand to hand" attacks */
         case AT_KICK:

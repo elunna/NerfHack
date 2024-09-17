@@ -3688,8 +3688,9 @@ mhitm_ad_drst(
         switch (mattk->adtyp) {
         case AD_DRST: ptmp = A_STR; break;
         case AD_DRDX: ptmp = A_DEX; break;
-        case AD_RABD: /* All rabid monsters attack like the old "rabid rat" */
         case AD_DRCO: ptmp = A_CON; break;
+        default:
+            impossible("ADTYPE %d not handled in mhitm_ad_drst!", mattk->adtyp);
         }
         hitmsg(magr, mattk);
         if ((!negated || is_zombie(magr->data)) && !rn2(8)) {
@@ -5021,35 +5022,73 @@ mhitm_ad_rabd(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    boolean negated = mhitm_mgc_atk_negated(magr, mdef, FALSE);
+    struct permonst *pa = magr->data;
+
     if (magr == &gy.youmonst) {
         /* uhitm - infect other mon */
-        if (!mdef->mrabid && can_become_rabid(mdef->data)) {
+        hitmsg(magr, mattk);
+        if (!negated && !mdef->mrabid
+              && can_become_rabid(mdef->data)) {
             mon_rabid(mdef, TRUE);
-            return;
+        } else if (!negated && !rn2(8)) {
+            /* AD_DRCO attack from mhitm_ad_drst */
+            Your("%s was poisoned!", mpoisons_subj(magr, mattk));
+            if (resists_poison(mdef)) {
+                pline_The("poison doesn't seem to affect %s.", mon_nam(mdef));
+            } else {
+                if (!rn2(10)) {
+                    Your("poison was deadly...");
+                    mhm->damage = mdef->mhp;
+                } else
+                    mhm->damage += rn1(10, 6);
+            }
         }
-        mhitm_ad_drst(magr, mattk, mdef, mhm);
-        if (mhm->done)
-            return;
+        mhm->hitflags = M_ATTK_AGR_DONE;
     } else if (mdef == &gy.youmonst) {
+        char buf[BUFSZ];
         /* mhitu - you infected */
-        if (!rn2(4) && !Rabid && can_become_rabid(gy.youmonst.data)
-                && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
-            hitmsg(magr, mattk);
+        hitmsg(magr, mattk);
+        if (!negated &&!rn2(4) && !Rabid
+              && can_become_rabid(gy.youmonst.data)) {
             if (!Sick_resistance)
                 urgent_pline("You feel like going rabid!");
             exercise(A_CON, FALSE);
             do_rabid_u(magr);
-        } else
-            mhitm_ad_drst(magr, mattk, mdef, mhm);
+        } else if (!negated && !rn2(8)) {
+            /* AD_DRCO attack from mhitm_ad_drst */
+            if (!negated) {
+                Sprintf(buf, "%s %s", s_suffix(Monnam(magr)),
+                        mpoisons_subj(magr, mattk));
+                poisoned(buf, A_CON, pmname(pa, Mgender(magr)), 30, FALSE);
+            }
+        }
+        mhm->hitflags = M_ATTK_AGR_DONE;
     } else {
         /* mhitm - infect other mon */
-        if (!magr->mcan && !mdef->mrabid && can_become_rabid(mdef->data)) {
+        hitmsg(magr, mattk);
+        if (!negated && !rn2(4) && !mdef->mrabid && can_become_rabid(mdef->data)) {
             mon_rabid(mdef, TRUE);
-            return;
+        } else if (!negated && !rn2(8)) {
+            /* AD_DRCO attack from mhitm_ad_drst */
+            if (gv.vis && canspotmon(magr))
+                pline("%s %s was poisoned!", s_suffix(Monnam(magr)),
+                      mpoisons_subj(magr, mattk));
+            if (resists_poison(mdef)) {
+                if (gv.vis && canspotmon(mdef) && canspotmon(magr))
+                    pline_The("poison doesn't seem to affect %s.",
+                              mon_nam(mdef));
+            } else {
+                if (rn2(10)) {
+                    mhm->damage += rn1(10, 6);
+                } else {
+                    if (gv.vis && canspotmon(mdef))
+                        pline_The("poison was deadly...");
+                    mhm->damage = mdef->mhp;
+                }
+            }
         }
-        mhitm_ad_drst(magr, mattk, mdef, mhm);
-        if (mhm->done)
-            return;
+        mhm->hitflags = M_ATTK_AGR_DONE;
     }
 }
 
@@ -6330,7 +6369,6 @@ hmonas(struct monst *mon)
     int i, tmp, dieroll, armorpenalty, sum[NATTK],
         dhit = 0, attknum = 0, multi_claw = 0, multi_weap = 0;
     boolean monster_survived;
-    boolean did_rabid = FALSE;
 
     /* not used here but umpteen mhitm_ad_xxxx() need this */
     gv.vis = (canseemon(mon) || m_next2u(mon));
@@ -6341,14 +6379,6 @@ hmonas(struct monst *mon)
     for (i = 0; i < NATTK; i++) {
         sum[i] = M_ATTK_MISS;
         mattk = getmattk(&gy.youmonst, mon, i, sum, &alt_attk);
-
-         /* Extra attack for rabid monster */
-        if (Rabid && !mattk->aatyp && !did_rabid) {
-            if (mattk->aatyp != AT_BITE)
-                mattk->aatyp = AT_BITE;
-            mattk->adtyp = AD_RABD;
-            did_rabid = TRUE;
-        }
 
         if (mattk->aatyp == AT_WEAP)
             ++multi_weap;
