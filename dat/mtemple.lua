@@ -48,9 +48,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 03,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("?")
+                des.object("?")
+                des.object("?")
              end
 });
 des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 03,
@@ -58,9 +58,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 03,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("!")
+                des.object("!")
+                des.object("!")
              end
 });
 des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 03,
@@ -68,9 +68,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 03,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("+")
+                des.object("+")
+                des.object("+")
              end
 });
 des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 04,
@@ -78,9 +78,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 04,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("*")
+                des.object("*")
+                des.object("*")
              end
 });
 des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 04,
@@ -88,9 +88,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 04,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("(")
+                des.object("(")
+                des.object("(")
              end
 });
 des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 04,
@@ -98,9 +98,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 04,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object(")")
+                des.object(")")
+                des.object(")")
              end
 });
 des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 05,
@@ -108,9 +108,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 05,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("%")
+                des.object("%")
+                des.object("%")
              end
 });
 des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 05,
@@ -118,9 +118,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 05,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.object("[")
+                des.object("[")
+                des.object("[")
              end
 });
 des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 05,
@@ -128,9 +128,9 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 05,
                 des.object("wax candle")
                 des.gold()
                 des.gold()
-                des.object()
-                des.object()
-                des.object()
+                des.gold()
+                des.gold()
+                des.object("\"")
              end
 });
 
