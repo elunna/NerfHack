@@ -2,11 +2,11 @@ name: NerfHack
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ master ]
     tags:
       - '**'
   pull_request:
-    branches: [ dev ]
+    branches: [ master ]
 
 jobs:
   linux-build:
