@@ -263,6 +263,7 @@ struct obj {
 #define is_poisonable(otmp)       \
     (otmp->oclass == WEAPON_CLASS \
      && !is_launcher(otmp)        \
+     && otmp->otyp != UNICORN_HORN \
      && objects[otmp->otyp].oc_dir != WHACK)
 #define uslinging() (uwep && objects[uwep->otyp].oc_skill == P_SLING)
 /* 'is_quest_artifact()' only applies to the current role's artifact */
