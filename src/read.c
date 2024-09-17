@@ -347,6 +347,7 @@ doread(void)
     static const char find_any_braille[] = "feel any Braille writing.";
     struct obj *scroll;
     boolean confused, nodisappear;
+    boolean carto = Role_if(PM_CARTOMANCER);
     int otyp;
 
     /*
@@ -498,7 +499,7 @@ doread(void)
         } else {
             if (flags.verbose)
                 pline("It reads:");
-            if (Role_if(PM_CARTOMANCER)) {
+            if (carto) {
                 pline("\"%s\"",
                     scroll->oartifact
                     ? tcg_msgs[SIZE(tcg_msgs) - 1]
@@ -632,14 +633,23 @@ doread(void)
 
     /* Actions required to win the game aren't counted towards conduct */
     /* Novel conduct is handled in read_tribute so exclude it too */
-    if (otyp != SPE_BOOK_OF_THE_DEAD && otyp != SPE_NOVEL
-        && otyp != SPE_BLANK_PAPER && otyp != SCR_BLANK_PAPER)
-        if (!u.uconduct.literate++)
+    if (otyp != SPE_BOOK_OF_THE_DEAD
+        && otyp != SPE_NOVEL
+        && otyp != SPE_BLANK_PAPER
+        && otyp != SCR_BLANK_PAPER) {
+        /* Cartomancers *play* cards, they don't read them. */
+        if (carto) {
+            if (scroll->oclass != SCROLL_CLASS && !u.uconduct.literate++)
+                livelog_printf(LL_CONDUCT, "became literate by reading %s",
+                            (scroll->oclass == SPBOOK_CLASS) ? "a rulebook"
+                            : (scroll->oclass == SCROLL_CLASS) ? "a card"
+                                : something);
+        } else if (!u.uconduct.literate++)
             livelog_printf(LL_CONDUCT, "became literate by reading %s",
                            (scroll->oclass == SPBOOK_CLASS) ? "a book"
                            : (scroll->oclass == SCROLL_CLASS) ? "a scroll"
                              : something);
-
+    }
     if (scroll->oclass == SPBOOK_CLASS) {
         if (Role_if(PM_CARTOMANCER) && scroll->otyp != SPE_NOVEL)
             return cast_from_book(scroll) ? ECMD_TIME : ECMD_OK;
