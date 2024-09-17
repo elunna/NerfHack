@@ -231,9 +231,11 @@ init_objects(void)
 #endif
     objects[WAN_NOTHING].oc_dir = rn2(2) ? NODIR : IMMEDIATE;
 
-    /* Scrolls/cards only weigh 1 for Cartomancers */
-    for (int s = SCR_ENCHANT_ARMOR; s < SCR_STINKING_CLOUD; s++)
-	objects[s].oc_weight = 1;
+    if (Role_if(PM_CARTOMANCER)) {
+        /* Cards only weigh 1 for Cartomancers */
+        for (int s = SCR_ENCHANT_ARMOR; s < SCR_STINKING_CLOUD; s++)
+            objects[s].oc_weight = 1;
+    }
 }
 
 /* Compute the total probability of each object class.
