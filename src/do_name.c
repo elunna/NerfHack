@@ -842,7 +842,7 @@ x_monnam(
     struct permonst *mdat = mtmp->data;
     const char *pm_name;
     boolean do_hallu, do_invis, do_it, do_saddle, do_mappear,
-            do_exact, do_name, augment_it;
+            do_rabid, do_exact, do_name, augment_it;
     boolean name_at_start, has_adjectives, insertbuf2,
             mappear_as_mon = (M_AP_TYPE(mtmp) == M_AP_MONSTER);
     char *bp, buf2[BUFSZ];
@@ -870,6 +870,7 @@ x_monnam(
     do_it = !canspotmon(mtmp) && article != ARTICLE_YOUR
             && !program_state.gameover && mtmp != u.usteed
             && !engulfing_u(mtmp) && !(suppress & SUPPRESS_IT);
+    do_rabid = canspotmon(mtmp) && mtmp->mrabid;
     do_saddle = !(suppress & SUPPRESS_SADDLE);
     do_mappear = mappear_as_mon && !(suppress & SUPPRESS_MAPPEARANCE);
     do_exact = (suppress & EXACT_NAME) == EXACT_NAME;
@@ -947,6 +948,8 @@ x_monnam(
         Strcat(strcat(buf, adjective), " ");
     if (do_invis)
         Strcat(buf, "invisible ");
+    if (do_rabid)
+        Strcat(buf, "rabid ");
     if (do_saddle && (mtmp->misc_worn_check & W_SADDLE) && !Blind
         && !Hallucination)
         Strcat(buf, "saddled ");
