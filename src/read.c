@@ -1676,8 +1676,7 @@ seffect_create_monster(struct obj **sobjp)
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
 
-    if (is_moncard(sobj) || (Role_if(PM_CARTOMANCER)
-                && sobj->otyp == SPE_CREATE_MONSTER)) {
+    if (is_moncard(sobj)) {
         use_moncard(sobj, u.ux, u.uy);
         gk.known = TRUE;
         return;
