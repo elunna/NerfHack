@@ -936,7 +936,11 @@ xname_flags(
                 Strcat(buf, "blank card");
                 break;
             }
-            Strcpy(buf, Cartomancer_rarity(typ));
+            /* Prevent "summon card of create monster" */
+            if (obj->otyp == SCR_CREATE_MONSTER && obj->corpsenm == NON_PM)
+                Strcpy(buf, "card");
+            else
+                Strcpy(buf, Cartomancer_rarity(typ));
             if (obj->quan > 1) {
                 Strcat(buf, "s");
                 pluralize = FALSE;
