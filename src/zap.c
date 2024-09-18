@@ -2423,9 +2423,6 @@ bhito(struct obj *obj, struct obj *otmp)
             cancel_item(obj);
             newsym(obj->ox, obj->oy); /* might change color */
             break;
-        case SPE_DRAIN_LIFE:
-            (void) drain_item(obj, TRUE);
-            break;
         case WAN_TELEPORTATION:
         case SPE_TELEPORT_AWAY:
             {
@@ -3403,7 +3400,6 @@ zap_steed(struct obj *obj) /* wand or spell */
     case WAN_SPEED_MONSTER:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
-    case SPE_DRAIN_LIFE:
     case WAN_OPENING:
     case SPE_KNOCK:
         (void) bhitm(u.usteed, obj);
@@ -3938,7 +3934,12 @@ weffects(struct obj *obj)
 
         if (otyp == WAN_DIGGING || otyp == SPE_DIG)
             zap_dig(otyp);
-        else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_FINGER_OF_DEATH)
+        /* Make the spellbook of drain life act like wand of draining. */
+        #if 0
+        else if (otyp == SPE_DRAIN_LIFE)
+            ubuzz(BZ_U_WAND(BZ_OFS_WAN(WAN_DRAINING)), 6);
+        #endif
+        else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_DRAIN_LIFE    )
             ubuzz(BZ_U_SPELL(BZ_OFS_SPE(otyp)), u.ulevel / 2 + 1);
         else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(otyp)),
