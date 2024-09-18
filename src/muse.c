@@ -1166,7 +1166,7 @@ use_defensive(struct monst *mtmp)
                `pm' is what to actually create (0 => random) */
             if (!enexto(&cc, mtmp->mx, mtmp->my, fish))
                 break;
-            if (Role_if(PM_CARTOMANCER))
+            if (is_moncard(otmp))
                 mon = make_msummoned(pm, mtmp, FALSE, cc.x, cc.y);
             else
                 mon = makemon(pm, cc.x, cc.y, NO_MM_FLAGS);
