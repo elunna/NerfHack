@@ -6947,6 +6947,7 @@ staticfn boolean
 card_drop(struct monst *mon)
 {
     struct obj *otmp;
+    struct obj *lotus;
     struct permonst *ptr = mon->data;
     int difficulty = level_difficulty() * 2 + u.ulevel - 2;
     int chance = (difficulty / 10) + 1;
@@ -6973,8 +6974,13 @@ card_drop(struct monst *mon)
     if (chance > 10)
         chance = 10;
 
-    if (rn2(chance))
+    /* The quest artifact allows for a much higher rate when invoked. */
+    if ((lotus = carrying_arti(ART_HOLOGRAPHIC_VOID_LILY)) && lotus->lamplit) {
+        if (!rn2(chance))
+            return FALSE;
+    } if (rn2(chance)) {
         return FALSE;
+    }
 
     switch (rnd(20)) {
     case 1:

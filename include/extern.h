@@ -1305,6 +1305,7 @@ extern void delobj_core(struct obj *, boolean) NONNULLARG1;
 extern struct obj *sobj_at(int, coordxy, coordxy);
 extern struct obj *nxtobj(struct obj *, int, boolean) NONNULLARG1;
 extern struct obj *carrying(int);
+extern struct obj *carrying_arti(char);
 extern struct obj *u_carried_gloves(void);
 extern struct obj *u_have_novel(void);
 extern struct obj *o_on(unsigned int, struct obj *);

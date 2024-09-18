@@ -1850,7 +1850,26 @@ burn_object(anything *arg, long timeout)
         if (obj && obj->age)
             begin_burn(obj, TRUE);
         break; /* case [otyp ==] candelabrum|tallow_candle|wax_candle */
-
+    case CREDIT_CARD:
+        if (!obj->oartifact)
+            impossible("burn_object: non-artifact credit card!");
+        /* this should only be called when we run out */
+        if (canseeit) {
+            switch (obj->where) {
+            case OBJ_INVENT:
+                need_invupdate = TRUE;
+                /*FALLTHRU*/
+            case OBJ_MINVENT:
+                pline("%sholographic card stops glowing.", whose);
+                break;
+            case OBJ_FLOOR:
+                You_see("a holographic card stop glowing.");
+                need_newsym = TRUE;
+                break;
+            }
+        }
+        end_burn(obj, FALSE); /* turn off light source */
+        break;
     default:
         impossible("burn_object: unexpected obj %s", xname(obj));
         break;
@@ -1940,7 +1959,11 @@ begin_burn(struct obj *obj, boolean already_lit)
             turns = obj->age;
         radius = candle_light_range(obj);
         break;
-
+    case CREDIT_CARD: /* Holographic Void Lily */
+        if (!obj->oartifact)
+            impossible("begin burn: non-artifact credit card lit!");
+        turns = obj->age;
+        break;
     default:
         /* [ALI] Support artifact light sources */
         if (artifact_light(obj)) {

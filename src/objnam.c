@@ -1558,7 +1558,9 @@ doname_base(
             ConcatF2(bp, 0, " (%d of 7 candle%s)", obj->spe, suffix);
             break;
         } else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-                   || obj->otyp == BRASS_LANTERN || Is_candle(obj)) {
+                   || obj->otyp == BRASS_LANTERN || Is_candle(obj)
+                   || (obj->otyp == CREDIT_CARD
+                        && obj->oartifact == ART_HOLOGRAPHIC_VOID_LILY)) {
             if (Is_candle(obj)) {
                 anything timer;
                 long full_burn_time = 20L * (long) objects[obj->otyp].oc_cost,

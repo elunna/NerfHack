@@ -2503,12 +2503,17 @@ arti_invoke(struct obj *obj)
             }
             break;
         }
-        case SUMMONING: {
-            for (int i = 0; i < rn1(7, 4); i++) {
-                (void) make_msummoned((struct permonst *) 0, &gy.youmonst, TRUE, u.ux, u.uy);
+        case SUMMONING:
+            /* In SpliceHack, the Holographic Void Lily would summon 4-10 random spell beings.
+             * Now, it has an entirely different mechanic. It lights up for 25-50 turns and
+             * while lit, allows for a much higher rate of card drops. */
+            if (!obj->lamplit) {
+                obj->age = rn1(26, 25);
+                if (!Blind)
+                    pline("%s starts to glow radiantly!", The(xname(obj)));
+                begin_burn(obj, FALSE);
             }
             break;
-        }
         case LIGHTNING_BOLT: {
             struct obj* pseudo = mksobj(WAN_LIGHTNING, FALSE, FALSE);
             pseudo->blessed = pseudo->cursed = 0;
