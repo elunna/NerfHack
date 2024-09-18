@@ -1592,11 +1592,11 @@ doname_base(
             goto charges;
         break;
     case SPBOOK_CLASS:
+        add_erosion_words(obj, prefix);
+        break;
     case WAND_CLASS:
         add_erosion_words(obj, prefix);
  charges:
-        if (!Role_if(PM_CARTOMANCER) && obj->oclass == SPBOOK_CLASS)
-            break;
         if (known)
             ConcatF2(bp, 0, " (%d:%d)", (int) obj->recharged, obj->spe);
         break;
