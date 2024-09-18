@@ -1297,7 +1297,7 @@ soko_allow_web(struct monst *mon)
 staticfn void
 maybe_spin_web(struct monst *mtmp)
 {
-    if (webmaker(mtmp->data)
+    if (webmaker(mtmp->data) && !mtmp->mtame
         && !helpless(mtmp) && !mtmp->mspec_used
         && !t_at(mtmp->mx, mtmp->my) && soko_allow_web(mtmp)) {
         struct trap *trap;
