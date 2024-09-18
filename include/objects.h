@@ -1390,7 +1390,6 @@ SPELL("confuse monster", "orange",
 SPELL("cure blindness",  "yellow",
       P_HEALING_SPELL,     25,  2, 2, 1, IMMEDIATE, CLR_YELLOW,
                                                         SPE_CURE_BLINDNESS),
-
 SPELL("slow monster",    "light green",
       P_ENCHANTMENT_SPELL, 30,  2, 2, 1, IMMEDIATE, CLR_BRIGHT_GREEN,
                                                         SPE_SLOW_MONSTER),

@@ -1242,6 +1242,15 @@ cpostfx(int pm)
     case PM_HUMAN_WERETIGER:
         catch_lycanthropy = PM_WERETIGER;
         break;
+    case PM_LITTLE_DOG:
+    case PM_DOG:
+    case PM_LARGE_DOG:
+        /* A possible Jewish remedy for curing rabies is dog liver.
+         * https://www.myjewishlearning.com/article/jewish-healing-magic/
+         */
+        if (Rabid)
+            make_rabid(0L, (char *) 0, 0, (char *) 0);
+        break;
     case PM_NURSE:
         if (Upolyd)
             u.mh = u.mhmax;
@@ -2782,6 +2791,11 @@ fpostfx(struct obj *otmp)
             make_rabid(0L, (char *) 0, 0, (char *) 0);
         if (Vomiting && !otmp->cursed)
             make_vomiting(0L, TRUE);
+        break;
+    case CLOVE_OF_GARLIC:
+        /* Ethiopian folklore remedy for rabies. */
+        if (Rabid && !otmp->cursed)
+            make_rabid(0L, (char *) 0, 0, (char *) 0);
         break;
     case APPLE:
         if (otmp->cursed && !fully_resistant(SLEEP_RES)) {

@@ -2451,7 +2451,7 @@ tinit:
 void
 use_unicorn_horn(struct obj **optr)
 {
-#define PROP_COUNT 7           /* number of properties we're dealing with */
+#define PROP_COUNT 6           /* number of properties we're dealing with */
     int idx, val, val_limit, trouble_count, unfixable_trbl, did_prop;
     int trouble_list[PROP_COUNT];
     int chance;    /* KMH */
@@ -2531,8 +2531,6 @@ use_unicorn_horn(struct obj **optr)
         prop_trouble(STUNNED);
     if (TimedTrouble(HDeaf))
         prop_trouble(DEAF);
-    if (TimedTrouble(Rabid))
-        prop_trouble(RABID);
 
     if (trouble_count == 0) {
         pline1(nothing_happens);
@@ -2593,11 +2591,6 @@ use_unicorn_horn(struct obj **optr)
             case SICK:
                 /* Illness is simply cured. */
                 make_sick(0L, (char *) 0, TRUE, SICK_ALL);
-                did_prop++;
-                break;
-             case RABID:
-                /* Rabid is simply cured. */
-                make_rabid(0L, (char *) 0, 0, (char *) 0);
                 did_prop++;
                 break;
             case BLINDED:
@@ -4888,12 +4881,20 @@ doapply(void)
             res = use_stone(obj);
         return res; /* Might useup the flint */
         break;
+    case FOULSTONE:
+        if (Rabid && !obj->cursed) {
+            pline_The("%s cures your infested wound!", xname(obj));
+            make_rabid(0L, (char *) 0, 0, (char *) 0);
+            curse(obj);
+            break;
+        }
+        /* FALLTHROUGH */
     case LUCKSTONE:
     case HEALTHSTONE:
     case LOADSTONE:
     case TOUCHSTONE:
     case WHETSTONE:
-    case FOULSTONE:
+    
     case ROCK:
         res = use_stone(obj);
         break;
