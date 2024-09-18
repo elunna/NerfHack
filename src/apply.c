@@ -2455,6 +2455,7 @@ use_unicorn_horn(struct obj **optr)
     int idx, val, val_limit, trouble_count, unfixable_trbl, did_prop;
     int trouble_list[PROP_COUNT];
     int chance;    /* KMH */
+    long old_to, new_to, fix_to;
     struct obj *obj = (optr ? *optr : (struct obj *) 0);
 
     if (obj && obj->degraded_horn) {
@@ -2578,41 +2579,77 @@ use_unicorn_horn(struct obj **optr)
         chance = 18;
 #endif
 
-    /* fix [some of] the troubles */
+    /* fix [some of] the troubles.
+     * For most troubles that time out (not to death),
+     * the unihorn has been nerfed so that it only reduces
+     * the timeout.
+     */
     for (val = 0; val < val_limit; val++) {
         idx = trouble_list[val];
         if (rn2(20) < chance) { /* KMH */
+            fix_to = (long) (rnd(chance) + 1);
+            new_to = 0L;
             switch (idx) {
             case SICK:
+                /* Illness is simply cured. */
                 make_sick(0L, (char *) 0, TRUE, SICK_ALL);
                 did_prop++;
                 break;
+             case RABID:
+                /* Rabid is simply cured. */
+                make_rabid(0L, (char *) 0, 0, (char *) 0);
+                did_prop++;
+                break;
             case BLINDED:
-                make_blinded((long) u.ucreamed, TRUE);
+                old_to = HBlinded & TIMEOUT;
+                if (old_to - fix_to > 0L)
+                    new_to = u.ucreamed
+                        ? (long) u.ucreamed
+                        : old_to - fix_to;
+                if (wizard)
+                    pline("HBlinded: %ld->%ld", old_to, new_to);
+                make_blinded(new_to, TRUE);
                 did_prop++;
                 break;
             case HALLUC:
-                (void) make_hallucinated(0L, TRUE, 0L);
+                old_to = HHallucination & TIMEOUT;
+                if (old_to - fix_to > 0L)
+                    new_to = old_to - fix_to;
+                if (wizard)
+                    pline("HHallucination: %ld->%ld", old_to, new_to);
+                (void) make_hallucinated(new_to, TRUE, 0L);
                 did_prop++;
                 break;
             case VOMITING:
+                /* Vomiting is simply cured. */
                 make_vomiting(0L, TRUE);
                 did_prop++;
                 break;
             case CONFUSION:
-                make_confused(0L, TRUE);
+                old_to = HConfusion & TIMEOUT;
+                if (old_to - fix_to > 0L)
+                    new_to = old_to - fix_to;
+                if (wizard)
+                    pline("HConfusion: %ld->%ld", old_to, new_to);
+                make_confused(new_to, TRUE);
                 did_prop++;
                 break;
             case STUNNED:
-                make_stunned(0L, TRUE);
+                old_to = HStun & TIMEOUT;
+                if (old_to - fix_to > 0L)
+                    new_to = old_to - fix_to;
+                if (wizard)
+                    pline("HStun: %ld->%ld", old_to, new_to);
+                make_stunned(new_to, TRUE);
                 did_prop++;
                 break;
             case DEAF:
-                make_deaf(0L, TRUE);
-                did_prop++;
-                break;
-            case RABID:
-                make_rabid(0L, (char *) 0, 0, (char *) 0);
+                old_to = HDeaf & TIMEOUT;
+                if (old_to - fix_to > 0L)
+                    new_to = old_to - fix_to;
+                if (wizard)
+                    pline("HDeaf: %ld->%ld", old_to, new_to);
+                make_deaf(new_to, TRUE);
                 did_prop++;
                 break;
             default:
