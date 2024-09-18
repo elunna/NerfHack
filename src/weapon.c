@@ -1743,6 +1743,9 @@ weapon_hit_bonus(struct obj *weapon)
         case P_EXPERT:
             bonus = 3;
             break;
+        case P_MASTER:
+            bonus = 4;
+            break;
         }
     } else if (type == P_TWO_WEAPON_COMBAT) {
         skill = P_SKILL(P_TWO_WEAPON_COMBAT);
@@ -1837,6 +1840,9 @@ weapon_dam_bonus(struct obj *weapon)
             break;
         case P_EXPERT:
             bonus = 2;
+            break;
+        case P_MASTER:
+            bonus = 3;
             break;
         }
     } else if (type == P_TWO_WEAPON_COMBAT) {

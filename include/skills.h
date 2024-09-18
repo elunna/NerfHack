@@ -100,7 +100,7 @@ enum skill_levels {
        were unnamed and just used numbers.  Devteam coined them Master and
        Grand Master.  Sometime after that, Heroes of Might and Magic IV (tm)
        was released and had two more levels which use these same names. */
-    P_MASTER       = 5, /* Unarmed combat/martial arts only */
+    P_MASTER       = 5, /* Unarmed combat/martial arts, shuriken for cartomancer */
     P_GRAND_MASTER = 6  /* ditto */
 };
 

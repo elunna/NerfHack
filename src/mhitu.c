@@ -3052,15 +3052,9 @@ struct attack *mattk)
     if (wtype == P_DAGGER || wtype == P_KNIFE) {
         int chance = 0;
         switch (P_SKILL(wtype)) {
-            case P_BASIC:
-                chance += 5;
-                break;
-            case P_SKILLED:
-                chance += 10;
-                break;
-            case P_EXPERT:
-                chance += 20;
-                break;
+            case P_BASIC:   chance += 5;  break;
+            case P_SKILLED: chance += 10; break;
+            case P_EXPERT:  chance += 20; break;
             default:
                 break;
         }

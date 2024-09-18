@@ -175,6 +175,9 @@ throw_obj(struct obj *obj, int shotlimit)
 
         /* Bonus if the player is proficient in this weapon... */
         switch (P_SKILL(weapon_type(obj))) {
+        case P_MASTER: /* Only cartomancer with shuriken skill. */
+            multishot++;
+        /*FALLTHRU*/
         case P_EXPERT:
             multishot++;
         /*FALLTHRU*/
