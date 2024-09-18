@@ -4989,9 +4989,10 @@ mergable(
         return FALSE;
 
     /* Prevent summon card from merging incorrectly */
-    if (obj->oclass == SCROLL_CLASS
-        && ((obj->corpsenm != NON_PM && obj->corpsenm != otmp->corpsenm)))
-        return FALSE;
+    if (obj->oclass == SCROLL_CLASS) {
+        if (obj->corpsenm != otmp->corpsenm)
+            return FALSE;
+    }
 
     if (obj->dknown != otmp->dknown
         || (obj->bknown != otmp->bknown && !Role_if(PM_CLERIC) &&
