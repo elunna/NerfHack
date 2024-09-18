@@ -2560,10 +2560,11 @@ cartomancer_combo(void)
     }
     if (u.uen < 5)
         You("need at least 5 energy to start a combo.");
-    /* Level 5:   2 cards       Level 10:  3 cards
-       Level 15:  4 cards       Level 20+: 5 cards
+    /* Level 5:   3 cards
+       Level 10:  4 cards
+       Level 15+: 5 cards
     */
-    combos = min(5, max(2, (u.ulevel / 5) + 1));
+    combos = min(5, max(2, (u.ulevel / 5) + 2));
 
     pline("You unleash a wicked combo! [max %d cards]", combos);
     for (i = 0; i < combos ; i++) {
