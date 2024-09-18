@@ -5027,7 +5027,6 @@ mhitm_ad_rabd(
 
     if (magr == &gy.youmonst) {
         /* uhitm - infect other mon */
-        hitmsg(magr, mattk);
         if (!negated && !mdef->mrabid
               && can_become_rabid(mdef->data)) {
             mon_rabid(mdef, TRUE);
@@ -5066,7 +5065,6 @@ mhitm_ad_rabd(
         mhm->hitflags = M_ATTK_AGR_DONE;
     } else {
         /* mhitm - infect other mon */
-        hitmsg(magr, mattk);
         if (!negated && !rn2(4) && !mdef->mrabid && can_become_rabid(mdef->data)) {
             mon_rabid(mdef, TRUE);
         } else if (!negated && !rn2(8)) {
