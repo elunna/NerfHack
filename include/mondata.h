@@ -77,6 +77,9 @@
         && !is_undead(ptr) \
         && !nonliving(ptr) \
         && !unique_corpstat(ptr) \
+        && (ptr)->mlet != S_ANT \
+        && (ptr)->mlet != S_LIZARD \
+        && !is_bird(ptr) \
         && (ptr)->msound != MS_LEADER \
         && ptr != &mons[PM_DEEP_ONE] \
         && ptr != &mons[PM_DEEPER_ONE] \
