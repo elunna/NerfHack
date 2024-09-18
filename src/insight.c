@@ -1084,12 +1084,28 @@ status_enlightenment(int mode, int final)
         you_are("withering away", "");
     if (Vomiting)
         you_are("nauseated", "");
-    if (Stunned)
-        you_are("stunned", "");
-    if (Confusion)
-        you_are("confused", "");
-    if (Hallucination)
-        you_are("hallucinating", "");
+
+    if (Stunned) {
+        Sprintf(buf, "stunned");
+        if (wizard)
+            Sprintf(eos(buf), " (%ld)", HStun & TIMEOUT);
+        you_are(buf, "");
+    }
+
+    if (Confusion) {
+        Sprintf(buf, "confused");
+        if (wizard)
+            Sprintf(eos(buf), " (%ld)", HConfusion & TIMEOUT);
+        you_are(buf, "");
+    }
+
+    if (Hallucination) {
+        Sprintf(buf, "hallucinating");
+        if (wizard)
+            Sprintf(eos(buf), " (%ld)", HHallucination & TIMEOUT);
+        you_are(buf, "");
+    }
+
     if (Blind) {
         /* check the reasons in same order as from_what() */
         Sprintf(buf, "%s blind",
@@ -1104,8 +1120,13 @@ status_enlightenment(int mode, int final)
         /* !haseyes: avoid "you are innately blind innately" */
         you_are(buf, !haseyes(gy.youmonst.data) ? "" : from_what(BLINDED));
     }
-    if (Deaf)
-        you_are("deaf", from_what(DEAF));
+    
+    if (Deaf) {
+        Sprintf(buf, "deaf");
+        if (wizard)
+            Sprintf(eos(buf), " (%ld)", HDeaf & TIMEOUT);
+        you_are(buf, from_what(DEAF));
+    }
 
     /* external troubles, more or less */
     if (Punished) {
