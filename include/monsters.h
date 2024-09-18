@@ -1504,7 +1504,7 @@
     /* Maggots are from SLASH'EM, but have the infest mechanic from SpliceHack.
      * So they can consume corpses to create giant flies. */
     MON(NAM("maggot"), S_WORM,
-        LVL(2, 9, 5, 0, 0), (G_GENO | G_SGROUP | 2),
+        LVL(2, 9, 5, 0, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 3),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
