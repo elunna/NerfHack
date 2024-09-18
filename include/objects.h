@@ -690,6 +690,10 @@ SHIELD("shield of reflection", "polished silver shield",
                                                         SHIELD_OF_REFLECTION),
 
 /* gloves */
+/* Non-random appearance */
+GLOVES("rogue's gloves", "fingerless gloves",
+       0, 1, SEARCHING, 4, 1, 10, 50, 9, 0,  LEATHER, HI_LEATHER,
+                                                        ROGUE_S_GLOVES),
 /* These have their color but not material shuffled, so the IRON must
  * stay CLR_BROWN (== HI_LEATHER) even though it's normally either
  * HI_METAL or CLR_BLACK.  All have shuffled descriptions.
@@ -703,9 +707,6 @@ GLOVES("gauntlets of fumbling", "padded gloves",
 GLOVES("gauntlets of power", "riding gloves",
        0, 1,        0,  8, 1, 30, 50, 9, 0,  IRON, CLR_BROWN,
                                                     GAUNTLETS_OF_POWER),
-GLOVES("rogue's gloves", "fingerless gloves",
-       0, 1, SEARCHING, 4, 1, 10, 50, 9, 0,  LEATHER, HI_LEATHER,
-                                                        ROGUE_S_GLOVES),
 GLOVES("gauntlets of swimming", "black gloves",
 	0, 1,  SWIMMING, 8, 1, 10, 50,  9, 0, LEATHER, HI_LEATHER,
                                                  GAUNTLETS_OF_SWIMMING),
