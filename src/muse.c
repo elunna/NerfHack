@@ -348,6 +348,7 @@ mreadmsg(struct monst *mtmp, struct obj *otmp)
 {
     char onambuf[BUFSZ];
     boolean vismon = canseemon(mtmp);
+    boolean carto = Role_if(PM_CARTOMANCER);
 
     if (!vismon && Deaf)
         return; /* no feedback */
@@ -357,7 +358,8 @@ mreadmsg(struct monst *mtmp, struct obj *otmp)
 
     if (vismon) {
         /* directly see the monster reading the scroll */
-        pline("%s reads %s!", Monnam(mtmp), onambuf);
+        pline("%s %s %s!", Monnam(mtmp),
+               carto ? "plays" : "reads", onambuf);
     } else { /* !Deaf, otherwise we wouldn't reach here */
         char blindbuf[BUFSZ];
         boolean similar = same_race(gy.youmonst.data, mtmp->data),
@@ -379,8 +381,10 @@ mreadmsg(struct monst *mtmp, struct obj *otmp)
         if (couldsee(mtmp->mx, mtmp->my) && mdistu(mtmp) <= 10 * 10)
             map_invisible(mtmp->mx, mtmp->my);
 
-        Snprintf(blindbuf, sizeof blindbuf, "reading %s", onambuf);
-        strsubst(blindbuf, "reading a scroll labeled",
+        Snprintf(blindbuf, sizeof blindbuf,
+                 carto ? "playing %s" : "reading %s", onambuf);
+        strsubst(blindbuf, carto ? "playing a card labeled"
+                                 : "reading a scroll labeled",
                  mtmp->mconf ? "attempting to incant" : "incant");
         You_hear("%s %s.",
                  x_monnam(mtmp, ARTICLE_A, (char *) 0, mflags, FALSE),
