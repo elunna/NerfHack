@@ -2423,6 +2423,9 @@ bhito(struct obj *obj, struct obj *otmp)
             cancel_item(obj);
             newsym(obj->ox, obj->oy); /* might change color */
             break;
+        case SPE_DRAIN_LIFE:
+            (void) drain_item(obj, TRUE);
+            break;
         case WAN_TELEPORTATION:
         case SPE_TELEPORT_AWAY:
             {
