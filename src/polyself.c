@@ -1969,7 +1969,9 @@ domindblast(void)
             continue;
         u_sen = has_telepathy(mtmp) && !mtmp->mcansee;
         if (u_sen || (has_telepathy(mtmp) && rn2(2)) || !rn2(10)) {
-            dmg = rnd(15);
+            dmg = d(5, 6);
+            if (gy.youmonst.data == &mons[PM_MASTER_MIND_FLAYER])
+                dmg += d(3, 5);
             /* wake it up first, to bring hidden monster out of hiding;
                but in case it is currently peaceful, don't make it hostile
                unless it will survive the psychic blast, otherwise hero
@@ -1983,6 +1985,8 @@ domindblast(void)
             mtmp->mhp -= dmg;
             if (DEADMONSTER(mtmp))
                 killed(mtmp);
+            if (dmg > 6)
+                mtmp->mstun = 1;
         }
     }
     return ECMD_TIME;

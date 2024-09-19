@@ -633,10 +633,15 @@ mind_blast(struct monst *mtmp)
                     m_sen ? "telepathy"
                     : Blind_telepat ? "latent telepathy"
                     : "mind"); /* note: hero is never mindless */
-            dmg = rnd(15);
+            dmg = d(5, 6);
+            if (mtmp->data == &mons[PM_MASTER_MIND_FLAYER])
+                dmg += d(3, 5);
+
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
             losehp(dmg, "psychic blast", KILLED_BY_AN);
+            if (!Stunned && dmg > 6)
+                make_stunned((HStun & TIMEOUT) + (long) rnd(dmg), FALSE);
         }
     }
     for (m2 = fmon; m2; m2 = nmon) {
@@ -654,9 +659,12 @@ mind_blast(struct monst *mtmp)
             wakeup(m2, FALSE);
             if (cansee(m2->mx, m2->my))
                 pline("It locks on to %s.", mon_nam(m2));
-            m2->mhp -= rnd(15);
+            m2->mhp -= d(5, 6);
+            if (mtmp->data == &mons[PM_MASTER_MIND_FLAYER])
+                m2->mhp -= d(3, 5);
             if (DEADMONSTER(m2))
                 monkilled(m2, "", AD_DRIN);
+            m2->mstun = 1;
         }
     }
 }
