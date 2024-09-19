@@ -806,7 +806,8 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
             monstseesu(M_SEEN_MAGR);
             if (!Stunned || Stun_resistance)
                 You_feel("momentarily disoriented.");
-            make_stunned(1L, FALSE);
+            if (!Stunned)
+                make_stunned(1L, FALSE);
         } else {
             if (!Stun_resistance)
                 You(Stunned ? "struggle to keep your balance." : "reel...");
