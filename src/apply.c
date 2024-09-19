@@ -2630,13 +2630,13 @@ use_unicorn_horn(struct obj **optr)
             impossible("use_unicorn_horn: bad trouble? (%d)", idx);
             break;
         }
+        /* Sometimes exercise unicorn horn. */
+        if (new_to < 10L)
+            use_skill(P_UNICORN_HORN, 1);
     }
 
     if (did_prop) {
         disp.botl = TRUE;
-        /* Successfully using the unicorn horn exercises skill.
-         * Grant lots of skill points since the unihorn was nerfed. */
-        use_skill(P_UNICORN_HORN, 5);
     } else
         pline("%s", nothing_seems_to_happen);
 
