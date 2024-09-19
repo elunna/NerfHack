@@ -2585,7 +2585,7 @@ use_unicorn_horn(struct obj **optr)
     for (val = 0; val < val_limit; val++) {
         idx = trouble_list[val];
         if (rn2(20) < chance) { /* KMH */
-            fix_to = (long) (rnd(chance) + 1);
+            fix_to = (long) (rnd(chance) + rnd(chance));
             new_to = 0L;
             switch (idx) {
             case SICK:
@@ -4894,7 +4894,7 @@ doapply(void)
     case LOADSTONE:
     case TOUCHSTONE:
     case WHETSTONE:
-    
+
     case ROCK:
         res = use_stone(obj);
         break;
