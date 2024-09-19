@@ -1468,16 +1468,6 @@ passivemm(
     }
     if (mdead || mdef->mcan)
         return (mdead | mhit);
-    
-    /* All fungi can propogate when agitated, 
-     * brown mold already can do this. */
-    if (mdef->data->mlet == S_FUNGUS
-        && mdef->data->mattk[i].adtyp != AD_COLD && rn2(3)) {
-        mdef->mhp += 2;
-        if (mdef->mhpmax < mdef->mhp)
-            mdef->mhpmax = mdef->mhp;
-        (void) split_mon(mdef,(struct monst *) 0);
-    }
 
     /* These affect the enemy only if defender is still alive */
     if (rn2(3))
