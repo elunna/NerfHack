@@ -1059,6 +1059,7 @@ status_enlightenment(int mode, int final)
             }
         }
     }
+
     if (Sick) {
         /* the two types of sickness are lumped together; hero can be
            afflicted by both but there is only one timeout; botl status
@@ -1073,15 +1074,29 @@ status_enlightenment(int mode, int final)
             /* unlike death due to sickness, report the two cases separately
                because it is possible to cure one without curing the other */
             if (u.usick_type & SICK_NONVOMITABLE)
-                you_are("terminally sick from illness", "");
+                Sprintf(buf, "terminally sick from illness");
             if (u.usick_type & SICK_VOMITABLE)
-                you_are("terminally sick from food poisoning", "");
+                Sprintf(buf, "terminally sick from food poisoning");
+            if (wizard)
+                Sprintf(eos(buf), " (%ld)", Sick & TIMEOUT);
+            you_are(buf, "");
         }
     }
-    if (Rabid)
-        you_are("going rabid", "");
-    if (Withering)
-        you_are("withering away", "");
+
+    if (Rabid) {
+        Sprintf(buf, "going rabid");
+        if (wizard)
+            Sprintf(eos(buf), " (%ld)", Rabid & TIMEOUT);
+        you_are(buf, "");
+    }
+
+    if (Withering) {
+        Sprintf(buf, "withering away");
+        if (wizard)
+            Sprintf(eos(buf), " (%ld)", HWithering & TIMEOUT);
+        you_are(buf, "");
+    }
+
     if (Vomiting)
         you_are("nauseated", "");
 
@@ -1120,7 +1135,7 @@ status_enlightenment(int mode, int final)
         /* !haseyes: avoid "you are innately blind innately" */
         you_are(buf, !haseyes(gy.youmonst.data) ? "" : from_what(BLINDED));
     }
-    
+
     if (Deaf) {
         Sprintf(buf, "deaf");
         if (wizard)
