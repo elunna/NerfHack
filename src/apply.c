@@ -2555,7 +2555,7 @@ use_unicorn_horn(struct obj **optr)
      *
      * TODO: Maybe even figure some luck into this...*/
     basefix = rnd(3) + 1;
-    basefix += obj->spe * 2;
+    basefix += !obj ? 0 : obj->spe * 2;
     basefix += P_SKILL(P_UNICORN_HORN) * 2;
     if (Role_if(PM_HEALER))
         basefix *= 2;
@@ -2563,7 +2563,10 @@ use_unicorn_horn(struct obj **optr)
     /* fix [some of] the troubles */
     for (val = 0; val < val_limit; val++) {
         idx = trouble_list[val];
-        fix_to = (long) (rnd(basefix));
+        if (Upolyd && is_unicorn(gy.youmonst.data))
+            fix_to = 9999L;
+        else
+            fix_to = (long) (rnd(basefix));
         new_to = 0L;
         switch (idx) {
         case SICK:
