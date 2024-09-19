@@ -3891,16 +3891,16 @@ staticfn void
 interesting_room(void)
 {
     static const char *const adjectives[] = {
-        "furious",    "wrathful",        "mysterious",   "ugly",
+        "wrathful",   "mysterious",      "ugly",         "dark"
         "beautiful",  "poorly-rendered", "large",        "lifelike",
         "peaceful",   "covetous",        "crooked",      "lovely",
         "misshapen",  "luminous",        "melancholic",  "bold",
         "surreal",    "emotional",       "enigmatic",    "chaotic",
-        "frenzied",   "cheap",           "knock-off",
+        "frenzied",   "cheap",           "knock-off",    "disturbing",
         "tattered",   "distasteful",     "vulgar",       "sordid",
         "unpleasant", "expensive",       "poor-quality", "tacky",
         "kitsch",     "tawdry",          "inferior",     "unnerving",
-        "ominous",    "eerie",           "disturbing",   "dark"
+        "ominous",    "eerie",
     };
 
     static const char *const scary_adj[] = {
@@ -3908,6 +3908,7 @@ interesting_room(void)
         "horrifying",
         "sinister",
         "menacing",
+        "furious",
     };
 
     static const char *const art[] = {
