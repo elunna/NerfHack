@@ -2454,7 +2454,7 @@ use_unicorn_horn(struct obj **optr)
 #define PROP_COUNT 6           /* number of properties we're dealing with */
     int idx, val, val_limit, trouble_count, unfixable_trbl, did_prop;
     int trouble_list[PROP_COUNT];
-    int chance;    /* KMH */
+    int basefix;    /* KMH */
     long old_to, new_to, fix_to;
     struct obj *obj = (optr ? *optr : (struct obj *) 0);
 
@@ -2538,7 +2538,6 @@ use_unicorn_horn(struct obj **optr)
     } else if (trouble_count > 1)
         shuffle_int_array(trouble_list, trouble_count);
 
-#if 0    /* Old NetHack success rate */
     /*
      *  Chances for number of troubles to be fixed
      *               0      1      2      3      4      5      6      7
@@ -2548,107 +2547,85 @@ use_unicorn_horn(struct obj **optr)
     val_limit = rn2(d(2, (obj && obj->blessed) ? 4 : 2));
     if (val_limit > trouble_count)
         val_limit = trouble_count;
-#else    /* hackemslashem's new success rate */
-    /* blessed:  Tries all problems, each with chance given below.
-     * uncursed: Tries one problem, with chance given below.
-     * ENCHANT  +0  +1  +2  +3  +4  +5  +6  +7  +8  +9  +10 +11 +12 or more
-     * CHANCE   30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90%
-     */
-    val_limit = (obj && (obj->blessed || Role_if(PM_HEALER)))
-                ? trouble_count : 1;
 
-    if (obj && obj->spe > 0)
-        chance = (obj->spe < 12) ? (obj->spe + 6) : 18;
-    else
-        chance = 6;
-
-    if (Role_if(PM_HEALER))
-        chance += 2;
-
-    if (P_SKILL(P_UNICORN_HORN) == P_BASIC)
-        chance += 3;
-    if (P_SKILL(P_UNICORN_HORN) == P_SKILLED)
-        chance += 5;
-    if (P_SKILL(P_UNICORN_HORN) == P_EXPERT)
-        chance += 8;
-
-    /* Ceiling is still 90% success rate*/
-    if (chance > 18)
-        chance = 18;
-#endif
-
-    /* fix [some of] the troubles.
-     * For most troubles that time out (not to death),
+    /* For troubles that time out (not illness or vomiting),
      * the unihorn has been nerfed so that it only reduces
-     * the timeout.
-     */
+     * the timeout. The amount reduced depends on your skill,
+     * the enchantment, and if you are a healer or not.
+     *
+     * TODO: Maybe even figure some luck into this...*/
+    basefix = rnd(3) + 1;
+    basefix += obj->spe * 2;
+    basefix += P_SKILL(P_UNICORN_HORN) * 2;
+    if (Role_if(PM_HEALER))
+        basefix *= 2;
+
+    /* fix [some of] the troubles */
     for (val = 0; val < val_limit; val++) {
         idx = trouble_list[val];
-        if (rn2(20) < chance) { /* KMH */
-            fix_to = (long) (rnd(chance) + rnd(chance));
-            new_to = 0L;
-            switch (idx) {
-            case SICK:
-                /* Illness is simply cured. */
-                make_sick(0L, (char *) 0, TRUE, SICK_ALL);
-                did_prop++;
-                break;
-            case BLINDED:
-                old_to = HBlinded & TIMEOUT;
-                if (old_to - fix_to > 0L)
-                    new_to = u.ucreamed
-                        ? (long) u.ucreamed
-                        : old_to - fix_to;
-                if (wizard)
-                    pline("HBlinded: %ld->%ld", old_to, new_to);
-                make_blinded(new_to, TRUE);
-                did_prop++;
-                break;
-            case HALLUC:
-                old_to = HHallucination & TIMEOUT;
-                if (old_to - fix_to > 0L)
-                    new_to = old_to - fix_to;
-                if (wizard)
-                    pline("HHallucination: %ld->%ld", old_to, new_to);
-                (void) make_hallucinated(new_to, TRUE, 0L);
-                did_prop++;
-                break;
-            case VOMITING:
-                /* Vomiting is simply cured. */
-                make_vomiting(0L, TRUE);
-                did_prop++;
-                break;
-            case CONFUSION:
-                old_to = HConfusion & TIMEOUT;
-                if (old_to - fix_to > 0L)
-                    new_to = old_to - fix_to;
-                if (wizard)
-                    pline("HConfusion: %ld->%ld", old_to, new_to);
-                make_confused(new_to, TRUE);
-                did_prop++;
-                break;
-            case STUNNED:
-                old_to = HStun & TIMEOUT;
-                if (old_to - fix_to > 0L)
-                    new_to = old_to - fix_to;
-                if (wizard)
-                    pline("HStun: %ld->%ld", old_to, new_to);
-                make_stunned(new_to, TRUE);
-                did_prop++;
-                break;
-            case DEAF:
-                old_to = HDeaf & TIMEOUT;
-                if (old_to - fix_to > 0L)
-                    new_to = old_to - fix_to;
-                if (wizard)
-                    pline("HDeaf: %ld->%ld", old_to, new_to);
-                make_deaf(new_to, TRUE);
-                did_prop++;
-                break;
-            default:
-                impossible("use_unicorn_horn: bad trouble? (%d)", idx);
-                break;
-            }
+        fix_to = (long) (rnd(basefix));
+        new_to = 0L;
+        switch (idx) {
+        case SICK:
+            /* Illness is simply cured. */
+            make_sick(0L, (char *) 0, TRUE, SICK_ALL);
+            did_prop++;
+            break;
+        case BLINDED:
+            old_to = HBlinded & TIMEOUT;
+            if (old_to - fix_to > 0L)
+                new_to = u.ucreamed
+                    ? (long) u.ucreamed
+                    : old_to - fix_to;
+            if (wizard)
+                pline("HBlinded: %ld->%ld", old_to, new_to);
+            make_blinded(new_to, TRUE);
+            did_prop++;
+            break;
+        case HALLUC:
+            old_to = HHallucination & TIMEOUT;
+            if (old_to - fix_to > 0L)
+                new_to = old_to - fix_to;
+            if (wizard)
+                pline("HHallucination: %ld->%ld", old_to, new_to);
+            (void) make_hallucinated(new_to, TRUE, 0L);
+            did_prop++;
+            break;
+        case VOMITING:
+            /* Vomiting is simply cured. */
+            make_vomiting(0L, TRUE);
+            did_prop++;
+            break;
+        case CONFUSION:
+            old_to = HConfusion & TIMEOUT;
+            if (old_to - fix_to > 0L)
+                new_to = old_to - fix_to;
+            if (wizard)
+                pline("HConfusion: %ld->%ld", old_to, new_to);
+            make_confused(new_to, TRUE);
+            did_prop++;
+            break;
+        case STUNNED:
+            old_to = HStun & TIMEOUT;
+            if (old_to - fix_to > 0L)
+                new_to = old_to - fix_to;
+            if (wizard)
+                pline("HStun: %ld->%ld", old_to, new_to);
+            make_stunned(new_to, TRUE);
+            did_prop++;
+            break;
+        case DEAF:
+            old_to = HDeaf & TIMEOUT;
+            if (old_to - fix_to > 0L)
+                new_to = old_to - fix_to;
+            if (wizard)
+                pline("HDeaf: %ld->%ld", old_to, new_to);
+            make_deaf(new_to, TRUE);
+            did_prop++;
+            break;
+        default:
+            impossible("use_unicorn_horn: bad trouble? (%d)", idx);
+            break;
         }
     }
 
