@@ -1509,6 +1509,11 @@ m_calcdistress(struct monst *mtmp)
                 pline("%s %s", Monnam(mtmp), rn2(2)
                     ? "winks out of existence."
                     : "vanishes in a puff of smoke.");
+        } else if (!Deaf) {
+            You_hear("a%s %s.",
+                distu(mtmp->mx, mtmp->my) > (8*8)
+                    ? " distant" : "",
+                Hallucination ? "wink" : "pop");
         }
         for (obj = mtmp->minvent; obj; obj = otmp) {
             otmp = obj->nobj;
