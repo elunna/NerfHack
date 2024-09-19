@@ -2741,6 +2741,7 @@ const struct PotionRecipe potionrecipes[] = {
     { POT_WATER,            UNICORN_HORN, POT_CONFUSION,        1 },
     { POT_WATER,            UNICORN_HORN, POT_BLOOD,            1 },
     { POT_WATER,            UNICORN_HORN, POT_VAMPIRE_BLOOD,    1 },
+    { POT_HEALING,          UNICORN_HORN, POT_ACID,             1 },
     { POT_OIL,              POT_WATER, POT_OIL,                 1 },
     { POT_RESTORE_ABILITY,  POT_SICKNESS, POT_HEALING,          1 },
 
@@ -2851,7 +2852,8 @@ mixtype(struct obj *o1, struct obj *o2)
     if (o1->oclass == POTION_CLASS
         && (o2typ == POT_GAIN_LEVEL || o2typ == POT_GAIN_ENERGY
           || o2typ == POT_SPEED || o2typ == POT_SICKNESS
-            || o2typ == POT_BLOOD || o2typ == POT_ENLIGHTENMENT)) {
+            || o2typ == POT_BLOOD || o2typ == POT_ENLIGHTENMENT
+            || o2typ == UNICORN_HORN)) {
         /* swap o1 and o2 */
         o1typ = o2->otyp;
         o2typ = o1->otyp;
@@ -2876,7 +2878,6 @@ mixtype(struct obj *o1, struct obj *o2)
             } else {
                 return recipe->result_typ;
             }
-
         }
     }
 
@@ -3355,6 +3356,9 @@ potion_dip(struct obj *obj, struct obj *potion)
         if (erode_obj(obj, 0, ERODE_CORRODE, EF_GREASE | EF_DESTROY) != ER_NOTHING) {
             poof(potion);
             return ECMD_TIME;
+        } else if (obj->otyp == UNICORN_HORN) {
+            Your("%s dissolves in the %s!", xname(obj), xname(potion));
+            useup(obj);
         }
     }
 
