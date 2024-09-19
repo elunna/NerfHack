@@ -449,19 +449,9 @@ look_at_monster(
         Strcat(buf, ", withering");
     if (mtmp->mdiseased)
         Strcat(buf, ", diseased");
-    if (mtmp->mreflecttime)
-        Strcat(buf, ", reflecting");
 
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
-
-    /* Intimate knowledge */
-    if (mtmp->mtame && mtmp->mconf)
-        Strcat(buf, ", confused");
-    if (mtmp->mtame && mtmp->mstun)
-        Strcat(buf, ", stunned");
-    if (mtmp->mtame && mtmp->mblinded)
-        Strcat(buf, ", blinded");
 
     if (canseemon(mtmp) && !Blind) {
         if (mtmp->misc_worn_check & W_ARMOR) {
@@ -486,15 +476,19 @@ look_at_monster(
 
         /* Check accessories */
         if ((otmp = which_armor(mtmp, W_AMUL))) {
-            Sprintf(eos(buf), "%s%s", weartxt ? ", " : " wearing ", xname(otmp));
+            Sprintf(eos(buf), "%s%s", weartxt ? ", " : ", wearing ", ansimpleoname(otmp));
             weartxt = TRUE;
         }
         /* Are gloves covering their rings? */
         if (!gloves) {
+            int ringcount = 0;
             if ((otmp = which_armor(mtmp, W_RINGL)))
-                Sprintf(eos(buf), ", %s", xname(otmp));
+                ringcount++;
             if ((otmp = which_armor(mtmp, W_RINGR)))
-                Sprintf(eos(buf), ", %s", xname(otmp));
+                ringcount++;
+            if (ringcount)
+                Sprintf(eos(buf), "%s%s", weartxt ? ", " : ", wearing ",
+                    ringcount > 1 ? "two rings" : "a ring");
         }
 
         if (MON_WEP(mtmp))

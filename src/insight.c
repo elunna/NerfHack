@@ -3502,6 +3502,8 @@ mstatusline(struct monst *mtmp)
         Strcat(info, ", meditating");
     if (mtmp->mwither)
         Strcat(info, ", withering away");
+    if (mtmp->mberserk)
+        Strcat(info, ", berserking");
     if (mtmp->mflee)
         Strcat(info, ", scared");
     if (mtmp->mtrapped)
