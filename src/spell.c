@@ -2512,8 +2512,8 @@ int cast_from_book(struct obj *spellbook)
             if (!gone)
                 pline_The("spellbook crumbles to dust!");
             useup(spellbook);
-            return ECMD_TIME;
         }
+        return ECMD_TIME;
     } else if (Confusion) {
         if (!confused_book(spellbook)) {
             spellbook->in_use = FALSE;
