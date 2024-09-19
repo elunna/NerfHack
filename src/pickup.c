@@ -2649,7 +2649,8 @@ mbag_explodes(struct obj *obj, int depthin)
         return FALSE;
 
     /* odds: 1/1, 2/2, 3/4, 4/8, 5/16, 6/32, 7/64, 8/128, 9/128, 10/128,... */
-    if ((Is_mbag(obj) || obj->otyp == WAN_CANCELLATION)
+    if ((Is_mbag(obj) || Is_cancelcard(obj)
+            || obj->otyp == WAN_CANCELLATION)
         && (rn2(1 << (depthin > 7 ? 7 : depthin)) <= depthin))
         return TRUE;
     else if (Has_contents(obj)) {
@@ -2726,7 +2727,8 @@ in_container(struct obj *obj)
     } else if (obj == gc.current_container) {
         pline("That would be an interesting topological exercise.");
         return 0;
-    } else if ((Is_mbag(obj) || (obj->otyp == WAN_CANCELLATION && obj->spe > 0))
+    } else if ((Is_mbag(obj) || Is_cancelcard(obj)
+            || (obj->otyp == WAN_CANCELLATION && obj->spe > 0))
             && objects[obj->otyp].oc_name_known && obj->dknown
             && gc.current_container->otyp == BAG_OF_HOLDING
             && !Confusion && !Hallucination) {
@@ -3945,6 +3947,7 @@ tipcontainer(struct obj *box) /* or bag */
             boolean prevent_explosion = explosive_combo
                                         && !Confusion && !Hallucination
                                         && (Is_mbag(otmp)
+                                            || Is_cancelcard(otmp)
                                             || (otmp->otyp == WAN_CANCELLATION
                                             && otmp->spe > 0))
                                         && objects[otmp->otyp].oc_name_known
