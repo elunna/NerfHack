@@ -1930,7 +1930,7 @@ meatobj(struct monst* mtmp) /* for gelatinous cubes */
         /* touch sensitive items */
         if (otmp->otyp == CORPSE && is_rider(&mons[otmp->corpsenm])) {
             int ox = otmp->ox, oy = otmp->oy;
-            boolean revived_it = revive_corpse(otmp);
+            boolean revived_it = revive_corpse(otmp, FALSE);
 
             newsym(ox, oy);
             /* Rider corpse isn't just inedible; can't engulf it either */
@@ -2049,7 +2049,7 @@ meatcorpse(
             || (flesh_petrifies(corpsepm) && !resists_ston(mtmp)))
             continue;
         if (is_rider(corpsepm)) {
-            boolean revived_it = revive_corpse(otmp);
+            boolean revived_it = revive_corpse(otmp, FALSE);
 
             newsym(x, y); /* corpse is gone; mtmp might be too so do this now
                              since we're bypassing the bottom of the loop */

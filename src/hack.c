@@ -115,7 +115,7 @@ revive_nasty(coordxy x, coordxy y, const char *msg)
                 rloc_to(mtmp, cc.x, cc.y);
             if (msg)
                 Norep("%s", msg);
-            revived = revive_corpse(otmp);
+            revived = revive_corpse(otmp, FALSE);
         }
     }
 

@@ -2532,7 +2532,7 @@ minfestcorpse(struct monst *mtmp)
                 if (cansee(mtmp->mx, mtmp->my) && flags.verbose)
                     pline("%s attempts to infest %s!", Monnam(mtmp),
                       distant_name(otmp,doname));
-                (void) revive_corpse(otmp);
+                (void) revive_corpse(otmp, FALSE);
                 return;
             }
             if (cansee(mtmp->mx,mtmp->my) && flags.verbose)

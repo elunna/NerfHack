@@ -1386,6 +1386,7 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 /* Corpse aging */
 #define TAINT_AGE (50L)        /* age when corpses go bad */
 #define TROLL_REVIVE_CHANCE 37 /* 1/37 chance for 250 turns ~ 75% chance */
+#define MOLDY_CHANCE 290       /* 1/290 chance for 200 turns ~ 50% chance */
 #define ZOMBIE_REVIVE_CHANCE 250 /* 1/250 chance for 250 turns ~ 65% chance */
 #define ROT_AGE (250L)         /* age when corpses rot away */
 

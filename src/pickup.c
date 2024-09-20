@@ -289,7 +289,7 @@ rider_corpse_revival(struct obj *obj, boolean remotely)
 
     pline("At your %s, the corpse suddenly moves...",
           remotely ? "attempted acquisition" : "touch");
-    (void) revive_corpse(obj);
+    (void) revive_corpse(obj, FALSE);
     exercise(A_WIS, FALSE);
     return TRUE;
 }
@@ -2821,6 +2821,7 @@ in_container(struct obj *obj)
         if (obj->otyp == CORPSE) {
             if (obj->timed) {
                 (void) stop_timer(ROT_CORPSE, obj_to_any(obj));
+                (void) stop_timer(MOLDY_CORPSE, obj_to_any(obj));
                 (void) stop_timer(REVIVE_MON, obj_to_any(obj));
             }
             /* if this is the corpse of a cancelled ice troll, uncancel it */

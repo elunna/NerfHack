@@ -632,8 +632,9 @@ extern void hellish_smoke_mesg(void);
 extern void maybe_lvltport_feedback(void);
 extern void schedule_goto(d_level *, int, const char *, const char *) NONNULLARG1;
 extern void deferred_goto(void);
-extern boolean revive_corpse(struct obj *) NONNULLARG1;
+extern boolean revive_corpse(struct obj *, boolean) NONNULLARG1;
 extern void revive_mon(union any *, long) NONNULLARG1;
+extern void moldy_corpse(union any *, long);
 extern void zombify_mon(union any *, long) NONNULLARG1;
 extern boolean cmd_safety_prevention(const char *, const char *,
                                      const char *, int *) NONNULLPTRS;

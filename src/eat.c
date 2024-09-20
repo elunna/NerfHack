@@ -852,7 +852,7 @@ cprefx(int pm)
            to normal play though because bones creation empties them */
         if (svc.context.victual.piece /* Null for tins */
             && svc.context.victual.piece->otyp == CORPSE /* paranoia */
-            && revive_corpse(svc.context.victual.piece))
+            && revive_corpse(svc.context.victual.piece, FALSE))
             svc.context.victual = zero_victual; /* victual.piece=0, .o_id=0 */
         return;
     }

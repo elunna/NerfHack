@@ -2043,7 +2043,7 @@ rloco(struct obj *obj)
     int try_limit = 4000;
 
     if (obj->otyp == CORPSE && is_rider(&mons[obj->corpsenm])) {
-        if (revive_corpse(obj))
+        if (revive_corpse(obj, FALSE))
             return FALSE;
     }
 
