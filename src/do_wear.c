@@ -1413,15 +1413,18 @@ Ring_on(struct obj *obj)
     case RIN_PROTECTION_FROM_SHAPE_CHAN:
         rescham();
         break;
-    case RIN_PROTECTION:
-        /* usually learn enchantment and discover type;
-           won't happen if ring is unseen or if it's +0
-           and the type hasn't been discovered yet */
-        observable = (obj->spe != 0);
+    case RIN_PROTECTION:{
+        /* usually learn enchantment and discover type; */
+        long ringmask = obj->owornmask;
+        setworn((struct obj *) 0, obj->owornmask);
+        int old_mc = magic_negation(&gy.youmonst);
+        setworn(obj, ringmask);
+        observable = (obj->spe != 0 || (old_mc != magic_negation(&gy.youmonst)));
         learnring(obj, observable);
         if (obj->spe)
             find_ac(); /* updates botl */
         break;
+    }
     case RIN_REGENERATION:
         if (!oldprop && !HRegeneration && !regenerates(gy.youmonst.data)) {
             if ((uhp() < uhpmax()) &&
