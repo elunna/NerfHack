@@ -329,16 +329,24 @@ static const struct def_skill Skill_B[] = {
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_Car[] = {
-    { P_DAGGER, P_BASIC},
+    /* Cartomancers are extremely narrow in their skills because
+     * they are guaranteed a steady stream of cards for offense
+     * and defense.
+     * Dwarvish carts can reach skilled in pick-axe
+     * Gnomish carts can reach skilled in crossbow, basic club
+     * Elves do not get enchantment spell skill however.
+     * */
+    { P_DAGGER, P_BASIC },
     { P_KNIFE, P_BASIC },
-    { P_QUARTERSTAFF, P_EXPERT},
-    { P_SLING, P_BASIC},
-    { P_DART, P_BASIC},
+    { P_QUARTERSTAFF, P_BASIC },
+    { P_SLING, P_BASIC },
+    { P_BOOMERANG, P_BASIC },
+    { P_DART, P_BASIC },
     { P_SHURIKEN, P_MASTER },
-    { P_UNICORN_HORN, P_SKILLED },
+    { P_UNICORN_HORN, P_BASIC },
     /* Cartomancers don't get skill in spellcasting - they have rulebooks. */
-    { P_RIDING, P_EXPERT},         /* Card games on motorcycles. */
-    { P_BARE_HANDED_COMBAT, P_SKILLED},
+    { P_RIDING, P_EXPERT },         /* Card games on motorcycles. */
+    { P_BARE_HANDED_COMBAT, P_BASIC },
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_C[] = {
@@ -357,7 +365,7 @@ static const struct def_skill Skill_C[] = {
     { P_UNICORN_HORN, P_BASIC },
     { P_RIDING, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_MASTER },
-     { P_SHIELD, P_BASIC },
+    { P_SHIELD, P_BASIC },
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_H[] = {
