@@ -346,6 +346,8 @@ mon_regen(struct monst *mon, boolean digest_meal)
         mon->msummoned--;
     if (mon->mreflecttime)
         mon->mreflecttime--;
+    if (mon->mdiseasetime)
+        mon->mdiseasetime--;
     if (digest_meal) {
         if (mon->meating) {
             mon->meating--;
