@@ -69,25 +69,48 @@
 
 /* The general guideline is that a mammal-type monster can become rabid. */
 #define can_become_rabid(ptr) \
-    ((is_animal(ptr) || humanoid(ptr)) \
-        && !is_rider(ptr) \
-        && !is_angel(ptr) \
-        && !is_demon(ptr) \
-        && !is_were(ptr) \
-        && !is_undead(ptr) \
-        && !nonliving(ptr) \
-        && !unique_corpstat(ptr) \
-        && (ptr)->mlet != S_ANT \
-        && (ptr)->mlet != S_LIZARD \
-        && !is_bird(ptr) \
-        && (ptr)->msound != MS_LEADER \
-        && ptr != &mons[PM_DEEP_ONE] \
-        && ptr != &mons[PM_DEEPER_ONE] \
-        && ptr != &mons[PM_DEEPEST_ONE] \
-        /* These pose complex problems if they become rabid... */ \
-        && ptr != &mons[PM_ALIGNED_CLERIC] \
-        && ptr != &mons[PM_HIGH_CLERIC] \
-        && ptr != &mons[PM_SHOPKEEPER])
+    (((ptr)->mlet == S_DOG \
+    || (ptr)->mlet == S_FELINE \
+    || (ptr)->mlet == S_HUMANOID \
+    || (ptr)->mlet == S_ORC \
+    || (ptr)->mlet == S_QUADRUPED \
+    || (ptr)->mlet == S_RODENT \
+    || (ptr)->mlet == S_UNICORN \
+    || (ptr)->mlet == S_ZRUTY \
+    || (ptr)->mlet == S_BAT \
+    || (ptr)->mlet == S_CENTAUR \
+    || (ptr)->mlet == S_GNOME \
+    || (ptr)->mlet == S_GIANT \
+    || (ptr)->mlet == S_OGRE \
+    || (ptr)->mlet == S_TROLL \
+    || (ptr)->mlet == S_YETI \
+    || (ptr)->mlet == S_HUMAN) \
+    && !cannot_be_rabid(ptr))
+
+#define cannot_be_rabid(ptr) \
+    (is_undead(ptr) \
+    || nonliving(ptr) \
+    || unique_corpstat(ptr) \
+    || is_mind_flayer(ptr) \
+    || is_unicorn(ptr) \
+    || is_bird(ptr) \
+    || ptr == &mons[PM_DEEP_ONE] \
+    || ptr == &mons[PM_DEEPER_ONE] \
+    || ptr == &mons[PM_DEEPEST_ONE] \
+    || ptr == &mons[PM_BYAKHEE] \
+    || ptr == &mons[PM_NIGHTGAUNT] \
+    || ptr == &mons[PM_VELOCIRAPTOR] \
+    || ptr == &mons[PM_T_REX] \
+    || ptr == &mons[PM_LANDSHARK] \
+    /* These pose complex problems if they become rabid... */ \
+    || ptr == &mons[PM_ALIGNED_CLERIC] \
+    || ptr == &mons[PM_HIGH_CLERIC] \
+    || ptr == &mons[PM_SHOPKEEPER] \
+    || ptr == &mons[PM_DOPPELGANGER] \
+    || ptr == &mons[PM_GUARD] \
+    || ptr == &mons[PM_NURSE] \
+    || (ptr)->msound == MS_LEADER \
+    )
 
 /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
 #define resists_mgc(ptr) \
