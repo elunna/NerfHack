@@ -421,6 +421,11 @@ find_roll_to_hit(
     if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
         tmp -= 1;
 
+    /* Cartomancers are not great melee fighters - they prefer ranged weapons
+     * or fighting behind their summoned help. */
+    if (Role_if(PM_CARTOMANCER) && uwep)
+        tmp -= 10;
+
     if (is_orc(mtmp->data)
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;

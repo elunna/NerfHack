@@ -63,8 +63,7 @@ static struct trobj Barbarian[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cartomancer[] = {
-#define T_CARDS 0
-    { RAZOR_CARD, 0, WEAPON_CLASS, 40, UNDEF_BLESS }, /* quan is variable */
+    { RAZOR_CARD, 0, WEAPON_CLASS, 60, 1 }, /* quan is variable */
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { MEAT_STICK, 0, FOOD_CLASS, 2, 0 },
     { CANDY_BAR, 0, FOOD_CLASS, 2, 0 },
@@ -332,21 +331,22 @@ static const struct def_skill Skill_Car[] = {
     /* Cartomancers are extremely narrow in their skills because
      * they are guaranteed a steady stream of cards for offense
      * and defense.
+     * Cartomancers also have a base -5 penalty for melee weapons
      * Dwarvish carts can reach skilled in pick-axe
      * Gnomish carts can reach skilled in crossbow, basic club
      * Elves do not get enchantment spell skill however.
      * */
-    { P_DAGGER, P_BASIC },
-    { P_KNIFE, P_BASIC },
-    { P_QUARTERSTAFF, P_BASIC },
+    { P_DAGGER, P_SKILLED },
+    { P_KNIFE, P_SKILLED },
+    { P_QUARTERSTAFF, P_SKILLED },
     { P_SLING, P_BASIC },
     { P_BOOMERANG, P_BASIC },
     { P_DART, P_BASIC },
     { P_SHURIKEN, P_MASTER },
-    { P_UNICORN_HORN, P_BASIC },
+    { P_UNICORN_HORN, P_SKILLED },
     /* Cartomancers don't get skill in spellcasting - they have rulebooks. */
     { P_RIDING, P_EXPERT },         /* Card games on motorcycles. */
-    { P_BARE_HANDED_COMBAT, P_BASIC },
+    { P_BARE_HANDED_COMBAT, P_SKILLED },
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_C[] = {
@@ -715,7 +715,6 @@ u_init_role(void)
         for (int s = SPE_DIG; s < SPE_CHAIN_LIGHTNING; s++)
             objects[s].oc_weight = 5;
 
-        Cartomancer[T_CARDS].trquan = rn1(21, 40); /* 40..60 */
         ini_inv(Cartomancer);
         if (!rn2(3))
             ini_inv(PhasePotion);
