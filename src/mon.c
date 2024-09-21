@@ -3416,9 +3416,8 @@ mondead(struct monst *mtmp)
     iflags.sad_feeling = FALSE;
 
     mtmp->mhp = 0; /* in case caller hasn't done this */
+    unpoly_monster(mtmp);
 
-    /* WAC First check that monster can unpoly */
-	unpoly_monster(mtmp);
 	if (mtmp->mhp > 0)
         return;
 
@@ -6927,8 +6926,12 @@ cham_depth_appropriate(struct monst *mon)
     int s = mons[monsndx(mon->data)].difficulty;
     int n = 15 - abs(d - s);
 
+    /* Shapeshifters in their natural state want to poly. */
+    if (mon->cham == mon->mnum)
+        return 1;
+
     if (is_were(mon->data))
-         /* More frequent change than for the player is justified, because the
+        /* More frequent change than for the player is justified, because the
             player only observes monsters for short periods of time, relatively.
             If non-player werecreatures only changed form as often as the player
             does, you'd basically never see it happen.  If player lycanthropes
