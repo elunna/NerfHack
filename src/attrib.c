@@ -1343,7 +1343,7 @@ extremeattr(
         /* lower limit for Str can also be 25 */
         if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER)
             lolimit = hilimit;
-        else if (u_wield_art(ART_OGRESMASHER))
+        else if (u_wield_art(ART_GIANTSLAYER))
             lolimit = hilimit;
     } else if (attrindx == A_CON) {
         if (u_wield_art(ART_OGRESMASHER))
