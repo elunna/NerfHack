@@ -202,6 +202,7 @@ mkshop(void)
          * - so make them general stores
          */
         if (isbig(sroom) && (shtypes[i].symb == WAND_CLASS
+                             || shtypes[i].symb == SCROLL_CLASS
                              || shtypes[i].symb == SPBOOK_CLASS))
             i = 0;
     }
