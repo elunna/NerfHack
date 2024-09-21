@@ -2359,7 +2359,7 @@ moldy_corpse(anything *arg, long timeout UNUSED)
     }
 
     /* Don't allow arbitrarily long chains of mold growing on mold. */
-    boolean already_fungus = (mons[oldtyp].mlet == S_FUNGUS && !rn2(2));
+    boolean already_fungus = (mons[oldtyp].mlet == S_FUNGUS);
 
     /* [ALI] Molds don't grow in adverse conditions.  If it ever
      * becomes possible for molds to grow in containers we should
