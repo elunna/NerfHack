@@ -65,6 +65,14 @@ static NEARDATA struct artifact artilist[] = {
       0, 0, 0, NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 0L, NO_COLOR, NONARTIFACT),
 
+    /* Guidelines for to-hit penalties:
+     * The default to-hit penalty is -10.
+     * Crowning gifts only have a penalty of -5 (to make them a little easier to use)
+     * A couple of special weapons have 0 to-hit penalty.
+     *    - Magicbane and Quick Blade
+     * Note: All the to-hit numbers appear here as positive, but they
+     * adjusted to become negative in artifact.c:spec_abon()
+     */
 
     /*** Lawful artifacts ***/
 
@@ -73,7 +81,7 @@ static NEARDATA struct artifact artilist[] = {
      * making #offer overpowered. Used to be PM_KNIGHT. */
     A("Carnwennan", KNIFE,
       (SPFX_RESTR | SPFX_SEARCH | SPFX_STLTH), 0, 0,
-      PHYS(6, 8), NO_DFNS, NO_CARY, 0,
+      PHYS(10, 8), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 400L, NO_COLOR, CARNWENNAN),
 
     A("Demonbane", MACE,
@@ -85,7 +93,7 @@ static NEARDATA struct artifact artilist[] = {
      * in fountains - only lawful knights can be blessed with it. */
     A("Excalibur", LONG_SWORD, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN
                                 | SPFX_INTEL | SPFX_SEARCH),
-      0, 0, PHYS(10, 10), DRLI(0, 0), NO_CARY, 0,
+      0, 0, PHYS(5, 10), DRLI(0, 0), NO_CARY, 0,
       A_LAWFUL, PM_KNIGHT, NON_PM, 4000L, NO_COLOR, EXCALIBUR),
 
     A("Grayswandir", SILVER_SABER,
@@ -123,7 +131,7 @@ static NEARDATA struct artifact artilist[] = {
          */
     A("Snickersnee", KATANA,
       SPFX_RESTR, 0, 0,
-      PHYS(0, 8), DFNS(AD_STUN), NO_CARY,
+      PHYS(10, 8), DFNS(AD_STUN), NO_CARY,
       0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L, NO_COLOR, SNICKERSNEE),
 
     A("Sunsword", LONG_SWORD,
@@ -145,7 +153,7 @@ static NEARDATA struct artifact artilist[] = {
 
     A("Cleaver", BATTLE_AXE,
       SPFX_RESTR, 0, 0,
-      PHYS(6, 6), NO_DFNS, NO_CARY, 0,
+      PHYS(10, 6), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_BARBARIAN, NON_PM, 1500L, NO_COLOR, CLEAVER),
 
     A("David's Sling", SLING,
@@ -188,7 +196,7 @@ static NEARDATA struct artifact artilist[] = {
      * - Magicbane was changed from an athame to a quarterstaff. */
     A("Magicbane", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
-      STUN(6, 4), DFNS(AD_MAGM), NO_CARY, 0,
+      STUN(0, 4), DFNS(AD_MAGM), NO_CARY, 0,
       A_NEUTRAL, PM_WIZARD, NON_PM, 3500L, NO_COLOR, MAGICBANE),
 
     /* From SLASH'EM with changes:
@@ -218,7 +226,7 @@ static NEARDATA struct artifact artilist[] = {
      */
     A("Mjollnir", WAR_HAMMER, /* Mjo:llnir */
       (SPFX_RESTR | SPFX_ATTK), 0, 0,
-      ELEC(10, 24), NO_DFNS, NO_CARY,
+      ELEC(5, 24), NO_DFNS, NO_CARY,
       LIGHTNING_BOLT,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, NO_COLOR, MJOLLNIR),
 
@@ -240,7 +248,7 @@ static NEARDATA struct artifact artilist[] = {
     /* From SpliceHack */
     A("The End", SCYTHE,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
-      COLD(6, 20), DFNS(AD_DRLI), NO_CARY, 0,
+      COLD(10, 20), DFNS(AD_DRLI), NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 6000L, NO_COLOR, THE_END),
 
     /* Two problems:
@@ -256,7 +264,7 @@ static NEARDATA struct artifact artilist[] = {
     A("Vorpal Blade", LONG_SWORD,
       (SPFX_RESTR | SPFX_BEHEAD | SPFX_SEEINV | SPFX_WARN | SPFX_DFLAGH),
       0, MH_JABBERWOCK,
-      PHYS(10, 1), NO_DFNS, NO_CARY, 0,
+      PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 4000L, CLR_RED, VORPAL_BLADE),
 
     /* From SLASH'EM */
@@ -277,7 +285,7 @@ static NEARDATA struct artifact artilist[] = {
     /* From SLASH'EM */
     A("Doomblade", SHORT_SWORD,
       SPFX_RESTR, 0, 0,
-      PHYS(0, 20), NO_DFNS, NO_CARY, 0,
+      PHYS(10, 20), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 1000L, NO_COLOR, DOOMBLADE),
 
     /*
@@ -312,13 +320,13 @@ static NEARDATA struct artifact artilist[] = {
     /* From SpliceHack */
     A("Poseidon\'s Trident", TRIDENT,
       (SPFX_RESTR | SPFX_BREATHE), 0, 0,
-      PHYS(6, 7), NO_DFNS, NO_CARY, WWALKING,
+      PHYS(10, 7), NO_DFNS, NO_CARY, WWALKING,
       A_CHAOTIC, NON_PM, NON_PM, 1500L, NO_COLOR, POSEIDON_S_TRIDENT),
 
     /* From SLASH'EM */
     A("Serpent's Tongue", DAGGER,
       SPFX_RESTR, 0, 0,
-      PHYS(4, 0), NO_DFNS, NO_CARY, 0,
+      PHYS(10, 0), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 400L, NO_COLOR, SERPENT_S_TONGUE),
 
     /* Same alignment as elves */
@@ -376,7 +384,7 @@ static NEARDATA struct artifact artilist[] = {
      * Grants teleport control; greatly increases spellcasting ability. */
     A("Origin", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_TCTRL), 0, 0,
-      PHYS(4, 6), NO_DFNS, NO_CARY, 0,
+      PHYS(10, 6), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 500L, NO_COLOR, ORIGIN),
 
     /* Debut artifact in NerfHack.
@@ -447,7 +455,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
     A("The Staff of Aesculapius", QUARTERSTAFF,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK | SPFX_INTEL | SPFX_DRLI
        | SPFX_REGEN | SPFX_NOWISH), 0, 0,
-      DRLI(0, 0), DFNS(AD_DRLI), NO_CARY, HEALING,
+      DRLI(10, 0), DFNS(AD_DRLI), NO_CARY, HEALING,
       A_NEUTRAL, PM_HEALER, NON_PM, 5000L, NO_COLOR, STAFF_OF_AESCULAPIUS),
 
     A("The Magic Mirror of Merlin", MIRROR,
@@ -489,7 +497,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
     A("The Tsurugi of Muramasa", TSURUGI,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_BEHEAD | SPFX_LUCK
        | SPFX_PROTECT | SPFX_NOWISH), 0, 0,
-      PHYS(0, 8), NO_DFNS, NO_CARY, 0,
+      PHYS(10, 8), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_SAMURAI, NON_PM, 4500L, NO_COLOR, TSURUGI_OF_MURAMASA),
 
     A("The Platinum Yendorian Express Card", CREDIT_CARD,
