@@ -2258,7 +2258,7 @@ thitmonst(
 
             if (is_moncard(obj)) {
                 /* Spheres explode on contact! */
-                if (is_boomer(obj->corpsenm)) {
+                if (is_boomer(obj->corpsenm) && !obj->cursed) {
                     switch (obj->corpsenm) {
                         case PM_FREEZING_SPHERE:
                             explode(gb.bhitpos.x, gb.bhitpos.y,
