@@ -1962,6 +1962,10 @@ not_special:
                               && (levl[ggx][ggy].lit || !levl[omx][omy].lit)
                               && (dist2(omx, omy, ggx, ggy) <= 36));
 
+        /* If berserking or rabid, the default is very aggressive. */
+        if (mtmp->mberserk || mtmp->mrabid)
+            appr = 1;
+
         if (!mtmp->mcansee
             || (should_see && Invis && !mon_prop(mtmp, SEE_INVIS) && rn2(11))
             || is_obj_mappear(&gy.youmonst, STRANGE_OBJECT) || u.uundetected
@@ -1978,9 +1982,6 @@ not_special:
         if (m_balks_at_approaching(mtmp))
             appr = -1;
 
-        /* ... unless they are currently berserk or are rabid */
-        if (mtmp->mberserk || mtmp->mrabid)
-            appr = 1;
 
         if (!should_see && can_track(ptr)) {
             coord *cp;
