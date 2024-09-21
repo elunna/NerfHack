@@ -167,6 +167,22 @@ setuwep(struct obj *obj)
         disp.botl = TRUE;
         You_feel("more comfortable now.");
     }
+
+    /* Cartomancers are quite adept with crystal balls */
+    if (olduwep && olduwep->otyp == CRYSTAL_BALL) {
+        ESee_invisible &= ~W_WEP;
+        ETelepat &= ~W_WEP;
+        u.xray_range = -1;
+        /* Charisma bonus handled in attrib.c */
+        disp.botl = TRUE;
+    }
+    if (uwep && uwep->otyp == CRYSTAL_BALL) {
+        ESee_invisible |= W_WEP;
+        ETelepat |= W_WEP;
+        u.xray_range = 3;
+        disp.botl = TRUE;
+    }
+
     /* Note: Explicitly wielding a pick-axe will not give a "bashing"
      * message.  Wielding one via 'a'pplying it will.
      * 3.2.2:  Wielding arbitrary objects will give bashing message too.

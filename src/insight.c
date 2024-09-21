@@ -914,6 +914,9 @@ one_characteristic(int mode, int final, int attrindx)
             hide_innate_value = TRUE;
         break;
     case A_CHA:
+        if (Role_if(PM_CARTOMANCER)
+            && uwep && uwep->otyp == CRYSTAL_BALL && uwep->cursed)
+            hide_innate_value = TRUE;
         break;
     default:
         return; /* impossible */

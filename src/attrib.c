@@ -1285,6 +1285,9 @@ acurr(int chridx)
         if (tmp < 18 && (gy.youmonst.data->mlet == S_NYMPH
                          || u.umonnum == PM_AMOROUS_DEMON))
             result = 18;
+        else if (Role_if(PM_CARTOMANCER)
+            && uwep && uwep->otyp == CRYSTAL_BALL)
+            result = 25;
     } else if (chridx == A_CON) {
         if (u_wield_art(ART_OGRESMASHER))
             result = 25;
@@ -1344,6 +1347,10 @@ extremeattr(
             lolimit = hilimit;
     } else if (attrindx == A_CON) {
         if (u_wield_art(ART_OGRESMASHER))
+            lolimit = hilimit;
+    } else if (attrindx == A_CHA) {
+         if (Role_if(PM_CARTOMANCER)
+            && uwep && uwep->otyp == CRYSTAL_BALL)
             lolimit = hilimit;
     }
     /* this exception is hypothetical; the only other worn item affecting
