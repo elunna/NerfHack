@@ -620,6 +620,7 @@ fix_worst_trouble(int trouble)
         uncurse(otmp);
         break;
     }
+    exercise(A_CON, FALSE);
 }
 
 /* "I am sometimes shocked by... the nuns who never take a bath without
