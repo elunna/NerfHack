@@ -243,7 +243,7 @@ static NEARDATA struct artifact artilist[] = {
     A("Snakeskin", ROBE,
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
       NO_ATTK, DFNS(AD_ACID), NO_CARY, 0,
-      A_NEUTRAL, 0, NON_PM, 1700L, NO_COLOR, SNAKESKIN),
+      A_NEUTRAL, NON_PM, NON_PM, 1700L, NO_COLOR, SNAKESKIN),
 
     /* From SpliceHack */
     A("The End", SCYTHE,

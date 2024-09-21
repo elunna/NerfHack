@@ -1788,7 +1788,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp)
             OBJPUTSTR("Does not generate randomly.");
         }
 
-        Sprintf(buf, "Associated class/role: %s/%s ",
+        Sprintf(buf, "Associated class/race: %s/%s ",
                 a_info.role, a_info.race) ;
         OBJPUTSTR(buf);
 
