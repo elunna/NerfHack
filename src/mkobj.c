@@ -46,16 +46,16 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
                                          { 1, AMULET_CLASS } };
 
 /* Cartomancers have a different dynamic with card drops. */
-static const struct icp cartprobs[] =  { { 14, WEAPON_CLASS },
-                                         { 14, ARMOR_CLASS },
-                                         { 30, FOOD_CLASS },
-                                         { 8, TOOL_CLASS },
+static const struct icp cartprobs[] =  { { 10, WEAPON_CLASS },
+                                         { 10, ARMOR_CLASS },
+                                         { 30, FOOD_CLASS }, /* Double to compensate for less corpse drops */
+                                         { 12, TOOL_CLASS },
                                          { 8, GEM_CLASS },
-                                         { 11, POTION_CLASS },
-                                         { 8, SCROLL_CLASS },
-                                         { 2, SPBOOK_CLASS },
-                                         { 2, WAND_CLASS },
-                                         { 2, RING_CLASS },
+                                         { 12, POTION_CLASS },
+                                         { 8, SCROLL_CLASS }, /* Half because of card drops*/
+                                         { 4, SPBOOK_CLASS },
+                                         { 2, WAND_CLASS }, /* Half because of zap card drops */
+                                         { 3, RING_CLASS },
                                          { 1, AMULET_CLASS } };
 
 static const struct icp boxiprobs[] = { { 18, GEM_CLASS },
