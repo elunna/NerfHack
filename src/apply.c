@@ -4331,6 +4331,9 @@ do_break_wand(struct obj *obj)
     } else if (ACURR(A_STR) < (is_fragile ? 5 : 10)) {
         You("don't have the strength to break %s!", yname(obj));
         return ECMD_OK;
+    } else if (objdescr_is(obj, "plastic")) {
+        pline("%s is too flexible to break!", Yname2(obj));
+        return ECMD_OK;
     }
     if (!paranoid_query(ParanoidBreakwand,
                         safe_qbuf(confirm,

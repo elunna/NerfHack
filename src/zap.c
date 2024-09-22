@@ -6439,6 +6439,10 @@ destroyable(struct obj *obj, int adtyp)
         if (obj->oclass != RING_CLASS && obj->oclass != WAND_CLASS) {
             return FALSE;
         }
+        /* plastic wands are immune */
+        if (objdescr_is(obj, "plastic")) {
+            return FALSE;
+        }
         /* electric-magic items are immune */
         if (obj->otyp != RIN_SHOCK_RESISTANCE && obj->otyp != WAN_LIGHTNING) {
             return TRUE;
