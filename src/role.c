@@ -189,8 +189,8 @@ const struct Role roles[NUM_ROLES + 1] = {
       /* Spellcasting stats */
       1,                            /* base penalty */
       0,                            /* healing spells (-bonus) */
-      3,                            /* shield penalty */
-      10,                           /* metal armor penalty */
+      10,                           /* shield penalty */
+      20,                           /* metal armor penalty */
       A_INT,                        /* spellcasting stat */
       0,                            /* special spell */
       -4 },                         /* (-bonus) for special spell */
