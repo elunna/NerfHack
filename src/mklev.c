@@ -1883,12 +1883,13 @@ traptype_rnd(unsigned mktrapflags)
         if (lvl < 8)
             kind = NO_TRAP;
         break;
-    case MAGIC_BEAM_TRAP:
-        if (lvl < 10)
-            kind = NO_TRAP;
-        break;
+
     case COLD_TRAP:
         if (lvl < 12)
+            kind = NO_TRAP;
+        break;
+    case MAGIC_BEAM_TRAP:
+        if (lvl < 14)
             kind = NO_TRAP;
         break;
     case FIRE_TRAP:
