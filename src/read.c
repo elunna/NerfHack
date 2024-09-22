@@ -3549,7 +3549,7 @@ create_particular_parse(
     d->fem = -1;     /* gender not specified */
     d->genderconf = -1;  /* no confusion on which gender to assign */
     d->randmonst = FALSE;
-    d->maketame = d->makepeaceful = d->makehostile = FALSE;
+    d->maketame = d->makepeaceful = d->makehostile = d->makesummon = FALSE;
     d->sleeping = d->saddled = d->invisible = FALSE;
     d->rabid = d->diseased = FALSE;
     /* quantity */
@@ -3604,6 +3604,11 @@ create_particular_parse(
     } else if (!strncmpi(bufp, "hostile ", 8)) {
         bufp += 8;
         d->makehostile = TRUE;
+    }
+    
+    if (!strncmpi(bufp, "summoned ", 9)) {
+        bufp += 9;
+        d->makesummon = TRUE;
     }
 
     if (!strncmpi(bufp, "rabid ", 6)) {
@@ -3744,6 +3749,10 @@ create_particular_creation(
                  * will make it look like the monster isn't peaceful. */
                 newsym(mtmp->mx, mtmp->my);
         }
+
+        if (d->makesummon)
+            mtmp->msummoned = 15; /* Arbitrary, for testing */
+
         if (d->saddled && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
             struct obj *otmp = mksobj(SADDLE, TRUE, FALSE);
 

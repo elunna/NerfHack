@@ -343,7 +343,7 @@ struct _create_particular_data {
     int genderconf;    /* conflicting gender */
     char monclass;
     boolean randmonst;
-    boolean maketame, makepeaceful, makehostile;
+    boolean maketame, makepeaceful, makehostile, makesummon;
     boolean sleeping, saddled, invisible, hidden, diseased, rabid;
 };
 
