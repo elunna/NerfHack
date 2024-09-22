@@ -1119,7 +1119,7 @@ mon_explodes(
             s_suffix(pmname(mon->data, Mgender(mon))));
     svk.killer.format = KILLED_BY_AN;
 
-    if (mon->data == &mons[PM_PHOENIX] && !mon->mcan) {
+    if (mon->data == &mons[PM_PHOENIX] && !mon->mcan && !mon->msummoned) {
         explode(mon->mx, mon->my, -1, dmg, MON_EXPLODE, EXPL_FIERY);
         /* eggs have to be done here instead of in the corpse
            function because otherwise the explosion destroys the egg */
