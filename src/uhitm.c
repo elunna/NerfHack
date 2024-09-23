@@ -424,11 +424,11 @@ find_roll_to_hit(
     /* Cartomancers are not great melee fighters - they prefer ranged weapons
      * or fighting behind their summoned help. */
     if (Role_if(PM_CARTOMANCER)) {
+        tmp -= 5; /* Base to-hit penalty */
         /* Instead of punishing spellcasting for armor and shields,
          * punish melee capabilities instead. */
         tmp -= uarm ? gu.urole.spelarmr : 0; /* spelarmr == 20 */
         tmp -= uarms ? gu.urole.spelshld: 0; /* spelshld == 10 */
-
         if (uwep)
             tmp -= 10;
     }
