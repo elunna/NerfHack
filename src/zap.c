@@ -2780,6 +2780,10 @@ dozap(void)
 
     /* Handle zappable effect cards here */
     if (obj->otyp == SCR_ZAPPING) {
+        if (u.uen < 10) {
+            pline1(nothing_happens);
+            return ECMD_TIME;
+        }
         struct obj *pseudo;
         if (obj->corpsenm == NON_PM)
             impossible("seffects: SCR_WAND_ZAP has no zap type!");
@@ -2814,6 +2818,7 @@ dozap(void)
         }
         obfree(pseudo, NULL);
         useup(obj);
+        u.uen -= 10;
         return 1;
     }
 

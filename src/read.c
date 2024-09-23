@@ -26,7 +26,7 @@ staticfn void seffect_confuse_monster(struct obj **);
 staticfn void seffect_scare_monster(struct obj **);
 staticfn void seffect_remove_curse(struct obj **);
 staticfn boolean seffect_create_monster(struct obj **);
-staticfn void seffect_zapping(struct obj **);
+staticfn boolean seffect_zapping(struct obj **);
 staticfn void seffect_enchant_weapon(struct obj **);
 staticfn int wep_enchant_range(int);
 staticfn void seffect_taming(struct obj **);
@@ -664,6 +664,7 @@ doread(void)
            to the scroll itself, so avoid "it disappears" for those */
         nodisappear = (otyp == SCR_FIRE
                        || (otyp == SCR_REMOVE_CURSE && scroll->cursed)
+                       || otyp == SCR_ZAPPING
                        || is_moncard(scroll));
         if (Blind)
             pline(nodisappear
@@ -1706,13 +1707,20 @@ seffect_create_monster(struct obj **sobjp)
     return TRUE;
 }
 
-staticfn void
+staticfn boolean
 seffect_zapping(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
     struct obj *pseudo;
-    if (sobj->corpsenm == NON_PM)
+    if (sobj->corpsenm == NON_PM) {
 	    impossible("seffects: SCR_WAND_ZAP has no zap type!");
+        return FALSE;
+    }
+    if (u.uen < 10) {
+        pline1(nothing_happens);
+        sobj->in_use = FALSE;
+        return FALSE;
+    }
 
     pseudo = mksobj(sobj->corpsenm, FALSE, FALSE);
     pseudo->blessed = pseudo->cursed = 0;
@@ -1728,6 +1736,7 @@ seffect_zapping(struct obj **sobjp)
         gc.current_wand = 0;
     }
     obfree(pseudo, NULL);
+    return TRUE;
 }
 
 staticfn void
@@ -2675,7 +2684,8 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
             return 1;
         break;
     case SCR_ZAPPING:
-        seffect_zapping(&sobj);
+        if (!seffect_zapping(&sobj))
+            return 1;
         break;
     case SCR_ENCHANT_WEAPON:
         seffect_enchant_weapon(&sobj);

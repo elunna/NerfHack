@@ -1497,7 +1497,7 @@ throwit(struct obj *obj,
                       && obj->otyp == SCR_CREATE_MONSTER;
 
     /* Handle thrown zap cards here */
-    if (obj->otyp == SCR_ZAPPING) {
+    if (obj->otyp == SCR_ZAPPING && u.uen >= 10) {
         struct obj *pseudo = mksobj(obj->corpsenm, FALSE, FALSE);
         pseudo->blessed = pseudo->cursed = 0;
         pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
