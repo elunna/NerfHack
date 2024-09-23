@@ -1158,7 +1158,6 @@ use_defensive(struct monst *mtmp)
         else if (is_pool(mtmp->mx, mtmp->my))
             fish = &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
 
-        /* Cartomancer effects */
         if (is_moncard(otmp)) {
             pm = &mons[otmp->corpsenm];
             cnt = 1; /* Same as for player */

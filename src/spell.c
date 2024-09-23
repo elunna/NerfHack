@@ -2574,13 +2574,8 @@ cartomancer_combo(void)
                 return 0;
             break;
         }
-        u.uen -= i == 0 ? 5 : 20;
         disp.botl = TRUE;
-        if (u.uen <= 0) {
-            u.uen = 0;
-            break;
-        }
-        if (u.uen < 20)
+        if (u.uen < 10)
             break;
     }
     pline("Your combo ends.");

@@ -25,7 +25,7 @@ staticfn void seffect_destroy_armor(struct obj **);
 staticfn void seffect_confuse_monster(struct obj **);
 staticfn void seffect_scare_monster(struct obj **);
 staticfn void seffect_remove_curse(struct obj **);
-staticfn void seffect_create_monster(struct obj **);
+staticfn boolean seffect_create_monster(struct obj **);
 staticfn void seffect_zapping(struct obj **);
 staticfn void seffect_enchant_weapon(struct obj **);
 staticfn int wep_enchant_range(int);
@@ -663,7 +663,8 @@ doread(void)
         /* a few scroll feedback messages describe something happening
            to the scroll itself, so avoid "it disappears" for those */
         nodisappear = (otyp == SCR_FIRE
-                       || (otyp == SCR_REMOVE_CURSE && scroll->cursed));
+                       || (otyp == SCR_REMOVE_CURSE && scroll->cursed)
+                       || is_moncard(scroll));
         if (Blind)
             pline(nodisappear
                       ? "You %s the formula on the scroll."
@@ -1674,18 +1675,24 @@ seffect_remove_curse(struct obj **sobjp)
     update_inventory();
 }
 
-staticfn void
+staticfn boolean
 seffect_create_monster(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
     boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
+    boolean yours = !svc.context.mon_moving;
 
     if (is_moncard(sobj)) {
+        if (yours && u.uen < 10) {
+            pline1(nothing_happens);
+            sobj->in_use = FALSE;
+            return FALSE;
+        }
         use_moncard(sobj, u.ux, u.uy);
         gk.known = TRUE;
-        return;
+        return TRUE;
     }
     if (create_critters(1 + ((confused || scursed) ? 12 : 0)
                         + ((sblessed || rn2(73)) ? 0 : rnd(4)),
@@ -1696,6 +1703,7 @@ seffect_create_monster(struct obj **sobjp)
     /* no need to flush monsters; we ask for identification only if the
      * monsters are not visible
      */
+    return TRUE;
 }
 
 staticfn void
@@ -2663,7 +2671,8 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
         break;
     case SCR_CREATE_MONSTER:
     case SPE_CREATE_MONSTER:
-        seffect_create_monster(&sobj);
+        if (!seffect_create_monster(&sobj))
+            return 1;
         break;
     case SCR_ZAPPING:
         seffect_zapping(&sobj);
@@ -3883,11 +3892,14 @@ use_moncard(
     struct obj *sobj,
     int x, int y)
 {
+    boolean yours = !svc.context.mon_moving;
     struct permonst *pm = sobj->corpsenm == NON_PM
             ? rndmonst() : &mons[sobj->corpsenm];
 
     (void) make_msummoned(pm, &gy.youmonst,
                           sobj->cursed ? FALSE : TRUE, x, y);
+    if (yours)
+        u.uen -= 10;
 }
 
 staticfn void
