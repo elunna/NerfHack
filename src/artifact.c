@@ -3400,34 +3400,40 @@ artifact_info(int anum)
         strcpy(art_info.wield_res, buf);
     }
 
+    if ((artilist[anum].spfx & SPFX_FLYING) != 0)
+        art_info.wielded[0] = "flying";
     if ((artilist[anum].spfx & SPFX_SEARCH) != 0)
-        art_info.wielded[0] = "searching";
+        art_info.wielded[1] = "searching";
     if ((artilist[anum].spfx & SPFX_HALRES) != 0)
-        art_info.wielded[1] = "hallucination resistance";
+        art_info.wielded[2] = "hallucination resistance";
     if ((artilist[anum].spfx & SPFX_ESP) != 0)
-        art_info.wielded[2] = "telepathy";
+        art_info.wielded[3] = "telepathy";
     if ((artilist[anum].spfx & SPFX_STLTH) != 0)
-        art_info.wielded[3] = "stealth";
+        art_info.wielded[4] = "stealth";
     if ((artilist[anum].spfx & SPFX_REGEN) != 0)
-        art_info.wielded[4] = "regeneration";
+        art_info.wielded[5] = "regeneration";
     if ((artilist[anum].spfx & SPFX_EREGEN) != 0)
-        art_info.wielded[5] = "energy regeneration";
+        art_info.wielded[6] = "energy regeneration";
     if ((artilist[anum].spfx & SPFX_HSPDAM) != 0)
-        art_info.wielded[6] = "half spell damage";
+        art_info.wielded[7] = "half spell damage";
     if ((artilist[anum].spfx & SPFX_HPHDAM) != 0)
-        art_info.wielded[7] = "half physical damage";
+        art_info.wielded[8] = "half physical damage";
     if ((artilist[anum].spfx & SPFX_TCTRL) != 0)
-        art_info.wielded[8] = "teleport control";
+        art_info.wielded[9] = "teleport control";
     if ((artilist[anum].spfx & SPFX_LUCK) != 0)
-        art_info.wielded[9] = "luck";
+        art_info.wielded[10] = "luck";
     if ((artilist[anum].spfx & SPFX_XRAY) != 0)
-        art_info.wielded[10] = "astral vision";
+        art_info.wielded[11] = "astral vision";
     if ((artilist[anum].spfx & SPFX_REFLECT) != 0)
-        art_info.wielded[11] = "reflection";
+        art_info.wielded[12] = "reflection";
     if ((artilist[anum].spfx & SPFX_PROTECT) != 0)
-        art_info.wielded[12] = "protection";
+        art_info.wielded[13] = "protection";
     if ((artilist[anum].spfx & SPFX_BREATHE) != 0)
-        art_info.wielded[13] = "magical breathing";
+        art_info.wielded[14] = "magical breathing";
+    if ((artilist[anum].spfx & SPFX_SEEINV) != 0)
+        art_info.wielded[15] = "see invisible";
+    if ((artilist[anum].spfx & SPFX_DISPLAC) != 0)
+        art_info.wielded[16] = "displacement";
 
     if ((artilist[anum].spfx & SPFX_WARN) != 0) {
         if ((artilist[anum].spfx & SPFX_DFLAGH) != 0) {
@@ -3445,36 +3451,43 @@ artifact_info(int anum)
         art_info.carr_res = malloc(100);
         strcpy(art_info.carr_res, buf);
     }
+    if ((artilist[anum].cspfx & SPFX_FLYING) != 0)
+        art_info.carried[0] = "flying";
     if ((artilist[anum].cspfx & SPFX_SEARCH) != 0)
-        art_info.carried[0] = "searching";
+        art_info.carried[1] = "searching";
     if ((artilist[anum].cspfx & SPFX_HALRES) != 0)
-        art_info.carried[1] = "hallucination resistance";
+        art_info.carried[2] = "hallucination resistance";
     if ((artilist[anum].cspfx & SPFX_ESP) != 0)
-        art_info.carried[2] = "telepathy";
+        art_info.carried[3] = "telepathy";
     if ((artilist[anum].cspfx & SPFX_STLTH) != 0)
-        art_info.carried[3] = "stealth";
+        art_info.carried[4] = "stealth";
     if ((artilist[anum].cspfx & SPFX_REGEN) != 0)
-        art_info.carried[4] = "regeneration";
+        art_info.carried[5] = "regeneration";
     if ((artilist[anum].cspfx & SPFX_EREGEN) != 0)
-        art_info.carried[5] = "energy regeneration";
+        art_info.carried[6] = "energy regeneration";
     if ((artilist[anum].cspfx & SPFX_HSPDAM) != 0)
-        art_info.carried[6] = "half spell damage";
+        art_info.carried[7] = "half spell damage";
     if ((artilist[anum].cspfx & SPFX_HPHDAM) != 0)
-        art_info.carried[7] = "half physical damage";
+        art_info.carried[8] = "half physical damage";
     if ((artilist[anum].cspfx & SPFX_TCTRL) != 0)
-        art_info.carried[8] = "teleport control";
+        art_info.carried[9] = "teleport control";
     if ((artilist[anum].cspfx & SPFX_LUCK) != 0)
-        art_info.carried[9] = "luck";
+        art_info.carried[10] = "luck";
     if ((artilist[anum].cspfx & SPFX_XRAY) != 0)
-        art_info.carried[10] = "astral vision";
+        art_info.carried[11] = "astral vision";
     if ((artilist[anum].cspfx & SPFX_REFLECT) != 0)
-        art_info.carried[11] = "reflection";
+        art_info.carried[12] = "reflection";
     if ((artilist[anum].cspfx & SPFX_PROTECT) != 0)
-        art_info.carried[12] = "protection";
+        art_info.carried[13] = "protection";
     if ((artilist[anum].cspfx & SPFX_BREATHE) != 0)
-        art_info.carried[13] = "magical breathing";
+        art_info.carried[14] = "magical breathing";
+    if ((artilist[anum].cspfx & SPFX_SEEINV) != 0)
+        art_info.carried[15] = "see invisible";
+    if ((artilist[anum].cspfx & SPFX_DISPLAC) != 0)
+        art_info.carried[16] = "displacement";
+
     if ((artilist[anum].cspfx & SPFX_WARN) != 0)
-        art_info.carried[14] = "warning";
+        art_info.carried[17] = "warning";
 
     switch (artilist[anum].inv_prop) {
     case TAMING: art_info.invoke = "Taming"; break;
