@@ -2455,7 +2455,7 @@ use_unicorn_horn(struct obj **optr)
     int idx, val, val_limit, trouble_count, unfixable_trbl, did_prop;
     int trouble_list[PROP_COUNT];
     int basefix;    /* KMH */
-    long old_to, new_to, fix_to, ttl_to = 0L;
+    long old_to, new_to, fix_to;
     struct obj *obj = (optr ? *optr : (struct obj *) 0);
 
     if (obj && obj->degraded_horn) {
@@ -2573,7 +2573,6 @@ use_unicorn_horn(struct obj **optr)
             /* Illness is simply cured. */
             make_sick(0L, (char *) 0, TRUE, SICK_ALL);
             did_prop++;
-            ttl_to += 25;
             break;
         case BLINDED:
             old_to = HBlinded & TIMEOUT;
@@ -2585,7 +2584,6 @@ use_unicorn_horn(struct obj **optr)
                 pline("HBlinded: %ld->%ld", old_to, new_to);
             make_blinded(new_to, TRUE);
             did_prop++;
-            ttl_to += fix_to;
             break;
         case HALLUC:
             old_to = HHallucination & TIMEOUT;
@@ -2595,13 +2593,11 @@ use_unicorn_horn(struct obj **optr)
                 pline("HHallucination: %ld->%ld", old_to, new_to);
             (void) make_hallucinated(new_to, TRUE, 0L);
             did_prop++;
-            ttl_to += fix_to;
             break;
         case VOMITING:
             /* Vomiting is simply cured. */
             make_vomiting(0L, TRUE);
             did_prop++;
-            ttl_to += 25;
             break;
         case CONFUSION:
             old_to = HConfusion & TIMEOUT;
@@ -2611,7 +2607,6 @@ use_unicorn_horn(struct obj **optr)
                 pline("HConfusion: %ld->%ld", old_to, new_to);
             make_confused(new_to, TRUE);
             did_prop++;
-            ttl_to += fix_to;
             break;
         case STUNNED:
             old_to = HStun & TIMEOUT;
@@ -2621,7 +2616,6 @@ use_unicorn_horn(struct obj **optr)
                 pline("HStun: %ld->%ld", old_to, new_to);
             make_stunned(new_to, TRUE);
             did_prop++;
-            ttl_to += fix_to;
             break;
         case DEAF:
             old_to = HDeaf & TIMEOUT;
@@ -2631,7 +2625,6 @@ use_unicorn_horn(struct obj **optr)
                 pline("HDeaf: %ld->%ld", old_to, new_to);
             make_deaf(new_to, TRUE);
             did_prop++;
-            ttl_to += fix_to;
             break;
         default:
             impossible("use_unicorn_horn: bad trouble? (%d)", idx);
@@ -2643,19 +2636,6 @@ use_unicorn_horn(struct obj **optr)
     }
 
     if (did_prop) {
-        /* Some helpful feedback for the new nerfed mechanic. */
-        if (obj && !Blind) {
-            if (fix_to < 4)
-                Your("%s glows dimly.", xname(obj));
-            else if (fix_to < 8)
-                Your("%s glows softly.", xname(obj));
-            else if (fix_to < 16)
-                Your("%s glows.", xname(obj));
-            else if (fix_to < 26)
-                Your("%s glows brightly.", xname(obj));
-            else
-                Your("%s glows radiantly!", xname(obj));
-        }
         disp.botl = TRUE;
     } else
         pline("%s", nothing_seems_to_happen);
