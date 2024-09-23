@@ -51,10 +51,10 @@ static const struct icp cartprobs[] =  { { 10, WEAPON_CLASS },
                                          { 30, FOOD_CLASS }, /* Double to compensate for less corpse drops */
                                          { 12, TOOL_CLASS },
                                          { 8, GEM_CLASS },
-                                         { 12, POTION_CLASS },
+                                         { 14, POTION_CLASS },
                                          { 8, SCROLL_CLASS }, /* Half because of card drops*/
                                          { 4, SPBOOK_CLASS },
-                                         { 2, WAND_CLASS }, /* Half because of zap card drops */
+                                         /* No WAND_CLASS because of zap card drops */
                                          { 3, RING_CLASS },
                                          { 1, AMULET_CLASS } };
 
