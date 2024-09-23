@@ -246,7 +246,8 @@ mkobj_erosions(struct obj *otmp)
             otmp->greased = 1;
     }
     /* Potions can sometimes generate diluted. */
-    if (otmp->oclass == POTION_CLASS && svm.moves > 1L && !rn2(27))
+    if (otmp->oclass == POTION_CLASS && otmp->otyp != POT_WATER
+        && svm.moves > 1L && !rn2(27))
         otmp->odiluted = 1;
 
 }
