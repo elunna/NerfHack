@@ -5,7 +5,7 @@
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel");
+des.level_flags("mazelevel", "noflip");
 
 des.map([[
              --------                     
@@ -67,9 +67,6 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 40, y = 09,
                 des.object("?")
                 des.object("?")
                 des.object("?")
-                des.object("?")
-                des.object("?")
-                des.object("!")
                 des.object("!")
                 des.object("!")
                 des.object("!")
@@ -120,8 +117,6 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 40, y = 10,
                 des.object("?")
                 des.object("?")
                 des.object("?")
-                des.object("?")
-                des.object("+")
                 des.object("+")
                 des.object("+")
                 des.object("+")
