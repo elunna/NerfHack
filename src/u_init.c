@@ -1458,7 +1458,7 @@ staticfn void
 ini_inv(struct trobj *trop)
 {
     struct obj *obj;
-    int otyp, i;
+    int otyp;
     boolean got_sp1 = FALSE; /* got a level 1 spellbook? */
 
     if (u.uroleplay.pauper) /* pauper gets no items */
@@ -1499,13 +1499,7 @@ ini_inv(struct trobj *trop)
 
 	    /* Set up cartomancer cards */
         if (Role_if(PM_CARTOMANCER) && obj->otyp == SCR_CREATE_MONSTER) {
-            do {
-                i = rn2(NUMMONS);
-            } while ((type_is_pname(&mons[i])
-                || (mons[i].geno & G_UNIQ)
-                || (mons[i].geno & G_NOGEN)));
-
-            obj->corpsenm = i;
+            obj->corpsenm = mk_moncard();
             if (rn2(2))
                 bless(obj);
         }

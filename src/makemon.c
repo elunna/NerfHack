@@ -844,7 +844,7 @@ m_initinv(struct monst *mtmp)
 	        /* Dal Zethire */
             for (cnt = 0; cnt < 7; cnt++) {
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
-                curse(otmp);
+                otmp->corpsenm = mk_moncard();
                 (void) mpickobj(mtmp, otmp);
             }
             (void) mongets(mtmp, EXPENSIVE_CAMERA);
@@ -2756,6 +2756,27 @@ summon_furies(int limit) /* number to create, or 0 to create until extinct */
         makemon(&mons[PM_ERINYS], u.ux, u.uy, MM_ADJACENTOK | MM_NOWAIT);
         i++;
     }
+}
+
+int
+mk_moncard(void)
+{
+    int i;
+
+    /* Avoid named monsters - until such time as we find it's
+     * possible to do without breaking everything.
+     * G_UNIQ includes a couple non-named monsters like high
+     * priest and long worm tail.
+     * Allow NOGEN monsters because there's a lot of fun stuff
+     * that would otherwise be missing (ie: Keystone Kops and minotaurs)
+     */
+    do {
+        i = rn2(NUMMONS);
+    } while ((type_is_pname(&mons[i])
+        || (mons[i].geno & G_UNIQ))
+        || is_placeholder(&mons[i]));
+
+    return i;
 }
 
 /*makemon.c*/

@@ -119,6 +119,7 @@ mk_mplayer(struct permonst *ptr, coordxy x, coordxy y, boolean special)
 {
     struct monst *mtmp;
     char nam[PL_NSIZ];
+    int cnt;
 
     if (!is_mplayer(ptr))
         return ((struct monst *) 0);
@@ -179,9 +180,12 @@ mk_mplayer(struct permonst *ptr, coordxy x, coordxy y, boolean special)
             if (rn2(4))
                 helm = HELM_OF_BRILLIANCE;
             shield = STRANGE_OBJECT;
-            (void) mongets(mtmp, SCR_CREATE_MONSTER);
-            (void) mongets(mtmp, SCR_CREATE_MONSTER);
-            (void) mongets(mtmp, SCR_CREATE_MONSTER);
+
+            for (cnt = rnd(5); cnt > 0; cnt--) {
+                otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+                otmp->corpsenm = mk_moncard();
+                (void) mpickobj(mtmp, otmp);
+            }
             break;
         case PM_CAVE_DWELLER:
             if (rn2(4))

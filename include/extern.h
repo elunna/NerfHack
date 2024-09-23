@@ -1484,6 +1484,7 @@ extern void summon_furies(int);
 extern void mon_berserk(struct monst *);
 extern void mon_rabid(struct monst *, boolean);
 extern long mm_aggression(struct monst *, struct monst *);
+extern int mk_moncard(void);
 
 /* ### mcastu.c ### */
 
