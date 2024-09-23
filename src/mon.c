@@ -7013,13 +7013,13 @@ card_drop(struct monst *mon)
          * The odds come roughly from old MtG booster packs having 1 rare.
          */
         if (!rn2(3)) {
-            int tryct = 0;
             int min_lev = 3;
             /* Try to restrain overly powerful drops, but allow them once in a while. */
             int max_lev = 5 + u.ulevel * (!rn2(10) ? 2 : 1);
-            do
-                otmp->corpsenm = rndmonnum_adj(min_lev, max_lev);
-            while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
+            otmp->corpsenm = rn2(10) ? rndmonnum_adj(min_lev, max_lev)
+                                     /* Really random, can include NOGEN. */
+                                     : mk_moncard();
+
         } else {
             /* For very weak monsters (base lvl 0 or 1), skip most summon drops.
              * Otherwise the player ends up with loads of crap cards in
