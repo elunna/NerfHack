@@ -388,10 +388,10 @@ static NEARDATA struct artifact artilist[] = {
       A_NONE, NON_PM, NON_PM, 500L, NO_COLOR, ORIGIN),
 
     /* Debut artifact in NerfHack.
-     * Provides see invisible, searching, and stun resistance.
+     * Provides see invisible and stun resistance.
      * With these glasses - you CAN handle the Truth! */
     A("The Lenses of Truth", LENSES,
-      (SPFX_RESTR | SPFX_SEEINV | SPFX_SEARCH), 0, 0,
+      (SPFX_RESTR | SPFX_SEEINV), 0, 0,
       NO_ATTK, DFNS(AD_STUN), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, LENSES_OF_TRUTH),
 
