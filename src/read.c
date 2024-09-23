@@ -1179,7 +1179,13 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
         return;
 
     if (rn2(1 + distmin(xx, yy, x, y))
-        || sobj_at(BOULDER, x, y) || levl[x][y].typ != ROOM)
+        || sobj_at(BOULDER, x, y) || nexttodoor(x, y))
+        return;
+
+    if (levl[x][y].typ != ROOM
+        && levl[x][y].typ != TREE
+        && levl[x][y].typ != GRAVE
+        && levl[x][y].typ != LAVAPOOL)
         return;
 
     /* Never create if there's an immovable trap here. */
