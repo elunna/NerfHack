@@ -26,8 +26,11 @@ des.room({type="ordinary",
           des.object()
           des.trap()
           des.object()
-          des.monster("assassin bug")
-          des.monster("assassin bug")
+          if percent(50) then
+            des.monster({id="assassin bug",peaceful=0})
+          else
+            des.monster({id="ha naga",peaceful=0})
+          end
         end
 });
 

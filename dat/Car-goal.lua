@@ -70,8 +70,16 @@ des.trap()
 des.monster({id="Dal Zethire", x=32, y=10})
 des.monster({class="N",peaceful=0})
 des.monster({class="N",peaceful=0})
-des.monster("assassin bug")
-des.monster("assassin bug")
-des.monster("assassin bug")
-des.monster("assassin bug")
+
+if percent(50) then
+    des.monster({id="assassin bug",peaceful=0})
+else
+    des.monster({id="ha naga",peaceful=0})
+end
+
+if percent(50) then
+    des.monster({id="assassin bug",peaceful=0})
+else
+    des.monster({id="ha naga",peaceful=0})
+end
 des.wallify()
