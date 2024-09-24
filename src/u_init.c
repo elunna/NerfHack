@@ -1500,9 +1500,8 @@ ini_inv(struct trobj *trop)
 
 	    /* Set up cartomancer cards */
         if (Role_if(PM_CARTOMANCER) && obj->otyp == SCR_CREATE_MONSTER) {
-            obj->corpsenm = mk_moncard();
-            if (rn2(2))
-                bless(obj);
+            obj->corpsenm = PM_RAVEN;
+            bless(obj);
         }
 
         /* nudist gets no armor, vampires get no food */
