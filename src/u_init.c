@@ -1184,6 +1184,10 @@ u_init(void)
     if (num_spells() && (u.uenmax < SPELL_LEV_PW(1)))
         u.uen = u.uenmax = u.uenpeak = u.ueninc[u.ulevel] = SPELL_LEV_PW(1);
 
+    /* Same idea as above, cartomancers should be able to play summons right away. */
+    if (Role_if(PM_CARTOMANCER) && u.uen < 10)
+        u.uen = u.uenmax = 10;
+
     /* Quality-of-Life */
     knows_object(POT_WATER, FALSE);
     knows_object(SCR_BLANK_PAPER, FALSE);
