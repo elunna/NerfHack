@@ -112,7 +112,7 @@ enum levl_typ_types {
     ((typ) == TREE || (svl.level.flags.arboreal && (typ) == STONE))
 #define ACCESSIBLE(typ) ((typ) >= DOOR) /* good position */
 #define IS_ROOM(typ) ((typ) >= ROOM)    /* ROOM, STAIRS, furniture.. */
-#define ZAP_POS(typ) ((typ) >= POOL)
+#define ZAP_POS(typ) ((typ) >= POOL || (typ) == TREE)
 #define SPACE_POS(typ) ((typ) > DOOR)
 #define IS_POOL(typ) ((typ) >= POOL && (typ) <= DRAWBRIDGE_UP)
 #define IS_LAVA(typ) ((typ) == LAVAPOOL || (typ) == LAVAWALL)

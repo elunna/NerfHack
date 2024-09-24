@@ -5958,6 +5958,19 @@ zap_over_floor(
             if (see_it)
                 newsym(x, y);
         }
+        if (IS_TREE(levl[x][y].typ) && may_dig(x, x)) {
+            if (see_it)
+                Norep("A tree bursts into flames!");
+            set_levltyp(x, y, ROOM);
+            levl[x][y].flags = 0;
+            /* Don't allow an entire forest to chain-explode. 
+             * Remember... Only YOU Can Prevent Forest Fires. 
+             * - Smokey Bear */
+            if (!rn2(3))
+                explode(x, y, type, d(3, 6), 0, EXPL_FIERY);
+            if (see_it)
+                newsym(x, y);
+        }
         if (is_ice(x, y)) {
             melt_ice(x, y, (char *) 0);
         } else if (is_pool(x, y)) {
@@ -6024,6 +6037,16 @@ zap_over_floor(
         break; /* ZT_FIRE */
 
     case ZT_COLD:
+        if (IS_TREE(levl[x][y].typ) && may_dig(x, x)) {
+            if (see_it)
+                Norep("A tree freezes and shatters!");
+            set_levltyp(x, y, ROOM);
+            levl[x][y].flags = 0;
+            if (!rn2(3))
+                explode(x, y, type, d(3, 6), 0, EXPL_FROSTY);
+            if (see_it)
+                newsym(x, y);
+        }
         if (is_pool(x, y) || is_lava(x, y) || lavawall) {
             boolean lava = (is_lava(x, y) || lavawall),
                     moat = is_moat(x, y);
@@ -6158,7 +6181,17 @@ zap_over_floor(
             }
         }
         break; /* ZT_ACID */
-
+    case ZT_DEATH:
+        if (abs(type) == ZT_BREATH(ZT_DEATH)
+            && IS_TREE(levl[x][y].typ) && may_dig(x, x)) {
+            if (see_it)
+                Norep("A tree disintegrates!");
+            set_levltyp(x, y, ROOM);
+            levl[x][y].flags = 0;
+            if (see_it)
+                newsym(x, y);
+        }
+        break;
     default:
         break;
     }
@@ -6280,11 +6313,12 @@ zap_over_floor(
         }
     }
 
-    if (OBJ_AT(x, y) && damgtype == ZT_FIRE)
+    if (OBJ_AT(x, y) && damgtype == ZT_FIRE) {
         if (burn_floor_objects(x, y, FALSE, (type > 0 && !moncast)) && couldsee(x, y)) {
             newsym(x, y);
             You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
         }
+    }
     if (OBJ_AT(x, y) && abs(type) == ZT_BREATH(ZT_DEATH)) {
         if (disintegrate_floor_objects(x, y, TRUE, type > 0)
               && couldsee(x, y)) {
