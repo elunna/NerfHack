@@ -4187,9 +4187,13 @@ corpse_conveys(char *buf, struct permonst * pm)
      * If you find yourself listing multiple things here for the same effect,
      * that may indicate the property should be added to psuedo_intrinsics. */
     APPENDC(pm == &mons[PM_DISPLACER_BEAST], "temporary displacement");
+    APPENDC(pm == &mons[PM_ZOO_BAT], "temporary confusion");
+    APPENDC(pm == &mons[PM_PHASE_SPIDER], "temporary phasing");
+    APPENDC(is_troll(pm), "temporary regeneration");
     APPENDC(pm == &mons[PM_QUANTUM_MECHANIC], "speed or slowness");
     APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
             "intelligence");
+    APPENDC(is_giant(pm), "strength");
 
     #if 0 /* Pending*/
     APPENDC(intrinsic_possible(INTRINSIC_GAIN_STR, pm), "strength");
