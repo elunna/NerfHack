@@ -5121,7 +5121,8 @@ mhitm_ad_heal(
         /* mhitu */
         /* a cancelled nurse is just an ordinary monster,
          * nurses don't heal those that cause petrification */
-        if (magr->mcan || (Upolyd && touch_petrifies(pd))) {
+        if (magr->mcan || (Upolyd && touch_petrifies(pd))
+            || is_undead(gy.youmonst.data)) {
             hitmsg(magr, mattk);
             return;
         }
