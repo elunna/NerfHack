@@ -2642,7 +2642,7 @@
      * results in you sticking to it.
      * */
     MON(NAM("adherer"), S_MUMMY,
-        LVL(7, 12, 3, 30, -5), (G_GENO | G_NOCORPSE | 1),
+        LVL(7, 12, -3, 30, -5), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_STCK, 2, 4),
           ATTK(AT_CLAW, AD_WTHR, 4, 4),
           ATTK(AT_NONE, AD_DSRM, 0, 0),
