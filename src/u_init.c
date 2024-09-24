@@ -328,9 +328,9 @@ static const struct def_skill Skill_Car[] = {
     /* Cartomancers are extremely narrow in their skills because
      * they are guaranteed a steady stream of cards for offense
      * and defense.
-     * Cartomancers also have a base -20 to-hit penalty for melee fighting
+     * Cartomancers also have a base -5 to-hit penalty for melee fighting
      * Dwarvish carts can reach skilled in pick-axe
-     * Gnomish carts can reach skilled in crossbow, basic club
+     * Gnomish carts can reach skilled in crossbow, basic in club
      * Elves do not get enchantment spell skill however.
      * */
     { P_DAGGER, P_SKILLED },
