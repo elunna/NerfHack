@@ -5164,6 +5164,8 @@ mhitm_ad_heal(
                 exercise(A_CON, TRUE);
             if (Sick)
                 make_sick(0L, (char *) 0, FALSE, SICK_ALL);
+            if (Rabid)
+                make_rabid(0L, (char *) 0, 0, (char *) 0);
             disp.botl = TRUE;
             if (goaway) {
                 mongone(magr);
