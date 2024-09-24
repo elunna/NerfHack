@@ -3886,53 +3886,40 @@ lookaround(void)
     }
 }
 
+static const char *const adjectives[] = {
+    "wrathful",   "mysterious",      "ugly",         "dark"
+    "beautiful",  "poorly-rendered", "large",        "lifelike",
+    "peaceful",   "covetous",        "crooked",      "lovely",
+    "misshapen",  "luminous",        "melancholic",  "bold",
+    "surreal",    "emotional",       "enigmatic",    "chaotic",
+    "frenzied",   "cheap",           "knock-off",    "disturbing",
+    "tattered",   "distasteful",     "vulgar",       "sordid",
+    "unpleasant", "expensive",       "poor-quality", "tacky",
+    "kitsch",     "tawdry",          "inferior",     "unnerving",
+    "ominous",    "eerie",
+};
+
+static const char *const scary_adj[] = {
+    "fearful",      "horrifying",   "sinister", "menacing",
+    "furious",
+};
+
+static const char *const art[] = {
+    "painting", "carving",  "tapestry", "bas-relief",   "photograph",
+    "print",    "etching",  "engraving","woodcut",      "lithograph",
+    "mosaic",   "oil painting", "watercolor painting","spray painting",
+    "fresco",   "poster",   "sketching","pyrograph",
+};
+
+static const char *const teach[] = {
+    "diagram", "illustration", "sketch", "graphic", "figure", "schematic",
+};
+
 /* Message for entering an art room. */
 staticfn void
 interesting_room(void)
 {
-    static const char *const adjectives[] = {
-        "wrathful",   "mysterious",      "ugly",         "dark"
-        "beautiful",  "poorly-rendered", "large",        "lifelike",
-        "peaceful",   "covetous",        "crooked",      "lovely",
-        "misshapen",  "luminous",        "melancholic",  "bold",
-        "surreal",    "emotional",       "enigmatic",    "chaotic",
-        "frenzied",   "cheap",           "knock-off",    "disturbing",
-        "tattered",   "distasteful",     "vulgar",       "sordid",
-        "unpleasant", "expensive",       "poor-quality", "tacky",
-        "kitsch",     "tawdry",          "inferior",     "unnerving",
-        "ominous",    "eerie",
-    };
-
-    static const char *const scary_adj[] = {
-        "fearful",
-        "horrifying",
-        "sinister",
-        "menacing",
-        "furious",
-    };
-
-    static const char *const art[] = {
-        "painting",
-        "carving",
-        "tapestry",
-        "bas-relief",
-        "photograph",
-        "print",
-        "etching",
-        "engraving",
-        "woodcut",
-        "lithograph",
-        "mosaic",
-        "oil painting",
-        "watercolor painting",
-        "spray painting",
-        "fresco",
-        "poster",
-        "sketching",
-        "pyrograph",
-    };
-
-    int name, name2;
+    int name, name2, learnabout;
     /* Modified version of rndmonnam */
     do {
         name = rn2(NUMMONS);
@@ -3946,7 +3933,7 @@ interesting_room(void)
     const char *carvemon2 = pmname(&mons[name2], rn2(NEUTRAL + 1));
 
     /* Carving message */
-    switch (rnd(7)) {
+    switch (rnd(13)) {
     case 1:
         pline("%s %s on the ceiling portrays %s.",
               An(adjectives[rn2(SIZE(adjectives))]), art[rn2(SIZE(art))],
@@ -3988,12 +3975,23 @@ interesting_room(void)
             pline("It %s you!", rn2(2) ? "scares" : "terrifies");
         make_stunned(((HStun & TIMEOUT) + (long) rn1(10, 5)), FALSE);
         break;
-    default:
+    case 6:
         pline("%s in this room presents a battle between %s and %s. The %s are winning.",
               An(art[rn2(SIZE(art))]), makeplural(carvemon),
               makeplural(carvemon2),
               makeplural(rn2(2) ? carvemon : carvemon2));
         exercise(rn2(2) ? A_INT : A_WIS, TRUE);
+        break;
+    default:
+        /* Learn something interesting */
+        learnabout = learnme();
+        if (learnabout)
+            You("notice a %s of %s in this room.",
+                teach[rn2(SIZE(teach))],
+                an(simple_typename(learnabout)));
+        else
+            pline("This room feels spooky for some reason.");
+        break;
     }
     more_experienced(2, 0);
     newexplevel();

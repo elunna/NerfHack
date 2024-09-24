@@ -2434,14 +2434,13 @@ staticfn void
 seffect_knowledge(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
-    struct obj *otmp;
-    int otyp = sobj->otyp;
-    int oclass;
-    int tries = 0, qty = 1;
+    int otyp = sobj->otyp, learnabout;
+
     boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
     boolean already_known = (objects[otyp].oc_name_known);
+    boolean learned_something = FALSE;
 
     /* known = TRUE; -- handled inline here */
     /* use up the scroll first, before learnscrolltyp() -> makeknown()
@@ -2465,32 +2464,18 @@ seffect_knowledge(struct obj **sobjp)
     if (!already_known)
         (void) learnscrolltyp(SCR_KNOWLEDGE);
 
-    /* Get a random bonus based on luck. */
-    if (sblessed && rnl(5) == 0)
-        qty++;
+    if ((learnabout = learnme())) {
+        You("now know more about %s.", makeplural(simple_typename(learnabout)));
+        learned_something = TRUE;
+    }
 
-     static const int extra_classes[] = {
-        WEAPON_CLASS,   ARMOR_CLASS,    TOOL_CLASS,
-        GEM_CLASS,      SCROLL_CLASS,   SPBOOK_CLASS,
-        POTION_CLASS,   RING_CLASS,     AMULET_CLASS,
-        WAND_CLASS,
-    };
-
-    /* Identify a random magical item. */
-    do {
-        oclass = ROLL_FROM(extra_classes);
-        otmp = mkobj(oclass, FALSE);
-        if (objects[otmp->otyp].oc_magic && !objects[otmp->otyp].oc_name_known) {
-            makeknown(otmp->otyp);
-            You("now know more about %s.", makeplural(simple_typename(otmp->otyp)));
-            qty--;
-        }
-        obfree(otmp, NULL); /* Destroy the item*/
-        tries++;
-    } while (tries < 10000 && qty > 0);
-
-    if (qty > 0)
-        You("feel like you might already know everything...");
+       /* Get a random bonus based on luck. */
+    if (sblessed && rnl(5) == 0 && (learnabout = learnme())) {
+        You("now know more about %s.", makeplural(simple_typename(learnabout)));
+        learned_something = TRUE;
+    }
+    if (!learned_something)
+        You("don't learn anything new...");
 }
 
 staticfn void
@@ -3957,4 +3942,30 @@ retry:
     update_inventory();
 }
 
+static const int extra_classes[] = {
+    WEAPON_CLASS,   ARMOR_CLASS,    TOOL_CLASS,
+    GEM_CLASS,      SCROLL_CLASS,   SPBOOK_CLASS,
+    POTION_CLASS,   RING_CLASS,     AMULET_CLASS,
+    WAND_CLASS,
+};
+
+int
+learnme(void)
+{
+    struct obj *otmp;
+    int tries = 0, oclass;
+    /* Identify a random magical item. */
+    do {
+        oclass = ROLL_FROM(extra_classes);
+        otmp = mkobj(oclass, FALSE);
+        if (objects[otmp->otyp].oc_magic && !objects[otmp->otyp].oc_name_known) {
+            makeknown(otmp->otyp);
+            return otmp->otyp;
+        }
+        obfree(otmp, NULL); /* Destroy the item*/
+        tries++;
+    } while (tries < 1000);
+    
+    return 0;
+}
 /*read.c*/
