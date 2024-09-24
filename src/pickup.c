@@ -3657,6 +3657,11 @@ tip_ok(struct obj *obj)
         return GETOBJ_SUGGEST;
     }
 
+    if (obj->otyp == PLAYING_CARD_DECK
+        || obj->otyp == DECK_OF_FATE) {
+        return GETOBJ_SUGGEST;
+    }
+
     /* include horn of plenty if sufficiently discovered */
     if (obj->otyp == HORN_OF_PLENTY && obj->dknown
         && objects[obj->otyp].oc_name_known)
@@ -3731,7 +3736,7 @@ choose_tip_container_menu(void)
 int
 dotip(void)
 {
-    struct obj *cobj, *nobj;
+    struct obj *cobj, *nobj, *otmp;
     coord cc;
     int boxes;
     char c, buf[BUFSZ], qbuf[BUFSZ];
@@ -3799,6 +3804,17 @@ dotip(void)
     if (Is_container(cobj) || cobj->otyp == HORN_OF_PLENTY) {
         tipcontainer(cobj);
         return ECMD_TIME;
+    }
+    /* packs of cards */
+    if (cobj->otyp == PLAYING_CARD_DECK || cobj->otyp == DECK_OF_FATE) {
+        You("empty the contents of the card box.");
+        otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
+        otmp->quan = rn1(31, 22);
+        otmp->owt = weight(otmp);
+        place_object(otmp, u.ux, u.uy);
+        useup(cobj);
+	    newsym(u.ux, u.uy);
+	    return TRUE;
     }
     /* assorted other cases */
     if (Is_candle(cobj) && cobj->lamplit) {
