@@ -170,6 +170,7 @@ throw_obj(struct obj *obj, int shotlimit)
         weakmultishot = (Role_if(PM_WIZARD) || Role_if(PM_CLERIC)
                          || (Role_if(PM_HEALER) && skill != P_KNIFE)
                          || (Role_if(PM_TOURIST) && skill != -P_DART)
+                         || (Role_if(PM_CARTOMANCER) && skill != -P_SHURIKEN)
                          /* poor dexterity also inhibits multishot */
                          || ACURR(A_DEX) <= 6);
 
