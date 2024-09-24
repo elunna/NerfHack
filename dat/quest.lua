@@ -759,8 +759,9 @@ spell cards to have ever lived."]],
       killed_nemesis = {
          synopsis = "[%nC curses you, but you feel the overpowering aura of magic fading.]",
          output = "text",
-         text = [["I see now," gasps %nC. "It was never about the power of the cards, or the skill of the player, but about the love the player has for
-their cards. Thank you, %c, you have taught me much."
+         text = [["I see now," gasps %nC. "It was never about the power of the cards,
+or the skill of the player, but about the love the player has for their
+cards. Thank you, %c, you have taught me much."
 
 With that, %n collapses. They will never oppose you again.]],
       },
@@ -827,11 +828,11 @@ And your cards as well."]],
 you, and you soundly defeat him.
 After you have won, he smiles and says:
 
-    Congratulations! You have done what I could not.
-    As a fellow competitor, I bow to your prowess.
+Congratulations! You have done what I could not.
+As a fellow competitor, I bow to your prowess.
 
-    Please, %p, keep %o and use it in your quest. You
-    are truly worthy to wield its power.]],
+Please, %p, keep %o and use it in your quest. You
+are truly worthy to wield its power.]],
       },
       offeredit2 = {
          synopsis = "[\"You keep %o.  Return to %Z to search for the Amulet.\"]",
@@ -850,39 +851,6 @@ enter %H.]],
          text = "\"My deepest thanks, %p.\"",
       },
    },
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    Cav = {
       assignquest = {
          synopsis = "[Go beat %n.  Get %o.  Bring back.]",
