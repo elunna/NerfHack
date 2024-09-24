@@ -1913,6 +1913,9 @@ hmon_hitmon_dmg_recalc(struct _hitmon_data *hmd, struct obj *obj)
                 strbonus = ((3 * absbonus + 2) / 4) * sgn(strbonus);
             else if (hmd->thrown == HMON_MELEE && uwep && bimanual(uwep))
                 strbonus = ((3 * absbonus + 1) / 2) * sgn(strbonus);
+            else if (Role_if(PM_CARTOMANCER) && obj && obj->otyp != RAZOR_CARD)
+                /* Don't allow other projectiles to trump razor cards. */
+                strbonus = 0;
             dmgbonus += strbonus;
         }
     }
