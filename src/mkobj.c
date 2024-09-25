@@ -1125,7 +1125,7 @@ mksobj_init(struct obj *otmp, boolean artif)
         blessorcurse(otmp, 17);
 
         /* Cartomancers use up spellbooks similar to wands. */
-        if (Role_if(PM_CARTOMANCER))
+        if (Role_if(PM_CARTOMANCER) && otmp->otyp != SPE_BLANK_PAPER)
             otmp->spe = 4 + (otmp->blessed ? rn2(2) : 0);
         break;
     case ARMOR_CLASS:
