@@ -4627,6 +4627,7 @@ mhitm_ad_calm(struct monst *magr, struct attack *mattk,
     boolean no_effect = mdef->iswiz
         || (mdef->data->mflags3 & M3_COVETOUS)
         || (mdef->data->geno & G_UNIQ)
+        || mdef->mrabid || mdef->mberserk
         || type_is_pname(mdef->data);
 
     if (magr == &gy.youmonst) {
