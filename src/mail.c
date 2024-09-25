@@ -825,23 +825,23 @@ get_hint(void)
             "I knows the difference between nerfs and buffs; I just don't give a damn.",
             "So you're having a bad day? Don't blame NerfHack!",
             "The InterHack Principle is a lie!",
-            "Dying is the easy part!"
-            "Welcome to NerfHack: Where hope goes to die."
-            "Because winning is overrated."
-            "You didn't need that weapon anyway."
-            "Survival is optional, suffering is mandatory!"
-            "The dungeon hates you — and it's personal."
-            "If you think you're good, NerfHack thinks you're hilarious."
-            "Nerfed to perfection, frustration guaranteed."
-            "Your only reward is pain — enjoy!"
-            "You'll never be ready for this nerf."
-            "Luck won't save you. Neither will skill."
-            "NerfHack: The grind grinds back."
-            "Hard mode? That's just the tutorial."
-            "Your biggest enemy? Hope."
-            "Every death is a lesson you'll forget immediately."
-            "Get nerfed, stay nerfed."
-            "This dungeon runs *you*."
+            "Dying is the easy part!",
+            "Welcome to NerfHack: Where hope goes to die.",
+            "Because winning is overrated.",
+            "You didn't need that weapon anyway.",
+            "Survival is optional, suffering is mandatory!",
+            "The dungeon hates you — and it's personal.",
+            "If you think you're good, NerfHack thinks you're hilarious.",
+            "Nerfed to perfection, frustration guaranteed.",
+            "Your only reward is pain — enjoy!",
+            "You'll never be ready for this nerf.",
+            "Luck won't save you. Neither will skill.",
+            "NerfHack: The grind grinds back.",
+            "Hard mode? That's just the tutorial.",
+            "Your biggest enemy? Hope.",
+            "Every death is a lesson you'll forget immediately.",
+            "Get nerfed, stay nerfed.",
+            "This dungeon runs *you*.",
             "You've played hard games. Now play the hardest.",
             "Permadeath? More like perma-sad.",
             "The RNG is not your friend. It's your nemesis.",
@@ -875,7 +875,6 @@ get_hint(void)
             "There's no place like a trap-filled home.",
             "The first rule of NerfHack: You don't survive NerfHack.",
             "Life finds a way… but not in NerfHack.",
-
     };
 
     return hint[rn2(SIZE(hint))];
