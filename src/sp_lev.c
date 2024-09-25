@@ -2112,6 +2112,10 @@ create_monster(monster *m, struct mkroom *croom)
             /* changed mpeaceful again; have to reset malign */
             set_malign(mtmp);
         }
+        /* Sanity check here - rabid overrides peaceful */
+        if (mtmp->mpeaceful && mtmp->mrabid)
+            mtmp->mpeaceful = 0;
+        
         if (m->asleep > BOOL_RANDOM)
             mtmp->msleeping = m->asleep;
         if (m->seentraps)
