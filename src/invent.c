@@ -3376,7 +3376,7 @@ itemactions(struct obj *otmp)
         || otmp->otyp == BRASS_LANTERN) {
         Sprintf(buf, "Rub this %s", simpleonames(otmp));
         ia_addmenu(win, IA_RUB_OBJ, 'R', buf);
-    } else if (otmp->oclass == GEM_CLASS && is_graystone(otmp))
+    } else if (otmp->oclass == GEM_CLASS && is_graystone(otmp->otyp))
         ia_addmenu(win, IA_RUB_OBJ, 'R', "Rub something on this stone");
 
     /* t: throw item */

@@ -1378,7 +1378,7 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
         if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS) {
             obj->quan = (long) trop->trquan;
             trop->trquan = 1;
-        } else if (obj->oclass == GEM_CLASS && is_graystone(obj)
+        } else if (obj->oclass == GEM_CLASS && is_graystone(obj->otyp)
                    && obj->otyp != FLINT) {
             obj->quan = 1L;
         }

@@ -1876,7 +1876,7 @@ rub_ok(struct obj *obj)
         return GETOBJ_EXCLUDE;
 
     if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-        || obj->otyp == BRASS_LANTERN || is_graystone(obj)
+        || obj->otyp == BRASS_LANTERN || is_graystone(obj->otyp)
         || obj->otyp == LUMP_OF_ROYAL_JELLY)
         return GETOBJ_SUGGEST;
 
@@ -1905,7 +1905,7 @@ dorub(void)
         return ECMD_CANCEL;
     }
     if (obj->oclass == GEM_CLASS) {
-        if (is_graystone(obj) || obj->otyp == ROCK) {
+        if (is_graystone(obj->otyp) || obj->otyp == ROCK) {
             return use_stone(obj);
         } else {
             pline("Sorry, I don't know how to use that.");
@@ -3086,7 +3086,7 @@ use_stone(struct obj *tstone)
     }
 
     if (tstone->otyp == TOUCHSTONE && tstone->cursed
-        && obj->oclass == GEM_CLASS && !is_graystone(obj)
+        && obj->oclass == GEM_CLASS && !is_graystone(obj->otyp)
         && !obj_resists(obj, 80, 100)) {
         if (Blind)
             You_feel("something shatter.");
@@ -4620,7 +4620,7 @@ apply_ok(struct obj *obj)
     if (obj->otyp == BANANA && Hallucination)
         return GETOBJ_DOWNPLAY;
 
-    if (is_graystone(obj)) {
+    if (is_graystone(obj->otyp)) {
         /* The only case where we don't suggest a gray stone is if we KNOW it
            isn't a touchstone. */
         if (!obj->dknown)

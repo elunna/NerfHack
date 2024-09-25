@@ -436,14 +436,14 @@ struct obj {
     (otmp->otyp == SCR_CREATE_MONSTER && otmp->corpsenm != NON_PM)
 
 /* special stones */
-#define is_graystone(obj)                                 \
-    ((obj)->otyp == LUCKSTONE \
-     || (obj)->otyp == LOADSTONE \
-     || (obj)->otyp == FLINT \
-     || (obj)->otyp == HEALTHSTONE \
-     || (obj)->otyp == WHETSTONE \
-     || (obj)->otyp == FOULSTONE \
-     || (obj)->otyp == TOUCHSTONE)
+#define is_graystone(ptr)                                 \
+    ((ptr) == LUCKSTONE \
+     || (ptr) == LOADSTONE \
+     || (ptr) == FLINT \
+     || (ptr) == HEALTHSTONE \
+     || (ptr) == WHETSTONE \
+     || (ptr) == FOULSTONE \
+     || (ptr) == TOUCHSTONE)
 
 /* misc helpers, simple enough to be macros */
 #define safegloves(otmp) (otmp && !objdescr_is(otmp, "fingerless gloves"))
