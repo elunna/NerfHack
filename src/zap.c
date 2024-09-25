@@ -204,6 +204,54 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             learn_it = FALSE;
         }
         break;
+    case SPE_FIRE_BOLT:
+        zap_type_text = "fire bolt";
+        dmg = 0;
+        reveal_invis = TRUE;
+        if (disguised_mimic)
+            seemimic(mtmp);
+        if (resists_fire(mtmp) || defended(mtmp, AD_FIRE)) { /* match effect on player */
+            golemeffects(mtmp, AD_FIRE, dmg);
+            shieldeff(mtmp->mx, mtmp->my);
+            pline("Swoosh!");
+            break; /* skip makeknown */
+        } else if (u.uswallow || rnd(20) < 14 + find_mac(mtmp)) {
+            if (completelyburns(mtmp->data)) { /* paper golem or straw golem */
+                if (!Blind)
+                    pline("%s burns completely!", Monnam(mtmp));
+                else
+                    You("smell burning%s.",
+                    (mtmp->data == &mons[PM_PAPER_GOLEM]) ? " paper"
+                    : (mtmp->data == &mons[PM_STRAW_GOLEM]) ? " straw" : "");
+                xkilled(mtmp, XKILL_NOMSG | XKILL_NOCORPSE);
+                if (DEADMONSTER(mtmp))
+                    killed(mtmp);
+            } else if (!resist(mtmp, otmp->oclass, dmg, NOTELL)
+                     && !DEADMONSTER(mtmp)) {
+                dmg = d(1, 10);      /* Level 1 = 1d10 fire damage */
+                dmg = spell_damage_bonus(dmg);
+                if (resists_cold(mtmp))
+                    dmg += 7;
+                if (P_SKILL(P_MATTER_SPELL) >= P_SKILLED)
+                    dmg += d(1, 4); /* Skilled = +1d4 */
+                if (P_SKILL(P_MATTER_SPELL) >= P_EXPERT)
+                    dmg += d(1, 4); /* Expert = +1d4 */
+                if (dbldam)
+                    dmg *= 2;
+                hit(zap_type_text, mtmp, exclam(dmg));
+                (void) resist(mtmp, otmp->oclass, dmg, TELL);
+                if (burnarmor(mtmp)) {
+                    if (!rn2(3)) {
+                        dmg += destroy_items(mtmp, AD_FIRE, dmg);
+                        ignite_items(mtmp->minvent);
+                    }
+                }
+            }
+        } else {
+            miss(zap_type_text, mtmp);
+        }
+        learn_it = TRUE;
+        break;
     case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
         if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
@@ -2523,6 +2571,7 @@ bhito(struct obj *obj, struct obj *otmp)
             res = stone_to_flesh_obj(obj);
             break;
         case SPE_FIREBALL:
+        case SPE_FIRE_BOLT:
         case WAN_FIRE:
             if (obj->otyp == EGG && obj->corpsenm == PM_PHOENIX) {
                 hatch_faster(obj);
@@ -2576,6 +2625,14 @@ bhitpile(
            or above (when zapping down) */
         if (svl.level.objects[tx][ty] != topofpile)
             first = FALSE; /* top item was statue which activated */
+    }
+
+    if (obj->otyp == SPE_FIRE_BOLT) {
+        if (burn_floor_objects(tx, ty, FALSE, couldsee(tx, ty))) {
+            You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
+            hitanything = 1;
+        }
+        learnwand(obj);
     }
 
     gp.poly_zapped = -1;
@@ -2960,6 +3017,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         explode(u.ux, u.uy, BZ_U_SPELL(ZT_FIRE), d(6, 6), WAND_CLASS, EXPL_FIERY);
         break;
     case WAN_FIRE:
+    case SPE_FIRE_BOLT:
     case FIRE_HORN:
         learn_it = TRUE;
         orig_dmg = d(12, 6);
@@ -4401,6 +4459,7 @@ bhit(
         }
 
         typ = levl[x][y].typ;
+        ttmp = t_at(gb.bhitpos.x, gb.bhitpos.y);
 
         if (typ == IRONBARS
             && ((levl[gb.bhitpos.x][gb.bhitpos.y].wall_info & W_NONDIGGABLE) == 0)
@@ -4414,6 +4473,39 @@ bhit(
             wake_nearto(gb.bhitpos.x, gb.bhitpos.y, 20 * 20);
             newsym(gb.bhitpos.x, gb.bhitpos.y);
             /* stop the bolt here; it takes a lot of energy to destroy bars */
+            range = 0;
+            break;
+        } else if (typ == TREE &&
+                   ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
+                       && obj->otyp == SPE_FIRE_BOLT))) {
+            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                Norep("A tree bursts into flames!");
+            else if (!Deaf)
+                You_hear("crackling and snapping.");
+            set_levltyp(gb.bhitpos.x, gb.bhitpos.y, ROOM);
+            levl[gb.bhitpos.x][gb.bhitpos.y].flags = 0;
+            if (!rn2(3))
+                explode(x, y, ZT_FIRE, d(3, 6), 0, EXPL_FIERY);
+            newsym(gb.bhitpos.x, gb.bhitpos.y);
+            /* stop the bolt here; it takes a lot of energy to destroy trees */
+            range = 0;
+            break;
+        } else if (typ == FOUNTAIN &&
+                   ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
+                     && obj->otyp == SPE_FIRE_BOLT))) {
+            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                pline("Steam billows from the fountain.");
+            dryup(gb.bhitpos.x, gb.bhitpos.y, TRUE);
+            range -= 1;
+            break;
+        } else if (ttmp && ttmp->ttyp == WEB &&
+                   ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
+                     && obj->otyp == SPE_FIRE_BOLT))) {
+            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                Norep("A web bursts into flames!");
+            (void) delfloortrap(ttmp);
+            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                newsym(gb.bhitpos.x, gb.bhitpos.y);
             range = 0;
             break;
         }
@@ -4576,6 +4668,7 @@ bhit(
             case SPE_KNOCK:
             case SPE_WIZARD_LOCK:
             case SPE_FORCE_BOLT:
+            case SPE_FIRE_BOLT:
                 if (doorlock(obj, x, y)) {
                     if (cansee(x, y) || (obj->otyp == WAN_STRIKING && !Deaf))
                         learnwand(obj);
@@ -4583,6 +4676,9 @@ bhit(
                         && *in_rooms(x, y, SHOPBASE)) {
                         shopdoor = TRUE;
                         add_damage(x, y, SHOP_DOOR_COST);
+
+                        if (obj->otyp == SPE_FIRE_BOLT)
+                            range = 0;
                     }
                 }
                 break;
@@ -5292,7 +5388,7 @@ burn_floor_objects(
             || (obj->oclass == FOOD_CLASS
                 && obj->otyp == GLOB_OF_GREEN_SLIME)) {
             if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL
-                || obj_resists(obj, 2, 100))
+                || obj->otyp == SPE_FIRE_BOLT || obj_resists(obj, 2, 100))
                 continue;
             scrquan = obj->quan; /* number present */
             delquan = 0L;        /* number to destroy */
@@ -5963,8 +6059,8 @@ zap_over_floor(
                 Norep("A tree bursts into flames!");
             set_levltyp(x, y, ROOM);
             levl[x][y].flags = 0;
-            /* Don't allow an entire forest to chain-explode. 
-             * Remember... Only YOU Can Prevent Forest Fires. 
+            /* Don't allow an entire forest to chain-explode.
+             * Remember... Only YOU Can Prevent Forest Fires.
              * - Smokey Bear */
             if (!rn2(3))
                 explode(x, y, type, d(3, 6), 0, EXPL_FIERY);
@@ -6460,7 +6556,7 @@ destroyable(struct obj *obj, int adtyp)
     if (adtyp == AD_FIRE) {
         /* fire-magic items are immune */
         if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL
-            || obj->otyp == POT_REFLECTION) {
+            || obj->otyp == SPE_FIRE_BOLT || obj->otyp == POT_REFLECTION) {
             return FALSE;
         }
         if (obj->oclass == POTION_CLASS

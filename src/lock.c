@@ -1180,6 +1180,7 @@ doorlock(struct obj *otmp, coordxy x, coordxy y)
         case SPE_KNOCK:
         case WAN_STRIKING:
         case SPE_FORCE_BOLT:
+        case SPE_FIRE_BOLT:
             door->typ = DOOR;
             door->doormask = D_CLOSED | (door->doormask & D_TRAPPED);
             newsym(x, y);
@@ -1264,6 +1265,7 @@ doorlock(struct obj *otmp, coordxy x, coordxy y)
         break;
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
+    case SPE_FIRE_BOLT:
         if (door->doormask & (D_LOCKED | D_CLOSED)) {
             /* sawit: closed door location is more visible than open */
             boolean sawit, seeit;

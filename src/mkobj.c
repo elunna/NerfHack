@@ -2354,9 +2354,11 @@ is_flammable(struct obj *otmp)
     if (Is_candle(otmp))
         return FALSE;
 
+    /* fire-related items are immune */
     if (objects[otyp].oc_oprop == FIRE_RES
         || otyp == SCR_FIRE
         || otyp == SPE_FIREBALL
+        || otyp == SPE_FIRE_BOLT
         || otyp == WAN_FIRE
         || otyp == RIN_FIRE_RESISTANCE
         || otyp == FIRE_HORN)
