@@ -342,7 +342,7 @@ do_pit(coordxy x, coordxy y, unsigned tu_pit)
 /* Generate earthquake :-) of desired force.
  * That is:  create random chasms (pits).
  */
-staticfn void
+void
 do_earthquake(int force)
 {
     static const char into_a_chasm[] = " into a chasm";
