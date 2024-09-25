@@ -4617,11 +4617,49 @@ mhitm_ad_dsrm(struct monst *magr, struct attack *mattk,
     }
 }
 
+/* TODO: Should koalas be able to calm berserkers?
+   Probably not...
+*/
 void
-mhitm_ad_tckl(struct monst *magr,
-    struct attack *mattk,
-    struct monst *mdef,
-    struct mhitm_data *mhm)
+mhitm_ad_calm(struct monst *magr, struct attack *mattk,
+              struct monst *mdef, struct mhitm_data *mhm)
+{
+    boolean no_effect = mdef->iswiz
+        || (mdef->data->mflags3 & M3_COVETOUS)
+        || (mdef->data->geno & G_UNIQ)
+        || type_is_pname(mdef->data);
+
+    if (magr == &gy.youmonst) {
+        /* uhitm */
+        if (!no_effect && !mdef->mtame) {
+            if (canseemon(mdef))
+                pline("%s looks calmer.", Monnam(mdef));
+            mdef->mpeaceful = 1;
+            mdef->mtame = mhm->damage = 0;
+        }
+        if (mhm->done)
+            return;
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu */
+        hitmsg(magr, mattk);
+        You_feel("much calmer.");
+        return;
+    } else {
+        /* mhitm */
+        if (!no_effect && (magr->mtame || mdef->mtame)) {
+            if (gv.vis)
+                pline("%s looks calmer.", Monnam(mdef));
+            mdef->mpeaceful = 1;
+            mdef->mtame = mhm->damage = 0;
+        }
+        if (mhm->done)
+            return;
+    }
+}
+
+void
+mhitm_ad_tckl(struct monst *magr, struct attack *mattk,
+              struct monst *mdef, struct mhitm_data *mhm)
 {
     int armpro = magic_negation(mdef);
     boolean no_effect = (magr != &gy.youmonst && magr->mcan)
@@ -5752,6 +5790,7 @@ mhitm_adtyping(
     case AD_FAMN: mhitm_ad_famn(magr, mattk, mdef, mhm); break;
     case AD_DGST: mhitm_ad_dgst(magr, mattk, mdef, mhm); break;
     case AD_HALU: mhitm_ad_halu(magr, mattk, mdef, mhm); break;
+    case AD_CALM: mhitm_ad_calm(magr, mattk, mdef, mhm); break;
     case AD_TCKL: mhitm_ad_tckl(magr, mattk, mdef, mhm); break;
     case AD_DSRM: mhitm_ad_dsrm(magr, mattk, mdef, mhm); break;
     case AD_WEBS: mhitm_ad_webs(magr, mattk, mdef, mhm); break;

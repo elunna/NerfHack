@@ -1001,6 +1001,10 @@ dogfood(struct monst *mon, struct obj *obj)
     if (mon->msummoned)
         return TABU;
 
+    /* KMH -- Koalas can only eat eucalyptus */
+	if (mon->data == &mons[PM_KOALA])
+		return (obj->otyp == EUCALYPTUS_LEAF ? DOGFOOD : APPORT);
+    
     /* skip shop food and other items */
     if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge
                         && costly_spot(obj->ox, obj->oy)))

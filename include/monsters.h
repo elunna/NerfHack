@@ -1631,6 +1631,13 @@
     /*
      * zruty
      */
+    MON(NAM("koala"), S_ZRUTY,
+        LVL(7, 4, 9, 10, 0), (G_NOHELL | G_GENO | 2),
+        A(ATTK(AT_TUCH, AD_CALM, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(150, 50, MS_SQEEK, MZ_SMALL), MR_POISON, 0,
+        M1_ANIMAL | M1_HERBIVORE | M1_SEE_INVIS, M2_DOMESTIC, 0,
+        NO_RACE, 8, CLR_GRAY, KOALA),
     MON(NAM("zruty"), S_ZRUTY,
         LVL(9, 8, 3, 0, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4),

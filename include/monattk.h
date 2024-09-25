@@ -92,12 +92,13 @@
 #define AD_WEBS 45  /* entangles target in webbing (from EvilHack) */
 #define AD_LUCK 46  /* drain luck */
 #define AD_RABD 47  /* cause rabies */
-#define AD_CLRC 48  /* random clerical spell */
-#define AD_SPEL 49  /* random magic spell */
-#define AD_RBRE 50  /* random breath weapon */
+#define AD_CALM 48  /* calms down the defender (koala) */
+#define AD_CLRC 49  /* random clerical spell */
+#define AD_SPEL 50  /* random magic spell */
+#define AD_RBRE 51  /* random breath weapon */
 
-#define AD_SAMU 51  /* hits, may steal Amulet (Wizard) */
-#define AD_CURS 52  /* random curse (ex. gremlin) */
+#define AD_SAMU 52  /* hits, may steal Amulet (Wizard) */
+#define AD_CURS 53  /* random curse (ex. gremlin) */
 
 #define LAST_AD AD_CURS
 
