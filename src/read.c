@@ -3953,19 +3953,21 @@ int
 learnme(void)
 {
     struct obj *otmp;
-    int tries = 0, oclass;
+    int tries = 0, oclass, otyp;
     /* Identify a random magical item. */
     do {
         oclass = ROLL_FROM(extra_classes);
         otmp = mkobj(oclass, FALSE);
-        if (objects[otmp->otyp].oc_magic && !objects[otmp->otyp].oc_name_known) {
-            makeknown(otmp->otyp);
-            return otmp->otyp;
+        otyp = otmp->otyp;
+        if (objects[otyp].oc_magic && !objects[otyp].oc_name_known) {
+            obfree(otmp, NULL); /* Destroy the item*/
+            makeknown(otyp);
+            return otyp;
         }
         obfree(otmp, NULL); /* Destroy the item*/
         tries++;
     } while (tries < 1000);
-    
+
     return 0;
 }
 /*read.c*/

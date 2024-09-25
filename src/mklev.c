@@ -1105,7 +1105,7 @@ fill_ordinary_room(
     }
 
     /* Maybe decorate the walls */
-    if (croom->rtype == OROOM && depth(&u.uz) > 1 && !rn2(25))
+    if (croom->rtype == OROOM && depth(&u.uz) > 1 && !rn2(27))
         croom->rtype = ARTROOM;
 
  skip_nonrogue:

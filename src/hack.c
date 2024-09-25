@@ -3933,7 +3933,7 @@ interesting_room(void)
     const char *carvemon2 = pmname(&mons[name2], rn2(NEUTRAL + 1));
 
     /* Carving message */
-    switch (rnd(13)) {
+    switch (rnd(10)) {
     case 1:
         pline("%s %s on the ceiling portrays %s.",
               An(adjectives[rn2(SIZE(adjectives))]), art[rn2(SIZE(art))],
