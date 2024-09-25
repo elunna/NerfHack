@@ -75,12 +75,12 @@ des.monster({class="N",peaceful=0})
 if percent(50) then
     des.monster({id="assassin bug",peaceful=0})
 else
-    des.monster({id="ha naga",peaceful=0})
+    des.monster({id="ha-naga",peaceful=0})
 end
 
 if percent(50) then
     des.monster({id="assassin bug",peaceful=0})
 else
-    des.monster({id="ha naga",peaceful=0})
+    des.monster({id="ha-naga",peaceful=0})
 end
 des.wallify()
