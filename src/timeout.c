@@ -1,4 +1,4 @@
-/* NetHack 3.7	timeout.c	$NHDT-Date: 1723580900 2024/08/13 20:28:20 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.190 $ */
+/* NetHack 3.7	timeout.c	$NHDT-Date: 1727251273 2024/09/25 08:01:13 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.193 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -15,6 +15,7 @@ staticfn void slime_dialogue(void);
 staticfn void slimed_to_death(struct kinfo *) NO_NNARGS;
 staticfn void sickness_dialogue(void);
 staticfn void phaze_dialogue(void);
+staticfn void region_dialogue(void);
 staticfn void done_timeout(int, int);
 staticfn void slip_or_trip(void);
 staticfn void see_lamp_flicker(struct obj *, const char *) NONNULLPTRS;
@@ -58,6 +59,8 @@ const struct propname {
     /* timed pass-walls is a potential prayer result if surrounded by stone
        with nowhere to be safely teleported to */
     { PASSES_WALLS, "pass thru walls" },
+    /* likewise for magical breathing vs poison gas regions */
+    { MAGICAL_BREATHING, "magical breathing" },
     /* timed fire resistance and water walking are possible in explore mode
        (as well as in wizard mode) after life-saving in lava if it fails to
        teleport the hero to safety and player declines to die */
@@ -94,7 +97,6 @@ const struct propname {
     { TELEPORT_CONTROL, "teleport control" },
     { FLYING, "flying" },
     { SWIMMING, "swimming" },
-    { MAGICAL_BREATHING, "magical breathing" },
     { SLOW_DIGESTION, "slow digestion" },
     { HALF_SPDAM, "half spell damage" },
     { HALF_PHDAM, "half physical damage" },
@@ -585,7 +587,33 @@ phaze_dialogue(void)
         return;
 
     if (((HPasses_walls & TIMEOUT) % 2L) && i > 0L && i <= SIZE(phaze_texts))
-        pline1(phaze_texts[SIZE(phaze_texts) - i]);
+        pline("%s", phaze_texts[SIZE(phaze_texts) - i]);
+}
+
+/* Similar to Passes_walls, if prayer tries to save hero from a poison
+   gas region but can't, (HMagical_breathing & TIMEOUT) will be set to
+   a small value.  Unlike Passes_walls, there's no joke message. */
+static NEARDATA const char *const region_texts[] = {
+    "You seem to have some trouble breathing.",
+    "The air here seems foul.",
+};
+
+staticfn void
+region_dialogue(void)
+{
+    boolean breathless, in_poison_gas_cloud;
+    long r = (HMagical_breathing & TIMEOUT), i = r / 2L;
+
+    /* might have poly'd into non-breather or moved out of gas cloud */
+    HMagical_breathing &= ~TIMEOUT;
+    breathless = breathless(&mons[u.umonnum]);
+    in_poison_gas_cloud = region_danger();
+    HMagical_breathing |= r;
+    if (breathless || !in_poison_gas_cloud)
+        return;
+
+    if ((r % 2L) && i > 0L && i <= SIZE(region_texts))
+        pline("%s", region_texts[SIZE(region_texts) - i]);
 }
 
 /* when a status timeout is fatal, keep the status line indicator shown
@@ -693,6 +721,8 @@ nh_timeout(void)
         levitation_dialogue();
     if (HPasses_walls & TIMEOUT)
         phaze_dialogue();
+    if (HMagical_breathing & TIMEOUT)
+        region_dialogue();
     if (HSleepy & TIMEOUT)
         sleep_dialogue();
     if (u.mtimedone && !--u.mtimedone) {
@@ -990,6 +1020,23 @@ nh_timeout(void)
                               !Upolyd ? "normal" : "unusual");
                 }
                 break;
+            case MAGICAL_BREATHING:
+                You_feel(Hallucination ? "your gills disappear."
+                                       : "your lungs start working again.");
+                if (!Breathless) {
+                    if (region_danger())
+                        You("cough%s",
+                            Poison_resistance ? "." : " and spit blood!");
+                    if (Underwater) {
+                        if (!cant_drown(gy.youmonst.data) && !Swimming) {
+                            You("suddenly inhale an unhealthy amount of %s!",
+                                hliquid("water"));
+                            stop_occupation();
+                            (void) drown();
+                        }
+                    }
+                }
+                break;
             case STRANGLED:
                 svk.killer.format = KILLED_BY;
                 Strcpy(svk.killer.name,
@@ -1094,19 +1141,6 @@ nh_timeout(void)
             case PROT_FROM_SHAPE_CHANGERS:
                 /* No message */
                 restartcham();
-                break;
-            case MAGICAL_BREATHING:
-                You_feel(Hallucination ? "your gills disappear."
-                                           : "more afraid of water.");
-                if (Underwater) {
-                    if (!cant_drown(gy.youmonst.data) && !Swimming) {
-                        You("suddenly inhale an unhealthy amount of %s!",
-                            hliquid("water"));
-                        stop_occupation();
-                        (void) drown();
-                    }
-                    return;
-                }
                 break;
             case REFLECTING:
                 if (!Blind) {

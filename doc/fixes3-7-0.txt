@@ -1,4 +1,4 @@
-NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1472 $ $NHDT-Date: 1725143669 2024/08/31 22:34:29 $
+NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1484 $ $NHDT-Date: 1726862062 2024/09/20 19:54:22 $
 
 General Fixes and Modified Features
 -----------------------------------
@@ -118,7 +118,8 @@ tribute (Discworld snippets) typos, in book order rather than fix order:
 	Moving Pictures passage #10 initial single quote should be double,
 	 #12 "or" -> "of", #14 second instance of "megalomaniac" misspelled
 	Lords and Ladies passage #5, near end add missing opening double
-	 quote, passage #7 last paragraph, "to" -> "be"
+	 quote, passage #6 first footnote, insert omitted "be", passage #7
+	 last paragraph, "to" -> "be"
 	Men at Arms passage #1, italicize /for/, passage #2, insert omitted
 	 word "had": 'it was /fate/ that _had_ let Edward'
 	Interesting Times passage #1, italicize several words
@@ -778,9 +779,8 @@ covetous monsters will teleport to downstairs or upstairs to heal
 have fake player monsters use verbalize instead of pline when reacting to chat
 fix mention_walls distinguishing unseen walls from solid stone
 don't push unknown boulders when moving
-in flush_screen, reorder the code slightly to complete the bot() and
-	timebot() calls prior to the window port call to place the cursor
-	on the hero
+in flush_screen, reorder the code slightly to complete the bot() and timebot()
+	calls prior to the window port call to place the cursor on the hero
 magic traps can toggle intrinsic invisibility
 Death attacking a monster does drain life attack
 add unique Rider revival messages
@@ -1466,6 +1466,7 @@ when a secret corridor was discovered by wand of secret door detection or by
 	formerly embedded object at the spot, presence of the object would be
 	forgotten unless within range of a light source
 when poly'd into a giant, kicking a closed door always succeeds in breaking it
+reduce crystal plate mail weight
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2031,6 +2032,14 @@ wizards were discovering unread spellbooks whenever any skill was advanced;
 if tips were enabled, the getpos/farlook tip clobbered the initial prompt (at
 	least for tty's one line message window), so reissue the prompt after
 	the tip has been displayed
+a post-3.6 change to try to cope with invalid light source data when restoring
+	corrupted save file caused "panic: relink_light_sources" for valid
+	save file if saved while hero was poly'd into a light emitting monster
+priestname() didn't handle "a" vs" "an" prefix correctly; normally priests are
+	named as "the priest of <deity>" but hearing an unseen priest read a
+	scroll doesn't force "the" and yielded "You hear an priest of <deity>
+	incant <scroll>."
+
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -2189,6 +2198,9 @@ curses: allow changing default colors with the 'palette' config option
 curses: if messages have been issued during start-up (for instance, warnings
 	about issues in run-time config file), prompt user to press <return>
 	so that they can be read before curses erases the screen
+curses: when the map was narrower than the space set aside for it, wide popup
+	windows could write into the unused space and whatever was written
+	there would stick after the popup was removed
 documentation: when building plain text Guidebook.txt from Guidebook.mn, avoid
 	attempting to use CR font; change doesn't affect building Guidebook.ps
 	which utilizes CR to get various instances of fixed-width text
@@ -2879,6 +2891,10 @@ check for valid indexes of def_monsyms[] and def_oc_syms[] in
 	choose_classes_menu() (pr #1179 by argrath)
 split damage from acid potion into separate function (pr #1195 by argrath)
 add swallow and explosion glyphs to glyph_to_cmap() (pr #1277 by ars3niy)
+split "cannot_push" on moverock_done() into a separate function (pr #1282
+	by argrath)
+split making pits on do_earthquake() into a separate function and
+	eliminate some gotos on do_earthquake() (pr #1287 by argrath)
 
 
 Code Cleanup and Reorganization

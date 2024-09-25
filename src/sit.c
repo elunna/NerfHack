@@ -315,6 +315,9 @@ dosit(void)
         return ECMD_OK;
     } else if (is_pool(u.ux, u.uy) && !Underwater) { /* water walking */
         goto in_water;
+    } else if (Upolyd && u.umonnum == PM_GREMLIN
+               && (levl[u.ux][u.uy].typ == FOUNTAIN || is_pool(u.ux, u.uy))) {
+        goto in_water;
     }
 
     u_wipe_engr(rnd(5));
@@ -393,10 +396,18 @@ dosit(void)
     } else if (is_pool(u.ux, u.uy) && !eggs_in_water(gy.youmonst.data)) {
  in_water:
         You("sit in the %s.", hliquid("water"));
-        if (!rn2(10) && uarm)
-            (void) water_damage(uarm, "armor", TRUE);
-        if (!rn2(10) && uarmf && uarmf->otyp != WATER_WALKING_BOOTS)
-            (void) water_damage(uarm, "armor", TRUE);
+        if (Upolyd && u.umonnum == PM_GREMLIN) {
+            if (split_mon(&gy.youmonst, (struct monst *) 0)) {
+                if (levl[u.ux][u.uy].typ == FOUNTAIN)
+                    dryup(u.ux, u.uy, TRUE);
+            }
+            /* splitting--or failing to do so--protects gear from the water */
+        } else {
+            if (!rn2(10) && uarm)
+                (void) water_damage(uarm, "armor", TRUE);
+            if (!rn2(10) && uarmf && uarmf->otyp != WATER_WALKING_BOOTS)
+                (void) water_damage(uarm, "armor", TRUE);
+        }
     } else if (IS_SINK(typ)) {
         You(sit_message, defsyms[S_sink].explanation);
         Your("%s gets wet.",
