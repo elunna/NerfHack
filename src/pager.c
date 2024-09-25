@@ -449,9 +449,19 @@ look_at_monster(
         Strcat(buf, ", withering");
     if (mtmp->mdiseased)
         Strcat(buf, ", diseased");
+    if (mtmp->mreflecttime)
+        Strcat(buf, ", reflecting");
 
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
+
+    /* Intimate knowledge */
+    if (mtmp->mtame && mtmp->mconf)
+        Strcat(buf, ", confused");
+    if (mtmp->mtame && mtmp->mstun)
+        Strcat(buf, ", stunned");
+    if (mtmp->mtame && mtmp->mblinded)
+        Strcat(buf, ", blinded");
 
     if (canseemon(mtmp) && !Blind) {
         if (mtmp->misc_worn_check & W_ARMOR) {
