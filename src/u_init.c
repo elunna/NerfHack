@@ -333,8 +333,8 @@ static const struct def_skill Skill_Car[] = {
      * Gnomish carts can reach skilled in crossbow, basic in club
      * Elves do not get enchantment spell skill however.
      * */
-    { P_DAGGER, P_SKILLED },
-    { P_KNIFE, P_SKILLED },
+    { P_DAGGER, P_BASIC },
+    { P_KNIFE, P_BASIC },
     { P_QUARTERSTAFF, P_SKILLED },
     { P_SLING, P_BASIC },
     { P_BOOMERANG, P_BASIC },
