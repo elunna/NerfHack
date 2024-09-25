@@ -1087,7 +1087,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_GIANT_EEL:
     case PM_ELECTRIC_EEL:
     case PM_KRAKEN:
-    case PM_MERMAID:
+    case PM_MERFOLK:
     case PM_THING_FROM_BELOW:
     case PM_NEWT:
     case PM_GECKO:

@@ -417,6 +417,18 @@ m_initweap(struct monst *mtmp)
             (void) mongets(mtmp, GNOMISH_SUIT);
         goto catchgnomes;
         break;
+    case S_EEL:
+        if (mm == PM_MERFOLK) {
+            if (!rn2(2)) {
+                otmp = mongets(mtmp, TRIDENT);
+                otmp->oerodeproof = 1;
+            } else {
+                 otmp = mongets(mtmp, ELVEN_SPEAR);
+            }
+        }
+        if (!rn2(5))
+            (void) mongets(mtmp, OILSKIN_CLOAK);
+        break;
     case S_HUMANOID:
         if (mm == PM_HOBBIT) {
             switch (rn2(3)) {
