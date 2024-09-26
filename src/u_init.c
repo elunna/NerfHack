@@ -453,7 +453,7 @@ static const struct def_skill Skill_R[] = {
     { P_CLUB, P_BASIC },
     { P_FLAIL, P_BASIC },
     { P_HAMMER, P_BASIC },
-    { P_CROSSBOW, P_BASICT },
+    { P_CROSSBOW, P_BASIC },
     { P_DART, P_EXPERT },
     { P_SHURIKEN, P_SKILLED },
     { P_DIVINATION_SPELL, P_BASIC }, /* Special spell */
