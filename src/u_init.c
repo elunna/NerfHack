@@ -474,16 +474,12 @@ static const struct def_skill Skill_R[] = {
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_Ran[] = {
-    { P_DAGGER, P_EXPERT },
-    { P_AXE, P_SKILLED },
+    { P_DAGGER, P_SKILLED },
+    { P_AXE, P_BASIC },
     { P_FLAIL, P_SKILLED },
-    { P_POLEARMS, P_SKILLED },
     { P_BOW, P_EXPERT },
-    { P_SLING, P_EXPERT },
     { P_CROSSBOW, P_EXPERT },
-    { P_DART, P_EXPERT },
-    { P_SHURIKEN, P_SKILLED },
-    { P_BOOMERANG, P_EXPERT },
+    { P_DART, P_SKILLED },
     { P_WHIP, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
     { P_DIVINATION_SPELL, P_BASIC },
