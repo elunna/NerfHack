@@ -6965,7 +6965,7 @@ card_drop(struct monst *mon)
     struct obj *lotus;
     struct permonst *ptr = mon->data;
     int difficulty = level_difficulty() * 2 + u.ulevel - 2;
-    int chance = (difficulty / 10) + 1;
+    int chance = (difficulty / 20) + 1;
 
     /* No potential for a unique card. */
     if (ptr->geno & G_UNIQ)
