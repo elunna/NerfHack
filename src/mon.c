@@ -6534,11 +6534,12 @@ boolean
 calculate_flankers(struct monst *magr, struct monst *mdef)
 {
     struct monst* flanker;
-    boolean grudge, youflanker, youattack, youdefend;
+    boolean grudge, youflanker, youattack, youdefend, petattack;
     int ax, ay, /* Attacker coords */
         dx, dy, /* Defender coords */
         fx, fy; /* Flanker coords */
     grudge = youflanker = youattack = youdefend = FALSE;
+    petattack = magr->mtame;
 
     if (magr == &gy.youmonst)
         youattack = TRUE;
@@ -6635,8 +6636,9 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
         return magr->mtame && !mdef->mpeaceful;
     } else {
         /* If you are not involved in the flanking, then flanking can
-         * still occur if the defender and flanker have a grudge vs each other. */
-        return grudge;
+         * still occur if the defender and flanker have a grudge vs each other
+         or if two of your pets are attacking something together. */
+        return grudge || (petattack && flanker->mtame);
     }
 }
 
