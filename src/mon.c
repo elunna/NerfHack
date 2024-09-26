@@ -7047,8 +7047,13 @@ card_drop(struct monst *mon)
 	if (otmp) {
 	    place_object(otmp, mon->mx, mon->my);
 	    newsym(mon->mx, mon->my);
+        /* This lets paper golems have extra drops later. */
+        if (mon->mnum == PM_PAPER_GOLEM) {
+            return FALSE;
+        }
 	    return TRUE;
 	}
+
     return FALSE;
 }
 
