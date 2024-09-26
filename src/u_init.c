@@ -63,7 +63,7 @@ static struct trobj Barbarian[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cartomancer[] = {
-    { RAZOR_CARD, 0, WEAPON_CLASS, 60, 1 }, /* quan is variable */
+    { RAZOR_CARD, 2, WEAPON_CLASS, 53, 1 }, /* quan is variable */
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { MEAT_STICK, 0, FOOD_CLASS, 2, 0 },
     { CANDY_BAR, 0, FOOD_CLASS, 2, 0 },
@@ -331,16 +331,12 @@ static const struct def_skill Skill_Car[] = {
      * Cartomancers also have a base -5 to-hit penalty for melee fighting
      * Dwarvish carts can reach skilled in pick-axe
      * Gnomish carts can reach skilled in crossbow, basic in club
-     * Elves do not get enchantment spell skill however.
+     * Orcs can reach skilled in saber
+     * Elves do not get the enchantment spell skill however.
      * */
-    { P_DAGGER, P_BASIC },
-    { P_KNIFE, P_BASIC },
-    { P_QUARTERSTAFF, P_SKILLED },
-    { P_SLING, P_BASIC },
-    { P_BOOMERANG, P_BASIC },
-    { P_DART, P_BASIC },
+    { P_DART, P_SKILLED },
     { P_SHURIKEN, P_MASTER },
-    { P_UNICORN_HORN, P_SKILLED },
+    { P_UNICORN_HORN, P_EXPERT },
     /* Cartomancers don't get skill in spellcasting - they have rulebooks. */
     { P_RIDING, P_EXPERT },         /* Card games on motorcycles. */
     { P_BARE_HANDED_COMBAT, P_BASIC },
