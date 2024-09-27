@@ -2230,7 +2230,7 @@ teleport_pain(void)
         u.mhmax -= min(rnd(8), u.mhmax - 1);
     } else {
         if (u.uhpmax > uhpmin)
-            setuhpmax(max(u.uhpmax - rnd(8), uhpmin));
+            setuhpmax(max(u.uhpmax - rnd(8), uhpmin), TRUE);
     }
     u.uen /= 5;
     if (u.uen < 1)

@@ -1198,7 +1198,7 @@ cpostfx(int pm)
                 u.mhmax -= min(rnd(4), u.mhmax - 1);
             } else {
                 if (u.uhpmax > uhpmin)
-                    setuhpmax(max(u.uhpmax - rnd(4), uhpmin));
+                    setuhpmax(max(u.uhpmax - rnd(4), uhpmin), FALSE);
             }
             drain_en(rnd(8), FALSE);
             losehp(rnd(4), "eating a wraith corpse", KILLED_BY);

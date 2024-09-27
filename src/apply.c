@@ -5202,7 +5202,7 @@ deck_of_fate(struct obj *obj)
                 if (Upolyd) {
                     u.mhmax -= min(drain, u.mhmax - 1);
                 } else {
-                    setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
+                    setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
                 }
                 losehp(dmg, "touch of death", KILLED_BY_AN);
                 break;

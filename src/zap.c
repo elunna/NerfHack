@@ -5205,7 +5205,7 @@ zhitu(
             if (Upolyd)
                 u.mhmax -= min(drain, u.mhmax - 1);
             else
-                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
+                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
 
             break;
         } else if (Reflecting && !Antimagic) {
@@ -5220,7 +5220,7 @@ zhitu(
             if (Upolyd)
                 u.mhmax -= min(drain, u.mhmax - 1);
             else
-                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
+                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
 	    break;
 	}
         monstunseesu(M_SEEN_MAGR);
@@ -5296,7 +5296,7 @@ zhitu(
             if (Upolyd)
                 u.mhmax -= min(drain, u.mhmax - 1);
             else
-                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)));
+                setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
         } else {
             if (Blind)
                 You_feel("a necrotic force draining your %s!", life);
