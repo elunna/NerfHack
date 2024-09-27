@@ -319,7 +319,8 @@
 #define is_displaced(ptr) \
     ((ptr) == &mons[PM_DISPLACER_BEAST] \
     || (ptr) == &mons[PM_BABY_SHIMMERING_DRAGON] \
-    || (ptr) == &mons[PM_SHIMMERING_DRAGON])
+    || (ptr) == &mons[PM_SHIMMERING_DRAGON] \
+    || (ptr)->mlet == S_GHOST)
 #define is_mplayer(ptr) \
     (((ptr) >= &mons[PM_ARCHEOLOGIST]) && ((ptr) <= &mons[PM_WIZARD]))
 #define is_watch(ptr) \
