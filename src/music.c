@@ -648,7 +648,6 @@ do_improvisation(struct obj *instr)
         if (!Deaf) {
             You("produce a frightful, grave%s sound.",
                 same_old_song ? ", yet familiar," : "");
-            makeknown_msg(TOOLED_HORN);
         } else
             You("blow into the horn.");
         Hero_playnotes(obj_to_instr(&itmp), improvisation, 80);
