@@ -1477,6 +1477,7 @@ m_calcdistress(struct monst *mtmp)
                 xkilled(mtmp, XKILL_GIVEMSG);
             else
                 mondied(mtmp);
+            return;
         }
     }
 
