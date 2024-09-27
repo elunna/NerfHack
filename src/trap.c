@@ -4854,7 +4854,7 @@ dofiretrap(
             u.uhpmax -= rn2(min(u.uhpmax, num + 1)), disp.botl = TRUE;
         } /* note: no 'else' here */
         if (u.uhpmax < uhpmin) {
-            setuhpmax(min(olduhpmax, uhpmin)); /* sets disp.botl */
+            setuhpmax(min(olduhpmax, uhpmin), FALSE); /* sets disp.botl */
             if (!Drain_resistance)
                 losexp(NULL); /* never fatal when 'drainer' is Null */
         }
@@ -7510,13 +7510,15 @@ lava_effects(void)
      * thing to come into contact with lava makes sense.)
      */
     if (uarmf && is_flammable(uarmf) && !uarmf->oerodeproof
-            && uarmf->in_use) {
+            && (uarmf->in_use
+                  || (is_organic(uarmf) && !uarmf->oerodeproof))) {
         obj = uarmf;
         pline("%s into flame!", Yobjnam2(obj, "burst"));
         ++burnmesgcount;
         iflags.in_lava_effects++; /* (see above) */
         (void) Boots_off();
-        useup(obj);
+        if (obj->o_id != protect_oid)
+            useup(obj);
         iflags.in_lava_effects--;
         ++burncount;
     }
