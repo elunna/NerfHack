@@ -1315,7 +1315,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
                     damage_info.damage_large, damage_info.bonus_large);
             OBJPUTSTR(buf);
         } else {
-            Sprintf(buf, "Damage:  unknown");
+            Sprintf(buf, "Damage: unknown");
             OBJPUTSTR(buf);
         }
 
@@ -1366,7 +1366,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     }
 
     /* APPEARANCE BONUSES */
-    
+
     /* Effects based on the base description of the item --
         only one will apply, so an if-else chain is appropriate */
     if (objdescr_is(&dummy, "snow boots"))
@@ -1434,19 +1434,20 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
 
     if (olet == SCROLL_CLASS) {
         /* nothing special (ink is covered below) */
-        OBJPUTSTR("Scroll.");
+        OBJPUTSTR(Role_if(PM_CARTOMANCER) ? "Card" : "Scroll.");
     }
 
     /* SPELLBOOK INFO */
 
     if (olet == SPBOOK_CLASS) {
         if (otyp == SPE_BLANK_PAPER || !reveal_info) {
-            OBJPUTSTR("Spellbook.");
+            OBJPUTSTR(Role_if(PM_CARTOMANCER) ? "Rulebook" : "Spellbook.");
         } else if (otyp == SPE_NOVEL || otyp == SPE_BOOK_OF_THE_DEAD) {
             OBJPUTSTR("Book.");
         } else {
-            Sprintf(buf, "Level %d spellbook, in the %s school. %s spell.",
-                    oc.oc_level, spelltypemnemonic(oc.oc_skill), dir);
+            Sprintf(buf, "Level %d %s, in the %s school. %s spell.",
+                    oc.oc_level, Role_if(PM_CARTOMANCER) ? "Rulebook" : "Spellbook.",
+                    spelltypemnemonic(oc.oc_skill), dir);
             OBJPUTSTR(buf);
             Sprintf(buf, "Takes %d actions to read.", oc.oc_delay);
             OBJPUTSTR(buf);
@@ -1684,7 +1685,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         else if (otyp == YELLOW_DRAGON_SCALE_MAIL)
             OBJPUTSTR("Confers petrification resistance.");
     }
-   
+
 
     buf[0] = '\0';
     if (reveal_info) {
@@ -1703,29 +1704,31 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
      * material.
      * Object classes where this may matter: rings, wands. All randomized tools
      * share materials, and all scrolls and potions are the same material. */
-    if (!(olet == RING_CLASS || olet == WAND_CLASS) || oc.oc_name_known) {
-        /* char array converting materials to strings; if this is ever needed
-        * anywhere else it should be externified. Corresponds exactly to the
-        * materials defined in objclass.h.
-        * This is very similar to materialnm[], but the slight difference is
-        * that this is always the noun form whereas materialnm uses adjective
-        * forms; most materials have the same noun and adjective forms but two
-        * (wood/wooden, vegetable matter/organic) don't */
-        const char* mat_str = materialnm[oc.oc_material];
-        /* Two exceptions to materialnm, which uses adjectival forms: most of
-         * these work fine as nouns but two don't. */
-        if (oc.oc_material == WOOD) {
-            mat_str = "wood";
-        } else if (oc.oc_material == VEGGY) {
-            mat_str = "vegetable matter";
-        }
 
-        if ((olet == GEM_CLASS && is_graystone(otyp)) || !reveal_info)
-            Sprintf(buf, "Material: unknown");
-        else
-            Sprintf(buf, "Material: %s.", mat_str);
-        OBJPUTSTR(buf);
+    /* char array converting materials to strings; if this is ever needed
+     * anywhere else it should be externified. Corresponds exactly to the
+     * materials defined in objclass.h.
+     * This is very similar to materialnm[], but the slight difference is
+     * that this is always the noun form whereas materialnm uses adjective
+     * forms; most materials have the same noun and adjective forms but two
+     * (wood/wooden, vegetable matter/organic) don't */
+    const char* mat_str = materialnm[oc.oc_material];
+    /* Two exceptions to materialnm, which uses adjectival forms: most of
+        * these work fine as nouns but two don't. */
+    if (oc.oc_material == WOOD) {
+        mat_str = "wood";
+    } else if (oc.oc_material == VEGGY) {
+        mat_str = "vegetable matter";
     }
+
+    /* Generally the only */
+    if (!reveal_info
+        && ((olet == GEM_CLASS && !is_graystone(otyp))
+            || olet == RING_CLASS || olet == WAND_CLASS))
+        Sprintf(buf, "Material: unknown");
+    else
+        Sprintf(buf, "Material: %s.", mat_str);
+    OBJPUTSTR(buf);
 
     /* TODO: prevent obj lookup from displaying with monster database entry
      * (e.g. scroll of light gives "light" monster database) */
