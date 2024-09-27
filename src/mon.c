@@ -6853,11 +6853,10 @@ unpoly_monster(struct monst *mtmp)
     if (!is_were(mtmp->data) && !shifter)
         return;
 
-    if (visible)
-        pline("But wait...");
-
     /* Revert werefoo */
     if (is_were(mtmp->data) && !is_human(mtmp->data) && rn2(13)) {
+        if (visible)
+            pline("But wait...");
         new_were(mtmp);
         return;
     }
@@ -6865,6 +6864,9 @@ unpoly_monster(struct monst *mtmp)
     /* Revert shapechangers */
     if (shifter && mtmp->cham != NON_PM && rn2(13)) {
         int mndx = mtmp->cham;
+
+        if (visible)
+            pline("But wait...");
 
         /* this only happens if shapeshifted */
         if (mndx >= LOW_PM && mndx != monsndx(mtmp->data)
