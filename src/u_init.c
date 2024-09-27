@@ -63,7 +63,7 @@ static struct trobj Barbarian[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cartomancer[] = {
-    { RAZOR_CARD, 2, WEAPON_CLASS, 53, 1 }, /* quan is variable */
+    { RAZOR_CARD, 0, WEAPON_CLASS, 60, 1 },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { MEAT_STICK, 0, FOOD_CLASS, 2, 0 },
     { CANDY_BAR, 0, FOOD_CLASS, 2, 0 },
@@ -703,6 +703,7 @@ u_init_role(void)
         knows_object(SCR_ZAPPING, TRUE);
         knows_class(SPBOOK_CLASS); /* all rulebooks */
 
+        change_luck(1); /* Little help vs mulching */
         break;
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
