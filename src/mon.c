@@ -621,6 +621,13 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
             if (canseemon(mtmp))
             pline_mon(mtmp, "%s horn crumbles to dust.",
                     s_suffix(Monnam(mtmp)));
+
+            /* Not all is lost... */
+            if (Role_if(PM_CARTOMANCER)) {
+                card_drop(mtmp);
+                free_mgivenname(mtmp);
+                return (struct obj *) 0;
+            }
         }
         goto default_1;
     }
@@ -3608,7 +3615,11 @@ corpse_chance(
     if (mon->msummoned)
         return FALSE;
 
-    if (Role_if(PM_CARTOMANCER) && card_drop(mon))
+    /* Unicorn are handled a little differently. Because their horns
+     * decrease with unicorn kills, we'll handle the drop when the horn
+     * crumbles. Otherwise, the player can get screwed out of their first 
+     * guaranteed horn and we don't want that... */
+    if (Role_if(PM_CARTOMANCER) && !is_unicorn(mon->data) && card_drop(mon))
         return FALSE;
 
     /* must duplicate this below check in xkilled() since it results in
