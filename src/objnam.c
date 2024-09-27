@@ -3715,6 +3715,7 @@ wizterrainwish(struct _readobjnam_data *d)
         if (oldtyp != FORGE)
             svl.level.flags.nforges++;
         lev->looted = 0; /* overlays 'flags' */
+        lev->lit = TRUE;
         pline("A forge.");
         madeterrain = TRUE;
     } else if (!BSTRCMPI(bp, p - 6, "throne")) {

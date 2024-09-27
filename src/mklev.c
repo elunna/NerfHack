@@ -2225,7 +2225,7 @@ mkforge(struct mkroom *croom)
     /* Put a forge at m.x, m.y */
     if (!set_levltyp(m.x, m.y, FORGE))
         return;
-
+    levl[m.x][m.y].lit = TRUE;
     svl.level.flags.nforges++;
 }
 

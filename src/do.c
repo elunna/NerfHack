@@ -517,6 +517,7 @@ polymorph_sink(void)
     case 4:
         sym = S_forge;
         set_levltyp(u.ux, u.uy, FORGE);
+        levl[u.ux][u.uy].lit = TRUE;
         break;
      case 5:
         sym = S_toilet;

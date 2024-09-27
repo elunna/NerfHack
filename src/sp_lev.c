@@ -4851,6 +4851,7 @@ lspo_feature(lua_State *L)
         break;
     case FORGE:
         typ = FORGE;
+        levl[x][y].lit = TRUE;
         break;
     case SINK:
         l_table_getset_feature_flag(L, x, y, "pudding", S_LPUDDING);
