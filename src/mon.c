@@ -6985,7 +6985,7 @@ card_drop(struct monst *mon)
         return FALSE;
 
     /* Prevent farmable card-drops. */
-    if (mon->msummoned || mon->mrevived || mon->mcloned
+    if (mon->msummoned || mon->mrevived || mon->mcloned || mon->mcan
          /* No potential for a unique card. */
         || ptr == &mons[PM_PHOENIX])
         return FALSE;
@@ -6998,7 +6998,7 @@ card_drop(struct monst *mon)
     if (chance > 10)
         chance = 10;
 
-    /* The quest artifact allows for a much higher rate when invoked. */
+    /* Much higher drop rate when invoked. */
     if ((lotus = carrying_arti(ART_HOLOGRAPHIC_VOID_LILY)) && lotus->lamplit) {
         if (!rn2(chance))
             return FALSE;
