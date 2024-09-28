@@ -125,6 +125,7 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
 {
     struct permonst *pm;
     struct monst *mtmp = 0;
+    struct obj *card;
     int chance, trycnt = 100;
 
     do {
@@ -133,6 +134,16 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
 
         if (!(pm = pick_familiar_pm(otmp, quietly)))
             break;
+
+        /* No permapets for cartomancers */
+        if (Role_if(PM_CARTOMANCER)) {
+            card = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+            card->corpsenm = monsndx(pm);
+            blessorcurse(card, 4); /* Same as figurines */
+            (void) hold_another_object(card, "You drop %s!",
+                                    doname(card), (const char *) 0);
+            return (struct monst *) 0;
+        }
 
         mmflags = MM_EDOG | MM_IGNOREWATER | NO_MINVENT | MM_NOMSG;
         cgend = otmp ? (otmp->spe & CORPSTAT_GENDER) : 0;
