@@ -46,13 +46,13 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
                                          { 1, AMULET_CLASS } };
 
 /* Cartomancers have a different dynamic with card drops. */
-static const struct icp cartprobs[] =  { { 10, WEAPON_CLASS },
+static const struct icp cartprobs[] =  { { 8, WEAPON_CLASS },
                                          { 10, ARMOR_CLASS },
                                          { 30, FOOD_CLASS }, /* Double to compensate for less corpse drops */
                                          { 12, TOOL_CLASS },
                                          { 8, GEM_CLASS },
-                                         { 14, POTION_CLASS },
-                                         { 8, SCROLL_CLASS }, /* Half because of card drops*/
+                                         { 12, POTION_CLASS },
+                                         { 12, SCROLL_CLASS },
                                          { 4, SPBOOK_CLASS },
                                          /* No WAND_CLASS because of zap card drops */
                                          { 3, RING_CLASS },
@@ -1114,11 +1114,16 @@ mksobj_init(struct obj *otmp, boolean artif)
             blessorcurse(otmp, 4);
 
         /* Cursed potions of blood are more nutritious for V,
-        * this lightens the early game pressure a bit. */
+         * this lightens the early game pressure for V a bit. */
         if (otmp->otyp == POT_BLOOD && !rn2(4))
             curse(otmp);
         if (otmp->otyp == SCR_ZAPPING)
             otmp->corpsenm = mk_zapcard();
+        /* For cartomancers, most generic create monster cards are
+         * changed to specific summon cards*/
+        if (otmp->otyp == SCR_CREATE_MONSTER
+            && Role_if(PM_CARTOMANCER) && rn2(20))
+            otmp->corpsenm = mk_moncard();
         break;
     case SPBOOK_CLASS:
         otmp->spestudied = 0;

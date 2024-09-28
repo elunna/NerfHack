@@ -690,10 +690,11 @@ u_init_role(void)
         /* Cards only weigh 1 for Cartomancers */
         for (int s = SCR_ENCHANT_ARMOR; s < SCR_STINKING_CLOUD; s++)
             objects[s].oc_weight = 1;
-
         /* Rulebooks weigh 5 for Cartomancers */
         for (int s = SPE_DIG; s < SPE_CHAIN_LIGHTNING; s++)
             objects[s].oc_weight = 5;
+        /* Create monster cards are double as likely */
+        objects[SCR_CREATE_MONSTER].oc_prob *= 2;
 
         ini_inv(Cartomancer);
         if (!rn2(3))
