@@ -5277,6 +5277,7 @@ readobjnam(char *bp, struct obj *no_wish)
         break;
     case STATUE: /* otmp->cobj already done in mksobj() */
     case FIGURINE:
+    case SCR_CREATE_MONSTER:
     case CORPSE: {
         struct permonst *P = (ismnum(d.mntmp)) ? &mons[d.mntmp] : 0;
 
@@ -5359,6 +5360,7 @@ readobjnam(char *bp, struct obj *no_wish)
             set_corpsenm(d.otmp, d.mntmp);
             break;
         case FIGURINE:
+        case SCR_CREATE_MONSTER:
             if (!(mons[d.mntmp].geno & G_UNIQ)
                 && (!is_human(&mons[d.mntmp]) || is_were(&mons[d.mntmp]))
 #ifdef MAIL_STRUCTURES

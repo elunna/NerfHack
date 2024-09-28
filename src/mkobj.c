@@ -1320,6 +1320,13 @@ mksobj(int otyp, boolean init, boolean artif)
     /* unique objects may have an associated artifact entry */
     if (objects[otyp].oc_unique && !otmp->oartifact)
         otmp = mk_artifact(otmp, (aligntyp) A_NONE);
+
+    /* Prevent permapets for cartos, convert figurines to cards. */
+    if (Role_if(PM_CARTOMANCER) && otmp->otyp == FIGURINE) {
+        otmp->otyp = SCR_CREATE_MONSTER;
+        otmp->oclass = SCROLL_CLASS;
+        // otmp->spe = 0; /* reset spe just in case */
+    }
     otmp->owt = weight(otmp);
     return otmp;
 }
