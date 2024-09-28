@@ -204,6 +204,17 @@ mkshop(void)
         if (isbig(sroom) && (shtypes[i].symb == WAND_CLASS
                              || shtypes[i].symb == SPBOOK_CLASS))
             i = 0;
+
+        /* Let cartomancers have a few more card shops and prevent
+         * other roles from seeing them. */
+        if (Role_if(PM_CARTOMANCER)) {
+            /* 2% + 5% + 5% + 7% = 19% */
+            if (shtypes[i].symb == WEAPON_CLASS
+               || shtypes[i].symb == FOOD_CLASS)
+            i = CARDSHOP - SHOPBASE;
+        } else if (!strcmp(shtypes[i].annotation, "card shop")) {
+            i = 0;
+        }
     }
     sroom->rtype = SHOPBASE + i;
 

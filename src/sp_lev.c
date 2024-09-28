@@ -3923,6 +3923,7 @@ static const struct {
     { "book shop",          BOOKSHOP },
     { "health food shop",   FODDERSHOP },
     { "junk shop",          JUNKSHOP },
+    { "card shop",          CARDSHOP },
     { "candle shop",        CANDLESHOP },
     { 0, 0 }
 };
