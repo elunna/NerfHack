@@ -6984,14 +6984,13 @@ card_drop(struct monst *mon)
     if (!isok(mon->mx, mon->my))
         return FALSE;
 
+    /* Prevent farmable card-drops. */
     if (mon->msummoned || mon->mrevived || mon->mcloned
          /* No potential for a unique card. */
-        || ptr->geno & G_UNIQ)
+        || ptr == &mons[PM_PHOENIX])
         return FALSE;
 
-    /* Prevent farmable card-drops for monsters that can revive or come back. */
-    if (is_zombie(ptr) || is_troll(ptr)
-        || ptr == &mons[PM_PHOENIX])
+    if (ptr->geno & G_UNIQ)
         return FALSE;
 
     if (chance < 2)
