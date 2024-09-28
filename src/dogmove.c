@@ -1551,7 +1551,7 @@ acceptable_pet_target(
             || mtmp2->data->msound == MS_GUARDIAN || mtmp2->data->msound == MS_LEADER)
                     && mtmp2->mpeaceful && !grudge && !Conflict;
 
-    boolean vs_boomer = (attacktype(mtmp2->data, AT_BOOM)
+    boolean vs_boomer = (attacktype(mtmp2->data, AT_BOOM) && !mtmp2->mcan
             && distu(mtmp2->mx, mtmp2->my) < 3);
 
     return !(scared || bad_eye || vs_passive || passive_kill
