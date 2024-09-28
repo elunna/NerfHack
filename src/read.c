@@ -1913,7 +1913,10 @@ seffect_light(struct obj **sobjp)
                 mon = makemon(&mons[pm], u.ux, u.uy,
                               MM_EDOG | NO_MINVENT | MM_NOMSG);
                 if (mon) {
-                    initedog(mon);
+                    if (Role_if(PM_CARTOMANCER))
+                        mon->mpeaceful = 1;
+                    else
+                        initedog(mon);
                     mon->msleeping = 0;
                     mon->mcan = TRUE;
                     if (canspotmon(mon))
@@ -1933,7 +1936,7 @@ staticfn void
 seffect_cloning(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
-    struct obj *otmp, *otmp2, *card;
+    struct obj *otmp, *otmp2;
     struct monst *mtmp;
     int otyp = sobj->otyp, otyp2;
     boolean sblessed = sobj->blessed;
