@@ -492,6 +492,7 @@ gain_guardian_angel(void)
 {
     struct monst *mtmp;
     struct obj *otmp;
+    struct obj *card;
     coord mm;
 
     Hear_again(); /* attempt to cure any deafness now (divine
@@ -512,6 +513,17 @@ gain_guardian_angel(void)
             You_feel("a soft voice:");
         SetVoice((struct monst *) 0, 0, 80, voice_deity);
         verbalize("Thou hast been worthy of me!");
+
+        /* Still no permapets for cartomancer! */
+        if (Role_if(PM_CARTOMANCER)) {
+            card = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+            card->corpsenm = PM_ARCHON;
+            bless(card);
+            (void) hold_another_object(card, "You drop %s!",
+                                    doname(card), (const char *) 0);
+            return;
+        }
+
         mm.x = u.ux;
         mm.y = u.uy;
         if (enexto(&mm, mm.x, mm.y, &mons[PM_ANGEL])
