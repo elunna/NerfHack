@@ -499,15 +499,16 @@ static const struct def_skill Skill_S[] = {
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_T[] = {
-    { P_DAGGER, P_EXPERT },
-    { P_KNIFE, P_SKILLED },
+    /* "Jack of all trades, master of none" */
+    { P_DAGGER, P_BASIC },
+    { P_KNIFE, P_BASIC },
     { P_AXE, P_BASIC },
     { P_PICK_AXE, P_BASIC },
-    { P_SHORT_SWORD, P_EXPERT },
+    { P_SHORT_SWORD, P_BASIC },
     { P_BROAD_SWORD, P_BASIC },
     { P_LONG_SWORD, P_BASIC },
     { P_TWO_HANDED_SWORD, P_BASIC },
-    { P_SABER, P_SKILLED },
+    { P_SABER, P_BASIC },
     { P_MACE, P_BASIC },
     { P_MORNING_STAR, P_BASIC },
     { P_FLAIL, P_BASIC },
@@ -524,13 +525,13 @@ static const struct def_skill Skill_T[] = {
     { P_SHURIKEN, P_BASIC },
     { P_BOOMERANG, P_BASIC },
     { P_WHIP, P_BASIC },
-    { P_UNICORN_HORN, P_SKILLED },
+    { P_UNICORN_HORN, P_BASIC },
     { P_DIVINATION_SPELL, P_BASIC },
     { P_ENCHANTMENT_SPELL, P_BASIC },
-    { P_ESCAPE_SPELL, P_SKILLED },
+    { P_ESCAPE_SPELL, P_BASIC },
     { P_RIDING, P_BASIC },
-    { P_TWO_WEAPON_COMBAT, P_SKILLED },
-    { P_BARE_HANDED_COMBAT, P_SKILLED },
+    { P_TWO_WEAPON_COMBAT, P_BASIC },
+    { P_BARE_HANDED_COMBAT, P_BASIC },
     { P_SHIELD, P_BASIC },
     { P_NONE, 0 }
 };
