@@ -123,6 +123,9 @@ sanity_check_single_mon(
         if (mtmp->mberserk && mtmp->mflee)
             impossible("berserking %s is fleeing (%s)",
                        pmname(mptr, Mgender(mtmp)), msg);
+         if (Role_if(PM_CARTOMANCER) && !mtmp->msummoned && mtmp->mtame)
+            impossible("cartomancer has non-msummoned tame %s (%s)",
+                       pmname(mptr, Mgender(mtmp)), msg);
     }
     if (mtmp->isshk && !has_eshk(mtmp))
         impossible("shk without eshk (%s)", msg);
