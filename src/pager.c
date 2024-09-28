@@ -451,6 +451,8 @@ look_at_monster(
         Strcat(buf, ", diseased");
     if (mtmp->mreflecttime)
         Strcat(buf, ", reflecting");
+    if (mtmp->msummoned)
+        Strcat(buf, ", sparkling");
 
     if (mtmp->mleashed)
         Strcat(buf, ", leashed to you");
