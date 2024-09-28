@@ -2255,8 +2255,8 @@ trapeffect_cold_trap(
                 trapkilled = TRUE;
             } else {
                 mtmp->mhpmax -= rn2(dmg + 1);
-                assert(mtmp->mhpmax >= mtmp->mhp); /* mon->mhpmax > 1 */
-                assert(mtmp->mhpmax > 0); /* mon->mhpmax > 1 */
+                if (mtmp->mhp < mtmp->mhpmax)
+                    mtmp->mhp = mtmp->mhpmax;
             }
         }
         if (rn2(3)) {
