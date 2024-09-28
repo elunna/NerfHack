@@ -2791,4 +2791,23 @@ mk_moncard(void)
     return i;
 }
 
+/* otmp is the object we'll use to base the BUC off of */
+void
+get_particular_moncard(int mndx, struct obj *otmp)
+{
+    struct obj *card;
+    card = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+    card->corpsenm = mndx;
+    if (otmp) {
+        card->blessed = otmp->blessed;
+        card->cursed = otmp->cursed;
+    } else {
+        blessorcurse(card, 4); /* Same as figurines */
+    }
+
+    (void) hold_another_object(card, "You drop %s!",
+                        doname(card), (const char *) 0);
+    return;
+}
+
 /*makemon.c*/

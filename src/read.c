@@ -1952,14 +1952,9 @@ seffect_cloning(struct obj **sobjp)
         }
         int mndx = monsndx(gy.youmonst.data);
 
-         /* No permapets for cartomancers */
+        /* No permapets for cartomancers */
         if (Role_if(PM_CARTOMANCER)) {
-            card = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
-            card->corpsenm = mndx;
-            card->blessed = sblessed;
-            card->cursed = scursed;
-            (void) hold_another_object(card, "You drop %s!",
-                                    doname(card), (const char *) 0);
+            get_particular_moncard(mndx, sobj);
             return;
         }
 

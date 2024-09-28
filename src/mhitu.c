@@ -3084,13 +3084,20 @@ cloneu(void)
         return (struct monst *) 0;
     if (svm.mvitals[mndx].mvflags & G_EXTINCT)
         return (struct monst *) 0;
+
     mon = makemon(gy.youmonst.data, u.ux, u.uy,
                   NO_MINVENT | MM_EDOG | MM_NOMSG);
     if (!mon)
         return NULL;
     mon->mcloned = 1;
     mon = christen_monst(mon, svp.plname);
-    initedog(mon);
+
+    /* No permapets for cartomancers */
+    if (Role_if(PM_CARTOMANCER)) {
+        mon->mpeaceful = 1;
+    } else {
+        initedog(mon);
+    }
     mon->m_lev = gy.youmonst.data->mlevel;
     mon->mhpmax = u.mhmax;
     mon->mhp = u.mh / 2;
