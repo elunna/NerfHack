@@ -1933,11 +1933,9 @@ staticfn void
 seffect_cloning(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
-    struct obj *otmp;
-    struct obj *otmp2;
+    struct obj *otmp, *otmp2, *card;
     struct monst *mtmp;
-    int otyp = sobj->otyp;
-    int otyp2;
+    int otyp = sobj->otyp, otyp2;
     boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
@@ -1952,11 +1950,22 @@ seffect_cloning(struct obj **sobjp)
         } else {
             You("realize that you have been a clone all along!");
         }
+        int mndx = monsndx(gy.youmonst.data);
+
+         /* No permapets for cartomancers */
+        if (Role_if(PM_CARTOMANCER)) {
+            card = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+            card->corpsenm = mndx;
+            card->blessed = sblessed;
+            card->cursed = scursed;
+            (void) hold_another_object(card, "You drop %s!",
+                                    doname(card), (const char *) 0);
+            return;
+        }
+
         if (Upolyd)
             mtmp = cloneu();
         else {
-            int mndx = monsndx(gy.youmonst.data);
-
             if (svm.mvitals[mndx].mvflags & G_EXTINCT) {
                 You("momentarily feel like your kind has no future.");
                 return;
@@ -3615,7 +3624,7 @@ create_particular_parse(
         bufp += 8;
         d->makehostile = TRUE;
     }
-    
+
     if (!strncmpi(bufp, "summoned ", 9)) {
         bufp += 9;
         d->makesummon = TRUE;
