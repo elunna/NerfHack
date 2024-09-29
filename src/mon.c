@@ -6975,6 +6975,7 @@ card_drop(struct monst *mon)
     struct permonst *ptr = mon->data;
     int difficulty = level_difficulty() * 2 + u.ulevel - 2;
     int chance = (difficulty / 20) + 1;
+    int dice;
 
     /* Prevent drops in impossible places
        (fuzzer once picked up a card dropped by a guard at (0, 0)) */
@@ -6994,12 +6995,13 @@ card_drop(struct monst *mon)
         || ptr == &mons[PM_PHOENIX])
         return FALSE;
 
+    /* Unique monsters always drop their own cards */
     if (ptr->geno & G_UNIQ) {
         otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
         otmp->corpsenm = mon->mnum;
         goto mkdrop;
     }
-
+    
     if (chance < 2)
         chance = 2;
     if (chance > 10)
@@ -7013,8 +7015,8 @@ card_drop(struct monst *mon)
         return FALSE;
     }
 
-
-    switch (rnd(20)) {
+    dice = extra_nasty(ptr) ? 20 : rnd(20);
+    switch (dice) {
     case 1:
     case 2:
     case 3: /* Wand zap card. */
@@ -7029,10 +7031,13 @@ card_drop(struct monst *mon)
         otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
 
         /* Every once in a while, drop a strong monster card. This should
-        * keep things more interesting when slaying hordes of weenies.
-        * The odds come roughly from old MtG booster packs having 1 rare.
-        */
-        if (!rn2(3)) {
+         * keep things more interesting when slaying hordes of weenies.
+         * The odds come roughly from old MtG booster packs having 1 rare.
+         * Nasty monsters always drop their own cards.
+         */
+        if (extra_nasty(ptr)) {
+            otmp->corpsenm = monsndx(ptr);
+        } else if (!rn2(3) ) {
             int min_lev = 3;
             /* Try to restrain overly powerful drops, but allow them once in a while. */
             int max_lev = 5 + u.ulevel * (!rn2(10) ? 2 : 1);
