@@ -486,7 +486,8 @@ quest_talk(struct monst *mtmp)
     }
     switch (mtmp->data->msound) {
     case MS_NEMESIS:
-        nemesis_speaks();
+        if (!mtmp->mpeaceful)
+            nemesis_speaks();
         break;
     case MS_DJINNI:
         prisoner_speaks(mtmp);

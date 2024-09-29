@@ -6984,12 +6984,21 @@ card_drop(struct monst *mon)
     /* Prevent farmable card-drops. */
     if (mon->msummoned || mon->mrevived || mon->mcloned || mon->mcan
         || mon->data->mlet == S_KOP
+        /* Wiz and riders can come back infinitely */
+        || mon->iswiz || is_rider(mon->data)
+        /* Avoid mon w/ special structure */
+        || has_egd(mon)  || has_epri(mon)
+        || has_eshk(mon) || has_emin(mon)
+        || ptr == &mons[PM_LONG_WORM_TAIL]
          /* No potential for a unique card. */
         || ptr == &mons[PM_PHOENIX])
         return FALSE;
 
-    if (ptr->geno & G_UNIQ)
-        return FALSE;
+    if (ptr->geno & G_UNIQ) {
+        otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+        otmp->corpsenm = mon->mnum;
+        goto mkdrop;
+    }
 
     if (chance < 2)
         chance = 2;
@@ -7003,6 +7012,7 @@ card_drop(struct monst *mon)
     } if (rn2(chance)) {
         return FALSE;
     }
+
 
     switch (rnd(20)) {
     case 1:
@@ -7051,6 +7061,8 @@ card_drop(struct monst *mon)
         }
         break;
     }
+
+mkdrop:
 	if (otmp) {
 	    place_object(otmp, mon->mx, mon->my);
 	    newsym(mon->mx, mon->my);

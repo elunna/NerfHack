@@ -795,7 +795,8 @@ dochug(struct monst *mtmp)
     if (mdat == &mons[PM_NAZGUL] || mdat == &mons[PM_BLACK_DRAGON]
         || mdat == &mons[PM_T_REX])
         m_respond(mtmp);
-    if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my))
+    if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my)
+        && !mtmp->mpeaceful)
         m_respond(mtmp);
     if (DEADMONSTER(mtmp))
         return 1; /* m_respond gaze can kill medusa */
