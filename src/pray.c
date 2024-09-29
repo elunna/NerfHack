@@ -1984,7 +1984,59 @@ bestow_artifact(void)
     struct rm *lev = &levl[u.ux][u.uy];
     int nchance = u.ulevel + 12;
     int arti_gift_odds = 8 + (2 * u.ugifts);
+    int reg_gift_odds = ((u.ualign.abuse == 0) ? 5 : 6) + (2 * u.ugifts);
 
+    /* Cartomancers get the luck of the draw here...
+     * We purposely check for card drop first.
+     * Based on the SpliceHack minion code adapted from SLASH'EM */
+    if (Role_if(PM_CARTOMANCER) && u.ulevel > 4
+        && u.uluck >= 0 && !rn2(reg_gift_odds)) {
+        struct obj *otmp;
+        char buf[BUFSZ];
+        int pm;
+
+        switch (u.ualign.type) {
+        case A_LAWFUL:
+            pm = lminion();
+            break;
+        case A_NEUTRAL:
+            pm = PM_AIR_ELEMENTAL + rn2(PM_WATER_ELEMENTAL - PM_AIR_ELEMENTAL);
+            break;
+        case A_CHAOTIC:
+        case A_NONE:
+            pm = ndemon(u.ualign.type);
+            break;
+        default:
+            impossible("unaligned player?");
+            pm = ndemon(A_NONE);
+            break;
+        }
+
+        otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
+        otmp->corpsenm = pm;
+        bless(otmp);
+        Strcpy(buf, (Hallucination ? "a doodad"
+                        : Blind ? "an object"
+                        : ansimpleoname(otmp)));
+        if (!Blind)
+            Sprintf(eos(buf), " named %s",
+                    bare_artifactname(otmp));
+        at_your_feet(upstart(buf));
+        dropy(otmp);
+        godvoice(u.ualign.type, "Use my gift wisely!");
+        livelog_printf(LL_DIVINEGIFT,
+                    "was bestowed with %s by %s",
+                    xname(otmp),
+                    align_gname(u.ualign.type));
+        /* These don't crack altars */
+        u.ugifts++;
+        u.ublesscnt = rnz(300 + (50 * u.ugifts));
+        u.lastprayed = svm.moves;
+        u.lastprayresult = PRAY_GIFT;
+        u.reconciled = REC_NONE;
+        exercise(A_WIS, TRUE);
+        return TRUE;
+    }
     /* you were already in pretty good standing
     *
     * The player can gain an artifact;
@@ -2005,59 +2057,63 @@ bestow_artifact(void)
     * level 17: 80% chance
     * level 18: 90% chance
     * level 20 or greater: 100% chance
-
     */
-    if (u.ulevel > 3 && u.uluck >= 0
-         && rn2(10) < (int) ((nchance * nchance) / 100)
-         && !rn2(arti_gift_odds)) {
-        struct obj *otmp;
-        otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy));
-        if (otmp) {
-            char buf[BUFSZ];
+    else if (u.ulevel > 3 && u.uluck >= 0
+            && rn2(10) < (int) ((nchance * nchance) / 100)) {
+        /* If we make it past the first gauntlet - one more for glory. */
+        if (!rn2(arti_gift_odds)) {
+            struct obj *otmp;
+            otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy));
+            if (otmp) {
+                char buf[BUFSZ];
 
-            artifact_origin(otmp, ONAME_GIFT | ONAME_KNOW_ARTI);
-            if (otmp->spe < 0)
-                otmp->spe = 0;
-            if (otmp->cursed)
-                uncurse(otmp);
-            otmp->oerodeproof = TRUE;
-            Strcpy(buf, (Hallucination ? "a doodad"
-                            : Blind ? "an object"
-                            : ansimpleoname(otmp)));
-            if (!Blind)
-                Sprintf(eos(buf), " named %s",
-                        bare_artifactname(otmp));
-            at_your_feet(upstart(buf));
-            dropy(otmp);
-            godvoice(u.ualign.type, "Use my gift wisely!");
-            u.ugifts++;
-            u.ublesscnt = rnz(300 + (50 * u.ugifts));
-            u.lastprayed = svm.moves;
-            u.lastprayresult = PRAY_GIFT;
-            u.reconciled = REC_NONE;
-            exercise(A_WIS, TRUE);
-            livelog_printf (LL_DIVINEGIFT | LL_ARTIFACT,
-                            "was bestowed with %s by %s",
-                            artiname(otmp->oartifact),
-                            align_gname(u.ualign.type));
-            /* make sure we can use this weapon */
-            unrestrict_weapon_skill(weapon_type(otmp));
-            if (!Hallucination && !Blind) {
-                otmp->dknown = 1;
-                makeknown(otmp->otyp);
-                discover_artifact(otmp->oartifact);
+                artifact_origin(otmp, ONAME_GIFT | ONAME_KNOW_ARTI);
+                if (otmp->spe < 0)
+                    otmp->spe = 0;
+                if (otmp->cursed)
+                    uncurse(otmp);
+                otmp->oerodeproof = TRUE;
+                Strcpy(buf, (Hallucination ? "a doodad"
+                                : Blind ? "an object"
+                                : ansimpleoname(otmp)));
+                if (!Blind)
+                    Sprintf(eos(buf), " named %s",
+                            bare_artifactname(otmp));
+                at_your_feet(upstart(buf));
+                dropy(otmp);
+                godvoice(u.ualign.type, "Use my gift wisely!");
+                u.ugifts++;
+                u.ublesscnt = rnz(300 + (50 * u.ugifts));
+                u.lastprayed = svm.moves;
+                u.lastprayresult = PRAY_GIFT;
+                u.reconciled = REC_NONE;
+                exercise(A_WIS, TRUE);
+                livelog_printf (LL_DIVINEGIFT | LL_ARTIFACT,
+                                "was bestowed with %s by %s",
+                                artiname(otmp->oartifact),
+                                align_gname(u.ualign.type));
+                /* make sure we can use this weapon */
+                unrestrict_weapon_skill(weapon_type(otmp));
+                if (!Hallucination && !Blind) {
+                    otmp->dknown = 1;
+                    makeknown(otmp->otyp);
+                    discover_artifact(otmp->oartifact);
+                }
+
+                /* If more than 2 gifts have been granted, the altar can crack. */
+                if ((u.ugifts > 2 && !rn2(2))
+                    /* If the player is already crowned, it definitely cracks. */
+                    || u.uevent.uhand_of_elbereth
+                    /* If the altar is already cracked - sorry... */
+                    || lev->cracked)
+                    crackaltar();
+                return TRUE;
             }
-
-            /* If more than 2 gifts have been granted, the altar can crack. */
-            if ((u.ugifts > 2 && !rn2(2))
-                /* If the player is already crowned, it definitely cracks. */
-                || u.uevent.uhand_of_elbereth
-                /* If the altar is already cracked - sorry... */
-                || lev->cracked)
-                crackaltar();
-            return TRUE;
         }
     }
+    
+
+
     return FALSE;
 }
 
