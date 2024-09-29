@@ -39,6 +39,7 @@ staticfn void pacify_guard(struct monst *);
 staticfn void unpoly_monster(struct monst *);
 staticfn int cham_depth_appropriate(struct monst *);
 staticfn boolean card_drop(struct monst *);
+staticfn void msummon_dies(struct monst *);
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -1512,21 +1513,7 @@ m_calcdistress(struct monst *mtmp)
     }
 
     if (mtmp->msummoned && mtmp->msummoned == 1) {
-        if (canseemon(mtmp)) {
-            if (Hallucination)
-                pline("%s %s", Monnam(mtmp), rn2(2)
-                    ? "folds in on itself!"
-                    : "explodes into multicolored polygons!");
-            else
-                pline("%s %s", Monnam(mtmp), rn2(2)
-                    ? "winks out of existence."
-                    : "vanishes in a puff of smoke.");
-        } else if (!Deaf) {
-            You_hear("a%s %s.",
-                distu(mtmp->mx, mtmp->my) > (8*8)
-                    ? " distant" : "",
-                Hallucination ? "wink" : "pop");
-        }
+        msummon_dies(mtmp);
         for (obj = mtmp->minvent; obj; obj = otmp) {
             otmp = obj->nobj;
             if (mtmp->mx)
@@ -3538,11 +3525,19 @@ corpse_chance(
     struct permonst *mdat = mon->data;
     int i, tmp, x, y;
 
+    /* Spell-beings can't leave corpses or cards  */
+    if (mon->msummoned) {
+        msummon_dies(mon);
+        return FALSE;
+    }
+
     if (mdat == &mons[PM_VLAD_THE_IMPALER] || mdat->mlet == S_LICH
         || mdat == &mons[PM_ALHOON]) {
         if (cansee(mon->mx, mon->my) && !was_swallowed)
             pline_mon(mon, "%s body crumbles into dust.",
                       s_suffix(Monnam(mon)));
+        if (Role_if(PM_CARTOMANCER))
+            card_drop(mon);
         return FALSE;
     }
 
@@ -3590,6 +3585,8 @@ corpse_chance(
             }
 
             mon_explodes(mon, &mdat->mattk[i]);
+            if (Role_if(PM_CARTOMANCER))
+                card_drop(mon);
             return FALSE;
         }
     }
@@ -3613,14 +3610,6 @@ corpse_chance(
         }
     }
 
-    /* Spell-beings can't leave corpses or cards  */
-    if (mon->msummoned)
-        return FALSE;
-
-    /* Unicorn are handled a little differently. Because their horns
-     * decrease with unicorn kills, we'll handle the drop when the horn
-     * crumbles. Otherwise, the player can get screwed out of their first 
-     * guaranteed horn and we don't want that... */
     if (Role_if(PM_CARTOMANCER) && !is_unicorn(mon->data) && card_drop(mon))
         return FALSE;
 
@@ -6972,6 +6961,11 @@ cham_depth_appropriate(struct monst *mon)
  * certain point. The tradeoff is that as the player levels up or
  * goes deeper, the strength of the cards also increases.
  * Return TRUE if a card was dropped, otherwise FALSE.
+ *
+ * Unicorn are handled a little differently. Because their horns
+ * decrease with unicorn kills, we'll handle the drop when the horn
+ * crumbles. Otherwise, the player can get screwed out of their first 
+ * guaranteed horn and we don't want that...
  */
 staticfn boolean
 card_drop(struct monst *mon)
@@ -7024,29 +7018,29 @@ card_drop(struct monst *mon)
         otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
 
         /* Every once in a while, drop a strong monster card. This should
-         * keep things more interesting when slaying hordes of weenies.
-         * The odds come roughly from old MtG booster packs having 1 rare.
-         */
+        * keep things more interesting when slaying hordes of weenies.
+        * The odds come roughly from old MtG booster packs having 1 rare.
+        */
         if (!rn2(3)) {
             int min_lev = 3;
             /* Try to restrain overly powerful drops, but allow them once in a while. */
             int max_lev = 5 + u.ulevel * (!rn2(10) ? 2 : 1);
             otmp->corpsenm = rn2(10) ? rndmonnum_adj(min_lev, max_lev)
-                                     /* Really random, can include NOGEN. */
-                                     : mk_moncard();
+                                    /* Really random, can include NOGEN. */
+                                    : mk_moncard();
 
         } else {
             /* For very weak monsters (base lvl 0 or 1), skip most summon drops.
-             * Otherwise the player ends up with loads of crap cards in
-             * their inventory they'll never play. We don't want to check this above
-             * because the chance of zaps, ammo, or rare cards is still nice. */
+            * Otherwise the player ends up with loads of crap cards in
+            * their inventory they'll never play. We don't want to check this above
+            * because the chance of zaps, ammo, or rare cards is still nice. */
             if (ptr->mlevel < 3 && rn2(10)) {
                 delobj(otmp);
                 return FALSE;
             } else {
                 /* Most of the time we get here, we'll grant a sphere card -
-                 * these are more fun to play and they act as a callback to the
-                 * summon sphere spells in SLASH'EM. */
+                * these are more fun to play and they act as a callback to the
+                * summon sphere spells in SLASH'EM. */
                 if (rn2(2))
                     otmp->corpsenm = PM_FREEZING_SPHERE
                         + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE + 1);
@@ -7067,6 +7061,26 @@ card_drop(struct monst *mon)
 	}
 
     return FALSE;
+}
+
+staticfn void
+msummon_dies(struct monst *mtmp)
+{
+    if (canseemon(mtmp)) {
+        if (Hallucination)
+            pline("%s %s", Monnam(mtmp), rn2(2)
+                ? "folds in on itself!"
+                : "explodes into multicolored polygons!");
+        else
+            pline("%s %s", Monnam(mtmp), rn2(2)
+                ? "winks out of existence."
+                : "vanishes in a puff of smoke.");
+    } else if (!Deaf) {
+        You_hear("a%s %s.",
+            distu(mtmp->mx, mtmp->my) > (8*8)
+                ? " distant" : "",
+            Hallucination ? "wink" : "pop");
+    }
 }
 
 /*mon.c*/
