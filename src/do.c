@@ -2346,10 +2346,13 @@ void
 moldy_corpse(anything *arg, long timeout UNUSED)
 {
     struct obj* body = arg->a_obj;
+    struct permonst* newpm = mkclass(S_FUNGUS, 0);
     char* old_oname = (has_oname(body) ? ONAME(body) : NULL);
     int oldtyp = body->corpsenm;
     int oldquan = body->quan;
-    struct permonst* newpm = mkclass(S_FUNGUS, 0);
+
+    if (obj_has_timer(body, ROT_CORPSE))
+        return;
 
     /* Acidic corpses and petrifying corpses only grow acidic fungi. */
     if (acidic(&mons[oldtyp]) || touch_petrifies(&mons[oldtyp])) {
