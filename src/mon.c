@@ -6983,6 +6983,7 @@ card_drop(struct monst *mon)
 
     /* Prevent farmable card-drops. */
     if (mon->msummoned || mon->mrevived || mon->mcloned || mon->mcan
+        || mon->data->mlet == S_KOP
          /* No potential for a unique card. */
         || ptr == &mons[PM_PHOENIX])
         return FALSE;
