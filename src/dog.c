@@ -170,6 +170,8 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
     if (!mtmp)
         return (struct monst *) 0;
 
+    mtmp->mrabid = 0; /* Just in case */
+
     if (is_pool(mtmp->mx, mtmp->my) && minliquid(mtmp))
         return (struct monst *) 0;
 
