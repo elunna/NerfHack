@@ -7708,6 +7708,10 @@ sokoban_guilt(void)
     if (Sokoban && !completed_soko) {
         u.uconduct.sokocheat++;
         change_luck(-1);
+        if (u.ualign.type == A_CHAOTIC)
+            You_feel("clever.");
+        else
+            You_feel("shame.");
         /*
          * TODO:
          *  Issue some feedback so that player can learn that whatever
