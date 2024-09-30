@@ -2278,6 +2278,11 @@ thitmonst(
                             explode(gb.bhitpos.x, gb.bhitpos.y,
                                 ZT_SPELL(ZT_ACID), d(4, 6), WEAPON_CLASS, EXPL_WET);
                             break;
+                        case PM_GAS_SPORE:
+                        case PM_VOLATILE_MUSHROOM:
+                            explode(gb.bhitpos.x, gb.bhitpos.y,
+                                -((AD_PHYS - 1) + 20), d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
+                            break;
                     }
                 } else
                     use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
