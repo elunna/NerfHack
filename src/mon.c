@@ -6982,18 +6982,18 @@ card_drop(struct monst *mon)
     if (!isok(mon->mx, mon->my))
         return FALSE;
 
-    /* Prevent farmable card-drops. */
-    if (mon->msummoned || mon->mrevived || mon->mcloned || mon->mcan
-        || mon->data->mlet == S_KOP
-        /* Wiz and riders can come back infinitely */
-        || mon->iswiz || is_rider(mon->data)
+    if (invalid_spellbeing(mon->data)
+        || mon->msummoned   /* Prevent farming */
+        || mon->mrevived    /* Prevent farming */
+        || mon->mcloned     /* Prevent farming */
+        || mon->iswiz       /* Prevent farming */
+        || mon->mcan        /* Cancelled */
         /* Avoid mon w/ special structure */
-        || has_egd(mon)  || has_epri(mon)
-        || has_eshk(mon) || has_emin(mon)
-        || ptr == &mons[PM_LONG_WORM_TAIL]
-         /* No potential for a unique card. */
-        || ptr == &mons[PM_PHOENIX])
+        || has_egd(mon)     || has_epri(mon)
+        || has_eshk(mon)    || has_emin(mon)
+        )
         return FALSE;
+    /* Prevent farmable card-drops. */
 
     /* Unique monsters always drop their own cards */
     if (ptr->geno & G_UNIQ) {
@@ -7001,7 +7001,7 @@ card_drop(struct monst *mon)
         otmp->corpsenm = mon->mnum;
         goto mkdrop;
     }
-    
+
     if (chance < 2)
         chance = 2;
     if (chance > 10)

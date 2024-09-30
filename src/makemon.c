@@ -2775,8 +2775,7 @@ mk_moncard(void)
 {
     int i;
 
-    /* Avoid named monsters - until such time as we find it's
-     * possible to do without breaking everything.
+    /* Avoid named monsters.
      * G_UNIQ includes a couple non-named monsters like high
      * priest and long worm tail.
      * Allow NOGEN monsters because there's a lot of fun stuff
@@ -2784,9 +2783,9 @@ mk_moncard(void)
      */
     do {
         i = rn2(NUMMONS);
-    } while ((type_is_pname(&mons[i])
-        || (mons[i].geno & G_UNIQ))
-        || is_placeholder(&mons[i]));
+    } while (invalid_spellbeing(&mons[i])
+        || type_is_pname(&mons[i])
+        || (mons[i].geno & G_UNIQ));
 
     return i;
 }
@@ -2796,6 +2795,11 @@ void
 get_particular_moncard(int mndx, struct obj *otmp)
 {
     struct obj *card;
+
+    if (invalid_spellbeing(&mons[mndx])) {
+        pline1(nothing_happens);
+        return;
+    }
     card = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
     card->corpsenm = mndx;
     if (otmp) {

@@ -87,6 +87,16 @@
     || (ptr)->mlet == S_HUMAN) \
     && !cannot_be_rabid(ptr))
 
+#define invalid_spellbeing(ptr) \
+    (is_rider(ptr) \
+    || is_placeholder(ptr) \
+    /* Watchmen can get angry from certain actions */ \
+    || (ptr) == &mons[PM_WATCHMAN] \
+    || (ptr) == &mons[PM_WATCH_CAPTAIN] \
+    || (ptr) == &mons[PM_LONG_WORM_TAIL] \
+    || (ptr) == &mons[PM_PHOENIX] /* Phoenixes ressurect */ \
+    || (ptr)->mlet == S_KOP)  /* Kops can be farmed */
+
 #define cannot_be_rabid(ptr) \
     (is_undead(ptr) \
     || nonliving(ptr) \
