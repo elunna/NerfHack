@@ -928,7 +928,9 @@ test_move(
         if (Blind && mode == DO_MOVE)
             feel_location(x, y);
         if (Passes_walls && may_passwall(x, y)) {
-            ; /* do nothing */
+            if (In_sokoban(&u.uz))
+                sokoban_guilt();
+            /* otherwise, do nothing */
         } else if (Underwater) {
             /* note: if water_friction() changes direction due to
                turbulence, new target destination will always be water,

@@ -7695,7 +7695,17 @@ sink_into_lava(void)
 void
 sokoban_guilt(void)
 {
-    if (Sokoban && svc.context.achieveo.soko_prize_oid) {
+    boolean completed_soko = FALSE;
+    int i;
+    /* TODO: Find a better way to check this? */
+    for (i = 0; i < count_achievements(); ++i) {
+        if (abs(u.uachieved[i]) == ACH_SOKO_PRIZE) {
+            completed_soko = TRUE;
+            break;
+        }
+    }
+
+    if (Sokoban && !completed_soko) {
         u.uconduct.sokocheat++;
         change_luck(-1);
         /*
