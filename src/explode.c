@@ -321,6 +321,8 @@ explode(
     if (type == PHYS_EXPL_TYPE) {
         /* currently only gas spores */
         adtyp = AD_PHYS;
+        if (olet == WEAPON_CLASS)
+            str = "explosion";
     } else {
         /* If str is e.g. "flaming sphere's explosion" from above, we want to
          * still assign adtyp appropriately, but not replace str. */

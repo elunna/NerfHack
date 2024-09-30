@@ -2281,7 +2281,7 @@ thitmonst(
                         case PM_GAS_SPORE:
                         case PM_VOLATILE_MUSHROOM:
                             explode(gb.bhitpos.x, gb.bhitpos.y,
-                                -((AD_PHYS - 1) + 20), d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
+                                PHYS_EXPL_TYPE, d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
                             break;
                     }
                 } else
