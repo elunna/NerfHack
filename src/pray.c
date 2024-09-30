@@ -1984,13 +1984,12 @@ bestow_artifact(void)
     struct rm *lev = &levl[u.ux][u.uy];
     int nchance = u.ulevel + 12;
     int arti_gift_odds = 8 + (2 * u.ugifts);
-    int reg_gift_odds = ((u.ualign.abuse == 0) ? 5 : 6) + (2 * u.ugifts);
 
     /* Cartomancers get the luck of the draw here...
      * We purposely check for card drop first.
      * Based on the SpliceHack minion code adapted from SLASH'EM */
     if (Role_if(PM_CARTOMANCER) && u.ulevel > 4
-        && u.uluck >= 0 && !rn2(reg_gift_odds)) {
+        && u.uluck >= 0 && !rnl(30 + u.ulevel)) {
         struct obj *otmp;
         char buf[BUFSZ];
         int pm;
@@ -2028,8 +2027,7 @@ bestow_artifact(void)
                     "was bestowed with %s by %s",
                     xname(otmp),
                     align_gname(u.ualign.type));
-        /* These don't crack altars */
-        u.ugifts++;
+        /* These don't crack altars, don't count as gifts  */
         u.ublesscnt = rnz(300 + (50 * u.ugifts));
         u.lastprayed = svm.moves;
         u.lastprayresult = PRAY_GIFT;
