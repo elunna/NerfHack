@@ -1504,6 +1504,12 @@ trapmove(
             newsym(u.ux, u.uy);
             break;
         }
+        if (uarmc && uarmc->otyp == OILSKIN_CLOAK) {
+            /* escape trap but don't move and destroy it */
+            u.utrap = 0; /* caller will call reset_utrap() */
+            You("slip out of the web!");
+            return TRUE;
+        }
         if (--u.utrap) {
             if (flags.verbose) {
                 predicament = "stuck to the web";
