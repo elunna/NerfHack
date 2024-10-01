@@ -1833,6 +1833,8 @@ bless(struct obj *otmp)
         old_light = arti_light_radius(otmp);
     otmp->cursed = 0;
     otmp->blessed = 1;
+    if (otmp->oclass == ARMOR_CLASS && (otmp->owornmask & W_ARMOR))
+        otmp->owt = weight(otmp);
     if (carried(otmp) && confers_luck(otmp))
         set_moreluck();
     else if (otmp->otyp == HEALTHSTONE)
@@ -1884,6 +1886,8 @@ curse(struct obj *otmp)
        with cursed alternate weapon */
     if (otmp == uswapwep && u.twoweap)
         drop_uswapwep();
+    if (otmp->oclass == ARMOR_CLASS && (otmp->owornmask & W_ARMOR))
+        otmp->owt = weight(otmp);
     /* some cursed items need immediate updating */
     if (carried(otmp) && confers_luck(otmp)) {
         set_moreluck();
@@ -1913,6 +1917,8 @@ uncurse(struct obj *otmp)
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);
     otmp->cursed = 0;
+    if (otmp->oclass == ARMOR_CLASS && (otmp->owornmask & W_ARMOR))
+        otmp->owt = weight(otmp);
     if (carried(otmp) && confers_luck(otmp))
         set_moreluck();
     else if (otmp->otyp == HEALTHSTONE)
