@@ -4632,6 +4632,10 @@ mhitm_ad_calm(struct monst *magr, struct attack *mattk,
 
     if (magr == &gy.youmonst) {
         /* uhitm */
+        if (Rabid) {
+            mhitm_ad_phys(magr, mattk, mdef, mhm);
+            return;
+        }
         if (!no_effect && !mdef->mtame) {
             if (mdef->mberserk) {
                 calm_berserker(mdef);
@@ -4646,11 +4650,19 @@ mhitm_ad_calm(struct monst *magr, struct attack *mattk,
             return;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
+        if (magr->mrabid) {
+            mhitm_ad_phys(magr, mattk, mdef, mhm);
+            return;
+        }
         hitmsg(magr, mattk);
         You_feel("much calmer.");
         return;
     } else {
         /* mhitm */
+        if (magr->mrabid) {
+            mhitm_ad_phys(magr, mattk, mdef, mhm);
+            return;
+        }
         if (!no_effect && (magr->mtame || mdef->mtame)) {
             if (mdef->mberserk) {
                 calm_berserker(mdef);
