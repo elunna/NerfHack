@@ -205,7 +205,7 @@ use_towel(struct obj *obj)
         HFumbling = 0;
         if (uarmf)
             uarmf->greased = 0;
-        if (rn2(3) && !obj->greased) {
+        if (!rn2(5) && !obj->greased) {
             Your("towel gets covered in grease!");
             obj->greased = 1;
         }
@@ -237,7 +237,7 @@ use_towel(struct obj *obj)
     }
     You("remove the grime from %s", yobjnam(otmp, (char *) 0));
     otmp->greased = 0;
-    if (!rn2(2)) {
+    if (!rn2(5)) {
         Your("towel gets covered in grease!");
         obj->greased = 1;
     }
