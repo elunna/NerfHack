@@ -3501,12 +3501,12 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                         || mdef->msummoned;
 
     if (youdefend ? (!youattack && Antimagic)
-                  : resist(mdef, obj->oclass, 0, NOTELL))
+                  : (!vulnerable && resist(mdef, obj->oclass, 0, NOTELL)))
         return FALSE; /* resisted cancellation */
 
     boolean resisted = (youdefend && Antimagic)
-                       || (!youdefend
-                           && resist(mdef, obj->oclass, 0, NOTELL));
+                       || (!youdefend && !vulnerable
+                       && resist(mdef, obj->oclass, 0, NOTELL));
 
     if (obj->otyp == WAN_CANCELLATION)
         makeknown(obj->otyp);
