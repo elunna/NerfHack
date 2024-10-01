@@ -86,12 +86,10 @@ des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
 
-des.door("closed", 02, 01);
--- des.door("locked", 09, 01);
-des.door("closed", 02, 03);
+des.door("locked", 02, 01);
+des.door("locked", 02, 03);
+des.door("locked", 02, 05);
 des.door("locked", 11, 03);
-des.door("closed", 02, 05);
---des.door("locked", 09, 05);
 des.door("locked", 11, 13);
 
 des.region({ region={03,01,10,05}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
