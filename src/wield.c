@@ -380,6 +380,9 @@ wield_ok(struct obj *obj)
     if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
         return GETOBJ_SUGGEST;
 
+    if (Role_if(PM_CARTOMANCER) && obj->otyp == CRYSTAL_BALL)
+        return GETOBJ_SUGGEST;
+
     return GETOBJ_DOWNPLAY;
 }
 
