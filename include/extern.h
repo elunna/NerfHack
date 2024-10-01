@@ -1483,6 +1483,7 @@ extern int bagotricks(struct obj *, boolean, int *);
 extern boolean propagate(int, boolean, boolean);
 extern void summon_furies(int);
 extern void mon_berserk(struct monst *);
+extern void calm_berserker(struct monst *);
 extern void mon_rabid(struct monst *, boolean);
 extern long mm_aggression(struct monst *, struct monst *);
 extern int mk_moncard(void);

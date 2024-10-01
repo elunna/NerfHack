@@ -4627,15 +4627,19 @@ mhitm_ad_calm(struct monst *magr, struct attack *mattk,
     boolean no_effect = mdef->iswiz
         || (mdef->data->mflags3 & M3_COVETOUS)
         || (mdef->data->geno & G_UNIQ)
-        || mdef->mrabid || mdef->mberserk
+        || mdef->mrabid
         || type_is_pname(mdef->data);
 
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (!no_effect && !mdef->mtame) {
-            if (canseemon(mdef))
-                pline("%s looks calmer.", Monnam(mdef));
-            mdef->mpeaceful = 1;
+            if (mdef->mberserk) {
+                calm_berserker(mdef);
+            } else {
+                if (canseemon(mdef))
+                    pline("%s looks calmer.", Monnam(mdef));
+                mdef->mpeaceful = 1;
+            }
             mdef->mtame = mhm->damage = 0;
         }
         if (mhm->done)
@@ -4648,9 +4652,13 @@ mhitm_ad_calm(struct monst *magr, struct attack *mattk,
     } else {
         /* mhitm */
         if (!no_effect && (magr->mtame || mdef->mtame)) {
-            if (gv.vis)
-                pline("%s looks calmer.", Monnam(mdef));
-            mdef->mpeaceful = 1;
+            if (mdef->mberserk) {
+                calm_berserker(mdef);
+            } else {
+                if (gv.vis)
+                    pline("%s looks calmer.", Monnam(mdef));
+                mdef->mpeaceful = 1;
+            }
             mdef->mtame = mhm->damage = 0;
         }
         if (mhm->done)

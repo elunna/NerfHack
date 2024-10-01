@@ -6818,6 +6818,17 @@ mon_berserk(struct monst *mtmp)
 }
 
 void
+calm_berserker(struct monst *mtmp)
+{
+    if (canspotmon(mtmp))
+        pline("%s calms down.", Monnam(mtmp));
+    mtmp->mpeaceful = 1;
+    /* Also heal them so they don't immediately re-berserk.*/
+    if (mtmp->mhp < (mtmp->mhpmax / 2))
+        mtmp->mhp = (mtmp->mhpmax / 2) + 1;
+}
+
+void
 mon_rabid(struct monst *mtmp, boolean noisy)
 {
     if (noattacks(mtmp->data) || !can_become_rabid(mtmp->data))
