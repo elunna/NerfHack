@@ -44,6 +44,7 @@ des.levregion({ type="stair-down", region={61,03,75,19}, region_islev=1,
 
 -- A few fountains.
 des.feature("fountain",05,11)
+des.feature("fountain",31,11)
 
 -- The masouleum
 des.region({ region={19,12, 21,14}, lit=1, type="temple", filled=1 })
