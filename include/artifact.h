@@ -28,9 +28,9 @@
 #define SPFX_HPHDAM 0x00020000L /* 1/2 physical damage (on player) in combat */
 #define SPFX_TCTRL  0x00040000L /* Teleportation Control */
 #define SPFX_LUCK   0x00080000L /* Increase Luck (like Luckstone) */
-#define SPFX_DMONS  0x00100000L /* attack bonus on one monster type */
-#define SPFX_DCLAS  0x00200000L /* attack bonus on monsters w/ symbol mtype */
-#define SPFX_DFLAG1 0x00400000L /* attack bonus on monsters w/ mflags1 flag */
+#define SPFX_FAST   0x00100000L /* Very fast speed */
+#define SPFX_PROTSC 0x00200000L /* protection vs shapechangers */
+#define SPFX_BAGGRV 0x00400000L /* blocks aggravate monster */
 #define SPFX_DFLAGH 0x00800000L /* attack bonus on monsters w/ mhflags flag */
 #define SPFX_DALIGN 0x01000000L /* attack bonus on non-aligned monsters  */
 #define SPFX_DBONUS 0x01F00000L /* attack bonus mask */

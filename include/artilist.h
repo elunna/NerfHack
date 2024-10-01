@@ -110,13 +110,12 @@ static NEARDATA struct artifact artilist[] = {
 
     /* From SLASH'EM */
     A("Quick Blade", SILVER_SHORT_SWORD,
-      SPFX_RESTR, 0, 0,
-      /* +d9 to-hit bonus handled in artifact.c:spec_abon */
+      (SPFX_RESTR | SPFX_FAST), 0, 0,
       PHYS(0, 2), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 1000L, NO_COLOR, QUICK_BLADE),
 
     A("Serenity", SILVER_SPEAR,
-      (SPFX_RESTR), 0, 0,
+      (SPFX_RESTR | SPFX_BAGGRV), 0, 0,
       PHYS(10, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 5000L, NO_COLOR, SERENITY),
 
@@ -405,7 +404,7 @@ static NEARDATA struct artifact artilist[] = {
     /* Changes: Now grants protection from shapechangers, warning vs werefoo
      * and can instakill werefoo */
     A("Werebane", SILVER_SABER,
-      (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_WERE,
+      (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN | SPFX_PROTSC), 0, MH_WERE,
       PHYS(10, 0), DFNS(AD_WERE), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 1500L, CLR_RED, WEREBANE),
 
@@ -496,7 +495,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
     /* Changes: Increased the rate of bisection from 5% to 10% */
     A("The Tsurugi of Muramasa", TSURUGI,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_BEHEAD | SPFX_LUCK
-       | SPFX_PROTECT | SPFX_NOWISH), 0, 0,
+       | SPFX_PROTECT | SPFX_FAST | SPFX_NOWISH), 0, 0,
       PHYS(10, 8), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_SAMURAI, NON_PM, 4500L, NO_COLOR, TSURUGI_OF_MURAMASA),
 

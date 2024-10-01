@@ -124,39 +124,6 @@ setuwep(struct obj *obj)
     else if (is_art(olduwep, ART_ORIGIN))
         You_feel("less in touch with your magical abilities.");
 
-    /* Werebane grants protection from shape-changers.
-     * Handled with this method because we ran out of SPFX fields. */
-    if (is_art(olduwep, ART_WEREBANE)) {
-        EProtection_from_shape_changers &= ~W_WEP;
-        restartcham();
-    }
-    if (uwep && u_wield_art(ART_WEREBANE)) {
-        EProtection_from_shape_changers |= W_WEP;
-        rescham();
-    }
-
-    /* Serenity suppresses aggravate monster. */
-    if (is_art(olduwep, ART_SERENITY))
-        BAggravate_monster &= ~W_WEP;
-    if (uwep && u_wield_art(ART_SERENITY))
-        BAggravate_monster |= W_WEP;
-
-    /* These grant speed. */
-    if (is_art(olduwep, ART_QUICK_BLADE)
-        || is_art(olduwep, ART_TSURUGI_OF_MURAMASA)) {
-        EFast &= ~W_WEP;
-        if (!Very_fast ) {
-            You_feel("yourself slow down%s.", Fast ? " a bit" : "");
-        }
-    }
-    if (uwep && (u_wield_art(ART_QUICK_BLADE)
-        || u_wield_art(ART_TSURUGI_OF_MURAMASA))) {
-        if (!Very_fast)
-            You_feel("yourself speed up%s.",
-                     HFast ? " a bit more" : "");
-        EFast |= W_WEP;
-    }
-
     /* Hated items decrease AC and affect to-hit */
     if (uwep && hates_item(&gy.youmonst, uwep->otyp)) {
         find_ac();
@@ -982,7 +949,8 @@ uwepgone(void)
             if (!Blind)
                 pline("%s shining.", Tobjnam(uwep, "stop"));
         }
-        setworn((struct obj *) 0, W_WEP);
+        /* setworn((struct obj *) 0, W_WEP); */
+        setuwep((struct obj *) 0);
         gu.unweapon = TRUE;
         update_inventory();
     }

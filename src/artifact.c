@@ -804,6 +804,12 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         else
             ETeleport_control &= ~wp_mask;
     }
+        if (spfx & SPFX_FAST) {
+        if (on)
+            EFast |= wp_mask;
+        else
+            EFast &= ~wp_mask;
+    }
     if (spfx & SPFX_WARN) {
         if (spec_m2(otmp)) {
             if (on) {
@@ -860,12 +866,27 @@ set_artifact_intrinsic(struct obj *otmp, boolean on, long wp_mask)
         else
             EReflecting &= ~wp_mask;
     }
-
     if (spfx & SPFX_PROTECT) {
         if (on)
             EProtection |= wp_mask;
         else
             EProtection &= ~wp_mask;
+    }
+    if (spfx & SPFX_PROTSC) {
+        if (on) {
+            EProtection_from_shape_changers |= wp_mask;
+            rescham();
+        } else {
+            EProtection_from_shape_changers &= ~wp_mask;
+            restartcham();
+        }
+    }
+    /* Serenity suppresses aggravate monster. */
+    if (spfx & SPFX_BAGGRV) {
+        if (on)
+            BAggravate_monster |= wp_mask;
+        else
+            BAggravate_monster &= ~wp_mask;
     }
     if (spfx & SPFX_BREATHE) {
         if (on)
@@ -1047,13 +1068,7 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
     yours = (mtmp == &gy.youmonst);
     ptr = mtmp->data;
 
-    if (weap->spfx & SPFX_DMONS) {
-        return (ptr == &mons[(int) weap->mtype]);
-    } else if (weap->spfx & SPFX_DCLAS) {
-        return (weap->mtype == (unsigned long) ptr->mlet);
-    } else if (weap->spfx & SPFX_DFLAG1) {
-        return ((ptr->mflags1 & weap->mtype) != 0L);
-    } else if (weap->spfx & SPFX_DFLAGH) {
+    if (weap->spfx & SPFX_DFLAGH) {
         return ((ptr->mhflags & weap->mtype)
                 || (yours
                     && ((!Upolyd && (gu.urace.selfmask & weap->mtype))
@@ -1700,7 +1715,7 @@ artifact_hit(
     /* Bane instakills */
     atmp = &artilist[(unsigned char) otmp->oartifact];
 
-    if (atmp->spfx & (SPFX_DFLAGH | SPFX_DCLAS)) {
+    if (atmp->spfx & (SPFX_DFLAGH)) {
         instakill = !rn2(5); /* 20% chance of instakill for some artifacts */
         switch (otmp->oartifact) {
         case ART_DRAGONBANE:
@@ -2763,21 +2778,26 @@ abil_to_spfx(long *abil)
         long *abil;
         unsigned long spfx;
     } abil2spfx[] = {
+        { &EFlying, SPFX_FLYING },
+        { &EWarn_of_mon, SPFX_WARN },
+        { &EWarning, SPFX_WARN },
         { &ESearching, SPFX_SEARCH },
         { &EHalluc_resistance, SPFX_HALRES },
         { &ETelepat, SPFX_ESP },
-        { &ESee_invisible, SPFX_SEEINV },
         { &EStealth, SPFX_STLTH },
         { &ERegeneration, SPFX_REGEN },
-        { &ETeleport_control, SPFX_TCTRL },
-        { &EWarn_of_mon, SPFX_WARN },
-        { &EWarning, SPFX_WARN },
         { &EEnergy_regeneration, SPFX_EREGEN },
         { &EHalf_spell_damage, SPFX_HSPDAM },
         { &EHalf_physical_damage, SPFX_HPHDAM },
+        { &ETeleport_control, SPFX_TCTRL },
+        { &EFast, SPFX_FAST },
+        { &EProtection_from_shape_changers, SPFX_PROTSC },
+        { &BAggravate_monster, SPFX_BAGGRV },
         { &EReflecting, SPFX_REFLECT },
+        { &EProtection, SPFX_PROTECT },
         { &EMagical_breathing, SPFX_BREATHE },
-        { &EFlying, SPFX_FLYING },
+        { &ESee_invisible, SPFX_SEEINV },
+        { &EDisplaced, SPFX_DISPLAC },
     };
     int k;
 
@@ -3281,6 +3301,8 @@ arti_prop_spfx(int prop)
             return SPFX_FLYING;
         case WARNING:
             return SPFX_WARN;
+        case SEARCHING:
+            return SPFX_SEARCH;
         case HALLUC_RES:
             return SPFX_HALRES;
         case TELEPAT:
@@ -3289,12 +3311,18 @@ arti_prop_spfx(int prop)
             return SPFX_STLTH;
         case REGENERATION:
             return SPFX_REGEN;
+        case ENERGY_REGENERATION:
+            return SPFX_EREGEN;
         case HALF_SPDAM:
             return SPFX_HSPDAM;
         case HALF_PHDAM:
             return SPFX_HPHDAM;
         case TELEPORT_CONTROL:
             return SPFX_TCTRL;
+        case FAST:
+            return SPFX_FAST;
+        case PROT_FROM_SHAPE_CHANGERS:
+            return SPFX_PROTSC;
         case REFLECTING:
             return SPFX_REFLECT;
         case MAGICAL_BREATHING:
@@ -3434,6 +3462,12 @@ artifact_info(int anum)
         art_info.wielded[15] = "see invisible";
     if ((artilist[anum].spfx & SPFX_DISPLAC) != 0)
         art_info.wielded[16] = "displacement";
+    if ((artilist[anum].spfx & SPFX_FAST) != 0)
+        art_info.wielded[17] = "very vast";
+    if ((artilist[anum].spfx & SPFX_PROTSC) != 0)
+        art_info.wielded[18] = "protection vs shapechangers";
+    if ((artilist[anum].spfx & SPFX_BAGGRV) != 0)
+        art_info.wielded[19] = "suppresses aggravate monster";
 
     if ((artilist[anum].spfx & SPFX_WARN) != 0) {
         if ((artilist[anum].spfx & SPFX_DFLAGH) != 0) {
@@ -3485,9 +3519,10 @@ artifact_info(int anum)
         art_info.carried[15] = "see invisible";
     if ((artilist[anum].cspfx & SPFX_DISPLAC) != 0)
         art_info.carried[16] = "displacement";
-
+    if ((artilist[anum].cspfx & SPFX_FAST) != 0)
+        art_info.carried[17] = "very fast";
     if ((artilist[anum].cspfx & SPFX_WARN) != 0)
-        art_info.carried[17] = "warning";
+        art_info.carried[18] = "warning";
 
     switch (artilist[anum].inv_prop) {
     case TAMING: art_info.invoke = "Taming"; break;
