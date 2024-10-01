@@ -3496,6 +3496,9 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
     boolean youdefend = (mdef == &gy.youmonst);
     int onum = 0, oindex = 0, cnt = 0;
     struct obj *otmp;
+    /* These monsters should be reliably cancelled when hit. */
+    boolean vulnerable = mdef->data == &mons[PM_CLAY_GOLEM]
+                        || mdef->msummoned;
 
     if (youdefend ? (!youattack && Antimagic)
                   : resist(mdef, obj->oclass, 0, NOTELL))
@@ -3717,7 +3720,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         /* force shapeshifter into its base form or mimic to unhide */
         normal_shape(mdef);
 
-        if (mdef->data == &mons[PM_CLAY_GOLEM] || mdef->msummoned) {
+        if (vulnerable) {
             if (canseemon(mdef) && !mdef->msummoned)
                 pline(writing_vanishes, s_suffix(mon_nam(mdef)));
             /* !allow_cancel_kill is for Magicbane, where clay golem
