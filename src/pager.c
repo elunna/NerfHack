@@ -1368,6 +1368,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         }
     }
 
+#if 0 /* Currently leaks info */
     /* APPEARANCE BONUSES */
 
     /* Effects based on the base description of the item --
@@ -1390,7 +1391,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         OBJPUTSTR("Increases to-hit when fighting with a free off-hand (fencing gloves)");
     else if (objdescr_is(&dummy, "visored helm"))
         OBJPUTSTR("Protects from blinding claws and venom (visored helm)");
-
+#endif
     /* COMESTIBLE INFO */
 
     if (olet == FOOD_CLASS) {
