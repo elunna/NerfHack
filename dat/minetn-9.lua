@@ -104,7 +104,7 @@ des.monster("dwarf zombie")
 des.monster("gnome zombie")
 des.monster("gnome zombie")
 des.monster("ghost")
-des.monster("ghost")
+-- des.monster("ghost")
 des.monster("human zombie", 05, 05)
 
 -- A ghoulish gravekeeper.
