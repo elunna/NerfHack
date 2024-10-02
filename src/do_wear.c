@@ -1378,6 +1378,14 @@ Ring_on(struct obj *obj)
     case RIN_SUSTAIN_ABILITY:
     case MEAT_RING:
         break;
+    case RIN_CARRYING:
+        /* with inventory weights available, this is trivial to identify if it's
+         * charged, so if it IS charged, learn it. */
+        if (obj->spe != 0) {
+            Your("pack feels %s.", obj->spe < 0 ? "heavier" : "lighter");
+        }
+        learnring(obj, (obj->spe != 0));
+        break;
     case RIN_STEALTH:
         toggle_stealth(obj, oldprop, TRUE);
         break;
@@ -3657,4 +3665,25 @@ misc_bonus(struct obj *obj)
         return obj->owt / 30;
     return 0;
 }
+
+/* Computes magical bonus from worn rings of a specific type.
+ * Intended for things that give numerical bonuses; could theoretically be
+ * extended later if other equipment confers a similar bonus. */
+int
+ringbon(short ring_typ)
+{
+    int bon = 0;
+    if (!objects[ring_typ].oc_charged) {
+        impossible("ringbon: called with non-chargeable ring?");
+        return 0;
+    }
+    if (uleft && uleft->otyp == ring_typ) {
+        bon += uleft->spe;
+    }
+    if (uright && uright->otyp == ring_typ) {
+        bon += uright->spe;
+    }
+    return bon;
+}
+
 /*do_wear.c*/

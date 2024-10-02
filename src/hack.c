@@ -4330,6 +4330,12 @@ weight_cap(void)
         float_vs_flight();
     }
 
+    /* final adjustment: ring of carrying lets you carry more than usual and go
+    * over the normal carrycap */
+    int pct_increase = ringbon(RIN_CARRYING) * 10;
+    carrcap = (carrcap * (100 + pct_increase)) / 100;
+
+
     return (int) max(carrcap, 1L); /* never return 0 */
 }
 
