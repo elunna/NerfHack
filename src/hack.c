@@ -3901,7 +3901,7 @@ lookaround(void)
 }
 
 static const char *const adjectives[] = {
-    "wrathful",   "mysterious",      "ugly",         "dark"
+    "wrathful",   "mysterious",      "ugly",         "dark",
     "beautiful",  "poorly-rendered", "large",        "lifelike",
     "peaceful",   "covetous",        "crooked",      "lovely",
     "misshapen",  "luminous",        "melancholic",  "bold",
