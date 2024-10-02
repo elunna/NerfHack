@@ -6611,6 +6611,7 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
     if (youflanker) {
         if (!canseemon(mdef) || Hallucination || Confusion
             || Punished || Fumbling || Wounded_legs || Stunned
+            || gy.youmonst.data->mmove == 0 /* Stationary */
             || Unaware) /* Unaware includes fainted, sleeping, and periods
                          * when we are otherwise incapacitated */
             return FALSE;
@@ -6618,6 +6619,8 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
                || flanker->mflee || flanker->mconf || flanker->mtrapped
                || flanker->mstun || flanker->meating
                || flanker->mundetected
+               /* Stationary monsters cannot flank either*/
+               || flanker->data->mmove == 0
                /* hidden mimics can't help flank - gives away their position */
                || (flanker->m_ap_type || flanker->mappearance)) {
         /* Impaired monsters don't make good flankers */

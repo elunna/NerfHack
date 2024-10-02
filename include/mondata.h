@@ -473,6 +473,8 @@
 #endif
 #define monsym(ptr) (def_monsyms[(int) (ptr)->mlet].sym)
 
+#define is_immobile(ptr) ((ptr)->mmove == 0)
+
 /* The monster prefers to keep its distance rather than charging and engaging
  * you in combat. This was adapted from the M3_SKITTISH flag in SporkHack;
  * however, since only a couple monsters have this behavior and they're all in
