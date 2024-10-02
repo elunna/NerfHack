@@ -25,6 +25,7 @@ staticfn void debug_fields(const char *);
 #ifndef NODUMPENUMS
 staticfn void dump_enums(void);
 #endif
+staticfn void ck_foulstones(void);
 
 #ifdef CRASHREPORT
 #define USED_FOR_CRASHREPORT
@@ -272,20 +273,7 @@ moveloop_core(void)
                 /* Foulstones sometimes emit stench:
                  * must go before run_regions */
                 if ((fstone = carrying(FOULSTONE))) {
-                    if (fstone->blessed && !rn2(100)) {
-                        if (!Deaf && rn2(3))
-                            You_hear(Hallucination ? "breaking wind."
-                                                   : "a light puff.");
-                        iter_mons(garlic_breath);
-                    } else if (fstone->cursed && !rn2(100)) {
-                        if (olfaction(gy.youmonst.data) && !rn2(3)) {
-                            if (!Hallucination)
-                                You("smell something awful.");
-                            else
-                                pline("Did somebody step on a duck?");
-                        }
-                        create_gas_cloud(u.ux, u.uy, 1, 4);
-                    }
+                  
                 }
 
                 nh_timeout();
@@ -1393,6 +1381,37 @@ vamp_can_regen(void)
 #endif
     }
     return 1;
+}
+
+/* Foulstone effects stack.
+ * The blessed and cursed effects can overlap. */
+staticfn void
+ck_foulstones(void)
+{
+    struct obj *otmp;
+    int fcursed = 0, fblessed = 0;
+
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+        if (otmp->otyp == FOULSTONE) {
+            fcursed += otmp->cursed * otmp->quan;
+            fblessed += otmp->blessed * otmp->quan;
+        }
+    }
+    if (rnd(100) <= fblessed) {
+        if (!Deaf && rn2(3))
+            You_hear(Hallucination ? "breaking wind."
+                                    : "a light puff.");
+        iter_mons(garlic_breath);
+    }
+    if (rnd(100) <= fcursed) {
+        if (olfaction(gy.youmonst.data) && !rn2(3)) {
+            if (!Hallucination)
+                You("smell something awful.");
+            else
+                pline("Did somebody step on a duck?");
+        }
+        create_gas_cloud(u.ux, u.uy, 1, 4);
+    }
 }
 
 /*allmain.c*/
