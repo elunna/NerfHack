@@ -1562,6 +1562,10 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         Sprintf(buf, "Weighs %d aum.", oc.oc_weight);
     }
 
+    /* probability */
+    if (reveal_info) {
+        Sprintf(buf, "Probability: %d", oc.oc_prob);
+    }
     OBJPUTSTR(buf);
 
     /* Scrolls or spellbooks: ink cost */
