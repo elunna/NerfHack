@@ -2315,7 +2315,9 @@ trapeffect_pit(
             return Trap_Effect_Finished;
         }
         if (uarmf && objdescr_is(uarmf, "hiking boots") && !Sokoban
-            && !plunged && !u.usteed && !Blind) {
+            && !plunged && !u.usteed && !Blind
+            /* Prevent this when landmine creates pits below hero */
+            && (trflags & RECURSIVETRAP) == 0) {
             You("effortlessly hike around the pit!");
             if (Fumbling && rn2(2))
                 ; /* You are still clumsy */
