@@ -819,6 +819,9 @@ u_init_role(void)
         knows_class(WEAPON_CLASS); /* excludes polearms */
         knows_class(ARMOR_CLASS);
         skill_init(Skill_V);
+        /* Valkyries can tame these */
+        mons[PM_WINTER_WOLF_CUB].mflags2 |= M2_DOMESTIC;
+        mons[PM_WINTER_WOLF].mflags2 |= M2_DOMESTIC;
         break;
     case PM_WIZARD:
         ini_inv(Wizard);
