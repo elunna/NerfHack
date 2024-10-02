@@ -337,7 +337,7 @@ static NEARDATA struct artifact artilist[] = {
     /* Stormbringer only has a 2 because it can drain a level,
      * providing 8 more. */
     A("Stormbringer", RUNESWORD,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL 
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL
         | SPFX_DRLI), 0, 0,
       DRLI(10, 2), DFNS(AD_DRLI), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 8000L, NO_COLOR, STORMBRINGER),
@@ -350,19 +350,19 @@ static NEARDATA struct artifact artilist[] = {
 
     /*** Unaligned artifacts ***/
 
-    /* Changes: Now grants warning vs dragons and can instakill dragons */
+    /* Now grants warning vs dragons and can instakill dragons */
     A("Dragonbane", BROADSWORD,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_REFLECT | SPFX_WARN), 0, MH_DRAGON,
       PHYS(10, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 500L, CLR_RED, DRAGONBANE),
 
-    /* Changes: Now can instakill flammable monsters and green slime */
+    /* Now can instakill flammable monsters and green slime */
     A("Fire Brand", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       FIRE(10, 0), DFNS(AD_FIRE), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, FIRE_BRAND),
 
-    /* Changes: Now can instakill water elementals */
+    /* Now can instakill water elementals */
     A("Frost Brand", LONG_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       COLD(10, 0), DFNS(AD_COLD), NO_CARY, 0,
@@ -374,7 +374,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(10, 40), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, LOAD_BRAND),
 
-    /* Changes: Now grants warning vs ogres and can instakill ogres */
+    /* Now grants warning vs ogres and can instakill ogres */
     A("Ogresmasher", WAR_HAMMER,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_OGRE,
       PHYS(10, 0), NO_DFNS, NO_CARY, 0,
@@ -395,14 +395,14 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, DFNS(AD_STUN), NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 3000L, NO_COLOR, LENSES_OF_TRUTH),
 
-    /* Changes: Now grants regeneration, warning vs trolls and can instakill
+    /* Now grants regeneration, warning vs trolls and can instakill
      * trolls */
     A("Trollsbane", MORNING_STAR,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_REGEN | SPFX_WARN), 0, MH_TROLL,
       PHYS(10, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM, 1000L, CLR_RED, TROLLSBANE),
 
-    /* Changes: Now grants protection from shapechangers, warning vs werefoo
+    /* Now grants protection from shapechangers, warning vs werefoo
      * and can instakill werefoo */
     A("Werebane", SILVER_SABER,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN | SPFX_PROTSC), 0, MH_WERE,
@@ -476,7 +476,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       NO_ATTK, NO_DFNS, CARY(AD_FIRE), ENERGY_BOOST,
       A_LAWFUL, PM_CLERIC, NON_PM, 2000L, NO_COLOR, MITRE_OF_HOLINESS),
 
-    /* Changes: Now grants physical damage reduction */
+    /* Now grants physical damage reduction */
     A("The Longbow of Diana", BOW,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT | SPFX_HPHDAM
         | SPFX_NOWISH),
@@ -493,7 +493,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       NO_ATTK, NO_DFNS, NO_CARY, UNTRAP,
       A_CHAOTIC, PM_ROGUE, NON_PM, 3500L, NO_COLOR, MASTER_KEY_OF_THIEVERY),
 
-    /* Changes: Increased the rate of bisection from 5% to 10% */
+    /* Increased the rate of bisection from 5% to 10% */
     A("The Tsurugi of Muramasa", TSURUGI,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_BEHEAD | SPFX_LUCK
        | SPFX_PROTECT | SPFX_FAST | SPFX_NOWISH), 0, 0,

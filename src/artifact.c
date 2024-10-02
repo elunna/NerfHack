@@ -3548,33 +3548,74 @@ artifact_info(int anum)
 
     /* Extra hard-coded info (not possible to automate into the lookup) */
     switch (anum) {
-    case ART_DEMONBANE:
-        art_info.wielded[16] = "angers demons princes and lords";
-        art_info.wielded[17] = "blocks demon gating";
-        break;
-    case ART_EXCALIBUR:
-        art_info.wielded[16] = "angers demons princes and lords";
+    case ART_AMULET_OF_STORMS:
+        art_info.wielded[20] = "pacify stormy monsters via #chat";
+        art_info.wielded[21] = "prevents thunderstorm paralysis";
         break;
     case ART_CLEAVER:
         art_info.xattack = "wide slashing arc";
         break;
-    case ART_MAGICBANE:
-        art_info.wielded[16] = "negates curses";
-        break;
-    case ART_MIRRORBRIGHT:
-        art_info.wielded[16] = "does not impede spellcasting";
+    case ART_DEMONBANE:
+        art_info.wielded[20] = "angers demons princes and lords";
+        art_info.wielded[21] = "blocks demon gating";
         break;
     case ART_DOOMBLADE:
         art_info.xattack = "bonus damage";
         break;
+    case ART_DRAGONBANE:
+        art_info.wielded[20] = "protects from dragon roars";
+        break;
+    case ART_EXCALIBUR:
+        art_info.wielded[20] = "angers demons princes and lords";
+        break;
+    case ART_GIANTSLAYER:
+        art_info.wielded[20] = "steadfastness";
+        art_info.wielded[21] = "boosts strength";
+        break;
     case ART_GRIMTOOTH:
         art_info.xattack = "sickness attack";
+        break;
+    case ART_LOAD_BRAND:
+        art_info.wielded[20] = "steadfastness";
+        art_info.wielded[21] = "negates curses";
+        break;
+    case ART_MAGICBANE:
+        art_info.wielded[20] = "negates curses";
+        break;
+    case ART_MAYHEM:
+        art_info.wielded[20] = "conflict";
+        break;
+    case ART_MIRRORBRIGHT:
+        art_info.wielded[20] = "does not impede spellcasting";
+        art_info.wielded[21] = "light source";
+        break;
+    case ART_MITRE_OF_HOLINESS:
+        art_info.wielded[16] = "1/2 physical damage from undead and demons (Priests only)";
+        break;
+    case ART_ORB_OF_DETECTION:
+        art_info.carried[20] = "clairvoyance";
+        break;
+    case ART_OGRESMASHER:
+        art_info.wielded[16] = "boosts constitution";
+        break;
+    case ART_ORCRIST:
+        art_info.xattack = "instakills orcs";
+        break;
+    case ART_ORIGIN:
+        art_info.wielded[16] = "boosts spellcasting";
         break;
     case ART_PLAGUE:
         art_info.xattack = "auto-poisons arrows";
         break;
-    case ART_ORCRIST:
-        art_info.xattack = "instakills orcs";
+    case ART_PRIDWEN:
+        art_info.wielded[20] = "steadfastness";
+        break;
+    case ART_SCEPTRE_OF_MIGHT:
+        art_info.wielded[20] = "steadfastness";
+        break;
+    case ART_SERENITY:
+        art_info.wielded[20] = "counters spells";
+        art_info.wielded[21] = "suppresses berserking";
         break;
     case ART_SERPENT_S_TONGUE:
         art_info.xattack = "always poisoned";
@@ -3582,19 +3623,10 @@ artifact_info(int anum)
     case ART_STING:
         art_info.xattack = "instakills orcs";
         break;
-    case ART_OGRESMASHER:
-        art_info.wielded[16] = "boosts constitution";
-        break;
-    case ART_ORIGIN:
-        art_info.wielded[16] = "boosts spellcasting";
-        break;
     case ART_TROLLSBANE:
-        art_info.wielded[16] = "Prevents troll revival";
+        art_info.wielded[16] = "prevents troll revival";
         break;
-    case ART_MITRE_OF_HOLINESS:
-        art_info.wielded[16] = "1/2 physical damage from undead and demons (Priests only)";
-        art_info.wielded[17] = "allows #pray and turn undead in Gehennom";
-        break;
+
 #if 0
     case ART_ELFRIST:
         art_info.xattack = "instakills elves";
