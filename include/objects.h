@@ -1541,7 +1541,6 @@ WAND("speed monster",   "brass", 50, 150, 1, IMMEDIATE, COPPER, HI_COPPER,
                                                     WAN_SPEED_MONSTER),
 WAND("undead turning", "copper", 50, 150, 1, IMMEDIATE, COPPER, HI_COPPER,
                                                     WAN_UNDEAD_TURNING),
-
 WAND("polymorph",      "silver", 45, 200, 1, IMMEDIATE, SILVER, HI_SILVER,
                                                     WAN_POLYMORPH),
 WAND("cancellation", "platinum", 45, 200, 1, IMMEDIATE, PLATINUM, CLR_WHITE,
