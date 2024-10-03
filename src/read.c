@@ -2337,7 +2337,7 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
 
     if (confused) {
         int dried_up = 0;
-        do_clear_area(wx, wy, range, unflood_space, &dried_up);
+        do_clear_area(wx, wy, range, unflood_space, (genericptr_t) &dried_up);
         if (dried_up) {
             gk.known = TRUE;
             if (Hallucination)
@@ -2353,7 +2353,7 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
         int madepools = 0;
         int stilldry = -1;
         int x, y, safe_pos = 0;
-        do_clear_area(wx, wy, range, flood_space, &madepools);
+        do_clear_area(wx, wy, range, flood_space, (genericptr_t) &madepools);
 
         /* check if there are safe tiles around the user */
         for (x = wx - 1; x <= wx + 1; x++) {
