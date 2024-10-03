@@ -7076,7 +7076,7 @@ passive(
             } else {
                 pline("A cloud of spores surrounds you!");
             }
-        } else if (canseemon(mon))
+        } else if (malive && canseemon(mon))
             pline_mon(mon, "puffs out a cloud of spores!");
         break;
     case AD_HALU: /* specifically violet fungus */
@@ -7088,7 +7088,7 @@ passive(
             } else {
                 pline("A cloud of spores surrounds you!");
             }
-        } else if (canseemon(mon))
+        } else if (malive && canseemon(mon))
             pline_mon(mon, "puffs out a cloud of spores!");
         break;
      case AD_DISE: /* specifically gray fungus */
@@ -7099,7 +7099,7 @@ passive(
             } else {
                 pline("A cloud of spores surrounds you!");
             }
-        } else if (canseemon(mon))
+        } else if (malive && canseemon(mon))
             pline_mon(mon, "puffs out a cloud of spores!");
         break;
     default:
