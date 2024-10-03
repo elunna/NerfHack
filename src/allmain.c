@@ -275,9 +275,7 @@ moveloop_core(void)
 
                 /* Foulstones sometimes emit stench:
                  * must go before run_regions */
-                if ((fstone = carrying(FOULSTONE))) {
-                  
-                }
+                ck_foulstones();
 
                 nh_timeout();
                 run_regions();
