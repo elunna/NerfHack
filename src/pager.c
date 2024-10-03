@@ -1561,6 +1561,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     } else {
         Sprintf(buf, "Weighs %d aum.", oc.oc_weight);
     }
+    OBJPUTSTR(buf);
 
     /* probability */
     if (reveal_info) {
