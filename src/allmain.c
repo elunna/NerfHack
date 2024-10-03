@@ -7,6 +7,7 @@
 
 #include "hack.h"
 #include <ctype.h>
+#include <math.h>
 
 #ifndef NO_SIGNAL
 #include <signal.h>
@@ -612,7 +613,7 @@ regen_pw(int wtcap)
 staticfn void
 regen_hp(int wtcap)
 {
-    int efflev, effcon, heal = 0;
+    int heal = 0, healbase = 0;
     boolean reached_full = FALSE,
             encumbrance_ok = (wtcap < MOD_ENCUMBER || !u.umoved);
 
@@ -653,19 +654,30 @@ regen_hp(int wtcap)
             && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))
             && (encumbrance_ok || U_CAN_REGEN())) {
 
-            /*
-             * KMH, balance patch -- New regeneration code
-             * Healthstones have been added, which alter your effective
-             * experience level and constitution (-2 cursed, +1 uncursed,
-             * +2 blessed) for the basis of regeneration calculations.
-             */
-            efflev = u.ulevel + u.uhealbonus;
-            effcon = (int) ACURR(A_CON) + u.uhealbonus;
+
 
 #if 0       /* 3.7 version */
             heal = (u.ulevel + (int) ACURR(A_CON)) > rn2(100);
-#else       /* NerfHack version */
-            heal = (efflev + effcon) > rn2(100);
+#else
+            /*
+             * KMH, balance patch -- New regeneration code
+             * Healthstones have been added, which alter your effective
+             * experience level and constitution.
+             *
+             * hackemslashem: To adapt these to the new 3.7 regeneration
+             * calculations, healthstones now dynamically calculate 
+             * their bonus from the players level and CON.
+             * For each blessed healthstone: Add 10% of the total
+             * For each uncursed healthstone: Add 5% of the total
+             * For each cursed healstone: Subtract 10% of the total.
+             */
+            healbase = (u.ulevel + (int) ACURR(A_CON));
+            if (u.uhealbonus) {
+                float tmp = 100 + u.uhealbonus * 5;
+                tmp /= 100;
+                healbase = (int) (healbase * tmp);
+            }
+            heal = (healbase) > rn2(100);
 #endif
             if (U_CAN_REGEN())
                 heal += 1;
