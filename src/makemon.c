@@ -188,21 +188,21 @@ m_initweap(struct monst *mtmp)
         break;
     case S_IMP:
         if (mm == PM_REDCAP) {
-            switch (rn2(10)) {
-            case 0: (void) mongets(mtmp, TWO_HANDED_SWORD); break;
-            case 1: (void) mongets(mtmp, BATTLE_AXE); break;
-            case 2: (void) mongets(mtmp, DWARVISH_MATTOCK); break;
-            case 3: (void) mongets(mtmp, WAR_HAMMER); break;
-            default:
-                (void) mongets(mtmp, SCYTHE);
+            if (rn2(3)) {
+                switch (rn2(10)) {
+                case 0: (void) mongets(mtmp, TWO_HANDED_SWORD); break;
+                case 1: (void) mongets(mtmp, BATTLE_AXE); break;
+                case 2: (void) mongets(mtmp, DWARVISH_MATTOCK); break;
+                case 3: (void) mongets(mtmp, WAR_HAMMER); break;
+                default:
+                    (void) mongets(mtmp, SCYTHE);
+                }
+            } else {
+                otmp = mongets(mtmp, SLING_BULLET);
+                otmp->quan = 6 + rnd(6);
+                otmp->owt = weight(otmp);
+                (void) mongets(mtmp, SLING);
             }
-
-            /* They also traditionally get slings */
-            otmp = mongets(mtmp, SLING_BULLET);
-            otmp->quan = 6 + rnd(6);
-            otmp->owt = weight(otmp);
-            (void) mongets(mtmp, SLING);
-
             if (rn2(2))
                 (void) mongets(mtmp, ELVEN_LEATHER_HELM);
             if (rn2(2))
