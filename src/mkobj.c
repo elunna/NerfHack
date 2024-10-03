@@ -1161,7 +1161,8 @@ mksobj_init(struct obj *otmp, boolean artif)
         break;
     case WAND_CLASS:
         if (otmp->otyp == WAN_WISHING) {
-            otmp->spe = rnd(2);
+            /* The Castle wand is always (1:2) to guarantee 3 wishes. */
+            otmp->spe = 2;
             otmp->recharged = 1;
         } else if (otmp->otyp == WAN_WONDER) {
             otmp->spe = rn1(10, 15);
