@@ -222,10 +222,13 @@ moveloop_core(void)
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
 
-#if 0 /* Disabled - this makes ascension too sloggy. */
-                if (u.uevent.invoked && !rn2(15) && !In_endgame(&u.uz))
+                /* After invocation, open the hell-gates!
+                 * However, don't continue the flooding after exiting gehennom,
+                 * it gets sloggy and the fresh air is nice. */
+                if (u.uevent.invoked && !rn2(10)
+                    && (depth(&u.uz) > depth(&stronghold_level)))
                     nasty((struct monst *) 0, TRUE);
-#endif
+
                 u_calc_moveamt(mvl_wtcap);
                 settrack();
 
