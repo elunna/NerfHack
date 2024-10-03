@@ -224,7 +224,7 @@ static NEARDATA struct artifact artilist[] = {
      * - Can be invoked for a lightning bolt
      */
     A("Mjollnir", WAR_HAMMER, /* Mjo:llnir */
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK), 0, 0,
+      (SPFX_RESTR | SPFX_ATTK), 0, 0,
       ELEC(5, 24), NO_DFNS, NO_CARY,
       LIGHTNING_BOLT,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, NO_COLOR, MJOLLNIR),
@@ -337,8 +337,7 @@ static NEARDATA struct artifact artilist[] = {
     /* Stormbringer only has a 2 because it can drain a level,
      * providing 8 more. */
     A("Stormbringer", RUNESWORD,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL
-        | SPFX_DRLI), 0, 0,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL| SPFX_DRLI), 0, 0,
       DRLI(10, 2), DFNS(AD_DRLI), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 8000L, NO_COLOR, STORMBRINGER),
 
