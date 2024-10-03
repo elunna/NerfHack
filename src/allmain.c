@@ -7,7 +7,6 @@
 
 #include "hack.h"
 #include <ctype.h>
-#include <math.h>
 
 #ifndef NO_SIGNAL
 #include <signal.h>
@@ -167,7 +166,6 @@ moveloop_core(void)
 {
     boolean monscanmove = FALSE;
     boolean vamp_regen = vamp_can_regen();
-    struct obj *fstone;
 
 #ifdef SAFERHANGUP
     if (program_state.done_hup)
