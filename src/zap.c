@@ -5059,7 +5059,10 @@ zhitm(
         tmp = 0; /* don't allow negative damage */
     debugpline3("zapped monster hp = %d (= %d - %d)", mon->mhp - tmp,
                 mon->mhp, tmp);
-    showdamage(tmp, FALSE);
+
+    if (!svc.context.mon_moving)
+        showdamage(tmp, FALSE);
+
     mon->mhp -= tmp;
     return tmp;
 }
@@ -7137,7 +7140,8 @@ resist(struct monst *mtmp, char oclass, int damage, int tell)
 
     if (damage) {
         int saved_mhp = mtmp->mhp;
-        showdamage(damage, FALSE);
+        if (!svc.context.mon_moving)
+            showdamage(damage, FALSE);
         mtmp->mhp -= damage;
         if (DEADMONSTER(mtmp)) {
             if (gm.m_using)
