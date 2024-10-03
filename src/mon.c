@@ -6723,12 +6723,17 @@ int flank_bonus(struct monst *mtmp)
 {
     int fbon;
     boolean isyou = (mtmp == &gy.youmonst);
+
+    fbon = isyou ? ((int) (u.ulevel - 4) / 2 + 2)
+                    : (int) ((mtmp->m_lev - 4) / 2 + 2);
+
+    /* Monsters get a stronger flanking bonus than the player - if
+     * it's symmetrical it gives the player too much of an advantage
+     * and higher level flankers are not as threatening */
     if (is_outflanker(mtmp->data)) {
-        fbon = isyou ? (u.ulevel + 4) : mtmp->m_lev + 4;
-    } else {
-        fbon = isyou ? ((int) (u.ulevel - 4) / 2 + 2)
-                     : (int) ((mtmp->m_lev - 4) / 2 + 2);
+        fbon = isyou ? fbon * 2 : fbon + ((mtmp->m_lev * 3) / 2);
     }
+
     fbon = min(fbon, MAX_FLANK_BONUS);
     fbon = max(fbon, MIN_FLANK_BONUS);
     return fbon;
