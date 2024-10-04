@@ -642,7 +642,7 @@ mind_blast(struct monst *mtmp)
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
             losehp(dmg, "psychic blast", KILLED_BY_AN);
-            if (!Stunned && dmg > 6)
+            if ((ETelepat || HTelepat) && !Stunned && dmg > 6)
                 make_stunned((HStun & TIMEOUT) + (long) rnd(dmg), FALSE);
         }
     }
@@ -666,7 +666,8 @@ mind_blast(struct monst *mtmp)
                 m2->mhp -= d(3, 5);
             if (DEADMONSTER(m2))
                 monkilled(m2, "", AD_DRIN);
-            m2->mstun = 1;
+            if (has_telepathy(m2))
+                m2->mstun = 1;
         }
     }
 }
