@@ -8,7 +8,7 @@
 void
 were_change(struct monst *mon)
 {
-    if (!is_were(mon->data))
+    if (!is_were(mon->data) || mon->mcan)
         return;
 
     if (is_human(mon->data)) {
