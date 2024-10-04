@@ -1113,7 +1113,6 @@ floor_trigger(int ttyp)
     switch (ttyp) {
     case ARROW_TRAP:
     case DART_TRAP:
-    case ROCKTRAP:
     case SQKY_BOARD:
     case BEAR_TRAP:
     case LANDMINE:
