@@ -67,8 +67,8 @@ static NEARDATA struct artifact artilist[] = {
 
     /* Guidelines for to-hit penalties:
      * The default to-hit penalty is -10.
-     * Crowning gifts only have a penalty of -5 (to make them a little easier to use)
-     * A couple of special weapons have 0 to-hit penalty.
+     * Crowning gifts only have a penalty of -5 (to make them a little easier 
+     * to use). A couple of special weapons have 0 to-hit penalty.
      *    - Magicbane and Quick Blade
      * Note: All the to-hit numbers appear here as positive, but they
      * adjusted to become negative in artifact.c:spec_abon()
@@ -432,7 +432,8 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL),
       (SPFX_EREGEN | SPFX_HSPDAM | SPFX_REFLECT), 0,
       NO_ATTK, NO_DFNS, NO_CARY, SUMMONING,
-      A_CHAOTIC, PM_CARTOMANCER, NON_PM, 7000L, NO_COLOR, HOLOGRAPHIC_VOID_LILY),
+      A_CHAOTIC, PM_CARTOMANCER, NON_PM, 7000L, NO_COLOR,
+						    HOLOGRAPHIC_VOID_LILY),
 
     A("The Sceptre of Might", MACE,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN
