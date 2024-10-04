@@ -93,7 +93,7 @@ static NEARDATA struct artifact artilist[] = {
      * in fountains - only lawful knights can be blessed with it. */
     A("Excalibur", LONG_SWORD, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN
                                 | SPFX_INTEL | SPFX_SEARCH),
-      0, 0, PHYS(15, 10), DRLI(0, 0), NO_CARY, 0,
+      0, 0, PHYS(10, 10), DRLI(0, 0), NO_CARY, 0,
       A_LAWFUL, PM_KNIGHT, NON_PM, 4000L, NO_COLOR, EXCALIBUR),
 
     A("Grayswandir", SILVER_SABER,
@@ -225,7 +225,7 @@ static NEARDATA struct artifact artilist[] = {
      */
     A("Mjollnir", WAR_HAMMER, /* Mjo:llnir */
       (SPFX_RESTR | SPFX_ATTK), 0, 0,
-      ELEC(15, 24), NO_DFNS, NO_CARY,
+      ELEC(10, 24), NO_DFNS, NO_CARY,
       LIGHTNING_BOLT,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, NO_COLOR, MJOLLNIR),
 
@@ -263,7 +263,7 @@ static NEARDATA struct artifact artilist[] = {
     A("Vorpal Blade", LONG_SWORD,
       (SPFX_RESTR | SPFX_BEHEAD | SPFX_SEEINV | SPFX_WARN | SPFX_DFLAGH),
       0, MH_JABBERWOCK,
-      PHYS(15, 1), NO_DFNS, NO_CARY, 0,
+      PHYS(10, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 4000L, CLR_RED, VORPAL_BLADE),
 
     /* From SLASH'EM */
@@ -338,7 +338,7 @@ static NEARDATA struct artifact artilist[] = {
      * providing 8 more. */
     A("Stormbringer", RUNESWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL| SPFX_DRLI), 0, 0,
-      DRLI(15, 2), DFNS(AD_DRLI), NO_CARY, 0,
+      DRLI(10, 2), DFNS(AD_DRLI), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM, 8000L, NO_COLOR, STORMBRINGER),
 
     /* Same alignment as elves. */
