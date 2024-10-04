@@ -165,7 +165,7 @@ WEAPON("razor card", NoDes,
                                                         RAZOR_CARD),
 
 WEAPON("boomerang", NoDes,
-       1, 1, 0, 15,   5,  20,  9,  9, 0, B,   -P_BOOMERANG, WOOD, HI_WOOD,
+       1, 1, 0, 60,   5,  20,  9,  9, 0, B,   -P_BOOMERANG, WOOD, HI_WOOD,
                                                         BOOMERANG),
 
 /* spears [note: javelin used to have a separate skill from spears,
