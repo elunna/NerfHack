@@ -1373,12 +1373,12 @@ trapeffect_rocktrap(
 {
     struct obj *otmp;
     boolean harmless = FALSE;
-    int dropqty = min(1, level_difficulty() / 4);
+    int dropqty = max(1, level_difficulty() / 4);
     boolean drop_boulder = rnd(level_difficulty()) > 10;
     int old_mhp;
 
     if (drop_boulder)
-        dropqty = min(1, dropqty / 2);
+        dropqty = max(1, dropqty / 2);
 
     if (mtmp == &gy.youmonst) {
         if (trap->once && trap->tseen && !rn2(15)) {
