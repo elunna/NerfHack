@@ -1161,6 +1161,8 @@ fall_asleep(int how_long, boolean wakeup_msg)
 {
     stop_occupation();
     how_long = resist_reduce(how_long, SLEEP_RES);
+    if (!how_long)
+       return;
     nomul(how_long);
     gm.multi_reason = "sleeping";
 #if 0   /* this was broken; the fix for 'how_long' will result in changed
