@@ -2379,6 +2379,7 @@ create_object(object *o, struct mkroom *croom)
                 svc.context.achieveo.soko_prize_otyp = otmp->otyp;
                 otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack;
                                     * will be reset in addinv_core1() */
+                otmp->oerodeproof = 1;
             } else {
                 impossible(prize_warning, "sokoban end");
             }
