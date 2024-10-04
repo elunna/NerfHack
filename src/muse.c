@@ -1582,8 +1582,7 @@ boolean
 find_offensive(struct monst *mtmp)
 {
     struct obj *obj;
-    boolean reflection_skip = m_seenres(mtmp, M_SEEN_REFL) != 0
-        || monnear(mtmp, mtmp->mux, mtmp->muy);
+    boolean reflection_skip = monnear(mtmp, mtmp->mux, mtmp->muy);
     struct obj *helmet = which_armor(mtmp, W_ARMH);
 
     gm.m.offensive = (struct obj *) 0;
@@ -1622,8 +1621,7 @@ find_offensive(struct monst *mtmp)
             }
             nomore(MUSE_WAN_DRAINING);
             if (otyp == WAN_DRAINING && can_zap
-                && !resists_drain(gy.youmonst.data)
-                && !m_seenres(mtmp, M_SEEN_REFL)) {
+                && !resists_drain(gy.youmonst.data)) {
                 gm.m.offensive = obj;
                 gm.m.has_offense = MUSE_WAN_DRAINING;
             }

@@ -5142,6 +5142,7 @@ zhitu(
         break;
     case ZT_DEATH: {
         int drain;
+        dam = d(nd, 6);
 
         if (abstyp == ZT_BREATH(ZT_DEATH)) {
             boolean disn_prot = inventory_resistance_check(AD_DISN);
@@ -5158,29 +5159,24 @@ zhitu(
             } else if (Reflecting) {
                 /* Items are protected */
                 You("aren't disintegrated, but that hurts!");
-                monstunseesu(M_SEEN_DISINT);
                 dam = resist_reduce(dam, DISINT_RES);
                 break;
             }
 
-            if (uarms) {
-                /* destroy shield; other possessions are safe */
-                (void) destroy_arm(uarms, FALSE, TRUE);
-                break;
-            } else if (uarm) {
-                /* destroy suit; if present, cloak goes too */
-                if (uarmc)
-                    (void) destroy_arm(uarmc, FALSE, TRUE);
-                (void) destroy_arm(uarm, FALSE, TRUE);
-                break;
-            }
             /* no shield or suit, you're dead; wipe out cloak
                and/or shirt in case of life-saving or bones */
             if (!Reflecting) {
-                if (uarmc)
-                    (void) destroy_arm(uarmc, FALSE, TRUE);
-                if (uarmu)
-                    (void) destroy_arm(uarmu, FALSE, TRUE);
+                if (uarms) {
+                    /* destroy shield; other possessions are safe */
+                    (void) destroy_arm(uarms, FALSE, TRUE);
+                    break;
+                } else if (uarm) {
+                    /* destroy suit; if present, cloak goes too */
+                    if (uarmc)
+                        (void) destroy_arm(uarmc, FALSE, TRUE);
+                    (void) destroy_arm(uarm, FALSE, TRUE);
+                    break;
+                }
             }
 
             if (how_resistant(DISINT_RES) >= 50)
@@ -5229,13 +5225,13 @@ zhitu(
                 setuhpmax(max(u.uhpmax - drain, minuhpmax(1)), FALSE);
 	    break;
 	}
-        monstunseesu(M_SEEN_MAGR);
-        svk.killer.format = KILLED_BY_AN;
-        Strcpy(svk.killer.name, fltxt ? fltxt : "");
-        /* when killed by disintegration breath, don't leave corpse */
-        u.ugrave_arise = (type == -ZT_BREATH(ZT_DEATH)) ? -3 : NON_PM;
-        done(DIED);
-        return; /* lifesaved */
+    monstunseesu(M_SEEN_MAGR);
+    svk.killer.format = KILLED_BY_AN;
+    Strcpy(svk.killer.name, fltxt ? fltxt : "");
+    /* when killed by disintegration breath, don't leave corpse */
+    u.ugrave_arise = (type == -ZT_BREATH(ZT_DEATH)) ? -3 : NON_PM;
+    done(DIED);
+    return; /* lifesaved */
     }
     case ZT_LIGHTNING:
         orig_dam = d(nd, 6);
@@ -5828,6 +5824,9 @@ dobuzz(
                                          "it");
                     } else
                         pline("You appear to only be partially affected.");
+
+                    /* M_SEEN_REFL doesn't have much use now with partial reflection,
+                     * but we'll still track it anyway in case something comes up. */
                     monstseesu(M_SEEN_REFL);
                     dx = -dx;
                     dy = -dy;

@@ -996,8 +996,7 @@ breamm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
         /* if we've seen the actual resistance, don't bother, or
            if we're close by and they reflect, just jump the player */
-        if (utarget && (m_seenres(mtmp, cvt_adtyp_to_mseenres(typ))
-                        || m_seenres(mtmp, M_SEEN_REFL)))
+        if (utarget && (m_seenres(mtmp, cvt_adtyp_to_mseenres(typ))))
             return M_ATTK_HIT;
 
         if (!mtmp->mspec_used && rn2(3)) {
