@@ -1855,15 +1855,19 @@ wiz_migrate_mons(void)
 int
 wiz_clear(void)
 {
-    /* Can't let the fuzzer use this otherwise vault guards might die on
-     * (0, 0) and weird things happen */
-    if (wizard && !iflags.debug_fuzzer) {
+    /* Allow this every once in a while for fuzzing to help unclog messes. */
+    if (iflags.debug_fuzzer && rn2(100))
+        return 0;
+    if (wizard) {
         register struct monst *mtmp, *mtmp2;
 
         int gonecnt = 0;
         for (mtmp = fmon; mtmp; mtmp = mtmp2) {
             mtmp2 = mtmp->nmon;
             if (DEADMONSTER(mtmp))
+                continue;
+            /* Skip guards */
+            if (mtmp->mx == 0 && mtmp->my == 0)
                 continue;
             mongone(mtmp);
             gonecnt++;
