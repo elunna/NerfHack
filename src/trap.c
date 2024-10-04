@@ -1372,9 +1372,9 @@ trapeffect_rocktrap(
 {
     struct obj *otmp;
     boolean harmless = FALSE;
-    int dropqty = max(1, level_difficulty() / 4);
-    boolean drop_boulder = rnd(level_difficulty()) > 10;
-    int old_mhp;
+    int old_mhp, dropqty = max(1, level_difficulty() / 4);
+    boolean drop_boulder = rnd(level_difficulty()) > 10,
+        gavemsg = FALSE;
 
     if (drop_boulder)
         dropqty = max(1, dropqty / 2);
@@ -1410,24 +1410,25 @@ trapeffect_rocktrap(
 
                 place_object(otmp, u.ux, u.uy);
 
-                if (uarmh) {
+                if (uarmh && !gavemsg) {
                     /* normally passes_rocks() would protect against a falling
                     rock, but not when wearing a helmet */
                     if (passes_rocks(gy.youmonst.data)) {
-                        pline("Unfortunately, you are wearing %s.",
+                        Norep("Unfortunately, you are wearing %s.",
                             an(helm_simple_name(uarmh))); /* helm or hat */
                         dmg = 2;
                     } else if (hard_helmet(uarmh) && otmp->otyp == BOULDER) {
-                        Your("helmet only slightly protects you.");
+                        Norep("Your helmet only slightly protects you.");
                         dmg -= 2;
                     } else if (hard_helmet(uarmh)) {
-                        pline("Fortunately, you are wearing a hard helmet.");
+                        Norep("Fortunately, you are wearing a hard helmet.");
                         dmg = 2;
                     } else if (flags.verbose) {
-                        pline("%s does not protect you.", Yname2(uarmh));
+                        Norep("%s does not protect you.", Yname2(uarmh));
                     }
+                    gavemsg = TRUE;
                 } else if (passes_rocks(gy.youmonst.data)) {
-                    pline("It passes harmlessly through you.");
+                    Norep("It passes harmlessly through you.");
                     harmless = TRUE;
                 }
                 if (!Blind)
