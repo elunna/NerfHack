@@ -341,9 +341,12 @@ dmgval_core(
         case TSURUGI:
         case DWARVISH_MATTOCK:
         case TWO_HANDED_SWORD:
-        case HEAVY_SWORD:
             tmp += d(2, 6);
             damage_info->bonus_large = "+2d6";
+            break;
+        case HEAVY_SWORD:
+            tmp += d(2, 14);
+            damage_info->bonus_large = "+2d16";
             break;
         case BOULDER:
             tmp += d(5, 4);
@@ -391,6 +394,10 @@ dmgval_core(
         case ACID_VENOM:
             tmp += rnd(6);
             damage_info->bonus_small = "+1d6";
+            break;
+        case HEAVY_SWORD:
+            tmp += d(2, 10);
+            damage_info->bonus_small = "+2d10";
             break;
         case BOULDER:
             tmp += d(5, 4);
