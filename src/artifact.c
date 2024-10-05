@@ -1614,10 +1614,6 @@ artifact_hit(
                 pline_The("massive hammer hits%s %s%c",
                           !gs.spec_dbon_applies ? "" : "!  Lightning strikes",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
-            } else if (otmp->oartifact == ART_KEOLEWA) {
-                pline_The("war club hits%s %s%c",
-                          !gs.spec_dbon_applies ? "" : "!  Lightning strikes",
-                          hittee, !gs.spec_dbon_applies ? '.' : '!');
             }
         }
         if (gs.spec_dbon_applies)
