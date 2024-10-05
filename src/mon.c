@@ -6871,7 +6871,7 @@ unpoly_monster(struct monst *mtmp)
             pline("But wait...");
         new_were(mtmp);
         /* Recover with 50-75% HP */
-        mtmp->mhp = (mtmp->mhpmax / 2) + rnd(mtmp->mhpmax / 4);
+        mtmp->mhp = (mtmp->mhpmax / 2) + rn2(mtmp->mhpmax / 4 + 1);
         return;
     }
 
@@ -6924,7 +6924,7 @@ unpoly_monster(struct monst *mtmp)
             }
             newcham(mtmp, &mons[mndx], NO_NC_FLAGS);
             /* Recover with 50-75% HP */
-            mtmp->mhp = (mtmp->mhpmax / 2) + rnd(mtmp->mhpmax / 4);
+            mtmp->mhp = (mtmp->mhpmax / 2) + rnd(mtmp->mhpmax / 4 + 1);
             return;
         }
     } else {
