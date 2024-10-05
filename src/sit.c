@@ -37,6 +37,7 @@ staticfn void
 throne_sit_effect(void)
 {
     coordxy tx = u.ux, ty = u.uy;
+    int learnabout;
 
     if (rnd(6) > 4) { /* [why so convoluted? it's the same as '!rn2(3)'] */
         int effect = rnd(13);
@@ -131,7 +132,6 @@ throne_sit_effect(void)
                       flags.female ? "Dame" : "Sire");
             /* Dungeon wide */
             do_genocide(5, FALSE);	/* REALLY|ONTHRONE, see do_genocide() */
-               
             break;
         case 9:
             /* Magical voice not affected by deafness */
@@ -216,7 +216,13 @@ throne_sit_effect(void)
             break;
         }
     } else {
-        if (is_prince(gy.youmonst.data) || u.uevent.uhand_of_elbereth)
+        if (!rn2(2)) {
+            /* Learn something interesting */
+            learnabout = learnme();
+            if (learnabout)
+                You("suddenly receive knowledge of %s.",
+                    makeplural(simple_typename(learnabout)));
+        } else if (is_prince(gy.youmonst.data) || u.uevent.uhand_of_elbereth)
             You_feel("very comfortable here.");
         else
             You_feel("somehow out of place...");
