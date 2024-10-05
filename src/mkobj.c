@@ -1501,7 +1501,9 @@ start_corpse_timeout(struct obj *body)
     if (action == ROT_CORPSE) {
         /* Corpses get moldy. */
         for (age = TAINT_AGE + 1; age <= ROT_AGE; age++) {
-            if (!rn2(MOLDY_CHANCE)) {    /* "revives" as a random s_fungus */
+            /* Refactored MOLDY_CHANCE so that it now scales with the dungeon depth. */
+            int moldchance = 300 + depth(&u.uz) * depth(&u.uz) * 15;
+            if (!rn2(moldchance)) {    /* "revives" as a random s_fungus */
                 action = MOLDY_CORPSE;
                 when = age;
                 break;
