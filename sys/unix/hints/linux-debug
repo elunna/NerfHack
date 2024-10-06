@@ -170,6 +170,24 @@ endif   #MAKEFILE_SRC
 endif   #HAVE_NCURSESW
 endif   #WANT_WIN_CURSES
 
+# CUSTOM COMPILER OPTIONS FOR ENSURING HARDFOUGHT SERVER BUILD WORKS
+NHCFLAGS+=-DDUMPHTML
+NHCFLAGS+=-DDGAMELAUNCH
+
+# CUSTOM FLAGS FOR DEBUGGING
+NHCFLAGS+=-O0 # don't optimize out anything
+NHCFLAGS+=-g  # -g3 will include highest level of debug symbols (macros) but
+              # this slows it down too much
+NHCFLAGS+=-Wformat=2 # -Wformat=2 includes format-nonliteral, which NetHack liberally violates;
+                     # however we still want those warnings outside
+                     # DISABLE_WARNING_FORMAT_NONLITERAL blocks
+NHCFLAGS+=-Werror # warnings are Serious Business
+NHCFLAGS+= -Wimplicit-fallthrough=2 # 3 usually ok, but nice to enforce
+                                    # /* else FALLTHRU */
+NHCFLAGS+=-Warray-bounds=2 # extra checking for struct/pointer array access
+NHCFLAGS+=-DDEBUG # duh
+# END CUSTOM FLAGS
+
 #
 #-INCLUDE multisnd1-pre.370
 #
