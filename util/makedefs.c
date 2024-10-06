@@ -1823,7 +1823,8 @@ do_date(void)
 #else
     /* ordinary build: use current date+time */
 #if !defined(NOSTRFTIME)
-    if (!strftime(cbuf, sizeof cbuf, "%c", localtime(&clocktim)))
+    if (!strftime(cbuf, sizeof cbuf, "%a %b %e %H:%M:%S %Y",
+                  localtime(&clocktim)))
         cbuf[0] = '\0';
 #else
     Strcpy(cbuf, ctime(&clocktim));
