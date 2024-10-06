@@ -180,7 +180,7 @@ NHCFLAGS+=-g  # -g3 will include highest level of debug symbols (macros) but
 NHCFLAGS+=-Wformat=2 # -Wformat=2 includes format-nonliteral, which NetHack liberally violates;
                      # however we still want those warnings outside
                      # DISABLE_WARNING_FORMAT_NONLITERAL blocks
-NHCFLAGS+=-Werror # warnings are Serious Business
+#NHCFLAGS+=-Werror # warnings are Serious Business
 NHCFLAGS+= -Wimplicit-fallthrough=2 # 3 usually ok, but nice to enforce
                                     # /* else FALLTHRU */
 NHCFLAGS+=-Warray-bounds=2 # extra checking for struct/pointer array access
