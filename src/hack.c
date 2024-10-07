@@ -2683,7 +2683,7 @@ domove_core(void)
 
     /* treat entering a visible gas cloud region like entering a trap;
        there could be a known trap as well as a region at the target spot;
-       if so, ask about entring the region first; even though this could
+       if so, ask about entering the region first; even though this could
        lead to two consecutive confirmation prompts, the situation seems to
        be too uncommon to warrant a separate case with combined trap+region
        confirmation */
@@ -2717,6 +2717,8 @@ domove_core(void)
     if (ParanoidTrap && !Stunned && !Confusion
         /* skip if player used 'm' prefix or is moving recklessly */
         && (!svc.context.nopick || svc.context.run)
+        /* skip if player is being displaced into the trap */
+        && !displaceu
         /* check for discovered trap */
         && (trap = t_at(x, y)) != 0 && trap->tseen
         /* check whether attempted move will be viable */
