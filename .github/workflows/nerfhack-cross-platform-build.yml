@@ -43,6 +43,7 @@ jobs:
       run: make install
 
   windows-build:
+    permissions: write-all
     runs-on: windows-latest
     env:
         ADD_LUA: Y
