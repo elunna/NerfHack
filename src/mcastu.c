@@ -1150,6 +1150,9 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
             impossible("no reason for monster to cast blindness spell?");
         break;
     case CLC_HOBBLE: {
+        dmg = 4 + (int) mtmp->m_lev;
+        if (Half_spell_damage)
+            dmg = (dmg + 1) / 2;
         if (m_canseeu(mtmp) && distu(mtmp->mx, mtmp->my) <= 192) {
             long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
             Your("%s are smashed by a bolt of force!",
