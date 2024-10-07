@@ -997,7 +997,8 @@ from_what(int propidx) /* special cases can have negative values */
                           : ((EFast & W_ARMF) != 0L && uarmf->dknown
                              && objects[uarmf->otyp].oc_name_known)
                               ? ysimple_name(uarmf) /* speed boots */
-                                : (uwep && uwep->oartifact == ART_QUICK_BLADE)
+                                : (u_wield_art(ART_QUICK_BLADE)
+                                   || u_offhand_art(ART_QUICK_BLADE))
                                     ? "Quick Blade"
                                     : EFast
                                         ? "worn equipment"
@@ -1301,7 +1302,7 @@ acurr(int chridx)
            STR19(y) yields 100 + y (intended for 19 <= y <= 25) */
         if (tmp >= STR19(25) || (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER))
             result = STR19(25); /* 125 */
-        else if (uwep && uwep->oartifact == ART_GIANTSLAYER)
+        else if (u_wield_art(ART_GIANTSLAYER) || u_offhand_art(ART_GIANTSLAYER))
             result = (tmp < 118 ? 118 : tmp);
         else
             /* need non-zero here to avoid 'if(result==0)' below because
@@ -1316,7 +1317,7 @@ acurr(int chridx)
             && uwep && uwep->otyp == CRYSTAL_BALL)
             result = 25;
     } else if (chridx == A_CON) {
-        if (u_wield_art(ART_OGRESMASHER))
+        if (u_wield_art(ART_OGRESMASHER) || u_offhand_art(ART_OGRESMASHER))
             result = 25;
     } else if (chridx == A_INT || chridx == A_WIS) {
         /* Yes, this may raise Int and/or Wis if hero is sufficiently
@@ -1370,10 +1371,10 @@ extremeattr(
         /* lower limit for Str can also be 25 */
         if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER)
             lolimit = hilimit;
-        else if (u_wield_art(ART_GIANTSLAYER))
+        else if (u_wield_art(ART_GIANTSLAYER) || u_offhand_art(ART_GIANTSLAYER))
             lolimit = hilimit;
     } else if (attrindx == A_CON) {
-        if (u_wield_art(ART_OGRESMASHER))
+        if (u_wield_art(ART_OGRESMASHER) || u_offhand_art(ART_OGRESMASHER))
             lolimit = hilimit;
     } else if (attrindx == A_CHA) {
          if (Role_if(PM_CARTOMANCER)

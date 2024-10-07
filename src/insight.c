@@ -896,13 +896,15 @@ one_characteristic(int mode, int final, int attrindx)
     case A_STR:
         if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmg->cursed)
             hide_innate_value = TRUE;
-        else if (u_wield_art(ART_GIANTSLAYER) && uwep->cursed)
+        else if ((u_wield_art(ART_GIANTSLAYER) && uwep->cursed) ||
+            (u_offhand_art(ART_GIANTSLAYER) && uswapwep->cursed))
             hide_innate_value = TRUE;
         break;
     case A_DEX:
         break;
     case A_CON:
-        if (u_wield_art(ART_OGRESMASHER) && uwep->cursed)
+        if ((u_wield_art(ART_OGRESMASHER) && uwep->cursed)
+            || (u_offhand_art(ART_OGRESMASHER) && uswapwep->cursed))
             hide_innate_value = TRUE;
         break;
     case A_INT:
@@ -1596,7 +1598,7 @@ attributes_enlightenment(
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
 
-    if (u_wield_art(ART_SERENITY))
+    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY))
         you_are("countering spells", " because of Serenity");
 
     /* Partial intrinsic resistances */
@@ -2026,14 +2028,11 @@ attributes_enlightenment(
     /* Steadfastness checks: These are not very clean, perhaps in the future
      * the devteam will add a Steadfast property. The challenge with that is
      * that loadstones and other gray stones don't have a property field. */
-    if ((uwep && uwep->oartifact == ART_GIANTSLAYER)
-        || (uswapwep && uswapwep->oartifact == ART_GIANTSLAYER))
+    if (u_wield_art(ART_GIANTSLAYER) || u_offhand_art(ART_GIANTSLAYER))
         you_have("steadfastness", " from Giantslayer");
-    if ((uwep && uwep->oartifact == ART_SCEPTRE_OF_MIGHT)
-        || (uswapwep && uswapwep->oartifact == ART_SCEPTRE_OF_MIGHT))
+    if (u_wield_art(ART_SCEPTRE_OF_MIGHT) || u_offhand_art(ART_SCEPTRE_OF_MIGHT))
         you_have("steadfastness", " from the Sceptre of Might");
-    else if ((uwep && uwep->oartifact == ART_LOAD_BRAND)
-        || (uswapwep && uswapwep->oartifact == ART_LOAD_BRAND))
+    else if (u_wield_art(ART_LOAD_BRAND))
         you_have("steadfastness", " from Load Brand");
     else if (uarms && uarms->oartifact == ART_PRIDWEN)
         you_have("steadfastness", " from Pridwen");

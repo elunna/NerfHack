@@ -552,7 +552,7 @@ can_be_strangled(struct monst *mon)
 boolean
 can_track(struct permonst *ptr)
 {
-    if (u_wield_art(ART_EXCALIBUR))
+    if (u_wield_art(ART_EXCALIBUR) || u_offhand_art(ART_EXCALIBUR))
         return TRUE;
     return (boolean) haseyes(ptr);
 }

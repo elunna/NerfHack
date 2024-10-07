@@ -1678,7 +1678,7 @@ artifact_hit(
                     pline("%s looks %s.", Monnam(mdef),
                           mdef->mdiseased ? "even worse" : "diseased");
                 mdef->mdiseased = 1;
-                if (u_wield_art(ART_GRIMTOOTH))
+                if (youattack)
                     mdef->mdiseabyu = TRUE;
                 else
                     mdef->mdiseabyu = FALSE;
@@ -2899,17 +2899,16 @@ Sting_effects(
     int orc_count) /* new count (warn_obj_cnt is old count);
                     * -1 is a flag value */
 {
-    if (u_wield_art(ART_STING)
-        || u_wield_art(ART_ORCRIST)
-        || u_wield_art(ART_GRIMTOOTH)
-        || u_wield_art(ART_DRAGONBANE)
-        || u_wield_art(ART_DEMONBANE)
-        || u_wield_art(ART_WEREBANE)
-        || u_wield_art(ART_GIANTSLAYER)
-        || u_wield_art(ART_OGRESMASHER)
-        || u_wield_art(ART_TROLLSBANE)
-        || u_wield_art(ART_VORPAL_BLADE)
-        || u_wield_art(ART_DISRUPTER)) {
+    /* Make this generic:
+        Does the item grant warning and have a hated class?
+        */
+    if (!uwep->oartifact)
+        return;
+
+    boolean artiwarns = (artilist[(int) uwep->oartifact].spfx & SPFX_WARN) != 0;
+    boolean artihates = artilist[(int) uwep->oartifact].mtype;
+
+    if (artiwarns && artihates) {
         int oldstr = glow_strength(gw.warn_obj_cnt),
             newstr = glow_strength(orc_count);
 
@@ -3381,7 +3380,7 @@ artifact_info(int anum)
     art_info.vscross = (artilist[anum].spfx & SPFX_DALIGN) != 0;
 
     /* Hated/Targeted Monster */
-    if ((artilist[anum].mtype)) {
+    if (artilist[anum].mtype) {
         int i;
         buf[0] = '\0';
 

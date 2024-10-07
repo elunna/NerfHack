@@ -931,6 +931,10 @@ dotwoweapon(void)
             You("begin two-weapon combat.");
         }
         set_twoweap(TRUE); /* u.twoweap = TRUE */
+        if (u_offhand_art(ART_OGRESMASHER)
+            || u_offhand_art(ART_GIANTSLAYER))
+            disp.botl = TRUE;
+
         update_inventory();
         return (rnd(20) > ACURR(A_DEX)) ? ECMD_TIME : ECMD_OK;
     }
@@ -980,9 +984,15 @@ uqwepgone(void)
 void
 untwoweapon(void)
 {
+    struct obj *olduswapwep = uswapwep;
+
     if (u.twoweap) {
         You("%s.", can_no_longer_twoweap);
         set_twoweap(FALSE); /* u.twoweap = FALSE */
+        if (is_art(olduswapwep, ART_OGRESMASHER)
+            || is_art(olduswapwep, ART_GIANTSLAYER))
+            disp.botl = TRUE;
+
         update_inventory();
     }
     return;

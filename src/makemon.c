@@ -1591,7 +1591,8 @@ makemon(
     if (is_dprince(ptr) && ptr->msound == MS_BRIBE) {
         mtmp->mpeaceful = mtmp->minvis = mtmp->perminvis = 1;
         mtmp->mavenge = 0;
-        if (u_wield_art(ART_EXCALIBUR) || u_wield_art(ART_DEMONBANE))
+        if (u_wield_art(ART_EXCALIBUR) || u_offhand_art(ART_EXCALIBUR)
+            || u_wield_art(ART_DEMONBANE) || u_offhand_art(ART_DEMONBANE))
             mtmp->mpeaceful = mtmp->mtame = FALSE;
     }
     if (mndx == PM_RAVEN && uwep && uwep->otyp == BEC_DE_CORBIN)

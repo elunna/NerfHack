@@ -630,7 +630,8 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
         return;
     }
 
-    if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY)) {
+    if (!mtmp->mpeaceful && (u_wield_art(ART_SERENITY)
+                            || u_offhand_art(ART_SERENITY))) {
         if (counterspell(mtmp, uwep))
             return;
     }
@@ -948,7 +949,8 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
         return;
     }
 
-    if (!mtmp->mpeaceful && u_wield_art(ART_SERENITY)) {
+    if (!mtmp->mpeaceful && (u_wield_art(ART_SERENITY)
+                            || u_offhand_art(ART_SERENITY))) {
         if (counterspell(mtmp, uwep))
             return;
     }

@@ -472,6 +472,7 @@ struct obj {
 /* #define is_art(o,art) ((o) && (o)->oartifact == (art)) */
 
 #define u_wield_art(art) is_art(uwep, art)
+#define u_offhand_art(art) (u.twoweap && is_art(uswapwep, art))
 
 /* mummy wrappings are more versatile sizewise than other cloaks */
 #define WrappingAllowed(mptr) \

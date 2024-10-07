@@ -1296,7 +1296,7 @@ spelleffects_check(int spell, int *res, int *energy)
     *energy = SPELL_LEV_PW(spellev(spell)); /* 5 <= energy <= 35 */
 
     /* Origin gives us a discount on spellcasting. */
-    if (uwep && uwep->oartifact == ART_ORIGIN)
+    if (u_wield_art(ART_ORIGIN))
         *energy -= rnd(3);
     /*
      * Spell casting no longer affects knowledge of the spell. A
@@ -2219,12 +2219,12 @@ percent_success(int spell)
                                                     : gu.urole.spelarmr;
     else if (uarmc && uarmc->otyp == ROBE)
         splcaster -= gu.urole.spelarmr;
-    
+
     if (uwep && uwep->otyp == QUARTERSTAFF)
         splcaster -= 3; /* Small bonus */
-    if (uwep && uwep->oartifact == ART_ORIGIN)
+    if (u_wield_art(ART_ORIGIN))
         splcaster -= 3; /* On top of the quarterstaff */
-    
+
     /* Mirrorbright doesn't impede spellcasting */
     if (uarms && uarms->oartifact != ART_MIRRORBRIGHT)
         splcaster += gu.urole.spelshld;

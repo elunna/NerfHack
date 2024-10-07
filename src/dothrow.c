@@ -1512,7 +1512,7 @@ throwit(struct obj *obj,
     }
 
     /* KMH -- Handle Plague here */
-    if (uwep && uwep->oartifact == ART_PLAGUE &&
+    if (u_wield_art(ART_PLAGUE) &&
         ammo_and_launcher(obj, uwep) && is_poisonable(obj))
         obj->opoisoned = 1;
 
@@ -2038,7 +2038,7 @@ thitmonst(
     int otyp = obj->otyp, hmode;
     int wtype;
     boolean guaranteed_hit = engulfing_u(mon);
-    boolean hellfiring = uwep && uwep->oartifact == ART_HELLFIRE;
+    boolean hellfiring = u_wield_art(ART_HELLFIRE);
     int dieroll;
 
     hmode = (obj == uwep) ? HMON_APPLIED

@@ -3542,7 +3542,8 @@ corpse_chance(
     }
 
     /* Zombies don't leave a corpse when the player is wielding Sunsword */
-    if (is_zombie(mdat) && uwep && uwep->oartifact == ART_SUNSWORD
+    if (is_zombie(mdat)
+        && (u_wield_art(ART_SUNSWORD) || u_offhand_art(ART_SUNSWORD))
         && distu(mon->mx, mon->my) < 3) {
         if (cansee(mon->mx, mon->my))
             pline("In the presence of Sunsword, %s corpse dissolves into nothingness.",
@@ -4669,7 +4670,7 @@ dragon_roar(struct monst *mtmp)
                 unmul("You are shocked awake!");
 
             /* Might be a t-rex too... but that is Fine(TM) */
-            if (uwep && uwep->oartifact == ART_DRAGONBANE) {
+            if (u_wield_art(ART_DRAGONBANE) || u_offhand_art(ART_DRAGONBANE)) {
                 pline("By the power of Dragonbane, you hold firm!");
             } else if (rn2(100) >= ACURR(A_CHA)) {
                 /* Charisma may spare the player from effects */
@@ -6774,7 +6775,7 @@ mon_berserk(struct monst *mtmp)
         return;
 
     /* Serenity blocks berserkers */
-    if (u_wield_art(ART_SERENITY)) {
+    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)) {
         if (!rn2(3)) {
             if (!canseemon(mtmp) || distu(mtmp->mx, mtmp->my) > 100)
                 You_hear("a distant %s.", rn2(4) ? "moan" : "whimper");

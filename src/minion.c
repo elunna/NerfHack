@@ -66,7 +66,8 @@ msummon(struct monst *mon)
     if (mon) {
         ptr = mon->data;
 
-        if (u_wield_art(ART_DEMONBANE) && is_demon(ptr)) {
+        if ((u_wield_art(ART_DEMONBANE) || u_offhand_art(ART_DEMONBANE))
+            && is_demon(ptr)) {
             if (canseemon(mon))
                 pline("%s looks puzzled for a moment.", Monnam(mon));
             return 0;
@@ -268,7 +269,8 @@ demon_talk(struct monst *mtmp)
 {
     long cash, demand, offer;
 
-    if (u_wield_art(ART_EXCALIBUR) || u_wield_art(ART_DEMONBANE)) {
+    if (u_wield_art(ART_EXCALIBUR) || u_offhand_art(ART_EXCALIBUR)
+        || u_wield_art(ART_DEMONBANE) || u_offhand_art(ART_DEMONBANE)) {
         if (canspotmon(mtmp))
             pline("%s looks very angry.", Amonnam(mtmp));
         else

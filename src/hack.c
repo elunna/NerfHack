@@ -55,7 +55,8 @@ staticfn boolean water_turbulence(coordxy *, coordxy *);
 #define Known_wwalking \
     ((uarmf && uarmf->otyp == WATER_WALKING_BOOTS \
      && objects[WATER_WALKING_BOOTS].oc_name_known && !u.usteed) \
-     || (uwep && uwep->oartifact == ART_POSEIDON_S_TRIDENT && EWwalking)      \
+     || u_wield_art(ART_POSEIDON_S_TRIDENT) \
+     || u_offhand_art(ART_POSEIDON_S_TRIDENT) \
      || HWwalking)
 #define Known_lwalking \
     (Known_wwalking && Fire_resistance \

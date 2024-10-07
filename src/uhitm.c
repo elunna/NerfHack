@@ -559,7 +559,8 @@ do_attack(struct monst *mtmp)
      */
     /* Intelligent chaotic weapons (Stormbringer) want blood */
     if (is_safemon(mtmp) && !svc.context.forcefight) {
-        if (!u_wield_art(ART_STORMBRINGER) && !Rabid) {
+        if (!u_wield_art(ART_STORMBRINGER)
+            && u_offhand_art(ART_STORMBRINGER) && !Rabid) {
             /* There are some additional considerations: this won't work
              * if in a shop or Punished or you miss a random roll or
              * if you can walk thru walls and your pet cannot (KAA) or
@@ -1317,7 +1318,7 @@ hmon_hitmon_weapon_melee(
                && ammo_and_launcher(obj, uwep)) {
         if (is_giant(hmd->mdat)
             && !unique_corpstat(hmd->mdat)
-            && ((uwep->oartifact == ART_DAVID_S_SLING) ||
+            && (u_wield_art(ART_DAVID_S_SLING) ||
                 (P_SKILL(P_SLING) >= P_SKILLED && hmd->dieroll == 1
                 && !rn2(P_SKILL(P_SLING) == P_SKILLED ? 2 : 1)))) {
             /* With a critical hit, a skilled slinger can bring down
@@ -1332,7 +1333,7 @@ hmon_hitmon_weapon_melee(
             * some reason being Skilled+ gives a penalty?) */
             hmd->get_dmg_bonus = FALSE;
             hmd->dmg -= weapon_dam_bonus(uwep);
-        } else if (uwep->oartifact == ART_DAVID_S_SLING) {
+        } else if (u_wield_art(ART_DAVID_S_SLING)) {
             hmd->dmg += rnd(6);
         }
     } else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd
@@ -1455,8 +1456,7 @@ hmon_hitmon_weapon_melee(
         hmd->hittxt = TRUE;
     }
 
-    if (uwep && (uwep->oartifact == ART_PLAGUE
-            || uwep->oartifact == ART_HELLFIRE)
+    if ((u_wield_art(ART_PLAGUE) || u_wield_art(ART_HELLFIRE))
         && ammo_and_launcher(obj, uwep)) {
         hmd->dmg += rnd(7);
     }
