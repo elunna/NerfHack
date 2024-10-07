@@ -546,7 +546,8 @@ boolean
 do_attack(struct monst *mtmp)
 {
     struct permonst *mdat = mtmp->data;
-
+    boolean indoorway = IS_DOOR(levl[u.ux][u.uy].typ);
+    boolean diag_attack = u.dx && u.dy;
     /* This section of code provides protection against accidentally
      * hitting peaceful (like '@') and tame (like 'd') monsters.
      * Protection is provided as long as player is not: blind, confused,
@@ -670,8 +671,12 @@ do_attack(struct monst *mtmp)
 
     if (((is_displaced(mtmp->data) && !mtmp->mcan)
             || has_displacement(mtmp))
-        && !helpless(mtmp) && !mtmp->mtrapped
-        && !u.uswallow && !rn2(2)) {
+        && !helpless(mtmp)
+        && !mtmp->mtrapped
+        && !u.uswallow
+        /* Attacking from doorway allow move-free attack glitches */
+        && !(indoorway && diag_attack)
+        && !rn2(2)) {
         pline("The image of %s shimmers and vanishes!", mon_nam(mtmp));
         return FALSE;
     }
