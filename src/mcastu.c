@@ -1465,8 +1465,11 @@ counterspell(struct monst *mtmp, struct obj *otmp) {
     if (!rn2(5))
         return FALSE;
 
-    pline("%s %s and %s %s magic!",
-        (Blind ? "vibrates" : "glows"), artiname(uwep->oartifact),
+    /* Here we assume that Serenity is doing the countering; 
+     * If another countering weapon/item is added, this needs
+     * updating. */
+    pline("Serenity %s and %s %s magic!",
+        (Blind ? "vibrates" : "flashes"),
         !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
 
     if (canseemon(mtmp)) {
