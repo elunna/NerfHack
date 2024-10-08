@@ -6544,6 +6544,9 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
     grudge = youflanker = youattack = youdefend = FALSE;
     petattack = magr->mtame;
 
+    /* They are healers, not fighters */
+    if (magr->mnum == PM_NURSE)
+        return FALSE;
     if (magr == &gy.youmonst)
         youattack = TRUE;
     if (mdef == &gy.youmonst)
@@ -6622,6 +6625,7 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
                || flanker->mundetected
                /* Stationary monsters cannot flank either*/
                || flanker->data->mmove == 0
+               || flanker->mnum == PM_NURSE
                /* hidden mimics can't help flank - gives away their position */
                || (flanker->m_ap_type || flanker->mappearance)) {
         /* Impaired monsters don't make good flankers */
