@@ -2296,7 +2296,13 @@ create_object(object *o, struct mkroom *croom)
             struct obj *cobj = container_obj[container_idx - 1];
 
             remove_object(otmp);
-            if (cobj) {
+
+            /* This prevents boxes within boxes. So we can specify random
+             * objects in containers for lua level creation. Unfortunately,
+             * the item is lost when this happens. */
+            boolean invalid_choice = Is_box(otmp) || otmp->otyp == ICE_BOX;
+
+            if (cobj && !invalid_choice) {
                 otmp = add_to_container(cobj, otmp);
                 cobj->owt = weight(cobj);
             } else {
