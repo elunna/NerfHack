@@ -5822,9 +5822,7 @@ dobuzz(
                     if (!Blind) {
                         (void) ureflects("Some of %s reflects from your %s!",
                                          "it");
-                    } else
-                        pline("You appear to only be partially affected.");
-
+                    }
                     /* M_SEEN_REFL doesn't have much use now with partial reflection,
                      * but we'll still track it anyway in case something comes up. */
                     monstseesu(M_SEEN_REFL);
