@@ -5,7 +5,7 @@
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noflip");
+des.level_flags("mazelevel", "solidify", "noflip");
 
 des.map([[
              --------                     
@@ -30,7 +30,6 @@ des.map([[
              --------                     
 ]]);
 
---
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
 

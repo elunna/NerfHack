@@ -5,7 +5,7 @@
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noflip");
+des.level_flags("mazelevel", "solidify", "noflip");
 
 -- Ported from SLASH'EM by hackemslashem.
 -- This is the Temple of Moloch.
@@ -23,6 +23,9 @@ des.map([[
 ]]);
 
 -- RANDOM_MONSTERS: '&','Z'
+
+-- Non diggable walls
+des.non_diggable(selection.area(00,00,75,19))
 
 des.region({ region={08,01,41,07}, lit=1, type="temple", filled=2 })
 
