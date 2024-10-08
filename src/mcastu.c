@@ -1458,8 +1458,6 @@ staticfn boolean
 counterspell(struct monst *mtmp, struct obj *otmp) {
     if (otmp->cursed)
         return FALSE;
-    if (!canspotmon(mtmp))
-        return FALSE;
     if (dist2(u.ux, u.uy, mtmp->mx, mtmp->my) > 192)
         return FALSE;
     if (!rn2(5))
