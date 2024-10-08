@@ -617,6 +617,17 @@ getmattk(
         attk->damn = 1;
         attk->damd = 6;
     }
+    /* Revenants have a magic fireball attack, but this also translates
+     * to a fire spell in melee. We don't want the melee spell, so
+     * convert it to physical damage instead. */
+    else if (magr->data == &mons[PM_REVENANT]
+        && attk->aatyp == AT_MAGC && attk->adtyp == AD_FIRE
+        && udefend && m_next2u(magr)) {
+        *alt_attk_buf = *attk;
+        attk = alt_attk_buf;
+        attk->aatyp = AT_WEAP;
+        attk->adtyp = AD_PHYS;
+    }
     return attk;
 }
 
