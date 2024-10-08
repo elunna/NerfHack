@@ -1086,10 +1086,10 @@ use_defensive(struct monst *mtmp)
         mzapwand(mtmp, otmp, FALSE);
         if (oseen)
             makeknown(WAN_DIGGING);
-        if (IS_FURNITURE(levl[mtmp->mx][mtmp->my].typ)
+        if (oseen && (IS_FURNITURE(levl[mtmp->mx][mtmp->my].typ)
             || IS_DRAWBRIDGE(levl[mtmp->mx][mtmp->my].typ)
             || (is_drawbridge_wall(mtmp->mx, mtmp->my) >= 0)
-            || stairway_at(mtmp->mx, mtmp->my)) {
+            || stairway_at(mtmp->mx, mtmp->my))) {
             pline_The("digging ray is ineffective.");
             return 2;
         }
