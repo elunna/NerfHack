@@ -560,7 +560,7 @@ do_attack(struct monst *mtmp)
     /* Intelligent chaotic weapons (Stormbringer) want blood */
     if (is_safemon(mtmp) && !svc.context.forcefight) {
         if (!u_wield_art(ART_STORMBRINGER)
-            && u_offhand_art(ART_STORMBRINGER) && !Rabid) {
+            && !u_offhand_art(ART_STORMBRINGER) && !Rabid) {
             /* There are some additional considerations: this won't work
              * if in a shop or Punished or you miss a random roll or
              * if you can walk thru walls and your pet cannot (KAA) or
