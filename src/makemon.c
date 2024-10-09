@@ -875,7 +875,7 @@ m_initinv(struct monst *mtmp)
         break;
     case S_GIANT:
         if (ptr == &mons[PM_MINOTAUR]) {
-            if (!rn2(3) || (gi.in_mklev && Is_earthlevel(&u.uz)))
+            if (!rn2(5) || (gi.in_mklev && Is_earthlevel(&u.uz)))
                 (void) mongets(mtmp, WAN_DIGGING);
         } else if (is_giant(ptr)) {
             for (cnt = rn2((int) (mtmp->m_lev / 2)); cnt; cnt--) {
