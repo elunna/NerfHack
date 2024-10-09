@@ -1284,6 +1284,9 @@ cpostfx(int pm)
     case PM_LARGE_MIMIC:
         tmp += 20;
         /*FALLTHRU*/
+    case PM_KILLER_MIMIC:
+        tmp += 20;
+        /*FALLTHRU*/
     case PM_SMALL_MIMIC:
         tmp += 20;
         if (gy.youmonst.data->mlet != S_MIMIC && !Unchanging) {
