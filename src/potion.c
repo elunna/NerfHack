@@ -2549,12 +2549,15 @@ potionbreathe(struct obj *obj)
         }
         break;
     case POT_PARALYSIS:
-        if (!Free_action)
+        if (!Free_action) {
             pline("%s seems to be holding you.", Something);
-        nomul(-rnd(5));
-        gm.multi_reason = "frozen by a potion";
-        gn.nomovemsg = You_can_move_again;
-        unambiguous = TRUE;
+            nomul(-rnd(5));
+            gm.multi_reason = "frozen by a potion";
+            gn.nomovemsg = You_can_move_again;
+            exercise(A_DEX, FALSE);
+            unambiguous = TRUE;
+        } else
+            You("stiffen momentarily.");
         break;
     case POT_SLEEPING:
         if (!Free_action && !fully_resistant(SLEEP_RES)) {
