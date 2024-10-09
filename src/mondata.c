@@ -793,7 +793,9 @@ same_race(struct permonst *pm1, struct permonst *pm2)
                 || pm2 == &mons[PM_WINGED_GARGOYLE]);
     if (pm1 == &mons[PM_KILLER_BEE] || pm1 == &mons[PM_QUEEN_BEE])
         return (pm2 == &mons[PM_KILLER_BEE] || pm2 == &mons[PM_QUEEN_BEE]);
-
+    if (pm1 == &mons[PM_GIANT_ANT] || pm1 == &mons[PM_QUEEN_ANT])
+        return (pm2 == &mons[PM_GIANT_ANT] || pm2 == &mons[PM_QUEEN_ANT]);
+    
     if (is_longworm(pm1))
         return is_longworm(pm2); /* handles tail */
     /* [currently there's no reason to bother matching up

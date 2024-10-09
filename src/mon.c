@@ -771,6 +771,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_FIRE_ANT:
     case PM_GIANT_BEETLE:
     case PM_QUEEN_BEE:
+    case PM_QUEEN_ANT:
     case PM_LOCUST:
     case PM_GIANT_PRAYING_MANTIS:
     case PM_ASSASSIN_BUG:
@@ -6117,7 +6118,9 @@ can_be_hatched(int mnum)
     if (mnum == PM_KILLER_BEE || mnum == PM_GARGOYLE
         || (lays_eggs(&mons[mnum])
             && (BREEDER_EGG
-                || (mnum != PM_QUEEN_BEE && mnum != PM_WINGED_GARGOYLE))))
+                || (mnum != PM_QUEEN_BEE
+                    && mnum != PM_WINGED_GARGOYLE
+                    && mnum != PM_QUEEN_ANT))))
         return mnum;
     return NON_PM;
 }
@@ -6133,6 +6136,8 @@ egg_type_from_parent(
             mnum = PM_KILLER_BEE;
         else if (mnum == PM_WINGED_GARGOYLE)
             mnum = PM_GARGOYLE;
+        else if (mnum == PM_QUEEN_ANT)
+            mnum = PM_GIANT_ANT;
     }
     return mnum;
 }

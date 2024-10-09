@@ -372,7 +372,9 @@ fill_zoo(struct mkroom *sroom)
                           (type == COCKNEST) ? (rn2(4)
                                                     ? &mons[PM_COCKATRICE]
                                                     : &mons[PM_CHICKATRICE]) :
-                          (type == ANTHOLE) ? antholemon() :
+                          (type == ANTHOLE) ? (sx == tx && sy == ty
+                                                    ? &mons[PM_QUEEN_ANT]
+                                                    : antholemon()) :
                           (type == REALZOO) ? realzoomon() :
                           (type == GIANTCOURT) ? mkclass(S_GIANT, 0) :
                           (type == DRAGONLAIR) ? mkclass(S_DRAGON, 0) :

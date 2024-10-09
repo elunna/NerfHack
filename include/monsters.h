@@ -173,6 +173,18 @@
         M1_ANIMAL | M1_FLY | M1_NOHANDS | M1_OVIPAROUS | M1_POIS,
         M2_HOSTILE, 0,
         NO_RACE, 11, CLR_GRAY, LOCUST),
+    /* How do antholes not have a queen to guard and protect?
+     * We'll correct that little oversight... */
+    MON(NAM("queen ant"), S_ANT,
+        LVL(14, 24, -8, 0, 0), (G_GENO | G_NOGEN),
+        A(ATTK(AT_BITE, AD_PHYS, 3, 8),
+          ATTK(AT_STNG, AD_DRST, 3, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(100, 100, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_THICK_HIDE
+            | M1_CARNIVORE | M1_POIS,
+        M2_HOSTILE | M2_NASTY | M2_FEMALE | M2_PRINCE, 0,
+        NO_RACE, 16, CLR_CYAN, QUEEN_ANT),
     MON(NAM("assassin bug"), S_ANT,                                  /* Slash'EM */
         LVL(12, 24, 4, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 4, 6),
