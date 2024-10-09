@@ -2236,6 +2236,7 @@ teleport_pain(void)
     if (u.uen < 1)
         u.uen = 1;
     drain_en(rnd(8), FALSE);
+    make_stunned((HStun & TIMEOUT) + (long) d(15, 15), FALSE);
 }
 
 /*teleport.c*/
