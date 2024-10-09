@@ -34,6 +34,7 @@ local wiz2 = des.map({ halign = "center", valign = "center", map = [[
    --
    des.non_passwall(selection.area(00,00,27,12))
    -- Random traps.
+   des.trap("spiked pit",16,1)
    des.trap("spiked pit")
    des.trap("sleep gas")
    des.trap("anti magic")
