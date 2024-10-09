@@ -5202,7 +5202,7 @@ mhitm_ad_heal(
             pline("%s hits!  (I hope you don't mind.)", Monnam(magr));
             if (Upolyd) {
                 u.mh += rnd(7);
-                if (!rn2(7)) {
+                if (!rn2(2)) {
                     /* no upper limit necessary; effect is temporary */
                     u.mhmax++;
                     if (!rn2(13))
@@ -5212,7 +5212,7 @@ mhitm_ad_heal(
                     u.mh = u.mhmax;
             } else {
                 u.uhp += rnd(7);
-                if (!rn2(7)) {
+                if (!rn2(2)) {
                     /* hard upper limit via nurse care: 25 * ulevel */
                     if (u.uhpmax < 5 * u.ulevel + d(2 * u.ulevel, 10)) {
                         u.uhpmax++;
