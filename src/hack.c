@@ -2682,6 +2682,7 @@ domove_core(void)
     if (u_rooted())
         return;
 
+#if 0 /* Clouds are not traps */
     /* treat entering a visible gas cloud region like entering a trap;
        there could be a known trap as well as a region at the target spot;
        if so, ask about entering the region first; even though this could
@@ -2714,6 +2715,7 @@ domove_core(void)
             return;
         }
     }
+#endif
     /* maybe ask player for confirmation before walking into known traps */
     if (ParanoidTrap && !Stunned && !Confusion
         /* skip if player used 'm' prefix or is moving recklessly */
