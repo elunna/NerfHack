@@ -778,6 +778,10 @@ Gloves_off(void)
     if (u.twoweap && uswapwep && uswapwep->otyp == CORPSE)
         wielding_corpse(uswapwep, gloves, on_purpose);
 
+    /* you may now be touching some material you hate */
+    if (uwep)
+        retouch_object(&uwep, will_touch_skin(W_WEP), FALSE);
+
     if (condtests[bl_bareh].enabled)
         disp.botl = TRUE;
 
@@ -2489,7 +2493,7 @@ accessory_or_armor_on(struct obj *obj)
         }
     }
 
-    if (!retouch_object(&obj, FALSE))
+    if (!retouch_object(&obj, will_touch_skin(W_WEP), FALSE))
         return ECMD_TIME; /* costs a turn even though it didn't get worn */
 
     if (armor) {
@@ -3684,6 +3688,22 @@ ringbon(short ring_typ)
         bon += uright->spe;
     }
     return bon;
+}
+
+/* Return TRUE iff wearing/wielding a potential new piece of equipment with
+ * the given mask will touch the hero's skin. */
+boolean
+will_touch_skin(long mask)
+{
+    if (mask == W_ARMC && (uarm || uarmu))
+        return FALSE;
+    else if (mask == W_ARM && uarmu)
+        return FALSE;
+    else if ((mask & (W_WEP | W_SWAPWEP | W_ARMS)) && uarmg)
+        return FALSE;
+    else if (mask == W_QUIVER)
+        return FALSE;
+    return TRUE;
 }
 
 /*do_wear.c*/

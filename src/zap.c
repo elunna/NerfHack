@@ -2840,7 +2840,7 @@ dozap(void)
     if (!obj)
         return ECMD_CANCEL;
 
-    if (!retouch_object(&obj, FALSE))
+    if (!retouch_object(&obj, !uarmg, FALSE))
         return ECMD_TIME; /* costs a turn even though it didn't get worn */
 
     check_unpaid(obj);

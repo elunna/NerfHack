@@ -2228,7 +2228,7 @@ doinvoke(void)
     obj = getobj("invoke", invoke_ok, GETOBJ_PROMPT);
     if (!obj)
         return ECMD_CANCEL;
-    if (!retouch_object(&obj, FALSE))
+    if (!retouch_object(&obj, FALSE, FALSE))
         return ECMD_TIME;
     return arti_invoke(obj);
 }
@@ -2946,6 +2946,7 @@ Sting_effects(
 int
 retouch_object(
     struct obj **objp, /* might be destroyed or unintentionally dropped */
+    boolean direct,    /* whether player has physical protection from artifact */
     boolean loseit)    /* whether to drop it if hero can longer touch it */
 {
     struct obj *obj = *objp;
@@ -2959,23 +2960,35 @@ retouch_object(
     if (touch_artifact(obj, &gy.youmonst)) {
         char buf[BUFSZ];
         int dmg = 0, tmp;
-        boolean ag = ((objects[obj->otyp].oc_material == SILVER && Hate_silver) ||
+        boolean hatemat = ((objects[obj->otyp].oc_material == SILVER && Hate_silver) ||
                 (obj->otyp == CLOVE_OF_GARLIC && Race_if(PM_VAMPIRE))),
                 bane = bane_applies(get_artifact(obj), &gy.youmonst);
 
         /* nothing else to do if hero can successfully handle this object */
-        if (!ag && !bane)
+        if (!hatemat && !bane)
             return 1;
+
+        /* Another case where nothing should happen: hero is wearing gloves
+         * which protect them from directly touching a weapon of a material
+         * they hate or wearing boots that prevent them touching a kicked
+         * object. */
+        if (!bane && !direct)
+            return 1;
+
 
         /* hero can't handle this object, but didn't get touch_artifact()'s
            "<obj> evades your grasp|control" message; give an alternate one */
-        You_cant("handle %s%s!", yname(obj),
+        if (!bane) {
+            Your("%s %s!", xname(obj), rn2(2) ? "hurts to touch" : "burns your skin");
+        } else {
+            You_cant("handle %s%s!", yname(obj),
                  obj->owornmask ? " anymore" : "");
+        }
         /* also inflict damage unless touch_artifact() already did so */
         if (!touch_blasted) {
             const char *what = killer_xname(obj);
 
-            if (ag && !obj->oartifact && !bane) {
+            if (hatemat && !obj->oartifact && !bane) {
                 /* 'obj' is silver; for rings and wands it ended up that
                    way due to randomization at start of game; showing this
                    game's silver item without stating that it is silver
@@ -2988,13 +3001,26 @@ retouch_object(
             }
             /* damage is somewhat arbitrary; half the usual 1d20 physical
                for silver, 1d10 magical for <foo>bane, potentially both */
-            if (ag)
+            if (hatemat && direct)
                 tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
             if (bane)
                 dmg += rnd(10);
             Sprintf(buf, "handling %s", what);
             losehp(dmg, buf, KILLED_BY);
             exercise(A_CON, FALSE);
+
+            /* concession to those wishing to use gear made of an adverse material:
+            * don't make them totally unable to use them. In fact, they can touch
+            * them just fine as long as they're willing to.
+            * In keeping with the flavor of searing vs just pain implemented
+            * everywhere else, only silver is actually unbearable -- other
+            * hated non-silver materials can be used too. */
+#if 0
+        if (!bane && !(hatemat && obj->material == SILVER))
+#else
+        if (!bane)
+#endif
+            return 1;
         }
     }
 
@@ -3061,7 +3087,8 @@ untouchable(
     }
 
     if (beingworn || carryeffect || invoked) {
-        if (!retouch_object(&obj, drop_untouchable)) {
+        boolean direct = beingworn && will_touch_skin(obj->owornmask);
+        if (!retouch_object(&obj, direct, drop_untouchable)) {
             /* "<artifact> is beyond your control" or "you can't handle
                <object>" has been given and it is now unworn/unwielded
                and possibly dropped (depending upon caller); if dropped,

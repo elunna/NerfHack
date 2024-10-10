@@ -1034,6 +1034,11 @@ doengrave(void)
         goto doengr_exit;
     }
 
+    if (!retouch_object(&de->otmp, !uarmg, FALSE)) {
+        de->ret = ECMD_TIME;
+        goto doengr_exit;/* costs a turn even though it didn't get worn */
+    }
+    
     if (u.ustuck && (de->otmp == &hands_obj
                     || de->otmp->oclass == WEAPON_CLASS
                     || de->otmp->oclass == TOOL_CLASS)) {

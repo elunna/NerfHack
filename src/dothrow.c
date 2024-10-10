@@ -134,6 +134,8 @@ throw_obj(struct obj *obj, int shotlimit)
         res = ECMD_OK;
         goto unsplit_stack;
     }
+    (void) retouch_object(&obj, !uarmg, TRUE);
+
     u_wipe_engr(2);
     if (!safegloves(uarmg) && obj->otyp == CORPSE
         && touch_petrifies(&mons[obj->corpsenm])

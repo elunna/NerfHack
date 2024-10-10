@@ -3096,7 +3096,7 @@ doeat(void)
         /* let them eat rings */
         You_cant("eat %s you're wearing.", something);
         return ECMD_OK;
-    } else if (!(carried(otmp) ? retouch_object(&otmp, FALSE)
+    } else if (!(carried(otmp) ? retouch_object(&otmp, !uarmg, FALSE)
                                : touch_artifact(otmp, &gy.youmonst))) {
         return ECMD_TIME; /* got blasted so use a turn */
     }

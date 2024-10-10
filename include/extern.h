@@ -180,7 +180,7 @@ extern struct obj *what_gives(long *) NONNULLARG1;
 extern const char *glow_color(int);
 extern const char *glow_verb(int, boolean);
 extern void Sting_effects(int);
-extern int retouch_object(struct obj **, boolean) NONNULLARG1;
+extern int retouch_object(struct obj **, boolean, boolean) NONNULLARG1;
 extern void retouch_equipment(int);
 extern void mkot_trap_warn(void);
 extern boolean is_magic_key(struct monst *, struct obj *);
@@ -759,6 +759,7 @@ extern boolean inaccessible_equipment(struct obj *, const char *, boolean);
 extern int race_bonus(struct obj *) NONNULLARG1;
 extern int misc_bonus(struct obj *) NONNULLARG1;
 extern int ringbon(short);
+extern boolean will_touch_skin(long);
 
 /* ### dog.c ### */
 
