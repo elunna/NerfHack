@@ -176,6 +176,9 @@ choose_clerical_spell(struct monst* mtmp, int spellnum)
     if ((mtmp->mhp * 4) <= mtmp->mhpmax)
         spellnum = 1;
 
+    if (mtmp->data == &mons[PM_ARCH_VILE] && spellnum != 1)
+        return CLC_FIRE_PILLAR;
+
     switch (spellnum) {
     case 15:
     case 14:
@@ -1296,6 +1299,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case CLC_PROTECTION:
         case CLC_BLIGHT:
         case CLC_HOBBLE:
+        case CLC_FIRE_PILLAR:
             return TRUE;
         default:
             break;
@@ -1406,6 +1410,12 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             return TRUE;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)
+            return TRUE;
+
+        /* Only arch-viles can cast fire pillar at range. */
+        if (spellnum == CLC_FIRE_PILLAR
+            && mtmp->data != &mons[PM_ARCH_VILE]
+            && (distu(mtmp->mx, mtmp->my) > 2))
             return TRUE;
     }
     return FALSE;

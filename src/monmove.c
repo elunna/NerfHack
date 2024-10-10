@@ -1786,8 +1786,8 @@ m_move(struct monst *mtmp, int after)
         return MMOVE_DONE; /* still eating */
     }
 
-        /* Maggots infest corpses. */
-    if (ptr == &mons[PM_MAGGOT])
+        /* Maggots infest corpses, arch-viles revive them. */
+    if (ptr == &mons[PM_MAGGOT] || mtmp->data == &mons[PM_ARCH_VILE])
         minfestcorpse(mtmp);
 
     if (hides_under(ptr) && OBJ_AT(mtmp->mx, mtmp->my)
@@ -2520,8 +2520,10 @@ decide_to_teleport(struct monst *mtmp)
 void
 minfestcorpse(struct monst *mtmp)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     coord cc;
+    boolean resurrecting = mtmp->data == &mons[PM_ARCH_VILE];
+
     /* If a pet, eating is handled separately, in dog.c */
     if (mtmp->mtame)
         return;
@@ -2541,7 +2543,8 @@ minfestcorpse(struct monst *mtmp)
                 return;
             }
             if (cansee(mtmp->mx,mtmp->my) && flags.verbose)
-                pline("%s infests %s!", Monnam(mtmp),
+                pline("%s %s %s!", Monnam(mtmp),
+                    resurrecting ? "resurrects" : "infests",
                     distant_name(otmp,doname));
             else if (!Deaf && flags.verbose)
                 You_hear("an unsettling writhing noise.");
@@ -2551,7 +2554,14 @@ minfestcorpse(struct monst *mtmp)
             if (mtmp->data == &mons[PM_MAGGOT]) {
                 if (enexto(&cc, mtmp->mx, mtmp->my, &mons[PM_GIANT_FLY]))
                     makemon(&mons[PM_GIANT_FLY ], cc.x, cc.y, NO_MINVENT);
+            } else if (resurrecting) {
+                if (enexto(&cc, mtmp->mx, mtmp->my, &mons[otmp->corpsenm])) {
+                    makemon(&mons[otmp->corpsenm], cc.x, cc.y,
+                        (NO_MINVENT | MM_NOCOUNTBIRTH));
+                    mtmp->mrevived = 1;
+                }
             }
+
             delobj(otmp);
             break; /* only eat one at a time... */
         }
