@@ -1466,6 +1466,18 @@ passivemm(
             }
         }
         break;
+    case AD_QUIL:
+        if (mhit && !rn2(2)) {
+            Strcpy(buf, Monnam(magr));
+            if (canseemon(magr)) {
+                pline("%s is jabbed by %s quills!", buf,
+                        s_suffix(mon_nam(mdef)));
+                if (!thick_skinned(mdef->data))
+                        tmp += rn2(4);
+            }
+            goto assess_dmg;
+        }
+        break;
     default:
         break;
     }

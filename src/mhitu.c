@@ -2998,6 +2998,18 @@ passiveum(
             }
             pline("%s is jolted with your electricity!", Monnam(mtmp));
             break;
+        case AD_QUIL:
+            if (oldu_mattk->aatyp == AT_NONE) {
+                if (!rn2(2)) {
+                    pline("%s is jabbed by %squills!", Monnam(mtmp),
+                          !Upolyd ? "" : "your ");
+                    if (!thick_skinned(mtmp->data))
+                        tmp += rn2(4);
+                } else
+                    tmp = 0;
+                goto assess_dmg;
+            }
+            break;
         default:
             tmp = 0;
             break;
