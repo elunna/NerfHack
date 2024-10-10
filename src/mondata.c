@@ -576,6 +576,7 @@ breakarm(struct permonst *ptr)
                       || (ptr->msize > MZ_SMALL && !humanoid(ptr))
                       /* special cases of humanoids that cannot wear suits */
                       || ptr == &mons[PM_MARILITH]
+                      || ptr == &mons[PM_SPIKED_ORC]
                       || ptr == &mons[PM_WINGED_GARGOYLE]);
 }
 
