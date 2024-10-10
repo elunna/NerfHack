@@ -1466,18 +1466,21 @@ passivemm(
             }
         }
         break;
-    case AD_QUIL:
+    case AD_QUIL: {
+        boolean spikes = is_orc(mdef->data);
         if (mhit && !rn2(2)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr)) {
-                pline("%s is jabbed by %s quills!", buf,
-                        s_suffix(mon_nam(mdef)));
+                pline("%s is jabbed by %s %ss!", buf,
+                        s_suffix(mon_nam(mdef)),
+                        spikes ? "spikes" : "quills");
                 if (!thick_skinned(mdef->data))
                         tmp += rn2(4);
             }
             goto assess_dmg;
         }
         break;
+    }
     default:
         break;
     }

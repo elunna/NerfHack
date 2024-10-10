@@ -7105,18 +7105,21 @@ passive(
         } else if (malive && canseemon(mon))
             pline_mon(mon, "puffs out a cloud of spores!");
         break;
-    case AD_QUIL:
+    case AD_QUIL: {
+        boolean spikes = is_orc(mon->data);
         if (monnear(mon, u.ux, u.uy) && mhitb) {
             if (Blind || !flags.verbose) {
                 You("are jabbed by something sharp!");
             } else {
-                You("are jabbed by %s spikes!", s_suffix(mon_nam(mon)));
+                You("are jabbed by %s %s!", s_suffix(mon_nam(mon)),
+                     spikes ? "spikes" : "quills");
             }
             if (!thick_skinned(gy.youmonst.data))
                 tmp += rn2(4);
             mdamageu(mon, tmp);
         }
         break;
+    }
     default:
         break;
     }

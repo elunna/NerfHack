@@ -2998,11 +2998,13 @@ passiveum(
             }
             pline("%s is jolted with your electricity!", Monnam(mtmp));
             break;
-        case AD_QUIL:
+        case AD_QUIL: {
+            boolean spikes = is_orc(gy.youmonst.data);
             if (oldu_mattk->aatyp == AT_NONE) {
                 if (!rn2(2)) {
-                    pline("%s is jabbed by %squills!", Monnam(mtmp),
-                          !Upolyd ? "" : "your ");
+                    pline("%s is jabbed by %s%ss!", Monnam(mtmp),
+                          !Upolyd ? "" : "your ",
+                          spikes ? "spikes" : "quills");
                     if (!thick_skinned(mtmp->data))
                         tmp += rn2(4);
                 } else
@@ -3010,6 +3012,7 @@ passiveum(
                 goto assess_dmg;
             }
             break;
+        }
         default:
             tmp = 0;
             break;

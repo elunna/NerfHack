@@ -863,6 +863,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_URUK_HAI:
     case PM_ORC_SHAMAN:
     case PM_ORC_CAPTAIN:
+    case PM_SPIKED_ORC:
     case PM_ROCK_PIERCER:
     case PM_IRON_PIERCER:
     case PM_GLASS_PIERCER:
