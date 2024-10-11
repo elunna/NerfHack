@@ -2575,7 +2575,6 @@ domove_core(void)
 {
     struct monst *mtmp;
     struct rm *tmpr;
-    NhRegion *newreg, *oldreg;
     coordxy x, y;
     struct trap *trap = NULL;
     int glyph;
