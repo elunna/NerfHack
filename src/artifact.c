@@ -3556,13 +3556,17 @@ artifact_info(int anum)
     case CREATE_PORTAL: art_info.invoke = "Branchport"; break;
     case ENLIGHTENING: art_info.invoke = "Enlightenment"; break;
     case CREATE_AMMO: art_info.invoke = "Create Ammo"; break;
-    case SUMMONING: art_info.invoke = "Summon a horde of spell beings"; break;
+    case BANISH: art_info.invoke = "Banish demon"; break;
+    case BLINDING_RAY: art_info.invoke = "Blinding ray"; break;
     case LIGHTNING_BOLT: art_info.invoke = "Lightning Bolt"; break;
+    case SUMMONING: art_info.invoke = "Card drop boost"; break;
+    case UNCURSE_INVK: art_info.invoke = "Uncurse Inventory"; break;
+    /* The following are properties converted to invokes */
     case CONFLICT: art_info.invoke = "Conflict"; break;
     case LEVITATION: art_info.invoke = "Levitation"; break;
     case INVIS: art_info.invoke = "Invisibility"; break;
-    case FLYING: art_info.invoke = "Flying"; break;
     case WWALKING: art_info.invoke = "Water Walking"; break;
+    case FLYING: art_info.invoke = "Flying"; break;
 
     default:
         art_info.invoke = "None"; break;
