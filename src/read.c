@@ -1239,7 +1239,7 @@ seffect_enchant_armor(struct obj **sobjp)
     boolean confused = (Confusion != 0);
     boolean old_erodeproof, new_erodeproof;
     boolean already_known = objects[sobj->otyp].oc_name_known;
-
+    boolean resists_magic;
     if (already_known) {
         for (i = 0; i < 5; i++) {
             otmp = getobj("enchant", enchant_ok, GETOBJ_NOFLAGS);
@@ -1327,6 +1327,18 @@ seffect_enchant_armor(struct obj **sobjp)
         exercise(A_WIS, FALSE);
         return;
     }
+
+    /* Items which provide magic resistance also resist enchanting.
+     * They don't resist when their enchantment is negative, that is
+     * "un"-enchanting a bad enchantment. But for anything starting at
+     * +0 has a 1 in (enchantment + 2) chance of failure. */
+    resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
+        || defends(AD_MAGM, otmp);;
+    if (resists_magic && otmp->spe >= 0 && rn2(otmp->spe + 2)) {
+        pline("%s vibrates and resists!", Yname2(otmp));
+        return;
+    }
+
     s = scursed ? -1
         : (otmp->spe >= 9)
         ? (rn2(otmp->spe) == 0)
@@ -1750,6 +1762,7 @@ seffect_enchant_weapon(struct obj **sobjp)
     boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
     boolean old_erodeproof, new_erodeproof;
+    boolean resists_magic;
 
     /* [What about twoweapon mode?  Proofing/repairing/enchanting both
        would be too powerful, but shouldn't we choose randomly between
@@ -1789,6 +1802,15 @@ seffect_enchant_weapon(struct obj **sobjp)
         uwep->oerodeproof = new_erodeproof ? 1 : 0;
         return;
     }
+
+     /* Items that grant magic resistance themselves resist enchantment. */
+    resists_magic = objects[uwep->otyp].oc_oprop == ANTIMAGIC
+        || defends(AD_MAGM, uwep);
+    if (resists_magic && uwep->spe >= 0 && rn2(uwep->spe + 2)) {
+        pline("%s vibrates and resists!", Yname2(uwep));
+        return;
+    }
+
     /* Adjusted max weapon enchantment. For more exciting hackin 'n slashin
      * we will allow the new 'soft' limit to be 11.
      * This allows weapons to be safely enchanted up to 13 if the player
