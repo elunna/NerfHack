@@ -212,7 +212,7 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 #define is_corrodeable(otmp) \
     (objects[otmp->otyp].oc_material == COPPER          \
      || objects[otmp->otyp].oc_material == IRON         \
-     || objects[otmp->otyp].oc_material == SILVER)
+     || is_silver(otmp))
 /* inherently fooproof */
 #define is_supermaterial(otmp) \
     (objects[otmp->otyp].oc_material == DRAGON_HIDE \

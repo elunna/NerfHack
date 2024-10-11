@@ -179,7 +179,7 @@ mk_artifact(
             continue;
 
         /* Don't gift silver to vampires. */
-        if (Race_if(PM_VAMPIRE) && objects[a->otyp].oc_material == SILVER)
+        if (Race_if(PM_VAMPIRE) && is_silver(a))
             continue;
 
         if (!by_align) {
@@ -492,7 +492,7 @@ shade_glare(struct obj *obj)
     const struct artifact *arti;
 
     /* any silver object is effective */
-    if (objects[obj->otyp].oc_material == SILVER)
+    if (is_silver(obj))
         return TRUE;
     /* non-silver artifacts with bonus against undead also are effective */
     arti = get_artifact(obj);
@@ -1003,7 +1003,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
         touch_blasted = TRUE;
         dmg = d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
         /* add half (maybe quarter) of the usual silver damage bonus */
-        if (objects[obj->otyp].oc_material == SILVER && Hate_silver)
+        if (is_silver(obj) && Hate_silver)
             tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
         Sprintf(buf, "touching %s", oart->name);
         losehp(dmg, buf, KILLED_BY); /* magic damage, not physical */
@@ -2960,7 +2960,7 @@ retouch_object(
     if (touch_artifact(obj, &gy.youmonst)) {
         char buf[BUFSZ];
         int dmg = 0, tmp;
-        boolean hatemat = ((objects[obj->otyp].oc_material == SILVER && Hate_silver) ||
+        boolean hatemat = ((is_silver(obj) && Hate_silver) ||
                 (obj->otyp == CLOVE_OF_GARLIC && Race_if(PM_VAMPIRE))),
                 bane = bane_applies(get_artifact(obj), &gy.youmonst);
 
@@ -3016,7 +3016,7 @@ retouch_object(
             * everywhere else, only silver is actually unbearable -- other
             * hated non-silver materials can be used too. */
 #if 0
-        if (!bane && !(hatemat && obj->material == SILVER))
+        if (!bane && !(hatemat && is_silver(obj)))
 #else
         if (!bane)
 #endif

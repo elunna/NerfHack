@@ -707,7 +707,7 @@ hitmm(
     boolean weaponhit = (mattk->aatyp == AT_WEAP
                          || (mattk->aatyp == AT_CLAW && mwep)),
             silverhit = (weaponhit && mwep
-                         && objects[mwep->otyp].oc_material == SILVER);
+                         && is_silver(mwep));
 
     pre_mm_attack(magr, mdef);
 

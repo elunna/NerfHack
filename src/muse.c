@@ -3087,7 +3087,7 @@ use_misc(struct monst *mtmp)
                     maybe_grease_off(obj);
                 return 1;
             } else if (where_to == 3 && mon_hates_silver(mtmp)
-                       && objects[obj->otyp].oc_material == SILVER) {
+                       && is_silver(obj)) {
                 /* this monster won't want to catch a silver
                    weapon; drop it at hero's feet instead */
                 where_to = 2;

@@ -163,7 +163,7 @@ thitu(
             obj->dknown = TRUE;
             losehp(dam, knm, kprefix); /* beheading */
         } else {
-            if (obj && objects[obj->otyp].oc_material == SILVER
+            if (obj && is_silver(obj)
                 && Hate_silver) {
                 /* extra damage already applied by dmgval() */
                 pline_The("silver sears your flesh!");

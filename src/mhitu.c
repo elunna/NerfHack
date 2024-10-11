@@ -1865,7 +1865,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     case AD_DCAY: /* like-like */
         if (!mtmp->mcan && rn2(2)) {
             /* They prefer shields first */
-            if (uarms && objects[uarms->otyp].oc_material != SILVER) {
+            if (uarms && !is_silver(uarms)) {
                 pline("%s eats %s!", Monnam(mtmp), yobjnam(uarms, (char *) 0));
                 destroy_arm(uarms, FALSE, FALSE);
                 if (uarms)

@@ -446,7 +446,7 @@ dmgval_core(
                 bonus += rnd(4);
             damage_info->axe_damage = "\t+1d4 against wood golems.";
         }
-        if (objects[otyp].oc_material == SILVER && mon && mon_hates_silver(mon)) {
+        if (is_silver(otmp) && mon && mon_hates_silver(mon)) {
             bonus += rnd(20);
             damage_info->hate_damage = "\t+1d20 against silver hating monsters.";
         }
@@ -527,8 +527,7 @@ special_dmgval(
            scales refer to color, not material) and the only way to hit
            with one--aside from throwing--is to wield it and perform a
            weapon hit, but we include a general check here */
-        if (objects[obj->otyp].oc_material == SILVER
-            && mon_hates_silver(mdef)) {
+        if (is_silver(obj) && mon_hates_silver(mdef)) {
             bonus += rnd(20);
             silverhit |= armask;
         }
@@ -536,15 +535,13 @@ special_dmgval(
     /* when no gloves we check for silver rings (blessed rings ignored) */
     } else if ((left_ring || right_ring) && magr == &gy.youmonst) {
         if (left_ring && uleft) {
-            if (objects[uleft->otyp].oc_material == SILVER
-                && mon_hates_silver(mdef)) {
+            if (is_silver(uleft) && mon_hates_silver(mdef)) {
                 bonus += rnd(20);
                 silverhit |= W_RINGL;
             }
         }
         if (right_ring && uright) {
-            if (objects[uright->otyp].oc_material == SILVER
-                && mon_hates_silver(mdef)) {
+            if (is_silver(uright) && mon_hates_silver(mdef)) {
                 /* two silver rings don't give double silver damage
                    but 'silverhit' messages might be adjusted for them */
                 if (!(silverhit & W_RINGL))

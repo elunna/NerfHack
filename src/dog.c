@@ -1139,7 +1139,7 @@ dogfood(struct monst *mon, struct obj *obj)
             || obj->otyp == FOULSTONE
             || obj->otyp == RIN_SLOW_DIGESTION)
             return TABU;
-        if (mon_hates_silver(mon) && objects[obj->otyp].oc_material == SILVER)
+        if (mon_hates_silver(mon) && is_silver(obj))
             return TABU;
         if (is_bigeater(mptr) && is_organic(obj))
             return ACCFOOD;

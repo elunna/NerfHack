@@ -1351,10 +1351,8 @@ toss_up(struct obj *obj, boolean hitsroof)
         hitfloor(obj, FALSE);
         gt.thrownobj = 0;
     } else { /* neither potion nor other breaking object */
-        int material = objects[otyp].oc_material;
-        boolean is_silver = (material == SILVER),
-                less_damage = (hard_helmet(uarmh)
-                               && (!is_silver || !Hate_silver)),
+        boolean less_damage = (hard_helmet(uarmh)
+                               && (!is_silver(obj) || !Hate_silver)),
                 harmless = (stone_missile(obj)
                             && passes_rocks(gy.youmonst.data)),
                 artimsg = FALSE;
@@ -1376,11 +1374,11 @@ toss_up(struct obj *obj, boolean hitsroof)
                dmgval()'s artifact light against gremlin or axe against
                woody creature since both involve weapons; hero-as-shade is
                hypothetical because hero can't polymorph into that form */
-            if (gy.youmonst.data == &mons[PM_SHADE] && !is_silver)
+            if (gy.youmonst.data == &mons[PM_SHADE] && !is_silver(obj))
                 dmg = 0;
             if (obj->blessed && mon_hates_blessings(&gy.youmonst))
                 dmg += rnd(4);
-            if (is_silver && Hate_silver)
+            if (is_silver(obj) && Hate_silver)
                 dmg += rnd(20);
         }
         if (dmg > 2 && less_damage)
@@ -1427,7 +1425,7 @@ toss_up(struct obj *obj, boolean hitsroof)
             done(STONING);
             return obj ? TRUE : FALSE;
         }
-        if (is_silver && Hate_silver)
+        if (is_silver(obj) && Hate_silver)
             pline_The("silver sears you!");
         if (harmless)
             hit(thesimpleoname(obj), &gy.youmonst, " but doesn't hurt.");

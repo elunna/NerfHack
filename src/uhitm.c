@@ -2490,7 +2490,7 @@ shade_aware(struct obj *obj)
         || obj->otyp == IRON_CHAIN      /* dmgval handles those first three */
         || obj->otyp == MIRROR          /* silver in the reflective surface */
         || obj->otyp == CLOVE_OF_GARLIC /* causes shades to flee */
-        || objects[obj->otyp].oc_material == SILVER)
+        || is_silver(obj))
         return TRUE;
     return FALSE;
 }
@@ -4904,8 +4904,7 @@ mhitm_ad_phys(
                 }
                 if (!mhm->damage)
                     return;
-                if (objects[otmp->otyp].oc_material == SILVER
-                    && Hate_silver) {
+                if (is_silver(otmp) && Hate_silver) {
                     pline_The("silver sears your flesh!");
                     exercise(A_CON, FALSE);
                 }
@@ -6525,8 +6524,7 @@ hmonas(struct monst *mon)
                      || is_missile(uswapwep)) /* dart, shuriken, boomerang */
                 /* and not two-handed and not incapable of being wielded */
                 && !bimanual(uswapwep)
-                && !(objects[uswapwep->otyp].oc_material == SILVER
-                     && Hate_silver))
+                && !(is_silver(uswapwep) && Hate_silver))
                 altwep = !altwep; /* toggle for next attack */
             weapon = *originalweapon;
             if (!weapon) /* no need to go beyond no-gloves to rings; not ...*/
