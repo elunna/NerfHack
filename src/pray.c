@@ -2127,6 +2127,11 @@ void
 crackaltar(void)
 {
     struct rm *lev = &levl[u.ux][u.uy];
+
+    /* Safeguard mostly for #wizcrown*/
+    if (!IS_ALTAR(lev->typ))
+        return;
+
     if (lev->cracked && !Is_astralevel(&u.uz)) {
         /* don't leave loose ends.. */
         set_levltyp(u.ux, u.uy, ROOM);
