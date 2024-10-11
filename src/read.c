@@ -3429,8 +3429,13 @@ do_genocide(
             /* accumulated 'cnt' doesn't take groups into account;
                assume bringing in new mon(s) didn't remove any old ones */
             cnt = monster_census(FALSE) - census;
-            pline("Sent in %s%s.", (cnt > 1) ? "some " : "",
-                  (cnt > 1) ? makeplural(buf) : an(buf));
+            if (!Hallucination && mons[mndx].mlet == S_TROLL) {
+                pline("S3n7 1n %s!!!",
+                      (cnt > 1) ? "s0m3 7r0llz" : "4 7r0ll");
+            } else  {
+                pline("Sent in %s%s.", (cnt > 1) ? "some " : "",
+                    (cnt > 1) ? makeplural(buf) : an(buf));
+            }
         } else
             pline1(nothing_happens);
     }
