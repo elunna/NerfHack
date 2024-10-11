@@ -516,6 +516,7 @@ DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  1200, 6, CLR_GRAY,
     /* gold DSM is a light source; there's no property for that */
 DRGN_ARMR("gold dragon scale mail",    1, 0,           900, 6, HI_GOLD,
                                                     GOLD_DRAGON_SCALE_MAIL),
+/* Silver scales are coated in silver - see is_silver() */
 DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 1200, 6, DRAGON_SILVER,
                                                     SILVER_DRAGON_SCALE_MAIL),
 DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 7, CLR_CYAN,
@@ -541,6 +542,7 @@ DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,   700, 9, CLR_GRAY,
                                                         GRAY_DRAGON_SCALES),
 DRGN_ARMR("gold dragon scales",        0, 0,           500, 9, HI_GOLD,
                                                         GOLD_DRAGON_SCALES),
+/* Silver scales are coated in silver - see is_silver() */
 DRGN_ARMR("silver dragon scales",      0, REFLECTING,  700, 9, DRAGON_SILVER,
                                                         SILVER_DRAGON_SCALES),
 DRGN_ARMR("shimmering dragon scales",  0, DISPLACED,   700, 8, CLR_CYAN,

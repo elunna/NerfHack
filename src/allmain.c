@@ -1360,18 +1360,21 @@ vamp_can_regen(void)
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         if (uwep && is_silver(uwep) && !is_quest_artifact(uwep) && !uarmg)
             return 0;
+        if (uswapwep && is_silver(uswapwep) && u.twoweap && !uarmg)
+            return 0;
+        /* Silver coated DSM*/
+        if (uarm && is_silver(uarm) && !uarmu)
+            return 0;
+        /* Shield of reflection */
         if (uarms && is_silver(uarms) && !uarmg)
             return 0;
+        /* Silver rings */
         if (uleft && is_silver(uleft))
             return 0;
         if (uright && is_silver(uright))
             return 0;
-        if (uswapwep && is_silver(uswapwep) && u.twoweap && !uarmg)
-            return 0;
 
-#if 0 /* Unnecessary checks - no object materials */
-        if (uarm && is_silver(uarm) && !uarmu)
-            return 0;
+#if 0 /* Currently unnecessary checks - no object materials */
         if (uarmu && is_silver(uarmu))
             return 0;
         if (uarmc && is_silver(uarmc) && !uarmu && !uarm)

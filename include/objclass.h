@@ -222,6 +222,8 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
     (is_rustprone(otmp) || is_flammable(otmp)           \
      || is_rottable(otmp) || is_corrodeable(otmp)       \
      || is_crackable(otmp))
-#define is_silver(otmp) (objects[otmp->otyp].oc_material == SILVER)
+#define is_silver(otmp) (objects[otmp->otyp].oc_material == SILVER \
+    || otmp->otyp == SILVER_DRAGON_SCALES \
+    || otmp->otyp == SILVER_DRAGON_SCALE_MAIL)
 
 #endif /* OBJCLASS_H */
