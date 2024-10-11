@@ -3088,6 +3088,7 @@ extern int num_spells(void);
 extern void skill_based_spellbook_id(void);
 extern void spell_nag(void);
 extern const char *spelltypemnemonic(int);
+extern void cast_chain_lightning(void);
 
 /* ### stairs.c ### */
 

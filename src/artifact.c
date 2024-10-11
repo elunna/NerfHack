@@ -1614,6 +1614,9 @@ artifact_hit(
                 pline_The("massive hammer hits%s %s%c",
                           !gs.spec_dbon_applies ? "" : "!  Lightning strikes",
                           hittee, !gs.spec_dbon_applies ? '.' : '!');
+            } else if (otmp->oartifact == ART_THUNDERFISTS) {
+                pline_The("thundering fists %s %s.",
+                          rn2(2) ? "pummel" : "strike", hittee);
             }
         }
         if (gs.spec_dbon_applies)
@@ -1623,6 +1626,14 @@ artifact_hit(
             if (!youdefend)
                 *dmgptr += itemdmg; /* item destruction dmg */
         }
+
+        /* Bonus chain lightning for Thunderfists */
+        if (otmp->oartifact == ART_THUNDERFISTS
+            && gs.spec_dbon_applies && !rn2(20)) {
+            pline("Lightning strikes!");
+            cast_chain_lightning();
+        }
+
         return realizes_damage;
     }
 

@@ -1236,6 +1236,13 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
                  | ((hmd->twohits == 0 || hmd->twohits == 2) ? W_RINGL : 0L));
     hmd->dmg += special_dmgval(&gy.youmonst, mon, spcdmgflg, &silverhit);
 
+    if (uarmg && uarmg->oartifact == ART_THUNDERFISTS) {
+
+        artifact_hit(&gy.youmonst, mon, uarmg, &hmd->dmg, hmd->dieroll);
+        if (Hallucination)
+            pline("THUNDERSTRUCK!");
+    }
+
     /* copy silverhit info back into struct _hitmon_data *hmd */
     switch (hmd->twohits) {
     case 0: /* only one hit being attempted; a silver ring on either hand

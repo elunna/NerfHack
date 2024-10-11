@@ -207,6 +207,12 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR, MIRRORBRIGHT),
 
+
+    A("Thunderfists", GAUNTLETS_OF_FORCE,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_PROTECT), 0, 0,
+      ELEC(0, 8), DFNS(AD_ELEC), NO_CARY, 0,
+      A_NEUTRAL, PM_MONK, NON_PM, 5000L, NO_COLOR, THUNDERFISTS),
+
     /*
      *      Mjollnir can be thrown when wielded if hero has 25 Strength
      *      (usually via gauntlets of power but possible with rings of
