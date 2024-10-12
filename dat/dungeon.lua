@@ -100,18 +100,18 @@ dungeon = {
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 8,
-      range = 3,
+      base = 20,
+      range = 5,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
       alignment = "noalign",
       branches = {
          {
             name = "Vlad's Tower",
-            base = 2,
-            range = 8,
+            base = 9,
+            range = 5,
             direction = "up"
-         },
+         }
       },
       levels = {
          {
@@ -122,6 +122,30 @@ dungeon = {
          {
             name = "sanctum",
             base = -1
+         },
+         {
+            name = "juiblex",
+            bonetag = "J",
+            base = 4,
+            range = 4
+         },
+         {
+            name = "baalz",
+            bonetag = "B",
+            base = 6,
+            range = 4
+         },
+         {
+            name = "asmodeus",
+            bonetag = "A",
+            base = 2,
+            range = 6
+         },
+         {
+            name = "orcus",
+            bonetag = "O",
+            base = 10,
+            range = 6
          },
       }
    },
