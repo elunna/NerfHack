@@ -13,6 +13,8 @@
 #endif
 
 #include "config.h"
+#include "hacklib.h"
+
 #if !defined(O_WRONLY) && !defined(LSC) && !defined(AZTEC_C)
 #include <fcntl.h>
 #endif
@@ -26,11 +28,12 @@ extern int vms_open(const char *, int, unsigned);
 #define nhUse(arg) (void)(arg)
 #endif
 
+/* copy_bytes() has been moved to hacklib */
+
 int restore_savefile(char *);
 void set_levelfile_name(int);
 int open_levelfile(int);
 int create_savefile(void);
-void copy_bytes(int, int);
 static void store_formatindicator(int);
 
 #ifndef WIN_CE
@@ -250,22 +253,6 @@ create_savefile(void)
     return fd;
 }
 
-void
-copy_bytes(int ifd, int ofd)
-{
-    char buf[BUFSIZ];
-    int nfrom, nto;
-
-    do {
-        nfrom = read(ifd, buf, BUFSIZ);
-        nto = write(ofd, buf, nfrom);
-        if (nto != nfrom) {
-            Fprintf(stderr, "file copy failed!\n");
-            exit(EXIT_FAILURE);
-        }
-    } while (nfrom == BUFSIZ);
-}
-
 int
 restore_savefile(char *basename)
 {
@@ -389,6 +376,7 @@ restore_savefile(char *basename)
         return -1;
     }
 
+    assert((size_t) pltmpsiz <= sizeof plbuf);
     if (write(sfd, (genericptr_t) plbuf, pltmpsiz) != pltmpsiz) {
         Fprintf(stderr, "Error writing %s; recovery failed (player name).\n",
                 savename);
@@ -398,11 +386,17 @@ restore_savefile(char *basename)
         return -1;
     }
 
-    copy_bytes(lfd, sfd);
+    if (!copy_bytes(lfd, sfd)) {
+        Fprintf(stderr, "file copy failed!\n");
+        exit(EXIT_FAILURE);
+    }
     Close(lfd);
     (void) unlink(lock);
 
-    copy_bytes(gfd, sfd);
+    if (!copy_bytes(gfd, sfd)) {
+        Fprintf(stderr, "file copy failed!\n");
+        exit(EXIT_FAILURE);
+    }
     Close(gfd);
     set_levelfile_name(0);
     (void) unlink(lock);
@@ -417,10 +411,14 @@ restore_savefile(char *basename)
                 /* any or all of these may not exist */
                 levc = (xint8) lev;
                 if (write(sfd, (genericptr_t) &levc, sizeof levc)
-                    != sizeof levc)
+                    != sizeof levc) {
                     res = -1;
-                else
-                    copy_bytes(lfd, sfd);
+		} else {
+                    if (!copy_bytes(lfd, sfd)) {
+                        Fprintf(stderr, "file copy failed!\n");
+                        exit(EXIT_FAILURE);
+		    }
+		}
                 Close(lfd);
                 (void) unlink(lock);
             }
@@ -442,7 +440,10 @@ restore_savefile(char *basename)
         in = open("NetHack:default.icon", O_RDONLY);
         out = open(iconfile, O_WRONLY | O_TRUNC | O_CREAT);
         if (in > -1 && out > -1) {
-            copy_bytes(in, out);
+            if (!copy_bytes(in, out)) {
+                Fprintf(stderr, "file copy failed!\n");
+                exit(EXIT_FAILURE);
+            }
         }
         if (in > -1)
             close(in);
@@ -460,8 +461,8 @@ store_formatindicator(int fd)
     char indicate = 'h';      /* historical */
     int cmc = 0;
 
-    write(fd, (genericptr_t) &indicate, sizeof indicate);
-    write(fd, (genericptr_t) &cmc, sizeof cmc);
+    (void) write(fd, (genericptr_t) &indicate, sizeof indicate);
+    (void) write(fd, (genericptr_t) &cmc, sizeof cmc);
 }
 
 

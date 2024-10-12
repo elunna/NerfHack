@@ -1467,6 +1467,12 @@ when a secret corridor was discovered by wand of secret door detection or by
 	forgotten unless within range of a light source
 when poly'd into a giant, kicking a closed door always succeeds in breaking it
 reduce crystal plate mail weight
+interactively setting a status highlight for hunger with 'O' and choosing
+	'text match' could crash while setting up the menu of hunger status
+	value strings; happened for curses or if the program was built to
+	use C++ regex processing but not for tty+posixregex
+a pet with the hides-under attribute could "move reluctantly over" a cursed
+	object and then hide under it
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2043,6 +2049,8 @@ non-fireproof water walking boots wouldn't be burnt up if fire resistant hero
 	walked on molten lava
 1x1 poison gas clouds for green dragon and iron golem breath could be placed
 	at wall locations
+if a pile of objects had plain arrow(s) on top, map location classification
+	got confused and reported 'unexplored area'
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -2702,6 +2710,12 @@ livelog/#chronicle for saving-grace: if saving-grace prevents hero's death,
 enlightenment/attribute disclosure for saving-grace: include a line for have
 	or haven't been saved (game in progress) or did or didn't get saved
 	(game over) via saving-grace
+'selectsaved' lists "name-role-race-gend-algn" instead of just "name" in the
+	menu of save files available to be restored
+'selectsaved' prefixes "name-role-race-gend-algn" with "- " for normal play,
+	"X " for explore mode, or "D " for debug mode if any of the games
+	shown in its menu weren't saved during normal play; if they're all
+	normal play, the prefix is suppressed
 
 
 Platform- and/or Interface-Specific New Features

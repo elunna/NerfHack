@@ -87,6 +87,7 @@ dosave0(void)
     int res = 0;
 
     program_state.saving++; /* inhibit status and perm_invent updates */
+    notice_mon_off();
     /* we may get here via hangup signal, in which case we want to fix up
        a few of things before saving so that they won't be restored in
        an improper state; these will be no-ops for normal save sequence */
@@ -234,6 +235,7 @@ dosave0(void)
     res = 1;
 
  done:
+    notice_mon_on();
     program_state.saving--;
     return res;
 }
@@ -1069,16 +1071,35 @@ savelevchn(NHFILE *nhfp)
         svs.sp_levchn = 0;
 }
 
+/* write "name-role-race-gend-algn" into save file for menu-based restore;
+   the first dash is actually stored as '\0' instead of '-' */
 void
 store_plname_in_file(NHFILE *nhfp)
 {
-    int plsiztmp = PL_NSIZ;
+    char hero[PL_NSIZ_PLUS]; /* [PL_NSIZ + 4*(1+3) + 1] */
+    int plsiztmp = (int) sizeof hero;
+
+    (void) memset((genericptr_t) hero, '\0', sizeof hero);
+    /* augment svp.plname[]; the gender and alignment values reflect those
+       in effect at time of saving rather than at start of game */
+    Snprintf(hero, sizeof hero, "%s-%.3s-%.3s-%.3s-%.3s",
+            svp.plname, gu.urole.filecode,
+            gu.urace.filecode, genders[flags.female].filecode,
+            aligns[1 - u.ualign.type].filecode);
+    /* replace "-role-race..." with "\0role-race..." so that we can include
+       or exclude the role-&c suffix easily, without worrying about whether
+       plname contains any dashes; but don't rely on snprintf() for this */
+    hero[strlen(svp.plname)] = '\0';
+    /* insert playmode into final slot of hero[];
+       'D','X','-' are the same characters as are used for paniclog entries */
+    assert(hero[PL_NSIZ_PLUS - 1 - 1] == '\0');
+    hero[PL_NSIZ_PLUS - 1] = wizard ? 'D' : discover ? 'X' : '-';
 
     if (nhfp->structlevel) {
         bufoff(nhfp->fd);
         /* bwrite() before bufon() uses plain write() */
         bwrite(nhfp->fd, (genericptr_t) &plsiztmp, sizeof plsiztmp);
-        bwrite(nhfp->fd, (genericptr_t) svp.plname, plsiztmp);
+        bwrite(nhfp->fd, (genericptr_t) hero, plsiztmp);
         bufon(nhfp->fd);
     }
     return;
