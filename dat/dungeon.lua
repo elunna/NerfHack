@@ -130,6 +130,12 @@ dungeon = {
             range = 4
          },
          {
+            name = "mephisto",
+            bonetag = "M",
+            base = 2,
+            range = 6
+         },
+         {
             name = "baalz",
             bonetag = "B",
             base = 6,
