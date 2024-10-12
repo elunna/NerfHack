@@ -1804,9 +1804,9 @@ seffect_enchant_weapon(struct obj **sobjp)
     }
 
      /* Items that grant magic resistance themselves resist enchantment. */
-    resists_magic = objects[uwep->otyp].oc_oprop == ANTIMAGIC
-        || defends(AD_MAGM, uwep);
-    if (resists_magic && uwep->spe >= 0 && rn2(uwep->spe + 2)) {
+    resists_magic = uwep && (objects[uwep->otyp].oc_oprop == ANTIMAGIC
+        || defends(AD_MAGM, uwep));
+    if (uwep && resists_magic && uwep->spe >= 0 && rn2(uwep->spe + 2)) {
         pline("%s vibrates and resists!", Yname2(uwep));
         return;
     }
