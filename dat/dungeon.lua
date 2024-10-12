@@ -143,8 +143,9 @@ dungeon = {
             range = 4
          },
          {
-            name = "asmodeus",
+            name = "asmode",
             bonetag = "A",
+            nlevels = 2,
             base = 2,
             range = 6
          },

@@ -35,7 +35,7 @@ $	sysconf_file = "[.sys.vms]sysconf"
 $	guidebook  = "[.doc]Guidebook.txt"
 $	invoc_proc = "[.sys.vms]nethack.com"
 $	trmcp_file = "[.sys.share]termcap"
-$	spec_files = "air.lua,asmodeus.lua,astral.lua,baalz-%.lua,"	-
+$	spec_files = "air.lua,asmode-%.lua,astral.lua,baalz-%.lua,"	-
 		+ "bigrm-*.lua,castle.lua,earth.lua,fakewiz%.lua,"	-
 		+ "fire.lua,hellfill.lua,juiblex.lua,knox-%.lua,"		-
 		+ "medusa-%.lua,minefill.lua,minetn-*.lua,"		-

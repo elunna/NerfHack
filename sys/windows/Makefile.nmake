@@ -531,8 +531,8 @@ HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 
 LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\Arc-goal.lua $(DAT)\Arc-loca.lua $(DAT)\Arc-strt.lua \
-	$(DAT)\asmodeus.lua $(DAT)\astral.lua   $(DAT)\baalz-1.lua \
-	$(DAT)\baalz-2.lua \
+	$(DAT)\asmode-1.lua $(DAT)\asmode-2.lua $(DAT)\astral.lua
+	$(DAT)\baalz-1.lua  $(DAT)\baalz-2.lua \
 	$(DAT)\Bar-fila.lua $(DAT)\Bar-filb.lua $(DAT)\Bar-goal.lua \
 	$(DAT)\Bar-loca.lua $(DAT)\Bar-strt.lua $(DAT)\bigrm-1.lua \
 	$(DAT)\bigrm-10.lua $(DAT)\bigrm-11.lua $(DAT)\bigrm-2.lua \
