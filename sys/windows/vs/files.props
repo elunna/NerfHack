@@ -23,7 +23,8 @@
     <Luafiles Include = "Arc-strt.lua"/>
     <Luafiles Include = "asmodeus.lua"/>
     <Luafiles Include = "astral.lua"/>
-    <Luafiles Include = "baalz.lua"/>
+    <Luafiles Include = "baalz-1.lua"/>
+    <Luafiles Include = "baalz-2.lua"/>
     <Luafiles Include = "Bar-fila.lua"/>
     <Luafiles Include = "Bar-filb.lua"/>
     <Luafiles Include = "Bar-goal.lua"/>
