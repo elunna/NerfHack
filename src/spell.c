@@ -51,7 +51,6 @@ staticfn int percent_success(int);
 staticfn char *spellretention(int, char *);
 staticfn int throwspell(void);
 staticfn void cast_protection(void);
-staticfn void cast_chain_lightning(void);
 staticfn void spell_backfire(int);
 staticfn int spell_hunger(int);
 staticfn boolean spelleffects_check(int, int *, int *);
@@ -1050,7 +1049,7 @@ propagate_chain_lightning(
     tmp_at(zap.x, zap.y);
 }
 
-staticfn void
+void
 cast_chain_lightning(void)
 {
     struct chain_lightning_queue clq = {
