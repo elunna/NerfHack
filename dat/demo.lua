@@ -9,7 +9,7 @@
 des.level_init({ style="mazegrid", bg ="-" });
 
 des.level_flags("mazelevel", "hardfloor", "noflip")
-des.map([[
+des.map({ halign = "right", valign = "center", map = [[
 -------------------------------------------------
 | ------------|------------------                
 | |}}}}}}}}}}}|}...}......}}}}}}|--------------  
@@ -23,13 +23,9 @@ des.map([[
 | |}}}}S......|..}|      |----------|.......|    
 | ------------|----                 ---------    
 -------------------------------------------------
-]]);
--- Regions
--- des.region(selection.area(00,00,75,19), "unlit")
--- des.region(selection.area(68,01,72,03), "lit")
+]] });
 
 -- Stairs
--- des.stair("up", 69,02)
 des.stair("down", 44,06)
 
 des.levregion({ region = {01,00,15,20}, region_islev=1, exclude={15,1,70,16}, exclude_islev=1, type="stair-up" })
@@ -37,6 +33,7 @@ des.levregion({ region = {01,00,15,20}, region_islev=1, exclude={15,1,70,16}, ex
 des.teleport_region({region={01,00,15,20}, exclude = {15,01,70,16} })
 
 des.mazewalk(00,06,"west")
+
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,46,12))
 
