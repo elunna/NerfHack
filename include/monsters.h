@@ -874,6 +874,16 @@
         M1_TPORT | M1_TPORT_CNTRL | M1_CARNIVORE,
         M2_STALK, M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 7, CLR_CYAN, TENGU),
+    /* From SLASH'EM but stronger */
+    MON(NAM("nupperibo"), S_IMP,
+        LVL(10, 9, 0, 20, -7), (G_HELL | G_GENO | 1),
+        A(ATTK(AT_CLAW, AD_DRST, 5, 4),
+          ATTK(AT_BITE, AD_DRLI, 2, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(20, 10, MS_CUSS, MZ_TINY), MR_ACID | MR_POISON, 0,
+        M1_REGEN, M2_WANDER | M2_STALK,
+        M3_INFRAVISIBLE | M3_INFRAVISION,
+        NO_RACE, 10, CLR_GREEN, NUPPERIBO),
     /* From SpliceHack with changes:
      *  - They now berserk and they don't leave any corpses.
      *  - Their starting gear includes a selection of strong weapons
@@ -4248,7 +4258,7 @@
         M1_FLY | M1_SEE_INVIS | M1_POIS | M1_HUMANOID,
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
             | M2_PRINCE | M2_MALE | M2_COLLECT,
-        M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
+        M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_DEMON, 40, HI_LORD, DISPATER),
     MON(NAM("Malcanthet"), S_DEMON,
         LVL(80, 15, -6, 80, 15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
@@ -4309,7 +4319,7 @@
         M1_FLY | M1_SEE_INVIS | M1_NOHANDS | M1_POIS,
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
             | M2_PRINCE | M2_MALE,
-        M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
+        M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_DEMON, 57, HI_LORD, DEMOGORGON),
     /* Riders -- the Four Horsemen of the Apocalypse ("War" == player);
      * depicted with '&' but do not have MH_DEMON set.

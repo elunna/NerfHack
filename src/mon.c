@@ -838,6 +838,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_LEMURE:
     case PM_QUASIT:
     case PM_TENGU:
+    case PM_NUPPERIBO:
     case PM_REDCAP:
     case PM_BLUE_JELLY:
     case PM_SPOTTED_JELLY:
