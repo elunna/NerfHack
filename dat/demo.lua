@@ -100,16 +100,11 @@ des.monster("shoggoth")
 des.monster("shoggoth")
 des.monster("shoggoth")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+des.trap("grease")
+des.trap("grease")
+des.trap("grease")
+des.trap("grease")
+des.trap("grease")
+des.trap("grease")
+des.trap("grease")
+des.trap("grease")
