@@ -86,10 +86,44 @@ dungeon = {
          },
          {
             name = "medusa",
-            base = -8,
+            base = -11,
             range = 4,
             nlevels = 4,
             alignment = "chaotic"
+         },
+         {
+            name = "leth-a",
+            base = -9
+         },
+         {
+            name = "leth-b",
+            base = -8
+         },
+         {
+            name = "leth-c",
+            base = -7,
+            nlevels = 2,
+         },
+         {
+            name = "leth-d",
+            base = -6,
+            nlevels = 2,
+         },
+         {
+            name = "leth-e",
+            base = -5
+         },
+         {
+            name = "leth-f",
+            base = -4
+         },
+         {
+            name = "leth-g",
+            base = -3
+         },
+         {
+            name = "leth-z",
+            base = -2
          },
          {
             name = "castle",

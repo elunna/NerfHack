@@ -42,7 +42,7 @@ $	spec_files = "air.lua,asmode-%.lua,astral.lua,baalz-%.lua,"	-
 		+ "minend-%.lua,yeenoghu.lua,nhcore.lua,nhlib.lua,"	-
 		+ "oracle-%.lua,orcus.lua,quest.lua,sanctum.lua,"		-
 		+ "soko%-%.lua,themerms.lua,tower%.lua,tut-%.lua,"	-
-		+ "valley.lua,water.lua,wizard%.lua,mephisto.lua"
+		+ "valley.lua,water.lua,wizard%.lua,mephisto.lua,leth-*"
 $	qstl_files = "%%%-goal.lua,%%%-fil%.lua,%%%-loca.lua,%%%-strt.lua"
 $	dngn_files = "dungeon.lua"
 $!
@@ -51,7 +51,7 @@ $!		   + "CASTLE.LEV,EARTH.LEV,FAKEWIZ%.LEV,FIRE.LEV," -
 $!		   + "JUIBLEX.LEV,KNOX.LEV,MEDUSA-%.LEV,MINEFILL.LEV," -
 $!		   + "MINETN-%.LEV,MINEND-%.LEV,ORACLE.LEV,ORCUS.LEV," -
 $!		   + "SANCTUM.LEV,SOKO%-%.LEV,TOWER%.LEV,VALLEY.LEV," -
-$!		   + "WATER.LEV,WIZARD%.LEV"
+$!		   + "WATER.LEV,WIZARD%.LEV,LETH-%,LETH-%-%"
 $!	spec_input = "bigroom.des castle.des endgame.des " -
 $!		   + "gehennom.des knox.des medusa.des mines.des " -
 $!		   + "oracle.des sokoban.des tower.des yendor.des"
