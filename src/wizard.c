@@ -772,7 +772,7 @@ void
 intervene(void)
 {
     struct monst *mtmp = (struct monst *) 0;
-    int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(8);
+    int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(7);
 
     /* cases 0 and 5 don't apply on the Astral level */
     switch (which) {
@@ -814,17 +814,6 @@ intervene(void)
     case 6:
         resurrect();
         break;
-    case 7: {
-        if (carrying(AMULET_OF_YENDOR) && !Is_astralevel(&u.uz)) {
-            /* Summon a mean demon */
-            if (msummon(&gy.youmonst))
-                pline("Black magic!");
-            else
-                resurrect();
-        } else {
-            You("get an uneasy feeling.");
-        }
-    }
     }
 }
 
