@@ -57,6 +57,7 @@
     <Luafiles Include = "Cav-goal.lua"/>
     <Luafiles Include = "Cav-loca.lua"/>
     <Luafiles Include = "Cav-strt.lua"/>
+    <Luafiles Include = "demo.lua"/>
     <Luafiles Include = "dungeon.lua"/>
     <Luafiles Include = "earth.lua"/>
     <Luafiles Include = "fakewiz1.lua"/>
