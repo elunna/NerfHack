@@ -962,6 +962,18 @@ m_initinv(struct monst *mtmp)
         }
         break;
     case S_GNOME:
+        if (ptr == &mons[PM_GNOLL]) {
+            if (!rn2(3))
+                (void) mongets(mtmp, ORCISH_HELM);
+            if (!rn2(3))
+                (void) mongets(mtmp, SPLINT_MAIL);
+            if (!rn2(3))
+                (void) mongets(mtmp, ORCISH_SHIELD);
+            if (rn2(4))
+                (void) mongets(mtmp, rn2(3) ? FLAIL : SPEAR);
+            else
+                (void) mongets(mtmp, !rn2(3) ? VOULGE : MORNING_STAR);
+        }
         if (!rn2((In_mines(&u.uz) && gi.in_mklev) ? 10 : 60)) {
             otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE);
             otmp->quan = 1;

@@ -140,7 +140,7 @@ SPEC_LEVS = asmode-1.lua asmode-2.lua baalz-1.lua baalz-2.lua \
 	minetn-*.lua oracle.lua orcus.lua sanctum.lua soko?-?.lua \
 	tower?.lua valley.lua wizard?.lua nhcore.lua nhlib.lua themerms.lua \
 	astral.lua air.lua earth.lua fire.lua water.lua hellfill.lua tut-?.lua \
-	mephisto.lua
+	mephisto.lua yeenoghu.lua
 QUEST_LEVS = ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua
 
 DATNODLB = $(VARDATND) license symbols

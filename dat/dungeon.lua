@@ -162,6 +162,12 @@ dungeon = {
             range = 6
          },
          {
+            name = "yeenoghu",
+            bonetag = "Y",
+            base = 10,
+            range = 6
+         },
+         {
             name = "demo",
             bonetag = "D",
             base = 13,
