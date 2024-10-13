@@ -962,6 +962,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_GNOME_LEADER:
     case PM_GNOMISH_WIZARD:
     case PM_GNOME_RULER:
+    case PM_GNOLL:
     case PM_GIANT:
     case PM_STONE_GIANT:
     case PM_HILL_GIANT:
