@@ -64,6 +64,7 @@
     <Luafiles Include = "fakewiz1.lua"/>
     <Luafiles Include = "fakewiz2.lua"/>
     <Luafiles Include = "fire.lua"/>
+    <Luafiles Include = "geryon.lua"/>
     <Luafiles Include = "Hea-fila.lua"/>
     <Luafiles Include = "Hea-filb.lua"/>
     <Luafiles Include = "Hea-goal.lua"/>

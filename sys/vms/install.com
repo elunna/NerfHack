@@ -36,7 +36,7 @@ $	guidebook  = "[.doc]Guidebook.txt"
 $	invoc_proc = "[.sys.vms]nethack.com"
 $	trmcp_file = "[.sys.share]termcap"
 $	spec_files = "air.lua,asmode-%.lua,astral.lua,baalz-%.lua,"	-
-		+ "bigrm-*.lua,castle.lua,earth.lua,fakewiz%.lua,"	-
+		+ "bigrm-*.lua,castle.lua,earth.lua,fakewiz%.lua,geryon.lua" -
 		+ "fire.lua,hellfill.lua,juiblex.lua,knox-%.lua,demo.lua" -
 		+ "dispater.lua","medusa-%.lua,minefill.lua,minetn-*.lua," -
 		+ "minend-%.lua,yeenoghu.lua,nhcore.lua,nhlib.lua,"	-
