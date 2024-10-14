@@ -802,6 +802,7 @@ clear_level_structures(void)
     svl.level.flags.has_zoo = 0;
     svl.level.flags.has_court = 0;
     svl.level.flags.has_morgue = svl.level.flags.graveyard = 0;
+    svl.level.flags.lethe = 0;
     svl.level.flags.has_beehive = 0;
     svl.level.flags.has_lair = 0;
     svl.level.flags.has_barracks = 0;
