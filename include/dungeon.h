@@ -127,6 +127,7 @@ typedef struct branch {
 #define Is_portal_level(x)  (Lcheck(x, &portal_level))
 #define Is_rogue_level(x)   (Lcheck(x, &rogue_level))
 #define Is_stronghold(x)    (Lcheck(x, &stronghold_level))
+#define Is_lethe_gate(x)    (Lcheck(x, &lethegate_level))
 #define Is_bigroom(x)       (Lcheck(x, &bigroom_level))
 #define Is_qstart(x)        (Lcheck(x, &qstart_level))
 #define Is_qlocate(x)       (Lcheck(x, &qlocate_level))

@@ -820,7 +820,7 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
                 if (teleport_pet(mtmp, FALSE)) {
                     d_level tolevel;
 
-                    if (Is_stronghold(&u.uz)) {
+                    if (Is_lethe_gate(&u.uz)) {
                         assign_level(&tolevel, &valley_level);
                     } else if (Is_botlevel(&u.uz)) {
                         if (canseemon(mtmp))

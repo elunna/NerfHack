@@ -936,6 +936,7 @@ static const struct instance_globals_saved_d init_svd = {
       {0}, /* d_rogue_level */
       {0}, /* d_medusa_level */
       {0}, /* d_stronghold_level */
+      {0}, /* d_lethegate_level */
       {0}, /* d_valley_level */
       {0}, /* d_wiz1_level */
       {0}, /* d_wiz2_level */

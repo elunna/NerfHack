@@ -216,7 +216,7 @@ moveloop_core(void)
                    place after movement has been allotted, the new
                    monster effectively loses its first turn */
                 if (!rn2(u.uevent.udemigod ? 25
-                         : (depth(&u.uz) > depth(&stronghold_level)) ? 50
+                         : (depth(&u.uz) > depth(&lethegate_level)) ? 50
                          : 70))
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
@@ -225,7 +225,7 @@ moveloop_core(void)
                  * However, don't continue the flooding after exiting gehennom,
                  * it gets sloggy and the fresh air is nice. */
                 if (u.uevent.invoked && !rn2(10)
-                    && (depth(&u.uz) > depth(&stronghold_level)))
+                    && (depth(&u.uz) > depth(&lethegate_level)))
                     nasty((struct monst *) 0, TRUE);
 
                 u_calc_moveamt(mvl_wtcap);

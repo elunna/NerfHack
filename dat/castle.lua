@@ -57,8 +57,10 @@ shuffle(monster)
 
 des.teleport_region({ region = {01,00,10,20}, region_islev=1, exclude={1,1,61,15}, dir="down" })
 des.teleport_region({ region = {69,00,79,20}, region_islev=1, exclude={1,1,61,15}, dir="up" })
-des.levregion({ region = {01,00,10,20}, region_islev=1, exclude={0,0,62,16}, type="stair-up" })
 
+-- Stairs
+des.levregion({ region = {01,00,10,20}, region_islev=1, exclude={0,0,62,16}, type="stair-up" })
+des.levregion({ region = {69,00,79,20}, region_islev=1, exclude={0,0,62,16}, type="stair-down" })
 
 des.feature("fountain", 10,08)
 -- Doors
@@ -197,12 +199,14 @@ des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
 -- The treasure of the lord
 des.object("chest",37,08)
+
 -- Traps
-des.trap("trap door",40,08)
-des.trap("trap door",44,08)
-des.trap("trap door",48,08)
-des.trap("trap door",52,08)
-des.trap("trap door",55,08)
+-- des.trap("trap door",40,08)
+-- des.trap("trap door",44,08)
+-- des.trap("trap door",48,08)
+-- des.trap("trap door",52,08)
+-- des.trap("trap door",55,08)
+
 -- Soldiers guarding the entry hall
 des.monster("soldier",08,06)
 des.monster("soldier",09,05)

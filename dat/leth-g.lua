@@ -140,9 +140,9 @@ des.monster("electric eel", 48,17)
 des.monster("jellyfish", 57,13)
 des.monster("jellyfish", 64,10)
 des.monster(";", 67,07)
-des.monster(";")'
-des.monster(";")'
-des.monster(";")'
+des.monster(";")
+des.monster(";")
+des.monster(";")
 
 -- A couple of random monsters to finish
 des.monster()

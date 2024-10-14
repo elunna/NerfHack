@@ -1955,7 +1955,7 @@ mlevel_tele_trap(
         int migrate_typ = MIGR_RANDOM;
 
         if (is_hole(tt)) {
-            if (Is_stronghold(&u.uz)) {
+            if (Is_lethe_gate(&u.uz)) {
                 assign_level(&tolevel, &valley_level);
             } else if (Is_botlevel(&u.uz)) {
                 if (in_sight && trap->tseen)

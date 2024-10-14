@@ -6,8 +6,8 @@
 --
 --MAZE: "leth-z",' '
 
-des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "temperate", "noflip")
+des.level_init({ style="mazegrid", bg ="-" });
+des.level_flags("mazelevel", "noteleport", "noflip")
 
 --0         1         2   	  3	      4	    5		  6	      7
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
@@ -36,12 +36,14 @@ des.map([[
 
 -- Dungeon Description
 -- dnh added these holes
-des.trap("hole", 70,13)
-des.trap("hole", 72,14)
-des.trap("hole", 73,15)
-des.trap("hole", 73,16)
-des.trap("hole", 72,17)
-des.trap("hole", 70,18)
+des.trap("trap door", 70,09)
+
+des.trap("trap door", 70,13)
+des.trap("trap door", 72,14)
+des.trap("trap door", 73,15)
+des.trap("trap door", 73,16)
+des.trap("trap door", 72,17)
+des.trap("trap door", 70,18)
 
 des.region(selection.area(00,00,46,19),"lit")
 des.region(selection.area(47,00,75,19),"unlit")

@@ -1354,7 +1354,7 @@ dodown(void)
         You("%s %s the %s.", actn, down_or_thru,
             trap->ttyp == HOLE ? "hole" : "trap door");
     }
-    if (trap && Is_stronghold(&u.uz)) {
+    if (trap && Is_lethe_gate(&u.uz)) {
         goto_hell(FALSE, TRUE);
     } else if (trap && trap->dst.dlevel != -1) {
         d_level tdst;

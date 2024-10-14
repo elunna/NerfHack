@@ -50,7 +50,7 @@ dungeon = {
          },
          {
             name = "Gehennom",
-            chainlevel = "castle",
+            chainlevel = "leth-z",
             base = 0,
             branchtype = "no_down"
          },
@@ -100,35 +100,35 @@ dungeon = {
             base = -8
          },
          {
-            name = "leth-c",
-            base = -7,
-            nlevels = 2,
+            name = "castle",
+            base = -7
          },
          {
-            name = "leth-d",
+            name = "leth-c",
             base = -6,
             nlevels = 2,
          },
          {
-            name = "leth-e",
-            base = -5
+            name = "leth-d",
+            base = -5,
+            nlevels = 2,
          },
          {
-            name = "leth-f",
+            name = "leth-e",
             base = -4
          },
          {
-            name = "leth-g",
+            name = "leth-f",
             base = -3
          },
          {
-            name = "leth-z",
+            name = "leth-g",
             base = -2
          },
          {
-            name = "castle",
+            name = "leth-z",
             base = -1
-         }
+         },
       }
    },
    {
