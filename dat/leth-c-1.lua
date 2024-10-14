@@ -164,6 +164,9 @@ des.trap("level teleport",51,18)
 des.trap("spiked pit", 24,02)
 des.trap("spiked pit", 22,03)
 des.trap("spiked pit", 19,02)
+des.trap("grease")
+des.trap("magic beam")
+des.trap("spear")
 
 -- Fishes in the river...
 des.monster("electric eel", 09,13)

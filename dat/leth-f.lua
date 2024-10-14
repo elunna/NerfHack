@@ -164,6 +164,12 @@ des.trap()
 des.trap()
 des.trap()
 des.trap()
+des.trap("grease")
+des.trap("grease")
+des.trap("magic beam")
+des.trap("magic beam")
+des.trap("spear")
+des.trap("spear")
 
 -- Fishes in the river...
 des.monster("giant eel", 23,15)

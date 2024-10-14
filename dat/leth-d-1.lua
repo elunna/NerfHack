@@ -114,6 +114,9 @@ des.trap("polymorph",35,09)
 des.trap("board",35,14)
 des.trap("magic",34,06)
 des.trap("magic",53,17)
+des.trap("grease")
+des.trap("magic beam")
+des.trap("spear")
 
 -- Fishes in the river...
 des.monster("giant eel", 42,02)

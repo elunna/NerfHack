@@ -106,9 +106,13 @@ des.trap("pit",30,02)
 des.trap("board",19,17)
 des.trap("board",46,07)
 des.trap("board",62,14)
+des.trap("grease")
+des.trap("magic beam")
+des.trap("spear")
 des.trap()
 des.trap()
 des.trap()
+
 
 -- Some random objects
 des.object()

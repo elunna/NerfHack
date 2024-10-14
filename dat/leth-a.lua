@@ -93,8 +93,6 @@ des.gold({ x = 07, y = 16, amount = 300 + math.random(0, 300) });
 des.gold({ x = 08, y = 15, amount = 300 + math.random(0, 300) });
 des.gold({ x = 08, y = 16, amount = 300 + math.random(0, 300) });
 
-des.trap("board", 10,12)
-
 -- Sea monsters for the lake
 des.monster("electric eel")
 des.monster("electric eel")
@@ -167,15 +165,26 @@ des.monster("B")
 des.monster("B")
 des.monster("B")
 des.monster("B")
+
 -- Random traps
+des.trap("board", 10,12)
 des.trap("rust")
 des.trap("rust")
 des.trap("rust")
 des.trap("pit")
 des.trap("pit")
+des.trap("grease")
+des.trap("magic beam")
+des.trap("spear")
 des.trap()
 des.trap()
 des.trap()
+-- door bells
+des.trap("board", 10,03)
+des.trap("board", 12,10)
+des.trap("board", 17,17)
+des.trap("board", 62,05)
+des.trap("board", 56,02)
 
 -- Hidden in the corridor
 if percent(50) then
@@ -216,10 +225,3 @@ des.object("scroll of enchant weapon", 52,16)
 -- Monsters in the dark
 des.monster("trapper", 62,03)
 des.monster("lurker above", 43,01)
-
--- door bells
-des.trap("board", 10,03)
-des.trap("board", 12,10)
-des.trap("board", 17,17)
-des.trap("board", 62,05)
-des.trap("board", 56,02)
