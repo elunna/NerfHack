@@ -89,6 +89,12 @@ des.monster("ogre", 54,14)
 des.monster("ogre", 54,09)
 des.monster("ogre", 70,14)
 
+des.monster("ogre mage")
+des.monster("ogre mage")
+des.monster("shadow ogre")
+des.monster("shadow ogre")
+des.monster("shadow ogre")
+
 -- Compound guards
 des.monster("ogre", 30,01)
 des.monster("ogre", 30,04)
