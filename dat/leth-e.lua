@@ -32,14 +32,12 @@ des.map([[
                         ....###....         #####  ........                 
                             ###                                             
 ]]);
---0123456789012345678901234567890123456789012345678901234567890123456789012345
---0         1         2         3         4         5         6         7
+
 -- Dungeon Description
 
 -- The ruined church was added in dnh, but not NerfHack
 -- des.region({ region={39,00,47,07}, lit=1, type="temple", filled=2 })
 -- des.altar({ x=43,y=02,align="neutral", type="shrine" })
-
 
 des.region(selection.area(00,00,51,19),"lit")
 des.region(selection.area(01,05,05,07),"unlit")

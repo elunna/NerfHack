@@ -2,7 +2,7 @@
 --	The gates of Gehennom.
 --
 --	The river flows through an impressive gates guarded by angels and
---	demons and thence into he depths of Gehennom itself.
+--	demons and thence into the depths of Gehennom itself.
 --
 --MAZE: "leth-z",' '
 
@@ -33,8 +33,6 @@ des.map([[
             }}}}}}}}}}}}}}}}}}}}}}}}        |   |             }}}}}}}}      
                }}}}}}}}}}}}}}}}}}}          -----                           
 ]]);
---0         1         2   	   3	     4	       5	     6	       7
---0123456789012345678901234567890123456789012345678901234567890123456789012345
 
 -- Dungeon Description
 -- dnh added these holes
@@ -51,11 +49,8 @@ des.region(selection.area(01,07,03,09),"lit")
 des.region(selection.area(14,09,16,12),"unlit")
 des.region(selection.area(18,07,22,09),"unlit")
 des.region(selection.area(18,11,22,13),"unlit")
-
 des.region({ region={24,09,29,13},lit=1,type="barracks", filled=1 })
-
 des.region({ region={59,01,63,05},lit=0,type="morgue",filled=1 })
-
 des.region(selection.area(66,09,70,11),"unlit")
 des.region(selection.area(72,09,74,11),"unlit")
 

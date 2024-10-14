@@ -1,4 +1,3 @@
-
 --
 --	The Lichs Manse
 --
@@ -32,8 +31,6 @@ des.map([[
  |..........|.........|.......|.....|..........|.|....|                     
  ------------------------------------------------------                     
 ]]);
---0123456789012345678901234567890123456789012345678901234567890123456789012345
---0         1         2         3         4         5         6         7    
 
 -- Dungeon Description
 -- The swamp replaces the fungusfarms in dnh
@@ -49,16 +46,12 @@ des.region(selection.area(02,08,11,18),"lit")
 des.region(selection.area(37,01,48,08),"lit")
 des.region(selection.area(53,05,55,07),"lit")
 des.region(selection.area(59,01,61,02),"lit")
-
 des.region({ region={13,09,21,11},lit=1,type="morgue",filled=1 })
-
 des.region(selection.area(13,16,21,18),"lit")
-
 des.region(selection.area(23,11,29,12),"unlit")
 des.region(selection.area(23,09,24,09),"unlit")
 des.region(selection.area(26,09,26,09),"unlit")
 des.region(selection.area(28,09,29,09),"unlit")
-
 des.region(selection.area(23,16,29,18),"lit")
 des.region(selection.area(31,09,35,12),"lit")
 des.region(selection.area(31,16,35,18),"lit")
@@ -67,7 +60,6 @@ des.region(selection.area(13,14,35,14),"lit")
 -- Throne Room, in two parts
 des.region({ region={38,10,45,13},lit=1,type="morgue",filled=1 })
 des.region({ region={38,15,45,18},lit=1,type="morgue",filled=1 })
-
 
 des.region(selection.area(48,10,48,12),"lit")
 des.region(selection.area(47,14,48,14),"lit")

@@ -31,8 +31,7 @@ des.map([[
             .....  ...         ....             ####  ....####H####         
                                                                             
 ]]);
---0123456789012345678901234567890123456789012345678901234567890123456789012345
---0         1         2         3         4         5         6         7     
+
 -- Dungeon Description
 des.region(selection.area(00,00,75,19),"lit")
 des.region(selection.area(02,01,06,04),"unlit")
@@ -109,7 +108,6 @@ des.monster()
 des.monster()
 des.monster("B")
 des.monster("B")
-
 
 -- Entry chamber
 des.monster("deep one", 31,16)

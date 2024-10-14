@@ -31,8 +31,6 @@ des.map([[
              ...           }}}}}}}}}}}}}}}}  # # # # # #   ....             
                                         }}}}                                
 ]]);
---0123456789012345678901234567890123456789012345678901234567890123456789012345
---0         1         2   	  3	      4	    5		  6	      7
 
 -- Initialize random monsters
 local monster = { "D", "H", "q", "c", "T", "R" };
@@ -69,10 +67,10 @@ des.monster("ogre royal", 66,04)
 des.monster("ogre mage", 65,04)
 
 -- The Guards
-des.monster("ogre", 65,02)
-des.monster("ogre", 67,02)
-des.monster("ogre", 65,04)
-des.monster("ogre", 67,04)
+des.monster("spiked orc", 65,02)
+des.monster("spiked orc", 67,02)
+des.monster("spiked orc", 65,04)
+des.monster("spiked orc", 67,04)
 
 -- A petitioner
 des.monster("kobold noble", 65,03)
@@ -144,18 +142,19 @@ des.object("%", 71,15)
 des.object("%", 72,15)
 des.object("(", 69,16)
 des.object("%", 70,16)
+
 if percent(50) then
     des.object("%", 71,16)
 end
 if percent(50) then
     des.object("[", 72,16)
 end
+
 des.monster("cave spider", 71,14)
 des.monster("cave spider", 72,13)
 des.monster("cave spider", 70,16)
 des.monster("cave spider", 69,12)
 des.monster({ id = "giant mimic", x=73, y=14, appear_as = "ter:staircase down" })
-
 
 -- A little trap...
 des.trap("level teleport",51,18)

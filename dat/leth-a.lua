@@ -36,8 +36,6 @@ des.map([[
                               ###########           .....###H#........      
                                                                             
 ]]);
---0123456789012345678901234567890123456789012345678901234567890123456789012345
---0         1         2         3         4         5         6         7     
 
 -- Altar to Nodens
 -- TODO: Add this if we can customize it as cracked
@@ -65,13 +63,6 @@ des.monster({ id = "red dragon", x=11, y=16, asleep = 1 })
 
 -- The Dragons Hoard
 des.object("chest", 05,14)
--- des.object("egg", 05,15)
--- des.object("egg", 06,14)
--- des.object("egg", 06,15)
--- des.object("egg", 06,16)
--- des.object("egg", 07,14)
--- des.object("egg", 07,15)
-
 des.object({ id = "egg", x=05, y=15, montype="red dragon" });
 des.object({ id = "egg", x=06, y=14, montype="red dragon" });
 des.object({ id = "egg", x=06, y=15, montype="red dragon" });
@@ -144,7 +135,7 @@ des.object({ id = "statue", x=36, y=11, contents = 0 })
 -- And even some treasure
 des.object({ id = "chest", locked = 1, x = 39, y = 10 ,
              contents = function()
-                -- Original patch has a magic lamp
+                -- Original patch has a magic lamp, not in NerfHack...
                 -- des.object("magic lamp");
                 des.object("oil lamp");
                 des.object("potion of oil")
@@ -212,7 +203,6 @@ des.gold({ x = 52, y = 17, amount = 300 + math.random(0, 300) });
 des.gold({ x = 52, y = 16, amount = 300 + math.random(0, 300) });
 des.gold({ x = 53, y = 16, amount = 300 + math.random(0, 300) });
 
-
 des.object('/', 51,17)
 des.object("*", 51,17)
 des.object("*", 52,17)
@@ -223,7 +213,6 @@ des.object("scroll of enchant weapon", 52,16)
 -- Monsters in the dark
 des.monster("trapper", 62,03)
 des.monster("lurker above", 43,01)
-
 
 -- door bells
 des.trap("board", 10,03)

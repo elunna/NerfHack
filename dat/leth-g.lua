@@ -32,8 +32,6 @@ des.map([[
               ####  ...  ...H#####  ....}}}}}}}}}}}}}}}}      .......H#...  
                                           }}}}}}}}}}}}                      
 ]]);
---0123456789012345678901234567890123456789012345678901234567890123456789012345
---0         1         2         3         4         5         6         7    7
 
 -- Dungeon Description
 des.region(selection.area(00,00,75,19),"lit")
@@ -64,14 +62,11 @@ des.object({ id = "statue", x = 06, y = 03, montype = "ice devil", historic = tr
 des.object({ id = "statue", x = 08, y = 01, montype = "balrog", historic = true });
 des.object({ id = "statue", x = 08, y = 03, montype = "balrog", historic = true });
 
-
 -- Long hall
 des.object({ id = "statue", x = 15, y = 01, montype = "knight", historic = true });
 des.object({ id = "statue", x = 15, y = 03, montype = "barbarian", historic = true });
-
 --des.object({ id = "statue", x = 23, y = 01, montype = "fool", historic = true });
 --des.object({ id = "statue", x = 23, y = 03, montype = "Rodney", historic = true });
-
 des.object({ id = "statue", x = 32, y = 01, montype = "wizard", historic = true });
 des.object({ id = "statue", x = 32, y = 03, montype = "priest", historic = true });
 des.object({ id = "statue", x = 41, y = 01, montype = "ranger", historic = true });
@@ -88,9 +83,7 @@ des.object({ id = "statue", x = 62, y = 03, montype = "Pestilence", historic = t
              end
 });
 
-
 des.object({ id = "statue", x = 0, y = 0, montype = "C", historic = true });
-
 
 -- Final Room
 des.object({ id = "statue", x = 72, y = 01, montype = "marilith", historic = true });
@@ -101,7 +94,6 @@ des.object({ id = "statue", x=74,y=02, montype="Asmodeus", historic=1,
                 des.object({ id = "ring of aggravate monster", buc="cursed" })
              end
 });
-
 
 des.object("fortune cookie", 71,02)
 
