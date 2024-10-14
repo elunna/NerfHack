@@ -138,16 +138,19 @@ des.monster("B", 48,12)
 des.monster("B", 73,07)
 
 -- A few fishies
-des.monster(";", 05,13)
-des.monster(";", 13,09)
-des.monster(";", 23,07)
-des.monster(";", 26,02)
-des.monster(";", 31,10)
-des.monster(";", 40,14)
-des.monster(";", 48,17)
-des.monster(";", 57,13)
-des.monster(";", 64,10)
+des.monster("giant eel", 05,13)
+des.monster("giant eel", 13,09)
+des.monster("giant eel", 23,07)
+des.monster("electric eel", 26,02)
+des.monster("electric eel", 31,10)
+des.monster("electric eel", 40,14)
+des.monster("electric eel", 48,17)
+des.monster("jellyfish", 57,13)
+des.monster("jellyfish", 64,10)
 des.monster(";", 67,07)
+des.monster(";")'
+des.monster(";")'
+des.monster(";")'
 
 -- A couple of random monsters to finish
 des.monster()

@@ -83,12 +83,12 @@ des.monster("T")
 des.monster("T")
 
 -- Fishes in the river...
-des.monster(";", 04,14)
-des.monster(";", 16,15)
-des.monster(";", 25,13)
-des.monster(";", 35,13)
-des.monster(";", 41,09)
-des.monster(";", 48,06)
+des.monster("giant eel", 04,14)
+des.monster("giant eel", 16,15)
+des.monster("giant eel", 25,13)
+des.monster("electric eel", 35,13)
+des.monster("electric eel", 41,09)
+des.monster("electric eel", 48,06)
 des.monster(";", 50,01)
 
 -- Monsters
