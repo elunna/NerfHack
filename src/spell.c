@@ -371,7 +371,9 @@ learn(void)
     if (svc.context.spbook.delay && ublindf
         && ublindf->otyp == LENSES && rn2(2))
         svc.context.spbook.delay++;
-    if (Confusion) { /* became confused while learning */
+
+    /* became confused while learning */
+    if (Confusion || svl.level.flags.lethe) {
         (void) confused_book(book);
         svc.context.spbook.book = 0; /* no longer studying */
         svc.context.spbook.o_id = 0;
@@ -393,7 +395,7 @@ learn(void)
         pline("Where did the spellbook go?");
         return 0;
     }
-    
+
     exercise(A_WIS, TRUE); /* you're studying. */
     booktype = book->otyp;
     if (booktype == SPE_BOOK_OF_THE_DEAD) {

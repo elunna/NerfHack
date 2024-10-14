@@ -1600,6 +1600,10 @@ use_skill(int skill, int degree)
 {
     boolean advance_before;
 
+    /* Lethe levels block any gains */
+    if (svl.level.flags.lethe)
+        return;
+    
     if (skill != P_NONE && !P_RESTRICTED(skill)) {
         advance_before = can_advance(skill, FALSE);
         P_ADVANCE(skill) += degree;

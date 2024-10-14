@@ -3973,6 +3973,8 @@ xkilled(
 
         /* illogical but traditional "treasure drop" */
         if (!rn2(6) && !(svm.mvitals[mndx].mvflags & G_NOCORPSE)
+            /* no treasure along the Lethe */
+            && !svl.level.flags.lethe
             /* no extra item from swallower or steed */
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */

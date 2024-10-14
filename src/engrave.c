@@ -366,6 +366,14 @@ read_engr_at(coordxy x, coordxy y)
     }
 }
 
+#define N_CANNOT_WRITE 4
+static const char *cannot_write[N_CANNOT_WRITE] = {
+    "You can't seem to wrap your mind around that!",
+    "You feel like you've seen this word before, but can't quite remember it.",
+    "You regret skipping Sindarin class during school.",
+    "You have difficulty writing this word for some reason..."
+};
+
 void
 make_engr_at(
     coordxy x, coordxy y,
@@ -380,6 +388,14 @@ make_engr_at(
     if ((ep = engr_at(x, y)) != 0)
         del_engr(ep);
 
+    if (!gi.in_mklev && e_type != HEADSTONE && strstri(s, "Elbereth")) {
+        if (svl.level.flags.lethe) {
+           pline("%s", cannot_write[rn2(N_CANNOT_WRITE)]);
+            make_confused(HConfusion + d(3, 4), FALSE);
+            return;
+        }
+    }
+
     ep = newengr(smem * 3);
     (void) memset((genericptr_t) ep, 0, (smem * 3) + sizeof (struct engr));
     ep->nxt_engr = head_engr;
@@ -389,8 +405,9 @@ make_engr_at(
     ep->engr_txt[actual_text] = (char *) (ep + 1);
     ep->engr_txt[remembered_text] = ep->engr_txt[actual_text] + smem;
     ep->engr_txt[pristine_text] = ep->engr_txt[remembered_text] + smem;
-    for(i = 0; i < text_states; ++i)
+    for (i = 0; i < text_states; ++i)
         Strcpy(ep->engr_txt[i], s);
+
     if (!strcmp(s, "Elbereth")) {
         /* engraving "Elbereth":  if done when making a level, it creates
            an old-style Elbereth that deters monsters when any objects are
