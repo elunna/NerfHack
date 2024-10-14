@@ -50,10 +50,12 @@ des.region(selection.area(71,01,74,02),"lit")
 des.region(selection.area(64,14,71,16),"lit")
 des.region(selection.area(69,12,73,12),"lit")
 
-
 -- Stairs
 des.stair("down", 73,01)
 des.stair("up", 30,17)
+
+-- Non diggable walls
+des.non_diggable(selection.area(00,00,75,19))
 
 -- Doors
 des.door("closed", 06,03)

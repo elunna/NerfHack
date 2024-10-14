@@ -56,6 +56,9 @@ des.region({ region={63,02,70,05},lit=1,type="morgue",filled=0 })
 des.stair("down", 59,18)
 des.stair("up", 02,06)
 
+-- Non diggable walls
+des.non_diggable(selection.area(00,00,75,19))
+
 -- Doors
 des.door("locked", 46,03)
 des.door("locked", 46,04)

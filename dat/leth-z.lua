@@ -36,8 +36,6 @@ des.map([[
 
 -- Dungeon Description
 -- dnh added these holes
-des.trap("trap door", 70,09)
-
 des.trap("trap door", 70,13)
 des.trap("trap door", 72,14)
 des.trap("trap door", 73,15)
@@ -60,6 +58,9 @@ des.region(selection.area(72,09,74,11),"unlit")
 --BRANCH: (74,10,74,10), (0,0,0,0)
 des.stair("up", 02,08)
 des.stair("down", 69,10)
+
+-- Non diggable walls
+des.non_diggable(selection.area(00,00,75,19))
 
 -- Doors
 des.door("locked", 04,08)

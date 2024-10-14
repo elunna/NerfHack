@@ -74,6 +74,9 @@ des.region(selection.area(71,03,74,07),"unlit")
 des.stair("down", 73,05)
 des.stair("up", 60,01)
 
+-- Non diggable walls
+des.non_diggable(selection.area(00,00,75,19))
+
 -- Doors
 des.door("locked", 60,03)
 des.door("locked", 56,06)

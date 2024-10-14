@@ -55,6 +55,9 @@ des.region(selection.area(59,17,62,18),"unlit")
 des.stair("down", 59,18)
 des.stair("up", 02,06)
 
+-- Non diggable walls
+des.non_diggable(selection.area(00,00,75,19))
+
 -- The drawbridge
 des.drawbridge({dir="east",state="open",x=27,y=03})
 

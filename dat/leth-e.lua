@@ -56,6 +56,9 @@ des.region(selection.area(70,08,73,10),"unlit")
 des.stair("down", 73,04)
 des.stair("up", 03,07)
 
+-- Non diggable walls
+des.non_diggable(selection.area(00,00,75,19))
+
 -- Trolls
 des.monster({ id = "troll", x=24,y=02, asleep = 1 })
 des.monster({ id = "troll", x=26,y=02, asleep = 1 })
