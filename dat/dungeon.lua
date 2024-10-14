@@ -133,12 +133,14 @@ dungeon = {
             name = "geryon",
             bonetag = "G",
             base = 2,
+            chance = 50,
             range = 16
          },
          {
             name = "mephisto",
             bonetag = "M",
             base = 2,
+            chance = 50,
             range = 6
          },
          {
@@ -165,12 +167,14 @@ dungeon = {
             name = "dispater",
             bonetag = "R",
             base = 10,
+            chance = 50,
             range = 6
          },
          {
             name = "yeenoghu",
             bonetag = "Y",
             base = 10,
+            chance = 50,
             range = 6
          },
          {
