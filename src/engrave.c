@@ -390,7 +390,7 @@ make_engr_at(
 
     if (!gi.in_mklev && e_type != HEADSTONE && strstri(s, "Elbereth")) {
         if (svl.level.flags.lethe) {
-           pline("%s", cannot_write[rn2(N_CANNOT_WRITE)]);
+            pline("%s", cannot_write[rn2(N_CANNOT_WRITE)]);
             make_confused(HConfusion + d(3, 4), FALSE);
             return;
         }
