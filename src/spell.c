@@ -2221,6 +2221,10 @@ percent_success(int spell)
     else if (uarmc && uarmc->otyp == ROBE)
         splcaster -= gu.urole.spelarmr;
 
+    /* Lethe levels make spellcasting more difficult */
+    if (svl.level.flags.lethe)
+        splcaster += 5;
+
     if (uwep && uwep->otyp == QUARTERSTAFF)
         splcaster -= 3; /* Small bonus */
     if (u_wield_art(ART_ORIGIN))
@@ -2240,7 +2244,7 @@ percent_success(int spell)
     }
 
     if (spellid(spell) == gu.urole.spelspec)
-        splcaster += gu.urole.spelsbon;
+        splcaster += gu.urole.spelsbon; /* usually negative */
 
     /* `healing spell' bonus */
     if (spellid(spell) == SPE_HEALING
@@ -2249,7 +2253,7 @@ percent_success(int spell)
         || spellid(spell) == SPE_CURE_SICKNESS
         || spellid(spell) == SPE_RESTORE_ABILITY
         || spellid(spell) == SPE_REMOVE_CURSE)
-        splcaster += special;
+        splcaster += special; /* usually negative */
 
     if (splcaster > 20)
         splcaster = 20;
