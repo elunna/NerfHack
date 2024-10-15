@@ -440,19 +440,21 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 14, CLR_RED, HELL_HOUND),
-#ifdef CHARON
     MON(NAM("Cerberus"), S_DOG,
-        LVL(12, 10, 2, 20, -7), (G_NOGEN | G_UNIQ | G_HELL),
+        LVL(27, 20, -7, 90, -7), (G_NOGEN | G_UNIQ | G_HELL),
         A(ATTK(AT_BITE, AD_PHYS, 3, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1000, 350, MS_BARK, MZ_LARGE), MR_FIRE, MR_FIRE,
-        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
+          ATTK(AT_BREA, AD_FIRE, 3, 6),
+          NO_ATTK, NO_ATTK),
+        SIZ(1200, 500, MS_BARK, MZ_HUGE),
+        MR_FIRE | MR_SLEEP | MR_POISON | MR_STONE, MR_FIRE,
+        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE | M1_THICK_HIDE
+            | M1_SEE_INVIS | M1_POIS | M1_TPORT_CNTRL,
         M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_PNAME | M2_MALE,
-        M3_INFRAVISIBLE,
-        NO_RACE, 14, CLR_RED, CERBERUS),
-#endif
+        M3_INFRAVISIBLE | M3_ACCURATE | M3_BERSERK | M3_WAITFORU
+            | M3_DISPLACES,
+        NO_RACE, 30, CLR_BLACK, CERBERUS),
     /*
      * eyes
      */

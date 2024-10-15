@@ -409,6 +409,7 @@ remove_mon_from_bones(struct monst *mtmp)
     struct permonst *mptr = mtmp->data;
 
     if (mtmp->iswiz || mptr == &mons[PM_MEDUSA]
+        || mtmp->iscerberus
         || mptr->msound == MS_NEMESIS || mptr->msound == MS_LEADER
         || is_Vlad(mtmp) /* mptr == &mons[VLAD_THE_IMPALER] || cham == VLAD */
         || (mptr == &mons[PM_ORACLE] && !fixuporacle(mtmp)))

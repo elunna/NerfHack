@@ -50,6 +50,7 @@
      || (ptr)->msound == MS_LEADER \
      || (ptr) == &mons[PM_MINOTAUR] \
      || (ptr) == &mons[PM_TITAN] \
+     || (ptr) == &mons[PM_CERBERUS] \
      || (ptr) == &mons[PM_DEATH])
 
 #define resists_sick(ptr) \
@@ -129,10 +130,11 @@
 
 #define resists_drain(ptr) \
     (is_undead(ptr) || is_demon(ptr) || is_were(ptr) \
-     || ptr == &mons[PM_DEEP_ONE]                 \
-     || ptr == &mons[PM_DEEPER_ONE]                 \
-     || ptr == &mons[PM_DEEPEST_ONE]                 \
-     || ptr == &mons[PM_SHADOW_OGRE]                 \
+     || ptr == &mons[PM_DEEP_ONE]       \
+     || ptr == &mons[PM_DEEPER_ONE]     \
+     || ptr == &mons[PM_DEEPEST_ONE]    \
+     || ptr == &mons[PM_SHADOW_OGRE]    \
+     || (ptr) == &mons[PM_CERBERUS]     \
      || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 

@@ -1495,6 +1495,12 @@ makemon(
     if ((mmflags & MM_MINVIS) != 0) /* for ^G */
         mon_set_minvis(mtmp); /* call after place_monster() */
 
+    /* Beef up Cerberus a bit without jacking up
+       his level so high that pets won't attempt
+       to take him on */
+    if (ptr == &mons[PM_CERBERUS])
+        mtmp->mhp = mtmp->mhpmax = 250 + rnd(50);
+
     switch (ptr->mlet) {
     case S_MIMIC:
         set_mimic_sym(mtmp);
@@ -1578,6 +1584,8 @@ makemon(
                Let newcham() pick the shape. */
             && newcham(mtmp, (struct permonst *) 0, NO_NC_FLAGS))
             allow_minvent = FALSE;
+    } else if (mndx == PM_CERBERUS) {
+        mtmp->iscerberus = TRUE;
     } else if (mndx == PM_WIZARD_OF_YENDOR) {
         mtmp->iswiz = TRUE;
         svc.context.no_of_wizards++;

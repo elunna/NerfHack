@@ -2485,6 +2485,9 @@ show_achievements(
         case ACH_MEDU:
             you_have_X("defeated Medusa");
             break;
+        case ACH_CERB:
+            you_have_X("defeated Cerberus");
+            break;
         case ACH_TUNE:
             you_have_X(
                 "learned the tune to open and close the Castle's drawbridge");

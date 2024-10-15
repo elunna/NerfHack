@@ -1311,15 +1311,20 @@ paralyze_monst(struct monst *mon, int amt)
 int
 sleep_monst(struct monst *mon, int amt, int how)
 {
-    if (resists_sleep(mon) || defended(mon, AD_SLEE)
-        || (how >= 0 && resist(mon, (char) how, 0, NOTELL))) {
+    if ((resists_sleep(mon) || defended(mon, AD_SLEE)
+        || (how >= 0 && resist(mon, (char) how, 0, NOTELL)))
+        /* Cerberus can be put to sleep by tools */
+        && !(mon->data == &mons[PM_CERBERUS] && how == TOOL_CLASS)) {
         shieldeff(mon->mx, mon->my);
     } else if (mon->mcanmove) {
         finish_meating(mon); /* terminate any meal-in-progress */
         amt += (int) mon->mfrozen;
         if (amt > 0) { /* sleep for N turns */
             mon->mcanmove = 0;
-            mon->mfrozen = min(amt, 127);
+            if (mon->iscerberus)
+                mon->mfrozen = min(amt, 8);
+            else
+                mon->mfrozen = min(amt, 127);
         } else { /* sleep until awakened */
             mon->msleeping = 1;
         }

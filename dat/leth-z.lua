@@ -77,7 +77,7 @@ des.door("locked", 65,10)
 des.door("locked", 71,10)
 
 -- Watch Dog
--- des.monster({ id = "Cerberus", x=68,y=10, asleep = 1, peaceful = 0 })
+des.monster({ id = "Cerberus", x=68, y=10, asleep = 1, peaceful = 0 })
 
 -- Sea monsters for the river
 des.monster("giant eel", 03,15)
