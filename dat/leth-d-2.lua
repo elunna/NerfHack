@@ -34,13 +34,12 @@ des.map([[
 
 -- Dungeon Description
 -- The swamp replaces the fungusfarms in dnh
-des.region(selection.area(02,01,35,07),"lit")
-des.region({ region={02,01,35,07}, lit=1, type="swamp", filled=2 })
+-- des.region(selection.area(02,01,35,07),"lit")
+-- des.region({ region={02,01,35,07}, lit=1, type="swamp", filled=2 })
 
--- Pending implementation of fungus farms
--- REGION: (03,02,10,06), lit, "fungusfarm"
--- REGION: (13,05,20,07), lit, "fungusfarm"
--- REGION: (29,01,32,02), lit, "fungusfarm"
+des.region({ region={03,02,10,06},lit=1,type="fungusfarm",filled=1 })
+des.region({ region={13,05,20,07},lit=1,type="fungusfarm",filled=1 })
+des.region({ region={29,01,32,02},lit=1,type="fungusfarm",filled=1 })
 
 des.region(selection.area(02,08,11,18),"lit")
 des.region(selection.area(37,01,48,08),"lit")
