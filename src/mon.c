@@ -7030,6 +7030,9 @@ card_drop(struct monst *mon)
     if (!isok(mon->mx, mon->my))
         return FALSE;
 
+    if (svl.level.flags.lethe)
+        return FALSE;
+
     if (invalid_spellbeing(mon->data)
         || mon->msummoned   /* Prevent farming */
         || mon->mrevived    /* Prevent farming */
