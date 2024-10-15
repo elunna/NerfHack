@@ -167,6 +167,23 @@ dungeon = {
             base = 2
          },
          {
+            name = "nkai-a",
+            nlevels = 2,
+            base = -5
+         },
+         {
+            name = "nkai-b",
+            base = -4
+         },
+         {
+            name = "nkai-c",
+            base = -3
+         },
+         {
+            name = "nkai-z",
+            base = -2
+         },
+         {
             name = "sanctum",
             base = -1
          },
@@ -229,23 +246,6 @@ dungeon = {
             bonetag = "D",
             base = 13,
             range = 6
-         },
-         {
-            name = "nkai-a",
-            nlevels = 2,
-            base = -5
-         },
-         {
-            name = "nkai-b",
-            base = -4
-         },
-         {
-            name = "nkai-c",
-            base = -3
-         },
-         {
-            name = "nkai-z",
-            base = -2
          },
       }
    },
