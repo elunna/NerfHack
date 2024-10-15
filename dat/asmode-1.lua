@@ -34,6 +34,7 @@ local asmo1 = des.map({ halign = "half-left", valign = "center", map = [[
    des.stair("down", 13,07)
    -- Non diggable walls
    des.non_diggable(selection.area(00,00,20,11))
+   des.non_passwall(selection.area(00,00,20,11));
    -- Entire main area
    des.region(selection.area(01,01,20,10),"unlit")
    -- The fellow in residence
@@ -83,6 +84,7 @@ local asmo2 = des.map({ halign = "half-right", valign = "center", map = [[
    des.mazewalk(32,02,"east")
    -- Non diggable walls
    des.non_diggable(selection.area(00,00,32,04))
+   des.non_passwall(selection.area(00,00,32,04));
    des.door("closed",32,02)
    des.monster("&")
    des.monster("&")
