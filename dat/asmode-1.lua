@@ -58,6 +58,14 @@ local asmo1 = des.map({ halign = "half-left", valign = "center", map = [[
    des.trap("fire")
    des.trap("magic")
    des.trap("magic")
+   des.trap("cold")
+   des.trap("cold")
+   des.trap("cold")
+   des.trap("cold")
+   des.trap("cold")
+   des.trap("cold")
+   des.trap("cold")
+
    -- Random monsters.
    des.monster("ghost",11,07)
    des.monster("horned devil",10,05)

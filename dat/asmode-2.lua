@@ -96,6 +96,13 @@ des.trap("board",12,12)
 des.trap("fire",11,11)
 des.trap("fire",10,10)
 des.trap("fire",12,10)
+des.trap("cold")
+des.trap("cold")
+des.trap("cold")
+des.trap("cold")
+des.trap("cold")
+des.trap("cold")
+des.trap("cold")
 
 -- The 'fake' throne room
 des.monster({class="&", x=07, y=04})
