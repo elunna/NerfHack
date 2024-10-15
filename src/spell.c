@@ -589,7 +589,7 @@ study_book(struct obj *spellbook)
 
         /* Books are often wiser than their readers (Rus.) */
         spellbook->in_use = TRUE;
-        if ((!spellbook->blessed 
+        if ((!spellbook->blessed
                 || (spellbook->blessed && Role_if(PM_CAVE_DWELLER)))
             && spellbook->otyp != SPE_BOOK_OF_THE_DEAD) {
             if (spellbook->cursed) {
@@ -1597,7 +1597,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
             otmp = getobj("repair", repair_ok, GETOBJ_PROMPT);
         else
             otmp = some_armor(&gy.youmonst);
-        
+
         if (otmp && greatest_erosion(otmp) > 0) {
             if (Blind)
                 Your("%s feels warmer for a brief moment.",
@@ -1633,20 +1633,20 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
        when above. Players may want to (ab)use this to train spells
        even faster by not advancing to skilled as soon as possible. */
     use_skill(skill, (spellev(spell) * (role_skill <= P_BASIC ? 4 : 2)));
-    
+
     /* Successful casting increases the amount of time the cast
        spell is known. The players INT must be greater than 6 to be
        able to help remember spells as they're cast. Only the
-       primary spellcasters (healers, priests, monks, wizards) 
+       primary spellcasters (healers, priests, monks, wizards)
        get this benefit. Roles casting their special spell also
        get the bonus. */
     if ((primary_spellcaster() || spellid(spell) == gu.urole.spelspec)
-            && ACURR(A_INT) > 6) {
+            && ACURR(A_INT) > 6 && !svl.level.flags.lethe) {
         svs.spl_book[spell].sp_know += CAST_BOOST;
         if (svs.spl_book[spell].sp_know >= MAX_KNOW)
             svs.spl_book[spell].sp_know = MAX_KNOW;
     }
-    
+
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     return ECMD_TIME;
 }
@@ -2143,7 +2143,7 @@ dospellmenu(
         Sprintf(buf, "Name\tLevel\tCategory\tFail\tRetention");
         fmt = "%s\t%-d\t%s\t%-d%%\t%s";
     }
-    
+
     add_menu_heading(tmpwin, buf);
     for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
         splnum = !gs.spl_orderindx ? i : gs.spl_orderindx[i];
