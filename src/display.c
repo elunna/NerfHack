@@ -2673,7 +2673,7 @@ map_glyphinfo(
                  * the moment; colored walls look weird when they're part of
                  * special levels that adjoin special room walls to other room
                  * walls directly. */
-                if (rtype == BEEHIVE || rtype == COCKNEST)
+                if (rtype == BEEHIVE || rtype == MIGOHIVE || rtype == COCKNEST)
                     glyphinfo->gm.sym.color = CLR_YELLOW;
                 else if ((rtype == COURT || rtype == GIANTCOURT)
                          && !Is_stronghold(&u.uz))

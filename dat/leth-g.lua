@@ -39,10 +39,9 @@ des.region(selection.area(03,01,09,03),"lit")
 des.region(selection.area(11,01,69,03),"unlit")
 des.region(selection.area(71,01,74,03),"lit")
 
--- Pending implementation of migos, migohives
--- REGION: (18,14,27,18), unlit, "migohive"
--- REGION: (44,06,53,09), unlit, "migohive"
--- REGION: (60,16,68,18), unlit, "migohive"
+des.region({ region={18,14,27,18},lit=0,type="migohive",filled=1 })
+des.region({ region={44,06,53,09},lit=0,type="migohive",filled=1 })
+des.region({ region={60,16,68,18},lit=0,type="migohive",filled=1 })
 
 -- Stairs
 des.stair("down", 73,02)

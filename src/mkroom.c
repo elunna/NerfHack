@@ -66,6 +66,9 @@ do_mkroom(int roomtype)
         case BEEHIVE:
             mkzoo(BEEHIVE);
             break;
+        case MIGOHIVE:
+            mkzoo(MIGOHIVE); 
+            break;
         case FUNGUSFARM:
             mkzoo(FUNGUSFARM);
             break;
@@ -120,6 +123,10 @@ mkshop(void)
             }
             if (*ep == 'b' || *ep == 'B') {
                 mkzoo(BEEHIVE);
+                return;
+            }
+            if (*ep == 'i' || *ep == 'I') {
+                mkzoo(MIGOHIVE);
                 return;
             }
             if (*ep == 'f' || *ep == 'F') {
@@ -327,6 +334,7 @@ fill_zoo(struct mkroom *sroom)
         mk_zoo_thronemon(tx, ty);
         break;
     case BEEHIVE:
+    case MIGOHIVE:
         tx = sroom->lx + (sroom->hx - sroom->lx + 1) / 2;
         ty = sroom->ly + (sroom->hy - sroom->ly + 1) / 2;
         if (sroom->irregular) {
@@ -376,6 +384,10 @@ fill_zoo(struct mkroom *sroom)
                           (type == BEEHIVE) ? (sx == tx && sy == ty
                                                    ? &mons[PM_QUEEN_BEE]
                                                    : &mons[PM_KILLER_BEE]) :
+                          (type == MIGOHIVE) ? (sx == tx && sy == ty
+                                             ? &mons[PM_MIGO_QUEEN] : (rn2(2)
+                                             ? &mons[PM_MIGO_DRONE]
+                                             : &mons[PM_MIGO_WARRIOR])) :
                           (type == LEPREHALL) ? &mons[PM_LEPRECHAUN] :
                           (type == COCKNEST) ? (rn2(4)
                                                     ? &mons[PM_COCKATRICE]
@@ -432,6 +444,26 @@ fill_zoo(struct mkroom *sroom)
                 if (!rn2(3))
                     (void) mksobj_at(LUMP_OF_ROYAL_JELLY, sx, sy, TRUE,
                                      FALSE);
+                break;
+            case MIGOHIVE:
+                switch (rn2(10)) {
+                    case 9:
+                        mksobj_at(DIAMOND, sx, sy, TRUE, FALSE);
+                        break;
+                    case 8:
+                        mksobj_at(RUBY, sx, sy, TRUE, FALSE);
+                        break;
+                    case 7:
+                    case 6:
+                        mksobj_at(AGATE, sx, sy, TRUE, FALSE);
+                        break;
+                    case 5:
+                    case 4:
+                        mksobj_at(FLUORITE, sx, sy, TRUE, FALSE);
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case FUNGUSFARM:
                 if (!rn2(3))
@@ -501,6 +533,9 @@ fill_zoo(struct mkroom *sroom)
         break;
     case BEEHIVE:
         svl.level.flags.has_beehive = 1;
+        break;
+    case MIGOHIVE:
+        svl.level.flags.has_migohive = 1;
         break;
     case FUNGUSFARM:
         svl.level.flags.has_fungusfarm = 1;

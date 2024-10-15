@@ -262,6 +262,10 @@
 #define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] || \
                        (ptr) == &mons[PM_PHOENIX] || \
                        (ptr) == &mons[PM_VROCK])
+# define is_migo(ptr) \
+    ((ptr) == &mons[PM_MIGO_DRONE] \
+     || (ptr) == &mons[PM_MIGO_WARRIOR] \
+     || (ptr) == &mons[PM_MIGO_QUEEN])
 #define is_giant(ptr) (((ptr)->mhflags & MH_GIANT) != 0L)
 #define is_ettin(ptr) \
     ((ptr) == &mons[PM_ETTIN] || (ptr) == &mons[PM_ETTIN_MUMMY] \

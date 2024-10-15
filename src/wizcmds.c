@@ -762,6 +762,8 @@ wiz_map_levltyp(void)
             Strcat(dsc, " barracks");
         if (svl.level.flags.has_beehive)
             Strcat(dsc, " hive");
+        if (svl.level.flags.has_migohive)
+            Strcat(dsc, " migohive");
         if (svl.level.flags.has_fungusfarm)
             Strcat(dsc, " fungus farm");
         if (svl.level.flags.has_lair)
