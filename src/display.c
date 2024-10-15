@@ -2684,6 +2684,8 @@ map_glyphinfo(
                     glyphinfo->gm.sym.color = CLR_WHITE;
                 else if (rtype == LEPREHALL)
                     glyphinfo->gm.sym.color = CLR_BRIGHT_GREEN;
+                 else if (rtype == FUNGUSFARM)
+                    glyphinfo->gm.sym.color = CLR_GREEN;
                 else if (rtype == ANTHOLE)
                     glyphinfo->gm.sym.color = CLR_BROWN;
                 else if (rtype == ZOO)

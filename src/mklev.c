@@ -804,6 +804,7 @@ clear_level_structures(void)
     svl.level.flags.has_morgue = svl.level.flags.graveyard = 0;
     svl.level.flags.lethe = 0;
     svl.level.flags.has_beehive = 0;
+    svl.level.flags.has_fungusfarm = 0;
     svl.level.flags.has_lair = 0;
     svl.level.flags.has_barracks = 0;
     svl.level.flags.has_temple = 0;
@@ -1256,6 +1257,8 @@ makelevel(void)
             do_mkroom(LEPREHALL);
         else if (u_depth > 6 && !rn2(7))
             do_mkroom(ZOO);
+        else if (u_depth > 7 && !rn2(25))
+            do_mkroom(FUNGUSFARM);
         else if (u_depth > 8 && !rn2(5))
             do_mkroom(TEMPLE);
         else if (u_depth > 9 && !rn2(5)

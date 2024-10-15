@@ -2736,6 +2736,7 @@ fill_special_room(struct mkroom *croom)
         case ZOO:
         case REALZOO:
         case BEEHIVE:
+        case FUNGUSFARM:
         case ANTHOLE:
         case COCKNEST:
         case LEPREHALL:
@@ -2761,6 +2762,9 @@ fill_special_room(struct mkroom *croom)
         break;
     case BEEHIVE:
         svl.level.flags.has_beehive = TRUE;
+        break;
+    case FUNGUSFARM:
+        svl.level.flags.has_fungusfarm = TRUE;
         break;
     case DRAGONLAIR:
         svl.level.flags.has_lair = TRUE;
@@ -3911,6 +3915,7 @@ static const struct {
     { "swamp",              SWAMP },
     { "vault",              VAULT },
     { "beehive",            BEEHIVE },
+    { "fungusfarm",         FUNGUSFARM },
     { "morgue",             MORGUE },
     { "barracks",           BARRACKS },
     { "zoo",                ZOO },

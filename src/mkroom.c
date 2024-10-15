@@ -66,6 +66,9 @@ do_mkroom(int roomtype)
         case BEEHIVE:
             mkzoo(BEEHIVE);
             break;
+        case FUNGUSFARM:
+            mkzoo(FUNGUSFARM);
+            break;
         case MORGUE:
             mkzoo(MORGUE);
             break;
@@ -117,6 +120,10 @@ mkshop(void)
             }
             if (*ep == 'b' || *ep == 'B') {
                 mkzoo(BEEHIVE);
+                return;
+            }
+            if (*ep == 'f' || *ep == 'F') {
+                mkzoo(FUNGUSFARM);
                 return;
             }
             if (*ep == 't' || *ep == 'T' || *ep == '\\') {
@@ -365,6 +372,7 @@ fill_zoo(struct mkroom *sroom)
             mon = makemon((type == COURT) ? courtmon() :
                           (type == BARRACKS) ? squadmon() :
                           (type == MORGUE) ? morguemon() :
+                          (type == FUNGUSFARM) ? fungusmon() :
                           (type == BEEHIVE) ? (sx == tx && sy == ty
                                                    ? &mons[PM_QUEEN_BEE]
                                                    : &mons[PM_KILLER_BEE]) :
@@ -424,6 +432,14 @@ fill_zoo(struct mkroom *sroom)
                 if (!rn2(3))
                     (void) mksobj_at(LUMP_OF_ROYAL_JELLY, sx, sy, TRUE,
                                      FALSE);
+                break;
+            case FUNGUSFARM:
+                if (!rn2(3))
+                    (void) mksobj_at(SLIME_MOLD, sx, sy, TRUE, FALSE);
+                #if 0
+                if (!rn2(5))
+                    (void) mksobj_at(MUSHROOM, sx, sy, TRUE, FALSE);
+                #endif
                 break;
             case BARRACKS:
                 if (!rn2(20)) /* the payroll and some loot */
@@ -485,6 +501,9 @@ fill_zoo(struct mkroom *sroom)
         break;
     case BEEHIVE:
         svl.level.flags.has_beehive = 1;
+        break;
+    case FUNGUSFARM:
+        svl.level.flags.has_fungusfarm = 1;
         break;
     case DRAGONLAIR:
         svl.level.flags.has_lair = 1;
@@ -568,6 +587,60 @@ antholemon(void)
 
     return ((svm.mvitals[mtyp].mvflags & G_GONE) ? (struct permonst *) 0
                                              : &mons[mtyp]);
+}
+
+#define FIRST_MOLD PM_LICHEN
+#define FIRST_MOLDIER PM_BROWN_MOLDIER
+#define LAST_MOLDIER PM_BLACK_MOLDIER
+
+
+struct permonst *
+fungusmon(void)
+{
+	int i, hd = level_difficulty(), mtyp = 0;
+
+	i = rn2(hd > 20 ? 17 : hd > 12 ? 14 : 12);
+
+	switch (i) {
+	case 0:
+	case 1:
+        mtyp = PM_LICHEN;
+        break;
+	case 2: mtyp = PM_BROWN_MOLD;
+        break;
+	case 3: mtyp = PM_YELLOW_MOLD;
+        break;
+	case 4: mtyp = PM_GREEN_MOLD;
+        break;
+	case 5: mtyp = PM_RED_MOLD;
+        break;
+	case 6: mtyp = PM_SHRIEKER;
+        break;
+	case 7: mtyp = PM_VIOLET_FUNGUS;
+        break;
+	case 8: mtyp = PM_BLUE_JELLY;
+        break;
+	case 9:
+	case 10: mtyp = PM_GRAY_FUNGUS;
+        break;
+	case 11: mtyp = PM_GRAY_OOZE;
+        break;
+	/* Following only after level 12... */
+	case 12: mtyp = PM_SPOTTED_JELLY;
+        break;
+	case 13: mtyp = PM_BROWN_PUDDING;
+        break;
+	/* Following only after level 20... */
+	case 14: mtyp = PM_GREEN_SLIME;
+        break;
+	case 15: mtyp = PM_BLACK_PUDDING;
+        break;
+	case 16: mtyp = PM_OCHRE_JELLY;
+        break;
+	}
+
+	return ((svm.mvitals[mtyp].mvflags & G_GONE) ?
+		(struct permonst *)0 : &mons[mtyp]);
 }
 
 staticfn void

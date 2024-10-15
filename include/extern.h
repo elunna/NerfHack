@@ -1719,6 +1719,7 @@ extern int mk_zapcard(void);
 extern void do_mkroom(int);
 extern void fill_zoo(struct mkroom *) NONNULLARG1;
 extern struct permonst *antholemon(void);
+extern struct permonst *fungusmon(void);
 extern boolean nexttodoor(int, int);
 extern boolean has_dnstairs(struct mkroom *) NONNULLARG1;
 extern boolean has_upstairs(struct mkroom *) NONNULLARG1;

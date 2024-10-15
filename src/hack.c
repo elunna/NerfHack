@@ -3536,6 +3536,12 @@ check_special_room(boolean newlev)
         case BEEHIVE:
             You("enter a giant beehive!");
             break;
+        case FUNGUSFARM:
+            if (Hallucination)
+                You("go down under!");
+            else
+                You("enter a room full of fungi!");
+            break;
         case COCKNEST:
             You("enter a disgusting nest!");
             break;
@@ -3609,6 +3615,9 @@ check_special_room(boolean newlev)
                     break;
                 case BEEHIVE:
                     svl.level.flags.has_beehive = 0;
+                    break;
+                case FUNGUSFARM:
+                    svl.level.flags.has_fungusfarm = 0;
                     break;
                 case DRAGONLAIR:
                     svl.level.flags.has_lair = 0;
