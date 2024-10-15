@@ -79,6 +79,14 @@ dungeon = {
             nlevels = 20
          },
          {
+            name = "bigrm",
+            bonetag = "D",
+            base = 23,
+            range = 3,
+            chance = 40,
+            nlevels = 20
+         },
+         {
             name = "medusa",
             base = -11,
             range = 4,
