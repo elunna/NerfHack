@@ -124,23 +124,6 @@ des.monster({ id = "gug", 45,16, peaceful = 0, asleep = 1 })
 --des.object("scroll of demonology"), (44,17), cursed,0
 des.object({ id = "scroll of create monster", x=45, y=18, buc="cursed" })
 
--- Some random objects (no potions or food)
-des.object("?")
-des.object("?")
-des.object("+")
-des.object("/")
-des.object("(")
-des.object("(")
-des.object(")")
-des.object(")")
-des.object("[")
-des.object("[")
-des.object("[")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-
 -- A few traps
 des.trap("spiked pit")
 des.trap("spiked pit")

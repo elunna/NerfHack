@@ -149,7 +149,7 @@ des.object("wand of lightning", 45,11)
 des.object("chest", 48,12)
 
 des.monster("alhoon", 46,14)
-if percent(50) then
+if percent(25) then
     des.object("wand of cancellation", 46,14)
 end
 
@@ -172,15 +172,15 @@ des.monster()
 des.monster()
 
 -- Objects
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
 
 -- Random traps
 des.trap()

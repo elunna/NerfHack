@@ -112,15 +112,6 @@ des.trap()
 des.trap()
 des.trap()
 
-
--- Some random objects
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
-
 -- A little incentive for the last hive
 des.object("potion of full healing", 73,17)
 des.object("potion of full healing", 73,18)

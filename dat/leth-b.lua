@@ -55,12 +55,13 @@ des.stair("down", 72,03)
 des.non_diggable(selection.area(00,00,75,19))
 
 -- Objects
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
-des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+-- des.object()
+
 if percent(75) then
     des.object()
 end

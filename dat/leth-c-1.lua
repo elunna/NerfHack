@@ -191,29 +191,3 @@ des.monster()
 
 -- Essential tools (assume they have a wand of striking)
 des.object({ id = "scroll of earth", x=10,y=03, blessed })
-
--- Random items (from dnh)
-des.object()
-des.object()
-des.object()
-if percent(50) then
-    des.object()
-end
-if percent(50) then
-    des.object()
-end
-if percent(50) then
-    des.object()
-end
-if percent(25) then
-    des.object()
-end
-if percent(25) then
-    des.object()
-end
-if percent(25) then
-    des.object()
-end
-
-
-
