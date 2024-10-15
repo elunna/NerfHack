@@ -15,7 +15,8 @@
 --
 -- MAZE: "nkai-a-1",' '
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "shortsighted", "noteleport", "temperate", "noflip")
+-- The whole gulf is dark and quiet
+des.level_flags("mazelevel", "graveyard", "lethe", "noflip")
 
 --0         1         2         3         4         5         6         7    
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
@@ -41,18 +42,13 @@ des.map([[
     .....    .....    ...     ...  }.}}}.   ......       ....      .......  
                                    }}}}                                     
 ]]);
---0123456789012345678901234567890123456789012345678901234567890123456789012345
---         1         2         3         4         5         6         7    
-
--- Regions
--- The whole gulf is dark and quiet
-des.region({ region={01,01,75,19},lit=0,type="morgue",filled=0 })
 
 -- Stairs and Branch
 des.stair("down", 03,08)
 des.stair("up", 73,14)
 
-BRANCH: (01,01,74,18), (00,00,00,00)
+-- BRANCH: (01,01,74,18), (00,00,00,00)
+des.levregion({ region = {01,01,74,18}, exclude = {00,00,00,00}, type = "branch" })
 
 -- Sea monsters for the river
 des.monster(";", 34,02)

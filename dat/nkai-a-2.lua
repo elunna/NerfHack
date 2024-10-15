@@ -1,13 +1,14 @@
 --
 -- An alternate introductory level...
 --
-MAZE: "nkai-a-2",' '
-#FLAGS: lethe
-GEOMETRY: center, center
+-- MAZE: "nkai-a-2",' '
+des.level_init({ style = "solidfill", fg = " " });
+-- The whole gulf is dark and quiet
+des.level_flags("mazelevel", "graveyard", "lethe", "noflip")
 
 --         1         2         3         4         5         6         7    7
 --123456789012345678901234567890123456789012345678901234567890123456789012345
-MAP
+des.map([[
                                  }}}}                                       
  ...    .....            ...    }}..}}  ....        .....       .....   ... 
  ...  ....  ..     ... ... ....}.}..}.}   ...    ..........   ...   .....   
@@ -28,20 +29,14 @@ MAP
    ....  ....  ...  ....    ...   }..}}}... .... ... ..   ........     ...  
   ... ....  .... .....    ....     }}}.}  ... .... ...    .   ......    ... 
                                    }}}}                                     
-ENDMAP
---123456789012345678901234567890123456789012345678901234567890123456789012345
---         1         2         3         4         5         6         7    7
-
--- Regions
--- The whole gulf is dark and quiet
--- TODO: Mark the level as graveyard instead?
-des.region({ region={01,01,75,195},lit=0,type="morgue",filled=0 })
+]]);
 
 -- Stairs and Branch
 des.stair("down", 57,08)
 des.stair("up", 02,02)
 
-BRANCH: (01,01,74,18), (45,04,68,15)
+-- BRANCH: (01,01,74,18), (45,04,68,15)
+des.levregion({ region = {01,01,74,18}, exclude = {45,04,68,15}, type = "branch" })
 
 -- Sea monsters for the river
 des.monster(";", 33,02)
@@ -89,7 +84,7 @@ des.monster("V")
 
 -- A couple of slithy things
 des.monster("P")
-des.monster("p",)
+des.monster("p")
 des.monster("shoggoth")
 
 -- Some random objects (no potions or food)

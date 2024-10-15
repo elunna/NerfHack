@@ -168,11 +168,14 @@ des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
 des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
--- The new stairs to the Wizard's Tower
--- Moved from the fake wizard's levels
--- Takes the place of one of the fake chests
 local loc = place:rndcoord(2);
-des.levregion({ region={loc.x,loc.y,loc.x,loc.y}, type="portal", name="wizard3" })
+des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
+             contents = function()
+                des.object("nothing");
+             end
+});
+des.engraving({ coord = loc, type="burn", text="Elbereth" })
+des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
 -- THE NOT QUITE WANDS OF WISHING
 -- ...since you can see the chest now through the bars,

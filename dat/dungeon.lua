@@ -55,12 +55,6 @@ dungeon = {
             branchtype = "no_down"
          },
          {
-            name = "The Wizard's Tower",
-            chainlevel = "castle",
-            base = 0,
-            branchtype = "portal"
-         },
-         {
             name = "The Elemental Planes",
             base = 1,
             branchtype = "no_down",
@@ -134,7 +128,7 @@ dungeon = {
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 20,
+      base = 24,
       range = 5,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
@@ -145,7 +139,13 @@ dungeon = {
             base = 9,
             range = 5,
             direction = "up"
-         }
+         },
+         {
+            name = "The Wizard's Tower",
+            chainlevel = "nkai-b",
+            base = 0,
+            branchtype = "portal"
+         },
       },
       levels = {
          {
@@ -216,6 +216,23 @@ dungeon = {
             bonetag = "D",
             base = 13,
             range = 6
+         },
+         {
+            name = "nkai-a",
+            nlevels = 2,
+            base = -5
+         },
+         {
+            name = "nkai-b",
+            base = -4
+         },
+         {
+            name = "nkai-c",
+            base = -3
+         },
+         {
+            name = "nkai-z",
+            base = -2
          },
       }
    },

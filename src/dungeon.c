@@ -718,7 +718,7 @@ static struct level_map {
                   { "castle", &stronghold_level },
                   { "leth-z", &lethegate_level },
                   { "earth", &earth_level },
-                  { "fakewiz1", &portal_level },
+                  { "nkai-b", &portal_level },
                   { "fire", &fire_level },
                   { "juiblex", &juiblex_level },
                   { "knox", &knox_level },

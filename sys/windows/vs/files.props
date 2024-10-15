@@ -90,6 +90,11 @@
     <Luafiles Include = "leth-f.lua"/>
     <Luafiles Include = "leth-g.lua"/>
     <Luafiles Include = "leth-z.lua"/>
+    <Luafiles Include = "nkai-a-1.lua"/>
+    <Luafiles Include = "nkai-a-2.lua"/>
+    <Luafiles Include = "nkai-b.lua"/>
+    <Luafiles Include = "nkai-c.lua"/>
+    <Luafiles Include = "nkai-z.lua"/>
     <Luafiles Include = "medusa-1.lua"/>
     <Luafiles Include = "medusa-2.lua"/>
     <Luafiles Include = "medusa-3.lua"/>

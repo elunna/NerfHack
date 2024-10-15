@@ -3,7 +3,8 @@
 --
 --MAZE: "nkai-b",' '
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "shortsighted", "noteleport", "temperate", "noflip")
+-- The whole gulf is dark and quiet
+des.level_flags("mazelevel", "graveyard", "lethe", "noflip")
 
 --         1         2         3         4         5         6         7    7
 --123456789012345678901234567890123456789012345678901234567890123456789012345
@@ -29,19 +30,15 @@ des.map([[
    .       ...   .. }|.S.|}}} .... }}}}    ....        ....   .....     ... 
                     }-----}}       }}}}                                     
 ]]);
---123456789012345678901234567890123456789012345678901234567890123456789012345
---         1         2         3         4         5         6         7    7
-
--- Regions
--- The whole gulf is dark and quiet
-des.region({ region={01,01,75,19},lit=0,type="morgue",filled=0 })
 
 -- Stairs, Branches and the wizards portal
 des.stair("down", 64,17)
 des.stair("up", 03,17)
 
---Pending design decision.
+-- The new stairs to the Wizard's Tower
+-- Moved from the fake wizard's levels
 --BRANCH: (22,18,22,18), (00,00,00,00)
+des.levregion({ region={22,18,22,18}, type="portal", name="wizard3" })
 
 -- The wizard gets a drawbridge...
 des.drawbridge({dir="west",state="closed",x=28,y=16})
@@ -123,7 +120,7 @@ des.monster({ id = "gug", 43,18, peaceful = 0, asleep = 1 })
 des.monster({ id = "gug", 45,16, peaceful = 0, asleep = 1 })
 
 -- And some toys for them...
-des.object( "wand of death"), (43,16)
+des.object("wand of death", 43,16)
 --des.object("scroll of demonology"), (44,17), cursed,0
 des.object({ id = "scroll of create monster", x=45, y=18, buc="cursed" })
 
