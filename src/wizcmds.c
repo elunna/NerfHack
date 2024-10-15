@@ -545,7 +545,12 @@ wiz_panic(void)
 int
 wiz_fuzzer(void)
 {
-    iflags.debug_fuzzer = TRUE; /* Thoth, take the reins */
+     /* Thoth, take the reins */
+     if (y_n("Do you want to call panic() after impossible()?") == 'n') {
+        iflags.debug_fuzzer = fuzzer_impossible_continue;
+    } else {
+        iflags.debug_fuzzer = fuzzer_impossible_panic;
+    }
     return ECMD_OK;
 }
 
