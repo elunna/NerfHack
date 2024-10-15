@@ -3217,6 +3217,7 @@ extern int mlevel_tele_trap(struct monst *, struct trap *,
 extern boolean rloco(struct obj *) NONNULLARG1;
 extern int random_teleport_level(void);
 extern boolean u_teleport_mon(struct monst *, boolean) NONNULLARG1;
+extern void teleport_pain(void);
 
 /* ### timeout.c ### */
 

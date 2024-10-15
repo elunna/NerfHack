@@ -13,7 +13,6 @@ staticfn void vault_tele(void);
 staticfn void rloc_to_core(struct monst *, coordxy, coordxy, unsigned);
 staticfn void mvault_tele(struct monst *);
 staticfn boolean m_blocks_teleporting(struct monst *);
-staticfn void teleport_pain(void);
 
 /* does monster block others from teleporting? */
 staticfn boolean
@@ -1124,8 +1123,8 @@ level_tele(void)
     char buf[BUFSZ];
     boolean force_dest = FALSE;
 
-     /* Level teleports in Gehennom (including Vlad's/Wizards tower) are
-      * not prevented, but the magic is resisted and inflicts pain. */
+    /* Level teleports in Gehennom (including Vlad's/Wizards tower) are
+    * not prevented, but the magic is resisted and inflicts pain. */
     boolean tele_pain = On_W_tower_level(&u.uz) || In_tower(&u.uz)
         || In_hell(&u.uz);
 
@@ -2218,7 +2217,7 @@ u_teleport_mon(struct monst *mtmp, boolean give_feedback)
     return TRUE;
 }
 
-staticfn void
+void
 teleport_pain(void)
 {
     int uhpmin = minuhpmax(1);

@@ -2385,6 +2385,15 @@ arti_invoke(struct obj *obj)
             winid tmpwin = create_nhwindow(NHW_MENU);
             anything any;
             int clr = NO_COLOR;
+            /* Branchports in Gehennom inflict pain. */
+            boolean tele_pain = On_W_tower_level(&u.uz) || In_tower(&u.uz)
+                || In_hell(&u.uz);
+
+            if (tele_pain) {
+                You_feel("a powerful force confront you.");
+                if (y_n("Continue teleporting?") != 'y')
+                    break;
+            }
 
             any = cg.zeroany; /* set all bits to zero */
             start_menu(tmpwin, MENU_BEHAVE_STANDARD);
@@ -2437,6 +2446,8 @@ arti_invoke(struct obj *obj)
                 else
                     You_feel("weightless for a moment.");
                 goto_level(&newlev, FALSE, FALSE, FALSE);
+                if (tele_pain)
+                    teleport_pain();
             }
             break;
         }
