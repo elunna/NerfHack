@@ -16,7 +16,7 @@
 -- MAZE: "nkai-a-1",' '
 des.level_init({ style = "solidfill", fg = " " });
 -- The whole gulf is dark and quiet
-des.level_flags("mazelevel", "graveyard", "lethe", "noflip")
+des.level_flags("mazelevel", "graveyard", "noflip")
 
 --0         1         2         3         4         5         6         7    
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
