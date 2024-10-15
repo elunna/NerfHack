@@ -138,8 +138,9 @@ des.object("chest", 48,12)
 
 -- The alhoon is a mmf in the original patch, alhoon from dnh
 des.monster("alhoon", 46,14)
-des.object("wand of cancellation", 46,14)
-
+if percent(50) then
+    des.object("wand of cancellation", 46,14)
+end
 -- des.object("spellbook of secrets", 46,14)
 des.trap("magic", 47,14)
 des.object("chest", 48,14)

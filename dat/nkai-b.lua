@@ -120,7 +120,7 @@ des.monster({ id = "gug", 43,18, peaceful = 0, asleep = 1 })
 des.monster({ id = "gug", 45,16, peaceful = 0, asleep = 1 })
 
 -- And some toys for them...
-des.object("wand of death", 43,16)
+-- des.object("wand of death", 43,16)
 --des.object("scroll of demonology"), (44,17), cursed,0
 des.object({ id = "scroll of create monster", x=45, y=18, buc="cursed" })
 

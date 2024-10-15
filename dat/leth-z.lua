@@ -154,7 +154,7 @@ des.object("/", 22,13)
 des.object("/", 19,13)
 des.object("wand of sleep", 18,12)
 des.object("wand of lightning", 18,12)
-des.object("amulet of life saving", 18,12)
+-- des.object("amulet of life saving", 18,12)
 des.object({ id = "ring of protection", x=18, y=12, buc="blessed", spe=3 })
 
 -- Garrison 3
@@ -167,7 +167,7 @@ des.monster({ id = "deep one", x=16,y=10, asleep = 1 })
 -- A statue for the entrance area
 des.object({ id = "statue", x=67,y=15, montype="purple worm", name = "Shudde M'ell", historic=1,
              contents = function()
-                des.object({ id = "drum of earthquake", buc="cursed",spe=8 })
+                des.object({ id = "drum", buc="cursed",spe=8 })
              end
 });
 

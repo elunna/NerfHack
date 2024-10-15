@@ -147,8 +147,12 @@ des.object("chest", 28,09)
 des.monster({ id = "master lich", x=45, y=11, asleep = 1 })
 des.object("wand of lightning", 45,11)
 des.object("chest", 48,12)
+
 des.monster("alhoon", 46,14)
-des.object("wand of cancellation", 46,14)
+if percent(50) then
+    des.object("wand of cancellation", 46,14)
+end
+
 des.trap("magic", 47,14)
 des.object("chest", 48,14)
 des.monster({ id = "succubus", x=46, y=13, asleep = 1 })

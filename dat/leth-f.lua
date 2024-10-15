@@ -64,7 +64,7 @@ des.door("closed", 70,02)
 des.door("locked", 63,16)
 des.door("closed", 71,13)
 
--- Centaurs in the west 
+-- Centaurs in the west
 des.monster("C", 13,03)
 des.monster("C", 09,06)
 des.monster("C", 06,09)
@@ -125,7 +125,11 @@ des.object({ id = "statue", x=07, y=04, montype="mountain nymph",
              contents = 0 })
 des.object({ id = "statue", x=69,y=01, montype="Death", historic=1,
              contents = function()
+              if percent(15) then
                 des.object({ id = "wand of death" })
+              else
+                des.object({ id = "wand of lightning" })
+              end
              end
 });
 
@@ -141,7 +145,11 @@ des.object({ id = "statue", x=67,y=15, montype="kraken", historic=1,
 
 des.object({ id = "statue", x=69,y=01, montype="kraken", historic=1,
              contents = function()
+              if percent(15) then
                 des.object({ id = "wand of death" })
+              else
+                des.object({ id = "wand of lightning" })
+              end
              end
 });
 

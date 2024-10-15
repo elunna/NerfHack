@@ -81,7 +81,9 @@ des.drawbridge({dir="east",state="open",x=27,y=03})
 -- Lich Kings Throne Room
 -- The King
 des.monster("master lich", 66,03)
-des.object("wand of death", 66,03)
+if percent(50) then
+    des.object("wand of death", 66,03)
+end
 -- The Queen
 des.monster("lich", 66,04)
 des.object("wand of lightning", 66,04)

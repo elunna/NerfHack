@@ -144,7 +144,9 @@ des.object({ id = "chest", locked = 1, x = 39, y = 10 ,
 });
 
 -- Ruins of a library (from dnh)
-des.object("magic marker")
+if percent(20) then
+    des.object("magic marker")
+end
 if percent(50) then
     des.object("scroll of blank paper", 37,10)
 end
