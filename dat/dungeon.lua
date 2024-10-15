@@ -162,6 +162,11 @@ dungeon = {
             base = 1
          },
          {
+            name = "bridge",
+            bonetag = "E",
+            base = 2
+         },
+         {
             name = "sanctum",
             base = -1
          },
