@@ -261,9 +261,10 @@
      || (ptr) == &mons[PM_ATHOL])
 #define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
 /* Jabberwocks not considered to have beaks because they have "jaws". */
-#define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] || \
-                       (ptr) == &mons[PM_PHOENIX] || \
-                       (ptr) == &mons[PM_VROCK])
+#define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] \
+                       || (ptr) == &mons[PM_PHOENIX] \
+                       || (ptr) == &mons[PM_FELL_BEAST] \
+                       || (ptr) == &mons[PM_VROCK])
 # define is_migo(ptr) \
     ((ptr) == &mons[PM_MIGO_DRONE] \
      || (ptr) == &mons[PM_MIGO_WARRIOR] \

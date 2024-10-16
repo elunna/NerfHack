@@ -2005,6 +2005,23 @@
      * infravision.  Red and gold dragons (also Chromatic Dragon) are
      * the exceptions because they breathe fire.
      */
+    /* From J.R.R. Tolkien, the nine Nazgul had steeds known as 'fell beasts'
+     * which they rode/flew into battle. Fearsome in their own right.
+     * Not exactly dragons, but dragon-like.
+     */
+    MON(NAM("fell beast"), S_DRAGON,
+        LVL(14, 12, -2, 20, -17), G_NOGEN,
+        A(ATTK(AT_CLAW, AD_PHYS, 4, 5),
+          ATTK(AT_CLAW, AD_PHYS, 4, 5),
+          ATTK(AT_BITE, AD_PHYS, 2, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1200, 800, MS_SHRIEK, MZ_LARGE),
+        MR_COLD | MR_SLEEP | MR_POISON, 0,
+        M1_FLY | M1_POIS | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS
+          | M1_CARNIVORE,
+        M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_NASTY,
+        M3_ACCURATE | M3_INFRAVISION | M3_NOTAME,
+        NO_RACE, 16, HI_LORD, FELL_BEAST),
     MON(NAM("baby gray dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, 4), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_ENCH, 1, 6),

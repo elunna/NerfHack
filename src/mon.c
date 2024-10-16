@@ -937,6 +937,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_PLAINS_CENTAUR:
     case PM_FOREST_CENTAUR:
     case PM_MOUNTAIN_CENTAUR:
+    case PM_FELL_BEAST:
     case PM_BABY_GRAY_DRAGON:
     case PM_BABY_GOLD_DRAGON:
     case PM_BABY_SILVER_DRAGON:
@@ -4565,7 +4566,7 @@ m_respond(struct monst *mtmp)
                 break;
             }
     }
-    if (mtmp->data == &mons[PM_NAZGUL] && !mtmp->mcan && !mtmp->mtame
+    if (mtmp->data == &mons[PM_FELL_BEAST] && !mtmp->mcan
         && mtmp->mspec_used == 0 && !rn2(3)) {
         /* mspec_used also controls whether a Nazgul's breath weapon is ready
          * for use. This gets executed in dochug before it attempts to use its
@@ -4591,9 +4592,6 @@ nazgul_shriek(struct monst *mtmp)
 {
     boolean cansee = canseemon(mtmp);
     struct monst *bystander;
-
-    if (mtmp->data != &mons[PM_NAZGUL])
-        impossible("%d attempting nazgul_shriek!", mtmp->mnum);
 
     /* they will not shriek often when they can't see the player
      * uses m_cansee rather than m_canseeu because the latter is blocked by
@@ -4663,7 +4661,6 @@ nazgul_shriek(struct monst *mtmp)
         }
     }
 }
-
 
 /* mtmp (a black dragon) has a chance to roar to scare the player.
  * Mostly a clone of nazgul_shriek*/

@@ -1501,6 +1501,13 @@ makemon(
     if (ptr == &mons[PM_CERBERUS])
         mtmp->mhp = mtmp->mhpmax = 250 + rnd(50);
 
+    /* Nazgul spawn with their steeds (but not riding them)*/
+    if (ptr == &mons[PM_NAZGUL]) {
+        if (enexto(&cc, x, y, &mons[PM_FELL_BEAST]))
+            makemon(&mons[PM_FELL_BEAST], cc.x, cc.y,
+                MM_ADJACENTOK | MM_IGNOREWATER | MM_IGNORELAVA);
+    }
+
     switch (ptr->mlet) {
     case S_MIMIC:
         set_mimic_sym(mtmp);
