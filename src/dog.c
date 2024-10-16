@@ -1200,6 +1200,10 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
         return FALSE;
     }
 
+    /* Vampires can only tame familiars, no pacifying anything else */
+    if (Race_if(PM_VAMPIRE) && mtmp->data != &mons[PM_FAMILIAR])
+        return FALSE;
+
     /* worst case, at least it'll be peaceful. */
     if (givemsg && !mtmp->mpeaceful && canspotmon(mtmp)) {
         pline("%s seems %s.", Monnam(mtmp),
