@@ -277,6 +277,12 @@ dipforge(struct obj *obj)
         return;
     }
 
+    if (obj->greased) {
+        obj->greased = 0;
+        if (!Blind)
+            pline_The("grease burns off.");
+    }
+
 result:
     switch (rnd(30)) {
     case 6:
