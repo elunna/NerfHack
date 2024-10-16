@@ -327,7 +327,8 @@ static const struct def_skill Skill_B[] = {
 static const struct def_skill Skill_Car[] = {
     /* Cartomancers are extremely narrow in their skills because
      * they are guaranteed a steady stream of cards for offense
-     * and defense.
+     * and defense. Multishot only applies to shuriken class projectiles.
+     *
      * Cartomancers also have a base -5 to-hit penalty for melee fighting
      * Dwarvish carts can reach skilled in pick-axe
      * Gnomish carts can reach skilled in crossbow, basic in club
@@ -336,9 +337,11 @@ static const struct def_skill Skill_Car[] = {
      * */
     { P_DART, P_SKILLED },
     { P_SHURIKEN, P_MASTER },
+    { P_SLING, P_SKILLED },
+    { P_BOOMERANG, P_SKILLED },
     { P_UNICORN_HORN, P_EXPERT },
-    /* Cartomancers don't get skill in spellcasting - they have rulebooks. */
     { P_BARE_HANDED_COMBAT, P_BASIC },
+    /* Cartomancers don't get skill in spellcasting - they have rulebooks. */
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_C[] = {
