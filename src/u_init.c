@@ -63,7 +63,7 @@ static struct trobj Barbarian[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cartomancer[] = {
-    { RAZOR_CARD, 1, WEAPON_CLASS, 60, 1 },
+    { RAZOR_CARD, 1, WEAPON_CLASS, 40, 1 },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { MEAT_STICK, 0, FOOD_CLASS, 2, 0 },
     { CANDY_BAR, 0, FOOD_CLASS, 2, 0 },
