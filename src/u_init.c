@@ -958,6 +958,10 @@ u_init_race(void)
     case PM_VAMPIRE:
         knows_object(POT_VAMPIRE_BLOOD, FALSE);
         knows_object(POT_BLOOD, FALSE);
+        /* Enable random generation too */
+        objects[POT_VAMPIRE_BLOOD].oc_prob = 40;
+        objects[POT_BLOOD].oc_prob = 40;
+
         /* Vampires start off with gods not as pleased, luck penalty */
         adjalign(-5);
         change_luck(-1);
