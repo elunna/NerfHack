@@ -6657,6 +6657,8 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
                /* Stationary monsters cannot flank either*/
                || flanker->data->mmove == 0
                || flanker->mnum == PM_NURSE
+               /* We can't help flank while on Elbereth */
+               || sengr_at("Elbereth", u.ux, u.uy, TRUE)
                /* hidden mimics can't help flank - gives away their position */
                || (flanker->m_ap_type || flanker->mappearance)) {
         /* Impaired monsters don't make good flankers */
