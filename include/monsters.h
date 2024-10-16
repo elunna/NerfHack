@@ -3787,7 +3787,7 @@
        speed of 22 rather than 24 and slowed speed of 11 rather than 12;
        they will still block the shop door, but not as tenaciously */
     MON(NAM("shopkeeper"), S_HUMAN,
-        LVL(13, 16, 0, 50, 0), G_NOGEN,
+        LVL(24, 16, -6, 50, 0), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 4, 4),
           ATTK(AT_WEAP, AD_PHYS, 4, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -3795,7 +3795,7 @@
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_PEACEFUL | M2_STRONG | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_ACCURATE,
-        MH_HUMAN, 15, CLR_YELLOW, SHOPKEEPER),
+        MH_HUMAN, 18, CLR_YELLOW, SHOPKEEPER),
     /* vault guard */
     MON(NAM("guard"), S_HUMAN,
         LVL(12, 12, 10, 40, 10), G_NOGEN,
