@@ -1539,10 +1539,35 @@ throwit(struct obj *obj,
                 slipok = FALSE;
         }
         if (slipok) {
+            char tmpbuf[BUFSZ];
+            int dmg = dmgval(obj, &gy.youmonst);
+
             u.dx = rn2(3) - 1;
             u.dy = rn2(3) - 1;
-            if (!u.dx && !u.dy)
+
+            if (!u.dx && !u.dy) {
                 u.dz = 1;
+                You("hit yourself in the %s!", body_part(LEG));
+
+                if (obj->oartifact)
+                    /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
+                    (void) artifact_hit((struct monst *) 0, &gy.youmonst, obj, &dmg,
+                                        rn1(18, 2));
+                if (dmg > 0)
+                    dmg += u.udaminc;
+                if (dmg < 0)
+                    dmg = 0; /* beware negative rings of increase damage */
+                dmg = Maybe_Half_Phys(dmg);
+
+                if (is_silver(obj) && Hate_silver) {
+                    /* dmgval() already added extra damage */
+                    pline_The("silver sears you!");
+                    exercise(A_CON, FALSE);
+                }
+                Sprintf(tmpbuf, "hitting %sself with a cursed projectile",
+                        uhim());
+                losehp(dmg, tmpbuf, KILLED_BY);
+            }
             impaired = TRUE;
         }
     }
