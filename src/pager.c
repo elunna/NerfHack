@@ -3221,7 +3221,7 @@ do_look(int mode, coord *click_cc)
 
                 supplemental_name[0] = '\0';
                 Strcpy(temp_buf, firstmatch);
-                (void) checkfile(NULL, temp_buf, pm,
+                (void) checkfile(NULL, temp_buf, supplemental_pm,
                                  (ans == LOOK_VERBOSE) ? chkfilDontAsk
                                                        : chkfilNone,
                                  supplemental_name);
