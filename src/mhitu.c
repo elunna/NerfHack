@@ -3129,6 +3129,13 @@ cloneu(void)
     mon->mhp = u.mh / 2;
     u.mh -= mon->mhp;
     disp.botl = TRUE;
+    if (Rabid)
+        mon_rabid(mon, TRUE);
+    if (Sick) {
+        mon->mdiseased = 1;
+        mon->mdiseasetime = (int) (Sick & TIMEOUT);
+        mon->mdiseabyu = TRUE;
+    }
     return mon;
 }
 
