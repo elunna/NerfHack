@@ -1053,6 +1053,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_DOPPELGANGER:
     case PM_SHOPKEEPER:
     case PM_GUARD:
+    case PM_FAMILIAR:
     case PM_PRISONER:
     case PM_ORACLE:
     case PM_ALIGNED_CLERIC:

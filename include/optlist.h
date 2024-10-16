@@ -386,6 +386,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTC(horsename, Advanced, PL_PSIZ, opt_in, set_gameview,
                 No, Yes, No, No, NoAlias,
                 "name of your starting pet if it is a pony")
+    NHOPTC(familiarname, Advanced, PL_PSIZ, opt_in, set_gameview,
+                No, Yes, No, No, NoAlias,
+                "name of your starting pet if it is a familiar")
 #ifdef BACKWARD_COMPAT
     NHOPTC(IBMgraphics, Advanced, 70, opt_in, set_in_config,
                 Yes, Yes, No, No, NoAlias,

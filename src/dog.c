@@ -75,6 +75,9 @@ initedog(struct monst *mtmp)
 staticfn int
 pet_type(void)
 {
+    if (Race_if(PM_VAMPIRE))
+        return PM_FAMILIAR;
+
     if (gu.urole.petnum != NON_PM)
         return  gu.urole.petnum;
     else if (gp.preferred_pet == 'c')
@@ -227,7 +230,8 @@ makedog(void)
     petname = (pettype == PM_LITTLE_DOG) ? gd.dogname
               : (pettype == PM_KITTEN) ? gc.catname
                 : (pettype == PM_PONY) ? gh.horsename
-                  : "";
+                  : (pettype == PM_FAMILIAR) ? gh.familiarname
+                    : "";
 
     /* default pet names */
     if (!*petname && pettype == PM_LITTLE_DOG) {
@@ -243,6 +247,10 @@ makedog(void)
         if (Role_if(PM_RANGER))
             petname = "Sirius"; /* Orion's dog */
     }
+
+    /* default pet names */
+    if (!*petname && pettype == PM_FAMILIAR)
+        petname = "Guillermo"; /* What We Do in the Shadows */
 
     mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG);
 

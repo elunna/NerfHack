@@ -3787,6 +3787,16 @@
             | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE,
         MH_HUMAN, 14, CLR_BLUE, GUARD),
+    /* familiar is the vampires starting pet */
+    MON(NAM("familiar"), S_HUMAN,
+        LVL(5, 12, 10, 10, 0), G_NOGEN,
+        A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 400, MS_FAMILIAR, MZ_HUMAN), MR_POISON, 0,
+        M1_HUMANOID | M1_OMNIVORE,
+        M2_NOPOLY | M2_PEACEFUL | M2_STRONG | M2_COLLECT,
+        M3_INFRAVISIBLE,
+        MH_HUMAN, 7, CLR_BLACK, FAMILIAR),
     /* prisoner is used on some special levels */
     MON(NAM("prisoner"), S_HUMAN,
         LVL(12, 12, 10, 0, 0), G_NOGEN,

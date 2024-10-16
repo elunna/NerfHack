@@ -453,6 +453,7 @@ struct instance_globals_h {
 
     /* dog.c */
     char horsename[PL_PSIZ];
+    char familiarname[PL_PSIZ];
 
     /* mhitu.c */
     unsigned hitmsg_mid;

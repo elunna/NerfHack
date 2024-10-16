@@ -632,6 +632,7 @@ maybe_gasp(struct monst *mon)
     case MS_ROAR: /* dragon, xorn, owlbear */
     case MS_BELLOW: /* crocodile */
     /* capable of speech but only do so if hero is similar type */
+    case MS_FAMILIAR:
     case MS_DJINNI:
     case MS_VAMPIRE: /* vampire in its own form */
     case MS_WERE: /* lycanthrope in human form */
@@ -1171,6 +1172,31 @@ domonnoise(struct monst *mtmp)
                 pline_msg = "discusses dungeon exploration.";
                 break;
             }
+        break;
+    case MS_FAMILIAR:
+        switch (rnd(7)) {
+        case 1:
+            verbl_msg = "I’m just trying to talk to you like a regular person.";
+            break;
+        case 2:
+            verbl_msg = "I’m doing whatever it takes to become a vampire.";
+            break;
+        case 3:
+            verbl_msg = "I wish you guys knew how hard I work.";
+            break;
+        case 4:
+            verbl_msg = "Very cool master, very scary.";
+            break;
+        case 5:
+            verbl_msg = "Are you gonna be alright without me?";
+            break;
+        case 6:
+            verbl_msg = "I haven't slept in 72 hours.";
+            break;
+        case 7:
+            verbl_msg = "Oh, that. That's just my body spray, It's axe.";
+            break;
+        }
         break;
     case MS_SEDUCE: {
         int swval;

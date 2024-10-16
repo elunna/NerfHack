@@ -428,6 +428,7 @@ static const struct instance_globals_h g_init_h = {
               * higher if polymorphed into something that's even faster */
     /* dog.c */
     DUMMY, /* horsename */
+    DUMMY, /* familiarname */
     /* mhitu.c */
     0U, /* hitmsg_mid */
     NULL, /* hitmsg_prev */
