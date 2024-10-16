@@ -1546,7 +1546,6 @@ throwit(struct obj *obj,
             u.dy = rn2(3) - 1;
 
             if (!u.dx && !u.dy) {
-                u.dz = 1;
                 You("hit yourself in the %s!", body_part(LEG));
 
                 if (obj->oartifact)
