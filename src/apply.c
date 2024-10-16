@@ -5208,12 +5208,6 @@ deck_of_fate(struct obj *obj)
                 break;
             }
 
-            if (!u.usaving_grace && Luck > 0) {
-                pline("A graceful force intervenes - the hand retreats!");
-                u.usaving_grace = TRUE;
-                break;
-            }
-
             /* No protection = dead */
             Sprintf(svk.killer.name, "the card of Death");
             svk.killer.format = NO_KILLER_PREFIX;

@@ -4288,7 +4288,10 @@ losehp(int n, const char *knam, schar k_format)
         return;
     }
 
+#if 0 /* Disabled saving grace */
     n = saving_grace(n);
+#endif
+
     u.uhp -= n;
     showdamage(n, TRUE);
 

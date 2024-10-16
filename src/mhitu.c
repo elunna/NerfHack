@@ -2360,7 +2360,9 @@ mdamageu(struct monst *mtmp, int n)
         if (u.mh < 1)
             rehumanize();
     } else {
+#if 0 /* Disabled saving grace */
         n = saving_grace(n);
+#endif
         u.uhp -= n;
         /* caller might have reduced uhpmax before calling mdamageu() */
         if (u.uhp > u.uhpmax)
