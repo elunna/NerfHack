@@ -1044,7 +1044,7 @@ end,
    {
       mindiff = 6,
       contents = function()
-         des.map({ map = [[
+         des.map({ halign = "center", valign = "center", map = [[
    -----------
    -----------
    ||.- - - ||
