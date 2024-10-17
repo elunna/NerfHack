@@ -238,6 +238,64 @@ themerooms = {
          end
    },
 
+   -- Kitchen - idea by spicycebolla - implementation by aosdict
+   -- ported from SpliceHack
+   function()
+      des.room({ type = 'themed', w = d(4)+8, h = 2, filled = 0, contents = function()
+         -- furniture...
+         for i = 1, d(2) do
+            des.feature({ type='sink' })
+         end
+         if percent(50) then
+            des.feature({ type='forge' })
+         end
+         if percent(50) then
+            des.object('ice box')
+         end
+         -- cookware and other useful things...
+         for i = 1, d(3)-1 do
+            des.object('dented pot')
+         end
+         for i = 1, d(3) do
+            des.object('knife')
+         end
+         if percent(70) then
+            des.object('tin opener')
+         end
+         if percent(20) then
+            des.object('tinning kit')
+         end
+         if percent(20) then
+            des.object('towel')
+         end
+         if percent(20) then
+            des.object('apron')
+         end
+         -- sauces and stocks...
+         for i = 1, d(3)-1 do
+            des.object({ class='!', id='oil' })
+         end
+         for i = 1, d(3)-1 do
+            des.object({ class='!', id='fruit juice' })
+         end
+         if percent(50) then
+            des.object({ class='!', id='booze' })
+         end
+         -- raw ingredients...
+         for i = 1, d(4)-1 do
+            des.object('tin')
+         end
+         local ingr = { 'meatball', 'apple', 'orange', 'pear', 'melon', 'banana', 'egg',
+                        'carrot', 'clove of garlic', 'cream pie', 'fruit', 'egg', 'fruit' }
+         -- Missing ingredients: 'slice of cake', 'pumpkin pie', 'apple pie', 'pineapple',
+         for i = 1, d(4) + 4 do
+            local ingrdt = ingr[d(#ingr)]
+            des.object({ class='%', id=ingr[d(#ingr)] })
+
+         end
+      end })
+   end,
+
    -- Fake Delphi
    function()
       des.room({ type = "themed", w = 11,h = 9, filled = 1,
