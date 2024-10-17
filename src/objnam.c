@@ -1810,15 +1810,6 @@ doname_base(
         Strcat(prefix, tmpbuf);
     }
 
-    /* Archeologists have built-in price identification.
-     * (leave precious stones out - they have the touchstone anyway) */
-    if (Role_if(PM_ARCHEOLOGIST) && !objects[obj->otyp].oc_name_known
-        && !has_oname(obj) /* Already has a label/name */
-        && !objects[obj->otyp].oc_uname
-        && !is_unpaid(obj) && obj->oclass != GEM_CLASS) {
-        ConcatF1(bp, 0, " ($%ld)", (long) objects[obj->otyp].oc_cost);
-    }
-
     /* show weight for items (debug tourist info);
        "aum" is stolen from Crawl's "Arbitrary Unit of Measure" */
     if (iflags.invweight && (obj->where == OBJ_INVENT || wizard)) {
