@@ -1743,7 +1743,8 @@ makemon(
     }
 
     /* Small portion of eligible monsters can spawn rabid. */
-    if (!mtmp->mpeaceful && !mtmp->mtame && !flags.beginner
+    if (!mtmp->mpeaceful && !mtmp->mtame
+            && !flags.beginner && gm.moves > 300
         /* Although humans can get infected with rabid, we
          * won't generate them rabid to avoid insane
          * concentrations of rabid soldiers in Ludios or Castle */
