@@ -1438,6 +1438,8 @@ check_room(
                     return FALSE;
                 if (gi.in_mk_themerooms)
                     return FALSE;
+                if (svl.level.flags.is_maze_lev)
+                    return FALSE;
                 if (x < *lowx)
                     *lowx = x + xlim + 1;
                 else

@@ -985,6 +985,7 @@ end,
       end
    },
 
+   --[=[
    -- Storeroom vault v2
    function()
       -- TODO: the nut of figuring out how to have a room that is only joinable
@@ -1019,7 +1020,8 @@ end,
          end })
       end })
    end,
-
+ --]=]
+   
    -- Crossed X of water
    -- FIXME: This breaks the rule that the space in front of a door should
    -- always be free of traps or dangerous terrain, but we can't address that
@@ -1178,7 +1180,7 @@ xxxx----xx----xxxx]], contents=function(m)
       end })
    end
 },
---[=[
+
    -- Swimming pool
    {
       mindiff = 5,
@@ -1192,6 +1194,7 @@ xxxx----xx----xxxx]], contents=function(m)
             for i=1,nmonsters do
                des.monster(';')
             end
+            --[=[
             -- sunken treasure
             if percent(50) then
                des.object({ id='chest', coord=poolarea:rndcoord(1),
@@ -1202,10 +1205,11 @@ xxxx----xx----xxxx]], contents=function(m)
                   des.object({ id = "gold piece", quantity = d(80, 5) })
                end })
             end
+            --]=]
          end })
       end
    },
---]=]
+
 
    -- Anti swimming pool
    {
@@ -1600,7 +1604,6 @@ end,
       end })
    end,
 
-
    -- Dragon hall
    {
       mindiff = nh.mon_difficulty('black dragon') + 3,
@@ -1689,6 +1692,7 @@ xxxxxxx------xxxxxx]], contents = function()
          end })
       end
    },
+
 };
 
 
