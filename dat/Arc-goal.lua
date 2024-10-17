@@ -59,7 +59,7 @@ des.stair("up", 38,10)
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
 -- The altar of Huhetotl.  Unattended.
-des.altar({ x=50,y=14,align="chaos",type="altar" })
+des.altar({ x=50,y=14,align="chaos",type="altar", cracked=1 })
 -- Objects
 des.object({ id = "crystal ball", x=50, y=14,buc="blessed",spe=5,name="The Orb of Detection" })
 des.object()

@@ -32,7 +32,7 @@ des.region({ region={09,02, 27,09}, lit=1, type="temple", filled=2 })
 des.stair("up", 38,0)
 des.stair("down", 18,05)
 -- The altar atop the Tor and its attendant (creating altar makes the priest).
-des.altar({ x=17, y=05, align="neutral", type="shrine" })
+des.altar({ x=17, y=05, align="neutral", type="shrine", cracked=nh.rn2(2) })
 -- Objects
 des.object()
 des.object()

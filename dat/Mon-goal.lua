@@ -54,7 +54,7 @@ des.trap()
 des.trap()
 -- Random monsters.
 des.monster("Master Kaen",place[placeidx])
-des.altar({ coord = place[placeidx], align="noalign", type="altar" })
+des.altar({ coord = place[placeidx], align="noalign", type="altar", cracked=1 })
 des.monster("earth elemental")
 des.monster("earth elemental")
 des.monster("earth elemental")

@@ -68,7 +68,7 @@ des.stair("up", 55,05)
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
 -- The altar.  This is not a shrine.
-des.altar({ coord={16,11}, aligned="noncoaligned", type="altar" })
+des.altar({ coord={16,11}, aligned="noncoaligned", type="altar", cracked=nh.rn2(2) })
 -- Objects
 des.object({ id = "amulet of ESP", x=16, y=11, buc="blessed", spe=0, name="The Eye of the Aethiopica" })
 des.object()

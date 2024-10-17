@@ -45,7 +45,7 @@ des.stair("down", 37,9)
 -- Portal arrival point
 des.levregion({ region = {04,12,04,12}, type="branch" })
 -- altar for the Temple
-des.altar({ x=32,y=09,align="neutral",type="altar" })
+des.altar({ x=32,y=09,align="neutral",type="altar", cracked=nh.rn2(2) })
 -- Doors
 des.door("locked",24,10)
 des.door("closed",26,08)

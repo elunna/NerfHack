@@ -37,7 +37,7 @@ des.door("locked",26,09)
 -- Stairs
 des.stair("up", 36,05)
 -- The altar.  Unattended.
-des.altar({ x=63,y=04,align="noncoaligned", type="altar" })
+des.altar({ x=63,y=04,align="noncoaligned", type="altar", cracked=1 })
 des.non_diggable(selection.area(00,00,75,19))
 -- Objects
 des.object({ id = "luckstone", x=63, y=04,buc="blessed",spe=0,name="The Heart of Ahriman" })
