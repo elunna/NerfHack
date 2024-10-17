@@ -5948,7 +5948,7 @@ object_not_monster(const char *str)
 static const char*
 Cartomancer_rarity(int otyp)
 {
-    int price = objects[otyp].oc_cost;
+    int prob = objects[otyp].oc_prob;
     if (otyp == SCR_CREATE_MONSTER)
         return "summon card";
     if (otyp == SCR_ZAPPING)
@@ -5959,13 +5959,14 @@ Cartomancer_rarity(int otyp)
     if (objects[otyp].oc_name_known)
         return "card";
 
-    if (price < 100)
-        return "common card";
-    if (price < 200)
-        return "uncommon card";
-    if (price < 300)
+    if (prob <= 15)
+        return "legendary card";
+    else if (prob < 35)
         return "rare card";
-    return "legendary card";
+    else if (prob <= 55)
+        return "uncommon card";
+    else
+        return "common card";
 }
 
 /*objnam.c*/
