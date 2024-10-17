@@ -1627,8 +1627,8 @@ artifact_hit(
                 *dmgptr += itemdmg; /* item destruction dmg */
         }
 
-        /* Bonus chain lightning for Thunderfists */
-        if (otmp->oartifact == ART_THUNDERFISTS
+        /* Monks get bonus chain lightning for Thunderfists */
+        if (otmp->oartifact == ART_THUNDERFISTS && Role_if(PM_MONK)
             && gs.spec_dbon_applies && !rn2(20)) {
             pline("Lightning strikes!");
             cast_chain_lightning();
