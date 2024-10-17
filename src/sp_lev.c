@@ -54,7 +54,7 @@ staticfn int pm_to_humidity(struct permonst *);
 staticfn unsigned int sp_amask_to_amask(unsigned int sp_amask);
 staticfn void create_monster(monster *, struct mkroom *);
 staticfn struct obj *create_object(object *, struct mkroom *);
-staticfn void create_altar(altar *, struct mkroom *);
+staticfn void create_altar(altar *, struct mkroom *, boolean);
 staticfn boolean search_door(struct mkroom *, coordxy *, coordxy *, xint16,
                              int) NONNULLPTRS;
 staticfn void create_corridor(corridor *);
@@ -2423,7 +2423,7 @@ create_object(object *o, struct mkroom *croom)
  * Create an altar in a room.
  */
 staticfn void
-create_altar(altar *a, struct mkroom *croom)
+create_altar(altar *a, struct mkroom *croom, boolean cracked)
 {
     schar sproom;
     coordxy x = -1, y = -1;
@@ -2449,6 +2449,8 @@ create_altar(altar *a, struct mkroom *croom)
     amask = sp_amask_to_amask(a->sp_amask);
 
     levl[x][y].altarmask = amask;
+    if (cracked)
+        levl[x][y].cracked = 1;
 
     if (a->shrine < 0)
         a->shrine = rn2(2); /* handle random case */
@@ -4263,6 +4265,7 @@ lspo_altar(lua_State *L)
 
     al = get_table_align(L);
     shrine = shrines2i[get_table_option(L, "type", "altar", shrines)];
+    int cracked_state = get_table_boolean_opt(L, "cracked", 0);
 
     if (x == -1 && y == -1)
         acoord = SP_COORD_PACK_RANDOM(0);
@@ -4273,7 +4276,7 @@ lspo_altar(lua_State *L)
     tmpaltar.sp_amask = al;
     tmpaltar.shrine = shrine;
 
-    create_altar(&tmpaltar, gc.coder->croom);
+    create_altar(&tmpaltar, gc.coder->croom, cracked_state);
 
     return 0;
 }

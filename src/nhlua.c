@@ -573,6 +573,8 @@ nhl_getmap(lua_State *L)
             /* TODO: bits 0, 1, 2 */
             nhl_add_table_entry_bool(L, "shrine",
                                      (levl[x][y].flags & AM_SHRINE));
+            nhl_add_table_entry_bool(L, "cracked",
+                                     levl[x][y].cracked == 1);
         } else if (IS_THRONE(levl[x][y].typ)) {
             nhl_add_table_entry_bool(L, "looted",
                                      (levl[x][y].flags & T_LOOTED));
