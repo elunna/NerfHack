@@ -1178,8 +1178,7 @@ xxxx----xx----xxxx]], contents=function(m)
       end })
    end
 },
-
-
+--[=[
    -- Swimming pool
    {
       mindiff = 5,
@@ -1206,6 +1205,7 @@ xxxx----xx----xxxx]], contents=function(m)
          end })
       end
    },
+--]=]
 
    -- Anti swimming pool
    {
