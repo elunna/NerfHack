@@ -1070,7 +1070,7 @@ u_init(void)
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
 
     flags.female = flags.initgend;
-    flags.beginner = TRUE;
+    flags.beginner = Role_if(PM_TOURIST) ? TRUE : FALSE;
 
     /* zero u, including pointer values --
      * necessary when aborting from a failed restore */

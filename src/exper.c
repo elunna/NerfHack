@@ -219,7 +219,7 @@ more_experienced(int exper, int rexp)
             disp.botl = TRUE;
 #endif
     }
-    if (u.urexp >= (Role_if(PM_WIZARD) ? 1000 : 2000))
+    if (u.urexp >= 2000)
         flags.beginner = FALSE;
 }
 
