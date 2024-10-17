@@ -82,8 +82,8 @@ themeroom_fills = {
    -- Trap room
    function(rm)
       local traps = { "arrow", "dart", "falling rock", "bear",
-                      "land mine", "sleep gas", "rust",
-                      "anti magic" };
+                      "land mine", "sleep gas", "rust", "spear",
+                      "grease", "cold", "magic beam", "anti magic" };
       shuffle(traps);
       local locs = selection.room():percentage(30);
       local func = function(x,y)
