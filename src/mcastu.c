@@ -93,7 +93,7 @@ choose_magic_spell(struct monst* mtmp, int spellval)
 
     /* Low HP, prioritize healing */
     if ((mtmp->mhp * 4) <= mtmp->mhpmax) {
-        if (!rn2(10) || mtmp->mflee)
+        if ((!rn2(10) || mtmp->mflee) && mtmp->m_lev > 10)
             return MGC_ENTOMB;
         return MGC_CURE_SELF;
     }
