@@ -2307,32 +2307,37 @@ hmon_hitmon(
         hmon_hitmon_stagger(&hmd, mon, obj);
     }
 
-    /* Adapted "blood rage" skill from SpliceHack: When a barbarians health is
-     * below 50%, they get a damage boost for melee attacks. Instead of the skill level
-     * in SpliceHack, we'll use the player's level divided by 5. This only kicks in after
-     * level 3 so it's not abuseable early game. These attacks also use a small amount 
-     * of energy.
+    /* Adapted "blood rage" skill from SpliceHack: When a barbarians health
+     * is below 40%, they get a damage boost for melee attacks. Instead of
+     * the skill level in SpliceHack, we'll use the player's level divided
+     * by 5. This only kicks in after level 3. These attacks also use a small
+     * amount of energy.
      *
-     * The bonus is doubled if the player is below 1/4'th of their health.
+     * The bonus is doubled if the player is below 1/5'th of their health.
      * */
-    if (Role_if(PM_BARBARIAN) && u.ulevel > 3
-            && (u.uhp < (u.uhpmax / 2)) && (u.uen >= 3)
-            && !thrown && !Upolyd && rn2(3)) {
-        int bonus = (u.ulevel / 5 + 1) * (u.uhp < (u.uhpmax / 4) ? 2 : 1);
-        hmd.dmg += bonus;
-        if (wizard)
-            pline("rage attack! [%d]", bonus);
-        else if (!rn2(3)) {
-            switch (rnd(5)) {
-                case 1: Your("rage strengthens your attack!"); break;
-                case 2: You("lash out in a fury!"); break;
-                case 3: You("attack in a frenzy!"); break;
-                case 4: You("hit with primal savagery!"); break;
-                case 5: Your("assault is fueled with anger!"); break;
+    if (Role_if(PM_BARBARIAN)) {
+        int fifth_of_hp = u.uhpmax / 5;
+        boolean critical_hp = u.uhp < (fifth_of_hp * 2);
+
+        if (u.ulevel > 3 && critical_hp && u.uen >= 5
+               && !thrown && !Upolyd && rn2(3)) {
+            int bonus = (u.ulevel / 5 + 1) * (u.uhp < (u.uhpmax / 5) ? 2 : 1);
+            hmd.dmg += bonus;
+
+            if (wizard)
+                pline("rage attack! [%d]", bonus);
+            else if (!rn2(3)) {
+                switch (rnd(5)) {
+                    case 1: Your("rage strengthens your attack!"); break;
+                    case 2: You("lash out in a fury!"); break;
+                    case 3: You("attack in a frenzy!"); break;
+                    case 4: You("hit with primal savagery!"); break;
+                    case 5: Your("assault is fueled with anger!"); break;
+                }
             }
+            u.uen -= rnd(5);
+            wake_nearby(FALSE);
         }
-        u.uen -= rnd(3);
-        wake_nearby(FALSE);
     }
 
     if (!hmd.already_killed) {
