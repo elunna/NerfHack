@@ -282,6 +282,11 @@ dipforge(struct obj *obj)
         if (!Blind)
             pline_The("grease burns off.");
     }
+    if (obj->opoisoned) {
+        obj->opoisoned = 0;
+        if (!Blind)
+            pline_The("poison evaporates.");
+    }
 
 result:
     switch (rnd(30)) {
