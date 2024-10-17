@@ -1241,10 +1241,15 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
         artifact_hit(&gy.youmonst, mon, uarmg, &hmd->dmg, hmd->dieroll);
         if (Hallucination)
             pline("THUNDERSTRUCK!");
-        /* It's possible the monster was killed by chain lightning before
-         * the actual damage. */
-        if (DEADMONSTER(mon))
-            hmd->dmg = 0;
+         /* artifact_hit updates 'tmp' but doesn't inflict any
+            damage; however, it might cause carried items to be
+            destroyed and they might do so */
+        if (DEADMONSTER(mon)) { /* artifact killed monster */
+            hmd->doreturn = TRUE;
+            hmd->retval = FALSE;
+            return;
+            /*return FALSE;*/
+        }
     }
 
     /* copy silverhit info back into struct _hitmon_data *hmd */
