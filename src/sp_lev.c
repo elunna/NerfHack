@@ -113,7 +113,6 @@ staticfn int floodfillchk_match_accessible(coordxy, coordxy);
 staticfn void l_push_mkroom_table(lua_State *, struct mkroom *);
 staticfn int get_table_align(lua_State *);
 staticfn int get_table_monclass(lua_State *);
-staticfn int find_montype(lua_State *, const char *, int *);
 staticfn int get_table_montype(lua_State *, int *);
 staticfn lua_Integer get_table_int_or_random(lua_State *, const char *, int);
 staticfn int get_table_buc(lua_State *);
@@ -3116,7 +3115,7 @@ get_table_monclass(lua_State *L)
     return ret;
 }
 
-staticfn int
+int
 find_montype(
     lua_State *L UNUSED,
     const char *s,

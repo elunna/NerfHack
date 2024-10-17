@@ -3045,6 +3045,7 @@ extern boolean create_room(coordxy, coordxy, coordxy, coordxy,
 extern boolean dig_corridor(coord *, coord *, boolean, schar, schar) NONNULLARG12;
 extern void fill_special_room(struct mkroom *) NO_NNARGS;
 extern void wallify_map(coordxy, coordxy, coordxy, coordxy);
+extern int find_montype(lua_State *, const char *, int *);
 extern boolean load_special(const char *) NONNULLARG1;
 extern coordxy random_wdir(void);
 extern boolean pm_good_location(coordxy, coordxy, struct permonst *) NONNULLARG3;

@@ -1400,11 +1400,304 @@ end,
    end
 },
 
+ -- Triple rhombus
+ function()
+   des.map({ map = [[
+-------xxx-------
+|.....--x--.....|
+--.....---.....--
+x--.....|.....--x
+xx--....|....--xx
+xxx-----.-----xxx
+xxxxxx--.--xxxxxx
+xxxxx--...--xxxxx
+xxxxx|.....|xxxxx
+xxxxx|.....|xxxxx
+xxxxx--...--xxxxx
+xxxxxx--.--xxxxxx
+xxxxxxx---xxxxxxx]], contents = function() filler_region(1,1) end })
+end,
+
+-- Spiral
+function()
+   des.map({ map = [[
+x-----------xxx
+--.........----
+|..-------....|
+|.--.....----.|
+|.|..---....|.|
+|.|.--.----.|.|
+|.|.|...+.|.|.|
+|.|.--.--.|.|.|
+|.|..---..|.|.|
+|.--.....--.|.|
+|..-------..|--
+--.........--xx
+x------------xx]], contents = function()
+      des.region({ region = {02,01,02,01}, type = 'themed', irregular = true,
+                   filled = 1 })
+      des.region({ region = {06,06,06,06}, type = 'themed', irregular = true,
+                   joined = false, contents = function()
+         local choice = d(5)
+         if choice == 1 then
+            des.feature({ type='tree', x=01, y=01 })
+         elseif choice == 2 then
+            des.feature({ type='fountain', x=01, y=01 })
+         elseif choice == 3 then
+            if percent(50) then
+               des.altar({ x=01, y=01 })
+            else
+               des.feature({ type='throne', x=01, y=01 })
+            end
+         elseif choice == 4 then
+            for i=1,3 do
+               des.object()
+            end
+         end -- choice 5 = nothing
+         des.monster()
+      end })
+      des.door("random", 08, 06)
+   end })
+end,
+
+ -- Abandoned shop
+ {
+   mindiff = 16,
+   contents = function()
+      des.room({ type = "shop", filled = 0, contents = function(rm)
+         local size = rm.width * rm.height
+         for i = 1, math.floor(size / 5) + d(3) do
+            des.monster('m')
+            if percent(35) then
+               des.object()
+            end
+         end
+      end })
+   end
+},
+
+-- Irregular anthole
+{
+   mindiff = nh.mon_difficulty('soldier ant') + 4,
+   contents = function()
+      des.map({ map = [[
+...............
+...............
+...............
+...............
+...............
+...............
+...............]], contents = function()
+         local room = selection.area(00, 00, 14, 06)
+         local origroom = room:clone()
+         local center = selection.ellipse(07, 03, 7, 3, 1)
+         room = room ~ center -- outermost edge
+         des.replace_terrain({ selection=room, fromterrain='.',
+                               toterrain=' ', chance=80 })
+         room = center
+         center = selection.ellipse(07, 03, 5, 2, 1)
+         room = room ~ center -- a bit further in...
+         des.replace_terrain({ selection=room, fromterrain='.',
+                               toterrain=' ', chance=60 })
+         room = center
+         center = selection.ellipse(07, 03, 3, 1, 1)
+         room = room ~ center -- even further in...
+         des.replace_terrain({ selection=room, fromterrain='.',
+                               toterrain=' ', chance=40 })
+         des.replace_terrain({ selection=center, fromterrain='.', 
+                               toterrain=' ', chance=20 })
+         des.terrain(07, 03, '.')
+         -- now clear out any orphaned disconnected spaces not accessible
+         -- from the center
+         local orphans = origroom:filter_mapchar('.')
+                         ~ selection.floodfill(07, 03, true)
+         des.terrain(orphans, ' ')
+         -- finally, mark it up as an anthole
+         des.region({ region={07,03,07,03}, type = "anthole", filled = 1,
+                      joined = 1, irregular = true })
+         des.wallify()
+      end })
+   end
+},
+
+-- Tiny cage, big monster
+function()
+   des.map({ map = [[
+-------
+|.....|
+|.FFF.|
+|.F.F.|
+|.FFF.|
+|.....|
+-------]], contents = function(m)
+      des.region({ region={1,1,5,5}, type="themed", irregular=false,
+                   filled=1 })
+      if percent(80) then
+         local mons = { 'M', 'Z', 'O', 'T' }
+         if nh.level_difficulty() > 6 then
+            table.insert(mons, 'H')
+            if nh.level_difficulty() > 12 then
+               table.insert(mons, 'D')
+            end
+         end
+         shuffle(mons)
+         des.monster(mons[1], 3,3)
+      else
+         des.trap({ x = 3, y = 3})
+      end
+   end })
+end,
+
+-- These require the mon_difficulty function
+
+ -- Water temple (not a real temple)
+ {
+   mindiff = nh.mon_difficulty('water nymph') + 1,
+   contents = function()
+      des.room({ type = 'themed', contents = function(rm)
+         local totsiz = rm.width * rm.height
+         for i = 1, math.min(d(6)+6, math.floor(totsiz / 4)) do
+            des.feature({ type='pool' })
+         end
+         for i = 1, math.min(d(3), math.floor(totsiz / 4)) do
+            des.feature({ type='fountain' })
+         end
+         if percent(30) then
+            des.feature({ type='sink' })
+         end
+         for i = 1, math.min(d(4)+1, math.floor(totsiz / 4)) do
+            des.monster('water nymph')
+         end
+      end })
+   end
+},
 
 
+   -- Room with small pillars (also, possibly wood nymph room)
+   function()
+      des.room({ type = "themed", w = 5 + nh.rn2(3)*2, h = 5 + nh.rn2(3)*2,
+                 filled = 1, contents = function(rm)
+         local grove = percent(20)
+         if nh.level_difficulty() < nh.mon_difficulty("wood nymph") then
+            grove = false
+         end
+         local mapchr = (grove and 'T') or '-'
+         for i = 0, (rm.width - 3) / 2 do
+            for j = 0, (rm.height - 3) / 2 do
+               des.terrain(i*2 + 1, j*2 + 1, mapchr)
+            end
+         end
+         if grove then
+            des.replace_terrain({ selection = selection.area(0,0,rm.width-1,rm.height-1),
+                                  fromterrain = '.', toterrain='g' })
+            if percent(50) then
+               des.object({ id = "statue", montype = "wood nymph" })
+            end
+            if percent(20) then
+               if percent(50) then
+                  des.object({ id = "statue", montype = "wood nymph" })
+               else
+                  des.object({ id = "figurine", montype = "wood nymph",
+                               material = "wooden" })
+               end
+            end
+            local nnymphs = math.floor(d(nh.level_difficulty()) / 4)
+            for i=1,nnymphs do
+               des.monster("wood nymph")
+            end
+         end
+      end })
+   end,
 
 
+   -- Dragon hall
+   {
+      mindiff = nh.mon_difficulty('black dragon') + 3,
+      contents = function()
+         des.map({ map = [[
+xxxxxx----xx----xxx
+xxxx---..----..--xx
+xxx--...........--x
+x---.............--
+--................|
+|................--
+|...............--x
+----..........---xx
+xxx--........--xxxx
+xxxx----....--xxxxx
+xxxxxxx------xxxxxx]], contents = function()
+            des.region({ region = {04,04,04,04}, irregular = true, filled = 0,
+                         type = "themed", joined = true })
+            local floor = selection.floodfill(04, 04)
+            local hoardctr = floor:rndcoord()
 
+            function loot(x, y)
+               local choice = d(25)
+               if choice == 1 then
+                  des.object('(', x, y)
+               elseif choice == 2 then
+                  des.object({ class=')', x=x, y=y, spe=2+nh.rn2(3) })
+               elseif choice == 3 then
+                  des.object({ class='[', x=x, y=y, spe=2+nh.rn2(3) })
+               elseif choice == 4 then
+                  des.object('chest', x, y)
+               elseif choice >= 5 and choice <= 7 then
+                  des.object('=', x, y)
+               elseif choice == 8 then
+                  des.object(percent(50) and '?' or '+', x, y)
+               else
+                  des.object('*', x, y)
+               end
+               -- recursive 10% chance for more loot
+               if percent(10) then
+                  loot(x, y)
+               end
+            end
+            local goldpile = selection.circle(hoardctr.x, hoardctr.y, 5, 1)
+            goldpile:filter_mapchar('.'):iterate(function(x,y)
+               local dist2 = (x-hoardctr.x) * (x-hoardctr.x) + (y-hoardctr.y) * (y-hoardctr.y)
+               if (dist2 >= 20 and percent(20)) -- radius 4-5
+                  or (dist2 >= 12 and dist2 < 20 and percent(50)) -- radius 3-4
+                  or dist2 < 12 then -- radius 0-3
+                  des.object({ id = 'gold piece', x = x, y = y,
+                               quantity = 200 - dist2*5 + d(50) })
+               end
+               -- given circle radius of 5, practical max for dist2 is 29
+               if percent(40 - (dist2 * 2)) then
+                  loot(x, y)
+               end
+               -- dragon eggs
+               if dist2 < 3 and percent(80) then
+                  des.object({ id = 'egg', x = x, y = y, montype = 'D' })
+               end
+            end)
+
+            -- put some pits and traps down
+            local nonpile = (floor ~ goldpile) & floor
+            for i = 1, 2+d(2) do
+               des.trap("pit", nonpile:rndcoord())
+               des.trap(nonpile:rndcoord())
+            end
+
+            -- no way to specifically force a baby or adult dragon
+            -- so we have to do it manually
+            colors = { 'gray', 'silver', 'red', 'white', 'orange', 'black',
+                       'blue', 'green', 'yellow', 'gold', 'shimmering' }
+            for i = 1, 3+d(3) do
+               des.monster({ id='baby '..colors[d(#colors)]..' dragon',
+                             coord=goldpile:rndcoord(), waiting=1 })
+            end
+            for i = 1, 5 + d(5) do
+               -- would be neat if the adult dragons here could be buffed
+               des.monster({ id=colors[d(#colors)]..' dragon',
+                             coord=goldpile:rndcoord(), waiting=1 })
+            end
+            -- TODO: problem with this room is that the dragons start picking
+            -- up the hoard. Something needs to tell their AI that it's a
+            -- dragon hoard and shouldn't be picked up.
+         end })
+      end
+   },
 
 
 };
