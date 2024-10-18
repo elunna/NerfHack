@@ -2663,7 +2663,7 @@ set_mimic_sym(struct monst *mtmp)
      */
 
     } else if (rt >= SHOPBASE) {
-        if (rn2(10) >= depth(&u.uz)) {
+        if (!rn2(10)) {
             s_sym = S_MIMIC_DEF; /* -> STRANGE_OBJECT */
             goto assign_sym;
         }
