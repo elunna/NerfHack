@@ -1473,12 +1473,15 @@ passivemm(
         break;
     case AD_QUIL: {
         boolean spikes = is_orc(mdef->data);
+        boolean barbs = mdef->data == &mons[PM_BARBED_DEVIL];
+
         if (mhit && !rn2(2)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr)) {
-                pline("%s is jabbed by %s %ss!", buf,
+                pline("%s is %s by %s %ss!", buf,
+                        barbs ? "lacerated" : "jabbed",
                         s_suffix(mon_nam(mdef)),
-                        spikes ? "spikes" : "quills");
+                        spikes ? "spikes" : barbs ? "barbs" : "quills");
                 if (!thick_skinned(mdef->data))
                         tmp += rn2(4);
             }

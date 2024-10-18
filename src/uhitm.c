@@ -7126,12 +7126,17 @@ passive(
         break;
     case AD_QUIL: {
         boolean spikes = is_orc(mon->data);
+        boolean barbs = mon->data == &mons[PM_BARBED_DEVIL];
+
         if (monnear(mon, u.ux, u.uy) && mhitb) {
             if (Blind || !flags.verbose) {
-                You("are jabbed by something sharp!");
+                You("are %s by something sharp!",
+                    barbs ? "lacerated" : "jabbed");
             } else {
-                You("are jabbed by %s %s!", s_suffix(mon_nam(mon)),
-                     spikes ? "spikes" : "quills");
+                You("are %s by %s %s!",
+                     barbs ? "lacerated" : "jabbed",
+                     s_suffix(mon_nam(mon)),
+                     spikes ? "spikes" : barbs ? "barbs" : "quills");
             }
             if (!thick_skinned(gy.youmonst.data))
                 tmp += rn2(4);

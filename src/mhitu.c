@@ -3002,11 +3002,14 @@ passiveum(
             break;
         case AD_QUIL: {
             boolean spikes = is_orc(gy.youmonst.data);
+            boolean barbs = gy.youmonst.data == &mons[PM_BARBED_DEVIL];
+
             if (oldu_mattk->aatyp == AT_NONE) {
                 if (!rn2(2)) {
-                    pline("%s is jabbed by %s%ss!", Monnam(mtmp),
+                    pline("%s is %s by %s%ss!", Monnam(mtmp),
+                          barbs ? "lacerated" : "jabbed",
                           !Upolyd ? "" : "your ",
-                          spikes ? "spikes" : "quills");
+                          spikes ? "spikes" : barbs ? "barbs" : "quills");
                     if (!thick_skinned(mtmp->data))
                         tmp += rn2(4);
                 } else
