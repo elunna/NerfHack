@@ -1039,7 +1039,8 @@
         LVL(11, 3, 7, 20, 0), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_STCK, 3, 6),
           ATTK(AT_CLAW, AD_STCK, 3, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+          ATTK(AT_ENGL, AD_DGST, 1, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 500, MS_SILENT, MZ_LARGE), MR_ACID, 0,
         M1_CLING | M1_BREATHLESS | M1_AMORPHOUS | M1_HIDE | M1_ANIMAL
             | M1_NOEYES | M1_NOHEAD | M1_NOLIMBS | M1_THICK_HIDE
