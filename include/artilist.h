@@ -74,7 +74,7 @@ static NEARDATA struct artifact artilist[] = {
      * Note: All the to-hit numbers appear here as positive, but they
      * adjusted to become negative in artifact.c:spec_abon()
      */
-#define  PENTOHIT 10
+#define  PENTOHIT 15
 
     /*** Lawful artifacts ***/
 
