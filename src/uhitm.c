@@ -1930,7 +1930,7 @@ hmon_hitmon_dmg_recalc(struct _hitmon_data *hmd, struct obj *obj)
             || !obj || !uwep || !ammo_and_launcher(obj, uwep) || uslinging()) {
             strbonus = dbon();
             absbonus = abs(strbonus);
-            if (hmd->twohits)
+            if (hmd->twohits || uslinging())
                 strbonus = ((3 * absbonus + 2) / 4) * sgn(strbonus);
             else if (hmd->thrown == HMON_MELEE && uwep && bimanual(uwep))
                 strbonus = ((3 * absbonus + 1) / 2) * sgn(strbonus);
