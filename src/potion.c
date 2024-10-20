@@ -1116,6 +1116,7 @@ peffect_sleeping(struct obj *otmp)
 staticfn int
 peffect_monster_detection(struct obj *otmp)
 {
+    makeknown(POT_MONSTER_DETECTION);
     if (otmp->blessed) {
         int i, x, y;
 
