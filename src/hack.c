@@ -3267,7 +3267,20 @@ spoteffects(boolean pick)
                                       : 0]);
     }
 
-    if ((mtmp = m_at(u.ux, u.uy)) != 0 && !u.uswallow) {
+    /* Loop through the surrounding squares for pouncers */
+    int x, y;
+    for (x = u.ux - 1; x <= u.ux + 1; x++) {
+        for (y = u.uy - 1; y <= u.uy + 1; y++) {
+            if (!isok(x, y))
+                continue;
+            if ((mtmp = m_at(x, y)) != 0 && mtmp->mundetected
+                  && !canspotmon(mtmp) && !rn2(3))
+                goto mon_findsu;
+        }
+    }
+
+mon_findsu:
+    if (mtmp && !u.uswallow) {
         mtmp->mundetected = mtmp->msleeping = 0;
         switch (mtmp->data->mlet) {
         case S_PIERCER:
@@ -3285,7 +3298,10 @@ spoteffects(boolean pick)
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
             break;
         }
-        mnexto(mtmp, RLOC_NOMSG); /* have to move the monster */
+        if (u_at(mtmp->mx, mtmp->mx))
+            mnexto(mtmp, RLOC_NOMSG); /* have to move the monster */
+        else
+            newsym(mtmp->mx, mtmp->my);
     }
  spotdone:
     if (!--inspoteffects) {
