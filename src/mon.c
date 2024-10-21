@@ -6806,7 +6806,7 @@ mon_berserk(struct monst *mtmp)
 {
     if (noattacks(mtmp->data) || !is_berserker(mtmp->data))
         return;
-    if (helpless(mtmp))
+    if (helpless(mtmp) || mtmp->mberserk)
         return;
 
     /* Serenity blocks berserkers */
