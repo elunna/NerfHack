@@ -1021,8 +1021,8 @@ end,
       end })
    end,
  --]=]
-   
-   -- Crossed X of water
+
+   -- Crossed X of lava
    -- FIXME: This breaks the rule that the space in front of a door should
    -- always be free of traps or dangerous terrain, but we can't address that
    -- here since no doors exist yet.
@@ -1030,8 +1030,8 @@ end,
       des.room({ type = "themed", filled = 1,
                w = 5 + nh.rn2(9), h = 5 + nh.rn2(3),
                contents = function(rm)
-         des.terrain(selection.line(0, 0, rm.width - 1, rm.height - 1), "}")
-         des.terrain(selection.line(0, rm.height - 1, rm.width - 1, 0), "}")
+         des.terrain(selection.line(0, 0, rm.width - 1, rm.height - 1), "L")
+         des.terrain(selection.line(0, rm.height - 1, rm.width - 1, 0), "L")
       end })
    end,
 
