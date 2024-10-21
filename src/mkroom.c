@@ -20,7 +20,7 @@
 staticfn boolean isbig(struct mkroom *);
 staticfn struct mkroom *pick_room(boolean);
 staticfn void mkshop(void), mkzoo(int), mkswamp(void);
-staticfn void mk_zoo_thronemon(coordxy, coordxy);
+staticfn int mk_zoo_thronemon(coordxy, coordxy);
 staticfn void mktemple(void);
 staticfn coord *shrine_pos(int);
 staticfn struct permonst *morguemon(void);
@@ -283,11 +283,12 @@ mkzoo(int type)
     }
 }
 
-staticfn void
+staticfn int
 mk_zoo_thronemon(coordxy x, coordxy y)
 {
     int i = rnd(level_difficulty());
-    int pm = (i > 9) ? PM_OGRE_TYRANT
+    int pm = (i > 20) ? PM_VAMPIRE_LEADER
+        : (i > 9) ? PM_OGRE_TYRANT
         : (i > 5) ? PM_ELVEN_MONARCH
         : (i > 2) ? PM_DWARF_RULER
         : PM_GNOME_RULER;
@@ -300,6 +301,7 @@ mk_zoo_thronemon(coordxy x, coordxy y)
         /* Give him a sceptre to pound in judgment */
         (void) mongets(mon, MACE);
     }
+    return pm;
 }
 
 void
@@ -307,7 +309,7 @@ fill_zoo(struct mkroom *sroom)
 {
     struct monst *mon;
     int sx, sy, i;
-    int sh, goldlim = 0, type = sroom->rtype;
+    int sh, goldlim = 0, type = sroom->rtype, ctype = NON_PM;
     coordxy tx = 0, ty = 0;
     int rmno = (int) ((sroom - svr.rooms) + ROOMOFFSET);
     coord mm;
@@ -331,7 +333,7 @@ fill_zoo(struct mkroom *sroom)
             ty = mm.y;
         } while (occupied((coordxy) tx, (coordxy) ty) && --i > 0);
  throne_placed:
-        mk_zoo_thronemon(tx, ty);
+        ctype = mk_zoo_thronemon(tx, ty);
         break;
     case BEEHIVE:
     case MIGOHIVE:
@@ -377,7 +379,8 @@ fill_zoo(struct mkroom *sroom)
             if ((type == COURT || type == GIANTCOURT)
                     && IS_THRONE(levl[sx][sy].typ))
                 continue;
-            mon = makemon((type == COURT) ? courtmon() :
+            mon = makemon((type == COURT) ? (ctype == PM_VAMPIRE_LEADER
+                                          ? mkclass(S_VAMPIRE, 0) : courtmon()) :
                           (type == BARRACKS) ? squadmon() :
                           (type == MORGUE) ? morguemon() :
                           (type == FUNGUSFARM) ? fungusmon() :
