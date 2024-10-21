@@ -1547,6 +1547,8 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define mdistu(mon) distu((mon)->mx, (mon)->my)
 #define onlineu(xx, yy) online2((coordxy)(xx), (coordxy)(yy), u.ux, u.uy)
 
+#define a_align(x, y) ((aligntyp) Amask2align(levl[x][y].altarmask & AM_MASK))
+
 #define rn1(x, y) (rn2(x) + (y))
 
 /* negative armor class is randomly weakened to prevent invulnerability */

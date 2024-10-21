@@ -291,8 +291,8 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
         /* Monsters don't respect musical scaring when aggravated */
         return Aggravate_monster ? FALSE : TRUE;
 
-    /* should this still be true for defiled/molochian altars? */
-    if (IS_ALTAR(levl[x][y].typ)
+    /* should this still be true for defiled altars? */
+    if (IS_ALTAR(levl[x][y].typ) && a_align(x, y) != A_NONE
         && (mtmp->data->mlet == S_VAMPIRE || is_vampshifter(mtmp)))
         return TRUE;
 
