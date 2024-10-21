@@ -3176,6 +3176,7 @@ spoteffects(boolean pick)
     struct monst *mtmp;
     struct trap *trap = t_at(u.ux, u.uy);
     int trapflag = iflags.failing_untrap ? FAILEDUNTRAP : 0;
+    static boolean was_hidden;
 
     /* prevent recursion from affecting the hero all over again
        [hero poly'd to iron golem enters water here, drown() inflicts
@@ -3286,6 +3287,7 @@ spoteffects(boolean pick)
     }
 
 mon_findsu:
+    was_hidden = mtmp && mtmp->mundetected;
     /* There is now a monster occupying the same square as hero */
     if (mtmp && !u.uswallow) {
         mtmp->mundetected = mtmp->msleeping = 0;
@@ -3294,14 +3296,14 @@ mon_findsu:
             piercer_hit(mtmp, &gy.youmonst);
             break;
         default: /* monster surprises you. */
-            if (mtmp->mtame)
+            if (mtmp->mtame && was_hidden)
                 pline("%s jumps near you from the %s.", Amonnam(mtmp),
                       ceiling(u.ux, u.uy));
-            else if (mtmp->mpeaceful) {
+            else if (mtmp->mpeaceful && was_hidden) {
                 You("surprise %s!",
                     Blind && !sensemon(mtmp) ? something : a_monnam(mtmp));
                 mtmp->mpeaceful = 0;
-            } else
+            } else if (was_hidden)
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
             break;
         }
