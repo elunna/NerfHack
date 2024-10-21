@@ -5196,6 +5196,7 @@ zhitu(
         } else if (resists_death(gy.youmonst.data)) {
             shieldeff(sx, sy);
             You("seem unaffected.");
+            dam = 0;
             break;
         } else if (Antimagic) {
             /* not as much damage as 'touch of death'

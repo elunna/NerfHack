@@ -46,7 +46,7 @@
      || nonliving(ptr) \
      || is_demon(ptr) \
      || is_angel(ptr) \
-     || (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) \
+     || is_vampire(ptr) \
      || (ptr)->msound == MS_LEADER \
      || (ptr) == &mons[PM_MINOTAUR] \
      || (ptr) == &mons[PM_TITAN] \
