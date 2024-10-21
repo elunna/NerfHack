@@ -1446,7 +1446,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
 
     if (olet == SPBOOK_CLASS) {
         if (otyp == SPE_BLANK_PAPER || !reveal_info) {
-            OBJPUTSTR(Role_if(PM_CARTOMANCER) ? "Rulebook" : "Spellbook.");
+            OBJPUTSTR(Role_if(PM_CARTOMANCER) ? "Rulebook" : "Spellbook");
         } else if (otyp == SPE_NOVEL || otyp == SPE_BOOK_OF_THE_DEAD) {
             OBJPUTSTR("Book.");
         } else {
