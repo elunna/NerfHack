@@ -3269,17 +3269,24 @@ spoteffects(boolean pick)
 
     /* Loop through the surrounding squares for pouncers */
     int x, y;
+    if ((mtmp = m_at(u.ux, u.uy)) != 0)
+        goto mon_findsu;
+
     for (x = u.ux - 1; x <= u.ux + 1; x++) {
         for (y = u.uy - 1; y <= u.uy + 1; y++) {
             if (!isok(x, y))
                 continue;
             if ((mtmp = m_at(x, y)) != 0 && mtmp->mundetected
-                  && !canspotmon(mtmp) && !rn2(3))
+                  && !mtmp->mpeaceful && !canspotmon(mtmp) && !rn2(3)) {
+                /* Place the monster *over* us */
+                (void) rloc_to(mtmp, u.ux, u.uy);
                 goto mon_findsu;
+            }
         }
     }
 
 mon_findsu:
+    /* There is now a monster occupying the same square as hero */
     if (mtmp && !u.uswallow) {
         mtmp->mundetected = mtmp->msleeping = 0;
         switch (mtmp->data->mlet) {
@@ -3298,10 +3305,7 @@ mon_findsu:
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
             break;
         }
-        if (u_at(mtmp->mx, mtmp->mx))
-            mnexto(mtmp, RLOC_NOMSG); /* have to move the monster */
-        else
-            newsym(mtmp->mx, mtmp->my);
+        mnexto(mtmp, RLOC_NOMSG); /* Best to move the monster */
     }
  spotdone:
     if (!--inspoteffects) {
