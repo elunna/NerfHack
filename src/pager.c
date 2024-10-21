@@ -1567,8 +1567,8 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     /* probability */
     if (reveal_info) {
         Sprintf(buf, "Probability: %d", oc.oc_prob);
+         OBJPUTSTR(buf);
     }
-    OBJPUTSTR(buf);
 
     /* Scrolls or spellbooks: ink cost */
 
