@@ -3307,7 +3307,8 @@ mon_findsu:
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
             break;
         }
-        mnexto(mtmp, RLOC_NOMSG); /* Best to move the monster */
+        if (was_hidden)
+            mnexto(mtmp, RLOC_NOMSG); /* Best to move the monster */
     }
  spotdone:
     if (!--inspoteffects) {
