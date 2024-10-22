@@ -3176,7 +3176,6 @@ spoteffects(boolean pick)
     struct monst *mtmp;
     struct trap *trap = t_at(u.ux, u.uy);
     int trapflag = iflags.failing_untrap ? FAILEDUNTRAP : 0;
-    static boolean was_hidden;
 
     /* prevent recursion from affecting the hero all over again
        [hero poly'd to iron golem enters water here, drown() inflicts
@@ -3273,11 +3272,13 @@ spoteffects(boolean pick)
     if ((mtmp = m_at(u.ux, u.uy)) != 0)
         goto mon_findsu;
 
+    /* Look for piercers or high-up monsters that can ambush us. */
     for (x = u.ux - 1; x <= u.ux + 1; x++) {
         for (y = u.uy - 1; y <= u.uy + 1; y++) {
             if (!isok(x, y))
                 continue;
-            if ((mtmp = m_at(x, y)) != 0 && mtmp->mundetected
+            if ((mtmp = m_at(x, y)) != 0
+                  && mtmp->mundetected && is_clinger(mtmp->data)
                   && !mtmp->mpeaceful && !canspotmon(mtmp) && !rn2(3)) {
                 /* Place the monster *over* us */
                 (void) rloc_to(mtmp, u.ux, u.uy);
@@ -3287,7 +3288,6 @@ spoteffects(boolean pick)
     }
 
 mon_findsu:
-    was_hidden = mtmp && mtmp->mundetected;
     /* There is now a monster occupying the same square as hero */
     if (mtmp && !u.uswallow) {
         mtmp->mundetected = mtmp->msleeping = 0;
@@ -3296,19 +3296,18 @@ mon_findsu:
             piercer_hit(mtmp, &gy.youmonst);
             break;
         default: /* monster surprises you. */
-            if (mtmp->mtame && was_hidden)
+            if (mtmp->mtame)
                 pline("%s jumps near you from the %s.", Amonnam(mtmp),
                       ceiling(u.ux, u.uy));
-            else if (mtmp->mpeaceful && was_hidden) {
+            else if (mtmp->mpeaceful) {
                 You("surprise %s!",
                     Blind && !sensemon(mtmp) ? something : a_monnam(mtmp));
                 mtmp->mpeaceful = 0;
-            } else if (was_hidden)
+            } else
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
             break;
         }
-        if (was_hidden)
-            mnexto(mtmp, RLOC_NOMSG); /* Best to move the monster */
+        mnexto(mtmp, RLOC_NOMSG); /* have to move the monster */
     }
  spotdone:
     if (!--inspoteffects) {
