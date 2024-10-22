@@ -2371,6 +2371,7 @@ use_offensive(struct monst *mtmp)
         cval = bcsign(otmp);
         dam = (2 * (rn1(3, 3) + 2 * cval) + 1) / 3;;
         mreadmsg(mtmp, otmp);
+        m_useup(mtmp, otmp);
         if (mtmp->mconf) {
             if (vis)
                 pline("Oh, what a pretty fire!");
