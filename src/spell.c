@@ -2209,6 +2209,12 @@ percent_success(int spell)
     boolean paladin_bonus = (Role_if(PM_KNIGHT)
                              && skilltype == P_CLERIC_SPELL);
 
+    struct trap *trap = t_at(u.ux, u.uy);
+
+    /* Anti-magic fields block spellcasting */
+    if (trap && trap->ttyp == ANTI_MAGIC)
+        return 0;
+
     /* Calculate intrinsic ability (splcaster) */
 
     splcaster = gu.urole.spelbase;
