@@ -1312,6 +1312,7 @@ maybe_spin_web(struct monst *mtmp)
 {
     if (webmaker(mtmp->data) && !mtmp->mtame
         && !helpless(mtmp) && !mtmp->mspec_used
+        && accessible(mtmp->mx, mtmp->my)
         && !t_at(mtmp->mx, mtmp->my) && soko_allow_web(mtmp)) {
         struct trap *trap;
         int prob = ((((mtmp->data == &mons[PM_GIANT_SPIDER]) ? 15 : 5)
