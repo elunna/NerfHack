@@ -3286,6 +3286,7 @@ spoteffects(boolean pick)
             }
         }
     }
+    goto spotdone;
 
 mon_findsu:
     /* There is now a monster occupying the same square as hero */
