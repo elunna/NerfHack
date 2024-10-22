@@ -2361,6 +2361,8 @@ use_offensive(struct monst *mtmp)
         } else if (clone_mon(mtmp, 0, 0) && vis)
             pline("%s multiplies!", Monnam(mtmp));
         m_useup(mtmp, otmp);
+        if (oseen)
+            makeknown(SCR_CLONING);
         return 2;
     } /* case MUSE_SCR_CLONING */
     case MUSE_SCR_FIRE: {
