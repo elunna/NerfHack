@@ -2383,6 +2383,8 @@ use_offensive(struct monst *mtmp)
             }
         } else
             explode(mtmp->mux, mtmp->muy, BZ_M_SPELL(ZT_FIRE), dam, SCROLL_CLASS, EXPL_FIERY);
+        if (oseen)
+            makeknown(SCR_FIRE);
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     } /* case MUSE_SCR_FIRE */
     case MUSE_POT_PARALYSIS:
