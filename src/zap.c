@@ -2825,6 +2825,7 @@ int
 dozap(void)
 {
     struct obj *obj;
+    struct trap *trap = t_at(u.ux, u.uy);
     int damage, need_dir;
 
     if (nohands(gy.youmonst.data)) {
@@ -2851,6 +2852,12 @@ dozap(void)
             pline1(nothing_happens);
             return ECMD_TIME;
         }
+        if (trap && trap->ttyp == ANTI_MAGIC) {
+            if (!Blind)
+                pline("%s glows and fades.", The(xname(obj)));
+            return ECMD_TIME;
+        }
+
         struct obj *pseudo;
         if (obj->corpsenm == NON_PM)
             impossible("seffects: SCR_WAND_ZAP has no zap type!");
@@ -2892,6 +2899,9 @@ dozap(void)
     need_dir = objects[obj->otyp].oc_dir != NODIR;
     if (!zappable(obj)) {
         pline1(nothing_happens);
+    } else if (trap && trap->ttyp == ANTI_MAGIC) {
+        if (!Blind)
+            pline("%s glows and fades.", The(xname(obj)));
     } else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE)) {
         backfire(obj); /* the wand blows up in your face! */
         exercise(A_STR, FALSE);
