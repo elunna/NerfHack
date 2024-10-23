@@ -1398,6 +1398,7 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
          */
         if (mtmp->mpeaceful && (spellnum == CLC_INSECTS
                                 || spellnum == CLC_HOBBLE
+                                || spellnum == CLC_FIRE_PILLAR
                                 || spellnum == CLC_BLIGHT))
             return TRUE;
         /* healing when already healed */
@@ -1417,6 +1418,11 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             && mtmp->data != &mons[PM_ARCH_VILE]
             && (distu(mtmp->mx, mtmp->my) > 2))
             return TRUE;
+
+        if ((m_seenres(mtmp, M_SEEN_FIRE))
+            && spellnum == CLC_FIRE_PILLAR) {
+            return TRUE;
+        }
     }
     return FALSE;
 }
