@@ -229,12 +229,36 @@ watchman_warn_fountain(struct monst *mtmp)
 void
 dipforge(struct obj *obj)
 {
+    boolean is_hands = (obj == &hands_obj);
+
     if (Levitation) {
         floating_above("forge");
         return;
     }
 
     burn_away_slime();
+
+    if (is_hands) {
+        if (uarmg) {
+            obj = uarmg; /* Process below */
+        } else {
+            You("dip your %s into the forge.", makeplural(body_part(HAND)));
+
+            if (!fully_resistant(AD_FIRE)) {
+                You("burn yourself!");
+                losehp(resist_reduce(d(2, 16), FIRE_RES),
+                "touching forge lava", KILLED_BY);
+            } else {
+                You("swirl the lava around...");
+            }
+            /* Burn any goop off */
+            if (Glib) {
+                make_glib(0);
+                Your("%s are no longer slippery.", fingers_or_gloves(TRUE));
+            }
+            return;
+        }
+    }
 
     /* Dipping something you're still wearing into a forge filled with
      * lava, probably not the smartest thing to do. This is gonna hurt.
