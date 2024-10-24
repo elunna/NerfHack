@@ -1512,7 +1512,7 @@ pleased(aligntyp g_align)
                 /*FALLTHRU*/
             case 6:
                 /* Cave dwellers don't mess around with spells, so do nothing */
-                if (Role_if(PM_CAVE_DWELLER))
+                if (!primary_spellcaster())
                     break;
                 give_spell();
                 break;

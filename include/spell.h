@@ -35,4 +35,9 @@ enum spellknowledge {
 /* how much Pw a spell of level lvl costs to cast? */
 #define SPELL_LEV_PW(lvl) ((lvl) * 5)
 
+/* These are the roles that specialize in spellcasting, they start with
+ * spellbooks */
+#define primary_spellcaster() (Role_if(PM_HEALER) || Role_if(PM_CLERIC) \
+                               || Role_if(PM_MONK) || Role_if(PM_WIZARD))
+
 #endif /* SPELL_H */
