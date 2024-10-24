@@ -962,6 +962,11 @@ doopen_indir(coordxy x, coordxy y)
         return res;
     }
 
+    if (levl[cc.x][cc.y].splatpm && rn2(20)) {
+        Your("%s slips off the bloody door!", body_part(HAND));
+        return res;
+    }
+
     /* door is known to be CLOSED */
     if ((rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3)
         /* Minor perk of force gloves */
