@@ -181,6 +181,13 @@ des.trap("spiked pit",19,02)
 des.trap("grease")
 des.trap("magic beam")
 des.trap("spear")
+des.trap("anti magic")
+des.trap("anti magic")
+des.trap("anti magic")
+des.trap("anti magic")
+des.trap("anti magic")
+des.trap("anti magic")
+des.trap("anti magic")
 
 -- Fishes in the river...
 des.monster("giant eel", 09,13)
