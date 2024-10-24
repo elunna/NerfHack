@@ -1330,17 +1330,6 @@ seffect_enchant_armor(struct obj **sobjp)
         return;
     }
 
-    /* Items which provide magic resistance also resist enchanting.
-     * They don't resist when their enchantment is negative, that is
-     * "un"-enchanting a bad enchantment. But for anything starting at
-     * +0 has a 1 in (enchantment + 2) chance of failure. */
-    resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
-        || defends(AD_MAGM, otmp);;
-    if (resists_magic && otmp->spe >= 0 && rn2(otmp->spe + 2)) {
-        pline("%s vibrates and resists!", Yname2(otmp));
-        return;
-    }
-
     s = scursed ? -1
         : (otmp->spe >= 9)
         ? (rn2(otmp->spe) == 0)
@@ -1377,6 +1366,18 @@ seffect_enchant_armor(struct obj **sobjp)
         makeknown(SCR_ENCHANT_ARMOR);
         return;
     }
+
+    /* Items which provide magic resistance also resist enchanting.
+     * They don't resist when their enchantment is negative, that is
+     * "un"-enchanting a bad enchantment. But for anything starting at
+     * +0 has a 1 in (enchantment + 2) chance of failure. */
+    resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
+        || defends(AD_MAGM, otmp);;
+    if (resists_magic && otmp->spe >= 0 && rn2(otmp->spe + 2)) {
+        pline("%s vibrates and resists!", Yname2(otmp));
+        return;
+    }
+
     pline("%s %s%s%s%s for a %s.", Yname2(otmp),
           (s == 0) ? "violently " : "",
           otense(otmp, Blind ? "vibrate" : "glow"),
