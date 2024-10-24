@@ -3137,6 +3137,7 @@ trapeffect_spear_trap(
     boolean is_you = mtmp == &gy.youmonst;
 
     if (is_you) {
+        int oldumort = u.umortality;
         feeltrap(trap);
         if (u.usteed)
             pline("A spear shoots up from a hole in the ground at %s!",
@@ -3164,6 +3165,12 @@ trapeffect_spear_trap(
             losehp(Maybe_Half_Phys(rnd(8) + 6), "spear trap", KILLED_BY_AN);
             exercise(A_STR, FALSE);
             exercise(A_DEX, FALSE);
+
+            if (!rn2(6))
+                poisoned("spear", A_STR, "jabbed by a poisoned spear",
+                            /* if damage triggered life-saving,
+                            poison is limited to attrib loss */
+                            (u.umortality > oldumort) ? 0 : 8, FALSE);
         }
     } else {
         boolean trapkilled = FALSE;
