@@ -589,6 +589,10 @@ moveloop(boolean resuming)
 staticfn void
 regen_pw(int wtcap)
 {
+    /* Lethe is a subtle suppressor of magic */
+    if (svl.level.flags.lethe && !rn2(3))
+        return;
+
     if (u.uen < u.uenmax
         && ((wtcap < MOD_ENCUMBER
              && (!(svm.moves % ((MAXULEV + 8 - u.ulevel)
