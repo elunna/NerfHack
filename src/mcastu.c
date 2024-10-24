@@ -634,7 +634,8 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
     }
 
     if (!mtmp->mpeaceful && (u_wield_art(ART_SERENITY)
-                            || u_offhand_art(ART_SERENITY))) {
+                            || u_offhand_art(ART_SERENITY)
+                            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD))) {
         if (counterspell(mtmp, uwep))
             return;
     }
@@ -953,7 +954,8 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
     }
 
     if (!mtmp->mpeaceful && (u_wield_art(ART_SERENITY)
-                            || u_offhand_art(ART_SERENITY))) {
+                            || u_offhand_art(ART_SERENITY)
+                            | (uarms && uarms->otyp == ANTI_MAGIC_SHIELD))) {
         if (counterspell(mtmp, uwep))
             return;
     }
@@ -1479,12 +1481,9 @@ counterspell(struct monst *mtmp, struct obj *otmp) {
     if (!rn2(5))
         return FALSE;
 
-    /* Here we assume that Serenity is doing the countering; 
-     * If another countering weapon/item is added, this needs
-     * updating. */
     if (!rn2(4))
-        pline("Serenity %s and %s %s magic!",
-            (Blind ? "vibrates" : "flashes"),
+        pline("%s %s and %s %s magic!",
+            xname(otmp), (Blind ? "vibrates" : "flashes"),
             !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(mtmp)));
 
     if (canseemon(mtmp)) {

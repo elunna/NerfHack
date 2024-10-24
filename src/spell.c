@@ -1273,7 +1273,8 @@ spelleffects_check(int spell, int *res, int *energy)
 {
     int chance;
     boolean confused = (Confusion != 0);
-    boolean wearing_antimagic = uarms && uarms->otyp == ANTI_MAGIC_SHIELD;
+    boolean wearing_antimagic = (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)
+        || (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY));
     *energy = 0;
 
     /*
