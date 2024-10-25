@@ -1526,7 +1526,7 @@ makemon(
         hide_monst(mtmp);
         break;
     case S_ANGEL:
-        if (mndx == PM_COUATL && !rn2(2)) {
+        if (mndx == PM_COUATL && !mtmp->mpeaceful && !rn2(2)) {
             mtmp->perminvis = TRUE;
             mtmp->minvis = TRUE;
         }
