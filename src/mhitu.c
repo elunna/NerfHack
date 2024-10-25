@@ -3006,7 +3006,7 @@ passiveum(
 
             if (oldu_mattk->aatyp == AT_NONE) {
                 if (!rn2(2)) {
-                    pline("%s is %s by %s%ss!", Monnam(mtmp),
+                    pline("%s is %s by %s%s!", Monnam(mtmp),
                           barbs ? "lacerated" : "jabbed",
                           !Upolyd ? "" : "your ",
                           spikes ? "spikes" : barbs ? "barbs" : "quills");

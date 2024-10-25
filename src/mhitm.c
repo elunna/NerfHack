@@ -1478,7 +1478,7 @@ passivemm(
         if (mhit && !rn2(2)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr)) {
-                pline("%s is %s by %s %ss!", buf,
+                pline("%s is %s by %s %s!", buf,
                         barbs ? "lacerated" : "jabbed",
                         s_suffix(mon_nam(mdef)),
                         spikes ? "spikes" : barbs ? "barbs" : "quills");
