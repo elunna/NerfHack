@@ -1451,7 +1451,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
             OBJPUTSTR("Book.");
         } else {
             Sprintf(buf, "Level %d %s, in the %s school. %s spell.",
-                    oc.oc_level, Role_if(PM_CARTOMANCER) ? "Rulebook" : "Spellbook.",
+                    oc.oc_level, Role_if(PM_CARTOMANCER) ? "Rulebook" : "Spellbook",
                     spelltypemnemonic(oc.oc_skill), dir);
             OBJPUTSTR(buf);
             Sprintf(buf, "Takes %d actions to read.", oc.oc_delay);
