@@ -35,9 +35,14 @@ des.map([[
 
 -- Dungeon Description
 
--- The ruined church was added in dnh, but not NerfHack
--- des.region({ region={39,00,47,07}, lit=1, type="temple", filled=2 })
--- des.altar({ x=43,y=02,align="neutral", type="shrine" })
+-- The ruined church was added in dnh
+if percent(50) then
+  des.altar({ x=43,y=02,align="neutral", type="shrine", cracked=nh.rn2(4) })
+else
+  for i = 1,math.random(8, 17) do
+      des.object("rock", 43,02)
+   end
+end
 
 des.region(selection.area(00,00,51,19),"lit")
 des.region(selection.area(01,05,05,07),"unlit")

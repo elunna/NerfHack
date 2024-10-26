@@ -38,9 +38,13 @@ des.map([[
 ]]);
 
 -- Altar to Nodens
--- TODO: Add this if we can customize it as cracked
---des.altar({ x=35,y=10,align="noalign", type="shrine" })
-
+if percent(50) then
+    des.altar({ x=35,y=10,align="noalign", type="shrine", cracked=nh.rn2(4) })
+else
+    for i = 1,math.random(8, 17) do
+        des.object("rock", 35,10)
+     end
+end
 -- Dungeon Description
 des.region(selection.area(00,00,75,19),"lit")
 des.region(selection.area(04,02,08,04),"lit")

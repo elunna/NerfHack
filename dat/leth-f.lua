@@ -37,9 +37,13 @@ des.map([[
 des.region(selection.area(00,00,75,19),"lit")
 des.region(selection.area(02,01,02,02),"lit")
 
--- Pending being able to specify cracked altars in LUA
--- des.region({ region={04,01,08,02}, lit=1, type="temple", filled=2 })
--- des.altar({ x=06,y=01,align=random, type="shrine" })
+if percent(50) then
+  des.altar({ x=06,y=01,align=random, type="shrine", cracked=nh.rn2(4) })
+else
+  for i = 1,math.random(8, 17) do
+      des.object("rock", 06,01)
+   end
+end
 
 des.region(selection.area(02,16,07,18),"unlit")
 des.region(selection.area(14,15,18,18),"unlit")

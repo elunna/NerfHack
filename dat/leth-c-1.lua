@@ -44,9 +44,13 @@ des.region(selection.area(51,08,58,10),"unlit")
 
 des.region({ region={63,02,70,05},lit=1,type="throne", filled=0 })
 
--- Pending ability to specify cracked altars
--- des.region({ region={67,07,73,10}, lit=1, type="temple", filled=2 })
--- des.altar({ x=70,y=09,align=random, type="altar" })
+if percent(50) then
+    des.altar({ x=70,y=09,align=random, type="altar", cracked=nh.rn2(4) })
+else
+    for i = 1,math.random(8, 17) do
+        des.object("rock", 70,09)
+     end
+end
 
 des.region(selection.area(68,12,73,16),"unlit")
 des.region(selection.area(59,17,62,18),"unlit")
