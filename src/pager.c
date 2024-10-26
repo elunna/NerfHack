@@ -1237,7 +1237,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     boolean wielded, carried, potion_known, has_recipes = FALSE,
         /* If it's an artifact, we always have it in obj. */
         is_artifact = obj && obj->oartifact,
-        reveal_info = (boolean) (!obj || (obj && oc.oc_name_known)),
+        reveal_info = (boolean) (!Hallucination && (!obj || (obj && oc.oc_name_known))),
         show_corpse = obj && otyp == CORPSE;
     int i;
 
