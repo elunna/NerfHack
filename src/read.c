@@ -2316,9 +2316,28 @@ seffect_punishment(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
     boolean sblessed = sobj->blessed;
+    boolean scursed = sobj->cursed;
     boolean confused = (Confusion != 0);
 
     gk.known = TRUE;
+    if (u.ugangr && confused && scursed) {
+        int saved_anger = u.ugangr;
+        u.ugangr -= 1;
+        if (u.ugangr < 0)
+            u.ugangr = 0;
+        if (u.ugangr != saved_anger) {
+            if (u.ugangr) {
+                pline("%s seems %s.", u_gname(),
+                        Hallucination ? "groovy" : "slightly mollified");
+            } else {
+                pline("%s seems %s.", u_gname(),
+                        Hallucination ? "cosmic (not a new fact)"
+                                    : "mollified");
+                u.reconciled = REC_MOL;
+            }
+        }
+        return;
+    }
     if (confused || sblessed) {
         You_feel("guilty.");
         return;
