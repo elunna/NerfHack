@@ -1126,7 +1126,11 @@ mksobj_init(struct obj *otmp, boolean artif)
             otmp->corpsenm = mk_moncard();
         break;
     case SPBOOK_CLASS:
-        otmp->spestudied = 0;
+        /* 90% of spellbooks generate unread.
+           8% generate pre-read once
+           2% generate pre-read twice */
+        otmp->spestudied = rn2(10) ? 0 : rn2(5)
+                                   ? 1 : 2;
         blessorcurse(otmp, 17);
 
         /* Cartomancers use up spellbooks similar to wands. */
