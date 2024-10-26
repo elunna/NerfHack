@@ -3412,7 +3412,7 @@ gethungry(void)
         && (carnivorous(gy.youmonst.data)
             || herbivorous(gy.youmonst.data)
             || metallivorous(gy.youmonst.data))
-        && !Slow_digestion)
+        && !(Slow_digestion && rn2(2)))
         u.uhunger--; /* ordinary food consumption */
 
     /*
