@@ -1142,7 +1142,7 @@ FOOD("slime mold",           75,  1,  5, 0, VEGGY, 250, HI_ORGANIC,
                                                           SLIME_MOLD),
 
 /* people food */
-FOOD("lump of royal jelly",   0,  1,  2, 0, VEGGY, 200, CLR_YELLOW,
+FOOD("lump of royal jelly",   0,  1,  2, 0, VEGGY, 200, CLR_MAGENTA,
                                                         LUMP_OF_ROYAL_JELLY),
 FOOD("cream pie",            25,  1, 10, 0, VEGGY, 100, CLR_WHITE, CREAM_PIE),
 FOOD("candy bar",            13,  1,  2, 0, VEGGY, 100, CLR_BRIGHT_BLUE,
