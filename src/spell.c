@@ -359,10 +359,11 @@ staticfn int
 learn(void)
 {
     int i;
-    short booktype;
     char splname[BUFSZ];
     boolean costly = TRUE, faded_to_blank = FALSE;
     struct obj *book = svc.context.spbook.book;
+    short booktype = book->otyp;
+    int skill = objects[booktype].oc_skill;
 
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
     if (svc.context.spbook.delay && ublindf
@@ -381,6 +382,7 @@ learn(void)
         svc.context.spbook.delay = 0;
         return 0;
     }
+
     if (svc.context.spbook.delay) {
         /* not if (svc.context.spbook.delay++), so at end delay == 0 */
         svc.context.spbook.delay++;
@@ -393,8 +395,34 @@ learn(void)
         return 0;
     }
 
+    /* We can't learn restricted spells. */
+    if (P_SKILL(skill) == P_ISRESTRICTED) {
+        switch (rnd(3)) {
+        case 1:
+            You("find yourself unable to comprehend the runes.");
+            break;
+        case 2:
+            pline("The knowledge feels locked away. You don't feel motivated to continue.");
+            break;
+        case 3:
+            pline("Something in your mind simply cannot connect with the subject matter.");
+            break;
+        }
+        svc.context.spbook.book = 0; /* no longer studying */
+        svc.context.spbook.o_id = 0;
+        /* Charge for it anyway */
+        book->spestudied++;
+
+        /* Copied from below, but silent. */
+        if (book->spestudied > MAX_SPELL_STUDY) {
+            book->otyp = booktype = SPE_BLANK_PAPER;
+            faded_to_blank = TRUE;
+            book->spestudied = rn2(book->spestudied);
+        }
+        return 0;
+    }
+
     exercise(A_WIS, TRUE); /* you're studying. */
-    booktype = book->otyp;
     if (booktype == SPE_BOOK_OF_THE_DEAD) {
         deadbook(book);
         return 0;
@@ -417,6 +445,7 @@ learn(void)
             faded_to_blank = TRUE;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
+            
         } else {
             Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
