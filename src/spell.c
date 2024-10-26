@@ -1603,8 +1603,13 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         break;
     case SPE_CLAIRVOYANCE:
         if (!BClairvoyant) {
-            if (role_skill >= P_SKILLED)
+            if (role_skill >= P_SKILLED) {
                 pseudo->blessed = 1; /* detect monsters as well as map */
+                if ((HClairvoyant & TIMEOUT) > 500L)
+                    incr_itimeout(&HClairvoyant, rn1(15, 10));
+                else
+                    incr_itimeout(&HClairvoyant, rn1(150, 100));
+            }
             do_vicinity_map(pseudo);
         /* at present, only one thing blocks clairvoyance */
         } else if (uarmh && uarmh->otyp == CORNUTHAUM)
