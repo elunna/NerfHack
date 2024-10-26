@@ -6994,7 +6994,7 @@ cham_depth_appropriate(struct monst *mon)
                 ? depth(&sanctum_level)
                 : depth(&u.uz)) / 2;
     int s = mons[monsndx(mon->data)].difficulty;
-    int n = 15 - abs(d - s);
+    int n = 20 - abs(d - s);
 
     /* Shapeshifters in their natural state want to poly. */
     if (mon->cham == mon->mnum)
