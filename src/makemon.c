@@ -1217,6 +1217,8 @@ newmonhp(struct monst *mon, int mndx)
     if (is_golem(ptr)) {
         /* golems have a fixed amount of HP, varying by golem type */
         mon->mhpmax = mon->mhp = golemhp(mndx);
+    } else if (mndx == PM_GAS_SPORE || mndx == PM_VOLATILE_MUSHROOM) {
+        mon->mhpmax = mon->mhp = 1;
     } else if (is_rider(ptr)) {
         /* we want low HP, but a high mlevel so they can attack well */
         basehp = 10; /* minimum is 1 per false (weaker) level */
