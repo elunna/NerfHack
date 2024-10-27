@@ -3208,6 +3208,29 @@ potion_dip(struct obj *obj, struct obj *potion)
         }
         potion->in_use = FALSE; /* didn't go poof */
         return ECMD_TIME;
+    } else if (obj->otyp == SCR_AMNESIA && potion->otyp != POT_WATER) {
+        /* Scrolls of amnesia make potions forget what they were */
+        struct obj *singlescroll = (obj->quan > 1L ?  splitobj(obj, 1L) : obj);
+
+        if (potion->quan > 1L) {
+            singlepotion = splitobj(potion, 1L);
+        } else
+            singlepotion = potion;
+
+        Your("%s fades.", xname(singlepotion));
+        makeknown(SCR_AMNESIA);
+
+        costly_alteration(singlepotion, COST_NUTRLZ);
+        costly_alteration(singlescroll, COST_NUTRLZ);
+
+        useup(singlescroll);
+        singlepotion->otyp = POT_WATER;
+        potion->in_use = FALSE; /* didn't go poof */
+        singlepotion->in_use = FALSE;
+        hold_potion(singlepotion, "You juggle and drop %s!",
+                    doname(singlepotion), (const char *) 0);
+
+        return ECMD_TIME;
     } else if (obj->oclass == POTION_CLASS && obj->otyp != potion->otyp) {
         int amt = (int) obj->quan;
         boolean magic;
@@ -3495,7 +3518,7 @@ potion_dip(struct obj *obj, struct obj *potion)
 
            /* MRKR: Gems dissolve in acid to produce new potions */
         if (obj->oclass == GEM_CLASS && potion->otyp == POT_ACID) {
-            struct obj *singlegem = (obj->quan > 1L ?  splitobj(obj, 1L) : obj);
+            struct obj *singlegem = (obj->quan > 1L ? splitobj(obj, 1L) : obj);
 
             if (potion->otyp == POT_ACID &&
                 (obj->otyp == DILITHIUM_CRYSTAL || potion->cursed || !rn2(30))) {
