@@ -1483,6 +1483,10 @@ counterspell(struct monst *mtmp) {
         otmp = uswapwep;
     else if (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)
         otmp = uarms;
+    else {
+        impossible("counterspell with no item?");
+        return FALSE;
+    }
 
     if (otmp->cursed)
         return FALSE;
