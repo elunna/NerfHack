@@ -2373,7 +2373,7 @@ accessory_or_armor_on(struct obj *obj)
 
         if (obj->otyp == HELM_OF_OPPOSITE_ALIGNMENT
             && qstart_level.dnum == u.uz.dnum) { /* in quest */
-            if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL])
+            if (retained_alignment())
                 You("narrowly avoid losing all chance at your goal.");
             else /* converted */
                 You("are suddenly overcome with shame and change your mind.");

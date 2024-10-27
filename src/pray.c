@@ -1809,8 +1809,8 @@ offer_different_alignment_altar(
     /* Is this a conversion ? */
     /* An unaligned altar in Gehennom will always elicit rejection. */
     if (ugod_is_angry() || (altaralign == A_NONE && Inhell)) {
-        if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL]
-            && altaralign != A_NONE && !u.uevent.uhand_of_elbereth) {
+        if (retained_alignment() && altaralign != A_NONE
+            && !u.uevent.uhand_of_elbereth) {
             You("have a strong feeling that %s is angry...", u_gname());
             consume_offering(otmp);
             pline("%s accepts your allegiance.", a_gname());

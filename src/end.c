@@ -1352,7 +1352,7 @@ really_done(int how)
         if (how == ASCENDED && u.ualign.type == u.ualignbase[A_ORIGINAL]) {
             /* retaining original alignment: score *= 2;
                converting, then using helm-of-OA to switch back: *= 1.5 */
-            tmp = (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL])
+            tmp = (retained_alignment())
                       ? u.urexp
                       : (u.urexp / 2L);
             u.urexp = nowrap_add(u.urexp, tmp);

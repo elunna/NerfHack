@@ -601,7 +601,7 @@ background_enlightenment(int unused_mode UNUSED, int final)
        helm of opposite alignment mask a permanent alignment conversion */
     difgend = (innategend != flags.initgend);
     difalgn = (((u.ualign.type != u.ualignbase[A_CURRENT]) ? 1 : 0)
-               + ((u.ualignbase[A_CURRENT] != u.ualignbase[A_ORIGINAL])
+               + ((!retained_alignment())
                   ? 2 : 0));
     if (difalgn & 1) { /* have temporary alignment so report permanent one */
         Sprintf(buf, "actually %s", align_str(u.ualignbase[A_CURRENT]));

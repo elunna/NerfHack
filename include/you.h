@@ -578,4 +578,7 @@ struct _hitmon_data {
 #define RING_ON_PRIMARY (ULEFTY ? uleft : uright)
 #define RING_ON_SECONDARY (ULEFTY ? uright : uleft)
 
+#define retained_alignment() \
+    (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL])
+
 #endif /* YOU_H */
