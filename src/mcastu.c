@@ -1321,6 +1321,11 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
      * We really want something like "if the monster could see mux, muy".
      */
     boolean mcouldseeu = couldsee(mtmp->mx, mtmp->my);
+    struct trap *trap = t_at(mtmp->mx, mtmp->my);
+
+    /* Anti-magic fields block spellcasting */
+    if (trap && trap->ttyp == ANTI_MAGIC)
+        return TRUE;
 
     if (adtyp == AD_SPEL) {
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
