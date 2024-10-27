@@ -335,6 +335,7 @@ fill_zoo(struct mkroom *sroom)
  throne_placed:
         ctype = mk_zoo_thronemon(tx, ty);
         break;
+    case ANTHOLE:
     case BEEHIVE:
     case MIGOHIVE:
         tx = sroom->lx + (sroom->hx - sroom->lx + 1) / 2;
