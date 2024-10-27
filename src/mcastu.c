@@ -54,7 +54,7 @@ staticfn void cast_cleric_spell(struct monst *, int, int);
 staticfn boolean is_undirected_spell(unsigned int, int);
 staticfn boolean spell_would_be_useless(struct monst *, unsigned int, int);
 staticfn boolean is_entombed(coordxy, coordxy);
-staticfn boolean counterspell(struct monst *, struct obj *);
+staticfn boolean counterspell(struct monst *);
 
 /* feedback when frustrated monster couldn't cast a spell */
 staticfn void
@@ -636,7 +636,7 @@ cast_wizard_spell(struct monst *mtmp, int dmg, int spellnum)
     if (!mtmp->mpeaceful && (u_wield_art(ART_SERENITY)
                             || u_offhand_art(ART_SERENITY)
                             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD))) {
-        if (counterspell(mtmp, uwep))
+        if (counterspell(mtmp))
             return;
     }
 
@@ -956,7 +956,7 @@ cast_cleric_spell(struct monst *mtmp, int dmg, int spellnum)
     if (!mtmp->mpeaceful && (u_wield_art(ART_SERENITY)
                             || u_offhand_art(ART_SERENITY)
                             | (uarms && uarms->otyp == ANTI_MAGIC_SHIELD))) {
-        if (counterspell(mtmp, uwep))
+        if (counterspell(mtmp))
             return;
     }
 
@@ -1473,7 +1473,17 @@ is_entombed(coordxy x, coordxy y)
 }
 
 staticfn boolean
-counterspell(struct monst *mtmp, struct obj *otmp) {
+counterspell(struct monst *mtmp) {
+    struct obj *otmp;
+    /* If any more items are added for countering spells, we should
+     * create a property instead. */
+    if (u_wield_art(ART_SERENITY))
+        otmp = uwep;
+    else if (u_offhand_art(ART_SERENITY))
+        otmp = uswapwep;
+    else if (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)
+        otmp = uarms;
+
     if (otmp->cursed)
         return FALSE;
     if (dist2(u.ux, u.uy, mtmp->mx, mtmp->my) > 192)
