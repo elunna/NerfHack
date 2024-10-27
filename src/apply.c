@@ -5244,14 +5244,15 @@ deck_of_fate(struct obj *obj)
                 You("will be rewarded for your loyalty!");
                 if (Punished)
                     unpunish();
-                else { /* Divine protection */
-                    if (!(HProtection & INTRINSIC)) {
-                        HProtection |= FROMOUTSIDE;
-                        if (!u.ublessed)
-                            u.ublessed = 1;
+                /* Divine protection */
+                if (!retained_alignment())
+                    break;
+                if (!(HProtection & INTRINSIC)) {
+                    HProtection |= FROMOUTSIDE;
+                    if (!u.ublessed)
+                        u.ublessed = 1;
                 } else if ((rn2(10) - u.ublessed >= 0) && (rn2(10) - u.ublessed >= 0))
                     u.ublessed++;
-                }
             }
             break;
         case 11: /* Temperance */
@@ -5318,6 +5319,8 @@ deck_of_fate(struct obj *obj)
             break;
         case 19: /* The Sun */
             You("are bathed in warmth."); /* as praying */
+            if (!retained_alignment())
+                break;
             if (!(HProtection & INTRINSIC)) {
                 HProtection |= FROMOUTSIDE;
                 if (!u.ublessed)

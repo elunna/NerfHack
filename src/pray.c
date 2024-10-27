@@ -1486,8 +1486,9 @@ pleased(aligntyp g_align)
                         "Thou hast pleased me with thy progress,");
 
                 /* NerfHack: No other intrinsics granted here */
-
-                if (!(HProtection & INTRINSIC)) {
+                if (!retained_alignment())
+                    break;
+                else if (!(HProtection & INTRINSIC)) {
                     HProtection |= FROMOUTSIDE;
                     if (!u.ublessed)
                         u.ublessed = 1;

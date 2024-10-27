@@ -651,6 +651,7 @@ priest_talk(struct monst *priest)
                 incr_itimeout(&HClairvoyant, rn1(500, 500));
             }
         } else if (offer < (u.ulevel * 600)
+                   && retained_alignment()
                    /* u.ublessed is only active when Protection is
                       enabled via something other than worn gear
                       (theft by gremlin clears the intrinsic but not
