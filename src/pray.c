@@ -1506,6 +1506,7 @@ pleased(aligntyp g_align)
             case 8:
                 /* Crowning requires maximized luck */
                 if (u.ualign.record >= PIOUS && Luck == 13
+                    && u.uevent.qcompleted
                     && !u.uevent.uhand_of_elbereth) {
                     gcrownu();
                     break;
