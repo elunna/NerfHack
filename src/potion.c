@@ -1149,7 +1149,7 @@ peffect_monster_detection(struct obj *otmp)
             return 0;
         }
     }
-    if (monster_detect((struct obj *) 0, 0))
+    if (monster_detect(otmp, 0))
         return 1; /* nothing detected */
     exercise(A_WIS, TRUE);
     return 0;
