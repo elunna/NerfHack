@@ -530,10 +530,15 @@ Helmet_on(void)
            including levitation; uarmh could get dropped or destroyed here
            by hero falling onto a polymorph trap or into water (emergency
            disrobe) or maybe lava (probably not, helm isn't 'organic') */
-        uchangealign((u.ualign.type != A_NEUTRAL)
-                         ? -u.ualign.type
-                         : (uarmh->o_id % 2) ? A_CHAOTIC : A_LAWFUL,
-                     A_CG_HELM_ON);
+
+        /* If you have been crowned - your alignment is locked.*/
+        if (!u.uevent.uhand_of_elbereth)
+            uchangealign((u.ualign.type != A_NEUTRAL)
+                            ? -u.ualign.type
+                            : (uarmh->o_id % 2) ? A_CHAOTIC : A_LAWFUL,
+                        A_CG_HELM_ON);
+        pline_The("helm violently vibrates and disintegrates!");
+        useup(uarmh);
         /* makeknown(HELM_OF_OPPOSITE_ALIGNMENT); -- below, after Tobjnam() */
     /*FALLTHRU*/
     case DUNCE_CAP:
