@@ -1426,7 +1426,7 @@ hmon_hitmon_weapon_melee(
                    && has_head(mon->data)
                    && !(noncorporeal(mon->data) || amorphous(mon->data))) {
         /* Flails and morning stars get a bonus head-bonk stun
-         * on critical hits. Must be at least skills and fighting
+         * on critical hits. Must be at least skilled and fighting
          * in melee. */
         You("bash %s on the head with your %s!", mon_nam(mon), xname(uwep));
         hmd->hittxt = TRUE;
