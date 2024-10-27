@@ -1230,11 +1230,12 @@ break_armor(void)
         if ((otmp = uarmh) != 0) {
             if (is_flimsy(otmp) && !donning(otmp)) {
                 char hornbuf[BUFSZ];
-
-                /* Future possibilities: This could damage/destroy helmet */
+                /* This destroys the helmet */
                 Sprintf(hornbuf, "horn%s", plur(num_horns(uptr)));
-                Your("%s %s through %s.", hornbuf, vtense(hornbuf, "pierce"),
+                Your("%s %s through and rip %s.", hornbuf, vtense(hornbuf, "pierce"),
                      yname(otmp));
+                Helmet_off();
+                breakobj(otmp, u.ux, u.uy, FALSE, TRUE);
             } else {
                 if (donning(otmp))
                     cancel_don();
