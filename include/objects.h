@@ -1229,7 +1229,7 @@ POTION("water",                 "clear",  0, 0, 80, 100, CLR_CYAN,
                                                         POT_WATER),
 POTION("blood",             "blood-red",  0, 0, 0,  100, CLR_RED,
                                                         POT_BLOOD),
-POTION("vampire blood",     "blood-red",  1, 0, 0,  100, CLR_RED,
+POTION("vampire blood",     "blood-red",  1, 0, 0,  200, CLR_RED,
                                                         POT_VAMPIRE_BLOOD),
 #undef POTION
 
