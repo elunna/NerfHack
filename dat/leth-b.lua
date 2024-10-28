@@ -96,7 +96,7 @@ des.monster("deeper one")
 des.monster("deeper one")
 des.monster("deeper one")
 des.monster("deeper one")
-des.monster("deepest one")
+des.monster("deeper one")
 des.monster("deepest one")
 des.monster("giant eel")
 des.monster("giant eel")
@@ -108,7 +108,7 @@ des.monster(";")
 des.monster(";")
 des.monster(";")
 if percent(50) then
-    des.monster("thing from below")
+    des.monster("kraken")
 end
 
 -- Random monsters.
@@ -132,8 +132,8 @@ des.monster("deep one", 28,12)
 -- Main chamber
 des.monster("deep one", 22,16)
 des.monster("deep one", 20,16)
-des.monster("deep one", 20,17)
-des.monster("deep one", 16,17)
+des.monster("deeper one", 20,17)
+des.monster("deeper one", 16,17)
 des.monster("deeper one", 18,16)
 des.monster("deeper one", 18,17)
 des.object("chest" , 14,18)
