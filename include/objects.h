@@ -479,6 +479,10 @@ HELM("dunce cap", "conical hat",
 HELM("dented pot", NoDes,
      1, 0,           0,  2, 0, 10,  8,  9, 0, IRON, CLR_BLACK,
                                                         DENTED_POT),
+/* 5lo: Fire Helmet from SLASH 6, grants Fire Resistance */
+HELM("fire helmet", "red shiny helmet",
+     0, 0,    FIRE_RES,  5, 1, 25, 50,  9, 0, IRON, CLR_RED,
+                                                        FIRE_HELMET),
 HELM("helm of brilliance", "crystal helmet",
      0, 1,           0,  3, 1, 40, 50,  9, 0, GLASS, CLR_WHITE,
         /* used to be iron and shuffled as "etched helmet" but required
