@@ -2735,11 +2735,12 @@ zapnodir(struct obj *obj)
        from being identified erroneously. */
     boolean wonder = FALSE;
     if (obj->otyp == WAN_WONDER) {
-        switch (rn2(4)) {
+        switch (rn2(5)) {
         case 0: obj->otyp = WAN_LIGHT; break;
         case 1: obj->otyp = WAN_SECRET_DOOR_DETECTION; break;
         case 2: obj->otyp = WAN_CREATE_MONSTER; break;
         case 3: obj->otyp = WAN_ENLIGHTENMENT; break;
+        case 4: obj->otyp = WAN_IDENTIFY; break;
         }
         wonder = TRUE;
     }
@@ -2781,6 +2782,14 @@ zapnodir(struct obj *obj)
         known = !!obj->dknown;
         /* do_enlightenmnt_effect() always describes enlightenment */
         do_enlightenment_effect();
+        break;
+    case WAN_IDENTIFY:
+        learnwand(obj);
+        You_feel("insightful!");
+        /* Only identify one object per zap */
+        if (gi.invent)
+            identify_pack(1, FALSE);
+        exercise(A_WIS, TRUE);
         break;
     default:
         break;
