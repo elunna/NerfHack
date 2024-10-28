@@ -5066,9 +5066,11 @@ normal_shape(struct monst *mon)
         if (mcan)
             mon->mcan = 1;
         newsym(mon->mx, mon->my);
+        wakeup(mon, FALSE);
     }
     if (is_were(mon->data) && mon->data->mlet != S_HUMAN) {
         new_were(mon);
+        wakeup(mon, FALSE);
     }
     if (M_AP_TYPE(mon) != M_AP_NOTHING) {
         /* this used to include a cansee() check but Protection_from_
@@ -5083,6 +5085,7 @@ normal_shape(struct monst *mon)
                this terminates the meal early */
             finish_meating(mon);
         }
+        wakeup(mon, FALSE);
     }
 }
 
