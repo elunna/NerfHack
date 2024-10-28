@@ -7074,7 +7074,8 @@ passive(
     case AD_SLIM:
         if (mhit && !mon->mcan && m_next2u(mon) && !rn2(3)) {
             pline("Its slime splashes onto you!");
-            if (flaming(gy.youmonst.data)) {
+            if (flaming(gy.youmonst.data) || u_wield_art(ART_FIRE_BRAND)
+                || u_offhand_art(ART_FIRE_BRAND)) {
                 pline_The("slime burns away!");
                 tmp = 0;
             } else if (Unchanging || noncorporeal(gy.youmonst.data)
