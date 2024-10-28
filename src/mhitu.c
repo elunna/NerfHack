@@ -1331,6 +1331,15 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
                   : cloak_simple_name(obj));
         maybe_grease_off(obj);
         return TRUE;
+    /* 50% chance (with a luck bonus) of slipping free with free action */
+    } else if (Free_action && (rnl(10) < 5)) {
+        pline("%s %s you, but you quickly free yourself!",
+            Monnam(mtmp), (mattk->adtyp == AD_WRAP)
+                                ? "swings itself around"
+                                : is_mind_flayer(mtmp->data)
+                                    ? "latches onto"
+                                    : "grabs");
+        return TRUE;
     } else if (mattk->adtyp == AD_WRAP
             /* 50% chance (with a luck bonus) of slipping free with mud boots.
             * Doesn't apply to brain attacks or cursed boots. */
