@@ -38,8 +38,8 @@ dungeon = {
          },
          {
             name = "The Temple of Moloch",
-            base = 20,
-            range = 10,
+            base = 21,
+            range = 4,
             direction = "down",
          },
          {
