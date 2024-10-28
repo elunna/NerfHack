@@ -853,7 +853,7 @@ recharge(struct obj *obj, int curse_bless)
         boolean is_on = (obj == uleft || obj == uright);
 
         /* destruction depends on current state, not adjustment */
-        if (obj->spe > rn2(7) || obj->spe <= -5) {
+        if (obj->spe > rn2(6) + 3 || (is_cursed && obj->spe <= -5)) {
             pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
                   otense(obj, "explode"));
             if (is_on)
