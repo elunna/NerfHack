@@ -1036,7 +1036,7 @@ dragon_armor_handling(
     }
 }
 
-staticfn int
+int
 Armor_on(void)
 {
     if (!uarm) /* no known instances of !uarm here but play it safe */
