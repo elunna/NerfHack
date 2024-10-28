@@ -1220,9 +1220,10 @@ newmonhp(struct monst *mon, int mndx)
     } else if (mndx == PM_GAS_SPORE || mndx == PM_VOLATILE_MUSHROOM) {
         mon->mhpmax = mon->mhp = 1;
     } else if (is_rider(ptr)) {
-        /* we want low HP, but a high mlevel so they can attack well */
+         /* we want low HP, but a high mlevel so they can attack well
+         * Riders are a bit too easy to take down. Let's buff them up a bit */
         basehp = 10; /* minimum is 1 per false (weaker) level */
-        mon->mhpmax = mon->mhp = d(basehp, 8);
+        mon->mhpmax = mon->mhp = 100 + d(basehp, 8);
     } else if (ptr->mlevel > 49) {
         /* "special" fixed hp monster
          * the hit points are encoded in the mlevel in a somewhat strange
