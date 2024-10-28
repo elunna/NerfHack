@@ -511,6 +511,9 @@ Helmet_on(void)
     case HELM_OF_TELEPATHY:
     case FIRE_HELMET:
         break;
+    case OILSKIN_HELM:
+        pline("%s very tightly.", Tobjnam(uarmh, "fit"));
+        break;
     case HELM_OF_CAUTION:
         see_monsters();
         break;
@@ -602,6 +605,7 @@ Helmet_off(void)
     case ORCISH_HELM:
     case GNOMISH_HELM:
     case FIRE_HELMET:
+    case OILSKIN_HELM:
         break;
     case DUNCE_CAP:
         disp.botl = TRUE;

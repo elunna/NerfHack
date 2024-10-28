@@ -2577,7 +2577,8 @@ m_slips_free(struct monst *mdef, struct attack *mattk)
 
     /* if monster's cloak/armor is greased, your grab slips off; this
        protection might fail (33% chance) when the armor is cursed */
-    if (obj && (obj->greased || obj->otyp == OILSKIN_CLOAK)
+    if (obj && (obj->greased || obj->otyp == OILSKIN_CLOAK
+            || obj->otyp == OILSKIN_HELM)
         && (!obj->cursed || rn2(3))) {
         You("%s %s %s %s!",
             (mattk->adtyp == AD_WRAP) ? "slip off of"
@@ -2587,7 +2588,9 @@ m_slips_free(struct monst *mdef, struct attack *mattk)
                for undiscovered oilskin cloak */
             (obj->greased || objects[obj->otyp].oc_name_known)
                 ? xname(obj)
-                : cloak_simple_name(obj));
+                : obj->otyp == OILSKIN_CLOAK
+                    ? cloak_simple_name(obj)
+                    : helm_simple_name(obj));
 
         maybe_grease_off(obj);
         return TRUE;
@@ -2681,6 +2684,7 @@ steal_it(struct monst *mdef, struct attack *mattk)
     /* greased objects are difficult to get a grip on, hence
        the odds that an attempt at stealing it may fail */
     if (otmp && (otmp->greased || otmp->otyp == OILSKIN_CLOAK
+                 || otmp->otyp == OILSKIN_HELM
                  || otmp->otyp == OILSKIN_SACK)
         && (!otmp->cursed || rn2(4))) {
         Your("%s slip off of %s %s %s!",
@@ -5648,6 +5652,7 @@ mhitm_ad_sedu(
             /* greased objects are difficult to get a grip on, hence
               the odds that an attempt at stealing it may fail */
             if ((obj->greased || obj->otyp == OILSKIN_CLOAK
+                 || obj->otyp == OILSKIN_HELM
                  || obj->otyp == OILSKIN_SACK)
                 && (!obj->cursed || rn2(4))) {
                 if (canseemon(mdef)) {

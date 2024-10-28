@@ -1318,7 +1318,8 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
 
     /* if your cloak/armor is greased, monster slips off; this
        protection might fail (33% chance) when the armor is cursed */
-    if (obj && (obj->greased || obj->otyp == OILSKIN_CLOAK)
+    if (obj && (obj->greased || obj->otyp == OILSKIN_CLOAK
+        || (obj == uarmh && obj->otyp == OILSKIN_HELM))
         && (!obj->cursed || rn2(3))) {
         pline("%s %s your %s %s!", Monnam(mtmp),
               (mattk->adtyp == AD_WRAP) ? "slips off of"
@@ -1328,7 +1329,9 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
                  for undiscovered oilskin cloak */
               (obj->greased || objects[obj->otyp].oc_name_known)
                   ? xname(obj)
-                  : cloak_simple_name(obj));
+                  : obj->otyp == OILSKIN_CLOAK
+                    ? cloak_simple_name(obj)
+                    : helm_simple_name(obj));
         maybe_grease_off(obj);
         return TRUE;
     /* 50% chance (with a luck bonus) of slipping free with free action */
