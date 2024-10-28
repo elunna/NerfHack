@@ -3939,7 +3939,7 @@
         A(ATTK(AT_WEAP, AD_PHYS, 4, 4),
           ATTK(AT_CLAW, AD_PHYS, 1, 8),
           ATTK(AT_GAZE, AD_STON, 0, 0),
-          ATTK(AT_TENT, AD_DRST, 2, 6),
+          ATTK(AT_BITE, AD_STON, 4, 4),
           ATTK(AT_TENT, AD_DRST, 2, 6),
           ATTK(AT_TENT, AD_DRST, 2, 6)),
         SIZ(WT_HUMAN, 400, MS_HISS, MZ_LARGE),
