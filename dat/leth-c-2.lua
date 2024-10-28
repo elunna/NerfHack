@@ -44,7 +44,7 @@ des.region(selection.area(30,10,36,14),"unlit")
 des.region(selection.area(51,08,58,10),"unlit")
 
 if percent(50) then
-    des.altar({ x=70,y=09,align=random, type="altar", cracked=nh.rn2(4) })
+    des.altar({ x=70,y=09,align=random, type="altar", cracked=nh.rn2(2) })
 else
     for i = 1,math.random(8, 17) do
         des.object("rock", 70,09)

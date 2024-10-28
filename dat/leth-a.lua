@@ -39,7 +39,7 @@ des.map([[
 
 -- Altar to Nodens
 if percent(50) then
-    des.altar({ x=35,y=10,align="noalign", type="shrine", cracked=nh.rn2(4) })
+    des.altar({ x=35,y=10,align="noalign", type="shrine", cracked=nh.rn2(2) })
 else
     for i = 1,math.random(8, 17) do
         des.object("rock", 35,10)
