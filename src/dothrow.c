@@ -2110,6 +2110,7 @@ thitmonst(
         switch (uarmg->otyp) {
         case GAUNTLETS_OF_POWER: /* metal */
         case GAUNTLETS_OF_FORCE: /* bulky */
+        case BRONZE_GAUNTLETS:
             tmp -= 2;
             break;
         case GAUNTLETS_OF_FUMBLING:

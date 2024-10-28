@@ -656,6 +656,7 @@ Gloves_on(void)
     case LEATHER_GLOVES:
     case GAUNTLETS_OF_FORCE:
     case ROGUE_S_GLOVES:
+    case BRONZE_GAUNTLETS:
         break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
@@ -738,6 +739,7 @@ Gloves_off(void)
     case LEATHER_GLOVES:
     case GAUNTLETS_OF_FORCE:
     case ROGUE_S_GLOVES:
+    case BRONZE_GAUNTLETS:
         break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
