@@ -22,7 +22,6 @@ static NEARDATA const long takeoff_order[] = {
 
 staticfn void on_msg(struct obj *);
 staticfn void toggle_stealth(struct obj *, long, boolean);
-staticfn int Armor_on(void);
 /* int Boots_on(void); -- moved to extern.h */
 /* int Gloves_on(void); -- moved to extern.h */
 staticfn int Cloak_on(void);
@@ -658,8 +657,8 @@ Gloves_on(void)
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
-    case GAUNTLETS_OF_FORCE:
     case ROGUE_S_GLOVES:
+    case GAUNTLETS_OF_FORCE:
     case BRONZE_GAUNTLETS:
         break;
     case GAUNTLETS_OF_FUMBLING:
@@ -741,8 +740,8 @@ Gloves_off(void)
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
-    case GAUNTLETS_OF_FORCE:
     case ROGUE_S_GLOVES:
+    case GAUNTLETS_OF_FORCE:
     case BRONZE_GAUNTLETS:
         break;
     case GAUNTLETS_OF_FUMBLING:
@@ -968,8 +967,10 @@ dragon_armor_handling(
     case RED_DRAGON_SCALE_MAIL:
         if (puton) {
             EInfravision |= W_ARM;
+            u.udaminc += otmp->spe; /* Increase damage */
         } else {
             EInfravision &= ~W_ARM;
+            u.udaminc -= otmp->spe;
         }
         see_monsters();
         break;

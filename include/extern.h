@@ -718,6 +718,7 @@ extern boolean doffing(struct obj *) NONNULLARG1;
 extern void cancel_doff(struct obj *, long) NONNULLARG1;
 extern void cancel_don(void);
 extern int stop_donning(struct obj *); /* doseduce() calls with NULL */
+extern int Armor_on(void);
 extern int Armor_off(void);
 extern int Armor_gone(void);
 extern int Helmet_off(void);
