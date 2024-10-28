@@ -1005,8 +1005,10 @@ dragon_armor_handling(
     case WHITE_DRAGON_SCALE_MAIL:
         if (puton) {
             ESlow_digestion |= W_ARM;
+            EWwalking |= W_ARM;
         } else {
             ESlow_digestion &= ~W_ARM;
+            EWwalking &= ~W_ARM;
         }
         break;
     case SHIMMERING_DRAGON_SCALE_MAIL:
