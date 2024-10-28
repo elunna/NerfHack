@@ -875,7 +875,8 @@ get_hint(void)
             "There's no place like a trap-filled home.",
             "The first rule of NerfHack: You don't survive NerfHack.",
             "Life finds a way… but not in NerfHack.",
-            "Why so quiet, kamadan got your tongue?"
+            "Why so quiet, kamadan got your tongue?",
+            "The year is 20NN. Everyone plays NerfHack at TAS levels of perfection."
     };
 
     return hint[rn2(SIZE(hint))];
