@@ -516,7 +516,16 @@ use_stethoscope(struct obj *obj)
             There("is %s there.", mnm);
         }
 
-        mstatusline(mtmp);
+        /* Undead/nonliving monsters don't give any feedback */
+        if (is_undead(mtmp->data)) {
+            pline("It's undead.");
+            // return res;
+        } else if (nonliving(mtmp->data)) {
+            pline("It's not of the living.");
+            // return res;
+        } else 
+            mstatusline(mtmp);
+
         if (!canspotmon(mtmp))
             map_invisible(rx, ry);
         return res;
