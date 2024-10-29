@@ -10,6 +10,7 @@
 
 /* spellbook re-use control; used when reading and when polymorphing */
 #define MAX_SPELL_STUDY 3
+#define MONCARD_COST 5
 
 struct spell {
     short sp_id;  /* spell id (== object.otyp) */

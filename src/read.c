@@ -1716,7 +1716,7 @@ seffect_create_monster(struct obj **sobjp)
     boolean yours = !svc.context.mon_moving;
 
     if (is_moncard(sobj)) {
-        if (yours && u.uen < 10) {
+        if (yours && u.uen < MONCARD_COST) {
             pline1(nothing_happens);
             sobj->in_use = FALSE;
             return FALSE;
@@ -3965,7 +3965,7 @@ use_moncard(
     (void) make_msummoned(pm, &gy.youmonst,
                           sobj->cursed ? FALSE : TRUE, x, y);
     if (yours)
-        u.uen -= 10;
+        u.uen -= MONCARD_COST;
 }
 
 staticfn void
