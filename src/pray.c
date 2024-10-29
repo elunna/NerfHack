@@ -434,7 +434,6 @@ fix_worst_trouble(int trouble)
         make_rabid(0L, (char *) 0, 0, (char *) 0);
         break;
     case TROUBLE_WITHERING:
-        You("stop withering.");
         make_withering(0L, TRUE);
         break;
     case TROUBLE_REGION:
