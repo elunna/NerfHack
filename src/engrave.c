@@ -572,6 +572,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
     case WAN_CREATE_MONSTER:
     case WAN_WISHING:
     case WAN_ENLIGHTENMENT:
+    case WAN_IDENTIFY:
         if (de->wonder)
             de->otmp->otyp = WAN_WONDER;
         zapnodir(de->otmp);

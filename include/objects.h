@@ -1547,6 +1547,8 @@ WAND("striking",        "ebony", 75, 200, 1, IMMEDIATE, WOOD, HI_WOOD,
                                                     WAN_STRIKING),
 WAND("make invisible", "marble", 45, 200, 1, IMMEDIATE, MINERAL, HI_MINERAL,
                                                     WAN_MAKE_INVISIBLE),
+WAND("identify",       "forked", 10, 200, 1, NODIR,     WOOD,  HI_WOOD,
+                                                    WAN_IDENTIFY),
 WAND("slow monster",      "tin", 50, 200, 1, IMMEDIATE, METAL, HI_METAL,
                                                     WAN_SLOW_MONSTER),
 WAND("speed monster",   "brass", 50, 200, 1, IMMEDIATE, COPPER, HI_COPPER,
@@ -1588,7 +1590,6 @@ WAND("draining",      "ceramic", 20, 200, 1, RAY, GLASS,  HI_MINERAL,
                                                     WAN_DRAINING),
 
 /* extra descriptions, shuffled into use at start of new game */
-WAND(NoDes,             "forked",  0, 200, 1, 0, WOOD, HI_WOOD, WAN1),
 WAND(NoDes,             "spiked",  0, 200, 1, 0, IRON, HI_METAL, WAN2),
 WAND(NoDes,            "jeweled",  0, 200, 1, 0, IRON, HI_MINERAL, WAN3),
 #undef WAND

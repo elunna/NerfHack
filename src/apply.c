@@ -4414,6 +4414,7 @@ do_break_wand(struct obj *obj)
     case WAN_LOCKING:
     case WAN_PROBING:
     case WAN_ENLIGHTENMENT:
+    case WAN_IDENTIFY:
         broken_wand_explode(obj, dmg, EXPL_MAGICAL);
         return ECMD_TIME;
 

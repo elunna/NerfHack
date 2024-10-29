@@ -1168,8 +1168,10 @@ mksobj_init(struct obj *otmp, boolean artif)
             /* The Castle wand is always (1:2) to guarantee 3 wishes. */
             otmp->spe = 2;
             otmp->recharged = 1;
-	} else if (otmp->otyp == WAN_WONDER) {
-	    otmp->spe = rn1(10, 15);
+        } else if (otmp->otyp == WAN_WONDER) {
+            otmp->spe = rn1(10, 15);
+         } else if (otmp->otyp == WAN_IDENTIFY) {
+            otmp->spe = rn1(5, 4); /* Same as ray/beam */
         } else
             otmp->spe = rn1(5, (objects[otmp->otyp].oc_dir == NODIR) ? 11 : 4);
         blessorcurse(otmp, 17);
