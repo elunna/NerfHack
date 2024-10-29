@@ -2687,14 +2687,14 @@ potionbreathe(struct obj *obj)
     case POT_MONSTER_DETECTION:
         /* force uncursed monster detection if blessed */
         obj->blessed = 0;
-        if (!monster_detect(obj, 0))
+        if (!monster_detect((struct obj *) 0, 0))
             exercise(A_WIS, TRUE);
         unambiguous = TRUE;
         break;
     case POT_OBJECT_DETECTION:
         /* force uncursed object detection if blessed */
         obj->blessed = 0;
-        if (!object_detect(obj, 0))
+        if (!object_detect((struct obj *) 0, 0))
             exercise(A_WIS, TRUE);
         unambiguous = TRUE;
         break;
