@@ -1364,7 +1364,7 @@ end,
                           asleep=1 })
             -- and a rat for company
             -- no 'r' = rock moles to break them out!
-            rats = {"sewer rat", "giant rat", "chickenrat"} 
+            rats = {"sewer rat", "giant rat", "rat"} 
             des.monster(rats[d(#rats)])
          end
          des.region({ region={01,01,01,01}, type="themed", irregular=true,

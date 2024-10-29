@@ -1758,7 +1758,7 @@ makemon(
         else if (!rn2(127 - level_difficulty()))
             mon_rabid(mtmp, FALSE);
     }
-    if (mtmp->mnum == PM_CHICKENRAT) { /* Always rabid */
+    if (mtmp->mnum == PM_RAT) { /* Always rabid */
         mon_rabid(mtmp, FALSE);
     }
 
