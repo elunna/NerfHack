@@ -1430,6 +1430,11 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             && spellnum == CLC_FIRE_PILLAR) {
             return TRUE;
         }
+        /* Prevent monsters from constantly spamming protection */
+        if (spellnum == CLC_PROTECTION && rn2(mtmp->mprotection + 1)
+            && !(mtmp->mhp * 2 <= mtmp->mhpmax)) {
+            return TRUE;
+        }
     }
     return FALSE;
 }
