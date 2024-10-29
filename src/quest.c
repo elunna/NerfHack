@@ -437,6 +437,7 @@ staticfn void
 prisoner_speaks(struct monst *mtmp)
 {
     if (mtmp->data == &mons[PM_PRISONER]
+        && !mtmp->mrabid
         && (mtmp->mstrategy & STRAT_WAITMASK)) {
         /* Awaken the prisoner */
         if (canseemon(mtmp))
