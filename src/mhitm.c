@@ -352,7 +352,7 @@ mattackm(
     /* find rings of increase accuracy */
     tmp += mring_bon(magr, RIN_INCREASE_ACCURACY);
 
-    if (calculate_flankers(magr, mdef)) {
+    if (!iflags.debug_fuzzer && calculate_flankers(magr, mdef)) {
         ftmp = flank_bonus(magr);
         tmp += ftmp;
         if (canseemon(magr)) {
