@@ -69,6 +69,7 @@ static struct trobj Cartomancer[] = {
     { CANDY_BAR, 0, FOOD_CLASS, 2, 0 },
     { SCR_CREATE_MONSTER, 0, SCROLL_CLASS, 7, UNDEF_BLESS },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS },
+    { SACK, 0, TOOL_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cave_man[] = {
