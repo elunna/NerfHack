@@ -6870,6 +6870,7 @@ calm_berserker(struct monst *mtmp)
     if (canspotmon(mtmp))
         pline("%s calms down.", Monnam(mtmp));
     mtmp->mpeaceful = 1;
+    mtmp->mberserk = 0;
     /* Also heal them so they don't immediately re-berserk.*/
     if (mtmp->mhp < (mtmp->mhpmax / 2))
         mtmp->mhp = (mtmp->mhpmax / 2) + 1;
