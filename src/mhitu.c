@@ -19,6 +19,7 @@ staticfn int gulpmu(struct monst *, struct attack *);
 staticfn int explmu(struct monst *, struct attack *, boolean);
 staticfn void mayberem(struct monst *, const char *, struct obj *,
                      const char *);
+staticfn int assess_dmg(struct monst *, int);
 staticfn int passiveum(struct permonst *, struct monst *, struct attack *);
 staticfn int counterattack(struct monst *, struct attack *);
 
@@ -2804,6 +2805,19 @@ mayberem(struct monst *mon,
     remove_worn_item(obj, TRUE);
 }
 
+staticfn int
+assess_dmg(struct monst *mtmp, int tmp)
+{
+    if ((mtmp->mhp -= tmp) <= 0) {
+        pline("%s dies!", Monnam(mtmp));
+        xkilled(mtmp, XKILL_NOMSG);
+        if (!DEADMONSTER(mtmp))
+            return M_ATTK_HIT;
+        return M_ATTK_AGR_DIED;
+    }
+    return M_ATTK_HIT;
+}
+
 /* FIXME:
  *  sequencing issue:  a monster's attack might cause poly'd hero
  *  to revert to normal form.  The messages for passive counterattack
@@ -2863,7 +2877,7 @@ passiveum(
         if (!rn2(3))
             acid_damage(MON_WEP(mtmp));
         tmp += destroy_items(mtmp, AD_ACID, orig_dmg);
-        goto assess_dmg;
+        return assess_dmg(mtmp, tmp);
     case AD_STON: /* cockatrice */
     {
         long protector = attk_protection((int) mattk->aatyp),
@@ -2931,7 +2945,7 @@ passiveum(
                 You("explode!");
                 /* KMH, balance patch -- this is okay with unchanging */
                 rehumanize();
-                goto assess_dmg;
+                return assess_dmg(mtmp, tmp);
             }
             break;
         case AD_PLYS: /* Floating eye */
@@ -3026,7 +3040,6 @@ passiveum(
                         tmp += rn2(4);
                 } else
                     tmp = 0;
-                goto assess_dmg;
             }
             break;
         }
@@ -3037,16 +3050,7 @@ passiveum(
     else
         tmp = 0;
 
- assess_dmg:
-    showdamage(tmp, FALSE);
-    if ((mtmp->mhp -= tmp) <= 0) {
-        pline("%s dies!", Monnam(mtmp));
-        xkilled(mtmp, XKILL_NOMSG);
-        if (!DEADMONSTER(mtmp))
-            return M_ATTK_HIT;
-        return M_ATTK_AGR_DIED;
-    }
-    return M_ATTK_HIT;
+    return assess_dmg(mtmp, tmp);
 }
 
 /* Rogue have the potential for counter-attacks. The attack will simply

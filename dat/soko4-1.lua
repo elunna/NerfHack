@@ -81,15 +81,17 @@ des.object("boulder",3,7)
 des.object("boulder",8,8)
 des.object("boulder",8,10)
 
-des.trap("pit",15,6)
-des.trap("pit",16,6)
-des.trap("pit",17,6)
-des.trap("pit",18,6)
-des.trap("pit",19,6)
-des.trap("pit",20,6)
-des.trap("pit",21,6)
-des.trap("pit",22,6)
-des.trap("pit",23,6)
+-- prevent monster generation over the (filled) pits
+des.exclusion({ type = "monster-generation", region = { 15,06, 23,06 } });
+des.trap("pit",15,06)
+des.trap("pit",16,06)
+des.trap("pit",17,06)
+des.trap("pit",18,06)
+des.trap("pit",19,06)
+des.trap("pit",20,06)
+des.trap("pit",21,06)
+des.trap("pit",22,06)
+des.trap("pit",23,06)
 
 -- Random objects
 des.object({ class = "%" });

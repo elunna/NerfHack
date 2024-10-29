@@ -52,24 +52,26 @@ des.object("boulder",11,13)
 des.object("boulder",16,13)
 
 -- Traps
+-- prevent monster generation over the (filled) holes
+des.exclusion({ type = "monster-generation", region = { 08,05, 11,07 } });
 des.trap("hole",08,05)
-des.trap("hole",11,05)
 des.trap("hole",08,06)
-des.trap("hole",09,06)
-des.trap("hole",10,06)
-des.trap("hole",11,06)
 des.trap("hole",08,07)
+des.trap("hole",09,06)
 des.trap("hole",09,07)
-des.trap("hole",10,07)
-des.trap("hole",11,07)
 des.trap("hole",09,08)
-des.trap("hole",10,08)
 des.trap("hole",09,09)
-des.trap("hole",10,09)
 des.trap("hole",09,10)
-des.trap("hole",10,10)
 des.trap("hole",09,11)
+des.trap("hole",10,06)
+des.trap("hole",10,07)
+des.trap("hole",10,08)
+des.trap("hole",10,09)
+des.trap("hole",10,10)
 des.trap("hole",10,11)
+des.trap("hole",11,05)
+des.trap("hole",11,06)
+des.trap("hole",11,07)
 
 -- Random objects
 des.object({ class = "%" });

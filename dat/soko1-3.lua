@@ -80,20 +80,11 @@ des.object("boulder",03,11);
 des.object("boulder",11,11);
 
 -- Traps
-des.trap("hole",19,04)
-des.trap("hole",19,05)
-des.trap("hole",19,06)
-des.trap("hole",19,07)
-des.trap("hole",19,08)
-des.trap("hole",19,09)
-des.trap("hole",19,10)
-des.trap("hole",19,11)
-des.trap("hole",19,12)
-
+-- prevent monster generation over the (filled) holes
+des.exclusion({ type = "monster-generation", region = { 02,13, 17,15 } });
+des.exclusion({ type = "monster-generation", region = { 19,04, 19,14 } });
 des.trap("hole",02,13)
-des.trap("hole",19,13)
 des.trap("hole",02,14)
-des.trap("hole",19,14)
 
 des.trap("hole",03,15)
 des.trap("hole",04,15)
@@ -110,6 +101,20 @@ des.trap("hole",14,15)
 des.trap("hole",15,15)
 des.trap("hole",16,15)
 des.trap("hole",17,15)
+
+des.trap("hole",19,04)
+des.trap("hole",19,05)
+des.trap("hole",19,06)
+des.trap("hole",19,07)
+des.trap("hole",19,08)
+des.trap("hole",19,09)
+des.trap("hole",19,10)
+des.trap("hole",19,11)
+des.trap("hole",19,12)
+des.trap("hole",19,13)
+des.trap("hole",19,14)
+
+
 
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });

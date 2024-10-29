@@ -11,9 +11,7 @@
 
 staticfn void putmesg(const char *);
 staticfn char *You_buf(int);
-#if defined(MSGHANDLER)
 staticfn void execplinehandler(const char *);
-#endif
 #ifdef USER_SOUNDS
 extern void maybe_play_sound(const char *);
 #endif
@@ -267,9 +265,7 @@ vpline(const char *line, va_list the_args)
 
     putmesg(line);
 
-#if defined(MSGHANDLER)
     execplinehandler(line);
-#endif
 
     /* this gets cleared after every pline message */
     iflags.last_msg = PLNMSG_UNKNOWN;
@@ -581,9 +577,7 @@ vraw_printf(const char *line, va_list the_args)
         pbuf[BUFSZ - 1] = '\0'; /* terminate strncpy or truncate vsprintf */
     }
     raw_print(line);
-#if defined(MSGHANDLER)
     execplinehandler(line);
-#endif
     if (!program_state.beyond_savefile_load)
         ge.early_raw_messages++;
 }
@@ -643,37 +637,30 @@ impossible(const char *s, ...)
 
 RESTORE_WARNING_FORMAT_NONLITERAL
 
-#if defined(MSGHANDLER)
 static boolean use_pline_handler = TRUE;
 
 staticfn void
 execplinehandler(const char *line)
 {
-#if defined(POSIX_TYPES) || defined(__GNUC__)
+#if defined(UNIX) && (defined(POSIX_TYPES) || defined(__GNUC__))
     int f;
 #endif
     const char *args[3];
-    char *env;
 
-    if (!use_pline_handler)
+    if (!use_pline_handler || !sysopt.msghandler)
         return;
 
-    if (!(env = nh_getenv("NETHACK_MSGHANDLER"))) {
-        use_pline_handler = FALSE;
-        return;
-    }
-
-#if defined(POSIX_TYPES) || defined(__GNUC__)
+#if defined(UNIX) && (defined(POSIX_TYPES) || defined(__GNUC__))
     f = fork();
     if (f == 0) { /* child */
-        args[0] = env;
+        args[0] = sysopt.msghandler;
         args[1] = line;
         args[2] = NULL;
         (void) setgid(getgid());
         (void) setuid(getuid());
         (void) execv(args[0], (char *const *) args);
         perror((char *) 0);
-        (void) fprintf(stderr, "Exec to message handler %s failed.\n", env);
+        (void) fprintf(stderr, "Exec to message handler %s failed.\n", sysopt.msghandler);
         nh_terminate(EXIT_FAILURE);
     } else if (f > 0) {
         int status;
@@ -687,16 +674,17 @@ execplinehandler(const char *line)
 #elif defined(WIN32)
     {
         intptr_t ret;
-        args[0] = env;
+        args[0] = sysopt.msghandler;
         args[1] = line;
         args[2] = NULL;
-        ret = _spawnv(_P_NOWAIT, env, args);
+        ret = _spawnv(_P_NOWAIT, sysopt.msghandler, args);
     }
 #else
-#error MSGHANDLER is not implemented on this system.
+    use_pline_handler = FALSE;
+    nhUse(args);
+    nhUse(line);
 #endif
 }
-#endif /* MSGHANDLER */
 
 /*
  * varargs handling for files.c
