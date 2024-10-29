@@ -1746,7 +1746,7 @@ seffect_zapping(struct obj **sobjp)
 	    impossible("seffects: SCR_WAND_ZAP has no zap type!");
         return FALSE;
     }
-    if (u.uen < 10) {
+    if (u.uen < ZAPCARD_COST) {
         pline1(nothing_happens);
         sobj->in_use = FALSE;
         return FALSE;

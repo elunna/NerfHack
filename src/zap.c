@@ -2865,7 +2865,7 @@ dozap(void)
 
     /* Handle zappable effect cards here */
     if (obj->otyp == SCR_ZAPPING) {
-        if (u.uen < 10) {
+        if (u.uen < ZAPCARD_COST) {
             pline1(nothing_happens);
             return ECMD_TIME;
         }
@@ -2909,7 +2909,7 @@ dozap(void)
         }
         obfree(pseudo, NULL);
         useup(obj);
-        u.uen -= 10;
+        u.uen -= ZAPCARD_COST;
         return 1;
     }
 
