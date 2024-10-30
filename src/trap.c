@@ -1111,8 +1111,10 @@ staticfn boolean
 floor_trigger(int ttyp)
 {
     switch (ttyp) {
-    case ARROW_TRAP:
-    case DART_TRAP:
+    /* Projectile traps should trigger even if flying,
+       otherwise flying let's the player bypass too many traps */
+    /* case ARROW_TRAP: */
+    /* case DART_TRAP: */
     case SQKY_BOARD:
     case BEAR_TRAP:
     case LANDMINE:
