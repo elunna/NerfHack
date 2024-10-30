@@ -615,6 +615,33 @@ mattackm(
             }
             break;
 
+        case AT_MAGC:
+            if (!monnear(magr, mdef->mx, mdef->my)) {
+                if (mattk->adtyp == AD_FIRE || mattk->adtyp == AD_COLD
+                    || mattk->adtyp == AD_ACID || mattk->adtyp == AD_MAGM)
+                    strike = buzzmm(magr, mdef, mattk);
+                else /* AD_SPEL and AD_CLRC */
+                    strike = castmm(magr, mdef, mattk);
+
+                /* We don't really know if we hit or not; pretend we did. */
+                if (strike)
+                    res[i] |= M_ATTK_HIT;
+                if (DEADMONSTER(mdef))
+                    res[i] = M_ATTK_DEF_DIED;
+                if (DEADMONSTER(magr))
+                    res[i] |= M_ATTK_AGR_DIED;
+            } else if (monnear(magr, mdef->mx, mdef->my)) {
+                strike = castmm(magr, mdef, mattk);
+
+                if (strike)
+                    res[i] |= M_ATTK_HIT;
+                if (DEADMONSTER(mdef))
+                    res[i] = M_ATTK_DEF_DIED;
+                if (DEADMONSTER(magr))
+                    res[i] |= M_ATTK_AGR_DIED;
+            }
+            break;
+
         default: /* no attack */
             strike = 0;
             attk = 0;

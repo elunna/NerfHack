@@ -153,6 +153,8 @@
 #define is_swimmer(ptr) (((ptr)->mflags1 & M1_SWIM) != 0L)
 #define breathless(ptr) (((ptr)->mflags1 & M1_BREATHLESS) != 0L)
 #define amphibious(ptr) (((ptr)->mflags1 & M1_AMPHIBIOUS) != 0L)
+#define mon_underwater(mon) \
+    (is_swimmer((mon)->data) && is_pool((mon)->mx, (mon)->my))
 #define cant_drown(ptr) (is_swimmer(ptr) || amphibious(ptr) || breathless(ptr))
 #define passes_walls(ptr) (((ptr)->mflags1 & M1_WALLWALK) != 0L)
 #define amorphous(ptr) (((ptr)->mflags1 & M1_AMORPHOUS) != 0L)
@@ -446,6 +448,10 @@
         && ((ptr) != &mons[PM_BLACK_PUDDING] \
         && ((ptr) != &mons[PM_SHOGGOTH]) \
         && (ptr) != &mons[PM_LIKE_LIKE])))
+/* jello-like creatures */
+#define can_flollop(ptr) \
+    ((ptr)->mlet == S_BLOB || (ptr)->mlet == S_JELLY \
+     || (ptr)->mlet == S_PUDDING)
 
 #define corpse_eater(ptr)                    \
     (ptr == &mons[PM_PURPLE_WORM]            \

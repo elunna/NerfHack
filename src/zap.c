@@ -49,7 +49,7 @@ static const char are_blinded_by_the_flash[] = "are blinded by the flash!";
  * index fixup beyond abs() needed for wand zaps.  Wand zaps for monster
  * use -39..-30 rather than -9..-0 because -0 is ambiguous (same as 0).
  */
-static const char *const flash_types[] = {
+const char *const flash_types[] = {
     /* Wands must be 0-9 */
     "magic missile",
     "bolt of fire",         /* 01 */
