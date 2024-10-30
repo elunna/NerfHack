@@ -1179,8 +1179,8 @@ u_init(void)
         u.uen = u.uenmax = u.uenpeak = u.ueninc[u.ulevel] = SPELL_LEV_PW(1);
 
     /* Same idea as above, cartomancers should be able to play summons right away. */
-    if (Role_if(PM_CARTOMANCER) && u.uen < 10)
-        u.uen = u.uenmax = 10;
+    if (Role_if(PM_CARTOMANCER) && u.uen < 5)
+        u.uen = u.uenmax = 5;
 
     /* Quality-of-Life */
     knows_object(POT_WATER, FALSE);
