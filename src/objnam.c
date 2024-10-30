@@ -703,11 +703,14 @@ xname_flags(
         }
     }
 
-    /* Cartomancers grow to become card masters. */
-    if (carto && obj->otyp == RAZOR_CARD && u.ulevel > 6) {
-        obj->known = 1;
-        if (u.ulevel > 14)
+    if (carto) {
+        if (u.ulevel > 6 && obj->otyp == RAZOR_CARD) {
+            obj->known = 1;
+        }
+        if (u.ulevel > 14 && (obj->otyp == RAZOR_CARD
+                || obj->oclass == SCROLL_CLASS)) {
             obj->bknown = 1;
+        }
     }
 
     if (iflags.override_ID) {
