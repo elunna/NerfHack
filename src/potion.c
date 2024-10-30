@@ -3212,24 +3212,16 @@ potion_dip(struct obj *obj, struct obj *potion)
         /* Scrolls of amnesia make potions forget what they were */
         struct obj *singlescroll = (obj->quan > 1L ?  splitobj(obj, 1L) : obj);
 
-        if (potion->quan > 1L) {
-            singlepotion = splitobj(potion, 1L);
-        } else
-            singlepotion = potion;
-
-        Your("%s fades.", xname(singlepotion));
+        Your("%s fade%s.", xname(potion), 
+            potion->quan > 1L ? "" : "s");
         makeknown(SCR_AMNESIA);
 
-        costly_alteration(singlepotion, COST_NUTRLZ);
+        costly_alteration(potion, COST_NUTRLZ);
         costly_alteration(singlescroll, COST_NUTRLZ);
 
         useup(singlescroll);
-        singlepotion->otyp = POT_WATER;
+        potion->otyp = POT_WATER;
         potion->in_use = FALSE; /* didn't go poof */
-        singlepotion->in_use = FALSE;
-        hold_potion(singlepotion, "You juggle and drop %s!",
-                    doname(singlepotion), (const char *) 0);
-
         return ECMD_TIME;
     } else if (obj->oclass == POTION_CLASS && obj->otyp != potion->otyp) {
         int amt = (int) obj->quan;
