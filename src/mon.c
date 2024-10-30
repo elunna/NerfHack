@@ -6889,9 +6889,6 @@ mon_rabid(struct monst *mtmp, boolean noisy)
     mtmp->mflee = 0;
     mtmp->mpeaceful = mtmp->mtame = 0;
     newsym(mtmp->mx, mtmp->my);
-
-    if (is_berserker(mtmp->data) && !mtmp->mberserk)
-        mon_berserk(mtmp);
 }
 
 staticfn void
