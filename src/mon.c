@@ -4567,7 +4567,7 @@ m_respond(struct monst *mtmp)
             }
     }
     if (mtmp->data == &mons[PM_FELL_BEAST] && !mtmp->mcan
-        && mtmp->mspec_used == 0 && !rn2(3)) {
+        && !mtmp->mpeaceful && mtmp->mspec_used == 0 && !rn2(3)) {
         /* mspec_used also controls whether a Nazgul's breath weapon is ready
          * for use. This gets executed in dochug before it attempts to use its
          * attacks, so if it tried to shriek 100% of the time, it would never
@@ -4576,10 +4576,8 @@ m_respond(struct monst *mtmp)
         nazgul_shriek(mtmp);
     }
 
-    /* For this we don't rely on mspec_used because that can interfere with
-     * breath attacks/other ranged attacks. */
     if ((mtmp->data == &mons[PM_BLACK_DRAGON] || mtmp->data == &mons[PM_T_REX])
-        && !mtmp->mcan && !mtmp->mtame && !rn2(30)) {
+        && !mtmp->mcan && !mtmp->mpeaceful && !rn2(30)) {
         dragon_roar(mtmp);
     }
 }
