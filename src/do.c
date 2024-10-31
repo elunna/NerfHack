@@ -1263,7 +1263,9 @@ dodown(void)
             else if (ladder_down)
                 ladder_down = (glyph_to_cmap(glyph_at_uxuy) == S_dnladder);
         }
-        if (Is_airlevel(&u.uz))
+        if (!stairs_down && !ladder_down && do_stair_travel('>')) {
+            return ECMD_TIME;
+        } else if (Is_airlevel(&u.uz))
             You("are floating in the %s.", surface(u.ux, u.uy));
         else if (Is_waterlevel(&u.uz))
             You("are floating in %s.",
