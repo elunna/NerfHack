@@ -1251,7 +1251,7 @@ linedup(
     return FALSE;
 }
 
-staticfn int
+int
 m_lined_up(struct monst *mtarg, struct monst *mtmp)
 {
     boolean utarget = (mtarg == &gy.youmonst);
