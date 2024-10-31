@@ -645,9 +645,8 @@ cast_wizard_spell(
         return;
     }
 
-    if (!caster->mpeaceful && (u_wield_art(ART_SERENITY)
-                            || u_offhand_art(ART_SERENITY)
-                            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD))) {
+    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
+            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
             return;
     }
@@ -1129,9 +1128,8 @@ cast_cleric_spell(
         return;
     }
 
-    if (!caster->mpeaceful && (u_wield_art(ART_SERENITY)
-                            || u_offhand_art(ART_SERENITY)
-                            | (uarms && uarms->otyp == ANTI_MAGIC_SHIELD))) {
+    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
+            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
             return;
     }
