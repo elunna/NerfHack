@@ -16,7 +16,7 @@ jobs:
       #HINTS_FILE: linux.370
       HINTS_FILE: linux-debug
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: setup
       run: ./sys/unix/setup.sh sys/unix/hints/$HINTS_FILE
     - name: fetch lua
@@ -32,7 +32,7 @@ jobs:
     env:
       HINTS_FILE: macOS.370
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: setup
       run: |
         ./sys/unix/setup.sh sys/unix/hints/$HINTS_FILE
@@ -56,7 +56,7 @@ jobs:
         TRAVIS_COMPILER: 1
         ZIP_NAME: nerfhack.zip
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
     - uses: ilammy/msvc-dev-cmd@v1 # enable visual c compiler / nmake
