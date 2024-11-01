@@ -1505,7 +1505,7 @@ makemon(
         mtmp->mhp = mtmp->mhpmax = 250 + rnd(50);
 
     /* Nazgul spawn with their steeds (but not riding them)*/
-    if (ptr == &mons[PM_NAZGUL]) {
+    if (ptr == &mons[PM_NAZGUL] && countbirth) {
         if (enexto(&cc, x, y, &mons[PM_FELL_BEAST]))
             makemon(&mons[PM_FELL_BEAST], cc.x, cc.y,
                 MM_ADJACENTOK | MM_IGNOREWATER | MM_IGNORELAVA);
