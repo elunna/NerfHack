@@ -238,7 +238,8 @@ in_trouble(void)
         return TROUBLE_COLLAPSING;
     if (stuck_in_wall())
         return TROUBLE_STUCK_IN_WALL;
-    if (stuck_ring(uleft, RIN_LEVITATION)
+    if (Cursed_obj(uarmf, LEVITATION_BOOTS)
+        || stuck_ring(uleft, RIN_LEVITATION)
         || stuck_ring(uright, RIN_LEVITATION))
         return TROUBLE_CURSED_LEVITATION;
     if (nohands(gy.youmonst.data) || !freehand()) {
@@ -499,7 +500,9 @@ fix_worst_trouble(int trouble)
         }
         break;
     case TROUBLE_CURSED_LEVITATION:
-        if ((otmp = stuck_ring(uleft, RIN_LEVITATION)) != 0) {
+        if (Cursed_obj(uarmf, LEVITATION_BOOTS)) {
+            otmp = uarmf;
+        } else if ((otmp = stuck_ring(uleft, RIN_LEVITATION)) != 0) {
             if (otmp == uleft)
                 what = leftglow;
         } else if ((otmp = stuck_ring(uright, RIN_LEVITATION)) != 0) {
