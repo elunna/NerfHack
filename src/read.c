@@ -1716,7 +1716,7 @@ seffect_create_monster(struct obj **sobjp)
     boolean yours = !svc.context.mon_moving;
 
     if (is_moncard(sobj)) {
-        if (yours && u.uen < MONCARD_COST) {
+        if (yours && u.uen < CARD_COST) {
             pline1(nothing_happens);
             sobj->in_use = FALSE;
             return FALSE;
@@ -1746,7 +1746,7 @@ seffect_zapping(struct obj **sobjp)
 	    impossible("seffects: SCR_WAND_ZAP has no zap type!");
         return FALSE;
     }
-    if (u.uen < ZAPCARD_COST) {
+    if (u.uen < CARD_COST) {
         pline1(nothing_happens);
         sobj->in_use = FALSE;
         return FALSE;
@@ -3965,7 +3965,7 @@ use_moncard(
     (void) make_msummoned(pm, &gy.youmonst,
                           sobj->cursed ? FALSE : TRUE, x, y);
     if (yours)
-        u.uen -= MONCARD_COST;
+        u.uen -= CARD_COST;
 }
 
 staticfn void

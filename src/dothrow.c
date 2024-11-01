@@ -635,7 +635,7 @@ hitfloor(
         pline("%s %s the %s.", Doname2(obj), otense(obj, "hit"), surf);
     }
     /* Cartomancer can throw summon cards downward */
-    if (is_moncard(obj) && u.uen >= MONCARD_COST) {
+    if (is_moncard(obj) && u.uen >= CARD_COST) {
         use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
         obfree(obj, (struct obj *) 0);
         return;
@@ -1498,7 +1498,7 @@ throwit(struct obj *obj,
                       && obj->otyp == SCR_CREATE_MONSTER;
 
     /* Handle thrown zap cards here */
-    if (obj->otyp == SCR_ZAPPING && u.uen >= ZAPCARD_COST) {
+    if (obj->otyp == SCR_ZAPPING && u.uen >= CARD_COST) {
         struct obj *pseudo = mksobj(obj->corpsenm, FALSE, FALSE);
         pseudo->blessed = pseudo->cursed = 0;
         pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
