@@ -540,8 +540,10 @@ Helmet_on(void)
                             ? -u.ualign.type
                             : (uarmh->o_id % 2) ? A_CHAOTIC : A_LAWFUL,
                         A_CG_HELM_ON);
-        pline_The("helm violently vibrates and disintegrates!");
-        useup(uarmh);
+        else {
+            pline_The("helm violently vibrates and disintegrates!");
+            useup(uarmh);
+        }
         /* makeknown(HELM_OF_OPPOSITE_ALIGNMENT); -- below, after Tobjnam() */
     /*FALLTHRU*/
     case DUNCE_CAP:
