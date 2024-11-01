@@ -2560,9 +2560,7 @@ use_unicorn_horn(struct obj **optr)
     /* For troubles that time out (not illness or vomiting),
      * the unihorn has been nerfed so that it only reduces
      * the timeout. The amount reduced depends on your skill,
-     * the enchantment, and if you are a healer or not.
-     *
-     * TODO: Maybe even figure some luck into this...*/
+     * the enchantment, and if you are a healer or not. */
     basefix = rnd(3) + 1;
     basefix += !obj ? 0 : obj->spe * 2;
     basefix += P_SKILL(P_UNICORN_HORN) * 2;
@@ -2640,7 +2638,7 @@ use_unicorn_horn(struct obj **optr)
             break;
         }
         /* Sometimes exercise unicorn horn. */
-        if (new_to < 10L)
+        if (old_to != new_to && fix_to > 3L)
             use_skill(P_UNICORN_HORN, 1);
     }
 
