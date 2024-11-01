@@ -7046,6 +7046,14 @@ card_drop(struct monst *mon)
     if (svl.level.flags.lethe)
         return FALSE;
 
+    /* No card drops if you are polyd! Some poly-forms give the
+       cartomancer unlimited offence that could allow them to
+       start circumventing card-playing. We can't do much to
+       prevent that but at the very least we don't need to reward
+       it. */
+    if (Upolyd)
+        return FALSE;
+
     if (invalid_spellbeing(mon->data)
         || mon->msummoned   /* Prevent farming */
         || mon->mrevived    /* Prevent farming */
@@ -7054,10 +7062,9 @@ card_drop(struct monst *mon)
         || mon->mcan        /* Cancelled */
         /* Avoid mon w/ special structure */
         || has_egd(mon)     || has_epri(mon)
-        || has_eshk(mon)    || has_emin(mon)
-        )
+        || has_eshk(mon)    || has_emin(mon))
         return FALSE;
-    /* Prevent farmable card-drops. */
+
 
     /* Unique monsters always drop their own cards */
     if (ptr->geno & G_UNIQ) {
