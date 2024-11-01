@@ -2315,7 +2315,10 @@ hmon_hitmon(
      *
      * The bonus is doubled if the player is below 1/5'th of their health.
      * */
-    if (Role_if(PM_BARBARIAN)) {
+    if (Role_if(PM_BARBARIAN) &&
+            /* Serenity blocks berserking */
+            !(u_wield_art(ART_SERENITY) 
+            || u_offhand_art(ART_SERENITY))) {
         int fifth_of_hp = u.uhpmax / 5;
         boolean critical_hp = u.uhp < (fifth_of_hp * 2);
 
