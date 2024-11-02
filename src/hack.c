@@ -2802,11 +2802,14 @@ domove_core(void)
         case LEVEL_TELEP:
         case MAGIC_PORTAL:
         case WEB:
+        case ARROW_TRAP:
+        case DART_TRAP:
+        case ROCKTRAP:
             into = TRUE;
             break;
         }
         Snprintf(qbuf, sizeof qbuf, "Really %s %s that %s?",
-                 locomotion(gy.youmonst.data, "step"),
+                 u_locomotion("step"),
                  into ? "into" : "onto",
                  defsyms[trap_to_defsym(traptype)].explanation);
         /* handled like paranoid_confirm:pray; when paranoid_confirm:trap
