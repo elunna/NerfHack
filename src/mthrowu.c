@@ -1368,6 +1368,8 @@ hit_bars(
                 You("break the bars apart!");
                 dissolve_bars(barsx, barsy);
                 noise = noise * 2;
+                if (wearing_force_gloves)
+                    makeknown(GAUNTLETS_OF_FORCE);
             }
         }
 
