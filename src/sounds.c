@@ -766,6 +766,9 @@ domonnoise(struct monst *mtmp)
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
 
+    if (mtmp->mrabid && msound >= MS_MUMBLE)
+        msound =  MS_GROWL;
+
     switch (msound) {
     case MS_ORACLE:
         return doconsult(mtmp); /* check this */
