@@ -1304,6 +1304,8 @@ hit_bars(
     boolean nodissolve = (levl[barsx][barsy].wall_info & W_NONDIGGABLE) != 0,
             your_fault = (breakflags & BRK_BY_HERO) != 0,
             melee_attk = (breakflags & BRK_MELEE) != 0;
+    boolean wearing_force_gloves = obj_type == GAUNTLETS_OF_FORCE
+        && uarmg && uarmg->otyp == obj_type;
     int noise = 0;
 
     if (your_fault
@@ -1351,7 +1353,7 @@ hit_bars(
 
         if (your_fault && (otmp->otyp == WAR_HAMMER
                            || otmp->otyp == HEAVY_IRON_BALL
-                           || otmp->otyp == GAUNTLETS_OF_FORCE)) {
+                           || wearing_force_gloves)) {
             /* iron ball isn't a weapon or wep-tool so doesn't use obj->spe;
                weight is normally 480 but can be increased by increments
                of 160 (scrolls of punishment read while already punished) */
@@ -1362,7 +1364,7 @@ hit_bars(
                break those when 'chance' is _lower_; acurrstr(): 3..25 */
             int chance = (melee_attk ? 40 : 60) - acurrstr() - spe;
 
-            if (!rn2(max(2, chance)) || otmp->otyp == GAUNTLETS_OF_FORCE) {
+            if (!rn2(max(2, chance)) || wearing_force_gloves) {
                 You("break the bars apart!");
                 dissolve_bars(barsx, barsy);
                 noise = noise * 2;
