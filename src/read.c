@@ -1595,7 +1595,8 @@ seffect_remove_curse(struct obj **sobjp)
     boolean confused = (Confusion != 0);
     struct obj *obj, *nxto;
     long wornmask;
-
+    gk.known = TRUE;
+    
     You_feel(!Hallucination
              ? (!confused ? "like someone is helping you."
                 : "like you need some help.")
