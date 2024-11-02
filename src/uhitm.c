@@ -7380,7 +7380,8 @@ stumble_onto_mimic(struct monst *mtmp)
 {
     const char *fmt = "Wait!  That's %s!", *generic = "a monster", *what = 0;
 
-    if (!u.ustuck && !mtmp->mflee && dmgtype(mtmp->data, AD_STCK)
+    if (!u.ustuck && !mtmp->mflee && !helpless(mtmp)
+        && dmgtype(mtmp->data, AD_STCK)
         /* must be adjacent; attack via polearm could be from farther away */
         && m_next2u(mtmp))
         set_ustuck(mtmp);
