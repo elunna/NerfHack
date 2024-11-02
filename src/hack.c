@@ -2206,6 +2206,7 @@ domove_fight_empty(coordxy x, coordxy y)
 {
     static const char unknown_obstacle[] = "an unknown obstacle";
     boolean off_edge = !isok(x, y);
+    boolean wearing_force_gloves = uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE;
     int glyph = !off_edge ? glyph_at(x, y) : GLYPH_UNEXPLORED;
 
     if (off_edge)
@@ -2251,7 +2252,7 @@ domove_fight_empty(coordxy x, coordxy y)
                 return TRUE;
             }
             /* force fight at boulder while wearing gauntlets of force */
-            if (svc.context.forcefight
+            if (svc.context.forcefight && wearing_force_gloves
                     && boulder && boulder->otyp == BOULDER) {
                 You("smash %s!", cansee(boulder->ox, boulder->oy)
                                     ? "the boulder" : "something");
@@ -2261,6 +2262,7 @@ domove_fight_empty(coordxy x, coordxy y)
                 else
                     You_hear("a crumbling sound.");
                 fracture_rock(boulder);
+                makeknown(GAUNTLETS_OF_FORCE);
                 sokoban_guilt();
                 return TRUE;
             }
