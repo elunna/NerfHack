@@ -578,6 +578,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         /* [wakeup() doesn't rouse victims of temporary sleep,
            so it's okay to leave `wake' set to TRUE here] */
         reveal_invis = TRUE;
+        if (disguised_mimic)
+            seemimic(mtmp);
         if (sleep_monst(mtmp, d(1 + otmp->spe, 12), WAND_CLASS))
             slept_monst(mtmp);
         if (!Blind)
@@ -5837,6 +5839,9 @@ dobuzz(
                             slept_monst(mon);
                         if (damgtype != ZT_SLEEP)
                             wakeup(mon, (type >= 0) ? TRUE : FALSE);
+                        if (mon->data->mlet == S_MIMIC
+                               && M_AP_TYPE(mon) != M_AP_NOTHING)
+                            seemimic(mon);
                     }
                 }
                 range -= 2;
