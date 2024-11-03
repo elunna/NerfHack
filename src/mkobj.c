@@ -1119,7 +1119,7 @@ mksobj_init(struct obj *otmp, boolean artif)
          * this lightens the early game pressure for V a bit. */
         if (otmp->otyp == POT_BLOOD && !rn2(4))
             curse(otmp);
-        if (otmp->otyp == SCR_ZAPPING)
+        if (otmp->otyp == SCR_ZAPPING && otmp->corpsenm == NON_PM)
             otmp->corpsenm = mk_zapcard();
         /* For cartomancers, most generic create monster cards are
          * changed to specific summon cards*/
@@ -1277,6 +1277,14 @@ mksobj(int otyp, boolean init, boolean artif)
     otmp->corpsenm = NON_PM;
     otmp->lua_ref_cnt = 0;
     otmp->pickup_prev = 0;
+
+    /* Hijack wands when playing as a cartomancer
+        - convert them to cards instead */
+    if (Role_if(PM_CARTOMANCER) && let == WAND_CLASS) {
+        otmp->oclass = SCROLL_CLASS;
+        otmp->otyp = SCR_ZAPPING;
+        otmp->corpsenm = otyp;
+    }
 
     if (init)
         mksobj_init(otmp, artif);
