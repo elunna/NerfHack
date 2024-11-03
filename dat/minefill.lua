@@ -16,7 +16,33 @@ des.level_flags("mazelevel", "noflip");
 
 des.level_init({ style="mines", fg=".", bg=" ", smoothed=true, joined=true, walled=true })
 
---
+-- Light variation
+-- Copied from bigrm-2
+if percent(25) then
+   local darkness;
+
+   local choice = math.random(0, 3)
+   if choice == 0 then
+      darkness = selection.area(01,07,22,09)
+         | selection.area(24,01,50,05)
+         | selection.area(24,11,50,16)
+         | selection.area(52,07,73,09);
+   elseif choice == 1 then
+      darkness = selection.area(24,01,50,16);
+   elseif choice == 2 then
+      darkness = selection.area(01,01,22,16)
+         | selection.area(52,01,73,16);
+   end
+
+   if darkness ~= nil then
+      des.region(darkness,"unlit");
+      if percent(25) then
+         des.replace_terrain({ selection = darkness:grow(),
+                              fromterrain = ".", toterrain = "I" });
+      end
+   end
+end
+   --
 des.stair("up")
 des.stair("down")
 --
