@@ -673,6 +673,57 @@ static NEARDATA const int pwep[] = {
     PARTISAN,
     LANCE };
 
+boolean
+would_prefer_rwep(struct monst *mtmp, struct obj *otmp)
+{
+    struct obj *wep = select_rwep(mtmp);
+    int i = 0;
+
+    if (wep) {
+        if (wep == otmp)
+            return TRUE;
+        if (wep->oartifact)
+            return FALSE;
+        if (mtmp->data->mlet == S_KOP) {
+            if (wep->otyp == CREAM_PIE)
+                return FALSE;
+            if (otmp->otyp == CREAM_PIE)
+                return TRUE;
+        }
+        if (throws_rocks(mtmp->data)) {
+            if (wep->otyp == BOULDER)
+                return FALSE;
+            if (otmp->otyp == BOULDER)
+                return TRUE;
+        }
+    }
+
+    if (strongmonst(mtmp->data) && (mtmp->misc_worn_check & W_ARMS) == 0) {
+        for (i = 0; i < SIZE(pwep); i++) {
+            if (wep && wep->otyp == pwep[i]
+                  && !(otmp->otyp == pwep[i]
+                  && dmgval(otmp, &gy.youmonst) > dmgval(wep, &gy.youmonst)))
+                return FALSE;
+            if (otmp->otyp == pwep[i])
+                return TRUE;
+        }
+    }
+
+    if (is_pole(otmp))
+        return FALSE; /* If we get this far,
+                         we failed the polearm strength check */
+
+    for (i = 0; i < SIZE(rwep); i++) {
+        if (wep && wep->otyp == rwep[i]
+              && !(otmp->otyp == rwep[i]
+	          && dmgval(otmp, &gy.youmonst) > dmgval(wep, &gy.youmonst)))
+	        return FALSE;
+        if (otmp->otyp == rwep[i])
+            return TRUE;
+    }
+    return FALSE;
+}
+
 /* select a ranged weapon for the monster */
 struct obj *
 select_rwep(struct monst *mtmp)
@@ -854,6 +905,40 @@ static const NEARDATA short hwep[] = {
     KNIFE,
     WORM_TOOTH
 };
+
+boolean
+would_prefer_hwep(struct monst *mtmp, struct obj *otmp)
+{
+    struct obj *wep = select_hwep(mtmp);
+
+    int i = 0;
+
+    if (wep) {
+        if (wep == otmp)
+            return TRUE;
+        if (wep->oartifact)
+            return FALSE;
+        if (is_giant(mtmp->data)) {
+            if (wep->otyp == CLUB)
+                return FALSE;
+            if (otmp->otyp == CLUB)
+                return TRUE;
+        }
+    }
+
+    for (i = 0; i < SIZE(hwep); i++) {
+      	if (hwep[i] == CORPSE && !(mtmp->misc_worn_check & W_ARMG))
+      	    continue;
+
+        if (wep && wep->otyp == hwep[i]
+              && !(otmp->otyp == hwep[i]
+              && dmgval(otmp, &gy.youmonst) > dmgval(wep, &gy.youmonst)))
+  	        return FALSE;
+        if (otmp->otyp == hwep[i])
+            return TRUE;
+    }
+    return FALSE;
+}
 
 /* select a hand to hand weapon for the monster */
 struct obj *

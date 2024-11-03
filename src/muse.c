@@ -42,7 +42,6 @@ staticfn boolean necrophiliac(struct obj *, boolean);
 #endif
 staticfn void mon_consume_unstone(struct monst *, struct obj *, boolean,
                                 boolean);
-staticfn boolean cures_stoning(struct monst *, struct obj *, boolean);
 staticfn boolean mcould_eat_tin(struct monst *);
 staticfn boolean muse_unslime(struct monst *, struct obj *, struct trap *,
                             boolean);
@@ -3622,7 +3621,7 @@ mon_consume_unstone(
 }
 
 /* decide whether obj can cure petrification; also used when picking up */
-staticfn boolean
+boolean
 cures_stoning(struct monst *mon, struct obj *obj, boolean tinok)
 {
     if (obj->otyp == POT_ACID)

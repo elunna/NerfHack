@@ -797,6 +797,7 @@ extern boolean could_reach_item(struct monst *, coordxy, coordxy) NONNULLARG1;
 extern void finish_meating(struct monst *) NONNULLARG1;
 extern void quickmimic(struct monst *) NONNULLARG1;
 extern boolean acceptable_pet_target(struct monst *, struct monst *, boolean);
+extern boolean could_use_item(struct monst*, struct obj*, boolean, boolean);
 
 /* ### dokick.c ### */
 
@@ -2070,6 +2071,7 @@ extern boolean ureflects(const char *, const char *) NO_NNARGS;
 extern void mcureblindness(struct monst *, boolean) NONNULLARG1;
 extern boolean munstone(struct monst *, boolean) NONNULLARG1;
 extern boolean munslime(struct monst *, boolean) NONNULLARG1;
+extern boolean cures_stoning(struct monst *, struct obj *, boolean);
 
 /* ### music.c ### */
 
@@ -3733,8 +3735,10 @@ extern struct damage_info_t dmgval_info(struct obj*);
 extern int dmgval(struct obj *, struct monst *) NONNULLARG12;
 extern int special_dmgval(struct monst *, struct monst *, long, long *) NONNULLARG12;
 extern void silver_sears(struct monst *, struct monst *, long) NONNULLARG2;
+extern boolean would_prefer_rwep(struct monst *, struct obj *) NONNULLARG12;
 extern struct obj *select_rwep(struct monst *) NONNULLARG1;
 extern boolean monmightthrowwep(struct obj *) NONNULLARG1;
+extern boolean would_prefer_hwep(struct monst *, struct obj *) NONNULLARG12;
 extern struct obj *select_hwep(struct monst *) NONNULLARG1;
 extern void possibly_unwield(struct monst *, boolean) NONNULLARG1;
 extern int mon_wield_item(struct monst *) NONNULLARG1;
@@ -3968,9 +3972,11 @@ extern void clear_bypasses(void);
 extern void bypass_objlist(struct obj *, boolean) NO_NNARGS;
 extern struct obj *nxt_unbypassed_obj(struct obj *) NO_NNARGS;
 extern struct obj *nxt_unbypassed_loot(Loot *, struct obj *) NONNULLARG1;
+extern int extra_pref(struct monst *, struct obj *) NONNULLARG1;
 extern int racial_exception(struct monst *, struct obj *) NONNULLARG12;
 extern void extract_from_minvent(struct monst *, struct obj *, boolean,
                                  boolean) NONNULLARG12;
+extern int armor_bonus(struct monst *, struct obj *);
 
 /* ### write.c ### */
 

@@ -9,7 +9,6 @@ staticfn void m_lose_armor(struct monst *, struct obj *, boolean) NONNULLPTRS;
 staticfn void clear_bypass(struct obj *) NO_NNARGS;
 staticfn void m_dowear_type(struct monst *, long, boolean, boolean)
                                                                   NONNULLARG1;
-staticfn int extra_pref(struct monst *, struct obj *) NONNULLARG1;
 staticfn boolean threatens_dmgtype(int);
 
 static const struct worn {
@@ -711,21 +710,11 @@ find_mac(struct monst *mon)
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags) {
-            if (obj->otyp == AMULET_OF_GUARDING)
+            if (obj->otyp == AMULET_OF_GUARDING) {
                 base -= obj->spe; /* not impacted by erosion */
-            else
-                base -= ARM_BONUS(obj);
-            /* since ARM_BONUS is positive, subtracting it increases AC */
-
-            /* Racial bonuses */
-            if (is_orc(mon->data) && is_orcish_armor(obj->otyp))
-                base -= 2;
-            else if (is_gnome(mon->data) && is_gnomish_armor(obj->otyp))
-                base -= 2;
-            else if (is_elf(mon->data) && is_elven_armor(obj->otyp))
-                base -= 1;
-            else if (is_dwarf(mon->data) && is_dwarvish_armor(obj->otyp))
-                base -= 1;
+                continue;
+            }
+            base += armor_bonus(mon, obj);
         }
     }
     /* Bonus for polearms still applies for monsters! */
@@ -1608,6 +1597,35 @@ staticfn boolean threatens_dmgtype(int adtyp)
     if (uswapwep && uswapwep->oartifact && attacks(adtyp, uswapwep))
         return TRUE;
     return FALSE;
+}
+
+/* Return the armor bonus of a piece of armor: the amount by which it directly
+   lowers the AC of the wearer */
+int
+armor_bonus(struct monst *mon, struct obj *armor)
+{
+    int bon = 0;
+    if (!armor) {
+        impossible("armor_bonus was passed a null obj");
+        return 0;
+    }
+    /* start with its base AC value
+     (includes spe and erosion) */
+    bon -= ARM_BONUS(armor);
+
+    /* Racial bonuses */
+    if (is_orc(mon->data) && is_orcish_armor(armor->otyp))
+        bon -= 2;
+    else if (is_gnome(mon->data) && is_gnomish_armor(armor->otyp))
+        bon -= 2;
+    else if (is_elf(mon->data) && is_elven_armor(armor->otyp))
+        bon -= 1;
+    else if (is_dwarf(mon->data) && is_dwarvish_armor(armor->otyp))
+        bon -= 1;
+
+    /* appearance bonuses */
+    bon -= misc_bonus(armor);
+    return bon;
 }
 
 /*worn.c*/
