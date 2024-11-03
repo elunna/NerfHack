@@ -1417,7 +1417,7 @@ ck_foulstones(void)
     }
     if (rnd(100) <= fblessed) {
         if (!Deaf && rn2(3))
-            You_hear(Hallucination ? "breaking wind."
+            You_hear(Hallucination ? "a strange wind."
                                     : "a light puff.");
         iter_mons(garlic_breath);
     }
