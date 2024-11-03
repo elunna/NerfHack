@@ -2326,6 +2326,13 @@ create_object(object *o, struct mkroom *croom)
              * the item is lost when this happens. */
             boolean invalid_choice = Is_box(otmp) || otmp->otyp == ICE_BOX;
 
+            /* Kludge for cartomancers and their wishes... */
+            if (o->id == WAN_WISHING) {
+                /* By this point the wand of wishing has already been
+                 * converted to a zapping card of wishing. Increase
+                 * quantity so they get 3. */
+                otmp->quan = 3;
+            }
             if (cobj && !invalid_choice) {
                 otmp = add_to_container(cobj, otmp);
                 cobj->owt = weight(cobj);
