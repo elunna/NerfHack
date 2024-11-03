@@ -1499,14 +1499,15 @@ throwit(struct obj *obj,
 
     /* Handle thrown zap cards here */
     if (obj->otyp == SCR_ZAPPING && u.uen >= CARD_COST) {
-        struct obj *pseudo = mksobj(obj->corpsenm, FALSE, FALSE);
-        pseudo->blessed = pseudo->cursed = 0;
-        pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
-        gc.current_wand = pseudo;
-        weffects(pseudo);
-        pseudo = gc.current_wand;
+        struct obj pseudo;
+        pseudo = cg.zeroobj;
+        pseudo.otyp = obj->corpsenm;
+        pseudo.dknown = pseudo.obroken = 1; /* Don't id it */
+
+        gc.current_wand = &pseudo;
+        weffects(&pseudo);
+        // pseudo = gc.current_wand;
         gc.current_wand = 0;
-        obfree(pseudo, NULL);
         obfree(obj, (struct obj *) 0);
         return;
     }

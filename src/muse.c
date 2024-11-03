@@ -2243,7 +2243,9 @@ use_offensive(struct monst *mtmp)
     case MUSE_WAN_SLOW_MONSTER:
     case MUSE_WAN_POLYMORPH:
     {
-        struct obj* pseudo = NULL;
+        struct obj pseudo;
+        pseudo = cg.zeroobj;
+
         gz.zap_oseen = oseen;
         mzapwand(mtmp, otmp, FALSE);
         gm.m_using = TRUE;
@@ -2252,12 +2254,11 @@ use_offensive(struct monst *mtmp)
 
         /* This is ugly but it's cleaner than the alternative */
         if (zapcard) {
-            pseudo = mksobj(otyp, FALSE, FALSE);
-            pseudo->blessed = pseudo->cursed = 0;
+            pseudo.otyp = otyp;
             gc.current_wand = otmp; /* For wand of striking descriptions */
         }
 
-        mbhit(mtmp, rn1(8, 6), mbhitm, bhito, zapcard ? pseudo : otmp);
+        mbhit(mtmp, rn1(8, 6), mbhitm, bhito, zapcard ? &pseudo : otmp);
         /* note: 'otmp' might have been destroyed (drawbridge destruction) */
         gm.m_using = FALSE;
         if (wonder)
@@ -2265,8 +2266,6 @@ use_offensive(struct monst *mtmp)
 
         if (zapcard) {
             m_useup(mtmp, otmp);
-            /* Cleanup the temp wand */
-            obfree(pseudo, NULL);
             gc.current_wand = 0;
         }
         return 2;

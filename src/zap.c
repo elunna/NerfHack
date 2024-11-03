@@ -2877,14 +2877,14 @@ dozap(void)
             return ECMD_TIME;
         }
 
-        struct obj *pseudo;
+        struct obj pseudo;
+        pseudo = cg.zeroobj;
         if (obj->corpsenm == NON_PM)
             impossible("seffects: SCR_WAND_ZAP has no zap type!");
 
-        pseudo = mksobj(obj->corpsenm, FALSE, FALSE);
-        pseudo->blessed = pseudo->cursed = 0;
-        pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
-        need_dir = objects[pseudo->otyp].oc_dir != NODIR;
+        pseudo.otyp = obj->corpsenm;
+        pseudo.dknown = pseudo.obroken = 1; /* Don't id it */
+        need_dir = objects[pseudo.otyp].oc_dir != NODIR;
 
         if (need_dir && !getdir((char *) 0)) {
             if (!Blind)
@@ -2893,10 +2893,10 @@ dozap(void)
                 || (obj->cursed && !rn2(WAND_BACKZAP_CHANCE)))) {
             if (u.dx || u.dy || u.dz)
                 pline("%s backfires!", The(xname(obj)));
-            if ((damage = zapyourself(pseudo, TRUE)) != 0) {
+            if ((damage = zapyourself(&pseudo, TRUE)) != 0) {
                 char buf[BUFSZ];
 
-                if (pseudo->otyp == WAN_STRIKING) { /* physical damage source */
+                if (pseudo.otyp == WAN_STRIKING) { /* physical damage source */
                     damage = Maybe_Half_Phys(damage);
                 }
                 Sprintf(buf, "zapped %sself with %s",
@@ -2904,12 +2904,10 @@ dozap(void)
                 losehp(damage, buf, NO_KILLER_PREFIX);
             }
         } else {
-            gc.current_wand = pseudo;
-            weffects(pseudo);
-            pseudo = gc.current_wand;
+            gc.current_wand = &pseudo;
+            weffects(&pseudo);
             gc.current_wand = 0;
         }
-        obfree(pseudo, NULL);
         useup(obj);
         u.uen -= CARD_COST;
         return 1;

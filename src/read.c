@@ -1742,7 +1742,9 @@ staticfn boolean
 seffect_zapping(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
-    struct obj *pseudo;
+    struct obj pseudo;
+    pseudo = cg.zeroobj;
+
     if (sobj->corpsenm == NON_PM) {
 	    impossible("seffects: SCR_WAND_ZAP has no zap type!");
         return FALSE;
@@ -1752,21 +1754,17 @@ seffect_zapping(struct obj **sobjp)
         sobj->in_use = FALSE;
         return FALSE;
     }
+    pseudo.otyp = sobj->corpsenm;
+    pseudo.dknown = pseudo.obroken = 1; /* Don't id it */
 
-    pseudo = mksobj(sobj->corpsenm, FALSE, FALSE);
-    pseudo->blessed = pseudo->cursed = 0;
-    pseudo->dknown = pseudo->obroken = 1; /* Don't id it */
-
-    if (!(objects[pseudo->otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
+    if (!(objects[pseudo.otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
         if (!Blind)
             pline("%s glows and fades.", The(xname(sobj)));
     } else {
-        gc.current_wand = pseudo;
-        weffects(pseudo);
-        pseudo = gc.current_wand;
+        gc.current_wand = &pseudo;
+        weffects(&pseudo);
         gc.current_wand = 0;
     }
-    obfree(pseudo, NULL);
     return TRUE;
 }
 

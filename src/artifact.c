@@ -2560,20 +2560,17 @@ arti_invoke(struct obj *obj)
             }
             break;
         case LIGHTNING_BOLT: {
-            struct obj* pseudo = mksobj(WAN_LIGHTNING, FALSE, FALSE);
-            pseudo->blessed = pseudo->cursed = 0;
-            /* type is a "spell of lightning bolt" which doesn't actually
-             * exist: 10 + AD_ELEC - 1 */
+            struct obj pseudo;
+            pseudo = cg.zeroobj;
+            pseudo.otyp = WAN_LIGHTNING;
+
             if (!getdir(NULL) || (!u.dx && !u.dy && !u.dz)) {
-                int damage = zapyourself(pseudo, TRUE);
-                if (damage > 0) {
+                int damage = zapyourself(&pseudo, TRUE);
+                if (damage > 0)
                     losehp(damage, "struck by lightning", NO_KILLER_PREFIX);
-                }
             } else {
-                /* don't use weffects - we want higher damage than that */
                 buzz(ZT_SPELL(ZT_LIGHTNING), 8, u.ux, u.uy, u.dx, u.dy);
             }
-            obfree(pseudo, NULL);
             break;
         }
         case BLINDING_RAY:
