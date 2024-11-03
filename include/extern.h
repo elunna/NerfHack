@@ -1549,6 +1549,11 @@ extern int gazemu(struct monst *, struct attack *) NONNULLARG12;
 extern void mdamageu(struct monst *, int) NONNULLARG1;
 extern int could_seduce(struct monst *, struct monst *, struct attack *) NONNULLARG12;
 extern int doseduce(struct monst *) NONNULLARG1;
+extern boolean mon_avoiding_this_attack(struct monst *, int) NONNULLARG1;
+/* extern boolean ranged_attk_assessed(struct monst *mtmp,
+                             boolean (*assessfunct)(struct monst *, int)) NONNULLARG1;
+*/
+extern boolean ranged_attk_available(struct monst *mtmp) NONNULLARG1;
 extern void piercer_hit(struct monst *, struct monst *);
 
 /* ### minion.c ### */

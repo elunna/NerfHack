@@ -1006,7 +1006,8 @@ dochug(struct monst *mtmp)
                 return 0;
             /* Monsters can move and then shoot on same turn;
                our hero can't.  Is that fair? */
-            if (!nearby && (ranged_attk(mdat)
+            if (!nearby
+                && (ranged_attk_available(mtmp)
                             || attacktype(mdat, AT_WEAP)
                             || find_offensive(mtmp)))
                 break;
@@ -1245,7 +1246,7 @@ m_balks_at_approaching(struct monst *mtmp)
         return TRUE;
 
     /* can attack from distance, and hp loss or attack not used */
-    if (ranged_attk(mtmp->data)
+    if (ranged_attk_available(mtmp)
         && ((mtmp->mhp < (mtmp->mhpmax + 1) / 4)
             || !mtmp->mspec_used)) {
         /* Most breathing monsters prefer melee more often:

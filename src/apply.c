@@ -13,6 +13,7 @@ staticfn void use_whistle(struct obj *);
 staticfn void use_magic_whistle(struct obj *);
 staticfn void magic_whistled(struct obj *);
 staticfn int use_leash(struct obj *);
+staticfn void use_leash_core(struct obj *, struct monst *, coord *, int);
 staticfn boolean mleashed_next2u(struct monst *);
 staticfn int use_mirror(struct obj *);
 staticfn void use_bell(struct obj **);
@@ -847,13 +848,11 @@ leashable(struct monst *mtmp)
                        && (!nolimbs(mtmp->data) || has_head(mtmp->data)));
 }
 
-/* ARGSUSED */
 staticfn int
 use_leash(struct obj *obj)
 {
     coord cc;
     struct monst *mtmp;
-    int spotmon;
 
     if (u.uswallow) {
         /* if the leash isn't in use, assume we're trying to leash
@@ -884,8 +883,8 @@ use_leash(struct obj *obj)
     if (u_at(cc.x, cc.y)) {
         if (u.usteed && u.dz > 0) {
             mtmp = u.usteed;
-            spotmon = 1;
-            goto got_target;
+            use_leash_core(obj, mtmp, &cc, 1);
+            return ECMD_TIME;
         }
         pline("Leash yourself?  Very funny...");
         return ECMD_OK;
@@ -901,16 +900,20 @@ use_leash(struct obj *obj)
         return ECMD_TIME;
     }
 
-    spotmon = canspotmon(mtmp);
- got_target:
+    use_leash_core(obj, mtmp, &cc, canspotmon(mtmp));
+    return ECMD_TIME;
+}
 
-    if (!spotmon && !glyph_is_invisible(levl[cc.x][cc.y].glyph)) {
+staticfn void
+use_leash_core(struct obj *obj, struct monst *mtmp, coord *cc, int spotmon)
+{
+    if (!spotmon && !glyph_is_invisible(levl[cc->x][cc->y].glyph)) {
         /* for the unleash case, we don't verify whether this unseen
            monster is the creature attached to the current leash */
         You("fail to %sleash something.", obj->leashmon ? "un" : "");
         /* trying again will work provided the monster is tame
            (and also that it doesn't change location by retry time) */
-        map_invisible(cc.x, cc.y);
+        map_invisible(cc->x, cc->y);
     } else if (!mtmp->mtame) {
         pline("%s %s leashed!", Monnam(mtmp),
               (!obj->leashmon) ? "cannot be" : "is not");
@@ -928,7 +931,7 @@ use_leash(struct obj *obj)
             char lmonbuf[BUFSZ];
             char *lmonnam = l_monnam(mtmp);
 
-            if (cc.x != mtmp->mx || cc.y != mtmp->my) {
+            if (cc->x != mtmp->mx || cc->y != mtmp->my) {
                 Sprintf(lmonbuf, "%s tail", s_suffix(lmonnam));
                 lmonnam = lmonbuf;
             }
@@ -957,7 +960,6 @@ use_leash(struct obj *obj)
                 spotmon ? y_monnam(mtmp) : l_monnam(mtmp));
         }
     }
-    return ECMD_TIME;
 }
 
 /* assuming mtmp->mleashed has been checked */
