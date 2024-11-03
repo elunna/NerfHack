@@ -4521,7 +4521,7 @@
      * Most of the stats were pulled from THEM.
      * */
     MON(NAMS("merman", "mermaid", "merfolk"), S_EEL,
-        LVL(9, 15, 4, 10, -10), (G_GENO | G_SGROUP | 1),
+        LVL(9, 15, 4, 10, -10), (G_GENO | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
           ATTK(AT_WEAP, AD_PHYS, 2, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
