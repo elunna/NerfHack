@@ -708,10 +708,10 @@ GLOVES("rogue's gloves", "fingerless gloves",
  * HI_METAL or CLR_BLACK.  All have shuffled descriptions.
  */
 GLOVES("leather gloves", "old gloves",
-       0, 0,        0, 16, 1, 10,  8, 9, 0,  LEATHER, HI_LEATHER,
+       0, 0,        0, 16, 1, 10,  8, 10, 0,  LEATHER, HI_LEATHER,
                                                         LEATHER_GLOVES),
 GLOVES("bronze gauntlets", "falconry gloves",
-       0, 0,        0, 12, 1, 30, 30, 8, 0,  COPPER, HI_COPPER,
+       0, 0,        0, 12, 1, 30, 30, 9, 0,  COPPER, HI_COPPER,
                                                     BRONZE_GAUNTLETS),
 GLOVES("gauntlets of fumbling", "padded gloves",
        0, 1, FUMBLING,  8, 1, 10, 50, 9, 0,  LEATHER, HI_LEATHER,
