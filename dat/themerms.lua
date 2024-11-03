@@ -1181,6 +1181,7 @@ xxxx----xx----xxxx]], contents=function(m)
    end
 },
 
+--[=[
    -- Swimming pool
    {
       mindiff = 5,
@@ -1194,7 +1195,6 @@ xxxx----xx----xxxx]], contents=function(m)
             for i=1,nmonsters do
                des.monster(';')
             end
-            --[=[
             -- sunken treasure
             if percent(50) then
                des.object({ id='chest', coord=poolarea:rndcoord(1),
@@ -1205,11 +1205,10 @@ xxxx----xx----xxxx]], contents=function(m)
                   des.object({ id = "gold piece", quantity = d(80, 5) })
                end })
             end
-            --]=]
          end })
       end
    },
-
+ --]=]
 
    -- Anti swimming pool
    {
