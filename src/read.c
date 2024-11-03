@@ -2099,6 +2099,8 @@ seffect_cloning(struct obj **sobjp)
         if (otmp2->otyp == WAN_WISHING) {
             otmp2->otyp = WAN_WONDER;
             otmp2->spe = rn1(10, 15);
+        } else if (otmp2->otyp == SCR_ZAPPING && otmp2->corpsenm == WAN_WISHING) {
+            otmp2->corpsenm = WAN_WONDER;
         } else if (otmp2->otyp == MAGIC_LAMP) {
             otmp2->otyp = OIL_LAMP;
         } else if (otmp2->otyp == SCR_CLONING) {
