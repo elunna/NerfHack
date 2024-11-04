@@ -965,6 +965,9 @@ u_init_race(void)
         objects[POT_VAMPIRE_BLOOD].oc_prob = 40;
         objects[POT_BLOOD].oc_prob = 40;
 
+        /* Allow vampires to tame familiars */
+        mons[PM_FAMILIAR].mflags2 |= M2_DOMESTIC;
+
         /* Vampires start off with gods not as pleased, luck penalty */
         adjalign(-5);
         change_luck(-1);
