@@ -1201,6 +1201,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
         return;
 
     if (levl[x][y].typ != ROOM
+        && levl[x][y].typ != GRASS
         && levl[x][y].typ != TREE
         && levl[x][y].typ != GRAVE
         && levl[x][y].typ != LAVAPOOL)

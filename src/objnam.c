@@ -3867,6 +3867,11 @@ wizterrainwish(struct _readobjnam_data *d)
         set_wallprop_from_str(bp);
         pline("A tree.");
         madeterrain = TRUE;
+    } else if (!BSTRCMPI(bp, p - 5, "grass")) {
+        lev->typ = GRASS;
+        lev->flags = 0;
+        pline("Some grass.");
+        madeterrain = TRUE;
     } else if (!BSTRCMPI(bp, p - 4, "bars")) {
         lev->typ = IRONBARS;
         lev->flags = 0;

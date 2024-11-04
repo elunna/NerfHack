@@ -120,6 +120,7 @@ start: Blank
         S_giant: \032
         S_gnome: \032
         S_golem: \032
+				S_grass: \032
         S_grave: \032
         S_gremlin: \032
         S_hbeam: \032
@@ -272,6 +273,7 @@ start: IBMgraphics
 	S_toilet: \xf4			# meta-t, integral top half
 	S_pool: \xf7			# meta-w, approx. equals
 	S_ice: \xfa			# meta-z, centered dot
+	S_grass: \xfa			# meta-z, centered dot
 	S_lava: \xf7			# meta-w, approx. equals
 	S_lavawall: \xf7		# meta-w, approx. equals
 	S_vodbridge: \xfa		# meta-z, centered dot

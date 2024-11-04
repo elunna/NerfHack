@@ -363,6 +363,8 @@ static const struct {
                 { 'W', WATER },
                 { 'T', TREE },
                 { 'F', IRONBARS }, /* Fe = iron */
+                { ',', GRASS },
+                { 'g', GRASS },
                 { 'x', MAX_TYPE }, /* "see-through" */
                 { 'B', CROSSWALL }, /* hack: boundary location */
                 { 'w', MATCH_WALL }, /* IS_STWALL() */

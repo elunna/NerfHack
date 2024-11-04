@@ -2368,6 +2368,9 @@ back_to_glyph(coordxy x, coordxy y)
     case ICE:
         idx = S_ice;
         break;
+     case GRASS:
+        idx = S_grass;
+        break;
     case AIR:
         idx = S_air;
         break;
@@ -2514,6 +2517,9 @@ get_bkglyph_and_framecolor(
            break;
         case ICE:
            idx = S_ice;
+           break;
+        case GRASS:
+           idx = S_grass;
            break;
         case AIR:
            idx = S_air;
@@ -3187,7 +3193,7 @@ static const char *const type_names[MAX_TYPE] = {
     "SDOOR", "SCORR", "POOL", "MOAT", "WATER", "DRAWBRIDGE_UP", "LAVAPOOL",
     "LAVAWALL",
     "IRON_BARS", "DOOR", "CORR", "ROOM", "STAIRS", "LADDER", "FOUNTAIN",
-    "FORGE", "THRONE", "SINK", "TOILET", "GRAVE", "ALTAR", "ICE",
+    "FORGE", "THRONE", "SINK", "TOILET", "GRAVE", "ALTAR", "ICE", "GRASS", 
     "DRAWBRIDGE_DOWN", "AIR", "CLOUD"
 };
 

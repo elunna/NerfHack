@@ -910,6 +910,7 @@ somexyspace(struct mkroom* croom, coord *c)
         okay = somexy(croom, c) && isok(c->x, c->y) && !occupied(c->x, c->y)
             && (levl[c->x][c->y].typ == ROOM
                 || levl[c->x][c->y].typ == CORR
+                || levl[c->x][c->y].typ == GRASS
                 || levl[c->x][c->y].typ == ICE);
     } while (trycnt++ < 100 && !okay);
     return okay;
@@ -1194,6 +1195,9 @@ cmap_to_type(int sym)
         break;
     case S_ice:
         typ = ICE;
+        break;
+    case S_grass:
+        typ = GRASS;
         break;
     case S_lava:
         typ = LAVAPOOL;

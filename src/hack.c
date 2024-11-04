@@ -3906,7 +3906,7 @@ lookaround(void)
             /* more uninteresting terrain */
             if (IS_ROCK(levl[x][y].typ) || levl[x][y].typ == ROOM
                 || IS_AIR(levl[x][y].typ) || levl[x][y].typ == GRAVE
-                || levl[x][y].typ == ICE) {
+                || levl[x][y].typ == ICE || IS_GRASS(levl[x][y].typ)) {
                 continue;
             } else if (closed_door(x, y) || (mtmp && is_door_mappear(mtmp))) {
                 /* a closed door? */

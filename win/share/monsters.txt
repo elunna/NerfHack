@@ -9236,7 +9236,7 @@ Z = (195, 195, 195)
   ..LA.......RL...
   LLA........ALL..
 }
-# tile 48. (arch-vile,female)
+# tile 481. (arch-vile,female)
 {
   .LH...........L.
   HH...........AH.

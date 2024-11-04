@@ -1750,7 +1750,8 @@ make_grave(coordxy x, coordxy y, const char *str)
     char buf[BUFSZ];
 
     /* Can we put a grave here? */
-    if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRAVE) || t_at(x, y))
+    if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRASS
+         && levl[x][y].typ != GRAVE) || t_at(x, y))
         return;
     /* Make the grave */
     if (!set_levltyp(x, y, GRAVE))

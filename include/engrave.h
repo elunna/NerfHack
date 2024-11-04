@@ -48,6 +48,7 @@ struct engr {
     (levl[(x)][(y)].typ == CORR         \
      || levl[(x)][(y)].typ == SCORR     \
      || levl[(x)][(y)].typ == ICE       \
+     || levl[(x)][(y)].typ == GRASS     \
      || levl[(x)][(y)].typ == ROOM )
 
 #endif /* ENGRAVE_H */
