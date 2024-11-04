@@ -827,7 +827,7 @@ mattacku(struct monst *mtmp)
                     /* note that m_monnam() overrides hallucination, which is
                        what we want when message is from mtmp's perspective */
                     if (gy.youmonst.data->mlet == S_EEL
-                        || u.umonnum == PM_TRAPPER)
+                        || u.umonnum == PM_TRAPPER || !obj)
                         pline(
                              "Wait, %s!  There's a hidden %s named %s there!",
                               m_monnam(mtmp),

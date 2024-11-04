@@ -5348,10 +5348,12 @@ hideunder(struct monst *mtmp)
                    && touch_petrifies(&mons[otmp->corpsenm]))
                 otmp = otmp->nexthere;
             if (otmp != 0 || ((mtmp == &gy.youmonst) ? Stone_resistance
-                                                     : resists_ston(mtmp)))
+                                                     : resists_ston(mtmp))) {
                 undetected = TRUE;
-            if (seeit) /*&& (!is_pool(x, y) || (Underwater && distu(x, y) <= 2))*/
-                seenobj = ansimpleoname(otmp);
+
+                if (seeit)
+                    seenobj = ansimpleoname(otmp);
+            }
         }
     }
 
@@ -7024,7 +7026,7 @@ cham_depth_appropriate(struct monst *mon)
  *
  * Unicorn are handled a little differently. Because their horns
  * decrease with unicorn kills, we'll handle the drop when the horn
- * crumbles. Otherwise, the player can get screwed out of their first 
+ * crumbles. Otherwise, the player can get screwed out of their first
  * guaranteed horn and we don't want that...
  */
 staticfn boolean
