@@ -1390,7 +1390,7 @@ mon_break_armor(struct monst *mon, boolean polyspot)
 /* bias a monster's preferences towards armor that has special benefits.
  * Adapted from EvilHack.
  */
-staticfn int
+int
 extra_pref(struct monst *mon, struct obj *obj)
 {
     struct obj *old;
