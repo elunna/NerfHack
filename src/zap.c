@@ -5469,6 +5469,7 @@ burn_floor_objects(
     /* This also ignites floor items, but does not change cnt
        because they weren't consumed. */
     ignite_items(svl.level.objects[x][y]);
+    wipe_blood(x, y); /* Burn off any blood */
     return cnt;
 }
 
