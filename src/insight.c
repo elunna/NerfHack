@@ -1927,7 +1927,7 @@ attributes_enlightenment(
         if (uright && uright->otyp == RIN_PROTECTION)
             prot += uright->spe;
         if (uamul && uamul->otyp == AMULET_OF_GUARDING)
-            prot += 2;
+            prot += uamul->spe;
         if (HProtection & INTRINSIC)
             prot += u.ublessed;
         prot += u.uspellprot;

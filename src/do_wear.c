@@ -28,7 +28,7 @@ staticfn int Cloak_on(void);
 staticfn int Helmet_on(void);
 staticfn int Shield_on(void);
 staticfn int Shirt_on(void);
-staticfn void Amulet_on(void);
+
 staticfn void learnring(struct obj *, boolean);
 staticfn void adjust_attrib(struct obj *, int, int);
 staticfn void Ring_off_or_gone(struct obj *, boolean);
@@ -1116,7 +1116,7 @@ Armor_gone(void)
     return 0;
 }
 
-staticfn void
+void
 Amulet_on(void)
 {
     /* make sure amulet isn't wielded; can't use remove_worn_item()
@@ -1221,6 +1221,7 @@ Amulet_on(void)
     case AMULET_OF_GUARDING:
         makeknown(AMULET_OF_GUARDING);
         find_ac();
+        uamul->known = 1;
         break;
     case AMULET_OF_YENDOR:
         break;
@@ -2647,7 +2648,7 @@ find_ac(void)
     if (uright && uright->otyp == RIN_PROTECTION)
         uac -= uright->spe;
     if (uamul && uamul->otyp == AMULET_OF_GUARDING)
-        uac -= 2; /* fixed amount; main benefit is to MC */
+        uac -= uamul->spe; /* chargable; main benefit is to MC */
 
     /* Extra skill for shield */
     if (uarms) {

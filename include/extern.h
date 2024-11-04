@@ -733,6 +733,7 @@ extern int Shield_off(void);
 extern int Shirt_off(void);
 extern void dragon_armor_handling(struct obj *, boolean, boolean);
 extern void Amulet_off(void);
+extern void Amulet_on(void);
 extern void Ring_on(struct obj *) NONNULLARG1;
 extern void Ring_off(struct obj *) NONNULLARG1;
 extern void Ring_gone(struct obj *) NONNULLARG1;

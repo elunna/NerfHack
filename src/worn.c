@@ -712,7 +712,7 @@ find_mac(struct monst *mon)
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags) {
             if (obj->otyp == AMULET_OF_GUARDING)
-                base -= 2; /* fixed amount, not impacted by erosion */
+                base -= obj->spe; /* not impacted by erosion */
             else
                 base -= ARM_BONUS(obj);
             /* since ARM_BONUS is positive, subtracting it increases AC */

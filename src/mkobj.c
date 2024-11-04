@@ -27,6 +27,7 @@ staticfn void check_contained(struct obj *, const char *);
 staticfn void check_glob(struct obj *, const char *);
 staticfn void sanity_check_worn(struct obj *);
 staticfn void init_oextra(struct oextra *);
+staticfn void init_charging(struct obj *);
 
 struct icp {
     int iprob;   /* probability of an item type */
@@ -1101,6 +1102,8 @@ mksobj_init(struct obj *otmp, boolean artif)
                 || otmp->otyp == AMULET_OF_CHANGE
                 || otmp->otyp == AMULET_OF_RESTFUL_SLEEP)) {
             curse(otmp);
+        } else if (otmp->otyp == AMULET_OF_GUARDING) {
+            init_charging(otmp);
         } else
             blessorcurse(otmp, 10);
         break;
@@ -1181,29 +1184,7 @@ mksobj_init(struct obj *otmp, boolean artif)
         break;
     case RING_CLASS:
         if (objects[otmp->otyp].oc_charged) {
-            schar multiplier = 1;
-            blessorcurse(otmp, 3);
-            /* This multiplier formula is from FIQHack:
-             * Beatitude |    +1 |  0 |    -1
-             * Blessed:      94%   2%      4%
-             * Uncursed:     67%   2%     31%
-             * Cursed:       13%   2%     85%
-             */
-            if (rn2(10)) {
-                /* For 81% of rings that were already cursed, and for 40.5%
-                 * of rings that were uncursed, make enchantment negative. */
-                if (rn2(10) && (otmp->cursed || (!bcsign(otmp) && !rn2(3))))
-                    multiplier = -1;
-            } else if (!rn2(5)) {
-                /* 2% of all charged rings are +0 */
-                multiplier = 0;
-            }  if (!rn2(2)) {
-                /* 4% of all charged rings are made negative, even blessed */
-                multiplier = -1;
-            }
-            /* use rne(2) to get higher values; nobody really likes
-             * low-enchanted rings that much. */
-            otmp->spe = rne(2) * multiplier;
+            init_charging(otmp);
         } else if (rn2(10) && (otmp->otyp == RIN_TELEPORTATION
                                || otmp->otyp == RIN_POLYMORPH
                                || otmp->otyp == RIN_AGGRAVATE_MONSTER
@@ -3983,4 +3964,31 @@ mk_zapcard(void)
     return otyp;
 }
 
+staticfn void
+init_charging(struct obj *otmp)
+{
+    schar multiplier = 1;
+    blessorcurse(otmp, 3);
+    /* This multiplier formula is from FIQHack:
+        * Beatitude |    +1 |  0 |    -1
+        * Blessed:      94%   2%      4%
+        * Uncursed:     67%   2%     31%
+        * Cursed:       13%   2%     85%
+        */
+    if (rn2(10)) {
+        /* For 81% of rings that were already cursed, and for 40.5%
+            * of rings that were uncursed, make enchantment negative. */
+        if (rn2(10) && (otmp->cursed || (!bcsign(otmp) && !rn2(3))))
+            multiplier = -1;
+    } else if (!rn2(5)) {
+        /* 2% of all charged rings are +0 */
+        multiplier = 0;
+    }  if (!rn2(2)) {
+        /* 4% of all charged rings are made negative, even blessed */
+        multiplier = -1;
+    }
+    /* use rne(2) to get higher values; nobody really likes
+        * low-enchanted rings that much. */
+    otmp->spe = rne(2) * multiplier;
+}
 /*mkobj.c*/

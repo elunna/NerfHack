@@ -879,7 +879,7 @@ RING("protection from shape changers", "shiny",
 /* amulets ... - THE Amulet comes last because it is special */
 #define AMULET(name,desc,power,prob,sn) \
     OBJECT(OBJ(name, desc),                                            \
-           BITS(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, P_NONE, IRON),        \
+           BITS(0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, P_NONE, IRON),        \
            power, AMULET_CLASS, prob, 0, 20, 150, 0, 0, 0, 0, 20, HI_METAL, sn)
 AMULET("amulet of ESP",                "circular", TELEPAT, 120,
                                                         AMULET_OF_ESP),

@@ -1456,6 +1456,7 @@ doname_base(
              */
                  || ((!known || !objects[obj->otyp].oc_charged
                       || obj->oclass == ARMOR_CLASS
+                      || obj->oclass == AMULET_CLASS
                       || obj->oclass == RING_CLASS)
 #ifdef MAIL_STRUCTURES
                      && obj->otyp != SCR_MAIL
@@ -1495,6 +1496,8 @@ doname_base(
         add_erosion_words(obj, prefix);
         if (obj->owornmask & W_AMUL)
             Concat(bp, 0, " (being worn)");
+        if (known && obj->otyp == AMULET_OF_GUARDING)
+            Sprintf(eos(prefix), "%+d ", obj->spe); /* sitoa(obj->spe)+" " */
         break;
     case ARMOR_CLASS:
         if (obj->owornmask & W_ARMOR) {
@@ -5246,6 +5249,7 @@ readobjnam(char *bp, struct obj *no_wish)
         ; /* no restrictions except SPE_LIM */
     } else if (d.oclass == ARMOR_CLASS || d.oclass == WEAPON_CLASS
                || is_weptool(d.otmp)
+               || d.typ == AMULET_OF_GUARDING
                || (d.oclass == RING_CLASS && objects[d.typ].oc_charged)) {
         if (d.spe > rnd(5) && d.spe > d.otmp->spe)
             d.spe = 0;

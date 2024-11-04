@@ -847,40 +847,51 @@ recharge(struct obj *obj, int curse_bless)
 #endif
         }
 
-    } else if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged) {
+    } else if ((obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged)
+            || obj->otyp == AMULET_OF_GUARDING) {
         /* charging does not affect ring's curse/bless status */
         int s = is_blessed ? rnd(3) : is_cursed ? -rnd(2) : 1;
-        boolean is_on = (obj == uleft || obj == uright);
+        boolean isring = obj->oclass == RING_CLASS;
+        boolean is_on = (obj == uleft || obj == uright || obj == uamul);
 
         /* destruction depends on current state, not adjustment */
         if (obj->spe > rn2(6) + 3 || (is_cursed && obj->spe <= -5)) {
             pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
                   otense(obj, "explode"));
-            if (is_on)
-                Ring_gone(obj);
+            if (is_on) {
+                if (isring)
+                    Ring_gone(obj);
+                else
+                    Amulet_off();
+            }
+
             s = rnd(3 * abs(obj->spe)); /* amount of damage */
             useup(obj), obj = 0;
-            losehp(Maybe_Half_Phys(s), "exploding ring", KILLED_BY_AN);
+            losehp(Maybe_Half_Phys(s), "exploding jewelery", KILLED_BY_AN);
         } else {
-            long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
+            long mask = is_on ? (obj == uleft ? LEFT_RING
+                                 : obj == uright ? RIGHT_RING : W_AMUL) : 0L;
 
             pline("%s spins %sclockwise for a moment.", Yname2(obj),
                   s < 0 ? "counter" : "");
             if (s < 0)
                 costly_alteration(obj, COST_DECHNT);
             /* cause attributes and/or properties to be updated */
+            if (is_on) {
+                if (isring)
+                    Ring_off(obj);
+                else
+                    Amulet_off();
+            }
+            obj->spe += s; /* update the accessory while it's off */
             if (is_on)
-                Ring_off(obj);
-            obj->spe += s; /* update the ring while it's off */
-            if (is_on)
-                setworn(obj, mask), Ring_on(obj);
+                setworn(obj, mask), isring ? Ring_on(obj) : Amulet_on();
             /* oartifact: if a touch-sensitive artifact ring is
                ever created the above will need to be revised  */
             /* update shop bill to reflect new higher price */
             if (s > 0 && obj->unpaid)
                 alter_cost(obj, 0L);
         }
-
     } else if (obj->oclass == TOOL_CLASS) {
         int rechrg = (int) obj->recharged;
 

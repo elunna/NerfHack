@@ -2541,10 +2541,7 @@ eataccessory(struct obj *otmp)
         case AMULET_OF_GUARDING:
             accessory_has_effect(otmp);
             HProtection |= FROMOUTSIDE;
-            u.ublessed = bounded_increase(u.ublessed,
-                                          (typ == RIN_PROTECTION) ? otmp->spe
-                                           : 2, /* fixed amount for amulet */
-                                          typ);
+            u.ublessed = bounded_increase(u.ublessed, otmp->spe, typ);
             disp.botl = TRUE;
             break;
         case RIN_FREE_ACTION:
