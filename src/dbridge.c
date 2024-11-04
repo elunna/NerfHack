@@ -97,6 +97,14 @@ is_ice(coordxy x, coordxy y)
 }
 
 boolean
+is_grass(coordxy x, coordxy y)
+{
+    if (!isok(x, y))
+        return FALSE;
+    return levl[x][y].typ == GRASS;
+}
+
+boolean
 is_moat(coordxy x, coordxy y)
 {
     schar ltyp;

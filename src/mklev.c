@@ -23,6 +23,8 @@ staticfn void mkinvpos(coordxy, coordxy, int);
 staticfn int mkinvk_check_wall(coordxy x, coordxy y);
 staticfn void mk_knox_portal(coordxy, coordxy);
 staticfn void makevtele(void);
+staticfn void cellular(int, int);
+staticfn void mkgrass(void);
 staticfn void fill_ordinary_room(struct mkroom *, boolean) NONNULLARG1;
 staticfn void themerooms_post_level_generate(void);
 staticfn void makelevel(void);
@@ -733,6 +735,71 @@ makevtele(void)
     makeniche(TELEP_TRAP);
 }
 
+void
+cellular(int chance, int maxpasses)
+{
+    int x, y, x2, y2;
+    boolean cells[COLNO][ROWNO];
+    int passes, wallcnt;
+
+    /* Initial pass; randomly fill level. */
+    for (x = 0; x < COLNO; x++) {
+        for (y = 0; y < ROWNO; y++) {
+            if (rn2(100) < chance)
+                levl[x][y].bk = 1;
+            else
+                levl[x][y].bk = 0;
+            cells[x][y] = 0;
+        }
+    }
+
+    /* Cellular automata */
+    for (passes = 0; passes < maxpasses; passes++) {
+        for (x = 2; x < COLNO - 2; x++) {
+            for (y = 2; y < ROWNO - 2; y++) {
+                wallcnt = 0;
+                for (x2 = x - 1; x2 <= x + 1; x2++) {
+                    for (y2 = y - 1; y2 <= y + 1; y2++) {
+                        if (levl[x2][y2].bk)
+                            wallcnt += 1;
+                    }
+                }
+                if (wallcnt >= 5)
+                    cells[x][y] = 1;
+                else
+                    cells[x][y] = 0;
+            }
+        }
+        /* Transfer array */
+        for (x = 0; x < COLNO; x++) {
+            for (y = 0; y < ROWNO; y++)
+                levl[x][y].bk = cells[x][y];
+        }
+    }
+}
+
+staticfn void
+mkgrass(void)
+{
+    int x, y;
+
+    int freq = max(30, 60 - (3 * depth(&u.uz)));
+    int passes = max(2, 8 - depth(&u.uz));
+    cellular(freq, passes);
+
+    for (x = 0; x < COLNO; x++) {
+        for (y = 0; y < ROWNO; y++) {
+            if (levl[x][y].bk) {
+                if (levl[x][y].typ == ROOM) {
+                    levl[x][y].typ = GRASS;
+                }
+            }
+            levl[x][y].bk = 0;
+        }
+    }
+
+}
+
 /* count the tracked features (sinks, fountains) present on the level */
 void
 count_level_features(void)
@@ -1286,6 +1353,10 @@ makelevel(void)
             do_mkroom(DRAGONLAIR);
 
  skip0:
+         /* make grass */
+        if (depth(&u.uz) <= 10 || !rn2(5))
+            mkgrass();
+
         prevstairs = gs.stairs; /* used to test for place_branch() success */
         /* Place multi-dungeon branch. */
         place_branch(branchp, 0, 0);

@@ -958,7 +958,7 @@ zombie_can_dig(coordxy x, coordxy y)
 
         if ((ttmp = t_at(x, y)) != 0)
             return FALSE;
-        if (typ == ROOM || typ == CORR || typ == GRAVE)
+        if (typ == ROOM || typ == CORR || typ == GRAVE || typ == GRASS)
             return TRUE;
     }
     return FALSE;
@@ -4530,6 +4530,16 @@ bhit(
             /* stop the bolt here; it takes a lot of energy to destroy trees */
             range = 0;
             break;
+        } else if (typ == GRASS &&
+                 ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
+                   && obj->otyp == SPE_FIRE_BOLT))) {
+            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                pline_The("grass burns up!");
+            else if (!Deaf)
+                You_hear("whooshing and crackling.");
+            levl[gb.bhitpos.x][gb.bhitpos.y].typ = ROOM;
+            newsym(gb.bhitpos.x, gb.bhitpos.y);
+            maybe_unhide_at(gb.bhitpos.x, gb.bhitpos.y);
         } else if (typ == FOUNTAIN &&
                    ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                      && obj->otyp == SPE_FIRE_BOLT))) {
@@ -6180,6 +6190,7 @@ zap_over_floor(
                 pline("The grass is scorched away!");
                 newsym(x, y);
             }
+            maybe_unhide_at(x, y);
         }
         break; /* ZT_FIRE */
 
@@ -6328,6 +6339,13 @@ zap_over_floor(
                         *shopdamage = TRUE;
                 }
             }
+        } else if (IS_GRASS(lev->typ)) {
+            lev->typ = ROOM;
+            if (see_it) {
+                pline_The("grass is dissolved!");
+                newsym(x, y);
+            }
+            maybe_unhide_at(x, y);
         }
         break; /* ZT_ACID */
     case ZT_DEATH:
