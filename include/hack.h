@@ -1415,6 +1415,12 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define TELEDS_ALLOW_DRAG 1
 #define TELEDS_TELEPORT   2
 
+enum concealed_spot_returnflags {
+    NOT_CONCEALABLE_SPOT   = 0x0,
+    CONCEALABLE_BY_TERRAIN = 0x1,
+    CONCEALABLE_BY_OBJECT  = 0x2
+};
+
 /* flags for mktrap() */
 #define MKTRAP_NOFLAGS       0x0U
 #define MKTRAP_SEEN          0x1U /* trap is seen */

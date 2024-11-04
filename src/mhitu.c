@@ -815,7 +815,8 @@ mattacku(struct monst *mtmp)
 
                 if (obj || u.umonnum == PM_TRAPPER
                     || (gy.youmonst.data->mlet == S_EEL
-                        && is_pool(u.ux, u.uy))) {
+                        && is_pool(u.ux, u.uy))
+                    || concealed_spot(u.ux, u.uy)) {
                     int save_spe = 0; /* suppress warning */
 
                     if (obj) {

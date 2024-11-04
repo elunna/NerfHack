@@ -4538,8 +4538,8 @@ bhit(
             else if (!Deaf)
                 You_hear("whooshing and crackling.");
             levl[gb.bhitpos.x][gb.bhitpos.y].typ = ROOM;
-            newsym(gb.bhitpos.x, gb.bhitpos.y);
             maybe_unhide_at(gb.bhitpos.x, gb.bhitpos.y);
+            newsym(gb.bhitpos.x, gb.bhitpos.y);
         } else if (typ == FOUNTAIN &&
                    ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                      && obj->otyp == SPE_FIRE_BOLT))) {
@@ -6186,11 +6186,11 @@ zap_over_floor(
             dryup(x, y, type > 0);
         } else if (IS_GRASS(lev->typ)) {
             lev->typ = ROOM;
+            maybe_unhide_at(x, y);
             if (see_it) {
                 pline("The grass is scorched away!");
                 newsym(x, y);
             }
-            maybe_unhide_at(x, y);
         }
         break; /* ZT_FIRE */
 
@@ -6341,11 +6341,11 @@ zap_over_floor(
             }
         } else if (IS_GRASS(lev->typ)) {
             lev->typ = ROOM;
+            maybe_unhide_at(x, y);
             if (see_it) {
                 pline_The("grass is dissolved!");
                 newsym(x, y);
             }
-            maybe_unhide_at(x, y);
         }
         break; /* ZT_ACID */
     case ZT_DEATH:

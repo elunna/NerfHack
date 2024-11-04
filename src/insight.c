@@ -2195,6 +2195,8 @@ youhiding(boolean via_enlghtmt, /* enlightenment line vs topl message */
 
             if (o)
                 Sprintf(bp, " underneath %s", ansimpleoname(o));
+            else if (concealed_spot(u.ux, u.uy))
+                Sprintf(bp, " under %s", explain_terrain(u.ux, u.uy));
         } else if (is_clinger(gy.youmonst.data) || Flying) {
             /* Flying: 'lurker above' hides on ceiling but doesn't cling */
             Sprintf(bp, " on the %s", ceiling(u.ux, u.uy));

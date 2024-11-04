@@ -175,7 +175,8 @@ sanity_check_single_mon(
             mx = my = 0;
         if (mtmp == u.ustuck)
             impossible("hiding monster stuck to you (%s)", msg);
-        if (m_at(mx, my) == mtmp && hides_under(mptr) && !OBJ_AT(mx, my))
+        if (m_at(mx, my) == mtmp && hides_under(mptr)
+            && !concealed_spot(mx, my))
             impossible("mon hiding under nonexistent obj (%s)", msg);
         if (mptr->mlet == S_EEL
             && !(is_pool(mx, my) && !Is_waterlevel(&u.uz)))
@@ -5296,9 +5297,7 @@ maybe_unhide_at(coordxy x, coordxy y)
     }
 
     if (undetected
-        && ((hides_under(mtmp->data)
-             && (!OBJ_AT(x, y) || trapped
-                 || !can_hide_under_obj(svl.level.objects[x][y])))
+        && ((hides_under(mtmp->data) && (!concealed_spot(x, y) || trapped))
             || (mtmp->data->mlet == S_EEL && !is_pool(x, y))))
         (void) hideunder(mtmp);
 }
@@ -5310,7 +5309,6 @@ boolean
 hideunder(struct monst *mtmp)
 {
     struct trap *t;
-    struct obj *otmp;
     const char *seenmon = (char *) 0, *seenobj = (char *) 0,
                *locomo = (char *) 0;
     int seeit = gi.in_mklev ? 0 : canseemon(mtmp);
@@ -5336,26 +5334,25 @@ hideunder(struct monst *mtmp)
             locomo = "dive";
         }
     } else if (hides_under(mtmp->data)
-               /* hider-underers only hide under objects */
-               && (otmp = svl.level.objects[x][y]) != 0
-               /* most things can be hidden under, but not all */
-               && can_hide_under_obj(otmp)
-               /* pets won't hide under a cursed item or an item of any BUC
-                  state that shares a pile with one or more cursed items */
-               && (!mtmp->mtame || !cursed_object_at(x, y))
-               /* aquatic creatures don't reach here; other swimmers
-                  shouldn't hide beneath underwater objects */
-               && !is_pool_or_lava(x, y)) {
-        if (seeit) /*&& (!is_pool(x, y) || (Underwater && distu(x, y) <= 2))*/
-            seenobj = ansimpleoname(otmp);
-        /* most monsters won't hide under a cockatrice corpse but they
-           can hide under a pile containing more than just such corpses */
-        if (is_u ? !Stone_resistance : !resists_ston(mtmp))
+        /* pets won't hide under a cursed item or an item of any BUC
+           state that shares a pile with one or more cursed items */
+        && (!mtmp->mtame || !cursed_object_at(x, y))) {
+        int concealment = concealed_spot(x, y);
+        if (concealment == CONCEALABLE_BY_TERRAIN) {
+            undetected = TRUE;
+        } else if (concealment == CONCEALABLE_BY_OBJECT) {
+            struct obj *otmp = svl.level.objects[x][y];
+            /* most monsters won't hide under cockatrice corpse but they
+               can hide under a pile containing more than just such corpses */
             while (otmp && otmp->otyp == CORPSE
                    && touch_petrifies(&mons[otmp->corpsenm]))
                 otmp = otmp->nexthere;
-        if (otmp)
-            undetected = TRUE;
+            if (otmp != 0 || ((mtmp == &gy.youmonst) ? Stone_resistance
+                                                     : resists_ston(mtmp)))
+                undetected = TRUE;
+            if (seeit) /*&& (!is_pool(x, y) || (Underwater && distu(x, y) <= 2))*/
+                seenobj = ansimpleoname(otmp);
+        }
     }
 
     if (is_u) {

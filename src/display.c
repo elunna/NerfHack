@@ -2273,7 +2273,21 @@ flush_screen(int cursor_on_u)
 int
 back_to_glyph(coordxy x, coordxy y)
 {
-    int idx, bypass_glyph = NO_GLYPH;
+    int defsym = back_to_defsym(x, y);
+
+    /* 5 altars share one cmap entry, so we need to pick out the actual glyph
+     * here. */
+    if (defsym == S_altar) {
+        return altar_to_glyph(levl[x][y].altarmask);
+    }
+
+    return cmap_to_glyph(defsym);
+}
+
+int
+back_to_defsym(coordxy x, coordxy y)
+{
+    int idx;
     struct rm *ptr = &(levl[x][y]);
     struct stairway *sway;
 
@@ -2351,7 +2365,6 @@ back_to_glyph(coordxy x, coordxy y)
         break;
     case ALTAR:
         idx = S_altar;  /* not really used */
-        bypass_glyph = altar_to_glyph(ptr->altarmask);
         break;
     case GRAVE:
         idx = S_grave;
@@ -2412,8 +2425,7 @@ back_to_glyph(coordxy x, coordxy y)
         idx = S_room;
         break;
     }
-
-    return (bypass_glyph != NO_GLYPH) ? bypass_glyph : cmap_to_glyph(idx);
+    return idx;
 }
 
 /*

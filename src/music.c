@@ -473,6 +473,7 @@ do_earthquake(int force)
                     add_damage(x, y, 0L);
                 break;
             }
+            maybe_unhide_at(x, y);
         }
     /* level.flags.nfountains,nsinks, etc */
     count_level_features();

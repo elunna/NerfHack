@@ -2128,6 +2128,13 @@ not_special:
             || (nix == mtmp->mux && niy == mtmp->muy))
             return m_move_aggress(mtmp, nix, niy);
 
+        /* hiding-under monsters will attack things from their hiding spot but
+         * are less likely to venture out */
+        if (hides_under(ptr) && concealed_spot(mtmp->mx, mtmp->my)
+            && !concealed_spot(nix, niy) && rn2(10)) {
+            return MMOVE_NOTHING;
+        }
+
         if ((info[chi] & ALLOW_MDISP) != 0) {
             struct monst *mtmp2;
             int mstatus;
@@ -2220,6 +2227,39 @@ m_move_aggress(struct monst *mtmp, coordxy x, coordxy y)
             return MMOVE_DIED;
     }
     return MMOVE_DONE;
+}
+
+/* Tell in what ways a hides_under monster can conceal itself at this spot.
+ * Such monsters can hide in grass and under some types of dungeon furniture, as
+ * well as under objects. Return a bitmask of concealed_spot_return flags if it
+ * can conceal itself, or 0 (NOT_CONCEALABLE_SPOT) if a monster can't conceal
+ * itself.
+ */
+int
+concealed_spot(coordxy x, coordxy y)
+{
+    int cflags = NOT_CONCEALABLE_SPOT;
+    struct obj *otmp = svl.level.objects[x][y];
+    if (otmp != 0
+        /* most things can be hidden under, but not all */
+        && can_hide_under_obj(otmp)
+        /* aquatic creatures don't reach here; other swimmers
+           shouldn't hide beneath underwater objects */
+        && !is_pool_or_lava(x, y))
+        cflags |= CONCEALABLE_BY_OBJECT;
+    switch (levl[x][y].typ) {
+    case ALTAR:
+    case FORGE:
+    case FOUNTAIN:
+    case GRASS:
+    case GRAVE:
+    case LADDER:
+    case SINK:
+    case THRONE:
+    case TOILET:
+        cflags |= CONCEALABLE_BY_TERRAIN;
+    }
+    return cflags;
 }
 
 /* returns TRUE if a mon can hide under the obj */

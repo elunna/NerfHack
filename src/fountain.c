@@ -710,6 +710,7 @@ dryup(coordxy x, coordxy y, boolean isyou)
         levl[x][y].blessedftn = 0;
         /* The location is seen if the hero/monster is invisible
            or felt if the hero is blind. */
+        maybe_unhide_at(x, y);
         newsym(x, y);
         if (isyou && in_town(x, y))
             (void) angry_guards(FALSE);
@@ -1083,6 +1084,7 @@ breaksink(coordxy x, coordxy y)
     levl[x][y].looted = 0;
     levl[x][y].blessedftn = 0;
     SET_FOUNTAIN_LOOTED(x, y);
+    maybe_unhide_at(x, y);
     newsym(x, y);
 }
 
@@ -1101,6 +1103,7 @@ breaktoilet(coordxy x, coordxy y)
     levl[x][y].looted = 0;
     levl[x][y].blessedftn = 0;
     SET_FOUNTAIN_LOOTED(x, y);
+    maybe_unhide_at(x, y);
     newsym(x, y);
 
     if (!rn2(3)) {
@@ -1373,6 +1376,7 @@ breakforge(coordxy x, coordxy y)
     levl[x][y].doormask = 0;
     /* replace the forge with lava */
     set_levltyp(x, y, LAVAPOOL); /* updates level.flags.nforges */
+    maybe_unhide_at(x, y);
     newsym(x, y);
 }
 

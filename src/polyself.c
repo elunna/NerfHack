@@ -1860,8 +1860,9 @@ dohide(void)
     if (hides_under(gy.youmonst.data)) {
         long ct = 0L;
         struct obj *otmp, *otop = svl.level.objects[u.ux][u.uy];
+        int concealflags = concealed_spot(u.ux, u.uy);
 
-        if (!otop) {
+        if (concealflags == NOT_CONCEALABLE_SPOT) {
             There("is nothing to hide under here.");
             u.uundetected = 0;
             return ECMD_OK;
@@ -1872,7 +1873,10 @@ dohide(void)
              otmp = otmp->nexthere)
             ct += otmp->quan;
         /* otmp will be Null iff the entire pile consists of 'trice corpses */
-        if (!otmp && !Stone_resistance) {
+        if (!otmp && !Stone_resistance
+            /* hiding in the terrain will supersede even the entire object pile
+             * being trice corpses... */
+            && !(concealed_spot(u.ux, u.uy) & CONCEALABLE_BY_TERRAIN)) {
             char kbuf[BUFSZ];
             const char *corpse_name = cxname(otop);
 
