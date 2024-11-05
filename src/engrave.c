@@ -1155,6 +1155,9 @@ doengrave(void)
         de->oep = (struct engr *) 0;
         de->disprefresh = TRUE;
     }
+    if (de->oep && de->oep->engr_type == BURN)
+        burn_grass(u.ux, u.uy);
+
     /* Something has changed the engraving here */
     if (*de->buf) {
         struct engr *tmp_ep;
