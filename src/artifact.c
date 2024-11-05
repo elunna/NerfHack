@@ -2933,7 +2933,7 @@ Sting_effects(
     /* Make this generic:
         Does the item grant warning and have a hated class?
         */
-    if (!uwep->oartifact)
+    if (!uwep && !uwep->oartifact)
         return;
 
     boolean artiwarns = (artilist[(int) uwep->oartifact].spfx & SPFX_WARN) != 0;
