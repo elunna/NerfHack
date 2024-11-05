@@ -1066,6 +1066,11 @@ doengrave(void)
             de->ret = ECMD_CANCEL;
             goto doengr_exit;
         }
+        else if (is_grass(u.ux, u.uy)) {
+            pline("It's too grassy to write here!");
+            de->ret = ECMD_CANCEL;
+            goto doengr_exit;
+        }
         Strcat(strcpy(de->fbuf, "your "), body_part(FINGERTIP));
         de->writer = de->fbuf;
     } else {
