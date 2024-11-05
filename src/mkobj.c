@@ -50,12 +50,12 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
 static const struct icp cartprobs[] =  { { 8, WEAPON_CLASS },
                                          { 10, ARMOR_CLASS },
                                          { 30, FOOD_CLASS }, /* Double to compensate for less corpse drops */
-                                         { 12, TOOL_CLASS },
+                                         { 8, TOOL_CLASS },
                                          { 8, GEM_CLASS },
                                          { 12, POTION_CLASS },
                                          { 12, SCROLL_CLASS },
                                          { 4, SPBOOK_CLASS },
-                                         /* No WAND_CLASS because of zap card drops */
+                                         { 4, WAND_CLASS }, /* Wands are converted to zap cards */
                                          { 3, RING_CLASS },
                                          { 1, AMULET_CLASS } };
 
