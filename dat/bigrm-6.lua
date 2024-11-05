@@ -30,6 +30,10 @@ des.map([[
 
 des.region(selection.area(01,01,72,17), "lit");
 
+-- Some grass
+local sel = selection.match("."):percentage(2):grow();
+des.replace_terrain({ selection=sel, fromterrain=".", toterrain="g" });
+
 des.stair("up");
 des.stair("down");
 

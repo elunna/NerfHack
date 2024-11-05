@@ -32,6 +32,10 @@ local terrain = { "L", "T", "{", "." };
 local tidx = math.random(1, #terrain);
 des.replace_terrain({ region={00,00, 74,18}, fromterrain="L", toterrain=terrain[tidx] });
 
+-- Some grass
+local sel = selection.match("."):percentage(2):grow();
+des.replace_terrain({ selection=sel, fromterrain=".", toterrain="g" });
+
 des.region(selection.area(01,01,73,17), "lit");
 
 des.stair("up");

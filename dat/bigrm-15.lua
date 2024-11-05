@@ -11,25 +11,25 @@ des.level_flags("mazelevel", "noflip");
 
 des.map([[
                       LLLLLLLLLLLLPPPPPLLPPPIIIIPPLPPPPLLLLLL              
-                     LLLLLLLLLLLLPPPPLLLLPPI........PLLPPPPPLLLL           
-                  LLLLLLLLLLPPPPPPLPPPPPPPPI.......IPPPLLLLLPPLLLL         
-              LLLLLLLLLPPPPPPPPLLPP....................PPPI.PLPLLLL        
-          LLLLLLLLPPPPPPPPPPLLLLPPPI........................PLPPLLLL       
-      LLLLLLLLLPPLPLLLLLLLLLPPPPP..........................IPPLPPLLLL      
-   LLLLLLLLLPPPPLPIIPPPP.IPPPPPP..............................PPPLLLL      
- LLLLLLLLPPPPPLLPPPI.........II..............................PPLPLLLLL     
-LLLLLLPPPPPLLLPPPP...........................................PLPPLLLLL     
-LPPPPLLLLLPPPPP.............................................PPLPPLLLLL     
-P.........................................................IPPLLPPLLLLL     
-LPPPPLLLLLPPPPP.............................................PPLPPLLLLL     
-LLLLLLPPPPPLLLPPPP...........................................PLPPLLLLL     
- LLLLLLLLPPPPPLLPPPI.........II..............................PPLPLLLLL     
-   LLLLLLLLLPPPPLPIIPPPP.IPPPPPP..............................PPPLLLL      
-      LLLLLLLLLPPLPLLLLLLLLLPPPPP..........................IPPLPPLLLL      
-          LLLLLLLLPPPPPPPPPPLLLLPPPI........................PLPPLLLL       
-              LLLLLLLLLPPPPPPPPLLPP....................PPPI.PLPLLLL        
-                  LLLLLLLLLLPPPPPPLPPPPPPPPI.......IPPPLLLLLPPLLLL         
-                     LLLLLLLLLLLLPPPPLLLLPPI........PLLPPPPPLLLL           
+                     LLLLLLLLLLLLPPPPLLLLPPI.,,..,..PLLPPPPPLLLL           
+                  LLLLLLLLLLPPPPPPLPPPPPPPPI,,.,,.,IPPPLLLLLPPLLLL         
+              LLLLLLLLLPPPPPPPPLLPP,,.,,.,.,,......,,..PPPI.PLPLLLL        
+          LLLLLLLLPPPPPPPPPPLLLLPPPI,,...............,,,,,..PLPPLLLL       
+      LLLLLLLLLPPLPLLLLLLLLLPPPPP,,,.....................,,IPPLPPLLLL      
+   LLLLLLLLLPPPPLPIIPPPP,IPPPPPP,,.........................,,,.PPPLLLL      
+ LLLLLLLLPPPPPLLPPPI,,,.,,.,.II.,..........................,,PPLPLLLLL     
+LLLLLLPPPPPLLLPPPP,,........,,,,...........................,,PLPPLLLLL     
+LPPPPLLLLLPPPPP,,,.......................................,,,PPLPPLLLLL     
+P,,,,,.......,,,.........................................,IPPLLPPLLLLL     
+LPPPPLLLLLPPPPP,,,.......................................,,,PPLPPLLLLL     
+LLLLLLPPPPPLLLPPPP,,,.......,,,............................,,PLPPLLLLL     
+ LLLLLLLLPPPPPLLPPPI.,,,.,,,.II,...........................,,PPLPLLLLL     
+   LLLLLLLLLPPPPLPIIPPPP,IPPPPPP,.........................,,,,PPPLLLL      
+      LLLLLLLLLPPLPLLLLLLLLLPPPPP,,,......................,IPPLPPLLLL      
+          LLLLLLLLPPPPPPPPPPLLLLPPPI,.................,,,,,.PLPPLLLL       
+              LLLLLLLLLPPPPPPPPLLPP.,,,,,,,.,,....,,,,.PPPI.PLPLLLL        
+                  LLLLLLLLLLPPPPPPLPPPPPPPPI,...,,.IPPPLLLLLPPLLLL         
+                     LLLLLLLLLLLLPPPPLLLLPPI,,,,,,,,PLLPPPPPLLLL           
                         LLLLLLLLLLLLPPPPPLLPPPIIIIPPLPPPPLLLLLL            
 ]]);
 

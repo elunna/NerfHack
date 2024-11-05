@@ -30,10 +30,13 @@ des.map([[
 ---------------------------------------------------------------------------
 ]]);
 
--- Overgrown forest 
-des.replace_terrain({ region={00,00, 25,19}, fromterrain=".", toterrain="T", chance=15 })
-des.replace_terrain({ region={26,00, 50,19}, fromterrain=".", toterrain="T", chance=35 })
-des.replace_terrain({ region={51,00, 75,19}, fromterrain=".", toterrain="T", chance=55 })
+-- Overgrown forest
+des.replace_terrain({ region={00,00, 25,19}, fromterrain=".",
+                      toterrain=percent(50) and "T" or "g", chance=15 })
+des.replace_terrain({ region={26,00, 50,19}, fromterrain=".",
+                      toterrain=percent(50) and "T" or "g", chance=35 })
+des.replace_terrain({ region={51,00, 75,19}, fromterrain=".",
+                      toterrain=percent(50) and "T" or "g", chance=55 })
 
 des.region(selection.area(01,01, 73, 16), "lit");
 

@@ -7,7 +7,7 @@ des.level_flags("mazelevel", "noflipx");
 -- bridge with space to either side, but this has the unwanted effect of
 -- monsters on the right side trying to beeline to the player and getting stuck.
 -- So instead, it's shaped to help funnel them towards the bridge.
--- 
+--
 -- If better AI is introduced at some point so that monsters will intelligently
 -- pathfind across the bridge, you can probably change it back.
 des.map([[
