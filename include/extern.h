@@ -4058,6 +4058,7 @@ extern int destroy_items(struct monst *, int, int) NONNULLARG1;
 extern int resist(struct monst *, char, int, int) NONNULLARG1;
 extern void makewish(void);
 extern const char *flash_str(int, boolean) NONNULL;
+extern void burn_grass(coordxy, coordxy);
 
 /* ### unixmain.c, windsys.c ### */
 

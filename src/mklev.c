@@ -781,10 +781,9 @@ cellular(int chance, int maxpasses)
 staticfn void
 mkgrass(void)
 {
-    int x, y;
-
-    int freq = max(30, 60 - (3 * depth(&u.uz)));
-    int passes = max(2, 8 - depth(&u.uz));
+    int x, y,
+        freq = max(30, 60 - (3 * depth(&u.uz))),
+        passes = max(2, 8 - depth(&u.uz));
     cellular(freq, passes);
 
     for (x = 0; x < COLNO; x++) {
@@ -797,7 +796,6 @@ mkgrass(void)
             levl[x][y].bk = 0;
         }
     }
-
 }
 
 /* count the tracked features (sinks, fountains) present on the level */

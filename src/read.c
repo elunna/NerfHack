@@ -1200,10 +1200,8 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
         || sobj_at(BOULDER, x, y) || nexttodoor(x, y))
         return;
 
-    if (levl[x][y].typ != ROOM
-        && levl[x][y].typ != GRASS
-        && levl[x][y].typ != TREE
-        && levl[x][y].typ != GRAVE
+    if (levl[x][y].typ != ROOM      && levl[x][y].typ != GRASS
+        && levl[x][y].typ != TREE   && levl[x][y].typ != GRAVE
         && levl[x][y].typ != LAVAPOOL)
         return;
 

@@ -4533,13 +4533,7 @@ bhit(
         } else if (typ == GRASS &&
                  ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                    && obj->otyp == SPE_FIRE_BOLT))) {
-            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
-                pline_The("grass burns up!");
-            else if (!Deaf)
-                You_hear("whooshing and crackling.");
-            levl[gb.bhitpos.x][gb.bhitpos.y].typ = ROOM;
-            maybe_unhide_at(gb.bhitpos.x, gb.bhitpos.y);
-            newsym(gb.bhitpos.x, gb.bhitpos.y);
+            burn_grass(gb.bhitpos.x, gb.bhitpos.y);
         } else if (typ == FOUNTAIN &&
                    ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                      && obj->otyp == SPE_FIRE_BOLT))) {
@@ -6185,12 +6179,7 @@ zap_over_floor(
             rangemod -= 1;
             dryup(x, y, type > 0);
         } else if (IS_GRASS(lev->typ)) {
-            lev->typ = ROOM;
-            maybe_unhide_at(x, y);
-            if (see_it) {
-                pline("The grass is scorched away!");
-                newsym(x, y);
-            }
+            burn_grass(x, y);
         }
         break; /* ZT_FIRE */
 
@@ -6340,12 +6329,7 @@ zap_over_floor(
                 }
             }
         } else if (IS_GRASS(lev->typ)) {
-            lev->typ = ROOM;
-            maybe_unhide_at(x, y);
-            if (see_it) {
-                pline_The("grass is dissolved!");
-                newsym(x, y);
-            }
+            burn_grass(x, y);
         }
         break; /* ZT_ACID */
     case ZT_DEATH:
@@ -7419,6 +7403,22 @@ flash_str(
         Strcpy(fltxt, flash_types[typ]);
     }
     return fltxt;
+}
+
+void
+burn_grass(coordxy x, coordxy y)
+{
+    if (levl[x][y].typ != GRASS)
+        return;
+
+    if (cansee(x, y))
+        pline_The("grass %s!", rn2(2) ? "is scorched away" : "burns up");
+    else if (!Deaf)
+        You_hear("whooshing and crackling.");
+
+    levl[x][y].typ = ROOM;
+    maybe_unhide_at(x, y);
+    newsym(x, y);
 }
 
 /*zap.c*/
