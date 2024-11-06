@@ -964,7 +964,7 @@ doopen_indir(coordxy x, coordxy y)
 
     if (levl[cc.x][cc.y].splatpm && rn2(7)) {
         Your("%s slips off the bloody door!", body_part(HAND));
-        return res;
+        return ECMD_TIME;
     }
 
     /* door is known to be CLOSED */
@@ -1106,7 +1106,7 @@ doclose(void)
         }
         if (levl[x][y].splatpm && rn2(7)) {
             Your("%s slips off the bloody door!", body_part(HAND));
-            return res;
+            return ECMD_TIME;
         }
         if (u.usteed
             || rn2(25) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
