@@ -51,8 +51,8 @@ staticfn void cursetxt(struct monst *, boolean);
 staticfn int choose_magic_spell(struct monst *, int);
 staticfn int choose_clerical_spell(struct monst *, int);
 staticfn int m_cure_self(struct monst *, int);
-staticfn void cast_wizard_spell(struct monst *, struct monst *, int, int);
-staticfn void cast_cleric_spell(struct monst *, struct monst *, int, int);
+staticfn int cast_wizard_spell(struct monst *, struct monst *, int, int);
+staticfn int cast_cleric_spell(struct monst *, struct monst *, int, int);
 staticfn boolean is_undirected_spell(unsigned int, int);
 staticfn boolean spell_would_be_useless(struct monst *, unsigned int, int);
 staticfn boolean mspell_would_be_useless(struct monst *,
@@ -400,9 +400,9 @@ castmu(
     case AD_SPEL: /* wizard spell */
     case AD_CLRC: /* clerical spell */
         if (mattk->adtyp == AD_SPEL)
-            cast_wizard_spell(caster, &gy.youmonst, dmg, spellnum);
+            (void) cast_wizard_spell(caster, &gy.youmonst, dmg, spellnum);
         else
-            cast_cleric_spell(caster, &gy.youmonst, dmg, spellnum);
+            (void) cast_cleric_spell(caster, &gy.youmonst, dmg, spellnum);
         dmg = 0; /* done by the spell casting functions */
         break;
     } /* switch */
@@ -623,7 +623,7 @@ m_destroy_armor(struct monst *caster, struct monst *mdef)
    If you modify either of these, be sure to change is_undirected_spell()
    and spell_would_be_useless().
  */
-staticfn void
+staticfn int 
 cast_wizard_spell(
     struct monst *caster, /* caster */
     struct monst *mdef, /* target */
@@ -635,20 +635,20 @@ cast_wizard_spell(
     if (dmg < 0) {
         impossible("monster cast wizard spell (%d) with negative dmg (%d)?",
                    spellnum, dmg);
-        return;
+        return 0;
     } else if (!mdef || DEADMONSTER(mdef))
-        return;
+        return 0;
 
     int ml = min(caster->m_lev, 50);
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
         impossible("cast directed wizard spell (%d) with dmg=0?", spellnum);
-        return;
+        return 0;
     }
 
     if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
-            return;
+            return 0;
     }
 
     switch (spellnum) {
@@ -673,7 +673,6 @@ cast_wizard_spell(
                 }
                 pline("Lucky for you, it didn't work!");
             }
-            dmg = 0;
         } else { /* mhitm */
             if (canseemon(caster)) {
                 char buf[BUFSZ];
@@ -698,7 +697,7 @@ cast_wizard_spell(
             } else if (!resisted) {
                 mdef->mhp = -1;
                 monkilled(caster, "", AD_SPEL);
-                return;
+                return 0;
             } else {
                 if (resisted)
                     shieldeff(mdef->mx, mdef->my);
@@ -709,6 +708,7 @@ cast_wizard_spell(
                         pline("Well.  That didn't work...");
                 }
             }
+	dmg = 0;
         }
         break;
     case MGC_REFLECTION: {
@@ -760,8 +760,7 @@ cast_wizard_spell(
                 You_hear("some cursing!");
             }
         }
-        /* damage is handled by explode() */
-        dmg = 0;
+        dmg = 0; /* damage is handled by explode() */
         break;
     case MGC_CLONE_WIZ:
         if (!youdefend)
@@ -948,7 +947,6 @@ cast_wizard_spell(
                 mdef->mstun = 1;
             }
         }
-
         dmg = 0;
         break;
     case MGC_HASTE_SELF:
@@ -994,7 +992,6 @@ cast_wizard_spell(
                 pline("But %s seems unaffected by the fire.", mon_nam(mdef));
             }
         }
-
         dmg = 0; /* damage is handled by explode() */
         break;
     case MGC_ICE_BOLT:
@@ -1102,13 +1099,14 @@ cast_wizard_spell(
         break;
     }
 
-    if (dmg)
-        mdamageu(caster, dmg);
+    if (youdefend && dmg)
+	mdamageu(caster, dmg);
+    return dmg;
 }
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-staticfn void
+staticfn int 
 cast_cleric_spell(
     struct monst *caster,
     struct monst *mdef,
@@ -1121,17 +1119,17 @@ cast_cleric_spell(
     if (dmg < 0) {
         impossible("monster cast cleric spell (%d) with negative dmg (%d)?",
                    spellnum, dmg);
-        return;
+        return 0;
     }
     if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         impossible("cast directed cleric spell (%d) with dmg=0?", spellnum);
-        return;
+        return 0;
     }
 
     if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
-            return;
+            return 0;
     }
 
     switch (spellnum) {
@@ -1597,8 +1595,9 @@ cast_cleric_spell(
         break;
     }
 
-    if (dmg)
+    if (youdefend && dmg)
         mdamageu(caster, dmg);
+    return dmg;
 }
 
 RESTORE_WARNING_FORMAT_NONLITERAL
@@ -2139,12 +2138,10 @@ castmm(
         mon_spell_hits_spot(caster, AD_MAGM, u.ux, u.uy);
         break;
     case AD_SPEL:  /* wizard spell */
-        cast_wizard_spell(caster, mdef, dmg, spellnum);
-        dmg = 0; /* done by the spell casting functions */
+        dmg = cast_wizard_spell(caster, mdef, dmg, spellnum);
         break;
     case AD_CLRC:  /* clerical spell */
-        cast_cleric_spell(caster, mdef, dmg, spellnum);
-        dmg = 0; /* done by the spell casting functions */
+        dmg = cast_cleric_spell(caster, mdef, dmg, spellnum);
         break;
     }
 
