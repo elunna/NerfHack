@@ -7412,9 +7412,9 @@ burn_grass(coordxy x, coordxy y)
         return;
 
     if (cansee(x, y))
-        pline_The("grass %s!", rn2(2) ? "is scorched away" : "burns up");
+        Norep("The grass %s!", rn2(2) ? "is scorched away" : "burns up");
     else if (!Deaf)
-        You_hear("whooshing and crackling.");
+        Norep("You heart whooshing and crackling.");
 
     levl[x][y].typ = ROOM;
     maybe_unhide_at(x, y);
