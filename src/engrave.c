@@ -836,6 +836,8 @@ doengrave_sfx_item(struct _doengrave_ctx *de)
     case ROCK_CLASS:
         You_cant("engrave with such a large object!");
         de->ptext = FALSE;
+        de->ret = ECMD_FAIL;
+        return FALSE;
         break;
     /* Objects too silly to engrave with */
     case FOOD_CLASS:
@@ -844,6 +846,8 @@ doengrave_sfx_item(struct _doengrave_ctx *de)
         pline("%s would get %s.", Yname2(de->otmp),
               de->frosted ? "all frosty" : "too dirty");
         de->ptext = FALSE;
+        de->ret = ECMD_FAIL;
+        return FALSE;
         break;
     case RANDOM_CLASS: /* This should mean fingers */
         break;
@@ -933,10 +937,12 @@ doengrave_sfx_item(struct _doengrave_ctx *de)
                 } else {
                     pline("%s can't wipe out this engraving.",
                           Yname2(de->otmp));
+                    return FALSE;
                 }
             } else {
                 pline("%s %s.", Yobjnam2(de->otmp, "get"),
                       de->frosted ? "frosty" : "dusty");
+                return FALSE;
             }
             break;
         default:
