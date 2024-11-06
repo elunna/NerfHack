@@ -109,7 +109,7 @@ thitu(
         if (Blind || !flags.verbose) {
             pline("It misses.");
         } else if (u.uac + tlev <= dieroll - 2) {
-            if (uarms && rn2(2)) {
+            if (uarms) {
                 Your("%s %s %s.", simple_typename(uarms->otyp),
                      (rn2(2) ? "blocks" : "deflects"), onm);
                 use_skill(P_SHIELD, 1);
