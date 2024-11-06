@@ -2138,43 +2138,14 @@ castmm(
         /* shower of magic missiles scuffs an engraving */
         mon_spell_hits_spot(caster, AD_MAGM, u.ux, u.uy);
         break;
-    case AD_SPEL:   /* wizard spell */
-    case AD_CLRC: { /* clerical spell */
-
-        /* aggravation is a special case;
-         * it's undirected but should still target the
-         * victim so as to aggravate you */
-        if (is_undirected_spell(mattk->adtyp, spellnum)
-            /* 'undirected-but-not-really' spells: */
-            && (mattk->adtyp == AD_SPEL
-                /* magic spells */
-                ? (!(spellnum == MGC_AGGRAVATION
-                     || spellnum == MGC_SUMMON_MONS
-                     || spellnum == MGC_ACID_BLAST
-                     || spellnum == MGC_FIRE_BOLT
-                     || spellnum == MGC_ICE_BOLT
-                     || spellnum == MGC_CALL_UNDEAD))
-                /* clerical spells */
-                : (!(spellnum == CLC_INSECTS
-                     || spellnum == CLC_OPEN_WOUNDS)))) {
-            /* monster vs you */
-            if (mattk->adtyp == AD_SPEL)
-                cast_wizard_spell(caster, &gy.youmonst, dmg, spellnum);
-            else
-                cast_cleric_spell(caster, &gy.youmonst, dmg, spellnum);
-
-        }
-#if 0 /* No player-polyd casting supported yet */
-        /* you vs monster or monster vs monster */
-        /* else */ if (mattk->adtyp == AD_SPEL) {
-            ucast_wizard_spell(&gy.youmonst, mdef, dmg, spellnum);
-        } else {
-            ucast_cleric_spell(&gy.youmonst, mdef, dmg, spellnum);
-        }
-#endif
+    case AD_SPEL:  /* wizard spell */
+        cast_wizard_spell(caster, mdef, dmg, spellnum);
         dmg = 0; /* done by the spell casting functions */
         break;
-        }
+    case AD_CLRC:  /* clerical spell */
+        cast_cleric_spell(caster, mdef, dmg, spellnum);
+        dmg = 0; /* done by the spell casting functions */
+        break;
     }
 
     if (dmg) {
