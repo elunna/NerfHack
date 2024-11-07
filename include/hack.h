@@ -48,7 +48,7 @@
 #define ON 1
 #define OFF 0
 #define BOLT_LIM 8        /* from this distance ranged attacks will be made */
-#define MAX_CARR_CAP 1000 /* so that boulders can be heavier */
+#define MAX_CARR_CAP 1250 /* so that boulders can be heavier */
 #define DUMMY { 0 }       /* array initializer, letting [1..N-1] default */
 #define DEF_NOTHING ' '   /* default symbol for NOTHING and UNEXPLORED  */
 

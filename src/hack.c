@@ -4403,7 +4403,9 @@ weight_cap(void)
        functions enough in that situation to enhance carrying capacity */
     BLevitation &= ~I_SPECIAL;
 
-    carrcap = 25 * (ACURRSTR + ACURR(A_CON)) + 50;
+    carrcap = (35 * ACURRSTR) + (25 * ACURR(A_CON));
+    // carrcap = 25 * (ACURRSTR + ACURR(A_CON)) + 50;
+
     if (Upolyd) {
         /* consistent with can_carry() in mon.c */
         if (gy.youmonst.data->mlet == S_NYMPH)
