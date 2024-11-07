@@ -5390,6 +5390,7 @@ water_damage(
         } else {
             /* About 1/3'rd of scrolls damaged by water disintegrate.
              * For stacks, be more generous */
+            obj->in_use = 1; /* in case of hangup during message w/ --More-- */
             if (obj->quan > 1)
                 num_disintegrate = rnd(obj->quan / 2 + 1);
 
@@ -5406,7 +5407,11 @@ water_damage(
 
             if (obj->quan == num_disintegrate) {
                 setnotworn(obj);
-                useup(obj);
+                // useup(obj);
+                delobj(obj);
+                if (in_invent)
+                    update_inventory();
+                return ER_DESTROYED;
             } else { /* Just decrease the amount */
                 obj->otyp = SCR_BLANK_PAPER;
                 obj->dknown = 0;
@@ -5416,7 +5421,7 @@ water_damage(
             }
             if (in_invent)
                 update_inventory();
-            return ER_DESTROYED;
+            return ER_DAMAGED;
         }
 
         if (in_invent)
