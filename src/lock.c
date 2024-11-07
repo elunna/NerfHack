@@ -962,7 +962,7 @@ doopen_indir(coordxy x, coordxy y)
         return res;
     }
 
-    if (levl[cc.x][cc.y].splatpm && rn2(7)) {
+    if (levl[cc.x][cc.y].splatpm && rn2(3)) {
         Your("%s slips off the bloody door!", body_part(HAND));
         return ECMD_TIME;
     }
@@ -1104,7 +1104,7 @@ doclose(void)
             pline("You're too small to push the door closed.");
             return res;
         }
-        if (levl[x][y].splatpm && rn2(7)) {
+        if (levl[x][y].splatpm && rn2(3)) {
             Your("%s slips off the bloody door!", body_part(HAND));
             return ECMD_TIME;
         }
