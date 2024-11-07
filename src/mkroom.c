@@ -410,6 +410,8 @@ fill_zoo(struct mkroom *sroom)
                     mon->mpeaceful = 0;
                     set_malign(mon);
                 }
+		/* Prevent rabid monsters from spawning in special rooms. */
+		mon->mrabid = 0;
             }
             switch (type) {
             case DRAGONLAIR:
