@@ -1053,11 +1053,21 @@ peffect_see_invisible(struct obj *otmp)
               ? "This tastes like 10%% real %s%s all-natural beverage."
               : "This tastes like %s%s.",
               otmp->odiluted ? "reconstituted " : "", fruitname(TRUE));
+    
+    /* Auto-ID by process of elimination */
+    if (otmp->otyp == POT_FRUIT_JUICE
+            && objects[POT_SEE_INVISIBLE].oc_name_known)
+        makeknown(POT_FRUIT_JUICE);
+    else if (otmp->otyp == POT_SEE_INVISIBLE
+            && objects[POT_FRUIT_JUICE].oc_name_known)
+        makeknown(POT_SEE_INVISIBLE);
+    
     if (otmp->otyp == POT_FRUIT_JUICE) {
         u.uhunger += (otmp->odiluted ? 5 : 10) * (2 + bcsign(otmp));
         newuhs(FALSE);
         return;
     }
+
     if (!otmp->cursed) {
         /* Tell them they can see again immediately, which
          * will help them identify the potion...
