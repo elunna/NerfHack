@@ -2157,6 +2157,7 @@ crackaltar(void)
         lev->cracked = 0;
 
         Soundeffect(se_crash_throne_destroyed, 60);
+        maybe_unhide_at(u.ux, u.uy);
         if (Blind && !Deaf)
             pline("CRACK!  Something loudly crumbles.");
         else {
