@@ -602,12 +602,12 @@ mrndcurse(struct monst *mtmp) /* curse a few inventory items at random! */
     boolean resists = resist(mtmp, 0, 0, FALSE),
             vis = couldsee(mtmp->mx, mtmp->my);
 
-    if (mwep->oartifact == ART_MAGICBANE && rn2(20)) {
+    if (mwep && mwep->oartifact == ART_MAGICBANE && rn2(20)) {
         if (vis)
             You(mal_aura, "the magic-absorbing staff");
         return;
     }
-    if (mwep->oartifact == ART_LOAD_BRAND && rn2(20)) {
+    if (mwep && mwep->oartifact == ART_LOAD_BRAND && rn2(20)) {
         if (vis)
             You(mal_aura, "the magic-absorbing staff");
         return;
