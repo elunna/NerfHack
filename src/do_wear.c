@@ -197,7 +197,7 @@ Boots_on(void)
     case LOW_BOOTS:
     case ORCISH_BOOTS:
     case GNOMISH_BOOTS:
-    case IRON_SHOES:
+    case DWARVISH_BOOTS:
     case HIGH_BOOTS:
     case KICKING_BOOTS:
         break;
@@ -340,7 +340,7 @@ Boots_off(void)
     case LOW_BOOTS:
     case ORCISH_BOOTS:
     case GNOMISH_BOOTS:
-    case IRON_SHOES:
+    case DWARVISH_BOOTS:
     case HIGH_BOOTS:
     case KICKING_BOOTS:
         break;

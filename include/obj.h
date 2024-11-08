@@ -390,6 +390,7 @@ struct obj {
     (otyp == DWARVISH_IRON_HELM \
      || otyp == DWARVISH_MITHRIL_COAT \
      || otyp == DWARVISH_CLOAK \
+     || otyp == DWARVISH_BOOTS \
      || otyp == DWARVISH_ROUNDSHIELD)
 #define is_dwarvish_weapon(otyp) \
      (otyp == DWARVISH_SPEAR \

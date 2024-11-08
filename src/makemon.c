@@ -206,7 +206,7 @@ m_initweap(struct monst *mtmp)
             if (rn2(2))
                 (void) mongets(mtmp, ELVEN_LEATHER_HELM);
             if (rn2(2))
-                (void) mongets(mtmp, IRON_SHOES);
+                (void) mongets(mtmp, HIGH_BOOTS);
             if (rn2(2))
                 (void) mongets(mtmp, LEATHER_CLOAK);
         }
@@ -460,7 +460,7 @@ m_initweap(struct monst *mtmp)
             if (rn2(7))
                 (void) mongets(mtmp, DWARVISH_CLOAK);
             if (rn2(7))
-                (void) mongets(mtmp, IRON_SHOES);
+                (void) mongets(mtmp, DWARVISH_BOOTS);
             if (!rn2(4)) {
                 (void) mongets(mtmp, DWARVISH_SHORT_SWORD);
                 /* note: you can't use a mattock with a shield */

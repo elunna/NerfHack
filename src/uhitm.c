@@ -5370,7 +5370,7 @@ mhitm_ad_legs(
         } else {
             if (uarmf) {
                 if (rn2(2) && (uarmf->otyp == LOW_BOOTS
-                               || uarmf->otyp == IRON_SHOES)) {
+                               || uarmf->otyp == DWARVISH_BOOTS)) {
                     pline("%s %s the exposed part of your %s %s!",
                           Monst_name, zombie ? "bites" : "pricks",
                           sidestr, leg);
