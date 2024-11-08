@@ -1367,7 +1367,7 @@ makemon(
     fakemon = cg.zeromonst;
     cc.x = cc.y = 0;
 
-    if (iflags.debug_mongen || (!svl.level.flags.rndmongen && !ptr))
+    if (iflags.debug_mongen || (!svl.level.flags.rndmongen && anymon))
         return (struct monst *) 0;
 
     /* if caller wants random location, do it here */

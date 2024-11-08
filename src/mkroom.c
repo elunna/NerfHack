@@ -402,7 +402,7 @@ fill_zoo(struct mkroom *sroom)
                           (type == REALZOO) ? realzoomon() :
                           (type == GIANTCOURT) ? mkclass(S_GIANT, 0) :
                           (type == DRAGONLAIR) ? mkclass(S_DRAGON, 0) :
-                          (struct permonst *) 0,sx, sy, MM_ASLEEP | MM_NOGRP);
+                          (struct permonst *) 0, sx, sy, MM_ASLEEP | MM_NOGRP);
             if (mon) {
                 mon->msleeping = 1;
                 if ((type == COURT || type == GIANTCOURT || type == REALZOO)
@@ -410,8 +410,8 @@ fill_zoo(struct mkroom *sroom)
                     mon->mpeaceful = 0;
                     set_malign(mon);
                 }
-		/* Prevent rabid monsters from spawning in special rooms. */
-		mon->mrabid = 0;
+                /* Prevent rabid monsters from spawning in special rooms. */
+                mon->mrabid = 0;
             }
             switch (type) {
             case DRAGONLAIR:
