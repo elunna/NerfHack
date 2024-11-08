@@ -1953,7 +1953,7 @@ rndmonst_adj(int minadj, int maxadj)
         if (Inhell && (ptr->geno & G_NOHELL))
             continue;
         if (is_migo(ptr) && !svl.level.flags.lethe)
-            return FALSE;
+            continue;
 
         /*
          * Weighted reservoir sampling:  select ptr with a
