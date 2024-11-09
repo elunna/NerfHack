@@ -5647,6 +5647,11 @@ use_whetstone(struct obj *stone, struct obj *obj)
                  makeplural(body_part(HAND)));
     } else if (verysmall(gy.youmonst.data)) {
         You("are too small to use %s effectively.", an(xname(stone)));
+    } else if (is_puddle(u.ux, u.uy)) {
+        You("dip your whetstone into the puddle.");
+        if (!rn2(2))
+            dryup_puddle(u.ux, u.uy, "dries up");
+        fail_use = FALSE;
     } else if (!is_damp_terrain(u.ux, u.uy)
                && !IS_FOUNTAIN(levl[u.ux][u.uy].typ)
                && !is_rusttrap
@@ -5680,6 +5685,7 @@ use_whetstone(struct obj *stone, struct obj *obj)
         reset_whetstone();
         return 0;
     }
+
 
     if (stone == whetstoneinfo.wsobj && obj == whetstoneinfo.tobj
         && carried(obj) && carried(stone)) {
