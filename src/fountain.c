@@ -1392,6 +1392,7 @@ blowupforge(coordxy x, coordxy y)
     set_levltyp(x, y, LAVAPOOL); /* updates level.flags.nforges */
     explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), resist_reduce(rnd(30), FIRE_RES),
             FORGE_EXPLODE, EXPL_FIERY);
+    maybe_unhide_at(x, y);
     newsym(x, y);
 }
 

@@ -1103,6 +1103,7 @@ dig_up_grave(coord *cc)
     levl[dig_x][dig_y].emptygrave = 0; /* clear 'flags' */
     levl[dig_x][dig_y].disturbed = 0; /* clear 'horizontal' */
     del_engr_at(dig_x, dig_y);
+    maybe_unhide_at(dig_x, dig_y);
     newsym(dig_x, dig_y);
     return;
 }
