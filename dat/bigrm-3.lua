@@ -33,7 +33,7 @@ des.region(selection.area(01,01,73,16), "lit");
 -- replace some walls
 if percent(66) then
    local sel = selection.match("[.w.]");
-   local terrains = { "F", "T", "W", "Z" };
+   local terrains = { "F", "T", "W", "Z", "u" };
    local choice = terrains[math.random(1, #terrains)];
    des.terrain(sel, choice);
 end

@@ -27,7 +27,7 @@ des.room({ type ="delphi", lit = 1, x=3, y=3, xalign="center", yalign="center", 
 
                -- now actually make the ring
                if percent(99) then
-                  des.terrain({ selection=ring, typ="}", lit=1 })
+                  des.terrain({ selection=ring, typ="u", lit=1 })
                else
                   des.terrain({ selection=ring, typ="L", lit=1 })
                end

@@ -10,27 +10,27 @@ des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noflip");
 
 des.map([[
-                      LLLLLLLLLLLLPPPPPLLPPPIIIIPPLPPPPLLLLLL              
-                     LLLLLLLLLLLLPPPPLLLLPPI.,,..,..PLLPPPPPLLLL           
-                  LLLLLLLLLLPPPPPPLPPPPPPPPI,,.,,.,IPPPLLLLLPPLLLL         
-              LLLLLLLLLPPPPPPPPLLPP,,.,,.,.,,......,,..PPPI.PLPLLLL        
-          LLLLLLLLPPPPPPPPPPLLLLPPPI,,...............,,,,,..PLPPLLLL       
-      LLLLLLLLLPPLPLLLLLLLLLPPPPP,,,.....................,,IPPLPPLLLL      
-   LLLLLLLLLPPPPLPIIPPPP,IPPPPPP,,.........................,,,.PPPLLLL     
- LLLLLLLLPPPPPLLPPPI,,,.,,.,.II.,..........................,,PPLPLLLLL     
-LLLLLLPPPPPLLLPPPP,,........,,,,...........................,,PLPPLLLLL     
-LPPPPLLLLLPPPPP,,,.......................................,,,PPLPPLLLLL     
-P,,,,,.......,,,.........................................,IPPLLPPLLLLL     
-LPPPPLLLLLPPPPP,,,.......................................,,,PPLPPLLLLL     
-LLLLLLPPPPPLLLPPPP,,,.......,,,............................,,PLPPLLLLL     
- LLLLLLLLPPPPPLLPPPI.,,,.,,,.II,...........................,,PPLPLLLLL     
-   LLLLLLLLLPPPPLPIIPPPP,IPPPPPP,.........................,,,,PPPLLLL      
-      LLLLLLLLLPPLPLLLLLLLLLPPPPP,,,......................,IPPLPPLLLL      
-          LLLLLLLLPPPPPPPPPPLLLLPPPI,.................,,,,,.PLPPLLLL       
-              LLLLLLLLLPPPPPPPPLLPP.,,,,,,,.,,....,,,,.PPPI.PLPLLLL        
-                  LLLLLLLLLLPPPPPPLPPPPPPPPI,...,,.IPPPLLLLLPPLLLL         
-                     LLLLLLLLLLLLPPPPLLLLPPI,,,,,,,,PLLPPPPPLLLL           
-                        LLLLLLLLLLLLPPPPPLLPPPIIIIPPLPPPPLLLLLL            
+                      LLLLLLLLLLLLuuuuuLLuuuIIIIuuLuuuuLLLLLL              
+                     LLLLLLLLLLLLuuuuLLLLuuI.,,..,..uLLuuuuuLLLL           
+                  LLLLLLLLLLuuuuuuLuuuuuuuuI,,.,,.,IuuuLLLLLuuLLLL         
+              LLLLLLLLLuuuuuuuuLLuu,,.,,.,.,,......,,..uuuI.uLuLLLL        
+          LLLLLLLLuuuuuuuuuuLLLLuuuI,,...............,,,,,..uLuuLLLL       
+      LLLLLLLLLuuLuLLLLLLLLLuuuuu,,,.....................,,IuuLuuLLLL      
+   LLLLLLLLLuuuuLuIIuuuu,Iuuuuuu,,.........................,,,.uuuLLLL     
+ LLLLLLLLuuuuuLLuuuI,,,.,,.,.II.,..........................,,uuLuLLLLL     
+LLLLLLuuuuuLLLuuuu,,........,,,,...........................,,uLuuLLLLL     
+LuuuuLLLLLuuuuu,,,.......................................,,,uuLuuLLLLL     
+u,,,,,.......,,,.........................................,IuuLLuuLLLLL     
+LuuuuLLLLLuuuuu,,,.......................................,,,uuLuuLLLLL     
+LLLLLLuuuuuLLLuuuu,,,.......,,,............................,,uLuuLLLLL     
+ LLLLLLLLuuuuuLLuuuI.,,,.,,,.II,...........................,,uuLuLLLLL     
+   LLLLLLLLLuuuuLuIIuuuu,Iuuuuuu,.........................,,,,uuuLLLL      
+      LLLLLLLLLuuLuLLLLLLLLLuuuuu,,,......................,IuuLuuLLLL      
+          LLLLLLLLuuuuuuuuuuLLLLuuuI,.................,,,,,.uLuuLLLL       
+              LLLLLLLLLuuuuuuuuLLuu.,,,,,,,.,,....,,,,.uuuI.uLuLLLL        
+                  LLLLLLLLLLuuuuuuLuuuuuuuuI,...,,.IuuuLLLLLuuLLLL         
+                     LLLLLLLLLLLLuuuuLLLLuuI,,,,,,,,uLLuuuuuLLLL           
+                        LLLLLLLLLLLLuuuuuLLuuuIIIIuuLuuuuLLLLLL            
 ]]);
 
 des.region(selection.area(01,01, 74, 21), "lit");

@@ -30,7 +30,7 @@ des.map([[
 
 if percent(40) then
    -- occasionally it's not a fog maze
-   local terrain = { "L", "}", "T", "-", "F", "g" };
+   local terrain = { "L", "u", "T", "-", "F", "g" };
    local tidx = math.random(1, #terrain);
    -- break it up a bit
    des.replace_terrain({ region={0, 0, 70, 18}, fromterrain="C", toterrain=".", chance=5 });
