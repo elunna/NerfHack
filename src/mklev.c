@@ -2162,7 +2162,8 @@ mkstairs(
     if (force)
         levl[x][y].typ = ROOM;
     ltyp = levl[x][y].typ; /* somexyspace() allows ice */
-    if (ltyp != ROOM && ltyp != CORR && ltyp != ICE && ltyp != GRASS) {
+    if (ltyp != ROOM && ltyp != CORR
+        && ltyp != ICE && ltyp != GRASS && ltyp != PUDDLE) {
         int glyph = back_to_glyph(x, y),
             sidx = glyph_to_cmap(glyph);
 
