@@ -5409,6 +5409,7 @@ water_damage(
                 setnotworn(obj);
                 // useup(obj);
                 delobj(obj);
+                obj->in_use = FALSE;
                 if (in_invent)
                     update_inventory();
                 return ER_DESTROYED;
@@ -5421,6 +5422,7 @@ water_damage(
             }
             if (in_invent)
                 update_inventory();
+            obj->in_use = FALSE;
             return ER_DAMAGED;
         }
 
