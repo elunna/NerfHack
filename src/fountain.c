@@ -177,7 +177,7 @@ gush(coordxy x, coordxy y, genericptr_t poolcnt)
         pline("Water gushes forth from the overflowing fountain!");
 
     /* Put a pool at x, y */
-    set_levltyp(x, y, POOL);
+    set_levltyp(x, y, PUDDLE);
     levl[x][y].flags = 0;
     /* No kelp! */
     del_engr_at(x, y);

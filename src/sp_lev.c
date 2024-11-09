@@ -4133,7 +4133,8 @@ good_stair_loc(coordxy x, coordxy y)
 {
     schar typ = levl[x][y].typ;
 
-    return (typ == ROOM || typ == CORR || typ == ICE);
+    return (typ == ROOM || typ == CORR || typ == ICE
+            || typ == PUDDLE || typ == GRASS);
 }
 
 staticfn int

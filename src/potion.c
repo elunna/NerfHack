@@ -760,15 +760,23 @@ dodrink(void)
             }
         }
         /* Or are you surrounded by water? */
-        if (Underwater && !u.uswallow) {
-            if (y_n("Drink the water around you?") == 'y') {
-                pline("Do you know what lives in this water?");
+        if (((is_puddle(u.ux, u.uy) && !verysmall(gy.youmonst.data))
+              || (is_pool(u.ux, u.uy) && Wwalking))
+              && !u.uswallow && can_reach_floor(FALSE)) {
+            if (y_n("Drink the water underneath you?") == 'y') {
+                pline("Do you know what lives in that water?");
                 return ECMD_TIME;
+            } else if ((Underwater 
+                    || (is_puddle(u.ux, u.uy) && verysmall(gy.youmonst.data)))
+                    && !u.uswallow) {
+                if (y_n("Drink the water around you?") == 'y') {
+                    pline("Do you know what lives in this water?");
+                    return ECMD_TIME;
+                }
             }
             ++drink_ok_extra;
         }
     }
-
     otmp = getobj("drink", drink_ok, GETOBJ_NOFLAGS);
     if (!otmp)
         return ECMD_CANCEL;
@@ -2975,7 +2983,7 @@ dodip(void)
     char qbuf[QBUFSZ], obuf[QBUFSZ];
     const char *shortestname; /* last resort obj name for prompt */
     uchar here = levl[u.ux][u.uy].typ;
-    boolean is_hands, at_pool = is_pool(u.ux, u.uy),
+    boolean is_hands, at_pool = is_damp_terrain(u.ux, u.uy),
             at_fountain = IS_FOUNTAIN(here),
             at_forge = IS_FORGE(here),
             at_sink = IS_SINK(here),
@@ -3087,6 +3095,9 @@ dodip(void)
                     if (water_damage(obj, 0, TRUE) != ER_DESTROYED
                         && obj->in_use)
                         useup(obj);
+                    if (IS_PUDDLE(here) && !rn2(3))
+                        dryup_puddle(u.ux, u.uy, "dries up");
+                    
                 }
                 return ECMD_TIME;
             }

@@ -1412,7 +1412,8 @@ under_water(int mode)
 
     for (x = u.ux - 1; x <= u.ux + 1; x++)
         for (y = u.uy - 1; y <= u.uy + 1; y++)
-            if (isok(x, y) && (is_pool_or_lava(x, y) || is_ice(x, y))) {
+            if (isok(x, y) && (is_pool_or_lava(x, y)
+                || is_puddle(x, y) || is_ice(x, y))) {
                 if (Blind && !u_at(x, y))
                     show_glyph(x, y, GLYPH_UNEXPLORED);
                 else
@@ -2337,6 +2338,9 @@ back_to_defsym(coordxy x, coordxy y)
     case MOAT:
         idx = S_pool;
         break;
+    case PUDDLE:
+        idx = S_puddle;
+        break;
     case STAIRS:
         sway = stairway_at(x, y);
         if (known_branch_stairs(sway))
@@ -2542,6 +2546,9 @@ get_bkglyph_and_framecolor(
         case POOL:
         case MOAT:
            idx = S_pool;
+           break;
+        case PUDDLE:
+           idx = S_puddle;
            break;
         case WATER:
            idx = S_water;
@@ -3206,7 +3213,7 @@ static const char *const type_names[MAX_TYPE] = {
     "LAVAWALL",
     "IRON_BARS", "DOOR", "CORR", "ROOM", "STAIRS", "LADDER", "FOUNTAIN",
     "FORGE", "THRONE", "SINK", "TOILET", "GRAVE", "ALTAR", "ICE", "GRASS", 
-    "DRAWBRIDGE_DOWN", "AIR", "CLOUD"
+    "DRAWBRIDGE_DOWN", "AIR", "CLOUD", "PUDDLE"
 };
 
 staticfn const char *

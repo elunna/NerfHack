@@ -487,7 +487,7 @@ u_can_engrave(void)
     } else if (is_lava(u.ux, u.uy) || IS_FORGE(levtyp)) {
         You_cant("write on the %s!", surface(u.ux, u.uy));
         return FALSE;
-    } else if (is_pool(u.ux, u.uy) || IS_FOUNTAIN(levtyp)) {
+    } else if (is_damp_terrain(u.ux, u.uy) || IS_FOUNTAIN(levtyp)) {
         You_cant("write on the %s!", surface(u.ux, u.uy));
         return FALSE;
     } else if (IS_AIR(levtyp)) {
@@ -1622,7 +1622,8 @@ engraving_sanity_check(void)
             continue;
         }
         levtyp = SURFACE_AT(x, y);
-        if (is_pool_or_lava(x, y) || IS_AIR(levtyp) || !ACCESSIBLE(levtyp)) {
+        if (is_pool_or_lava(x, y) || is_puddle(x, y)
+            || IS_AIR(levtyp) || !ACCESSIBLE(levtyp)) {
             impossible("engraving sanity: illegal surface (%d: \"%s\")",
                        levtyp, surface(x, y));
             continue;

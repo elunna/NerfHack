@@ -1448,7 +1448,7 @@ slip_or_trip(void)
     char buf[BUFSZ];
     boolean on_foot = !u.usteed;
 
-    if (otmp && on_foot && !u.uinwater && is_pool(u.ux, u.uy))
+    if (otmp && on_foot && !u.uinwater && is_damp_terrain(u.ux, u.uy))
         otmp = 0;
 
     if (otmp && on_foot) { /* trip over something in particular */

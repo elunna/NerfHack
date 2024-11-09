@@ -4639,6 +4639,8 @@ dfeature_at(coordxy x, coordxy y, char *buf)
         dfeature = ice_descr(x, y, altbuf), cmap = -1; /* "ice" */
     else if (is_pool(x, y))
         dfeature = "pool of water";
+    else if (is_puddle(x, y))
+        dfeature = "pool of shallow water";
     else if (IS_GRASS(ltyp))
         cmap = S_grass;
     else if (IS_SINK(ltyp))
@@ -4817,7 +4819,7 @@ look_here(
     }
 
     if (!otmp || is_lava(u.ux, u.uy)
-        || (is_pool(u.ux, u.uy) && !Underwater)) {
+        || (is_damp_terrain(u.ux, u.uy) && !Underwater)) {
         if (dfeature && !skip_dfeature)
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
@@ -6087,9 +6089,9 @@ display_binventory(coordxy x, coordxy y, boolean as_if_seen)
        below (the map won't be showing them); if hero is underwater, player
        should use the normal look_here command instead of probing (caller
        has already used bhitpile() which will have set dknown on all items) */
-    if (is_pool_or_lava(x, y) && !Underwater
+    if ((is_pool_or_lava(x, y) || is_puddle(x, y)) && !Underwater
         && (obj = svl.level.objects[x][y]) != 0) {
-        const char *real_liquid = is_pool(x, y) ? "water" : "lava",
+        const char *real_liquid = is_damp_terrain(x, y) ? "water" : "lava",
                    *seen_liquid = hliquid(real_liquid);
 
         if (!obj->nexthere) {

@@ -1719,6 +1719,8 @@ surface(coordxy x, coordxy y)
     else if (is_pool(x, y))
         return (Underwater && !Is_waterlevel(&u.uz))
             ? "bottom" : hliquid("water");
+    else if (IS_PUDDLE(levl[x][y].typ))
+        return hliquid("water");
     else if (is_ice(x, y))
         return "ice";
     else if (is_lava(x, y))

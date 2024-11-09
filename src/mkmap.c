@@ -540,7 +540,7 @@ makeriver(int x1, int y1, int x2, int y2)
             chance = 100;
 
         if (rn2(100) < chance && !t_at(cx, cy)) {
-            levl[cx][cy].typ = !rn2(3) ? POOL : MOAT;
+            levl[cx][cy].typ = rn2(3) ? PUDDLE : POOL;
             levl[cx][cy].lit = 1;
       	}
 
@@ -611,7 +611,7 @@ makeriver(int x1, int y1, int x2, int y2)
     while (count++ < 2000 && monstcount > 0) {
         cx = 1 + rn2(COLNO - 2);
         cy = 1 + rn2(ROWNO - 2);
-        if (levl[cx][cy].typ == POOL || levl[cx][cy].typ == MOAT) {
+        if (levl[cx][cy].typ == POOL || levl[cx][cy].typ == PUDDLE) {
             if (u.uz.dlevel >= 5) {
                 (void) makemon(rn2(20) ? &mons[PM_JELLYFISH +
                                                rn2(PM_ELECTRIC_EEL - PM_JELLYFISH)]
@@ -626,7 +626,7 @@ makeriver(int x1, int y1, int x2, int y2)
             monstcount--;
         }
     }
-    if (!(levl[cx][cy].typ == POOL || levl[cx][cy].typ == MOAT))
+    if (!(levl[cx][cy].typ == POOL || levl[cx][cy].typ == PUDDLE))
         maybe_unhide_at(cx, cy);
 }
 

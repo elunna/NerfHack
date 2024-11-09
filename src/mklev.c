@@ -967,6 +967,7 @@ fill_ordinary_room(
      * attempts to find a ROOM, CORR or ICE square, all of which are
      * ACCESSIBLE. */
 
+    /* greater chance of puddles if a water source is nearby */
     if (!rn2(10))
         mkfount(croom);
     if (!rn2(60)) {
@@ -2048,7 +2049,7 @@ mktrap(
     }
     m.x = m.y = 0;
 
-    /* no traps in pools */
+    /* no traps in pools/puddles */
     if (tm && is_pool(tm->x, tm->y))
         return;
 
@@ -2062,6 +2063,13 @@ mktrap(
     } else {
         do {
             kind = traptype_rnd(mktrapflags);
+            if (tm && is_puddle(tm->x, tm->y) && 
+                  (is_hole(kind) || is_pit(kind) ||
+                  kind == WEB || kind == LANDMINE ||
+                  kind == MAGIC_BEAM_TRAP ||
+                  kind == COLD_TRAP || kind == FIRE_TRAP)) {
+                kind = NO_TRAP;
+            }
         } while (kind == NO_TRAP);
     }
 
@@ -2599,7 +2607,7 @@ mkinvpos(coordxy x, coordxy y, int dist)
 
     switch (dist) {
     case 1: /* fire traps */
-        if (is_pool(x, y))
+        if (is_damp_terrain(x, y))
             break;
         lev->typ = ROOM;
         ttmp = maketrap(x, y, FIRE_TRAP);

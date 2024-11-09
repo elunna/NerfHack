@@ -1185,6 +1185,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     struct monst *mtmp;
     struct trap *ttmp;
     int xx = u.ux, yy = u.uy;
+    schar ltyp = PUDDLE;
     if (gc.current_wand && gc.current_wand->otyp == SCR_FLOOD) {
         xx = gc.current_wand->ox;
         yy = gc.current_wand->oy;
@@ -1193,8 +1194,12 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
         return;
 
     /* Don't create on the user's space unless poolcnt is -1. */
-    if ((* (int*)poolcnt) != -1 && x == xx && y == yy)
-        return;
+    if ((* (int*)poolcnt) != -1) {
+        if (x == xx && y == yy)
+            return;
+    } else {
+        ltyp = POOL;
+    }
 
     if (rn2(1 + distmin(xx, yy, x, y))
         || sobj_at(BOULDER, x, y) || nexttodoor(x, y))
@@ -1210,11 +1215,11 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     if (ttmp && !delfloortrap(ttmp))
         return;
 
-    set_levltyp(x, y, POOL);
+    set_levltyp(x, y, ltyp);
     del_engr_at(x, y);
     water_damage_chain(svl.level.objects[x][y], FALSE);
 
-    if ((mtmp = m_at(x, y)) != 0)
+    if (ltyp == POOL && (mtmp = m_at(x, y)) != 0)
         (void) minliquid(mtmp);
     else
         newsym(x, y);
@@ -1226,6 +1231,7 @@ staticfn void
 unflood_space(coordxy x, coordxy y, genericptr_t drycnt)
 {
     if (levl[x][y].typ != POOL
+        && levl[x][y].typ != PUDDLE
         && levl[x][y].typ != MOAT
         && levl[x][y].typ != WATER
         && levl[x][y].typ != FOUNTAIN)
@@ -3855,7 +3861,7 @@ create_particular_creation(
            && !closed_door(mtmp->mx, mtmp->my)
            && ((is_hider(mtmp->data) && mtmp->data->mlet != S_MIMIC)
                || (hides_under(mtmp->data) && concealed_spot(mx, my))
-               || (mtmp->data->mlet == S_EEL && is_pool(mx, my))))
+               || (mtmp->data->mlet == S_EEL && is_damp_terrain(mx, my))))
             mtmp->mundetected = 1;
         if (d->sleeping)
             mtmp->msleeping = 1;

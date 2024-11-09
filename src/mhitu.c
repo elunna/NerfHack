@@ -767,9 +767,9 @@ mattacku(struct monst *mtmp)
                 /* a fish won't voluntarily swap positions
                    when it's in water and hero is over land */
                 || mtmp->mtrapped /* Hard to displace when trapped */
-                || (mtmp->data->mlet == S_EEL
-                    && is_pool(mtmp->mx, mtmp->my)
-                    && !is_pool(u.ux, u.uy))) {
+                ||  (mtmp->data->mlet == S_EEL
+                    && (is_pool(mtmp->mx, mtmp->my) || is_puddle(mtmp->mx, mtmp->my))
+                    && !(is_pool(u.ux, u.uy) || is_puddle(u.ux, u.uy)))) {
                 /* couldn't find any spot for hero; this used to
                    kill off attacker, but now we just give a "miss"
                    message and keep both mtmp and hero at their
@@ -815,7 +815,7 @@ mattacku(struct monst *mtmp)
 
                 if (obj || u.umonnum == PM_TRAPPER
                     || (gy.youmonst.data->mlet == S_EEL
-                        && is_pool(u.ux, u.uy))
+                        && (is_pool(u.ux, u.uy) || is_puddle(u.ux, u.uy)))
                     || concealed_spot(u.ux, u.uy)) {
                     int save_spe = 0; /* suppress warning */
 
@@ -1446,6 +1446,8 @@ hitmu(struct monst *mtmp, struct attack *mattk)
                     what = something;
                 else if (is_pool(mtmp->mx, mtmp->my) && !Underwater)
                     what = "the water";
+                else if (is_puddle(mtmp->mx, mtmp->my))
+                    what = "the shallow water";
                 else
                     what = doname(obj);
 

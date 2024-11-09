@@ -10,6 +10,8 @@
 #define monsndx(ptr) ((ptr)->pmidx)
 #define verysmall(ptr) ((ptr)->msize < MZ_SMALL)
 #define bigmonst(ptr) ((ptr)->msize >= MZ_LARGE)
+#define tiny_groundedmon(ptr) \
+    (verysmall(ptr) && !is_flyer(ptr) && !is_swimmer(ptr) && !amphibious(ptr))
 
 #define pm_resistance(ptr, typ) (((ptr)->mresists & (typ)) != 0)
 

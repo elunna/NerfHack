@@ -2667,7 +2667,7 @@ arti_invoke(struct obj *obj)
                     spoteffects(TRUE);
             } else {
                 You_feel("as if you are no longer at equilibrium.");
-                if ((is_pool(u.ux, u.uy) || is_lava(u.ux, u.uy))
+                if ((is_damp_terrain(u.ux, u.uy) || is_lava(u.ux, u.uy))
                     && !Levitation && !Flying && !is_clinger(gy.youmonst.data)
                     && !svc.context.takeoff.cancelled_don
                     /* avoid recursive call to lava_effects() */
