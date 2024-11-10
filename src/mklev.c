@@ -1157,7 +1157,7 @@ fill_ordinary_room(
      * Either a hint or a true rumor. */
     if (depth(&u.uz) < 2 && has_upstairs(croom) && !rn2(depth(&u.uz))) {
         if (find_okay_roompos(croom, &pos)) {
-            make_engr_at(pos.x, pos.y, get_hint(), 0L, MARK);
+            make_engr_at(pos.x, pos.y, get_hint(), 0L, ENGR_BLOOD);
         }
     } else if (!rn2(27 + 3 * abs(depth(&u.uz)))) {
         char buf[BUFSZ];
