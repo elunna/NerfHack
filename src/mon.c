@@ -755,10 +755,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         free_mgivenname(mtmp);
         newsym(x, y);
         return obj;
-    case PM_ALCHEMIST:
-        (void) mksobj_at(rnd_class(POT_GAIN_ABILITY, POT_OIL),
-                         x, y, TRUE, FALSE);
-        goto default_1;
     case NON_PM:
     case LEAVESTATUE:
     case NUMMONS: /* never use as index */
@@ -1006,6 +1002,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_SHOGGOTH:
     case PM_QUANTUM_MECHANIC:
     case PM_GENETIC_ENGINEER:
+    case PM_ALCHEMIST:
     case PM_RUST_MONSTER:
     case PM_DISENCHANTER:
     case PM_GARTER_SNAKE:
