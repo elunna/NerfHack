@@ -3488,6 +3488,7 @@ static const struct alt_spellings {
     { "helm of esp", HELM_OF_TELEPATHY },
     { "gauntlets of ogre power", GAUNTLETS_OF_POWER },
     { "gauntlets of giant strength", GAUNTLETS_OF_POWER },
+    { "iron boots", DWARVISH_BOOTS },
     { "elven chain mail", ELVEN_MITHRIL_COAT },
     { "silver shield", SHIELD_OF_REFLECTION },
     { "potion of sleep", POT_SLEEPING },
