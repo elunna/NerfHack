@@ -14,7 +14,8 @@ des.level_init({ style = "solidfill", fg = "." });
 des.level_flags("mazelevel", "noteleport", "hardfloor", "arboreal", "noflip")
 
 des.level_init({ style="mines", fg=".", bg=".", smoothed=true, joined=true, lit=1, walled=false })
-des.replace_terrain({ region={00,00, 76,19}, fromterrain=".", toterrain="T", chance=5 })
+des.replace_terrain({ region={00,00, 76,19}, fromterrain=".", toterrain="g", chance=100 })
+des.replace_terrain({ region={00,00, 76,19}, fromterrain="g", toterrain="T", chance=5 })
 --1234567890123456789012345678901234567890123456789012345678901234567890
 des.map({ halign = "left", valign = "center", map = [[
                                        xx

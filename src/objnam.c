@@ -3784,7 +3784,14 @@ wizterrainwish(struct _readobjnam_data *d)
         }
         water_damage_chain(svl.level.objects[x][y], TRUE);
         madeterrain = TRUE;
-
+    } else if (!BSTRCMPI(bp, p - 13, "shallow water")
+                   || !BSTRCMPI(bp, p - 6, "puddle")) {
+        lev->typ = PUDDLE;
+        del_engr_at(x, y);
+        pline("Shallow water.");
+        water_damage_chain(svl.level.objects[x][y], TRUE);
+        madeterrain = TRUE;
+    
     /* also matches "molten lava" */
     } else if (!BSTRCMPI(bp, p - 4, "lava")
                || !BSTRCMPI(bp, p - 12, "wall of lava")) {

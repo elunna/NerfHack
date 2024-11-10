@@ -2742,7 +2742,7 @@ fig_transform(anything *arg, long timeout)
                 if (canseemon(figurine->ocarry)
                     && (!mon->wormno || cansee(mon->mx, mon->my)))
                     Sprintf(carriedby, "%s pack", s_suffix(a_monnam(mon)));
-                else if (is_pool(mon->mx, mon->my))
+                else if (is_damp_terrain(mon->mx, mon->my))
                     Strcpy(carriedby, "empty water");
                 else
                     Strcpy(carriedby, "thin air");
@@ -3252,7 +3252,8 @@ use_stone(struct obj *tstone)
                         && !(resists_fire(mtmp) || defended(mtmp, AD_FIRE)
                              || (mtmp->data->geno & G_UNIQ)
                              || mtmp->data->msize == MZ_GIGANTIC
-                             || mindless(mtmp->data))) {
+                             || mindless(mtmp->data)
+                             || is_damp_terrain(i, j))) {
                         if (rn2(3))
                             monflee(mtmp, rnd(10), TRUE, TRUE);
                     }
@@ -3302,7 +3303,7 @@ use_trap(struct obj *otmp)
         what = "underwater";
     else if (Levitation)
         what = "while levitating";
-    else if (is_pool(u.ux, u.uy))
+    else if (is_damp_terrain(u.ux, u.uy))
         what = "in water";
     else if (is_lava(u.ux, u.uy))
         what = "in lava";
@@ -3493,6 +3494,7 @@ use_whip(struct obj *obj)
             return ECMD_TIME;
         }
         if (is_pool_or_lava(u.ux, u.uy)
+            || is_puddle(u.ux, u.uy)
             || IS_WATERWALL(levl[rx][ry].typ)
             || levl[rx][ry].typ == LAVAWALL) {
             You("cause a small splash.");
@@ -3513,8 +3515,13 @@ use_whip(struct obj *obj)
                 return ECMD_TIME;
             }
             if (otmp && proficient) {
-                You("wrap your bullwhip around %s on the %s.",
-                    an(singular(otmp, xname)), surface(u.ux, u.uy));
+                 /* objects lie *in* water, lava, or sewage. 'on the fountain'
+                 * sounds a bit weird, but the object isn't in the fountain,
+                 * or else it would be wet. */
+                const char *surf_prep = is_damp_terrain(u.ux, u.uy) ? "in" : "on";
+                You("wrap your bullwhip around %s %s the %s.",
+                    an(singular(otmp, xname)), surf_prep,
+                    surface(u.ux, u.uy));
                 if (rnl(6) || pickup_object(otmp, 1L, TRUE) < 1)
                     pline1(msg_slipsfree);
                 return ECMD_TIME;
@@ -4262,7 +4269,7 @@ use_grapple(struct obj *obj)
         }
     /*FALLTHRU*/
     case 3: /* Surface */
-        if (IS_AIR(levl[cc.x][cc.y].typ) || is_pool(cc.x, cc.y))
+        if (IS_AIR(levl[cc.x][cc.y].typ) || is_damp_terrain(cc.x, cc.y))
             pline_The("hook slices through the %s.", surface(cc.x, cc.y));
         else {
             You("are yanked toward the %s!", surface(cc.x, cc.y));
@@ -5640,8 +5647,14 @@ use_whetstone(struct obj *stone, struct obj *obj)
                  makeplural(body_part(HAND)));
     } else if (verysmall(gy.youmonst.data)) {
         You("are too small to use %s effectively.", an(xname(stone)));
-    } else if (!is_pool(u.ux, u.uy) && !IS_FOUNTAIN(levl[u.ux][u.uy].typ)
-               && (!is_rusttrap)
+    } else if (is_puddle(u.ux, u.uy)) {
+        You("dip your whetstone into the puddle.");
+        if (!rn2(2))
+            dryup_puddle(u.ux, u.uy, "dries up");
+        fail_use = FALSE;
+    } else if (!is_damp_terrain(u.ux, u.uy)
+               && !IS_FOUNTAIN(levl[u.ux][u.uy].typ)
+               && !is_rusttrap
                && !IS_TOILET(levl[u.ux][u.uy].typ)
                && !IS_SINK(levl[u.ux][u.uy].typ)) {
         /* A player can use a potion of water if on hand. */
@@ -5672,6 +5685,7 @@ use_whetstone(struct obj *stone, struct obj *obj)
         reset_whetstone();
         return 0;
     }
+
 
     if (stone == whetstoneinfo.wsobj && obj == whetstoneinfo.tobj
         && carried(obj) && carried(stone)) {

@@ -166,6 +166,7 @@ start: Blank
         S_pool: \032
         S_potion: \032
         S_pudding: \032
+				S_puddle: \032
         S_quadruped: \032
         S_quantmech: \032
         S_ring: \032
@@ -272,6 +273,7 @@ start: IBMgraphics
 	S_sink: \xf4			# meta-t, integral top half
 	S_toilet: \xf4			# meta-t, integral top half
 	S_pool: \xf7			# meta-w, approx. equals
+	S_puddle: \xf7			# meta-w, approx. equals
 	S_ice: \xfa			# meta-z, centered dot
 	S_grass: \xfa			# meta-z, centered dot
 	S_lava: \xf7			# meta-w, approx. equals
@@ -719,6 +721,7 @@ start: DECgraphics
 	S_brdnladder: \xfa		# meta-z, greater-than-or-equals
 	S_altar: \xfb			# meta-{, pi (used to default to '_')
 	S_pool: \xe0			# meta-\, diamond
+	S_puddle: \xe0			# meta-\, diamond
 	S_ice: \xfe			# meta-~, centered dot
 	S_lava: \xe0			# meta-\, diamond
 	S_lavawall: \xe0		# meta-\, diamond
@@ -807,6 +810,7 @@ start: MACgraphics
 	S_engrcorr: \xb0
 	S_grave: \xef			# same as open door
 	S_pool: \xe0
+	S_puddle: \xe0
 finish
 
 start: Enhanced1
@@ -838,6 +842,7 @@ start: Enhanced1
 	S_grave: U+2020                     # DAGGER
 	G_fountain: U+2320/0-150-255        # TOP HALF INTEGRAL
 	S_pool: U+224b                      # TRIPLE TILDE
+	S_puddle: U+224b                      # TRIPLE TILDE
 	S_ice: U+00b7                       # MIDDLE DOT
 	S_lava: U+224b                      # TRIPLE TILDE
 	S_lavawall: U+2248                  # ALMOST EQUAL TO

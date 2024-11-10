@@ -500,6 +500,7 @@ maketrap(coordxy x, coordxy y, int typ)
                    && (typ != PIT && typ != HOLE))
                || is_pool_or_lava(x, y)
                || (IS_AIR(lev->typ) && typ != MAGIC_PORTAL)
+               || (is_puddle(x, y) && typ == WEB)
                || (typ == LEVEL_TELEP && single_level_branch(&u.uz))) {
         /* no trap on top of furniture (caller usually screens the
            location to inhibit this, but wizard mode wishing doesn't)
@@ -2078,13 +2079,24 @@ trapeffect_fire_trap(
         int orig_dmg = d(2, 4);
 
         if (in_sight)
-            pline_mon(mtmp,
+            if (is_puddle(mtmp->mx, mtmp->my))
+                pline_mon(mtmp, "A cascade of steamy bubbles erupts from the %s under %s!",
+                          surface(mtmp->mx, mtmp->my), mon_nam(mtmp));
+            else
+                pline_mon(mtmp,
                  "A %s erupts from the %s under %s!", tower_of_flame,
                   surface(mtmp->mx, mtmp->my), mon_nam(mtmp));
         else if (see_it) { /* evidently `mtmp' is invisible */
             set_msg_xy(mtmp->mx, mtmp->my);
-            You_see("a %s erupt from the %s!", tower_of_flame,
+            if (is_puddle(mtmp->mx, mtmp->my))
+                You("see a cascade of steamy bubbles erupt from the %s!",
+                        surface(mtmp->mx, mtmp->my));
+            else
+                You_see("a %s erupt from the %s!", tower_of_flame,
                     surface(mtmp->mx, mtmp->my));
+        }
+        if (is_puddle(mtmp->mx, mtmp->my) && rn2(2)) {
+            dryup_puddle(mtmp->mx, mtmp->my, "evaporates");
         }
         if (resists_fire(mtmp)) {
             if (in_sight) {
@@ -4651,7 +4663,7 @@ float_down(
     }
 
     if (Punished && !carried(uball) && !m_at(uball->ox, uball->oy)
-        && (is_pool(uball->ox, uball->oy)
+        && (is_damp_terrain(uball->ox, uball->oy)
             || ((trap = t_at(uball->ox, uball->oy))
                 && (is_pit(trap->ttyp) || is_hole(trap->ttyp))))) {
         u.ux0 = u.ux;
@@ -4717,7 +4729,7 @@ float_down(
                     You("settle more firmly in the saddle.");
                 } else if (Hallucination) {
                     pline("Bummer!  You've %s.",
-                          is_pool(u.ux, u.uy)
+                          is_damp_terrain(u.ux, u.uy)
                              ? "splashed down"
                              : "hit the ground");
                 } else {
@@ -4831,6 +4843,8 @@ dofiretrap(
     }
     pline("A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
           the(box ? xname(box) : surface(u.ux, u.uy)));
+    if (is_puddle(u.ux, u.uy) && rn2(2))
+        dryup_puddle(u.ux, u.uy, "evaporates");
     if (fully_resistant(FIRE_RES)) {
         shieldeff(u.ux, u.uy);
         monstseesu(M_SEEN_FIRE);
@@ -5728,7 +5742,9 @@ drown(void)
     }
 
     /* happily wading in the same contiguous pool */
-    if (u.uinwater && is_pool(u.ux - u.dx, u.uy - u.dy)
+    if (u.uinwater 
+        && (is_pool(u.ux - u.dx, u.uy - u.dy) || (is_damp_terrain(u.ux - u.dx, u.uy - u.dy)
+                && tiny_groundedmon(gy.youmonst.data)))
         && (Swimming || Amphibious || Breathless)) {
         /* water effects on objects every now and then */
         if (!rn2(5))
@@ -6244,12 +6260,7 @@ disarm_rust_trap(struct trap *ttmp) /* Paul Sonier */
         return fails;
     You("disarm the water trap!");
     deltrap(ttmp);
-    /* updates level.flags.nfountains */
-    set_levltyp(x, y, FOUNTAIN);
-    /* Never create a magic fountain */
-    levl[x][y].looted = 0;
-    levl[x][y].blessedftn = 0;
-    SET_FOUNTAIN_LOOTED(x, y);
+    set_levltyp(x, y, PUDDLE);
     newsym(x, y);
     return 1;
 }

@@ -250,7 +250,8 @@ polyman(const char *fmt, const char *arg)
     }
     check_strangling(TRUE);
 
-    if (!Levitation && !u.ustuck && is_pool_or_lava(u.ux, u.uy))
+    if (!Levitation && !u.ustuck 
+        && (is_pool_or_lava(u.ux, u.uy) || is_puddle(u.ux, u.uy)))
         spoteffects(TRUE);
 
     see_monsters();
@@ -974,7 +975,8 @@ polymon(int mntmp)
     }
 
     find_ac();
-    if (((!Levitation && !u.ustuck && !Flying && is_pool_or_lava(u.ux, u.uy))
+    if (((!Levitation && !u.ustuck && !Flying 
+        && (is_pool_or_lava(u.ux, u.uy) || is_puddle(u.ux, u.uy)))
          || (Underwater && !Swimming))
         /* if expelled above, expels() already called spoteffects() */
         && !was_expelled) {
@@ -1498,7 +1500,8 @@ dospinweb(void)
     coordxy x = u.ux, y = u.uy;
     struct trap *ttmp = t_at(x, y);
     /* disallow webs on water, lava, air & cloud */
-    boolean reject_terrain = is_pool_or_lava(x, y) || IS_AIR(levl[x][y].typ);
+    boolean reject_terrain = is_pool_or_lava(x, y) || IS_AIR(levl[x][y].typ)
+                              || is_puddle(x, y) ;
 
     /* [at the time this was written, it was not possible to be both a
        webmaker and a flyer, but with the advent of amulet of flying that
@@ -1849,7 +1852,7 @@ dohide(void)
     }
     /* note: hero-as-eel handling is incomplete but unnecessary;
        such critters aren't offered the option of hiding via #monster */
-    if (gy.youmonst.data->mlet == S_EEL && !is_pool(u.ux, u.uy)) {
+    if (gy.youmonst.data->mlet == S_EEL && !is_damp_terrain(u.ux, u.uy)) {
         if (IS_FOUNTAIN(levl[u.ux][u.uy].typ))
             pline_The("fountain is not deep enough to hide in.");
         else

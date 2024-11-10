@@ -124,7 +124,8 @@ goodpos(
             return FALSE;
 
         mdat = mtmp->data;
-        if (is_pool(x, y) && !ignorewater) {
+        if (!ignorewater && (is_pool(x, y) || (is_puddle(x, y)
+                             && tiny_groundedmon(mtmp->data)))) {
             /* [what about Breathless?] */
             if (mtmp == &gy.youmonst)
                 return (Swimming || Amphibious
@@ -138,7 +139,8 @@ goodpos(
                         || (!Is_waterlevel(&u.uz)
                             && !is_waterwall(x, y)
                             && m_in_air(mtmp)));
-        } else if (mdat->mlet == S_EEL && rn2(13) && !ignorewater) {
+        } else if (mdat->mlet == S_EEL && rn2(13)
+            && !ignorewater && !is_puddle(x, y)) {
             return FALSE;
         } else if (is_lava(x, y) && !ignorelava) {
             /* 3.6.3: floating eye can levitate over lava but it avoids
@@ -156,6 +158,8 @@ goodpos(
         if (passes_walls(mdat) && may_passwall(x, y))
             return TRUE;
         if (amorphous(mdat) && closed_door(x, y))
+            return TRUE;
+        if ((is_puddle(x, y)) && !tiny_groundedmon(mdat))
             return TRUE;
         /* avoid onscary() if caller has specified that restriction */
         if (checkscary && (mtmp->m_id ? onscary(x, y, mtmp)

@@ -260,7 +260,7 @@ mhidden_description(
                     ceiling_hider(mon->data) ? "ceiling"
                        : surface(x, y)); /* trapper */
         } else {
-            if (mon->data->mlet == S_EEL && is_pool(x, y))
+            if (mon->data->mlet == S_EEL && is_damp_terrain(x, y))
                 Strcat(outbuf, " in murky water");
         }
     }
@@ -390,7 +390,7 @@ look_at_object(
         Strcat(buf, " embedded in a wall");
     else if (closed_door(x, y))
         Strcat(buf, " embedded in a door");
-    else if (is_pool(x, y))
+    else if (is_damp_terrain(x, y))
         Strcat(buf, " in water");
     else if (is_lava(x, y))
         Strcat(buf, " in molten lava"); /* [can this ever happen?] */
@@ -629,6 +629,9 @@ waterbody_name(coordxy x, coordxy y)
     } else if (ltyp == POOL) {
         Snprintf(pooltype, sizeof pooltype, "pool of %s", hliquid("water"));
         return pooltype;
+    } else if (ltyp == PUDDLE) {
+        Snprintf(pooltype, sizeof pooltype, "puddle of %s", hliquid("water"));
+        return pooltype;
     } else if (ltyp == MOAT) {
         /* a bit of extra flavor over general moat */
         if (hallucinate) {
@@ -824,6 +827,7 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
             printed_blood = TRUE;
             break;
         case S_pool:
+        case S_puddle:
         case S_water: /* was Plane of Water, now that or "wall of water" */
         case S_lava:
         case S_lavawall:
@@ -2467,6 +2471,8 @@ add_cmap_descr(
             /* duplicate some transformations performed by waterbody_name() */
             if (idx == S_pool)
                 x_str = "pool of water";
+            else if (idx == S_puddle)
+                x_str = "puddle of water";
             else if (idx == S_water)
                 x_str = !Is_waterlevel(&u.uz) ? "wall of water"
                                               : "limitless water";
@@ -2813,6 +2819,7 @@ do_screen_description(
 
             if (alt_i == S_altar || is_cmap_trap(alt_i)
                 || (hallucinate && (alt_i == S_water /* S_pool already done */
+                                    || alt_i == S_puddle
                                     || alt_i == S_lava
                                     || alt_i == S_lavawall
                                     || alt_i == S_ice))

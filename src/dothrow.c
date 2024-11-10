@@ -1841,7 +1841,7 @@ throwit(struct obj *obj,
         }
         if (!Deaf && !Underwater) {
             /* Some sound effects when item lands in water or lava */
-            if (is_pool(gb.bhitpos.x, gb.bhitpos.y)
+            if (is_damp_terrain(gb.bhitpos.x, gb.bhitpos.y)
                 || (is_lava(gb.bhitpos.x, gb.bhitpos.y)
                     && !is_flammable(obj))) {
                 Soundeffect(se_splash, 50);

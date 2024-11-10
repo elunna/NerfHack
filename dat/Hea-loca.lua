@@ -10,16 +10,16 @@ des.level_flags("mazelevel", "hardfloor", "noflip");
 des.level_init({ style="mines", fg=".", bg="P", smoothed=true ,joined=true, lit=1, walled=false })
 
 des.map([[
-PPPPPPPPPPPPP.......PPPPPPPPPPP
-PPPPPPPP...............PPPPPPPP
-PPPP.....-------------...PPPPPP
-PPPPP....|.S.........|....PPPPP
-PPP......+.|.........|...PPPPPP
-PPP......+.|.........|..PPPPPPP
-PPPP.....|.S.........|..PPPPPPP
-PPPPP....-------------....PPPPP
-PPPPPPPP...............PPPPPPPP
-PPPPPPPPPPP........PPPPPPPPPPPP
+PPPPPPPPPPPPPu.....uPPPPPPPPPPP
+PPPPPPPPu.............uPPPPPPPP
+PPPPu....-------------..uPPPPPP
+PPPPPu...|.S.........|...uPPPPP
+PPPu.....+.|.........|..uPPPPPP
+PPPu.....+.|.........|.uPPPPPPP
+PPPPu....|.S.........|.uPPPPPPP
+PPPPPu...-------------...uPPPPP
+PPPPPPPPu.............uPPPPPPPP
+PPPPPPPPPPPu......uPPPPPPPPPPPP
 ]]);
 -- Dungeon Description
 des.region(selection.area(00,00,30,09), "lit")

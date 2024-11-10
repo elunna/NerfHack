@@ -93,9 +93,10 @@ enum levl_typ_types {
     DRAWBRIDGE_DOWN = 37,
     AIR       = 38,
     CLOUD     = 39,
+    PUDDLE    = 40,
 
-    MAX_TYPE  = 40,
-    MATCH_WALL = 41,
+    MAX_TYPE  = 41,
+    MATCH_WALL = 42,
     INVALID_TYPE = 127
 };
 
@@ -130,6 +131,7 @@ enum levl_typ_types {
 #define IS_GRASS(typ) ((typ) == GRASS)
 #define IS_AIR(typ) ((typ) == AIR || (typ) == CLOUD)
 #define IS_SOFT(typ) ((typ) == AIR || (typ) == CLOUD || IS_POOL(typ))
+#define IS_PUDDLE(typ) ((typ) == PUDDLE)
 #define IS_WATERWALL(typ) ((typ) == WATER)
 /* for surface checks when it's unknown whether a drawbridge is involved;
    drawbridge_up is the spot in front of a closed drawbridge and not the
@@ -247,8 +249,10 @@ enum levl_typ_types {
 /*
  * Room areas may be iced pools
  */
+#define ICED_PUDDLE 4
 #define ICED_POOL 8
 #define ICED_MOAT 16
+
 
 /*
  * The structure describing a coordinate position.

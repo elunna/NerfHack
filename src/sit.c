@@ -106,6 +106,7 @@ throne_sit_effect(void)
                     set_levltyp(u.ux, u.uy, ROOM);
                     levl[u.ux][u.uy].flags = 0;
                     pline_The("throne vanishes in a puff of logic.");
+                    maybe_unhide_at(u.ux, u.uy);
                     newsym(u.ux, u.uy);
                 } else
                     change_luck(-1); /* oops */
@@ -237,6 +238,7 @@ throne_sit_effect(void)
        but if the answer is yes than it will vanish in a puff of logic. */
     if (!rn2(3) && (!wizard || y_n("Analyze throne?") == 'y')) {
         levl[tx][ty].typ = ROOM, levl[tx][ty].flags = 0;
+        maybe_unhide_at(tx, ty);
         map_background(tx, ty, FALSE);
         newsym_force(tx, ty);
         /* "[God] promptly vanishes in a puff of logic" is from
@@ -319,10 +321,10 @@ dosit(void)
         else
             pline("%s has no lap.", Monnam(u.ustuck));
         return ECMD_OK;
-    } else if (is_pool(u.ux, u.uy) && !Underwater) { /* water walking */
+    } else if (is_damp_terrain(u.ux, u.uy) && !Underwater) { /* water walking */
         goto in_water;
     } else if (Upolyd && u.umonnum == PM_GREMLIN
-               && (levl[u.ux][u.uy].typ == FOUNTAIN || is_pool(u.ux, u.uy))) {
+               && (levl[u.ux][u.uy].typ == FOUNTAIN || is_damp_terrain(u.ux, u.uy))) {
         goto in_water;
     }
 
@@ -399,7 +401,7 @@ dosit(void)
             There("are no cushions floating nearby.");
         else
             You("sit down on the muddy bottom.");
-    } else if (is_pool(u.ux, u.uy) && !eggs_in_water(gy.youmonst.data)) {
+    } else if (is_damp_terrain(u.ux, u.uy) && !eggs_in_water(gy.youmonst.data)) {
  in_water:
         You("sit in the %s.", hliquid("water"));
         if (Upolyd && u.umonnum == PM_GREMLIN) {
@@ -412,7 +414,8 @@ dosit(void)
             if (!rn2(10) && uarm)
                 (void) water_damage(uarm, "armor", TRUE);
             if (!rn2(10) && uarmf && uarmf->otyp != WATER_WALKING_BOOTS)
-                (void) water_damage(uarm, "armor", TRUE);
+                (void) water_damage(uarmf, "armor", TRUE);
+            dryup_puddle(u.ux, u.uy, "dries up");
         }
     } else if (IS_SINK(typ)) {
         You(sit_message, defsyms[S_sink].explanation);

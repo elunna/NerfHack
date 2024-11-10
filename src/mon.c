@@ -179,7 +179,7 @@ sanity_check_single_mon(
             && !concealed_spot(mx, my))
             impossible("mon hiding under nonexistent obj (%s)", msg);
         if (mptr->mlet == S_EEL
-            && !(is_pool(mx, my) && !Is_waterlevel(&u.uz)))
+            && !(is_damp_terrain(mx, my) && !Is_waterlevel(&u.uz)))
             impossible("eel hiding %s (%s)",
                        !Is_waterlevel(&u.uz) ? "out of water"
                                              : "on Plane of Water", msg);
@@ -1257,7 +1257,7 @@ minliquid(struct monst *mtmp)
 staticfn int
 minliquid_core(struct monst *mtmp)
 {
-    boolean inpool, inlava, infountain;
+    boolean inpool, inlava, infountain, inshallow;
     boolean waterwall = is_waterwall(mtmp->mx,mtmp->my);
 
     /* [ceiling clingers are handled below] */
@@ -1270,6 +1270,8 @@ minliquid_core(struct monst *mtmp)
     inlava = (is_lava(mtmp->mx, mtmp->my)
               && !(mon_prop(mtmp, FLYING) || mon_prop(mtmp, LEVITATION)));
     infountain = IS_FOUNTAIN(levl[mtmp->mx][mtmp->my].typ);
+    inshallow = (is_puddle(mtmp->mx, mtmp->my) && !(is_flyer(mtmp->data)
+                      || is_floater(mtmp->data) || can_levitate(mtmp)));
 
     /* Flying and levitation keeps our steed out of the liquid
        (but not water-walking or swimming; note: if hero is in a
@@ -1284,18 +1286,23 @@ minliquid_core(struct monst *mtmp)
      * function will fail.
      */
     if (mtmp->data == &mons[PM_GREMLIN]
-        && (inpool || infountain) &&
+        && (inpool || infountain || inshallow) &&
         (mtmp->mtame || !mtmp->mpeaceful) && rn2(3)) {
-        if (split_mon(mtmp, (struct monst *) 0))
+        if (split_mon(mtmp, (struct monst *) 0)) {
             dryup(mtmp->mx, mtmp->my, FALSE);
+            dryup_puddle(mtmp->mx, mtmp->my, "dries up");
+        }
         if (inpool)
             water_damage_chain(mtmp->minvent, FALSE);
         return 0;
-    } else if (mtmp->data == &mons[PM_IRON_GOLEM] && inpool && !rn2(5)) {
+    } else if (mtmp->data == &mons[PM_IRON_GOLEM]
+        && (inpool || inshallow) && !rn2(3)) {
         int dam = d(2, 6);
 
         if (cansee(mtmp->mx, mtmp->my))
             pline_mon(mtmp, "%s rusts.", Monnam(mtmp));
+        if (rn2(2))
+            dryup_puddle(mtmp->mx, mtmp->my, "dries up");
         mtmp->mhp -= dam;
         if (mtmp->mhpmax > dam)
             mtmp->mhpmax -= dam;
@@ -1304,7 +1311,10 @@ minliquid_core(struct monst *mtmp)
             if (DEADMONSTER(mtmp))
                 return 1;
         }
-        water_damage_chain(mtmp->minvent, FALSE);
+        if (inshallow)
+            (void) water_damage(which_armor(mtmp, W_ARMF), "boots", TRUE);
+        else
+            water_damage_chain(mtmp->minvent, FALSE);
         return 0;
     }
 
@@ -1399,7 +1409,7 @@ minliquid_core(struct monst *mtmp)
     } else {
         /* but eels have a difficult time outside */
         if (mtmp->data->mlet == S_EEL && !Is_waterlevel(&u.uz)
-            && !breathless(mtmp->data)) {
+            && !breathless(mtmp->data) && !is_puddle(mtmp->mx, mtmp->my)) {
             /* as mhp gets lower, the rate of further loss slows down */
             if (mtmp->mhp > 1 && rn2(mtmp->mhp) > rn2(8))
                 mtmp->mhp--;
@@ -1429,7 +1439,7 @@ mcalcmove(
         mmove = (4 * mmove + 2) / 3;
 
     /* various monsters get a slight bump in speed when in their natural element */
-    if (is_pool(mon->mx, mon->my) && is_fast_underwater(mon->data))
+    if (is_damp_terrain(mon->mx, mon->my) && is_fast_underwater(mon->data))
         mmove = (4 * mmove + 2) / 3;
 
     if (mon == u.usteed && u.ugallop && svc.context.mv) {
@@ -2549,7 +2559,7 @@ mfndpos(
     int cnt = 0;
     uchar ntyp;
     uchar nowtyp;
-    boolean wantpool, poolok, lavaok, nodiag;
+    boolean wantpool, wantpuddle, poolok, lavaok, nodiag;
     boolean rockok = FALSE, treeok = FALSE, thrudoor;
     int maxx, maxy;
     boolean poisongas_ok, in_poisongas;
@@ -2561,7 +2571,7 @@ mfndpos(
     nowtyp = levl[x][y].typ;
 
     nodiag = NODIAG(mdat - mons);
-    wantpool = (mdat->mlet == S_EEL);
+    wantpool = wantpuddle = (mdat->mlet == S_EEL);
     poolok = ((!Is_waterlevel(&u.uz) && (m_in_air(mon) || can_wwalk(mon)))
               || (is_swimmer(mdat) && !wantpool));
     /* note: floating eye is the only is_floater() so this could be
@@ -2658,7 +2668,11 @@ mfndpos(
             if ((!lavaok || !(flag & ALLOW_WALL)) && ntyp == LAVAWALL)
                 continue;
             if ((poolok || is_pool(nx, ny) == wantpool)
-                && (lavaok || !is_lava(nx, ny))) {
+                && (is_puddle(nx, ny) == wantpuddle || !wantpuddle)
+                && (lavaok || !is_lava(nx, ny))
+                /* iron golems and longworms avoid shallow water */
+                && ((mon->data != &mons[PM_IRON_GOLEM] && !tiny_groundedmon(mdat))
+                    || !is_puddle(nx, ny))) {
                 int dispx, dispy;
                 boolean monseeu = (mon->mcansee
                                    && (!Invis || mon_prop(mon, SEE_INVIS)));
@@ -2777,6 +2791,10 @@ mfndpos(
         }
     if (!cnt && wantpool && !is_pool(x, y)) {
         wantpool = FALSE;
+        goto nexttry;
+    }
+    if (!cnt && wantpuddle && !is_puddle(x, y)) {
+        wantpuddle = FALSE;
         goto nexttry;
     }
     return cnt;
@@ -5298,7 +5316,7 @@ maybe_unhide_at(coordxy x, coordxy y)
 
     if (undetected
         && ((hides_under(mtmp->data) && (!concealed_spot(x, y) || trapped))
-            || (mtmp->data->mlet == S_EEL && !is_pool(x, y))))
+            || (mtmp->data->mlet == S_EEL && !is_damp_terrain(x, y))))
         (void) hideunder(mtmp);
 }
 
@@ -5327,7 +5345,8 @@ hideunder(struct monst *mtmp)
         /* aquatic creatures only hide under water, not under objects;
            they don't do so on the Plane of Water or when hero is also
            under water unless some obstacle blocks line-of-sight */
-        undetected = (is_pool(x, y) && !Is_waterlevel(&u.uz)
+        undetected = ((is_pool(x, y) || is_puddle(x, y))
+                      && !Is_waterlevel(&u.uz)
                       && (!Underwater || !couldsee(x, y)));
         if (seeit) {
             seenobj = "the water";

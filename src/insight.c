@@ -220,7 +220,8 @@ walking_on_water(void)
 {
     if (u.uinwater || Levitation || Flying)
         return FALSE;
-    return (boolean) (Wwalking && is_pool_or_lava(u.ux, u.uy));
+    return (boolean) (Wwalking && is_pool_or_lava(u.ux, u.uy)
+                      || is_puddle(u.ux, u.uy));
 }
 
 /* describe u.utraptype; used by status_enlightenment() and self_lookat() */
@@ -1029,7 +1030,7 @@ status_enlightenment(int mode, int final)
     } else if (walking_on_water()) {
         /* show active Wwalking here, potential Wwalking elsewhere */
         Sprintf(buf, "walking on %s",
-                is_pool(u.ux, u.uy) ? "water"
+                is_damp_terrain(u.ux, u.uy) ? "water"
                 : is_lava(u.ux, u.uy) ? "lava"
                   : surface(u.ux, u.uy)); /* catchall; shouldn't happen */
         you_are(buf, from_what(WWALKING));
@@ -2188,7 +2189,7 @@ youhiding(boolean via_enlghtmt, /* enlightenment line vs topl message */
     } else if (u.uundetected) {
         bp = eos(buf); /* points past "hiding" */
         if (gy.youmonst.data->mlet == S_EEL) {
-            if (is_pool(u.ux, u.uy))
+            if (is_damp_terrain(u.ux, u.uy))
                 Sprintf(bp, " in the %s", waterbody_name(u.ux, u.uy));
         } else if (hides_under(gy.youmonst.data)) {
             struct obj *o = svl.level.objects[u.ux][u.uy];

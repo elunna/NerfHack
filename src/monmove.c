@@ -2245,7 +2245,7 @@ concealed_spot(coordxy x, coordxy y)
         && can_hide_under_obj(otmp)
         /* aquatic creatures don't reach here; other swimmers
            shouldn't hide beneath underwater objects */
-        && !is_pool_or_lava(x, y))
+        && !is_pool_or_lava(x, y) && !is_puddle(x, y))
         cflags |= CONCEALABLE_BY_OBJECT;
     switch (levl[x][y].typ) {
     case ALTAR:

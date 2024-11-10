@@ -1155,7 +1155,7 @@ use_defensive(struct monst *mtmp)
             cnt += 12;
         if (mtmp->mconf)
             pm = fish = &mons[PM_ACID_BLOB];
-        else if (is_pool(mtmp->mx, mtmp->my))
+        else if (is_damp_terrain(mtmp->mx, mtmp->my))
             fish = &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
 
         if (is_moncard(otmp)) {
@@ -4084,7 +4084,7 @@ muse_createmonster(struct monst *mtmp, struct obj *otmp)
     coord cc;
     struct monst *mon;
     /* pm: 0 => random, eel => aquatic, croc => amphibious */
-    struct permonst *pm = !is_pool(mtmp->mx, mtmp->my) ? 0
+    struct permonst *pm = !is_damp_terrain(mtmp->mx, mtmp->my) ? 0
                         : &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
 
     if (!enexto(&cc, mtmp->mx, mtmp->my, pm))

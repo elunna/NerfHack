@@ -43,6 +43,20 @@ is_waterwall(coordxy x, coordxy y)
 }
 
 boolean
+is_damp_terrain(coordxy x, coordxy y)
+{
+    return (is_pool(x, y) || is_puddle(x, y));
+}
+
+boolean
+is_puddle(coordxy x, coordxy y)
+{
+    if (!isok(x, y))
+        return FALSE;
+    return levl[x][y].typ == PUDDLE;
+}
+
+boolean
 is_pool(coordxy x, coordxy y)
 {
     schar ltyp;
@@ -394,6 +408,13 @@ e_survives_at(struct entity *etmp, coordxy x, coordxy y)
                           || is_swimmer(etmp->edata)
                           || is_flyer(etmp->edata)
                           || is_floater(etmp->edata));
+    if (is_puddle(x, y) && tiny_groundedmon(etmp->edata))
+        return (boolean) ((is_u(etmp) && (Wwalking || Amphibious || Breathless
+                                          || Swimming || Flying || Levitation))
+                          || is_swimmer(etmp->edata)
+                          || is_flyer(etmp->edata)
+                          || is_floater(etmp->edata));
+
     /* must force call to lava_effects in e_died if is_u */
     if (is_lava(x, y))
         return (boolean) ((is_u(etmp) && (Levitation || Flying))

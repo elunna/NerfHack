@@ -929,7 +929,7 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
         explode(dig_x, dig_y, 0, 20 + d(3, 6), TRAP_EXPLODE, EXPL_MAGICAL);
         deltrap(ttmp);
         newsym(dig_x, dig_y);
-    } else if (is_pool_or_lava(dig_x, dig_y)) {
+    } else if (is_lava(dig_x, dig_y) || is_damp_terrain(dig_x, dig_y)) {
         pline_The("%s sloshes furiously for a moment, then subsides.",
                   hliquid(is_lava(dig_x, dig_y) ? "lava" : "water"));
         wake_nearby(FALSE); /* splashing */
@@ -1103,6 +1103,7 @@ dig_up_grave(coord *cc)
     levl[dig_x][dig_y].emptygrave = 0; /* clear 'flags' */
     levl[dig_x][dig_y].disturbed = 0; /* clear 'horizontal' */
     del_engr_at(dig_x, dig_y);
+    maybe_unhide_at(dig_x, dig_y);
     newsym(dig_x, dig_y);
     return;
 }
@@ -1338,6 +1339,9 @@ use_pick_axe2(struct obj *obj)
         /* Monsters which swim also happen not to be able to dig */
         You("cannot stay under%s long enough.",
             is_pool(u.ux, u.uy) ? "water" : " the lava");
+    } else if (IS_PUDDLE(levl[u.ux][u.uy].typ)) {
+        Your("%s against the water's surface.", aobjnam(obj, "splash"));
+        wake_nearby(FALSE);
     } else if ((trap = t_at(u.ux, u.uy)) != 0
                && (uteetering_at_seen_pit(trap) || uescaped_shaft(trap))) {
         dotrap(trap, FORCEBUNGLE);

@@ -915,10 +915,12 @@ domonability(void)
         if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)) {
             if (split_mon(&gy.youmonst, (struct monst *) 0))
                 dryup(u.ux, u.uy, TRUE);
-        } else if (is_pool(u.ux, u.uy)) {
+        } else if (is_damp_terrain(u.ux, u.uy)) {
             /* is_pool: might be wearing water walking boots or amulet of
                magical breathing */
             (void) split_mon(&gy.youmonst, (struct monst *) 0);
+            if (is_puddle(u.ux, u.uy) && rn2(2))
+                dryup_puddle(u.ux, u.uy, "dries up");
         } else {
             There("is no fountain here.");
         }
@@ -1080,7 +1082,8 @@ const char *levltyp[MAX_TYPE + 2] = {
     "secret door", "secret corridor", "pool", "moat", "water",
     "drawbridge up", "lava pool", "lava wall", "iron bars", "door",
     "corridor", "room", "stairs", "ladder", "fountain", "forge", "throne",
-    "sink", "toilet", "grave", "altar", "ice", "grass", "drawbridge down", "air", "cloud",
+    "sink", "toilet", "grave", "altar", "ice", "grass", "drawbridge down",
+    "air", "cloud", "puddle",
     /* not a real terrain type, but used for undiggable stone
        by wiz_map_levltyp() */
     "unreachable/undiggable",

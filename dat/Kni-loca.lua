@@ -10,18 +10,18 @@ des.level_flags("mazelevel", "hardfloor", "noflip")
 des.level_init({ style="mines", fg=".", bg="P", smoothed=false, joined=true, lit=1, walled=false })
 
 des.map([[
-xxxxxxxxx......xxxx...........xxxxxxxxxx
-xxxxxxx.........xxx.............xxxxxxxx
-xxxx..............................xxxxxx
-xx.................................xxxxx
-....................................xxxx
-.......................................x
-........................................
-xx...................................xxx
-xxxx..............................xxxxxx
-xxxxxx..........................xxxxxxxx
-xxxxxxxx.........xx..........xxxxxxxxxxx
-xxxxxxxxx.......xxxxxx.....xxxxxxxxxxxxx
+xxxxxxxxxu....uxxxxu.........uxxxxxxxxxx
+xxxxxxxuu......uxxxu..........uuxxxxxxxx
+xxxxuuu.........uuu.............uuxxxxxx
+xxuu..............................uxxxxx
+uu.................................uxxxx
+....................................uuux
+uu...................................uuu
+xxuu..............................uuuxxx
+xxxxuu..........................uuxxxxxx
+xxxxxxuu.........uu..........uuuxxxxxxxx
+xxxxxxxxu.......uxxu.......uuxxxxxxxxxxx
+xxxxxxxxxu.....uxxxxxxu...uxxxxxxxxxxxxx
 ]]);
 -- Dungeon Description
 -- The Isle of Glass is a Tor rising out of the swamps surrounding it.

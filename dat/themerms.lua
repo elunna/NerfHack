@@ -460,7 +460,7 @@ themerooms = {
       local hei = 3 + (nh.rn2(3) * 2);
       des.room({ type = "themed", filled = 1, w = wid, h = hei,
                  contents = function(rm)
-                    local feature = { "C", "L", "I", "P", "T" };
+                    local feature = { "C", "L", "I", "u", "T" };
                     shuffle(feature);
                     des.terrain((rm.width - 1) / 2, (rm.height - 1) / 2,
                 feature[1]);
@@ -1181,14 +1181,13 @@ xxxx----xx----xxxx]], contents=function(m)
    end
 },
 
---[=[
    -- Swimming pool
    {
       mindiff = 5,
       contents = function()
          des.room({ type="themed", filled=0, contents=function(rm)
             local poolarea = selection.fillrect(1,1,rm.width-2,rm.height-2)
-            des.terrain(poolarea, '}')
+            des.terrain(poolarea, 'u')
             -- spice it up with some sea monsters
             local waterarea = (rm.width-2)*(rm.height-2)
             local nmonsters = math.min(d(5), waterarea/2)
@@ -1208,7 +1207,6 @@ xxxx----xx----xxxx]], contents=function(m)
          end })
       end
    },
- --]=]
 
    -- Anti swimming pool
    {
@@ -1216,7 +1214,7 @@ xxxx----xx----xxxx]], contents=function(m)
       contents = function()
          des.room({ type="themed", filled=0, contents = function(rm)
             local water = selection.rect(0, 0, rm.width-1, rm.height-1)
-            des.terrain(water, '}')
+            des.terrain(water, 'u')
             for i = 1, d(3) do
                des.monster(';')
             end
@@ -1383,7 +1381,7 @@ end,
          height = 5 + nh.rn2(4)
          des.room({ type="themed", w=width, h=height, contents=function(rm)
             -- no grass/ice; not obstacles
-            obstacles = { 'T', '}', 'F', 'L', 'C' }
+            obstacles = { 'T', 'u', 'F', 'L', 'C' }
             terrain = obstacles[d(#obstacles)]
             for x = 1,rm.width/2 do
                for y = 1,rm.height-2 do
@@ -1554,7 +1552,7 @@ end,
          des.room({ type = 'themed', contents = function(rm)
             local totsiz = rm.width * rm.height
             for i = 1, math.min(d(6)+6, math.floor(totsiz / 4)) do
-               des.feature({ type='pool' })
+               des.feature({ type='puddle' })
             end
             for i = 1, math.min(d(3), math.floor(totsiz / 4)) do
                des.feature({ type='fountain' })

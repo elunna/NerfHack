@@ -28,7 +28,7 @@ des.map([[
 ]]);
 
 if percent(40) then
-   local terrain = { "L", "}", "T", ".", "-", "C", "g" };
+   local terrain = { "L", "u", "T", ".", "-", "C", "g" };
    local tidx = math.random(1, #terrain);
    des.replace_terrain({ region={00,00, 74,17}, fromterrain="F", toterrain=terrain[tidx] });
 end;

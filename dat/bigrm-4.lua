@@ -27,7 +27,7 @@ des.map([[
 -----------                                                     -----------
 ]]);
 
-local terrains = { ".", ".", ".", ".", "P", "L", "-", "T", "W", "Z" };
+local terrains = { ".", ".", ".", ".", "P", "L", "-", "T", "W", "Z", "u" };
 local tidx = math.random(1, #terrains);
 local toterr = terrains[tidx];
 if (toterr ~= "L") then

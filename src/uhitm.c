@@ -287,7 +287,7 @@ attack_checks(
                 pline("A %s %s %s!", mtmp->mtame ? "tame" : "wild",
                       notseen ? "creature" : (const char *) lmonbuf,
                       notseen ? "is present" : "appears");
-            else if (Blind || (is_pool(mtmp->mx, mtmp->my) && !Underwater))
+            else if (Blind || (is_damp_terrain(mtmp->mx, mtmp->my) && !Underwater))
                 pline("Wait!  There's a hidden monster there!");
             else if (concealed_spot(mtmp->mx, mtmp->my)) {
                 obj = svl.level.objects[mtmp->mx][mtmp->my];
@@ -5768,6 +5768,7 @@ mhitm_ad_webs(
                 pline("%s entangles you in a web%s",
                       Monnam(magr),
                       (is_pool_or_lava(u.ux, u.uy)
+                       || is_puddle(u.ux, u.uy)
                        || IS_AIR(levl[u.ux][u.uy].typ))
                           ? ", but it has nothing to anchor to."
                           : is_giant(gy.youmonst.data)

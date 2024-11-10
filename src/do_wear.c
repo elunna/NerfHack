@@ -296,7 +296,7 @@ Boots_off(void)
         break;
     case WATER_WALKING_BOOTS:
         /* check for lava since fireproofed boots make it viable */
-        if ((is_pool(u.ux, u.uy) || is_lava(u.ux, u.uy))
+        if ((is_damp_terrain(u.ux, u.uy) || is_lava(u.ux, u.uy))
             && !Levitation && !Flying
             && !(is_clinger(gy.youmonst.data) && has_ceiling(&u.uz))
             && !svc.context.takeoff.cancelled_don

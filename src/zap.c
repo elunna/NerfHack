@@ -1054,8 +1054,8 @@ revive(struct obj *corpse, boolean by_hero)
             x = xy.x, y = xy.y;
     }
 
-    if (corpse->norevive
-        || (mons[montype].mlet == S_EEL && !IS_POOL(levl[x][y].typ))) {
+    if (corpse->norevive || (mons[montype].mlet == S_EEL 
+            && !(IS_POOL(levl[x][y].typ) || IS_PUDDLE(levl[x][y].typ)))) {
         if (cansee(x, y))
             pline("%s twitches feebly.",
                 upstart(corpse_xname(corpse, (const char *) 0, CXN_PFX_THE)));
@@ -3925,6 +3925,9 @@ zap_updown(struct obj *obj) /* wand or spell, nonnull */
             if (!(e && e->engr_type == ENGRAVE)) {
                 if (is_pool(u.ux, u.uy) || is_ice(u.ux, u.uy))
                     pline1(nothing_happens);
+                else if (is_puddle(u.ux, u.uy))
+                    pline("The %s at your %s turns slightly %s.", hliquid("water"),
+                          makeplural(body_part(FOOT)), hcolor("red"));
                 else
                     pline("Blood %ss %s your %s.",
                           is_lava(u.ux, u.uy) ? "boil" : "pool",
@@ -4534,12 +4537,16 @@ bhit(
                  ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                    && obj->otyp == SPE_FIRE_BOLT))) {
             burn_grass(gb.bhitpos.x, gb.bhitpos.y);
-        } else if (typ == FOUNTAIN &&
+        } else if ((typ == FOUNTAIN || typ == PUDDLE) &&
                    ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                      && obj->otyp == SPE_FIRE_BOLT))) {
             if (cansee(gb.bhitpos.x, gb.bhitpos.y))
-                pline("Steam billows from the fountain.");
-            dryup(gb.bhitpos.x, gb.bhitpos.y, TRUE);
+                pline("Steam billows from the %s.", 
+                explain_terrain(gb.bhitpos.x, gb.bhitpos.y));
+            if (typ == FOUNTAIN)
+                dryup(gb.bhitpos.x, gb.bhitpos.y, TRUE);
+            else
+                dryup_puddle(gb.bhitpos.x, gb.bhitpos.y, "evaporates");
             range -= 1;
             break;
         } else if (ttmp && ttmp->ttyp == WEB &&
@@ -5980,20 +5987,24 @@ melt_ice(coordxy x, coordxy y, const char *msg)
     if (lev->typ == DRAWBRIDGE_UP || lev->typ == DRAWBRIDGE_DOWN) {
         lev->drawbridgemask &= ~DB_ICE; /* revert to DB_MOAT */
     } else { /* lev->typ == ICE */
-        lev->typ = (lev->icedpool == ICED_POOL ? POOL : MOAT);
+        lev->typ = (lev->icedpool == ICED_POOL ? POOL
+                        : lev->icedpool == ICED_PUDDLE ? PUDDLE
+                              : MOAT);
         lev->icedpool = 0;
     }
     spot_stop_timers(x, y, MELT_ICE_AWAY); /* no more ice to melt away */
     if (t_at(x, y))
         trap_ice_effects(x, y, TRUE); /* TRUE because ice_is_melting */
     obj_ice_effects(x, y, FALSE);
-    unearth_objs(x, y);
+    if (lev->typ != PUDDLE)
+        unearth_objs(x, y);
     if (Underwater)
         vision_recalc(1);
     newsym(x, y);
     if (cansee(x, y) || u_at(x, y))
         Norep("%s", msg);
-    if ((otmp = sobj_at(BOULDER, x, y)) != 0) {
+
+    if (lev->typ != PUDDLE && (otmp = sobj_at(BOULDER, x, y)) != 0) {
         if (cansee(x, y))
             pline("%s settles...", An(xname(otmp)));
         do {
@@ -6178,6 +6189,9 @@ zap_over_floor(
                 pline("Steam billows from the fountain.");
             rangemod -= 1;
             dryup(x, y, type > 0);
+        } else if (IS_PUDDLE(lev->typ)) {
+            rangemod -= 1;
+            dryup_puddle(x, y, "boils away");
         } else if (IS_GRASS(lev->typ)) {
             burn_grass(x, y);
         }
@@ -6194,7 +6208,7 @@ zap_over_floor(
             if (see_it)
                 newsym(x, y);
         }
-        if (is_pool(x, y) || is_lava(x, y) || lavawall) {
+        if (is_damp_terrain(x, y) || is_lava(x, y) || lavawall) {
             boolean lava = (is_lava(x, y) || lavawall),
                     moat = is_moat(x, y);
             int chance = max(2, 5 + svl.level.flags.temperature * 10);
@@ -6219,6 +6233,7 @@ zap_over_floor(
                 } else {
                     lev->icedpool = lava ? 0
                                          : (lev->typ == POOL) ? ICED_POOL
+                                         : (lev->typ == PUDDLE) ? ICED_PUDDLE
                                                               : ICED_MOAT;
                     if (lavawall) {
                         if ((isok(x, y-1) && IS_WALL(levl[x][y-1].typ))
@@ -6232,7 +6247,8 @@ zap_over_floor(
                         lev->typ = lava ? ROOM : ICE;
                     }
                 }
-                bury_objs(x, y);
+                if (lev->icedpool != ICED_PUDDLE)
+                    bury_objs(x, y);
                 if (!lava) {
                     Soundeffect(se_soft_crackling, 30);
                 }
@@ -7417,6 +7433,20 @@ burn_grass(coordxy x, coordxy y)
         Norep("You heart whooshing and crackling.");
 
     levl[x][y].typ = ROOM;
+    maybe_unhide_at(x, y);
+    newsym(x, y);
+}
+
+/* shallow water isn't an endless resource like a pool/moat */
+void
+dryup_puddle(coordxy x, coordxy y, const char *action)
+{
+    if (levl[x][y].typ != PUDDLE)
+        return;
+
+    if (cansee(x, y))
+        pline_The("puddle %s.", action);
+    set_levltyp(u.ux, u.uy, ROOM);
     maybe_unhide_at(x, y);
     newsym(x, y);
 }

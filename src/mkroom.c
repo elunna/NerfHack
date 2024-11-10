@@ -725,9 +725,12 @@ mkswamp(void) /* Michiel Huisjes & Fred de Wilde */
                                                sx, sy, NO_MM_FLAGS);
                             eelct++;
                         }
-                    } else if (!rn2(4)) /* swamps tend to be moldy */
+                    } else if (!rn2(4)) { 
+                        levl[sx][sy].typ = PUDDLE;
+                        /* swamps tend to be moldy */
                         (void) makemon(mkclass(S_FUNGUS, 0), sx, sy,
                                        NO_MM_FLAGS);
+                    }
                 }
             }
         svl.level.flags.has_swamp = 1;
@@ -1194,6 +1197,9 @@ cmap_to_type(int sym)
         break;
     case S_pool:
         typ = POOL;
+        break;
+    case S_puddle:
+        typ = PUDDLE;
         break;
     case S_ice:
         typ = ICE;

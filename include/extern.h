@@ -459,6 +459,8 @@ extern void free_nomakedefs(void);
 /* ### dbridge.c ### */
 
 extern boolean is_waterwall(coordxy, coordxy);
+extern boolean is_damp_terrain(coordxy, coordxy);
+extern boolean is_puddle(coordxy, coordxy);
 extern boolean is_pool(coordxy, coordxy);
 extern boolean is_lava(coordxy, coordxy);
 extern boolean is_pool_or_lava(coordxy, coordxy);
@@ -4059,6 +4061,7 @@ extern int resist(struct monst *, char, int, int) NONNULLARG1;
 extern void makewish(void);
 extern const char *flash_str(int, boolean) NONNULL;
 extern void burn_grass(coordxy, coordxy);
+extern void dryup_puddle(coordxy, coordxy, const char *);
 
 /* ### unixmain.c, windsys.c ### */
 

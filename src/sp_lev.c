@@ -4133,7 +4133,8 @@ good_stair_loc(coordxy x, coordxy y)
 {
     schar typ = levl[x][y].typ;
 
-    return (typ == ROOM || typ == CORR || typ == ICE);
+    return (typ == ROOM || typ == CORR || typ == ICE
+            || typ == PUDDLE || typ == GRASS);
 }
 
 staticfn int
@@ -4842,9 +4843,9 @@ int
 lspo_feature(lua_State *L)
 {
     static const char *const features[] = { "fountain", "forge", "sink", "toilet",
-                                            "pool", "throne", "tree", NULL };
+                                            "pool", "throne", "tree", "puddle", NULL };
     static const int features2i[] = { FOUNTAIN, FORGE, SINK, TOILET,
-                                      POOL, THRONE, TREE, STONE };
+                                      POOL, THRONE, TREE, PUDDLE, STONE };
     coordxy x, y;
     int typ;
     int argc = lua_gettop(L);

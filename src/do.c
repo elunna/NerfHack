@@ -262,7 +262,7 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
         res = TRUE;
     } else if (is_lava(x, y)) {
         res = lava_damage(obj, x, y);
-    } else if (is_pool(x, y)) {
+    } else if (is_damp_terrain(x, y)) {
         /* Reasonably bulky objects (arbitrary) splash when dropped.
          * If you're floating above the water even small things make
          * noise.  Stuff dropped near fountains always misses */
@@ -277,6 +277,9 @@ flooreffects(struct obj *obj, coordxy x, coordxy y, const char *verb)
             map_background(x, y, 0);
             newsym(x, y);
         }
+        if (is_puddle(x, y) && !rn2(3))
+            dryup_puddle(x, y, "dries up");
+        
         res = water_damage(obj, NULL, FALSE) == ER_DESTROYED;
     } else if (u_at(x, y) && (t = t_at(x, y)) != 0
                && (uteetering_at_seen_pit(t) || uescaped_shaft(t))) {

@@ -357,6 +357,7 @@ static const struct {
                 { 'U', TOILET },
                 { '}', MOAT },
                 { 'P', POOL },
+                { 'u', PUDDLE },
                 { 'L', LAVAPOOL },
                 { 'Z', LAVAWALL },
                 { 'I', ICE },
