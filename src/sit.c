@@ -114,7 +114,7 @@ throne_sit_effect(void)
             break;
         case 7:
             {
-                int cnt = rnd(10);
+                int cnt = rnd(4) + 10;
 
                 /* Magical voice not affected by deafness */
                 pline("A voice echoes:");
