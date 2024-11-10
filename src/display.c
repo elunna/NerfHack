@@ -793,7 +793,7 @@ feel_location(coordxy x, coordxy y)
          *      + Room/water positions
          *      + Everything else (hallways!)
          */
-        if (IS_ROCK(lev->typ)
+        if (IS_OBSTRUCTED(lev->typ)
             || (IS_DOOR(lev->typ)
                 && (lev->doormask & (D_LOCKED | D_CLOSED)))) {
             map_background(x, y, 1);
@@ -3246,7 +3246,7 @@ check_pos(coordxy x, coordxy y, int which)
     if (!isok(x, y))
         return which;
     type = levl[x][y].typ;
-    if (IS_ROCK(type) || type == CORR || type == SCORR)
+    if (IS_STWALL(type) || IS_CORR(type) || IS_SDOOR(type))
         return which;
     return 0;
 }

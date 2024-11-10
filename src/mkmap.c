@@ -347,8 +347,8 @@ finish_map(
     if (lit) {
         for (i = 1; i < COLNO; i++)
             for (j = 0; j < ROWNO; j++)
-                if ((!IS_ROCK(fg_typ) && levl[i][j].typ == fg_typ)
-                    || (!IS_ROCK(bg_typ) && levl[i][j].typ == bg_typ)
+                if ((!IS_OBSTRUCTED(fg_typ) && levl[i][j].typ == fg_typ)
+                    || (!IS_OBSTRUCTED(bg_typ) && levl[i][j].typ == bg_typ)
                     || (bg_typ == TREE && levl[i][j].typ == bg_typ)
                     || (walled && IS_WALL(levl[i][j].typ)))
                     levl[i][j].lit = TRUE;
@@ -536,7 +536,7 @@ makeriver(int x1, int y1, int x2, int y2)
             chance = 15;
         else if (levl[cx][cy].typ == ROOM)
             chance = 30;
-        else if (IS_ROCK(levl[cx][cy].typ))
+        else if (IS_OBSTRUCTED(levl[cx][cy].typ))
             chance = 100;
 
         if (rn2(100) < chance && !t_at(cx, cy)) {

@@ -1684,7 +1684,7 @@ trapeffect_rust_trap(
     struct trap *trap,
     unsigned int trflags UNUSED)
 {
-    struct obj *otmp;
+    struct obj *otmp, *nextobj;
 
     if (mtmp == &gy.youmonst) {
         seetrap(trap);
@@ -1716,10 +1716,12 @@ trapeffect_rust_trap(
             pline("%s you!", A_gush_of_water_hits);
             /* note: exclude primary and secondary weapons from splashing
                because cases 1 and 2 target them [via water_damage()] */
-            for (otmp = gi.invent; otmp; otmp = otmp->nobj)
+            for (otmp = gi.invent; otmp; otmp = nextobj) {
+                nextobj = otmp->nobj;
                 if (otmp->lamplit && otmp != uwep
                     && (otmp != uswapwep || !u.twoweap))
                     (void) splash_lit(otmp);
+            }
             if (uarmc)
                 (void) water_damage(uarmc, cloak_simple_name(uarmc), TRUE);
             else if (uarm)
@@ -4107,7 +4109,7 @@ launch_obj(
                 const char *bmsg = " as one boulder sets another in motion";
                 coordxy fx = x + dx, fy = y + dy;
 
-                if (!isok(fx, fy) || !dist || IS_ROCK(levl[fx][fy].typ))
+                if (!isok(fx, fy) || !dist || IS_OBSTRUCTED(levl[fx][fy].typ))
                     bmsg = " as one boulder hits another";
 
                 Soundeffect(se_loud_crash, 80);
@@ -5552,13 +5554,14 @@ emergency_disrobe(boolean *lostsome)
     int invc = inv_cnt(TRUE);
 
     while (near_capacity() > (Punished ? UNENCUMBERED : SLT_ENCUMBER)) {
-        struct obj *obj, *otmp = (struct obj *) 0;
+        struct obj *obj, *nextobj, *otmp = (struct obj *) 0;
         int i;
 
         /* Pick a random object */
         if (invc > 0) {
             i = rn2(invc);
-            for (obj = gi.invent; obj; obj = obj->nobj) {
+            for (obj = gi.invent; obj; obj = nextobj) {
+                nextobj = obj->nobj;
                 /*
                  * Undroppables are: body armor, boots, gloves,
                  * amulets, and rings because of the time and effort
@@ -7480,7 +7483,7 @@ static const char lava_killer[] = "molten lava";
 boolean
 lava_effects(void)
 {
-    struct obj *obj, *obj2;
+    struct obj *obj, *obj2, *nextobj;
     boolean usurvive, boil_away;
     unsigned protect_oid = 0;
     int burncount = 0, burnmesgcount = 0;
@@ -7508,7 +7511,8 @@ lava_effects(void)
      * emergency save file created before item destruction.
      */
     if (!usurvive) {
-        for (obj = gi.invent; obj; obj = obj->nobj) {
+        for (obj = gi.invent; obj; obj = nextobj) {
+            nextobj = obj->nobj;
             if (obj->in_use) { /* remove_worn_item() sets in_use */
                 /* one item can be protected from burning up [accommodates
                    steal(AMULET_OF_FLYING) -> remove_worn_item() -> fall
@@ -7856,10 +7860,11 @@ trapname(
 void
 ignite_items(struct obj *objchn)
 {
-    struct obj *obj;
+    struct obj *obj, *nextobj;
     boolean bynexthere = (objchn && objchn->where == OBJ_FLOOR);
 
-    for (obj = objchn; obj; obj = bynexthere ? obj->nexthere : obj->nobj) {
+    for (obj = objchn; obj; obj = bynexthere ? obj->nexthere : nextobj) {
+        nextobj = obj->nobj;
         /* ignitable items like lamps and candles will catch fire */
         if (!obj->lamplit && !obj->in_use)
             catch_lit(obj);
