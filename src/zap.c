@@ -7381,7 +7381,7 @@ makewish(void)
     /* TODO? maybe generate a second event describing what was received since
        these just echo player's request rather than show actual result */
 
-    if (otmp->otyp == CORPSE && !u_safe_from_fatal_corpse(otmp))
+    if (otmp->otyp == CORPSE && !u_safe_from_fatal_corpse(otmp, st_all))
         otmp->wishedfor = 1;
 
     /* The NeverEnding Story II: The Next Chapter: Bastian loses a

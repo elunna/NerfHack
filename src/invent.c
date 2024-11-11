@@ -1219,7 +1219,7 @@ hold_another_object(
         obj = addinv_core0(obj, (struct obj *) 0, FALSE);
         goto drop_it;
     } else if (obj->otyp == CORPSE
-               && !u_safe_from_fatal_corpse(obj)
+               && !u_safe_from_fatal_corpse(obj, st_all)
                && obj->wishedfor) {
         obj->wishedfor = 0;
         obj = addinv_core0(obj, (struct obj *) 0, FALSE);
@@ -1467,6 +1467,18 @@ carrying(int type)
     /* this could be replaced by 'return m_carrying(&gy.youmonst, type);' */
     for (otmp = gi.invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == type)
+            break;
+    return otmp;
+}
+
+/* return inventory object of type that will petrify on touch */
+struct obj *
+carrying_stoning_corpse(void)
+{
+    struct obj *otmp;
+
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj)
+        if (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]))
             break;
     return otmp;
 }
