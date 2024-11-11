@@ -220,8 +220,8 @@ walking_on_water(void)
 {
     if (u.uinwater || Levitation || Flying)
         return FALSE;
-    return (boolean) (Wwalking && is_pool_or_lava(u.ux, u.uy)
-                      || is_puddle(u.ux, u.uy));
+    return (boolean) (Wwalking && (is_pool_or_lava(u.ux, u.uy)
+                      || is_puddle(u.ux, u.uy)));
 }
 
 /* describe u.utraptype; used by status_enlightenment() and self_lookat() */
