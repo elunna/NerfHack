@@ -2239,14 +2239,16 @@ concealed_spot(coordxy x, coordxy y)
         && !is_pool_or_lava(x, y) && !is_puddle(x, y))
         cflags |= CONCEALABLE_BY_OBJECT;
     switch (levl[x][y].typ) {
-    case ALTAR:
+    /* Inherited from xnh */
+    case GRASS:
+    case SINK:
+    case ALTAR: 
+    case THRONE:
+    case LADDER:
+    case GRAVE:
+    /* New for NerfHack*/
     case FORGE:
     case FOUNTAIN:
-    case GRASS:
-    case GRAVE:
-    case LADDER:
-    case SINK:
-    case THRONE:
     case TOILET:
         cflags |= CONCEALABLE_BY_TERRAIN;
     }

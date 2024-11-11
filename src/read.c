@@ -1218,7 +1218,8 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     set_levltyp(x, y, ltyp);
     del_engr_at(x, y);
     water_damage_chain(svl.level.objects[x][y], FALSE);
-
+    maybe_unhide_at(x, y);
+    
     if (ltyp == POOL && (mtmp = m_at(x, y)) != 0)
         (void) minliquid(mtmp);
     else

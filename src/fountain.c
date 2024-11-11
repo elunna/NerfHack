@@ -929,6 +929,7 @@ dipfountain(struct obj *obj)
         update_inventory();
         set_levltyp(u.ux, u.uy, ROOM); /* updates level.flags.nfountains */
         levl[u.ux][u.uy].flags = 0;
+        maybe_unhide_at(u.ux, u.uy);
         newsym(u.ux, u.uy);
         if (in_town(u.ux, u.uy))
             (void) angry_guards(FALSE);
