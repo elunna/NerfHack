@@ -1757,8 +1757,8 @@ makemon(
          * won't generate them rabid to avoid insane
          * concentrations of rabid soldiers in Ludios or Castle */
             && mtmp->data->mlet != S_HUMAN) {
-        if ((mtmp->mnum == PM_COYOTE || is_bat(mtmp->data))
-                && !rn2(10))
+        if ((mtmp->mnum == PM_COYOTE || mtmp->mnum == PM_RABBIT
+            || is_bat(mtmp->data)) && !rn2(10))
             mon_rabid(mtmp, FALSE);
         else if (!rn2(127 - level_difficulty()))
             mon_rabid(mtmp, FALSE);
