@@ -1403,6 +1403,15 @@
         M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
         M2_HOSTILE, 0,
         NO_RACE, 5, CLR_BROWN, RECLUSE_SPIDER),
+    MON(NAM("nickelpede"), S_SPIDER,                                 /* Slash'EM */
+        LVL(8, 4, 3, 0, 0), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_BITE, AD_DRST, 3, 4), 
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(150, 50, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS 
+            | M1_CARNIVORE, M2_HOSTILE, 
+        0,
+        NO_RACE, 6, CLR_CYAN, NICKELPEDE),
     MON(NAM("giant spider"), S_SPIDER,
         LVL(5, 15, 4, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 2, 4),
