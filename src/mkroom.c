@@ -619,6 +619,9 @@ antholemon(void)
         case 1:
             mtyp = PM_FIRE_ANT;
             break;
+        case 2:
+            mtyp = PM_BULLET_ANT;
+            break;
         default:
             mtyp = PM_GIANT_ANT;
             break;
