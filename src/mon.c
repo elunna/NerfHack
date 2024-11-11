@@ -3370,6 +3370,9 @@ logdeadmon(struct monst *mtmp, int mndx)
 {
     int howmany = svm.mvitals[mndx].died;
 
+    if (mtmp->msummoned)
+        return;
+    
     if (mndx == PM_MEDUSA && howmany == 1) {
         record_achievement(ACH_MEDU); /* also generates a livelog event */
     } else if (mndx == PM_CERBERUS && howmany == 1) {
@@ -3510,9 +3513,12 @@ mondead(struct monst *mtmp)
      * first dead dragon via ring of conflict or pets, and extinguishing
      * based on only player kills probably opens more avenues of abuse
      * for rings of conflict and such.
+     *
+     * Spell-beings do not count toward vanquished monsters.
      */
+
     mndx = monsndx(mtmp->data);
-    if (svm.mvitals[mndx].died < 255)
+    if (svm.mvitals[mndx].died < 255 && !mtmp->msummoned)
         svm.mvitals[mndx].died++;
 
     /* if it's a (possibly polymorphed) quest leader, mark him as dead */
@@ -3524,7 +3530,7 @@ mondead(struct monst *mtmp)
         svm.mvitals[mndx].mvflags |= G_GENOD;
 #endif
 
-    if (mtmp->data->mlet == S_KOP) {
+    if (mtmp->data->mlet == S_KOP && !mtmp->msummoned) {
         stairway *stway = stairway_find_type_dir(FALSE, FALSE);
 
         /* Dead Kops may come back. */
