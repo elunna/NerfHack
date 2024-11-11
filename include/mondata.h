@@ -398,7 +398,9 @@
      || likes_lava(ptr))
 
 #define touch_petrifies(ptr) \
-    ((ptr) == &mons[PM_COCKATRICE] || (ptr) == &mons[PM_CHICKATRICE] \
+    ((ptr) == &mons[PM_COCKATRICE] \
+    || (ptr) == &mons[PM_CHICKATRICE] \
+    || (ptr) == &mons[PM_ASPHYNX] \
     || (ptr) == &mons[PM_BASILISK])
 /* Medusa doesn't pass touch_petrifies() but does petrify if eaten */
 #define flesh_petrifies(pm) (touch_petrifies(pm) || (pm) == &mons[PM_MEDUSA])
