@@ -1340,13 +1340,13 @@ spelleffects_check(int spell, int *res, int *energy)
         disp.botl = TRUE;
         *res = ECMD_TIME;
         return TRUE;
-    } else if (spellknow(spell) <= KEEN / 200) { /* 100 turns left */
+    } else if (spellknow(spell) <= MAX_KNOW / 200) { /* 100 turns left */
         You("strain to recall the spell.");
-    } else if (spellknow(spell) <= KEEN / 40) { /* 500 turns left */
+    } else if (spellknow(spell) <= MAX_KNOW / 40) { /* 500 turns left */
         You("have difficulty remembering the spell.");
-    } else if (spellknow(spell) <= KEEN / 20) { /* 1000 turns left */
+    } else if (spellknow(spell) <= MAX_KNOW / 20) { /* 1000 turns left */
         Your("knowledge of this spell is growing faint.");
-    } else if (spellknow(spell) <= KEEN / 10) { /* 2000 turns left */
+    } else if (spellknow(spell) <= MAX_KNOW / 10) { /* 2000 turns left */
         Your("recall of this spell is gradually fading.");
     }
 
@@ -2379,7 +2379,7 @@ spellretention(int idx, char * outbuf)
     if (turnsleft < 1L) {
         /* spell has expired; hero can't successfully cast it anymore */
         Strcpy(outbuf, "(gone)");
-    } else if (turnsleft >= (long) KEEN) {
+    } else if (turnsleft >= (long) MAX_KNOW) {
         /* full retention, first turn or immediately after reading book */
         Strcpy(outbuf, "100%");
     } else {
@@ -2395,9 +2395,9 @@ spellretention(int idx, char * outbuf)
          *
          * At the low end of each range, a value of N% really means
          * (N-1)%+1 through N%; so 1% is "greater than 0, at most 200".
-         * KEEN is a multiple of 100; KEEN/100 loses no precision.
+         * MAX_KNOW is a multiple of 100; MAX_KNOW/100 loses no precision.
          */
-        percent = (turnsleft - 1L) / ((long) KEEN / 100L) + 1L;
+        percent = (turnsleft - 1L) / ((long) MAX_KNOW / 100L) + 1L;
         accuracy = (skill == P_EXPERT) ? 2L
                    : (skill == P_SKILLED) ? 5L
                      : (skill == P_BASIC) ? 10L
@@ -2444,7 +2444,7 @@ known_spell(short otyp)
     for (i = 0; (i < MAXSPELL) && (spellid(i) != NO_SPELL); i++)
         if (spellid(i) == otyp) {
             k = spellknow(i);
-            return (k > KEEN / 10) ? spe_Fresh
+            return (k > MAX_KNOW / 10) ? spe_Fresh
                    : (k > 0) ? spe_GoingStale
                      : spe_Forgotten;
         }
