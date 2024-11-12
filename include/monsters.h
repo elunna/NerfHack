@@ -147,7 +147,7 @@
     /* From SpliceHack: In Splice it ignores Elbereth. Now it ignores Elbereth
      * and all magical scaring. */
     MON(NAM("giant praying mantis"), S_ANT,
-        LVL(7, 12, 2, 0, 0), (G_GENO | 2),
+        LVL(11, 12, 2, 0, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6),
           ATTK(AT_CLAW, AD_PHYS, 3, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
