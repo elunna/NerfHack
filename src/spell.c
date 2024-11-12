@@ -2368,7 +2368,7 @@ percent_success(int spell)
 staticfn char *
 spellretention(int idx, char * outbuf)
 {
-    long turnsleft, percent, accuracy;
+    long turnsleft, percent;
     int skill;
 
     skill = P_SKILL(spell_skilltype(spellid(idx)));
@@ -2384,27 +2384,11 @@ spellretention(int idx, char * outbuf)
         Strcpy(outbuf, "100%");
     } else {
         /*
-         * Retention is displayed as a range of percentages of
-         * amount of time left until memory of the spell expires;
-         * the precision of the range depends upon hero's skill
-         * in this spell.
-         *    expert:  2% intervals; 1-2,   3-4,  ...,   99-100;
-         *   skilled:  5% intervals; 1-5,   6-10, ...,   95-100;
-         *     basic: 10% intervals; 1-10, 11-20, ...,   91-100;
-         * unskilled: 25% intervals; 1-25, 26-50, 51-75, 76-100.
-         *
-         * At the low end of each range, a value of N% really means
-         * (N-1)%+1 through N%; so 1% is "greater than 0, at most 200".
-         * MAX_KNOW is a multiple of 100; MAX_KNOW/100 loses no precision.
+         * Retention is displayed as a single percentage of
+         * amount of time left until memory of the spell expires.
          */
         percent = (turnsleft - 1L) / ((long) MAX_KNOW / 100L) + 1L;
-        accuracy = (skill == P_EXPERT) ? 2L
-                   : (skill == P_SKILLED) ? 5L
-                     : (skill == P_BASIC) ? 10L
-                       : 25L;
-        /* round up to the high end of this range */
-        percent = accuracy * ((percent - 1L) / accuracy + 1L);
-        Sprintf(outbuf, "%ld%%-%ld%%", percent - accuracy + 1L, percent);
+        Sprintf(outbuf, "%ld%%", percent);
     }
     return outbuf;
 }
