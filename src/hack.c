@@ -3228,7 +3228,7 @@ pooleffects(
             if (drown())
                 return TRUE;
         }
-    } else if (shallow_water && !Wwalking) {
+    } else if (shallow_water && !Wwalking && !Levitation && !Flying) {
         if (is_puddle(u.ux, u.uy) && u.umoved)
             pline("You splash through the shallow water.");
 
