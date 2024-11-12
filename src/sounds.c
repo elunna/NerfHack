@@ -1177,28 +1177,32 @@ domonnoise(struct monst *mtmp)
             }
         break;
     case MS_FAMILIAR:
-        switch (rnd(7)) {
-        case 1:
-            verbl_msg = "I’m just trying to talk to you like a regular person.";
-            break;
-        case 2:
-            verbl_msg = "I’m doing whatever it takes to become a vampire.";
-            break;
-        case 3:
-            verbl_msg = "I wish you guys knew how hard I work.";
-            break;
-        case 4:
-            verbl_msg = "Very cool master, very scary.";
-            break;
-        case 5:
-            verbl_msg = "Are you gonna be alright without me?";
-            break;
-        case 6:
-            verbl_msg = "I haven't slept in 72 hours.";
-            break;
-        case 7:
-            verbl_msg = "Oh, that. That's just my body spray, It's axe.";
-            break;
+        if (mtmp->mtame) {
+            switch (rnd(7)) {
+            case 1:
+                verbl_msg = "I’m just trying to talk to you like a regular person.";
+                break;
+            case 2:
+                verbl_msg = "I’m doing whatever it takes to become a vampire.";
+                break;
+            case 3:
+                verbl_msg = "I wish you guys knew how hard I work.";
+                break;
+            case 4:
+                verbl_msg = "Very cool master, very scary.";
+                break;
+            case 5:
+                verbl_msg = "Are you gonna be alright without me?";
+                break;
+            case 6:
+                verbl_msg = "I haven't slept in 72 hours.";
+                break;
+            case 7:
+                verbl_msg = "Oh, that. That's just my body spray, It's axe.";
+                break;
+            }
+        } else {
+            pline_msg = "mutters something about ungrateful masters.";
         }
         break;
     case MS_SEDUCE: {
