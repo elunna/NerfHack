@@ -948,10 +948,9 @@ gcrownu(void)
         && !u_wield_art(ART_STORMBRINGER)
         && !carrying(SPE_FINGER_OF_DEATH)) {
         class_gift = SPE_FINGER_OF_DEATH;
-    } else if (Role_if(PM_MONK) && (!uwep || !uwep->oartifact)
-               && !carrying(SPE_RESTORE_ABILITY)) {
+    } else if (Role_if(PM_MONK) && (!uwep || !uwep->oartifact)) {
         /* monks rarely wield a weapon */
-        class_gift = SPE_RESTORE_ABILITY;
+        class_gift = MAGIC_MARKER;
     }
 
     obj = ok_wep(uwep) ? uwep : 0;
@@ -1027,6 +1026,22 @@ gcrownu(void)
         /* when getting a new book for known spell, enhance
            currently wielded weapon rather than the book */
         if (known_spell(class_gift) != spe_Unknown && ok_wep(uwep))
+            obj = uwep; /* to be blessed,&c */
+    } else if (class_gift == MAGIC_MARKER) {
+        obj = mksobj(class_gift, TRUE, FALSE);
+        bless(obj);
+        obj->bknown = 1; /* ok to skip set_bknown() */
+        obj->dknown = 1;
+        obj->spe = 99;
+        at_your_feet(upstart(ansimpleoname(obj)));
+        dropy(obj);
+        u.ugifts++;
+        /* not an artifact, but treat like one for this situation;
+           classify as a spoiler in case player hasn't IDed the book yet */
+        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
+                       "was bestowed with %s", actualoname(obj));
+
+        if (ok_wep(uwep))
             obj = uwep; /* to be blessed,&c */
     }
 
