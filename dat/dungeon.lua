@@ -94,15 +94,15 @@ dungeon = {
             alignment = "chaotic"
          },
          {
-            name = "leth-a",
+            name = "castle",
             base = -9
          },
          {
-            name = "leth-b",
+            name = "leth-a",
             base = -8
          },
          {
-            name = "castle",
+            name = "leth-b",
             base = -7
          },
          {
