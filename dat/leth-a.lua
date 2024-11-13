@@ -13,7 +13,8 @@ des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe", "noflip")
 
 --0         1         2         3         4         5         6         7     
---0123456789012345678901234567890123456789012345678901234567890123456789012345
+--
+0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
                                                                             
    -------                #######H...............#####      ...       ....  
@@ -153,16 +154,16 @@ if percent(20) then
     des.object("magic marker")
 end
 if percent(50) then
-    des.object("scroll of blank paper", 37,10)
+    des.object("scroll of blank paper", 36,10)
 end
 if percent(50) then
-    des.object("scroll of blank paper", 37,10)
+    des.object("scroll of blank paper", 36,10)
 end
 if percent(50) then
-    des.object("scroll of blank paper", 41,11)
+    des.object("scroll of blank paper", 40,11)
 end
 if percent(50) then
-    des.object("scroll of blank paper", 41,11)
+    des.object("scroll of blank paper", 40,11)
 end
 
 -- A few random flapping things
