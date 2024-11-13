@@ -409,13 +409,15 @@ static const struct def_skill Skill_Mon[] = {
     { P_QUARTERSTAFF, P_EXPERT },
     { P_SPEAR, P_BASIC },
     { P_SHURIKEN, P_BASIC },
-    { P_ATTACK_SPELL, P_BASIC },
     { P_HEALING_SPELL, P_EXPERT },
-    { P_DIVINATION_SPELL, P_BASIC },
-    { P_ENCHANTMENT_SPELL, P_BASIC },
     { P_CLERIC_SPELL, P_SKILLED },
+    { P_ENCHANTMENT_SPELL, P_SKILLED },
+#if 0 /* Monks only specialize in 3 spell schools */
+    { P_ATTACK_SPELL, P_BASIC },
     { P_ESCAPE_SPELL, P_SKILLED },
     { P_MATTER_SPELL, P_BASIC },
+    { P_DIVINATION_SPELL, P_BASIC },
+#endif
     { P_MARTIAL_ARTS, P_GRAND_MASTER },
     { P_NONE, 0 }
 };
