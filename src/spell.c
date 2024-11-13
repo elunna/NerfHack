@@ -2340,7 +2340,8 @@ percent_success(int spell)
      * to cast a spell.  The penalty is not quite so bad for the
      * player's role-specific spell.
      */
-    if (uarms && weight(uarms) > (int) objects[SMALL_SHIELD].oc_weight) {
+    if (uarms && weight(uarms) > (int) objects[SMALL_SHIELD].oc_weight
+        && uarms->oartifact != ART_MIRRORBRIGHT) {
         if (spellid(spell) == gu.urole.spelspec) {
             chance /= 2;
         } else {
