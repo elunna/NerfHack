@@ -2415,7 +2415,7 @@ initialspell(struct obj *obj)
     } else {
         svs.spl_book[i].sp_id = otyp;
         svs.spl_book[i].sp_lev = objects[otyp].oc_level;
-        incrnknow(i, 0);
+        incrnknow(i, 10000);
     }
     return;
 }
