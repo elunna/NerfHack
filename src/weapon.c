@@ -2034,13 +2034,20 @@ skill_init(const struct def_skill *class_skill)
     }
 
     /* set skills for magic */
-    if (Role_if(PM_HEALER) || Role_if(PM_MONK)) {
+    if (Role_if(PM_HEALER)) {
         P_SKILL(P_HEALING_SPELL) = P_BASIC;
     } else if (Role_if(PM_CLERIC)) {
         P_SKILL(P_CLERIC_SPELL) = P_BASIC;
     } else if (Role_if(PM_WIZARD)) {
         P_SKILL(P_ATTACK_SPELL) = P_BASIC;
         P_SKILL(P_ENCHANTMENT_SPELL) = P_BASIC;
+    } else if (Role_if(PM_MONK)) {
+        if (carrying(SPE_HEALING))
+            P_SKILL(P_HEALING_SPELL) = P_BASIC;
+        else if (carrying(SPE_PROTECTION))
+            P_SKILL(P_CLERIC_SPELL) = P_BASIC;
+        else if (carrying(SPE_CONFUSE_MONSTER))
+            P_SKILL(P_ENCHANTMENT_SPELL) = P_BASIC;
     }
 
     /* walk through array to set skill maximums */
