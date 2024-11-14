@@ -25,6 +25,7 @@ extern winid WIN_STATUS;
 
 static TCHAR szMainWindowClass[] = TEXT("MSNHMainWndClass");
 static TCHAR szTitle[MAX_LOADSTRING];
+struct window_tracking_data windowdata[MAXWINDOWS];
 extern void mswin_display_splash_window(BOOL);
 
 LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
@@ -208,9 +209,11 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         data = (PNHMainWindow) malloc(sizeof(NHMainWindow));
         if (!data)
             panic("out of memory");
+
         ZeroMemory(data, sizeof(NHMainWindow));
         data->mapAcsiiModeSave = MAP_MODE_ASCII12x16;
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);
+        windowdata[NHW_MAIN].address = (genericptr_t) data;
 
         /* update menu items */
         CheckMenuItem(
@@ -509,7 +512,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         /* clean up */
         free((PNHMainWindow) GetWindowLongPtr(hWnd, GWLP_USERDATA));
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) 0);
-
+        windowdata[NHW_MAIN].address = 0;
         // PostQuitMessage(0);
         exit(1);
         break;

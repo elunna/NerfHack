@@ -88,16 +88,17 @@ B. Specify the prefix for variable substitution:
    team.  If you are, this may be wrong.  Look for more specific documentation.
    For example, this file uses "MINE" for the substitution prefix - this will
    almost always be wrong if you are working with someone else.)
-    Decide where you want to put this info; it should NOT be inside the
-    tree you cloned from git.  I use ~/nethack/GITADDDIR; for that base,
-    create the needed directories and edit the file:
-        ~/nethack/GITADDDIR/DOTGIT/PRE
-    Put this in it (if your OS is not Unix-like you may need to change
-    the first line):
-        #!/bin/sh
-        git config nethack.substprefix MINE
-    Now make it executable:
-        chmod +x ~/nethack/GITADDDIR/DOTGIT/PRE
+	Decide where you want to put this info; it should NOT be inside the
+	tree you cloned from git.  I use ~/nethack/GITADDDIR; for that base,
+	create the needed directories and edit the file:
+		~/nethack/GITADDDIR/DOTGIT/PRE
+	Put this in it, adapting it to your variant (if your OS is not Unix-like
+	you may need to change the first line):
+		#!/bin/sh
+		git config nethack.substprefix MINE
+		git config nethack.projectname MineHack
+	Now make it executable:
+		chmod +x ~/nethack/GITADDDIR/DOTGIT/PRE
 C. Configure the repository:
     - cd to the top level of the repository
     - tell the repository about the directory you created above:
@@ -168,9 +169,9 @@ A. Introduction
 
    The PREFIX is the value in the git config variable nethack.substprefix.
    VARNAME is one of:
-    Date
-    Branch (experimental)
-    Revision (experimental)
+	Date
+	Branch
+	Revision
    other names will give a warning.
 
 B. Enabling variable expansion
