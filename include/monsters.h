@@ -270,6 +270,46 @@
             | M1_ACID,
         M2_WANDER | M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 8, CLR_CYAN, GELATINOUS_CUBE),
+     MON(NAM("jiggling blob"), S_BLOB,                                /* Slash'EM */
+        LVL(10, 6, 8, 0, 0), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_TUCH, AD_PHYS, 2, 8), 
+          ATTK(AT_NONE, AD_ACID, 2, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(200, 100, MS_SILENT, MZ_MEDIUM),
+        MR_SLEEP | MR_POISON | MR_ACID, MR_POISON,
+        M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS,
+        M2_WANDER | M2_HOSTILE | M2_NEUTER, 0, 
+        NO_RACE, 11, CLR_MAGENTA, JIGGLING_BLOB),
+    MON(NAM("lava blob"), S_BLOB,                                    /* Slash'EM */
+        LVL(10, 6, 8, 0, 0), (G_GENO | 1),
+        A(ATTK(AT_TUCH, AD_FIRE, 4, 4), 
+          ATTK(AT_NONE, AD_FIRE, 2, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(200, 100, MS_SILENT, MZ_MEDIUM),
+        MR_SLEEP | MR_FIRE, MR_FIRE,
+        M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS,
+        M2_WANDER | M2_HOSTILE | M2_NEUTER, 0,
+        NO_RACE, 12, CLR_RED, LAVA_BLOB),
+    MON(NAM("static blob"), S_BLOB,                                  /* Slash'EM */
+        LVL(12, 6, 8, 0, 0), (G_NOHELL | G_GENO  |1),
+        A(ATTK(AT_TUCH, AD_ELEC, 3, 8), 
+          ATTK(AT_NONE, AD_ELEC, 3, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(200, 100, MS_SILENT, MZ_MEDIUM),
+        MR_SLEEP | MR_POISON | MR_ELEC, MR_POISON | MR_ELEC,
+        M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS,
+        M2_WANDER | M2_HOSTILE | M2_NEUTER, 0,
+        NO_RACE, 14, HI_ZAP, STATIC_BLOB),
+    MON(NAM("burbling blob"), S_BLOB,                                /* Slash'EM */
+        LVL(14, 6, 8, 0, 0), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_TUCH, AD_PHYS, 2, 8), 
+          ATTK(AT_NONE, AD_ACID, 5, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(200, 100, MS_SILENT, MZ_MEDIUM),
+        MR_SLEEP | MR_POISON | MR_ACID, MR_POISON,
+        M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS,
+        M2_WANDER | M2_HOSTILE | M2_NEUTER, 0,
+        NO_RACE, 15, CLR_BLACK, BURBLING_BLOB),
     /*
      * cockatrice
      */
@@ -964,6 +1004,17 @@
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_ACID | M1_NOTAKE, M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 6, CLR_GREEN, SPOTTED_JELLY),
+    MON(NAM("clear jelly"), S_JELLY,                                 /* Slash'EM */
+        LVL(6, 3, 8, 10, 0), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_TUCH, AD_ACID, 3, 6),
+          ATTK(AT_NONE, AD_ACID, 3, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(50, 20, MS_SILENT, MZ_MEDIUM),
+        MR_COLD | MR_POISON | MR_ACID, MR_COLD | MR_POISON,
+        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
+            | M1_MINDLESS | M1_OMNIVORE | M1_CLING | M1_HIDE,
+        M2_HOSTILE | M2_NEUTER, 0,
+        NO_RACE, 7, CLR_CYAN, CLEAR_JELLY),
     MON(NAM("ochre jelly"), S_JELLY,
         LVL(6, 3, 8, 20, 0), (G_GENO | 2),
         A(ATTK(AT_ENGL, AD_ACID, 3, 6),
@@ -974,6 +1025,38 @@
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_ACID | M1_NOTAKE, M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 8, CLR_BROWN, OCHRE_JELLY),
+     MON(NAM("yellow jelly"), S_JELLY,                                /* Slash'EM */
+        LVL(8, 5, 8, 20, 0), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_ENGL, AD_ACID, 3, 6), 
+          ATTK(AT_TUCH, AD_STUN, 2, 4),
+          ATTK(AT_NONE, AD_STUN, 2, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(250, 220, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_STONE, 0,
+        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
+            | M1_MINDLESS | M1_ACID | M1_OMNIVORE, 
+        M2_HOSTILE | M2_NEUTER, 0, 
+        NO_RACE, 10, CLR_YELLOW, YELLOW_JELLY),
+    MON(NAM("orange jelly"), S_JELLY,                                /* Slash'EM */
+        LVL(8, 5, 8, 20, 0), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_ENGL, AD_ACID, 2, 8),
+          ATTK(AT_TUCH, AD_SLEE, 2, 4),
+          ATTK(AT_NONE, AD_SLEE, 2, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(250, 220, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_STONE, 0,
+        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD 
+            | M1_MINDLESS | M1_ACID | M1_OMNIVORE, 
+        M2_HOSTILE | M2_NEUTER, 0, 
+        NO_RACE, 10, CLR_ORANGE, ORANGE_JELLY),
+    MON(NAM("rancid jelly"), S_JELLY,                                /* Slash'EM */
+        LVL(12, 5, 8, 20, 0), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_ENGL, AD_ACID, 4, 6), 
+          ATTK(AT_NONE, AD_ACID, 3, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(250, 220, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_STONE, 0,
+        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD 
+            | M1_MINDLESS | M1_ACID | M1_OMNIVORE, 
+        M2_HOSTILE | M2_NEUTER, 0, 
+        NO_RACE, 14, CLR_BLACK, RANCID_JELLY),
     /*
      * kobolds
      */

@@ -780,6 +780,10 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_QUIVERING_BLOB:
     case PM_ACID_BLOB:
     case PM_GELATINOUS_CUBE:
+    case PM_JIGGLING_BLOB:
+    case PM_LAVA_BLOB:
+    case PM_STATIC_BLOB:
+    case PM_BURBLING_BLOB:
     case PM_CHICKATRICE:
     case PM_COCKATRICE:
     case PM_PYROLISK:
@@ -845,6 +849,10 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BLUE_JELLY:
     case PM_SPOTTED_JELLY:
     case PM_OCHRE_JELLY:
+    case PM_CLEAR_JELLY:
+    case PM_YELLOW_JELLY:
+    case PM_ORANGE_JELLY:
+    case PM_RANCID_JELLY:
     case PM_KOBOLD:
     case PM_LARGE_KOBOLD:
     case PM_KOBOLD_LEADER:
