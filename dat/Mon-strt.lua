@@ -48,7 +48,7 @@ local spacelocs = selection.floodfill(05,04);
 des.terrain({05,04}, ".")
 des.levregion({ region = {05,04,05,04}, type="branch" })
 -- Stairs
-des.stair("doun", 52,09)
+des.stair("down", 52,09)
 -- Doors
 des.door("locked",18,09)
 des.door("locked",18,10)
@@ -84,7 +84,7 @@ des.monster("abbot", 33, 07)
 des.monster("abbot", 33, 08)
 des.monster("abbot", 33, 11)
 des.monster("abbot", 33, 12)
--- Non diggable ualls
+-- Non diggable walls
 des.non_diggable(selection.area(18,03,55,16))
 -- Random traps
 for i = 1, 2 do
