@@ -177,7 +177,7 @@ sanity_check_single_mon(
             impossible("hiding monster stuck to you (%s)", msg);
         if (m_at(mx, my) == mtmp && hides_under(mptr)
             && !concealed_spot(mx, my))
-            impossible("mon hiding under nonexistent obj (%s)", msg);
+            impossible("mon hiding under nonexistent obj/furniture (%s)", msg);
         if (mptr->mlet == S_EEL
             && !(is_damp_terrain(mx, my) && !Is_waterlevel(&u.uz)))
             impossible("eel hiding %s (%s)",
@@ -2851,7 +2851,6 @@ mm_aggression(
         && mdef->data == &mons[PM_MAGGOT])
         return ALLOW_M | ALLOW_TM;
 
-
     /* berserk monsters sometimes lash out at everything
        when trying to attack you  */
     if (magr->mberserk && !magr->mpeaceful
@@ -3474,11 +3473,10 @@ mondead(struct monst *mtmp)
     mtmp->mhp = 0; /* in case caller hasn't done this */
 
     /* WAC First check that monster can unpoly */
-    if (!attacktype(mtmp->data, AT_BOOM)) {
+    if (!attacktype(mtmp->data, AT_BOOM))
         unpoly_monster(mtmp);
-    }
 
-	if (mtmp->mhp > 0)
+    if (mtmp->mhp > 0)
         return;
 
     lifesaved_monster(mtmp);
@@ -4587,8 +4585,7 @@ m_respond(struct monst *mtmp)
             if (canseemon(mtmp)) {
                 pline("%s athools.", Monnam(mtmp));
                 stop_occupation();
-            }
-            else
+            } else
                 You_hear("a distant athooool!");
         }
         aggravate();
@@ -4863,9 +4860,9 @@ peacefuls_respond(struct monst *mtmp)
                         newsym(mon->mx, mon->my);
                         if (!Uevil_inherently) {
                             if (canspotmon(mon))
-                            You_feel("guilty.");
+                                You_feel("guilty.");
                             else
-                            You("have a vague sense of guilt.");
+                                You("have a vague sense of guilt.");
                                     mon->mstrategy &= ~STRAT_WAITMASK;
                             adjalign(-1);
                         }
@@ -4917,7 +4914,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
         if (!Uevil_inherently) {
             You_feel("like a hypocrite.");
             adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
-        } /* no alignment penalty for vampires */
+        }
 
         if (!Blind)
             pline("The engraving beneath you fades.");
@@ -4951,9 +4948,8 @@ setmangry(struct monst *mtmp, boolean via_attack)
 
     /* It only makes sense that the function that angers monsters should
      * also trigger berserkers */
-    if (is_berserker(mtmp->data) && !mtmp->mberserk && rn2(3)) {
+    if (is_berserker(mtmp->data) && !mtmp->mberserk && rn2(3))
         mon_berserk(mtmp);
-    }
 
     /* attacking your own quest leader will anger his or her guardians */
     if (mtmp->data == &mons[quest_info(MS_LEADER)])
@@ -5001,8 +4997,8 @@ wakeup(struct monst *mtmp, boolean via_attack)
         /* To preserve the classic behavior of stealth, we will weight the
          * chance of growling against luck. Good luck is highly rewarded,
          * bad luck is punished.
-         * LUCK:   −11	   −8	  −5	 −2	  0    +2 and higher
-         * CHANCE: 61.3%  49.1%	 36.9%	24.7%	12.5%     0.3%
+         * LUCK:   −11	   −8	  −5	 −2	    0    +2 and higher
+         * CHANCE: 61.3%  49.1%	 36.9%	24.7% 12.5%     0.3%
          */
         if (was_sleeping && rnl(8) > 6)
             growl(mtmp);
@@ -5091,7 +5087,7 @@ normal_shape(struct monst *mon)
 
         (void) newcham(mon, &mons[mcham], NC_SHOW_MSG);
 
-        /* Don't erase monsters info still wearing a
+        /* Don't erase monster info still wearing a
          * ring of polymorph */
         if (!mon_prop(mon, POLYMORPH))
             mon->cham = NON_PM;
@@ -5362,8 +5358,7 @@ hideunder(struct monst *mtmp)
         /* aquatic creatures only hide under water, not under objects;
            they don't do so on the Plane of Water or when hero is also
            under water unless some obstacle blocks line-of-sight */
-        undetected = ((is_pool(x, y) || is_puddle(x, y))
-                      && !Is_waterlevel(&u.uz)
+        undetected = (is_damp_terrain(x, y) && !Is_waterlevel(&u.uz)
                       && (!Underwater || !couldsee(x, y)));
         if (seeit) {
             seenobj = "the water";
@@ -6833,9 +6828,8 @@ kill_monster_on_level(int mndx)
             continue;
 
         tmp_mndx = monsndx(mtmp->data);
-        if (mndx == tmp_mndx) {
+        if (mndx == tmp_mndx)
             mondead(mtmp);
-        }
     }
 }
 
@@ -6869,8 +6863,9 @@ mon_berserk(struct monst *mtmp)
                 pline("%s turns on you!", Monnam(mtmp));
             else
                 You_feel("uneasy about %s.", y_monnam(mtmp));
-        } else
+        } else {
             return;
+        }
     }
 
     if (canseemon(mtmp) && humanoid(mtmp->data)
