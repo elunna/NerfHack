@@ -282,7 +282,6 @@ hippocampus
 hippogriff
 kelpie
 catoblepas
-phoenix
 amphisbaena
 
 # Unusually animate body parts
@@ -431,6 +430,7 @@ enderman
 
 # Pun
 wight supremacist
+special snowflake
 
 # Starcraft 2
 zergling
@@ -546,3 +546,8 @@ water lemon
 water melon
 winged grizzly
 yellow wight
+
+# I'm not sure...
+hanging chad
+skipping record
+stray tab
