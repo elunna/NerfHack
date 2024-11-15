@@ -4030,6 +4030,7 @@ wizterrainwish(struct _readobjnam_data *d)
     }
 
     if (madeterrain) {
+        maybe_unhide_at(x, y);
         feel_newsym(x, y); /* map the spot where the wish occurred */
 
         /* hero started at <x,y> but might not be there anymore (create

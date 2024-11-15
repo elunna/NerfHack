@@ -1957,6 +1957,7 @@ sacrifice_your_race(
             levl[u.ux][u.uy].typ = ROOM;
             levl[u.ux][u.uy].altarmask = 0;
             add_blood(u.ux, u.uy, gu.urace.mnum);
+            maybe_unhide_at(u.ux, u.uy);
             newsym(u.ux, u.uy);
             angry_priest();
             demonless_msg = "cloud dissipates";

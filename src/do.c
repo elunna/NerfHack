@@ -534,6 +534,7 @@ polymorph_sink(void)
         pline_The("sink transforms into %s!", an(defsyms[sym].explanation));
     else
         pline_The("sink vanishes.");
+    maybe_unhide_at(u.ux, u.uy);
     newsym(u.ux, u.uy);
 }
 

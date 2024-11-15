@@ -1032,6 +1032,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
             gm.maploc->typ = ROOM;
             (void) mkgold((long) rnd(200), x, y);
             Soundeffect(se_crash_throne_destroyed, 60);
+            maybe_unhide_at(x, y);
             if (Blind)
                 pline("CRASH!  You destroy it.");
             else {
@@ -1150,6 +1151,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
             gm.maploc->disturbed = 0; /* clear 'horizontal' */
             (void) mksobj_at(ROCK, x, y, TRUE, FALSE);
             del_engr_at(x, y);
+            maybe_unhide_at(x, y);
             if (Blind) {
                 /* [feel this happen if Deaf?] */
                 pline("Crack!  %s broke!", Something);

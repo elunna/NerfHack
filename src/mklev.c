@@ -2188,10 +2188,8 @@ mkstairs(
 
     /* added because makeriver() runs before mkstairs()
        in the gnomish mines */
-    if ((mtmp = m_at(x, y)) != 0) {
-        if (is_swimmer(mtmp->data) && mtmp->mundetected)
-            mtmp->mundetected = 0;
-    }
+    if ((mtmp = m_at(x, y)) != 0 && mtmp->mundetected)
+        mtmp->mundetected = 0;
 }
 
 /* is room a good one to generate up or down stairs in? */

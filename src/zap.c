@@ -7456,7 +7456,7 @@ dryup_puddle(coordxy x, coordxy y, const char *action)
 
     if (cansee(x, y))
         pline_The("puddle %s.", action);
-    set_levltyp(u.ux, u.uy, ROOM);
+    set_levltyp(x, y, ROOM);
     maybe_unhide_at(x, y);
     newsym(x, y);
 }

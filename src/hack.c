@@ -3249,11 +3249,11 @@ pooleffects(
             losehp(dam, "rusting away", NO_KILLER_PREFIX);
             dryup_puddle(u.ux, u.uy, "dries up");
         }
-        if (verysmall(gy.youmonst.data)) {
+        if (verysmall(gy.youmonst.data))
             water_damage_chain(gi.invent, FALSE);
-            dryup_puddle(u.ux, u.uy, "dries up");
-        }
+        
         if (!u.usteed) {
+            /* Only dryup puddle if something was damaged. */
             if (!rn2(3) && water_damage(uarmf, "boots", TRUE))
                 dryup_puddle(u.ux, u.uy, "dries up");
         }

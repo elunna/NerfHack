@@ -2097,9 +2097,9 @@ trapeffect_fire_trap(
                 You_see("a %s erupt from the %s!", tower_of_flame,
                     surface(mtmp->mx, mtmp->my));
         }
-        if (is_puddle(mtmp->mx, mtmp->my) && rn2(2)) {
+        if (is_puddle(mtmp->mx, mtmp->my) && rn2(2))
             dryup_puddle(mtmp->mx, mtmp->my, "evaporates");
-        }
+
         if (resists_fire(mtmp)) {
             if (in_sight) {
                 shieldeff(mtmp->mx, mtmp->my);
