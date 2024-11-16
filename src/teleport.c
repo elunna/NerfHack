@@ -31,7 +31,10 @@ noteleport_level(struct monst *mon)
     if (In_hell(&u.uz) && !(is_dlord(mon->data) || is_dprince(mon->data)))
         if (get_iter_mons(m_blocks_teleporting))
             return TRUE;
-
+    
+    if (In_quest(&u.uz) && !svq.quest_status.killed_nemesis) {
+        return TRUE;
+    }
     /* natural no-teleport level */
     if (svl.level.flags.noteleport)
         return TRUE;
@@ -1275,8 +1278,15 @@ level_tele(void)
          *
          * we let negative values requests fall into the "heaven" handling.
          */
-        if (In_quest(&u.uz) && newlev > 0)
-            newlev = newlev + svd.dungeons[u.uz.dnum].depth_start - 1;
+        if (In_quest(&u.uz) && newlev > 0) {
+            if (svq.quest_status.killed_nemesis) {
+                newlev = newlev + svd.dungeons[u.uz.dnum].depth_start - 1;
+            } else {
+                pline("A mysterious force interferes with your teleporting!");
+                newlev = u.uz.dlevel;
+            }
+        }
+            
     } else { /* involuntary level tele */
  random_levtport:
 
@@ -2171,13 +2181,17 @@ random_teleport_level(void)
     if (In_quest(&u.uz)) {
         int bottom = dunlevs_in_dungeon(&u.uz),
             qlocate_depth = qlocate_level.dlevel;
+        boolean nemesis_dead = svq.quest_status.killed_nemesis;
 
         /* if hero hasn't reached the middle locate level yet,
            no one can randomly teleport past it */
         if (dunlev_reached(&u.uz) < qlocate_depth)
             bottom = qlocate_depth;
         min_depth = svd.dungeons[u.uz.dnum].depth_start;
-        max_depth = bottom + (svd.dungeons[u.uz.dnum].depth_start - 1);
+        /* If the hero has not killed the quest nemesis, they 
+         * are restricted from downward levelporting */
+        max_depth = nemesis_dead ? u.uz.dlevel
+                    : bottom + (svd.dungeons[u.uz.dnum].depth_start - 1);
     } else {
         min_depth = 1;
         max_depth = dunlevs_in_dungeon(&u.uz)

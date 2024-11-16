@@ -5,7 +5,7 @@
 --
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "noflip");
+des.level_flags("mazelevel", "hardfloor");
 
 des.map([[
                                                                             

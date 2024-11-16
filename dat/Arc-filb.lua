@@ -4,6 +4,8 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 --
+des.level_flags("hardfloor")
+
 des.room({ type = "ordinary",
            contents = function()
               des.stair("up")
