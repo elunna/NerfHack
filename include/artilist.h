@@ -145,12 +145,13 @@ static NEARDATA struct artifact artilist[] = {
 
     /* From SlashTHEM with changes:
      * In THEM, this was a neutral cloak of protection that granted luck,
-     * drain resistance, and warning. Now it is a cloak of invisibility that
-     * grants drain resistance and warning. Luck was removed. */
+     * drain resistance, and warning. Now it is a chaotic cloak of
+     * invisibility that grants drain resistance and warning.
+     * Luck was removed. */
     A("Blackshroud", CLOAK_OF_INVISIBILITY,
       (SPFX_RESTR | SPFX_WARN), 0, 0,
       NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
-      A_NEUTRAL, NON_PM, NON_PM, 1500L, NO_COLOR, BLACKSHROUD),
+      A_CHAOTIC, NON_PM, NON_PM, 1500L, NO_COLOR, BLACKSHROUD),
 
     A("Cleaver", BATTLE_AXE,
       SPFX_RESTR, 0, 0,
