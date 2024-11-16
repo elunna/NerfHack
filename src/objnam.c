@@ -305,7 +305,7 @@ obj_typename(int otyp)
             if (ocl->oc_class == GEM_CLASS) {
                 if (carto)
                     Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
-                        ? " dice" : " token");
+                        ? " stone" : " token");
                 else
                     Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
                         ? " stone" : " gem");
