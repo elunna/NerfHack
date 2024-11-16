@@ -727,7 +727,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         free_mgivenname(mtmp);
         break;
     case PM_PAPER_GOLEM:
-        num = rnd(4);
+        num = Role_if(PM_CARTOMANCER) ? rnd(4) : rnd(3) + rnd(3);
         while (num--) {
             if (Role_if(PM_CARTOMANCER))
                 (void) card_drop(mtmp);
