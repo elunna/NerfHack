@@ -4094,7 +4094,7 @@ xkilled(
            a corpse or animating a statue and usually will be hostile */
         && mndx != PM_HUMAN
         /* only applicable if hero is lawful or neutral */
-        && u.ualign.type != A_CHAOTIC && !Uevil_inherently) {
+        && u.ualign.type != A_CHAOTIC && !Uevil) {
         HTelepat &= ~INTRINSIC;
         change_luck(-2);
         You("murderer!");
@@ -4116,7 +4116,7 @@ xkilled(
     /* adjust alignment points */
     if (mtmp->m_id == svq.quest_status.leader_m_id) { /* REAL BAD! */
         /* adjalign(-(u.ualign.record + (int) ALIGNLIM / 2)); */
-        if (!Uevil_inherently) {
+        if (!Uevil) {
             if (canspotmon(mtmp))
                 You_feel("very guilty.");
             else
@@ -4134,7 +4134,7 @@ xkilled(
             adjalign((int) (ALIGNLIM / 4));
     } else if (mdat->msound == MS_GUARDIAN) { /* Bad */
         /* adjalign(-(int) (ALIGNLIM / 8)); */
-	    if (!Uevil_inherently) {
+	    if (!Uevil) {
             if (canspotmon(mtmp))
                 You_feel("guilty.");
             else
@@ -4156,7 +4156,7 @@ xkilled(
         if (mdat->maligntyp == A_NONE)
             adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
     } else if (mtmp->mtame) {
-	    if (Uevil_inherently) {
+	    if (Uevil) {
             if (canspotmon(mtmp))
                 You_feel("guilty.");
             else
@@ -4172,7 +4172,7 @@ xkilled(
 
         /* your god is mighty displeased... */
         if (!Hallucination) {
-            if (Uevil_inherently)
+            if (Uevil)
                 You_hear("sinister laughter off in the distance...");
             else {
                 Soundeffect(se_distant_thunder, 40);
@@ -4190,7 +4190,7 @@ xkilled(
                            uhis(), pmname(mdat, Mgender(mtmp)));
         }
     } else if (mtmp->mpeaceful) {
-        if (!Uevil_inherently) {
+        if (!Uevil) {
             if (canspotmon(mtmp))
                 You_feel("guilty.");
             else
@@ -4858,7 +4858,7 @@ peacefuls_respond(struct monst *mtmp)
                     } else {
                         mon->mpeaceful = 0;
                         newsym(mon->mx, mon->my);
-                        if (!Uevil_inherently) {
+                        if (!Uevil) {
                             if (canspotmon(mon))
                                 You_feel("guilty.");
                             else
@@ -4911,7 +4911,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
            it's intentionally larger than the 1s and 2s that are normally
            given for this sort of thing. */
         /* reduce to 3 (average) when alignment is already very low */
-        if (!Uevil_inherently) {
+        if (!Uevil) {
             You_feel("like a hypocrite.");
             adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
         }

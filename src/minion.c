@@ -499,7 +499,7 @@ gain_guardian_angel(void)
 
     Hear_again(); /* attempt to cure any deafness now (divine
                      message will be heard even if that fails) */
-    if (Conflict || Uevil_inherently) {
+    if (Conflict || Uevil) {
        if (!Deaf)
             pline("A voice booms:");
         else

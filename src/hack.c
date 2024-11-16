@@ -2197,7 +2197,7 @@ domove_swap_with_pet(struct monst *mtmp, coordxy x, coordxy y)
              */
             if (rn2(4)) {
                 u.ugangr++;
-                if (Uevil_inherently) {
+                if (Uevil) {
                     You_feel("somewhat guilty about losing your pet.");
                     adjalign(-3);
                 } else {

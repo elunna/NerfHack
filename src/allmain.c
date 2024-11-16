@@ -258,7 +258,7 @@ moveloop_core(void)
 
                 l_nhcore_call(NHCORE_MOVELOOP_TURN);
 
-                if ((Uevil_inherently
+                if ((Uevil
                     || (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))))
                     && sengr_at("Elbereth", u.ux, u.uy, TRUE)) {
                     /* Followers of Moloch (and bloodsuckers) aren't supposed

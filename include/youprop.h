@@ -21,7 +21,7 @@
 
 #define maybe_polyd(if_so, if_not) (Upolyd ? (if_so) : (if_not))
 
-#define Uevil_inherently (u.ualign.type == A_NONE \
+#define Uevil (u.ualign.type == A_NONE \
                           || Race_if(PM_VAMPIRE))
 
 /*** Resistances to troubles ***/
