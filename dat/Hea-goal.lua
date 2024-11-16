@@ -61,7 +61,7 @@ des.monster({ id = "Cyclops", x=20, y=06, peaceful=0 })
 local dragons = { "gray dragon", "gold dragon", "silver dragon",
                   "red dragon", "white dragon", "orange dragon",
                   "black dragon", "blue dragon", "green dragon",
-                  "yellow dragon" };
+                  "yellow dragon", "shimmering dragon" };
 shuffle(dragons)
 -- 5 adults
 des.monster({ id = dragons[1], peaceful=0 })
