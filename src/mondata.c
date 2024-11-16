@@ -1662,10 +1662,13 @@ mon_prop(struct monst *mon, int prop)
         return TRUE;
     if (prop == JUMPING && is_unicorn(mon->data))
         return TRUE;
-    if (prop == ANTIMAGIC)
-        return resists_magm(mon); /* just in case */
+    if (prop == ANTIMAGIC && resists_magm(mon))
+        return TRUE; /* just in case */
+    if (prop == DISINT_RES && defended(mon, AD_DISN))
+        return TRUE;
     if (prop == HALLUC_RES)
         adtyp = AD_HALU;
+    
 
     int tspfx = arti_prop_spfx(prop);
 

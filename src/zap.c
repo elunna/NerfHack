@@ -4991,11 +4991,12 @@ zhitm(
                 break;
             }
             type = -1; /* so they don't get saving throws */
-        } else {
+        } else {                                /* disintegration*/
             struct obj *otmp2;
 
             if (resists_disint(mon) || defended(mon, AD_DISN)) {
                 sho_shieldeff = TRUE;
+                tmp = 0;
             } else if (mon->misc_worn_check & W_ARMS) {
                 /* destroy shield; victim survives */
                 *ootmp = which_armor(mon, W_ARMS);
@@ -5200,6 +5201,7 @@ zhitu(
                 /* Items are protected */
                 You("are not disintegrated.");
                 monstseesu(M_SEEN_DISINT);
+                dam = 0;
                 break;
             } else if (fully_resistant(DISINT_RES)) {
                 /* Items are NOT protected */

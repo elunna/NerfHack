@@ -4409,7 +4409,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
     if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!no_effect) {
+        if (!no_effect && !BWithering) {
             if (Withering)
                 Your("withering speeds up!");
             else
@@ -4430,7 +4430,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
         }
     } else {
         /* uhitm, mhitm */
-        if (!no_effect) {
+        if (!no_effect && !mon_prop(mdef, DISINT_RES)) {
             if (canseemon(mdef))
                 pline("%s is withering away!", Monnam(mdef));
 

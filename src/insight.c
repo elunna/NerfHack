@@ -1639,6 +1639,11 @@ attributes_enlightenment(
         you_are(buf, from_what(ACID_RES));
     }
 
+    /* Not an official resistance, parallel with disintegration res . */
+    if (BWithering) {
+        you_are("withering resistant ", from_what(DISINT_RES));
+    }
+
     /* Group these together for readability */
     item_resistance_message(AD_FIRE, " protected from fire", final);
     item_resistance_message(AD_COLD, " protected from cold", final);

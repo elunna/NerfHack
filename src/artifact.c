@@ -596,6 +596,7 @@ defends(int adtyp, struct obj *otmp)
         case AD_SLEE: /* sleep */
             return (otyp == ORANGE_DRAGON_SCALES);
         case AD_DISN: /* disintegration */
+        case AD_WTHR: /* withering */
             return (otyp == BLACK_DRAGON_SCALES);
         case AD_ELEC: /* electricity == lightning */
             return (otyp == BLUE_DRAGON_SCALES);

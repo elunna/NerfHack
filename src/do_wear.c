@@ -815,6 +815,10 @@ Shield_on(void)
     case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
         break;
+    case SHIELD_OF_INTEGRITY:
+        if (HWithering)
+            make_withering(0L, TRUE);
+        break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
     }
@@ -858,6 +862,7 @@ Shield_off(void)
     case SHIELD_OF_REFLECTION:
     case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
+    case SHIELD_OF_INTEGRITY:
         break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
@@ -927,12 +932,18 @@ dragon_armor_handling(
     switch (otmp->otyp) {
         /* grey: no extra effect */
         /* silver: no extra effect */
+    
+
     case BLACK_DRAGON_SCALE_MAIL:
         if (puton) {
             EDrain_resistance |= W_ARM;
         } else {
             EDrain_resistance &= ~W_ARM;
         }
+        /* FALLTHROUGH */
+    case BLACK_DRAGON_SCALES:
+        if (HWithering)
+            make_withering(0L, TRUE);
         break;
     case BLUE_DRAGON_SCALE_MAIL:
         if (puton) {
