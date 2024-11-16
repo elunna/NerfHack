@@ -2232,6 +2232,7 @@ just_an(char *outbuf, const char *str)
                || !strcmpi(str, "molten lava")
                || !strcmpi(str, "iron bars")
                || !strcmpi(str, "ice")
+               || !strcmpi(str, "grass")
                ) {
         ; /* no article */
     } else {
