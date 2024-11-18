@@ -2327,7 +2327,7 @@ create_object(object *o, struct mkroom *croom)
             boolean invalid_choice = Is_box(otmp) || otmp->otyp == ICE_BOX;
 
             /* Kludge for cartomancers and their wishes... */
-            if (o->id == WAN_WISHING) {
+            if (Role_if(PM_CARTOMANCER) && o->id == WAN_WISHING) {
                 /* By this point the wand of wishing has already been
                  * converted to a zapping card of wishing. Increase
                  * quantity so they get 3. */
