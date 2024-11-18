@@ -850,33 +850,25 @@ gcrownu(void)
 
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
-    /* Player gets up to 3 intrinsics granted.
-     * If they didn't receive ANY, they get a wish! */
+    /* Player gets up to 3 intrinsics granted. */
 
     for (int i = 0; i < 3; i++) {
-        switch (rnd(9)) {
+        switch (rnd(5)) {
         case 1:
-            if (!(HDisint_resistance & FROMOUTSIDE || fully_resistant(DISINT_RES))) {
-                You_feel(Hallucination ? "totally together, man." : "very firm.");
-                incr_resistance(&HDisint_resistance, 100);
-                given++;
-            }
-            break;
-        case 2:
             if (!(HFire_resistance & FROMOUTSIDE || fully_resistant(FIRE_RES))) {
                 You(Hallucination ? "be chillin'." : "feel a momentary chill.");
                 incr_resistance(&HFire_resistance, 100);
                 given++;
             }
             break;
-        case 3:
+        case 2:
             if (!(HCold_resistance & FROMOUTSIDE || fully_resistant(COLD_RES))) {
                 You_feel("full of hot air.");
                 incr_resistance(&HCold_resistance, 100);
                 given++;
             }
             break;
-        case 4:
+        case 3:
             if (!(HShock_resistance & FROMOUTSIDE || fully_resistant(SHOCK_RES))) {
                 if (Hallucination)
                     You_feel("grounded in reality.");
@@ -886,55 +878,20 @@ gcrownu(void)
                 given++;
             }
             break;
-        case 5:
+        case 4:
             if (!(HSleep_resistance & FROMOUTSIDE || fully_resistant(SLEEP_RES))) {
                 You_feel("wide awake.");
                 incr_resistance(&HSleep_resistance, 100);
                 given++;
             }
             break;
-        case 6:
+        case 5:
             if (!(HPoison_resistance & FROMOUTSIDE || fully_resistant(POISON_RES))) {
                 You_feel(Poison_resistance ? "especially healthy." : "healthy.");
                 incr_resistance(&HPoison_resistance, 100);
                 given++;
             }
             break;
-        case 7:
-            if (!(HAcid_resistance & FROMOUTSIDE)) {
-                You_feel("%s.",
-                         Hallucination
-                             ? "secure from flashbacks"
-                             : "less concerned about being harmed by acid");
-                HAcid_resistance |= FROMOUTSIDE;
-                given++;
-            }
-            break;
-        case 8:
-            if (!(HStone_resistance & FROMOUTSIDE)) {
-                You_feel("%s.", Hallucination
-                                    ? "unusually limber"
-                                    : "less concerned about becoming petrified");
-                HStone_resistance |= FROMOUTSIDE;
-                given++;
-            }
-            break;
-        case 9:
-            if (!(HSick_resistance & FROMOUTSIDE)) {
-                You_feel(Hallucination ? "the jab, man." : "immune.");
-                HSick_resistance |= FROMOUTSIDE;
-                given++;
-            }
-            break;
-        }
-    }
-
-    if (!given) {
-         if (Role_if(PM_CAVE_DWELLER) && !rn2(10)) {
-            pline("Unfortunately, nothing happens.");
-        } else {
-            verbalize("Hark!  You have proven yourself worthy of this gift.");
-            makewish();
         }
     }
 
