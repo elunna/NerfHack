@@ -459,8 +459,10 @@ const struct ForgeRecipe fusions[] = {
     { WAR_HAMMER,           MACE,               FLAIL,          1, 1 },
     { SILVER_DAGGER,        SILVER_ARROW,       DAGGER,         5, 1 },
     { SILVER_SPEAR,         SILVER_DAGGER,      SPEAR,          1, 1 },
+    { SILVER_SPEAR,         SILVER_DAGGER,      DWARVISH_SPEAR, 1, 1 },
     { SILVER_SABER,         SILVER_DAGGER,      SCIMITAR,       1, 1 },
     { SILVER_SHORT_SWORD,   SILVER_DAGGER,      SHORT_SWORD,    1, 1 },
+    { SILVER_SHORT_SWORD,   SILVER_DAGGER,      DWARVISH_SHORT_SWORD, 1, 1 },
     { MORNING_STAR,         MACE,               DAGGER,         1, 1 },
     { MACE,                 AKLYS,              DAGGER,         1, 1 },
     /* Polearms*/
