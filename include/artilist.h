@@ -445,8 +445,7 @@ static NEARDATA struct artifact artilist[] = {
 						    HOLOGRAPHIC_VOID_LILY),
 
     A("The Sceptre of Might", MACE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN
-        | SPFX_NOWISH), 0, 0,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH), 0, 0,
       PHYS(PENTOHIT, 0), DFNS(AD_MAGM), NO_CARY, CONFLICT,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM, 2500L, NO_COLOR, SCEPTRE_OF_MIGHT),
 
