@@ -7102,7 +7102,14 @@ passive(
             }
         }
         break;
-    case AD_STUN: /* specifically yellow mold */
+    case AD_STUN:
+        if (ptr == &mons[PM_YELLOW_JELLY]) {
+            if (m_next2u(mon) && !Stunned)
+                make_stunned((long) tmp, TRUE);
+            break;
+        }
+
+        /* specifically yellow mold */
         if (m_next2u(mon)) {
             if (!Strangled && !Breathless && !Stunned) {
                 pline("You inhale a cloud of spores!");
@@ -7112,6 +7119,16 @@ passive(
             }
         } else if (malive && canseemon(mon))
             pline_mon(mon, "puffs out a cloud of spores!");
+        break;
+     case AD_SLEE:
+        /* passive sleep attack for orange jelly */
+        if (m_next2u(mon)) {
+            fall_asleep(-rnd(tmp), TRUE);
+            if (Blind)
+                You("are put to sleep!");
+            else
+                You("are put to sleep by %s!", mon_nam(mon));
+        }
         break;
     case AD_HALU: /* specifically violet fungus */
         /* Use the same values as breathing potion vapors. */
