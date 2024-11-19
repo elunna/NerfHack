@@ -2484,6 +2484,7 @@ rnd_offensive_item(struct monst *mtmp)
     case 6:
         return POT_PARALYSIS;
     case 7:
+        return WAN_CORROSION;
     case 8:
         return WAN_MAGIC_MISSILE;
     case 9:
