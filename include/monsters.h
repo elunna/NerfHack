@@ -488,6 +488,18 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 14, CLR_RED, HELL_HOUND),
+    /* Cerberus inherits many abilities from EvilHack:
+     * - Level raised from 12 to 27
+     * - Speed raised from 10 to 20
+     * - AC raised from 2 to -7
+     * - MR raised from 20 to 90
+     * - Weight and nutrition raised
+     * - Size raised from large to huge
+     * - Added thick skin, berserk, poisonous corpse, see invisible,
+     *   teleport control, accurate, displaces monsters.
+     * - resists sleep, poison, stoning, draining, and death.
+     * - Waits for the player to approach
+    */
     MON(NAM("Cerberus"), S_DOG,
         LVL(27, 20, -7, 90, -7), (G_NOGEN | G_UNIQ | G_HELL),
         A(ATTK(AT_BITE, AD_PHYS, 3, 6),
