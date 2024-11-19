@@ -130,7 +130,8 @@
     <Luafiles Include = "oracle-1.lua"/>
     <Luafiles Include = "oracle-2.lua"/>
     <Luafiles Include = "oracle-3.lua"/>
-    <Luafiles Include = "orcus.lua"/>
+    <Luafiles Include = "orcus-1.lua"/>
+    <Luafiles Include = "orcus-2.lua"/>
     <Luafiles Include = "Pri-fila.lua"/>
     <Luafiles Include = "Pri-filb.lua"/>
     <Luafiles Include = "Pri-goal.lua"/>

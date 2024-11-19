@@ -225,6 +225,7 @@ dungeon = {
          {
             name = "orcus",
             bonetag = "O",
+            nlevels = 2,
             base = 10,
             range = 6
          },

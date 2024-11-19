@@ -40,7 +40,7 @@ $	spec_files = "air.lua,asmode-%.lua,astral.lua,baalz-%.lua,"	-
 		+ "fire.lua,hellfill.lua,juiblex.lua,knox-%.lua,demo.lua," -
 		+ "dispater.lua","medusa-%.lua,minefill.lua,minetn-*.lua," -
 		+ "minend-%.lua,yeenoghu.lua,nhcore.lua,nhlib.lua,"	-
-		+ "oracle-%.lua,orcus.lua,quest.lua,sanctum.lua,bridge.lua"		-
+		+ "oracle-%.lua,orcus-%.lua,quest.lua,sanctum.lua,bridge.lua"		-
 		+ "soko%-%.lua,themerms.lua,tower%.lua,tut-%.lua,nkai-*," -
 		+ "valley.lua,water.lua,wizard%.lua,mephisto.lua,leth-*"
 $	qstl_files = "%%%-goal.lua,%%%-fil%.lua,%%%-loca.lua,%%%-strt.lua"
