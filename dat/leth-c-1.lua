@@ -99,7 +99,7 @@ des.monster("spiked orc", 65,04)
 des.monster("spiked orc", 67,04)
 
 -- A petitioner
-des.monster("kobold noble", 65,03)
+des.monster("kobold leader", 65,03)
 
 -- His treasure
 des.object("chest", 70,02)
