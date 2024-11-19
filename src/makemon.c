@@ -2474,7 +2474,7 @@ peace_minded(struct permonst *ptr)
 
 	/* Less trouble for the player. Note: aligned unicorns will still be peaceful, their
 	 * mpeaceful flag is set after the initial check. */
-	if (In_sokoban(&u.uz))
+	if (In_sokoban(&u.uz) || svl.level.flags.lethe)
 		return FALSE;
 
     if (always_peaceful(ptr))
