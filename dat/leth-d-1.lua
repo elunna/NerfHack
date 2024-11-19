@@ -1,14 +1,14 @@
 --
---	The Wizards Manse
+--  The Wizards Manse
 --
---	Upstream to the entry level, downstream to the castle.
+--  Upstream to the entry level, downstream to the castle.
 --
 -- MAZE: "leth-d-1",' '
 
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe", "noflip")
 
---0         1         2   	   3	     4	       5		 6	       7
+--0         1         2         3         4         5         6         7
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
  ------------------------------------   }}}}              -----             
@@ -22,13 +22,13 @@ des.map([[
  |.T..}}..T.-----------------------S|...}}}}}}...|  -----            ##     
  |....}}....|.........|..|.|..|.....-------------------  ....         ##    
  |....}}....|.........|+--+--+|.....|..........|.|....| ..}}}}}}       H    
- |.T..}}..T.|.........|.......|.....|........\...|....S#.}}}}}}}}}}}   ..   
+ |.T..}}..T.|.........|.......|.....|............|....S#.}}}}}}}}}}}   ..   
  |....}}....|.........|.......|.....|..........|.S....| .}}}}}}}}}}}} ....  
  |....}}....-----+--------+------+---..........-----+--  }}}}}}}}}}}}}}}}}}}
  |.T..}}..T.+.......................+.........\..| |.|    }}}}}}T.}}}}}}}}}}
  |....}}....-----+--------+------+---..........-----+--      .......}}}}}}}}
  |....}}....|.........|.......|.....|..........|.S....|          #          
- |.T..}}..T.|.........|.......|.....|........\...|....S###########          
+ |.T..}}..T.|.........|.......|.....|............|....S###########          
  |..........|.........|.......|.....|..........|.|....|                     
  ------------------------------------------------------                     
 ]]);
@@ -66,8 +66,8 @@ des.region(selection.area(56,09,75,15),"lit")
 des.region(selection.area(71,03,74,07),"unlit")
 
 -- Stairs
-des.stair("down", 73,05)
-des.stair("up", 60,01)
+des.stair("down", 74,05)
+des.stair("up", 61,01)
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
@@ -98,32 +98,22 @@ des.door("random", 52,13)
 des.door("random", 52,15)
 
 -- Monsters in the garden
+des.monster("killer bee", 02,15)
 des.monster("killer bee", 03,15)
-des.monster("killer bee", 04,15)
+des.monster("killer bee", 02,16)
 des.monster("killer bee", 03,16)
-des.monster("killer bee", 04,16)
-des.monster('u', 06,03)
-des.monster('u', 18,07)
-des.monster('u', 30,02)
-des.monster('u', 26,07)
-des.monster("C", 10,13)
-des.monster("C", 10,15)
+des.monster('u', 05,03)
+des.monster('u', 17,07)
+des.monster('u', 29,02)
+des.monster('u', 25,07)
+des.monster("C", 09,13)
+des.monster("C", 09,15)
 
 -- Traps
 des.trap("polymorph",35,09)
 des.trap("board",35,14)
 des.trap("magic",34,06)
 des.trap("magic",53,17)
-des.trap("grease")
-des.trap("magic beam")
-des.trap("spear")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
 
 -- Fishes in the river...
 des.monster("giant eel", 42,02)
@@ -139,20 +129,20 @@ des.object("chest", 26,09)
 des.object("chest", 28,09)
 
 -- Throne Room Extras
-des.monster({ id = "master mind flayer", x=45, y=11, asleep = 1 })
-des.object("wand of lightning", 45,11)
+des.monster({ id = "master mind flayer", x=44, y=11, asleep = 1 })
+des.object("wand of lightning", 44,11)
 des.object("chest", 48,12)
 
 -- The alhoon is a mmf in the original patch, alhoon from dnh
-des.monster("master mind flayer", 46,14)
+des.monster("master mind flayer", 45,14)
 if percent(50) then
-    des.object("wand of cancellation", 46,14)
+    des.object("wand of cancellation", 45,14)
 end
 -- des.object("spellbook of secrets", 46,14)
 des.trap("magic", 47,14)
 des.object("chest", 48,14)
-des.monster({ id = "mind flayer", x=45,y=17, asleep = 1 })
-des.object("wand of sleep", 45,17)
+des.monster({ id = "mind flayer", x=44,y=17, asleep = 1 })
+des.object("wand of sleep", 44,17)
 des.object("chest", 48,16)
 
 -- Decorations
@@ -168,15 +158,15 @@ des.monster()
 des.monster()
 
 -- Objects
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
 
 -- Random traps
 des.trap()

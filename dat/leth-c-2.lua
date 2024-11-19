@@ -1,48 +1,42 @@
 --
---	The Undead Stockade for the Lethe branch.
+--  The Undead Stockade for the Lethe branch.
 --
---	Upstream to the entry level, downstream to the castle.
+--  Upstream to the entry level, downstream to the castle.
 --
 --MAZE: "leth-c-2",' '
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe", "noflip")
 
---0         1         2   	   3	     4	       5		 6	       7
+--0         1         2         3         4         5         6         7
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
-                          }                                                 
-          ..      ........}}|.......                                        
-       ##....   ...........}|..........           ......        .......     
-  H#####  ...  ..T.........}|................#+#...........#+##....\..      
-  .             ..........}}|................#+#.....{.....#+##....\.       
- ...             ......    }        T.......    .........       .......     
- ...            ....       }          .....        ....                     
- ....          ...      T}}T         ##..##                     ###.....    
-  ...##       ...       }}          ###  ####   #    .....    ###  .......  
-      #   .......      }T         ####    ####  +   .......####    .......  
-      ............    }}        ....##    ##......   ....           .....   
-       ...T}}}}}}}}}}}}}      .......     ..........  +    #                
-        }}}}}}}}}}}}}}}}}     .......    ................. +         ....   
-       }}}}}}}}}}}}}}}}}}}     .....   #+.....T.............   #### .....   
-}}}}}}}}}}}}     T...  }}}}           ..  .......{.....T.....###  ##......  
-}}}}}}}}}    ..    H    }}}}       T....    ........T.......      # .....   
-}}}}}}}}   .....   #     }}}}}}}}}}}}}}}}   .............         #  ....   
-           ......###      }}}}}}}}}}}}}}}}   + + + + + +    ...####         
-             ...           }}}}}}}}}}}}}}}}  # # # # # #   ....             
-                                        }}}}                                
+                           }                                                 
+           ..      ........}}|.......                                        
+        ##....   ...........}|..........           ......        .......     
+   H#####  ...  ..T.........}|................#+#...........#+##....\..      
+   .             ..........}}|................#+#.....{.....#+##......       
+  ...             ......    }        T.......    .........       .......     
+  ...            ....       }          .....        ....                     
+  ....          ...      T}}T         ##..##                     ###.....    
+   ...##       ...       }}          ###  ####   #    .....    ###  .......  
+       #   .......      }T         ####    ####  +   .......####    .......  
+       ............    }}        ....##    ##......   ....           .....   
+        ...T}}}}}}}}}}}}}      .......     ..........  +    #                
+         }}}}}}}}}}}}}}}}}     .......    ................. +         ....   
+        }}}}}}}}}}}}}}}}}}}     .....   #+.....T.............   #### .....   
+}}}}}}}}}}}}}     T...  }}}}           ..  .......{.....T.....###  ##......  
+}}}}}}}}}}    ..    H    }}}}       T....    ........T.......      # .....   
+}}}}}}}}}   .....   #     }}}}}}}}}}}}}}}}   .............         #  ....   
+            ......###      }}}}}}}}}}}}}}}}   + + + + + +    ...####         
+              ...           }}}}}}}}}}}}}}}}  # # # # # #   ....             
+                                         }}}}                                
 ]]);
 
 -- Some random pets...
 local monster = { "D", "Z", "M", "c", "T", "R" };
 shuffle(monster)
 
--- Dungeon Description
-des.region(selection.area(00,00,75,19),"lit")
-des.region(selection.area(09,01,12,03),"unlit")
-des.region(selection.area(01,04,04,08),"unlit")
-des.region(selection.area(30,10,36,14),"unlit")
-des.region(selection.area(51,08,58,10),"unlit")
-
+-- Possible altar
 if percent(50) then
     des.altar({ x=70,y=09,align=random, type="altar", cracked=nh.rn2(2) })
 else
@@ -51,58 +45,64 @@ else
      end
 end
 
+-- Dungeon Description
+des.region(selection.area(00,00,75,19),"lit")
+des.region(selection.area(09,01,12,03),"unlit")
+des.region(selection.area(01,04,04,08),"unlit")
+des.region(selection.area(30,10,36,14),"unlit")
+des.region(selection.area(51,08,58,10),"unlit")
 des.region(selection.area(68,12,73,16),"unlit")
 des.region(selection.area(59,17,62,18),"unlit")
 
 des.region({ region={63,02,70,05},lit=1,type="morgue",filled=0 })
+-- REGION:(67,07,73,10),lit,"temple"
 
 -- Stairs
 des.stair("down", 59,18)
-des.stair("up", 02,06)
+des.stair("up", 02,05)
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
 
 -- Doors
-des.door("locked", 46,03)
-des.door("locked", 46,04)
-des.door("locked", 60,03)
-des.door("locked", 60,04)
---#DOOR: locked, (54,11)
---#DOOR: closed, (48,09)
---#DOOR: closed, (40,13)
---#DOOR: closed, (45,17)
---#DOOR: closed, (47,17)
---#DOOR: closed, (49,17)
---#DOOR: closed, (51,17)
---#DOOR: closed, (53,17)
---#DOOR: closed, (55,17)
---#DOOR: closed, (59,12)
+des.door("locked", 47,03)
+des.door("locked", 47,04)
+des.door("locked", 61,03)
+des.door("locked", 61,04)
+des.door("locked", 55,11)
+des.door("closed", 49,09)
+des.door("closed", 41,13)
+des.door("closed", 60,12)
+
+-- Jail cells
+des.door("closed", 46,17)
+des.door("closed", 48,17)
+des.door("closed", 50,17)
+des.door("closed", 52,17)
+des.door("closed", 54,17)
+des.door("closed", 56,17)
 
 -- The drawbridge
-des.drawbridge({dir="east",state="open",x=27,y=03})
+des.drawbridge({dir="east",state="open",x=28,y=03})
 
 -- Lich Kings Throne Room
--- The King
-des.monster("arch-vile", 66,03)
+--      The King
+des.monster("master lich", 66,03)
 if percent(50) then
     des.object("wand of death", 66,03)
 end
--- The Queen
+--      The Queen
 des.monster("lich", 66,04)
 des.object("wand of lightning", 66,04)
 
 -- The Guards
-des.monster("ettin mummy", 65,02)
-des.monster("ettin mummy", 67,02)
-des.monster("ettin mummy", 65,04)
-des.monster("ettin mummy", 67,04)
+des.monster("adherer", 65,02)
+des.monster("adherer", 67,02)
+des.monster("adherer", 65,04)
+des.monster("adherer", 67,04)
 
 -- A petitioner or two
-des.monster("ghoul", 65,03)
-
--- des.monster("ghoul magii", 65,04)      # (original lethe patch)
--- des.monster("gnoll ghoul"), (65,04) # (from dnh)
+des.monster("ghoul mage", 65,03)
 des.monster("ghoul mage", 65,04)
 
 -- His treasure
@@ -119,10 +119,10 @@ des.monster("elf mummy", 70,14)
 -- Compound guards
 des.monster("giant zombie", 30,01)
 des.monster("giant zombie", 30,04)
-des.monster("Z", 33,02)
-des.monster("Z", 34,02)
-des.monster("Z", 48,03)
-des.monster("Z", 48,04)
+des.monster("giant zombie", 33,02)
+des.monster("giant zombie", 34,02)
+des.monster("giant zombie", 48,03)
+des.monster("giant zombie", 48,04)
 
 -- Temple guard
 des.monster("skeleton", 56,09)
@@ -154,27 +154,27 @@ des.object("!", 15,16)
 des.object("?", 14,15)
 
 -- Some things in the store room...
-des.object("%", 69,12)
-des.object("%", 70,12)
-des.object("%", 71,13)
+-- des.object("%", 69,12)
+-- des.object("%", 70,12)
+-- des.object("%", 71,13)
 des.object("(", 72,14)
-des.object("%", 70,13)
+-- des.object("%", 70,13)
 des.object(")", 71,13)
-des.object("%", 72,13)
-des.object("%", 71,14)
+-- des.object("%", 72,13)
+-- des.object("%", 71,14)
 des.object("(", 72,14)
-des.object("%", 70,15)
-des.object("%", 71,15)
-des.object("%", 72,15)
+-- des.object("%", 70,15)
+-- des.object("%", 71,15)
+-- des.object("%", 72,15)
 des.object("(", 69,16)
-des.object("%", 70,16)
-des.object("%", 71,16)
+-- des.object("%", 70,16)
+-- des.object("%", 71,16)
 des.object("[", 72,16)
 
-des.monster("cave spider", 71,14)
-des.monster("cave spider", 72,13)
-des.monster("cave spider", 70,16)
-des.monster("cave spider", 69,12)
+des.monster("s", 71,14)
+des.monster("s", 72,13)
+des.monster("s", 70,16)
+des.monster("s", 69,12)
 des.monster({ id = "giant mimic", x=73, y=14, appear_as = "ter:staircase down" })
 
 -- A little trap...
@@ -182,16 +182,6 @@ des.trap("level teleport",51,18)
 des.trap("spiked pit",24,02)
 des.trap("spiked pit",22,03)
 des.trap("spiked pit",19,02)
-des.trap("grease")
-des.trap("magic beam")
-des.trap("spear")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
 
 -- Fishes in the river...
 des.monster("giant eel", 09,13)

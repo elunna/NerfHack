@@ -1,7 +1,7 @@
 --
---	Sylvan Park
+--  Sylvan Park
 --
---	Upstream to the entry level, downstream to the castle.
+--  Upstream to the entry level, downstream to the castle.
 --
 -- MAZE: "leth-f",' '
 
@@ -11,26 +11,26 @@ des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe",
 --         1         2         3         4         5         6         7    7
 --123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
----------                                                            ------
-|.S.....|    .........    ######                        ......T......|....|
-|.|.....|..............H###    #######      #####   .......T.....T...+....|
------+---......T.......              ###.....   ##.....T.............------
-   ..................}}}}}}}}}}}}}}}    ..}..     ..T........T....T....    
- .................}}}}}}}}}}}}}}}}}}}    ...       ............T....}}}}}}}
-.....T.....T....}}}}}}}}}}}}}}}}}}}}}}     ###      ....T.........}}}}}}}}}
-....T.........}}}}}}}}  ...... }}}}}}}}      #       .......T...}}}}}}}}}}}
- ............}}}}}}}}    ..  #  }}}}}}}}}    ##...    ...T....}}}}}}}}}}}} 
-  .......T..}}}}}}}}         ##  }}}}}}}}}}    ....    .....}}}}}}}}}}     
-    ..T.....}}}}}}}}}.        ###.}}}..}}}}..   ....    T..}}}}}}}}        
-     .......}}}}}}}}}.           .}}}..}}}}}.. # ...    }}}}}}    ------- 
-      #   ....T.}}}}}}..           .}}.T.}}}}}...       }}}}}      |.....| 
-     ##   # ......}}}}}.            ..}}..}}}.}}T..    }}}}}  --------S--- 
-    ##    #        }}}}..       ###  }}.}}}}..}}}}}.} }}}}}   |...{....|   
-    #   #H##  ....  }}}}.#####  H ##  .}.}}}.}.}}}}}.}}}}}    |..{.{...|   
-   ....H#  ##.....  }}}}.    .. .  ###..}.}.}}}.}}}}}.}}..####+...{....|   
- .....       ....   }}}}   ......      ..}. T}}}.}}}}}..      ----------   
-  .....       ...  }}}}    .....                                           
-                  }}}}                                                     
+ ---------                                                            ------
+ |.S.....|    .........    ######                        ......T......|....|
+ |.|.....|..............H###    #######      #####   .......T.....T...+....|
+ -----+---......T.......              ###.....   ##.....T.............------
+    ..................}}}}}}}}}}}}}}}    ..}..     ..T........T....T....    
+  .................}}}}}}}}}}}}}}}}}}}    ...       ............T....}}}}}}}
+ .....T.....T....}}}}}}}}}}}}}}}}}}}}}}     ###      ....T.........}}}}}}}}}
+ ....T.........}}}}}}}}  ...... }}}}}}}}      #       .......T...}}}}}}}}}}}
+  ............}}}}}}}}    ..  #  }}}}}}}}}    ##...    ...T....}}}}}}}}}}}} 
+   .......T..}}}}}}}}         ##  }}}}}}}}}}    ....    .....}}}}}}}}}}     
+     ..T.....}}}}}}}}}.        ###.}}}..}}}}..   ....    T..}}}}}}}}        
+       .......}}}}}}}}}.           .}}}..}}}}}.. # ...    }}}}}}    ------- 
+       #   ....T.}}}}}}..           .}}.T.}}}}}...       }}}}}      |.....| 
+      ##   # ......}}}}}.            ..}}..}}}.}}T..    }}}}}  --------S--- 
+     ##    #        }}}}..       ###  }}.}}}}..}}}}}.} }}}}}   |...{....|   
+     #   #H##  ....  }}}}.#####  H ##  .}.}}}.}.}}}}}.}}}}}    |..{.{...|   
+    ....H#  ##.....  }}}}.    .. .  ###..}.}.}}}.}}}}}.}}..####+...{....|   
+  .....       ....   }}}}   ......      ..}. T}}}.}}}}}..      ----------   
+   .....       ...  }}}}    .....                                           
+                   }}}}                                                     
 ]]);
 
 -- Dungeon Description
@@ -165,36 +165,41 @@ des.monster({ id = "deep one", x=65, y=16, asleep = 1 })
 des.monster({ id = "deeper one", x=70, y=15, asleep = 1 })
 des.object("chest", 69,12)
 des.object("chest", 73,12)
+
 --des.object("scroll of demonology"), (70,15), cursed,0
+des.object({ id="scroll of fire", x=70, y=15, buc="cursed" })
 
 -- A stray amulet
 des.object('"', 26,08)
 
 -- A few random traps
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("grease")
-des.trap("grease")
-des.trap("magic beam")
-des.trap("magic beam")
-des.trap("spear")
-des.trap("spear")
+des.trap("random")
+des.trap("random")
+des.trap("random")
+des.trap("random")
+des.trap("random")
+
 
 -- Fishes in the river...
-des.monster("giant eel", 23,15)
-des.monster("giant eel", 19,11)
-des.monster("giant eel", 16,09)
-des.monster("giant eel", 21,06)
-des.monster("electric eel", 28,05)
-des.monster("electric eel", 34,06)
+des.monster(";", 23,15)
+des.monster(";", 19,11)
+des.monster(";", 16,09)
+des.monster(";", 21,06)
+des.monster(";", 28,05)
+des.monster(";", 34,06)
 des.monster("electric eel", 38,08)
-des.monster("jellyfish", 43,12)
-des.monster("jellyfish", 50,15)
-des.monster("jellyfish", 58,14)
+des.monster(";", 43,12)
+des.monster(";", 50,15)
+des.monster(";", 58,14)
 des.monster(";", 65,09)
 des.monster(";", 72,06)
+
+-- A few random objects
+des.object("!")
+des.object("!")
+des.object("!")
+des.object("/")
+des.object("*")
+des.object()
+des.object()
+des.object()

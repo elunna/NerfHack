@@ -1,7 +1,7 @@
 --
---	Honycombe Canyon
+--  Honycombe Canyon
 --
---	Upstream to the entry level, downstream to the castle.
+--  Upstream to the entry level, downstream to the castle.
 --
 --MAZE: "leth-g",' '
 
@@ -12,10 +12,10 @@ des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe",
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
   ---------   ---     ---      ---      ---    ---    ---    ---      ------
-  |.......|----.-------}--------.--------.------.------.------.-------|....|
-  |.......+...........}}}}}}}}........................................+....|
-  |.......|----.-------}}-------.--------.------.------.------.-------|....|
-  ---------   -S-     -}}}     ---      ---    -S-    ---    ---      ------
+  |.......|----.-------}--------.--------.------.------.------}-------|....|
+  |.......+...........}}}}}}}}................................}}}}....+....|
+  |.......|----.-------}}-------.--------.------.------.------}--}}}--|....|
+  ---------   -S-     -}}}     ---      ---    -S-    ---    ---  }}  ------
                # ...}}}}}}}}                    H                 }}}       
                ...}}}}}}}}}}}}}     ###      .......             }}}}}}...  
               ..}}}}}}}}}}}}}}}}.   H ######..........        ..}}}}}}}}}.. 
@@ -81,7 +81,7 @@ des.object({ id = "statue", x = 62, y = 01, montype = "healer", historic = true 
 
 des.object({ id = "statue", x = 62, y = 03, montype = "Pestilence", historic = true,
              contents = function()
-                des.object({ id = "unicorn horn", buc="cursed", spe=3 })
+                des.object({ id = "unicorn horn", buc="cursed", spe=-3 })
              end
 });
 
@@ -105,16 +105,17 @@ des.trap("pit",30,02)
 des.trap("board",19,17)
 des.trap("board",46,07)
 des.trap("board",62,14)
-des.trap("grease")
-des.trap("magic beam")
-des.trap("spear")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
+des.trap("random")
+des.trap("random")
+des.trap("random")
+
+-- Some random objects
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
 
 -- A little incentive for the last hive
 des.object("potion of full healing", 73,17)
@@ -122,24 +123,24 @@ des.object("potion of full healing", 73,18)
 des.object({ id = "levitation boots", x=73,y=12, buc="cursed" })
 
 -- A few monsters (other than bees)
-des.monster("T", 18,02)
-des.monster("T", 44,02)
-des.monster("T", 62,02)
+des.monster("t", 18,02)
+des.monster("t", 44,02)
+des.monster("t", 62,02)
 des.monster("B", 06,16)
 des.monster("B", 29,11)
 des.monster("B", 48,12)
 des.monster("B", 73,07)
 
 -- A few fishies
-des.monster("giant eel", 05,13)
-des.monster("giant eel", 13,09)
-des.monster("giant eel", 23,07)
-des.monster("electric eel", 26,02)
-des.monster("electric eel", 31,10)
-des.monster("electric eel", 40,14)
-des.monster("electric eel", 48,17)
-des.monster("jellyfish", 57,13)
-des.monster("jellyfish", 64,10)
+des.monster(";", 05,13)
+des.monster(";", 13,09)
+des.monster(";", 23,07)
+des.monster(";", 26,02)
+des.monster(";", 31,10)
+des.monster(";", 40,14)
+des.monster(";", 48,17)
+des.monster(";", 57,13)
+des.monster(";", 64,10)
 des.monster(";", 67,07)
 des.monster(";")
 des.monster(";")

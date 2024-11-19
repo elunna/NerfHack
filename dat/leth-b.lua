@@ -1,7 +1,10 @@
 --
---	The entry level for the Lethe branch.
+--  The entry level for the Lethe branch.
 --
---	Upstream to the dragons lair, downstream to the castle.
+--  Upstream to the dragons lair, downstream to the castle.
+--
+-- Note from hackemslashem: This level is now continuous with the other
+-- Lethe levels and leads to leth-c instead of the castle.
 --
 -- MAZE: "leth-b",' '
 des.level_init({ style = "solidfill", fg = " " });
@@ -10,7 +13,6 @@ des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe",
 --0         1         2         3         4         5         6         7     
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
-                                                                            
    ...            ###.......  ....            ....                          
   .....         ###   ...........           .......####                ...  
   ....      #####    ...}}}}}}}}}}}}}}     .......    ##         ....H....  
@@ -55,12 +57,12 @@ des.stair("down", 72,03)
 des.non_diggable(selection.area(00,00,75,19))
 
 -- Objects
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
 
 if percent(75) then
     des.object()
@@ -80,36 +82,27 @@ des.trap("rust")
 des.trap("rust")
 des.trap("rust")
 des.trap("rust")
-des.trap("grease")
-des.trap("magic beam")
-des.trap("spear")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
+des.trap("random")
+des.trap("random")
 
+
+des.monster("deep one")
+des.monster("deep one")
+des.monster("deep one")
+des.monster("deep one")
+des.monster("deep one")
 des.monster("deeper one")
 des.monster("deeper one")
-des.monster("deeper one")
-des.monster("deeper one")
-des.monster("deeper one")
-des.monster("deeper one")
-des.monster("deepest one")
-des.monster("giant eel")
-des.monster("giant eel")
-des.monster("giant eel")
-des.monster("electric eel")
-des.monster("electric eel")
-des.monster("electric eel")
+
 des.monster(";")
 des.monster(";")
 des.monster(";")
-if percent(50) then
-    des.monster("kraken")
-end
+des.monster(";")
+des.monster(";")
+des.monster(";")
+des.monster("electric eel")
+des.monster("electric eel")
+des.monster("electric eel")
 
 -- Random monsters.
 des.monster()
@@ -118,6 +111,7 @@ des.monster()
 des.monster()
 des.monster()
 des.monster()
+
 des.monster("B")
 des.monster("B")
 
@@ -132,8 +126,8 @@ des.monster("deep one", 28,12)
 -- Main chamber
 des.monster("deep one", 22,16)
 des.monster("deep one", 20,16)
-des.monster("deeper one", 20,17)
-des.monster("deeper one", 16,17)
+des.monster("deep one", 20,17)
+des.monster("deep one", 16,17)
 des.monster("deeper one", 18,16)
 des.monster("deeper one", 18,17)
 des.object("chest" , 14,18)
@@ -149,5 +143,5 @@ des.object("chest" , 68,14)
 -- Hard to reach caves
 des.object({ id = "potion of water", x=43, y=03, buc="blessed" })
 des.object("potion of gain ability", 49,08)
-des.monster("iron piercer", 47,03)
+des.monster("diamond piercer", 47,03)
 des.monster("p", 52,08)

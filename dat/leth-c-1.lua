@@ -1,35 +1,35 @@
 --
---	The Ogre Stockade for the Lethe branch.
+--  The Ogre Stockade for the Lethe branch.
 --
---	Upstream to the entry level, downstream to the castle.
+--  Upstream to the entry level, downstream to the castle.
 --
 --MAZE: "leth-c-1",' '
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe", "noflip")
 
---0         1         2   	  3	      4	    5		  6	      7
+--0         1         2         3         4         5         6         7
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
-                          }                                                 
-          ..      ........}}|.......                                        
-  ###  ##....   ...........}|..........           ......        .......     
-  H ####  ...  ..T.........}|................#+#...........#+##....\..      
-  .    ##...    ..........}}|................#+#.....{.....#+##....\.       
- ...      ...    ......    }        T.......    .........       .......     
- ...     ..     ....      }    }}     .....        ....                     
- ....          ...      T}}} }}}     ##..##                     ###.....    
-  ...##       ...       }}} }..     ###  ####   #    .....    ###  .......  
-      #   .......      }T   ...   ####    ####  +   .......####    .......  
-      ............    }}   .... ....##    ##......   ....           .....   
-       ...T}}}}}}}}}}}}}   ..........     ..........  +    #                
-        }}}}}}}}}}}}}}}}}   .........    ................. +         ....   
-       }}}}}}}}}}}}}}}}}}}    ......   #+.....T.............   #### .....   
-}}}}}}}}}}}}     T...  }}}}           ..  .......{.....T.....###  ##......  
-}}}}}}}}}    ..    H    }}}}       T....    ........T.......      # .....   
-}}}}}}}}   .....   #     }}}}}}}}}}}}}}}}   .............         #  ....   
-           ......###      }}}}}}}}}}}}}}}}   + + + + + +    ...####         
-             ...           }}}}}}}}}}}}}}}}  # # # # # #   ....             
-                                        }}}}                                
+                           }                                                 
+           ..      ........}}|.......                                        
+   ###  ##....   ...........}|..........           ......        .......     
+   H ####  ...  ..T.........}|................#+#...........#+##....\..      
+   .    ##...    ..........}}|................#+#.....{.....#+##......       
+  ...      ...    ......    }        T.......    .........       .......     
+  ...     ..     ....      }    }}     .....        ....                     
+  ....          ...      T}}} }}}     ##..##                     ###.....    
+   ...##       ...       }}} }..     ###  ####   #    .....    ###  .......  
+       #   .......      }T   ...   ####    ####  +   .......####    .......  
+       ............    }}   .... ....##    ##......   ....           .....   
+        ...T}}}}}}}}}}}}}   ..........     ..........  +    #                
+         }}}}}}}}}}}}}}}}}   .........    ................. +         ....   
+        }}}}}}}}}}}}}}}}}}}    ......   #+.....T.............   #### .....   
+}}}}}}}}}}}}}     T...  }}}}           ..  .......{.....T.....###  ##......  
+}}}}}}}}}}    ..    H    }}}}       T....    ........T.......      # .....   
+}}}}}}}}}   .....   #     }}}}}}}}}}}}}}}}   .............         #  ....   
+            ......###      }}}}}}}}}}}}}}}}   + + + + + +    ...####         
+              ...           }}}}}}}}}}}}}}}}  # # # # # #   ....             
+                                        }}}}                                 
 ]]);
 
 -- Initialize random monsters
@@ -57,23 +57,42 @@ des.region(selection.area(59,17,62,18),"unlit")
 
 -- Stairs
 des.stair("down", 59,18)
-des.stair("up", 02,06)
+des.stair("up", 02,05)
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
 
 -- The drawbridge
-des.drawbridge({dir="east",state="open",x=27,y=03})
+des.drawbridge({dir="east",state="open",x=28,y=03})
+
+-- Doors
+des.door("locked", 47,03)
+des.door("locked", 47,04)
+des.door("locked", 61,03)
+des.door("locked", 61,04)
+des.door("locked", 55,11)
+des.door("closed", 49,09)
+des.door("closed", 41,13)
+des.door("closed", 60,12)
+
+-- Jail cells
+des.door("closed", 46,17)
+des.door("closed", 48,17)
+des.door("closed", 50,17)
+des.door("closed", 52,17)
+des.door("closed", 54,17)
+des.door("closed", 56,17)
 
 -- Ogre Kings Throne Room
-des.monster("ogre royal", 66,03)
-des.monster("ogre royal", 66,04)
-
--- An advisor (original lethe patch has an Ogre Shaman)
---des.monster("ogre shaman", 65,04)
+--      The King
+des.monster("ogre king", 66,03)
+--      The Queen
+des.monster("ogre queen", 66,04)
+--      An advisor
 des.monster("ogre mage", 65,04)
 
 -- The Guards
+-- (was ogres in SLethe, but these are better guards)
 des.monster("spiked orc", 65,02)
 des.monster("spiked orc", 67,02)
 des.monster("spiked orc", 65,04)
@@ -90,14 +109,9 @@ des.object("chest", 70,05)
 des.monster("ogre mage", 39,05)
 des.monster("ogre", 45,12)
 des.monster("ogre", 54,14)
-des.monster("ogre", 54,09)
-des.monster("ogre", 70,14)
+des.monster("ogre lord", 54,09)
+des.monster("ogre lady", 70,14)
 
-des.monster("ogre mage")
-des.monster("ogre mage")
-des.monster("shadow ogre")
-des.monster("shadow ogre")
-des.monster("shadow ogre")
 
 -- Compound guards
 des.monster("ogre", 30,01)
@@ -110,7 +124,7 @@ des.monster("ogre", 48,04)
 des.object("wand of fire", 48,04)
 
 -- Temple guard
-des.monster("ogre", 56,09)
+des.monster("ogre lord", 56,09)
 des.object("wand of sleep", 56,09)
 
 -- A surprise for those being nosy
@@ -141,32 +155,32 @@ des.object("!", 15,16)
 des.object("?", 14,15)
 
 -- Some things in the store room...
-des.object("%", 69,12)
-des.object("%", 70,12)
-des.object("%", 71,13)
+-- des.object("%", 69,12)
+-- des.object("%", 70,12)
+-- des.object("%", 71,13)
 des.object("(", 72,14)
-des.object("%", 70,13)
+-- des.object("%", 70,13)
 des.object(")", 71,13)
-des.object("%", 72,13)
-des.object("%", 71,14)
+-- des.object("%", 72,13)
+-- des.object("%", 71,14)
 des.object("(", 72,14)
-des.object("%", 70,15)
-des.object("%", 71,15)
-des.object("%", 72,15)
+-- des.object("%", 70,15)
+-- des.object("%", 71,15)
+-- des.object("%", 72,15)
 des.object("(", 69,16)
-des.object("%", 70,16)
+-- des.object("%", 70,16)
 
-if percent(50) then
-    des.object("%", 71,16)
-end
+-- if percent(50) then
+--     des.object("%", 71,16)
+-- end
 if percent(50) then
     des.object("[", 72,16)
 end
 
-des.monster("cave spider", 71,14)
-des.monster("cave spider", 72,13)
-des.monster("cave spider", 70,16)
-des.monster("cave spider", 69,12)
+des.monster("s", 71,14)
+des.monster("s", 72,13)
+des.monster("s", 70,16)
+des.monster("s", 69,12)
 des.monster({ id = "giant mimic", x=73, y=14, appear_as = "ter:staircase down" })
 
 -- A little trap...
@@ -174,16 +188,6 @@ des.trap("level teleport",51,18)
 des.trap("spiked pit", 24,02)
 des.trap("spiked pit", 22,03)
 des.trap("spiked pit", 19,02)
-des.trap("grease")
-des.trap("magic beam")
-des.trap("spear")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
 
 -- Fishes in the river...
 des.monster("electric eel", 09,13)
@@ -192,13 +196,13 @@ des.monster(";", 22,12)
 des.monster(";", 17,12)
 
 -- A few random monsters to finish things off
-des.monster("ogre")
-des.monster("ogre")
-des.monster("ogre")
+des.monster("shadow ogre")
+des.monster("shadow ogre")
+des.monster("shadow ogre")
 des.monster()
 des.monster()
 des.monster()
 des.monster()
 
 -- Essential tools (assume they have a wand of striking)
-des.object({ id = "scroll of earth", x=10,y=03, blessed })
+des.object({ id = "scroll of earth", x=10,y=03, buc = "blessed" })

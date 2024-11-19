@@ -1,7 +1,7 @@
 --
---	The Lichs Manse
+--  The Lichs Manse
 --
---	Upstream to the entry level, downstream to the castle.
+--  Upstream to the entry level, downstream to the castle.
 --
 --MAZE: "leth-d-2",' '
 des.level_init({ style = "solidfill", fg = " " });
@@ -11,41 +11,47 @@ des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe",
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
  ------------------------------------   }}}}              -----             
- |.............}...........}........|    }}}}             |...|             
- |}}}}..}}}}}..}}}..}}}}}..}}}..}}..|  ..}}}}..           |...|             
- |......}...}...........}..}.....}..| ...}}}}...          --+--         ..  
- |..}}}}}}..}..}}}}}}}..}.....{..}..|...}}}}}}...|  -----   #          .... 
- |..........}..}.....}}}}..}.....}..|..}}}}}}}}..|  |...|   #        ##.... 
- |}}}}..}}}}}..}}}}..}..}..}}}..}}..+..}}}}}}}}..+##S...+####        # .... 
- |..........}........}.....}........|..}}}}}}}}..|  |...|            #  ..  
+ |..................................|    }}}}             |...|             
+ |..................................|  ..}}}}..           |...|             
+ |..................................| ...}}}}...          --+--         ..  
+ |..................................|...}}}}}}...|  -----   #          .... 
+ |..................................|..}}}}}}}}..|  |...|   #        ##.... 
+ |..................................+..}}}}}}}}..+##S...+####        # .... 
+ |..................................|..}}}}}}}}..|  |...|            #  ..  
  |..........-----------------------S|...}}}}}}...|  -----            ##     
  |....}}....|.........|..|.|..|.....-------------------  ....         ##    
- |....}}....|.........|+--+--+|.....|..........|.|....| ..}}}}}}       H    
- |....}}....|.........|.......|.....|........\...|....S#.}}}}}}}}}}}   ..   
- |....}}....|.........|.......|.....|..........|.S....| .}}}}}}}}}}}} ....  
- |....}}....-----+--------+------+---..........-----+--  }}}}}}}}}}}}}}}}}}}
- |....}}....+.......................+.........\..| |.|    }}}}}}..}}}}}}}}}}
- |....}}....-----+--------+------+---..........-----+--      .......}}}}}}}}
- |....}}....|.........|.......|.....|..........|.S....|          #          
- |....}}....|.........|.......|.....|........\...|....S###########          
+ |...u}}u...|.........|+--+--+|.....|..........|.|....| ..}}}}}}       H    
+ |...u}}u...|.........|.......|.....|............|....S#.}}}}}}}}}}}   ..   
+ |...u}}u...|.........|.......|.....|..........|.S....| .}}}}}}}}}}}} ....  
+ |...u}}u...-----+--------+------+---..........-----+--  }}}}}}}}}}}}}}}}}}}
+ |...u}}u...+.......................+.........\..| |.|    }}}}}}..}}}}}}}}}}
+ |...u}}u...-----+--------+------+---..........-----+--      .......}}}}}}}}
+ |...u}}u...|.........|.......|.....|..........|.S....|          #          
+ |....}}....|.........|.......|.....|............|....S###########          
  |..........|.........|.......|.....|..........|.|....|                     
  ------------------------------------------------------                     
 ]]);
 
 -- Dungeon Description
--- The swamp replaces the fungusfarms in dnh
--- des.region(selection.area(02,01,35,07),"lit")
--- des.region({ region={02,01,35,07}, lit=1, type="swamp", filled=2 })
+
+des.region(selection.area(02,01,35,07),"lit")
+des.replace_terrain({ region={02,01,35,07}, fromterrain=".", toterrain="u", chance=80 })
+des.replace_terrain({ region={02,01,35,07}, fromterrain=".", toterrain="P", chance=5 })
 
 des.region({ region={03,02,10,06},lit=1,type="fungusfarm",filled=1 })
+des.region({ region={13,01,20,03},lit=1,type="fungusfarm",filled=1 })
 des.region({ region={13,05,20,07},lit=1,type="fungusfarm",filled=1 })
+des.region({ region={23,02,26,06},lit=1,type="fungusfarm",filled=1 })
 des.region({ region={29,01,32,02},lit=1,type="fungusfarm",filled=1 })
+des.region({ region={29,04,32,04},lit=1,type="fungusfarm",filled=1 })
+des.region({ region={29,06,32,07},lit=1,type="fungusfarm",filled=1 })
 
 des.region(selection.area(02,08,11,18),"lit")
 des.region(selection.area(37,01,48,08),"lit")
 des.region(selection.area(53,05,55,07),"lit")
 des.region(selection.area(59,01,61,02),"lit")
 des.region({ region={13,09,21,11},lit=1,type="morgue",filled=1 })
+
 des.region(selection.area(13,16,21,18),"lit")
 des.region(selection.area(23,11,29,12),"unlit")
 des.region(selection.area(23,09,24,09),"unlit")
@@ -89,7 +95,7 @@ des.door("random", 17,15)
 des.door("random", 26,13)
 des.door("random", 26,15)
 des.door("random", 23,10)
-des.door("random", 26,10)
+des.door("random", 26,11)
 des.door("random", 29,10)
 des.door("locked", 33,13)
 des.door("random", 33,15)
@@ -102,12 +108,12 @@ des.door("random", 52,13)
 des.door("random", 52,15)
 
 -- Monsters in the garden
-des.monster("killer bee", 03,15)
-des.monster("killer bee", 04,15)
-des.monster("killer bee", 03,16)
-des.monster("killer bee", 04,16)
-des.monster({ id = "giant mummy", x=10, y=13, asleep = 1 })
-des.monster({ id = "giant mummy", x=10, y=15, asleep = 1 })
+des.monster("locust", 02,15)
+des.monster("locust", 02,16)
+des.monster("locust", 03,15)
+des.monster("locust", 03,16)
+des.monster({ id = "troll mummy", x=10, y=13, asleep = 1 })
+des.monster({ id = "troll mummy", x=10, y=15, asleep = 1 })
 
 -- Replacement 'trees' in the garden
 des.monster({ id = "shrieker", x=03, y=11, asleep = 1 })
@@ -122,16 +128,6 @@ des.trap("polymorph",35,09)
 des.trap("board",35,14)
 des.trap("magic",34,06)
 des.trap("magic",53,17)
-des.trap("grease")
-des.trap("magic beam")
-des.trap("spear")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
-des.trap("anti magic")
 
 -- Fishes in the river...
 des.monster("giant eel", 42,02)
@@ -151,11 +147,11 @@ des.object("chest", 28,09)
 
 -- Throne Room Extras
 -- Stronger monsters from dnh than the original lethe.
-des.monster({ id = "demilich", x=45, y=11, asleep = 1 })
+des.monster({ id = "lich", x=45, y=11, asleep = 1 })
 des.object("wand of lightning", 45,11)
 des.object("chest", 48,12)
 
-des.monster("mind flayer", 46,14)
+des.monster("master lich", 46,14)
 if percent(25) then
     des.object("wand of cancellation", 46,14)
 end
@@ -164,7 +160,7 @@ des.trap("magic", 47,14)
 des.object("chest", 48,14)
 des.monster({ id = "succubus", x=46, y=13, asleep = 1 })
 des.monster({ id = "succubus", x=46, y=15, asleep = 1 })
-des.monster({ id = "demilich", x=45, y=17, asleep = 1 })
+des.monster({ id = "lich", x=45, y=17, asleep = 1 })
 des.object("wand of sleep", 45,17)
 des.object("chest", 48,16)
 
@@ -174,20 +170,20 @@ des.object({ id = "statue", x=38, y=08, contents = 0 })
 des.object({ id = "statue", x=26, y=18, contents = 0 })
 
 -- Monsters
-des.monster("werewolf")
+des.monster()
 des.monster()
 des.monster()
 
 -- Objects
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
--- des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
+des.object()
 
 -- Random traps
 des.trap()
