@@ -43,6 +43,8 @@ local special_levels = {
 "fakewiz1",
 "fakewiz2",
 "fire",
+"geryon-1",
+"geryon-2",
 "juiblex",
 "knox",
 "leth-a-1",

@@ -197,6 +197,7 @@ dungeon = {
          {
             name = "geryon",
             bonetag = "G",
+            nlevels = 2,
             base = 2,
             chance = 50,
             range = 16

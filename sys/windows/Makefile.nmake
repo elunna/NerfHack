@@ -532,7 +532,8 @@ HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\Arc-goal.lua $(DAT)\Arc-loca.lua $(DAT)\Arc-strt.lua \
 	$(DAT)\asmode-1.lua $(DAT)\asmode-2.lua $(DAT)\astral.lua \
-	$(DAT)\baalz-1.lua  $(DAT)\baalz-2.lua \
+	$(DAT)\baalz-1.lua  $(DAT)\baalz-2.lua  $(DAT)\geryon-1.lua \
+	$(DAT)\geryon-2.lua \
 	$(DAT)\Bar-fila.lua $(DAT)\Bar-filb.lua $(DAT)\Bar-goal.lua \
 	$(DAT)\Bar-loca.lua $(DAT)\Bar-strt.lua $(DAT)\bigrm-1.lua \
 	$(DAT)\bigrm-10.lua $(DAT)\bigrm-11.lua $(DAT)\bigrm-2.lua \
@@ -541,7 +542,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\bigrm-9.lua  $(DAT)\castle.lua   $(DAT)\Cav-fila.lua \
 	$(DAT)\Cav-filb.lua $(DAT)\Cav-goal.lua $(DAT)\Cav-loca.lua \
 	$(DAT)\Cav-strt.lua $(DAT)\demo.lua     $(DAT)\dispater.lua \
-	$(DAT)\dungeon.lua  $(DAT)\earth.lua 	$(DAT)\geryon.lua \
+	$(DAT)\dungeon.lua  $(DAT)\earth.lua 	 \
 	$(DAT)\fakewiz1.lua $(DAT)\fakewiz2.lua $(DAT)\fire.lua \
 	$(DAT)\Hea-fila.lua $(DAT)\Hea-filb.lua $(DAT)\Hea-goal.lua \
 	$(DAT)\Hea-loca.lua $(DAT)\Hea-strt.lua $(DAT)\hellfill.lua \
