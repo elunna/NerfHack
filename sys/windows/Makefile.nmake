@@ -548,8 +548,9 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\juiblex.lua  $(DAT)\Kni-fila.lua $(DAT)\Kni-filb.lua \
 	$(DAT)\Kni-goal.lua $(DAT)\Kni-loca.lua $(DAT)\Kni-strt.lua \
 	$(DAT)\knox-1.lua   $(DAT)\knox-2.lua   $(DAT)\knox-2.lua   \
-	$(DAT)\leth-a.lua 	$(DAT)\leth-b.lua 	$(DAT)\leth-c-1.lua \
-	$(DAT)\leth-c-2.lua $(DAT)\leth-d-1.lua $(DAT)\leth-d-2.lua \
+	$(DAT)\leth-a-1.lua $(DAT)\leth-a-2.lua	$(DAT)\leth-b.lua 	\
+	$(DAT)\leth-c-1.lua $(DAT)\leth-c-2.lua \
+	$(DAT)\leth-d-1.lua $(DAT)\leth-d-2.lua \
 	$(DAT)\leth-e.lua 	$(DAT)\leth-f.lua 	$(DAT)\leth-g.lua   \
 	$(DAT)\leth-z.lua \
 	$(DAT)\nkai-a-1.lua $(DAT)\nkai-a-2.lua $(DAT)\nkai-b.lua \

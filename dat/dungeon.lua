@@ -99,7 +99,8 @@ dungeon = {
          },
          {
             name = "leth-a",
-            base = -8
+            base = -8,
+            nlevels = 2,
          },
          {
             name = "leth-b",

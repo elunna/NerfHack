@@ -9,7 +9,7 @@
 des.level_init({ style="mazegrid", bg ="-" });
 des.level_flags("mazelevel", "noteleport", "lethe", "noflip")
 
---0         1         2   	  3	      4	    5		  6	      7
+--0         1         2   	    3	      4	        5		  6	        7
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
                                                         ---------           

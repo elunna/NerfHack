@@ -80,7 +80,8 @@
     <Luafiles Include = "knox-1.lua"/>
     <Luafiles Include = "knox-2.lua"/>
     <Luafiles Include = "knox-3.lua"/>
-    <Luafiles Include = "leth-a.lua"/>
+    <Luafiles Include = "leth-a-1.lua"/>
+    <Luafiles Include = "leth-a-2.lua"/>
     <Luafiles Include = "leth-b.lua"/>
     <Luafiles Include = "leth-c-1.lua"/>
     <Luafiles Include = "leth-c-2.lua"/>
