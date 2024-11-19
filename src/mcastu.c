@@ -313,6 +313,7 @@ castmu(
         }
         return M_ATTK_MISS;
     }
+
     if (canspotmon(caster) || !is_undirected_spell(mattk->adtyp, spellnum)) {
         pline_mon(caster, "%s casts a spell%s!",
                  canspotmon(caster) ? Monnam(caster) : "Something",
@@ -323,6 +324,12 @@ castmu(
                    : (Displaced && !u_at(caster->mux, caster->muy))
                      ? " at your displaced image"
                      : " at you");
+    }
+
+    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
+            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
+        if (counterspell(caster))
+            return 0;
     }
 
     /*
@@ -643,12 +650,6 @@ cast_wizard_spell(
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
         impossible("cast directed wizard spell (%d) with dmg=0?", spellnum);
         return 0;
-    }
-
-    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
-            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
-        if (counterspell(caster))
-            return 0;
     }
 
     switch (spellnum) {
@@ -1124,12 +1125,6 @@ cast_cleric_spell(
     if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         impossible("cast directed cleric spell (%d) with dmg=0?", spellnum);
         return 0;
-    }
-
-    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
-            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
-        if (counterspell(caster))
-            return 0;
     }
 
     switch (spellnum) {
@@ -2039,6 +2034,12 @@ castmm(
             pline("%s casts a spell!", Monnam(caster));
     }
 
+    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
+            || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
+        if (counterspell(caster))
+            return 0;
+    }
+
     /*
      * As these are spells, the damage is related to the level
      * of the monster casting the spell.
@@ -2195,7 +2196,7 @@ counterspell(struct monst *caster) {
         return FALSE;
 
     if (!rn2(4))
-        pline("%s %s and %s %s magic!",
+        Your("%s %s and %s %s magic!",
             xname(otmp), (Blind ? "vibrates" : "flashes"),
             !rn2(2) ? "absorbs" : "cancels", s_suffix(mon_nam(caster)));
 
@@ -2209,6 +2210,9 @@ counterspell(struct monst *caster) {
     } else {
         You_hear("some cursing!");
     }
+
+    /* A little salt... */
+    caster->mspec_used += d(2, 3);
     return TRUE;
 }
 
