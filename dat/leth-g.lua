@@ -119,7 +119,7 @@ des.trap("anti magic")
 -- A little incentive for the last hive
 des.object("potion of full healing", 73,17)
 des.object("potion of full healing", 73,18)
-des.object({ id = "flying boots", x=73,y=12, buc="cursed" })
+des.object({ id = "levitation boots", x=73,y=12, buc="cursed" })
 
 -- A few monsters (other than bees)
 des.monster("T", 18,02)
