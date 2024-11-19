@@ -499,14 +499,23 @@
      *   teleport control, accurate, displaces monsters.
      * - resists sleep, poison, stoning, draining, and death.
      * - Waits for the player to approach
+     *
+     * From xNetHack
+     * - Bumped all bites to 5d6
+     * - Added fire bite
+     * - Replaced the breath attack with 2 6d6 claws
+     *
+     * NerfHack:
+     * - Added drain life bite
     */
     MON(NAM("Cerberus"), S_DOG,
         LVL(27, 20, -7, 90, -7), (G_NOGEN | G_UNIQ | G_HELL),
-        A(ATTK(AT_BITE, AD_PHYS, 3, 6),
-          ATTK(AT_BITE, AD_PHYS, 3, 6),
-          ATTK(AT_BITE, AD_PHYS, 3, 6),
-          ATTK(AT_BREA, AD_FIRE, 3, 6),
-          NO_ATTK, NO_ATTK),
+        A(ATTK(AT_BITE, AD_PHYS, 5, 6),
+          ATTK(AT_BITE, AD_DRLI, 5, 6),
+          ATTK(AT_BITE, AD_FIRE, 5, 6),
+          ATTK(AT_CLAW, AD_PHYS, 6, 6),
+          ATTK(AT_CLAW, AD_PHYS, 6, 6),
+          NO_ATTK),
         SIZ(1200, 500, MS_BARK, MZ_HUGE),
         MR_FIRE | MR_SLEEP | MR_POISON | MR_STONE, MR_FIRE,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE | M1_THICK_HIDE
