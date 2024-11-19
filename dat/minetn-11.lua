@@ -97,7 +97,7 @@ des.monster({ id = "wolf", x=30,y=08, peaceful = 1 })
 
 -- Citizens
 des.monster({ id = "gnome", x=17,y=10, peaceful = 0 })
-des.monster({ id = "gnome royal", x=20,y=16, peaceful = 0 })
+des.monster({ id = "gnome ruler", x=20,y=16, peaceful = 0 })
 des.monster({ id = "gnome", x=47,y=14 })
 des.monster("gnome")
 des.monster("gnome")
