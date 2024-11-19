@@ -2311,6 +2311,8 @@ bounded_increase(int old, int inc, int typ)
         old -= uright->spe;
     if (uleft && uleft->otyp == typ && typ != RIN_PROTECTION)
         old -= uleft->spe;
+    if (uamul && uamul->otyp == typ && typ != AMULET_OF_GUARDING)
+        old -= uamul->spe;
     absold = abs(old), absinc = abs(inc);
     sgnold = sgn(old), sgninc = sgn(inc);
 
@@ -2334,6 +2336,8 @@ bounded_increase(int old, int inc, int typ)
         old += uright->spe;
     if (uleft && uleft->otyp == typ && typ != RIN_PROTECTION)
         old += uleft->spe;
+    if (uamul && uamul->otyp == typ && typ != AMULET_OF_GUARDING)
+        old += uamul->spe;
     return old + inc;
 }
 
