@@ -2361,263 +2361,252 @@ eataccessory(struct obj *otmp)
     otmp->known = otmp->dknown = 1; /* by taste */
 
     /* Note: because eating jewelery has been heavily nerfed,
-     * the odds of getting results has been inverted. */
-    if (rn2(otmp->oclass == RING_CLASS ? 3 : 5)) {
-        switch (otmp->otyp) {
-        default:
-            if (!objects[typ].oc_oprop)
-                break; /* should never happen */
-
-            if (!(u.uprops[objects[typ].oc_oprop].intrinsic & FROMOUTSIDE))
-                accessory_has_effect(otmp);
-
-            switch (typ) {
-            case RIN_SEE_INVISIBLE:
-                incr_itimeout(&HSee_invisible, rnd(750) + 750);
-                set_mimic_blocking();
-                see_monsters();
-                if (Invis && !oldprop && !ESee_invisible
-                    && !perceives(gy.youmonst.data) && !Blind) {
-                    newsym(u.ux, u.uy);
-                    pline("Suddenly you can see yourself.");
-                    makeknown(typ);
-                }
-                break;
-            case RIN_INVISIBILITY:
-                incr_itimeout(&HInvis, rnd(750) + 750);
-                if (!oldprop && !EInvis && !BInvis && !See_invisible
-                    && !Blind) {
-                    newsym(u.ux, u.uy);
-                    Your("body takes on a %s transparency...",
-                         Hallucination ? "normal" : "strange");
-                    makeknown(typ);
-                }
-                break;
-            case RIN_TELEPORT_CONTROL:
-                incr_itimeout(&HTeleport_control, rnd(750) + 750);
-                if (!oldprop && !ETeleport_control) {
-                    You_feel(Hallucination ? "centered in your personal space."
-                                   : "in control of yourself.");
-                    makeknown(typ);
-                }
-                break;
-            case RIN_TELEPORTATION:
-                incr_itimeout(&HTeleportation, rnd(750) + 750);
-                if (!oldprop && !ETeleportation) {
-                     if (!HTeleportation)
-                        You_feel(Hallucination ? "diffuse." : "very jumpy.");
-                    else
-                        You_feel(Hallucination ? "diffuser." : "more jumpy.");
-                    makeknown(typ);
-                }
-                break;
-            case RIN_POLYMORPH:
-                incr_itimeout(&HPolymorph, rnd(750) + 750);
-                if (!oldprop && !EPolymorph) {
-                    You_feel(Hallucination ? "multiple personalities." : "very fluid.");
-                    makeknown(typ);
-                }
-                break;
-            case RIN_POLYMORPH_CONTROL:
-                incr_itimeout(&HPolymorph_control, rnd(750) + 750);
-                if (!oldprop && !EPolymorph_control) {
-                    You_feel(Hallucination ? "centered in your personal space."
-                                   : "in control of yourself.");
-                    makeknown(typ);
-                }
-                break;
-            case RIN_REGENERATION:
-                incr_itimeout(&HRegeneration, rnd(750) + 750);
-                if (!Regeneration)
-                    You_feel("invigorated!");
-                makeknown(typ);
-                break;
-            case RIN_WITHERING:
-                incr_itimeout(&HWithering, rnd(750) + 750);
-                if (!Withering)
-                    You("start withering away!");
-                makeknown(typ);
-                break;
-            case RIN_HUNGER:
-                incr_itimeout(&HHunger, rnd(750) + 750);
-                if (!Hunger)
-                    You_feel("ravenous!");
-                makeknown(typ);
-                break;
-            case RIN_SEARCHING:
-                incr_itimeout(&HSearching, rnd(750) + 750);
-                if (!Searching)
-                    You_feel("perceptive!");
-                makeknown(typ);
-                break;
-            case RIN_WARNING:
-                incr_itimeout(&HWarning, rnd(750) + 750);
-                if (!Warning)
-                    You_feel("sensitive!");
-                makeknown(typ);
-                see_monsters();
-                break;
-            case RIN_STEALTH:
-                incr_itimeout(&HStealth, rnd(750) + 750);
-                if (!Stealth)
-                    You_feel("stealthy!");
-                makeknown(typ);
-                see_monsters();
-                break;
-
-            case RIN_CONFLICT:
-                incr_itimeout(&HConflict, rnd(750) + 750);
-                if (!Conflict)
-                    You_feel("like a rabble rouser!");
-                makeknown(typ);
-                break;
-
-            case RIN_PROTECTION_FROM_SHAPE_CHAN:
-                incr_itimeout(&HProtection_from_shape_changers,
-                    rnd(750) + 750); /* No message */
-                rescham();
-                break;
-            case RIN_LEVITATION:
-                /* undo the `.intrinsic |= FROMOUTSIDE' done above */
-                u.uprops[LEVITATION].intrinsic = oldprop;
-                if (!Levitation) {
-                    float_up();
-                    incr_itimeout(&HLevitation, d(10, 20));
-                    makeknown(typ);
-                }
-                break;
-            case RIN_AGGRAVATE_MONSTER:
-                incr_itimeout(&HAggravate_monster,
-                    rnd(750) + 750); /* No message */
-                break;
-
-            case AMULET_OF_ESP:
-                makeknown(typ);
-                if (!HTelepat)
-                    You_feel(Hallucination ? "in touch with the cosmos."
-                                    : "a strange mental acuity.");
-                else
-                    You_feel(Hallucination ? "more in touch with the cosmos."
-                                        : "more mentally acute.");
-                incr_itimeout(&HTelepat, rn1(750, 1250));
-                /* If blind, make sure monsters show up. */
-                if (Blind)
-                    see_monsters();
-                break;
-            case AMULET_OF_MAGICAL_BREATHING:
-                incr_itimeout(&HMagical_breathing,
-                    rnd(750) + 1250); /* No message */
-                break;
-
-            default:
-                u.uprops[objects[typ].oc_oprop].intrinsic |= FROMOUTSIDE;
-                break;
-            } /* inner switch */
-            break; /* default case of outer switch */
-
-        case RIN_ADORNMENT:
+     * guarantee results. */
+    switch (otmp->otyp) {
+    default:
+        if (!objects[typ].oc_oprop)
+            break; /* should never happen */
+        if (!(u.uprops[objects[typ].oc_oprop].intrinsic & FROMOUTSIDE))
             accessory_has_effect(otmp);
-            if (adjattrib(A_CHA, otmp->spe, -1))
+        switch (typ) {
+        case RIN_SEE_INVISIBLE:
+            incr_itimeout(&HSee_invisible, rnd(750) + 750);
+            set_mimic_blocking();
+            see_monsters();
+            if (Invis && !oldprop && !ESee_invisible
+                && !perceives(gy.youmonst.data) && !Blind) {
+                newsym(u.ux, u.uy);
+                pline("Suddenly you can see yourself.");
                 makeknown(typ);
-            break;
-        case RIN_GAIN_STRENGTH:
-            accessory_has_effect(otmp);
-            if (adjattrib(A_STR, otmp->spe, -1))
-                makeknown(typ);
-            break;
-        case RIN_GAIN_CONSTITUTION:
-            accessory_has_effect(otmp);
-            if (adjattrib(A_CON, otmp->spe, -1))
-                makeknown(typ);
-            break;
-        case RIN_INCREASE_ACCURACY:
-            accessory_has_effect(otmp);
-            u.uhitinc = (schar) bounded_increase((int) u.uhitinc, otmp->spe,
-                                                 RIN_INCREASE_ACCURACY);
-            break;
-        case RIN_INCREASE_DAMAGE:
-            accessory_has_effect(otmp);
-            u.udaminc = (schar) bounded_increase((int) u.udaminc, otmp->spe,
-                                                 RIN_INCREASE_DAMAGE);
-            break;
-        case RIN_PROTECTION:
-        case AMULET_OF_GUARDING:
-            accessory_has_effect(otmp);
-            HProtection |= FROMOUTSIDE;
-            u.ublessed = bounded_increase(u.ublessed, otmp->spe, typ);
-            disp.botl = TRUE;
-            break;
-        case RIN_FREE_ACTION:
-            /* Give sleep resistance instead */
-            if (!fully_resistant(SLEEP_RES)) {
-                accessory_has_effect(otmp);
-                You_feel("wide awake.");
             }
-            incr_resistance(&HSleep_resistance, 100);
             break;
-        case AMULET_OF_CHANGE:
+        case RIN_INVISIBILITY:
+            incr_itimeout(&HInvis, rnd(750) + 750);
+            if (!oldprop && !EInvis && !BInvis && !See_invisible
+                && !Blind) {
+                newsym(u.ux, u.uy);
+                Your("body takes on a %s transparency...",
+                        Hallucination ? "normal" : "strange");
+                makeknown(typ);
+            }
+            break;
+        case RIN_TELEPORT_CONTROL:
+            incr_itimeout(&HTeleport_control, rnd(750) + 750);
+            if (!oldprop && !ETeleport_control) {
+                You_feel(Hallucination ? "centered in your personal space."
+                                : "in control of yourself.");
+                makeknown(typ);
+            }
+            break;
+        case RIN_TELEPORTATION:
+            incr_itimeout(&HTeleportation, rnd(750) + 750);
+            if (!oldprop && !ETeleportation) {
+                    if (!HTeleportation)
+                    You_feel(Hallucination ? "diffuse." : "very jumpy.");
+                else
+                    You_feel(Hallucination ? "diffuser." : "more jumpy.");
+                makeknown(typ);
+            }
+            break;
+        case RIN_POLYMORPH:
+            incr_itimeout(&HPolymorph, rnd(750) + 750);
+            if (!oldprop && !EPolymorph) {
+                You_feel(Hallucination ? "multiple personalities." : "very fluid.");
+                makeknown(typ);
+            }
+            break;
+        case RIN_POLYMORPH_CONTROL:
+            incr_itimeout(&HPolymorph_control, rnd(750) + 750);
+            if (!oldprop && !EPolymorph_control) {
+                You_feel(Hallucination ? "centered in your personal space."
+                                : "in control of yourself.");
+                makeknown(typ);
+            }
+            break;
+        case RIN_REGENERATION:
+            incr_itimeout(&HRegeneration, rnd(750) + 750);
+            if (!Regeneration)
+                You_feel("invigorated!");
+            makeknown(typ);
+            break;
+        case RIN_WITHERING:
+            incr_itimeout(&HWithering, rnd(750) + 750);
+            if (!Withering)
+                You("start withering away!");
+            makeknown(typ);
+            break;
+        case RIN_HUNGER:
+            incr_itimeout(&HHunger, rnd(750) + 750);
+            if (!Hunger)
+                You_feel("ravenous!");
+            makeknown(typ);
+            break;
+        case RIN_SEARCHING:
+            incr_itimeout(&HSearching, rnd(750) + 750);
+            if (!Searching)
+                You_feel("perceptive!");
+            makeknown(typ);
+            break;
+        case RIN_WARNING:
+            incr_itimeout(&HWarning, rnd(750) + 750);
+            if (!Warning)
+                You_feel("sensitive!");
+            makeknown(typ);
+            see_monsters();
+            break;
+        case RIN_STEALTH:
+            incr_itimeout(&HStealth, rnd(750) + 750);
+            if (!Stealth)
+                You_feel("stealthy!");
+            makeknown(typ);
+            see_monsters();
+            break;
+        case RIN_CONFLICT:
+            incr_itimeout(&HConflict, rnd(750) + 750);
+            if (!Conflict)
+                You_feel("like a rabble rouser!");
+            makeknown(typ);
+            break;
+        case RIN_PROTECTION_FROM_SHAPE_CHAN:
+            incr_itimeout(&HProtection_from_shape_changers,
+                rnd(750) + 750); /* No message */
+            rescham();
+            break;
+        case RIN_LEVITATION:
+            /* undo the `.intrinsic |= FROMOUTSIDE' done above */
+            u.uprops[LEVITATION].intrinsic = oldprop;
+            if (!Levitation) {
+                float_up();
+                incr_itimeout(&HLevitation, d(10, 20));
+                makeknown(typ);
+            }
+            break;
+        case RIN_AGGRAVATE_MONSTER:
+            incr_itimeout(&HAggravate_monster,
+                rnd(750) + 750); /* No message */
+            break;
+        case AMULET_OF_ESP:
+            makeknown(typ);
+            if (!HTelepat)
+                You_feel(Hallucination ? "in touch with the cosmos."
+                                : "a strange mental acuity.");
+            else
+                You_feel(Hallucination ? "more in touch with the cosmos."
+                                    : "more mentally acute.");
+            incr_itimeout(&HTelepat, rn1(750, 1250));
+            /* If blind, make sure monsters show up. */
+            if (Blind)
+                see_monsters();
+            break;
+        case AMULET_OF_MAGICAL_BREATHING:
+            incr_itimeout(&HMagical_breathing,
+                rnd(750) + 1250); /* No message */
+            break;
+        default:
+            u.uprops[objects[typ].oc_oprop].intrinsic |= FROMOUTSIDE;
+            break;
+        } /* inner switch */
+        break; /* default case of outer switch */
+    case RIN_ADORNMENT:
+        accessory_has_effect(otmp);
+        if (adjattrib(A_CHA, otmp->spe, -1))
+            makeknown(typ);
+        break;
+    case RIN_GAIN_STRENGTH:
+        accessory_has_effect(otmp);
+        if (adjattrib(A_STR, otmp->spe, -1))
+            makeknown(typ);
+        break;
+    case RIN_GAIN_CONSTITUTION:
+        accessory_has_effect(otmp);
+        if (adjattrib(A_CON, otmp->spe, -1))
+            makeknown(typ);
+        break;
+    case RIN_INCREASE_ACCURACY:
+        accessory_has_effect(otmp);
+        u.uhitinc = (schar) bounded_increase((int) u.uhitinc, otmp->spe,
+                                                RIN_INCREASE_ACCURACY);
+        break;
+    case RIN_INCREASE_DAMAGE:
+        accessory_has_effect(otmp);
+        u.udaminc = (schar) bounded_increase((int) u.udaminc, otmp->spe,
+                                                RIN_INCREASE_DAMAGE);
+        break;
+    case RIN_PROTECTION:
+    case AMULET_OF_GUARDING:
+        accessory_has_effect(otmp);
+        HProtection |= FROMOUTSIDE;
+        u.ublessed = bounded_increase(u.ublessed, otmp->spe, typ);
+        disp.botl = TRUE;
+        break;
+    case RIN_FREE_ACTION:
+        /* Give sleep resistance instead */
+        if (!fully_resistant(SLEEP_RES)) {
+            accessory_has_effect(otmp);
+            You_feel("wide awake.");
+        }
+        incr_resistance(&HSleep_resistance, 100);
+        break;
+    case AMULET_OF_CHANGE:
+        accessory_has_effect(otmp);
+        makeknown(typ);
+        change_sex();
+        You("are suddenly very %s!",
+            flags.female ? "feminine" : "masculine");
+        disp.botl = TRUE;
+        break;
+    case AMULET_OF_UNCHANGING:
+        /* un-change: it's a pun */
+        if (!Unchanging && Upolyd) {
             accessory_has_effect(otmp);
             makeknown(typ);
-            change_sex();
-            You("are suddenly very %s!",
-                flags.female ? "feminine" : "masculine");
-            disp.botl = TRUE;
-            break;
-        case AMULET_OF_UNCHANGING:
-            /* un-change: it's a pun */
-            if (!Unchanging && Upolyd) {
-                accessory_has_effect(otmp);
-                makeknown(typ);
-                rehumanize();
-            }
-            break;
-        case AMULET_OF_STRANGULATION: /* bad idea! */
-            /* no message--this gives no permanent effect */
-            choke(otmp);
-            break;
-        case RIN_SLEEPING:
-        case AMULET_OF_RESTFUL_SLEEP: { /* another bad idea! */
-            long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
-
-            if (!(HSleepy & FROMOUTSIDE))
-                accessory_has_effect(otmp);
-            incr_itimeout(&HSleepy, rnd(1250) + 750);
-            /* might also be wearing one; use shorter of two timeouts */
-            if (newnap < oldnap || oldnap == 0L)
-                HSleepy = (HSleepy & ~TIMEOUT) | newnap;
-            break;
+            rehumanize();
         }
-        case AMULET_OF_FLYING:
-            float_vs_flight(); /* block flying if levitating */
-            boolean already_flying = !!Flying;;
-            incr_itimeout(&HFlying, rnd(1250) + 750);
+        break;
+    case AMULET_OF_STRANGULATION: /* bad idea! */
+        /* no message--this gives no permanent effect */
+        choke(otmp);
+        break;
+    case RIN_SLEEPING:
+    case AMULET_OF_RESTFUL_SLEEP: { /* another bad idea! */
+        long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
+        if (!(HSleepy & FROMOUTSIDE))
+            accessory_has_effect(otmp);
+        incr_itimeout(&HSleepy, rnd(1250) + 750);
+        /* might also be wearing one; use shorter of two timeouts */
+        if (newnap < oldnap || oldnap == 0L)
+            HSleepy = (HSleepy & ~TIMEOUT) | newnap;
+        break;
+    }
+    case AMULET_OF_FLYING:
+        float_vs_flight(); /* block flying if levitating */
+        boolean already_flying = !!Flying;;
+        incr_itimeout(&HFlying, rnd(1250) + 750);
 
-            if (!already_flying) {
-                disp.botl = TRUE; /* status: 'Fly' On */
-                You("are now in flight.");
-            }
-            break;
-        case AMULET_OF_REFLECTION:
-            incr_itimeout(&HReflecting, rnd(1250) + 750);
-            if (!Blind)
-                pline("A shimmering %s surrounds you!",
-                    Hallucination ? "bubble" : "globe");
-            break;
+        if (!already_flying) {
+            disp.botl = TRUE; /* status: 'Fly' On */
+            You("are now in flight.");
+        }
+        break;
+    case AMULET_OF_REFLECTION:
+        incr_itimeout(&HReflecting, rnd(1250) + 750);
+        if (!Blind)
+            pline("A shimmering %s surrounds you!",
+                Hallucination ? "bubble" : "globe");
+        break;
 #if 0 /* Disabled saving grace */
-        case AMULET_OF_LIFE_SAVING:
-            if (u.usaving_grace && Luck > 0 && !rn2(2)) {
-                You("are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
-                u.usaving_grace = 0;
-                break;
-            }
-#endif
-        case RIN_SUSTAIN_ABILITY:
-
-            /* can't eat Amulet of Yendor or fakes,
-             * and no oc_prop even if you could -3.
-             */
+    case AMULET_OF_LIFE_SAVING:
+        if (u.usaving_grace && Luck > 0 && !rn2(2)) {
+            You("are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
+            u.usaving_grace = 0;
             break;
         }
+#endif
+    case RIN_SUSTAIN_ABILITY:
+        /* can't eat Amulet of Yendor or fakes,
+         * and no oc_prop even if you could -3.
+        */
+        break;
     }
 }
 
