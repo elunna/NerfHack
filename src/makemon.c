@@ -601,6 +601,9 @@ m_initweap(struct monst *mtmp)
         case PM_HORNED_DEVIL:
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
             break;
+        case PM_SPINED_DEVIL:
+            (void) mongets(mtmp, rn2(4) ? TRIDENT : HALBERD);
+            break;
         case PM_DISPATER:
             (void) mongets(mtmp, WAN_STRIKING);
             break;

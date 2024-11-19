@@ -1500,15 +1500,15 @@ passivemm(
         break;
     case AD_QUIL: {
         boolean spikes = is_orc(mdef->data);
-        boolean barbs = mdef->data == &mons[PM_BARBED_DEVIL];
+        boolean spines = mdef->data == &mons[PM_SPINED_DEVIL];
 
         if (mhit && !rn2(2)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr)) {
                 pline("%s is %s by %s %s!", buf,
-                        barbs ? "lacerated" : "jabbed",
+                        spines ? "lacerated" : "jabbed",
                         s_suffix(mon_nam(mdef)),
-                        spikes ? "spikes" : barbs ? "barbs" : "quills");
+                        spikes ? "spikes" : spines ? "spines" : "quills");
                 if (!thick_skinned(mdef->data))
                         tmp += rn2(4);
             }
