@@ -1418,6 +1418,7 @@
 				"$(NH_DAT_DIR)/astral.lua",
 				"$(NH_DAT_DIR)/baalz-1.lua",
 				"$(NH_DAT_DIR)/baalz-2.lua",
+				"$(NH_DAT_DIR)/baalz-3.lua",
 				"$(NH_DAT_DIR)/Bar-fila.lua",
 				"$(NH_DAT_DIR)/Bar-filb.lua",
 				"$(NH_DAT_DIR)/Bar-goal.lua",

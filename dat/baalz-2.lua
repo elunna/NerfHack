@@ -4,7 +4,7 @@
 --
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "hardfloor")
+des.level_flags("mazelevel")
 des.map([[
       }}   }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}                  
   ..}}...} ...}}....}}}}.....}}...}}.}..}.}.}....}}.}  }}.}}...    .....    

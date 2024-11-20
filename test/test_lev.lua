@@ -18,6 +18,7 @@ local special_levels = {
 "astral",
 "baalz-1",
 "baalz-2",
+"baalz-3",
 "bigrm-1",
 "bigrm-2",
 "bigrm-3",

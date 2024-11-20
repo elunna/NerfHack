@@ -26,6 +26,7 @@
     <Luafiles Include = "astral.lua"/>
     <Luafiles Include = "baalz-1.lua"/>
     <Luafiles Include = "baalz-2.lua"/>
+    <Luafiles Include = "baalz-3.lua"/>
     <Luafiles Include = "Bar-fila.lua"/>
     <Luafiles Include = "Bar-filb.lua"/>
     <Luafiles Include = "Bar-goal.lua"/>
