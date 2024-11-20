@@ -1446,6 +1446,7 @@
 				"$(NH_DAT_DIR)/bigrm-20.lua",
 				"$(NH_DAT_DIR)/castle-1.lua",
 				"$(NH_DAT_DIR)/castle-2.lua",
+				"$(NH_DAT_DIR)/castle-3.lua",
 				"$(NH_DAT_DIR)/Cav-fila.lua",
 				"$(NH_DAT_DIR)/Cav-filb.lua",
 				"$(NH_DAT_DIR)/Cav-goal.lua",

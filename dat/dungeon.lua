@@ -96,7 +96,7 @@ dungeon = {
          {
             name = "castle",
             base = -9,
-            nlevels = 2,
+            nlevels = 3,
          },
          {
             name = "leth-a",

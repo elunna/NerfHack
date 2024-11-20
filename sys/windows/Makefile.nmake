@@ -539,7 +539,8 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\bigrm-10.lua $(DAT)\bigrm-11.lua $(DAT)\bigrm-2.lua \
 	$(DAT)\bigrm-3.lua  $(DAT)\bigrm-4.lua  $(DAT)\bigrm-5.lua \
 	$(DAT)\bigrm-6.lua  $(DAT)\bigrm-7.lua  $(DAT)\bigrm-8.lua \
-	$(DAT)\bigrm-9.lua  $(DAT)\castle-1.lua $(DAT)\castle-2.lua \
+	$(DAT)\bigrm-9.lua  \
+	$(DAT)\castle-1.lua $(DAT)\castle-2.lua $(DAT)\castle-3.lua \
 	$(DAT)\Cav-fila.lua \
 	$(DAT)\Cav-filb.lua $(DAT)\Cav-goal.lua $(DAT)\Cav-loca.lua \
 	$(DAT)\Cav-strt.lua $(DAT)\demo-1.lua   $(DAT)\demo-2.lua \

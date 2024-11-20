@@ -355,6 +355,7 @@ static const struct {
                 { '\\', THRONE },
                 { 'K', SINK },
                 { 'U', TOILET },
+                { 'f', FORGE },
                 { '}', MOAT },
                 { 'P', POOL },
                 { 'u', PUDDLE },
