@@ -6,28 +6,39 @@ des.level_init({ style="mazegrid", bg ="-" });
 
 des.level_flags("mazelevel", "cold", "noflip")
 -- First part
+--0       1         2         3         4         5         6         7     
+--23456789012345678901234567890123456789012345678901234567890123456789012345
 des.map({ halign = "half-left", valign = "center", map = [[
-                                          }}}}                          ----
---------------------    -------         |}}}}--                         |..|
-|............S.....|    |.....|------   --}}}}--------------       #####+..|
-|---+-----------...|    |.....|.....|------}}}}|...........|       #    |..|
-|.....|........|-+------|.....|.....|.....F}}}}F...........|    ---+--- ----
-|..---|........|........|.....|.....|.....|}}}}|..{..{..{..|    |.....|     
-|..|..S........|..........................|}.|}............+##H#S.....S#    
-|..|..|........|........|.....|.....|.....|}}}}|..{..{..{..|    |.....|     
-|..|..|........|-+------|.....|.....|.....F}}}}F...........|    ---+---     
-|..|..-----S----...|    |.....|.....|------}}}}|...........|       H        
-|..S.....|...|.....|    |.....|------    |}}}}--------------       H        
----------|...|------    -------         --}}}}|  --------          H        
-         |...|            ###           |}}}}----|......|          #        
-         |...|              #  ###       }}}}| |.+......+###########        
-     -----+++-----    ####  #  #         }}}}  |.+......+###########        
-     |...........|    #     ######  ----  }}}} --|......|          #        
-     |...........S#####     #    #  |..|  }}}}   --------       ---+---     
-     |...........|    #     #    ###+..|   }}}}                 |.....|     
-     |.....\.....|    #######       |..|   }}}}                 |.....|     
-     -------------                  ----  }}}}                  -------     
+LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL}}}}LLLLLLLLLLLLLLLLLLLLLLLLLL----
+--------------------LLLL-------         |}}}}--LLLLLLLLLLLLLLLLLLLLLLLLL|..|
+|............S.....|LLLL|.....|------   --}}}}--------------LLLLLLL#####+..|
+|---+-----------...|LLLL|.....|.....|------}}}}|...........|LLLLLLL#LLLL|..|
+|.....|........|-+------|.....|.....|.....F}}}}F...........|LLLL---+--- ----
+|..---|........|........|.....|.....|.....|}}}}|..{..{..{..|LLLL|.....|     
+|..|..S........|..........................|}..}|...........+##H#S.....S#    
+|..|..|........|........|.....|.....|.....|}}}}|..{..{..{..|LLLL|.....|     
+|..|..|........|-+------|.....|.....|.....F}}}}F...........|LLLL---+---     
+|..|..-----S----...|LLLL|.....|.....|------}}}}|...........|LLLLLLLH        
+|..S.....|...|.....|LLLL|.....|------LLLL|}}}}--------------LLLLLLLH        
+---------|...|------LLLL-------LLLLLLLLL--}}}}LLL--------LLLLLLLLLLH        
+LLLLLLLLL|...|LLLLLLLLLLLL###LLLLLLLLLLL|}}}}----|......|LLLLLLLLLL#        
+LLLLLLLLL|...|LLLLLLLLLLLLLL#LL###LLLLLLL}}}}|L|.+......+###########        
+LLLLL-----+++-----LLLL####LL#LL#LLLLLLLLL}}}}LL|.+......+###########        
+LLLLL|...........|LLLL#LLLLL######LL----LL}}}}L--|......|LLLLLLLLLL#        
+LLLLL|...........S#####LLLLL#LLLL#LL|..|LL}}}}LLL--------LLLLLLL---+---     
+LLLLL|...........|LLLL#LLLLL#LLLL###+..|LLL}}}}LLLLLLLLLLLLLLLLL|.....|     
+LLLLL|.....\.....|LLLL#######LLLLLLL|..|LLL}}}}LLLLLLLLLLLLLLLLL|.....|     
+LLLLL-------------LLLLLLLLLLLLLLLLLL----LLL}}}LLLLLLLLLLLLLLLLLL-------     
 ]] });
+
+local terrains = { "P", "L", "-", "I" };
+local tidx = math.random(1, #terrains);
+local toterr = terrains[tidx];
+
+if percent(50) then
+    des.replace_terrain({ fromterrain="L", toterrain=toterr, chance=100 })
+end
+
 des.stair("up", 65,17)
 des.stair("down", 11,16)
 
@@ -59,7 +70,7 @@ des.door("locked",17,16)
 des.door("locked",36,17)
 
 -- Drawbridges
-des.drawbridge({dir="west",state="closed",x=46,y=06})
+des.drawbridge({dir="east",state="closed",x=46,y=06})
 des.drawbridge({dir="west",state="closed",x=43,y=06})
 
 -- Non diggable walls
@@ -179,14 +190,15 @@ des.gold({amount=1,x=53,y=13})
 des.trap("fire",54,13)
 des.trap("fire",54,14)
 des.trap("magic",52,12)
-des.trap("magic",52,15)
+des.trap("magic beam",52,15)
 des.trap("spiked pit",51,13)
 des.trap("anti magic",50,14)
 des.object("polymorph", 50, 13)
 
 --OBJECT:'?',"demonology",(50,12),cursed,0
 --des.object({id="elementalism", x=50, y=12, buc="cursed"})
-des.object({id="fire", x=50, y=12, buc="cursed"})
+des.object({id="create monster", x=50, y=12, buc="cursed"})
+des.object({id="amnesia", x=50, y=12, buc="cursed"})
 
 -- Guardians in the fountain room
 des.monster({class="&", x=49, y=04})
@@ -210,3 +222,5 @@ des.monster({id="imp", 69, 17})
 des.object({id="helm of opposite alignment", x=65, y=17,buc="cursed",spe=-2})
 des.object({id="loadstone", x=65, y=18,buc="cursed"})
 des.object({id="amulet of strangulation", x=65, y=18,buc="cursed",spe=-2})
+
+-- TODO: Salamanders when they can swim in lava.
