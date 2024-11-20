@@ -1454,6 +1454,7 @@
 				"$(NH_DAT_DIR)/demo-3.lua",
 				"$(NH_DAT_DIR)/dispat-1.lua",
 				"$(NH_DAT_DIR)/dispat-2.lua",
+				"$(NH_DAT_DIR)/dispat-3.lua",
 				"$(NH_DAT_DIR)/dungeon.lua",
 				"$(NH_DAT_DIR)/earth.lua",
 				"$(NH_DAT_DIR)/fakewiz1.lua",
