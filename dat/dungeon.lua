@@ -238,8 +238,9 @@ dungeon = {
             range = 6
          },
          {
-            name = "yeenoghu",
+            name = "yeenog",
             bonetag = "Y",
+            nlevels = 2,
             base = 10,
             chance = 50,
             range = 6

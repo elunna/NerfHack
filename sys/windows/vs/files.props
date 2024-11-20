@@ -200,7 +200,8 @@
     <Luafiles Include = "wizard3.lua"/>
     <Luafiles Include = "tomb.lua"/>
     <Luafiles Include = "mtemple.lua"/>
-    <Luafiles Include = "yeenoghu.lua"/>
+    <Luafiles Include = "yeenog-1.lua"/>
+    <Luafiles Include = "yeenog-2.lua"/>
   </ItemGroup>
   <ItemGroup>
     <UUFiles Include = "$(SysWindDir)nhico.uu"/>

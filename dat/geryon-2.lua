@@ -41,7 +41,7 @@ uuuu........T.u}}}}}}uuuuu..uuuuu......................uuuuu
 des.stair("down", 50,07)
 
 des.levregion({ region = {01,01,20,19}, region_islev=1, exclude_islev=1, type="stair-up" })
---des.levregion({ region = {01,01,20,19}, region_islev=1, exclude={00,00,59,19}, exclude_islev=1, type="branch" })
+--des.levregion({ region = {01,01,20,19}, region_islev=1, exclude_islev=1, type="branch" })
 des.teleport_region({region={01,01,20,19}, dir="down" })
 
 des.region(selection.area(00,00,59,19),"lit")
@@ -139,12 +139,10 @@ des.trap("fire")
 des.trap("fire")
 des.trap("fire")
 des.trap("fire")
-
 des.trap("fire")
 des.trap("fire")
 des.trap("fire")
 des.trap("fire")
-
 des.trap("fire")
 des.trap("fire")
 

@@ -588,8 +588,8 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\Wiz-filb.lua $(DAT)\Wiz-goal.lua $(DAT)\Wiz-loca.lua \
 	$(DAT)\Wiz-strt.lua $(DAT)\wizard1.lua  $(DAT)\wizard2.lua \
 	$(DAT)\wizard3.lua  $(DAT)\tut-1.lua    $(DAT)\tut-2.lua \
-	$(DAT)\tomb.lua		$(DAT)\mtemple.lua	$(DAT)\yeenoghu.lua \
-	$(DAT)\bridge.lua
+	$(DAT)\tomb.lua		$(DAT)\mtemple.lua	$(DAT)\yeenog-2.lua \
+	$(DAT)\yeenog-2.lua$(DAT)\bridge.lua
 #
 # Utility Objects.
 #
