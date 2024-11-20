@@ -105,6 +105,7 @@ des.monster("m")
 des.monster("m")
 des.monster("jellyfish")
 des.monster("jellyfish")
+des.monster("shoggoth")
 -- Some random objects
 des.object("!")
 des.object("!")
