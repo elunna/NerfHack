@@ -577,7 +577,8 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\Rog-fila.lua $(DAT)\Rog-filb.lua $(DAT)\Rog-goal.lua \
 	$(DAT)\Rog-loca.lua $(DAT)\Rog-strt.lua $(DAT)\Sam-fila.lua \
 	$(DAT)\Sam-filb.lua $(DAT)\Sam-goal.lua $(DAT)\Sam-loca.lua \
-	$(DAT)\Sam-strt.lua $(DAT)\sanctum.lua  $(DAT)\soko1-1.lua \
+	$(DAT)\Sam-strt.lua $(DAT)\sanctm-1.lua $(DAT)\sanctm-2.lua \
+	$(DAT)\soko1-1.lua \
 	$(DAT)\soko1-2.lua  $(DAT)\soko2-1.lua  $(DAT)\soko2-2.lua \
 	$(DAT)\soko3-1.lua  $(DAT)\soko3-2.lua  $(DAT)\soko4-1.lua \
 	$(DAT)\soko4-2.lua  $(DAT)\themerms.lua $(DAT)\Tou-fila.lua \

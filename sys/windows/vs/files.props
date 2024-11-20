@@ -159,7 +159,8 @@
     <Luafiles Include = "Sam-goal.lua"/>
     <Luafiles Include = "Sam-loca.lua"/>
     <Luafiles Include = "Sam-strt.lua"/>
-    <Luafiles Include = "sanctum.lua"/>
+    <Luafiles Include = "sanctm-1.lua"/>
+    <Luafiles Include = "sanctm-2.lua"/>
     <Luafiles Include = "soko1-1.lua"/>
     <Luafiles Include = "soko1-2.lua"/>
     <Luafiles Include = "soko1-3.lua"/>

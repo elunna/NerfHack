@@ -185,7 +185,8 @@ dungeon = {
             base = -2
          },
          {
-            name = "sanctum",
+            name = "sanctm",
+            nlevels = 2,
             base = -1
          },
          {
