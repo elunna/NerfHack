@@ -52,7 +52,8 @@
     <Luafiles Include = "bigrm-18.lua"/>
     <Luafiles Include = "bigrm-19.lua"/>
     <Luafiles Include = "bigrm-20.lua"/>
-    <Luafiles Include = "castle.lua"/>
+    <Luafiles Include = "castle-1.lua"/>
+    <Luafiles Include = "castle-2.lua"/>
     <Luafiles Include = "Cav-fila.lua"/>
     <Luafiles Include = "Cav-filb.lua"/>
     <Luafiles Include = "Cav-goal.lua"/>

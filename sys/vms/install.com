@@ -36,7 +36,7 @@ $	guidebook  = "[.doc]Guidebook.txt"
 $	invoc_proc = "[.sys.vms]nethack.com"
 $	trmcp_file = "[.sys.share]termcap"
 $	spec_files = "air.lua,asmode-%.lua,astral.lua,baalz-%.lua,"	-
-		+ "bigrm-*.lua,castle.lua,earth.lua,fakewiz%.lua,geryon-%.lua," -
+		+ "bigrm-*.lua,castle-%.lua,earth.lua,fakewiz%.lua,geryon-%.lua," -
 		+ "fire.lua,hellfill.lua,juiblex.lua,knox-%.lua,demo-%.lua," -
 		+ "dispat-%.lua","medusa-%.lua,minefill.lua,minetn-*.lua," -
 		+ "minend-%.lua,yeenog-%.lua,nhcore.lua,nhlib.lua,"	-
@@ -52,7 +52,7 @@ $!		   + "JUIBLEX.LEV,KNOX.LEV,MEDUSA-%.LEV,MINEFILL.LEV," -
 $!		   + "MINETN-%.LEV,MINEND-%.LEV,ORACLE.LEV,ORCUS.LEV," -
 $!		   + "SANCTUM.LEV,SOKO%-%.LEV,TOWER%.LEV,VALLEY.LEV," -
 $!		   + "WATER.LEV,WIZARD%.LEV,LETH-%,LETH-%-%"
-$!	spec_input = "bigroom.des castle.des endgame.des " -
+$!	spec_input = "bigroom.des castle-%.des endgame.des " -
 $!		   + "gehennom.des knox.des medusa.des mines.des " -
 $!		   + "oracle.des sokoban.des tower.des yendor.des"
 $!	qstl_files = "%%%-GOAL.LEV,%%%-FIL%.LEV,%%%-LOCA.LEV,%%%-STRT.LEV"

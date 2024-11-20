@@ -169,6 +169,11 @@ des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
 des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
+-- THE NOT QUITE WANDS OF WISHING
+-- ...since you can see the chest now through the bars,
+-- we have to find a better way to disguise where the wand is
+-- From SporkHack
+
 local loc = place:rndcoord(2);
 des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
              contents = function()
@@ -177,11 +182,6 @@ des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
 });
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
 des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
-
--- THE NOT QUITE WANDS OF WISHING
--- ...since you can see the chest now through the bars,
--- we have to find a better way to disguise where the wand is
--- From SporkHack
 
 local loc = place:rndcoord(3);
 des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
