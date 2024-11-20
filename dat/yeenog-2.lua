@@ -9,6 +9,8 @@ des.level_flags("mazelevel", "hardfloor", "noflip")
 
 des.level_init({ style="mines", fg=".", bg="}", smoothed=true, joined=true, walled=true })
 
+--0       1         2         3         4         5         6         7     
+--23456789012345678901234567890123456789012345678901234567890123456789012345
 des.map({ halign = "right", valign = "center", map = [[
 }}}w}}wwwww}}}}}}}}}}}
 }---------------w}}w}}

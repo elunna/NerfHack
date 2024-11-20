@@ -1580,6 +1580,7 @@
 				"$(NH_DAT_DIR)/wizard3.lua",
 				"$(NH_DAT_DIR)/yeenog-1.lua",
 				"$(NH_DAT_DIR)/yeenog-2.lua",
+				"$(NH_DAT_DIR)/yeenog-3.lua",
 				"$(NH_DAT_DIR)/bridge.lua",
 			);
 			name = "Build nhdat";
