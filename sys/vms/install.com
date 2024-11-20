@@ -38,7 +38,7 @@ $	trmcp_file = "[.sys.share]termcap"
 $	spec_files = "air.lua,asmode-%.lua,astral.lua,baalz-%.lua,"	-
 		+ "bigrm-*.lua,castle.lua,earth.lua,fakewiz%.lua,geryon-%.lua," -
 		+ "fire.lua,hellfill.lua,juiblex.lua,knox-%.lua,demo-%.lua," -
-		+ "dispater.lua","medusa-%.lua,minefill.lua,minetn-*.lua," -
+		+ "dispat-%.lua","medusa-%.lua,minefill.lua,minetn-*.lua," -
 		+ "minend-%.lua,yeenog-%.lua,nhcore.lua,nhlib.lua,"	-
 		+ "oracle-%.lua,orcus-%.lua,quest.lua,sanctum.lua,bridge.lua"		-
 		+ "soko%-%.lua,themerms.lua,tower%.lua,tut-%.lua,nkai-*," -

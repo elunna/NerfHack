@@ -231,8 +231,9 @@ dungeon = {
             range = 6
          },
          {
-            name = "dispater",
+            name = "dispat",
             bonetag = "R",
+            nlevels = 2,
             base = 10,
             chance = 50,
             range = 6

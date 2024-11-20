@@ -542,8 +542,8 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\bigrm-9.lua  $(DAT)\castle.lua   $(DAT)\Cav-fila.lua \
 	$(DAT)\Cav-filb.lua $(DAT)\Cav-goal.lua $(DAT)\Cav-loca.lua \
 	$(DAT)\Cav-strt.lua $(DAT)\demo-1.lua   $(DAT)\demo-2.lua \
-	$(DAT)\demo-3.lua \
-	$(DAT)\dispater.lua $(DAT)\dungeon.lua  $(DAT)\earth.lua 	\
+	$(DAT)\demo-3.lua   $(DAT)\dispat-1.lua  \
+	$(DAT)\dispat-2.lua $(DAT)\dungeon.lua  $(DAT)\earth.lua 	\
 	$(DAT)\fakewiz1.lua $(DAT)\fakewiz2.lua $(DAT)\fire.lua \
 	$(DAT)\Hea-fila.lua $(DAT)\Hea-filb.lua $(DAT)\Hea-goal.lua \
 	$(DAT)\Hea-loca.lua $(DAT)\Hea-strt.lua $(DAT)\hellfill.lua \
