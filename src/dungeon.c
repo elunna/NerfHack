@@ -728,7 +728,7 @@ static struct level_map {
                   { "oracle", &oracle_level },
                   { "orcus", &orcus_level },
                   { "rogue", &rogue_level },
-                  { "sanctum", &sanctum_level },
+                  { "sanctm", &sanctum_level },
                   { "valley", &valley_level },
                   { "water", &water_level },
                   { "wizard1", &wiz1_level },
