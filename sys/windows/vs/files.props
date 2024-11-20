@@ -59,6 +59,7 @@
     <Luafiles Include = "Cav-strt.lua"/>
     <Luafiles Include = "demo-1.lua"/>
     <Luafiles Include = "demo-2.lua"/>
+    <Luafiles Include = "demo-3.lua"/>
     <Luafiles Include = "dispater.lua"/>
     <Luafiles Include = "dungeon.lua"/>
     <Luafiles Include = "earth.lua"/>

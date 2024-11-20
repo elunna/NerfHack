@@ -1451,6 +1451,7 @@
 				"$(NH_DAT_DIR)/Cav-strt.lua",
 				"$(NH_DAT_DIR)/demo-1.lua",
 				"$(NH_DAT_DIR)/demo-2.lua",
+				"$(NH_DAT_DIR)/demo-3.lua",
 				"$(NH_DAT_DIR)/dispater.lua",
 				"$(NH_DAT_DIR)/dungeon.lua",
 				"$(NH_DAT_DIR)/earth.lua",

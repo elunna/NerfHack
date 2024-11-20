@@ -248,7 +248,7 @@ dungeon = {
          {
             name = "demo",
             bonetag = "D",
-            nlevels = 2,
+            nlevels = 3,
             base = 13,
             range = 6
          },
