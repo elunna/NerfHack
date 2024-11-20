@@ -1779,14 +1779,9 @@ m_move(struct monst *mtmp, int after)
         return MMOVE_DONE; /* still eating */
     }
 
-        /* Maggots infest corpses, arch-viles revive them. */
+    /* Maggots infest corpses, arch-viles revive them. */
     if (ptr == &mons[PM_MAGGOT] || mtmp->data == &mons[PM_ARCH_VILE])
         minfestcorpse(mtmp);
-
-    if (hides_under(ptr) && OBJ_AT(mtmp->mx, mtmp->my)
-        && can_hide_under_obj(svl.level.objects[mtmp->mx][mtmp->my])
-        && rn2(10))
-        return MMOVE_NOTHING; /* do not leave hiding place */
 
     /* set up pre-move visibility flags */
     seenflgs = (canseemon(mtmp) ? 1 : 0) | (canspotmon(mtmp) ? 2 : 0);
@@ -2232,18 +2227,14 @@ concealed_spot(coordxy x, coordxy y)
 {
     int cflags = NOT_CONCEALABLE_SPOT;
     struct obj *otmp = svl.level.objects[x][y];
-    if (otmp != 0
-        /* most things can be hidden under, but not all */
-        && can_hide_under_obj(otmp)
-        /* aquatic creatures don't reach here; other swimmers
-           shouldn't hide beneath underwater objects */
-        && !is_pool_or_lava(x, y) && !is_puddle(x, y))
+    if (otmp != 0)
         cflags |= CONCEALABLE_BY_OBJECT;
+
     switch (levl[x][y].typ) {
     /* Inherited from xnh */
     case GRASS:
     case SINK:
-    case ALTAR: 
+    case ALTAR:
     case THRONE:
     case LADDER:
     case GRAVE:

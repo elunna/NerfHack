@@ -5366,25 +5366,36 @@ hideunder(struct monst *mtmp)
             locomo = "dive";
         }
     } else if (hides_under(mtmp->data)
-        /* pets won't hide under a cursed item or an item of any BUC
-           state that shares a pile with one or more cursed items */
-        && (!mtmp->mtame || !cursed_object_at(x, y))) {
+        && !is_pool_or_lava(x, y) && !is_puddle(x, y)) {
+
         int concealment = concealed_spot(x, y);
+
         if (concealment == CONCEALABLE_BY_TERRAIN) {
             undetected = TRUE;
-        } else if (concealment == CONCEALABLE_BY_OBJECT) {
-            struct obj *otmp = svl.level.objects[x][y];
-            /* most monsters won't hide under cockatrice corpse but they
-               can hide under a pile containing more than just such corpses */
-            while (otmp && otmp->otyp == CORPSE
-                   && touch_petrifies(&mons[otmp->corpsenm]))
-                otmp = otmp->nexthere;
-            if (otmp != 0 || ((mtmp == &gy.youmonst) ? Stone_resistance
-                                                     : resists_ston(mtmp))) {
-                undetected = TRUE;
+        } else if (concealment == CONCEALABLE_BY_OBJECT
+            && (!mtmp->mtame || !cursed_object_at(x, y))
+            /* aquatic creatures don't reach here; other swimmers
+               shouldn't hide beneath underwater objects */) {
 
-                if (seeit)
-                    seenobj = ansimpleoname(otmp);
+            struct obj *otmp = svl.level.objects[x][y];
+
+            /* pets won't hide under a cursed item or an item of any BUC
+               state that shares a pile with one or more cursed items */
+            if (!can_hide_under_obj(otmp)) {
+                undetected = FALSE;
+            } else {
+                /* most monsters won't hide under cockatrice corpse but they
+                can hide under a pile containing more than just such corpses */
+                while (otmp && otmp->otyp == CORPSE
+                    && touch_petrifies(&mons[otmp->corpsenm]))
+                    otmp = otmp->nexthere;
+                if (otmp != 0 || ((mtmp == &gy.youmonst) ? Stone_resistance
+                                                        : resists_ston(mtmp))) {
+                    undetected = TRUE;
+
+                    if (seeit)
+                        seenobj = ansimpleoname(otmp);
+                }
             }
         }
     }
