@@ -5393,7 +5393,7 @@ hideunder(struct monst *mtmp)
                                                         : resists_ston(mtmp))) {
                     undetected = TRUE;
 
-                    if (seeit)
+                    if (otmp && seeit)
                         seenobj = ansimpleoname(otmp);
                 }
             }
