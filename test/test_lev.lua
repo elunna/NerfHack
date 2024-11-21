@@ -103,6 +103,7 @@ local special_levels = {
 "tower3",
 "valley-1",
 "valley-2",
+"valley-3",
 "water",
 "wizard1",
 "wizard2",
