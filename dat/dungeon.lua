@@ -161,6 +161,7 @@ dungeon = {
          {
             name = "valley",
             bonetag = "V",
+            nlevels = 2,
             base = 1
          },
          {

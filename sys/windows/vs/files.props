@@ -196,7 +196,8 @@
     <Luafiles Include = "Val-goal.lua"/>
     <Luafiles Include = "Val-loca.lua"/>
     <Luafiles Include = "Val-strt.lua"/>
-    <Luafiles Include = "valley.lua"/>
+    <Luafiles Include = "valley-1.lua"/>
+    <Luafiles Include = "valley-2.lua"/>
     <Luafiles Include = "bridge.lua"/>
     <Luafiles Include = "water.lua"/>
     <Luafiles Include = "Wiz-fila.lua"/>

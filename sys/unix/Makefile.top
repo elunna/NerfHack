@@ -99,7 +99,7 @@ DATHELP = help hh cmdhelp keyhelp history opthelp optmenu usagehlp wizhelp
 SPEC_LEVS = asmode-?.lua baalz-?.lua bigrm-*.lua castle-?.lua fakewiz?.lua \
 	juiblex.lua knox-?.lua medusa-?.lua minend-?.lua minefill.lua \
 	minetn-*.lua oracle-?.lua orcus-?.lua sanctm-?.lua soko?-?.lua \
-	tower?.lua valley.lua wizard?.lua nhcore.lua nhlib.lua themerms.lua \
+	tower?.lua valley-?.lua wizard?.lua nhcore.lua nhlib.lua themerms.lua \
 	astral.lua air.lua earth.lua fire.lua water.lua hellfill.lua tut-?.lua \
 	tomb.lua mtemple.lua mephisto.lua demo-?.lua dispat-?.lua yeenog-?.lua \
 	geryon-?.lua leth-* nkai-* bridge.lua

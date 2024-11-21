@@ -138,7 +138,7 @@ SPEC_LEVS = asmode-?.lua baalz-?.lua \
 	bigrm-*.lua castle-?.lua fakewiz?.lua demo-?.lua dispat-?.lua \
 	juiblex.lua knox-?.lua medusa-?.lua minend-?.lua minefill.lua \
 	minetn-*.lua oracle.lua orcus-?.lua sanctm-?.lua soko?-?.lua \
-	tower?.lua valley.lua wizard?.lua nhcore.lua nhlib.lua themerms.lua \
+	tower?.lua valley-?.lua wizard?.lua nhcore.lua nhlib.lua themerms.lua \
 	astral.lua air.lua earth.lua fire.lua water.lua hellfill.lua tut-?.lua \
 	mephisto.lua yeenog-?.lua geryon-?.lua leth-* nkai-* bridge.lua
 QUEST_LEVS = ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua
