@@ -96,13 +96,46 @@ CSS = NHdump.css
 
 DATHELP = help hh cmdhelp keyhelp history opthelp optmenu usagehlp wizhelp
 
-SPEC_LEVS = asmode-?.lua baalz-?.lua bigrm-*.lua castle-?.lua fakewiz?.lua \
-	juiblex.lua knox-?.lua medusa-?.lua minend-?.lua minefill.lua \
-	minetn-*.lua oracle-?.lua orcus-?.lua sanctm-?.lua soko?-?.lua \
-	tower?.lua valley-?.lua wizard?.lua nhcore.lua nhlib.lua themerms.lua \
-	astral.lua air.lua earth.lua fire.lua water.lua hellfill.lua tut-?.lua \
-	tomb.lua mtemple.lua mephisto.lua demo-?.lua dispat-?.lua yeenog-?.lua \
-	geryon-?.lua leth-* nkai-* bridge.lua
+SPEC_LEVS = 	 	\
+	air.lua 		\
+	astral.lua 		\
+	asmode-?.lua	\
+	baalz-?.lua		\
+	bigrm-*.lua 	\
+	bridge.lua		\
+	castle-?.lua 	\
+	demo-?.lua 		\
+	dispat-?.lua 	\
+	earth.lua 		\
+	fakewiz?.lua 	\
+	fire.lua 		\
+	geryon-?.lua 	\
+	hellfill.lua 	\
+	juiblex.lua 	\
+	knox-?.lua 		\
+	leth-* 			\
+	medusa-?.lua 	\
+	mephisto.lua 	\
+	minend-?.lua 	\
+	minefill.lua 	\
+	minetn-*.lua 	\
+	mtemple.lua 	\
+	nhcore.lua 		\
+	nhlib.lua 		\
+	nkai-* 			\
+	oracle-?.lua 	\
+	orcus-?.lua 	\
+	sanctm-?.lua 	\
+	soko?-?.lua 	\
+	themerms.lua 	\
+	tomb.lua 		\
+	tower?.lua 		\
+	tut-?.lua 		\
+	valley-?.lua 	\
+	water.lua 		\
+	wizard?.lua 	\
+	yeenog-?.lua
+
 QUEST_LEVS = ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua
 
 DATNODLB = $(VARDATND) license symbols $(CSS)

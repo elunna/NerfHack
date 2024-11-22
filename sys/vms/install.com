@@ -35,23 +35,71 @@ $	sysconf_file = "[.sys.vms]sysconf"
 $	guidebook  = "[.doc]Guidebook.txt"
 $	invoc_proc = "[.sys.vms]nethack.com"
 $	trmcp_file = "[.sys.share]termcap"
-$	spec_files = "air.lua,asmode-%.lua,astral.lua,baalz-%.lua,"	-
-		+ "bigrm-*.lua,castle-%.lua,earth.lua,fakewiz%.lua,geryon-%.lua," -
-		+ "fire.lua,hellfill.lua,juiblex.lua,knox-%.lua,demo-%.lua," -
-		+ "dispat-%.lua","medusa-%.lua,minefill.lua,minetn-*.lua," -
-		+ "minend-%.lua,yeenog-%.lua,nhcore.lua,nhlib.lua,"	-
-		+ "oracle-%.lua,orcus-%.lua,quest.lua,sanctm-%.lua,bridge.lua"		-
-		+ "soko%-%.lua,themerms.lua,tower%.lua,tut-%.lua,nkai-*," -
-		+ "valley-%.lua,water.lua,wizard%.lua,mephisto.lua,leth-*"
+$	spec_files = "air.lua,"	-
+		+ "asmode-%.lua," 	-
+		+ "astral.lua," 	-
+		+ "baalz-%.lua,"	-
+		+ "bigrm-*.lua," 	-
+		+ "bridge.lua," 		-
+		+ "castle-%.lua," 	-
+		+ "demo-%.lua," 	-
+		+ "dispat-%.lua,"	-
+		+ "earth.lua," 		-
+		+ "fakewiz%.lua," 	-
+		+ "geryon-%.lua," 	-
+		+ "fire.lua," 		-
+		+ "hellfill.lua," 	-
+		+ "juiblex.lua," 	-
+		+ "knox-%.lua," 	-
+		+ "leth-*,"			-
+		+ "medusa-%.lua," 	-
+		+ "mephisto.lua," 	-
+		+ "minefill.lua," 	-
+		+ "minetn-*.lua," 	-
+		+ "minend-%.lua," 	-
+		+ "nhcore.lua," 	-
+		+ "nhlib.lua,"		-
+		+ "nkai-*," 		-
+		+ "oracle-%.lua," 	-
+		+ "orcus-%.lua," 	-
+		+ "quest.lua," 		-
+		+ "sanctm-%.lua," 	-
+		+ "soko%-%.lua," 	-
+		+ "themerms.lua" 	-
+		+ "tower%.lua," 	-
+		+ "tut-%.lua," 		-
+		+ "valley-%.lua" 	-
+		+ "water.lua," 		-
+		+ "wizard%.lua," 	-
+		+ "yeenog-%.lua"
 $	qstl_files = "%%%-goal.lua,%%%-fil%.lua,%%%-loca.lua,%%%-strt.lua"
 $	dngn_files = "dungeon.lua"
 $!
-$!	spec_files = "AIR.LEV,ASMODEUS.LEV,ASTRAL.LEV,BAALZ-%.LEV,BIGRM-%.LEV," -
-$!		   + "CASTLE.LEV,EARTH.LEV,FAKEWIZ%.LEV,FIRE.LEV," -
-$!		   + "JUIBLEX.LEV,KNOX.LEV,MEDUSA-%.LEV,MINEFILL.LEV," -
-$!		   + "MINETN-%.LEV,MINEND-%.LEV,ORACLE.LEV,ORCUS.LEV," -
-$!		   + "SANCTUM.LEV,SOKO%-%.LEV,TOWER%.LEV,VALLEY.LEV," -
-$!		   + "WATER.LEV,WIZARD%.LEV,LETH-%,LETH-%-%"
+$!	spec_files = "AIR.LEV," -
+$!		   + "ASMODEUS.LEV," -
+$!		   + "ASTRAL.LEV," -
+$!		   + "BAALZ-%.LEV," -
+$!		   + "BIGRM-%.LEV," -
+$!		   + "CASTLE.LEV," -
+$!		   + "EARTH.LEV," -
+$!		   + "FAKEWIZ%.LEV," -
+$!		   + "FIRE.LEV," -
+$!		   + "JUIBLEX.LEV," -
+$!		   + "KNOX.LEV," -
+$!		   + "MEDUSA-%.LEV," -
+$!		   + "MINEFILL.LEV," -
+$!		   + "MINETN-%.LEV," -
+$!		   + "MINEND-%.LEV," -
+$!		   + "ORACLE.LEV," -
+$!		   + "ORCUS.LEV," -
+$!		   + "SANCTUM.LEV," -
+$!		   + "SOKO%-%.LEV," -
+$!		   + "TOWER%.LEV," -
+$!		   + "VALLEY.LEV," -
+$!		   + "WATER.LEV," -
+$!		   + "WIZARD%.LEV," -
+$!		   + "LETH-%," -
+$!		   + "LETH-%-%"
 $!	spec_input = "bigroom.des castle-%.des endgame.des " -
 $!		   + "gehennom.des knox.des medusa.des mines.des " -
 $!		   + "oracle.des sokoban.des tower.des yendor.des"

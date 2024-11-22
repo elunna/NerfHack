@@ -530,71 +530,202 @@ HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   windows.c wizard.c worm.c worn.c write.c zap.c
 
 LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
-	$(DAT)\Arc-goal.lua $(DAT)\Arc-loca.lua $(DAT)\Arc-strt.lua \
-	$(DAT)\asmode-1.lua $(DAT)\asmode-2.lua $(DAT)\astral.lua \
-	$(DAT)\baalz-1.lua  $(DAT)\baalz-2.lua  $(DAT)\baalz-3.lua \
-	$(DAT)\geryon-1.lua $(DAT)\geryon-2.lua \
-	$(DAT)\Bar-fila.lua $(DAT)\Bar-filb.lua $(DAT)\Bar-goal.lua \
-	$(DAT)\Bar-loca.lua $(DAT)\Bar-strt.lua $(DAT)\bigrm-1.lua \
-	$(DAT)\bigrm-10.lua $(DAT)\bigrm-11.lua $(DAT)\bigrm-2.lua \
-	$(DAT)\bigrm-3.lua  $(DAT)\bigrm-4.lua  $(DAT)\bigrm-5.lua \
-	$(DAT)\bigrm-6.lua  $(DAT)\bigrm-7.lua  $(DAT)\bigrm-8.lua \
+	$(DAT)\Arc-goal.lua \
+	$(DAT)\Arc-loca.lua \
+	$(DAT)\Arc-strt.lua \
+	$(DAT)\asmode-1.lua \
+	$(DAT)\asmode-2.lua \
+	$(DAT)\astral.lua   \
+	$(DAT)\baalz-1.lua  \
+	$(DAT)\baalz-2.lua  \
+	$(DAT)\baalz-3.lua  \
+	$(DAT)\Bar-fila.lua \
+	$(DAT)\Bar-filb.lua \
+	$(DAT)\Bar-goal.lua \
+	$(DAT)\Bar-loca.lua \
+	$(DAT)\Bar-strt.lua \
+	$(DAT)\bigrm-1.lua  \
+	$(DAT)\bigrm-2.lua  \
+	$(DAT)\bigrm-3.lua  \
+	$(DAT)\bigrm-4.lua  \
+	$(DAT)\bigrm-5.lua  \
+	$(DAT)\bigrm-6.lua  \
+	$(DAT)\bigrm-7.lua  \
+	$(DAT)\bigrm-8.lua  \
 	$(DAT)\bigrm-9.lua  \
-	$(DAT)\castle-1.lua $(DAT)\castle-2.lua $(DAT)\castle-3.lua \
+	$(DAT)\bigrm-10.lua \
+	$(DAT)\bigrm-11.lua \
+	$(DAT)\bigrm-12.lua \
+	$(DAT)\bigrm-13.lua \
+	$(DAT)\bigrm-14.lua \
+	$(DAT)\bigrm-15.lua \
+	$(DAT)\bigrm-16.lua \
+	$(DAT)\bigrm-17.lua \
+	$(DAT)\bigrm-18.lua \
+	$(DAT)\bigrm-19.lua \
+	$(DAT)\bigrm-20.lua \
+	$(DAT)\castle-1.lua \
+	$(DAT)\castle-2.lua \
+	$(DAT)\castle-3.lua \
 	$(DAT)\Cav-fila.lua \
-	$(DAT)\Cav-filb.lua $(DAT)\Cav-goal.lua $(DAT)\Cav-loca.lua \
-	$(DAT)\Cav-strt.lua $(DAT)\demo-1.lua   $(DAT)\demo-2.lua \
-	$(DAT)\demo-3.lua   $(DAT)\dispat-1.lua $(DAT)\dispat-2.lua \
-	$(DAT)\dispat-3.lua $(DAT)\dungeon.lua  $(DAT)\earth.lua 	\
-	$(DAT)\fakewiz1.lua $(DAT)\fakewiz2.lua $(DAT)\fire.lua \
-	$(DAT)\Hea-fila.lua $(DAT)\Hea-filb.lua $(DAT)\Hea-goal.lua \
-	$(DAT)\Hea-loca.lua $(DAT)\Hea-strt.lua $(DAT)\hellfill.lua \
-	$(DAT)\juiblex.lua  $(DAT)\Kni-fila.lua $(DAT)\Kni-filb.lua \
-	$(DAT)\Kni-goal.lua $(DAT)\Kni-loca.lua $(DAT)\Kni-strt.lua \
-	$(DAT)\knox-1.lua   $(DAT)\knox-2.lua   $(DAT)\knox-2.lua   \
-	$(DAT)\leth-a-1.lua $(DAT)\leth-a-2.lua	$(DAT)\leth-b.lua 	\
-	$(DAT)\leth-c-1.lua $(DAT)\leth-c-2.lua \
-	$(DAT)\leth-d-1.lua $(DAT)\leth-d-2.lua \
-	$(DAT)\leth-e.lua 	$(DAT)\leth-f.lua 	$(DAT)\leth-g.lua   \
-	$(DAT)\leth-z.lua \
-	$(DAT)\nkai-a-1.lua $(DAT)\nkai-a-2.lua $(DAT)\nkai-b.lua \
-	$(DAT)\nkai-c.lua   $(DAT)\nkai-z.lua \
-	$(DAT)\medusa-1.lua $(DAT)\medusa-2.lua $(DAT)\medusa-3.lua \
-	$(DAT)\medusa-4.lua $(DAT)\mephisto.lua $(DAT)\minefill.lua \
-	$(DAT)\minend-1.lua $(DAT)\minend-2.lua $(DAT)\minend-3.lua \
-	$(DAT)\minend-4.lua $(DAT)\minend-5.lua $(DAT)\minend-6.lua \
+	$(DAT)\Cav-filb.lua \
+	$(DAT)\Cav-goal.lua \
+	$(DAT)\Cav-loca.lua \
+	$(DAT)\Cav-strt.lua \
+	$(DAT)\demo-1.lua   \
+	$(DAT)\demo-2.lua   \
+	$(DAT)\demo-3.lua   \
+	$(DAT)\dispat-1.lua \
+	$(DAT)\dispat-2.lua \
+	$(DAT)\dispat-3.lua \
+	$(DAT)\dungeon.lua  \
+	$(DAT)\earth.lua 	\
+	$(DAT)\fakewiz1.lua \
+	$(DAT)\fakewiz2.lua \
+	$(DAT)\fire.lua     \
+	$(DAT)\geryon-1.lua \
+	$(DAT)\geryon-2.lua \
+	$(DAT)\Hea-fila.lua \
+	$(DAT)\Hea-filb.lua \
+	$(DAT)\Hea-goal.lua \
+	$(DAT)\Hea-loca.lua \
+	$(DAT)\Hea-strt.lua \
+	$(DAT)\hellfill.lua \
+	$(DAT)\juiblex.lua  \
+	$(DAT)\Kni-fila.lua \
+	$(DAT)\Kni-filb.lua \
+	$(DAT)\Kni-goal.lua \
+	$(DAT)\Kni-loca.lua \
+	$(DAT)\Kni-strt.lua \
+	$(DAT)\knox-1.lua   \
+	$(DAT)\knox-2.lua   \
+	$(DAT)\knox-2.lua   \
+	$(DAT)\leth-a-1.lua \
+	$(DAT)\leth-a-2.lua	\
+	$(DAT)\leth-b.lua 	\
+	$(DAT)\leth-c-1.lua \
+	$(DAT)\leth-c-2.lua \
+	$(DAT)\leth-d-1.lua \
+	$(DAT)\leth-d-2.lua \
+	$(DAT)\leth-e.lua 	\
+	$(DAT)\leth-f.lua 	\
+	$(DAT)\leth-g.lua   \
+	$(DAT)\leth-z.lua   \
+	$(DAT)\nkai-a-1.lua \
+	$(DAT)\nkai-a-2.lua \
+	$(DAT)\nkai-b.lua   \
+	$(DAT)\nkai-c.lua   \
+	$(DAT)\nkai-z.lua   \
+	$(DAT)\medusa-1.lua \
+	$(DAT)\medusa-2.lua \
+	$(DAT)\medusa-3.lua \
+	$(DAT)\medusa-4.lua \
+	$(DAT)\mephisto.lua \
+	$(DAT)\minefill.lua \
+	$(DAT)\minend-1.lua \
+	$(DAT)\minend-2.lua \
+	$(DAT)\minend-3.lua \
+	$(DAT)\minend-4.lua \
+	$(DAT)\minend-5.lua \
+	$(DAT)\minend-6.lua \
 	$(DAT)\minend-7.lua \
-	$(DAT)\minetn-1.lua $(DAT)\minetn-2.lua $(DAT)\minetn-3.lua \
-	$(DAT)\minetn-4.lua $(DAT)\minetn-5.lua $(DAT)\minetn-6.lua \
-	$(DAT)\minetn-7.lua $(DAT)\minetn-8.lua $(DAT)\minetn-9.lua \
-	$(DAT)\minetn-10.lua $(DAT)\minetn-11.lua \
-	$(DAT)\Mon-fila.lua $(DAT)\Mon-filb.lua \
-	$(DAT)\Mon-goal.lua $(DAT)\Mon-loca.lua $(DAT)\Mon-strt.lua \
-	$(DAT)\nhcore.lua   $(DAT)\nhlib.lua    $(DAT)\oracle-1.lua \
-	$(DAT)\oracle-2.lua	$(DAT)\oracle-3.lua $(DAT)\orcus-1.lua  \
-	$(DAT)\orcus-2.lua  $(DAT)\Pri-fila.lua $(DAT)\Pri-filb.lua \
-	$(DAT)\Pri-goal.lua $(DAT)\Pri-loca.lua $(DAT)\Pri-strt.lua \
-	$(DAT)\quest.lua    $(DAT)\Ran-fila.lua $(DAT)\Ran-filb.lua \
-	$(DAT)\Ran-goal.lua $(DAT)\Ran-loca.lua $(DAT)\Ran-strt.lua \
-	$(DAT)\Rog-fila.lua $(DAT)\Rog-filb.lua $(DAT)\Rog-goal.lua \
-	$(DAT)\Rog-loca.lua $(DAT)\Rog-strt.lua $(DAT)\Sam-fila.lua \
-	$(DAT)\Sam-filb.lua $(DAT)\Sam-goal.lua $(DAT)\Sam-loca.lua \
-	$(DAT)\Sam-strt.lua $(DAT)\sanctm-1.lua $(DAT)\sanctm-2.lua \
-	$(DAT)\sanctm-3.lua $(DAT)\soko1-1.lua \
-	$(DAT)\soko1-2.lua  $(DAT)\soko2-1.lua  $(DAT)\soko2-2.lua \
-	$(DAT)\soko3-1.lua  $(DAT)\soko3-2.lua  $(DAT)\soko4-1.lua \
-	$(DAT)\soko4-2.lua  $(DAT)\themerms.lua $(DAT)\Tou-fila.lua \
-	$(DAT)\Tou-filb.lua $(DAT)\Tou-goal.lua $(DAT)\Tou-loca.lua \
-	$(DAT)\Tou-strt.lua $(DAT)\tower1.lua   $(DAT)\tower2.lua \
-	$(DAT)\tower3.lua   $(DAT)\Val-fila.lua $(DAT)\Val-filb.lua \
-	$(DAT)\Val-goal.lua $(DAT)\Val-loca.lua $(DAT)\Val-strt.lua \
-	$(DAT)\valley-1.lua $(DAT)\valley-2.lua $(DAT)\valley-3.lua \
-	$(DAT)\water.lua    $(DAT)\Wiz-fila.lua \
-	$(DAT)\Wiz-filb.lua $(DAT)\Wiz-goal.lua $(DAT)\Wiz-loca.lua \
-	$(DAT)\Wiz-strt.lua $(DAT)\wizard1.lua  $(DAT)\wizard2.lua \
-	$(DAT)\wizard3.lua  $(DAT)\tut-1.lua    $(DAT)\tut-2.lua \
-	$(DAT)\tomb.lua		$(DAT)\mtemple.lua	$(DAT)\yeenog-2.lua \
-	$(DAT)\yeenog-2.lua $(DAT)\yeenog-3.lua $(DAT)\bridge.lua
+	$(DAT)\minetn-1.lua \
+	$(DAT)\minetn-2.lua \
+	$(DAT)\minetn-3.lua \
+	$(DAT)\minetn-4.lua \
+	$(DAT)\minetn-5.lua \
+	$(DAT)\minetn-6.lua \
+	$(DAT)\minetn-7.lua \
+	$(DAT)\minetn-8.lua \
+	$(DAT)\minetn-9.lua \
+	$(DAT)\minetn-10.lua \
+	$(DAT)\minetn-11.lua \
+	$(DAT)\Mon-fila.lua \
+	$(DAT)\Mon-filb.lua \
+	$(DAT)\Mon-goal.lua \
+	$(DAT)\Mon-loca.lua \
+	$(DAT)\Mon-strt.lua \
+	$(DAT)\nhcore.lua   \
+	$(DAT)\nhlib.lua    \
+	$(DAT)\oracle-1.lua \
+	$(DAT)\oracle-2.lua	\
+	$(DAT)\oracle-3.lua \
+	$(DAT)\orcus-1.lua  \
+	$(DAT)\orcus-2.lua  \
+	$(DAT)\Pri-fila.lua \
+	$(DAT)\Pri-filb.lua \
+	$(DAT)\Pri-goal.lua \
+	$(DAT)\Pri-loca.lua \
+	$(DAT)\Pri-strt.lua \
+	$(DAT)\quest.lua    \
+	$(DAT)\Ran-fila.lua \
+	$(DAT)\Ran-filb.lua \
+	$(DAT)\Ran-goal.lua \
+	$(DAT)\Ran-loca.lua \
+	$(DAT)\Ran-strt.lua \
+	$(DAT)\Rog-fila.lua \
+	$(DAT)\Rog-filb.lua \
+	$(DAT)\Rog-goal.lua \
+	$(DAT)\Rog-loca.lua \
+	$(DAT)\Rog-strt.lua \
+	$(DAT)\Sam-fila.lua \
+	$(DAT)\Sam-filb.lua \
+	$(DAT)\Sam-goal.lua \
+	$(DAT)\Sam-loca.lua \
+	$(DAT)\Sam-strt.lua \
+	$(DAT)\sanctm-1.lua \
+	$(DAT)\sanctm-2.lua \
+	$(DAT)\sanctm-3.lua \
+	$(DAT)\soko1-1.lua  \
+	$(DAT)\soko1-2.lua  \
+	$(DAT)\soko1-3.lua  \
+	$(DAT)\soko2-1.lua  \
+	$(DAT)\soko2-2.lua  \
+	$(DAT)\soko2-3.lua  \
+	$(DAT)\soko2-4.lua  \
+	$(DAT)\soko2-5.lua  \
+	$(DAT)\soko3-1.lua  \
+	$(DAT)\soko3-2.lua  \
+	$(DAT)\soko3-3.lua  \
+	$(DAT)\soko3-4.lua  \
+	$(DAT)\soko3-5.lua  \
+	$(DAT)\soko4-1.lua  \
+	$(DAT)\soko4-2.lua  \
+	$(DAT)\soko4-3.lua  \
+	$(DAT)\themerms.lua \
+	$(DAT)\Tou-fila.lua \
+	$(DAT)\Tou-filb.lua \
+	$(DAT)\Tou-goal.lua \
+	$(DAT)\Tou-loca.lua \
+	$(DAT)\Tou-strt.lua \
+	$(DAT)\tower1.lua   \
+	$(DAT)\tower2.lua   \
+	$(DAT)\tower3.lua   \
+	$(DAT)\Val-fila.lua \
+	$(DAT)\Val-filb.lua \
+	$(DAT)\Val-goal.lua \
+	$(DAT)\Val-loca.lua \
+	$(DAT)\Val-strt.lua \
+	$(DAT)\valley-1.lua \
+	$(DAT)\valley-2.lua \
+	$(DAT)\valley-3.lua \
+	$(DAT)\water.lua    \
+	$(DAT)\Wiz-fila.lua \
+	$(DAT)\Wiz-filb.lua \
+	$(DAT)\Wiz-goal.lua \
+	$(DAT)\Wiz-loca.lua \
+	$(DAT)\Wiz-strt.lua \
+	$(DAT)\wizard1.lua  \
+	$(DAT)\wizard2.lua  \
+	$(DAT)\wizard3.lua  \
+	$(DAT)\tut-1.lua    \
+	$(DAT)\tut-2.lua    \
+	$(DAT)\tomb.lua		\
+	$(DAT)\mtemple.lua	\
+	$(DAT)\yeenog-1.lua \
+	$(DAT)\yeenog-2.lua \
+	$(DAT)\yeenog-3.lua \
+	$(DAT)\bridge.lua
 #
 # Utility Objects.
 #

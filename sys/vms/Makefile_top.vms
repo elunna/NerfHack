@@ -134,13 +134,44 @@ VARDAT = $(VARDATD) $(VARDATND)
 
 DATHELP = help hh cmdhelp keyhelp history opthelp optmenu usagehlp wizhelp
 
-SPEC_LEVS = asmode-?.lua baalz-?.lua \
-	bigrm-*.lua castle-?.lua fakewiz?.lua demo-?.lua dispat-?.lua \
-	juiblex.lua knox-?.lua medusa-?.lua minend-?.lua minefill.lua \
-	minetn-*.lua oracle.lua orcus-?.lua sanctm-?.lua soko?-?.lua \
-	tower?.lua valley-?.lua wizard?.lua nhcore.lua nhlib.lua themerms.lua \
-	astral.lua air.lua earth.lua fire.lua water.lua hellfill.lua tut-?.lua \
-	mephisto.lua yeenog-?.lua geryon-?.lua leth-* nkai-* bridge.lua
+SPEC_LEVS = 		\
+	air.lua 		\
+	asmode-?.lua	\
+	astral.lua 		\
+	baalz-?.lua 	\
+	bigrm-*.lua 	\
+	bridge.lua		\
+	castle-?.lua 	\
+	fakewiz?.lua 	\
+	fire.lua 		\
+	demo-?.lua 		\
+	dispat-?.lua 	\
+	earth.lua 		\
+	geryon-?.lua 	\
+	hellfill.lua 	\
+	juiblex.lua 	\
+	knox-?.lua 		\
+	leth-* 			\
+	medusa-?.lua 	\
+	mephisto.lua 	\
+	minend-?.lua 	\
+	minefill.lua 	\
+	minetn-*.lua 	\
+	nkai-* 			\
+	oracle.lua 		\
+	orcus-?.lua 	\
+	sanctm-?.lua 	\
+	soko?-?.lua 	\
+	tower?.lua 		\
+	valley-?.lua 	\
+	wizard?.lua 	\
+	nhcore.lua 		\
+	nhlib.lua 		\
+	themerms.lua 	\
+	tut-?.lua 		\
+	water.lua 		\
+	yeenog-?.lua
+
 QUEST_LEVS = ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua
 
 DATNODLB = $(VARDATND) license symbols
