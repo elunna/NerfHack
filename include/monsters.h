@@ -1553,7 +1553,7 @@
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 8, CLR_RED, SCORPION),
     MON(NAM("cerastes"), S_SNAKE,                                 /* SpliceHack */
-        LVL(7, 16, 15, 10, 0), (G_GENO | 2),
+        LVL(7, 16, 5, 10, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6),
           ATTK(AT_BUTT, AD_PHYS, 1, 8),
           ATTK(AT_HUGS, AD_PHYS, 2, 4),
