@@ -8,6 +8,9 @@ Elbereth
 Vlad was here
 ad aerarium
 
+# mess with the player
+Closed for inventory
+
 # take-offs and other famous engravings
 Owlbreath
 Galadriel

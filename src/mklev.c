@@ -638,7 +638,7 @@ place_niche(
 
 /* there should be one of these per trap, in the same order as trap.h */
 static NEARDATA const char *trap_engravings[TRAPNUM] = {
-    (char *) 0,      (char *) 0,    (char *) 0,    (char *) 0, (char *) 0,
+    "Closed for inventory",      (char *) 0,    (char *) 0,    (char *) 0, (char *) 0,
     (char *) 0,      (char *) 0,    (char *) 0,    (char *) 0, (char *) 0,
     (char *) 0,      (char *) 0,    (char *) 0,    (char *) 0,
     /* 14..16: trap door, teleport, level-teleport */
@@ -676,6 +676,12 @@ makeniche(int trap_type)
                 if (ttmp) {
                     if (trap_type != ROCKTRAP)
                         ttmp->once = 1;
+
+                    /* Every once in a while, do the
+                     * closed shop fakeout message. */
+                    if (!rn2(30))
+                        trap_type = 0;
+
                     if (trap_engravings[trap_type]) {
                         make_engr_at(xx, yy - dy,
                                      trap_engravings[trap_type], 0L,
