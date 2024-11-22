@@ -8,7 +8,7 @@
 -- Keeping the Moat for old-time's sake
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "solidify", "noflip")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "solidify")
 
 local wiz1 = des.map({ halign = "center", valign = "center", map = [[
 ----------------------------x

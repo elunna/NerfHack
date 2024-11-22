@@ -4,7 +4,7 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("noteleport", "mazelevel", "shortsighted", "noflip")
+des.level_flags("noteleport", "mazelevel", "shortsighted")
 --
 -- Here you disturb ravens nesting in the trees.
 --

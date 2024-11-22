@@ -7,7 +7,7 @@
 -- Converted to lua by hackemslashem
 -- Not exactly the same level, but serves as a nasty choke point.
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "hot", "fumaroles", "noflip")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "hot", "fumaroles")
 des.map([[
 ---------------------------------------------------------------------------
 |.LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL|

@@ -11,7 +11,7 @@
 -- Converted to lua by hackemslashem
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "hardfloor", "noflip")
+des.level_flags("mazelevel", "hardfloor")
 des.map({ halign = "right", valign = "center", map = [[
 -------------------------------------------------
 | ------------|------------------                

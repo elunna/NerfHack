@@ -5,7 +5,7 @@
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "solidify", "noflip");
+des.level_flags("mazelevel", "solidify");
 
 -- Ported from SlashTHEM
 -- Converted to lua by hackemslashem

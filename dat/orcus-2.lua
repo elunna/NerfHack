@@ -12,7 +12,7 @@
 
 des.level_init({ style="mazegrid", bg ="-" });
 -- INIT_MAP:solidfill,' '
-des.level_flags("mazelevel", "shortsighted", "noflip")
+des.level_flags("mazelevel", "shortsighted")
 
 --0       1         2         3         4         5         6         7     
 --23456789012345678901234567890123456789012345678901234567890123456789012345

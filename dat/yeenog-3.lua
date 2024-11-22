@@ -13,7 +13,7 @@
 -- MAZE:"yeenoghu",random
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "hardfloor", "noflip")
+des.level_flags("mazelevel", "hardfloor")
 -- Add lethe flag?
 
 --0       1         2         3         4         5         6         7     

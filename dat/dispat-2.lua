@@ -9,7 +9,7 @@
 --
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "hardfloor", "shortsighted", "noflip")
+des.level_flags("mazelevel", "hardfloor", "shortsighted")
 
 des.level_init({ style="mines", fg=".", bg="L", smoothed=true, joined=true, walled=true })
 

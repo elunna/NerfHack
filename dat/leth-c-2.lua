@@ -8,7 +8,7 @@
 --
 --MAZE: "leth-c-2",' '
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe", "noflip")
+des.level_flags("mazelevel", "shortsighted", "noteleport", "hardfloor", "lethe")
 
 --0         1         2         3         4         5         6         7
 --0123456789012345678901234567890123456789012345678901234567890123456789012345

@@ -15,7 +15,7 @@
 
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "graveyard", "noflip")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "graveyard")
 
 des.map([[
 T...}}}}}}}}}..}}}}}}}}}}}}}}}}}}}}}..}}...}}}}}}}}}}}}}....T.....}}}}...T..

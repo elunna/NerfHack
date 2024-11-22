@@ -5,7 +5,7 @@
 --
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "solidify", "noflip")
+des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "solidify")
 
 local wiz3 = des.map({ halign = "center", valign = "center", map = [[
 ----------------------------x

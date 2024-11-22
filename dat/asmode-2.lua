@@ -7,7 +7,7 @@
 --
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "cold", "noflip")
+des.level_flags("mazelevel", "cold")
 -- First part
 --0       1         2         3         4         5         6         7     
 --23456789012345678901234567890123456789012345678901234567890123456789012345
