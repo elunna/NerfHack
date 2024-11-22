@@ -2023,10 +2023,19 @@ boolean
 should_mulch_missile(struct obj *obj)
 {
     boolean broken;
+    boolean is_dagger = objects[obj->otyp].oc_skill == P_DAGGER;
+    boolean is_knife = objects[obj->otyp].oc_skill == P_KNIFE;
     int chance;
 
+    /* Daggers and knives have a small chance to mulch. */
+    if (is_dagger || is_knife) {
+        if (!obj->cursed && rn2(100))
+            return FALSE;
+        /* Cursed daggers and knifes drop down to the standard
+         * ammo mulching odds. */
+    }
     /* only ammo (excluding magic stones) or missiles will break */
-    if (!obj || !(is_ammo(obj) || is_missile(obj))
+    else if (!obj || !(is_ammo(obj) || is_missile(obj))
         || obj->otyp == BOOMERANG
         || objects[obj->otyp].oc_magic)
         return FALSE;
