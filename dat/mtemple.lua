@@ -49,7 +49,7 @@ des.trap("spiked pit",06,03)
 des.trap("spiked pit",06,05)
 
 -- the treasure chamber!
-des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 03,
+des.object({ id = "chest", x = 52, y = 03,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -59,7 +59,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 03,
                 des.object()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 03,
+des.object({ id = "chest", x = 53, y = 03,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -69,7 +69,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 03,
                 des.object()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 03,
+des.object({ id = "chest", x = 54, y = 03,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -79,7 +79,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 03,
                 des.object()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 04,
+des.object({ id = "chest", x = 52, y = 04,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -89,7 +89,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 04,
                 des.object()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 04,
+des.object({ id = "chest", x = 53, y = 04,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -99,7 +99,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 04,
                 des.object()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 04,
+des.object({ id = "chest", x = 54, y = 04,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -109,7 +109,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 04,
                 des.object()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 05,
+des.object({ id = "chest", x = 52, y = 05,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -119,7 +119,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 52, y = 05,
                 des.object()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 05,
+des.object({ id = "chest", x = 53, y = 05,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -129,7 +129,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 53, y = 05,
                 des.object()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, x = 54, y = 05,
+des.object({ id = "chest", x = 54, y = 05,
              contents = function()
                 des.object("wax candle")
                 des.gold()

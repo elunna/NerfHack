@@ -175,7 +175,7 @@ des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 -- From SporkHack
 
 local loc = place:rndcoord(2);
-des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
+des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
                 des.object("nothing");
              end
@@ -184,7 +184,7 @@ des.engraving({ coord = loc, type="burn", text="Elbereth" })
 des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
 local loc = place:rndcoord(3);
-des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
+des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
                 des.object("nothing");
              end
@@ -193,7 +193,7 @@ des.engraving({ coord = loc, type="burn", text="Elbereth" })
 des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
 local loc = place:rndcoord(4);
-des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
+des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
                 des.object("nothing");
              end

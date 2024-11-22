@@ -53,7 +53,7 @@ des.trap("spiked pit")
 des.trap("spiked pit")
 
 -- Stash spot 1
-des.object({ id = "chest", trapped = 0, locked = 1, x = 40, y = 09,
+des.object({ id = "chest", x = 40, y = 09,
              contents = function()
                 des.gold()
                 des.gold()
@@ -80,7 +80,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 40, y = 09,
 des.object()
 
 -- Stash spot 2
-des.object({ id = "chest", trapped = 0, locked = 1, x = 16, y = 01,
+des.object({ id = "chest", x = 16, y = 01,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -92,7 +92,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 16, y = 01,
 });
 
 -- Stash spot 3
-des.object({ id = "chest", trapped = 0, locked = 1, x = 17, y = 18,
+des.object({ id = "chest", x = 17, y = 18,
              contents = function()
                 des.object("wax candle")
                 des.gold()
@@ -104,7 +104,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, x = 17, y = 18,
 });
 
 -- Stash spot 4
-des.object({ id = "chest", trapped = 0, locked = 1, x = 40, y = 10,
+des.object({ id = "chest", x = 40, y = 10,
              contents = function()
                 des.object("wax candle")
                 des.gold()

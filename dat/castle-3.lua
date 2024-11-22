@@ -204,15 +204,15 @@ des.object({ id = "chest", coord = places[6] })
 des.object({ id = "chest", coord = places[7] })
 
 -- Guaranteed to be empty.
-des.object({ id = "chest", trapped = 0, locked = 1, coord = places[8],
+des.object({ id = "chest", locked = 1, coord = places[8],
              contents = function()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, coord = places[9],
+des.object({ id = "chest", locked = 1, coord = places[9],
              contents = function()
              end
 });
-des.object({ id = "chest", trapped = 0, locked = 1, coord = places[10] ,
+des.object({ id = "chest", locked = 1, coord = places[10] ,
              contents = function()
              end
 });
