@@ -88,8 +88,6 @@ on_msg(struct obj *otmp)
         const char *otmp_name = xname(otmp);
 
         how[0] = '\0';
-        if (otmp->otyp == TOWEL)
-            Sprintf(how, " around your %s", body_part(HEAD));
         You("are now wearing %s%s.",
             obj_is_pname(otmp) ? the(otmp_name) : an(otmp_name), how);
     }
@@ -2381,8 +2379,7 @@ accessory_or_armor_on(struct obj *obj)
     }
     armor = (obj->oclass == ARMOR_CLASS);
     ring = (obj->oclass == RING_CLASS || obj->otyp == MEAT_RING);
-    eyewear = (obj->otyp == BLINDFOLD || obj->otyp == TOWEL
-               || obj->otyp == LENSES);
+    eyewear = (obj->otyp == BLINDFOLD || obj->otyp == LENSES);
     /* checks which are performed prior to actually touching the item */
     if (armor) {
         if (!canwearobj(obj, &mask, TRUE))
@@ -2490,10 +2487,7 @@ accessory_or_armor_on(struct obj *obj)
             }
 
             if (ublindf) {
-                if (ublindf->otyp == TOWEL)
-                    Your("%s is already covered by a towel.",
-                         body_part(FACE));
-                else if (ublindf->otyp == BLINDFOLD) {
+                if (ublindf->otyp == BLINDFOLD) {
                     if (obj->otyp == LENSES)
                         already_wearing2("lenses", "a blindfold");
                     else
@@ -3628,7 +3622,7 @@ equip_ok(struct obj *obj, boolean removing, boolean accessory)
         && obj->oclass != AMULET_CLASS) {
         /* ... except for a few wearable exceptions outside these classes */
         if (obj->otyp != MEAT_RING && obj->otyp != BLINDFOLD
-            && obj->otyp != TOWEL && obj->otyp != LENSES)
+            && obj->otyp != LENSES)
             return GETOBJ_EXCLUDE;
     }
 
