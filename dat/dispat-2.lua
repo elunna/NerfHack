@@ -5,6 +5,7 @@
 --
 -- the city of Dis
 -- Ported from GruntHack
+-- Converted to lua by hackemslashem
 --
 des.level_init({ style="mazegrid", bg ="-" });
 

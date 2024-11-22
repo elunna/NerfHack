@@ -8,6 +8,9 @@
 --
 -- Based upon Tom Proudfoots Slash'em Dispater level
 --
+-- Ported from the Lethe Patch
+-- Converted to lua by hackemslashem
+--
 -- Dispaters origins are in the Roman god of the underworld.
 -- originally Dis Pater (rich father) he is associated with
 -- wealth (naturally found underground).

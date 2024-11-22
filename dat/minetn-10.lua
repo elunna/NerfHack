@@ -2,9 +2,11 @@
 --	Copyright (c) 1989-95 by Jean-Christophe Collet
 --	Copyright (c) 1991-95 by M. Stephenson
 -- NetHack may be freely redistributed.  See license for details.
-
+--
 -- "Mini-Castle Town" - Original author unknown
--- Ported to lua by Erik Lunna (NerfHack/Hack'EM)
+-- Ported from SlashTHEM
+-- Converted to lua by hackemslashem
+--
 des.level_flags("noflip")
 des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=1,walled=true })
 des.map([[

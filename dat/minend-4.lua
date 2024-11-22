@@ -1,6 +1,7 @@
 -- Mine end level variant 4
 -- "The Gnomish Sewer" by jonadab
-
+-- Ported from xNetHack
+--
 des.level_init({ style = "solidfill", fg = " " })
 des.level_flags("mazelevel")
 des.map([[

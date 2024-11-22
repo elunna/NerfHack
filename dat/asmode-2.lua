@@ -2,6 +2,9 @@
 --
 -- The New Asmodeus Level
 --
+-- Ported from SpliceHack
+-- Original design seems to come from the Lethe Patch, author unknown.
+--
 des.level_init({ style="mazegrid", bg ="-" });
 
 des.level_flags("mazelevel", "cold", "noflip")

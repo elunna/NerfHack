@@ -5,7 +5,9 @@
 --  https://nethackwiki.com/wiki/Sokoban_Level_1f
 -- authorship may be Hiroyuki Imabayashi, the original 1982 sokoban developer
 -- thinking rabbit republished sokoban in 1988, and added some levels
-
+-- Ported from SLASH'EM
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "hardfloor", "sokoban", "premapped", "solidify");
 des.map([[

@@ -1,4 +1,6 @@
---
+-- Mik Clarke, January 21st, 2001
+-- Ported from the Lethe Patch
+-- Converted to lua by hackemslashem (with modifications)
 --
 -- The bottom of the gulf (so look for the vibrating square)...
 --

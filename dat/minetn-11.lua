@@ -5,6 +5,9 @@
 --
 -- "Creek Town" by L.
 -- No fountains in this town, for obvious reasons.
+-- Ported from SlashTHEM
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "noflip");

@@ -4,7 +4,9 @@
 --
 -- SLASHEM 3g
 -- https://nethackwiki.com/wiki/Sokoban_Level_3g
-
+-- Ported from SLASH'EM
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[

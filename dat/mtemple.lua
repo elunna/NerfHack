@@ -7,7 +7,10 @@ des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "solidify", "noflip");
 
--- Ported from SLASH'EM by hackemslashem.
+-- Ported from SlashTHEM
+-- Converted to lua by hackemslashem
+-- Author unknown
+--
 -- This is the Temple of Moloch.
 -- Within lie priests, demons, and, most importantly.... candles!
 des.map([[

@@ -2,8 +2,13 @@
 --       Copyright (c) 1989 by Jean-Christophe Collet
 --       Copyright (c) 1992 by M. Stephenson and Izchak Miller
 -- NetHack may be freely redistributed.  See license for details.
+--
 -- [Tom]
 -- The Geryon level
+--
+-- Ported from SLASH'EM
+-- Author: Unknown
+-- Converted to lua by hackemslashem
 --
 des.level_init({ style="mazegrid", bg ="-" });
 

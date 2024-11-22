@@ -4,8 +4,8 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 -- Ported from UnNetHack
--- From SlashTHEM, unknown source.
--- Converted to LUA by hackemslashem
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noflip");
 

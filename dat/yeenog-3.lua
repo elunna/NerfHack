@@ -1,6 +1,7 @@
--- SCCS Id: @(#)gehennom.des	3.4	1996/11/09
---       Copyright (c) 1989 by Jean-Christophe Collet
---       Copyright (c) 1992 by M. Stephenson and Izchak Miller
+-- Mik Clarke, January 21st, 2001
+-- Ported from the Lethe Patch
+-- Converted to lua by hackemslashem (with modifications)
+--
 -- NetHack may be freely redistributed.  See license for details.
 
 -- The Yeenoghu level

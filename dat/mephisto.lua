@@ -1,4 +1,6 @@
 -- Mephisto's lair
+-- Ported from SpliceHack
+-- Author: Kestrel Gregorich-Trevor'
 --
 des.level_init({ style = "solidfill", fg = " " });
 

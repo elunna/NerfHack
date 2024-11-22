@@ -2,6 +2,9 @@
 --
 -- The New Baalzebub level
 --
+-- Ported from SpliceHack by hackemslashem
+-- Original design seems to come from the Lethe Patch, author unknown.
+--
 des.level_init({ style="mazegrid", bg ="-" });
 
 des.level_flags("mazelevel")

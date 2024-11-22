@@ -5,7 +5,8 @@
 --
 -- Minetown variant 9
 -- Lavender Town -- Minetown, but spooky!
--- By Kestrel Gregorich-Trevor
+-- Ported from SpliceHack (with minor modifications)
+-- Author: Kestrel Gregorich-Trevor
 
 des.level_init({ style = "solidfill", fg = " " });
 

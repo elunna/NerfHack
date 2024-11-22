@@ -1,7 +1,6 @@
--- NetHack gehennom sanctum.lua	$NHDT-Date: 1652196034 2022/05/10 15:20:34 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.5 $
---	Copyright (c) 1989 by Jean-Christophe Collet
---	Copyright (c) 1992 by M. Stephenson and Izchak Miller
--- NetHack may be freely redistributed.  See license for details.
+-- Mik Clarke, January 21st, 2001
+-- Ported from the Lethe Patch
+-- Converted to lua by hackemslashem (with modifications)
 --
 -- Cthulhu's Sanctum
 --
@@ -9,8 +8,6 @@
 -- between them and their arcane gods.  For nethack, it seems
 -- reasonable to cast him as the great priest of Moloch, to whom
 -- the amulet has been entrusted for safe keeping.
---
--- Ported to 3.7 (from the Lethe Patch) by hackemslashem
 --
 des.level_init({ style = "solidfill", fg = " " });
 

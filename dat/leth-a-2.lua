@@ -1,7 +1,6 @@
--- Lethe Patch
--- -----------
---
--- Mik Clarke, Janrary 21st, 2001
+-- Mik Clarke, January 21st, 2001
+-- Ported from the Lethe Patch
+-- Converted to lua by hackemslashem (with modifications)
 --
 --  Alternate river head - Vampires and Byakhee
 --

@@ -3,6 +3,10 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 --
+-- Ported from UnNetHack
+-- Author: Pasi Kallinen
+-- Converted to lua by hackemslashem
+--
 -- This is the stronghold level :
 -- there are several ways to enter it :
 --    - opening the drawbridge (wand of opening, knock spell, playing

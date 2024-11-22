@@ -4,6 +4,7 @@
 -- LEVEL: "moria2-1"
 
 -- Ported from UnNetHack.
+-- Converted to lua by hackemslashem
 -- Not exactly the same level, but serves as a nasty choke point.
 
 des.level_flags("mazelevel", "noteleport", "hardfloor", "hot", "fumaroles", "noflip")

@@ -4,7 +4,8 @@
 --
 -- Ported from NetHack Fourk
 -- https://nethackwiki.com/wiki/The_Dragon_of_Bactria
-
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[

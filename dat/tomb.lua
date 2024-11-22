@@ -2,7 +2,9 @@
 -- Copyright (c) 1989 by Jean-Christophe Collet
 -- Copyright (c) 1991 by M. Stephenson
 -- NetHack may be freely redistributed. See license for details.
-
+-- Ported from SLASH'EM
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "solidify", "noflip");

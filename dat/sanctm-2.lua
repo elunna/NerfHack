@@ -3,6 +3,9 @@
 --	Copyright (c) 1992 by M. Stephenson and Izchak Miller
 -- NetHack may be freely redistributed.  See license for details.
 --
+-- Ported from UnNetHack and EvilHack
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style="mines", fg=".", bg="L", smoothed=true, joined=true, walled=true })
 
 des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "noflip")

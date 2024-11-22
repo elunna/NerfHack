@@ -5,7 +5,8 @@
 --
 -- Mine end level variant 7
 -- "Boulder Bonanza"
--- Ported to 3.7 (from SlashTHEM) by hackemslashem
+-- Ported from SlashTHEM
+-- Converted to lua by hackemslashem
 
 des.level_init({ style = "solidfill", fg = " " });
 

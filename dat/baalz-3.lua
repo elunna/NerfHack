@@ -3,6 +3,8 @@
 --	Copyright (c) 1992 by M. Stephenson and Izchak Miller
 -- NetHack may be freely redistributed.  See license for details.
 --
+-- This level was inspired by the changes in UnNetHack
+--
 des.level_init({ style="mines", fg=".", bg="L", smoothed=true, joined=true, walled=true })
 
 -- TODO FIXME: see baalz_fixup - the legs get removed currently.

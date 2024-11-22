@@ -7,6 +7,9 @@
 --
 -- Based upon Tom Proudfoots Slash'em Demogorgon level
 --
+-- Ported from the Lethe Patch
+-- Converted to lua by hackemslashem
+--
 -- Don't be fooled by Demogorgons apparently greek name, he was
 -- created during the 12th century by a transcription error.
 -- He is very loosly associated with power, might and dark

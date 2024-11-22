@@ -3,7 +3,9 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 -- authorship may be Joseph L Traub
-
+-- Ported from SLASH'EM
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "hardfloor", "sokoban", "premapped", "solidify");
 des.map([[

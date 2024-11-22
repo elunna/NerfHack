@@ -5,7 +5,9 @@
 
 -- "Zoo Town" by Derek S. Ray (SporkHack).
 -- Modified by Keith Simpson (EvilHack)
--- Ported to lua by Kestrel Gregorich-Trevor (SpliceHack).
+-- Ported from SpliceHack
+-- Converted to lua by Kestrel Gregorich-Trevor
+--
 des.level_flags("noflip")
 des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=1,walled=true })
 des.map({ halign = "center", valign = "top", map = [[

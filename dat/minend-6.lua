@@ -5,8 +5,9 @@
 --
 -- Mine end level variant 6
 -- Gnome King's Apiary (Kelly Bailey)
--- Ported to 3.7 (from SlashTHEM) by hackemslashem
-
+-- Ported from SlashTHEM
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "noflip");

@@ -4,7 +4,9 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 -- LEVEL: "valley-2"
-
+-- Ported from UnNetHack
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "noteleport", "hardfloor", "nommap", "temperate", "noflip");

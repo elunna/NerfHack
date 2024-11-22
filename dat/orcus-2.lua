@@ -3,13 +3,16 @@
 -- Copyright (c) 1992 by M. Stephenson and Izchak Miller
 -- NetHack may be freely redistributed.  See license for details.
 --
+-- Mik Clarke, January 21st, 2001
+-- Ported from UnNetHack, original source is the Lethe Patch
+-- Converted to lua by hackemslashem (with modifications)
+--
+-- The New Orcus Level
+-- A ghost town
+
 des.level_init({ style="mazegrid", bg ="-" });
 -- INIT_MAP:solidfill,' '
 des.level_flags("mazelevel", "shortsighted", "noflip")
-
--- The New Orcus Level
--- Ported from UnNetHack which ported from the Lethe Patch.
--- A ghost town
 
 --0       1         2         3         4         5         6         7     
 --23456789012345678901234567890123456789012345678901234567890123456789012345

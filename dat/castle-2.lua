@@ -3,7 +3,11 @@
 -- NetHack may be freely redistributed.  See license for details.
 --
 --
--- This is the stronghold level :
+-- Ported from UnNetHack
+-- Author: Pasi Kallinen
+-- Converted to lua by hackemslashem
+--
+-- This is the stronghold level
 -- The thick walls on the corners of the armouries and the dragon pens
 -- are a kludge to prevent the walls showing up through the iron bars from
 -- outside the castle.

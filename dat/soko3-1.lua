@@ -5,7 +5,9 @@
 -- https://nethackwiki.com/wiki/Sokoban_Level_1c
 -- authorship may be Thinking Rabbit
 -- with edits from paxed/patr
-
+-- Ported from SpliceHack, original source SLASH'EM
+-- Converted to lua by Kestrel Gregorich-Trevor
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[

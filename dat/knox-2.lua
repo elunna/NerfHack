@@ -5,7 +5,9 @@
 --
 --
 -- "Winterly Fort Ludios" by Patric Mueller <bhaak@gmx.net>
-
+-- Ported from UnNetHack
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "noteleport", "shortsighted", "noflip")

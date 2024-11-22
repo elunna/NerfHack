@@ -5,6 +5,7 @@
 --
 -- the isle of Erytheia, Geryon's domain
 -- Ported from GruntHack
+-- Converted to lua by hackemslashem
 --
 des.level_init({ style="mazegrid", bg ="-" });
 

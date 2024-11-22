@@ -4,7 +4,10 @@
 --
 -- "J Franklin Mentzer <wryter@aol.com>"
 -- https://nethackwiki.com/wiki/Sokoban_Level_4c
-
+-- Ported from SLASH'EM
+-- Converted to lua by hackemslashem
+-- NerfHack enlarged the zoo slightly
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[

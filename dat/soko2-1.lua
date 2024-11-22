@@ -4,7 +4,9 @@
 --
 -- SLASH'EM 3e
 -- https://nethackwiki.com/wiki/Sokoban_Level_3e
-
+-- Ported from SpliceHack, original source SLASH'EM
+-- Converted to lua by Kestrel Gregorich-Trevor
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[

@@ -1,4 +1,5 @@
 -- "The Great Bridge" bigroom
+-- Ported from xNetHack
 
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noflipx");

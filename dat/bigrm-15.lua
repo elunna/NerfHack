@@ -5,7 +5,8 @@
 --
 -- The Mandelbrot
 -- Ported from UnNetHack
--- Converted to LUA by hackemslashem
+-- Converted to lua by hackemslashem
+--
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noflip");
 

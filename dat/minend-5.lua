@@ -5,7 +5,9 @@
 --
 -- Mine end level variant 5
 -- "Orc Temple" by Khor
--- Ported to 3.7 LUA (from EvilHack) by hackemslashem
+-- Ported from EvilHack
+-- Converted to lua by hackemslashem
+--
 -- In this variant of the mines' end a group of orcs have found a randomly
 -- generated figurine of a demon and worship it. Slightly modified from
 -- the original.
