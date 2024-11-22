@@ -110,7 +110,6 @@ des.door("closed",45,08)
 des.door("closed",38,11)
 des.door("closed",43,11)
 des.door("closed",46,11)
-
 des.door("locked",65,02)
 des.door("locked",73,02)
 des.door("locked",65,17)
@@ -237,7 +236,6 @@ des.trap("fire",17,06)
 des.trap("fire",15,13)
 des.trap("magic",16,13)
 des.trap("fire",17,13)
-
 
 des.monster({ id = "kraken", x=09,y=10,peaceful=0,asleep=1 })
 des.monster({ class = "B", x=05,y=07,peaceful=0,asleep=1})

@@ -22,7 +22,6 @@
 -- gems) and a wand of wishing in one of the 4 towers...
 --
 --
-
 des.level_init({ style="mazegrid", bg ="-" });
 
 des.level_flags("mazelevel", "noteleport", "hardfloor", "graveyard", "noflip")
@@ -74,7 +73,6 @@ des.levregion({ region = {33,15,68,20}, region_islev=1, exclude={00,00,00,00}, t
 -- des.levregion({ region = {69,00,79,20}, region_islev=1, exclude={0,0,62,16}, type="stair-down" })
 
 -- Non diggable walls
-
 -- everything except the inner walls of the maze are non-diggable
 des.non_diggable(selection.area(00,00,19,20))
 des.non_diggable(selection.area(19,00,33,14))
@@ -233,7 +231,6 @@ des.object("[",17,03)
 des.object("[",18,03)
 des.object("[",20,03)
 des.object("[",21,03)
-
 des.object(")",18,01)
 des.object(")",21,01)
 des.object(")",17,02)
@@ -254,7 +251,6 @@ des.object("[",28,03)
 des.object("[",30,03)
 des.object("[",31,03)
 des.object("[",33,03)
-
 des.object(")",28,01)
 des.object(")",31,01)
 des.object(")",28,02)

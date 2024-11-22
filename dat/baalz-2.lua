@@ -2,7 +2,7 @@
 --
 -- The New Baalzebub level
 --
--- Ported from SpliceHack by hackemslashem
+-- Ported from SpliceHack
 -- Original design seems to come from the Lethe Patch, author unknown.
 --
 des.level_init({ style="mazegrid", bg ="-" });
@@ -33,23 +33,30 @@ des.map([[
 -- Regions
 des.region(selection.area(00,00,75,19), "unlit")
 des.region(selection.area(68,01,72,03), "lit")
+
 -- Stairs
 des.stair("up", 69,02)
 des.stair("down", 48,08)
+
 des.levregion({ region = {16,15,75,19}, exclude = {00,00,00,00}, type="branch" })
 des.teleport_region({region={16,15,75,19}})
+
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
 des.non_passwall(selection.area(00,00,75,19));
+
 -- Doors
 des.door("locked",14,08)
 des.door("locked",38,10)
 des.door("locked",33,07)
 des.door("locked",46,08)
+
 -- Drawbridges
 des.drawbridge({dir="east",state="closed",x=03,y=08})
+
 -- The fellow in residence
 des.monster({id="Baalzebub", x=44, y=08})
+
 -- Some random weapons and armor.
 des.object("[")
 des.object("[")
@@ -71,6 +78,7 @@ des.object("?")
 des.object("?")
 des.object("?")
 des.object("?")
+
 -- Some traps.
 des.trap("spiked pit")
 des.trap("spiked pit")
@@ -87,6 +95,7 @@ des.trap("magic")
 des.trap("magic")
 des.trap("magic")
 des.trap("magic")
+
 -- Random monsters.
 des.monster({id="ghost", x=39, y=08})
 des.monster({id="horned devil", x=29, y=06})
@@ -95,28 +104,24 @@ des.monster("L")
 des.monster("ghost")
 des.monster("ghost")
 des.monster("shade")
-if math.random(0, 99) < 50 then
-  des.monster("shade")
-end
+des.monster("shade")
 des.monster("&")
 des.monster("&")
 des.monster("horned devil")
 des.monster("horned devil")
 des.monster("horned devil")
-if math.random(0, 99) < 50 then
-  des.monster("horned devil")
-end
+des.monster("horned devil")
 des.monster("lemure")
 des.monster("lemure")
 des.monster("lemure")
 des.monster("lemure")
-if math.random(0, 99) < 50 then
-  des.monster("lemure")
-end
+des.monster("lemure")
+
 -- Some Vampires for good measure
 des.monster("V")
 des.monster("V")
 des.monster("V")
+
 -- And a few blobby things, borrowed from Big J.
 des.monster("F")
 des.monster("F")
@@ -124,6 +129,4 @@ des.monster("F")
 des.monster({id="green slime",name="Glurrz, emissary of Juiblex"})
 des.monster("P")
 des.monster("P")
-if math.random(0, 99) < 50 then
-  des.monster("P")
-end
+des.monster("P")

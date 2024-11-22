@@ -136,7 +136,6 @@ des.trap("board",11,16)
 des.trap("board",17,13)
 des.trap("board",19,15)
 
-
 -- Guardians at the crossing
 des.monster({ class = "B", x = 32, y = 05, peaceful=0, asleep=1 })
 des.monster({ class = "B", x = 35, y = 06, peaceful=0, asleep=1 })

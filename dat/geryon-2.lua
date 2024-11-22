@@ -147,11 +147,9 @@ des.trap("fire")
 des.trap("fire")
 des.trap("fire")
 des.trap("fire")
-
 des.trap("magic")
 des.trap("magic")
 des.trap("magic")
-
 des.trap("random")
 des.trap("random")
 des.trap("random")

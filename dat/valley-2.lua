@@ -88,7 +88,6 @@ des.non_diggable(selection.area(00,00,75,19))
 -- **LOTS** of dead bodies (all human).
 -- note: no priest(esse)s or monks - maybe Moloch has a *special*
 --       fate reserved for members of *those* classes.
---
 des.object({ id="corpse",montype="archeologist" })
 des.object({ id="corpse",montype="archeologist" })
 des.object({ id="corpse",montype="barbarian" })
@@ -113,9 +112,8 @@ des.object({ id="corpse",montype="valkyrie" })
 des.object({ id="corpse",montype="valkyrie" })
 des.object({ id="corpse",montype="wizard" })
 des.object({ id="corpse",montype="wizard" })
---
+
 -- Some random weapons and armor.
---
 des.object("[")
 des.object("[")
 des.object("[")
@@ -125,9 +123,7 @@ des.object(")")
 des.object(")")
 des.object(")")
 
---
 -- Some random loot.
---
 des.object("ruby")
 des.object("*")
 des.object("*")
@@ -179,4 +175,3 @@ des.monster("M")
 des.monster("M")
 des.monster("M")
 des.monster("M")
-

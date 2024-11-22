@@ -53,9 +53,11 @@ end
 
 -- there's fewer things on the left side
 leftobjs = nh.rn2(6)
+
 for i = 1, leftobjs do
    des.object({ coord = leftside:rndcoord() });
 end
+
 for i = 1, 15 - leftobjs do
    des.object({ coord = rightside:rndcoord() });
 end
@@ -64,6 +66,7 @@ leftmons = nh.rn2(4)
 for i = 1, leftmons do
    des.monster({ coord = leftside:rndcoord(1) })
 end
+
 for i = 1, 28 - leftmons do
    des.monster({ coord = rightside:rndcoord(1) })
 end

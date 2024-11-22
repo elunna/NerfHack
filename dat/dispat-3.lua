@@ -74,7 +74,6 @@ des.door("locked",02,18)
 des.door("locked",03,03)
 des.door("locked",06,02)
 des.door("locked",07,03)
-
 des.door("locked",28,09)
 des.door("locked",28,11)
 des.door("locked",32,08)
@@ -155,26 +154,21 @@ des.gold({ x = 15, y = 02 });
 des.gold({ x = 14, y = 03 });
 des.gold({ x = 13, y = 05 });
 des.gold({ x = 14, y = 06 });
-
 des.gold({ x = 15, y = 07 });
 des.gold({ x = 14, y = 10 });
 des.gold({ x = 15, y = 11 });
 des.gold({ x = 14, y = 14 });
-
 des.gold({ x = 13, y = 15 });
 des.gold({ x = 14, y = 17 });
 des.gold({ x = 13, y = 18 });
-
 des.gold({ x = 20, y = 02 });
 des.gold({ x = 19, y = 03 });
 des.gold({ x = 18, y = 04 });
 des.gold({ x = 19, y = 06 });
-
 des.gold({ x = 20, y = 07 });
 des.gold({ x = 21, y = 08 });
 des.gold({ x = 20, y = 11 });
 des.gold({ x = 20, y = 12 });
-
 des.gold({ x = 19, y = 14 });
 des.gold({ x = 18, y = 15 });
 des.gold({ x = 19, y = 16 });
@@ -238,20 +232,15 @@ des.trap("board", 29,09)
 des.trap("board", 32,09)
 des.trap("board", 32,11)
 
-
 -- Traps for the unwary
 des.trap("anti magic", 32,07)
 des.trap("anti magic", 32,13)
-
 des.trap("magic", 33,07)
 des.trap("magic", 33,13)
-
 des.trap("polymorph", 34,07)
 des.trap("polymorph", 34,13)
-
 des.trap("magic", 35,07)
 des.trap("magic", 35,13)
-
 des.trap("fire", 37,07)
 des.trap("fire", 37,13)
 

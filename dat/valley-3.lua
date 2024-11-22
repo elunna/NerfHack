@@ -90,7 +90,6 @@ des.region(selection.area(03,14,09,17),"unlit")
 des.region(selection.area(11,18,15,18),"unlit")
 des.region(selection.area(17,17,19,18),"unlit")
 
-
 -- Doors
 des.door("locked",16,15)
 des.door("locked",10,15)
@@ -146,7 +145,6 @@ des.monster({ id = "horse", x=64,y=16, peaceful = 1 })
 des.monster({ id = "rothe", x=63,y=12, peaceful = 1 })
 des.monster({ id = "rothe", x=65,y=11, peaceful = 1 })
 des.monster({ id = "rothe", x=64,y=09, peaceful = 1 })
-
 
 -- Watch Dogs
 des.monster({ id = "winter wolf", x=12,y=14, peaceful = 0, asleep = 1 })

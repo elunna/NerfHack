@@ -31,6 +31,7 @@ des.map([[
 ]]);
 
 -- Overgrown forest
+-- Level needs to be diggable because of the trees...
 des.replace_terrain({ region={00,00, 25,19}, fromterrain=".",
                       toterrain=percent(50) and "T" or "g", chance=15 })
 des.replace_terrain({ region={26,00, 50,19}, fromterrain=".",
@@ -42,8 +43,6 @@ des.region(selection.area(01,01, 73, 16), "lit");
 
 des.stair("up");
 des.stair("down");
-
--- Level needs to be diggable because of the trees...
 
 for i = 1,15 do
    des.object();
