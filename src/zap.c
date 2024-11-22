@@ -3182,7 +3182,7 @@ zapyourself(struct obj *obj, boolean ordinary)
             You_feel("rather itchy under %s.", yname(uarmc));
             break;
         }
-        incr_itimeout(&HInvis, ordinary ? rn1(50, 50) : d(obj->spe, 250));
+        incr_itimeout(&HInvis, ordinary ? rn1(500, 500) : d(obj->spe, 250));
         if (msg) {
             learn_it = TRUE;
             newsym(u.ux, u.uy);
