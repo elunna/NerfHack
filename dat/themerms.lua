@@ -215,6 +215,19 @@ themeroom_fills = {
       locs:iterate(func);
    end,
 
+   -- Piercer room
+   function(rm)
+      local locs = selection.room():percentage(30);
+      local func = function(x, y)
+         if (percent(25)) then
+            des.object({ id = "corpse", montype = "@" });
+         else
+            des.monster({ class = "p" });
+         end
+      end;
+      locs:iterate(func);
+   end,
+
    -- Teleportation hub
    function(rm)
       local locs = selection.room():filter_mapchar(".");
