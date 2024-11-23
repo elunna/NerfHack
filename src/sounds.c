@@ -1375,6 +1375,7 @@ dochat(void)
         if (uamul && uamul->oartifact == ART_AMULET_OF_STORMS
             && is_stormy_monster(u.ustuck)) {
             pacify_with_words(u.ustuck);
+            pline("%s recognizes your amulet.", Monnam(u.ustuck));
             return ECMD_OK;
         }
         pline("They won't hear you out there.");
@@ -1494,8 +1495,22 @@ dochat(void)
     if (uamul && uamul->oartifact == ART_AMULET_OF_STORMS
         && !mtmp->mpeaceful && is_stormy_monster(mtmp)) {
         pacify_with_words(mtmp);
+        pline("%s recognizes your amulet.", Monnam(mtmp));
         return ECMD_OK;
     }
+    /* Valkyries can tame winter wolves via #chat */
+    if ((Role_if(PM_VALKYRIE)
+            && (mtmp->data == &mons[PM_WINTER_WOLF_CUB]
+                || mtmp->data == &mons[PM_WINTER_WOLF]))
+        /* Vampires can tame familiars via chat */
+        || (Race_if(PM_VAMPIRE)
+            && mtmp->data == &mons[PM_FAMILIAR])) {
+        pacify_with_words(mtmp);
+        /* Maybe tame it too... */
+        if (rn2(2) && !resist(mtmp, WAND_CLASS, 0, NOTELL))
+            (void) tamedog(mtmp, (struct obj *) 0, FALSE);
+    }
+
     /* if this monster is waiting for something, prod it into action */
     mtmp->mstrategy &= ~STRAT_WAITMASK;
 
@@ -1540,7 +1555,7 @@ pacify_with_words(struct monst *mtmp)
 {
     if (mtmp->mrabid) /* No chance... */
         return;
-    pline("%s recognizes your amulet.", Monnam(mtmp));
+    
     You("manage to calm %s.",
          genders[pronoun_gender(mtmp, PRONOUN_HALLU)].him);
     mtmp->mpeaceful = 1;

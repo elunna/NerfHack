@@ -824,9 +824,6 @@ u_init_role(void)
         knows_class(WEAPON_CLASS); /* excludes polearms */
         knows_class(ARMOR_CLASS);
         skill_init(Skill_V);
-        /* Valkyries can tame these */
-        mons[PM_WINTER_WOLF_CUB].mflags2 |= M2_DOMESTIC;
-        mons[PM_WINTER_WOLF].mflags2 |= M2_DOMESTIC;
         break;
     case PM_WIZARD:
         ini_inv(Wizard);
@@ -966,9 +963,6 @@ u_init_race(void)
         /* Enable random generation too */
         objects[POT_VAMPIRE_BLOOD].oc_prob = 40;
         objects[POT_BLOOD].oc_prob = 40;
-
-        /* Allow vampires to tame familiars */
-        mons[PM_FAMILIAR].mflags2 |= M2_DOMESTIC;
 
         /* Vampires start off with gods not as pleased, luck penalty */
         adjalign(-5);
