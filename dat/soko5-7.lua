@@ -75,6 +75,7 @@ des.object({ class = "%" });
 des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
+des.object({ id = "statue", x=05, y=01, montype="white dragon", historic=1 })
 
 -- A little help
 des.object("earth",11,09)

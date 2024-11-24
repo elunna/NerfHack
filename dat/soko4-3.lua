@@ -17,7 +17,7 @@ des.map([[
  |...........|--...|
  |.--F--...|.|....--
  |.|...|-.-|......| 
- |.F.L.+...|......| 
+ |.F...+...|......| 
 --.|...|........--- 
 |..--F-----.|.---   
 |.........|...|     
@@ -70,6 +70,9 @@ des.trap("hole",05,11)
 des.trap("hole",06,11)
 des.trap("hole",07,11)
 des.trap("hole",08,11)
+
+-- This is where the lava used to be in the original version
+des.object({ id = "statue", x=05, y=08, montype="white dragon", historic=1 })
 
 -- Random objects
 des.object({ class = "%" });

@@ -36,6 +36,8 @@ des.non_passwall(selection.area(00,00,20,14));
 -- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
 
+des.object({ id = "statue", x=10, y=02, montype="white dragon", historic=1 })
+des.object({ id = "statue", x=15, y=10, montype="white dragon", historic=1 })
 -- Doors
 des.door("locked",12,02)
 des.door("locked",15,08)

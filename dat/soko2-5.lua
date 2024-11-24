@@ -35,6 +35,9 @@ des.region(selection.area(00,00,27,17),"lit");
 des.non_diggable(selection.area(00,00,27,17));
 des.non_passwall(selection.area(00,00,27,17));
 
+des.object({ id = "statue", x=19, y=10, montype="white dragon", historic=1 })
+
+
 -- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
 

@@ -20,7 +20,7 @@ des.map([[
 |FFFFF-------|.-|
 |...........|-..|
 |.....-------...|
-|..L............|
+|...............|
 |.....-------...|
 |.....|     |...|
 -------     -----
@@ -72,6 +72,7 @@ des.object({ class = "%" });
 des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
+des.object({ id = "statue", x=03, y=09, montype="white dragon", historic=1 })
 
 -- A little help
 des.object("earth",14,01)

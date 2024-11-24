@@ -27,6 +27,8 @@ des.region(selection.area(00,00,18,11),"lit");
 des.non_diggable(selection.area(00,00,18,11));
 des.non_passwall(selection.area(00,00,18,11));
 
+des.object({ id = "statue", x=08, y=01, montype="white dragon", historic=1 })
+
 -- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
 -- No ice on branch location
