@@ -77,5 +77,6 @@ des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
 
--- One random mimic
+-- Two random mimics!
+des.monster("m")
 des.monster("m")
