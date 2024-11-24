@@ -709,6 +709,14 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\soko4-6.lua  \
 	$(DAT)\soko4-7.lua  \
 	$(DAT)\soko4-8.lua  \
+	$(DAT)\soko5-1.lua  \
+	$(DAT)\soko5-2.lua  \
+	$(DAT)\soko5-3.lua  \
+	$(DAT)\soko5-4.lua  \
+	$(DAT)\soko5-5.lua  \
+	$(DAT)\soko5-6.lua  \
+	$(DAT)\soko5-7.lua  \
+	$(DAT)\soko5-8.lua  \
 	$(DAT)\themerms.lua \
 	$(DAT)\Tou-fila.lua \
 	$(DAT)\Tou-filb.lua \

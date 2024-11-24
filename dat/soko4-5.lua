@@ -1,73 +1,71 @@
+-- NetHack sokoban soko3-2.lua	$NHDT-Date: 1652196036 2022/05/10 15:20:36 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1 $
+--	Copyright (c) 1998-1999 by Kevin Hugo
+-- NetHack may be freely redistributed.  See license for details.
 --
---LEVEL:"soko4-5"
--- "Thinking Rabbit"
--- Ported from UnNetHack
+-- https://nethackwiki.com/wiki/Sokoban_Level_1j
+-- Ported from SLASH'EM
 -- Converted to lua by hackemslashem
 --
-
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify");
+des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[
-----             
-|..|             
-|..------------- 
-|..............| 
-|-.--FFFFFF---+| 
-|..........F...| 
-|...|......F...| 
----.|......F...| 
-  |.|...|..F...| 
-  |.|......F...| 
-  |.|.|....F...| 
-  |.|....------- 
-  |.---..|       
-  |....|.|       
-  ----...|       
-     -----       
+            ---------
+------------|.....+.|
+|...........|.....|.|
+|.---.......|.....|.|
+|...|.......|.....|.|
+|...|---.---|.....|.|
+|...--......|.....|.|
+|...........-------.|
+---.--...|..........|
+  |.--...|--------..|
+  |......|       ----
+  ---.----           
+    ---              
 ]]);
 
-des.levregion({ region = {08,13,08,13}, type = "branch" })
-des.stair("up",13,10)
-des.region(selection.area(00,00,15,15),"lit");
-des.non_diggable(selection.area(00,00,15,15));
-des.non_passwall(selection.area(00,00,15,15));
+des.stair("down", 05,11)
+des.stair("up", 15,05)
+des.region(selection.area(00,00,20,12), "lit")
+des.non_diggable(selection.area(00,00,20,12))
+des.non_passwall(selection.area(00,00,20,12))
 
 -- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
--- No ice on branch location
-des.replace_terrain({ region={08,13,08,13}, fromterrain="I", toterrain="." })
 
 -- Doors
-des.door("locked", 14,04)
+des.door("locked",18,01)
 
 -- Boulders
-des.object("boulder", 02,04)
-des.object("boulder", 02,05)
-des.object("boulder", 04,05)
-des.object("boulder", 06,07)
-des.object("boulder", 07,07)
-des.object("boulder", 09,07)
-des.object("boulder", 09,08)
-des.object("boulder", 06,09)
-des.object("boulder", 07,09)
-des.object("boulder", 08,10)
-des.object("boulder", 09,10)
-des.object("boulder", 07,11)
+des.object("boulder",06,03)
+des.object("boulder",07,03)
+des.object("boulder",06,04)
+des.object("boulder",09,04)
+des.object("boulder",03,05)
+des.object("boulder",08,05)
+des.object("boulder",02,06)
+des.object("boulder",03,07)
+des.object("boulder",04,07)
+des.object("boulder",06,07)
+des.object("boulder",07,08)
+des.object("boulder",08,08)
 
 -- Traps
--- prevent monster generation over the (filled) pits
-des.exclusion({ type = "monster-generation", region = { 03,03, 13,03 } });
-des.trap("hole", 03,03)
-des.trap("hole", 04,03)
-des.trap("hole", 05,03)
-des.trap("hole", 06,03)
-des.trap("hole", 07,03)
-des.trap("hole", 08,03)
-des.trap("hole", 09,03)
-des.trap("hole", 10,03)
-des.trap("hole", 11,03)
-des.trap("hole", 12,03)
-des.trap("hole", 13,03)
+-- prevent monster generation over the (filled) holes
+des.exclusion({ type = "monster-generation", region = { 19,02, 19,07 } });
+des.trap("hole",19,02)
+des.trap("hole",19,03)
+des.trap("hole",19,04)
+des.trap("hole",19,05)
+des.trap("hole",19,06)
+des.trap("hole",19,07)
+des.exclusion({ type = "monster-generation", region = { 12,08, 17,08 } });
+des.trap("hole",12,08)
+des.trap("hole",13,08)
+des.trap("hole",14,08)
+des.trap("hole",15,08)
+des.trap("hole",16,08)
+des.trap("hole",17,08)
 
 -- Random objects
 des.object({ class = "%" });
@@ -76,12 +74,6 @@ des.object({ class = "%" });
 des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
-
--- A little help
-des.object("earth",01,01)
-if percent(50) then
-    des.object("earth",02,01)
-end
 
 -- One random mimic
 des.monster("m")

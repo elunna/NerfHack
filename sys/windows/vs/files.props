@@ -198,6 +198,14 @@
     <Luafiles Include = "soko4-6.lua"/>
     <Luafiles Include = "soko4-7.lua"/>
     <Luafiles Include = "soko4-8.lua"/>
+    <Luafiles Include = "soko5-1.lua"/>
+    <Luafiles Include = "soko5-2.lua"/>
+    <Luafiles Include = "soko5-3.lua"/>
+    <Luafiles Include = "soko5-4.lua"/>
+    <Luafiles Include = "soko5-5.lua"/>
+    <Luafiles Include = "soko5-6.lua"/>
+    <Luafiles Include = "soko5-7.lua"/>
+    <Luafiles Include = "soko5-8.lua"/>
     <Luafiles Include = "themerms.lua"/>
     <Luafiles Include = "Tou-fila.lua"/>
     <Luafiles Include = "Tou-filb.lua"/>
