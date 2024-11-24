@@ -29,16 +29,12 @@ des.map([[
                  ----          
 ]]);
 
-local place = selection.new();
-place:set(29,03);
-place:set(29,05);
-place:set(29,07);
-
 des.stair("down", 02,12);
 des.region(selection.area(00,00,30,17),"lit");
 des.non_diggable(selection.area(00,00,30,17));
 des.non_passwall(selection.area(00,00,30,17));
 
+-- Doors
 des.door("locked",22,03)
 des.door("locked",28,03)
 des.door("locked",28,05)
@@ -64,13 +60,11 @@ des.object("boulder",03,08);
 des.object("boulder",05,08);
 des.object("boulder",10,08);
 des.object("boulder",12,08);
---
 des.object("boulder",02,09);
 des.object("boulder",05,09);
 des.object("boulder",07,09);
 des.object("boulder",11,09);
 des.object("boulder",13,09);
---
 des.object("boulder",03,10);
 des.object("boulder",06,10);
 des.object("boulder",07,10);
@@ -115,8 +109,6 @@ des.trap("hole",19,12)
 des.trap("hole",19,13)
 des.trap("hole",19,14)
 
-
-
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 
@@ -135,6 +127,11 @@ des.replace_terrain({ region={0,0, 28,19}, fromterrain=".", toterrain="I", chanc
 
 -- Rewards
 
+local place = selection.new();
+place:set(29,03);
+place:set(29,05);
+place:set(29,07);
+
 local pt = selection.rndcoord(place);
 local prizes = { { id = "bag of holding" },
                  { id = "amulet of reflection"},
@@ -145,4 +142,5 @@ des.object({ id = prizes[1].id, coord=pt, buc="not-cursed", achievement=1 });
 des.engraving({ coord = pt, type = "burn", text = "Elbereth" });
 des.object({ id = "scroll of scare monster", coord = pt, buc = "cursed" });
 
+-- Ruling steward of Sokoban
 des.monster({ id = "white dragon",  coord=pt, name="Wintercloak", waiting=1});

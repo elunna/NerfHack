@@ -33,8 +33,10 @@ des.region(selection.area(00,00,20,14), "lit");
 des.non_diggable(selection.area(00,00,20,14));
 des.non_passwall(selection.area(00,00,20,14));
 
+-- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
 
+-- Doors
 des.door("locked",12,02)
 des.door("locked",15,08)
 des.door("locked",08,13)

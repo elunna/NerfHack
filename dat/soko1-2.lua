@@ -31,15 +31,16 @@ des.map([[
    ---------          
 ]]);
 
-local place = selection.new();
-place:set(20,09);
-place:set(20,11);
-place:set(20,13);
-
 des.stair("down", 02,03);
 des.region(selection.area(00,00,21,17),"lit");
 des.non_diggable(selection.area(00,00,21,17));
 des.non_passwall(selection.area(00,00,21,17));
+
+-- Doors
+des.door("locked",19,02)
+des.door("locked",19,09)
+des.door("locked",19,11)
+des.door("locked",19,13)
 
 -- Boulders
 des.object("boulder",06,04);
@@ -78,7 +79,6 @@ des.trap("hole",14,11)
 des.trap("hole",14,12)
 des.trap("hole",14,13)
 
-
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 
@@ -90,11 +90,6 @@ des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
 
-des.door("locked",19,02)
-des.door("locked",19,09)
-des.door("locked",19,11)
-des.door("locked",19,13)
-
 des.region({ region={16,03, 13,07}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
 --des.region({ region={16,08, 15,07}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
 
@@ -103,6 +98,11 @@ des.replace_terrain({ region={0,0, 75,08}, fromterrain=".", toterrain="I", chanc
 des.replace_terrain({ region={0,9, 75,08}, fromterrain=".", toterrain="I", chance=15 })
 
 -- Rewards
+
+local place = selection.new();
+place:set(20,09);
+place:set(20,11);
+place:set(20,13);
 
 local pt = selection.rndcoord(place);
 local prizes = { { id = "bag of holding" },
@@ -114,4 +114,5 @@ des.object({ id = prizes[1].id, coord=pt, buc="not-cursed", achievement=1 });
 des.engraving({ coord = pt, type = "burn", text = "Elbereth" });
 des.object({ id = "scroll of scare monster", coord = pt, buc = "cursed" });
 
+-- Ruling steward of Sokoban
 des.monster({ id = "white dragon",  coord=pt, name="Wintercloak", waiting=1});

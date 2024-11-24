@@ -30,6 +30,7 @@ des.region(selection.area(00,00,15,10),"lit")
 des.non_diggable(selection.area(00,00,15,10))
 des.non_passwall(selection.area(00,00,15,10))
 
+-- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
 
 -- Boulders

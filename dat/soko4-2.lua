@@ -32,14 +32,9 @@ des.region(selection.area(00,00,16,12),"lit")
 des.non_diggable(selection.area(00,00,16,12))
 des.non_passwall(selection.area(00,00,16,12))
 
+-- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
 des.replace_terrain({ region={01,05,01,05}, fromterrain="I", toterrain="." })
-
--- A little help
-des.object("earth",14,01)
-if percent(50) then
-    des.object("earth",15,01)
-end
 
 -- Boulders
 des.object("boulder",12,02)
@@ -76,6 +71,12 @@ des.object({ class = "%" });
 des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
+
+-- A little help
+des.object("earth",14,01)
+if percent(50) then
+    des.object("earth",15,01)
+end
 
 -- One random mimic
 des.monster("m")

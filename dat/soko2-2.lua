@@ -35,6 +35,7 @@ des.region(selection.area(00,00,21,16), "lit");
 des.non_diggable(selection.area(00,00,21,16));
 des.non_passwall(selection.area(00,00,21,16));
 
+-- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
 
 -- Boulders
@@ -48,9 +49,8 @@ des.object("boulder",09,05)
 des.object("boulder",03,07)
 des.object("boulder",06,09)
 
--- prevent monster generation over the (filled) holes
-
 -- Traps
+-- prevent monster generation over the (filled) holes
 des.exclusion({ type = "monster-generation", region = { 14,04, 14,04 } });
 des.trap("hole",14,04)
 des.exclusion({ type = "monster-generation", region = { 16,05, 16,06 } });
