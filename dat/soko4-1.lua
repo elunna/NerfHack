@@ -65,6 +65,7 @@ des.non_passwall(selection.area(00,00,28,12))
 
 -- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
+-- No ice on branch location
 des.replace_terrain({ region={13,6,13,6}, fromterrain="I", toterrain="." })
 
 -- Boulders
@@ -79,6 +80,7 @@ des.object("boulder",3,7)
 des.object("boulder",8,8)
 des.object("boulder",8,10)
 
+-- Traps
 -- prevent monster generation over the (filled) pits
 des.exclusion({ type = "monster-generation", region = { 15,06, 23,06 } });
 des.trap("pit",15,06)

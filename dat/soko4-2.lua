@@ -34,6 +34,7 @@ des.non_passwall(selection.area(00,00,16,12))
 
 -- Ice
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
+-- No ice on branch location
 des.replace_terrain({ region={01,05,01,05}, fromterrain="I", toterrain="." })
 
 -- Boulders
