@@ -747,7 +747,8 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\tut-1.lua    \
 	$(DAT)\tut-2.lua    \
 	$(DAT)\tomb.lua		\
-	$(DAT)\mtemple.lua	\
+	$(DAT)\temple-1.lua	\
+	$(DAT)\temple-2.lua	\
 	$(DAT)\yeenog-1.lua \
 	$(DAT)\yeenog-2.lua \
 	$(DAT)\yeenog-3.lua

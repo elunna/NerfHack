@@ -383,9 +383,10 @@ dungeon = {
       alignment = "chaotic",
       levels = {
          {
-            name = "mtemple",
+            name = "temple",
             bonetag = "Y",
-            base = -1
+            base = -1,
+            nlevels = 2,
          }
       }
    },

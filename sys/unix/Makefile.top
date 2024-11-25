@@ -119,7 +119,7 @@ SPEC_LEVS = 	 	\
 	minend-?.lua 	\
 	minefill.lua 	\
 	minetn-*.lua 	\
-	mtemple.lua 	\
+	temple-?.lua 	\
 	nhcore.lua 		\
 	nhlib.lua 		\
 	nkai-* 			\

@@ -135,7 +135,8 @@
     <Luafiles Include = "Mon-goal.lua"/>
     <Luafiles Include = "Mon-loca.lua"/>
     <Luafiles Include = "Mon-strt.lua"/>
-    <Luafiles Include = "mtemple.lua"/>
+    <Luafiles Include = "temple-1.lua"/>
+    <Luafiles Include = "temple-2.lua"/>
     <Luafiles Include = "nhcore.lua"/>
     <Luafiles Include = "nhlib.lua"/>
     <Luafiles Include = "oracle-1.lua"/>
