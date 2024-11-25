@@ -643,8 +643,7 @@ cast_wizard_spell(
         impossible("monster cast wizard spell (%d) with negative dmg (%d)?",
                    spellnum, dmg);
         return 0;
-    } else if (!mdef || DEADMONSTER(mdef))
-        return 0;
+    }
 
     int ml = min(caster->m_lev, 50);
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
@@ -654,6 +653,9 @@ cast_wizard_spell(
 
     switch (spellnum) {
     case MGC_DEATH_TOUCH:
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
+
         if (youdefend) { /* mhitu */
             pline("Oh no, %s's using the touch of death!", mhe(caster));
             if (nonliving(gy.youmonst.data)) {
@@ -725,6 +727,8 @@ cast_wizard_spell(
         break;
     }
     case MGC_ACID_BLAST:
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
         dmg = d((ml / 2) + 4, 8);
         if (mcast_dist_ok(caster)) {
             if (youdefend)
@@ -831,6 +835,8 @@ cast_wizard_spell(
         dmg = 0;
         break;
     case MGC_CURSE_ITEMS:
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
         if (youdefend) {
             You_feel("as if you need some help.");
             rndcurse();
@@ -842,6 +848,8 @@ cast_wizard_spell(
         dmg = 0;
         break;
     case MGC_DESTRY_ARMR:
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
         dmg = m_destroy_armor(caster, mdef);
         break;
     case MGC_EVIL_EYE: { /* drains luck */
@@ -865,6 +873,8 @@ cast_wizard_spell(
         break;
     }
     case MGC_WEAKEN_YOU: /* drain strength */
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
         if (youdefend) {
             if (Antimagic) {
                 shieldeff(u.ux, u.uy);
@@ -914,6 +924,8 @@ cast_wizard_spell(
             impossible("no reason for monster to cast disappear spell?");
         break;
     case MGC_STUN_YOU:
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
         if (youdefend) {
             if (Antimagic || Free_action) {
                 shieldeff(u.ux, u.uy);
@@ -958,6 +970,8 @@ cast_wizard_spell(
         dmg = m_cure_self(caster, dmg);
         break;
     case MGC_FIRE_BOLT:
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
         dmg = d((ml / 5) + 1, 8);
         if (youdefend) {
             /* hotwire these to only go off if the critter can see you
@@ -996,6 +1010,8 @@ cast_wizard_spell(
         dmg = 0; /* damage is handled by explode() */
         break;
     case MGC_ICE_BOLT:
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
         dmg = d((ml / 5) + 1, 8);
         if (youdefend) {
             if (mcast_dist_ok(caster)) {
@@ -1031,6 +1047,8 @@ cast_wizard_spell(
         dmg = 0; /* damage is handled by explode() */
         break;
     case MGC_PSI_BOLT:
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
         if (youdefend) {
@@ -1107,7 +1125,7 @@ cast_wizard_spell(
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-staticfn int 
+staticfn int
 cast_cleric_spell(
     struct monst *caster,
     struct monst *mdef,
