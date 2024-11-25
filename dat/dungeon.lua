@@ -254,6 +254,7 @@ dungeon = {
             bonetag = "D",
             nlevels = 3,
             base = 13,
+            chance = 50,
             range = 6
          },
       }
