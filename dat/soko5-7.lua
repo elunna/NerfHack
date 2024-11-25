@@ -9,12 +9,12 @@ des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "hardfloor", "sokoban", "premapped", "solidify", "cold");
 des.map([[
    ---------   
- ---..|....--- 
+ ---..F....--- 
  |....|......| 
 --..........---
-|.....|.....|.|
+|.....|.....F.|
 |.........---.|
-|------...|...|
+|-F-FF-...|...|
 |.......---...|
 --...........--
  |......---..| 
