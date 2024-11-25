@@ -967,8 +967,8 @@ flip_level_rnd(int flp, boolean extras)
 {
     int c = 0;
 
-    if (In_sokoban(&u.uz) && flags.noflipsoko) {
-        /* Forcing non-flipped Sokoban breaks the rules. */
+    if (In_sokoban(&u.uz) && !flags.flipsoko) {
+        /* Not allowing flipping of Sokoban breaks the rules. */
         sokoban_guilt();
         return;
     }
