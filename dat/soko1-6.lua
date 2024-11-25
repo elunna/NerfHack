@@ -93,6 +93,25 @@ des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
 
+
+-- The marbles
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+
 -- Rewards
 
 des.region({ region={19,09,23,15}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
