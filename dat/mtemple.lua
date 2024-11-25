@@ -151,11 +151,11 @@ des.monster({id="gargoyle", x=20, y=07, peaceful=0})
 des.monster({id="gargoyle", x=26, y=01, peaceful=0})
 des.monster({id="gargoyle", x=26, y=07, peaceful=0})
 
-des.monster({id="gargoyle", x=32, y=01, peaceful=0})
-des.monster({id="gargoyle", x=32, y=07, peaceful=0})
+des.monster({id="winged gargoyle", x=32, y=01, peaceful=0})
+des.monster({id="winged gargoyle", x=32, y=07, peaceful=0})
 
-des.monster({id="gargoyle", x=38, y=01, peaceful=0})
-des.monster({id="gargoyle", x=38, y=07, peaceful=0})
+des.monster({id="winged gargoyle", x=38, y=01, peaceful=0})
+des.monster({id="winged gargoyle", x=38, y=07, peaceful=0})
 
 -- demons down by the altar...
 des.monster({id="bone devil",   x=37, y=02, peaceful=0})
