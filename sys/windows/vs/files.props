@@ -111,6 +111,7 @@
     <Luafiles Include = "medusa-4.lua"/>
     <Luafiles Include = "mephisto.lua"/>
     <Luafiles Include = "minefill.lua"/>
+    <Luafiles Include = "townfill.lua"/>
     <Luafiles Include = "minend-1.lua"/>
     <Luafiles Include = "minend-2.lua"/>
     <Luafiles Include = "minend-3.lua"/>

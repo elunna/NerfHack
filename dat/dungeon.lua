@@ -309,7 +309,7 @@ dungeon = {
    },
    {
       name = "Sokoban",
-      base = 5,
+      base = 6,
       alignment = "neutral",
       flags = { "mazelike" },
       entry = -1,
@@ -338,6 +338,10 @@ dungeon = {
             name = "soko5",
             base = 5,
             nlevels = 8
+         },
+         {
+            name = "townfill",
+            base = 6,
          },
       }
    },

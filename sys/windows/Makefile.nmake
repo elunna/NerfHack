@@ -623,6 +623,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\medusa-4.lua \
 	$(DAT)\mephisto.lua \
 	$(DAT)\minefill.lua \
+	$(DAT)\townfill.lua \
 	$(DAT)\minend-1.lua \
 	$(DAT)\minend-2.lua \
 	$(DAT)\minend-3.lua \
