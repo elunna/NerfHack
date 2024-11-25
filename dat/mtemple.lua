@@ -5,7 +5,7 @@
 
 des.level_init({ style = "solidfill", fg = " " });
 
-des.level_flags("mazelevel", "solidify");
+des.level_flags("mazelevel", "solidify", "noflip");
 
 -- Ported from SlashTHEM
 -- Converted to lua by hackemslashem
@@ -142,16 +142,20 @@ des.object({ id = "chest", x = 54, y = 05,
 
 --  five gargoyles on either side, in the niches of the temple
 -- all should start asleep
-des.monster({id="gargoyle", x=15, y=01, peaceful=0})
-des.monster({id="gargoyle", x=21, y=01, peaceful=0})
-des.monster({id="gargoyle", x=27, y=01, peaceful=0})
-des.monster({id="gargoyle", x=33, y=01, peaceful=0})
-des.monster({id="gargoyle", x=39, y=01, peaceful=0})
-des.monster({id="gargoyle", x=15, y=08, peaceful=0})
-des.monster({id="gargoyle", x=21, y=08, peaceful=0})
-des.monster({id="gargoyle", x=27, y=08, peaceful=0})
-des.monster({id="gargoyle", x=33, y=08, peaceful=0})
-des.monster({id="gargoyle", x=39, y=08, peaceful=0})
+des.monster({id="gargoyle", x=14, y=01, peaceful=0})
+des.monster({id="gargoyle", x=14, y=07, peaceful=0})
+
+des.monster({id="gargoyle", x=20, y=01, peaceful=0})
+des.monster({id="gargoyle", x=20, y=07, peaceful=0})
+
+des.monster({id="gargoyle", x=26, y=01, peaceful=0})
+des.monster({id="gargoyle", x=26, y=07, peaceful=0})
+
+des.monster({id="gargoyle", x=32, y=01, peaceful=0})
+des.monster({id="gargoyle", x=32, y=07, peaceful=0})
+
+des.monster({id="gargoyle", x=38, y=01, peaceful=0})
+des.monster({id="gargoyle", x=38, y=07, peaceful=0})
 
 -- demons down by the altar...
 des.monster({id="bone devil",   x=37, y=02, peaceful=0})
