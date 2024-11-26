@@ -40,6 +40,44 @@ des.room({ type ="delphi", lit = 1, x=3, y=3, xalign="center", yalign="center", 
             end
 })
 
+
+-- Enable dungeon features to generate in the Oracle level
+-- These odds generally follow the standard generation odds
+-- but are boosted slightly to makeup for less eligible rooms.
+-- The stair up and stair down rooms will still not be eligible.
+function oracle_fill(rm)
+   des.object();
+   if percent(20) then
+      des.object();
+   end
+   des.monster();
+
+   if percent(10) then
+      des.feature("fountain")
+   end
+   if d(40) == 1 then
+      des.altar({ type="altar", cracked=1 })
+   end
+   if d(60) == 1 then
+      des.feature("forge")
+   end
+   if d(60) == 1 then
+      des.feature("sink")
+   end
+   if percent(1) then
+      des.feature("toilet")
+   end
+   if d(60) == 1 then
+      des.grave()
+   end
+   if percent(5) then
+      des.feature("tree")
+   end
+   if percent(75) then
+      des.trap()
+   end
+end
+
 des.room({ contents = function()
                  des.stair("up")
                  des.object()
@@ -55,25 +93,12 @@ des.room({ contents = function()
               end
 })
 
-des.room({ contents = function()
-                 des.object()
-                 des.object()
-                 des.monster()
-              end
-})
+des.room({ contents = oracle_fill });
 
-des.room({ contents = function()
-                 des.object()
-                 des.trap()
-                 des.monster()
-              end
-})
+des.room({ contents = oracle_fill });
 
-des.room({ contents = function()
-                 des.object()
-                 des.trap()
-                 des.monster()
-              end
-})
+des.room({ contents = oracle_fill });
+
+des.room({ contents = oracle_fill });
 
 des.random_corridors()
