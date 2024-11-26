@@ -1778,8 +1778,9 @@
         NO_RACE, 8, CLR_BROWN, BLOODWORM),
     MON(NAM("tunnel worm"), S_WORM,
         LVL(7, 9, 5, 0, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_BITE, AD_PHYS, 3, 4), NO_ATTK, NO_ATTK,
-          NO_ATTK, NO_ATTK, NO_ATTK),
+        A(ATTK(AT_BUTT, AD_PHYS, 3, 6), 
+          ATTK(AT_BITE, AD_ENCH, 1, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(300, 200, MS_SILENT, MZ_HUGE), MR_ACID, 0,
         M1_ANIMAL | M1_SLITHY | M1_TUNNEL | M1_NOLIMBS | M1_CARNIVORE
           | M1_NOTAKE,
