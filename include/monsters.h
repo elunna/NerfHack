@@ -1797,7 +1797,7 @@
         LVL(1, 9, 5, 0, 0), (G_GENO),
         A(ATTK(AT_BITE, AD_DISE, 1, 2), NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(10, 10, MS_SILENT, MZ_SMALL), 0, 0,
+        SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
         M1_ANIMAL | M1_CONCEAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE,
         M2_NASTY | M2_HOSTILE, 0, 
         NO_RACE, 10, CLR_GRAY, ROT_WORM),
