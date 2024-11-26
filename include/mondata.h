@@ -16,6 +16,7 @@
 #define pm_resistance(ptr, typ) (((ptr)->mresists & (typ)) != 0)
 
 #define immune_poisongas(ptr) ((ptr) == &mons[PM_HEZROU]        \
+                               || (ptr) == &mons[PM_DRETCH]     \
                                || (ptr) == &mons[PM_VROCK])
 
 #define can_levitate(mon) \
