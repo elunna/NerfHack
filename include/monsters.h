@@ -1616,6 +1616,16 @@
           | M1_REGEN,
         M2_NOPOLY | M2_HOSTILE, M3_INFRAVISIBLE,
         MH_WERE, 13, CLR_BLACK, WERESPIDER),
+    MON(NAM("monstrous spider"), S_SPIDER,
+        LVL(12, 15, 4, 0, 0), (G_GENO | 1),
+        A(ATTK(AT_BITE, AD_DRST, 4, 6),
+          ATTK(AT_TUCH, AD_WEBS, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(200, 200, MS_SILENT, MZ_HUGE), MR_POISON, MR_POISON,
+        M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
+        M2_HOSTILE | M2_STRONG | M2_NASTY,
+        M3_INFRAVISIBLE | M3_ACCURATE | M3_BERSERK,
+        NO_RACE, 15, CLR_ORANGE, MONSTROUS_SPIDER),
     /* Ported from EvilHack:
      * in honor of our friend Grasshopper
      * who always seems to be attacked by centipedes */

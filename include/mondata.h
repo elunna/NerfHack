@@ -331,6 +331,7 @@
      || (ptr) == &mons[PM_PHASE_SPIDER] \
      || (ptr) == &mons[PM_RECLUSE_SPIDER] \
      || (ptr) == &mons[PM_WERESPIDER] \
+     || (ptr) == &mons[PM_MONSTROUS_SPIDER] \
      || (ptr) == &mons[PM_GIANT_SPIDER])
 #define is_unicorn(ptr) ((ptr)->mlet == S_UNICORN && likes_gems(ptr))
 #define is_longworm(ptr)                                                   \

@@ -209,12 +209,14 @@ were_summon(
         case PM_WERESNAKE:
         case PM_HUMAN_WERESNAKE:
             typ = rn2(3) ? PM_SNAKE : rn2(3) ? PM_PIT_VIPER : PM_ASPHYNX;
-            if (genbuf) Strcpy(genbuf, "snake");
+            if (genbuf)
+                Strcpy(genbuf, "snake");
             break;
         case PM_WERESPIDER:
         case PM_HUMAN_WERESPIDER:
-            typ = rn2(3) ? PM_GIANT_SPIDER : PM_PHASE_SPIDER;
-            if (genbuf) Strcpy(genbuf, "spider");
+            typ = rn2(3) ? PM_GIANT_SPIDER : rn2(3) ? PM_PHASE_SPIDER : PM_MONSTROUS_SPIDER;
+            if (genbuf)
+                Strcpy(genbuf, "spider");
             break;
         default:
             continue;
