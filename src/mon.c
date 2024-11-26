@@ -3485,8 +3485,7 @@ mondead(struct monst *mtmp)
     mtmp->mhp = 0; /* in case caller hasn't done this */
 
     /* WAC First check that monster can unpoly */
-    if (!attacktype(mtmp->data, AT_BOOM))
-        unpoly_monster(mtmp);
+    unpoly_monster(mtmp);
 
     if (mtmp->mhp > 0)
         return;
