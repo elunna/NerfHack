@@ -3527,6 +3527,10 @@ mondead(struct monst *mtmp)
         set_mon_data(mtmp, &mons[PM_HUMAN_WERERAT]);
     else if (mtmp->data == &mons[PM_WERETIGER])
         set_mon_data(mtmp, &mons[PM_HUMAN_WERETIGER]);
+    else if (mtmp->data == &mons[PM_WERESNAKE])
+	    set_mon_data(mtmp, &mons[PM_HUMAN_WERESNAKE]);
+	else if (mtmp->data == &mons[PM_WERESPIDER])
+	    set_mon_data(mtmp, &mons[PM_HUMAN_WERESPIDER]);
 
     /*
      * svm.mvitals[].died does double duty as total number of dead monsters

@@ -1238,6 +1238,12 @@ cpostfx(int pm)
     case PM_HUMAN_WERETIGER:
         catch_lycanthropy = PM_WERETIGER;
         break;
+    case PM_HUMAN_WERESNAKE:
+        catch_lycanthropy = PM_WERESNAKE;
+        break;
+    case PM_HUMAN_WERESPIDER:
+        catch_lycanthropy = PM_WERESPIDER;
+        break;
     case PM_LITTLE_DOG:
     case PM_DOG:
     case PM_LARGE_DOG:

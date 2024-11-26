@@ -70,6 +70,14 @@ counter_were(int pm)
         return PM_HUMAN_WERETIGER;
     case PM_HUMAN_WERETIGER:
         return PM_WERETIGER;
+    case PM_WERESNAKE:
+        return(PM_HUMAN_WERESNAKE);
+    case PM_HUMAN_WERESNAKE:
+        return(PM_WERESNAKE);
+    case PM_WERESPIDER:
+        return(PM_HUMAN_WERESPIDER);
+    case PM_HUMAN_WERESPIDER:
+        return(PM_WERESPIDER);
     default:
         return NON_PM;
     }
@@ -98,6 +106,13 @@ were_beastie(int pm)
     case PM_TIGER:
     case PM_JAGUAR:
         return PM_WERETIGER;
+    case PM_GIANT_SPIDER:
+    case PM_PHASE_SPIDER:
+        return PM_WERESPIDER;
+    case PM_SNAKE:
+    case PM_PIT_VIPER:
+    case PM_ASPHYNX:
+        return PM_WERESNAKE;
     default:
         break;
     }
@@ -190,6 +205,16 @@ were_summon(
             typ = rn2(5) ? PM_JAGUAR : PM_TIGER;
             if (genbuf)
                 Strcpy(genbuf, "large cat");
+            break;
+        case PM_WERESNAKE:
+        case PM_HUMAN_WERESNAKE:
+            typ = rn2(3) ? PM_SNAKE : rn2(3) ? PM_PIT_VIPER : PM_ASPHYNX;
+            if (genbuf) Strcpy(genbuf, "snake");
+            break;
+        case PM_WERESPIDER:
+        case PM_HUMAN_WERESPIDER:
+            typ = rn2(3) ? PM_GIANT_SPIDER : PM_PHASE_SPIDER;
+            if (genbuf) Strcpy(genbuf, "spider");
             break;
         default:
             continue;
