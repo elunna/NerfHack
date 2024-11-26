@@ -2250,6 +2250,13 @@ handler_rebind_keys(void)
     menu_item *picks = (menu_item *) 0;
     int clr = NO_COLOR;
 
+    /* Don't allow rebinding while the fuzzer is running.
+     * This could cause issues that make fuzzing less efficient, like
+     * rebinding the key that performs wizmakemap.
+    */
+    if (iflags.debug_fuzzer)
+        return;
+
  redo_rebind:
     win = create_nhwindow(NHW_MENU);
     start_menu(win, MENU_BEHAVE_STANDARD);
