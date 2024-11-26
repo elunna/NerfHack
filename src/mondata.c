@@ -952,6 +952,8 @@ name_to_monplus(
             { "djinn", PM_DJINNI, NEUTRAL },
             { "mumakil", PM_MUMAK, NEUTRAL },
             { "erinyes", PM_ERINYS, NEUTRAL },
+            { "blood worm", PM_BLOODWORM, NEUTRAL },
+            { "blood-worm", PM_BLOODWORM, NEUTRAL },
             /* end of list */
             { 0, NON_PM, NEUTRAL }
         };

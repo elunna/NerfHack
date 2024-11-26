@@ -921,6 +921,10 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BABY_LONG_WORM:
     case PM_BABY_PURPLE_WORM:
     case PM_PURPLE_WORM:
+    case PM_BLOODWORM:
+    case PM_ACID_WORM:
+    case PM_TUNNEL_WORM:
+    case PM_ROT_WORM:
     case PM_GRID_BUG:
     case PM_ARC_BUG:
     case PM_SPARK_BUG:
