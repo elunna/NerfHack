@@ -2300,16 +2300,15 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         }
         break;
     case AD_LUCK:
-        if (mcanseeu) {
+        if (mcanseeu && !mtmp->mspec_used) {
             if (cancelled) {
                 pline("%s winks.", Monnam(mtmp));
             } else {
-               /* mtmp->mspec_used = mtmp->mspec_used + 3 + rn2(8);*/
+                mtmp->mspec_used = mtmp->mspec_used + 3 + rn2(8);
                 pline("%s %s you!", Monnam(mtmp),
                       rn2(2) ? "locks eyes with" : "glares ominously at");
-                int dmg = d((int) mattk->damn, (int) mattk->damd);
-                change_luck(-dmg);
-                You_feel("%sunlucky.", dmg > 1 ? "very " : "");
+                change_luck(-1);
+                You_feel("unlucky.");
                 stop_occupation();
             }
         }

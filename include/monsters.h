@@ -479,6 +479,17 @@
         SIZ(200, 200, MS_BARK, MZ_SMALL), MR_FIRE, MR_FIRE,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 9, CLR_RED, HELL_HOUND_PUP),
+    /* "In East Anglia, where it was thought to be amphibious, the dog had 
+     * only one eye and was known as Black Shuck, or Shock." */
+    MON(NAM("barghest"), S_DOG,
+        LVL(7, 12, 4, 20, -7), (G_GENO | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 2, 6),
+          ATTK(AT_GAZE, AD_LUCK, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(900, 400, MS_BARK, MZ_LARGE), 0, 0,
+        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE | M1_SEE_INVIS | M1_AMPHIBIOUS,
+        M2_HOSTILE, M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
+        NO_RACE, 9, CLR_BLACK, BARGHEST),
     MON(NAM("hell hound"), S_DOG,
         LVL(12, 14, 2, 20, 0), (G_HELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 3, 6),
