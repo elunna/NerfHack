@@ -3286,6 +3286,15 @@
         M1_HUMANOID | M1_OMNIVORE | M1_POIS | M1_TPORT, M2_HOSTILE,
         M3_INFRAVISIBLE,
         NO_RACE, 9, CLR_CYAN, QUANTUM_MECHANIC),
+    MON(NAM("orb weaver"), S_QUANTMECH,
+        LVL(12, 12, 2, 0, 3), (G_GENO | 1),
+        A(ATTK(AT_MAGC, AD_CLRC, 0, 0), /* summon spheres */
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 20, MS_HUMANOID, MZ_HUMAN),
+        MR_POISON | MR_FIRE | MR_COLD | MR_ELEC | MR_ACID, 0,
+        M1_HUMANOID | M1_OMNIVORE | M1_POIS,
+        M2_HOSTILE, M3_INFRAVISIBLE,
+        NO_RACE, 10, CLR_YELLOW, ORB_WEAVER),
     /* 3.7: from slash'em, to expand Q class; hit polymorphs target */
     MON(NAM("genetic engineer"), S_QUANTMECH,
         LVL(12, 12, 3, 10, 0), (G_GENO | 1),

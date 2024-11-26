@@ -42,7 +42,8 @@ enum mcast_cleric_spells {
     CLC_FIRE_PILLAR,
     CLC_GEYSER,
     CLC_BLIGHT,
-    CLC_HOBBLE
+    CLC_HOBBLE,
+    CLC_SPHERES, /* Only for orb weavers */
 };
 
 extern const char *const flash_types[]; /* from zap.c */
@@ -59,6 +60,7 @@ staticfn boolean mspell_would_be_useless(struct monst *,
                                         struct monst *, unsigned int, int);
 staticfn boolean is_entombed(coordxy, coordxy);
 staticfn boolean counterspell(struct monst *);
+staticfn int rnd_sphere(void);
 
 /* feedback when frustrated monster couldn't cast a spell */
 staticfn void
@@ -182,6 +184,13 @@ choose_clerical_spell(struct monst* caster, int spellnum)
 
     if (caster->data == &mons[PM_ARCH_VILE] && spellnum != 1)
         return CLC_FIRE_PILLAR;
+
+    if (caster->data == &mons[PM_ORB_WEAVER] && spellnum != 1) {
+        if (rn2(4))
+            return CLC_PROTECTION;
+        else
+            return CLC_SPHERES;
+    }
 
     switch (spellnum) {
     case 15:
@@ -1410,6 +1419,82 @@ cast_cleric_spell(
         dmg = 0;
         break;
     }
+    case CLC_SPHERES: {
+        if (!youdefend) {
+            dmg = 0;
+            break;
+        }
+        struct permonst *pm = &mons[rnd_sphere()];
+        struct monst *mtmp2 = (struct monst *) 0;
+        const char *fmt, *what;
+        char whatbuf[QBUFSZ];
+        boolean success = FALSE, seecaster;
+        int oldseen, newseen;
+        coord bypos;
+
+        oldseen = monster_census(TRUE);
+
+        if (!enexto(&bypos, caster->mx, caster->my, caster->data))
+            break;
+        if ((pm = &mons[rnd_sphere()]) != 0
+            && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y)) != 0) {
+            success = TRUE;
+            mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
+            set_malign(mtmp2);
+        }
+        newseen = monster_census(TRUE);
+
+        /* not canspotmon() which includes unseen things sensed via warning */
+        seecaster = canseemon(caster) || tp_sensemon(caster) || Detect_monsters;
+        what = "an orb";
+        if (Hallucination)
+            what = makeplural(bogusmon(whatbuf, (char *) 0));
+
+        fmt = 0;
+        if (!seecaster) {
+            if (newseen <= oldseen || Unaware) {
+                /* unseen caster fails or summons unseen critters,
+                   or unconscious hero ("You dream that you hear...") */
+                You_hear("someone summoning %s.", what);
+            } else {
+                char *arg;
+
+                if (what != whatbuf)
+                    what = strcpy(whatbuf, what);
+                /* unseen caster summoned seen critter(s) */
+                arg = (newseen == oldseen + 1) ? an(makesingular(what))
+                                               : whatbuf;
+                if (!Deaf) {
+                    Soundeffect(se_someone_summoning, 100);
+                    You_hear("someone summoning something, and %s %s.", arg,
+                             vtense(arg, "appear"));
+                } else {
+                    pline("%s %s.", upstart(arg), vtense(arg, "appear"));
+                }
+            }
+
+        /* seen caster, possibly producing unseen--or just one--critters;
+           hero is told what the caster is doing and doesn't necessarily
+           observe complete accuracy of that caster's results (in other
+           words, no need to fuss with visibility or singularization;
+           player is told what's happening even if hero is unconscious) */
+        } else if (!success) {
+            fmt = "%s waves its hands, but nothing happens.%s";
+            what = "";
+        } else if (Invis && !mon_prop(caster, SEE_INVIS)
+                   && (caster->mux != u.ux || caster->muy != u.uy)) {
+            fmt = "%s summons %s around a spot near you!";
+        } else if (Displaced && (caster->mux != u.ux || caster->muy != u.uy)) {
+            fmt = "%s summons %s around your displaced image!";
+        } else {
+            fmt = "%s summons %s!";
+        }
+        if (fmt)
+            pline(fmt, Monnam(caster), what);
+
+        dmg = 0;
+        break;
+    }
     case CLC_BLIND_YOU:
         if (youdefend) {
             /* note: resists_blnd() doesn't apply here */
@@ -1641,6 +1726,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
     } else if (adtyp == AD_CLRC) {
         switch (spellnum) {
         case CLC_INSECTS:
+        case CLC_SPHERES:
         case CLC_CURE_SELF:
         case CLC_PROTECTION:
         case CLC_BLIGHT:
@@ -1748,6 +1834,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */
         if (caster->mpeaceful && (spellnum == CLC_INSECTS
+                                || spellnum == CLC_SPHERES
                                 || spellnum == CLC_HOBBLE
                                 || spellnum == CLC_FIRE_PILLAR
                                 || spellnum == CLC_BLIGHT))
@@ -1758,6 +1845,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             return TRUE;
         /* don't summon insects if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == CLC_INSECTS
+                            || spellnum == CLC_SPHERES
                             || spellnum == CLC_HOBBLE
                             || spellnum == CLC_BLIGHT))
             return TRUE;
@@ -1898,7 +1986,7 @@ mspell_would_be_useless(
         /* monster summoning won't be cast by tame
            or peaceful monsters */
         if ((caster->mtame || caster->mpeaceful)
-            && spellnum == CLC_INSECTS)
+            && (spellnum == CLC_INSECTS || spellnum == CLC_SPHERES))
             return TRUE;
     }
     return FALSE;
@@ -2247,4 +2335,9 @@ mcast_dist_ok(struct monst *caster)
     return TRUE;
 }
 
+staticfn int
+rnd_sphere(void)
+{
+    return PM_FREEZING_SPHERE + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE);
+}
 /*mcastu.c*/

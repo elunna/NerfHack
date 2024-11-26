@@ -1026,6 +1026,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_QUANTUM_MECHANIC:
     case PM_GENETIC_ENGINEER:
     case PM_ALCHEMIST:
+    case PM_ORB_WEAVER:
     case PM_RUST_MONSTER:
     case PM_DISENCHANTER:
     case PM_GARTER_SNAKE:
