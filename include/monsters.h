@@ -3750,6 +3750,19 @@
             | M2_MAGIC | M2_NASTY,
         M3_INFRAVISION,
         MH_UNDEAD, 18, CLR_BLACK, GUG),
+    MON(NAM("ghoul queen"), S_ZOMBIE,
+        LVL(14, 12, 0, 30, -8), (G_GENO | G_NOCORPSE | 1),
+        A(ATTK(AT_CLAW, AD_PLYS, 1, 3),
+          ATTK(AT_CLAW, AD_PHYS, 1, 4),
+          ATTK(AT_MAGC, AD_SPEL, 4, 6),
+          ATTK(AT_MAGC, AD_SPEL, 4, 6),
+          NO_ATTK, NO_ATTK),
+        SIZ(400, 50, MS_SILENT, MZ_MEDIUM),
+        MR_COLD | MR_SLEEP | MR_POISON, 0,
+        M1_HUMANOID | M1_POIS | M1_TUNNEL | M1_NEEDPICK | M1_CARNIVORE,
+        M2_WANDER | M2_HOSTILE | M2_FEMALE | M2_COLLECT | M2_MAGIC,
+        M3_INFRAVISION,
+        MH_UNDEAD, 20, CLR_BLACK, GHOUL_QUEEN),
     /*
      * golems
      */
