@@ -155,9 +155,9 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK, 0,
         NO_RACE, 9, CLR_GREEN, GIANT_PRAYING_MANTIS),
-    MON(NAM("bullet ant"), S_ANT,                                  /* SpliceHack */
+    MON(NAM("bullet ant"), S_ANT,
         LVL(4, 18, 3, 0, 0), (G_GENO | G_SGROUP | 2),
-        A(ATTK(AT_STNG, AD_DRCO, 5, 4), 
+        A(ATTK(AT_STNG, AD_DRCO, 5, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(20, 5, MS_SILENT, MZ_TINY), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
@@ -270,19 +270,19 @@
             | M1_ACID,
         M2_WANDER | M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 8, CLR_CYAN, GELATINOUS_CUBE),
-     MON(NAM("jiggling blob"), S_BLOB,                                /* Slash'EM */
+     MON(NAM("jiggling blob"), S_BLOB,
         LVL(10, 6, 8, 0, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_TUCH, AD_PHYS, 2, 8), 
+        A(ATTK(AT_TUCH, AD_PHYS, 2, 8),
           ATTK(AT_NONE, AD_ACID, 2, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(200, 100, MS_SILENT, MZ_MEDIUM),
         MR_SLEEP | MR_POISON | MR_ACID, MR_POISON,
         M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS,
-        M2_WANDER | M2_HOSTILE | M2_NEUTER, 0, 
+        M2_WANDER | M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 11, CLR_MAGENTA, JIGGLING_BLOB),
-    MON(NAM("lava blob"), S_BLOB,                                    /* Slash'EM */
+    MON(NAM("lava blob"), S_BLOB,
         LVL(10, 6, 8, 0, 0), (G_GENO | 1),
-        A(ATTK(AT_TUCH, AD_FIRE, 4, 4), 
+        A(ATTK(AT_TUCH, AD_FIRE, 4, 4),
           ATTK(AT_NONE, AD_FIRE, 2, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(200, 100, MS_SILENT, MZ_MEDIUM),
@@ -290,9 +290,9 @@
         M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS,
         M2_WANDER | M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 12, CLR_RED, LAVA_BLOB),
-    MON(NAM("static blob"), S_BLOB,                                  /* Slash'EM */
+    MON(NAM("static blob"), S_BLOB,
         LVL(12, 6, 8, 0, 0), (G_NOHELL | G_GENO  |1),
-        A(ATTK(AT_TUCH, AD_ELEC, 3, 8), 
+        A(ATTK(AT_TUCH, AD_ELEC, 3, 8),
           ATTK(AT_NONE, AD_ELEC, 3, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(200, 100, MS_SILENT, MZ_MEDIUM),
@@ -300,9 +300,9 @@
         M1_NOEYES | M1_NOLIMBS | M1_NOHEAD | M1_MINDLESS,
         M2_WANDER | M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 14, HI_ZAP, STATIC_BLOB),
-    MON(NAM("burbling blob"), S_BLOB,                                /* Slash'EM */
+    MON(NAM("burbling blob"), S_BLOB,
         LVL(14, 6, 8, 0, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_TUCH, AD_PHYS, 2, 8), 
+        A(ATTK(AT_TUCH, AD_PHYS, 2, 8),
           ATTK(AT_NONE, AD_ACID, 5, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(200, 100, MS_SILENT, MZ_MEDIUM),
@@ -347,8 +347,8 @@
     /* From ancient lore, the cockatrice and basilisk were virtually
      * the same creature, with just some slight differences in their origin.
      * Taking some creative license here. Bottom line, the basilisk template
-     * is a larger, faster and all-around more deadly version of the cockatrice.
-     * (ported from EvilHack) */
+     * is a larger, faster and all-around more deadly version of the
+     * cockatrice. (ported from EvilHack) */
     MON(NAM("basilisk"), S_COCKATRICE,
         LVL(12, 12, -10, 70, -5), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4),
@@ -479,7 +479,7 @@
         SIZ(200, 200, MS_BARK, MZ_SMALL), MR_FIRE, MR_FIRE,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 9, CLR_RED, HELL_HOUND_PUP),
-    /* "In East Anglia, where it was thought to be amphibious, the dog had 
+    /* "In East Anglia, where it was thought to be amphibious, the dog had
      * only one eye and was known as Black Shuck, or Shock." */
     MON(NAM("barghest"), S_DOG,
         LVL(7, 12, 4, 20, -7), (G_GENO | 1),
@@ -1061,7 +1061,7 @@
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_ACID | M1_NOTAKE, M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 6, CLR_GREEN, SPOTTED_JELLY),
-    MON(NAM("clear jelly"), S_JELLY,                                 /* Slash'EM */
+    MON(NAM("clear jelly"), S_JELLY,
         LVL(6, 3, 8, 10, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_TUCH, AD_ACID, 3, 6),
           ATTK(AT_NONE, AD_ACID, 3, 6),
@@ -1082,37 +1082,37 @@
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_ACID | M1_NOTAKE, M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 8, CLR_BROWN, OCHRE_JELLY),
-     MON(NAM("yellow jelly"), S_JELLY,                                /* Slash'EM */
+     MON(NAM("yellow jelly"), S_JELLY,
         LVL(8, 5, 8, 20, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_ENGL, AD_ACID, 3, 6), 
+        A(ATTK(AT_ENGL, AD_ACID, 3, 6),
           ATTK(AT_TUCH, AD_STUN, 2, 4),
           ATTK(AT_NONE, AD_STUN, 2, 6),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(250, 220, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_STONE, 0,
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
-            | M1_MINDLESS | M1_ACID | M1_OMNIVORE, 
-        M2_HOSTILE | M2_NEUTER, 0, 
+            | M1_MINDLESS | M1_ACID | M1_OMNIVORE,
+        M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 10, CLR_YELLOW, YELLOW_JELLY),
-    MON(NAM("orange jelly"), S_JELLY,                                /* Slash'EM */
+    MON(NAM("orange jelly"), S_JELLY,
         LVL(8, 5, 8, 20, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_ENGL, AD_ACID, 2, 8),
           ATTK(AT_TUCH, AD_SLEE, 2, 4),
           ATTK(AT_NONE, AD_SLEE, 2, 6),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(250, 220, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_STONE, 0,
-        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD 
-            | M1_MINDLESS | M1_ACID | M1_OMNIVORE, 
-        M2_HOSTILE | M2_NEUTER, 0, 
+        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
+            | M1_MINDLESS | M1_ACID | M1_OMNIVORE,
+        M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 10, CLR_ORANGE, ORANGE_JELLY),
-    MON(NAM("rancid jelly"), S_JELLY,                                /* Slash'EM */
+    MON(NAM("rancid jelly"), S_JELLY,
         LVL(12, 5, 8, 20, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_ENGL, AD_ACID, 4, 6), 
+        A(ATTK(AT_ENGL, AD_ACID, 4, 6),
           ATTK(AT_NONE, AD_ACID, 3, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(250, 220, MS_SILENT, MZ_MEDIUM), MR_ACID | MR_STONE, 0,
-        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD 
-            | M1_MINDLESS | M1_ACID | M1_OMNIVORE, 
-        M2_HOSTILE | M2_NEUTER, 0, 
+        M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
+            | M1_MINDLESS | M1_ACID | M1_OMNIVORE,
+        M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 14, CLR_BLACK, RANCID_JELLY),
     /*
      * kobolds
@@ -1316,7 +1316,8 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1350, 350, MS_ORC, MZ_HUMAN), MR_POISON, 0,
         M1_HUMANOID | M1_OMNIVORE,
-        M2_STRONG | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_LORD | M2_FLANK | M2_STALK,
+        M2_STRONG | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_LORD
+          | M2_FLANK | M2_STALK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE,
         MH_ORC, 7, HI_LORD, ORC_CAPTAIN),
     MON(NAM("spiked orc"), S_ORC,
@@ -1506,7 +1507,7 @@
         M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_CARNIVORE,
         M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 4, CLR_RED, RAT),
-    MON(NAM("rabbit"), S_RODENT,                               /* Slash'EM */
+    MON(NAM("rabbit"), S_RODENT,
         LVL(3, 18, 7, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1559,22 +1560,22 @@
         M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
         M2_HOSTILE, 0,
         NO_RACE, 4, CLR_YELLOW, CENTIPEDE),
-    MON(NAM("recluse spider"), S_SPIDER,                             /* Slash'EM */
+    MON(NAM("recluse spider"), S_SPIDER,
         LVL(3, 12, 3, 0, 0), (G_NOHELL | G_GENO  |G_SGROUP | 1),
-        A(ATTK(AT_BITE, AD_DRST, 1, 4), 
+        A(ATTK(AT_BITE, AD_DRST, 1, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(50, 50, MS_SILENT, MZ_TINY), MR_POISON, MR_POISON,
         M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
         M2_HOSTILE, 0,
         NO_RACE, 5, CLR_BROWN, RECLUSE_SPIDER),
-    MON(NAM("nickelpede"), S_SPIDER,                                 /* Slash'EM */
+    MON(NAM("nickelpede"), S_SPIDER,
         LVL(8, 4, 3, 0, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_BITE, AD_DRST, 3, 4), 
+        A(ATTK(AT_BITE, AD_DRST, 3, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(150, 50, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON,
-        M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS 
-            | M1_CARNIVORE, M2_HOSTILE, 
-        0,
+        M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS
+            | M1_CARNIVORE,
+        M2_HOSTILE, 0,
         NO_RACE, 6, CLR_CYAN, NICKELPEDE),
     MON(NAM("giant spider"), S_SPIDER,
         LVL(5, 15, 4, 0, 0), (G_GENO | 1),
@@ -1596,7 +1597,7 @@
             | M1_CARNIVORE,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 8, CLR_RED, SCORPION),
-    MON(NAM("phase spider"), S_SPIDER,                               /* Slash'EM */
+    MON(NAM("phase spider"), S_SPIDER,
         LVL(8, 12, -2, 0, -4), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_DRST, 3, 8),
           ATTK(AT_TUCH, AD_WEBS, 0, 0),
@@ -1783,8 +1784,8 @@
      * worms
      */
 
-    /* Maggots are from SLASH'EM, but have the infest mechanic from SpliceHack.
-     * So they can consume corpses to create giant flies. */
+    /* Maggots are from SLASH'EM, but have the infest mechanic from
+     * SpliceHack so they can consume corpses to create giant flies. */
     MON(NAM("maggot"), S_WORM,
         LVL(2, 9, 5, 0, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 3),
@@ -1822,7 +1823,7 @@
         NO_RACE, 8, CLR_BROWN, BLOODWORM),
     MON(NAM("tunnel worm"), S_WORM,
         LVL(7, 9, 5, 0, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_BUTT, AD_PHYS, 3, 6), 
+        A(ATTK(AT_BUTT, AD_PHYS, 3, 6),
           ATTK(AT_BITE, AD_ENCH, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(300, 200, MS_SILENT, MZ_HUGE), MR_ACID, 0,
@@ -1843,7 +1844,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
         M1_ANIMAL | M1_CONCEAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE,
-        M2_NASTY | M2_HOSTILE, 0, 
+        M2_NASTY | M2_HOSTILE, 0,
         NO_RACE, 10, CLR_GRAY, ROT_WORM),
     MON(NAM("long worm"), S_WORM,
         LVL(9, 3, 5, 10, 0), (G_GENO | 2),
@@ -2158,7 +2159,8 @@
           ATTK(AT_CLAW, AD_PHYS, 2, 4),
           ATTK(AT_STNG, AD_STUN, 1, 6),
           NO_ATTK, NO_ATTK),
-        SIZ(1600, 100, MS_SQEEK, MZ_MEDIUM), MR_SLEEP | MR_POISON | MR_COLD, 0,
+        SIZ(1600, 100, MS_SQEEK, MZ_MEDIUM),
+        MR_SLEEP | MR_POISON | MR_COLD, 0,
         M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_THICK_HIDE
             | M1_SEE_INVIS | M1_OMNIVORE,
         M2_HOSTILE | M2_WANDER | M2_STALK | M2_STRONG | M2_COLLECT
@@ -2372,7 +2374,7 @@
         0,
         MH_DRAGON, 20, CLR_GRAY, GRAY_DRAGON),
         /* Initially appeared in SporkHack
-         * gold dragon can be seen via infravision but doesn't have infravision
+         * can be seen via infravision but doesn't have infravision
          */
         MON(NAM("gold dragon"), S_DRAGON,
         LVL(15, 20, -1, 20, 4), (G_GENO | 2),
@@ -3402,7 +3404,7 @@
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
         M2_HOSTILE, M3_ACCURATE,
         NO_RACE, 10, CLR_BLUE, COBRA),
-    MON(NAM("cerastes"), S_SNAKE,      /* SpliceHack */
+    MON(NAM("cerastes"), S_SNAKE,
         LVL(7, 16, 5, 10, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_DRST, 1, 6),
           ATTK(AT_BITE, AD_DRST, 1, 6),
@@ -3414,15 +3416,15 @@
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE |
         M1_CONCEAL, M2_HOSTILE, 0,
         NO_RACE, 12, CLR_YELLOW, CERASTES),
-     MON(NAM("asphynx"), S_SNAKE,                                     /* Slash'EM */
+     MON(NAM("asphynx"), S_SNAKE,
         LVL(8, 15, 3, 0, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_BITE, AD_STON, 1, 6), 
-          ATTK(AT_NONE, AD_STON, 0, 0), 
+        A(ATTK(AT_BITE, AD_STON, 1, 6),
+          ATTK(AT_NONE, AD_STON, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(100, 80, MS_HISS, MZ_SMALL), MR_POISON | MR_STONE | MR_ACID, 
+        SIZ(100, 80, MS_HISS, MZ_SMALL), MR_POISON | MR_STONE | MR_ACID,
         MR_POISON | MR_STONE,
-        M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY 
-            | M1_POIS | M1_OVIPAROUS | M1_CARNIVORE | M1_NOTAKE, 
+        M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY
+            | M1_POIS | M1_OVIPAROUS | M1_CARNIVORE | M1_NOTAKE,
         M2_HOSTILE, 0,
         NO_RACE, 11, CLR_BLACK, ASPHYNX),
      MON(NAM("weresnake"), S_SNAKE,
@@ -3571,7 +3573,8 @@
         M1_FLY | M1_BREATHLESS | M1_HUMANOID | M1_POIS | M1_REGEN,
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_STRONG
             | M2_NASTY | M2_PRINCE | M2_MALE | M2_SHAPESHIFTER,
-        M3_WAITFORU | M3_WANTSCAND | M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE,
+        M3_WAITFORU | M3_WANTSCAND | M3_INFRAVISIBLE | M3_INFRAVISION
+          | M3_ACCURATE,
         MH_VAMPIRE | MH_UNDEAD, 32, HI_LORD, VLAD_THE_IMPALER),
     /*
      * Wraiths
@@ -4245,7 +4248,8 @@
           ATTK(AT_TENT, AD_DRST, 2, 6)),
         SIZ(WT_HUMAN, 400, MS_HISS, MZ_LARGE),
         MR_POISON | MR_STONE, MR_POISON | MR_STONE,
-        M1_FLY | M1_SWIM | M1_AMPHIBIOUS | M1_HUMANOID | M1_POIS | M1_OMNIVORE,
+        M1_FLY | M1_SWIM | M1_AMPHIBIOUS | M1_HUMANOID | M1_POIS
+          | M1_OMNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_PNAME | M2_FEMALE,
         M3_WAITFORU | M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 25, CLR_BRIGHT_GREEN, MEDUSA),
