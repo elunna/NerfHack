@@ -1606,17 +1606,6 @@
             | M1_CARNIVORE | M1_WALLWALK,
         M2_HOSTILE | M2_STRONG, 0,
         NO_RACE, 10, CLR_BLUE, PHASE_SPIDER),
-    MON(NAM("asphynx"), S_SNAKE,                                     /* Slash'EM */
-        LVL(8, 15, 3, 0, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_BITE, AD_STON, 1, 6), 
-          ATTK(AT_NONE, AD_STON, 0, 0), 
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(100, 80, MS_HISS, MZ_SMALL), MR_POISON | MR_STONE | MR_ACID, 
-        MR_POISON | MR_STONE,
-        M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY 
-            | M1_POIS | M1_OVIPAROUS | M1_CARNIVORE | M1_NOTAKE, 
-        M2_HOSTILE, 0,
-        NO_RACE, 11, CLR_BLACK, ASPHYNX),
     /* Ported from EvilHack:
      * in honor of our friend Grasshopper
      * who always seems to be attacked by centipedes */
@@ -3416,6 +3405,17 @@
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE |
         M1_CONCEAL, M2_HOSTILE, 0,
         NO_RACE, 12, CLR_YELLOW, CERASTES),
+     MON(NAM("asphynx"), S_SNAKE,                                     /* Slash'EM */
+        LVL(8, 15, 3, 0, 0), (G_NOHELL | G_GENO | 1),
+        A(ATTK(AT_BITE, AD_STON, 1, 6), 
+          ATTK(AT_NONE, AD_STON, 0, 0), 
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(100, 80, MS_HISS, MZ_SMALL), MR_POISON | MR_STONE | MR_ACID, 
+        MR_POISON | MR_STONE,
+        M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY 
+            | M1_POIS | M1_OVIPAROUS | M1_CARNIVORE | M1_NOTAKE, 
+        M2_HOSTILE, 0,
+        NO_RACE, 11, CLR_BLACK, ASPHYNX),
     MON(NAM("giant anaconda"), S_SNAKE, /* From EvilHack */
         LVL(10, 6, 2, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
