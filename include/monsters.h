@@ -1769,7 +1769,7 @@
         NO_RACE, CLR_GREEN, 7, ACID_WORM),
     MON(NAM("bloodworm"), S_WORM,
         LVL(6, 9, 4, 0, 0), (G_NOHELL | G_GENO | 1),
-        A(ATTK(AT_BITE, AD_DRST, 2, 4),
+        A(ATTK(AT_BITE, AD_DRLI, 2, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_SILENT, MZ_SMALL), MR_ACID, 0,
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_AMPHIBIOUS
