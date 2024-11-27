@@ -1617,7 +1617,7 @@
         M2_NOPOLY | M2_HOSTILE, M3_INFRAVISIBLE,
         MH_WERE, 13, CLR_BLACK, WERESPIDER),
     MON(NAM("monstrous spider"), S_SPIDER,
-        LVL(12, 15, 4, 0, 0), (G_GENO | 1),
+        LVL(12, 15, 4, 20, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 4, 6),
           ATTK(AT_TUCH, AD_WEBS, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
