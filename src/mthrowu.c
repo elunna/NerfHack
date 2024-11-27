@@ -1060,6 +1060,7 @@ thrwmu(struct monst *mtmp)
     struct obj *otmp, *mwep;
     coordxy x, y;
     const char *onm;
+    boolean mon_likes_melee = (mtmp->m_id % 4);
 
     /* Rearranged beginning so monsters can use polearms not in a line */
     if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
@@ -1073,7 +1074,8 @@ thrwmu(struct monst *mtmp)
     otmp = select_rwep(mtmp);
     if (!otmp)
         return FALSE;
-
+    if (mon_likes_melee && melee_or_ranged(otmp))
+        return FALSE;
     if (is_pole(otmp)) {
         int dam, hitv, rang;
 

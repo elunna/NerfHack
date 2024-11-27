@@ -238,6 +238,10 @@ struct obj {
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == GEM_CLASS) \
      && objects[otmp->otyp].oc_skill >= -P_CROSSBOW              \
      && objects[otmp->otyp].oc_skill <= -P_BOW)
+#define melee_or_ranged(otmp)                                    \
+    (objects[otmp->otyp].oc_skill == P_SPEAR                     \
+     || objects[otmp->otyp].oc_skill == P_DAGGER                 \
+     || objects[otmp->otyp].oc_skill == P_KNIFE)
 #define matching_launcher(a, l) \
     ((l) && objects[(a)->otyp].oc_skill == -objects[(l)->otyp].oc_skill)
 #define ammo_and_launcher(a, l) (is_ammo(a) && matching_launcher(a, l))
