@@ -334,6 +334,21 @@ obj_nutrition(struct obj *otmp)
                       : otmp->globby ? otmp->owt
                          : (unsigned) objects[otmp->otyp].oc_nutrition;
 
+    if (otmp->otyp == LEMBAS_WAFER) {
+        if (maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
+            nut += nut / 4; /* 800 -> 1000 */
+        else if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC)))
+            nut -= nut / 4; /* 800 -> 600 */
+        /* prevent polymorph making a partly eaten wafer
+           become more nutritious than an untouched one */
+        if (otmp->oeaten >= nut)
+            otmp->oeaten = (otmp->oeaten < objects[LEMBAS_WAFER].oc_nutrition)
+                              ? (nut - 1) : nut;
+    } else if (otmp->otyp == CRAM_RATION) {
+        if (maybe_polyd(is_dwarf(gy.youmonst.data), Race_if(PM_DWARF)))
+            nut += nut / 6; /* 600 -> 700 */
+    }
+
     return nut;
 }
 
@@ -2241,7 +2256,16 @@ fprefx(struct obj *otmp)
         } else if (maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))) {
             pline("A little goes a long way.");
             break;
+         } else if (maybe_polyd(is_dwarf(gy.youmonst.data), Race_if(PM_DWARF))) {
+            pline("Hrm... cram.");
+            break;
+        } 
+#if 0 /* No hobbit race yet */
+        else if (maybe_polyd(is_hobbit(gy.youmonst.data), Race_if(PM_HOBBIT))) {
+            pline("You'd prefer a bit of plain bread and a mug of ale, but this will do.");
+            break;
         }
+#endif
         goto give_feedback;
     case MEATBALL:
     case MEAT_STICK:
