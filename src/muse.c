@@ -2484,7 +2484,6 @@ rnd_offensive_item(struct monst *mtmp)
     case 6:
         return POT_PARALYSIS;
     case 7:
-        return WAN_CORROSION;
     case 8:
         return WAN_MAGIC_MISSILE;
     case 9:
@@ -2494,7 +2493,7 @@ rnd_offensive_item(struct monst *mtmp)
     case 11:
         return WAN_COLD;
     case 12:
-        return WAN_LIGHTNING;
+        return rn2(5) ? WAN_LIGHTNING : WAN_CORROSION;
     case 13:
         return SCR_STINKING_CLOUD;
     case 14:
