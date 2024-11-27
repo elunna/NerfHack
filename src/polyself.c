@@ -1671,6 +1671,11 @@ dogaze(void)
             break;
         }
     }
+
+    /* Monsters don't have luck - convert to confusion instead. */
+    if (adtyp == AD_LUCK)
+        adtyp = AD_CONF;
+
     if (adtyp != AD_CONF
         && adtyp != AD_FIRE
         && adtyp != AD_BLND
