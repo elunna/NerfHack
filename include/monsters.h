@@ -1821,7 +1821,7 @@
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_ACID
           | M1_NOTAKE,
         M2_HOSTILE, 0,
-        NO_RACE, CLR_GREEN, 7, ACID_WORM),
+        NO_RACE, 7, CLR_GREEN, ACID_WORM),
     MON(NAM("bloodworm"), S_WORM,
         LVL(6, 9, 4, 0, 0), (G_NOHELL | G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRLI, 2, 4),
