@@ -6980,6 +6980,14 @@ unpoly_monster(struct monst *mtmp)
     if (shifter && mtmp->cham != NON_PM && rn2(13)) {
         int mndx = mtmp->cham;
 
+        /* This is a bit of a hack to make sure that shifters that are polyd
+         * into exploding monsters go boom on death - and still revert to
+         * normal shape. Since we don't have the attacker data we have to
+         * assume they are not swallowed.
+         */
+        if (attacktype(mtmp->data, AT_BOOM))
+            (void) corpse_chance(mtmp, NULL, FALSE);
+
         if (visible)
             pline("But wait...");
 
