@@ -1,7 +1,6 @@
 --
--- LEVEL:"soko2-6"
 -- Steve Melenchuk <smelenchuk@gmail.com>
--- Ported from 
+-- Ported from GruntHack
 -- Converted to lua by hackemslashem
 --
 

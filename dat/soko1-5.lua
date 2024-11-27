@@ -1,6 +1,4 @@
 -- "Open at the Top"
---MAZE:"soko1-8",' '
-
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

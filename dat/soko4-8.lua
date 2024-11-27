@@ -1,7 +1,6 @@
 --
 -- "Fly on the Wall"
---MAZE:"soko3-11",' '
--- Ported from 
+-- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --
 

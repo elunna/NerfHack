@@ -1,6 +1,5 @@
 --
 -- "Ringing Endorsement"
--- MAZE:"soko1-7",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

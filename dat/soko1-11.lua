@@ -1,5 +1,4 @@
 --
--- LEVEL:"soko1-6"
 -- Steve Melenchuk <smelenchuk@gmail.com>
 -- Ported from GruntHack
 -- Converted to lua by hackemslashem

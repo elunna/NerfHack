@@ -2,7 +2,7 @@
 --	Copyright (c) 1998-1999 by Kevin Hugo
 -- NetHack may be freely redistributed.  See license for details.
 --
--- authorship may be Joseph L Traub
+-- "Joseph L Traub"
 -- Ported from SLASH'EM
 -- Converted to lua by hackemslashem
 --

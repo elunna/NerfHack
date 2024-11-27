@@ -1,6 +1,5 @@
 --
 -- "Either Way, It's All Good"
---MAZE: "soko2-14",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

@@ -1,6 +1,5 @@
 
 -- "Two-Phase"
---MAZE:"soko3-13",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

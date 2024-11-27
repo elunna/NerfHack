@@ -1,6 +1,5 @@
 --
 -- "Boulder Halls of Zim"
---MAZE:"soko3-12",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

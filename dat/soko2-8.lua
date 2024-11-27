@@ -1,5 +1,4 @@
 --
--- MAZE:"soko2-8",' '
 -- MESSAGE:"No Way Out"
 -- "Joseph L Traub"
 -- Converted to lua by hackemslashem

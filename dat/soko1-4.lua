@@ -1,6 +1,5 @@
 --
 -- "Back At Ya"
--- MAZE: "soko1-11",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

@@ -1,5 +1,4 @@
 --
---LEVEL:"soko4-5"
 -- "Thinking Rabbit"
 -- Ported from UnNetHack
 -- Converted to lua by hackemslashem

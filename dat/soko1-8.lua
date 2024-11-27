@@ -1,6 +1,5 @@
 --
 -- "Running Rings Around"
---MAZE: "soko1-10",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

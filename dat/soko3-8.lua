@@ -1,6 +1,5 @@
 -- "Sneak Preview"
--- MAZE: "soko2-15",' '
--- Ported from 
+-- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --
 

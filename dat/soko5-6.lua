@@ -1,6 +1,5 @@
 --
 -- "Boomerang Boulders"
--- MAZE:"soko4-10",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

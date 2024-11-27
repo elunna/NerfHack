@@ -1,6 +1,5 @@
 --
 -- "Picking out the Seeds"
--- MAZE: "soko4-13",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

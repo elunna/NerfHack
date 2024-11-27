@@ -1,7 +1,6 @@
 --
 -- "The Snake"
 -- (Adapted from Slash'em.)
---MAZE:"soko3-14",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

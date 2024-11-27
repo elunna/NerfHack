@@ -1,5 +1,4 @@
 --
---LEVEL:"soko3-5"
 -- "Joseph L Traub"
 -- Ported from UnNetHack
 -- Converted to lua by hackemslashem

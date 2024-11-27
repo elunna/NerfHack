@@ -1,7 +1,7 @@
 --
--- MAZE:"soko2-7",' '
 -- MESSAGE:"Corner Pocket"
 -- "Thinking Rabbit"
+-- Ported from UnNetHack 
 -- Converted to lua by hackemslashem
 --
 des.level_init({ style = "solidfill", fg = " " });

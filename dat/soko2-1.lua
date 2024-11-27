@@ -1,6 +1,5 @@
 --
 -- "Daedalus Delicatessen"
---MAZE:"soko2-16",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

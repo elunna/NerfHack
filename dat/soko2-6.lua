@@ -1,6 +1,5 @@
 --
 -- "Four Wings"
---MAZE: "soko3-17",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

@@ -1,6 +1,5 @@
 --
 -- "Collecting Marbles"
--- MAZE:"soko1-9",' '
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --

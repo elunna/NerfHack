@@ -1,5 +1,4 @@
 --
---MAZE:"soko3-9",' '
 --MESSAGE:"Escape Goat"
 -- Steve Melenchuk <smelenchuk@gmail.com>
 -- Ported from GruntHack
