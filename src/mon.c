@@ -1602,7 +1602,7 @@ m_calcdistress(struct monst *mtmp)
     }
 
     /* possibly polymorph shapechangers and lycanthropes */
-    if (((ismnum(mtmp->cham) && !mtmp->cham) || mon_prop(mtmp, POLYMORPH))
+    if ((ismnum(mtmp->cham) || mon_prop(mtmp, POLYMORPH))
           && !rn2(cham_depth_appropriate(mtmp)))
         decide_to_shapeshift(mtmp);
     were_change(mtmp);
@@ -3655,7 +3655,7 @@ corpse_chance(
                                   Monnam(magr));
                 }
 
-                return FALSE;
+        return FALSE;
             }
 
             mon_explodes(mon, &mdat->mattk[i]);

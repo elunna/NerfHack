@@ -1672,7 +1672,6 @@ mon_prop(struct monst *mon, int prop)
         return TRUE;
     if (prop == HALLUC_RES)
         adtyp = AD_HALU;
-    
 
     int tspfx = arti_prop_spfx(prop);
 
