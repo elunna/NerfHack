@@ -25,11 +25,8 @@ des.map([[
           ----     
 ]]);
 
--- Since there isn't a return portal, this forces the hero's initial placement
--- TELEPORT_REGION:(00,00,18,15),(0,0,0,0)
-
-des.levregion({ region = {11,14,11,14}, type = "branch" })
 des.stair("up",12,02)
+des.stair("down", 11,14)
 des.region(selection.area(00,00,18,15),"lit");
 des.non_diggable(selection.area(00,00,18,15));
 des.non_passwall(selection.area(00,00,18,15));

@@ -20,8 +20,8 @@ des.map([[
     ------------ 
 ]]);
 
-des.levregion({ region = {07,08,07,08}, type = "branch" })
 des.stair("up", 08,05)
+des.stair("down", 07,08)
 des.region(selection.area(00,00,16,10),"lit");
 des.non_diggable(selection.area(00,00,16,10));
 des.non_passwall(selection.area(00,00,16,10));
