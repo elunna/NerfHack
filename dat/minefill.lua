@@ -36,7 +36,7 @@ if percent(25) then
 
    if darkness ~= nil then
       des.region(darkness,"unlit");
-      if percent(25) then
+      if percent(5) then
          des.replace_terrain({ selection = darkness:grow(),
                               fromterrain = ".", toterrain = "I" });
       end
