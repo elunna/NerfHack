@@ -3674,6 +3674,7 @@ artifact_info(int anum)
     case ART_SERENITY:
         art_info.wielded[20] = "counters spells";
         art_info.wielded[21] = "suppresses berserking";
+        art_info.wielded[22] = "suppresses conflict";
         break;
     case ART_SERPENT_S_TONGUE:
         art_info.xattack = "always poisoned";
