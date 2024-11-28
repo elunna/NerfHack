@@ -341,7 +341,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_HISS, MZ_SMALL), MR_POISON | MR_FIRE,
         MR_POISON | MR_FIRE,
-        M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_OVIPAROUS,
+        M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_OVIPAROUS | M1_FLY,
         M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 8, CLR_RED, PYROLISK),
     /* From ancient lore, the cockatrice and basilisk were virtually
