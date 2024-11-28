@@ -335,7 +335,7 @@
         M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 8, CLR_YELLOW, COCKATRICE),
     MON(NAM("pyrolisk"), S_COCKATRICE,
-        LVL(6, 6, 6, 30, 0), (G_GENO | 1),
+        LVL(6, 6, 6, 30, -2), (G_GENO | 1),
         A(ATTK(AT_GAZE, AD_FIRE, 2, 6),
           ATTK(AT_BITE, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
