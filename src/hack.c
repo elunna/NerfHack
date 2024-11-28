@@ -3931,7 +3931,7 @@ lookaround(void)
             }
 
             /* stone is never interesting */
-            if (levl[x][y].typ == STONE)
+            if (levl[x][y].typ == STONE || IS_GRASS(levl[x][y].typ))
                 continue;
             /* ignore the square we're moving away from */
             if (x == u.ux - u.dx && y == u.uy - u.dy)
@@ -3947,9 +3947,11 @@ lookaround(void)
             }
 
             /* more uninteresting terrain */
-            if (IS_OBSTRUCTED(levl[x][y].typ) || levl[x][y].typ == ROOM
-                || IS_AIR(levl[x][y].typ) || levl[x][y].typ == GRAVE
-                || levl[x][y].typ == ICE || IS_GRASS(levl[x][y].typ)) {
+            if (IS_OBSTRUCTED(levl[x][y].typ)
+                || IS_AIR(levl[x][y].typ)
+                || levl[x][y].typ == ROOM
+                || levl[x][y].typ == GRAVE
+                || levl[x][y].typ == ICE) {
                 continue;
             } else if (closed_door(x, y) || (mtmp && is_door_mappear(mtmp))) {
                 /* a closed door? */
