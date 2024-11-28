@@ -1600,9 +1600,6 @@ attributes_enlightenment(
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
 
-    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY))
-        you_are("countering spells", " because of Serenity");
-
     /* Partial intrinsic resistances */
 
     Sprintf(buf, "%d%% fire resistant (intrinsic)", intrinsic_res(FIRE_RES));
@@ -1805,6 +1802,10 @@ attributes_enlightenment(
                     : ((BStealth == I_SPECIAL)
                            ? " if not wearing stomping boots" : ""));
         enl_msg(You_, "would be", "would have been", buf, "");
+    }
+
+    if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)) {
+        you_are("countering spells", " because of Serenity");
     }
 
     if (BAggravate_monster) /* Currently only Serenity does this.*/
