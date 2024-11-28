@@ -3556,6 +3556,7 @@ static const struct alt_spellings {
     { "HoOA",  HELM_OF_OPPOSITE_ALIGNMENT},
     { "HoT",  HELM_OF_TELEPATHY},
     { "SoR",  SHIELD_OF_REFLECTION},
+    { "pfsc",  RIN_PROTECTION_FROM_SHAPE_CHAN},
     { (const char *) 0, 0 },
 };
 
