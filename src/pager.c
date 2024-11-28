@@ -1021,6 +1021,15 @@ add_mon_info(winid datawin, struct permonst * pm)
             pm->difficulty, pm->mmove, pm->mlevel, pm->ac, pm->mr, pm->cwt);
     MONPUTSTR(buf);
 
+    if (pm->maligntyp > 0)
+        Sprintf(buf, "Alignment: lawful");
+    else if (pm->maligntyp < 0)
+        Sprintf(buf, "Alignment: chaotic");
+    else
+        Sprintf(buf, "Alignment: neutral");
+
+    MONPUTSTR(buf);
+
     /* Generation */
     if (uniq)
         Strcpy(buf, "Unique.");
