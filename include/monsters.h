@@ -4308,16 +4308,17 @@
      *  to them matters for statues
      */
    MON(NAM("shadow"), S_GHOST,
-        LVL(4, 9, 4, 0, 0), (G_NOCORPSE | G_NOGEN),
-        A(ATTK(AT_TUCH, AD_DRST, 1, 4),
-          ATTK(AT_TUCH, AD_COLD, 1, 4),
+        LVL(10, 9, -2, 0, 0), (G_NOCORPSE | G_NOGEN),
+        A(ATTK(AT_TUCH, AD_DRST, 4, 4),
+          ATTK(AT_TUCH, AD_COLD, 4, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 0, MS_WAIL, MZ_HUMAN),
         MR_COLD | MR_DISINT | MR_SLEEP | MR_POISON | MR_STONE, 0,
-        M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_HUMANOID | M1_SEE_INVIS,
-        M2_NOPOLY | M2_WANDER | M2_HOSTILE | M2_NASTY | M2_STALK,
+        M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_HUMANOID | M1_UNSOLID
+          | M1_SEE_INVIS,
+        M2_NOPOLY | M2_WANDER | M2_STALK | M2_HOSTILE,
         M3_INFRAVISION,
-        MH_UNDEAD, 9, CLR_BLACK, SHADOW),
+        MH_UNDEAD, 10, DRAGON_SILVER, SHADOW),
     MON(NAM("ghost"), S_GHOST,
         LVL(10, 3, -5, 50, -5), (G_NOCORPSE | G_NOGEN),
         A(ATTK(AT_TUCH, AD_PHYS, 1, 1),
