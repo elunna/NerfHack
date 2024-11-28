@@ -119,9 +119,9 @@ MARKER(OBJCLASS_HACK, FIRST_OBJECT - 1)
            BITS(kn, 1, 1, 0, 0, 1, 0, 0, 0, 0, PIERCE, sub, metal), \
            0, WEAPON_CLASS, prob, 0, wt,                            \
            cost, sdam, ldam, hitbon, 0, wt, color, sn)
-#define BOW(name,desc,kn,prob,wt,cost,hitbon,metal,sub,color,sn)    \
+#define BOW(name,desc,kn,bi,prob,wt,cost,hitbon,metal,sub,color,sn)    \
     OBJECT(OBJ(name,desc),                                          \
-           BITS(kn, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, sub, metal),      \
+           BITS(kn, 0, 1, 0, 0, 1, 0, 0, bi, 0, 0, sub, metal),      \
            0, WEAPON_CLASS, prob, 0, wt,                            \
            cost, 2, 2, hitbon, 0, wt, color, sn)
 
@@ -402,17 +402,17 @@ WEAPON("bullwhip", NoDes,
                                                         BULLWHIP),
 
 /* bows */
-BOW("bow", NoDes,               1, 24, 30, 60, 0, WOOD, P_BOW, HI_WOOD,
+BOW("bow", NoDes,               1, 1, 24, 30, 60, 0, WOOD, P_BOW, HI_WOOD,
                                                         BOW),
-BOW("elven bow", "runed bow",  0, 12, 30, 60, 0, WOOD, P_BOW, HI_WOOD,
+BOW("elven bow", "runed bow",   0, 1, 12, 30, 60, 0, WOOD, P_BOW, HI_WOOD,
                                                         ELVEN_BOW),
-BOW("orcish bow", "crude bow", 0, 12, 30, 60, 0, WOOD, P_BOW, CLR_BLACK,
+BOW("orcish bow", "crude bow",  0, 1, 12, 30, 60, 0, WOOD, P_BOW, CLR_BLACK,
                                                         ORCISH_BOW),
-BOW("yumi", "long bow",        0,  0, 30, 60, 0, WOOD, P_BOW, HI_WOOD,
+BOW("yumi", "long bow",         0, 1,  0, 30, 60, 0, WOOD, P_BOW, HI_WOOD,
                                                         YUMI),
-BOW("sling", NoDes,             1, 40,  3, 20, 0, LEATHER, P_SLING, HI_LEATHER,
+BOW("sling", NoDes,             1, 0, 40,  3, 20, 0, LEATHER, P_SLING, HI_LEATHER,
                                                         SLING),
-BOW("crossbow", NoDes,          1, 45, 50, 40, 0, WOOD, P_CROSSBOW, HI_WOOD,
+BOW("crossbow", NoDes,          1, 1, 45, 50, 40, 0, WOOD, P_CROSSBOW, HI_WOOD,
                                                         CROSSBOW),
 
 #undef P
