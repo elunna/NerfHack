@@ -228,7 +228,8 @@
 
 #define HConflict u.uprops[CONFLICT].intrinsic
 #define EConflict u.uprops[CONFLICT].extrinsic
-#define Conflict (HConflict || EConflict)
+#define BConflict (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY))
+#define Conflict ((HConflict || EConflict) && !BConflict)
 
 /*** Transportation ***/
 #define HJumping u.uprops[JUMPING].intrinsic

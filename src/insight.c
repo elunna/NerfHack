@@ -1814,9 +1814,12 @@ attributes_enlightenment(
     else if (Aggravate_monster)
         enl_msg("You aggravate", "", "d", " monsters",
                 from_what(AGGRAVATE_MONSTER));
-    if (Conflict)
-        enl_msg("You cause", "", "d", " conflict", from_what(CONFLICT));
-
+    if (HConflict || EConflict) {
+        if (BConflict)
+            enl_msg("Serenity ", "is preventing", "prevented", "conflict", "");
+        else
+            enl_msg("You cause", "", "d", " conflict", from_what(CONFLICT));
+    }
     /*** Transportation ***/
     if (Jumping)
         you_can("jump", from_what(JUMPING));
