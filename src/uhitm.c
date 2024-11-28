@@ -7583,6 +7583,26 @@ hates_item(struct monst *mtmp, int otyp)
 {
     boolean is_you = (mtmp == &gy.youmonst);
 
+    /* Special exception for archaeologists - the following text was written
+     * by ChatGPT because, ... why not.
+     *
+     * Archaeologists adore dwarven mattocks because they're
+     * the Swiss Army knife of ancient digs, blending rugged
+     * efficiency with legendary craftsmanship. It's not just
+     * a pickaxe; it's a statement. Need to excavate stubborn
+     * sediment? Bam, mattock. Accidentally uncover an ancient
+     * door sealed for centuries? Twist it open with the
+     * mattock. Facing a sudden horde of undead guardians?
+     * Swing that thing like you're auditioning for a fantasy
+     * action flick! Plus, the mattock's impeccable dwarven
+     * metallurgy ensures it outlasts lesser tools — and the
+     * archaeologists who wield them — making it the only artifact
+     * that might one day be discovered by future archaeologists.
+     */
+    if (is_you && Role_if(PM_ARCHEOLOGIST) && otyp == DWARVISH_MATTOCK)
+        return FALSE;
+
+
     if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))
                     : is_elf(mtmp->data))
         return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
