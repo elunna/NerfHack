@@ -71,6 +71,7 @@ staticfn void first_weapon_hit(struct obj *) NONNULLARG1;
 staticfn boolean shade_aware(struct obj *) NO_NNARGS;
 staticfn boolean bite_monster(struct monst *);
 staticfn int shield_dmg(struct obj *, struct monst *);
+staticfn void ring_familiarity(void);
 
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
 #define KILL_FAMILIARITY 20
@@ -2383,6 +2384,7 @@ hmon_hitmon(
                 update_inventory();
             }
         }
+        ring_familiarity();
     }
     hmon_hitmon_pet(&hmd, mon, obj);
 
@@ -7714,4 +7716,37 @@ shield_dmg(struct obj *obj, struct monst *mon)
     return tmp;
 }
 
+/* Like becoming familiar with weapons, we can become
+* familiar with our rings if we kill enough monsters. */
+staticfn void
+ring_familiarity(void)
+{
+    if (uright && !uright->known
+            && (uright->otyp == RIN_INCREASE_DAMAGE
+            || uright->otyp == RIN_INCREASE_ACCURACY)) {
+        uright->wep_kills++;
+        if (uright->wep_kills > KILL_FAMILIARITY
+            && !rn2(max(2, uright->spe) && !uright->known)) {
+            You("have become quite familiar with %s.",
+                yobjnam(uright, (char *) 0));
+            fully_identify_obj(uright);
+            discover_object(uright->otyp, TRUE, TRUE);
+            update_inventory();
+        }
+    }
+
+    if (uleft && !uleft->known
+            && (uleft->otyp == RIN_INCREASE_DAMAGE
+            || uleft->otyp == RIN_INCREASE_ACCURACY)) {
+        uleft->wep_kills++;
+        if (uleft->wep_kills > KILL_FAMILIARITY
+            && !rn2(max(2, uleft->spe) && !uleft->known)) {
+            You("have become quite familiar with %s.",
+                yobjnam(uleft, (char *) 0));
+            fully_identify_obj(uleft);
+            discover_object(uleft->otyp, TRUE, TRUE);
+            update_inventory();
+        }
+    }
+}
 /*uhitm.c*/
