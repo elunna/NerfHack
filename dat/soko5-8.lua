@@ -65,9 +65,7 @@ des.trap("pit",15,10)
 
 -- A little help
 des.object("earth",15,01)
-if percent(50) then
-    des.object("earth",116,01)
-end
+des.object("earth",16,01)
 
 -- Random objects
 des.object({ class = "%" });

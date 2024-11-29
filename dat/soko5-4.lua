@@ -80,9 +80,7 @@ des.object({ id = "statue", x=08, y=02, montype="white dragon", historic=1 })
 
 -- A little help
 des.object("earth",01,13)
-if percent(50) then
-    des.object("earth",02,13)
-end
+des.object("earth",02,13)
 
 -- One random mimic
 des.monster("m")

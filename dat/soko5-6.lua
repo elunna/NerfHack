@@ -73,9 +73,7 @@ des.object({ class = "/" });
 
 -- A little help
 des.object("earth",02,08)
-if percent(50) then
-    des.object("earth",03,08)
-end
+des.object("earth",03,08)
 
 -- One random mimic
 des.monster("m")
