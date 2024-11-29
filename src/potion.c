@@ -3242,6 +3242,7 @@ potion_dip(struct obj *obj, struct obj *potion)
 
         useup(singlescroll);
         potion->otyp = POT_WATER;
+        potion->odiluted = 0;
         potion->in_use = FALSE; /* didn't go poof */
         return ECMD_TIME;
     } else if (obj->oclass == POTION_CLASS && obj->otyp != potion->otyp) {
