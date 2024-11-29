@@ -229,6 +229,9 @@ hitval(struct obj *otmp, struct monst *mon)
     if (is_pick(otmp) && (passes_walls(ptr) && thick_skinned(ptr)))
         tmp += 2;
 
+    if (is_pole(otmp) && (ptr->mlet == S_CENTAUR || ptr->mlet == S_UNICORN))
+        tmp += 4;
+
     /* Check specially named weapon "to hit" bonuses */
     if (otmp->oartifact)
         tmp += spec_abon(otmp, mon);
