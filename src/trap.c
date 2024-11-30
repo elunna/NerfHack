@@ -7122,8 +7122,7 @@ chest_trap(
             dofiretrap(obj);
             break;
         case 8:
-        case 7:
-        case 6: {
+        case 7: {
             int dmg = d(4, 4), orig_dmg = dmg;
 
             You("are jolted by a surge of electricity!");
@@ -7140,10 +7139,9 @@ chest_trap(
             if (dmg)
                 losehp(dmg, "electric shock", KILLED_BY_AN);
             break;
-        } /* case 6 */
+        } /* case 7 */
+        case 6:
         case 5:
-        case 4:
-        case 3:
             if (!Free_action) {
                 pline("Suddenly you are frozen in place!");
                 nomul(-d(5, 6));
@@ -7153,7 +7151,77 @@ chest_trap(
             } else
                 You("momentarily stiffen.");
             break;
+        case 4: {
+            /* Summon a little critter */
+            struct permonst *mdat;
+            int i;
+            for (i = 1000; i > 0; i--) {
+                /* Make a creepy crawly */
+                switch (rnd(5)) {
+                case 1:
+                    mdat = mkclass(S_SNAKE, 0);
+                    break;
+                case 2:
+                    mdat = mkclass(S_RODENT, 0);
+                    break;
+                default:
+                    mdat = mkclass(S_SPIDER, 0);
+                }
+                /* Try for poison res */
+                if (!mdat)
+                    continue;
+            }
+            if (mdat) {
+                struct monst *mtmp = makemon(mdat, u.ux, u.uy, MM_NOGRP);
+                if (mtmp && canseemon(mtmp)) {
+                    pline("%s pops out of %s!", Amonnam(mtmp), the(xname(obj)));
+                    You("are caught off guard!");
+                    nomul(-1);
+                    gm.multi_reason = "being surprised by a critter";
+                    gn.nomovemsg = "You regain your composure.";
+                    break;
+                }
+            }
+            /* No mon data was made, so just... */
+        }
+        /* FALLTHROUGH*/
+        case 3: {
+            /* Cream pie in the face */
+            struct obj pseudo;
+            int blindinc;
+            pseudo = cg.zeroobj;
+            pseudo.otyp = CREAM_PIE;
+            if (!Blind)
+                pline("A cream pie flies out from %s and hits you!", the(xname(obj)));
+
+            if (can_blnd((struct monst *) 0, &gy.youmonst,
+                                 (uchar) (AT_WEAP), &pseudo)) {
+                if (!Blind)
+                    pline("Yecch!  You've been creamed.");
+                else
+                    pline("There's %s sticky all over your %s.",
+                            something, body_part(FACE));
+                blindinc = rnd(25);
+                u.ucreamed += blindinc;
+                make_blinded(BlindedTimeout + (long) blindinc, FALSE);
+                if (!Blind)
+                    Your1(vision_clears);
+            }
+            break;
+        } /* Case 3 */
         case 2:
+            /* Hinge screeches loudly */
+            if (!Deaf) {
+                if (Hallucination)
+                    pline("A loud siren blares from %s!", the(xname(obj)));
+                else
+                    pline_The("hinges on %s let out an %s screech!",
+                        rn2(2) ? "unruly" :
+                        rn2(2) ? "ear-splitting" :"obstreperous",
+                        the(xname(obj)));
+            }
+            awaken_monsters(d(4, 6));
+            break;
         case 1:
         case 0:
             pline("A cloud of %s gas billows from %s.",
@@ -7174,6 +7242,8 @@ chest_trap(
             (void) make_hallucinated(
                 (HHallucination & TIMEOUT) + (long) rn1(5, 16), FALSE, 0L);
             break;
+        
+        
         default:
             impossible("bad chest trap");
             break;
