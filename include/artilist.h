@@ -93,13 +93,13 @@ static NEARDATA struct artifact artilist[] = {
 
     /* Excalibur it no longer available to any lawful character when dipping
      * in fountains - only lawful knights can be blessed with it. */
-    A("Excalibur", LONG_SWORD, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN
-                                | SPFX_INTEL | SPFX_SEARCH),
-      0, 0, PHYS(PENTOHIT, 10), DRLI(0, 0), NO_CARY, 0,
+    A("Excalibur", LONG_SWORD,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN | SPFX_INTEL | SPFX_SEARCH), 0, 0,
+      PHYS(PENTOHIT, 10), DRLI(0, 0), NO_CARY, 0,
       A_LAWFUL, PM_KNIGHT, NON_PM, 4000L, NO_COLOR, EXCALIBUR),
 
     A("Grayswandir", SILVER_SABER,
-      (SPFX_RESTR | SPFX_HALRES), 0, 0,
+      (SPFX_RESTR | SPFX_HALRES | SPFX_DALIGN), 0, 0,
       PHYS(PENTOHIT, 0), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM, 8000L, NO_COLOR, GRAYSWANDIR),
 
