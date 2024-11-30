@@ -1772,7 +1772,7 @@ doname_base(
         if (is_shield(obj))
             ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj)
                     + race_bonus(obj)
-                    + shield_bonus(obj)
+                    + shield_bonus()
                     + misc_bonus(obj));
         else
             ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj)
