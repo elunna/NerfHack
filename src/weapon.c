@@ -422,7 +422,7 @@ dmgval_core(
     if (otmp->oclass == GEM_CLASS && ptr && thick_skinned(ptr))
         tmp = 0; /* pebbles don't penetrate */
 
-    if (ptr && ptr == &mons[PM_SHADE] && !shade_glare(otmp))
+    if (ptr && shadelike(ptr) && !shade_glare(otmp))
         tmp = 0;
 
     /* "very heavy iron ball"; weight increase is in increments */

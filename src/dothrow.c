@@ -1374,7 +1374,7 @@ toss_up(struct obj *obj, boolean hitsroof)
                dmgval()'s artifact light against gremlin or axe against
                woody creature since both involve weapons; hero-as-shade is
                hypothetical because hero can't polymorph into that form */
-            if (gy.youmonst.data == &mons[PM_SHADE] && !is_silver(obj))
+            if (shadelike(gy.youmonst.data) && !is_silver(obj))
                 dmg = 0;
             if (obj->blessed && mon_hates_blessings(&gy.youmonst))
                 dmg += rnd(4);

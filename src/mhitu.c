@@ -584,7 +584,7 @@ getmattk(
     } else if (indx == 0 && attk->aatyp == AT_TUCH && attk->adtyp == AD_COLD
                && (udefend ? Cold_resistance : resists_cold(mdef))
                /* don't substitute if target is immune to normal damage */
-               && mdef->data != &mons[PM_SHADE]) {
+               && !shadelike(mdef->data)) {
         *alt_attk_buf = *attk;
         attk = alt_attk_buf;
         attk->adtyp = AD_PHYS;

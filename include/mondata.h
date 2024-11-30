@@ -413,6 +413,9 @@
    and also require an exception for blessed rocks/gems/boulders) */
 #define passes_rocks(ptr) (passes_walls(ptr) && !unsolid(ptr))
 
+#define shadelike(ptr) \
+    ((ptr) == &mons[PM_SHADE] || (ptr) == &mons[PM_SHADOW])
+
 #define is_mind_flayer(ptr) \
     ((ptr) == &mons[PM_MIND_FLAYER] || (ptr) == &mons[PM_MASTER_MIND_FLAYER])
 
