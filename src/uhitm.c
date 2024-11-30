@@ -6257,6 +6257,15 @@ attack_blocker(struct monst *mdef)
     if (mdef == &gy.youmonst && armasks[selected] == W_ARMS)
         use_skill(P_SHIELD, 1);
 
+    /* Don't create messages saying T-shirts are blocking an attack when
+     * they are covered by armor or a cloak. */
+    if (armasks[selected] == W_ARMU){
+        if (which_armor(mdef, armasks[W_ARM]))
+            selected = 1; /* W_ARM */
+        else if (which_armor(mdef, armasks[W_ARMC]))
+            selected = 2; /* W_ARMC */
+    }
+
     if (armasks[selected] == BLOCKED_BODY)
         return mdef->data->mlet == S_DRAGON ? "scaly hide" : "thick hide";
     else if (armasks[selected] == BLOCKED_PROT)
