@@ -1768,11 +1768,15 @@ doname_base(
                    : "at the ready");
     }
 
-    if (obj->oclass == ARMOR_CLASS) {
-        if (obj->known) {
+    if (obj->oclass == ARMOR_CLASS && obj->known) {
+        if (is_shield(obj))
             ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj)
-                     + race_bonus(obj) + misc_bonus(obj));
-        }
+                    + race_bonus(obj)
+                    + shield_bonus(obj)
+                    + misc_bonus(obj));
+        else
+            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj)
+                    + race_bonus(obj) + misc_bonus(obj));
     }
 
     if (obj->oclass == WEAPON_CLASS) {

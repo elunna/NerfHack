@@ -47,6 +47,7 @@ staticfn int puton_ok(struct obj *);
 staticfn int remove_ok(struct obj *);
 staticfn int wear_ok(struct obj *);
 staticfn int takeoff_ok(struct obj *);
+
 /* maybe_destroy_armor() may return NULL */
 staticfn struct obj *maybe_destroy_armor(struct obj *, struct obj *,
                                        boolean *) NONNULLARG3;
@@ -2659,14 +2660,7 @@ find_ac(void)
     /* Extra skill for shield */
     if (uarms) {
         uac -= (ARM_BONUS(uarms) + race_bonus(uarms));
-        if (P_SKILL(P_SHIELD) == P_BASIC)
-            uac -= 1;
-        else if (P_SKILL(P_SHIELD) == P_SKILLED)
-            uac -= 3;
-        else if (P_SKILL(P_SHIELD) == P_EXPERT)
-            uac -= 5;
-        else if (P_SKILL(P_SHIELD) == P_MASTER)
-            uac -= 8;
+        uac -= shield_bonus();
     }
 
     /* combat boots give +1 AC */
@@ -3711,6 +3705,23 @@ misc_bonus(struct obj *obj)
     if (is_pole(obj))
         return obj->owt / 30;
     return 0;
+}
+
+int
+shield_bonus(void)
+{
+    switch (P_SKILL(P_SHIELD)) {
+    case P_BASIC:
+        return 1;
+    case P_SKILLED:
+        return 3;
+    case P_EXPERT:
+        return 5;
+    case P_MASTER:
+        return 8;
+    default:
+        return 0;
+    }
 }
 
 /* Computes magical bonus from worn rings of a specific type.
