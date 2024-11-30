@@ -5210,8 +5210,8 @@
           ATTK(AT_MAGC, AD_CLRC, 2, 8),
           NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN),
-        MR_FIRE | MR_ELEC | MR_SLEEP | MR_POISON, 0,
-        M1_HUMANOID | M1_SEE_INVIS | M1_HERBIVORE,
+        MR_POISON | MR_STONE | MR_SLEEP | MR_FIRE | MR_COLD | MR_ELEC, 0,
+        M1_HUMANOID | M1_SEE_INVIS | M1_HERBIVORE | M1_TPORT_CNTRL,
         M2_NOPOLY | M2_PEACEFUL | M2_STRONG | M2_MALE | M2_NASTY
             | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE,
@@ -5406,15 +5406,19 @@
             | M2_STALK | M2_GREEDY | M2_JEWELS | M2_MAGIC,
         M3_WANTSARTI | M3_WAITFORU | M3_INFRAVISIBLE | M3_BERSERK,
         MH_DRAGON, 22, CLR_RED, IXOTH),
+    /* Master Kaen gets all the resistances a high-level monk gets, plus
+     * 15 speed to simulate being fast. */
     MON(NAM("Master Kaen"), S_HUMAN,
-        LVL(25, 12, -10, 10, -20), (G_NOGEN | G_UNIQ),
+        LVL(25, 15, -10, 10, -20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_CLAW, AD_PHYS, 16, 2),
           ATTK(AT_CLAW, AD_PHYS, 16, 2),
           ATTK(AT_MAGC, AD_CLRC, 0, 0),
           ATTK(AT_CLAW, AD_SAMU, 1, 4),
           NO_ATTK, NO_ATTK),
-        SIZ(WT_HUMAN, 400, MS_NEMESIS, MZ_HUMAN), MR_POISON | MR_STONE,
-        MR_POISON, M1_HUMANOID | M1_HERBIVORE | M1_SEE_INVIS,
+        SIZ(WT_HUMAN, 400, MS_NEMESIS, MZ_HUMAN),
+        MR_POISON | MR_STONE | MR_SLEEP | MR_FIRE | MR_COLD | MR_ELEC,
+        MR_POISON,
+        M1_HUMANOID | M1_HERBIVORE | M1_SEE_INVIS | M1_TPORT_CNTRL,
         M2_NOPOLY | M2_MALE | M2_PNAME | M2_HOSTILE | M2_STRONG
             | M2_NASTY | M2_STALK | M2_COLLECT | M2_MAGIC,
         M3_WANTSARTI | M3_WAITFORU | M3_INFRAVISIBLE,
