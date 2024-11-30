@@ -799,6 +799,7 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             && !(levl[x][y].wall_info & W_NONDIGGABLE)
             && !IS_FURNITURE(levl[x][y].typ)
             && !(Is_botlevel(&u.uz) || In_endgame(&u.uz))
+            && !svl.level.flags.hardfloor
             && !(is_ice(x, y) || is_pool(x, y) || is_lava(x, y))
             && !(is_Vlad(mtmp) && In_V_tower(&u.uz))) {
             gm.m.defensive = obj;
