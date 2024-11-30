@@ -53,36 +53,6 @@ des.trap("spiked pit",06,04)
 des.trap("spiked pit",06,06)
 
 -- the treasure chamber!
-des.object({ id = "chest", x = 52, y = 03,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 53, y = 03,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 54, y = 03,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
 des.object({ id = "chest", x = 52, y = 04,
              contents = function()
                 des.object("wax candle")
@@ -143,7 +113,36 @@ des.object({ id = "chest", x = 54, y = 05,
                 des.object()
              end
 });
-
+des.object({ id = "chest", x = 52, y = 06,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", x = 53, y = 06,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
+des.object({ id = "chest", x = 54, y = 06,
+             contents = function()
+                des.object("wax candle")
+                des.gold()
+                des.gold()
+                des.object()
+                des.object()
+                des.object()
+             end
+});
 --  five gargoyles on either side, in the niches of the temple
 -- all should start asleep
 des.monster({id="glowing eye", x=14, y=01, peaceful=0})
