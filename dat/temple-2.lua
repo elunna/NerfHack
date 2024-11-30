@@ -32,7 +32,10 @@ des.map([[
 -- RANDOM_MONSTERS: '&','Z'
 
 -- Non diggable walls
-des.non_diggable(selection.area(00,00,75,19))
+des.non_diggable(selection.area(00,00,11,19))
+des.non_diggable(selection.area(41,00,75,19))
+des.non_diggable(selection.area(12,00,40,01))
+des.non_diggable(selection.area(12,09,40,10))
 
 des.region({ region={08,01,50,09}, lit=1, type="temple", filled=2 })
 
