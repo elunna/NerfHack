@@ -88,6 +88,7 @@ static int getobj_else = 0;
 boolean
 is_edible(struct obj *obj)
 {
+    int material = objects[obj->otyp].oc_material;
     /* protect invocation tools but not Rider corpses (handled elsewhere)*/
     /* if (obj->oclass != FOOD_CLASS && obj_resists(obj, 0, 0)) */
     if (objects[obj->otyp].oc_unique)
@@ -102,10 +103,12 @@ is_edible(struct obj *obj)
     if (metallivorous(gy.youmonst.data) && is_metallic(obj)
         && (gy.youmonst.data != &mons[PM_RUST_MONSTER] || is_rustprone(obj)))
         return TRUE;
-
+    if (lithivorous(gy.youmonst.data) && (material == MINERAL || material == GEMSTONE)) {
+        return TRUE;
+    }
     /* Koalas only eat Eucalyptus leaves */
-	if (u.umonnum == PM_KOALA)
-		return (boolean)(obj->otyp == EUCALYPTUS_LEAF);
+    if (u.umonnum == PM_KOALA)
+	return (boolean)(obj->otyp == EUCALYPTUS_LEAF);
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
     if (is_ghoul(gy.youmonst.data))
@@ -2700,7 +2703,17 @@ eatspecial(void)
     if (otmp->otyp == FLINT && !otmp->cursed) {
         /* chewable vitamin for kids based on "The Flintstones" TV cartoon */
         pline("Yabba-dabba delicious!");
+        makeknown(otmp->otyp);
         exercise(A_CON, TRUE);
+    }
+    if (otmp->otyp == DILITHIUM_CRYSTAL && !(HFast & FROMOUTSIDE)) {
+        if (Fast) {
+            Your("quickness feels more natural.");
+        } else {
+            You_feel("quick.");
+        }
+        HFast |= FROMOUTSIDE;
+        makeknown(otmp->otyp);
     }
 
     if (otmp == uwep && otmp->quan == 1L)
@@ -3043,14 +3056,17 @@ doeat_nonfood(struct obj *otmp)
         } else
             You("seem unaffected by the poison.");
     } else if (!nodelicious) {
-        pline("%s%s is delicious!",
+        /* should this function use a shared code path with the regular eating
+         * code so that it handles Hallu? */
+        pline("%s%s is %s",
               (obj_is_pname(otmp)
                && otmp->oartifact < ART_ORB_OF_DETECTION)
               ? ""
               : "This ",
               (otmp->oclass == COIN_CLASS)
               ? foodword(otmp)
-              : singular(otmp, xname));
+              : singular(otmp, xname),
+              (material == MINERAL) ? "pretty bland." : "delicious!");
     }
     eatspecial();
     return ECMD_TIME;
@@ -3434,6 +3450,7 @@ gethungry(void)
     if ((!Unaware || !rn2(10)) /* slow metabolic rate while asleep */
         && (carnivorous(gy.youmonst.data)
             || herbivorous(gy.youmonst.data)
+            || lithivorous(gy.youmonst.data)
             || metallivorous(gy.youmonst.data))
         && !(Slow_digestion && rn2(2)))
         u.uhunger--; /* ordinary food consumption */

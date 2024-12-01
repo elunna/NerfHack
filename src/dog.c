@@ -1144,6 +1144,13 @@ dogfood(struct monst *mon, struct obj *obj)
             return (obj->otyp > SLIME_MOLD) ? (carni ? ACCFOOD : MANFOOD)
                                             : (herbi ? ACCFOOD : MANFOOD);
         }
+    case GEM_CLASS:
+        /* not ROCK_CLASS; large boulders and statues are too large to bother
+         * with - normal rocks are GEM_CLASS */
+        if (lithivorous(mptr)) {
+            return objects[obj->otyp].oc_material == GEMSTONE ? DOGFOOD : ACCFOOD;
+        }
+        return UNDEF;
     default:
         if (obj->otyp == AMULET_OF_STRANGULATION
             || obj->otyp == FOULSTONE
@@ -1163,8 +1170,6 @@ dogfood(struct monst *mon, struct obj *obj)
             && obj->oclass != BALL_CLASS
             && obj->oclass != CHAIN_CLASS)
             return APPORT;
-        /*FALLTHRU*/
-    case ROCK_CLASS:
         return UNDEF;
     }
 }
