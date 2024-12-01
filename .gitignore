@@ -104,3 +104,5 @@ ported_patches/
 *.patch
 backtraces
 submodules/CHKSUMS.tmp
+CMakeLists.txt
+cmake-build-debug/
