@@ -2271,6 +2271,9 @@ fprefx(struct obj *otmp)
         }
 #endif
         goto give_feedback;
+    case CARROT:
+        wake_nearby(FALSE);
+        goto give_feedback;
     case MEATBALL:
     case MEAT_STICK:
     case ENORMOUS_MEATBALL:

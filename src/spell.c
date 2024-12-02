@@ -535,6 +535,15 @@ study_book(struct obj *spellbook)
         }
     }
 
+    /* attempting to read a dusty book may result in sneezing */
+    if (objdescr_is(spellbook, "dusty") && !rn2(5)
+        && olfaction(gy.youmonst.data)) {
+        pline("The book's dust gets in your %s and makes you sneeze!",
+              body_part(NOSE));
+        wake_nearby(FALSE);
+        return 1;
+    }
+
     if (svc.context.spbook.delay && !confused
         && spellbook == svc.context.spbook.book
         /* handle the sequence: start reading, get interrupted, have

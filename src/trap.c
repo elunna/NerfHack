@@ -1556,6 +1556,16 @@ trapeffect_sqky_board(
         }
         /* wake up nearby monsters */
         wake_nearto(mtmp->mx, mtmp->my, 40);
+
+        /* wake the hero if nearby */
+        if (u.usleep && u.usleep < svm.moves
+            && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) < 40
+            /* sleeping causes deafness so don't check regular Deaf here, only
+             * stricter forms of it */
+            && !(EDeaf || u.uroleplay.deaf)) {
+            gm.multi = -1;
+            gn.nomovemsg = "A squeak awakens you.";
+        }
     }
     return Trap_Effect_Finished;
 }
@@ -4016,6 +4026,9 @@ launch_obj(
                 stop_occupation();
         }
         if (style == ROLL) {
+            if (otyp == BOULDER) {
+                wake_nearto(gb.bhitpos.x, gb.bhitpos.y, 25);
+            }
             if (down_gate(x, y) != -1) {
                 if (ship_object(singleobj, x, y, FALSE)) {
                     used_up = TRUE;
