@@ -322,6 +322,7 @@ demon_talk(struct monst *mtmp)
     if (!demand || gm.multi < 0 || cash <= 0) { /* you have no gold or can't move */
         mtmp->mpeaceful = 0;
         set_malign(mtmp);
+        newsym(mtmp->mx, mtmp->my);
         return 0;
     } else {
 
