@@ -1633,7 +1633,7 @@ makemon(
         }
     }
     if (is_dprince(ptr) && ptr->msound == MS_BRIBE) {
-        mtmp->mpeaceful = mtmp->minvis = mtmp->perminvis = 1;
+        mtmp->mpeaceful = 1;
         mtmp->mavenge = 0;
         if (u_wield_art(ART_EXCALIBUR) || u_offhand_art(ART_EXCALIBUR)
             || u_wield_art(ART_DEMONBANE) || u_offhand_art(ART_DEMONBANE))
