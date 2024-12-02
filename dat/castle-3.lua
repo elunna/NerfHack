@@ -73,6 +73,7 @@ des.teleport_region({ region = {47,01,75,09}, region_islev=1, exclude={17,00,44,
 
 -- Stairs
 des.levregion({ region = {33,15,68,20}, region_islev=1, exclude={00,00,00,00}, type="stair-up" })
+des.stair("down", 01,15);
 
 -- Non diggable walls
 -- castle is non-diggable
