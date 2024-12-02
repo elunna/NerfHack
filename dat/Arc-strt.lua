@@ -119,3 +119,9 @@ if percent(50) then
 else
    des.monster("S")
 end
+
+for i = 1,2 do
+   des.object({ id="boomerang", spe=d(2) })
+end
+des.object({ id="tinning kit" })
+des.object({ id="grappling hook" })
