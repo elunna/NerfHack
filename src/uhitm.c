@@ -5624,8 +5624,12 @@ mhitm_ad_sedu(
             if (DEADMONSTER(magr))
                 impossible("dead stealer after steal()!");
 
-            if (!is_animal(magr->data) && !tele_restrict(magr))
-                (void) rloc(magr, RLOC_MSG);
+            if (!is_animal(magr->data) && !tele_restrict(magr)) {
+                if (canspotmon(magr)) {
+                    pline("%s giggles and vanishes.", Monnam(magr));
+                }
+                rloc(magr, RLOC_NOMSG);
+            }
             if (is_animal(magr->data) && *buf) {
                 if (canseemon(magr))
                     pline("%s tries to %s away with %s.", Monnam(magr),
