@@ -3426,7 +3426,7 @@ use_whip(struct obj *obj)
     struct obj *otmp;
     int rx, ry, proficient, res = ECMD_OK;
     const char *msg_slipsfree = "The bullwhip slips free.";
-    const char *msg_snap = "Snap!";
+    boolean snapped_in_air = FALSE;
 
     if (obj != uwep) {
         if (wield_tool(obj, "lash")) {
@@ -3456,12 +3456,19 @@ use_whip(struct obj *obj)
 
     /* fake some proficiency checks */
     proficient = 0;
+    if (P_SKILL(P_WHIP) <= P_UNSKILLED)
+        --proficient;
+    else if (P_SKILL(P_WHIP) >= P_SKILLED) {
+        ++proficient;
+        if (P_SKILL(P_WHIP) >= P_EXPERT)
+            ++proficient;
+    }
     if (Role_if(PM_ARCHEOLOGIST))
         ++proficient;
     if (ACURR(A_DEX) < 6)
         proficient--;
     else if (ACURR(A_DEX) >= 14)
-        proficient += (ACURR(A_DEX) - 14);
+        proficient++;
     if (Fumbling)
         --proficient;
     if (proficient > 3)
@@ -3595,7 +3602,7 @@ use_whip(struct obj *obj)
             if (mtmp)
                 wakeup(mtmp, TRUE);
         } else
-            pline1(msg_snap);
+            snapped_in_air = TRUE;
 
     } else if (mtmp) {
  whipattack:
@@ -3663,6 +3670,7 @@ use_whip(struct obj *obj)
                     stackobj(otmp);
                     break;
                 case 3:
+                case 4:
 #if 0
                     /* right to you */
                     if (!rn2(25)) {
@@ -3733,17 +3741,34 @@ use_whip(struct obj *obj)
             if (proficient && force_attack(mtmp, FALSE))
                 return ECMD_TIME;
             if (do_snap)
-                pline1(msg_snap);
+                snapped_in_air = TRUE;
         }
         /* regardless of mtmp's weapon or hero's proficiency */
         wakeup(mtmp, TRUE);
-
-    } else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) {
-        /* it must be air -- water checked above */
-        You("snap your whip through thin air.");
-
+    } else if (IS_OBSTRUCTED(levl[rx][ry].typ)) {
+        pline("Your bullwhip slaps against the %s.", explain_terrain(rx, ry));
     } else {
-        pline1(msg_snap);
+        snapped_in_air = TRUE;
+    }
+    if (snapped_in_air) {
+        if (proficient >= rn2(4)) { /* another possiblity: prof > 4 - rne(2) */
+            if (Deaf)
+                You("crack the whip!");
+            else
+                pline("CRACK!");
+            wake_nearby(FALSE);
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+                if (!DEADMONSTER(mtmp) && is_animal(mtmp->data)
+                    && distu(mtmp->mx, mtmp->my) <= 8
+                    && !resist(mtmp, '\0', 0, NOTELL)) {
+                    if (M_AP_TYPE(mtmp))
+                        seemimic(mtmp); // TODO test it
+                    monflee(mtmp, rn1(15, 10), FALSE, TRUE);
+                }
+            }
+        }
+        else
+            pline("Snap!");
     }
     return ECMD_TIME;
 }
