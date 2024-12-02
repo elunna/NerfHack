@@ -11,6 +11,7 @@ staticfn void sleep_dialogue(void);
 staticfn void choke_dialogue(void);
 staticfn void rabid_dialogue(void);
 staticfn void levitation_dialogue(void);
+staticfn void reappear_dialogue(void);
 staticfn void slime_dialogue(void);
 staticfn void slimed_to_death(struct kinfo *) NO_NNARGS;
 staticfn void sickness_dialogue(void);
@@ -425,6 +426,23 @@ levitation_dialogue(void)
     }
 }
 
+staticfn void
+reappear_dialogue(void)
+{
+    if (EInvis)
+        return;
+
+    if ((HInvis & TIMEOUT) == 5) {
+        if (Hallucination) {
+            You("are starting to get less clarified.");
+        } else if (See_invisible) {
+            You("are beginning to unfade.");
+        } else {
+            Your("outline is starting to become visible.");
+        }
+    }
+}
+
 static NEARDATA const char *const slime_texts[] = {
     "You are turning a little %s.",   /* 5 */
     "Your limbs are getting oozy.",   /* 4 */
@@ -703,6 +721,8 @@ nh_timeout(void)
             u.luckturn = svm.moves;
         }
     }
+    if (HInvis & TIMEOUT)
+        reappear_dialogue();
     if (u.uinvulnerable)
         return; /* things past this point could kill you */
     if (Stoned)
