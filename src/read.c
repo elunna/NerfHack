@@ -2784,7 +2784,6 @@ seffects(struct obj *sobj) /* sobj - scroll or fake spellbook for spell */
         seffect_knowledge(&sobj);
         break;
     case SCR_IDENTIFY:
-    case SPE_IDENTIFY:
         seffect_identify(&sobj);
         break;
     case SCR_CLONING:
