@@ -283,10 +283,13 @@
 #define is_zombie(ptr) \
     ((ptr)->mlet == S_ZOMBIE && !is_not_zombie(ptr))
 #define is_not_zombie(ptr) \
-    (is_ghoul(ptr) || (ptr) == &mons[PM_SKELETON] \
+    (is_ghoul(ptr) \
+    || (ptr) == &mons[PM_SKELETON] \
+    || (ptr) == &mons[PM_REVENANT] \
     || (ptr) == &mons[PM_GUG])
 #define is_ghoul(ptr) ((ptr) == &mons[PM_GHOUL] \
-                       || (ptr)== &mons[PM_GHOUL_MAGE])
+                        || (ptr)== &mons[PM_GHOUL_MAGE] \
+                        || (ptr)== &mons[PM_GHOUL_QUEEN])
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mhflags & MH_DEMON) != 0L)
 #define is_angel(ptr) (((ptr)->mhflags & MH_ANGEL) != 0L)
