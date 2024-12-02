@@ -106,6 +106,9 @@ des.region({ region={17,01,23,03},lit=1,type="barracks", filled=1 })
 des.region({ region={27,01,33,03},lit=1,type="barracks", filled=1 })
 des.region({ region={17,07,19,10},lit=1,type="barracks", filled=1 })
 
+-- Dragon lair to the side
+des.region({ region={66,02, 71,06}, lit=0, type="dragon lair", filled=1 })
+
 des.mazewalk(33,13,"east")
 
 des.feature("fountain", 02,10)

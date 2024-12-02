@@ -3963,6 +3963,7 @@ static const struct {
     { "anthole",            ANTHOLE },
     { "cocknest",           COCKNEST },
     { "leprehall",          LEPREHALL },
+    { "dragon lair",        DRAGONLAIR },
     { "shop",               SHOPBASE },
     { "armor shop",         ARMORSHOP },
     { "scroll shop",        SCROLLSHOP },
