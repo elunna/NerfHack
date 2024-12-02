@@ -376,26 +376,24 @@ m_initweap(struct monst *mtmp)
 
     case S_ANGEL:
         if (humanoid(ptr)) {
-            /* create minion stuff; can't use mongets;
-               weapon: long sword [rn2(5) > 1 == 60%] or mace [40%] */
-            otmp = mksobj((rn2(5) > 1) ? LONG_SWORD : MACE, FALSE, FALSE);
+            /* create minion stuff; bypass mongets */
+            int typ = rn2(3) ? LONG_SWORD : MACE;
+            const char *nam = (typ == LONG_SWORD) ? "Sunsword" : "Demonbane";
+
+            otmp = mksobj(typ, FALSE, FALSE);
             /* maybe promote weapon to an artifact */
             if ((!rn2(20) || is_lord(ptr))
                  && sgn(mtmp->isminion ? EMIN(mtmp)->min_align
-                                       : ptr->maligntyp) == A_LAWFUL) {
-                /* Sunsword and Demonbane both used to be long swords and
-                   Angels always got a long sword, so might get either of
-                   the two artifacts; Demonbane has been changed to be a
-                   mace; this deliberately makes an independent choice of
-                   which artifact and if it picks the wrong name for 'otmp's
-                   type, then 'otmp' won't be upgraded into an artifact */
-                otmp = oname(otmp, artiname((rn2(5) > 1) ? ART_SUNSWORD
-                                                         : ART_DEMONBANE),
-                             ONAME_RANDOM); /* randomly created */
-            }
+                                       : ptr->maligntyp) == A_LAWFUL)
+                otmp = oname(otmp, nam, ONAME_RANDOM); /* randomly created */
+            /* enhance the weapon */
             bless(otmp);
             otmp->oerodeproof = TRUE;
-            otmp->spe = rn2(4) + rnd(5);
+            /* make long sword be +0 to +3, mace be +3 to +6 to compensate
+               for being significantly weaker against large opponents */
+            otmp->spe = rn2(4);
+            if (typ == MACE)
+                otmp->spe += 3;
             (void) mpickobj(mtmp, otmp);
 
             otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION
@@ -642,6 +640,7 @@ m_initweap(struct monst *mtmp)
          */
         if (!is_demon(ptr))
             break;
+        FALLTHROUGH;
         /*FALLTHRU*/
     default:
     catchgnomes:
@@ -826,12 +825,15 @@ m_initinv(struct monst *mtmp)
             /* MAJOR fall through ... */
             case 0:
                 (void) mongets(mtmp, WAN_MAGIC_MISSILE);
+                FALLTHROUGH;
                 /*FALLTHRU*/
             case 1:
                 (void) mongets(mtmp, POT_EXTRA_HEALING);
+                FALLTHROUGH;
                 /*FALLTHRU*/
             case 2:
                 (void) mongets(mtmp, POT_HEALING);
+                FALLTHROUGH;
                 /*FALLTHRU*/
             case 3:
                 (void) mongets(mtmp, WAN_SLEEP);
@@ -839,20 +841,23 @@ m_initinv(struct monst *mtmp)
 
             /* MAJOR fall through ... */
             switch (rnd(4)) {
-			case 1:
+	    case 1:
                 (void) mongets(mtmp, POT_REFLECTION);
+                FALLTHROUGH;
                 /*FALLTHRU*/
-			case 2:
+	    case 2:
                 (void) mongets(mtmp, POT_EXTRA_HEALING);
+                FALLTHROUGH;
                 /*FALLTHRU*/
-			case 3:
+	    case 3:
                 (void) mongets(mtmp, SCR_TELEPORTATION);
+                FALLTHROUGH;
                 /*FALLTHRU*/
-			case 4:
+	    case 4:
                 (void) mongets(mtmp, WAN_TELEPORTATION);
+                FALLTHROUGH;
                 /*FALLTHRU*/
-		    }
-
+	    }
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_CLERIC)) {
             (void) mongets(mtmp, rn2(7) ? ROBE
@@ -2350,7 +2355,7 @@ mongets(struct monst *mtmp, int otyp)
         return (struct obj *) 0;
 
     /* Anyone can be an undead slayer when you are a vampire! */
-    if (Race_if(PM_VAMPIRE) && level_difficulty() > 8 
+    if (Race_if(PM_VAMPIRE) && level_difficulty() > 8
         && !mon_hates_silver(mtmp) && !rn2(10)) {
         switch (otyp) {
             case DAGGER:

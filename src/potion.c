@@ -766,7 +766,7 @@ dodrink(void)
             if (y_n("Drink the water underneath you?") == 'y') {
                 pline("Do you know what lives in that water?");
                 return ECMD_TIME;
-            } else if ((Underwater 
+            } else if ((Underwater
                     || (is_puddle(u.ux, u.uy) && verysmall(gy.youmonst.data)))
                     && !u.uswallow) {
                 if (y_n("Drink the water around you?") == 'y') {
@@ -1061,7 +1061,7 @@ peffect_see_invisible(struct obj *otmp)
               ? "This tastes like 10%% real %s%s all-natural beverage."
               : "This tastes like %s%s.",
               otmp->odiluted ? "reconstituted " : "", fruitname(TRUE));
-    
+
     /* Auto-ID by process of elimination */
     if (otmp->otyp == POT_FRUIT_JUICE
             && objects[POT_SEE_INVISIBLE].oc_name_known)
@@ -1069,7 +1069,7 @@ peffect_see_invisible(struct obj *otmp)
     else if (otmp->otyp == POT_SEE_INVISIBLE
             && objects[POT_FRUIT_JUICE].oc_name_known)
         makeknown(POT_SEE_INVISIBLE);
-    
+
     if (otmp->otyp == POT_FRUIT_JUICE) {
         u.uhunger += (otmp->odiluted ? 5 : 10) * (2 + bcsign(otmp));
         newuhs(FALSE);
@@ -2175,16 +2175,19 @@ potionhit(struct monst *mon, struct obj *obj, int how)
         switch (obj->otyp) {
         case POT_FULL_HEALING:
             cureblind = TRUE;
+            FALLTHROUGH;
             /*FALLTHRU*/
         case POT_EXTRA_HEALING:
             if (!obj->cursed)
                 cureblind = TRUE;
+            FALLTHROUGH;
             /*FALLTHRU*/
         case POT_HEALING:
             if (obj->blessed)
                 cureblind = TRUE;
             if (mon->data == &mons[PM_PESTILENCE])
                 goto do_illness;
+            FALLTHROUGH;
             /*FALLTHRU*/
         case POT_RESTORE_ABILITY:
         case POT_GAIN_ABILITY:
@@ -2481,6 +2484,7 @@ potionbreathe(struct obj *obj)
         if (u.uhp < u.uhpmax)
             u.uhp++, disp.botl = TRUE;
         cureblind = TRUE;
+        FALLTHROUGH;
         /*FALLTHRU*/
     case POT_EXTRA_HEALING:
         if (Upolyd && u.mh < u.mhmax)
@@ -2489,6 +2493,7 @@ potionbreathe(struct obj *obj)
             u.uhp++, disp.botl = TRUE;
         if (!obj->cursed)
             cureblind = TRUE;
+        FALLTHROUGH;
         /*FALLTHRU*/
     case POT_HEALING:
         if (Upolyd && u.mh < u.mhmax)
@@ -3097,7 +3102,7 @@ dodip(void)
                         useup(obj);
                     if (IS_PUDDLE(here) && !rn2(3))
                         dryup_puddle(u.ux, u.uy, "dries up");
-                    
+
                 }
                 return ECMD_TIME;
             }
@@ -3233,7 +3238,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         /* Scrolls of amnesia make potions forget what they were */
         struct obj *singlescroll = (obj->quan > 1L ?  splitobj(obj, 1L) : obj);
 
-        Your("%s fade%s.", xname(potion), 
+        Your("%s fade%s.", xname(potion),
             potion->quan > 1L ? "" : "s");
         makeknown(SCR_AMNESIA);
 

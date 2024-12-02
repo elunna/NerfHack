@@ -1675,6 +1675,9 @@ attributes_enlightenment(
     /*** Vision and senses ***/
     if ((HBlinded || EBlinded) && BBlinded) /* blind w/ blindness blocked */
         you_can("see", from_what(-BLINDED)); /* Eyes of the Overworld */
+    if (Blnd_resist && !Blind) /* skip if no eyes or blindfolded */
+        you_are("not subject to light-induced blindness",
+                from_what(BLND_RES));
     if (See_invisible) {
         if (!Blind)
             enl_msg(You_, "see", "saw", " invisible", from_what(SEE_INVIS));
@@ -2148,6 +2151,8 @@ attributes_enlightenment(
             switch (u.umortality) {
             case 0:
                 impossible("dead without dying?");
+                FALLTHROUGH;
+                /* FALLTHRU */
             case 1:
                 break; /* just "are dead" */
             default:
@@ -2825,6 +2830,7 @@ vanqsort_cmp(
             res = uniq2 - uniq1;
             break;
         } /* else both unique or neither unique */
+        FALLTHROUGH;
         /*FALLTHRU*/
     case VANQ_ALPHA_MIX:
         name1 = mons[indx1].pmnames[NEUTRAL];
@@ -3579,7 +3585,7 @@ mstatusline(struct monst *mtmp)
 
     /* avoid "Status of the invisible newt ..., invisible" */
     /* and unlike a normal mon_nam, use "saddled" even if it has a name */
-    Strcpy(monnambuf, x_monnam(mtmp, ARTICLE_THE, (char *) 0,
+    Strcpy(monnambuf, x_monnam(mtmp, ARTICLE_YOUR, (char *) 0,
                                (SUPPRESS_IT | SUPPRESS_INVISIBLE), FALSE));
 
     pline("Status of %s (%s, %s):  Level %d  HP %d(%d)  AC %d%s.",

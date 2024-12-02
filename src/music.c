@@ -447,6 +447,7 @@ do_earthquake(int force)
                 unblock_point(x, y);
                 if (cansee(x, y))
                     pline("A secret corridor is revealed.");
+                FALLTHROUGH;
                 /*FALLTHRU*/
             case CORR:
             case ROOM:
@@ -456,6 +457,7 @@ do_earthquake(int force)
                 cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
                 if (cansee(x, y))
                     pline("A secret door is revealed.");
+                FALLTHROUGH;
                 /*FALLTHRU*/
             case DOOR: /* make the door collapse */
                 /* if already doorless, treat like room or corridor */

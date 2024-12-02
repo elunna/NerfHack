@@ -4090,6 +4090,7 @@ sellobj(
         switch (gs.sell_response ? gs.sell_response : nyaq(qbuf)) {
         case 'q':
             gs.sell_response = 'n';
+            FALLTHROUGH;
             /*FALLTHRU*/
         case 'n':
             if (container)
@@ -4100,6 +4101,7 @@ sellobj(
             break;
         case 'a':
             gs.sell_response = 'y';
+            FALLTHROUGH;
             /*FALLTHRU*/
         case 'y':
             if (container)

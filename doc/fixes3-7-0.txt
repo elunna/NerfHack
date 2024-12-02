@@ -1475,6 +1475,14 @@ a pet with the hides-under attribute could "move reluctantly over" a cursed
 	object and then hide under it
 prevent monster generation in the sokoban trap hallway
 change MSGHANDLER from compile-time to sysconf option
+allow changing extended command autocompletions via #optionsfull
+if eating a tin's contents caused the hero to choke to death or turn to stone,
+	resulting bones would contain the tin still intact
+when hero who is poly'd into metallivore form eats a tin, bypass "smells like
+	<monster>" feedback and the "Eat it?" prompt; just eat the contents
+	along with the tin without asking
+digging in ice was handled inconsistently, particularly if done at the span
+	spot in front of closed drawbridge
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2206,7 +2214,7 @@ curses: if user's terminal was set to 'application keypad mode' (DEC VTxxx
 	"ESC SPC G"), nethack wasn't recognizing number pad keys
 curses: change petattr attributes, dropping support for curses-only ones
 curses: swap the grey and no-color color initialization
-curses: allow changing default colors with the 'palette' config option
+curses+Qt: allow changing default colors with the 'palette' config option
 	(only if compiled with CHANGE_COLOR)
 curses: if messages have been issued during start-up (for instance, warnings
 	about issues in run-time config file), prompt user to press <return>
@@ -2914,6 +2922,8 @@ split "cannot_push" on moverock_done() into a separate function (pr #1282
 	by argrath)
 split making pits on do_earthquake() into a separate function and
 	eliminate some gotos on do_earthquake() (pr #1287 by argrath)
+update the WASM cross-compile to work with the current
+	code (pr #1331 by guillaumebrunerie)
 
 
 Code Cleanup and Reorganization

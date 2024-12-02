@@ -885,7 +885,7 @@ recharge(struct obj *obj, int curse_bless)
             }
             obj->spe += s; /* update the accessory while it's off */
             if (is_on)
-                setworn(obj, mask), isring ? Ring_on(obj) : Amulet_on();
+                setworn(obj, mask), isring ? Ring_on(obj) : Amulet_on(obj);
             /* oartifact: if a touch-sensitive artifact ring is
                ever created the above will need to be revised  */
             /* update shop bill to reflect new higher price */

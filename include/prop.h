@@ -58,23 +58,24 @@ enum prop_types {
     CLAIRVOYANT       = 35,
     INFRAVISION       = 36,
     DETECT_MONSTERS   = 37,
+    BLND_RES          = 38,
     /* Appearance and behavior */
-    ADORNED           = 38,
-    INVIS             = 39,
-    DISPLACED         = 40,
-    STEALTH           = 41,
-    AGGRAVATE_MONSTER = 42,
-    CONFLICT          = 43,
+    ADORNED           = 39,
+    INVIS             = 40,
+    DISPLACED         = 41,
+    STEALTH           = 42,
+    AGGRAVATE_MONSTER = 43,
+    CONFLICT          = 44,
     /* Transportation */
-    JUMPING           = 44,
-    TELEPORT          = 45,
-    TELEPORT_CONTROL  = 46,
-    LEVITATION        = 47,
-    FLYING            = 48,
-    WWALKING          = 49,
-    SWIMMING          = 50,
-    MAGICAL_BREATHING = 51,
-    PASSES_WALLS      = 52,
+    JUMPING           = 45,
+    TELEPORT          = 46,
+    TELEPORT_CONTROL  = 47,
+    LEVITATION        = 48,
+    FLYING            = 49,
+    WWALKING          = 50,
+    SWIMMING          = 51,
+    MAGICAL_BREATHING = 52,
+    PASSES_WALLS      = 53,
     /* Physical attributes */
     SLOW_DIGESTION    = 53,
     HALF_SPDAM        = 54,
@@ -96,8 +97,8 @@ enum prop_types {
     STUN_RES          = 70,
     BREATHLESS        = 71,
     RABID             = 72,
+    LAST_PROP = RABID
 };
-#define LAST_PROP (RABID)
 
 /*** Where the properties come from ***/
 /* Definitions were moved here from obj.h and you.h */

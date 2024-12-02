@@ -103,6 +103,8 @@ set_uasmon(void)
     PROPSET(REGENERATION, regenerates(mdat));
     PROPSET(REFLECTING, (mdat == &mons[PM_SILVER_DRAGON]));
     PROPSET(BLINDED, !haseyes(mdat));
+    PROPSET(BLND_RES, (dmgtype_fromattack(mdat, AD_BLND, AT_EXPL)
+                       || dmgtype_fromattack(mdat, AD_BLND, AT_GAZE)));
 #undef PROPSET
 
     /* whether the player is flying/floating depends on their steed,
@@ -1476,6 +1478,7 @@ dospit(void)
             break;
         default:
             impossible("bad attack type in dospit");
+            FALLTHROUGH;
             /*FALLTHRU*/
         case AD_ACID:
             otmp = mksobj(ACID_VENOM, TRUE, FALSE);

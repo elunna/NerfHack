@@ -171,6 +171,7 @@ throne_sit_effect(void)
                     default:
                     case 2: /* more than 1 eye */
                         eye = makeplural(eye);
+                        FALLTHROUGH;
                         /*FALLTHRU*/
                     case 1: /* one eye (Cyclops, floating eye) */
                         Your("%s %s...", eye, vtense(eye, "tingle"));
@@ -676,6 +677,7 @@ attrcurse(void)
             ret = FIRE_RES;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 2:
         if (HTeleportation & INTRINSIC) {
@@ -684,6 +686,7 @@ attrcurse(void)
             ret = TELEPORT;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 3:
         if (HPoison_resistance) {
@@ -694,6 +697,7 @@ attrcurse(void)
             ret = POISON_RES;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 4:
         if (HTelepat & INTRINSIC) {
@@ -704,6 +708,7 @@ attrcurse(void)
             ret = TELEPAT;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 5:
         if (HCold_resistance) {
@@ -714,6 +719,7 @@ attrcurse(void)
             ret = COLD_RES;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 6:
         if (HInvis & INTRINSIC) {
@@ -722,6 +728,7 @@ attrcurse(void)
             ret = INVIS;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 7:
         if (HSee_invisible & INTRINSIC) {
@@ -737,6 +744,7 @@ attrcurse(void)
             ret = SEE_INVIS;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 8:
         if (HFast & INTRINSIC) {
@@ -745,6 +753,7 @@ attrcurse(void)
             ret = FAST;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 9:
         if (HStealth & INTRINSIC) {
@@ -753,6 +762,7 @@ attrcurse(void)
             ret = STEALTH;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 10:
         /* intrinsic protection is just disabled, not set back to 0 */
@@ -762,6 +772,7 @@ attrcurse(void)
             ret = PROTECTION;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 11:
         if (HAggravate_monster & INTRINSIC) {
@@ -770,6 +781,7 @@ attrcurse(void)
             ret = AGGRAVATE_MONSTER;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 12:
         if (HSleep_resistance) {

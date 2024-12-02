@@ -1825,7 +1825,9 @@ weapon_hit_bonus(struct obj *weapon)
     } else if (type <= P_LAST_WEAPON) {
         switch (P_SKILL(type)) {
         default:
-            impossible(bad_skill, P_SKILL(type)); /* fall through */
+            impossible(bad_skill, P_SKILL(type));
+            FALLTHROUGH;
+            /* FALLTHRU */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus = -4;
@@ -1849,7 +1851,9 @@ weapon_hit_bonus(struct obj *weapon)
             skill = P_SKILL(wep_type);
         switch (skill) {
         default:
-            impossible(bad_skill, skill); /* fall through */
+            impossible(bad_skill, skill);
+            FALLTHROUGH;
+            /* FALLTHRU */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus = -9;
@@ -1923,7 +1927,8 @@ weapon_dam_bonus(struct obj *weapon)
         switch (P_SKILL(type)) {
         default:
             impossible("weapon_dam_bonus: bad skill %d", P_SKILL(type));
-        /* fall through */
+            FALLTHROUGH;
+        /* FALLTHRU */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus = -2;

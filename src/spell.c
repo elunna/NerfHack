@@ -445,7 +445,7 @@ learn(void)
             faded_to_blank = TRUE;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
-            
+
         } else {
             Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
@@ -1511,12 +1511,14 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
              * magical energy */
             u.uen += Role_if(PM_CARTOMANCER) ? 0 : rnd(energy / 2 + 1);
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
 
     /* these spells are all duplicates of wand effects */
     case SPE_FORCE_BOLT:
         physical_damage = TRUE;
-    /*FALLTHRU*/
+        FALLTHROUGH;
+        /*FALLTHRU*/
     case SPE_SLEEP:
     case SPE_MAGIC_MISSILE:
     case SPE_KNOCK:
@@ -1582,7 +1584,8 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         /* high skill yields effect equivalent to blessed scroll */
         if (role_skill >= P_SKILLED)
             pseudo->blessed = 1;
-    /*FALLTHRU*/
+        FALLTHROUGH;
+        /*FALLTHRU*/
     case SPE_MAGIC_MAPPING:
     case SPE_CREATE_MONSTER:
         (void) seffects(pseudo);
@@ -1597,7 +1600,8 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         /* high skill yields effect equivalent to blessed potion */
         if (role_skill >= P_SKILLED)
             pseudo->blessed = 1;
-    /*FALLTHRU*/
+        FALLTHROUGH;
+        /*FALLTHRU*/
     case SPE_INVISIBILITY:
         (void) peffects(pseudo);
         break;

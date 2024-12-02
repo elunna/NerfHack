@@ -575,6 +575,7 @@ moverock_core(coordxy sx, coordxy sy)
                         dopush(sx, sy, rx, ry, otmp, costly);
                         continue;
                     }
+                    FALLTHROUGH;
                     /*FALLTHRU*/
                 case TELEP_TRAP:
                     rock_disappear_msg(otmp);
@@ -1799,9 +1800,14 @@ u_locomotion(const char *def)
 {
     boolean capitalize = (*def == highc(*def));
 
+    /* regular locomotion() takes a monster type rather than a specific
+       monster, so can't tell whether it is operating on hero;
+       its is_flyer() and is_floater() tests wouldn't work on hero except
+       when hero is polymorphed and not wearing an amulet of flying
+       or boots/ring/spell of levitation */
     return Levitation ? (capitalize ? "Float" : "float")
-        : Flying ? (capitalize ? "Fly" : "fly")
-        : locomotion(gy.youmonst.data, def);
+           : Flying ? (capitalize ? "Fly" : "fly")
+             : locomotion(gy.youmonst.data, def);
 }
 
 /* Return a simplified floor solid/liquid state based on hero's state */
@@ -1863,10 +1869,9 @@ staticfn boolean
 swim_move_danger(coordxy x, coordxy y)
 {
     schar newtyp = u_simple_floortyp(x, y);
-    boolean liquid_wall = IS_WATERWALL(newtyp)
-        || newtyp == LAVAWALL;
+    boolean liquid_wall = IS_WATERWALL(newtyp) || newtyp == LAVAWALL;
     boolean dangerous_puddle = is_puddle(x, y) && tiny_groundedmon(gy.youmonst.data);
-    if (Underwater && (is_pool(x, y) || IS_WATERWALL(newtyp)))
+    if (Underwater && (is_pool(x,y) || IS_WATERWALL(newtyp)))
         return FALSE;
 
     if ((newtyp != u_simple_floortyp(u.ux, u.uy))
@@ -2610,6 +2615,7 @@ escape_from_sticky_mon(coordxy x, coordxy y)
                     u.ustuck->mfrozen = 1;
                     u.ustuck->msleeping = 0;
                 }
+                FALLTHROUGH;
                 /*FALLTHRU*/
             default:
                 if (u.ustuck->mtame && !Conflict && !u.ustuck->mconf)
@@ -2776,7 +2782,7 @@ domove_core(void)
         char qbuf[QBUFSZ];
 
         Snprintf(qbuf, sizeof qbuf, "%s into that %s cloud?",
-                 locomotion(gy.youmonst.data, "step"),
+                 u_locomotion("step"),
                  (reg_damg(newreg) > 0) ? "poison gas" : "vapor");
         if (!paranoid_query(ParanoidConfirm, upstart(qbuf))) {
             nomul(0);
@@ -3190,8 +3196,8 @@ pooleffects(
     }
 
     /* check for entering water or lava */
-    if (!u.ustuck && !Levitation && !Flying && 
-        (is_pool_or_lava(u.ux, u.uy) 
+    if (!u.ustuck && !Levitation && !Flying &&
+        (is_pool_or_lava(u.ux, u.uy)
             || (shallow_water && tiny_groundedmon(gy.youmonst.data)))) {
         if (u.usteed && !grounded(u.usteed->data)) {
             /* floating or clinging steed keeps hero safe (is_flyer() test
@@ -3251,7 +3257,7 @@ pooleffects(
         }
         if (verysmall(gy.youmonst.data))
             water_damage_chain(gi.invent, FALSE);
-        
+
         if (!u.usteed) {
             /* Only dryup puddle if something was damaged. */
             if (!rn2(3) && water_damage(uarmf, "boots", TRUE))
@@ -3703,7 +3709,8 @@ check_special_room(boolean newlev)
             break;
         case TEMPLE:
             intemple(roomno + ROOMOFFSET);
-        /*FALLTHRU*/
+            FALLTHROUGH;
+            /*FALLTHRU*/
         default:
             msg_given = (rt == TEMPLE || rt >= SHOPBASE);
             rt = 0;
@@ -4597,6 +4604,7 @@ spot_checks(coordxy x, coordxy y, schar old_typ)
     switch (old_typ) {
     case DRAWBRIDGE_UP:
         db_ice_now = ((levl[x][y].drawbridgemask & DB_UNDER) == DB_ICE);
+        FALLTHROUGH;
         /*FALLTHRU*/
     case ICE:
         if ((new_typ != old_typ)

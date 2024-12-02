@@ -1876,6 +1876,7 @@ dump_status_update(
         break;
     case BL_GOLD:
         text = decode_mixed(goldbuf, text);
+        FALLTHROUGH;
         /*FALLTHRU*/
     default:
         attrmask = (color >> 8) & 0x00FF;

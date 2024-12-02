@@ -98,7 +98,7 @@ cell_t undefined_cell = { CONSOLE_UNDEFINED_CHARACTER,
                           CONSOLE_UNDEFINED_ATTRIBUTE };
 #else /* VIRTUAL_TERMINAL_SEQUENCES */
 cell_t clear_cell = { { CONSOLE_CLEAR_CHARACTER, 0, 0, 0, 0, 0, 0 },
-                        CONSOLE_CLEAR_CHARACTER, 0, 0L, 0, "\x1b[0m" };
+                        CONSOLE_CLEAR_CHARACTER, 0, 0L, 0, "\x1b[0m", 0 };
 cell_t undefined_cell = { { CONSOLE_UNDEFINED_CHARACTER, 0, 0, 0, 0, 0, 0 },
                             CONSOLE_UNDEFINED_CHARACTER, 0, 0L, 0, (const char *) 0 };
 static const uint8 empty_utf8str[MAX_UTF8_SEQUENCE] = { 0 };
@@ -300,7 +300,7 @@ static INPUT_RECORD bogus_key;
 /*
 Windows console palette:
 Color Name      Console Legacy RGB Values  New Default RGB Values
-BLACK           0,0,0	                   12,12,12
+BLACK           0,0,0                      12,12,12
 DARK_BLUE       0,0,128                    0,55,218
 DARK_GREEN      0,128,0                    19,161,14
 DARK_CYAN       0,128,128                  58,150,221
@@ -1087,6 +1087,7 @@ CtrlHandler(DWORD ctrltype)
     /* case CTRL_C_EVENT: */
     case CTRL_BREAK_EVENT:
         term_clear_screen();
+        FALLTHROUGH;
     case CTRL_CLOSE_EVENT:
     case CTRL_LOGOFF_EVENT:
     case CTRL_SHUTDOWN_EVENT:
@@ -1335,7 +1336,8 @@ xputc_core(int ch)
     case '\n':
         if (console.cursor.Y < console.height - 1)
             console.cursor.Y++;
-    /* fall through */
+        FALLTHROUGH;
+    /* FALLTHRU */
     case '\r':
         console.cursor.X = 1;
         break;
@@ -1879,6 +1881,7 @@ toggle_mouse_support(void)
 #endif /* VIRTUAL_TERMINAL_SEQUENCES */
                 break;
         case 0:
+                FALLTHROUGH;
                 /*FALLTHRU*/
         default:
 #ifndef VIRTUAL_TERMINAL_SEQUENCES

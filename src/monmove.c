@@ -974,6 +974,7 @@ dochug(struct monst *mtmp)
              * Monsters should never attack while scared or fleeing. */
             if (scared)
                 panicattk = FALSE;
+            FALLTHROUGH;
             /*FALLTHRU*/
         case MMOVE_NOTHING: /* no movement, but it can still attack you */
         case MMOVE_DONE: /* absolutely no movement */
@@ -1585,9 +1586,9 @@ postmov(
                 && amorphous(ptr)) {
                 if (flags.verbose && canseemon(mtmp))
                     pline_mon(mtmp, "%s %s under the door.", YMonnam(mtmp),
-                          (ptr == &mons[PM_FOG_CLOUD]
-                           || ptr->mlet == S_LIGHT) ? "flows" : "oozes");
-            } else if (here->doormask & D_LOCKED && can_unlock) {
+                              (ptr == &mons[PM_FOG_CLOUD]
+                               || ptr->mlet == S_LIGHT) ? "flows" : "oozes");
+            } else if ((here->doormask & D_LOCKED) != 0 && can_unlock) {
                 /* like the vampshift hack, there are sequencing
                    issues when the monster is moved to the door's spot
                    first then door handling plus feedback comes after */
@@ -1626,7 +1627,7 @@ postmov(
                         }
                     }
                 }
-            } else if (here->doormask & (D_LOCKED | D_CLOSED)) {
+            } else if ((here->doormask & (D_LOCKED | D_CLOSED)) != 0) {
                 /* mfndpos guarantees this must be a doorbuster */
                 unsigned mask;
 
@@ -1861,6 +1862,7 @@ m_move(struct monst *mtmp, int after)
             break;
         default:
             impossible("unknown shk/gd/pri_move return value (%d)", xm);
+            FALLTHROUGH;
             /*FALLTHRU*/
         case 0:
         case 1:

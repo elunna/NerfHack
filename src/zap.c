@@ -1,4 +1,4 @@
-/* NetHack 3.7	zap.c	$NHDT-Date: 1723946858 2024/08/18 02:07:38 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.542 $ */
+/* NetHack 3.7	zap.c	$NHDT-Date: 1732979463 2024/11/30 07:11:03 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.551 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -153,7 +153,11 @@ learnwand(struct obj *obj)
     }
 }
 
-/* Routines for IMMEDIATE wands and spells. */
+/*
+ * Routines for IMMEDIATE wands and spells.
+ * Also RAY or NODIR for wands that are being broken rather than zapped.
+ */
+
 /* bhitm: monster mtmp was hit by the effect of wand or spell otmp */
 int
 bhitm(struct monst *mtmp, struct obj *otmp)
@@ -181,7 +185,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     switch (otyp) {
     case WAN_STRIKING:
         zap_type_text = "wand";
-    /*FALLTHRU*/
+        FALLTHROUGH;
+        /*FALLTHRU*/
     case SPE_FORCE_BOLT:
         reveal_invis = TRUE;
         if (disguised_mimic)
@@ -432,6 +437,10 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     }
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
+        /* can't use Is_box() here */
+        if (disguised_mimic && (is_obj_mappear(mtmp, CHEST)
+                                || is_obj_mappear(mtmp, LARGE_BOX)))
+            seemimic(mtmp);
         wake = closeholdingtrap(mtmp, &learn_it);
         break;
     case WAN_PROBING:
@@ -442,6 +451,9 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         break;
     case WAN_OPENING:
     case SPE_KNOCK:
+        if (disguised_mimic && (is_obj_mappear(mtmp, CHEST)
+                                || is_obj_mappear(mtmp, LARGE_BOX)))
+            seemimic(mtmp);
         wake = FALSE; /* don't want immediate counterattack */
         if (mtmp == u.ustuck) {
             if (otyp == SPE_KNOCK) {
@@ -576,7 +588,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         break;
     case WAN_SLEEP: /* (broken wand) */
         /* [wakeup() doesn't rouse victims of temporary sleep,
-           so it's okay to leave `wake' set to TRUE here] */
+           so it's okay to leave `wake' set to TRUE here;
+           revealing concealed mimic is handled by sleep_monst()] */
         reveal_invis = TRUE;
         if (sleep_monst(mtmp, d(1 + otmp->spe, 12), WAND_CLASS))
             slept_monst(mtmp);
@@ -584,6 +597,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             learn_it = TRUE;
         break;
     case SPE_STONE_TO_FLESH:
+        /* FIXME: mimics disguished as stone furniture or stone object
+           should be taken out of concealment. */
         if (monsndx(mtmp->data) == PM_STONE_GOLEM) {
             char *name = Monnam(mtmp);
 
@@ -1052,7 +1067,7 @@ revive(struct obj *corpse, boolean by_hero)
             x = xy.x, y = xy.y;
     }
 
-    if (corpse->norevive || (mons[montype].mlet == S_EEL 
+    if (corpse->norevive || (mons[montype].mlet == S_EEL
             && !(IS_POOL(levl[x][y].typ) || IS_PUDDLE(levl[x][y].typ)))) {
         if (cansee(x, y))
             pline("%s twitches feebly.",
@@ -1214,6 +1229,7 @@ revive(struct obj *corpse, boolean by_hero)
             obfree(corpse, (struct obj *) 0);
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case OBJ_FREE:
     case OBJ_MIGRATING:
@@ -2265,6 +2281,7 @@ stone_to_flesh_obj(struct obj *obj) /* nonnull */
         smell = TRUE;
         break;
     case WEAPON_CLASS: /* crysknife */
+        FALLTHROUGH;
         /*FALLTHRU*/
     default:
         res = 0;
@@ -3280,6 +3297,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case WAN_LIGHT: /* (broken wand) */
         /* assert( !ordinary ); */
         damage = d(obj->spe, 25);
+        FALLTHROUGH;
         /*FALLTHRU*/
     case EXPENSIVE_CAMERA:
         if (!damage)
@@ -3848,6 +3866,7 @@ zap_updown(struct obj *obj) /* wand or spell, nonnull */
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         striking = TRUE;
+        FALLTHROUGH;
         /*FALLTHRU*/
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
@@ -4158,7 +4177,8 @@ exclam(int force)
 }
 
 void
-hit(const char *str,    /* zap text or missile name */
+hit(
+    const char *str,    /* zap text or missile name */
     struct monst *mtmp, /* target; for missile, might be hero */
     const char *force)  /* usually either "." or "!" via exclam() */
 {
@@ -4167,11 +4187,8 @@ hit(const char *str,    /* zap text or missile name */
                              && (cansee(gb.bhitpos.x, gb.bhitpos.y)
                                  || canspotmon(mtmp) || engulfing_u(mtmp))));
 
-    if (!verbosely)
-        pline("%s %s it.", The(str), vtense(str, "hit"));
-    else
-        pline("%s %s %s%s", The(str), vtense(str, "hit"),
-              mon_nam(mtmp), force);
+    pline("%s %s %s%s", The(str), vtense(str, "hit"),
+          verbosely ? mon_nam(mtmp) : "it", force);
 }
 
 void
@@ -4541,7 +4558,7 @@ bhit(
                    ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                      && obj->otyp == SPE_FIRE_BOLT))) {
             if (cansee(gb.bhitpos.x, gb.bhitpos.y))
-                pline("Steam billows from the %s.", 
+                pline("Steam billows from the %s.",
                 explain_terrain(gb.bhitpos.x, gb.bhitpos.y));
             if (typ == FOUNTAIN)
                 dryup(gb.bhitpos.x, gb.bhitpos.y, TRUE);
@@ -4968,7 +4985,8 @@ zhitm(
             tmp += destroy_items(mon, AD_COLD, orig_dmg);
         break;
     case ZT_SLEEP:
-        /* possibly resistance and shield effect handled by sleep_monst() */
+        /* resistance and shield effect and revealing concealed mimic are
+           handled by sleep_monst() */
         tmp = 0;
         (void) sleep_monst(mon, d(nd, 25),
                            type == ZT_WAND(ZT_SLEEP) ? WAND_CLASS : '\0');
@@ -5947,6 +5965,7 @@ dobuzz(
                 switch (bounce) {
                 case 0:
                     dx = -dx;
+                    FALLTHROUGH;
                     /*FALLTHRU*/
                 case 1:
                     dy = -dy;
@@ -6321,6 +6340,7 @@ zap_over_floor(
         break;
 
     case ZT_LIGHTNING:
+        FALLTHROUGH;
         /*FALLTHRU*/
     case ZT_ACID:
         if (lev->typ == IRONBARS) {

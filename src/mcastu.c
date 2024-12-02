@@ -114,6 +114,7 @@ choose_magic_spell(struct monst* caster, int spellval)
             if (Antimagic || Hallucination)
                 return MGC_PSI_BOLT;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 22:
     case 21:
@@ -197,6 +198,7 @@ choose_clerical_spell(struct monst* caster, int spellnum)
     case 14:
         if (rn2(3))
             return CLC_OPEN_WOUNDS;
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 13:
         return CLC_GEYSER;
@@ -639,7 +641,7 @@ m_destroy_armor(struct monst *caster, struct monst *mdef)
    If you modify either of these, be sure to change is_undirected_spell()
    and spell_would_be_useless().
  */
-staticfn int 
+staticfn int
 cast_wizard_spell(
     struct monst *caster, /* caster */
     struct monst *mdef, /* target */

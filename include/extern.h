@@ -738,7 +738,7 @@ extern int Shield_off(void);
 extern int Shirt_off(void);
 extern void dragon_armor_handling(struct obj *, boolean, boolean);
 extern void Amulet_off(void);
-extern void Amulet_on(void);
+extern void Amulet_on(struct obj *);
 extern void Ring_on(struct obj *) NONNULLARG1;
 extern void Ring_off(struct obj *) NONNULLARG1;
 extern void Ring_gone(struct obj *) NONNULLARG1;
@@ -2168,12 +2168,7 @@ extern void tutorial(boolean);
 #endif /* MAKEDEFS_C MDLIB_C CPPREGEX_C */
 
 /* ### {cpp,pmatch,posix}regex.c ### */
-
-extern struct nhregex *regex_init(void);
-extern boolean regex_compile(const char *, struct nhregex *) NONNULLARG1;
-extern char *regex_error_desc(struct nhregex *, char *) NONNULLARG2;
-extern boolean regex_match(const char *, struct nhregex *) NO_NNARGS;
-extern void regex_free(struct nhregex *) NONNULLARG1;
+#include "nhregex.h"
 
 #if !defined(MAKEDEFS_C) && !defined(MDLIB_C) && !defined(CPPREGEX_C)
 
@@ -3959,6 +3954,7 @@ extern boolean worm_cross(int, int, int, int);
 extern int wseg_at(struct monst *, int, int) NO_NNARGS;
 extern void flip_worm_segs_vertical(struct monst *, int, int) NONNULLARG1;
 extern void flip_worm_segs_horizontal(struct monst *, int, int) NONNULLARG1;
+extern void redraw_worm(struct monst *);
 
 /* ### worn.c ### */
 

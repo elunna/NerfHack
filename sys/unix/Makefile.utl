@@ -200,7 +200,7 @@ HACKLIBOBJ = $(OBJDIR)/hacklib.o panic.o
 MAKEOBJS = makedefs.o $(OMONOBJ) $(ODATE) $(OALLOC)
 
 # object files for recovery utility
-RECOVOBJS = $(TARGETPFX)recover.o
+RECOVOBJS = recover.o
 
 # object files for the data librarian
 DLBOBJS = dlb_main.o $(OBJDIR)/dlb.o $(OALLOC)
@@ -277,12 +277,12 @@ lintdgn:
 
 #	dependencies for recover
 #
-$(TARGETPFX)recover: $(RECOVOBJS) $(TARGETPFX)$(HACKLIB)
-	$(TARGET_CLINK) $(TARGET_LFLAGS) -o recover \
-		$(RECOVOBJS) $(TARGETPFX)$(HACKLIB) $(LIBS)
+recover: $(RECOVOBJS) $(HACKLIB)
+	$(CLINK) $(LFLAGS) -o recover \
+		$(RECOVOBJS) $(HACKLIB) $(LIBS)
 
-$(TARGETPFX)recover.o: recover.c $(CONFIG_H)
-	$(TARGET_CC) $(TARGET_CFLAGS) $(CSTD) -c recover.c -o $@
+recover.o: recover.c $(CONFIG_H)
+	$(CC) $(CFLAGS) $(CSTD) -c recover.c -o $@
 
 
 #	dependencies for dlb
@@ -441,7 +441,10 @@ clean-fixup:
 clean: clean-fixup
 	-rm -f *.o
 
+# obsolete dgn_comp and lev_comp could be left around from 3.6.x
 spotless: clean
 	-rm -f makedefs recover dlb $(HACKLIB)
 	-rm -f gif2txt txt2ppm tile2x11 tile2img.ttp xpm2img.ttp \
 		tilemap tileedit tile2bmp uudecode
+	-rm -f dgn_comp* dgn_lex.c dgn_yacc.c ../include/dgn_comp.h \
+		lev_comp* lev_lex.c lev_yacc.c ../include/lev_comp.h

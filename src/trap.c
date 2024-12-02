@@ -477,7 +477,7 @@ struct trap *
 maketrap(coordxy x, coordxy y, int typ)
 {
     static union vlaunchinfo zero_vl;
-    boolean oldplace;
+    boolean oldplace, was_ice, clear_flags;
     struct trap *ttmp;
     struct rm *lev = &levl[x][y];
 
@@ -495,10 +495,10 @@ maketrap(coordxy x, coordxy y, int typ)
                 || (u.utraptype == TT_LAVA && !is_lava(x, y))))
             reset_utrap(FALSE);
         /* old <tx,ty> remain valid */
-    } else if (!CAN_OVERWRITE_TERRAIN(lev->typ)
-               || (IS_FURNITURE(lev->typ)
-                   && (typ != PIT && typ != HOLE))
+    } else if (!CAN_OVERWRITE_TERRAIN(lev->typ) /* stairs */
                || is_pool_or_lava(x, y)
+               || (IS_FURNITURE(lev->typ) && (typ != PIT && typ != HOLE))
+               || (lev->typ == DRAWBRIDGE_UP && typ == MAGIC_PORTAL)
                || (IS_AIR(lev->typ) && typ != MAGIC_PORTAL)
                || (is_puddle(x, y) && typ == WEB)
                || (typ == LEVEL_TELEP && single_level_branch(&u.uz))) {
@@ -588,6 +588,7 @@ maketrap(coordxy x, coordxy y, int typ)
     case PIT:
     case SPIKED_PIT:
         ttmp->conjoined = 0;
+        FALLTHROUGH;
         /*FALLTHRU*/
     case HOLE:
     case TRAPDOOR:
@@ -597,22 +598,41 @@ maketrap(coordxy x, coordxy y, int typ)
             && (is_hole(typ) || IS_DOOR(lev->typ) || IS_WALL(lev->typ)))
             add_damage(x, y, /* schedule repair */
                        ((IS_DOOR(lev->typ) || IS_WALL(lev->typ))
-                        && !svc.context.mon_moving)
-                           ? SHOP_HOLE_COST
-                           : 0L);
-        lev->doormask = 0;     /* subsumes altarmask, icedpool... */
-        if (IS_ROOM(lev->typ)) /* && !IS_AIR(lev->typ) */
+                        && !svc.context.mon_moving) ? SHOP_HOLE_COST : 0L);
+
+        clear_flags = TRUE; /* assume lev->flags needs to be reset */
+        /* DRAWBRIDGE_UP passes the IS_ROOM() test so check it first;
+           it also needs to retain lev->drawbridgemask */
+        if (lev->typ == DRAWBRIDGE_UP) {
+            /* bridge is closed and we're putting a hole or pit at the span
+               spot; this trap will be deleted if/when the bridge is opened;
+               terrain becomes room floor even if it was moat, lava, or ice */
+            clear_flags = FALSE; /* keep lev->drawbridgemask */
+            was_ice = (lev->drawbridgemask & DB_UNDER) == DB_ICE;
+            lev->drawbridgemask &= ~DB_UNDER;
+            lev->drawbridgemask |= DB_FLOOR;
+            if (was_ice) {
+                /* subset of set_levltyp() after changing ice to floor;
+                   frozen corpses resume rotting, no more ice to melt away */
+                obj_ice_effects(x, y, TRUE);
+                spot_stop_timers(x, y, MELT_ICE_AWAY);
+            }
+        } else if (IS_ROOM(lev->typ)) {
             (void) set_levltyp(x, y, ROOM);
+
         /*
          * some cases which can happen when digging
          * down while phazing thru solid areas
          */
-        else if (lev->typ == STONE || lev->typ == SCORR)
+        } else if (lev->typ == STONE || lev->typ == SCORR) {
             (void) set_levltyp(x, y, CORR);
-        else if (IS_WALL(lev->typ) || lev->typ == SDOOR)
+        } else if (IS_WALL(lev->typ) || lev->typ == SDOOR) {
             (void) set_levltyp(x, y, svl.level.flags.is_maze_lev ? ROOM
                                      : svl.level.flags.is_cavernous_lev ? CORR
                                        : DOOR);
+        }
+        if (clear_flags)
+            lev->flags = 0; /* set_levltyp doesn't take care of this [yet?] */
 
         unearth_objs(x, y);
         break;
@@ -1192,10 +1212,13 @@ m_harmless_trap(struct monst *mtmp, struct trap *ttmp)
     case COLD_TRAP:
         break; /* Affects cold resistant monsters too */
     case PIT:
+        FALLTHROUGH;
         /*FALLTHRU*/
     case SPIKED_PIT:
+        FALLTHROUGH;
         /*FALLTHRU*/
     case HOLE:
+        FALLTHROUGH;
         /*FALLTHRU*/
     case TRAPDOOR:
         if (is_clinger(mdat) && !Sokoban)
@@ -2712,6 +2735,7 @@ trapeffect_web(
                 mtmp->mtrapped = 1;
                 break;
             }
+            FALLTHROUGH;
             /*FALLTHRU*/
         default:
             if (mptr->mlet == S_GIANT
@@ -3385,6 +3409,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
         if (pm->msize <= MZ_SMALL
             || amorphous(pm) || is_whirly(pm) || unsolid(pm))
             return TRAP_CLEARLY_IMMUNE;
+        FALLTHROUGH;
         /*FALLTHRU*/
     case SQKY_BOARD:
     case LANDMINE:
@@ -3486,6 +3511,7 @@ immune_to_trap(struct monst *mon, unsigned ttype)
            for monsters, only replicates fire trap, so fall through */
         if (is_you)
             return TRAP_NOT_IMMUNE;
+        FALLTHROUGH;
         /*FALLTHRU*/
     case FIRE_TRAP: /* can always destroy items being carried */
         /* harmful if not resistant or if carrying anything that could burn */
@@ -3961,10 +3987,12 @@ launch_obj(
         /* use otrapped as a flag to ohitmon */
         singleobj->otrapped = 1;
         style &= ~LAUNCH_KNOWN;
+        FALLTHROUGH;
     /*FALLTHRU*/
     case ROLL:
  roll:
         delaycnt = 2;
+        FALLTHROUGH;
     /*FALLTHRU*/
     default:
         if (!delaycnt)
@@ -4072,6 +4100,7 @@ launch_obj(
                     /* if trap doesn't work, skip "disappears" message */
                     if (newlev == depth(&u.uz))
                         break;
+                    FALLTHROUGH;
                     /*FALLTHRU*/
                 case TELEP_TRAP:
                     if (cansee(x, y))
@@ -4770,6 +4799,7 @@ float_down(
         case TRAPDOOR:
             if (!Can_fall_thru(&u.uz) || u.ustuck)
                 break;
+            FALLTHROUGH;
             /*FALLTHRU*/
         default:
             if (!u.utrap) /* not already in the trap */
