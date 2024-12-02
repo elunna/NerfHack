@@ -3732,7 +3732,7 @@ race_bonus(struct obj *obj)
     if (Race_if(PM_ORC) && is_orcish_armor(obj->otyp))
         return 2;
     if (Race_if(PM_GNOME) && is_gnomish_armor(obj->otyp))
-        return 2;
+        return 1;
     if (Race_if(PM_ELF) && is_elven_armor(obj->otyp))
         return 1;
     if (Race_if(PM_DWARF) && is_dwarvish_armor(obj->otyp))
