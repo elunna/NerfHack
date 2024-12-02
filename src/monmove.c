@@ -25,6 +25,7 @@ staticfn boolean leppie_avoidance(struct monst *);
 staticfn boolean m_balks_at_approaching(struct monst *);
 staticfn boolean stuff_prevents_passage(struct monst *);
 staticfn int vamp_shift(struct monst *, struct permonst *, boolean);
+staticfn boolean special_baalzebub_actions(struct monst *);
 staticfn void maybe_spin_web(struct monst *);
 staticfn boolean decide_to_teleport(struct monst *);
 staticfn void minfestcorpse(struct monst *);
@@ -884,6 +885,9 @@ dochug(struct monst *mtmp)
         set_apparxy(mtmp);
         distfleeck(mtmp, &inrange, &nearby, &scared);
     }
+
+    if (mdat == &mons[PM_BAALZEBUB] && special_baalzebub_actions(mtmp))
+        return 0;
 
     /* If monster is nearby you, and has to wield a weapon, do so.  This
      * costs the monster a move, of course.
@@ -2601,6 +2605,84 @@ minfestcorpse(struct monst *mtmp)
             break; /* only eat one at a time... */
         }
     newsym(mtmp->mx, mtmp->my);
+}
+
+/* once-per-move actions and effects for Baalzebub; return true if this has used
+ * up his move and false if he should continue with his normal actions */
+staticfn boolean
+special_baalzebub_actions(struct monst *baalz)
+{
+    coordxy x, y;
+
+    if (baalz->mpeaceful)
+        return FALSE;
+
+    /* When threatened, he may decide to burst into a swarm of flies and reform
+     * elsewhere. */
+    if (baalz->mhp * 2 < baalz->mhpmax && !baalz->mspec_used) {
+        int dist_i = distu(baalz->mx, baalz->my);
+        int options = 0;
+        coordxy targx = -1, targy = -1;
+        for (x = baalz->mx - 10; x <= baalz->mx + 10; ++x) {
+            for (y = baalz->my - 10; y <= baalz->my + 10; ++y) {
+                if (!goodpos(x, y, baalz, GP_CHECKSCARY))
+                    continue;
+                if (distu(x, y) <= dist_i) /* must go strictly away from hero */
+                    continue;
+                options++;
+                if (!rn2(options)) {
+                    targx = x;
+                    targy = y;
+                }
+            }
+        }
+        if (options > 0) {
+            coordxy ox = baalz->mx, oy = baalz->my;
+            int nflies = 5 + rn2(3);
+            int i;
+            if (canspotmon(baalz)) {
+                pline("%s explodes into a swarm of flies!", Monnam(baalz));
+            }
+            rloc_to(baalz, targx, targy);
+            baalz->mspec_used = 10 + rn2(20);
+            monflee(baalz, baalz->mspec_used, TRUE, FALSE);
+            for (i = 0; i < nflies; ++i) {
+                makemon(&mons[PM_GIANT_FLY], ox, oy, MM_ADJACENTOK | MM_NOMSG);
+            }
+            if (canspotmon(baalz)) {
+                pline("%s re-coalesces further away.", Monnam(baalz));
+            }
+            return TRUE;
+        }
+    }
+
+    /* Flies constantly peel off Baalzebub. */
+    if (m_canseeu(baalz) || !rn2(8)) {
+        /* spawn flies if fewer than 50% of open spaces around baalzebub are
+         * occupied by flies already */
+        int numopen = 0, numflies = 0;
+        for (x = baalz->mx - 1; x <= baalz->mx + 1; ++x) {
+            for (y = baalz->my - 1; y <= baalz->my + 1; ++y) {
+                if (!isok(x, y))
+                    continue;
+                if (!closed_door(x, y) || SPACE_POS(levl[x][y].typ)) {
+                    struct monst *m2 = m_at(x, y);
+                    if (!m2)
+                        numopen++;
+                    else if (monsndx(m2->data) == PM_GIANT_FLY)
+                        numflies++;
+                }
+            }
+        }
+        if (numopen > 0 && numflies < numopen) {
+            int mkflies = min(rnd(2), (numopen - numflies));
+            for (; mkflies > 0; mkflies--) {
+                makemon(&mons[PM_GIANT_FLY], baalz->mx, baalz->my,
+                        MM_ADJACENTOK | MM_NOGRP | MM_NOMSG);
+            }
+        }
+    }
+    return FALSE;
 }
 
 /*monmove.c*/
