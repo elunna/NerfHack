@@ -2152,7 +2152,7 @@ attributes_enlightenment(
             case 0:
                 impossible("dead without dying?");
                 FALLTHROUGH;
-                /* FALLTHRU */
+                /*FALLTHRU*/
             case 1:
                 break; /* just "are dead" */
             default:

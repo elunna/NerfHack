@@ -425,7 +425,7 @@ fix_worst_trouble(int trouble)
     case TROUBLE_STARVING:
         /* temporarily lost strength recovery now handled by init_uhunger() */
         FALLTHROUGH;
-        /* FALLTHRU*/
+        /*FALLTHRU*/
     case TROUBLE_HUNGRY:
         Your("%s feels content.", body_part(STOMACH));
         init_uhunger();
@@ -783,7 +783,7 @@ angrygods(aligntyp resp_god)
             break;
         }
         FALLTHROUGH;
-        /* FALLTHRU */
+        /*FALLTHRU*/
     case 4:
     case 5:
         gods_angry(resp_god);

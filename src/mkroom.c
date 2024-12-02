@@ -419,7 +419,8 @@ fill_zoo(struct mkroom *sroom)
                     (void) mksobj_at(
                         rnd_class(GRAY_DRAGON_SCALES, YELLOW_DRAGON_SCALES),
                         sx, sy, FALSE, FALSE);
-                /* FALLTHROUGH */
+                FALLTHROUGH;
+                /*FALLTHRU*/
             case ZOO:
             case LEPREHALL:
                 if (sroom->doorct) {

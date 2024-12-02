@@ -940,15 +940,14 @@ dragon_armor_handling(
     switch (otmp->otyp) {
         /* grey: no extra effect */
         /* silver: no extra effect */
-
-
     case BLACK_DRAGON_SCALE_MAIL:
         if (puton) {
             EDrain_resistance |= W_ARM;
         } else {
             EDrain_resistance &= ~W_ARM;
         }
-        /* FALLTHROUGH */
+        FALLTHROUGH;
+        /*FALLTHRU*/
     case BLACK_DRAGON_SCALES:
         if (HWithering)
             make_withering(0L, TRUE);
@@ -1036,7 +1035,8 @@ dragon_armor_handling(
         } else {
             EStun_resistance &= ~W_ARM;
         }
-        /* FALLTHROUGH */
+        FALLTHROUGH;
+        /*FALLTHRU*/
     case SHIMMERING_DRAGON_SCALES:
         if (puton) {
             toggle_displacement(uarm, oldprop, TRUE);

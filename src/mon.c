@@ -657,7 +657,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_GIANT_ZOMBIE:
     case PM_ETTIN_ZOMBIE:
         corpstatflags |= CORPSTAT_ZOMBIE;
-        /* FALLTHRU */
+        FALLTHROUGH;
+        /*FALLTHRU*/
     case PM_KOBOLD_MUMMY:
     case PM_DWARF_MUMMY:
     case PM_GNOME_MUMMY:
@@ -1211,11 +1212,11 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_KING_OF_GAMES:
     case PM_DAL_ZETHIRE:
     case PM_DUELIST:
-        FALLTHROUGH;
-        /*FALLTHRU*/
 #else
     default:
 #endif
+        FALLTHROUGH;
+        /*FALLTHRU*/
  default_1:
         if (svm.mvitals[mndx].mvflags & G_NOCORPSE) {
             return (struct obj *) 0;
@@ -3667,7 +3668,7 @@ mondead(struct monst *mtmp)
                 break;
             }
             FALLTHROUGH;
-            /* FALLTHRU */
+            /*FALLTHRU*/
         case 2: /* randomly */
             (void) makemon(mtmp->data, 0, 0, NO_MM_FLAGS);
             break;

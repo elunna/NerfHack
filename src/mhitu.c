@@ -218,7 +218,8 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
                     pline("%s %s you!", Monst_name, weaphitmsg(mwep, mtmp));
                 return;
             }
-            /* FALLTHRU */
+            FALLTHROUGH;
+            /*FALLTHRU*/
         case AT_CLAW: {
             verb = barehitmsg(mtmp);
             if (verb) {
@@ -226,7 +227,8 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
                 return;
             }
         }
-        /* FALLTHRU */
+            FALLTHROUGH;
+            /*FALLTHRU*/
         default:
             verb = "hits";
         }

@@ -5312,7 +5312,7 @@ readobjnam(char *bp, struct obj *no_wish)
     case SLIME_MOLD:
         d.otmp->spe = d.ftype;
         FALLTHROUGH;
-    /* FALLTHRU */
+        /*FALLTHRU*/
     case SKELETON_KEY:
     case CHEST:
     case LARGE_BOX:

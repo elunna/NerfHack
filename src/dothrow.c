@@ -2766,7 +2766,8 @@ breaktest(struct obj *obj)
     case EXPENSIVE_CAMERA:
         if (Role_if(PM_CARTOMANCER))
             return 0;
-    /* FALLTHROUGH */
+        FALLTHROUGH;
+        /* FALLTHRU */
     case POT_WATER: /* really, all potions */
     case CREAM_PIE:
     case MELON:

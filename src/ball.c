@@ -751,7 +751,7 @@ drag_ball(coordxy x, coordxy y, int *bc_control,
                 break;
             }
             FALLTHROUGH;
-        /* FALLTHRU */
+            /*FALLTHRU*/
         case 1:
         case 0:
             /* do nothing if possible */

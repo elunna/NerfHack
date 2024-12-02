@@ -1094,7 +1094,8 @@ dig_up_grave(coord *cc)
                                            : "Something was sleeping here");
             break;
         }
-        /* FALLTHROUGH */
+        FALLTHROUGH;
+        /*FALLTHRU*/
     default:
         /* No corpse */
         pline_The("grave is unoccupied.  Strange...");

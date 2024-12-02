@@ -3198,6 +3198,7 @@ use_stone(struct obj *tstone)
         case IRON:
             if (tstone->otyp == FLINT)
                 make_sparks = TRUE;
+            FALLTHROUGH;
             /* FALLTHRU */
         default:
             /* Objects passing the is_flimsy() test will not
@@ -4781,7 +4782,8 @@ doapply(void)
             You("need both %s free!", makeplural(body_part(HAND)));
             return ECMD_OK;
         }
-        /* FALLTHROUGH */
+        FALLTHROUGH;
+        /* FALLTHRU */
     case CREDIT_CARD:
     case SKELETON_KEY:
         /* Lockpicking requires a free hand. */
@@ -4919,13 +4921,13 @@ doapply(void)
             curse(obj);
             break;
         }
+        FALLTHROUGH;
         /* FALLTHROUGH */
     case LUCKSTONE:
     case HEALTHSTONE:
     case LOADSTONE:
     case TOUCHSTONE:
     case WHETSTONE:
-
     case ROCK:
         res = use_stone(obj);
         break;

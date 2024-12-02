@@ -891,7 +891,7 @@ cprefx(int pm)
             delayed_killer(SLIMED, KILLED_BY_AN, "");
         }
         FALLTHROUGH;
-    /* Fall through */
+        /*FALLTHRU*/
     default:
         if (acidic(&mons[pm]) && Stoned)
             fix_petrification();

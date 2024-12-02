@@ -1335,7 +1335,7 @@ dipsink(struct obj *obj)
             break;
         }
         FALLTHROUGH;
-        /* FALLTHRU */
+        /*FALLTHRU*/
     case POT_GAIN_LEVEL:
     case POT_GAIN_ENERGY:
     case POT_MONSTER_DETECTION:
