@@ -1028,7 +1028,7 @@ TOOL("magic marker",        NoDes, 1, 0, 1, 1, 3,  2, 500, PLASTIC, CLR_RED,
 /* traps */
 TOOL("land mine",           NoDes, 1, 0, 0, 0, 0, 40,180, IRON, CLR_RED,
                                                                 LAND_MINE),
-TOOL("beartrap",            NoDes, 1, 0, 0, 0, 0, 50, 60, IRON, HI_METAL,
+TOOL("beartrap",            NoDes, 1, 1, 0, 0, 0, 50, 60, IRON, HI_METAL,
                                                                 BEARTRAP),
 /* instruments;
    "If tin whistles are made out of tin, what do they make foghorns out of?" */
