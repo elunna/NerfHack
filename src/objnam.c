@@ -807,8 +807,6 @@ xname_flags(
             break;
         } else if (is_boots(obj) || is_gloves(obj)) {
             Strcpy(buf, "pair of ");
-            FALLTHROUGH;
-            /*FALLTHRU*/
         } else if (is_shield(obj) && !dknown) {
             if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD) {
                 Strcpy(buf, "shield");
