@@ -1094,6 +1094,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_CAPTAIN:
     case PM_WATCHMAN:
     case PM_WATCH_CAPTAIN:
+    case PM_WINTERCLOAK:
     case PM_MEDUSA:
     case PM_WIZARD_OF_YENDOR:
     case PM_CROESUS:

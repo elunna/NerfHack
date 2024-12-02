@@ -4251,6 +4251,20 @@
         MH_HUMAN, 12, CLR_GREEN, WATCH_CAPTAIN),
     /* Unique humans not tied to quests.
      */
+    MON(NAM("Wintercloak"), S_DRAGON,
+        LVL(16, 14, 2, 30, -5), (G_NOGEN | G_UNIQ),
+        A(ATTK(AT_BREA, AD_COLD, 4, 6),
+          ATTK(AT_BITE, AD_PHYS, 3, 8),
+          ATTK(AT_CLAW, AD_COLD, 1, 8),
+          ATTK(AT_CLAW, AD_COLD, 1, 8),
+          NO_ATTK, NO_ATTK),
+        SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_COLD, MR_COLD,
+        M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
+            | M1_CARNIVORE,
+        M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS
+            | M2_MAGIC | M2_STALK | M2_PNAME | M2_FEMALE,
+        M3_INFRAVISION,
+        MH_DRAGON, 20, CLR_WHITE, WINTERCLOAK),
     MON(NAM("Medusa"), S_HUMAN,
         LVL(24, 12, -8, 50, -15), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 4),
