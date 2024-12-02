@@ -275,7 +275,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
     /* creatures who are directly resistant to magical scaring:
      * humans aren't monsters
      * uniques have ascended their base monster instincts
-     * Rodney, lawful minions, Angels, the Riders, shopkeepers
+     * Rodney, lawful minions, Angels, the Riders, shopkeepers, zombies,
      * inside their own shop, priests inside their own temple */
     if (mtmp->iswiz || is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL]
         || is_rider(mtmp->data)
@@ -283,6 +283,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
         || mtmp->data->mlet == S_HUMAN || unique_corpstat(mtmp->data)
         || (mtmp->isshk && inhishop(mtmp))
         || (mtmp->ispriest && inhistemple(mtmp))
+        || is_zombie(mtmp->data)
         || mtmp->mberserk || mtmp->mrabid)
         return FALSE;
 
