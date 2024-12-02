@@ -457,6 +457,11 @@ m_initweap(struct monst *mtmp)
             if (!rn2(10))
                 (void) mongets(mtmp, DWARVISH_CLOAK);
         } else if (is_dwarf(ptr)) {
+            if (!rn2(In_mines(&u.uz) ? 40 : 8)) {
+                otmp = mongets(mtmp, POT_BOOZE);
+                otmp->quan = rnd(3);
+                otmp->owt = weight(otmp);
+            }
             if (rn2(7))
                 (void) mongets(mtmp, DWARVISH_CLOAK);
             if (rn2(7))
