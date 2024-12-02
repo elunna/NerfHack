@@ -1215,8 +1215,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
 #else
     default:
 #endif
-        FALLTHROUGH;
-        /*FALLTHRU*/
  default_1:
         if (svm.mvitals[mndx].mvflags & G_NOCORPSE) {
             return (struct obj *) 0;
