@@ -57,8 +57,12 @@ local object = { "[", ")", "*", "%" };
 shuffle(object)
 
 -- Random registers initialization
-local places = { {15,01},{11,01},{09,01},{05,01},{03,03},
-                 {03,07},{05,09},{08,09},{12,09},{05,09} }
+local places = { {05,01},{09,01},{11,01},{15,01},
+                 {03,03},
+                 {03,07},
+                 {05,06},{08,09},{12,09},{14,09},
+                 {02,15}}
+ -- Prisoners appear at {03,13}, {06,13}, {10,13}
 shuffle(places)
 
 local monster = { "L", "L", "E", "E", "R", "R", "T", "T", "O", "O" }
@@ -69,7 +73,6 @@ des.teleport_region({ region = {47,01,75,09}, region_islev=1, exclude={17,00,44,
 
 -- Stairs
 des.levregion({ region = {33,15,68,20}, region_islev=1, exclude={00,00,00,00}, type="stair-up" })
--- des.levregion({ region = {69,00,79,20}, region_islev=1, exclude={0,0,62,16}, type="stair-down" })
 
 -- Non diggable walls
 -- castle is non-diggable
@@ -173,7 +176,7 @@ des.monster({ class = "D", coord = places[8] })
 des.monster({ class = "D", coord = places[9] })
 
 -- the prisoners
-des.monster({ id = "prisoner", x = 02, y = 15, peaceful=1,asleep=1 })
+-- des.monster({ id = "prisoner", x = 02, y = 15, peaceful=1,asleep=1 })
 des.monster({ id = "prisoner", x = 03, y = 13, peaceful=1 })
 des.monster("prisoner",06,13)
 des.monster("prisoner",10,13)
