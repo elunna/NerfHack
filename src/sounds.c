@@ -367,15 +367,17 @@ dosounds(void)
             && !strchr(u.ushops, (int) (ROOM_INDEX(sroom) + ROOMOFFSET))) {
             const char *name = shkname(sroom->resident);
             struct eshk *eshkp = ESHK(sroom->resident);
-            if (!eshkp->visitct) {
+            if (!eshkp->visitct || !*eshkp->customer
+                || strncmp(eshkp->customer, svp.plname, PL_NSIZ)) {
                 name = "someone";
-            }
-            static const char *const shop_msg[3] = {
-                "%s cursing shoplifters.",
-                "the chime of a cash register.", "Neiman and Marcus arguing!",
-            };
-            You_hear("%s %s", shop_msg[rn2(2) + hallu], name);
-        }
+                }
+            if (hallu && rn2(2))
+                You_hear("Neiman and Marcus arguing!");
+            else if (hallu || rn2(2))
+                You_hear("the chime of a cash register.");
+            else
+                You_hear("%s cursing shoplifters.", name);
+           }
         return;
     }
     if (svl.level.flags.has_temple && !rn2(200)
