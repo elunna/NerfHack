@@ -2474,8 +2474,8 @@ rnd_offensive_item(struct monst *mtmp)
             || passes_walls(pm) || noncorporeal(pm) || unsolid(pm))
             return SCR_EARTH;
     }
-    FALLTHROUGH;
-    /* FALLTHRU */
+        FALLTHROUGH;
+        /*FALLTHRU*/
     case 1:
         return WAN_STRIKING;
     case 2:

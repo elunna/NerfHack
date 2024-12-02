@@ -287,7 +287,7 @@ strategy(struct monst *mtmp)
         if (mtmp->data != &mons[PM_WIZARD_OF_YENDOR])
             return (unsigned long) STRAT_HEAL;
         FALLTHROUGH;
-        /* FALLTHRU */
+        /*FALLTHRU*/
     case 2:
         dstrat = STRAT_HEAL;
         break;

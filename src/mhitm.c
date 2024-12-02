@@ -794,7 +794,8 @@ hitmm(
                                  weaphitmsg(mwep, magr));
                     break;
                 }
-                /* FALLTHRU */
+                FALLTHROUGH;
+                /*FALLTHRU*/
             case AT_CLAW: {
                 const char *verb = barehitmsg(magr);
                 Snprintf(buf, sizeof(buf), "%s %s", magr_name,

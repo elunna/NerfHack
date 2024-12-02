@@ -1337,7 +1337,7 @@ xputc_core(int ch)
         if (console.cursor.Y < console.height - 1)
             console.cursor.Y++;
         FALLTHROUGH;
-    /* FALLTHRU */
+        /*FALLTHRU*/
     case '\r':
         console.cursor.X = 1;
         break;

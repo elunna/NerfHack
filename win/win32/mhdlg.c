@@ -147,7 +147,7 @@ GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             NH_W2A(wbuf2, data->result, data->result_size);
 
         FALLTHROUGH;
-        /* FALLTHRU */
+        /*FALLTHRU*/
 
         /* cancel button was pressed */
         case IDCANCEL:
@@ -248,7 +248,7 @@ ExtCmdDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (*data->selection == LB_ERR)
                 *data->selection = -1;
             FALLTHROUGH;
-            /* FALLTHRU */
+            /*FALLTHRU*/
 
         /* CANCEL button ws clicked */
         case IDCANCEL:

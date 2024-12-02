@@ -7411,7 +7411,7 @@ passive_obj(
             break;
         }
         FALLTHROUGH;
-        /* FALLTHRU */
+        /*FALLTHRU*/
     default:
         break;
     }
@@ -7746,7 +7746,8 @@ bite_monster(struct monst *mon)
             You("don't feel very well.");
             Slimed = 10L;
         }
-        /* Fall through */
+        FALLTHROUGH;
+        /*FALLTHRU*/
     default:
         if (acidic(mon->data) && Stoned)
 	        fix_petrification();

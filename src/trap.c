@@ -7227,7 +7227,7 @@ chest_trap(
             }
             /* No mon data was made, so just... */
         }
-        /* FALLTHROUGH*/
+        /*FALLTHRU*/
         case 3: {
             /* Cream pie in the face */
             struct obj pseudo;

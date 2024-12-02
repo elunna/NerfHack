@@ -383,7 +383,7 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #define FALLTHROUGH __attribute__((fallthrough))
 #endif  /* __clang_major__ greater than or equal to 9 */
 #endif  /* __clang_major__ is defined */
-#endif  /* FALLTHROUGH */
+#endif  /*FALLTHRU*/
 #if !defined(DO_DEFINE_NONNULLS)
 #define DO_DEFINE_NONNULLS
 #endif

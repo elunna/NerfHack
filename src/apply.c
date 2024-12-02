@@ -3199,7 +3199,7 @@ use_stone(struct obj *tstone)
             if (tstone->otyp == FLINT)
                 make_sparks = TRUE;
             FALLTHROUGH;
-            /* FALLTHRU */
+            /*FALLTHRU*/
         default:
             /* Objects passing the is_flimsy() test will not
                scratch a stone.  They will leave streaks on
@@ -4783,7 +4783,7 @@ doapply(void)
             return ECMD_OK;
         }
         FALLTHROUGH;
-        /* FALLTHRU */
+        /*FALLTHRU*/
     case CREDIT_CARD:
     case SKELETON_KEY:
         /* Lockpicking requires a free hand. */
@@ -4922,7 +4922,7 @@ doapply(void)
             break;
         }
         FALLTHROUGH;
-        /* FALLTHROUGH */
+        /*FALLTHRU*/
     case LUCKSTONE:
     case HEALTHSTONE:
     case LOADSTONE:

@@ -564,7 +564,7 @@ outrumor(
     case BY_COOKIE:
         pline(fortune_msg);
         FALLTHROUGH;
-    /* FALLTHRU */
+        /*FALLTHRU*/
     case BY_PAPER:
         pline("It reads:");
         break;

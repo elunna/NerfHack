@@ -711,7 +711,7 @@ const char *str;
 
     case NHW_MENU:
         mar_change_menu_2_text(window);
-    /* Fallthru */
+        /*FALLTHRU*/
     case NHW_TEXT:
         mar_putstr_text(window, attr, str);
         break;

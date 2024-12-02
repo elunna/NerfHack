@@ -1635,7 +1635,8 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
                         break;
                     case LIFESAVED:
                         effect = "life saving";
-                        /* FALLTHRU */
+                        FALLTHROUGH;
+                        /*FALLTHRU*/
                     /* for things that don't work with "Makes you" */
                     case GLIB:
                     case WOUNDED_LEGS:

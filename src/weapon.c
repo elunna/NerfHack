@@ -1827,7 +1827,7 @@ weapon_hit_bonus(struct obj *weapon)
         default:
             impossible(bad_skill, P_SKILL(type));
             FALLTHROUGH;
-            /* FALLTHRU */
+            /*FALLTHRU*/
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus = -4;
@@ -1853,7 +1853,7 @@ weapon_hit_bonus(struct obj *weapon)
         default:
             impossible(bad_skill, skill);
             FALLTHROUGH;
-            /* FALLTHRU */
+            /*FALLTHRU*/
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus = -9;
@@ -1928,7 +1928,7 @@ weapon_dam_bonus(struct obj *weapon)
         default:
             impossible("weapon_dam_bonus: bad skill %d", P_SKILL(type));
             FALLTHROUGH;
-        /* FALLTHRU */
+            /*FALLTHRU*/
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus = -2;

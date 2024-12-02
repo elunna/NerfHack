@@ -847,7 +847,7 @@ do_grep_control(char *buf)
     case '!': /* if not ID */
         isif = 0;
         FALLTHROUGH;
-    /* FALLTHRU */
+        /*FALLTHRU*/
     case '?': /* if ID */
         if (grep_sp == GREP_STACK_SIZE - 2) {
             Fprintf(stderr, "stack overflow at line %d.", grep_lineno);

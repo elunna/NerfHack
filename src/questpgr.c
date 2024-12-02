@@ -407,7 +407,7 @@ convert_line(char *in_line, char *out_line)
                 break;
             }
             FALLTHROUGH;
-            /* FALLTHRU */
+            /*FALLTHRU*/
         default:
             *cc++ = *c;
             break;
