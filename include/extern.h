@@ -686,6 +686,7 @@ extern char *monverbself(struct monst *, char *,
                          const char *, const char *) NONNULLARG123;
 extern char *minimal_monnam(struct monst *, boolean);
 extern char *bogusmon(char *, char *) NONNULLARG1;
+extern void mintroduce(struct monst *) NONNULLARG1;
 extern char *rndmonnam(char *);
 extern const char *hcolor(const char *);
 extern const char *rndcolor(void);

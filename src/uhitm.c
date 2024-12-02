@@ -5597,20 +5597,23 @@ mhitm_ad_sedu(
             mhm->hitflags = M_ATTK_AGR_DONE; /* return 3??? */
             mhm->done = TRUE;
             return;
-        } else if (magr->mcan) {
-            if (!Blind)
-                pline("%s tries to %s you, but you seem %s.",
-                      Adjmonnam(magr, "plain"),
-                      flags.female ? "charm" : "seduce",
-                      flags.female ? "unaffected" : "uninterested");
-            if (rn2(3)) {
-                if (!tele_restrict(magr))
-                    (void) rloc(magr, RLOC_MSG);
-                mhm->hitflags = M_ATTK_AGR_DONE; /* return 3??? */
-                mhm->done = TRUE;
+        } else {
+            mintroduce(magr);
+            if (magr->mcan) {
+                if (!Blind) {
+                    pline("%s tries to %s you, but you seem %s.",
+                        Adjmonnam(magr, "plain"),
+                        flags.female ? "charm" : "seduce",
+                        flags.female ? "unaffected" : "uninterested");
+                }
+                if (rn2(3)) {
+                    if (!tele_restrict(magr))
+                        (void) rloc(magr, RLOC_MSG);
+                    mhm->hitflags = M_ATTK_AGR_DONE; /* return 3??? */
+                    mhm->done = TRUE;
+                }
                 return;
             }
-            return;
         }
         buf[0] = '\0';
         switch (steal(magr, buf)) {
@@ -5726,12 +5729,14 @@ mhitm_ad_ssex(struct monst *magr, struct attack *mattk, struct monst *mdef,
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         if (SYSOPT_SEDUCE) {
-            if (could_seduce(magr, mdef, mattk) == 1 && !magr->mcan)
+            if (could_seduce(magr, mdef, mattk) == 1 && !magr->mcan) {
+                mintroduce(magr);
                 if (doseduce(magr)) {
                     mhm->hitflags = M_ATTK_AGR_DONE;
                     mhm->done = TRUE;
                     return;
                 }
+            }
             return;
         }
         mhitm_ad_sedu(magr, mattk, mdef, mhm);
