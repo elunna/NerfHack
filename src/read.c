@@ -1320,7 +1320,8 @@ seffect_enchant_armor(struct obj **sobjp)
     }
     /* sometimes armor can be enchanted to a higher limit than usual */
     special_armor = (is_elven_armor(otmp->otyp) && Race_if(PM_ELF))
-        || (Role_if(PM_WIZARD) && otmp->otyp == CORNUTHAUM);
+        || (Role_if(PM_WIZARD) && otmp->otyp == CORNUTHAUM)
+        || (Role_if(PM_ARCHEOLOGIST) && otmp->otyp == FEDORA);
     if (scursed)
         same_color = (otmp->otyp == BLACK_DRAGON_SCALE_MAIL
                       || otmp->otyp == BLACK_DRAGON_SCALES);
