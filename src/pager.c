@@ -910,7 +910,7 @@ static const char * attacktypes[] = {
     "bearhug",  /* AT_HUGS 7 */
     "spit",     /* AT_SPIT 10 */
     "engulf",   /* AT_ENGL 11 */
-    "breath",   /* AT_BREA 12 */
+    "breathe",   /* AT_BREA 12 */
     "explode",  /* AT_EXPL 13 */
     "explode on death", /* AT_BOOM 14 */
     "gaze",     /*  AT_GAZE 15 */
@@ -1140,7 +1140,6 @@ add_mon_info(winid datawin, struct permonst * pm)
     if (!noncorporeal(pm))
         APPENDC(unsolid(pm), "unsolid");
     APPENDC(acidic(pm), "acidic");
-    APPENDC(thick_skinned(pm), "thick-skinned");
     APPENDC(poisonous(pm), "poisonous");
     APPENDC(regenerates(pm), "regenerating");
     APPENDC(is_reviver(pm), "reviving");
@@ -1150,14 +1149,20 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_undead(pm), "undead");
     if (!is_undead(pm))
         APPENDC(nonliving(pm), "nonliving");
+    APPENDC(mindless(pm), "mindless");
     APPENDC(telepathic(pm), "telepathic");
     APPENDC(is_displacer(pm), "displaces monsters");
+    APPENDC(strongmonst(pm), "strong");
     APPENDC(is_immobile(pm), "stationary");
     APPENDC(follows_you(pm), "follows you");
     APPENDC(keeps_distance(pm), "skittish");
     APPENDC(is_accurate(pm), "accurate");
     APPENDC(infravisible(pm), "infravisible");
-
+    APPENDC(carnivorous(pm), "carnivorous");
+    APPENDC(herbivorous(pm), "herbivorous");
+    APPENDC(metallivorous(pm), "metallivorous");
+    APPENDC(lithivorous(pm), "lithivorous");
+    APPENDC(inediate(pm), "inediate");
     if (*buf) {
         Snprintf(buf2, BUFSZ, "Is %s.", buf);
         MONPUTSTR(buf2);
@@ -1177,6 +1182,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_jumper(pm), "jump");
     APPENDC(is_outflanker(pm), "flank");
     APPENDC(is_berserker(pm), "go berserk");
+    APPENDC(lays_eggs(pm), "lay eggs");
     APPENDC(webmaker(pm), "spin webs");
     APPENDC(needspick(pm), "mine");
     APPENDC(innate_reflector(pm), "has reflective scales");
@@ -1189,6 +1195,8 @@ add_mon_info(winid datawin, struct permonst * pm)
     }
 
     /* Full-line remarks. */
+    if (thick_skinned(pm))
+        MONPUTSTR("Has a thick hide.");
     if (touch_petrifies(pm))
         MONPUTSTR("Petrifies by touch.");
     if (infravision(pm))
