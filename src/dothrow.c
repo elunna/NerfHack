@@ -2345,7 +2345,8 @@ thitmonst(
                 return 1;
             }
             if (mon->data == &mons[PM_ADHERER] && !DEADMONSTER(mon)) {
-                pline("The %s sticks to %s", xname(obj), mon_nam(mon));
+                if (canseemon(mon))
+                    pline("The %s sticks to %s.", xname(obj), mon_nam(mon));
 
                 if (uwep && obj == uwep) {
                     dropx(uwep);
