@@ -2030,7 +2030,7 @@
         M1_HUMANOID | M1_SEE_INVIS,
         M2_MINION | M2_STALK | M2_NASTY | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION,
-        MH_ANGEL, 12, CLR_YELLOW, ALEAX),
+        MH_ANGEL, 16, CLR_YELLOW, ALEAX),
     /* Angels start with the emin extension attached, and usually have
        the isminion flag set; however, non-minion Angels can be tamed
        and will switch to edog (guardian Angel is handled specially and
