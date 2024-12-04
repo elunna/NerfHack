@@ -69,6 +69,9 @@ des.trap("hole", 24,10)
 des.object({ class = "=" });
 des.object({ class = "/" });
 
+-- The delicatessen:
+des.region({ region={08,01,12,04}, lit=1, type="food shop", filled=1 })
+
 -- Two random mimics!
 des.monster("m")
 des.monster("m")
