@@ -7259,9 +7259,9 @@ chest_trap(
                     pline("A loud siren blares from %s!", the(xname(obj)));
                 else
                     pline_The("hinges on %s let out an %s screech!",
+                        the(xname(obj)),
                         rn2(2) ? "unruly" :
-                        rn2(2) ? "ear-splitting" :"obstreperous",
-                        the(xname(obj)));
+                        rn2(2) ? "ear-splitting" : "obstreperous");
             }
             awaken_monsters(d(4, 6));
             break;
