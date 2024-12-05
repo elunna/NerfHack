@@ -1358,20 +1358,21 @@ dump_glyphids(void)
 }
 #endif /* !NODUMPENUMS */
 
-
 boolean
 vamp_can_regen(void)
 {
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
-        if (uwep && is_silver(uwep) && !is_quest_artifact(uwep) && !uarmg)
+        if (uwep && is_silver(uwep) && !is_quest_artifact(uwep)
+                && !safegloves(uarmg))
             return 0;
-        if (uswapwep && is_silver(uswapwep) && u.twoweap && !uarmg)
+        if (uswapwep && is_silver(uswapwep) && u.twoweap
+                && !safegloves(uarmg))
             return 0;
         /* Silver coated DSM*/
         if (uarm && is_silver(uarm) && !uarmu)
             return 0;
         /* Shield of reflection */
-        if (uarms && is_silver(uarms) && !uarmg)
+        if (uarms && is_silver(uarms) && !safegloves(uarmg))
             return 0;
         /* Silver rings */
         if (uleft && is_silver(uleft))
