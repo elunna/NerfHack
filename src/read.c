@@ -1385,13 +1385,13 @@ seffect_enchant_armor(struct obj **sobjp)
         return;
     }
 
-    /* Items which provide magic resistance also resist enchanting.
-     * They don't resist when their enchantment is negative, that is
+    /* Items which provide magic resistance also can resist enchanting.
+     * They don't resist when their enchantment is zero or negative, that is
      * "un"-enchanting a bad enchantment. But for anything starting at
-     * +0 has a 1 in (enchantment + 2) chance of failure. */
+     * +1 has a x in 7 chance of failure. */
     resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
         || defends(AD_MAGM, otmp);;
-    if (resists_magic && otmp->spe >= 0 && rn2(otmp->spe + 2)) {
+    if (resists_magic && otmp->spe > rn2(7) + 1) {
         pline("%s vibrates and resists!", Yname2(otmp));
         return;
     }
@@ -1839,7 +1839,7 @@ seffect_enchant_weapon(struct obj **sobjp)
      /* Items that grant magic resistance themselves resist enchantment. */
     resists_magic = uwep && (objects[uwep->otyp].oc_oprop == ANTIMAGIC
         || defends(AD_MAGM, uwep));
-    if (uwep && resists_magic && uwep->spe >= 0 && rn2(uwep->spe + 2)) {
+    if (uwep && resists_magic && uwep->spe > rn2(13) + 1) {
         pline("%s vibrates and resists!", Yname2(uwep));
         return;
     }
