@@ -190,7 +190,7 @@ static NEARDATA struct artifact artilist[] = {
     /* From SLASH'EM */
     A("Skullcrusher", CLUB,
       (SPFX_RESTR), 0, 0,
-      PHYS(PENTOHIT, 20), NO_DFNS, NO_CARY, 0,
+      PHYS(PENTOHIT, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM, 300L, NO_COLOR, SKULLCRUSHER),
 
     /*Magicbane is a bit different!  Its magic fanfare unbalances victims
