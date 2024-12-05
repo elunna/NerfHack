@@ -187,10 +187,12 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(PENTOHIT, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM, 200L, CLR_RED, GIANTSLAYER),
 
-    /* From SLASH'EM */
-    A("Skullcrusher", CLUB,
+    /* From SLASH'EM; changed to an AKLYS.
+     * Skullcrusher has no to-hit penalty because it's a simple weapon but
+     * also because it makes the aklys very hard to connect */
+    A("Skullcrusher", AKLYS,
       (SPFX_RESTR), 0, 0,
-      PHYS(PENTOHIT, 10), NO_DFNS, NO_CARY, 0,
+      PHYS(0, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM, 300L, NO_COLOR, SKULLCRUSHER),
 
     /*Magicbane is a bit different!  Its magic fanfare unbalances victims
