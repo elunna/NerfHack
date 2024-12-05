@@ -404,7 +404,7 @@
 #define HWithering u.uprops[WITHERING].intrinsic
 #define EWithering u.uprops[WITHERING].extrinsic
 #define Withering (HWithering || EWithering) && !BWithering
-#define BWithering Disint_resistance /* parallel resistances */
+#define BWithering EDisint_resistance /* parallel resistances */
 
 #define Rabid u.uprops[RABID].intrinsic
 

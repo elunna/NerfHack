@@ -650,7 +650,7 @@ regen_hp(int wtcap)
            once u.mh reached u.mhmax; that may have been convenient
            for the player, but it didn't make sense for gameplay...] */
         if (u.uhp < u.uhpmax
-	        && vamp_can_regen()
+	    && vamp_can_regen()
             && !Rabid
             /* Non-undead cannot regenerate in the valley */
             && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))
