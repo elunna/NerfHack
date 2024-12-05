@@ -3536,7 +3536,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         } else
             singlepotion = potion;
 
-           /* MRKR: Gems dissolve in acid to produce new potions */
+        /* MRKR: Gems dissolve in acid to produce new potions */
         if (obj->oclass == GEM_CLASS && potion->otyp == POT_ACID) {
             struct obj *singlegem = (obj->quan > 1L ? splitobj(obj, 1L) : obj);
 
@@ -3597,6 +3597,16 @@ potion_dip(struct obj *obj, struct obj *potion)
                           newbuf);
             else
                 pline("Something happens.");
+
+            /* Auto-id potions of sickness/fruit;
+             * in the future it may be worth adding another
+             * recipe that alchemizes a potion when mixed
+             * with a unihorn so this isn't as easy. */
+            if (obj->otyp == UNICORN_HORN && old_otyp == POT_SICKNESS
+                && mixture == POT_FRUIT_JUICE) {
+                makeknown(POT_SICKNESS);
+                makeknown(POT_FRUIT_JUICE);
+            }
 
             if (old_dknown
                 && !objects[old_otyp].oc_name_known
