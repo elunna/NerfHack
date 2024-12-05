@@ -2086,8 +2086,10 @@ bestow_artifact(void)
                                 "was bestowed with %s by %s",
                                 artiname(otmp->oartifact),
                                 align_gname(u.ualign.type));
-                /* make sure we can use this weapon */
-                unrestrict_weapon_skill(weapon_type(otmp));
+                /* make sure we can use this weapon
+                 * (only for the first gift) */
+                if (u.ugifts == 1)
+                    unrestrict_weapon_skill(weapon_type(otmp));
                 if (!Hallucination && !Blind) {
                     otmp->dknown = 1;
                     makeknown(otmp->otyp);
