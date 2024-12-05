@@ -1733,6 +1733,10 @@ surface(coordxy x, coordxy y)
         return "headstone";
     else if (IS_FOUNTAIN(levtyp))
         return "fountain";
+    else if (IS_SINK(levtyp))
+        return "sink";
+    else if (IS_TOILET(levtyp))
+        return "toilet";
     else if (On_stairs(x, y))
         return "stairs";
     else if (IS_WALL(levtyp) || levtyp == SDOOR)
