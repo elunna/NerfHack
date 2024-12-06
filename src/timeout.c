@@ -665,6 +665,9 @@ nh_timeout(void)
     if (flags.friday13)
         baseluck -= 1;
 
+    if (Role_if(PM_ARCHEOLOGIST) && uarmh && uarmh->otyp == FEDORA)
+        baseluck += 1;
+
     if (svq.quest_status.killed_leader)
         baseluck -= 4;
 
