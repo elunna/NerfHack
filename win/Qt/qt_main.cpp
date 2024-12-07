@@ -886,8 +886,8 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
     if (qt_settings != NULL) {
         auto glyphs = &qt_settings->glyphs();
         if (glyphs != NULL) {
-            maxwn = glyphs->width() * COLNO + 10;
-            maxhn = glyphs->height() * ROWNO * 6/4;
+            maxwn = glyphs->width() * (COLNO + 1);
+            maxhn = glyphs->height() * ROWNO * 6/4 + glyphs->height() * 10;
         }
     }
 
@@ -1444,19 +1444,19 @@ void NetHackQtMainWindow::ShowIfReady()
                                       : static_cast<QWidget *>(hsplitter);
         QWidget* vp = qt_compact_mode ? static_cast<QWidget *>(stack)
                                       : static_cast<QWidget *>(vsplitter);
-    message->Widget()->setParent(hp);
-    map->Widget()->setParent(vp);
-    status->Widget()->setParent(hp);
-    if ( qt_compact_mode ) {
-        message->setMap(map);
-        stack->addWidget(map->Widget());
-        stack->addWidget(message->Widget());
-        stack->addWidget(status->Widget());
-        raiseMap();
-    } else {
-        layout();
-    }
-    showMaximized();
+	message->Widget()->setParent(hp);
+	map->Widget()->setParent(vp);
+	status->Widget()->setParent(hp);
+	if ( qt_compact_mode ) {
+	    message->setMap(map);
+	    stack->addWidget(map->Widget());
+	    stack->addWidget(message->Widget());
+	    stack->addWidget(status->Widget());
+	    raiseMap();
+	} else {
+	    layout();
+	}
+	showNormal();
     } else if (isVisible()) {
     hide();
     }

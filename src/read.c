@@ -1123,6 +1123,12 @@ maybe_tame(struct monst *mtmp, struct obj *sobj)
            not tame the target, so call it even if taming gets resisted */
         if (!resist(mtmp, sobj->oclass, 0, NOTELL) || mtmp->isshk)
             (void) tamedog(mtmp, (struct obj *) 0, FALSE);
+        if (sobj->blessed && was_tame && mtmp->mtame) {
+            int new_tame = min(10, ACURR(A_CHA) / 2);
+
+            if (mtmp->mtame < new_tame)
+                mtmp->mtame = new_tame;
+        }
         if ((!was_peaceful && mtmp->mpeaceful) || (!was_tame && mtmp->mtame))
             return 1;
     }
@@ -1219,7 +1225,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     del_engr_at(x, y);
     water_damage_chain(svl.level.objects[x][y], FALSE);
     maybe_unhide_at(x, y);
-    
+
     if (ltyp == POOL && (mtmp = m_at(x, y)) != 0)
         (void) minliquid(mtmp);
     else
@@ -1614,7 +1620,7 @@ seffect_remove_curse(struct obj **sobjp)
     struct obj *obj, *nxto;
     long wornmask;
     gk.known = TRUE;
-    
+
     You_feel(!Hallucination
              ? (!confused ? "like someone is helping you."
                 : "like you need some help.")

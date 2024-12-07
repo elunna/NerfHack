@@ -173,8 +173,18 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     boolean disguised_mimic = (mtmp->data->mlet == S_MIMIC
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
     int healing_skill = ((P_SKILL(P_HEALING_SPELL) >= P_EXPERT) ? 10
-                        : (P_SKILL(P_HEALING_SPELL) == P_SKILLED) ? 8
-                        : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
+                    : (P_SKILL(P_HEALING_SPELL) == P_SKILLED) ? 8
+                    : (P_SKILL(P_HEALING_SPELL) == P_BASIC) ? 6 : 4);
+
+/* box_or_door(): mimic appearances that have locks */
+#define box_or_door(monst) \
+    ((M_AP_TYPE(monst) == M_AP_OBJECT                                   \
+      && ((monst)->mappearance == CHEST                                 \
+          || (monst)->mappearance == LARGE_BOX))                        \
+     || (M_AP_TYPE(monst) == M_AP_FURNITURE                             \
+         /* is_cmap_door() tests S_symbol values, and            */     \
+         /* mon->mappearance for furniture contains one of those */     \
+         && is_cmap_door((monst)->mappearance)))
 
     if (engulfing_u(mtmp))
         reveal_invis = FALSE;
@@ -436,10 +446,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     }
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
-        /* can't use Is_box() here */
-        if (disguised_mimic && (is_obj_mappear(mtmp, CHEST)
-                                || is_obj_mappear(mtmp, LARGE_BOX)))
-            seemimic(mtmp);
+        if (disguised_mimic && box_or_door(mtmp))
+            that_is_a_mimic(mtmp, TRUE); /*seemimic()*/
         wake = closeholdingtrap(mtmp, &learn_it);
         break;
     case WAN_PROBING:
@@ -450,9 +458,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         break;
     case WAN_OPENING:
     case SPE_KNOCK:
-        if (disguised_mimic && (is_obj_mappear(mtmp, CHEST)
-                                || is_obj_mappear(mtmp, LARGE_BOX)))
-            seemimic(mtmp);
+        if (disguised_mimic && box_or_door(mtmp))
+            that_is_a_mimic(mtmp, TRUE); /*seemimic()*/
         wake = FALSE; /* don't want immediate counterattack */
         if (mtmp == u.ustuck) {
             if (otyp == SPE_KNOCK) {
@@ -668,6 +675,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
     if (learn_it)
         learnwand(otmp);
     return ret;
+#undef box_or_door
 }
 
 /* hero is held by a monster or engulfed or holding a monster and has zapped
@@ -1976,10 +1984,9 @@ poly_obj(struct obj *obj, int id)
 
     /* Keep chest/box traps and poisoned ammo if we may */
     if (obj->otrapped && Is_box(otmp))
-        otmp->otrapped = TRUE;
-
+        otmp->otrapped = 1;
     if (obj->opoisoned && is_poisonable(otmp))
-        otmp->opoisoned = TRUE;
+        otmp->opoisoned = 1;
 
     if (id == STRANGE_OBJECT && obj->otyp == CORPSE) {
         /* turn crocodile corpses into shoes */

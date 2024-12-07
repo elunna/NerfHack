@@ -1483,6 +1483,9 @@ when hero who is poly'd into metallivore form eats a tin, bypass "smells like
 	along with the tin without asking
 digging in ice was handled inconsistently, particularly if done at the span
 	spot in front of closed drawbridge
+angry god may remove an intrinsic
+blessed scroll of taming increases tameness of already tame creatures
+blessed scroll of destroy armor asks which armor to destroy
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2118,6 +2121,7 @@ Qt: with a pick-one menu containing a pre-selected entry, clicking on that
 	instead of typing the selector letter toggled off preselected entry
 	but failed to toggle on the explicitly selected one; clicking again
 	after nothing was pre-selected anymore refused to toggle anything on
+Qt: don't show main window and tombstone window maximized by default
 tty: redraw unexplored locations as S_unexplored rather than <space> after
 	map has been partially overwritten by popup menu or text display
 tty: previous change resulted in remnants of previous level being shown on
@@ -2726,6 +2730,8 @@ enlightenment/attribute disclosure for saving-grace: include a line for have
 	"X " for explore mode, or "D " for debug mode if any of the games
 	shown in its menu weren't saved during normal play; if they're all
 	normal play, the prefix is suppressed
+tourists gain experience by seeing new types of creatures up close, and
+	going to new dungeon levels
 
 
 Platform- and/or Interface-Specific New Features
@@ -2863,9 +2869,8 @@ use %lu, not %d, in format string in timer_sanity_check() (pr #617 by argrath)
 bad cast making sp_lev chameleon light source (pr #625 by entrez)
 add Ray Chason's adaptation of nethack's Qt5 interface to work with Qt6 (issue
 	#525 followup comment by chasonr)
-mingw32 build updates and replacement of sys/windows/Makefile.gcc with new
-	sys/windows/Makefile.mingw32 and sys/windows/Makefile.mingw32.depend
-	(pr #661 by feiyunw)
+mingw32 build updates to replace contents of sys/windows/GNUmakefile and new
+	sys/windows/GNUmakefile.depend (pr #661 by feiyunw)
 mark various pointers to const char as const pointers (pr #624 by argrath)
 function fill_special_room() in sp_lev.c was dereferencing a pointer
 	argument prior to a subsequent check for a NULL pointer that

@@ -14,7 +14,7 @@
 
 staticfn void moveloop_preamble(boolean);
 staticfn void u_calc_moveamt(int);
-
+staticfn void see_nearby_monsters(void);
 #ifdef POSITIONBAR
 staticfn void do_positionbar(void);
 #endif
@@ -153,6 +153,28 @@ u_calc_moveamt(int wtcap)
     u.umovement += moveamt;
     if (u.umovement < 0)
         u.umovement = 0;
+}
+
+/* mark a monster type as seen when we see it next to us */
+staticfn void
+see_nearby_monsters(void)
+{
+    coordxy x, y;
+
+    if (Blind || !Role_if(PM_TOURIST))
+        return;
+
+    for (x = u.ux - 1; x <= u.ux + 1; x++)
+        for (y = u.uy - 1; y <= u.uy + 1; y++)
+            if (isok(x, y) && MON_AT(x, y)) {
+                struct monst *mtmp = m_at(x, y);
+
+                if (canseemon(mtmp) && !svm.mvitals[monsndx(mtmp->data)].seen_close) {
+                    svm.mvitals[monsndx(mtmp->data)].seen_close = TRUE;
+                    more_experienced(experience(mtmp, 0), 0);
+                    newexplevel();
+                }
+            }
 }
 
 #if defined(MICRO) || defined(WIN32)
@@ -447,6 +469,7 @@ moveloop_core(void)
         else if (u.uburied)
             under_ground(0);
 
+        see_nearby_monsters();
     } /* actual time passed */
 
     /****************************************/
@@ -667,7 +690,7 @@ regen_hp(int wtcap)
              * experience level and constitution.
              *
              * hackemslashem: To adapt these to the new 3.7 regeneration
-             * calculations, healthstones now dynamically calculate 
+             * calculations, healthstones now dynamically calculate
              * their bonus from the players level and CON.
              * For each blessed healthstone: Add 10% of the total
              * For each uncursed healthstone: Add 5% of the total
