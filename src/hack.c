@@ -3718,7 +3718,7 @@ check_special_room(boolean newlev)
         }
         if (msg_given)
             room_discovered(roomno);
-
+        
         if (rt != 0) {
             svr.rooms[roomno].rtype = OROOM;
             if (!search_special(rt)) {

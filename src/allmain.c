@@ -446,7 +446,6 @@ moveloop_core(void)
         else if (u.uburied)
             under_ground(0);
 
-        see_nearby_monsters();
     } /* actual time passed */
 
     /****************************************/

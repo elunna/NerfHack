@@ -3237,6 +3237,12 @@ room_discovered(int roomno)
     if (mptr && !mptr->msrooms[roomno].seen) {
         mptr->msrooms[roomno].seen = 1;
         recalc_mapseen();
+
+        /* XP for tourists entering new special rooms */
+        if (Role_if(PM_TOURIST)) {
+            more_experienced(level_difficulty(), 0);
+            newexplevel();
+        }
     }
 }
 
