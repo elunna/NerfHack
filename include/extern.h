@@ -1856,6 +1856,8 @@ extern void adj_erinys(unsigned);
 extern boolean calculate_flankers(struct monst *, struct monst *);
 extern coord find_flanking_pos(struct monst *, struct monst *);
 extern int flank_bonus(struct monst *);
+extern void see_monster_closeup(struct monst *) NONNULLARG1;
+extern void see_nearby_monsters(void);
 
 /* ### mondata.c ### */
 
