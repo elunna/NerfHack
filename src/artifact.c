@@ -1131,22 +1131,24 @@ spec_m2(struct obj *otmp)
     return 0L;
 }
 
+
+
 /* special attack bonus */
 int
 spec_abon(struct obj *otmp, struct monst *mon)
 {
     const struct artifact *weap = get_artifact(otmp);
+    int thit = 0;
 
     /* no need for an extra check for `NO_ATTK' because this will
        always return 0 for any artifact which has that attribute */
 
-    if (weap != &artilist[ART_NONARTIFACT]
-            && weap->attk.damn && spec_applies(weap, mon)) {
-
-        /* Artifacts are legendarily difficulty to handle... */
-        return -((int) weap->attk.damn);
-        }
-    return 0;
+    if (weap != &artilist[ART_NONARTIFACT]) {
+        thit = -PENTOHIT;
+        if (weap->attk.damn && spec_applies(weap, mon))
+            thit += (int) weap->attk.damn;
+    }
+    return thit;
 }
 
 /* special damage bonus */
