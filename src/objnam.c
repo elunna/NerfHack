@@ -3004,6 +3004,7 @@ makeplural(const char *oldstr)
             "ae",  /* algae, larvae, &c */
             "eaux", /* chateaux, gateaux */
             "dice",
+            "undead",
             "matzot", 0,
         };
 
