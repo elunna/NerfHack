@@ -819,6 +819,13 @@ dodrink(void)
         djinni_from_bottle(otmp);
         useup(otmp);
         return ECMD_TIME;
+    } else if ((objdescr_is(otmp, "fizzy") || otmp->otyp == POT_BOOZE)
+                && !Breathless && !rn2(3)) {
+        if (Hallucination)
+            verbalize("Burrrrp!");
+        else
+            You("let out a loud belch!");
+        wake_nearto(u.ux, u.ux, 7 * 7);
     }
     return dopotion(otmp);
 }

@@ -237,6 +237,12 @@ precheck(struct monst *mon, struct obj *obj)
             }
             return 2;
         }
+        if ((objdescr_is(obj, "fizzy") || obj->otyp == POT_BOOZE)
+            && breathless(mon->data) && !rn2(3)) {
+            if (!Deaf)
+                pline("%s lets out a loud belch!", Monnam(mon));
+            wake_nearto(mon->mx, mon->my, 7 * 7);
+        }
     }
     if (obj->oclass == WAND_CLASS && obj->cursed
         /* Monsters should know better, we are less forgiving to them... */

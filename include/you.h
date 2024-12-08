@@ -581,4 +581,6 @@ struct _hitmon_data {
 #define retained_alignment() \
     (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL])
 
+#define is_crude() (Role_if(PM_BARBARIAN) || Role_if(PM_CAVE_DWELLER))
+
 #endif /* YOU_H */

@@ -433,7 +433,7 @@ dosit(void)
                 && (Upolyd ? u.mh == u.mhmax : u.uhp == u.uhpmax)) {
             You("don't have to go...");
         } else {
-            if (Role_if(PM_BARBARIAN) || Role_if(PM_CAVE_DWELLER))
+            if (is_crude())
                 You("miss...");
             else
                 You("grunt.");
