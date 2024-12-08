@@ -1970,6 +1970,8 @@ rndmonst_adj(int minadj, int maxadj)
             continue;
         if (is_migo(ptr) && !svl.level.flags.lethe)
             continue;
+        if (is_dino(ptr) && !Role_if(PM_CAVE_DWELLER))
+            continue;
 
         /*
          * Weighted reservoir sampling:  select ptr with a
@@ -2027,6 +2029,8 @@ mk_gen_ok(int mndx, unsigned mvflagsmask, unsigned genomask)
     if (Is_mineend_level(&u.uz) && ptr == &mons[PM_VAMPIRE_MAGE])
         return FALSE;
     if (is_migo(ptr) && !svl.level.flags.lethe)
+        return FALSE;
+    if (is_dino(ptr) && !Role_if(PM_CAVE_DWELLER))
         return FALSE;
     if (In_mines(&u.uz)
         && (ptr == &mons[PM_ALHOON]
