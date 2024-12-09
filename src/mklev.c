@@ -790,10 +790,22 @@ mkgrass(void)
     int x, y,
         freq = max(30, 60 - (3 * depth(&u.uz))),
         passes = max(2, 8 - depth(&u.uz));
+    int vaultroom = (int) vault_occupied(u.urooms);
+    char rno;
+
     cellular(freq, passes);
 
     for (x = 0; x < COLNO; x++) {
         for (y = 0; y < ROWNO; y++) {
+            rno = levl[x][y].roomno;
+
+            /* Don't generate grass in shops or vaults -
+             * it breaks guard behavior for vaults. */
+            if (inside_shop(x, y) || rno == vaultroom) {
+                levl[x][y].bk = 0;
+                continue;
+            }
+
             if (levl[x][y].bk) {
                 if (levl[x][y].typ == ROOM) {
                     levl[x][y].typ = GRASS;
