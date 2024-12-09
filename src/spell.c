@@ -21,7 +21,7 @@
    initialization; spell memory is decremented at the end of each turn,
    including the turn on which the spellbook is read; without the extra
    increment, the hero used to get cheated out of 1 turn of retention */
-#define incrnknow(spell, x) (svs.spl_book[spell].sp_know = KEEN + (x))
+#define incrnknow(spell, amt, x) (svs.spl_book[spell].sp_know = amt + (x))
 
 #define spellev(spell) svs.spl_book[spell].sp_lev
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
@@ -359,10 +359,11 @@ staticfn int
 learn(void)
 {
     int i;
-    short booktype;
     char splname[BUFSZ];
     boolean costly = TRUE, faded_to_blank = FALSE;
     struct obj *book = svc.context.spbook.book;
+    short booktype = book->otyp;
+    int skill = objects[booktype].oc_skill;
 
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
     if (svc.context.spbook.delay && ublindf
@@ -420,7 +421,8 @@ learn(void)
         } else {
             Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
-            incrnknow(i, 1);
+            /* Restricted spells only get 1000 turns */
+            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED) ? (KEEN/10) : KEEN, 1);
             book->spestudied++;
             exercise(A_WIS, TRUE); /* extra study */
         }
@@ -438,7 +440,7 @@ learn(void)
         } else {
             svs.spl_book[i].sp_id = booktype;
             svs.spl_book[i].sp_lev = objects[booktype].oc_level;
-            incrnknow(i, 1);
+            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED) ? (KEEN/10) : KEEN, 1);
             book->spestudied++;
             if (!i)
                 /* first is always 'a', so no need to mention the letter */
@@ -2398,7 +2400,7 @@ initialspell(struct obj *obj)
     } else {
         svs.spl_book[i].sp_id = otyp;
         svs.spl_book[i].sp_lev = objects[otyp].oc_level;
-        incrnknow(i, 10000);
+        incrnknow(i, 0, 10000);
     }
     return;
 }
@@ -2452,7 +2454,7 @@ force_learn_spell(short otyp)
        are redundant but harmless; for an unknown spell, they're essential */
     svs.spl_book[i].sp_id = otyp;
     svs.spl_book[i].sp_lev = objects[otyp].oc_level;
-    incrnknow(i, 0); /* set spl_book[i].sp_know to KEEN; unlike when learning
+    incrnknow(i, KEEN, 0); /* set spl_book[i].sp_know to KEEN; unlike when learning
                       * a spell by reading its book, we don't need to add 1 */
     return spellet(i);
 }
