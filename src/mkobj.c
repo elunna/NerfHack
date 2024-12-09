@@ -3246,6 +3246,12 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
         if (obj->in_use || obj->bypass || obj->nomerge
             || (obj->otyp == BOULDER && obj->next_boulder))
             insane_obj_bits(obj, (struct monst *) 0);
+
+        if (obj->oclass == POTION_CLASS) {
+            if (obj->spe != 0)
+                insane_object(obj, "%s potion has non-0 spe! %s %s: %s",
+                          mesg, (struct monst *) 0);
+        }
     }
 }
 
