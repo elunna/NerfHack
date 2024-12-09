@@ -1653,13 +1653,14 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
 
     /* Successful casting increases the amount of time the cast
        spell is known. The players INT must be greater than 6 to be
-       able to help remember spells as they're cast. Only the
-       primary spellcasters (healers, priests, monks, wizards)
-       get this benefit. Roles casting their special spell also
-       get the bonus. */
-    if ((primary_spellcaster() || spellid(spell) == gu.urole.spelspec)
-            && ACURR(A_INT) > 6 && !svl.level.flags.lethe) {
-        svs.spl_book[spell].sp_know += CAST_BOOST;
+       able to help remember spells as they're cast. Primary spellcasters
+       get a much larger boost than non-primary. Roles casting their
+       special spell also get the full bonus. */
+    if (ACURR(A_INT) > 6 && !svl.level.flags.lethe) {
+        if (primary_spellcaster() || spellid(spell) == gu.urole.spelspec)
+            svs.spl_book[spell].sp_know += CAST_BOOST;
+        else
+            svs.spl_book[spell].sp_know += 50 + rnd(50);
         if (svs.spl_book[spell].sp_know >= MAX_KNOW)
             svs.spl_book[spell].sp_know = MAX_KNOW;
     }
