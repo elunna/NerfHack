@@ -803,8 +803,7 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
         case S_altar:
             amsk = altarmask_at(x, y);
             algn = Amask2align(amsk & AM_MASK);
-            Sprintf(buf, "%s%s%s %saltar",
-                    levl[x][y].splatpm ? "bloody " : "",
+            Sprintf(buf, "%s%s %saltar",
                     levl[x][y].cracked ? "cracked " : "",
                     /* like endgame high priests, endgame high altars
                        are only recognizable when immediately adjacent */
