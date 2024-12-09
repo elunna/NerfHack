@@ -206,7 +206,7 @@ static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
 static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
-static struct trobj OilPotion[] = { { POT_OIL, 1, POTION_CLASS, 1, 0 },
+static struct trobj OilPotion[] = { { POT_OIL, 0, POTION_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
 static struct trobj PoisonPotion[] = { { POT_SICKNESS, 0, POTION_CLASS, 2, 0 },
                                        { 0, 0, 0, 0, 0 } };
@@ -1366,7 +1366,7 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
     } else {
         if (objects[obj->otyp].oc_uses_known)
             obj->known = 1;
-        obj->dknown = obj->bknown = obj->rknown = 1;
+        obj->dknown = obj->bknown;
         if (Is_container(obj) || obj->otyp == STATUE) {
             obj->cknown = obj->lknown = 1;
             obj->otrapped = 0;

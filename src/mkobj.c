@@ -3250,7 +3250,7 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
         if (obj->oclass == POTION_CLASS) {
             if (obj->spe != 0)
                 insane_object(obj, "%s potion has non-0 spe! %s %s: %s",
-                          mesg, (struct monst *) 0);
+                      mesg, (struct monst *) 0);
         }
     }
 }

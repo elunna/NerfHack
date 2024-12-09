@@ -5528,9 +5528,7 @@ water_damage(
                 Your("%s %s further.", ostr, vtense(ostr, "dilute"));
 
             obj->otyp = POT_WATER;
-            obj->dknown = 0;
-            obj->blessed = obj->cursed = 0;
-            obj->odiluted = 0;
+            obj->dknown = obj->blessed = obj->cursed = obj->odiluted = 0;
             if (in_invent)
                 update_inventory();
             return ER_DAMAGED;
