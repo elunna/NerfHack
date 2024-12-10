@@ -2963,7 +2963,7 @@ dip_hands_ok(struct obj *obj)
 /* call hold_another_object() to deal with a transformed potion; its weight
    won't have changed but it might require an extra slot that isn't available
    or it might merge into some other carried stack */
-staticfn void
+void
 hold_potion(
     struct obj *potobj,
     const char *drop_fmt, const char *drop_arg,
