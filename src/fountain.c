@@ -551,8 +551,9 @@ doforging(void)
     /* worn or wielded objects */
     } else if (is_worn(obj1) || is_worn(obj2)) {
         You("must first %s the objects you wish to forge.",
-            ((obj1->owornmask & W_ARMOR)
-             || (obj2->owornmask & W_ARMOR)) ? "remove" : "unwield");
+            ((obj1->owornmask & W_QUIVER) || (obj2->owornmask & W_QUIVER)) ? "unquiver"
+            : ((obj1->owornmask & W_ARMOR) || (obj2->owornmask & W_ARMOR)) ? "remove"
+                                                                           : "unwield");
         return 0;
     /* Artifacts can never be applied to a non-artifact base. */
     } else if ((obj2->oartifact && !obj1->oartifact)
