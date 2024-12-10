@@ -1558,7 +1558,14 @@ diptoilet(struct obj *obj)
                 "alchemic blast", KILLED_BY_AN);
         breaktoilet(u.ux, u.uy);
     } else {
-        water_damage(obj, NULL, TRUE);
+        /* unlimited water dipping nerf here:
+           potions only turn to sickness */
+        if (obj->oclass == POTION_CLASS) {
+            if (!Blind && obj->otyp != POT_SICKNESS)
+                pline_The("toilet water contaminates your %s.", cxname(obj));
+            obj->otyp = POT_SICKNESS;
+        } else
+            water_damage(obj, NULL, TRUE);
     }
 
     if (is_poisonable(obj)) {
