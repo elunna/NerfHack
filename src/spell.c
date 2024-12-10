@@ -422,7 +422,7 @@ learn(void)
             Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
             /* Restricted spells only get 1000 turns */
-            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED) ? (KEEN/10) : KEEN, 1);
+            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED) ? (KEEN/5) : KEEN, 1);
             book->spestudied++;
             exercise(A_WIS, TRUE); /* extra study */
         }
@@ -440,7 +440,7 @@ learn(void)
         } else {
             svs.spl_book[i].sp_id = booktype;
             svs.spl_book[i].sp_lev = objects[booktype].oc_level;
-            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED) ? (KEEN/10) : KEEN, 1);
+            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED) ? (KEEN/5) : KEEN, 1);
             book->spestudied++;
             if (!i)
                 /* first is always 'a', so no need to mention the letter */
