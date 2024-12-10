@@ -8,7 +8,7 @@
 
 des.level_init({ style = "solidfill", fg = "-" });
 
-des.level_flags("mazelevel", "nommap", "noflip")
+des.level_flags("mazelevel", "nommap")
 
 des.map({ halign = "center", valign = "bottom", map = [[
  - - - - - - - - - - -- -- - - . - - - - - - - - - -- - - -- - - - - . - - |
