@@ -262,7 +262,8 @@ erode_obj(
         ostr += 4;
 
     /* Old gloves are already as damaged as they're going to get */
-    if (otmp && objdescr_is(otmp, "old gloves")) {
+    if (otmp && (objdescr_is(otmp, "old gloves")
+                 || otmp->otyp == SHIELD_OF_INTEGRITY)) {
         if (flags.verbose && print && (uvictim || vismon))
             pline("%s %s %s not affected by %s.",
                   uvictim ? "Your" : s_suffix(Monnam(victim)), ostr,
