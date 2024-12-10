@@ -83,7 +83,7 @@ des.door("closed",07,13)
 des.door("closed",55,13)
 
 if percent(50) then
-des.door("locked",26,05) -- Barracks
+    des.door("locked",26,05) -- Barracks
 else
     des.door("locked",15,05) -- Barracks
 end
