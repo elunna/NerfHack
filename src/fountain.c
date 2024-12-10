@@ -600,12 +600,11 @@ doforging(void)
         return 1;
     } else if (objtype) {
         /* success */
-        output = mksobj(objtype, TRUE, FALSE);
-
         You("place %s, then %s inside the forge.",
             the(xname(obj1)), the(xname(obj2)));
         pline("Raising your %s, you begin to forge the objects together...",
-                xname(uwep));
+              xname(uwep));
+        output = mksobj(objtype, TRUE, FALSE);
 
         /* if objects are enchanted or have charges,
             carry that over, and use the greater of the two */
@@ -628,6 +627,9 @@ doforging(void)
         /* ensure the final product is not degraded or poisoned
             in any way */
         output->oeroded = output->oeroded2 = output->opoisoned = 0;
+
+        /* no grease should be present after forging */
+        output->greased = 0;
 
         /* toss out old objects, add new one */
         if (obj1->otyp == recipe->typ1)
