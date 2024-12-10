@@ -672,6 +672,10 @@ doforging(void)
             else
                 pline_The("lava in the forge bubbles ominously.");
         }
+        /* remove result from inventory and re-insert it, possibly stacking
+          with compatible ones; override 'pickup_burden' while doing so */
+        hold_potion(output, "You juggle and drop %s!",
+                    doname(output), (const char *) 0);
     }
 
     return 1;

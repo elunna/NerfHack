@@ -42,8 +42,6 @@ staticfn boolean H2Opotion_dip(struct obj *, struct obj *, boolean,
                              const char *);
 staticfn int dip_ok(struct obj *);
 staticfn int dip_hands_ok(struct obj *);
-staticfn void hold_potion(struct obj *, const char *, const char *,
-                        const char *);
 staticfn void poof(struct obj *);
 staticfn int potion_dip(struct obj *obj, struct obj *potion);
 
