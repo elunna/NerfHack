@@ -47,6 +47,7 @@
 # Lewis Carroll
 # Little Shop of Horrors
 # Lord of the Rings
+# Magic of Scheherazade
 # Minecraft
 # modern folklore
 # Monkey Island
@@ -103,19 +104,24 @@
 aardvark
 acid blog
 acute blob
+air squad
 aliasing priest
 aligned parasite
 aligned parquet
 aligned proctor
+amaries
 amazon
 amphisbaena
 Ancient Multi-Hued Dragon
 angry mariachi
 antagonistic undecagonstring
+antlion tail
+antlion
 apostrophe golem
 aquator
 arch-pedant
 aria elemental
+armored man
 attorney
 =Audrey II
 baby balky dragon
@@ -129,19 +135,30 @@ baby parable worm
 barfed devil
 barking spider
 +Barney the dinosaur
+barzil
+barzil's helper
 basement cat
+basido squad
 basilisk
 battlemech
+beast zombie
 beer wight
 beholder
 beluga whale
+berlah
 big dumb object
 blancmange
+blat
+blimro
 +Blork the orc
+blue drop
+blue kibra
 bluebird of happiness
+bluster gas
 +Bob the angry flower
 bohrbug
 bold face
+bomb bee
 bonsai-kitten
 bookworm
 boomer
@@ -154,13 +171,19 @@ brogmoid
 /b/tard
 buffer overflow
 bust vortex
+buzz bee
 cacodemon
 cardboard golem
+captain duck
 catoblepas
 ceiling cat
+changarl
+changarl's helper
+chess knight
 chess pawn
 chiasmus
 chicken
+chobin hood
 chocolate pudding
 Christmas-tree monster
 clown
@@ -169,17 +192,30 @@ COBOL
 coelacanth
 conventioneer
 corpulent porpoise
+corsa
+crawler
 creeping coins
 +Crow T. Robot
+curgot
+Curly
+cytron
 dahu
 Dalek
 dangling pointer
+dalzark
+dark funk
+dark knight
+dark ninja
+dark stalker
 dementor
+derol
 dhole
 diagonally moving grid bug
 dingbat
 dinkus
+dinofish
 +Domo-kun
+doom sword
 dornbeast
 dropbear
 duct tape golem
@@ -188,25 +224,35 @@ dungeon core
 dust speck
 earthquake beast
 efreeti
+eggatrice
+eggplant man
 elastic eel
 electric giraffe
 electrocardiogram eel
 +El Pollo Diablo
 elwedritsche
 emu
+emberman
 enderman
 Ent
 errata elemental
 +Evil Iggy
 evil overlord
+evil sword
+evil tree
 Ewok
 existential angst
+eye spy
 fallacy golem
 feather golem
+fiend head
+fierce head
 fierceness sphere
 figment of your imagination
 fir elemental
+fire squad
 first category perpetual motion device
+fishman
 flamingo sphere
 flash of insight
 floating nose
@@ -221,7 +267,9 @@ frizzed centaur
 frog cloud
 frog prince
 frosted giant
+gangar
 gazebo
+gazeil
 geriatric snake
 ghoti
 giant bath
@@ -230,6 +278,9 @@ giant mango
 giant pigmy
 giant slug
 giant tetrapod
+gigadan
+gilas regiment
+gilga
 gloating eye
 =Gloorx Vloq
 glossy golem
@@ -240,12 +291,19 @@ gnu
 -Godzilla
 gonzo journalist
 gooier ooze
+goragora
+gorgon
+gorla
 grant beetle
+grave bat
 gray goo
 Greater Hell Beast
 greater snake
+green drop
 green slide
 griffin
+griffin hand
+grim reaper
 grind bug
 grue
 guardian nacho
@@ -257,30 +315,41 @@ hanging chad
 harpy
 hearse
 heisenbug
-hell hound pun
+heck hound
 high purist
 hippocampus
 hippogriff
 holloway
 hologram
+howler
 hydra
+ice bandit
 ice monster
+ice thug
 ice trowel
+iffish
+ifrit
 -Ijyb
 Invid
 Invisible Pink Unicorn
 jackalope
 jester
 jumbo shrimp
+kakkara
 kelpie
 kestrel
+kid goblin
 killer beet
 killer bunny
+killer flower
 killer penguin
 killer tomato
+kimono bird
+kimono wizard
 +King Kong
 kitten prospecting robot
 Klingon
+la funk
 lag monster
 land octopus
 large microbat
@@ -297,22 +366,37 @@ looooooooooooong cat
 lounge worm
 luck sucker
 Luggage
+lullabud
 lungfish
-maggot
+ma goblin
+mace menace
+mad mallard
+magic squad
 +Magical Trevor
+magma regiment
 magnetic monopole
 manbearpig
 mandelbug
+mardul
+mardul's helper
 marid
+marmablue
 martyr orc
 master lichen
+master ninja
 maxotaur
+megarl
 meeple
+meldo
+metal crab
+metal crawler
 microscopic space fleet
 millitaur
 mime
+mimic box
 mimmoth
 miniature blimp
+miniyad
 mock role
 moldier ant
 monorail cat
@@ -320,12 +404,19 @@ monorail cat
 mortar orc
 mother-in-law
 mountain lymph
+mushboom
+mushgloom
+mystic book
+national scar
+needlion
+nemesis owl
 +Nessie
 netsplit
 newsgroup troll
 nickelpede
 nightmare
 ninja pirate zombie robot
+nitro pumpkin
 nyaasu
 nyan cat
 obelus
@@ -338,14 +429,18 @@ one-winged dewinged stab-bat
 ooblecks
 orcus cosmicus
 pager golem
+pandarm
 particle man
 paskald
+pebbler
 peddler
 peer
 phantom
+pharyad
 pie fiend
 pigasus
 plaid unicorn
+polter chair
 possessed waffle iron
 potoo
 poultrygeist
@@ -353,26 +448,36 @@ praying mantis
 Predator
 prophylactic worm
 pterodactyl
+pumpkin bomb
 pushmi-pullyu
 quagga
 quale
 questing beast
 quokka
 quylthulg
+rabite
 raging nerd
 rat-ant
 rattlesnake
 Ravenous Bugblatter Beast of Traal
 rave spider
+razaleo
 rebus
+red drop
+red kibra
 regex engine
 rhinovirus
+robin foot
 robot
 rodent of unusual size
 rogue piercer
+romsarb
 roomba
 rot grub
+samrima
 samurai rabbit
+sand stinger
+sandbeast
 schroedinbug
 scone giant
 scrag
@@ -381,12 +486,15 @@ seesawing sphere
 _Semigorgon
 shadow
 shallow one
+shellblast
 shrinking violet
 +Sigmund
+silktail
 simile mimic
 siren
 skipping record
 skvader
+skull demon
 sleazoid
 slinky
 slow loris
@@ -398,12 +506,16 @@ snark
 sock mole
 solidus
 special snowflake
+specter
 spelling bee
 spherical cow
+spider legs
 stainless steel rat
 stain vortex
 star-nosed mole
 steam dragon
+steamed crab
+steelpion
 stray tab
 +Strong Bad
 stuffed raccoon puppet
@@ -417,15 +529,21 @@ three-headed monkey
 tie-thulu
 tire elemental
 tofurkey
+tomato man
 toothsayer
 Totoro
+trap flower
 tribble
 tridude
+tsunami
+turtlance
 tyrannosaurus rex
 uberhulk
 umbrella hulk
 unicorn pegasus kitten
 vampire mace
+vampire wasp
+vampire thief
 vampiric watermelon
 velociraptor
 +Vendor of Yizard
@@ -438,12 +556,18 @@ Vorlon
 voussoir
 walking disk drive
 wandering eye
+warhammer's helper
+water bandit
 water lemon
 water melon
+water thug
+wazarn
 wee green blobbie
+weepy eye
 weighted Companion Cube
 wereplatypus
 were-rabbit
+whimper
 white rabbit
 wiggle
 wight supremacist
@@ -452,6 +576,8 @@ wild haggis
 winged grizzly
 wire shark
 witch doctor
+wizard eye
+wolf lord
 wolpertinger
 womble
 xeroc
@@ -459,4 +585,5 @@ Y2K bug
 yeek
 yellow wight
 youma
+zahhark
 zergling
