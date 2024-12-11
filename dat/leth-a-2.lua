@@ -34,13 +34,7 @@ des.map([[
 ]]);
 
 -- Altar to Nodens
-if percent(50) then
-    des.altar({ x=35,y=10,align="noalign", type="shrine", cracked=nh.rn2(2) })
-else
-    for i = 1,math.random(8, 17) do
-        des.object("rock", 35,10)
-     end
-end
+des.altar({ x=35,y=10,align="noalign", type="shrine", cracked=nh.rn2(2) })
 
 -- Dungeon Description
 des.region(selection.area(00,00,75,19),"lit")
@@ -90,9 +84,27 @@ des.object({ id = "statue", x=36, y=11, contents = 0 })
 -- And even some treasure
 des.object({ id = "chest", locked = 1, x = 39, y = 10 ,
              contents = function()
-                -- Original patch has a magic lamp, not in NerfHack...
-                des.object("oil lamp");
+                des.object({ id = "magic lamp", buc = "cursed" });
                 des.object("potion of oil")
+             end
+});
+
+-- Ruins of a library
+des.object({ id = "chest", locked = 1, x = 38, y = 10 ,
+             contents = function()
+                des.object({ id = "magic marker", buc = "random" });
+                if percent(50)
+                    des.object("scroll of blank paper");
+                end
+                if percent(50)
+                    des.object("scroll of blank paper");
+                end
+                if percent(50)
+                    des.object("spellbook of blank paper");
+                end
+                if percent(50)
+                    des.object("spellbook of blank paper");
+                end
              end
 });
 

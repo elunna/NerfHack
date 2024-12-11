@@ -40,13 +40,7 @@ des.map([[
 des.region(selection.area(00,00,75,19),"lit")
 des.region(selection.area(02,01,02,02),"lit")
 
-if percent(50) then
-  des.altar({ x=06,y=01,align=random, type="shrine", cracked=nh.rn2(2) })
-else
-  for i = 1,math.random(8, 17) do
-      des.object("rock", 06,01)
-   end
-end
+des.altar({ x=06,y=01,align=random, type="shrine", cracked=nh.rn2(2) })
 
 des.region(selection.area(02,16,07,18),"unlit")
 des.region(selection.area(14,15,18,18),"unlit")
@@ -132,11 +126,7 @@ des.object({ id = "statue", x=07, y=04, montype="mountain nymph",
              contents = 0 })
 des.object({ id = "statue", x=69,y=01, montype="Death", historic=1,
              contents = function()
-              if percent(15) then
-                des.object({ id = "wand of death" })
-              else
-                des.object({ id = "wand of lightning" })
-              end
+             des.object({ id = "wand of death" })
              end
 });
 

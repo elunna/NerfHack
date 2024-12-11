@@ -111,23 +111,28 @@ dungeon = {
             name = "leth-c",
             base = -6,
             nlevels = 2,
+            chance = 50
          },
          {
             name = "leth-d",
             base = -5,
             nlevels = 2,
+            chance = 25
          },
          {
             name = "leth-e",
-            base = -4
+            base = -4,
+            chance = 50
          },
          {
             name = "leth-f",
-            base = -3
+            base = -3,
+            chance = 50,
          },
          {
             name = "leth-g",
-            base = -2
+            base = -2,
+            chance = 25,
          },
          {
             name = "leth-z",

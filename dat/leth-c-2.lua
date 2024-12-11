@@ -39,14 +39,7 @@ des.map([[
 local monster = { "D", "Z", "M", "c", "T", "R" };
 shuffle(monster)
 
--- Possible altar
-if percent(50) then
-    des.altar({ x=70,y=09,align=random, type="altar", cracked=nh.rn2(2) })
-else
-    for i = 1,math.random(8, 17) do
-        des.object("rock", 70,09)
-     end
-end
+des.altar({ x=70,y=09,align=random, type="altar", cracked=nh.rn2(2) })
 
 -- Dungeon Description
 des.region(selection.area(00,00,75,19),"lit")

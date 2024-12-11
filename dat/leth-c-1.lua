@@ -47,13 +47,7 @@ des.region(selection.area(51,08,58,10),"unlit")
 
 des.region({ region={63,02,70,05},lit=1,type="throne", filled=0 })
 
-if percent(50) then
-    des.altar({ x=70,y=09,align=random, type="altar", cracked=nh.rn2(2) })
-else
-    for i = 1,math.random(8, 17) do
-        des.object("rock", 70,09)
-     end
-end
+des.altar({ x=70,y=09,align=random, type="altar", cracked=nh.rn2(2) })
 
 des.region(selection.area(68,12,73,16),"unlit")
 des.region(selection.area(59,17,62,18),"unlit")
