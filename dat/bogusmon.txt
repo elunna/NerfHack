@@ -71,6 +71,7 @@
 # saccharine kiddy TV
 # Sailor Moon
 # SciFi elements
+# Secret of Mana
 # Souljazz
 # soundex and typos of monsters
 # South Park
@@ -139,7 +140,6 @@ barzil
 barzil's helper
 basement cat
 basido squad
-basilisk
 battlemech
 beast zombie
 beer wight
@@ -273,7 +273,6 @@ gazeil
 geriatric snake
 ghoti
 giant bath
-giant cockroach
 giant mango
 giant pigmy
 giant slug
@@ -413,7 +412,6 @@ nemesis owl
 +Nessie
 netsplit
 newsgroup troll
-nickelpede
 nightmare
 ninja pirate zombie robot
 nitro pumpkin
@@ -444,7 +442,6 @@ polter chair
 possessed waffle iron
 potoo
 poultrygeist
-praying mantis
 Predator
 prophylactic worm
 pterodactyl
@@ -484,7 +481,6 @@ scrag
 sea cucumber
 seesawing sphere
 _Semigorgon
-shadow
 shallow one
 shellblast
 shrinking violet
@@ -537,7 +533,6 @@ tribble
 tridude
 tsunami
 turtlance
-tyrannosaurus rex
 uberhulk
 umbrella hulk
 unicorn pegasus kitten
@@ -545,7 +540,6 @@ vampire mace
 vampire wasp
 vampire thief
 vampiric watermelon
-velociraptor
 +Vendor of Yizard
 venus flytrap
 verbal jabberwock
