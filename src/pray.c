@@ -1742,7 +1742,11 @@ offer_real_amulet(struct obj *otmp, aligntyp altaralign)
         /* You've won the game!  Feedback-wise, it's a bit of a let down. */
         u.uevent.ascended = 1;
         adjalign(10);
-        pline("An invisible choir sings, and you are bathed in radiance...");
+        /* you might be able to see the invisible choir! */
+        pline("%s sings, and you are bathed in radiance...",
+              Hallucination ? "The fat lady"
+                  : (See_invisible && !Blind ? "A visible choir"
+                                             : "An invisible choir"));
         godvoice(altaralign, "Mortal, thou hast done well!");
         display_nhwindow(WIN_MESSAGE, FALSE);
         SetVoice((struct monst *) 0, 0, 80, voice_deity);
