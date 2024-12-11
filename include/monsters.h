@@ -3456,7 +3456,7 @@
     MON(NAM("giant anaconda"), S_SNAKE, /* From EvilHack */
         LVL(10, 6, 2, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6),
-          ATTK(AT_HUGS, AD_WRAP, 2, 6),
+          ATTK(AT_BITE, AD_PHYS, 2, 6),
           ATTK(AT_HUGS, AD_PHYS, 4, 6),
           ATTK(AT_ENGL, AD_DGST, 3, 6),
           NO_ATTK, NO_ATTK),
