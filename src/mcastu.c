@@ -749,7 +749,7 @@ cast_wizard_spell(
                 pline("%s douses %s in a torrent of acid!",
                     Monnam(caster), mon_nam(mdef));
             explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_ACID), dmg,
-                MON_CASTBALL, EXPL_WET);
+                    MON_CASTBALL, EXPL_WET);
 
             if (youdefend) {
                 if (Acid_resistance) {
@@ -1009,15 +1009,10 @@ cast_wizard_spell(
                 }
             }
         } else {
-            if (canseemon(caster)) {
+            if (canseemon(caster))
                 pline("%s blasts %s with fire!", Monnam(caster), mon_nam(mdef));
-                explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
+            explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
                     MON_CASTBALL, EXPL_FIERY);
-            }
-            if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
-                shieldeff(mdef->mx, mdef->my);
-                pline("But %s seems unaffected by the fire.", mon_nam(mdef));
-            }
         }
         dmg = 0; /* damage is handled by explode() */
         break;
@@ -1046,15 +1041,10 @@ cast_wizard_spell(
                 }
             }
         } else {
-            if (canseemon(caster)) {
+            if (canseemon(caster))
                 pline("%s blasts %s with ice!", Monnam(caster), mon_nam(mdef));
-                explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_COLD), dmg,
+            explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_COLD), dmg,
                     MON_CASTBALL, EXPL_FROSTY);
-            }
-            if (resists_cold(mdef) || defended(mdef, AD_COLD)) {
-                shieldeff(mdef->mx, mdef->my);
-                pline("But %s seems unaffected by the cold.", mon_nam(mdef));
-            }
         }
         dmg = 0; /* damage is handled by explode() */
         break;
