@@ -2302,6 +2302,7 @@ extern const char *boots_simple_name(struct obj *) NONNULL NO_NNARGS;
    conditional block, preventing NONNULLARG1 */
 extern const char *shield_simple_name(struct obj *) NONNULL NO_NNARGS;
 /* shirt_simple_name always just returns hardcoded "shirt" */
+extern char *dragon_scales_color(struct obj *);
 extern const char *shirt_simple_name(struct obj *) NONNULL NO_NNARGS;
 extern const char *mimic_obj_name(struct monst *) NONNULL NONNULLARG1;
 /* safe_qbuf() contains tests for NULL arg2 and arg3, qprefix and qsuffix,
@@ -2521,6 +2522,7 @@ extern const char *mbodypart(struct monst *, int) NONNULLARG1;
 extern const char *body_part(int);
 extern int poly_gender(void);
 extern void ugolemeffects(int, int);
+extern int armor_to_dragon(struct monst *);
 extern boolean ugenocided(void);
 extern const char *udeadinside(void);
 extern void newman(void);
@@ -3989,6 +3991,7 @@ extern int racial_exception(struct monst *, struct obj *) NONNULLARG12;
 extern void extract_from_minvent(struct monst *, struct obj *, boolean,
                                  boolean) NONNULLARG12;
 extern int armor_bonus(struct monst *, struct obj *);
+extern long armor_provides_extrinsic(struct obj *);
 
 /* ### write.c ### */
 

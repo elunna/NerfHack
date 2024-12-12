@@ -1705,30 +1705,28 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
             OBJPUTSTR("Can be applied to arrows for extra damage (only cave dwellers).");
             OBJPUTSTR("Can be rubbed on iron to produce monster-scaring sparks.");
         }
-        if (otyp == SILVER_DRAGON_SCALE_MAIL)
+        if (otyp == SILVER_DRAGON_SCALES)
             OBJPUTSTR("Protects from bright lights.");
-        else if (otyp == GOLD_DRAGON_SCALES || otyp == GOLD_DRAGON_SCALE_MAIL)
+        else if (otyp == GOLD_DRAGON_SCALES) {
             OBJPUTSTR("Permanent light source.");
-        else if (otyp == GOLD_DRAGON_SCALE_MAIL)
             OBJPUTSTR("Confers hallucination resistance.");
-        else if (otyp == SHIMMERING_DRAGON_SCALE_MAIL)
+        } else if (otyp == SHIMMERING_DRAGON_SCALES)
             OBJPUTSTR("Confers stun resistance.");
-        else if (otyp == RED_DRAGON_SCALE_MAIL)
+        else if (otyp == RED_DRAGON_SCALES)
             OBJPUTSTR("Confers infravision.");
-        else if (otyp == WHITE_DRAGON_SCALE_MAIL)
+        else if (otyp == WHITE_DRAGON_SCALES)
             OBJPUTSTR("Confers slow digestion.");
-        else if (otyp == ORANGE_DRAGON_SCALE_MAIL)
+        else if (otyp == ORANGE_DRAGON_SCALES)
             OBJPUTSTR("Confers free action.");
-        else if (otyp == BLACK_DRAGON_SCALE_MAIL)
+        else if (otyp == BLACK_DRAGON_SCALES)
             OBJPUTSTR("Confers level drain resistance.");
-        else if (otyp == BLUE_DRAGON_SCALE_MAIL)
+        else if (otyp == BLUE_DRAGON_SCALES)
             OBJPUTSTR("Confers very fast speed.");
-        else if (otyp == GREEN_DRAGON_SCALE_MAIL)
+        else if (otyp == GREEN_DRAGON_SCALES)
             OBJPUTSTR("Confers regeneration and sickness resistance.");
-        else if (otyp == YELLOW_DRAGON_SCALE_MAIL)
+        else if (otyp == YELLOW_DRAGON_SCALES)
             OBJPUTSTR("Confers petrification resistance.");
     }
-
 
     buf[0] = '\0';
     if (reveal_info) {

@@ -2249,11 +2249,10 @@
     /*
      * Dragons
      */
-    /* The order of the dragons is VERY IMPORTANT.  Quite a few
-     * pieces of code depend on gray being first and yellow being last.
-     * The code also depends on the *order* being the same as that for
-     * dragon scale mail and dragon scales in objects.c.  [Also,
-     * 'tilemap' assumes that shimmering dragon follows silver dragon.]
+    /* The order of the dragons is VERY IMPORTANT.
+     * The code depends on the *order* being the same as that for dragon scales
+     * in objects.c. [Also, 'tilemap' assumes that shimmering dragon follows
+     * silver dragon.]
      *
      * Dragons are all lawful or chaotic; This affects monster generation on
      * some special levels. Baby dragons cannot confer intrinsics, to avoid

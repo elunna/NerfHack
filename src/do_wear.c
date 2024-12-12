@@ -46,6 +46,7 @@ staticfn int puton_ok(struct obj *);
 staticfn int remove_ok(struct obj *);
 staticfn int wear_ok(struct obj *);
 staticfn int takeoff_ok(struct obj *);
+staticfn void toggle_armor_light(struct obj *, boolean);
 
 /* maybe_destroy_armor() may return NULL */
 staticfn struct obj *maybe_destroy_armor(struct obj *, struct obj *,
@@ -362,18 +363,25 @@ Boots_off(void)
 staticfn int
 Cloak_on(void)
 {
+    int otyp = uarmc->otyp;
     long oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
+
+    if (Is_dragon_scales(uarmc)) {
+        /* all scales are handled the same in this function */
+        otyp = GRAY_DRAGON_SCALES;
+    }
 
     if (hates_item(&gy.youmonst, uarmc->otyp))
         You_feel("uncomfortable wearing this cloak.");
 
-    switch (uarmc->otyp) {
+    switch (otyp) {
     case ORCISH_CLOAK:
     case DWARVISH_CLOAK:
     case CLOAK_OF_MAGIC_RESISTANCE:
     case ROBE:
     case LEATHER_CLOAK:
+    case GRAY_DRAGON_SCALES:
         break;
     case CLOAK_OF_PROTECTION:
         makeknown(uarmc->otyp);
@@ -427,6 +435,7 @@ Cloak_on(void)
         uarmc->known = 1; /* cloak's +/- evident because of status line AC */
         update_inventory();
     }
+    toggle_armor_light(uarmc, TRUE);
     return 0;
 }
 
@@ -437,6 +446,12 @@ Cloak_off(void)
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
     boolean was_opera = (otmp && objdescr_is(otmp, "opera cloak"));
+    boolean was_arti_light = otmp && otmp->lamplit && artifact_light(otmp);
+
+    if (Is_dragon_scales(uarmc)) {
+        /* all scales are handled the same in this function */
+        otyp = GRAY_DRAGON_SCALES;
+    }
 
     if (hates_item(&gy.youmonst, uarmc->otyp))
         You_feel("more comfortable now.");
@@ -452,6 +467,7 @@ Cloak_off(void)
     case OILSKIN_CLOAK:
     case ROBE:
     case LEATHER_CLOAK:
+    case GRAY_DRAGON_SCALES:
         break;
     case ELVEN_CLOAK:
         toggle_stealth(otmp, oldprop, FALSE);
@@ -482,6 +498,9 @@ Cloak_off(void)
     default:
         impossible(unknown_type, c_cloak, otyp);
     }
+    if (was_arti_light)
+        toggle_armor_light(otmp, FALSE);
+    
     /* vampires get a charisma bonus when wearing an opera cloak */
     if (was_opera &&
         maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
@@ -940,30 +959,30 @@ dragon_armor_handling(
     boolean puton,      /* True: on, False: off */
     boolean on_purpose) /* voluntary removal; not applicable for putting on */
 {
+    /* NerfHack note: as of first merging this behavior in from NetHack 3.7,
+     * this only happens on dragon-scaled body armor - NOT scales worn in the
+     * cloak slot. */
     long oldprop = uarm
         ? u.uprops[objects[uarm->otyp].oc_oprop].extrinsic & ~WORN_ARMOR : 0L;
 
     if (!otmp)
         return;
 
-    switch (otmp->otyp) {
+    switch (Dragon_armor_to_scales(otmp)) {
         /* grey: no extra effect */
         /* silver: no extra effect */
-    case BLACK_DRAGON_SCALE_MAIL:
+    case BLACK_DRAGON_SCALES:
         if (puton) {
             EDrain_resistance |= W_ARM;
             BWithering |= W_ARM;
         } else {
             EDrain_resistance &= ~W_ARM;
             BWithering &= ~W_ARM;
+            if (HWithering)
+                make_withering(0L, TRUE);
         }
-        FALLTHROUGH;
-        /*FALLTHRU*/
-    case BLACK_DRAGON_SCALES:
-        if (HWithering)
-            make_withering(0L, TRUE);
         break;
-    case BLUE_DRAGON_SCALE_MAIL:
+    case BLUE_DRAGON_SCALES:
         if (puton) {
             if (!Very_fast)
                 You("speed up%s.", Fast ? " a bit more" : "");
@@ -974,7 +993,7 @@ dragon_armor_handling(
                 You("slow down.");
         }
         break;
-    case GREEN_DRAGON_SCALE_MAIL:
+    case GREEN_DRAGON_SCALES:
         if (puton) {
             ESick_resistance |= W_ARM;
             if (Sick) {
@@ -987,7 +1006,7 @@ dragon_armor_handling(
             ERegeneration &= ~W_ARM;
         }
         break;
-    case RED_DRAGON_SCALE_MAIL:
+    case RED_DRAGON_SCALES:
         if (puton) {
             EInfravision |= W_ARM;
             u.udaminc += otmp->spe; /* Increase damage */
@@ -997,19 +1016,19 @@ dragon_armor_handling(
         }
         see_monsters();
         break;
-    case GOLD_DRAGON_SCALE_MAIL:
+    case GOLD_DRAGON_SCALES:
         (void) make_hallucinated((long) !puton,
                                  program_state.restoring ? FALSE : TRUE,
                                  W_ARM);
         break;
-    case ORANGE_DRAGON_SCALE_MAIL:
+    case ORANGE_DRAGON_SCALES:
         if (puton) {
             Free_action |= W_ARM;
         } else {
             Free_action &= ~W_ARM;
         }
         break;
-    case YELLOW_DRAGON_SCALE_MAIL:
+    case YELLOW_DRAGON_SCALES:
         if (puton) {
             EStone_resistance |= W_ARM;
             if (Stoned) {
@@ -1025,7 +1044,7 @@ dragon_armor_handling(
             wielding_corpse(uswapwep, otmp, on_purpose);
         }
         break;
-    case WHITE_DRAGON_SCALE_MAIL:
+    case WHITE_DRAGON_SCALES:
         if (puton) {
             ESlow_digestion |= W_ARM;
             EWwalking |= W_ARM;
@@ -1034,7 +1053,7 @@ dragon_armor_handling(
             EWwalking &= ~W_ARM;
         }
         break;
-    case SHIMMERING_DRAGON_SCALE_MAIL:
+    case SHIMMERING_DRAGON_SCALES:
         if (puton) {
             EStun_resistance |= W_ARM;
             if (Stunned) {
@@ -1046,9 +1065,6 @@ dragon_armor_handling(
         } else {
             EStun_resistance &= ~W_ARM;
         }
-        FALLTHROUGH;
-        /*FALLTHRU*/
-    case SHIMMERING_DRAGON_SCALES:
         if (puton) {
             toggle_displacement(uarm, oldprop, TRUE);
         } else {
@@ -1075,15 +1091,9 @@ Armor_on(void)
         You_feel("uncomfortable wearing such armor.");
 
     dragon_armor_handling(uarm, TRUE, TRUE);
-    /* gold DSM requires extra handling since it emits light when worn;
+    /* gold DSM requires special handling since it emits light when worn;
        do that after the special armor handling */
-    if (artifact_light(uarm) && !uarm->lamplit) {
-        begin_burn(uarm, FALSE);
-        if (!Blind)
-            pline("%s %s to shine %s!",
-                  Yname2(uarm), otense(uarm, "begin"),
-                  arti_light_description(uarm));
-    }
+    toggle_armor_light(uarm, TRUE);
     return 0;
 }
 
@@ -1105,13 +1115,9 @@ Armor_off(void)
        comes from gold dragon scales/mail so they don't overlap, but
        conceptually the non-fatal change should be done before the
        potentially fatal change in case the latter results in bones */
-    if (was_arti_light && !artifact_light(otmp)) {
-        end_burn(otmp, FALSE);
-        if (!Blind)
-            pline("%s shining.", Tobjnam(otmp, "stop"));
-    }
+    if (was_arti_light && !artifact_light(otmp))
+        toggle_armor_light(otmp, FALSE);
     dragon_armor_handling(otmp, FALSE, TRUE);
-
     return 0;
 }
 
@@ -2072,12 +2078,8 @@ dotakeoff(void)
 
     count_worn_stuff(&otmp, FALSE);
     if (!Narmorpieces && !Naccessories) {
-        /* assert( GRAY_DRAGON_SCALES > YELLOW_DRAGON_SCALE_MAIL ); */
         if (uskin)
-            pline_The("%s merged with your skin!",
-                      uskin->otyp >= GRAY_DRAGON_SCALES
-                          ? "dragon scales are"
-                          : "dragon scale mail is");
+            pline("Your scaly armor is merged with your skin!");
         else
             pline("Not wearing any armor or accessories.");
         return ECMD_OK;
@@ -3822,6 +3824,30 @@ will_touch_skin(long mask)
     else if (mask == W_QUIVER)
         return FALSE;
     return TRUE;
+}
+
+
+/* hero is putting on or taking off obj, which may do something light-related
+ * unifies code for cloak and body armor code paths since gold dragon scales are
+ * worn in cloak slot and gold-scaled armor is worn in armor slot*/
+staticfn void
+toggle_armor_light(struct obj *armor, boolean on)
+{
+    if (on) {
+        if (artifact_light(armor) && !armor->lamplit) {
+            begin_burn(armor, FALSE);
+            if (!Blind)
+                pline("%s %s to shine %s!",
+                    Yname2(armor), otense(armor, "begin"),
+                    arti_light_description(armor));
+        }
+    } else {
+        if (!artifact_light(armor)) {
+            end_burn(armor, FALSE);
+            if (!Blind)
+                pline("%s shining.", Tobjnam(armor, "stop"));
+        }
+    }
 }
 
 /*do_wear.c*/

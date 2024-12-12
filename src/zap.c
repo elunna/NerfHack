@@ -1350,7 +1350,11 @@ void
 cancel_item(struct obj *obj)
 {
     int otyp = obj->otyp;
-
+    
+    if (Is_dragon_armor(obj)) {
+        /* convert mail to scales to simplify testing */
+        otyp = Dragon_armor_to_scales(obj);
+    }
     if (otyp == EGG) {
         /* sterilized */
         if (obj->corpsenm != -1 && (rn2(100) < mons[obj->corpsenm].mr)) {
@@ -1399,7 +1403,7 @@ cancel_item(struct obj *obj)
                 disp.botl = TRUE;
             }
             break;
-        case RED_DRAGON_SCALE_MAIL:
+        case RED_DRAGON_SCALES:
             if ((obj->owornmask & W_ARM) != 0L)
                 u.udaminc -= obj->spe;
             break;
@@ -1416,6 +1420,7 @@ cancel_item(struct obj *obj)
             break;
         }
     }
+#if 0 /* Don't allow this */
     /* Small chance DSM can revert to scales if cancelled */
     if (!rn2(6) && obj->otyp >= GRAY_DRAGON_SCALE_MAIL
         && obj->otyp <= YELLOW_DRAGON_SCALE_MAIL) {
@@ -1437,6 +1442,8 @@ cancel_item(struct obj *obj)
         if (worn)
             setworn(obj, W_ARM);
     }
+#endif
+    
     /* cancelled item might not be in hero's possession but
        cancellation is presumed to be instigated by hero */
     if (objects[otyp].oc_magic
@@ -1536,7 +1543,12 @@ boolean
 drain_item(struct obj *obj, boolean by_you)
 {
     boolean u_ring;
-
+    int otyp = obj->otyp;
+    
+    /* convert mail to scales to simplify testing */
+    if (Is_dragon_armor(obj))
+        otyp = Dragon_armor_to_scales(obj);
+        
     /* Is this a charged/enchanted object? */
     if (!obj
         || (!objects[obj->otyp].oc_charged && obj->oclass != WEAPON_CLASS
@@ -1554,7 +1566,7 @@ drain_item(struct obj *obj, boolean by_you)
     /* Drain the object and any implied effects */
     obj->spe--;
     u_ring = (obj == uleft) || (obj == uright);
-    switch (obj->otyp) {
+    switch (otyp) {
     case RIN_GAIN_STRENGTH:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_STR)--;
@@ -1598,7 +1610,7 @@ drain_item(struct obj *obj, boolean by_you)
             disp.botl = TRUE;
         }
         break;
-    case RED_DRAGON_SCALE_MAIL:
+    case RED_DRAGON_SCALES:
         if ((obj->owornmask & W_ARM) && (obj == uarm))
             u.udaminc--;
         break;
@@ -3593,8 +3605,8 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         /* player attacking monster */
         if (youattack) {
             if (rn2(10) && (otmp = which_armor(mdef, W_ARM))
-                && (otmp->otyp == GRAY_DRAGON_SCALES
-                    || otmp->otyp == GRAY_DRAGON_SCALE_MAIL)) {
+            && Is_dragon_scaled_armor(otmp)
+            && Dragon_armor_to_scales(otmp) == GRAY_DRAGON_SCALES) {
                 shieldeff(mdef->mx, mdef->my);
                 if (canseemon(mdef))
                     You("sense a wave of energy dissipate around %s.",
@@ -3628,8 +3640,8 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         /* monster attacking player */
         if (youdefend) {
             if (rn2(10) && uarm
-                && (uarm->otyp == GRAY_DRAGON_SCALES
-                    || uarm->otyp == GRAY_DRAGON_SCALE_MAIL)) {
+                && Is_dragon_scaled_armor(uarm)
+                && Dragon_armor_to_scales(uarm) == GRAY_DRAGON_SCALES) {
                 shieldeff(u.ux, u.uy);
                 You_feel("a wave of energy dissipate around you.");
                 return FALSE;
@@ -3667,8 +3679,8 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
         if (!youdefend && !youattack) {
             if (rn2(10)
                 && (otmp = which_armor(mdef, W_ARM))
-                && (otmp->otyp == GRAY_DRAGON_SCALES
-                    || otmp->otyp == GRAY_DRAGON_SCALE_MAIL)) {
+                && Is_dragon_scaled_armor(otmp)
+                && Dragon_armor_to_scales(otmp) == GRAY_DRAGON_SCALES) {
                 shieldeff(mdef->mx, mdef->my);
                 if (canseemon(mdef))
                     You("sense a wave of energy dissipate around %s.",

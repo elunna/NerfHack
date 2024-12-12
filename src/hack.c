@@ -59,7 +59,8 @@ staticfn boolean water_turbulence(coordxy *, coordxy *);
 #define Known_wwalking \
     ((uarmf && uarmf->otyp == WATER_WALKING_BOOTS \
      && objects[WATER_WALKING_BOOTS].oc_name_known && !u.usteed) \
-     || (uarm && uarm->otyp == WHITE_DRAGON_SCALE_MAIL) \
+     || (uarm && Is_dragon_scaled_armor(uarm) \
+         && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES) \
      || u_wield_art(ART_POSEIDON_S_TRIDENT) \
      || u_offhand_art(ART_POSEIDON_S_TRIDENT) \
      || HWwalking)
@@ -2412,7 +2413,8 @@ slippery_ice_fumbling(void)
         if ((uarmf && objdescr_is(uarmf, "snow boots"))
             || resists_cold(iceskater) || Flying
             || mon_prop(iceskater, LEVITATION)
-            || (uarm && uarm->otyp == WHITE_DRAGON_SCALE_MAIL)
+            || (uarm && Is_dragon_scaled_armor(uarm)
+                    && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES)
             || is_clinger(iceskater->data)
             || is_whirly(iceskater->data)) {
             on_ice = FALSE;

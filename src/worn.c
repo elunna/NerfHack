@@ -94,7 +94,7 @@ setworn(struct obj *obj, long mask)
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
                         /* leave as "x = x <op> y", here and below, for broken
                          * compilers */
-                        p = objects[oobj->otyp].oc_oprop;
+                        p = armor_provides_extrinsic(oobj);
                         u.uprops[p].extrinsic =
                             u.uprops[p].extrinsic & ~wp->w_mask;
                         /* if the hero removed an extrinsic-granting item,
@@ -122,7 +122,7 @@ setworn(struct obj *obj, long mask)
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
                         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
                             || mask != W_WEP) {
-                            p = objects[obj->otyp].oc_oprop;
+                            p = armor_provides_extrinsic(obj);
                             u.uprops[p].extrinsic =
                                 u.uprops[p].extrinsic | wp->w_mask;
                             if ((p = w_blocks(obj, mask)) != 0)
@@ -162,7 +162,7 @@ setnotworn(struct obj *obj)
             cancel_doff(obj, wp->w_mask);
 
             *(wp->w_obj) = (struct obj *) 0;
-            p = objects[obj->otyp].oc_oprop;
+            p = armor_provides_extrinsic(obj);
             u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
             monstunseesu_prop(p); /* remove this extrinsic from seenres */
             obj->owornmask &= ~wp->w_mask;
@@ -360,7 +360,7 @@ check_wornmask_slots(void)
         else if (!Is_dragon_scales(o))
             Sprintf(whybuf, "%s (%s) %s not dragon scales",
                     what, simpleonames(o), otense(o, "are"));
-        else if (Dragon_scales_to_pm(o) != &mons[u.umonnum])
+        else if (Dragon_armor_to_pm(o) != &mons[u.umonnum])
             Sprintf(whybuf, "%s, hero is not %s",
                     what, an(mons[u.umonnum].pmnames[NEUTRAL]));
         if (whybuf[0])
@@ -516,7 +516,7 @@ update_mon_extrinsics(
     int unseen;
     uchar mask;
     struct obj *otmp;
-    int which = (int) objects[obj->otyp].oc_oprop,
+    int which = (int) armor_provides_extrinsic(obj),
         altwhich = altprop(obj);
 
     unseen = !canseemon(mon);
@@ -1244,8 +1244,8 @@ mon_break_armor(struct monst *mon, boolean polyspot)
 
     if (breakarm(mdat)) {
         if ((otmp = which_armor(mon, W_ARM)) != 0) {
-            if ((Is_dragon_scales(otmp) && mdat == Dragon_scales_to_pm(otmp))
-                || (Is_dragon_mail(otmp) && mdat == Dragon_mail_to_pm(otmp))) {
+            if (Is_dragon_armor(otmp)
+                && mdat == &mons[Dragon_armor_to_pm(otmp)]) {
                 ; /* no message here;
                      "the dragon merges with his scaly armor" is odd
                      and the monster's previous form is already gone */
@@ -1268,7 +1268,11 @@ mon_break_armor(struct monst *mon, boolean polyspot)
                 m_lose_armor(mon, otmp, polyspot);
             } else {
                 Soundeffect(se_ripping_sound, 100);
-                if (vis)
+                if (Is_dragon_armor(otmp)
+                    && mdat == &mons[Dragon_armor_to_pm(otmp)]) {
+                    ; /* same as above; no message here */
+                }
+                else if (vis)
                     pline("%s %s tears apart!", s_suffix(Monnam(mon)),
                           cloak_simple_name(otmp));
                 else
@@ -1583,8 +1587,6 @@ extract_from_minvent(
     }
 }
 
-#undef w_blocks
-
 /* Checks a player's weapons and attack types from poly form.
  * Should we check pets too?
  */
@@ -1612,7 +1614,12 @@ armor_bonus(struct monst *mon, struct obj *armor)
     /* start with its base AC value
      (includes spe and erosion) */
     bon -= ARM_BONUS(armor);
-
+    
+    /* add bonus for dragon-scaled armor */
+    if (Is_dragon_scaled_armor(armor)) {
+        bon += 3;
+    }
+    
     /* Racial bonuses */
     if (is_orc(mon->data) && is_orcish_armor(armor->otyp))
         bon -= 2;
@@ -1627,5 +1634,24 @@ armor_bonus(struct monst *mon, struct obj *armor)
     bon -= misc_bonus(armor);
     return bon;
 }
+
+/* Determine the extrinsic property a piece of armor provides.
+ * Based on item_provides_extrinsic in NetHack Fourk, but less general.
+ * Alchemy smocks will return POISON_RES for this; altprop() will return
+ * ACID_RES. */
+long
+armor_provides_extrinsic(struct obj *armor)
+{
+    if (!armor) {
+        return 0;
+    }
+    long prop = objects[armor->otyp].oc_oprop;
+    if (!prop && Is_dragon_armor(armor)) {
+        return objects[Dragon_armor_to_scales(armor)].oc_oprop;
+    }
+    return prop;
+}
+
+#undef w_blocks
 
 /*worn.c*/

@@ -577,48 +577,37 @@ defends(int adtyp, struct obj *otmp)
     if ((weap = get_artifact(otmp)) != &artilist[ART_NONARTIFACT])
         return (boolean) (weap->defn.adtyp == adtyp);
     if (Is_dragon_armor(otmp)) {
-        int otyp = otmp->otyp;
-
         /* convert mail to scales to simplify testing */
-        if (Is_dragon_mail(otmp))
-            otyp += GRAY_DRAGON_SCALES - GRAY_DRAGON_SCALE_MAIL;
+        int otyp = Dragon_armor_to_scales(otmp);
 
         switch (adtyp) {
         case AD_MAGM: /* magic missiles => general magic resistance */
             return (otyp == GRAY_DRAGON_SCALES);
+        case AD_HALU: /* confers hallucination resistance */
+            return (otyp == GOLD_DRAGON_SCALES);
         case AD_FIRE:
             return (otyp == RED_DRAGON_SCALES); /* red but not gold */
         case AD_COLD:
       /*case AD_FAMN: -- slows digestion but does not override Famine */
             return (otyp == WHITE_DRAGON_SCALES); /* white but not silver */
         case AD_DRST: /* drain strength => poison */
+        case AD_DISE: /* blocks disease but not slime */
             return (otyp == GREEN_DRAGON_SCALES);
         case AD_SLEE: /* sleep */
+        case AD_PLYS: /* paralysis => free action */
             return (otyp == ORANGE_DRAGON_SCALES);
         case AD_DISN: /* disintegration */
         case AD_WTHR: /* withering */
+        case AD_DRLI: /* level drain resistance */
             return (otyp == BLACK_DRAGON_SCALES);
         case AD_ELEC: /* electricity == lightning */
+        case AD_SLOW: /* confers speed so blocks speed removal */
             return (otyp == BLUE_DRAGON_SCALES);
         case AD_ACID:
-            return (otyp == YELLOW_DRAGON_SCALES);
-
-        /* Secondary resistances for dragon scale-mail */
-
-        case AD_HALU: /* confers hallucination resistance */
-            return (otmp->otyp == GOLD_DRAGON_SCALE_MAIL);
-        case AD_DISE: /* blocks disease but not slime */
-            return (otmp->otyp == GREEN_DRAGON_SCALE_MAIL);
-        case AD_PLYS: /* paralysis => free action */
-            return (otmp->otyp == ORANGE_DRAGON_SCALE_MAIL);
-        case AD_DRLI: /* level drain resistance */
-            return (otmp->otyp == BLACK_DRAGON_SCALE_MAIL);
-        case AD_SLOW: /* confers speed so blocks speed removal */
-            return (otmp->otyp == BLUE_DRAGON_SCALE_MAIL);
         case AD_STON: /* petrification resistance */
-            return (otmp->otyp == YELLOW_DRAGON_SCALE_MAIL);
+            return (otmp->otyp == YELLOW_DRAGON_SCALES);
         case AD_BLND: /* Blinding light resistance */
-            return (otmp->otyp == SILVER_DRAGON_SCALE_MAIL);
+            return (otmp->otyp == SILVER_DRAGON_SCALES);
         default:
             break;
         }
@@ -2729,9 +2718,9 @@ artifact_light(struct obj *obj)
 {
     /* not artifacts but treat them as if they were because they emit
        light without burning */
-    if (obj && (obj->otyp == GOLD_DRAGON_SCALE_MAIL
-                || obj->otyp == GOLD_DRAGON_SCALES)
-        && (obj->owornmask & W_ARM) != 0L)
+    if (obj && (Is_dragon_armor(obj)
+                && Dragon_armor_to_scales(obj) == GOLD_DRAGON_SCALES)
+        && (obj->owornmask & (W_ARM | W_ARMC)) != 0L)
         return TRUE;
 
     if (obj && is_art(obj, ART_MIRRORBRIGHT)

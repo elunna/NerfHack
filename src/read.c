@@ -1258,6 +1258,7 @@ seffect_enchant_armor(struct obj **sobjp)
     int i;
     boolean special_armor;
     boolean same_color;
+    boolean draconic = (uarmc && Is_dragon_scales(uarmc));
     struct obj *otmp;
     boolean sblessed = sobj->blessed;
     boolean scursed = sobj->cursed;
@@ -1284,6 +1285,11 @@ seffect_enchant_armor(struct obj **sobjp)
         }
      } else {
          otmp = some_armor(&gy.youmonst);
+         if (draconic) {
+             /* if player is trying to enchant scales onto armor, override random
+              * armor selection */
+             otmp = uarmc;
+         }
      }
 
     if (!otmp) {
@@ -1295,7 +1301,7 @@ seffect_enchant_armor(struct obj **sobjp)
         exercise(A_STR, !scursed);
         return;
     }
-    if (confused) {
+    if (confused && !draconic) {
         old_erodeproof = (otmp->oerodeproof != 0);
         new_erodeproof = !scursed;
         otmp->oerodeproof = 0; /* for messages */
@@ -1329,17 +1335,105 @@ seffect_enchant_armor(struct obj **sobjp)
         || (Role_if(PM_WIZARD) && otmp->otyp == CORNUTHAUM)
         || (Role_if(PM_ARCHEOLOGIST) && otmp->otyp == FEDORA);
     if (scursed)
-        same_color = (otmp->otyp == BLACK_DRAGON_SCALE_MAIL
-                      || otmp->otyp == BLACK_DRAGON_SCALES);
+        same_color = (otmp->otyp == BLACK_DRAGON_SCALES);
     else
-        same_color = (otmp->otyp == SILVER_DRAGON_SCALE_MAIL
-                      || otmp->otyp == SILVER_DRAGON_SCALES
+        same_color = (otmp->otyp == SILVER_DRAGON_SCALES
                       || otmp->otyp == SHIELD_OF_REFLECTION);
     if (Blind)
         same_color = FALSE;
 
     /* KMH -- catch underflow */
     s = scursed ? -otmp->spe : otmp->spe;
+    
+    
+    /* Dragon scales that are worn over body armor will cause the armor to
+     * become scaled. */
+    if (draconic) { /* guarantees that worn cloak is scales, and that
+                       otmp = uarmc, but does NOT guarantee existence of uarm */
+        /* no body armor under the scales = the scales are enchanted directly
+         * onto you (no such thing as a scaled shirt). The wearer will
+         * polymorph. Also caused by a confused scroll, _after_ the scales meld.
+         * */
+        boolean poly_after_merge = (!uarm || confused);
+        int old_light = artifact_light(otmp) ? arti_light_radius(otmp) : 0;
+        if (uarm) {
+            struct obj *scales = uarmc;
+            struct obj *armor = uarm;
+
+            pline("%s melds into your %s%s", Yname2(scales),
+                  suit_simple_name(armor),
+                  Is_dragon_scaled_armor(armor) ? "." : "!");
+
+            if (Is_dragon_scaled_armor(armor)) {
+                if (Dragon_armor_to_scales(armor) == scales->otyp) {
+                    /* scales match armor already; just use up scales */
+                    pline("Its scales still seem %s.",
+                          dragon_scales_color(armor));
+                }
+                else {
+                    /* armor is already scaled but the new scales are
+                     * different and will replace the old ones */
+                    pline("Its scales change from %s to %s!",
+                          dragon_scales_color(armor),
+                          dragon_scales_color(scales));
+                    /* remove properties of old scales */
+                    dragon_armor_handling(armor, FALSE, TRUE);
+                }
+            }
+            setnotworn(armor);
+            armor->dragonscales = scales->otyp;
+            armor->cursed = 0;
+            if (sblessed) {
+                armor->oeroded = armor->oeroded2 = 0;
+                armor->blessed = 1;
+            }
+            setworn(armor, W_ARM);
+            dragon_armor_handling(armor, TRUE, TRUE);
+            gk.known = TRUE;
+            if (otmp->unpaid)
+                alter_cost(otmp, 0L); /* shop bill */
+
+            /* handle gold dragon scaled armor... */
+            if (scales->lamplit) {
+                if (armor->lamplit) {
+                    /* if melding gold dragon scales onto already gold-scaled
+                     * armor, avoid attaching a duplicate light source to the
+                     * armor
+                     * useup() won't take care of this, because it calls
+                     * setnotworn(), which will make artifact_light() return
+                     * false, so the regular check for deleting the light source
+                     * when an object is deallocated will do nothing */
+                    del_light_source(LS_OBJECT, obj_to_any(scales));
+                }
+                else {
+                    /* this will set armor->lamplit */
+                    obj_move_light_source(scales, armor);
+                }
+                /* may be different radius depending on BUC of armor */
+                maybe_adjust_light(armor, old_light);
+            }
+            else if (armor->lamplit) {
+                /* scales not lit but armor is: melding non-gold scales onto
+                 * gold-scaled armor, which will no longer be a light source */
+                end_burn(armor, FALSE);
+            }
+            useup(scales);
+        }
+        if (poly_after_merge) {
+            polyself(4);
+            /* adjust duration for scroll beatitude - a blessed scroll will
+             * give you more time as a dragon, a cursed scroll less */
+            u.mtimedone = (u.mtimedone * (bcsign(sobj) + 2) / 2);
+        }
+        if (!scursed || !uarm) {
+            return;
+        } else {
+            /* continue with regular cursed-enchant logic on the resulting
+             * armor piece */
+            otmp = uarm;
+        }
+    }
+    
     if (s > (special_armor ? 5 : 3) && rn2(s)) {
         otmp->in_use = TRUE;
         pline("%s violently %s%s%s for a while, then %s.", Yname2(otmp),
@@ -1360,36 +1454,7 @@ seffect_enchant_armor(struct obj **sobjp)
         : sblessed
         ? rnd(3 - otmp->spe / 3)
         : 1;
-    if (s >= 0 && Is_dragon_scales(otmp)) {
-        unsigned was_lit = otmp->lamplit;
-        int old_light = artifact_light(otmp) ? arti_light_radius(otmp) : 0;
-
-        /* dragon scales get turned into dragon scale mail */
-        pline("%s merges and hardens!", Yname2(otmp));
-        setworn((struct obj *) 0, W_ARM);
-        /* assumes same order */
-        otmp->otyp += GRAY_DRAGON_SCALE_MAIL - GRAY_DRAGON_SCALES;
-        otmp->lamplit = 0; /* don't want bless() or uncurse() to adjust
-                            * light radius because scales -> scale_mail will
-                            * result in a second increase with own message */
-        if (sblessed) {
-            otmp->spe++;
-            cap_spe(otmp);
-            if (!otmp->blessed)
-                bless(otmp);
-        } else if (otmp->cursed)
-            uncurse(otmp);
-        otmp->known = 1;
-        setworn(otmp, W_ARM);
-        dragon_armor_handling(otmp, TRUE, TRUE);
-        if (otmp->unpaid)
-            alter_cost(otmp, 0L); /* shop bill */
-        otmp->lamplit = was_lit;
-        if (old_light)
-            maybe_adjust_light(otmp, old_light);
-        makeknown(SCR_ENCHANT_ARMOR);
-        return;
-    }
+  
 
     /* Items which provide magic resistance also can resist enchanting.
      * They don't resist when their enchantment is zero or negative, that is
@@ -1423,7 +1488,7 @@ seffect_enchant_armor(struct obj **sobjp)
         int oldspe = otmp->spe;
         /* RDSM act as a ring of increase damage, so we need to remove them
          * and put them back on to recalculate the damage bonus. */
-        if (otmp->otyp == RED_DRAGON_SCALE_MAIL)
+        if (otmp->otyp == RED_DRAGON_SCALES)
             Armor_off();
 
         /* despite being schar, it shouldn't be possible for spe to wrap
@@ -1434,7 +1499,7 @@ seffect_enchant_armor(struct obj **sobjp)
         cap_spe(otmp); /* make sure that it doesn't exceed SPE_LIM */
         s = otmp->spe - oldspe; /* cap_spe() might have throttled 's' */
 
-        if (otmp->otyp == RED_DRAGON_SCALE_MAIL) {
+        if (otmp->otyp == RED_DRAGON_SCALES) {
             setworn(otmp, W_ARM);
             Armor_on();
         }

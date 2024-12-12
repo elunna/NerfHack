@@ -763,7 +763,8 @@ enum polyself_flags {
     POLY_CONTROLLED = 0x01,
     POLY_MONSTER    = 0x02,
     POLY_REVERT     = 0x04,
-    POLY_LOW_CTRL   = 0x08
+    POLY_LOW_CTRL   = 0x08,
+    POLY_DRAGON_ONLY = 0x10
 };
 
 struct repo { /* repossession context */

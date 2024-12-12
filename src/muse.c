@@ -2704,14 +2704,11 @@ find_misc(struct monst *mtmp)
 staticfn struct permonst *
 muse_newcham_mon(struct monst *mon)
 {
-    struct obj *m_armr;
-
-    if ((m_armr = which_armor(mon, W_ARM)) != 0) {
-        if (Is_dragon_scales(m_armr))
-            return Dragon_scales_to_pm(m_armr);
-        else if (Is_dragon_mail(m_armr))
-            return Dragon_mail_to_pm(m_armr);
+    int pm = armor_to_dragon(mon);
+    if (pm != NON_PM) {
+        return &mons[pm];
     }
+    /* not wearing anything that would turn it into a dragon */
     return rndmonst();
 }
 
@@ -3406,11 +3403,16 @@ mon_reflects(struct monst *mon, const char *str)
         }
         return TRUE;
     } else if ((orefl = which_armor(mon, W_ARM))
-               && (orefl->otyp == SILVER_DRAGON_SCALES
-                   || orefl->otyp == SILVER_DRAGON_SCALE_MAIL)) {
+               && Is_dragon_scaled_armor(orefl)
+               && Dragon_armor_to_scales(orefl) == SILVER_DRAGON_SCALES) {
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "armor");
         return TRUE;
+    } else if ((orefl = which_armor(mon, W_ARMC))
+              && orefl->otyp == SILVER_DRAGON_SCALES) {
+       if (str)
+           pline(str, s_suffix(mon_nam(mon)), "set of scales");
+       return TRUE;
     } else if (innate_reflector(mon->data)) {
         /* Silver dragons only reflect when mature; babies do not */
         if (str)
@@ -3451,6 +3453,18 @@ ureflects(const char *fmt, const char *str)
         if (fmt && str)
             pline(fmt, str, "weapon");
         return TRUE;
+    } else if (EReflecting & W_ARMC) {
+        if (uarmc->otyp == SILVER_DRAGON_SCALES) {
+            if (fmt && str)
+                pline(fmt, str, "set of scales");
+            return TRUE;
+        } else {
+            /* no other cloaks give this */
+            impossible("reflecting cloak?");
+            if (fmt && str)
+                pline(fmt, str, "cloak");
+            return TRUE;
+        }
     } else if (EReflecting & W_AMUL) {
         if (fmt && str) {
             pline(fmt, str, "medallion");
