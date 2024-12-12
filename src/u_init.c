@@ -1099,6 +1099,7 @@ u_init(void)
     u.uevent.uhand_of_elbereth = 0;
     u.uevent.uheard_tune = 0;
     u.uevent.uopened_dbridge = 0;
+    u.uevent.uskilled = 0;
     u.uevent.udemigod = 0;              /* not a demi-god yet... */
     u.udg_cnt = 0;
     u.mh = u.mhmax = u.mtimedone = 0;

@@ -45,6 +45,7 @@ struct u_event {
     Bitfield(qcompleted, 1);   /* successfully completed Quest task */
     Bitfield(uheard_tune, 2);  /* 1=know about, 2=heard passtune, 3=bridge has
                                 * been destroyed so tune has become useless */
+    Bitfield(uskilled, 1);     /* god unlocked a skill */
     Bitfield(uopened_dbridge, 1);   /* opened the drawbridge */
     Bitfield(invoked, 1);           /* invoked Gate to the Sanctum level */
     Bitfield(gehennom_entered, 1);  /* entered Gehennom via Valley */
