@@ -93,16 +93,16 @@ des.object({ id = "chest", locked = 1, x = 39, y = 10 ,
 des.object({ id = "chest", locked = 1, x = 38, y = 10 ,
              contents = function()
                 des.object({ id = "magic marker", buc = "random" });
-                if percent(50)
+                if percent(50) then
                     des.object("scroll of blank paper");
                 end
-                if percent(50)
+                if percent(50) then
                     des.object("scroll of blank paper");
                 end
-                if percent(50)
+                if percent(50) then
                     des.object("spellbook of blank paper");
                 end
-                if percent(50)
+                if percent(50) then
                     des.object("spellbook of blank paper");
                 end
              end
