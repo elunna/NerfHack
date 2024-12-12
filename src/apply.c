@@ -2575,7 +2575,7 @@ use_unicorn_horn(struct obj **optr)
     /* fix [some of] the troubles */
     for (val = 0; val < val_limit; val++) {
         idx = trouble_list[val];
-        if (Upolyd && is_unicorn(gy.youmonst.data))
+        if ((Upolyd && is_unicorn(gy.youmonst.data)) || !rn2(20))
             fix_to = 9999L;
         else
             fix_to = (long) (rnd(basefix));
