@@ -46,8 +46,7 @@ des.region(selection.area(69,01,74,07),"unlit")
 des.region(selection.area(51,16,56,18),"unlit")
 
 -- Stairs
-des.stair("down", 72,02)
-des.stair("up", 50,17)
+des.levregion({ region={72,02,72,02}, type="branch" });
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))

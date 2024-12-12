@@ -51,6 +51,7 @@ des.region(selection.area(70,02,73,04),"unlit")
 
 -- Arrival point
 --des.levregion({ region = {32,16,33,17}, type = "branch" })
+des.levregion({ region={32,16,33,17}, type="stair-up", name="leth-a" })
 
 -- Stairs
 des.stair("up", 04,02)

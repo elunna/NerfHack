@@ -31,6 +31,12 @@ dungeon = {
             branchtype = "portal"
          },
          {
+            name = "Head of the Lethe River",
+            chainlevel = "leth-b",
+            base = 0,
+            direction = "up"
+         },
+         {
             name = "The Lost Tomb",
             base = 15,
             range = 4,
@@ -97,11 +103,6 @@ dungeon = {
             name = "castle",
             base = -9,
             nlevels = 3,
-         },
-         {
-            name = "leth-a",
-            base = -8,
-            nlevels = 2,
          },
          {
             name = "leth-b",
@@ -364,6 +365,20 @@ dungeon = {
             base = -1,
             nlevels = 3,
          }
+      }
+   },
+   {
+      name = "Head of the Lethe River",
+      base = 1,
+      alignment = "chaotic",
+      flags = { "mazelike" },
+      entry = -1,
+      levels = {
+         {
+            name = "leth-a",
+            base = 1,
+            nlevels = 2
+         },
       }
    },
    {
