@@ -109,6 +109,7 @@ local pt = selection.rndcoord(place);
 
 des.object({ id = "sack", coord = pt, buc="uncursed",
              contents = function()
+                des.object({ id = "magic marker" })
                 des.object({ id = "ring of teleport control" })
                 des.object({ id = "ring of polymorph control" })
                 if percent(75) then
