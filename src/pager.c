@@ -1047,7 +1047,8 @@ add_mon_info(winid datawin, struct permonst * pm)
                 nogen ? "only appears specially" :
                 "appears in any branch",
                 (gen & G_SGROUP) ? " in groups" :
-                (gen & G_LGROUP) ? " in large groups" : "",
+                (gen & G_LGROUP) ? " in large groups" :
+                (gen & G_VLGROUP) ? " in very large groups" : "",
                 freq >= 5 ? "very common" :
                 freq == 4 ? "common" :
                 freq == 3 ? "slightly rare" :

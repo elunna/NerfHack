@@ -108,13 +108,12 @@
     || is_mind_flayer(ptr) \
     || is_unicorn(ptr) \
     || is_bird(ptr) \
+    || is_dino(ptr) \
     || ptr == &mons[PM_DEEP_ONE] \
     || ptr == &mons[PM_DEEPER_ONE] \
     || ptr == &mons[PM_DEEPEST_ONE] \
     || ptr == &mons[PM_BYAKHEE] \
     || ptr == &mons[PM_NIGHTGAUNT] \
-    || ptr == &mons[PM_VELOCIRAPTOR] \
-    || ptr == &mons[PM_T_REX] \
     || ptr == &mons[PM_LANDSHARK] \
     /* These pose complex problems if they become rabid... */ \
     || ptr == &mons[PM_ALIGNED_CLERIC] \
@@ -279,6 +278,7 @@
      || (ptr) == &mons[PM_MIGO_QUEEN])
 #define is_dino(ptr) \
     ((ptr) == &mons[PM_VELOCIRAPTOR] \
+    || (ptr) == &mons[PM_COMPSOGNATHUS] \
     || (ptr) == &mons[PM_T_REX])
 #define is_giant(ptr) (((ptr)->mhflags & MH_GIANT) != 0L)
 #define is_ettin(ptr) \

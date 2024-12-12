@@ -1153,6 +1153,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_CHAMELEON:
     case PM_CROCODILE:
     case PM_SALAMANDER:
+    case PM_COMPSOGNATHUS:
     case PM_VELOCIRAPTOR:
     case PM_T_REX:
     case PM_LONG_WORM_TAIL:

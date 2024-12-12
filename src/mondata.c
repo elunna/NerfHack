@@ -890,6 +890,7 @@ name_to_monplus(
     {
         static const struct alt_spl names[] = {
             /* Alternate spellings */
+            { "compy", PM_COMPSOGNATHUS, NEUTRAL },
             { "grey dragon", PM_GRAY_DRAGON, NEUTRAL },
             { "baby grey dragon", PM_BABY_GRAY_DRAGON, NEUTRAL },
             { "grey unicorn", PM_GRAY_UNICORN, NEUTRAL },
