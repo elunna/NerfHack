@@ -2472,7 +2472,7 @@ use_unicorn_horn(struct obj **optr)
     long old_to, new_to, fix_to;
     struct obj *obj = (optr ? *optr : (struct obj *) 0);
 
-    if (obj && obj->degraded_horn) {
+    if (obj && obj->degraded_horn && !rn2(20)) {
         if (rn2(10)) {
             pline_The("%s emits a weak fizzle.", xname(obj));;
         } else {
