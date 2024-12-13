@@ -732,6 +732,8 @@ u_init_role(void)
             ini_inv(Lamp);
         knows_object(POT_FULL_HEALING, FALSE);
         knows_object(HEALTHSTONE, FALSE);	/* KMH */
+        knows_object(POT_BLOOD, FALSE);
+        knows_object(POT_VAMPIRE_BLOOD, FALSE);
         skill_init(Skill_H);
         break;
     case PM_KNIGHT:
