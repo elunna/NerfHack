@@ -306,7 +306,8 @@ dipforge(struct obj *obj)
         if (!Blind)
             pline_The("grease burns off.");
     }
-    if (obj->opoisoned) {
+    /* Zombies also share the otrapped var (zombie_corpse) */
+    if (obj->opoisoned && obj->otyp != CORPSE) {
         obj->opoisoned = 0;
         if (!Blind)
             pline_The("poison evaporates.");
