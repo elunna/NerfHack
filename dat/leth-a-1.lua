@@ -118,31 +118,33 @@ des.object({ id = "statue", x=44, y=10, contents = 0 })
 des.object({ id = "statue", x=36, y=11, contents = 0 })
 
 -- And even some treasure
-des.object({ id = "chest", locked = 1, x = 39, y = 10 ,
-             contents = function()
-                des.object({ id = "magic lamp", buc = "cursed" });
-                des.object("potion of oil")
-             end
-});
-
--- Ruins of a library
-des.object({ id = "chest", locked = 1, x = 38, y = 10 ,
-             contents = function()
-                des.object({ id = "magic marker", buc = "random" });
-                if percent(50) then
-                    des.object("scroll of blank paper");
-                end
-                if percent(50) then
-                    des.object("scroll of blank paper");
-                end
-                if percent(50) then
-                    des.object("spellbook of blank paper");
-                end
-                if percent(50) then
-                    des.object("spellbook of blank paper");
-                end
-             end
-});
+if percent(50) then
+    des.object({ id = "chest", locked = 1, x = 39, y = 10 ,
+                 contents = function()
+                    des.object({ id = "magic lamp", buc = "cursed" });
+                    des.object("potion of oil")
+                 end
+    });
+else
+    -- Ruins of a library
+    des.object({ id = "chest", locked = 1, x = 38, y = 10 ,
+                 contents = function()
+                    des.object({ id = "magic marker", buc = "random" });
+                    if percent(50) then
+                        des.object("scroll of blank paper");
+                    end
+                    if percent(50) then
+                        des.object("scroll of blank paper");
+                    end
+                    if percent(50) then
+                        des.object("spellbook of blank paper");
+                    end
+                    if percent(50) then
+                        des.object("spellbook of blank paper");
+                    end
+                 end
+    });
+end
 
 -- A few random flapping things
 des.monster("vampire bat")
