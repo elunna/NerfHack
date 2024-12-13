@@ -154,6 +154,8 @@ static struct trobj Rogue[] = {
     { KNIFE, 0, WEAPON_CLASS, 10, 0 }, /* quan is variable */
     { LEATHER_ARMOR, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_SICKNESS, 0, POTION_CLASS, 1, 0 },
+    { SCR_GOLD_DETECTION, 0, SCROLL_CLASS, 4, 1 },
+    { SCR_TELEPORTATION, 0, SCROLL_CLASS, 4, 1 },
     { LOCK_PICK, 0, TOOL_CLASS, 1, 0 },
     { SACK, 0, TOOL_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
