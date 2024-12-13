@@ -2469,7 +2469,7 @@ use_unicorn_horn(struct obj **optr)
     int idx, val, val_limit, trouble_count, unfixable_trbl, did_prop;
     int trouble_list[PROP_COUNT];
     int basefix;    /* KMH */
-    long old_to, new_to, fix_to;
+    long old_to = 0L, new_to, fix_to;
     struct obj *obj = (optr ? *optr : (struct obj *) 0);
 
     if (obj && obj->degraded_horn && !rn2(20)) {

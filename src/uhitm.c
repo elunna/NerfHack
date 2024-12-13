@@ -6635,6 +6635,7 @@ hmonas(struct monst *mon)
                     || mon->data == &mons[PM_GREEN_SLIME]
                     || noncorporeal(mon->data)))
                 break;
+            FALLTHROUGH;
             /*FALLTHRU*/
         case AT_KICK:
         case AT_STNG:

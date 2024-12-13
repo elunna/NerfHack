@@ -1601,7 +1601,7 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
 {
     struct obj *obj;
     struct obj *best = (struct obj *) 0;
-    int best_score, obj_score;
+    int best_score = 0, obj_score = 0;
 
     if (otmp->oclass != ARMOR_CLASS)
         return FALSE;

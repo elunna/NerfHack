@@ -851,8 +851,6 @@ gcrownu(void)
     const char *what;
     boolean already_exists, in_hand;
     short class_gift;
-    int given = 0;
-
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
     /* Player gets up to 3 intrinsics granted. */
@@ -863,14 +861,12 @@ gcrownu(void)
             if (!(HFire_resistance & FROMOUTSIDE || fully_resistant(FIRE_RES))) {
                 You(Hallucination ? "be chillin'." : "feel a momentary chill.");
                 incr_resistance(&HFire_resistance, 100);
-                given++;
             }
             break;
         case 2:
             if (!(HCold_resistance & FROMOUTSIDE || fully_resistant(COLD_RES))) {
                 You_feel("full of hot air.");
                 incr_resistance(&HCold_resistance, 100);
-                given++;
             }
             break;
         case 3:
@@ -880,21 +876,18 @@ gcrownu(void)
                 else
                     Your("health currently feels amplified!");
                 incr_resistance(&HShock_resistance, 100);
-                given++;
             }
             break;
         case 4:
             if (!(HSleep_resistance & FROMOUTSIDE || fully_resistant(SLEEP_RES))) {
                 You_feel("wide awake.");
                 incr_resistance(&HSleep_resistance, 100);
-                given++;
             }
             break;
         case 5:
             if (!(HPoison_resistance & FROMOUTSIDE || fully_resistant(POISON_RES))) {
                 You_feel(Poison_resistance ? "especially healthy." : "healthy.");
                 incr_resistance(&HPoison_resistance, 100);
-                given++;
             }
             break;
         }

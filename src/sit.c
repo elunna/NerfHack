@@ -792,6 +792,7 @@ attrcurse(void)
             ret = SLEEP_RES;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 13:
         if (HDisint_resistance) {
@@ -802,6 +803,7 @@ attrcurse(void)
             ret = DISINT_RES;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     case 14:
         if (HShock_resistance) {
@@ -812,6 +814,7 @@ attrcurse(void)
             ret = SHOCK_RES;
             break;
         }
+        FALLTHROUGH;
         /*FALLTHRU*/
     default:
         break;

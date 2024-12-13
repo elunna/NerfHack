@@ -7045,26 +7045,26 @@ chest_trap(
     if (Luck > -13 && rn2(13 + Luck) > 7) { /* saved by luck */
         /* trap went off, but good luck prevents damage */
         switch (rn2(13)) {
-        case 12:
+        case 12: FALLTHROUGH; /*FALLTHRU*/
         case 11:
             msg = "explosive charge is a dud";
             break;
-        case 10:
+        case 10: FALLTHROUGH; /*FALLTHRU*/
         case 9:
             msg = "electric charge is grounded";
             break;
-        case 8:
+        case 8: FALLTHROUGH; /*FALLTHRU*/
         case 7:
             msg = "flame fizzles out";
             break;
-        case 6:
-        case 5:
+        case 6: FALLTHROUGH; /*FALLTHRU*/
+        case 5: FALLTHROUGH; /*FALLTHRU*/
         case 4:
             msg = "poisoned needle misses";
             break;
-        case 3:
-        case 2:
-        case 1:
+        case 3: FALLTHROUGH; /*FALLTHRU*/
+        case 2: FALLTHROUGH; /*FALLTHRU*/
+        case 1: FALLTHROUGH; /*FALLTHRU*/
         case 0:
             msg = "gas cloud blows away";
             break;

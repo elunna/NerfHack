@@ -3250,6 +3250,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         break;
 
     case WAN_SLOW_MONSTER:
+        FALLTHROUGH; /*FALLTHRU*/
     case SPE_SLOW_MONSTER:
         if (HFast & (TIMEOUT | INTRINSIC)) {
             learn_it = TRUE;
@@ -3258,6 +3259,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         break;
 
     case WAN_TELEPORTATION:
+        FALLTHROUGH; /*FALLTHRU*/
     case SPE_TELEPORT_AWAY:
         tele();
         /* same criteria as when mounted (zap_steed) */
@@ -3267,6 +3269,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         break;
 
     case WAN_DEATH:
+        FALLTHROUGH; /*FALLTHRU*/
     case SPE_FINGER_OF_DEATH:
         if (resists_death(gy.youmonst.data)) {
             pline((obj->otyp == WAN_DEATH)
