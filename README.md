@@ -9,12 +9,12 @@ NerfHack is intended to be a more difficult variant than Vanilla NetHack. By pul
 It's not all nerfs though, many small buffs and mechanics have been added to even the playing field and make the game more interesting.
 
 ## Development and Gameplay Goals:
-1) Nullify many tried-and-true exploits, for example:
+1) Nullify many tried-and-true exploits or strategies, for example:
    * Pet Theft
-   * The Protection Racket
+   * Credit-Cloning
    * Astral Rain
    * Wraith luring
-   * Healing potion HP gorging
+   * HP gorging
    * Infinite Altar camping
    * Genociding on the planes
    * Polypiling
@@ -42,23 +42,21 @@ It's not all nerfs though, many small buffs and mechanics have been added to eve
 5) Introduce quality-of-life features
     * Speed up the pace of the game, auto-identifying anything that is umambiguous
     * Give the player access to in-game object and monster lookup information
-6) Shorten the endgame
-    * Gehennom is much shorter, the wizards tower is accessible from the Castle level
     * Allow players to enchant weapons to +13 so they can clear through the hordes with ease (it still won't be easy!)
-7) Emphasize role and race uniqueness
+6) Emphasize role and race uniqueness
     * By not allowing quest artifacts to be wished for, each role has to rely on their own and play around it's powers.
     * Put in measures to make the roles feel different or have noticeable strengths and weakness that carry through the entire game.
     * Racial bonuses and penalties for armors
     * New special mechanics for roles.
-8) Make it easy to variant-hop
+7) Make it easy to variant-hop
    * The player should be able to easily transition from Vanilla NetHack to NerfHack. We hope players don't have to think too much about the changes. Most of the mechanics are designed to be understood intuitively based on game feedback.
-   * Don't require the player to memorize or lookup large tables of information (ex: forging recipes, tinker mechanics, object materials, object properties, gem alchemy, potion fermentation, etc, etc, etc)
+   * Don't require the player to memorize or lookup large tables of information (ex: forging recipes, tinker mechanics, object materials, object properties, gem alchemy, potion fermentation, etc, etc, etc). Forging and gem alchemy recipes are readily available in the object lookup which shows all related recipes for any item.
    * Don't change anything major in the interface or functionality.
    * Don't introduce any new #extended commands (other than wiz-mode tools)
    * Don't change any monster letters
-9)  Stay current with upstream NetHack and contribute issues and bug-fixes back when possible.
+8) Stay current with upstream NetHack and contribute issues and bug-fixes back when possible.
 
-There are definitely some changes that the player should know about, however, we will leave it up to the individual to decide what those are. The thrill of discovery should not be spoiled.
+There are definitely some changes that the player should know about, however, we will leave it up to the individual to decide what those are. The thrill of discovery should not be spoiled!
 
 For a complete list of changes, please visit the changelog repo: https://github.com/elunna/nerfhack-changelog
 
