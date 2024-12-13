@@ -7784,9 +7784,7 @@ lava_effects(void)
     }
 
  burn_stuff:
-    fire_damage_chain(gi.invent, FALSE, FALSE, u.ux, u.uy);
-    /* Reroll dmg for items */
-    (void) destroy_items(&gy.youmonst, AD_FIRE, d(6, 6));
+    (void) destroy_items(&gy.youmonst, AD_FIRE, dmg);
     ignite_items(gi.invent);
     return FALSE;
 }
