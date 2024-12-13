@@ -1488,7 +1488,7 @@ seffect_enchant_armor(struct obj **sobjp)
         int oldspe = otmp->spe;
         /* RDSM act as a ring of increase damage, so we need to remove them
          * and put them back on to recalculate the damage bonus. */
-        if (otmp->otyp == RED_DRAGON_SCALES)
+        if (otmp->dragonscales == RED_DRAGON_SCALES)
             Armor_off();
 
         /* despite being schar, it shouldn't be possible for spe to wrap
@@ -1499,7 +1499,7 @@ seffect_enchant_armor(struct obj **sobjp)
         cap_spe(otmp); /* make sure that it doesn't exceed SPE_LIM */
         s = otmp->spe - oldspe; /* cap_spe() might have throttled 's' */
 
-        if (otmp->otyp == RED_DRAGON_SCALES) {
+        if (otmp->dragonscales == RED_DRAGON_SCALES) {
             setworn(otmp, W_ARM);
             Armor_on();
         }
