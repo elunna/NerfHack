@@ -5,7 +5,8 @@
 
 #include "hack.h"
 
-/* "an uncursed greased thoroughly rusty thoroughly corroded rustproof +0 [chain mail]" (82 characters) */
+/* "an uncursed greased silver-scaled thoroughly rusty thoroughly corroded
+   rustproof +0 [chain mail]" (83 characters) */
 #define PREFIX 90
 #define SCHAR_LIM 127
 #define NUMOBUF 12
@@ -1521,12 +1522,6 @@ doname_base(
                                            * to be "(something; slippery)" */
                     Concat(bp,  1, "; slippery)");
             }
-            if (Is_dragon_scaled_armor(obj)) {
-                char scalebuf[30], *colorstr = dragon_scales_color(obj);
-                Sprintf(scalebuf, "%s-scaled ", colorstr);
-                Strcat(prefix, scalebuf);
-                releaseobuf(colorstr); /* don't consume an extra obuf */
-            }
             if (bp_eos[-1] == ')') {
                 /* there could be light-emitting artifact gloves someday,
                    so add 'lit' separately from 'slippery' rather than via
@@ -1534,6 +1529,12 @@ doname_base(
                 if (!Blind && obj->lamplit && artifact_light(obj))
                     ConcatF1(bp, 1, ", %s lit)", arti_light_description(obj));
             }
+        }
+        if (Is_dragon_scaled_armor(obj)) {
+            char scalebuf[30], *colorstr = dragon_scales_color(obj);
+            Sprintf(scalebuf, "%s-scaled ", colorstr);
+            Strcat(prefix, scalebuf);
+            releaseobuf(colorstr); /* don't consume an extra obuf */
         }
         FALLTHROUGH;
         /*FALLTHRU*/
