@@ -1543,11 +1543,7 @@ boolean
 drain_item(struct obj *obj, boolean by_you)
 {
     boolean u_ring;
-    int otyp = obj->otyp;
-    
-    /* convert mail to scales to simplify testing */
-    if (Is_dragon_armor(obj))
-        otyp = Dragon_armor_to_scales(obj);
+    int otyp;
         
     /* Is this a charged/enchanted object? */
     if (!obj
@@ -1558,7 +1554,13 @@ drain_item(struct obj *obj, boolean by_you)
     if (defends(AD_DRLI, obj) || defends_when_carried(AD_DRLI, obj)
         || obj_resists(obj, 10, 90))
         return FALSE;
-
+    
+    otyp = obj->otyp;
+    
+    /* convert mail to scales to simplify testing */
+    if (Is_dragon_armor(obj))
+        otyp = Dragon_armor_to_scales(obj);
+    
     /* Charge for the cost of the object */
     if (by_you)
         costly_alteration(obj, COST_DRAIN);
