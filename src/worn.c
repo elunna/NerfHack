@@ -1608,6 +1608,7 @@ int
 armor_bonus(struct monst *mon, struct obj *armor)
 {
     int bon;
+    boolean is_you = mon == &gy.youmonst;
     if (!armor) {
         impossible("armor_bonus was passed a null obj");
         return 0;
@@ -1633,7 +1634,7 @@ armor_bonus(struct monst *mon, struct obj *armor)
     }
     
     /* add shield skill bonuses for the player */
-    if (is_shield(armor) && mon == &gy.youmonst) {
+    if (is_shield(armor) && is_you) {
         switch (P_SKILL(P_SHIELD)) {
         case P_BASIC:      bon += 1; break;
         case P_SKILLED:    bon += 3; break;
@@ -1644,15 +1645,18 @@ armor_bonus(struct monst *mon, struct obj *armor)
     }
     
     /* Racial bonuses */
-    if (is_orc(mon->data) && is_orcish_armor(armor->otyp))
-        bon += 2;
-    else if (is_gnome(mon->data) && is_gnomish_armor(armor->otyp))
-        bon += 2;
-    else if (is_elf(mon->data) && is_elven_armor(armor->otyp))
-        bon += 1;
-    else if (is_dwarf(mon->data) && is_dwarvish_armor(armor->otyp))
-        bon += 1;
-
+    if (is_you) {
+        bon += race_bonus(armor);
+    } else {
+        if (is_orc(mon->data) && is_orcish_armor(armor->otyp))
+            bon += 2;
+        else if (is_gnome(mon->data) && is_gnomish_armor(armor->otyp))
+            bon += 2;
+        else if (is_elf(mon->data) && is_elven_armor(armor->otyp))
+            bon += 1;
+        else if (is_dwarf(mon->data) && is_dwarvish_armor(armor->otyp))
+            bon += 1;
+    }
     /* appearance bonuses */
     if (objdescr_is(armor, "combat boots"))
         bon += 1;
