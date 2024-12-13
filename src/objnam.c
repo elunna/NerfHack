@@ -1777,19 +1777,12 @@ doname_base(
     }
 
     if (obj->oclass == ARMOR_CLASS && obj->known) {
-        if (is_shield(obj))
-            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj)
-                    + race_bonus(obj)
-                    + shield_bonus()
-                    + misc_bonus(obj));
-        else
-            ConcatF1(bp, 0, " [%dAC]", ARM_BONUS(obj)
-                    + race_bonus(obj) + misc_bonus(obj));
+        ConcatF1(bp, 0, " [%dAC]", armor_bonus(&gy.youmonst, obj));
     }
 
     if (obj->oclass == WEAPON_CLASS) {
         if (is_pole(obj) && obj->otyp != LANCE && obj->known)
-            ConcatF1(bp, 0, " [%dAC]", misc_bonus(obj));
+            ConcatF1(bp, 0, " [%dAC]", pole_bonus(obj));
     }
 
     /* treat 'restoring' like suppress_price because shopkeeper and

@@ -6248,7 +6248,7 @@ attack_blocker(struct monst *mdef)
             bon = (mdef == &gy.youmonst) ? u.uspellprot : 0;
         else {
             struct obj *armor = which_armor(mdef, armasks[i]);
-            bon = armor ? ARM_BONUS(armor) : 0;
+            bon = armor ? armor_bonus(mdef, armor) : 0;
         }
 
         if (bon <= 0)

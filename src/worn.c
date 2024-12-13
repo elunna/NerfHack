@@ -714,12 +714,13 @@ find_mac(struct monst *mon)
                 base -= obj->spe; /* not impacted by erosion */
                 continue;
             }
-            base += armor_bonus(mon, obj);
+            base -= armor_bonus(mon, obj);
+            /* since armor_bonus is positive, subtracting it increases AC */
         }
     }
     /* Bonus for polearms still applies for monsters! */
     if (monwep && is_pole(monwep) && monwep->otyp != LANCE)
-        base -= misc_bonus(monwep);
+        base -= pole_bonus(monwep);
 
     /* same cap as for hero [find_ac(do_wear.c)] */
     if (abs(base) > AC_MAX)
@@ -953,8 +954,8 @@ m_dowear_type(
          * it would forget spe and once again think the object is better
          * than what it already has.
          */
-        if (best && (ARM_BONUS(best) + extra_pref(mon, best)
-                     >= ARM_BONUS(obj) + extra_pref(mon, obj)))
+        if (best && (armor_bonus(mon, best) + extra_pref(mon, best)
+                     >= armor_bonus(mon, obj) + extra_pref(mon, obj)))
             continue;
         best = obj;
     }
@@ -1606,18 +1607,40 @@ staticfn boolean threatens_dmgtype(int adtyp)
 int
 armor_bonus(struct monst *mon, struct obj *armor)
 {
-    int bon = 0;
+    int bon;
     if (!armor) {
         impossible("armor_bonus was passed a null obj");
         return 0;
     }
-    /* start with its base AC value
-     (includes spe and erosion) */
-    bon -= ARM_BONUS(armor);
+    
+    /* start with its base AC value */
+    bon = objects[armor->otyp].a_ac;
+    
+    /* subtract erosion */
+    bon -= (int) greatest_erosion(armor);
+    
+    /* erosion is not allowed to make the armor worse than wearing nothing;
+     * only negative enchantment can do that. */
+    if (bon < 0) {
+        bon = 0;
+    }
+    /* add enchantment (could be negative) */
+    bon += armor->spe;
     
     /* add bonus for dragon-scaled armor */
     if (Is_dragon_scaled_armor(armor)) {
-        bon += 3;
+        bon -= 3;
+    }
+    
+    /* add shield skill bonuses for the player */
+    if (is_shield(armor) && mon == &gy.youmonst) {
+        switch (P_SKILL(P_SHIELD)) {
+        case P_BASIC:      bon -= 1; break;
+        case P_SKILLED:    bon -= 3; break;
+        case P_EXPERT:     bon -= 5; break;
+        case P_MASTER:     bon -= 8; break;
+        default: break;
+        }
     }
     
     /* Racial bonuses */
@@ -1631,7 +1654,10 @@ armor_bonus(struct monst *mon, struct obj *armor)
         bon -= 1;
 
     /* appearance bonuses */
-    bon -= misc_bonus(armor);
+    if (objdescr_is(armor, "combat boots"))
+        bon -= 1;
+    if (objdescr_is(armor, "padded gloves"))
+        bon -= 1;
     return bon;
 }
 

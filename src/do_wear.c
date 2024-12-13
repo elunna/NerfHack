@@ -2702,20 +2702,22 @@ find_ac(void)
 
     /* Polearms AC bonus */
     if (uwep && is_pole(uwep) && uwep->otyp != LANCE)
-        uac -= misc_bonus(uwep);
+        uac -= pole_bonus(uwep);
 
     if (uarm)
-        uac -= (ARM_BONUS(uarm) + race_bonus(uarm));
+        uac -= armor_bonus(&gy.youmonst, uarm);
     if (uarmc)
-        uac -= (ARM_BONUS(uarmc) + race_bonus(uarmc));
+        uac -= armor_bonus(&gy.youmonst, uarmc);
     if (uarmh)
-        uac -= (ARM_BONUS(uarmh) + race_bonus(uarmh));
+        uac -= armor_bonus(&gy.youmonst, uarmh);
     if (uarmf)
-        uac -= (ARM_BONUS(uarmf) + race_bonus(uarmf));
+        uac -= armor_bonus(&gy.youmonst, uarmf);
     if (uarmg)
-        uac -= ARM_BONUS(uarmg);
+        uac -= armor_bonus(&gy.youmonst, uarmg);
     if (uarmu)
-        uac -= ARM_BONUS(uarmu);
+        uac -= armor_bonus(&gy.youmonst, uarmu);
+    if (uarms)
+        uac -= armor_bonus(&gy.youmonst, uarms);
     if (uleft && uleft->otyp == RIN_PROTECTION)
         uac -= uleft->spe;
     if (uright && uright->otyp == RIN_PROTECTION)
@@ -2723,24 +2725,12 @@ find_ac(void)
     if (uamul && uamul->otyp == AMULET_OF_GUARDING)
         uac -= uamul->spe; /* chargable; main benefit is to MC */
 
-    /* Extra skill for shield */
-    if (uarms) {
-        uac -= (ARM_BONUS(uarms) + race_bonus(uarms));
-        uac -= shield_bonus();
-    }
 
-    /* combat boots give +1 AC */
-    if (uarmf && misc_bonus(uarmf))
-        uac -= misc_bonus(uarmf);
-    /* padded gloves give +1 AC */
-    if (uarmg && misc_bonus(uarmg))
-        uac -= misc_bonus(uarmg);
 
     /* armor class from other sources */
     if (HProtection & INTRINSIC)
         uac -= u.ublessed;
     uac -= u.uspellprot;
-
 
     /* Dexterity affects your base AC */
     dex_adjust_ac = 0;
@@ -3760,34 +3750,13 @@ race_bonus(struct obj *obj)
     return 0;
 }
 
-/* AC bonuses for misc items */
+/* AC bonuses for polearms items */
 int
-misc_bonus(struct obj *obj)
+pole_bonus(struct obj *obj)
 {
-    if (objdescr_is(obj, "combat boots"))
-        return 1;
-    if (objdescr_is(obj, "padded gloves"))
-        return 1;
     if (is_pole(obj))
         return obj->owt / 30;
     return 0;
-}
-
-int
-shield_bonus(void)
-{
-    switch (P_SKILL(P_SHIELD)) {
-    case P_BASIC:
-        return 1;
-    case P_SKILLED:
-        return 3;
-    case P_EXPERT:
-        return 5;
-    case P_MASTER:
-        return 8;
-    default:
-        return 0;
-    }
 }
 
 /* Computes magical bonus from worn rings of a specific type.
