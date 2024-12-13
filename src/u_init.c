@@ -59,7 +59,7 @@ static struct trobj Barbarian[] = {
     { TWO_HANDED_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { AXE, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { STUDDED_LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
-    { FOOD_RATION, 0, FOOD_CLASS, 1, 0 },
+    { FOOD_RATION, 0, FOOD_CLASS, 2, 0 },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cartomancer[] = {
