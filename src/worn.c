@@ -1629,35 +1629,35 @@ armor_bonus(struct monst *mon, struct obj *armor)
     
     /* add bonus for dragon-scaled armor */
     if (Is_dragon_scaled_armor(armor)) {
-        bon -= 3;
+        bon += 3;
     }
     
     /* add shield skill bonuses for the player */
     if (is_shield(armor) && mon == &gy.youmonst) {
         switch (P_SKILL(P_SHIELD)) {
-        case P_BASIC:      bon -= 1; break;
-        case P_SKILLED:    bon -= 3; break;
-        case P_EXPERT:     bon -= 5; break;
-        case P_MASTER:     bon -= 8; break;
+        case P_BASIC:      bon += 1; break;
+        case P_SKILLED:    bon += 3; break;
+        case P_EXPERT:     bon += 5; break;
+        case P_MASTER:     bon += 8; break;
         default: break;
         }
     }
     
     /* Racial bonuses */
     if (is_orc(mon->data) && is_orcish_armor(armor->otyp))
-        bon -= 2;
+        bon += 2;
     else if (is_gnome(mon->data) && is_gnomish_armor(armor->otyp))
-        bon -= 2;
+        bon += 2;
     else if (is_elf(mon->data) && is_elven_armor(armor->otyp))
-        bon -= 1;
+        bon += 1;
     else if (is_dwarf(mon->data) && is_dwarvish_armor(armor->otyp))
-        bon -= 1;
+        bon += 1;
 
     /* appearance bonuses */
     if (objdescr_is(armor, "combat boots"))
-        bon -= 1;
+        bon += 1;
     if (objdescr_is(armor, "padded gloves"))
-        bon -= 1;
+        bon += 1;
     return bon;
 }
 
