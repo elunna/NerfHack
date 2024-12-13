@@ -1620,7 +1620,7 @@ attributes_enlightenment(
     if (extrinsic_res(COLD_RES))
         you_are("cold resistant", from_what(COLD_RES));
     if (extrinsic_res(SLEEP_RES))
-        you_are(buf, from_what(SLEEP_RES));
+        you_are("sleep resistant", from_what(SLEEP_RES));
     if (extrinsic_res(DISINT_RES))
         you_are("disintegration resistant", from_what(DISINT_RES));
     if (extrinsic_res(SHOCK_RES))
@@ -1654,7 +1654,7 @@ attributes_enlightenment(
 
     if (Sick_resistance)
         you_are("immune to sickness", from_what(SICK_RES));
-
+    
     if (Stone_resistance) {
         Sprintf(buf, "%.20s%.30s",
                 temp_resist(STONE_RES) ? "temporarily " : "",
@@ -1668,7 +1668,12 @@ attributes_enlightenment(
     if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));
-
+    
+    /* Conferred by Sunsword or Silver dragon scaled armor; 
+     * no good checks for those yet.  */
+    if (defended(&gy.youmonst, AD_BLND))
+        enl_msg(You_, "resist", "resisted", " blinding effects", "");
+    
     if (u.uedibility)
         you_can("recognize detrimental food", "");
 
