@@ -3197,6 +3197,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         break;
     case WAN_DRAINING:	/* KMH */
         makeknown(obj->otyp);
+        FALLTHROUGH;
         /*FALLTHRU*/
     case SPE_DRAIN_LIFE:
         if (!Drain_resistance) {

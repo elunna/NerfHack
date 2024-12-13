@@ -7193,6 +7193,7 @@ chest_trap(
             } else
                 You("momentarily stiffen.");
             break;
+            /* cases 5/6 */
         case 4: {
             /* Summon a little critter */
             struct permonst *mdat;
@@ -7225,8 +7226,8 @@ chest_trap(
                 }
             }
             /* No mon data was made, so just... */
-        }
-        /*FALLTHRU*/
+        } /* case 4 */
+        break;
         case 3: {
             /* Cream pie in the face */
             struct obj pseudo;
@@ -7284,15 +7285,12 @@ chest_trap(
             (void) make_hallucinated(
                 (HHallucination & TIMEOUT) + (long) rn1(5, 16), FALSE, 0L);
             break;
-        
-        
         default:
             impossible("bad chest trap");
             break;
         }
         bot(); /* to get immediate botl re-display */
     }
-
     return FALSE;
 }
 
