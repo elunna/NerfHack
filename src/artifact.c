@@ -605,9 +605,9 @@ defends(int adtyp, struct obj *otmp)
             return (otyp == BLUE_DRAGON_SCALES);
         case AD_ACID:
         case AD_STON: /* petrification resistance */
-            return (otmp->otyp == YELLOW_DRAGON_SCALES);
+            return (otyp == YELLOW_DRAGON_SCALES);
         case AD_BLND: /* Blinding light resistance */
-            return (otmp->otyp == SILVER_DRAGON_SCALES);
+            return (otyp == SILVER_DRAGON_SCALES);
         default:
             break;
         }
