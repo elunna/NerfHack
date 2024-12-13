@@ -8,29 +8,82 @@
 des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "solidify");
-
+--0         1         2         3         4         5         6         7     
+--0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
-             --------                     
-             |......|                     
-             |......|                     
-             |---.--|                     
-                 #                        
-                 #                        
-            |----S---|           --------|
-|------|    |........|           |.......|
-|......------........|------------.......|
-|......+.............+...........+.......|
-|......+.............+...........+.......|
-|......------........|------------.......|
-|------|    |........|           |.......|
-            |---S----|           --------|
-                #                         
-                #                         
-             |--.---|                     
-             |......|                     
-             |......|                     
-             --------                     
+00             --------              -----    
+01  -----      |......|              |...|    
+02  |...|      |......|              |...S####
+03  |...|      |---.--|              |---|   #
+04  |---|          #                         #
+05                 #                         #
+06            |----S---|           --------| #
+07|------|    |........|           |.......| #
+08|......------........|------------.......| #
+09|......+.............+...........+.......| #
+10|......+.............+...........+.......| #
+11|......------........|------------.......| #
+12|------|    |........|           |.......| #
+13            |---S----|           --------| #
+14                #                          #
+15  |---|         #                          #
+16  |...|      |--.---|              |---|   #
+17  |...|      |......|              |...S####
+18  -----      |......|              |...|    
+19             --------              -----    
 ]]);
+
+local place = selection.new();
+place:set(03,02);
+place:set(37,01);
+place:set(03,17);
+place:set(37,18);
+
+-- Make the path somewhat unpredictable
+
+-- Upper left room
+if percent(50) then
+    des.terrain(selection.line(04,05, 04,06), 'B')
+    des.terrain({ x=04, y=04, typ='S' })
+    des.terrain({ x=04, y=07, typ='S' })
+else
+    des.terrain(selection.line(07,02, 12,02), 'B')
+    des.terrain({ x=06, y=02, typ='S' })
+    des.terrain({ x=13, y=02, typ='S' })
+end
+
+-- Lower left room
+if percent(50) then
+    des.terrain(selection.line(04,13, 04,14), 'B')
+    des.terrain({ x=04, y=12, typ='S' })
+    des.terrain({ x=04, y=15, typ='S' })
+else
+    des.terrain(selection.line(07,17, 12,17), 'B')
+    des.terrain({ x=06, y=17, typ='S' })
+    des.terrain({ x=13, y=17, typ='S' })
+end
+
+-- Upper right room
+if percent(50) then
+    des.terrain(selection.line(37,04, 37,05), 'B')
+    des.terrain({ x=37, y=03, typ='S' })
+    des.terrain({ x=37, y=06, typ='S' })
+else
+    des.terrain(selection.line(21,01, 34,01), 'B')
+    des.terrain({ x=20, y=01, typ='S' })
+    des.terrain({ x=35, y=01, typ='S' })
+end
+
+-- Lower right room
+if percent(50) then
+    des.terrain(selection.line(37,14, 37,15), 'B')
+    des.terrain({ x=37, y=13, typ='S' })
+    des.terrain({ x=37, y=16, typ='S' })
+else
+    des.terrain(selection.line(21,18, 34,18), 'B')
+    des.terrain({ x=20, y=18, typ='S' })
+    des.terrain({ x=35, y=18, typ='S' })
+end
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
@@ -132,6 +185,27 @@ des.object({ id = "chest", x = 40, y = 10,
                 des.object()
              end
 });
+
+-- A couple more chests, some empty, one with a nice prize.
+local loc = place:rndcoord(1);
+des.object({ id = "chest", locked = 1, coord = loc ,
+             contents = function()
+                des.object("wishing");
+             end
+});
+
+local loc = place:rndcoord(2);
+des.object({ id = "chest", locked = 1, trapped = 1, coord = loc ,
+             contents = function()
+                -- nothing
+             end
+});
+
+local loc = place:rndcoord(3);
+des.object({ id = "chest", locked = 1, coord = loc });
+
+local loc = place:rndcoord(4);
+des.object({ id = "chest", locked = 1, coord = loc });
 
 -- monsters
 des.monster("L", 40, 9)

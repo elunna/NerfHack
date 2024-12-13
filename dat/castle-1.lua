@@ -186,7 +186,15 @@ des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 local loc = place:rndcoord(3);
 des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
-                des.object("nothing");
+                  if percent(10) then
+                      des.object('magic lamp') -- even if not a wish dlord
+                  elseif percent(30) then
+                      des.object('magic marker')
+                  elseif percent(30) then
+                      des.object({ class='/', id='death' })
+                  else
+                      des.object({ id='gold piece', quan=1 })
+                  end
              end
 });
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
