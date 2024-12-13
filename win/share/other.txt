@@ -1075,7 +1075,7 @@ Z = (195, 195, 195)
   BBBBBBOOOOBBBBBB
   BBBBBBBBBBBBBBBB
 }
-# tile 55 (shallow water)
+# tile 55 (puddle)
 {
   ..........NNN...
   .BBBB....NB.BN..
