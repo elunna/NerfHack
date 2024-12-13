@@ -360,7 +360,7 @@ check_wornmask_slots(void)
         else if (!Is_dragon_scales(o))
             Sprintf(whybuf, "%s (%s) %s not dragon scales",
                     what, simpleonames(o), otense(o, "are"));
-        else if (Dragon_armor_to_pm(o) != &mons[u.umonnum])
+        else if (Dragon_armor_to_pm(o) != u.umonnum)
             Sprintf(whybuf, "%s, hero is not %s",
                     what, an(mons[u.umonnum].pmnames[NEUTRAL]));
         if (whybuf[0])
