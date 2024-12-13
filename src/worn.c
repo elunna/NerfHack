@@ -76,7 +76,7 @@ setworn(struct obj *obj, long mask)
     struct obj *oobj;
     int p;
 
-    if ((mask & (W_ARM | I_SPECIAL)) == (W_ARM | I_SPECIAL)) {
+    if ((mask & I_SPECIAL) != 0 && (mask & (W_ARM | W_ARMC)) != 0) {
         /* restoring saved game; no properties are conferred via skin */
         uskin = obj;
         /* assert( !uarm ); */
