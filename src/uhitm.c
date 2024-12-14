@@ -1479,10 +1479,21 @@ hmon_hitmon_weapon_melee(
         && ammo_and_launcher(obj, uwep)) {
         hmd->dmg += rnd(7);
     }
-
+    
     if (hmd->material == SILVER && mon_hates_silver(mon)) {
         hmd->silvermsg = hmd->silverobj = TRUE;
     }
+    
+    /* In NerfHack, launchers can contribute to damage. This
+     * change was adapted from SpliceHack, but tempered back
+     * a bit to balance things out. For example, since the 
+     * cavemen starts with a +2 sling we don't want them 
+     * getting a +2 damage bonus right off the bat.
+     * This version of the mechanic also ignores the enchant
+     * level of the ammo and only concerns the launcher. */
+    if (uwep && ammo_and_launcher(obj, uwep) && uwep->spe > 2)
+        hmd->dmg += rnd(uwep->spe / 3); /* Max possible bonus up to +4 */
+    
     if (artifact_light(obj) && obj->lamplit
         && mon_hates_light(mon))
         hmd->lightobj = TRUE;
