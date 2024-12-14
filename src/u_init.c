@@ -74,10 +74,11 @@ static struct trobj Cartomancer[] = {
 };
 static struct trobj Cave_man[] = {
 #define C_AMMO 2
+#define C_SCALES 3
     { CLUB, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { SLING, 2, WEAPON_CLASS, 1, UNDEF_BLESS },
     { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS }, /* trquan is overridden below */
-    { LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { GRAY_DRAGON_SCALES, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Healer[] = {
@@ -721,6 +722,8 @@ u_init_role(void)
         break;
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
+        Cave_man[C_SCALES].trotyp = FIRST_DRAGON_SCALES
+                    + rn2(LAST_DRAGON_SCALES - FIRST_DRAGON_SCALES);                        
         ini_inv(Cave_man);
         skill_init(Skill_C);
         knows_object(SLING_BULLET, FALSE);
