@@ -478,7 +478,8 @@ dofire(void)
        on its caller to make sure hero is strong enough to throw that */
     boolean uwep_Throw_and_Return = (uwep && AutoReturn(uwep, uwep->owornmask)
                                      && (uwep->oartifact != ART_MJOLLNIR
-                                         || ACURR(A_STR) >= STR19(25)));
+                                         || ACURR(A_STR) >= STR19(25))),
+            skip_fireassist = FALSE;
     int altres, res = ECMD_OK;
 
     /*
@@ -508,6 +509,7 @@ dofire(void)
        throwing Mjollnir if quiver contains daggers] */
     if (uwep_Throw_and_Return && (!obj || is_ammo(obj))) {
         obj = uwep;
+        skip_fireassist = TRUE;
 
     } else if (!obj) {
         if (!flags.autoquiver) {
@@ -556,7 +558,8 @@ dofire(void)
         obj = uquiver;
     }
 
-    if (uquiver && is_ammo(uquiver) && iflags.fireassist) {
+    if (uquiver && is_ammo(uquiver) && iflags.fireassist
+        && !skip_fireassist) {
         struct obj *olauncher;
 
         /* Try to find a launcher */
