@@ -1013,7 +1013,7 @@ dog_move(
     struct obj *obj = (struct obj *) 0;
     xint16 otyp;
     boolean cursemsg[9], summoned, do_eat = FALSE;
-    boolean better_with_displacing = FALSE;
+    boolean better_with_displacing = FALSE, ranged_only;
     coordxy nix, niy;      /* position mtmp is (considering) moving to */
     coordxy nx, ny; /* temporary coordinates */
     xint16 cnt, uncursedcnt, chcnt;
@@ -1134,6 +1134,8 @@ dog_move(
         if (!edog && (j = distu(nx, ny)) > 16 && j >= udist)
             continue;
 
+        ranged_only = FALSE;
+
         if ((info[i] & ALLOW_M) && MON_AT(nx, ny)) {
             int mstatus;
             struct monst *mtmp2 = m_at(nx, ny);
@@ -1211,6 +1213,7 @@ dog_move(
         /* (minion isn't interested; `cursemsg' stays FALSE) */
         if (edog) {
             boolean can_reach_food = could_reach_item(mtmp, nx, ny);
+
             for (obj = svl.level.objects[nx][ny]; obj; obj = obj->nexthere) {
                 if (obj->cursed || obj->otyp == FOULSTONE) {
                     cursemsg[i] = TRUE;
@@ -1589,7 +1592,8 @@ acceptable_pet_target(
     boolean vs_boomer = (attacktype(mtmp2->data, AT_BOOM) && !mtmp2->mcan
             && distu(mtmp2->mx, mtmp2->my) < 3);
 
-    return !(scared || bad_eye || vs_passive || passive_kill || vs_spiker
+    return !((bad_eye && !mon_reflects(mtmp, (char *) NULL))
+             || scared || vs_passive || passive_kill || vs_spiker
               || vs_stoner || vs_dise || vs_peaceful || vs_boomer);
 }
 
