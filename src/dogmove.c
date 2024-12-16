@@ -1013,7 +1013,7 @@ dog_move(
     struct obj *obj = (struct obj *) 0;
     xint16 otyp;
     boolean cursemsg[9], summoned, do_eat = FALSE;
-    boolean better_with_displacing = FALSE, ranged_only;
+    boolean better_with_displacing = FALSE;
     coordxy nix, niy;      /* position mtmp is (considering) moving to */
     coordxy nx, ny; /* temporary coordinates */
     xint16 cnt, uncursedcnt, chcnt;
@@ -1133,8 +1133,6 @@ dog_move(
         /* if a guardian, try to stay close by choice */
         if (!edog && (j = distu(nx, ny)) > 16 && j >= udist)
             continue;
-
-        ranged_only = FALSE;
 
         if ((info[i] & ALLOW_M) && MON_AT(nx, ny)) {
             int mstatus;
