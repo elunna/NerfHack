@@ -1988,7 +1988,7 @@
         NO_RACE, 11, CLR_BROWN, ZRUTY),
     /* Only appears when playing as caveman/cavewoman */
     MON(NAM("compsognathus"), S_LIZARD,
-        LVL(3, 15, 5, 0, 0), (G_NOGEN | G_VLGROUP | 6),
+        LVL(3, 15, 5, 0, 0), (G_VLGROUP | 6),
         A(ATTK(AT_BITE, AD_PHYS, 1, 4),
           ATTK(AT_CLAW, AD_PHYS, 1, 2),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
