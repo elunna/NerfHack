@@ -6373,8 +6373,8 @@ zap_over_floor(
             if ((lev->wall_info & W_NONDIGGABLE) != 0) {
                 if (see_it)
                     Norep("The %s %s somewhat but remain intact.",
-                          (damgtype == ZT_ACID) ? "corrode" : "melt",
-                          defsyms[S_bars].explanation);
+                        defsyms[S_bars].explanation,
+                        (damgtype == ZT_ACID) ? "corrode" : "melt");
                 /* but nothing actually happens... */
             } else {
                 rangemod -= 3;
