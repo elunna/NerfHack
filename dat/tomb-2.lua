@@ -331,7 +331,7 @@ for i = 1, TOTAL_ROOMS do
             des.terrain(lava, 'L')
          end
          for i = 1, 1 + (rooms[i].big and d(3) or 0) do
-            des.monster({ id='salamander', coord=lava:rndcoord() })
+            des.monster({ id='salamander', coord=lava:rndcoord(), peaceful = 0 })
          end
       elseif choice == 3 then
          if percent(30) then
@@ -341,7 +341,7 @@ for i = 1, TOTAL_ROOMS do
             sel = sel:percentage(50)
             des.terrain(sel, 'L')
             for i = 1, 2 + d(3) do
-               des.monster({ id='steam vortex', coord=room:rndcoord(1) })
+               des.monster({ id='steam vortex', coord=room:rndcoord(1), peaceful = 0 })
             end
          end
       elseif choice == 4 then
@@ -361,7 +361,8 @@ for i = 1, TOTAL_ROOMS do
       elseif choice == 6 then
          -- demons
          for i = 1, d(5) do
-            des.monster({ class='&', align=percent(50) and 'chaos' or 'random', coord=room:rndcoord() })
+            des.monster({ class='&', align=percent(50) and 'chaos' or 'random',
+                          coord=room:rndcoord(), peaceful = 0 })
          end
       elseif choice == 7 then
          -- ghosts/undead
@@ -431,7 +432,7 @@ end })
 -- now random level wide stuff
 -- monsters:
 for i = 1, 12 do
-   des.monster({ class='&', align=percent(80) and 'chaos' or 'random' })
+   des.monster({ class='&', align=percent(80) and 'chaos' or 'random', peaceful = 0 })
 end
 for i = 1, 5 do
    des.monster('i')
