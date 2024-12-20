@@ -316,7 +316,7 @@ for i = 1, TOTAL_ROOMS do
             local air = selection.area(cx-2, cy-1, cx+2, cy+1)
             air:set(cx-3, cy)
             air:set(cx+3, cy)
-            des.terrain(air, 'A')
+            des.terrain(air, 'P')
          end
       elseif choice == 2 then
          -- lava in the middle
