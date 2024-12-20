@@ -977,10 +977,16 @@ test_move(
 {
     coordxy x = ux + dx;
     coordxy y = uy + dy;
-    struct rm *tmpr = &levl[x][y];
+    struct rm *tmpr;
     struct rm *ust;
 
     svc.context.door_opened = FALSE;
+
+    if (!isok(x, y))
+        return FALSE;
+
+    tmpr = &levl[x][y];
+
     /*
      *  Check for physical obstacles.  First, the place we are going.
      */
@@ -1074,9 +1080,9 @@ test_move(
                             " but can't squeeze your possessions through.");
                     if (flags.autoopen && !svc.context.run
                         && !Confusion && !Stunned && !Fumbling) {
-                        svc.context.door_opened
-                        = svc.context.move
-                          = (doopen_indir(x, y) == ECMD_TIME ? 1 : 0);
+                        (void) doopen_indir(x, y);
+                        svc.context.door_opened = !closed_door(x, y);
+                        svc.context.move = (ux != u.ux || uy != u.uy);
                     } else if (x == ux || y == uy) {
                         if (Blind || Stunned || ACURR(A_DEX) < 10
                             || Fumbling) {

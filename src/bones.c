@@ -105,6 +105,7 @@ resetobjs(struct obj *ochain, boolean restore)
             otmp->rknown = 0;
             otmp->lknown = 0;
             otmp->cknown = 0;
+            otmp->tknown = 0;
             otmp->invlet = 0;
             otmp->no_charge = 0;
             otmp->how_lost = LOST_NONE;
@@ -464,6 +465,7 @@ savebones(int how, time_t when, struct obj *corpse)
     iter_mons(remove_mon_from_bones); /* send various unique monsters away, */
     dmonsfree();                      /* then discard dead or gone monsters */
 
+    forget_engravings(); /* next hero won't have read any engravings yet */
     /* mark all named fruits as nonexistent; if/when we come to instances
        of any of them we'll mark those as existing (using goodfruit()) */
     for (f = gf.ffruit; f; f = f->nextf)

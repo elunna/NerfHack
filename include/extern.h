@@ -127,6 +127,7 @@ extern void use_unicorn_horn(struct obj **);
 extern boolean tinnable(struct obj *) NONNULLPTRS;
 extern void reset_trapset(void);
 extern int use_whip(struct obj *) NONNULLPTRS;
+extern boolean could_pole_mon(void);
 extern int use_pole(struct obj *, boolean) NONNULLPTRS;
 extern void fig_transform(union any *, long) NONNULLARG1;
 extern int unfixable_trouble_count(boolean);
@@ -141,7 +142,7 @@ extern void init_artifacts(void);
 extern void save_artifacts(NHFILE *);
 extern void restore_artifacts(NHFILE *);
 extern const char *artiname(int);
-extern struct obj *mk_artifact(struct obj *, aligntyp);
+extern struct obj *mk_artifact(struct obj *, aligntyp, uchar, boolean);
 extern const char *artifact_name(const char *, short *, boolean) NONNULLARG1;
 extern boolean exist_artifact(int, const char *) NONNULLPTRS;
 extern void artifact_exists(struct obj *, const char *, boolean, unsigned) ;
@@ -996,6 +997,7 @@ extern void del_engr_at(coordxy, coordxy);
 extern int freehand(void);
 extern int doengrave(void);
 extern void sanitize_engravings(void);
+extern void forget_engravings(void);
 extern void engraving_sanity_check(void);
 extern void save_engravings(NHFILE *) NONNULLARG1;
 extern void rest_engravings(NHFILE *) NONNULLARG1;
@@ -1006,6 +1008,7 @@ extern void make_grave(coordxy, coordxy, const char *);
 extern void disturb_grave(coordxy, coordxy);
 extern void see_engraving(struct engr *) NONNULLARG1;
 extern void feel_engraving(struct engr *) NONNULLARG1;
+extern boolean engr_can_be_felt(struct engr *) NONNULLARG1;
 
 /* ### exper.c ### */
 
@@ -1858,6 +1861,7 @@ extern coord find_flanking_pos(struct monst *, struct monst *);
 extern int flank_bonus(struct monst *);
 extern void see_monster_closeup(struct monst *) NONNULLARG1;
 extern void see_nearby_monsters(void);
+extern void shieldeff_mon(struct monst *) NONNULLARG1;
 
 /* ### mondata.c ### */
 

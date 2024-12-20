@@ -1821,6 +1821,7 @@ wiz_migrate_mons(void)
     char inbuf[BUFSZ];
     struct permonst *ptr;
     struct monst *mtmp;
+    boolean use_random_mon = TRUE;
 #endif
     d_level tolevel;
 
@@ -1844,17 +1845,25 @@ wiz_migrate_mons(void)
         return ECMD_OK;
 
     mcount = atoi(inbuf);
+    if (mcount < 0) {
+        use_random_mon = FALSE;
+        mcount *= -1;
+    }
     if (mcount < 1)
         mcount = 0;
     else if (mcount > ((COLNO - 1) * ROWNO))
         mcount = (COLNO - 1) * ROWNO;
 
     while (mcount > 0) {
-        ptr = rndmonst();
-        mtmp = makemon(ptr, 0, 0, MM_NOMSG);
+        if (use_random_mon) {
+            ptr = rndmonst();
+            mtmp = makemon(ptr, 0, 0, MM_NOMSG);
+        } else {
+            mtmp = fmon;
+        }
         if (mtmp)
             migrate_to_level(mtmp, ledger_no(&tolevel), MIGR_RANDOM,
-                             (coord *) 0);
+                                 (coord *) 0);
         mcount--;
     }
 #endif /* DEBUG_MIGRATING_MONS */

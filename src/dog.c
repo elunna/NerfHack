@@ -860,8 +860,8 @@ keepdogs(
                 mdrop_special_objs(mtmp); /* drop Amulet */
             } else if (mtmp->meating || mtmp->mtrapped) {
                 if (canseemon(mtmp))
-                    pline("%s is still %s.", Monnam(mtmp),
-                          mtmp->meating ? "eating" : "trapped");
+                    pline_mon(mtmp, "%s is still %s.", Monnam(mtmp),
+                             mtmp->meating ? "eating" : "trapped");
                 stay_behind = TRUE;
             } else if (mon_has_amulet(mtmp)) {
                 if (canseemon(mtmp))
@@ -981,6 +981,8 @@ discard_migrations(void)
             mtmp->nmon = 0;
             discard_minvent(mtmp, FALSE);
             /* bypass mongone() and its call to m_detach() plus dmonsfree() */
+            if (emits_light(mtmp->data))
+                del_light_source(LS_MONSTER, monst_to_any(mtmp));
             dealloc_monst(mtmp);
         }
     }
@@ -1003,6 +1005,12 @@ discard_migrations(void)
             otmp->where = OBJ_FREE;
             otmp->owornmask = 0L; /* overloaded for destination usage;
                                    * obfree() will complain if nonzero */
+            /*
+             * obfree(otmp,)
+             *  -> dealloc_obj(otmp)
+             *      -> obj_stop_timers(otmp)
+             *      -> del_light_source(LS_OBJECT, obj_to_any(otmp))
+             */
             obfree(otmp, (struct obj *) 0); /* releases any contents too */
         }
     }
@@ -1192,14 +1200,24 @@ dogfood(struct monst *mon, struct obj *obj)
  * on the original mtmp.  It now returns TRUE if the taming succeeded.
  */
 boolean
-tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
+tamedog(
+    struct monst *mtmp,
+    struct obj *obj, /* food or scroll/spell */
+    boolean givemsg)
 {
+    boolean blessed_scroll = FALSE;
+
     /* Spell of charm monster is limited at unskilled and basic -
      * it can only pacify. */
     boolean unskilled_charmer = obj
         && obj->otyp == SPE_CHARM_MONSTER
         && P_SKILL(P_ENCHANTMENT_SPELL) < P_SKILLED;
 
+    if (obj && (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS)) {
+        blessed_scroll = obj->blessed ? TRUE : FALSE;
+        /* the rest of this routine assumes 'obj' represents food */
+        obj = (struct obj *) NULL;
+    }
     /* reduce timed sleep or paralysis, leaving mtmp->mcanmove as-is
        (note: if mtmp is donning armor, this will reduce its busy time) */
     if (mtmp->mfrozen)
@@ -1222,7 +1240,7 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
 
     /* worst case, at least it'll be peaceful. */
     if (givemsg && !mtmp->mpeaceful && canspotmon(mtmp)) {
-        pline("%s seems %s.", Monnam(mtmp),
+        pline_mon(mtmp, "%s seems %s.", Monnam(mtmp),
               Hallucination ? "really chill" : "more amiable");
         givemsg = FALSE; /* don't give another message below */
     }
@@ -1265,8 +1283,9 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
                 boolean big_corpse =
                     (obj->otyp == CORPSE && ismnum(obj->corpsenm)
                      && mons[obj->corpsenm].msize > mtmp->data->msize);
-                pline("%s catches %s%s", Monnam(mtmp), the(xname(obj)),
-                      !big_corpse ? "." : ", or vice versa!");
+                pline_mon(mtmp, "%s catches %s%s",
+                          Monnam(mtmp), the(xname(obj)),
+                         !big_corpse ? "." : ", or vice versa!");
             } else if (cansee(mtmp->mx, mtmp->my))
                 pline("%s.", Tobjnam(obj, "stop"));
             /* dog_eat expects a floor object */
@@ -1280,11 +1299,17 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
             return FALSE;
     }
 
-    /* if already tame, taming magic might make it become tamer */
-    if (mtmp->mtame) {
-        /* maximum tameness is 20, only reachable via eating */
-        if (rnd(10) > mtmp->mtame)
+    /* maximum tameness is 20, only reachable via eating; if already tame but
+       less than 10, taming magic might make it become tamer; blessed scroll
+       or skilled spell raises low tameness by 2 or 3, uncursed by 0 or 1 */
+    if (mtmp->mtame && mtmp->mtame < 10) {
+        if (mtmp->mtame < rnd(10))
             mtmp->mtame++;
+        if (blessed_scroll) {
+            mtmp->mtame += 2;
+            if (mtmp->mtame > 10)
+                mtmp->mtame = 10;
+        }
         return FALSE; /* didn't just get tamed */
     }
     /* pacify angry shopkeeper but don't tame him/her/it/them */
@@ -1320,7 +1345,7 @@ tamedog(struct monst *mtmp, struct obj *obj, boolean givemsg)
     }
 
     if (givemsg && canspotmon(mtmp))
-        pline("%s seems quite %s.", Monnam(mtmp),
+        pline_mon(mtmp, "%s seems quite %s.", Monnam(mtmp),
               Hallucination ? "approachable" : "friendly");
 
     newsym(mtmp->mx, mtmp->my);
@@ -1367,11 +1392,12 @@ wary_dog(struct monst *mtmp, boolean was_dead)
         if (!quietly && cansee(mtmp->mx, mtmp->my)) {
             if (haseyes(gy.youmonst.data)) {
                 if (haseyes(mtmp->data))
-                    pline("%s %s to look you in the %s.", Monnam(mtmp),
-                          mtmp->mpeaceful ? "seems unable" : "refuses",
-                          body_part(EYE));
+                    pline_mon(mtmp,
+                             "%s %s to look you in the %s.", Monnam(mtmp),
+                             mtmp->mpeaceful ? "seems unable" : "refuses",
+                             body_part(EYE));
                 else
-                    pline("%s avoids your gaze.", Monnam(mtmp));
+                    pline_mon(mtmp, "%s avoids your gaze.", Monnam(mtmp));
             }
         }
     } else {
@@ -1383,7 +1409,7 @@ wary_dog(struct monst *mtmp, boolean was_dead)
 
     if (!mtmp->mtame) {
         if (!quietly && canspotmon(mtmp))
-            pline("%s %s.", Monnam(mtmp),
+            pline_mon(mtmp, "%s %s.", Monnam(mtmp),
                   mtmp->mpeaceful ? "is no longer tame" : "has become feral");
         newsym(mtmp->mx, mtmp->my);
         /* a life-saved monster might be leashed;

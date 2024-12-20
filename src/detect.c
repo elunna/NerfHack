@@ -938,6 +938,8 @@ detect_obj_traps(
                 continue;
         }
         if (Is_box(otmp) && otmp->otrapped) {
+            otmp->tknown = 1;
+            otmp->dknown = 1;
             result |= u_at(x, y) ? OTRAP_HERE : OTRAP_THERE;
             if (ft) {
                 flash_glyph_at(x, y, trapglyph, FOUND_FLASH_COUNT);
@@ -1410,7 +1412,7 @@ show_map_spot(coordxy x, coordxy y, boolean cnf)
     if (!IS_FURNITURE(lev->typ)) {
         if ((t = t_at(x, y)) != 0 && t->tseen) {
             map_trap(t, 1);
-        } else if ((ep = engr_at(x, y)) != 0) {
+        } else if ((ep = engr_at(x, y)) != 0 && !cnf) {
             map_engraving(ep, 1);
         } else if (glyph_is_trap(oldglyph) || glyph_is_object(oldglyph)) {
             show_glyph(x, y, oldglyph);

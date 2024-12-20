@@ -33,8 +33,9 @@ struct engr {
                                 * even when hero isn't (so behaves similarly
                                 * to how Elbereth did in 3.4.3) */
     Bitfield(nowipeout, 1);    /* this engraving will not degrade */
-    Bitfield(eread, 1);        /* the engraving text has been read or felt */
-    /* 5 free bits */
+    Bitfield(eread, 1);        /* refers to the engaving text: read or felt */
+    Bitfield(erevealed, 1);    /* refers to engraving map symbol: revealed */
+    /* 4 free bits */
 };
 
 #define newengr(lth) \
@@ -46,9 +47,8 @@ struct engr {
 
 #define spot_shows_engravings(x,y) \
     (levl[(x)][(y)].typ == CORR         \
-     || levl[(x)][(y)].typ == SCORR     \
      || levl[(x)][(y)].typ == ICE       \
      || levl[(x)][(y)].typ == GRASS     \
-     || levl[(x)][(y)].typ == ROOM )
+     || levl[(x)][(y)].typ == ROOM)
 
 #endif /* ENGRAVE_H */

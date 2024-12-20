@@ -27,7 +27,7 @@ staticfn void offer_negative_valued(boolean, aligntyp);
 staticfn void offer_fake_amulet(struct obj *, boolean, aligntyp);
 staticfn void offer_different_alignment_altar(struct obj *, aligntyp);
 staticfn void sacrifice_your_race(struct obj *, boolean, aligntyp);
-staticfn int bestow_artifact(void);
+staticfn int bestow_artifact(uchar);
 staticfn int sacrifice_value(struct obj *);
 staticfn int eval_offering(struct obj *, aligntyp);
 staticfn void offer_corpse(struct obj *, boolean, aligntyp);
@@ -1973,17 +1973,18 @@ sacrifice_your_race(
 }
 
 staticfn int
-bestow_artifact(void)
+bestow_artifact(uchar max_giftvalue)
 {
     struct rm *lev = &levl[u.ux][u.uy];
     int nchance = u.ulevel + 12;
     int arti_gift_odds = 8 + (2 * u.ugifts);
-
+    boolean do_bestow = u.ulevel > 2 && u.uluck >= 0;
+        
     /* Cartomancers get the luck of the draw here...
      * We purposely check for card drop first.
      * Based on the SpliceHack minion code adapted from SLASH'EM */
-    if (Role_if(PM_CARTOMANCER) && u.ulevel > 4
-        && u.uluck >= 0 && !rnl(30 + u.ulevel)) {
+    if (Role_if(PM_CARTOMANCER) && do_bestow
+        && !rnl(30 + u.ulevel)) {
         struct obj *otmp;
         char buf[BUFSZ];
         int pm;
@@ -2050,12 +2051,11 @@ bestow_artifact(void)
     * level 18: 90% chance
     * level 20 or greater: 100% chance
     */
-    else if (u.ulevel > 3 && u.uluck >= 0
-            && rn2(10) < (int) ((nchance * nchance) / 100)) {
+    else if (do_bestow && rn2(10) < (int) ((nchance * nchance) / 100)) {
         /* If we make it past the first gauntlet - one more for glory. */
         if (!rn2(arti_gift_odds)) {
             struct obj *otmp;
-            otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy));
+            otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy), max_giftvalue, TRUE);
             if (otmp) {
                 char buf[BUFSZ];
 
@@ -2408,13 +2408,27 @@ offer_corpse(struct obj *otmp, boolean highaltar, aligntyp altaralign)
             }
         }
     } else {
-        int saved_luck = u.uluck;
-        if (bestow_artifact())
+        int orig_luck, luck_increase;
+
+        if (bestow_artifact(value))
             return;
-        change_luck((value * LUCKMAX) / (MAXVALUE * 2));
+
+        orig_luck = u.uluck;
+        luck_increase = (value * LUCKMAX) / (MAXVALUE * 2);
+
+        /* sacrificing can't increase non-bonus Luck to above the value of the
+           sacrifice; this prevents players immediately maxing their Luck as
+           soon as they find an altar and a few rations via sacrificing lots
+           of low-valued corpses, which can unbalance the early game */
+        if (orig_luck > value)
+            luck_increase = 0;
+        else if (orig_luck + luck_increase > value)
+            luck_increase = value - orig_luck;
+
+        change_luck(luck_increase);
         if ((int) u.uluck < 0)
             u.uluck = 0;
-        if (u.uluck != saved_luck) {
+        if (u.uluck != orig_luck) {
             if (Blind)
                 You("think %s brushed your %s.", something,
                     body_part(FOOT));

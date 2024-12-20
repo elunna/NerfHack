@@ -73,7 +73,7 @@ int GUILaunched = TRUE;     /* We tell shared startup code in windmain.c
 
 // Forward declarations of functions included in this code module:
 extern boolean main(int, char **);
-static void __cdecl mswin_moveloop(void *);
+//static void __cdecl mswin_moveloop(void *);
 
 #define MAX_CMDLINE_PARAM 255
 
@@ -252,6 +252,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     return 0;
 }
 
+extern void free_menu_data(void);
+
 void
 free_winmain_stuff(void)
 {
@@ -271,6 +273,7 @@ free_winmain_stuff(void)
             windowdata[cnt].address = 0;
         }
     }
+    free_menu_data();
 }
 
 #ifdef _MSC_VER
@@ -324,7 +327,7 @@ _get_cmd_arg(TCHAR *pCmdLine)
     } else {
         pArgs = NULL;
     }
-
+    nhUse(bQuoted);
     return pRetArg;
 }
 

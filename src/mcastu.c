@@ -434,7 +434,7 @@ m_cure_self(struct monst *caster, int dmg)
 {
     if (caster->mhp < caster->mhpmax) {
         if (canseemon(caster))
-            pline("%s looks better.", Monnam(caster));
+            pline_mon(caster, "%s looks better.", Monnam(caster));
         /* note: player healing does 6d4; this used to do 1d8 */
         if ((caster->mhp += d(3, 6)) > caster->mhpmax)
             caster->mhp = caster->mhpmax;
@@ -926,7 +926,7 @@ cast_wizard_spell(
     case MGC_DISAPPEAR: /* makes self invisible */
         if (!caster->minvis && !caster->invis_blkd) {
             if (canseemon(caster))
-                pline("%s suddenly %s!", Monnam(caster),
+                pline_mon(caster, "%s suddenly %s!", Monnam(caster),
                       !See_invisible ? "disappears" : "becomes transparent");
             mon_set_minvis(caster);
             if (cansee(caster->mx, caster->my) && !canspotmon(caster))
@@ -1407,7 +1407,7 @@ cast_cleric_spell(
             fmt = "%s summons %s!";
         }
         if (fmt)
-            pline(fmt, Monnam(caster), what);
+            pline_mon(caster, fmt, Monnam(caster), what);
 
         dmg = 0;
         break;
@@ -2001,7 +2001,7 @@ buzzmu(struct monst *caster, struct attack *mattk)
     if (lined_up(caster) && !rn2(3)) {
         nomul(0);
         if (canseemon(caster))
-            pline("%s zaps you with a %s!", Monnam(caster),
+            pline_mon(caster, "%s zaps you with a %s!", Monnam(caster),
                   flash_str(BZ_OFS_AD(mattk->adtyp), FALSE));
         gb.buzzer = caster;
         buzz(BZ_M_SPELL(BZ_OFS_AD(mattk->adtyp)), (int) mattk->damn,

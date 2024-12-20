@@ -562,6 +562,8 @@ dofire(void)
         && !skip_fireassist) {
         struct obj *olauncher;
 
+        if (uwep && is_pole(uwep) && could_pole_mon())
+            return use_pole(uwep, TRUE);
         /* Try to find a launcher */
         if (ammo_and_launcher(uquiver, uwep)) {
             obj = uquiver;
@@ -616,6 +618,7 @@ hitfloor(
     if (IS_ALTAR(levl[u.ux][u.uy].typ)) {
         doaltarobj(obj);
     } else if (verbosely) {
+        const char *verb = (obj->otyp == WAN_STRIKING) ? "strike" : "hit";
         const char *surf = surface(u.ux, u.uy);
         struct trap *t = t_at(u.ux, u.uy);
 
@@ -637,7 +640,7 @@ hitfloor(
                 break;
             }
         }
-        pline("%s %s the %s.", Doname2(obj), otense(obj, "hit"), surf);
+        pline("%s %s the %s.", Doname2(obj), otense(obj, verb), surf);
     }
     /* Cartomancer can throw summon cards downward */
     if (is_moncard(obj) && u.uen >= CARD_COST) {

@@ -1486,6 +1486,13 @@ digging in ice was handled inconsistently, particularly if done at the span
 angry god may remove an intrinsic
 gelatinous cubes eat organic objects inside them
 pets with reflection were unwilling to attack floating eyes
+artifact gifts are rebalanced (easier to obtain; higher-value sacrifices are
+	needed for higher-value artifacts; lower-value artifacts are usually
+	gifted enchanted; unaligned artifacts are possible but rare even on
+	the first gift; artifacts you can't use well are less likely)
+luck gains from sacrificing are limited by the value of the sacrifice
+failed #untrap could move hero diagonally into or out of an open doorway
+remember box is trapped after finding the trap
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2066,6 +2073,11 @@ if a pile of objects had plain arrow(s) on top, map location classification
 	got confused and reported 'unexplored area'
 when the 'fireassist' option was on, 'f' would choose uquiver over wielded
 	throw-and-return uwep
+knockback could move hero diagonally into or out of an open doorway
+farlook of /e or /E stopped reporting engraving and headstone text after a fix
+	for the situation where // or ; reported such text when there was an
+	object or monster in the way
+message was garbled when lightning or acid breath hit iron bars
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository

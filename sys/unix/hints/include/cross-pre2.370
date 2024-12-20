@@ -133,20 +133,55 @@ override TARGET_CC = $(TOOLTOP1)/i586-pc-msdosdjgpp-gcc
 override TARGET_CXX = $(TOOLTOP1)/i586-pc-msdosdjgpp-g++
 override TARGET_AR = $(TOOLTOP1)/i586-pc-msdosdjgpp-gcc-ar
 override TARGET_STUBEDIT = ../lib/djgpp/i586-pc-msdosdjgpp/bin/stubedit
-MSDOS_TARGET_CFLAGS = -c -O -I../include -I../sys/msdos -I../win/share \
-	$(LUAINCL) -DDLB $(PDCURSESDEF) \
-	-DTILES_IN_GLYPHMAP -DCROSSCOMPILE -DCROSSCOMPILE_TARGET \
-	-DCROSS_TO_MSDOS \
-        -Wall -Wextra -Wno-missing-field-initializers -Wreturn-type -Wunused \
-        -Wformat -Wswitch -Wshadow -Wwrite-strings \
-	-Wimplicit -Wimplicit-function-declaration -Wimplicit-int \
-	-Wimplicit-fallthrough \
-	-Wmissing-parameter-type -Wold-style-definition -Wstrict-prototypes
-MSDOS_TARGET_CXXFLAGS = -c -O -I../include -I../sys/msdos -I../win/share \
+#
+ifdef DOSBOX
+dosbox=$(DOSBOX)
+endif
+ifdef dosbox
+dosboxgameid=NH370
+dosboxtop=$(dosbox)
+dosboxnhfolder=$(dosboxtop)/$(dosboxgameid)
+dosboxnhsrc=$(dosboxnhfolder)/NHSRC
+dosboxconfigfile=NETHACK.CNF
+dosgdburl=http://www.mirrorservice.org/sites/ftp.delorie.com/pub/djgpp/current/v2gnu/gdb801b.zip
+ifdef MAKEFILE_SRC
+FLDR=../
+endif
+ifdef MAKEFILE_TOP
+FLDR=
+endif
+dostargetexes=$(FLDR)lib/djgpp/target
+WANT_DEBUG=1
+DEPLOY=deploytodosbox
+endif  # dosbox
+#
+ifeq "$(WANT_DEBUG)" "1"
+DBGFLAGS = -g
+else
+DBGFLAGS =
+endif
+MSDOS_GCC_CFLAGS = -Wall -Wextra -Wreturn-type -Wunused -Wformat \
+	-Wswitch -Wshadow -Wwrite-strings -Wmissing-declarations \
+	-Wunreachable-code \
+	-Wimplicit -Wimplicit-function-declaration \
+	-Wimplicit-int -Wmissing-prototypes -Wold-style-definition \
+	-Wstrict-prototypes -Wnonnull -Wformat-overflow \
+	-Wmissing-parameter-type -Wimplicit-fallthrough
+#-Wno-missing-field-initializers -Wno-cast-function-type
+#-Wno-format
+MSDOS_PEDANTIC = -pedantic
+MSDOS_GPP_CFLAGS = -Wall -Wextra -Wno-missing-field-initializers -Wreturn-type \
+	-Wunused -Wformat -Wswitch -Wshadow -Wwrite-strings -pedantic \
+	-Wmissing-declarations -Wformat-nonliteral -Wunreachable-code \
+	-Wno-maybe-uninitialized
+MSDOS_TARGET_CFLAGS = -c -O $(DBGFLAGS) -I../include -I../sys/msdos -I../win/share \
+	$(LUAINCL) -DDLB $(PDCURSESDEF) -DTILES_IN_GLYPHMAP \
+	-DCROSSCOMPILE -DCROSSCOMPILE_TARGET -DCROSS_TO_MSDOS \
+	$(MSDOS_GCC_CFLAGS)
+MSDOS_TARGET_CXXFLAGS = -c -O $(DBGFLAGS) -I../include -I../sys/msdos -I../win/share \
         $(LUAINCL) -DDLB $(PDCURSESDEF) \
         -DUSE_TILES -DCROSSCOMPILE -DCROSSCOMPILE_TARGET -DCROSS_TO_MSDOS \
-        -Wall -Wextra -Wno-missing-field-initializers -Wreturn-type -Wunused \
-        -Wformat -Wswitch -Wshadow -Wwrite-strings -Wno-maybe-uninitialized
+	$(MSDOS_GPP_CFLAGS)
 PDCINCL += -I$(PDCPORT)
 PDC_TARGET_CFLAGS = $(MSDOS_TARGET_CFLAGS) -Wno-unused-parameter \
 			-Wno-missing-prototypes
@@ -159,9 +194,7 @@ FONTTARGETS = $(DOSFONT)/ter-u16b.psf $(DOSFONT)/ter-u16v.psf \
 		$(DOSFONT)/ter-u28b.psf $(DOSFONT)/ter-u32b.psf
 LUABIN = ../lib/lua-$(LUA_VERSION)/src/lua
 LUA_TARGET_CFLAGS = $(MSDOS_TARGET_CFLAGS)
-override TARGET_CFLAGS = $(MSDOS_TARGET_CFLAGS) -Wmissing-declarations \
-			-Wmissing-prototypes -pedantic -Wmissing-declarations \
-			-Wformat-nonliteral
+override TARGET_CFLAGS = $(MSDOS_TARGET_CFLAGS) $(MSDOS_PEDANTIC)
 override TARGET_CXXFLAGS = $(MSDOS_TARGET_CXXFLAGS)
 ifdef CPLUSPLUS_NEEDED
 override TARGET_LINK = $(TOOLTOP1)/i586-pc-msdosdjgpp-g++
@@ -195,6 +228,17 @@ override RECOVERBIN = $(TARGETPFX)recover.exe
 override PACKAGE = dospkg
 override PREGAME += mkdir -p $(TARGETDIR) ; make $(TARGETPFX)exceptn.o ;
 override CLEANMORE += rm -f -r $(TARGETDIR) ; rm -f -r $(FONTTARGETS) ;
+ifeq "$(WANT_DEBUG)" "1"
+GDBEXE=../lib/djgpp/target/gdb.exe
+GDBBAT=NHGDB.BAT
+GDBCMDLINE=directory nhsrc/src nhsrc/include nhsrc/sys/msdos \
+		nhsrc/sys/share nhsrc/win/share nhsrc/win/curses \
+		nhsrc/win/tty nhsrc/util
+else
+GDBEXE=
+GDBBAT=
+GDBCMDLINE=
+endif
 VARDATND += nhtiles.bmp
 #
 ifdef WANT_WIN_CURSES
@@ -395,6 +439,9 @@ override RECOVERBIN = $(TARGETPFX)recover
 override PACKAGE = mipspkg
 override PREGAME += mkdir -p $(TARGETDIR) ;
 override CLEANMORE += rm -f -r $(TARGETDIR) ;
+NCURSES_CONFIGURE_BUILD=i686-pc-linux-gnu
+NCURSES_CONFIGURE_HOST=mipsel-linux-gnu
+NCURSES_PLATFORM=MIPS
 # Rule for file in sys/unix
 #$(TARGETPFX)%.o : ../sys/unix/%.c
 #	$(TARGET_CC) $(TARGET_CFLAGS) -c -o$@ $<

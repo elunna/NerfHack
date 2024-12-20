@@ -337,7 +337,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         } else if (resists_magm(mtmp)) {
             /* magic resistance protects from polymorph traps, so make
                it guard against involuntary polymorph attacks too... */
-            shieldeff(mtmp->mx, mtmp->my);
+            shieldeff_mon(mtmp);
         } else if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
             boolean polyspot = (otyp != POT_POLYMORPH),
                     give_msg = (!Hallucination
@@ -513,10 +513,13 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         }
         break;
     case SPE_HEALING:
-    case SPE_EXTRA_HEALING:
+    case SPE_EXTRA_HEALING: {
+        int healamt = d(6, otyp == SPE_EXTRA_HEALING ? 8 : 4);
+
         reveal_invis = TRUE;
         if (mtmp->data != &mons[PM_PESTILENCE]) {
-            boolean already_max = (mtmp->mhp == mtmp->mhpmax);
+            int delta = mtmp->mhpmax - mtmp->mhp;
+
             wake = FALSE; /* wakeup() makes the target angry */
             mtmp->mhp += d(healing_skill, otyp == SPE_EXTRA_HEALING ? 8 : 4);
             if (mtmp->mhp > mtmp->mhpmax)
@@ -539,9 +542,11 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                     pline("%s looks%s better.", Monnam(mtmp),
                           otyp == SPE_EXTRA_HEALING ? " much" : "");
             }
-            if ((mtmp->mtame || mtmp->mpeaceful) && !already_max) {
-                if (Role_if(PM_HEALER)) {
+            if ((mtmp->mtame || mtmp->mpeaceful)) {
+                if (Role_if(PM_HEALER) && delta > 0) {
                     adjalign(1);
+                    more_experienced(min(delta, healamt), 0);
+                    newexplevel();
                 }
                 /* This used to do this unconditionally, making chaotics get an
                  * alignment penalty for healing their pets. Don't do that. */
@@ -550,9 +555,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                 }
             }
         } else { /* Pestilence */
-            /* Pestilence will always resist; damage is half of 3d{4,8} */
-            (void) resist(mtmp, otmp->oclass,
-                          d(3, otyp == SPE_EXTRA_HEALING ? 8 : 4), TELL);
+            /* Pestilence will always resist; damage is half of (healamt/2) */
+            (void) resist(mtmp, otmp->oclass, healamt / 2, TELL);
         }
         break;
     case SPE_CURE_SICKNESS:
@@ -586,6 +590,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         if (mtmp->mpeaceful && !is_zombie(mtmp->data))
             helpful_gesture = TRUE;
         break;
+    }
     case WAN_LIGHT: /* (broken wand) */
         if (flash_hits_mon(mtmp, otmp)) {
             learn_it = TRUE;
@@ -628,7 +633,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         if (otyp == SPE_DRAIN_LIFE)
             dmg = spell_damage_bonus(dmg);
         if (resists_drli(mtmp)) {
-            shieldeff(mtmp->mx, mtmp->my);
+            shieldeff_mon(mtmp);
         } else if (!resist(mtmp, otmp->oclass, dmg, NOTELL)
                    && !DEADMONSTER(mtmp)) {
             showdamage(dmg, FALSE);
@@ -6373,13 +6378,14 @@ zap_over_floor(
             if ((lev->wall_info & W_NONDIGGABLE) != 0) {
                 if (see_it)
                     Norep("The %s %s somewhat but remain intact.",
-                        defsyms[S_bars].explanation,
-                        (damgtype == ZT_ACID) ? "corrode" : "melt");
+                          defsyms[S_bars].explanation,
+                          (damgtype == ZT_ACID) ? "corrode" : "melt");
                 /* but nothing actually happens... */
             } else {
                 rangemod -= 3;
                 if (see_it)
-                    Norep("The %s melt.", defsyms[S_bars].explanation);
+                    Norep("The %s %s.", defsyms[S_bars].explanation,
+                          (damgtype == ZT_ACID) ? "corrode away" : "melt");
                 dissolve_bars(x, y);
                 if (*in_rooms(x, y, SHOPBASE)) {
                     add_damage(x, y, (type >= 0) ? SHOP_BARS_COST : 0L);
@@ -7236,10 +7242,8 @@ resist(struct monst *mtmp, char oclass, int damage, int tell)
 
     resisted = rn2(100 + alev - dlev) < mtmp->data->mr;
     if (resisted) {
-        if (tell) {
-            shieldeff(mtmp->mx, mtmp->my);
-            pline("%s resists!", Monnam(mtmp));
-        }
+        if (tell)
+            shieldeff_mon(mtmp);
         damage = (damage + 1) / 2;
     }
 
