@@ -444,6 +444,21 @@ for i = 1, 3 do
    des.monster('Z')
 end
 
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+des.monster("shadow")
+
 -- objects:
 for i = 1, 20 do
    des.gold()
