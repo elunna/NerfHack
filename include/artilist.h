@@ -394,7 +394,7 @@ static NEARDATA struct artifact artilist[] = {
     /* From SpliceHack */
     A("Poseidon\'s Trident", TRIDENT,
       (SPFX_RESTR | SPFX_BREATHE), 0, 0,
-      PHYS(0, 7), NO_DFNS, NO_CARY, WWALKING,
+      PHYS(0, 14), NO_DFNS, NO_CARY, WWALKING,
       A_CHAOTIC, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 1500L, NO_COLOR, POSEIDON_S_TRIDENT),
 
