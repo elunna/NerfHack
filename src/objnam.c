@@ -4420,6 +4420,7 @@ readobjnam_parse_charges(struct _readobjnam_data *d)
         d->spesgn = -1; /* cheaters get what they deserve */
         d->spe = abs(d->spe);
     }
+    
     /* cap on obj->spe is independent of (and less than) SCHAR_LIM */
     if (d->spe > SPE_LIM)
         d->spe = SPE_LIM; /* slime mold uses d.ftype, so not affected */
@@ -5216,7 +5217,11 @@ readobjnam(char *bp, struct obj *no_wish)
         && d.spe != 0) {
         d.spe = 0;
     }
-
+    
+    /* For sanity... */
+    if (d.oclass == POTION_CLASS)
+        d.spe = 0;
+    
     /* if asking for corpse of a monster which leaves behind a glob, give
        glob instead of rejecting the monster type to create random corpse */
     if (d.typ == CORPSE && d.mntmp >= LOW_PM
