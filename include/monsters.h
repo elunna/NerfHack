@@ -94,7 +94,7 @@
     /* Created when maggots infest corpses. A little stronger than
      * the SpliceHack version, but also does not generate randomly. */
     MON(NAM("giant fly"), S_ANT,
-        LVL(2, 18, 3, 0, 0), (G_GENO | G_NOGEN),
+        LVL(2, 18, 3, 0, 0), (G_NOGEN),
         A(ATTK(AT_BITE, AD_PHYS, 1, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(10, 10, MS_BUZZ, MZ_TINY), 0, 0,
