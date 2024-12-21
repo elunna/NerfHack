@@ -1668,9 +1668,10 @@ movemon_singlemon(struct monst *mtmp)
         return FALSE;
 
     mtmp->movement -= NORMAL_SPEED;
+#if 0 /* Disabled to allow monkeys to move out of range after theft */
     if (mtmp->movement >= NORMAL_SPEED)
         gs.somebody_can_move = TRUE;
-
+#endif
     if (gv.vision_full_recalc)
         vision_recalc(0); /* vision! */
 
@@ -1734,6 +1735,13 @@ movemon_singlemon(struct monst *mtmp)
             return FALSE; /* mon might have died */
     }
     (void) dochugw(mtmp, TRUE); /* otherwise just move the monster */
+
+    /* this check used to be directly after subtracting NORMAL_SPEED, but
+     * since monsters (monkeys) can sometimes gain extra movement points
+     * during the dochugw call chain, it needs to be checked at the end */
+    if (mtmp->movement >= NORMAL_SPEED)
+        gs.somebody_can_move = TRUE;
+
     return FALSE;
 }
 

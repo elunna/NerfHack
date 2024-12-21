@@ -629,6 +629,18 @@ steal(struct monst *mtmp, char *objnambuf)
         minstapetrify(mtmp, TRUE);
         return -1;
     }
+    if (monkey_business && gm.multi >= 0) {
+        /* check multi here because we only want the speed boost to go towards
+         * fleeing, not towards further attacks if player can't move */
+        int bonus = NORMAL_SPEED;
+        if (mtmp->mspeed == MFAST) {
+            bonus *= 2;
+        }
+        else if (mtmp->mspeed == MSLOW) {
+            bonus /= 2;
+        }
+        mtmp->movement += bonus;
+    }
     return (gm.multi < 0) ? 0 : 1;
 }
 
