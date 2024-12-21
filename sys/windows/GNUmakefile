@@ -472,6 +472,7 @@ LUALIST = \
 	bigrm-18 	\
 	bigrm-19 	\
 	bigrm-20 	\
+	bigrm-21 	\
 	bridge		\
 	castle-1 	\
 	castle-2 	\

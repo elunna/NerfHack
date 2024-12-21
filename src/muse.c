@@ -352,7 +352,8 @@ staticfn void
 mreadmsg(struct monst *mtmp, struct obj *otmp)
 {
     char onambuf[BUFSZ];
-    boolean vismon = canseemon(mtmp);
+    boolean vismon = canseemon(mtmp),
+            tpindicator = (!vismon && sensemon(mtmp));
     boolean carto = Role_if(PM_CARTOMANCER);
 
     if (!vismon && Deaf)
@@ -380,11 +381,15 @@ mreadmsg(struct monst *mtmp, struct obj *otmp)
         int mflags = (SUPPRESS_INVISIBLE | SUPPRESS_SADDLE
                       | (recognize ? SUPPRESS_IT : AUGMENT_IT));
 
-        /* monster can't be seen; hero might be blind or monster might
-           be at a spot that isn't in view or might be invisible; remember
-           it if the spot is within line of sight and relatively close */
-        if (couldsee(mtmp->mx, mtmp->my) && mdistu(mtmp) <= 10 * 10)
+        if (sensemon(mtmp)) {
+            tpindicator = TRUE;
+        } else if (couldsee(mtmp->mx, mtmp->my) && mdistu(mtmp) <= 10 * 10) {
+            /* monster can't be seen or sensed; hero might be blind or monster
+               might be at a spot that isn't in view or might be invisible;
+               remember it if the spot is within line of sight and relatively
+               close */
             map_invisible(mtmp->mx, mtmp->my);
+        }
 
         Snprintf(blindbuf, sizeof blindbuf,
                  carto ? "playing %s" : "reading %s", onambuf);
@@ -394,6 +399,8 @@ mreadmsg(struct monst *mtmp, struct obj *otmp)
         You_hear("%s %s.",
                  x_monnam(mtmp, ARTICLE_A, (char *) 0, mflags, FALSE),
                  blindbuf);
+        if (tpindicator)
+            flash_mon(mtmp);
     }
     if (mtmp->mconf) /* (note: won't get if not seen and hero can't hear) */
         pline("Being confused, %s mispronounces the magic words...",
