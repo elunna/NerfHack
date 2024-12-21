@@ -1443,6 +1443,7 @@ drinkforge(void)
         return;
     }
 
+    /* Assumes that there are no playable likes-fire races! */
     if (!likes_fire(gy.youmonst.data)) {
         pline("Molten lava incinerates its way down your gullet...");
         losehp(Upolyd ? u.mh : u.uhp, "trying to drink molten lava", KILLED_BY);
