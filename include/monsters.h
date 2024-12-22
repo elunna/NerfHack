@@ -1858,7 +1858,7 @@
         M2_NASTY | M2_HOSTILE, 0,
         NO_RACE, 10, CLR_GRAY, ROT_WORM),
     MON(NAM("long worm"), S_WORM,
-        LVL(14, 3, -5, 10, 0), (G_GENO | 2),
+        LVL(14, 7, -5, 10, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 10),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_SILENT, MZ_GIGANTIC), 0, 0,
