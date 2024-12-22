@@ -384,11 +384,11 @@ cutworm(struct monst *worm, coordxy x, coordxy y,
         return; /* hit on head */
 
     /* cutting goes best with a cuttier weapon */
-    cut_chance = rnd(20); /* Normally     1-16 does not cut, 17-20 does, */
+    cut_chance = rnd(40); /* Normally     1-36 does not cut, 37-20 does, */
     if (cuttier)
-        cut_chance += 10; /* with a blade 1- 6 does not cut,  7-20 does. */
+        cut_chance += 10; /* with a blade 1- 26 does not cut,  27-40 does. */
 
-    if (cut_chance < 17)
+    if (cut_chance < 37)
         return; /* not good enough */
 
     /* Find the segment that was attacked. */
