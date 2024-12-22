@@ -4265,8 +4265,8 @@
         LVL(16, 14, 2, 30, -5), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_BREA, AD_COLD, 4, 6),
           ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_COLD, 1, 8),
-          ATTK(AT_CLAW, AD_COLD, 1, 8),
+          ATTK(AT_CLAW, AD_PHYS, 1, 8),
+          ATTK(AT_CLAW, AD_PHYS, 1, 8),
           NO_ATTK, NO_ATTK),
         SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), MR_COLD, MR_COLD,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
