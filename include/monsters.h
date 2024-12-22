@@ -1859,11 +1859,8 @@
         NO_RACE, 10, CLR_GRAY, ROT_WORM),
     MON(NAM("long worm"), S_WORM,
         LVL(14, 3, -5, 10, 0), (G_GENO | 2),
-        A(ATTK(AT_BITE, AD_PHYS, 1, 10),
-          ATTK(AT_BITE, AD_PHYS, 1, 10),
-          ATTK(AT_BITE, AD_PHYS, 1, 10),
-          ATTK(AT_BITE, AD_PHYS, 1, 10),
-          NO_ATTK, NO_ATTK),
+        A(ATTK(AT_BITE, AD_PHYS, 2, 10),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_SILENT, MZ_GIGANTIC), 0, 0,
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_OVIPAROUS | M1_CARNIVORE
             | M1_NOTAKE | M1_THICK_HIDE,
