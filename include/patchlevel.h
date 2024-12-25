@@ -17,7 +17,8 @@
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
  */
-#define EDITLEVEL 001
+/* NOTE: DO NOT UPDATE THIS FOR HARDFOUGHT.ORG! */
+#define EDITLEVEL 000
 
 /*
  * Development status possibilities.
