@@ -877,7 +877,8 @@ get_hint(void)
             "Life finds a way… but not in NerfHack.",
             "Why so quiet, kamadan got your tongue?",
             "The year is 20NN. Everyone plays NerfHack at TAS levels of perfection.",
-            "or How I Learned to Stop Worrying and Love the Nerf"
+            "or How I Learned to Stop Worrying and Love the Nerf",
+            "all i want for christmas… is nerffff", /* Loggers_VIII */
     };
 
     return hint[rn2(SIZE(hint))];
