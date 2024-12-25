@@ -169,7 +169,7 @@ aboutMsg()
 #else
         "Qt:\n     http://www.troll.no/\n"      // obsolete
 #endif
-        "NetHack:\n     %s\n",
+        "NerfHack:\n     %s\n",
         // arguments
 #ifdef QT_VERSION_MAJOR
         QT_VERSION_MAJOR,
@@ -3684,8 +3684,8 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
     macro=new const char* [count];
 
     game->insertItem("Qt settings...",1000);
-    help->insertItem("About Qt NetHack...",2000);
-    //help->insertItem("NetHack Guidebook...",3000);
+    help->insertItem("About Qt NerfHack...",2000);
+    //help->insertItem("NerfHack Guidebook...",3000);
     help->insertSeparator();
 
     count=0;

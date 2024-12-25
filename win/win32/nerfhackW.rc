@@ -67,7 +67,7 @@ BEGIN
     END
     POPUP "Windows &Settings"
     BEGIN
-        MENUITEM "NetHack Mode",                IDM_NHMODE
+        MENUITEM "NerfHack Mode",                IDM_NHMODE
         MENUITEM SEPARATOR
         MENUITEM "&Clear All Settings",         IDM_CLEARSETTINGS
         MENUITEM SEPARATOR
@@ -386,7 +386,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_APP_TITLE           "NerfHack for Windows - Graphical Interface"
-    IDC_NETHACKW            "NETHACKW"
+    IDC_NETHACKW            "NERFHACKW"
     IDS_APP_TITLE_SHORT     "NerfHack for Windows"
 END
 

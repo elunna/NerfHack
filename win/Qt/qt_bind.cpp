@@ -88,8 +88,8 @@ NetHackQtBind::NetHackQtBind(int& argc, char** argv) :
     // these used to be in MainWindow but we want them before QtSettings
     // which we want before MainWindow...
     QCoreApplication::setOrganizationName("The NerfHack DevTeam");
-    QCoreApplication::setOrganizationDomain("nethack.org");
-    QCoreApplication::setApplicationName("NetHack-Qt"); // Qt NetHack
+    QCoreApplication::setOrganizationDomain("https://github.com/elunna/NerfHack");
+    QCoreApplication::setApplicationName("NerfHack-Qt"); // Qt NetHack
     {
         char cvers[BUFSZ];
         QString qvers = QString(::version_string(cvers, sizeof cvers));

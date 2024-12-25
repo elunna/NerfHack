@@ -2597,7 +2597,7 @@ init_standard_windows(void)
 
     num_args = 0;
     XtSetArg(args[num_args], XtNallowShellResize, True); num_args++;
-    form = XtCreateManagedWidget("nethack", panedWidgetClass, toplevel, args,
+    form = XtCreateManagedWidget("nerfhack", panedWidgetClass, toplevel, args,
                                  num_args);
 
     XtAddEventHandler(form, KeyPressMask, False, (XtEventHandler) msgkey,

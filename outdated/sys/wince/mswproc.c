@@ -303,7 +303,7 @@ prompt_for_player_selection(void)
         /* tty_putstr(BASE_WINDOW, 0, ""); */
         /* echoline = wins[BASE_WINDOW]->cury; */
         box_result = MessageBox(NULL, NH_A2W(prompt, wbuf, BUFSZ),
-                                TEXT("NetHack for Windows"),
+                                TEXT("NerfHack for Windows"),
 #if defined(WIN_CE_SMARTPHONE)
                                 MB_YESNO | MB_DEFBUTTON1
 #else

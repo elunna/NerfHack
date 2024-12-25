@@ -235,7 +235,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
             for (p = name; *p && *p != '.'; p++)
                 ;
             if (*p) {
-                if (strcmp(p + 1, "NetHack-saved-game") == 0) {
+                if (strcmp(p + 1, "NerfHack-saved-game") == 0) {
                     *p = '\0';
                     argv[1] = strdup("-u");
                     argv[2] = strdup(name);

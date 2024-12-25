@@ -135,8 +135,8 @@ DISABLE_WARNING_UNREACHABLE_CODE
 /*
  * NetHack main
  *
- * The following function is used in both the nongraphical nethack.exe, and
- * in the graphical nethackw.exe.
+ * The following function is used in both the nongraphical nerfhack.exe, and
+ * in the graphical nerfhackw.exe.
  *
  * The function below is called main() in the non-graphical build of
  * NetHack for Windows and is the primary entry point for the program.
@@ -1022,7 +1022,7 @@ copy_config_content(void)
                 gf.fqn_prefix[DATAPREFIX], CONFIG_TEMPLATE, FALSE);
 
     /* If the required early game file does not exist, copy it */
-    /* NOTE: We never replace .nethackrc or sysconf */
+    /* NOTE: We never replace .nerfhackrc or sysconf */
     copy_file(gf.fqn_prefix[CONFIGPREFIX], CONFIG_FILE,
               gf.fqn_prefix[DATAPREFIX], CONFIG_TEMPLATE, FALSE);
 }
