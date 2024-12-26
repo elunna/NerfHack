@@ -2628,7 +2628,7 @@
         M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 2, CLR_YELLOW, YELLOW_MOLD),
      MON(NAM("volatile mushroom"), S_FUNGUS,
-        LVL(1, 0, 9, 0, 0), (G_GENO | G_LGROUP | 1),
+        LVL(1, 0, 9, 0, 0), (G_NOCORPSE | G_GENO | G_LGROUP | 1),
         A(ATTK(AT_BOOM, AD_PHYS, 4, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(50, 30, MS_SILENT, MZ_SMALL), MR_POISON, MR_POISON,
