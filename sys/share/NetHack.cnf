@@ -65,7 +65,7 @@ OPTIONS=time,noshowexp,number_pad:2,lit_corridor
 
 #
 # If you want to get rid of "use #quit to quit..." use:
-#OPTIONS=suppress_alert:3.3.1
+#OPTIONS=suppress_alert:1.0.0
 #
 #
 # *** LOCATIONS ***

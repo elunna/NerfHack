@@ -288,7 +288,7 @@ statuslines   whether to use expanded (3) or condensed (2) status       [2]
 suppress_alert disable various version-specific warnings about changes   []
               in game play or the user interface, such as notification given
               for the 'Q' command that quitting is now done via #quit
-              (e.g., use suppress_alert:3.3.1 to stop that and any other
+              (e.g., use suppress_alert:1.0.0 to stop that and any other
               notifications added in that version or earlier)
 versinfo      selects what information is displayed when showvers  [1 or 4]
               is true (default depends on program development status)

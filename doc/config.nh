@@ -288,7 +288,7 @@
 
 # NerfHack version level to suppress alert notification messages
 # about feature changes for that and prior versions.
-#OPTIONS=suppress_alert:3.6.0
+#OPTIONS=suppress_alert:1.0.0
 
 # Show current turn in the status line
 #OPTIONS=time

@@ -2271,7 +2271,7 @@ do_write_config_file(void)
         pline("Strange, could not figure out config file name.");
         return ECMD_OK;
     }
-    if (flags.suppress_alert < FEATURE_NOTICE_VER(3,7,0)) {
+    if (flags.suppress_alert < FEATURE_NOTICE_VER(2,0,0)) {
         pline("Warning: saveoptions is highly experimental!");
         wait_synch();
         pline("Some settings are not saved!");

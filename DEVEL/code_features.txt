@@ -30,7 +30,7 @@ annoying, they can set the "suppress_alert" option.
         releases.
       - The suppression can be done interactively mid game with
         the 'O' command, or via 
-           OPTIONS=suppress_alert:3.6.0
+           OPTIONS=suppress_alert:1.0.0
         in the user's config file.
 
 ==============================================

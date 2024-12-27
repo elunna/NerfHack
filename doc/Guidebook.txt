@@ -5203,7 +5203,7 @@
      suppress_alert
        This  option may be set to a NetHack version level to suppress alert
        notification messages about feature changes for that and prior  ver-
-       sions (for example "suppress_alert:3.3.1").
+       sions (for example "suppress_alert:1.0.0").
 
      symset
        This option may be used to select one of the named symbol sets found
