@@ -37,7 +37,7 @@
 #define DEBUG
 #endif
 
-#define COPYRIGHT_BANNER_A "NerfHack, Copyright 2023, based on NetHack, Copyright 1985-2023"
+#define COPYRIGHT_BANNER_A "NerfHack, Copyright 2023-25, based on NetHack, Copyright 1985-2024"
 #define COPYRIGHT_BANNER_B "A variant by Erik Lunna."
 /* nomakedefs.copyright_banner_c is generated at runtime */
 #define COPYRIGHT_BANNER_C nomakedefs.copyright_banner_c
