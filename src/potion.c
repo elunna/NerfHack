@@ -3255,6 +3255,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         potion->otyp = POT_WATER;
         potion->odiluted = 0;
         potion->in_use = FALSE; /* didn't go poof */
+        update_inventory();
         return ECMD_TIME;
     } else if (obj->oclass == POTION_CLASS && obj->otyp != potion->otyp) {
         int amt = (int) obj->quan;
