@@ -2081,10 +2081,20 @@ castmm(
 
     /* monster unable to cast spells? */
     if (caster->mcan || caster->mspec_used || !ml) {
-        cursetxt(caster, is_undirected_spell(mattk->adtyp, spellnum));
+        if (canseemon(caster)) {
+            if (is_undirected_spell(mattk->adtyp, spellnum))
+                pline("%s points all around, then curses.",
+                      Monnam(caster));
+            else
+                pline("%s points at %s, then curses.",
+                      Monnam(caster), mon_nam(mdef));
+        } else if ((!(svm.moves % 4) || !rn2(4))) {
+            if (!Deaf)
+                Norep("You hear a mumbled curse.");
+        }
         return M_ATTK_MISS;
     }
-
+    
     if (mattk->adtyp == AD_SPEL || mattk->adtyp == AD_CLRC) {
          /* monst->m_lev is unsigned (uchar), monst->mspec_used is int */
         caster->mspec_used =  (int) (4 - caster->m_lev);
