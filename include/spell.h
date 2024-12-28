@@ -10,7 +10,7 @@
 
 /* spellbook re-use control; used when reading and when polymorphing */
 #define MAX_SPELL_STUDY 3
-#define CARD_COST 10
+#define CARD_COST 5
 
 
 struct spell {
