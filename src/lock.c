@@ -561,7 +561,7 @@ pick_lock(
                                     : ((ACURR(A_DEX) + 3) / 4))) {
                     Your("%s slips through the crack!", xname(pick));
                     obj_extract_self(pick);
-                    add_to_container(gx.xlock.box, pick);
+                    add_to_container(otmp, pick);
                     return PICKLOCK_DID_NOTHING;
                 }
 
