@@ -1886,14 +1886,14 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     case AD_DCAY: /* like-like */
         if (!mtmp->mcan && rn2(2)) {
             /* They prefer shields first */
-            if (uarms && !is_silver(uarms)) {
+            if (uarms && is_organic(uarms)) {
                 pline("%s eats %s!", Monnam(mtmp), yobjnam(uarms, (char *) 0));
                 destroy_arm(uarms, FALSE, FALSE);
                 if (uarms)
                     pline("%s!", Yobjnam2(uarms, "resist"));
                 else
                     expels(mtmp, mtmp->data, FALSE);
-            } else if (uarmc) {
+            } else if (uarmc && is_organic(uarmc)) {
                 pline("%s eats %s!", Monnam(mtmp), yobjnam(uarmc, (char *) 0));
                 destroy_arm(uarmc, FALSE, FALSE);
                 if (uarmc)

@@ -3255,6 +3255,7 @@
             | M1_HIDE,
         M2_HOSTILE | M2_NEUTER, 0,
         NO_RACE, 14, CLR_GREEN, GREEN_SLIME),
+    /* Like-likes can engulf and eat organic armor and shields */
     MON(NAM("like-like"), S_PUDDING,
         LVL(6, 10, 8, 0, 0), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_DCAY, 4, 4),
