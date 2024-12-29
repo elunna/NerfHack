@@ -951,6 +951,8 @@ m_dowear_type(
         case W_ARMF:
             if (!is_boots(obj))
                 continue;
+            if (obj->otyp == LEVITATION_BOOTS && mon_prop(mon, FLYING))
+                continue;
             break;
         case W_ARM:
             if (!is_suit(obj))
@@ -967,6 +969,8 @@ m_dowear_type(
         case W_RINGR:
             /* Monsters can put on only the following rings. */
             if (obj->oclass != RING_CLASS || !can_muse_ring(obj->otyp))
+                continue;
+            if (obj->otyp == RIN_LEVITATION && mon_prop(mon, FLYING))
                 continue;
             break;
         }
@@ -1461,9 +1465,12 @@ extra_pref(struct monst *mon, struct obj *obj)
     if (objects[obj->otyp].oc_oprop == FLYING
         && !can_jump(mon))
         return 15;
-    if (objects[obj->otyp].oc_oprop == LEVITATION
-            && grounded(mon->data))
-        return 10;
+    if (objects[obj->otyp].oc_oprop == LEVITATION) {
+        if (mon_prop(mon, FLYING))
+            return -100;
+        if (grounded(mon->data))
+            return 10;
+    }
     if (objects[obj->otyp].oc_oprop == STUN_RES
             && !mon_prop(mon, STUN_RES))
         return 15;
@@ -1538,7 +1545,7 @@ extra_pref(struct monst *mon, struct obj *obj)
         rc = dmgtype(gy.youmonst.data, AD_DGST) ? 35 : 25;
         break;
     case RIN_LEVITATION:
-        rc = grounded(mon->data) ? 20 : 0;
+        rc = (grounded(mon->data) && !mon_prop(mon, FLYING)) ? 20 : 0;
         break;
     case RIN_FREE_ACTION:
         rc = 30;
