@@ -6943,17 +6943,22 @@ void
 kill_monster_on_level(int mndx)
 {
     struct monst *mtmp, *mtmp2;
-    int tmp_mndx;
+    int tmp_mndx, dist;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp2) {
         mtmp2 = mtmp->nmon;
         if (DEADMONSTER(mtmp))
             continue;
 
-        /* Genocides are throttled for the endgame, sorry... */
-        if (In_endgame(&u.uz) && rn2(5))
-            continue;
-
+        /* Genocides are throttled for the endgame; 
+         * kills are guaranteed within a radius of 3 squares, but after that
+         * the chance is 1 in x, where x is the monsters distance from the
+         * hero. */
+        if (In_endgame(&u.uz)) {
+            dist = distu(mtmp->mx, mtmp->my);
+            if (dist <= 3 || !rn2(dist))
+                continue;
+        }
         tmp_mndx = monsndx(mtmp->data);
         if (mndx == tmp_mndx)
             mondead(mtmp);
