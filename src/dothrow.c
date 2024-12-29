@@ -2669,7 +2669,6 @@ breakobj(
             pline_The("altar is stained with blood.");
             if (!Is_astralevel(&u.uz)) {
                 levl[x][y].altarmask = AM_CHAOTIC;
-                crackaltar();
             }
             angry_priest();
         } else if (next2u(x, y)) {
