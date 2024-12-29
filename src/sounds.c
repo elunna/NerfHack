@@ -1509,12 +1509,13 @@ dochat(void)
         return ECMD_OK;
     }
     /* Valkyries can tame winter wolves via #chat */
-    if ((Role_if(PM_VALKYRIE)
+    if (((Role_if(PM_VALKYRIE)
             && (mtmp->data == &mons[PM_WINTER_WOLF_CUB]
                 || mtmp->data == &mons[PM_WINTER_WOLF]))
         /* Vampires can tame familiars via chat */
         || (Race_if(PM_VAMPIRE)
-            && mtmp->data == &mons[PM_FAMILIAR])) {
+            && mtmp->data == &mons[PM_FAMILIAR]))
+        && !mtmp->mtame) {
         pacify_with_words(mtmp);
         /* Maybe tame it too... */
         if (rn2(2) && !resist(mtmp, WAND_CLASS, 0, NOTELL))
