@@ -51,6 +51,7 @@ const
 #if defined(UNIX) && defined(SELECTSAVED)
 #include <sys/types.h>
 #include <dirent.h>
+#include <stdlib.h>
 #endif
 
 #if defined(UNIX) || defined(VMS) || !defined(NO_SIGNAL)
@@ -2941,6 +2942,7 @@ cnf_line_DUMPLOGURL(char *bufp)
 #endif /*DUMPLOG*/
     return TRUE;
 }
+
 staticfn boolean
 cnf_line_DUMPHTMLFILE(char *bufp)
 {

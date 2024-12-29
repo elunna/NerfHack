@@ -99,6 +99,10 @@ moveloop_preamble(boolean resuming)
     u.uz0.dlevel = u.uz.dlevel;
     svc.context.move = 0;
 
+#ifdef WHEREIS_FILE
+    touch_whereis();
+#endif
+
     program_state.in_moveloop = 1;
     /* for perm_invent preset at startup, display persistent inventory after
        invent is fully populated and the in_moveloop flag has been set */
