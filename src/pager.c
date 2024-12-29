@@ -1694,6 +1694,9 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
             OBJPUTSTR("Force open doors or locks, break boulders and iron bars.");
             OBJPUTSTR("Occasionally stuns enemies in hand-to-hand combat.");
         }
+        if (otyp == TOWEL) {
+            OBJPUTSTR("Can cleanse grease and blood.");
+        }
         if (otyp == LUCKSTONE) {
             OBJPUTSTR("Confers luck.");
         }
