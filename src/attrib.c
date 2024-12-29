@@ -105,12 +105,11 @@ static const struct innate {
   orc_abil[] = { { 1, &HPoison_resistance, "", "" },
                  { 0, 0, 0, 0 } },
 
+  /* Flying and regeneration are inherited from the creature form */
   vam_abil[] = { { 1, &HDrain_resistance, "", "" },
                  { 1, &HPoison_resistance, "", "" },
-                 { 1, &HFlying, "", "" },
-		         { 1, &(HBreathless), "breathless", "full of air" },
-                 { 1, &(HRegeneration), "resilient", "less resilient" },
-		         { 9, &HSleep_resistance, "awake", "tired" },
+		 { 1, &HBreathless, "", "" },
+		 { 9, &HSleep_resistance, "awake", "tired" },
                  { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };

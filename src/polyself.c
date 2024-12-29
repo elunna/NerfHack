@@ -43,8 +43,11 @@ set_uasmon(void)
 
     if (Protection_from_shape_changers)
         gy.youmonst.cham = NON_PM;
-    else if (is_vampire(gy.youmonst.data))
+#if 0
+    else if (is_vampire(gy.youmonst.data)) {
         gy.youmonst.cham = gy.youmonst.mnum;
+    }
+#endif
     /* assume hero-as-chameleon/doppelganger/sandestin doesn't change shape */
     else if (!was_vampshifter)
         gy.youmonst.cham = NON_PM;
@@ -94,13 +97,15 @@ set_uasmon(void)
     /* floating eye is the only 'floater'; it is also flagged as a 'flyer';
        suppress flying for it so that enlightenment doesn't confusingly
        show latent flight capability always blocked by levitation */
-    PROPSET(FLYING, (is_flyer(mdat) && !is_floater(mdat)));
+    PROPSET(FLYING, (is_flyer(Upolyd ? mdat : &mons[gu.urace.mnum])
+                     && !is_floater(Upolyd ? mdat : &mons[gu.urace.mnum])));
+
     PROPSET(JUMPING, (is_jumper(mdat)));
     PROPSET(SWIMMING, is_swimmer(mdat));
     /* [don't touch MAGICAL_BREATHING here; both Amphibious and Breathless
        key off of it but include different monster forms...] */
     PROPSET(PASSES_WALLS, passes_walls(mdat));
-    PROPSET(REGENERATION, regenerates(mdat));
+    PROPSET(REGENERATION, regenerates(Upolyd ? mdat : &mons[gu.urace.mnum]));
     PROPSET(REFLECTING, (mdat == &mons[PM_SILVER_DRAGON]));
     PROPSET(BLINDED, !haseyes(mdat));
     PROPSET(BLND_RES, (dmgtype_fromattack(mdat, AD_BLND, AT_EXPL)

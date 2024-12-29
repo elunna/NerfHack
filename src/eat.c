@@ -3512,7 +3512,8 @@ gethungry(void)
         && (carnivorous(gy.youmonst.data)
             || herbivorous(gy.youmonst.data)
             || lithivorous(gy.youmonst.data)
-            || metallivorous(gy.youmonst.data))
+            || metallivorous(gy.youmonst.data)
+            || maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
         && !(Slow_digestion && rn2(2)))
         u.uhunger--; /* ordinary food consumption */
 
@@ -3529,9 +3530,10 @@ gethungry(void)
     accessorytime = rn2(20); /* rn2(20) replaces (int) (svm.moves % 20L) */
     if (accessorytime % 2) { /* odd */
          /* Regeneration uses up food when injured, unless due to an artifact */
-        if (HRegeneration || (((ERegeneration & ~W_ART) &&
-                               (ERegeneration != W_WEP || !uwep->oartifact)) &&
-                              (uhp() < uhpmax())))
+        if ((HRegeneration & ~(FROMFORM | FROMRACE))
+             || (((ERegeneration & ~W_ART) &&
+                  (ERegeneration != W_WEP || !uwep->oartifact)) &&
+                 (uhp() < uhpmax())))
             u.uhunger--;
         if (near_capacity() > SLT_ENCUMBER)
             u.uhunger--;
