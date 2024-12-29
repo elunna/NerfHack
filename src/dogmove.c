@@ -1704,12 +1704,7 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
                  && (!check_if_better || is_better_armor(mtmp, otmp)))
         can_use = TRUE;
     /* useful amulets */
-    else if (otmp->otyp == AMULET_OF_LIFE_SAVING
-             || otmp->otyp == AMULET_OF_REFLECTION
-             || otmp->otyp == AMULET_OF_FLYING
-             || otmp->otyp == AMULET_OF_GUARDING
-             || otmp->otyp == AMULET_VERSUS_POISON
-             || otmp->otyp == AMULET_OF_ESP)
+    else if (can_muse_amulet(otmp->otyp))
         can_use = TRUE;
     /* bags */
     else if (otmp->otyp == BAG_OF_HOLDING
@@ -1753,22 +1748,7 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
              || otmp->otyp == POT_OIL)
         can_use = TRUE;
     /* rings */
-    else if (otmp->otyp == RIN_INVISIBILITY
-             || otmp->otyp == RIN_SEE_INVISIBLE
-             || otmp->otyp == RIN_FIRE_RESISTANCE
-             || otmp->otyp == RIN_COLD_RESISTANCE
-             || otmp->otyp == RIN_POISON_RESISTANCE
-             || otmp->otyp == RIN_SHOCK_RESISTANCE
-             || otmp->otyp == RIN_REGENERATION
-             || otmp->otyp == RIN_TELEPORTATION
-             || otmp->otyp == RIN_TELEPORT_CONTROL
-             || otmp->otyp == RIN_SLOW_DIGESTION
-             || otmp->otyp == RIN_INCREASE_DAMAGE
-             || otmp->otyp == RIN_INCREASE_ACCURACY
-             || otmp->otyp == RIN_GAIN_STRENGTH
-             || otmp->otyp == RIN_PROTECTION
-             || otmp->otyp == RIN_LEVITATION
-             || otmp->otyp == RIN_FREE_ACTION)
+    else if (can_muse_ring(otmp->otyp))
         can_use = TRUE;
     /* misc magic items that muse can use */
     else if (otmp->otyp == FROST_HORN

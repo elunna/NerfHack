@@ -423,6 +423,35 @@ struct obj {
 #define is_gnomish_armor(otyp) (otyp == GNOMISH_HELM \
     || otyp == GNOMISH_BOOTS || otyp == GNOMISH_SUIT)
 
+/* Rings that monsters will wear */
+#define can_muse_ring(otyp)         \
+    (otyp == RIN_COLD_RESISTANCE    \
+    || otyp == RIN_FIRE_RESISTANCE  \
+    || otyp == RIN_FREE_ACTION      \
+    || otyp == RIN_GAIN_STRENGTH    \
+    || otyp == RIN_INCREASE_ACCURACY\
+    || otyp == RIN_INCREASE_DAMAGE  \
+    || otyp == RIN_INVISIBILITY     \
+    || otyp == RIN_LEVITATION       \
+    || otyp == RIN_POISON_RESISTANCE\
+    || otyp == RIN_REGENERATION     \
+    || otyp == RIN_POLYMORPH        \
+    || otyp == RIN_PROTECTION       \
+    || otyp == RIN_SEE_INVISIBLE    \
+    || otyp == RIN_SHOCK_RESISTANCE \
+    || otyp == RIN_SLOW_DIGESTION   \
+    || otyp == RIN_TELEPORTATION    \
+    || otyp == RIN_TELEPORT_CONTROL)
+
+/* Amulets that monsters will wear */
+#define can_muse_amulet(otyp)         \
+    (otyp == AMULET_OF_LIFE_SAVING    \
+    || otyp == AMULET_OF_REFLECTION   \
+    || otyp == AMULET_OF_ESP          \
+    || otyp == AMULET_VERSUS_POISON   \
+    || otyp == AMULET_OF_FLYING       \
+    || otyp == AMULET_OF_GUARDING)    \
+
 /* Light sources */
 #define Is_candle(otmp) \
     (otmp->otyp == TALLOW_CANDLE || otmp->otyp == WAX_CANDLE)

@@ -507,8 +507,10 @@ mon_adjust_speed(
      ? (POISON_RES + ACID_RES - objects[(o)->otyp].oc_oprop)    \
      : 0)
 
-/* armor put on or taken off; might be magical variety */
-void
+/* armor put on or taken off; might be magical variety.
+ * Return TRUE if there was an observable effect which could
+ * identify the item, otherwise return FALSE. */
+boolean
 update_mon_extrinsics(
     struct monst *mon,
     struct obj *obj,   /* armor being worn or taken off */
@@ -520,6 +522,7 @@ update_mon_extrinsics(
     struct obj *otmp;
     int which = (int) armor_provides_extrinsic(obj),
         altwhich = altprop(obj);
+    boolean had_effect;
 
     unseen = !canseemon(mon);
     if (!which && !altwhich)
@@ -537,10 +540,29 @@ update_mon_extrinsics(
                 gi.in_mklev = TRUE;
             mon_adjust_speed(mon, 0, obj);
             gi.in_mklev = save_in_mklev;
+            if (!unseen) {
+                pline("%s starts to move faster!", Monnam(mon));
+                had_effect = TRUE;
+            }
             break;
         }
         case DISPLACED:
+            /* Here we assume that monsters that have displacement will never 
+             * wear rings/cloaks of displacement; this should be true for
+             * shimmering dragons and displacer beasts. */
+            if (!unseen) {
+                pline_The("image of %s becomes difficult to track!", mon_nam(mon));
+                had_effect = TRUE;
+            }
             mon->mextrinsics |= MR2_DISPLACED;
+            break;
+        case STOMPING:
+             /* Currently, stomping is not handled very elegantly. We do
+              * manual checks in monster attacks instead of an MR2 flag */
+             if (!unseen) {
+                pline("%s starts to stomp around!", Monnam(mon));
+                had_effect = TRUE;
+            }
             break;
         case JUMPING:
             mon->mextrinsics |= MR2_JUMPING;
@@ -556,13 +578,17 @@ update_mon_extrinsics(
             break;
         case LEVITATION:
             mon->mextrinsics |= MR2_LEVITATE;
-            if (!unseen)
+            if (!unseen) {
                 pline("%s starts to float in the air!", Monnam(mon));
+                had_effect = TRUE;
+            }
             break;
         case FLYING:
             mon->mextrinsics |= MR2_FLYING;
-            if (!unseen)
+            if (!unseen) {
                 pline("%s starts to fly!", Monnam(mon));
+                had_effect = TRUE;
+            }
             break;
         case POLYMORPH:
             /* To make them act like shapechangers, set mcham so the original
@@ -603,6 +629,18 @@ update_mon_extrinsics(
         }
         case DISPLACED:
             mon->mextrinsics &= ~(MR2_DISPLACED);
+            if (!unseen) {
+                pline_The("image of %s resolidifies!", mon_nam(mon));
+                had_effect = TRUE;
+            }
+            break;
+        case STOMPING:
+             /* Currently, stomping is not handled very elegantly. We do
+              * manual checks in monster attacks instead of an MR2 flag */
+             if (!unseen) {
+                pline("%s ceases their incessant stomping!", Monnam(mon));
+                had_effect = TRUE;
+            }
             break;
         case JUMPING:
             mon->mextrinsics &= ~(MR2_JUMPING);
@@ -618,15 +656,19 @@ update_mon_extrinsics(
             break;
         case LEVITATION:
             mon->mextrinsics &= ~(MR2_LEVITATE);
-            if (!unseen)
+            if (!unseen) {
                 pline("%s floats gently back to the %s.",
                       Monnam(mon), surface(mon->mx, mon->my));
+                had_effect = TRUE;
+            }
             break;
         case FLYING:
             mon->mextrinsics &= ~(MR2_FLYING);
-            if (!unseen)
+            if (!unseen) {
                 pline("%s lands gently back to the %s.",
                       Monnam(mon), surface(mon->mx, mon->my));
+                had_effect = TRUE;
+            }
             break;
         case POLYMORPH:
             if (!is_shapeshifter(mon->data) && !mon_prop(mon, POLYMORPH))
@@ -698,6 +740,7 @@ update_mon_extrinsics(
     /* if couldn't see it but now can, or vice versa, update display */
     if (!silently && (unseen ^ !canseemon(mon)))
         newsym(mon->mx, mon->my);
+    return had_effect;
 }
 
 #undef altprop
@@ -812,6 +855,8 @@ m_dowear(struct monst *mon, boolean creation)
         m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
 }
 
+/* Monsters wears an item according to a specified slot
+ * Auto-id the item if it's obvious and seen by the hero. */
 staticfn void
 m_dowear_type(
     struct monst *mon,
@@ -824,7 +869,7 @@ m_dowear_type(
     long oldmask = 0L;
     int m_delay = 0;
     int sawmon = canseemon(mon), sawloc = cansee(mon->mx, mon->my);
-    boolean autocurse;
+    boolean autocurse, observed_effect = FALSE;
     char nambuf[BUFSZ];
 
     if (mon->mfrozen)
@@ -836,7 +881,8 @@ m_dowear_type(
     old = which_armor(mon, flag);
     if (old && old->cursed)
         return;
-    if (old && flag == W_AMUL && old->otyp != AMULET_OF_GUARDING)
+    if (old && flag == W_AMUL && (old->otyp == AMULET_OF_LIFE_SAVING
+                                  || old->otyp == AMULET_OF_REFLECTION))
         return; /* no amulet better than life-saving or reflection */
     best = old;
 
@@ -847,13 +893,7 @@ m_dowear_type(
 
         switch (flag) {
         case W_AMUL:
-            if (obj->oclass != AMULET_CLASS
-                || (obj->otyp != AMULET_OF_LIFE_SAVING
-                    && obj->otyp != AMULET_OF_REFLECTION
-                    && obj->otyp != AMULET_OF_ESP
-                    && obj->otyp != AMULET_VERSUS_POISON
-                    && obj->otyp != AMULET_OF_FLYING
-                    && obj->otyp != AMULET_OF_GUARDING))
+            if (obj->oclass != AMULET_CLASS || !can_muse_amulet(obj->otyp))
                 continue;
             /* for 'best' to be non-Null, it must be an amulet of guarding;
                life-saving and reflection don't get here due to early return
@@ -926,25 +966,7 @@ m_dowear_type(
         case W_RINGL:
         case W_RINGR:
             /* Monsters can put on only the following rings. */
-            if (obj->oclass != RING_CLASS)
-                continue;
-            if (obj->otyp != RIN_INVISIBILITY
-                && obj->otyp != RIN_SEE_INVISIBLE
-                && obj->otyp != RIN_FIRE_RESISTANCE
-                && obj->otyp != RIN_COLD_RESISTANCE
-                && obj->otyp != RIN_POISON_RESISTANCE
-                && obj->otyp != RIN_SHOCK_RESISTANCE
-                && obj->otyp != RIN_REGENERATION
-                && obj->otyp != RIN_POLYMORPH
-                && obj->otyp != RIN_TELEPORTATION
-                && obj->otyp != RIN_TELEPORT_CONTROL
-                && obj->otyp != RIN_SLOW_DIGESTION
-                && obj->otyp != RIN_INCREASE_DAMAGE
-                && obj->otyp != RIN_INCREASE_ACCURACY
-                && obj->otyp != RIN_GAIN_STRENGTH
-                && obj->otyp != RIN_PROTECTION
-                && obj->otyp != RIN_LEVITATION
-                && obj->otyp != RIN_FREE_ACTION)
+            if (obj->oclass != RING_CLASS || !can_muse_ring(obj->otyp))
                 continue;
             break;
         }
@@ -1051,14 +1073,20 @@ m_dowear_type(
                 pline("%s is shining %s.", Something, adesc);
         }
     }
-    update_mon_extrinsics(mon, best, TRUE, creation);
-    /* if couldn't see it but now can, or vice versa, */
-    if (!creation && (sawmon ^ canseemon(mon))) {
-        if (mon->minvis && !See_invisible) {
-            pline("Suddenly you cannot see %s.", nambuf);
+    
+    observed_effect = update_mon_extrinsics(mon, best, TRUE, creation);
+    
+    if (!creation) {
+        /* if couldn't see it but now can, or vice versa, */
+        if ((sawmon ^ canseemon(mon))) {
+            if (mon->minvis && !See_invisible) {
+                pline("Suddenly you cannot see %s.", nambuf);
+                makeknown(best->otyp);
+            } else if (!mon->minvis) {
+                pline("%s suddenly appears!", Amonnam(mon));
+            }
+        } else if (canseemon(mon) && observed_effect) {
             makeknown(best->otyp);
-        /* } else if (!mon->minvis) {
-         *     pline("%s suddenly appears!", Amonnam(mon)); */
         }
     }
 }

@@ -3980,7 +3980,7 @@ extern long wearslot(struct obj *) NONNULLARG1;
 extern void check_wornmask_slots(void);
 extern void mon_set_minvis(struct monst *) NONNULLARG1;
 extern void mon_adjust_speed(struct monst *, int, struct obj *) NONNULLARG1;
-extern void update_mon_extrinsics(struct monst *, struct obj *, boolean,
+extern boolean update_mon_extrinsics(struct monst *, struct obj *, boolean,
                                   boolean) NONNULLARG12;
 extern int find_mac(struct monst *) NONNULLARG1;
 extern void m_dowear(struct monst *, boolean) NONNULLARG1;
