@@ -5177,8 +5177,9 @@ mhitm_ad_rabd(
         char buf[BUFSZ];
         /* mhitu - you infected */
         hitmsg(magr, mattk);
-        if (!negated &&!rn2(4) && !Rabid
-              && can_become_rabid(gy.youmonst.data)) {
+        if (!negated && !rn2(4) && !Rabid
+              && can_become_rabid(gy.youmonst.data)
+              && !maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
             if (!Sick_resistance)
                 urgent_pline("You feel like going rabid!");
             exercise(A_CON, FALSE);
