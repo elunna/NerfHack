@@ -1097,7 +1097,7 @@ nh_timeout(void)
                 HFumbling &= ~FROMOUTSIDE;
                 /* I_SPECIAL means from grease */
                 if (HFumbling & I_SPECIAL && !rn2(20)) {
-                    pline_The("goop wears off of your %s",
+                    pline_The("goop wears off of your %s.",
                                 makeplural(body_part(FOOT)));
                     HFumbling &= ~I_SPECIAL;
                 }
