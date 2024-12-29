@@ -1178,7 +1178,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     if (!is_floater(pm))
         APPENDC(is_flyer(pm), "fly");
     APPENDC(passes_walls(pm), "phase through walls");
-    APPENDC(NODIAG(pm), "only move orthogonally");
+    APPENDC(NODIAG(monsndx(pm)), "only move orthogonally");
     APPENDC(can_teleport(pm), "teleport");
     APPENDC(is_clinger(pm), "cling to the ceiling");
     APPENDC(is_jumper(pm), "jump");
