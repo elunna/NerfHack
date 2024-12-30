@@ -853,46 +853,11 @@ gcrownu(void)
     short class_gift;
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
-    /* Player gets up to 3 intrinsics granted. */
-
-    for (int i = 0; i < 3; i++) {
-        switch (rnd(5)) {
-        case 1:
-            if (!(HFire_resistance & FROMOUTSIDE || fully_resistant(FIRE_RES))) {
-                You(Hallucination ? "be chillin'." : "feel a momentary chill.");
-                incr_resistance(&HFire_resistance, 100);
-            }
-            break;
-        case 2:
-            if (!(HCold_resistance & FROMOUTSIDE || fully_resistant(COLD_RES))) {
-                You_feel("full of hot air.");
-                incr_resistance(&HCold_resistance, 100);
-            }
-            break;
-        case 3:
-            if (!(HShock_resistance & FROMOUTSIDE || fully_resistant(SHOCK_RES))) {
-                if (Hallucination)
-                    You_feel("grounded in reality.");
-                else
-                    Your("health currently feels amplified!");
-                incr_resistance(&HShock_resistance, 100);
-            }
-            break;
-        case 4:
-            if (!(HSleep_resistance & FROMOUTSIDE || fully_resistant(SLEEP_RES))) {
-                You_feel("wide awake.");
-                incr_resistance(&HSleep_resistance, 100);
-            }
-            break;
-        case 5:
-            if (!(HPoison_resistance & FROMOUTSIDE || fully_resistant(POISON_RES))) {
-                You_feel(Poison_resistance ? "especially healthy." : "healthy.");
-                incr_resistance(&HPoison_resistance, 100);
-            }
-            break;
-        }
-    }
-
+    HFire_resistance |= FROMOUTSIDE;
+    HCold_resistance |= FROMOUTSIDE;
+    HShock_resistance |= FROMOUTSIDE;
+    HSleep_resistance |= FROMOUTSIDE;
+    HPoison_resistance |= FROMOUTSIDE;
     godvoice(u.ualign.type, (char *) 0);
 
     class_gift = STRANGE_OBJECT;
