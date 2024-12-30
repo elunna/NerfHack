@@ -1387,7 +1387,7 @@ use_defensive(struct monst *mtmp)
         return 2;
      case MUSE_POT_VAMPIRE_BLOOD:
         mquaffmsg(mtmp, otmp);
-        if (!otmp->blessed) {
+        if (!otmp->cursed) {
             i = rnd(8) + rnd(2);
             mtmp->mhp += i;
             mtmp->mhpmax += i;
