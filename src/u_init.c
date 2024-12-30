@@ -125,7 +125,6 @@ static struct trobj Monk[] = {
 };
 static struct trobj Priest[] = {
     #define P_BOOK 7
-    #define P_POT 3
     { MACE, 1, WEAPON_CLASS, 1, 1 },
     { ROBE, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
@@ -768,8 +767,6 @@ u_init_role(void)
             /* This works very well for vampires, but it's also indirectly
              * related to the dazzle technique from SLASH'EM. */
             Priest[P_BOOK].trotyp = SPE_CONFUSE_MONSTER;
-            /* Unholy instead of holy */
-            Priest[P_POT].trbless = CURSED;
         }
 
         ini_inv(Priest);
@@ -1410,10 +1407,8 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
         if (trop->trbless != UNDEF_BLESS)
             obj->blessed = (trop->trbless == 1);
 
-        /* Vampires like their blood to be unholy. */
         if (obj->otyp == POT_BLOOD
             || obj->otyp == POT_VAMPIRE_BLOOD) {
-            curse(obj);
             if (trop->trquan > 4L)
                 trop->trquan = 4L;
         }
