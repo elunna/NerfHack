@@ -1121,10 +1121,10 @@ mksobj_init(struct obj *otmp, boolean artif)
 #endif
             blessorcurse(otmp, 4);
 
-        /* Cursed potions of blood are more nutritious for V,
+        /* Blessed potions of blood are more nutritious for V,
          * this lightens the early game pressure for V a bit. */
         if (otmp->otyp == POT_BLOOD && !rn2(4))
-            curse(otmp);
+            bless(otmp);
         if (otmp->otyp == SCR_ZAPPING && otmp->corpsenm == NON_PM)
             otmp->corpsenm = mk_zapcard();
         /* For cartomancers, most generic create monster cards are
