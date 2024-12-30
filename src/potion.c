@@ -1689,11 +1689,11 @@ peffect_blood(struct obj *otmp)
                     : "The %s blood tastes delicious.",
                     otmp->odiluted ? "watery" : "thick");
 
-        amt = otmp->otyp == POT_VAMPIRE_BLOOD ? 400 : 200;
-        amt *= (otmp->odiluted ? 1 : 2);
+        amt = (otmp->otyp == POT_VAMPIRE_BLOOD ? 400 : 200)
+               * (otmp->odiluted ? 1 : 2);
         lesshungry(amt);
 
-        if (otmp->otyp == POT_VAMPIRE_BLOOD && otmp->cursed) {
+        if (otmp->otyp == POT_VAMPIRE_BLOOD && otmp->blessed) {
             int num = newhp();
             if (Upolyd) {
                 u.mhmax += num;
