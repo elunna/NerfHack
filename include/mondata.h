@@ -526,8 +526,8 @@
     ((ptr) == &mons[PM_GELATINOUS_CUBE] || (ptr) == &mons[PM_SHOGGOTH])
 
 /* Corpse intrinsic stats */
-#define MAX_GAIN 25
-#define MIN_GAIN 2
-#define percent_granted(ptr) ((ptr)->cwt / 120)
+#define MAX_GAIN 50
+#define MIN_GAIN 5
+#define percent_granted(ptr) ((ptr)->cwt / 90)
 
 #endif /* MONDATA_H */
