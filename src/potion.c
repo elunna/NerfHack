@@ -1669,6 +1669,7 @@ peffect_polymorph(struct obj *otmp)
     }
 }
 
+
 staticfn void
 peffect_blood(struct obj *otmp)
 {
@@ -1678,12 +1679,11 @@ peffect_blood(struct obj *otmp)
 
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         violated_vegetarian();
-        if (otmp->blessed) {
+        if (otmp->cursed)
             pline("Yecch!  This %s.", Hallucination
                     ? "liquid could do with a good stir"
                     : "blood has congealed");
-            return;
-        } else
+        else
             pline(Hallucination
                     ? "The %s liquid stirs memories of home."
                     : "The %s blood tastes delicious.",
