@@ -1319,7 +1319,7 @@
         MH_ORC, 7, HI_LORD, ORC_CAPTAIN),
     MON(NAM("spiked orc"), S_ORC,
         LVL(13, 9, 2, 0, -5), (G_GENO | G_SGROUP | 1),
-        A(ATTK(AT_WEAP, AD_PHYS, 2, 14),
+        A(ATTK(AT_WEAP, AD_PHYS, 2, 8),
           ATTK(AT_CLAW, AD_PHYS, 4, 2),
           ATTK(AT_NONE, AD_QUIL, 4, 8),
           NO_ATTK, NO_ATTK, NO_ATTK),
