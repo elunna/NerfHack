@@ -1612,7 +1612,7 @@ void
 check_dogs(void)
 {
     /* The Astral Plane is still very unfriendly to pets. */
-    int numdogs = 0, maxdogs = ACURR(A_CHA) / (Is_astralevel(&u.uz) ? 8 : 4);
+    int numdogs = 0, maxdogs = ACURR(A_CHA) / 3;
     struct Node* head = NULL;
 
     /* Create a linked list of all pets */
