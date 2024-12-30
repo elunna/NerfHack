@@ -49,7 +49,7 @@ des.feature("fountain",16,09)
 des.feature("fountain",25,09)
 
 -- the altar's defiled; useful for BUC but never coaligned
-des.altar({ x=20,y=13,align="noalign", type="shrine", cracked=nh.rn2(2) })
+des.altar({ x=20,y=13,align="noalign", type="shrine" })
 
 -- set up the shop doors; could be broken down
 des.door("random",5,8)
