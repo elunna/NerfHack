@@ -1212,7 +1212,9 @@ abon(void)
     /* Game tuning kludge: make it a bit easier for a low level character to
      * hit */
     sbon += (u.ulevel < 3) ? 1 : 0;
-
+    /* Be a little more generous for NerfHack early game too */
+    sbon += (u.ulevel < 6) ? 1 : 0;
+    
     if (dex < 4)
         return (sbon - 3);
     else if (dex < 6)
