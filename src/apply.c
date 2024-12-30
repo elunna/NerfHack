@@ -214,6 +214,7 @@ use_towel(struct obj *obj)
             Your("towel gets covered in grease!");
             obj->greased = 1;
         }
+        update_inventory();
         return ECMD_TIME;
     }
 
@@ -246,6 +247,7 @@ use_towel(struct obj *obj)
         Your("towel gets covered in grease!");
         obj->greased = 1;
     }
+    update_inventory();
     return ECMD_OK;
 }
 
