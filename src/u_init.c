@@ -82,7 +82,7 @@ static struct trobj Cave_man[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Healer[] = {
-    { SCALPEL, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { SCALPEL, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { STETHOSCOPE, 0, TOOL_CLASS, 1, 0 },
     { POT_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS },
