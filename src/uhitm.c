@@ -4415,7 +4415,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
             (nonliving(mdef->data) /* This could use is_fleshy(), but that would
                                   make a large set of monsters immune like
                                   fungus, blobs, and jellies. */
-             || is_vampshifter(mdef)
+             || is_vampire(mdef->data)
              || (magr != &gy.youmonst && magr->mcan)
              || !(rn2(10) >= 3 * armpro));
     boolean lose_maxhp = (withertime >= 8); /* if already withering */
