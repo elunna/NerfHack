@@ -734,7 +734,7 @@ m_postmove_effect(struct monst *mtmp)
             y = is_u ? u.uy0 : mtmp->my;
 
     /* Hezrous create clouds of stench. This does not cost a move. */
-    if (mtmp->data == &mons[PM_HEZROU] || mtmp->data == &mons[PM_DRETCH]) /* stench */
+    if (mtmp->data == &mons[PM_HEZROU]) /* stench */
         create_gas_cloud(x, y, 1, 8);
     else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
         create_gas_cloud(x, y, 1, 0); /* harmless vapor */
@@ -1019,7 +1019,7 @@ dochug(struct monst *mtmp)
             break;
         case MMOVE_MOVED: /* monster moved */
             /* Hezrous create clouds of stench. This does not cost a move. */
-            if (mtmp->data == &mons[PM_HEZROU] || mtmp->data == &mons[PM_DRETCH]) /* stench */
+            if (mtmp->data == &mons[PM_HEZROU]) /* stench */
                 create_gas_cloud(start.x, start.y, 1, 8);
             else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
                 create_gas_cloud(start.x, start.y, 1, 0); /* harmless vapor */
