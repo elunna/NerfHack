@@ -108,8 +108,10 @@ throne_sit_effect(void)
                     pline_The("throne vanishes in a puff of logic.");
                     maybe_unhide_at(u.ux, u.uy);
                     newsym(u.ux, u.uy);
-                } else
+                } else {
+                    You_feel("your luck is changing...");
                     change_luck(-1); /* oops */
+                }
             }
             break;
         case 7:
