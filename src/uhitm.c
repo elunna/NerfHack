@@ -430,8 +430,8 @@ find_roll_to_hit(
         tmp -= 5; /* Base to-hit penalty */
         /* Instead of punishing spellcasting for armor and shields,
          * punish melee capabilities instead. */
-        tmp -= uarm ? gu.urole.spelarmr : 0; /* spelarmr == 20 */
-        tmp -= uarms ? gu.urole.spelshld: 0; /* spelshld == 10 */
+        tmp -= uarm ? (*role_roll_penalty = gu.urole.spelarmr) : 0; /* spelarmr == 20 */
+        tmp -= uarms ? (*role_roll_penalty += gu.urole.spelshld) : 0; /* spelshld == 10 */
         if (uwep)
             tmp -= 10;
     }
