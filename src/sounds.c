@@ -1516,10 +1516,24 @@ dochat(void)
         || (Race_if(PM_VAMPIRE)
             && mtmp->data == &mons[PM_FAMILIAR]))
         && !mtmp->mtame) {
-        pacify_with_words(mtmp);
-        /* Maybe tame it too... */
-        if (rn2(2) && !resist(mtmp, WAND_CLASS, 0, NOTELL))
-            (void) tamedog(mtmp, (struct obj *) 0, FALSE);
+
+        if (Role_if(PM_VALKYRIE))
+            You("attempt to tame the %s with calm sounds.", l_monnam(mtmp));
+        else if (Race_if(PM_VAMPIRE))
+            You("attempt to dominate the %s.", l_monnam(mtmp));
+        
+        if (rnl(10) < 2) {
+            (void) tamedog(mtmp, (struct obj *) 0, TRUE);
+        } else if (!mtmp->mpeaceful) {
+            if (rnl(10) > 8) {
+                pline("%s unfortunately ignores your overtures.",
+                      Monnam(mtmp));
+                return 0;
+            }
+            mtmp->mpeaceful = 1;
+            set_malign(mtmp);
+        }
+        newsym(mtmp->mx, mtmp->my);
     }
 
     /* if this monster is waiting for something, prod it into action */
