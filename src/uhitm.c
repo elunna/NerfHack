@@ -5130,7 +5130,7 @@ mhitm_ad_were(
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!rn2(4) && u.ulycn == NON_PM && is_vampire(gy.youmonst.data)
+        if (!rn2(4) && u.ulycn == NON_PM && !is_vampire(gy.youmonst.data)
             && !Protection_from_shape_changers && !defends(AD_WERE, uwep)
             && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
             urgent_pline("You feel feverish.");
