@@ -1065,7 +1065,7 @@ double_punch(void)
 staticfn boolean
 hitum(struct monst *mon, struct attack *uattk)
 {
-    boolean malive, wep_was_destroyed = FALSE;
+    boolean malive = TRUE, wep_was_destroyed = FALSE;
     struct obj *wepbefore = uwep,
         *secondwep = u.twoweap ? uswapwep : (struct obj *) 0;
     struct obj *wearshield = uarms;
