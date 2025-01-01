@@ -5470,8 +5470,8 @@ hideunder(struct monst *mtmp)
 
     if (mtmp == u.ustuck) {
         ; /* undetected==FALSE; can't hide if holding you or held by you */
-    } else if (mtmp->msummoned) {
-        ; /* spell beings should not hide - makes them useless. */
+    } else if (mtmp->msummoned || mtmp->mtame) {
+        ; /* spell beings and tame pets should not hide - makes them useless. */
     } else if ((is_u ? u.utrap : mtmp->mtrapped)
                || ((t = t_at(x, y)) != 0 && !is_pit(t->ttyp))) {
         ; /* undetected==FALSE; can't hide while trapped or on/in/under
