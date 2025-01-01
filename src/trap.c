@@ -225,6 +225,8 @@ erode_obj(
         cost_type = COST_RUST;
         break;
     case ERODE_ROT:
+        if (uvictim && inventory_resistance_check(AD_DCAY))
+            return ER_NOTHING;
         vulnerable = is_rottable(otmp);
         check_grease = FALSE;
         is_primary = FALSE;

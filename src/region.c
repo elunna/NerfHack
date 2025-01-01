@@ -1131,7 +1131,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
     if (!mtmp) { /* hero is indicated by Null rather than by &youmonst */
         if (!rn2(5))
             erode_armor(&gy.youmonst, ERODE_ROT);
-        if (!rn2(3))
+        else if (!rn2(3))
             (void) destroy_items(&gy.youmonst, AD_DCAY, dam);
 
         if (m_poisongas_ok(&gy.youmonst) == M_POISONGAS_OK)
@@ -1166,7 +1166,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         mtmp = (struct monst *) p2;
         if (!rn2(5))
             erode_armor(mtmp, ERODE_ROT);
-        if (!rn2(3))
+        else if (!rn2(3))
             mtmp += destroy_items(mtmp, AD_DCAY, dam);
 
         if (m_poisongas_ok(mtmp) != M_POISONGAS_OK) {

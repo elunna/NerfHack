@@ -6728,6 +6728,9 @@ adtyp_to_prop(int dmgtyp)
         return ACID_RES;
     case AD_DISN:
         return DISINT_RES;
+    /* Extrinsic poison resistance protects items from rotting */
+    case AD_DCAY:
+        return POISON_RES;
     default:
         break;
     }
