@@ -96,19 +96,19 @@ des.room({ type = "ordinary", lit=1, x=3, y=3,
                  })
               end
 
-              des.room({ type="shop", chance=90, lit=1, x=2,y=10, w=4,h=3,
+              des.room({ type="shop", chance=95, lit=1, x=2,y=10, w=4,h=3,
                          contents = function()
                             des.door({ state="closed", wall="west" })
                          end
               });
 
-              des.room({ type = "tool shop", chance=90, lit=1, x=23,y=10, w=4,h=3,
+              des.room({ type = "tool shop", chance=95, lit=1, x=23,y=10, w=4,h=3,
                          contents = function()
                             des.door({ state="closed", wall="east" })
                          end
               });
 
-              des.room({ type = monkfoodshop(), chance=90, lit=1, x=24,y=5, w=3,h=4,
+              des.room({ type = monkfoodshop(), chance=95, lit=1, x=24,y=5, w=3,h=4,
                          contents = function()
                             des.door({ state="closed", wall="north" })
                          end

@@ -20,7 +20,7 @@ des.room({ type = "ordinary",lit=1,x=3,y=3,
              end
   });
 
-  des.room({ type = "tool shop", chance=30, lit=1,x=5,y=3,w=2,h=3,
+  des.room({ type = "tool shop", chance=60, lit=1,x=5,y=3,w=2,h=3,
              contents = function()
                 des.door({ state="closed", wall="south" })
              end
@@ -73,7 +73,7 @@ des.room({ type = "ordinary",lit=1,x=3,y=3,
              end
   })
 
-  des.room({ type = "tool shop", chance=40,lit=1,x=17,y=10,w=3,h=3,
+  des.room({ type = "tool shop", chance=50,lit=1,x=17,y=10,w=3,h=3,
              contents = function()
                 des.door({ state="closed", wall="north" })
              end
@@ -104,7 +104,7 @@ des.room({ type = "ordinary",lit=1,x=3,y=3,
              end
   })
 
-  des.room({ type = "wand shop", chance=30,lit=1,x=19,y=5,w=3,h=2,
+  des.room({ type = "wand shop", chance=60,lit=1,x=19,y=5,w=3,h=2,
              contents = function()
                 des.door({ state="closed", wall="west" })
              end

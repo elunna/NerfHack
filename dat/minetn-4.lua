@@ -55,7 +55,7 @@ des.room({ type = "ordinary", lit=1, x=3,y=3,
                          end
               })
 
-              des.room({ type = "tool shop", chance=90, lit=1, x=4,y=10, w=3,h=3,
+              des.room({ type = "tool shop", lit=1, x=4,y=10, w=3,h=3,
                          contents = function()
                             des.door({ state = "closed", wall="north" })
                          end
@@ -90,7 +90,7 @@ des.room({ type = "ordinary", lit=1, x=3,y=3,
                          end
               })
 
-              des.room({ type = "shop", chance=90, lit=1, x=23, y=10, w=3, h=3,
+              des.room({ type = "shop", lit=1, x=23, y=10, w=3, h=3,
                          contents = function()
                             des.door({ state = "closed", wall="north" })
                          end
