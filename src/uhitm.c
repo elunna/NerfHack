@@ -770,7 +770,9 @@ known_hitum(
         long oldweaphit = u.uconduct.weaphit;
 
         /* KMH, conduct */
-        if (weapon && (weapon->oclass == WEAPON_CLASS || is_weptool(weapon)))
+        if (weapon && (weapon->oclass == WEAPON_CLASS || is_weptool(weapon)) 
+            /* Don't break conduct with launchers */  
+            && !is_launcher(weapon))
             u.uconduct.weaphit++;
 
         /* we hit the monster; be careful: it might die or
