@@ -272,7 +272,8 @@ choke(struct obj *food)
             You("choke, but recover your composure.");
             return;
         }
-        You("stuff yourself and then vomit voluminously.");
+        You("%s yourself and then vomit voluminously.",
+            food->oclass == POTION_CLASS ? "gorge" : "stuff");
         morehungry(Hunger ? (u.uhunger - 60) : 1000); /* just got very sick! */
         vomit();
     } else {
