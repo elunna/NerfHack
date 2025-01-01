@@ -93,12 +93,7 @@ des.trap()
 des.trap()
 des.trap()
 -- Random monsters.
-
-des.monster({ id = "Dark One", coord = {16, 11}, inventory = function()
-   des.object({ id = "quarterstaff", spe = 4 });
-   des.object({ id = "cloak of magic resistance", spe = 2 });
-end })
-
+des.monster("Dark One", 16, 11)
 des.monster({ class = "B",random, peaceful = 0 })
 des.monster({ class = "B",random, peaceful = 0 })
 des.monster({ class = "B",random, peaceful = 0 })

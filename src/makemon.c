@@ -868,8 +868,8 @@ m_initinv(struct monst *mtmp)
                 (void) mongets(mtmp, RIN_SLOW_DIGESTION);
                 m_dowear(mtmp, FALSE);
             }
-	    } else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
-	        /* Dal Zethire */
+	} else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
+	    /* Dal Zethire */
             for (cnt = 0; cnt < 7; cnt++) {
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
                 otmp->corpsenm = mk_moncard();
@@ -881,6 +881,12 @@ m_initinv(struct monst *mtmp)
             (void) mpickobj(mtmp, otmp);
         } else if (quest_mon_represents_role(ptr, PM_MONK)) {
             (void) mongets(mtmp, rn2(11) ? ROBE : CLOAK_OF_MAGIC_RESISTANCE);
+        } else if (quest_mon_represents_role(ptr, PM_WIZARD)) {
+            otmp = mksobj(QUARTERSTAFF, TRUE, rn2(13) ? FALSE : TRUE);
+            if (otmp->spe < 2)
+                otmp->spe = rnd(3);
+            (void) mpickobj(mtmp, otmp);
+            (void) mongets(mtmp, CLOAK_OF_MAGIC_RESISTANCE);
         }
         break;
     case S_NYMPH:
