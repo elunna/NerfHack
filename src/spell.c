@@ -13,9 +13,8 @@
    eligible to reread the spellbook and regain 100% retention (the threshold
    used to be 1000 turns, which was 10% of the original 10000 turn retention
    period but didn't get adjusted when that period got doubled to 20000) */
-#define KEEN        10000
+#define KEEN            (primary_spellcaster() ? 20000 : 10000)
 #define CAST_BOOST 	  500	/* memory increase for successful casting */
-#define MAX_KNOW 	(KEEN * 2) /* Absolute Max timeout */
 
 /* x: need to add 1 when used for reading a spellbook rather than for hero
    initialization; spell memory is decremented at the end of each turn,
@@ -422,7 +421,8 @@ learn(void)
             Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
             /* Restricted spells only get 1000 turns */
-            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED) ? (KEEN/5) : KEEN, 1);
+            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED)
+                             ? (KEEN / 2) : KEEN, 1);
             book->spestudied++;
             exercise(A_WIS, TRUE); /* extra study */
         }
@@ -440,7 +440,8 @@ learn(void)
         } else {
             svs.spl_book[i].sp_id = booktype;
             svs.spl_book[i].sp_lev = objects[booktype].oc_level;
-            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED) ? (KEEN/5) : KEEN, 1);
+            incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED)
+                             ? (KEEN / 2) : KEEN, 1);
             book->spestudied++;
             if (!i)
                 /* first is always 'a', so no need to mention the letter */
@@ -1322,13 +1323,13 @@ spelleffects_check(int spell, int *res, int *energy)
         disp.botl = TRUE;
         *res = ECMD_TIME;
         return TRUE;
-    } else if (spellknow(spell) <= MAX_KNOW / 200) { /* 100 turns left */
+    } else if (spellknow(spell) <= KEEN / 200) { /* 100 turns left */
         You("strain to recall the spell.");
-    } else if (spellknow(spell) <= MAX_KNOW / 40) { /* 500 turns left */
+    } else if (spellknow(spell) <= KEEN / 40) { /* 500 turns left */
         You("have difficulty remembering the spell.");
-    } else if (spellknow(spell) <= MAX_KNOW / 20) { /* 1000 turns left */
+    } else if (spellknow(spell) <= KEEN / 20) { /* 1000 turns left */
         Your("knowledge of this spell is growing faint.");
-    } else if (spellknow(spell) <= MAX_KNOW / 10) { /* 2000 turns left */
+    } else if (spellknow(spell) <= KEEN / 10) { /* 2000 turns left */
         Your("recall of this spell is gradually fading.");
     }
 
@@ -1662,8 +1663,8 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
             svs.spl_book[spell].sp_know += CAST_BOOST;
         else
             svs.spl_book[spell].sp_know += 50 + rnd(50);
-        if (svs.spl_book[spell].sp_know >= MAX_KNOW)
-            svs.spl_book[spell].sp_know = MAX_KNOW;
+        if (svs.spl_book[spell].sp_know >= KEEN)
+            svs.spl_book[spell].sp_know = KEEN;
     }
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
@@ -2367,7 +2368,7 @@ spellretention(int idx, char * outbuf)
     if (turnsleft < 1L) {
         /* spell has expired; hero can't successfully cast it anymore */
         Strcpy(outbuf, "(gone)");
-    } else if (turnsleft >= (long) MAX_KNOW) {
+    } else if (turnsleft >= (long) KEEN) {
         /* full retention, first turn or immediately after reading book */
         Strcpy(outbuf, "100%");
     } else {
@@ -2375,7 +2376,7 @@ spellretention(int idx, char * outbuf)
          * Retention is displayed as a single percentage of
          * amount of time left until memory of the spell expires.
          */
-        percent = (turnsleft - 1L) / ((long) MAX_KNOW / 100L) + 1L;
+        percent = (turnsleft - 1L) / ((long) KEEN / 100L) + 1L;
         Sprintf(outbuf, "%ld%%", percent);
     }
     return outbuf;
@@ -2402,7 +2403,7 @@ initialspell(struct obj *obj)
     } else {
         svs.spl_book[i].sp_id = otyp;
         svs.spl_book[i].sp_lev = objects[otyp].oc_level;
-        incrnknow(i, 0, 10000);
+        incrnknow(i, 0, KEEN);
     }
     return;
 }
@@ -2416,7 +2417,7 @@ known_spell(short otyp)
     for (i = 0; (i < MAXSPELL) && (spellid(i) != NO_SPELL); i++)
         if (spellid(i) == otyp) {
             k = spellknow(i);
-            return (k > MAX_KNOW / 10) ? spe_Fresh
+            return (k > KEEN / 10) ? spe_Fresh
                    : (k > 0) ? spe_GoingStale
                      : spe_Forgotten;
         }
