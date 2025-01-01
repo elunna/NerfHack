@@ -1077,6 +1077,41 @@ hitum(struct monst *mon, struct attack *uattk)
                        : P_SKILL(P_SHIELD) == P_SKILLED ? !rn2(17)
                        : !rn2(25));
 
+     /* Tertiary bite attack for vampires.
+      * Handle this first so that vampires always have the chance
+      * to feed first before the victim expires. */
+    if (!DEADMONSTER(mon) && m_at(x, y) == mon 
+            && Race_if(PM_VAMPIRE) && !Upolyd) {
+        if ((uwep || (u.twoweap && uswapwep)) &&
+            maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)) &&
+                (is_rider(mon->data)
+                || mon->data == &mons[PM_GREEN_SLIME]
+                || touch_petrifies(mon->data))) {
+            ; /* Don't attack - move onto weapon attacks */
+        } else {
+            tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
+                                   &armorpenalty);
+            dieroll = rnd(20);
+            mhit = (tmp > dieroll || u.uswallow);
+            if (tmp > dieroll)
+                exercise(A_DEX, TRUE);
+            
+            if (mhit) {
+                You("bite %s.", mon_nam(mon));
+                malive = damageum(mon, &mons[PM_VAMPIRE].mattk[0], 0) != 2;
+                (void) passive(mon, uswapwep, mhit, malive, AT_BITE, !uswapwep);
+                wakeup(mon, TRUE);
+            } else {
+                /* If cartomancer/monk are ever allowed to be vampires
+                 * update this to take their armor into account. */
+                missum(mon, &mons[PM_VAMPIRE].mattk[1], FALSE);
+            }
+        }
+    }
+    
+    if (!malive)
+        return FALSE;
+
     /* Cleaver attacks three spots, 'mon' and one on either side of 'mon';
        it can't be part of dual-wielding but we guard against that anyway;
        cleave return value reflects status of primary target ('mon') */
@@ -1152,27 +1187,7 @@ hitum(struct monst *mon, struct attack *uattk)
             (void) passive(mon, secondwep, mhit, malive, AT_WEAP,
                            secondwep && !uswapwep);
     }
-
-    /* Tertiary bite attack for vampires */
-    if (malive && m_at(x, y) == mon && Race_if(PM_VAMPIRE) && !Upolyd) {
-        if ((uwep || (u.twoweap && uswapwep)) &&
-            maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)) &&
-                (is_rider(mon->data)
-                || mon->data == &mons[PM_GREEN_SLIME]
-                || touch_petrifies(mon->data)))
-            return malive;
-        tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
-                               &armorpenalty);
-        dieroll = rnd(20);
-        mhit = (tmp > dieroll || u.uswallow);
-        if (mhit) {
-            You("bite %s.", mon_nam(mon));
-            malive = damageum(mon, &mons[PM_VAMPIRE].mattk[1], 0) != 2;
-            (void) passive(mon, uswapwep, mhit, malive, AT_BITE, !uswapwep);
-            wakeup(mon, TRUE);
-        }
-    }
-
+    
     /* random shield bash if wearing a shield and are skilled
        in using shields */
     if (bash_chance && wearshield && P_SKILL(P_SHIELD) >= P_BASIC
@@ -7023,7 +7038,7 @@ passive(
     if (mhit && aatyp == AT_BITE
           && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         if (bite_monster(mon))
-	    return 2; /* lifesaved */
+	        return 2; /* lifesaved */
     }
 
     for (i = 0;; i++) {
