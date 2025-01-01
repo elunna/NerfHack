@@ -891,12 +891,14 @@ doengrave_sfx_item(struct _doengrave_ctx *de)
     case WAND_CLASS:
         if (zappable(de->otmp)) {
             check_unpaid(de->otmp);
+#if 0 /* This is too deadly to allow with real explosions */
             if (de->otmp->cursed && !rn2(WAND_BACKFIRE_CHANCE)) {
                 pline_The("%s suddenly detonates!", xname(de->otmp));
                 wand_explode(de->otmp, 0, &gy.youmonst);
                 de->ret = ECMD_TIME;
                 return FALSE;
             }
+#endif
             de->zapwand = TRUE;
             if (!can_reach_floor(TRUE))
                 de->ptext = FALSE;
