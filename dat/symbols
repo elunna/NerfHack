@@ -166,7 +166,7 @@ start: Blank
         S_pool: \032
         S_potion: \032
         S_pudding: \032
-				S_puddle: \032
+		S_puddle: \032
         S_quadruped: \032
         S_quantmech: \032
         S_ring: \032
@@ -842,7 +842,7 @@ start: Enhanced1
 	S_grave: U+2020                     # DAGGER
 	G_fountain: U+2320/0-150-255        # TOP HALF INTEGRAL
 	S_pool: U+224b                      # TRIPLE TILDE
-	S_puddle: U+224b                      # TRIPLE TILDE
+	S_puddle: U+224b                    # TRIPLE TILDE
 	S_ice: U+00b7                       # MIDDLE DOT
 	S_lava: U+224b                      # TRIPLE TILDE
 	S_lavawall: U+2248                  # ALMOST EQUAL TO
