@@ -300,17 +300,17 @@ drop_upon_death(
             curse(otmp);
 
         /* A bit of randomization for the bones log peekers */
-        if (rn2(7)) {
+        if (!rn2(5)) {
             obj_shudders(otmp);
             do_osshock(otmp);
         } else {
-            if (rn2(5))
+            if (!rn2(3))
                 otmp = poly_obj(otmp, STRANGE_OBJECT);
             if (mtmp)
                 (void) add_to_minv(mtmp, otmp);
             else if (cont)
                 (void) add_to_container(cont, otmp);
-            else if (!rn2(8))
+            else if (!rn2(3))
                 give_to_nearby_mon(otmp, x, y);
             else
                 place_object(otmp, x, y);
