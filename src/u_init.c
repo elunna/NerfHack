@@ -737,6 +737,11 @@ u_init_role(void)
         knows_object(HEALTHSTONE, FALSE);	/* KMH */
         knows_object(POT_BLOOD, FALSE);
         knows_object(POT_VAMPIRE_BLOOD, FALSE);
+        /* Naturally familiar with healing items in their work */
+        knows_object(POT_SICKNESS, FALSE);
+        knows_object(POT_PARALYSIS, FALSE);
+        knows_object(POT_SLEEPING, FALSE);
+        knows_object(POT_RESTORE_ABILITY, FALSE);
         skill_init(Skill_H);
         break;
     case PM_KNIGHT:
