@@ -3296,7 +3296,10 @@ potion_dip(struct obj *obj, struct obj *potion)
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
         if (obj->cursed || potion->cursed || obj->otyp == POT_ACID
-            || mixture == ACID_VENOM || !rn2(10)) {
+            /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
+            || mixture == ACID_VENOM 
+            /* decrease the chance of non-magical mixtures of exploding */
+            || (magic ? !rn2(10) : !rn2(20))) {
             /* it would be better to use up the whole stack in advance
                of the message, but we can't because we need to keep it
                around for potionbreathe() [and we can't set obj->in_use
