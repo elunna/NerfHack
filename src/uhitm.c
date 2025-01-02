@@ -446,10 +446,10 @@ find_roll_to_hit(
 
     /* Some races really don't like wearing other racial armor, if they
      * do they get a severe to-hit penalty */
-    tmp -= count_hated_items() * 5;
+    tmp -= d(count_hated_items(), 5);
 
     /* Feedback for wearing items your race hates. */
-    if (tmp && !rn2(5)) {
+    if (tmp > 4 && !rn2(10)) {
         switch (rnd(7)) {
         case 1:
             if (uarm && hates_item(&gy.youmonst, uarm->otyp))
