@@ -15,6 +15,9 @@ des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "hardfloor", "noflip")
 
+des.message("You step into a desolate, frozen expanse.")
+des.message("In the distance, an ornate tower rises, its shadow stretching across the icy wasteland.")
+
 des.map([[
 -----................................................................       
 |........................................................................   
