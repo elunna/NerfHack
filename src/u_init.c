@@ -1315,6 +1315,8 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || (otyp == SPE_MAGIC_MISSILE && Role_if(PM_WIZARD))
            /* vampirics start with regeneration */
            || (otyp == RIN_REGENERATION && Race_if(PM_VAMPIRE))
+           /* vampirics don't benefit from food  */
+           || (otyp == SPE_DETECT_FOOD && Role_if(PM_VAMPIRE))
            /* items that will be silver for vampirics (rings/wands perhaps)
            * that can't become iron */
            || (Race_if(PM_VAMPIRE) && objects[otyp].oc_material == SILVER)
