@@ -3745,7 +3745,7 @@ race_bonus(struct obj *obj)
      * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
      * too. For each piece of hated armor, the player gets a +2AC penalty. */
     if (hates_item(&gy.youmonst, obj->otyp))
-        return -5;
+        return -2;
 
     return 0;
 }
