@@ -18,7 +18,7 @@ des.level_init({ style="mines", fg=".", bg=" ", smoothed=true, joined=true, wall
 
 -- Light variation
 -- Copied from bigrm-2
-if percent(25) then
+if percent(7) then
    local darkness;
 
    local choice = math.random(0, 3)
@@ -36,9 +36,6 @@ if percent(25) then
 
    if darkness ~= nil then
       des.region(darkness,"unlit");
-      if percent(5) then
-         des.replace_terrain({ selection = darkness:grow(),
-                              fromterrain = ".", toterrain = "I" });
       end
    end
 end
