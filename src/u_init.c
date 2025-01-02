@@ -69,6 +69,7 @@ static struct trobj Cartomancer[] = {
     { CANDY_BAR, 0, FOOD_CLASS, 2, 0 },
     { SCR_CREATE_MONSTER, 0, SCROLL_CLASS, 7, UNDEF_BLESS },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS },
+    { POT_PHASING, 0, POTION_CLASS, 4, UNDEF_BLESS },
     { SACK, 0, TOOL_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
@@ -214,8 +215,6 @@ static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0 },
 static struct trobj OilPotion[] = { { POT_OIL, 0, POTION_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
 static struct trobj PoisonPotion[] = { { POT_SICKNESS, 0, POTION_CLASS, 2, 0 },
-                                       { 0, 0, 0, 0, 0 } };
-static struct trobj PhasePotion[] = { { POT_PHASING, 0, POTION_CLASS, 1, 0 },
                                        { 0, 0, 0, 0, 0 } };
 static struct trobj Blindfold[] = { { BLINDFOLD, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
@@ -709,8 +708,6 @@ u_init_role(void)
         objects[SCR_CREATE_MONSTER].oc_prob *= 2;
 
         ini_inv(Cartomancer);
-        if (!rn2(3))
-            ini_inv(PhasePotion);
         skill_init(Skill_Car);
         knows_object(PLAYING_CARD_DECK, FALSE);
         knows_object(DECK_OF_FATE, FALSE);
@@ -1512,7 +1509,7 @@ ini_inv(struct trobj *trop)
 
         otyp = ini_inv_obj_substitution(trop, obj);
 
-	    /* Set up cartomancer cards */
+	/* Set up cartomancer cards */
         if (Role_if(PM_CARTOMANCER) && obj->otyp == SCR_CREATE_MONSTER) {
             obj->corpsenm = PM_RAVEN;
             bless(obj);
