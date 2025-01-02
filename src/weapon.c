@@ -2056,7 +2056,7 @@ skill_init(const struct def_skill *class_skill)
             P_SKILL(P_HEALING_SPELL) = P_BASIC;
         else if (carrying(SPE_PROTECTION))
             P_SKILL(P_CLERIC_SPELL) = P_BASIC;
-        else if (carrying(SPE_CONFUSE_MONSTER))
+        else if (carrying(SPE_CONFUSE_MONSTER) || carrying(SPE_SLEEP))
             P_SKILL(P_ENCHANTMENT_SPELL) = P_BASIC;
     }
 

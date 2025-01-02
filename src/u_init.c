@@ -748,10 +748,10 @@ u_init_role(void)
         break;
     case PM_MONK: {
         static short M_spell[] = {
-            SPE_HEALING, SPE_PROTECTION, SPE_CONFUSE_MONSTER
+            SPE_HEALING, SPE_PROTECTION, SPE_CONFUSE_MONSTER, SPE_SLEEP
         };
 
-        Monk[M_BOOK].trotyp = M_spell[rn2(90) / 30]; /* [0..2] */
+        Monk[M_BOOK].trotyp = M_spell[rn2(120) / 30]; /* [0..3] */
         ini_inv(Monk);
         ini_inv(Magicmarker);
         if (!rn2(10))
