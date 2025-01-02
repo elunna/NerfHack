@@ -2148,7 +2148,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                 losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
                 if (!rn2(3))
                     erode_armor(&gy.youmonst, ERODE_CORRODE);
-                if (!rn2(3))
+                else if (!rn2(3))
                     dmg += destroy_items(&gy.youmonst, AD_ACID, dmg);
             }
             break;
@@ -2340,10 +2340,10 @@ potionhit(struct monst *mon, struct obj *obj, int how)
         case POT_ACID:
             dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
             if (!rn2(3))
-                erode_armor(mon, ERODE_CORRODE);
-            if (!rn2(3))
                 acid_damage(MON_WEP(mon));
             if (!rn2(3))
+                erode_armor(mon, ERODE_CORRODE);
+            else if (!rn2(3))
                 dmg += destroy_items(mon, AD_ACID, dmg);
 
             if (!resists_acid(mon) && !resist(mon, POTION_CLASS, 0, NOTELL)) {
