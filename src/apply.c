@@ -2385,8 +2385,7 @@ use_tinning_kit(struct obj *obj)
         pline("That's too insubstantial to tin.");
         return;
     }
-    consume_obj_charge(obj, TRUE);
-
+    
     /* Vampires can tin blood from corpses - from SlashTHEM.
      * TODO: Factor this out to it's own function. */
     long age = peek_at_iced_corpse_age(corpse);
@@ -2400,12 +2399,17 @@ use_tinning_kit(struct obj *obj)
             && has_blood(&mons[corpse->corpsenm])) {
 
         if (!bottleable) {
-            if (y_n("This corpse does not have blood.  Tin it?") == 'y')
+            if (y_n("This corpse does not have any fresh blood.  Tin it?") == 'y')
                 goto tinit;
+            else
+                return;
         } else if (mons[corpse->corpsenm].msize < MZ_MEDIUM) {
-            if (y_n("This corpse is too small to bottle.  Tin it?") == 'y')
+            if (y_n("This corpse doesn't have enough blood to bottle.  Tin it?") == 'y')
                 goto tinit;
+            else
+                return;
         } else if ((bld = mksobj(POT_BLOOD, FALSE, FALSE)) != 0) {
+            consume_obj_charge(obj, TRUE);
             static const char you_buy_it[] = "You bottle it, you bought it!";
 
             bld->corpsenm = corpse->corpsenm;
@@ -2429,6 +2433,7 @@ use_tinning_kit(struct obj *obj)
     }
 
 tinit:
+    consume_obj_charge(obj, TRUE);
     if ((can = mksobj(TIN, FALSE, FALSE)) != 0) {
         static const char you_buy_it[] = "You tin it, you bought it!";
 
