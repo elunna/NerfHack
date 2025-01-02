@@ -1304,7 +1304,16 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_SLEEPING
            || otyp == RIN_WITHERING
            || otyp == WAN_NOTHING
-           /* orcs start with poison resistance */
+           || (Race_if(PM_VAMPIRE) &&
+               /* vampirics start with regeneration */
+               (otyp == RIN_REGENERATION
+               /* vampirics start with flying */
+                || otyp == RIN_LEVITATION
+               /* vampirics don't eat */
+                || otyp == SPE_DETECT_FOOD || otyp == SCR_FOOD_DETECTION
+               /* vampires don't like silver */
+                || objects[otyp].oc_material == SILVER))
+           /* orcs/vampires start with poison resistance */
            || (otyp == RIN_POISON_RESISTANCE &&
 	       (Race_if(PM_ORC) || Race_if(PM_VAMPIRE)))
            /* Monks don't use weapons */
@@ -1313,13 +1322,6 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || (otyp == SPE_FORCE_BOLT && Role_if(PM_WIZARD))
            /* Make them hunt for it!*/
            || (otyp == SPE_MAGIC_MISSILE && Role_if(PM_WIZARD))
-           /* vampirics start with regeneration */
-           || (otyp == RIN_REGENERATION && Race_if(PM_VAMPIRE))
-           /* vampirics don't benefit from food  */
-           || (otyp == SPE_DETECT_FOOD && Role_if(PM_VAMPIRE))
-           /* items that will be silver for vampirics (rings/wands perhaps)
-           * that can't become iron */
-           || (Race_if(PM_VAMPIRE) && objects[otyp].oc_material == SILVER)
            /* powerful spells are either useless to
               low level players or unbalancing; also
               spells in restricted skill categories */
