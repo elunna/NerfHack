@@ -172,7 +172,8 @@ moveloop_core(void)
 {
     boolean monscanmove = FALSE;
     boolean vamp_regen = vamp_can_regen();
-
+    int chance;
+    
 #ifdef SAFERHANGUP
     if (program_state.done_hup)
         end_of_input();
@@ -221,9 +222,14 @@ moveloop_core(void)
                 /* occasionally add another monster; since this takes
                    place after movement has been allotted, the new
                    monster effectively loses its first turn */
-                if (!rn2(u.uevent.udemigod ? 25
+                chance = u.uevent.udemigod ? 25
                          : (depth(&u.uz) > depth(&lethegate_level)) ? 50
-                         : 70))
+                         : 70;
+                
+                /* Monster generation in quests is dramatically slowed down */
+                chance *= In_quest(&u.uz) ? 5 : 1;
+                
+                if (!rn2(chance))
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
 
