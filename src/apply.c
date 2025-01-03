@@ -2416,6 +2416,7 @@ use_tinning_kit(struct obj *obj)
             bld->cursed = obj->cursed;
             bld->blessed = obj->blessed;
             bld->known = 1;
+            bld->bknown = obj->bknown;
             if (carried(corpse)) {
                 if (corpse->unpaid)
                     verbalize(you_buy_it);
