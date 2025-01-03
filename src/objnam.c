@@ -3480,6 +3480,7 @@ static const struct alt_spellings {
 } spellings[] = {
     { "credit card", CREDIT_CARD },
     { "razor card", RAZOR_CARD },
+    { "razor cards", RAZOR_CARD },
     { "pickax", PICK_AXE },
     { "whip", BULLWHIP },
     { "saber", SILVER_SABER },
