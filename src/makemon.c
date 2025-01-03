@@ -724,7 +724,7 @@ m_initinv(struct monst *mtmp)
 
             switch (monsndx(ptr)) {
             case PM_GUARD:
-                mac = -1;
+                mac = -2;
                 break;
             case PM_SOLDIER:
                 mac = 3;
@@ -1031,7 +1031,10 @@ m_initinv(struct monst *mtmp)
     default:
         break;
     }
-
+    /* vault guard farming nerf */
+    if (ptr == &mons[PM_GUARD])
+        return;
+    
     /* ordinary soldiers rarely have access to magic (or gold :-) */
     if (ptr == &mons[PM_SOLDIER] && rn2(13))
         return;

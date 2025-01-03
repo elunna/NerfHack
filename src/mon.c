@@ -3761,8 +3761,7 @@ corpse_chance(
                                   "%s seems to have indigestion.",
                                   Monnam(magr));
                 }
-
-        return FALSE;
+            return FALSE;
             }
 
             mon_explodes(mon, &mdat->mattk[i]);
@@ -4151,6 +4150,8 @@ xkilled(
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */
             && mdat->mlet != S_KOP
+            /* no extra item from guards--too easy to farm */
+            && mdat != &mons[PM_GUARD]
             /* no items from cloned monsters */
             && !mtmp->mcloned) {
             otmp = mkobj(RANDOM_CLASS, TRUE);
@@ -4264,7 +4265,7 @@ xkilled(
             adjalign(-(int) (ALIGNLIM / 8));
 	        u.ugangr++;
         }
-	    /* Vampirics still get the luck hit */
+	/* Vampirics still get the luck hit */
         change_luck(-4);
         if (!Hallucination)
             pline("That was probably a bad idea...");

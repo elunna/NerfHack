@@ -4124,7 +4124,7 @@
         MH_HUMAN, 18, CLR_YELLOW, SHOPKEEPER),
     /* vault guard */
     MON(NAM("guard"), S_HUMAN,
-        LVL(12, 12, 10, 40, 10), G_NOGEN,
+        LVL(14, 12, 10, 40, 10), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_GUARD, MZ_HUMAN), 0, 0,
@@ -4132,7 +4132,7 @@
         M2_NOPOLY | M2_MERC | M2_PEACEFUL | M2_STRONG
             | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE,
-        MH_HUMAN, 14, CLR_BLUE, GUARD),
+        MH_HUMAN, 15, CLR_BLUE, GUARD),
     /* familiar is the vampires starting pet */
     MON(NAM("familiar"), S_HUMAN,
         LVL(5, 12, 10, 10, 0), (G_GENO | 2),
