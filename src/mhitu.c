@@ -3274,25 +3274,37 @@ piercer_hit(struct monst *magr, struct monst *mdef)
         return;
     } else if (helm && hard_helmet(helm)) {
         helm_res = 11 + helm->spe * 6;
-        /* These things now quite frequently destroy hard helmets -
-         * they are piercers after all! */
-        if (!helm->oartifact && dmg > helm_res) {
-            pline("%s is pierced and breaks apart!", Yname2(helm));
-            if (youdefend) {
-                Helmet_off();
-                update_inventory();
-            } else {
-                helm->owornmask = 0;
-                mdef->misc_worn_check &= ~W_ARMH;
-                check_gear_next_turn(mdef);
-                update_mon_extrinsics(mdef, helm, FALSE, TRUE);
+
+        /* These things now quite frequently destroy hard helmets.
+         * First we'll damage the helmet by reducing the enchantment.
+         * If the enchantment is negative, it'll break. */
+
+        if (dmg > helm_res) {
+            if (helm->spe >= 0 || (is_glass(helm) && helm->oeroded > 2)) {
+                pline("%s is damaged!", Yname2(helm));
+                /* The cystal helm will crack instead */
+                if (is_glass(helm) && !helm->oerodeproof)
+                    helm->oeroded++;
+                else
+                    helm->spe -= Luck < 0 ? rnd(2) : 1;
+            } else if (!helm->oartifact) {
+                pline("%s is pierced and breaks apart!", Yname2(helm));
+                if (youdefend) {
+                    Helmet_off();
+                    update_inventory();
+                } else {
+                    helm->owornmask = 0;
+                    mdef->misc_worn_check &= ~W_ARMH;
+                    check_gear_next_turn(mdef);
+                    update_mon_extrinsics(mdef, helm, FALSE, TRUE);
+                }
+                breakobj(helm, u.ux, u.uy, FALSE, TRUE);
             }
-            breakobj(helm, u.ux, u.uy, FALSE, TRUE);
-             /* The helmet absorbed some damage. */
+            /* The helmet absorbed some damage. */
             dmg -= 11;
             if (dmg < 1)
                 dmg = 1;
-        } else if (hard_helmet(helm)) {
+        } else {
             pline("%s partially diverts the blow.", Yname2(helm));
             dmg = (dmg + 1) / 2;
         }
@@ -3305,6 +3317,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
                   Monnam(mdef), youattack ? " (you)" : "");
         }
     }
+
     if (youdefend) {
         mdamageu(magr, dmg);
     } else {
