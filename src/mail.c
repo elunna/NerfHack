@@ -879,6 +879,7 @@ get_hint(void)
             "The year is 20NN. Everyone plays NerfHack at TAS levels of perfection.",
             "or How I Learned to Stop Worrying and Love the Nerf",
             "all i want for christmas… is nerffff", /* Loggers_VIII */
+            "This is your brain. This is Nerf. This is your brain on Nerf.",
     };
 
     return hint[rn2(SIZE(hint))];
