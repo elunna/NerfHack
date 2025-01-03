@@ -221,7 +221,9 @@ were_summon(
         default:
             continue;
         }
-        mtmp = makemon(&mons[typ], u.ux, u.uy, NO_MM_FLAGS);
+//        mtmp = makemon(&mons[typ], u.ux, u.uy, NO_MM_FLAGS);
+        mtmp = make_msummoned(&mons[typ], NULL, yours, u.ux, u.uy);
+        
         if (mtmp) {
             total++;
             if (canseemon(mtmp))
