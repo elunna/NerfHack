@@ -1570,6 +1570,8 @@ attributes_enlightenment(
     int ltmp, armpro, warnspecies;
     char buf[BUFSZ];
 
+    
+    
     /*\
      *  Attributes
     \*/
@@ -1594,90 +1596,9 @@ attributes_enlightenment(
         enl_msg("Your alignment ", "is", "was", buf, "");
     }
 
-    /*** Resistances to troubles ***/
-    if (Invulnerable)
-        you_are("invulnerable", from_what(INVULNERABLE));
-    if (Antimagic)
-        you_are("magic-protected", from_what(ANTIMAGIC));
-
-    /* Partial intrinsic resistances */
-
-    Sprintf(buf, "%d%% fire resistant (intrinsic)", intrinsic_res(FIRE_RES));
-    you_are(buf, "");
-    Sprintf(buf, "%d%% cold resistant (intrinsic)", intrinsic_res(COLD_RES));
-    you_are(buf, "");
-    Sprintf(buf, "%d%% sleep resistant (intrinsic)", intrinsic_res(SLEEP_RES));
-    you_are(buf, "");
-    Sprintf(buf, "%d%% disintegration resistant (intrinsic)", intrinsic_res(DISINT_RES));
-    you_are(buf, "");
-    Sprintf(buf, "%d%% shock resistant (intrinsic)", intrinsic_res(SHOCK_RES));
-    you_are(buf, "");
-    Sprintf(buf, "%d%% poison resistant (intrinsic)", intrinsic_res(POISON_RES));
-    you_are(buf, "");
-
-    if (extrinsic_res(FIRE_RES))
-        you_are("fire resistant", from_what(FIRE_RES));
-    if (extrinsic_res(COLD_RES))
-        you_are("cold resistant", from_what(COLD_RES));
-    if (extrinsic_res(SLEEP_RES))
-        you_are("sleep resistant", from_what(SLEEP_RES));
-    if (extrinsic_res(DISINT_RES))
-        you_are("disintegration resistant", from_what(DISINT_RES));
-    if (extrinsic_res(SHOCK_RES))
-        you_are("shock resistant", from_what(SHOCK_RES));
-    if (extrinsic_res(POISON_RES))
-        you_are("poison resistant", from_what(POISON_RES));
-
-    /* End of partial intrinsic resistances */
-
-    if (Acid_resistance) {
-        Sprintf(buf, "%.20s%.30s",
-                temp_resist(ACID_RES) ? "temporarily " : "",
-                "acid resistant");
-        you_are(buf, from_what(ACID_RES));
-    }
-
-    /* Not an official resistance, parallel with disintegration res . */
-    if (BWithering) {
-        you_are("withering resistant ", from_what(DISINT_RES));
-    }
-
-    /* Group these together for readability */
-    item_resistance_message(AD_FIRE, " protected from fire", final);
-    item_resistance_message(AD_COLD, " protected from cold", final);
-    item_resistance_message(AD_DISN, " protected from disintegration", final);
-    item_resistance_message(AD_ELEC, " protected from electric shocks", final);
-    item_resistance_message(AD_ACID, " protected from acid", final);
-
-    if (Drain_resistance)
-        you_are("level-drain resistant", from_what(DRAIN_RES));
-
-    if (Sick_resistance)
-        you_are("immune to sickness", from_what(SICK_RES));
-    
-    if (Stone_resistance) {
-        Sprintf(buf, "%.20s%.30s",
-                temp_resist(STONE_RES) ? "temporarily " : "",
-                "petrification resistant");
-        you_are(buf, from_what(STONE_RES));
-    }
-
-    if (Stun_resistance)
-        you_are("stun resistant", from_what(STUN_RES));
-
-    if (Halluc_resistance)
-        enl_msg(You_, "resist", "resisted", " hallucinations",
-                from_what(HALLUC_RES));
-    
-    /* Conferred by Sunsword or Silver dragon scaled armor; 
-     * no good checks for those yet.  */
-    if (defended(&gy.youmonst, AD_BLND))
-        enl_msg(You_, "resist", "resisted", " blinding effects", "");
-    
-    if (u.uedibility)
-        you_can("recognize detrimental food", "");
-
+   
     /*** Vision and senses ***/
+
     if ((HBlinded || EBlinded) && BBlinded) /* blind w/ blindness blocked */
         you_can("see", from_what(-BLINDED)); /* Eyes of the Overworld */
     if (Blnd_resist && !Blind) /* skip if no eyes or blindfolded */
@@ -1760,6 +1681,8 @@ attributes_enlightenment(
         }
         you_are(buf, "");
     }
+    if (u.uedibility)
+        you_can("recognize detrimental food", "");
     if (u.umconf) { /* 'u.umconf' is a counter rather than a timeout */
         Strcpy(buf, " monsters when hitting them");
         if (wizard && !final) {
@@ -1797,9 +1720,8 @@ attributes_enlightenment(
     if (Displaced)
         you_are("displaced", from_what(DISPLACED));
 
-    if (Stomping) {
+    if (Stomping)
         you_are("stomping", from_what(STOMPING));
-    }
 
     if (Stealth) {
         you_are("stealthy", from_what(STEALTH));
@@ -2082,14 +2004,14 @@ attributes_enlightenment(
     }
 
     /* KMH, balance patch -- healthstones affect health */
-	if (u.uhealbonus) {
-		Sprintf(buf, "%s health", u.uhealbonus > 0 ? "extra" : "reduced");
-	    if (wizard)
+    if (u.uhealbonus) {
+        Sprintf(buf, "%s health", u.uhealbonus > 0 ? "extra" : "reduced");
+        if (wizard)
             Sprintf(eos(buf), " (%ld)", u.uhealbonus);
-		you_have(buf, "");
-	} else if (wizard)
+        you_have(buf, "");
+    } else if (wizard) {
         enl_msg("Your health bonus ", "is", "was", " zero", "");
-
+    }
 
 #ifdef DEBUG
     /* named fruit debugging (doesn't really belong here...); to enable,
@@ -2169,6 +2091,110 @@ attributes_enlightenment(
         if (p)
             enl_msg(You_, "have been killed ", p, buf, "");
     }
+    
+    
+    /*\
+     *  Resistances
+    \*/
+    enlght_out("");
+    enlght_out(final ? "Final Resistances:" : "Resistances:");
+
+    /* Partial intrinsic resistances */
+
+    Sprintf(buf, "%3d%% fire resistant (intrinsic)", intrinsic_res(FIRE_RES));
+    if (extrinsic_res(FIRE_RES)) {
+        strcat(buf, " + extrinsic");
+        strcat(buf, from_what(FIRE_RES));
+    }
+    you_are(buf, "");
+    
+    Sprintf(buf, "%3d%% cold resistant (intrinsic)", intrinsic_res(COLD_RES));
+    if (extrinsic_res(COLD_RES)) {
+        strcat(buf, " + extrinsic");
+        strcat(buf, from_what(COLD_RES));
+    }
+    you_are(buf, "");
+    
+    Sprintf(buf, "%3d%% sleep resistant (intrinsic)", intrinsic_res(SLEEP_RES));
+    if (extrinsic_res(SLEEP_RES)) {
+        strcat(buf, " + extrinsic");
+        strcat(buf, from_what(SLEEP_RES));
+    }
+    you_are(buf, "");
+    
+    Sprintf(buf, "%3d%% disintegration resistant (intrinsic)", intrinsic_res(DISINT_RES));
+    if (extrinsic_res(DISINT_RES)) {
+        strcat(buf, " + extrinsic");
+        strcat(buf, from_what(DISINT_RES));
+    }
+    you_are(buf, "");
+    
+    Sprintf(buf, "%3d%% shock resistant (intrinsic)", intrinsic_res(SHOCK_RES));
+    if (extrinsic_res(SHOCK_RES)) {
+        strcat(buf, " + extrinsic");
+        strcat(buf, from_what(SHOCK_RES));
+    }
+    you_are(buf, "");
+    
+    Sprintf(buf, "%3d%% poison resistant (intrinsic)", intrinsic_res(POISON_RES));
+    if (extrinsic_res(POISON_RES)) {
+        strcat(buf, " + extrinsic");
+        strcat(buf, from_what(POISON_RES));
+    }
+    you_are(buf, "");
+
+    /* End of partial intrinsic resistances */
+    
+    /* Group these together for readability */
+    item_resistance_message(AD_FIRE, " protected from fire", final);
+    item_resistance_message(AD_COLD, " protected from cold", final);
+    item_resistance_message(AD_DISN, " protected from disintegration", final);
+    item_resistance_message(AD_ELEC, " protected from electric shocks", final);
+    item_resistance_message(AD_ACID, " protected from acid", final);
+
+    /*** Resistances to troubles ***/
+    if (Invulnerable)
+        you_are("invulnerable", from_what(INVULNERABLE));
+    if (Antimagic)
+        you_are("magic-protected", from_what(ANTIMAGIC));
+    
+    if (Acid_resistance) {
+        Sprintf(buf, "%.20s%.30s",
+                temp_resist(ACID_RES) ? "temporarily " : "",
+                "acid resistant");
+        you_are(buf, from_what(ACID_RES));
+    }
+
+    /* Not an official resistance, parallel with disintegration res . */
+    if (BWithering) {
+        you_are("withering resistant ", from_what(DISINT_RES));
+    }
+    
+    if (Drain_resistance)
+        you_are("level-drain resistant", from_what(DRAIN_RES));
+
+    if (Sick_resistance)
+        you_are("immune to sickness", from_what(SICK_RES));
+    
+    if (Stone_resistance) {
+        Sprintf(buf, "%.20s%.30s",
+                temp_resist(STONE_RES) ? "temporarily " : "",
+                "petrification resistant");
+        you_are(buf, from_what(STONE_RES));
+    }
+
+    if (Stun_resistance)
+        you_are("stun resistant", from_what(STUN_RES));
+
+    if (Halluc_resistance)
+        enl_msg(You_, "resist", "resisted", " hallucinations",
+                from_what(HALLUC_RES));
+    
+    /* Conferred by Sunsword or Silver dragon scaled armor; 
+     * no good checks for those yet.  */
+    if (defended(&gy.youmonst, AD_BLND))
+        enl_msg(You_, "resist", "resisted", " blinding effects", "");
+
 }
 
 /* ^X command */
