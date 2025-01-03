@@ -1082,7 +1082,10 @@ void
 forget(int howmuch)
 {
     struct monst *mtmp;
-
+    
+    if (u_wield_art(ART_ORIGIN))
+        return;
+        
     if (Punished)
         u.bc_felt = 0; /* forget felt ball&chain */
 
