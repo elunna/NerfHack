@@ -405,8 +405,10 @@ findpriest(char roomno)
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-/* called from check_special_room() when the player enters the temple room */
-void
+/* called from check_special_room() when the player enters the temple room
+* Return FALSE if the temple should be removed because it generated a ghost,
+* otherwise return TRUE if the temple should be left as is. */
+boolean
 intemple(int roomno)
 {
     struct monst *priest, *mtmp;
@@ -418,7 +420,7 @@ intemple(int roomno)
 
     /* don't do anything if hero is already in the room */
     if (temple_occupied(u.urooms0))
-        return;
+        return TRUE;
 
     if ((priest = findpriest((char) roomno)) != 0) {
         /* tended */
@@ -533,8 +535,11 @@ intemple(int roomno)
             nomul(-3);
             gm.multi_reason = "being terrified of a ghost";
             gn.nomovemsg = "You regain your composure.";
+            
+            return FALSE;
         }
     }
+    return TRUE;
 }
 
 RESTORE_WARNING_FORMAT_NONLITERAL

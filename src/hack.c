@@ -3699,7 +3699,8 @@ check_special_room(boolean newlev)
                 interesting_room();
             break;
         case TEMPLE:
-            intemple(roomno + ROOMOFFSET);
+            if (!intemple(roomno + ROOMOFFSET))
+                break;
             FALLTHROUGH;
             /*FALLTHRU*/
         default:
