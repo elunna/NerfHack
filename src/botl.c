@@ -604,19 +604,19 @@ static struct istat_s initblstats[MAXBLSTATS] = {
 static const struct condmap condition_aliases[] = {
     { "strangled",      BL_MASK_STRNGL },
     { "all",            BL_MASK_BAREH | BL_MASK_BLIND | BL_MASK_BUSY
-                        | BL_MASK_CONF | BL_MASK_DEAF | BL_MASK_ELF_IRON
+                        | BL_MASK_CONF | BL_MASK_DEAF | BL_MASK_RABID
                         | BL_MASK_FLY | BL_MASK_FOODPOIS | BL_MASK_GLOWHANDS
                         | BL_MASK_GRAB | BL_MASK_HALLU | BL_MASK_HELD
                         | BL_MASK_ICY | BL_MASK_INLAVA | BL_MASK_LEV
                         | BL_MASK_PARLYZ | BL_MASK_RIDE | BL_MASK_SLEEPING
                         | BL_MASK_SLIME | BL_MASK_SLIPPERY | BL_MASK_STONE
                         | BL_MASK_STRNGL | BL_MASK_STUN | BL_MASK_SUBMERGED
-                        | BL_MASK_TERMILL | BL_MASK_TETHERED
+                        | BL_MASK_TERMILL | BL_MASK_TETHERED | BL_MASK_WITHER
                         | BL_MASK_TRAPPED | BL_MASK_UNCONSC
                         | BL_MASK_WOUNDEDL | BL_MASK_HOLDING },
     { "major_troubles", BL_MASK_FOODPOIS | BL_MASK_GRAB | BL_MASK_INLAVA
                         | BL_MASK_SLIME | BL_MASK_STONE | BL_MASK_STRNGL
-                        | BL_MASK_TERMILL | BL_MASK_WITHER },
+                        | BL_MASK_TERMILL | BL_MASK_WITHER | BL_MASK_RABID},
     { "minor_troubles", BL_MASK_BLIND | BL_MASK_CONF | BL_MASK_DEAF
                         | BL_MASK_HALLU | BL_MASK_PARLYZ | BL_MASK_SUBMERGED
                         | BL_MASK_STUN },
@@ -640,7 +640,7 @@ const struct conditions_t conditions[] = {
     { 20, BL_MASK_BUSY,      bl_busy,      { "Busy",     "Bsy",   "By"  } },
     { 10, BL_MASK_CONF,      bl_conf,      { "Conf",     "Cnf",   "Cf"  } },
     { 10, BL_MASK_DEAF,      bl_deaf,      { "Deaf",     "Def",   "Df"  } },
-    { 15, BL_MASK_ELF_IRON,  bl_elf_iron,  { "Iron",     "Irn",   "Fe"  } },
+    { 15, BL_MASK_RABID,     bl_rabid,     { "Rabid",    "Rab",   "Rb"  } },
     { 10, BL_MASK_FLY,       bl_fly,       { "Fly",      "Fly",   "Fl"  } },
     {  6, BL_MASK_FOODPOIS,  bl_foodpois,  { "FoodPois", "Fpois", "Poi" } },
     { 20, BL_MASK_GLOWHANDS, bl_glowhands, { "Glow",     "Glo",   "Gl"  } },
@@ -676,7 +676,7 @@ struct condtests_t condtests[CONDITION_COUNT] = {
     { bl_busy,      "busy",        opt_in,  FALSE, FALSE, FALSE },
     { bl_conf,      "conf",        opt_out, TRUE,  FALSE, FALSE },
     { bl_deaf,      "deaf",        opt_out, TRUE,  FALSE, FALSE },
-    { bl_elf_iron,  "iron",        opt_out, TRUE,  FALSE, FALSE },
+    { bl_rabid,     "rabid",       opt_out, TRUE,  FALSE, FALSE },
     { bl_fly,       "fly",         opt_out, TRUE,  FALSE, FALSE },
     { bl_foodpois,  "foodPois",    opt_out, TRUE,  FALSE, FALSE },
     { bl_glowhands, "glowhands",   opt_out, FALSE, FALSE, FALSE },
@@ -996,7 +996,7 @@ bot_via_windowport(void)
     condtests[bl_stun].test      = (Stunned) ? TRUE : FALSE;
     condtests[bl_submerged].test = (Underwater) ? TRUE : FALSE;
     condtests[bl_wither].test    = (Withering) ? TRUE : FALSE;
-    test_if_enabled(bl_elf_iron) = (FALSE);
+    condtests[bl_rabid].test     = (Rabid) ? TRUE : FALSE;
     test_if_enabled(bl_bareh)    = (!uarmg && !uwep);
     test_if_enabled(bl_icy)      = (levl[u.ux][u.uy].typ == ICE);
     test_if_enabled(bl_slippery) = (Glib) ? TRUE : FALSE;

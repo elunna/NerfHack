@@ -93,9 +93,10 @@
 #define F_CONF     39
 #define F_HALLU    40
 #define F_WITHER   41
+#define F_RABID    42
 
-#define F_VERS     42 /* version info */
-#define NUM_STATS  43
+#define F_VERS     43 /* version info */
+#define NUM_STATS  44
 
 static int condcolor(long, unsigned long *);
 static int condattr(long, unsigned long *);
@@ -160,6 +161,7 @@ static struct tt_condinfo {
     { BL_MASK_TERMILL, "TermIll" },
     { BL_MASK_INLAVA, "InLava" },
     { BL_MASK_WITHER, "Wither" },
+    { BL_MASK_RABID, "Rabid" },
     { BL_MASK_HELD, "Held" },
     { BL_MASK_HOLDING, "Holding" },
     { BL_MASK_BLIND, "Blind" },
@@ -884,6 +886,7 @@ X11_status_update_fancy(
         { BL_MASK_FOODPOIS, F_FOODPOIS },
         { BL_MASK_TERMILL, F_TERMILL },
         { BL_MASK_WITHER, F_WITHER },
+        { BL_MASK_RABID, F_RABID },
         { BL_MASK_INLAVA, F_IN_LAVA },
         { BL_MASK_HELD, F_HELD },
         { BL_MASK_HOLDING, F_HOLDING },
@@ -1422,7 +1425,6 @@ static struct X_status_value shown_stats[NUM_STATS] = {
  * The following are supported by the core but not yet handled here:
  *  bareh      'bare handed' (no weapon and no gloves)
  *  busy       involved in some multi-turn activity, possibly involuntarily
- *  elf_iron   elf being harmed by contact with iron (not implemented)
  *  glowhands  'glowing hands' (inflict confuse monster for next N melee hits)
  *  icy        on or above ice terrain (temporary fumbling; might melt)
  *  parlyz     paralyzed (can't move)
@@ -1931,6 +1933,9 @@ update_fancy_status_field(int i, int color, int attributes)
         case F_WITHER:
             condmask = BL_MASK_WITHER;
             break;
+        case F_RABID:
+            condmask = BL_MASK_RABID;
+            break;
         /* non-fatal status conditions */
         case F_HELD:
             condmask = BL_MASK_HELD;
@@ -2144,6 +2149,7 @@ width_string(int sv_index)
     case F_FOODPOIS:
     case F_TERMILL:
     case F_WITHER:
+    case F_RABID:
     case F_IN_LAVA:
     case F_HELD:
     case F_HOLDING:
@@ -2364,14 +2370,14 @@ init_column(
  * two columns and might expand to more if 'hitpointbar' is implemented.
  * Version is optional, right justified, and much wider than the others.
  *
- Title ("Plname the Rank")   <>            <>           <>          <>
+ Title ("Plname the Rank")   <>            <>           <>          <>        <>
  Dungeon-Branch-and-Level    <>           Hunger       Grabbed     Held
  Hit-points    Max-HP       Strength      Encumbrance  Petrifying  Blind
  Power-points  Max-Power    Dexterity     Trapped      Slimed      Deaf
  Armor-class   Alignment    Constitution  Levitation   Strangled   Stunned
  Xp-level     [Exp-points]  Intelligence  Flying       Food-Pois   Confused
  Gold         [Score]       Wisdom        Riding       Term-Ill    Hallucinat
-  <>          [Time]        Charisma       <>          Sinking         Version
+  <>          [Time]        Charisma       <>          Sinking     Version
  *
  * A seventh column is going to be needed to fit in more conditions.
  */
@@ -2383,7 +2389,7 @@ init_column(
    updated, that shouldn't matter */
 static int status_indices[3][11] = {
     { F_DUMMY, F_HUNGER, F_ENCUMBER, F_TRAPPED,
-      F_LEV, F_FLY, F_RIDE, F_VERS, -1, 0, 0 },
+      F_LEV, F_FLY, F_RIDE, F_RABID, -1, 0, 0 },
     { F_DUMMY, F_GRABBED, F_STONE, F_SLIME, F_STRNGL,
       F_FOODPOIS, F_TERMILL, F_IN_LAVA, -1, 0, 0 },
     { F_DUMMY, F_HELD, F_BLIND, F_DEAF, F_STUN,
