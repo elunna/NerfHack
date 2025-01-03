@@ -57,7 +57,7 @@ enum blconditions {
     bl_busy,
     bl_conf,
     bl_deaf,
-    bl_elf_iron,
+    bl_rabid,
     bl_fly,
     bl_foodpois,
     bl_glowhands,
@@ -95,7 +95,7 @@ enum blconditions {
 #define BL_MASK_BUSY         0x00000004L
 #define BL_MASK_CONF         0x00000008L
 #define BL_MASK_DEAF         0x00000010L
-#define BL_MASK_ELF_IRON     0x00000020L
+#define BL_MASK_RABID        0x00000020L
 #define BL_MASK_FLY          0x00000040L
 #define BL_MASK_FOODPOIS     0x00000080L
 #define BL_MASK_GLOWHANDS    0x00000100L

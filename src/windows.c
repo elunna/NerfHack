@@ -1026,6 +1026,8 @@ genl_status_update(
                 Strcpy(nb = eos(nb), " TermIll");
             if (cond & BL_MASK_WITHER)
                 Strcpy(nb = eos(nb), " Wither");
+            if (cond & BL_MASK_RABID)
+                Strcpy(nb = eos(nb), " Rabid");
             if (cond & BL_MASK_BLIND)
                 Strcpy(nb = eos(nb), " Blind");
             if (cond & BL_MASK_DEAF)
@@ -1709,7 +1711,8 @@ dump_render_status(void)
         { BL_MASK_LEV,       "Lev"      },
         { BL_MASK_FLY,       "Fly"      },
         { BL_MASK_RIDE,      "Ride"     },
-        { BL_MASK_WITHER,    "Wither"   }
+        { BL_MASK_WITHER,    "Wither"   },
+        { BL_MASK_RABID,     "Rabid"    }
     };
 
     num_rows = (iflags.wc2_statuslines < 3) ? 2 : 3;
