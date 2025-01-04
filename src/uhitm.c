@@ -17,6 +17,7 @@ staticfn void steal_it(struct monst *, struct attack *) NONNULLARG1;
 staticfn void mhitm_ad_slow_core(struct monst *, struct monst *);
 staticfn boolean should_cleave(void);
 staticfn boolean should_skewer(int);
+staticfn boolean can_skewer(struct monst *);
 /* hitum_cleave() has contradictory information. There's a comment
  * beside the 1st arg 'target' stating non-null, but later on there
  * is a test for 'target' being null */
@@ -926,12 +927,12 @@ hitum_cleave(
     return (target && DEADMONSTER(target)) ? FALSE : TRUE;
 }
 
-
 /* return TRUE iff no peaceful target is found behind the target space
  * assumes u.dx and u.dy have been set */
 staticfn boolean
 should_skewer(int range)
 {
+    struct monst *mtmp;
     boolean bystanders = FALSE;
     int dir = xytod(u.dx, u.dy);
     int i;
@@ -939,12 +940,16 @@ should_skewer(int range)
         impossible("should_skewer: unknown target direction");
         return FALSE; /* better safe than sorry */
     }
-
+    
+    mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
+    if (mtmp && !can_skewer(mtmp))
+        return FALSE;
+    
     for (i = 0; i < range; i++) {
         /* The +2 gets us one spot beyond the first monster. */
         int x = u.ux + u.dx * (i + 2);
         int y = u.uy + u.dy * (i + 2);
-        struct monst *mtmp;
+        
         if (!isok(x, y))
             return FALSE;
 
@@ -955,7 +960,9 @@ should_skewer(int range)
                 bystanders = TRUE;
         } else if (!cansee(x, y)) {
             bystanders = TRUE;
-        }
+        } else if (mtmp && !can_skewer(mtmp))
+            return FALSE;
+        
     }
     if (bystanders) {
         if (!svc.context.forcefight)
@@ -964,6 +971,24 @@ should_skewer(int range)
     return TRUE;
 }
 
+/* We can always skewer through unsolid monsters, but fleshy monsters
+ * need to be fairly low health (under 20%). This idea was adapted 
+ * from some ideas aosdict had in IRC.
+ */
+staticfn boolean
+can_skewer(struct monst *mtmp)
+{
+     if (unsolid(mtmp->data) || amorphous(mtmp->data)
+        /* Most blobs are not amorphous for some reason */
+        || mtmp->data->mlet == S_BLOB
+        || mtmp->data->mlet == S_FUNGUS 
+        /* Why wouldn't we use kebabable here?!? */
+        || strchr(kebabable, mtmp->data->mlet)
+        || (is_fleshy(mtmp->data) && mtmp->mhp < (mtmp->mhpmax / 5)))
+        return TRUE;
+     return FALSE;
+}
+    
 /* hit the monster next to you and the monster behind;
    return False if the primary target is killed, True otherwise
    This was copied and adapted from hitum_cleave.
@@ -1121,7 +1146,7 @@ hitum(struct monst *mon, struct attack *uattk)
         && (uwep->cursed || should_cleave()))
         return hitum_cleave(mon, uattk);
 
-    /* Spears at expert (and tridents at skilled) can skewer through
+    /* Spears at skilled (and tridents at basic) can skewer through
      * the enemy, hitting the one behind.
      * We'll grant this ability solely to the player for now.
      * We are using thitmonst, which is also used for throwing items, but maybe
@@ -1129,8 +1154,8 @@ hitum(struct monst *mon, struct attack *uattk)
      */
     if (uwep && !u.twoweap && !u.uswallow && !u.ustuck
         && ((wtype = uwep_skill_type()) != P_NONE)
-        && ((is_spear(uwep) && P_SKILL(wtype) >= P_EXPERT)
-            || (uwep->otyp == TRIDENT && P_SKILL(wtype) >= P_SKILLED))
+        && ((is_spear(uwep) && P_SKILL(wtype) >= P_SKILLED)
+            || (uwep->otyp == TRIDENT && P_SKILL(wtype) >= P_BASIC))
         /* If the weapon is cursed, it doesn't care about who it hits */
         && (uwep->cursed || should_skewer(1))) {
         return hitum_skewer(mon, uwep, uattk);
@@ -1141,8 +1166,8 @@ hitum(struct monst *mon, struct attack *uattk)
     if (uwep && uwep->otyp == SPETUM
         && u.usteed && !u.uswallow && !u.ustuck
         && ((wtype = uwep_skill_type()) != P_NONE
-            && P_SKILL(wtype) >= P_SKILLED)
-        /* If the spear is cursed, it doesn't care about who it hits */
+            && P_SKILL(wtype) >= P_BASIC)
+        /* If the weapon is cursed, it doesn't care about who it hits */
         && (uwep->cursed || should_skewer(2))) {
         return hitum_skewer(mon, uwep, uattk);
     }

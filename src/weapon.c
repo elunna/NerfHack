@@ -114,7 +114,7 @@ static NEARDATA const char *const barehands_or_martial[] = {
                : odd_skill_names[-skill_names_indices[type]])
 
 /* targets that provide attacker with small to-hit bonus when using a spear */
-static NEARDATA const char kebabable[] = {
+const char kebabable[] = {
     S_XORN, S_DRAGON, S_JABBERWOCK, S_NAGA, S_GIANT,  '\0'
 };
 
