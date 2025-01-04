@@ -1569,8 +1569,6 @@
 				"$(NH_DAT_DIR)/soko2-4.lua",
 				"$(NH_DAT_DIR)/soko2-5.lua",
 				"$(NH_DAT_DIR)/soko2-6.lua",
-				"$(NH_DAT_DIR)/soko2-7.lua",
-				"$(NH_DAT_DIR)/soko2-8.lua",
 				"$(NH_DAT_DIR)/soko3-1.lua",
 				"$(NH_DAT_DIR)/soko3-2.lua",
 				"$(NH_DAT_DIR)/soko3-3.lua",

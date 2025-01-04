@@ -183,8 +183,6 @@
     <Luafiles Include = "soko2-4.lua"/>
     <Luafiles Include = "soko2-5.lua"/>
     <Luafiles Include = "soko2-6.lua"/>
-    <Luafiles Include = "soko2-7.lua"/>
-    <Luafiles Include = "soko2-8.lua"/>
     <Luafiles Include = "soko3-1.lua"/>
     <Luafiles Include = "soko3-2.lua"/>
     <Luafiles Include = "soko3-3.lua"/>

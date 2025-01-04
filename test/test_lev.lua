@@ -121,8 +121,6 @@ local special_levels = {
 "soko2-4",
 "soko2-5",
 "soko2-6",
-"soko2-7",
-"soko2-8",
 "soko3-1",
 "soko3-2",
 "soko3-3",
