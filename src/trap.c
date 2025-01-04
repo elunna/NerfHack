@@ -2021,7 +2021,10 @@ trapeffect_grease_trap(
         struct obj *target;
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
-
+        
+        if (in_sight)
+            seetrap(trap);
+        
         if (!(mon_prop(mtmp, LEVITATION) || mon_prop(mtmp, FLYING)
                     || (is_clinger(mtmp->data) && has_ceiling(&u.uz))) && !rn2(2)) {
             if (canseemon(mtmp))
@@ -2043,8 +2046,6 @@ trapeffect_grease_trap(
             return Trap_Is_Gone;
         }
 
-        if (in_sight)
-            seetrap(trap);
         trap->once = 1;
         switch (rn2(5)) {
         case 0:
