@@ -28,8 +28,8 @@ des.map([[
          ------
 ]]);
 
-des.stair("down",11,09)
-des.stair("up",11,18)
+des.stair("up",11,09)
+des.stair("down",11,18)
 des.region(selection.area(00,00,14,19),"lit");
 des.non_diggable(selection.area(00,00,14,19));
 des.non_passwall(selection.area(00,00,14,19));
