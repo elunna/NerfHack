@@ -3532,9 +3532,10 @@ gethungry(void)
     if (accessorytime % 2) { /* odd */
          /* Regeneration uses up food when injured, unless due to an artifact */
         if ((HRegeneration & ~(FROMFORM | FROMRACE))
-             || (((ERegeneration & ~W_ART) &&
-                  (ERegeneration != W_WEP || !uwep->oartifact)) &&
-                 (uhp() < uhpmax())))
+             /* Extrinsic regeneration is possible from a couple artifacts
+              * and green dragon scales. */
+             || (((ERegeneration & ~(W_ARTI | W_WEP | W_ARMOR)) &&
+                 uhp() < uhpmax())))
             u.uhunger--;
         if (near_capacity() > SLT_ENCUMBER)
             u.uhunger--;
