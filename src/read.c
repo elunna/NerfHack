@@ -3313,8 +3313,25 @@ litroom(
             }
         } else if (obj && obj->oclass == SPBOOK_CLASS) {
             /* Spell scales with ability; scroll is still superior. */
-            radius = Role_if(PM_CARTOMANCER) ? 7 /* Cartomancers always cast expert spells */
-                    : min(7, 2 + (P_SKILL(P_DIVINATION_SPELL) - 1) * 2);
+            if (Role_if(PM_CARTOMANCER))
+                radius = 7;
+            else {
+                switch (P_SKILL(P_DIVINATION_SPELL)) {
+                case P_ISRESTRICTED:
+                case P_UNSKILLED:
+                    radius = 1;
+                    break;
+                case P_BASIC:
+                    radius = 3;
+                    break;
+                case P_SKILLED:
+                    radius = 5;
+                    break;
+                case P_EXPERT:
+                    radius = 7;
+                    break;
+                }
+            }
         } else {
             radius = 5;
         }
