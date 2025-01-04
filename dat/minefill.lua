@@ -36,7 +36,6 @@ if percent(7) then
 
    if darkness ~= nil then
       des.region(darkness,"unlit");
-      end
    end
 end
    --
