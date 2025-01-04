@@ -2122,6 +2122,7 @@ crackaltar(void)
             pline("CRACK!  The altar splits in two and is destroyed!");
             newsym(u.ux, u.uy);
         }
+        livelog_printf(LL_CONDUCT, "cracked an altar in half");
         u.uconduct.altars++;
     } else {
         lev->cracked = 1;
