@@ -1417,8 +1417,10 @@ pleased(aligntyp g_align)
                         u.ublessed = 1;
                 } else if ((rn2(10) - u.ublessed >= 0) && (rn2(10) - u.ublessed >= 0))
                     u.ublessed++;
-                else
+                else {
+                    pline("do not cease your efforts!");
                     break; /* Sorry... */
+                }
                 pline(msg, "my protection");
 
                 SetVoice((struct monst *) 0, 0, 80, voice_deity);
