@@ -1107,9 +1107,11 @@ hitum(struct monst *mon, struct attack *uattk)
       * to feed first before the victim expires. */
     if (!DEADMONSTER(mon) && m_at(x, y) == mon 
         && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
-        if (is_rider(mon->data)
+        if ((is_rider(mon->data)
                 || mon->data == &mons[PM_GREEN_SLIME]
-                || touch_petrifies(mon->data)) {
+                || touch_petrifies(mon->data))
+            /* ... unless they are impaired */
+            && (!Stunned && !Confusion && !Hallucination)) {
             ; /* Don't attack - move onto weapon attacks */
         } else {
             tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
@@ -3051,10 +3053,13 @@ mhitm_ad_drli(
 
             /* Vampire draining bite. Player vampires are smart enough not
              * to feed while biting if they might have trouble getting it down
-             */
-            if (maybe_polyd(is_vampire(gy.youmonst.data),
-                Race_if(PM_VAMPIRE)) && mattk->aatyp == AT_BITE &&
-                has_blood(mdef->data) && u.uhunger <= 1420) {
+             * NOTE: This code might be redundant... 
+             * */
+            if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
+                && mattk->aatyp == AT_BITE
+                && has_blood(mdef->data) && u.uhunger <= 1420
+                /* ... unless they are impaired */
+			    && (!Stunned && !Confusion && !Hallucination)) {
                 /* For the life of a creature is in the blood
                 (Lev 17:11) */
                 if (flags.verbose) {
@@ -7058,12 +7063,13 @@ passive(
     int mhit = mhitb ? M_ATTK_HIT : M_ATTK_MISS;
     int malive = maliveb ? M_ATTK_HIT : M_ATTK_MISS;
 
+#if 0
     if (mhit && aatyp == AT_BITE
           && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         if (bite_monster(mon))
-	    return 2; /* lifesaved */
+	        return 2; /* lifesaved */
     }
-
+#endif
     for (i = 0;; i++) {
         if (i >= NATTK)
             return (malive | mhit); /* no passive attacks */
