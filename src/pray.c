@@ -980,8 +980,6 @@ gcrownu(void)
         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                        "was bestowed with %s",
                        artiname(ART_MJOLLNIR));
-        /* acquire Vorpal Blade's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_LONG_SWORD);
         if (obj && obj->oartifact == PRIEST_GIFT)
             discover_artifact(PRIEST_GIFT);
     } else {
