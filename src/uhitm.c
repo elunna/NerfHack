@@ -1109,7 +1109,7 @@ hitum(struct monst *mon, struct attack *uattk)
         && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         if ((is_rider(mon->data)
                 || mon->data == &mons[PM_GREEN_SLIME]
-                || touch_petrifies(mon->data))
+                || (touch_petrifies(mon->data) && !Stone_resistance))
             /* ... unless they are impaired */
             && (!Stunned && !Confusion && !Hallucination)) {
             ; /* Don't attack - move onto weapon attacks */
