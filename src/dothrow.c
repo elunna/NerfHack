@@ -2670,7 +2670,7 @@ breakobj(
         } else if (next2u(x, y)) {
             if (!Breathless || haseyes(gy.youmonst.data)) {
                 /* wet towel protects both eyes and breathing */
-                if (obj->otyp != POT_WATER && !Half_gas_damage) {
+                if (obj->otyp != POT_WATER && !No_gas_damage) {
                     if (!Breathless) {
                         /* [what about "familiar odor" when known?] */
                         You("smell a peculiar odor...");

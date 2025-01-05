@@ -1889,7 +1889,7 @@ attributes_enlightenment(
         enlght_halfdmg(HALF_PHDAM, final);
     if (Half_spell_damage)
         enlght_halfdmg(HALF_SPDAM, final);
-    if (Half_gas_damage)
+    if (No_gas_damage)
         enl_msg(You_, "take", "took", " reduced poison gas damage", "");
     /* polymorph and other shape change */
     if (Protection_from_shape_changers)

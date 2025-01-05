@@ -400,7 +400,7 @@ poisoned(
         /* HP damage; more likely--but less severe--with missiles */
         loss = thrown_weapon ? rnd(6) : rn1(10, 6);
         loss = resist_reduce(loss, POISON_RES);
-        if ((blast || cloud) && Half_gas_damage) /* worn towel */
+        if ((blast || cloud) && No_gas_damage) /* worn towel */
             loss = (loss + 1) / 2;
         losehp(loss, pkiller, kprefix); /* poison damage */
     } else {

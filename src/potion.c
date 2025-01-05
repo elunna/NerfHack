@@ -2441,7 +2441,7 @@ potionbreathe(struct obj *obj)
     /* wearing a wet towel protects both eyes and breathing, even when
        the breath effect might be beneficial; we still pass down to the
        naming opportunity in case potion was thrown at hero by a monster */
-    switch (Half_gas_damage ? TOWEL : obj->otyp) {
+    switch (No_gas_damage ? TOWEL : obj->otyp) {
     case TOWEL:
         pline("Some vapor passes harmlessly around you.");
         break;
