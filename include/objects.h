@@ -1655,17 +1655,17 @@ MARKER(LAST_GLASS_GEM, WORTHLESS_VIOLET_GLASS)
  * that is currently everything between luckstones and flint
  * (inclusive).
  */
-ROCK("luckstone", "gray",  0,   2,  25, 60, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY,
+ROCK("luckstone", "gray",  0,   2,  10, 60, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY,
                                                                     LUCKSTONE),
-ROCK("healthstone", "gray",0 , 10,  25, 60, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY,
+ROCK("healthstone", "gray",0 , 10,  10, 60, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY,
                                                                   HEALTHSTONE),
-ROCK("whetstone", "gray",  0,  10,  25, 45, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY,
+ROCK("whetstone", "gray",  0,  10,  10, 45, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY,
                                                                     WHETSTONE),
-ROCK("foulstone", "gray",  0,  10,  25,  0, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY,
+ROCK("foulstone", "gray",  0,  10,  10,  0, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY,
                                                                     FOULSTONE),
 ROCK("loadstone", "gray",  0,  10, 500,  1, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY,
                                                                     LOADSTONE),
-ROCK("touchstone", "gray", 0,  10,  25, 45, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY,
+ROCK("touchstone", "gray", 0,  10,  10, 45, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY,
                                                                   TOUCHSTONE),
 ROCK("flint", "gray",      0,  20,   2,  1, 6, 6, 0, 10, 7, MINERAL, CLR_GRAY,
                                                                     FLINT),
