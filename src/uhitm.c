@@ -3037,10 +3037,10 @@ mhitm_ad_drli(
     /* Bonus for attacking susceptible victims */
     boolean vulnerable;
     if (mdef == &gy.youmonst)
-	    vulnerable = u.usleep || gm.multi || Confusion || u.utrap || u.ustuck;
+        vulnerable = u.usleep || gm.multi || Confusion || u.utrap || u.ustuck;
     else
-	    vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
-                || mdef->mconf || mdef->mtrapped;
+        vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
+            || mdef->mconf || mdef->mtrapped;
 
     boolean success = vulnerable ? rn2(3) : !rn2(3);
 
@@ -3057,9 +3057,7 @@ mhitm_ad_drli(
              * */
             if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
                 && mattk->aatyp == AT_BITE
-                && has_blood(mdef->data) && u.uhunger <= 1420
-                /* ... unless they are impaired */
-			    && (!Stunned && !Confusion && !Hallucination)) {
+                && has_blood(mdef->data) && u.uhunger <= 1420) {
                 /* For the life of a creature is in the blood
                 (Lev 17:11) */
                 if (flags.verbose) {
