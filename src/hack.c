@@ -2437,6 +2437,7 @@ boolean
 u_maybe_impaired(void)
 {
     return (Stunned || (Confusion && !rn2(5))
+                    || (is_wanderer(gy.youmonst.data) && !rn2(8))
                     || (Rabid && !rn2(11)));
 }
 
