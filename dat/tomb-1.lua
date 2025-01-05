@@ -190,7 +190,15 @@ des.object({ id = "chest", x = 40, y = 10,
 local loc = place:rndcoord(1);
 des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
-                des.object("wishing");
+                 if percent(10) then
+                    des.object('magic lamp') -- even if not a wish dlord
+                 elseif percent(30) then
+                    des.object('magic marker')
+                 elseif percent(30) then
+                    des.object({ class='/', id='death' })
+                 else
+                    des.object({ id='gold piece', quan=1 })
+                 end
              end
 });
 
