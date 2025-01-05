@@ -7240,7 +7240,7 @@ passive(
                 pline("A cloud of spores surrounds you!");
             }
         } else if (malive && canseemon(mon))
-            pline_mon(mon, "puffs out a cloud of spores!");
+            pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon));
         break;
      case AD_SLEE:
         /* passive sleep attack for orange jelly */
@@ -7262,7 +7262,7 @@ passive(
                 pline("A cloud of spores surrounds you!");
             }
         } else if (malive && canseemon(mon))
-            pline_mon(mon, "puffs out a cloud of spores!");
+            pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon));
         break;
      case AD_DISE: /* specifically gray fungus */
         if (m_next2u(mon)) {
@@ -7273,7 +7273,7 @@ passive(
                 pline("A cloud of spores surrounds you!");
             }
         } else if (malive && canseemon(mon))
-            pline_mon(mon, "puffs out a cloud of spores!");
+            pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon)); 
         break;
     case AD_QUIL: {
         boolean spikes = is_orc(mon->data);
