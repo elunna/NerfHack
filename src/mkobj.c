@@ -250,6 +250,11 @@ mkobj_erosions(struct obj *otmp)
     if (otmp->oclass == POTION_CLASS && otmp->otyp != POT_WATER
         && svm.moves > 1L && !rn2(27))
         otmp->odiluted = 1;
+    /* Wands can sometimes generate pre-charged. */
+    if (otmp->oclass == WAND_CLASS
+        && svm.moves > 1L && !rn2(23))
+        otmp->recharged = 1;
+        
 
 }
 
