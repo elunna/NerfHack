@@ -878,6 +878,11 @@ gcrownu(void)
     switch (u.ualign.type) {
     case A_LAWFUL:
         u.uevent.uhand_of_elbereth = 1;
+        if (Role_if(PM_CLERIC)) {
+            in_hand = (uwep && uwep->oartifact == PRIEST_GIFT);
+            already_exists =
+                    exist_artifact(WAR_HAMMER, artiname(PRIEST_GIFT));
+        }
         verbalize("I crown thee...  The Hand of Elbereth!");
         livelog_printf(LL_DIVINEGIFT,
                        "was crowned \"The Hand of Elbereth\" by %s",
@@ -964,129 +969,102 @@ gcrownu(void)
         if (ok_wep(uwep))
             obj = uwep; /* to be blessed,&c */
     }
-
-    switch (u.ualign.type) {
-    case A_LAWFUL:
-        if (class_gift != STRANGE_OBJECT) {
-            ; /* already got bonus above */
-        } else if (Role_if(PM_CLERIC)) {
-            if (obj && obj->otyp == WAR_HAMMER && !obj->oartifact) {
+    
+    if (Role_if(PM_CLERIC)) {
+        obj = mksobj(WAR_HAMMER, FALSE, FALSE);
+        obj = oname(obj, artiname(PRIEST_GIFT), ONAME_GIFT | ONAME_KNOW_ARTI);
+        obj->spe = 1;
+        at_your_feet("A hammer");
+        dropy(obj);
+        u.ugifts++;
+        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                       "was bestowed with %s",
+                       artiname(ART_MJOLLNIR));
+        /* acquire Vorpal Blade's skill regardless of weapon or gift */
+        unrestrict_weapon_skill(P_LONG_SWORD);
+        if (obj && obj->oartifact == PRIEST_GIFT)
+            discover_artifact(PRIEST_GIFT);
+    } else {
+        switch (u.ualign.type) {
+        case A_LAWFUL:
+            if (class_gift != STRANGE_OBJECT) {
+                ; /* already got bonus above */
+            } else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact) {
                 char lbuf[BUFSZ];
 
                 Strcpy(lbuf, simpleonames(obj)); /* before transformation */
                 if (!Blind)
-                    Your("hammer shines brightly for a moment.");
-                obj = oname(obj, artiname(PRIEST_GIFT),
+                    Your("sword shines brightly for a moment.");
+                obj = oname(obj, artiname(ART_EXCALIBUR),
                             ONAME_GIFT | ONAME_KNOW_ARTI);
-                if (is_art(obj, PRIEST_GIFT)) {
+                if (is_art(obj, ART_EXCALIBUR)) {
                     u.ugifts++;
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                                    "had %s wielded %s transformed into %s",
-                                   uhis(), lbuf, artiname(PRIEST_GIFT));
+                                   uhis(), lbuf, artiname(ART_EXCALIBUR));
                 }
             }
-        } else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact) {
-            char lbuf[BUFSZ];
-
-            Strcpy(lbuf, simpleonames(obj)); /* before transformation */
-            if (!Blind)
-                Your("sword shines brightly for a moment.");
-            obj = oname(obj, artiname(ART_EXCALIBUR),
-                        ONAME_GIFT | ONAME_KNOW_ARTI);
-            if (is_art(obj, ART_EXCALIBUR)) {
-                u.ugifts++;
-                livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                               "had %s wielded %s transformed into %s",
-                               uhis(), lbuf, artiname(ART_EXCALIBUR));
-            }
-            if (obj->spe < 1) {
-                obj->spe = 1;
-            }
-        }
-        /* acquire Excalibur's skill regardless of weapon or gift (not for priests) */
-        unrestrict_weapon_skill(P_LONG_SWORD);
-        if (is_art(obj, ART_EXCALIBUR))
-            discover_artifact(ART_EXCALIBUR);
-        if (is_art(obj, PRIEST_GIFT))
-            discover_artifact(PRIEST_GIFT);
-        break;
-    case A_NEUTRAL:
-        if (class_gift != STRANGE_OBJECT) {
-            ; /* already got bonus above */
-        } else if (obj && in_hand) {
-            if (!Role_if(PM_CLERIC))
+            /* acquire Excalibur's skill regardless of weapon or gift */
+            unrestrict_weapon_skill(P_LONG_SWORD);
+            if (is_art(obj, ART_EXCALIBUR))
+                discover_artifact(ART_EXCALIBUR);
+            break;
+        case A_NEUTRAL:
+            if (class_gift != STRANGE_OBJECT) {
+                ; /* already got bonus above */
+            } else if (obj && in_hand) {
                 Your("%s goes snicker-snack!", xname(obj));
-            obj->dknown = 1;
-        } else if (!already_exists) {
-            if (Role_if(PM_CLERIC)) {
-                obj = mksobj(WAR_HAMMER, FALSE, FALSE);
-                obj = oname(obj, artiname(PRIEST_GIFT),
-                            ONAME_GIFT | ONAME_KNOW_ARTI);
-                obj->spe = 1;
-                at_your_feet("A hammer");
-            } else {
+                obj->dknown = 1;
+            } else if (!already_exists) {
                 obj = mksobj(LONG_SWORD, FALSE, FALSE);
                 obj = oname(obj, artiname(ART_VORPAL_BLADE),
                             ONAME_GIFT | ONAME_KNOW_ARTI);
                 obj->spe = 1;
                 at_your_feet("A sword");
+                dropy(obj);
+                u.ugifts++;
+                livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                               "was bestowed with %s",
+                               artiname(ART_VORPAL_BLADE));
             }
-            dropy(obj);
-            u.ugifts++;
-            livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                           "was bestowed with %s",
-                           artiname(ART_VORPAL_BLADE));
-        }
-        /* acquire Vorpal Blade's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_LONG_SWORD);
-        if (is_art(obj, ART_VORPAL_BLADE))
-            discover_artifact(ART_VORPAL_BLADE);
-        if (obj && obj->oartifact == PRIEST_GIFT)
-            discover_artifact(PRIEST_GIFT);
-        break;
-    case A_CHAOTIC: {
-        char swordbuf[BUFSZ];
+            /* acquire Vorpal Blade's skill regardless of weapon or gift */
+            unrestrict_weapon_skill(P_LONG_SWORD);
+            if (is_art(obj, ART_VORPAL_BLADE))
+                discover_artifact(ART_VORPAL_BLADE);
+            break;
+        case A_CHAOTIC: {
+            char swordbuf[BUFSZ];
 
-        Sprintf(swordbuf, "%s sword", hcolor(NH_BLACK));
-        if (class_gift != STRANGE_OBJECT) {
-            ; /* already got bonus above */
-        } else if (obj && in_hand) {
-            if (!Role_if(PM_CLERIC))
+            Sprintf(swordbuf, "%s sword", hcolor(NH_BLACK));
+            if (class_gift != STRANGE_OBJECT) {
+                ; /* already got bonus above */
+            } else if (obj && in_hand) {
                 Your("%s hums ominously!", swordbuf);
-            obj->dknown = 1;
-        } else if (!already_exists) {
-            if (Role_if(PM_CLERIC)) {
-                obj = mksobj(WAR_HAMMER, FALSE, FALSE);
-                obj = oname(obj, artiname(PRIEST_GIFT),
-                                          ONAME_GIFT | ONAME_KNOW_ARTI);
-                obj->spe = 1;
-                at_your_feet("A hammer");
-            } else {
+                obj->dknown = 1;
+            } else if (!already_exists) {
                 obj = mksobj(RUNESWORD, FALSE, FALSE);
                 obj = oname(obj, artiname(ART_STORMBRINGER),
                             ONAME_GIFT | ONAME_KNOW_ARTI);
                 obj->spe = 1;
                 at_your_feet(An(swordbuf));
+                dropy(obj);
+                u.ugifts++;
+                livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                               "was bestowed with %s",
+                               artiname(ART_STORMBRINGER));
             }
-            dropy(obj);
-            u.ugifts++;
-            livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                           "was bestowed with %s",
-                           artiname(ART_STORMBRINGER));
+            /* acquire Stormbringer's skill regardless of weapon or gift */
+            unrestrict_weapon_skill(P_BROAD_SWORD);
+            if (is_art(obj, ART_STORMBRINGER))
+                discover_artifact(ART_STORMBRINGER);
+            break;
         }
-        /* acquire Stormbringer's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_BROAD_SWORD);
-        if (is_art(obj, ART_STORMBRINGER))
-            discover_artifact(ART_STORMBRINGER);
-        if (obj && obj->oartifact == PRIEST_GIFT)
-            discover_artifact(PRIEST_GIFT);
-        break;
+        default:
+            obj = 0; /* lint */
+            break;
+        }
     }
-    default:
-        obj = 0; /* lint */
-        break;
-    }
-
+    
     /* enhance weapon regardless of alignment or artifact status */
     if (ok_wep(obj)) {
         bless(obj);
