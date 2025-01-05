@@ -94,14 +94,14 @@ dungeon = {
          },
          {
             name = "medusa",
-            base = -13,
+            base = -12,
             range = 4,
             nlevels = 4,
             alignment = "chaotic"
          },
          {
             name = "castle",
-            base = -9,
+            base = -8,
             nlevels = 3,
          },
          {
