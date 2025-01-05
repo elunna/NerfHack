@@ -1106,12 +1106,10 @@ hitum(struct monst *mon, struct attack *uattk)
       * Handle this first so that vampires always have the chance
       * to feed first before the victim expires. */
     if (!DEADMONSTER(mon) && m_at(x, y) == mon 
-            && Race_if(PM_VAMPIRE) && !Upolyd) {
-        if ((uwep || (u.twoweap && uswapwep)) &&
-            maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)) &&
-                (is_rider(mon->data)
+        && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        if (is_rider(mon->data)
                 || mon->data == &mons[PM_GREEN_SLIME]
-                || touch_petrifies(mon->data))) {
+                || touch_petrifies(mon->data)) {
             ; /* Don't attack - move onto weapon attacks */
         } else {
             tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
@@ -7063,7 +7061,7 @@ passive(
     if (mhit && aatyp == AT_BITE
           && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
         if (bite_monster(mon))
-	        return 2; /* lifesaved */
+	    return 2; /* lifesaved */
     }
 
     for (i = 0;; i++) {
@@ -7836,7 +7834,7 @@ bite_monster(struct monst *mon)
     switch(monsndx(mon->data)) {
     case PM_LIZARD:
         if (Stoned)
-	        fix_petrification();
+	    fix_petrification();
         break;
     case PM_DEATH:
     case PM_PESTILENCE:
@@ -7856,7 +7854,7 @@ bite_monster(struct monst *mon)
         /*FALLTHRU*/
     default:
         if (acidic(mon->data) && Stoned)
-	        fix_petrification();
+	    fix_petrification();
         break;
     }
     return FALSE;
