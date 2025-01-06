@@ -4300,9 +4300,6 @@ mhitm_ad_ench(
             if (drain_item(obj, FALSE)) {
                 pline("%s less effective.", Yobjnam2(obj, "seem"));
             }
-             /* Possibly remove erodeproofing */
-            if (obj && obj->oerodeproof && !rn2(2))
-                obj->oerodeproof = 0;
         }
     } else {
         /* mhitm */
@@ -7506,9 +7503,6 @@ passive_obj(
                 && (obj->known || obj->oclass == ARMOR_CLASS)) {
                 pline("%s less effective.", Yobjnam2(obj, "seem"));
             }
-            /* Possibly remove erodeproofing */
-            if (obj && obj->oerodeproof && !rn2(2))
-                obj->oerodeproof = 0;
             break;
         }
         FALLTHROUGH;

@@ -1485,9 +1485,6 @@ passivemm(
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
         if (mhitb && !mdef->mcan && mwep) {
             (void) drain_item(mwep, FALSE);
-            /* Possibly remove erodeproofing */
-            if (mwep && mwep->oerodeproof && !rn2(2))
-                mwep->oerodeproof = 0;
             /* No message */
         }
         break;
