@@ -1001,6 +1001,13 @@ should_givit(int type, struct permonst *ptr)
 
     /* some intrinsics are easier to get than others */
     switch (type) {
+    case POISON_RES:
+        if ((ptr == &mons[PM_KILLER_BEE] || ptr == &mons[PM_SCORPION])
+            && !rn2(4))
+            chance = 1;
+        else
+            chance = 15;
+        break;
     case TELEPORT:
         chance = 10;
         break;
@@ -1014,10 +1021,11 @@ should_givit(int type, struct permonst *ptr)
         chance = 1;
         break;
     default:
-        chance = 1; /* the rest use the new system, give it to them all the time */
+        chance = 15;
         break;
     }
-    return (ptr->mlevel <= rn2(chance));
+
+    return (ptr->mlevel > rn2(chance));
 }
 
 
