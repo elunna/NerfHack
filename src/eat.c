@@ -1414,6 +1414,7 @@ cpostfx(int pm)
         if (!Passes_walls)
             You("feel %s!", Hallucination ? "phasey" : "hazy");
         incr_itimeout(&HPasses_walls, (long) (d(4, 4) + 6)); /* 8..20 */
+        check_intrinsics = TRUE;
         break;
     case PM_DISENCHANTER:
         /* picks an intrinsic at random and removes it; there's
