@@ -2236,8 +2236,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                 if (mtmp->mcan && mtmp->data == &mons[PM_ARCHON] && rn2(5))
                     react = -1;
             } else if (defended(&gy.youmonst, AD_BLND)) {
-                Your("armor protects you from %s gaze.",
-                    s_suffix(mon_nam(mtmp)));
+                You("are unaffected.");
             } else if (!resists_blnd(&gy.youmonst)) {
                 int blnd = d((int) mattk->damn, (int) mattk->damd);
 

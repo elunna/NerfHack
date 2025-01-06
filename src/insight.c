@@ -2196,7 +2196,6 @@ attributes_enlightenment(
      * no good checks for those yet.  */
     if (defended(&gy.youmonst, AD_BLND))
         enl_msg(You_, "resist", "resisted", " blinding effects", "");
-
 }
 
 /* ^X command */

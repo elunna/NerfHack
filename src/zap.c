@@ -3481,7 +3481,7 @@ boolean
 flashburn(long duration, boolean via_lightning)
 {
     if (defended(&gy.youmonst, AD_BLND)) {
-        Your("armor reflects the flash!");
+        You("are unaffected.");
         return FALSE;
     } else if (!resists_blnd(&gy.youmonst)) {
         You(are_blinded_by_the_flash);
