@@ -60,6 +60,7 @@ static const struct innate {
                  { 13, &(HCold_resistance), "warm", "cooler" },
                  { 15, &(HShock_resistance), "insulated", "conductive" },
                  { 17, &(HTeleport_control), "controlled", "uncontrolled" },
+                 { 19, &(HAcid_resistance), "thick-skinned","soft-skinned" },
                  { 0, 0, 0, 0 } },
 
   pri_abil[] = { { 15, &(HWarning), "sensitive", "" },
