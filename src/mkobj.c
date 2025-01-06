@@ -1177,11 +1177,11 @@ mksobj_init(struct obj *otmp, boolean artif)
         }
         break;
     case WAND_CLASS:
+        otmp->recharged = 0; /* used to control recharging */
         if (otmp->otyp == WAN_WISHING) {
             /* The Castle wand is always (1:2) to guarantee 3 wishes. */
             otmp->spe = 2;
             otmp->recharged = 1;
-            break;
         } else if (otmp->otyp == WAN_WONDER) {
             otmp->spe = rn1(10, 15);
          } else if (otmp->otyp == WAN_IDENTIFY) {
@@ -1189,7 +1189,6 @@ mksobj_init(struct obj *otmp, boolean artif)
         } else
             otmp->spe = rn1(5, (objects[otmp->otyp].oc_dir == NODIR) ? 11 : 4);
         blessorcurse(otmp, 17);
-        otmp->recharged = 0; /* used to control recharging */
         break;
     case RING_CLASS:
         if (objects[otmp->otyp].oc_charged) {
