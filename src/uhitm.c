@@ -6379,8 +6379,10 @@ m_is_steadfast(struct monst *mtmp)
     boolean is_u = (mtmp == &gy.youmonst);
     struct obj *otmp = is_u ? uwep : MON_WEP(mtmp);
     struct obj *shield = is_u ? uarms : which_armor(mtmp, W_ARMS);
+    struct obj *gloves = is_u ? uarmg : which_armor(mtmp, W_ARMG);
 
-#if 0 /* These restrictions are - in my opinion - not fun. */
+#if 0 /* These restrictions are - in my opinion - not fun and really
+       * frustrating, especially on the plane of water. */
     /* must be on the ground (or in water) */
     if ((is_u ? (Flying || Levitation)
               : (is_flyer(mtmp->data) || mon_prop(mtmp, LEVITATION)))
@@ -6392,7 +6394,8 @@ m_is_steadfast(struct monst *mtmp)
     if (is_art(otmp, ART_GIANTSLAYER)
         || is_art(otmp, ART_LOAD_BRAND)
         || is_art(otmp, ART_SCEPTRE_OF_MIGHT)
-        || (shield && is_art(otmp, ART_PRIDWEN)))
+        || (shield && is_art(otmp, ART_PRIDWEN))
+        || (gloves && gloves->otyp == GAUNTLETS_OF_FORCE))
         return TRUE;
 
     /* steadfast if carrying any loadstone (and not floating or flying);

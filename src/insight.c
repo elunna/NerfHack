@@ -1977,6 +1977,8 @@ attributes_enlightenment(
         you_have("steadfastness", " from Load Brand");
     else if (uarms && uarms->oartifact == ART_PRIDWEN)
         you_have("steadfastness", " from Pridwen");
+    else if (uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE)
+        you_have("steadfastness", " from your gauntlets of force");
     else if (m_carrying(&gy.youmonst, LOADSTONE))
         you_have("steadfastness", " from a loadstone");
 
