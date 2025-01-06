@@ -68,7 +68,8 @@ des.object({ id = "statue", x=61, y=09, montype="gnome king", historic=1 })
 -- Darshan - since we need room for the downstairs,
 --          shifted these gems over to the same square
 --          as those above
-des.object("luckstone",72,09)
+des.object({ id="luckstone", x=72, y=09, buc="not-cursed", achievement=1 })
+
 des.object("diamond",72,09)
 des.object("diamond",72,09)
 des.object("emerald",72,09)
