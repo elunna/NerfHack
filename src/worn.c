@@ -326,10 +326,10 @@ check_wornmask_slots(void)
            object checking will most likely have already caught this] */
         for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
             if (otmp != o && (otmp->owornmask & m) != 0L
-                /* embedded scales owornmask is W_ARM|I_SPECIAL so would
+                /* embedded scales owornmask is W_ARMC|I_SPECIAL so would
                    give a false complaint about item other than uarm having
                    W_ARM bit set if we didn't screen it out here */
-                && (m != W_ARM || otmp != uskin
+                && (m != W_ARMC || otmp != uskin
                     || (otmp->owornmask & I_SPECIAL) == 0L)) {
                 Sprintf(whybuf, "%s [0x%08lx] has %s mask 0x%08lx bit set",
                         simpleonames(otmp), otmp->owornmask, wp->w_what, m);
@@ -343,7 +343,7 @@ check_wornmask_slots(void)
         const char *what = "embedded scales";
 
         o = uskin;
-        m = W_ARM | I_SPECIAL;
+        m = W_ARMC | I_SPECIAL;
         whybuf[0] = '\0';
         for (otmp = gi.invent; otmp; otmp = otmp->nobj)
             if (otmp == o)
