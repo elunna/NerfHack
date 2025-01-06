@@ -115,16 +115,16 @@ des.monster("locust", 02,15)
 des.monster("locust", 02,16)
 des.monster("locust", 03,15)
 des.monster("locust", 03,16)
-des.monster({ id = "troll mummy", x=10, y=13, asleep = 1 })
-des.monster({ id = "troll mummy", x=10, y=15, asleep = 1 })
+des.monster({ id = "troll mummy", x=10, y=13  })
+des.monster({ id = "troll mummy", x=10, y=15  })
 
 -- Replacement 'trees' in the garden
-des.monster({ id = "shrieker", x=03, y=11, asleep = 1 })
-des.monster({ id = "shrieker", x=10, y=11, asleep = 1 })
-des.monster({ id = "shrieker", x=03, y=14, asleep = 1 })
-des.monster({ id = "shrieker", x=10, y=14, asleep = 1 })
-des.monster({ id = "shrieker", x=03, y=17, asleep = 1 })
-des.monster({ id = "shrieker", x=10, y=17, asleep = 1 })
+des.monster({ id = "shrieker", x=03, y=11  })
+des.monster({ id = "shrieker", x=10, y=11  })
+des.monster({ id = "shrieker", x=03, y=14  })
+des.monster({ id = "shrieker", x=10, y=14  })
+des.monster({ id = "shrieker", x=03, y=17  })
+des.monster({ id = "shrieker", x=10, y=17  })
 
 -- Traps
 des.trap("polymorph",35,09)
@@ -141,7 +141,7 @@ des.monster("electric eel", 66,12)
 des.monster("kraken", 71,15)
 
 -- One security guard
-des.monster({ id = "black dragon", x=26, y=11, asleep = 1 })
+des.monster({ id = "black dragon", x=26, y=11  })
 
 -- Treasure
 des.object("chest", 24,09)
@@ -150,7 +150,7 @@ des.object("chest", 28,09)
 
 -- Throne Room Extras
 -- Stronger monsters from dnh than the original lethe.
-des.monster({ id = "lich", x=45, y=11, asleep = 1 })
+des.monster({ id = "lich", x=45, y=11  })
 des.object("wand of lightning", 45,11)
 des.object("chest", 48,12)
 
@@ -161,9 +161,9 @@ end
 
 des.trap("magic", 47,14)
 des.object("chest", 48,14)
-des.monster({ id = "succubus", x=46, y=13, asleep = 1 })
-des.monster({ id = "succubus", x=46, y=15, asleep = 1 })
-des.monster({ id = "lich", x=45, y=17, asleep = 1 })
+des.monster({ id = "succubus", x=46, y=13  })
+des.monster({ id = "succubus", x=46, y=15  })
+des.monster({ id = "lich", x=45, y=17  })
 des.object("wand of sleep", 45,17)
 des.object("chest", 48,16)
 

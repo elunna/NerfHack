@@ -67,8 +67,8 @@ des.monster(";", 52,10)
 des.monster(";", 69,15)
 
 -- 'Trices living on the island
-des.monster({ id = "cockatrice", x=34,y=09, asleep = 1})
-des.monster({ id = "pyrolisk", x=42,y=10, asleep = 1})
+des.monster({ id = "cockatrice", x=34,y=09 })
+des.monster({ id = "pyrolisk", x=42,y=10 })
 des.monster(";",38,11)
 des.monster(";",39,09)
 des.monster(";",34,10)
@@ -110,11 +110,11 @@ else
 end
 
 -- Byakhee in the big caves
-des.monster({ id = "byakhee", x=09,y=14, peaceful = 0, asleep = 1})
-des.monster({ id = "byakhee", x=12,y=15, peaceful = 0, asleep = 1})
-des.monster({ id = "byakhee", x=09,y=16, peaceful = 0, asleep = 1})
-des.monster({ id = "byakhee", x=11,y=12, peaceful = 0, asleep = 1})
-des.monster({ id = "byakhee", x=14,y=14, peaceful = 0, asleep = 1})
+des.monster({ id = "byakhee", x=09,y=14, peaceful = 0 })
+des.monster({ id = "byakhee", x=12,y=15, peaceful = 0 })
+des.monster({ id = "byakhee", x=09,y=16, peaceful = 0 })
+des.monster({ id = "byakhee", x=11,y=12, peaceful = 0 })
+des.monster({ id = "byakhee", x=14,y=14, peaceful = 0 })
 
 -- A little loot
 des.object("luckstone", 05,15)
@@ -143,14 +143,14 @@ des.monster("B")
 des.monster("B")
 
 -- Vampire the first
-des.monster({ id = "vampire", x=62,y=03, peaceful = 0, asleep = 1})
+des.monster({ id = "vampire", x=62,y=03, peaceful = 0 })
 des.object("potion of speed", 62,03)
 
 -- Minions
-des.monster({ class = "o", x=62,y=04, peaceful = 0, asleep = 1})
-des.monster({ class = "o", x=62,y=02, peaceful = 0, asleep = 1})
-des.monster({ class = "o", x=61,y=03, peaceful = 0, asleep = 1})
-des.monster({ class = "o", x=63,y=03, peaceful = 0, asleep = 1})
+des.monster({ class = "o", x=62,y=04, peaceful = 0 })
+des.monster({ class = "o", x=62,y=02, peaceful = 0 })
+des.monster({ class = "o", x=61,y=03, peaceful = 0 })
+des.monster({ class = "o", x=63,y=03, peaceful = 0 })
 
 -- And his door bells
 des.trap("board",62,05)
@@ -168,15 +168,15 @@ des.monster("Z",38,01)
 des.monster("Z",36,01)
 
 -- The fountain room
-des.monster({ id = "vampire lord", x=05,y=03, peaceful = 0, asleep = 1})
+des.monster({ id = "vampire lord", x=05,y=03, peaceful = 0 })
 des.object({ id = "scroll of create monster", x=06,y=06, buc="cursed" })
 des.object({ id = "potion of full healing", x=06,y=06 })
 
 -- Slaves
-des.monster({ id = "vampire", x=06,y=03, peaceful = 0, asleep = 1})
-des.monster({ id = "vampire", x=04,y=03, peaceful = 0, asleep = 1})
-des.monster({ id = "vampire", x=05,y=02, peaceful = 0, asleep = 1})
-des.monster({ id = "vampire", x=05,y=04, peaceful = 0, asleep = 1})
+des.monster({ id = "vampire", x=06,y=03, peaceful = 0 })
+des.monster({ id = "vampire", x=04,y=03, peaceful = 0 })
+des.monster({ id = "vampire", x=05,y=02, peaceful = 0 })
+des.monster({ id = "vampire", x=05,y=04, peaceful = 0 })
 
 -- Door bell
 des.trap("board",10,03)
@@ -192,15 +192,15 @@ des.object('chest', 06,08)
 des.gold({ x = 06, y = 08, amount = 300 + math.random(0, 300) });
 
 -- Stray Vampire
-des.monster({ id = "vampire lord", x=53,y=17, peaceful = 0, asleep = 1})
+des.monster({ id = "vampire lord", x=53,y=17, peaceful = 0 })
 des.object("wand of fire", 53,17)
 des.object("wand of slow monster", 53,17)
 
 -- Guardians
-des.monster({ id = "warg", x=54,y=17, peaceful = 0, asleep = 1})
-des.monster({ id = "warg", x=52,y=18, peaceful = 0, asleep = 1})
-des.monster({ id = "winter wolf", x=53,y=16, peaceful = 0, asleep = 1})
-des.monster({ id = "winter wolf", x=52,y=17, peaceful = 0, asleep = 1})
+des.monster({ id = "warg", x=54,y=17, peaceful = 0 })
+des.monster({ id = "warg", x=52,y=18, peaceful = 0 })
+des.monster({ id = "winter wolf", x=53,y=16, peaceful = 0 })
+des.monster({ id = "winter wolf", x=52,y=17, peaceful = 0 })
 
 -- Loot
 des.gold({ x = 51, y = 17, amount = 300 + math.random(0, 300) });

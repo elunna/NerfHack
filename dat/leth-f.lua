@@ -153,9 +153,9 @@ des.object({ id = "statue", x=69,y=01, montype="kraken", historic=1,
 des.object({ id = "statue", x=38, y=10, contents = 0 })
 
 -- Deep one servitors for the temple of Poseidon
-des.monster({ id = "deep one", x=65, y=14, asleep = 1 })
-des.monster({ id = "deep one", x=65, y=16, asleep = 1 })
-des.monster({ id = "deeper one", x=70, y=15, asleep = 1 })
+des.monster({ id = "deep one", x=65, y=14  })
+des.monster({ id = "deep one", x=65, y=16  })
+des.monster({ id = "deeper one", x=70, y=15  })
 des.object("chest", 69,12)
 des.object("chest", 73,12)
 

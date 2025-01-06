@@ -106,10 +106,10 @@ des.monster(";", 52,10)
 des.monster(";", 69,15)
 
 -- Gargoyles living on the island
-des.monster({ id = "winged gargoyle", x=35,y=10, asleep = 1})
-des.monster({ id = "winged gargoyle", x=42,y=10, asleep = 1})
-des.monster({ id = "winged gargoyle", x=38,y=09, asleep = 1})
-des.monster({ id = "winged gargoyle", x=40,y=11, asleep = 1})
+des.monster({ id = "winged gargoyle", x=35,y=10 })
+des.monster({ id = "winged gargoyle", x=42,y=10 })
+des.monster({ id = "winged gargoyle", x=38,y=09 })
+des.monster({ id = "winged gargoyle", x=40,y=11 })
 
 -- And some (empty) decorations
 des.object({ id = "statue", x=33, y=10, contents = 0 })
@@ -172,8 +172,8 @@ if percent(50) then
     des.object({ id = "leather armor", x=47,y=04, buc="cursed", spe=-2 })
 end
 -- The fountain room
-des.monster({ id = "clay golem", x=04,y=03, asleep = 1})
-des.monster({ id = "clay golem", x=07,y=03, asleep = 1})
+des.monster({ id = "clay golem", x=04,y=03 })
+des.monster({ id = "clay golem", x=07,y=03 })
 des.object({ id = "scroll of teleportation", x=06,y=06, buc="cursed" })
 des.object({ id = "scroll of amnesia", x=06,y=06 })
 

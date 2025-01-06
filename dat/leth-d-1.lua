@@ -132,7 +132,7 @@ des.object("chest", 26,09)
 des.object("chest", 28,09)
 
 -- Throne Room Extras
-des.monster({ id = "master mind flayer", x=44, y=11, asleep = 1 })
+des.monster({ id = "master mind flayer", x=44, y=11  })
 des.object("wand of lightning", 44,11)
 des.object("chest", 48,12)
 
@@ -144,7 +144,7 @@ end
 -- des.object("spellbook of secrets", 46,14)
 des.trap("magic", 47,14)
 des.object("chest", 48,14)
-des.monster({ id = "mind flayer", x=44,y=17, asleep = 1 })
+des.monster({ id = "mind flayer", x=44,y=17  })
 des.object("wand of sleep", 44,17)
 des.object("chest", 48,16)
 

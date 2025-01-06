@@ -141,8 +141,8 @@ des.object("chest" , 14,17)
 des.monster("electric eel", 62,13)
 
 -- Treasure cave
-des.monster({ class = 'T', x=67, y=15, asleep = 1 })
-des.monster({ class = 'T', x=69, y=16, asleep = 1 })
+des.monster({ class = 'T', x=67, y=15  })
+des.monster({ class = 'T', x=69, y=16  })
 des.object("chest" , 68,14)
 
 -- Hard to reach caves
