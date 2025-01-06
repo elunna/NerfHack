@@ -1181,6 +1181,7 @@ mksobj_init(struct obj *otmp, boolean artif)
             /* The Castle wand is always (1:2) to guarantee 3 wishes. */
             otmp->spe = 2;
             otmp->recharged = 1;
+            break;
         } else if (otmp->otyp == WAN_WONDER) {
             otmp->spe = rn1(10, 15);
          } else if (otmp->otyp == WAN_IDENTIFY) {
