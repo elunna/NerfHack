@@ -2053,10 +2053,11 @@ weight(struct obj *obj)
          *  The macro DELTA_CWT in pickup.c also implements these
          *  weight equations.
          */
-        if (obj->otyp == BAG_OF_HOLDING)
+        if (obj->otyp == BAG_OF_HOLDING) {
             cwt = obj->cursed ? (cwt * 2)
                   : obj->blessed ? ((cwt + 3) / 4)
                     : ((cwt + 1) / 2); /* uncursed */
+        }
 
         return wt + cwt;
     }
@@ -2822,6 +2823,11 @@ add_to_container(struct obj *container, struct obj *obj)
     obj->ocontainer = container;
     obj->nobj = container->cobj;
     container->cobj = obj;
+    
+    /* There might be a more efficient way to identify this... */
+    if (container->otyp == BAG_OF_HOLDING && carried(container)) {
+       makeknown_msg(BAG_OF_HOLDING);
+    }
     return obj;
 }
 

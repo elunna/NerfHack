@@ -1551,7 +1551,11 @@ delta_cwt(struct obj *container, struct obj *obj)
 
     if (container->otyp != BAG_OF_HOLDING)
         return obj->owt;
-
+    
+    /* Be nice and auto-id */
+    if (container->otyp == BAG_OF_HOLDING)
+        makeknown_msg(container->otyp);
+    
     owt = nwt = container->owt;
     /* find the object so that we can remove it */
     for (prev = &container->cobj; *prev; prev = &(*prev)->nobj)
