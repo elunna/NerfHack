@@ -1364,9 +1364,11 @@ makelevel(void)
         else if (u_depth > 16 && !rn2(8)
                  && !(svm.mvitals[PM_COCKATRICE].mvflags & G_GONE))
             do_mkroom(COCKNEST);
-        /* Better odds because above rooms gets hit much more often. */
         else if (u_depth > 16 && !rn2(4))
             do_mkroom(DRAGONLAIR);
+        else if (u_depth > 18 && !rn2(6)
+                 && !(svm.mvitals[PM_MIGO_DRONE].mvflags & G_GONE))
+            do_mkroom(MIGOHIVE);
 
  skip0:
          /* make grass */
