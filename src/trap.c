@@ -1471,7 +1471,7 @@ trapeffect_rocktrap(
                     exercise(A_STR, FALSE);
 
                     if (dmg > 6)
-                        make_stunned((HStun & TIMEOUT) + (long) d(dmg, 2), TRUE);
+                        make_stunned((HStun & TIMEOUT) + (long) d(dmg / 6 + 1, 3), TRUE);
                 }
             }
         }
