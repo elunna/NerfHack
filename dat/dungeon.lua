@@ -100,26 +100,29 @@ dungeon = {
          },
       }
    },
+   -- Gehennom follows roughly the same template as SLASH'EM
+   -- All demon lords are guaranteed
+   -- There is now an additional entry bridge level after the VoTD
+   -- The Wizard's tower was extracted to it's own branch
+   -- The Fake wizard towers were removed
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 20,
-      range = 5,
+      base = 17,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
       alignment = "noalign",
       branches = {
          {
             name = "Vlad's Tower",
-            base = 9,
-            range = 5,
+            base = 3,
+            range = 10,
             direction = "up"
          },
          {
             name = "The Wizard's Tower",
             bonetag = "F",
-            base = -6,
-            range = 4,
+            base = 9,
             branchtype = "portal"
          },
       },
@@ -143,41 +146,40 @@ dungeon = {
          {
             name = "juiblex",
             bonetag = "J",
-            base = 4,
-            range = 4
+            base = 3,
+            range = 5
          },
          {
-            name = "geryon",
-            bonetag = "G",
+            name = "yeenog",
+            bonetag = "E",
+            nlevels = 3,
+            base = 3,
+            range = 5
+         },
+         {
+            name = "orcus",
+            bonetag = "O",
             nlevels = 2,
-            base = 2,
-            chance = 50,
-            range = 16
+            base = 3,
+            range = 5
          },
          {
-            name = "mephisto",
-            bonetag = "M",
-            base = 2,
-            chance = 50,
-            range = 6
+            name = "demo",
+            bonetag = "D",
+            nlevels = 3,
+            base = 3,
+            range = 5
          },
          {
             name = "baalz",
             bonetag = "B",
             nlevels = 3,
-            base = 6,
-            range = 4
-         },
-         {
-            name = "asmode",
-            bonetag = "A",
-            nlevels = 2,
-            base = 2,
+            base = 10,
             range = 6
          },
          {
-            name = "orcus",
-            bonetag = "O",
+            name = "geryon",
+            bonetag = "G",
             nlevels = 2,
             base = 10,
             range = 6
@@ -187,23 +189,13 @@ dungeon = {
             bonetag = "R",
             nlevels = 3,
             base = 10,
-            chance = 50,
             range = 6
          },
          {
-            name = "yeenog",
-            bonetag = "Y",
-            nlevels = 3,
+            name = "asmode",
+            bonetag = "A",
+            nlevels = 2,
             base = 10,
-            chance = 50,
-            range = 6
-         },
-         {
-            name = "demo",
-            bonetag = "D",
-            nlevels = 3,
-            base = 13,
-            chance = 50,
             range = 6
          },
       }
