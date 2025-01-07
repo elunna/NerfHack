@@ -742,7 +742,7 @@ fall_through(
 
     if (*u.ushops)
         shopdig(1);
-    if (Is_lethe_gate(&u.uz)) {
+    if (Is_stronghold(&u.uz)) {
         find_hell(&dtmp);
     } else {
         int dist;

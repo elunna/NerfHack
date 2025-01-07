@@ -4143,8 +4143,6 @@ xkilled(
 
         /* illogical but traditional "treasure drop" */
         if (!rn2(6) && !(svm.mvitals[mndx].mvflags & G_NOCORPSE)
-            /* no treasure along the Lethe */
-            && !svl.level.flags.lethe
             /* no extra item from swallower or steed */
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */
@@ -7208,9 +7206,6 @@ card_drop(struct monst *mon)
     /* Prevent drops in impossible places
        (fuzzer once picked up a card dropped by a guard at (0, 0)) */
     if (!isok(mon->mx, mon->my))
-        return FALSE;
-
-    if (svl.level.flags.lethe)
         return FALSE;
 
     /* No card drops if you are polyd! Some poly-forms give the

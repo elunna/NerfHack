@@ -18,7 +18,7 @@
 des.level_init({ style="mazegrid", bg ="-" });
 
 des.level_flags("mazelevel", "hardfloor")
--- Mark as lethe?
+
 
 des.map({ halign = "center", valign = "center", map = [[
                                   LLLL  ......   LLL    .LLLL  LLL          

@@ -3551,8 +3551,6 @@ gethungry(void)
         /* Cursed rings burn hunger too */
         if (uright && uright->cursed && rn2(2))
             u.uhunger--;
-         if (svl.level.flags.lethe && rn2(2))
-            u.uhunger--;
     } else { /* even */
         if (Hunger)
             u.uhunger--;
@@ -3561,8 +3559,6 @@ gethungry(void)
             u.uhunger--;
         /* Cursed rings burn hunger too */
         if (uleft && uleft->cursed && rn2(2))
-            u.uhunger--;
-        if (svl.level.flags.lethe && rn2(2))
             u.uhunger--;
         /*
          * +0 charged rings don't do anything, so don't affect hunger.

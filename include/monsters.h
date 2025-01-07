@@ -202,7 +202,6 @@
         M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_CARNIVORE | M1_CONCEAL,
         M2_HOSTILE | M2_FLANK, M3_BERSERK,
         NO_RACE, 16, CLR_BLACK, ASSASSIN_BUG),
-    /* Migos can only spawn in the lethe branch */
     MON(NAM("migo drone"), S_ANT,
         LVL(5, 15, 0, 10, -5), (G_GENO | G_LGROUP | 6),
         A(ATTK(AT_STNG, AD_DRST, 1, 3),

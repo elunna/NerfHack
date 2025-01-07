@@ -444,7 +444,7 @@ use_stethoscope(struct obj *obj)
             cant_reach_floor(u.ux, u.uy, (u.dz < 0), TRUE);
     } else if (its_dead(u.ux, u.uy, &res, obj)) {
             ; /* message already given */
-        } else if (Is_lethe_gate(&u.uz)) {
+        } else if (Is_stronghold(&u.uz)) {
             Soundeffect(se_crackling_of_hellfire, 35);
             You_hear("the crackling of hellfire.");
         } else {

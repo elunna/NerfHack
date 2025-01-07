@@ -165,7 +165,7 @@ function test_level_flags()
    des.level_flags("noteleport")
    des.level_flags("noteleport", "hardfloor", "nommap", "shortsighted", "arboreal")
    des.level_flags("mazelevel", "shroud", "graveyard", "icedpools", "corrmaze")
-   des.level_flags("lethe", "premapped", "solidify", "inaccessibles")
+   des.level_flags("premapped", "solidify", "inaccessibles")
 end
 
 function test_engraving()

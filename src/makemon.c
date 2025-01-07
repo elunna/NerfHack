@@ -1983,8 +1983,6 @@ rndmonst_adj(int minadj, int maxadj)
             continue;
         if (Inhell && (ptr->geno & G_NOHELL))
             continue;
-        if (is_migo(ptr) && !svl.level.flags.lethe)
-            continue;
         if (is_dino(ptr) && !Role_if(PM_CAVE_DWELLER))
             continue;
 
@@ -2042,8 +2040,6 @@ mk_gen_ok(int mndx, unsigned mvflagsmask, unsigned genomask)
     if (is_placeholder(ptr))
         return FALSE;
     if (Is_mineend_level(&u.uz) && ptr == &mons[PM_VAMPIRE_MAGE])
-        return FALSE;
-    if (is_migo(ptr) && !svl.level.flags.lethe)
         return FALSE;
     if (is_dino(ptr) && !Role_if(PM_CAVE_DWELLER))
         return FALSE;
@@ -2501,7 +2497,7 @@ peace_minded(struct permonst *ptr)
 
 	/* Less trouble for the player. Note: aligned unicorns will still be peaceful, their
 	 * mpeaceful flag is set after the initial check. */
-	if (In_sokoban(&u.uz) || svl.level.flags.lethe)
+	if (In_sokoban(&u.uz))
 		return FALSE;
 
     if (always_peaceful(ptr))

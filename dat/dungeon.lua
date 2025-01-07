@@ -7,7 +7,7 @@ dungeon = {
    {
       name = "The Dungeons of Doom",
       bonetag = "D",
-      base = 40,
+      base = 30,
       range = 5,
       alignment = "unaligned",
       themerooms = "themerms.lua",
@@ -31,12 +31,6 @@ dungeon = {
             branchtype = "portal"
          },
          {
-            name = "Head of the Lethe River",
-            chainlevel = "leth-b",
-            base = 0,
-            direction = "up"
-         },
-         {
             name = "The Lost Tomb",
             base = 15,
             range = 4,
@@ -56,7 +50,7 @@ dungeon = {
          },
          {
             name = "Gehennom",
-            chainlevel = "leth-z",
+            chainlevel = "castle",
             base = 0,
             branchtype = "no_down"
          },
@@ -94,57 +88,22 @@ dungeon = {
          },
          {
             name = "medusa",
-            base = -12,
+            base = -5,
             range = 4,
             nlevels = 4,
             alignment = "chaotic"
          },
          {
             name = "castle",
-            base = -8,
+            base = -1,
             nlevels = 3,
-         },
-         {
-            name = "leth-b",
-            base = -7
-         },
-         {
-            name = "leth-c",
-            base = -6,
-            nlevels = 2,
-            chance = 50
-         },
-         {
-            name = "leth-d",
-            base = -5,
-            nlevels = 2,
-            chance = 25
-         },
-         {
-            name = "leth-e",
-            base = -4,
-            chance = 50
-         },
-         {
-            name = "leth-f",
-            base = -3,
-            chance = 50,
-         },
-         {
-            name = "leth-g",
-            base = -2,
-            chance = 25,
-         },
-         {
-            name = "leth-z",
-            base = -1
          },
       }
    },
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 24,
+      base = 20,
       range = 5,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
@@ -158,8 +117,9 @@ dungeon = {
          },
          {
             name = "The Wizard's Tower",
-            chainlevel = "nkai-b",
-            base = 0,
+            bonetag = "F",
+            base = -6,
+            range = 4,
             branchtype = "portal"
          },
       },
@@ -167,30 +127,13 @@ dungeon = {
          {
             name = "valley",
             bonetag = "V",
-            nlevels = 3,
+            nlevels = 2,
             base = 1
          },
          {
             name = "bridge",
             bonetag = "E",
             base = 2
-         },
-         {
-            name = "nkai-a",
-            nlevels = 2,
-            base = -5
-         },
-         {
-            name = "nkai-b",
-            base = -4
-         },
-         {
-            name = "nkai-c",
-            base = -3
-         },
-         {
-            name = "nkai-z",
-            base = -2
          },
          {
             name = "sanctm",
@@ -365,20 +308,6 @@ dungeon = {
             base = -1,
             nlevels = 3,
          }
-      }
-   },
-   {
-      name = "Head of the Lethe River",
-      base = 1,
-      alignment = "chaotic",
-      flags = { "mazelike" },
-      entry = -1,
-      levels = {
-         {
-            name = "leth-a",
-            base = 1,
-            nlevels = 2
-         },
       }
    },
    {

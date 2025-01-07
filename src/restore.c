@@ -1183,7 +1183,7 @@ getlev(NHFILE *nhfp, int pid, xint8 lev)
         freefruitchn(go.oldfruit), go.oldfruit = 0;
 
         if (lev > ledger_no(&medusa_level)
-            && lev < ledger_no(&lethegate_level) && !stway) {
+            && lev < ledger_no(&stronghold_level) && !stway) {
             coord cc;
             d_level dest;
 

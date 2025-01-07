@@ -113,7 +113,6 @@ SPEC_LEVS = 	 	\
 	hellfill.lua 	\
 	juiblex.lua 	\
 	knox-?.lua 		\
-	leth-* 			\
 	medusa-?.lua 	\
 	mephisto.lua 	\
 	minend-?.lua 	\
@@ -122,7 +121,6 @@ SPEC_LEVS = 	 	\
 	temple-?.lua 	\
 	nhcore.lua 		\
 	nhlib.lua 		\
-	nkai-* 			\
 	oracle-?.lua 	\
 	orcus-?.lua 	\
 	sanctm-?.lua 	\
