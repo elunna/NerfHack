@@ -5702,7 +5702,10 @@ pickvampshape(struct monst *mon)
         if (mon_has_special(mon))
             break; /* leave mndx as is */
         wolfchance = 3;
-        /* Vlad can become wolf */
+        FALLTHROUGH;
+        /*FALLTHRU*/
+    case PM_VAMPIRE_MAGE:
+    /* Vlad can become wolf */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
             break;
