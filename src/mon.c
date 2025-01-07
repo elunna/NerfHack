@@ -5704,13 +5704,14 @@ pickvampshape(struct monst *mon)
         wolfchance = 3;
         FALLTHROUGH;
         /*FALLTHRU*/
-    case PM_VAMPIRE_MAGE:
-    /* Vlad can become wolf */
+    case PM_VAMPIRE_LEADER: /* vampire lord or Vlad can become wolf */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
             break;
         }
-        /* Vlad can become fog or bat */
+        FALLTHROUGH;
+        /*FALLTHRU*/
+    case PM_VAMPIRE: /* any vampire can become fog or bat */
         mndx = (!rn2(4) && !uppercase_only) ? PM_FOG_CLOUD : PM_VAMPIRE_BAT;
         break;
     }
