@@ -1090,10 +1090,8 @@ polymon(int mntmp)
             pline(use_thec, monsterc, "shriek");
         if (uptr->msound == MS_ATHOL) /* worthless, actually */
             pline(use_thec, monsterc, "athool");
-#if 0 /* Vampshifting disabled */
         if (is_vampire(uptr) || is_vampshifter(&gy.youmonst))
             pline(use_thec, monsterc, "change shape");
-#endif
         if (lays_eggs(uptr) && flags.female
             && !(uptr == &mons[PM_GIANT_EEL]
                  || uptr == &mons[PM_ELECTRIC_EEL]))
