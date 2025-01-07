@@ -114,7 +114,6 @@ SPEC_LEVS = 	 	\
 	juiblex.lua 	\
 	knox-?.lua 		\
 	medusa-?.lua 	\
-	mephisto.lua 	\
 	minend-?.lua 	\
 	minefill.lua 	\
 	minetn-*.lua 	\

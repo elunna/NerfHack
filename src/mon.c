@@ -1125,12 +1125,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_ASMODEUS:
     case PM_DEMOGORGON:
     case PM_LAVA_DEMON:
-    case PM_BUER:
-    case PM_KOSTCHTCHIE:
-    case PM_BAPHOMET:
-    case PM_LOLTH:
-    case PM_MALCANTHET:
-    case PM_MEPHISTOPHOLES:
     case PM_DEATH:
     case PM_PESTILENCE:
     case PM_FAMINE:
@@ -6580,8 +6574,6 @@ usmellmon(struct permonst *mdat)
         case PM_DISPATER:
         case PM_YEENOGHU:
         case PM_ORCUS:
-        case PM_MALCANTHET:
-        case PM_MEPHISTOPHOLES:
             break;
         case PM_HUMAN_WEREJACKAL:
         case PM_HUMAN_WERERAT:

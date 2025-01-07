@@ -612,27 +612,6 @@ m_initweap(struct monst *mtmp)
         case PM_YEENOGHU:
             (void) mongets(mtmp, FLAIL);
             break;
-        case PM_MALCANTHET:
-            (void) mongets(mtmp, BULLWHIP);
-            break;
-        case PM_BAPHOMET:
-            (void) mongets(mtmp, RANSEUR);
-            break;
-        case PM_KOSTCHTCHIE:
-            otmp = mksobj(WAR_HAMMER, FALSE, FALSE);
-            otmp->spe = rnd(5) + 8;
-            otmp->oeroded = otmp->oeroded2 = 0;
-            oname(otmp, "Matalotok", ONAME_VIA_NAMING);
-            (void) mpickobj(mtmp, otmp);
-            (void) mongets(mtmp, BOULDER);
-            break;
-        case PM_LOLTH:
-            otmp = mksobj(ELVEN_BROADSWORD, FALSE, FALSE);
-            otmp->opoisoned = TRUE;
-            curse(otmp);
-            otmp->spe = rnd(5) + rnd(5) + 2;
-            (void) mpickobj(mtmp, otmp);
-            break;
         }
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish
