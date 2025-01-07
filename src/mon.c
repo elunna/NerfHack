@@ -6199,7 +6199,7 @@ newcham(
     if (mtmp->mrabid && !can_become_rabid(mtmp->data)) {
         mtmp->mrabid = 0;
         if (seenorsensed) /* could see or sense it before */
-            pline_mon(mtmp, "%s stops frothing at the mouth!", oldname);
+            pline_mon(mtmp, "%s stops frothing at the mouth!", Monnam(mtmp));
     }
     mtmp->meverseen = 0; /* never seen mon in present shape; newsym() ->
                           * display_monster() may change it right back */
