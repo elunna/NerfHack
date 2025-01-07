@@ -1970,8 +1970,6 @@ dopoly(void)
     if (is_vampire(gy.youmonst.data) || is_vampshifter(&gy.youmonst)) {
         polyself(POLY_MONSTER);
         if (savedat != gy.youmonst.data) {
-            You("transform into %s.",
-                an(pmname(gy.youmonst.data, Ugender)));
             newsym(u.ux, u.uy);
         }
     }
