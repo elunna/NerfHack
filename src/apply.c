@@ -2574,16 +2574,24 @@ use_unicorn_horn(struct obj **optr)
     /* For troubles that time out (not illness or vomiting),
      * the unihorn has been nerfed so that it only reduces
      * the timeout. The amount reduced depends on your skill,
-     * the enchantment, and if you are a healer or not. */
+     * the enchantment.
+     * */
     basefix = rnd(3) + 1;
-    basefix += !obj ? 0 : obj->spe * 2;
+    basefix += !obj ? 0 : obj->spe * 3;
     basefix += P_SKILL(P_UNICORN_HORN) * 2;
-    if (Role_if(PM_HEALER))
+    
+    /* Additional bonus for being a healer or good luck roll.
+     * The success percent is chance doubling the timeout reduction:
+     *  LUCK:     <0      0     +2     +5     +8    +11
+     *  SUCCESS: 0.1%    4.2%  8.2%  12.3%  16.4%  20.4%
+     */
+    if (Role_if(PM_HEALER) || rnl(8) == 0)
         basefix *= 2;
 
     /* fix [some of] the troubles */
     for (val = 0; val < val_limit; val++) {
         idx = trouble_list[val];
+        /* There is always a 5% chance of outright curing the condition */
         if ((Upolyd && is_unicorn(gy.youmonst.data)) || !rn2(20))
             fix_to = 9999L;
         else
