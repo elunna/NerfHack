@@ -400,6 +400,43 @@ static const char *cannot_write[N_CANNOT_WRITE] = {
     "You have difficulty writing this word for some reason..."
 };
 
+#define N_REFUSE_WRITE 4
+static const char *refuse_write[N_REFUSE_WRITE] = {
+    "You wouldn't dare invoke such a holy name!",
+    "Something deep within you rejects invoking that name.",
+    "Like she would protect you anyway...",
+    "The name of such a blessed being remains beyond your reach."
+};
+
+#define N_BOGUS_ELBERETH 25
+static const char *bogus_elbereth[N_BOGUS_ELBERETH] = {
+    "Elizabeth",
+    "OwlBreath",
+    "Everest",
+    "Elly'sBreast", /* maybe not ;) */
+    "Eratosthenes",
+    "EvilHack",     /* hahahah */
+    "htereblE",
+    "Ermahgerd",     /* Gersberms, mah fravrit berks */
+    "Elb*r@th",
+    "E||bereth",
+    "Elboofeth",
+    "Elbeefeth",
+    "Elbrrrreth",
+    "Elbereths",
+    "Elebreth",
+    "Hellbereth",
+    "Elbedeath",
+    "Elburrth",
+    "Elbert",
+    "Elber3th",
+    "ElberethElbereth",
+    "Betherel", /* Anagram */
+    "Thelbree", /* Anagram */
+    "Errrrrrrrr", 
+    "Elberithius", /* latinized */
+};
+
 void
 make_engr_at(
     coordxy x, coordxy y,
@@ -419,6 +456,11 @@ make_engr_at(
             pline("%s", cannot_write[rn2(N_CANNOT_WRITE)]);
             make_confused(HConfusion + d(3, 4), FALSE);
             return;
+        } else if (Race_if(PM_VAMPIRE) || Race_if(PM_ORC)) {
+            s = bogus_elbereth[rn2(N_BOGUS_ELBERETH)];
+            pline("%s", refuse_write[rn2(N_REFUSE_WRITE)]);
+            You("%swrite `%s` instead.",
+                (ep ? "wipe out the message and " : ""),  s);
         }
     }
 
