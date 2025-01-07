@@ -3610,7 +3610,8 @@ mondead(struct monst *mtmp)
     if (mtmp->data == &mons[PM_STEAM_VORTEX])
         create_gas_cloud(mtmp->mx, mtmp->my, rn2(10) + 5, 0); /* harmless */
 
-    if (mtmp->data == &mons[PM_STINKING_SPHERE] && !mtmp->mcan)
+    if ((mtmp->data == &mons[PM_STINKING_SPHERE] || is_migo(mtmp->data))
+        && !mtmp->mcan)
         create_gas_cloud(mtmp->mx, mtmp->my, 3 + rn2(2), 2 + rnd(8));
 
     /* dead vault guard is actually kept at coordinate <0,0> until
