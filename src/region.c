@@ -1129,6 +1129,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         return FALSE; /* if no damage then there's nothing to do here... */
 
     if (!mtmp) { /* hero is indicated by Null rather than by &youmonst */
+        stop_occupation();
         if (!rn2(5))
             erode_armor(&gy.youmonst, ERODE_ROT);
         else if (!rn2(3))
@@ -1142,7 +1143,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         }
         if (Breathless)
             return FALSE;
-
+        
         if (!fully_resistant(POISON_RES) && !No_gas_damage) {
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
