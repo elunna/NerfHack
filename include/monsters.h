@@ -1992,7 +1992,7 @@
         SIZ(25, 25, MS_SILENT, MZ_TINY), 0, 0,
         M1_SWIM | M1_AMPHIBIOUS | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK, 0, 
-        NO_RACE, 4, CLR_GREEN, COMPSOGNATHUS),
+        NO_RACE, 6, CLR_GREEN, COMPSOGNATHUS),
     MON(NAM("velociraptor"), S_ZRUTY,
         LVL(14, 24, 5, 0, 0), (G_SGROUP | 3),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6),
