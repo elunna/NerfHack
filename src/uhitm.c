@@ -77,6 +77,20 @@ staticfn void ring_familiarity(void);
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
 #define KILL_FAMILIARITY 20
 
+
+#define N_CRIT 10
+static const char *monk_crit[N_CRIT] = {
+    "SMACK", "WHAM", "POW", "BAM", "WHACK",
+    "THWACK", "SMASH", "BOFF", "KAPOW", "ZONK"
+};
+
+#define N_HALUCRIT 15
+static const char *monk_halucrit[N_HALUCRIT] = {
+    "PLOOP", "SQUORP", "GLORP", "FLARNG", "ZIBZAB",
+    "WOOSHLE", "CRINK", "BLERGH", "ZWAFF", "SPLOINK",
+    "GLIMB", "THWORB", "FLOONK", "KACHUMBLE", "WIBBLE"
+};
+
 staticfn boolean
 mhitm_mgc_atk_negated(
     struct monst *magr, struct monst *mdef,
@@ -1280,9 +1294,8 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
               : (((hmd->twohits == 0 || hmd->twohits == 1) ? W_RINGR : 0L)
                  | ((hmd->twohits == 0 || hmd->twohits == 2) ? W_RINGL : 0L));
     hmd->dmg += special_dmgval(&gy.youmonst, mon, spcdmgflg, &silverhit);
-
+    
     if (uarmg && uarmg->oartifact == ART_THUNDERFISTS) {
-
         artifact_hit(&gy.youmonst, mon, uarmg, &hmd->dmg, hmd->dieroll);
         if (Hallucination)
             pline("THUNDERSTRUCK!");
@@ -1293,7 +1306,6 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
             hmd->doreturn = TRUE;
             hmd->retval = FALSE;
             return;
-            /*return FALSE;*/
         }
     }
 
@@ -2373,8 +2385,7 @@ hmon_hitmon(
      * */
     if (Role_if(PM_BARBARIAN) &&
             /* Serenity blocks berserking */
-            !(u_wield_art(ART_SERENITY) 
-            || u_offhand_art(ART_SERENITY))) {
+            !(u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY))) {
         int fifth_of_hp = u.uhpmax / 5;
         boolean critical_hp = u.uhp < (fifth_of_hp * 2);
 
@@ -2399,6 +2410,17 @@ hmon_hitmon(
         }
     }
 
+    /* Occasional critical hits for veteran monks */
+    if (hmd.dieroll == 1 && Role_if(PM_MONK) 
+               && P_SKILL(P_BARE_HANDED_COMBAT) == P_GRAND_MASTER
+               && u.ulevel > 20
+               && !Upolyd && !uwep && !uarms && !thrown) {
+        pline("%s!", Hallucination ? monk_halucrit[rn2(N_HALUCRIT)]
+                            : monk_crit[rn2(N_CRIT)]);
+        pline("dmg=%d",hmd.dmg);
+        hmd.dmg *= 2;
+    }
+    
     if (!hmd.already_killed) {
         if (obj && (obj == uwep || (obj == uswapwep && u.twoweap))
             /* known_hitum 'what counts as a weapon' criteria */
@@ -4442,7 +4464,6 @@ mhitm_ad_poly(
         }
     }
 }
-
 
 void
 mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
