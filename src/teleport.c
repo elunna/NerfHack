@@ -2262,15 +2262,15 @@ teleport_pain(void)
     losehp(dmg, "ripped apart by a force field", KILLED_BY);
 
     if (Upolyd) {
-        u.mhmax -= min(rnd(8), u.mhmax - 1);
+        u.mhmax -= min(rnd(3), u.mhmax - 1);
     } else {
         if (u.uhpmax > uhpmin)
-            setuhpmax(max(u.uhpmax - rnd(8), uhpmin), TRUE);
+            setuhpmax(max(u.uhpmax - rnd(3), uhpmin), TRUE);
     }
     u.uen /= 5;
     if (u.uen < 1)
         u.uen = 1;
-    drain_en(rnd(8), FALSE);
+    drain_en(rnd(3), FALSE);
 }
 
 /*teleport.c*/
