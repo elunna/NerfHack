@@ -38,6 +38,7 @@ staticfn void peffect_oil(struct obj *);
 staticfn void peffect_acid(struct obj *);
 staticfn void peffect_polymorph(struct obj *);
 staticfn void peffect_blood(struct obj *);
+staticfn void peffect_milk(struct obj *);
 staticfn boolean H2Opotion_dip(struct obj *, struct obj *, boolean,
                              const char *);
 staticfn int dip_ok(struct obj *);
@@ -1670,7 +1671,6 @@ peffect_polymorph(struct obj *otmp)
     }
 }
 
-
 staticfn void
 peffect_blood(struct obj *otmp)
 {
@@ -1743,6 +1743,90 @@ peffect_blood(struct obj *otmp)
         pline("Ugh.  That was vile.");
         make_vomiting(Vomiting + d(10, 8), TRUE);
     }
+}
+
+/* Milk must be ingested to have any effects, it won't
+ * create any vapors. cancels various temporary good 
+ * and bad status effects in general, like confusion,
+ * stunning, and invisibility, but not nausea since 
+ * drinking milk usually makes nausea worse in real life.
+ * 
+ * Severe conditions are NOT cancelled: illness, rabid,
+ * lycanthropy, aggravate monster, withering.
+ * Deafness don't make sense, so don't cure it.
+ */
+staticfn void
+peffect_milk(struct obj *otmp)
+{
+    if (!u.uconduct.unvegan++) {
+        livelog_printf(LL_CONDUCT,
+              "consumed animal products for the first time, by drinking milk");
+    }
+    if (otmp->cursed) {
+        pline("Ugh.  Spoiled milk."); /* perhaps others like it */
+        /* increasing existing nausea means that it will take longer
+           before eventual vomit, but also means that constitution
+           will be abused more times before illness completes */
+        make_vomiting((Vomiting & TIMEOUT) + (long) d(10, 4), TRUE);
+        return;
+    }
+    
+    /* Cancel bad statuses */
+    /* blindness is cured in the later call to healup() */
+    
+    (void) make_hallucinated(0L, TRUE, 0L);
+    make_confused(0L, TRUE);
+    make_stunned(0L, TRUE);
+    
+    /* Also cancel good statuses */
+    
+    if (u.uspellprot) {
+        pline_The("%s haze around you disappears.",
+                  hcolor(NH_GOLDEN));
+        u.usptime = u.uspmtime = u.uspellprot = 0;
+        disp.botl = 1; /* potential AC change */
+        find_ac();
+    }
+    if (HReflecting & TIMEOUT) {
+        pline_The("shimmering globe around you disappears.");
+        HReflecting &= ~TIMEOUT;
+    }
+    if (HPasses_walls & TIMEOUT) {
+        You("feel more solid.");
+        HPasses_walls &= ~TIMEOUT;
+    }
+    if (HInvis & TIMEOUT) {
+		set_itimeout(&HInvis, 0);
+    	newsym(u.ux, u.uy);
+    }
+    if (HSee_invisible & TIMEOUT) {
+        HSee_invisible &= ~TIMEOUT;
+        if (!See_invisible) {
+            set_mimic_blocking();
+            see_monsters();
+            /* might not be able to see self anymore */
+            newsym(u.ux, u.uy);
+        }
+        You("%s!", Hallucination ? "tawt you taw a puttie tat"
+                                 : "thought you saw something");
+    }
+    if (HTelepat & TIMEOUT) {
+        HTelepat &= ~TIMEOUT;
+        if (Blind && !Blind_telepat)
+            see_monsters(); /* Can't sense mons anymore! */
+        You_feel(Hallucination ? "out of touch with the cosmos."
+                                           : "a strange mental dullness.");
+    }
+    
+    /* Also - Unpoly yourself if polyd */
+	if (Upolyd) { /* includes lycanthrope in creature form */
+        if (Unchanging && u.mh > 0)
+            Your("amulet grows hot for a moment, then cools.");
+        else
+            rehumanize();
+    }
+    healup(1, otmp->blessed ? 1 : 0, FALSE, TRUE);
+    exercise(A_CON, TRUE);
 }
 
 int
@@ -1836,6 +1920,10 @@ peffects(struct obj *otmp)
     case POT_BLOOD:
     case POT_VAMPIRE_BLOOD:
         peffect_blood(otmp);
+        break;
+    case POT_MILK:
+        /* Does the body good! */
+        peffect_milk(otmp);
         break;
     case POT_REFLECTION:
         peffect_reflection(otmp);
@@ -2366,12 +2454,17 @@ potionhit(struct monst *mon, struct obj *obj, int how)
         case POT_POLYMORPH:
             (void) bhitm(mon, obj);
             break;
+        case POT_MILK:
+            if (canseemon(mon) && Hallucination)
+                You("try not to cry over the spilled milk.");
+            break;
         /*
         case POT_GAIN_LEVEL:
         case POT_LEVITATION:
         case POT_FRUIT_JUICE:
         case POT_MONSTER_DETECTION:
         case POT_OBJECT_DETECTION:
+    	case POT_MILK:
             break;
         */
         }

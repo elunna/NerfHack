@@ -4471,10 +4471,11 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
     uchar withertime = max(2, mhm->damage);
     mhm->damage = 0; /* doesn't deal immediate damage */
     int armpro = magic_negation(mdef);
+    /* This could use is_fleshy(), but that would
+       make a large set of monsters immune like
+       fungus, blobs, and jellies. */
     boolean no_effect =
-            (nonliving(mdef->data) /* This could use is_fleshy(), but that would
-                                  make a large set of monsters immune like
-                                  fungus, blobs, and jellies. */
+            (nonliving(mdef->data) 
              || is_vampire(mdef->data)
              || (magr != &gy.youmonst && magr->mcan)
              || !(rn2(10) >= 3 * armpro));

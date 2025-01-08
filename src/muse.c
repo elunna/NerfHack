@@ -127,6 +127,7 @@ staticfn int muse_createmonster(struct monst *, struct obj *);
 #define MUSE_POT_POLYMORPH          317 /* misc */
 #define MUSE_POT_REFLECT            318
 #define MUSE_POT_SICKNESS           319
+#define MUSE_POT_MILK               320 /* Defensive */
 
 /* Misc items */
 
@@ -446,6 +447,13 @@ m_use_healing(struct monst *mtmp)
             return TRUE;
         }
     }
+    if (mtmp->mconf || mtmp->mstun) {
+        if ((obj = m_carrying(mtmp, POT_MILK)) != 0) {
+            gm.m.defensive = obj;
+            gm.m.has_defense = MUSE_POT_MILK;
+            return TRUE;
+        }
+    }
     if (is_vampire(mtmp->data) &&
         (obj = m_carrying(mtmp, POT_VAMPIRE_BLOOD)) != 0) {
         gm.m.defensive = obj;
@@ -586,7 +594,19 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             return TRUE;
         }
     }
-
+    /* Check if they can use a potion of milk */
+    if (mtmp->mconf || mtmp->mstun || !mtmp->mcansee) {
+        if (!nohands(mtmp->data)) {
+            for (obj = mtmp->minvent; obj; obj = obj->nobj) {
+                if (obj && obj->otyp == POT_MILK && !obj->cursed) {
+                    gm.m.defensive = obj;
+                    gm.m.has_defense = MUSE_POT_MILK;
+                    return TRUE;
+                }
+            }
+        }
+    }
+                    
     if (mtmp->mrabid || mtmp->mdiseased) {
         for (obj = mtmp->minvent; obj; obj = obj->nobj) {
             if (!nohands(mtmp->data)) {
@@ -877,6 +897,11 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             if (obj->otyp == POT_HEALING) {
                 gm.m.defensive = obj;
                 gm.m.has_defense = MUSE_POT_HEALING;
+            }
+            nomore(MUSE_POT_MILK);
+            if (obj->otyp == POT_MILK) {
+                gm.m.defensive = obj;
+                gm.m.has_defense = MUSE_POT_MILK;
             }
             nomore(MUSE_POT_VAMPIRE_BLOOD);
             if(is_vampire(mtmp->data) && obj->otyp == POT_VAMPIRE_BLOOD) {
@@ -1385,7 +1410,58 @@ use_defensive(struct monst *mtmp)
             makeknown(otmp->otyp);
         m_useup(mtmp, otmp);
         return 2;
-     case MUSE_POT_VAMPIRE_BLOOD:
+        
+    case MUSE_POT_MILK:
+        /* Cancels:
+         * confusion, stunning, 
+         * protection, reflection, phasing, 
+         * invisibility, unpolymorphs
+         */
+        mquaffmsg(mtmp, otmp);
+        mtmp->mhp += 1;
+        if (mtmp->mhp > mtmp->mhpmax)
+            mtmp->mhp = ++mtmp->mhpmax;
+        if (!mtmp->mcansee) {
+            mcureblindness(mtmp, vismon);
+        } 
+        if (mtmp->mconf || mtmp->mstun) {
+            mtmp->mconf = mtmp->mstun = 0;
+            if (vismon)
+                pline_mon(mtmp, "%s seems steadier now.", Monnam(mtmp));
+        }
+        if (mtmp->mprotection) {
+            if (canseemon(mtmp))
+                pline_The("%s haze around %s %s.",
+                          hcolor(NH_GOLDEN), mon_nam(mtmp), "disappears");
+            mtmp->mprotection = mtmp->mprottime = 0;
+        }
+        if (has_reflection(mtmp)) {
+            if (canseemon(mtmp))
+                pline("%s shimmering globe disappears.",
+                      s_suffix(Monnam(mtmp)));
+            mtmp->mextrinsics &= ~(MR2_REFLECTION);
+            mtmp->mreflecttime = 0;
+        }
+        if (has_phasing(mtmp)) {
+            if (canseemon(mtmp))
+                pline("%s looks less hazy.", Monnam(mtmp));
+            mtmp->mextrinsics &= ~(MR2_PHASING);
+            mtmp->mphasetime = 0;
+        }
+        if (mtmp->minvis) {
+            mtmp->minvis = mtmp->perminvis = 0;
+            newsym(mtmp->mx, mtmp->my);
+        }
+        
+        /* force shapeshifter into its base form or mimic to unhide */
+        normal_shape(mtmp);
+
+        if (oseen)
+            makeknown(POT_MILK);
+        m_useup(mtmp, otmp);
+        return 2;    
+    
+    case MUSE_POT_VAMPIRE_BLOOD:
         mquaffmsg(mtmp, otmp);
         if (!otmp->cursed) {
             i = rnd(8) + rnd(2);
@@ -1469,9 +1545,9 @@ rnd_defensive_item(struct monst *mtmp)
     case 2:
         return SCR_CREATE_MONSTER;
     case 3:
-        return POT_HEALING;
+        return rn2(7) ? POT_HEALING : POT_MILK;
     case 4:
-        return POT_EXTRA_HEALING;
+        return rn2(11) ? POT_EXTRA_HEALING : POT_MILK;
     case 5:
         return (mtmp->data != &mons[PM_PESTILENCE]) ? POT_FULL_HEALING
                                                     : POT_SICKNESS;

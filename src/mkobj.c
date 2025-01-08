@@ -2998,7 +2998,7 @@ hornoplenty(
             obj = mkobj(POTION_CLASS, FALSE);
             if (objects[obj->otyp].oc_magic) {
                 do {
-                    obj->otyp = rnd_class(POT_BOOZE, POT_WATER);
+                    obj->otyp = rnd_class(POT_BOOZE, POT_MILK);
                     /* this number is very large on purpose */
                     if (!rn2(131))
                         obj->otyp = (!rn2(5)) ? POT_VAMPIRE_BLOOD : POT_BLOOD;

@@ -3691,6 +3691,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     You("feel more solid.");
                     HPasses_walls = 0;
                 }
+                /* TODO: Add temp invisibility cancelling */
             }
         }
 
