@@ -7265,7 +7265,7 @@ passive(
         break;
      case AD_SLEE:
         /* passive sleep attack for orange jelly */
-        if (m_next2u(mon)) {
+        if (m_next2u(mon) && !fully_resistant(SLEEP_RES)) {
             fall_asleep(-rnd(tmp), TRUE);
             if (Blind)
                 You("are put to sleep!");
