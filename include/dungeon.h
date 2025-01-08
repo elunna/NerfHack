@@ -139,7 +139,8 @@ typedef struct branch {
 #define Is_mineend_level(x) (Lcheck(x, &mineend_level))
 #define Is_sokoend_level(x) (Lcheck(x, &sokoend_level))
 
-#define In_sokoban(x) ((x)->dnum == sokoban_dnum)
+#define SOKO_ENTRANCE 6
+#define In_sokoban(x) ((x)->dnum == sokoban_dnum && (x)->dlevel < SOKO_ENTRANCE)
 #define In_tower(x) ((x)->dnum == tower_dnum)
 #define Inhell In_hell(&u.uz) /* now gehennom */
 #define In_endgame(x) ((x)->dnum == astral_level.dnum)
