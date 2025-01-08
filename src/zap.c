@@ -1355,18 +1355,17 @@ void
 cancel_item(struct obj *obj)
 {
     int otyp = obj->otyp;
-    
     int cancel_amt = obj->spe;
     int armpro = 0;
     /* Magic cancellation protects from total cancellation.
-     * try to be fairly generous, MC1 reduces the amount if
+     * try to be fairly generous, MC reduces the amount if
      * the enchantment is positive. If the enchantment is
      * negative, the amount is not affected because we assume
      * that negative enchantment is both easier to cancel
      * and less desireable for players.
      *
      * TODO: Currently this mechanic only works in favor of
-     * player - rework so that monsters also benefit */
+     * the player - rework so that monsters also benefit */
     if (carried(obj) && obj->spe > 0) {
         armpro = magic_negation(&gy.youmonst);
         cancel_amt -= armpro * 2;
