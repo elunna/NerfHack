@@ -449,6 +449,9 @@ const struct ForgeRecipe fusions[] = {
     /* Any role can forge the rest */
     { DAGGER,               ARROW,              KNIFE,          2, 1 },
     { KNIFE,                ARROW,              DART,           2, 2 },
+    { JAVELIN,              CROSSBOW_BOLT,      SPEAR,          2, 1 },
+    { TRIDENT,              SCIMITAR,           SPEAR,          1, 1 },
+    { SCALPEL,              KNIFE,              STILETTO,       1, 1 },
     { STILETTO,             DAGGER,             KNIFE,          2, 1 },
     { AXE,                  DAGGER,             SPEAR,          1, 1 },
     { BATTLE_AXE,           AXE,                BROADSWORD,     1, 1 },
@@ -475,7 +478,7 @@ const struct ForgeRecipe fusions[] = {
     { HALBERD,              RANSEUR,            AXE,            1, 1 },
     { BARDICHE,             BATTLE_AXE,         SPEAR,          1, 1 },
     { VOULGE,               AXE,                SPEAR,          1, 1 },
-    { FAUCHARD,             SCIMITAR,           SPEAR,          1, 1 },
+    { FAUCHARD,             SILVER_SABER,       SPEAR,          1, 1 },
     { GUISARME,             GRAPPLING_HOOK,     SPEAR,          1, 1 },
     { BILL_GUISARME,        GUISARME,           SPEAR,          1, 1 },
     { LUCERN_HAMMER,        WAR_HAMMER,         JAVELIN,        1, 1 },
