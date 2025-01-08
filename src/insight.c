@@ -454,7 +454,12 @@ enlightenment(
         }
     } else {
         enl_msg("You ", "have ", "had ", "never prayed", "");
-	}
+    }
+
+    Sprintf(buf, "received %d point%s of divine protection%s",
+            u.ublessed, u.ublessed != 1 ? "s" : "",
+            u.ublessed == 9 ? " (maximum)" : "");
+    you_have(buf, "");
 
     enlght_out(""); /* separator */
     enlght_out("Miscellaneous:");
