@@ -1887,21 +1887,21 @@ trapeffect_grease_trap(
                 otmp = which_armor(u.usteed, W_SADDLE);
                 otmp->greased = 1;
                 dismount_steed(DISMOUNT_FELL);
-				losehp(Maybe_Half_Phys(d(2, 3)), "bucked off a greased steed", KILLED_BY);
-				nomul(-rnd(4));
+		nomul(-rnd(4));
             } else {
                 if (uarmf && (objdescr_is(uarmf, "mud boots")
                         || uarmf->otyp == WATER_WALKING_BOOTS))
                     Your("boots keep you from slipping on grease!");
-				else if (rn2(10)) {
-					You("slip on a puddle of grease and crash on the floor!");
-					exercise(A_DEX, FALSE);
-					losehp(Maybe_Half_Phys(rnd(3)), "slipping on grease and falling", KILLED_BY);
-					nomul(-rnd(3));
-				} else {
+		else if (rn2(10)) {
+		    You("slip on a puddle of grease and crash on the floor!");
+		    exercise(A_DEX, FALSE);
+		    losehp(Maybe_Half_Phys(rnd(3)),
+                           "slipping on grease and falling", KILLED_BY);
+		    nomul(-rnd(3));
+		} else {
                     You("almost slip on a puddle of grease!");
                 }
-			}
+	    }
             make_feet_greasy();
             seetrap(trap);
             trap->once = 1;
