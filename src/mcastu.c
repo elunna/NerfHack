@@ -1151,7 +1151,8 @@ cast_cleric_spell(
     case CLC_BLIGHT: {
         /* This could use is_fleshy(), but that would make a large set
          * of monsters immune like fungus, blobs, and jellies. */
-        boolean no_effect = nonliving(mdef->data) || mon_prop(mdef, DISINT_RES);
+        boolean no_effect = nonliving(mdef->data) || is_vampire(mdef->data)
+                            || mon_prop(mdef, DISINT_RES);
         uchar withertime = rn1(41, 20);
         boolean lose_maxhp = (withertime >= 8); /* if already withering */
 
