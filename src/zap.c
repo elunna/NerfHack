@@ -1356,6 +1356,26 @@ cancel_item(struct obj *obj)
 {
     int otyp = obj->otyp;
     
+    int cancel_amt = obj->spe;
+    int armpro = 0;
+    /* Magic cancellation protects from total cancellation.
+     * try to be fairly generous, MC1 reduces the amount if
+     * the enchantment is positive. If the enchantment is
+     * negative, the amount is not affected because we assume
+     * that negative enchantment is both easier to cancel
+     * and less desireable for players.
+     *
+     * TODO: Currently this mechanic only works in favor of
+     * player - rework so that monsters also benefit */
+    if (carried(obj) && obj->spe > 0) {
+        armpro = magic_negation(&gy.youmonst);
+        cancel_amt -= armpro * 2;
+        if (cancel_amt < 0)
+            cancel_amt = 0;
+        /* Allow for *some* chance of cancelling */
+        else if (obj->spe > 0 && cancel_amt == 0 && !rn2(armpro * 2))
+            cancel_amt = 1;
+    }
     if (Is_dragon_armor(obj)) {
         /* convert mail to scales to simplify testing */
         otyp = Dragon_armor_to_scales(obj);
@@ -1374,29 +1394,29 @@ cancel_item(struct obj *obj)
         switch (otyp) {
         case RIN_GAIN_STRENGTH:
             if ((obj->owornmask & W_RING) != 0L) {
-                ABON(A_STR) -= obj->spe;
+                ABON(A_STR) -= cancel_amt;
                 disp.botl = TRUE;
             }
             break;
         case RIN_GAIN_CONSTITUTION:
             if ((obj->owornmask & W_RING) != 0L) {
-                ABON(A_CON) -= obj->spe;
+                ABON(A_CON) -= cancel_amt;
                 disp.botl = TRUE;
             }
             break;
         case RIN_ADORNMENT:
             if ((obj->owornmask & W_RING) != 0L) {
-                ABON(A_CHA) -= obj->spe;
+                ABON(A_CHA) -= cancel_amt;
                 disp.botl = TRUE;
             }
             break;
         case RIN_INCREASE_ACCURACY:
             if ((obj->owornmask & W_RING) != 0L)
-                u.uhitinc -= obj->spe;
+                u.uhitinc -= cancel_amt;
             break;
         case RIN_INCREASE_DAMAGE:
             if ((obj->owornmask & W_RING) != 0L)
-                u.udaminc -= obj->spe;
+                u.udaminc -= cancel_amt;
             break;
         case RIN_PROTECTION:
             if ((obj->owornmask & W_RING) != 0L)
@@ -1404,18 +1424,18 @@ cancel_item(struct obj *obj)
             break;
         case GAUNTLETS_OF_DEXTERITY:
             if ((obj->owornmask & W_ARMG) != 0L) {
-                ABON(A_DEX) -= obj->spe;
+                ABON(A_DEX) -= cancel_amt;
                 disp.botl = TRUE;
             }
             break;
         case RED_DRAGON_SCALES:
             if ((obj->owornmask & W_ARM) != 0L)
-                u.udaminc -= obj->spe;
+                u.udaminc -= cancel_amt;
             break;
         case HELM_OF_BRILLIANCE:
             if ((obj->owornmask & W_ARMH) != 0L) {
-                ABON(A_INT) -= obj->spe;
-                ABON(A_WIS) -= obj->spe;
+                ABON(A_INT) -= cancel_amt;
+                ABON(A_WIS) -= cancel_amt;
                 disp.botl = TRUE;
             }
             break;
@@ -1425,29 +1445,10 @@ cancel_item(struct obj *obj)
             break;
         }
     }
-#if 0 /* Don't allow this */
-    /* Small chance DSM can revert to scales if cancelled */
-    if (!rn2(6) && obj->otyp >= GRAY_DRAGON_SCALE_MAIL
-        && obj->otyp <= YELLOW_DRAGON_SCALE_MAIL) {
-        boolean worn = (obj == uarm);
 
-        if (!Blind) {
-            char buf[BUFSZ];
-            pline("%s%s reverts to its natural state.",
-                  Shk_Your(buf, obj), xname(obj));
-        }
-        if (worn)
-            Your("armor feels more loose.");
-        costly_alteration(obj, COST_CANCEL);
-        if (worn)
-            setworn((struct obj *) 0, W_ARM);
-        /* assumes same order */
-        obj->otyp = (GRAY_DRAGON_SCALES +
-                     obj->otyp - GRAY_DRAGON_SCALE_MAIL);
-        if (worn)
-            setworn(obj, W_ARM);
-    }
-#endif
+    /* Note: In some variants, there is a small chance DSM can revert to scales
+     * if cancelled. That effect was not ported to NerfHack because of
+     * the existing scarcity of resources. */
     
     /* cancelled item might not be in hero's possession but
        cancellation is presumed to be instigated by hero */
@@ -1460,7 +1461,8 @@ cancel_item(struct obj *obj)
         /* not magic; cancels to blank spellbook */
         || otyp == SPE_NOVEL) {
         int cancelled_spe = (obj->oclass == WAND_CLASS
-                             || otyp == CRYSTAL_BALL) ? -1 : 0;
+                             || otyp == CRYSTAL_BALL) ? -1
+                                : (obj->spe - cancel_amt);
 
         if (obj->spe != cancelled_spe
             && otyp != WAN_CANCELLATION /* can't cancel cancellation */
@@ -1473,38 +1475,42 @@ cancel_item(struct obj *obj)
         if (obj->otyp == UNICORN_HORN) {
             if (obj->spe <= 0 && !obj->degraded_horn)
                 obj->degraded_horn = 1;
-            else
-                obj->spe--;
             costly_alteration(obj, COST_CANCEL);
         }
 
         switch (obj->oclass) {
         case SCROLL_CLASS:
-            costly_alteration(obj, COST_CANCEL);
-            obj->otyp = SCR_BLANK_PAPER;
-            obj->spe = 0;
+            if (!carried(obj) || !rn2(armpro + 1)) {
+                costly_alteration(obj, COST_CANCEL);
+                obj->otyp = SCR_BLANK_PAPER;
+                obj->spe = 0;
+            }
             break;
         case SPBOOK_CLASS:
-            if (otyp != SPE_CANCELLATION && otyp != SPE_BOOK_OF_THE_DEAD) {
-                costly_alteration(obj, COST_CANCEL);
-                obj->otyp = SPE_BLANK_PAPER;
-                /* cancelling a novel is more involved than a spellbook */
-                if (otyp == SPE_NOVEL) /* old type */
-                    blank_novel(obj);
+            if (!carried(obj) || !rn2(armpro + 1)) {
+                if (otyp != SPE_CANCELLATION && otyp != SPE_BOOK_OF_THE_DEAD) {
+                    costly_alteration(obj, COST_CANCEL);
+                    obj->otyp = SPE_BLANK_PAPER;
+                    /* cancelling a novel is more involved than a spellbook */
+                    if (otyp == SPE_NOVEL) /* old type */
+                        blank_novel(obj);
+                }
             }
             break;
         case POTION_CLASS:
-            costly_alteration(obj, (otyp != POT_WATER) ? COST_CANCEL
-                                   : obj->cursed ? COST_UNCURS : COST_UNBLSS);
-            if (otyp == POT_SICKNESS || otyp == POT_SEE_INVISIBLE) {
-                /* sickness is "biologically contaminated" fruit juice;
-                   cancel it and it just becomes fruit juice...
-                   whereas see invisible tastes like "enchanted" fruit
-                   juice, it similarly cancels */
-                obj->otyp = POT_FRUIT_JUICE;
-            } else {
-                obj->otyp = POT_WATER;
-                obj->odiluted = 0; /* same as any other water */
+            if (!carried(obj) || !rn2(armpro + 1)) {
+                costly_alteration(obj, (otyp != POT_WATER) ? COST_CANCEL
+                                       : obj->cursed ? COST_UNCURS : COST_UNBLSS);
+                if (otyp == POT_SICKNESS || otyp == POT_SEE_INVISIBLE) {
+                    /* sickness is "biologically contaminated" fruit juice;
+                       cancel it and it just becomes fruit juice...
+                       whereas see invisible tastes like "enchanted" fruit
+                       juice, it similarly cancels */
+                    obj->otyp = POT_FRUIT_JUICE;
+                } else {
+                    obj->otyp = POT_WATER;
+                    obj->odiluted = 0; /* same as any other water */
+                }
             }
             break;
         }
@@ -1521,7 +1527,8 @@ cancel_item(struct obj *obj)
             (void) start_timer(timout, TIMER_OBJECT, ROT_CORPSE, &a);
         }
     }
-
+    
+    /* Should these happen independant of MC protection? */
     unbless(obj);
     uncurse(obj);
     return;
