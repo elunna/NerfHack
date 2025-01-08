@@ -2005,7 +2005,8 @@ domove_fight_ironbars(coordxy x, coordxy y)
 
             hit_bars(&obj, u.ux, u.uy, x, y, breakflags);
             return TRUE;
-        } else if (uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE) {
+        } else if (Role_if(PM_MONK)
+                && uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE) {
             breakflags |= BRK_KNOWN2NOTBREAK;
             hit_bars(&uarmg, u.ux, u.uy, x, y, breakflags);
             return TRUE;
@@ -2231,7 +2232,8 @@ domove_fight_empty(coordxy x, coordxy y)
 {
     static const char unknown_obstacle[] = "an unknown obstacle";
     boolean off_edge = !isok(x, y);
-    boolean wearing_force_gloves = uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE;
+    boolean wearing_force_gloves = Role_if(PM_MONK)
+        && uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE;
     int glyph = !off_edge ? glyph_at(x, y) : GLYPH_UNEXPLORED;
 
     if (off_edge)

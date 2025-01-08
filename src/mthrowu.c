@@ -1308,7 +1308,8 @@ hit_bars(
     boolean nodissolve = (levl[barsx][barsy].wall_info & W_NONDIGGABLE) != 0,
             your_fault = (breakflags & BRK_BY_HERO) != 0,
             melee_attk = (breakflags & BRK_MELEE) != 0;
-    boolean wearing_force_gloves = obj_type == GAUNTLETS_OF_FORCE
+    boolean wearing_force_gloves = Role_if(PM_MONK)
+        && obj_type == GAUNTLETS_OF_FORCE
         && uarmg && uarmg->otyp == obj_type;
     int noise = 0;
 

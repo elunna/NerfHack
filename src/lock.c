@@ -243,9 +243,7 @@ forcelock(void)
     } else             /* blunt */
         wake_nearby(FALSE); /* due to hammering on the container */
 
-    if (uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE)
-        ; /* Forcing is easy with these! */
-    else if (rn2(100) >= gx.xlock.chance)
+    if (rn2(100) >= gx.xlock.chance)
         return 1; /* still busy */
 
     You("succeed in forcing the lock.");
