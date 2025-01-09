@@ -482,7 +482,8 @@ food_detect(struct obj *sobj)
     struct monst *mtmp;
     int ct = 0, ctu = 0;
     boolean confused = (Confusion || (sobj && sobj->cursed)), stale;
-    char oclass = confused ? POTION_CLASS : FOOD_CLASS;
+    char oclass = (confused || Race_if(PM_VAMPIRE))
+                       ? POTION_CLASS : FOOD_CLASS;
     const char *what = confused ? something : "food";
 
     stale = clear_stale_map(oclass, 0);
