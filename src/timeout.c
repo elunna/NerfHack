@@ -870,7 +870,9 @@ nh_timeout(void)
                 u.usick_type = 0;
                 break;
             case WITHERING:
-                You("are no longer withering away.");
+                if (!Withering) {
+                    You("are no longer withering away.");
+                }
                 disp.botl = TRUE;
                 break;
             case AGGRAVATE_MONSTER:
