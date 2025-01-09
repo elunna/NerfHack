@@ -2867,6 +2867,8 @@ drop_boulder_on_player(
     }
     if (dmg)
         losehp(Maybe_Half_Phys(dmg), "scroll of earth", KILLED_BY_AN);
+    if (dmg > 6)
+        make_stunned((HStun & TIMEOUT) + (long) d(dmg / 6 + 1, 3), TRUE);
 }
 
 boolean
@@ -2933,6 +2935,13 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
             }
         } else {
             wakeup(mtmp, byu);
+            /* Stun if damage was over 6. */
+            if (mdmg > 6 && !mtmp->mstun) {
+                if (canseemon(mtmp))
+                    pline("%s %s for a moment.", Monnam(mtmp),
+                            makeplural(stagger(mtmp->data, "stagger")));
+                mtmp->mstun = 1;
+            }
         }
         wake_nearto(x, y, 4 * 4);
     } else if (engulfing_u(mtmp)) {
