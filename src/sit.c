@@ -777,8 +777,8 @@ attrcurse(void)
         FALLTHROUGH;
         /*FALLTHRU*/
     case 11:
-        if (HAggravate_monster & INTRINSIC) {
-            HAggravate_monster &= ~INTRINSIC;
+        if (HAggravate_monster & TIMEOUT) {
+            HAggravate_monster &= ~TIMEOUT;
             You_feel("less attractive.");
             ret = AGGRAVATE_MONSTER;
             break;

@@ -1746,9 +1746,12 @@ attributes_enlightenment(
     if (BAggravate_monster) /* Currently only Serenity does this.*/
         enl_msg("Serenity ", "is preventing", "prevented",
             " monsters from being aggravated", "");
-    else if (Aggravate_monster)
-        enl_msg("You aggravate", "", "d", " monsters",
-                from_what(AGGRAVATE_MONSTER));
+    else if (Aggravate_monster) {
+        Sprintf(buf, "aggravating monsters%s", from_what(AGGRAVATE_MONSTER));
+        if (wizard)
+            Sprintf(eos(buf), " (%ld)", HAggravate_monster & TIMEOUT);
+        you_are(buf, "");
+    }
     if (HConflict || EConflict) {
         if (BConflict)
             enl_msg("Serenity ", "is preventing", "prevented", "conflict", "");
