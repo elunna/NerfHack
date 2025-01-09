@@ -755,6 +755,13 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         free_mgivenname(mtmp);
         newsym(x, y);
         return obj;
+    case PM_DEMOGORGON:
+        /* Drop a scroll of wishing */
+        obj = mksobj_at(SCR_ZAPPING, x, y, TRUE, FALSE);
+        obj->corpsenm = WAN_WISHING;
+        obj->quan = 1;
+        obj->owt = weight(obj);
+        break;
     case NON_PM:
     case LEAVESTATUE:
     case NUMMONS: /* never use as index */
@@ -1123,7 +1130,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_DISPATER:
     case PM_BAALZEBUB:
     case PM_ASMODEUS:
-    case PM_DEMOGORGON:
     case PM_LAVA_DEMON:
     case PM_DEATH:
     case PM_PESTILENCE:
