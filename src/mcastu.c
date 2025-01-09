@@ -98,8 +98,8 @@ choose_magic_spell(struct monst* caster, int spellval)
         spellval = rn2(spellval);
 
     /* Low HP, prioritize healing */
-    if ((caster->mhp * 4) <= caster->mhpmax) {
-        if ((!rn2(10) || caster->mflee) && caster->m_lev > 10)
+    if ((caster->mhp * 5) <= caster->mhpmax) {
+        if ((!rn2(10) || caster->mflee) && caster->m_lev > 8)
             return MGC_ENTOMB;
         return MGC_CURE_SELF;
     }
@@ -1111,6 +1111,9 @@ cast_wizard_spell(
             if (rn2(4))
                 drop_boulder_on_player(FALSE, FALSE, FALSE, FALSE);
             dmg = 0;
+            /* Don't let monsters spam this, they should be trying to get away */
+            caster->mspec_used += d(20, 20);
+            caster->mflee = 1;
         }
         break;
     }
@@ -2098,7 +2101,7 @@ castmm(
     
     if (mattk->adtyp == AD_SPEL || mattk->adtyp == AD_CLRC) {
          /* monst->m_lev is unsigned (uchar), monst->mspec_used is int */
-        caster->mspec_used =  (int) (4 - caster->m_lev);
+        caster->mspec_used = (int) (4 - caster->m_lev);
         if (caster->mspec_used < 2)
             caster->mspec_used = 2;
 
