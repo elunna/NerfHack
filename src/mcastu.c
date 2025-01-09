@@ -840,7 +840,7 @@ cast_wizard_spell(
         /* Skip aggravate if we are not the target */
         if (youdefend) {
             if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 192)
-                incr_itimeout(&HAggravate_monster, rnd(250) + 50);
+                incr_itimeout(&HAggravate_monster, rnd(75) + 50);
             You_feel("that monsters are aware of your presence.");
             aggravate();
         }
