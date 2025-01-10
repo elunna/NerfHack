@@ -1501,12 +1501,6 @@ makemon(
     if ((mmflags & MM_MINVIS) != 0) /* for ^G */
         mon_set_minvis(mtmp); /* call after place_monster() */
 
-    /* Beef up Cerberus a bit without jacking up
-       his level so high that pets won't attempt
-       to take him on */
-    if (ptr == &mons[PM_CERBERUS])
-        mtmp->mhp = mtmp->mhpmax = 250 + rnd(50);
-
     /* Nazgul spawn with their steeds (but not riding them)*/
     if (ptr == &mons[PM_NAZGUL] && countbirth) {
         if (enexto(&cc, x, y, &mons[PM_FELL_BEAST]))
@@ -1597,8 +1591,6 @@ makemon(
                Let newcham() pick the shape. */
             && newcham(mtmp, (struct permonst *) 0, NO_NC_FLAGS))
             allow_minvent = FALSE;
-    } else if (mndx == PM_CERBERUS) {
-        mtmp->iscerberus = TRUE;
     } else if (mndx == PM_WIZARD_OF_YENDOR) {
         mtmp->iswiz = TRUE;
         svc.context.no_of_wizards++;

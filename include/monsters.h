@@ -498,42 +498,19 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 14, CLR_RED, HELL_HOUND),
-    /* Cerberus inherits many abilities from EvilHack:
-     * - Level raised from 12 to 27
-     * - Speed raised from 10 to 20
-     * - AC raised from 2 to -7
-     * - MR raised from 20 to 90
-     * - Weight and nutrition raised
-     * - Size raised from large to huge
-     * - Added thick skin, berserk, poisonous corpse, see invisible,
-     *   teleport control, accurate, displaces monsters.
-     * - resists sleep, poison, stoning, draining, and death.
-     * - Waits for the player to approach
-     *
-     * From xNetHack
-     * - Bumped all bites to 5d6
-     * - Added fire bite
-     * - Replaced the breath attack with 2 6d6 claws
-     *
-     * NerfHack:
-     * - Added drain life bite
-    */
+#ifdef CHARON
     MON(NAM("Cerberus"), S_DOG,
-        LVL(27, 20, -7, 90, -7), (G_NOGEN | G_UNIQ | G_HELL),
-        A(ATTK(AT_BITE, AD_PHYS, 5, 6),
-          ATTK(AT_BITE, AD_DRLI, 5, 6),
-          ATTK(AT_BITE, AD_FIRE, 5, 6),
-          ATTK(AT_CLAW, AD_PHYS, 6, 6),
-          ATTK(AT_CLAW, AD_PHYS, 6, 6),
-          NO_ATTK),
-        SIZ(1200, 500, MS_BARK, MZ_HUGE),
-        MR_FIRE | MR_SLEEP | MR_POISON | MR_STONE, MR_FIRE,
-        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE | M1_THICK_HIDE
-            | M1_SEE_INVIS | M1_POIS | M1_TPORT_CNTRL,
+        LVL(12, 10, 2, 20, -7), (G_NOGEN | G_UNIQ | G_HELL),
+        A(ATTK(AT_BITE, AD_PHYS, 3, 6),
+          ATTK(AT_BITE, AD_PHYS, 3, 6),
+          ATTK(AT_BITE, AD_PHYS, 3, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1000, 350, MS_BARK, MZ_LARGE), MR_FIRE, MR_FIRE,
+        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_PNAME | M2_MALE,
-        M3_INFRAVISIBLE | M3_ACCURATE | M3_BERSERK | M3_WAITFORU
-            | M3_DISPLACES,
-        NO_RACE, 30, CLR_BLACK, CERBERUS),
+        M3_INFRAVISIBLE,
+        NO_RACE, 14, CLR_RED, CERBERUS),
+#endif
     /*
      * eyes
      */

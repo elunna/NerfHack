@@ -811,7 +811,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_HELL_HOUND_PUP:
     case PM_BARGHEST:
     case PM_HELL_HOUND:
-    case PM_CERBERUS:
     case PM_GAS_SPORE:
     case PM_FLOATING_EYE:
     case PM_FREEZING_SPHERE:
@@ -3253,12 +3252,6 @@ m_detach(
        leaving the dungeon alive rather than dying */
     if (mtmp->iswiz)
         wizdeadorgone();
-
-#if 0 /* TODO: Possible travel restrictions if Cerberus is not killed. */
-    if (mtmp->iscerberus)
-        cerberusdead();
-#endif
-
     /* foodead() might give quest feedback for foo having died; skip that
        if we're called for mongone() rather than mondead(); saving bones
        or wizard mode genocide of "*" can result in special monsters going

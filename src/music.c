@@ -94,8 +94,6 @@ put_monsters_to_sleep(struct monst * caster, int distance)
         if (dist2(cx, cy, mtmp->mx, mtmp->my) < distance
             && sleep_monst(mtmp, d(10, 10), TOOL_CLASS)) {
             mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
-            if (mtmp->iscerberus)
-                pline("%s settles in for a quick nap.", Monnam(mtmp));
             slept_monst(mtmp);
         }
     }
