@@ -6755,8 +6755,7 @@ u_adtyp_resistance_obj(int dmgtyp)
 
     /* Items that give an extrinsic resistance give 99% protection to
        your items */
-    if ((u.uprops[prop].extrinsic & (W_ARMOR | W_ACCESSORY
-                                     | W_WEP | W_SWAPWEP)) != 0)
+    if (u.uprops[prop].extrinsic)
         return 99;
 
     /* Dwarvish cloaks give a 90% protection to items against heat and cold */
