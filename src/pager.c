@@ -1146,6 +1146,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_reviver(pm), "reviving");
     APPENDC(is_floater(pm), "floating");
     APPENDC(pm->mmove == 0, "stationary");
+    APPENDC(is_wanderer(pm), "wanders");
     APPENDC(pm_invisible(pm), "invisible");
     APPENDC(is_undead(pm), "undead");
     if (!is_undead(pm))
