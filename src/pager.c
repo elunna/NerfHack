@@ -4314,7 +4314,10 @@ corpse_conveys(char *buf, struct permonst * pm)
     /* acid, stone, and psionic resistance aren't currently conveyable */
     if (*buf)
         Strcat(buf, " resistance");
-    APPENDC(intrinsic_possible(TELEPORT, pm), "teleportation");
+    /* If we have many more corpses like this that have exceptions, implement 
+     * official handling in eat.c */
+    APPENDC(intrinsic_possible(TELEPORT, pm)
+                && pm != &mons[PM_QUANTUM_MECHANIC], "teleportation");
     APPENDC(intrinsic_possible(TELEPORT_CONTROL, pm), "teleport control");
     APPENDC(intrinsic_possible(TELEPAT, pm), "telepathy");
     APPENDC(pm == &mons[PM_MIND_FLAYER] || pm == &mons[PM_MASTER_MIND_FLAYER],
