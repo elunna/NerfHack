@@ -4783,6 +4783,8 @@ mhitm_ad_calm(struct monst *magr, struct attack *mattk,
                 if (gv.vis)
                     pline("%s looks calmer.", Monnam(mdef));
                 mdef->mpeaceful = 1;
+                if (mdef == u.usteed)
+                    dismount_steed(DISMOUNT_THROWN);
             }
             mdef->mtame = mhm->damage = 0;
         }
