@@ -1861,12 +1861,14 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
         } else {
             u.uhp += nhp;
             if (u.uhp > u.uhpmax) {
-                /* hard upper limit (copied from nurse care)
-                 * Use max level of 30 so early max HP gain is possible. */
-                if (u.uhpmax < 5 * MAXULEV + d(2 * MAXULEV, 10)) {
-                    u.uhpmax += nxtra;
-                } else {
-                    You_feel("your resilience reaching its apex.");
+                if (nxtra) {
+                    /* hard upper limit (copied from nurse care)
+                     * Use max level of 30 so early max HP gain is possible. */
+                    if (u.uhpmax < 5 * MAXULEV + d(2 * MAXULEV, 10)) {
+                        u.uhpmax += nxtra;
+                    } else {
+                        You_feel("your resilience reaching its apex.");
+                    }
                 }
                 if (u.uhpmax > u.uhppeak)
                     u.uhppeak = u.uhpmax;
