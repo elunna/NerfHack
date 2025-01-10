@@ -137,7 +137,7 @@ maybe_kick_monster(struct monst *mon, coordxy x, coordxy y)
         /* kicking might be halted by discovery of hidden monster,
            by player declining to attack peaceful monster,
            or by passing out due to encumbrance */
-        if (attack_checks(mon, (struct obj *) 0) || overexertion())
+        if (attack_checks(mon) || overexertion())
             mon = 0; /* don't kick after all */
         svc.context.forcefight = save_forcefight;
     }

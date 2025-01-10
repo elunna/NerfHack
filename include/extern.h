@@ -3399,7 +3399,7 @@ extern void u_init(void);
 
 extern void dynamic_multi_reason(struct monst *, const char *, boolean) NONNULLARG12;
 extern void erode_armor(struct monst *, int) NONNULLARG1;
-extern boolean attack_checks(struct monst *, struct obj *) NONNULLARG1;
+extern boolean attack_checks(struct monst *) NONNULLARG1;
 extern void check_caitiff(struct monst *) NONNULLARG1;
 extern void mon_maybe_unparalyze(struct monst *) NONNULLARG1;
 extern int find_roll_to_hit(struct monst *, uchar, struct obj *,

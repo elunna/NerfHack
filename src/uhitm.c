@@ -202,9 +202,7 @@ erode_armor(struct monst *mdef, int hurt)
 
 /* FALSE means it's OK to attack */
 boolean
-attack_checks(
-    struct monst *mtmp, /* target */
-    struct obj *wep)    /* uwep for do_attack(), null for kick_monster() */
+attack_checks(struct monst *mtmp) /* target */
 {
     int glyph;
 
@@ -327,7 +325,8 @@ attack_checks(
     if (flags.confirm && mtmp->mpeaceful
         && !Confusion && !Hallucination && !Stunned) {
         /* Intelligent chaotic weapons (Stormbringer) want blood */
-        if (is_art(wep, ART_STORMBRINGER) || Rabid) {
+        if (u_wield_art(ART_STORMBRINGER)
+                || u_offhand_art(ART_STORMBRINGER) || Rabid) {
             go.override_confirmation = TRUE;
             return FALSE;
         }
@@ -644,7 +643,7 @@ do_attack(struct monst *mtmp)
     gb.bhitpos.x = u.ux + u.dx;
     gb.bhitpos.y = u.uy + u.dy;
     gn.notonhead = (gb.bhitpos.x != mtmp->mx || gb.bhitpos.y != mtmp->my);
-    if (attack_checks(mtmp, uwep))
+    if (attack_checks(mtmp))
         return TRUE;
 
     if (Upolyd && noattacks(gy.youmonst.data)) {

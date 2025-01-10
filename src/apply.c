@@ -4004,7 +4004,7 @@ use_pole(struct obj *obj, boolean autohit)
     /* Attack the monster there */
     gb.bhitpos = cc;
     if ((mtmp = m_at(gb.bhitpos.x, gb.bhitpos.y)) != (struct monst *) 0) {
-        if (attack_checks(mtmp, uwep)) /* can attack proceed? */
+        if (attack_checks(mtmp)) /* can attack proceed? */
             /* no, abort the attack attempt; result depends on
                res: 1 => polearm became wielded, 0 => already wielded;
                svc.context.move: 1 => discovered hidden monster at target spot,
@@ -4331,7 +4331,7 @@ use_grapple(struct obj *obj)
         if (verysmall(mtmp->data) && !rn2(4)
             && enexto(&cc, u.ux, u.uy, (struct permonst *) 0)) {
             flags.confirm = FALSE;
-            (void) attack_checks(mtmp, uwep);
+            (void) attack_checks(mtmp);
             flags.confirm = save_confirm;
             check_caitiff(mtmp); /* despite fact there's no damage */
             You("pull in %s!", mon_nam(mtmp));
@@ -4341,7 +4341,7 @@ use_grapple(struct obj *obj)
         } else if ((!bigmonst(mtmp->data) && !strongmonst(mtmp->data))
                    || rn2(4)) {
             flags.confirm = FALSE;
-            (void) attack_checks(mtmp, uwep);
+            (void) attack_checks(mtmp);
             flags.confirm = save_confirm;
             check_caitiff(mtmp);
             (void) thitmonst(mtmp, uwep);
