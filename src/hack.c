@@ -2979,7 +2979,6 @@ domove_core(void)
         newsym(u.ux0, u.uy0);
         /* Since the hero has moved, adjust what can be seen/unseen. */
         vision_recalc(1); /* Do the work now in the recover time. */
-        invocation_message();
     }
 
     if (Punished) /* put back ball and chain */

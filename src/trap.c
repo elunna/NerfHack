@@ -3338,9 +3338,13 @@ trapeffect_vibrating_square(
     unsigned int trflags UNUSED)
 {
     if (mtmp == &gy.youmonst) {
+        /* temporary kludge to save hothraxxa's game */
+        svi.inv_pos.x = u.ux;
+        svi.inv_pos.y = u.uy;
         feeltrap(trap);
         /* messages handled elsewhere; the trap symbol is merely to mark the
            square for future reference */
+        invocation_message();
     } else {
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
         boolean see_it = cansee(mtmp->mx, mtmp->my);
