@@ -2288,8 +2288,6 @@ reveal_terrain_getglyph(
 
 #undef glyph_is_gascloud
 
-#undef glyph_is_gascloud
-
 #if defined(DUMPLOG) || defined(DUMPHTML)
 void
 dump_map(void)
