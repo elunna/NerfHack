@@ -230,7 +230,7 @@ static bool have_asked = false;
 void NetHackQtBind::qt_player_selection()
 {
     if ( !have_asked )
-    qt_askname();
+        qt_askname();
 }
 
 void NetHackQtBind::qt_askname()
@@ -462,8 +462,8 @@ void NetHackQtBind::qt_display_file(const char *filename, boolean must_exist)
     }
 
     if (complain) {
-    QString message = nh_qsprintf("File not found: %s\n",filename);
-    QMessageBox::warning(NULL, "File Error", message, QMessageBox::Ignore);
+        QString message = nh_qsprintf("File not found: %s\n",filename);
+        QMessageBox::warning(NULL, "File Error", message, QMessageBox::Ignore);
     }
 }
 
@@ -498,7 +498,7 @@ int NetHackQtBind::qt_select_menu(winid wid, int how, MENU_ITEM_P **menu_list)
 void NetHackQtBind::qt_update_inventory(int arg UNUSED)
 {
     if (main)
-    main->updateInventory(); // update the paper doll inventory subset
+        main->updateInventory(); // update the paper doll inventory subset
 
     /* doesn't work yet
     if (program_state.something_worth_saving && iflags.perm_invent)
@@ -816,26 +816,26 @@ char NetHackQtBind::qt_yn_function(const char *question_,
             cbuf[0] = '\0';
         char ch=NetHackQtBind::qt_nhgetch();
         if (ch=='\033') {
-        result=yn_esc_map;
-                Strcpy(cbuf, "ESC");
+            result=yn_esc_map;
+            Strcpy(cbuf, "ESC");
         } else if (choices && !strchr(choices,ch)) {
-        if (def && (ch==' ' || ch=='\r' || ch=='\n')) {
-            result=def;
-                    Strcpy(cbuf, visctrl(def));
+            if (def && (ch==' ' || ch=='\r' || ch=='\n')) {
+                result=def;
+                Strcpy(cbuf, visctrl(def));
+            } else {
+                NetHackQtBind::qt_nhbell();
+                // typing anything caused the most recent message line
+                // (which happens to our prompt) from having highlighting
+                // be removed; put that back
+                NetHackQtMessageWindow
+                        *mesgwin = main ? main->GetMessageWindow() : NULL;
+                if (mesgwin)
+                    mesgwin->RehighlightPrompt();
+                // and try again...
+            }
         } else {
-            NetHackQtBind::qt_nhbell();
-                    // typing anything caused the most recent message line
-                    // (which happens to our prompt) from having highlighting
-                    // be removed; put that back
-                    NetHackQtMessageWindow
-                            *mesgwin = main ? main->GetMessageWindow() : NULL;
-                    if (mesgwin)
-                        mesgwin->RehighlightPrompt();
-            // and try again...
-        }
-        } else {
-        result=ch;
-                Strcpy(cbuf, visctrl(ch));
+            result=ch;
+            Strcpy(cbuf, visctrl(ch));
         }
     }
 
