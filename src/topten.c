@@ -528,9 +528,6 @@ encode_extended_achievements(char *buf)
         case ACH_MEDU:
             achievement = "defeated_medusa";
             break;
-        case ACH_CERB:
-            achievement = "defeated_cerberus";
-            break;
         case ACH_MINE_PRIZE:
             achievement = "obtained_the_luckstone_from_the_mines";
             break;

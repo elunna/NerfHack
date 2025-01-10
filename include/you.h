@@ -82,32 +82,25 @@ enum achivements {
     ACH_MINE_PRIZE = 10, /* acquired Mines' End luckstone */
     ACH_SOKO_PRIZE = 11, /* acquired Sokoban bag or amulet */
     ACH_MEDU = 12, /* killed Medusa */
-    ACH_CERB = 13, /* killed Cerberus */
-    ACH_BLND = 14, /* hero was always blond, no, blind */
-    ACH_NUDE = 15, /* hero never wore armor */
+    ACH_BLND = 13, /* hero was always blond, no, blind */
+    ACH_NUDE = 14, /* hero never wore armor */
     /* 1 through 14 were present in 3.6.x; the rest are newer; first,
        some easier ones so less skilled players can have achievements */
-    ACH_MINE = 16, /* entered Gnomish Mines */
-    ACH_TOWN = 17, /* reached Minetown */
-    ACH_SHOP = 18, /* entered a shop */
-    ACH_TMPL = 19, /* entered a temple */
-    ACH_ORCL = 20, /* consulted the Oracle */
-    ACH_NOVL = 21, /* read at least one passage from a Discworld novel */
-    ACH_SOKO = 22, /* entered Sokoban */
-    ACH_BGRM = 23, /* entered Bigroom (not guaranteed to be in every dgn) */
+    ACH_MINE = 15, /* entered Gnomish Mines */
+    ACH_TOWN = 16, /* reached Minetown */
+    ACH_SHOP = 17, /* entered a shop */
+    ACH_TMPL = 18, /* entered a temple */
+    ACH_ORCL = 19, /* consulted the Oracle */
+    ACH_NOVL = 20, /* read at least one passage from a Discworld novel */
+    ACH_SOKO = 21, /* entered Sokoban */
+    ACH_BGRM = 22, /* entered Bigroom (not guaranteed to be in every dgn) */
     /* role's rank titles, beyond first (#0 at level one, not an achievement);
        23..30 are negated if hero is female at the time new rank is gained
        so that disclosing them can use the gender which applied at the time */
-    ACH_RNK1 = 24,
-    ACH_RNK2 = 25,
-    ACH_RNK3 = 26,
-    ACH_RNK4 = 27,
-    ACH_RNK5 = 28,
-    ACH_RNK6 = 29,
-    ACH_RNK7 = 30,
-    ACH_RNK8 = 31,
-    ACH_TUNE = 32, /* discovered the castle drawbridge's open/close tune */
-    N_ACH = 33     /* allocate room for 31 plus a slot for 0 terminator */
+    ACH_RNK1 = 23, ACH_RNK2 = 24, ACH_RNK3 = 25, ACH_RNK4 = 26,
+    ACH_RNK5 = 27, ACH_RNK6 = 28, ACH_RNK7 = 29, ACH_RNK8 = 30,
+    ACH_TUNE = 31, /* discovered the castle drawbridge's open/close tune */
+    N_ACH = 32     /* allocate room for 31 plus a slot for 0 terminator */
 };
     /*
      * Other potential achievements to track (this comment briefly resided
