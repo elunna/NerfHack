@@ -3464,9 +3464,7 @@ do_genocide(
         if (!only_on_level) {
             svm.mvitals[mndx].mvflags |= (G_GENOD | G_NOCORPSE);
         }
-        pline("Wiped out %s%s%s.", which,
-              (*which != 'a') ? buf : makeplural(buf),
-              on_this_level);
+        pline("Wiped out %s%s%s.", which, makeplural(buf), on_this_level);
 
         if (killplayer) {
             u.uhp = -1;
