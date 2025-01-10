@@ -517,18 +517,18 @@ update_mon_extrinsics(
     boolean on,
     boolean silently)
 {
-    int unseen;
     uchar mask;
     struct obj *otmp;
-    int which = (int) armor_provides_extrinsic(obj),
+    int unseen,
+        which = (int) armor_provides_extrinsic(obj),
         altwhich = altprop(obj);
-    boolean had_effect;
+    boolean had_effect = FALSE;
 
     unseen = !canseemon(mon);
     if (!which && !altwhich)
         goto maybe_blocks;
 
- again:
+again:
     if (on) {
         switch (which) {
         case INVIS:
