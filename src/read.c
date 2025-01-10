@@ -3225,7 +3225,7 @@ litroom(
            (do_clear_area() rejects radius 0 so call set_lit() directly) */
         set_lit(u.ux, u.uy, (genericptr_t) &is_lit);
     } else {
-        int radius;
+        int radius = 5; /* default radius */
         if (obj && obj->oclass == SCROLL_CLASS) {
             /* blessed scroll lights up entire level */
             if (obj->blessed) {
@@ -3260,8 +3260,6 @@ litroom(
                     break;
                 }
             }
-        } else {
-            radius = 5;
         }
 
         if (radius > 0) {
