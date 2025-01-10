@@ -4312,7 +4312,7 @@ xkilled(
                            uhis(), pmname(mdat, Mgender(mtmp)));
         }
     } else if (mtmp->mpeaceful) {
-        if (!Uevil) {
+        if (u.ualign.type != A_CHAOTIC) {
             if (canspotmon(mtmp))
                 You_feel("guilty.");
             else
