@@ -5420,8 +5420,7 @@ deck_of_fate(struct obj *obj)
                 You_feel("quite lordly.");
             break;
         case 18: /* The Chariot */
-            incr_itimeout(&HTeleport_control, 1);
-            level_tele();
+            tele();
             break;
         case 19: /* The Sun */
             You("are bathed in warmth."); /* as praying */
