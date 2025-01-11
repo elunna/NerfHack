@@ -1183,15 +1183,14 @@ u_init(void)
     boolean nosmoky;
     do {
         nosmoky = TRUE;
-        struct obj *otmp;
-        
+        struct obj *otmp = NULL;
         for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
             if (otmp->oclass != POTION_CLASS)
                 continue;
             if (objdescr_is(otmp, "smoky")) {
                 shuffle(FIRST_POTION, LAST_POTION, TRUE);
                 nosmoky = FALSE;
-               break;
+                break;
             }
         }
     } while (!nosmoky);
