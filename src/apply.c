@@ -5399,7 +5399,7 @@ deck_of_fate(struct obj *obj)
             break;
         case 16: /* The Hierophant */
             terr = levl[u.ux][u.uy].typ;
-            if (terr == ROOM) {
+            if (terr == ROOM || terr == CORR || terr == GRASS) {
                 if (!Blind)
                     pline_The("%s beneath you reshapes itself into an altar!",
                                 surface(u.ux, u.uy));
@@ -5412,7 +5412,7 @@ deck_of_fate(struct obj *obj)
             break;
         case 17: /* The Empress */
             terr = levl[u.ux][u.uy].typ;
-            if (terr == ROOM || terr == CORR) {
+            if (terr == ROOM || terr == CORR || terr == GRASS) {
                 if (!Blind)
                     Your("throne arrives.");
                 levl[u.ux][u.uy].typ = THRONE;
