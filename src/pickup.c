@@ -3832,7 +3832,7 @@ dotip(void)
         return ECMD_TIME;
     }
     /* packs of cards */
-    if (cobj->otyp == PLAYING_CARD_DECK || cobj->otyp == DECK_OF_FATE) {
+    if (cobj->otyp == PLAYING_CARD_DECK) {
         You("empty the contents of the card box.");
         otmp = mksobj(RAZOR_CARD, TRUE, FALSE);
         otmp->quan = rn1(31, 22);
