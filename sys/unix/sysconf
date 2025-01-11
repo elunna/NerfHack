@@ -144,12 +144,18 @@ LIVELOG=0x0FFF
 #   %D current time, YYYYMMDDhhmmss format
 #   %n player name
 #   %N first character of player name
-DUMPLOGFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nerfhack.txt
+#DUMPLOGFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nerfhack.txt
+
+# For local playtesting
+DUMPLOGFILE=/home/sweep/%t.nerfhack.txt
 
 # End of game HTML dump.
 # Only available if NerfHack was compiled with DUMPHTML
 # Allows placeholders as above.
-DUMPHTMLFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nerfhack.html
+#DUMPHTMLFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nerfhack.html
+
+# For local playtesting
+DUMPHTMLFILE=/home/sweep/%t.nerfhack.html
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will
