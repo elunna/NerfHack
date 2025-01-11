@@ -5176,15 +5176,15 @@ check_mon_jump(struct monst *mtmp, int x, int y)
 static const int GOOD_CARDS = 12;
 static NEARDATA const char *tarotnames[] = {
     "the Tower",            /* 1 - bad */
-    "the Wheel of Fortune", /* 2 - meh, +3-5 cards */
-    "the Devil",            /* 3 - bad, stop */
+    "the Wheel of Fortune", /* 2 - meh, +2 cards */
+    "the Devil",            /* 3 - bad, stop drawing*/
     "the Fool",             /* 4 - bad */
-    "Death",                /* 5 - bad, stop */
+    "Death",                /* 5 - bad, stop drawing */
     "Judgment",             /* 6 - bad */
     "the Emperor",          /* 7 - bad */
     "the Hermit",           /* 8 - meh? */
     "the Hanged Man",       /* 9 - meh? */
-    "Justice",              /* 10 - bad */
+    "Justice",              /* 10 - bad, maybe stop drawing  */
     "Temperance",           /* 11 - bad */
     "the Lovers",           /* 12 - good */
     "the Magician",         /* 13 - good */
@@ -5195,8 +5195,8 @@ static NEARDATA const char *tarotnames[] = {
     "the Chariot",          /* 18 - good */
     "the Sun",              /* 19 - good */
     "the Moon",             /* 20 - good */
-    "the Star",             /* 21 - good */
-    "the World"             /* 22 - good, stop */
+    "the World",            /* 21 - good */
+    "the Star"              /* 22 - good, stop drawing */
 };
 
 staticfn void
@@ -5449,10 +5449,10 @@ deck_of_fate(struct obj *obj)
             else
                 You("feel lucky!");
             break;
-        case 21: /* The Star */
+        case 21: /* The World */
             identify_pack(0, FALSE);
             break;
-        case 22: /* The World */
+        case 22: /* The Star */
             draws = 0;
             makewish();
             break;
