@@ -5271,6 +5271,8 @@ deck_of_fate(struct obj *obj)
         case 4: /* The Fool */
             (void) adjattrib(A_INT, -rnd(3), FALSE);
             (void) adjattrib(A_WIS, -rnd(3), FALSE);
+            incr_itimeout(&HAggravate_monster, rn1(725, 1500));
+            aggravate();
             break;
         case 5: /* Death */
             draws = 0;
