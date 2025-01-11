@@ -5325,10 +5325,10 @@ deck_of_fate(struct obj *obj)
             break;
         case 8: /* The Hermit */
             You_feel("like hiding!");
-            tele();
-            incr_itimeout(&HInvis, rn1(500, 500));
+            int amt = rn1(500, 1000);
+            incr_itimeout(&HInvis, amt);
+            incr_itimeout(&HTeleportation, amt / 2);
             newsym(u.ux, u.uy);
-            aggravate();
             break;
         case 9: /* The Hanged Man */
             mtmp = makemon(&mons[PM_ROPE_GOLEM], u.ux, u.uy, NO_MM_FLAGS);
