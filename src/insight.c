@@ -71,7 +71,6 @@ static struct ll_achieve_msg achieve_msg [] = {
     { LL_ACHIEVE | LL_SPOILER, "acquired the Mines' End" }, /* " luckstone" */
     { LL_ACHIEVE | LL_SPOILER, "acquired the Sokoban" }, /* " <item>" */
     { LL_ACHIEVE | LL_UMONST, "killed Medusa" },
-    { LL_ACHIEVE | LL_UMONST, "killed Cerberus" },
      /* these two are not logged */
     { 0, "hero was always blond, no, blind" },
     { 0, "hero never wore armor" },
