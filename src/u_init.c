@@ -1179,15 +1179,22 @@ u_init(void)
     
 #define FIRST_POTION POT_GAIN_ABILITY
 #define LAST_POTION POT_OIL
-    /* Ensure nobody gets smoky potions in starting inventory */
-    struct obj *otmp;
-reroll_smoky:
-    for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
-        if (objdescr_is(otmp, "smoky")) {
-            shuffle(FIRST_POTION, LAST_POTION, TRUE);
-            goto reroll_smoky;
+    /* Ensure no smoky potions in starting inventory */
+    boolean nosmoky;
+    do {
+        nosmoky = TRUE;
+        struct obj *otmp;
+        
+        for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+            if (otmp->oclass != POTION_CLASS)
+                continue;
+            if (objdescr_is(otmp, "smoky")) {
+                shuffle(FIRST_POTION, LAST_POTION, TRUE);
+                nosmoky = FALSE;
+               break;
+            }
         }
-    }
+    } while (!nosmoky);
     
     if (u.uroleplay.pauper)
         pauper_reinit();
