@@ -2052,6 +2052,8 @@ poly_obj(struct obj *obj, int id)
             otmp->age = 1500L; /* "best" oil lamp possible */
         } else if (otmp->otyp == MAGIC_MARKER) {
             otmp->recharged = 1; /* degraded quality */
+        } else if (otmp->otyp == DECK_OF_FATE) {
+            otmp->otyp = PLAYING_CARD_DECK;
         }
         /* don't care about the recharge count of other tools */
         break;
@@ -2077,15 +2079,15 @@ poly_obj(struct obj *obj, int id)
 	/* Avoid creating scrolls of zapping from polypiling.
 	 * Maybe cartomancers should be able to?? */
 	while (otmp->otyp == SCR_ZAPPING) {
-        otmp->otyp = rnd_class(SCR_ENCHANT_ARMOR, SCR_STINKING_CLOUD);
-    }
+            otmp->otyp = rnd_class(SCR_ENCHANT_ARMOR, SCR_STINKING_CLOUD);
+        }
 
-    if (Role_if(PM_CARTOMANCER)) {
-        You("feel guilty about defacing a card!");
-        adjalign(-10);
-        change_luck(-2);
-    }
-    break;
+        if (Role_if(PM_CARTOMANCER)) {
+            You("feel guilty about defacing a card!");
+            adjalign(-10);
+            change_luck(-2);
+        }
+        break;
 
     case SPBOOK_CLASS:
         while (otmp->otyp == SPE_POLYMORPH)
