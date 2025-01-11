@@ -7,7 +7,6 @@
 
 staticfn void setgemprobs(d_level *);
 staticfn void randomize_gem_colors(void);
-staticfn void shuffle(int, int, boolean);
 staticfn void shuffle_all(void);
 staticfn int QSORTCALLBACK discovered_cmp(const genericptr, const genericptr);
 staticfn char *sortloot_descr(int, char *);
@@ -107,7 +106,7 @@ randomize_gem_colors(void)
 }
 
 /* shuffle descriptions on objects o_low to o_high */
-staticfn void
+void
 shuffle(int o_low, int o_high, boolean domaterial)
 {
     int i, j, num_to_shuffle;
