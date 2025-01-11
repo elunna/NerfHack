@@ -5376,8 +5376,10 @@ deck_of_fate(struct obj *obj)
         case 12: /* The Lovers */
             for (n = 0; n < 2; n++) {
                 mtmp = makemon(&mons[PM_AMOROUS_DEMON], u.ux, u.uy, NO_MM_FLAGS);
-                if (mtmp)
+                if (mtmp) {
                     mtmp->mpeaceful = 1;
+                    newsym(mtmp->mx, mtmp->my);
+                }
             }
             if (!Deaf && mtmp)
                 You_hear("infernal giggling.");
