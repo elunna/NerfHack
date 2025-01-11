@@ -371,6 +371,14 @@ POSTINSTALL+= sed -i -e 's;^GDBPATH=/usr/bin/gdb;\#GDBPATH=/usr/bin/gdb;' \
 		-e 's;PANICTRACE_GDB=1;PANICTRACE_GDB=0;' $(INSTDIR)/sysconf;
 endif
 
+ifeq 'USENONOSTATICFN' '1'
+CFLAGS += -DNONOSTATICFN
+else
+ifeq 'USE_NOSTATICFN' '1'
+CFLAGS += -DNOSTATICFN
+endif
+endif
+
 # Lua
 # when building liblua.a, avoid warning that use of tmpnam() should be
 # replaced by mkstemp(); the lua code doesn't use nethack's config.h so

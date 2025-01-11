@@ -59,7 +59,7 @@ MAXPLAYERS=0
 
 # If not null, added to string "To get local support, " in the support
 # information help.
-SUPPORT=Contact hackemslashem on Libera irc channel #hardfought
+SUPPORT=Contact hackemslashem on Libera irc channel #nerfhack
 
 # If not null, displayed at the end of a panic-save sequence.
 #RECOVER=Run the recover program.
@@ -147,7 +147,7 @@ LIVELOG=0x0FFF
 #DUMPLOGFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nerfhack.txt
 
 # For local playtesting
-DUMPLOGFILE=/home/sweep/%t.nerfhack.txt
+#DUMPLOGFILE=/home/sweep/%t.nerfhack.txt
 
 # End of game HTML dump.
 # Only available if NerfHack was compiled with DUMPHTML
@@ -155,7 +155,7 @@ DUMPLOGFILE=/home/sweep/%t.nerfhack.txt
 #DUMPHTMLFILE=/dgldir/userdata/%N/%n/nethack/dumplog/%t.nerfhack.html
 
 # For local playtesting
-DUMPHTMLFILE=/home/sweep/%t.nerfhack.html
+#DUMPHTMLFILE=/home/sweep/%t.nerfhack.html
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will

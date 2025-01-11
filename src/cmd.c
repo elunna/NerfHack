@@ -5294,7 +5294,7 @@ yn_function(
         int altres = def ? def : '\033';
 
 #if 0 /* TODO: Fix this - for now I'm disabling this impossible
-       * because it clobs up the fuzzer */
+       * because it clogs up the fuzzer */
         impossible("yn_function() returned '%s'; using '%s' instead",
                    visctrl(res), visctrl(altres));
 #endif
