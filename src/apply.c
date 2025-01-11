@@ -5211,7 +5211,10 @@ deck_of_fate(struct obj *obj)
         Your("%s are occupied!", makeplural(body_part(HAND)));
         return;
     }
-
+    /* We need some way to make turn 1 cartomancer wishes not
+     * as crazy overpowered... message for this? */
+    u.ualign.record = -1;
+    
     if (obj->cursed) {
         badcards = TRUE;
     } else if (obj->blessed || Role_if(PM_CARTOMANCER)) {
@@ -5339,7 +5342,7 @@ deck_of_fate(struct obj *obj)
             change_luck(-1);
             break;
         case 10: /* Justice */
-            if (u.ualign.abuse < (unsigned) -13 || u.ualign.record < 0) {
+            if (u.ualign.abuse < (unsigned) -13 || Luck <= 0) {
                 if (!Blind)
                     You("are frozen by the power of Justice!");
                 else
