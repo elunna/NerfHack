@@ -5398,9 +5398,9 @@ deck_of_fate(struct obj *obj)
             (void) adjattrib(A_STR, rn1(5, 4), FALSE);
             break;
         case 15: /* The High Priestess */
-            You_feel("more devout.");
-            u.ualign.abuse = 0; /* Clear past sins! */
-            adjalign(10);
+            /* You_feel("more devout."); */
+            (void) adjattrib(A_CHA, 1, FALSE);
+            incr_itimeout(&HTelepat, rn1(750, 1250));
             break;
         case 16: /* The Hierophant */
             terr = levl[u.ux][u.uy].typ;

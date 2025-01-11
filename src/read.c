@@ -2545,7 +2545,7 @@ seffect_knowledge(struct obj **sobjp)
         learned_something = TRUE;
     }
 
-       /* Get a random bonus based on luck. */
+    /* Get a random bonus based on luck. */
     if (sblessed && rnl(5) == 0 && (learnabout = learnme())) {
         You("now know more about %s.", makeplural(simple_typename(learnabout)));
         learned_something = TRUE;
