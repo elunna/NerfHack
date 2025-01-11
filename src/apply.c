@@ -5246,9 +5246,7 @@ deck_of_fate(struct obj *obj)
             break;
         case 2: /* The Wheel of Fortune */
             draws += 2;
-            if (Role_if(PM_CARTOMANCER))
-                draws += rnd(3);
-            pline("%ld more cards flip out of the deck.", draws);
+            pline("Two more cards flip out of the deck.");
             break;
         case 3: { /* The Devil */
             draws = 0;
