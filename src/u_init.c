@@ -1092,7 +1092,8 @@ u_init(void)
 {
     int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
-
+    struct obj *otmp;
+    
     flags.female = flags.initgend;
     flags.beginner = Role_if(PM_TOURIST) ? TRUE : FALSE;
 
@@ -1179,22 +1180,22 @@ u_init(void)
     
 #define FIRST_POTION POT_GAIN_ABILITY
 #define LAST_POTION POT_OIL
-    /* Ensure no smoky potions in starting inventory */
-    boolean nosmoky;
-    do {
-        nosmoky = TRUE;
-        struct obj *otmp = NULL;
-        for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
-            if (otmp->oclass != POTION_CLASS)
-                continue;
-            if (objdescr_is(otmp, "smoky")) {
-                shuffle(FIRST_POTION, LAST_POTION, TRUE);
-                nosmoky = FALSE;
-                break;
-            }
-        }
-    } while (!nosmoky);
     
+    /* Ensure no smoky potions in starting inventory */
+    int tries = 0;
+reroll:
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+        if (tries > 1000)
+            break;
+        if (otmp->oclass != POTION_CLASS)
+            continue;
+        if (objdescr_is(otmp, "smoky")) {
+            shuffle(FIRST_POTION, LAST_POTION, TRUE);
+            tries++;
+            goto reroll;
+        }
+    }
+
     if (u.uroleplay.pauper)
         pauper_reinit();
 
