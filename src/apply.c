@@ -5345,6 +5345,7 @@ deck_of_fate(struct obj *obj)
                 else
                     You("can't seem to move!");
                 nomul(-(rn1(30, 20)));
+                draws = 0;
             } else {
                 You("will be rewarded for your loyalty!");
                 if (Punished)
