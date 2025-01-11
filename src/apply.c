@@ -5411,6 +5411,10 @@ deck_of_fate(struct obj *obj)
                 You_feel("a twinge of anxiety.");
             break;
         case 17: /* The Empress */
+            if (Luck < 0) {
+                mtmp = makemon(&mons[PM_ELVEN_MONARCH], u.ux, u.uy, MM_FEMALE);
+                break;
+            }
             terr = levl[u.ux][u.uy].typ;
             if (terr == ROOM || terr == CORR || terr == GRASS) {
                 if (!Blind)
