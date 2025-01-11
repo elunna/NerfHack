@@ -5263,11 +5263,11 @@ deck_of_fate(struct obj *obj)
                 if (dnum != NON_PM)
                     mtmp = makemon(&mons[dnum], u.ux, u.uy, NO_MM_FLAGS);
             }
-
-            if (!Blind && mtmp) {
+          
+            if (mtmp && !Blind) {
                 pline("%s appears from a cloud of noxious smoke!", Monnam(mtmp));
                 newsym(mtmp->mx, mtmp->my);
-            } else if (olfaction(gy.youmonst.data))
+            } else if (mtmp && olfaction(gy.youmonst.data))
                 pline("Something stinks!");
             break;
         }
