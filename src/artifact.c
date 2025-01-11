@@ -1034,7 +1034,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
             return 0;
         You("are blasted by %s power!", s_suffix(the(xname(obj))));
         touch_blasted = TRUE;
-        dmg = d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
+        dmg = d((Antimagic ? 6 : 8), (self_willed ? 10 : 6));
         /* add half (maybe quarter) of the usual silver damage bonus */
         if (is_silver(obj) && Hate_silver)
             tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
