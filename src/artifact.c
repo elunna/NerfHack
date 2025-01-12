@@ -1189,7 +1189,7 @@ spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
                   && weap->attk.damn == 0 && weap->attk.damd == 0))
         gs.spec_dbon_applies = FALSE;
     else if (is_art(otmp, ART_GRIMTOOTH) || is_art(otmp, ART_VORPAL_BLADE)
-             							 || is_art(otmp, ART_ANGELSLAYER))
+             || is_art(otmp, ART_GLAMDRING) || is_art(otmp, ART_ANGELSLAYER))
         /* Grimtooth has SPFX settings to warn against elves but we want its
            damage bonus to apply to all targets, so bypass spec_applies() */
         gs.spec_dbon_applies = TRUE;
@@ -1958,6 +1958,7 @@ artifact_hit(
                 return FALSE;
             return TRUE;
         case ART_ORCRIST:
+        case ART_GLAMDRING:
             if (youattack && is_orc(mdef->data) && instakill) {
                 You("slice open %s throat!", s_suffix(mon_nam(mdef)));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
@@ -1969,7 +1970,8 @@ artifact_hit(
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (youdefend && maybe_polyd(is_orc(gy.youmonst.data),
                                                 Race_if(PM_ORC)) && instakill) {
-                You("feel Orcrist slice deep across your neck!");
+                You("feel %s slice deep across your neck!",
+                    artiname(otmp->oartifact));
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
             } else
@@ -3764,6 +3766,7 @@ artifact_info(int anum)
         art_info.wielded[16] = "boosts constitution";
         break;
     case ART_ORCRIST:
+    case ART_GLAMDRING:
         art_info.xattack = "instakills orcs";
         break;
     case ART_ORIGIN:

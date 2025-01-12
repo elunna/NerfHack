@@ -435,6 +435,17 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, PM_ELF,
       3, ARTVAL, 2000L, CLR_BRIGHT_BLUE, ORCRIST),
 
+    /* Glamdring, from the LotR series by J.R.R Tolkien. This was the
+     * sword that was found along side Orcrist and Sting in a troll cave,
+     * and was used by Gandalf thereafter. Like its brethren, this sword
+     * glows blue in the presence of orcs. In EvilHack, can only come into
+     * existience by forging Orcrist and Sting together */
+    A("Glamdring", LONG_SWORD,
+      (SPFX_RESTR | SPFX_WARN | SPFX_PROTECT | SPFX_DFLAGH), 0, MH_ORC,
+      PHYS(8, 10), DFNS(AD_ELEC), NO_CARY, 0,
+      A_CHAOTIC, NON_PM, PM_ELF,
+      1, ARTVAL, 8000L, CLR_BRIGHT_BLUE, GLAMDRING),
+    
     /*** Unaligned artifacts ***/
 
     /* Now grants warning vs dragons and can instakill dragons */
