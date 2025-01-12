@@ -3769,6 +3769,9 @@ artifact_info(int anum)
     case ART_GLAMDRING:
         art_info.xattack = "instakills orcs";
         break;
+    case ART_ANGELSLAYER:
+        art_info.xattack = "instakills angels";
+        break;
     case ART_ORIGIN:
         art_info.wielded[16] = "boosts spellcasting";
         break;
