@@ -321,7 +321,16 @@ static NEARDATA struct artifact artilist[] = {
 
 
     /*** Chaotic artifacts ***/
-
+    
+    /* From SpliceHack. Similar to the brands. Destroys items.
+     * Was un-aligned in Splice, but was made chaotic and intelligent.
+     */
+    A("Acidfall", LONG_SWORD,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL), 0, 0,
+      ACID(5, 0), DFNS(AD_ACID), NO_CARY, 0,
+      A_CHAOTIC, NON_PM, NON_PM,
+      DFLT_SPE, ARTVAL, 3000L, NO_COLOR, ACIDFALL),
+    
     /* From xNetHack */
     A("The Amulet of Storms", AMULET_OF_FLYING,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,

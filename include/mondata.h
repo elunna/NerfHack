@@ -366,6 +366,10 @@
     ((ptr) == &mons[PM_ORC] || (ptr) == &mons[PM_GIANT] \
      || (ptr) == &mons[PM_ELF] || (ptr) == &mons[PM_HUMAN])
 
+/* Is an iron piercer really made of iron?? */
+#define can_corrode(ptr) \
+((ptr) == &mons[PM_IRON_GOLEM] || (ptr) == &mons[PM_IRON_PIERCER])
+
 /* various monsters move faster underwater vs on land */
 #define is_fast_underwater(ptr) \
     ((ptr) == &mons[PM_WATER_TROLL] || (ptr) == &mons[PM_BABY_CROCODILE] \

@@ -1329,6 +1329,14 @@ hit_bars(
             if (!nodissolve)
                 dissolve_bars(barsx, barsy);
         }
+    } else if (obj_type == LONG_SWORD && otmp->oartifact == ART_ACIDFALL) {
+        if (cansee(barsx, barsy) && !nodissolve)
+            pline_The("acidic blade slices right through the iron bars!");
+        else
+            You_hear(Hallucination ? "a hot knife slice through butter!"
+                                   : "a hissing noise.");
+        if (!nodissolve)
+            dissolve_bars(barsx, barsy);
     } else {
         if (!Deaf) {
             static enum sound_effect_entries se[] SOUNDLIBONLY = {

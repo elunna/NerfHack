@@ -1583,7 +1583,8 @@ artifact_hit(
     realizes_damage = (youdefend || vis
                        /* feel the effect even if not seen */
                        || (youattack && mdef == u.ustuck));
-
+    boolean def_underwater = youdefend ? Underwater : mon_underwater(mdef);
+    
     /* the four basic attacks: fire, cold, shock and missiles */
     if (attacks(AD_FIRE, otmp)) {
         if (realizes_damage) {
@@ -1673,6 +1674,30 @@ artifact_hit(
         return realizes_damage;
     }
 
+    /* Fifth basic attack - acid (for the new and improved Dirge... DIRGE) */
+    if (attacks(AD_ACID, otmp)) {
+        if (realizes_damage) {
+            pline_The("acidic blade %s %s%c",
+                      !gs.spec_dbon_applies
+                          ? "hits"
+                          : can_corrode(mdef->data)
+                              ? "eats away part of"
+                              : def_underwater
+                                  ? "hits" : "burns",
+                      hittee, !gs.spec_dbon_applies ? '.' : '!');
+        }
+        if (!def_underwater) {
+            if (!rn2(5)) {
+                erode_armor(mdef, ERODE_CORRODE);
+            }
+            if (!rn2(3)) {
+                int itemdmg = destroy_items(mdef, AD_ELEC, *dmgptr);
+                if (!youdefend)
+                    *dmgptr += itemdmg; /* item destruction dmg */
+            }
+        }
+        return realizes_damage;
+    }
     /* disease attack  */
     if (attacks(AD_DISE, otmp)) {
         boolean elf = youdefend ? maybe_polyd(is_elf(gy.youmonst.data),
