@@ -286,6 +286,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
                 opt_in, set_in_game,
                 Yes, Yes, No, Yes, NoAlias,
                 "the kinds of information to disclose at end of game")
+    NHOPTB(do_not_flip_soko, Advanced, 0, opt_in, set_in_game,
+       Off, Yes, No, No, NoAlias, &flags.do_not_flip_soko, Term_False,
+       "allow flipped Sokoban levels (enabling this breaks Soko rules!)")
     NHOPTC(dogname, Advanced, PL_PSIZ, opt_in, set_gameview,
                 No, Yes, No, No, NoAlias,
                 "name of your starting pet if it is a little dog")
@@ -313,9 +316,6 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTB(fixinv, Advanced, 0, opt_out, set_in_game,
            On, Yes, No, No, NoAlias, &flags.invlet_constant, Term_False,
            "inventory items keep their letters")
-    NHOPTB(flipsoko, Advanced, 0, opt_in, set_in_game,
-           On, Yes, No, No, NoAlias, &flags.flipsoko, Term_False,
-           "allow flipped Sokoban levels (disabling this breaks Soko rules!)")
     NHOPTC(font_map, Advanced, 40, opt_in, set_gameview,
                 Yes, Yes, Yes, No, NoAlias, "font to use in the map window")
     NHOPTC(font_menu, Advanced, 40, opt_in, set_gameview,
