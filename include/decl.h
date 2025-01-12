@@ -343,6 +343,10 @@ struct instance_globals_d {
     boolean decor_fumble_override;
     boolean decor_levitate_override;
 
+    /* new */
+    boolean deferred_showpaths;
+    char *deferred_showpaths_dir;
+
     boolean havestate;
     unsigned long magic; /* validate that structure layout is preserved */
 };
@@ -1043,6 +1047,9 @@ struct instance_globals_w {
     /* decl.c */
     int warn_obj_cnt; /* count of monsters meeting criteria */
     long wailmsg;
+
+    /* do_wear.c */
+    uint8 wasinwater;
 
     /* symbols.c */
     nhsym warnsyms[WARNCOUNT]; /* the current warning display symbols */

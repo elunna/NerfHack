@@ -639,6 +639,7 @@ maketrap(coordxy x, coordxy y, int typ)
             lev->flags = 0; /* set_levltyp doesn't take care of this [yet?] */
 
         unearth_objs(x, y);
+        recalc_block_point(x, y);
         break;
     case TELEP_TRAP:
         if (isok(gl.launchplace.x, gl.launchplace.y)) {
@@ -3877,6 +3878,7 @@ blow_up_landmine(struct trap *trap)
             }
         }
     }
+    fill_pit(x, y);
     spot_checks(x, y, old_typ);
 }
 
@@ -8053,7 +8055,8 @@ trap_ice_effects(coordxy x, coordxy y, boolean ice_is_melting)
             int otyp = (ttmp->ttyp == LANDMINE) ? LAND_MINE : BEARTRAP;
             cnv_trap_obj(otyp, 1, ttmp, TRUE);
         } else {
-            deltrap(ttmp);
+            if (!undestroyable_trap(ttmp->ttyp))
+                deltrap(ttmp);
         }
     }
 }

@@ -958,8 +958,7 @@ reveal_trap(struct trap *t, boolean seeit)
 
     if (lev->typ == SCORR) {
         lev->typ = CORR, lev->flags = 0; /* set_levltyp(,,CORR) */
-        if (seeit)
-            unblock_point(t->tx, t->ty);
+        unblock_point(t->tx, t->ty);
     }
     if (seeit)
         seetrap(t);
@@ -1150,11 +1149,13 @@ use_defensive(struct monst *mtmp)
                       surface(mtmp->mx, mtmp->my));
             }
             fill_pit(mtmp->mx, mtmp->my);
+            recalc_block_point(mtmp->mx, mtmp->my);
             return (mintrap(mtmp, FORCEBUNGLE) == Trap_Killed_Mon) ? 1 : 2;
         }
         t = maketrap(mtmp->mx, mtmp->my, HOLE);
         if (!t)
             return 2;
+        recalc_block_point(mtmp->mx, mtmp->my);
         seetrap(t);
         if (vis) {
             pline_mon(mtmp, "%s has made a hole in the %s.", Monnam(mtmp),
@@ -1346,6 +1347,7 @@ use_defensive(struct monst *mtmp)
         place_monster(mtmp, gt.trapx, gt.trapy);
         if (mtmp->wormno)
             worm_move(mtmp);
+        maybe_unhide_at(mtmp->mx, mtmp->my);
         newsym(gt.trapx, gt.trapy);
         /* 0: 'no object' rather than STRANGE_OBJECT; FALSE: obj not seen */
         m_tele(mtmp, vismon, FALSE, 0);

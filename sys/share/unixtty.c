@@ -11,6 +11,9 @@
 
 #define NEED_VARARGS
 #include "hack.h"
+#if defined(TTY_GRAPHICS) && !defined(NOTTYGRAPHICS)
+#include "wintty.h"
+#endif
 
 /*
  * The distinctions here are not BSD - rest but rather USG - rest, as
@@ -229,7 +232,10 @@ gettty(void)
 void
 settty(const char *s)
 {
-    end_screen();
+#ifdef TTY_GRAPHICS
+    if (WINDOWPORT(tty))
+        term_end_screen();
+#endif
     if (s)
         raw_print(s);
     if (STTY(&inittyb) < 0 || STTY2(&inittyb2) < 0)
@@ -306,7 +312,11 @@ setftty(void)
 
     if (change)
         setctty();
-    start_screen();
+
+#ifdef TTY_GRAPHICS
+    if (WINDOWPORT(tty))
+        term_start_screen();
+#endif
 }
 
 void intron(void) /* enable kbd interrupts if enabled when game started */
@@ -480,7 +490,7 @@ RESTORE_WARNING_FORMAT_NONLITERAL
 
 #ifdef ENHANCED_SYMBOLS
 /*
- * set in tty_start_screen() and allows
+ * set in term_start_screen() and allows
  * OS-specific changes that may be
  * required for support of utf8.
  */

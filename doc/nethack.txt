@@ -286,4 +286,4 @@ COPYRIGHT
 
 
 
-NETHACK                        28 February 2024                     NETHACK(6)
+NETHACK                        25 December 2024                     NETHACK(6)
