@@ -717,6 +717,8 @@ set_artifact_intrinsic(
         mask = &EDrain_resistance;
     else if (dtyp == AD_ACID)
         mask = &EAcid_resistance;
+    else if (dtyp == AD_SLEE)
+        mask = &ESleep_resistance;
     else if (dtyp == AD_DISE) {
         mask = &ESick_resistance;
         if (Sick) {
@@ -1138,6 +1140,8 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
             return !(yours ? Stone_resistance : resists_ston(mtmp));
         case AD_ACID:
             return !(yours ? Acid_resistance : resists_acid(mtmp));
+        case AD_SLEE:
+            return !(yours ? Sleep_resistance : resists_sleep(mtmp));
         case AD_DISE:
             return !(yours ? Sick_resistance : resists_sick(mtmp->data));
         default:
@@ -1774,6 +1778,37 @@ artifact_hit(
         return Mb_hit(magr, mdef, otmp, dmgptr, dieroll, vis, hittee);
     }
 
+    /* Drowsing Rod 
+     * */
+    if (attacks(AD_SLEE, otmp) && rn2(10)) {
+        if (realizes_damage) {
+            if (otmp->oartifact == ART_DROWSING_ROD) {
+                if (realizes_damage && (youdefend || mdef->mcanmove)) {
+                    pline_The("staff sprays a %s %s at %s!", rndcolor(),
+                              (rn2(2) ? "gas" : "mist"), hittee);
+                }
+            } 
+            
+            if (youdefend &&
+                (how_resistant(SLEEP_RES) == 100 || Breathless)) {
+                pline_The("vapors do not affect you.");
+            } else if (youdefend) {
+                fall_asleep(-resist_reduce(rnd(10), SLEEP_RES), TRUE);
+                if (Blind)
+                    You("are put to sleep!");
+                else
+                    You("are put to sleep by %s!", 
+                        otmp->oartifact ? artiname(otmp->oartifact) : xname(otmp));
+            } else if (mdef->mcanmove && !breathless(mdef->data) 
+                        && sleep_monst(mdef, d(2, 4), -1)) {
+                if (!Blind)
+                    pline("%s is put to sleep!", Monnam(mdef));
+                slept_monst(mdef);
+            }
+        }
+        return realizes_damage;
+    }
+    
     if (!gs.spec_dbon_applies) {
         /* since damage bonus didn't apply, nothing more to do;
            no further attacks have side-effects on inventory */
@@ -2831,6 +2866,7 @@ abil_to_adtyp(long *abil)
         { &ECold_resistance, AD_COLD },
         { &EShock_resistance, AD_ELEC },
         { &EAcid_resistance, AD_ACID },
+        { &ESleep_resistance, AD_SLEE },
         { &EAntimagic, AD_MAGM },
         { &EDisint_resistance, AD_DISN },
         { &EPoison_resistance, AD_DRST },

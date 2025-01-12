@@ -45,6 +45,7 @@ static const char *const artifact_names[] = {
 #define     ACID(a,b)   {0,AD_ACID,a,b}         /* acid */
 #define     STUN(a,b)   {0,AD_STUN,a,b}         /* magical attack */
 #define     DISE(a,b)   {0,AD_DISE,a,b}         /* disease attack */
+#define     SLEE(a,b)   {0,AD_SLEE,a,b}         /* Sleep attack  */
 
 /* Some helper macros for artifact value.
  * We diverge from Vanilla 3.7.0 and assign a value of 1 to all artifacts 
@@ -434,6 +435,13 @@ static NEARDATA struct artifact artilist[] = {
       A_NONE, NON_PM, NON_PM,
       BANE_SPE, ARTVAL, 500L, CLR_RED, DRAGONBANE),
 
+    /* First sac gift for Healers. */
+    A("Drowsing Rod", QUARTERSTAFF, 
+      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
+      SLEE(5, 5), DFNS(AD_SLEE), NO_CARY, 0, 
+      A_NONE, PM_HEALER, NON_PM,
+      DFLT_SPE, ARTVAL, 500L, CLR_MAGENTA, DROWSING_ROD),
+
     /* Now can instakill flammable monsters and green slime */
     A("Fire Brand", SHORT_SWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
@@ -642,6 +650,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
 #undef ACID
 #undef STUN
 #undef DISE
+#undef SLEE
 #endif
 
 /*artilist.h*/
