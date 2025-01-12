@@ -127,6 +127,15 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 8000L, NO_COLOR, GRAYSWANDIR),
 
+    /* From SLASH'EM; changed to an AKLYS.
+     * Lessened to-hit penalty so aklys will connect
+     * Guarantee +3 so illiterate cavemen have a nice weapon */
+    A("Skullcrusher", AKLYS,
+      (SPFX_RESTR), 0, 0,
+      PHYS(3, 10), NO_DFNS, NO_CARY, 0,
+      A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
+      3, ARTVAL, 300L, NO_COLOR, SKULLCRUSHER),
+    
     /* From SpliceHack: Shield of King Arthur.
      * This shield now grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
@@ -172,17 +181,6 @@ static NEARDATA struct artifact artilist[] = {
 
     /*** Neutral artifacts ***/
 
-    /* From SlashTHEM with changes:
-     * In THEM, this was a neutral cloak of protection that granted luck,
-     * drain resistance, and warning. Now it is a chaotic cloak of
-     * invisibility that grants drain resistance and warning.
-     * Luck was removed. */
-    A("Blackshroud", CLOAK_OF_INVISIBILITY,
-      (SPFX_RESTR | SPFX_WARN), 0, 0,
-      NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
-      A_CHAOTIC, NON_PM, NON_PM,
-      ARMR_SPE, ARTVAL, 1500L, NO_COLOR, BLACKSHROUD),
-
     A("Cleaver", BATTLE_AXE,
       SPFX_RESTR, 0, 0,
       PHYS(3, 6), NO_DFNS, NO_CARY, 0,
@@ -221,15 +219,6 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
       BANE_SPE, ARTVAL, 200L, CLR_RED, GIANTSLAYER),
-
-    /* From SLASH'EM; changed to an AKLYS.
-     * Lessened to-hit penalty so aklys will connect
-     * Guarantee +3 so illiterate cavemen have a nice weapon */
-    A("Skullcrusher", AKLYS,
-      (SPFX_RESTR), 0, 0,
-      PHYS(3, 10), NO_DFNS, NO_CARY, 0,
-      A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
-      3, ARTVAL, 300L, NO_COLOR, SKULLCRUSHER),
 
     /* Magicbane is a bit different!  Its magic fanfare unbalances victims
      * in addition to doing some damage.
@@ -340,6 +329,17 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 600L, NO_COLOR, AMULET_OF_STORMS),
 
+    /* From SlashTHEM with changes:
+     * In THEM, this was a neutral cloak of protection that granted luck,
+     * drain resistance, and warning. Now it is a chaotic cloak of
+     * invisibility that grants drain resistance and warning.
+     * Luck was removed. */
+    A("Blackshroud", CLOAK_OF_INVISIBILITY,
+      (SPFX_RESTR | SPFX_WARN), 0, 0,
+      NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
+      A_CHAOTIC, NON_PM, NON_PM,
+      ARMR_SPE, ARTVAL, 1500L, NO_COLOR, BLACKSHROUD),
+    
     /* From SLASH'EM */
     A("Doomblade", SHORT_SWORD,
       SPFX_RESTR, 0, 0,
