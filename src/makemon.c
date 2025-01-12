@@ -594,8 +594,24 @@ m_initweap(struct monst *mtmp)
     case S_DEMON:
         switch (mm) {
         case PM_BALROG:
-            (void) mongets(mtmp, BULLWHIP);
-            (void) mongets(mtmp, BROADSWORD);
+            if (!rn2(20)) {
+                otmp = mksobj(TRIDENT, FALSE, FALSE);
+                otmp = oname(otmp, artiname(ART_ANGELSLAYER), ONAME_RANDOM);
+                curse(otmp);
+                otmp->oeroded = otmp->oeroded2 = 0;
+                otmp->oerodeproof = 1;
+                otmp->spe = rnd(3);
+                (void) mpickobj(mtmp, otmp);
+            } else {
+                otmp = mksobj(BROADSWORD, FALSE, FALSE);
+                otmp->spe = rnd(3) + 2;
+                (void) mpickobj(mtmp, otmp);
+            }
+            
+            otmp = mksobj(BULLWHIP, FALSE, FALSE);
+            otmp->spe = rnd(3) + 2;
+            otmp->oerodeproof = 1;
+            (void) mpickobj(mtmp, otmp);
             break;
         case PM_ORCUS:
             (void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */

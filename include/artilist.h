@@ -339,6 +339,15 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 600L, NO_COLOR, AMULET_OF_STORMS),
 
+    /* The quasi-evil twin of Demonbane, Angelslayer is an unholy trident
+     * geared towards the destruction of all angelic beings */
+    A("Angelslayer", TRIDENT,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_SEARCH | SPFX_HSPDAM
+       | SPFX_WARN | SPFX_DFLAGH | SPFX_INTEL), 0, MH_ANGEL,
+      FIRE(5, 10), NO_DFNS, NO_CARY, 0, 
+      A_CHAOTIC, NON_PM, NON_PM,
+      BANE_SPE, ARTVAL, 5000L, CLR_RED, ANGELSLAYER),
+    
     /* From SlashTHEM with changes:
      * In THEM, this was a neutral cloak of protection that granted luck,
      * drain resistance, and warning. Now it is a chaotic cloak of

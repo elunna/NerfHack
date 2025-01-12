@@ -1188,7 +1188,8 @@ spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
         || (weap->attk.adtyp == AD_PHYS /* check for `NO_ATTK' */
                   && weap->attk.damn == 0 && weap->attk.damd == 0))
         gs.spec_dbon_applies = FALSE;
-    else if (is_art(otmp, ART_GRIMTOOTH) || is_art(otmp, ART_VORPAL_BLADE))
+    else if (is_art(otmp, ART_GRIMTOOTH) || is_art(otmp, ART_VORPAL_BLADE)
+             							 || is_art(otmp, ART_ANGELSLAYER))
         /* Grimtooth has SPFX settings to warn against elves but we want its
            damage bonus to apply to all targets, so bypass spec_applies() */
         gs.spec_dbon_applies = TRUE;
@@ -1592,7 +1593,9 @@ artifact_hit(
     /* the four basic attacks: fire, cold, shock and missiles */
     if (attacks(AD_FIRE, otmp)) {
         if (realizes_damage) {
-            pline_The("fiery blade %s %s%c",
+            pline_The("%s %s %s%c",
+                      otmp->oartifact == ART_FIRE_BRAND ? "firey blade"
+                                                        : "infernal trident",
                       !gs.spec_dbon_applies
                           ? "hits"
                           : (mdef->data == &mons[PM_WATER_ELEMENTAL]
@@ -1967,6 +1970,22 @@ artifact_hit(
             } else if (youdefend && maybe_polyd(is_orc(gy.youmonst.data),
                                                 Race_if(PM_ORC)) && instakill) {
                 You("feel Orcrist slice deep across your neck!");
+                *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
+                /* player returns to their original form if poly'd */
+            } else
+                return FALSE;
+            return TRUE;
+        case ART_ANGELSLAYER:
+            if (youattack && is_angel(mdef->data) && instakill) {
+                pline("Angelslayer's eldritch flame consumes %s!", mon_nam(mdef));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (!youattack && !youdefend
+                       && magr && is_angel(mdef->data) && instakill) {
+                if (show_instakill)
+                    pline("Angelslayer's eldritch flame consumes %s!", mon_nam(mdef));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && is_angel(gy.youmonst.data) && instakill) {
+                pline("The infernal trident's eldritch flame consumes you!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
             } else
