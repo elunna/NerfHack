@@ -5343,7 +5343,7 @@ deck_of_fate(struct obj *obj)
             change_luck(-1);
             break;
         case 10: /* Justice */
-            if (u.ualign.abuse < (unsigned) -13 || Luck <= 0) {
+            if (u.ualign.abuse > (unsigned) 13 || Luck <= 0) {
                 if (!Blind)
                     You("are frozen by the power of Justice!");
                 else
