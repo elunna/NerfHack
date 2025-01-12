@@ -64,7 +64,7 @@ staticfn boolean water_turbulence(coordxy *, coordxy *);
      || u_offhand_art(ART_POSEIDON_S_TRIDENT) \
      || HWwalking)
 #define Known_lwalking \
-    (Known_wwalking && Fire_resistance \
+    (Known_wwalking && fully_resistant(FIRE_RES) \
      && uarmf && uarmf->oerodeproof && uarmf->rknown)
 
 /* mode values for findtravelpath() */

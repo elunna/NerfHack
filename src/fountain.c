@@ -131,7 +131,7 @@ dolavademon(void)
                 You_feel("the temperature rise significantly.");
 
             /* low levels offer a (slightly) better chance of survival */
-            if (rnd(100) > (80 + level_difficulty()) && !HFire_resistance) {
+            if (rnd(100) > (80 + level_difficulty()) && !fully_resistant(FIRE_RES)) {
                 pline("Freed from the depths of Gehennom, "
                       "%s grants you protection from fire!", mhe(mtmp));
                 incr_resistance(&HFire_resistance, 100);

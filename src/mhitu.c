@@ -584,7 +584,7 @@ getmattk(
        against cold resistant foes; change the touch damage from cold to
        physical if target will resist */
     } else if (indx == 0 && attk->aatyp == AT_TUCH && attk->adtyp == AD_COLD
-               && (udefend ? Cold_resistance : resists_cold(mdef))
+               && (udefend ? fully_resistant(COLD_RES) : resists_cold(mdef))
                /* don't substitute if target is immune to normal damage */
                && !shadelike(mdef->data)) {
         *alt_attk_buf = *attk;
