@@ -514,6 +514,7 @@ static const struct def_skill Skill_S[] = {
 };
 static const struct def_skill Skill_T[] = {
     /* "Jack of all trades, master of none" */
+    { P_CLUB, P_BASIC },
     { P_DAGGER, P_BASIC },
     { P_KNIFE, P_BASIC },
     { P_AXE, P_BASIC },
