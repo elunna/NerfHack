@@ -716,9 +716,7 @@ static struct level_map {
                   { "baalz", &baalzebub_level },
                   { "bigrm", &bigroom_level },
                   { "castle", &stronghold_level },
-                  { "leth-z", &lethegate_level },
                   { "earth", &earth_level },
-                  { "nkai-b", &portal_level },
                   { "fire", &fire_level },
                   { "juiblex", &juiblex_level },
                   { "knox", &knox_level },
@@ -1622,7 +1620,7 @@ Can_dig_down(d_level *lev)
 boolean
 Can_fall_thru(d_level *lev)
 {
-    return (boolean) (Can_dig_down(lev) || Is_lethe_gate(lev));
+    return (boolean) (Can_dig_down(lev) || Is_stronghold(lev));
 }
 
 /*

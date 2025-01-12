@@ -127,21 +127,6 @@ dowrite(struct obj *pen)
               fingers_or_gloves(FALSE));
         dropx(pen);
         return ECMD_TIME;
-    } else if (svl.level.flags.lethe) {
-        switch (rnd(3)) {
-        case 1:
-            You("suddenly become quite ... %s.",
-            rn2(2) ? "bored" : "distracted");
-            break;
-        case 2:
-            You("find it hard to concentrate in this strange place.");
-            break;
-        case 3:
-            You("start thinking about your daily occupation...");
-            break;
-        }
-        make_confused(HConfusion + d(3, 4), FALSE);
-        return ECMD_TIME;
     }
 
     /* get paper to write on */

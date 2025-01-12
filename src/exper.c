@@ -191,10 +191,6 @@ more_experienced(int exper, int rexp)
          rexpincr = 4 * exper + rexp,
          newrexp = oldrexp + rexpincr;
 
-    /* Lethe levels block any gains */
-    if (svl.level.flags.lethe)
-        return;
-
     /* cap experience and score on wraparound */
     if (newexp < 0 && exper > 0)
         newexp = LONG_MAX;

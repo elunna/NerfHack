@@ -885,7 +885,6 @@ clear_level_structures(void)
     svl.level.flags.has_zoo = 0;
     svl.level.flags.has_court = 0;
     svl.level.flags.has_morgue = svl.level.flags.graveyard = 0;
-    svl.level.flags.lethe = 0;
     svl.level.flags.has_beehive = 0;
     svl.level.flags.has_migohive = 0;
     svl.level.flags.has_fungusfarm = 0;
@@ -993,7 +992,7 @@ fill_ordinary_room(
         if (!rn2(15))
             mktoilet(croom);
     }
-    if (depth(&u.uz) > 4 && !rn2(60))
+    if (!rn2(60))
         mkaltar(croom);
     if (!rn2(120))
         mkforge(croom);
@@ -1365,9 +1364,11 @@ makelevel(void)
         else if (u_depth > 16 && !rn2(8)
                  && !(svm.mvitals[PM_COCKATRICE].mvflags & G_GONE))
             do_mkroom(COCKNEST);
-        /* Better odds because above rooms gets hit much more often. */
         else if (u_depth > 16 && !rn2(4))
             do_mkroom(DRAGONLAIR);
+        else if (u_depth > 18 && !rn2(6)
+                 && !(svm.mvitals[PM_MIGO_DRONE].mvflags & G_GONE))
+            do_mkroom(MIGOHIVE);
 
  skip0:
          /* make grass */
@@ -2396,7 +2397,7 @@ mkaltar(struct mkroom *croom)
     levl[m.x][m.y].altarmask = Align2amask(al);
 
     /* Sometimes they are in poor condition */
-    if (!rn2(4) || level_difficulty() > 15
+    if (!rn2(4) || level_difficulty() > 20
                 || svl.level.flags.naltars > 1)
         levl[m.x][m.y].cracked = 1;
 }

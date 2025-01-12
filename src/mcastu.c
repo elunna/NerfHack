@@ -1332,13 +1332,11 @@ cast_cleric_spell(
             break;
         }
         /* Try for insects, and if there are none
-           left, go for (sticks to) snakes.  -3.
-           Lolth summons spiders as he does in EvilHack */
-        boolean spiders = (caster->data == &mons[PM_LOLTH]);
+           left, go for (sticks to) snakes.  -3. */
         struct permonst *pm = mkclass(S_ANT, 0);
         struct monst *mtmp2 = (struct monst *) 0;
         char whatbuf[QBUFSZ],
-            let = (pm ? (spiders ? S_SPIDER : S_ANT) : S_SNAKE);
+            let = (pm ? S_ANT : S_SNAKE);
         boolean success = FALSE, seecaster;
         int i, quan, oldseen, newseen;
         coord bypos;
@@ -1363,9 +1361,7 @@ cast_cleric_spell(
 
         /* not canspotmon() which includes unseen things sensed via warning */
         seecaster = canseemon(caster) || tp_sensemon(caster) || Detect_monsters;
-        what = (let == S_SNAKE) ? "snake"
-               : (let == S_SPIDER) ? "arachnid"
-                                   : "insect";
+        what = (let == S_SNAKE) ? "snake" : "insect";
         if (Hallucination)
             what = makeplural(bogusmon(whatbuf, (char *) 0));
 

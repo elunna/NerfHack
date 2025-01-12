@@ -1735,6 +1735,7 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
     else if ( otmp->otyp == POT_HEALING
              || otmp->otyp == POT_EXTRA_HEALING
              || otmp->otyp == POT_FULL_HEALING
+             || otmp->otyp == POT_MILK
              || otmp->otyp == POT_RESTORE_ABILITY
              || otmp->otyp == POT_PARALYSIS
              || otmp->otyp == POT_BLINDNESS

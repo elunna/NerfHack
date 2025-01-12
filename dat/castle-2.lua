@@ -15,7 +15,7 @@
 
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "graveyard")
+des.level_flags("mazelevel", "noteleport", "noflipy", "graveyard")
 --0         1         2         3         4         5         6         7
 --0123456789012345678901234567890123456789012345678901234567890123456789012345
 des.map([[
@@ -62,7 +62,6 @@ des.teleport_region({ region = {01,01,07,18}, region_islev=1, exclude={07,01,75,
 
 -- Stairs
 des.levregion({ region = {66,05,75,20}, region_islev=1, exclude={07,01,66,20}, type="stair-up" })
-des.stair("down", 11,09);
 
 -- the inner courtyard
 des.feature("fountain", 42,09)

@@ -387,7 +387,6 @@ struct dgn_topology { /* special dungeon levels for speed */
     d_level d_rogue_level;
     d_level d_medusa_level;
     d_level d_stronghold_level;
-    d_level d_lethegate_level;
     d_level d_valley_level;
     d_level d_wiz1_level;
     d_level d_wiz2_level;
@@ -396,7 +395,6 @@ struct dgn_topology { /* special dungeon levels for speed */
     d_level d_orcus_level;
     d_level d_baalzebub_level; /* unused */
     d_level d_asmodeus_level;  /* unused */
-    d_level d_portal_level;    /* only in goto_level() [do.c] */
     d_level d_sanctum_level;
     d_level d_earth_level;
     d_level d_water_level;
@@ -422,7 +420,6 @@ struct dgn_topology { /* special dungeon levels for speed */
 #define rogue_level             (svd.dungeon_topology.d_rogue_level)
 #define medusa_level            (svd.dungeon_topology.d_medusa_level)
 #define stronghold_level        (svd.dungeon_topology.d_stronghold_level)
-#define lethegate_level         (svd.dungeon_topology.d_lethegate_level)
 #define valley_level            (svd.dungeon_topology.d_valley_level)
 #define wiz1_level              (svd.dungeon_topology.d_wiz1_level)
 #define wiz2_level              (svd.dungeon_topology.d_wiz2_level)
@@ -431,7 +428,6 @@ struct dgn_topology { /* special dungeon levels for speed */
 #define orcus_level             (svd.dungeon_topology.d_orcus_level)
 #define baalzebub_level         (svd.dungeon_topology.d_baalzebub_level)
 #define asmodeus_level          (svd.dungeon_topology.d_asmodeus_level)
-#define portal_level            (svd.dungeon_topology.d_portal_level)
 #define sanctum_level           (svd.dungeon_topology.d_sanctum_level)
 #define earth_level             (svd.dungeon_topology.d_earth_level)
 #define water_level             (svd.dungeon_topology.d_water_level)

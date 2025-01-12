@@ -51,16 +51,13 @@ $	spec_files = "air.lua,"	-
 		+ "hellfill.lua," 	-
 		+ "juiblex.lua," 	-
 		+ "knox-%.lua," 	-
-		+ "leth-*,"			-
 		+ "medusa-%.lua," 	-
-		+ "mephisto.lua," 	-
 		+ "minefill.lua," 	-
 		+ "townfill.lua," 	-
 		+ "minetn-*.lua," 	-
 		+ "minend-%.lua," 	-
 		+ "nhcore.lua," 	-
 		+ "nhlib.lua,"		-
-		+ "nkai-*," 		-
 		+ "oracle-%.lua," 	-
 		+ "orcus-%.lua," 	-
 		+ "quest.lua," 		-
@@ -98,9 +95,7 @@ $!		   + "SOKO%-%.LEV," -
 $!		   + "TOWER%.LEV," -
 $!		   + "VALLEY.LEV," -
 $!		   + "WATER.LEV," -
-$!		   + "WIZARD%.LEV," -
-$!		   + "LETH-%," -
-$!		   + "LETH-%-%"
+$!		   + "WIZARD%.LEV,"
 $!	spec_input = "bigroom.des castle-%.des endgame.des " -
 $!		   + "gehennom.des knox.des medusa.des mines.des " -
 $!		   + "oracle.des sokoban.des tower.des yendor.des"

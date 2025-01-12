@@ -151,14 +151,11 @@ SPEC_LEVS = 		\
 	hellfill.lua 	\
 	juiblex.lua 	\
 	knox-?.lua 		\
-	leth-* 			\
 	medusa-?.lua 	\
-	mephisto.lua 	\
 	minend-?.lua 	\
 	minefill.lua 	\
 	townfill.lua 	\
 	minetn-*.lua 	\
-	nkai-* 			\
 	oracle.lua 		\
 	orcus-?.lua 	\
 	sanctm-?.lua 	\

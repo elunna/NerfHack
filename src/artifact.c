@@ -2038,18 +2038,6 @@ artifact_hit(
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     return TRUE;
                 }
-
-                if (mdef->data == &mons[PM_CERBERUS]) {
-                    pline("%s removes one of %s heads!", wepdesc,
-                          s_suffix(mon_nam(mdef)));
-                    *dmgptr = rn2(15) + 10;
-                    if (!DEADMONSTER(mdef)) {
-                        if (canseemon(mdef))
-                            You("watch in horror as it quickly grows back.");
-                    }
-                    return TRUE;
-                }
-
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 pline(ROLL_FROM(behead_msg), wepdesc,
                       mon_nam(mdef));

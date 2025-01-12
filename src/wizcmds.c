@@ -1825,7 +1825,7 @@ wiz_migrate_mons(void)
 #endif
     d_level tolevel;
 
-    if (Is_lethe_gate(&u.uz))
+    if (Is_stronghold(&u.uz))
         assign_level(&tolevel, &valley_level);
     else if (!Is_botlevel(&u.uz))
         get_level(&tolevel, depth(&u.uz) + 1);

@@ -804,7 +804,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_HELL_HOUND_PUP:
     case PM_BARGHEST:
     case PM_HELL_HOUND:
-    case PM_CERBERUS:
     case PM_GAS_SPORE:
     case PM_FLOATING_EYE:
     case PM_FREEZING_SPHERE:
@@ -1125,12 +1124,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_ASMODEUS:
     case PM_DEMOGORGON:
     case PM_LAVA_DEMON:
-    case PM_BUER:
-    case PM_KOSTCHTCHIE:
-    case PM_BAPHOMET:
-    case PM_LOLTH:
-    case PM_MALCANTHET:
-    case PM_MEPHISTOPHOLES:
     case PM_DEATH:
     case PM_PESTILENCE:
     case PM_FAMINE:
@@ -3253,12 +3246,6 @@ m_detach(
        leaving the dungeon alive rather than dying */
     if (mtmp->iswiz)
         wizdeadorgone();
-
-#if 0 /* TODO: Possible travel restrictions if Cerberus is not killed. */
-    if (mtmp->iscerberus)
-        cerberusdead();
-#endif
-
     /* foodead() might give quest feedback for foo having died; skip that
        if we're called for mongone() rather than mondead(); saving bones
        or wizard mode genocide of "*" can result in special monsters going
@@ -4143,8 +4130,6 @@ xkilled(
 
         /* illogical but traditional "treasure drop" */
         if (!rn2(6) && !(svm.mvitals[mndx].mvflags & G_NOCORPSE)
-            /* no treasure along the Lethe */
-            && !svl.level.flags.lethe
             /* no extra item from swallower or steed */
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */
@@ -6582,8 +6567,6 @@ usmellmon(struct permonst *mdat)
         case PM_DISPATER:
         case PM_YEENOGHU:
         case PM_ORCUS:
-        case PM_MALCANTHET:
-        case PM_MEPHISTOPHOLES:
             break;
         case PM_HUMAN_WEREJACKAL:
         case PM_HUMAN_WERERAT:
@@ -7208,9 +7191,6 @@ card_drop(struct monst *mon)
     /* Prevent drops in impossible places
        (fuzzer once picked up a card dropped by a guard at (0, 0)) */
     if (!isok(mon->mx, mon->my))
-        return FALSE;
-
-    if (svl.level.flags.lethe)
         return FALSE;
 
     /* No card drops if you are polyd! Some poly-forms give the

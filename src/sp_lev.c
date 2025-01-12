@@ -3775,8 +3775,6 @@ lspo_level_flags(lua_State *L)
             svl.level.flags.hero_memory = 1;
         else if (!strcmpi(s, "graveyard"))
             svl.level.flags.graveyard = 1;
-         else if (!strcmpi(s, "lethe"))
-            svl.level.flags.lethe = 1;
         else if (!strcmpi(s, "icedpools"))
             icedpools = 1;
         else if (!strcmpi(s, "corrmaze"))

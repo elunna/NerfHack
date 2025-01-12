@@ -489,17 +489,6 @@ LUALIST = \
 	knox-1 		\
 	knox-2 		\
 	knox-3 		\
-	leth-a-1 	\
-	leth-a-2 	\
-	leth-b 		\
-	leth-c-1	\
-	leth-c-2 	\
-	leth-d-1 	\
-	leth-d-2 	\
-	leth-e 		\
-	leth-f 		\
-	leth-g 		\
-	leth-z 		\
 	medusa-1 	\
 	medusa-2 	\
 	medusa-3 	\
@@ -527,11 +516,6 @@ LUALIST = \
 	temple-2	\
 	nhcore 		\
 	nhlib 		\
-	nkai-a-1	\
-	nkai-a-2 	\
-	nkai-b 		\
-	nkai-c 		\
-	nkai-z 		\
 	oracle 		\
 	orcus 		\
 	quest 		\

@@ -608,30 +608,10 @@ m_initweap(struct monst *mtmp)
             break;
         case PM_DISPATER:
             (void) mongets(mtmp, WAN_STRIKING);
+            (void) mongets(mtmp, DECK_OF_FATE);
             break;
         case PM_YEENOGHU:
             (void) mongets(mtmp, FLAIL);
-            break;
-        case PM_MALCANTHET:
-            (void) mongets(mtmp, BULLWHIP);
-            break;
-        case PM_BAPHOMET:
-            (void) mongets(mtmp, RANSEUR);
-            break;
-        case PM_KOSTCHTCHIE:
-            otmp = mksobj(WAR_HAMMER, FALSE, FALSE);
-            otmp->spe = rnd(5) + 8;
-            otmp->oeroded = otmp->oeroded2 = 0;
-            oname(otmp, "Matalotok", ONAME_VIA_NAMING);
-            (void) mpickobj(mtmp, otmp);
-            (void) mongets(mtmp, BOULDER);
-            break;
-        case PM_LOLTH:
-            otmp = mksobj(ELVEN_BROADSWORD, FALSE, FALSE);
-            otmp->opoisoned = TRUE;
-            curse(otmp);
-            otmp->spe = rnd(5) + rnd(5) + 2;
-            (void) mpickobj(mtmp, otmp);
             break;
         }
         /* prevent djinn and mail daemons from leaving objects when
@@ -1522,12 +1502,6 @@ makemon(
     if ((mmflags & MM_MINVIS) != 0) /* for ^G */
         mon_set_minvis(mtmp); /* call after place_monster() */
 
-    /* Beef up Cerberus a bit without jacking up
-       his level so high that pets won't attempt
-       to take him on */
-    if (ptr == &mons[PM_CERBERUS])
-        mtmp->mhp = mtmp->mhpmax = 250 + rnd(50);
-
     /* Nazgul spawn with their steeds (but not riding them)*/
     if (ptr == &mons[PM_NAZGUL] && countbirth) {
         if (enexto(&cc, x, y, &mons[PM_FELL_BEAST]))
@@ -1618,8 +1592,6 @@ makemon(
                Let newcham() pick the shape. */
             && newcham(mtmp, (struct permonst *) 0, NO_NC_FLAGS))
             allow_minvent = FALSE;
-    } else if (mndx == PM_CERBERUS) {
-        mtmp->iscerberus = TRUE;
     } else if (mndx == PM_WIZARD_OF_YENDOR) {
         mtmp->iswiz = TRUE;
         svc.context.no_of_wizards++;
@@ -1983,8 +1955,6 @@ rndmonst_adj(int minadj, int maxadj)
             continue;
         if (Inhell && (ptr->geno & G_NOHELL))
             continue;
-        if (is_migo(ptr) && !svl.level.flags.lethe)
-            continue;
         if (is_dino(ptr) && !Role_if(PM_CAVE_DWELLER))
             continue;
 
@@ -2042,8 +2012,6 @@ mk_gen_ok(int mndx, unsigned mvflagsmask, unsigned genomask)
     if (is_placeholder(ptr))
         return FALSE;
     if (Is_mineend_level(&u.uz) && ptr == &mons[PM_VAMPIRE_MAGE])
-        return FALSE;
-    if (is_migo(ptr) && !svl.level.flags.lethe)
         return FALSE;
     if (is_dino(ptr) && !Role_if(PM_CAVE_DWELLER))
         return FALSE;
@@ -2501,7 +2469,7 @@ peace_minded(struct permonst *ptr)
 
 	/* Less trouble for the player. Note: aligned unicorns will still be peaceful, their
 	 * mpeaceful flag is set after the initial check. */
-	if (In_sokoban(&u.uz) || svl.level.flags.lethe)
+	if (In_sokoban(&u.uz))
 		return FALSE;
 
     if (always_peaceful(ptr))
