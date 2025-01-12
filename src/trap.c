@@ -7909,11 +7909,11 @@ sokoban_guilt(void)
         }
     }
 
-    if (Sokoban && !completed_soko) {
+    if (Sokoban && !completed_soko && !wizard) {
         u.uconduct.sokocheat++;
         change_luck(-1);
         if (u.ualign.type == A_CHAOTIC)
-        You_feel(Hallucination ? "so creative!" : "shame.");
+            You_feel(Hallucination ? "so creative!" : "shame.");
         /*
          * TODO:
          *  Issue some feedback so that player can learn that whatever
