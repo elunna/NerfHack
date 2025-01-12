@@ -67,7 +67,8 @@ des.trap("pit", 01,10)
 des.exclusion({ type = "monster-generation", region = { 03,12, 05,12 } });
 des.trap("pit", 03,12)
 des.trap("pit", 04,12)
-des.trap("pit", 05,12)
+-- leave a spare boulder
+--des.trap("pit", 05,12)
 
 -- Random objects
 des.object({ class = "%" });

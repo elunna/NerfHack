@@ -59,7 +59,8 @@ des.trap("hole",05,05)
 des.trap("hole",06,05)
 des.trap("hole",07,05)
 des.trap("hole",08,05)
-des.trap("hole",09,05)
+-- Leaves one spare boulder 
+-- des.trap("hole",09,05)
 
 -- Random objects
 des.object({ class = "%" });
