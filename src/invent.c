@@ -1364,6 +1364,11 @@ freeinv_core(struct obj *obj)
     } else if (obj->otyp == FIGURINE && obj->timed) {
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(obj));
     }
+
+    if (obj == svc.context.tin.tin) {
+        svc.context.tin.tin = (struct obj *) 0;
+        svc.context.tin.o_id = 0;
+    }
 }
 
 /* remove an object from the hero's inventory */
@@ -6222,6 +6227,12 @@ sync_perminvent(void)
             || in_perm_invent_toggled) {
             wri = ctrl_nhwindow(WIN_INVEN, request_settings, &wri_info);
             if (wri != 0) {
+                if ((wri->tocore.tocore_flags & (too_early)) != 0) {
+                    /* don't be too noisy about this as it's really
+                     * a startup timing issue. Just set a marker. */
+                    iflags.perm_invent_pending = TRUE;
+                    return;
+                }
                 if ((wri->tocore.tocore_flags & (too_small | prohibited))
                     != 0) {
                     /* sizes aren't good enough */

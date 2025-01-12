@@ -1,4 +1,4 @@
-/* NetHack 3.7	symbols.c	$NHDT-Date: 1711477037 2024/03/26 18:17:17 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.120 $ */
+/* NetHack 3.7	symbols.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.123 $ */
 /* Copyright (c) NetHack Development Team 2020.                   */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -11,12 +11,12 @@ staticfn struct _savedsym *savedsym_find(const char *, int);
 extern const uchar def_r_oc_syms[MAXOCLASSES];      /* drawing.c */
 
 #if defined(TERMLIB) || defined(CURSES_GRAPHICS)
-void (*decgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
+void (*decgraphics_mode_callback)(void) = 0; /* set in term_start_screen() */
 #endif /* TERMLIB || CURSES */
 
 #ifdef PC9800
-void (*ibmgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
-void (*ascgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
+void (*ibmgraphics_mode_callback)(void) = 0; /* set in term_start_screen() */
+void (*ascgraphics_mode_callback)(void) = 0; /* set in term_start_screen() */
 #endif
 #ifdef CURSES_GRAPHICS
 void (*cursesgraphics_mode_callback)(void) = 0;
@@ -25,7 +25,7 @@ void (*cursesgraphics_mode_callback)(void) = 0;
 void (*ibmgraphics_mode_callback)(void) = 0;
 #endif
 #ifdef ENHANCED_SYMBOLS
-void (*utf8graphics_mode_callback)(void) = 0; /* set in tty_start_screen and
+void (*utf8graphics_mode_callback)(void) = 0; /* set in term_start_screen and
                                                * found in unixtty,windtty,&c */
 #endif
 

@@ -4398,6 +4398,7 @@ zap_map(
         /* secret door gets revealed, converted into regular door */
         if (ltyp == SDOOR) {
             cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
+            recalc_block_point(x, y);
             newsym(x, y);
             if (cansee(x, y)) {
                 pline("Probing reveals a secret door.");
@@ -6445,6 +6446,7 @@ zap_over_floor(
     /* secret door gets revealed, converted into regular door */
     if (levl[x][y].typ == SDOOR) {
         cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
+        recalc_block_point(x, y);
         /* target spot will now pass closed_door() test below
            (except on rogue level) */
         newsym(x, y);
@@ -6523,7 +6525,7 @@ zap_over_floor(
                     add_damage(x, y, 0L);
             }
             lev->doormask = new_doormask;
-            unblock_point(x, y); /* vision */
+            recalc_block_point(x, y); /* vision */
             if (see_it) {
                 pline1(see_txt);
                 newsym(x, y);

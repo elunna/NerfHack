@@ -3524,6 +3524,7 @@ static const struct alt_spellings {
     { "kelp", KELP_FROND },
     { "eucalyptus", EUCALYPTUS_LEAF },
     { "lembas", LEMBAS_WAFER },
+    { "tripe", TRIPE_RATION },
     { "cookie", FORTUNE_COOKIE },
     { "pie", CREAM_PIE },
     { "huge meatball", ENORMOUS_MEATBALL }, /* likely conflated name */

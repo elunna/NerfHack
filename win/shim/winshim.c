@@ -158,9 +158,6 @@ VDECLCB(shim_change_background,(int white_or_black), "vi", A2P white_or_black)
 DECLCB(short, set_shim_font_name,(winid window_type, char *font_name),"2is", A2P window_type, P2V font_name)
 DECLCB(char *,shim_get_color_string,(void),"sv")
 
-/* other defs that really should go away (they're tty specific) */
-VDECLCB(shim_start_screen, (void), "v")
-VDECLCB(shim_end_screen, (void), "v")
 VDECLCB(shim_preference_update, (const char *pref), "vp", P2V pref)
 DECLCB(char *,shim_getmsghistory, (boolean init), "sb", A2P init)
 VDECLCB(shim_putmsghistory, (const char *msg, boolean restoring_msghist), "vsb", P2V msg, A2P restoring_msghist)
@@ -247,8 +244,7 @@ struct window_procs shim_procs = {
     shim_get_color_string,
 #endif
 
-    /* other defs that really should go away (they're tty specific) */
-    shim_start_screen, shim_end_screen, genl_outrip,
+    genl_outrip,
     shim_preference_update,
     shim_getmsghistory, shim_putmsghistory,
     shim_status_init,

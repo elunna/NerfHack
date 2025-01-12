@@ -3392,6 +3392,8 @@ potion_dip(struct obj *obj, struct obj *potion)
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
         if (obj->cursed || potion->cursed || obj->otyp == POT_ACID
+            /* oil and lit potions - obviously */
+            || (obj->otyp == POT_OIL && obj->lamplit)
             /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
             || mixture == ACID_VENOM 
             /* decrease the chance of non-magical mixtures of exploding */

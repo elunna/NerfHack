@@ -1,4 +1,4 @@
-/* NetHack 3.7	winprocs.h	$NHDT-Date: 1725653017 2024/09/06 20:03:37 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.81 $ */
+/* NetHack 3.7	winprocs.h	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.83 $ */
 /* Copyright (c) David Cohrs, 1992                                */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -80,10 +80,6 @@ struct window_procs {
     char *(*win_get_color_string)(void);
 #endif
 
-    /* other defs that really should go away (they're tty specific) */
-    void (*win_start_screen)(void);
-    void (*win_end_screen)(void);
-
     void (*win_outrip)(winid, int, time_t);
     void (*win_preference_update)(const char *);
     char *(*win_getmsghistory)(boolean);
@@ -128,8 +124,7 @@ extern
 #define display_file (*windowprocs.win_display_file)
 #define start_menu (*windowprocs.win_start_menu)
 #define end_menu (*windowprocs.win_end_menu)
-/* 3.7: There are real add_menu() and select_menu
- *      in the core now.
+/* 3.7: There are real add_menu() and select_menu in the core now.
  *      add_menu does some common activities, such as menu_colors.
  *      select_menu does some before and after activities.
  *      add_menu() and select_menu() are in windows.c
@@ -176,10 +171,6 @@ extern
  *        invoking the window port routine. yn_function() is in cmd.c
  */
 /* #define yn_function (*windowprocs.win_yn_function) */
-
-/* other defs that really should go away (they're tty specific) */
-#define start_screen (*windowprocs.win_start_screen)
-#define end_screen (*windowprocs.win_end_screen)
 
 #define outrip (*windowprocs.win_outrip)
 #define preference_update (*windowprocs.win_preference_update)
@@ -404,10 +395,6 @@ struct chain_procs {
     char *(*win_get_color_string)(CARGS);
 #endif
 
-    /* other defs that really should go away (they're tty specific) */
-    void (*win_start_screen)(CARGS);
-    void (*win_end_screen)(CARGS);
-
     void (*win_outrip)(CARGS, winid, int, time_t);
     void (*win_preference_update)(CARGS, const char *);
     char *(*win_getmsghistory)(CARGS, boolean);
@@ -481,8 +468,6 @@ extern short safe_set_font_name(winid, char *);
 #endif
 extern char *safe_get_color_string(void);
 #endif
-extern void safe_start_screen(void);
-extern void safe_end_screen(void);
 extern void safe_outrip(winid, int, time_t);
 extern void safe_preference_update(const char *);
 extern char *safe_getmsghistory(boolean);
