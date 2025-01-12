@@ -4903,12 +4903,6 @@ reveal_paths(void)
 #if defined(WIN32) && !defined(WIN32CON)
     wait_synch();
 #endif
-#ifndef DUMPLOG
-#ifdef SYSCF
-    nhUse(skip_sysopt);
-#endif
-    nhUse(nodumpreason);
-#endif
 }
 
 /* ----------  BEGIN TRIBUTE ----------- */

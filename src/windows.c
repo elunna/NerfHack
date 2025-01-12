@@ -70,7 +70,6 @@ staticfn void def_raw_print(const char *s) NONNULLARG1;
 staticfn void def_wait_synch(void);
 staticfn boolean get_menu_coloring(const char *, int *, int *) NONNULLPTRS;
 
-#if defined(DUMPLOG) || defined(DUMPHTML)
 staticfn winid dump_create_nhwindow(int);
 staticfn void dump_clear_nhwindow(winid);
 staticfn void dump_display_nhwindow(winid, boolean);
@@ -81,6 +80,9 @@ staticfn void dump_add_menu(winid, const glyph_info *, const ANY_P *, char,
 staticfn void dump_end_menu(winid, const char *);
 staticfn int dump_select_menu(winid, int, MENU_ITEM_P **);
 staticfn void dump_putstr(winid, int, const char *);
+staticfn void dump_headers(void);
+staticfn void dump_footers(void);
+staticfn void dump_set_color_attr(int, int, boolean);
 #ifdef DUMPHTML
 staticfn void html_write_tags(FILE *, int, boolean);
 staticfn void html_dump_char(FILE *, char);
@@ -94,12 +96,10 @@ staticfn int condattr(long, unsigned long *);
 staticfn void dump_render_status(void);
 staticfn void dump_status_update(int, genericptr_t, int, int,
                                int, unsigned long *);
-staticfn void dump_headers(void);
-staticfn void dump_footers(void);
 staticfn void dump_css(void);
 staticfn void dump_outrip(winid, int, time_t);
 #endif /* DUMPHTML */
-#endif /* DUMPLOG */
+
 
 #ifdef HANGUPHANDLING
 volatile
@@ -1621,7 +1621,6 @@ static long dump_condition_bits;
 static struct dump_status_fields dump_status[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 
-#ifdef DUMPHTML
 /* condcolor and condattr are needed to render the HTML status bar.
    These static routines exist verbatim in at least two other window
    ports. They should be promoted to the core (maybe botl.c).
@@ -1999,8 +1998,6 @@ dump_outrip(
 
 }
 
-#endif /* DUMPHTML */
-
 /** Dump file handling **/
 
 void
@@ -2064,7 +2061,7 @@ dump_forward_putstr(winid win, int attr, const char *str, int no_forward)
 #if defined(DUMPLOG) || defined (DUMPHTML)
 /*ARGSUSED*/
 staticfn void
-dump_putstr(winid win, int attr, const char *str)
+dump_putstr(winid win UNUSED, int attr UNUSED, const char *str)
 {
     /* Suppress newline for NHW_STATUS
        Send NHW_STATUS to HTML only */
@@ -2081,7 +2078,7 @@ dump_putstr(winid win, int attr, const char *str)
 }
 
 staticfn winid
-dump_create_nhwindow(int type)
+dump_create_nhwindow(int type UNUSED)
 {
 #ifdef DUMPHTML
     gd.dumping_list = (boolean) (type == NHW_MENU);
