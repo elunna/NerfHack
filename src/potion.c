@@ -812,7 +812,7 @@ dodrink(void)
         ghost_from_bottle();
         useup(otmp);
         return ECMD_TIME;
-    } else if (objdescr_is(otmp, "smoky")
+    } else if (objdescr_is(otmp, "smoky") && !otmp->odiluted
                && !(svm.mvitals[PM_DJINNI].mvflags & G_GONE)
                && !rn2(POTION_OCCUPANT_CHANCE(svm.mvitals[PM_DJINNI].born))) {
         djinni_from_bottle(otmp);
