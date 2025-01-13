@@ -1767,14 +1767,17 @@ peffect_milk(struct obj *otmp)
            will be abused more times before illness completes */
         make_vomiting((Vomiting & TIMEOUT) + (long) d(10, 4), TRUE);
         return;
+    } else {
+        /* Intentionally same as oil */
+        pline("That was smooth!");
     }
     
     /* Cancel bad statuses */
-    /* blindness is cured in the later call to healup() */
     
     (void) make_hallucinated(0L, TRUE, 0L);
     make_confused(0L, TRUE);
     make_stunned(0L, TRUE);
+    /* blindness is cured in the later call to healup() */
     
     /* Also cancel good statuses */
     
