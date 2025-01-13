@@ -806,7 +806,7 @@ dodrink(void)
     }
     otmp->in_use = TRUE; /* you've opened the stopper */
 
-    if (objdescr_is(otmp, "milky")
+    if (objdescr_is(otmp, "milky") && !otmp->odiluted
         && !(svm.mvitals[PM_GHOST].mvflags & G_GONE)
         && !rn2(POTION_OCCUPANT_CHANCE(svm.mvitals[PM_GHOST].born))) {
         ghost_from_bottle();
