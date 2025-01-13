@@ -65,6 +65,7 @@ private:
     QPixmap p_lev;
     QPixmap p_fly;
     QPixmap p_ride;
+    QPixmap p_phase;
         QPixmap p_vers; // version, when shown, is like a pseudo-condition
 
         /*
@@ -128,6 +129,7 @@ private:
     NetHackQtLabelledIcon lev;
     NetHackQtLabelledIcon fly;
     NetHackQtLabelledIcon ride;
+    NetHackQtLabelledIcon phase;
         /* to right of conditions, right justified */
         NetHackQtLabelledIcon vers;   // version
 

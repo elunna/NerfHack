@@ -76,27 +76,28 @@
 #define F_LEV      24
 #define F_FLY      25
 #define F_RIDE     26
+#define F_PHASE    27
 
-#define F_GRABBED  27
-#define F_STONE    28
-#define F_SLIME    29
-#define F_STRNGL   30
-#define F_FOODPOIS 31
-#define F_TERMILL  32
-#define F_IN_LAVA  33 /* could overload trapped but severity differs a lot */
+#define F_GRABBED  28
+#define F_STONE    29
+#define F_SLIME    30
+#define F_STRNGL   31
+#define F_FOODPOIS 32
+#define F_TERMILL  33
+#define F_IN_LAVA  34 /* could overload trapped but severity differs a lot */
 
-#define F_HELD     34 /* could overload grabbed but severity differs a lot */
-#define F_HOLDING  35 /* overloads held */
-#define F_BLIND    36
-#define F_DEAF     37
-#define F_STUN     38
-#define F_CONF     39
-#define F_HALLU    40
-#define F_WITHER   41
-#define F_RABID    42
+#define F_HELD     35 /* could overload grabbed but severity differs a lot */
+#define F_HOLDING  36 /* overloads held */
+#define F_BLIND    37
+#define F_DEAF     38
+#define F_STUN     39
+#define F_CONF     40
+#define F_HALLU    41
+#define F_WITHER   42
+#define F_RABID    43
 
-#define F_VERS     43 /* version info */
-#define NUM_STATS  44
+#define F_VERS     44 /* version info */
+#define NUM_STATS  45
 
 static int condcolor(long, unsigned long *);
 static int condattr(long, unsigned long *);
@@ -174,6 +175,7 @@ static struct tt_condinfo {
     { BL_MASK_LEV, "Lev" },
     { BL_MASK_FLY, "Fly" },
     { BL_MASK_RIDE, "Ride" },
+    { BL_MASK_PHASE, "Phasing" },
 };
 
 static const char *const fancy_status_hilite_colors[] = {
@@ -899,7 +901,8 @@ X11_status_update_fancy(
         { BL_MASK_TETHERED, F_TETHERED },
         { BL_MASK_LEV, F_LEV },
         { BL_MASK_FLY, F_FLY },
-        { BL_MASK_RIDE, F_RIDE }
+        { BL_MASK_RIDE, F_RIDE },
+        { BL_MASK_PHASE, F_PHASE }
     };
     int i;
 
@@ -1395,6 +1398,7 @@ static struct X_status_value shown_stats[NUM_STATS] = {
     /* 25 */
     { "Flying",       SV_NAME,  W0,   0L, 0, FALSE, TRUE,  FALSE, P0, 0, 0 },
     { "Riding",       SV_NAME,  W0,   0L, 0, FALSE, TRUE,  FALSE, P0, 0, 0 },
+    { "Phasing",      SV_NAME,  W0,   0L, 0, FALSE, TRUE,  FALSE, P0, 0, 0 },
     { "Grabbed!",     SV_NAME,  W0,   0L, 0, FALSE, TRUE,  FALSE, P0, 0, 0 },
     /* F_STONE: 28 */
     { "Petrifying",   SV_NAME,  W0,   0L, 0, FALSE, TRUE,  FALSE, P0, 0, 0 },
@@ -1431,7 +1435,6 @@ static struct X_status_value shown_stats[NUM_STATS] = {
  *  sleeping   asleep (can't move; might wake if attacked)
  *  slippery   'slippery hands' or gloves (will drop non-cursed weapons)
  *  submerged  underwater (severely restricted vision, hampered movement)
- *  unconsc    unconscious (can't move; includes fainted)
  *  woundedl   'wounded legs' (can't kick; temporary dex loss)
  */
 
@@ -1450,11 +1453,10 @@ static const struct f_overload cond_ovl[] = {
         { BL_MASK_HOLDING, F_HOLDING } },
     },
 #if 0   /* not yet implemented */
-    { (BL_MASK_BUSY | BL_MASK_PARALYZ | BL_MASK_SLEEPING | BL_MASK_UNCONSC),
+    { (BL_MASK_BUSY | BL_MASK_PARALYZ | BL_MASK_SLEEPING),
       { { BL_MASK_BUSY, F_BUSY }, /* can't move but none of the below... */
         { BL_MASK_PARALYZ, F_PARALYZED }
         { BL_MASK_SLEEPING, F_SLEEPING }
-        { BL_MASK_UNCONSC, F_UNCONSCIOUS } },
     },
 #endif
 };
@@ -1908,6 +1910,9 @@ update_fancy_status_field(int i, int color, int attributes)
         case F_RIDE:
             condmask = BL_MASK_RIDE;
             break;
+        case F_PHASE:
+            condmask = BL_MASK_PHASE;
+            break;
         /* fatal status conditions */
         case F_GRABBED:
             condmask = BL_MASK_GRAB;
@@ -2140,6 +2145,7 @@ width_string(int sv_index)
     case F_LEV:
     case F_FLY:
     case F_RIDE:
+    case F_PHASE:
     case F_TRAPPED:
     case F_TETHERED:
     case F_GRABBED:
@@ -2387,6 +2393,7 @@ init_column(
    we lose track of the Widget pointer for F_DUMMY, each use clobbering the
    one before, leaving the one from leftover_indices[]; since they're never
    updated, that shouldn't matter */
+/* TODO: Add F_PHASE */
 static int status_indices[3][11] = {
     { F_DUMMY, F_HUNGER, F_ENCUMBER, F_TRAPPED,
       F_LEV, F_FLY, F_RIDE, F_RABID, -1, 0, 0 },

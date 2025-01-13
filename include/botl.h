@@ -69,6 +69,7 @@ enum blconditions {
     bl_lev,
     bl_parlyz,
     bl_ride,
+    bl_phase,
     bl_sleeping,
     bl_slime,
     bl_slippery,
@@ -79,7 +80,6 @@ enum blconditions {
     bl_termill,
     bl_tethered,
     bl_trapped,
-    bl_unconsc,
     bl_woundedl,
     bl_holding,
     bl_wither,
@@ -107,17 +107,17 @@ enum blconditions {
 #define BL_MASK_LEV          0x00004000L
 #define BL_MASK_PARLYZ       0x00008000L
 #define BL_MASK_RIDE         0x00010000L
-#define BL_MASK_SLEEPING     0x00020000L
-#define BL_MASK_SLIME        0x00040000L
-#define BL_MASK_SLIPPERY     0x00080000L
-#define BL_MASK_STONE        0x00100000L
-#define BL_MASK_STRNGL       0x00200000L
-#define BL_MASK_STUN         0x00400000L
-#define BL_MASK_SUBMERGED    0x00800000L
-#define BL_MASK_TERMILL      0x01000000L
-#define BL_MASK_TETHERED     0x02000000L
-#define BL_MASK_TRAPPED      0x04000000L
-#define BL_MASK_UNCONSC      0x08000000L
+#define BL_MASK_PHASE        0x00020000L
+#define BL_MASK_SLEEPING     0x00040000L
+#define BL_MASK_SLIME        0x00080000L
+#define BL_MASK_SLIPPERY     0x00100000L
+#define BL_MASK_STONE        0x00200000L
+#define BL_MASK_STRNGL       0x00400000L
+#define BL_MASK_STUN         0x00800000L
+#define BL_MASK_SUBMERGED    0x01000000L
+#define BL_MASK_TERMILL      0x02000000L
+#define BL_MASK_TETHERED     0x04000000L
+#define BL_MASK_TRAPPED      0x08000000L
 #define BL_MASK_WOUNDEDL     0x10000000L
 #define BL_MASK_HOLDING      0x20000000L
 #define BL_MASK_WITHER       0x40000000L
