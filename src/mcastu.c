@@ -436,8 +436,7 @@ m_cure_self(struct monst *caster, int dmg)
         if (canseemon(caster))
             pline_mon(caster, "%s looks better.", Monnam(caster));
         /* note: player healing does 6d4; this used to do 1d8 */
-        if ((caster->mhp += d(3, 6)) > caster->mhpmax)
-            caster->mhp = caster->mhpmax;
+        healmon(caster, d(3, 6), 0);
         dmg = 0;
     }
     /* Cure other ailments that players spells are capable of. */

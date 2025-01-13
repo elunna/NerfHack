@@ -1036,9 +1036,10 @@ explode_oil(
     if (!obj->lamplit)
         impossible("exploding unlit oil");
     end_burn(obj, TRUE);
+    obj->how_lost = LOST_EXPLODING;
+    splatter_burning_oil(x, y, diluted_oil, hero_caused);
     if (cansee(x, y))
         makeknown(obj->otyp);
-    splatter_burning_oil(x, y, diluted_oil, hero_caused);
 }
 
 /* Convert a damage type into an explosion display type. */

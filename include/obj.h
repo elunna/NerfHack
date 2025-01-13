@@ -144,7 +144,7 @@ struct obj {
     Bitfield(bypass, 1); /* mark this as an object to be skipped by bhito() */
     Bitfield(pickup_prev, 1); /* was picked up previously */
     Bitfield(ghostly, 1); /* it just got placed into a bones file */
-    Bitfield(how_lost, 2);  /* stolen by mon or thrown, dropped by hero */
+    Bitfield(how_lost, 3);  /* stolen by mon or thrown, dropped by hero, etc */
 
     Bitfield(named_how, 1);  /* source of name per TODO in resetobjs() */
 #if 0
@@ -152,9 +152,9 @@ struct obj {
     Bitfield(eknown, 1); /* effect known for wands zapped or rings worn when
                           * not seen yet after being picked up while blind
                           * [maybe for remaining stack of used potion too] */
-    /* 6 free bits */
+    /* 5 free bits */
 #else
-    /* 7 free bits */
+    /* 6 free bits */
 #endif
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
@@ -562,10 +562,12 @@ struct obj {
 #define POTHIT_OTHER_THROW 3 /* propelled by some other means [scatter()] */
 
 /* tracking how an item left your inventory via how_lost field */
-#define LOST_NONE    0 /* still in inventory, or method not covered below */
-#define LOST_THROWN  1 /* thrown or fired by the hero */
-#define LOST_DROPPED 2 /* dropped or tipped out of a container by the hero */
-#define LOST_STOLEN  3 /* stolen from hero's inventory by a monster */
+#define LOST_NONE      0 /* still in inventory, or method not covered below */
+#define LOST_THROWN    1 /* thrown or fired by the hero */
+#define LOST_DROPPED   2 /* dropped or tipped out of a container by the hero */
+#define LOST_STOLEN    3 /* stolen from hero's inventory by a monster */
+#define LOSTOVERRIDEMASK 0x3
+#define LOST_EXPLODING 4 /* the object is exploding (i.e. POT_OIL) */
 
 /* tracking how a name got acquired by an object in named_how field */
 #define NAMED_PLAIN 0 /* nothing special, typical naming */

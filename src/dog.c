@@ -740,14 +740,9 @@ mon_catchup_elapsed_time(
     }
 
     /* recover lost hit points */
-    if (!mtmp->mwither) {
-        if (!mon_prop(mtmp, REGENERATION))
-            imv /= 20;
-        if (mtmp->mhp + imv >= mtmp->mhpmax)
-            mtmp->mhp = mtmp->mhpmax;
-        else
-            mtmp->mhp += imv;
-    }
+    if (!regenerates(mtmp->data))
+        imv /= 20;
+    healmon(mtmp, imv, 0);
 
     set_mon_lastmove(mtmp);
 }

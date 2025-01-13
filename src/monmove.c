@@ -336,13 +336,13 @@ mon_regen(struct monst *mon, boolean digest_meal)
 {
     struct obj *mstone = m_carrying(mon, HEALTHSTONE);
 
-    if (mon->mhp < mon->mhpmax && (svm.moves % 20 == 0
+    if ( (svm.moves % 20 == 0 || regenerates(mon->data)
             || mon_prop(mon, REGENERATION)
             || (mstone && !mstone->cursed))
         /* Below are conditions which prevent regen */
         && (!Is_valley(&u.uz) || is_undead(mon->data))
         && !mon->mrabid && !mon->mwither)
-        mon->mhp++;
+        healmon(mon, 1, 0);
     if (mon->mspec_used)
         mon->mspec_used--;
     if (mon->msummoned)

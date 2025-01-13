@@ -1356,10 +1356,7 @@ use_defensive(struct monst *mtmp)
         mquaffmsg(mtmp, otmp);
         i = 8 + d(4 + 2 * bcsign(otmp), 4);
         i /= (otmp->odiluted ? 2 : 1);
-
-        mtmp->mhp += i;
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = ++mtmp->mhpmax;
+        healmon(mtmp, i, 1);
         if (!otmp->cursed && !mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
         } else if (otmp->blessed && (mtmp->mrabid || mtmp->mdiseased)) {
@@ -1377,10 +1374,7 @@ use_defensive(struct monst *mtmp)
         mquaffmsg(mtmp, otmp);
         i = 16 + d(4 + 2 * bcsign(otmp), 8);
         i /= (otmp->odiluted ? 2 : 1);
-
-        mtmp->mhp += i;
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 5 : 2));
+        healmon(mtmp, i, (otmp->blessed ? 5 : 2));
         if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
         } else if (!otmp->cursed && (mtmp->mrabid || mtmp->mdiseased)) {
@@ -1398,7 +1392,7 @@ use_defensive(struct monst *mtmp)
         mquaffmsg(mtmp, otmp);
         if (otmp->otyp == POT_SICKNESS)
             unbless(otmp); /* Pestilence */
-        mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 8 : 4));
+        healmon(mtmp, mtmp->mhpmax, otmp->blessed ? 8 : 4);
         if (!mtmp->mcansee && otmp->otyp != POT_SICKNESS) {
             mcureblindness(mtmp, vismon);
         } else if (mtmp->mrabid || mtmp->mdiseased) {
