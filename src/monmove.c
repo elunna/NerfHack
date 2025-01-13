@@ -336,11 +336,12 @@ mon_regen(struct monst *mon, boolean digest_meal)
 {
     struct obj *mstone = m_carrying(mon, HEALTHSTONE);
 
-    if ( (svm.moves % 20 == 0 || regenerates(mon->data)
+    if ((svm.moves % 20 == 0 || regenerates(mon->data)
             || mon_prop(mon, REGENERATION)
             || (mstone && !mstone->cursed))
         /* Below are conditions which prevent regen */
         && (!Is_valley(&u.uz) || is_undead(mon->data))
+        /* rabid and withering monsters do not regenerate */
         && !mon->mrabid && !mon->mwither)
         healmon(mon, 1, 0);
     if (mon->mspec_used)
