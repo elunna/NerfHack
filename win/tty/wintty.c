@@ -4403,7 +4403,7 @@ tty_status_enablefield(
  *               BL_MASK_TERMILL      0x01000000L
  *               BL_MASK_TETHERED     0x02000000L
  *               BL_MASK_TRAPPED      0x04000000L
- *               BL_MASK_UNCONSC      0x08000000L
+ *               BL_MASK_PHASE        0x08000000L
  *               BL_MASK_WOUNDEDL     0x10000000L
  *               BL_MASK_HOLDING      0x20000000L
  *               BL_MASK_WITHER       0x40000000L
