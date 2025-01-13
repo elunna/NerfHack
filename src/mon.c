@@ -7033,9 +7033,7 @@ mon_berserk(struct monst *mtmp)
     wake_nearto(mtmp->mx, mtmp->my, 4 * 4);
 
     /* Renewed vigor!  */
-    mtmp->mhp += rnd(mtmp->mhpmax);
-    if (mtmp->mhp > mtmp->mhpmax)
-	    mtmp->mhp = mtmp->mhpmax;
+    healmon(mtmp, rnd(mtmp->mhpmax), 0);
     mtmp->mberserk = 1;
     mtmp->mflee = 0;
 
