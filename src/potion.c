@@ -1826,7 +1826,8 @@ peffect_milk(struct obj *otmp)
         else
             rehumanize();
     }
-    healup(1, otmp->blessed ? 1 : 0, FALSE, TRUE);
+    if (!otmp->odiluted)
+        healup(1, otmp->blessed ? 1 : 0, FALSE, TRUE);
     exercise(A_CON, TRUE);
 }
 
