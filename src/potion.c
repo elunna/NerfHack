@@ -1430,21 +1430,20 @@ peffect_gain_level(struct obj *otmp)
 staticfn void
 peffect_healing(struct obj *otmp)
 {
-    int amt = 8 + d(4 + 2 * bcsign(otmp), 4);
-    amt /= (otmp->odiluted ? 2 : 1);
-
+    int amt = (8 + d(4 + 2 * bcsign(otmp), 4)) / (otmp->odiluted ? 2 : 1);
+    int gain = !otmp->cursed && !otmp->odiluted ? 1 : 0;
     You_feel("better.");
-    healup(amt, !otmp->cursed ? 1 : 0, !!otmp->blessed, !otmp->cursed);
+    healup(amt, gain, !!otmp->blessed, !otmp->cursed);
     exercise(A_CON, TRUE);
 }
 
 staticfn void
 peffect_extra_healing(struct obj *otmp)
 {
-    int amt = 16 + d(4 + 2 * bcsign(otmp), 8);
-    amt /= (otmp->odiluted ? 2 : 1);
-    int gain = otmp->blessed ? 5 : !otmp->cursed ? 2 : 0;
-    gain /= (otmp->odiluted ? 2 : 1);
+    int amt = (16 + d(4 + 2 * bcsign(otmp), 8))
+                       / (otmp->odiluted ? 2 : 1);
+    int gain = (otmp->blessed ? 5 : !otmp->cursed ? 2 : 0) 
+               / (otmp->odiluted ? 2 : 1);
 
     You_feel("much better.");
     healup(amt, gain, !otmp->cursed, TRUE);
@@ -1461,8 +1460,7 @@ staticfn void
 peffect_full_healing(struct obj *otmp)
 {
     int amt = otmp->odiluted ? 200 : 400;
-    int gain = 4 + 4 * bcsign(otmp);
-    gain /= (otmp->odiluted ? 2 : 1);
+    int gain = (4 + 4 * bcsign(otmp)) / (otmp->odiluted ? 2 : 1);
     healup(amt, gain, !otmp->cursed, TRUE);
     You_feel("%s healed.", Upolyd ? (u.mh == u.mhmax ? "completely" : "mostly")
                                       : (u.uhp == u.uhpmax ? "completely" : "mostly"));
