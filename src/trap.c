@@ -882,6 +882,8 @@ animate_statue(
     else
         mon->mundetected = FALSE;
     mon->msleeping = 0;
+    /* clear any left over slow-stoning timers that may be present */
+    mon->mstone = 0;
     if (cause == ANIMATE_NORMAL || cause == ANIMATE_SHATTER) {
         /* trap always releases hostile monster */
         mon->mtame = 0; /* (might be petrified pet tossed onto trap) */
@@ -4504,7 +4506,9 @@ instapetrify(const char *str)
 void
 minstapetrify(struct monst *mon, boolean byplayer)
 {
-    if (resists_ston(mon))
+    mon->mstone = 0; /* end any lingering timer */
+
+    if (resists_ston(mon) || defended(mon, AD_STON))
         return;
     if (poly_when_stoned(mon->data)) {
         mon_to_stone(mon);
@@ -4537,7 +4541,7 @@ selftouch(const char *arg)
         corpse_pmname = obj_pmname(uwep);
         pline("%s touch the %s corpse.", arg, corpse_pmname);
         Sprintf(kbuf, "%s corpse", an(corpse_pmname));
-        instapetrify(kbuf);
+        make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
         /* life-saved; unwield the corpse if we can't handle it */
         if (!uarmg && !Stone_resistance)
             uwepgone();
@@ -4549,7 +4553,7 @@ selftouch(const char *arg)
         corpse_pmname = obj_pmname(uswapwep);
         pline("%s touch the %s corpse.", arg, corpse_pmname);
         Sprintf(kbuf, "%s corpse", an(corpse_pmname));
-        instapetrify(kbuf);
+        make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
         /* life-saved; unwield the corpse */
         if (!uarmg && !Stone_resistance)
             uswapwepgone();
@@ -4565,16 +4569,21 @@ mselftouch(
     struct obj *mwep = MON_WEP(mon);
 
     if (mwep && mwep->otyp == CORPSE && touch_petrifies(&mons[mwep->corpsenm])
-        && !resists_ston(mon)) {
+        && !(resists_ston(mon) || defended(mon, AD_STON))) {
         if (cansee(mon->mx, mon->my)) {
             pline_mon(mon, "%s%s touches %s.", arg ? arg : "",
                   arg ? mon_nam(mon) : Monnam(mon),
                   corpse_xname(mwep, (const char *) 0, CXN_PFX_THE));
         }
-        minstapetrify(mon, byplayer);
+        if (!mon->mstone) {
+            mon->mstone = 5;
+            mon->mstonebyu = byplayer;
+        }
+        
         /* if life-saved, might not be able to continue wielding */
         if (!DEADMONSTER(mon)
-            && !safegloves(which_armor(mon, W_ARMG)) && !resists_ston(mon))
+            && !safegloves(which_armor(mon, W_ARMG))
+            && !(resists_ston(mon) || defended(mon, AD_STON)))
             mwepgone(mon);
     }
 }
@@ -6539,7 +6548,7 @@ help_monster_out(
             char kbuf[BUFSZ];
 
             Sprintf(kbuf, "trying to help %s out of a pit", an(mtmp_pmname));
-            instapetrify(kbuf);
+            make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
             return 1;
         }
     }
@@ -6561,7 +6570,7 @@ help_monster_out(
         pline("%s awakens.", Monnam(mtmp));
     } else if (mtmp->mfrozen && !rn2(mtmp->mfrozen)) {
         /* After such manhandling, perhaps the effect wears off */
-        mtmp->mcanmove = 1;
+        maybe_moncanmove(mtmp);
         mtmp->mfrozen = 0;
         pline("%s stirs.", Monnam(mtmp));
     }

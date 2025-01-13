@@ -830,7 +830,7 @@ keepdogs(
             finish_meating(mtmp);
             mtmp->msleeping = 0;
             mtmp->mfrozen = 0;
-            mtmp->mcanmove = 1;
+            maybe_moncanmove(mtmp);
         }
         if (((monnear(mtmp, u.ux, u.uy) && levl_follower(mtmp))
              /* the wiz will level t-port from anywhere to chase
@@ -1057,7 +1057,7 @@ dogfood(struct monst *mon, struct obj *obj)
             return TABU;
         if ((obj->otyp == CORPSE || obj->otyp == EGG)
             && flesh_petrifies(fptr) /* c*ckatrice or Medusa */
-            && !resists_ston(mon))
+            && !(resists_ston(mon) || defended(mon, AD_STON)))
             return POISON;
         if (obj->otyp == LUMP_OF_ROYAL_JELLY
             && mon->data == &mons[PM_KILLER_BEE]) {
@@ -1090,6 +1090,11 @@ dogfood(struct monst *mon, struct obj *obj)
             return TABU;
         }
 
+        /* lizards cure stoning. ghouls won't eat them even then, though,
+          just like elves prefer starvation to cannibalism. */
+        if (obj->otyp == CORPSE && fptr == &mons[PM_LIZARD] && mon->mstone)
+            return DOGFOOD;
+        
 	/* vampires only "eat" very fresh corpses ...
 	 * Assume meat -> blood */
 	if (is_vampire(mptr)) {

@@ -2373,7 +2373,7 @@ use_tinning_kit(struct obj *obj)
                   corpse_name);
             Sprintf(kbuf, "trying to tin %s without gloves", corpse_name);
         }
-        instapetrify(kbuf);
+        make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
     }
     if (is_rider(mptr)) {
         if (revive_corpse(corpse, FALSE))
@@ -3724,14 +3724,14 @@ use_whip(struct obj *obj)
 
                         Strcpy(kbuf, (otmp->quan == 1L) ? an(onambuf)
                                                         : onambuf);
-                        pline("Snatching %s is a fatal mistake.", kbuf);
+//                        pline("Snatching %s is a fatal mistake.", kbuf);
                         /* corpse probably has a rot timer but is now
                            OBJ_FREE; end of game cleanup will panic if
                            it isn't part of current level; plus it would
                            be missing from bones, so put it on the floor */
                         place_object(otmp, u.ux, u.uy); /* but don't stack */
 
-                        instapetrify(kbuf);
+                        make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
                         /* life-saved; free the corpse again */
                         obj_extract_self(otmp);
                     }

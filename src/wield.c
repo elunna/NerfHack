@@ -179,7 +179,7 @@ cant_wield_corpse(struct obj *obj)
         corpse_xname(obj, (const char *) 0, CXN_PFX_THE),
         makeplural(body_part(HAND)));
     Sprintf(kbuf, "wielding %s bare-handed", killer_xname(obj));
-    instapetrify(kbuf);
+    make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
     return TRUE;
 }
 

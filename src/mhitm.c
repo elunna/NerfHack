@@ -229,7 +229,8 @@ mdisplacem(
      */
     gv.vis = (canspotmon(magr) && canspotmon(mdef));
 
-    if (touch_petrifies(pd) && !resists_ston(magr)) {
+    if (touch_petrifies(pd) && !(resists_ston(magr) 
+                                 || defended(magr, AD_STON))) {
         if (!safegloves(which_armor(magr, W_ARMG))) {
             if (poly_when_stoned(pa)) {
                 mon_to_stone(magr);
@@ -1149,7 +1150,7 @@ mdamagem(
 
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
-        && !resists_ston(magr)) {
+        && !(resists_ston(magr) || defended(magr, AD_STON))) {
         long protector = attk_protection((int) mattk->aatyp),
              wornitems = magr->misc_worn_check;
 

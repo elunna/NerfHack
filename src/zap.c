@@ -619,6 +619,16 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                 if (canseemon(mtmp))
                     pline("%s looks rather fleshy for a moment.", name);
             }
+        } else if (mtmp->mstone > 0) {
+            mtmp->mstone = 0;
+            maybe_moncanmove(mtmp);
+            if (!canseemon(mtmp)) {
+                ; /* no feedback */
+            } else if (Hallucination) {
+                pline("What a pity - you just ruined a future piece of art!");
+            } else {
+                pline("%s seems limber!", Monnam(mtmp));
+            } 
         } else
             wake = FALSE;
         break;

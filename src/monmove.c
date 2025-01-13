@@ -455,7 +455,8 @@ bee_eat_jelly(struct monst *mon, struct obj *obj)
 
         if (DEADMONSTER(mon))
             return 1; /* dead; apparently queen bees have been genocided */
-        mon->mfrozen = m_delay, mon->mcanmove = 0;
+        mon->mfrozen = m_delay;
+        maybe_moncanmove(mon);
         return 0; /* bee used its move */
     }
     return -1; /* a queen is already present; ordinary bee hasn't moved yet */
@@ -801,6 +802,11 @@ dochug(struct monst *mtmp)
     if (mtmp->mstun && !rn2(10))
         mtmp->mstun = 0;
 
+    if (mtmp->mstone && munstone(mtmp, mtmp->mstonebyu)) {
+        mtmp->mstone = 0;
+        return 1; /* this is its move */
+    }
+    
     /* Some monsters teleport. Teleportation costs a turn. */
     if (mtmp->mflee && !rn2(40) && mon_prop(mtmp, TELEPORT) && !mtmp->iswiz
         && !noteleport_level(mtmp)) {
@@ -2718,6 +2724,13 @@ special_baalzebub_actions(struct monst *baalz)
         }
     }
     return FALSE;
+}
+
+void
+maybe_moncanmove(struct monst *mtmp)
+{
+    if (!mtmp->mstone || mtmp->mstone > 2)
+        mtmp->mcanmove = 1;
 }
 
 /*monmove.c*/

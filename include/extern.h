@@ -1973,6 +1973,7 @@ extern boolean should_displace(struct monst *, coord *, long *, int, coordxy,
                                coordxy) NONNULLPTRS;
 extern boolean undesirable_disp(struct monst *, coordxy, coordxy) NONNULLARG1;
 extern boolean can_hide_under_obj(struct obj *);
+extern void maybe_moncanmove(struct monst *) NONNULLARG1;
 
 /* ### monst.c ### */
 

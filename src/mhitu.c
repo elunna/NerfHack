@@ -1680,7 +1680,8 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
             unleash_all();
         }
 
-        if (touch_petrifies(gy.youmonst.data) && !resists_ston(mtmp)) {
+        if (touch_petrifies(gy.youmonst.data)
+            && !(resists_ston(mtmp) || defended(mtmp, AD_STON))) {
             /* put the attacker back where it started;
                the resulting statue will end up there
                [note: if poly'd hero could ride or non-poly'd hero could
@@ -1689,7 +1690,10 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                engulfer's previous spot when hero was forcibly dismounted] */
             remove_monster(mtmp->mx, mtmp->my); /* u.ux,u.uy */
             place_monster(mtmp, omx, omy);
-            minstapetrify(mtmp, TRUE);
+            if (!mtmp->mstone) {
+                mtmp->mstone = 5;
+                mtmp->mstonebyu = TRUE;
+            }
             /* normally unstuck() would do this, but we're not
                fully swallowed yet so that won't work here */
             if (Punished)
@@ -1932,7 +1936,8 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
 
     if (!u.uswallow) {
         ; /* life-saving has already expelled swallowed hero */
-    } else if (touch_petrifies(gy.youmonst.data) && !resists_ston(mtmp)) {
+    } else if (touch_petrifies(gy.youmonst.data)
+        && !(resists_ston(mtmp) || defended(mtmp, AD_STON))) {
         pline("%s very hurriedly %s you!", Monnam(mtmp),
               digests(mtmp->data) ? "regurgitates"
               : enfolds(mtmp->data) ? "releases"
@@ -2953,7 +2958,7 @@ passiveum(
         if (MON_WEP(mtmp) != 0)
             wornitems |= W_ARMG;
 
-        if (!resists_ston(mtmp)
+        if (!(resists_ston(mtmp) || defended(mtmp, AD_STON))
             && (protector == 0L
                 || (protector != ~0L
                     && (wornitems & protector) != protector))) {
@@ -2963,6 +2968,7 @@ passiveum(
             }
             pline_mon(mtmp, "%s turns to stone!", Monnam(mtmp));
             gs.stoned = 1;
+            mtmp->mstone = 0; /* end any lingering timer */
             xkilled(mtmp, XKILL_NOMSG);
             if (!DEADMONSTER(mtmp))
                 return M_ATTK_HIT;

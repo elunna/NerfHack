@@ -370,7 +370,7 @@ mon_maybe_unparalyze(struct monst *mtmp)
 {
     if (!mtmp->mcanmove) {
         if (!rn2(10)) {
-            mtmp->mcanmove = 1;
+            maybe_moncanmove(mtmp);
             mtmp->mfrozen = 0;
         }
     }
@@ -391,6 +391,8 @@ find_roll_to_hit(
 
     *role_roll_penalty = 0; /* default is `none' */
 
+    /* luck still plays a role with to-hit calculations, but
+       it's toned down vs regular NetHack */
     tmp = 1 + (Luck / 3)
             + abon()
             + find_mac(mtmp)
@@ -411,8 +413,13 @@ find_roll_to_hit(
         tmp += 2;
     if (mtmp->msleeping)
         tmp += 2;
-    if (!mtmp->mcanmove)
+    if (!mtmp->mcanmove) {
         tmp += 4;
+        if (!rn2(10)) {
+            maybe_moncanmove(mtmp);
+            mtmp->mfrozen = 0;
+        }
+    }
 
     if (calculate_flankers(&gy.youmonst, mtmp)) {
         /* Scale with monster difficulty */
@@ -1697,10 +1704,12 @@ hmon_hitmon_misc_obj(
                              obj->dknown ? CXN_PFX_THE
                              : CXN_ARTICLE));
             obj->dknown = 1;
-            if (!munstone(mon, TRUE))
-                minstapetrify(mon, TRUE);
-            if (resists_ston(mon))
+            if (resists_ston(mon) || defended(mon, AD_STON))
                 break;
+            if (!mon->mstone) {
+                mon->mstone = 5;
+                mon->mstonebyu = TRUE;
+            }
             /* note: hp may be <= 0 even if munstoned==TRUE */
             hmd->doreturn = TRUE;
             hmd->retval = !DEADMONSTER(mon);
@@ -1751,14 +1760,13 @@ hmon_hitmon_misc_obj(
                   plur(cnt));
             obj->known = 1; /* (not much point...) */
             useup_eggs(obj);
-            if (!munstone(mon, TRUE))
-                minstapetrify(mon, TRUE);
-            if (resists_ston(mon))
+            if (resists_ston(mon) || defended(mon, AD_STON))
                 break;
-            hmd->doreturn = TRUE;
-            hmd->retval = !DEADMONSTER(mon);
+            if (!mon->mstone) {
+                mon->mstone = 5;
+                mon->mstonebyu = TRUE;
+            }
             return;
-            /*return (boolean) (!DEADMONSTER(mon));*/
         } else { /* ordinary egg(s) */
             enum monnums mnum = obj->corpsenm;
             const char *eggp =
@@ -2742,7 +2750,7 @@ theft_petrifies(struct obj *otmp)
 #endif
 
     /* stealing this corpse is fatal... */
-    instapetrify(corpse_xname(otmp, "stolen", CXN_ARTICLE));
+    make_stoned(5L, (char *) 0, KILLED_BY, corpse_xname(otmp, "stolen", CXN_ARTICLE));
     /* apparently wasn't fatal after all... */
     return TRUE;
 }
@@ -4903,7 +4911,7 @@ do_stone_mon(
         mhm->damage = 0;
         return;
     }
-    if (!resists_ston(mdef)) {
+    if (!(resists_ston(mdef) || defended(mdef, AD_STON))) {
         if (gv.vis && canseemon(mdef))
             pline_mon(mdef, "%s turns to stone!", Monnam(mdef));
         monstone(mdef);
@@ -5069,7 +5077,10 @@ mhitm_ad_phys(
 
             if (mwep->otyp == CORPSE
                 && touch_petrifies(&mons[mwep->corpsenm])) {
-                do_stone_mon(magr, mattk, mdef, mhm);
+                if (!mdef->mstone) {
+                    mdef->mstone = 5;
+                    mdef->mstonebyu = FALSE;
+                }
                 if (mhm->done)
                     return;
             }
@@ -5122,14 +5133,22 @@ mhitm_ad_ston(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    boolean negated = resists_ston(mdef) || defended(mdef, AD_STON);
+    
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (!munstone(mdef, TRUE))
-            minstapetrify(mdef, TRUE);
+        if (negated)
+            return;
+        if (!mdef->mstone) {
+            mdef->mstone = 5;
+            mdef->mstonebyu = TRUE;
+        }
         mhm->damage = 0;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
+        if (negated)
+            return;
         if (!rn2(3)) {
             if (magr->mcan) {
                 if (!Deaf)
@@ -5171,11 +5190,12 @@ mhitm_ad_ston(
         }
     } else {
         /* mhitm */
-        if (magr->mcan)
+        if (magr->mcan || negated)
             return;
-        do_stone_mon(magr, mattk, mdef, mhm);
-        if (mhm->done)
-            return;
+        if (!mdef->mstone) {
+            mdef->mstone = 5;
+            mdef->mstonebyu = FALSE;
+        }
     }
 }
 
@@ -6138,7 +6158,8 @@ gulpum(struct monst *mdef, struct attack *mattk)
                     : u_enfold ? "enclosing"
                       : "engulfing",
                     mnam, u_digest ? " whole" : "");
-            instapetrify(kbuf);
+            make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
+
         } else {
             start_engulf(mdef);
             switch (mattk->adtyp) {

@@ -42,7 +42,7 @@ staticfn void
 awaken_scare(struct monst *mtmp, boolean scary)
 {
     mtmp->msleeping = 0;
-    mtmp->mcanmove = 1;
+    maybe_moncanmove(mtmp);
     mtmp->mfrozen = 0;
     /* may scare some monsters -- waiting monsters excluded */
     if (!unique_corpstat(mtmp->data)
@@ -177,7 +177,7 @@ awaken_soldiers(struct monst* bugler  /* monster that played instrument */)
             if (!mtmp->mtame)
                 mtmp->mpeaceful = 0;
             mtmp->msleeping = mtmp->mfrozen = 0;
-            mtmp->mcanmove = 1;
+            maybe_moncanmove(mtmp);
             mtmp->mstrategy &= ~STRAT_WAITMASK;
             if (canseemon(mtmp))
                 pline("%s is now ready for battle!", Monnam(mtmp));

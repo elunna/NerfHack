@@ -2690,7 +2690,7 @@ maybe_turn_mon_iter(struct monst *mtmp)
                 pline("Unfortunately, your voice falters.");
             mtmp->mflee = 0;
             mtmp->mfrozen = 0;
-            mtmp->mcanmove = 1;
+            maybe_moncanmove(mtmp);
         } else if (!resist(mtmp, '\0', 0, TELL)) {
             int xlev = 6;
 

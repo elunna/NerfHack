@@ -843,7 +843,7 @@ monster_detect(struct obj *otmp, /* detecting object (if any) */
 
             if (otmp && otmp->cursed && helpless(mtmp)) {
                 mtmp->msleeping = mtmp->mfrozen = 0;
-                mtmp->mcanmove = 1;
+                maybe_moncanmove(mtmp);
                 woken = TRUE;
             }
         }

@@ -622,12 +622,16 @@ steal(struct monst *mtmp, char *objnambuf)
     urgent_pline("%s stole %s.", named ? "She" : Monnambuf, doname(otmp));
     (void) encumber_msg();
     could_petrify = (otmp->otyp == CORPSE
-                     && touch_petrifies(&mons[otmp->corpsenm]));
+                     && touch_petrifies(&mons[otmp->corpsenm])
+                     && !(resists_ston(mtmp) || defended(mtmp, AD_STON)));
     otmp->how_lost = LOST_STOLEN;
     (void) mpickobj(mtmp, otmp); /* may free otmp */
     if (could_petrify && !safegloves(which_armor(mtmp, W_ARMG))) {
-        minstapetrify(mtmp, TRUE);
-        return -1;
+        if (!mtmp->mstone) {
+            mtmp->mstone = 5;
+            mtmp->mstonebyu = TRUE;
+            /* Let them still steal the item, they'll die shortly */
+        }
     }
     if (monkey_business && gm.multi >= 0) {
         /* check multi here because we only want the speed boost to go towards

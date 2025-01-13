@@ -553,7 +553,7 @@ really_kick_object(coordxy x, coordxy y)
             /* normalize body shape here; foot, not body_part(FOOT) */
             Sprintf(svk.killer.name, "kicking %s barefoot",
                     killer_xname(gk.kickedobj));
-            instapetrify(svk.killer.name);
+            make_stoned(5L, (char *) 0, KILLED_BY, svk.killer.name);
         }
     }
 

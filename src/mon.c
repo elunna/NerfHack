@@ -1513,6 +1513,58 @@ m_calcdistress(struct monst *mtmp)
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
 
+    
+    if (mtmp->mstone > 0) {
+        if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {
+            mtmp->mstone = 0;
+        } else if (poly_when_stoned(mtmp->data)) {
+            mtmp->mstone = 0;
+            mon_to_stone(mtmp);
+        } else {
+            switch (mtmp->mstone--) {
+            case 5:
+                /* "<mon> is slowing down.";
+                 * also removes intrinsic speed */
+                mon_adjust_speed(mtmp, -3, (struct obj *) 0);
+                break;
+            case 4:
+                if (canspotmon(mtmp))
+                    pline("%s %s are stiffening.",
+                          s_suffix(Monnam(mtmp)),
+                          nolimbs(mtmp->data) ? "extremities"
+                                              : "limbs");
+                break;
+            case 3:
+                if (canspotmon(mtmp))
+                    pline("%s %s have turned to stone.",
+                          s_suffix(Monnam(mtmp)),
+                          nolimbs(mtmp->data) ? "extremities"
+                                              : "limbs");
+                mtmp->mcanmove = 0;
+                break;
+            case 2:
+                if (canspotmon(mtmp))
+                    pline("%s has almost completely turned to stone.",
+                          Monnam(mtmp));
+                mtmp->mcanmove = 0;
+                break;
+            case 1:
+                if (canspotmon(mtmp))
+                    pline("%s is a statue.", Monnam(mtmp));
+                if (mtmp->mstonebyu) {
+                    gs.stoned = TRUE;
+                    xkilled(mtmp, AD_STON);
+                } else {
+                    monstone(mtmp);
+                }
+            }
+        }
+        if (!mtmp->mstone && !mtmp->mfrozen)
+            mtmp->mcanmove = 1;
+        if (DEADMONSTER(mtmp))
+            return;
+    }
+        
     /* diseased monsters can die as well... */
     if (mtmp->mdiseased && mtmp->mdiseasetime <= 1) {
         if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
@@ -1609,7 +1661,8 @@ m_calcdistress(struct monst *mtmp)
     /* gradually time out temporary problems */
     if (mtmp->mblinded && !--mtmp->mblinded)
         mtmp->mcansee = 1;
-    if (mtmp->mfrozen && !--mtmp->mfrozen)
+    if (mtmp->mfrozen && !--mtmp->mfrozen
+            && (!mtmp->mstone || mtmp->mstone > 2))
         mtmp->mcanmove = 1;
     if (mtmp->mfleetim && !--mtmp->mfleetim)
         mtmp->mflee = 0;
@@ -1854,11 +1907,9 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
         if (mstone) {
             if (poly_when_stoned(mtmp->data)) {
                 mon_to_stone(mtmp);
-            } else if (!resists_ston(mtmp)) {
-                if (vis)
-                    pline_mon(mtmp, "%s turns to stone!",
-                              Monnam(mtmp));
-                monstone(mtmp);
+            } else if (!resists_ston(mtmp) || defended(mtmp, AD_STON)) {
+                mtmp->mstone = 5;
+                mtmp->mstonebyu = FALSE;
             }
         }
         if (heal)
@@ -1998,7 +2049,7 @@ meatobj(struct monst* mtmp) /* for gelatinous cubes */
         /* untouchable (or inaccessible) items */
         } else if ((otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm])
-                    && !resists_ston(mtmp))
+                    && !(resists_ston(mtmp) || defended(mtmp, AD_STON)))
                    /* don't engulf boulders and statues or ball&chain */
                    || otmp->oclass == ROCK_CLASS
                    || otmp == uball || otmp == uchain
@@ -2021,7 +2072,7 @@ meatobj(struct monst* mtmp) /* for gelatinous cubes */
                    || (otmp->opoisoned && !resists_poison(mtmp))
                    /* cockatrice corpses handled above; this
                       touch_petrifies() check catches eggs */
-                   || (mstoning(otmp) && !resists_ston(mtmp))
+                   || (mstoning(otmp) && !(resists_ston(mtmp) || defended(mtmp, AD_STON)))
                    || (otmp->otyp == GLOB_OF_GREEN_SLIME
                        && !slimeproof(mtmp->data))) {
             /* engulf */
@@ -2153,7 +2204,7 @@ meatcorpse(
         /* skip some corpses */
         if (vegan(corpsepm) /* ignore veggy corpse even if omnivorous */
             /* don't eat harmful corpses */
-            || (flesh_petrifies(corpsepm) && !resists_ston(mtmp)))
+            || (flesh_petrifies(corpsepm) && !(resists_ston(mtmp) || defended(mtmp, AD_STON))))
             continue;
         if (is_rider(corpsepm)) {
             boolean revived_it = revive_corpse(otmp, FALSE);
@@ -2441,7 +2492,8 @@ can_touch_safely(struct monst *mtmp, struct obj *otmp)
     struct permonst *mdat = mtmp->data;
 
     if (otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm])
-        && !(safegloves(which_armor(mtmp, W_ARMG)) && !resists_ston(mtmp)))
+        && !(safegloves(which_armor(mtmp, W_ARMG))
+        && !(resists_ston(mtmp) || defended(mtmp, AD_STON))))
         return FALSE;
     if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
         return FALSE;
@@ -3353,7 +3405,7 @@ lifesaved_monster(struct monst *mtmp)
         check_gear_next_turn(mtmp);
 
         surviver = !(svm.mvitals[monsndx(mtmp->data)].mvflags & G_GENOD);
-        mtmp->mcanmove = 1;
+        maybe_moncanmove(mtmp);
         mtmp->mfrozen = 0;
         if (mtmp->mtame && !mtmp->isminion) {
             wary_dog(mtmp, !surviver);
@@ -5531,8 +5583,9 @@ hideunder(struct monst *mtmp)
                 while (otmp && otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     otmp = otmp->nexthere;
-                if (otmp != 0 || ((mtmp == &gy.youmonst) ? Stone_resistance
-                                                        : resists_ston(mtmp))) {
+                if (otmp != 0 || ((mtmp == &gy.youmonst)
+                        ? Stone_resistance
+                        : (resists_ston(mtmp) || defended(mtmp, AD_STON)))) {
                     undetected = TRUE;
 
                     if (otmp && seeit)

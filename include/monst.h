@@ -162,6 +162,8 @@ struct monst {
     Bitfield(mtemplit, 1);  /* temporarily seen; only valid during bhit() */
     Bitfield(meverseen, 1); /* mon has been seen at some point */
     Bitfield(mwither_from_u, 1); /* is withering due to player */
+    Bitfield(mstonebyu, 1);  /* you caused the monster to start stoning */
+    Bitfield(mstone, 3);     /* monster is turning to stone */
     Bitfield(mberserk, 1);  /* monster is berserking */
     Bitfield(mrabid, 1);    /* monster is rabid */
     Bitfield(mspotted, 1);  /* mon is currently seen by hero */

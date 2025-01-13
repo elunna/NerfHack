@@ -962,6 +962,7 @@ engulfer_digests_food(struct obj *obj)
                 could_grow = FALSE, could_heal = FALSE;
 
         if (obj->otyp == CORPSE) {
+            /* Update this if any engulfers would resist stoning */
             could_petrify = touch_petrifies(&mons[obj->corpsenm]);
             could_poly = polyfood(obj);
             could_grow = (obj->corpsenm == PM_WRAITH);
@@ -976,7 +977,10 @@ engulfer_digests_food(struct obj *obj)
             (void) newcham(u.ustuck, could_slime ? &mons[PM_GREEN_SLIME] : 0,
                            could_slime ? NC_SHOW_MSG : NO_NC_FLAGS);
         } else if (could_petrify) {
-            minstapetrify(u.ustuck, TRUE);
+            if (!u.ustuck->mstone) {
+                u.ustuck->mstone = 5;
+                u.ustuck->mstonebyu = TRUE;
+            }
         } else if (could_grow) {
             (void) grow_up(u.ustuck, (struct monst *) 0);
         } else if (could_heal) {

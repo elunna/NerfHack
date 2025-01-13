@@ -247,12 +247,15 @@ dog_eat(struct monst *mtmp,
     int nutrit, res;
     long oprice;
     char objnambuf[BUFSZ], *obj_name;
-
+    boolean unstone;
+    
     objnambuf[0] = '\0';
     if (edog->hungrytime < svm.moves)
         edog->hungrytime = svm.moves;
     nutrit = dog_nutrition(mtmp, obj);
 
+    unstone = (cures_stoning(mtmp, obj, TRUE) && mtmp->mstone);
+    
     if (devour) {
         if (mtmp->meating > 1)
             mtmp->meating /= 2;
@@ -356,6 +359,18 @@ dog_eat(struct monst *mtmp,
             /* m_consume_obj() -> delobj() -> obfree() will handle the shop
                billing update */
         }
+        
+        if (unstone) {
+            mtmp->mstone = 0;
+            if (!gv.vis) {
+            } else if (Hallucination) {
+                pline("What a pity - %s just ruined a future piece of art!",
+                      mon_nam(mtmp));
+            } else {
+                pline("%s seems limber!", Monnam(mtmp));
+            }
+        }
+        
         m_consume_obj(mtmp, obj);
     }
 

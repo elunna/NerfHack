@@ -688,7 +688,8 @@ find_defensive(struct monst *mtmp, boolean tryescape)
     if (!mtmp->mpeaceful && !nohands(mtmp->data)
         && uwep && uwep->otyp == CORPSE
         && touch_petrifies(&mons[uwep->corpsenm])
-        && !poly_when_stoned(mtmp->data) && !resists_ston(mtmp)
+        && !poly_when_stoned(mtmp->data)
+        && !(resists_ston(mtmp) || defended(mtmp, AD_STON))
         && lined_up(mtmp)) { /* only lines up if distu range is within 5*5 */
         /* could use m_carrying(), then nxtobj() when matching wand
            is empty, but direct traversal is actually simpler here */
@@ -1475,7 +1476,7 @@ use_defensive(struct monst *mtmp)
         return 2;
     case MUSE_LIZARD_CORPSE:
         /* not actually called for its unstoning effect */
-        mon_consume_unstone(mtmp, otmp, FALSE, FALSE);
+        mon_consume_unstone(mtmp, otmp, FALSE, mtmp->mstone ? TRUE : FALSE);
         return 2;
     case MUSE_EUCALYPTUS_LEAF:
         /* not actually called for its unstoning effect */
@@ -3403,11 +3404,11 @@ searches_for_item(struct monst *mon, struct obj *obj)
         if (typ == CORPSE)
             return (boolean) ((safegloves(which_armor(mon, W_ARMG))
                                && touch_petrifies(&mons[obj->corpsenm]))
-                              || (!resists_ston(mon)
+                              || (!(resists_ston(mon) || defended(mon, AD_STON))
                                   && cures_stoning(mon, obj, FALSE)));
         if (typ == TIN)
             return (boolean) (mcould_eat_tin(mon)
-                              && (!resists_ston(mon)
+                              && (!(resists_ston(mon) || defended(mon, AD_STON))
                                   && cures_stoning(mon, obj, TRUE)));
         if (typ == EGG && ismnum(obj->corpsenm))
             return (boolean) touch_petrifies(&mons[obj->corpsenm]);
@@ -3591,7 +3592,7 @@ munstone(struct monst *mon, boolean by_you)
         attacktype_fordmg(mon->data, AT_MAGC, AD_SPEL)
         || attacktype_fordmg(mon->data, AT_MAGC, AD_CLRC);
 
-    if (resists_ston(mon))
+    if ((resists_ston(mon) || defended(mon, AD_STON)))
         return FALSE;
     if (mon->meating || helpless(mon))
         return FALSE;
@@ -3674,7 +3675,7 @@ mon_consume_unstone(
     m_useup(mon, obj);
     /* obj is now gone */
 
-    if (acid && !tinned && !resists_acid(mon)) {
+    if (acid && !tinned && !(resists_acid(mon) || defended(mon, AD_ACID))) {
         mon->mhp -= rnd(15);
         if (vis)
             pline_mon(mon, "%s has a very bad case of stomach acid.", Monnam(mon));
@@ -3690,12 +3691,16 @@ mon_consume_unstone(
             return;
         }
     }
-    if (stoning && vis) {
-        if (Hallucination)
+    if (stoning) {
+        mon->mstone = 0;
+       if (!vis) {
+           ; /* no feedback */
+       } else if (Hallucination) {
             pline("What a pity - %s just ruined a future piece of art!",
                   mon_nam(mon));
-        else
+        } else {
             pline_mon(mon, "%s seems limber!", Monnam(mon));
+        }
     }
     if (lizard && (mon->mconf || mon->mstun)) {
         mon->mconf = 0;
