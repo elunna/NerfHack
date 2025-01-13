@@ -692,6 +692,7 @@ do_attack(struct monst *mtmp)
         && !helpless(mtmp)
         && !mtmp->mtrapped
         && !u.uswallow
+        && u.ustuck != mtmp
         /* Attacking from doorway allow move-free attack glitches */
         && !(indoorway && diag_attack)
         && !rn2(2)) {
@@ -1130,7 +1131,7 @@ hitum(struct monst *mon, struct attack *uattk)
             tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
                                    &armorpenalty);
             dieroll = rnd(20);
-            mhit = (tmp > dieroll || u.uswallow);
+            mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
             if (tmp > dieroll)
                 exercise(A_DEX, TRUE);
             
@@ -1193,7 +1194,7 @@ hitum(struct monst *mon, struct attack *uattk)
     tmp = find_roll_to_hit(mon, uattk->aatyp, uwep, &attknum, &armorpenalty);
     mon_maybe_unparalyze(mon);
     dieroll = rnd(20);
-    mhit = (tmp > dieroll || u.uswallow);
+    mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
     if (tmp > dieroll)
         exercise(A_DEX, TRUE);
 
@@ -1217,7 +1218,7 @@ hitum(struct monst *mon, struct attack *uattk)
                                &armorpenalty);
         mon_maybe_unparalyze(mon);
         dieroll = rnd(20);
-        mhit = (tmp > dieroll || u.uswallow);
+        mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
         malive = known_hitum(mon, secondwep, &mhit, tmp, armorpenalty, uattk,
                              dieroll);
         /* second passive counter-attack only occurs if second attack hits */
@@ -1236,7 +1237,7 @@ hitum(struct monst *mon, struct attack *uattk)
         tmp = find_roll_to_hit(mon, uattk->aatyp, wearshield, &attknum,
                                &armorpenalty);
         dieroll = rnd(20);
-        mhit = (tmp > dieroll || u.uswallow);
+        mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
         malive = known_hitum(mon, wearshield, &mhit, tmp, armorpenalty, uattk,
                              dieroll);
         /* second passive counter-attack only occurs if second attack hits */
@@ -6706,7 +6707,7 @@ hmonas(struct monst *mon)
                                    &armorpenalty);
             mon_maybe_unparalyze(mon);
             dieroll = rnd(20);
-            dhit = (tmp > dieroll || u.uswallow);
+            dhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
             if (multi_weap > 1)
                 ++gt.twohits;
             /* caller must set gb.bhitpos */
@@ -6766,7 +6767,7 @@ hmonas(struct monst *mon)
                                    &attknum, &armorpenalty);
             mon_maybe_unparalyze(mon);
             dieroll = rnd(20);
-            dhit = (tmp > dieroll || u.uswallow);
+            dhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
             if (dhit) {
                 int compat, specialdmg;
                 long silverhit = 0L;
