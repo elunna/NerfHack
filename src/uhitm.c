@@ -5179,7 +5179,7 @@ mhitm_ad_ston(
                  * become a little harder.  Clearing out cockatrice nests
                  * during a new moon could become quite a bit harder.
                  */
-                if (!rn2(10) || flags.moonphase == NEW_MOON) {
+                if (!rn2(5) || flags.moonphase == NEW_MOON) {
                     if (do_stone_u(magr)) {
                         mhm->hitflags = M_ATTK_HIT;
                         mhm->done = TRUE;
@@ -7895,7 +7895,7 @@ bite_monster(struct monst *mon)
     switch(monsndx(mon->data)) {
     case PM_LIZARD:
         if (Stoned)
-	    fix_petrification();
+	        fix_petrification();
         break;
     case PM_DEATH:
     case PM_PESTILENCE:
@@ -7915,7 +7915,7 @@ bite_monster(struct monst *mon)
         /*FALLTHRU*/
     default:
         if (acidic(mon->data) && Stoned)
-	    fix_petrification();
+	        fix_petrification();
         break;
     }
     return FALSE;
