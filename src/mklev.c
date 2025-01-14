@@ -2711,8 +2711,8 @@ mk_knox_portal(coordxy x, coordxy y)
         source = &br->end1;
     }
 
-    /* Already set or 2/3 chance of deferring until a later level. */
-    if (source->dnum < svn.n_dgns || (rn2(3) && !wizard))
+    /* Already set */
+    if (source->dnum < svn.n_dgns)
         return;
 
     if (!(u.uz.dnum == oracle_level.dnum      /* in main dungeon */
