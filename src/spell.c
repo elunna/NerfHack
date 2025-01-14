@@ -1661,8 +1661,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     if (ACURR(A_INT) > 6) {
         if (primary_spellcaster() || spellid(spell) == gu.urole.spelspec)
             svs.spl_book[spell].sp_know += CAST_BOOST;
-        else
-            svs.spl_book[spell].sp_know += 50 + rnd(50);
+
         if (svs.spl_book[spell].sp_know >= KEEN)
             svs.spl_book[spell].sp_know = KEEN;
     }
