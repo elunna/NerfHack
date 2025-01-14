@@ -924,7 +924,8 @@ mattacku(struct monst *mtmp)
     if (is_accurate(mdat)) /* M3_ACCURATE monsters get a to-hit bonus */
         tmp += 5;
 
-    if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
+    if (Role_if(PM_ARCHEOLOGIST) && !Hallucination
+          && mtmp->data->mlet == S_SNAKE)
         tmp += 1;
 
     if (tmp <= 0)
@@ -1526,7 +1527,8 @@ hitmu(struct monst *mtmp, struct attack *mattk)
          * This handled a bit differently from the AD_PLYS attacks -
          * it's a bit weaker. If it was as strong as most paralyze
          * attacks, arcs probably wouldn't stand a chance... */
-        if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE) {
+        if (Role_if(PM_ARCHEOLOGIST) && !Hallucination
+            && mtmp->data->mlet == S_SNAKE) {
             if (gm.multi >= 0 && !rn2(5)) {
                 /* Free action is not always effective - this is psychological */
                 if (Free_action && rn2(4)) {

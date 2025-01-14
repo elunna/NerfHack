@@ -442,7 +442,8 @@ find_roll_to_hit(
         && weapon_type(uswapwep) == P_SHORT_SWORD) {
         tmp++;
     }
-    if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
+    if (Role_if(PM_ARCHEOLOGIST) && !Hallucination 
+        && mtmp->data->mlet == S_SNAKE)
         tmp -= 1;
 
     /* Cartomancers are not great melee fighters - they prefer ranged weapons
@@ -7815,7 +7816,6 @@ hates_item(struct monst *mtmp, int otyp)
      */
     if (is_you && Role_if(PM_ARCHEOLOGIST) && otyp == DWARVISH_MATTOCK)
         return FALSE;
-
 
     if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))
                     : is_elf(mtmp->data))
