@@ -854,27 +854,40 @@ gcrownu(void)
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
     if (!(HFire_resistance & FROMOUTSIDE || fully_resistant(FIRE_RES))) {
-        You(Hallucination ? "be chillin'." : "feel a momentary chill.");
-        incr_resistance(&HFire_resistance, 100);
+        incr_resistance(&HFire_resistance, 50);
+        if ((HFire_resistance & TIMEOUT) == 100)
+            You(Hallucination ? "be chillin'." : "feel completely chilled.");
+        else
+            You_feel("much more chill.");
     }
     if (!(HCold_resistance & FROMOUTSIDE || fully_resistant(COLD_RES))) {
-        You_feel("full of hot air.");
-        incr_resistance(&HCold_resistance, 100);
+        incr_resistance(&HCold_resistance, 50);
+        if ((HCold_resistance & TIMEOUT) == 100)
+            You_feel("full of hot air.");
+        else
+            You_feel("much warmer.");
     }
     if (!(HShock_resistance & FROMOUTSIDE || fully_resistant(SHOCK_RES))) {
-        if (Hallucination)
-            You_feel("grounded in reality.");
+        incr_resistance(&HShock_resistance, 50);
+        if ((HShock_resistance & TIMEOUT) == 100)
+            pline(Hallucination ? "You feel grounded in reality."
+                                : "Your health feels completely amplified!");
         else
-            Your("health currently feels amplified!");
-        incr_resistance(&HShock_resistance, 100);
+            Your("health is much more amplified!");
     }
     if (!(HSleep_resistance & FROMOUTSIDE || fully_resistant(SLEEP_RES))) {
-        You_feel("wide awake.");
-        incr_resistance(&HSleep_resistance, 100);
+        incr_resistance(&HSleep_resistance, 50);
+        if ((HSleep_resistance & TIMEOUT) == 100)
+            You_feel("wide awake.");
+        else
+            You_feel("much perkier.");
     }
     if (!(HPoison_resistance & FROMOUTSIDE || fully_resistant(POISON_RES))) {
-        You_feel(Poison_resistance ? "especially healthy." : "healthy.");
-        incr_resistance(&HPoison_resistance, 100);
+        incr_resistance(&HPoison_resistance, 50);
+        if ((HPoison_resistance & TIMEOUT) == 100)
+            You_feel("completely healthy.");
+        else
+            You_feel("much healthier.");
     }
     
     godvoice(u.ualign.type, (char *) 0);
