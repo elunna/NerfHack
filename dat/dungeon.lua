@@ -108,7 +108,8 @@ dungeon = {
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 17,
+      base = 19,
+      range = 2,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
       alignment = "noalign",
@@ -122,7 +123,8 @@ dungeon = {
          {
             name = "The Wizard's Tower",
             bonetag = "F",
-            base = 9,
+            base = 10,
+            range = 8,
             branchtype = "portal"
          },
       },
