@@ -1567,7 +1567,7 @@ Ring_on(struct obj *obj)
         break;
     }
     case RIN_WITHERING:
-        if (!oldprop) {
+        if (!oldprop && Withering) {
             You("begin to wither away!");
             makeknown(RIN_WITHERING);
             disp.botl = TRUE;
@@ -1580,8 +1580,8 @@ staticfn void
 Ring_off_or_gone(struct obj *obj, boolean gone)
 {
     long mask = (obj->owornmask & W_RING);
-    boolean observable;
-
+    boolean observable, was_withering = Withering;
+    
     svc.context.takeoff.mask &= ~mask;
     if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
         impossible("Strange... I didn't know you had that ring.");
@@ -1682,7 +1682,7 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
             HSleepy &= ~TIMEOUT; /* clear timeout bits */
         return;
     case RIN_WITHERING:
-        if (!Withering) {
+        if (was_withering && !Withering) {
             You("are no longer withering away.");
             disp.botl = TRUE;
         }

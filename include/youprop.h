@@ -404,7 +404,8 @@
 #define HWithering u.uprops[WITHERING].intrinsic
 #define EWithering u.uprops[WITHERING].extrinsic
 #define BWithering u.uprops[WITHERING].blocked
-#define Withering ((HWithering || EWithering) && !BWithering)
+#define Withering ((HWithering || EWithering) && !BWithering \
+        && !maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
 
 #define Rabid u.uprops[RABID].intrinsic
 
