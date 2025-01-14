@@ -4114,7 +4114,7 @@
         MH_HUMAN, 15, CLR_BLUE, GUARD),
     /* familiar is the vampires starting pet */
     MON(NAM("familiar"), S_HUMAN,
-        LVL(5, 12, 10, 10, 0), (G_GENO | 2),
+        LVL(5, 14, 10, 10, 0), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_FAMILIAR, MZ_HUMAN), 0, 0,
