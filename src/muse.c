@@ -207,7 +207,7 @@ precheck(struct monst *mon, struct obj *obj)
                 return 2;
             }
         }
-        if (objdescr_is(obj, "smoky")
+        if (objdescr_is(obj, "smoky") && !obj->odiluted
             && !(svm.mvitals[PM_DJINNI].mvflags & G_GONE)
             && !rn2(POTION_OCCUPANT_CHANCE(svm.mvitals[PM_DJINNI].born))) {
             if (!enexto(&cc, mon->mx, mon->my, &mons[PM_DJINNI]))
