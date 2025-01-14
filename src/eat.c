@@ -3555,7 +3555,7 @@ gethungry(void)
         if (Hunger)
             u.uhunger--;
         /* Conflict uses up food too */
-        if (HConflict || (EConflict & (~W_ARTI)))
+        if (HConflict || (EConflict & ~(W_ARTI | W_ARMF)))
             u.uhunger--;
         /* Cursed rings burn hunger too */
         if (uleft && uleft->cursed && rn2(2))
