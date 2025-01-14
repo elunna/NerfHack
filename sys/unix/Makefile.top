@@ -126,7 +126,7 @@ SPEC_LEVS = 	 	\
 	soko?-?.lua 	\
 	themerms.lua 	\
 	tomb-?.lua 		\
-	townfill.lua	\
+	sokostrt.lua	\
 	tower?.lua 		\
 	tut-?.lua 		\
 	valley-?.lua 	\

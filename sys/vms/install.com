@@ -53,7 +53,7 @@ $	spec_files = "air.lua,"	-
 		+ "knox-%.lua," 	-
 		+ "medusa-%.lua," 	-
 		+ "minefill.lua," 	-
-		+ "townfill.lua," 	-
+		+ "sokostrt.lua," 	-
 		+ "minetn-*.lua," 	-
 		+ "minend-%.lua," 	-
 		+ "nhcore.lua," 	-

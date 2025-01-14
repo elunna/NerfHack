@@ -154,7 +154,7 @@ SPEC_LEVS = 		\
 	medusa-?.lua 	\
 	minend-?.lua 	\
 	minefill.lua 	\
-	townfill.lua 	\
+	sokostrt.lua 	\
 	minetn-*.lua 	\
 	oracle.lua 		\
 	orcus-?.lua 	\

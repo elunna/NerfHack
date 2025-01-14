@@ -284,7 +284,7 @@ dungeon = {
             nlevels = 8
          },
          {
-            name = "townfill",
+            name = "sokostrt",
             base = 6,
          },
       }

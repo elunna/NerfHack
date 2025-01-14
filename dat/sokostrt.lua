@@ -9,7 +9,7 @@
 -- The filler levels for the Town branch.
 -- Ported from UnNetHack
 -- Converted to lua by hackemslashem
--- LEVEL:"townfill"
+-- LEVEL:"sokostrt"
 --
 des.level_init({ style = "solidfill", fg = " " });
 
