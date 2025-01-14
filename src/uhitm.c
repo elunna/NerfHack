@@ -3077,7 +3077,7 @@ mhitm_ad_drli(
              * NOTE: This code might be redundant... 
              * */
             if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
-                && mattk->aatyp == AT_BITE
+                && mattk->aatyp == AT_BITE && V2V
                 && has_blood(mdef->data) && u.uhunger <= 1420) {
                 /* For the life of a creature is in the blood
                 (Lev 17:11) */
@@ -3120,11 +3120,9 @@ mhitm_ad_drli(
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-
         hitmsg(magr, mattk);
         if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success) {
-
-	        if (mattk->aatyp == AT_BITE && (!unaffected || V2V)) {
+	        if (mattk->aatyp == AT_BITE && !unaffected && V2V) {
                 /* if vampire biting (and also a pet) */
                 if (vulnerable)
                     pline("%s gorges itself on your %s!",
