@@ -4740,9 +4740,6 @@ mhitm_ad_dsrm(struct monst *magr, struct attack *mattk,
     }
 }
 
-/* TODO: Should koalas be able to calm berserkers?
-   Probably not...
-*/
 void
 mhitm_ad_calm(struct monst *magr, struct attack *mattk,
               struct monst *mdef, struct mhitm_data *mhm)
@@ -4779,6 +4776,7 @@ mhitm_ad_calm(struct monst *magr, struct attack *mattk,
         }
         hitmsg(magr, mattk);
         You_feel("much calmer.");
+        exercise(A_CHA, FALSE);
         return;
     } else {
         /* mhitm */
