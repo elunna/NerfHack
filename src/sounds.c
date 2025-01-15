@@ -1188,10 +1188,10 @@ domonnoise(struct monst *mtmp)
         if (mtmp->mtame) {
             switch (rnd(7)) {
             case 1:
-                verbl_msg = "I’m just trying to talk to you like a regular person.";
+                verbl_msg = "I'm just trying to talk to you like a regular person.";
                 break;
             case 2:
-                verbl_msg = "I’m doing whatever it takes to become a vampire.";
+                verbl_msg = "I'm doing whatever it takes to become a vampire.";
                 break;
             case 3:
                 verbl_msg = "I wish you guys knew how hard I work.";
