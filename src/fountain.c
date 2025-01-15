@@ -519,7 +519,7 @@ doforging(void)
     }
 
     /* various player conditions can prevent successful forging */
-    if (Stunned || Confusion) {
+    if (Stunned || Confusion || Hallucination) {
         You_cant("use the forge while incapacitated.");
         return 0;
     } else if (u.uhunger < 50) { /* weak */
