@@ -190,6 +190,7 @@ des.monster({ id = "ochre jelly", x = 43, y = 01, asleep=1 })
 -- treasure
 des.object({ id = "chest", trapped = 0, locked = 1, coord = places[1] ,
              contents = function()
+                -- This is converted into a zappable scroll of wishing
                 des.object("wishing");
              end
 });

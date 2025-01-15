@@ -961,8 +961,11 @@ xname_flags(
             Strcat(buf, mons[obj->corpsenm].pmnames[NEUTRAL]);
         } else if (nn && obj->otyp == SCR_ZAPPING
                       && obj->corpsenm != NON_PM) {
-            Strcat(buf, " - ");
+            Strcat(buf, carto ? " - " : " of ");
             Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
+            
+            if (!carto && !u.uconduct.literate)
+                Strcat(buf, " (zappable)");
         } else if (nn) {
             Strcat(buf, " of ");
             Strcat(buf, actualn);

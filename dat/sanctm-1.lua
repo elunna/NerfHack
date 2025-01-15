@@ -109,7 +109,8 @@ des.object("?")
 -- Chest by the altar
 des.object({ id = "chest", trapped = 0, locked = 1, x = 17, y = 09 ,
              contents = function()
-                des.object("magic marker");
+                -- This is converted into a zappable scroll of wishing
+                des.object("wishing");
              end
 });
 

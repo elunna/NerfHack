@@ -1270,7 +1270,8 @@ mksobj(int otyp, boolean init, boolean artif)
 
     /* Hijack wands when playing as a cartomancer
         - convert them to cards instead */
-    if (Role_if(PM_CARTOMANCER) && let == WAND_CLASS) {
+    if ((Role_if(PM_CARTOMANCER) && let == WAND_CLASS)
+            || otyp == WAN_WISHING) {
         otmp->oclass = SCROLL_CLASS;
         otmp->otyp = SCR_ZAPPING;
         otmp->corpsenm = otyp;
