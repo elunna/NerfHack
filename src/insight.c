@@ -2110,44 +2110,44 @@ attributes_enlightenment(
 
     /* Partial intrinsic resistances */
 
-    Sprintf(buf, "%3d%% fire resistant (intrinsic)", intrinsic_res(FIRE_RES));
+    Sprintf(buf, "%d%% fire resistant", intrinsic_res(FIRE_RES));
     if (extrinsic_res(FIRE_RES)) {
-        strcat(buf, " + extrinsic");
+        strcat(buf, " and 100% protected");
         strcat(buf, from_what(FIRE_RES));
     }
     you_are(buf, "");
     
-    Sprintf(buf, "%3d%% cold resistant (intrinsic)", intrinsic_res(COLD_RES));
+    Sprintf(buf, "%d%% cold resistant", intrinsic_res(COLD_RES));
     if (extrinsic_res(COLD_RES)) {
-        strcat(buf, " + extrinsic");
+        strcat(buf, " and 100% protected");
         strcat(buf, from_what(COLD_RES));
     }
     you_are(buf, "");
     
-    Sprintf(buf, "%3d%% sleep resistant (intrinsic)", intrinsic_res(SLEEP_RES));
+    Sprintf(buf, "%d%% sleep resistant", intrinsic_res(SLEEP_RES));
     if (extrinsic_res(SLEEP_RES)) {
-        strcat(buf, " + extrinsic");
+        strcat(buf, " and 100% protected");
         strcat(buf, from_what(SLEEP_RES));
     }
     you_are(buf, "");
     
-    Sprintf(buf, "%3d%% disintegration resistant (intrinsic)", intrinsic_res(DISINT_RES));
+    Sprintf(buf, "%d%% disintegration resistant", intrinsic_res(DISINT_RES));
     if (extrinsic_res(DISINT_RES)) {
-        strcat(buf, " + extrinsic");
+        strcat(buf, " and 100% protected");
         strcat(buf, from_what(DISINT_RES));
     }
     you_are(buf, "");
     
-    Sprintf(buf, "%3d%% shock resistant (intrinsic)", intrinsic_res(SHOCK_RES));
+    Sprintf(buf, "%d%% shock resistant", intrinsic_res(SHOCK_RES));
     if (extrinsic_res(SHOCK_RES)) {
-        strcat(buf, " + extrinsic");
+        strcat(buf, " and 100% protected");
         strcat(buf, from_what(SHOCK_RES));
     }
     you_are(buf, "");
     
-    Sprintf(buf, "%3d%% poison resistant (intrinsic)", intrinsic_res(POISON_RES));
+    Sprintf(buf, "%d%% poison resistant", intrinsic_res(POISON_RES));
     if (extrinsic_res(POISON_RES)) {
-        strcat(buf, " + extrinsic");
+        strcat(buf, " and 100% protected");
         strcat(buf, from_what(POISON_RES));
     }
     you_are(buf, "");
