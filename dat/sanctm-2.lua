@@ -118,6 +118,13 @@ des.object("?")
 des.object("?")
 des.object("?")
 
+-- Chest by the altar
+des.object({ id = "chest", trapped = 0, locked = 1, x = 17, y = 09 ,
+             contents = function()
+                des.object("magic marker");
+             end
+});
+
 -- Some monsters.
 des.monster({ id = "horned devil", x=14,y=12,peaceful=0 })
 des.monster({ id = "barbed devil", x=18,y=08,peaceful=0 })
