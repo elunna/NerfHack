@@ -318,10 +318,8 @@ add_region(NhRegion *reg)
                 }
             }
             if (reg->visible) {
-#if 0 /* Being able to see through poison clouds is a QoL feature */
                 if (is_inside)
                     block_point(i, j);
-#endif
                 if (cansee(i, j))
                     newsym(i, j);
             }
