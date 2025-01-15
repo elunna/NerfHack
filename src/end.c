@@ -1076,7 +1076,7 @@ done(int how)
             disp.botl = TRUE;
         }
     }
-    if (Lifesaved && (how <= GENOCIDED)) {
+    if (Lifesaved && (how <= GENOCIDED) && !nonliving(gy.youmonst.data)) {
         pline("But wait...");
         /* assumes that only one type of item confers LifeSaved property */
         makeknown(AMULET_OF_LIFE_SAVING);
