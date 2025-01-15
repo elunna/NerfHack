@@ -1981,6 +1981,8 @@ goto_level(
     } else if (In_sokoban(&u.uz)) {
         if (newdungeon)
             record_achievement(ACH_SOKO);
+    } else if (at_dgn_entrance("The Wizard's Tower") && !u.uevent.udemigod) {
+        You_feel("the presence of a great wizard, his tower must be somewhere on this level!");
     } else {
         if (new && Is_rogue_level(&u.uz)) {
             You("enter what seems to be an older, more primitive world.");
