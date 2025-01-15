@@ -1456,14 +1456,14 @@ staticfn void
 levl_sanity_check(void)
 {
     coordxy x, y;
-
+    int result;
     if (Underwater)
         return; /* Underwater uses different vision */
 
     for (y = 0; y < ROWNO; y++) {
         for (x = 1; x < COLNO; x++) {
-            if ((does_block(x, y, &levl[x][y]) ? 1 : 0) != get_viz_clear(x, y))
-                impossible("levl[%i][%i] vision blocking", x, y);
+            if ((result = does_block(x, y, &levl[x][y]) ? 1 : 0) != get_viz_clear(x, y))
+                impossible("levl[%i][%i] vision blocking (cause=%d)", x, y, result);
         }
     }
 }
