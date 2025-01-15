@@ -1970,7 +1970,7 @@ attributes_enlightenment(
         you_have("free action", from_what(FREE_ACTION));
     if (Fixed_abil)
         you_have("fixed abilities", from_what(FIXED_ABIL));
-    if (Lifesaved)
+    if (Lifesaved && !nonliving(gy.youmonst.data))
         enl_msg("Your life ", "will be", "would have been", " saved", "");
 
     /* Steadfastness checks: These are not very clean, perhaps in the future
