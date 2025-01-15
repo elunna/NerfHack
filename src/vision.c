@@ -171,7 +171,7 @@ does_block(int x, int y, struct rm *lev)
 #ifdef DEBUG
     if (gs.seethru != 1) {
 #endif
-    if (IS_WATERWALL(lev->typ) || lev->typ == LAVAWALL
+    if (lev->typ == CLOUD || IS_WATERWALL(lev->typ) || lev->typ == LAVAWALL
         || (Underwater && is_moat(x, y)))
         return 1;
 #ifdef DEBUG
