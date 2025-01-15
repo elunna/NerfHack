@@ -191,14 +191,9 @@ does_block(int x, int y, struct rm *lev)
 #ifdef DEBUG
     if (gs.seethru != 1) {
 #endif
-
-#if 0 /* Block this feature. Being able to see poisonous clouds is a quality-
-       * of-life feature */
     /* Clouds (poisonous or not) block light. */
     if (visible_region_at(x, y))
         return 2;
-#endif
-
 #ifdef DEBUG
     } /* gs.seethru */
 #endif
