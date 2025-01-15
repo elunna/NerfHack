@@ -54,15 +54,16 @@
      || (ptr) == &mons[PM_TITAN] \
      || (ptr) == &mons[PM_DEATH])
 
-#define resists_sick(ptr) \
-    ((ptr)->mlet == S_FUNGUS \
+#define resists_sick(ptr)                      \
+    ((ptr)->mlet == S_FUNGUS                   \
      || ((ptr)->mlet == S_ELEMENTAL && (ptr) != &mons[PM_STALKER]) \
-     || nonliving(ptr) \
-     || is_demon(ptr) \
-     || is_rider(ptr) \
-     || (ptr) == &mons[PM_GIANT_COCKROACH]   \
+     || nonliving(ptr)                         \
+     || is_demon(ptr)                          \
+     || is_rider(ptr)                          \
+     || (ptr) == &mons[PM_GIANT_COCKROACH]     \
      || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
      || (ptr) == &mons[PM_GREEN_DRAGON]        \
+     || (ptr) == &mons[PM_LEPER]               \
      || (ptr) == &mons[PM_LOCUST])
 
 #define resists_stun(ptr) \

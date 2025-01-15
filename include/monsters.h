@@ -1136,6 +1136,14 @@
         SIZ(60, 30, MS_LAUGH, MZ_TINY), 0, 0,
         M1_HUMANOID | M1_TPORT, M2_HOSTILE | M2_GREEDY, M3_INFRAVISIBLE,
         NO_RACE, 4, CLR_GREEN, LEPRECHAUN),
+    MON(NAM("leper"), S_LEPRECHAUN, 
+        LVL(3, 6, 5, 5, 0), (G_GENO | 1),
+        A(ATTK(AT_TUCH, AD_DISE, 2, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1200, 300, MS_SILENT, MZ_HUMAN), MR_POISON, 0,
+        M1_HUMANOID, M2_HOSTILE | M2_COLLECT, M3_INFRAVISIBLE,
+        NO_RACE, 5, CLR_GRAY, LEPER),
+
     /*
      * mimics
      */
