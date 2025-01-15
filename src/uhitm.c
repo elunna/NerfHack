@@ -5605,9 +5605,17 @@ mhitm_ad_samu(
         hitmsg(magr, mattk);
         /* when the Wizard or quest nemesis hits, there's a 1/20 chance
            to steal a quest artifact (any, not just the one for the hero's
-           own role) or the Amulet or one of the invocation tools */
-        if (!rn2(20))
+           own role) or the Amulet or one of the invocation tools
+           
+           when a mplayer hits, there's a 1 in 3 chance to steal and they'll
+           start running away.
+        */
+        if ((is_mplayer(magr->data) && !rn2(3)) || !rn2(20)) {
             stealamulet(magr);
+            if (In_endgame(&u.uz) && mon_has_amulet(magr)) {
+                monflee(magr, rnd(100) + 100, FALSE, TRUE);
+            }
+        }
     } else {
         /* mhitm */
         mhm->damage = 0;
