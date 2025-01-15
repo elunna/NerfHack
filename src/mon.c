@@ -2981,10 +2981,15 @@ mm_aggression(
         return ALLOW_M | ALLOW_TM;
 
     /* Rabies wants to spread... */
-    if (magr->mrabid
-            && !mdef->mrabid && can_become_rabid(mdef->data))
+    if (magr->mrabid && !mdef->mrabid && can_become_rabid(mdef->data))
         return ALLOW_M | ALLOW_TM;
 
+    /* covetous/player monsters will attack
+       whoever has the amulet  */
+    if ((is_covetous(magr->data) || is_mplayer(magr->data))
+        && mon_has_amulet(mdef))
+        return ALLOW_M | ALLOW_TM;
+    
     /* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */
