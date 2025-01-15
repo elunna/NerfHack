@@ -39,6 +39,9 @@ noteleport_level(struct monst *mon)
     if (svl.level.flags.noteleport)
         return TRUE;
 
+    if (m_carrying(mon, AMULET_OF_YENDOR))
+        return FALSE;
+    
     return FALSE;
 }
 
@@ -2246,6 +2249,9 @@ u_teleport_mon(
     boolean give_feedback)
 {
     coord cc;
+
+    if (m_carrying(mtmp, AMULET_OF_YENDOR))
+        return FALSE;
 
     if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) {
         if (give_feedback)
