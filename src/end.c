@@ -1076,27 +1076,43 @@ done(int how)
             disp.botl = TRUE;
         }
     }
-    if (Lifesaved && (how <= GENOCIDED) && !nonliving(gy.youmonst.data)) {
+    if (Lifesaved && (how <= GENOCIDED)) {
         pline("But wait...");
         /* assumes that only one type of item confers LifeSaved property */
         makeknown(AMULET_OF_LIFE_SAVING);
         Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
-        if (how == CHOKING)
-            You("vomit ...");
-        You_feel("much better!");
-        pline_The("medallion crumbles to dust!");
-        if (uamul)
+        
+        if (uamul->cursed || nonliving(gy.youmonst.data)) {
+            Your("medallion %s!", !Blind ? "glows white-hot"
+                                         : "sears your neck");
+            if (!Deaf)
+                You("hear manic laughter in the distance...");
+            Your("medallion turns to ash!");
+            u.uhp = 0;
+            disp.botl = 1;
+            if (uamul->cursed)
+                pline("It appears your luck has run out...");
+            else
+                pline("It appears you have no life to save...");
             useup(uamul);
-
-        (void) adjattrib(A_CON, -1, TRUE);
-        savelife(how);
-        if (how == GENOCIDED) {
-            pline("Unfortunately you are still genocided...");
         } else {
-            char killbuf[BUFSZ];
-            formatkiller(killbuf, BUFSZ, how, FALSE);
-            livelog_printf(LL_LIFESAVE, "averted death (%s)", killbuf);
-            survive = TRUE;
+            if (how == CHOKING)
+                You("vomit ...");
+            You_feel("much better!");
+            pline_The("medallion crumbles to dust!");
+            if (uamul)
+                useup(uamul);
+
+            (void) adjattrib(A_CON, -1, TRUE);
+            savelife(how);
+            if (how == GENOCIDED) {
+                pline("Unfortunately you are still genocided...");
+            } else {
+                char killbuf[BUFSZ];
+                formatkiller(killbuf, BUFSZ, how, FALSE);
+                livelog_printf(LL_LIFESAVE, "averted death (%s)", killbuf);
+                survive = TRUE;
+            }
         }
     }
     /* explore and wizard modes offer player the option to keep playing */

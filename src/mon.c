@@ -3364,7 +3364,11 @@ set_mon_min_mhpmax(
         mon->mhpmax = minimum_mhpmax;
 }
 
-/* find the worn amulet of life saving which will save a monster */
+/* find the worn amulet of life saving which can save a monster
+ * NOTE: this will return an amulet of life saving even if it's cursed and
+ * doomed to fail! The reason is that mlifesaver is used in various bits of code
+ * to determine whether mon has an amulet of life saving that should activate
+ * later, and we don't want it to just die as if the amulet weren't there. */
 struct obj *
 mlifesaver(struct monst *mon)
 {
@@ -3382,17 +3386,28 @@ lifesaved_monster(struct monst *mtmp)
 {
     boolean surviver;
     struct obj *lifesave = mlifesaver(mtmp);
-    int visible = (u.uswallow && u.ustuck == mtmp)
-                    || cansee(mtmp->mx, mtmp->my);
 
     if (lifesave) {
         /* not canseemon; amulets are on the head, so you don't want
          * to show this for a long worm with only a tail visible.
          * Nor do you check invisibility, because glowing and
          * disintegrating amulets are always visible. */
-        /* [ALI] Always treat swallower as visible for consistency */
-		/* with unpoly_monster(). */
-        if (visible) {
+
+        if (lifesave->cursed || nonliving(mtmp->data)) {
+            if (cansee(mtmp->mx, mtmp->my)) {
+                pline("But wait...");
+                pline("%s medallion glows white-hot!", s_suffix(Monnam(mtmp)));
+                makeknown(AMULET_OF_LIFE_SAVING);
+            }
+            if (!Deaf)
+                You("hear diabolical laughter in the distance...");
+            pline("%s dies!", Monnam(mtmp));
+            if (cansee(mtmp->mx, mtmp->my))
+                pline_The("medallion crumbles to dust!");
+            m_useup(mtmp, lifesave);
+            mtmp->mhp = 0;
+            return;
+        } else {
             pline("But wait...");
             pline("%s medallion begins to glow!", s_suffix(Monnam(mtmp)));
             makeknown(AMULET_OF_LIFE_SAVING);
