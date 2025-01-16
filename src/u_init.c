@@ -1231,7 +1231,8 @@ reroll:
     /* Quality-of-Life */
     knows_object(POT_WATER, FALSE);
     knows_object(SCR_BLANK_PAPER, FALSE);
-    knows_object(SCR_IDENTIFY, FALSE);
+    if (!Role_if(PM_CAVE_DWELLER))
+        knows_object(SCR_IDENTIFY, FALSE);
     return;
 }
 
