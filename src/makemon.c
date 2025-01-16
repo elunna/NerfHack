@@ -629,6 +629,12 @@ m_initweap(struct monst *mtmp)
         case PM_YEENOGHU:
             (void) mongets(mtmp, FLAIL);
             break;
+        case PM_GERYON:
+            otmp = mksobj(BATTLE_AXE, FALSE, FALSE);
+            curse(otmp);
+            otmp->spe = rnd(3) + 2;
+            (void) mpickobj(mtmp, otmp);
+            break;
         }
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish
