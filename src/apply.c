@@ -5273,6 +5273,7 @@ deck_of_fate(struct obj *obj)
                 newsym(mtmp->mx, mtmp->my);
             } else if (mtmp && olfaction(gy.youmonst.data))
                 pline("Something stinks!");
+            change_luck(-7);
             break;
         }
         case 4: /* The Fool */
