@@ -865,7 +865,7 @@ dochug(struct monst *mtmp)
 
     /* Monsters that want to acquire things may teleport, so do it before
        inrange is set. This costs a turn only if mstate is set.  */
-    if (is_covetous(mdat)) {
+    if (is_covetous(mdat) && !covetous_nonwarper(mdat)) {
         (void) tactics(mtmp);
         /* tactics -> mnexto -> deal_with_overcrowding */
         if (mtmp->mstate)
@@ -1857,7 +1857,7 @@ m_move(struct monst *mtmp, int after)
     }
 
     /* and the acquisitive monsters get special treatment */
-    if (is_covetous(ptr)) { /* [should this include
+    if (is_covetous(ptr) && !covetous_nonwarper(ptr)) { /* [should this include
                              *  '&& mtmp->mstrategy != STRAT_NONE'?] */
         int covetousattack;
         coordxy tx = STRAT_GOALX(mtmp->mstrategy),
@@ -1881,8 +1881,9 @@ m_move(struct monst *mtmp, int after)
         } else {
             mmoved = MMOVE_NOTHING;
         }
-        return postmov(mtmp, ptr, omx, omy, mmoved,
-                       seenflgs, can_tunnel, can_unlock, can_open);
+        if (!covetous_nonwarper(ptr))
+            return postmov(mtmp, ptr, omx, omy, mmoved,
+                           seenflgs, can_tunnel, can_unlock, can_open);
     }
 
     /* likewise for shopkeeper, guard, or priest */

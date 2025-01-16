@@ -533,4 +533,9 @@
 #define MIN_GAIN 5
 #define percent_granted(ptr) ((ptr)->cwt / 90)
 
+/* The monster is covetous, but should not warp, heal, or otherwise use
+ * tactics(). */
+#define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr))
+#define covetous_nonwarper(ptr) (is_archfiend(ptr))
+
 #endif /* MONDATA_H */
