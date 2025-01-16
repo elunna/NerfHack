@@ -1185,14 +1185,19 @@ newhp(void)
         if (Role_if(PM_CAVE_DWELLER)) {
             tempnum = 0;
             if (u.uconduct.literate < 1) {
-                if (u.ulevel < 4)
-                    tempnum += 2;
-                else if (u.ulevel < 8)
-                    tempnum += 3;
-                else if (u.ulevel < 16)
-                    tempnum += 4;
-                else
-                    tempnum += 5;
+                if (u.ulevel < 3) {
+                    /* 1st rank */
+                    tempnum += rn1(3, 2);
+                } else if (u.ulevel < 10) {
+                    /* 2nd and 3rd ranks */
+                    tempnum += rn1(4, 3);
+                } else if (u.ulevel < 18) {
+                    /* 4th and 5th ranks */
+                    tempnum += rn1(6, 3);
+                } else {
+                    /* 6th through 9th ranks */
+                    tempnum += rn1(8, 5);
+                }
                 exercise(A_WIS, TRUE);
             }
             hp += tempnum;
