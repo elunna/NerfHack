@@ -213,6 +213,14 @@ done_in_by(struct monst *mtmp, int how)
     (void) monhealthdescr(mtmp, TRUE, eos(buf));
     if (mtmp->minvis)
         Strcat(buf, "invisible ");
+    if (mtmp->mrabid)
+        Strcat(buf, "rabid ");
+    if (mtmp->mberserk)
+        Strcat(buf, "berserking ");
+    if (mtmp->mdiseased)
+        Strcat(buf, "diseased ");
+    if (mtmp->msummoned)
+        Strcat(buf, "summoned ");
     if (distorted)
         Strcat(buf, "hallucinogen-distorted ");
 
