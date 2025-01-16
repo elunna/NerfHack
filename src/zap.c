@@ -2762,19 +2762,23 @@ bhitpile(
 int
 zappable(struct obj *wand)
 {
-    int wrestchance = (wand->blessed ? 7
-                                     : (wand->cursed ? WAND_WREST_CHANCE
-                                                     : 23));
-    /* Not a wand, but definitely zappable! */
+    int zap_it = 1;
+    int wrestchance = 6 + (wand->cursed ? 2 : (wand->blessed ? - 2 : 0));
+    
+    /* Not a wand, but definitely zappable. Don't remove any charges! */
     if (wand->otyp == SCR_ZAPPING)
-        return TRUE;
-
-    if (wand->spe < 0 || (wand->spe == 0 && rn2(wrestchance)))
+        return 1;
+    
+    if (wand->spe < 0)
         return 0;
-    if (wand->spe == 0)
-        You("wrest one last charge from the worn-out wand.");
+    
+    if (wand->spe == 0) {
+        if ((zap_it = !rn2(wrestchance)))
+            You("wrest one last charge from the worn-out wand.");
+    }
+
     wand->spe--;
-    return 1;
+    return zap_it;
 }
 
 void
