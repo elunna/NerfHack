@@ -867,7 +867,7 @@ dochug(struct monst *mtmp)
     /* Shriekers and Medusa have irregular abilities which must be
        checked every turn. These abilities do not cost a turn when
        used. */
-    if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
+    if (mdat->msound == MS_SHRIEK && m_canseeu(mtmp))
         m_respond(mtmp);
     /* Athols have a greater range than shriekers */
     if (mdat->msound == MS_ATHOL
