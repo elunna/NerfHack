@@ -5269,7 +5269,7 @@ deck_of_fate(struct obj *obj)
             }
           
             if (mtmp && !Blind) {
-                pline("%s appears from a cloud of noxious smoke!", Monnam(mtmp));
+                pline("%s appears from a cloud of noxious smoke!", Amonnam(mtmp));
                 newsym(mtmp->mx, mtmp->my);
             } else if (mtmp && olfaction(gy.youmonst.data))
                 pline("Something stinks!");
@@ -5283,7 +5283,7 @@ deck_of_fate(struct obj *obj)
             break;
         case 5: /* Death */
             /* Magic resistance does not protect against this! */
-            if (Luck >= 7 && rn2(13) && !Unchanging ) {
+            if (Luck >= 7 && rn2(13) && !Unchanging) {
                 pline("A great change starts to ripple though you!");
                 polyself(POLY_NOFLAGS);
                 break;
