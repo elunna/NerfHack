@@ -1618,7 +1618,7 @@ doname_base(
     case WAND_CLASS:
         add_erosion_words(obj, prefix);
  charges:
-        if (known)
+        if (known || Role_if(PM_WIZARD))
             ConcatF2(bp, 0, " (%d:%d)", (int) obj->recharged, obj->spe);
         break;
     case POTION_CLASS:
