@@ -750,9 +750,10 @@ int
 dochug(struct monst *mtmp)
 {
     struct permonst *mdat;
+    struct obj *otmp;
+    struct monst *mtmp2;
     int status = MMOVE_NOTHING;
     int inrange, nearby, scared, res;
-    struct obj *otmp;
     boolean panicattk = FALSE;
     coord start;
     /*
@@ -817,7 +818,52 @@ dochug(struct monst *mtmp)
     /* Erinyes will inform surrounding monsters of your crimes */
     if (mdat == &mons[PM_ERINYS] && !mtmp->mpeaceful && m_canseeu(mtmp))
         aggravate();
-
+    
+    /* It is now the considered opinion of historians of leprosy 
+       that bells (and also clappers) were not used in medieval
+       Europe to warn the uninfected away. Leprosy often has extreme
+       effects on the larynx, meaning that loss of voice is one of
+       the classic symptoms. Bells and clappers attracted the
+       attention of passers-by after the voice failed.
+        [ The New York Times, Opinion. Feb. 22, 2013 ]
+    */
+    if (mdat == &mons[PM_LEPER] && mtmp->mcanmove &&
+        (otmp = m_carrying(mtmp, BELL)) != 0 && m_canseeu(mtmp) && !rn2(5)) {
+        pline_mon(mtmp, "%s rings %s.", Monnam(mtmp), the(xname(otmp)));
+        
+        /* Copied from use_bell; consolidate? */
+        if (otmp->cursed && !rn2(4)
+            /* note: once any of them are gone, we stop all of them */
+            && !(svm.mvitals[PM_WOOD_NYMPH].mvflags & G_GONE)
+            && !(svm.mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
+            && !(svm.mvitals[PM_MOUNTAIN_NYMPH].mvflags & G_GONE)
+            && (mtmp2 = makemon(mkclass(S_NYMPH, 0), u.ux, u.uy,
+                               NO_MINVENT | MM_NOMSG)) != 0) {
+            pline_mon(mtmp, "summons %s!", a_monnam(mtmp2));
+            if (!obj_resists(otmp, 93, 100)) {
+                pline("%s shattered!", Tobjnam(otmp, "have"));
+                useup(otmp);
+            } else {
+                switch (rn2(3)) {
+                default:
+                    break;
+                case 1:
+                    mon_adjust_speed(mtmp2, 2, (struct obj *) 0);
+                    break;
+                case 2: /* no explanation; it just happens... */
+                    aggravate();
+                    if (canseemon(mtmp2)) {
+                        gn.nomovemsg = "";
+                        gm.multi_reason = NULL;
+                        nomul(-rnd(2));
+                    }
+                    break;
+                }
+            }
+            wake_nearby(TRUE);
+        }
+    }
+    
     /* Shriekers and Medusa have irregular abilities which must be
        checked every turn. These abilities do not cost a turn when
        used. */
@@ -836,6 +882,7 @@ dochug(struct monst *mtmp)
     if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my)
         && !mtmp->mpeaceful)
         m_respond(mtmp);
+    
     if (DEADMONSTER(mtmp))
         return 1; /* m_respond gaze can kill medusa */
 

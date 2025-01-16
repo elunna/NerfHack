@@ -966,6 +966,12 @@ m_initinv(struct monst *mtmp)
         }
         break;
     case S_LEPRECHAUN:
+        if (ptr == &mons[PM_LEPER] /*&& !rn2(2)*/) {
+            (void) mongets(mtmp, BELL);
+            /* They also get some money... from begging. */
+            mkmonmoney(mtmp, (long) d(level_difficulty(), 5));
+            break;
+        }
         mkmonmoney(mtmp, (long) d(level_difficulty(), 30));
         break;
     case S_DEMON:
