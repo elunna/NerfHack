@@ -141,6 +141,7 @@ SPEC_LEVS = 		\
 	baalz-?.lua 	\
 	bigrm-*.lua 	\
 	bridge.lua		\
+	dragons.lua		\
 	castle-?.lua 	\
 	fakewiz?.lua 	\
 	fire.lua 		\

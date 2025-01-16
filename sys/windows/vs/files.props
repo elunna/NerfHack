@@ -54,6 +54,7 @@
     <Luafiles Include = "bigrm-20.lua"/>
     <Luafiles Include = "bigrm-21.lua"/>
     <Luafiles Include = "bridge.lua"/>
+    <Luafiles Include = "dragons.lua"/>
     <Luafiles Include = "castle-1.lua"/>
     <Luafiles Include = "castle-2.lua"/>
     <Luafiles Include = "castle-3.lua"/>

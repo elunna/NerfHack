@@ -37,6 +37,12 @@ dungeon = {
             direction = "down",
          },
          {
+            name = "The Wyrm Caves",
+            base = 20,
+            range = 2,
+            direction = "down",
+         },
+         {
             name = "The Temple of Moloch",
             base = 21,
             range = 4,
@@ -319,6 +325,20 @@ dungeon = {
          }
       }
    },
+      {
+         name = "The Wyrm Caves",
+         base = 1,
+         bonetag = "D",
+         flags = { "mazelike" },
+         alignment = "chaotic",
+         levels = {
+            {
+               name = "dragons",
+               bonetag = "D",
+               base = -1,
+            }
+         }
+      },
    {
       name = "The Temple of Moloch",
       base = 1,

@@ -40,7 +40,8 @@ $	spec_files = "air.lua,"	-
 		+ "astral.lua," 	-
 		+ "baalz-%.lua,"	-
 		+ "bigrm-*.lua," 	-
-		+ "bridge.lua," 		-
+		+ "bridge.lua," 	-
+		+ "dragons.lua," 	-
 		+ "castle-%.lua," 	-
 		+ "demo-%.lua," 	-
 		+ "dispat-%.lua,"	-
