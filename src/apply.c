@@ -5282,6 +5282,13 @@ deck_of_fate(struct obj *obj)
             aggravate();
             break;
         case 5: /* Death */
+            /* Magic resistance does not protect against this! */
+            if (Luck >= 7 && rn2(13) && !Unchanging ) {
+                pline("A great change starts to ripple though you!");
+                polyself(POLY_NOFLAGS);
+                break;
+            }
+
             draws = 0;
             if (!Blind)
                 pline("A skeletal hand appears upon the deck, stopping your draws.");
