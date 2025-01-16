@@ -4626,7 +4626,7 @@
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_DEMON, 40, HI_LORD, DISPATER),
     MON(NAM("Baalzebub"), S_DEMON,
-        LVL(89, 9, -5, 85, 20), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
+        LVL(89, 15, -5, 85, 20), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_BITE, AD_PHYS, 6, 6),
           ATTK(AT_GAZE, AD_STUN, 2, 6),
           ATTK(AT_STNG, AD_DRST, 2, 6),
