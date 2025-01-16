@@ -1467,7 +1467,6 @@ extern void ck_server_admin_msg(void);
 extern void ckmailstatus(void);
 extern void readmail(struct obj *);
 #endif /* MAIL */
-extern const char * get_hint(void);
 
 /* ### makemon.c ### */
 

@@ -293,6 +293,7 @@ rumor_check(void)
     others_check("Engravings:", ENGRAVEFILE, &tmpwin);
     others_check("Epitaphs:", EPITAPHFILE, &tmpwin);
     others_check("Bogus monsters:", BOGUSMONFILE, &tmpwin);
+    others_check("Entry messages:", ENTRYMSGFILE, &tmpwin);
 
     if (tmpwin != WIN_ERR) {
         display_nhwindow(tmpwin, TRUE);
@@ -306,7 +307,7 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 staticfn void
 others_check(
     const char *ftype, /* header: "{Engravings|Epitaphs|Bogus monsters}:" */
-    const char *fname, /* filename: {ENGRAVEFILE|EPITAPHFILE|BOGUSMONFILE} */
+    const char *fname, /* filename: {ENGRAVEFILE|EPITAPHFILE|BOGUSMONFILE|ENTRYMSGFILE} */
     winid *winptr)     /* text window for output; created here if necessary */
 {
     static const char errfmt[] = "others_check(\"%s\"): %s";

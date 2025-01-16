@@ -67,7 +67,7 @@ MOCPATH ?= $(QTDIR)/bin/$(MOC)
 # The default is for the TARGET_* variables to match the defaults.
 # If we're cross-compiling these will get overridden elsewhere, likely via
 
-VARDAT = bogusmon data engrave epitaph rumors oracles options
+VARDAT = bogusmon data engrave epitaph rumors oracles options ntrymsgs
 
 all:	$(VARDAT) spec_levs quest_levs
 

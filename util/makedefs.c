@@ -332,10 +332,12 @@ do_makedefs(char *options)
             rafile('1');
             rafile('2');
             rafile('3');
+            rafile('4');
             break;
         case '1':
         case '2':
         case '3':
+        case '4':
             rafile(*options);
             break;
 #if defined(OLD_MAKEDEFS_OPTIONS)
@@ -436,6 +438,11 @@ rafile(int whichone)
             do_rnd_access_file(BOGUSMONFILE, "bogusmon",
                 /* default bogusmon:  iconic monster that isn't in nethack */
                                "grue", MD_PAD_BOGONS);
+            break;
+    case '4':
+            do_rnd_access_file(ENTRYMSGFILE, "ntrymsgs",
+                /* default ntrymsgs:  engraves for room 1 */
+                               "Welcome to NerfHack!", MD_PAD_BOGONS);
             break;
     }
 }

@@ -1156,7 +1156,6 @@ fill_ordinary_room(
         }
     }
 
-
     /* put box/chest inside;
      *  40% chance for at least 1 box, regardless of number
      *  of rooms; about 5 - 7.5% for 2 boxes, least likely
@@ -1174,7 +1173,10 @@ fill_ordinary_room(
      * Either a hint or a true rumor. */
     if (depth(&u.uz) < 2 && has_upstairs(croom) && !rn2(depth(&u.uz))) {
         if (find_okay_roompos(croom, &pos)) {
-            make_engr_at(pos.x, pos.y, get_hint(), 0L, BURN);
+            char buf[BUFSZ];
+            const char *str;
+            str = get_rnd_text(ENTRYMSGFILE, buf, rn2, MD_PAD_RUMORS);
+            make_engr_at(pos.x, pos.y, str, 0L, BURN);
         }
     } else if (!rn2(27 + 3 * abs(depth(&u.uz)))) {
         char buf[BUFSZ];
