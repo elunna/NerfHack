@@ -128,6 +128,13 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 8000L, NO_COLOR, GRAYSWANDIR),
 
+    /* Original idea by Spicy. Prevents all monster regen. */
+    A("Mortality Dial", MORNING_STAR,
+      (SPFX_RESTR | SPFX_REGEN | SPFX_WARN), 0, 0,
+      PHYS(5, 12), NO_DFNS, NO_CARY, 0,
+      A_LAWFUL, NON_PM, NON_PM,
+      DFLT_SPE, ARTVAL, 5000L, NO_COLOR, MORTALITY_DIAL),
+      
     /* From SLASH'EM; changed to an AKLYS.
      * Lessened to-hit penalty so aklys will connect
      * Guarantee +3 so illiterate cavemen have a nice weapon */

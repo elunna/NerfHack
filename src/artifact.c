@@ -3761,6 +3761,10 @@ artifact_info(int anum)
     case ART_OGRESMASHER:
         art_info.wielded[16] = "boosts constitution";
         break;
+    case ART_MORTALITY_DIAL: 
+        art_info.wielded[16] = "prevents monster regeneration";
+        art_info.wielded[17] = "prevents corpse revival";
+        break;
     case ART_ORCRIST:
     case ART_GLAMDRING:
         art_info.xattack = "instakills orcs";
