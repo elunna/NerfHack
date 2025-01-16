@@ -3286,7 +3286,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
               Monnam(mdef), youattack ? " (you)" : "");
         return;
     } else if (helm && hard_helmet(helm)) {
-        helm_res = 11 + helm->spe * 6;
+        helm_res = 11 + helm->spe * 4;
 
         /* These things now quite frequently destroy hard helmets.
          * First we'll damage the helmet by reducing the enchantment.
