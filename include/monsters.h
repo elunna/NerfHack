@@ -4558,18 +4558,21 @@
      * (their order matters; see minion.c)
      */
     MON(NAM("Juiblex"), S_DEMON,
-        LVL(50, 3, -7, 65, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
+        LVL(50, 12, -7, 65, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_ENGL, AD_DISE, 4, 10),
           ATTK(AT_SPIT, AD_ACID, 3, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1500, 0, MS_GURGLE, MZ_LARGE),
+          ATTK(AT_TUCH, AD_SLIM, 1, 4),
+          ATTK(AT_NONE, AD_ACID, 0, 1), 
+          ATTK(AT_BOOM, AD_ACID, 4, 6),
+          NO_ATTK),
+        SIZ(1500, 0, MS_GURGLE, MZ_GIGANTIC),
         MR_FIRE | MR_POISON | MR_ACID | MR_STONE, 0,
         M1_AMPHIBIOUS | M1_AMORPHOUS | M1_NOHEAD | M1_FLY | M1_SEE_INVIS
             | M1_ACID | M1_POIS,
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
             | M2_LORD | M2_MALE,
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISION,
-        MH_DEMON, 26, CLR_BRIGHT_GREEN, JUIBLEX),
+        MH_DEMON, 27, CLR_BRIGHT_GREEN, JUIBLEX),
     MON(NAM("Yeenoghu"), S_DEMON,
         LVL(56, 18, -5, 80, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6),
