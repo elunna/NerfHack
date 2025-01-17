@@ -1973,11 +1973,11 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
         make_blinded(0L, TRUE);
         /* heal deafness too */
         make_deaf(0L, TRUE);
+        make_rabid(0L, (char *) 0, 0, (char *) 0);
     }
     if (curesick) {
         make_vomiting(0L, TRUE);
         make_sick(0L, (char *) 0, TRUE, SICK_ALL);
-        make_rabid(0L, (char *) 0, 0, (char *) 0);
     }
     disp.botl = TRUE;
     return;
