@@ -1502,7 +1502,7 @@
         SIZ(20, 12, MS_SQEEK, MZ_SMALL), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_HERBIVORE, M2_HOSTILE,
         M3_INFRAVISIBLE,
-        NO_RACE, 3, CLR_WHITE, RABBIT),
+        NO_RACE, 5, CLR_WHITE, RABBIT),
     MON(NAM("wererat"), S_RODENT,
         LVL(2, 12, 6, 10, -7), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_WERE, 1, 4),
