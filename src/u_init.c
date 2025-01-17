@@ -187,7 +187,7 @@ static struct trobj Tourist[] = {
 };
 static struct trobj Valkyrie[] = {
     { SPEAR, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { DAGGER, 0, WEAPON_CLASS, 5, UNDEF_BLESS },
+    { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
