@@ -224,7 +224,7 @@ mkobj_erosions(struct obj *otmp)
         /* A small fraction of non-artifact items will generate eroded or
          * possibly erodeproof. An item that generates eroded will never be
          * erodeproof, and vice versa. */
-        if (!rn2(100) || (is_dwarvish_obj(otmp->otyp) && !rn2(5))) {
+        if (!rn2(100) || (is_dwarvish_obj(otmp->otyp) && !rn2(25))) {
             otmp->oerodeproof = 1;
         } else {
             if ((!rn2(80) || (is_orcish_obj(otmp->otyp) && rn2(3)))
@@ -254,8 +254,6 @@ mkobj_erosions(struct obj *otmp)
     if (otmp->oclass == WAND_CLASS
         && svm.moves > 1L && !rn2(23))
         otmp->recharged = 1;
-        
-
 }
 
 /* make a random object of class 'let' at a specific location;
