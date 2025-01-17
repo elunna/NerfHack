@@ -1303,10 +1303,26 @@ XTRA_SCROLL_LABEL(   "PHOL ENDE WODAN", SC15), /* Merseburg Incantations */
 XTRA_SCROLL_LABEL(             "GHOTI", SC16), /* pronounced as 'fish',
                                                 * George Bernard Shaw */
 XTRA_SCROLL_LABEL("MAPIRO MAHAMA DIROMAT", SC17), /* Wizardry */
-XTRA_SCROLL_LABEL( "VAS CORP BET MANI", SC18), /* Ultima */
-XTRA_SCROLL_LABEL(           "XOR OTA", SC19), /* Aarne Haapakoski */
-XTRA_SCROLL_LABEL("STRC PRST SKRZ KRK", SC20), /* Czech and Slovak
+XTRA_SCROLL_LABEL( "VAS CORP BET MANI",  SC18), /* Ultima */
+XTRA_SCROLL_LABEL(           "XOR OTA",  SC19), /* Aarne Haapakoski */
+XTRA_SCROLL_LABEL("STRC PRST SKRZ KRK",  SC20), /* Czech and Slovak
                                                 * tongue-twister */
+XTRA_SCROLL_LABEL("4OFAE OF9 SCC9",      SC21), /* Voynich */
+XTRA_SCROLL_LABEL("TEMP USF UGIT",       SC22), /* tempus fugit */
+XTRA_SCROLL_LABEL("TRATS ARL",           SC23), /* LRA START */
+XTRA_SCROLL_LABEL("TLON UQBAR",          SC24), /* SpliceHack */
+XTRA_SCROLL_LABEL("HZLRC KSTSBD MPFNG",  SC25),
+XTRA_SCROLL_LABEL("OOBID IBBOB",         SC26), /* Cinderella */
+XTRA_SCROLL_LABEL("NYEHEHE",             SC27), /* laughing noise */
+XTRA_SCROLL_LABEL("ELPHE MONATER",       SC28), /* famous mistranslation */
+XTRA_SCROLL_LABEL("ABAJ",                SC29), /* famous mistranslation */
+XTRA_SCROLL_LABEL("CONG LAT URAT ION",   SC30), /* famous mistranslation */
+XTRA_SCROLL_LABEL("DESUM TETRAL",        SC31), /* dal aos */
+XTRA_SCROLL_LABEL("NH IN RL",            SC32), /* meta */
+XTRA_SCROLL_LABEL("ISAY INAY",           SC33), /* meta */
+XTRA_SCROLL_LABEL("PEBCAK RTFM",         SC34), /* Slang */
+XTRA_SCROLL_LABEL("KA TET",              SC35), /* Dark Tower */
+
 #undef XTRA_SCROLL_LABEL
     /* These must come last because they have special fixed descriptions.
      */
@@ -1509,6 +1525,8 @@ WAND("enlightenment", "crystal", 15, 200, 1, NODIR, GLASS, HI_GLASS,
                                                     WAN_ENLIGHTENMENT),
 WAND("create monster",  "maple", 45, 200, 1, NODIR, WOOD, HI_WOOD,
                                                     WAN_CREATE_MONSTER),
+/* WoW's don't generate randomly or anywhere in game anymore - instead,
+ * they are used for the zappable scroll of wishing effect. */
 WAND("wishing",          "pine",  0, 200, 1, NODIR, WOOD, HI_WOOD,
                                                     WAN_WISHING),
 WAND("nothing",           "oak", 25, 200, 0, IMMEDIATE, WOOD, HI_WOOD,
@@ -1560,10 +1578,34 @@ WAND("corrosion",    "twisted",  30, 200, 1, RAY, WOOD,  HI_WOOD,
                                                     WAN_CORROSION),
 WAND("draining",      "ceramic", 20, 200, 1, RAY, GLASS,  HI_MINERAL,
                                                     WAN_DRAINING),
-
 /* extra descriptions, shuffled into use at start of new game */
-WAND(NoDes,             "spiked",  0, 200, 1, 0, IRON, HI_METAL, WAN2),
-WAND(NoDes,            "jeweled",  0, 200, 1, 0, IRON, HI_MINERAL, WAN3),
+WAND(NoDes,      "spiked", 0, 200, 1, 0, IRON, HI_METAL,        WAN2),
+WAND(NoDes,     "jeweled", 0, 200, 1, 0, IRON, HI_MINERAL,      WAN3),
+WAND(NoDes,      "crusty", 0, 200, 1, 0, IRON, CLR_RED,         WAN4),
+WAND(NoDes,       "green", 0, 200, 1, 0, PLASTIC, CLR_BRIGHT_GREEN, WAN5), 
+WAND(NoDes,       "black", 0, 200, 1, 0, IRON,  CLR_BLACK,      WAN6), 
+WAND(NoDes,      "bronze", 0, 200, 1, 0, COPPER, CLR_YELLOW,    WAN7), 
+WAND(NoDes,   "driftwood", 0, 200, 1, 0, WOOD,  HI_WOOD,        WAN8),
+WAND(NoDes,      "quartz", 0, 200, 1, 0, GLASS, HI_GLASS,       WAN9),
+WAND(NoDes,      "walnut", 0, 200, 1, 0, WOOD,  HI_WOOD,        WAN10),
+WAND(NoDes,    "mahogany", 0, 200, 1, 0, WOOD,  HI_WOOD,        WAN11),
+WAND(NoDes,       "cedar", 0, 200, 1, 0, WOOD,  HI_WOOD,        WAN12),
+WAND(NoDes,      "chrome", 0, 200, 1, 0, METAL, HI_SILVER,      WAN13),
+WAND(NoDes,      "nickel", 0, 200, 1, 0, METAL, HI_METAL,       WAN14),
+WAND(NoDes,     "mithril", 0, 200, 1, 0, MITHRIL, HI_SILVER,    WAN15),
+WAND(NoDes,     "grooved", 0, 200, 1, 0, WOOD,  HI_WOOD,        WAN16),
+WAND(NoDes,        "bent", 0, 200, 1, 0, IRON,  HI_METAL,       WAN17),
+WAND(NoDes,        "bone", 0, 200, 1, 0, BONE,  CLR_WHITE,      WAN18),
+WAND(NoDes,   "alabaster", 0, 200, 1, 0, MINERAL, CLR_BROWN,    WAN19),
+WAND(NoDes,  "orichalcum", 0, 200, 1, 0, METAL,  HI_METAL,      WAN20),
+WAND(NoDes,    "electrum", 0, 200, 1, 0, METAL,    HI_GOLD,     WAN21),
+WAND(NoDes,       "holly", 0, 200, 1, 0, WOOD,     HI_WOOD,     WAN22),
+WAND(NoDes,     "pliable", 0, 200, 1, 0, PLASTIC,  HI_WOOD,     WAN23),
+WAND(NoDes, "dragon-bone", 0, 200, 1, 0, BONE,     CLR_WHITE,   WAN24),
+WAND(NoDes,      "golden", 0, 200, 1, 0, GOLD,     HI_GOLD,     WAN25),
+WAND(NoDes,      "gilded", 0, 200, 1, 0, GOLD,     HI_GOLD,     WAN26),
+WAND(NoDes,        "thin", 0, 200, 1, 0, IRON,     HI_METAL,    WAN27),
+WAND(NoDes,   "porcelain", 0, 200, 1, 0, GLASS,    CLR_WHITE,   WAN28),
 #undef WAND
 
 /* coins ... - so far, gold is all there is */
