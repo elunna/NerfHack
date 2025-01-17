@@ -1692,12 +1692,6 @@ armor_bonus(struct monst *mon, struct obj *armor)
         bon += race_bonus(armor);
     } else {
         if (is_orc(mon->data) && is_orcish_armor(armor->otyp))
-            bon += 2;
-        else if (is_gnome(mon->data) && is_gnomish_armor(armor->otyp))
-            bon += 2;
-        else if (is_elf(mon->data) && is_elven_armor(armor->otyp))
-            bon += 1;
-        else if (is_dwarf(mon->data) && is_dwarvish_armor(armor->otyp))
             bon += 1;
     }
     /* appearance bonuses */

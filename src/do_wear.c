@@ -3757,19 +3757,13 @@ race_bonus(struct obj *obj)
     * and the stats-challenged orc itself. Taken from SporkHack.
     */
     if (Race_if(PM_ORC) && is_orcish_armor(obj->otyp))
-        return 2;
-    if (Race_if(PM_GNOME) && is_gnomish_armor(obj->otyp))
-        return 1;
-    if (Race_if(PM_ELF) && is_elven_armor(obj->otyp))
-        return 1;
-    if (Race_if(PM_DWARF) && is_dwarvish_armor(obj->otyp))
         return 1;
 
     /* Racial preferences in armor. Some races really hate wearing the armor
      * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
      * too. For each piece of hated armor, the player gets a +2AC penalty. */
     if (hates_item(&gy.youmonst, obj->otyp))
-        return -2;
+        return -3;
 
     return 0;
 }
