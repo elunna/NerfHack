@@ -3555,6 +3555,12 @@ destroy_arm(
                          cloak_simple_name(otmp));
     } else if (!resistedc
              && (otmp = maybe_destroy_armor(uarm, atmp, &resistedsuit)) != 0) {
+        
+        if (uarm && (uarm == otmp) && otmp->otyp == CRYSTAL_PLATE_MAIL) {
+            otmp->in_use = FALSE; /* nothing happens */
+            return 0;
+        }
+        
         const char *suit = suit_simple_name(otmp);
 
         /* for gold DSM, we don't want Armor_gone() to report that it

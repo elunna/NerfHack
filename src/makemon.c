@@ -735,10 +735,10 @@ m_initinv(struct monst *mtmp)
                 mac = 0;
                 break;
             case PM_LIEUTENANT:
-                mac = -2;
+                mac = -3;
                 break;
             case PM_CAPTAIN:
-                mac = -3;
+                mac = -4;
                 break;
             case PM_WATCHMAN:
                 mac = 3;
@@ -757,9 +757,12 @@ m_initinv(struct monst *mtmp)
     otmp = (struct obj *) 0;
 
             /* round 1: give them body armor */
-            if (mac < -1 && rn2(5))
+            if (mac < -2 && rn2(5))
                 otmp = mongets(mtmp, (rn2(5)) ? PLATE_MAIL
                                               : CRYSTAL_PLATE_MAIL);
+            else if (mac < 0 && rn2(5))
+                otmp = mongets(mtmp, (rn2(5)) ? SPLINT_MAIL
+                                              : BRONZE_PLATE_MAIL);
             else if (mac < 3 && rn2(5))
                 otmp = mongets(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);
             else if (rn2(5))

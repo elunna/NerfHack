@@ -3523,7 +3523,6 @@ get_faux_artifact_obj(const char *name)
     return obj;
 }
 
-
 struct art_info_t
 artifact_info(int anum)
 {

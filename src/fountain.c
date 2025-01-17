@@ -486,13 +486,6 @@ const struct ForgeRecipe fusions[] = {
     /* Ammo */
     { SLING_BULLET,         ROCK,               DART,           3, 1 },
 
-#if 0 /* Should we port these? */
-    { DWARVISH_BEARDED_AXE, AXE,                DWARVISH_SHORT_SWORD, 1, 1 },
-    { DWARVISH_BOOTS,       GAUNTLETS,          DWARVISH_SHORT_SWORD, 1, 1 },
-    { ORCISH_SCIMITAR,      KNIFE,              ORCISH_SHORT_SWORD, 1, 1 },
-    { ORCISH_LONG_SWORD,    ORCISH_SHORT_SWORD, ORCISH_SHORT_SWORD, 1, 1 },
-    { ORCISH_MORNING_STAR,  MACE,               ORCISH_DAGGER, 1, 1 },
-#endif
     { 0, 0, 0, 0, 0 }
 };
 
