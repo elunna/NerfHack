@@ -1308,8 +1308,9 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
 
     /*
      * For random objects, do not create certain overly powerful
-     * items: wand of wishing, polymorph/polymorph control combination.
-     * Specific objects, i.e. the discovery wishing, are still OK.
+     * items: wand of wishing, ring of levitation, or the
+     * polymorph/polymorph control combination.  Specific objects,
+     * i.e. the discovery wishing, are still OK.
      * Also, don't get a couple of really useless items.  (Note:
      * punishment isn't "useless".  Some players who start out with
      * one will immediately read it and use the iron ball as a
@@ -1318,9 +1319,12 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
     obj = mkobj(oclass, FALSE);
     otyp = obj->otyp;
 
-    while (otyp == WAN_WISHING || otyp == gn.nocreate
-           || otyp == gn.nocreate2 || otyp == gn.nocreate3
+    while (otyp == WAN_WISHING
+           || otyp == gn.nocreate
+           || otyp == gn.nocreate2
+           || otyp == gn.nocreate3
            || otyp == gn.nocreate4
+           || otyp == RIN_LEVITATION
            /* 'useless' items */
            || otyp == POT_HALLUCINATION
            || otyp == POT_ACID
@@ -1337,8 +1341,6 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || (Race_if(PM_VAMPIRE) &&
                /* vampirics start with regeneration */
                (otyp == RIN_REGENERATION
-               /* vampirics start with flying */
-                || otyp == RIN_LEVITATION
                /* vampirics don't eat */
                 || otyp == SPE_DETECT_FOOD || otyp == SCR_FOOD_DETECTION
                /* vampires don't like silver */
