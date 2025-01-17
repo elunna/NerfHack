@@ -539,7 +539,7 @@ doforging(void)
     if (!obj2) {
         You("need more than one object.");
         return 0;
-    } else if (!(is_metallic(obj2) || obj1->otyp == ROCK)) {
+    } else if (!(is_metallic(obj2) || obj2->otyp == ROCK)) {
         /* secondary object should also be metallic */
         pline_The("secondary object must be metallic or mineral.");
         return 0;
