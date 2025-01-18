@@ -212,10 +212,23 @@ Boots_on(void)
     case HIGH_BOOTS:
     case KICKING_BOOTS:
         break;
-    case JUMPING_BOOTS:
+    case JUMPING_BOOTS: {
+        boolean was_flying = !!Flying;
+        /* while jumping, block flying; you need boots on the ground */
+        BFlying |= W_ARMF;
+        
         makeknown(uarmf->otyp);
         pline("Your %s feel longer.", makeplural(body_part(LEG)));
+        
+        if (was_flying) {
+            You("%s.", (is_pool_or_lava(u.ux, u.uy)
+                    || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                      ? "abruptly stop flying"
+                      : "land with a bounce");
+            spoteffects(TRUE);
+        }
         break;
+    }
     case WATER_WALKING_BOOTS:
         /*
          * Sequencing issue?  If underwater (perhaps via magical breathing),
@@ -379,6 +392,10 @@ Boots_off(void)
     case JUMPING_BOOTS:
         makeknown(otyp);
         Your("%s feel shorter.", makeplural(body_part(LEG)));
+        /* Unblock flying */
+        BFlying &= ~W_ARMF;
+        if (Flying)
+            You("start flying.");
         break;
     case LOW_BOOTS:
     case ORCISH_BOOTS:
