@@ -245,17 +245,30 @@ Boots_on(void)
                      (oldprop || HFast) ? " a bit more" : "");
         }
         break;
-    case STOMPING_BOOTS:
+    case STOMPING_BOOTS: {
+        boolean was_flying = !!Flying;
+        /* while stomping, block flying; you need boots on the ground */
+        BFlying |= W_ARMF;
+        
         if (uarmf && uarmf->oartifact == ART_MAYHEM) {
             You_feel("the spirits begin to stir...");
             EConflict |= W_ARMF;
             makeknown(uarmf->otyp);
-        } else if (Stomping && !Flying) {
-            You("begin stomping around very loudly.");
+        } else if (Stomping) {
+            if (was_flying) {
+                You("%s.", (is_pool_or_lava(u.ux, u.uy)
+                        || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                          ? "abruptly stop flying"
+                          : "land with a stomp");
+                spoteffects(TRUE);
+            } else
+                You("begin stomping around very loudly.");
             makeknown(uarmf->otyp);
-        }
+        } 
         BStealth |= I_SPECIAL;
+        
         break;
+    }
     case ELVEN_BOOTS:
         toggle_stealth(uarmf, oldprop, TRUE);
         break;
@@ -332,13 +345,18 @@ Boots_off(void)
             spoteffects(TRUE);
         }
         break;
-    case STOMPING_BOOTS:
+    case STOMPING_BOOTS: {
         if (!Levitation && !Flying) {
             Your("footsteps become considerably less violent.");
             makeknown(otyp);
         }
         BStealth &= ~I_SPECIAL;
+        /* Unblock flying */
+        BFlying &= ~W_ARMF;
+        if (Flying)
+            You("start flying.");
         break;
+    }
     case ELVEN_BOOTS:
         toggle_stealth(otmp, oldprop, FALSE);
         break;
