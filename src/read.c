@@ -2399,7 +2399,9 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
         wx = mtmp->mx;
         wy = mtmp->my;
     }
-
+    if (!isyou)
+        extract_from_minvent(mtmp, sobj, FALSE, TRUE);
+    
     if (confused) {
         int dried_up = 0;
         do_clear_area(wx, wy, range, unflood_space, (genericptr_t) &dried_up);
@@ -2448,7 +2450,7 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
         }
         /* Cleanup when used in muse.c */
         if (!isyou)
-            m_useup(mtmp, sobj);
+            delobj(sobj);
 
     }
 }
