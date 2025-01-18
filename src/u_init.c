@@ -542,7 +542,7 @@ static const struct def_skill Skill_T[] = {
     { P_WHIP, P_BASIC },
     { P_UNICORN_HORN, P_BASIC },
     { P_DIVINATION_SPELL, P_BASIC },
-    { P_ENCHANTMENT_SPELL, P_BASIC },
+    { P_ENCHANTMENT_SPELL, P_SKILLED }, /* Special spell: charm monster */
     { P_ESCAPE_SPELL, P_BASIC },
     { P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_BASIC },
