@@ -2126,7 +2126,6 @@ jump(int magic) /* 0=Physical, otherwise skill level */
 {
     coord cc;
     int bootdamage;
-    struct monst *mon;
 
     /* attempt "jumping" spell if hero has no innate jumping ability */
     if (!magic && !Jumping && known_spell(SPE_JUMPING) >= spe_Fresh)
@@ -2217,11 +2216,6 @@ jump(int magic) /* 0=Physical, otherwise skill level */
     getpos_sethilite(display_jump_positions, get_valid_jump_position);
     if (getpos(&cc, FALSE, "the desired position") < 0)
         return ECMD_CANCEL; /* user pressed ESC */
-    
-    if ((mon = m_at(cc.x, cc.y)) != 0 && canseemon(mon)) {
-        pline("Something is already there!");
-         return ECMD_FAIL;
-    }
     if (!is_valid_jump_pos(cc.x, cc.y, magic, TRUE)) {
         return ECMD_FAIL;
     } else if (u.usteed && u_at(cc.x, cc.y)) {
