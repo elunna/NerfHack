@@ -849,10 +849,7 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
     }
 
     if ((mon = m_at(x, y)) != 0
-            /* We can pass over tiny and small monsters unless
-               they are flying or levitating */
-            && (mon->data->msize > MZ_SMALL
-            || mon_prop(mon, FLYING) || mon_prop(mon, LEVITATION))
+            && mon->data->msize > MZ_SMALL
 #if 0   /* we can't include these two exceptions unless we know we're
          * going to end up past the current spot rather than on it;
          * for that, we need to know that the range is not exhausted
