@@ -394,8 +394,9 @@
 
 #define HFast u.uprops[FAST].intrinsic
 #define EFast u.uprops[FAST].extrinsic
-#define Fast (HFast || EFast)
-#define Very_fast ((HFast & ~INTRINSIC) || EFast)
+#define Fast ((HFast || EFast) && !BFast)
+#define BFast (Levitation || Flying)
+#define Very_fast (((HFast & ~INTRINSIC) || EFast) && !BFast)
 
 #define HReflecting u.uprops[REFLECTING].intrinsic
 #define EReflecting u.uprops[REFLECTING].extrinsic

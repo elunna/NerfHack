@@ -1962,8 +1962,18 @@ attributes_enlightenment(
     if (Hate_silver)
         you_are("harmed by silver", "");
     /* movement and non-armor-based protection */
-    if (Fast)
-        you_are(Very_fast ? "very fast" : "fast", from_what(FAST));
+    if ((HFast || EFast)) {
+        if (BFast) {
+            if ((HFast & ~INTRINSIC))
+                enl_msg(You_, "will be", "would have been",
+                        " very fast if not airborn", "");
+            else
+                enl_msg(You_, "will be", "would have been",
+                        " fast if not airborn", "");
+        } else {
+            you_are(Very_fast ? "very fast" : "fast", from_what(FAST));
+        }
+    }
     if (Reflecting)
         you_have("reflection", from_what(REFLECTING));
     if (Free_action)
