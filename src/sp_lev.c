@@ -4864,10 +4864,28 @@ nhl_abs_coord(lua_State *L)
 int
 lspo_feature(lua_State *L)
 {
-    static const char *const features[] = { "fountain", "forge", "sink", "toilet",
-                                            "pool", "throne", "tree", "puddle", NULL };
-    static const int features2i[] = { FOUNTAIN, FORGE, SINK, TOILET,
-                                      POOL, THRONE, TREE, PUDDLE, STONE };
+    static const char *const features[] = {
+        "fountain",
+        "forge",
+        "sink",
+        "toilet",
+        "pool",
+        "throne",
+        "tree", 
+        "puddle",
+        "lava",
+        NULL };
+    static const int features2i[] = { 
+        FOUNTAIN,
+        FORGE,
+        SINK,
+        TOILET,
+        POOL,
+        THRONE,
+        TREE, 
+        PUDDLE,
+        LAVAPOOL,
+        STONE };
     coordxy x, y;
     int typ;
     int argc = lua_gettop(L);

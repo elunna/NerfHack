@@ -1579,7 +1579,18 @@ end,
          end })
       end
    },
-
+   -- Lava pools
+   {
+      mindiff = 4,
+      contents = function()
+         des.room({ type = 'themed', contents = function(rm)
+            local totsiz = rm.width * rm.height
+            for i = 1, math.min(d(6)+6, math.floor(totsiz / 4)) do
+               des.feature({ type='lava' })
+            end
+         end })
+      end
+   },
    -- Room with small pillars (also, possibly wood nymph room)
    function()
       des.room({ type = "themed", w = 5 + nh.rn2(3)*2, h = 5 + nh.rn2(3)*2,
