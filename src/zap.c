@@ -38,6 +38,7 @@ staticfn boolean destroyable(struct obj *, int);
 
 staticfn void wishcmdassist(int);
 staticfn void drain_floor_objects(coordxy, coordxy, boolean);
+staticfn int calc_zap_range(int);
 
 #define M_IN_WATER(ptr) ((ptr)->mlet == S_EEL || cant_drown(ptr))
 
@@ -282,8 +283,12 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         }
         break;
     case SPE_CHARM_MONSTER:
-        /* Pacification only available at lower skills */
+        /* Pacification only available at unskilled */
         if (!resist(mtmp, otmp->oclass, 0, NOTELL) || mtmp->isshk)
+            (void) tamedog(mtmp, otmp, TRUE);
+        /* Get another chance at expert skill */
+        else if (P_SKILL(P_ENCHANTMENT_SPELL) >= P_EXPERT
+            && (!resist(mtmp, otmp->oclass, 0, NOTELL) || mtmp->isshk))
             (void) tamedog(mtmp, otmp, TRUE);
         helpful_gesture = TRUE;
         ret = 1;
@@ -2639,7 +2644,7 @@ bhito(struct obj *obj, struct obj *otmp)
         case SPE_HEALING:
         case SPE_EXTRA_HEALING:
         case SPE_CURE_SICKNESS:
-	    case WAN_WONDER:
+        case WAN_WONDER:
         case SPE_CHARM_MONSTER:
             res = 0;
             break;
@@ -4099,8 +4104,8 @@ weffects(struct obj *obj)
         } else if (u.dz) {
             disclose = zap_updown(obj);
         } else {
-            (void) bhit(u.dx, u.dy, rn1(8, 6), ZAPPED_WAND, bhitm, bhito,
-                        &obj);
+            (void) bhit(u.dx, u.dy, calc_zap_range(otyp), ZAPPED_WAND, bhitm,
+                        bhito, &obj);
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
@@ -4117,7 +4122,7 @@ weffects(struct obj *obj)
         else if (otyp == SPE_DRAIN_LIFE)
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(WAN_DRAINING)), 6);
         #endif
-        else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_DRAIN_LIFE    )
+        else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_DRAIN_LIFE)
             ubuzz(BZ_U_SPELL(BZ_OFS_SPE(otyp)), u.ulevel / 2 + 1);
         else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(otyp)),
@@ -4534,9 +4539,6 @@ bhit(
 
     /* Being in a pit limits our range to whatever is next to the pit */
     if (in_pit)
-        range = 1;
-
-    if (obj && (obj->otyp == SPE_KNOCK || obj->otyp == SPE_WIZARD_LOCK))
         range = 1;
 
     if (weapon == FLASHED_LIGHT) {
@@ -4992,7 +4994,11 @@ zhitm(
     *ootmp = (struct obj *) 0;
     switch (damgtype) {
     case ZT_MAGIC_MISSILE:
-        tmp = d(nd, 6);
+        if (spellcaster) {
+            int skill = min(1, P_SKILL(P_ATTACK_SPELL));
+            tmp = d(nd, 2+skill);
+        } else
+            tmp = d(nd, 6);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
         if (resists_magm(mon)) {
@@ -5133,9 +5139,18 @@ zhitm(
             tmp = 0;
             break;
         }
+
         tmp = rnd(8);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
+        
+        if (P_SKILL(P_ATTACK_SPELL) >= P_EXPERT && !rn2(10)) {
+            /* 10% chance of an explosion instead */
+            explode(mon->mx, mon->my, -(WAN_DRAINING), tmp, WAND_CLASS,
+                    EXPL_MAGICAL);
+            tmp = 0;
+            break;
+        }
         if (mon->mhpmax - tmp > (int) mon->m_lev) {
             mon->mhpmax -= tmp;
         } else {
@@ -7530,4 +7545,40 @@ dryup_puddle(coordxy x, coordxy y, const char *action)
     newsym(x, y);
 }
 
+staticfn int
+calc_zap_range(int otyp)
+{
+    int skill = spell_skilltype(otyp);
+    int role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(skill);
+    
+    if (otyp == SPE_FORCE_BOLT
+        || otyp == SPE_FIRE_BOLT 
+        || otyp == SPE_DRAIN_LIFE
+        || otyp == SPE_SLEEP
+        || otyp == SPE_SLOW_MONSTER
+        || otyp == SPE_TELEPORT_AWAY
+        || otyp == SPE_KNOCK
+        || otyp == SPE_WIZARD_LOCK
+        || otyp == SPE_DIG
+        ) {
+        switch (role_skill) {
+        default:        return rnd(4);          /* range 1-4 */
+        case P_BASIC:   return 1 + rnd(7);      /* range 2-8 */
+        case P_SKILLED:
+        case P_EXPERT:  return rn1(7, 7);       /* range 7-13 */
+        }
+    }
+    
+    if (otyp == SPE_CONE_OF_COLD || otyp == SPE_FIREBALL
+        || otyp == SPE_FINGER_OF_DEATH || otyp == SPE_POLYMORPH
+        || otyp == SPE_CANCELLATION) {
+        switch (role_skill) {
+        default:        return 1 + rnd(7);      /* range 2-8 */
+        case P_BASIC:   return rn1(7, 7);       /* range 7-13 */
+        case P_SKILLED: return rn1(5, 9);       /* range 9-13 */
+        case P_EXPERT:  return rn1(3, 11);      /* range 11-13 */
+        }
+    }   
+    return rn1(8, 6); /* Default range: 6-13 */
+}
 /*zap.c*/

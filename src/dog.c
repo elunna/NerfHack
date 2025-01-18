@@ -1211,9 +1211,8 @@ tamedog(
 
     /* Spell of charm monster is limited at unskilled and basic -
      * it can only pacify. */
-    boolean unskilled_charmer = obj
-        && obj->otyp == SPE_CHARM_MONSTER
-        && P_SKILL(P_ENCHANTMENT_SPELL) < P_SKILLED;
+    boolean unskilled_charmer = obj && obj->otyp == SPE_CHARM_MONSTER
+        && P_SKILL(P_ENCHANTMENT_SPELL) < P_BASIC;
 
     if (obj && (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS)) {
         blessed_scroll = obj->blessed ? TRUE : FALSE;

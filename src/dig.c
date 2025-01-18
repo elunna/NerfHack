@@ -1648,8 +1648,22 @@ zap_dig(int otyp)
         pitdig = TRUE;
         diridx = xytod(u.dx, u.dy);
     }
-    /* The spell is roughly half as effective. */
-    digdepth = otyp == SPE_DIG ? rn1(8, 4) : rn1(18, 8);
+    if (otyp == SPE_DIG) {
+        int role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(P_MATTER_SPELL);
+        switch (role_skill) {
+        default:        digdepth = rnd(4);          /* range 1-4 */
+            break;
+        case P_BASIC:   digdepth = rn1(7, 5);       /* range 5-11 */
+            break;
+        case P_SKILLED: digdepth = rn1(12, 7);      /* range 7-18 */
+            break;
+        case P_EXPERT:  digdepth = rn1(18, 8);      /* range 8-25 */
+            break;
+        }
+    } else {
+        digdepth = rn1(18, 8); /* Wand */
+    }
+
     tmp_at(DISP_BEAM, cmap_to_glyph(S_digbeam));
     while (--digdepth >= 0) {
         if (!isok(zx, zy))

@@ -1574,6 +1574,8 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         /* high skill yields effect equivalent to blessed potion */
         if (role_skill >= P_SKILLED)
             pseudo->blessed = 1;
+        if (role_skill < P_BASIC)
+            pseudo->odiluted = 1;
         FALLTHROUGH;
         /*FALLTHRU*/
     case SPE_INVISIBILITY:

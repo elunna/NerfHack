@@ -1029,7 +1029,7 @@ staticfn void
 peffect_invisibility(struct obj *otmp)
 {
     boolean is_spell = (otmp->oclass == SPBOOK_CLASS);
-    int amt = (rnd(2500) + 500 * (bcsign(otmp) + 2));
+    int amt = (rnd(200) + 200 * (bcsign(otmp) + 2));
     amt /= (otmp->odiluted ? 2 : 1);
 
     /* spell cannot penetrate mummy wrapping */
