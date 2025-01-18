@@ -2187,7 +2187,8 @@ jump(int magic) /* 0=Physical, otherwise skill level */
         }
         You("cannot escape from %s!", mon_nam(u.ustuck));
         return ECMD_OK;
-    } else if (Levitation || Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) {
+    } else if (Levitation || Flying 
+               || Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) {
         if (magic) {
             You("flail around a little.");
             return ECMD_TIME;
