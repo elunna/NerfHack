@@ -1900,6 +1900,7 @@ trapeffect_grease_trap(
 		    exercise(A_DEX, FALSE);
 		    losehp(Maybe_Half_Phys(rnd(3)),
                            "slipping on grease and falling", KILLED_BY);
+                    maybe_fall_onto_weapon();
 		    nomul(-rnd(3));
 		} else {
                     You("almost slip on a puddle of grease!");
@@ -2452,8 +2453,8 @@ trapeffect_pit(
                            ? "stumbled into a pit of iron spikes"
                            : "fell into a pit of iron spikes",
                        NO_KILLER_PREFIX);
-
-                maybe_fall_onto_weapon();
+                if (!deliberate)
+                    maybe_fall_onto_weapon();
 
                 if (!rn2(6))
                     poisoned("spikes", A_STR,
