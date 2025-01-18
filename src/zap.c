@@ -4900,7 +4900,7 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
     gb.bhitpos.x = u.ux;
     gb.bhitpos.y = u.uy;
     boom = counterclockwise ? S_boomleft : S_boomright;
-    i = (int) xytod(dx, dy);
+    i = xytod(dx, dy);
     tmp_at(DISP_FLASH, cmap_to_glyph(boom));
 
     /* Boomerangs take 10 steps to leave and return */

@@ -3542,7 +3542,7 @@ rhack(int key)
 }
 
 /* convert an x,y pair into a direction code */
-coordxy
+int
 xytod(coordxy x, coordxy y)
 {
     int dd;
