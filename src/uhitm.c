@@ -393,10 +393,11 @@ find_roll_to_hit(
 
     /* luck still plays a role with to-hit calculations, but
        it's toned down vs regular NetHack */
-    tmp = 1 + (Luck / 3)
-            + abon()
-            + find_mac(mtmp)
-            + u.uhitinc
+    tmp = 1 + abon() + find_mac(mtmp) + u.uhitinc
+            /* a popular change is to add in Luck/3 instead of Luck; this keeps
+             * the same scale but shifts the ranges down, so that Luck of +1 or -1
+             * still has a noticeable effect. */
+            + (sgn(Luck) * ((abs(Luck) + 2) / 3))
             + maybe_polyd(gy.youmonst.data->mlevel,
         (u.ulevel > 20 ? 20 : u.ulevel));
 
