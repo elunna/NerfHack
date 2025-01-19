@@ -1505,7 +1505,7 @@ hmon_hitmon_weapon_melee(
                && hmd->dieroll <= (P_SKILL(wtype) * 3)
                && Role_if(PM_ARCHEOLOGIST) && is_animal(mon->data)) {
         /* Archeologists can occasionally crack the whip on animals. */
-        You("crack %s at %s!", xname(uwep), mon_nam(mon));
+        You("crack %s at %s!", yobjnam(uwep, (char *) 0), mon_nam(mon));
         wake_nearby(FALSE);
         hmd->hittxt = TRUE;
         monflee(mon, d(2, 4), FALSE, FALSE);
