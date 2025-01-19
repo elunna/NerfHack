@@ -1260,7 +1260,7 @@ cast_cleric_spell(
         mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
         break;
     case CLC_LIGHTNING: {
-        boolean reflects;
+        boolean reflects = FALSE;
         Soundeffect(se_bolt_of_lightning, 80);
 
         if (youdefend) {
