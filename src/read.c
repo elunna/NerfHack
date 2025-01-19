@@ -385,6 +385,11 @@ doread(void)
         && scroll->otyp != SCR_MAIL
 #endif
         && scroll->otyp != HAWAIIAN_SHIRT
+        && scroll->otyp != ALCHEMY_SMOCK
+        && scroll->otyp != CREDIT_CARD
+        && scroll->otyp != MAGIC_MARKER
+        && scroll->otyp != CANDY_BAR
+        && scroll->oclass == COIN_CLASS
         && scroll->otyp != SPE_BOOK_OF_THE_DEAD) {
         You_cant("seem to make out what all these %s on the %s mean.",
                  rn2(2) ? "weird scribbles" : "confusing scratches",
