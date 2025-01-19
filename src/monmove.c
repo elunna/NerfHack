@@ -2778,6 +2778,8 @@ special_baalzebub_actions(struct monst *baalz)
 void
 maybe_moncanmove(struct monst *mtmp)
 {
+    if (mtmp->mfrozen)
+        return;
     if (!mtmp->mstone || mtmp->mstone > 2)
         mtmp->mcanmove = 1;
 }
