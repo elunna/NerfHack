@@ -563,13 +563,15 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         }
         break;
     case SPE_CURE_SICKNESS:
-        if (mtmp->mrabid || mtmp->mwither) {
+        if (mtmp->mrabid || mtmp->mwither || mtmp->mdiseased) {
             wake = FALSE;
             if (canseemon(mtmp)) {
                 if (mtmp->mwither)
                     pline("%s is no longer withering away.", Monnam(mtmp));
                 if (mtmp->mrabid)
                     pline("%s is no longer frothing at the mouth.", Monnam(mtmp));
+                if (mtmp->mdiseased)
+                    pline("%s is no longer sickly.", Monnam(mtmp));
             }
             if (mtmp->mtame || mtmp->mpeaceful) {
                 if (Role_if(PM_HEALER)) {
@@ -578,7 +580,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                     adjalign(sgn(u.ualign.type));
                 }
             }
-            mtmp->mrabid = mtmp->mwither = 0;
+            mtmp->mrabid = mtmp->mwither = mtmp->mdiseased = 0;
         } else if (is_zombie(mtmp->data)) {
             if (!DEADMONSTER(mtmp)) {
                 dmg = d(1, 8);
@@ -3342,6 +3344,9 @@ zapyourself(struct obj *obj, boolean ordinary)
         } else {
             if (Sick)
                 You("are no longer ill.");
+            /* The below call to healup won't cure rabid */
+            if (Rabid)
+                make_rabid(0L, (char *) 0, 0, (char *) 0);
             if (Slimed)
                 make_slimed(0L, "The slime disappears!");
             if (Withering) {
