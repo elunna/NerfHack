@@ -19,7 +19,7 @@
 
 des.level_init({ style="mazegrid", bg ="-" });
 
-des.level_flags("mazelevel", "noteleport", "hardfloor", "graveyard")
+des.level_flags("mazelevel", "noteleport", "noflipy", "graveyard")
 
 des.map([[
 }}}}}}}}}.............................................}}}}}}}}}
@@ -60,7 +60,6 @@ des.teleport_region({ region = {69,00,79,20}, region_islev=1, exclude={1,1,61,15
 
 -- Stairs
 des.levregion({ region = {01,00,10,20}, region_islev=1, exclude={0,0,62,16}, type="stair-up" })
-des.levregion({ region = {69,00,79,20}, region_islev=1, exclude={0,0,62,16}, type="stair-down" })
 
 des.feature("forge", 10,09)
 des.feature("fountain", 10,07)
@@ -159,10 +158,10 @@ des.object(object[4],55,11)
 -- THE WAND OF WISHING in 1 of the 4 towers
 local loc = place:rndcoord(1);
 
-
 des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
              contents = function()
-                des.object("wishing");
+                -- This is converted into a zappable scroll of wishing
+                des.object("wand of wishing");
              end
 });
 -- Prevent monsters from eating it.  (@'s never eat objects)
@@ -177,7 +176,7 @@ des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 local loc = place:rndcoord(2);
 des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
-                des.object("nothing");
+                des.object("?");
              end
 });
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
@@ -186,7 +185,7 @@ des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 local loc = place:rndcoord(3);
 des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
-                des.object("nothing");
+                des.object("?");
              end
 });
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
@@ -195,7 +194,7 @@ des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 local loc = place:rndcoord(4);
 des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
-                des.object("nothing");
+                des.object("?");
              end
 });
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
@@ -205,12 +204,11 @@ des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 des.object("chest",37,08)
 
 -- Traps
--- des.trap("trap door",40,08)
--- des.trap("trap door",44,08)
--- des.trap("trap door",48,08)
--- des.trap("trap door",52,08)
--- des.trap("trap door",55,08)
-
+des.trap("trap door",40,08)
+des.trap("trap door",44,08)
+des.trap("trap door",48,08)
+des.trap("trap door",52,08)
+des.trap("trap door",55,08)
 -- Soldiers guarding the entry hall
 des.monster("soldier",08,06)
 des.monster("soldier",09,05)

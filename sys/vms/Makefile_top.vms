@@ -141,6 +141,7 @@ SPEC_LEVS = 		\
 	baalz-?.lua 	\
 	bigrm-*.lua 	\
 	bridge.lua		\
+	dragons.lua		\
 	castle-?.lua 	\
 	fakewiz?.lua 	\
 	fire.lua 		\
@@ -151,14 +152,11 @@ SPEC_LEVS = 		\
 	hellfill.lua 	\
 	juiblex.lua 	\
 	knox-?.lua 		\
-	leth-* 			\
 	medusa-?.lua 	\
-	mephisto.lua 	\
 	minend-?.lua 	\
 	minefill.lua 	\
-	townfill.lua 	\
+	sokostrt.lua 	\
 	minetn-*.lua 	\
-	nkai-* 			\
 	oracle.lua 		\
 	orcus-?.lua 	\
 	sanctm-?.lua 	\

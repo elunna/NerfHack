@@ -127,6 +127,7 @@ staticfn int muse_createmonster(struct monst *, struct obj *);
 #define MUSE_POT_POLYMORPH          317 /* misc */
 #define MUSE_POT_REFLECT            318
 #define MUSE_POT_SICKNESS           319
+#define MUSE_POT_MILK               320 /* Defensive */
 
 /* Misc items */
 
@@ -206,7 +207,7 @@ precheck(struct monst *mon, struct obj *obj)
                 return 2;
             }
         }
-        if (objdescr_is(obj, "smoky")
+        if (objdescr_is(obj, "smoky") && !obj->odiluted
             && !(svm.mvitals[PM_DJINNI].mvflags & G_GONE)
             && !rn2(POTION_OCCUPANT_CHANCE(svm.mvitals[PM_DJINNI].born))) {
             if (!enexto(&cc, mon->mx, mon->my, &mons[PM_DJINNI]))
@@ -446,6 +447,13 @@ m_use_healing(struct monst *mtmp)
             return TRUE;
         }
     }
+    if (mtmp->mconf || mtmp->mstun) {
+        if ((obj = m_carrying(mtmp, POT_MILK)) != 0) {
+            gm.m.defensive = obj;
+            gm.m.has_defense = MUSE_POT_MILK;
+            return TRUE;
+        }
+    }
     if (is_vampire(mtmp->data) &&
         (obj = m_carrying(mtmp, POT_VAMPIRE_BLOOD)) != 0) {
         gm.m.defensive = obj;
@@ -586,7 +594,19 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             return TRUE;
         }
     }
-
+    /* Check if they can use a potion of milk */
+    if (mtmp->mconf || mtmp->mstun || !mtmp->mcansee) {
+        if (!nohands(mtmp->data)) {
+            for (obj = mtmp->minvent; obj; obj = obj->nobj) {
+                if (obj && obj->otyp == POT_MILK && !obj->cursed) {
+                    gm.m.defensive = obj;
+                    gm.m.has_defense = MUSE_POT_MILK;
+                    return TRUE;
+                }
+            }
+        }
+    }
+                    
     if (mtmp->mrabid || mtmp->mdiseased) {
         for (obj = mtmp->minvent; obj; obj = obj->nobj) {
             if (!nohands(mtmp->data)) {
@@ -668,7 +688,8 @@ find_defensive(struct monst *mtmp, boolean tryescape)
     if (!mtmp->mpeaceful && !nohands(mtmp->data)
         && uwep && uwep->otyp == CORPSE
         && touch_petrifies(&mons[uwep->corpsenm])
-        && !poly_when_stoned(mtmp->data) && !resists_ston(mtmp)
+        && !poly_when_stoned(mtmp->data)
+        && !(resists_ston(mtmp) || defended(mtmp, AD_STON))
         && lined_up(mtmp)) { /* only lines up if distu range is within 5*5 */
         /* could use m_carrying(), then nxtobj() when matching wand
            is empty, but direct traversal is actually simpler here */
@@ -878,6 +899,11 @@ find_defensive(struct monst *mtmp, boolean tryescape)
                 gm.m.defensive = obj;
                 gm.m.has_defense = MUSE_POT_HEALING;
             }
+            nomore(MUSE_POT_MILK);
+            if (obj->otyp == POT_MILK) {
+                gm.m.defensive = obj;
+                gm.m.has_defense = MUSE_POT_MILK;
+            }
             nomore(MUSE_POT_VAMPIRE_BLOOD);
             if(is_vampire(mtmp->data) && obj->otyp == POT_VAMPIRE_BLOOD) {
                 gm.m.defensive = obj;
@@ -933,8 +959,7 @@ reveal_trap(struct trap *t, boolean seeit)
 
     if (lev->typ == SCORR) {
         lev->typ = CORR, lev->flags = 0; /* set_levltyp(,,CORR) */
-        if (seeit)
-            unblock_point(t->tx, t->ty);
+        unblock_point(t->tx, t->ty);
     }
     if (seeit)
         seetrap(t);
@@ -1125,11 +1150,13 @@ use_defensive(struct monst *mtmp)
                       surface(mtmp->mx, mtmp->my));
             }
             fill_pit(mtmp->mx, mtmp->my);
+            recalc_block_point(mtmp->mx, mtmp->my);
             return (mintrap(mtmp, FORCEBUNGLE) == Trap_Killed_Mon) ? 1 : 2;
         }
         t = maketrap(mtmp->mx, mtmp->my, HOLE);
         if (!t)
             return 2;
+        recalc_block_point(mtmp->mx, mtmp->my);
         seetrap(t);
         if (vis) {
             pline_mon(mtmp, "%s has made a hole in the %s.", Monnam(mtmp),
@@ -1321,18 +1348,16 @@ use_defensive(struct monst *mtmp)
         place_monster(mtmp, gt.trapx, gt.trapy);
         if (mtmp->wormno)
             worm_move(mtmp);
+        maybe_unhide_at(mtmp->mx, mtmp->my);
         newsym(gt.trapx, gt.trapy);
         /* 0: 'no object' rather than STRANGE_OBJECT; FALSE: obj not seen */
         m_tele(mtmp, vismon, FALSE, 0);
         return 2;
     case MUSE_POT_HEALING:
         mquaffmsg(mtmp, otmp);
-        i = 8 + d(4 + 2 * bcsign(otmp), 4);
-        i /= (otmp->odiluted ? 2 : 1);
-
-        mtmp->mhp += i;
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = ++mtmp->mhpmax;
+        i = (8 + d(4 + 2 * bcsign(otmp), 4))
+                    / (otmp->odiluted ? 2 : 1);
+        healmon(mtmp, i, !otmp->cursed && !otmp->odiluted ? 1 : 0);
         if (!otmp->cursed && !mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
         } else if (otmp->blessed && (mtmp->mrabid || mtmp->mdiseased)) {
@@ -1348,12 +1373,10 @@ use_defensive(struct monst *mtmp)
         return 2;
     case MUSE_POT_EXTRA_HEALING:
         mquaffmsg(mtmp, otmp);
-        i = 16 + d(4 + 2 * bcsign(otmp), 8);
-        i /= (otmp->odiluted ? 2 : 1);
-
-        mtmp->mhp += i;
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 5 : 2));
+        i = (16 + d(4 + 2 * bcsign(otmp), 8))
+            / (otmp->odiluted ? 2 : 1);
+        healmon(mtmp, i, (otmp->blessed ? 5 : 2) 
+                             / (otmp->odiluted ? 2 : 1));
         if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
         } else if (!otmp->cursed && (mtmp->mrabid || mtmp->mdiseased)) {
@@ -1371,7 +1394,8 @@ use_defensive(struct monst *mtmp)
         mquaffmsg(mtmp, otmp);
         if (otmp->otyp == POT_SICKNESS)
             unbless(otmp); /* Pestilence */
-        mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 8 : 4));
+        healmon(mtmp, mtmp->mhpmax, (otmp->blessed ? 8 : 4)
+                                        / (otmp->odiluted ? 2 : 1));
         if (!mtmp->mcansee && otmp->otyp != POT_SICKNESS) {
             mcureblindness(mtmp, vismon);
         } else if (mtmp->mrabid || mtmp->mdiseased) {
@@ -1385,7 +1409,58 @@ use_defensive(struct monst *mtmp)
             makeknown(otmp->otyp);
         m_useup(mtmp, otmp);
         return 2;
-     case MUSE_POT_VAMPIRE_BLOOD:
+        
+    case MUSE_POT_MILK:
+        /* Cancels:
+         * confusion, stunning, 
+         * protection, reflection, phasing, 
+         * invisibility, unpolymorphs
+         */
+        mquaffmsg(mtmp, otmp);
+        mtmp->mhp += 1;
+        if (mtmp->mhp > mtmp->mhpmax)
+            mtmp->mhp = ++mtmp->mhpmax;
+        if (!mtmp->mcansee) {
+            mcureblindness(mtmp, vismon);
+        } 
+        if (mtmp->mconf || mtmp->mstun) {
+            mtmp->mconf = mtmp->mstun = 0;
+            if (vismon)
+                pline_mon(mtmp, "%s seems steadier now.", Monnam(mtmp));
+        }
+        if (mtmp->mprotection) {
+            if (canseemon(mtmp))
+                pline_The("%s haze around %s %s.",
+                          hcolor(NH_GOLDEN), mon_nam(mtmp), "disappears");
+            mtmp->mprotection = mtmp->mprottime = 0;
+        }
+        if (has_reflection(mtmp)) {
+            if (canseemon(mtmp))
+                pline("%s shimmering globe disappears.",
+                      s_suffix(Monnam(mtmp)));
+            mtmp->mextrinsics &= ~(MR2_REFLECTION);
+            mtmp->mreflecttime = 0;
+        }
+        if (has_phasing(mtmp)) {
+            if (canseemon(mtmp))
+                pline("%s looks less hazy.", Monnam(mtmp));
+            mtmp->mextrinsics &= ~(MR2_PHASING);
+            mtmp->mphasetime = 0;
+        }
+        if (mtmp->minvis) {
+            mtmp->minvis = mtmp->perminvis = 0;
+            newsym(mtmp->mx, mtmp->my);
+        }
+        
+        /* force shapeshifter into its base form or mimic to unhide */
+        normal_shape(mtmp);
+
+        if (oseen)
+            makeknown(POT_MILK);
+        m_useup(mtmp, otmp);
+        return 2;    
+    
+    case MUSE_POT_VAMPIRE_BLOOD:
         mquaffmsg(mtmp, otmp);
         if (!otmp->cursed) {
             i = rnd(8) + rnd(2);
@@ -1401,7 +1476,7 @@ use_defensive(struct monst *mtmp)
         return 2;
     case MUSE_LIZARD_CORPSE:
         /* not actually called for its unstoning effect */
-        mon_consume_unstone(mtmp, otmp, FALSE, FALSE);
+        mon_consume_unstone(mtmp, otmp, FALSE, mtmp->mstone ? TRUE : FALSE);
         return 2;
     case MUSE_EUCALYPTUS_LEAF:
         /* not actually called for its unstoning effect */
@@ -1469,9 +1544,9 @@ rnd_defensive_item(struct monst *mtmp)
     case 2:
         return SCR_CREATE_MONSTER;
     case 3:
-        return POT_HEALING;
+        return rn2(7) ? POT_HEALING : POT_MILK;
     case 4:
-        return POT_EXTRA_HEALING;
+        return rn2(11) ? POT_EXTRA_HEALING : POT_MILK;
     case 5:
         return (mtmp->data != &mons[PM_PESTILENCE]) ? POT_FULL_HEALING
                                                     : POT_SICKNESS;
@@ -3329,11 +3404,11 @@ searches_for_item(struct monst *mon, struct obj *obj)
         if (typ == CORPSE)
             return (boolean) ((safegloves(which_armor(mon, W_ARMG))
                                && touch_petrifies(&mons[obj->corpsenm]))
-                              || (!resists_ston(mon)
+                              || (!(resists_ston(mon) || defended(mon, AD_STON))
                                   && cures_stoning(mon, obj, FALSE)));
         if (typ == TIN)
             return (boolean) (mcould_eat_tin(mon)
-                              && (!resists_ston(mon)
+                              && (!(resists_ston(mon) || defended(mon, AD_STON))
                                   && cures_stoning(mon, obj, TRUE)));
         if (typ == EGG && ismnum(obj->corpsenm))
             return (boolean) touch_petrifies(&mons[obj->corpsenm]);
@@ -3382,115 +3457,93 @@ searches_for_item(struct monst *mon, struct obj *obj)
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-boolean
-mon_reflects(struct monst *mon, const char *str)
+const char *
+mon_reflectsrc(struct monst *mon)
 {
     struct obj *orefl = which_armor(mon, W_ARMS);
-
+    
+    /* TODO: Make sure the reflecting item is seen before identifying */
+    
     if (orefl && orefl->otyp == SHIELD_OF_REFLECTION) {
-        if (str) {
-            pline(str, s_suffix(mon_nam(mon)), "shield");
-            makeknown(SHIELD_OF_REFLECTION);
-        }
-        return TRUE;
+        makeknown(SHIELD_OF_REFLECTION);
+        return "shield";
     } else if (arti_reflects(MON_WEP(mon))) {
         /* due to wielded artifact weapon */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "weapon");
-        return TRUE;
+        return "weapon";
     } else if ((orefl = which_armor(mon, W_AMUL))
                && orefl->otyp == AMULET_OF_REFLECTION) {
-        if (str) {
-            pline(str, s_suffix(mon_nam(mon)), "amulet");
-            makeknown(AMULET_OF_REFLECTION);
-        }
-        return TRUE;
+        makeknown(AMULET_OF_REFLECTION);
+        return "amulet";
     } else if ((orefl = which_armor(mon, W_ARM))
                && Is_dragon_scaled_armor(orefl)
                && Dragon_armor_to_scales(orefl) == SILVER_DRAGON_SCALES) {
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "armor");
-        return TRUE;
+        return "armor";
     } else if ((orefl = which_armor(mon, W_ARMC))
               && orefl->otyp == SILVER_DRAGON_SCALES) {
-       if (str)
-           pline(str, s_suffix(mon_nam(mon)), "set of scales");
-       return TRUE;
+        return "set of scales";
     } else if (innate_reflector(mon->data)) {
         /* Silver dragons only reflect when mature; babies do not */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "scales");
-        return TRUE;
+        return "luster";
     } else if (has_reflection(mon)) {
         /* specifically for the monster spell MGC_REFLECTION */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "shimmering globe");
-        return TRUE;
+        return "shimmering globe";
     } else if (orefl && orefl->oartifact == ART_HOLOGRAPHIC_VOID_LILY) {
         /* Due to any carried artifact which grants reflection, which shows as W_ART */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "card");
-        monstseesu(M_SEEN_REFL);
-        return TRUE;
+        return "card";
+    } else if (m_carrying(mon, MIRROR)) {
+        /* Also applies to the Magic Mirror of Merlin */
+        return "mirror";
     }
-    return FALSE;
+    return (const char*) NULL;
 }
 
-boolean
-ureflects(const char *fmt, const char *str)
+/* Check whether the player is reflecting right now.
+ * Return a string which is the source of the player's reflection,
+ * or 0 if the player does not reflect the thing. */
+const char *
+ureflectsrc(void)
 {
     /* Check from outermost to innermost objects */
     if (EReflecting & W_ARMS) {
-        if (fmt && str) {
-            pline(fmt, str, "shield");
-            makeknown(SHIELD_OF_REFLECTION);
-        }
-        return TRUE;
+        /* assumes shield of reflection */
+        makeknown(SHIELD_OF_REFLECTION);
+        return "shield";
     } else if (HReflecting) {
-        if (fmt && str)
-            pline(fmt, str, "magical shield");
-        monstseesu(M_SEEN_REFL);
-        return TRUE;
+        /* Potion of reflection */
+        return "shimmering globe";
     } else if (EReflecting & (W_WEP | W_SWAPWEP)) {
         /* Due to wielded artifact weapon */
-        if (fmt && str)
-            pline(fmt, str, "weapon");
-        return TRUE;
+        return "weapon";
     } else if (EReflecting & W_ARMC) {
         if (uarmc->otyp == SILVER_DRAGON_SCALES) {
-            if (fmt && str)
-                pline(fmt, str, "set of scales");
-            return TRUE;
+            return "set of scales";
         } else {
             /* no other cloaks give this */
             impossible("reflecting cloak?");
-            if (fmt && str)
-                pline(fmt, str, "cloak");
-            return TRUE;
+            return "cloak";
         }
     } else if (EReflecting & W_AMUL) {
-        if (fmt && str) {
-            pline(fmt, str, "medallion");
-            makeknown(AMULET_OF_REFLECTION);
-        }
-        return TRUE;
+        makeknown(AMULET_OF_REFLECTION);
+        return "amulet";
     } else if (EReflecting & W_ARM) {
-        if (fmt && str)
-            pline(fmt, str, uskin ? "luster" : "armor");
-        return TRUE;
+        if (uskin) {
+            return "luster";
+        } else {
+            return "armor";
+        }
     } else if (gy.youmonst.data == &mons[PM_SILVER_DRAGON]) {
-        if (fmt && str)
-            pline(fmt, str, "scales");
-        return TRUE;
+        return "scales";
     } else if (EReflecting & W_ART) {
         /* Only carried artifact which grants reflection is
          * the Holographic Void Lily, which shows as W_ART */
-        if (fmt && str)
-            pline(fmt, str, "card");
-        monstseesu(M_SEEN_REFL);
-        return TRUE;
+        return "card";
+    } else if (carrying(MIRROR)) {
+        /* carried mirror offers reflection but easily breaks */
+        /* Also applies to the Magic Mirror of Merlin */
+        makeknown(MIRROR);
+        return "mirror";
     }
-    return FALSE;
+    return (const char*) NULL;
 }
 
 RESTORE_WARNING_FORMAT_NONLITERAL
@@ -3517,7 +3570,7 @@ munstone(struct monst *mon, boolean by_you)
         attacktype_fordmg(mon->data, AT_MAGC, AD_SPEL)
         || attacktype_fordmg(mon->data, AT_MAGC, AD_CLRC);
 
-    if (resists_ston(mon))
+    if ((resists_ston(mon) || defended(mon, AD_STON)))
         return FALSE;
     if (mon->meating || helpless(mon))
         return FALSE;
@@ -3600,7 +3653,7 @@ mon_consume_unstone(
     m_useup(mon, obj);
     /* obj is now gone */
 
-    if (acid && !tinned && !resists_acid(mon)) {
+    if (acid && !tinned && !(resists_acid(mon) || defended(mon, AD_ACID))) {
         mon->mhp -= rnd(15);
         if (vis)
             pline_mon(mon, "%s has a very bad case of stomach acid.", Monnam(mon));
@@ -3616,12 +3669,16 @@ mon_consume_unstone(
             return;
         }
     }
-    if (stoning && vis) {
-        if (Hallucination)
+    if (stoning) {
+        mon->mstone = 0;
+       if (!vis) {
+           ; /* no feedback */
+       } else if (Hallucination) {
             pline("What a pity - %s just ruined a future piece of art!",
                   mon_nam(mon));
-        else
+        } else {
             pline_mon(mon, "%s seems limber!", Monnam(mon));
+        }
     }
     if (lizard && (mon->mconf || mon->mstun)) {
         mon->mconf = 0;

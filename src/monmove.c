@@ -336,13 +336,16 @@ mon_regen(struct monst *mon, boolean digest_meal)
 {
     struct obj *mstone = m_carrying(mon, HEALTHSTONE);
 
-    if (mon->mhp < mon->mhpmax && (svm.moves % 20 == 0
+    if ((svm.moves % 20 == 0 || regenerates(mon->data)
             || mon_prop(mon, REGENERATION)
             || (mstone && !mstone->cursed))
         /* Below are conditions which prevent regen */
+        && (u_wield_art(ART_MORTALITY_DIAL) 
+            || u_offhand_art(ART_MORTALITY_DIAL))
         && (!Is_valley(&u.uz) || is_undead(mon->data))
+        /* rabid and withering monsters do not regenerate */
         && !mon->mrabid && !mon->mwither)
-        mon->mhp++;
+        healmon(mon, 1, 0);
     if (mon->mspec_used)
         mon->mspec_used--;
     if (mon->msummoned)
@@ -454,7 +457,8 @@ bee_eat_jelly(struct monst *mon, struct obj *obj)
 
         if (DEADMONSTER(mon))
             return 1; /* dead; apparently queen bees have been genocided */
-        mon->mfrozen = m_delay, mon->mcanmove = 0;
+        mon->mfrozen = m_delay;
+        maybe_moncanmove(mon);
         return 0; /* bee used its move */
     }
     return -1; /* a queen is already present; ordinary bee hasn't moved yet */
@@ -748,16 +752,16 @@ int
 dochug(struct monst *mtmp)
 {
     struct permonst *mdat;
+    struct obj *otmp;
+    struct monst *mtmp2;
     int status = MMOVE_NOTHING;
     int inrange, nearby, scared, res;
-    struct obj *otmp;
     boolean panicattk = FALSE;
-    coord start;
+
     /*
      * PHASE ONE: Pre-movement adjustments
      */
-    start.x = mtmp->mx;
-    start.y = mtmp->my;
+
     mdat = mtmp->data;
 
     if (mtmp->mstrategy & STRAT_ARRIVE) {
@@ -800,6 +804,11 @@ dochug(struct monst *mtmp)
     if (mtmp->mstun && !rn2(10))
         mtmp->mstun = 0;
 
+    if (mtmp->mstone && munstone(mtmp, mtmp->mstonebyu)) {
+        mtmp->mstone = 0;
+        return 1; /* this is its move */
+    }
+    
     /* Some monsters teleport. Teleportation costs a turn. */
     if (mtmp->mflee && !rn2(40) && mon_prop(mtmp, TELEPORT) && !mtmp->iswiz
         && !noteleport_level(mtmp)) {
@@ -810,11 +819,56 @@ dochug(struct monst *mtmp)
     /* Erinyes will inform surrounding monsters of your crimes */
     if (mdat == &mons[PM_ERINYS] && !mtmp->mpeaceful && m_canseeu(mtmp))
         aggravate();
-
+    
+    /* It is now the considered opinion of historians of leprosy 
+       that bells (and also clappers) were not used in medieval
+       Europe to warn the uninfected away. Leprosy often has extreme
+       effects on the larynx, meaning that loss of voice is one of
+       the classic symptoms. Bells and clappers attracted the
+       attention of passers-by after the voice failed.
+        [ The New York Times, Opinion. Feb. 22, 2013 ]
+    */
+    if (mdat == &mons[PM_LEPER] && mtmp->mcanmove &&
+        (otmp = m_carrying(mtmp, BELL)) != 0 && m_canseeu(mtmp) && !rn2(5)) {
+        pline_mon(mtmp, "%s rings %s.", Monnam(mtmp), the(xname(otmp)));
+        
+        /* Copied from use_bell; consolidate? */
+        if (otmp->cursed && !rn2(4)
+            /* note: once any of them are gone, we stop all of them */
+            && !(svm.mvitals[PM_WOOD_NYMPH].mvflags & G_GONE)
+            && !(svm.mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
+            && !(svm.mvitals[PM_MOUNTAIN_NYMPH].mvflags & G_GONE)
+            && (mtmp2 = makemon(mkclass(S_NYMPH, 0), u.ux, u.uy,
+                               NO_MINVENT | MM_NOMSG)) != 0) {
+            pline_mon(mtmp, "summons %s!", a_monnam(mtmp2));
+            if (!obj_resists(otmp, 93, 100)) {
+                pline("%s shattered!", Tobjnam(otmp, "have"));
+                useup(otmp);
+            } else {
+                switch (rn2(3)) {
+                default:
+                    break;
+                case 1:
+                    mon_adjust_speed(mtmp2, 2, (struct obj *) 0);
+                    break;
+                case 2: /* no explanation; it just happens... */
+                    aggravate();
+                    if (canseemon(mtmp2)) {
+                        gn.nomovemsg = "";
+                        gm.multi_reason = NULL;
+                        nomul(-rnd(2));
+                    }
+                    break;
+                }
+            }
+            wake_nearby(TRUE);
+        }
+    }
+    
     /* Shriekers and Medusa have irregular abilities which must be
        checked every turn. These abilities do not cost a turn when
        used. */
-    if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
+    if (mdat->msound == MS_SHRIEK && m_canseeu(mtmp))
         m_respond(mtmp);
     /* Athols have a greater range than shriekers */
     if (mdat->msound == MS_ATHOL
@@ -829,6 +883,7 @@ dochug(struct monst *mtmp)
     if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my)
         && !mtmp->mpeaceful)
         m_respond(mtmp);
+    
     if (DEADMONSTER(mtmp))
         return 1; /* m_respond gaze can kill medusa */
 
@@ -858,7 +913,7 @@ dochug(struct monst *mtmp)
 
     /* Monsters that want to acquire things may teleport, so do it before
        inrange is set. This costs a turn only if mstate is set.  */
-    if (is_covetous(mdat)) {
+    if (is_covetous(mdat) && !covetous_nonwarper(mdat)) {
         (void) tactics(mtmp);
         /* tactics -> mnexto -> deal_with_overcrowding */
         if (mtmp->mstate)
@@ -945,6 +1000,12 @@ dochug(struct monst *mtmp)
      * PHASE THREE: Now the actual movement phase
      */
 
+    /* Hezrous create clouds of stench. This does not cost a move. */
+    if (mtmp->data == &mons[PM_HEZROU]) /* stench */
+        create_gas_cloud(mtmp->mx, mtmp->my, 1, 8);
+    else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
+        create_gas_cloud(mtmp->mx, mtmp->my, 1, 0); /* harmless vapor */
+
     /* A killer bee may eat honey in order to turn into a queen bee,
        costing it a move. */
     if (mdat == &mons[PM_KILLER_BEE]
@@ -1018,12 +1079,6 @@ dochug(struct monst *mtmp)
                 newsym(mtmp->mx, mtmp->my);
             break;
         case MMOVE_MOVED: /* monster moved */
-            /* Hezrous create clouds of stench. This does not cost a move. */
-            if (mtmp->data == &mons[PM_HEZROU]) /* stench */
-                create_gas_cloud(start.x, start.y, 1, 8);
-            else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
-                create_gas_cloud(start.x, start.y, 1, 0); /* harmless vapor */
-
             /* if confused grabber has wandered off, let go */
             if (mtmp == u.ustuck && !m_next2u(mtmp))
                 unstuck(mtmp);
@@ -1596,7 +1651,7 @@ postmov(
     do {                                                        \
         (where)->doormask = (what);                             \
         newsym((who)->mx, (who)->my);                           \
-        unblock_point((who)->mx, (who)->my);                    \
+        recalc_block_point((who)->mx, (who)->my);               \
         vision_recalc(0);                                       \
         /* update cached value since it might change */         \
         canseeit = didseeit || cansee((who)->mx, (who)->my);    \
@@ -1850,7 +1905,7 @@ m_move(struct monst *mtmp, int after)
     }
 
     /* and the acquisitive monsters get special treatment */
-    if (is_covetous(ptr)) { /* [should this include
+    if (is_covetous(ptr) && !covetous_nonwarper(ptr)) { /* [should this include
                              *  '&& mtmp->mstrategy != STRAT_NONE'?] */
         int covetousattack;
         coordxy tx = STRAT_GOALX(mtmp->mstrategy),
@@ -1874,8 +1929,9 @@ m_move(struct monst *mtmp, int after)
         } else {
             mmoved = MMOVE_NOTHING;
         }
-        return postmov(mtmp, ptr, omx, omy, mmoved,
-                       seenflgs, can_tunnel, can_unlock, can_open);
+        if (!covetous_nonwarper(ptr))
+            return postmov(mtmp, ptr, omx, omy, mmoved,
+                           seenflgs, can_tunnel, can_unlock, can_open);
     }
 
     /* likewise for shopkeeper, guard, or priest */
@@ -2066,7 +2122,8 @@ not_special:
         coord poss[9];
 
         cnt = mfndpos(mtmp, poss, info, flag);
-        if (cnt == 0 && (mtmp->mflee || !rn2(13))) {
+        if (cnt == 0 && (mtmp->mflee || !rn2(13))
+                && !is_unicorn(mtmp->data)) {
             if (find_defensive(mtmp, TRUE) && use_defensive(mtmp))
                 return MMOVE_DONE;
             return MMOVE_NOMOVES;
@@ -2716,6 +2773,15 @@ special_baalzebub_actions(struct monst *baalz)
         }
     }
     return FALSE;
+}
+
+void
+maybe_moncanmove(struct monst *mtmp)
+{
+    if (mtmp->mfrozen)
+        return;
+    if (!mtmp->mstone || mtmp->mstone > 2)
+        mtmp->mcanmove = 1;
 }
 
 /*monmove.c*/

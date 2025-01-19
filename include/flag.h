@@ -31,7 +31,7 @@ struct flag {
     boolean end_own;         /* list all own scores */
     boolean explore;         /* in exploration mode (aka discover mode) */
 #define discover flags.explore
-    boolean flipsoko;        /* enable flipping of Sokoban levels */
+    boolean do_not_flip_soko;/* disable flipping of Sokoban levels */
     boolean female;
     boolean friday13;        /* it's Friday the 13th */
     boolean goldX;           /* for BUCX filtering, whether gold is X or U */
@@ -322,6 +322,7 @@ struct instance_flags {
     boolean news;             /* print news */
     boolean num_pad;          /* use numbers for movement commands */
     boolean perm_invent;      /* display persistent inventory window */
+    boolean perm_invent_pending;  /* need to try again */
     boolean renameallowed;    /* can change hero name during role selection */
     boolean renameinprogress; /* we are changing hero name */
     boolean sounds;           /* master on/off switch for using soundlib */

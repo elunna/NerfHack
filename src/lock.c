@@ -945,13 +945,15 @@ doopen_indir(coordxy x, coordxy y)
                 && (unlocktool = autokey(TRUE)) != 0) {
                 res = pick_lock(unlocktool, cc.x, cc.y,
                                 (struct obj *) 0) ? ECMD_TIME : ECMD_OK;
-            } else if (!u.usteed
-                       && (flags.autounlock & AUTOUNLOCK_KICK) != 0
+            } else if ((flags.autounlock & AUTOUNLOCK_KICK) != 0
+                       && !u.usteed /* kicking is different when mounted */
                        && ynq("Kick it?") == 'y') {
                 cmdq_add_ec(CQ_CANNED, dokick);
                 cmdq_add_dir(CQ_CANNED,
                              sgn(cc.x - u.ux), sgn(cc.y - u.uy), 0);
-                res = ECMD_TIME;
+                /* this was 'ECMD_TIME', but time shouldn't elapse until
+                   the canned kick takes place */
+                res = ECMD_OK;
             }
         }
         return res;
@@ -981,7 +983,7 @@ doopen_indir(coordxy x, coordxy y)
         } else
             door->doormask = D_ISOPEN;
         feel_newsym(cc.x, cc.y); /* the hero knows she opened it */
-        unblock_point(cc.x, cc.y); /* vision: new see through there */
+        recalc_block_point(cc.x, cc.y); /* vision: new see through there */
     } else {
         exercise(A_STR, TRUE);
         set_msg_xy(cc.x, cc.y);
@@ -1308,7 +1310,7 @@ doorlock(struct obj *otmp, coordxy x, coordxy y)
             }
             sawit = cansee(x, y);
             door->doormask = D_BROKEN;
-            unblock_point(x, y);
+            recalc_block_point(x, y);
             seeit = cansee(x, y);
             newsym(x, y);
             if (flags.verbose) {

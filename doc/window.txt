@@ -493,17 +493,17 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percentage, \
                         BL_MASK_LEV          0x00004000L
                         BL_MASK_PARLYZ       0x00008000L
                         BL_MASK_RIDE         0x00010000L
-                        BL_MASK_SLEEPING     0x00020000L
-                        BL_MASK_SLIME        0x00040000L
-                        BL_MASK_SLIPPERY     0x00080000L
-                        BL_MASK_STONE        0x00100000L
-                        BL_MASK_STRNGL       0x00200000L
-                        BL_MASK_STUN         0x00400000L
-                        BL_MASK_SUBMERGED    0x00800000L
-                        BL_MASK_TERMILL      0x01000000L
-                        BL_MASK_TETHERED     0x02000000L
-                        BL_MASK_TRAPPED      0x04000000L
-                        BL_MASK_UNCONSC      0x08000000L
+                        BL_MASK_PHASE        0x00020000L
+                        BL_MASK_SLEEPING     0x00040000L
+                        BL_MASK_SLIME        0x00080000L
+                        BL_MASK_SLIPPERY     0x00100000L
+                        BL_MASK_STONE        0x00200000L
+                        BL_MASK_STRNGL       0x00400000L
+                        BL_MASK_STUN         0x00800000L
+                        BL_MASK_SUBMERGED    0x01000000L
+                        BL_MASK_TERMILL      0x02000000L
+                        BL_MASK_TETHERED     0x04000000L
+                        BL_MASK_TRAPPED      0x08000000L
                         BL_MASK_WOUNDEDL     0x10000000L
                         BL_MASK_HOLDING      0x20000000L
 		-- The value passed for BL_GOLD includes a leading
@@ -648,14 +648,6 @@ resume_nhwindows()
 can_suspend()   -- Tell the core if the window system will allow the game
                    to be suspended now.  If unconditionally yes or no, use
 		   genl_can_suspend_yes() or genl_can_suspend_no().
-
-start_screen()	-- Only used on Unix tty ports, but must be declared for
-		   completeness.  Sets up the tty to work in full-screen
-		   graphics mode.  Look at win/tty/termcap.c for an
-		   example.  If your window-port does not need this function
-		   just declare an empty function.
-end_screen()	-- Only used on Unix tty ports, but must be declared for
-		   completeness.  The complement of start_screen().
 
 outrip(winid, int, time_t)
 		-- The tombstone code.  If you want the traditional code use

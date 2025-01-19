@@ -1,4 +1,4 @@
-/* NetHack 3.7	hack.h	$NHDT-Date: 1725653009 2024/09/06 20:03:29 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.262 $ */
+/* NetHack 3.7	hack.h	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.266 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -368,7 +368,6 @@ enum digcheck_result {
 };
 
 
-
 /* Dismount: causes for why you are no longer riding */
 enum dismount_types {
     DISMOUNT_GENERIC  = 0,
@@ -387,7 +386,6 @@ struct dgn_topology { /* special dungeon levels for speed */
     d_level d_rogue_level;
     d_level d_medusa_level;
     d_level d_stronghold_level;
-    d_level d_lethegate_level;
     d_level d_valley_level;
     d_level d_wiz1_level;
     d_level d_wiz2_level;
@@ -396,7 +394,6 @@ struct dgn_topology { /* special dungeon levels for speed */
     d_level d_orcus_level;
     d_level d_baalzebub_level; /* unused */
     d_level d_asmodeus_level;  /* unused */
-    d_level d_portal_level;    /* only in goto_level() [do.c] */
     d_level d_sanctum_level;
     d_level d_earth_level;
     d_level d_water_level;
@@ -422,7 +419,6 @@ struct dgn_topology { /* special dungeon levels for speed */
 #define rogue_level             (svd.dungeon_topology.d_rogue_level)
 #define medusa_level            (svd.dungeon_topology.d_medusa_level)
 #define stronghold_level        (svd.dungeon_topology.d_stronghold_level)
-#define lethegate_level         (svd.dungeon_topology.d_lethegate_level)
 #define valley_level            (svd.dungeon_topology.d_valley_level)
 #define wiz1_level              (svd.dungeon_topology.d_wiz1_level)
 #define wiz2_level              (svd.dungeon_topology.d_wiz2_level)
@@ -431,7 +427,6 @@ struct dgn_topology { /* special dungeon levels for speed */
 #define orcus_level             (svd.dungeon_topology.d_orcus_level)
 #define baalzebub_level         (svd.dungeon_topology.d_baalzebub_level)
 #define asmodeus_level          (svd.dungeon_topology.d_asmodeus_level)
-#define portal_level            (svd.dungeon_topology.d_portal_level)
 #define sanctum_level           (svd.dungeon_topology.d_sanctum_level)
 #define earth_level             (svd.dungeon_topology.d_earth_level)
 #define water_level             (svd.dungeon_topology.d_water_level)
@@ -1403,10 +1398,9 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define ROT_AGE (250L)         /* age when corpses rot away */
 
 /* Some misc definitions */
-#define POTION_OCCUPANT_CHANCE(n) (26 + 4 * (n))
+#define POTION_OCCUPANT_CHANCE(n) (13 + 2 * (n))
 #define WAND_BACKFIRE_CHANCE 30
 #define WAND_BACKZAP_CHANCE 8
-#define WAND_WREST_CHANCE 121
 #define BALL_IN_MON (u.uswallow && uball && uball->where == OBJ_FREE)
 #define CHAIN_IN_MON (u.uswallow && uchain && uchain->where == OBJ_FREE)
 #define NODIAG(monnum) \

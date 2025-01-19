@@ -1,4 +1,4 @@
-/* NetHack 3.7	uhitm.c	$NHDT-Date: 1732979463 2024/11/30 07:11:03 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.451 $ */
+/* NetHack 3.7	uhitm.c	$NHDT-Date: 1736575153 2025/01/10 21:59:13 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.461 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -370,7 +370,7 @@ mon_maybe_unparalyze(struct monst *mtmp)
 {
     if (!mtmp->mcanmove) {
         if (!rn2(10)) {
-            mtmp->mcanmove = 1;
+            maybe_moncanmove(mtmp);
             mtmp->mfrozen = 0;
         }
     }
@@ -391,10 +391,13 @@ find_roll_to_hit(
 
     *role_roll_penalty = 0; /* default is `none' */
 
-    tmp = 1 + (Luck / 3)
-            + abon()
-            + find_mac(mtmp)
-            + u.uhitinc
+    /* luck still plays a role with to-hit calculations, but
+       it's toned down vs regular NetHack */
+    tmp = 1 + abon() + find_mac(mtmp) + u.uhitinc
+            /* a popular change is to add in Luck/3 instead of Luck; this keeps
+             * the same scale but shifts the ranges down, so that Luck of +1 or -1
+             * still has a noticeable effect. */
+            + (sgn(Luck) * ((abs(Luck) + 2) / 3))
             + maybe_polyd(gy.youmonst.data->mlevel,
         (u.ulevel > 20 ? 20 : u.ulevel));
 
@@ -411,8 +414,13 @@ find_roll_to_hit(
         tmp += 2;
     if (mtmp->msleeping)
         tmp += 2;
-    if (!mtmp->mcanmove)
+    if (!mtmp->mcanmove) {
         tmp += 4;
+        if (!rn2(10)) {
+            maybe_moncanmove(mtmp);
+            mtmp->mfrozen = 0;
+        }
+    }
 
     if (calculate_flankers(&gy.youmonst, mtmp)) {
         /* Scale with monster difficulty */
@@ -435,7 +443,8 @@ find_roll_to_hit(
         && weapon_type(uswapwep) == P_SHORT_SWORD) {
         tmp++;
     }
-    if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
+    if (Role_if(PM_ARCHEOLOGIST) && !Hallucination 
+        && mtmp->data->mlet == S_SNAKE)
         tmp -= 1;
 
     /* Cartomancers are not great melee fighters - they prefer ranged weapons
@@ -692,6 +701,7 @@ do_attack(struct monst *mtmp)
         && !helpless(mtmp)
         && !mtmp->mtrapped
         && !u.uswallow
+        && u.ustuck != mtmp
         /* Attacking from doorway allow move-free attack glitches */
         && !(indoorway && diag_attack)
         && !rn2(2)) {
@@ -1130,7 +1140,7 @@ hitum(struct monst *mon, struct attack *uattk)
             tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
                                    &armorpenalty);
             dieroll = rnd(20);
-            mhit = (tmp > dieroll || u.uswallow);
+            mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
             if (tmp > dieroll)
                 exercise(A_DEX, TRUE);
             
@@ -1193,7 +1203,7 @@ hitum(struct monst *mon, struct attack *uattk)
     tmp = find_roll_to_hit(mon, uattk->aatyp, uwep, &attknum, &armorpenalty);
     mon_maybe_unparalyze(mon);
     dieroll = rnd(20);
-    mhit = (tmp > dieroll || u.uswallow);
+    mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
     if (tmp > dieroll)
         exercise(A_DEX, TRUE);
 
@@ -1217,7 +1227,7 @@ hitum(struct monst *mon, struct attack *uattk)
                                &armorpenalty);
         mon_maybe_unparalyze(mon);
         dieroll = rnd(20);
-        mhit = (tmp > dieroll || u.uswallow);
+        mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
         malive = known_hitum(mon, secondwep, &mhit, tmp, armorpenalty, uattk,
                              dieroll);
         /* second passive counter-attack only occurs if second attack hits */
@@ -1236,7 +1246,7 @@ hitum(struct monst *mon, struct attack *uattk)
         tmp = find_roll_to_hit(mon, uattk->aatyp, wearshield, &attknum,
                                &armorpenalty);
         dieroll = rnd(20);
-        mhit = (tmp > dieroll || u.uswallow);
+        mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
         malive = known_hitum(mon, wearshield, &mhit, tmp, armorpenalty, uattk,
                              dieroll);
         /* second passive counter-attack only occurs if second attack hits */
@@ -1492,13 +1502,13 @@ hmon_hitmon_weapon_melee(
         mon->mstun = 1;
         hmd->dmg += rnd(6); /* Bonus damage */
     } else if (obj == uwep && (wtype == P_WHIP && P_SKILL(wtype) >= P_BASIC)
-               && hmd->dieroll <= P_SKILL(wtype)
+               && hmd->dieroll <= (P_SKILL(wtype) * 3)
                && Role_if(PM_ARCHEOLOGIST) && is_animal(mon->data)) {
         /* Archeologists can occasionally crack the whip on animals. */
         You("crack %s at %s!", xname(uwep), mon_nam(mon));
+        wake_nearby(FALSE);
         hmd->hittxt = TRUE;
         monflee(mon, d(2, 4), FALSE, FALSE);
-        hmd->dmg += rnd(2); /* Bonus damage */
     } else if (obj == uwep && u.twoweap
         && Role_if(PM_SAMURAI)
         && uwep->otyp == KATANA
@@ -1696,10 +1706,12 @@ hmon_hitmon_misc_obj(
                              obj->dknown ? CXN_PFX_THE
                              : CXN_ARTICLE));
             obj->dknown = 1;
-            if (!munstone(mon, TRUE))
-                minstapetrify(mon, TRUE);
-            if (resists_ston(mon))
+            if (resists_ston(mon) || defended(mon, AD_STON))
                 break;
+            if (!mon->mstone) {
+                mon->mstone = 5;
+                mon->mstonebyu = TRUE;
+            }
             /* note: hp may be <= 0 even if munstoned==TRUE */
             hmd->doreturn = TRUE;
             hmd->retval = !DEADMONSTER(mon);
@@ -1750,14 +1762,13 @@ hmon_hitmon_misc_obj(
                   plur(cnt));
             obj->known = 1; /* (not much point...) */
             useup_eggs(obj);
-            if (!munstone(mon, TRUE))
-                minstapetrify(mon, TRUE);
-            if (resists_ston(mon))
+            if (resists_ston(mon) || defended(mon, AD_STON))
                 break;
-            hmd->doreturn = TRUE;
-            hmd->retval = !DEADMONSTER(mon);
+            if (!mon->mstone) {
+                mon->mstone = 5;
+                mon->mstonebyu = TRUE;
+            }
             return;
-            /*return (boolean) (!DEADMONSTER(mon));*/
         } else { /* ordinary egg(s) */
             enum monnums mnum = obj->corpsenm;
             const char *eggp =
@@ -2741,7 +2752,7 @@ theft_petrifies(struct obj *otmp)
 #endif
 
     /* stealing this corpse is fatal... */
-    instapetrify(corpse_xname(otmp, "stolen", CXN_ARTICLE));
+    make_stoned(5L, (char *) 0, KILLED_BY, corpse_xname(otmp, "stolen", CXN_ARTICLE));
     /* apparently wasn't fatal after all... */
     return TRUE;
 }
@@ -3572,7 +3583,7 @@ mhitm_ad_tlpt(
         int tmphp;
 
         hitmsg(magr, mattk);
-        if (!mhitm_mgc_atk_negated(magr, mdef, FALSE)) {
+        if (mhitm_mgc_atk_negated(magr, mdef, FALSE)) {
             You("are not affected.");
         } else {
             if (flags.verbose)
@@ -4471,10 +4482,11 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
     uchar withertime = max(2, mhm->damage);
     mhm->damage = 0; /* doesn't deal immediate damage */
     int armpro = magic_negation(mdef);
+    /* This could use is_fleshy(), but that would
+       make a large set of monsters immune like
+       fungus, blobs, and jellies. */
     boolean no_effect =
-            (nonliving(mdef->data) /* This could use is_fleshy(), but that would
-                                  make a large set of monsters immune like
-                                  fungus, blobs, and jellies. */
+            (nonliving(mdef->data) 
              || is_vampire(mdef->data)
              || (magr != &gy.youmonst && magr->mcan)
              || !(rn2(10) >= 3 * armpro));
@@ -4729,9 +4741,6 @@ mhitm_ad_dsrm(struct monst *magr, struct attack *mattk,
     }
 }
 
-/* TODO: Should koalas be able to calm berserkers?
-   Probably not...
-*/
 void
 mhitm_ad_calm(struct monst *magr, struct attack *mattk,
               struct monst *mdef, struct mhitm_data *mhm)
@@ -4768,6 +4777,7 @@ mhitm_ad_calm(struct monst *magr, struct attack *mattk,
         }
         hitmsg(magr, mattk);
         You_feel("much calmer.");
+        exercise(A_CHA, FALSE);
         return;
     } else {
         /* mhitm */
@@ -4901,7 +4911,7 @@ do_stone_mon(
         mhm->damage = 0;
         return;
     }
-    if (!resists_ston(mdef)) {
+    if (!(resists_ston(mdef) || defended(mdef, AD_STON))) {
         if (gv.vis && canseemon(mdef))
             pline_mon(mdef, "%s turns to stone!", Monnam(mdef));
         monstone(mdef);
@@ -5067,7 +5077,10 @@ mhitm_ad_phys(
 
             if (mwep->otyp == CORPSE
                 && touch_petrifies(&mons[mwep->corpsenm])) {
-                do_stone_mon(magr, mattk, mdef, mhm);
+                if (!mdef->mstone) {
+                    mdef->mstone = 5;
+                    mdef->mstonebyu = FALSE;
+                }
                 if (mhm->done)
                     return;
             }
@@ -5120,14 +5133,22 @@ mhitm_ad_ston(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    boolean negated = resists_ston(mdef) || defended(mdef, AD_STON);
+    
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (!munstone(mdef, TRUE))
-            minstapetrify(mdef, TRUE);
+        if (negated)
+            return;
+        if (!mdef->mstone) {
+            mdef->mstone = 5;
+            mdef->mstonebyu = TRUE;
+        }
         mhm->damage = 0;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
+        if (negated)
+            return;
         if (!rn2(3)) {
             if (magr->mcan) {
                 if (!Deaf)
@@ -5158,7 +5179,7 @@ mhitm_ad_ston(
                  * become a little harder.  Clearing out cockatrice nests
                  * during a new moon could become quite a bit harder.
                  */
-                if (!rn2(10) || flags.moonphase == NEW_MOON) {
+                if (!rn2(5) || flags.moonphase == NEW_MOON) {
                     if (do_stone_u(magr)) {
                         mhm->hitflags = M_ATTK_HIT;
                         mhm->done = TRUE;
@@ -5169,11 +5190,12 @@ mhitm_ad_ston(
         }
     } else {
         /* mhitm */
-        if (magr->mcan)
+        if (magr->mcan || negated)
             return;
-        do_stone_mon(magr, mattk, mdef, mhm);
-        if (mhm->done)
-            return;
+        if (!mdef->mstone) {
+            mdef->mstone = 5;
+            mdef->mstonebyu = FALSE;
+        }
     }
 }
 
@@ -5584,9 +5606,17 @@ mhitm_ad_samu(
         hitmsg(magr, mattk);
         /* when the Wizard or quest nemesis hits, there's a 1/20 chance
            to steal a quest artifact (any, not just the one for the hero's
-           own role) or the Amulet or one of the invocation tools */
-        if (!rn2(20))
+           own role) or the Amulet or one of the invocation tools
+           
+           when a mplayer hits, there's a 1 in 3 chance to steal and they'll
+           start running away.
+        */
+        if ((is_mplayer(magr->data) && !rn2(3)) || !rn2(20)) {
             stealamulet(magr);
+            if (In_endgame(&u.uz) && mon_has_amulet(magr)) {
+                monflee(magr, rnd(100) + 100, FALSE, TRUE);
+            }
+        }
     } else {
         /* mhitm */
         mhm->damage = 0;
@@ -6136,7 +6166,8 @@ gulpum(struct monst *mdef, struct attack *mattk)
                     : u_enfold ? "enclosing"
                       : "engulfing",
                     mnam, u_digest ? " whole" : "");
-            instapetrify(kbuf);
+            make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
+
         } else {
             start_engulf(mdef);
             switch (mattk->adtyp) {
@@ -6705,7 +6736,7 @@ hmonas(struct monst *mon)
                                    &armorpenalty);
             mon_maybe_unparalyze(mon);
             dieroll = rnd(20);
-            dhit = (tmp > dieroll || u.uswallow);
+            dhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
             if (multi_weap > 1)
                 ++gt.twohits;
             /* caller must set gb.bhitpos */
@@ -6765,7 +6796,7 @@ hmonas(struct monst *mon)
                                    &attknum, &armorpenalty);
             mon_maybe_unparalyze(mon);
             dieroll = rnd(20);
-            dhit = (tmp > dieroll || u.uswallow);
+            dhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
             if (dhit) {
                 int compat, specialdmg;
                 long silverhit = 0L;
@@ -7350,14 +7381,17 @@ passive(
                     break;
                 }
                 if (mon->mcansee) {
-                    if (ureflects("%s gaze is partially reflected by your %s.",
-                                  s_suffix(Monnam(mon))) && !Free_action
-                                  /* Quite rare if luck is 8 or higher */
-                                  && rnl(10) > 5) {
-                        You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
-                        nomul(-rnd(2));
-                        dynamic_multi_reason(mon, "frozen", TRUE);
-                        gn.nomovemsg = 0;
+                    const char* reflectsrc = ureflectsrc();
+                    if (reflectsrc) {
+                        /* Sometimes reflection still doesn't fully protect */
+                        if (!Free_action && rnl(10) > 5) {
+                            pline_mon(mon, "%s gaze is partially reflected by your %s.",
+                                      s_suffix(Monnam(mon)), reflectsrc);
+                            You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
+                            nomul(-rnd(2));
+                            dynamic_multi_reason(mon, "frozen", TRUE);
+                            gn.nomovemsg = 0;
+                        }
                     } else if (Hallucination) {
                         /* [it's the hero who should be getting paralyzed
                            and isn't; this message describes the monster's
@@ -7413,9 +7447,7 @@ passive(
                 You("are suddenly very cold!");
                 mdamageu(mon, tmp);
                 /* monster gets stronger with your heat! */
-                mon->mhp += (tmp + rn2(2)) / 2;
-                if (mon->mhpmax < mon->mhp)
-                    mon->mhpmax = mon->mhp;
+                healmon(mon, (tmp + rn2(2)) / 2, (tmp + 1) / 2);
                 /* at a certain point, the monster will reproduce! */
                 if (mon->mhpmax > (((int) mon->m_lev) + 1) * 8)
                     (void) split_mon(mon, &gy.youmonst);
@@ -7553,18 +7585,22 @@ that_is_a_mimic(
         else if (M_AP_TYPE(mtmp) == M_AP_MONSTER)
             what = a_monnam(mtmp); /* differs from what was sensed */
     } else {
-        int glyph = levl[u.ux + u.dx][u.uy + u.dy].glyph;
+        coordxy x = u.ux + u.dx, y = u.uy + u.dy;
+        int glyph = glyph_at(x, y);
 
         if (glyph_is_cmap(glyph)) {
-            /* note: defsyms[stairs] yields singular "staircase {up|down}" */
-            Snprintf(fmtbuf, sizeof fmtbuf, "That %s actually is %%s!",
-                     defsyms[mtmp->mappearance].explanation);
+            int sym = glyph_to_cmap(glyph);
+
+            if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
+                || (M_AP_TYPE(mtmp) == M_AP_OBJECT && sym == S_trapped_chest))
+                Snprintf(fmtbuf, sizeof fmtbuf, "That %s actually is %%s!",
+                         defsyms[sym].explanation);
         } else if (glyph_is_object(glyph)) {
             boolean fakeobj;
             const char *otmp_name;
             struct obj *otmp = NULL;
 
-            fakeobj = object_from_map(glyph, mtmp->mx, mtmp->my, &otmp);
+            fakeobj = object_from_map(glyph, x, y, &otmp);
             otmp_name = (otmp && otmp->otyp != STRANGE_OBJECT)
                         ? simpleonames(otmp) : "strange object";
             Snprintf(fmtbuf, sizeof fmtbuf, "%s %s %s %%s!",
@@ -7574,12 +7610,22 @@ that_is_a_mimic(
                 otmp->where = OBJ_FREE; /* object_from_map set to OBJ_FLOOR */
                 dealloc_obj(otmp);
             }
+        } else if (glyph_is_monster(glyph)) {
+            const char *mtmp_name;
+            int mndx = glyph_to_mon(glyph);
+
+            assert(mndx >= LOW_PM && mndx <= HIGH_PM);
+            mtmp_name = pmname(&mons[mndx], Mgender(mtmp));
+            Snprintf(fmtbuf, sizeof fmtbuf,
+                     "Wait!  That %s is really %%s!", mtmp_name);
         }
 
         /* cloned Wiz starts out mimicking some other monster and
            might make himself invisible before being revealed */
         if (mtmp->minvis && !See_invisible)
             what = generic;
+        else if (M_AP_TYPE(mtmp) == M_AP_MONSTER)
+            what = x_monnam(mtmp, ARTICLE_A, (char *) NULL, EXACT_NAME, TRUE);
         else if (mtmp->data->mlet == S_MIMIC
                  && (M_AP_TYPE(mtmp) == M_AP_OBJECT
                      || M_AP_TYPE(mtmp) == M_AP_FURNITURE)
@@ -7777,7 +7823,6 @@ hates_item(struct monst *mtmp, int otyp)
     if (is_you && Role_if(PM_ARCHEOLOGIST) && otyp == DWARVISH_MATTOCK)
         return FALSE;
 
-
     if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))
                     : is_elf(mtmp->data))
         return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
@@ -7856,7 +7901,7 @@ bite_monster(struct monst *mon)
     switch(monsndx(mon->data)) {
     case PM_LIZARD:
         if (Stoned)
-	    fix_petrification();
+	        fix_petrification();
         break;
     case PM_DEATH:
     case PM_PESTILENCE:
@@ -7876,7 +7921,7 @@ bite_monster(struct monst *mon)
         /*FALLTHRU*/
     default:
         if (acidic(mon->data) && Stoned)
-	    fix_petrification();
+	        fix_petrification();
         break;
     }
     return FALSE;

@@ -69,8 +69,7 @@ struct window_procs Gem_procs = {
     Gem_get_color_string,
 #endif
 
-    /* other defs that really should go away (they're tty specific) */
-    Gem_start_screen, Gem_end_screen, Gem_outrip, Gem_preference_update,
+    Gem_outrip, Gem_preference_update,
     genl_getmsghistory, genl_putmsghistory
                             genl_status_init,
     genl_status_finish, genl_status_enablefield, genl_status_update,
@@ -523,16 +522,6 @@ Gem_resume_nhwindows()
 {
 }
 
-void
-Gem_end_screen()
-{
-}
-
-void
-Gem_start_screen()
-{
-}
-
 extern void mar_exit_nhwindows(void);
 extern boolean run_from_desktop;
 
@@ -891,7 +880,7 @@ int x, y;
  *  position and glyph are always correct (checked there)!
  */
 
-void mar_print_gl_char(winid, xchar, xchar, int);
+void mar_print_gl_char(winid, coordxy, coordxy, int);
 
 extern int mar_set_rogue(int);
 
@@ -900,7 +889,7 @@ extern void mar_add_pet_sign(winid, int, int);
 void
 Gem_print_glyph(window, x, y, glyph, bkglyph)
 winid window;
-xchar x, y;
+coordxy x, y;
 int glyph, bkglyph;
 {
     /* Move the cursor. */
@@ -919,12 +908,12 @@ int glyph, bkglyph;
         mar_print_gl_char(window, x, y, glyph);
 }
 
-void mar_print_char(winid, xchar, xchar, char, int);
+void mar_print_char(winid, coordxy, coordxy, char, int);
 
 void
 mar_print_gl_char(window, x, y, glyph)
 winid window;
-xchar x, y;
+coordxy x, y;
 int glyph;
 {
     int ch;

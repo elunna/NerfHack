@@ -740,14 +740,9 @@ mon_catchup_elapsed_time(
     }
 
     /* recover lost hit points */
-    if (!mtmp->mwither) {
-        if (!mon_prop(mtmp, REGENERATION))
-            imv /= 20;
-        if (mtmp->mhp + imv >= mtmp->mhpmax)
-            mtmp->mhp = mtmp->mhpmax;
-        else
-            mtmp->mhp += imv;
-    }
+    if (!regenerates(mtmp->data))
+        imv /= 20;
+    healmon(mtmp, imv, 0);
 
     set_mon_lastmove(mtmp);
 }
@@ -835,7 +830,7 @@ keepdogs(
             finish_meating(mtmp);
             mtmp->msleeping = 0;
             mtmp->mfrozen = 0;
-            mtmp->mcanmove = 1;
+            maybe_moncanmove(mtmp);
         }
         if (((monnear(mtmp, u.ux, u.uy) && levl_follower(mtmp))
              /* the wiz will level t-port from anywhere to chase
@@ -1062,7 +1057,7 @@ dogfood(struct monst *mon, struct obj *obj)
             return TABU;
         if ((obj->otyp == CORPSE || obj->otyp == EGG)
             && flesh_petrifies(fptr) /* c*ckatrice or Medusa */
-            && !resists_ston(mon))
+            && !(resists_ston(mon) || defended(mon, AD_STON)))
             return POISON;
         if (obj->otyp == LUMP_OF_ROYAL_JELLY
             && mon->data == &mons[PM_KILLER_BEE]) {
@@ -1095,6 +1090,11 @@ dogfood(struct monst *mon, struct obj *obj)
             return TABU;
         }
 
+        /* lizards cure stoning. ghouls won't eat them even then, though,
+          just like elves prefer starvation to cannibalism. */
+        if (obj->otyp == CORPSE && fptr == &mons[PM_LIZARD] && mon->mstone)
+            return DOGFOOD;
+        
 	/* vampires only "eat" very fresh corpses ...
 	 * Assume meat -> blood */
 	if (is_vampire(mptr)) {
@@ -1211,9 +1211,8 @@ tamedog(
 
     /* Spell of charm monster is limited at unskilled and basic -
      * it can only pacify. */
-    boolean unskilled_charmer = obj
-        && obj->otyp == SPE_CHARM_MONSTER
-        && P_SKILL(P_ENCHANTMENT_SPELL) < P_SKILLED;
+    boolean unskilled_charmer = obj && obj->otyp == SPE_CHARM_MONSTER
+        && P_SKILL(P_ENCHANTMENT_SPELL) < P_BASIC;
 
     if (obj && (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS)) {
         blessed_scroll = obj->blessed ? TRUE : FALSE;
@@ -1335,8 +1334,10 @@ tamedog(
         return FALSE;
 
     /* add the pet extension */
-    newedog(mtmp);
-    initedog(mtmp);
+    if (!has_edog(mtmp)) {
+        newedog(mtmp);
+        initedog(mtmp);
+    }
 
     if (obj) { /* thrown food */
         /* defer eating until the edog extension has been set up */

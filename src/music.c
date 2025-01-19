@@ -1,4 +1,4 @@
-/* NetHack 3.7	music.c	$NHDT-Date: 1702349065 2023/12/12 02:44:25 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.102 $ */
+/* NetHack 3.7	music.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.120 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -42,7 +42,7 @@ staticfn void
 awaken_scare(struct monst *mtmp, boolean scary)
 {
     mtmp->msleeping = 0;
-    mtmp->mcanmove = 1;
+    maybe_moncanmove(mtmp);
     mtmp->mfrozen = 0;
     /* may scare some monsters -- waiting monsters excluded */
     if (!unique_corpstat(mtmp->data)
@@ -94,8 +94,6 @@ put_monsters_to_sleep(struct monst * caster, int distance)
         if (dist2(cx, cy, mtmp->mx, mtmp->my) < distance
             && sleep_monst(mtmp, d(10, 10), TOOL_CLASS)) {
             mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
-            if (mtmp->iscerberus)
-                pline("%s settles in for a quick nap.", Monnam(mtmp));
             slept_monst(mtmp);
         }
     }
@@ -179,7 +177,7 @@ awaken_soldiers(struct monst* bugler  /* monster that played instrument */)
             if (!mtmp->mtame)
                 mtmp->mpeaceful = 0;
             mtmp->msleeping = mtmp->mfrozen = 0;
-            mtmp->mcanmove = 1;
+            maybe_moncanmove(mtmp);
             mtmp->mstrategy &= ~STRAT_WAITMASK;
             if (canseemon(mtmp))
                 pline("%s is now ready for battle!", Monnam(mtmp));

@@ -1,4 +1,4 @@
-/* NetHack 3.7	explode.c	$NHDT-Date: 1619553210 2021/04/27 19:53:30 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.77 $ */
+/* NetHack 3.7	explode.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.122 $ */
 /*      Copyright (C) 1990 by Ken Arromdee */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -1036,9 +1036,10 @@ explode_oil(
     if (!obj->lamplit)
         impossible("exploding unlit oil");
     end_burn(obj, TRUE);
+    obj->how_lost = LOST_EXPLODING;
+    splatter_burning_oil(x, y, diluted_oil, hero_caused);
     if (cansee(x, y))
         makeknown(obj->otyp);
-    splatter_burning_oil(x, y, diluted_oil, hero_caused);
 }
 
 /* Convert a damage type into an explosion display type. */

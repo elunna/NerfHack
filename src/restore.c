@@ -1,4 +1,4 @@
-/* NetHack 3.7	restore.c	$NHDT-Date: 1717878585 2024/06/08 20:29:45 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.228 $ */
+/* NetHack 3.7	restore.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.234 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -1183,7 +1183,7 @@ getlev(NHFILE *nhfp, int pid, xint8 lev)
         freefruitchn(go.oldfruit), go.oldfruit = 0;
 
         if (lev > ledger_no(&medusa_level)
-            && lev < ledger_no(&lethegate_level) && !stway) {
+            && lev < ledger_no(&stronghold_level) && !stway) {
             coord cc;
             d_level dest;
 

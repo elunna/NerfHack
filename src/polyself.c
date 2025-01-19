@@ -986,7 +986,7 @@ polymon(int mntmp)
                   mon_nam(u.usteed));
             Sprintf(buf, "riding %s",
                     an(pmname(u.usteed->data, Mgender(u.usteed))));
-            instapetrify(buf);
+            make_stoned(5L, (char *) 0, KILLED_BY, buf);
         }
         if (!can_ride(u.usteed))
             dismount_steed(DISMOUNT_POLY);
@@ -1924,7 +1924,7 @@ dohide(void)
             pline("Hiding under %s%s is a fatal mistake...",
                   corpse_name, plur(ct));
             Sprintf(kbuf, "hiding under %s%s", corpse_name, plur(ct));
-            instapetrify(kbuf);
+            make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
             /* only reach here if life-saved */
             u.uundetected = 0;
             return ECMD_TIME;

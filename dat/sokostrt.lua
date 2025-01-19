@@ -9,7 +9,7 @@
 -- The filler levels for the Town branch.
 -- Ported from UnNetHack
 -- Converted to lua by hackemslashem
--- LEVEL:"townfill"
+-- LEVEL:"sokostrt"
 --
 des.level_init({ style = "solidfill", fg = " " });
 
@@ -122,11 +122,16 @@ des.object()
 des.object()
 des.object()
 
--- Random traps
-des.trap()
-des.trap()
-des.trap()
-des.trap()
+-- Traps
+-- Do not use random here because level teleport traps could
+-- send the player up to a random Soko level!
+des.trap("cold")
+des.trap("cold")
+des.trap("cold")
+des.trap("pit")
+des.trap("spiked pit")
+des.trap("bear")
+des.trap("spear")
 
 -- Random monsters.
 --[25%]: MONSTER: (':', "giant turtle"), random

@@ -961,8 +961,11 @@ xname_flags(
             Strcat(buf, mons[obj->corpsenm].pmnames[NEUTRAL]);
         } else if (nn && obj->otyp == SCR_ZAPPING
                       && obj->corpsenm != NON_PM) {
-            Strcat(buf, " - ");
+            Strcat(buf, carto ? " - " : " of ");
             Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
+            
+            if (!carto && !u.uconduct.literate)
+                Strcat(buf, " (zappable)");
         } else if (nn) {
             Strcat(buf, " of ");
             Strcat(buf, actualn);
@@ -1615,7 +1618,7 @@ doname_base(
     case WAND_CLASS:
         add_erosion_words(obj, prefix);
  charges:
-        if (known)
+        if (known || Role_if(PM_WIZARD))
             ConcatF2(bp, 0, " (%d:%d)", (int) obj->recharged, obj->spe);
         break;
     case POTION_CLASS:
@@ -3487,6 +3490,7 @@ static const struct alt_spellings {
     { "silver sabre", SILVER_SABER },
     { "smooth shield", SHIELD_OF_REFLECTION },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
+    { "withering", RIN_WITHERING },
     
     /* dragon scale mail no longer formally exists; a wish for it will get you
      * scales instead */
@@ -3524,6 +3528,7 @@ static const struct alt_spellings {
     { "kelp", KELP_FROND },
     { "eucalyptus", EUCALYPTUS_LEAF },
     { "lembas", LEMBAS_WAFER },
+    { "tripe", TRIPE_RATION },
     { "cookie", FORTUNE_COOKIE },
     { "pie", CREAM_PIE },
     { "huge meatball", ENORMOUS_MEATBALL }, /* likely conflated name */

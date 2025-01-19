@@ -45,6 +45,7 @@ static const char *const artifact_names[] = {
 #define     ACID(a,b)   {0,AD_ACID,a,b}         /* acid */
 #define     STUN(a,b)   {0,AD_STUN,a,b}         /* magical attack */
 #define     DISE(a,b)   {0,AD_DISE,a,b}         /* disease attack */
+#define     SLEE(a,b)   {0,AD_SLEE,a,b}         /* Sleep attack  */
 
 /* Some helper macros for artifact value.
  * We diverge from Vanilla 3.7.0 and assign a value of 1 to all artifacts 
@@ -127,6 +128,22 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 8000L, NO_COLOR, GRAYSWANDIR),
 
+    /* Original idea by Spicy. Prevents all monster regen. */
+    A("Mortality Dial", MORNING_STAR,
+      (SPFX_RESTR | SPFX_REGEN | SPFX_WARN), 0, 0,
+      PHYS(5, 12), NO_DFNS, NO_CARY, 0,
+      A_LAWFUL, NON_PM, NON_PM,
+      DFLT_SPE, ARTVAL, 5000L, NO_COLOR, MORTALITY_DIAL),
+      
+    /* From SLASH'EM; changed to an AKLYS.
+     * Lessened to-hit penalty so aklys will connect
+     * Guarantee +3 so illiterate cavemen have a nice weapon */
+    A("Skullcrusher", AKLYS,
+      (SPFX_RESTR), 0, 0,
+      PHYS(3, 10), NO_DFNS, NO_CARY, 0,
+      A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
+      3, ARTVAL, 300L, NO_COLOR, SKULLCRUSHER),
+    
     /* From SpliceHack: Shield of King Arthur.
      * This shield now grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
@@ -172,17 +189,6 @@ static NEARDATA struct artifact artilist[] = {
 
     /*** Neutral artifacts ***/
 
-    /* From SlashTHEM with changes:
-     * In THEM, this was a neutral cloak of protection that granted luck,
-     * drain resistance, and warning. Now it is a chaotic cloak of
-     * invisibility that grants drain resistance and warning.
-     * Luck was removed. */
-    A("Blackshroud", CLOAK_OF_INVISIBILITY,
-      (SPFX_RESTR | SPFX_WARN), 0, 0,
-      NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
-      A_CHAOTIC, NON_PM, NON_PM,
-      ARMR_SPE, ARTVAL, 1500L, NO_COLOR, BLACKSHROUD),
-
     A("Cleaver", BATTLE_AXE,
       SPFX_RESTR, 0, 0,
       PHYS(3, 6), NO_DFNS, NO_CARY, 0,
@@ -221,15 +227,6 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
       BANE_SPE, ARTVAL, 200L, CLR_RED, GIANTSLAYER),
-
-    /* From SLASH'EM; changed to an AKLYS.
-     * Lessened to-hit penalty so aklys will connect
-     * Guarantee +3 so illiterate cavemen have a nice weapon */
-    A("Skullcrusher", AKLYS,
-      (SPFX_RESTR), 0, 0,
-      PHYS(3, 10), NO_DFNS, NO_CARY, 0,
-      A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
-      3, ARTVAL, 300L, NO_COLOR, SKULLCRUSHER),
 
     /* Magicbane is a bit different!  Its magic fanfare unbalances victims
      * in addition to doing some damage.
@@ -332,7 +329,16 @@ static NEARDATA struct artifact artilist[] = {
 
 
     /*** Chaotic artifacts ***/
-
+    
+    /* From SpliceHack. Similar to the brands. Destroys items.
+     * Was un-aligned in Splice, but was made chaotic and intelligent.
+     */
+    A("Acidfall", LONG_SWORD,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL), 0, 0,
+      ACID(5, 0), DFNS(AD_ACID), NO_CARY, 0,
+      A_CHAOTIC, NON_PM, NON_PM,
+      DFLT_SPE, ARTVAL, 3000L, NO_COLOR, ACIDFALL),
+    
     /* From xNetHack */
     A("The Amulet of Storms", AMULET_OF_FLYING,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
@@ -340,6 +346,26 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 600L, NO_COLOR, AMULET_OF_STORMS),
 
+    /* The quasi-evil twin of Demonbane, Angelslayer is an unholy trident
+     * geared towards the destruction of all angelic beings */
+    A("Angelslayer", TRIDENT,
+      (SPFX_RESTR | SPFX_ATTK | SPFX_SEARCH | SPFX_HSPDAM
+       | SPFX_WARN | SPFX_DFLAGH | SPFX_INTEL), 0, MH_ANGEL,
+      FIRE(5, 10), NO_DFNS, NO_CARY, 0, 
+      A_CHAOTIC, NON_PM, NON_PM,
+      BANE_SPE, ARTVAL, 5000L, CLR_RED, ANGELSLAYER),
+    
+    /* From SlashTHEM with changes:
+     * In THEM, this was a neutral cloak of protection that granted luck,
+     * drain resistance, and warning. Now it is a chaotic cloak of
+     * invisibility that grants drain resistance and warning.
+     * Luck was removed. */
+    A("Blackshroud", CLOAK_OF_INVISIBILITY,
+      (SPFX_RESTR | SPFX_WARN), 0, 0,
+      NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
+      A_CHAOTIC, NON_PM, NON_PM,
+      ARMR_SPE, ARTVAL, 1500L, NO_COLOR, BLACKSHROUD),
+    
     /* From SLASH'EM */
     A("Doomblade", SHORT_SWORD,
       SPFX_RESTR, 0, 0,
@@ -416,6 +442,17 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, PM_ELF,
       3, ARTVAL, 2000L, CLR_BRIGHT_BLUE, ORCRIST),
 
+    /* Glamdring, from the LotR series by J.R.R Tolkien. This was the
+     * sword that was found along side Orcrist and Sting in a troll cave,
+     * and was used by Gandalf thereafter. Like its brethren, this sword
+     * glows blue in the presence of orcs. In EvilHack, can only come into
+     * existience by forging Orcrist and Sting together */
+    A("Glamdring", LONG_SWORD,
+      (SPFX_RESTR | SPFX_WARN | SPFX_PROTECT | SPFX_DFLAGH), 0, MH_ORC,
+      PHYS(8, 10), DFNS(AD_ELEC), NO_CARY, 0,
+      A_CHAOTIC, NON_PM, PM_ELF,
+      1, ARTVAL, 8000L, CLR_BRIGHT_BLUE, GLAMDRING),
+    
     /*** Unaligned artifacts ***/
 
     /* Now grants warning vs dragons and can instakill dragons */
@@ -424,6 +461,13 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM,
       BANE_SPE, ARTVAL, 500L, CLR_RED, DRAGONBANE),
+
+    /* First sac gift for Healers. */
+    A("Drowsing Rod", QUARTERSTAFF, 
+      (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
+      SLEE(5, 5), DFNS(AD_SLEE), NO_CARY, 0, 
+      A_NONE, PM_HEALER, NON_PM,
+      DFLT_SPE, ARTVAL, 500L, CLR_MAGENTA, DROWSING_ROD),
 
     /* Now can instakill flammable monsters and green slime */
     A("Fire Brand", SHORT_SWORD,
@@ -633,6 +677,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
 #undef ACID
 #undef STUN
 #undef DISE
+#undef SLEE
 #endif
 
 /*artilist.h*/

@@ -62,7 +62,8 @@ des.trap("hole",20,03)
 des.trap("hole",20,04)
 des.trap("hole",20,05)
 des.exclusion({ type = "monster-generation", region = { 09,06, 18,06 } });
-des.trap("hole",09,06)
+-- reduced holes by 1, to allow for small mistakes
+--des.trap("hole",09,06)
 des.trap("hole",10,06)
 des.trap("hole",11,06)
 des.trap("hole",12,06)

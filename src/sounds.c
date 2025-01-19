@@ -1,4 +1,4 @@
-/* NetHack 3.7	sounds.c	$NHDT-Date: 1674548234 2023/01/24 08:17:14 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.134 $ */
+/* NetHack 3.7	sounds.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.165 $ */
 /*      Copyright (c) 1989 Janet Walz, Mike Threepoint */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -11,7 +11,6 @@ staticfn boolean zoo_mon_sound(struct monst *);
 staticfn boolean dlair_mon_sound(struct monst *);
 staticfn boolean temple_priest_sound(struct monst *);
 staticfn boolean mon_is_gecko(struct monst *);
-staticfn int domonnoise(struct monst *);
 staticfn int dochat(void);
 static boolean is_stormy_monster(struct monst *);
 static void pacify_with_words(struct monst *);
@@ -729,7 +728,7 @@ mon_is_gecko(struct monst *mon)
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-staticfn int /* check calls to this */
+int /* check calls to this */
 domonnoise(struct monst *mtmp)
 {
     char verbuf[BUFSZ];
@@ -1189,10 +1188,10 @@ domonnoise(struct monst *mtmp)
         if (mtmp->mtame) {
             switch (rnd(7)) {
             case 1:
-                verbl_msg = "I’m just trying to talk to you like a regular person.";
+                verbl_msg = "I'm just trying to talk to you like a regular person.";
                 break;
             case 2:
-                verbl_msg = "I’m doing whatever it takes to become a vampire.";
+                verbl_msg = "I'm doing whatever it takes to become a vampire.";
                 break;
             case 3:
                 verbl_msg = "I wish you guys knew how hard I work.";
@@ -2056,6 +2055,21 @@ get_soundlib_name(char *dest, int maxlen)
         *dest++ = *src++;
     }
     *dest = '\0';
+}
+
+enum soundlib_ids
+soundlib_id_from_opt(char *op)
+{
+    int idx;
+    struct sound_procs *defproc = &nosound_procs,
+                       *sp = 0;
+
+    for (idx = 0; idx < SIZE(soundlib_choices); ++idx) {
+        sp = soundlib_choices[idx].sndprocs;
+        if (!strcmp(sp->soundname, op))
+            return sp->soundlib_id;
+    }
+    return defproc->soundlib_id;
 }
 
 /*

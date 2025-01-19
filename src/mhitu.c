@@ -620,6 +620,15 @@ getmattk(
         attk->damn = 1;
         attk->damd = 6;
     }
+    /* mplayers get an additional amulet stealing attack */
+    else if (is_mplayer(magr->data) && udefend && indx == (NATTK-1)) {
+        *alt_attk_buf = *attk;
+        attk = alt_attk_buf;
+        attk->aatyp = AT_CLAW;
+        attk->adtyp = AD_SAMU;
+        attk->damn = 1;
+        attk->damd = 6;
+    }
     /* Revenants have a magic fireball attack, but this also translates
      * to a fire spell in melee. We don't want the melee spell, so
      * convert it to physical damage instead. */
@@ -924,7 +933,8 @@ mattacku(struct monst *mtmp)
     if (is_accurate(mdat)) /* M3_ACCURATE monsters get a to-hit bonus */
         tmp += 5;
 
-    if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE)
+    if (Role_if(PM_ARCHEOLOGIST) && !Hallucination
+          && mtmp->data->mlet == S_SNAKE)
         tmp += 1;
 
     if (tmp <= 0)
@@ -1526,7 +1536,8 @@ hitmu(struct monst *mtmp, struct attack *mattk)
          * This handled a bit differently from the AD_PLYS attacks -
          * it's a bit weaker. If it was as strong as most paralyze
          * attacks, arcs probably wouldn't stand a chance... */
-        if (Role_if(PM_ARCHEOLOGIST) && mtmp->data->mlet == S_SNAKE) {
+        if (Role_if(PM_ARCHEOLOGIST) && !Hallucination
+            && mtmp->data->mlet == S_SNAKE) {
             if (gm.multi >= 0 && !rn2(5)) {
                 /* Free action is not always effective - this is psychological */
                 if (Free_action && rn2(4)) {
@@ -1680,7 +1691,8 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
             unleash_all();
         }
 
-        if (touch_petrifies(gy.youmonst.data) && !resists_ston(mtmp)) {
+        if (touch_petrifies(gy.youmonst.data)
+            && !(resists_ston(mtmp) || defended(mtmp, AD_STON))) {
             /* put the attacker back where it started;
                the resulting statue will end up there
                [note: if poly'd hero could ride or non-poly'd hero could
@@ -1689,7 +1701,10 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                engulfer's previous spot when hero was forcibly dismounted] */
             remove_monster(mtmp->mx, mtmp->my); /* u.ux,u.uy */
             place_monster(mtmp, omx, omy);
-            minstapetrify(mtmp, TRUE);
+            if (!mtmp->mstone) {
+                mtmp->mstone = 5;
+                mtmp->mstonebyu = TRUE;
+            }
             /* normally unstuck() would do this, but we're not
                fully swallowed yet so that won't work here */
             if (Punished)
@@ -1932,7 +1947,8 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
 
     if (!u.uswallow) {
         ; /* life-saving has already expelled swallowed hero */
-    } else if (touch_petrifies(gy.youmonst.data) && !resists_ston(mtmp)) {
+    } else if (touch_petrifies(gy.youmonst.data)
+        && !(resists_ston(mtmp) || defended(mtmp, AD_STON))) {
         pline("%s very hurriedly %s you!", Monnam(mtmp),
               digests(mtmp->data) ? "regurgitates"
               : enfolds(mtmp->data) ? "releases"
@@ -2029,6 +2045,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             cancelled = (mtmp->mcan != 0), already = FALSE,
             mcanseeu = (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
                         && mtmp->mcansee);
+    const char* reflectsrc = ureflectsrc();
     boolean wearing_eyes = ublindf
                             && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD;
     boolean foundyou = (u.ux == mtmp->mux && u.uy == mtmp->muy);
@@ -2072,7 +2089,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     }
 
     is_medusa = (mtmp->data == &mons[PM_MEDUSA]);
-    reflectable = (Reflecting && couldsee(mtmp->mx, mtmp->my) && is_medusa);
+    reflectable = (reflectsrc && couldsee(mtmp->mx, mtmp->my) && is_medusa);
     /* assumes that hero has to see monster's gaze in order to be
        affected, rather than monster just having to look at hero;
        Unaware:  asleep or unconscious => not blind but won't see;
@@ -2110,17 +2127,21 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             boolean useeit = canseemon(mtmp);
 
             if (useeit)
-                (void) ureflects("%s gaze is reflected by your %s.",
-                                 s_suffix(Monnam(mtmp)));
+                pline("%s gaze is reflected by your %s.",
+                     s_suffix(Monnam(mtmp)), reflectsrc);
             if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > 9) {
                 if (useeit)
                     pline("%s reflection is too far away for %s to notice.",
                           s_suffix(Monnam(mtmp)), mhis(mtmp));
                 break;
             }
-            if (mon_reflects(mtmp, !useeit ? (char *) 0
-                                  : "The gaze is reflected away by %s %s!"))
+            const char* monreflector = mon_reflectsrc(mtmp);
+            if (monreflector) {
+                pline_mon(mtmp, "The gaze is reflected away by %s %s!",
+                                  s_suffix(mon_nam(mtmp)), monreflector);
                 break;
+            }
+                
             if (!m_canseeu(mtmp)) { /* probably you're invisible */
                 if (useeit)
                     pline(
@@ -2953,7 +2974,7 @@ passiveum(
         if (MON_WEP(mtmp) != 0)
             wornitems |= W_ARMG;
 
-        if (!resists_ston(mtmp)
+        if (!(resists_ston(mtmp) || defended(mtmp, AD_STON))
             && (protector == 0L
                 || (protector != ~0L
                     && (wornitems & protector) != protector))) {
@@ -2963,6 +2984,7 @@ passiveum(
             }
             pline_mon(mtmp, "%s turns to stone!", Monnam(mtmp));
             gs.stoned = 1;
+            mtmp->mstone = 0; /* end any lingering timer */
             xkilled(mtmp, XKILL_NOMSG);
             if (!DEADMONSTER(mtmp))
                 return M_ATTK_HIT;
@@ -3022,9 +3044,12 @@ passiveum(
                               pmname(gy.youmonst.data,
                                      flags.female ? FEMALE : MALE));
                     } else {
-                        if (mon_reflects(mtmp,
-                                         "Your gaze is reflected by %s %s."))
+                        const char* monreflector = mon_reflectsrc(mtmp);
+                        if (monreflector) {
+                            Your("gaze is reflected by %s %s.",
+                                  s_suffix(mon_nam(mtmp)), monreflector);
                             return 1;
+                        }
                         if (has_free_action(mtmp)) {
                             pline_mon(mtmp, "%s stiffens momentarily.", Monnam(mtmp));
                             return 1;
@@ -3269,7 +3294,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
               Monnam(mdef), youattack ? " (you)" : "");
         return;
     } else if (helm && hard_helmet(helm)) {
-        helm_res = 11 + helm->spe * 6;
+        helm_res = 11 + helm->spe * 4;
 
         /* These things now quite frequently destroy hard helmets.
          * First we'll damage the helmet by reducing the enchantment.

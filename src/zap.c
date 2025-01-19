@@ -38,6 +38,7 @@ staticfn boolean destroyable(struct obj *, int);
 
 staticfn void wishcmdassist(int);
 staticfn void drain_floor_objects(coordxy, coordxy, boolean);
+staticfn int calc_zap_range(int);
 
 #define M_IN_WATER(ptr) ((ptr)->mlet == S_EEL || cant_drown(ptr))
 
@@ -282,8 +283,12 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         }
         break;
     case SPE_CHARM_MONSTER:
-        /* Pacification only available at lower skills */
+        /* Pacification only available at unskilled */
         if (!resist(mtmp, otmp->oclass, 0, NOTELL) || mtmp->isshk)
+            (void) tamedog(mtmp, otmp, TRUE);
+        /* Get another chance at expert skill */
+        else if (P_SKILL(P_ENCHANTMENT_SPELL) >= P_EXPERT
+            && (!resist(mtmp, otmp->oclass, 0, NOTELL) || mtmp->isshk))
             (void) tamedog(mtmp, otmp, TRUE);
         helpful_gesture = TRUE;
         ret = 1;
@@ -521,9 +526,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             int delta = mtmp->mhpmax - mtmp->mhp;
 
             wake = FALSE; /* wakeup() makes the target angry */
-            mtmp->mhp += d(healing_skill, otyp == SPE_EXTRA_HEALING ? 8 : 4);
-            if (mtmp->mhp > mtmp->mhpmax)
-                mtmp->mhp = mtmp->mhpmax;
+            healmon(mtmp, d(healing_skill, otyp == SPE_EXTRA_HEALING ? 8 : 4), 0);
             /* plain healing must be blessed to cure blindness; extra
                healing only needs to not be cursed, so spell always cures
                [potions quaffed by monsters behave slightly differently;
@@ -621,6 +624,16 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                 if (canseemon(mtmp))
                     pline("%s looks rather fleshy for a moment.", name);
             }
+        } else if (mtmp->mstone > 0) {
+            mtmp->mstone = 0;
+            maybe_moncanmove(mtmp);
+            if (!canseemon(mtmp)) {
+                ; /* no feedback */
+            } else if (Hallucination) {
+                pline("What a pity - you just ruined a future piece of art!");
+            } else {
+                pline("%s seems limber!", Monnam(mtmp));
+            } 
         } else
             wake = FALSE;
         break;
@@ -2631,7 +2644,7 @@ bhito(struct obj *obj, struct obj *otmp)
         case SPE_HEALING:
         case SPE_EXTRA_HEALING:
         case SPE_CURE_SICKNESS:
-	    case WAN_WONDER:
+        case WAN_WONDER:
         case SPE_CHARM_MONSTER:
             res = 0;
             break;
@@ -2754,19 +2767,23 @@ bhitpile(
 int
 zappable(struct obj *wand)
 {
-    int wrestchance = (wand->blessed ? 7
-                                     : (wand->cursed ? WAND_WREST_CHANCE
-                                                     : 23));
-    /* Not a wand, but definitely zappable! */
+    int zap_it = 1;
+    int wrestchance = 6 + (wand->cursed ? 2 : (wand->blessed ? - 2 : 0));
+    
+    /* Not a wand, but definitely zappable. Don't remove any charges! */
     if (wand->otyp == SCR_ZAPPING)
-        return TRUE;
-
-    if (wand->spe < 0 || (wand->spe == 0 && rn2(wrestchance)))
+        return 1;
+    
+    if (wand->spe < 0)
         return 0;
-    if (wand->spe == 0)
-        You("wrest one last charge from the worn-out wand.");
+    
+    if (wand->spe == 0) {
+        if ((zap_it = !rn2(wrestchance)))
+            You("wrest one last charge from the worn-out wand.");
+    }
+
     wand->spe--;
-    return 1;
+    return zap_it;
 }
 
 void
@@ -2956,7 +2973,11 @@ dozap(void)
             weffects(&pseudo);
             gc.current_wand = 0;
         }
-        useup(obj);
+        /* Check if scroll still exists - a backfire from an
+           emulated wand of fire could burn up inventory and
+           destroy the scroll before useup is called. */
+        if (obj)
+            useup(obj);
         u.uen -= CARD_COST;
         return 1;
     }
@@ -3691,6 +3712,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     You("feel more solid.");
                     HPasses_walls = 0;
                 }
+                /* TODO: Add temp invisibility cancelling */
             }
         }
 
@@ -4086,8 +4108,8 @@ weffects(struct obj *obj)
         } else if (u.dz) {
             disclose = zap_updown(obj);
         } else {
-            (void) bhit(u.dx, u.dy, rn1(8, 6), ZAPPED_WAND, bhitm, bhito,
-                        &obj);
+            (void) bhit(u.dx, u.dy, calc_zap_range(otyp), ZAPPED_WAND, bhitm,
+                        bhito, &obj);
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
@@ -4104,7 +4126,7 @@ weffects(struct obj *obj)
         else if (otyp == SPE_DRAIN_LIFE)
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(WAN_DRAINING)), 6);
         #endif
-        else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_DRAIN_LIFE    )
+        else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_DRAIN_LIFE)
             ubuzz(BZ_U_SPELL(BZ_OFS_SPE(otyp)), u.ulevel / 2 + 1);
         else if (otyp >= WAN_MAGIC_MISSILE && otyp <= LAST_WAND)
             ubuzz(BZ_U_WAND(BZ_OFS_WAN(otyp)),
@@ -4397,6 +4419,7 @@ zap_map(
         /* secret door gets revealed, converted into regular door */
         if (ltyp == SDOOR) {
             cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
+            recalc_block_point(x, y);
             newsym(x, y);
             if (cansee(x, y)) {
                 pline("Probing reveals a secret door.");
@@ -4520,9 +4543,6 @@ bhit(
 
     /* Being in a pit limits our range to whatever is next to the pit */
     if (in_pit)
-        range = 1;
-
-    if (obj && (obj->otyp == SPE_KNOCK || obj->otyp == SPE_WIZARD_LOCK))
         range = 1;
 
     if (weapon == FLASHED_LIGHT) {
@@ -4886,7 +4906,7 @@ boomhit(struct obj *obj, coordxy dx, coordxy dy)
     gb.bhitpos.x = u.ux;
     gb.bhitpos.y = u.uy;
     boom = counterclockwise ? S_boomleft : S_boomright;
-    i = (int) xytod(dx, dy);
+    i = xytod(dx, dy);
     tmp_at(DISP_FLASH, cmap_to_glyph(boom));
 
     /* Boomerangs take 10 steps to leave and return */
@@ -4974,11 +4994,16 @@ zhitm(
     int damgtype = zaptype(type) % 10;
     boolean sho_shieldeff = FALSE;
     boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
-
+    const char* monreflector = mon_reflectsrc(mon);
     *ootmp = (struct obj *) 0;
+    
     switch (damgtype) {
     case ZT_MAGIC_MISSILE:
-        tmp = d(nd, 6);
+        if (spellcaster) {
+            int skill = min(1, P_SKILL(P_ATTACK_SPELL));
+            tmp = d(nd, 2+skill);
+        } else
+            tmp = d(nd, 6);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
         if (resists_magm(mon)) {
@@ -5000,7 +5025,7 @@ zhitm(
         orig_dmg = tmp; /* includes spell bonus but not monster vuln to fire */
         if (resists_cold(mon))
             tmp += 7;
-        if (burnarmor(mon)) {
+        if (!monreflector && burnarmor(mon)) {
             if (!rn2(3)) {
                 tmp += destroy_items(mon, AD_FIRE, orig_dmg);
                 ignite_items(mon->minvent);
@@ -5018,7 +5043,7 @@ zhitm(
         orig_dmg = tmp; /* includes spell bonus but not monster vuln to cold */
         if (resists_fire(mon))
             tmp += d(nd, 3);
-        if (!rn2(3))
+        if (!monreflector && !rn2(3))
             tmp += destroy_items(mon, AD_COLD, orig_dmg);
         break;
     case ZT_SLEEP:
@@ -5031,14 +5056,13 @@ zhitm(
     case ZT_DEATH:                              /* death/disintegration */
         if (abs(type) != ZT_BREATH(ZT_DEATH)) { /* death */
             if (mon->data == &mons[PM_DEATH]) {
-                mon->mhpmax += mon->mhpmax / 2;
+                healmon(mon, mon->mhpmax * 3 / 2, mon->mhpmax / 2);
                 if (mon->mhpmax >= MAGIC_COOKIE)
                     mon->mhpmax = MAGIC_COOKIE - 1;
-                mon->mhp = mon->mhpmax;
                 tmp = 0;
                 break;
             }
-            if (resists_death(mon->data) || resists_magm(mon)) {
+            if (resists_death(mon->data)) {
                 /* similar to player */
                 sho_shieldeff = TRUE;
                 break;
@@ -5046,10 +5070,14 @@ zhitm(
             type = -1; /* so they don't get saving throws */
         } else {                                /* disintegration*/
             struct obj *otmp2;
-
+            
             if (resists_disint(mon) || defended(mon, AD_DISN)) {
                 sho_shieldeff = TRUE;
                 tmp = 0;
+            } else if (monreflector) {
+                /* no item destruction; still take damage though */
+                sho_shieldeff = TRUE; 
+                tmp = d(nd, 6);
             } else if (mon->misc_worn_check & W_ARMS) {
                 /* destroy shield; victim survives */
                 *ootmp = which_armor(mon, W_ARMS);
@@ -5070,7 +5098,15 @@ zhitm(
             type = -1; /* no saving throw wanted */
             break;     /* not ordinary damage */
         }
-        tmp = mon->mhp + 1;
+        tmp = d(nd, 6);
+        if (resists_magm(mon)) {
+            if (monreflector)
+                tmp /= 2;
+        } else if (monreflector) {
+            tmp /= 2;
+        } else {
+            tmp = mon->mhp + 1;
+        }
         break;
     case ZT_LIGHTNING:
         tmp = d(nd, 6);
@@ -5093,7 +5129,7 @@ zhitm(
             else
                 mon->mblinded += rnd_tmp;
         }
-        if (!rn2(3))
+        if (!monreflector && !rn2(3))
             tmp += destroy_items(mon, AD_ELEC, orig_dmg);
         break;
     case ZT_POISON_GAS:
@@ -5109,9 +5145,9 @@ zhitm(
             break;
         }
         tmp = d(nd, 6);
-        if (!rn2(6))
+        if (!monreflector && !rn2(6))
             acid_damage(MON_WEP(mon));
-        if (!rn2(6))
+        if (!monreflector && !rn2(6))
             erode_armor(mon, ERODE_CORRODE);
         break;
     case ZT_DRAIN:
@@ -5120,9 +5156,18 @@ zhitm(
             tmp = 0;
             break;
         }
-        tmp = rnd(8);
+
+        tmp = monreflector ? rnd(4) : rnd(8);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
+        
+        if (P_SKILL(P_ATTACK_SPELL) >= P_EXPERT && !rn2(10)) {
+            /* 10% chance of an explosion instead */
+            explode(mon->mx, mon->my, -(WAN_DRAINING), tmp, WAND_CLASS,
+                    EXPL_MAGICAL);
+            tmp = 0;
+            break;
+        }
         if (mon->mhpmax - tmp > (int) mon->m_lev) {
             mon->mhpmax -= tmp;
         } else {
@@ -5708,7 +5753,7 @@ dobuzz(
     struct monst *mon;
     struct monst *zapper;
     struct trap *ttmp;
-
+    
     coord save_bhitpos;
     boolean shopdamage = FALSE,
             fireball = (type == ZT_SPELL(ZT_FIRE)
@@ -5717,7 +5762,7 @@ dobuzz(
     struct obj *otmp;
     int spell_type;
     int hdmgtype = Hallucination ? rn2(6) : damgtype;
-
+    
     /* if it's a Hero Spell then get its SPE_TYPE */
     spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + damgtype : 0;
 
@@ -5780,7 +5825,6 @@ dobuzz(
                 tmp_at(sx, sy);
             nh_delay_output(); /* wait a little */
         }
-
         /* hit() and miss() need gb.bhitpos to match the target */
         gb.bhitpos.x = sx, gb.bhitpos.y = sy;
         gas_hit = (damgtype == ZT_POISON_GAS);
@@ -5806,12 +5850,12 @@ dobuzz(
             gn.notonhead = (mon->mx != gb.bhitpos.x
                             || mon->my != gb.bhitpos.y);
             if (zap_hit(find_mac(mon), spell_type)) {
-                if (mon_reflects(mon, (char *) 0)) {
+                const char* mreflector = mon == &gy.youmonst 
+                    ? ureflectsrc() : mon_reflectsrc(mon);
+                if (mreflector) {
                     if (cansee(mon->mx, mon->my)) {
-                        hit(flash_str(fltyp, FALSE), mon, exclam(0));
-                        shieldeff(mon->mx, mon->my);
-                        (void) mon_reflects(mon,
-                                            "But it reflects from %s %s!");
+                        pline_mon(mon, "But some of it reflects from %s %s!",
+                                  s_suffix(mon_nam(mon)), mreflector);
                         gas_hit = FALSE;
                     }
                     /* reflected but doesn't bounce */
@@ -5819,94 +5863,109 @@ dobuzz(
                         range = 0;
                     dx = -dx;
                     dy = -dy;
+                    /* monsters get partial reflection too */
+                    nd = (nd + 1) / 2;
+                    if (strcmp(mreflector, "mirror") == 0) {
+                        struct obj *mmirror = m_carrying(mon, MIRROR);
+                        /* They break roughly 50% of the time */
+                        if (d(6,6) > 20 && breaktest(mmirror)) {
+                            pline("A %s shatters!", xname(mmirror));
+                            if (type >= 0) {
+                                pline("That's bad luck!");
+                                change_luck(-2);
+                            }
+                            m_useup(mon, mmirror);
+                            mmirror = (struct obj *) 0;
+                        }
+                    }
+                }
+                boolean mon_could_move = mon->mcanmove;
+                int tmp = zhitm(mon, type, nd, &otmp);
+
+                if (is_rider(mon->data)
+                    && abs(type) == ZT_BREATH(ZT_DEATH)) { /* disintegration */
+                    if (canseemon(mon)) {
+                        hit(flash_str(fltyp, FALSE), mon, ".");
+                        pline("%s disintegrates.", Monnam(mon));
+                        pline("%s body reintegrates before your %s!",
+                              s_suffix(Monnam(mon)),
+                              (eyecount(gy.youmonst.data) == 1)
+                                  ? body_part(EYE)
+                                  : makeplural(body_part(EYE)));
+                        pline("%s resurrects!", Monnam(mon));
+                    }
+                    mon->mhp = mon->mhpmax;
+                    break; /* Out of while loop */
+                }
+                if (mon->data == &mons[PM_DEATH] && damgtype == ZT_DEATH) {
+                    if (canseemon(mon)) {
+                        hit(flash_str(fltyp, FALSE), mon, ".");
+                        pline("%s absorbs the deadly %s!", Monnam(mon),
+                              type == ZT_BREATH(ZT_DEATH) ? "blast"
+                                                          : "ray");
+                        pline("It seems even stronger than before.");
+                    }
+                    break; /* Out of while loop */
+                }
+
+                if (tmp == MAGIC_COOKIE) { /* disintegration */
+                    disintegrate_mon(mon, type, flash_str(fltyp, FALSE));
+                } else if (DEADMONSTER(mon)) {
+                    if (type < 0) {
+                        /* mon has just been killed by another monster */
+                        monkilled(mon, flash_str(fltyp, FALSE), AD_RBRE);
+                    } else {
+                        int xkflags = XKILL_GIVEMSG; /* killed(mon); */
+
+                        /* killed by hero; we know 'type' isn't negative;
+                           if it's fire, highly flammable monsters leave
+                           no corpse; don't bother reporting that they
+                           "burn completely" -- unnecessary verbosity */
+                        if (damgtype == ZT_FIRE
+                            /* paper golem or straw golem */
+                            && completelyburns(mon->data))
+                            xkflags |= XKILL_NOCORPSE;
+                        xkilled(mon, xkflags);
+                    }
                 } else {
-                    boolean mon_could_move = mon->mcanmove;
-                    int tmp = zhitm(mon, type, nd, &otmp);
+                    if (!otmp) {
+                        /* normal non-fatal hit */
+                        if (say || canseemon(mon)) {
+                            hit(flash_str(fltyp, FALSE), mon, exclam(tmp));
+                            if ((resists_magm(mon) || defended(mon, AD_MAGM)
+                                                   || mreflector)
+                                && damgtype == ZT_DEATH
+                                && abs(type) != ZT_BREATH(ZT_DEATH)) { /* death */
+                                if (canseemon(mon))
+                                    pline("%s resists the death magic, but appears drained!",
+                                          Monnam(mon));
+                            }
+                            if (damgtype == ZT_DRAIN) {
+                                const char *life = nonliving(mon->data) ? "animating force"
+                                                                        : "life";
 
-                    if (is_rider(mon->data)
-                        && abs(type) == ZT_BREATH(ZT_DEATH)) { /* disintegration */
-                        if (canseemon(mon)) {
-                            hit(flash_str(fltyp, FALSE), mon, ".");
-                            pline("%s disintegrates.", Monnam(mon));
-                            pline("%s body reintegrates before your %s!",
-                                  s_suffix(Monnam(mon)),
-                                  (eyecount(gy.youmonst.data) == 1)
-                                      ? body_part(EYE)
-                                      : makeplural(body_part(EYE)));
-                            pline("%s resurrects!", Monnam(mon));
-                        }
-                        mon->mhp = mon->mhpmax;
-                        break; /* Out of while loop */
-                    }
-                    if (mon->data == &mons[PM_DEATH] && damgtype == ZT_DEATH) {
-                        if (canseemon(mon)) {
-                            hit(flash_str(fltyp, FALSE), mon, ".");
-                            pline("%s absorbs the deadly %s!", Monnam(mon),
-                                  type == ZT_BREATH(ZT_DEATH) ? "blast"
-                                                              : "ray");
-                            pline("It seems even stronger than before.");
-                        }
-                        break; /* Out of while loop */
-                    }
-
-                    if (tmp == MAGIC_COOKIE) { /* disintegration */
-                        disintegrate_mon(mon, type, flash_str(fltyp, FALSE));
-                    } else if (DEADMONSTER(mon)) {
-                        if (type < 0) {
-                            /* mon has just been killed by another monster */
-                            monkilled(mon, flash_str(fltyp, FALSE), AD_RBRE);
-                        } else {
-                            int xkflags = XKILL_GIVEMSG; /* killed(mon); */
-
-                            /* killed by hero; we know 'type' isn't negative;
-                               if it's fire, highly flammable monsters leave
-                               no corpse; don't bother reporting that they
-                               "burn completely" -- unnecessary verbosity */
-                            if (damgtype == ZT_FIRE
-                                /* paper golem or straw golem */
-                                && completelyburns(mon->data))
-                                xkflags |= XKILL_NOCORPSE;
-                            xkilled(mon, xkflags);
+                                if (canseemon(mon)) {
+                                    if (resists_drli(mon) || defended(mon, AD_DRLI))
+                                        pline("%s appears unaffected.", Monnam(mon));
+                                    else
+                                        pline_The("blast draws the %s from %s!",
+                                                  life, mon_nam(mon));
+                                }
+                            }
+                            print_mon_wounded(mon, saved_mhp);
                         }
                     } else {
-                        if (!otmp) {
-                            /* normal non-fatal hit */
-                            if (say || canseemon(mon)) {
-                                hit(flash_str(fltyp, FALSE), mon, exclam(tmp));
-                                if ((resists_magm(mon) || defended(mon, AD_MAGM))
-                                    && damgtype == ZT_DEATH
-                                    && abs(type) != ZT_BREATH(ZT_DEATH)) { /* death */
-                                    if (canseemon(mon))
-                                        pline("%s resists the death magic, but appears drained!",
-                                              Monnam(mon));
-                                }
-                                if (damgtype == ZT_DRAIN) {
-                                    const char *life = nonliving(mon->data) ? "animating force"
-                                                                            : "life";
-
-                                    if (canseemon(mon)) {
-                                        if (resists_drli(mon) || defended(mon, AD_DRLI))
-                                            pline("%s appears unaffected.", Monnam(mon));
-                                        else
-                                            pline_The("blast draws the %s from %s!",
-                                                      life, mon_nam(mon));
-                                    }
-                                }
-                                print_mon_wounded(mon, saved_mhp);
-                            }
-                        } else {
-                            /* some armor was destroyed; no damage done */
-                            if (canseemon(mon))
-                                pline("%s %s is disintegrated!",
-                                      s_suffix(Monnam(mon)),
-                                      distant_name(otmp, xname));
-                            m_useup(mon, otmp);
-                        }
-                        if (mon_could_move && !mon->mcanmove) /* ZT_SLEEP */
-                            slept_monst(mon);
-                        if (damgtype != ZT_SLEEP)
-                            wakeup(mon, (type >= 0) ? TRUE : FALSE);
+                        /* some armor was destroyed; no damage done */
+                        if (canseemon(mon))
+                            pline("%s %s is disintegrated!",
+                                  s_suffix(Monnam(mon)),
+                                  distant_name(otmp, xname));
+                        m_useup(mon, otmp);
                     }
+                    if (mon_could_move && !mon->mcanmove) /* ZT_SLEEP */
+                        slept_monst(mon);
+                    if (damgtype != ZT_SLEEP)
+                        wakeup(mon, (type >= 0) ? TRUE : FALSE);
                 }
                 range -= 2;
             } else {
@@ -5917,17 +5976,17 @@ dobuzz(
             nomul(0);
             if (fireball) /* The buck stops here. */
                 break;
-            else if (u.usteed && !rn2(3) && !mon_reflects(u.usteed, (char *) 0)) {
+            else if (u.usteed && !rn2(3) && !mon_reflectsrc(u.usteed)) {
                 mon = u.usteed;
                 goto buzzmonst;
             } else if (zap_hit((int) u.uac, 0)) {
                 range -= 2;
                 pline_dir(xytod(-dx, -dy), "%s hits you!",
                           The(flash_str(fltyp, FALSE)));
-                if (Reflecting) {
+                const char* reflectsrc = ureflectsrc();
+                if (Reflecting || reflectsrc) {
                     if (!Blind) {
-                        (void) ureflects("Some of %s reflects from your %s!",
-                                         "it");
+                        pline("But some of it reflects from your %s!", reflectsrc);
                     }
                     /* M_SEEN_REFL doesn't have much use now with partial reflection,
                      * but we'll still track it anyway in case something comes up. */
@@ -5937,6 +5996,19 @@ dobuzz(
                     shieldeff(sx, sy);
                     nd = (nd + 1) / 2;
                     gas_hit = FALSE;
+                    if (strcmp(reflectsrc, "mirror") == 0) {
+                        struct obj *mmirror = carrying(MIRROR);
+                        /* They break roughly 50% of the time */
+                        if (d(6,6) > 20 && breaktest(mmirror)) {
+                            pline("%s shatters!", Ysimple_name2(mmirror));
+                            if (type >= 0) {
+                                pline("That's bad luck!");
+                                change_luck(-2);
+                            }
+                            useup(mmirror);
+                            mmirror = (struct obj *) 0;
+                        }
+                    }
                 } else {
                     monstunseesu(M_SEEN_REFL);
                 }
@@ -6444,6 +6516,7 @@ zap_over_floor(
     /* secret door gets revealed, converted into regular door */
     if (levl[x][y].typ == SDOOR) {
         cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
+        recalc_block_point(x, y);
         /* target spot will now pass closed_door() test below
            (except on rogue level) */
         newsym(x, y);
@@ -6522,7 +6595,7 @@ zap_over_floor(
                     add_damage(x, y, 0L);
             }
             lev->doormask = new_doormask;
-            unblock_point(x, y); /* vision */
+            recalc_block_point(x, y); /* vision */
             if (see_it) {
                 pline1(see_txt);
                 newsym(x, y);
@@ -7516,4 +7589,40 @@ dryup_puddle(coordxy x, coordxy y, const char *action)
     newsym(x, y);
 }
 
+staticfn int
+calc_zap_range(int otyp)
+{
+    int skill = spell_skilltype(otyp);
+    int role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(skill);
+    
+    if (otyp == SPE_FORCE_BOLT
+        || otyp == SPE_FIRE_BOLT 
+        || otyp == SPE_DRAIN_LIFE
+        || otyp == SPE_SLEEP
+        || otyp == SPE_SLOW_MONSTER
+        || otyp == SPE_TELEPORT_AWAY
+        || otyp == SPE_KNOCK
+        || otyp == SPE_WIZARD_LOCK
+        || otyp == SPE_DIG
+        ) {
+        switch (role_skill) {
+        default:        return rnd(4);          /* range 1-4 */
+        case P_BASIC:   return 1 + rnd(7);      /* range 2-8 */
+        case P_SKILLED:
+        case P_EXPERT:  return rn1(7, 7);       /* range 7-13 */
+        }
+    }
+    
+    if (otyp == SPE_CONE_OF_COLD || otyp == SPE_FIREBALL
+        || otyp == SPE_FINGER_OF_DEATH || otyp == SPE_POLYMORPH
+        || otyp == SPE_CANCELLATION) {
+        switch (role_skill) {
+        default:        return 1 + rnd(7);      /* range 2-8 */
+        case P_BASIC:   return rn1(7, 7);       /* range 7-13 */
+        case P_SKILLED: return rn1(5, 9);       /* range 9-13 */
+        case P_EXPERT:  return rn1(3, 11);      /* range 11-13 */
+        }
+    }   
+    return rn1(8, 6); /* Default range: 6-13 */
+}
 /*zap.c*/

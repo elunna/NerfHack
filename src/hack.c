@@ -1,4 +1,4 @@
-/* NetHack 3.7	hack.c	$NHDT-Date: 1723410639 2024/08/11 21:10:39 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.452 $ */
+/* NetHack 3.7	hack.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.477 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -967,7 +967,7 @@ invocation_pos(coordxy x, coordxy y)
                       && x == svi.inv_pos.x && y == svi.inv_pos.y);
 }
 
-/* return TRUE if (ux+dx,ux+dy) is an OK place to move;
+/* return TRUE if (ux+dx,uy+dy) is an OK place to move;
    mode is one of DO_MOVE, TEST_MOVE, TEST_TRAV, or TEST_TRAP */
 boolean
 test_move(
@@ -1080,8 +1080,18 @@ test_move(
                             " but can't squeeze your possessions through.");
                     if (flags.autoopen && !svc.context.run
                         && !Confusion && !Stunned && !Fumbling) {
-                        (void) doopen_indir(x, y);
-                        svc.context.door_opened = !closed_door(x, y);
+                        int tmp = doopen_indir(x, y);
+                        /* if 'autounlock' includes Kick, we might have a
+                           kick at the door queued up after doopen_indir() */
+                        struct _cmd_queue *cq = cmdq_peek(CQ_CANNED);
+
+                        if (tmp == ECMD_OK && cq && cq->typ == CMDQ_EXTCMD
+                            && cq->ec_entry == ext_func_tab_from_func(dokick))
+                            /* door hasn't been opened, but fake it so that
+                               canned kick will be executed as next command */
+                            svc.context.door_opened = TRUE;
+                        else
+                            svc.context.door_opened = !closed_door(x, y);
                         svc.context.move = (ux != u.ux || uy != u.uy);
                     } else if (x == ux || y == uy) {
                         if (Blind || Stunned || ACURR(A_DEX) < 10
@@ -2094,7 +2104,9 @@ domove_fight_web(coordxy x, coordxy y)
 
 /* maybe swap places with a pet? returns TRUE if swapped places */
 staticfn boolean
-domove_swap_with_pet(struct monst *mtmp, coordxy x, coordxy y)
+domove_swap_with_pet(
+    struct monst *mtmp,
+    coordxy x, coordxy y)
 {
     struct trap *trap;
     /* if it turns out we can't actually move */
@@ -2979,6 +2991,7 @@ domove_core(void)
         newsym(u.ux0, u.uy0);
         /* Since the hero has moved, adjust what can be seen/unseen. */
         vision_recalc(1); /* Do the work now in the recover time. */
+        invocation_message();
     }
 
     if (Punished) /* put back ball and chain */

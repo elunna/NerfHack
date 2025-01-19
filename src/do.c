@@ -75,6 +75,7 @@ boulder_hits_pool(
                 levl[rx][ry].drawbridgemask |= DB_FLOOR;
             } else {
                 levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
+                recalc_block_point(rx, ry);
             }
             /* 3.7: normally DEADMONSTER() is used when traversing the fmon
                list--dead monsters usually aren't still at specific map
@@ -961,6 +962,7 @@ engulfer_digests_food(struct obj *obj)
                 could_grow = FALSE, could_heal = FALSE;
 
         if (obj->otyp == CORPSE) {
+            /* Update this if any engulfers would resist stoning */
             could_petrify = touch_petrifies(&mons[obj->corpsenm]);
             could_poly = polyfood(obj);
             could_grow = (obj->corpsenm == PM_WRAITH);
@@ -975,11 +977,14 @@ engulfer_digests_food(struct obj *obj)
             (void) newcham(u.ustuck, could_slime ? &mons[PM_GREEN_SLIME] : 0,
                            could_slime ? NC_SHOW_MSG : NO_NC_FLAGS);
         } else if (could_petrify) {
-            minstapetrify(u.ustuck, TRUE);
+            if (!u.ustuck->mstone) {
+                u.ustuck->mstone = 5;
+                u.ustuck->mstonebyu = TRUE;
+            }
         } else if (could_grow) {
             (void) grow_up(u.ustuck, (struct monst *) 0);
         } else if (could_heal) {
-            u.ustuck->mhp = u.ustuck->mhpmax;
+            healmon(u.ustuck, u.ustuck->mhpmax, 0);
             /* False: don't realize that sight is cured from inside */
             mcureblindness(u.ustuck, FALSE);
         }
@@ -1385,7 +1390,7 @@ dodown(void)
         You("%s %s the %s.", actn, down_or_thru,
             trap->ttyp == HOLE ? "hole" : "trap door");
     }
-    if (trap && Is_lethe_gate(&u.uz)) {
+    if (trap && Is_stronghold(&u.uz)) {
         goto_hell(FALSE, TRUE);
     } else if (trap && trap->dst.dlevel != -1) {
         d_level tdst;
@@ -1976,6 +1981,8 @@ goto_level(
     } else if (In_sokoban(&u.uz)) {
         if (newdungeon)
             record_achievement(ACH_SOKO);
+    } else if (at_dgn_entrance("The Wizard's Tower") && !u.uevent.udemigod) {
+        You_feel("the presence of a great wizard, his tower must be somewhere on this level!");
     } else {
         if (new && Is_rogue_level(&u.uz)) {
             You("enter what seems to be an older, more primitive world.");

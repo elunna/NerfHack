@@ -38,12 +38,6 @@ staticfn void fixup_death(int);
 staticfn int wordcount(char *);
 staticfn void bel_copy1(char **, char *);
 
-#if defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(WIN32)
-ATTRNORETURN extern void nethack_exit(int) NORETURN;
-#else
-#define nethack_exit exit
-#endif
-
 #define done_stopprint program_state.stopprint
 
 /*
@@ -219,6 +213,14 @@ done_in_by(struct monst *mtmp, int how)
     (void) monhealthdescr(mtmp, TRUE, eos(buf));
     if (mtmp->minvis)
         Strcat(buf, "invisible ");
+    if (mtmp->mrabid)
+        Strcat(buf, "rabid ");
+    if (mtmp->mberserk)
+        Strcat(buf, "berserking ");
+    if (mtmp->mdiseased)
+        Strcat(buf, "diseased ");
+    if (mtmp->msummoned)
+        Strcat(buf, "summoned ");
     if (distorted)
         Strcat(buf, "hallucinogen-distorted ");
 
@@ -1087,22 +1089,47 @@ done(int how)
         /* assumes that only one type of item confers LifeSaved property */
         makeknown(AMULET_OF_LIFE_SAVING);
         Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
-        if (how == CHOKING)
-            You("vomit ...");
-        You_feel("much better!");
-        pline_The("medallion crumbles to dust!");
-        if (uamul)
+        
+        if (uamul->cursed || nonliving(gy.youmonst.data)) {
+            Your("medallion %s!", !Blind ? "glows white-hot"
+                                         : "sears your neck");
+            if (!Deaf)
+                You("hear manic laughter in the distance...");
+            Your("medallion turns to ash!");
+            u.uhp = 0;
+            disp.botl = 1;
+            if (uamul->cursed)
+                pline("It appears your luck has run out...");
+            else
+                pline("It appears you have no life to save...");
             useup(uamul);
-
-        (void) adjattrib(A_CON, -1, TRUE);
-        savelife(how);
-        if (how == GENOCIDED) {
-            pline("Unfortunately you are still genocided...");
         } else {
-            char killbuf[BUFSZ];
-            formatkiller(killbuf, BUFSZ, how, FALSE);
-            livelog_printf(LL_LIFESAVE, "averted death (%s)", killbuf);
-            survive = TRUE;
+            if (how == CHOKING)
+                You("vomit ...");
+            You_feel("much better!");
+            pline_The("medallion crumbles to dust!");
+            if (uamul)
+                useup(uamul);
+
+            /* Getting lifesaved isn't great for your overall health.
+             * Current and maximum Con go down by 2 (e.g. if max Con was
+             * formerly 16, you'll need exercise/gain ability to restore them,
+             * not just restore ability.
+             * A possible extension here is to reduce ATTRMAX by 1, making your
+             * Con cap permanently lower no matter what the player does, but
+             * this currently isn't saved. */
+            (void) adjattrib(A_CON, -2, TRUE);
+            AMAX(A_CON) = (AMAX(A_CON) >= 5 ? AMAX(A_CON) - 2 : 3);
+
+            savelife(how);
+            if (how == GENOCIDED) {
+                pline("Unfortunately you are still genocided...");
+            } else {
+                char killbuf[BUFSZ];
+                formatkiller(killbuf, BUFSZ, how, FALSE);
+                livelog_printf(LL_LIFESAVE, "averted death (%s)", killbuf);
+                survive = TRUE;
+            }
         }
     }
     /* explore and wizard modes offer player the option to keep playing */

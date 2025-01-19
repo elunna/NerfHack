@@ -484,9 +484,11 @@ ohitmon(
             }
         }
         if (otmp->otyp == EGG && touch_petrifies(&mons[otmp->corpsenm])) {
-            if (!munstone(mtmp, FALSE))
-                minstapetrify(mtmp, FALSE);
-            if (resists_ston(mtmp))
+            if (!mtmp->mstone) {
+                mtmp->mstone = 5;
+                mtmp->mstonebyu = TRUE;
+            }
+            if (resists_ston(mtmp) || defended(mtmp, AD_STON))
                 damage = 0;
         }
 
@@ -1329,6 +1331,14 @@ hit_bars(
             if (!nodissolve)
                 dissolve_bars(barsx, barsy);
         }
+    } else if (obj_type == LONG_SWORD && otmp->oartifact == ART_ACIDFALL) {
+        if (cansee(barsx, barsy) && !nodissolve)
+            pline_The("acidic blade slices right through the iron bars!");
+        else
+            You_hear(Hallucination ? "a hot knife slice through butter!"
+                                   : "a hissing noise.");
+        if (!nodissolve)
+            dissolve_bars(barsx, barsy);
     } else {
         if (!Deaf) {
             static enum sound_effect_entries se[] SOUNDLIBONLY = {

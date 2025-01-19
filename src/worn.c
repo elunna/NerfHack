@@ -1,4 +1,4 @@
-/* NetHack 3.7	worn.c	$NHDT-Date: 1715109581 2024/05/07 19:19:41 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.109 $ */
+/* NetHack 3.7	worn.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.116 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -1425,7 +1425,7 @@ mon_break_armor(struct monst *mon, boolean polyspot)
             You("touch %s.", mon_nam(u.usteed));
             Sprintf(buf, "falling off %s",
                     an(pmname(u.usteed->data, Mgender(u.usteed))));
-            instapetrify(buf);
+            make_stoned(5L, (char *) 0, KILLED_BY, buf);
         }
         dismount_steed(DISMOUNT_FELL);
     }
@@ -1448,7 +1448,7 @@ extra_pref(struct monst *mon, struct obj *obj)
             && !(resists_magm(mon) || defended(mon, AD_MAGM)))
         return 50;
     if (objects[obj->otyp].oc_oprop == REFLECTING
-            && !mon_reflects(mon, (char *) 0))
+            && !mon_reflectsrc(mon))
         return 40;
     if (objects[obj->otyp].oc_oprop == STOMPING
             && !mon_prop(mon, STOMPING))
@@ -1692,12 +1692,6 @@ armor_bonus(struct monst *mon, struct obj *armor)
         bon += race_bonus(armor);
     } else {
         if (is_orc(mon->data) && is_orcish_armor(armor->otyp))
-            bon += 2;
-        else if (is_gnome(mon->data) && is_gnomish_armor(armor->otyp))
-            bon += 2;
-        else if (is_elf(mon->data) && is_elven_armor(armor->otyp))
-            bon += 1;
-        else if (is_dwarf(mon->data) && is_dwarvish_armor(armor->otyp))
             bon += 1;
     }
     /* appearance bonuses */

@@ -371,6 +371,12 @@ tactics(struct monst *mtmp)
     mtmp->mstrategy =
         (mtmp->mstrategy & (STRAT_WAITMASK | STRAT_APPEARMSG)) | strat;
 
+    if (covetous_nonwarper(mtmp->data))
+        /* currently every strategy below this involves warping; for
+         * non-warpers, we still want to set mstrategy but don't want to go any
+         * further */
+        return 0;
+
     switch (strat) {
     case STRAT_HEAL: /* hide and recover */
         mx = mtmp->mx, my = mtmp->my;
@@ -398,7 +404,7 @@ tactics(struct monst *mtmp)
         /* if you're not around, cast healing spells */
         if (distu(mx, my) > (BOLT_LIM * BOLT_LIM))
             if (mtmp->mhp <= mtmp->mhpmax - 8) {
-                mtmp->mhp += rnd(8);
+                healmon(mtmp, rnd(8), 0);
                 return 1;
             }
         FALLTHROUGH;
@@ -488,7 +494,7 @@ aggravate(void)
         mtmp->msleeping = 0;
         if (!mtmp->mcanmove && !rn2(5)) {
             mtmp->mfrozen = 0;
-            mtmp->mcanmove = 1;
+            maybe_moncanmove(mtmp);
         }
     }
 }
@@ -729,8 +735,10 @@ resurrect(void)
                 elapsed /= 50L;
                 if (mtmp->msleeping && rn2((int) elapsed + 1))
                     mtmp->msleeping = 0;
-                if (mtmp->mfrozen == 1) /* would unfreeze on next move */
-                    mtmp->mfrozen = 0, mtmp->mcanmove = 1;
+                if (mtmp->mfrozen == 1) { /* would unfreeze on next move */
+                    mtmp->mfrozen = 0;
+                    maybe_moncanmove(mtmp);
+                }
                 if (!helpless(mtmp)) {
                     *mmtmp = mtmp->nmon;
                     mon_arrive(mtmp, -1); /* -1: Wiz_arrive (dog.c) */

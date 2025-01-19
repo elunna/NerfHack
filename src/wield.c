@@ -158,7 +158,7 @@ setuwep(struct obj *obj)
     if (obj) {
         gu.unweapon = (obj->oclass == WEAPON_CLASS)
                        ? is_launcher(obj) || is_ammo(obj) || is_missile(obj)
-                             || (is_pole(obj) && !u.usteed)
+                             || (is_pole(obj) && !u.usteed && obj->otyp != SCYTHE)
                        : !is_weptool(obj) && !is_wet_towel(obj);
     } else
         gu.unweapon = TRUE; /* for "bare hands" message */
@@ -179,7 +179,7 @@ cant_wield_corpse(struct obj *obj)
         corpse_xname(obj, (const char *) 0, CXN_PFX_THE),
         makeplural(body_part(HAND)));
     Sprintf(kbuf, "wielding %s bare-handed", killer_xname(obj));
-    instapetrify(kbuf);
+    make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
     return TRUE;
 }
 

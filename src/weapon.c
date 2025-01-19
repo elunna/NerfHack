@@ -971,7 +971,7 @@ select_hwep(struct monst *mtmp)
     /* all monsters can wield the remaining weapons */
     for (i = 0; i < SIZE(hwep); i++) {
         if (hwep[i] == CORPSE && !(mtmp->misc_worn_check & W_ARMG)
-            && !resists_ston(mtmp))
+            && !(resists_ston(mtmp) || defended(mtmp, AD_STON)))
             continue;
         if (((strong && !wearing_shield) || !objects[hwep[i]].oc_bimanual)
             && (objects[hwep[i]].oc_material != SILVER
@@ -1689,10 +1689,6 @@ void
 use_skill(int skill, int degree)
 {
     boolean advance_before;
-
-    /* Lethe levels block any gains */
-    if (svl.level.flags.lethe)
-        return;
     
     if (skill != P_NONE && !P_RESTRICTED(skill)) {
         advance_before = can_advance(skill, FALSE);

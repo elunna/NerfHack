@@ -227,7 +227,7 @@ endif
 #==============================================================================
 
 #  The version of the game this Makefile was designed for
-NETHACK_VERSION="2.0.0"
+NETHACK_VERSION="2.1.0"
 
 # A brief version for use in macros
 NHV1=$(subst .,,$(NETHACK_VERSION))
@@ -489,17 +489,6 @@ LUALIST = \
 	knox-1 		\
 	knox-2 		\
 	knox-3 		\
-	leth-a-1 	\
-	leth-a-2 	\
-	leth-b 		\
-	leth-c-1	\
-	leth-c-2 	\
-	leth-d-1 	\
-	leth-d-2 	\
-	leth-e 		\
-	leth-f 		\
-	leth-g 		\
-	leth-z 		\
 	medusa-1 	\
 	medusa-2 	\
 	medusa-3 	\
@@ -527,11 +516,6 @@ LUALIST = \
 	temple-2	\
 	nhcore 		\
 	nhlib 		\
-	nkai-a-1	\
-	nkai-a-2 	\
-	nkai-b 		\
-	nkai-c 		\
-	nkai-z 		\
 	oracle 		\
 	orcus 		\
 	quest 		\
@@ -1285,7 +1269,7 @@ $(ONH)/%.o: $(SRC)/%.c $(NHLUAH) | $(ONH)
 TARGET_CPU = x64
 NHV=370
 PKGFILES = nerfhackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
-        NerfHackW.exe opthelp nhdat200 record symbols sysconf.template
+        NerfHackW.exe opthelp nhdat210 record symbols sysconf.template
 FILESTOZIP = $(addprefix $(GAMEDIR)/, $(PKGFILES))
 MAINZIP = $(PkgDir)/nethack-$(NHV)-win-$(TARGET_CPU)-msys2.zip
 

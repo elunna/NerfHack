@@ -229,7 +229,8 @@ mdisplacem(
      */
     gv.vis = (canspotmon(magr) && canspotmon(mdef));
 
-    if (touch_petrifies(pd) && !resists_ston(magr)) {
+    if (touch_petrifies(pd) && !(resists_ston(magr) 
+                                 || defended(magr, AD_STON))) {
         if (!safegloves(which_armor(magr, W_ARMG))) {
             if (poly_when_stoned(pa)) {
                 mon_to_stone(magr);
@@ -878,15 +879,18 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
             pline("but nothing happens.");
         return M_ATTK_MISS;
     }
-    /* call mon_reflects 2x, first test, then, if visible, print message */
-    if (magr->data == &mons[PM_MEDUSA] && mon_reflects(mdef, (char *) 0)) {
+    /* call mon_reflectsrc 2x, first test, then, if visible, print message */
+    const char* monreflector = mon_reflectsrc(mdef);
+    if (magr->data == &mons[PM_MEDUSA] && monreflector) {
         if (canseemon(mdef))
-            (void) mon_reflects(mdef, "The gaze is reflected away by %s %s.");
+            pline_mon(mdef, "The gaze is reflected away by %s %s.",
+                      s_suffix(mon_nam(mdef)), monreflector);
         if (mdef->mcansee) {
-            if (mon_reflects(magr, (char *) 0)) {
+            monreflector = mon_reflectsrc(magr);
+            if (monreflector) {
                 if (canseemon(magr))
-                    (void) mon_reflects(magr,
-                                      "The gaze is reflected away by %s %s.");
+                    pline_mon(magr, "The gaze is reflected away by %s %s.",
+                      s_suffix(mon_nam(magr)), monreflector);
                 return M_ATTK_MISS;
             }
             if (mdef->minvis && !mon_prop(magr, SEE_INVIS)) {
@@ -1149,7 +1153,7 @@ mdamagem(
 
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
-        && !resists_ston(magr)) {
+        && !(resists_ston(magr) || defended(magr, AD_STON))) {
         long protector = attk_protection((int) mattk->aatyp),
              wornitems = magr->misc_worn_check;
 
@@ -1233,7 +1237,7 @@ mdamagem(
                 return (M_ATTK_DEF_DIED
                         | (!DEADMONSTER(magr) ? 0 : M_ATTK_AGR_DIED));
             } else if (pd == &mons[PM_NURSE]) {
-                magr->mhp = magr->mhpmax;
+                healmon(magr, magr->mhpmax, 0);
             }
             mon_givit(magr, pd);
         }
@@ -1356,19 +1360,14 @@ sleep_monst(struct monst *mon, int amt, int how)
         seemimic(mon);
 
     if ((resists_sleep(mon) || defended(mon, AD_SLEE)
-        || (how >= 0 && resist(mon, (char) how, 0, NOTELL)))
-        /* Cerberus can be put to sleep by tools */
-        && !(mon->data == &mons[PM_CERBERUS] && how == TOOL_CLASS)) {
+        || (how >= 0 && resist(mon, (char) how, 0, NOTELL)))) {
         shieldeff(mon->mx, mon->my);
     } else if (mon->mcanmove) {
         finish_meating(mon); /* terminate any meal-in-progress */
         amt += (int) mon->mfrozen;
         if (amt > 0) { /* sleep for N turns */
             mon->mcanmove = 0;
-            if (mon->iscerberus)
-                mon->mfrozen = min(amt, 8);
-            else
-                mon->mfrozen = min(amt, 127);
+            mon->mfrozen = min(amt, 127);
         } else { /* sleep until awakened */
             mon->msleeping = 1;
         }
@@ -1549,9 +1548,12 @@ passivemm(
                     Strcpy(buf, s_suffix(Monnam(mdef)));
                     (void) strNsubst(buf, "%", "%%", 0);
                     Strcat(buf, " gaze is reflected by %s %s.");
-                    if (mon_reflects(magr,
-                                     canseemon(magr) ? buf : (char *) 0))
+                    const char* monreflector = mon_reflectsrc(magr);
+                    if (monreflector) {
+                        pline_mon(magr, "But it reflects from %s %s!",
+                                  s_suffix(mon_nam(magr)), monreflector);
                         return (mdead | mhit);
+                    }
                     Strcpy(buf, Monnam(magr));
                     if (canseemon(magr)) {
                         if (has_free_action(magr)) {
@@ -1592,9 +1594,7 @@ passivemm(
             }
             if (canseemon(magr))
                 pline_mon(magr, "%s is suddenly very cold!", Monnam(magr));
-            mdef->mhp += tmp / 2;
-            if (mdef->mhpmax < mdef->mhp)
-                mdef->mhpmax = mdef->mhp;
+            healmon(mdef, tmp/2, tmp/2);
             if (mdef->mhpmax > ((int) (mdef->m_lev + 1) * 8))
                 (void) split_mon(mdef, magr);
             break;

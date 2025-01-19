@@ -52,18 +52,18 @@
      || (ptr)->msound == MS_LEADER \
      || (ptr) == &mons[PM_MINOTAUR] \
      || (ptr) == &mons[PM_TITAN] \
-     || (ptr) == &mons[PM_CERBERUS] \
      || (ptr) == &mons[PM_DEATH])
 
-#define resists_sick(ptr) \
-    ((ptr)->mlet == S_FUNGUS \
+#define resists_sick(ptr)                      \
+    ((ptr)->mlet == S_FUNGUS                   \
      || ((ptr)->mlet == S_ELEMENTAL && (ptr) != &mons[PM_STALKER]) \
-     || nonliving(ptr) \
-     || is_demon(ptr) \
-     || is_rider(ptr) \
-     || (ptr) == &mons[PM_GIANT_COCKROACH]   \
+     || nonliving(ptr)                         \
+     || is_demon(ptr)                          \
+     || is_rider(ptr)                          \
+     || (ptr) == &mons[PM_GIANT_COCKROACH]     \
      || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
      || (ptr) == &mons[PM_GREEN_DRAGON]        \
+     || (ptr) == &mons[PM_LEPER]               \
      || (ptr) == &mons[PM_LOCUST])
 
 #define resists_stun(ptr) \
@@ -131,11 +131,10 @@
 
 #define resists_drain(ptr) \
     (is_undead(ptr) || is_demon(ptr) || is_were(ptr) \
-     || ptr == &mons[PM_DEEP_ONE]       \
-     || ptr == &mons[PM_DEEPER_ONE]     \
-     || ptr == &mons[PM_DEEPEST_ONE]    \
-     || ptr == &mons[PM_SHADOW_OGRE]    \
-     || (ptr) == &mons[PM_CERBERUS]     \
+     || ptr == &mons[PM_DEEP_ONE]                 \
+     || ptr == &mons[PM_DEEPER_ONE]                 \
+     || ptr == &mons[PM_DEEPEST_ONE]                 \
+     || ptr == &mons[PM_SHADOW_OGRE]                 \
      || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 
@@ -368,6 +367,10 @@
     ((ptr) == &mons[PM_ORC] || (ptr) == &mons[PM_GIANT] \
      || (ptr) == &mons[PM_ELF] || (ptr) == &mons[PM_HUMAN])
 
+/* Is an iron piercer really made of iron?? */
+#define can_corrode(ptr) \
+((ptr) == &mons[PM_IRON_GOLEM] || (ptr) == &mons[PM_IRON_PIERCER])
+
 /* various monsters move faster underwater vs on land */
 #define is_fast_underwater(ptr) \
     ((ptr) == &mons[PM_WATER_TROLL] || (ptr) == &mons[PM_BABY_CROCODILE] \
@@ -529,5 +532,10 @@
 #define MAX_GAIN 50
 #define MIN_GAIN 5
 #define percent_granted(ptr) ((ptr)->cwt / 90)
+
+/* The monster is covetous, but should not warp, heal, or otherwise use
+ * tactics(). */
+#define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr))
+#define covetous_nonwarper(ptr) (is_archfiend(ptr))
 
 #endif /* MONDATA_H */

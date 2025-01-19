@@ -38,6 +38,7 @@ staticfn void peffect_oil(struct obj *);
 staticfn void peffect_acid(struct obj *);
 staticfn void peffect_polymorph(struct obj *);
 staticfn void peffect_blood(struct obj *);
+staticfn void peffect_milk(struct obj *);
 staticfn boolean H2Opotion_dip(struct obj *, struct obj *, boolean,
                              const char *);
 staticfn int dip_ok(struct obj *);
@@ -805,13 +806,13 @@ dodrink(void)
     }
     otmp->in_use = TRUE; /* you've opened the stopper */
 
-    if (objdescr_is(otmp, "milky")
+    if (objdescr_is(otmp, "milky") && !otmp->odiluted
         && !(svm.mvitals[PM_GHOST].mvflags & G_GONE)
         && !rn2(POTION_OCCUPANT_CHANCE(svm.mvitals[PM_GHOST].born))) {
         ghost_from_bottle();
         useup(otmp);
         return ECMD_TIME;
-    } else if (objdescr_is(otmp, "smoky")
+    } else if (objdescr_is(otmp, "smoky") && !otmp->odiluted
                && !(svm.mvitals[PM_DJINNI].mvflags & G_GONE)
                && !rn2(POTION_OCCUPANT_CHANCE(svm.mvitals[PM_DJINNI].born))) {
         djinni_from_bottle(otmp);
@@ -1028,7 +1029,7 @@ staticfn void
 peffect_invisibility(struct obj *otmp)
 {
     boolean is_spell = (otmp->oclass == SPBOOK_CLASS);
-    int amt = (rnd(2500) + 500 * (bcsign(otmp) + 2));
+    int amt = (rnd(200) + 200 * (bcsign(otmp) + 2));
     amt /= (otmp->odiluted ? 2 : 1);
 
     /* spell cannot penetrate mummy wrapping */
@@ -1429,21 +1430,20 @@ peffect_gain_level(struct obj *otmp)
 staticfn void
 peffect_healing(struct obj *otmp)
 {
-    int amt = 8 + d(4 + 2 * bcsign(otmp), 4);
-    amt /= (otmp->odiluted ? 2 : 1);
-
+    int amt = (8 + d(4 + 2 * bcsign(otmp), 4)) / (otmp->odiluted ? 2 : 1);
+    int gain = !otmp->cursed && !otmp->odiluted ? 1 : 0;
     You_feel("better.");
-    healup(amt, !otmp->cursed ? 1 : 0, !!otmp->blessed, !otmp->cursed);
+    healup(amt, gain, !!otmp->blessed, !otmp->cursed);
     exercise(A_CON, TRUE);
 }
 
 staticfn void
 peffect_extra_healing(struct obj *otmp)
 {
-    int amt = 16 + d(4 + 2 * bcsign(otmp), 8);
-    amt /= (otmp->odiluted ? 2 : 1);
-    int gain = otmp->blessed ? 5 : !otmp->cursed ? 2 : 0;
-    gain /= (otmp->odiluted ? 2 : 1);
+    int amt = (16 + d(4 + 2 * bcsign(otmp), 8))
+                       / (otmp->odiluted ? 2 : 1);
+    int gain = (otmp->blessed ? 5 : !otmp->cursed ? 2 : 0) 
+               / (otmp->odiluted ? 2 : 1);
 
     You_feel("much better.");
     healup(amt, gain, !otmp->cursed, TRUE);
@@ -1460,8 +1460,7 @@ staticfn void
 peffect_full_healing(struct obj *otmp)
 {
     int amt = otmp->odiluted ? 200 : 400;
-    int gain = 4 + 4 * bcsign(otmp);
-    gain /= (otmp->odiluted ? 2 : 1);
+    int gain = (4 + 4 * bcsign(otmp)) / (otmp->odiluted ? 2 : 1);
     healup(amt, gain, !otmp->cursed, TRUE);
     You_feel("%s healed.", Upolyd ? (u.mh == u.mhmax ? "completely" : "mostly")
                                       : (u.uhp == u.uhpmax ? "completely" : "mostly"));
@@ -1670,7 +1669,6 @@ peffect_polymorph(struct obj *otmp)
     }
 }
 
-
 staticfn void
 peffect_blood(struct obj *otmp)
 {
@@ -1743,6 +1741,94 @@ peffect_blood(struct obj *otmp)
         pline("Ugh.  That was vile.");
         make_vomiting(Vomiting + d(10, 8), TRUE);
     }
+}
+
+/* Milk must be ingested to have any effects, it won't
+ * create any vapors. cancels various temporary good 
+ * and bad status effects in general, like confusion,
+ * stunning, and invisibility, but not nausea since 
+ * drinking milk usually makes nausea worse in real life.
+ * 
+ * Severe conditions are NOT cancelled: illness, rabid,
+ * lycanthropy, aggravate monster, withering.
+ * Deafness don't make sense, so don't cure it.
+ */
+staticfn void
+peffect_milk(struct obj *otmp)
+{
+    if (!u.uconduct.unvegan++) {
+        livelog_printf(LL_CONDUCT,
+              "consumed animal products for the first time, by drinking milk");
+    }
+    if (otmp->cursed) {
+        pline("Ugh.  Spoiled milk."); /* perhaps others like it */
+        /* increasing existing nausea means that it will take longer
+           before eventual vomit, but also means that constitution
+           will be abused more times before illness completes */
+        make_vomiting((Vomiting & TIMEOUT) + (long) d(10, 4), TRUE);
+        return;
+    } else {
+        /* Intentionally same as oil */
+        pline("That was smooth!");
+    }
+    
+    /* Cancel bad statuses */
+    
+    (void) make_hallucinated(0L, TRUE, 0L);
+    make_confused(0L, TRUE);
+    make_stunned(0L, TRUE);
+    /* blindness is cured in the later call to healup() */
+    
+    /* Also cancel good statuses */
+    
+    if (u.uspellprot) {
+        pline_The("%s haze around you disappears.",
+                  hcolor(NH_GOLDEN));
+        u.usptime = u.uspmtime = u.uspellprot = 0;
+        disp.botl = 1; /* potential AC change */
+        find_ac();
+    }
+    if (HReflecting & TIMEOUT) {
+        pline_The("shimmering globe around you disappears.");
+        HReflecting &= ~TIMEOUT;
+    }
+    if (HPasses_walls & TIMEOUT) {
+        You("feel more solid.");
+        HPasses_walls &= ~TIMEOUT;
+    }
+    if (HInvis & TIMEOUT) {
+		set_itimeout(&HInvis, 0);
+    	newsym(u.ux, u.uy);
+    }
+    if (HSee_invisible & TIMEOUT) {
+        HSee_invisible &= ~TIMEOUT;
+        if (!See_invisible) {
+            set_mimic_blocking();
+            see_monsters();
+            /* might not be able to see self anymore */
+            newsym(u.ux, u.uy);
+        }
+        You("%s!", Hallucination ? "tawt you taw a puttie tat"
+                                 : "thought you saw something");
+    }
+    if (HTelepat & TIMEOUT) {
+        HTelepat &= ~TIMEOUT;
+        if (Blind && !Blind_telepat)
+            see_monsters(); /* Can't sense mons anymore! */
+        You_feel(Hallucination ? "out of touch with the cosmos."
+                                           : "a strange mental dullness.");
+    }
+    
+    /* Also - Unpoly yourself if polyd */
+	if (Upolyd) { /* includes lycanthrope in creature form */
+        if (Unchanging && u.mh > 0)
+            Your("amulet grows hot for a moment, then cools.");
+        else
+            rehumanize();
+    }
+    if (!otmp->odiluted)
+        healup(1, otmp->blessed ? 1 : 0, FALSE, TRUE);
+    exercise(A_CON, TRUE);
 }
 
 int
@@ -1837,6 +1923,10 @@ peffects(struct obj *otmp)
     case POT_VAMPIRE_BLOOD:
         peffect_blood(otmp);
         break;
+    case POT_MILK:
+        /* Does the body good! */
+        peffect_milk(otmp);
+        break;
     case POT_REFLECTION:
         peffect_reflection(otmp);
         break;
@@ -1883,11 +1973,11 @@ healup(int nhp, int nxtra, boolean curesick, boolean cureblind)
         make_blinded(0L, TRUE);
         /* heal deafness too */
         make_deaf(0L, TRUE);
+        make_rabid(0L, (char *) 0, 0, (char *) 0);
     }
     if (curesick) {
         make_vomiting(0L, TRUE);
         make_sick(0L, (char *) 0, TRUE, SICK_ALL);
-        make_rabid(0L, (char *) 0, 0, (char *) 0);
     }
     disp.botl = TRUE;
     return;
@@ -2202,7 +2292,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
  do_healing:
             angermon = FALSE;
             if (mon->mhp < mon->mhpmax) {
-                mon->mhp = mon->mhpmax;
+                healmon(mon, mon->mhpmax, 0);
                 if (canseemon(mon))
                     pline("%s looks sound and hale again.", Monnam(mon));
             }
@@ -2277,7 +2367,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             angermon = FALSE;
             if (canseemon(mon))
                 pline("A shimmering globe appears around %s!", mon_nam(mon));
-            /* monster reflection is handled in mon_reflects() */
+            /* monster reflection is handled in mon_reflectsrc() */
             mon->mextrinsics |= MR2_REFLECTION;
             mon->mreflecttime = rn1(5, 15);
             break;
@@ -2316,9 +2406,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                     angermon = FALSE;
                     if (canseemon(mon))
                         pline("%s looks healthier.", Monnam(mon));
-                    mon->mhp += d(2, 6);
-                    if (mon->mhp > mon->mhpmax)
-                        mon->mhp = mon->mhpmax;
+                    healmon(mon, d(2, 6), 0);
                     if (is_were(mon->data) && is_human(mon->data)
                         && !Protection_from_shape_changers)
                         new_were(mon); /* transform into beast */
@@ -2366,12 +2454,17 @@ potionhit(struct monst *mon, struct obj *obj, int how)
         case POT_POLYMORPH:
             (void) bhitm(mon, obj);
             break;
+        case POT_MILK:
+            if (canseemon(mon) && Hallucination)
+                You("try not to cry over the spilled milk.");
+            break;
         /*
         case POT_GAIN_LEVEL:
         case POT_LEVITATION:
         case POT_FRUIT_JUICE:
         case POT_MONSTER_DETECTION:
         case POT_OBJECT_DETECTION:
+    	case POT_MILK:
             break;
         */
         }
@@ -3299,6 +3392,8 @@ potion_dip(struct obj *obj, struct obj *potion)
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
         if (obj->cursed || potion->cursed || obj->otyp == POT_ACID
+            /* oil and lit potions - obviously */
+            || (obj->otyp == POT_OIL && obj->lamplit)
             /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
             || mixture == ACID_VENOM 
             /* decrease the chance of non-magical mixtures of exploding */
@@ -3405,7 +3500,8 @@ potion_dip(struct obj *obj, struct obj *potion)
             return ECMD_TIME;
         } else if (obj->opoisoned && (potion->otyp == POT_HEALING
                                       || potion->otyp == POT_EXTRA_HEALING
-                                      || potion->otyp == POT_FULL_HEALING)) {
+                                      || potion->otyp == POT_FULL_HEALING
+                                      || potion->otyp == POT_MILK)) {
             pline("A coating wears off %s.", the(xname(obj)));
             obj->opoisoned = 0;
             poof(potion);

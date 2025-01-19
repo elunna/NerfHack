@@ -1,4 +1,4 @@
-/* NetHack 3.7	shknam.c	$NHDT-Date: 1715203028 2024/05/08 21:17:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.78 $ */
+/* NetHack 3.7	shknam.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.82 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -282,8 +282,9 @@ const struct shclass shtypes[] = {
       FOOD_CLASS,
       5,
       D_SHOP,
-      { { 83, FOOD_CLASS },
+      { { 78, FOOD_CLASS },
         { 5, -POT_FRUIT_JUICE },
+        { 5, -POT_MILK },
         { 4, -POT_BOOZE },
         { 5, -POT_WATER },
         { 3, -ICE_BOX },
@@ -337,7 +338,8 @@ const struct shclass shtypes[] = {
       2,
       D_SHOP,
       { { 70, VEGETARIAN_CLASS },
-        { 20, -POT_FRUIT_JUICE },
+        { 10, -POT_FRUIT_JUICE },
+        { 10, -POT_MILK },
         { 4, -POT_HEALING },
         { 3, -POT_FULL_HEALING },
         { 2, -SCR_FOOD_DETECTION },

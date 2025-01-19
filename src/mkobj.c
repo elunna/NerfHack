@@ -224,7 +224,7 @@ mkobj_erosions(struct obj *otmp)
         /* A small fraction of non-artifact items will generate eroded or
          * possibly erodeproof. An item that generates eroded will never be
          * erodeproof, and vice versa. */
-        if (!rn2(100) || (is_dwarvish_obj(otmp->otyp) && !rn2(5))) {
+        if (!rn2(100) || (is_dwarvish_obj(otmp->otyp) && !rn2(25))) {
             otmp->oerodeproof = 1;
         } else {
             if ((!rn2(80) || (is_orcish_obj(otmp->otyp) && rn2(3)))
@@ -254,8 +254,6 @@ mkobj_erosions(struct obj *otmp)
     if (otmp->oclass == WAND_CLASS
         && svm.moves > 1L && !rn2(23))
         otmp->recharged = 1;
-        
-
 }
 
 /* make a random object of class 'let' at a specific location;
@@ -1270,7 +1268,8 @@ mksobj(int otyp, boolean init, boolean artif)
 
     /* Hijack wands when playing as a cartomancer
         - convert them to cards instead */
-    if (Role_if(PM_CARTOMANCER) && let == WAND_CLASS) {
+    if ((Role_if(PM_CARTOMANCER) && let == WAND_CLASS)
+            || otyp == WAN_WISHING) {
         otmp->oclass = SCROLL_CLASS;
         otmp->otyp = SCR_ZAPPING;
         otmp->corpsenm = otyp;
@@ -2645,9 +2644,8 @@ remove_object(struct obj *otmp)
         panic("remove_object: obj not on floor");
     extract_nexthere(otmp, &svl.level.objects[x][y]);
     extract_nobj(otmp, &fobj);
-    /* update vision iff this was the only boulder at its spot */
-    if (otmp->otyp == BOULDER && !sobj_at(BOULDER, x, y))
-        unblock_point(x, y); /* vision */
+    if (otmp->otyp == BOULDER)
+        recalc_block_point(x, y); /* vision */
     if (otmp->timed)
         obj_timer_checks(otmp, x, y, 0);
 }
@@ -2918,6 +2916,10 @@ dealloc_obj(struct obj *obj)
         gt.thrownobj = 0;
     if (obj == gk.kickedobj)
         gk.kickedobj = 0;
+    if (obj == svc.context.tin.tin) {
+        svc.context.tin.tin = (struct obj *) 0;
+        svc.context.tin.o_id = 0;
+    }
 
     /* if obj came from the most recent splitobj(), it's no longer eligible
        for unsplitobj(); perform inline clear_splitobjs() */
@@ -2998,7 +3000,7 @@ hornoplenty(
             obj = mkobj(POTION_CLASS, FALSE);
             if (objects[obj->otyp].oc_magic) {
                 do {
-                    obj->otyp = rnd_class(POT_BOOZE, POT_WATER);
+                    obj->otyp = rnd_class(POT_BOOZE, POT_MILK);
                     /* this number is very large on purpose */
                     if (!rn2(131))
                         obj->otyp = (!rn2(5)) ? POT_VAMPIRE_BLOOD : POT_BLOOD;

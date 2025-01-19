@@ -436,8 +436,7 @@ m_cure_self(struct monst *caster, int dmg)
         if (canseemon(caster))
             pline_mon(caster, "%s looks better.", Monnam(caster));
         /* note: player healing does 6d4; this used to do 1d8 */
-        if ((caster->mhp += d(3, 6)) > caster->mhpmax)
-            caster->mhp = caster->mhpmax;
+        healmon(caster, d(3, 6), 0);
         dmg = 0;
     }
     /* Cure other ailments that players spells are capable of. */
@@ -732,7 +731,7 @@ cast_wizard_spell(
                              || caster->data->msound == MS_LEADER);
         if (canseemon(caster))
             pline("A shimmering globe appears around %s!", mon_nam(caster));
-        /* monster reflection is handled in mon_reflects() */
+        /* monster reflection is handled in mon_reflectsrc() */
         caster->mextrinsics |= MR2_REFLECTION;
         caster->mreflecttime = rn1(50, strongbad ? 200 : 100);
         dmg = 0;
@@ -1261,17 +1260,18 @@ cast_cleric_spell(
         mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
         break;
     case CLC_LIGHTNING: {
-        boolean reflects;
+        boolean reflects = FALSE;
         Soundeffect(se_bolt_of_lightning, 80);
 
         if (youdefend) {
             pline("A bolt of lightning strikes down at you from above!");
-            reflects = ureflects("It bounces off your %s%s.", "");
+            const char* reflectsrc = ureflectsrc();
             orig_dmg = dmg = d(8, 6);
-            if (reflects || fully_resistant(SHOCK_RES)) {
+            if (reflectsrc || fully_resistant(SHOCK_RES)) {
                 shieldeff(u.ux, u.uy);
-                if (reflects) {
+                if (reflectsrc) {
                     dmg = resist_reduce(d(4, 6), SHOCK_RES);
+                    pline("It bounces off your %s.", reflectsrc);
                     monstseesu(M_SEEN_REFL);
                     break;
                 }
@@ -1294,15 +1294,22 @@ cast_cleric_spell(
             if (canseemon(mdef))
                 pline("A bolt of lightning strikes down at %s from above!",
                     mon_nam(mdef));
-            reflects = mon_reflects(mdef, "It bounces off %s %s.");
-            if (reflects || resists_elec(mdef) || defended(mdef, AD_ELEC)) {
+            const char* monreflector = mon_reflectsrc(mdef);
+            if (monreflector)
+                pline("It bounces off %s %s.", s_suffix(mon_nam(mdef)), 
+                      monreflector);
+            if (resists_elec(mdef) || defended(mdef, AD_ELEC)) {
                 shieldeff(u.ux, u.uy);
                 dmg = 0;
                 if (reflects)
                     break;
-            } else
+            } else {
                 dmg = d(8, 6);
-            dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
+            }
+            if (monreflector)
+                dmg /= 2;
+            if (!monreflector)
+                dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
         }
 
         /* lightning might destroy iron bars if hero is on such a spot;
@@ -1332,13 +1339,11 @@ cast_cleric_spell(
             break;
         }
         /* Try for insects, and if there are none
-           left, go for (sticks to) snakes.  -3.
-           Lolth summons spiders as he does in EvilHack */
-        boolean spiders = (caster->data == &mons[PM_LOLTH]);
+           left, go for (sticks to) snakes.  -3. */
         struct permonst *pm = mkclass(S_ANT, 0);
         struct monst *mtmp2 = (struct monst *) 0;
         char whatbuf[QBUFSZ],
-            let = (pm ? (spiders ? S_SPIDER : S_ANT) : S_SNAKE);
+            let = (pm ? S_ANT : S_SNAKE);
         boolean success = FALSE, seecaster;
         int i, quan, oldseen, newseen;
         coord bypos;
@@ -1363,9 +1368,7 @@ cast_cleric_spell(
 
         /* not canspotmon() which includes unseen things sensed via warning */
         seecaster = canseemon(caster) || tp_sensemon(caster) || Detect_monsters;
-        what = (let == S_SNAKE) ? "snake"
-               : (let == S_SPIDER) ? "arachnid"
-                                   : "insect";
+        what = (let == S_SNAKE) ? "snake" : "insect";
         if (Hallucination)
             what = makeplural(bogusmon(whatbuf, (char *) 0));
 
@@ -1769,7 +1772,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         /* invisibility when already invisible */
         if ((caster->minvis || caster->invis_blkd) && spellnum == MGC_DISAPPEAR)
             return TRUE;
-        if ((has_reflection(caster) || mon_reflects(caster, (char *) 0))
+        if ((has_reflection(caster) || mon_reflectsrc(caster))
             && spellnum == MGC_REFLECTION)
             return TRUE;
         /* peaceful monster won't cast invisibility. This doesn't
@@ -1908,7 +1911,7 @@ mspell_would_be_useless(
             && !See_invisible && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* reflection when already reflecting */
-        if ((has_reflection(caster) || mon_reflects(caster, (char *) 0))
+        if ((has_reflection(caster) || mon_reflectsrc(caster))
             && spellnum == MGC_REFLECTION)
             return TRUE;
         /* healing when already healed */

@@ -804,7 +804,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_HELL_HOUND_PUP:
     case PM_BARGHEST:
     case PM_HELL_HOUND:
-    case PM_CERBERUS:
     case PM_GAS_SPORE:
     case PM_FLOATING_EYE:
     case PM_FREEZING_SPHERE:
@@ -862,6 +861,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_KOBOLD_LEADER:
     case PM_KOBOLD_SHAMAN:
     case PM_LEPRECHAUN:
+    case PM_LEPER:
     case PM_SMALL_MIMIC:
     case PM_LARGE_MIMIC:
     case PM_GIANT_MIMIC:
@@ -1125,12 +1125,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_ASMODEUS:
     case PM_DEMOGORGON:
     case PM_LAVA_DEMON:
-    case PM_BUER:
-    case PM_KOSTCHTCHIE:
-    case PM_BAPHOMET:
-    case PM_LOLTH:
-    case PM_MALCANTHET:
-    case PM_MEPHISTOPHOLES:
     case PM_DEATH:
     case PM_PESTILENCE:
     case PM_FAMINE:
@@ -1520,6 +1514,58 @@ m_calcdistress(struct monst *mtmp)
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
 
+    
+    if (mtmp->mstone > 0) {
+        if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {
+            mtmp->mstone = 0;
+        } else if (poly_when_stoned(mtmp->data)) {
+            mtmp->mstone = 0;
+            mon_to_stone(mtmp);
+        } else {
+            switch (mtmp->mstone--) {
+            case 5:
+                /* "<mon> is slowing down.";
+                 * also removes intrinsic speed */
+                mon_adjust_speed(mtmp, -3, (struct obj *) 0);
+                break;
+            case 4:
+                if (canspotmon(mtmp))
+                    pline("%s %s are stiffening.",
+                          s_suffix(Monnam(mtmp)),
+                          nolimbs(mtmp->data) ? "extremities"
+                                              : "limbs");
+                break;
+            case 3:
+                if (canspotmon(mtmp))
+                    pline("%s %s have turned to stone.",
+                          s_suffix(Monnam(mtmp)),
+                          nolimbs(mtmp->data) ? "extremities"
+                                              : "limbs");
+                mtmp->mcanmove = 0;
+                break;
+            case 2:
+                if (canspotmon(mtmp))
+                    pline("%s has almost completely turned to stone.",
+                          Monnam(mtmp));
+                mtmp->mcanmove = 0;
+                break;
+            case 1:
+                if (canspotmon(mtmp))
+                    pline("%s is a statue.", Monnam(mtmp));
+                if (mtmp->mstonebyu) {
+                    gs.stoned = TRUE;
+                    xkilled(mtmp, AD_STON);
+                } else {
+                    monstone(mtmp);
+                }
+            }
+        }
+        if (!mtmp->mstone && !mtmp->mfrozen)
+            mtmp->mcanmove = 1;
+        if (DEADMONSTER(mtmp))
+            return;
+    }
+        
     /* diseased monsters can die as well... */
     if (mtmp->mdiseased && mtmp->mdiseasetime <= 1) {
         if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
@@ -1616,7 +1662,8 @@ m_calcdistress(struct monst *mtmp)
     /* gradually time out temporary problems */
     if (mtmp->mblinded && !--mtmp->mblinded)
         mtmp->mcansee = 1;
-    if (mtmp->mfrozen && !--mtmp->mfrozen)
+    if (mtmp->mfrozen && !--mtmp->mfrozen
+            && (!mtmp->mstone || mtmp->mstone > 2))
         mtmp->mcanmove = 1;
     if (mtmp->mfleetim && !--mtmp->mfleetim)
         mtmp->mflee = 0;
@@ -1819,9 +1866,7 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
 
     /* non-pet: Heal up to the object's weight in hp */
     if (!ispet && mtmp->mhp < mtmp->mhpmax) {
-        mtmp->mhp += objects[otmp->otyp].oc_weight;
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = mtmp->mhpmax;
+        healmon(mtmp, objects[otmp->otyp].oc_weight, 0);
     }
     if (Has_contents(otmp))
         meatbox(mtmp, otmp);
@@ -1863,15 +1908,13 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
         if (mstone) {
             if (poly_when_stoned(mtmp->data)) {
                 mon_to_stone(mtmp);
-            } else if (!resists_ston(mtmp)) {
-                if (vis)
-                    pline_mon(mtmp, "%s turns to stone!",
-                              Monnam(mtmp));
-                monstone(mtmp);
+            } else if (!resists_ston(mtmp) || defended(mtmp, AD_STON)) {
+                mtmp->mstone = 5;
+                mtmp->mstonebyu = FALSE;
             }
         }
         if (heal)
-            mtmp->mhp = mtmp->mhpmax;
+            healmon(mtmp, mtmp->mhpmax, 0);
         if ((eyes || heal) && !mtmp->mcansee)
             mcureblindness(mtmp, canseemon(mtmp));
         if (ispet && deadmimic)
@@ -2007,7 +2050,7 @@ meatobj(struct monst* mtmp) /* for gelatinous cubes */
         /* untouchable (or inaccessible) items */
         } else if ((otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm])
-                    && !resists_ston(mtmp))
+                    && !(resists_ston(mtmp) || defended(mtmp, AD_STON)))
                    /* don't engulf boulders and statues or ball&chain */
                    || otmp->oclass == ROCK_CLASS
                    || otmp == uball || otmp == uchain
@@ -2030,7 +2073,7 @@ meatobj(struct monst* mtmp) /* for gelatinous cubes */
                    || (otmp->opoisoned && !resists_poison(mtmp))
                    /* cockatrice corpses handled above; this
                       touch_petrifies() check catches eggs */
-                   || (mstoning(otmp) && !resists_ston(mtmp))
+                   || (mstoning(otmp) && !(resists_ston(mtmp) || defended(mtmp, AD_STON)))
                    || (otmp->otyp == GLOB_OF_GREEN_SLIME
                        && !slimeproof(mtmp->data))) {
             /* engulf */
@@ -2162,7 +2205,7 @@ meatcorpse(
         /* skip some corpses */
         if (vegan(corpsepm) /* ignore veggy corpse even if omnivorous */
             /* don't eat harmful corpses */
-            || (flesh_petrifies(corpsepm) && !resists_ston(mtmp)))
+            || (flesh_petrifies(corpsepm) && !(resists_ston(mtmp) || defended(mtmp, AD_STON))))
             continue;
         if (is_rider(corpsepm)) {
             boolean revived_it = revive_corpse(otmp, FALSE);
@@ -2450,7 +2493,8 @@ can_touch_safely(struct monst *mtmp, struct obj *otmp)
     struct permonst *mdat = mtmp->data;
 
     if (otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm])
-        && !(safegloves(which_armor(mtmp, W_ARMG)) && !resists_ston(mtmp)))
+        && !(safegloves(which_armor(mtmp, W_ARMG))
+        && !(resists_ston(mtmp) || defended(mtmp, AD_STON))))
         return FALSE;
     if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
         return FALSE;
@@ -2926,8 +2970,7 @@ mm_aggression(
         return ALLOW_M | ALLOW_TM;
 
     /* Maggots tend to eat ghoul food, angering the ghouls... */
-    if ((mndx == PM_GHOUL || mndx == PM_GHOUL_MAGE)
-        && mdef->data == &mons[PM_MAGGOT])
+    if (is_ghoul(magr->data) && mdef->data == &mons[PM_MAGGOT])
         return ALLOW_M | ALLOW_TM;
 
     /* berserk monsters sometimes lash out at everything
@@ -2937,10 +2980,15 @@ mm_aggression(
         return ALLOW_M | ALLOW_TM;
 
     /* Rabies wants to spread... */
-    if (magr->mrabid
-            && !mdef->mrabid && can_become_rabid(mdef->data))
+    if (magr->mrabid && !mdef->mrabid && can_become_rabid(mdef->data))
         return ALLOW_M | ALLOW_TM;
 
+    /* covetous/player monsters will attack
+       whoever has the amulet  */
+    if ((is_covetous(magr->data) || is_mplayer(magr->data))
+        && mon_has_amulet(mdef))
+        return ALLOW_M | ALLOW_TM;
+    
     /* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */
@@ -3253,12 +3301,6 @@ m_detach(
        leaving the dungeon alive rather than dying */
     if (mtmp->iswiz)
         wizdeadorgone();
-
-#if 0 /* TODO: Possible travel restrictions if Cerberus is not killed. */
-    if (mtmp->iscerberus)
-        cerberusdead();
-#endif
-
     /* foodead() might give quest feedback for foo having died; skip that
        if we're called for mongone() rather than mondead(); saving bones
        or wizard mode genocide of "*" can result in special monsters going
@@ -3321,7 +3363,11 @@ set_mon_min_mhpmax(
         mon->mhpmax = minimum_mhpmax;
 }
 
-/* find the worn amulet of life saving which will save a monster */
+/* find the worn amulet of life saving which can save a monster
+ * NOTE: this will return an amulet of life saving even if it's cursed and
+ * doomed to fail! The reason is that mlifesaver is used in various bits of code
+ * to determine whether mon has an amulet of life saving that should activate
+ * later, and we don't want it to just die as if the amulet weren't there. */
 struct obj *
 mlifesaver(struct monst *mon)
 {
@@ -3339,17 +3385,28 @@ lifesaved_monster(struct monst *mtmp)
 {
     boolean surviver;
     struct obj *lifesave = mlifesaver(mtmp);
-    int visible = (u.uswallow && u.ustuck == mtmp)
-                    || cansee(mtmp->mx, mtmp->my);
 
     if (lifesave) {
         /* not canseemon; amulets are on the head, so you don't want
          * to show this for a long worm with only a tail visible.
          * Nor do you check invisibility, because glowing and
          * disintegrating amulets are always visible. */
-        /* [ALI] Always treat swallower as visible for consistency */
-		/* with unpoly_monster(). */
-        if (visible) {
+
+        if (lifesave->cursed || nonliving(mtmp->data)) {
+            if (cansee(mtmp->mx, mtmp->my)) {
+                pline("But wait...");
+                pline("%s medallion glows white-hot!", s_suffix(Monnam(mtmp)));
+                makeknown(AMULET_OF_LIFE_SAVING);
+            }
+            if (!Deaf)
+                You("hear diabolical laughter in the distance...");
+            pline("%s dies!", Monnam(mtmp));
+            if (cansee(mtmp->mx, mtmp->my))
+                pline_The("medallion crumbles to dust!");
+            m_useup(mtmp, lifesave);
+            mtmp->mhp = 0;
+            return;
+        } else {
             pline("But wait...");
             pline("%s medallion begins to glow!", s_suffix(Monnam(mtmp)));
             makeknown(AMULET_OF_LIFE_SAVING);
@@ -3368,7 +3425,7 @@ lifesaved_monster(struct monst *mtmp)
         check_gear_next_turn(mtmp);
 
         surviver = !(svm.mvitals[monsndx(mtmp->data)].mvflags & G_GENOD);
-        mtmp->mcanmove = 1;
+        maybe_moncanmove(mtmp);
         mtmp->mfrozen = 0;
         if (mtmp->mtame && !mtmp->isminion) {
             wary_dog(mtmp, !surviver);
@@ -4143,8 +4200,6 @@ xkilled(
 
         /* illogical but traditional "treasure drop" */
         if (!rn2(6) && !(svm.mvitals[mndx].mvflags & G_NOCORPSE)
-            /* no treasure along the Lethe */
-            && !svl.level.flags.lethe
             /* no extra item from swallower or steed */
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */
@@ -5356,6 +5411,44 @@ get_iter_mons_xy(
 }
 
 
+/* Heal the given monster by amt hitpoints, unless it is somehow prevented
+   from healing. "overheal" is the maximum amount by which the max HP will
+   increase to allow for the healing (the resulting HP caps at max HP +
+   overheal, and the max HP stays the some unless it needs to increase to
+   accommodate the new HP). Overhealing the player is not currently
+   implemented by this method.
+
+   This function should only be used for situations which are conceptually
+   heals, rather than other situations where a monster's HP is set, so that
+   "prevent healing" effects work correctly. In particular, it should not
+   be used for cases where a monster's HP is restored upon revival, or when
+   a monster is created. It also shouldn't be used for lifesaving, which
+   overrides "cannot heal" effects.
+
+   amt and overheal must not be negative (0 is allowed, and a very common
+   amount for overheal). Returns the number of hitpoints healed. */
+int
+healmon(struct monst *mtmp, int amt, int overheal)
+{
+    if (mtmp == &gy.youmonst) {
+        int oldhp = Upolyd ? u.mh : u.uhp;
+        healup(amt, 0, 0, 0);
+        return (Upolyd ? u.mh : u.uhp) - oldhp;
+    } else {
+        int oldhp = mtmp->mhp;
+        if (mtmp->mhp + amt > mtmp->mhpmax + overheal) {
+            mtmp->mhpmax += overheal;
+            mtmp->mhp = mtmp->mhpmax;
+        } else {
+            mtmp->mhp += amt;
+            if (mtmp->mhp > mtmp->mhpmax)
+                mtmp->mhpmax = mtmp->mhp;
+        }
+        return mtmp->mhp - oldhp;
+    }
+}
+
+
 /* force all chameleons and mimics to become themselves and werecreatures
    to revert to human form; called when Protection_from_shape_changers gets
    activated via wearing or eating ring or via #wizintrinsic */
@@ -5510,8 +5603,9 @@ hideunder(struct monst *mtmp)
                 while (otmp && otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     otmp = otmp->nexthere;
-                if (otmp != 0 || ((mtmp == &gy.youmonst) ? Stone_resistance
-                                                        : resists_ston(mtmp))) {
+                if (otmp != 0 || ((mtmp == &gy.youmonst)
+                        ? Stone_resistance
+                        : (resists_ston(mtmp) || defended(mtmp, AD_STON)))) {
                     undetected = TRUE;
 
                     if (otmp && seeit)
@@ -6450,10 +6544,7 @@ golemeffects(struct monst *mon, int damtype, int dam)
             mon_adjust_speed(mon, -1, (struct obj *) 0);
     }
     if (heal) {
-        if (mon->mhp < mon->mhpmax) {
-            mon->mhp += heal;
-            if (mon->mhp > mon->mhpmax)
-                mon->mhp = mon->mhpmax;
+        if (healmon(mon, heal, 0)) {
             if (cansee(mon->mx, mon->my))
                 pline_mon(mon, "%s seems healthier.", Monnam(mon));
         }
@@ -6582,8 +6673,6 @@ usmellmon(struct permonst *mdat)
         case PM_DISPATER:
         case PM_YEENOGHU:
         case PM_ORCUS:
-        case PM_MALCANTHET:
-        case PM_MEPHISTOPHOLES:
             break;
         case PM_HUMAN_WEREJACKAL:
         case PM_HUMAN_WERERAT:
@@ -7017,9 +7106,7 @@ mon_berserk(struct monst *mtmp)
     wake_nearto(mtmp->mx, mtmp->my, 4 * 4);
 
     /* Renewed vigor!  */
-    mtmp->mhp += rnd(mtmp->mhpmax);
-    if (mtmp->mhp > mtmp->mhpmax)
-	    mtmp->mhp = mtmp->mhpmax;
+    healmon(mtmp, rnd(mtmp->mhpmax), 0);
     mtmp->mberserk = 1;
     mtmp->mflee = 0;
 
@@ -7210,9 +7297,6 @@ card_drop(struct monst *mon)
     if (!isok(mon->mx, mon->my))
         return FALSE;
 
-    if (svl.level.flags.lethe)
-        return FALSE;
-
     /* No card drops if you are polyd! Some poly-forms give the
        cartomancer unlimited offence that could allow them to
        start circumventing card-playing. We can't do much to
@@ -7340,8 +7424,8 @@ msummon_dies(struct monst *mtmp)
 }
 
 
-/* mark monster type as seen from close-up */
-void
+/* mark monster type as seen from close-up,
+   if we haven't seen it nearby before */void
 see_monster_closeup(struct monst *mtmp)
 {
     if (!svm.mvitals[monsndx(mtmp->data)].seen_close) {
@@ -7359,17 +7443,13 @@ see_nearby_monsters(void)
 {
     coordxy x, y;
 
-    /* currently used only for tourists ... */
-    if (Blind || !Role_if(PM_TOURIST))
-        return;
-
     for (x = u.ux - 1; x <= u.ux + 1; x++)
         for (y = u.uy - 1; y <= u.uy + 1; y++)
             if (isok(x, y) && MON_AT(x, y)) {
                 struct monst *mtmp = m_at(x, y);
 
-                if (canseemon(mtmp))
-                    see_monster_closeup(mtmp);
+                if (canspotmon(mtmp) && !mtmp->mundetected && !M_AP_TYPE(mtmp))
+                    svm.mvitals[monsndx(mtmp->data)].seen_close = TRUE;
             }
 }
 

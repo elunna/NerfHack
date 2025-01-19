@@ -119,8 +119,7 @@ struct window_procs mswin_procs = {
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     mswin_change_color, mswin_get_color_string,
 #endif
-    /* other defs that really should go away (they're tty specific) */
-    mswin_start_screen, mswin_end_screen, mswin_outrip,
+    mswin_outrip,
     mswin_preference_update, mswin_getmsghistory, mswin_putmsghistory,
     mswin_status_init, mswin_status_finish, mswin_status_enablefield,
     mswin_status_update,
@@ -1925,31 +1924,6 @@ mswin_get_color_string(void)
 }
 
 /*
-start_screen()  -- Only used on Unix tty ports, but must be declared for
-               completeness.  Sets up the tty to work in full-screen
-               graphics mode.  Look at win/tty/termcap.c for an
-               example.  If your window-port does not need this function
-               just declare an empty function.
-*/
-void
-mswin_start_screen(void)
-{
-    /* Do Nothing */
-    logDebug("mswin_start_screen()\n");
-}
-
-/*
-end_screen()    -- Only used on Unix tty ports, but must be declared for
-               completeness.  The complement of start_screen().
-*/
-void
-mswin_end_screen(void)
-{
-    /* Do Nothing */
-    logDebug("mswin_end_screen()\n");
-}
-
-/*
 outrip(winid, int, when)
             -- The tombstone code.  If you want the traditional code use
                genl_outrip for the value and check the #if in rip.c.
@@ -2394,7 +2368,7 @@ logDebug(const char *fmt, ...)
 /* Reading and writing settings from the registry. */
 #define CATEGORYKEY "Software"
 #define COMPANYKEY "NerfHack"
-#define PRODUCTKEY "NerfHack 2.0.0"
+#define PRODUCTKEY "NerfHack 2.1.0"
 #define SETTINGSKEY "Settings"
 #define MAINSHOWSTATEKEY "MainShowState"
 #define MAINMINXKEY "MainMinX"
@@ -2902,6 +2876,7 @@ static mswin_condition_field _condition_fields[CONDITION_COUNT] = {
     { BL_MASK_LEV,       "Lev", 0 },
     { BL_MASK_PARLYZ,    "Parlyz", 0 },
     { BL_MASK_RIDE,      "Ride", 0 },
+    { BL_MASK_PHASE,     "Phasing", 0 },
     { BL_MASK_SLEEPING,  "Zzz", 0 },
     { BL_MASK_SLIME,     "Slime", 0 },
     { BL_MASK_SLIPPERY,  "Slip", 0 },
@@ -2912,7 +2887,6 @@ static mswin_condition_field _condition_fields[CONDITION_COUNT] = {
     { BL_MASK_TERMILL,   "TermIll", 0 },
     { BL_MASK_TETHERED,  "Teth", 0 },
     { BL_MASK_TRAPPED,   "Trap", 0 },
-    { BL_MASK_UNCONSC,   "Out", 0 },
     { BL_MASK_WOUNDEDL,  "Legs", 0 },
     { BL_MASK_HOLDING,   "Uhold", 0 },
     { BL_MASK_WITHER,    "Wither", 0 },

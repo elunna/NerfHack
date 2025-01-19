@@ -17,7 +17,7 @@ staticfn int dog_invent(struct monst *, struct edog *, int);
 staticfn int dog_goal(struct monst *, struct edog *, int, int, int);
 staticfn struct monst *find_targ(struct monst *, int, int, int);
 staticfn int find_friends(struct monst *, struct monst *, int);
-staticfn struct monst *best_target(struct monst *);
+staticfn struct monst *best_target(struct monst *, boolean);
 staticfn long score_targ(struct monst *, struct monst *);
 staticfn boolean can_reach_location(struct monst *, coordxy, coordxy, coordxy,
                                   coordxy) NONNULLARG1;
@@ -247,12 +247,15 @@ dog_eat(struct monst *mtmp,
     int nutrit, res;
     long oprice;
     char objnambuf[BUFSZ], *obj_name;
-
+    boolean unstone;
+    
     objnambuf[0] = '\0';
     if (edog->hungrytime < svm.moves)
         edog->hungrytime = svm.moves;
     nutrit = dog_nutrition(mtmp, obj);
 
+    unstone = (cures_stoning(mtmp, obj, TRUE) && mtmp->mstone);
+    
     if (devour) {
         if (mtmp->meating > 1)
             mtmp->meating /= 2;
@@ -356,6 +359,18 @@ dog_eat(struct monst *mtmp,
             /* m_consume_obj() -> delobj() -> obfree() will handle the shop
                billing update */
         }
+        
+        if (unstone) {
+            mtmp->mstone = 0;
+            if (!gv.vis) {
+            } else if (Hallucination) {
+                pline("What a pity - %s just ruined a future piece of art!",
+                      mon_nam(mtmp));
+            } else {
+                pline("%s seems limber!", Monnam(mtmp));
+            }
+        }
+        
         m_consume_obj(mtmp, obj);
     }
 
@@ -864,7 +879,7 @@ score_targ(struct monst *mtmp, struct monst *mtarg)
 }
 
 staticfn struct monst *
-best_target(struct monst *mtmp)   /* Pet */
+best_target(struct monst *mtmp, boolean forced)   /* Pet */
 {
     int dx, dy;
     long bestscore = -40000L, currscore;
@@ -907,7 +922,7 @@ best_target(struct monst *mtmp)   /* Pet */
     }
 
     /* Filter out targets the pet doesn't like */
-    if (bestscore < 0L)
+    if (!forced && bestscore < 0L)
         best_targ = 0;
 
     return best_targ;
@@ -915,7 +930,7 @@ best_target(struct monst *mtmp)   /* Pet */
 
 /* Pet considers and maybe executes a ranged attack */
 int
-pet_ranged_attk(struct monst *mtmp)
+pet_ranged_attk(struct monst *mtmp, boolean forced)
 {
     struct monst *mtarg;
     int hungry = 0;
@@ -930,7 +945,7 @@ pet_ranged_attk(struct monst *mtmp)
     /* Identify the best target in a straight line from the pet;
      * if there is such a target, we'll let the pet attempt an attack.
      */
-    mtarg = best_target(mtmp);
+    mtarg = best_target(mtmp, forced);
 
     /* Hungry pets are unlikely to use breath/spit attacks */
     if (mtarg && (!hungry || !rn2(5))) {
@@ -990,7 +1005,8 @@ pet_ranged_attk(struct monst *mtmp)
          */
         if (mstatus != M_ATTK_MISS)
             return MMOVE_DONE;
-    }
+    } else if (forced)
+        (void) domonnoise(mtmp);
     return MMOVE_NOTHING;
 }
 
@@ -1268,7 +1284,7 @@ dog_move(
      * now's the time for ranged attacks. Note that the pet can move
      * after it performs its ranged attack. Should this be changed?
      */
-    if ((i = pet_ranged_attk(mtmp)) != MMOVE_NOTHING)
+    if ((i = pet_ranged_attk(mtmp, FALSE)) != MMOVE_NOTHING)
         return i;
 
  newdogpos:
@@ -1565,7 +1581,7 @@ acceptable_pet_target(
 
     boolean bad_eye = (!ranged && mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
             && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
-            && !mon_reflects(mtmp, (char *) NULL)
+            && !mon_reflectsrc(mtmp)
             && (mon_prop(mtmp, SEE_INVIS) || !mtmp2->minvis));
 
     boolean vs_passive = (!ranged && (mtmp2->data == &mons[PM_GELATINOUS_CUBE]
@@ -1591,7 +1607,7 @@ acceptable_pet_target(
     boolean vs_boomer = (attacktype(mtmp2->data, AT_BOOM) && !mtmp2->mcan
             && distu(mtmp2->mx, mtmp2->my) < 3);
 
-    return !((bad_eye && !mon_reflects(mtmp, (char *) NULL))
+    return !((bad_eye && !mon_reflectsrc(mtmp))
              || scared || vs_passive || passive_kill || vs_spiker
               || vs_stoner || vs_dise || vs_peaceful || vs_boomer);
 }
@@ -1735,6 +1751,7 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
     else if ( otmp->otyp == POT_HEALING
              || otmp->otyp == POT_EXTRA_HEALING
              || otmp->otyp == POT_FULL_HEALING
+             || otmp->otyp == POT_MILK
              || otmp->otyp == POT_RESTORE_ABILITY
              || otmp->otyp == POT_PARALYSIS
              || otmp->otyp == POT_BLINDNESS

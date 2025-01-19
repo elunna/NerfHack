@@ -959,6 +959,8 @@ a hero on the quest home level who runs or travels past the quest leader and
 	gets tossed out of the quest for some reason would keep running on the
 	far side of the quest portal
 allow rush/run over water if wearing discovered water walking boots
+putting on water walking boots while underwater (maybe via magical breathing)
+	and rising to surface wasn't causing the boots to become discovered
 flying pets wouldn't target underwater food but if they happened to fly over
 	such food they could and would eat it
 praying on an altar with pet corpse on it can revive the pet
@@ -1495,6 +1497,8 @@ failed #untrap could move hero diagonally into or out of an open doorway
 remember box is trapped after finding the trap
 when you hear a monster incant a scroll, ensure that the 'I' invisible
 	monster indicator doesn't trump telepathy briefly
+proceed with showpaths option even if the sysconf file is missing
+angry shopkeeper was not charging for thrown items
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2080,6 +2084,10 @@ farlook of /e or /E stopped reporting engraving and headstone text after a fix
 	for the situation where // or ; reported such text when there was an
 	object or monster in the way
 message was garbled when lightning or acid breath hit iron bars
+shop bug: buying a container with unpaid items in it could produce impossible
+	"unpaid_cost: object not on any bill" warnings
+when walking into/against a locked closed door, 'autounlock'==kick didn't
+	execute kick when player answered yes to "Door is locked.  Kick it?"
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -2405,7 +2413,10 @@ tty: add support for petattr
 tty: if a ^C interrupt occurred while DECgraphics characters were being drawn
 	on the map, the "Really quit?" prompt would be illegible due to being
 	rendered with VT line drawing characters
-tty: hide cursor unless waiting for user input
+tty: hide cursor unless waiting for user input; now extended to include tty
+	platforms that define NO_TERMS, rather than just on those using
+	termcap/terminfo, namely Windows console and msdos (text-mode
+	implemented; vga and vesa just have stubs currently)
 Unix: when user name is used as default character name, keep hyphenated value
 	intact instead stripping off dash and whatever follows as if that
 	specified role/race/&c (worked once upon a time; broken since 3.3.0)
@@ -2596,7 +2607,7 @@ menu for what-is command supports /^ and /" to view a list of nearby or whole
 	level visible and remembered traps
 spiders will occasionally spin webs when moving around
 drinking a burning potion of oil will cure being turned into slime
-new bigroom variant, a boulder maze
+new bigroom variants, a boulder maze and hexagons
 vomiting on an altar provokes the deities wrath
 branch stairs have a different glyph, show up in yellow color in tty
 duration of confusion when drinking booze depends upon hunger state
@@ -2746,7 +2757,7 @@ enlightenment/attribute disclosure for saving-grace: include a line for have
 	"X " for explore mode, or "D " for debug mode if any of the games
 	shown in its menu weren't saved during normal play; if they're all
 	normal play, the prefix is suppressed
-tourists gain experience by seeing new types of creatures up close, and
+tourists gain experience by "taking photos" of new creatures, and
 	going to new dungeon levels
 healers gain experience by healing pets
 blessed scroll of destroy armor asks which armor to destroy
@@ -2848,7 +2859,7 @@ always print a message when the hero teleports (pr #265 by copperwater)
 always print a message when the hero level teleports (pr #265 by copperwater)
 remove Sokoban luck penalties for actions you can't cheat with (pr #260 by
 	copperwater)
-sounds for minotaurs (pr #298 by NullCGT)
+sounds for minotaurs (pr #298 by Kestrel Gregorich-Trevor)
 correct the Guidebook descriptions for msdos video_width and video_height to
 	state that they work with video:vesa; the video:vga setting that was
 	described there forces the 640x480x16 mode where video_width and
@@ -2862,7 +2873,7 @@ allow themed rooms constrained by level difficulty (pr #344 by copperwater)
 add a varied form of LIBNH nethack library contribution (pr #385, #403
 	by apowers313)
 add cross-compile to WASM (pr #385, #403, #412 by apowers313)
-differentiating gendered monster tiles (pr #430 by NullCGT)
+differentiating gendered monster tiles (pr #430 by Kestrel Gregorich-Trevor)
 check bones data directly for deja vu messages (pr #374 by entrez)
 unify code for extracting an object from a monster's inventory (pr #455 by
 	copperwater)

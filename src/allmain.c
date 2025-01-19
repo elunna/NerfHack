@@ -223,7 +223,7 @@ moveloop_core(void)
                    place after movement has been allotted, the new
                    monster effectively loses its first turn */
                 chance = u.uevent.udemigod ? 25
-                         : (depth(&u.uz) > depth(&lethegate_level)) ? 50
+                         : (depth(&u.uz) > depth(&stronghold_level)) ? 50
                          : 70;
                 
                 /* Monster generation in quests is dramatically slowed down */
@@ -237,7 +237,7 @@ moveloop_core(void)
                  * However, don't continue the flooding after exiting gehennom,
                  * it gets sloggy and the fresh air is nice. */
                 if (u.uevent.invoked && !rn2(10)
-                    && (depth(&u.uz) > depth(&lethegate_level)))
+                    && (depth(&u.uz) > depth(&stronghold_level)))
                     nasty((struct monst *) 0, TRUE);
 
                 u_calc_moveamt(mvl_wtcap);
@@ -598,10 +598,6 @@ moveloop(boolean resuming)
 staticfn void
 regen_pw(int wtcap)
 {
-    /* Lethe is a subtle suppressor of magic */
-    if (svl.level.flags.lethe && !rn2(3))
-        return;
-
     if (u.uen < u.uenmax
         && ((wtcap < MOD_ENCUMBER
              && (!(svm.moves % ((MAXULEV + 8 - u.ulevel)
@@ -788,6 +784,10 @@ init_sound_disp_gamewindows(void)
     display_nhwindow(WIN_MESSAGE, FALSE);
     clear_glyph_buffer();
     display_nhwindow(WIN_MAP, FALSE);
+#ifdef TTY_PERM_INVENT
+    if (iflags.perm_invent_pending)
+        check_perm_invent_again();
+#endif
  }
 
 void

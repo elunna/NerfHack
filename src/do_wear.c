@@ -212,13 +212,40 @@ Boots_on(void)
     case HIGH_BOOTS:
     case KICKING_BOOTS:
         break;
-    case JUMPING_BOOTS:
+    case JUMPING_BOOTS: {
+        boolean was_flying = !!Flying;
+        /* while jumping, block flying; you need boots on the ground */
+        BFlying |= W_ARMF;
+        
         makeknown(uarmf->otyp);
         pline("Your %s feel longer.", makeplural(body_part(LEG)));
+        
+        if (was_flying) {
+            You("%s.", (is_pool_or_lava(u.ux, u.uy)
+                    || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                      ? "abruptly stop flying"
+                      : "land with a bounce");
+            spoteffects(TRUE);
+        }
         break;
+    }
     case WATER_WALKING_BOOTS:
+        /*
+         * Sequencing issue?  If underwater (perhaps via magical breathing),
+         * putting on water walking boots produces "you slowly rise above
+         * the surface" then "you finish your dressing maneuver".
+         */
+
+        /* spoteffects() doesn't get called here; pooleffects() is called
+           during movement and u.uinwater is already False after setworn() */
         if (u.uinwater)
             spoteffects(TRUE);
+        /* init'd in accessory_or_armor_on() and only used here */
+        if (gw.wasinwater) {
+            if (!u.uinwater)
+                makeknown(WATER_WALKING_BOOTS);
+            gw.wasinwater = 0U;
+        }
         /* (we don't need a lava check here since boots can't be
            put on while feet are stuck) */
         break;
@@ -231,17 +258,30 @@ Boots_on(void)
                      (oldprop || HFast) ? " a bit more" : "");
         }
         break;
-    case STOMPING_BOOTS:
+    case STOMPING_BOOTS: {
+        boolean was_flying = !!Flying;
+        /* while stomping, block flying; you need boots on the ground */
+        BFlying |= W_ARMF;
+        
         if (uarmf && uarmf->oartifact == ART_MAYHEM) {
             You_feel("the spirits begin to stir...");
             EConflict |= W_ARMF;
             makeknown(uarmf->otyp);
-        } else if (Stomping && !Flying) {
-            You("begin stomping around very loudly.");
+        } else if (Stomping) {
+            if (was_flying) {
+                You("%s.", (is_pool_or_lava(u.ux, u.uy)
+                        || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                          ? "abruptly stop flying"
+                          : "land with a stomp");
+                spoteffects(TRUE);
+            } else
+                You("begin stomping around very loudly.");
             makeknown(uarmf->otyp);
-        }
+        } 
         BStealth |= I_SPECIAL;
+        
         break;
+    }
     case ELVEN_BOOTS:
         toggle_stealth(uarmf, oldprop, TRUE);
         break;
@@ -318,13 +358,18 @@ Boots_off(void)
             spoteffects(TRUE);
         }
         break;
-    case STOMPING_BOOTS:
+    case STOMPING_BOOTS: {
         if (!Levitation && !Flying) {
             Your("footsteps become considerably less violent.");
             makeknown(otyp);
         }
         BStealth &= ~I_SPECIAL;
+        /* Unblock flying */
+        BFlying &= ~W_ARMF;
+        if (Flying)
+            You("start flying.");
         break;
+    }
     case ELVEN_BOOTS:
         toggle_stealth(otmp, oldprop, FALSE);
         break;
@@ -347,6 +392,10 @@ Boots_off(void)
     case JUMPING_BOOTS:
         makeknown(otyp);
         Your("%s feel shorter.", makeplural(body_part(LEG)));
+        /* Unblock flying */
+        BFlying &= ~W_ARMF;
+        if (Flying)
+            You("start flying.");
         break;
     case LOW_BOOTS:
     case ORCISH_BOOTS:
@@ -751,7 +800,7 @@ wielding_corpse(
             Strcpy(hbuf, "resistance timing out");
         Snprintf(kbuf, sizeof kbuf, "%s while wielding %s",
                  hbuf, killer_xname(obj));
-        instapetrify(kbuf);
+        make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
         /* life-saved or got poly'd into a stone golem; can't continue
            wielding cockatrice corpse unless have now become resistant */
         if (!Stone_resistance)
@@ -2605,6 +2654,7 @@ accessory_or_armor_on(struct obj *obj)
          *
         obj->known = 1;
          */
+        gw.wasinwater = u.uinwater; /* for WWALKING; Boots_on() is too late */
         setworn(obj, mask);
         /* if there's no delay, we'll execute 'afternmv' immediately */
         if (obj == uarm)
@@ -2634,6 +2684,8 @@ accessory_or_armor_on(struct obj *obj)
             on_msg(obj);
         }
         svc.context.takeoff.mask = svc.context.takeoff.what = 0L;
+        /* gw.wasinwater = 0U; // can't clear this yet; Boots_on() needs it
+         * and gets called via afternmv() after this routine has returned */
     } else { /* not armor */
         if (ring) {
             /* Ring_on() expects ring to already be worn as uleft or uright */
@@ -3538,6 +3590,12 @@ destroy_arm(
                          cloak_simple_name(otmp));
     } else if (!resistedc
              && (otmp = maybe_destroy_armor(uarm, atmp, &resistedsuit)) != 0) {
+        
+        if (uarm && (uarm == otmp) && otmp->otyp == CRYSTAL_PLATE_MAIL) {
+            otmp->in_use = FALSE; /* nothing happens */
+            return 0;
+        }
+        
         const char *suit = suit_simple_name(otmp);
 
         /* for gold DSM, we don't want Armor_gone() to report that it
@@ -3740,19 +3798,13 @@ race_bonus(struct obj *obj)
     * and the stats-challenged orc itself. Taken from SporkHack.
     */
     if (Race_if(PM_ORC) && is_orcish_armor(obj->otyp))
-        return 2;
-    if (Race_if(PM_GNOME) && is_gnomish_armor(obj->otyp))
-        return 1;
-    if (Race_if(PM_ELF) && is_elven_armor(obj->otyp))
-        return 1;
-    if (Race_if(PM_DWARF) && is_dwarvish_armor(obj->otyp))
         return 1;
 
     /* Racial preferences in armor. Some races really hate wearing the armor
      * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
      * too. For each piece of hated armor, the player gets a +2AC penalty. */
     if (hates_item(&gy.youmonst, obj->otyp))
-        return -2;
+        return -3;
 
     return 0;
 }

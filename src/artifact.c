@@ -717,6 +717,8 @@ set_artifact_intrinsic(
         mask = &EDrain_resistance;
     else if (dtyp == AD_ACID)
         mask = &EAcid_resistance;
+    else if (dtyp == AD_SLEE)
+        mask = &ESleep_resistance;
     else if (dtyp == AD_DISE) {
         mask = &ESick_resistance;
         if (Sick) {
@@ -1138,6 +1140,8 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
             return !(yours ? Stone_resistance : resists_ston(mtmp));
         case AD_ACID:
             return !(yours ? Acid_resistance : resists_acid(mtmp));
+        case AD_SLEE:
+            return !(yours ? Sleep_resistance : resists_sleep(mtmp));
         case AD_DISE:
             return !(yours ? Sick_resistance : resists_sick(mtmp->data));
         default:
@@ -1184,7 +1188,8 @@ spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
         || (weap->attk.adtyp == AD_PHYS /* check for `NO_ATTK' */
                   && weap->attk.damn == 0 && weap->attk.damd == 0))
         gs.spec_dbon_applies = FALSE;
-    else if (is_art(otmp, ART_GRIMTOOTH) || is_art(otmp, ART_VORPAL_BLADE))
+    else if (is_art(otmp, ART_GRIMTOOTH) || is_art(otmp, ART_VORPAL_BLADE)
+             || is_art(otmp, ART_GLAMDRING) || is_art(otmp, ART_ANGELSLAYER))
         /* Grimtooth has SPFX settings to warn against elves but we want its
            damage bonus to apply to all targets, so bypass spec_applies() */
         gs.spec_dbon_applies = TRUE;
@@ -1583,11 +1588,14 @@ artifact_hit(
     realizes_damage = (youdefend || vis
                        /* feel the effect even if not seen */
                        || (youattack && mdef == u.ustuck));
-
+    boolean def_underwater = youdefend ? Underwater : mon_underwater(mdef);
+    
     /* the four basic attacks: fire, cold, shock and missiles */
     if (attacks(AD_FIRE, otmp)) {
         if (realizes_damage) {
-            pline_The("fiery blade %s %s%c",
+            pline_The("%s %s %s%c",
+                      otmp->oartifact == ART_FIRE_BRAND ? "firey blade"
+                                                        : "infernal trident",
                       !gs.spec_dbon_applies
                           ? "hits"
                           : (mdef->data == &mons[PM_WATER_ELEMENTAL]
@@ -1673,6 +1681,30 @@ artifact_hit(
         return realizes_damage;
     }
 
+    /* Fifth basic attack - acid (for the new and improved Dirge... DIRGE) */
+    if (attacks(AD_ACID, otmp)) {
+        if (realizes_damage) {
+            pline_The("acidic blade %s %s%c",
+                      !gs.spec_dbon_applies
+                          ? "hits"
+                          : can_corrode(mdef->data)
+                              ? "eats away part of"
+                              : def_underwater
+                                  ? "hits" : "burns",
+                      hittee, !gs.spec_dbon_applies ? '.' : '!');
+        }
+        if (!def_underwater) {
+            if (!rn2(5)) {
+                erode_armor(mdef, ERODE_CORRODE);
+            }
+            if (!rn2(3)) {
+                int itemdmg = destroy_items(mdef, AD_ELEC, *dmgptr);
+                if (!youdefend)
+                    *dmgptr += itemdmg; /* item destruction dmg */
+            }
+        }
+        return realizes_damage;
+    }
     /* disease attack  */
     if (attacks(AD_DISE, otmp)) {
         boolean elf = youdefend ? maybe_polyd(is_elf(gy.youmonst.data),
@@ -1749,6 +1781,37 @@ artifact_hit(
         return Mb_hit(magr, mdef, otmp, dmgptr, dieroll, vis, hittee);
     }
 
+    /* Drowsing Rod 
+     * */
+    if (attacks(AD_SLEE, otmp) && rn2(10)) {
+        if (realizes_damage) {
+            if (otmp->oartifact == ART_DROWSING_ROD) {
+                if (realizes_damage && (youdefend || mdef->mcanmove)) {
+                    pline_The("staff sprays a %s %s at %s!", rndcolor(),
+                              (rn2(2) ? "gas" : "mist"), hittee);
+                }
+            } 
+            
+            if (youdefend &&
+                (how_resistant(SLEEP_RES) == 100 || Breathless)) {
+                pline_The("vapors do not affect you.");
+            } else if (youdefend) {
+                fall_asleep(-resist_reduce(rnd(10), SLEEP_RES), TRUE);
+                if (Blind)
+                    You("are put to sleep!");
+                else
+                    You("are put to sleep by %s!", 
+                        otmp->oartifact ? artiname(otmp->oartifact) : xname(otmp));
+            } else if (mdef->mcanmove && !breathless(mdef->data) 
+                        && sleep_monst(mdef, d(2, 4), -1)) {
+                if (!Blind)
+                    pline("%s is put to sleep!", Monnam(mdef));
+                slept_monst(mdef);
+            }
+        }
+        return realizes_damage;
+    }
+    
     if (!gs.spec_dbon_applies) {
         /* since damage bonus didn't apply, nothing more to do;
            no further attacks have side-effects on inventory */
@@ -1895,6 +1958,7 @@ artifact_hit(
                 return FALSE;
             return TRUE;
         case ART_ORCRIST:
+        case ART_GLAMDRING:
             if (youattack && is_orc(mdef->data) && instakill) {
                 You("slice open %s throat!", s_suffix(mon_nam(mdef)));
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
@@ -1906,7 +1970,24 @@ artifact_hit(
                 *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
             } else if (youdefend && maybe_polyd(is_orc(gy.youmonst.data),
                                                 Race_if(PM_ORC)) && instakill) {
-                You("feel Orcrist slice deep across your neck!");
+                You("feel %s slice deep across your neck!",
+                    artiname(otmp->oartifact));
+                *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
+                /* player returns to their original form if poly'd */
+            } else
+                return FALSE;
+            return TRUE;
+        case ART_ANGELSLAYER:
+            if (youattack && is_angel(mdef->data) && instakill) {
+                pline("Angelslayer's eldritch flame consumes %s!", mon_nam(mdef));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (!youattack && !youdefend
+                       && magr && is_angel(mdef->data) && instakill) {
+                if (show_instakill)
+                    pline("Angelslayer's eldritch flame consumes %s!", mon_nam(mdef));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && is_angel(gy.youmonst.data) && instakill) {
+                pline("The infernal trident's eldritch flame consumes you!");
                 *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 /* player returns to their original form if poly'd */
             } else
@@ -2038,18 +2119,6 @@ artifact_hit(
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     return TRUE;
                 }
-
-                if (mdef->data == &mons[PM_CERBERUS]) {
-                    pline("%s removes one of %s heads!", wepdesc,
-                          s_suffix(mon_nam(mdef)));
-                    *dmgptr = rn2(15) + 10;
-                    if (!DEADMONSTER(mdef)) {
-                        if (canseemon(mdef))
-                            You("watch in horror as it quickly grows back.");
-                    }
-                    return TRUE;
-                }
-
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 pline(ROLL_FROM(behead_msg), wepdesc,
                       mon_nam(mdef));
@@ -2216,9 +2285,7 @@ artifact_hit(
                     healup(drain, 0, FALSE, FALSE);
                 } else {
                     assert(magr != 0);
-                    magr->mhp += drain;
-                    if (magr->mhp > magr->mhpmax)
-                        magr->mhp = magr->mhpmax;
+                    healmon(magr, drain, 0);
                 }
             }
             return vis;
@@ -2244,9 +2311,7 @@ artifact_hit(
             }
             losexp("life drainage");
             if (magr && magr->mhp < magr->mhpmax) {
-                magr->mhp += (abs(oldhpmax - u.uhpmax) + 1) / 2;
-                if (magr->mhp > magr->mhpmax)
-                    magr->mhp = magr->mhpmax;
+                healmon(magr, (abs(oldhpmax - u.uhpmax) + 1) / 2, 0);
             }
             return TRUE;
         }
@@ -2818,6 +2883,7 @@ abil_to_adtyp(long *abil)
         { &ECold_resistance, AD_COLD },
         { &EShock_resistance, AD_ELEC },
         { &EAcid_resistance, AD_ACID },
+        { &ESleep_resistance, AD_SLEE },
         { &EAntimagic, AD_MAGM },
         { &EDisint_resistance, AD_DISN },
         { &EPoison_resistance, AD_DRST },
@@ -3457,7 +3523,6 @@ get_faux_artifact_obj(const char *name)
     return obj;
 }
 
-
 struct art_info_t
 artifact_info(int anum)
 {
@@ -3695,8 +3760,16 @@ artifact_info(int anum)
     case ART_OGRESMASHER:
         art_info.wielded[16] = "boosts constitution";
         break;
+    case ART_MORTALITY_DIAL: 
+        art_info.wielded[16] = "prevents monster regeneration";
+        art_info.wielded[17] = "prevents corpse revival";
+        break;
     case ART_ORCRIST:
+    case ART_GLAMDRING:
         art_info.xattack = "instakills orcs";
+        break;
+    case ART_ANGELSLAYER:
+        art_info.xattack = "instakills angels";
         break;
     case ART_ORIGIN:
         art_info.wielded[16] = "boosts spellcasting";

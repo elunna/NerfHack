@@ -71,7 +71,7 @@ use_saddle(struct obj *otmp)
         if (!(poly_when_stoned(gy.youmonst.data) && polymon(PM_STONE_GOLEM))) {
             Sprintf(kbuf, "attempting to saddle %s",
                     an(pmname(mtmp->data, Mgender(mtmp))));
-            instapetrify(kbuf);
+            make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
         }
     }
     if (ptr == &mons[PM_AMOROUS_DEMON]) {
@@ -279,7 +279,7 @@ mount_steed(
         You("touch %s.", mon_nam(mtmp));
         Sprintf(kbuf, "attempting to ride %s",
                 an(pmname(mtmp->data, Mgender(mtmp))));
-        instapetrify(kbuf);
+        make_stoned(5L, (char *) 0, KILLED_BY, kbuf);
     }
     if (!mtmp->mtame || mtmp->isminion) {
         pline("I think %s would mind.", mon_nam(mtmp));
@@ -409,7 +409,7 @@ kick_steed(void)
                 u.usteed->mfrozen -= 2;
             else {
                 u.usteed->mfrozen = 0;
-                u.usteed->mcanmove = 1;
+                maybe_moncanmove(u.usteed);
             }
             if (helpless(u.usteed))
                 pline("%s stirs.", He);
@@ -825,7 +825,7 @@ maybewakesteed(struct monst *steed)
         /* might break out of timed sleep or paralysis */
         if (!rn2(frozen)) {
             steed->mfrozen = 0;
-            steed->mcanmove = 1;
+            maybe_moncanmove(steed);
         } else {
             /* didn't awake, but remaining duration is halved */
             steed->mfrozen = frozen;

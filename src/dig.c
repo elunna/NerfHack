@@ -1,4 +1,4 @@
-/* NetHack 3.7	dig.c	$NHDT-Date: 1724613307 2024/08/25 19:15:07 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.219 $ */
+/* NetHack 3.7	dig.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.225 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -545,6 +545,7 @@ dig(void)
         if (IS_DOOR(lev->typ) && (lev->doormask & D_TRAPPED)) {
             lev->doormask = D_NODOOR;
             b_trapped("door", NO_PART);
+            recalc_block_point(dpx, dpy);
             newsym(dpx, dpy);
         }
  cleanup:
@@ -723,7 +724,10 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
         pline("%s digs %s %s the %s.", Monnam(madeby), an(tname), in_thru,
               surface_type);
     } else if (cansee(x, y) && flags.verbose) {
-        pline("%s appears in the %s.", An(tname), surface_type);
+        if (IS_STWALL(old_typ))
+            pline_The("%s crumbles into %s.", surface_type, an(tname));
+        else
+            pline("%s appears in the %s.", An(tname), surface_type);
     }
     if (IS_FURNITURE(old_typ) && cansee(x, y))
         pline_The("%s falls into the %s!", furniture, tname);
@@ -820,7 +824,7 @@ digactualhole(coordxy x, coordxy y, struct monst *madeby, int ttyp)
                 if (teleport_pet(mtmp, FALSE)) {
                     d_level tolevel;
 
-                    if (Is_lethe_gate(&u.uz)) {
+                    if (Is_stronghold(&u.uz)) {
                         assign_level(&tolevel, &valley_level);
                     } else if (Is_botlevel(&u.uz)) {
                         if (canseemon(mtmp))
@@ -1644,8 +1648,22 @@ zap_dig(int otyp)
         pitdig = TRUE;
         diridx = xytod(u.dx, u.dy);
     }
-    /* The spell is roughly half as effective. */
-    digdepth = otyp == SPE_DIG ? rn1(8, 4) : rn1(18, 8);
+    if (otyp == SPE_DIG) {
+        int role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(P_MATTER_SPELL);
+        switch (role_skill) {
+        default:        digdepth = rnd(4);          /* range 1-4 */
+            break;
+        case P_BASIC:   digdepth = rn1(7, 5);       /* range 5-11 */
+            break;
+        case P_SKILLED: digdepth = rn1(12, 7);      /* range 7-18 */
+            break;
+        case P_EXPERT:  digdepth = rn1(18, 8);      /* range 8-25 */
+            break;
+        }
+    } else {
+        digdepth = rn1(18, 8); /* Wand */
+    }
+
     tmp_at(DISP_BEAM, cmap_to_glyph(S_digbeam));
     while (--digdepth >= 0) {
         if (!isok(zx, zy))
@@ -1702,7 +1720,7 @@ zap_dig(int otyp)
                 pline_The("door is razed!");
             watch_dig((struct monst *) 0, zx, zy, TRUE);
             room->doormask = D_NODOOR;
-            unblock_point(zx, zy); /* vision */
+            recalc_block_point(zx, zy); /* vision */
             digdepth -= 2;
             if (maze_dig)
                 break;

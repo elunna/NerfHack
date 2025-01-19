@@ -294,7 +294,7 @@ fatal_corpse_mistake(struct obj *obj, boolean remotely)
 
     pline("Touching %s is a fatal mistake.",
           corpse_xname(obj, (const char *) 0, CXN_SINGULAR | CXN_ARTICLE));
-    instapetrify(killer_xname(obj));
+    make_stoned(5L, (char *) 0, KILLED_BY, killer_xname(obj));
     return TRUE;
 }
 
@@ -951,6 +951,8 @@ autopick_testobj(struct obj *otmp, boolean calc_costly)
         || (flags.pickup_stolen && otmp->how_lost == LOST_STOLEN))
         return TRUE;
     if (flags.nopick_dropped && otmp->how_lost == LOST_DROPPED)
+        return FALSE;
+    if (otmp->how_lost == LOST_EXPLODING)
         return FALSE;
 
     /* check for pickup_types */
@@ -1875,7 +1877,7 @@ pickup_object(
        couldn't pick up a thrown, stolen, or dropped item that was split
        off from a carried stack even while still carrying the rest of the
        stack unless we have at least one free slot available */
-    obj->how_lost = LOST_NONE; /* affects merge_choice() */
+    obj->how_lost &= ~LOSTOVERRIDEMASK;  /* affects merge_choice() */
     res = lift_object(obj, (struct obj *) 0, &count, telekinesis);
     obj->how_lost = save_how_lost; /* even when res > 0,
                                     * in case we call splitobj() below */
@@ -1888,7 +1890,7 @@ pickup_object(
     if (obj->quan != count && obj->otyp != LOADSTONE)
         obj = splitobj(obj, count);
 
-    obj->how_lost = LOST_NONE;
+    obj->how_lost &= ~LOSTOVERRIDEMASK;
     obj = pick_obj(obj);
 
     if (uwep && uwep == obj)
@@ -2471,7 +2473,7 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
                          && touch_petrifies(&mons[otmp->corpsenm]));
         boolean mtmp_would_ston = (!taking && petri
                                    && !safegloves(which_armor(mtmp, W_ARMG))
-                                   && !resists_ston(mtmp));
+                                   && !(resists_ston(mtmp) || defended(mtmp, AD_STON)));
         boolean unpaid = otmp->unpaid
                 || (!otmp->no_charge && costly_spot(u.ux, u.uy));
 
@@ -2603,11 +2605,14 @@ exchange_objects_with_mon(struct monst *mtmp, boolean taking)
         }
         if (otmp && petri) {
             if (taking && !uarmg && !Stone_resistance) {
-                instapetrify(corpse_xname(otmp, (const char *) 0,
+                make_stoned(5L, (char *) 0, KILLED_BY, corpse_xname(otmp, (const char *) 0,
                              CXN_ARTICLE));
                 break; /* if life-saved, stop taking items */
             } else if (mtmp_would_ston) {
-                minstapetrify(mtmp, TRUE);
+                if (!mtmp->mstone) {
+                    mtmp->mstone = 5;
+                    mtmp->mstonebyu = TRUE;
+                }
                 break;
             }
         }

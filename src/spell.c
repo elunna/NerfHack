@@ -370,7 +370,7 @@ learn(void)
         svc.context.spbook.delay++;
 
     /* became confused while learning */
-    if (Confusion || svl.level.flags.lethe) {
+    if (Confusion) {
         (void) confused_book(book);
         svc.context.spbook.book = 0; /* no longer studying */
         svc.context.spbook.o_id = 0;
@@ -1574,6 +1574,8 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         /* high skill yields effect equivalent to blessed potion */
         if (role_skill >= P_SKILLED)
             pseudo->blessed = 1;
+        if (role_skill < P_BASIC)
+            pseudo->odiluted = 1;
         FALLTHROUGH;
         /*FALLTHRU*/
     case SPE_INVISIBILITY:
@@ -1658,11 +1660,10 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
        able to help remember spells as they're cast. Primary spellcasters
        get a much larger boost than non-primary. Roles casting their
        special spell also get the full bonus. */
-    if (ACURR(A_INT) > 6 && !svl.level.flags.lethe) {
+    if (ACURR(A_INT) > 6) {
         if (primary_spellcaster() || spellid(spell) == gu.urole.spelspec)
             svs.spl_book[spell].sp_know += CAST_BOOST;
-        else
-            svs.spl_book[spell].sp_know += 50 + rnd(50);
+
         if (svs.spl_book[spell].sp_know >= KEEN)
             svs.spl_book[spell].sp_know = KEEN;
     }
@@ -2246,10 +2247,6 @@ percent_success(int spell)
                                                     : gu.urole.spelarmr;
     else if (uarmc && uarmc->otyp == ROBE)
         splcaster -= gu.urole.spelarmr;
-
-    /* Lethe levels make spellcasting more difficult */
-    if (svl.level.flags.lethe)
-        splcaster += 5;
 
     if (uwep && uwep->otyp == QUARTERSTAFF)
         splcaster -= 3; /* Small bonus */

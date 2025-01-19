@@ -187,7 +187,7 @@ static struct trobj Tourist[] = {
 };
 static struct trobj Valkyrie[] = {
     { SPEAR, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { DAGGER, 0, WEAPON_CLASS, 5, UNDEF_BLESS },
+    { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
@@ -514,6 +514,7 @@ static const struct def_skill Skill_S[] = {
 };
 static const struct def_skill Skill_T[] = {
     /* "Jack of all trades, master of none" */
+    { P_CLUB, P_BASIC },
     { P_DAGGER, P_BASIC },
     { P_KNIFE, P_BASIC },
     { P_AXE, P_BASIC },
@@ -541,7 +542,7 @@ static const struct def_skill Skill_T[] = {
     { P_WHIP, P_BASIC },
     { P_UNICORN_HORN, P_BASIC },
     { P_DIVINATION_SPELL, P_BASIC },
-    { P_ENCHANTMENT_SPELL, P_BASIC },
+    { P_ENCHANTMENT_SPELL, P_SKILLED }, /* Special spell: charm monster */
     { P_ESCAPE_SPELL, P_BASIC },
     { P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_BASIC },
@@ -1230,7 +1231,8 @@ reroll:
     /* Quality-of-Life */
     knows_object(POT_WATER, FALSE);
     knows_object(SCR_BLANK_PAPER, FALSE);
-    knows_object(SCR_IDENTIFY, FALSE);
+    if (!Role_if(PM_CAVE_DWELLER))
+        knows_object(SCR_IDENTIFY, FALSE);
     return;
 }
 
@@ -1306,8 +1308,9 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
 
     /*
      * For random objects, do not create certain overly powerful
-     * items: wand of wishing, polymorph/polymorph control combination.
-     * Specific objects, i.e. the discovery wishing, are still OK.
+     * items: wand of wishing, ring of levitation, or the
+     * polymorph/polymorph control combination.  Specific objects,
+     * i.e. the discovery wishing, are still OK.
      * Also, don't get a couple of really useless items.  (Note:
      * punishment isn't "useless".  Some players who start out with
      * one will immediately read it and use the iron ball as a
@@ -1316,9 +1319,12 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
     obj = mkobj(oclass, FALSE);
     otyp = obj->otyp;
 
-    while (otyp == WAN_WISHING || otyp == gn.nocreate
-           || otyp == gn.nocreate2 || otyp == gn.nocreate3
+    while (otyp == WAN_WISHING
+           || otyp == gn.nocreate
+           || otyp == gn.nocreate2
+           || otyp == gn.nocreate3
            || otyp == gn.nocreate4
+           || otyp == RIN_LEVITATION
            /* 'useless' items */
            || otyp == POT_HALLUCINATION
            || otyp == POT_ACID
@@ -1335,8 +1341,6 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || (Race_if(PM_VAMPIRE) &&
                /* vampirics start with regeneration */
                (otyp == RIN_REGENERATION
-               /* vampirics start with flying */
-                || otyp == RIN_LEVITATION
                /* vampirics don't eat */
                 || otyp == SPE_DETECT_FOOD || otyp == SCR_FOOD_DETECTION
                /* vampires don't like silver */

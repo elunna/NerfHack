@@ -590,7 +590,7 @@ priest_talk(struct monst *priest)
             pline("%s breaks out of %s reverie!", Monnam(priest),
                   mhis(priest));
             priest->mfrozen = priest->msleeping = 0;
-            priest->mcanmove = 1;
+            maybe_moncanmove(priest);
         }
         priest->mpeaceful = 0;
         SetVoice(priest, 0, 80, 0);

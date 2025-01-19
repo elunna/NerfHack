@@ -1190,25 +1190,25 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
 {
     struct monst *mtmp;
     struct trap *ttmp;
-    int xx = u.ux, yy = u.uy;
-    schar ltyp = PUDDLE;
+    int castr_x = u.ux, castr_y = u.uy;
+    schar ltyp = rn2(3) ? POOL : PUDDLE;
+    
+    /* We use current_wand if a monster muse'd the scroll */
     if (gc.current_wand && gc.current_wand->otyp == SCR_FLOOD) {
-        xx = gc.current_wand->ox;
-        yy = gc.current_wand->oy;
+        castr_x = gc.current_wand->ox;
+        castr_y = gc.current_wand->oy;
     }
-    if (!isok(xx, yy))
-        return;
 
     /* Don't create on the user's space unless poolcnt is -1. */
     if ((* (int*)poolcnt) != -1) {
-        if (x == xx && y == yy)
+        if (x == castr_x && y == castr_y)
             return;
     } else {
         ltyp = POOL;
     }
 
-    if (rn2(1 + distmin(xx, yy, x, y))
-        || sobj_at(BOULDER, x, y) || nexttodoor(x, y))
+    if (nexttodoor(x, y) || rn2(1 + distmin(castr_x, castr_y, x, y))
+        || sobj_at(BOULDER, x, y))
         return;
 
     if (levl[x][y].typ != ROOM      && levl[x][y].typ != GRASS
@@ -1574,7 +1574,7 @@ seffect_scare_monster(struct obj **sobjp)
         if (cansee(mtmp->mx, mtmp->my)) {
             if (confused || scursed) {
                 mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
-                mtmp->mcanmove = 1;
+                maybe_moncanmove(mtmp);
             } else if (!resist(mtmp, sobj->oclass, 0, NOTELL))
                 monflee(mtmp, 0, FALSE, FALSE);
             if (!mtmp->mtame)
@@ -2399,10 +2399,9 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
         wx = mtmp->mx;
         wy = mtmp->my;
     }
-    /* Cleanup when used in muse.c */
     if (!isyou)
-        m_useup(mtmp, sobj);
-
+        extract_from_minvent(mtmp, sobj, FALSE, TRUE);
+    
     if (confused) {
         int dried_up = 0;
         do_clear_area(wx, wy, range, unflood_space, (genericptr_t) &dried_up);
@@ -2449,6 +2448,10 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
         } else {
             pline("The air around you suddenly feels very humid.");
         }
+        /* Cleanup when used in muse.c */
+        if (!isyou)
+            delobj(sobj);
+
     }
 }
 
@@ -2639,8 +2642,11 @@ seffect_magic_mapping(struct obj **sobjp)
 
             for (x = 1; x < COLNO; x++)
                 for (y = 0; y < ROWNO; y++)
-                    if (levl[x][y].typ == SDOOR)
+                    if (levl[x][y].typ == SDOOR) {
                         cvt_sdoor_to_door(&levl[x][y]);
+                        if (Is_rogue_level(&u.uz))
+                            unblock_point(x, y);
+                    }
             /* do_mapping() already reveals secret passages */
         }
         gk.known = TRUE;

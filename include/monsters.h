@@ -202,7 +202,6 @@
         M1_ANIMAL | M1_NOHANDS | M1_POIS | M1_CARNIVORE | M1_CONCEAL,
         M2_HOSTILE | M2_FLANK, M3_BERSERK,
         NO_RACE, 16, CLR_BLACK, ASSASSIN_BUG),
-    /* Migos can only spawn in the lethe branch */
     MON(NAM("migo drone"), S_ANT,
         LVL(5, 15, 0, 10, -5), (G_GENO | G_LGROUP | 6),
         A(ATTK(AT_STNG, AD_DRST, 1, 3),
@@ -499,42 +498,19 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 14, CLR_RED, HELL_HOUND),
-    /* Cerberus inherits many abilities from EvilHack:
-     * - Level raised from 12 to 27
-     * - Speed raised from 10 to 20
-     * - AC raised from 2 to -7
-     * - MR raised from 20 to 90
-     * - Weight and nutrition raised
-     * - Size raised from large to huge
-     * - Added thick skin, berserk, poisonous corpse, see invisible,
-     *   teleport control, accurate, displaces monsters.
-     * - resists sleep, poison, stoning, draining, and death.
-     * - Waits for the player to approach
-     *
-     * From xNetHack
-     * - Bumped all bites to 5d6
-     * - Added fire bite
-     * - Replaced the breath attack with 2 6d6 claws
-     *
-     * NerfHack:
-     * - Added drain life bite
-    */
+#ifdef CHARON
     MON(NAM("Cerberus"), S_DOG,
-        LVL(27, 20, -7, 90, -7), (G_NOGEN | G_UNIQ | G_HELL),
-        A(ATTK(AT_BITE, AD_PHYS, 5, 6),
-          ATTK(AT_BITE, AD_DRLI, 5, 6),
-          ATTK(AT_BITE, AD_FIRE, 5, 6),
-          ATTK(AT_CLAW, AD_PHYS, 6, 6),
-          ATTK(AT_CLAW, AD_PHYS, 6, 6),
-          NO_ATTK),
-        SIZ(1200, 500, MS_BARK, MZ_HUGE),
-        MR_FIRE | MR_SLEEP | MR_POISON | MR_STONE, MR_FIRE,
-        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE | M1_THICK_HIDE
-            | M1_SEE_INVIS | M1_POIS | M1_TPORT_CNTRL,
+        LVL(12, 10, 2, 20, -7), (G_NOGEN | G_UNIQ | G_HELL),
+        A(ATTK(AT_BITE, AD_PHYS, 3, 6),
+          ATTK(AT_BITE, AD_PHYS, 3, 6),
+          ATTK(AT_BITE, AD_PHYS, 3, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1000, 350, MS_BARK, MZ_LARGE), MR_FIRE, MR_FIRE,
+        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_PNAME | M2_MALE,
-        M3_INFRAVISIBLE | M3_ACCURATE | M3_BERSERK | M3_WAITFORU
-            | M3_DISPLACES,
-        NO_RACE, 30, CLR_BLACK, CERBERUS),
+        M3_INFRAVISIBLE,
+        NO_RACE, 14, CLR_RED, CERBERUS),
+#endif
     /*
      * eyes
      */
@@ -1160,6 +1136,14 @@
         SIZ(60, 30, MS_LAUGH, MZ_TINY), 0, 0,
         M1_HUMANOID | M1_TPORT, M2_HOSTILE | M2_GREEDY, M3_INFRAVISIBLE,
         NO_RACE, 4, CLR_GREEN, LEPRECHAUN),
+    MON(NAM("leper"), S_LEPRECHAUN, 
+        LVL(3, 6, 5, 5, 0), (G_GENO | 1),
+        A(ATTK(AT_TUCH, AD_DISE, 2, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1200, 300, MS_SILENT, MZ_HUMAN), MR_POISON, 0,
+        M1_HUMANOID, M2_HOSTILE | M2_COLLECT, M3_INFRAVISIBLE,
+        NO_RACE, 5, CLR_GRAY, LEPER),
+
     /*
      * mimics
      */
@@ -1518,7 +1502,7 @@
         SIZ(20, 12, MS_SQEEK, MZ_SMALL), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_HERBIVORE, M2_HOSTILE,
         M3_INFRAVISIBLE,
-        NO_RACE, 3, CLR_WHITE, RABBIT),
+        NO_RACE, 5, CLR_WHITE, RABBIT),
     MON(NAM("wererat"), S_RODENT,
         LVL(2, 12, 6, 10, -7), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_WERE, 1, 4),
@@ -4138,7 +4122,7 @@
         MH_HUMAN, 15, CLR_BLUE, GUARD),
     /* familiar is the vampires starting pet */
     MON(NAM("familiar"), S_HUMAN,
-        LVL(5, 12, 10, 10, 0), (G_GENO | 2),
+        LVL(5, 14, 10, 10, 0), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_FAMILIAR, MZ_HUMAN), 0, 0,
@@ -4574,48 +4558,21 @@
      * (their order matters; see minion.c)
      */
     MON(NAM("Juiblex"), S_DEMON,
-        LVL(50, 3, -7, 65, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
+        LVL(50, 12, -7, 65, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_ENGL, AD_DISE, 4, 10),
           ATTK(AT_SPIT, AD_ACID, 3, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1500, 0, MS_GURGLE, MZ_LARGE),
+          ATTK(AT_TUCH, AD_SLIM, 1, 4),
+          ATTK(AT_NONE, AD_ACID, 0, 1), 
+          ATTK(AT_BOOM, AD_ACID, 4, 6),
+          NO_ATTK),
+        SIZ(1500, 0, MS_GURGLE, MZ_GIGANTIC),
         MR_FIRE | MR_POISON | MR_ACID | MR_STONE, 0,
         M1_AMPHIBIOUS | M1_AMORPHOUS | M1_NOHEAD | M1_FLY | M1_SEE_INVIS
             | M1_ACID | M1_POIS,
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
             | M2_LORD | M2_MALE,
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISION,
-        MH_DEMON, 26, CLR_BRIGHT_GREEN, JUIBLEX),
-    MON(NAM("Buer"), S_DEMON,
-         LVL(52, 20, -5, 70, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-         A(ATTK(AT_BITE, AD_PHYS, 4, 6),
-           ATTK(AT_CLAW, AD_PHYS, 2, 6),
-           ATTK(AT_CLAW, AD_PHYS, 2, 6),
-           ATTK(AT_CLAW, AD_PHYS, 2, 6),
-           ATTK(AT_CLAW, AD_PHYS, 2, 6),
-           ATTK(AT_CLAW, AD_PHYS, 2, 6)),
-         SIZ(900, 500, MS_ROAR, MZ_LARGE), MR_FIRE | MR_POISON, 0,
-         M1_SEE_INVIS | M1_POIS,
-         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
-             | M2_LORD | M2_MALE | M2_COLLECT,
-         M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
-         MH_DEMON, 28, HI_LORD, BUER),
-    /* In SpliceHack this guy had a fumbling attack - we are replacing it
-     * with a clerical spellcasting ability. */
-    MON(NAM("Kostchtchie"), S_DEMON,
-        LVL(54, 15, 3, 30, -15), (G_HELL | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_WEAP, AD_PHYS, 5, 10),
-          ATTK(AT_MAGC, AD_CLRC, 2, 8),
-          ATTK(AT_HUGS, AD_PHYS, 2, 12),
-          NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(2250, 750, MS_BOAST, MZ_GIGANTIC),
-        MR_COLD | MR_POISON | MR_STONE, MR_COLD | MR_POISON,
-        M1_HUMANOID | M1_CARNIVORE,
-        M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_JEWELS
-            | M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
-            | M2_LORD | M2_MALE,
-        M3_INFRAVISIBLE | M3_INFRAVISION | M3_WANTSAMUL,
-        MH_GIANT | MH_DEMON, 30, HI_LORD, KOSTCHTCHIE),
+        MH_DEMON, 27, CLR_BRIGHT_GREEN, JUIBLEX),
     MON(NAM("Yeenoghu"), S_DEMON,
         LVL(56, 18, -5, 80, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6),
@@ -4629,33 +4586,6 @@
             | M2_LORD | M2_MALE | M2_COLLECT,
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_DEMON, 31, HI_LORD, YEENOGHU),
-    MON(NAM("Baphomet"), S_DEMON,
-        LVL(56, 15, -5, 70, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_WEAP, AD_PHYS, 3, 7),
-          ATTK(AT_CLAW, AD_PHYS, 3, 7),
-          ATTK(AT_BUTT, AD_PHYS, 3, 8),
-          ATTK(AT_BREA, AD_CURS, 1, 6),
-          NO_ATTK, NO_ATTK),
-        SIZ(1500, 700, MS_ROAR, MZ_HUGE), MR_FIRE | MR_POISON, 0,
-        M1_HUMANOID | M1_CARNIVORE | M1_POIS,
-        M2_HOSTILE | M2_STRONG | M2_NASTY | M2_PNAME | M2_LORD | M2_MALE
-            | M2_COLLECT | M2_NOPOLY,
-        M3_INFRAVISIBLE | M3_INFRAVISION | M3_WANTSAMUL,
-        MH_DEMON, 32, HI_LORD, BAPHOMET),
-    MON(NAM("Lolth"), S_DEMON,
-        LVL(67, 12, -10, 70, -15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_WEAP, AD_PHYS, 3, 4),
-          ATTK(AT_WEAP, AD_PHYS, 2, 4),
-          ATTK(AT_BITE, AD_PLYS, 2, 4),
-          ATTK(AT_TUCH, AD_WEBS, 0, 0),
-          ATTK(AT_MAGC, AD_CLRC, 4, 6),
-          ATTK(AT_MAGC, AD_SPEL, 4, 6)),
-        SIZ(1800, 600, MS_SILENT, MZ_HUGE), MR_FIRE | MR_POISON | MR_SLEEP, 0,
-        M1_SEE_INVIS | M1_POIS,
-        M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
-            | M2_STRONG | M2_LORD | M2_FEMALE,
-        M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
-        MH_DEMON /*|MH_SPIDER*/, 36, HI_LORD, LOLTH),
     MON(NAM("Orcus"), S_DEMON,
         LVL(66, 9, -6, 85, -20), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6),
@@ -4672,11 +4602,12 @@
             | M3_INFRAVISION,
         MH_DEMON, 36, HI_LORD, ORCUS),
     MON(NAM("Geryon"), S_DEMON,
-        LVL(72, 3, -3, 75, 15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_CLAW, AD_PHYS, 3, 6),
-          ATTK(AT_CLAW, AD_PHYS, 3, 6),
-          ATTK(AT_STNG, AD_DRST, 2, 4),
-          NO_ATTK, NO_ATTK, NO_ATTK),
+        LVL(72, 12, -3, 75, 15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
+        A(ATTK(AT_WEAP, AD_PHYS, 4, 6),
+          ATTK(AT_CLAW, AD_PHYS, 4, 6),
+          ATTK(AT_STNG, AD_DRST, 2, 8),
+          ATTK(AT_MAGC, AD_CLRC, 4, 6),
+          NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_BRIBE, MZ_HUGE), MR_FIRE | MR_POISON, 0,
         M1_FLY | M1_SEE_INVIS | M1_POIS | M1_SLITHY,
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
@@ -4694,21 +4625,8 @@
             | M2_PRINCE | M2_MALE | M2_COLLECT,
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_DEMON, 40, HI_LORD, DISPATER),
-    MON(NAM("Malcanthet"), S_DEMON,
-        LVL(80, 15, -6, 80, 15), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_GAZE, AD_BLND, 4, 6),
-          ATTK(AT_WEAP, AD_PHYS, 2, 6),
-          ATTK(AT_CLAW, AD_PHYS, 2, 6),
-          ATTK(AT_CLAW, AD_SSEX, 0, 0),
-          NO_ATTK, NO_ATTK),
-        SIZ(900, 500, MS_BRIBE, MZ_HUMAN), MR_FIRE | MR_POISON, 0,
-        M1_FLY | M1_SEE_INVIS | M1_POIS | M1_TPORT_CNTRL | M1_TPORT,
-        M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_NASTY
-            | M2_PRINCE | M2_COLLECT | M2_PNAME | M2_NASTY,
-        M3_WANTSAMUL | M3_WAITFORU | M3_INFRAVISIBLE | M3_INFRAVISION,
-        MH_DEMON, 42, HI_LORD, MALCANTHET),
     MON(NAM("Baalzebub"), S_DEMON,
-        LVL(89, 9, -5, 85, 20), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
+        LVL(89, 15, -5, 85, 20), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_BITE, AD_PHYS, 6, 6),
           ATTK(AT_GAZE, AD_STUN, 2, 6),
           ATTK(AT_STNG, AD_DRST, 2, 6),
@@ -4719,18 +4637,6 @@
             | M2_PRINCE | M2_MALE,
         M3_WANTSAMUL | M3_WAITFORU | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_DEMON, 45, HI_LORD, BAALZEBUB),
-    MON(NAM("Mephistopholes"), S_DEMON,
-        LVL(105, 12, -17, 90, 20), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-         A(ATTK(AT_BUTT, AD_PHYS, 4, 4),
-           ATTK(AT_MAGC, AD_FIRE, 4, 4),
-           ATTK(AT_CLAW, AD_PHYS, 2, 4),
-           NO_ATTK, NO_ATTK, NO_ATTK),
-         SIZ(1500, 500, MS_BRIBE, MZ_HUGE), MR_FIRE | MR_COLD | MR_POISON, 0,
-         M1_FLY | M1_SEE_INVIS | M1_HUMANOID | M1_POIS,
-         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_STRONG
-             | M2_NASTY | M2_PRINCE | M2_MALE,
-         M3_WANTSAMUL | M3_INFRAVISIBLE | M3_WAITFORU | M3_INFRAVISION,
-        MH_DEMON, 53, HI_LORD, MEPHISTOPHOLES),
     MON(NAM("Asmodeus"), S_DEMON,
         LVL(105, 12, -7, 90, 20), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_CLAW, AD_PHYS, 4, 4),

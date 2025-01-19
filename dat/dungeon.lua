@@ -7,7 +7,7 @@ dungeon = {
    {
       name = "The Dungeons of Doom",
       bonetag = "D",
-      base = 40,
+      base = 30,
       range = 5,
       alignment = "unaligned",
       themerooms = "themerms.lua",
@@ -31,15 +31,15 @@ dungeon = {
             branchtype = "portal"
          },
          {
-            name = "Head of the Lethe River",
-            chainlevel = "leth-b",
-            base = 0,
-            direction = "up"
-         },
-         {
             name = "The Lost Tomb",
             base = 15,
             range = 4,
+            direction = "down",
+         },
+         {
+            name = "The Wyrm Caves",
+            base = 20,
+            range = 2,
             direction = "down",
          },
          {
@@ -56,7 +56,7 @@ dungeon = {
          },
          {
             name = "Gehennom",
-            chainlevel = "leth-z",
+            chainlevel = "castle",
             base = 0,
             branchtype = "no_down"
          },
@@ -94,72 +94,43 @@ dungeon = {
          },
          {
             name = "medusa",
-            base = -12,
+            base = -5,
             range = 4,
             nlevels = 4,
             alignment = "chaotic"
          },
          {
             name = "castle",
-            base = -8,
+            base = -1,
             nlevels = 3,
-         },
-         {
-            name = "leth-b",
-            base = -7
-         },
-         {
-            name = "leth-c",
-            base = -6,
-            nlevels = 2,
-            chance = 50
-         },
-         {
-            name = "leth-d",
-            base = -5,
-            nlevels = 2,
-            chance = 25
-         },
-         {
-            name = "leth-e",
-            base = -4,
-            chance = 50
-         },
-         {
-            name = "leth-f",
-            base = -3,
-            chance = 50,
-         },
-         {
-            name = "leth-g",
-            base = -2,
-            chance = 25,
-         },
-         {
-            name = "leth-z",
-            base = -1
          },
       }
    },
+   -- Gehennom follows roughly the same template as SLASH'EM
+   -- All demon lords are guaranteed
+   -- There is now an additional entry bridge level after the VoTD
+   -- The Wizard's tower was extracted to it's own branch
+   -- The Fake wizard towers were removed
    {
       name = "Gehennom",
       bonetag = "G",
-      base = 24,
-      range = 5,
+      base = 19,
+      range = 2,
       flags = { "mazelike", "hellish" },
       lvlfill = "hellfill",
       alignment = "noalign",
       branches = {
          {
             name = "Vlad's Tower",
-            base = 9,
-            range = 5,
+            base = 3,
+            range = 10,
             direction = "up"
          },
          {
             name = "The Wizard's Tower",
-            chainlevel = "nkai-b",
-            base = 0,
+            bonetag = "F",
+            base = 10,
+            range = 8,
             branchtype = "portal"
          },
       },
@@ -167,30 +138,13 @@ dungeon = {
          {
             name = "valley",
             bonetag = "V",
-            nlevels = 3,
+            nlevels = 2,
             base = 1
          },
          {
             name = "bridge",
             bonetag = "E",
             base = 2
-         },
-         {
-            name = "nkai-a",
-            nlevels = 2,
-            base = -5
-         },
-         {
-            name = "nkai-b",
-            base = -4
-         },
-         {
-            name = "nkai-c",
-            base = -3
-         },
-         {
-            name = "nkai-z",
-            base = -2
          },
          {
             name = "sanctm",
@@ -200,41 +154,40 @@ dungeon = {
          {
             name = "juiblex",
             bonetag = "J",
-            base = 4,
-            range = 4
+            base = 3,
+            range = 5
          },
          {
-            name = "geryon",
-            bonetag = "G",
+            name = "yeenog",
+            bonetag = "E",
+            nlevels = 3,
+            base = 3,
+            range = 5
+         },
+         {
+            name = "orcus",
+            bonetag = "O",
             nlevels = 2,
-            base = 2,
-            chance = 50,
-            range = 16
+            base = 3,
+            range = 5
          },
          {
-            name = "mephisto",
-            bonetag = "M",
-            base = 2,
-            chance = 50,
-            range = 6
+            name = "demo",
+            bonetag = "D",
+            nlevels = 3,
+            base = 3,
+            range = 5
          },
          {
             name = "baalz",
             bonetag = "B",
             nlevels = 3,
-            base = 6,
-            range = 4
-         },
-         {
-            name = "asmode",
-            bonetag = "A",
-            nlevels = 2,
-            base = 2,
+            base = 10,
             range = 6
          },
          {
-            name = "orcus",
-            bonetag = "O",
+            name = "geryon",
+            bonetag = "G",
             nlevels = 2,
             base = 10,
             range = 6
@@ -244,23 +197,13 @@ dungeon = {
             bonetag = "R",
             nlevels = 3,
             base = 10,
-            chance = 50,
             range = 6
          },
          {
-            name = "yeenog",
-            bonetag = "Y",
-            nlevels = 3,
+            name = "asmode",
+            bonetag = "A",
+            nlevels = 2,
             base = 10,
-            chance = 50,
-            range = 6
-         },
-         {
-            name = "demo",
-            bonetag = "D",
-            nlevels = 3,
-            base = 13,
-            chance = 50,
             range = 6
          },
       }
@@ -347,7 +290,7 @@ dungeon = {
             nlevels = 8
          },
          {
-            name = "townfill",
+            name = "sokostrt",
             base = 6,
          },
       }
@@ -368,20 +311,6 @@ dungeon = {
       }
    },
    {
-      name = "Head of the Lethe River",
-      base = 1,
-      alignment = "chaotic",
-      flags = { "mazelike" },
-      entry = -1,
-      levels = {
-         {
-            name = "leth-a",
-            base = 1,
-            nlevels = 2
-         },
-      }
-   },
-   {
       name = "The Lost Tomb",
       base = 1,
       bonetag = "Z",
@@ -396,6 +325,20 @@ dungeon = {
          }
       }
    },
+      {
+         name = "The Wyrm Caves",
+         base = 1,
+         bonetag = "D",
+         flags = { "mazelike" },
+         alignment = "chaotic",
+         levels = {
+            {
+               name = "dragons",
+               bonetag = "D",
+               base = -1,
+            }
+         }
+      },
    {
       name = "The Temple of Moloch",
       base = 1,

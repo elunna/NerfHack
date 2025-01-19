@@ -144,7 +144,7 @@ GIT_AVAILABLE=Y
 #==============================================================================
 #
 #  The version of the game this Makefile was designed for
-NETHACK_VERSION="2.0.0"
+NETHACK_VERSION="2.1.0"
 
 # A brief version for use in macros
 NHV=$(NETHACK_VERSION:.=)
@@ -585,6 +585,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\bigrm-20.lua \
 	$(DAT)\bigrm-21.lua \
 	$(DAT)\bridge.lua   \
+	$(DAT)\dragons.lua   \
 	$(DAT)\castle-1.lua \
 	$(DAT)\castle-2.lua \
 	$(DAT)\castle-3.lua \
@@ -621,29 +622,12 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\knox-1.lua   \
 	$(DAT)\knox-2.lua   \
 	$(DAT)\knox-2.lua   \
-	$(DAT)\leth-a-1.lua \
-	$(DAT)\leth-a-2.lua	\
-	$(DAT)\leth-b.lua 	\
-	$(DAT)\leth-c-1.lua \
-	$(DAT)\leth-c-2.lua \
-	$(DAT)\leth-d-1.lua \
-	$(DAT)\leth-d-2.lua \
-	$(DAT)\leth-e.lua 	\
-	$(DAT)\leth-f.lua 	\
-	$(DAT)\leth-g.lua   \
-	$(DAT)\leth-z.lua   \
-	$(DAT)\nkai-a-1.lua \
-	$(DAT)\nkai-a-2.lua \
-	$(DAT)\nkai-b.lua   \
-	$(DAT)\nkai-c.lua   \
-	$(DAT)\nkai-z.lua   \
 	$(DAT)\medusa-1.lua \
 	$(DAT)\medusa-2.lua \
 	$(DAT)\medusa-3.lua \
 	$(DAT)\medusa-4.lua \
-	$(DAT)\mephisto.lua \
 	$(DAT)\minefill.lua \
-	$(DAT)\townfill.lua \
+	$(DAT)\sokostrt.lua \
 	$(DAT)\minend-1.lua \
 	$(DAT)\minend-2.lua \
 	$(DAT)\minend-3.lua \
@@ -2528,10 +2512,10 @@ $(SndWavDir)\sa2_xplevelup.wav: $(SndWavDir)\sa2_xplevelup.uu $(U)uudecode.exe
 #===============================================================================
 
 PKGFILES = nerfhackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
-	 NerfHackW.exe opthelp nhdat200 record symbols sysconf.template
+	 NerfHackW.exe opthelp nhdat210 record symbols sysconf.template
 FILESTOZIP = $(BinDir)\nerfhackrc.template $(BinDir)\Guidebook.txt $(BinDir)\license \
 	$(BinDir)\NerfHack.exe $(BinDir)\NetHack.txt $(BinDir)\NerfHackW.exe \
-	$(BinDir)\opthelp $(BinDir)\nhdat200 $(BinDir)\record \
+	$(BinDir)\opthelp $(BinDir)\nhdat210 $(BinDir)\record \
 	$(BinDir)\symbols $(BinDir)\sysconf.template 
 DBGSYMS = NerfHack.PDB NerfHackW.PDB
 PDBTOZIP = $(BinDir)\NerfHack.PDB $(BinDir)\NerfHackW.PDB

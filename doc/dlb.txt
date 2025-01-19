@@ -1,4 +1,4 @@
-DLB(6)                                                                  DLB(6)
+DLB(6)                           Games Manual                           DLB(6)
 
 
 
@@ -61,10 +61,10 @@ BUGS
        way to know which files can be.
 
 COPYRIGHT
-       This  file  is  Copyright  (C)  Kenneth  Lorber,   2022   for   version
-       NetHack-3.7:1.12.   NetHack  may  be freely redistributed.  See license
-       for details.
+       This file is Copyright (C) Kenneth Lorber, 2024 for  version  keni-git-
+       set:1.13.   NetHack  may  be  freely  redistributed.   See  license for
+       details.
 
 
 
-NETHACK                         8 February 2022                         DLB(6)
+NETHACK                        25 December 2024                         DLB(6)

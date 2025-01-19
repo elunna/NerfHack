@@ -148,10 +148,10 @@ new_were(struct monst *mon)
         /* transformation wakens and/or revitalizes */
         mon->msleeping = 0;
         mon->mfrozen = 0; /* not asleep or paralyzed */
-        mon->mcanmove = 1;
+        maybe_moncanmove(mon);
     }
     /* regenerate by 1/4 of the lost hit points */
-    mon->mhp += (mon->mhpmax - mon->mhp) / 4;
+    healmon(mon, (mon->mhpmax - mon->mhp) / 4, 0);
     newsym(mon->mx, mon->my);
     mon_break_armor(mon, FALSE);
     possibly_unwield(mon, FALSE);

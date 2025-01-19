@@ -1070,34 +1070,14 @@ givit(int type, struct permonst *ptr)
                 You_feel("%s more chill.", adj);
         }
         break;
-    case SLEEP_RES:
-        debugpline0("Trying to give sleep resistance");
-        if ((HSleep_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
-            incr_resistance(&HSleep_resistance, increase);
-            if ((HSleep_resistance & TIMEOUT) == 100)
-            You_feel("wide awake.");
-            else
-                You_feel("%s perkier.", adj);
-        }
-        break;
     case COLD_RES:
         debugpline0("Trying to give cold resistance");
         if ((HCold_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
             incr_resistance(&HCold_resistance, increase);
             if ((HCold_resistance & TIMEOUT) == 100)
-            You_feel("full of hot air.");
+                You_feel("full of hot air.");
             else
                 You_feel("%s warmer.", adj);
-        }
-        break;
-    case DISINT_RES:
-        debugpline0("Trying to give disintegration resistance");
-        if ((HDisint_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
-            incr_resistance(&HDisint_resistance, increase);
-            if ((HDisint_resistance & TIMEOUT) == 100)
-                You_feel(Hallucination ? "totally together, man." : "completely firm.");
-            else
-                You_feel("%s more firm.", adj);
         }
         break;
     case SHOCK_RES: /* shock (electricity) resistance */
@@ -1109,6 +1089,26 @@ givit(int type, struct permonst *ptr)
                                     : "Your health feels completely amplified!");
             else
                 Your("health is %s more amplified!", adj);
+        }
+        break;
+    case SLEEP_RES:
+        debugpline0("Trying to give sleep resistance");
+        if ((HSleep_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+            incr_resistance(&HSleep_resistance, increase);
+            if ((HSleep_resistance & TIMEOUT) == 100)
+                You_feel("wide awake.");
+            else
+                You_feel("%s perkier.", adj);
+        }
+        break;
+    case DISINT_RES:
+        debugpline0("Trying to give disintegration resistance");
+        if ((HDisint_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+            incr_resistance(&HDisint_resistance, increase);
+            if ((HDisint_resistance & TIMEOUT) == 100)
+                You_feel(Hallucination ? "totally together, man." : "completely firm.");
+            else
+                You_feel("%s more firm.", adj);
         }
         break;
     case POISON_RES:
@@ -3551,18 +3551,14 @@ gethungry(void)
         /* Cursed rings burn hunger too */
         if (uright && uright->cursed && rn2(2))
             u.uhunger--;
-         if (svl.level.flags.lethe && rn2(2))
-            u.uhunger--;
     } else { /* even */
         if (Hunger)
             u.uhunger--;
         /* Conflict uses up food too */
-        if (HConflict || (EConflict & (~W_ARTI)))
+        if (HConflict || (EConflict & ~(W_ARTI | W_ARMF)))
             u.uhunger--;
         /* Cursed rings burn hunger too */
         if (uleft && uleft->cursed && rn2(2))
-            u.uhunger--;
-        if (svl.level.flags.lethe && rn2(2))
             u.uhunger--;
         /*
          * +0 charged rings don't do anything, so don't affect hunger.

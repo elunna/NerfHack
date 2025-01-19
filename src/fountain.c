@@ -486,13 +486,6 @@ const struct ForgeRecipe fusions[] = {
     /* Ammo */
     { SLING_BULLET,         ROCK,               DART,           3, 1 },
 
-#if 0 /* Should we port these? */
-    { DWARVISH_BEARDED_AXE, AXE,                DWARVISH_SHORT_SWORD, 1, 1 },
-    { DWARVISH_BOOTS,       GAUNTLETS,          DWARVISH_SHORT_SWORD, 1, 1 },
-    { ORCISH_SCIMITAR,      KNIFE,              ORCISH_SHORT_SWORD, 1, 1 },
-    { ORCISH_LONG_SWORD,    ORCISH_SHORT_SWORD, ORCISH_SHORT_SWORD, 1, 1 },
-    { ORCISH_MORNING_STAR,  MACE,               ORCISH_DAGGER, 1, 1 },
-#endif
     { 0, 0, 0, 0, 0 }
 };
 
@@ -518,6 +511,18 @@ doforging(void)
         return 0;
     }
 
+    /* various player conditions can prevent successful forging */
+    if (Stunned || Confusion || Hallucination) {
+        You_cant("use the forge while incapacitated.");
+        return 0;
+    } else if (u.uhunger < 50) { /* weak */
+        You("are too weak from hunger to use the forge.");
+        return 0;
+    } else if (ACURR(A_STR) < 4) {
+        You("lack the strength to use the forge.");
+        return 0;
+    }
+    
     /* setup the base object */
     obj1 = getobj("use as a base", any_obj_ok, GETOBJ_PROMPT);
     if (!obj1) {
@@ -534,7 +539,7 @@ doforging(void)
     if (!obj2) {
         You("need more than one object.");
         return 0;
-    } else if (!(is_metallic(obj2) || obj1->otyp == ROCK)) {
+    } else if (!(is_metallic(obj2) || obj2->otyp == ROCK)) {
         /* secondary object should also be metallic */
         pline_The("secondary object must be metallic or mineral.");
         return 0;

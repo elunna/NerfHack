@@ -300,10 +300,13 @@ add_region(NhRegion *reg)
     for (i = reg->bounding_box.lx; i <= reg->bounding_box.hx; i++)
         for (j = reg->bounding_box.ly; j <= reg->bounding_box.hy; j++) {
             struct monst *mtmp;
+            boolean is_inside = FALSE;
+
             /* Some regions can cross the level boundaries */
             if (!isok(i, j))
                 continue;
             if (inside_region(reg, i, j)) {
+                is_inside = TRUE;
                 /* if there's a monster here, add it to the region */
                 if ((mtmp = m_at(i, j)) != 0
 #if 0
@@ -318,10 +321,8 @@ add_region(NhRegion *reg)
                 }
             }
             if (reg->visible) {
-#if 0 /* Being able to see through poison clouds is a QoL feature */
                 if (is_inside)
                     block_point(i, j);
-#endif
                 if (cansee(i, j))
                     newsym(i, j);
             }
@@ -356,11 +357,14 @@ remove_region(NhRegion *reg)
     reg->ttl = -2L; /* for visible_region_at */
     if (reg->visible) {
         int pass;
+        boolean tmp_uinwater = u.uinwater;
 
         /* need to process the region's spots twice, first unblocking all
            locations which no longer block line-of-sight, then redrawing
            spots within revised line-of-sight; skip second pass if blind */
         for (pass = 1; pass <= (Blind ? 1 : 2); ++pass) {
+            u.uinwater = (pass == 1) ? 0 : tmp_uinwater;
+
             for (x = reg->bounding_box.lx; x <= reg->bounding_box.hx; x++)
                 for (y = reg->bounding_box.ly; y <= reg->bounding_box.hy; y++)
                     if (isok(x, y) && inside_region(reg, x, y)) {
@@ -373,6 +377,7 @@ remove_region(NhRegion *reg)
                         }
                     }
         }
+        u.uinwater = tmp_uinwater;
     }
     free_region(reg);
 }

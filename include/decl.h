@@ -343,6 +343,10 @@ struct instance_globals_d {
     boolean decor_fumble_override;
     boolean decor_levitate_override;
 
+    /* new */
+    boolean deferred_showpaths;
+    char *deferred_showpaths_dir;
+
     boolean havestate;
     unsigned long magic; /* validate that structure layout is preserved */
 };
@@ -619,10 +623,10 @@ struct instance_globals_m {
     boolean made_branch; /* used only during level creation */
 
     /* mkmap.c */
-    int min_rx; /* rectangle bounds for regions */
-    int max_rx;
-    int min_ry;
-    int max_ry;
+    coordxy min_rx; /* rectangle bounds for regions */
+    coordxy max_rx;
+    coordxy min_ry;
+    coordxy max_ry;
 
     /* mkobj.c */
     boolean mkcorpstat_norevive; /* for trolls */
@@ -953,8 +957,8 @@ struct instance_globals_t {
     const char *this_title; /* title for inventory list of specific type */
 
     /* muse.c */
-    int trapx;
-    int trapy;
+    coordxy trapx;
+    coordxy trapy;
 
     /* rumors.c */
     long true_rumor_size; /* rumor size variables are signed so that value -1
@@ -1043,6 +1047,9 @@ struct instance_globals_w {
     /* decl.c */
     int warn_obj_cnt; /* count of monsters meeting criteria */
     long wailmsg;
+
+    /* do_wear.c */
+    uint8 wasinwater;
 
     /* symbols.c */
     nhsym warnsyms[WARNCOUNT]; /* the current warning display symbols */

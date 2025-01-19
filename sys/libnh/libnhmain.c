@@ -51,6 +51,7 @@ extern void init_linux_cons(void);
 
 static void wd_message(void);
 static struct passwd *get_unix_pw(void);
+ATTRNORETURN static void opt_terminate(void) NORETURN;
 
 #ifdef __EMSCRIPTEN__
 /* if WebAssembly, export this API and don't optimize it out */
@@ -108,14 +109,8 @@ nhmain(int argc, char *argv[])
 #endif
 
         if (argcheck(argc, argv, ARG_SHOWPATHS) == 2) {
-#ifdef CHDIR
-            chdirx((char *) 0, 0);
-#endif
-            iflags.initoptions_noterminate = TRUE;
-            initoptions();
-            iflags.initoptions_noterminate = FALSE;
-            reveal_paths();
-            exit(EXIT_SUCCESS);
+            gd.deferred_showpaths = TRUE;
+            return;
         }
         if (argcheck(argc, argv, ARG_DEBUG) == 1) {
             argc--;
@@ -774,6 +769,32 @@ sys_random_seed(void)
     return seed;
 }
 
+/* for command-line options that perform some immediate action and then
+   terminate the program without starting play, like 'nethack --version'
+   or 'nethack -s Zelda'; do some cleanup before that termination */
+ATTRNORETURN static void
+opt_terminate(void)
+{
+    config_error_done(); /* free memory allocated by config_error_init() */
+
+    nh_terminate(EXIT_SUCCESS);
+    /*NOTREACHED*/
+}
+
+/* show the sysconf file name, playground directory, run-time configuration
+   file name, dumplog file name if applicable, and some other things */
+ATTRNORETURN void
+after_opt_showpaths(const char *dir)
+{
+#ifdef CHDIR
+    chdirx(dir, FALSE);
+#else
+    nhUse(dir);
+#endif
+    opt_terminate();
+    /*NOTREACHED*/
+}
+
 #ifdef __EMSCRIPTEN__
 /***
  * Helpers
@@ -988,6 +1009,7 @@ void js_constants_init() {
     SET_CONSTANT("CONDITION", BL_MASK_LEV);
     SET_CONSTANT("CONDITION", BL_MASK_PARLYZ);
     SET_CONSTANT("CONDITION", BL_MASK_RIDE);
+    SET_CONSTANT("CONDITION", BL_MASK_PHASE);
     SET_CONSTANT("CONDITION", BL_MASK_SLEEPING);
     SET_CONSTANT("CONDITION", BL_MASK_SLIME);
     SET_CONSTANT("CONDITION", BL_MASK_SLIPPERY);
@@ -998,7 +1020,6 @@ void js_constants_init() {
     SET_CONSTANT("CONDITION", BL_MASK_TERMILL);
     SET_CONSTANT("CONDITION", BL_MASK_TETHERED);
     SET_CONSTANT("CONDITION", BL_MASK_TRAPPED);
-    SET_CONSTANT("CONDITION", BL_MASK_UNCONSC);
     SET_CONSTANT("CONDITION", BL_MASK_WOUNDEDL);
     SET_CONSTANT("CONDITION", BL_MASK_HOLDING);
 
@@ -1080,6 +1101,7 @@ void js_constants_init() {
     SET_CONSTANT("BL_MASK", BL_MASK_LEV);
     SET_CONSTANT("BL_MASK", BL_MASK_PARLYZ);
     SET_CONSTANT("BL_MASK", BL_MASK_RIDE);
+    SET_CONSTANT("BL_MASK", BL_MASK_PHASE);
     SET_CONSTANT("BL_MASK", BL_MASK_SLEEPING);
     SET_CONSTANT("BL_MASK", BL_MASK_SLIME);
     SET_CONSTANT("BL_MASK", BL_MASK_SLIPPERY);
@@ -1090,7 +1112,6 @@ void js_constants_init() {
     SET_CONSTANT("BL_MASK", BL_MASK_TERMILL);
     SET_CONSTANT("BL_MASK", BL_MASK_TETHERED);
     SET_CONSTANT("BL_MASK", BL_MASK_TRAPPED);
-    SET_CONSTANT("BL_MASK", BL_MASK_UNCONSC);
     SET_CONSTANT("BL_MASK", BL_MASK_WOUNDEDL);
     SET_CONSTANT("BL_MASK", BL_MASK_HOLDING);
 
@@ -1125,6 +1146,7 @@ void js_constants_init() {
     SET_CONSTANT("blconditions", bl_lev);
     SET_CONSTANT("blconditions", bl_parlyz);
     SET_CONSTANT("blconditions", bl_ride);
+    SET_CONSTANT("blconditions", bl_phase);
     SET_CONSTANT("blconditions", bl_sleeping);
     SET_CONSTANT("blconditions", bl_slime);
     SET_CONSTANT("blconditions", bl_slippery);
@@ -1135,7 +1157,7 @@ void js_constants_init() {
     SET_CONSTANT("blconditions", bl_termill);
     SET_CONSTANT("blconditions", bl_tethered);
     SET_CONSTANT("blconditions", bl_trapped);
-    SET_CONSTANT("blconditions", bl_unconsc);
+
     SET_CONSTANT("blconditions", bl_woundedl);
     SET_CONSTANT("blconditions", bl_holding);
     SET_CONSTANT("blconditions", CONDITION_COUNT);

@@ -1,4 +1,4 @@
-/* NetHack 3.7	decl.c	$NHDT-Date: 1725138480 2024/08/31 21:08:00 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.337 $ */
+/* NetHack 3.7	decl.c	$NHDT-Date: 1736530208 2025/01/10 09:30:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.341 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -342,6 +342,8 @@ static const struct instance_globals_d g_init_d = {
     /* pickup.c */
     FALSE, /* decor_fumble_override */
     FALSE, /* decor_levitate_override */
+    FALSE, /* deferred_showpaths */
+    NULL,  /* deferred_showpaths_dir  */
     TRUE, /* havestate*/
     IVMAGIC  /* d_magic to validate that structure layout has been preserved */
 };
@@ -853,6 +855,8 @@ static const struct instance_globals_w g_init_w = {
     /* decl.c */
     0, /* warn_obj_cnt */
     0L, /* wailmsg */
+    /* do_wear.c */
+    0U, /* wasinwater */
     /* symbols.c */
     DUMMY, /* warnsyms */
     /* files.c */
@@ -937,7 +941,6 @@ static const struct instance_globals_saved_d init_svd = {
       {0}, /* d_rogue_level */
       {0}, /* d_medusa_level */
       {0}, /* d_stronghold_level */
-      {0}, /* d_lethegate_level */
       {0}, /* d_valley_level */
       {0}, /* d_wiz1_level */
       {0}, /* d_wiz2_level */
@@ -946,7 +949,6 @@ static const struct instance_globals_saved_d init_svd = {
       {0}, /* d_orcus_level*/
       {0}, /* d_baalzebub_level */
       {0}, /* d_asmodeus_level */
-      {0}, /* d_portal_level */
       {0}, /* d_sanctum_level */
       {0}, /* d_earth_level */
       {0}, /* d_water_level */

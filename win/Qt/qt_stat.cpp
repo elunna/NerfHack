@@ -143,6 +143,7 @@ NetHackQtStatusWindow::NetHackQtStatusWindow() :
     lev(this,"Lev"),          // 'other' conditions
     fly(this,"Fly"),
     ride(this,"Ride"),
+    ride(this,"Phasing"),
     vers(this,""),            // optional, right justified after 'conditions'
     hline1(this),             // separators
     hline2(this),

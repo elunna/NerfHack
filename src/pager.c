@@ -1,4 +1,4 @@
-/* NetHack 3.7	pager.c	$NHDT-Date: 1732979463 2024/11/30 07:11:03 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.282 $ */
+/* NetHack 3.7	pager.c	$NHDT-Date: 1737013431 2025/01/15 23:43:51 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.287 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -229,7 +229,7 @@ mhidden_description(
 
             if (fakeobj && otmp) {
                 otmp->where = OBJ_FREE; /* object_from_map set to OBJ_FLOOR */
-                dealloc_obj(otmp);
+                dealloc_obj(otmp); /* has no contents */
             }
         } else {
             Strcat(outbuf, something);
@@ -297,7 +297,11 @@ object_from_map(
     boolean fakeobj = FALSE, mimic_obj = FALSE;
     struct monst *mtmp;
     struct obj *otmp;
-    int glyphotyp = glyph_to_obj(glyph);
+    int glyphotyp = glyph_is_object(glyph) ? glyph_to_obj(glyph)
+                    /* if not an object, probably a detected chest trap */
+                    : glyph_is_cmap(glyph) /* assume trapped chest|door */
+                      ? (sobj_at(CHEST, x, y) ? CHEST : LARGE_BOX)
+                      : STRANGE_OBJECT;
 
     *obj_p = (struct obj *) 0;
     /* TODO: check inside containers in case glyph came from detection */
@@ -383,7 +387,7 @@ look_at_object(
                      : obj_descr[STRANGE_OBJECT].oc_name);
         if (fakeobj) {
             otmp->where = OBJ_FREE; /* object_from_map set it to OBJ_FLOOR */
-            dealloc_obj(otmp), otmp = 0;
+            dealloc_obj(otmp), otmp = NULL; /* has no contents */
         }
     } else
         Strcpy(buf, something); /* sanity precaution */
@@ -874,10 +878,14 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
         Strcpy(buf, "unexplored area");
     }
     if (!pm && cansee(x, y) && levl[x][y].splatpm
-            && !printed_blood && !u_at(x, y))
-        Sprintf(eos(buf), " covered in %s blood",
-                Hallucination ? rndmonnam(NULL) :
-                              mons[levl[x][y].splatpm].pmnames[NEUTRAL]);
+            && !printed_blood && !u_at(x, y)) {
+        if (levl[x][y].splatpm == NON_PM)
+            Sprintf(eos(buf), " covered in bood");
+        else
+            Sprintf(eos(buf), " covered in %s blood",
+                Hallucination ? rndmonnam(NULL)
+                              : mons[levl[x][y].splatpm].pmnames[NEUTRAL]);
+    }
     return (pm && !Hallucination) ? pm : (struct permonst *) 0;
 }
 

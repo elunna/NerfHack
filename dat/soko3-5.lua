@@ -58,6 +58,7 @@ des.object("boulder",04,10)
 des.object("boulder",15,10)
 des.object("boulder",03,11)
 des.object("boulder",02,12)
+des.object("boulder",03,06)
 
 -- Traps
 -- prevent monster generation over the (filled) holes

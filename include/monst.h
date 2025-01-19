@@ -157,12 +157,13 @@ struct monst {
     Bitfield(isgd, 1);      /* is guard */
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
 
-    Bitfield(iscerberus, 1); /* is Cerberus */
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
     Bitfield(mtemplit, 1);  /* temporarily seen; only valid during bhit() */
     Bitfield(meverseen, 1); /* mon has been seen at some point */
     Bitfield(mwither_from_u, 1); /* is withering due to player */
+    Bitfield(mstonebyu, 1);  /* you caused the monster to start stoning */
+    Bitfield(mstone, 3);     /* monster is turning to stone */
     Bitfield(mberserk, 1);  /* monster is berserking */
     Bitfield(mrabid, 1);    /* monster is rabid */
     Bitfield(mspotted, 1);  /* mon is currently seen by hero */

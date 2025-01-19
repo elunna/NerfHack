@@ -967,7 +967,7 @@ flip_level_rnd(int flp, boolean extras)
 {
     int c = 0;
 
-    if (In_sokoban(&u.uz) && !flags.flipsoko) {
+    if (In_sokoban(&u.uz) && flags.do_not_flip_soko) {
         /* Not allowing flipping of Sokoban breaks the rules. */
         sokoban_guilt();
         return;
@@ -2177,8 +2177,14 @@ create_monster(monster *m, struct mkroom *croom)
             if (vampshifted(mtmp) && m->appear != M_AP_MONSTER)
                 (void) newcham(mtmp, &mons[mtmp->cham], NO_NC_FLAGS);
         }
-        if (m->has_invent) {
+        if (!(m->has_invent & DEFAULT_INVENT)) {
+            /* guard against someone accidentally specifying e.g. quest nemesis
+             * with custom inventory that lacks Bell or quest artifact but
+             * forgetting to flag them as receiving their default inventory */
+            mdrop_special_objs(mtmp);
             discard_minvent(mtmp, TRUE);
+        }
+        if (m->has_invent & CUSTOM_INVENT) {
             invent_carrying_monster = mtmp;
         }
     }
@@ -2328,13 +2334,6 @@ create_object(object *o, struct mkroom *croom)
              * the item is lost when this happens. */
             boolean invalid_choice = Is_box(otmp) || otmp->otyp == ICE_BOX;
 
-            /* Kludge for cartomancers and their wishes... */
-            if (Role_if(PM_CARTOMANCER) && o->id == WAN_WISHING) {
-                /* By this point the wand of wishing has already been
-                 * converted to a zapping card of wishing. Increase
-                 * quantity so they get 3. */
-                otmp->quan = 3;
-            }
             if (cobj && !invalid_choice) {
                 otmp = add_to_container(cobj, otmp);
                 cobj->owt = weight(cobj);
@@ -2378,7 +2377,7 @@ create_object(object *o, struct mkroom *croom)
             /* makemon without rndmonst() might create a group */
             was = makemon(&mons[wastyp], 0, 0, MM_NOCOUNTBIRTH|MM_NOMSG);
             if (was) {
-                if (!resists_ston(was) && !poly_when_stoned(&mons[wastyp])) {
+                if (!(resists_ston(was) || defended(was, AD_STON)) && !poly_when_stoned(&mons[wastyp])) {
                     (void) propagate(wastyp, TRUE, FALSE);
                     break;
                 }
@@ -2962,7 +2961,12 @@ fill_empty_maze(void)
                             TRUE);
         }
         for (x = rnd((int) (12 * mapfact) / 100); x; x--) {
+            struct trap *ttmp;
+
             maze1xy(&mm, DRY);
+            if ((ttmp = t_at(mm.x, mm.y)) != 0
+                && (is_pit(ttmp->ttyp) || is_hole(ttmp->ttyp)))
+                continue;
             (void) mksobj_at(BOULDER, mm.x, mm.y, TRUE, FALSE);
         }
         for (x = rn2(2); x; x--) {
@@ -3250,7 +3254,7 @@ lspo_monster(lua_State *L)
     tmpmons.stunned = 0;
     tmpmons.confused = 0;
     tmpmons.seentraps = 0;
-    tmpmons.has_invent = 0;
+    tmpmons.has_invent = DEFAULT_INVENT;
     tmpmons.waiting = 0;
     tmpmons.mm_flags = NO_MM_FLAGS;
 
@@ -3298,6 +3302,7 @@ lspo_monster(lua_State *L)
                                 : (mgend == MALE) ? MALE : rn2(2);
         }
     } else {
+        int keep_default_invent = -1; /* -1 = unspecified */
         lcheck_param_table(L);
 
         tmpmons.peaceful = get_table_boolean_opt(L, "peaceful", BOOL_RANDOM);
@@ -3318,7 +3323,8 @@ lspo_monster(lua_State *L)
         tmpmons.confused = get_table_boolean_opt(L, "confused", FALSE);
         tmpmons.waiting = get_table_boolean_opt(L, "waiting", FALSE);
         tmpmons.seentraps = 0; /* TODO: list of trap names to bitfield */
-        tmpmons.has_invent = 0;
+        keep_default_invent =
+            get_table_boolean_opt(L, "keep_default_invent", -1);
 
         if (!get_table_boolean_opt(L, "tail", TRUE))
             tmpmons.mm_flags |= MM_NOTAIL;
@@ -3367,7 +3373,19 @@ lspo_monster(lua_State *L)
 
         lua_getfield(L, 1, "inventory");
         if (!lua_isnil(L, -1)) {
-            tmpmons.has_invent = 1;
+            /* overwrite DEFAULT_INVENT - most times inventory is specified,
+             * the monster should not get its species' default inventory. Only
+             * provide it if explicitly requested. */
+            tmpmons.has_invent = CUSTOM_INVENT;
+            if (keep_default_invent == TRUE)
+                tmpmons.has_invent |= DEFAULT_INVENT;
+        }
+        else {
+            /* if keep_default_invent was not specified (-1), keep has_invent as
+             * DEFAULT_INVENT and provide the species' default inventory.
+             * But if it was explicitly set to false, provide *no* inventory. */
+            if (keep_default_invent == FALSE)
+                tmpmons.has_invent = NO_INVENT;
         }
     }
 
@@ -3381,7 +3399,8 @@ lspo_monster(lua_State *L)
 
     create_monster(&tmpmons, gc.coder->croom);
 
-    if (tmpmons.has_invent && lua_type(L, -1) == LUA_TFUNCTION) {
+    if ((tmpmons.has_invent & CUSTOM_INVENT)
+        && lua_type(L, -1) == LUA_TFUNCTION) {
         lua_remove(L, -2);
         nhl_pcall_handle(L, 0, 0, "lspo_monster", NHLpa_panic);
         spo_end_moninvent();
@@ -3775,8 +3794,6 @@ lspo_level_flags(lua_State *L)
             svl.level.flags.hero_memory = 1;
         else if (!strcmpi(s, "graveyard"))
             svl.level.flags.graveyard = 1;
-         else if (!strcmpi(s, "lethe"))
-            svl.level.flags.lethe = 1;
         else if (!strcmpi(s, "icedpools"))
             icedpools = 1;
         else if (!strcmpi(s, "corrmaze"))
@@ -4847,10 +4864,28 @@ nhl_abs_coord(lua_State *L)
 int
 lspo_feature(lua_State *L)
 {
-    static const char *const features[] = { "fountain", "forge", "sink", "toilet",
-                                            "pool", "throne", "tree", "puddle", NULL };
-    static const int features2i[] = { FOUNTAIN, FORGE, SINK, TOILET,
-                                      POOL, THRONE, TREE, PUDDLE, STONE };
+    static const char *const features[] = {
+        "fountain",
+        "forge",
+        "sink",
+        "toilet",
+        "pool",
+        "throne",
+        "tree", 
+        "puddle",
+        "lava",
+        NULL };
+    static const int features2i[] = { 
+        FOUNTAIN,
+        FORGE,
+        SINK,
+        TOILET,
+        POOL,
+        THRONE,
+        TREE, 
+        PUDDLE,
+        LAVAPOOL,
+        STONE };
     coordxy x, y;
     int typ;
     int argc = lua_gettop(L);

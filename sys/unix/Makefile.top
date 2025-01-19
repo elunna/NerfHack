@@ -67,7 +67,7 @@ DIRPERM  = 0755
 #	Qt without X11; assumes GRAPHIC_TOMBSTONE:
 # VARDATND = nhtiles.bmp pet_mark.xbm pilemark.xbm rip.xpm
 
-VARDATD = bogusmon data engrave epitaph oracles options quest.lua rumors
+VARDATD = bogusmon data engrave epitaph oracles options quest.lua rumors ntrymsgs
 VARDAT = $(VARDATD) $(VARDATND)
 
 #	Some versions of make use the SHELL environment variable as the
@@ -103,6 +103,7 @@ SPEC_LEVS = 	 	\
 	baalz-?.lua		\
 	bigrm-*.lua 	\
 	bridge.lua		\
+	dragons.lua		\
 	castle-?.lua 	\
 	demo-?.lua 		\
 	dispat-?.lua 	\
@@ -113,23 +114,20 @@ SPEC_LEVS = 	 	\
 	hellfill.lua 	\
 	juiblex.lua 	\
 	knox-?.lua 		\
-	leth-* 			\
 	medusa-?.lua 	\
-	mephisto.lua 	\
 	minend-?.lua 	\
 	minefill.lua 	\
 	minetn-*.lua 	\
 	temple-?.lua 	\
 	nhcore.lua 		\
 	nhlib.lua 		\
-	nkai-* 			\
 	oracle-?.lua 	\
 	orcus-?.lua 	\
 	sanctm-?.lua 	\
 	soko?-?.lua 	\
 	themerms.lua 	\
 	tomb-?.lua 		\
-	townfill.lua	\
+	sokostrt.lua	\
 	tower?.lua 		\
 	tut-?.lua 		\
 	valley-?.lua 	\
@@ -253,6 +251,9 @@ rumors: $(GAME)
 
 oracles: $(GAME)
 	( cd dat ; $(MAKE) oracles )
+
+ntrymsgs: $(GAME)
+	( cd dat ; $(MAKE) ntrymsgs )
 
 #	Note: options should have already been made with make, but...
 options: $(GAME)

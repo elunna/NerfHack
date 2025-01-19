@@ -100,6 +100,15 @@ staticfn void rogue_vision(seenV **, coordxy *, coordxy *);
 #define sign(z) ((z) < 0 ? -1 : ((z) ? 1 : 0))
 #define v_abs(z) ((z) < 0 ? -(z) : (z)) /* don't use abs -- it may exist */
 
+/* expose viz_clear[][] for sanity checking */
+boolean
+get_viz_clear(int x, int y)
+{
+    if (isok(x,y) && !viz_clear[y][x])
+        return TRUE;
+    return FALSE;
+}
+
 /*
  * vision_init()
  *
@@ -182,14 +191,9 @@ does_block(int x, int y, struct rm *lev)
 #ifdef DEBUG
     if (gs.seethru != 1) {
 #endif
-
-#if 0 /* Block this feature. Being able to see poisonous clouds is a quality-
-       * of-life feature */
     /* Clouds (poisonous or not) block light. */
     if (visible_region_at(x, y))
         return 2;
-#endif
-
 #ifdef DEBUG
     } /* gs.seethru */
 #endif
@@ -892,7 +896,17 @@ unblock_point(int x, int y)
         gv.vision_full_recalc = 1;
 }
 
-/*==========================================================================*\
+/* recalc if point should be blocked or unblocked */
+void
+recalc_block_point(coordxy x, coordxy y)
+{
+    if (does_block(x, y, &levl[x][y]))
+        block_point(x, y);
+    else
+        unblock_point(x, y);
+}
+
+/*==========================================================================* \
  :                                                                          :
  :      Everything below this line uses (y,x) instead of (x,y) --- the      :
  :      algorithms are faster if they are less recursive and can scan       :
