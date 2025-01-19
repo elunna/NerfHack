@@ -349,6 +349,7 @@ doread(void)
     boolean confused, nodisappear;
     boolean carto = Role_if(PM_CARTOMANCER);
     int otyp;
+    
 
     /*
      * Reading while blind is allowed in most cases, including the
@@ -374,6 +375,23 @@ doread(void)
     scroll = getobj("read", read_ok, GETOBJ_PROMPT);
     if (!scroll)
         return ECMD_CANCEL;
+
+    /* really low intelligence can prevent reading things.
+       exceptions to this rule are scrolls of mail (server
+       messages), hawaiian shirts (pattern, not text), and
+       the book of the dead (must have to win) */
+    if (ACURR(A_INT) < 6
+#ifdef MAIL
+        && scroll->otyp != SCR_MAIL
+#endif
+        && scroll->otyp != HAWAIIAN_SHIRT
+        && scroll->otyp != SPE_BOOK_OF_THE_DEAD) {
+        You_cant("seem to make out what all these %s on the %s mean.",
+                 rn2(2) ? "weird scribbles" : "confusing scratches",
+                 simple_typename(scroll->otyp));
+        return 0;
+    }
+    
     otyp = scroll->otyp;
     scroll->pickup_prev = 0; /* no longer 'just picked up' */
 
