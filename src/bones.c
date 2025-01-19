@@ -375,7 +375,7 @@ can_make_bones(void)
 {
     struct trap *ttmp;
 
-    if (!flags.bones)
+    if (!wizard)
         return FALSE;
     if (ledger_no(&u.uz) <= 0 || ledger_no(&u.uz) > maxledgerno())
         return FALSE;
@@ -632,7 +632,7 @@ getbones(void)
     if (discover) /* save bones files for real games */
         return 0;
 
-    if (!flags.bones)
+    if (!wizard)
         return 0;
     /* wizard check added by GAN 02/05/87 */
     if (rn2(3) /* only once in three times do we find bones */

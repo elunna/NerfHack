@@ -211,9 +211,7 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTB(bloodless, Advanced, 0, opt_in, set_in_game,
            Off, Yes, No, No, "bloodless", &iflags.bloodless, Term_False,
            "bloody tiles are not drawn but still described")
-    NHOPTB(bones, Advanced, 0, opt_out, set_in_config,
-           On, Yes, No, No, NoAlias, &flags.bones, Term_False,
-           "allow loading bones files")
+
 #ifdef BACKWARD_COMPAT
     NHOPTC(boulder, Advanced, 1, opt_in, set_in_game,
                 No, Yes, No, No, NoAlias,
