@@ -1933,10 +1933,12 @@ greased_face:
             if (ublindf) {
                 grease_hits(ublindf);
                 otmp = ublindf;
-                Your("%s slips off your %s.", xname(otmp),
-                     body_part(HEAD));
-                Blindf_off(ublindf);
-                dropx(otmp);
+                if (!otmp->cursed) {
+                    Your("%s slips off your %s.", xname(otmp),
+                         body_part(HEAD));
+                    Blindf_off(ublindf);
+                    dropx(otmp);
+                }
             }
             pline("There's greasy goop all over your %s.",
                   body_part(FACE));
@@ -1949,9 +1951,11 @@ greased_face:
             if (uarms) {
                 grease_hits(uarms);
                 otmp = uarms;
-                Your("%s slips off your left %s.", xname(otmp), body_part(ARM));
-                Shield_off();
-                dropx(otmp);
+                if (!otmp->cursed) {
+                    Your("%s slips off your left %s.", xname(otmp), body_part(ARM));
+                    Shield_off();
+                    dropx(otmp);
+                }
             }
             if (u.twoweap)
                 grease_hits(uswapwep);
@@ -2012,7 +2016,6 @@ greased_face:
                 grease_hits(uarm);
             else if (uarmu)
                 grease_hits(uarmu);
-
         }
         update_inventory();
     } else {
