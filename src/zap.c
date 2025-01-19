@@ -2973,7 +2973,11 @@ dozap(void)
             weffects(&pseudo);
             gc.current_wand = 0;
         }
-        useup(obj);
+        /* Check if scroll still exists - a backfire from an
+           emulated wand of fire could burn up inventory and
+           destroy the scroll before useup is called. */
+        if (obj)
+            useup(obj);
         u.uen -= CARD_COST;
         return 1;
     }
