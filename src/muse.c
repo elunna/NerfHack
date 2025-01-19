@@ -3511,61 +3511,53 @@ mon_reflects(struct monst *mon, const char *str)
     return FALSE;
 }
 
-boolean
-ureflects(const char *fmt, const char *str)
+/* Check whether the player is reflecting right now.
+ * Return a string which is the source of the player's reflection,
+ * or 0 if the player does not reflect the thing. */
+const char *
+ureflectsrc(void)
 {
     /* Check from outermost to innermost objects */
     if (EReflecting & W_ARMS) {
-        if (fmt && str) {
-            pline(fmt, str, "shield");
-            makeknown(SHIELD_OF_REFLECTION);
-        }
-        return TRUE;
+        /* assumes shield of reflection */
+        makeknown(SHIELD_OF_REFLECTION);
+        return "shield";
     } else if (HReflecting) {
-        if (fmt && str)
-            pline(fmt, str, "magical shield");
-        monstseesu(M_SEEN_REFL);
-        return TRUE;
+        /* Potion of reflection */
+        return "magical shield";
     } else if (EReflecting & (W_WEP | W_SWAPWEP)) {
         /* Due to wielded artifact weapon */
-        if (fmt && str)
-            pline(fmt, str, "weapon");
-        return TRUE;
+        return "weapon";
     } else if (EReflecting & W_ARMC) {
         if (uarmc->otyp == SILVER_DRAGON_SCALES) {
-            if (fmt && str)
-                pline(fmt, str, "set of scales");
-            return TRUE;
-        } else {
+            return "set of scales";
+        }
+        else {
             /* no other cloaks give this */
             impossible("reflecting cloak?");
-            if (fmt && str)
-                pline(fmt, str, "cloak");
-            return TRUE;
+            return "cloak";
         }
     } else if (EReflecting & W_AMUL) {
-        if (fmt && str) {
-            pline(fmt, str, "medallion");
-            makeknown(AMULET_OF_REFLECTION);
-        }
-        return TRUE;
+        makeknown(AMULET_OF_REFLECTION);
+        return "amulet";
     } else if (EReflecting & W_ARM) {
-        if (fmt && str)
-            pline(fmt, str, uskin ? "luster" : "armor");
-        return TRUE;
+        if (uskin) {
+            return "luster";
+        } else {
+            return "armor";
+        }
     } else if (gy.youmonst.data == &mons[PM_SILVER_DRAGON]) {
-        if (fmt && str)
-            pline(fmt, str, "scales");
-        return TRUE;
+        return "scales";
     } else if (EReflecting & W_ART) {
         /* Only carried artifact which grants reflection is
          * the Holographic Void Lily, which shows as W_ART */
-        if (fmt && str)
-            pline(fmt, str, "card");
-        monstseesu(M_SEEN_REFL);
-        return TRUE;
+        return "card";
+    } else if (carrying(MIRROR)) {
+        /* carried mirror offers reflection but easily breaks */
+        makeknown(MIRROR);
+        return "mirror";
     }
-    return FALSE;
+    return (const char*) NULL;
 }
 
 RESTORE_WARNING_FORMAT_NONLITERAL

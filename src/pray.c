@@ -654,12 +654,13 @@ god_zaps_you(aligntyp resp_god)
             pline("%s seems unaffected.", Monnam(u.ustuck));
     } else {
         pline("Suddenly, a bolt of lightning strikes you!");
-        if (Reflecting) {
+        const char* reflectsrc = ureflectsrc();
+        if (reflectsrc) {
             shieldeff(u.ux, u.uy);
             if (Blind)
                 pline("For some reason you're unaffected.");
             else
-                (void) ureflects("%s reflects from your %s.", "It");
+                pline("It reflects from your %s.", reflectsrc);
             monstseesu(M_SEEN_REFL);
         } else if (fully_resistant(SHOCK_RES)) {
             shieldeff(u.ux, u.uy);

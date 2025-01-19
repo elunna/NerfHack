@@ -5740,7 +5740,7 @@ dobuzz(
     struct monst *mon;
     struct monst *zapper;
     struct trap *ttmp;
-
+    
     coord save_bhitpos;
     boolean shopdamage = FALSE,
             fireball = (type == ZT_SPELL(ZT_FIRE)
@@ -5956,10 +5956,10 @@ dobuzz(
                 range -= 2;
                 pline_dir(xytod(-dx, -dy), "%s hits you!",
                           The(flash_str(fltyp, FALSE)));
-                if (Reflecting) {
+                const char* reflectsrc = ureflectsrc();
+                if (Reflecting || reflectsrc) {
                     if (!Blind) {
-                        (void) ureflects("Some of %s reflects from your %s!",
-                                         "it");
+                        pline("But some of it reflects from your %s!", reflectsrc);
                     }
                     /* M_SEEN_REFL doesn't have much use now with partial reflection,
                      * but we'll still track it anyway in case something comes up. */
@@ -5969,6 +5969,20 @@ dobuzz(
                     shieldeff(sx, sy);
                     nd = (nd + 1) / 2;
                     gas_hit = FALSE;
+                    /* TODO: Add mirror breaking here when it protects */
+                    if (strcmp(reflectsrc, "mirror") == 0) {
+                        otmp = carrying(MIRROR);
+                        /* They break roughly 50% of the time */
+                        if (d(6,6) > 20 && breaktest(otmp)) {
+                            pline("%s mirror shatters.", Ysimple_name2(otmp));
+                            if (type >= 0) {
+                                pline("That's bad luck!");
+                                change_luck(-2);
+                            }
+                            useup(otmp);
+                            otmp = (struct obj *) 0;
+                        }
+                    }
                 } else {
                     monstunseesu(M_SEEN_REFL);
                 }

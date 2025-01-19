@@ -1265,12 +1265,13 @@ cast_cleric_spell(
 
         if (youdefend) {
             pline("A bolt of lightning strikes down at you from above!");
-            reflects = ureflects("It bounces off your %s%s.", "");
+            const char* reflectsrc = ureflectsrc();
             orig_dmg = dmg = d(8, 6);
-            if (reflects || fully_resistant(SHOCK_RES)) {
+            if (reflectsrc || fully_resistant(SHOCK_RES)) {
                 shieldeff(u.ux, u.uy);
-                if (reflects) {
+                if (reflectsrc) {
                     dmg = resist_reduce(d(4, 6), SHOCK_RES);
+                    pline("It bounces off your %s.", reflectsrc);
                     monstseesu(M_SEEN_REFL);
                     break;
                 }

@@ -2087,7 +2087,7 @@ extern int use_misc(struct monst *) NONNULLARG1;
 extern int rnd_misc_item(struct monst *) NONNULLARG1;
 extern boolean searches_for_item(struct monst *, struct obj *) NONNULLARG12;
 extern boolean mon_reflects(struct monst *, const char *) NONNULLARG1;
-extern boolean ureflects(const char *, const char *) NO_NNARGS;
+extern const char* ureflectsrc(void);
 extern void mcureblindness(struct monst *, boolean) NONNULLARG1;
 extern boolean munstone(struct monst *, boolean) NONNULLARG1;
 extern boolean munslime(struct monst *, boolean) NONNULLARG1;

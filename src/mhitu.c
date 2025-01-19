@@ -2045,6 +2045,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             cancelled = (mtmp->mcan != 0), already = FALSE,
             mcanseeu = (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
                         && mtmp->mcansee);
+    const char* reflectsrc = ureflectsrc();
     boolean wearing_eyes = ublindf
                             && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD;
     boolean foundyou = (u.ux == mtmp->mux && u.uy == mtmp->muy);
@@ -2088,7 +2089,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     }
 
     is_medusa = (mtmp->data == &mons[PM_MEDUSA]);
-    reflectable = (Reflecting && couldsee(mtmp->mx, mtmp->my) && is_medusa);
+    reflectable = (reflectsrc && couldsee(mtmp->mx, mtmp->my) && is_medusa);
     /* assumes that hero has to see monster's gaze in order to be
        affected, rather than monster just having to look at hero;
        Unaware:  asleep or unconscious => not blind but won't see;
@@ -2126,8 +2127,8 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             boolean useeit = canseemon(mtmp);
 
             if (useeit)
-                (void) ureflects("%s gaze is reflected by your %s.",
-                                 s_suffix(Monnam(mtmp)));
+                pline("%s gaze is reflected by your %s.",
+                     s_suffix(Monnam(mtmp)), reflectsrc);
             if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > 9) {
                 if (useeit)
                     pline("%s reflection is too far away for %s to notice.",

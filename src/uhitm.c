@@ -7380,14 +7380,17 @@ passive(
                     break;
                 }
                 if (mon->mcansee) {
-                    if (ureflects("%s gaze is partially reflected by your %s.",
-                                  s_suffix(Monnam(mon))) && !Free_action
-                                  /* Quite rare if luck is 8 or higher */
-                                  && rnl(10) > 5) {
-                        You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
-                        nomul(-rnd(2));
-                        dynamic_multi_reason(mon, "frozen", TRUE);
-                        gn.nomovemsg = 0;
+                    const char* reflectsrc = ureflectsrc();
+                    if (reflectsrc) {
+                        /* Sometimes reflection still doesn't fully protect */
+                        if (!Free_action && rnl(10) > 5) {
+                            pline_mon(mon, "%s gaze is partially reflected by your %s.",
+                                      s_suffix(Monnam(mon)), reflectsrc);
+                            You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
+                            nomul(-rnd(2));
+                            dynamic_multi_reason(mon, "frozen", TRUE);
+                            gn.nomovemsg = 0;
+                        }
                     } else if (Hallucination) {
                         /* [it's the hero who should be getting paralyzed
                            and isn't; this message describes the monster's
