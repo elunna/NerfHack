@@ -5990,7 +5990,7 @@ dobuzz(
                         otmp = carrying(MIRROR);
                         /* They break roughly 50% of the time */
                         if (d(6,6) > 20 && breaktest(otmp)) {
-                            pline("%s mirror shatters.", Ysimple_name2(otmp));
+                            pline("%s shatters!", Ysimple_name2(otmp));
                             if (type >= 0) {
                                 pline("That's bad luck!");
                                 change_luck(-2);
