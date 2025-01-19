@@ -758,10 +758,23 @@ Gloves_on(void)
     case GAUNTLETS_OF_FORCE:
     case BRONZE_GAUNTLETS:
         break;
-    case GAUNTLETS_OF_FUMBLING:
-        if (!oldprop && !(HFumbling & ~TIMEOUT))
+    case GAUNTLETS_OF_FUMBLING: {
+        boolean was_flying = !!Flying;
+        /* while fumbling, block flying */
+        BFlying |= W_ARMG;
+        
+        if (!oldprop && !(HFumbling & ~TIMEOUT)) {
             incr_itimeout(&HFumbling, rnd(20));
+            if (was_flying) {
+                You("%s.", (is_pool_or_lava(u.ux, u.uy)
+                       || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                         ? "abruptly stop flying"
+                         : "land with a thwomp");
+                spoteffects(TRUE);
+            }
+        }
         break;
+    }
     case GAUNTLETS_OF_SWIMMING:
         if (u.uinwater) {
            pline("Hey! You can swim!");
