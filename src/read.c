@@ -110,7 +110,7 @@ tshirt_text(struct obj *tshirt, char *buf)
         "Madame Elvira's House O' Succubi Employee of the Month",
         "Ludios Vault Guards Do It In Small, Dark Rooms",
         "Yendor Military Soldiers Do It In Large Groups",
-        "I survived Yendor Military Boot Camp",
+        "I survived NerfHack Military Boot Camp",
         "Ludios Accounting School Intra-Mural Lacrosse Team",
         "Oracle(TM) Fountains 10th Annual Wet T-Shirt Contest",
         "Hey, black dragon!  Disintegrate THIS!",
