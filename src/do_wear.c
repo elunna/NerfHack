@@ -326,7 +326,7 @@ Boots_on(void)
         update_inventory();
     }
     if (uarmf && uarmf->greased && uarmf->otyp != FUMBLE_BOOTS)
-        make_feet_greasy();
+        make_fumbling((HFumbling & TIMEOUT) + rnd(3));
 
     return 0;
 }
@@ -857,6 +857,10 @@ Gloves_off(void)
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             HFumbling = EFumbling = 0;
+        /* Unblock flying */
+        BFlying &= ~W_ARMG;
+        if (Flying)
+            You("start flying.");
         break;
     case GAUNTLETS_OF_SWIMMING:
         if (u.uinwater && !Swimming) {

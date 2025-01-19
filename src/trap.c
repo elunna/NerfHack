@@ -1853,21 +1853,6 @@ trapeffect_rust_trap(
     return Trap_Effect_Finished;
 }
 
-
-/* This is not great - but FROMOUTSIDE is used by other
- * sources of fumbling. In timeout.c we check if this is I_SPECIAL
- * and reset it for a while or until it's wiped off by a towel.
- */
-void
-make_feet_greasy(void)
-{
-    long old;
-    HFumbling |= (I_SPECIAL);
-    old = (HFumbling & TIMEOUT);
-    HFumbling &= ~TIMEOUT;
-    HFumbling += old + rnd(3);
-}
-
 staticfn int
 trapeffect_grease_trap(
     struct monst *mtmp,
@@ -1881,7 +1866,6 @@ trapeffect_grease_trap(
     if (mtmp == &gy.youmonst) {
         /* Stepping in a puddle grease */
         if (!Levitation && !Flying && !rn2(2)) {
-
             /* Usually fall off steed if riding */
             if (u.usteed) {
                 pline("%s clops into a puddle of grease and slips!",
@@ -1906,10 +1890,19 @@ trapeffect_grease_trap(
                     You("almost slip on a puddle of grease!");
                 }
 	    }
-            make_feet_greasy();
+            make_fumbling((HFumbling & TIMEOUT) + rnd(3)); /* + 1..3 */
             seetrap(trap);
             trap->once = 1;
             return Trap_Effect_Finished;
+        } else if (Flying && !rn2(2)) {
+            /* This is a bit of a stretch, but if you are flying
+               you get hit with an extra nasty splosh of grease that 
+               mucks up your flying and blinds you... */
+            pline("A torrent of grease inundates you!");
+            make_fumbling((HFumbling & TIMEOUT) + rnd(3)); /* + 1..3 */
+            seetrap(trap);
+            trap->once = 1;
+            goto greased_face;
         }
 
         if (trap->once && trap->tseen && !rn2(15)) {
@@ -1935,6 +1928,7 @@ trapeffect_grease_trap(
                     return Trap_Effect_Finished;
                 }
             }
+greased_face:
             /* Blindfolds/etc get pushed off first */
             if (ublindf) {
                 grease_hits(ublindf);
@@ -1983,7 +1977,7 @@ trapeffect_grease_trap(
                 grease_hits(uarmf);
                 grease_hits(uarmf); /* Two chances for good measure */
             }
-            make_feet_greasy();
+            make_fumbling((HFumbling & TIMEOUT) + rnd(3));
             break;
         default:
             pline("%s you!", A_gush_of_grease_hits);

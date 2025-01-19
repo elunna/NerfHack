@@ -606,6 +606,40 @@ make_glib(int xtime)
         update_inventory();
 }
 
+/* set or clear intrinsic fumbling from grease traps */
+/* This is not great - but FROMOUTSIDE is used by other
+ * sources of fumbling. In timeout.c we check if this is I_SPECIAL
+ * and reset it for a while or until it's wiped off by a towel.
+ */
+void
+make_fumbling(int xtime)
+{
+    boolean was_flying = !!Flying;
+    set_itimeout(&HFumbling, xtime + rnd(3));
+
+    if (xtime) {
+        HFumbling |= (I_SPECIAL);
+        HFumbling &= ~TIMEOUT;
+    }
+    /* fumbling inhibits flying (but not levitation) */
+    if (was_flying && xtime) {
+        BFlying |= W_ARM;
+        You("%s.", (is_pool_or_lava(u.ux, u.uy)
+               || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                 ? "abruptly stop flying"
+                 : "land with a thwomp");
+        spoteffects(TRUE);
+    } else if (!xtime) {
+        HFumbling &= ~I_SPECIAL;
+        if (!EFumbling && !(HFumbling & ~TIMEOUT))
+            HFumbling = 0;
+        /* Unblock flying */
+        BFlying &= ~W_ARM;
+        if (Flying)
+            You("start flying.");
+    }
+}
+
 void
 make_withering(long xtime, boolean talk)
 {
