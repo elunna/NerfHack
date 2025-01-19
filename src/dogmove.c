@@ -1581,7 +1581,7 @@ acceptable_pet_target(
 
     boolean bad_eye = (!ranged && mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
             && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
-            && !mon_reflects(mtmp, (char *) NULL)
+            && !mon_reflectsrc(mtmp)
             && (mon_prop(mtmp, SEE_INVIS) || !mtmp2->minvis));
 
     boolean vs_passive = (!ranged && (mtmp2->data == &mons[PM_GELATINOUS_CUBE]
@@ -1607,7 +1607,7 @@ acceptable_pet_target(
     boolean vs_boomer = (attacktype(mtmp2->data, AT_BOOM) && !mtmp2->mcan
             && distu(mtmp2->mx, mtmp2->my) < 3);
 
-    return !((bad_eye && !mon_reflects(mtmp, (char *) NULL))
+    return !((bad_eye && !mon_reflectsrc(mtmp))
              || scared || vs_passive || passive_kill || vs_spiker
               || vs_stoner || vs_dise || vs_peaceful || vs_boomer);
 }

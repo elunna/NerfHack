@@ -4994,7 +4994,7 @@ zhitm(
     int damgtype = zaptype(type) % 10;
     boolean sho_shieldeff = FALSE;
     boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
-    boolean mreflected = mon_reflects(mon, (char *) 0);
+    const char* monreflector = mon_reflectsrc(mon);
     *ootmp = (struct obj *) 0;
     
     switch (damgtype) {
@@ -5025,7 +5025,7 @@ zhitm(
         orig_dmg = tmp; /* includes spell bonus but not monster vuln to fire */
         if (resists_cold(mon))
             tmp += 7;
-        if (!mreflected && burnarmor(mon)) {
+        if (!monreflector && burnarmor(mon)) {
             if (!rn2(3)) {
                 tmp += destroy_items(mon, AD_FIRE, orig_dmg);
                 ignite_items(mon->minvent);
@@ -5043,7 +5043,7 @@ zhitm(
         orig_dmg = tmp; /* includes spell bonus but not monster vuln to cold */
         if (resists_fire(mon))
             tmp += d(nd, 3);
-        if (!mreflected && !rn2(3))
+        if (!monreflector && !rn2(3))
             tmp += destroy_items(mon, AD_COLD, orig_dmg);
         break;
     case ZT_SLEEP:
@@ -5074,7 +5074,7 @@ zhitm(
             if (resists_disint(mon) || defended(mon, AD_DISN)) {
                 sho_shieldeff = TRUE;
                 tmp = 0;
-            } else if (mreflected) {
+            } else if (monreflector) {
                 /* no item destruction; still take damage though */
                 sho_shieldeff = TRUE; 
                 tmp = d(nd, 6);
@@ -5100,9 +5100,9 @@ zhitm(
         }
         tmp = d(nd, 6);
         if (resists_magm(mon)) {
-            if (mreflected)
+            if (monreflector)
                 tmp /= 2;
-        } else if (mreflected) {
+        } else if (monreflector) {
             tmp /= 2;
         } else {
             tmp = mon->mhp + 1;
@@ -5129,7 +5129,7 @@ zhitm(
             else
                 mon->mblinded += rnd_tmp;
         }
-        if (!mreflected && !rn2(3))
+        if (!monreflector && !rn2(3))
             tmp += destroy_items(mon, AD_ELEC, orig_dmg);
         break;
     case ZT_POISON_GAS:
@@ -5145,9 +5145,9 @@ zhitm(
             break;
         }
         tmp = d(nd, 6);
-        if (!mreflected && !rn2(6))
+        if (!monreflector && !rn2(6))
             acid_damage(MON_WEP(mon));
-        if (!mreflected && !rn2(6))
+        if (!monreflector && !rn2(6))
             erode_armor(mon, ERODE_CORRODE);
         break;
     case ZT_DRAIN:
@@ -5157,7 +5157,7 @@ zhitm(
             break;
         }
 
-        tmp = mreflected ? rnd(4) : rnd(8);
+        tmp = monreflector ? rnd(4) : rnd(8);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
         
@@ -5762,7 +5762,6 @@ dobuzz(
     struct obj *otmp;
     int spell_type;
     int hdmgtype = Hallucination ? rn2(6) : damgtype;
-    boolean mreflected;
     
     /* if it's a Hero Spell then get its SPE_TYPE */
     spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + damgtype : 0;
@@ -5826,7 +5825,6 @@ dobuzz(
                 tmp_at(sx, sy);
             nh_delay_output(); /* wait a little */
         }
-
         /* hit() and miss() need gb.bhitpos to match the target */
         gb.bhitpos.x = sx, gb.bhitpos.y = sy;
         gas_hit = (damgtype == ZT_POISON_GAS);
@@ -5852,13 +5850,12 @@ dobuzz(
             gn.notonhead = (mon->mx != gb.bhitpos.x
                             || mon->my != gb.bhitpos.y);
             if (zap_hit(find_mac(mon), spell_type)) {
-                mreflected = mon_reflects(mon, (char *) 0);
-                if (mreflected) {
+                const char* mreflector = mon == &gy.youmonst 
+                    ? ureflectsrc() : mon_reflectsrc(mon);
+                if (mreflector) {
                     if (cansee(mon->mx, mon->my)) {
-                        hit(flash_str(fltyp, FALSE), mon, exclam(0));
-                        shieldeff(mon->mx, mon->my);
-                        (void) mon_reflects(mon,
-                                            "But it reflects from %s %s!");
+                        pline_mon(mon, "But some of it reflects from %s %s!",
+                                  s_suffix(mon_nam(mon)), mreflector);
                         gas_hit = FALSE;
                     }
                     /* reflected but doesn't bounce */
@@ -5868,6 +5865,19 @@ dobuzz(
                     dy = -dy;
                     /* monsters get partial reflection too */
                     nd = (nd + 1) / 2;
+                    if (strcmp(mreflector, "mirror") == 0) {
+                        struct obj *mmirror = m_carrying(mon, MIRROR);
+                        /* They break roughly 50% of the time */
+                        if (d(6,6) > 20 && breaktest(mmirror)) {
+                            pline("A %s shatters!", xname(mmirror));
+                            if (type >= 0) {
+                                pline("That's bad luck!");
+                                change_luck(-2);
+                            }
+                            m_useup(mon, mmirror);
+                            mmirror = (struct obj *) 0;
+                        }
+                    }
                 }
                 boolean mon_could_move = mon->mcanmove;
                 int tmp = zhitm(mon, type, nd, &otmp);
@@ -5923,7 +5933,7 @@ dobuzz(
                         if (say || canseemon(mon)) {
                             hit(flash_str(fltyp, FALSE), mon, exclam(tmp));
                             if ((resists_magm(mon) || defended(mon, AD_MAGM)
-                                                   || mreflected)
+                                                   || mreflector)
                                 && damgtype == ZT_DEATH
                                 && abs(type) != ZT_BREATH(ZT_DEATH)) { /* death */
                                 if (canseemon(mon))
@@ -5966,7 +5976,7 @@ dobuzz(
             nomul(0);
             if (fireball) /* The buck stops here. */
                 break;
-            else if (u.usteed && !rn2(3) && !mon_reflects(u.usteed, (char *) 0)) {
+            else if (u.usteed && !rn2(3) && !mon_reflectsrc(u.usteed)) {
                 mon = u.usteed;
                 goto buzzmonst;
             } else if (zap_hit((int) u.uac, 0)) {
@@ -5987,16 +5997,16 @@ dobuzz(
                     nd = (nd + 1) / 2;
                     gas_hit = FALSE;
                     if (strcmp(reflectsrc, "mirror") == 0) {
-                        otmp = carrying(MIRROR);
+                        struct obj *mmirror = carrying(MIRROR);
                         /* They break roughly 50% of the time */
-                        if (d(6,6) > 20 && breaktest(otmp)) {
-                            pline("%s shatters!", Ysimple_name2(otmp));
+                        if (d(6,6) > 20 && breaktest(mmirror)) {
+                            pline("%s shatters!", Ysimple_name2(mmirror));
                             if (type >= 0) {
                                 pline("That's bad luck!");
                                 change_luck(-2);
                             }
-                            useup(otmp);
-                            otmp = (struct obj *) 0;
+                            useup(mmirror);
+                            mmirror = (struct obj *) 0;
                         }
                     }
                 } else {

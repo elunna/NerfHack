@@ -879,15 +879,18 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
             pline("but nothing happens.");
         return M_ATTK_MISS;
     }
-    /* call mon_reflects 2x, first test, then, if visible, print message */
-    if (magr->data == &mons[PM_MEDUSA] && mon_reflects(mdef, (char *) 0)) {
+    /* call mon_reflectsrc 2x, first test, then, if visible, print message */
+    const char* monreflector = mon_reflectsrc(mdef);
+    if (magr->data == &mons[PM_MEDUSA] && monreflector) {
         if (canseemon(mdef))
-            (void) mon_reflects(mdef, "The gaze is reflected away by %s %s.");
+            pline_mon(mdef, "The gaze is reflected away by %s %s.",
+                      s_suffix(mon_nam(mdef)), monreflector);
         if (mdef->mcansee) {
-            if (mon_reflects(magr, (char *) 0)) {
+            monreflector = mon_reflectsrc(magr);
+            if (monreflector) {
                 if (canseemon(magr))
-                    (void) mon_reflects(magr,
-                                      "The gaze is reflected away by %s %s.");
+                    pline_mon(magr, "The gaze is reflected away by %s %s.",
+                      s_suffix(mon_nam(magr)), monreflector);
                 return M_ATTK_MISS;
             }
             if (mdef->minvis && !mon_prop(magr, SEE_INVIS)) {
@@ -1545,9 +1548,12 @@ passivemm(
                     Strcpy(buf, s_suffix(Monnam(mdef)));
                     (void) strNsubst(buf, "%", "%%", 0);
                     Strcat(buf, " gaze is reflected by %s %s.");
-                    if (mon_reflects(magr,
-                                     canseemon(magr) ? buf : (char *) 0))
+                    const char* monreflector = mon_reflectsrc(magr);
+                    if (monreflector) {
+                        pline_mon(magr, "But it reflects from %s %s!",
+                                  s_suffix(mon_nam(magr)), monreflector);
                         return (mdead | mhit);
+                    }
                     Strcpy(buf, Monnam(magr));
                     if (canseemon(magr)) {
                         if (has_free_action(magr)) {

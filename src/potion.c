@@ -2367,7 +2367,7 @@ potionhit(struct monst *mon, struct obj *obj, int how)
             angermon = FALSE;
             if (canseemon(mon))
                 pline("A shimmering globe appears around %s!", mon_nam(mon));
-            /* monster reflection is handled in mon_reflects() */
+            /* monster reflection is handled in mon_reflectsrc() */
             mon->mextrinsics |= MR2_REFLECTION;
             mon->mreflecttime = rn1(5, 15);
             break;

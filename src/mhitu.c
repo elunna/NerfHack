@@ -2135,9 +2135,13 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                           s_suffix(Monnam(mtmp)), mhis(mtmp));
                 break;
             }
-            if (mon_reflects(mtmp, !useeit ? (char *) 0
-                                  : "The gaze is reflected away by %s %s!"))
+            const char* monreflector = mon_reflectsrc(mtmp);
+            if (monreflector) {
+                pline_mon(mtmp, "The gaze is reflected away by %s %s!",
+                                  s_suffix(mon_nam(mtmp)), monreflector);
                 break;
+            }
+                
             if (!m_canseeu(mtmp)) { /* probably you're invisible */
                 if (useeit)
                     pline(
@@ -3040,9 +3044,12 @@ passiveum(
                               pmname(gy.youmonst.data,
                                      flags.female ? FEMALE : MALE));
                     } else {
-                        if (mon_reflects(mtmp,
-                                         "Your gaze is reflected by %s %s."))
+                        const char* monreflector = mon_reflectsrc(mtmp);
+                        if (monreflector) {
+                            Your("gaze is reflected by %s %s.",
+                                  s_suffix(mon_nam(mtmp)), monreflector);
                             return 1;
+                        }
                         if (has_free_action(mtmp)) {
                             pline_mon(mtmp, "%s stiffens momentarily.", Monnam(mtmp));
                             return 1;

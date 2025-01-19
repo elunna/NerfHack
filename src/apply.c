@@ -1229,8 +1229,12 @@ use_mirror(struct obj *obj)
         if (vis)
             pline("%s doesn't have a reflection.", Monnam(mtmp));
     } else if (monable && mtmp->data == &mons[PM_MEDUSA]) {
-        if (mon_reflects(mtmp, "The gaze is reflected away by %s %s!"))
-            return ECMD_TIME;
+        const char* monreflector = mon_reflectsrc(mtmp);
+        if (monreflector) {
+            pline_mon(mtmp, "The gaze is reflected away by %s %s!",
+                     s_suffix(mon_nam(mtmp)), monreflector);
+                return ECMD_TIME;
+        }
         if (vis)
             pline("%s is turned to stone!", Monnam(mtmp));
         gs.stoned = TRUE;

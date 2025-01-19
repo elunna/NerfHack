@@ -731,7 +731,7 @@ cast_wizard_spell(
                              || caster->data->msound == MS_LEADER);
         if (canseemon(caster))
             pline("A shimmering globe appears around %s!", mon_nam(caster));
-        /* monster reflection is handled in mon_reflects() */
+        /* monster reflection is handled in mon_reflectsrc() */
         caster->mextrinsics |= MR2_REFLECTION;
         caster->mreflecttime = rn1(50, strongbad ? 200 : 100);
         dmg = 0;
@@ -1294,15 +1294,22 @@ cast_cleric_spell(
             if (canseemon(mdef))
                 pline("A bolt of lightning strikes down at %s from above!",
                     mon_nam(mdef));
-            reflects = mon_reflects(mdef, "It bounces off %s %s.");
-            if (reflects || resists_elec(mdef) || defended(mdef, AD_ELEC)) {
+            const char* monreflector = mon_reflectsrc(mdef);
+            if (monreflector)
+                pline("It bounces off %s %s.", s_suffix(mon_nam(mdef)), 
+                      monreflector);
+            if (resists_elec(mdef) || defended(mdef, AD_ELEC)) {
                 shieldeff(u.ux, u.uy);
                 dmg = 0;
                 if (reflects)
                     break;
-            } else
+            } else {
                 dmg = d(8, 6);
-            dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
+            }
+            if (monreflector)
+                dmg /= 2;
+            if (!monreflector)
+                dmg += destroy_items(mdef, AD_ELEC, orig_dmg);
         }
 
         /* lightning might destroy iron bars if hero is on such a spot;
@@ -1765,7 +1772,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         /* invisibility when already invisible */
         if ((caster->minvis || caster->invis_blkd) && spellnum == MGC_DISAPPEAR)
             return TRUE;
-        if ((has_reflection(caster) || mon_reflects(caster, (char *) 0))
+        if ((has_reflection(caster) || mon_reflectsrc(caster))
             && spellnum == MGC_REFLECTION)
             return TRUE;
         /* peaceful monster won't cast invisibility. This doesn't
@@ -1904,7 +1911,7 @@ mspell_would_be_useless(
             && !See_invisible && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* reflection when already reflecting */
-        if ((has_reflection(caster) || mon_reflects(caster, (char *) 0))
+        if ((has_reflection(caster) || mon_reflectsrc(caster))
             && spellnum == MGC_REFLECTION)
             return TRUE;
         /* healing when already healed */

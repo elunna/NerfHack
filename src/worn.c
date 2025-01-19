@@ -1448,7 +1448,7 @@ extra_pref(struct monst *mon, struct obj *obj)
             && !(resists_magm(mon) || defended(mon, AD_MAGM)))
         return 50;
     if (objects[obj->otyp].oc_oprop == REFLECTING
-            && !mon_reflects(mon, (char *) 0))
+            && !mon_reflectsrc(mon))
         return 40;
     if (objects[obj->otyp].oc_oprop == STOMPING
             && !mon_prop(mon, STOMPING))

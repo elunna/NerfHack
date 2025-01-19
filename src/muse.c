@@ -3457,58 +3457,44 @@ searches_for_item(struct monst *mon, struct obj *obj)
 
 DISABLE_WARNING_FORMAT_NONLITERAL
 
-boolean
-mon_reflects(struct monst *mon, const char *str)
+const char *
+mon_reflectsrc(struct monst *mon)
 {
     struct obj *orefl = which_armor(mon, W_ARMS);
-
+    
+    /* TODO: Make sure the reflecting item is seen before identifying */
+    
     if (orefl && orefl->otyp == SHIELD_OF_REFLECTION) {
-        if (str) {
-            pline(str, s_suffix(mon_nam(mon)), "shield");
-            makeknown(SHIELD_OF_REFLECTION);
-        }
-        return TRUE;
+        makeknown(SHIELD_OF_REFLECTION);
+        return "shield";
     } else if (arti_reflects(MON_WEP(mon))) {
         /* due to wielded artifact weapon */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "weapon");
-        return TRUE;
+        return "weapon";
     } else if ((orefl = which_armor(mon, W_AMUL))
                && orefl->otyp == AMULET_OF_REFLECTION) {
-        if (str) {
-            pline(str, s_suffix(mon_nam(mon)), "amulet");
-            makeknown(AMULET_OF_REFLECTION);
-        }
-        return TRUE;
+        makeknown(AMULET_OF_REFLECTION);
+        return "amulet";
     } else if ((orefl = which_armor(mon, W_ARM))
                && Is_dragon_scaled_armor(orefl)
                && Dragon_armor_to_scales(orefl) == SILVER_DRAGON_SCALES) {
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "armor");
-        return TRUE;
+        return "armor";
     } else if ((orefl = which_armor(mon, W_ARMC))
               && orefl->otyp == SILVER_DRAGON_SCALES) {
-       if (str)
-           pline(str, s_suffix(mon_nam(mon)), "set of scales");
-       return TRUE;
+        return "set of scales";
     } else if (innate_reflector(mon->data)) {
         /* Silver dragons only reflect when mature; babies do not */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "scales");
-        return TRUE;
+        return "luster";
     } else if (has_reflection(mon)) {
         /* specifically for the monster spell MGC_REFLECTION */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "shimmering globe");
-        return TRUE;
+        return "shimmering globe";
     } else if (orefl && orefl->oartifact == ART_HOLOGRAPHIC_VOID_LILY) {
         /* Due to any carried artifact which grants reflection, which shows as W_ART */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "card");
-        monstseesu(M_SEEN_REFL);
-        return TRUE;
+        return "card";
+    } else if (m_carrying(mon, MIRROR)) {
+        /* Also applies to the Magic Mirror of Merlin */
+        return "mirror";
     }
-    return FALSE;
+    return (const char*) NULL;
 }
 
 /* Check whether the player is reflecting right now.
@@ -3524,15 +3510,14 @@ ureflectsrc(void)
         return "shield";
     } else if (HReflecting) {
         /* Potion of reflection */
-        return "magical shield";
+        return "shimmering globe";
     } else if (EReflecting & (W_WEP | W_SWAPWEP)) {
         /* Due to wielded artifact weapon */
         return "weapon";
     } else if (EReflecting & W_ARMC) {
         if (uarmc->otyp == SILVER_DRAGON_SCALES) {
             return "set of scales";
-        }
-        else {
+        } else {
             /* no other cloaks give this */
             impossible("reflecting cloak?");
             return "cloak";
@@ -3554,6 +3539,7 @@ ureflectsrc(void)
         return "card";
     } else if (carrying(MIRROR)) {
         /* carried mirror offers reflection but easily breaks */
+        /* Also applies to the Magic Mirror of Merlin */
         makeknown(MIRROR);
         return "mirror";
     }
