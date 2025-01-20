@@ -469,7 +469,7 @@ enlightenment(
             you_are(buf, "");
         }
 
-        if (!wizard) {
+        if (!flags.bones) {
             you_have_X("disabled loading of bones levels");
         } else if (!u.uroleplay.numbones) {
             you_have_never("encountered a bones level");
