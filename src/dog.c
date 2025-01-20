@@ -1207,7 +1207,8 @@ tamedog(
 {
     boolean blessed_scroll = FALSE;
     boolean taming_familiar = Race_if(PM_VAMPIRE) 
-                              && mtmp->data == &mons[PM_FAMILIAR];
+                              && (mtmp->data == &mons[PM_FAMILIAR]
+                                  || mtmp->data->mlet == S_VAMPIRE);
 
     /* Spell of charm monster is limited at unskilled and basic -
      * it can only pacify. */
@@ -1235,8 +1236,9 @@ tamedog(
         return FALSE;
     }
 
-    /* Vampires can only tame familiars, no pacifying anything else */
-    if (Race_if(PM_VAMPIRE) && mtmp->data != &mons[PM_FAMILIAR])
+    /* Vampires can only tame familiars and other vampire */
+    if (Race_if(PM_VAMPIRE) && !(mtmp->data == &mons[PM_FAMILIAR]
+                                  || mtmp->data->mlet == S_VAMPIRE))
         return FALSE;
 
     /* worst case, at least it'll be peaceful. */
