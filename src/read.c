@@ -2093,12 +2093,10 @@ seffect_cloning(struct obj **sobjp)
         otmp2->oeaten = otmp->oeaten;
         otmp2->opoisoned = otmp->opoisoned;
 
-        /* For slime mold names. We also don't want to copy
-         * an artifact name over. We could try to mangle the
-         * name like #name does for already existing artifacts,
-         * but this seems fine too. */
-        if (otmp->oextra && !otmp->oartifact)
-            otmp2->oextra = otmp->oextra;
+        
+        /* Copy the name over. Artifact names will not be copied.  */
+        if (otmp->oextra)
+            oname(otmp2, otmp->oextra->oname, ONAME_VIA_NAMING);
 
         /* but suppressing fruit details leads to "bad fruit #0" */
         if (otmp2->otyp == SLIME_MOLD)
