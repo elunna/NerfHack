@@ -5,9 +5,9 @@
 
 #include "hack.h"
 
-/* "an uncursed greased silver-scaled thoroughly rusty thoroughly corroded
-   rustproof +0 [chain mail]" (83 characters) */
-#define PREFIX 90
+/* "an uncursed greased shimmering-scaled thoroughly rusty thoroughly 
+    corroded rustproof +13 [chain mail]" (99 characters) */
+#define PREFIX 99
 #define SCHAR_LIM 127
 #define NUMOBUF 12
 
