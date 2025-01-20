@@ -950,6 +950,8 @@ artifact_score(
 staticfn boolean
 fuzzer_savelife(int how)
 {
+    struct obj *obj;
+    
     /*
      * Some debugging code pulled out of done() to unclutter it.
      * 'done_seq' is maintained in done().
@@ -997,6 +999,16 @@ fuzzer_savelife(int how)
                 ; /* might confer temporary Antimagic (magic resistance)
                    * or even Invulnerable */
             }
+        }
+        
+        /* Insertion point for testing specific items
+         * Every so often, give the hero the specific item
+         * so the fuzzer is more exposed to it. 
+         * */
+        int TEST_OTYP = 0; 
+        if (!rn2(20) && TEST_OTYP) {
+            obj = mksobj(TEST_OTYP, TRUE, FALSE);
+            (void) addinv(obj);
         }
         /* clear stale cause of death info after life-saving */
         svk.killer.name[0] = '\0';
