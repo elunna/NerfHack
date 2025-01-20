@@ -5165,14 +5165,7 @@ zhitm(
         tmp = monreflector ? rnd(4) : rnd(8);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
-        
-        if (P_SKILL(P_ATTACK_SPELL) >= P_EXPERT && !rn2(10)) {
-            /* 10% chance of an explosion instead */
-            explode(mon->mx, mon->my, -(WAN_DRAINING), tmp, WAND_CLASS,
-                    EXPL_MAGICAL);
-            tmp = 0;
-            break;
-        }
+
         if (mon->mhpmax - tmp > (int) mon->m_lev) {
             mon->mhpmax -= tmp;
         } else {
@@ -5768,6 +5761,12 @@ dobuzz(
     int spell_type;
     int hdmgtype = Hallucination ? rn2(6) : damgtype;
     
+    /* Drain life at expert can convert to an exploding type */
+    if (type == ZT_SPELL(ZT_DRAIN) 
+        && P_SKILL(P_ATTACK_SPELL) >= P_EXPERT && !rn2(10)) {
+            /* 10% chance of an explosion instead */
+            fireball = TRUE;
+    }
     /* if it's a Hero Spell then get its SPE_TYPE */
     spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + damgtype : 0;
 
@@ -6051,7 +6050,7 @@ dobuzz(
                     pline_The("%s vanishes into the aether!",
                               flash_str(fltyp, FALSE));
                     if (fireball)
-                        type = ZT_WAND(ZT_FIRE); /* skip pending fireball */
+                        type = ZT_WAND(zaptype(type) % 10); /* skip pending fireball */
                     break;
                 } else if (fireball) {
                     sx = lsx;
@@ -6094,7 +6093,8 @@ dobuzz(
     }
     tmp_at(DISP_END, 0);
     if (fireball)
-        explode(sx, sy, type, d(12, 6), 0, EXPL_FIERY);
+        explode(sx, sy, type, d(12, 6), 0,
+                type == ZT_SPELL(ZT_DRAIN) ? EXPL_MAGICAL : EXPL_FIERY);
     if (shopdamage)
         pay_for_damage(damgtype == ZT_FIRE ? "burn away"
                        : damgtype == ZT_COLD ? "shatter"
