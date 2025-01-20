@@ -2985,6 +2985,9 @@ hornoplenty(
         pline1(nothing_happens);
         morehungry(rn1(80, 80)); /* Famine! */
         consume_obj_charge(horn, !tipping);
+    } else if (rnd(10) > (10 - horn->recharged)) {
+        pline1(nothing_happens);
+        consume_obj_charge(horn, !tipping);
     } else if (horn->spe < 1) {
         pline1(nothing_happens);
         if (!horn->cknown) {
