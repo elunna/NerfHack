@@ -193,6 +193,7 @@ static struct trobj Valkyrie[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Wizard[] = {
+#define W_BOOK 6
     { QUARTERSTAFF, 1, WEAPON_CLASS, 1, 1 },
     { CLOAK_OF_PROTECTION, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS },
@@ -851,6 +852,8 @@ u_init_role(void)
         skill_init(Skill_V);
         break;
     case PM_WIZARD:
+        if (rn2(100) >= 50) /* see above comment */
+            Wizard[W_BOOK].trotyp = SPE_FIRE_BOLT;
         ini_inv(Wizard);
         ini_inv(Magicmarker);
         if (!rn2(5))
