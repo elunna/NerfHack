@@ -7600,16 +7600,11 @@ calc_zap_range(int otyp)
     int skill = spell_skilltype(otyp);
     int role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(skill);
     
-    if (otyp == SPE_FORCE_BOLT
-        || otyp == SPE_FIRE_BOLT 
-        || otyp == SPE_DRAIN_LIFE
-        || otyp == SPE_SLEEP
-        || otyp == SPE_SLOW_MONSTER
-        || otyp == SPE_TELEPORT_AWAY
-        || otyp == SPE_KNOCK
-        || otyp == SPE_WIZARD_LOCK
-        || otyp == SPE_DIG
-        ) {
+    if (otyp == SPE_FORCE_BOLT || otyp == SPE_FIRE_BOLT 
+        || otyp == SPE_DRAIN_LIFE || otyp == SPE_SLEEP
+        || otyp == SPE_SLOW_MONSTER || otyp == SPE_CHARM_MONSTER
+        || otyp == SPE_KNOCK || otyp == SPE_WIZARD_LOCK
+        || otyp == SPE_DIG || otyp == SPE_TELEPORT_AWAY) {
         switch (role_skill) {
         default:        return rnd(4);          /* range 1-4 */
         case P_BASIC:   return 1 + rnd(7);      /* range 2-8 */
