@@ -200,6 +200,7 @@ PANICTRACE_LIBC=2
 # option settings via NERFHACKOPTIONS in their environment or via
 # ~/.nerfhackrc run-time configuration file.
 #OPTIONS=!autopickup,fruit:tomato,symset:DECgraphics
+OPTIONS=bones
 OPTIONS=color
 OPTIONS=lit_corridor
 OPTIONS=dark_room
