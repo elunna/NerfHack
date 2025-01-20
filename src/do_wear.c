@@ -285,10 +285,23 @@ Boots_on(void)
     case ELVEN_BOOTS:
         toggle_stealth(uarmf, oldprop, TRUE);
         break;
-    case FUMBLE_BOOTS:
-        if (!oldprop && !(HFumbling & ~TIMEOUT))
+    case FUMBLE_BOOTS: {
+        boolean was_flying = !!Flying;
+        /* while fumbling, block flying */
+        BFlying |= W_ARMF;
+        
+        if (!oldprop && !(HFumbling & ~TIMEOUT)) {
             incr_itimeout(&HFumbling, rnd(20));
+            if (was_flying) {
+                You("%s.", (is_pool_or_lava(u.ux, u.uy)
+                       || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                         ? "abruptly stop flying"
+                         : "land with a thwomp");
+               spoteffects(TRUE);
+            }
+        }
         break;
+    }
     case LEVITATION_BOOTS:
         if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)) {
             uarmf->known = 1; /* might come off if putting on over a sink,
@@ -313,7 +326,7 @@ Boots_on(void)
         update_inventory();
     }
     if (uarmf && uarmf->greased && uarmf->otyp != FUMBLE_BOOTS)
-        make_feet_greasy();
+        make_fumbling((HFumbling & TIMEOUT) + rnd(3));
 
     return 0;
 }
@@ -376,6 +389,10 @@ Boots_off(void)
     case FUMBLE_BOOTS:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             HFumbling = EFumbling = 0;
+        /* Unblock flying */
+        BFlying &= ~W_ARMF;
+        if (Flying)
+            You("start flying.");
         break;
     case LEVITATION_BOOTS:
         if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)
@@ -741,10 +758,23 @@ Gloves_on(void)
     case GAUNTLETS_OF_FORCE:
     case BRONZE_GAUNTLETS:
         break;
-    case GAUNTLETS_OF_FUMBLING:
-        if (!oldprop && !(HFumbling & ~TIMEOUT))
+    case GAUNTLETS_OF_FUMBLING: {
+        boolean was_flying = !!Flying;
+        /* while fumbling, block flying */
+        BFlying |= W_ARMG;
+        
+        if (!oldprop && !(HFumbling & ~TIMEOUT)) {
             incr_itimeout(&HFumbling, rnd(20));
+            if (was_flying) {
+                You("%s.", (is_pool_or_lava(u.ux, u.uy)
+                       || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                         ? "abruptly stop flying"
+                         : "land with a thwomp");
+                spoteffects(TRUE);
+            }
+        }
         break;
+    }
     case GAUNTLETS_OF_SWIMMING:
         if (u.uinwater) {
            pline("Hey! You can swim!");
@@ -827,6 +857,10 @@ Gloves_off(void)
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             HFumbling = EFumbling = 0;
+        /* Unblock flying */
+        BFlying &= ~W_ARMG;
+        if (Flying)
+            You("start flying.");
         break;
     case GAUNTLETS_OF_SWIMMING:
         if (u.uinwater && !Swimming) {

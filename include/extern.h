@@ -2565,6 +2565,7 @@ extern void toggle_blindness(void);
 extern boolean make_hallucinated(long, boolean, long);
 extern void make_deaf(long, boolean);
 extern void make_glib(int);
+extern void make_fumbling(int);
 extern void self_invis_message(void);
 extern int dodrink(void);
 extern int dopotion(struct obj *) NONNULLARG1;
@@ -3405,7 +3406,6 @@ extern const char * trapname(int, boolean);
 extern void ignite_items(struct obj *) NO_NNARGS;
 extern void trap_ice_effects(coordxy x, coordxy y, boolean ice_is_melting);
 extern void trap_sanity_check(void);
-extern void make_feet_greasy(void);
 extern void trigger_trap_with_polearm(struct trap *, coord, struct obj *);
 extern boolean maybe_grease_off(struct obj *);
 

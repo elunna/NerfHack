@@ -110,7 +110,7 @@ tshirt_text(struct obj *tshirt, char *buf)
         "Madame Elvira's House O' Succubi Employee of the Month",
         "Ludios Vault Guards Do It In Small, Dark Rooms",
         "Yendor Military Soldiers Do It In Large Groups",
-        "I survived Yendor Military Boot Camp",
+        "I survived NerfHack Military Boot Camp",
         "Ludios Accounting School Intra-Mural Lacrosse Team",
         "Oracle(TM) Fountains 10th Annual Wet T-Shirt Contest",
         "Hey, black dragon!  Disintegrate THIS!",
@@ -349,6 +349,7 @@ doread(void)
     boolean confused, nodisappear;
     boolean carto = Role_if(PM_CARTOMANCER);
     int otyp;
+    
 
     /*
      * Reading while blind is allowed in most cases, including the
@@ -374,6 +375,28 @@ doread(void)
     scroll = getobj("read", read_ok, GETOBJ_PROMPT);
     if (!scroll)
         return ECMD_CANCEL;
+
+    /* really low intelligence can prevent reading things.
+       exceptions to this rule are scrolls of mail (server
+       messages), hawaiian shirts (pattern, not text), and
+       the book of the dead (must have to win) */
+    if (ACURR(A_INT) < 6
+#ifdef MAIL
+        && scroll->otyp != SCR_MAIL
+#endif
+        && scroll->otyp != HAWAIIAN_SHIRT
+        && scroll->otyp != ALCHEMY_SMOCK
+        && scroll->otyp != CREDIT_CARD
+        && scroll->otyp != MAGIC_MARKER
+        && scroll->otyp != CANDY_BAR
+        && scroll->oclass == COIN_CLASS
+        && scroll->otyp != SPE_BOOK_OF_THE_DEAD) {
+        You_cant("seem to make out what all these %s on the %s mean.",
+                 rn2(2) ? "weird scribbles" : "confusing scratches",
+                 simple_typename(scroll->otyp));
+        return 0;
+    }
+    
     otyp = scroll->otyp;
     scroll->pickup_prev = 0; /* no longer 'just picked up' */
 
@@ -816,6 +839,11 @@ recharge(struct obj *obj, int curse_bless)
                       || (n * n * n > rn2(7 * 7 * 7)))) { /* recharge_limit */
             pline_The("%s suddenly detonates!", xname(obj));
             wand_explode(obj, rnd(lim), &gy.youmonst);
+            return;
+        }
+        if (obj->otyp == HORN_OF_PLENTY && n > 9) {
+            pline_The("%s crumbles away!", xname(obj));
+            useup(obj);
             return;
         }
         /* didn't explode, so increment the recharge count */
@@ -2093,12 +2121,10 @@ seffect_cloning(struct obj **sobjp)
         otmp2->oeaten = otmp->oeaten;
         otmp2->opoisoned = otmp->opoisoned;
 
-        /* For slime mold names. We also don't want to copy
-         * an artifact name over. We could try to mangle the
-         * name like #name does for already existing artifacts,
-         * but this seems fine too. */
-        if (otmp->oextra && !otmp->oartifact)
-            otmp2->oextra = otmp->oextra;
+        
+        /* Copy the name over. Artifact names will not be copied.  */
+        if (otmp->oextra)
+            oname(otmp2, otmp->oextra->oname, ONAME_VIA_NAMING);
 
         /* but suppressing fruit details leads to "bad fruit #0" */
         if (otmp2->otyp == SLIME_MOLD)

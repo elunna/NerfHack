@@ -1579,8 +1579,7 @@ dokick(void)
               && !noncorporeal(mtmp->data)) {
             pline("The grease on your %s wears off.",
                 uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
-            HFumbling &= ~I_SPECIAL;
-            HFumbling = 0;
+            make_fumbling(0);
         }
         /* see comment in attack_checks() */
         if (DEADMONSTER(mtmp)) { /* DEADMONSTER() */

@@ -563,13 +563,15 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         }
         break;
     case SPE_CURE_SICKNESS:
-        if (mtmp->mrabid || mtmp->mwither) {
+        if (mtmp->mrabid || mtmp->mwither || mtmp->mdiseased) {
             wake = FALSE;
             if (canseemon(mtmp)) {
                 if (mtmp->mwither)
                     pline("%s is no longer withering away.", Monnam(mtmp));
                 if (mtmp->mrabid)
                     pline("%s is no longer frothing at the mouth.", Monnam(mtmp));
+                if (mtmp->mdiseased)
+                    pline("%s is no longer sickly.", Monnam(mtmp));
             }
             if (mtmp->mtame || mtmp->mpeaceful) {
                 if (Role_if(PM_HEALER)) {
@@ -578,7 +580,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                     adjalign(sgn(u.ualign.type));
                 }
             }
-            mtmp->mrabid = mtmp->mwither = 0;
+            mtmp->mrabid = mtmp->mwither = mtmp->mdiseased = 0;
         } else if (is_zombie(mtmp->data)) {
             if (!DEADMONSTER(mtmp)) {
                 dmg = d(1, 8);
@@ -3342,6 +3344,9 @@ zapyourself(struct obj *obj, boolean ordinary)
         } else {
             if (Sick)
                 You("are no longer ill.");
+            /* The below call to healup won't cure rabid */
+            if (Rabid)
+                make_rabid(0L, (char *) 0, 0, (char *) 0);
             if (Slimed)
                 make_slimed(0L, "The slime disappears!");
             if (Withering) {
@@ -5160,14 +5165,7 @@ zhitm(
         tmp = monreflector ? rnd(4) : rnd(8);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
-        
-        if (P_SKILL(P_ATTACK_SPELL) >= P_EXPERT && !rn2(10)) {
-            /* 10% chance of an explosion instead */
-            explode(mon->mx, mon->my, -(WAN_DRAINING), tmp, WAND_CLASS,
-                    EXPL_MAGICAL);
-            tmp = 0;
-            break;
-        }
+
         if (mon->mhpmax - tmp > (int) mon->m_lev) {
             mon->mhpmax -= tmp;
         } else {
@@ -5763,6 +5761,12 @@ dobuzz(
     int spell_type;
     int hdmgtype = Hallucination ? rn2(6) : damgtype;
     
+    /* Drain life at expert can convert to an exploding type */
+    if (type == ZT_SPELL(ZT_DRAIN) 
+        && P_SKILL(P_ATTACK_SPELL) >= P_EXPERT && !rn2(10)) {
+            /* 10% chance of an explosion instead */
+            fireball = TRUE;
+    }
     /* if it's a Hero Spell then get its SPE_TYPE */
     spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + damgtype : 0;
 
@@ -6046,7 +6050,7 @@ dobuzz(
                     pline_The("%s vanishes into the aether!",
                               flash_str(fltyp, FALSE));
                     if (fireball)
-                        type = ZT_WAND(ZT_FIRE); /* skip pending fireball */
+                        type = ZT_WAND(zaptype(type) % 10); /* skip pending fireball */
                     break;
                 } else if (fireball) {
                     sx = lsx;
@@ -6089,7 +6093,8 @@ dobuzz(
     }
     tmp_at(DISP_END, 0);
     if (fireball)
-        explode(sx, sy, type, d(12, 6), 0, EXPL_FIERY);
+        explode(sx, sy, type, d(12, 6), 0,
+                type == ZT_SPELL(ZT_DRAIN) ? EXPL_MAGICAL : EXPL_FIERY);
     if (shopdamage)
         pay_for_damage(damgtype == ZT_FIRE ? "burn away"
                        : damgtype == ZT_COLD ? "shatter"
@@ -7595,16 +7600,11 @@ calc_zap_range(int otyp)
     int skill = spell_skilltype(otyp);
     int role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(skill);
     
-    if (otyp == SPE_FORCE_BOLT
-        || otyp == SPE_FIRE_BOLT 
-        || otyp == SPE_DRAIN_LIFE
-        || otyp == SPE_SLEEP
-        || otyp == SPE_SLOW_MONSTER
-        || otyp == SPE_TELEPORT_AWAY
-        || otyp == SPE_KNOCK
-        || otyp == SPE_WIZARD_LOCK
-        || otyp == SPE_DIG
-        ) {
+    if (otyp == SPE_FORCE_BOLT || otyp == SPE_FIRE_BOLT 
+        || otyp == SPE_DRAIN_LIFE || otyp == SPE_SLEEP
+        || otyp == SPE_SLOW_MONSTER || otyp == SPE_CHARM_MONSTER
+        || otyp == SPE_KNOCK || otyp == SPE_WIZARD_LOCK
+        || otyp == SPE_DIG || otyp == SPE_TELEPORT_AWAY) {
         switch (role_skill) {
         default:        return rnd(4);          /* range 1-4 */
         case P_BASIC:   return 1 + rnd(7);      /* range 2-8 */
