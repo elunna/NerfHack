@@ -1,4 +1,4 @@
-/* NetHack 3.7	apply.c	$NHDT-Date: 1720128162 2024/07/04 21:22:42 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.449 $ */
+/* NetHack 3.7	apply.c	$NHDT-Date: 1737275719 2025/01/19 00:35:19 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.464 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -300,8 +300,7 @@ its_dead(coordxy rx, coordxy ry, int *resp, struct obj *stethoscope)
             /* (most corpses don't retain the monster's sex, so
                we're usually forced to use generic pronoun here) */
             if (mtmp) {
-                mptr = mtmp->data = &mons[mtmp->mnum];
-                /* TRUE: override visibility check--it's not on the map */
+                mtmp->data = &mons[mtmp->mnum];
                 gndr = pronoun_gender(mtmp, PRONOUN_NO_IT);
             } else {
                 mptr = &mons[corpse->corpsenm];
@@ -4397,6 +4396,18 @@ broken_wand_explode(struct obj *obj, int dmg, int expltype)
     discard_broken_wand();
 }
 
+/* if x,y has lava or water, dunk any boulders at that location into it */
+void
+maybe_dunk_boulders(coordxy x, coordxy y)
+{
+    struct obj *otmp;
+
+    while (is_pool_or_lava(x, y) && (otmp = sobj_at(BOULDER, x, y)) != 0) {
+        obj_extract_self(otmp);
+        (void) boulder_hits_pool(otmp, x,y, FALSE);
+    }
+}
+
 /* return 1 if the wand is broken, hence some time elapsed */
 staticfn int
 do_break_wand(struct obj *obj)
@@ -4613,6 +4624,8 @@ void exploding_wand_efx(struct obj *obj)
                 }
             }
             fill_pit(x, y);
+            maybe_dunk_boulders(x, y);
+            recalc_block_point(x, y);
             continue;
         } else if (obj->otyp == WAN_CREATE_MONSTER) {
             /* u.ux,u.uy creates it near you--x,y might create it in rock */
