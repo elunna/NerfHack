@@ -99,8 +99,7 @@ clear_fcorr(struct monst *grd, boolean forceshow)
         }
         del_engr_at(fcx, fcy);
         map_location(fcx, fcy, 1); /* bypass vision */
-        if (!ACCESSIBLE(lev->typ))
-            block_point(fcx, fcy);
+        recalc_block_point(fcx, fcy);
         gv.vision_full_recalc = 1;
         egrd->fcbeg++;
     }
@@ -731,6 +730,7 @@ gd_mv_monaway(struct monst *grd, int nx, int ny)
         }
         if (!rloc(mtmp, RLOC_ERR | RLOC_MSG) || MON_AT(nx, ny))
             m_into_limbo(mtmp);
+        recalc_block_point(nx, ny);
     }
 }
 

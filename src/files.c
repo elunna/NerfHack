@@ -1,4 +1,4 @@
-/* NetHack 3.7	files.c	$NHDT-Date: 1717449127 2024/06/03 21:12:07 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.399 $ */
+/* NetHack 3.7	files.c	$NHDT-Date: 1737346561 2025/01/19 20:16:01 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.416 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -367,7 +367,6 @@ fname_decode(char quotechar, char *s, char *callerbuf, int bufsz)
     sp = s;
     op = callerbuf;
     *op = '\0';
-    calc = 0;
 
     while (*sp) {
         /* Do we have room for one more character? */
@@ -1229,6 +1228,7 @@ create_savefile(void)
         nhfp->mode = WRITING;
         if (program_state.in_self_recover || do_historical) {
             do_historical = TRUE;       /* force it */
+            nhUse(do_historical);
             nhfp->structlevel = TRUE;
             nhfp->fieldlevel = FALSE;
             nhfp->addinfo = FALSE;
@@ -1283,6 +1283,7 @@ open_savefile(void)
         nhfp->mode = READING;
         if (program_state.in_self_recover || do_historical) {
             do_historical = TRUE;       /* force it */
+            nhUse(do_historical);
             nhfp->structlevel = TRUE;
             nhfp->fieldlevel = FALSE;
             nhfp->addinfo = FALSE;

@@ -1,4 +1,4 @@
-/* NetHack 3.7	zap.c	$NHDT-Date: 1732979463 2024/11/30 07:11:03 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.551 $ */
+/* NetHack 3.7	zap.c	$NHDT-Date: 1737344505 2025/01/19 19:41:45 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.562 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -2335,6 +2335,7 @@ stone_to_flesh_obj(struct obj *obj) /* nonnull */
         res = 0;
         break;
     }
+    nhUse(obj); /* avoid 'assigned value not used' for poly_obj() calls */
 
     if (smell) {
         /* non-meat eaters smell meat, meat eaters smell its flavor;
@@ -3895,7 +3896,7 @@ zap_updown(struct obj *obj) /* wand or spell, nonnull */
                we need to call it before probing for buried objects */
             ltyp = SURFACE_AT(x, y);
             zap_map(x, y, obj);
-            map_zapped = TRUE;
+            /*map_zapped = TRUE; // not needed due to early return*/
             if (ltyp == ICE || IS_FURNITURE(ltyp)) {
                 surf = "it";
                 if (svl.lastseentyp[x][y] != rememberedltyp)
@@ -4663,7 +4664,8 @@ bhit(
                 && hits_bars(pobj, x - ddx, y - ddy, x, y,
                              point_blank ? 0 : !rn2(5), 1)) {
                 /* caveat: obj might now be null... */
-                obj = *pobj;
+                obj = *pobj;  /* not currently needed due to 'break'; keep */
+                nhUse(obj);   /* in case usage gets added after the loop   */
                 gb.bhitpos.x -= ddx;
                 gb.bhitpos.y -= ddy;
                 break;
@@ -6383,7 +6385,7 @@ zap_over_floor(
                         else
                             lev->typ = HWALL;
                         fix_wall_spines(max(0,x-1), max(0,y-1),
-                                        min(COLNO,x+1), min(ROWNO,y+1));
+                                        min(COLNO-1,x+1), min(ROWNO-1,y+1));
                     } else {
                         lev->typ = lava ? ROOM : ICE;
                     }

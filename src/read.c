@@ -3903,9 +3903,9 @@ create_particular_creation(
             mtmp->msummoned = 15; /* Arbitrary, for testing */
 
         if (d->saddled && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
-            struct obj *otmp = mksobj(SADDLE, TRUE, FALSE);
-
-            put_saddle_on_mon(otmp, mtmp);
+            /* NULL obj arg means put_saddle_on_mon()
+             * will create the saddle itself */
+            put_saddle_on_mon((struct obj *) 0, mtmp);
         }
         if (d->hidden
            /* can't hide on a closed door (amorphous green slimes, etc) */
