@@ -1894,7 +1894,9 @@ trapeffect_grease_trap(
             seetrap(trap);
             trap->once = 1;
             return Trap_Effect_Finished;
-        } else if (Flying && !rn2(2)) {
+        }
+#if 0 /* Maybe come back to this - doesn't make sense for now */
+        else if (Flying && !rn2(2)) {
             /* This is a bit of a stretch, but if you are flying
                you get hit with an extra nasty splosh of grease that 
                mucks up your flying and blinds you... */
@@ -1904,6 +1906,7 @@ trapeffect_grease_trap(
             trap->once = 1;
             goto greased_face;
         }
+#endif
 
         if (trap->once && trap->tseen && !rn2(15)) {
             if (!Blind)
@@ -1928,7 +1931,6 @@ trapeffect_grease_trap(
                     return Trap_Effect_Finished;
                 }
             }
-greased_face:
             /* Blindfolds/etc get pushed off first */
             if (ublindf) {
                 grease_hits(ublindf);
