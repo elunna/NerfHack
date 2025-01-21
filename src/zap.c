@@ -3315,14 +3315,23 @@ zapyourself(struct obj *obj, boolean ordinary)
             break;
         }
         learn_it = TRUE;
-        Sprintf(svk.killer.name, "shot %sself with a death ray", uhim());
-        svk.killer.format = NO_KILLER_PREFIX;
-        /* probably don't need these to be urgent; player just gave input
-           without subsequent opportunity to dismiss --More-- with ESC */
-        urgent_pline("You irradiate yourself with pure energy!");
-        urgent_pline("You die.");
-        /* They might survive with an amulet of life saving */
-        done(DIED);
+        /* Prevent instadeath if you have some protection */
+        if (Antimagic || Half_spell_damage) {
+            if (Upolyd)
+                damage = u.mh; /* Take the full poly-life */
+            else
+                damage = max(1, u.uhp - 1);
+            pline("Idiot!  You've shot yourself!");
+        } else {
+            Sprintf(svk.killer.name, "shot %sself with a death ray", uhim());
+            svk.killer.format = NO_KILLER_PREFIX;
+            /* probably don't need these to be urgent; player just gave input
+               without subsequent opportunity to dismiss --More-- with ESC */
+            urgent_pline("You irradiate yourself with pure energy!");
+            urgent_pline("You die.");
+            /* They might survive with an amulet of life saving */
+            done(DIED);
+        }
         break;
     case WAN_UNDEAD_TURNING:
     case SPE_TURN_UNDEAD:
