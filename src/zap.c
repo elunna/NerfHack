@@ -5883,7 +5883,8 @@ dobuzz(
                     if (strcmp(mreflector, "mirror") == 0) {
                         struct obj *mmirror = m_carrying(mon, MIRROR);
                         /* They break roughly 50% of the time */
-                        if (d(6,6) > 20 && breaktest(mmirror)) {
+                        if (d(6,6) > 20 && !mmirror->oartifact
+                                        && breaktest(mmirror)) {
                             pline("A %s shatters!", xname(mmirror));
                             if (type >= 0) {
                                 pline("That's bad luck!");
@@ -6014,7 +6015,8 @@ dobuzz(
                     if (strcmp(reflectsrc, "mirror") == 0) {
                         struct obj *mmirror = carrying(MIRROR);
                         /* They break roughly 50% of the time */
-                        if (d(6,6) > 20 && breaktest(mmirror)) {
+                        if (d(6,6) > 20 && !mmirror->oartifact
+                                        && breaktest(mmirror)) {
                             pline("%s shatters!", Ysimple_name2(mmirror));
                             if (type >= 0) {
                                 pline("That's bad luck!");
