@@ -394,9 +394,15 @@
 
 #define HFast u.uprops[FAST].intrinsic
 #define EFast u.uprops[FAST].extrinsic
-#define Fast ((HFast || EFast) && !BFast)
-#define BFast (Levitation || Flying)
-#define Very_fast (((HFast & ~INTRINSIC) || EFast) && !BFast)
+#define Fast ((HFast || EFast) && !Levitation && !BFast)
+#define Very_fast (((HFast & ~INTRINSIC) || EFast) && !BVery_fast)
+
+/* The combination of very fast with with flying or levitation is not possible.
+ * Levitation blocks any form of speed from working.
+ * Flying allows for Fast speed but blocks Very Fast speed.
+ */
+#define BFast (Levitation)
+#define BVery_fast (Levitation || Flying)
 
 #define HReflecting u.uprops[REFLECTING].intrinsic
 #define EReflecting u.uprops[REFLECTING].extrinsic
