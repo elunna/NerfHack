@@ -1581,7 +1581,7 @@ artifact_hit(
      * smaller targets. Knockback rate is set here as well in rn2(rate).
      */
      int hurtle_distance = 0;
-     if (otmp->oartifact == ART_OGRESMASHER
+     if (otmp->oartifact == ART_OGRESMASHER && !m_is_steadfast(mdef)
          && mdef->data->msize < MZ_LARGE && !rn2(5))
          hurtle_distance = MZ_LARGE - mdef->data->msize;
 
