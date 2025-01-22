@@ -3083,13 +3083,11 @@ mhitm_ad_drli(
             mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
                                     * (usually 1d8) */
 
-            /* Vampire draining bite. Player vampires are smart enough not
-             * to feed while biting if they might have trouble getting it down
-             */
+            /* Vampire draining bite. */
             if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
                 && mattk->aatyp == AT_BITE) {
                 /* Don't execute the draining effect if we cannot feed */
-                if (!has_blood(mdef->data) || u.uhunger > 1420)
+                if (!has_blood(mdef->data))
                     return;
                 /* For the life of a creature is in the blood
                 (Lev 17:11) */
