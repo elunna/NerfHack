@@ -6605,6 +6605,7 @@ mhitm_knockback(
 
     /* do the actual knockback effect */
     if (u_def) {
+        (void) destroy_items(&gy.youmonst, AD_PHYS, rnd(6) + knockdistance);
         if (dismount) {
             /* normally u.dx,u.dy indicates the direction hero is throwing,
                zapping, &c but here it is used to pass preferred direction
@@ -6620,6 +6621,7 @@ mhitm_knockback(
         if (!Stunned && !rn2(4))
             make_stunned((long) (knockdistance + 1), TRUE); /* 2 or 3 */
     } else {
+        (void) destroy_items(mdef, AD_PHYS, rnd(6) + knockdistance);
         mhurtle(mdef, dx, dy, knockdistance);
         if (!u_agr)
             *hitflags |= M_ATTK_HIT;
