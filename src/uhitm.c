@@ -3085,11 +3085,13 @@ mhitm_ad_drli(
 
             /* Vampire draining bite. Player vampires are smart enough not
              * to feed while biting if they might have trouble getting it down
-             * NOTE: This code might be redundant... 
-             * */
+             */
             if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
-                && mattk->aatyp == AT_BITE
-                && has_blood(mdef->data) && u.uhunger <= 1420) {
+                && mattk->aatyp == AT_BITE) {
+                /* Don't execute the draining effect if we were not
+                 * able to feed */
+                if (!has_blood(mdef->data) || u.uhunger > 1420)
+                    return;
                 /* For the life of a creature is in the blood
                 (Lev 17:11) */
                 if (flags.verbose) {
