@@ -2174,7 +2174,8 @@ attributes_enlightenment(
     item_resistance_message(AD_DISN, " protected from disintegration", final);
     item_resistance_message(AD_ELEC, " protected from electric shocks", final);
     item_resistance_message(AD_ACID, " protected from acid", final);
-
+    item_resistance_message(AD_DCAY, " protected from decay", final);
+    
     /*** Resistances to troubles ***/
     if (Invulnerable)
         you_are("invulnerable", from_what(INVULNERABLE));
