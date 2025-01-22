@@ -458,7 +458,7 @@ bee_eat_jelly(struct monst *mon, struct obj *obj)
         if (DEADMONSTER(mon))
             return 1; /* dead; apparently queen bees have been genocided */
         mon->mfrozen = m_delay;
-        maybe_moncanmove(mon);
+        mon->mcanmove = 0;
         return 0; /* bee used its move */
     }
     return -1; /* a queen is already present; ordinary bee hasn't moved yet */
