@@ -3187,14 +3187,6 @@ mhitm_ad_drli(
                heal any from the drained life */
         }
     }
-
-    /* Ice devils' cold sting has some troublesome side effects */
-    if (monsndx(magr->data) == PM_ICE_DEVIL) {
-        if (mhm->damage == 0 && !rn2(5)) /* damage == 0: cold resistance */
-            strip_cold_resistance(mdef);
-        else
-            mhitm_ad_slow_core(magr, mdef); /* note this is only 25% on hero */
-    }
 }
 
 void
