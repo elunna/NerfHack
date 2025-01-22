@@ -918,13 +918,27 @@ recharge(struct obj *obj, int curse_bless)
                 alter_cost(obj, 0L);
         }
     } else if (obj->oclass == TOOL_CLASS) {
-        int rechrg = (int) obj->recharged;
+        n = (int) obj->recharged;
 
+        
+        /* Use same recharging calculation as for wands. */
+        if (obj->obroken) {
+            pline_The("%s crumbles away!", xname(obj));
+            useup(obj);
+            return;
+        }
+        if (n > 0 && !obj->oartifact && obj->otyp != BELL_OF_OPENING
+                && (n * n * n > rn2(7 * 7 * 7))) { /* recharge_limit */
+            obj->obroken = 1;
+            Your("%s suddenly vibrates!", xname(obj));
+            return;
+        }
         if (objects[obj->otyp].oc_charged) {
             /* tools don't have a limit, but the counter used does */
-            if (rechrg < 7) /* recharge_limit */
+            if (n < 7) /* recharge_limit */
                 obj->recharged++;
         }
+        
         switch (obj->otyp) {
         case BELL_OF_OPENING:
             if (is_cursed)
@@ -941,7 +955,7 @@ recharge(struct obj *obj, int curse_bless)
         case EXPENSIVE_CAMERA:
             if (is_cursed) {
                 stripspe(obj);
-            } else if (rechrg && obj->otyp == MAGIC_MARKER) {
+            } else if (n && obj->otyp == MAGIC_MARKER) {
                 /* previously recharged */
                 obj->recharged = 1; /* override increment done above */
                 if (obj->spe < 3)
