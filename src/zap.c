@@ -6939,6 +6939,11 @@ item_what(int dmgtyp)
  *      [4] burning spellbook
  *      [5] shocked ring
  *      [6] shocked wand
+ *      [7] burned up item
+ *      [8] rotted item
+ *      [9] corroded item
+ *      [10] splatted food item
+ *      [11] shattered item
  * (books, rings, and wands don't stack so don't need plural form;
  *  crumbling ring doesn't do damage so doesn't need killer reason)
  * externally referenced from trap.c.
@@ -6955,9 +6960,9 @@ const char *const destroy_strings[][3] = {
     { "smoulders", "smoulder", "" },
     { "rots", "rot", "" },
     { "corrodes", "corrode", "" },
-    { "shatters", "shatter", "" }, /* glass items */
-    { "splats", "splat", "" }, /* food items */
-    { "cracks", "crack", "" }, /* glass items */
+    { "fractures and shatters", "fracture and shatter", "shattered item" }, /* glass items */
+    { "splats", "splat", "splatted comestible" }, /* food items */
+    { "cracks and shatters", "crack and shatter", "shattered item" }, /* glass items */
 };
 
 /* guts of destroy_items();
