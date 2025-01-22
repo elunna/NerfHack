@@ -240,7 +240,7 @@ erode_obj(
         is_primary = FALSE;
         cost_type = COST_CORRODE;
         break;
-    case ERODE_CRACK: /* crystal armor */
+    case ERODE_CRACK: /* crystal armor, glass items */
         vulnerable = is_crackable(otmp);
         is_primary = TRUE;
         crackers = TRUE;

@@ -893,7 +893,8 @@ unknow_object(struct obj *obj)
     obj->cknown = obj->lknown = 0;
     obj->tknown = 0;
     /* Always reveal erodeproof status */
-    if (is_rustprone(obj) || is_corrodeable(obj) || is_flammable(obj))
+    if (is_rustprone(obj) || is_corrodeable(obj)
+        || is_flammable(obj) || is_crackable(obj))
         obj->rknown = 1;
 
     /* for an existing object, awareness of charges or enchantment has
@@ -1165,13 +1166,7 @@ mksobj_init(struct obj *otmp, boolean artif)
         /* simulate lacquered armor for samurai */
         if (Role_if(PM_SAMURAI) && otmp->otyp == SPLINT_MAIL
             && (svm.moves <= 1 || In_quest(&u.uz))) {
-#ifdef UNIXPC
-            /* optimizer bitfield bug */
             otmp->oerodeproof = 1;
-            otmp->rknown = 1;
-#else
-            otmp->oerodeproof = otmp->rknown = 1;
-#endif
         }
         break;
     case WAND_CLASS:

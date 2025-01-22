@@ -206,9 +206,9 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
 #define is_rustprone(otmp) (objects[otmp->otyp].oc_material == IRON)
-#define is_crackable(otmp) \
-    (objects[(otmp)->otyp].oc_material == GLASS         \
-     && (otmp)->oclass == ARMOR_CLASS) /* erosion_matters() */
+#define is_crackable(otmp) (is_glass(otmp) &&                      \
+    ((otmp)->oclass == ARMOR_CLASS || (otmp)->oclass == RING_CLASS \
+    || (otmp)->oclass == WAND_CLASS || (otmp)->oclass == TOOL_CLASS))
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp) \
     (objects[otmp->otyp].oc_material == COPPER          \
@@ -226,6 +226,7 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 #define is_silver(otmp) (objects[otmp->otyp].oc_material == SILVER \
     || otmp->otyp == SILVER_DRAGON_SCALES)
 #define is_glass(otmp) (objects[otmp->otyp].oc_material == GLASS)
+#define is_plastic(otmp) (objects[otmp->otyp].oc_material == PLASTIC)
 #define is_fragile(otmp) ((is_glass(otmp) && (otmp)->oclass != GEM_CLASS) \
     || (otmp)->otyp == EXPENSIVE_CAMERA \
     || (otmp)->otyp == EGG \

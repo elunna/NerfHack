@@ -6956,7 +6956,8 @@ const char *const destroy_strings[][3] = {
     { "rots", "rot", "" },
     { "corrodes", "corrode", "" },
     { "shatters", "shatter", "" }, /* glass items */
-    { "splats", "splat", "" } /* food items */
+    { "splats", "splat", "" }, /* food items */
+    { "cracks", "crack", "" }, /* glass items */
 };
 
 /* guts of destroy_items();
@@ -7071,10 +7072,15 @@ maybe_destroy_item(
         break;
     /* Fragile item destruction */
     case AD_PHYS:
-        if (obj_resists(obj, 33, 100))
+        if (obj->oerodeproof)
             skip++;
         quan = obj->quan;
-        if (obj->oclass == FOOD_CLASS)
+        /* Some items are gradually cracked, other can shatter instantly */
+        if (obj->oclass == RING_CLASS || obj->oclass == WAND_CLASS
+            || obj->oclass == ARMOR_CLASS) {
+            (void) erode_obj(obj, NULL, ERODE_CRACK, EF_DESTROY | EF_VERBOSE);
+            skip++;
+        } else if (obj->oclass == FOOD_CLASS)
             dindx = 11;
         else
             dindx = 10;
