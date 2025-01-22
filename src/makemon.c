@@ -895,7 +895,7 @@ m_initinv(struct monst *mtmp)
         }
         break;
     case S_NYMPH:
-        if (!rn2(2))
+        if (!rn2(4))
             (void) mongets(mtmp, MIRROR);
         if (!rn2(2))
             (void) mongets(mtmp, POT_OBJECT_DETECTION);
