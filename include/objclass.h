@@ -226,5 +226,9 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 #define is_silver(otmp) (objects[otmp->otyp].oc_material == SILVER \
     || otmp->otyp == SILVER_DRAGON_SCALES)
 #define is_glass(otmp) (objects[otmp->otyp].oc_material == GLASS)
-
+#define is_fragile(otmp) ((is_glass(otmp) && (otmp)->oclass != GEM_CLASS) \
+    || (otmp)->otyp == EXPENSIVE_CAMERA \
+    || (otmp)->otyp == EGG \
+    || (otmp)->otyp == CREAM_PIE \
+    || (otmp)->otyp == MELON)
 #endif /* OBJCLASS_H */

@@ -203,18 +203,20 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         if (disguised_mimic)
             seemimic(mtmp);
         learn_it = cansee(gb.bhitpos.x, gb.bhitpos.y);
+        dmg = d(2, 12);
+        int orig_dmg = dmg;
         if (resists_magm(mtmp)) { /* match effect on player */
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
             /* 3.7: used to 'break' to avoid setting learn_it here */
         } else if (u.uswallow || rnd(20) < 10 + find_mac(mtmp)) {
-            dmg = d(2, 12);
             if (dbldam)
                 dmg *= 2;
             if (otyp == SPE_FORCE_BOLT)
                 dmg = spell_damage_bonus(dmg);
             hit(zap_type_text, mtmp, exclam(dmg));
             (void) resist(mtmp, otmp->oclass, dmg, TELL);
+            dmg += destroy_items(mtmp, AD_PHYS, orig_dmg);
         } else {
             miss(zap_type_text, mtmp);
             learn_it = FALSE;
@@ -3089,18 +3091,18 @@ zapyourself(struct obj *obj, boolean ordinary)
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         learn_it = TRUE;
+        orig_dmg = damage = ordinary ? d(2, 12) : d(1 + obj->spe, 6);
         if (Antimagic) {
             shieldeff(u.ux, u.uy);
             pline("Boing!");
             monstseesu(M_SEEN_MAGR);
+            damage = 0;
         } else {
-            if (ordinary) {
+            if (ordinary)
                 You("bash yourself!");
-                damage = d(2, 12);
-            } else
-                damage = d(1 + obj->spe, 6);
             exercise(A_STR, FALSE);
             monstunseesu(M_SEEN_MAGR);
+            (void) destroy_items(&gy.youmonst, AD_PHYS, orig_dmg);
         }
         break;
 
@@ -6808,6 +6810,8 @@ destroyable(struct obj *obj, int adtyp)
         return is_rottable(obj);
     } else if (adtyp == AD_ACID) {
         return is_corrodeable(obj);
+    } else if (adtyp == AD_PHYS) {
+        return is_fragile(obj);
     }
     return FALSE;
 }
@@ -6950,7 +6954,9 @@ const char *const destroy_strings[][3] = {
     { "breaks apart and explodes", "", "exploding wand" },
     { "smoulders", "smoulder", "" },
     { "rots", "rot", "" },
-    { "corrodes", "corrode", "" }
+    { "corrodes", "corrode", "" },
+    { "shatters", "shatter", "" }, /* glass items */
+    { "splats", "splat", "" } /* food items */
 };
 
 /* guts of destroy_items();
@@ -7063,6 +7069,17 @@ maybe_destroy_item(
             break;
         }
         break;
+    /* Fragile item destruction */
+    case AD_PHYS:
+        if (obj_resists(obj, 33, 100))
+            skip++;
+        quan = obj->quan;
+        if (obj->oclass == FOOD_CLASS)
+            dindx = 11;
+        else
+            dindx = 10;
+        dmg = rnd(4);
+        break;
     /* This is klunky but effective way to add erosion. */
     case AD_DCAY:
         /* Most decay attacks rot armor separately, let's not double it */
@@ -7070,7 +7087,7 @@ maybe_destroy_item(
             skip++;
         (void) erode_obj(obj, NULL, ERODE_ROT, EF_GREASE | EF_DESTROY);
         dindx = 8;
-        skip++; /* No instant destruction with acid */
+        skip++; /* No instant destruction with decay */
         break;
     case AD_ACID:
         /* Weapons and armor are handled by acid_damage and erode_armor */
@@ -7130,6 +7147,11 @@ maybe_destroy_item(
             }
         }
         for (i = 0; i < cnt; i++) {
+            /* We don't have the cause so we have to rely on who'd turn it is */
+            if (obj->otyp == MIRROR && !svc.context.mon_moving) {
+                change_luck(-2);
+                You_feel("unlucky.");
+            }
             if (u_carry)
                 useup(obj);
             else
@@ -7168,7 +7190,7 @@ int
 destroy_items(
     struct monst *mon, /* monster whose invent is being subjected to
                         * destruction */
-    int dmgtyp,        /* AD_**** - currently only cold, fire, elec */
+    int dmgtyp,        /* AD_****: cold, fire, elec, dcay, acid, phys */
     int dmg_in)        /* the amount of HP damage the attack dealt */
 {
     struct obj *obj;

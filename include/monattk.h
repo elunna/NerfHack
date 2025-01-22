@@ -17,16 +17,16 @@
 #define AT_TUCH 5   /* touches */
 #define AT_STNG 6   /* sting */
 #define AT_HUGS 7   /* crushing bearhug */
-#define AT_SPIT 8  /* spits substance - ranged */
-#define AT_ENGL 9  /* engulf (swallow or by a cloud) */
+#define AT_SPIT 8   /* spits substance - ranged */
+#define AT_ENGL 9   /* engulf (swallow or by a cloud) */
 #define AT_BREA 10  /* breath - ranged */
 #define AT_EXPL 11  /* explodes - proximity */
 #define AT_BOOM 12  /* explodes when killed */
 #define AT_GAZE 13  /* gaze - ranged */
 #define AT_TENT 14  /* tentacles */
 
-#define AT_WEAP 15 /* uses weapon */
-#define AT_MAGC 16 /* uses magic spell(s) */
+#define AT_WEAP 15  /* uses weapon */
+#define AT_MAGC 16  /* uses magic spell(s) */
 
 #define LAST_AT AT_MAGC
 

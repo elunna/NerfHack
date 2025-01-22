@@ -1964,21 +1964,24 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
             seemimic(mtmp);
     }
     switch (otmp->otyp) {
-    case WAN_STRIKING:
+    case WAN_STRIKING: {
+        int orig_dmg;
         reveal_invis = TRUE;
         if (hits_you) {
+            orig_dmg = tmp = d(2, 12);
             if (Antimagic) {
                 monstseesu(M_SEEN_MAGR); /* monsters notice hero resisting */
                 shieldeff(u.ux, u.uy);
                 Soundeffect(se_boing, 40);
                 pline("Boing!");
                 learnit = TRUE;
+                tmp = 0;
             } else if (rnd(20) < 10 + u.uac) {
                 monstunseesu(M_SEEN_MAGR); /* mons see hero not resisting */
                 pline_The("%s hits you!", otxt);
-                tmp = d(2, 12);
                 if (Half_spell_damage)
                     tmp = (tmp + 1) / 2;
+                (void) destroy_items(&gy.youmonst, AD_PHYS, orig_dmg);
                 losehp(tmp, otxt, KILLED_BY_AN);
                 learnit = TRUE;
             } else {
@@ -1992,9 +1995,10 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
             pline("Boing!");
             learnit = TRUE;
         } else if (rnd(20) < 10 + find_mac(mtmp)) {
-            tmp = d(2, 12);
+            orig_dmg = tmp = d(2, 12);
             hit(otxt, mtmp, exclam(tmp));
             (void) resist(mtmp, otmp->oclass, tmp, TELL);
+            tmp += destroy_items(mtmp, AD_PHYS, orig_dmg);
             learnit = TRUE;
         } else {
             miss(otxt, mtmp);
@@ -2005,6 +2009,7 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
             && (hits_you || cansee(mtmp->mx, mtmp->my)))
             makeknown(WAN_STRIKING);
         break;
+    }
     case WAN_TELEPORTATION:
         if (hits_you) {
             tele();
