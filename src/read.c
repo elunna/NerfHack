@@ -841,11 +841,6 @@ recharge(struct obj *obj, int curse_bless)
             wand_explode(obj, rnd(lim), &gy.youmonst);
             return;
         }
-        if (obj->otyp == HORN_OF_PLENTY && n > 9) {
-            pline_The("%s crumbles away!", xname(obj));
-            useup(obj);
-            return;
-        }
         /* didn't explode, so increment the recharge count */
         obj->recharged = (unsigned) (n + 1);
 
