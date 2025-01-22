@@ -443,9 +443,10 @@ container_impact_dmg(
             result = "cracking";
         }
         if (result) {
-            if (otmp->otyp == MIRROR)
+            if (otmp->otyp == MIRROR) {
                 change_luck(-2);
-
+                You_feel("unlucky.");
+            }
             /* eggs laid by you.  penalty is -1 per egg, max 5,
              * but it's always exactly 1 that breaks */
             if (otmp->otyp == EGG && otmp->spe && ismnum(otmp->corpsenm))
