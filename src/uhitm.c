@@ -3062,7 +3062,7 @@ mhitm_ad_drli(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
-    boolean unaffected = (resists_drli(mdef) || defended(mdef, AD_DRLI));
+    boolean unaffected = resists_drli(mdef);
     boolean V2V = is_vampire(magr->data) && is_vampire(mdef->data)
         && !defended(mdef, AD_DRLI);
 
@@ -3078,8 +3078,8 @@ mhitm_ad_drli(
 
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE)
-		      && success && (!unaffected || V2V)) {
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success
+            && (!unaffected || V2V)) {
             mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
                                     * (usually 1d8) */
 
@@ -3088,8 +3088,7 @@ mhitm_ad_drli(
              */
             if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
                 && mattk->aatyp == AT_BITE) {
-                /* Don't execute the draining effect if we were not
-                 * able to feed */
+                /* Don't execute the draining effect if we cannot feed */
                 if (!has_blood(mdef->data) || u.uhunger > 1420)
                     return;
                 /* For the life of a creature is in the blood
@@ -3133,11 +3132,12 @@ mhitm_ad_drli(
         }
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
-
         hitmsg(magr, mattk);
-        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success) {
-
-	        if (mattk->aatyp == AT_BITE && (!unaffected || V2V)) {
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success
+                && (!unaffected || V2V)) {
+	    if (is_vampire(magr->data) && mattk->aatyp == AT_BITE ) {
+                if (!has_blood(mdef->data))
+                    return;
                 /* if vampire biting (and also a pet) */
                 if (vulnerable)
                     pline("%s gorges itself on your %s!",
@@ -3147,14 +3147,14 @@ mhitm_ad_drli(
                 if (magr->mtame && !magr->isminion)
                     EDOG(magr)->hungrytime +=
                             ((int) ((gy.youmonst.data)->cnutrit / 20) + 1);
-                losexp("life drainage");
                 add_blood(magr->mx, magr->my, PM_HUMAN);
+	        losexp("life drainage");
             }
-#if 0
-	    else {
-                monstseesu(M_SEEN_DRAIN);
-            }
-#endif
+            /* Vampires resist draining; avoid non-blood drains */
+            if (is_vampire(mdef->data))
+                return;
+            
+            losexp("life drainage");
             /* unlike hitting with Stormbringer, wounded attacker doesn't
                heal any from the drained life */
         }
@@ -3163,11 +3163,17 @@ mhitm_ad_drli(
         /* mhitm_ad_deth gets redirected here for Death's touch */
         boolean is_death = (mattk->adtyp == AD_DETH);
 
-        if (is_death
-            || (!rn2(3) && !(resists_drli(mdef) || defended(mdef, AD_DRLI))
-                && !mhitm_mgc_atk_negated(magr, mdef, TRUE))) {
+        if (is_death || (!mhitm_mgc_atk_negated(magr, mdef, TRUE)
+                    && success && (!unaffected || V2V))) {
             if (!is_death) /* Stormbringer uses monhp_per_lvl (1d8) */
                 mhm->damage = d(2, 6);
+            
+            if (is_vampire(magr->data) && mattk->aatyp == AT_BITE ) {
+                if (!has_blood(mdef->data))
+                    return;
+                add_blood(u.ux, u.uy, PM_HUMAN);
+            }
+
             if (gv.vis && canspotmon(mdef))
                 pline_mon(mdef, "%s becomes weaker!", Monnam(mdef));
             if (mdef->mhpmax - mhm->damage > (int) mdef->m_lev) {

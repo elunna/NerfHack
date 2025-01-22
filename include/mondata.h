@@ -130,11 +130,11 @@
      || dmgtype(ptr, AD_RBRE)) /* Chromatic Dragon */
 
 #define resists_drain(ptr) \
-    (is_undead(ptr) || is_demon(ptr) || is_were(ptr) \
-     || ptr == &mons[PM_DEEP_ONE]                 \
+    (is_undead(ptr) || is_demon(ptr) || is_were(ptr)\
+     || ptr == &mons[PM_DEEP_ONE]                   \
      || ptr == &mons[PM_DEEPER_ONE]                 \
-     || ptr == &mons[PM_DEEPEST_ONE]                 \
-     || ptr == &mons[PM_SHADOW_OGRE]                 \
+     || ptr == &mons[PM_DEEPEST_ONE]                \
+     || ptr == &mons[PM_SHADOW_OGRE]                \
      || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 
