@@ -2973,6 +2973,10 @@ mm_aggression(
     if (is_ghoul(magr->data) && mdef->data == &mons[PM_MAGGOT])
         return ALLOW_M | ALLOW_TM;
 
+    /* Maggots tend to eat ghoul food, angering the ghouls... */
+    if (mndx == PM_PHOENIX && is_undead(mdef->data))
+        return ALLOW_M | ALLOW_TM;
+    
     /* berserk monsters sometimes lash out at everything
        when trying to attack you  */
     if (magr->mberserk && !magr->mpeaceful
