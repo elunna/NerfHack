@@ -2093,11 +2093,10 @@ poly_obj(struct obj *obj, int id)
         break;
 
     case SCROLL_CLASS:
-	/* Avoid creating scrolls of zapping from polypiling.
-	 * Maybe cartomancers should be able to?? */
-	while (otmp->otyp == SCR_ZAPPING) {
+	    /* Avoid creating scrolls of zapping from polypiling.
+	     * Maybe cartomancers should be able to?? */
+	    while (otmp->otyp == SCR_ZAPPING)
             otmp->otyp = rnd_class(SCR_ENCHANT_ARMOR, SCR_STINKING_CLOUD);
-        }
 
         if (Role_if(PM_CARTOMANCER)) {
             You("feel guilty about defacing a card!");

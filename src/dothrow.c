@@ -1304,7 +1304,7 @@ toss_up(struct obj *obj, boolean hitsroof)
 
     if (obj->oclass == POTION_CLASS) {
         potionhit(&gy.youmonst, obj, POTHIT_HERO_THROW);
-    } else if (is_moncard(obj) && u.uen >= 10) {
+    } else if (is_moncard(obj) && u.uen >= CARD_COST) {
         use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
         obfree(obj, (struct obj *) 0);
     } else if (breaktest(obj)) {
@@ -1745,7 +1745,7 @@ throwit(struct obj *obj,
     }
 
     /* Cartomancer summon cards */
-    if (obj && gt.thrownobj && carding && u.uen >= 10) {
+    if (obj && gt.thrownobj && carding && u.uen >= CARD_COST) {
         use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
         obfree(obj, (struct obj *) 0);
         gt.thrownobj = (struct obj *) 0;
@@ -2298,7 +2298,7 @@ thitmonst(
                 }
             }
 
-            if (is_moncard(obj) && u.uen >= 10) {
+            if (is_moncard(obj) && u.uen >= CARD_COST) {
                 /* Spheres explode on contact! */
                 if (is_boomer(obj->corpsenm) && !obj->cursed) {
                     switch (obj->corpsenm) {
