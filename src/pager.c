@@ -1130,6 +1130,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     APPENDC(is_male(pm), "male");
     APPENDC(pm->msize == MZ_TINY, "tiny");
     APPENDC(pm->msize == MZ_SMALL, "small");
+    APPENDC(pm->msize == MZ_MEDIUM, "medium");
     APPENDC(pm->msize == MZ_LARGE, "large");
     APPENDC(pm->msize == MZ_HUGE, "huge");
     APPENDC(pm->msize == MZ_GIGANTIC, "gigantic");
