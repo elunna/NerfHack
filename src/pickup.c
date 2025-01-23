@@ -3844,8 +3844,9 @@ dotip(void)
         otmp->owt = weight(otmp);
         place_object(otmp, u.ux, u.uy);
         useup(cobj);
-	    newsym(u.ux, u.uy);
-	    return TRUE;
+	newsym(u.ux, u.uy);
+        makeknown(PLAYING_CARD_DECK);
+	return TRUE;
     }
     /* assorted other cases */
     if (Is_candle(cobj) && cobj->lamplit) {
