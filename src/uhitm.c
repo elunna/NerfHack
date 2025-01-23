@@ -6371,7 +6371,7 @@ attack_blocker(struct monst *mdef)
       * call to attack_blocker for the player is in mhitu.
       */
     if (mdef == &gy.youmonst && armasks[selected] == W_ARMS)
-        use_skill(P_SHIELD, 1);
+        use_skill(P_SHIELD, 4);
 
     /* Don't create messages saying T-shirts are blocking an attack when
      * they are covered by armor or a cloak. */

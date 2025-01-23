@@ -1063,7 +1063,7 @@ mattacku(struct monst *mtmp)
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
                         if (uarms && !rn2(3))
-                            use_skill(P_SHIELD, 1);
+                            use_skill(P_SHIELD, 4);
                     }
                 } else {
                     wildmiss(mtmp, mattk);
@@ -1106,7 +1106,7 @@ mattacku(struct monst *mtmp)
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
                         if (uarms && !rn2(3))
-                            use_skill(P_SHIELD, 1);
+                            use_skill(P_SHIELD, 4);
                     }
                 } else if (digests(mtmp->data)) {
                     pline_mon(mtmp, "%s gulps some air!", Monnam(mtmp));
@@ -1183,7 +1183,7 @@ mattacku(struct monst *mtmp)
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
                         if (uarms && !rn2(3))
-                            use_skill(P_SHIELD, 1);
+                            use_skill(P_SHIELD, 4);
                     }
                     /* KMH -- Don't accumulate to-hit bonuses */
                     if (mon_currwep)

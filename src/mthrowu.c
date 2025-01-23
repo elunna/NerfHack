@@ -112,7 +112,7 @@ thitu(
             if (uarms) {
                 Your("%s %s %s.", simple_typename(uarms->otyp),
                      (rn2(2) ? "blocks" : "deflects"), onm);
-                use_skill(P_SHIELD, 1);
+                use_skill(P_SHIELD, 4);
             } else {
                 if (onm != onmbuf)
                     Strcpy(onmbuf, onm); /* [modifiable buffer for upstart()] */
