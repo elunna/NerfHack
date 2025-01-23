@@ -540,6 +540,7 @@ vampire mace
 vampire wasp
 vampire thief
 vampiric watermelon
+vapmire
 +Vendor of Yizard
 venus flytrap
 verbal jabberwock
