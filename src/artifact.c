@@ -881,7 +881,7 @@ set_artifact_intrinsic(
          * are forbidden, there should not be any problems
          * with double xray vision here. */
         if (on)
-            u.xray_range = 3;
+            u.xray_range = 8;
         else
             u.xray_range = -1;
         gv.vision_full_recalc = 1;
