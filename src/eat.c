@@ -1145,7 +1145,8 @@ givit(int type, struct permonst *ptr)
         else
             You_feel(Hallucination ? "more in touch with the cosmos."
                                    : "more mentally acute.");
-        incr_itimeout(&HTelepat, rn1(250, 500));
+        incr_itimeout(&HTelepat, ptr == &mons[PM_FLOATING_EYE] 
+                                     ? rn1(400, 400) : rn1(100, 100));
         /* If blind, make sure monsters show up. */
         if (Blind)
             see_monsters();
