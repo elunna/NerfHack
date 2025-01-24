@@ -74,9 +74,8 @@ dowaterdemon(void)
             else
                 You_feel("the presence of evil.");
 
-            /* Give those on low levels a (slightly) better chance of survival
-             */
-            if (rnd(100) > (80 + level_difficulty())) {
+            /* Reward those on higher levels with better chances */
+            if (rnd(256) < level_difficulty()) {
                 pline("Grateful for %s release, %s grants you a wish!",
                       mhis(mtmp), mhe(mtmp));
                 /* give a wish and discard the monster (mtmp set to null) */
