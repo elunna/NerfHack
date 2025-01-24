@@ -7076,7 +7076,7 @@ maybe_destroy_item(
         break;
     /* Fragile item destruction */
     case AD_PHYS:
-        if (obj->oerodeproof)
+        if (obj->oerodeproof || obj->otyp == WAN_STRIKING)
             skip++;
         quan = obj->quan;
         /* Some items are gradually cracked, other can shatter instantly */
