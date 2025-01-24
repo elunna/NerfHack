@@ -2737,11 +2737,14 @@ bhitpile(
         if (otmp->where != OBJ_FLOOR || otmp->ox != tx || otmp->oy != ty)
             continue;
         hitanything += (*fhito)(otmp, obj);
+        /* Short-circuit the "one-big-polypile" exploit.
+         * As soon as a golem is created, abort polymorphing. */ 
+        if (gp.poly_zapped >= 0) {
+            create_polymon(svl.level.objects[tx][ty], gp.poly_zapped);
+            break;
+        }
     }
-
-    if (gp.poly_zapped >= 0)
-        create_polymon(svl.level.objects[tx][ty], gp.poly_zapped);
-
+    
     /* when boulders are present they're expected to be on top; with
        multiple boulders it's possible for some to have been changed into
        non-boulders (polymorph, stone-to-flesh) while ones beneath resist,
