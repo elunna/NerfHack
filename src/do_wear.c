@@ -1631,12 +1631,13 @@ Ring_on(struct obj *obj)
         break;
     }
     case RIN_REGENERATION:
-        if (!oldprop && !HRegeneration && !regenerates(gy.youmonst.data)) {
-            if ((uhp() < uhpmax()) &&
-                !objects[obj->otyp].oc_name_known) {
+        if (!oldprop && !HRegeneration && !regenerates(gy.youmonst.data)
+            && !objects[obj->otyp].oc_name_known) {
+            if (uhp() < uhpmax())
                 Your("wounds are rapidly healing!");
-                makeknown(RIN_REGENERATION);
-            }
+            else
+                pline("This ring makes you feel better!");
+            makeknown(RIN_REGENERATION);
         }
         break;
     case RIN_SLEEPING: {
