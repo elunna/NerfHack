@@ -3512,16 +3512,16 @@
         M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_UNDEAD, 14, CLR_GRAY, GRAVE_TROLL),
     MON(NAM("Olog-hai"), S_TROLL,
-        LVL(13, 12, -4, 0, -7), (G_GENO | 1),
+        LVL(15, 14, -4, 0, -7), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6),
           ATTK(AT_CLAW, AD_PHYS, 2, 8),
           ATTK(AT_BITE, AD_PHYS, 2, 6),
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1500, 400, MS_GRUNT, MZ_LARGE), MR_POISON, 0,
-        M1_HUMANOID | M1_REGEN | M1_CARNIVORE,
+        SIZ(1500, 400, MS_GRUNT, MZ_HUGE), MR_POISON, 0,
+        M1_HUMANOID | M1_REGEN | M1_CARNIVORE | M1_THICK_HIDE,
         M2_STRONG | M2_STALK | M2_HOSTILE | M2_COLLECT | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_ACCURATE,
-        MH_TROLL, 16, HI_LORD, OLOG_HAI),
+        MH_TROLL, 20, HI_LORD, OLOG_HAI),
     /*
      * Umber hulk
      */
