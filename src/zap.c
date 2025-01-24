@@ -1847,7 +1847,13 @@ do_osshock(struct obj *obj)
     if (gp.poly_zapped < 0) {
         /* some may metamorphosize */
         for (i = obj->quan; i; i--)
-            if (!rn2((Luck > -7 ? Luck : -6) + 7)) {
+            /* increase chances of Happy Golem Time
+             * (adjusted from SporkHack)
+             * Luck = 13:      1 in 14
+             * Luck = 0:       1 in 8
+             * Luck = -13:     1 in 2
+             * */
+            if (!rn2(Luck/2 + 8)) {
                 gp.poly_zapped = objects[obj->otyp].oc_material;
                 break;
             }
