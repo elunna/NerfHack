@@ -2529,12 +2529,17 @@ gem_accept(struct monst *mon, struct obj *obj)
     Strcat(buf, acceptgift);
     if (*u.ushops || obj->unpaid)
         check_shop_obj(obj, mon->mx, mon->my, TRUE);
-    (void) mpickobj(mon, obj); /* may merge and free obj */
     ret = 1;
 
  nopick:
     if (!Blind)
         pline1(buf);
+    /* Like priest donations, these are consumed for positive gains */
+    if (ret && canspotmon(mon))
+        pline("Its %s %s.", xname(obj),
+              canseemon(mon) ? "vanishes" : "seems to vanish");
+    obfree(obj, (struct obj *) 0);
+    
     if (!tele_restrict(mon))
         (void) rloc(mon, RLOC_MSG);
     return ret;
