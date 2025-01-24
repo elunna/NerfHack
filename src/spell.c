@@ -1650,11 +1650,12 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
 
     /* Skill gain for spells is faster than skill gain for weapons;
        four times faster when at basic skill or lower, two times
-       when above. Players may want to (ab)use this to train spells
-       even faster by not advancing to skilled as soon as possible. */
-    if (!force)
-        use_skill(skill, (spellev(spell) * (role_skill <= P_BASIC ? 4 : 2)));
-
+       when above. */
+    if (!force) {
+        boolean spbonus = role_skill <= P_BASIC 
+                          && !can_advance(skill, FALSE);
+        use_skill(skill, (spellev(spell) * (spbonus ? 4 : 2)));
+    }
     /* Successful casting increases the amount of time the cast
        spell is known. The players INT must be greater than 6 to be
        able to help remember spells as they're cast. Primary spellcasters
