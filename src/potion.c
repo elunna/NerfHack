@@ -1713,8 +1713,9 @@ peffect_blood(struct obj *otmp)
                * (otmp->odiluted ? 1 : 3);
         lesshungry(amt);
 
-        if (otmp->otyp == POT_VAMPIRE_BLOOD && otmp->blessed) {
-            int num = newhp() * (otmp->odiluted ? 1 : 2);
+        if (otmp->otyp == POT_VAMPIRE_BLOOD
+            && otmp->blessed && !otmp->odiluted) {
+            int num = newhp();
             if (Upolyd) {
                 u.mhmax += num;
                 u.mh += num;
