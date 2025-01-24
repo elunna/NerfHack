@@ -126,4 +126,4 @@ des.engraving({ coord = pt, type = "burn", text = "Elbereth" });
 des.object({ id = "scroll of scare monster", coord = pt, buc = "cursed" });
 
 -- Ruling steward of Sokoban
-des.monster({ id = "Wintercloak", coord=pt, waiting=1 });
+des.monster({ id = "Wintercloak", x = 11, y = 16, waiting = 1 });
