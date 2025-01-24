@@ -400,33 +400,11 @@ enlightenment(
     enlght_out("");
     enlght_out(final ? "Final Attributes:" : "Spiritual Attributes:");
 
-    if (u.ugangr) {
-        Sprintf(buf, " %sangry with you",
-                u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
-        if (wizard)
-            Sprintf(eos(buf), " (%d)", u.ugangr);
-        enl_msg(u_gname(), " is", " was", buf, "");
-    } else {
-        /*
-         * We need to suppress this when the game is over, because death
-         * can change the value calculated by can_pray(), potentially
-         * resulting in a false claim that you could have prayed safely.
-         */
-        if (!final) {
-#if 0
-            /* "can [not] safely pray" vs "could [not] have safely prayed" */
-            Sprintf(buf, "%s%ssafely pray%s", can_pray(FALSE) ? "" : "not ",
-                    final ? "have " : "", final ? "ed" : "");
-#else
-            Sprintf(buf, "%ssafely pray", can_pray(FALSE) ? "" : "not ");
-#endif
-            if (wizard || final) {
-                Sprintf(eos(buf), " (%d)", u.ublesscnt);
-                you_can(buf, "");
-            }
-        }
-    }
-
+    Sprintf(buf, "received %d point%s of divine protection%s",
+        u.ublessed, u.ublessed != 1 ? "s" : "",
+        u.ublessed == 9 ? " (maximum)" : "");
+    you_have(buf, "");
+    
     if (u.lastprayed) {
         Sprintf(buf, "You last %s %ld turns ago",
                 u.lastprayresult == PRAY_GIFT ? "received a gift" :
@@ -454,11 +432,34 @@ enlightenment(
     } else {
         enl_msg("You ", "have ", "had ", "never prayed", "");
     }
-
-    Sprintf(buf, "received %d point%s of divine protection%s",
-            u.ublessed, u.ublessed != 1 ? "s" : "",
-            u.ublessed == 9 ? " (maximum)" : "");
-    you_have(buf, "");
+    
+    if (mode & MAGICENLIGHTENMENT) {
+        if (u.ugangr) {
+            Sprintf(buf, " %sangry with you",
+                    u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+            if (wizard)
+                Sprintf(eos(buf), " (%d)", u.ugangr);
+            enl_msg(u_gname(), " is", " was", buf, "");
+        } else {
+            /*
+             * We need to suppress this when the game is over, because death
+             * can change the value calculated by can_pray(), potentially
+             * resulting in a false claim that you could have prayed safely.
+             */
+            if (!final) {
+#if 0
+                /* "can [not] safely pray" vs "could [not] have safely prayed" */
+                Sprintf(buf, "%s%ssafely pray%s", can_pray(FALSE) ? "" : "not ",
+                        final ? "have " : "", final ? "ed" : "");
+#else
+                Sprintf(buf, "%ssafely pray", can_pray(FALSE) ? "" : "not ");
+#endif
+                if (wizard)
+                    Sprintf(eos(buf), " (%d)", u.ublesscnt);
+                you_can(buf, "");
+            }
+        }
+    }
 
     enlght_out(""); /* separator */
     enlght_out("Miscellaneous:");
