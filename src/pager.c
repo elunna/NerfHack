@@ -1035,6 +1035,25 @@ add_mon_info(winid datawin, struct permonst * pm)
             pm->difficulty, pm->mmove, pm->mlevel, pm->ac, pm->mr, pm->cwt);
     MONPUTSTR(buf);
 
+    /* Size */
+    switch (pm->msize) {
+    case MZ_TINY: Sprintf(buf, "Size: tiny"); break;
+    case MZ_SMALL: Sprintf(buf, "Size: small"); break;
+    case MZ_MEDIUM: Sprintf(buf, "Size: medium"); break;
+    case MZ_LARGE: Sprintf(buf, "Size: large"); break;
+    case MZ_HUGE: Sprintf(buf, "Size: huge"); break;
+    case MZ_GIGANTIC: Sprintf(buf, "Size: gigantic"); break;
+    default:
+         if (verysmall(pm))
+             Sprintf(buf, "Size: small");
+         else if (bigmonst(pm))
+             Sprintf(buf, "Size: big");
+         else
+             impossible("no size for mon?");
+          break;
+    }
+    MONPUTSTR(buf);
+    
     if (pm->maligntyp > 0)
         Sprintf(buf, "Alignment: lawful");
     else if (pm->maligntyp < 0)
@@ -1128,17 +1147,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     /* Flag descriptions */
     buf[0] = '\0';
     APPENDC(is_male(pm), "male");
-    APPENDC(pm->msize == MZ_TINY, "tiny");
-    APPENDC(pm->msize == MZ_SMALL, "small");
-    APPENDC(pm->msize == MZ_MEDIUM, "medium");
-    APPENDC(pm->msize == MZ_LARGE, "large");
-    APPENDC(pm->msize == MZ_HUGE, "huge");
-    APPENDC(pm->msize == MZ_GIGANTIC, "gigantic");
-    if (!(*buf)) {
-        /* for nonstandard sizes */
-        APPENDC(verysmall(pm), "small");
-        APPENDC(bigmonst(pm), "big");
-    }
+
 
     /* inherent characteristics: "Monster is X." */
     APPENDC(!(gen & G_GENO), "ungenocideable");
