@@ -2643,17 +2643,28 @@ breakobj(
     boolean from_invent)
 {
     boolean fracture = FALSE;
+    const char *ostr;
     int am;
+    
     if (IS_ALTAR(levl[x][y].typ))
         am = levl[x][y].altarmask & AM_MASK;
     else
         am = AM_NONE;
     boolean explosion = FALSE;
 
-    if (is_crackable(obj)) /* if erodeproof, erode_obj() will say so */
-        return (erode_obj(obj, armor_simple_name(obj), ERODE_CRACK,
+    /* if erodeproof, erode_obj() will say so */
+    if (is_crackable(obj)) {
+        switch (obj->oclass) {
+            case ARMOR_CLASS:
+                ostr = armor_simple_name(obj);
+                break;
+            default:
+                ostr = xname(obj);
+                break;
+        }
+        return (erode_obj(obj, ostr, ERODE_CRACK,
                           EF_DESTROY | EF_VERBOSE) == ER_DESTROYED);
-
+    }
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case MIRROR:
         if (hero_caused)
