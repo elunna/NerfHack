@@ -197,6 +197,21 @@ resetobjs(struct obj *ochain, boolean restore)
                 otmp->oartifact = 0;
                 free_oname(otmp);
             }
+            /* Conversions copied from scroll of cloning */
+            else if (otmp->otyp == WAN_WISHING) {
+                otmp->otyp = WAN_WONDER;
+            } else if (otmp->otyp == SCR_ZAPPING
+                       && otmp->corpsenm == WAN_WISHING) {
+                otmp->corpsenm = WAN_WONDER;
+            } else if (otmp->otyp == MAGIC_LAMP) {
+                otmp->otyp = OIL_LAMP;
+            } else if (otmp->otyp == DECK_OF_FATE) {
+                otmp->otyp = PLAYING_CARD_DECK;
+            } else if (otmp->otyp == MAGIC_MARKER) {
+                otmp->otyp = ATHAME;
+                otmp->oclass = WEAPON_CLASS;
+                otmp->spe = 0;
+            }
         }
     }
 }
