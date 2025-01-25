@@ -2135,10 +2135,28 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                           s_suffix(Monnam(mtmp)), mhis(mtmp));
                 break;
             }
+            if (strcmp(reflectsrc, "mirror") == 0) {
+                struct obj *mmirror = carrying(MIRROR);
+                /* break 100% for stoning gazes */
+                if (!mmirror->oartifact) {
+                    pline("%s shatters!", Ysimple_name2(mmirror));
+                    useup(mmirror);
+                    mmirror = (struct obj *) 0;
+                }
+            }
             const char* monreflector = mon_reflectsrc(mtmp);
             if (monreflector) {
                 pline_mon(mtmp, "The gaze is reflected away by %s %s!",
                                   s_suffix(mon_nam(mtmp)), monreflector);
+                if (strcmp(monreflector, "mirror") == 0) {
+                    struct obj *mmirror = m_carrying(mtmp, MIRROR);
+                    /* break 100% for stoning gazes */
+                    if (!mmirror->oartifact) {
+                        pline("A %s shatters!", xname(mmirror));
+                        m_useup(mtmp, mmirror);
+                        mmirror = (struct obj *) 0;
+                    }
+                }
                 break;
             }
                 
