@@ -3535,13 +3535,14 @@ mon_reflectsrc(struct monst *mon)
     } else if (has_reflection(mon)) {
         /* specifically for the monster spell MGC_REFLECTION */
         return "shimmering globe";
+    } else if (m_carrying(mon, MIRROR)) {
+        /* Also applies to the Magic Mirror of Merlin - put this before the 
+         * W_ART check */
+        return "mirror";
     } else if (orefl && orefl->oartifact == ART_HOLOGRAPHIC_VOID_LILY) {
         /* Due to any carried artifact which grants reflection, which shows as W_ART */
         return "card";
-    } else if (m_carrying(mon, MIRROR)) {
-        /* Also applies to the Magic Mirror of Merlin */
-        return "mirror";
-    }
+    } 
     return (const char*) NULL;
 }
 
@@ -3581,16 +3582,17 @@ ureflectsrc(void)
         }
     } else if (gy.youmonst.data == &mons[PM_SILVER_DRAGON]) {
         return "scales";
+    } else if (carrying(MIRROR)) {
+        /* carried mirror offers reflection but easily breaks */
+        /* Also applies to the Magic Mirror of Merlin - put this before the 
+         * W_ART check */
+        makeknown(MIRROR);
+        return "mirror";
     } else if (EReflecting & W_ART) {
         /* Only carried artifact which grants reflection is
          * the Holographic Void Lily, which shows as W_ART */
         return "card";
-    } else if (carrying(MIRROR)) {
-        /* carried mirror offers reflection but easily breaks */
-        /* Also applies to the Magic Mirror of Merlin */
-        makeknown(MIRROR);
-        return "mirror";
-    }
+    } 
     return (const char*) NULL;
 }
 
