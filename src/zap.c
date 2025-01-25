@@ -7076,7 +7076,12 @@ maybe_destroy_item(
         break;
     /* Fragile item destruction */
     case AD_PHYS:
-        if (obj->oerodeproof || obj->otyp == WAN_STRIKING)
+        /* Rings of "shock" resistance prevent this type of damage */
+        if ((uleft && uleft->otyp == RIN_SHOCK_RESISTANCE) || 
+            (uright && uright->otyp == RIN_SHOCK_RESISTANCE))
+            skip++;
+        if (obj->oerodeproof || obj->otyp == WAN_STRIKING
+                             || obj->otyp == RIN_SHOCK_RESISTANCE)
             skip++;
         quan = obj->quan;
         /* Some items are gradually cracked, other can shatter instantly */
