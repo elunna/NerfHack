@@ -1058,13 +1058,8 @@ dig_up_grave(coord *cc)
     /* Grave-robbing is frowned upon... */
     exercise(A_WIS, FALSE);
     if (Role_if(PM_ARCHEOLOGIST)) {
-        if (u.ualign.type == A_CHAOTIC) {
-            adjalign(3);
-            You_feel("like a proper gravedigger.");
-        } else {
-            adjalign(-sgn(u.ualign.type) * 3);
-            You_feel("like a despicable grave-robber!");
-        }
+        adjalign(-sgn(u.ualign.type) * 3);
+        You_feel("like a despicable grave-robber!");
     } else if (Role_if(PM_SAMURAI)) {
         adjalign(-sgn(u.ualign.type));
         You("disturb the honorable dead!");
