@@ -1561,10 +1561,15 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         FALLTHROUGH;
         /*FALLTHRU*/
     case SPE_MAGIC_MAPPING:
-    case SPE_CREATE_MONSTER:
         (void) seffects(pseudo);
         break;
-
+    case SPE_CREATE_MONSTER:
+        if (role_skill >= P_SKILLED)
+            (void) seffects(pseudo);
+        else
+            (void) make_msummoned(0, &gy.youmonst, FALSE, u.ux, u.uy);
+        
+        break;
     /* these are all duplicates of potion effects */
     case SPE_HASTE_SELF:
     case SPE_DETECT_TREASURE:
