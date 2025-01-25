@@ -73,6 +73,7 @@ staticfn boolean shade_aware(struct obj *) NO_NNARGS;
 staticfn boolean bite_monster(struct monst *);
 staticfn int shield_dmg(struct obj *, struct monst *);
 staticfn void ring_familiarity(void);
+staticfn boolean biteum(struct monst *);
 
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
 #define KILL_FAMILIARITY 20
@@ -1125,39 +1126,24 @@ hitum(struct monst *mon, struct attack *uattk)
                        : P_SKILL(P_SHIELD) == P_SKILLED ? !rn2(17)
                        : !rn2(25));
 
-     /* Tertiary bite attack for vampires.
-      * Handle this first so that vampires always have the chance
-      * to feed first before the victim expires. */
-    if (!DEADMONSTER(mon) && m_at(x, y) == mon 
-        && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
-        if ((is_rider(mon->data)
-                || mon->data == &mons[PM_GREEN_SLIME]
-                || (touch_petrifies(mon->data) && !Stone_resistance))
-            /* ... unless they are impaired */
-            && (!Stunned && !Confusion && !Hallucination)) {
-            ; /* Don't attack - move onto weapon attacks */
-        } else {
-            tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
-                                   &armorpenalty);
-            dieroll = rnd(20);
-            mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
-            if (tmp > dieroll)
-                exercise(A_DEX, TRUE);
-            
-            if (mhit) {
-                You("bite %s.", mon_nam(mon));
-                malive = damageum(mon, &mons[PM_VAMPIRE].mattk[0], 0) != 2;
-                (void) passive(mon, uswapwep, mhit, malive, AT_BITE, !uswapwep);
-                wakeup(mon, TRUE);
-            } else {
-                /* If cartomancer/monk are ever allowed to be vampires
-                 * update this to take their armor into account. */
-                missum(mon, &mons[PM_VAMPIRE].mattk[1], FALSE);
+    /* "smart biting" for vampires. */
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
+        && !svc.context.forcefight) {
+        /* Hero only gets a bite *or* a weapon attack, not both */
+        if (u.ulevel < 15) {
+            /* If hungry, always bite first (if we can feed);
+             * otherwise it's 50/50 whether we bite or use weapon */
+            if ((u.uhunger < 200 || !rn2(2)) && has_blood(mon->data)) {
+                biteum(mon);
+                return malive;
             }
+        } else {
+            /* At XP14+, we get to both bite and attack */
+            biteum(mon);
         }
     }
-    
-    if (!malive)
+
+    if (!(malive = !DEADMONSTER(mon)))
         return FALSE;
 
     /* Cleaver attacks three spots, 'mon' and one on either side of 'mon';
@@ -7986,5 +7972,47 @@ ring_familiarity(void)
             update_inventory();
         }
     }
+}
+
+
+/* Tertiary bite attack for vampires.
+ * Return TRUE if we hit or passed on the attack, FALSE if we missed */
+staticfn boolean
+biteum(struct monst *mon)
+{
+    int tmp, armorpenalty, dieroll, mhit, attknum = 0;
+    boolean malive;
+    
+    if (DEADMONSTER(mon))
+        impossible("biteum monster is already dead.");
+    
+    if ((is_rider(mon->data)
+            || mon->data == &mons[PM_GREEN_SLIME]
+            || (touch_petrifies(mon->data) && !Stone_resistance))
+        /* ... unless they are impaired */
+        && (!Stunned && !Confusion && !Hallucination)) {
+        return TRUE; /* Don't attack - move onto weapon attacks */
+    } else {
+        tmp = find_roll_to_hit(mon, AT_BITE, (struct obj *) 0, &attknum,
+                               &armorpenalty);
+        dieroll = rnd(20);
+        mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
+        if (tmp > dieroll)
+            exercise(A_DEX, TRUE);
+    
+        if (mhit) {
+            You("bite %s.", mon_nam(mon));
+            malive = damageum(mon, &mons[PM_VAMPIRE].mattk[0], 0) != 2;
+            (void) passive(mon, uswapwep, mhit, malive, AT_BITE, !uswapwep);
+            wakeup(mon, TRUE);
+            return TRUE;
+        } else {
+            /* If cartomancer/monk are ever allowed to be vampires
+             * update this to take their armor into account. */
+            missum(mon, &mons[PM_VAMPIRE].mattk[1], FALSE);
+        }
+    }
+    
+    return FALSE;
 }
 /*uhitm.c*/
