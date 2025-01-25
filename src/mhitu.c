@@ -3166,7 +3166,7 @@ struct attack *mattk)
     }
     
     /* Counterattacks use energy */
-    if (u.uen < 5)
+    if (u.uen < COUNTER_COST)
         return M_ATTK_HIT;
 
     /* Allow counterattacks on weapon, bite, claw, and kick attacks. */
@@ -3201,7 +3201,7 @@ struct attack *mattk)
         if (rn2(100) < chance) {
             You("counterattack!");
             (void) thitmonst(mtmp, uwep);
-            u.uen -= 5;
+            u.uen -= COUNTER_COST;
             if (DEADMONSTER(mtmp))
                 return M_ATTK_AGR_DIED;
             return M_ATTK_AGR_DONE;
