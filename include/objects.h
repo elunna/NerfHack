@@ -1337,7 +1337,7 @@ XTRA_SCROLL_LABEL("ELPHE MONATER",       SC28), /* famous mistranslation */
 XTRA_SCROLL_LABEL("ABAJ",                SC29), /* famous mistranslation */
 XTRA_SCROLL_LABEL("CONG LAT URAT ION",   SC30), /* famous mistranslation */
 XTRA_SCROLL_LABEL("DESUM TETRAL",        SC31), /* dal aos */
-XTRA_SCROLL_LABEL("NH IN RL",            SC32), /* meta */
+XTRA_SCROLL_LABEL("NHINRL",            SC32), /* meta */
 XTRA_SCROLL_LABEL("ISAY INAY",           SC33), /* meta */
 XTRA_SCROLL_LABEL("PEBCAK RTFM",         SC34), /* Slang */
 XTRA_SCROLL_LABEL("KA TET",              SC35), /* Dark Tower */
