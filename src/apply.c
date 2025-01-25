@@ -2343,7 +2343,7 @@ tinnable(struct obj *corpse)
 staticfn void
 use_tinning_kit(struct obj *obj)
 {
-    struct obj *corpse, *can, *bld;
+    struct obj *corpse, *can;
     struct permonst *mptr;
 
     if (!freehand()) {
@@ -2389,56 +2389,8 @@ use_tinning_kit(struct obj *obj)
         pline("That's too insubstantial to tin.");
         return;
     }
-    
-    /* Vampires can tin blood from corpses - from SlashTHEM.
-     * TODO: Factor this out to it's own function. */
-    long age = peek_at_iced_corpse_age(corpse);
-    long rotted = (svm.moves - age) / (10L + rn2(20));
-    boolean bottleable = rotted <= 0 &&
-          (peek_at_iced_corpse_age(corpse) + 5) >= svm.moves;
-
-    if (Race_if(PM_VAMPIRE)
-            && mons[corpse->corpsenm].cnutrit
-            && !(svm.mvitals[corpse->corpsenm].mvflags & G_NOCORPSE)
-            && has_blood(&mons[corpse->corpsenm])) {
-
-        if (!bottleable) {
-            if (y_n("This corpse does not have any fresh blood.  Tin it?") == 'y')
-                goto tinit;
-            else
-                return;
-        } else if (mons[corpse->corpsenm].msize < MZ_MEDIUM) {
-            if (y_n("This corpse doesn't have enough blood to bottle.  Tin it?") == 'y')
-                goto tinit;
-            else
-                return;
-        } else if ((bld = mksobj(POT_BLOOD, FALSE, FALSE)) != 0) {
-            consume_obj_charge(obj, TRUE);
-            static const char you_buy_it[] = "You bottle it, you bought it!";
-
-            bld->corpsenm = corpse->corpsenm;
-            bld->cursed = obj->cursed;
-            bld->blessed = obj->blessed;
-            bld->known = 1;
-            bld->bknown = obj->bknown;
-            if (carried(corpse)) {
-                if (corpse->unpaid)
-                    verbalize(you_buy_it);
-                useup(corpse);
-            } else {
-                if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
-                    verbalize(you_buy_it);
-                useupf(corpse, 1L);
-            }
-            bld = hold_another_object(bld, "You make, but cannot pick up, %s.",
-                          doname(bld), (const char *)0);
-        } else
-            impossible("Bottling failed.");
-        return;
-    }
-
-tinit:
     consume_obj_charge(obj, TRUE);
+
     if ((can = mksobj(TIN, FALSE, FALSE)) != 0) {
         static const char you_buy_it[] = "You tin it, you bought it!";
 
