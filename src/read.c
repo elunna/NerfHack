@@ -1257,11 +1257,21 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     ttmp = t_at(x, y);
     if (ttmp && !delfloortrap(ttmp))
         return;
-
+    
+    if (levl[x][y].typ == TREE) {
+        if (ltyp == PUDDLE) /* This won't destroy a tree */
+            return;
+        if (cansee(x, y))
+            pline("A tree sinks into deep water!");
+    }
     set_levltyp(x, y, ltyp);
     del_engr_at(x, y);
     water_damage_chain(svl.level.objects[x][y], FALSE);
     maybe_unhide_at(x, y);
+    
+    if (!does_block(x, y, &levl[x][y]))
+        unblock_point(x, y); /* vision */
+    vision_recalc(0);
 
     if (ltyp == POOL && (mtmp = m_at(x, y)) != 0)
         (void) minliquid(mtmp);
