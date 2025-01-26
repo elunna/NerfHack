@@ -9,7 +9,7 @@ staticfn boolean may_generate_eroded(struct obj *);
 staticfn void mkobj_erosions(struct obj *);
 staticfn void mkbox_cnts(struct obj *);
 staticfn unsigned nextoid(struct obj *, struct obj *);
-staticfn void mksobj_init(struct obj *, boolean);
+staticfn struct obj * mksobj_init(struct obj *, boolean);
 staticfn int item_on_ice(struct obj *);
 staticfn void shrinking_glob_gone(struct obj *);
 staticfn void obj_timer_checks(struct obj *, coordxy, coordxy, int);
@@ -645,12 +645,13 @@ unsplitobj(struct obj *obj)
             }
     } else if (oparent && !ochild) {
         /* alternate scenario */
-        for (obj = list; obj; obj = obj->nobj)
+        for (obj = list; obj; obj = obj->nobj) {
             if (obj->o_id == target_oid) {
                 ochild = obj;
                 break;
             }
         }
+    }
     /* if we have both parent and child, try to merge them;
        if successful, return the combined stack, otherwise return null */
     return (oparent && ochild && merged(&oparent, &ochild)) ? oparent : 0;
@@ -904,7 +905,7 @@ unknow_object(struct obj *obj)
 }
 
 /* do some initialization to newly created object; otyp must already be set */
-staticfn void
+staticfn struct obj *
 mksobj_init(struct obj *otmp, boolean artif)
 {
     int mndx, tryct;
@@ -1219,6 +1220,7 @@ mksobj_init(struct obj *otmp, boolean artif)
     }
 
     mkobj_erosions(otmp);
+    return otmp;
 }
 
 /* mksobj(): create a specific type of object; result is always non-Null */
@@ -1271,7 +1273,7 @@ mksobj(int otyp, boolean init, boolean artif)
     }
 
     if (init)
-        mksobj_init(otmp, artif);
+        otmp = mksobj_init(otmp, artif);
 
     /* some things must get done (corpsenm, timers) even if init = 0 */
     switch ((otmp->oclass == POTION_CLASS && otmp->otyp != POT_OIL)
@@ -1433,8 +1435,8 @@ rider_revival_time(struct obj *body, boolean retry)
 void
 start_corpse_timeout(struct obj *body)
 {
-    long when; /* rot away when this old */
-    long age;  /* age of corpse          */
+    long when;       /* rot away when this old */
+    long age;        /* age of corpse          */
     int rot_adjust;
     short action;
 
