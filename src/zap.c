@@ -4627,8 +4627,12 @@ bhit(
             set_levltyp(gb.bhitpos.x, gb.bhitpos.y, ROOM);
             levl[gb.bhitpos.x][gb.bhitpos.y].flags = 0;
             if (!rn2(3))
-                explode(x, y, ZT_FIRE, d(3, 6), 0, EXPL_FIERY);
-            newsym(gb.bhitpos.x, gb.bhitpos.y);
+                explode(gb.bhitpos.x, gb.bhitpos.y, ZT_FIRE, d(3, 6), 0, EXPL_FIERY);
+            if (!does_block(gb.bhitpos.x, gb.bhitpos.y, &levl[gb.bhitpos.x][gb.bhitpos.y]))
+                unblock_point(gb.bhitpos.x, gb.bhitpos.y); /* vision */
+            vision_recalc(0);
+            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+                newsym(gb.bhitpos.x, gb.bhitpos.y);
             /* stop the bolt here; it takes a lot of energy to destroy trees */
             range = 0;
             break;
@@ -5648,8 +5652,14 @@ disintegrate_floor_objects(
                 else if (delquan < scrquan) {
                     obj->quan -= delquan;
                     obj->owt = weight(obj);
-                } else
+                } else {
                     delobj(obj);
+                    if (!does_block(x, y, &levl[x][y]))
+                        unblock_point(x, y);
+                    vision_recalc(0);
+                    if (cansee(x, y))
+                        newsym(x, y);
+                }
                 cnt += delquan;
                 if (give_feedback) {
                     if (delquan > 1L)
@@ -6279,6 +6289,9 @@ zap_over_floor(
              * - Smokey Bear */
             if (!rn2(3))
                 explode(x, y, type, d(3, 6), 0, EXPL_FIERY);
+            if (!does_block(x, y, &levl[x][y]))
+                unblock_point(x, y); /* vision */
+            vision_recalc(0);
             if (see_it)
                 newsym(x, y);
         }
@@ -6360,8 +6373,12 @@ zap_over_floor(
             levl[x][y].flags = 0;
             if (!rn2(3))
                 explode(x, y, type, d(3, 6), 0, EXPL_FROSTY);
+            if (!does_block(x, y, &levl[x][y]))
+                unblock_point(x, y); /* vision */
+            vision_recalc(0);
             if (see_it)
                 newsym(x, y);
+
         }
         if (is_damp_terrain(x, y) || is_lava(x, y) || lavawall) {
             boolean lava = (is_lava(x, y) || lavawall),
@@ -6512,6 +6529,9 @@ zap_over_floor(
                 Norep("A tree disintegrates!");
             set_levltyp(x, y, ROOM);
             levl[x][y].flags = 0;
+            if (!does_block(x, y, &levl[x][y]))
+                unblock_point(x, y); /* vision */
+            vision_recalc(0);
             if (see_it)
                 newsym(x, y);
         }
