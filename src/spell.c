@@ -2531,6 +2531,13 @@ int cast_from_book(struct obj *spellbook)
         pline("This book is all blank.");
         makeknown(booktype);
         return 1;
+    } else {
+        if (Blind)
+            pline("Feeling the braille etchings, you invoke the divine directives for %s!",
+                  OBJ_NAME(objects[spellbook->otyp]));
+        else
+            You("invoke the ancient instructions for %s!",
+                OBJ_NAME(objects[spellbook->otyp]));
     }
 
     /* Cursed books still have bad effects */
