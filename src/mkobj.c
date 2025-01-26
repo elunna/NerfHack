@@ -926,7 +926,7 @@ mksobj_init(struct obj *otmp, boolean artif)
             otmp->opoisoned = 1;
 
         /* Occasionally just get a really high enchantment. */
-        if (otmp->spe == 0 && !rn2(23)) {
+        if (otmp->spe == 0 && !rn2(163)) {
             otmp->spe = rne(2) * rnd(3) + 1;
             otmp->spe = otmp->spe < 13 ? otmp->spe : 13; /* Don't go over 13 */
         }
