@@ -1227,24 +1227,17 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
 {
     struct monst *mtmp;
     struct trap *ttmp;
-    int castr_x = u.ux, castr_y = u.uy;
     schar ltyp = rn2(3) ? POOL : PUDDLE;
-    
-    /* We use current_wand if a monster muse'd the scroll */
-    if (gc.current_wand && gc.current_wand->otyp == SCR_FLOOD) {
-        castr_x = gc.current_wand->ox;
-        castr_y = gc.current_wand->oy;
-    }
 
     /* Don't create on the user's space unless poolcnt is -1. */
     if ((* (int*)poolcnt) != -1) {
-        if (x == castr_x && y == castr_y)
+        if (x == u.ux && y == u.uy)
             return;
     } else {
         ltyp = POOL;
     }
 
-    if (nexttodoor(x, y) || rn2(1 + distmin(castr_x, castr_y, x, y))
+    if (nexttodoor(x, y) || rn2(1 + distmin(u.ux, u.uy, x, y))
         || sobj_at(BOULDER, x, y))
         return;
 
@@ -2436,14 +2429,8 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
     boolean scursed = sobj->cursed;
     boolean isyou = (mtmp == &gy.youmonst);
     boolean confused = isyou ? (Confusion != 0) : mtmp->mconf;
-    int wx, wy, range = 4 + (2 * bcsign(sobj));
+    int wx = u.ux, wy = u.uy, range = 4 + (2 * bcsign(sobj));
 
-    if (isyou)
-        wx = u.ux, wy = u.uy;
-    else {
-        wx = mtmp->mx;
-        wy = mtmp->my;
-    }
     if (!isyou)
         extract_from_minvent(mtmp, sobj, FALSE, TRUE);
     
@@ -2496,7 +2483,6 @@ seffect_water(struct obj **sobjp, struct monst *mtmp)
         /* Cleanup when used in muse.c */
         if (!isyou)
             delobj(sobj);
-
     }
 }
 

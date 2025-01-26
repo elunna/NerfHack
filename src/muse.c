@@ -1120,17 +1120,14 @@ use_defensive(struct monst *mtmp)
     case MUSE_SCR_FLOOD:
         if (otmp->quan > 1L)
             otmp = splitobj(otmp, 1L);
-
-        /* Kludge to make pools generate appropriately, otherwise
-         * they always generate out from the player. */
-        otmp->ox = mtmp->mx;
-        otmp->oy = mtmp->my;
-        gc.current_wand = otmp;
-
+        
+        /* Note: do_clear_area did not work correctly when I tried
+         * to pass the scroll from the monsters position. As a 
+         * consequence (and because I don't have the skilled to fix it)
+         * we are assuming the flood is always intended to be centered 
+         * on the hero */
         mreadmsg(mtmp, otmp); /* sets otmp->dknown if !Blind or !Deaf */
         seffect_water(&otmp, mtmp);
-        /* otmp used up in seffect_water() */
-        gc.current_wand = 0;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_WAN_DIGGING:
         if (!otmp)
