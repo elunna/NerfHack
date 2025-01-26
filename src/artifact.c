@@ -2189,12 +2189,12 @@ artifact_hit(
         otmp->dknown = TRUE;
         pline_The("twisted blade poisons %s!",
                   youdefend ? "you" : mon_nam(mdef));
-  	    if (youdefend ? fully_resistant(POISON_RES) : resists_poison(mdef)) {
-                if (youdefend)
-                    You("are not affected by the poison.");
-                else
-                    pline("%s seems unaffected by the poison.", Monnam(mdef));
-                return TRUE;
+  	if (youdefend ? fully_resistant(POISON_RES) : resists_poison(mdef)) {
+            if (youdefend)
+                You("are not affected by the poison.");
+            else
+                pline("%s seems unaffected by the poison.", Monnam(mdef));
+            return TRUE;
         }
         switch (rnd(10)) {
         case 1:
@@ -2213,13 +2213,18 @@ artifact_hit(
             *dmgptr += d(3, 6) + 6;
             break;
         case 10:
-            pline_The("poison was deadly...");
-            *dmgptr = 2 * (youdefend
-                               ? Upolyd
-                                     ? u.mh : u.uhp : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
+            *dmgptr = 2 * (youdefend ? Upolyd ? u.mh : u.uhp 
+                                     : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
             break;
         }
-        *dmgptr = resist_reduce(*dmgptr, POISON_RES);
+        if (youdefend) {
+            *dmgptr = resist_reduce(*dmgptr, POISON_RES);
+            if (*dmgptr >= (Upolyd ? u.mh : u.uhp))
+                pline_The("poison was deadly...");
+        } else {
+            if (*dmgptr >= mdef->mhp)
+                pline_The("poison was deadly...");
+        }
         return TRUE;
     }
 
