@@ -256,8 +256,7 @@ mk_artifact(
         a = &artilist[m];
 
         /* make an appropriate object if necessary, then christen it */
-        if (!otmp)
-            otmp = mksobj((int) a->otyp, FALSE, FALSE);
+        otmp = mksobj((int) a->otyp, TRUE, FALSE);
 
         if (adjust_spe) {
             int new_spe;
@@ -275,7 +274,7 @@ mk_artifact(
             /* prevent erosion from generating */
             otmp->oeroded = otmp->oeroded2 = 0;
             otmp = oname(otmp, a->name, ONAME_NO_FLAGS);
-            otmp->oartifact = m; /* Is this line redundant? */
+            otmp->oartifact = m;
             /* set existence and reason for creation bits */
             artifact_origin(otmp, ONAME_RANDOM); /* 'random' is default */
         }
