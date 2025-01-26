@@ -55,9 +55,6 @@ function oracle_fill(rm)
    if percent(10) then
       des.feature("fountain")
    end
-   if d(40) == 1 then
-      des.altar({ type="altar", cracked=1 })
-   end
    if d(60) == 1 then
       des.feature("forge")
    end
@@ -93,7 +90,15 @@ des.room({ contents = function()
               end
 })
 
-des.room({ contents = oracle_fill });
+-- Guaranteed altar!
+-- This needs to precede the other rooms so it always connects.
+des.room({ contents = function()
+                 des.object();
+                 des.trap();
+                 des.monster();
+                 des.altar({ type="altar" })
+              end
+});
 
 des.room({ contents = oracle_fill });
 
