@@ -1,4 +1,4 @@
-/* NetHack 3.7	objnam.c	$NHDT-Date: 1732979463 2024/11/30 07:11:03 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.439 $ */
+/* NetHack 3.7	objnam.c	$NHDT-Date: 1737528848 2025/01/21 22:54:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.444 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -33,9 +33,9 @@ struct _readobjnam_data {
     char fruitbuf[BUFSZ];
 };
 
-staticfn char *strprepend(char *, const char *);
-staticfn char *nextobuf(void);
-staticfn void releaseobuf(char *);
+staticfn char *strprepend(char *, const char *) NONNULL NONNULLARG1;
+staticfn char *nextobuf(void) NONNULL;
+staticfn void releaseobuf(char *) NONNULLARG1;
 staticfn void xcalled(char *, int, const char *, const char *);
 staticfn char *xname_flags(struct obj *, unsigned);
 staticfn char *minimal_xname(struct obj *);
@@ -158,15 +158,16 @@ static const char *Cartomancer_rarity(int otyp);
 staticfn char *
 strprepend(char *s, const char *pref)
 {
+    char star_s = *s;
     int i = (int) strlen(pref);
 
     if (i > PREFIX) {
         impossible("PREFIX too short (for %d).", i);
         return s;
     }
-    s -= i;
-    (void) strncpy(s, pref, i); /* do not copy trailing 0 */
-    return s;
+    copynchars(s - i, pref, i + 1);
+    *s = star_s;
+    return s - i;
 }
 
 /* manage a pool of BUFSZ buffers, so callers don't have to */
@@ -902,6 +903,9 @@ xname_flags(
                more robust because the default value for that overloaded
                field (obj->corpsenm) is NON_PM (-1) rather than 0 */
             Strcat(strcpy(buf, "next "), actualn); /* "next boulder" */
+            /* once "next boulder" occurs, subsequent messages should just
+               use ordinary "boulder" */
+            obj->next_boulder = 0;
         } else {
             Strcpy(buf, actualn); /* "boulder" or "statue" */
         }
@@ -2529,6 +2533,22 @@ Ysimple_name2(struct obj *obj)
     return s;
 }
 
+    /*
+     * FIXME:
+     *  simpleonames(), ansimpleoname(), and thesimpleoname() need to
+     *  know the beginning of the obuf[] they use so that they can
+     *  guard against buffer overflow when pluralizing (is that an
+     *  actual word?) or inserting "an" or "the".
+     *
+     *  minimal_xname() returns a call to xname() which writes into
+     *  the middle of its obuf[] then backs up to accomodate a prefix,
+     *  so BUFSZ is not a reliable limit for the length of the result.
+     *
+     *  [Overflow likely moot.  Since the formatted object name has
+     *  user-supplied name suppressed, the length is sure to be short
+     *  enough to added plural suffix or "an" or "the" prefix.]
+     */
+
 /* "scroll" or "scrolls" */
 char *
 simpleonames(struct obj *obj)
@@ -2562,12 +2582,14 @@ ansimpleoname(struct obj *obj)
     if (objects[otyp].oc_unique && OBJ_NAME(objects[otyp])
         && !strcmp(simpleoname, OBJ_NAME(objects[otyp]))) {
         /* the() will allocate another obuf[]; we want to avoid using two */
-        Strcpy(simpleoname, obufp = the(simpleoname));
+        obufp = the(simpleoname);
+        Strcpy(simpleoname, obufp);
         releaseobuf(obufp);
     } else if (obj->quan == 1L) {
         /* simpleoname[] is singular if quan==1, plural otherwise;
            an() will allocate another obuf[]; we want to avoid using two */
-        Strcpy(simpleoname, obufp = an(simpleoname));
+        obufp = an(simpleoname);
+        Strcpy(simpleoname, obufp);
         releaseobuf(obufp);
     }
     return simpleoname;
@@ -2580,7 +2602,8 @@ thesimpleoname(struct obj *obj)
     char *obufp, *simpleoname = simpleonames(obj);
 
     /* the() will allocate another obuf[]; we want to avoid using two */
-    Strcpy(simpleoname, obufp = the(simpleoname));
+    obufp = the(simpleoname);
+    Strcpy(simpleoname, obufp);
     releaseobuf(obufp);
     return simpleoname;
 }
@@ -3716,7 +3739,7 @@ wizterrainwish(struct _readobjnam_data *d)
     int trap;
     unsigned oldtyp, ltyp;
     coordxy x = u.ux, y = u.uy;
-    char *bp = d->bp, *p = d->p;
+    char *bp = d->bp, *p;
 
     for (trap = NO_TRAP + 1; trap < TRAPNUM; trap++) {
         struct trap *t;
@@ -5898,6 +5921,7 @@ safe_qbuf(
 
     lenlimit = QBUFSZ - 1;
     endp = qbuf + lenlimit;
+    assert(endp != NULL); /* workaround for static analyzer issue */
     /* sanity check, aimed mainly at paniclog (it's conceivable for
        the result of short_oname() to be shorter than the length of
        the last resort string, but we ignore that possibility here) */

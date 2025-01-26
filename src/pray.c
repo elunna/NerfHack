@@ -2031,7 +2031,9 @@ bestow_artifact(uchar max_giftvalue)
         /* If we make it past the first gauntlet - one more for glory. */
         if (!rn2(arti_gift_odds)) {
             struct obj *otmp;
-            otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy), max_giftvalue, TRUE);
+            /* mk_artifact() with NULL obj and a_align() arg can return NULL */
+            otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy),
+                               max_giftvalue, TRUE);
             if (otmp) {
                 char buf[BUFSZ];
 
