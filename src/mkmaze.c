@@ -39,6 +39,10 @@ staticfn void populate_maze(void);
         }                                                        \
     } while (0)
 
+/* Returns TRUE if the terrain at the given location is in-bounds and is a
+ * wall, door, secret door, or iron bars.
+ * Despite the name, any door will return TRUE here, even if it's open, broken,
+ * or missing. */
 /* used to determine if wall spines can join this location */
 staticfn int
 iswall(coordxy x, coordxy y)
@@ -53,6 +57,8 @@ iswall(coordxy x, coordxy y)
             || type == SDOOR || type == IRONBARS);
 }
 
+/* Same as iswall(), except also returns TRUE if the terrain at the given
+ * location is stone. */
 /* used to determine if wall spines can join this location */
 staticfn int
 iswall_or_stone(coordxy x, coordxy y)
@@ -188,7 +194,8 @@ extend_spine(int locale[3][3], int wall_there, int dx, int dy)
     return spine;
 }
 
-/* Remove walls totally surrounded by stone */
+/* Remove walls totally surrounded by stone.
+ * Arguments specify the rectangle in which to do this. */
 staticfn void
 wall_cleanup(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
 {
@@ -219,7 +226,8 @@ wall_cleanup(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
         }
 }
 
-/* Correct wall types so they extend and connect to each other */
+/* Correct wall types so they extend and connect to each other, within the
+ * given rectangle. */
 void
 fix_wall_spines(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
 {
@@ -281,6 +289,8 @@ fix_wall_spines(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
         }
 }
 
+/* Cleans up walls within the given rectangle. Does NOT change stone into
+ * walls. */
 void
 wallification(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
 {
@@ -288,6 +298,15 @@ wallification(coordxy x1, coordxy y1, coordxy x2, coordxy y2)
     fix_wall_spines(x1, y1, x2, y2);
 }
 
+/* Returns TRUE if the spot two steps in dir direction from the given location
+ * is:
+ * 1: Stone terrain.
+ * 2: More than 3 steps away from the left and top maze edges. (x=0 doesn't
+ *    exist, so it makes sense that the maze wall starts at x=3, but I'm not
+ *    sure why the upper wall can't start at y=0 and the maze at y=1).
+ * 3: Otherwise within the maze.
+ * Used exclusively in walkfrom() to determine whether it should carve a path
+ * to a new space. */
 staticfn boolean
 okay(coordxy x, coordxy y, coordxy dir)
 {
@@ -299,6 +318,9 @@ okay(coordxy x, coordxy y, coordxy dir)
     return TRUE;
 }
 
+/* Choose a random starting point for maze generation.
+ * The point is guaranteed to be on the maze grid: that is, it must have odd x
+ * and y coordinates and have 3 <= x < x_maze_max and 3 <= y < y_maze_max */
 /* find random starting point for maze generation */
 staticfn void
 maze0xy(coord *cc)
@@ -347,7 +369,8 @@ bad_location(
 }
 
 /* pick a location in area (lx, ly, hx, hy) but not in (nlx, nly, nhx, nhy)
-   and place something (based on rtype) in that region */
+   and place something (based on rtype) in that region.
+   If lx = 0, it will try the whole level rather than a subregion. */
 void
 place_lregion(
     coordxy lx, coordxy ly, coordxy hx, coordxy hy,
@@ -405,6 +428,13 @@ place_lregion(
     impossible("Couldn't place lregion type %d!", rtype);
 }
 
+/* Try to place something based on rtype specifically at (x,y).
+ * If the location is bad (occupied, has a trap, or is within the rectangle
+ * (nlx, nly, nhx, nhy), it'll fail, UNLESS oneshot is specified, in which case
+ * it'll try to make it non-bad by removing a trap.
+ * oneshot basically means we're only trying this space, so don't tell the
+ * caller to try somewhere else.
+ */
 staticfn boolean
 put_lregion_here(
     coordxy x, coordxy y,
@@ -886,6 +916,9 @@ stolen_booty(void)
 
 #undef ORC_LEADER
 
+/* Return TRUE iff the given location is within the valid maze area.
+ * Terrain type and whether the location is a possible intersection are not
+ * checked. */
 staticfn boolean
 maze_inbounds(coordxy x, coordxy y)
 {
@@ -896,6 +929,13 @@ maze_inbounds(coordxy x, coordxy y)
             && isok(x, y));
 }
 
+/* Remove all dead ends from the maze.
+ * Does this by looking for spots that have 3 or more directions in which they
+ * are separated from another open space 2 squares away by some inaccessible
+ * terrain. Then it picks a random one of these directions and replaces the
+ * wall between them with whatever terrain typ is.
+ * If it decides to remove the dead end in a direction that goes into a room,
+ * create a door there instead. */
 staticfn void
 maze_remove_deadends(xint16 typ)
 {
@@ -1271,6 +1311,16 @@ walkfrom(coordxy x, coordxy y, schar typ)
 }
 #else /* !MICRO */
 
+/* Main guts of the maze generator.
+ * First converts this space to typ, unless it's a door (presumably for special
+ * levels).
+ * From the given location, search all four directions for a valid place to
+ * carve a path (it must be STONE to be valid, see okay()).
+ * If more than one direction can have a path carved, pick one randomly, carve
+ * the path there, then recurse on it.
+ * This algorithm is a depth-first search and is generally known as "Recursive
+ * Backtracker". It tends to generate long twisty passages with some long and
+ * some short twisty dead-end side branches. */
 void
 walkfrom(coordxy x, coordxy y, schar typ)
 {
@@ -1306,8 +1356,12 @@ walkfrom(coordxy x, coordxy y, schar typ)
 }
 #endif /* ?MICRO */
 
-/* find random point in generated corridors,
-   so we don't create items in moats, bunkers, or walls */
+/* Finds a random point in the maze area which has the designated floor type of
+ * the maze (always ROOM).
+ * This is to avoid creating items, monsters, and features in illegal terrain
+ * like moats, bunkers, or walls.
+ * Argument is a pointer to coord that will be set by this function.
+ * Panics if it cannot find any valid points. */
 void
 mazexy(coord *cc)
 {
@@ -1450,6 +1504,8 @@ bound_digging(void)
                 levl[x][y].wall_info |= W_NONDIGGABLE;
 }
 
+/* Creates a magic portal at the given location, pointing to the given dungeon
+ * number and level. */
 void
 mkportal(coordxy x, coordxy y, xint16 todnum, xint16 todlevel)
 {
@@ -1785,6 +1841,8 @@ restore_waterlevel(NHFILE *nhfp)
     }
 }
 
+/* Set the global variable wportal to point to the magic portal on the current
+ * level. */
 staticfn void
 set_wportal(void)
 {

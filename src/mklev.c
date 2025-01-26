@@ -69,7 +69,7 @@ mkroom_cmp(const genericptr vx, const genericptr vy)
 }
 
 /* Return TRUE if a door placed at (x, y) which otherwise passes okdoor()
- * checks would be connecting into an area that was declared as joined=false.
+ * checks would be connecting into an area that was declared as joined = false.
  * Checking for this in finddpos() enables us to have rooms with sub-areas
  * (such as shops) that will never randomly generate unwanted doors in order
  * to connect them up to other areas.
@@ -94,6 +94,12 @@ door_into_nonjoined(coordxy x, coordxy y)
     return FALSE;
 }
 
+/* Find a valid position to place a door within the rectangle bounded by
+ * (xl, yl, xh, yh), as defined by okdoor(). First, try to pick a single random
+ * spot, then iterate over the entire area.
+ * If it can't find any valid places it'll just default to an
+ * existing door.
+ */
 staticfn boolean
 finddpos(
     coord *cc,
@@ -104,6 +110,7 @@ finddpos(
 
     x = rn1(xh - xl + 1, xl);
     y = rn1(yh - yl + 1, yl);
+    /* Avoid placing doors connecting to !needjoining areas. */
     if (okdoor(x, y) && !door_into_nonjoined(x, y))
         goto gotit;
 
@@ -149,6 +156,20 @@ sort_rooms(void)
         }
 }
 
+/* Initialize the croom struct and the portion of the level it sits on. This
+ * must be a regular (rectangular) room.
+ * lowx, lowy, hix, hiy: the bounding box of the room floor, NOT including its
+ *   walls.
+ * lit: Whether to light the whole room area.
+ * rtype: The room type. This directly sets croom->rtype without calling mkroom
+ *   even for special rooms. All randomly generated rooms currently specify
+ *   OROOM, but special levels may want to specify a rtype and leave the room
+ *   unfilled (e.g. an abandoned temple).
+ * special: If FALSE, this function will initialize the room terrain to be a
+ *   rectangle of floor surrounded by the appropriate walls. If TRUE, it will
+ *   skip this step.
+ * is_room: Whether this room is a full room. FALSE if it's a subroom.
+ *   Only relevant to wallification and if special = FALSE. */
 staticfn void
 do_room_or_subroom(struct mkroom *croom,
                    coordxy lowx, coordxy lowy, coordxy hix, coordxy hiy,
@@ -222,6 +243,10 @@ do_room_or_subroom(struct mkroom *croom,
     }
 }
 
+/* Adds a new room to the map.
+ * Arguments are the same as do_room_or_subroom(), except is_room is hardcoded
+ * to TRUE.
+ */
 void
 add_room(coordxy lowx, coordxy lowy, coordxy hix, coordxy hiy,
          boolean lit, schar rtype, boolean special)
@@ -236,6 +261,10 @@ add_room(coordxy lowx, coordxy lowy, coordxy hix, coordxy hiy,
     svn.nroom++;
 }
 
+/* Adds a new subroom to the map as part of the given room.
+ * Arguments are again the same as those passed to do_room_or_subroom() with
+ * is_room hardcoded to FALSE.
+ */
 void
 add_subroom(struct mkroom *proom,
             coordxy lowx, coordxy lowy,
@@ -275,6 +304,8 @@ free_luathemes(enum lua_theme_group theme_group)
     }
 }
 
+/* Repeatedly create rooms and place them on the map until we can't create any
+ * more. */
 staticfn void
 makerooms(void)
 {
@@ -313,9 +344,15 @@ makerooms(void)
     /* make rooms until satisfied */
     /* rnd_rect() will returns 0 if no more rects are available... */
     while (svn.nroom < (MAXNROFROOMS - 1) && rnd_rect()) {
+        /* If a certain number of rooms have already been created, and we have
+         * not yet tried to make a vault, with 50% probability, try to create
+         * one. */
         if (svn.nroom >= (MAXNROFROOMS / 6) && rn2(2) && !tried_vault) {
             tried_vault = TRUE;
             if (create_vault()) {
+                /* This won't actually create the room and edit the terrain
+                 * with add_room. It'll just set the lx and ly of rooms[nroom]
+                 * to represent its location. */
                 gv.vault_x = svr.rooms[svn.nroom].lx;
                 gv.vault_y = svr.rooms[svn.nroom].ly;
                 svr.rooms[svn.nroom].hx = -1;
@@ -332,6 +369,9 @@ makerooms(void)
                         || (svn.nroom >= (MAXNROFROOMS / 6))))
                     break;
             } else {
+                /* Try to create another random room. If it can't find anywhere for
+                 * one to go, stop making rooms.
+                 * Use the parameters for a totally random ordinary room. */
                 if (!create_room(-1, -1, -1, -1, -1, -1, OROOM, -1))
                     break;;
             }
@@ -347,6 +387,13 @@ makerooms(void)
     }
 }
 
+/* Join rooms a and b together by drawing a corridor and placing doors.
+ * If nxcor is TRUE, it will be pickier about whether to draw the corridor at
+ * all, and will not create doors in !okdoor() locations.
+ * The corridor will be made of CORR terrain unless this is an arboreal level
+ * in which case it will use ROOM.
+ * Afterwards, the smeq values of a and b will be set equal to each other.
+ * Should this return boolean (success or failure)? */
 staticfn void
 join(int a, int b, boolean nxcor)
 {
@@ -364,9 +411,20 @@ join(int a, int b, boolean nxcor)
     /* find positions cc and tt for doors in croom and troom
        and direction for a corridor between them */
 
+    /* if either room is not an actual room (hx = -1), abort */
     if (troom->hx < 0 || croom->hx < 0)
         return;
+
+    /* Determine how croom and troom are positioned relative to each other,
+     * then pick random positions on their walls that face each other where
+     * doors will be created.
+     * Note: This has a horizontal bias; if troom is, for instance, both to the
+     * right of and below croom, the ordering of the if clauses here will
+     * always place the doors on croom's right wall and troom's left wall.
+     * This may be intentional, since the playing field is much wider than it
+     * is tall. */
     if (troom->lx > croom->hx) {
+        /* troom to the right of croom */
         dx = 1;
         dy = 0;
         xx = croom->hx + 1;
@@ -376,6 +434,7 @@ join(int a, int b, boolean nxcor)
         if (!finddpos(&tt, tx, troom->ly, tx, troom->hy))
             return;
     } else if (troom->hy < croom->ly) {
+        /* troom below croom */
         dy = -1;
         dx = 0;
         yy = croom->ly - 1;
@@ -385,6 +444,7 @@ join(int a, int b, boolean nxcor)
         if (!finddpos(&tt, troom->lx, ty, troom->hx, ty))
             return;
     } else if (troom->hx < croom->lx) {
+        /* troom to the left of croom */
         dx = -1;
         dy = 0;
         xx = croom->lx - 1;
@@ -394,6 +454,7 @@ join(int a, int b, boolean nxcor)
         if (!finddpos(&tt, tx, troom->ly, tx, troom->hy))
             return;
     } else {
+        /* otherwise troom must be below croom */
         dy = 1;
         dx = 0;
         yy = croom->hy + 1;
@@ -407,11 +468,17 @@ join(int a, int b, boolean nxcor)
     yy = cc.y;
     tx = tt.x - dx;
     ty = tt.y - dy;
+
+    /* If nxcor is TRUE and the space outside croom's door isn't stone (maybe
+     * some previous corridor has already been drawn here?), abort. */
     if (nxcor && levl[xx + dx][yy + dy].typ != STONE)
         return;
+
+    /* If we can put a door in croom's wall or nxcor is FALSE, do so. */
     if (okdoor(xx, yy) || !nxcor)
         dodoor(xx, yy, croom);
 
+    /* Attempt to dig the corridor. If it fails for some reason, abort. */
     org.x = xx + dx;
     org.y = yy + dy;
     dest.x = tx;
@@ -421,31 +488,57 @@ join(int a, int b, boolean nxcor)
                       svl.level.flags.arboreal ? ROOM : CORR, STONE))
         return;
 
-    /* we succeeded in digging the corridor */
+    /* We succeeded in digging the corridor.
+     * If we can put the door in troom's wall or nxcor is FALSE, do so. */
     if (okdoor(tt.x, tt.y) || !nxcor)
         dodoor(tt.x, tt.y, troom);
 
+    /* Set the smeq values for these rooms to be equal to each other, denoting
+     * that these two rooms are now part of the same reachable section of the
+     * level.
+     * Importantly, this does NOT propagate the smeq value to any other rooms
+     * with the to-be-overwritten smeq value! */
     if (gs.smeq[a] < gs.smeq[b])
         gs.smeq[b] = gs.smeq[a];
     else
         gs.smeq[a] = gs.smeq[b];
 }
 
-/* create random corridors between rooms */
+/* Generate corridors connecting all the rooms on the level. */
 void
 makecorridors(void)
 {
     int a, b, i;
     boolean any = TRUE;
 
+    /* Connect each room to the next room in rooms.
+     *
+     * Since during normal random level generation, rooms is sorted by order of
+     * x-coordinate prior to calling this function, this first step will,
+     * unless it hits the !rn2(50), connect each room to the next room to its
+     * right, which will set everyone's smeq value to the same number. This
+     * will deny the next two loops in this function from getting to connect
+     * anything. Occasionally a level will be created by this having a series
+     * of up-and-down switchbacks, and no other corridors.
+     *
+     * It's rather easy to see all the rooms joined in order from left to right
+     * across the level if you know what you're looking for. */
     for (a = 0; a < svn.nroom - 1; a++) {
         join(a, a + 1, FALSE);
         if (!rn2(50))
             break; /* allow some randomness */
     }
+
+    /* Connect each room to the room two rooms after it in rooms, if and only
+     * if they do not have the same smeq already. */
     for (a = 0; a < svn.nroom - 2; a++)
         if (gs.smeq[a] != gs.smeq[a + 2])
             join(a, a + 2, FALSE);
+
+    /* Connect any remaining rooms with different smeqs.
+     * The "any" variable is an optimization; if on a given loop no different
+     * smeqs were found from the current room, there's nothing more to be done.
+     * */
     for (a = 0; any && a < svn.nroom; a++) {
         any = FALSE;
         for (b = 0; b < svn.nroom; b++)
@@ -454,7 +547,11 @@ makecorridors(void)
                 any = TRUE;
             }
     }
-    /* add some extra corridors which may be blocked off */
+    /* By now, all rooms should be guaranteed to be connected. */
+
+    /* Attempt to draw a few more corridors between rooms, but don't draw the
+     * corridor if it starts on an already carved out corridor space. Possibly
+     * also don't create the doors.*/
     if (svn.nroom > 2)
         for (i = rn2(svn.nroom) + 4; i; i--) {
             a = rn2(svn.nroom);
@@ -484,6 +581,10 @@ alloc_doors(void)
     }
 }
 
+/* Adds a door, not to the level itself, but to the doors array, and updates
+ * other mkroom structs as necessary.
+ * x and y are the coordinates of the door, and aroom is the room which is
+ * getting the door. */
 void
 add_door(coordxy x, coordxy y, struct mkroom *aroom)
 {
@@ -493,6 +594,7 @@ add_door(coordxy x, coordxy y, struct mkroom *aroom)
 
     alloc_doors();
 
+    /* Do nothing if this door already exists in gd.doors. */
     if (aroom->doorct) {
         for (i = 0; i < aroom->doorct; i++) {
             tmp = aroom->fdoor + i;
@@ -501,30 +603,45 @@ add_door(coordxy x, coordxy y, struct mkroom *aroom)
         }
     }
 
+    /* If this room doesn't have any doors yet, it becomes the last room on the
+     * doors array. */
     if (aroom->doorct == 0)
         aroom->fdoor = gd.doorindex;
 
     aroom->doorct++;
 
+    /* If this room did already have doors, move all the other doors up in
+     * position by 1. */
     for (tmp = gd.doorindex; tmp > aroom->fdoor; tmp--)
         svd.doors[tmp] = svd.doors[tmp - 1];
 
+    /* If this room was not the last room on the doors array, increment fdoor
+     * for any rooms after it (because aroom's will be eating up another index)
+     */
     for (i = 0; i < svn.nroom; i++) {
         broom = &svr.rooms[i];
         if (broom != aroom && broom->doorct && broom->fdoor >= aroom->fdoor)
             broom->fdoor++;
     }
+    /* ditto for subrooms */
     for (i = 0; i < gn.nsubroom; i++) {
         broom = &gs.subrooms[i];
         if (broom != aroom && broom->doorct && broom->fdoor >= aroom->fdoor)
             broom->fdoor++;
     }
 
+    /* finally, increment doorindex because we have one more door now, and
+     * aroom's first door becomes this one. */
     gd.doorindex++;
     svd.doors[aroom->fdoor].x = x;
     svd.doors[aroom->fdoor].y = y;
 }
 
+/* Generate the door mask for a random door. Contains the random probabilities
+ * that determine what doorstate the door gets, and whether it becomes trapped,
+ * but does not actually set any level structures.
+ * typ is either DOOR or SDOOR.
+ */
 staticfn void
 dosdoor(coordxy x, coordxy y, struct mkroom *aroom, int type)
 {
@@ -534,8 +651,13 @@ dosdoor(coordxy x, coordxy y, struct mkroom *aroom, int type)
         type = DOOR;
     levl[x][y].typ = type;
     if (type == DOOR) {
-        if (!rn2(3)) { /* is it a locked door, closed, or a doorway? */
+        /* is it a locked door, closed, or a doorway? */
+        if (!rn2(3)) { 
+            /* 1/3 of random doorways have a physical door, unless it's a maze level
+             * in which case 100% of random doorways do, for some reason. */
             if (!rn2(5))
+                /* 80% of doorways with a door have it closed. Secret doors must be
+                 * closed. */
                 levl[x][y].doormask = D_ISOPEN;
             else if (!rn2(6))
                 levl[x][y].doormask = D_LOCKED;
@@ -590,6 +712,11 @@ dosdoor(coordxy x, coordxy y, struct mkroom *aroom, int type)
     add_door(x, y, aroom);
 }
 
+/* Determine whether a niche (closet) can be placed on one edge of a room.
+ * If the niche can be placed, xx and yy will then contain the coordinate
+ * for the door, and dy will contain the direction it's supposed to go in (that
+ * is, the actual niche square is (xx, yy+dy)).
+ */
 /* is x,y location such that NEWS direction from it is inside aroom,
    excluding subrooms */
 staticfn boolean
@@ -620,6 +747,11 @@ place_niche(
 {
     coord dd;
 
+    /* Niches only ever generate on the top and bottom walls of rooms, for some
+     * reason. Probably because it looks better.
+     * Horizontal "niches" might still appear from time to time as a result of
+     * dig_corridor shenanigans, but they're failed corridors, not real niches.
+     * Look for a suitable spot on one of these walls to place a niche. */
     if (rn2(2)) {
         *dy = 1;
         if (!finddpos(&dd, aroom->lx, aroom->hy + 1,
@@ -633,6 +765,10 @@ place_niche(
     }
     *xx = dd.x;
     *yy = dd.y;
+    /* Spot for the niche must be stone; other spot just inside the room must
+     * not be water or another dungeon feature.
+     * Note that there's no checking that the area surrounding the niche is
+     * also stone; niches can generate touching one or more corridor spaces. */
     return (boolean) ((isok(*xx, *yy + *dy)
                        && levl[*xx][*yy + *dy].typ == STONE)
                       && (isok(*xx, *yy - *dy)
@@ -653,28 +789,37 @@ static NEARDATA const char *trap_engravings[TRAPNUM] = {
     (char *) 0, (char *) 0,
 };
 
+/* Actually create a niche/closet, on a random room. Place a trap on it if
+ * trap_type != NO_TRAP.
+ */
 staticfn void
 makeniche(int trap_type)
 {
     struct mkroom *aroom;
     struct rm *rm;
-    int dy, vct = 8;
+    int dy, vct = 8; /* number of attempts */
     coordxy xx, yy;
     struct trap *ttmp;
 
     while (vct--) {
         aroom = &svr.rooms[rn2(svn.nroom)];
         if (aroom->rtype != OROOM)
-            continue; /* not an ordinary room */
+            /* don't place niches in special rooms */
+            continue;
         if (aroom->doorct == 1 && rn2(5))
+            /* usually don't place in rooms with 1 door */
             continue;
         if (!place_niche(aroom, &dy, &xx, &yy))
+            /* didn't find a suitable spot */
             continue;
 
         rm = &levl[xx][yy + dy];
         if (trap_type || !rn2(4)) {
+            /* all closets with traps and 25% of other closets require some
+             * searching */
             rm->typ = SCORR;
             if (trap_type) {
+                /* don't place fallthru traps on undiggable levels */
                 if (is_hole(trap_type) && !Can_fall_thru(&u.uz))
                     trap_type = ROCKTRAP;
                 ttmp = maketrap(xx, yy + dy, trap_type);
@@ -686,7 +831,8 @@ makeniche(int trap_type)
                      * closed shop fakeout message. */
                     if (!rn2(30))
                         trap_type = 0;
-
+                    
+                    /* make the specified engraving in front of the door */
                     if (trap_engravings[trap_type]) {
                         make_engr_at(xx, yy - dy,
                                      trap_engravings[trap_type], 0L,
@@ -699,6 +845,8 @@ makeniche(int trap_type)
             dosdoor(xx, yy, aroom, SDOOR);
         } else {
             rm->typ = CORR;
+            /* 1/7 of these niches are generated inaccessible - no actual
+             * connection to their corresponding room */
             if (rn2(7))
                 dosdoor(xx, yy, aroom, rn2(5) ? SDOOR : DOOR);
             else {
@@ -706,10 +854,15 @@ makeniche(int trap_type)
                 if (!rn2(5) && IS_WALL(levl[xx][yy].typ)) {
                     (void) set_levltyp(xx, yy, IRONBARS);
                     if (rn2(3))
+                        /* For the love of God, Montresor! */
                         (void) mkcorpstat(CORPSE, (struct monst *) 0,
                                           mkclass(S_HUMAN, 0), xx,
                                           yy + dy, TRUE);
                 }
+                /* Place a teleport scroll here so the player can escape.
+                 * If an inaccessible niche is generated on a no-tele level, the
+                 * player shouldn't be able to get into it without some way of
+                 * getting back out... */
                 if (!svl.level.flags.noteleport)
                     (void) mksobj_at(SCR_TELEPORTATION, xx, yy + dy, TRUE,
                                      FALSE);
@@ -721,25 +874,36 @@ makeniche(int trap_type)
     }
 }
 
+/* Try to create several random niches across an entire level.
+ * Does NOT include the niche for a vault teleporter, if one exists. */
 staticfn void
 make_niches(void)
 {
+    /* This should really be nroom / 2... */
     int ct = rnd((svn.nroom >> 1) + 1), dep = depth(&u.uz);
     boolean ltptr = (!svl.level.flags.noteleport && dep > 15),
             vamp = (dep > 5 && dep < 25);
 
     while (ct--) {
         if (ltptr && !rn2(6)) {
+            /* occasional fake vault teleporter */
             ltptr = FALSE;
             makeniche(LEVEL_TELEP);
         } else if (vamp && !rn2(6)) {
+            /* "Vlad was here" trapdoor */
             vamp = FALSE;
             makeniche(TRAPDOOR);
         } else
+            /* regular untrapped niche */
             makeniche(NO_TRAP);
     }
 }
 
+/* Create a vault teleporter niche.
+ * The code seems to assume that any teleport trap inside a niche should always
+ * go to a vault; this may become problematic if the player ever gains the
+ * ability to make teleport traps...
+ */
 staticfn void
 makevtele(void)
 {
@@ -1014,6 +1178,7 @@ fill_ordinary_room(
     /* put traps and mimics inside */
     x = 8 - (level_difficulty() / 6);
     if (x <= 1)
+        /* maxes out at level_difficulty() == 36 */
         x = 2;
     while (!rn2(x) && (++trycnt < 1000))
         mktrap(0, MKTRAP_NOFLAGS, croom, (coord *) 0);
@@ -1203,6 +1368,8 @@ fill_ordinary_room(
         croom->rtype = ARTROOM;
 
  skip_nonrogue:
+     /* place a random object in the room (40% chance), with a recursive 20%
+     * chance of placing another */
     if (!rn2(3) && somexyspace(croom, &pos)) {
         (void) mkobj_at(RANDOM_CLASS, pos.x, pos.y, TRUE);
         trycnt = 0;
@@ -1241,6 +1408,10 @@ themerooms_post_level_generate(void)
     lua_gc(themes, LUA_GCCOLLECT);
 }
 
+/* Full initialization of all level structures, map, objects, etc.
+ * Handles any level - special levels will load that special level, Gehennom
+ * will create mazes, and so on.
+ * Called only from mklev(). */
 staticfn void
 makelevel(void)
 {
@@ -1251,22 +1422,28 @@ makelevel(void)
     s_level *slev;
     int i;
 
+    /* this is apparently used to denote that a lot of program state is
+     * uninitialized */
     if (wiz1_level.dlevel == 0) {
         impossible("makelevel() called when dungeon not yet initialized.");
         init_dungeons();
     }
     oinit(); /* assign level dependent obj probabilities */
-    clear_level_structures();
+    clear_level_structures(); /* full level reset */
 
     slev = Is_special(&u.uz);
     /* check for special levels */
     if (slev && !Is_rogue_level(&u.uz)) {
+        /* a special level */
         makemaz(slev->proto);
     } else if (svd.dungeons[u.uz.dnum].proto[0]) {
+        /* named prototype file */
         makemaz("");
     } else if (svd.dungeons[u.uz.dnum].fill_lvl[0]) {
+        /* various types of filler, e.g. "minefill" */
         makemaz(svd.dungeons[u.uz.dnum].fill_lvl);
     } else if (In_quest(&u.uz)) {
+        /* quest filler */
         char fillname[9];
         s_level *loc_lev;
 
@@ -1292,6 +1469,7 @@ makelevel(void)
             makerooms();
         }
         assert(svn.nroom > 0);
+        /* order rooms[] by x-coordinate */
         sort_rooms();
 
         generate_stairs(); /* up and down stairs */
@@ -1311,6 +1489,7 @@ makelevel(void)
             debugpline0("trying to make a vault...");
             w = 1;
             h = 1;
+            /* make sure vault can actually be placed */
             if (check_room(&gv.vault_x, &w, &gv.vault_y, &h, TRUE)) {
  fill_vault:
                 add_room(gv.vault_x, gv.vault_y,
@@ -1321,9 +1500,14 @@ makelevel(void)
                 svr.rooms[svn.nroom - 1].needfill = FILL_NORMAL;
                 fill_special_room(&svr.rooms[svn.nroom - 1]);
                 mk_knox_portal(gv.vault_x + w, gv.vault_y + h);
+                /* Only put a vault teleporter with 1/3 chance;
+                 * a teleportation trap in a closet is a sure sign that a vault is
+                 * on the level, but a vault is not a sure sign of a vault
+                 * teleporter. */
                 if (!svl.level.flags.noteleport && !rn2(3))
                     makevtele();
             } else if (rnd_rect() && create_vault()) {
+                /* If we didn't create a vault already, try once more. */
                 gv.vault_x = svr.rooms[svn.nroom].lx;
                 gv.vault_y = svr.rooms[svn.nroom].ly;
                 if (check_room(&gv.vault_x, &w, &gv.vault_y, &h, TRUE))
@@ -1337,6 +1521,7 @@ makelevel(void)
            note that mkroom doesn't guarantee a room gets created, and that
            this step only sets the room's rtype - it doesn't fill it yet. */
         if (wizard && nh_getenv("SHOPTYPE"))
+            /* special case that overrides everything else for wizard mode */
             do_mkroom(SHOPBASE);
         else if (u_depth > 1 && u_depth < depth(&medusa_level)
                  && svn.nroom >= room_threshold && rn2(u_depth) < 3)
@@ -1439,6 +1624,12 @@ makelevel(void)
  *      surrounding the rooms on the map.
  *      Also place kelp in water.
  *      mineralize(-1, -1, -1, -1, FALSE); => "default" behavior
+ * The four probability arguments aren't percentages; assuming the spot to
+ * place the item is suitable, kelp will be placed with 1/prob chance;
+ * whereas gold and gems will be placed with prob/1000 chance.
+ * skip_lvl_checks will ignore any checks that items don't get mineralized in
+ * the wrong levels. This is currently only TRUE if a special level forces it
+ * to be.
  */
 void
 mineralize(int kelp_pool, int kelp_moat, int goldprob, int gemprob,
@@ -1536,6 +1727,13 @@ mineralize(int kelp_pool, int kelp_moat, int goldprob, int gemprob,
             }
 }
 
+/* Topmost level creation routine.
+ * Mainly just wraps around makelevel(), but also handles loading bones files,
+ * mineralizing after the level is created, blocking digging, setting roomnos
+ * via topologize, and a couple other things.
+ * Called from a few places: newgame() (to generate level 1), goto_level (any
+ * other levels), and wiz_makemap (wizard mode regenerating the level).
+ */
 void
 level_finalize_topology(void)
 {
@@ -1546,8 +1744,8 @@ level_finalize_topology(void)
     mineralize(-1, -1, -1, -1, FALSE);
     gi.in_mklev = FALSE;
     /* avoid coordinates in future lua-loads for this level being thrown off
-     * because xstart and ystart aren't saved with the level and will be 0
-     * after leaving and returning */
+     * because xstart and ystart aren't saved with the level and will be 0 after
+     * leaving and returning */
     gx.xstart = gy.ystart = 0;
     /* has_morgue gets cleared once morgue is entered; graveyard stays
        set (graveyard might already be set even when has_morgue is clear
@@ -1588,6 +1786,14 @@ mklev(void)
     reseed_random(rn2_on_display_rng);
 }
 
+/* Set the roomno correctly for all squares of the given room.
+ * Mostly this sets them to the roomno from croom, but if there are any walls
+ * that already have a roomno defined, it changes them to SHARED.
+ * Then it recurses on subrooms.
+ *
+ * If SPECIALIZATION is defined and croom->rtype = OROOM, it will set the
+ * roomno to NO_ROOM, but only if do_ordinary is TRUE.
+ */
 void
 #ifdef SPECIALIZATION
 topologize(struct mkroom *croom, boolean do_ordinary)
@@ -1742,6 +1948,8 @@ place_branch(
     gm.made_branch = TRUE;
 }
 
+/* Return TRUE if the given location is directly adjacent to a door or secret
+ * door in any direction. */
 staticfn boolean
 bydoor(coordxy x, coordxy y)
 {
@@ -1770,7 +1978,10 @@ bydoor(coordxy x, coordxy y)
     return FALSE;
 }
 
-/* see whether it is allowable to create a door at [x,y] */
+/* Return TRUE if it is allowable to create a door at (x,y).
+ * The given coordinate must be a wall and not be adjacent to a door, and we
+ * can't be at the max number of doors.
+ * FIXME: This should return boolean. */
 int
 okdoor(coordxy x, coordxy y)
 {
@@ -1807,6 +2018,11 @@ dodoor(coordxy x, coordxy y, struct mkroom *aroom)
     dosdoor(x, y, aroom, doortyp);
 }
 
+/* Return TRUE if the given location contains a trap, dungeon furniture,
+ * inaccessible terrain, or the vibrating square.
+ * Generally used for determining if a space is unsuitable for placing
+ * something.
+ */
 boolean
 occupied(coordxy x, coordxy y)
 {
@@ -2106,6 +2322,7 @@ mktrap(
         int tryct = 0;
         boolean avoid_boulder = (is_pit(kind) || is_hole(kind));
 
+        /* Try up to 200 times to find a random coordinate for the trap. */
         do {
             if (++tryct > 200)
                 return;
@@ -2287,6 +2504,7 @@ generate_stairs(void)
         mkstairs(pos.x, pos.y, 0, croom, FALSE); /* down */
     }
 
+    /* now do the upstairs */
     if (u.uz.dlevel != 1) {
         /* if there is only 1 room and we found it above, this will find
            it again */

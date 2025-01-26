@@ -175,6 +175,8 @@ int lspo_wallify(lua_State *);
 
 #define sq(x) ((x) * (x))
 
+/* These are also defined in rect.c. If it's important that they have the same
+ * values, shouldn't they be moved into a header like rect.h? */
 #define XLIM 4
 #define YLIM 3
 
@@ -1408,6 +1410,19 @@ get_free_room_loc(
     *x = try_x, *y = try_y;
 }
 
+/* Check the area within XLIM and YLIM around a room to make sure it's valid
+ * (containing only STONE terrain). Try to make the room smaller so that it's
+ * valid if possible, and pass the changes to the caller.
+ * lowx and lowy are the absolute coordinates of the top left of the room floor.
+ * ddx and ddy are width-1 and height-1, respectively.
+ * Return TRUE if the room was valid or has been changed to be valid, FALSE
+ * otherwise.
+ * Note that every time it finds some non-STONE terrain in the area around the
+ * room, it will fail outright with 1/3 chance.
+ * Also note that the most other pieces of room generation code use a +1 to
+ * XLIM and YLIM to represent the walls, which aren't counted as part of the
+ * area of the room. However, this function does not add 1 for the walls, for
+ * some reason. */
 boolean
 check_room(
     coordxy *lowx, coordxy *ddx,
@@ -1486,8 +1501,28 @@ check_room(
 }
 
 /*
- * Create a new room.
- * This is still very incomplete...
+ * Create a room with the specified position, dimensions, alignment, room type,
+ * and lighting.
+ * Any of these arguments can be made random by setting them to -1.
+ * If they are all random, it will use a slightly different algorithm for
+ * placing the room (this is intended for normal filler level rooms). This
+ * algorithm looks for available rects to begin with, instead of setting the
+ * room location first and then trying to find a rect it fits in.
+ * Otherwise:
+ *   x, y: Absolute coordinates for the room. If either is -1, it will choose
+ *   a random value within the screen bounds.
+ *   w, h: Width and height of the room. If _either_ is -1, width is set to
+ *   d15 + 2 and height is set to d8 + 1.
+ *   xal, yal: Room alignment (should be SPLEV_LEFT, SPLEV_RIGHT, SPLEV_CENTER /
+ *     SPLEV_TOP, SPLEV_BOTTOM, SPLEV_CENTER). Define what point in the room is
+ *     represented by x and y; e.g. using SPLEV_CENTER,SPLEV_CENTER means that
+ *     (x,y) should be the center of the room. If either is -1 it will pick one
+ *     of the three randomly.
+ *   rtype: The room type. If -1, it will choose OROOM (*not* a random special
+ *     room type).
+ *   rlit: Whether to light the room. If -1, it will choose based on the level
+ *     depth.
+ *  Return TRUE if it successfully created the room, FALSE otherwise.
  */
 boolean
 create_room(
@@ -1503,9 +1538,11 @@ create_room(
     boolean vault = FALSE;
     int xlim = XLIM, ylim = YLIM;
 
-    if (rtype == -1) /* Is the type random ? */
+    /* If the type is random, set to OROOM; don't actually randomize */
+    if (rtype == -1)
         rtype = OROOM;
 
+    /* vaults apparently use an extra space of buffer */
     if (rtype == VAULT) {
         vault = TRUE;
         xlim++;
@@ -1518,11 +1555,10 @@ create_room(
     /* is light state random ? */
     rlit = litstate_rnd(rlit);
 
-    /*
-     * Here we will try to create a room. If some parameters are
-     * random we are willing to make several try before we give
-     * it up.
-     */
+    /* Here we try to create a semi-random or totally random room. Try 100
+     * times before giving up.
+     * FIXME: if there are no random parameters and the room cannot be created
+     * with those parameters, it tries 100 times anyway. */
     do {
         coordxy xborder, yborder;
 
@@ -1537,6 +1573,8 @@ create_room(
 
         if ((xtmp < 0 && ytmp < 0 && wtmp < 0 && xaltmp < 0 && yaltmp < 0)
             || vault) {
+            /* hx, hy, lx, ly: regular rectangle bounds
+             * dx, dy: tentative room dimensions minus 1 */
             coordxy hx, hy, lx, ly, dx, dy;
 
             r1 = rnd_rect(); /* Get a random rectangle */
@@ -1545,28 +1583,76 @@ create_room(
                 debugpline0("No more rects...");
                 return FALSE;
             }
+            /* set our boundaries to the rectangle's boundaries */
             hx = r1->hx;
             hy = r1->hy;
             lx = r1->lx;
             ly = r1->ly;
-            if (vault) {
+            if (vault) { /* always 2x2 */
                 dx = dy = 1;
             } else {
+                /* if in a very wide rectangle, allow room width to vary from
+                 * 3 to 14, otherwise 3 to 10;
+                 * vary room height from 3 to 6.
+                 * Keeping in mind that dx and dy are the room dimensions
+                 * minus 1. */
                 dx = 2 + rn2((hx - lx > 28) ? 12 : 8);
                 dy = 2 + rn2(4);
+                /* force the room to be no more than size 50 */
                 if (dx * dy > 50)
                     dy = 50 / dx;
             }
+
+            /* is r1 big enough to contain this room with enough buffer space?
+             * If it's touching one or more edges, we can have a looser bound
+             * on the border since there won't be other rooms on one side of
+             * the rectangle. */
             xborder = (lx > 0 && hx < COLNO - 1) ? 2 * xlim : xlim + 1;
             yborder = (ly > 0 && hy < ROWNO - 1) ? 2 * ylim : ylim + 1;
+
+            /* The rect must have enough width to fit:
+             *   1: the room width itself (dx + 1)
+             *   2: the room walls (+2)
+             *   3: the buffer space on one or both sides (xborder)
+             *
+             * Possible small bug? If the rectangle contains the hx column and
+             * the hy row inclusive, then hx - lx actually returns the width of
+             * the rectangle minus 1.
+             * For example, if lx = 40 and hx = 50, the rectangle is 11 squares
+             * wide. Say xborder is 4 and dx is 4 (room width 5). This rect
+             * should be able to fit this room like "  |.....|  " with no spare
+             * space. dx + 3 + xborder is the correct 11, but hx - lx is 10, so
+             * it won't let the room generate.
+             */
             if (hx - lx < dx + 3 + xborder || hy - ly < dy + 3 + yborder) {
                 r1 = 0;
                 continue;
             }
+
+            /* Finalize the actual coordinates as (xabs, yabs), selecting them
+             * uniformly from all possible valid locations to place the room
+             * (respecting the xlim and extra wall space rules).
+             * There are lots of shims here to make sure we never go below x=3
+             * or y=2, why does the rectangle code even allow rectangles to
+             * generate like that? */
             xabs = lx + (lx > 0 ? xlim : 3)
                    + rn2(hx - (lx > 0 ? lx : 3) - dx - xborder + 1);
             yabs = ly + (ly > 0 ? ylim : 2)
                    + rn2(hy - (ly > 0 ? ly : 2) - dy - yborder + 1);
+
+            /* Some weird tweaks: if r1 spans the whole level vertically and
+             * the bottom of this room would be below the middle of the level
+             * vertically, with a 1/(existing rooms) chance, set yabs to a
+             * value from 2 to 4.
+             * Then, shrink the room width by 1 if we have less than 4 rooms
+             * already and the room height >= 3.
+             * These are probably to prevent a large vertically centered room
+             * from being placed first, which would force the remaining top and
+             * bottom rectangles to be fairly narrow and unlikely to generate
+             * rooms. The overall effect would be to create a level which is
+             * more or less just a horizontal string of rooms, which
+             * occasionally does happen under this algorithm.
+             */
             if (ly == 0 && hy >= ROWNO - 1
                 && (!svn.nroom || !rn2(svn.nroom))
                 && (yabs + dy > ROWNO / 2)) {
@@ -1574,12 +1660,20 @@ create_room(
                 if (svn.nroom < 4 && dy > 1)
                     dy--;
             }
+
+            /* If the room or part of the surrounding area are occupied by
+             * something else, and we can't shrink the room to fit, abort. */
             if (!check_room(&xabs, &dx, &yabs, &dy, vault)) {
                 r1 = 0;
                 continue;
             }
+
+            /* praise be, finally setting width and height variables properly */
             wtmp = dx + 1;
             htmp = dy + 1;
+
+            /* Set up r2 with the full area of the room's footprint, including
+             * its walls. */
             r2.lx = xabs - 1;
             r2.ly = yabs - 1;
             r2.hx = xabs + wtmp;
@@ -1627,6 +1721,7 @@ create_room(
                 break;
             }
 
+            /* make sure room is staying in bounds */
             if (xabs + wtmp - 1 > COLNO - 2)
                 xabs = COLNO - wtmp - 3;
             if (xabs < 2)
@@ -1636,8 +1731,7 @@ create_room(
             if (yabs < 2)
                 yabs = 2;
 
-            /* Try to find a rectangle that fit our room ! */
-
+            /* Try to find a rectangle that fits our room */
             r2.lx = xabs - 1;
             r2.ly = yabs - 1;
             r2.hx = xabs + wtmp + rndpos;
@@ -1651,16 +1745,25 @@ create_room(
             }
         }
     } while (++trycnt <= 100 && !r1);
+
     if (!r1) { /* creation of room failed ? */
         return FALSE;
     }
+
+    /* r2 is contained inside r1: remove r1 and split it into four smaller
+     * rectangles representing the areas of r1 that don't intersect with r2. */
     split_rects(r1, &r2);
 
     if (!vault) {
+        /* set this room's id number to be unique for joining purposes */
         gs.smeq[svn.nroom] = svn.nroom;
+        /* actually add the room, setting the terrain properly */
         add_room(xabs, yabs, xabs + wtmp - 1, yabs + htmp - 1, rlit, rtype,
                  FALSE);
     } else {
+        /* vaults are isolated so don't get added to smeq; also apparently
+         * don't have add_room() called on them. The lx and ly is set so that
+         * makerooms() can store them in vault_x and vault_y. */
         svr.rooms[svn.nroom].lx = xabs;
         svr.rooms[svn.nroom].ly = yabs;
     }
@@ -1929,6 +2032,9 @@ sp_amask_to_amask(unsigned int sp_amask)
     return amask;
 }
 
+/*
+ * Create a monster in a room.
+ */
 staticfn void
 create_monster(monster *m, struct mkroom *croom)
 {
@@ -2679,8 +2785,8 @@ create_corridor(corridor *c)
         return;
     }
 
-    /* Safety railings - if there's ever a case where des.corridor() needs
-     * to be called with src/destwall="random", that logic first needs to be
+    /* Safety railings - if there's ever a case where des.corridor() needs to be
+     * called with src/destwall="random", that logic first needs to be
      * implemented in search_door. */
     if (c->src.wall == W_ANY || c->src.wall == W_RANDOM
         || c->dest.wall == W_ANY || c->dest.wall == W_RANDOM) {
@@ -2737,9 +2843,9 @@ fill_special_room(struct mkroom *croom)
     if (!croom)
         return;
 
-    /* First recurse into subrooms. We don't want to block an ordinary room
-     * with a special subroom from having the subroom filled, or an unfilled
-     * outer room preventing a special subroom from being filled. */
+    /* First recurse into subrooms. We don't want to block an ordinary room with
+     * a special subroom from having the subroom filled, or an unfilled outer
+     * room preventing a special subroom from being filled. */
     for (i = 0; i < croom->nsubrooms; ++i) {
         fill_special_room(croom->sbrooms[i]);
     }
@@ -3194,12 +3300,12 @@ get_table_montype(lua_State *L, int *mgender)
     return ret;
 }
 
-/* Get x and y values from a table (which the caller has already checked for
- * the existence of), handling both a table with x= and y= specified and a
- * table with coord= specified.
+/* Get x and y values from a table (which the caller has already checked for the
+ * existence of), handling both a table with x= and y= specified and a table
+ * with coord= specified.
  * Returns absolute rather than map-relative coordinates; the caller of this
- * function must decide if it wants to interpret the coordinates as
- * map-relative and adjust accordingly. */
+ * function must decide if it wants to interpret the coordinates as map-relative
+ * and adjust accordingly. */
 staticfn void
 get_table_xy_or_coord(
     lua_State *L,
