@@ -1459,11 +1459,7 @@ levl_sanity_check(void)
     int result;
     if (Underwater)
         return; /* Underwater uses different vision */
-    
-    /* TODO: Disable until we figure out why issue #105 is happening */
-    if (iflags.debug_fuzzer)
-        return;
-    
+
     for (y = 0; y < ROWNO; y++) {
         for (x = 1; x < COLNO; x++) {
             if ((result = does_block(x, y, &levl[x][y]) ? 1 : 0) != get_viz_clear(x, y))
