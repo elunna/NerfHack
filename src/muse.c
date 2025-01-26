@@ -1127,7 +1127,7 @@ use_defensive(struct monst *mtmp)
          * we are assuming the flood is always intended to be centered 
          * on the hero */
         mreadmsg(mtmp, otmp); /* sets otmp->dknown if !Blind or !Deaf */
-        seffect_water(&otmp, mtmp);
+        seffect_flood(&otmp, mtmp);
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_WAN_DIGGING:
         if (!otmp)

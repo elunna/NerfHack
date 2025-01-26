@@ -2422,7 +2422,7 @@ seffect_stinking_cloud(struct obj **sobjp)
 }
 
 void
-seffect_water(struct obj **sobjp, struct monst *mtmp)
+seffect_flood(struct obj **sobjp, struct monst *mtmp)
 {
     struct obj *sobj = *sobjp;
     boolean sblessed = sobj->blessed;
@@ -2842,7 +2842,7 @@ seffects(
         seffect_stinking_cloud(&sobj);
         break;
     case SCR_FLOOD:
-        seffect_water(&sobj, &gy.youmonst);
+        seffect_flood(&sobj, &gy.youmonst);
         break;
     default:
         impossible("What weird effect is this? (%u)", otyp);
