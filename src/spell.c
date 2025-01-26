@@ -357,12 +357,18 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 staticfn int
 learn(void)
 {
-    int i;
+    int i, skill;
     char splname[BUFSZ];
     boolean costly = TRUE, faded_to_blank = FALSE;
     struct obj *book = svc.context.spbook.book;
-    short booktype = book->otyp;
-    int skill = objects[booktype].oc_skill;
+    short booktype;
+    
+    /* Safety check in case spellbook doesn't exist anymore */
+    if (!book)
+        return 0; /* This should stop the occupation */
+        
+    booktype = book->otyp;
+    skill = objects[booktype].oc_skill;
 
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
     if (svc.context.spbook.delay && ublindf
@@ -390,6 +396,8 @@ learn(void)
     /* Spellbook destroyed while reading? */
     if (!book) {
         pline("Where did the spellbook go?");
+        svc.context.spbook.book = 0;
+        svc.context.spbook.o_id = 0;
         return 0;
     }
 
