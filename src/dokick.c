@@ -1190,7 +1190,8 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
             kick_ouch(x, y, "");
             return ECMD_TIME;
         }
-        if (rn2(15) && !(gm.maploc->looted & TREE_LOOTED)
+        if (!Is_special(&u.uz) 
+            && rn2(15) && !(gm.maploc->looted & TREE_LOOTED)
             && (treefruit = rnd_treefruit_at(x, y))) {
             long nfruit = 8L - rnl(7), nfall;
             short frtype = treefruit->otyp;
@@ -1216,7 +1217,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
             newsym(x, y);
             gm.maploc->looted |= TREE_LOOTED;
             return ECMD_TIME;
-        } else if (!(gm.maploc->looted & TREE_SWARM)) {
+        } else if (!Is_special(&u.uz) && !(gm.maploc->looted & TREE_SWARM)) {
             int cnt = rnl(4) + 2;
             int made = 0;
             coord mm;
