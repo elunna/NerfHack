@@ -3797,7 +3797,6 @@ artifact_info(int anum)
         break;
     case ART_MORTALITY_DIAL: 
         art_info.wielded[16] = "prevents monster regeneration";
-        art_info.wielded[17] = "prevents corpse revival";
         break;
     case ART_ORCRIST:
     case ART_GLAMDRING:
