@@ -3965,6 +3965,7 @@ lookaround(void)
             if (IS_OBSTRUCTED(levl[x][y].typ)
                 || IS_AIR(levl[x][y].typ)
                 || levl[x][y].typ == ROOM
+                || levl[x][y].typ == GRASS
                 || levl[x][y].typ == GRAVE
                 || levl[x][y].typ == ICE) {
                 continue;
@@ -3985,7 +3986,7 @@ lookaround(void)
             } else if (levl[x][y].typ == CORR) {
                 /* corridor */
  bcorr:
-                if (levl[u.ux][u.uy].typ != ROOM) {
+                if (levl[u.ux][u.uy].typ != ROOM && levl[u.ux][u.uy].typ != GRASS) {
                     /* running or traveling */
                     if (svc.context.run == 1 || svc.context.run == 3
                         || svc.context.run == 8) {
