@@ -1752,6 +1752,24 @@ use_lamp(struct obj *obj)
         Your("%s are occupied!", makeplural(body_part(HAND)));
         return;
     }
+    
+    /* For convenience, allow just lighting one candle. */
+    if (!obj->lamplit 
+        && (obj->otyp == WAX_CANDLE || obj->otyp == TALLOW_CANDLE)) {
+        
+        /* Don't allow splitting the stack if the player's
+           inventory won't accomodate it */
+        if (obj->quan > 1L && y_n("Light only one?") == 'y') {
+            obj = splitobj(obj, 1L);
+            obj_extract_self(obj); /* free from inv */
+            obj->nomerge = 1;
+            obj = hold_another_object(obj, "You drop %s!", doname(obj),
+                                      (const char *) 0);
+            if (obj)
+                obj->nomerge = 0;
+        }
+    }
+    
     /*
      * When blind, lamps' and candles' on/off state can be distinguished
      * by heat.  For brass lantern assume that there is an on/off switch
