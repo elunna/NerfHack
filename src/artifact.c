@@ -3595,7 +3595,7 @@ artifact_info(int anum)
     /* Special attacks */
     if (artilist[anum].attk.adtyp
           || artilist[anum].attk.damn || artilist[anum].attk.damd) {
-        Sprintf(buf, "%s, -%d to-hit, +1d%d damage",
+        Sprintf(buf, "%s, +%d to-hit, +1d%d damage",
                 adtyp_str(artilist[anum].attk.adtyp, FALSE),
                 artilist[anum].attk.damn,
                 artilist[anum].attk.damd);
