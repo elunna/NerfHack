@@ -802,8 +802,8 @@ domonnoise(struct monst *mtmp)
            night */
         boolean isnight = night();
         boolean kindred = maybe_polyd(is_vampire(gy.youmonst.data),
-                                      Race_if(PM_VAMPIRE));
-	boolean nightchild = (Upolyd && (u.umonnum == PM_WOLF
+                                      Race_if(PM_DHAMPIR));
+	    boolean nightchild = (Upolyd && (u.umonnum == PM_WOLF
                                          || u.umonnum == PM_WINTER_WOLF
                                          || u.umonnum == PM_WINTER_WOLF_CUB));
         const char *racenoun = (flags.female && gu.urace.individual.f)
@@ -1512,13 +1512,12 @@ dochat(void)
             && (mtmp->data == &mons[PM_WINTER_WOLF_CUB]
                 || mtmp->data == &mons[PM_WINTER_WOLF]))
         /* Vampires can tame familiars via chat */
-        || (Race_if(PM_VAMPIRE)
-            && mtmp->data == &mons[PM_FAMILIAR]))
-        && !mtmp->mtame) {
+        || (Race_if(PM_DHAMPIR)
+            && mtmp->data == &mons[PM_FAMILIAR])) && !mtmp->mtame) {
 
         if (Role_if(PM_VALKYRIE))
             You("attempt to tame the %s with calm sounds.", l_monnam(mtmp));
-        else if (Race_if(PM_VAMPIRE))
+        else if (Race_if(PM_DHAMPIR))
             You("attempt to dominate the %s.", l_monnam(mtmp));
         
         if (rnl(10) < 2) {

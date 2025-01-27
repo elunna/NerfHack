@@ -478,8 +478,9 @@ polyself(int psflags)
              * arbitrary monster */
             draconian_only = ((psflags & POLY_DRAGON_ONLY) != 0),
             iswere = (ismnum(u.ulycn)),
-            isvamp = (is_vampire(gy.youmonst.data)
-                      || is_vampshifter(&gy.youmonst)),
+            isvamp = ((is_vampire(gy.youmonst.data)
+                       || is_vampshifter(&gy.youmonst))
+                      && !Race_if(PM_DHAMPIR)),
             controllable_poly = Polymorph_control && !(Stunned || Unaware);
 
     if (Unchanging) {
@@ -820,7 +821,7 @@ polymon(int mntmp)
     }
 
     if (uarmc && objdescr_is(uarmc, "opera cloak") &&
-        maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
         ABON(A_CHA) -= 1;
         disp.botl = 1;
     }
@@ -847,7 +848,7 @@ polymon(int mntmp)
     }
 
     if (uarmc && objdescr_is(uarmc, "opera cloak") &&
-        maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
         You("%s very impressive in your %s.", Blind ||
             (Invis && !See_invisible) ? "feel" : "look",
             OBJ_DESCR(objects[uarmc->otyp]));
@@ -1091,7 +1092,8 @@ polymon(int mntmp)
             pline(use_thec, monsterc, "shriek");
         if (uptr->msound == MS_ATHOL) /* worthless, actually */
             pline(use_thec, monsterc, "athool");
-        if (is_vampire(uptr) || is_vampshifter(&gy.youmonst))
+        if ((is_vampire(uptr) || is_vampshifter(&gy.youmonst))
+                && !Race_if(PM_DHAMPIR))
             pline(use_thec, monsterc, "change shape");
         if (lays_eggs(uptr) && flags.female
             && !(uptr == &mons[PM_GIANT_EEL]
@@ -2331,6 +2333,7 @@ polysense(void)
     case PM_BABY_PURPLE_WORM:
         warnidx = PM_SHRIEKER;
         break;
+    case PM_DHAMPIR:
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
     case PM_VAMPIRE_MAGE:

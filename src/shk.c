@@ -650,7 +650,8 @@ rob_shop(struct monst *shkp)
     livelog_printf(LL_ACHIEVE, "stole %ld %s worth of merchandise from %s %s",
                    total, currency(total), s_suffix(shkname(shkp)),
                    shtypes[eshkp->shoptype - SHOPBASE].name);
-    if (!Role_if(PM_ROGUE) && !Uevil) /* stealing is unlawful */
+
+    if (!Role_if(PM_ROGUE)) /* stealing is unlawful */
         adjalign(-sgn(u.ualign.type));
 
     hot_pursuit(shkp);
@@ -3551,7 +3552,7 @@ append_honorific(char *buf)
     };
 
     Strcat(buf, honored[rn2(SIZE(honored) - 1) + u.uevent.udemigod]);
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
         Strcat(buf, (flags.female) ? " dark lady" : " dark lord");
     else if (maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         Strcat(buf, (flags.female) ? " hiril" : " hir");
@@ -4326,7 +4327,7 @@ getprice(struct obj *obj, boolean shk_buying)
         if (obj->otyp == POT_WATER && !obj->blessed && !obj->cursed)
             tmp = 0L;
         /* vampire hunger check, (2-4)*cost */
-        if (Race_if(PM_VAMPIRE) &&
+        if (Race_if(PM_DHAMPIR) &&
                 (obj->otyp == POT_BLOOD || obj->otyp == POT_VAMPIRE_BLOOD))
             if (u.uhs >= HUNGRY && !shk_buying)
                 tmp *= (long) u.uhs;
@@ -5340,8 +5341,7 @@ pay_for_damage(const char *dmgstr, boolean cant_mollify)
         } else
             growl(shkp);
         hot_pursuit(shkp);
-        if (!Uevil)
-            adjalign(-sgn(u.ualign.type));
+        adjalign(-sgn(u.ualign.type));
     }
 }
 

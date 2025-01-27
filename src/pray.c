@@ -2635,7 +2635,7 @@ prayer_done(void) /* M. Stephenson (1.0.3b) */
         rehumanize();
         u.lastprayresult = PRAY_BAD;
         /* no Half_physical_damage adjustment here */
-        if (!Race_if(PM_VAMPIRE)) {
+        if (!Race_if(PM_DHAMPIR)) {
             u.lastprayresult = PRAY_GOOD;
             rehumanize();
             losehp(rnd(20), "residual undead turning effect", KILLED_BY_AN);
@@ -2761,7 +2761,7 @@ doturn(void)
     /* Knights & Priest(esse)s only please */
     const char *Gname;
 
-    if (Race_if(PM_VAMPIRE)) {
+    if (Race_if(PM_DHAMPIR)) {
         You("shudder at the thought.");
         return ECMD_OK;
     }

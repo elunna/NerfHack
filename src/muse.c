@@ -905,7 +905,7 @@ find_defensive(struct monst *mtmp, boolean tryescape)
                 gm.m.has_defense = MUSE_POT_MILK;
             }
             nomore(MUSE_POT_VAMPIRE_BLOOD);
-            if(is_vampire(mtmp->data) && obj->otyp == POT_VAMPIRE_BLOOD) {
+            if (is_vampire(mtmp->data) && obj->otyp == POT_VAMPIRE_BLOOD) {
                 gm.m.defensive = obj;
                 gm.m.has_defense = MUSE_POT_VAMPIRE_BLOOD;
             }

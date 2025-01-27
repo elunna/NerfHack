@@ -2372,7 +2372,7 @@ mongets(struct monst *mtmp, int otyp)
         return (struct obj *) 0;
 
     /* Anyone can be an undead slayer when you are a vampire! */
-    if (Race_if(PM_VAMPIRE) && level_difficulty() > 8
+    if (Race_if(PM_DHAMPIR) && level_difficulty() > 8
         && !mon_hates_silver(mtmp) && !rn2(10)) {
         switch (otyp) {
             case DAGGER:

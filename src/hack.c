@@ -2220,14 +2220,9 @@ domove_swap_with_pet(
              * patron deity care at all, let alone enough to get mad?]
              */
             if (rn2(4)) {
+                You_feel("guilty about losing your pet like this.");
                 u.ugangr++;
-                if (Uevil) {
-                    You_feel("somewhat guilty about losing your pet.");
-                    adjalign(-3);
-                } else {
-                    You_feel("guilty about losing your pet like this.");
-                    adjalign(-15);
-                }
+                adjalign(-15);
             }
             break;
         default:

@@ -1370,7 +1370,7 @@ dump_glyphids(void)
 boolean
 vamp_can_regen(void)
 {
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
         if (uwep && is_silver(uwep) && !is_quest_artifact(uwep)
                 && !safegloves(uarmg))
             return 0;

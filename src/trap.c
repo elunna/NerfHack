@@ -4368,7 +4368,10 @@ isclearpath(
 staticfn boolean
 m_easy_escape_pit(struct monst *mtmp)
 {
+    if (mtmp == &gy.youmonst && !Upolyd && Race_if(PM_DHAMPIR))
+        return TRUE;
     return (mtmp->data == &mons[PM_PIT_FIEND]
+            || mtmp->data == &mons[PM_DHAMPIR]
             || mtmp->data->msize >= MZ_HUGE);
 }
 

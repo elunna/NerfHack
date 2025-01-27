@@ -75,9 +75,6 @@ initedog(struct monst *mtmp)
 staticfn int
 pet_type(void)
 {
-    if (Race_if(PM_VAMPIRE))
-        return PM_FAMILIAR;
-
     if (gu.urole.petnum != NON_PM)
         return  gu.urole.petnum;
     else if (gp.preferred_pet == 'c')
@@ -229,8 +226,7 @@ makedog(void)
     petname = (pettype == PM_LITTLE_DOG) ? gd.dogname
               : (pettype == PM_KITTEN) ? gc.catname
                 : (pettype == PM_PONY) ? gh.horsename
-                  : (pettype == PM_FAMILIAR) ? gh.familiarname
-                    : "";
+                  : "";
 
     /* default pet names */
     if (!*petname && pettype == PM_LITTLE_DOG) {
@@ -246,10 +242,6 @@ makedog(void)
         if (Role_if(PM_RANGER))
             petname = "Sirius"; /* Orion's dog */
     }
-
-    /* default pet names */
-    if (!*petname && pettype == PM_FAMILIAR)
-        petname = "Guillermo"; /* What We Do in the Shadows */
 
     /* specifying NO_MINVENT prevents makemon() from having a 1% chance
        of creating a pony with an already worn saddle; dogs and cats
@@ -1209,11 +1201,8 @@ tamedog(
     boolean givemsg)
 {
     boolean blessed_scroll = FALSE;
-    boolean taming_familiar = Race_if(PM_VAMPIRE) 
-                              && (mtmp->data == &mons[PM_FAMILIAR]
-                                  || mtmp->data->mlet == S_VAMPIRE);
 
-    /* Spell of charm monster is limited at unskilled and basic -
+    /* Spell of charm monster is limited at unskilled -
      * it can only pacify. */
     boolean unskilled_charmer = obj && obj->otyp == SPE_CHARM_MONSTER
         && P_SKILL(P_ENCHANTMENT_SPELL) < P_BASIC;
@@ -1231,6 +1220,7 @@ tamedog(
     if (mtmp->msleeping)
         wake_nearto(mtmp->mx, mtmp->my, 1); /* [different from wakeup()] */
 
+    /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
     if (non_tameable(mtmp->data) || mtmp->mrabid)
         return FALSE;
 
@@ -1238,11 +1228,6 @@ tamedog(
         calm_berserker(mtmp);
         return FALSE;
     }
-
-    /* Vampires can only tame familiars and other vampire */
-    if (Race_if(PM_VAMPIRE) && !(mtmp->data == &mons[PM_FAMILIAR]
-                                  || mtmp->data->mlet == S_VAMPIRE))
-        return FALSE;
 
     /* worst case, at least it'll be peaceful. */
     if (givemsg && !mtmp->mpeaceful && canspotmon(mtmp)) {
@@ -1329,8 +1314,7 @@ tamedog(
            [note: the various mextra structures don't actually conflict
            with each other anymore] */
         || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->isminion
-        || is_covetous(mtmp->data) 
-        || (is_human(mtmp->data) && !taming_familiar)
+        || is_covetous(mtmp->data) || is_human(mtmp->data)
         || (is_demon(mtmp->data) && !is_demon(gy.youmonst.data))
         || (obj && dogfood(mtmp, obj) >= MANFOOD))
         return FALSE;

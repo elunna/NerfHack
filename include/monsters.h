@@ -3538,6 +3538,16 @@
     /*
      * Vampires
      */
+    MON(NAM("dhampir"), S_VAMPIRE,
+        LVL(4, 12, 10, 15, -3), (G_GENO | 1),
+        A(ATTK(AT_BITE, AD_DRLI, 1, 6),
+          ATTK(AT_WEAP, AD_PHYS, 1, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 400, MS_VAMPIRE, MZ_HUMAN), 0, 0,
+        M1_BREATHLESS | M1_HUMANOID,
+        M2_STALK | M2_HOSTILE | M2_FLANK,
+        M3_INFRAVISIBLE | M3_INFRAVISION,
+        MH_VAMPIRE, 12, CLR_ORANGE, DHAMPIR),
     MON(NAM("vampire"), S_VAMPIRE,
         LVL(10, 12, 1, 25, -8), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_BITE, AD_DRLI, 1, 6),

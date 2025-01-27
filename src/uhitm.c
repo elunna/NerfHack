@@ -1126,11 +1126,11 @@ hitum(struct monst *mon, struct attack *uattk)
                        : P_SKILL(P_SHIELD) == P_SKILLED ? !rn2(17)
                        : !rn2(25));
 
-    /* "smart biting" for vampires. */
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
+    /* "smart biting" for vampirics. */
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
         && !svc.context.forcefight) {
         /* Hero only gets a bite *or* a weapon attack, not both */
-        if (u.ulevel < 15) {
+        if (u.ulevel < 10) {
             /* If hungry, always bite first (if we can feed);
              * otherwise it's 50/50 whether we bite or use weapon */
             if ((u.uhunger < 200 || !rn2(2)) && has_blood(mon->data)) {
@@ -1138,7 +1138,7 @@ hitum(struct monst *mon, struct attack *uattk)
                 return malive;
             }
         } else {
-            /* At XP14+, we get to both bite and attack */
+            /* At XP10+, we get to both bite and attack */
             biteum(mon);
         }
     }
@@ -3052,12 +3052,13 @@ mhitm_ad_drli(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
+    struct permonst *ptr = mdef->data;
+    int i;
     boolean unaffected = resists_drli(mdef);
     boolean V2V = is_vampire(magr->data) && is_vampire(mdef->data)
         && !defended(mdef, AD_DRLI);
-
-    /* Bonus for attacking susceptible victims */
-    boolean vulnerable;
+    int drain;
+    boolean vulnerable; /* Bonus for susceptible victims */
     if (mdef == &gy.youmonst)
         vulnerable = u.usleep || gm.multi || Confusion || u.utrap || u.ustuck;
     else
@@ -3074,7 +3075,7 @@ mhitm_ad_drli(
                                     * (usually 1d8) */
 
             /* Vampire draining bite. */
-            if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
+            if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
                 && mattk->aatyp == AT_BITE) {
                 /* Don't execute the draining effect if we cannot feed */
                 if (!has_blood(mdef->data))
@@ -3091,6 +3092,18 @@ mhitm_ad_drli(
                 effect */
                 lesshungry(mhm->damage * 6);
                 add_blood(u.ux, u.uy, PM_HUMAN);
+                
+                /* Maybe gain an intrinsic? */
+                
+                for (i = 1; i <= LAST_PROP; i++) {
+                    if (!intrinsic_possible(i, ptr))
+                        continue;
+                    givit(i, ptr);
+                }
+                
+                /* drain: was target's damage, now heal attacker by half */
+                drain = (mhm->damage + 1) /2; /* drain/2 rounded up */
+                healup(drain, 0, FALSE, FALSE);
             }
 
             pline("%s becomes weaker!", Monnam(mdef));
@@ -4476,7 +4489,6 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
        fungus, blobs, and jellies. */
     boolean no_effect =
             (nonliving(mdef->data) 
-             || is_vampire(mdef->data)
              || (magr != &gy.youmonst && magr->mcan)
              || !(rn2(10) >= 3 * armpro));
     boolean lose_maxhp = (withertime >= 8); /* if already withering */
@@ -5248,8 +5260,7 @@ mhitm_ad_rabd(
         /* mhitu - you infected */
         hitmsg(magr, mattk);
         if (!negated && !rn2(4) && !Rabid
-              && can_become_rabid(gy.youmonst.data)
-              && !maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+              && can_become_rabid(gy.youmonst.data)) {
             if (!Sick_resistance)
                 urgent_pline("You feel like going rabid!");
             exercise(A_CON, FALSE);
@@ -5265,7 +5276,8 @@ mhitm_ad_rabd(
         mhm->hitflags = M_ATTK_AGR_DONE;
     } else {
         /* mhitm - infect other mon */
-        if (!negated && !rn2(4) && !mdef->mrabid && can_become_rabid(mdef->data)) {
+        if (!negated && !rn2(4) && !mdef->mrabid
+            && can_become_rabid(mdef->data)) {
             mon_rabid(mdef, TRUE);
         } else if (!negated && !rn2(8)) {
             /* AD_DRCO attack from mhitm_ad_drst */
@@ -7103,9 +7115,9 @@ passive(
     int malive = maliveb ? M_ATTK_HIT : M_ATTK_MISS;
 
     if (mhit && aatyp == AT_BITE
-          && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+          && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
         if (bite_monster(mon))
-	        return 2; /* lifesaved */
+            return 2; /* lifesaved */
     }
 
     for (i = 0;; i++) {
@@ -7830,7 +7842,7 @@ hates_item(struct monst *mtmp, int otyp)
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN))
                     : is_human(mtmp->data))
         return (is_gnomish_obj(otyp));
-    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_VAMPIRE))
+    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_DHAMPIR))
                 : is_vampire(mtmp->data))
         return (is_gnomish_obj(otyp));
     return FALSE;
@@ -8007,14 +8019,14 @@ biteum(struct monst *mon)
     
         if (mhit) {
             You("bite %s.", mon_nam(mon));
-            malive = damageum(mon, &mons[PM_VAMPIRE].mattk[0], 0) != 2;
+            malive = damageum(mon, &mons[PM_DHAMPIR].mattk[0], 0) != 2;
             (void) passive(mon, uswapwep, mhit, malive, AT_BITE, !uswapwep);
             wakeup(mon, TRUE);
             return TRUE;
         } else {
             /* If cartomancer/monk are ever allowed to be vampires
              * update this to take their armor into account. */
-            missum(mon, &mons[PM_VAMPIRE].mattk[1], FALSE);
+            missum(mon, &mons[PM_DHAMPIR].mattk[0], FALSE);
         }
     }
     

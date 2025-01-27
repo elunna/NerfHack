@@ -959,6 +959,7 @@ extern void tin_details(struct obj *, int, char *);
 extern boolean Popeye(int);
 extern int Finish_digestion(void);
 extern void garlic_breath(struct monst *);
+extern void givit(int, struct permonst *);
 
 /* ### end.c ### */
 

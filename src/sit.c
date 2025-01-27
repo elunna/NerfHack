@@ -432,8 +432,6 @@ dosit(void)
 
         if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
             breaktoilet(u.ux, u.uy);
-        } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
-            pline("Vampires have no use of such things.");
         } else if (!Sick && u.uhs > 0
                 && (Upolyd ? u.mh == u.mhmax : u.uhp == u.uhpmax)) {
             You("don't have to go...");

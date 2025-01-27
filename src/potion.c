@@ -959,9 +959,7 @@ peffect_water(struct obj *otmp)
     }
     gp.potion_unkn++;
     if (mon_hates_blessings(&gy.youmonst) /* undead or demon */
-            || u.ualign.type == A_CHAOTIC) {
-	    int dice = Uevil ? 4 : 2;
-
+        || u.ualign.type == A_CHAOTIC) {
         if (otmp->blessed) {
             pline("This burns like %s!", hliquid("acid"));
             exercise(A_CON, FALSE);
@@ -972,11 +970,11 @@ peffect_water(struct obj *otmp)
                     you_unwere(FALSE);
                 set_ulycn(NON_PM); /* cure lycanthropy */
             }
-            losehp(Maybe_Half_Phys(d(dice, 6)), "potion of holy water",
+            losehp(Maybe_Half_Phys(d(2, 6)), "potion of holy water",
                    KILLED_BY_AN);
         } else if (otmp->cursed) {
             You_feel("quite proud of yourself.");
-            healup(d(dice, 6), 0, 0, 0);
+            healup(d(2, 6), 0, 0, 0);
             if (ismnum(u.ulycn) && !Upolyd)
                 you_were();
             exercise(A_CON, TRUE);
@@ -1697,7 +1695,7 @@ peffect_blood(struct obj *otmp)
     gp.potion_unkn++;
     u.uconduct.unvegan++;
 
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
         violated_vegetarian();
         if (otmp->cursed)
             pline("Yecch!  This %s.", Hallucination
@@ -1730,7 +1728,7 @@ peffect_blood(struct obj *otmp)
             duplicated "you feel guilty" messages */
         u.uconduct.unvegetarian++;
 
-        if (!Race_if(PM_VAMPIRE)) {
+        if (!Race_if(PM_DHAMPIR)) {
             if (u.ualign.type == A_LAWFUL || Role_if(PM_MONK)) {
                 You_feel("%sguilty about drinking such a vile liquid.",
                             Role_if(PM_MONK) ? "especially " : "");
@@ -1742,7 +1740,7 @@ peffect_blood(struct obj *otmp)
             }
             exercise(A_CON, FALSE);
         }
-        if (Race_if(PM_VAMPIRE)) {
+        if (Race_if(PM_DHAMPIR)) {
             if (!Unchanging)
                 rehumanize();
             return;
@@ -2795,7 +2793,7 @@ potionbreathe(struct obj *obj)
         break;
     case POT_BLOOD:
     case POT_VAMPIRE_BLOOD:
-        if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))) {
+        if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
             exercise(A_WIS, FALSE);
             You_feel("a %ssense of loss.",
                      obj->otyp == POT_VAMPIRE_BLOOD ? "terrible " : "");

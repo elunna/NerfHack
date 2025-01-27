@@ -19,7 +19,6 @@ staticfn struct obj *touchfood(struct obj *);
 staticfn void do_reset_eat(void);
 staticfn void done_eating(boolean);
 staticfn void cprefx(int);
-staticfn void givit(int, struct permonst *);
 staticfn void eye_of_newt_buzz(void);
 staticfn void cpostfx(int);
 staticfn void use_up_tin(struct obj *) NONNULLARG1;
@@ -48,7 +47,7 @@ staticfn void regen_hunger(void);
 
 /* also used to see if you're allowed to eat cats and dogs */
 #define CANNIBAL_ALLOWED() (Role_if(PM_CAVE_DWELLER) || Race_if(PM_ORC) \
-	|| Race_if(PM_VAMPIRE))
+	|| Race_if(PM_DHAMPIR))
 /* Rider corpses are treated as non-rotting so that attempting to eat one
    will be sure to reach the stage of eating where that meal is fatal;
    acid blob corpses eventually rot away to nothing but before that happens
@@ -119,7 +118,7 @@ is_edible(struct obj *obj)
                          || (obj->otyp == EGG));
 
     /* Vampires can only draw blood from the living or potions of blood. */
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
+    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
 	    return FALSE;
 
     if (is_bigeater(gy.youmonst.data) && is_organic(obj)
@@ -274,7 +273,7 @@ choke(struct obj *food)
             return;
         }
         You("%s yourself and then vomit voluminously.",
-            maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
+            maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
                 ? "gorge" : "stuff");
         morehungry(Hunger ? (u.uhunger - 60) : 1000); /* just got very sick! */
         vomit();
@@ -1034,7 +1033,7 @@ should_givit(int type, struct permonst *ptr)
 /* givit() tries to give you an intrinsic based on the monster's level
  * and what type of intrinsic it is trying to give you.
  */
-staticfn void
+void
 givit(int type, struct permonst *ptr)
 {
     const char *adj;
@@ -1047,6 +1046,12 @@ givit(int type, struct permonst *ptr)
     if (increase > MAX_GAIN)
         increase = MAX_GAIN;
 
+    if (Race_if(PM_DHAMPIR)) {
+        /* Allow for partial intrinsics along with acid/stone res */
+        if (type > STONE_RES)
+            return;
+        increase = 1;
+    }
     if (increase == 24)
         adj = "much";
     else if (increase > 16)
@@ -1064,7 +1069,7 @@ givit(int type, struct permonst *ptr)
     /* All these use the new system, which is based on corpse weight. */
     case FIRE_RES:
         debugpline0("Trying to give fire resistance");
-        if ((HFire_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+        if ((HFire_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
             incr_resistance(&HFire_resistance, increase);
             if ((HFire_resistance & TIMEOUT) == 100)
                 You(Hallucination ? "be chillin'." : "feel completely chilled.");
@@ -1074,7 +1079,7 @@ givit(int type, struct permonst *ptr)
         break;
     case COLD_RES:
         debugpline0("Trying to give cold resistance");
-        if ((HCold_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+        if ((HCold_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
             incr_resistance(&HCold_resistance, increase);
             if ((HCold_resistance & TIMEOUT) == 100)
                 You_feel("full of hot air.");
@@ -1084,7 +1089,7 @@ givit(int type, struct permonst *ptr)
         break;
     case SHOCK_RES: /* shock (electricity) resistance */
         debugpline0("Trying to give shock resistance");
-        if ((HShock_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+        if ((HShock_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
             incr_resistance(&HShock_resistance, increase);
             if ((HShock_resistance & TIMEOUT) == 100)
                 pline(Hallucination ? "You feel grounded in reality."
@@ -1095,7 +1100,7 @@ givit(int type, struct permonst *ptr)
         break;
     case SLEEP_RES:
         debugpline0("Trying to give sleep resistance");
-        if ((HSleep_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+        if ((HSleep_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
             incr_resistance(&HSleep_resistance, increase);
             if ((HSleep_resistance & TIMEOUT) == 100)
                 You_feel("wide awake.");
@@ -1105,7 +1110,7 @@ givit(int type, struct permonst *ptr)
         break;
     case DISINT_RES:
         debugpline0("Trying to give disintegration resistance");
-        if ((HDisint_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+        if ((HDisint_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
             incr_resistance(&HDisint_resistance, increase);
             if ((HDisint_resistance & TIMEOUT) == 100)
                 You_feel(Hallucination ? "totally together, man." : "completely firm.");
@@ -1115,7 +1120,7 @@ givit(int type, struct permonst *ptr)
         break;
     case POISON_RES:
         debugpline0("Trying to give poison resistance");
-        if ((HPoison_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < 100) {
+        if ((HPoison_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
             incr_resistance(&HPoison_resistance, increase);
             if ((HPoison_resistance & TIMEOUT) == 100)
                 You_feel("completely healthy.");
@@ -3526,7 +3531,7 @@ gethungry(void)
             || herbivorous(gy.youmonst.data)
             || lithivorous(gy.youmonst.data)
             || metallivorous(gy.youmonst.data)
-            || maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
+            || maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
         && !(Slow_digestion && rn2(2)))
         u.uhunger--; /* ordinary food consumption */
 
@@ -3943,10 +3948,10 @@ floorfood(
     boolean feeding = !strcmp(verb, "eat"),        /* corpsecheck==0 */
             offering = !strcmp(verb, "sacrifice"); /* corpsecheck==1 */
 
-    if (feeding && (is_vampire(gy.youmonst.data) || Race_if(PM_VAMPIRE))) {
+    if (feeding && (is_vampire(gy.youmonst.data) || Race_if(PM_DHAMPIR))) {
         You("can't eat.");
         if (flags.verbose)
-            pline("You can feed on lifeblood by attacking and biting other monsters.");
+            pline("You can feed by attacking and biting other monsters.");
         return (struct obj *) 0;
     }
 

@@ -432,7 +432,7 @@
 
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE  \
                      || ((ptr) == gy.youmonst.data &&       \
-                         !Upolyd && Race_if(PM_VAMPIRE)))
+                         !Upolyd && Race_if(PM_DHAMPIR)))
 
 /* For vampires */
 #define has_blood(ptr)	(!vegetarian(ptr) && \
@@ -531,6 +531,7 @@
 /* Corpse intrinsic stats */
 #define MAX_GAIN 50
 #define MIN_GAIN 5
+#define MAX_PARTIAL (Race_if(PM_DHAMPIR) ? 50 : 100)
 #define percent_granted(ptr) ((ptr)->cwt / 90)
 
 /* The monster is covetous, but should not warp, heal, or otherwise use

@@ -735,15 +735,16 @@ const struct Race races[] = {
         { 1, 0, 1, 0, 1, 0 }  /* Energy */
     },
     {
-        "vampire",
+        "dhampir",
         "vampiric",
         "kindred",
         "Vam",
         { 0, 0 },               /* individual as a noun */
-        PM_VAMPIRE,             /* PM_ as a male monster */
+        PM_DHAMPIR,             /* PM_ as a male monster */
         PM_HUMAN_MUMMY,         /* PM_ as a mummy */
         PM_HUMAN_ZOMBIE,        /* PM_ as a zombie */
-        MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC, /* allowed variations */
+        /* allowed variations */
+        MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC | ROLE_NEUTRAL,
         MH_VAMPIRE,             /* your own race's bit mask */
         0,                      /* always peaceful */
         MH_ELF | MH_GNOME | MH_DWARF | MH_ORC, /* always hostile */
@@ -2982,6 +2983,7 @@ setup_racemenu(
     boolean race_ok;
     int i;
     char this_ch;
+    char high_ch;
     int clr = NO_COLOR;
 
     any = cg.zeroany;
@@ -2997,13 +2999,20 @@ setup_racemenu(
         else
             any.a_string = races[i].noun;
         this_ch = *races[i].noun;
+        high_ch = highc(this_ch);
+        if (this_ch == 'd') {
+            if (!strcmp(races[i].noun, "dhampir"))
+                this_ch = 'D';
+            else
+                high_ch = 0;
+        }
         /* filtering: picking race, so choose by first letter, with
            capital letter as unseen accelerator;
            !filtering: resetting filter rather than picking, choose by
            capital letter since lowercase role letters will be present */
         add_menu(win, &nul_glyphinfo, &any,
-                 filtering ? this_ch : highc(this_ch),
-                 filtering ? highc(this_ch) : 0,
+                 filtering ? this_ch : high_ch,
+                 filtering ? high_ch : 0,
                  ATR_NONE, clr, races[i].noun,
                  (!filtering && !race_ok)
                     ? MENU_ITEMFLAGS_SELECTED : MENU_ITEMFLAGS_NONE);

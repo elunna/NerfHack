@@ -273,11 +273,11 @@ static struct inv_sub {
     { PM_GNOME, HIGH_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, LEATHER_ARMOR, GNOMISH_SUIT },
     /* Create vampire blood */
-    { PM_VAMPIRE, POT_FRUIT_JUICE, POT_VAMPIRE_BLOOD },
-    { PM_VAMPIRE, CLOVE_OF_GARLIC, POT_VAMPIRE_BLOOD },
-    { PM_VAMPIRE, FOOD_RATION, POT_VAMPIRE_BLOOD },
-    { PM_VAMPIRE, CRAM_RATION, POT_VAMPIRE_BLOOD },
-    { PM_VAMPIRE, LEMBAS_WAFER, POT_VAMPIRE_BLOOD },
+    { PM_DHAMPIR, POT_FRUIT_JUICE, POT_VAMPIRE_BLOOD },
+    { PM_DHAMPIR, CLOVE_OF_GARLIC, POT_VAMPIRE_BLOOD },
+    { PM_DHAMPIR, FOOD_RATION, POT_VAMPIRE_BLOOD },
+    { PM_DHAMPIR, CRAM_RATION, POT_VAMPIRE_BLOOD },
+    { PM_DHAMPIR, LEMBAS_WAFER, POT_VAMPIRE_BLOOD },
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
@@ -978,7 +978,7 @@ u_init_race(void)
         set_skill_cap_minimum(P_SABER, P_SKILLED);
         break;
 
-    case PM_VAMPIRE:
+    case PM_DHAMPIR:
         knows_object(POT_VAMPIRE_BLOOD, FALSE);
         knows_object(POT_BLOOD, FALSE);
         /* Enable random generation too */
@@ -1333,16 +1333,15 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_SLEEPING
            || otyp == RIN_WITHERING
            || otyp == WAN_NOTHING
-           || (Race_if(PM_VAMPIRE) &&
+           || (Race_if(PM_DHAMPIR) &&
                /* vampirics start with regeneration */
                (otyp == RIN_REGENERATION
                /* vampirics don't eat */
                 || otyp == SPE_DETECT_FOOD || otyp == SCR_FOOD_DETECTION
                /* vampires don't like silver */
                 || objects[otyp].oc_material == SILVER))
-           /* orcs/vampires start with poison resistance */
-           || (otyp == RIN_POISON_RESISTANCE &&
-	       (Race_if(PM_ORC) || Race_if(PM_VAMPIRE)))
+           /* orcs start with poison resistance */
+           || (otyp == RIN_POISON_RESISTANCE && Race_if(PM_ORC))
            /* Monks don't use weapons */
            || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
            /* wizard patch -- they already have one of these */
@@ -1549,7 +1548,7 @@ ini_inv(struct trobj *trop)
 
         /* nudist gets no armor, vampires get no food */
         if ((u.uroleplay.nudist && obj->oclass == ARMOR_CLASS)
-            || (Race_if(PM_VAMPIRE) && obj->oclass == FOOD_CLASS)) {
+            || (Race_if(PM_DHAMPIR) && obj->oclass == FOOD_CLASS)) {
             dealloc_obj(obj);
             trop++;
             continue;

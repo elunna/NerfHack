@@ -108,9 +108,8 @@ static const struct innate {
 
   /* Flying and regeneration are inherited from the creature form */
   vam_abil[] = { { 1, &HDrain_resistance, "", "" },
-                 { 1, &HPoison_resistance, "", "" },
 		 { 1, &HBreathless, "", "" },
-		 { 9, &HSleep_resistance, "awake", "tired" },
+                 { 7, &(HFast), "quick", "slow" },
                  { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };
@@ -574,7 +573,7 @@ exerper(void)
         switch (hs) {
         case SATIATED:
 	        /* Don't punish vampires for eating too much */
-            if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE)))
+            if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
                 exercise(A_DEX, FALSE);
             if (Role_if(PM_MONK) || Role_if(PM_SAMURAI))
                 exercise(A_WIS, FALSE);
@@ -881,7 +880,7 @@ check_innate_abil(long *ability, long frommask)
         case PM_HUMAN:
             abil = hum_abil;
             break;
-        case PM_VAMPIRE:
+        case PM_DHAMPIR:
             abil = vam_abil;
             break;
         default:
@@ -1069,7 +1068,7 @@ adjabil(int oldlevel, int newlevel)
     case PM_ORC:
         rabil = orc_abil;
         break;
-    case PM_VAMPIRE:
+    case PM_DHAMPIR:
         rabil = vam_abil;
         break;
     case PM_HUMAN:

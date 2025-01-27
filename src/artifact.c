@@ -186,11 +186,7 @@ mk_artifact(
             continue;
         else if (u.ualign.type == A_CHAOTIC && m == ART_STORMBRINGER)
             continue;
-
-        /* Don't gift silver to vampires. */
-        if (Race_if(PM_VAMPIRE) && is_silver(a))
-            continue;
-
+        
         if (!by_align) {
             /* looking for a particular type of item; not producing a
                divine gift so we don't care about role's first choice */
@@ -3132,8 +3128,7 @@ retouch_object(
     if (touch_artifact(obj, &gy.youmonst)) {
         char buf[BUFSZ];
         int dmg = 0, tmp;
-        boolean hatemat = ((is_silver(obj) && Hate_silver) ||
-                (obj->otyp == CLOVE_OF_GARLIC && Race_if(PM_VAMPIRE))),
+        boolean hatemat = (is_silver(obj) && Hate_silver),
                 bane = bane_applies(get_artifact(obj), &gy.youmonst);
 
         /* nothing else to do if hero can successfully handle this object */
