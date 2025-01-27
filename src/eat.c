@@ -274,7 +274,8 @@ choke(struct obj *food)
             return;
         }
         You("%s yourself and then vomit voluminously.",
-            food->oclass == POTION_CLASS ? "gorge" : "stuff");
+            maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_VAMPIRE))
+                ? "gorge" : "stuff");
         morehungry(Hunger ? (u.uhunger - 60) : 1000); /* just got very sick! */
         vomit();
     } else {
