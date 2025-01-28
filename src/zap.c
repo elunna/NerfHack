@@ -3153,6 +3153,7 @@ zapyourself(struct obj *obj, boolean ordinary)
             damage = resist_reduce(orig_dmg, FIRE_RES);
             monstunseesu(M_SEEN_FIRE);
         }
+        dehydrate(orig_dmg);
         burn_away_slime();
         (void) burnarmor(&gy.youmonst);
         (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
@@ -5281,6 +5282,9 @@ zhitu(
                 if (!rn2(3))
                     ignite_items(gi.invent);
             }
+            dehydrate(orig_dam);
+        } else {
+            dehydrate(orig_dam / 2);
         }
         break;
     case ZT_COLD:

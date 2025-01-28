@@ -726,6 +726,11 @@ savelife(int how)
     if (u.uhunger < 500 || how == CHOKING) {
         init_uhunger();
     }
+    /* Ensure grung get a little hydration when they survive. */
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
+        if (!svc.context.hydration)
+            svc.context.hydration = (long) givehp;
+    }
     /* cure impending doom of sickness hero won't have time to fix
        [shouldn't this also be applied to other fatal timeouts?] */
     if ((Sick & TIMEOUT) == 1L) {

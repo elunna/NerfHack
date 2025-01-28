@@ -1481,6 +1481,49 @@ passivemm(
         if (!rn2(3))
             tmp += destroy_items(magr, AD_ACID, orig_dmg);
         goto assess_dmg;
+    case AD_DRST:
+    case AD_DRDX:
+    case AD_DRCO:
+    case AD_HALU:
+        /* passive poison for grung's toxic skin */ 
+        if (mhitb && !rn2(2)) {
+            Strcpy(buf, Monnam(magr));
+            if (canseemon(magr))
+                pline("%s is splashed by %s %s!", buf,
+                      s_suffix(mon_nam(mdef)), hliquid("toxic skin"));
+            if (resists_poison(magr)) {
+                if (canseemon(magr))
+                    pline("%s is not affected.", Monnam(magr));
+                tmp = 0;
+            } else {
+                pline_mon(magr, "%s skin was poisoned!", s_suffix(Monnam(magr)));
+                if (rn2(20))
+                    tmp += rn1(5, 3);
+                else {
+                    if (canseemon(magr))
+                        pline_The("poison was deadly...");
+                    tmp = mdef->mhp;
+                }
+            }
+        } else
+            tmp = 0;
+        goto assess_dmg;
+    case AD_SLEE:
+        /* passive poison for grung's toxic skin */ 
+        if (mhitb && !rn2(2)) {
+            Strcpy(buf, Monnam(magr));
+            if (canseemon(magr))
+                pline("%s is splashed by %s %s!", buf,
+                      s_suffix(mon_nam(mdef)), hliquid("toxic skin"));
+            if (resists_sleep(magr)) {
+                if (canseemon(magr))
+                    pline("%s is not affected.", Monnam(magr));
+            } else {
+                (void) sleep_monst(magr, tmp, 0);
+            }
+        }
+        tmp = 0;
+        break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
         if (mhitb && !mdef->mcan && mwep) {
             (void) drain_item(mwep, FALSE);

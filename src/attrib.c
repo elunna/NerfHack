@@ -106,13 +106,18 @@ static const struct innate {
   orc_abil[] = { { 1, &HPoison_resistance, "", "" },
                  { 0, 0, 0, 0 } },
 
-  /* Flying and regeneration are inherited from the creature form */
   vam_abil[] = { { 1, &HDrain_resistance, "", "" },
-		         { 1, &HBreathless, "", "" },
+                 { 1, &HBreathless, "", "" },
                  { 1, &HHunger, "", "" },
                  { 7, &(HFast), "quick", "slow" },
                  { 0, 0, 0, 0 } },
 
+  gru_abil[] = { { 1, &HPoison_resistance, "", "" },
+                 { 1, &(HSearching), "", "" },
+                 { 1, &(HSwimming), "", "" },
+                 { 5, &(EJumping), "light on your feet", "stuck to the ground" },
+                 { 0, 0, 0, 0 } },
+  
   hum_abil[] = { { 0, 0, 0, 0 } };
 
 staticfn void exerper(void);
@@ -884,6 +889,9 @@ check_innate_abil(long *ability, long frommask)
         case PM_DHAMPIR:
             abil = vam_abil;
             break;
+        case PM_GRUNG:
+            abil = gru_abil;
+            break;
         default:
             break;
         }
@@ -1071,6 +1079,9 @@ adjabil(int oldlevel, int newlevel)
         break;
     case PM_DHAMPIR:
         rabil = vam_abil;
+        break;
+    case PM_GRUNG:
+        rabil = gru_abil;
         break;
     case PM_HUMAN:
     case PM_DWARF:

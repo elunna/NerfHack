@@ -4150,6 +4150,7 @@ vomit(void) /* A good idea from David Neves */
                 melt_ice(u.ux, u.uy,
                          "Your stomach acid melts straight through the ice!");
         }
+        dehydrate(rn1(150, 100));
     }
 }
 

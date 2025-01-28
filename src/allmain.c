@@ -24,7 +24,9 @@ staticfn void debug_fields(const char *);
 staticfn void dump_enums(void);
 #endif
 staticfn void ck_foulstones(void);
-
+staticfn void check_hydration(void);
+staticfn int find_tier_index(long);
+    
 #ifdef CRASHREPORT
 #define USED_FOR_CRASHREPORT
 #else
@@ -281,9 +283,13 @@ moveloop_core(void)
                 nh_timeout();
                 run_regions();
                 check_dogs();
-
+                check_hydration();
+                
                 if (u.ublesscnt)
                     u.ublesscnt--;
+                
+           
+
 
 #ifdef EXTRAINFO_FN
                 if ((prev_dgl_extrainfo == 0) || (prev_dgl_extrainfo < (svm.moves + 250))) {
@@ -1441,6 +1447,104 @@ ck_foulstones(void)
         }
         create_gas_cloud(u.ux, u.uy, 1, 4);
     }
+}
+
+/* This performs maintenance with the grung's requirement for periodic 
+ * hydration. Should this be managed in timeout.c?
+ * If we do it there, we'd need to make hydration a property which seems 
+ * strange. */
+staticfn void
+check_hydration(void)
+{
+    /* Only relevant for Grung and only applies while in grung form;
+     * while polymorphed into a different form the timer will pause. */
+    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+        return;
+    
+    if (Underwater) {
+        rehydrate(TRUE);
+        return;
+    }
+    dehydrate(1);
+    
+    if (!svc.context.hydration) {
+        Your("skin dries up into a lifeless husk!");
+        if (Upolyd) {
+            rehumanize();
+            spoteffects(TRUE);
+            return;
+        } else {
+            Sprintf(svk.killer.name, "dehydration");
+            svk.killer.format = KILLED_BY;
+            done(DIED);
+        }
+    }
+}
+
+/* Decrease the grung's hydration level. Maybe show a message if the player
+ * passed a tier of dryness.
+ */
+static const int tiers[] = { 10, 25, 100, 250, 500, 1000, 6000 };
+#define NUM_TIERS 7
+void
+dehydrate(int dmg)
+{
+    int old_tier = find_tier_index(svc.context.hydration);
+
+    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+        return;
+    svc.context.hydration -= (long) dmg;
+    if (svc.context.hydration < 0)
+        svc.context.hydration = 0;
+    
+    int new_tier = find_tier_index(svc.context.hydration);
+    if (new_tier == old_tier)
+        return;
+    
+    switch (new_tier) {
+    case 0: You_feel("extremely dehydrated."); break;
+    case 1: You_feel("severely dehydrated."); break;
+    case 2: You_feel("very dehydrated."); break;
+    case 3: You_feel("mildly dehydrated."); break;
+    case 4: You_feel("slightly thirsty."); break;
+    case 5: You_feel("mostly-hydrated."); break;
+    }
+    stop_occupation();
+}
+
+staticfn int
+find_tier_index(long value) {
+    for (int i = 0; i < NUM_TIERS; i++) {
+        if (value <= tiers[i]) {
+            return i;
+        }
+    }
+    return -1; // No match found
+}
+
+/* Check if player is grung before calling
+* Return TRUE if it had a measurable effect, FALSE otherwise.*/
+boolean
+rehydrate(boolean submerged)
+{
+    if (submerged) {
+        if (svc.context.hydration != HYDRATION_MAX)
+            You("feel fully hydrated again.");
+        svc.context.hydration = HYDRATION_MAX;
+    } else {
+        /* Rehydrating needs to have a minimum amount of effect to
+         * dry up a puddle or fountain */
+        if (HYDRATION_MAX - svc.context.hydration < 50)
+            return FALSE;
+        svc.context.hydration += rn1(25,25);
+        if (svc.context.hydration > HYDRATION_MAX) {
+            svc.context.hydration = HYDRATION_MAX;
+            You("feel fully hydrated again.");
+        } else {
+            You("feel a little more hydrated.");
+        }
+    }
+    return TRUE;
 }
 
 /*allmain.c*/

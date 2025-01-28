@@ -4901,6 +4901,93 @@
         NO_RACE, 12, CLR_ORANGE, SALAMANDER),
 
     /*
+    * grung
+    */
+    /* plain "grung" is a placeholder, not a normal monster */
+    MON(NAM("grung"), S_GRUNG,
+        LVL(0, 12, 10, 0, -3), G_NOGEN, /* for corpses */
+        A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
+          ATTK(AT_NONE, AD_DRST, 0, 3),
+          NO_ATTK, NO_ATTK, NO_ATTK,NO_ATTK),
+        SIZ(650, 100, MS_HUMANOID, MZ_SMALL), MR_POISON, 0,
+        M1_HUMANOID | M1_OMNIVORE | M1_AMPHIBIOUS | M1_SWIM
+            | M1_POIS | M1_OVIPAROUS,
+        M2_NOPOLY | M2_COLLECT, M3_INFRAVISIBLE,
+        MH_GRUNG, 4, CLR_BRIGHT_GREEN, GRUNG),
+    MON(NAM("green grung"), S_GRUNG,
+        LVL(3, 10, 10, 0, -3), (G_GENO | G_NOHELL | G_SGROUP | 1),
+        A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
+          ATTK(AT_BITE, AD_DRST, 1, 6),
+          ATTK(AT_NONE, AD_DRST, 0, 3),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(650, 100, MS_HUMANOID, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_HUMANOID | M1_OMNIVORE | M1_AMPHIBIOUS | M1_SWIM
+            | M1_POIS | M1_OVIPAROUS,
+        M2_HOSTILE | M2_COLLECT,
+        M3_INFRAVISIBLE | M3_JUMPER | M3_ACCURATE,
+        MH_GRUNG, 7, CLR_GREEN, GREEN_GRUNG),
+    MON(NAM("blue grung"), S_GRUNG,
+        LVL(4, 10, 9, 20, -3), (G_GENO | G_NOHELL | G_SGROUP | 1),
+        A(ATTK(AT_MAGC, AD_SPEL, 0, 0),
+          ATTK(AT_BITE, AD_DRCO, 1, 6),
+          ATTK(AT_NONE, AD_DRCO, 0, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(650, 100, MS_HUMANOID, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_HUMANOID | M1_OMNIVORE | M1_AMPHIBIOUS | M1_SWIM
+            | M1_POIS | M1_OVIPAROUS,
+        M2_HOSTILE | M2_COLLECT | M2_MAGIC,
+        M3_INFRAVISIBLE | M3_JUMPER | M3_ACCURATE,
+        MH_GRUNG, 8, CLR_BRIGHT_BLUE, BLUE_GRUNG),
+    MON(NAM("purple grung"), S_GRUNG,
+        LVL(4, 12, 8, 30, -3), (G_GENO | G_NOHELL | G_SGROUP | 1),
+        A(ATTK(AT_MAGC, AD_CLRC, 0, 0),
+          ATTK(AT_BITE, AD_STUN, 1, 6),
+          ATTK(AT_NONE, AD_STUN, 0, 2),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(650, 100, MS_HUMANOID, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_HUMANOID | M1_OMNIVORE | M1_AMPHIBIOUS | M1_SWIM
+            | M1_POIS | M1_OVIPAROUS,
+        M2_HOSTILE | M2_COLLECT | M2_MAGIC,
+        M3_INFRAVISIBLE | M3_JUMPER | M3_ACCURATE,
+        MH_GRUNG, 9, CLR_BRIGHT_MAGENTA, PURPLE_GRUNG),
+    MON(NAM("red grung"), S_GRUNG,
+        LVL(5, 14, 5, 0, -3), (G_GENO | G_NOHELL | G_SGROUP | 1),
+        A(ATTK(AT_WEAP, AD_PHYS, 2, 4),
+          ATTK(AT_BITE, AD_DRDX, 1, 6),
+          ATTK(AT_NONE, AD_DRDX, 0, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(650, 100, MS_HUMANOID, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_HUMANOID | M1_OMNIVORE | M1_AMPHIBIOUS | M1_SWIM
+            | M1_POIS | M1_OVIPAROUS,
+        M2_HOSTILE | M2_COLLECT | M2_STRONG,
+        M3_INFRAVISIBLE | M3_JUMPER | M3_ACCURATE,
+        MH_GRUNG, 11, CLR_RED, RED_GRUNG),
+    MON(NAM("orange grung"), S_GRUNG,
+        LVL(5, 10, 4, 0, -3), (G_GENO | G_NOHELL | 1),
+        A(ATTK(AT_WEAP, AD_PHYS, 1, 6),
+          ATTK(AT_BITE, AD_HALU, 1, 6),
+          ATTK(AT_NONE, AD_HALU, 0, 2),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(650, 100, MS_HUMANOID, MZ_SMALL), MR_POISON, MR_POISON,
+        M1_HUMANOID | M1_OMNIVORE | M1_AMPHIBIOUS | M1_SWIM
+            | M1_POIS | M1_OVIPAROUS,
+        M2_HOSTILE | M2_COLLECT | M2_LORD,
+        M3_INFRAVISIBLE | M3_JUMPER | M3_ACCURATE,
+        MH_GRUNG, 11, CLR_ORANGE, ORANGE_GRUNG),
+    MON(NAM("gold grung"), S_GRUNG,
+        LVL(5, 12, 2, 0, -3), (G_GENO | G_NOHELL | 1),
+        A(ATTK(AT_WEAP, AD_PHYS, 2, 6),
+          ATTK(AT_BITE, AD_SLEE, 1, 6),
+          ATTK(AT_NONE, AD_SLEE, 0, 2),
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(650, 100, MS_HUMANOID, MZ_SMALL),
+        MR_POISON | MR_SLEEP, MR_POISON | MR_SLEEP,
+        M1_HUMANOID | M1_OMNIVORE | M1_AMPHIBIOUS | M1_SWIM
+            | M1_POIS | M1_OVIPAROUS,
+        M2_HOSTILE | M2_COLLECT | M2_PRINCE,
+        M3_INFRAVISIBLE | M3_JUMPER | M3_ACCURATE,
+        MH_GRUNG, 13, CLR_YELLOW, GOLD_GRUNG),
+    /*
      * dummy monster needed for visual interface
      * (marking it unique prevents figurines)
      */

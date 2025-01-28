@@ -1665,8 +1665,8 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                                  : "surges",
                          buf);
             dismount_steed(DISMOUNT_ENGULFED);
-	    } else if (mtmp->data == &mons[PM_FIRE_VORTEX]
-            && Role_if(PM_CARTOMANCER)) {
+        } else if (mtmp->data == &mons[PM_FIRE_VORTEX]
+                   && Role_if(PM_CARTOMANCER)) {
             pline("That tornado\'s carrying a car!"); /* Sonic 06 */
         } else {
             urgent_pline("%s %s!", Monnam(mtmp),
@@ -1833,6 +1833,8 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                 /* keep him blind until disgorged */
                 incr_itimeout(&HBlinded, 1L);
         }
+        if (mtmp->data == &mons[PM_DUST_VORTEX])
+            dehydrate(rn1(150, 150));
         tmp = 0;
         break;
     case AD_ELEC:
@@ -1870,6 +1872,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
         break;
     case AD_FIRE:
         if (!mtmp->mcan && rn2(2)) {
+            dehydrate(rn1(150, 150));
             if (fully_resistant(FIRE_RES)) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly hot.");
@@ -2318,6 +2321,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                     monstunseesu(M_SEEN_FIRE);
                 }
                 burn_away_slime();
+                dehydrate(orig_dmg);
                 if (lev > rn2(20))
                     (void) burnarmor(&gy.youmonst);
                 if (lev > rn2(20)) {
@@ -2941,7 +2945,11 @@ passiveum(
 
     if (Role_if(PM_ROGUE) && !Upolyd)
         return counterattack(mtmp, mattk);
-
+    
+    /* Hack to make passive grung poison work */
+    if (!Upolyd && Race_if(PM_GRUNG))
+        olduasmon = &mons[PM_GRUNG];
+    
     /*
      * mattk      == mtmp's attack that hit you;
      * oldu_mattk == your passive counterattack (even if mtmp's attack
@@ -2982,6 +2990,44 @@ passiveum(
         if (!rn2(3))
             acid_damage(MON_WEP(mtmp));
         tmp += destroy_items(mtmp, AD_ACID, orig_dmg);
+        return assess_dmg(mtmp, tmp);
+    case AD_DRST:
+    case AD_DRDX:
+    case AD_DRCO:
+    case AD_HALU:
+        /* passive poison for grung's toxic skin */ 
+        orig_dmg = tmp;
+        if (!rn2(2)) {
+            pline_mon(mtmp, "%s is splashed by your %s!", Monnam(mtmp),
+                  hliquid("toxic skin"));
+            if (resists_poison(mtmp)) {
+                pline_mon(mtmp, "%s is not affected.", Monnam(mtmp));
+                tmp = 0;
+            } else {
+                if (rn2(20))
+                    tmp += rn1(5, 3);
+                else {
+                    if (canseemon(mtmp))
+                        pline_The("poison was deadly...");
+                    tmp = mtmp->mhp;
+                }
+            }
+        } else
+            tmp = 0;
+        return assess_dmg(mtmp, tmp);
+    case AD_SLEE:
+        /* passive sleep for gold grung */ 
+            orig_dmg = tmp;
+        if (!rn2(2)) {
+            pline_mon(mtmp, "%s is splashed by your %s!", Monnam(mtmp),
+                  hliquid("toxic skin"));
+            if (resists_sleep(mtmp)) {
+                pline_mon(mtmp, "%s is not affected.", Monnam(mtmp));
+            } else {
+                (void) sleep_monst(mtmp, tmp, 0);
+            }
+        }
+        tmp = 0;
         return assess_dmg(mtmp, tmp);
     case AD_STON: /* cockatrice */
     {

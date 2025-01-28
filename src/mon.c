@@ -1151,6 +1151,13 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_COMPSOGNATHUS:
     case PM_VELOCIRAPTOR:
     case PM_T_REX:
+    case PM_GRUNG:
+    case PM_GREEN_GRUNG:
+    case PM_BLUE_GRUNG:
+    case PM_PURPLE_GRUNG:
+    case PM_RED_GRUNG:
+    case PM_ORANGE_GRUNG:
+    case PM_GOLD_GRUNG:
     case PM_LONG_WORM_TAIL:
     case PM_ARCHEOLOGIST:
     case PM_BARBARIAN:
@@ -2975,8 +2982,12 @@ mm_aggression(
     if (is_ghoul(magr->data) && mdef->data == &mons[PM_MAGGOT])
         return ALLOW_M | ALLOW_TM;
 
-    /* Maggots tend to eat ghoul food, angering the ghouls... */
+    /* Phoenixes loathe undead */
     if (mndx == PM_PHOENIX && is_undead(mdef->data))
+        return ALLOW_M | ALLOW_TM;
+    
+    /* Grung really hate kamadan */
+    if (is_grung(magr->data) && mdef->data == &mons[PM_KAMADAN])
         return ALLOW_M | ALLOW_TM;
     
     /* berserk monsters sometimes lash out at everything

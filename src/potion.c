@@ -951,6 +951,9 @@ peffect_hallucination(struct obj *otmp)
 staticfn void
 peffect_water(struct obj *otmp)
 {
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+        rehydrate(FALSE);
+
     if (!otmp->blessed && !otmp->cursed) {
         pline("This tastes like %s.", hliquid("water"));
         u.uhunger += rnd(10);
@@ -2763,6 +2766,8 @@ potionbreathe(struct obj *obj)
                 you_were();
                 unambiguous = TRUE;
             }
+        } else if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
+            rehydrate(FALSE);
         }
         break;
     case POT_ACID:
@@ -3112,6 +3117,7 @@ dodip(void)
     const char *shortestname; /* last resort obj name for prompt */
     uchar here = levl[u.ux][u.uy].typ;
     boolean is_hands, at_pool = is_damp_terrain(u.ux, u.uy),
+            is_grung = maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)),
             at_fountain = IS_FOUNTAIN(here),
             at_forge = IS_FORGE(here),
             at_sink = IS_SINK(here),
@@ -3230,6 +3236,15 @@ dodip(void)
                 return ECMD_TIME;
             }
             ++drink_ok_extra;
+        } else if (is_grung && is_poisonable(obj) && !obj->opoisoned) {
+            Snprintf(qbuf, sizeof(qbuf), "%s%s along your toxic skin??",
+                     Dip_, flags.verbose ? obuf : shortestname);
+            if (y_n(qbuf) == 'y') {
+                    pline("Your sticky poison forms a coating on %s.", the(xname(obj)));
+                    obj->opoisoned = TRUE;
+                    dehydrate(rn1(15, 15));
+                return ECMD_TIME;
+            }
         }
     }
 

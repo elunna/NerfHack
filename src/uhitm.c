@@ -1303,7 +1303,24 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
             return;
         }
     }
-
+    /* Grung have a poison touch that is effective when the hero is
+     * fighting barehanded and without gloves */
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)) && !uarmg) {
+        pline_mon(mon, "%s is %s by your poisonous skin!",
+                  Monnam(mon), rn2(2) ? "hit" : "struck");
+        if (resists_poison(mon)) {
+            pline_mon(mon, "%s is not affected.", Monnam(mon));
+        } else {
+            if (rn2(20))
+                hmd->dmg += rn1(5, 3);
+            else {
+                if (canseemon(mon))
+                    pline_The("poison was deadly...");
+                hmd->dmg = mon->mhp;
+            }
+        }
+    }
+    
     /* copy silverhit info back into struct _hitmon_data *hmd */
     switch (hmd->twohits) {
     case 0: /* only one hit being attempted; a silver ring on either hand
@@ -3306,6 +3323,7 @@ mhitm_ad_fire(
                 ignite_items(gi.invent);
             }
             burn_away_slime();
+            dehydrate(orig_dmg);
         } else {
             mhm->damage = 0;
         }
@@ -4709,12 +4727,14 @@ mhitm_ad_halu(
 {
     mhm->damage = 0;
     boolean thirdeye = magr->mnum == PM_THIRD_EYE;
-
+    int armpro = magic_negation(mdef);
+    boolean negated = !(rn2(10) >= 3 * armpro);
+    
     /* Currently this code assumes this is an AT_EXPL attack (the only such
      * attack currently implemented). Make something break if some other
      * hallucination attack gets implemented, so that the below can be revised.
      */
-    if (mattk->aatyp != AT_EXPL && mattk->aatyp != AT_GAZE) {
+    if (mattk->aatyp != AT_EXPL && mattk->aatyp != AT_GAZE && mattk->aatyp != AT_BITE) {
         impossible("Non-explosion AD_HALU attack; behavior is unimplemented");
         return;
     }
@@ -4732,6 +4752,14 @@ mhitm_ad_halu(
         mdef->mstrategy &= ~STRAT_WAITFORU;
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
+        if (mattk->aatyp == AT_BITE) {
+            mhm->damage = rn1(10, 10);
+            hitmsg(magr, mattk);
+            if (!negated && !rn2(2)) {
+                (void) make_hallucinated((HHallucination & TIMEOUT) + mhm->damage, TRUE, 0L);
+                mhm->damage /= 2;
+            }
+        }
         /* handled in mon_explodes_nodmg */
     } else {
         /* mhitm */
@@ -7223,6 +7251,41 @@ passive(
         }
         exercise(A_STR, FALSE);
         break;
+    case AD_DRST:
+    case AD_DRDX:
+    case AD_DRCO: {
+        /* passive poison for grung's toxic skin */
+        int ptmp = A_STR;  /* A_STR == 0 */
+        char buf[BUFSZ];
+        
+        switch (ptr->mattk[i].adtyp) {
+        case AD_DRST: ptmp = A_STR; break;
+        case AD_DRDX: ptmp = A_DEX; break;
+        case AD_DRCO: ptmp = A_CON; break;
+        default:
+            impossible("ADTYPE %d not handled in mhitm_ad_drst!",
+                       ptr->mattk->adtyp);
+        }
+        
+        if (mhitb && m_next2u(mon) && rn2(2)) {
+            if (Blind || !flags.verbose)
+                You("are splashed!");
+            else
+                You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
+                    hliquid("toxic skin"));
+
+            if (!fully_resistant(POISON_RES)) {
+                mdamageu(mon, tmp);
+                Sprintf(buf, "%s %s", s_suffix(Monnam(mon)), mpoisons_subj(mon, ptr->mattk));
+                poisoned(buf, ptmp, pmname(mon->data, Mgender(mon)), 30, FALSE);
+                monstunseesu(M_SEEN_POISON);
+            } else {
+                monstseesu(M_SEEN_POISON);
+            }
+        }
+        exercise(A_STR, FALSE);
+        break;
+    }
     case AD_STON:
         if (mhitb) { /* successful attack */
             long protector = attk_protection((int) aatyp);
@@ -7332,35 +7395,59 @@ passive(
 
         /* specifically yellow mold */
         if (m_next2u(mon)) {
-            if (!Strangled && !Breathless && !Stunned) {
-                pline("You inhale a cloud of spores!");
-                make_stunned((long) tmp, TRUE);
-            } else {
-                pline("A cloud of spores surrounds you!");
+            if (is_grung(mon->data)) { /* purple grung */
+                You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
+                hliquid("toxic skin"));
+                if (!Stunned)
+                    make_stunned((long) tmp, TRUE);
+            } else { /* Yellow mold */
+                if (!Strangled && !Breathless && !Stunned) {
+                    pline("You inhale a cloud of spores!");
+                    make_stunned((long) tmp, TRUE);
+                } else {
+                    pline("A cloud of spores surrounds you!");
+                }
             }
-        } else if (malive && canseemon(mon))
+        } else if (ptr == &mons[PM_YELLOW_MOLD]
+                   && malive && canseemon(mon))
             pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon));
         break;
      case AD_SLEE:
         /* passive sleep attack for orange jelly */
         if (m_next2u(mon) && !fully_resistant(SLEEP_RES)) {
-            fall_asleep(-rnd(tmp), TRUE);
-            if (Blind)
-                You("are put to sleep!");
-            else
-                You("are put to sleep by %s!", mon_nam(mon));
+            if (is_grung(mon->data)) { /* orange grung */
+                if (canseemon(mon))
+                    You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
+                        hliquid("toxic skin"));
+                else
+                    You("are splashed!");
+                fall_asleep(-rnd(tmp), TRUE);
+            } else {
+                if (Blind)
+                    You("are put to sleep!");
+                else
+                    You("are put to sleep by %s!", mon_nam(mon));
+                fall_asleep(-rnd(tmp), TRUE);
+            }
         }
         break;
     case AD_HALU: /* specifically violet fungus */
         /* Use the same values as breathing potion vapors. */
         if (m_next2u(mon)) {
-            if (!Strangled && !Breathless && !Hallucination) {
-                pline("You inhale a cloud of spores!");
+            if (is_grung(mon->data)) { /* orange grung */
+                You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
+                hliquid("toxic skin"));
                 (void) make_hallucinated((HHallucination & TIMEOUT) + rn1(20, 20), TRUE, 0L);
             } else {
-                pline("A cloud of spores surrounds you!");
+                if (!Strangled && !Breathless && !Hallucination) {
+                    pline("You inhale a cloud of spores!");
+                    (void) make_hallucinated((HHallucination & TIMEOUT) + rn1(20, 20), TRUE, 0L);
+                } else {
+                    pline("A cloud of spores surrounds you!");
+                }
             }
-        } else if (malive && canseemon(mon))
+        } else if (ptr == &mons[PM_VIOLET_FUNGUS]
+                          && malive && canseemon(mon))
             pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon));
         break;
      case AD_DISE: /* specifically gray fungus */
@@ -7514,6 +7601,7 @@ passive(
                 You("are suddenly very hot!");
                 mdamageu(mon, tmp); /* fire damage */
                 burn_away_slime();
+                dehydrate(tmp);
             }
             break;
         case AD_ELEC:
@@ -7845,12 +7933,14 @@ light_hits_gremlin(struct monst *mon, int dmg)
  * Gnomes are really picky, they don't like any other races' armor
  * Humans are not too picky, they only dislike orcish and gnomish armor
  * Hobbits will tolerate elven and dwarven armor but never orcish.
+ * Grung tolerate different armors, but hate heavy metallic armor.
  */
 boolean
 hates_item(struct monst *mtmp, int otyp)
 {
     boolean is_you = (mtmp == &gy.youmonst);
-
+    boolean is_heavy_suit = otyp >= PLATE_MAIL && otyp <= LEATHER_JACKET
+                            && objects[otyp].oc_material != LEATHER;
     /* Special exception for archaeologists - the following text was written
      * by ChatGPT because, ... why not.
      *
@@ -7892,6 +7982,11 @@ hates_item(struct monst *mtmp, int otyp)
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_DHAMPIR))
                 : is_vampire(mtmp->data))
         return (is_gnomish_obj(otyp));
+    
+    if (is_you ? maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
+                : is_grung(mtmp->data))
+        return (is_heavy_suit);
+    
     return FALSE;
 }
 

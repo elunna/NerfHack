@@ -439,7 +439,8 @@ newman(void)
                    ? gu.urace.individual.m
                    : gu.urace.noun;
     polyman("You feel like a new %s!", newform);
-
+    break_armor();
+    
     newgend = poly_gender();
     /* note: newman() bypasses achievements for new ranks attained and
        doesn't log "new <form>" when that isn't accompanied by level change */
@@ -762,7 +763,7 @@ polymon(int mntmp)
         livelog_printf(LL_CONDUCT,
                        "changed form for the first time, becoming %s",
                        an(pmname(&mons[mntmp], flags.female ? FEMALE : MALE)));
-
+    
     /* exercise used to be at the very end but only Wis was affected
        there since the polymorph was always in effect by then */
     exercise(A_CON, FALSE);
@@ -879,7 +880,18 @@ polymon(int mntmp)
     check_strangling(FALSE); /* maybe stop strangling */
     if (nohands(gy.youmonst.data))
         make_glib(0);
-
+    
+    /* Grung need their hydration; start them off with less than a standard
+     * grung would get. */
+    if (is_grung(gy.youmonst.data)) {
+        if (!svc.context.hydration)
+            svc.context.hydration = (long) rn1(250, 250);
+    } else if (Race_if(PM_GRUNG)) {
+        /* Polymorphing uses up a significant amount of hydration */
+        svc.context.hydration -= (long) (svc.context.hydration / 5);
+        if (svc.context.hydration < 25)
+            svc.context.hydration = 26L;
+    }
     /*
     mlvl = adj_lev(&mons[mntmp]);
      * We can't do the above, since there's no such thing as an
@@ -1191,7 +1203,8 @@ staticfn void
 break_armor(void)
 {
     struct obj *otmp;
-    struct permonst *uptr = gy.youmonst.data;
+    struct permonst *uptr = Upolyd ? gy.youmonst.data
+                                   : &mons[gu.urace.mnum];
 
     if (breakarm(uptr)) {
         if ((otmp = uarm) != 0) {
@@ -1300,8 +1313,8 @@ break_armor(void)
             dropp(otmp);
         }
     }
-    if (nohands(uptr) || verysmall(uptr)
-        || slithy(uptr) || uptr->mlet == S_CENTAUR) {
+    if (nohands(uptr) || verysmall(uptr) || slithy(uptr)
+        || uptr->mlet == S_CENTAUR || uptr->mlet == S_GRUNG) {
         if ((otmp = uarmf) != 0) {
             if (donning(otmp))
                 cancel_don();
@@ -1422,8 +1435,13 @@ rehumanize(void)
 
     if (emits_light(gy.youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
+    
+    /* Don't keep this timer going when we revert to normal */
+    if (svc.context.hydration && !Race_if(PM_GRUNG))
+        svc.context.hydration = 0L;
+    
     polyman("You return to %s form!", gu.urace.adj);
-
+    break_armor();
     if (u.uhp < 1) {
         /* can only happen if some bit of code reduces u.uhp
            instead of u.mh while poly'd */

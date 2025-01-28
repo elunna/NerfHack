@@ -13,6 +13,7 @@ staticfn void rabid_dialogue(void);
 staticfn void levitation_dialogue(void);
 staticfn void reappear_dialogue(void);
 staticfn void slime_dialogue(void);
+staticfn void hydration_dialogue(void);
 staticfn void slimed_to_death(struct kinfo *) NO_NNARGS;
 staticfn void sickness_dialogue(void);
 staticfn void phaze_dialogue(void);

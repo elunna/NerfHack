@@ -4957,6 +4957,7 @@ dofiretrap(
     else
         losehp(num, tower_of_flame, KILLED_BY_AN); /* fire damage */
     burn_away_slime();
+    dehydrate(orig_dmg);
 
     if (burnarmor(&gy.youmonst) || rn2(3)) {
         (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);

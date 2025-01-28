@@ -1290,6 +1290,22 @@ status_enlightenment(int mode, int final)
             Sprintf(eos(buf), " <%d>", u.uhunger);
         you_are(buf, "");
     }
+    /* dehydration for grung */
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
+        if (svc.context.hydration == 0)
+            Strcpy(buf, "dead from dehydration");
+        else if (svc.context.hydration <= 10)
+            Strcpy(buf, "extremely dehydrated");
+        else if (svc.context.hydration <= 100)
+            Strcpy(buf, "very dehydrated");
+        else if (svc.context.hydration <= 250)
+            Strcpy(buf, "moderately dehydrated");
+        else if (svc.context.hydration <= 500)
+            Strcpy(buf, "slightly dehydrated");
+        else 
+            Strcpy(buf, "properly hydrated");
+        you_are(buf, "");
+    }
     /* encumbrance */
     if ((cap = near_capacity()) > UNENCUMBERED) {
         const char *adj = "?_?"; /* (should always get overridden) */

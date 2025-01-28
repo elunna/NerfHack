@@ -1447,7 +1447,18 @@ you_sanity_check(void)
                    u.uen, u.uenmax);
         u.uen = u.uenmax;
     }
-
+    /* Grung hydration checks */
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
+        if (!svc.context.hydration)
+            impossible("grung hydration is 0");
+        if (svc.context.hydration < 0)
+            impossible("grung hydration is negative");
+        if (svc.context.hydration > HYDRATION_MAX)
+            impossible("grung hydration is over maximum (%d)", HYDRATION_MAX);
+    } else {
+        if (!svc.context.hydration)
+            impossible("non-grung hydration is non-0");
+    }
     check_wornmask_slots();
     (void) check_invent_gold("invent");
 }

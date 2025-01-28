@@ -107,6 +107,7 @@
     || is_mind_flayer(ptr) \
     || is_unicorn(ptr) \
     || is_bird(ptr) \
+    || is_grung(ptr) \
     || is_dino(ptr) \
     || ptr == &mons[PM_DEEP_ONE] \
     || ptr == &mons[PM_DEEPER_ONE] \
@@ -433,6 +434,7 @@
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE  \
                      || ((ptr) == gy.youmonst.data &&       \
                          !Upolyd && Race_if(PM_DHAMPIR)))
+#define is_grung(ptr) ((ptr)->mlet == S_GRUNG)
 
 /* For vampires */
 #define has_blood(ptr)	(!vegetarian(ptr) && \
@@ -534,6 +536,7 @@
 #define MAX_PARTIAL (Race_if(PM_DHAMPIR) ? 50 : 100)
 #define percent_granted(ptr) ((ptr)->cwt / 90)
 
+#define HYDRATION_MAX 6000
 /* The monster is covetous, but should not warp, heal, or otherwise use
  * tactics(). */
 #define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr))

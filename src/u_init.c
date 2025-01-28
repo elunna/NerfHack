@@ -278,6 +278,11 @@ static struct inv_sub {
     { PM_DHAMPIR, FOOD_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, CRAM_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, LEMBAS_WAFER, POT_VAMPIRE_BLOOD },
+    /* grung can't wear boots */
+    { PM_GRUNG, HIGH_BOOTS, STRANGE_OBJECT },
+    { PM_GRUNG, LOW_BOOTS, STRANGE_OBJECT },
+    { PM_GRUNG, SACK, OILSKIN_SACK },
+    
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
@@ -989,7 +994,8 @@ u_init_race(void)
         adjalign(-5);
         change_luck(-1);
         break;
-
+    case PM_GRUNG:
+        svc.context.hydration = HYDRATION_MAX;
     default: /* impossible */
         break;
     }
@@ -1334,14 +1340,13 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_WITHERING
            || otyp == WAN_NOTHING
            || (Race_if(PM_DHAMPIR) &&
-               /* vampirics start with regeneration */
-               (otyp == RIN_REGENERATION
                /* vampirics don't eat */
-                || otyp == SPE_DETECT_FOOD || otyp == SCR_FOOD_DETECTION
+               (otyp == SPE_DETECT_FOOD || otyp == SCR_FOOD_DETECTION
                /* vampires don't like silver */
                 || objects[otyp].oc_material == SILVER))
            /* orcs start with poison resistance */
-           || (otyp == RIN_POISON_RESISTANCE && Race_if(PM_ORC))
+           || (otyp == RIN_POISON_RESISTANCE 
+               && (Race_if(PM_ORC) || Race_if(PM_GRUNG)))
            /* Monks don't use weapons */
            || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
            /* wizard patch -- they already have one of these */

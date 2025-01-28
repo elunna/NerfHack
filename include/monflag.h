@@ -195,15 +195,17 @@ enum ms_sounds {
 #define MH_GNOME        0x00000040L
 #define MH_ORC          0x00000080L
 #define MH_VAMPIRE      0x00000100L
-#define MH_WERE         0x00000200L
-#define MH_GIANT        0x00000400L
-#define MH_UNDEAD       0x00000800L
-#define MH_DRAGON       0x00001000L
-#define MH_TROLL        0x00002000L
-#define MH_OGRE         0x00004000L
-#define MH_JABBERWOCK   0x00008000L
-#define MH_ANGEL        0x00010000L
-#define MH_DEMON        0x00020000L
+#define MH_GRUNG        0x00000200L
+/* End of playable races */
+#define MH_WERE         0x00000400L
+#define MH_GIANT        0x00000800L
+#define MH_UNDEAD       0x00001000L
+#define MH_DRAGON       0x00002000L
+#define MH_TROLL        0x00004000L
+#define MH_OGRE         0x00008000L
+#define MH_JABBERWOCK   0x00010000L
+#define MH_ANGEL        0x00020000L
+#define MH_DEMON        0x00040000L
 
 #define MH_ANY          0x80000000L
 

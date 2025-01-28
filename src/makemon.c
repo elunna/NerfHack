@@ -591,6 +591,40 @@ m_initweap(struct monst *mtmp)
             (void) mongets(mtmp,
                            (rn2(7) ? SPEAR : rn2(3) ? TRIDENT : STILETTO));
         break;
+    case S_GRUNG:
+        switch (mm) {
+        case PM_BLUE_GRUNG:
+        case PM_PURPLE_GRUNG:
+             (void) mongets(mtmp, rn2(5) ? LEATHER_CLOAK : ROBE);
+             if (!rn2(4))
+                 (void) mongets(mtmp, QUARTERSTAFF);
+             else
+                 m_initthrow(mtmp, DART, 12);
+             break;
+        case PM_GREEN_GRUNG:
+        case PM_ORANGE_GRUNG:
+            if (!rn2(3))
+                (void) mongets(mtmp, LEATHER_ARMOR);
+            if (!rn2(2)) {
+                (void) mongets(mtmp, BOW);
+                m_initthrow(mtmp, ARROW, 12);
+            } else {
+                m_initthrow(mtmp, DART, 12);
+            }
+            break;
+        case PM_RED_GRUNG:
+        case PM_GOLD_GRUNG:
+            (void) mongets(mtmp, rn2(3) ? STUDDED_LEATHER_ARMOR 
+                                        : LEATHER_ARMOR);
+            (void) mongets(mtmp, rn2(7) ? SPEAR : rn2(3) 
+                                                  ? TRIDENT : SCIMITAR);
+        }
+        /* Spellcasters */
+       
+        /* Fighters */
+        
+        
+        break;
     case S_DEMON:
         switch (mm) {
         case PM_BALROG:

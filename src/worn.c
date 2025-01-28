@@ -847,7 +847,8 @@ m_dowear(struct monst *mon, boolean creation)
         m_dowear_type(mon, W_ARMS, creation, FALSE);
 
     m_dowear_type(mon, W_ARMG, creation, FALSE);
-    if (!slithy(mon->data) && mon->data->mlet != S_CENTAUR)
+    if (!slithy(mon->data) && mon->data->mlet != S_CENTAUR
+                           && mon->data->mlet != S_GRUNG)
         m_dowear_type(mon, W_ARMF, creation, FALSE);
     if (can_wear_armor)
         m_dowear_type(mon, W_ARM, creation, FALSE);

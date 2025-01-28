@@ -49,7 +49,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_SNAKE,                      /* quest enemies by class */
       S_MUMMY,                      /* quest enemies by class */
       ART_ORB_OF_DETECTION,         /* quest artifact */
-      MH_HUMAN | MH_DWARF | MH_GNOME | MH_ELF | MH_VAMPIRE | MH_ORC
+      MH_HUMAN | MH_DWARF | MH_GNOME | MH_ELF | MH_VAMPIRE | MH_ORC | MH_GRUNG
           | ROLE_MALE | ROLE_FEMALE
           | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
@@ -92,8 +92,8 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_OGRE,                       /* quest enemies by class */
       S_TROLL,                      /* quest enemies by class */
       ART_HEART_OF_AHRIMAN,         /* quest artifact */
-      MH_HUMAN | MH_ORC | MH_DWARF | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL
-          | ROLE_CHAOTIC,
+      MH_HUMAN | MH_ORC | MH_DWARF | MH_VAMPIRE | MH_GRUNG 
+          | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 16, 7, 7, 15, 16, 6 },      /* lowest initial attributes */
       { 30, 6, 7, 20, 30, 7 },      /* distribution of initial */
@@ -176,7 +176,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_SNAKE,                      /* quest enemies by class */
       S_NAGA,                       /* quest enemies by class */
       ART_HOLOGRAPHIC_VOID_LILY,    /* quest artifact */
-      MH_HUMAN | MH_DWARF | MH_ELF | MH_GNOME | MH_ORC
+      MH_HUMAN | MH_DWARF | MH_ELF | MH_GNOME | MH_ORC | MH_GRUNG
 	  | ROLE_MALE | ROLE_FEMALE
       | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
@@ -301,7 +301,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_ELEMENTAL,                  /* quest enemies by class */
       S_XORN,                       /* quest enemies by class */
       ART_EYES_OF_THE_OVERWORLD,    /* quest artifact */
-      MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
+      MH_HUMAN | MH_GRUNG | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
           | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 10, 7, 8, 8, 7, 7 },        /* lowest initial attributes */
@@ -387,8 +387,8 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_NYMPH,                      /* quest enemies by class */
       S_NAGA,                       /* quest enemies by class */
       ART_MASTER_KEY_OF_THIEVERY,   /* quest artifact */
-      MH_HUMAN | MH_ORC | MH_ELF | MH_GNOME | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE
-          | ROLE_NEUTRAL | ROLE_CHAOTIC,
+      MH_HUMAN | MH_ORC | MH_ELF | MH_GNOME | MH_VAMPIRE | MH_GRUNG 
+          | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 7, 7, 10, 7, 6 },        /* lowest initial attributes */
       { 20, 10, 10, 30, 20, 10 },   /* dist of initial attribs */
@@ -444,8 +444,8 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_CENTAUR,                    /* quest enemies by class */
       S_SPIDER,                     /* quest enemies by class */
       ART_LONGBOW_OF_DIANA,         /* quest artifact */
-      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | ROLE_MALE | ROLE_FEMALE
-          | ROLE_NEUTRAL | ROLE_CHAOTIC,
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_GRUNG 
+          | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 13, 13, 13, 9, 13, 7 },     /* lowest initial attributes */
       { 30, 10, 10, 20, 20, 10 },   /* dist of initial attribs */
@@ -609,8 +609,8 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_BAT,                        /* quest enemies by class */
       S_WRAITH,                     /* quest enemies by class */
       ART_EYE_OF_THE_AETHIOPICA,    /* quest artifact */
-      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE
-          | ROLE_NEUTRAL | ROLE_CHAOTIC,
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_VAMPIRE | MH_GRUNG 
+          | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 10, 7, 7, 7, 7 },        /* lowest initial attributes */
       { 10, 30, 10, 20, 20, 10 },   /* dist of initial attribs */
@@ -754,6 +754,27 @@ const struct Race races[] = {
         /* Init   Lower  Higher */
         {  3, 0,  0, 3,  2, 0 },	/* Hit points */
         {  3, 0,  4, 0,  4, 0 }		/* Energy */
+    },
+    {
+        "grung",
+        "grung",
+        "grungfolk",
+        "Gru",
+        { 0, 0 },               /* individual as a noun */
+        PM_GRUNG,               /* PM_ as a male monster */
+        NON_PM,                 /* PM_ as a mummy */
+        NON_PM,                 /* PM_ as a zombie */
+                                /* allowed variations */
+        MH_GRUNG | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC | ROLE_NEUTRAL, 
+        MH_GRUNG,               /* your own race's bit mask */
+        0,                      /* always peaceful */
+        MH_HUMAN | MH_ELF | MH_DWARF | MH_ORC | MH_VAMPIRE, /* always hostile */
+        /*  Str Int Wis Dex Con Cha */
+        {   3,  3,  3,  3,  3,  3 },
+        {   10, 18, 17, 20, 18, 14 },
+        /* Init   Lower  Higher */
+        { 1, 0, 0, 1, 1, 0 }, /* Hit points */
+        { 2, 0, 3, 0, 3, 0 }  /* Energy */
     },
     /* Array terminator */
     UNDEFINED_RACE,
@@ -3003,6 +3024,12 @@ setup_racemenu(
         if (this_ch == 'd') {
             if (!strcmp(races[i].noun, "dhampir"))
                 this_ch = 'D';
+            else
+                high_ch = 0;
+        }
+        if (this_ch == 'g') {
+            if (!strcmp(races[i].noun, "grung"))
+                this_ch = 'G';
             else
                 high_ch = 0;
         }

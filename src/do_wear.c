@@ -2423,6 +2423,10 @@ canwearobj(struct obj *otmp, long *mask, boolean noisy)
             if (noisy)
                 You("have no feet..."); /* not body_part(FOOT) */
             err++;
+        } else if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
+            if (noisy)
+                Your("feet are not shaped to wear %s.", c_boots);
+            err++;
         } else if (Upolyd && gy.youmonst.data->mlet == S_CENTAUR) {
             /* break_armor() pushes boots off for centaurs, so don't let
                dowear() put them back on;
