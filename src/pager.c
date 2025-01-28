@@ -880,7 +880,7 @@ lookat(coordxy x, coordxy y, char *buf, char *monbuf)
     if (!pm && cansee(x, y) && levl[x][y].splatpm
             && !printed_blood && !u_at(x, y)) {
         if (levl[x][y].splatpm == NON_PM)
-            Sprintf(eos(buf), " covered in bood");
+            Sprintf(eos(buf), " covered in blood");
         else
             Sprintf(eos(buf), " covered in %s blood",
                 Hallucination ? rndmonnam(NULL)
