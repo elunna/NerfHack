@@ -487,6 +487,9 @@ fill_zoo(struct mkroom *sroom)
                                      TRUE, FALSE);
                 if (!rn2(5))
                     make_grave(sx, sy, (char *) 0);
+                else if (!rn2(20)) {
+                    maketrap(sx, sy, PIT);
+                }
                 break;
             case BEEHIVE:
                 if (!rn2(3))
