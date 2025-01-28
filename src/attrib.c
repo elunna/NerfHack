@@ -108,7 +108,8 @@ static const struct innate {
 
   /* Flying and regeneration are inherited from the creature form */
   vam_abil[] = { { 1, &HDrain_resistance, "", "" },
-		 { 1, &HBreathless, "", "" },
+		         { 1, &HBreathless, "", "" },
+                 { 1, &HHunger, "", "" },
                  { 7, &(HFast), "quick", "slow" },
                  { 0, 0, 0, 0 } },
 
