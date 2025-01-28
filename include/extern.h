@@ -3439,6 +3439,8 @@ extern void mhitm_ad_dren(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_drli(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
+extern void mhitm_ad_vamp(struct monst *, struct attack *, struct monst *,
+                          struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_fire(struct monst *, struct attack *, struct monst *,
                           struct mhitm_data *) NONNULLPTRS;
 extern void mhitm_ad_cold(struct monst *, struct attack *, struct monst *,

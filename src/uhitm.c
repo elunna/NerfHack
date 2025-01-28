@@ -3052,60 +3052,12 @@ mhitm_ad_drli(
     struct monst *magr, struct attack *mattk,
     struct monst *mdef, struct mhitm_data *mhm)
 {
-    struct permonst *ptr = mdef->data;
-    int i;
-    boolean unaffected = resists_drli(mdef);
-    boolean V2V = is_vampire(magr->data) && is_vampire(mdef->data)
-        && !defended(mdef, AD_DRLI);
-    int drain;
-    boolean vulnerable; /* Bonus for susceptible victims */
-    if (mdef == &gy.youmonst)
-        vulnerable = u.usleep || gm.multi || Confusion || u.utrap || u.ustuck;
-    else
-        vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
-            || mdef->mconf || mdef->mtrapped;
-
-    boolean success = vulnerable ? rn2(3) : !rn2(3);
-
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success
-            && (!unaffected || V2V)) {
+        if (!rn2(3) && !(resists_drli(mdef) || defended(mdef, AD_DRLI))
+            && !mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
             mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
                                     * (usually 1d8) */
-
-            /* Vampire draining bite. */
-            if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
-                && mattk->aatyp == AT_BITE) {
-                /* Don't execute the draining effect if we cannot feed */
-                if (!has_blood(mdef->data))
-                    return;
-                /* For the life of a creature is in the blood
-                (Lev 17:11) */
-                if (flags.verbose) {
-                    You("%s on the lifeblood.",
-                        vulnerable ? "feast" : "feed");
-                }
-                /* [ALI] Biting monsters does not count against
-                eating conducts. The draining of life is
-                considered to be primarily a non-physical
-                effect */
-                lesshungry(mhm->damage * 6);
-                add_blood(u.ux, u.uy, PM_HUMAN);
-                
-                /* Maybe gain an intrinsic? */
-                
-                for (i = 1; i <= LAST_PROP; i++) {
-                    if (!intrinsic_possible(i, ptr))
-                        continue;
-                    givit(i, ptr);
-                }
-                
-                /* drain: was target's damage, now heal attacker by half */
-                drain = (mhm->damage + 1) /2; /* drain/2 rounded up */
-                healup(drain, 0, FALSE, FALSE);
-            }
-
             pline("%s becomes weaker!", Monnam(mdef));
             if (mdef->mhpmax - mhm->damage > (int) mdef->m_lev) {
                 mdef->mhpmax -= mhm->damage;
@@ -3134,28 +3086,10 @@ mhitm_ad_drli(
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success
-                && (!unaffected || V2V)) {
-	    if (is_vampire(magr->data) && mattk->aatyp == AT_BITE ) {
-                if (!has_blood(mdef->data))
-                    return;
-                /* if vampire biting (and also a pet) */
-                if (vulnerable)
-                    pline("%s gorges itself on your %s!",
-                              Monnam(magr), hliquid("blood"));
-                else
-                    Your("blood is being drained!");
-                if (magr->mtame && !magr->isminion)
-                    EDOG(magr)->hungrytime +=
-                            ((int) ((gy.youmonst.data)->cnutrit / 20) + 1);
-                add_blood(magr->mx, magr->my, PM_HUMAN);
-	        losexp("life drainage");
-            }
-            /* Vampires resist draining; avoid non-blood drains */
-            if (is_vampire(mdef->data))
-                return;
-            
+        if (!rn2(3) && !Drain_resistance
+            && !mhitm_mgc_atk_negated(magr, mdef, TRUE)){
             losexp("life drainage");
+
             /* unlike hitting with Stormbringer, wounded attacker doesn't
                heal any from the drained life */
         }
@@ -3164,17 +3098,11 @@ mhitm_ad_drli(
         /* mhitm_ad_deth gets redirected here for Death's touch */
         boolean is_death = (mattk->adtyp == AD_DETH);
 
-        if (is_death || (!mhitm_mgc_atk_negated(magr, mdef, TRUE)
-                    && success && (!unaffected || V2V))) {
+        if (is_death
+            || (!rn2(3) && !(resists_drli(mdef) || defended(mdef, AD_DRLI))
+                && !mhitm_mgc_atk_negated(magr, mdef, TRUE))) {
             if (!is_death) /* Stormbringer uses monhp_per_lvl (1d8) */
                 mhm->damage = d(2, 6);
-            
-            if (is_vampire(magr->data) && mattk->aatyp == AT_BITE ) {
-                if (!has_blood(mdef->data))
-                    return;
-                add_blood(u.ux, u.uy, PM_HUMAN);
-            }
-
             if (gv.vis && canspotmon(mdef))
                 pline_mon(mdef, "%s becomes weaker!", Monnam(mdef));
             if (mdef->mhpmax - mhm->damage > (int) mdef->m_lev) {
@@ -3192,6 +3120,123 @@ mhitm_ad_drli(
 
             /* unlike hitting with Stormbringer, wounded attacker doesn't
                heal any from the drained life */
+        }
+    }
+}
+
+/* Vampire draining bite. */
+void
+mhitm_ad_vamp(
+    struct monst *magr, struct attack *mattk,
+    struct monst *mdef, struct mhitm_data *mhm)
+{
+    struct permonst *ptr = mdef->data;
+    int i, drain;
+    boolean vulnerable,
+        unaffected = resists_drli(mdef),
+        V2V = is_vampire(mdef->data) && !defended(mdef, AD_DRLI);
+
+    if (mdef == &gy.youmonst)
+        vulnerable = u.usleep || gm.multi || Confusion || u.utrap || u.ustuck;
+    else
+        vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
+            || mdef->mconf || mdef->mtrapped;
+
+    boolean success = vulnerable ? rn2(3) : !rn2(3);
+                          
+    if (magr == &gy.youmonst) {
+        /* uhitm */
+        mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
+                                   * (usually 1d8) */
+        drain = (mhm->damage + 1) / 2; /* drain/2 rounded up */
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success
+            && (!unaffected || V2V)) {
+            /* For the life of a creature is in the blood
+            (Lev 17:11) */
+            if (flags.verbose) {
+                You("%s on the lifeblood.",
+                    vulnerable ? "feast" : "feed");
+            }
+            /* [ALI] Biting monsters does not count against
+            eating conducts. The draining of life is
+            considered to be primarily a non-physical
+            effect */
+            lesshungry(mhm->damage * 6);
+            add_blood(u.ux, u.uy, PM_HUMAN);
+
+            /* Maybe gain an intrinsic? */
+            for (i = 1; i <= LAST_PROP; i++) {
+                if (!intrinsic_possible(i, ptr))
+                    continue;
+                givit(i, ptr);
+            }
+
+            /* drain: was target's damage, now heal attacker by half */
+            healup(drain, 0, FALSE, FALSE);
+
+            pline("%s becomes weaker!", Monnam(mdef));
+            if (mdef->mhpmax - mhm->damage > (int) mdef->m_lev) {
+                mdef->mhpmax -= mhm->damage;
+            } else {
+                /* limit floor of mhpmax reduction to current m_lev + 1;
+                   avoid increasing it if somehow already less than that */
+                if (mdef->mhpmax > (int) mdef->m_lev)
+                    mdef->mhpmax = (int) mdef->m_lev + 1;
+            }
+            showdamage(mhm->damage, FALSE);
+            mdef->mhp -= mhm->damage;
+            /* !m_lev: level 0 monster is killed regardless of hit points
+               rather than drop to level -1; note: some non-living creatures
+               (golems, vortices) are subject to life-drain */
+            if (DEADMONSTER(mdef) || !mdef->m_lev) {
+                pline("%s %s!", Monnam(mdef),
+                      nonliving(mdef->data) ? "expires" : "dies");
+                xkilled(mdef, XKILL_NOMSG);
+            } else
+                mdef->m_lev--;
+            mhm->damage = 0; /* damage has already been inflicted */
+        }
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu */
+        hitmsg(magr, mattk);
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success
+                && (!unaffected || V2V)) {
+
+            /* if vampire biting (and also a pet) */
+            if (vulnerable)
+                pline("%s gorges itself on your %s!",
+                          Monnam(magr), hliquid("blood"));
+            else
+                Your("blood is being drained!");
+            if (magr->mtame && !magr->isminion)
+                EDOG(magr)->hungrytime +=
+                        ((int) ((gy.youmonst.data)->cnutrit / 20) + 1);
+            add_blood(magr->mx, magr->my, PM_HUMAN);
+	    losexp("life drainage");
+            healmon(magr, (mhm->damage + 1) / 2, 0); /* Heal attacker */
+        }
+    } else {
+        /* mhitm */
+
+        if ((!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success
+                 && (!unaffected || V2V))) {
+            add_blood(u.ux, u.uy, PM_HUMAN);
+
+            if (gv.vis && canspotmon(mdef))
+                pline_mon(mdef, "%s becomes weaker!", Monnam(mdef));
+            if (mdef->mhpmax - mhm->damage > (int) mdef->m_lev) {
+                mdef->mhpmax -= mhm->damage;
+            } else {
+                /* limit floor of mhpmax reduction to current m_lev + 1;
+                   avoid increasing it if somehow already less than that */
+                if (mdef->mhpmax > (int) mdef->m_lev)
+                    mdef->mhpmax = (int) mdef->m_lev + 1;
+            }
+            if (mdef->m_lev == 0) /* automatic kill if drained past level 0 */
+                mhm->damage = mdef->mhp;
+            else
+                mdef->m_lev--;
+            healmon(magr, (mhm->damage + 1) / 2, 0); /* Heal attacker */
         }
     }
 }
@@ -5940,6 +5985,7 @@ mhitm_adtyping(
     case AD_BLND: mhitm_ad_blnd(magr, mattk, mdef, mhm); break;
     case AD_CURS: mhitm_ad_curs(magr, mattk, mdef, mhm); break;
     case AD_DRLI: mhitm_ad_drli(magr, mattk, mdef, mhm); break;
+    case AD_VAMP: mhitm_ad_vamp(magr, mattk, mdef, mhm); break;
     case AD_RUST: mhitm_ad_rust(magr, mattk, mdef, mhm); break;
     case AD_CORR: mhitm_ad_corr(magr, mattk, mdef, mhm); break;
     case AD_DCAY: mhitm_ad_dcay(magr, mattk, mdef, mhm); break;

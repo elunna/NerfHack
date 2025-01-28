@@ -97,9 +97,10 @@
 #define AD_CLRC 50  /* random clerical spell */
 #define AD_SPEL 51  /* random magic spell */
 #define AD_RBRE 52  /* random breath weapon */
+#define AD_VAMP 53  /* vampire draining attack */
 
-#define AD_SAMU 53  /* hits, may steal Amulet (Wizard) */
-#define AD_CURS 54  /* random curse (ex. gremlin) */
+#define AD_SAMU 54  /* hits, may steal Amulet (Wizard) */
+#define AD_CURS 55  /* random curse (ex. gremlin) */
 
 #define LAST_AD AD_CURS
 
