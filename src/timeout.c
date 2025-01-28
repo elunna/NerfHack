@@ -117,6 +117,31 @@ const struct propname {
     {  0, 0 },
 };
 
+/* Someone whose only source of unchanging is polyinit mode or corruption on
+ * death can still turn into slime.
+ * TODO: Add a tracker for permanent corruption and check specifically for that
+ * and Polyinit_mode here, to guard against future ways of getting HUnchanging
+ * intrinsically.
+ */
+boolean
+can_slime_with_unchanging(void)
+{
+    /* caller should have checked this but just in case... */
+    if (!Unchanging) {
+        return TRUE;
+    }
+    /* extrinsic always blocks sliming */
+    if (EUnchanging) {
+        return FALSE;
+    }
+    /* any sources of unchanging besides FROMOUTSIDE? if so, sliming is blocked
+     */
+    if (HUnchanging & ~FROMOUTSIDE) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
 const char *
 property_by_index(int idx, int *propertynum)
 {
@@ -458,6 +483,12 @@ slime_dialogue(void)
 {
     long t = (Slimed & TIMEOUT), i = t / 2L;
 
+    if (Unchanging && !can_slime_with_unchanging()) {
+        /* prevent this message from showing up if sliming is suspended due to
+         * Unchanging */
+        return;
+    }
+
     if (t == 1L) {
         /* display as green slime during "You have become green slime."
            but don't worry about not being able to see self; if already
@@ -789,401 +820,418 @@ nh_timeout(void)
     }
 
     was_flying = Flying;
-    for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
-        if (!(upp->intrinsic & HAVEPARTIAL) /* partial intrinsics do not time out */
-            && (upp->intrinsic & TIMEOUT)
-            && !(--upp->intrinsic & TIMEOUT)) {
-            kptr = find_delayed_killer((int) (upp - u.uprops));
-            switch (upp - u.uprops) {
-            case STONED:
-                if (kptr && kptr->name[0]) {
-                    svk.killer.format = kptr->format;
-                    Strcpy(svk.killer.name, kptr->name);
-                } else {
-                    svk.killer.format = NO_KILLER_PREFIX;
-                    Strcpy(svk.killer.name, "killed by petrification");
-                }
-                dealloc_killer(kptr);
-                /* (unlike sliming, you aren't changing form here) */
-                done_timeout(STONING, STONED);
-                break;
-            case SLIMED:
-                slimed_to_death(kptr); /* done_timeout(TURNED_SLIME,SLIMED) */
-                break;
-            case VOMITING:
-                make_vomiting(0L, TRUE);
-                break;
-            case SICK:
-                /* hero might be able to bounce back from food poisoning,
-                   but not other forms of illness */
-                if ((u.usick_type & SICK_NONVOMITABLE) == 0
-                    && rn2(100) < ACURR(A_CON)) {
-                    You("have recovered from your illness.");
-                    make_sick(0, NULL, FALSE, SICK_ALL);
-                    exercise(A_CON, FALSE);
-                    adjattrib(A_CON, -1, 1);
-                    break;
-                }
-                urgent_pline("You die from your illness.");
-                if (kptr && kptr->name[0]) {
-                    svk.killer.format = kptr->format;
-                    Strcpy(svk.killer.name, kptr->name);
-                } else {
-                    svk.killer.format = KILLED_BY_AN;
-                    svk.killer.name[0] = 0; /* take the default */
-                }
-                dealloc_killer(kptr);
-
-                if ((m_idx = name_to_mon(svk.killer.name,
-                                         (int *) 0)) >= LOW_PM) {
-                    if (type_is_pname(&mons[m_idx])) {
-                        svk.killer.format = KILLED_BY;
-                    } else if (mons[m_idx].geno & G_UNIQ) {
-                        Strcpy(svk.killer.name, the(svk.killer.name));
-                        svk.killer.format = KILLED_BY;
+    for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++) {
+        if (upp->intrinsic & HAVEPARTIAL)
+            continue; /* partial intrinsics do not time out */
+        if ((upp->intrinsic & TIMEOUT) > 0) {
+            boolean timed_out = FALSE;
+            if ((upp->intrinsic & TIMEOUT) > 0) {
+                /* pause sliming only if hero has unchanging and the unchanging is
+                 * not obtained through e.g. polyinit mode;
+                 * currently no other timeouts can be paused */
+                if (!(upp - u.uprops == SLIMED && Unchanging
+                      && !can_slime_with_unchanging())) {
+                    /* the actual tick down */
+                    upp->intrinsic--;
+                    if ((upp->intrinsic & TIMEOUT) == 0) {
+                        timed_out = TRUE;
                     }
                 }
-                done_timeout(POISONING, SICK);
-                u.usick_type = 0;
-                break;
-            case RABID:
-                urgent_pline("You die from rabies.");
-                if (kptr && kptr->name[0]) {
-                    svk.killer.format = kptr->format;
-                    Strcpy(svk.killer.name, kptr->name);
-                } else {
-                    svk.killer.format = KILLED_BY_AN;
-                    svk.killer.name[0] = 0; /* take the default */
-                }
-                dealloc_killer(kptr);
-
-                if ((m_idx = name_to_mon(svk.killer.name,
-                                         (int *) 0)) >= LOW_PM) {
-                    if (type_is_pname(&mons[m_idx])) {
-                        svk.killer.format = KILLED_BY;
-                    } else if (mons[m_idx].geno & G_UNIQ) {
-                        Strcpy(svk.killer.name, the(svk.killer.name));
-                        svk.killer.format = KILLED_BY;
-                    }
-                }
-                done_timeout(POISONING, SICK);
-                u.usick_type = 0;
-                break;
-            case WITHERING:
-                if (!Withering) {
-                    You("are no longer withering away.");
-                }
-                disp.botl = TRUE;
-                break;
-            case AGGRAVATE_MONSTER:
-                if (!Aggravate_monster)
-                    You("are no longer feel so exposed.");
-                break;
-            case FAST:
-                if (!Very_fast)
-                    You_feel("yourself slow down%s.",
-                             Fast ? " a bit" : "");
-                break;
-            case CONFUSION:
-                /* So make_confused works properly */
-                set_itimeout(&HConfusion, 1L);
-                make_confused(0L, TRUE);
-                if (!Confusion)
-                    stop_occupation();
-                break;
-            case STUNNED:
-                set_itimeout(&HStun, 1L);
-                make_stunned(0L, TRUE);
-                if (!Stunned)
-                    stop_occupation();
-                break;
-            case BLINDED: {
-                boolean was_blind = !!Blind;
-
-                set_itimeout(&HBlinded, 1L);
-                make_blinded(0L, TRUE);
-                if (was_blind && !Blind)
-                    stop_occupation();
-                break;
             }
-            case DEAF:
-                set_itimeout(&HDeaf, 1L);
-                make_deaf(0L, TRUE);
-                disp.botl = TRUE;
-                if (!Deaf)
-                    stop_occupation();
-                break;
-            case INVIS:
-                newsym(u.ux, u.uy);
-                if (!Invis && !BInvis && !Blind) {
-                    You(!See_invisible
-                            ? "are no longer invisible."
-                            : "can no longer see through yourself.");
-                    stop_occupation();
-                }
-                break;
-            case TELEPAT:
-                if (!HTelepat) {
-                    You_feel(Hallucination ? "out of touch with the cosmos."
-                                           : "a strange mental dullness.");
-                    stop_occupation();
-                }
-                break;
-            case TELEPORT:
-                if (!HTeleport_control) {
-                    You_feel(Hallucination ? "yourself."
-                                           : "less jumpy.");
-                    stop_occupation();
-                }
-                break;
-            case SEE_INVIS:
-                set_mimic_blocking(); /* do special mimic handling */
-                see_monsters();       /* make invis mons appear */
-                newsym(u.ux, u.uy);   /* make self appear */
-                stop_occupation();
-                break;
-            case WOUNDED_LEGS:
-                heal_legs(0);
-                stop_occupation();
-                break;
-            case HALLUC:
-                set_itimeout(&HHallucination, 1L);
-                (void) make_hallucinated(0L, TRUE, 0L);
-                if (!Hallucination)
-                    stop_occupation();
-                break;
-            case SLEEPY:
-                if (unconscious() || fully_resistant(SLEEP_RES)) {
-                    incr_itimeout(&HSleepy, rnd(100));
-                } else if (Sleepy) {
-                    You("fall asleep.");
-                    sleeptime = rnd(20);
-                    fall_asleep(-sleeptime, TRUE);
-                    incr_itimeout(&HSleepy, sleeptime + rnd(100));
-                }
-                break;
-            case LEVITATION:
-                /* timed Levitation is ordinary, timed Flying is via
-                   #wizintrinsic only; still, we want to avoid float_down()
-                   reporting "you have stopped levitating and are now flying"
-                   when both are timing out together; if that is about to
-                   happen, end Flying early to skip feedback about it;
-                   assumes Levitation is handled before Flying */
-                if ((HFlying & TIMEOUT) == 1L)
-                    set_itimeout(&HFlying, 0L); /* bypass 'case FLYING' */
-                (void) float_down(I_SPECIAL | TIMEOUT, 0L);
-                break;
-            case FLYING:
-                /* timed Flying is via #wizintrinsic only */
-                if (was_flying && !Flying) {
-                    disp.botl = TRUE;
-                    You("land.");
-                    spoteffects(TRUE);
-                }
-                break;
-            case ACID_RES:
-                if (!Acid_resistance) {
-                    if (eating_dangerous_corpse(ACID_RES)) {
-                        /* extend temporary acid resistance if in midst
-                           of eating an acidic corpse; this will repeat
-                           until eating is finished or interrupted */
-                        set_itimeout(&u.uprops[ACID_RES].intrinsic, 1L);
+            /* now, did it time out? */
+            if (timed_out) {
+                kptr = find_delayed_killer((int) (upp - u.uprops));
+                switch (upp - u.uprops) {
+                case STONED:
+                    if (kptr && kptr->name[0]) {
+                        svk.killer.format = kptr->format;
+                        Strcpy(svk.killer.name, kptr->name);
+                    } else {
+                        svk.killer.format = NO_KILLER_PREFIX;
+                        Strcpy(svk.killer.name, "killed by petrification");
+                    }
+                    dealloc_killer(kptr);
+                    /* (unlike sliming, you aren't changing form here) */
+                    done_timeout(STONING, STONED);
+                    break;
+                case SLIMED:
+                    slimed_to_death(kptr); /* done_timeout(TURNED_SLIME,SLIMED) */
+                    break;
+                case VOMITING:
+                    make_vomiting(0L, TRUE);
+                    break;
+                case SICK:
+                    /* hero might be able to bounce back from food poisoning,
+                       but not other forms of illness */
+                    if ((u.usick_type & SICK_NONVOMITABLE) == 0
+                        && rn2(100) < ACURR(A_CON)) {
+                        You("have recovered from your illness.");
+                        make_sick(0, NULL, FALSE, SICK_ALL);
+                        exercise(A_CON, FALSE);
+                        adjattrib(A_CON, -1, 1);
                         break;
                     }
-                    if (!Unaware)
-                        You("no longer feel safe from acid.");
-                }
-                break;
-            case STONE_RES:
-                if (!Stone_resistance) {
-                    if (eating_dangerous_corpse(STONE_RES)) {
-                        /* extend temporary stoning resistance if in midst
-                           of eating a stoning corpse; this will repeat
-                           until eating is finished or interrupted */
-                        set_itimeout(&u.uprops[STONE_RES].intrinsic, 1L);
-                        break;
+                    urgent_pline("You die from your illness.");
+                    if (kptr && kptr->name[0]) {
+                        svk.killer.format = kptr->format;
+                        Strcpy(svk.killer.name, kptr->name);
+                    } else {
+                        svk.killer.format = KILLED_BY_AN;
+                        svk.killer.name[0] = 0; /* take the default */
                     }
-                    if (!Unaware)
-                        You("no longer feel secure from petrification.");
-                    /* no-op if not wielding a cockatrice corpse;
-                       uswapwep case is always a no-op because two-weapon
-                       combat is only possible with two one-handed weapons
-                       or weapon tools, not corpses */
-                    wielding_corpse(uwep, (struct obj *) 0, FALSE);
-                    wielding_corpse(uswapwep, (struct obj *) 0, FALSE);
-                }
-                break;
-            case FIRE_RES:
-                /* timed fire resistance and timed water walking combine
-                   as a way to survive lava after multiple life-saving
-                   attempts fail to relocate hero; skip timeout message
-                   if hero has acquired fire resistance in the meantime */
-                if (!fully_resistant(FIRE_RES))
-                    Your("temporary ability to survive burning has ended.");
-                break;
-            case WWALKING:
-                /* [see fire resistance] */
-                if (!Wwalking)
-                    Your("temporary ability to walk on liquid has ended.");
-                break;
-            case DISPLACED:
-                if (!Displaced) /* give a message */
-                    toggle_displacement((struct obj *) 0, 0L, FALSE);
-                break;
-            case WARN_OF_MON:
-                /* timed Warn_of_mon is via #wizintrinsic only */
-                if (!Warn_of_mon) {
-                    struct permonst *wptr = svc.context.warntype.species;
+                    dealloc_killer(kptr);
 
-                    svc.context.warntype.species = (struct permonst *) 0;
-                    svc.context.warntype.speciesidx = NON_PM;
-                    if (wptr)
-                        You("are no longer warned about %s.",
-                            makeplural(wptr->pmnames[NEUTRAL]));
-                }
-                break;
-            case PASSES_WALLS:
-                if (!Passes_walls) {
-                    if (stuck_in_wall())
-                        You_feel("hemmed in again.");
-                    else
-                        pline("You're back to your %s self again.",
-                              !Upolyd ? "normal" : "unusual");
-                }
-                break;
-            case MAGICAL_BREATHING:
-                You_feel(Hallucination ? "your gills disappear."
-                                       : "your lungs start working again.");
-                if (!Breathless) {
-                    if (region_danger())
-                        You("cough%s",
-                            Poison_resistance ? "." : " and spit blood!");
-                    if (Underwater) {
-                        if (!cant_drown(gy.youmonst.data) && !Swimming) {
-                            You("suddenly inhale an unhealthy amount of %s!",
-                                hliquid("water"));
-                            stop_occupation();
-                            (void) drown();
+                    if ((m_idx = name_to_mon(svk.killer.name,
+                                             (int *) 0)) >= LOW_PM) {
+                        if (type_is_pname(&mons[m_idx])) {
+                            svk.killer.format = KILLED_BY;
+                        } else if (mons[m_idx].geno & G_UNIQ) {
+                            Strcpy(svk.killer.name, the(svk.killer.name));
+                            svk.killer.format = KILLED_BY;
                         }
                     }
-                }
-                break;
-            case STRANGLED:
-                svk.killer.format = KILLED_BY;
-                Strcpy(svk.killer.name,
-                       (u.uburied) ? "suffocation" : "strangulation");
-                done_timeout(DIED, STRANGLED);
-                /* must be declining to die in explore|wizard mode;
-                   treat like being cured of strangulation by prayer */
-                if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
-                    Your("amulet vanishes!");
-                    useup(uamul);
-                }
-                break;
-            case FUMBLING:
-                /* call this only when a move took place.  */
-                /* otherwise handle fumbling msgs locally. */
-                if (u.umoved && !(Levitation || Flying)) {
-                    slip_or_trip();
-                    nomul(-2);
-                    gm.multi_reason = "fumbling";
-                    gn.nomovemsg = "";
-                    /* The more you are carrying the more likely you
-                     * are to make noise when you fumble.  Adjustments
-                     * to this number must be thoroughly play tested.
-                     */
-                    if ((inv_weight() > -500)) {
-                        if (!Deaf)
-                            You("make a lot of noise!");
-                        wake_nearby(FALSE);
+                    done_timeout(POISONING, SICK);
+                    u.usick_type = 0;
+                    break;
+                case RABID:
+                    urgent_pline("You die from rabies.");
+                    if (kptr && kptr->name[0]) {
+                        svk.killer.format = kptr->format;
+                        Strcpy(svk.killer.name, kptr->name);
+                    } else {
+                        svk.killer.format = KILLED_BY_AN;
+                        svk.killer.name[0] = 0; /* take the default */
                     }
-                }
-                /* from outside means slippery ice/grease; don't reset
-                   counter if that's the only fumble reason */
-                HFumbling &= ~FROMOUTSIDE;
-                /* I_SPECIAL means from grease */
-                if (HFumbling & I_SPECIAL && !rn2(20)) {
-                    pline_The("goop wears off of your %s.",
-                                makeplural(body_part(FOOT)));
-                    make_fumbling(0);
-                }
+                    dealloc_killer(kptr);
 
-                if (Fumbling)
-                    incr_itimeout(&HFumbling, rnd(20));
+                    if ((m_idx = name_to_mon(svk.killer.name,
+                                             (int *) 0)) >= LOW_PM) {
+                        if (type_is_pname(&mons[m_idx])) {
+                            svk.killer.format = KILLED_BY;
+                        } else if (mons[m_idx].geno & G_UNIQ) {
+                            Strcpy(svk.killer.name, the(svk.killer.name));
+                            svk.killer.format = KILLED_BY;
+                        }
+                    }
+                    done_timeout(POISONING, SICK);
+                    u.usick_type = 0;
+                    break;
+                case WITHERING:
+                    if (!Withering) {
+                        You("are no longer withering away.");
+                    }
+                    disp.botl = TRUE;
+                    break;
+                case AGGRAVATE_MONSTER:
+                    if (!Aggravate_monster)
+                        You("are no longer feel so exposed.");
+                    break;
+                case FAST:
+                    if (!Very_fast)
+                        You_feel("yourself slow down%s.",
+                                 Fast ? " a bit" : "");
+                    break;
+                case CONFUSION:
+                    /* So make_confused works properly */
+                    set_itimeout(&HConfusion, 1L);
+                    make_confused(0L, TRUE);
+                    if (!Confusion)
+                        stop_occupation();
+                    break;
+                case STUNNED:
+                    set_itimeout(&HStun, 1L);
+                    make_stunned(0L, TRUE);
+                    if (!Stunned)
+                        stop_occupation();
+                    break;
+                case BLINDED: {
+                    boolean was_blind = !!Blind;
 
-                if (iflags.defer_decor) {
-                    /* 'mention_decor' was deferred for message sequencing
-                       reasons; catch up now */
-                    deferred_decor(FALSE);
+                    set_itimeout(&HBlinded, 1L);
+                    make_blinded(0L, TRUE);
+                    if (was_blind && !Blind)
+                        stop_occupation();
+                    break;
                 }
-                break;
-            case DETECT_MONSTERS:
-                see_monsters();
-                break;
-            case GLIB:
-                make_glib(0); /* might update persistent inventory */
-                break;
-            case REGENERATION:
-                if (!Regeneration)
-                    You_feel("enervated.");
-                break;
-            case HUNGER:
-                if (!Hunger)
-                    Your("%s feels more at ease.", body_part(STOMACH));
-                break;
-            case SEARCHING:
-                if (!Searching)
-                    You_feel("less aware.");
-                break;
-            case WARNING:
-                /* No warning for losing warning.*/
-                see_monsters();
-                break;
-            case STEALTH:
-                if (!Stomping) {
-                    boolean riding = (u.usteed != NULL);
-                    You("%s%s are noisy.", riding ? "and " : "sure",
-                        riding ? x_monnam(u.usteed, ARTICLE_YOUR, (char *) NULL,
-                                        (SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION),
-                                        FALSE)
-                            : "");
-                }
-                break;
-            case CONFLICT:
-                if (!Conflict) {
-                    You_feel("the tension decrease around you.");
+                case DEAF:
+                    set_itimeout(&HDeaf, 1L);
+                    make_deaf(0L, TRUE);
+                    disp.botl = TRUE;
+                    if (!Deaf)
+                        stop_occupation();
+                    break;
+                case INVIS:
+                    newsym(u.ux, u.uy);
+                    if (!Invis && !BInvis && !Blind) {
+                        You(!See_invisible
+                                ? "are no longer invisible."
+                                : "can no longer see through yourself.");
+                        stop_occupation();
+                    }
+                    break;
+                case TELEPAT:
+                    if (!HTelepat) {
+                        You_feel(Hallucination ? "out of touch with the cosmos."
+                                               : "a strange mental dullness.");
+                        stop_occupation();
+                    }
+                    break;
+                case TELEPORT:
+                    if (!HTeleport_control) {
+                        You_feel(Hallucination ? "yourself."
+                                               : "less jumpy.");
+                        stop_occupation();
+                    }
+                    break;
+                case SEE_INVIS:
+                    set_mimic_blocking(); /* do special mimic handling */
+                    see_monsters();       /* make invis mons appear */
+                    newsym(u.ux, u.uy);   /* make self appear */
                     stop_occupation();
-                }
-                break;
-            case POLYMORPH:
-                if (!Polymorph) {
-                    You_feel(Hallucination ? "Pollyanna leave the building."
-                                           : "less fluid.");
+                    break;
+                case WOUNDED_LEGS:
+                    heal_legs(0);
                     stop_occupation();
+                    break;
+                case HALLUC:
+                    set_itimeout(&HHallucination, 1L);
+                    (void) make_hallucinated(0L, TRUE, 0L);
+                    if (!Hallucination)
+                        stop_occupation();
+                    break;
+                case SLEEPY:
+                    if (unconscious() || fully_resistant(SLEEP_RES)) {
+                        incr_itimeout(&HSleepy, rnd(100));
+                    } else if (Sleepy) {
+                        You("fall asleep.");
+                        sleeptime = rnd(20);
+                        fall_asleep(-sleeptime, TRUE);
+                        incr_itimeout(&HSleepy, sleeptime + rnd(100));
+                    }
+                    break;
+                case LEVITATION:
+                    /* timed Levitation is ordinary, timed Flying is via
+                       #wizintrinsic only; still, we want to avoid float_down()
+                       reporting "you have stopped levitating and are now flying"
+                       when both are timing out together; if that is about to
+                       happen, end Flying early to skip feedback about it;
+                       assumes Levitation is handled before Flying */
+                    if ((HFlying & TIMEOUT) == 1L)
+                        set_itimeout(&HFlying, 0L); /* bypass 'case FLYING' */
+                    (void) float_down(I_SPECIAL | TIMEOUT, 0L);
+                    break;
+                case FLYING:
+                    /* timed Flying is via #wizintrinsic only */
+                    if (was_flying && !Flying) {
+                        disp.botl = TRUE;
+                        You("land.");
+                        spoteffects(TRUE);
+                    }
+                    break;
+                case ACID_RES:
+                    if (!Acid_resistance) {
+                        if (eating_dangerous_corpse(ACID_RES)) {
+                            /* extend temporary acid resistance if in midst
+                               of eating an acidic corpse; this will repeat
+                               until eating is finished or interrupted */
+                            set_itimeout(&u.uprops[ACID_RES].intrinsic, 1L);
+                            break;
+                        }
+                        if (!Unaware)
+                            You("no longer feel safe from acid.");
+                    }
+                    break;
+                case STONE_RES:
+                    if (!Stone_resistance) {
+                        if (eating_dangerous_corpse(STONE_RES)) {
+                            /* extend temporary stoning resistance if in midst
+                               of eating a stoning corpse; this will repeat
+                               until eating is finished or interrupted */
+                            set_itimeout(&u.uprops[STONE_RES].intrinsic, 1L);
+                            break;
+                        }
+                        if (!Unaware)
+                            You("no longer feel secure from petrification.");
+                        /* no-op if not wielding a cockatrice corpse;
+                           uswapwep case is always a no-op because two-weapon
+                           combat is only possible with two one-handed weapons
+                           or weapon tools, not corpses */
+                        wielding_corpse(uwep, (struct obj *) 0, FALSE);
+                        wielding_corpse(uswapwep, (struct obj *) 0, FALSE);
+                    }
+                    break;
+                case FIRE_RES:
+                    /* timed fire resistance and timed water walking combine
+                       as a way to survive lava after multiple life-saving
+                       attempts fail to relocate hero; skip timeout message
+                       if hero has acquired fire resistance in the meantime */
+                    if (!fully_resistant(FIRE_RES))
+                        Your("temporary ability to survive burning has ended.");
+                    break;
+                case WWALKING:
+                    /* [see fire resistance] */
+                    if (!Wwalking)
+                        Your("temporary ability to walk on liquid has ended.");
+                    break;
+                case DISPLACED:
+                    if (!Displaced) /* give a message */
+                        toggle_displacement((struct obj *) 0, 0L, FALSE);
+                    break;
+                case WARN_OF_MON:
+                    /* timed Warn_of_mon is via #wizintrinsic only */
+                    if (!Warn_of_mon) {
+                        struct permonst *wptr = svc.context.warntype.species;
+
+                        svc.context.warntype.species = (struct permonst *) 0;
+                        svc.context.warntype.speciesidx = NON_PM;
+                        if (wptr)
+                            You("are no longer warned about %s.",
+                                makeplural(wptr->pmnames[NEUTRAL]));
+                    }
+                    break;
+                case PASSES_WALLS:
+                    if (!Passes_walls) {
+                        if (stuck_in_wall())
+                            You_feel("hemmed in again.");
+                        else
+                            pline("You're back to your %s self again.",
+                                  !Upolyd ? "normal" : "unusual");
+                    }
+                    break;
+                case MAGICAL_BREATHING:
+                    You_feel(Hallucination ? "your gills disappear."
+                                           : "your lungs start working again.");
+                    if (!Breathless) {
+                        if (region_danger())
+                            You("cough%s",
+                                Poison_resistance ? "." : " and spit blood!");
+                        if (Underwater) {
+                            if (!cant_drown(gy.youmonst.data) && !Swimming) {
+                                You("suddenly inhale an unhealthy amount of %s!",
+                                    hliquid("water"));
+                                stop_occupation();
+                                (void) drown();
+                            }
+                        }
+                    }
+                    break;
+                case STRANGLED:
+                    svk.killer.format = KILLED_BY;
+                    Strcpy(svk.killer.name,
+                           (u.uburied) ? "suffocation" : "strangulation");
+                    done_timeout(DIED, STRANGLED);
+                    /* must be declining to die in explore|wizard mode;
+                       treat like being cured of strangulation by prayer */
+                    if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
+                        Your("amulet vanishes!");
+                        useup(uamul);
+                    }
+                    break;
+                case FUMBLING:
+                    /* call this only when a move took place.  */
+                    /* otherwise handle fumbling msgs locally. */
+                    if (u.umoved && !(Levitation || Flying)) {
+                        slip_or_trip();
+                        nomul(-2);
+                        gm.multi_reason = "fumbling";
+                        gn.nomovemsg = "";
+                        /* The more you are carrying the more likely you
+                         * are to make noise when you fumble.  Adjustments
+                         * to this number must be thoroughly play tested.
+                         */
+                        if ((inv_weight() > -500)) {
+                            if (!Deaf)
+                                You("make a lot of noise!");
+                            wake_nearby(FALSE);
+                        }
+                    }
+                    /* from outside means slippery ice/grease; don't reset
+                       counter if that's the only fumble reason */
+                    HFumbling &= ~FROMOUTSIDE;
+                    /* I_SPECIAL means from grease */
+                    if (HFumbling & I_SPECIAL && !rn2(20)) {
+                        pline_The("goop wears off of your %s.",
+                                    makeplural(body_part(FOOT)));
+                        make_fumbling(0);
+                    }
+
+                    if (Fumbling)
+                        incr_itimeout(&HFumbling, rnd(20));
+
+                    if (iflags.defer_decor) {
+                        /* 'mention_decor' was deferred for message sequencing
+                           reasons; catch up now */
+                        deferred_decor(FALSE);
+                    }
+                    break;
+                case DETECT_MONSTERS:
+                    see_monsters();
+                    break;
+                case GLIB:
+                    make_glib(0); /* might update persistent inventory */
+                    break;
+                case REGENERATION:
+                    if (!Regeneration)
+                        You_feel("enervated.");
+                    break;
+                case HUNGER:
+                    if (!Hunger)
+                        Your("%s feels more at ease.", body_part(STOMACH));
+                    break;
+                case SEARCHING:
+                    if (!Searching)
+                        You_feel("less aware.");
+                    break;
+                case WARNING:
+                    /* No warning for losing warning.*/
+                    see_monsters();
+                    break;
+                case STEALTH:
+                    if (!Stomping) {
+                        boolean riding = (u.usteed != NULL);
+                        You("%s%s are noisy.", riding ? "and " : "sure",
+                            riding ? x_monnam(u.usteed, ARTICLE_YOUR, (char *) NULL,
+                                            (SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION),
+                                            FALSE)
+                                : "");
+                    }
+                    break;
+                case CONFLICT:
+                    if (!Conflict) {
+                        You_feel("the tension decrease around you.");
+                        stop_occupation();
+                    }
+                    break;
+                case POLYMORPH:
+                    if (!Polymorph) {
+                        You_feel(Hallucination ? "Pollyanna leave the building."
+                                               : "less fluid.");
+                        stop_occupation();
+                    }
+                    break;
+                case POLYMORPH_CONTROL:
+                    if (!Polymorph_control) {
+                        You_feel(Hallucination ? "like anything could happen."
+                                               : "less in control of yourself.");
+                        stop_occupation();
+                    }
+                    break;
+                case PROT_FROM_SHAPE_CHANGERS:
+                    /* No message */
+                    if (!Protection_from_shape_changers)
+                        restartcham();
+                    break;
+                case REFLECTING:
+                    if (!Blind) {
+                        pline_The("shimmering %s around you flickers and vanishes!",
+                            Hallucination ? "bubble" : "globe");
+                        stop_occupation();
+                    }
+                    break;
                 }
-                break;
-            case POLYMORPH_CONTROL:
-                if (!Polymorph_control) {
-                    You_feel(Hallucination ? "like anything could happen."
-                                           : "less in control of yourself.");
-                    stop_occupation();
-                }
-                break;
-            case PROT_FROM_SHAPE_CHANGERS:
-                /* No message */
-                if (!Protection_from_shape_changers)
-                    restartcham();
-                break;
-            case REFLECTING:
-                if (!Blind) {
-                    pline_The("shimmering %s around you flickers and vanishes!",
-                        Hallucination ? "bubble" : "globe");
-                    stop_occupation();
-                }
-                break;
             }
         }
-
+    }
     spell_nag();
     run_timers();
 }

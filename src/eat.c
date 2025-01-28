@@ -887,7 +887,8 @@ cprefx(int pm)
         return;
     }
     case PM_GREEN_SLIME:
-        if (!Slimed && !Unchanging && !slimeproof(gy.youmonst.data)) {
+        if (!Slimed && (!Unchanging || can_slime_with_unchanging())
+            && !slimeproof(gy.youmonst.data)) {
             You("don't feel very well.");
             make_slimed(10L, (char *) 0);
             delayed_killer(SLIMED, KILLED_BY_AN, "");

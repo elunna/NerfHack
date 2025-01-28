@@ -4299,7 +4299,8 @@ mhitm_ad_slim(
         if (flaming(pd)) {
             pline_The("slime burns away!");
             mhm->damage = 0;
-        } else if (Unchanging || noncorporeal(pd)
+        } else if ((Unchanging && !can_slime_with_unchanging())
+                   || noncorporeal(pd)
                    || pd == &mons[PM_GREEN_SLIME]) {
             You("are unaffected.");
             mhm->damage = 0;

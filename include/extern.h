@@ -3278,6 +3278,7 @@ extern void teleport_pain(void);
 
 /* ### timeout.c ### */
 
+extern boolean can_slime_with_unchanging(void);
 extern const char *property_by_index(int, int *) NO_NNARGS;
 extern void burn_away_slime(void);
 extern void nh_timeout(void);
