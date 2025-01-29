@@ -1089,6 +1089,7 @@ wash_hands(void)
         if (uarmf) {
             uarmf->greased = 0;
             res = water_damage(uarmf, (const char *) 0, TRUE);
+            update_inventory();
         }
     } else {
         You("wash your %s%s in the %s.", uarmg ? "gloved " : "", hands,
@@ -1098,6 +1099,7 @@ wash_hands(void)
             if (uarmg)
                 uarmg->greased = 0;
             Your("%s are no longer slippery.", fingers_or_gloves(TRUE));
+            update_inventory();
         }
         if (uarmg)
             res = water_damage(uarmg, (const char *) 0, TRUE);
