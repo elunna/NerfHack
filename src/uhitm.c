@@ -464,6 +464,11 @@ find_roll_to_hit(
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;
 
+    /* grung *hate* kamadan */
+    if (mtmp->data == &mons[PM_KAMADAN]
+        && maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+        tmp++;
+
     /* level adjustment. maxing out has some benefits */
     if (u.ulevel > 20)
         tmp += rn2((u.ulevel - 20) / 2 + 1);
