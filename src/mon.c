@@ -729,6 +729,12 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
             obj = mksobj_at(WAX_CANDLE, x, y, TRUE, FALSE);
         free_mgivenname(mtmp);
         break;
+    case PM_PLASTIC_GOLEM:
+        num = d(2, 2);
+        while (num--)
+            obj = mksobj_at(CREDIT_CARD, x, y, TRUE, FALSE);
+        free_mgivenname(mtmp);
+        break;
     case PM_GOLD_GOLEM:
         /* Good luck gives more coins */
         obj = mkgold((long) (200 - rnl(101)), x, y);

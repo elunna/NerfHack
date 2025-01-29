@@ -2506,6 +2506,7 @@ golemhp(int type)
     case PM_WAX_GOLEM:
     case PM_LEATHER_GOLEM:
         return 40;
+    case PM_PLASTIC_GOLEM:
     case PM_GOLD_GOLEM:
         return 60;
     case PM_WOOD_GOLEM:

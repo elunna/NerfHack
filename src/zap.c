@@ -1797,6 +1797,10 @@ create_polymon(struct obj *obj, int okind)
         pm_index = PM_WAX_GOLEM;
         material = "wax ";
         break;
+    case PLASTIC:
+        pm_index = PM_PLASTIC_GOLEM;
+        material = "plastic ";
+        break;
     case CLOTH:
         pm_index = PM_ROPE_GOLEM;
         material = "cloth ";
