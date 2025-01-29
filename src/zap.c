@@ -222,7 +222,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             learn_it = FALSE;
         }
         break;
-    case SPE_FIRE_BOLT:
+    case SPE_FIRE_BOLT: {
+        int role_skill = P_SKILL(P_ATTACK_SPELL);
         zap_type_text = "fire bolt";
         dmg = 0;
         reveal_invis = TRUE;
@@ -249,10 +250,20 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                 dmg = spell_damage_bonus(dmg);
                 if (resists_cold(mtmp))
                     dmg += 7;
-                if (P_SKILL(P_MATTER_SPELL) >= P_SKILLED)
-                    dmg += d(1, 4); /* Skilled = +1d4 */
-                if (P_SKILL(P_MATTER_SPELL) >= P_EXPERT)
-                    dmg += d(1, 4); /* Expert = +1d4 */
+                if (role_skill >= P_SKILLED)
+                    dmg += d(1, 10);         /* Skilled = +1d10 */
+                if (role_skill >= P_EXPERT)
+                    dmg += d(1, 10);         /* Expert  = +1d10 */
+                
+                if (u.ulevel >= 5)
+                    dmg += d(1, 4);
+                if (u.ulevel >= 11)
+                    dmg += d(1, 4);
+                if (u.ulevel >= 17)
+                    dmg += d(1, 4);
+                
+                /* Max possible = 3d10 + 3d4 */
+                
                 if (dbldam)
                     dmg *= 2;
                 hit(zap_type_text, mtmp, exclam(dmg));
@@ -269,6 +280,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         }
         learn_it = TRUE;
         break;
+    }
     case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
         if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
