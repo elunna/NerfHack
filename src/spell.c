@@ -1584,6 +1584,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_HASTE_SELF:
     case SPE_DETECT_TREASURE:
     case SPE_DETECT_MONSTERS:
+    case SPE_SACRED_VISION:
     case SPE_LEVITATION:
     case SPE_RESTORE_ABILITY:
         /* high skill yields effect equivalent to blessed potion */

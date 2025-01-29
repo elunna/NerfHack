@@ -985,10 +985,13 @@ nh_timeout(void)
                     }
                     break;
                 case SEE_INVIS:
-                    set_mimic_blocking(); /* do special mimic handling */
-                    see_monsters();       /* make invis mons appear */
-                    newsym(u.ux, u.uy);   /* make self appear */
-                    stop_occupation();
+                    if (!See_invisible) {
+                        You("feel less perceptive.");
+                        set_mimic_blocking(); /* do special mimic handling */
+                        see_monsters();       /* make invis mons appear */
+                        newsym(u.ux, u.uy);   /* make self appear */
+                        stop_occupation();
+                    }
                     break;
                 case WOUNDED_LEGS:
                     heal_legs(0);
