@@ -77,6 +77,7 @@ end
 
 des.room({ contents = function()
                  des.stair("up")
+                 des.trap();
                  des.object()
               end
 })
@@ -94,7 +95,6 @@ des.room({ contents = function()
 -- This needs to precede the other rooms so it always connects.
 des.room({ contents = function()
                  des.object();
-                 des.trap();
                  des.monster();
                  des.altar({ type="altar" })
               end

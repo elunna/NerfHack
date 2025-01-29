@@ -66,6 +66,7 @@ end
 
 des.room({ contents = function()
                  des.stair("up");
+                 des.trap();
                  des.object();
               end
 });
@@ -82,7 +83,6 @@ des.room({ contents = function()
 -- Guaranteed altar!
 des.room({ contents = function()
                  des.object();
-                 des.trap();
                  des.monster();
                  des.altar({ type="altar" })
               end
