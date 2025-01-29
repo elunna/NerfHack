@@ -3192,7 +3192,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         if (!Deaf) {
             pline("Whoosh!");
         }
-        if (!fully_resistant(POISON_RES)) {
+        if (fully_resistant(POISON_RES)) {
             shieldeff(u.ux, u.uy);
             You("inhale some apparently harmless gas.");
             monstseesu(M_SEEN_POISON);
