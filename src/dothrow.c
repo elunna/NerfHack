@@ -1509,6 +1509,7 @@ throwit(struct obj *obj,
         struct obj pseudo;
         pseudo = cg.zeroobj;
         pseudo.otyp = obj->corpsenm;
+        pseudo.oclass = WAND_CLASS;
         pseudo.dknown = pseudo.obroken = 1; /* Don't id it */
 
         gc.current_wand = &pseudo;

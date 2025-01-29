@@ -2099,9 +2099,9 @@ poly_obj(struct obj *obj, int id)
         break;
 
     case SCROLL_CLASS:
-	    /* Avoid creating scrolls of zapping from polypiling.
-	     * Maybe cartomancers should be able to?? */
-	    while (otmp->otyp == SCR_ZAPPING)
+        /* Avoid creating scrolls of zapping from polypiling.
+        * Maybe cartomancers should be able to?? */
+        while (otmp->otyp == SCR_ZAPPING)
             otmp->otyp = rnd_class(SCR_ENCHANT_ARMOR, SCR_STINKING_CLOUD);
 
         if (Role_if(PM_CARTOMANCER)) {
@@ -2961,6 +2961,7 @@ dozap(void)
             impossible("seffects: SCR_WAND_ZAP has no zap type!");
 
         pseudo.otyp = obj->corpsenm;
+        pseudo.oclass = WAND_CLASS;
         pseudo.dknown = pseudo.obroken = 1; /* Don't id it */
         need_dir = objects[pseudo.otyp].oc_dir != NODIR;
 

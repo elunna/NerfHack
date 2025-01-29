@@ -1803,6 +1803,7 @@ seffect_zapping(struct obj **sobjp)
         return FALSE;
     }
     pseudo.otyp = sobj->corpsenm;
+    pseudo.oclass = WAND_CLASS;
     pseudo.dknown = pseudo.obroken = 1; /* Don't id it */
 
     if (!(objects[pseudo.otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
