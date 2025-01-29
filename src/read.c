@@ -2483,6 +2483,8 @@ seffect_flood(struct obj **sobjp, struct monst *mtmp)
         } else {
             pline("The air around you suddenly feels very humid.");
         }
+        if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+            rehydrate(TRUE);
         /* Cleanup when used in muse.c */
         if (!isyou)
             delobj(sobj);
