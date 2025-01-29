@@ -448,8 +448,9 @@ new_book_description(int booktype, char *outbuf)
         "parchment",
         "vellum",
         "cloth",
+        "canvas",
+        "hardcover",
 #if 0
-        "canvas", "hardcover", /* not used */
         "papyrus", /* not applicable--can't be produced via writing */
 #endif /*0*/
         0

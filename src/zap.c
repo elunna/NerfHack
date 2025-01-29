@@ -5577,7 +5577,8 @@ burn_floor_objects(
             || (obj->oclass == FOOD_CLASS
                 && obj->otyp == GLOB_OF_GREEN_SLIME)) {
             if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL
-                || obj->otyp == SPE_FIRE_BOLT || obj_resists(obj, 2, 100))
+                || obj->otyp == SPE_FIRE_BOLT || obj->otyp == SPE_FLAME_SPHERE
+                || obj_resists(obj, 2, 100))
                 continue;
             scrquan = obj->quan; /* number present */
             delquan = 0L;        /* number to destroy */
@@ -6818,7 +6819,8 @@ destroyable(struct obj *obj, int adtyp)
     if (adtyp == AD_FIRE) {
         /* fire-magic items are immune */
         if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL
-            || obj->otyp == SPE_FIRE_BOLT || obj->otyp == POT_REFLECTION) {
+            || obj->otyp == SPE_FIRE_BOLT || obj->otyp == SPE_FLAME_SPHERE
+            || obj->otyp == POT_REFLECTION) {
             return FALSE;
         }
         if (obj->oclass == POTION_CLASS

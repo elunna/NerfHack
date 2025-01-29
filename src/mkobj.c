@@ -2393,6 +2393,7 @@ is_flammable(struct obj *otmp)
         || otyp == SCR_FIRE
         || otyp == SPE_FIREBALL
         || otyp == SPE_FIRE_BOLT
+        || otyp == SPE_FLAME_SPHERE
         || otyp == WAN_FIRE
         || otyp == RIN_FIRE_RESISTANCE
         || otyp == FIRE_HORN)

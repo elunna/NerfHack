@@ -1495,20 +1495,17 @@ SPELL("stone to flesh",  "thick",
 SPELL("repair",           "decrepit",
       P_MATTER_SPELL,      20,  6, 3, 1, IMMEDIATE, HI_PAPER,
                                                         SPE_REPAIR),
-SPELL("chain lightning", "checkered",
-      P_ATTACK_SPELL,      25,  4, 2, 1, NODIR, CLR_GRAY,
-                                                        SPE_CHAIN_LIGHTNING),
-
-#if 0 /* DEFERRED */
 /* from slash'em, create a tame critter which explodes when attacking,
    damaging adjacent creatures--friend or foe--and dying in the process */
 SPELL("flame sphere",    "canvas",
-      P_MATTER_SPELL,      20,  2, 1, 1, NODIR, CLR_BROWN,
+      P_MATTER_SPELL,      20,  4, 2, 1, NODIR, CLR_BROWN,
                                                         SPE_FLAME_SPHERE),
 SPELL("freeze sphere",   "hardcover",
-      P_MATTER_SPELL,      20,  2, 1, 1, NODIR, CLR_BROWN,
+      P_MATTER_SPELL,      20,  4, 2, 1, NODIR, CLR_BROWN,
                                                         SPE_FREEZE_SPHERE),
-#endif
+SPELL("chain lightning", "checkered",
+      P_ATTACK_SPELL,      25,  4, 2, 1, NODIR, CLR_GRAY,
+                                                        SPE_CHAIN_LIGHTNING),
 /* books with fixed descriptions
  */
 SPELL("blank paper", "plain", P_NONE, 18, 0, 0, 0, 0, HI_PAPER,

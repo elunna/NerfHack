@@ -1619,6 +1619,26 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_PROTECTION:
         cast_protection();
         break;
+    case SPE_FLAME_SPHERE:
+    case SPE_FREEZE_SPHERE: {
+        struct monst *mtmp;
+        struct permonst *pm;
+        pm = otyp == SPE_FLAME_SPHERE ? &mons[PM_FLAMING_SPHERE]
+                                      : &mons[PM_FREEZING_SPHERE];
+        You("conjure elemental energy...");
+        for (n = 0; n < max(role_skill - 1, 1); n++) {
+            mtmp = make_msummoned(pm, &gy.youmonst, TRUE, u.ux, u.uy);
+            if (!mtmp) {
+                pline("But it quickly fades away.");
+                break;
+            } else {
+                mtmp->mhpmax = mtmp->mhp = 1;
+                mtmp->msummoned = role_skill >= P_SKILLED ? rnd(100) + 100
+                                                          : rnd(50) + 50;
+            }
+        }
+        break;
+    }
     case SPE_JUMPING:
         if (!(jump(max(role_skill, 1)) & ECMD_TIME))
             pline1(nothing_happens);
