@@ -1448,7 +1448,7 @@ you_sanity_check(void)
         u.uen = u.uenmax;
     }
     /* Grung hydration checks */
-    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
+    if (is_grung(gy.youmonst.data) || Race_if(PM_GRUNG)) {
         if (svc.context.hydration == 0L)
             impossible("grung hydration is 0");
         if (svc.context.hydration < 0L)
