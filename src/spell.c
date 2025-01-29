@@ -57,6 +57,7 @@ staticfn void propagate_chain_lightning(struct chain_lightning_queue *,
             struct chain_lightning_zap);
 staticfn int repair_ok(struct obj *);
 staticfn int cartomancer_combo(void);
+staticfn void divine_reckon(void);
 
 /* The roles[] table lists the role-specific values for tuning
  * percent_success().
@@ -582,6 +583,7 @@ study_book(struct obj *spellbook)
                 -objects[booktype].oc_level * objects[booktype].oc_delay;
             break;
         case 7:
+        case 8:
             svc.context.spbook.delay = -8 * objects[booktype].oc_delay;
             break;
         default:
@@ -1604,6 +1606,9 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
         break;
     case SPE_CREATE_FAMILIAR:
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
+        break;
+    case SPE_DIVINE_RECKONING:
+        divine_reckon();
         break;
     case SPE_CLAIRVOYANCE:
         if (!BClairvoyant) {
@@ -2639,6 +2644,62 @@ cartomancer_combo(void)
     pline("Your combo ends.");
     u.combotime = rn1(500, 1000); /* tech timeout */
     return 1;
+}
+
+staticfn void
+divine_reckon(void)
+{
+    struct monst *mtmp;
+    struct obj *pseudo = mksobj(SCR_LIGHT, FALSE, FALSE);
+    int unseen;
+    
+    bless(pseudo);
+    pseudo->ox = u.ux, pseudo->oy = u.uy;
+    
+    if (!Blind)
+        pline("A blinding light erupts, punishing the unworthy!");
+    else
+        You_feel("a holy warmth surround you!");
+    litroom(TRUE, pseudo);
+    obfree(pseudo, NULL);
+    vision_recalc(0);
+
+    if (is_undead(gy.youmonst.data)) {
+        You("burn in the radiance!");
+        /* This is ground zero.  Not good news ... */
+        u.uhp /= 100;
+        if (u.uhp < 1) {
+            u.uhp = 0;
+            svk.killer.format = KILLED_BY;
+            Strcpy(svk.killer.name, "the light of divine reckoning");
+            done(DIED);
+        }
+    }
+
+    /* Undead and Demonics can't stand the light */
+    unseen = 0;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        if (DEADMONSTER(mtmp))
+            continue;
+        if (distu(mtmp->mx, mtmp->my) > 9 * 9)
+            continue;
+        if (couldsee(mtmp->mx, mtmp->my)
+            && (is_undead(mtmp->data) || is_demon(mtmp->data))
+            && !resist(mtmp, '\0', 0, TELL)) {
+            if (canseemon(mtmp))
+                pline("%s burns in the radiance!", Monnam(mtmp));
+            else
+                unseen++;
+
+            /* damage depends on distance, divisor ranges from 10 to 2 */
+            mtmp->mhp /= (10 - (distu(mtmp->mx, mtmp->my) / 10));
+            if (mtmp->mhp < 1)
+                mtmp->mhp = 1;
+        }
+    }
+    if (unseen)
+        You_hear("%s of intense pain!",
+                 unseen > 1 ? "cries" : "a cry");
 }
 
 /*spell.c*/
