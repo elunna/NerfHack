@@ -1077,19 +1077,34 @@ peffect_see_invisible(struct obj *otmp)
 {
     int amt, msg = Invisible && !Blind;
     boolean is_spell = otmp->oclass == SPBOOK_CLASS;
+    int role_skill;
     
     if (is_spell)
         amt = rn1(40, 21);
     else
-        amt = (rnd(1000) + 250 * (bcsign(otmp) + 2))
-              / (otmp->odiluted ? 2 : 1);
+        
     
     if (is_spell) {
+        role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT 
+                                                 : P_SKILL(P_CLERIC_SPELL);
         if (Hallucination)
             pline("Lux revelare!");
         else if (!See_invisible)
             You("feel more perceptive!");
+        switch (role_skill) {
+        default:
+            amt = rn1(40, 21);
+            break;
+        case P_SKILLED:
+            amt = rnd(50) + 50;
+            break;
+        case P_EXPERT:
+            amt = rnd(100) + 100;
+            break;
+        }
     } else {
+        amt = (rnd(200) + 200 * (bcsign(otmp) + 2))
+              / (otmp->odiluted ? 2 : 1);
         gp.potion_unkn++;
         if (otmp->cursed)
             pline("Yecch!  This tastes %s.",
