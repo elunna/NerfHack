@@ -2997,7 +2997,7 @@ passiveum(
     case AD_HALU:
         /* passive poison for grung's toxic skin */ 
         orig_dmg = tmp;
-        if (!rn2(5)) {
+        if (!rn2(3)) {
             pline_mon(mtmp, "%s is splashed by your %s!", Monnam(mtmp),
                   hliquid("toxic skin"));
             if (resists_poison(mtmp)) {
