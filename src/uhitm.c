@@ -1130,10 +1130,10 @@ hitum(struct monst *mon, struct attack *uattk)
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
         && !svc.context.forcefight) {
         /* Hero only gets a bite *or* a weapon attack, not both */
-        if (u.ulevel < 10) {
+        if (u.ulevel < 12) {
             /* If hungry, always bite first (if we can feed);
              * otherwise it's 50/50 whether we bite or use weapon */
-            if ((u.uhunger < 200 || !rn2(2)) && has_blood(mon->data)) {
+            if ((u.uhunger < 300 || !rn2(2))) {
                 biteum(mon);
                 return malive;
             }
@@ -3159,13 +3159,13 @@ mhitm_ad_vamp(
         vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
             || mdef->mconf || mdef->mtrapped;
 
-    boolean success = vulnerable ? rn2(3) : !rn2(3);
+    boolean success = vulnerable ? TRUE : rn2(2);
                           
     if (magr == &gy.youmonst) {
         /* uhitm */
         mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
                                    * (usually 1d8) */
-        drain = (mhm->damage + 1) / 2; /* drain/2 rounded up */
+        drain = mhm->damage; /* drain/2 rounded up */
         if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && success
             && (!unaffected || V2V)) {
             /* For the life of a creature is in the blood
@@ -8132,7 +8132,6 @@ ring_familiarity(void)
         }
     }
 }
-
 
 /* Tertiary bite attack for vampires.
  * Return TRUE if we hit or passed on the attack, FALSE if we missed */
