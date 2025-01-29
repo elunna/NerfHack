@@ -1489,10 +1489,12 @@ static const int tiers[] = { 10, 25, 100, 250, 500, 1000, 6000 };
 void
 dehydrate(int dmg)
 {
-    int old_tier = find_tier_index(svc.context.hydration);
+    int old_tier;
 
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
+        
+    old_tier = find_tier_index(svc.context.hydration);
     svc.context.hydration -= (long) dmg;
     if (svc.context.hydration < 0)
         svc.context.hydration = 0;
