@@ -1449,14 +1449,14 @@ you_sanity_check(void)
     }
     /* Grung hydration checks */
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-        if (!svc.context.hydration)
+        if (svc.context.hydration == 0L)
             impossible("grung hydration is 0");
-        if (svc.context.hydration < 0)
+        if (svc.context.hydration < 0L)
             impossible("grung hydration is negative");
         if (svc.context.hydration > HYDRATION_MAX)
             impossible("grung hydration is over maximum (%d)", HYDRATION_MAX);
     } else {
-        if (!svc.context.hydration)
+        if (svc.context.hydration != 0L)
             impossible("non-grung hydration is non-0");
     }
     check_wornmask_slots();
