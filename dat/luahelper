@@ -60,7 +60,7 @@ devhelp-msys2:
 	        i % 5{print ""}'
 	@echo ""
 
-xcodeextra = bogusmon cmdhelp data engrave epitaph help hh \
+xcodeextra = bogusmon ntrymsgs cmdhelp data engrave epitaph help hh \
 	    history keyhelp opthelp optmenu options oracles \
 	    rumors tribute wizhelp
 #

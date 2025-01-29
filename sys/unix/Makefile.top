@@ -67,7 +67,7 @@ DIRPERM  = 0755
 #	Qt without X11; assumes GRAPHIC_TOMBSTONE:
 # VARDATND = nhtiles.bmp pet_mark.xbm pilemark.xbm rip.xpm
 
-VARDATD = bogusmon data engrave epitaph oracles options quest.lua rumors ntrymsgs
+VARDATD = bogusmon ntrymsgs data engrave epitaph oracles options quest.lua rumors
 VARDAT = $(VARDATD) $(VARDATND)
 
 #	Some versions of make use the SHELL environment variable as the
@@ -244,6 +244,9 @@ engrave: $(GAME)
 bogusmon: $(GAME)
 	( cd dat ; $(MAKE) bogusmon )
 
+ntrymsgs: $(GAME)
+	( cd dat ; $(MAKE) ntrymsgs )
+
 epitaph: $(GAME)
 	( cd dat ; $(MAKE) epitaph )
 
@@ -252,9 +255,6 @@ rumors: $(GAME)
 
 oracles: $(GAME)
 	( cd dat ; $(MAKE) oracles )
-
-ntrymsgs: $(GAME)
-	( cd dat ; $(MAKE) ntrymsgs )
 
 #	Note: options should have already been made with make, but...
 options: $(GAME)

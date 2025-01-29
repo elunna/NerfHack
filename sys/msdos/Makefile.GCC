@@ -876,6 +876,9 @@ $(DAT)/oracles:	     $(O)utility.tag    $(DAT)/oracles.txt
 $(DAT)/bogusmon:     $(O)utility.tag    $(DAT)/bogusmon.txt
 	@$(subst /,\,$(U)makedefs.exe -s)
 
+$(DAT)/ntrymsgs:	 $(O)utility.tag    $(DAT)/ntrymsgs.txt
+	@$(subst /,\,$(U)makedefs.exe -s)
+
 $(DAT)/engrave:	     $(O)utility.tag    $(DAT)/engrave.txt
 	@$(subst /,\,$(U)makedefs.exe -s)
 
@@ -895,13 +898,13 @@ $(DAT)/nhdat:	$(U)dlb_main.exe $(DAT)/data $(DAT)/rumors \
 		$(DAT)/oracles \
 		$(QUEST_DAT) \
 		$(O)sp_lev.tag \
-		$(DAT)/bogusmon $(DAT)/engrave $(DAT)/epitaph $(DAT)/tribute
+		$(DAT)/bogusmon $(DAT)/ntrymsgs $(DAT)/engrave $(DAT)/epitaph $(DAT)/tribute
 	@$(subst /,\,echo dat done >$(O)dat.tag)
 	@$(subst /,\,cd $(DAT))
 	@$(subst /,\,copy $(MSYS)/msdoshlp.txt .)
 	@$(LS) data oracles options rumors help hh >dlb.lst
 	@$(LS) cmdhelp history opthelp optmenu wizhelp license msdoshlp.txt >>dlb.lst
-	@$(LS) bogusmon engrave epitaph tribute >>dlb.lst
+	@$(LS) bogusmon ntrymsgs engrave epitaph tribute >>dlb.lst
 	$(LS) $(subst /,\,*.lua) >>dlb.lst
 	@$(subst /,\,$(U)dlb_main cvIf dlb.lst nhdat)
 	@$(subst /,\,cd $(SRC))
@@ -984,6 +987,7 @@ ifndef LUA_QTEXT_FILE
 	$(subst /,\,if exist $(DAT)/quest.dat del $(DAT)/quest.dat)
 endif
 	$(subst /,\,if exist $(DAT)/bogusmon del $(DAT)/bogusmon)
+	$(subst /,\,if exist $(DAT)/ntrymsgs del $(DAT)/ntrymsgs)
 	$(subst /,\,if exist $(DAT)/engrave del $(DAT)/engrave)
 	$(subst /,\,if exist $(DAT)/epitaph del $(DAT)/epitaph)
 	$(subst /,\,if exist $(DAT)/dlb.lst del $(DAT)/dlb.lst)

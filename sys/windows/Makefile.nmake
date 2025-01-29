@@ -1706,6 +1706,7 @@ binary.tag: 	$(DAT)\data $(DAT)\rumors $(DAT)\oracles $(DLB) \
 	copy $(DAT)\opthelp       $(GAMEDIR)
 ! ELSE
 	copy $(DAT)\bogusmon $(GAMEDIR)
+	copy $(DAT)\ntrymsgs $(GAMEDIR)
 	copy $(DAT)\cmdhelp $(GAMEDIR)
 	copy $(DAT)\data $(GAMEDIR)
 	copy $(DAT)\dungeon $(GAMEDIR)
@@ -2069,7 +2070,7 @@ $(DAT)\porthelp: $(MSWSYS)\porthelp
 nhdat$(NHV):	$(U)dlb.exe $(DAT)\data $(DAT)\oracles $(OPTIONS_FILE) $(LUA_FILES) \
 	$(DAT)\rumors $(DAT)\help $(DAT)\hh $(DAT)\cmdhelp $(DAT)\keyhelp \
 	$(DAT)\history $(DAT)\opthelp $(DAT)\optmenu $(DAT)\wizhelp $(DAT)\porthelp \
-	$(DAT)\license $(DAT)\engrave $(DAT)\epitaph $(DAT)\bogusmon $(DAT)\tribute
+	$(DAT)\license $(DAT)\engrave $(DAT)\epitaph $(DAT)\bogusmon $(DAT)\ntrymsgs $(DAT)\tribute
 	@echo Building $@
 	@cd $(DAT)
 	@echo data >dlb.lst
@@ -2091,6 +2092,7 @@ nhdat$(NHV):	$(U)dlb.exe $(DAT)\data $(DAT)\oracles $(OPTIONS_FILE) $(LUA_FILES)
 	@echo engrave >>dlb.lst
 	@echo epitaph >>dlb.lst
 	@echo bogusmon >>dlb.lst
+	@echo ntrymsgs >>dlb.lst
 	@echo tribute >>dlb.lst
 	@for %%N in (*.lua) do @echo %%N >>dlb.lst
 	@$(U)dlb cIf dlb.lst $(SRC)\nhdat
@@ -2442,6 +2444,9 @@ $(DAT)\epitaph: $(U)makedefs.exe $(DAT)\epitaph.txt
 $(DAT)\bogusmon: $(U)makedefs.exe $(DAT)\bogusmon.txt
 	$(U)makedefs -s
 
+$(DAT)\ntrymsgs: $(U)makedefs.exe $(DAT)\ntrymsgs.txt
+	$(U)makedefs -s
+
 #===============================================================================
 # Integrated sound files
 #===============================================================================
@@ -2538,7 +2543,8 @@ binary:  envchk.tag libdir.tag ottydir$(TARGET_CPU).tag \
 		$(LUASRC)\lua.h $(PDCDEP) \
 		$(INCL)\nhlua.h $(OUTL)utility.tag \
 		$(DAT)\data $(DAT)\rumors $(DAT)\oracles $(DAT)\engrave \
-		$(DAT)\epitaph $(DAT)\bogusmon $(GAMEDIR)\NerfHack.exe \
+		$(DAT)\epitaph $(DAT)\bogusmon $(DAT)\ntrymsgs \
+		$(GAMEDIR)\NerfHack.exe \
 		$(GAMEDIR)\NerfHackW.exe $(GAMEDIRDLLS) binary.tag
 	@echo NetHack is up to date.
 
@@ -2561,7 +2567,8 @@ spotless: clean
 	if exist $(DAT)\engrave         del $(DAT)\engrave
 	if exist $(DAT)\epitaph         del $(DAT)\epitaph
 	if exist $(DAT)\bogusmon        del $(DAT)\bogusmon
-	if exist $(DAT)\porthelp	del $(DAT)\porthelp
+	if exist $(DAT)\ntrymsgs        del $(DAT)\ntrymsgs
+	if exist $(DAT)\porthelp	    del $(DAT)\porthelp
 	if exist nhdat$(NHV).	        del nhdat$(NHV).
 	if exist outldirx86.tag         del outldirx86.tag
 	if exist ottydirx86.tag         del ottydirx86.tag

@@ -67,7 +67,7 @@ MOCPATH ?= $(QTDIR)/bin/$(MOC)
 # The default is for the TARGET_* variables to match the defaults.
 # If we're cross-compiling these will get overridden elsewhere, likely via
 
-VARDAT = bogusmon data engrave epitaph rumors oracles options ntrymsgs
+VARDAT = bogusmon ntrymsgs data engrave epitaph rumors oracles options
 
 all:	$(VARDAT) spec_levs quest_levs
 
@@ -132,6 +132,9 @@ epitaph:	epitaph.txt $(UTIL)makedefs.exe
 	mcr $(UTIL)makedefs.exe -s
 
 bogusmon:	bogusmon.txt $(UTIL)makedefs.exe
+	mcr $(UTIL)makedefs.exe -s
+
+ntrymsgs:	ntrymsgs.txt $(UTIL)makedefs.exe
 	mcr $(UTIL)makedefs.exe -s
 
 # note: 'options' should have already been made when include/date.h was created

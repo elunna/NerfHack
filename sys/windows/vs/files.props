@@ -11,6 +11,7 @@
     <Defs Include = "$(DatDir)engrave"/>
     <Defs Include = "$(DatDir)epitaph"/>
     <Defs Include = "$(DatDir)bogusmon"/>
+    <Defs Include = "$(DatDir)ntrymsgs"/>
 	<!-- -h -->
     <Defs Include = "$(DatDir)oracles"/>
   </ItemGroup>
@@ -322,6 +323,7 @@
     <DlbList Include = "$(DatDir)engrave"/>
     <DlbList Include = "$(DatDir)epitaph"/>
     <DlbList Include = "$(DatDir)bogusmon"/>
+    <DlbList Include = "$(DatDir)ntrymsgs"/>
     <DlbList Include = "$(DatDir)tribute"/>
     <DlbList Include = "$(DatDir)help"/>
     <DlbList Include = "$(DatDir)porthelp"/>

@@ -30,7 +30,7 @@ $	play_files = "PERM.,RECORD.,LOGFILE.,XLOGFILE.,PANICLOG."
 $	help_files = "HELP.,HH.,CMDHELP.,KEYHELP.,WIZHELP.,OPTHELP.," -
 		   + "HISTORY.,LICENSE."
 $	data_files = "DATA.,RUMORS.,ORACLES.,OPTIONS.,TRIBUTE.," -
-		   + "ENGRAVE.,EPITAPH.,BOGUSMON."
+		   + "ENGRAVE.,EPITAPH.,BOGUSMON.,NTRYMSGS."
 $	sysconf_file = "[.sys.vms]sysconf"
 $	guidebook  = "[.doc]Guidebook.txt"
 $	invoc_proc = "[.sys.vms]nethack.com"
@@ -147,7 +147,7 @@ $	milestone "(oracles)"
 $ makedefs -h	!oracles.txt -> oracles
 $	milestone "(dungeon preprocess)"
 $ makedefs -s
-$	milestone "(engrave, epitaph, bogusmon)"
+$	milestone "(engrave, epitaph, bogusmon, ntrymsgs)"
 $ makedefs -v
 $	milestone "(options)"
 $! makedefs -e	!dungeon.def -> dungeon.pdf
