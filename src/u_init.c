@@ -996,6 +996,8 @@ u_init_race(void)
         break;
     case PM_GRUNG:
         svc.context.hydration = HYDRATION_MAX;
+        /* All grung are familiar with darts */
+        set_skill_cap_minimum(P_DART, P_SKILLED);
     default: /* impossible */
         break;
     }
