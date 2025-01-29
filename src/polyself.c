@@ -121,6 +121,20 @@ set_uasmon(void)
         float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
     polysense();
 
+    /* Grung need their hydration; start them off with less than a standard
+     * grung would get. */
+    if (is_grung(gy.youmonst.data)) {
+        if (!svc.context.hydration)
+            svc.context.hydration = (long) rn1(250, 250);
+    } else if (Race_if(PM_GRUNG)) {
+        /* Polymorphing uses up a significant amount of hydration */
+        svc.context.hydration -= (long) (svc.context.hydration / 5);
+        if (svc.context.hydration < 25)
+            svc.context.hydration = 26L;
+    } else {
+        svc.context.hydration = 0L;
+    }
+    
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
         status_initialize(REASSESS_ONLY);
@@ -881,17 +895,6 @@ polymon(int mntmp)
     if (nohands(gy.youmonst.data))
         make_glib(0);
     
-    /* Grung need their hydration; start them off with less than a standard
-     * grung would get. */
-    if (is_grung(gy.youmonst.data)) {
-        if (!svc.context.hydration)
-            svc.context.hydration = (long) rn1(250, 250);
-    } else if (Race_if(PM_GRUNG)) {
-        /* Polymorphing uses up a significant amount of hydration */
-        svc.context.hydration -= (long) (svc.context.hydration / 5);
-        if (svc.context.hydration < 25)
-            svc.context.hydration = 26L;
-    }
     /*
     mlvl = adj_lev(&mons[mntmp]);
      * We can't do the above, since there's no such thing as an
