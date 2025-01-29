@@ -1296,14 +1296,18 @@ status_enlightenment(int mode, int final)
             Strcpy(buf, "dead from dehydration");
         else if (svc.context.hydration <= 10)
             Strcpy(buf, "extremely dehydrated");
+        else if (svc.context.hydration <= 25)
+            Strcpy(buf, "severely dehydrated");
         else if (svc.context.hydration <= 100)
             Strcpy(buf, "very dehydrated");
         else if (svc.context.hydration <= 250)
-            Strcpy(buf, "moderately dehydrated");
+            Strcpy(buf, "mildly dehydrated");
         else if (svc.context.hydration <= 500)
-            Strcpy(buf, "slightly dehydrated");
+            Strcpy(buf, "slightly thirsty");
+        else if (svc.context.hydration <= 1000)
+            Strcpy(buf, "mostly-hydrated");
         else 
-            Strcpy(buf, "properly hydrated");
+            Strcpy(buf, "fully hydrated");
         you_are(buf, "");
     }
     /* encumbrance */
