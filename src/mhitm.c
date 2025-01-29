@@ -1486,7 +1486,7 @@ passivemm(
     case AD_DRCO:
     case AD_HALU:
         /* passive poison for grung's toxic skin */ 
-        if (mhitb && !rn2(2)) {
+        if (mhitb && !rn2(3)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
                 pline("%s is splashed by %s %s!", buf,
@@ -1497,8 +1497,8 @@ passivemm(
                 tmp = 0;
             } else {
                 pline_mon(magr, "%s skin was poisoned!", s_suffix(Monnam(magr)));
-                if (rn2(20))
-                    tmp += rn1(5, 3);
+                if (rn2(10))
+                    tmp += rnd(6);
                 else {
                     if (canseemon(magr))
                         pline_The("poison was deadly...");
@@ -1510,7 +1510,7 @@ passivemm(
         goto assess_dmg;
     case AD_SLEE:
         /* passive poison for grung's toxic skin */ 
-        if (mhitb && !rn2(2)) {
+        if (mhitb && !rn2(3)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
                 pline("%s is splashed by %s %s!", buf,

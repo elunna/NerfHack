@@ -1268,7 +1268,8 @@ staticfn void
 hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
 {
     long spcdmgflg, silverhit = 0L; /* worn masks */
-
+    boolean negated = mhitm_mgc_atk_negated(&gy.youmonst, mon, FALSE);
+    
     if (shadelike(hmd->mdat)) {
         hmd->dmg = 0;
     } else {
@@ -1303,16 +1304,18 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
             return;
         }
     }
+    
     /* Grung have a poison touch that is effective when the hero is
      * fighting barehanded and without gloves */
-    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)) && !uarmg) {
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
+        && !negated && !rn2(3) && !uarmg) {
         pline_mon(mon, "%s is %s by your poisonous skin!",
                   Monnam(mon), rn2(2) ? "hit" : "struck");
         if (resists_poison(mon)) {
             pline_mon(mon, "%s is not affected.", Monnam(mon));
         } else {
-            if (rn2(20))
-                hmd->dmg += rn1(5, 3);
+            if (rn2(10))
+                hmd->dmg += rnd(6);
             else {
                 if (canseemon(mon))
                     pline_The("poison was deadly...");
@@ -7266,8 +7269,7 @@ passive(
             impossible("ADTYPE %d not handled in mhitm_ad_drst!",
                        ptr->mattk->adtyp);
         }
-        
-        if (mhitb && m_next2u(mon) && rn2(2)) {
+        if (mhitb && m_next2u(mon) && !rn2(3)) {
             if (Blind || !flags.verbose)
                 You("are splashed!");
             else
@@ -7395,7 +7397,9 @@ passive(
 
         /* specifically yellow mold */
         if (m_next2u(mon)) {
-            if (is_grung(mon->data)) { /* purple grung */
+            if (is_grung(mon->data) ) { /* purple grung */
+                if (rn2(3))
+                    break;
                 You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
                 hliquid("toxic skin"));
                 if (!Stunned)
@@ -7416,6 +7420,8 @@ passive(
         /* passive sleep attack for orange jelly */
         if (m_next2u(mon) && !fully_resistant(SLEEP_RES)) {
             if (is_grung(mon->data)) { /* orange grung */
+                if (rn2(3))
+                    break;
                 if (canseemon(mon))
                     You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
                         hliquid("toxic skin"));
