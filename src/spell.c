@@ -1521,6 +1521,8 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_DRAIN_LIFE:
     case SPE_STONE_TO_FLESH:
     case SPE_FIRE_BOLT:
+    case SPE_LIGHTNING:
+    case SPE_POISON_BLAST:
         if (objects[otyp].oc_dir != NODIR) {
             if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING) {
                 /* healing and extra healing are actually potion effects,

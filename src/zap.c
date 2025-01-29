@@ -3124,6 +3124,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         break;
 
     case WAN_LIGHTNING:
+    case SPE_LIGHTNING:
         learn_it = TRUE;
         orig_dmg = d(12, 6);
         if (!fully_resistant(SHOCK_RES)) {
@@ -3186,6 +3187,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         (void) destroy_items(&gy.youmonst, AD_COLD, orig_dmg);
         break;
     case WAN_POISON_GAS:
+    case SPE_POISON_BLAST:
         learn_it = TRUE;
         if (!Deaf) {
             pline("Whoosh!");
@@ -7708,6 +7710,7 @@ calc_zap_range(int otyp)
     }
     
     if (otyp == SPE_CONE_OF_COLD || otyp == SPE_FIREBALL
+        || otyp == SPE_LIGHTNING || otyp == SPE_POISON_BLAST
         || otyp == SPE_FINGER_OF_DEATH || otyp == SPE_POLYMORPH
         || otyp == SPE_CANCELLATION) {
         switch (role_skill) {

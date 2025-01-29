@@ -4200,6 +4200,10 @@ reflectable_offense(void)
         return TRUE;
     if (known_spell(SPE_SLEEP) >= spe_Fresh)
         return TRUE;
+    if (known_spell(SPE_LIGHTNING) >= spe_Fresh)
+        return TRUE;
+    if (known_spell(SPE_POISON_BLAST) >= spe_Fresh)
+        return TRUE;
     if (known_spell(SPE_FINGER_OF_DEATH) >= spe_Fresh)
         return TRUE;
 
