@@ -2683,7 +2683,7 @@ maybe_fall_onto_weapon(void)
         if (Fumbling || rnd(20) > ACURR(A_DEX)) {
             You("fumble and fall onto %s", yname(uwep));
             losehp(Maybe_Half_Phys(dmgval(uwep, &gy.youmonst)),
-                "falling onto your own weapon", KILLED_BY);
+                "falling onto a weapon", KILLED_BY);
         }
         return;
     } else if (u.twoweap && uswapwep && rn2(3)) {
@@ -2693,7 +2693,7 @@ maybe_fall_onto_weapon(void)
         if (Fumbling || rnd(20) > ACURR(A_DEX)) {
             You("fumble and fall onto %s", yname(uswapwep));
             losehp(Maybe_Half_Phys(dmgval(uswapwep, &gy.youmonst)),
-                "falling onto your own weapon", KILLED_BY);
+                "falling onto a weapon", KILLED_BY);
         }
     }
 }
