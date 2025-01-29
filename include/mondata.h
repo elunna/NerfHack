@@ -187,10 +187,14 @@
 #define has_horns(ptr) (num_horns(ptr) > 0)
 #define is_whirly(ptr) \
     ((ptr)->mlet == S_VORTEX || (ptr) == &mons[PM_AIR_ELEMENTAL])
-#define flaming(ptr)                                                     \
-    ((ptr) == &mons[PM_FIRE_VORTEX] || (ptr) == &mons[PM_FLAMING_SPHERE] \
-     || (ptr) == &mons[PM_FIRE_ELEMENTAL] || (ptr) == &mons[PM_SALAMANDER] \
-     || (ptr) == &mons[PM_LAVA_BLOB] || (ptr) == &mons[PM_LAVA_DEMON])
+#define flaming(ptr)                       \
+    ((ptr) == &mons[PM_FIRE_VORTEX]        \
+     || (ptr) == &mons[PM_FLAMING_SPHERE]  \
+     || (ptr) == &mons[PM_FIRE_ELEMENTAL]  \
+     || (ptr) == &mons[PM_WAX_GOLEM]       \
+     || (ptr) == &mons[PM_SALAMANDER]      \
+     || (ptr) == &mons[PM_LAVA_BLOB]       \
+     || (ptr) == &mons[PM_LAVA_DEMON])
 #define is_silent(ptr) ((ptr)->msound == MS_SILENT)
 #define unsolid(ptr) (((ptr)->mflags1 & M1_UNSOLID) != 0L)
 #define mindless(ptr) (((ptr)->mflags1 & M1_MINDLESS) != 0L)
@@ -392,6 +396,7 @@
       || (ptr) == &mons[PM_SHOCKING_SPHERE]                       \
       || (ptr) == &mons[PM_BABY_GOLD_DRAGON]                      \
       || (ptr) == &mons[PM_GLOWING_EYE]                           \
+      || (ptr) == &mons[PM_WAX_GOLEM]                             \
       || (ptr) == &mons[PM_FIRE_VORTEX])                          \
          ? 1                                                      \
          : ((ptr) == &mons[PM_FIRE_ELEMENTAL]                     \
@@ -451,7 +456,8 @@
 
 /* no corpse (ie, blank scrolls) if killed by fire; special case instakill  */
 #define completelyburns(ptr) \
-    ((ptr) == &mons[PM_PAPER_GOLEM] || (ptr) == &mons[PM_STRAW_GOLEM])
+    ((ptr) == &mons[PM_PAPER_GOLEM] || (ptr) == &mons[PM_STRAW_GOLEM] \
+    || (ptr) == &mons[PM_WAX_GOLEM])
 #define completelyrots(ptr) \
     ((ptr) == &mons[PM_WOOD_GOLEM] || (ptr) == &mons[PM_LEATHER_GOLEM])
 #define completelyrusts(ptr) ((ptr) == &mons[PM_IRON_GOLEM])
