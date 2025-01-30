@@ -1466,19 +1466,6 @@ check_hydration(void)
         return;
     }
     dehydrate(1);
-    
-    if (!svc.context.hydration) {
-        Your("skin dries up into a lifeless husk!");
-        if (Upolyd) {
-            rehumanize();
-            spoteffects(TRUE);
-            return;
-        } else {
-            Sprintf(svk.killer.name, "dehydration");
-            svk.killer.format = KILLED_BY;
-            done(DIED);
-        }
-    }
 }
 
 /* Decrease the grung's hydration level. Maybe show a message if the player
@@ -1490,7 +1477,7 @@ void
 dehydrate(int dmg)
 {
     int old_tier;
-
+    
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
         
@@ -1499,17 +1486,29 @@ dehydrate(int dmg)
     if (svc.context.hydration < 0)
         svc.context.hydration = 0;
     
+    /* Show a message if there was a significant change. */
     int new_tier = find_tier_index(svc.context.hydration);
-    if (new_tier == old_tier)
-        return;
-    
-    switch (new_tier) {
-    case 0: You_feel("extremely dehydrated."); break;
-    case 1: You_feel("severely dehydrated."); break;
-    case 2: You_feel("very dehydrated."); break;
-    case 3: You_feel("mildly dehydrated."); break;
-    case 4: You_feel("slightly thirsty."); break;
-    case 5: You_feel("mostly-hydrated."); break;
+    if (new_tier != old_tier) {
+        switch (new_tier) {
+        case 0: You_feel("extremely dehydrated."); break;
+        case 1: You_feel("severely dehydrated."); break;
+        case 2: You_feel("very dehydrated."); break;
+        case 3: You_feel("mildly dehydrated."); break;
+        case 4: You_feel("slightly thirsty."); break;
+        case 5: You_feel("mostly-hydrated."); break;
+        }
+    }
+    if (!svc.context.hydration) {
+        Your("skin dries up into a lifeless husk!");
+        if (Upolyd) {
+            rehumanize();
+            spoteffects(TRUE);
+            return;
+        } else {
+            Sprintf(svk.killer.name, "dehydration");
+            svk.killer.format = KILLED_BY;
+            done(DIED);
+        }
     }
     stop_occupation();
 }
