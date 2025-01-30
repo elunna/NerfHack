@@ -191,6 +191,7 @@
     ((ptr) == &mons[PM_FIRE_VORTEX]        \
      || (ptr) == &mons[PM_FLAMING_SPHERE]  \
      || (ptr) == &mons[PM_FIRE_ELEMENTAL]  \
+     || (ptr) == &mons[PM_FIRE_VAMPIRE]    \
      || (ptr) == &mons[PM_WAX_GOLEM]       \
      || (ptr) == &mons[PM_SALAMANDER]      \
      || (ptr) == &mons[PM_LAVA_BLOB]       \
@@ -233,6 +234,7 @@
      || (ptr) == &mons[PM_ORACLE]               \
      || (ptr) == &mons[PM_GHOUL_MAGE]           \
      || (ptr) == &mons[PM_OGRE_MAGE]            \
+     || (ptr) == &mons[PM_FIRE_VAMPIRE]         \
      || (ptr) == &mons[PM_VAMPIRE_MAGE])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
@@ -397,6 +399,7 @@
       || (ptr) == &mons[PM_BABY_GOLD_DRAGON]                      \
       || (ptr) == &mons[PM_GLOWING_EYE]                           \
       || (ptr) == &mons[PM_WAX_GOLEM]                             \
+      || (ptr) == &mons[PM_FIRE_VAMPIRE]                          \
       || (ptr) == &mons[PM_FIRE_VORTEX])                          \
          ? 1                                                      \
          : ((ptr) == &mons[PM_FIRE_ELEMENTAL]                     \
@@ -415,7 +418,7 @@
 /* could probably add more */
 #define likes_fire(ptr)                                                  \
     ((ptr) == &mons[PM_FIRE_VORTEX] || (ptr) == &mons[PM_FLAMING_SPHERE] \
-     || (ptr) == &mons[PM_PHOENIX] \
+     || (ptr) == &mons[PM_FIRE_VAMPIRE] || (ptr) == &mons[PM_PHOENIX]    \
      || likes_lava(ptr))
 
 #define touch_petrifies(ptr) \
