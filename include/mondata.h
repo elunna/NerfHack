@@ -380,9 +380,11 @@
 ((ptr) == &mons[PM_IRON_GOLEM] || (ptr) == &mons[PM_IRON_PIERCER])
 
 /* various monsters move faster underwater vs on land */
-#define is_fast_underwater(ptr) \
-    ((ptr) == &mons[PM_WATER_TROLL] || (ptr) == &mons[PM_BABY_CROCODILE] \
-     || (ptr) == &mons[PM_CROCODILE])
+#define is_fast_underwater(ptr)         \
+    ((ptr) == &mons[PM_WATER_TROLL]     \
+    || (ptr) == &mons[PM_WATER_HULK]    \
+    || (ptr) == &mons[PM_BABY_CROCODILE]\
+    || (ptr) == &mons[PM_CROCODILE])
 
 /* return TRUE if the monster tends to revive */
 #define is_reviver(ptr) (is_rider(ptr) || is_zombie(ptr) \
@@ -445,6 +447,9 @@
                      || ((ptr) == gy.youmonst.data &&       \
                          !Upolyd && Race_if(PM_DHAMPIR)))
 #define is_grung(ptr) ((ptr)->mlet == S_GRUNG)
+#define is_hulk(ptr) ((ptr)->mlet == S_UMBER                \
+            && (ptr) != &mons[PM_FIRE_VAMPIRE]              \
+            && (ptr) != &mons[PM_STAR_VAMPIRE])
 
 /* For vampires */
 #define has_blood(ptr)	(!vegetarian(ptr) && \

@@ -1154,7 +1154,7 @@ use_mirror(struct obj *obj)
             } else if (is_vampire(gy.youmonst.data)
                        || is_vampshifter(&gy.youmonst)) {
                 You("don't have a reflection.");
-            } else if (u.umonnum == PM_UMBER_HULK) {
+            } else if (is_hulk(gy.youmonst.data)) {
                 pline("Huh?  That doesn't look like you!");
                 make_confused(HConfusion + d(3, 4), FALSE);
             } else if (Hallucination) {
@@ -1255,7 +1255,7 @@ use_mirror(struct obj *obj)
         if (has_free_action(mtmp))
             return 1;
         paralyze_monst(mtmp, (int) mtmp->mfrozen + tmp);
-    } else if (monable && mtmp->data == &mons[PM_UMBER_HULK]) {
+    } else if (monable && is_hulk(mtmp->data)) {
         if (vis)
             pline("%s confuses itself!", Monnam(mtmp));
         mtmp->mconf = 1;
