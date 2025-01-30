@@ -873,7 +873,6 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     }
 
     if (magr->mcan || !mdef->mcansee
-        || (archon ? resists_blnd(mdef) : !magr->mcansee)
         || (magr->minvis && !mon_prop(mdef, SEE_INVIS)) || mdef->msleeping) {
         if (gv.vis && canspotmon(mdef))
             pline("but nothing happens.");
@@ -881,34 +880,51 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     }
     /* call mon_reflectsrc 2x, first test, then, if visible, print message */
     const char* monreflector = mon_reflectsrc(mdef);
-    if (magr->data == &mons[PM_MEDUSA] && monreflector) {
-        if (canseemon(mdef))
-            pline_mon(mdef, "The gaze is reflected away by %s %s.",
-                      s_suffix(mon_nam(mdef)), monreflector);
-        if (mdef->mcansee) {
-            monreflector = mon_reflectsrc(magr);
-            if (monreflector) {
-                if (canseemon(magr))
-                    pline_mon(magr, "The gaze is reflected away by %s %s.",
-                      s_suffix(mon_nam(magr)), monreflector);
-                return M_ATTK_MISS;
-            }
-            if (mdef->minvis && !mon_prop(magr, SEE_INVIS)) {
-                if (canseemon(magr)) {
-                    pline(
-                      "%s doesn't seem to notice that %s gaze was reflected.",
-                          Monnam(magr), mhis(magr));
+    boolean is_medusa = magr->data == &mons[PM_MEDUSA];
+    
+    switch (mattk->adtyp) {
+    case AD_STON: 
+        if (monreflector) {
+            if (canseemon(mdef))
+                pline_mon(mdef, "The gaze is reflected away by %s %s.",
+                          s_suffix(mon_nam(mdef)), monreflector);
+            if (mdef->mcansee) {
+                monreflector = mon_reflectsrc(magr);
+                if (monreflector) {
+                    if (canseemon(magr))
+                        pline_mon(magr, "The gaze is reflected away by %s %s.",
+                          s_suffix(mon_nam(magr)), monreflector);
+                    return M_ATTK_MISS;
                 }
-                return M_ATTK_MISS;
+                if (mdef->minvis && !mon_prop(magr, SEE_INVIS)) {
+                    if (canseemon(magr)) {
+                        pline(
+                          "%s doesn't seem to notice that %s gaze was reflected.",
+                              Monnam(magr), mhis(magr));
+                    }
+                    return M_ATTK_MISS;
+                }
+                if (is_medusa) {
+                    if (canseemon(magr))
+                        pline_mon(magr, "%s is turned to stone!", Monnam(magr));
+                    monstone(magr);
+                } else if (!mdef->mstone) {
+                    mdef->mstone = 5;
+                    mdef->mstonebyu = FALSE;
+                }
+                
+                if (!DEADMONSTER(magr))
+                    return M_ATTK_MISS;
+                return M_ATTK_AGR_DIED;
             }
-            if (canseemon(magr))
-                pline_mon(magr, "%s is turned to stone!", Monnam(magr));
-            monstone(magr);
-            if (!DEADMONSTER(magr))
-                return M_ATTK_MISS;
-            return M_ATTK_AGR_DIED;
         }
-    } else if (archon) {
+        break;
+    case AD_BLND:
+        if (archon ? resists_blnd(mdef) : !magr->mcansee) {
+            if (gv.vis && canspotmon(mdef))
+                pline("but nothing happens.");
+            return M_ATTK_MISS;
+        }
         mhitm_ad_blnd(magr, mattk, mdef, (struct mhitm_data *) 0);
         /* an Archon's blinding radiance also stuns;
            this is different from the way the hero gets stunned because
@@ -917,6 +933,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
            continuously stunned due to repeated gaze attacks */
         if (rn2(2))
             mdef->mstun = 1;
+        break;
     }
 
     return mdamagem(magr, mdef, mattk, (struct obj *) 0, 0);

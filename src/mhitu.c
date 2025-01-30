@@ -2181,9 +2181,11 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
             if (!rn2(50)) {
                 if (useeit)
-                    pline_mon(mtmp, "%s is turned to stone!", Monnam(mtmp));
-                gs.stoned = TRUE;
-                killed(mtmp);
+                    pline_mon(mtmp, "%s starts turning to stone!", Monnam(mtmp));
+                if (!mtmp->mstone) {
+                    mtmp->mstone = 5;
+                    mtmp->mstonebyu = FALSE;
+                }
             } else {
                 if (useeit)
                     pline_mon(mtmp,
@@ -2201,15 +2203,21 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             && !Stone_resistance && !Unaware) {
             You("meet %s gaze.", s_suffix(mon_nam(mtmp)));
             stop_occupation();
-            if (poly_when_stoned(gy.youmonst.data) && polymon(PM_STONE_GOLEM))
-                break;
-            if (wearing_eyes)
-                pline("%s gaze is too powerful for %s to resist!",
-                      s_suffix(Monnam(mtmp)), bare_artifactname(ublindf));
-            urgent_pline("You turn to stone...");
-            svk.killer.format = KILLED_BY;
-            Strcpy(svk.killer.name, pmname(mtmp->data, Mgender(mtmp)));
-            done(STONING);
+            
+            if (is_medusa) {
+                if (poly_when_stoned(gy.youmonst.data) && polymon(PM_STONE_GOLEM))
+                    break;
+                if (wearing_eyes)
+                    pline("%s gaze is too powerful for %s to resist!",
+                          s_suffix(Monnam(mtmp)), bare_artifactname(ublindf));
+                urgent_pline("You turn to stone...");
+                svk.killer.format = KILLED_BY;
+                Strcpy(svk.killer.name, pmname(mtmp->data, Mgender(mtmp)));
+                done(STONING);
+            } else {
+                urgent_pline("You start turning to stone!");
+                do_stone_u(mtmp);
+            }
         }
         break;
     case AD_HNGY:

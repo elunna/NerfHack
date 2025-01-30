@@ -1721,6 +1721,7 @@ dogaze(void)
         && adtyp != AD_BLND
         && adtyp != AD_TLPT
         && adtyp != AD_HALU
+        && adtyp != AD_STON
         && adtyp != AD_STUN) {
         impossible("gaze attack %d?", adtyp);
         return ECMD_OK;
@@ -1737,7 +1738,7 @@ dogaze(void)
         You("lack the energy to use your special gaze!");
         return ECMD_OK;
     }
-    u.uen -= 15;
+    u.uen -= (adtyp == AD_STON) ? 25 : 15;
     disp.botl = TRUE;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -1835,6 +1836,14 @@ dogaze(void)
                     }
                     if (u_teleport_mon(mtmp, FALSE) && !(canseemon(mtmp)))
                         pline("%s suddenly disappears!", nambuf);
+                } else if (adtyp == AD_STON && !mtmp->mstone) {
+                    if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {
+                        pline("%s doesn't seem affected.", Monnam(mtmp));
+                    } else {
+                        mtmp->mstone = 5;
+                        mtmp->mstonebyu = TRUE;
+                        }
+                    Your("gaze starts to petrify %s!", mon_nam(mtmp));
                 }
                 /* For consistency with passive() in uhitm.c, this only
                  * affects you if the monster is still alive.
