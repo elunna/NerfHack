@@ -3680,6 +3680,9 @@ check_special_room(boolean newlev)
         case ANTHOLE:
             You("enter an anthole!");
             break;
+        case TERRORHALL:
+            You("enter a terrifying hall.");
+            break;
         case BARRACKS:
             if (monstinroom(&mons[PM_SOLDIER], roomno)
                 || monstinroom(&mons[PM_SERGEANT], roomno)
@@ -3758,6 +3761,9 @@ check_special_room(boolean newlev)
                     break;
                 case DRAGONLAIR:
                     svl.level.flags.has_lair = 0;
+                    break;
+                case TERRORHALL:
+                    svl.level.flags.has_terrorhall = 0;
                     break;
                 }
             }

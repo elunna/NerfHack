@@ -774,6 +774,8 @@ wiz_map_levltyp(void)
             Strcat(dsc, " fungus farm");
         if (svl.level.flags.has_lair)
             Strcat(dsc, " dragon lair");
+        if (svl.level.flags.has_terrorhall)
+            Strcat(dsc, " terror hall");
         if (svl.level.flags.has_swamp)
             Strcat(dsc, " swamp");
         /* level flags */

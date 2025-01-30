@@ -1058,6 +1058,7 @@ clear_level_structures(void)
     svl.level.flags.has_migohive = 0;
     svl.level.flags.has_fungusfarm = 0;
     svl.level.flags.has_lair = 0;
+    svl.level.flags.has_terrorhall = 0;
     svl.level.flags.has_barracks = 0;
     svl.level.flags.has_temple = 0;
     svl.level.flags.has_swamp = 0;
@@ -1544,6 +1545,8 @@ makelevel(void)
             do_mkroom(MORGUE);
         else if (u_depth > 12 && !rn2(8) && antholemon())
             do_mkroom(ANTHOLE);
+        else if (u_depth > 13 && !rn2(6))
+            do_mkroom(TERRORHALL);
         else if(u_depth > 13 && !rn2(8))
             do_mkroom(GIANTCOURT);
         else if (u_depth > 14 && !rn2(4)

@@ -9,6 +9,7 @@ staticfn boolean beehive_mon_sound(struct monst *);
 staticfn boolean morgue_mon_sound(struct monst *);
 staticfn boolean zoo_mon_sound(struct monst *);
 staticfn boolean dlair_mon_sound(struct monst *);
+staticfn boolean terror_mon_sound(struct monst *);
 staticfn boolean temple_priest_sound(struct monst *);
 staticfn boolean mon_is_gecko(struct monst *);
 staticfn int dochat(void);
@@ -154,6 +155,30 @@ dlair_mon_sound(struct monst *mtmp)
     return FALSE;
 }
 
+staticfn boolean
+terror_mon_sound(struct monst *mtmp)
+{
+    if (mtmp->data->mlet == S_UMBER && mon_in_room(mtmp, TERRORHALL)) {
+        int hallu = Hallucination ? 1 : 0;
+
+        switch (rn2(3) + hallu) {
+        case 0:
+            You_feel("weirded out.");
+            break;
+        case 1:
+            You("sense something strange about this place.");
+            break;
+        case 2:
+            You("think you just saw something move.");
+            break;
+        case 3:
+            You("think you're seeing white rabbits!");
+            break;
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
 
 staticfn boolean
 temple_priest_sound(struct monst *mtmp)
@@ -354,6 +379,10 @@ dosounds(void)
     }
     if (svl.level.flags.has_lair && !rn2(200)) {
         if (get_iter_mons(dlair_mon_sound))
+            return;
+    }
+    if (svl.level.flags.has_terrorhall && !rn2(200)) {
+        if (get_iter_mons(terror_mon_sound))
             return;
     }
     if (svl.level.flags.has_shop && !rn2(200)) {

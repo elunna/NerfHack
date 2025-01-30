@@ -2883,6 +2883,7 @@ fill_special_room(struct mkroom *croom)
         case MORGUE:
         case BARRACKS:
         case DRAGONLAIR:
+        case TERRORHALL:
             fill_zoo(croom);
             break;
         }
@@ -2911,6 +2912,9 @@ fill_special_room(struct mkroom *croom)
         break;
     case DRAGONLAIR:
         svl.level.flags.has_lair = TRUE;
+        break;
+    case TERRORHALL:
+        svl.level.flags.has_terrorhall = TRUE;
         break;
     case BARRACKS:
         svl.level.flags.has_barracks = TRUE;
@@ -4089,6 +4093,7 @@ static const struct {
     { "anthole",            ANTHOLE },
     { "cocknest",           COCKNEST },
     { "leprehall",          LEPREHALL },
+    { "terrorhall",         TERRORHALL },
     { "dragon lair",        DRAGONLAIR },
     { "shop",               SHOPBASE },
     { "armor shop",         ARMORSHOP },

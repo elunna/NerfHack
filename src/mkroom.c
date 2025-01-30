@@ -26,6 +26,7 @@ staticfn coord *shrine_pos(int);
 staticfn struct permonst *morguemon(void);
 staticfn struct permonst *squadmon(void);
 staticfn struct permonst *realzoomon(void);
+staticfn struct permonst *horriblemon(void);
 staticfn void save_room(NHFILE *, struct mkroom *);
 staticfn void rest_room(NHFILE *, struct mkroom *);
 staticfn boolean invalid_shop_shape(struct mkroom *sroom);
@@ -100,6 +101,9 @@ do_mkroom(int roomtype)
         case DRAGONLAIR:
             mkzoo(DRAGONLAIR);
             break;
+        case TERRORHALL:
+            mkzoo(TERRORHALL);
+            break;
         default:
             impossible("Tried to make a room of type %d.", roomtype);
         }
@@ -162,6 +166,10 @@ mkshop(void)
             }
             if (*ep == 'a' || *ep == 'A') {
                 mkzoo(ANTHOLE);
+                return;
+            }
+            if (*ep == 'h' || *ep == 'H') {
+                mkzoo(TERRORHALL);
                 return;
             }
             if (*ep == 'c' || *ep == 'C') {
@@ -440,11 +448,13 @@ fill_zoo(struct mkroom *sroom)
                                                     : antholemon()) :
                           (type == REALZOO) ? realzoomon() :
                           (type == GIANTCOURT) ? mkclass(S_GIANT, 0) :
+                          (type == TERRORHALL) ? horriblemon() :
                           (type == DRAGONLAIR) ? mkclass(S_DRAGON, 0) :
                           (struct permonst *) 0, sx, sy, MM_ASLEEP | MM_NOGRP);
             if (mon) {
                 mon->msleeping = 1;
-                if ((type == COURT || type == GIANTCOURT || type == REALZOO)
+                if ((type == COURT || type == GIANTCOURT
+                     || type == REALZOO || type == TERRORHALL)
                     && mon->mpeaceful) {
                     mon->mpeaceful = 0;
                     set_malign(mon);
@@ -593,6 +603,9 @@ fill_zoo(struct mkroom *sroom)
         break;
     case DRAGONLAIR:
         svl.level.flags.has_lair = 1;
+        break;
+    case TERRORHALL:
+        svl.level.flags.has_terrorhall = 1;
         break;
     }
 }
@@ -1067,6 +1080,33 @@ realzoomon(void)
         return (&mons[PM_APE]);
     else
         return (&mons[PM_MONKEY]);
+}
+
+/* return real zoo monster types. */
+staticfn struct permonst *
+horriblemon(void)
+{
+    int i = rn2(60) + rn2(3 * level_difficulty());
+    /* Umbers are the default filler */
+    if (rn2(4))
+        return (&mons[PM_UMBER_HULK]);
+    
+    if (i > 135)
+        return (&mons[PM_STAR_VAMPIRE]);
+    else if (i > 125)
+        return (&mons[PM_FIRE_VAMPIRE]);
+    else if (i > 115)
+        return (&mons[PM_GORGON_HULK]);
+    else if (i > 85)
+        return (&mons[PM_SLUMBER_HULK]);
+    else if (i > 70)
+        return (&mons[PM_HUNGER_HULK]);
+    else if (i > 55)
+        return (&mons[PM_WATER_HULK]);
+    else if (i > 45)
+        return (&mons[PM_UMBRAL_HULK]);
+    else
+        return (&mons[PM_UMBER_HULK]);
 }
 
 static const struct {
