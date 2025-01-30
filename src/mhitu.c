@@ -2384,20 +2384,35 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
-#ifdef PM_BEHOLDER /* work in progress */
     case AD_SLEE:
-        if (mcanseeu && gm.multi >= 0 && !rn2(5) && !fully_resistant(SLEEP_RES)) {
+        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
+              && mtmp->mcansee && gm.multi >= 0 && !rn2(5)) {
+            if (!cancelled)
+                You("meet %s slumbering gaze.",
+                    s_suffix(mon_nam(mtmp)));
             if (cancelled) {
                 react = 6;                      /* "tired" */
                 already = (mtmp->mfrozen != 0); /* can't happen... */
-            } else {
-                fall_asleep(-rnd(10), TRUE);
+                break;
+            } else if (fully_resistant(SLEEP_RES)) {
+                You("yawn.");
+                monstseesu(M_SEEN_SLEEP);
+                break;
+            } else if (wearing_eyes) {
+                if (!rn2(4))
+                    pline_mon(mtmp, "%s protect you from %s slumbering gaze.",
+                          An(bare_artifactname(ublindf)), 
+                              s_suffix(mon_nam(mtmp)));
+                break;
+            } else if (!fully_resistant(SLEEP_RES)) {
+                fall_asleep(-resist_reduce(rnd(20), SLEEP_RES), TRUE);
                 pline("%s gaze makes you very sleepy...",
                       s_suffix(Monnam(mtmp)));
-                monstunseesu(M_SEEN_SLEEP);
+                break;
             }
         }
         break;
+#ifdef PM_BEHOLDER /* work in progress */
     case AD_SLOW:
         if (mcanseeu
             && (HFast & (INTRINSIC | TIMEOUT)) && !defended(mtmp, AD_SLOW)

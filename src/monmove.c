@@ -372,7 +372,8 @@ disturb(struct monst *mtmp)
 {
     /*
      * + Ettins are hard to surprise.
-     * + Nymphs, jabberwocks, and leprechauns do not easily wake up.
+     * + Nymphs, jabberwocks, slumber hulks, and leprechauns
+     * + do not easily wake up.
      *
      * Wake up if:
      *  in direct LOS                                           AND
@@ -386,6 +387,7 @@ disturb(struct monst *mtmp)
         && (!Stealth || (mtmp->data == &mons[PM_ETTIN] && rn2(10)))
         && (!(mtmp->data->mlet == S_NYMPH
               || mtmp->data == &mons[PM_JABBERWOCK]
+              || mtmp->data == &mons[PM_SLUMBER_HULK]
 #if 0 /* DEFERRED */
               || mtmp->data == &mons[PM_VORPAL_JABBERWOCK]
 #endif
@@ -798,7 +800,14 @@ dochug(struct monst *mtmp)
         if (Hallucination)
             newsym(mtmp->mx, mtmp->my);
         return 0;
+    } else if (mtmp->data == &mons[PM_SLUMBER_HULK]
+               && !mtmp->msleeping && !rn2(10)) {
+        if (canseemon(mtmp))
+            pline_mon(mtmp, "%s falls asleep and begins to snore.",
+                      Monnam(mtmp));
+        mtmp->msleeping = 1;
     }
+    
 
     /* not frozen or sleeping: wipe out texts written in the dust */
     wipe_engr_at(mtmp->mx, mtmp->my, 1, FALSE);
