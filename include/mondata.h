@@ -235,6 +235,7 @@
      || (ptr) == &mons[PM_GHOUL_MAGE]           \
      || (ptr) == &mons[PM_OGRE_MAGE]            \
      || (ptr) == &mons[PM_FIRE_VAMPIRE]         \
+     || (ptr) == &mons[PM_STAR_VAMPIRE]         \
      || (ptr) == &mons[PM_VAMPIRE_MAGE])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
