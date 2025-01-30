@@ -2212,6 +2212,24 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             done(STONING);
         }
         break;
+    case AD_HNGY:
+        if (!mtmp->mcan && canseemon(mtmp) && !cancelled
+            && couldsee(mtmp->mx, mtmp->my) && !is_fainted()
+            && mtmp->mcansee && !mtmp->mspec_used && rn2(5)) {
+            int hunger = 40 + d(6, 4);
+
+            if (wearing_eyes) {
+                pline( "%s partially protect you from %s blightful gaze!",
+                    An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                hunger = d(2, 4);
+            } else
+                pline("%s gaze reminds you of delicious %s.",
+                      s_suffix(Monnam(mtmp)), fruitname(FALSE));
+            
+            mtmp->mspec_used = mtmp->mspec_used + (hunger + rn2(6));
+            morehungry(hunger);
+        }
+        break;
     case AD_CONF:
         if (mcanseeu && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {

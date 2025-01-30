@@ -1712,8 +1712,8 @@ dogaze(void)
         }
     }
 
-    /* Monsters don't have luck - convert to confusion instead. */
-    if (adtyp == AD_LUCK)
+    /* Monsters don't have luck/hunger - convert to confusion instead. */
+    if (adtyp == AD_LUCK || adtyp == AD_HNGY )
         adtyp = AD_CONF;
 
     if (adtyp != AD_CONF

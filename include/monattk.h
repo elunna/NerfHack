@@ -98,9 +98,10 @@
 #define AD_SPEL 51  /* random magic spell */
 #define AD_RBRE 52  /* random breath weapon */
 #define AD_VAMP 53  /* vampire draining attack */
+#define AD_HNGY 54 /* a lesser version of FAMN  */
 
-#define AD_SAMU 54  /* hits, may steal Amulet (Wizard) */
-#define AD_CURS 55  /* random curse (ex. gremlin) */
+#define AD_SAMU 55  /* hits, may steal Amulet (Wizard) */
+#define AD_CURS 56  /* random curse (ex. gremlin) */
 
 #define LAST_AD AD_CURS
 

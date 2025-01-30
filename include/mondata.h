@@ -544,7 +544,8 @@
 
 /* instantly eats any organic object it comes into contact with */
 #define is_bigeater(ptr) \
-    ((ptr) == &mons[PM_GELATINOUS_CUBE] || (ptr) == &mons[PM_SHOGGOTH])
+    ((ptr) == &mons[PM_GELATINOUS_CUBE] || (ptr) == &mons[PM_SHOGGOTH] \
+    || (ptr) == &mons[PM_HUNGER_HULK])
 
 /* Corpse intrinsic stats */
 #define MAX_GAIN 50

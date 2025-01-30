@@ -4931,6 +4931,47 @@ mhitm_ad_tckl(struct monst *magr, struct attack *mattk,
     }
 }
 
+void
+mhitm_ad_hngy(struct monst *magr, struct attack *mattk UNUSED,
+              struct monst *mdef, struct mhitm_data *mhm)
+{
+    boolean negated = mhitm_mgc_atk_negated(magr, mdef, TRUE);
+    
+    if (negated || magr->mcan)
+        return;
+    if (magr == &gy.youmonst) {
+        /* uhitm */
+        mhm->damage = 0;
+        if (!mdef->mtame)
+            return;
+        if (mdef->mtame && !mdef->isminion)
+            EDOG(mdef)->hungrytime -= 50;
+        if (canseemon(mdef))
+            pline("%s %s rumbles.",
+                s_suffix(Monnam(mdef)), mbodypart(mdef,STOMACH));
+    } else if (mdef == &gy.youmonst) {
+        /* mhitu */
+        if (!is_fainted() && !magr->mspec_used && rn2(5)) {
+            int hunger = 40 + d(6, 4);
+            Your("%s heaves convulsively!", body_part(STOMACH));
+            magr->mspec_used = magr->mspec_used + (hunger + rn2(6));
+            morehungry(hunger);
+        }
+    } else {
+        /* mhitm */
+        mhm->damage = 0;
+        if (!mdef->mtame)
+            return;
+        if (mdef->mtame && !mdef->isminion)
+            EDOG(mdef)->hungrytime -= 50;
+
+        magr->mspec_used = magr->mspec_used + 50;
+        if (canseemon(mdef))
+            pline("%s %s rumbles.",
+                s_suffix(Monnam(mdef)), mbodypart(mdef,STOMACH));
+    }
+}
+
 boolean
 do_stone_u(struct monst *mtmp)
 {
@@ -6052,6 +6093,7 @@ mhitm_adtyping(
     case AD_TCKL: mhitm_ad_tckl(magr, mattk, mdef, mhm); break;
     case AD_DSRM: mhitm_ad_dsrm(magr, mattk, mdef, mhm); break;
     case AD_WEBS: mhitm_ad_webs(magr, mattk, mdef, mhm); break;
+    case AD_HNGY: mhitm_ad_hngy(magr, mattk, mdef, mhm); break;
     default:
         mhm->damage = 0;
     }
