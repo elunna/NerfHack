@@ -1702,7 +1702,7 @@ dogaze(void)
     struct monst *mtmp;
     int looked = 0;
     char qbuf[QBUFSZ];
-    int i;
+    int i, dmg;
     uchar adtyp = 0;
 
     for (i = 0; i < NATTK; i++) {
@@ -1713,16 +1713,12 @@ dogaze(void)
     }
 
     /* Monsters don't have luck/hunger - convert to confusion instead. */
-    if (adtyp == AD_LUCK || adtyp == AD_HNGY )
+    if (adtyp == AD_LUCK || adtyp == AD_HNGY|| adtyp == AD_HALU)
         adtyp = AD_CONF;
 
-    if (adtyp != AD_CONF
-        && adtyp != AD_FIRE
-        && adtyp != AD_BLND
-        && adtyp != AD_TLPT
-        && adtyp != AD_HALU
-        && adtyp != AD_STON
-        && adtyp != AD_STUN) {
+    if (adtyp != AD_CONF && adtyp != AD_FIRE
+        && adtyp != AD_BLND && adtyp != AD_TLPT
+        && adtyp != AD_STON && adtyp != AD_STUN) {
         impossible("gaze attack %d?", adtyp);
         return ECMD_OK;
     }
@@ -1773,25 +1769,21 @@ dogaze(void)
                 /* No reflection check for consistency with when a monster
                  * gazes at *you*--only medusa gaze gets reflected then.
                  */
-                if (adtyp == AD_CONF) {
+                switch (adtyp) {
+                case AD_CONF:
                     if (!mtmp->mconf)
                         Your("gaze confuses %s!", mon_nam(mtmp));
                     else
                         pline("%s is getting more and more confused.",
                               Monnam(mtmp));
                     mtmp->mconf = 1;
-                } else if (adtyp == AD_HALU && !mon_prop(mtmp, HALLUC_RES)) {
-                    if (!mtmp->mconf)
-                        Your("gaze confuses %s!", mon_nam(mtmp));
-                    else
-                        pline("%s is getting more and more confused.",
-                              Monnam(mtmp));
-                    mtmp->mconf = 1;
-                } else if (adtyp == AD_FIRE) {
-                    int dmg = d(2, 6), orig_dmg = dmg, lev = (int) u.ulevel;
+                    break;
+                case AD_FIRE:
+                    dmg = d(2, 6);
+                    int orig_dmg = dmg, lev = (int) u.ulevel;
 
                     You("attack %s with a fiery gaze!", mon_nam(mtmp));
-                    if (resists_fire(mtmp)) {
+                    if (resists_fire(mtmp) || defended(mtmp, AD_FIRE)) {
                         pline_The("fire doesn't burn %s!", mon_nam(mtmp));
                         dmg = 0;
                     }
@@ -1805,10 +1797,12 @@ dogaze(void)
                     }
                     if (DEADMONSTER(mtmp))
                         killed(mtmp);
-                } else if (adtyp == AD_BLND) {
-                    int dmg = d(2, 6);
+                    break;
+                case AD_BLND:
+                    dmg = d(2, 6);
                     You("attack %s with a blinding gaze!", mon_nam(mtmp));
-                    if (!can_blnd(&gy.youmonst, mtmp, AT_GAZE, NULL)) {
+                    if (!can_blnd(&gy.youmonst, mtmp, AT_GAZE, NULL)
+                        || resists_blnd(mtmp) || defended(mtmp, AD_BLND)) {
                         pline("%s doesn't seem affected.", Monnam(mtmp));
                         dmg = 0;
                     }
@@ -1821,11 +1815,17 @@ dogaze(void)
                         if (DEADMONSTER(mtmp))
                             killed(mtmp);
                     }
-                } else if (adtyp == AD_STUN) {
-                    pline("%s %s for a moment.", Monnam(mtmp),
+                    break;
+                case AD_STUN:
+                    if (resists_stun(mtmp->data) || defended(mtmp, AD_STUN)) {
+                        pline("%s doesn't seem affected.", Monnam(mtmp));
+                    } else {
+                        pline("%s %s for a moment.", Monnam(mtmp),
                         makeplural(stagger(mtmp->data, "stagger")));
-                    mtmp->mstun = 1;
-                } else if (adtyp == AD_TLPT) {
+                        mtmp->mstun = 1;
+                    }
+                    break;
+                case AD_TLPT: {
                     char nambuf[BUFSZ];
                     /* record the name before losing sight of monster */
                     Strcpy(nambuf, Monnam(mtmp));
@@ -1836,15 +1836,21 @@ dogaze(void)
                     }
                     if (u_teleport_mon(mtmp, FALSE) && !(canseemon(mtmp)))
                         pline("%s suddenly disappears!", nambuf);
-                } else if (adtyp == AD_STON && !mtmp->mstone) {
+                    break;
+                }
+                case AD_STON:
+                    if (mtmp->mstone)
+                        break;
                     if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {
                         pline("%s doesn't seem affected.", Monnam(mtmp));
                     } else {
                         mtmp->mstone = 5;
                         mtmp->mstonebyu = TRUE;
-                        }
+                    }
                     Your("gaze starts to petrify %s!", mon_nam(mtmp));
+                    break;
                 }
+
                 /* For consistency with passive() in uhitm.c, this only
                  * affects you if the monster is still alive.
                  */
