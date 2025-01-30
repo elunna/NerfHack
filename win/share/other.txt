@@ -906,22 +906,22 @@ Z = (195, 195, 195)
 }
 # tile 46 (grass)
 {
-  GFFFGFFFFFFGFFFF
-  FFFFFFFFGFFFFGFF
-  FGFFFFFFGFFFFGFG
-  FGFFFGFFFFFFFFFG
-  FFFFFGFFFFGFFFFF
-  FFGFFFFFFFGFFFFF
-  FFGFFFFGGFFFFFFF
-  FFFFGFGFFGFFFFGF
-  FFFFGFGFFGFFFFGF
-  FFFFFFFGGFFFFFFF
-  GFFFFFFFFFFGFFFF
-  GFFGFFGFFFFGFGFF
-  FFFGFFGFFFFFFGFF
-  FFFFFFFFFGFFFFFF
-  FFFFFFFFFGFFFFFG
-  GFFFGFFFFFFGFFFG
+  F...F......F....
+  ........F....F..
+  .F......F....F.F
+  .F...F.........F
+  .....F....F.....
+  ..F.......F.....
+  ..F....FF.......
+  ....F.F..F....F.
+  ....F.F..F....F.
+  .......FF.......
+  F..........F....
+  F..F..F....F.F..
+  ...F..F......F..
+  .........F......
+  .........F.....F
+  F...F......F...F
 }
 # tile 47 (molten lava)
 {
