@@ -2278,6 +2278,21 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         }
         break;
     case AD_BLND:
+        if (mtmp->data == &mons[PM_UMBRAL_HULK]) {
+            if (!mtmp->mspec_used && !Blind && couldsee(mtmp->mx, mtmp->my) &&
+                    can_blnd(mtmp, &gy.youmonst, mattk->aatyp, (struct obj*) 0)) {
+                if (wearing_eyes && rn2(2)) {
+                    pline_mon(mtmp, "%s protect you from %s blinding gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                    break;
+                }
+                You("meet %s gaze! The shadows merge into utter darkness!",
+                      s_suffix(mon_nam(mtmp)) );
+                make_blinded(Blinded + d((int) mattk->damn, (int) mattk->damd), FALSE);
+                if (!Blind) Your1(vision_clears);
+            }
+            break;
+        }
         if (canseemon(mtmp) && mdistu(mtmp) <= BOLT_LIM * BOLT_LIM) {
             if (cancelled) {
                 react = rn1(2, 2); /* "puzzled" || "dazzled" */

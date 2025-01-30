@@ -742,6 +742,13 @@ m_postmove_effect(struct monst *mtmp)
         create_gas_cloud(x, y, 1, 8);
     else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
         create_gas_cloud(x, y, 1, 0); /* harmless vapor */
+    
+    /* Umbral hulks dim the lights as they move */
+    if (mtmp->data == &mons[PM_UMBRAL_HULK]
+          && !mtmp->mcan && !mtmp->mspec_used
+          && levl[mtmp->mx][mtmp->my].lit) {
+        levl[mtmp->mx][mtmp->my].lit = 0;
+    }
 }
 
 /* returns 1 if monster died moving, 0 otherwise */
