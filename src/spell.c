@@ -1447,7 +1447,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
      */
     otyp = pseudo->otyp;
     skill = spell_skilltype(otyp);
-    role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(skill);
+    role_skill = cartcast ? P_EXPERT : P_SKILL(skill);
 
     switch (otyp) {
     /*
@@ -1610,6 +1610,23 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_DIVINE_RECKONING:
         divine_reckon();
         break;
+    case SPE_WATERPROOFING: {
+        long t = (HWatertight & TIMEOUT);
+        int nbase = max(5, role_skill * role_skill * 5);
+        
+        if (!Watertight) {
+             if (!Blind)
+                 Your("belongings briefly glisten with an uncanny dryness.");
+             else
+                 pline("You sense a ward safeguarding your possessions.");
+        }
+        /* after a while, repeated uses become less effective */
+        if (t > 40L)
+            incr_itimeout(&HWatertight, 1);
+        else
+            incr_itimeout(&HWatertight, rn1(11, nbase));
+        break;
+    }
     case SPE_CLAIRVOYANCE:
         if (!BClairvoyant) {
             if (role_skill >= P_SKILLED) {

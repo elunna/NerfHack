@@ -221,7 +221,7 @@ erode_obj(
         cost_type = COST_BURN;
         break;
     case ERODE_RUST:
-        vulnerable = is_rustprone(otmp);
+        vulnerable = is_rustprone(otmp) && !Watertight;
         cost_type = COST_RUST;
         break;
     case ERODE_ROT:
@@ -5394,7 +5394,10 @@ water_damage(
 
     if (!obj)
         return ER_NOTHING;
-
+    
+    if (in_invent && Watertight)
+        return ER_NOTHING;
+    
     if (splash_lit(obj))
         return ER_DAMAGED;
 
@@ -5520,7 +5523,8 @@ water_damage(
             if (isok(ox, oy) && cansee(ox, oy))
                 pline("Steam rises from %s.", the(xname(obj)));
             return 0;
-        } else if (otyp == SPE_BLANK_PAPER) {
+        } else if (otyp == SPE_BLANK_PAPER || otyp == SPE_WATERPROOFING
+                   || objdescr_is(uarmf, "oilskin")) {
             return 0;
         }
         if (in_invent)

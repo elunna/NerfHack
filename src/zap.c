@@ -3805,7 +3805,6 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     mdef->mphasetime = 0;
                 }
             }
-
         }
 
         for (otmp = (youdefend ? gi.invent : mdef->minvent);

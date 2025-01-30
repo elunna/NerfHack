@@ -420,6 +420,12 @@
 
 #define EStomping u.uprops[STOMPING].extrinsic
 #define Stomping (EStomping && !Levitation)
+
+/* While safe items is active, your inventory is protected from damage */
+#define HWatertight u.uprops[WATERTIGHT].intrinsic
+#define EWatertight u.uprops[WATERTIGHT].extrinsic
+#define Watertight (HWatertight || EWatertight)
+
 /*
  * Some pseudo-properties.
  */

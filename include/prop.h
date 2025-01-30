@@ -97,7 +97,8 @@ enum prop_types {
     STUN_RES          = 71,
     BREATHLESS        = 72,
     RABID             = 73,
-    LAST_PROP = RABID
+    WATERTIGHT        = 74,
+    LAST_PROP = WATERTIGHT
 };
 
 /*** Where the properties come from ***/

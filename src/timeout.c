@@ -114,6 +114,7 @@ const struct propname {
     { WITHERING, "withering away" },
     { LIFESAVED, "life will be saved" },
     { STOMPING, "stomping" },
+    { WATERTIGHT, "protected inventory" },
     {  0, 0 },
 };
 
@@ -921,6 +922,11 @@ nh_timeout(void)
                         You("are no longer withering away.");
                     }
                     disp.botl = TRUE;
+                    break;
+                case WATERTIGHT:
+                    if (!Watertight) {
+                        Your("belongings lose their enchanted dryness.");
+                    }
                     break;
                 case AGGRAVATE_MONSTER:
                     if (!Aggravate_monster)
