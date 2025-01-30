@@ -3535,6 +3535,20 @@
         SIZ(1200, 500, MS_SILENT, MZ_LARGE), 0, 0,
         M1_TUNNEL | M1_CARNIVORE, M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 12, CLR_BROWN, UMBER_HULK),
+    MON(NAM("star vampire"), S_UMBER,
+        LVL(18, 18, -5, 60, -5), (G_GENO | G_NOCORPSE | 1),
+        A(ATTK(AT_CLAW, AD_PHYS, 6, 6),
+          ATTK(AT_TENT, AD_VAMP, 2, 6),
+          ATTK(AT_TENT, AD_VAMP, 2, 6),
+          ATTK(AT_TENT, AD_VAMP, 2, 6),
+          NO_ATTK, NO_ATTK ),
+        SIZ(WT_HUMAN, 400, MS_SILENT, MZ_LARGE), 
+        MR_SLEEP | MR_POISON | MR_COLD, 0,
+        M1_NOHEAD | M1_NOLIMBS | M1_NOEYES
+            | M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_CARNIVORE,
+        M2_STALK | M2_HOSTILE | M2_STRONG | M2_NASTY | M2_NEUTER,
+        M3_INFRAVISIBLE,
+        NO_RACE, 26, CLR_CYAN, STAR_VAMPIRE),
     /*
      * Vampires
      */

@@ -1635,6 +1635,13 @@ makemon(
         if (Inhell && is_bat(ptr))
             mon_adjust_speed(mtmp, 2, (struct obj *) 0);
         break;
+    case S_UMBER:
+        /* [DS] Star vampires are invisible until they feed */
+        if (mndx == PM_STAR_VAMPIRE) {
+            mtmp->perminvis = TRUE;
+            mtmp->minvis = TRUE;
+        }
+        break;
     }
     if ((ct = emits_light(mtmp->data)) > 0)
         new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,

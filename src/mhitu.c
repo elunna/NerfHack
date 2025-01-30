@@ -200,6 +200,8 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
         case AT_TENT:
             if (mtmp->data == &mons[PM_MEDUSA]) {
                 verb = "snakes bite you";
+            } else if (mtmp->data == &mons[PM_STAR_VAMPIRE]) {
+                verb = "tentacles attack you";
             } else {
                 verb = "tentacles suck your brain";
             }
@@ -954,6 +956,13 @@ mattacku(struct monst *mtmp)
 
     /* make eels visible the moment they hit/miss us */
     if (mdat->mlet == S_EEL && mtmp->minvis && cansee(mtmp->mx, mtmp->my)) {
+        mtmp->minvis = 0;
+        newsym(mtmp->mx, mtmp->my);
+    }
+    
+    /* Make Star Vampires visible the moment they hit/miss us */
+    if (mtmp->data == &mons[PM_STAR_VAMPIRE] && mtmp->minvis
+          && cansee(mtmp->mx, mtmp->my)) {
         mtmp->minvis = 0;
         newsym(mtmp->mx, mtmp->my);
     }
