@@ -384,6 +384,7 @@ castmu(
             monstunseesu(M_SEEN_FIRE);
         }
         burn_away_slime();
+        dehydrate(rn1(100, 50));
         /* burn up flammable items on the floor, melt ice terrain */
         mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
         break;
