@@ -608,8 +608,8 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
     /* Now grants physical damage reduction */
     A("The Longbow of Diana", BOW,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT | SPFX_HPHDAM
-        | SPFX_NOWISH),
-      SPFX_ESP, 0,
+       | SPFX_ESP | SPFX_NOWISH),
+      0, 0,
       PHYS(5, 0), NO_DFNS, NO_CARY, CREATE_AMMO,
       A_CHAOTIC, PM_RANGER, NON_PM,
       DFLT_SPE, QAVAL, 4000L, NO_COLOR, LONGBOW_OF_DIANA),
