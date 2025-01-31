@@ -781,11 +781,9 @@ resurrect_cthulhu(void)
 {
     struct monst *mtmp, **mmtmp;
     long elapsed;
-    const char *verb;
 
     if (!svc.context.no_of_cthulhu) {
         /* make a new Cthulhu */
-        verb = "kill";
         mtmp = makemon(&mons[PM_CTHULHU], u.ux, u.uy, MM_NOWAIT);
         /* affects experience; he's not coming back from a corpse
            but is subject to repeated killing like a revived corpse */
@@ -793,7 +791,6 @@ resurrect_cthulhu(void)
             mtmp->mrevived = 1;
     } else {
         /* look for a migrating Cthulhu */
-        verb = "elude";
         mmtmp = &gm.migrating_mons;
         while ((mtmp = *mmtmp) != 0) {
             if (mtmp->data == &mons[PM_CTHULHU]
