@@ -5437,7 +5437,7 @@ water_damage(
         }
         water_damage_chain(obj->cobj, FALSE);
         return ER_DAMAGED; /* contents were damaged */
-    } else if (Waterproof_container(obj)) {
+    } else if (Waterproof_container(obj) || objdescr_is(obj, "oilskin")) {
         if (in_invent) {
             pline_The("%s slides right off your %s.", hliquid("water"), ostr);
             gm.mentioned_water = !Hallucination;
@@ -5523,8 +5523,7 @@ water_damage(
             if (isok(ox, oy) && cansee(ox, oy))
                 pline("Steam rises from %s.", the(xname(obj)));
             return 0;
-        } else if (otyp == SPE_BLANK_PAPER || otyp == SPE_WATERPROOFING
-                   || objdescr_is(uarmf, "oilskin")) {
+        } else if (otyp == SPE_BLANK_PAPER || otyp == SPE_WATERPROOFING) {
             return 0;
         }
         if (in_invent)
