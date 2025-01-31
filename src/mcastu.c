@@ -344,7 +344,7 @@ castmu(
     if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
-            return 0;
+            return M_ATTK_MISS;
     }
 
     /*
@@ -431,6 +431,8 @@ castmu(
     } /* switch */
     if (dmg)
         mdamageu(caster, dmg);
+    if (DEADMONSTER(caster))
+        ret |= M_ATTK_AGR_DIED;
     return ret;
 }
 
@@ -2159,7 +2161,7 @@ castmm(
     if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
-            return 0;
+            return M_ATTK_MISS;
     }
 
     /*
@@ -2271,10 +2273,13 @@ castmm(
 
     if (dmg) {
         mdef->mhp -= dmg;
-        if (DEADMONSTER(mdef))
+        if (DEADMONSTER(mdef)) {
             monkilled(mdef, "", mattk->adtyp);
+            ret |= M_ATTK_DEF_DIED;
+        }
     }
-
+    if (DEADMONSTER(caster))
+        ret |= M_ATTK_AGR_DIED;
     return ret;
 }
 
