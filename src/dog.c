@@ -1027,8 +1027,8 @@ dogfood(struct monst *mon, struct obj *obj)
         return TABU;
 
     /* KMH -- Koalas can only eat eucalyptus */
-	if (mon->data == &mons[PM_KOALA])
-		return (obj->otyp == EUCALYPTUS_LEAF ? DOGFOOD : APPORT);
+    if (mon->data == &mons[PM_KOALA])
+	return (obj->otyp == EUCALYPTUS_LEAF ? DOGFOOD : APPORT);
 
     /* skip shop food and other items */
     if (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge
@@ -1140,6 +1140,7 @@ dogfood(struct monst *mon, struct obj *obj)
                      : MANFOOD;
         case TIN:
             return metallivorous(mptr) ? ACCFOOD : MANFOOD;
+        case MISTLETOE:
         case APPLE:
             return herbi ? DOGFOOD : starving ? ACCFOOD : MANFOOD;
         case CARROT:
