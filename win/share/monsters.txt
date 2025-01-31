@@ -9515,45 +9515,7 @@ Z = (195, 195, 195)
   .....CLJACLJAAAA
   ...LLLLJ.CLLLKAA
 }
-# tile 496 (stone giant,male)
-{
-  ......JJJJAA....
-  ....JJJJJJJJA...
-  ....JJLLLLJJA...
-  ....JFFLLFFJA...
-  ....JLLLLLLJA...
-  ....ALLAALLAAA..
-  .....ALLLLJAAAA.
-  ..CCLLJJJJLLCCAA
-  .CLLLCCKCKCLLLCA
-  .LLLAAKCKCLKLLLA
-  .LLPPPACCLLAALLA
-  .LLPPPPAKKJAALLA
-  .CLCPPPAJJKKCLAA
-  ..LLPPALACLJLLAA
-  .....ALJACLJAAAA
-  ...LLLLJ.CLLLKAA
-}
-# tile 497 (stone giant,female)
-{
-  ......JJJJAA....
-  ....JJJJJJJJA...
-  ....JJLLLLJJA...
-  ....JFFLLFFJA...
-  ....JLLLLLLJA...
-  ....ALLAALLAAA..
-  .....ALLLLJAAAA.
-  ..CCLLJJJJLLCCAA
-  .CLLLCCKCKCLLLCA
-  .LLLAAKCKCLKLLLA
-  .LLPPPACCLLAALLA
-  .LLPPPPAKKJAALLA
-  .CLCPPPAJJKKCLAA
-  ..LLPPALACLJLLAA
-  .....ALJACLJAAAA
-  ...LLLLJ.CLLLKAA
-}
-# tile 498 (hill giant,male)
+# tile 496 (hill giant,male)
 {
   ......JJJJAA....
   ....JJJJJJJJA...
@@ -9572,7 +9534,7 @@ Z = (195, 195, 195)
   .....CLJACLJAAAA
   ...LLLLJ.LLLLKAA
 }
-# tile 499 (hill giant,female)
+# tile 497 (hill giant,female)
 {
   ......JJJJAA....
   ....JJJJJJJJA...
@@ -9590,6 +9552,44 @@ Z = (195, 195, 195)
   ..LL.CLJACLJLLAA
   .....CLJACLJAAAA
   ...LLLLJ.LLLLKAA
+}
+# tile 498 (stone giant,male)
+{
+  ......JJJJAA....
+  ....JJJJJJJJA...
+  ....JJLLLLJJA...
+  ....JFFLLFFJA...
+  ....JLLLLLLJA...
+  ....ALLAALLAAA..
+  .....ALLLLJAAAA.
+  ..CCLLJJJJLLCCAA
+  .CLLLCCKCKCLLLCA
+  .LLLAAKCKCLKLLLA
+  .LLPPPACCLLAALLA
+  .LLPPPPAKKJAALLA
+  .CLCPPPAJJKKCLAA
+  ..LLPPALACLJLLAA
+  .....ALJACLJAAAA
+  ...LLLLJ.CLLLKAA
+}
+# tile 499 (stone giant,female)
+{
+  ......JJJJAA....
+  ....JJJJJJJJA...
+  ....JJLLLLJJA...
+  ....JFFLLFFJA...
+  ....JLLLLLLJA...
+  ....ALLAALLAAA..
+  .....ALLLLJAAAA.
+  ..CCLLJJJJLLCCAA
+  .CLLLCCKCKCLLLCA
+  .LLLAAKCKCLKLLLA
+  .LLPPPACCLLAALLA
+  .LLPPPPAKKJAALLA
+  .CLCPPPAJJKKCLAA
+  ..LLPPALACLJLLAA
+  .....ALJACLJAAAA
+  ...LLLLJ.CLLLKAA
 }
 # tile 500 (fire giant,male)
 {
