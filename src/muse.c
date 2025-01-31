@@ -2996,7 +2996,7 @@ use_misc(struct monst *mtmp)
             panic(MissingMiscellaneousItem, "potion of gain level");
         mquaffmsg(mtmp, otmp);
         if (otmp->cursed) {
-            if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz)) {
+            if (!otmp->odiluted && Can_rise_up(mtmp->mx, mtmp->my, &u.uz)) {
                 int tolev = depth(&u.uz) - 1;
                 d_level tolevel;
 

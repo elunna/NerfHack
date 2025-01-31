@@ -1444,7 +1444,8 @@ peffect_gain_level(struct obj *otmp)
 
         gp.potion_unkn++;
         /* they went up a level */
-        if (on_lvl_1 ? u.uhave.amulet : Can_rise_up(u.ux, u.uy, &u.uz)) {
+        if (!otmp->odiluted && on_lvl_1 ? u.uhave.amulet
+                                        : Can_rise_up(u.ux, u.uy, &u.uz)) {
             int newlev;
             d_level newlevel;
 
@@ -1466,6 +1467,7 @@ peffect_gain_level(struct obj *otmp)
             goto_level(&newlevel, FALSE, FALSE, FALSE);
         } else {
             You("have an uneasy feeling.");
+            peffect_levitation(otmp);
         }
         return;
     }
