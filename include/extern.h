@@ -3932,6 +3932,7 @@ extern void clonewiz(void);
 extern int pick_nasty(int);
 extern int nasty(struct monst *, boolean) NO_NNARGS;
 extern void resurrect(void);
+extern void resurrect_cthulhu(void);
 extern void intervene(void);
 extern void wizdeadorgone(void);
 extern void cuss(struct monst *) NONNULLARG1;
