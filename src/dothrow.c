@@ -1248,6 +1248,7 @@ harmless_missile(struct obj *obj)
     switch (otyp) {
     case SLING:
     case EUCALYPTUS_LEAF:
+    case MISTLETOE:
     case KELP_FROND:
     case SPRIG_OF_WOLFSBANE:
     case FORTUNE_COOKIE:
