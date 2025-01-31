@@ -1152,6 +1152,8 @@ dogfood(struct monst *mon, struct obj *obj)
             return (mptr->mlet == S_YETI && herbi) ? DOGFOOD
                    : (herbi || starving) ? ACCFOOD
                      : MANFOOD;
+	case PINCH_OF_CATNIP:
+	    return is_feline(mptr) ? DOGFOOD : MANFOOD;
         default:
             if (starving)
                 return ACCFOOD;

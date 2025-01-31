@@ -2428,6 +2428,13 @@ thitmonst(
         potionhit(mon, obj, POTHIT_HERO_THROW);
         return 1;
 
+   } else if (obj->otyp == PINCH_OF_CATNIP && is_feline(mon->data)) {
+       if (!Blind)
+           pline("%s chases %s tail!", Monnam(mon), mhis(mon));
+       (void) tamedog(mon, obj, TRUE);
+       mon->mconf = 1;
+       return 1;
+
     } else if ((befriend_with_obj(mon->data, obj) && !obj->cursed)
                || (mon->mtame && dogfood(mon, obj) <= ACCFOOD)) {
         if (tamedog(mon, obj, TRUE)) {
@@ -2821,6 +2828,7 @@ breaktest(struct obj *obj)
     case MELON:
     case ACID_VENOM:
     case BLINDING_VENOM:
+    case PINCH_OF_CATNIP:
         return TRUE;
      case EGG:
         return (obj->corpsenm != PM_PHOENIX);
@@ -2869,6 +2877,10 @@ breakmsg(struct obj *obj, boolean in_view)
     case ACID_VENOM:
     case BLINDING_VENOM:
         pline("Splash!");
+        break;
+    case PINCH_OF_CATNIP:
+        if (in_view)
+            pline("Catnip flies everywhere!");
         break;
     }
 }

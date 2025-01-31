@@ -291,7 +291,7 @@ dmgval_core(
     struct permonst *ptr = mon ? mon->data : NULL;
     boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
 
-    if (otyp == CREAM_PIE)
+    if (otyp == CREAM_PIE || otyp == PINCH_OF_CATNIP)
         return 0;
 
     /* Damage vs large monsters */

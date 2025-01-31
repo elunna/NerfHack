@@ -1823,6 +1823,29 @@ hmon_hitmon_misc_obj(
         }
         hmd->dmg = 1;
         break;
+    case PINCH_OF_CATNIP:
+        hmd->dmg = 0;
+        if (is_feline(hmd->mdat)) {
+            if (!Blind)
+                pline("%s chases %s tail!", Monnam(mon), mhis(mon));
+            (void) tamedog(mon, obj, TRUE);
+            mon->mconf = 1;
+            if (hmd->thrown)
+                obfree(obj, (struct obj *) 0);
+            else
+                useup(obj);
+            return;
+        } else {
+            You("%s catnip fly everywhere!", Blind ? "feel" : "see");
+            setmangry(mon, TRUE);
+        }
+        if (hmd->thrown)
+            obfree(obj, (struct obj *) 0);
+        else
+            useup(obj);
+        hmd->hittxt = TRUE;
+        hmd->get_dmg_bonus = FALSE;
+        break;
     case CREAM_PIE:
     case BLINDING_VENOM:
         mon->msleeping = 0;

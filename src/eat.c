@@ -2913,6 +2913,14 @@ fpostfx(struct obj *otmp)
         if (Hallucination && !otmp->cursed)
             make_hallucinated(0L, TRUE, 0L);
         break;
+    case PINCH_OF_CATNIP:
+        if (is_feline(gy.youmonst.data)) {
+            pline("Wow! That was excellent!");
+            make_confused(HConfusion + d(2, 4), FALSE);
+        } else {
+            pline("Blech! That was not very enjoyable.");
+        }
+        break;
     case CLOVE_OF_GARLIC:
         /* Ethiopian folklore remedy for rabies. */
         if (Rabid && !otmp->cursed)
