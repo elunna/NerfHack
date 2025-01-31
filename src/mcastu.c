@@ -108,8 +108,10 @@ choose_magic_spell(struct monst* caster, int spellval)
     case 24:
     case 23:
         switch (rnd(3)) {
-        case 1: return MGC_FIRE_BOLT;
-        case 2: return MGC_ICE_BOLT;
+        case 1:
+            return MGC_FIRE_BOLT;
+        case 2:
+            return MGC_ICE_BOLT;
         default:
             if (Antimagic || Hallucination)
                 return MGC_PSI_BOLT;
@@ -162,8 +164,10 @@ choose_magic_spell(struct monst* caster, int spellval)
     case 0:
     default:
         switch (rnd(3)) {
-        case 1: return MGC_FIRE_BOLT;
-        case 2: return MGC_ICE_BOLT;
+        case 1:
+            return MGC_FIRE_BOLT;
+        case 2:
+            return MGC_ICE_BOLT;
         default:
             return MGC_PSI_BOLT;
         }
@@ -704,14 +708,13 @@ cast_wizard_spell(
 
             if (resists_death(mdef->data) || is_vampshifter(mdef)) {
                 if (canseemon(mdef))
-                    pline("%s %s.", Monnam(mdef),
-                        nonliving(mdef->data)
+                    pline("%s %s.", Monnam(mdef), nonliving(mdef->data)
                             ? "seems no more dead than before"
                             : "is unaffected");
             } else if (!resisted) {
                 mdef->mhp = -1;
-                monkilled(caster, "", AD_SPEL);
-                return 0;
+                monkilled(mdef, "", AD_SPEL);
+                return M_ATTK_DEF_DIED;
             } else {
                 if (resisted)
                     shieldeff(mdef->mx, mdef->my);
@@ -1014,6 +1017,7 @@ cast_wizard_spell(
             explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
                     MON_CASTBALL, EXPL_FIERY);
         }
+
         dmg = 0; /* damage is handled by explode() */
         break;
     case MGC_ICE_BOLT:
