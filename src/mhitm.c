@@ -1513,7 +1513,8 @@ passivemm(
                     pline("%s is not affected.", Monnam(magr));
                 tmp = 0;
             } else {
-                pline_mon(magr, "%s skin was poisoned!", s_suffix(Monnam(magr)));
+                if (canseemon(magr))
+                    pline_mon(magr, "%s skin was poisoned!", s_suffix(Monnam(magr)));
                 if (rn2(10))
                     tmp += rnd(6);
                 else {
