@@ -832,7 +832,7 @@ keepdogs(
              /* the wiz will level t-port from anywhere to chase
                 the amulet; if you don't have it, will chase you
                 only if in range. -3. */
-             || (u.uhave.amulet && (mtmp->iswiz || mtmp->iscthulhu)))
+             || (u.uhave.amulet && mtmp->iswiz))
             && (!helpless(mtmp)
                 /* eg if level teleport or new trap, steed has no control
                    to avoid following */

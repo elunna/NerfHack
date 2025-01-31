@@ -144,8 +144,7 @@ m_can_break_boulder(struct monst *mtmp)
                 || (MON_WEP(mtmp) && is_pick(MON_WEP(mtmp)))
             || (!mtmp->mspec_used
                 && (mtmp->isshk
-                        /* Cthulhu is unstoppable */
-                        || mtmp->data == &mons[PM_CTHULHU]
+                        || mtmp->iscthulhu /* Cthulhu is unstoppable */
                         || mtmp->ispriest
                         || (mtmp->data->msound == MS_NEMESIS)
                         || (mtmp->data->msound == MS_LEADER)))));
@@ -677,7 +676,7 @@ mind_blast(struct monst *mtmp)
             dmg = d(5, 6);
             if (mtmp->data == &mons[PM_MASTER_MIND_FLAYER])
                 dmg += d(3, 5);
-            else if (mtmp->data == &mons[PM_CTHULHU])
+            else if (mtmp->iscthulhu)
                 dmg *= 2;
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;

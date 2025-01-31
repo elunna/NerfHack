@@ -3539,7 +3539,7 @@ mstatusline(struct monst *mtmp)
     aligntyp alignment = mon_aligntyp(mtmp);
     char info[BUFSZ], monnambuf[BUFSZ];
     
-    if (mtmp->data == &mons[PM_CTHULHU]) {
+    if (mtmp->iscthulhu) {
         There("are some things incapable of being understood!");
         make_confused(HConfusion + rnd(20), FALSE);
         return;

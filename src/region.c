@@ -1144,6 +1144,7 @@ revive_cthulhu(genericptr_t p1, genericptr_t p2)
         cthulhu = makemon(&mons[PM_CTHULHU], cx, cy,
                           MM_NOCOUNTBIRTH | NO_MINVENT);
         if (cthulhu) {
+            /* makemon() increments no_of_cthulhu for us */
             if (canseemon(cthulhu)) {
                 pline("%s reforms!", Monnam(cthulhu));
             }

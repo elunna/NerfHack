@@ -2683,7 +2683,7 @@ mon_allowflags(struct monst *mtmp)
     boolean can_open = !(nohands(mtmp->data) || verysmall(mtmp->data));
     boolean can_unlock = ((can_open && monhaskey(mtmp, TRUE))
                           || mtmp->iswiz || is_rider(mtmp->data));
-    boolean doorbuster = is_giant(mtmp->data) || mtmp->data == &mons[PM_CTHULHU];
+    boolean doorbuster = is_giant(mtmp->data) || mtmp->iscthulhu;
     /* don't tunnel if on rogue level or if hostile and close enough
        to prefer a weapon; same criteria as in m_move() */
     boolean can_tunnel = (tunnels(mtmp->data) && !Is_rogue_level(&u.uz));
@@ -3395,8 +3395,6 @@ m_detach(
                the nemesis's body creating noxious fumes/gas when killed. */
             if (stinky_nemesis(mtmp))
                 nemesis_stinks(mx, my);
-        } else if (mtmp->iscthulhu) {
-            cthulhu_dies(mtmp);
         }
         if (mtmp->data->msound == MS_LEADER)
             leaddead();
@@ -4571,6 +4569,7 @@ ok_to_obliterate(struct monst *mtmp)
      * here (return FALSE).
      */
     if (mtmp->data == &mons[PM_WIZARD_OF_YENDOR] || is_rider(mtmp->data)
+        || mtmp->data == &mons[PM_CTHULHU]
         || has_emin(mtmp) || has_epri(mtmp) || has_eshk(mtmp)
         || mtmp == u.ustuck || mtmp == u.usteed)
         return FALSE;

@@ -1680,7 +1680,7 @@ makemon(
             mitem = SPE_DIG;
     } else if (mndx == PM_CTHULHU) {
         mtmp->iscthulhu = TRUE;
-        svc.context.no_of_cthulhu++;
+        svc.context.no_of_cthulhu = 1;
     } else if (mndx == PM_GHOST && !(mmflags & MM_NONAME)) {
         mtmp = christen_monst(mtmp, rndghostname());
     } else if (mndx == PM_CROESUS) {
