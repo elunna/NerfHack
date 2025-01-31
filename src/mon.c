@@ -39,7 +39,8 @@ staticfn void unpoly_monster(struct monst *);
 staticfn int cham_depth_appropriate(struct monst *);
 staticfn boolean card_drop(struct monst *);
 staticfn void msummon_dies(struct monst *);
-
+staticfn void cthulhu_dies(struct monst *);
+    
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
@@ -1145,6 +1146,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BAALZEBUB:
     case PM_ASMODEUS:
     case PM_DEMOGORGON:
+    case PM_CTHULHU:
     case PM_LAVA_DEMON:
     case PM_DEATH:
     case PM_PESTILENCE:
@@ -2639,7 +2641,7 @@ mon_allowflags(struct monst *mtmp)
     boolean can_open = !(nohands(mtmp->data) || verysmall(mtmp->data));
     boolean can_unlock = ((can_open && monhaskey(mtmp, TRUE))
                           || mtmp->iswiz || is_rider(mtmp->data));
-    boolean doorbuster = is_giant(mtmp->data);
+    boolean doorbuster = is_giant(mtmp->data) || mtmp->data == &mons[PM_CTHULHU];
     /* don't tunnel if on rogue level or if hostile and close enough
        to prefer a weapon; same criteria as in m_move() */
     boolean can_tunnel = (tunnels(mtmp->data) && !Is_rogue_level(&u.uz));
@@ -4053,6 +4055,9 @@ monkilled(
     else
         mondied(mdef); /* calls mondead() and maybe leaves a corpse */
 
+    if (mdef->data == &mons[PM_CTHULHU])
+        cthulhu_dies(mdef);
+
     if (!DEADMONSTER(mdef))
         return; /* life-saved */
 
@@ -4217,6 +4222,9 @@ xkilled(
     mdat = mtmp->data; /* note: mondead can change mtmp->data */
     mndx = monsndx(mdat);
 
+    if (mdat == &mons[PM_CTHULHU])
+        cthulhu_dies(mtmp);
+    
     if (gs.stoned) {
         gs.stoned = FALSE;
         goto cleanup;
@@ -7464,4 +7472,33 @@ flash_mon(struct monst *mtmp)
     gv.viz_array[my][mx] = saveviz;
     newsym(mx, my);
 }
+
+
+/** Creates Cthulhu's death message and death cloud. */
+staticfn void
+cthulhu_dies(struct monst *mon) /**< Cthulhu's struct */
+{
+    /* really dead? */
+    if (!DEADMONSTER(mon))
+        return;
+
+    /* Cthulhu Deliquesces... */
+    if (cansee(mon->mx, mon->my)) {
+        pline("%s body deliquesces into a cloud of noxious gas!",
+              s_suffix(Monnam(mon)));
+    } else {
+        You_hear("hissing and bubbling!");
+    }
+    /* ...into a stinking cloud... */
+    if (svm.mvitals[PM_CTHULHU].died == 1 &&
+          distu(mon->mx, mon->my) > 2) {
+        /* Cthulhu got killed while meditating and the player
+         * was not next to him.
+         * You can't get rid of the True Final Boss so easily! */
+        (void) create_cthulhu_death_cloud(mon->mx, mon->my, 2, 4);
+    } else {
+        (void) create_cthulhu_death_cloud(mon->mx, mon->my, 3, 8);
+    }
+}
+
 /*mon.c*/

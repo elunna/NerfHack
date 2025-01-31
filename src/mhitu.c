@@ -200,7 +200,8 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
         case AT_TENT:
             if (mtmp->data == &mons[PM_MEDUSA]) {
                 verb = "snakes bite you";
-            } else if (mtmp->data == &mons[PM_STAR_VAMPIRE]) {
+            } else if (mtmp->data == &mons[PM_STAR_VAMPIRE]
+                       || mtmp->data == &mons[PM_CTHULHU]) {
                 verb = "tentacles attack you";
             } else {
                 verb = "tentacles suck your brain";

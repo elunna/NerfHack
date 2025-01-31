@@ -768,7 +768,8 @@ probe_monster(struct monst *mtmp)
     mstatusline(mtmp);
     if (gn.notonhead)
         return; /* don't show minvent for long worm tail */
-
+    if (mtmp->data == &mons[PM_CTHULHU])
+        return; /* Cthulhu keeps his secrets */
     if (mtmp->minvent) {
         probe_objchain(mtmp->minvent);
         (void) display_minventory(mtmp, MINV_ALL | MINV_NOLET | PICK_NONE,

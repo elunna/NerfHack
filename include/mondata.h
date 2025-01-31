@@ -237,7 +237,8 @@
      || (ptr) == &mons[PM_OGRE_MAGE]            \
      || (ptr) == &mons[PM_FIRE_VAMPIRE]         \
      || (ptr) == &mons[PM_STAR_VAMPIRE]         \
-     || (ptr) == &mons[PM_VAMPIRE_MAGE])
+     || (ptr) == &mons[PM_VAMPIRE_MAGE]         \
+     || (ptr) == &mons[PM_CTHULHU])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
 #define poisonous(ptr) (((ptr)->mflags1 & M1_POIS) != 0L)
@@ -389,6 +390,7 @@
 
 /* return TRUE if the monster tends to revive */
 #define is_reviver(ptr) (is_rider(ptr) || is_zombie(ptr) \
+                         || (ptr) == &mons[PM_CTHULHU] \
                          || (ptr)->mlet == S_TROLL)
 /* monsters whose corpses and statues need special handling;
    note that high priests and the Wizard of Yendor are flagged
@@ -558,6 +560,7 @@
 /* The monster is covetous, but should not warp, heal, or otherwise use
  * tactics(). */
 #define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr))
-#define covetous_nonwarper(ptr) (is_archfiend(ptr))
+#define covetous_nonwarper(ptr) (is_archfiend(ptr) \
+                                 || (ptr) == &mons[PM_CTHULHU])
 
 #endif /* MONDATA_H */

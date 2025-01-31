@@ -497,6 +497,8 @@ passes_bars(struct permonst *mptr)
                       || dmgtype(mptr, AD_RUST) || dmgtype(mptr, AD_CORR)
                       /* rock moles can eat bars */
                       || metallivorous(mptr)
+                      /* Cthulhu is unstoppable */
+                      || mptr == &mons[PM_CTHULHU] \
                       || (slithy(mptr) && !bigmonst(mptr)));
 }
 
@@ -560,6 +562,8 @@ can_be_strangled(struct monst *mon)
 boolean
 can_track(struct permonst *ptr)
 {
+    if (ptr == &mons[PM_CTHULHU])
+        return TRUE;
     if (u_wield_art(ART_EXCALIBUR) || u_offhand_art(ART_EXCALIBUR))
         return TRUE;
     return (boolean) haseyes(ptr);

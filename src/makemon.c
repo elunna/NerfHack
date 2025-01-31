@@ -669,6 +669,9 @@ m_initweap(struct monst *mtmp)
             otmp->spe = rnd(3) + 2;
             (void) mpickobj(mtmp, otmp);
             break;
+        case PM_CTHULHU:
+            (void) mongets(mtmp, POT_FULL_HEALING);
+            break;
         }
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish

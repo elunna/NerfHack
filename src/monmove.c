@@ -144,6 +144,8 @@ m_can_break_boulder(struct monst *mtmp)
                 || (MON_WEP(mtmp) && is_pick(MON_WEP(mtmp)))
             || (!mtmp->mspec_used
                 && (mtmp->isshk
+                        /* Cthulhu is unstoppable */
+                        || mtmp->data == &mons[PM_CTHULHU]
                         || mtmp->ispriest
                         || (mtmp->data->msound == MS_NEMESIS)
                         || (mtmp->data->msound == MS_LEADER)))));
@@ -674,7 +676,8 @@ mind_blast(struct monst *mtmp)
             dmg = d(5, 6);
             if (mtmp->data == &mons[PM_MASTER_MIND_FLAYER])
                 dmg += d(3, 5);
-
+            else if (mtmp->data == &mons[PM_CTHULHU])
+                dmg *= 2;
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
             losehp(dmg, "psychic blast", KILLED_BY_AN);
@@ -978,7 +981,8 @@ dochug(struct monst *mtmp)
     if (is_watch(mdat)) {
         watch_on_duty(mtmp);
     /* mind flayers can make psychic attacks! */
-    } else if (is_mind_flayer(mdat) && !rn2(20)) {
+    } else if ((is_mind_flayer(mdat) || mdat == &mons[PM_CTHULHU])
+               && !rn2(20)) {
         mind_blast(mtmp);
         set_apparxy(mtmp);
         distfleeck(mtmp, &inrange, &nearby, &scared);
@@ -2124,7 +2128,6 @@ not_special:
         /* hostiles with ranged weapon or attack try to stay away */
         if (m_balks_at_approaching(mtmp))
             appr = -1;
-
 
         if (!should_see && can_track(ptr)) {
             coord *cp;

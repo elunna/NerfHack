@@ -4779,6 +4779,44 @@
             | M2_PRINCE | M2_MALE,
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_DEMON, 57, HI_LORD, DEMOGORGON),
+    /* Cthulhu MUST be placed after Demogorgon so he will not be summoned
+     * as a random demon lord or demon prince.  See minion.c */
+    /* NerfHack's Cthulhu is a blend of his counterparts in SLASH'EM 
+     * and UnNetHack with some new enhancements to make him a fearsome
+     * component of the endgame:
+     * - Speed of 18 matches slashem.
+     * - AC was lowered from -15 to -8 to match un.
+     * - Cthulhu's inventory os prevented from being shown when probed (Un)
+     * - Cthulhu now has flying and is telepathic
+     * - Cthulhu can displace monsters, pass through iron bars, break boulders
+     *   and bust down doors to get to you.
+     * - Cthulhu will always track you down and chase you.
+     * - Converted the drain intelligence attack to drain energy instead 
+     * - Cthulhu is placed right in the middle of Moloch's Sanctum as a
+     *   guardian but does not receive the Amulet of Yendor.
+     *
+     * Important note: Even though Cthulhu is covetous (M3_WANTSAMUL) he will
+     * not teleport and instead follow the new movement rules that other
+     * covetous demons do.
+     */
+    MON(NAM("Cthulhu"), S_DEMON,
+        LVL(106, 18, -8, 95, 0), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
+        A(ATTK(AT_MAGC, AD_CLRC, 4, 6), 
+          ATTK(AT_CLAW, AD_PHYS, 6, 8),
+          ATTK(AT_BITE, AD_PHYS, 4, 10), 
+          ATTK(AT_HUGS, AD_PHYS, 6, 6),
+          ATTK(AT_TENT, AD_VAMP, 2, 1), 
+          ATTK(AT_GAZE, AD_CONF, 0, 0)),
+        SIZ(3000, 500, MS_ROAR, MZ_GIGANTIC), 
+        MR_POISON | MR_STONE | MR_DISINT | MR_SLEEP | MR_ACID, 0,
+        M1_FLY | M1_AMPHIBIOUS | M1_BREATHLESS | M1_THICK_HIDE 
+            | M1_SEE_INVIS | M1_NOHANDS | M1_POIS | M1_REGEN | M1_OMNIVORE,
+        M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY | M2_STRONG 
+            | M2_PRINCE | M2_NEUTER | M2_ROCKTHROW | M2_MAGIC,
+        M3_WANTSAMUL | M3_WAITFORU | M3_INFRAVISION | M3_NOTAME
+            | M3_DISPLACES,
+        /* Cthulhu doesn't count as a demon, vulnerable to death rays. */
+        NO_RACE, 61, HI_OVERLORD, CTHULHU),
     /* Riders -- the Four Horsemen of the Apocalypse ("War" == player);
      * depicted with '&' but do not have MH_DEMON set.
      */
