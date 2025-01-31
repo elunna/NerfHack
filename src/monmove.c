@@ -681,7 +681,7 @@ mind_blast(struct monst *mtmp)
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
             losehp(dmg, "psychic blast", KILLED_BY_AN);
-            if ((ETelepat || HTelepat) && !Stunned && dmg > 6)
+            if ((ETelepat || HTelepat) && !Stunned && dmg > 16)
                 make_stunned((HStun & TIMEOUT) + (long) rnd(dmg), FALSE);
         }
     }
