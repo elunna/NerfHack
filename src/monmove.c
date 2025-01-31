@@ -279,7 +279,8 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
      * uniques have ascended their base monster instincts
      * Rodney, lawful minions, Angels, the Riders, shopkeepers, zombies,
      * inside their own shop, priests inside their own temple */
-    if (mtmp->iswiz || is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL]
+    if (mtmp->iswiz || mtmp->iscthulhu || is_lminion(mtmp) 
+        || mtmp->data == &mons[PM_ANGEL]
         || is_rider(mtmp->data)
         || mtmp->data == &mons[PM_GIANT_PRAYING_MANTIS]
         || mtmp->data->mlet == S_HUMAN || unique_corpstat(mtmp->data)
@@ -1080,7 +1081,8 @@ dochug(struct monst *mtmp)
         || (mtmp->minvis && !rn2(3))
         || (mdat->mlet == S_LEPRECHAUN && !findgold(gi.invent)
             && (findgold(mtmp->minvent) || rn2(2)))
-        || (is_wanderer(mdat) && !rn2(4)) || (Conflict && !mtmp->iswiz)
+        || (is_wanderer(mdat) && !rn2(4))
+        || (Conflict && !mtmp->iswiz && !mtmp->iscthulhu)
         || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful
         || (nearby && !mtmp->mpeaceful
             && is_outflanker(mtmp->data) && rn2(3))) {

@@ -1662,7 +1662,8 @@ m_calcdistress(struct monst *mtmp)
                               mtmp->mprotection ? "becomes less dense"
                                                 : "disappears");
             if (mtmp->mprotection)
-                mtmp->mprottime = (mtmp->iswiz || is_prince(mtmp->data)
+                mtmp->mprottime = (mtmp->iswiz || mtmp->iscthulhu
+                                   || is_prince(mtmp->data)
                                    || mtmp->data->msound == MS_NEMESIS
                                    || mtmp->data->msound == MS_LEADER)
                                       ? 20 : 10;
@@ -1797,7 +1798,7 @@ movemon_singlemon(struct monst *mtmp)
     }
 
     /* continue if the monster died fighting */
-    if (Conflict && !mtmp->iswiz && m_canseeu(mtmp)) {
+    if (Conflict && !mtmp->iswiz && !mtmp->iscthulhu && m_canseeu(mtmp)) {
         /* Note:
          *  Conflict does not take effect in the first round.
          *  Therefore, A monster when stepping into the area will
@@ -3339,6 +3340,9 @@ m_detach(
        leaving the dungeon alive rather than dying */
     if (mtmp->iswiz)
         wizdeadorgone();
+    if (mtmp->iscthulhu) {
+        svc.context.no_of_cthulhu = 0;
+    }
     /* foodead() might give quest feedback for foo having died; skip that
        if we're called for mongone() rather than mondead(); saving bones
        or wizard mode genocide of "*" can result in special monsters going
@@ -3350,6 +3354,8 @@ m_detach(
                the nemesis's body creating noxious fumes/gas when killed. */
             if (stinky_nemesis(mtmp))
                 nemesis_stinks(mx, my);
+        } else if (mtmp->iscthulhu) {
+            cthulhu_dies(mtmp);
         }
         if (mtmp->data->msound == MS_LEADER)
             leaddead();
@@ -7304,6 +7310,7 @@ card_drop(struct monst *mon)
         || mon->mrevived    /* Prevent farming */
         || mon->mcloned     /* Prevent farming */
         || mon->iswiz       /* Prevent farming */
+        || mon->iscthulhu   /* Prevent farming */
         || mon->mcan        /* Cancelled */
         /* Avoid mon w/ special structure */
         || has_egd(mon)     || has_epri(mon)
@@ -7482,6 +7489,8 @@ cthulhu_dies(struct monst *mon) /**< Cthulhu's struct */
     if (!DEADMONSTER(mon))
         return;
 
+    svc.context.no_of_cthulhu = 0;
+
     /* Cthulhu Deliquesces... */
     if (cansee(mon->mx, mon->my)) {
         pline("%s body deliquesces into a cloud of noxious gas!",
@@ -7489,6 +7498,7 @@ cthulhu_dies(struct monst *mon) /**< Cthulhu's struct */
     } else {
         You_hear("hissing and bubbling!");
     }
+
     /* ...into a stinking cloud... */
     if (svm.mvitals[PM_CTHULHU].died == 1 &&
           distu(mon->mx, mon->my) > 2) {

@@ -775,13 +775,88 @@ resurrect(void)
     }
 }
 
+/* Let's resurrect Cthulhu, for some unexpected fun. */
+void
+resurrect_cthulhu(void)
+{
+    struct monst *mtmp, **mmtmp;
+    long elapsed;
+    const char *verb;
+
+    if (!svc.context.no_of_cthulhu) {
+        /* make a new Cthulhu */
+        verb = "kill";
+        mtmp = makemon(&mons[PM_CTHULHU], u.ux, u.uy, MM_NOWAIT);
+        /* affects experience; he's not coming back from a corpse
+           but is subject to repeated killing like a revived corpse */
+        if (mtmp)
+            mtmp->mrevived = 1;
+    } else {
+        /* look for a migrating Cthulhu */
+        verb = "elude";
+        mmtmp = &gm.migrating_mons;
+        while ((mtmp = *mmtmp) != 0) {
+            if (mtmp->data == &mons[PM_CTHULHU]
+                /* if he has the Amulet, he won't bring it to you */
+                && !mon_has_amulet(mtmp)
+                && (elapsed = svm.moves - mtmp->mlstmv) > 0L) {
+                mon_catchup_elapsed_time(mtmp, elapsed);
+                if (elapsed >= LARGEST_INT)
+                    elapsed = LARGEST_INT - 1;
+                elapsed /= 50L;
+                if (mtmp->msleeping && rn2((int) elapsed + 1))
+                    mtmp->msleeping = 0;
+                if (mtmp->mfrozen == 1) { /* would unfreeze on next move */
+                    mtmp->mfrozen = 0;
+                    maybe_moncanmove(mtmp);
+                }
+                if (!helpless(mtmp)) {
+                    *mmtmp = mtmp->nmon;
+                    mon_arrive(mtmp, -1); /* -1: Wiz_arrive (dog.c) */
+                    /* mx: mon_arrive() might have sent mtmp into limbo */
+                    if (!mtmp->mx)
+                        mtmp = 0;
+                    /* note: there might be a second Wizard; if so,
+                       he'll have to wait til the next resurrection */
+                    break;
+                }
+            }
+            mmtmp = &mtmp->nmon;
+        }
+    }
+
+    if (mtmp) {
+        /* FIXME: when a new wizard is created by makemon(), it gives
+           a "<mon> appears" message, delivered after he's been placed
+           on the map; however, when an existing wizard comes off
+           migrating_mons, he ends up triggering "<mon> vanishes and
+           reappears" on his first move (tactics when hero is carrying
+           the Amulet); setting STRAT_WAITMASK suppresses that but then
+           he just sits wherever he is, "meditating", contradicting the
+           threatening message below */
+        mtmp->mstrategy &= ~STRAT_WAITMASK;
+
+        mtmp->mtame = 0, mtmp->mpeaceful = 0; /* paranoia */
+        set_malign(mtmp);
+        if (!Deaf) {
+            pline("A voice booms out...");
+            SetVoice(mtmp, 0, 80, 0);
+            verbalize("Foolish mortal... I do not die.");
+        }
+    }
+}
+
+
+
+
+
 /* Here, we make trouble for the poor shmuck who actually
    managed to do in the Wizard. */
 void
 intervene(void)
 {
     struct monst *mtmp = (struct monst *) 0;
-    int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(7);
+    int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(8);
 
     /* cases 0 and 5 don't apply on the Astral level */
     switch (which) {
@@ -821,6 +896,12 @@ intervene(void)
         }
         break;
     case 6:
+        if (carrying(AMULET_OF_YENDOR))
+            resurrect_cthulhu();
+        else
+            You_feel("vaguely nervous.");
+        break;
+    case 7:
         resurrect();
         break;
     }

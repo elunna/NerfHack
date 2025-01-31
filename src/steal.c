@@ -716,8 +716,9 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
 static boolean
 is_stealable_item(struct obj *obj, struct monst *mtmp)
 {
-    /* the Wizard is not allowed to steal the player's quest artifact */
-    if (mtmp->iswiz && is_quest_artifact(obj))
+    /* the Wizard and Cthulhu are not allowed to steal
+       the player's quest artifact */
+    if ((mtmp->iswiz || mtmp->iscthulhu) && is_quest_artifact(obj))
         return FALSE;
 
     /* every other quest artifact is fine */

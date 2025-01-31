@@ -1164,10 +1164,10 @@ levl_follower(struct monst *mtmp)
         return TRUE;
 
     /* Wizard with Amulet won't bother trying to follow across levels */
-    if (mtmp->iswiz && mon_has_amulet(mtmp))
+    if ((mtmp->iswiz || mtmp->iscthulhu) && mon_has_amulet(mtmp))
         return FALSE;
     /* some monsters will follow even while intending to flee from you */
-    if (mtmp->mtame || mtmp->iswiz || is_fshk(mtmp))
+    if (mtmp->mtame || mtmp->iswiz || mtmp->iscthulhu || is_fshk(mtmp))
         return TRUE;
     /* stalking types follow, but won't when fleeing unless you hold
        the Amulet */

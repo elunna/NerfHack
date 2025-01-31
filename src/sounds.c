@@ -1594,7 +1594,7 @@ is_stormy_monster(struct monst *mtmp)
         return FALSE;
 
     /* not a "true" stormy monster */
-    if (mtmp->iswiz || is_vampshifter(mtmp))
+    if (mtmp->iswiz || mtmp->iscthulhu || is_vampshifter(mtmp))
         return FALSE;
 
     return (mtmp->data->mlet == S_VORTEX

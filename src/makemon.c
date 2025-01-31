@@ -1678,6 +1678,9 @@ makemon(
         svc.context.no_of_wizards++;
         if (svc.context.no_of_wizards == 1 && Is_earthlevel(&u.uz))
             mitem = SPE_DIG;
+    } else if (mndx == PM_CTHULHU) {
+        mtmp->iscthulhu = TRUE;
+        svc.context.no_of_cthulhu++;
     } else if (mndx == PM_GHOST && !(mmflags & MM_NONAME)) {
         mtmp = christen_monst(mtmp, rndghostname());
     } else if (mndx == PM_CROESUS) {

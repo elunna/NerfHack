@@ -979,7 +979,8 @@ staticfn int
 mon_escape(struct monst *mtmp, boolean vismon)
 {
     if (mon_has_special(mtmp)
-        || (mtmp->iswiz && svc.context.no_of_wizards < 2))
+        || (mtmp->iswiz && svc.context.no_of_wizards < 2)
+        || mtmp->iscthulhu)
         return 0;
     if (vismon)
         pline_mon(mtmp, "%s escapes the dungeon!", Monnam(mtmp));
@@ -1010,9 +1011,9 @@ use_defensive(struct monst *mtmp)
     /* when using defensive choice to run away, we want monster to avoid
        rushing right straight back; don't override if already scared */
     fleetim = !mtmp->mflee ? (33 - (30 * mtmp->mhp / mtmp->mhpmax)) : 0;
-#define m_flee(m)                          \
-    if (fleetim && !m->iswiz) {            \
-        monflee(m, fleetim, FALSE, FALSE); \
+#define m_flee(m)                                \
+    if (fleetim && !m->iswiz && !m->iscthulhu) { \
+        monflee(m, fleetim, FALSE, FALSE);       \
     }
 
     switch (gm.m.has_defense) {
@@ -2469,6 +2470,10 @@ use_offensive(struct monst *mtmp)
         if (mtmp->iswiz && svc.context.no_of_wizards == 1) {
             pline("Double Trouble...");
             clonewiz();
+        } else if (mtmp->iscthulhu) {
+            pline_mon(mtmp, "%s trembles violently then explodes!", Monnam(mtmp));
+            mtmp->mhp = 0;
+            monkilled(mtmp, "", AD_PHYS);
         } else if (type_is_pname(mtmp->data)) {
             /* Other uniques - no limit. */
             if ((mtmp2 = makemon(&mons[mtmp->mnum],

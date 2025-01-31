@@ -158,6 +158,7 @@ struct monst {
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
+    Bitfield(iscthulhu, 1); /* is Cthulhu */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
     Bitfield(mtemplit, 1);  /* temporarily seen; only valid during bhit() */
     Bitfield(meverseen, 1); /* mon has been seen at some point */

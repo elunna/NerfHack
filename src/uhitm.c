@@ -4828,7 +4828,7 @@ void
 mhitm_ad_calm(struct monst *magr, struct attack *mattk,
               struct monst *mdef, struct mhitm_data *mhm)
 {
-    boolean no_effect = mdef->iswiz
+    boolean no_effect = mdef->iswiz || mdef->iscthulhu
         || (mdef->data->mflags3 & M3_COVETOUS)
         || (mdef->data->geno & G_UNIQ)
         || mdef->mrabid

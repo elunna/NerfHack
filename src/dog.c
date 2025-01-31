@@ -786,10 +786,11 @@ mon_leave(struct monst *mtmp)
 staticfn boolean
 keep_mon_accessible(struct monst *mon)
 {
-    /* the Wizard is kept accessible so that his harassment can fetch
-       him instead of creating a new instance but also so that he can
-       be put back at his current location if hero returns to his level */
-    if (mon->iswiz)
+    /* the Wizard and Cthulhu are kept accessible so that his harassment can
+       fetch them instead of creating a new instance but also so that they can
+       be put back at their current locations if hero returns to their levels
+     */
+    if (mon->iswiz || mon->iscthulhu)
         return TRUE;
     /* monsters with special attachment to a particular level only need
        to be kept accessible when on some other level */
@@ -831,7 +832,7 @@ keepdogs(
              /* the wiz will level t-port from anywhere to chase
                 the amulet; if you don't have it, will chase you
                 only if in range. -3. */
-             || (u.uhave.amulet && mtmp->iswiz))
+             || (u.uhave.amulet && (mtmp->iswiz || mtmp->iscthulhu)))
             && (!helpless(mtmp)
                 /* eg if level teleport or new trap, steed has no control
                    to avoid following */
@@ -961,10 +962,10 @@ discard_migrations(void)
     for (mprev = &gm.migrating_mons; (mtmp = *mprev) != 0; ) {
         dest.dnum = mtmp->mux;
         dest.dlevel = mtmp->muy;
-        /* the Wizard is kept regardless of location so that he is
+        /* the Wizard/Cthulhu is kept regardless of location so that he is
            ready to be brought back; nothing should be scheduled to
            migrate to the endgame but if we find such, we'll keep it */
-        if (mtmp->iswiz || In_endgame(&dest)) {
+        if (mtmp->iswiz || mtmp->iscthulhu || In_endgame(&dest)) {
             mprev = &mtmp->nmon; /* keep mtmp on migrating_mons */
         } else {
             *mprev = mtmp->nmon; /* remove mtmp from migrating_mons */

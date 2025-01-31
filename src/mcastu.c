@@ -726,7 +726,8 @@ cast_wizard_spell(
         }
         break;
     case MGC_REFLECTION: {
-        boolean strongbad = (caster->iswiz || is_prince(caster->data)
+        boolean strongbad = (caster->iswiz || caster->iscthulhu
+                             || is_prince(caster->data)
                              || caster->data->msound == MS_NEMESIS
                              || caster->data->msound == MS_LEADER);
         if (canseemon(caster))
@@ -1675,7 +1676,8 @@ cast_cleric_spell(
                     pline_The("%s haze around %s becomes more dense.",
                               hcolor(NH_GOLDEN), mon_nam(caster));
                 } else {
-                    caster->mprottime = (caster->iswiz || is_prince(caster->data)
+                    caster->mprottime = (caster->iswiz || caster->iscthulhu
+                                       || is_prince(caster->data)
                                        || caster->data->msound == MS_NEMESIS
                                        || caster->data->msound == MS_LEADER)
                                        ? 20 : 10;
