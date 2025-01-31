@@ -1342,8 +1342,7 @@ cast_cleric_spell(
            left, go for (sticks to) snakes.  -3. */
         struct permonst *pm = mkclass(S_ANT, 0);
         struct monst *mtmp2 = (struct monst *) 0;
-        char whatbuf[QBUFSZ],
-            let = (pm ? S_ANT : S_SNAKE);
+        char whatbuf[QBUFSZ], let = (pm ? S_ANT : S_SNAKE);
         boolean success = FALSE, seecaster;
         int i, quan, oldseen, newseen;
         coord bypos;
@@ -1368,7 +1367,7 @@ cast_cleric_spell(
 
         /* not canspotmon() which includes unseen things sensed via warning */
         seecaster = canseemon(caster) || tp_sensemon(caster) || Detect_monsters;
-        what = (let == S_SNAKE) ? "snake" : "insect";
+        what = (let == S_SNAKE) ? "snakes" : "insects";
         if (Hallucination)
             what = makeplural(bogusmon(whatbuf, (char *) 0));
 
