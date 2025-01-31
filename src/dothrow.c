@@ -1321,6 +1321,9 @@ toss_up(struct obj *obj, boolean hitsroof)
             obj = 0; /* it's now gone */
 
         switch (otyp) {
+        case PINEAPPLE:
+            pline("Ouch! %s is covered in spikes!", Doname2(obj));
+            break;
         case EGG:
             if (petrifier && !Stone_resistance
                 && !(poly_when_stoned(gy.youmonst.data)
@@ -1387,6 +1390,8 @@ toss_up(struct obj *obj, boolean hitsroof)
                 dmg += rnd(4);
             if (is_silver(obj) && Hate_silver)
                 dmg += rnd(20);
+            if (obj->otyp == PINEAPPLE)
+                dmg = dmg + 2;
         }
         if (dmg > 2 && less_damage)
             dmg = (dmg > 2 ? dmg - 2 : 2);
@@ -1985,6 +1990,9 @@ omon_adj(struct monst *mon, struct obj *obj, boolean mon_notices)
     }
     /* some objects are more likely to hit than others */
     switch (obj->otyp) {
+    case PINEAPPLE:
+        tmp += 4;
+        break;
     case HEAVY_IRON_BALL:
         if (obj != uball)
             tmp += 2;
@@ -2409,7 +2417,7 @@ thitmonst(
         }
 
     } else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM
-                || otyp == ACID_VENOM)
+                || otyp == ACID_VENOM || otyp == PINEAPPLE)
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) {
         (void) hmon(mon, obj, hmode, dieroll);
         return 1; /* hmon used it up */

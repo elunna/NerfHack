@@ -1141,6 +1141,7 @@ dogfood(struct monst *mon, struct obj *obj)
         case TIN:
             return metallivorous(mptr) ? ACCFOOD : MANFOOD;
         case MISTLETOE:
+        case PINEAPPLE:
         case APPLE:
             return herbi ? DOGFOOD : starving ? ACCFOOD : MANFOOD;
         case CARROT:

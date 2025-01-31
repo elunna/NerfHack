@@ -640,6 +640,7 @@ static NEARDATA const int rwep[] = {
     JAVELIN,
     SHURIKEN,
     YA,
+    PINEAPPLE,
     SILVER_ARROW,
     ELVEN_ARROW,
     ARROW,
