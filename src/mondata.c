@@ -566,7 +566,7 @@ can_track(struct permonst *ptr)
         return TRUE;
     if (u_wield_art(ART_EXCALIBUR) || u_offhand_art(ART_EXCALIBUR))
         return TRUE;
-    return (boolean) haseyes(ptr);
+    return (boolean) (haseyes(ptr) || Aggravate_monster);
 }
 
 /* creature will slide out of armor */
