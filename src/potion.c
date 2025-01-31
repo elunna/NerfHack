@@ -1355,12 +1355,13 @@ peffect_gain_ability(struct obj *otmp)
     } else {      /* If blessed, increase all; if not, try up to */
         int itmp; /* 6 times to find one which can be increased. */
         int ii, i = -1;   /* increment to 0 */
+        boolean gainall = otmp->blessed && !otmp->odiluted;
         for (ii = A_MAX; ii > 0; ii--) {
-            i = (otmp->blessed ? i + 1 : rn2(A_MAX));
+            i = (gainall ? i + 1 : rn2(A_MAX));
             /* only give "your X is already as high as it can get"
                message on last attempt (except blessed potions) */
-            itmp = (otmp->blessed || ii == 1) ? 0 : -1;
-            if (adjattrib(i, 1, itmp) && !otmp->blessed)
+            itmp = (gainall || ii == 1) ? 0 : -1;
+            if (adjattrib(i, 1, itmp) && !gainall)
                 break;
         }
     }
