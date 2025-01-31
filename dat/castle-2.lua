@@ -107,9 +107,8 @@ des.trap("trap door", 44,15);
 
 des.mazewalk(63,09,"east")
 
--- only the inner walls of the maze are diggable
-des.non_diggable(selection.area(00,00,63,20))
-des.non_diggable(selection.area(63,00,75,02))
+-- walls of the castle undiggable
+des.non_diggable(selection.area(08,02,63,16))
 
 -- the maze is unlit
 des.region(selection.area(00,00,62,20),"unlit")
