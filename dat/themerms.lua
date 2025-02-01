@@ -322,7 +322,8 @@ themerooms = {
             des.object('tin')
          end
          local ingr = { 'meatball', 'apple', 'orange', 'pear', 'melon', 'banana', 'egg',
-                        'carrot', 'clove of garlic', 'cream pie', 'fruit', 'egg', 'fruit' }
+                        'carrot', 'clove of garlic', 'cream pie', 'fruit', 'egg', 'fruit',
+                         'pineapple' }
          -- Missing ingredients: 'slice of cake', 'pumpkin pie', 'apple pie', 'pineapple',
          for i = 1, d(4) + 4 do
             local ingrdt = ingr[d(#ingr)]
