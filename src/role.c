@@ -736,8 +736,8 @@ const struct Race races[] = {
     },
     {
         "dhampir",
-        "vampiric",
-        "kindred",
+        "dhampir",
+        "dhampir",
         "Vam",
         { 0, 0 },               /* individual as a noun */
         PM_DHAMPIR,             /* PM_ as a male monster */
