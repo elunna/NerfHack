@@ -1756,8 +1756,8 @@ use_lamp(struct obj *obj)
     }
     
     /* For convenience, allow just lighting one candle. */
-    if (!obj->lamplit 
-        && (obj->otyp == WAX_CANDLE || obj->otyp == TALLOW_CANDLE)) {
+    if ((obj->otyp == WAX_CANDLE || obj->otyp == TALLOW_CANDLE)
+        && !obj->lamplit && inv_cnt(FALSE) < 52) {
         
         /* Don't allow splitting the stack if the player's
            inventory won't accomodate it */
