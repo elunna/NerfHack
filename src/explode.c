@@ -485,7 +485,7 @@ explode(
                     continue;
                 xx = x + i - 1;
                 yy = y + j - 1;
-                if (u_at(xx, yy)) {
+                if (u_at(xx, yy) && !Underwater) {
                     uhurt = ((explmask[i][j] & EXPL_HERO) != 0) ? 1 : 2;
                     /* If the player is attacking via polyself into something
                      * with an explosion attack, leave them (and their gear)
@@ -508,7 +508,7 @@ explode(
                 mtmp = m_at(xx, yy);
                 if (!mtmp && u_at(xx, yy))
                     mtmp = u.usteed;
-                if (!mtmp)
+                if (!mtmp || mon_underwater(mtmp))
                     continue;
                 if (do_hallu) {
                     int tryct = 0;
