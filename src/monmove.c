@@ -1370,6 +1370,10 @@ m_balks_at_approaching(struct monst *mtmp)
         || !m_canseeu(mtmp))
         return FALSE;
 
+    if (mtmp->mberserk || mtmp->mrabid
+        || covetous_nonwarper(mtmp->data))
+        return FALSE;
+
     /* "skittish" behavior */
     if (keeps_distance(mtmp->data))
         return TRUE;
@@ -2116,7 +2120,7 @@ not_special:
                               && (dist2(omx, omy, ggx, ggy) <= 36));
 
         /* If berserking or rabid, the default is very aggressive. */
-        if (mtmp->mberserk || mtmp->mrabid)
+        if (mtmp->mberserk || mtmp->mrabid || covetous_nonwarper(mtmp->data))
             appr = 1;
 
         if (!mtmp->mcansee
