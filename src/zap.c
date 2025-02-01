@@ -4625,65 +4625,65 @@ bhit(
         }
 
         typ = levl[x][y].typ;
-        ttmp = t_at(gb.bhitpos.x, gb.bhitpos.y);
+        ttmp = t_at(x, y);
 
         if (typ == IRONBARS
-            && ((levl[gb.bhitpos.x][gb.bhitpos.y].wall_info & W_NONDIGGABLE) == 0)
+            && ((levl[x][y].wall_info & W_NONDIGGABLE) == 0)
             && (weapon != THROWN_WEAPON && weapon != KICKED_WEAPON)
             && (obj->otyp == SPE_FORCE_BOLT || obj->otyp == WAN_STRIKING)) {
-            levl[gb.bhitpos.x][gb.bhitpos.y].typ = ROOM;
-            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+            levl[x][y].typ = ROOM;
+            if (cansee(x, y))
                 pline_The("iron bars are blown apart!");
             else
                 You_hear("a lot of loud clanging sounds!");
-            wake_nearto(gb.bhitpos.x, gb.bhitpos.y, 20 * 20);
-            newsym(gb.bhitpos.x, gb.bhitpos.y);
+            wake_nearto(x, y, 20 * 20);
+            newsym(x, y);
             /* stop the bolt here; it takes a lot of energy to destroy bars */
             range = 0;
             break;
         } else if (typ == TREE &&
                    ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                        && obj->otyp == SPE_FIRE_BOLT))) {
-            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+            if (cansee(x, y))
                 Norep("A tree bursts into flames!");
             else if (!Deaf)
                 You_hear("crackling and snapping.");
-            set_levltyp(gb.bhitpos.x, gb.bhitpos.y, ROOM);
-            levl[gb.bhitpos.x][gb.bhitpos.y].flags = 0;
+            set_levltyp(x, y, ROOM);
+            levl[x][y].flags = 0;
             if (!rn2(3))
-                explode(gb.bhitpos.x, gb.bhitpos.y, ZT_FIRE, d(3, 6), 0, EXPL_FIERY);
-            if (!does_block(gb.bhitpos.x, gb.bhitpos.y, &levl[gb.bhitpos.x][gb.bhitpos.y]))
-                unblock_point(gb.bhitpos.x, gb.bhitpos.y); /* vision */
+                explode(x, y, ZT_FIRE, d(3, 6), 0, EXPL_FIERY);
+            if (!does_block(x, y, &levl[x][y]))
+                unblock_point(x, y); /* vision */
             vision_recalc(0);
-            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
-                newsym(gb.bhitpos.x, gb.bhitpos.y);
+            if (cansee(x, y))
+                newsym(x, y);
             /* stop the bolt here; it takes a lot of energy to destroy trees */
             range = 0;
             break;
         } else if (typ == GRASS &&
                  ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                    && obj->otyp == SPE_FIRE_BOLT))) {
-            burn_grass(gb.bhitpos.x, gb.bhitpos.y);
+            burn_grass(x, y);
         } else if ((typ == FOUNTAIN || typ == PUDDLE) &&
                    ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                      && obj->otyp == SPE_FIRE_BOLT))) {
-            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+            if (cansee(x, y))
                 pline("Steam billows from the %s.",
-                explain_terrain(gb.bhitpos.x, gb.bhitpos.y));
+                explain_terrain(x, y));
             if (typ == FOUNTAIN)
-                dryup(gb.bhitpos.x, gb.bhitpos.y, TRUE);
+                dryup(x, y, TRUE);
             else
-                dryup_puddle(gb.bhitpos.x, gb.bhitpos.y, "evaporates");
+                dryup_puddle(x, y, "evaporates");
             range -= 1;
             break;
         } else if (ttmp && ttmp->ttyp == WEB &&
                    ((!(weapon == KICKED_WEAPON || weapon == THROWN_WEAPON)
                      && obj->otyp == SPE_FIRE_BOLT))) {
-            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
+            if (cansee(x, y))
                 Norep("A web bursts into flames!");
             (void) delfloortrap(ttmp);
-            if (cansee(gb.bhitpos.x, gb.bhitpos.y))
-                newsym(gb.bhitpos.x, gb.bhitpos.y);
+            if (cansee(x, y))
+                newsym(x, y);
             range = 0;
             break;
         }
