@@ -151,7 +151,6 @@ struct context_info {
     long seer_turn;         /* when random clairvoyance will next kick in */
     long stethoscope_seq;   /* when a stethoscope was last used; first use
                              * during a move takes no time, second uses move */
-    long hydration;         /* Tracks grung's timeout to dehydration */
     boolean travel;  /* find way automatically to u.tx,u.ty */
     boolean travel1; /* first travel step */
     boolean forcefight;

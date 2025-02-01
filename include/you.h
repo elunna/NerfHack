@@ -460,7 +460,7 @@ struct you {
 #define LUCKMIN (-10) /* minimum value of u.uluck */
     schar uhitinc;
     schar udaminc;
-    long  uhealbonus;        /* KMH -- Healing bonus from healthstones */
+    long uhealbonus;         /* KMH -- Healing bonus from healthstones */
     schar uac;
 #define AC_MAX    99  /* abs(u.uac) <= 99; likewise for monster AC */
     uchar uspellprot;        /* protection by SPE_PROTECTION */
@@ -475,8 +475,9 @@ struct you {
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
     int ublessed, ublesscnt; /* blessing/duration from #pray */
-    int combotime;              /* Timeout for last cartomancer combo */
+    int combotime;           /* Timeout for last cartomancer combo */
     int lastprayed;
+    int hydration;           /* grung timeout to dehydration */
     uchar lastprayresult, reconciled;
 #define PRAY_NONE   0
 #define PRAY_GOOD   1

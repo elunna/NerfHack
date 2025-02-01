@@ -1292,19 +1292,19 @@ status_enlightenment(int mode, int final)
     }
     /* dehydration for grung */
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-        if (svc.context.hydration == 0)
+        if (u.hydration == 0)
             Strcpy(buf, "dead from dehydration");
-        else if (svc.context.hydration <= 10)
+        else if (u.hydration <= 10)
             Strcpy(buf, "extremely dehydrated");
-        else if (svc.context.hydration <= 25)
+        else if (u.hydration <= 25)
             Strcpy(buf, "severely dehydrated");
-        else if (svc.context.hydration <= 100)
+        else if (u.hydration <= 100)
             Strcpy(buf, "very dehydrated");
-        else if (svc.context.hydration <= 250)
+        else if (u.hydration <= 250)
             Strcpy(buf, "mildly dehydrated");
-        else if (svc.context.hydration <= 500)
+        else if (u.hydration <= 500)
             Strcpy(buf, "slightly thirsty");
-        else if (svc.context.hydration <= 1000)
+        else if (u.hydration <= 1000)
             Strcpy(buf, "mostly-hydrated");
         else 
             Strcpy(buf, "fully hydrated");

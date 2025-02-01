@@ -1462,7 +1462,7 @@ check_hydration(void)
         return;
     
     if (Underwater) {
-        if (svc.context.hydration < HYDRATION_MAX)
+        if (u.hydration < HYDRATION_MAX)
             rehydrate(TRUE);
         return;
     }
@@ -1482,13 +1482,13 @@ dehydrate(int dmg)
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
         
-    old_tier = find_tier_index(svc.context.hydration);
-    svc.context.hydration -= (long) dmg;
-    if (svc.context.hydration < 0)
-        svc.context.hydration = 0;
+    old_tier = find_tier_index(u.hydration);
+    u.hydration -= dmg;
+    if (u.hydration < 0)
+        u.hydration = 0;
     
     /* Show a message if there was a significant change. */
-    int new_tier = find_tier_index(svc.context.hydration);
+    int new_tier = find_tier_index(u.hydration);
     if (new_tier != old_tier) {
         switch (new_tier) {
         case 0: You_feel("extremely dehydrated."); break;
@@ -1499,7 +1499,7 @@ dehydrate(int dmg)
         case 5: You_feel("mostly-hydrated."); break;
         }
     }
-    if (!svc.context.hydration) {
+    if (!u.hydration) {
         Your("skin dries up into a lifeless husk!");
         if (Upolyd) {
             rehumanize();
@@ -1530,17 +1530,17 @@ boolean
 rehydrate(boolean submerged)
 {
     if (submerged) {
-        if (svc.context.hydration < HYDRATION_MAX)
+        if (u.hydration < HYDRATION_MAX)
             You("feel fully hydrated again.");
-        svc.context.hydration = HYDRATION_MAX;
+        u.hydration = HYDRATION_MAX;
     } else {
         /* Rehydrating needs to have a minimum amount of effect to
          * dry up a puddle or fountain */
-        if (HYDRATION_MAX - svc.context.hydration < 50)
+        if (HYDRATION_MAX - u.hydration < 50)
             return FALSE;
-        svc.context.hydration += rn1(25,25);
-        if (svc.context.hydration > HYDRATION_MAX) {
-            svc.context.hydration = HYDRATION_MAX;
+        u.hydration += rn1(25,25);
+        if (u.hydration > HYDRATION_MAX) {
+            u.hydration = HYDRATION_MAX;
             You("feel fully hydrated again.");
         } else {
             You("feel a little more hydrated.");

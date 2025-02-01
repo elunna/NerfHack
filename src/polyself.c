@@ -123,16 +123,18 @@ set_uasmon(void)
 
     /* Grung need their hydration; start them off with less than a standard
      * grung would get. */
-    if (is_grung(gy.youmonst.data)) {
-        if (!svc.context.hydration)
-            svc.context.hydration = (long) rn1(250, 250);
-    } else if (Race_if(PM_GRUNG)) {
-        /* Polymorphing uses up a significant amount of hydration */
-        svc.context.hydration -= (long) (svc.context.hydration / 5);
-        if (svc.context.hydration < 25)
-            svc.context.hydration = 26L;
-    } else {
-        svc.context.hydration = 0L;
+    if (!program_state.restoring) {
+        if (is_grung(gy.youmonst.data)) {
+            if (!u.hydration)
+                u.hydration = rn1(250, 250);
+        } else if (Race_if(PM_GRUNG)) {
+            /* Polymorphing costs hydration as a grung */
+            u.hydration -= rn1(150, 150);
+            if (u.hydration < 25)
+                u.hydration = 26L;
+        } else {
+            u.hydration = 0;
+        }
     }
     
 #ifdef STATUS_HILITES
@@ -1440,8 +1442,8 @@ rehumanize(void)
         del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
     
     /* Don't keep this timer going when we revert to normal */
-    if (svc.context.hydration && !Race_if(PM_GRUNG))
-        svc.context.hydration = 0L;
+    if (u.hydration && !Race_if(PM_GRUNG))
+        u.hydration = 0;
     
     polyman("You return to %s form!", gu.urace.adj);
     break_armor();

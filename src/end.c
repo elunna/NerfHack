@@ -728,8 +728,8 @@ savelife(int how)
     }
     /* Ensure grung get a little hydration when they survive. */
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-        if (!svc.context.hydration)
-            svc.context.hydration = (long) givehp;
+        if (!u.hydration)
+            u.hydration = givehp;
     }
     /* cure impending doom of sickness hero won't have time to fix
        [shouldn't this also be applied to other fatal timeouts?] */
