@@ -129,7 +129,7 @@ maybe_kick_monster(struct monst *mon, coordxy x, coordxy y)
 {
     if (mon) {
         boolean save_forcefight = svc.context.forcefight;
-
+        
         gb.bhitpos.x = x;
         gb.bhitpos.y = y;
         if (!mon->mpeaceful || !canspotmon(mon))
@@ -1542,6 +1542,17 @@ dokick(void)
        will be 1 unless player declines to kick peaceful monster */
     if (mtmp) {
         oldglyph = glyph_at(x, y);
+        /* Kicking monsters through water is a nearly impossible task */
+        if (!Underwater && mon_underwater(mtmp)) {
+            You("skim the water with your %s but cannot reach %s.",
+                body_part(FOOT), mon_nam(mtmp));
+            return ECMD_TIME;
+        }
+        if (Underwater && !mon_underwater(mtmp)) {
+            Your("slow motion kick can't reach %s.", mon_nam(mtmp));
+            return ECMD_TIME;
+        }
+        
         if (!maybe_kick_monster(mtmp, x, y))
             return (svc.context.move ? ECMD_TIME : ECMD_OK);
     }
