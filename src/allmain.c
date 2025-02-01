@@ -1498,6 +1498,7 @@ dehydrate(int dmg)
         case 4: You_feel("slightly thirsty."); break;
         case 5: You_feel("mostly-hydrated."); break;
         }
+        stop_occupation();
     }
     if (!u.hydration) {
         Your("skin dries up into a lifeless husk!");
@@ -1511,7 +1512,6 @@ dehydrate(int dmg)
             done(DIED);
         }
     }
-    stop_occupation();
 }
 
 staticfn int
