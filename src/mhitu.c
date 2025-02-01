@@ -3040,6 +3040,11 @@ passiveum(
     case AD_ACID:
         orig_dmg = tmp;
         if (!rn2(2)) {
+            if (Underwater) {
+                pline("%s %s disperses into the water!",
+                      !Upolyd ? "" : "Your ", hliquid("Acid"));
+                break;
+            }
             pline_mon(mtmp, "%s is splashed by %s%s!", Monnam(mtmp),
                   /* temporary? hack for sequencing issue:  "your acid"
                      looks strange coming immediately after player has
@@ -3064,6 +3069,12 @@ passiveum(
         /* passive poison for grung's toxic skin */ 
         orig_dmg = tmp;
         if (!rn2(3)) {
+            if (Underwater) {
+                pline("%s %s disperses into the water!",
+                      maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
+                          ? "" : "Your ", hliquid("Poison"));
+                break;
+            }
             pline_mon(mtmp, "%s is splashed by your %s!", Monnam(mtmp),
                   hliquid("toxic skin"));
             if (resists_poison(mtmp)) {
@@ -3083,8 +3094,13 @@ passiveum(
         return assess_dmg(mtmp, tmp);
     case AD_SLEE:
         /* passive sleep for gold grung */ 
-            orig_dmg = tmp;
+        orig_dmg = tmp;
         if (!rn2(5)) {
+            if (Underwater) {
+                pline("%s %s disperses into the water!",
+                      !Upolyd ? "" : "Your ", hliquid("Poison"));
+                break;
+            }
             pline_mon(mtmp, "%s is splashed by your %s!", Monnam(mtmp),
                   hliquid("toxic skin"));
             if (resists_sleep(mtmp)) {
@@ -3132,6 +3148,11 @@ passiveum(
         return M_ATTK_HIT;
     case AD_SLIM:
         if (!rn2(3)) {
+            if (Underwater) {
+                pline("%s %s disperses into the water!",
+                      !Upolyd ? "" : "Your ", hliquid("Slime"));
+                break;
+            }
             Your("slime splashes onto %s!", mon_nam(mtmp));
             if (flaming(mtmp->data)) {
                 pline_The("slime burns away!");

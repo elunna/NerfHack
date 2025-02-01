@@ -1479,6 +1479,8 @@ passivemm(
     switch (mddat->mattk[i].adtyp) {
     case AD_ACID:
         orig_dmg = tmp;
+        if (mon_underwater(mdef))
+            break;
         if (mhitb && !rn2(2)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
@@ -1502,7 +1504,9 @@ passivemm(
     case AD_DRDX:
     case AD_DRCO:
     case AD_HALU:
-        /* passive poison for grung's toxic skin */ 
+        /* passive poison for grung's toxic skin */
+        if (mon_underwater(mdef))
+            break;
         if (mhitb && !rn2(3)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
@@ -1528,6 +1532,8 @@ passivemm(
         goto assess_dmg;
     case AD_SLEE:
         /* passive poison for grung's toxic skin */ 
+        if (mon_underwater(mdef))
+            break;
         if (mhitb && !rn2(3)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
@@ -1549,6 +1555,8 @@ passivemm(
         }
         break;
     case AD_SLIM:
+        if (mon_underwater(mdef))
+            break;
         if (mhit && !mdef->mcan && !rn2(3)) {
             pline("Its slime splashes onto %s!", mon_nam(magr));
             if (flaming(magr->data)) {
@@ -1669,7 +1677,7 @@ passivemm(
             tmp = 0;
             break;
         case AD_FIRE:
-            if (resists_fire(magr)) {
+            if (resists_fire(magr) || mon_underwater(magr)) {
                 if (canseemon(magr)) {
                     pline_mon(magr, "%s is mildly warmed.", Monnam(magr));
                     golemeffects(magr, AD_FIRE, tmp);

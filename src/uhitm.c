@@ -7271,6 +7271,8 @@ passive(
      */
     switch (ptr->mattk[i].adtyp) {
     case AD_FIRE:
+        if (Underwater)
+            break; /* message? */
         if (mhitb && !mon->mcan && weapon) {
             if (aatyp == AT_KICK) {
                 if (uarmf && !rn2(6))
@@ -7283,6 +7285,12 @@ passive(
         break;
     case AD_ACID:
         if (mhitb && m_next2u(mon) && rn2(2)) {
+            if (Underwater) {
+                pline("Its slime %s.", mon_underwater(mon)
+                                           ? "disperses into the water" 
+                                           : "splashes onto the water");
+                break;
+            }
             if (Blind || !flags.verbose)
                 You("are splashed!");
             else
@@ -7325,6 +7333,13 @@ passive(
                        ptr->mattk->adtyp);
         }
         if (mhitb && m_next2u(mon) && !rn2(3)) {
+            if (Underwater) {
+                pline("Its slime %s.", mon_underwater(mon)
+                                           ? "disperses into the water" 
+                                           : "splashes onto the water");
+                break;
+            }
+        
             if (Blind || !flags.verbose)
                 You("are splashed!");
             else
@@ -7425,6 +7440,12 @@ passive(
         break;
     case AD_SLIM:
         if (mhit && !mon->mcan && m_next2u(mon) && !rn2(3)) {
+            if (Underwater) {
+                pline("Its slime %s.", mon_underwater(mon)
+                                           ? "disperses into the water" 
+                                           : "splashes onto the water");
+                break;
+            }
             pline("Its slime splashes onto you!");
             if (flaming(gy.youmonst.data) || u_wield_art(ART_FIRE_BRAND)
                 || u_offhand_art(ART_FIRE_BRAND)) {
@@ -7444,14 +7465,25 @@ passive(
         }
         break;
     case AD_STUN:
+        if (Underwater && ptr != &mons[PM_YELLOW_MOLD]) {
+            pline("Its slime %s.", mon_underwater(mon)
+                                       ? "disperses into the water" 
+                                       : "splashes onto the water");
+            break;
+        }
         if (ptr == &mons[PM_YELLOW_JELLY]) {
+            if (Blind || !flags.verbose)
+                You("are splashed!");
+            else
+                You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
+                    hliquid("acid"));
             if (m_next2u(mon) && !Stunned)
                 make_stunned((long) tmp, TRUE);
             break;
         }
 
         /* specifically yellow mold */
-        if (m_next2u(mon)) {
+        if (m_next2u(mon) && !Underwater) {
             if (is_grung(mon->data) ) { /* purple grung */
                 if (rn2(3))
                     break;
@@ -7471,8 +7503,14 @@ passive(
                    && malive && canseemon(mon))
             pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon));
         break;
-     case AD_SLEE:
+    case AD_SLEE:
         /* passive sleep attack for orange jelly */
+        if (Underwater) {
+            pline("Its slime %s.", mon_underwater(mon)
+                                       ? "disperses into the water" 
+                                       : "splashes onto the water");
+            break;
+        }
         if (m_next2u(mon) && !fully_resistant(SLEEP_RES)) {
             if (is_grung(mon->data)) { /* orange grung */
                 if (rn2(3))
@@ -7484,6 +7522,11 @@ passive(
                     You("are splashed!");
                 fall_asleep(-rnd(tmp), TRUE);
             } else {
+                if (Blind || !flags.verbose)
+                    You("are splashed!");
+                else
+                    You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
+                    hliquid("yellow goo"));
                 if (Blind)
                     You("are put to sleep!");
                 else
@@ -7494,7 +7537,7 @@ passive(
         break;
     case AD_HALU: /* specifically violet fungus */
         /* Use the same values as breathing potion vapors. */
-        if (m_next2u(mon)) {
+        if (m_next2u(mon) && !Underwater) {
             if (is_grung(mon->data)) { /* orange grung */
                 You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
                 hliquid("toxic skin"));
@@ -7512,7 +7555,7 @@ passive(
             pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon));
         break;
      case AD_DISE: /* specifically gray fungus */
-        if (m_next2u(mon)) {
+        if (m_next2u(mon) && !Underwater) {
             if (!Strangled && !Breathless && !Sick) {
                 You("inhale a cloud of spores!");
                 diseasemu(ptr);
@@ -7594,6 +7637,9 @@ passive(
                         pline("%s looks %s%s.", Monnam(mon),
                               !rn2(2) ? "" : "rather ",
                               !rn2(2) ? "numb" : "stupefied");
+                    } else if (Underwater) {
+                        pline("%s looks like it's gazing at you through the murky water...",
+                              Monnam(mon));
                     } else if (Free_action) {
                         You("momentarily stiffen under %s gaze!",
                             s_suffix(mon_nam(mon)));
@@ -7650,9 +7696,9 @@ passive(
             break;
         case AD_FIRE:
             if (monnear(mon, u.ux, u.uy)) {
-                if (fully_resistant(FIRE_RES)) {
+                if (fully_resistant(FIRE_RES) || Underwater) {
                     shieldeff(u.ux, u.uy);
-                    You_feel("mildly warm.");
+                    You_feel("milmdly warm.");
                     monstseesu(M_SEEN_FIRE);
                     ugolemeffects(AD_FIRE, tmp);
                     break;
