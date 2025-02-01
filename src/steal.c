@@ -685,12 +685,11 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
             pline("%s out.", Tobjnam(otmp, "go"));
         snuff_otmp = TRUE;
     }
+    /* for hero owned object on shop floor, mtmp is taking possession
+       and if it's eventually dropped in a shop, shk will claim it */
+    otmp->no_charge = 0;
     /* some object handling is only done if mtmp isn't a pet */
     if (!mtmp->mtame) {
-        /* for hero owned object on shop floor, mtmp is taking possession
-           and if it's eventually dropped in a shop, shk will claim it */
-        otmp->no_charge = 0;
-
         /* if otmp has flags set for how it left hero's inventory, change
            those flags; if thrown, now stolen and autopickup might override
            pickup_types and autopickup exceptions based on 'pickup_stolen'
