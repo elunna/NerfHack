@@ -719,30 +719,14 @@ do_attack(struct monst *mtmp)
         ; /* no attack, hero will still attempt to move onto solid ground */
         return FALSE;
     }
-
-    if (Underwater
-        && !u.ustuck && !u.uswallow  && !mtmp->minvis
-        && (!grounded(mtmp->data) || can_levitate(mtmp) || can_wwalk(mtmp))
-        && is_pool(mtmp->mx, mtmp->my)) {
-        char pnambuf[BUFSZ];
-
+    if (Underwater) {
         /* Don't allow forcefighting flying monsters. This can cause the
          * flyer to displace into the hero's position without moving the hero. */
-        if (svc.context.forcefight) {
-            You("flail wildly.");
+        if (!svc.context.forcefight && swim_under(mtmp, TRUE))
             return FALSE;
-        }
-
-        /* save its current description in case of polymorph */
-        Strcpy(pnambuf, y_monnam(mtmp));
-        mtmp->mtrapped = 0;
-        remove_monster(mtmp->mx, mtmp->my);
-        place_monster(mtmp, u.ux0, u.uy0);
-        newsym(mtmp->mx, mtmp->my);
-        newsym(u.ux0, u.uy0);
-
-        You("swim underneath %s.", pnambuf);
-        return FALSE;
+        if (svc.context.forcefight) {
+            return FALSE;
+        } 
     }
 
     if (Upolyd)

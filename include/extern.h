@@ -1255,6 +1255,7 @@ extern int inv_cnt(boolean);
 extern long money_cnt(struct obj *) NO_NNARGS;
 extern void spot_checks(coordxy, coordxy, schar);
 extern int rounddiv(long, int);
+extern boolean swim_under(struct monst *, boolean);
 
 /* ### strutil.c ### */
 

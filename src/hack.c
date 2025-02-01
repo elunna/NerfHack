@@ -1933,6 +1933,8 @@ domove_bump_mon(struct monst *mtmp, int glyph)
      * attack_check(), which still wastes a turn, but prints a
      * different message and makes the player remember the monster.
      */
+    if (swim_under(mtmp, FALSE))
+        return FALSE;
     if (svc.context.nopick && !svc.context.travel
         && (canspotmon(mtmp) || glyph_is_invisible(glyph)
             || glyph_is_warning(glyph))) {
@@ -1943,7 +1945,8 @@ domove_bump_mon(struct monst *mtmp, int glyph)
             /* m_monnam(): "dog" or "Fido", no "invisible dog" or "it" */
             pline("Pardon me, %s.", m_monnam(mtmp));
         else
-            You("move right into %s.", mon_nam(mtmp));
+            You("%s right into %s.", Underwater ? "swim" : "move ", 
+                mon_nam(mtmp));
         return TRUE;
     }
     return FALSE;
@@ -2748,7 +2751,7 @@ domove_core(void)
            will stop travel rather than domove */
         if (!is_safemon(mtmp) || svc.context.forcefight)
             nomul(0);
-
+        
         if (domove_bump_mon(mtmp, glyph))
             return;
 
@@ -3403,6 +3406,8 @@ mon_findsu:
             piercer_hit(mtmp, &gy.youmonst);
             break;
         default: /* monster surprises you. */
+            if (Underwater)
+                break; /* No surprise - just swam under */
             if (mtmp->mtame)
                 pline("%s jumps near you from the %s.", Amonnam(mtmp),
                       ceiling(u.ux, u.uy));
@@ -4655,5 +4660,40 @@ rounddiv(long x, int y)
     return divsgn * r;
 }
 
+/* Handles the hero swimming underneath a monster 
+ * and required checks.
+ * Returns TRUE if the hero and monster should trade places,
+ * otherwise FALSE.
+ */
+boolean
+swim_under(struct monst *mtmp, boolean noisy)
+{
+    int glyph = glyph_at(mtmp->mx, mtmp->my);
+    boolean noticed_it = (canspotmon(mtmp)
+                                  || glyph_is_invisible(glyph)
+                                  || glyph_is_warning(glyph));
+
+    if (!Underwater)
+        return FALSE;
+    /* A puddle is not enough to swim under */
+    if (!is_pool(mtmp->mx, mtmp->my))
+        return FALSE;
+    /* Being engulfed or held prevents any swimming */
+    if (u.ustuck || u.uswallow)
+        return FALSE;
+//    !mtmp->minvis
+//     || can_wwalk(mtmp))
+
+    /* We can only swim under monsters that are above the water */
+    if (!grounded(mtmp->data)
+        || mon_prop(mtmp, FLYING) || can_fly(mtmp)
+        || mon_prop(mtmp, LEVITATION) || can_levitate(mtmp)) {
+
+        if (noisy)
+            You("swim underneath %s.", !noticed_it ? Something : mon_nam(mtmp));
+        return TRUE;
+    }
+    return FALSE;
+}
 
 /*hack.c*/
