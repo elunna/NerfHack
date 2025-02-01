@@ -1462,7 +1462,8 @@ check_hydration(void)
         return;
     
     if (Underwater) {
-        rehydrate(TRUE);
+        if (svc.context.hydration < HYDRATION_MAX)
+            rehydrate(TRUE);
         return;
     }
     dehydrate(1);
@@ -1529,7 +1530,7 @@ boolean
 rehydrate(boolean submerged)
 {
     if (submerged) {
-        if (svc.context.hydration != HYDRATION_MAX)
+        if (svc.context.hydration < HYDRATION_MAX)
             You("feel fully hydrated again.");
         svc.context.hydration = HYDRATION_MAX;
     } else {
