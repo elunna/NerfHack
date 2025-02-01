@@ -196,6 +196,7 @@
      || (ptr) == &mons[PM_WAX_GOLEM]       \
      || (ptr) == &mons[PM_SALAMANDER]      \
      || (ptr) == &mons[PM_LAVA_BLOB]       \
+     || (ptr) == &mons[PM_VULPENFERNO]     \
      || (ptr) == &mons[PM_LAVA_DEMON])
 #define is_silent(ptr) ((ptr)->msound == MS_SILENT)
 #define unsolid(ptr) (((ptr)->mflags1 & M1_UNSOLID) != 0L)
@@ -363,6 +364,7 @@
 #define is_displacer(ptr) (((ptr)->mflags3 & M3_DISPLACES) != 0L)
 #define is_displaced(ptr) \
     ((ptr) == &mons[PM_DISPLACER_BEAST] \
+    || (ptr) == &mons[PM_VULPENFERNO] \
     || (ptr) == &mons[PM_BABY_SHIMMERING_DRAGON] \
     || (ptr) == &mons[PM_SHIMMERING_DRAGON])
 #define is_mplayer(ptr) \
@@ -407,7 +409,8 @@
       || (ptr) == &mons[PM_GLOWING_EYE]                           \
       || (ptr) == &mons[PM_WAX_GOLEM]                             \
       || (ptr) == &mons[PM_FIRE_VAMPIRE]                          \
-      || (ptr) == &mons[PM_FIRE_VORTEX])                          \
+      || (ptr) == &mons[PM_FIRE_VORTEX]                           \
+      || (ptr) == &mons[PM_VULPENFERNO])                          \
          ? 1                                                      \
          : ((ptr) == &mons[PM_FIRE_ELEMENTAL]                     \
             || (ptr) == &mons[PM_GOLD_DRAGON]) ? 1 : 0)
@@ -426,7 +429,7 @@
 #define likes_fire(ptr)                                                  \
     ((ptr) == &mons[PM_FIRE_VORTEX] || (ptr) == &mons[PM_FLAMING_SPHERE] \
      || (ptr) == &mons[PM_FIRE_VAMPIRE] || (ptr) == &mons[PM_PHOENIX]    \
-     || likes_lava(ptr))
+     || (ptr) == &mons[PM_VULPENFERNO] || likes_lava(ptr))
 
 #define touch_petrifies(ptr) \
     ((ptr) == &mons[PM_COCKATRICE] \
