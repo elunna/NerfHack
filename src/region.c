@@ -1248,7 +1248,8 @@ staticfn boolean
 is_hero_inside_gas_cloud(void)
 {
     int i;
-
+    if (Underwater)
+        return FALSE;
     for (i = 0; i < svn.n_regions; i++)
         if (hero_inside(gr.regions[i])
             && gr.regions[i]->inside_f == INSIDE_GAS_CLOUD)
