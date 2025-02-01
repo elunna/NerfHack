@@ -12,6 +12,7 @@ staticfn void choke_dialogue(void);
 staticfn void rabid_dialogue(void);
 staticfn void levitation_dialogue(void);
 staticfn void reappear_dialogue(void);
+staticfn void watertight_dialogue(void);
 staticfn void slime_dialogue(void);
 staticfn void slimed_to_death(struct kinfo *) NO_NNARGS;
 staticfn void sickness_dialogue(void);
@@ -471,6 +472,21 @@ reappear_dialogue(void)
     }
 }
 
+staticfn void
+watertight_dialogue(void)
+{
+    if (EWatertight)
+        return;
+
+    if ((HWatertight & TIMEOUT) == 5) {
+        if (Hallucination) {
+            pline("The grease on your items starts to stink...");
+        } else if (!Blind) {
+            pline("The protective sheen around your items flickers.");
+        }
+    }
+}
+
 static NEARDATA const char *const slime_texts[] = {
     "You are turning a little %s.",   /* 5 */
     "Your limbs are getting oozy.",   /* 4 */
@@ -760,6 +776,8 @@ nh_timeout(void)
     }
     if (HInvis & TIMEOUT)
         reappear_dialogue();
+    if (HWatertight & TIMEOUT)
+        watertight_dialogue();
     if (u.uinvulnerable)
         return; /* things past this point could kill you */
     if (Stoned)
