@@ -373,6 +373,8 @@ castmu(
      */
     switch (mattk->adtyp) {
     case AD_FIRE:
+        if (Underwater)
+            break;
         pline("You're enveloped in flames.");
         if (fully_resistant(FIRE_RES)) {
             shieldeff(u.ux, u.uy);
@@ -1866,7 +1868,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             && (distu(caster->mx, caster->my) > 2))
             return TRUE;
 
-        if ((m_seenres(caster, M_SEEN_FIRE))
+        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)
             && spellnum == CLC_FIRE_PILLAR) {
             return TRUE;
         }
@@ -2189,7 +2191,7 @@ castmm(
             }
         }
 
-        if (resists_fire(mdef) || defended(mdef, AD_FIRE)) {
+        if (resists_fire(mdef) || defended(mdef, AD_FIRE) || mon_underwater(mdef)) {
             shieldeff(mdef->mx, mdef->my);
             if (canseemon(mdef))
                 pline("But %s resists the effects.", mhe(mdef));

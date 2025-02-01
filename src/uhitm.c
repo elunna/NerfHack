@@ -3283,7 +3283,7 @@ mhitm_ad_fire(
 
     if (magr == &gy.youmonst) {
         /* uhitm */
-        if (mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
+        if (mhitm_mgc_atk_negated(magr, mdef, TRUE) || mon_underwater(mdef)) {
             mhm->damage = 0;
             return;
         }
@@ -3317,7 +3317,7 @@ mhitm_ad_fire(
     } else if (mdef == &gy.youmonst) {
         /* mhitu */
         hitmsg(magr, mattk);
-        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
+        if (!mhitm_mgc_atk_negated(magr, mdef, TRUE) && !Underwater) {
             pline("You're %s!", on_fire(pd, mattk));
             if (completelyburns(pd)) { /* paper or straw golem */
                 You("go up in flames!");
@@ -3344,7 +3344,7 @@ mhitm_ad_fire(
         }
     } else {
         /* mhitm */
-        if (mhitm_mgc_atk_negated(magr, mdef, TRUE)) {
+        if (mhitm_mgc_atk_negated(magr, mdef, TRUE) || mon_underwater(mdef)) {
             mhm->damage = 0;
             return;
         }

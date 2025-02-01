@@ -1883,7 +1883,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     case AD_FIRE:
         if (!mtmp->mcan && rn2(2)) {
             dehydrate(rn1(150, 150));
-            if (fully_resistant(FIRE_RES)) {
+            if (fully_resistant(FIRE_RES) || Underwater) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly hot.");
                 monstseesu(M_SEEN_FIRE);
@@ -2361,7 +2361,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                 pline_mon(mtmp, "%s attacks you with a fiery gaze!",
                           Monnam(mtmp));
                 stop_occupation();
-                if (fully_resistant(FIRE_RES)) {
+                if (fully_resistant(FIRE_RES) || Underwater) {
                     shieldeff(u.ux, u.uy);
                     pline_The("fire doesn't feel hot!");
                     monstseesu(M_SEEN_FIRE);
@@ -2373,11 +2373,13 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                 }
                 burn_away_slime();
                 dehydrate(orig_dmg);
-                if (lev > rn2(20))
-                    (void) burnarmor(&gy.youmonst);
-                if (lev > rn2(20)) {
-                    (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
-                    ignite_items(gi.invent);
+                if (!Underwater) {
+                    if (lev > rn2(20))
+                        (void) burnarmor(&gy.youmonst);
+                    if (lev > rn2(20)) {
+                        (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
+                        ignite_items(gi.invent);
+                    }
                 }
                 if (dmg)
                     mdamageu(mtmp, dmg);
@@ -3246,7 +3248,7 @@ passiveum(
             tmp = 0;
             break;
         case AD_FIRE: /* Red mold */
-            if (resists_fire(mtmp)) {
+            if (resists_fire(mtmp) || Underwater) {
                 shieldeff(mtmp->mx, mtmp->my);
                 pline_mon(mtmp, "%s is mildly warm.", Monnam(mtmp));
                 golemeffects(mtmp, AD_FIRE, tmp);

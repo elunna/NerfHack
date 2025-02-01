@@ -229,7 +229,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (resists_fire(mtmp) || defended(mtmp, AD_FIRE)) { /* match effect on player */
+        if (resists_fire(mtmp) || defended(mtmp, AD_FIRE)
+            || mon_underwater(mtmp)) { /* match effect on player */
             golemeffects(mtmp, AD_FIRE, dmg);
             shieldeff(mtmp->mx, mtmp->my);
             pline("Swoosh!");
@@ -3165,7 +3166,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case FIRE_HORN:
         learn_it = TRUE;
         orig_dmg = d(12, 6);
-        if (fully_resistant(FIRE_RES)) {
+        if (fully_resistant(FIRE_RES) || Underwater) {
             shieldeff(u.ux, u.uy);
             You_feel("rather warm.");
             monstseesu(M_SEEN_FIRE);
@@ -3175,11 +3176,13 @@ zapyourself(struct obj *obj, boolean ordinary)
             damage = resist_reduce(orig_dmg, FIRE_RES);
             monstunseesu(M_SEEN_FIRE);
         }
-        dehydrate(orig_dmg);
-        burn_away_slime();
-        (void) burnarmor(&gy.youmonst);
-        (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
-        ignite_items(gi.invent);
+        if (!Underwater) {
+            dehydrate(orig_dmg);
+            burn_away_slime();
+            (void) burnarmor(&gy.youmonst);
+            (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
+            ignite_items(gi.invent);
+        }
         break;
 
     case WAN_COLD:
@@ -5069,7 +5072,8 @@ zhitm(
         /* no half_spell_damage for monsters */
         break;
     case ZT_FIRE:
-        if (resists_fire(mon) || defended(mon, AD_FIRE)) {
+        if (resists_fire(mon) || defended(mon, AD_FIRE)
+            || mon_underwater(mon)) {
             sho_shieldeff = TRUE;
             break;
         }
@@ -5287,7 +5291,7 @@ zhitu(
         break;
     case ZT_FIRE:
         orig_dam = d(nd, 6);
-        if (fully_resistant(FIRE_RES)) {
+        if (fully_resistant(FIRE_RES) || Underwater) {
             shieldeff(sx, sy);
             You("don't feel hot!");
             monstseesu(M_SEEN_FIRE);
@@ -5296,7 +5300,7 @@ zhitu(
             dam = resist_reduce(orig_dam, FIRE_RES);
             monstunseesu(M_SEEN_FIRE);
         }
-        if (!Reflecting) {
+        if (!Reflecting && !Underwater) {
             burn_away_slime();
             if (burnarmor(&gy.youmonst)) { /* "body hit" */
                 if (!rn2(3))

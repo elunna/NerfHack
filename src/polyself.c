@@ -1785,11 +1785,12 @@ dogaze(void)
                     int orig_dmg = dmg, lev = (int) u.ulevel;
 
                     You("attack %s with a fiery gaze!", mon_nam(mtmp));
-                    if (resists_fire(mtmp) || defended(mtmp, AD_FIRE)) {
+                    if (resists_fire(mtmp) || defended(mtmp, AD_FIRE)
+                        || mon_underwater(mtmp)) {
                         pline_The("fire doesn't burn %s!", mon_nam(mtmp));
                         dmg = 0;
                     }
-                    if (lev > rn2(20)) {
+                    if (lev > rn2(20) || !mon_underwater(mtmp)) {
                         dmg += destroy_items(mtmp, AD_FIRE, orig_dmg);
                         ignite_items(mtmp->minvent);
                     }
