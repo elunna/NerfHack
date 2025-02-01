@@ -247,6 +247,7 @@ dipforge(struct obj *obj)
                 You("burn yourself!");
                 losehp(resist_reduce(d(2, 16), FIRE_RES),
                 "touching forge lava", KILLED_BY);
+                dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
             } else {
                 You("swirl the lava around...");
             }
@@ -255,7 +256,6 @@ dipforge(struct obj *obj)
                 make_glib(0);
                 Your("%s are no longer slippery.", fingers_or_gloves(TRUE));
             }
-            dehydrate(rn1(150, 150));
             return;
         }
     }
@@ -375,13 +375,12 @@ result:
         if (Luck < 0) {
             blowupforge(u.ux, u.uy);
             /* Avoid destroying the same item twice (lava_damage) */
-            dehydrate(d(150, 150));
             return;
         } else {
             pline("Molten lava surges up and splashes all over you!");
             losehp(resist_reduce(d(3, 8), FIRE_RES),
                    "dipping into a forge", KILLED_BY);
-            dehydrate(d(150, 150));
+            dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
         }
         break;
     case 23:
@@ -423,7 +422,7 @@ result:
 lava:
     lava_damage(obj, u.ux, u.uy);
     update_inventory();
-    dehydrate(d(2, 16));
+    dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
 }
 
 /* forging recipes - first object is the end result
@@ -686,7 +685,7 @@ doforging(void)
             else
                 pline_The("lava in the forge bubbles ominously.");
         }
-        dehydrate(d(15, 15));
+        dehydrate(resist_reduce(rn1(20, 20), FIRE_RES));
         /* remove result from inventory and re-insert it, possibly stacking
           with compatible ones; override 'pickup_burden' while doing so */
         hold_potion(output, "You juggle and drop %s!",

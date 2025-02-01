@@ -638,7 +638,7 @@ explode(
         if (adtyp == AD_FIRE) {
             (void) burnarmor(&gy.youmonst);
             ignite_items(gi.invent);
-            dehydrate(damu);
+            dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
         }
         if (adtyp == AD_ACID) {
             if (rn2(u.twoweap ? 2 : 3))

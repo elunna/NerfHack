@@ -3331,6 +3331,7 @@ mhitm_ad_fire(
                 mhm->damage = 0;
             } else {
                 mhm->damage = resist_reduce(mhm->damage, FIRE_RES);
+                dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
                 monstunseesu(M_SEEN_FIRE);
             }
             if ((int) magr->m_lev > rn2(20)) {
@@ -3338,7 +3339,6 @@ mhitm_ad_fire(
                 ignite_items(gi.invent);
             }
             burn_away_slime();
-            dehydrate(orig_dmg);
         } else {
             mhm->damage = 0;
         }
@@ -7704,11 +7704,11 @@ passive(
                     break;
                 }
                 tmp = resist_reduce(tmp, FIRE_RES);
+                dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
                 monstunseesu(M_SEEN_FIRE);
                 You("are suddenly very hot!");
                 mdamageu(mon, tmp); /* fire damage */
                 burn_away_slime();
-                dehydrate(tmp);
             }
             break;
         case AD_ELEC:

@@ -3174,10 +3174,10 @@ zapyourself(struct obj *obj, boolean ordinary)
         } else {
             pline("You've set yourself afire!");
             damage = resist_reduce(orig_dmg, FIRE_RES);
+            dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
             monstunseesu(M_SEEN_FIRE);
         }
         if (!Underwater) {
-            dehydrate(orig_dmg);
             burn_away_slime();
             (void) burnarmor(&gy.youmonst);
             (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
@@ -5308,9 +5308,9 @@ zhitu(
                 if (!rn2(3))
                     ignite_items(gi.invent);
             }
-            dehydrate(orig_dam);
+            dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
         } else {
-            dehydrate(orig_dam / 2);
+            dehydrate(resist_reduce(rn1(75, 75), FIRE_RES));
         }
         break;
     case ZT_COLD:

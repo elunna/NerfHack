@@ -1882,7 +1882,6 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
         break;
     case AD_FIRE:
         if (!mtmp->mcan && rn2(2)) {
-            dehydrate(rn1(150, 150));
             if (fully_resistant(FIRE_RES) || Underwater) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly hot.");
@@ -1891,6 +1890,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                 tmp = 0;
             } else {
                 tmp = resist_reduce(tmp, FIRE_RES);
+                dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
                 if (hardly_resistant(FIRE_RES))
                     You("are burning to a crisp!");
                 else
@@ -2369,10 +2369,10 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                     dmg = 0;
                 } else {
                     dmg = resist_reduce(dmg, FIRE_RES);
+                    dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
                     monstunseesu(M_SEEN_FIRE);
                 }
                 burn_away_slime();
-                dehydrate(orig_dmg);
                 if (!Underwater) {
                     if (lev > rn2(20))
                         (void) burnarmor(&gy.youmonst);

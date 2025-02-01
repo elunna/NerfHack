@@ -383,10 +383,10 @@ castmu(
             dmg = 0;
         } else {
             dmg = resist_reduce(dmg, FIRE_RES);
+            dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
             monstunseesu(M_SEEN_FIRE);
         }
         burn_away_slime();
-        dehydrate(rn1(100, 50));
         /* burn up flammable items on the floor, melt ice terrain */
         mon_spell_hits_spot(caster, AD_FIRE, u.ux, u.uy);
         break;
