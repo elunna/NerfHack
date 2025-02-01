@@ -619,6 +619,11 @@ distfleeck(
                         !Is_astralevel(&u.uz)))) {
         *scared = 1;
         monflee(mtmp, rnd(rn2(7) ? 10 : 100), TRUE, TRUE);
+    } else if (Underwater && !mon_underwater(mtmp)) {
+        /* If out-of-water monsters cannot attack us, make them back off 
+         * a bit so they don't just camp on the same square next to us.
+         */
+        monflee(mtmp, d(3, 4), TRUE, FALSE);
     } else
         *scared = 0;
 }
@@ -2515,10 +2520,11 @@ set_apparxy(struct monst *mtmp)
     /* add cases as required.  eg. Displacement ... */
     if (Underwater) {
         displ = 1;
-    } else if (notseen) {
+    } else if (notseen || Underwater) {
         /* Xorns can smell quantities of valuable metal
            like that in solid gold coins, treat as seen */
-        displ = (mtmp->data == &mons[PM_XORN] && umoney) ? 0 : 1;
+        displ = (mtmp->data == &mons[PM_XORN]
+                 && umoney && !Underwater) ? 0 : 1;
     } else if (notthere) {
         displ = couldsee(mx, my) ? 2 : 1;
     } else {
