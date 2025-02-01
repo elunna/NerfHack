@@ -5760,6 +5760,7 @@ mhitm_ad_samu(
             if (In_endgame(&u.uz) && mon_has_amulet(magr)) {
                 monflee(magr, rnd(100) + 100, FALSE, TRUE);
             }
+            mhm->done = TRUE;
         }
     } else {
         /* mhitm */

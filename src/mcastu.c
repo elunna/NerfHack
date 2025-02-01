@@ -1325,7 +1325,6 @@ cast_cleric_spell(
            to 'if (reflects) break' above] but hero resistance doesn't;
            do this before maybe blinding the hero via flashburn() */
         mon_spell_hits_spot(caster, AD_ELEC, u.ux, u.uy);
-
         break;
     }
     case CLC_CURSE_ITEMS:
