@@ -758,7 +758,7 @@ const struct Race races[] = {
     {
         "grung",
         "grung",
-        "grungfolk",
+        "grung",
         "Gru",
         { 0, 0 },               /* individual as a noun */
         PM_GRUNG,               /* PM_ as a male monster */
