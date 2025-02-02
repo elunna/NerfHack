@@ -8060,10 +8060,7 @@ boolean
 hates_item(struct monst *mtmp, int otyp)
 {
     boolean is_you = (mtmp == &gy.youmonst);
-    boolean is_heavy_suit = otyp >= PLATE_MAIL && otyp <= LEATHER_JACKET
-                            && (objects[otyp].oc_material == IRON
-                                || objects[otyp].oc_material == GEMSTONE
-                                || objects[otyp].oc_material == COPPER);
+    boolean is_bulky = objects[otyp].oc_bulky;
     /* Special exception for archaeologists - the following text was written
      * by ChatGPT because, ... why not.
      *
@@ -8105,10 +8102,9 @@ hates_item(struct monst *mtmp, int otyp)
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_DHAMPIR))
                 : is_vampire(mtmp->data))
         return (is_gnomish_obj(otyp));
-    
     if (is_you ? maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
                 : is_grung(mtmp->data))
-        return (is_heavy_suit);
+        return is_bulky;
     
     return FALSE;
 }
