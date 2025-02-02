@@ -2837,8 +2837,6 @@ find_ac(void)
     if (uamul && uamul->otyp == AMULET_OF_GUARDING)
         uac -= uamul->spe; /* chargable; main benefit is to MC */
 
-
-
     /* armor class from other sources */
     if (HProtection & INTRINSIC)
         uac -= u.ublessed;
@@ -2863,12 +2861,15 @@ find_ac(void)
     else if (ACURR(A_DEX) >= 24)
         dex_adjust_ac -= 5;
 
+    /* Double this bonus for grung to make up for lack of boots */
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+        dex_adjust_ac *= 2;
+        
     /* Wearing certain types of body armor negates any
      * beneficial dexterity bonus. So does being
      * encumbered in any way.
      */
-    if ((uarm && is_heavy_metallic(uarm))
-        || (near_capacity() >= SLT_ENCUMBER)) {
+    if ((uarm && is_heavy_metallic(uarm)) || (near_capacity() >= SLT_ENCUMBER)) {
         if (dex_adjust_ac < 0)
             dex_adjust_ac = 0;
     }
