@@ -2862,8 +2862,10 @@ find_ac(void)
         dex_adjust_ac -= 5;
 
     /* Double this bonus for grung to make up for lack of boots */
-    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
+        dex_adjust_ac++;
         dex_adjust_ac *= 2;
+    }
         
     /* Wearing certain types of body armor negates any
      * beneficial dexterity bonus. So does being
