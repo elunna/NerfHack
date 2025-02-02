@@ -1310,9 +1310,10 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
     /* Grung have a poison touch that is effective when the hero is
      * fighting barehanded and without gloves */
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
-        && !negated && !rn2(2) && !uarmg) {
-        pline_mon(mon, "%s is %s by your poisonous skin!",
-                  Monnam(mon), rn2(2) ? "hit" : "struck");
+        && !(resists_poison(mon) || defended(mon, AD_DRST))
+        && !negated && !rn2(2) ) {
+        pline_mon(mon, "%s is %s by your poison!",
+                  Monnam(mon), rn2(2) ? "by" : "splashed");
         if (resists_poison(mon)) {
             pline_mon(mon, "%s is not affected.", Monnam(mon));
         } else {
