@@ -60,6 +60,7 @@
      || ((ptr)->mlet == S_ELEMENTAL && (ptr) != &mons[PM_STALKER]) \
      || nonliving(ptr)                         \
      || is_demon(ptr)                          \
+     || is_angel(ptr)                          \
      || is_rider(ptr)                          \
      || (ptr) == &mons[PM_GIANT_COCKROACH]     \
      || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
