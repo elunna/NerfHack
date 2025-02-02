@@ -807,7 +807,7 @@ xname_flags(
         if (typ >= FIRST_DRAGON_SCALES && typ <= LAST_DRAGON_SCALES) {
             Sprintf(buf, "set of %s", actualn);
             break;
-        } else if (is_boots(obj) || is_gloves(obj)) {
+        } else if (is_boots(obj) || is_gloves(obj) || is_bracer(obj)) {
             Strcpy(buf, "pair of ");
         } else if (is_shield(obj) && !dknown) {
             if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD) {
@@ -2820,13 +2820,14 @@ static const struct sing_plur one_off[] = {
 static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "gloves",    "lenses",   "scales",
-    "eyes",    "gauntlets", "iron bars",
+    "eyes",    "gauntlets", "iron bars", "bracers",
     /* both singular and plural are spelled the same */
     "bison",   "deer",      "elk",       "fish",      "fowl",
     "tuna",    "yaki",      "-hai",      "krill",     "manes",
     "moose",   "ninja",     "sheep",     "ronin",     "roshi",
     "shito",   "tengu",     "ki-rin",    "Nazgul",    "gunyoki",
     "piranha", "samurai",   "shuriken",  "haggis",    "Bordeaux",
+    "undead",
     0,
     /* Note:  "fish" and "piranha" are collective plurals, suitable
        for "wiped out all <foo>".  For "3 <foo>", they should be
@@ -3484,6 +3485,7 @@ static NEARDATA const struct o_range o_ranges[] = {
     { "candle", TOOL_CLASS, TALLOW_CANDLE, WAX_CANDLE },
     { "horn", TOOL_CLASS, TOOLED_HORN, HORN_OF_PLENTY },
     { "shield", ARMOR_CLASS, SMALL_SHIELD, SHIELD_OF_REFLECTION },
+    { "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_VS_STONE },
     { "hat", ARMOR_CLASS, FEDORA, DUNCE_CAP },
     { "helm", ARMOR_CLASS, ELVEN_LEATHER_HELM, HELM_OF_TELEPATHY },
     { "gloves", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
@@ -5847,6 +5849,8 @@ shield_simple_name(struct obj *shield)
                ? "heavy shield"
                : "light shield";
 #endif
+        if (is_bracer(shield))
+            return "bracers";
     }
     return "shield";
 }

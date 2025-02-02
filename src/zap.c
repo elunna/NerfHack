@@ -2202,7 +2202,8 @@ poly_obj(struct obj *obj, int id)
             remove_worn_item(obj, TRUE);
             /* if the new form can be worn in the same slot, make it so */
             if ((new_wornmask & W_WEP) != 0L) {
-                if (was_twohanded || !bimanual(otmp) || !uarms)
+                if (was_twohanded || !bimanual(otmp) 
+                    || (!uarms || is_bracer(uarms)))
                     setuwep(otmp);
                 if (was_twoweap && uwep && !bimanual(uwep))
                     set_twoweap(TRUE); /* u.twoweap = TRUE */

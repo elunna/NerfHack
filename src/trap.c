@@ -148,7 +148,8 @@ burnarmor(struct monst *victim)
             return TRUE;
         case 2:
             item = hitting_u ? uarms : which_armor(victim, W_ARMS);
-            if (!burn_dmg(item, "wooden shield"))
+            if (item)
+                if (!burn_dmg(item, is_bracer(item) ? "bracers" : "shield"))
                 continue;
             break;
         case 3:
@@ -1741,7 +1742,9 @@ trapeffect_rust_trap(
             break;
         case 1:
             pline("%s your left %s!", A_gush_of_water_hits, body_part(ARM));
-            if (water_damage(uarms, "shield", TRUE) != ER_NOTHING)
+            if (water_damage(uarms, 
+                           (uarms && is_bracer(uarms)) ? "bracers" : "shield",
+                           TRUE) != ER_NOTHING)
                 break;
             if (u.twoweap || (uwep && bimanual(uwep)))
                 (void) water_damage(u.twoweap ? uswapwep : uwep, 0, TRUE);
@@ -1804,7 +1807,9 @@ trapeffect_rust_trap(
                       "%s %s's left %s!", A_gush_of_water_hits,
                       mon_nam(mtmp), mbodypart(mtmp, ARM));
             target = which_armor(mtmp, W_ARMS);
-            if (water_damage(target, "shield", TRUE) != ER_NOTHING)
+            if (water_damage(target, (target && is_bracer(target))
+                                         ? "bracers" : "shield", 
+                             TRUE) != ER_NOTHING)
                 break;
             target = MON_WEP(mtmp);
             if (target && bimanual(target))

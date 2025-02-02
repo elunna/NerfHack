@@ -11,6 +11,7 @@ static NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_shirt[] = "shirt", c_cloak[] = "cloak",
                            c_gloves[] = "gloves", c_boots[] = "boots",
                            c_helmet[] = "helmet", c_shield[] = "shield",
+                           c_bracers[] = "bracers",
                            c_weapon[] = "weapon", c_sword[] = "sword",
                            c_axe[] = "axe", c_that_[] = "that";
 
@@ -942,9 +943,19 @@ Shield_on(void)
     case SHIELD_OF_REFLECTION:
     case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
+    /* Bracers are also included in the shield slot */
+    case LEATHER_BRACERS:
+    case BRACERS_OF_POISON_RESISTANCE:
+    case BRACERS_OF_SLEEP_RESISTANCE:
+    case BRACERS_OF_COLD_RESISTANCE:
+    case BRACERS_OF_UNCHANGING:
+    case BRACERS_VS_STONE:
         break;
     case SHIELD_OF_INTEGRITY:
         BWithering |= W_ARM;
+        break;
+    case BRACERS_VS_SHAPESHIFTERS:
+        rescham();
         break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
@@ -989,9 +1000,23 @@ Shield_off(void)
     case SHIELD_OF_REFLECTION:
     case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
+    /* Bracers are also included in the shield slot */
+    case LEATHER_BRACERS:
+    case BRACERS_OF_POISON_RESISTANCE:
+    case BRACERS_OF_SLEEP_RESISTANCE:
+    case BRACERS_OF_COLD_RESISTANCE:
+    case BRACERS_OF_UNCHANGING:
+    case BRACERS_VS_STONE:
         break;
     case SHIELD_OF_INTEGRITY:
         BWithering &= ~W_ARM;
+        break;
+    case BRACERS_VS_SHAPESHIFTERS:
+        /* if you're no longer protected, let the chameleons change
+           shape again; however, might still be protected if wearing
+           2nd ring of this type (or via #wizintrinsic) */
+        if (!Protection_from_shape_changers)
+            restartcham();
         break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
@@ -2259,6 +2284,7 @@ armoroff(struct obj *otmp)
             ga.afternmv = Armor_off;
             break;
         case ARM_SHIELD:
+            /* also handles bracers */
             what = shield_simple_name(otmp);
             ga.afternmv = Shield_off;
             break;
@@ -2354,7 +2380,6 @@ canwearobj(struct obj *otmp, long *mask, boolean noisy)
 {
     int err = 0;
     const char *which;
-
     /* this is the same check as for 'W' (dowear), but different message,
        in case we get here via 'P' (doputon) */
     if (verysmall(gy.youmonst.data) || nohands(gy.youmonst.data)) {
@@ -2404,19 +2429,21 @@ canwearobj(struct obj *otmp, long *mask, boolean noisy)
             err++;
         } else
             *mask = W_ARMH;
-    } else if (is_shield(otmp)) {
+    } else if (is_shield(otmp) || is_bracer(otmp)) {
+        /* also handles bracers */
         if (uarms) {
             if (noisy)
-                already_wearing(an(c_shield));
+                already_wearing(is_bracer(uarms) ? c_bracers
+                                                : an(c_shield));
             err++;
-        } else if (uwep && bimanual(uwep)) {
+        } else if (uwep && !is_bracer(otmp) && bimanual(uwep)) {
             if (noisy)
                 You("cannot wear a shield while wielding a two-handed %s.",
                     is_sword(uwep) ? c_sword : (uwep->otyp == BATTLE_AXE)
                                                    ? c_axe
                                                    : c_weapon);
             err++;
-        } else if (u.twoweap) {
+        } else if (u.twoweap && !is_bracer(otmp)) {
             if (noisy)
                 You("cannot wear a shield while wielding two weapons.");
             err++;

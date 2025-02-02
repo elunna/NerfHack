@@ -437,7 +437,7 @@ find_roll_to_hit(
     if (Role_if(PM_MONK) && !Upolyd) {
         if (uarm)
             tmp -= (*role_roll_penalty = gu.urole.spelarmr) + 20;
-        else if (!uwep && !uarms)
+        else if (!uwep && (!uarms || is_bracer(uarms)))
             tmp += (u.ulevel / 3) + 2;
     }
     if (Role_if(PM_SAMURAI) && u.twoweap && uwep->otyp == KATANA
@@ -455,7 +455,9 @@ find_roll_to_hit(
         /* Instead of punishing spellcasting for armor and shields,
          * punish melee capabilities instead. */
         tmp -= uarm ? (*role_roll_penalty = gu.urole.spelarmr) : 0; /* spelarmr == 20 */
-        tmp -= uarms ? (*role_roll_penalty += gu.urole.spelshld) : 0; /* spelshld == 10 */
+        tmp -= (uarms || !is_bracer(uarms)) 
+                   ? (*role_roll_penalty += gu.urole.spelshld) 
+                   : 0; /* spelshld == 10 */
         if (uwep)
             tmp -= 10;
     }
@@ -1107,7 +1109,7 @@ double_punch(void)
      *  master      (5) : 60%
      *  grandmaster (6) : 80%
      */
-    if (!uwep && !uarms && skl_lvl > P_BASIC)
+    if (!uwep && (!uarms || is_bracer(uarms)) && skl_lvl > P_BASIC)
         return (skl_lvl - P_BASIC) > rn2(5);
     return FALSE;
 }
@@ -1226,7 +1228,8 @@ hitum(struct monst *mon, struct attack *uattk)
     
     /* random shield bash if wearing a shield and are skilled
        in using shields */
-    if (bash_chance && wearshield && P_SKILL(P_SHIELD) >= P_BASIC
+    if (bash_chance && wearshield && !is_bracer(uarms)
+        && P_SKILL(P_SHIELD) >= P_BASIC
         && !(gm.multi < 0 || u.umortality > oldumort
              || u.uinwater || !malive || m_at(x, y) != mon)
         /* suppress bashes with 'F' */
@@ -1447,7 +1450,7 @@ hmon_hitmon_weapon_melee(
                && obj->oclass == WEAPON_CLASS
                && (bimanual(obj)
                    || (Role_if(PM_SAMURAI) && obj->otyp == KATANA
-                       && !uarms))
+                       && (!uarms || is_bracer(uarms))))
                && (wtype != P_NONE
                    && P_SKILL(wtype) >= P_SKILLED)
                && ((monwep = MON_WEP(mon)) != 0
@@ -2366,7 +2369,7 @@ hmon_hitmon(
     hmd.jousting = 0;
     hmd.hittxt = FALSE;
     hmd.get_dmg_bonus = TRUE;
-    hmd.unarmed = !uwep && !uarm && !uarms;
+    hmd.unarmed = !uwep && !uarm && (!uarms || is_bracer(uarms));
     hmd.hand_to_hand = (thrown == HMON_MELEE
                         /* not grapnels; applied implies uwep */
                         || (thrown == HMON_APPLIED && is_pole(uwep)));
@@ -2456,7 +2459,8 @@ hmon_hitmon(
     if (hmd.dieroll == 1 && Role_if(PM_MONK) 
                && P_SKILL(P_BARE_HANDED_COMBAT) == P_GRAND_MASTER
                && u.ulevel > 20
-               && !Upolyd && !uwep && !uarms && !thrown) {
+               && !Upolyd && !uwep && (!uarms || is_bracer(uarms)) 
+               && !thrown) {
         pline("%s!", Hallucination ? monk_halucrit[rn2(N_HALUCRIT)]
                             : monk_crit[rn2(N_CRIT)]);
         pline("dmg=%d",hmd.dmg);
@@ -6865,7 +6869,7 @@ hmonas(struct monst *mon)
                    if polyform has them, but it matches twoweap behavior;
                    twoweap also only allows primary to be an artifact, so
                    if alternate weapon is one, don't use it */
-                && !uarms && !uswapwep->oartifact
+                && (!uarms || is_bracer(uarms)) && !uswapwep->oartifact
                 /* only switch to uswapwep if it's a weapon */
                 && (uswapwep->oclass == WEAPON_CLASS || is_weptool(uswapwep))
                 /* only switch if uswapwep is not bow, arrows, or darts */

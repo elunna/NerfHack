@@ -604,7 +604,8 @@ m_destroy_armor(struct monst *caster, struct monst *mdef)
                     else if (is_boots(oatmp))
                         action = "disintegrate";
                     else if (is_shield(oatmp))
-                        action = "crumbles away";
+                        action = is_bracer(oatmp) ? "crumble away"
+                                                  : "crumbles away";
                     else
                         action = "turns to dust";
                     pline("%s %s %s!", s_suffix(Monnam(mdef)), xname(oatmp),

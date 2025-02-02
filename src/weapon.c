@@ -953,6 +953,14 @@ select_hwep(struct monst *mtmp)
     boolean strong = strongmonst(mtmp->data);
     boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
 
+    /* bracers don't really count as shields */
+    if (wearing_shield) {
+        for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+            if (otmp->owornmask && is_bracer(otmp))
+                wearing_shield = 0;
+        }
+    }
+    
     /* prefer artifacts to everything else */
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
         if (otmp->oclass == WEAPON_CLASS && otmp->oartifact

@@ -282,6 +282,8 @@ obj_shuffle_range(
             *lo_p = CLOAK_OF_PROTECTION, *hi_p = CLOAK_OF_DISPLACEMENT;
         else if (otyp >= SPEED_BOOTS && otyp <= LEVITATION_BOOTS)
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
+        else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_VS_STONE)
+            *lo_p = LEATHER_BRACERS, *hi_p = BRACERS_VS_STONE;
         break;
     case POTION_CLASS:
         /* potion of water has the only fixed description */
@@ -326,6 +328,7 @@ shuffle_all(void)
     /* sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
         HELMET, LEATHER_GLOVES, CLOAK_OF_PROTECTION, SPEED_BOOTS,
+        LEATHER_BRACERS
     };
     int first, last, idx;
 

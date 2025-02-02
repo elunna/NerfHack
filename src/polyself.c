@@ -1305,7 +1305,9 @@ break_armor(void)
             dropp(otmp);
         }
         if ((otmp = uarms) != 0) {
-            You("can no longer hold your shield!");
+            You("can no longer %s!",
+                   is_bracer(uarms) ? "wear your bracers"
+                                    : "hold your shield");
             (void) Shield_off();
             dropp(otmp);
         }

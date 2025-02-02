@@ -2313,7 +2313,7 @@ percent_success(int spell)
         splcaster -= 3; /* On top of the quarterstaff */
 
     /* Mirrorbright doesn't impede spellcasting */
-    if (uarms && uarms->oartifact != ART_MIRRORBRIGHT)
+    if (uarms && !is_bracer(uarms) && uarms->oartifact != ART_MIRRORBRIGHT)
         splcaster += gu.urole.spelshld;
 
     if (!paladin_bonus) {

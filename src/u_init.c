@@ -1474,7 +1474,10 @@ ini_inv_use_obj(struct obj *obj)
                weapon ready to swap with the primary; just make sure we
                aren't two-weaponing (academic; no one starts that way) */
             set_twoweap(FALSE); /* u.twoweap = FALSE */
-        } else if (is_helmet(obj) && !uarmh)
+        }
+        else if (is_bracer(obj) && !uarms)
+            setworn(obj, W_ARMS);
+        else if (is_helmet(obj) && !uarmh)
             setworn(obj, W_ARMH);
         else if (is_gloves(obj) && !uarmg)
             setworn(obj, W_ARMG);

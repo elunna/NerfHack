@@ -673,7 +673,31 @@ SHIELD("shield of integrity", "embossed shield",
 SHIELD("shield of reflection", "polished silver shield",
        0, 1, 1, REFLECTING, 3, 0,  50, 50, 8, 0,  SILVER, HI_SILVER,
                                                         SHIELD_OF_REFLECTION),
-
+/* Bracers share the same slot as shield so both cannot be worn
+    simultaneously. The two don't share any intrinsics either so 
+    there are no bracers of reflection or magic resistance, etc.
+ */
+SHIELD("leather bracers", "runed bracers",
+       0, 0, 0,        0, 6, 0,  15,  10, 10, 0,LEATHER, CLR_BRIGHT_GREEN,
+                                                           LEATHER_BRACERS),
+SHIELD("bracers of poison resistance", "chitinous bracers",
+       0, 1, 0,POISON_RES, 2, 0, 15, 100, 10, 0,  COPPER, CLR_YELLOW,
+                                               BRACERS_OF_POISON_RESISTANCE),
+SHIELD("bracers of sleep resistance", "silver bracers",
+       0, 1, 0, SLEEP_RES, 2, 0, 15, 100, 10, 0,  SILVER, HI_SILVER,
+                                                BRACERS_OF_SLEEP_RESISTANCE),
+SHIELD("bracers of cold resistance", "wire bracers",
+       0, 1, 0,  COLD_RES, 2, 0, 15, 100, 10, 0,  IRON, CLR_CYAN,
+                                                 BRACERS_OF_COLD_RESISTANCE),
+SHIELD("bracers vs shapeshifters", "braided bracers",
+       0, 1, 0,PROT_FROM_SHAPE_CHANGERS, 2, 0, 15, 100, 10, 1, LEATHER,
+                                        CLR_BROWN, BRACERS_VS_SHAPESHIFTERS),
+SHIELD("bracers of unchanging", "bezeled bracers",
+       0, 1, 0,UNCHANGING, 2, 0, 15, 100, 10, 0,  GEMSTONE, CLR_BLUE,
+                                                      BRACERS_OF_UNCHANGING),
+SHIELD("bracers vs stone", "spiral bracers",
+       0, 1, 0, STONE_RES, 2, 0, 15, 100, 10, 0,  COPPER, HI_COPPER,
+                                                           BRACERS_VS_STONE),
 /* gloves */
 /* Non-random appearance */
 GLOVES("rogue's gloves", "fingerless gloves",

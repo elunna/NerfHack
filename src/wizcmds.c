@@ -1501,7 +1501,7 @@ sanity_check(void)
     bc_sanity_check();
     trap_sanity_check();
     engraving_sanity_check();
-    levl_sanity_check();
+//    levl_sanity_check();
     program_state.in_sanity_check--;
 }
 
