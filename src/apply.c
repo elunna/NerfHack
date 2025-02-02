@@ -1757,7 +1757,7 @@ use_lamp(struct obj *obj)
     
     /* For convenience, allow just lighting one candle. */
     if ((obj->otyp == WAX_CANDLE || obj->otyp == TALLOW_CANDLE)
-        && !obj->lamplit && inv_cnt(FALSE) < 52) {
+        && !obj->lamplit && inv_cnt(FALSE) < invlet_basic) {
         
         /* Don't allow splitting the stack if the player's
            inventory won't accomodate it */
@@ -1771,7 +1771,9 @@ use_lamp(struct obj *obj)
                 obj->nomerge = 0;
         }
     }
-    
+    if (!obj)
+        return; /* Safeguard against a dropped candle from splitting */
+
     /*
      * When blind, lamps' and candles' on/off state can be distinguished
      * by heat.  For brass lantern assume that there is an on/off switch
