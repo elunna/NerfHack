@@ -1720,7 +1720,8 @@ dogaze(void)
 
     if (adtyp != AD_CONF && adtyp != AD_FIRE
         && adtyp != AD_BLND && adtyp != AD_TLPT
-        && adtyp != AD_STON && adtyp != AD_STUN) {
+        && adtyp != AD_STON && adtyp != AD_STUN
+        && adtyp != AD_SLEE) {
         impossible("gaze attack %d?", adtyp);
         return ECMD_OK;
     }
@@ -1817,6 +1818,15 @@ dogaze(void)
                         mtmp->mstun = 1;
                         if (DEADMONSTER(mtmp))
                             killed(mtmp);
+                    }
+                    break;
+                case AD_SLEE:
+                    You("attack %s with a sleepy gaze!", mon_nam(mtmp));
+                    if (resists_sleep(mtmp) || defended(mtmp, AD_SLEE)) {
+                        pline("%s doesn't seem affected.", Monnam(mtmp));
+                    } else {
+                        pline("%s falls into a trance.", Monnam(mtmp));
+                        mtmp->msleeping = 1;
                     }
                     break;
                 case AD_STUN:
