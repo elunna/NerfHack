@@ -211,6 +211,7 @@ Boots_on(void)
     case DWARVISH_BOOTS:
     case HIGH_BOOTS:
     case KICKING_BOOTS:
+    case FREEDOM_BOOTS:
         break;
     case JUMPING_BOOTS: {
         boolean was_flying = !!Flying;
@@ -420,6 +421,7 @@ Boots_off(void)
     case DWARVISH_BOOTS:
     case HIGH_BOOTS:
     case KICKING_BOOTS:
+    case FREEDOM_BOOTS:
         break;
     default:
         impossible(unknown_type, c_boots, otyp);
