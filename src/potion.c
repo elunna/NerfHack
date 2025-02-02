@@ -3268,7 +3268,7 @@ dodip(void)
             }
             ++drink_ok_extra;
         } else if (is_grung && is_poisonable(obj) && !obj->opoisoned) {
-            Snprintf(qbuf, sizeof(qbuf), "%s%s along your toxic skin??",
+            Snprintf(qbuf, sizeof(qbuf), "%s%s in your toxic skin?",
                      Dip_, flags.verbose ? obuf : shortestname);
             if (y_n(qbuf) == 'y') {
                     pline("Your sticky poison forms a coating on %s.", the(xname(obj)));
