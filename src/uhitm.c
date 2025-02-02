@@ -1312,8 +1312,8 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
         && !(resists_poison(mon) || defended(mon, AD_DRST))
         && !negated && !rn2(2) ) {
-        pline_mon(mon, "%s is %s by your poison!",
-                  Monnam(mon), rn2(2) ? "by" : "splashed");
+        You("splash %s with your %s!", mon_nam(mon),
+            rn2(2) ? "toxic slime" : "poison");
         if (resists_poison(mon)) {
             pline_mon(mon, "%s is not affected.", Monnam(mon));
         } else {
