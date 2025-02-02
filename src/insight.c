@@ -2212,7 +2212,7 @@ attributes_enlightenment(
 
     /* Not an official resistance, parallel with disintegration res . */
     if (BWithering) {
-        you_are("withering resistant ", from_what(DISINT_RES));
+        you_are("withering resistant", from_what(DISINT_RES));
     }
     
     if (Drain_resistance)
