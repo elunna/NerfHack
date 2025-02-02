@@ -126,16 +126,27 @@ u_calc_moveamt(int wtcap)
         /* your speed doesn't augment steed's speed */
         moveamt = mcalcmove(u.usteed, TRUE);
     } else {
-        moveamt = gy.youmonst.data->mmove;
-
-        if (Very_fast) { /* speed boots, potion, or spell */
-            /* gain a free action on 2/3 of turns */
-            if (rn2(3) != 0)
-                moveamt += NORMAL_SPEED;
-        } else if (Fast) { /* intrinsic */
-            /* gain a free action on 1/3 of turns */
-            if (rn2(3) == 0)
-                moveamt += NORMAL_SPEED;
+        /* Grung get speed penalties for being dehydrated */
+        if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
+            && u.hydration < 1000) {
+            if (u.hydration < 25)
+                moveamt = 7;
+            else if (u.hydration < 100)
+                moveamt = SLOW_SPEED; /* 9 */
+            else
+                moveamt = 10;
+        } else {
+            moveamt = gy.youmonst.data->mmove;
+        
+            if (Very_fast) { /* speed boots, potion, or spell */
+                /* gain a free action on 2/3 of turns */
+                if (rn2(3) != 0)
+                    moveamt += NORMAL_SPEED;
+            } else if (Fast) { /* intrinsic */
+                /* gain a free action on 1/3 of turns */
+                if (rn2(3) == 0)
+                    moveamt += NORMAL_SPEED;
+            }
         }
     }
 

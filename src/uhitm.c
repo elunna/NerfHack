@@ -464,10 +464,23 @@ find_roll_to_hit(
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;
 
-    /* grung *hate* kamadan */
-    if (mtmp->data == &mons[PM_KAMADAN]
-        && maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
-        tmp++;
+   
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
+        /* hydration affects combat effectiveness */
+        if (u.hydration < 1000)
+            tmp--;
+        if (u.hydration < 500)
+            tmp--;
+        if (u.hydration < 250)
+            tmp--;
+        if (u.hydration < 100)
+            tmp--;
+        if (u.hydration < 25)
+            tmp--;
+        /* grung *hate* kamadan */
+        if (mtmp->data == &mons[PM_KAMADAN])
+            tmp++;
+    }
 
     /* level adjustment. maxing out has some benefits */
     if (u.ulevel > 20)
