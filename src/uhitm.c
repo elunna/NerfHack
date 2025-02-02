@@ -8061,7 +8061,9 @@ hates_item(struct monst *mtmp, int otyp)
 {
     boolean is_you = (mtmp == &gy.youmonst);
     boolean is_heavy_suit = otyp >= PLATE_MAIL && otyp <= LEATHER_JACKET
-                            && objects[otyp].oc_material != LEATHER;
+                            && (objects[otyp].oc_material == IRON
+                                || objects[otyp].oc_material == GEMSTONE
+                                || objects[otyp].oc_material == COPPER);
     /* Special exception for archaeologists - the following text was written
      * by ChatGPT because, ... why not.
      *
