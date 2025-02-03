@@ -3766,7 +3766,16 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                     You("feel more solid.");
                     HPasses_walls = 0;
                 }
-                /* TODO: Add temp invisibility cancelling */
+                if (u.uspellprot > 0) {
+                    You("feel more vulnerable.");
+                    u.uspellprot = u.uspmtime = 0;
+                }
+                if (HInvis > 0) {
+                    /* If we're invisible from another source */
+                    You_feel("a little more %s now.",
+                             HInvis ? "obvious" : "hidden");
+                    set_itimeout(&HInvis, 0);
+                }
             }
         }
 
