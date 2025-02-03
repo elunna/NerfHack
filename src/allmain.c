@@ -1486,15 +1486,17 @@ check_hydration(void)
 static const int tiers[] = { 10, 25, 100, 250, 500, 1000, 6000 };
 #define NUM_TIERS 7
 void
-dehydrate(int dmg)
+dehydrate(int amt)
 {
     int old_tier;
     
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
-        
+
+    
     old_tier = find_tier_index(u.hydration);
-    u.hydration -= dmg;
+    u.hydration -= amt;
+
     if (u.hydration < 0)
         u.hydration = 0;
     
@@ -1502,12 +1504,12 @@ dehydrate(int dmg)
     int new_tier = find_tier_index(u.hydration);
     if (new_tier != old_tier) {
         switch (new_tier) {
-        case 0: You_feel("extremely dehydrated."); break;
-        case 1: You_feel("severely dehydrated."); break;
-        case 2: You_feel("very dehydrated."); break;
-        case 3: You_feel("mildly dehydrated."); break;
-        case 4: You_feel("slightly thirsty."); break;
-        case 5: You_feel("mostly-hydrated."); break;
+        case 0: You_feel("extremely dehydrated."); break;   /* 10 */
+        case 1: You_feel("severely dehydrated."); break;    /* 25 */
+        case 2: You_feel("very dehydrated."); break;        /* 100 */
+        case 3: You_feel("mildly dehydrated."); break;      /* 250 */
+        case 4: You_feel("slightly thirsty."); break;       /* 500 */
+        case 5: You_feel("mostly-hydrated."); break;        /* 1000 */
         }
         stop_occupation();
     }
@@ -1549,7 +1551,7 @@ rehydrate(boolean submerged)
          * dry up a puddle or fountain */
         if (HYDRATION_MAX - u.hydration < 50)
             return FALSE;
-        u.hydration += rn1(25,25);
+        u.hydration += rn1(25, 25);
         if (u.hydration > HYDRATION_MAX) {
             u.hydration = HYDRATION_MAX;
             You("feel fully hydrated again.");

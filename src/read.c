@@ -2442,8 +2442,8 @@ seffect_flood(struct obj **sobjp, struct monst *mtmp)
                 pline("You are suddenly very dry!");
                 /* TODO: Dry out towels, etc */
             }
-            if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
-                u.hydration /= 5 + 5;
+            if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+                dehydrate(u.hydration - (u.hydration / 5));
         } else {
             pline("The air around you suddenly feels very dry.");
         }

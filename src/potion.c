@@ -3271,10 +3271,10 @@ dodip(void)
             Snprintf(qbuf, sizeof(qbuf), "%s%s in your toxic skin?",
                      Dip_, flags.verbose ? obuf : shortestname);
             if (y_n(qbuf) == 'y') {
-                    pline("Your sticky poison forms a coating on %s.", the(xname(obj)));
-                    obj->opoisoned = TRUE;
-                    dehydrate(rn1(15, 15));
-                    update_inventory();
+                pline("Your sticky poison forms a coating on %s.", the(xname(obj)));
+                obj->opoisoned = TRUE;
+                dehydrate(rn1(15, 15));
+                update_inventory();
                 return ECMD_TIME;
             }
         }

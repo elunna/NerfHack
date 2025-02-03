@@ -824,6 +824,7 @@ doengrave_sfx_item_WAN(struct _doengrave_ctx *de)
         }
         Strcpy(de->post_engr_text, Blind ? "You feel the wand heat up."
                                          : "Flames fly from the wand.");
+        dehydrate(rn1(15, 15));
         break;
     case WAN_LIGHTNING:
         de->ptext = TRUE;
