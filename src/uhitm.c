@@ -455,7 +455,7 @@ find_roll_to_hit(
         /* Instead of punishing spellcasting for armor and shields,
          * punish melee capabilities instead. */
         tmp -= uarm ? (*role_roll_penalty = gu.urole.spelarmr) : 0; /* spelarmr == 20 */
-        tmp -= (uarms || !is_bracer(uarms)) 
+        tmp -= (uarms && !is_bracer(uarms)) 
                    ? (*role_roll_penalty += gu.urole.spelshld) 
                    : 0; /* spelshld == 10 */
         if (uwep)
