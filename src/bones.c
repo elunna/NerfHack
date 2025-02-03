@@ -484,7 +484,7 @@ savebones(int how, time_t when, struct obj *corpse)
        of any of them we'll mark those as existing (using goodfruit()) */
     for (f = gf.ffruit; f; f = f->nextf)
         f->fid = -f->fid;
-                
+
     set_ghostly_objlist(gi.invent);
     /* dispose of your possessions, usually cursed */
     if (ismnum(u.ugrave_arise)) {
@@ -576,10 +576,9 @@ savebones(int how, time_t when, struct obj *corpse)
             levl[x][y].seenv = 0;
             levl[x][y].waslit = 0;
             levl[x][y].glyph = GLYPH_UNEXPLORED;
-            levl[x][y].splatpm = NON_PM; /* blood splatter */
             svl.lastseentyp[x][y] = 0;
         }
-    
+
     /* Attach bones info to the current level before saving. */
     newbones = (struct cemetery *) alloc(sizeof *newbones);
     /* entries are '\0' terminated but have fixed length allocations,
