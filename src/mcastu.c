@@ -44,6 +44,7 @@ enum mcast_cleric_spells {
     CLC_BLIGHT,
     CLC_HOBBLE,
     CLC_SPHERES, /* Only for orb weavers */
+    CLC_FLESH_TO_STONE,
 };
 
 extern const char *const flash_types[]; /* from zap.c */
@@ -199,6 +200,7 @@ choose_clerical_spell(struct monst* caster, int spellnum)
 
     switch (spellnum) {
     case 15:
+        return CLC_FLESH_TO_STONE;
     case 14:
         if (rn2(3))
             return CLC_OPEN_WOUNDS;
@@ -1342,6 +1344,46 @@ cast_cleric_spell(
 
         dmg = 0;
         break;
+    case CLC_FLESH_TO_STONE: {
+        boolean disguised_mimic = (mdef->data->mlet == S_MIMIC
+                               && M_AP_TYPE(mdef) != M_AP_NOTHING);
+        dmg = 0;
+        if (!mdef || (DEADMONSTER(mdef) && !youdefend))
+            return 0;
+
+        if (youdefend) {
+            /* Limit the range to either adjacent to hero or 1 square away, 
+             * any more and this spell would be insane to deal with. */
+            if (distu(caster->mx, caster->my) > 2)
+                break;
+            if (!Blind) 
+                pline("A gray haze surrounds you!");
+            else
+                You("suddenly catch the strong scent of sulfur in the air...");
+            if (Stone_resistance)
+                break;
+            make_stoned(5L, (char *) 0, KILLED_BY, "flesh-to-stone spell");
+        } else { /* mhitm */
+            if (mdef->mstone)
+               break; /* already turning to stone */
+            if (resists_ston(mdef) || defended(mdef, AD_STON)) {
+                shieldeff_mon(mdef);
+                break;
+            }
+            if (disguised_mimic)
+                seemimic(mdef);
+            if (canseemon(mdef)) {
+                pline("%s is turning to stone!", Monnam(mdef));
+                if (!canspotmon(mdef))
+                    map_invisible(gb.bhitpos.x, gb.bhitpos.y);
+            }
+            if (!mdef->mstone) {
+                mdef->mstone = 5;
+                mdef->mstonebyu = TRUE;
+            }
+       }
+       break;
+    }
     case CLC_INSECTS: {
         /* TODO: prevent this pre-emptively in mspell_would_be_useless? */
         if (!youdefend) {
@@ -1742,6 +1784,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case CLC_BLIGHT:
         case CLC_HOBBLE:
         case CLC_FIRE_PILLAR:
+        case CLC_FLESH_TO_STONE:
             return TRUE;
         default:
             break;
@@ -1847,6 +1890,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
                                 || spellnum == CLC_SPHERES
                                 || spellnum == CLC_HOBBLE
                                 || spellnum == CLC_FIRE_PILLAR
+                                || spellnum == CLC_FLESH_TO_STONE
                                 || spellnum == CLC_BLIGHT))
             return TRUE;
         /* healing when already healed */
@@ -1857,6 +1901,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if (!mcouldseeu && (spellnum == CLC_INSECTS
                             || spellnum == CLC_SPHERES
                             || spellnum == CLC_HOBBLE
+                            || spellnum == CLC_FLESH_TO_STONE
                             || spellnum == CLC_BLIGHT))
             return TRUE;
         /* blindness spell on blinded player */
