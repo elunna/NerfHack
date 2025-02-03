@@ -1473,7 +1473,7 @@ check_hydration(void)
         return;
     
     if (Underwater) {
-        rehydrate(6000);
+        rehydrate(1000);
     } else {
         dehydrate(1);
         /* Should we dehydrate faster in Gehennom or plane of fire? ... 
