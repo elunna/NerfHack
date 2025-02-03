@@ -481,7 +481,7 @@ find_roll_to_hit(
             tmp--;
         /* grung *hate* kamadan */
         if (mtmp->data == &mons[PM_KAMADAN])
-            tmp++;
+            tmp += 4;
     }
 
     /* level adjustment. maxing out has some benefits */
