@@ -577,7 +577,7 @@ m_initweap(struct monst *mtmp)
                 (void) mongets(mtmp, CROSSBOW);
                 m_initthrow(mtmp, CROSSBOW_BOLT, 12);
             }
-            if (rn2(!3))
+            if (!rn2(3))
                 (void) mongets(mtmp, LEATHER_BRACERS);
         }
         break;
