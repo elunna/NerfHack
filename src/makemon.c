@@ -266,7 +266,8 @@ m_initweap(struct monst *mtmp)
             switch (rn2(3)) {
             case 0:
                 if (!rn2(4))
-                    (void) mongets(mtmp, ELVEN_SHIELD);
+                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD 
+                                                : LEATHER_BRACERS);
                 if (rn2(3))
                     (void) mongets(mtmp, ELVEN_SHORT_SWORD);
                 (void) mongets(mtmp, ELVEN_BOW);
@@ -275,12 +276,14 @@ m_initweap(struct monst *mtmp)
             case 1:
                 (void) mongets(mtmp, ELVEN_BROADSWORD);
                 if (rn2(2))
-                    (void) mongets(mtmp, ELVEN_SHIELD);
+                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD 
+                                               : LEATHER_BRACERS);
                 break;
             case 2:
                 if (rn2(2)) {
                     (void) mongets(mtmp, ELVEN_SPEAR);
-                    (void) mongets(mtmp, ELVEN_SHIELD);
+                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD 
+                                               : LEATHER_BRACERS);
                 }
                 break;
             }
@@ -574,6 +577,8 @@ m_initweap(struct monst *mtmp)
                 (void) mongets(mtmp, CROSSBOW);
                 m_initthrow(mtmp, CROSSBOW_BOLT, 12);
             }
+            if (rn2(!3))
+                (void) mongets(mtmp, LEATHER_BRACERS);
         }
         break;
     case S_WRAITH:
