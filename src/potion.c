@@ -3274,6 +3274,7 @@ dodip(void)
                     pline("Your sticky poison forms a coating on %s.", the(xname(obj)));
                     obj->opoisoned = TRUE;
                     dehydrate(rn1(15, 15));
+                    update_inventory();
                 return ECMD_TIME;
             }
         }
