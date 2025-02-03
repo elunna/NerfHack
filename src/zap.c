@@ -280,6 +280,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             miss(zap_type_text, mtmp);
         }
         learn_it = TRUE;
+        ret = 1;
         break;
     }
     case WAN_SLOW_MONSTER:
