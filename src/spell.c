@@ -1522,6 +1522,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_CURE_SICKNESS:
     case SPE_DRAIN_LIFE:
     case SPE_STONE_TO_FLESH:
+    case SPE_FLESH_TO_STONE:
     case SPE_FIRE_BOLT:
     case SPE_LIGHTNING:
     case SPE_POISON_BLAST:

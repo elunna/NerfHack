@@ -627,6 +627,24 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         if (!Blind)
             learn_it = TRUE;
         break;
+    case SPE_FLESH_TO_STONE:
+        if (mtmp->mstone)
+            break; /* already turning to stone */
+        if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {
+            shieldeff_mon(mtmp);
+            break;
+        }
+        if (disguised_mimic)
+            seemimic(mtmp);
+        reveal_invis = TRUE;
+        if (canseemon(mtmp))
+            pline("%s is turning to stone!", Monnam(mtmp));
+        if (!mtmp->mstone) {
+            mtmp->mstone = 5;
+            mtmp->mstonebyu = TRUE;
+        }
+        ret = 1;
+       break;
     case SPE_STONE_TO_FLESH:
         /* FIXME: mimics disguished as stone furniture or stone object
            should be taken out of concealment. */
@@ -2679,6 +2697,7 @@ bhito(struct obj *obj, struct obj *otmp)
         case SPE_CURE_SICKNESS:
         case WAN_WONDER:
         case SPE_CHARM_MONSTER:
+        case SPE_FLESH_TO_STONE:
             res = 0;
             break;
         case SPE_STONE_TO_FLESH:
@@ -7738,7 +7757,7 @@ calc_zap_range(int otyp)
     if (otyp == SPE_CONE_OF_COLD || otyp == SPE_FIREBALL
         || otyp == SPE_LIGHTNING || otyp == SPE_POISON_BLAST
         || otyp == SPE_FINGER_OF_DEATH || otyp == SPE_POLYMORPH
-        || otyp == SPE_CANCELLATION) {
+        || otyp == SPE_CANCELLATION || otyp == SPE_FLESH_TO_STONE) {
         switch (role_skill) {
         default:        return 1 + rnd(7);      /* range 2-8 */
         case P_BASIC:   return rn1(7, 7);       /* range 7-13 */
