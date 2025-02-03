@@ -1472,10 +1472,10 @@ check_hydration(void)
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
     
-    if (Underwater) {
+    if (Underwater || Is_waterlevel(&u.uz)) {
         rehydrate(1000);
     } else {
-        dehydrate(1);
+        dehydrate((In_hell(&u.uz) || Is_firelevel(&u.uz)) ? d(1, 2) : 1);
         /* Should we dehydrate faster in Gehennom or plane of fire? ... 
          * What about the plane of water? Maybe you are constantly hydrated 
          * there? */
