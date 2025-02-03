@@ -3070,7 +3070,9 @@ passiveum(
     case AD_DRDX:
     case AD_DRCO:
     case AD_HALU:
-        /* passive poison for grung's toxic skin */ 
+        if (uarm && is_bulky(uarm))
+            break;
+        /* passive poison for grung's toxic skin */
         orig_dmg = tmp;
         if (!rn2(3)) {
             if (Underwater) {
@@ -3097,6 +3099,8 @@ passiveum(
             tmp = 0;
         return assess_dmg(mtmp, tmp);
     case AD_SLEE:
+        if (uarm && is_bulky(uarm))
+            break;
         /* passive sleep for gold grung */ 
         orig_dmg = tmp;
         if (!rn2(5)) {
@@ -3333,7 +3337,7 @@ struct attack *mattk)
 
     /* Restrictions */
     if ((uarm && is_heavy_metallic(uarm))
-        || (uarms && objects[uarms->otyp].oc_bulky)
+        || (uarms && is_bulky(uarms))
         || (near_capacity() > UNENCUMBERED)
         || (u.uhs >= WEAK)
         || !m_next2u(mtmp)

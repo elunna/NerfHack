@@ -1311,10 +1311,10 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
     }
     
     /* Grung have a poison touch that is effective when the hero is
-     * fighting barehanded and without gloves */
+     * fighting barehanded */
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
         && !(resists_poison(mon) || defended(mon, AD_DRST))
-        && !negated && !rn2(2) ) {
+        && !negated && !rn2(2)) {
         You("splash %s with your %s!", mon_nam(mon),
             rn2(2) ? "toxic slime" : "poison");
         if (resists_poison(mon)) {

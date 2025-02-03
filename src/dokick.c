@@ -252,7 +252,7 @@ kick_monster(struct monst *mon, coordxy x, coordxy y)
     if (Fumbling)
         clumsy = TRUE;
 
-    else if (uarm && objects[uarm->otyp].oc_bulky && ACURR(A_DEX) < rnd(25))
+    else if (uarm && is_bulky(uarm) && ACURR(A_DEX) < rnd(25))
         clumsy = TRUE;
  doit:
     You("kick %s.", mon_nam(mon));
