@@ -599,7 +599,7 @@ slimed_to_death(struct kinfo *kptr)
      * but does not perform polyself()'s light source bookkeeping.
      * No longer need to manually increment uconduct.polyselfs to reflect
      * [formerly implicit] change of form; polymon() takes care of that.
-     * Temporarily ungenocide if necessary.
+     * Temporarily unexile if necessary.
      */
     if (emits_light(gy.youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
@@ -611,7 +611,7 @@ slimed_to_death(struct kinfo *kptr)
     done_timeout(TURNED_SLIME, SLIMED);
 
     /* life-saved; even so, hero still has turned into green slime;
-       player may have genocided green slimes after being infected */
+       player may have exiled green slimes after being infected */
     if ((svm.mvitals[PM_GREEN_SLIME].mvflags & G_GENOD) != 0) {
         char slimebuf[BUFSZ];
 
@@ -619,7 +619,7 @@ slimed_to_death(struct kinfo *kptr)
         Strcpy(svk.killer.name, "slimicide");
         /* vary the message depending upon whether life-save was due to
            amulet or due to declining to die in explore or wizard mode */
-        Strcpy(slimebuf, "green slime has been genocided...");
+        Strcpy(slimebuf, "green slime has been exiled...");
         if (iflags.last_msg == PLNMSG_OK_DONT_DIE)
             /* follows "OK, so you don't die." and arg is second sentence */
             urgent_pline("Yes, you do.  %s", upstart(slimebuf));

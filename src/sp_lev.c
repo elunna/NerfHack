@@ -2063,12 +2063,12 @@ create_monster(monster *m, struct mkroom *croom)
         g_mvflags = (unsigned) svm.mvitals[monsndx(pm)].mvflags;
         if ((pm->geno & G_UNIQ) && (g_mvflags & G_EXTINCT))
             return;
-        if (g_mvflags & G_GONE) /* genocided or extinct */
+        if (g_mvflags & G_GONE) /* exiled or extinct */
             pm = (struct permonst *) 0; /* make random monster */
     } else {
         pm = mkclass(class, G_NOGEN);
         /* if we can't get a specific monster type (pm == 0) then the
-           class has been genocided, so settle for a random monster */
+           class has been exiled, so settle for a random monster */
     }
     if (In_mines(&u.uz) && pm && your_race(pm)
         && (Race_if(PM_DWARF) || Race_if(PM_GNOME)) && rn2(3))

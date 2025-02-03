@@ -130,11 +130,9 @@ throne_sit_effect(void)
         case 8:
             /* Magical voice not affected by deafness */
             pline("A voice echoes:");
-            SetVoice((struct monst *) 0, 0, 80, voice_throne);
-            verbalize("By thine Imperious order, %s...",
+            verbalize("Your gold, %s...",
                       flags.female ? "Dame" : "Sire");
-            /* Dungeon wide */
-            do_genocide(5, FALSE);	/* REALLY|ONTHRONE, see do_genocide() */
+            (void) mkgold((long) rn1(5500, 2500), u.ux, u.uy);
             break;
         case 9:
             /* Magical voice not affected by deafness */

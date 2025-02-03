@@ -47,7 +47,7 @@ static NEARDATA const char *deaths[] = {
     /* the array of death */
     "died", "choked", "poisoned", "starvation", "drowning", "burning",
     "dissolving under the heat and pressure", "crushed", "turned to stone",
-    "turned into slime", "genocided", "panic", "trickery", "quit",
+    "turned into slime", "exiled", "panic", "trickery", "quit",
     "escaped", "ascended"
 };
 
@@ -57,7 +57,7 @@ static NEARDATA const char *ends[] = {
     "starved", "drowned", "burned",
     "dissolved in the lava",
     "were crushed", "turned to stone",
-    "turned into slime", "were genocided",
+    "turned into slime", "were exiled",
     "panicked", "were tricked", "quit",
     "escaped", "ascended"
 };
@@ -338,7 +338,7 @@ done_in_by(struct monst *mtmp, int how)
     else if (mptr->mlet == S_LICH)
         u.ugrave_arise = PM_REVENANT;
     /* this could happen if a high-end vampire kills the hero
-       when ordinary vampires are genocided; ditto for wraiths */
+       when ordinary vampires are exiled; ditto for wraiths */
     if (u.ugrave_arise >= LOW_PM
         && (svm.mvitals[u.ugrave_arise].mvflags & G_GENOD))
         u.ugrave_arise = NON_PM;
@@ -1140,7 +1140,7 @@ done(int how)
 
             savelife(how);
             if (how == GENOCIDED) {
-                pline("Unfortunately you are still genocided...");
+                pline("Unfortunately you are still exiled...");
             } else {
                 char killbuf[BUFSZ];
                 formatkiller(killbuf, BUFSZ, how, FALSE);
@@ -1260,9 +1260,9 @@ really_done(int how)
         u.ugrave_arise = LEAVESTATUE; /* statue instead of corpse */
     else if (how == TURNED_SLIME
              /* it's possible to turn into slime even though green slimes
-                have been genocided:  genocide could occur after hero is
+                have been exiled:  exile could occur after hero is
                 already infected or hero could eat a glob of one created
-                before genocide; don't try to arise as one if they're gone */
+                before exiled; don't try to arise as one if they're gone */
              && !(svm.mvitals[PM_GREEN_SLIME].mvflags & G_GENOD))
         u.ugrave_arise = PM_GREEN_SLIME;
 
@@ -1451,8 +1451,8 @@ really_done(int how)
         done_stopprint = 1; /* just avoid any more output */
 
 #if defined(DUMPLOG) || defined(DUMPHTML)
-    /* 'how' reasons beyond genocide shouldn't show tombstone;
-       for normal end of game, genocide doesn't either */
+    /* 'how' reasons beyond exile shouldn't show tombstone;
+       for normal end of game, exile doesn't either */
     if (how <= GENOCIDED) {
         dump_redirect(TRUE);
         if (iflags.in_dumplog)

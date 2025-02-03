@@ -1081,9 +1081,9 @@ add_mon_info(winid datawin, struct permonst * pm)
     MONPUTSTR(buf);
 
     if (gen & G_GENO)
-        MONPUTSTR("Can be genocided.");
+        MONPUTSTR("Can be exiled.");
     else
-        MONPUTSTR("Can not be genocided.");
+        MONPUTSTR("Can not be exiled.");
 
     /* Resistances */
     buf[0] = '\0';
@@ -1147,7 +1147,7 @@ add_mon_info(winid datawin, struct permonst * pm)
 
 
     /* inherent characteristics: "Monster is X." */
-    APPENDC(!(gen & G_GENO), "ungenocideable");
+    APPENDC(!(gen & G_GENO), "inexilable");
     APPENDC(breathless(pm), "breathless");
     if (!breathless(pm))
         APPENDC(amphibious(pm), "amphibious");

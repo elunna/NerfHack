@@ -149,6 +149,7 @@ struct u_conduct {     /* number of times... */
     long gnostic;      /* used prayer, priest, or altar */
     long weaphit;      /* hit a monster with a weapon */
     long killer;       /* killed a monster yourself */
+    long exiles;       /* number of monsters exiled */
     long literate;     /* read something (other than BotD) */
     long polypiles;    /* polymorphed an object */
     long polyselfs;    /* transformed yourself */
@@ -158,7 +159,7 @@ struct u_conduct {     /* number of times... */
     long sokocheat;    /* violated special 'rules' in Sokoban */
     long pets;         /* obtained a pet */
     long altars;       /* altars destroyed via cracking */
-    /* genocides already listed at end of game */
+    /* exiles already listed at end of game */
 };
 
 struct u_roleplay {

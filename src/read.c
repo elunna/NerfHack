@@ -1961,12 +1961,8 @@ seffect_genocide(struct obj **sobjp)
                              || objects[otyp].oc_name_known);
 
     if (!already_known)
-        You("have found a scroll of genocide!");
+        You("have found a scroll of exile!");
     gk.known = TRUE;
-
-    if (In_endgame(&u.uz)) {
-        sblessed = 0; /* No dungeon-wide genos in endgame */
-    }
 
     do_genocide((!scursed) | (2 * !!Confusion), !sblessed);
 }
@@ -2799,7 +2795,7 @@ seffects(
     case SCR_TAMING:
         seffect_taming(&sobj);
         break;
-    case SCR_GENOCIDE:
+    case SCR_EXILE:
         seffect_genocide(&sobj);
         break;
     case SCR_LIGHT:
@@ -3349,18 +3345,17 @@ litroom(
 #define ONTHRONE 4
 void
 do_genocide(
-    int how, /* 0 = no genocide; create monsters (cursed scroll)
-              * 1 = normal genocide
-              * 3 = forced genocide of player
-              * 5 (4 | 1) = normal genocide from throne */
-    boolean only_on_level)
+    int how, /* 0 = no exile; create monsters (cursed scroll)
+              * 1 = normal exile
+              * 3 = forced exile of player
+              * 5 (4 | 1) = normal exile from throne */
+    boolean only_close)
 {
     char buf[BUFSZ], promptbuf[QBUFSZ];
     int i, killplayer = 0;
     int mndx;
     struct permonst *ptr;
     const char *which;
-    const char *on_this_level;
 
     if (how & PLAYER) {
         mndx = u.umonster; /* non-polymorphed mon num */
@@ -3379,13 +3374,13 @@ do_genocide(
                 return;
             }
             Strcpy(promptbuf,
-                   "What type of monster do you want to genocide?");
+                   "What type of monster do you want to exile?");
             if (i > 0)
                 Snprintf(eos(promptbuf), sizeof promptbuf - strlen(promptbuf),
                          " [enter %s]",
                          iflags.cmdassist
                            ? "the name of a type of monster, or '?'"
-                           : "'?' to see previous genocides");
+                           : "'?' to see previous exiles");
             getlin(promptbuf, buf);
             (void) mungspaces(buf);
             /* avoid 'such creatures do not exist' for empty input */
@@ -3397,17 +3392,17 @@ do_genocide(
                              : "No type of monster specified");
                 continue; /* try again */
             }
-            /* choosing "none" preserves genocideless conduct */
+            /* choosing "none" preserves exileless conduct */
             if (*buf == '\033' || !strcmpi(buf, "none")
                 || !strcmpi(buf, "'none'") || !strcmpi(buf, "nothing")) {
                 /* ... but no free pass if cursed */
                 if (!(how & REALLY) && (ptr = rndmonst()) != 0)
                     break; /* remaining checks don't apply */
 
-                livelog_printf(LL_GENOCIDE, "declined to perform genocide");
+                livelog_printf(LL_GENOCIDE, "declined to perform exile");
                 return;
             }
-            /* "?" or "'?'" runs #genocided to show existing genocides */
+            /* "?" or "'?'" runs #exiled to show existing exiles */
             if (!strcmp(buf, "?") || !strcmp(buf, "'?'")) {
                 list_genocided('g', FALSE);
                 --i; /* don't count this iteration as one of the tries */
@@ -3443,7 +3438,7 @@ do_genocide(
                 && (mndx == u.umonnum || mndx == gy.youmonst.cham))
                 polyself(POLY_REVERT); /* vampshifter (bat, &c) to vampire */
             /* Although "genus" is Latin for race, the hero benefits
-             * from both race and role; thus genocide affects either.
+             * from both race and role; thus exile affects either.
              */
             if (Your_Own_Role(mndx) || Your_Own_Race(mndx)) {
                 killplayer++;
@@ -3477,8 +3472,7 @@ do_genocide(
         mndx = monsndx(ptr); /* needed for the 'no free pass' cases */
     }
 
-    on_this_level = only_on_level ? " on this level" : "";
-    which = In_endgame(&u.uz) ? "some " : "all ";
+    which = "some ";
     if (Hallucination) {
         if (Upolyd)
             Strcpy(buf, pmname(gy.youmonst.data,
@@ -3494,34 +3488,26 @@ do_genocide(
             which = !type_is_pname(ptr) ? "the " : "";
     }
     if (how & REALLY) {
-        if (only_on_level) {
-            livelog_printf(LL_GENOCIDE, "genocided %s on a level in %s",
-                           makeplural(buf), svd.dungeons[u.uz.dnum].dname);
-        } else if (!num_genocides())
+        if (!u.uconduct.exiles)
             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
-                           "performed %s first genocide (%s)",
+                           "performed %s first exile (%s)",
                            uhis(), makeplural(buf));
-        else
-            livelog_printf(LL_GENOCIDE, "genocided %s", makeplural(buf));
-
-        /* setting no-corpse affects wishing and random tin generation */
-        if (!only_on_level) {
-            svm.mvitals[mndx].mvflags |= (G_GENOD | G_NOCORPSE);
-        }
-        pline("Wiped out %s%s%s.", which, makeplural(buf), on_this_level);
+        livelog_printf(LL_GENOCIDE, "exiled %s in %s",
+                       makeplural(buf), svd.dungeons[u.uz.dnum].dname);
+        pline("Wiped out %s%s on this level.", which, makeplural(buf));
 
         if (killplayer) {
             u.uhp = -1;
             if (how & PLAYER) {
                 svk.killer.format = KILLED_BY;
-                Strcpy(svk.killer.name, "genocidal confusion");
+                Strcpy(svk.killer.name, "exiling confusion");
             } else if (how & ONTHRONE) {
                 /* player selected while on a throne */
                 svk.killer.format = KILLED_BY_AN;
                 Strcpy(svk.killer.name, "imperious order");
             } else { /* selected player deliberately, not confused */
                 svk.killer.format = KILLED_BY_AN;
-                Strcpy(svk.killer.name, "scroll of genocide");
+                Strcpy(svk.killer.name, "scroll of exile");
             }
 
             /* Polymorphed characters will die as soon as they're rehumanized.
@@ -3535,18 +3521,7 @@ do_genocide(
         } else if (ptr == gy.youmonst.data) {
             rehumanize();
         }
-        if (only_on_level) {
-            if (In_endgame(&u.uz)) {
-                if (!Deaf)
-                    You_hear("a sinister laughter in the distance...");
-                else
-                    You_feel("a sinister presence in the background...");
-            }
-            kill_monster_on_level(mndx);
-        } else {
-            kill_genocided_monsters();
-            update_inventory();	/* in case identified eggs were affected */
-        }
+        kill_monster_on_level(mndx, only_close);
     } else {
         int cnt = 0, census = monster_census(FALSE);
 

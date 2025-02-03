@@ -104,7 +104,7 @@ sanity_check_single_mon(
             return;
         }
         if (chk_geno && (svm.mvitals[mndx].mvflags & G_GENOD) != 0)
-            impossible("genocided %s in play (%s)",
+            impossible("exiled %s in play (%s)",
                        pmname(mptr, Mgender(mtmp)), msg);
         if (mtmp->mtame && !mtmp->mpeaceful)
             impossible("tame %s is not peaceful (%s)",
@@ -1969,7 +1969,7 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
 /*
  * Maybe eat a metallic object (not just gold).
  * Return value: 0 => nothing happened, 1 => monster ate something,
- * 2 => monster died (it must have grown into a genocided form, but
+ * 2 => monster died (it must have grown into a exiled form, but
  * that can't happen at present because nothing which eats objects
  * has young and old forms).
  */
@@ -3385,7 +3385,7 @@ m_detach(
     }
     /* foodead() might give quest feedback for foo having died; skip that
        if we're called for mongone() rather than mondead(); saving bones
-       or wizard mode genocide of "*" can result in special monsters going
+       or wizard mode exile of "*" can result in special monsters going
        away without having been killed */
     if (due_to_death) {
         if (mtmp->data->msound == MS_NEMESIS) {
@@ -3419,7 +3419,7 @@ m_detach(
         iflags.purge_monsters++;
     }
 
-    /* hero is thrown from his steed when it dies or gets genocided */
+    /* hero is thrown from his steed when it dies or gets exiled */
     if (mtmp == u.usteed)
         dismount_steed(DISMOUNT_GENERIC);
     return;
@@ -3516,9 +3516,9 @@ lifesaved_monster(struct monst *mtmp)
         mtmp->mhp = mtmp->mhpmax;
 
         if (!surviver) {
-            /* genocided monster can't be life-saved */
+            /* exiled monster can't be life-saved */
             if (cansee(mtmp->mx, mtmp->my))
-                pline("Unfortunately, %s is still genocided...",
+                pline("Unfortunately, %s is still exiled...",
                       mon_nam(mtmp));
             mtmp->mhp = 0;
         }
@@ -5848,7 +5848,7 @@ pickvampshape(struct monst *mon)
         break;
     }
 
-    /* return to base form if chosen poly target has been genocided
+    /* return to base form if chosen poly target has been exiled
        or randomly if already in an alternate form (to prevent always
        switching back and forth between bat and fog) */
     if ((svm.mvitals[mndx].mvflags & G_GENOD) != 0
@@ -6212,7 +6212,7 @@ newcham(
         if (!tryct)
             return 0;
     } else if (svm.mvitals[monsndx(mdat)].mvflags & G_GENOD)
-        return 0; /* passed in mdat is genocided */
+        return 0; /* passed in mdat is exiled */
 
     if (mdat == olddata)
         return 0; /* still the same monster */
@@ -6488,7 +6488,7 @@ dead_species(int m_idx, boolean egg)
                       || (svm.mvitals[alt_idx].mvflags & G_GENOD) != 0);
 }
 
-/* kill off any eggs of genocided monsters */
+/* kill off any eggs of exiled monsters */
 staticfn void
 kill_eggs(struct obj *obj_list)
 {
@@ -6518,7 +6518,7 @@ kill_eggs(struct obj *obj_list)
         }
 }
 
-/* kill all members of genocided species */
+/* kill all members of exiled species */
 void
 kill_genocided_monsters(void)
 {
@@ -6527,15 +6527,15 @@ kill_genocided_monsters(void)
     int mndx;
 
     /*
-     * Called during genocide, and again upon level change.  The latter
+     * Called during exile, and again upon level change.  The latter
      * catches up with any migrating monsters as they finally arrive at
      * their intended destinations, so possessions get deposited there.
      *
      * Chameleon handling:
-     *  1) if chameleons have been genocided, destroy them
+     *  1) if chameleons have been exiled, destroy them
      *     regardless of current form;
      *  2) otherwise, force every chameleon which is imitating
-     *     any genocided species to take on a new form.
+     *     any exiled species to take on a new form.
      */
     for (mtmp = fmon; mtmp; mtmp = mtmp2) {
         mtmp2 = mtmp->nmon;
@@ -7069,10 +7069,10 @@ int flank_bonus(struct monst *mtmp)
 
 /**
  * Kills every member of the specified monster species on the current
- * level.
+ * level (or if specified only monsters that are close to the hero)
  */
 void
-kill_monster_on_level(int mndx)
+kill_monster_on_level(int mndx, boolean only_close)
 {
     struct monst *mtmp, *mtmp2;
     int tmp_mndx, dist;
@@ -7082,18 +7082,20 @@ kill_monster_on_level(int mndx)
         if (DEADMONSTER(mtmp))
             continue;
 
-        /* Genocides are throttled for the endgame; 
+        /* Uncursd exiles only work for close monsters
          * kills are guaranteed within a radius of 3 squares, but after that
          * the chance is 1 in x, where x is the monsters distance from the
          * hero. */
-        if (In_endgame(&u.uz)) {
+        if (only_close) {
             dist = distu(mtmp->mx, mtmp->my);
-            if (dist <= 3 || !rn2(dist))
+            if (dist >= 3 && rn2(dist))
                 continue;
         }
         tmp_mndx = monsndx(mtmp->data);
-        if (mndx == tmp_mndx)
+        if (mndx == tmp_mndx) {
             mondead(mtmp);
+            u.uconduct.exiles++;
+        }
     }
 }
 

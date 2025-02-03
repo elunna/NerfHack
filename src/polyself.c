@@ -246,9 +246,9 @@ polyman(const char *fmt, const char *arg)
     newsym(u.ux, u.uy);
 
     urgent_pline(fmt, arg);
-    /* check whether player foolishly genocided self while poly'd */
+    /* check whether player foolishly exiled self while poly'd */
     if (ugenocided()) {
-        /* intervening activity might have clobbered genocide info */
+        /* intervening activity might have clobbered exile info */
         struct kinfo *kptr = find_delayed_killer(POLYMORPH);
 
         if (kptr != (struct kinfo *) 0 && kptr->name[0]) {
@@ -256,7 +256,7 @@ polyman(const char *fmt, const char *arg)
             Strcpy(svk.killer.name, kptr->name);
         } else {
             svk.killer.format = KILLED_BY;
-            Strcpy(svk.killer.name, "self-genocide");
+            Strcpy(svk.killer.name, "self-exile");
         }
         dealloc_killer(kptr);
         done(GENOCIDED);
@@ -732,7 +732,7 @@ polyself(int psflags)
         } while (--tryct > 0);
     }
 
-    /* The below polyok() fails either if everything is genocided, or if
+    /* The below polyok() fails either if everything is exiled, or if
      * we deliberately chose something illegal to force newman().
      */
     gs.sex_change_ok++;
@@ -832,7 +832,7 @@ polymon(int mntmp)
     You("%s %s!", (u.umonnum != mntmp) ? "turn into" : "feel like", an(buf));
 
     if (Stoned && poly_when_stoned(&mons[mntmp])) {
-        /* poly_when_stoned already checked stone golem genocide */
+        /* poly_when_stoned already checked stone golem exile */
         mntmp = PM_STONE_GOLEM;
         make_stoned(0L, "You turn to stone!", 0, (char *) 0);
     }
@@ -2399,7 +2399,7 @@ polysense(void)
     }
 }
 
-/* True iff hero's role or race has been genocided */
+/* True iff hero's role or race has been exiled */
 boolean
 ugenocided(void)
 {
@@ -2407,11 +2407,11 @@ ugenocided(void)
             || (svm.mvitals[gu.urace.mnum].mvflags & G_GENOD));
 }
 
-/* how hero feels "inside" after self-genocide of role or race */
+/* how hero feels "inside" after self-exile of role or race */
 const char *
 udeadinside(void)
 {
-    /* self-genocide used to always say "you feel dead inside" but that
+    /* self-exile used to always say "you feel dead inside" but that
        seems silly when you're polymorphed into something undead;
        monkilled() distinguishes between living (killed) and non (destroyed)
        for monster death message; we refine the nonliving aspect a bit */

@@ -743,7 +743,7 @@ list of all discovered objects) and the `{\tt \`{}}' (knownclass,
 show a list of discovered objects in a particular class) commands to offer
 a menu of several sorting alternatives (which sets a new value for the
 {\it sortdiscoveries\/}
-option); also for ``{\tt \#vanquished}'' and ``{\tt \#genocided}'' commands
+option); also for ``{\tt \#vanquished}'' and ``{\tt \#exiled}'' commands
 to offer a sorting menu.
 \\
 %.lp ""
@@ -1410,21 +1410,21 @@ Default key is `{\tt f}'.
 \item[\tb{\#force}]
 Force a lock. Autocompletes. Default key is `{\tt M-f}'.
 %.lp
-\item[\tb{\#genocided}]
-List any monster types which have been genocided.
+\item[\tb{\#exiled}]
+List any monster types which have been exiled.
 In explore mode and debug mode it also shows types which have become
 extinct.
 \\
 %.lp ""
 The display order is the same as is used by {\\tt \#vanquished}.
 The `{\tt m}' prefix brings up a menu of available sorting orders, and
-doing that for either {\\tt \#genocided} or {\\tt \#vanquished} changes the order for both.
+doing that for either {\\tt \#exiled} or {\\tt \#vanquished} changes the order for both.
 \\
 %.lp ""
 If the sorting order is ``count high to low'' or ``count low to high''
 (which are applicable for {\tt \#vanquished}), that will be ignored
-for {\tt \#genocided} and alphabetical will be used instead.
-The menu omits those two choices when used for {\tt \#genocide}.
+for {\tt \#exiled} and alphabetical will be used instead.
+The menu omits those two choices when used for {\tt \#exile}.
 \\
 %.lp ""
 Autocompletes.
@@ -1888,7 +1888,7 @@ List vanquished monsters by type and count.
 %.lp ""
 Note that the vanquished monsters list includes all monsters killed by
 traps and each other as well as by you, and omits any which got removed
-from the game without being killed (perhaps by genocide, or by a mollified
+from the game without being killed (perhaps by exile, or by a mollified
 shopkeeper dismissing summoned Kops) or were already corpses when placed
 on the map.
 \\
@@ -1898,7 +1898,7 @@ a menu of sorting orders available (provided that the vanquished monsters
 list contains at least two types of monsters).
 Whichever ordering is picked gets assigned to the {\it sortvanquished}
 option so is remembered for subsequent \#vanquished requests.
-The {\tt \#genocided} command shares this sorting order.
+The {\tt \#exiled} command shares this sorting order.
 \\
 %.lp ""
 During end-of-game disclosure, when asked whether to show vanquished
@@ -1950,7 +1950,7 @@ Wield a weapon. Default key is `{\tt w}'.
 Wipe off your face. Autocompletes. Default key is `{\tt M-w}'.
 %.lp
 \item[\tb{\#wizborn}]
-Show monster birth, death, genocide, and extinct statistics.
+Show monster birth, death, exile, and extinct statistics.
 Debug mode only.
 %.lp
 \item[\tb{\#wizbury}]
@@ -2105,7 +2105,7 @@ equivalent is used for another command, so the three key combination
 {\tt\#force}
 %.lp
 \item[\tb{M-g}]
-{\tt\#genocided}
+{\tt\#exiled}
 %.lp
 \item[\tb{M-i}]
 {\tt\#invoke}
@@ -3647,9 +3647,9 @@ the ``obtained the Sokoban prize'' achievement
 
 %.pg
 There are several other challenges tracked by the game.  It is possible
-to eliminate one or more species of monsters by genocide; playing without
+to eliminate one or more species of monsters by exile; playing without
 this feature is considered a challenge.  When the game offers you an
-opportunity to genocide monsters, you may respond with the monster type
+opportunity to exile monsters, you may respond with the monster type
 ``none'' if you want to decline.  You can change the form of an item into
 another item of the same type (``polypiling'') or the form of your own
 body into another creature (``polyself'') by wand, spell, or potion of
@@ -4285,7 +4285,7 @@ The possibilities are:
 {\tt i} --- disclose your inventory;\\
 {\tt a} --- disclose your attributes;\\
 {\tt v} --- summarize monsters that have been vanquished;\\
-{\tt g} --- list monster species that have been genocided;\\
+{\tt g} --- list monster species that have been exiled;\\
 {\tt c} --- display your conduct; also achievements, if any;\\
 {\tt o} --- display dungeon overview.
 %.ei
@@ -4305,7 +4305,7 @@ lets you refine how it behaves.  Here are the valid prefixes:
 
 The listing of vanquished monsters can be sorted,
 so there are two additional choices for `{\tt v}':
-The listings of vanquished monsters and of genocided types can be sorted,
+The listings of vanquished monsters and of exiled types can be sorted,
 so there are two additional choices for `q' and `g':
 %.sd
 %.si
@@ -4332,7 +4332,7 @@ The example sets
 {\tt inventory} to {\it prompt\/} and default to {\it yes\/},
 {\tt attributes} to {\it prompt\/} and default to {\it no\/},
 {\tt vanquished} to {\it disclose without prompting\/},
-{\tt genocided} to {\it not disclose\/} and {\it not prompt\/},
+{\tt exiled} to {\it not disclose\/} and {\it not prompt\/},
 {\tt conduct} to implicitly {\it prompt\/} and default to {\it no\/},
 {\tt overview} to {\it disclose without prompting\/}.
 
@@ -5116,7 +5116,7 @@ Persistent.
 %.lp
 \item[\tb{sortvanquished}]
 Controls the sorting behavior for the output of the {\tt \#vanquished} command
-and also for the {\tt \#genocided} command.
+and also for the {\tt \#exiled} command.
 Persistent.
 \\
 %.lp ""
@@ -5153,7 +5153,7 @@ order by count, low to high; ties broken by internal index.
 %.PE
 Can be interactively set via the `{\tt m O}' command or via using
 the `{\tt m}' prefix before either the {\tt \#vanquished} command
-or the {\tt \#genocided} command.
+or the {\tt \#exiled} command.
 %.lp
 \item[\ib{sounds}]
 Allow sounds to be emitted from an integrated sound library (default on).

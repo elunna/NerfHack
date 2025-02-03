@@ -174,7 +174,7 @@ disclose      the types of information you want         [ni na nv ng nc no]
               'n' prompt with default "no", 'y' prompt with default "yes",
               'a' prompt to select sorting order (for suffix 'v' only);
               suffix: 'i' inventory, 'a' attributes, 'v' vanquished
-              monsters, 'g' genocided and extinct monsters, 'c' conduct
+              monsters, 'g' exiled and extinct monsters, 'c' conduct
               and achievements, 'o' dungeon overview)
 fruit         the name of a fruit you enjoy eating             [slime mold]
               (basically a whimsy which NetHack uses from time to time).

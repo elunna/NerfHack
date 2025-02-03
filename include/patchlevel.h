@@ -281,7 +281,7 @@
  *  Enhanced config file processing and alert to duplication of entries
  *  Player selection prompt enhancements for TTY and X11
  *  Objects merge in containers
- *  Wish for "nothing", and genocide "none" to preserve your conduct
+ *  Wish for "nothing", and exile "none" to preserve your conduct
  *  Changes to Wizard quest
  *  Added the travel command which works by mouse click or '_' command
  *  Config file BOULDER option to specify the symbol for displaying boulders

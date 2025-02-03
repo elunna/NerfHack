@@ -2422,7 +2422,7 @@ moldy_corpse(anything *arg, long timeout UNUSED)
                             || MON_AT(body->ox, body->oy)
                             || sobj_at(BOULDER, body->ox, body->oy)));
 
-    /* maybe F are genocided? */
+    /* maybe F are exiled? */
     boolean no_eligible = (newpm == NULL);
 
     /* Don't grow mold on the corpse the player is eating. */

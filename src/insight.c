@@ -2328,7 +2328,6 @@ void
 show_conduct(int final)
 {
     char buf[BUFSZ];
-    int ngenocided;
 
     /* Create the conduct window */
     ge.en_win = create_nhwindow(NHW_MENU);
@@ -2389,12 +2388,11 @@ show_conduct(int final)
     if (!u.uconduct.pets)
         you_have_never("had a pet");
 
-    ngenocided = num_genocides();
-    if (ngenocided == 0) {
-        you_have_never("genocided any monsters");
+    if (!u.uconduct.exiles) {
+        you_have_never("exiled any monsters");
     } else {
-        Sprintf(buf, "genocided %d type%s of monster%s", ngenocided,
-                plur(ngenocided), plur(ngenocided));
+        Sprintf(buf, "exiled %ld monster%s", u.uconduct.exiles, 
+                plur(u.uconduct.exiles));
         you_have_X(buf);
     }
 
@@ -2985,13 +2983,13 @@ set_vanq_order(boolean for_vanq)
     for (i = 0; i < SIZE(vanqorders); i++) {
         if (i == VANQ_ALPHA_MIX || i == VANQ_MCLS_HTOL) /* skip these */
             continue;
-        /* suppress some orderings if this menu if for 'm #genocided' */
+        /* suppress some orderings if this menu if for 'm #exiled' */
         if (!for_vanq && (i == VANQ_COUNT_H_L || i == VANQ_COUNT_L_H))
             continue;
         desc = vanqorders[i][2];
-        /* unique monsters can't be genocided so "alpha, unique separate"
+        /* unique monsters can't be exiled so "alpha, unique separate"
            and "alpha, unique intermixed" are confusing descriptions when
-           this menu is for #genocided rather than for #vanquished */
+           this menu is for #exiled rather than for #vanquished */
         if (!for_vanq && i == VANQ_ALPHA_SEP)
             desc = "alphabetically";
         any.a_int = i + 1;
@@ -3001,8 +2999,8 @@ set_vanq_order(boolean for_vanq)
                                             : MENU_ITEMFLAGS_NONE);
     }
     Sprintf(buf, "Sort order for %s",
-            for_vanq ? "vanquished monster counts (also genocided types)"
-                     : "genocided monster types (also vanquished counts)");
+            for_vanq ? "vanquished monster counts (also exiled types)"
+                     : "exiled monster types (also vanquished counts)");
     end_menu(tmpwin, buf);
 
     n = select_menu(tmpwin, PICK_ONE, &selected);
@@ -3212,23 +3210,6 @@ list_vanquished(char defquery, boolean ask)
     }
 }
 
-/* number of monster species which have been genocided */
-int
-num_genocides(void)
-{
-    int i, n = 0;
-
-    for (i = LOW_PM; i < NUMMONS; ++i) {
-        if (svm.mvitals[i].mvflags & G_GENOD) {
-            ++n;
-            if (UniqCritterIndx(i))
-                impossible("unique creature '%d: %s' genocided?",
-                           i, mons[i].pmnames[NEUTRAL]);
-        }
-    }
-    return n;
-}
-
 /* return a count of the number of extinct species */
 staticfn int
 num_extinct(void)
@@ -3244,7 +3225,7 @@ num_extinct(void)
     return n;
 }
 
-/* collect both genocides and extinctions, skipping uniques */
+/* collect both exiles and extinctions, skipping uniques */
 staticfn int
 num_gone(int mvflags, int *mindx)
 {
@@ -3254,7 +3235,7 @@ num_gone(int mvflags, int *mindx)
     (void) memset((genericptr_t) mindx, 0, NUMMONS * sizeof *mindx);
 
     for (i = LOW_PM; i < NUMMONS; ++i) {
-        /* uniques can't be genocided but can become extinct;
+        /* uniques can't be exiled but can become extinct;
            however, they're never reported as extinct, so skip them */
         if (UniqCritterIndx(i))
             continue;
@@ -3265,17 +3246,17 @@ num_gone(int mvflags, int *mindx)
     return n;
 }
 
-/* show genocided and extinct monster types for final disclosure/dumplog
-   or for the #genocided command */
+/* show exiled and extinct monster types for final disclosure/dumplog
+   or for the #exiled command */
 void
 list_genocided(char defquery, boolean ask)
 {
     int i, mndx;
-    int ngenocided, nextinct, ngone, mvflags, mindx[NUMMONS];
+    int nextinct, ngone, mvflags, mindx[NUMMONS];
     char c;
     winid klwin;
     char buf[BUFSZ];
-    boolean genoing, /* prompting for genocide or class genocide */
+    boolean genoing, /* prompting for exile or class exile */
             dumping; /* for DUMPLOG; doesn't need to be conditional */
     boolean both = (program_state.gameover || wizard || discover);
 
@@ -3284,23 +3265,19 @@ list_genocided(char defquery, boolean ask)
     if (dumping || genoing)
         defquery = 'y';
     if (genoing)
-        both = FALSE; /* genocides only, not extinctions */
+        both = FALSE; /* exiles only, not extinctions */
 
     /* this goes through the whole monster list up to three times but will
        happen rarely and is simpler than a more general single pass check;
        extinctions are only revealed during end of game disclosure or when
        running in wizard or explore mode */
-    ngenocided = num_genocides();
     nextinct = both ? num_extinct() : 0;
     mvflags = G_GENOD | (both ? G_EXTINCT : 0);
     ngone = num_gone(mvflags, mindx);
 
-    /* genocided or extinct species list */
-    if (ngenocided != 0 || nextinct != 0) {
-        Sprintf(buf, "Do you want a list of %sspecies%s%s?",
-                (nextinct && !ngenocided) ? "extinct " : "",
-                (ngenocided) ? " genocided" : "",
-                (nextinct && ngenocided) ? " and extinct" : "");
+    /* extinct species list */
+    if (nextinct != 0) {
+        Sprintf(buf, "Do you want a list of extinct species?");
         c = ask ? yn_function(buf, ynaqchars, defquery, TRUE) : defquery;
         if (c == 'q')
             done_stopprint++;
@@ -3311,12 +3288,12 @@ list_genocided(char defquery, boolean ask)
 
             if (ngone > 1) {
                 if (c == 'a') { /* ask player to choose sort order */
-                    /* #genocided shares #vanquished's sort order */
+                    /* #exiled shares #vanquished's sort order */
                     if (set_vanq_order(FALSE) < 0)
                         return;
                 }
                 /* sort orderings count-high-to-low or count-low-to-high
-                   don't make sense for genocides; if the preferred order
+                   don't make sense for exiles; if the preferred order
                    to set to either of those, use alphabetical instead;
                    note: the tie breaker for by-class is level-high-to-low
                    or level-low-to-high rather than count so is ok as-is */
@@ -3332,9 +3309,7 @@ list_genocided(char defquery, boolean ask)
             }
 
             klwin = create_nhwindow(NHW_MENU);
-            Sprintf(buf, "%s%s species:",
-                    (ngenocided) ? "Genocided" : "Extinct",
-                    (nextinct && ngenocided) ? " or extinct" : "");
+            Sprintf(buf, "Extinct species:");
             putstr(klwin, ATR_SUBHEAD, buf);
             if (!dumping)
                 putstr(klwin, 0, "");
@@ -3367,10 +3342,7 @@ list_genocided(char defquery, boolean ask)
             }
             if (!dumping)
                 putstr(klwin, 0, "");
-            if (ngenocided > 0) {
-                Sprintf(buf, "%d species genocided.", ngenocided);
-                putstr(klwin, ATR_PREFORM, buf);
-            }
+
             if (nextinct > 0) {
                 Sprintf(buf, "%d species extinct.", nextinct);
                 putstr(klwin, ATR_PREFORM, buf);
@@ -3382,17 +3354,17 @@ list_genocided(char defquery, boolean ask)
 
     /* See the comment for similar code near the end of list_vanquished(). */
     } else if (!program_state.gameover) {
-        /* #genocided rather than final disclosure, so pline() is ok and
+        /* #exiled rather than final disclosure, so pline() is ok and
            extinction has been ignored */
-        pline("No creatures have been genocided%s.", genoing ? " yet" : "");
+        pline("No creatures have been exiled%s.", genoing ? " yet" : "");
 #if defined (DUMPLOG) || defined (DUMPHTML)
     } else if (dumping) { /* 'gameover' is True if we make it here */
-        putstr(0, 0, "No species were genocided or became extinct.");
+        putstr(0, 0, "No species were exiled or became extinct.");
 #endif
     }
 }
 
-/* M-g - #genocided command */
+/* M-g - #exiled command */
 int
 dogenocided(void)
 {

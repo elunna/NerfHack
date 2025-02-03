@@ -460,7 +460,7 @@ bee_eat_jelly(struct monst *mon, struct obj *obj)
         (void) grow_up(mon, (struct monst *) 0);
 
         if (DEADMONSTER(mon))
-            return 1; /* dead; apparently queen bees have been genocided */
+            return 1; /* dead; apparently queen bees have been exiled */
         mon->mfrozen = m_delay;
         mon->mcanmove = 0;
         return 0; /* bee used its move */

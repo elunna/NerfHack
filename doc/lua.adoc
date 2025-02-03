@@ -251,7 +251,7 @@ Example:
 
 === is_genocided
 
-Is specific monster type genocided?  Returns a boolean value.
+Is specific monster type exiled?  Returns a boolean value.
 
 Example:
 

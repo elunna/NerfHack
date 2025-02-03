@@ -882,7 +882,7 @@
     /* From SLASH'EM with changes:
      * - Difficulty reduced from 33 to 27
      * - They get flanking; removed traitorous nature
-     * - Cannot be genocided */
+     * - Cannot be exiled */
     MON(NAM("deepest one"), S_HUMANOID,
         LVL(30, 15, -5, 70, -9), (1),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6),

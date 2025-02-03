@@ -3030,7 +3030,7 @@ use_misc(struct monst *mtmp)
         m_useup(mtmp, otmp);
         if (!grow_up(mtmp, (struct monst *) 0))
             return 1;
-        /* grew into genocided monster */
+        /* grew into exiled monster */
         return 2;
     case MUSE_WAN_MAKE_INVISIBLE:
     case MUSE_POT_INVISIBILITY:

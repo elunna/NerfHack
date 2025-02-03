@@ -111,7 +111,7 @@ MAX_STATUENAME_RANK=50
 # 0x0010 - Life-saving [bit 16]
 # 0x0020 - Break conduct [bit 32]
 # 0x0040 - Artifact obtained (#name Sting, dip for Excalibur) [bit 64]
-# 0x0080 - Genocides [bit 128]
+# 0x0080 - Exiles [bit 128]
 # 0x0100 - Murder of tame pet [bit 256]
 # 0x0200 - Changed alignment temporarily or permanently [bit 512]
 # 0x0400 - Log URL for dumplog if ascended [bit 1024]

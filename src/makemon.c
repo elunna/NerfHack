@@ -1481,7 +1481,7 @@ makemon(
     if (ptr) {
         mndx = monsndx(ptr);
         /* if you are to make a specific monster and it has
-           already been genocided, return */
+           already been exiled, return */
         if (svm.mvitals[mndx].mvflags & G_GENOD)
             return (struct monst *) 0;
         if (wizard && (svm.mvitals[mndx].mvflags & G_EXTINCT)) {
@@ -2221,7 +2221,7 @@ mkclass_aligned(char class, int spc, /* special mons[].geno handling */
 
 /* like mkclass(), but excludes difficulty considerations; used when
    player with polycontrol picks a class instead of a specific type;
-   genocided types are avoided but extinct ones are acceptable; we don't
+   exiled types are avoided but extinct ones are acceptable; we don't
    check polyok() here--caller accepts some choices !polyok() would reject */
 int
 mkclass_poly(int class)

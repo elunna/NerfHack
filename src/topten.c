@@ -431,7 +431,7 @@ encodeconduct(void)
         e |= 1L << 9;
     if (!u.uconduct.wisharti)
         e |= 1L << 10;
-    if (!num_genocides())
+    if (!u.uconduct.exiles)
         e |= 1L << 11;
     if (!u.uconduct.elbereth)
         e |= 1L << 12;
@@ -594,7 +594,7 @@ encode_extended_conducts(char *buf)
     add_achieveX(buf, "polyselfless", !u.uconduct.polyselfs);
     add_achieveX(buf, "wishless",     !u.uconduct.wishes);
     add_achieveX(buf, "artiwishless", !u.uconduct.wisharti);
-    add_achieveX(buf, "genocideless", !num_genocides());
+    add_achieveX(buf, "exileless",    !u.uconduct.exiles);
     add_achieveX(buf, "elberethless", !u.uconduct.elbereth);
     if (sokoban_in_play())
         add_achieveX(buf, "sokoban",  !u.uconduct.sokocheat);

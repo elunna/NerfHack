@@ -217,7 +217,7 @@ enum ms_sounds {
 #define G_NOGEN         0x0200 /* generated only specially */
 #define G_SGROUP        0x0080 /* appear in small groups normally */
 #define G_LGROUP        0x0040 /* appear in large groups normally */
-#define G_GENO          0x0020 /* can be genocided */
+#define G_GENO          0x0020 /* can be exiled */
 #define G_NOCORPSE      0x0010 /* no corpse left ever */
 #define G_FREQ          0x0007 /* creation frequency mask */
 /* note: G_IGNORE controls handling of mvitals[].mvflags bits but is
@@ -226,7 +226,7 @@ enum ms_sounds {
 
 /* for svm.mvitals[].mvflags (variant during game), along with G_NOCORPSE */
 #define G_KNOWN         0x04 /* have been encountered */
-#define G_GENOD         0x02 /* have been genocided */
+#define G_GENOD         0x02 /* have been exiled */
 #define G_EXTINCT       0x01 /* population control; create no more */
 #define G_GONE          (G_GENOD | G_EXTINCT)
 #define MV_KNOWS_EGG    0x08 /* player recognizes egg of this monster type */

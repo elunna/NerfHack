@@ -39,10 +39,10 @@ fix splitting merged group of wielded weapons for menu mode version of #loot
 if a buried container rots away, bury rather than destroy any contents
 the 'W'ear command now only shows armor you can actually wear at this instant,
 	instead of all armor you're not currently wearing
-wishing for a genocided monster egg gets a dead egg, not a generic egg
-"Unfortunately it is still genocided" printed only if monster is in range
-	(particularly important for lifesaved monster genocided off-level).
-message for monster growing into genocided monster only printed if in range
+wishing for a exiled monster egg gets a dead egg, not a generic egg
+"Unfortunately it is still exiled" printed only if monster is in range
+	(particularly important for lifesaved monster exiled off-level).
+message for monster growing into exiled monster only printed if in range
 include number of attached candles when formatting candelabrum's name
 support attaching already lit candles to candelabrum
 range of candlelight varies with number of candles

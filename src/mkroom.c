@@ -692,7 +692,7 @@ antholemon(void)
             mtyp = PM_GIANT_ANT;
             break;
         }
-        /* try again if chosen type has been genocided or used up */
+        /* try again if chosen type has been exiled or used up */
     } while (++trycnt < 3 && (svm.mvitals[mtyp].mvflags & G_GONE));
 
     return ((svm.mvitals[mtyp].mvflags & G_GONE) ? (struct permonst *) 0

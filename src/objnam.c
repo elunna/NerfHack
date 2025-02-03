@@ -3598,7 +3598,7 @@ static const struct alt_spellings {
     { "box", LARGE_BOX },
     { "SoEA", SCR_ENCHANT_ARMOR },
     { "SoEW", SCR_ENCHANT_WEAPON },
-    { "genocide", SCR_GENOCIDE },
+    { "genocide", SCR_EXILE },
     { "RoC", RIN_CONFLICT },
     { "BoL",  LEVITATION_BOOTS},
     { "bos",  SPEED_BOOTS},

@@ -79,7 +79,7 @@ noattacks(struct permonst *ptr)
 boolean
 poly_when_stoned(struct permonst *ptr)
 {
-    /* non-stone golems turn into stone golems unless latter is genocided */
+    /* non-stone golems turn into stone golems unless latter is exiled */
     return (boolean) (is_golem(ptr) && ptr != &mons[PM_STONE_GOLEM]
                       && !(svm.mvitals[PM_STONE_GOLEM].mvflags & G_GENOD));
     /* allow G_EXTINCT */
@@ -1034,7 +1034,7 @@ name_to_monplus(
     return mntmp;
 }
 
-/* monster class from user input; used for genocide and controlled polymorph;
+/* monster class from user input; used for exile and controlled polymorph;
    returns 0 rather than MAXMCLASSES if no match is found */
 int
 name_to_monclass(const char *in_str, int * mndx_p)

@@ -148,7 +148,7 @@ make_familiar(struct obj *otmp, coordxy x, coordxy y, boolean quietly)
         mtmp = makemon(pm, x, y, mmflags);
         if (otmp) { /* figurine */
             if (!mtmp) {
-                /* monster has been genocided or target spot is occupied */
+                /* monster has been exiled or target spot is occupied */
                 if (!quietly)
                     pline_The(
                            "figurine writhes and then shatters into pieces!");
@@ -251,7 +251,7 @@ makedog(void)
     mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | NO_MINVENT);
 
     if (!mtmp)
-        return ((struct monst *) 0); /* pets were genocided [how?] */
+        return ((struct monst *) 0); /* pets were exiled [how?] */
 
     if (!svc.context.startingpet_mid) {
         svc.context.startingpet_mid = mtmp->m_id;
@@ -1336,7 +1336,7 @@ tamedog(
     if (obj) { /* thrown food */
         /* defer eating until the edog extension has been set up */
         place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
-        /* devour the food (might grow into larger, genocided monster) */
+        /* devour the food (might grow into larger, exiled monster) */
         if (dog_eat(mtmp, obj, mtmp->mx, mtmp->my, TRUE) == 2)
             return TRUE; /* oops, it died... */
         /* `obj' is now obsolete */
@@ -1502,7 +1502,7 @@ make_msummoned(
     } while (!mtmp && --trycnt > 0);
 
     if (!mtmp)
-        return (struct monst *) 0; /* genocided */
+        return (struct monst *) 0; /* exiled */
 
     if (tame) {
         initedog(mtmp);

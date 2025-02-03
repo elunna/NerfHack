@@ -1216,7 +1216,7 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define DF_ALL      0x04
 
 /* special mhpmax value when loading bones monster to flag as extinct or
- * genocided */
+ * exiled */
 #define DEFUNCT_MONSTER (-100)
 
 /* macro form of adjustments of physical damage based on Half_physical_damage.

@@ -1428,7 +1428,7 @@ optfn_disclose(
 
         /*
          * The order that the end_disclose options are stored:
-         *      inventory, attribs, vanquished, genocided,
+         *      inventory, attribs, vanquished, exiled,
          *      conduct, overview.
          * There is an array in flags:
          *      end_disclose[NUM_DISCLOSURE_OPT];
@@ -5571,7 +5571,7 @@ handler_disclose(void)
        disclosure_options in decl.c */
     static const char *const disclosure_names[] = {
         "inventory", "attributes", "vanquished",
-        "genocides", "conduct",    "overview",
+        "exiles", "conduct",    "overview",
     };
     int disc_cat[NUM_DISCLOSURE_OPTIONS];
     int pick_cnt, pick_idx, opt_idx;

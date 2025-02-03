@@ -538,18 +538,18 @@ pick_nasty(
         && !('A' <= monsym(&mons[res]) && monsym(&mons[res]) <= 'Z'))
         res = ROLL_FROM(nasties);
 
-    /* if genocided or too difficult or out of place, try a substitute
+    /* if exiled or too difficult or out of place, try a substitute
        when a suitable one exists
            arch-lich -> master lich,
            master mind flayer -> mind flayer,
-       but the substitutes are likely to be genocided too */
+       but the substitutes are likely to be exiled too */
     alt = res;
     if ((svm.mvitals[res].mvflags & G_GENOD) != 0
         || (difcap > 0 && mons[res].difficulty >= difcap)
          /* note: nasty() -> makemon() ignores G_HELL|G_NOHELL;
             arch-lich and master lich are both flagged as hell-only;
             this filtering demotes arch-lich to master lich when
-            outside of Gehennom (unless the latter has been genocided) */
+            outside of Gehennom (unless the latter has been exiled) */
         || (mons[res].geno & (Inhell ? G_NOHELL : G_HELL)) != 0)
         alt = big_to_little(res);
     if (alt != res && (svm.mvitals[alt].mvflags & G_GENOD) == 0) {
@@ -650,7 +650,7 @@ nasty(struct monst *summoner, boolean centered_on_stairs)
                 if (summoner && !enexto(&bypos, summoner->mux, summoner->muy,
                                         &mons[makeindex]))
                     continue;
-                /* this honors genocide but overrides extinction; it ignores
+                /* this honors exile but overrides extinction; it ignores
                    inside-hell-only (G_HELL) & outside-hell-only (G_NOHELL) */
                 if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y,
                                     mmflags)) != 0) {
@@ -675,7 +675,7 @@ nasty(struct monst *summoner, boolean centered_on_stairs)
                     /* create at most one arch-lich or Archon regardless
                        of who is doing the summoning (note: Archon is
                        not in nasties[] but could be chosen as random
-                       replacement for a genocided selection) */
+                       replacement for a exiled selection) */
                     if (mtmp->data == &mons[PM_ARCH_LICH]
                         || mtmp->data == &mons[PM_ARCHON]) {
                         tmp = min(mons[PM_ARCHON].difficulty, /* A:26 */
