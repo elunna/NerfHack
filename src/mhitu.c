@@ -1798,7 +1798,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                                        : "can barely breathe!");
             if ((Amphibious || Breathless) && !flaming(gy.youmonst.data))
                 tmp = 0;
-            rehydrate(FALSE);
+            rehydrate(rn1(75, 25));
         } else {
             You("are %s!", enfolds(mtmp->data) ? "being squashed"
                                                : "pummeled with debris");

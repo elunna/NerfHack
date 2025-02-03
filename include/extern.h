@@ -101,7 +101,7 @@ extern int argcheck(int, char **, enum earlyarg);
 extern long timet_to_seconds(time_t);
 extern long timet_delta(time_t, time_t);
 extern boolean vamp_can_regen(void);
-extern boolean rehydrate(boolean);
+extern boolean rehydrate(int);
 extern void dehydrate(int);
 
 /* ### apply.c ### */

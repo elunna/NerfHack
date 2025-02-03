@@ -1473,11 +1473,13 @@ check_hydration(void)
         return;
     
     if (Underwater) {
-        if (u.hydration < HYDRATION_MAX)
-            rehydrate(TRUE);
-        return;
+        rehydrate(6000);
+    } else {
+        dehydrate(1);
+        /* Should we dehydrate faster in Gehennom or plane of fire? ... 
+         * What about the plane of water? Maybe you are constantly hydrated 
+         * there? */
     }
-    dehydrate(1);
 }
 
 /* Decrease the grung's hydration level. Maybe show a message if the player
@@ -1493,7 +1495,6 @@ dehydrate(int amt)
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
 
-    
     old_tier = find_tier_index(u.hydration);
     u.hydration -= amt;
 
@@ -1540,26 +1541,34 @@ find_tier_index(long value) {
 /* Check if player is grung before calling
 * Return TRUE if it had a measurable effect, FALSE otherwise.*/
 boolean
-rehydrate(boolean submerged)
+rehydrate(int amt)
 {
-    if (submerged) {
-        if (u.hydration < HYDRATION_MAX)
-            You("feel fully hydrated again.");
+    int old_hydration, amt_diff;
+    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+        return FALSE;
+
+    old_hydration = u.hydration;
+    if (u.hydration < HYDRATION_MAX)
+        u.hydration += amt;
+    if (u.hydration > HYDRATION_MAX)
         u.hydration = HYDRATION_MAX;
-    } else {
-        /* Rehydrating needs to have a minimum amount of effect to
-         * dry up a puddle or fountain */
-        if (HYDRATION_MAX - u.hydration < 50)
-            return FALSE;
-        u.hydration += rn1(25, 25);
-        if (u.hydration > HYDRATION_MAX) {
-            u.hydration = HYDRATION_MAX;
-            You("feel fully hydrated again.");
-        } else {
-            You("feel a little more hydrated.");
-        }
-    }
-    return TRUE;
+    amt_diff = u.hydration - old_hydration;
+    
+    /* messages */
+    if (amt_diff == 0)
+        return FALSE;
+    if (amt_diff > 0 && u.hydration == HYDRATION_MAX)
+        You("feel fully hydrated again.");
+    else if (amt_diff >= 1000)
+        You("feel much more hydrated.");
+    else if (amt_diff >= 100)
+        You("feel more hydrated.");
+    else if (amt_diff >= 100)
+        You("feel a little more hydrated.");
+    
+    /* Rehydrating needs to have a minimum amount of effect to
+     * dry up a puddle or fountain */
+    return amt_diff >= 50;
 }
 
 /*allmain.c*/

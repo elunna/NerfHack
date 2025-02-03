@@ -413,14 +413,15 @@ dosit(void)
                 if (levl[u.ux][u.uy].typ == FOUNTAIN)
                     dryup(u.ux, u.uy, TRUE);
             }
+            /* splitting--or failing to do so--protects gear from the water */
         } else if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-            if (rehydrate(FALSE)) {
+            if (rehydrate(rn1(75, 25))) {
                 if (levl[u.ux][u.uy].typ == FOUNTAIN)
                     dryup(u.ux, u.uy, TRUE);
                 else
                     dryup_puddle(u.ux, u.uy, "dries up");
             }
-            /* splitting--or failing to do so--protects gear from the water */
+            /* hydrating--or failing to do so--protects gear from the water */
         } else {
             if (!rn2(10) && uarm)
                 (void) water_damage(uarm, "armor", TRUE);
@@ -432,10 +433,8 @@ dosit(void)
         You(sit_message, defsyms[S_sink].explanation);
         Your("%s gets wet.",
              humanoid(gy.youmonst.data) ? "rump" : "underside");
-        if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-            if (rehydrate(FALSE))
-                dryup(u.ux, u.uy, TRUE);
-        }
+        if (rehydrate(rn1(75, 25)))
+            dryup(u.ux, u.uy, TRUE);
     } else if (IS_SINK(typ)) {
         You(sit_message, defsyms[S_sink].explanation);
         Your("%s gets wet.",

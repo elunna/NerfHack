@@ -951,8 +951,7 @@ peffect_hallucination(struct obj *otmp)
 staticfn void
 peffect_water(struct obj *otmp)
 {
-    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
-        rehydrate(FALSE);
+    rehydrate(rn1(75, 25));
 
     if (!otmp->blessed && !otmp->cursed) {
         pline("This tastes like %s.", hliquid("water"));
@@ -2797,9 +2796,8 @@ potionbreathe(struct obj *obj)
                 you_were();
                 unambiguous = TRUE;
             }
-        } else if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-            rehydrate(FALSE);
-        }
+        } 
+        rehydrate(rn1(25, 25));
         break;
     case POT_ACID:
         dmg = rnd(4);
