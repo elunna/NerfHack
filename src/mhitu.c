@@ -2442,6 +2442,23 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
+    case AD_DRLI:
+        if (!mtmp->mcan && canseemon(mtmp) && mtmp->mcansee
+            && !mtmp->mspec_used && !rn2(3)) {
+            if (Drain_resistance) {
+                break;
+            }
+            if (wearing_eyes) {
+                if (!rn2(4))
+                    pline("%s protect you from %s draining gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                break;
+            } 
+            pline("%s stares into your eyes...", Monnam(mtmp));
+            You("suddenly feel weaker!");
+            losexp("life drainage");
+        }
+        break;
 #ifdef PM_BEHOLDER /* work in progress */
     case AD_SLOW:
         if (mcanseeu

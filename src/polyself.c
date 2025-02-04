@@ -1721,7 +1721,7 @@ dogaze(void)
     if (adtyp != AD_CONF && adtyp != AD_FIRE
         && adtyp != AD_BLND && adtyp != AD_TLPT
         && adtyp != AD_STON && adtyp != AD_STUN
-        && adtyp != AD_SLEE) {
+        && adtyp != AD_SLEE && adtyp != AD_DRLI) {
         impossible("gaze attack %d?", adtyp);
         return ECMD_OK;
     }
@@ -1862,6 +1862,33 @@ dogaze(void)
                     }
                     Your("gaze starts to petrify %s!", mon_nam(mtmp));
                     break;
+                case AD_DRLI:
+                    dmg = d(2, 6);
+                    You("attack %s with a deathly gaze!", mon_nam(mtmp));
+                    if (resists_drli(mtmp) || defended(mtmp, AD_DRLI)) {
+                        pline_The("gaze doesn't affect %s!", mon_nam(mtmp));
+                        dmg = 0;
+                    } else {
+                        if (mtmp->mhpmax - dmg > (int) mtmp->m_lev) {
+                            mtmp->mhpmax -= dmg;
+                        } else {
+                            /* limit floor of mhpmax reduction to current m_lev + 1;
+                               avoid increasing it if somehow already less than that */
+                            if (mtmp->mhpmax > (int) mtmp->m_lev)
+                                mtmp->mhpmax = (int) mtmp->m_lev + 1;
+                        }
+                        showdamage(dmg, FALSE);
+                        mtmp->mhp -= dmg;
+                        /* !m_lev: level 0 monster is killed regardless of hit points
+                           rather than drop to level -1; note: some non-living creatures
+                           (golems, vortices) are subject to life-drain */
+                        if (DEADMONSTER(mtmp) || !mtmp->m_lev) {
+                            pline("%s %s!", Monnam(mtmp),
+                                  nonliving(mtmp->data) ? "expires" : "dies");
+                            xkilled(mtmp, XKILL_NOMSG);
+                        } else
+                            mtmp->m_lev--;
+                    }
                 }
 
                 /* For consistency with passive() in uhitm.c, this only

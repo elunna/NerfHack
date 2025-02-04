@@ -198,6 +198,7 @@
      || (ptr) == &mons[PM_SALAMANDER]      \
      || (ptr) == &mons[PM_LAVA_BLOB]       \
      || (ptr) == &mons[PM_VULPENFERNO]     \
+     || (ptr) == &mons[PM_EYE_OF_FEAR_AND_FLAME] \
      || (ptr) == &mons[PM_LAVA_DEMON])
 #define is_silent(ptr) ((ptr)->msound == MS_SILENT)
 #define unsolid(ptr) (((ptr)->mflags1 & M1_UNSOLID) != 0L)
@@ -240,6 +241,7 @@
      || (ptr) == &mons[PM_FIRE_VAMPIRE]         \
      || (ptr) == &mons[PM_STAR_VAMPIRE]         \
      || (ptr) == &mons[PM_VAMPIRE_MAGE]         \
+     || (ptr) == &mons[PM_EYE_OF_FEAR_AND_FLAME] \
      || (ptr) == &mons[PM_CTHULHU])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
@@ -430,7 +432,8 @@
 #define likes_fire(ptr)                                                  \
     ((ptr) == &mons[PM_FIRE_VORTEX] || (ptr) == &mons[PM_FLAMING_SPHERE] \
      || (ptr) == &mons[PM_FIRE_VAMPIRE] || (ptr) == &mons[PM_PHOENIX]    \
-     || (ptr) == &mons[PM_VULPENFERNO] || likes_lava(ptr))
+     || (ptr) == &mons[PM_VULPENFERNO] || likes_lava(ptr)                \
+      || (ptr) == &mons[PM_EYE_OF_FEAR_AND_FLAME])
 
 #define touch_petrifies(ptr) \
     ((ptr) == &mons[PM_COCKATRICE] \
