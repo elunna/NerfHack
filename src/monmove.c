@@ -1391,7 +1391,11 @@ m_balks_at_approaching(struct monst *mtmp)
     if (MON_WEP(mtmp) && is_pole(MON_WEP(mtmp))
         && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= MON_POLE_DIST)
         return TRUE;
-
+    
+    /* Bodaks try to stay away, unless they think you are weak. */
+    if (mtmp->data == &mons[PM_BODAK] && ((u.uhpmax / u.uhp) < 4))
+        return TRUE;
+    
     /* can attack from distance, and hp loss or attack not used */
     if (ranged_attk_available(mtmp)
         && ((mtmp->mhp < (mtmp->mhpmax + 1) / 4)
