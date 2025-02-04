@@ -733,7 +733,7 @@ savelife(int how)
     }
     /* Ensure grung get a little hydration when they survive. */
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-        if (!u.hydration)
+        if (u.hydration == 0)
             u.hydration = givehp;
     }
     /* cure impending doom of sickness hero won't have time to fix

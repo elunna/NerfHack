@@ -125,11 +125,8 @@ set_uasmon(void)
      * grung would get. */
     if (!program_state.restoring && svm.moves > 1L) {
         if (is_grung(gy.youmonst.data)) {
-            if (!u.hydration)
+            if (u.hydration == 0)
                 u.hydration = rn1(250, 250);
-        } else if (Race_if(PM_GRUNG)) {
-            /* Polymorphing costs hydration as a grung */
-            dehydrate(rn1(150, 150));
         } else {
             u.hydration = 0;
         }

@@ -25,7 +25,7 @@ staticfn void dump_enums(void);
 #endif
 staticfn void ck_foulstones(void);
 staticfn void check_hydration(void);
-staticfn int find_tier_index(long);
+staticfn int find_tier_index(int);
 
 #ifdef CRASHREPORT
 #define USED_FOR_CRASHREPORT
@@ -1493,18 +1493,20 @@ void
 dehydrate(int amt)
 {
     int old_tier;
-    
+
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
-
+    if (wizard)
+        pline("(T%ld:-%d)", svm.moves, amt);
+    
     old_tier = find_tier_index(u.hydration);
     u.hydration -= amt;
-
     if (u.hydration < 0)
         u.hydration = 0;
     
     /* Show a message if there was a significant change. */
     int new_tier = find_tier_index(u.hydration);
+    
     if (new_tier != old_tier) {
         switch (new_tier) {
         case 0: You_feel("extremely dehydrated."); break;   /* 10 */
@@ -1516,7 +1518,7 @@ dehydrate(int amt)
         }
         stop_occupation();
     }
-    if (!u.hydration) {
+    if (u.hydration == 0) {
         Your("skin dries up into a lifeless husk!");
         if (Upolyd) {
             rehumanize();
@@ -1531,7 +1533,7 @@ dehydrate(int amt)
 }
 
 staticfn int
-find_tier_index(long value) {
+find_tier_index(int value) {
     for (int i = 0; i < NUM_TIERS; i++) {
         if (value <= tiers[i]) {
             return i;
@@ -1565,7 +1567,7 @@ rehydrate(int amt)
         You("feel much more hydrated.");
     else if (amt_diff >= 100)
         You("feel more hydrated.");
-    else if (amt_diff >= 100)
+    else
         You("feel a little more hydrated.");
     
     /* Rehydrating needs to have a minimum amount of effect to

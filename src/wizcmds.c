@@ -1451,7 +1451,7 @@ you_sanity_check(void)
     }
     /* Grung hydration checks */
     if (is_grung(gy.youmonst.data) || Race_if(PM_GRUNG)) {
-        if (u.hydration == 0L)
+        if (u.hydration == 0)
             impossible("grung hydration is 0");
         if (u.hydration < 0)
             impossible("grung hydration is negative");

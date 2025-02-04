@@ -478,7 +478,6 @@ struct you {
     int ublessed, ublesscnt; /* blessing/duration from #pray */
     int combotime;           /* Timeout for last cartomancer combo */
     int lastprayed;
-    int hydration;           /* grung timeout to dehydration */
     uchar lastprayresult, reconciled;
 #define PRAY_NONE   0
 #define PRAY_GOOD   1
@@ -504,6 +503,7 @@ struct you {
     unsigned usteed_mid;     /* u.usteed->m_id, used during save/restore */
     long ugallop;            /* turns steed will run after being kicked */
     int urideturns;          /* time spent riding, for skill advancement */
+    int hydration;           /* grung timeout to dehydration */
     int umortality;          /* how many times you died */
     int ugrave_arise;    /* you die and become something aside from a ghost */
     int weapon_slots;        /* unused skill slots */
