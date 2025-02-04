@@ -3068,7 +3068,7 @@ blocked_boulder(int dx, int dy)
     return FALSE;
 }
 
-staticfn void
+void
 argent_cross_turns(void)
 {
     if (!uamul) {
