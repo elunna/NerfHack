@@ -3087,7 +3087,16 @@ argent_cross_turns(void)
                   yobjnam(uamul, (const char *) 0));
         aggravate();
         exercise(A_WIS, FALSE);
-        }
+        return;
+    }
+    
+    /* Let the player know this thing is working */
+    if (!Blind)
+        pline("%s glows with a holy silver light!",
+              Yobjnam2(uamul, (const char *) 0));
+    else
+        pline("%s suddenly feels hot!", Yobjnam2(uamul, (const char *) 0));
+
     /* note: does not perform unturn_dead() on victims' inventories */
     turn_undead_range = BOLT_LIM + (u.ulevel / 5); /* 8 to 14 */
     turn_undead_range *= turn_undead_range;
