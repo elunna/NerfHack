@@ -569,7 +569,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_MUMMY,                      /* quest enemies by class */
       S_VAMPIRE,                    /* quest enemies by class */
       ART_ARGENT_CROSS,         /* quest artifact */
-      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_GRUNG
           | ROLE_MALE | ROLE_FEMALE
           | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */ /* Modified from Knight */
