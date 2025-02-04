@@ -978,6 +978,7 @@ static const char * damagetypes[] = {
     "arcane",
     "random breath",
     "blood drain",
+    "hunger",
     "steal Amulet",
     "steal intrinsic",
 };
