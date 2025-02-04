@@ -337,6 +337,9 @@ done_in_by(struct monst *mtmp, int how)
         u.ugrave_arise = PM_GHOUL;
     else if (mptr->mlet == S_LICH)
         u.ugrave_arise = PM_REVENANT;
+    else if (mptr == &mons[PM_SLAUGHTER_WIGHT]
+             || mptr == &mons[PM_BARROW_WIGHT])
+        u.ugrave_arise = PM_BARROW_WIGHT;
     /* this could happen if a high-end vampire kills the hero
        when ordinary vampires are exiled; ditto for wraiths */
     if (u.ugrave_arise >= LOW_PM

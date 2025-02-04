@@ -40,7 +40,8 @@ staticfn int cham_depth_appropriate(struct monst *);
 staticfn boolean card_drop(struct monst *);
 staticfn void msummon_dies(struct monst *);
 staticfn void cthulhu_dies(struct monst *);
-    
+staticfn void deathwail(struct monst *);
+
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
@@ -1074,8 +1075,10 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_STAR_VAMPIRE:
     case PM_VLAD_THE_IMPALER:
     case PM_BARROW_WIGHT:
+    case PM_BODAK:
     case PM_WRAITH:
     case PM_NAZGUL:
+    case PM_SLAUGHTER_WIGHT:
     case PM_XORN:
     case PM_MONKEY:
     case PM_APE:
@@ -4113,6 +4116,11 @@ monkilled(
     if (mdef->data == &mons[PM_CTHULHU])
         cthulhu_dies(mdef);
 
+    /* Slaughter wights release a death wail on dying */
+    if (mdef->data == &mons[PM_SLAUGHTER_WIGHT] && !gd.disintegested) {
+        deathwail(mdef);
+    }
+    
     if (!DEADMONSTER(mdef))
         return; /* life-saved */
 
@@ -4279,7 +4287,10 @@ xkilled(
 
     if (mdat == &mons[PM_CTHULHU])
         cthulhu_dies(mtmp);
-    
+    /* Slaughter wights release a death wail on dying */
+    if (mtmp->data == &mons[PM_SLAUGHTER_WIGHT] && !gd.disintegested) {
+        deathwail(mtmp);
+    }
     if (gs.stoned) {
         gs.stoned = FALSE;
         goto cleanup;
@@ -7561,6 +7572,40 @@ cthulhu_dies(struct monst *mon) /**< Cthulhu's struct */
     } else {
         (void) create_cthulhu_death_cloud(mon->mx, mon->my, 3, 8);
     }
+}
+
+staticfn void
+deathwail(struct monst *mtmp)
+{
+    int dmg = d(2, 18);
+
+    /* We have to be in fairly close proximity to be damaged by this */
+    if (distu(mtmp->mx, mtmp->my) > 25) {
+        if (canseemon(mtmp))
+            pline("%s screams as it dies!", Monnam(mtmp));
+        else
+            You("hear a deathly wail echo through the dungeon.");
+        return;
+    }
+
+    if (Deaf) {
+        pline("It looks as if %s is yelling at you.", mon_nam(mtmp));
+    } else {
+        pline("%s releases a piercing death wail!", Monnam(mtmp));
+        if (u.usleep)
+            unmul("You are frightened awake!");
+    }
+    if (u.umonnum == PM_GLASS_GOLEM) {
+        You("shatter into a million pieces!");
+        rehumanize();
+    } else if (!Deaf) {
+        Your("mind reels from the noise!");
+        make_stunned((HStun & TIMEOUT) + (long) dmg, TRUE);
+        stop_occupation();
+        mdamageu(mtmp, dmg);
+    }
+    /* being deaf won't protect objects in inventory */
+    (void) destroy_items(&gy.youmonst, AD_PHYS, dmg);
 }
 
 /*mon.c*/
