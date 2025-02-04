@@ -184,6 +184,7 @@ static struct trobj Tourist[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj UndeadSlayer[] = {
+#define U_MAJOR 0       /* wooden stake or silver short sword for dhampir [Blade] */
 #define U_MINOR 1       /* silver spear or whip [Castlevania] 25/25% */
                         /* crossbow 50% [Buffy] */
 #define U_RANGE 2       /* silver daggers or crossbow bolts */
@@ -304,6 +305,7 @@ static struct inv_sub {
     { PM_DHAMPIR, FOOD_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, CRAM_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, LEMBAS_WAFER, POT_VAMPIRE_BLOOD },
+    { PM_DHAMPIR, CHAIN_MAIL, LEATHER_JACKET },
     /* grung can't wear boots */
     { PM_GRUNG, HIGH_BOOTS, STRANGE_OBJECT },
     { PM_GRUNG, LOW_BOOTS, LEATHER_BRACERS },
@@ -585,6 +587,7 @@ static const struct def_skill Skill_T[] = {
 static const struct def_skill Skill_U[] = {
     { P_DAGGER, P_EXPERT },            /* Stakes */
     { P_LONG_SWORD, P_SKILLED },       /* Buffy */
+    { P_SHORT_SWORD, P_BASIC },
     { P_MACE, P_SKILLED },
     { P_MORNING_STAR, P_EXPERT },
     { P_FLAIL, P_SKILLED },
@@ -888,7 +891,7 @@ u_init_role(void)
         skill_init(Skill_T);
         break;
     case PM_UNDEAD_SLAYER:
-        switch (rn2(150) / 50) {
+        switch (rn2(100) / 25) {
         case 0:	/* Crossbow and bolts */
             UndeadSlayer[U_MINOR].trotyp = CROSSBOW;
             UndeadSlayer[U_RANGE].trotyp = CROSSBOW_BOLT;
@@ -904,8 +907,22 @@ u_init_role(void)
             break;
         case 2:	/* Silver spear and daggers */
             break;
+        case 3: 
+            /* Silver short sword, silver daggers, gloves, and cloak */
+            UndeadSlayer[U_MINOR].trotyp = SILVER_SHORT_SWORD;
+            UndeadSlayer[U_MISC].trspe = 1;
+            UndeadSlayer[U_ARMOR].trotyp = LEATHER_CLOAK;
+            UndeadSlayer[U_ARMOR].trspe = 0;
+            break;
         }
+        /* Dhampir have to get gloves to be able to use silver */
+        if (Race_if(PM_DHAMPIR)) {
+            UndeadSlayer[U_MISC].trotyp = LEATHER_GLOVES;
+            UndeadSlayer[U_ARMOR].trspe = 0;
+        }
+            
         ini_inv(UndeadSlayer);
+
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
         if (!rn2(6))
