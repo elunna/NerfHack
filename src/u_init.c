@@ -132,8 +132,8 @@ static struct trobj Priest[] = {
     { ROBE, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_WATER, 0, POTION_CLASS, 4, 1 }, /* holy water */
-    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 4, 1 },
-    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 1 },
+    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 1 },
+    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 2, 1 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS },
     { 0, 0, 0, 0, 0 }
 };
@@ -181,6 +181,23 @@ static struct trobj Tourist[] = {
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0 },
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0 },
+    { 0, 0, 0, 0, 0 }
+};
+static struct trobj UndeadSlayer[] = {
+#define U_MINOR 1       /* silver spear or whip [Castlevania] 25/25% */
+                        /* crossbow 50% [Buffy] */
+#define U_RANGE 2       /* silver daggers or crossbow bolts */
+#define U_MISC  3       /* +1 boots [Buffy can kick] or helmet */
+#define U_ARMOR 4       /* Tshirt/leather +1 or chain mail */
+    { WOODEN_STAKE, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { SILVER_SPEAR, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { SILVER_DAGGER, 0, WEAPON_CLASS, 5, UNDEF_BLESS },
+    { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { CHAIN_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 3, 1 },
+    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 1 },
+    { HOLY_WAFER, 0, FOOD_CLASS, 4, 0 },
+    { POT_WATER, 0, POTION_CLASS, 4, 1 },        /* holy water */
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Valkyrie[] = {
@@ -234,6 +251,15 @@ static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0 },
                                   { 0, 0, 0, 0, 0 } };
 static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0 },
                                 { 0, 0, 0, 0, 0 } };
+
+/* align-based substitutions for initial inventory */
+struct inv_asub {
+    aligntyp align;
+    short item_otyp, subs_otyp;
+} inv_asubs[] = {
+    { A_CHAOTIC, HOLY_WAFER, LEMBAS_WAFER },
+    { A_NONE, STRANGE_OBJECT, STRANGE_OBJECT }
+};
 
 /* race-based substitutions for initial inventory;
    the weaker cloak for elven rangers is intentional--they shoot better */
@@ -556,6 +582,25 @@ static const struct def_skill Skill_T[] = {
     { P_SHIELD, P_BASIC },
     { P_NONE, 0 }
 };
+static const struct def_skill Skill_U[] = {
+    { P_DAGGER, P_EXPERT },            /* Stakes */
+    { P_LONG_SWORD, P_SKILLED },       /* Buffy */
+    { P_MACE, P_SKILLED },
+    { P_MORNING_STAR, P_EXPERT },
+    { P_FLAIL, P_SKILLED },
+    { P_HAMMER, P_SKILLED },
+    { P_POLEARMS, P_SKILLED },
+    { P_SPEAR, P_EXPERT },             /* starting weapon/artifact */
+    { P_CROSSBOW, P_EXPERT },          /* Dracula movies */
+    { P_WHIP, P_EXPERT },              /* Castlevania */
+    { P_UNICORN_HORN, P_SKILLED },
+    { P_CLERIC_SPELL, P_BASIC },
+    { P_ESCAPE_SPELL, P_BASIC },
+    { P_MATTER_SPELL, P_SKILLED },        /* Fireball, flame sphere, etc */
+    { P_BARE_HANDED_COMBAT, P_GRAND_MASTER }, /* Buffy the Vampire Slayer */
+    { P_SHIELD, P_SKILLED },
+    { P_NONE, 0 }
+};
 static const struct def_skill Skill_V[] = {
     { P_DAGGER, P_EXPERT },
     { P_AXE, P_EXPERT },
@@ -842,6 +887,35 @@ u_init_role(void)
         ini_inv(Magicmarker);
         skill_init(Skill_T);
         break;
+    case PM_UNDEAD_SLAYER:
+        switch (rn2(150) / 50) {
+        case 0:	/* Crossbow and bolts */
+            UndeadSlayer[U_MINOR].trotyp = CROSSBOW;
+            UndeadSlayer[U_RANGE].trotyp = CROSSBOW_BOLT;
+            UndeadSlayer[U_RANGE].trquan = rn1(10, 30);
+            UndeadSlayer[U_MISC].trotyp = LOW_BOOTS;
+            UndeadSlayer[U_MISC].trspe = 1;
+            UndeadSlayer[U_ARMOR].trotyp = LEATHER_JACKET;
+            UndeadSlayer[U_ARMOR].trspe = 1;
+            break;
+        case 1:	/* Whip and daggers */
+            UndeadSlayer[U_MINOR].trotyp = BULLWHIP;
+            UndeadSlayer[U_MINOR].trspe = 2;
+            break;
+        case 2:	/* Silver spear and daggers */
+            break;
+        }
+        ini_inv(UndeadSlayer);
+        knows_class(WEAPON_CLASS);
+        knows_class(ARMOR_CLASS);
+        if (!rn2(6))
+            ini_inv(Lamp);
+        skill_init(Skill_U);
+        
+        /* Kludge here to trigger Undead Warning */
+        HWarn_of_mon = HUndead_warning;
+        svc.context.warntype.intrins |= MH_UNDEAD;
+        break;
     case PM_VALKYRIE:
         ini_inv(Valkyrie);
         if (!rn2(6))
@@ -962,7 +1036,7 @@ u_init_race(void)
 
     case PM_ORC:
         /* compensate for generally inferior equipment */
-        if (!Role_if(PM_WIZARD))
+        if (!Role_if(PM_WIZARD) && !Role_if(PM_UNDEAD_SLAYER))
             ini_inv(Xtra_food);
         /* Orcs carry poison */
         ini_inv(PoisonPotion);
@@ -1286,6 +1360,9 @@ restricted_spell_discipline(int otyp)
     case PM_TOURIST:
         skills = Skill_T;
         break;
+    case PM_UNDEAD_SLAYER:
+        skills = Skill_U;
+        break;
     case PM_VALKYRIE:
         skills = Skill_V;
         break;
@@ -1404,9 +1481,23 @@ ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
                             (trop->trotyp == UNDEF_TYP) ? "random " : "",
                             OBJ_NAME(objects[obj->otyp]));
                 obj->otyp = inv_subs[i].subs_otyp;
-		    obj->oclass = objects[obj->otyp].oc_class;
+                obj->oclass = objects[obj->otyp].oc_class;
             break;
         }
+        /* Alignment based substitutions */
+        for (i = 0; inv_asubs[i].align != A_NONE; ++i) {
+            if (inv_asubs[i].align == u.ualign.type
+                    && obj->otyp == inv_asubs[i].item_otyp) {
+                debugpline3("ini_inv: substituting %s for %s%s",
+                            OBJ_NAME(objects[inv_asubs[i].subs_otyp]),
+                            (trop->trotyp == UNDEF_TYP) ? "random " : "",
+                            OBJ_NAME(objects[obj->otyp]));
+                obj->otyp = inv_asubs[i].subs_otyp;
+                obj->oclass = objects[obj->otyp].oc_class;
+                break;
+            }
+        }
+        
     }
     return obj->otyp;
 }

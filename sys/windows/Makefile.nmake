@@ -729,6 +729,11 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\tower1.lua   \
 	$(DAT)\tower2.lua   \
 	$(DAT)\tower3.lua   \
+    $(DAT)\Und-fila.lua \
+    $(DAT)\Und-filb.lua \
+    $(DAT)\Und-goal.lua \
+    $(DAT)\Und-loca.lua \
+    $(DAT)\Und-strt.lua \
 	$(DAT)\Val-fila.lua \
 	$(DAT)\Val-filb.lua \
 	$(DAT)\Val-goal.lua \

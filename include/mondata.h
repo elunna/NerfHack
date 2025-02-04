@@ -446,7 +446,8 @@
 #define passes_rocks(ptr) (passes_walls(ptr) && !unsolid(ptr))
 
 #define shadelike(ptr) \
-    ((ptr) == &mons[PM_SHADE] || (ptr) == &mons[PM_SHADOW])
+    ((ptr) == &mons[PM_SHADE] || (ptr) == &mons[PM_SHADOW] \
+    || (ptr) == &mons[PM_FIRST_EVIL])
 
 #define is_mind_flayer(ptr) \
     ((ptr) == &mons[PM_MIND_FLAYER] || (ptr) == &mons[PM_MASTER_MIND_FLAYER])

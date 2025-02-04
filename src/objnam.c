@@ -1513,6 +1513,13 @@ doname_base(
             Concat(bp, 0, " (being worn)");
         if (known && obj->otyp == AMULET_OF_GUARDING)
             Sprintf(eos(prefix), "%+d ", obj->spe); /* sitoa(obj->spe)+" " */
+        if (bp_eos[-1] == ')') {
+            /* there could be light-emitting artifact gloves someday,
+               so add 'lit' separately from 'slippery' rather than via
+               'else if' after uarmg+Glib */
+            if (!Blind && obj->lamplit && artifact_light(obj))
+                ConcatF1(bp, 1, ", %s lit)", arti_light_description(obj));
+        }
         break;
     case ARMOR_CLASS:
         if (obj->owornmask & W_ARMOR) {

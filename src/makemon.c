@@ -1657,6 +1657,13 @@ makemon(
             mtmp->msleeping = 0;
         }
     }
+    /* Undead and demons are always generated awake and pissed for
+       Undead Slayers. */
+    if (Role_if(PM_UNDEAD_SLAYER) && mon_hates_blessings(mtmp)) {
+        mtmp->mpeaceful = mtmp->mtame = FALSE;
+        mtmp->msleeping = 0;
+    }
+    
     if ((ct = emits_light(mtmp->data)) > 0)
         new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,
                          monst_to_any(mtmp));

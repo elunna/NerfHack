@@ -210,7 +210,11 @@ hitval(struct obj *otmp, struct monst *mon)
     /* Blessed weapons used against undead or demons */
     if (Is_weapon && otmp->blessed && mon_hates_blessings(mon))
         tmp += 2;
-
+    
+    /* Undead Slayers are naturally gifted at dispatching undead. */
+    if (Role_if(PM_UNDEAD_SLAYER) && mon_hates_blessings(mon))
+        tmp += 2;
+    
     if (is_spear(otmp) && strchr(kebabable, ptr->mlet))
         tmp += 2;
 
@@ -444,6 +448,10 @@ dmgval_core(
 
         if (otmp->blessed && mon && mon_hates_blessings(mon))
             bonus += rnd(4);
+        /* Undead Slayers are naturally gifted at dispatching undead. */
+        if (mon && Role_if(PM_UNDEAD_SLAYER) && mon_hates_blessings(mon))
+            bonus += 1 + rnd(u.ulevel / 5 + 1);
+        
         if (is_axe(otmp)) {
             if (ptr && is_wooden(ptr))
                 bonus += rnd(4);
@@ -894,6 +902,7 @@ static const NEARDATA short hwep[] = {
     BULLWHIP,
     UNICORN_HORN,
     QUARTERSTAFF,
+    WOODEN_STAKE,
     JAVELIN,
     AKLYS,
     CLUB,

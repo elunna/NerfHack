@@ -83,6 +83,11 @@ static const struct innate {
   tou_abil[] = { { 10, &(HSearching), "perceptive", "" },
                  { 20, &(HPoison_resistance), "hardy", "" },
                  { 0, 0, 0, 0 } },
+  
+  und_abil[] = { { 1, &(HUndead_warning), "", "" },
+                 { 1, &(HDrain_resistance), "", "" },
+                 { 1, &(HSick_resistance), "", "" },
+                 {   0, 0, 0, 0 } },
 
   val_abil[] = { { 1, &(HCold_resistance), "", "" },
                  { 3, &(HStealth), "stealthy", "" },
@@ -851,6 +856,7 @@ role_abil(int r)
         { PM_ROGUE, rog_abil },
         { PM_SAMURAI, sam_abil },
         { PM_TOURIST, tou_abil },
+        { PM_UNDEAD_SLAYER, und_abil },
         { PM_VALKYRIE, val_abil },
         { PM_WIZARD, wiz_abil },
         { 0, 0 }
@@ -1151,6 +1157,13 @@ adjabil(int oldlevel, int newlevel)
                 Your("powers diminish!");
         }
     }
+    
+    /* ALI -- update Warn_of_mon */
+    HWarn_of_mon = HUndead_warning;
+    if (HUndead_warning)
+        svc.context.warntype.intrins |= MH_UNDEAD;
+    else
+        svc.context.warntype.intrins &= ~MH_UNDEAD;
 }
 
 /* called when gaining a level (before u.ulevel gets incremented);

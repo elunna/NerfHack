@@ -5307,6 +5307,15 @@
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_STRONG | M2_COLLECT, M3_INFRAVISIBLE,
         MH_HUMAN, 12, HI_DOMESTIC, TOURIST),
+    MON(NAM("undead slayer"), S_HUMAN, 
+       LVL(10, 10, 10, 1, -1), G_NOGEN,
+       A(ATTK(AT_WEAP, AD_PHYS, 1, 8), 
+         NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+       SIZ(WT_HUMAN, 400, MS_HUMANOID, MZ_HUMAN), 0, 0,
+       M1_HUMANOID | M1_OMNIVORE,
+       M2_NOPOLY | M2_STRONG | M2_COLLECT,
+       M3_INFRAVISIBLE,
+       MH_HUMAN, CLR_BLACK, 12, UNDEAD_SLAYER),
     /* valk is lawful by default; player valk can be neutral, in which case
        role_init() will change this monster and 'warrior' to be neutral too;
        if a neutral valk leaves a bones file containing neutral warriors,
@@ -5489,6 +5498,16 @@
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE,
         MH_HUMAN, 24, HI_LORD, LORD_SATO),
+    MON(NAM("Van Helsing"), S_HUMAN, 
+        LVL(20, 12, 0, 40, 20), (G_NOGEN | G_UNIQ),
+        A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
+          ATTK(AT_WEAP, AD_PHYS, 4, 10),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN), 0, 0,
+        M1_HUMANOID | M1_OMNIVORE,
+        M2_NOPOLY | M2_PNAME | M2_PEACEFUL | M2_STRONG | M2_MALE |
+        M2_COLLECT | M2_MAGIC, M3_CLOSE,
+        MH_HUMAN, 22, HI_LORD, VAN_HELSING),
     MON(NAM("Twoflower"), S_HUMAN,
         LVL(20, 15, 10, 90, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
@@ -5705,6 +5724,23 @@
     /*
      * Note: the Master of Thieves was defined above.
      */
+    MON(NAM("First Evil"), S_GHOST, 
+        LVL(25, 18, -8, 80, -10), (G_NOGEN | G_NOCORPSE | G_UNIQ),
+        A(ATTK(AT_TUCH, AD_PLYS, 2, 6),
+          ATTK(AT_TUCH, AD_SLOW, 1, 6),
+          ATTK(AT_TUCH, AD_COLD, 5, 6),
+          ATTK(AT_TUCH, AD_ELEC, 2, 6),
+          ATTK(AT_MAGC, AD_SPEL, 0, 0),
+          NO_ATTK),
+        SIZ(WT_HUMAN, 0, MS_WAIL, MZ_HUMAN),
+        MR_COLD | MR_DISINT | MR_SLEEP | MR_POISON | MR_STONE
+            | MR_ACID | MR_ELEC, 0,
+        M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_POIS | M1_REGEN 
+            | M1_UNSOLID | M1_SEE_INVIS,
+        M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME |
+          M2_STRONG | M2_NASTY | M2_PRINCE | M2_NEUTER,
+        M3_WAITFORU | M3_WANTSARTI | M3_INFRAVISION,
+        MH_UNDEAD, 20, HI_LORD, FIRST_EVIL),
     MON(NAM("Lord Surtur"), S_GIANT,
         LVL(15, 12, 2, 50, 12), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 10),
@@ -5877,6 +5913,15 @@
     /* warriors used to be chaotic but have been changed to lawful because
        grow_up() promotes them to valkyrie; for a valkyrie hero, they might
        be changed to neutral at game start; see the valkyrie comment above */
+    MON(NAM("exterminator"), S_HUMAN, 
+        LVL(8, 10, 10, 10, 10), G_NOGEN,
+        A(ATTK(AT_WEAP, AD_PHYS, 1, 8),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 400, MS_GUARDIAN, MZ_HUMAN), 0, 0,
+        M1_HUMANOID | M1_OMNIVORE,
+        M2_NOPOLY | M2_PEACEFUL | M2_STRONG | M2_COLLECT,
+        M3_INFRAVISIBLE,
+        MH_HUMAN, 8, CLR_BLACK, EXTERMINATOR),
     MON(NAM("warrior"), S_HUMAN,
         LVL(5, 12, 10, 10, 1), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8),

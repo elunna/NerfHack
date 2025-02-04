@@ -3068,4 +3068,32 @@ blocked_boulder(int dx, int dy)
     return FALSE;
 }
 
+staticfn void
+argent_cross_turns(void)
+{
+    if (!uamul) {
+        impossible("argent_cross_turns called with NULL amul?");
+        return;
+    }
+    if (!uamul->blessed)
+        return; /* No effect unless blessed */
+                
+    if ((u.ualign.type != A_CHAOTIC && (is_demon(gy.youmonst.data) 
+                                        || is_undead(gy.youmonst.data) 
+                                        || is_vampshifter(&gy.youmonst)))
+        || u.ugangr > 6 || uamul->cursed) { /* "Die, mortal!" */
+        if (!Blind)   
+            pline("For some reason, %s glows red.",
+                  yobjnam(uamul, (const char *) 0));
+        aggravate();
+        exercise(A_WIS, FALSE);
+        }
+    /* note: does not perform unturn_dead() on victims' inventories */
+    turn_undead_range = BOLT_LIM + (u.ulevel / 5); /* 8 to 14 */
+    turn_undead_range *= turn_undead_range;
+    turn_undead_msg_cnt = 0;
+
+    iter_mons(maybe_turn_mon_iter);
+}
+
 /*pray.c*/

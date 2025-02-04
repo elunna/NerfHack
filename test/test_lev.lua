@@ -145,7 +145,8 @@ local special_levels = {
 "yeenog-3",
 }
 
-local roles = { "Arc", "Bar", "Car", "Cav", "Hea", "Kni", "Mon", "Pri", "Ran", "Rog", "Sam", "Tou", "Val", "Wiz" }
+local roles = { "Arc", "Bar", "Car", "Cav", "Hea", "Kni", "Mon", "Pri",
+                "Ran", "Rog", "Sam", "Tou", "Und", "Val", "Wiz" }
 local questlevs = { "fila", "filb", "goal", "loca", "strt" }
 
 for _,role in ipairs(roles) do

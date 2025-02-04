@@ -170,7 +170,9 @@ throw_obj(struct obj *obj, int shotlimit)
                          : obj->oclass == WEAPON_CLASS)
         && !(Confusion || Stunned || Fumbling )) {
         /* some roles don't get a volley bonus until becoming expert */
-        weakmultishot = (Role_if(PM_WIZARD) || Role_if(PM_CLERIC)
+        weakmultishot = (Role_if(PM_WIZARD) 
+                         || Role_if(PM_CLERIC)
+                         || Role_if(PM_UNDEAD_SLAYER)
                          || (Role_if(PM_HEALER) && skill != P_KNIFE)
                          || (Role_if(PM_TOURIST) && skill != -P_DART)
                          || (Role_if(PM_CARTOMANCER) && skill != -P_SHURIKEN)

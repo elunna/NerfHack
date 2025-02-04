@@ -786,7 +786,7 @@ struct rogueroom {
     int nroom; /* Only meaningful for "real" rooms */
 };
 
-#define NUM_ROLES (14)
+#define NUM_ROLES (15)
 struct role_filter {
     boolean roles[NUM_ROLES + 1];
     short mask;
@@ -1129,6 +1129,7 @@ typedef struct {
     (Warn_of_mon                                                        \
      && ((svc.context.warntype.obj & (mon)->data->mhflags) != 0           \
          || (svc.context.warntype.polyd & (mon)->data->mhflags) != 0      \
+         || (svc.context.warntype.intrins & (mon)->data->mhflags) != 0      \
          || (svc.context.warntype.species                                 \
              && (svc.context.warntype.species == (mon)->data))))
 

@@ -46,6 +46,7 @@ static const char *const artifact_names[] = {
 #define     STUN(a,b)   {0,AD_STUN,a,b}         /* magical attack */
 #define     DISE(a,b)   {0,AD_DISE,a,b}         /* disease attack */
 #define     SLEE(a,b)   {0,AD_SLEE,a,b}         /* Sleep attack  */
+#define     WTHR(a,b)   {0,AD_WTHR,a,b}         /* Wither attack  */
 
 /* Some helper macros for artifact value.
  * We diverge from Vanilla 3.7.0 and assign a value of 1 to all artifacts 
@@ -639,6 +640,16 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       A_NEUTRAL, PM_TOURIST, NON_PM,
       DFLT_SPE, QAVAL, 7000L, NO_COLOR, YENDORIAN_EXPRESS_CARD),
 
+    /* Revamped Undead Slayer quest artifact
+     * Acts as a magical light source, grants reflection, withering resistance,
+     * and passively turns undead when in the presence of evil */
+    A("The Argent Cross", AMULET_OF_REFLECTION,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH | SPFX_HSPDAM),
+      0, 0,
+      NO_ATTK, DFNS(AD_WTHR), NO_CARY, 0,
+      A_NEUTRAL, PM_UNDEAD_SLAYER, NON_PM,
+      DFLT_SPE, QAVAL, 4000L, NO_COLOR, ARGENT_CROSS),
+    
     A("The Orb of Fate", CRYSTAL_BALL,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK | SPFX_NOWISH),
       (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM), 0,
@@ -679,6 +690,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
 #undef STUN
 #undef DISE
 #undef SLEE
+#undef WTHR
 #endif
 
 /*artilist.h*/

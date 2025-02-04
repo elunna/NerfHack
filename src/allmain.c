@@ -26,7 +26,7 @@ staticfn void dump_enums(void);
 staticfn void ck_foulstones(void);
 staticfn void check_hydration(void);
 staticfn int find_tier_index(long);
-    
+
 #ifdef CRASHREPORT
 #define USED_FOR_CRASHREPORT
 #else
@@ -298,9 +298,6 @@ moveloop_core(void)
                 
                 if (u.ublesscnt)
                     u.ublesscnt--;
-                
-           
-
 
 #ifdef EXTRAINFO_FN
                 if ((prev_dgl_extrainfo == 0) || (prev_dgl_extrainfo < (svm.moves + 250))) {
@@ -458,7 +455,12 @@ moveloop_core(void)
                15 turns or theoretically never happen at all; but when
                a fast hero got multiple moves on that 15th turn, it
                could actually happen more than once on the same turn!] */
+            
+            /* The Argent Cross piggybacks on this timer as well */
+            if (uamul && uamul->oartifact == ART_ARGENT_CROSS)
+                argent_cross_turns();
         }
+        
         /* [fast hero who gets multiple moves per turn ends up sinking
            multiple times per turn; is that what we really want?] */
         if (u.utrap && u.utraptype == TT_LAVA)

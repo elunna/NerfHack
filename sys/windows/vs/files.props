@@ -203,6 +203,11 @@
     <Luafiles Include = "tower3.lua"/>
     <Luafiles Include = "tut-1.lua"/>
     <Luafiles Include = "tut-2.lua"/>
+    <Luafiles Include = "Und-fila.lua"/>
+    <Luafiles Include = "Und-filb.lua"/>
+    <Luafiles Include = "Und-goal.lua"/>
+    <Luafiles Include = "Und-loca.lua"/>
+    <Luafiles Include = "Und-strt.lua"/>
     <Luafiles Include = "Val-fila.lua"/>
     <Luafiles Include = "Val-filb.lua"/>
     <Luafiles Include = "Val-goal.lua"/>

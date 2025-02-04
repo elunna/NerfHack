@@ -585,6 +585,7 @@ LUALIST = \
 	Rog-fila Rog-filb Rog-goal Rog-loca Rog-strt \
 	Sam-fila Sam-filb Sam-goal Sam-loca Sam-strt \
 	Tou-fila Tou-filb Tou-goal Tou-loca Tou-strt \
+	Und-fila Und-filb Und-goal Und-loca Und-strt \
 	Val-fila Val-filb Val-goal Val-loca Val-strt \
 	Wiz-fila Wiz-filb Wiz-goal Wiz-loca Wiz-strt \
 

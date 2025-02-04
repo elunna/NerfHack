@@ -1227,6 +1227,13 @@ cpostfx(int pm)
     switch (pm) {
     case PM_WRAITH: {
         int uhpmin = minuhpmax(1);
+        if (Role_if(PM_UNDEAD_SLAYER)) {
+            /* Unbecoming of Undead Slayers  */
+            You("have disgraced your profession.");
+            adjalign(-20);
+            change_luck(-2);
+            break;
+        }
         switch(rnd(10)) {
         case 1:
             You("feel that was a bad idea.");
@@ -2841,6 +2848,25 @@ fpostfx(struct obj *otmp)
     case SPRIG_OF_WOLFSBANE:
         if (ismnum(u.ulycn) || is_were(gy.youmonst.data))
             you_unwere(TRUE);
+        break;
+    case HOLY_WAFER:            
+        if (u.ualign.type == A_LAWFUL) {
+            if (u.uhp < u.uhpmax) {
+                You_feel("warm inside.");
+                healup(rn1(20, 20), 0, 0, 0);
+            }
+        }
+        if (Sick) 
+            make_sick(0L, (char *)0, TRUE, SICK_ALL);
+        if (ismnum(u.ulycn) || is_were(gy.youmonst.data))
+            you_unwere(TRUE);
+        if (u.ualign.type == A_CHAOTIC) {
+            You_feel("a burning inside!");
+            losehp(Maybe_Half_Phys(rn1(10, 10)), "potion of unholy water",
+                       KILLED_BY_AN);
+        }
+        if (HWithering)
+            make_withering(0L, TRUE);
         break;
     case CARROT:
         if (!u.uswallow

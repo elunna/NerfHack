@@ -1284,8 +1284,11 @@ Amulet_on(struct obj *amul)
     case AMULET_OF_ESP:
     case AMULET_OF_LIFE_SAVING:
     case AMULET_VERSUS_POISON:
-    case AMULET_OF_REFLECTION:
     case FAKE_AMULET_OF_YENDOR:
+        break;
+    case AMULET_OF_REFLECTION:
+        if (uamul->oartifact && uamul->oartifact == ART_ARGENT_CROSS)
+            BWithering |= W_AMUL;
         break;
     case AMULET_OF_MAGICAL_BREATHING: {
         boolean was_in_poison_gas;
@@ -1399,6 +1402,15 @@ Amulet_on(struct obj *amul)
 
     if (!on_msg_done)
         on_msg(uamul);
+    
+    /* The Argent Cross emits light when worn;*/
+    if (artifact_light(uamul) && !uamul->lamplit) {
+        begin_burn(uamul, FALSE);
+        if (!Blind)
+            pline("%s %s to shine %s!",
+                  Yname2(uamul), otense(uamul, "begin"),
+                  arti_light_description(uamul));
+    }
 }
 
 void
@@ -1406,7 +1418,8 @@ Amulet_off(void)
 {
     struct obj *amul = uamul; /* for off_msg() after setworn(NULL,W_AMUL) */
     boolean mkn = FALSE, early_off_msg = FALSE;
-
+    boolean was_arti_light = amul && amul->lamplit && artifact_light(amul);
+     
     svc.context.takeoff.mask &= ~W_AMUL;
 
     switch (uamul->otyp) {
@@ -1420,9 +1433,11 @@ Amulet_off(void)
         break;
     case AMULET_OF_LIFE_SAVING:
     case AMULET_VERSUS_POISON:
-    case AMULET_OF_REFLECTION:
     case AMULET_OF_CHANGE:
     case FAKE_AMULET_OF_YENDOR:
+        break;
+    case AMULET_OF_REFLECTION:
+        BWithering &= ~W_AMUL;
         break;
     case AMULET_OF_UNCHANGING:
         if (Slimed) {
@@ -1504,6 +1519,12 @@ Amulet_off(void)
         off_msg(amul); /* (not 'uamul'; it's Null now) */
     if (mkn)
         makeknown(amul->otyp);
+     /* arti_light comes from The Argent Cross */
+    if (was_arti_light && !artifact_light(amul)) {
+        end_burn(amul, FALSE);
+        if (!Blind)
+            pline("%s shining.", Tobjnam(amul, "stop"));
+    }
     return;
 }
 

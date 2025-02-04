@@ -87,6 +87,7 @@ struct engrave_info {
 struct warntype_info {
     unsigned long obj;        /* object warn_of_mon monster type M2 */
     unsigned long polyd;      /* warn_of_mon monster type M2 due to poly */
+    unsigned long intrins;    /* intrinsic warn_of_mon monster type MH */
     struct permonst *species; /* particular species due to poly */
     short speciesidx; /* index of above in mons[] (for save/restore) */
 };

@@ -544,6 +544,49 @@ const struct Role roles[NUM_ROLES + 1] = {
       10,                           /* metal armor penalty */
       A_INT,                        /* spellcasting stat */
       SPE_CHARM_MONSTER,            /* special spell */
+      -4 },                         /* (-bonus) for special spell */        
+    { { "Undead Slayer", 0 },
+      { { "Assistant", 0 },
+        { "Eliminator", 0 },
+        { "Eliminator", 0 },
+        { "Exterminator", 0 },
+        { "Exterminator", 0 },
+        { "Destroyer", 0 },
+        { "Vindicator", 0 },
+        { "Vindicator", 0 },
+        { "Undead Slayer", 0 } },
+      "Seeker", "Osiris", "Seth", /* Egyptian */
+      "Und",
+      "the Temple of Light",
+      "the Lair of The First Evil",
+      PM_UNDEAD_SLAYER,             /* role */    
+      NON_PM,                       /* preferred pet */
+      PM_VAN_HELSING,               /* quest leader */
+      PM_EXTERMINATOR,              /* quest guardians */
+      PM_FIRST_EVIL,            /* quest nemesis */
+      PM_HUMAN_MUMMY,               /* quest enemies */
+      PM_VAMPIRE,                   /* quest enemies */
+      S_MUMMY,                      /* quest enemies by class */
+      S_VAMPIRE,                    /* quest enemies by class */
+      ART_ARGENT_CROSS,         /* quest artifact */
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC
+          | ROLE_MALE | ROLE_FEMALE
+          | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
+      /* Str Int Wis Dex Con Cha */ /* Modified from Knight */
+      {  13,  7, 14,  8, 10, 10 },  /* lowest initial attributes */
+      {  20, 15, 15, 10, 20, 10 },  /* dist of initial attribs */
+      /* Init   Lower  Higher */
+      { 14, 0,  0, 8,  2, 0 },	    /* hp advancement */
+      {  1, 4,  0, 1,  0, 2 },      /* energy advancement */
+      10,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      8,                            /* base penalty */
+      -2,                           /* healing spells (-bonus) */
+      0,                            /* shield penalty */
+      9,                            /* metal armor penalty */
+      A_WIS,                        /* spellcasting stat */
+      SPE_PROTECTION,               /* special spell */
       -4 },                         /* (-bonus) for special spell */
     { { "Valkyrie", 0 },
       { { "Stripling", 0 },

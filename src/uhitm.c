@@ -1408,6 +1408,29 @@ hmon_hitmon_weapon_melee(
            let it also hit from behind or shatter foes' weapons */
         || (hmd->hand_to_hand && is_art(obj, ART_CLEAVER))) {
         ; /* no special bonuses */
+    } else if (hmd->mdat->mlet == S_VAMPIRE && obj->otyp == WOODEN_STAKE
+             && which_armor(mon, W_ARM) == 0) {
+        if (Role_if(PM_UNDEAD_SLAYER) || (P_SKILL(DAGGER) >= P_EXPERT)) {
+            if (!rn2(10)) {
+                You("plunge your stake into the heart of %s.", mon_nam(mon));
+                hmd->dmg = mon->mhp + 100;
+            } else {
+                You("drive your stake into %s.", mon_nam(mon));
+                hmd->dmg += rnd(6) + 2;
+                hmd->hittxt = TRUE;
+           }
+        } else {
+           You("drive your stake into %s.", mon_nam(mon));
+           hmd->dmg += rnd(6);
+        }
+        hmd->hittxt = TRUE;
+        /* don't let negative daminc prevent from killing (and positive won't
+         * matter anyway) */
+        hmd->get_dmg_bonus = FALSE;
+        /* also don't let skill-based damage penalties prevent this
+         * from killing; cancel this out now (valid_weapon_attack is
+         * guaranteed from the above if) */
+        hmd->dmg -= weapon_dam_bonus(uwep);
     } else if (uslinging() && hmd->thrown == HMON_THROWN
                && ammo_and_launcher(obj, uwep)) {
         if (is_giant(hmd->mdat)

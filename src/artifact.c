@@ -2854,7 +2854,11 @@ artifact_light(struct obj *obj)
     if (obj && is_art(obj, ART_MIRRORBRIGHT)
             && (obj->owornmask & W_ARMS) != 0L)
         return TRUE;
-
+    
+    if (obj && is_art(obj, ART_ARGENT_CROSS)
+        && (obj->owornmask & W_AMUL) != 0L)
+        return TRUE;
+        
     return (boolean) ((get_artifact(obj) != &artilist[ART_NONARTIFACT])
                       && is_art(obj, ART_SUNSWORD));
 }
@@ -3777,6 +3781,10 @@ artifact_info(int anum)
         break;
     case ART_MIRRORBRIGHT:
         art_info.wielded[20] = "does not impede spellcasting";
+        art_info.wielded[21] = "light source";
+        break;
+    case ART_ARGENT_CROSS:
+        art_info.wielded[20] = "turns undead";
         art_info.wielded[21] = "light source";
         break;
     case ART_MITRE_OF_HOLINESS:

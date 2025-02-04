@@ -259,6 +259,12 @@ mk_mplayer(struct permonst *ptr, coordxy x, coordxy y, boolean special)
             if (rn2(2))
                 armor = rnd_class(PLATE_MAIL, CHAIN_MAIL);
             break;
+        case PM_UNDEAD_SLAYER:
+            if (rn2(2))
+                weapon = WOODEN_STAKE;
+            if (rn2(2))
+                armor = rnd_class(PLATE_MAIL, CHAIN_MAIL);
+            break;
         case PM_WIZARD:
             if (rn2(4))
                 weapon = rn2(2) ? QUARTERSTAFF : ATHAME;

@@ -1240,6 +1240,10 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_KING_OF_GAMES:
     case PM_DAL_ZETHIRE:
     case PM_DUELIST:
+    case PM_UNDEAD_SLAYER:
+    case PM_EXTERMINATOR:
+    case PM_FIRST_EVIL:
+    case PM_VAN_HELSING:
 #else
     default:
 #endif
@@ -3869,6 +3873,13 @@ corpse_chance(
         return FALSE;
     }
 
+    /* Undead Slayers totally destroy zombie corpses */
+    if (is_zombie(mdat) && Role_if(PM_UNDEAD_SLAYER)
+        && svc.context.mon_moving == 0 && distu(mon->mx, mon->my) < 2) {
+        pline("%s!", rn2(2) ? "Squish" : rn2(2) ? "Squash" : "Smash");
+        return FALSE;
+    }
+    
     /* Gas spores always explode upon death */
     for (i = 0; i < NATTK; i++) {
         if (mdat->mattk[i].aatyp == AT_BOOM) {
