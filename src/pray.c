@@ -2701,7 +2701,7 @@ maybe_turn_mon_iter(struct monst *mtmp)
         && (is_undead(mtmp->data) || is_vampshifter(mtmp)
             || (is_demon(mtmp->data) && (u.ulevel > (MAXULEV / 2))))) {
         mtmp->msleeping = 0;
-        if (Confusion) {
+        if (Confusion && !Role_if(PM_UNDEAD_SLAYER)) {
             if (!turn_undead_msg_cnt++)
                 pline("Unfortunately, your voice falters.");
             mtmp->mflee = 0;
