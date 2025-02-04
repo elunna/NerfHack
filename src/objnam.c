@@ -2821,6 +2821,7 @@ static const struct sing_plur one_off[] = {
     { "serum", "sera" },
     { "staff", "staves" },
     { "tooth", "teeth" },
+    { "worm that walks", "worms that walk" },
     { 0, 0 }
 };
 

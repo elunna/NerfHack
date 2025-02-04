@@ -2750,8 +2750,11 @@ minfestcorpse(struct monst *mtmp)
             mon_givit(mtmp, &mons[otmp->corpsenm]);
 
             if (mtmp->data == &mons[PM_MAGGOT]) {
-                if (enexto(&cc, mtmp->mx, mtmp->my, &mons[PM_GIANT_FLY]))
-                    makemon(&mons[PM_GIANT_FLY ], cc.x, cc.y, NO_MINVENT);
+                if (enexto(&cc, mtmp->mx, mtmp->my, &mons[PM_WORM_THAT_WALKS])) {
+                    makemon(&mons[PM_WORM_THAT_WALKS ], cc.x, cc.y, NO_MINVENT);
+                    /* Useup the maggot when it infests */
+                    mongone(mtmp);
+                }
             } else if (resurrecting) {
                 if (enexto(&cc, mtmp->mx, mtmp->my, &mons[otmp->corpsenm])) {
                     makemon(&mons[otmp->corpsenm], cc.x, cc.y,

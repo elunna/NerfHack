@@ -1026,6 +1026,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_KOP_LIEUTENANT:
     case PM_KOP_KAPTAIN:
     case PM_LICH:
+    case PM_WORM_THAT_WALKS:
     case PM_DEMILICH:
     case PM_EYE_OF_FEAR_AND_FLAME:
     case PM_MASTER_LICH:
@@ -3726,8 +3727,10 @@ void
 mondead(struct monst *mtmp)
 {
     struct permonst *mptr;
-    boolean be_sad;
-    int mndx;
+    boolean be_sad, nocorpse = u_wield_art(ART_SUNSWORD)
+                               || u_offhand_art(ART_SUNSWORD);
+    coord cc;
+    int mndx, i;
 
     /* potential pet message; always clear global flag */
     be_sad = iflags.sad_feeling;
@@ -3752,6 +3755,25 @@ mondead(struct monst *mtmp)
     if (be_sad)
         You("have a sad feeling for a moment, then it passes.");
 
+    if (mtmp->data == &mons[PM_WORM_THAT_WALKS]) {
+        if (nocorpse) {
+            if (cansee(mtmp->mx, mtmp->my))
+                pline("In the presence of %s, %s corpse flares brightly and burns to ashes.",
+                      artiname(uwep->oartifact), s_suffix(mon_nam(mtmp)));
+        } else {
+            if (cansee(mtmp->mx, mtmp->my)) {
+                pline_The("body of %s dissolves into worms!", mon_nam(mtmp));
+            } else {
+                You_hear("the slithering of many bodies.");
+            }
+            for (i = 0; i < rnd(10); i++) {
+                if (!enexto(&cc, mtmp->mx, mtmp->my, 0))
+                    break;
+                makemon(&mons[PM_MAGGOT], cc.x, cc.y, NO_MINVENT);
+            }
+        }
+    } 
+    
     if (mtmp->data == &mons[PM_STEAM_VORTEX])
         create_gas_cloud(mtmp->mx, mtmp->my, rn2(10) + 5, 0); /* harmless */
 
@@ -3857,8 +3879,8 @@ corpse_chance(
         return FALSE;
     }
 
-    if (mdat == &mons[PM_VLAD_THE_IMPALER] || mdat->mlet == S_LICH
-        || mdat == &mons[PM_ALHOON]) {
+    if (mdat == &mons[PM_VLAD_THE_IMPALER] || mdat == &mons[PM_ALHOON]
+        || (mdat->mlet == S_LICH && mdat != &mons[PM_WORM_THAT_WALKS])) {
         if (cansee(mon->mx, mon->my) && !was_swallowed)
             pline_mon(mon, "%s body crumbles into dust.",
                       s_suffix(Monnam(mon)));

@@ -91,10 +91,9 @@
         SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE, M2_HOSTILE, 0,
         NO_RACE, 4, CLR_BROWN, GIANT_ANT),
-    /* Created when maggots infest corpses. A little stronger than
-     * the SpliceHack version, but also does not generate randomly. */
+    /* For Baalzebub */
     MON(NAM("giant fly"), S_ANT,
-        LVL(2, 18, 3, 0, 0), (G_GENO | G_NOGEN),
+        LVL(2, 18, 3, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 1, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(10, 10, MS_BUZZ, MZ_TINY), 0, 0,
@@ -1795,10 +1794,11 @@
      * worms
      */
 
-    /* Maggots are from SLASH'EM, but have the infest mechanic from
-     * SpliceHack so they can consume corpses to create giant flies. */
+    /* Maggots are originally from SLASH'EM, but now they are used with
+     * the worm that walks. They can infest corpses to ressurect as more
+     * worms that walk */
     MON(NAM("maggot"), S_WORM,
-        LVL(2, 9, 5, 0, 0), (G_GENO | G_SGROUP | 1),
+        LVL(2, 9, 5, 0, 0), (G_NOGEN),
         A(ATTK(AT_BITE, AD_PHYS, 1, 3),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
@@ -2961,6 +2961,17 @@
         M1_BREATHLESS | M1_HUMANOID | M1_POIS | M1_REGEN,
         M2_HOSTILE | M2_MAGIC, M3_INFRAVISION,
         MH_UNDEAD, 18, CLR_RED, DEMILICH),
+    MON(NAM("worm that walks"), S_LICH,
+        LVL(11, 6, 0, 30, -9), (G_GENO | G_NOCORPSE | 1),
+        A(ATTK(AT_WEAP, AD_PHYS, 1, 10), 
+          ATTK(AT_TUCH, AD_DRCO, 2, 4),
+          ATTK(AT_MAGC, AD_SPEL, 0, 0), 
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1200, 100, MS_MUMBLE, MZ_HUMAN), 
+        MR_SLEEP | MR_POISON, MR_POISON, 
+        M1_BREATHLESS | M1_HUMANOID | M1_POIS | M1_REGEN,
+        M2_HOSTILE | M2_MAGIC, M3_INFRAVISION | M3_NOTAME,
+        MH_UNDEAD, 15, CLR_GREEN, WORM_THAT_WALKS),
     MON(NAM("eye of fear and flame"), S_LICH,
         LVL(16, 9, -4, 70, -13), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_GAZE, AD_DRLI, 0, 4),

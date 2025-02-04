@@ -333,6 +333,8 @@ done_in_by(struct monst *mtmp, int how)
         u.ugrave_arise = PM_VAMPIRE_MAGE;
     else if (mptr->mlet == S_VAMPIRE && Race_if(PM_HUMAN))
         u.ugrave_arise = PM_VAMPIRE;
+    else if (mptr == &mons[PM_WORM_THAT_WALKS])
+        u.ugrave_arise = Role_if(PM_WIZARD) ? PM_WORM_THAT_WALKS : PM_GHOUL;
     else if (is_ghoul(mptr))
         u.ugrave_arise = PM_GHOUL;
     else if (mptr->mlet == S_LICH)

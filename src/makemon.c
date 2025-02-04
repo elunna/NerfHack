@@ -969,8 +969,14 @@ m_initinv(struct monst *mtmp)
                 (void) mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
             if (!rn2(3))
                  (void) mongets(mtmp, RIN_SLOW_DIGESTION);
-        }
-        else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
+        } else if (ptr == &mons[PM_WORM_THAT_WALKS]) {
+            otmp = mksobj(MACE, TRUE, rn2(13) ? FALSE : TRUE);
+            if (otmp->spe < 2)
+                otmp->spe = rnd(3);
+            if (!rn2(4))
+                otmp->oerodeproof = 1;
+            (void) mpickobj(mtmp, otmp);
+        } else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
             otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
                           rn2(13) ? FALSE : TRUE);
             if (otmp->spe < 2)
