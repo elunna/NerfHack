@@ -406,9 +406,10 @@ m_initweap(struct monst *mtmp)
             otmp->spe = 0;
             (void) mpickobj(mtmp, otmp);
 
-            /* some insurance against purple worms */
+            /* some insurance against purple worms (and teleport wands) */
             if (on_level(&astral_level, &u.uz) && !rn2(3)) {
-                otmp = mksobj(RIN_SLOW_DIGESTION, FALSE, FALSE);
+                otmp = mksobj(rn2(3) ? RIN_SLOW_DIGESTION 
+                                     : RIN_TELEPORT_CONTROL, FALSE, FALSE);
                 (void) mpickobj(mtmp, otmp);
                 m_dowear(mtmp, FALSE);
             }
@@ -912,7 +913,8 @@ m_initinv(struct monst *mtmp)
 
             /* some insurance against 'purple rain' */
             if (on_level(&astral_level, &u.uz) && rn2(2)) {
-                (void) mongets(mtmp, RIN_SLOW_DIGESTION);
+                (void) mongets(mtmp, rn2(3) ? RIN_SLOW_DIGESTION
+                                            : RIN_TELEPORT_CONTROL);
                 m_dowear(mtmp, FALSE);
             }
 	} else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
@@ -984,7 +986,6 @@ m_initinv(struct monst *mtmp)
             if (!rn2(4))
                 otmp->oerodeproof = 1;
             (void) mpickobj(mtmp, otmp);
-
             if (!rn2(3))
                  (void) mongets(mtmp, RIN_SLOW_DIGESTION);
         }
