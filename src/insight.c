@@ -1308,6 +1308,8 @@ status_enlightenment(int mode, int final)
             Strcpy(buf, "mostly-hydrated");
         else 
             Strcpy(buf, "fully hydrated");
+        if (wizard)
+            Sprintf(eos(buf), " <%d>", u.hydration);
         you_are(buf, "");
     }
     /* encumbrance */
