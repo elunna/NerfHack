@@ -202,6 +202,8 @@ static struct trobj UndeadSlayer[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Valkyrie[] = {
+#define V_MAJOR 0
+#define V_ARMOR 2
     { SPEAR, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS },
@@ -934,6 +936,12 @@ u_init_role(void)
         svc.context.warntype.intrins |= MH_UNDEAD;
         break;
     case PM_VALKYRIE:
+        if (rn2(100) >= 50) { /* see above comment */
+            Valkyrie[V_MAJOR].trotyp = WAR_HAMMER;
+            Valkyrie[V_MAJOR].trspe = 0;
+            Valkyrie[V_ARMOR].trotyp = LEATHER_CLOAK;
+            Valkyrie[V_ARMOR].trspe = 0;
+        }
         ini_inv(Valkyrie);
         if (!rn2(6))
             ini_inv(Lamp);
