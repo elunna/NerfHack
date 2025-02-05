@@ -119,7 +119,7 @@ is_edible(struct obj *obj)
 
     /* Vampires can only draw blood from the living or potions of blood. */
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
-	    return FALSE;
+	return FALSE;
 
     if (is_bigeater(gy.youmonst.data) && is_organic(obj)
         /* [g-cubes can eat containers and retain all contents
@@ -1048,8 +1048,8 @@ givit(int type, struct permonst *ptr)
         increase = MAX_GAIN;
 
     if (Race_if(PM_DHAMPIR)) {
-        /* Allow for partial intrinsics along with acid/stone res */
-        if (type > STONE_RES)
+        /* Allow for partial intrinsics */
+        if (type > POISON_RES)
             return;
         increase = 1;
     }
