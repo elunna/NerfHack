@@ -1496,8 +1496,8 @@ dehydrate(int amt)
 
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)) || !amt)
         return;
-    if (wizard)
-        pline("(T%ld:-%d)", svm.moves, amt);
+    
+    debugpline2("(T%ld:-%d)", svm.moves, amt);
     
     old_tier = find_tier_index(u.hydration);
     u.hydration -= amt;
