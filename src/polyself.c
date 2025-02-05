@@ -129,7 +129,7 @@ set_uasmon(void)
                 u.hydration = rn1(250, 250);
         } else if (Race_if(PM_GRUNG)) {
             /* Polymorphing costs hydration as a grung */
-            dehydrate(999);
+            dehydrate(rn1(150, 150));
         } else {
             u.hydration = 0;
         }
