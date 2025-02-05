@@ -1301,11 +1301,11 @@ status_enlightenment(int mode, int final)
         else if (u.hydration <= 100)
             Strcpy(buf, "very dehydrated");
         else if (u.hydration <= 250)
-            Strcpy(buf, "mildly dehydrated");
+            Strcpy(buf, "dehydrated");
         else if (u.hydration <= 500)
-            Strcpy(buf, "slightly thirsty");
+            Strcpy(buf, "mildly dehydrated");
         else if (u.hydration <= 1000)
-            Strcpy(buf, "mostly-hydrated");
+            Strcpy(buf, "thirsty");
         else 
             Strcpy(buf, "fully hydrated");
         if (wizard)

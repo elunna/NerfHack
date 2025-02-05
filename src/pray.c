@@ -77,34 +77,35 @@ static const char *const godvoices[] = {
  * order to have the values be meaningful.
  */
 
-#define TROUBLE_STONED 16
-#define TROUBLE_SLIMED 15
-#define TROUBLE_STRANGLED 14
-#define TROUBLE_LAVA 13
-#define TROUBLE_SICK 12
-#define TROUBLE_RABID 11
-#define TROUBLE_WITHERING 10
-#define TROUBLE_STARVING 9
-#define TROUBLE_REGION 8 /* stinking cloud */
-#define TROUBLE_HIT 7
-#define TROUBLE_LYCANTHROPE 6
-#define TROUBLE_COLLAPSING 5
-#define TROUBLE_STUCK_IN_WALL 4
-#define TROUBLE_CURSED_LEVITATION 3
-#define TROUBLE_UNUSEABLE_HANDS 2
-#define TROUBLE_CURSED_BLINDFOLD 1
+#define TROUBLE_STONED             17
+#define TROUBLE_SLIMED             16
+#define TROUBLE_STRANGLED          15
+#define TROUBLE_LAVA               14
+#define TROUBLE_SICK               13
+#define TROUBLE_RABID              12
+#define TROUBLE_WITHERING          11
+#define TROUBLE_DEHYDRATED         10
+#define TROUBLE_STARVING            9
+#define TROUBLE_REGION              8 /* stinking cloud */
+#define TROUBLE_HIT                 7
+#define TROUBLE_LYCANTHROPE         6
+#define TROUBLE_COLLAPSING          5
+#define TROUBLE_STUCK_IN_WALL       4
+#define TROUBLE_CURSED_LEVITATION   3
+#define TROUBLE_UNUSEABLE_HANDS     2
+#define TROUBLE_CURSED_BLINDFOLD    1
 
-#define TROUBLE_PUNISHED (-1)
-#define TROUBLE_FUMBLING (-2)
-#define TROUBLE_CURSED_ITEMS (-3)
-#define TROUBLE_SADDLE (-4)
-#define TROUBLE_BLIND (-5)
-#define TROUBLE_POISONED (-6)
-#define TROUBLE_WOUNDED_LEGS (-7)
-#define TROUBLE_HUNGRY (-8)
-#define TROUBLE_STUNNED (-9)
-#define TROUBLE_CONFUSED (-10)
-#define TROUBLE_HALLUCINATION (-11)
+#define TROUBLE_PUNISHED         (-1)
+#define TROUBLE_FUMBLING         (-2)
+#define TROUBLE_CURSED_ITEMS     (-3)
+#define TROUBLE_SADDLE           (-4)
+#define TROUBLE_BLIND            (-5)
+#define TROUBLE_POISONED         (-6)
+#define TROUBLE_WOUNDED_LEGS     (-7)
+#define TROUBLE_HUNGRY           (-8)
+#define TROUBLE_STUNNED          (-9)
+#define TROUBLE_CONFUSED        (-10)
+#define TROUBLE_HALLUCINATION   (-11)
 
 
 #define ugod_is_angry() (u.ualign.record < 0)
@@ -230,6 +231,9 @@ in_trouble(void)
         return TROUBLE_RABID;
     if (Withering)
         return TROUBLE_WITHERING;
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
+        && u.hydration <= 250)
+        return TROUBLE_DEHYDRATED;
     if (u.uhs >= WEAK)
         return TROUBLE_STARVING;
     if (region_danger())
@@ -421,6 +425,9 @@ fix_worst_trouble(int trouble)
             reset_utrap(TRUE);
         rescued_from_terrain(DISSOLVED); /* DISSOLVED: pending cause of death
                                           * if trouble didn't get cured */
+        break;
+    case TROUBLE_DEHYDRATED:
+        rehydrate(1000);
         break;
     case TROUBLE_STARVING:
         /* temporarily lost strength recovery now handled by init_uhunger() */

@@ -1512,9 +1512,9 @@ dehydrate(int amt)
         case 0: You_feel("extremely dehydrated."); break;   /* 10 */
         case 1: You_feel("severely dehydrated."); break;    /* 25 */
         case 2: You_feel("very dehydrated."); break;        /* 100 */
-        case 3: You_feel("mildly dehydrated."); break;      /* 250 */
-        case 4: You_feel("slightly thirsty."); break;       /* 500 */
-        case 5: You_feel("mostly-hydrated."); break;        /* 1000 */
+        case 3: You_feel("dehydrated."); break;             /* 250 */
+        case 4: You_feel("mildly dehydrated."); break;      /* 500 */
+        case 5: You_feel("thirsty."); break;                /* 1000 */
         }
         stop_occupation();
     }
