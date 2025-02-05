@@ -1494,7 +1494,7 @@ dehydrate(int amt)
 {
     int old_tier;
 
-    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)) || !amt)
         return;
     if (wizard)
         pline("(T%ld:-%d)", svm.moves, amt);
@@ -1518,6 +1518,11 @@ dehydrate(int amt)
         }
         stop_occupation();
     }
+    
+    if (new_tier > old_tier)
+        impossible("dehydrate: new_tier (%d) is higher than old_tier (%d), amt=%d", 
+                   new_tier, old_tier, amt);
+    
     if (u.hydration == 0) {
         Your("skin dries up into a lifeless husk!");
         if (Upolyd) {
@@ -1548,7 +1553,7 @@ boolean
 rehydrate(int amt)
 {
     int old_hydration, amt_diff;
-    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)) || !amt)
         return FALSE;
 
     old_hydration = u.hydration;
@@ -1569,6 +1574,10 @@ rehydrate(int amt)
         You("feel more hydrated.");
     else
         You("feel a little more hydrated.");
+    
+    if (u.hydration < old_hydration)
+        impossible("rehydrate: current hydration (%d) is less than before (%d), amt=%d", 
+                   u.hydration, old_hydration, amt);
     
     /* Rehydrating needs to have a minimum amount of effect to
      * dry up a puddle or fountain */
