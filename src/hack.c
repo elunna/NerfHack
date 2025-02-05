@@ -2429,14 +2429,18 @@ slippery_ice_fumbling(void)
 
     if (on_ice) {
         if ((uarmf && objdescr_is(uarmf, "snow boots"))
-            || resists_cold(iceskater) || Flying
+            || resists_cold(iceskater)
+            || Flying
             || mon_prop(iceskater, LEVITATION)
-            || (uarm && Is_dragon_scaled_armor(uarm)
-                    && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES)
             || is_clinger(iceskater->data)
-            || is_whirly(iceskater->data)) {
+            || is_whirly(iceskater->data)
+            /* Wearing white dragon scales works regardless of steed */
+            || (uarm && Is_dragon_scaled_armor(uarm)
+                    && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES)) {
             on_ice = FALSE;
-        } else if (!rn2(fully_resistant(COLD_RES) ? 3 : 2)) {
+        } else if (!rn2((u.usteed ? resists_cold(iceskater)
+                                  : fully_resistant(COLD_RES))
+                            ? 3 : 2)) {
             HFumbling |= FROMOUTSIDE;
             HFumbling &= ~TIMEOUT;
             HFumbling += 1; /* slip on next move */
