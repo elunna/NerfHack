@@ -8087,7 +8087,8 @@ boolean
 hates_item(struct monst *mtmp, int otyp)
 {
     boolean is_you = (mtmp == &gy.youmonst);
-    boolean is_bulky = objects[otyp].oc_bulky;
+    boolean is_bulky = otyp >= PLATE_MAIL && otyp <= SHIELD_OF_REFLECTION
+                       && objects[otyp].oc_bulky;
     /* Special exception for archaeologists - the following text was written
      * by ChatGPT because, ... why not.
      *
