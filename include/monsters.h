@@ -934,7 +934,7 @@
             | M1_REGEN,
         M2_NOPOLY | M2_HOSTILE | M2_NASTY | M2_MAGIC | M2_GREEDY | M2_JEWELS
             | M2_COLLECT,
-        M3_INFRAVISIBLE | M3_INFRAVISION | M3_DISPLACES | M3_NOTAME,
+        M3_INFRAVISION | M3_DISPLACES | M3_NOTAME,
         MH_UNDEAD, 30, CLR_GRAY, ALHOON),
 
     /*
@@ -1499,8 +1499,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_SQEEK, MZ_TINY), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
-        M2_HOSTILE | M2_COLLECT | M2_STRONG,
-        M3_INFRAVISIBLE,
+        M2_HOSTILE | M2_COLLECT | M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 3, CLR_BLACK, PACK_RAT),
     MON(NAM("hedgehog"), S_RODENT,
         LVL(1, 12, 0, 0, 0), (G_GENO | 2),
@@ -1524,8 +1523,7 @@
         A(ATTK(AT_BITE, AD_PHYS, 1, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(20, 12, MS_SQEEK, MZ_SMALL), 0, 0,
-        M1_ANIMAL | M1_NOHANDS | M1_HERBIVORE, M2_HOSTILE,
-        M3_INFRAVISIBLE,
+        M1_ANIMAL | M1_NOHANDS | M1_HERBIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
         NO_RACE, 5, CLR_WHITE, RABBIT),
     MON(NAM("wererat"), S_RODENT,
         LVL(2, 12, 6, 10, -7), (G_NOGEN | G_NOCORPSE),
@@ -1637,7 +1635,7 @@
         SIZ(400, 200, MS_SILENT, MZ_HUGE), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY,
-        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
+        M3_BERSERK,
         NO_RACE, 15, CLR_ORANGE, MONSTROUS_SPIDER),
     /* Ported from EvilHack:
      * in honor of our friend Grasshopper
@@ -2023,7 +2021,7 @@
         SIZ(WT_DRAGON, 500, MS_ROAR, MZ_HUGE), 0, 0,
         M1_ANIMAL | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE | M1_OVIPAROUS
           | M1_NOTAKE,
-        M2_STRONG | M2_HOSTILE | M2_NASTY, M3_INFRAVISIBLE | M3_BERSERK,
+        M2_STRONG | M2_HOSTILE | M2_NASTY, M3_BERSERK,
         NO_RACE, 18, HI_LORD, T_REX),
     /*
      * Angels and other lawful minions
@@ -2197,14 +2195,13 @@
      * - They are strong, flank, can berserk, and no longer "wander"
      * - Like shriekers they occasionally shriek and aggravate monsters */
     MON(NAM("athol"), S_BAT,
-        LVL(7, 20, 7, 0, 0), (G_GENO | G_SGROUP | 1),
+        LVL(7, 20, 7, 0, -3), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 10),
           ATTK(AT_CLAW, AD_PHYS, 2, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 250, MS_ATHOL, MZ_LARGE), 0, 0,
         M1_FLY | M1_ANIMAL | M1_CARNIVORE,
-        M2_HOSTILE | M2_FLANK | M2_STRONG,
-        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
+        M2_HOSTILE | M2_FLANK | M2_STRONG, M3_BERSERK,
         NO_RACE, 12, CLR_GRAY, ATHOL),
     /* From SpliceHack with updates:*/
     MON(NAM("phoenix"), S_BAT,
@@ -2321,7 +2318,7 @@
         M1_FLY | M1_POIS | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS
           | M1_CARNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_NASTY,
-        M3_ACCURATE | M3_INFRAVISION | M3_NOTAME,
+        M3_ACCURATE | M3_NOTAME,
         NO_RACE, 16, HI_LORD, FELL_BEAST),
     MON(NAM("baby gray dragon"), S_DRAGON,
         LVL(4, 9, 2, 10, 4), (G_NOHELL | G_GENO | 1),
@@ -2440,8 +2437,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK | M2_FLANK,
-        0,
+            | M2_STALK | M2_FLANK, 0,
         MH_DRAGON, 20, CLR_GRAY, GRAY_DRAGON),
         /* Initially appeared in SporkHack
          * can be seen via infravision but doesn't have infravision
@@ -2457,8 +2453,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
-        M3_INFRAVISIBLE,
+            | M2_STALK, M3_INFRAVISIBLE,
         MH_DRAGON, 20, HI_GOLD, GOLD_DRAGON),
     MON(NAM("silver dragon"), S_DRAGON,
         LVL(15, 20, -1, 95, 4), (G_GENO | 2),
@@ -2471,8 +2466,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
-        0,
+            | M2_STALK, 0,
         MH_DRAGON, 20, DRAGON_SILVER, SILVER_DRAGON),
     /* Shimmering dragons are displaced.
      * Shimmering scales/scale-mail confer displacement.
@@ -2488,8 +2482,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
           | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
-        0,
+            | M2_STALK, 0,
         MH_DRAGON, 20, CLR_CYAN, SHIMMERING_DRAGON),
     /* red dragon has infravision and can be seen via infravision.
      * It also berserks */
@@ -2518,8 +2511,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
-        0,
+            | M2_STALK, 0,
         MH_DRAGON, 19, CLR_WHITE, WHITE_DRAGON),
     MON(NAM("orange dragon"), S_DRAGON,
         LVL(15, 20, -1, 20, -5), (G_GENO | 2),
@@ -2533,8 +2525,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
-        0,
+            | M2_STALK, 0,
         MH_DRAGON, 20, CLR_ORANGE, ORANGE_DRAGON),
     /* disintegration breath is actually all or nothing, not 1d255 */
     MON(NAM("black dragon"), S_DRAGON,
@@ -2548,8 +2539,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
-        0,
+            | M2_STALK, 0,
         MH_DRAGON, 20, CLR_BLACK, BLACK_DRAGON),
     /* Faster than the other dragons */
     MON(NAM("blue dragon"), S_DRAGON,
@@ -2563,8 +2553,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
-        0,
+            | M2_STALK, 0,
         MH_DRAGON, 20, CLR_BLUE, BLUE_DRAGON),
     MON(NAM("green dragon"), S_DRAGON,
         LVL(15, 20, -1, 20, -6), (G_GENO | 2),
@@ -2577,8 +2566,7 @@
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
             | M1_CARNIVORE | M1_POIS | M1_REGEN,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC
-            | M2_STALK,
-        0,
+            | M2_STALK, 0,
         MH_DRAGON, 20, CLR_GREEN, GREEN_DRAGON),
     MON(NAM("yellow dragon"), S_DRAGON,
         LVL(15, 20, -1, 20, -7), (G_GENO | 2),
@@ -2764,7 +2752,7 @@
         A(ATTK(AT_MAGC, AD_SPEL, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(700, 120, MS_ORC, MZ_SMALL), 0, 0, M1_HUMANOID | M1_OMNIVORE,
-        M2_MAGIC, M3_INFRAVISIBLE | M3_INFRAVISION,
+        M2_MAGIC, M3_INFRAVISIBLE,
         MH_GNOME, 5, HI_ZAP, GNOMISH_WIZARD),
     MON(NAMS("gnome king", "gnome queen", "gnome ruler"), S_GNOME,
          LVL(5, 10, 10, 20, 0), (G_GENO | 1),
@@ -3015,7 +3003,7 @@
         MR_FIRE | MR_COLD | MR_ELEC | MR_SLEEP | MR_POISON,
         MR_FIRE | MR_COLD,
         M1_BREATHLESS | M1_HUMANOID | M1_POIS | M1_REGEN | M1_THICK_HIDE,
-        M2_HOSTILE | M2_MAGIC, M3_INFRAVISION,
+        M2_HOSTILE | M2_MAGIC, M3_INFRAVISION | M3_INFRAVISIBLE,
         MH_UNDEAD, 23, CLR_YELLOW, ARCH_VILE),
     MON(NAM("arch-lich"), S_LICH,
         LVL(25, 9, -6, 90, -15), (G_HELL | G_GENO | G_NOCORPSE | 1),
@@ -3137,8 +3125,7 @@
         SIZ(1500, 375, MS_SILENT, MZ_HUGE),
         MR_COLD | MR_SLEEP | MR_POISON, 0,
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID | M1_REGEN | M1_POIS,
-        M2_HOSTILE | M2_STRONG | M2_STALK | M2_JEWELS,
-        M3_INFRAVISION,
+        M2_HOSTILE | M2_STRONG | M2_STALK | M2_JEWELS, M3_INFRAVISION,
         MH_UNDEAD | MH_TROLL, 11, CLR_BROWN, TROLL_MUMMY),
 
     /*
@@ -3268,7 +3255,6 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1700, 700, MS_GRUNT, MZ_LARGE), 0, 0, M1_HUMANOID | M1_CARNIVORE,
         M2_STRONG | M2_LORD | M2_GREEDY | M2_JEWELS | M2_COLLECT,
-            /*| M2_SUPPORTER was in SpliceHack */
         M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_OGRE, 10, HI_ZAP, OGRE_MAGE),
     MON(NAMS("ogre king", "ogre queen", "ogre tyrant"), S_OGRE,
@@ -3466,7 +3452,11 @@
         SIZ(150, 80, MS_HISS, MZ_SMALL), MR_POISON, MR_POISON,
         M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_POIS
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
-        M2_HOSTILE, 0,
+        M2_HOSTILE, 
+        /* A water moccasin (also known as a cottonmouth) is a pit viper,
+           meaning it has heat-sensing pit organs just like rattlesnakes.
+         */
+        M3_INFRAVISION,
         NO_RACE, 7, CLR_RED, WATER_MOCCASIN),
     MON(NAM("python"), S_SNAKE,
         LVL(6, 3, 5, 0, 0), (G_GENO | 1),
@@ -3478,7 +3468,11 @@
         SIZ(250, 100, MS_HISS, MZ_LARGE), 0, 0,
         M1_SWIM | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_CARNIVORE
             | M1_OVIPAROUS | M1_NOTAKE,
-        M2_HOSTILE | M2_STRONG, M3_INFRAVISION,
+        M2_HOSTILE | M2_STRONG, 
+        /* While some boas and pythons (like the ball python or boa
+           constrictor) do have heat-sensing pits, these are less advanced
+           than those of pit vipers. */
+        0,
         NO_RACE, 8, CLR_MAGENTA, PYTHON),
     MON(NAM("pit viper"), S_SNAKE,
         LVL(6, 15, 2, 0, 0), (G_GENO | 1),
@@ -3510,7 +3504,10 @@
         SIZ(600, 250, MS_SILENT, MZ_LARGE),
         MR_FIRE | MR_POISON, MR_POISON,
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE |
-        M1_CONCEAL, M2_HOSTILE, 0,
+        M1_CONCEAL, M2_HOSTILE, 
+        /* The cerastes (also known as the horned viper) belongs to the 
+           Viperidae family, similar to rattlesnakes and water moccasins. */
+        M3_INFRAVISION,
         NO_RACE, 12, CLR_YELLOW, CERASTES),
      MON(NAM("asphynx"), S_SNAKE,
         LVL(8, 15, 3, 0, 0), (G_NOHELL | G_GENO | 1),
@@ -3788,7 +3785,7 @@
          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 0, MS_MUMBLE, MZ_HUMAN), MR_COLD | MR_SLEEP | MR_POISON, 0,
         M1_BREATHLESS | M1_HUMANOID,
-        M2_STALK | M2_WANDER | M2_COLLECT, M3_INFRAVISION,
+        M2_STALK | M2_WANDER | M2_COLLECT, 0,
         MH_UNDEAD, 10, CLR_YELLOW, BODAK),
     /* wraiths weigh 0 but can leave corpses */
     MON(NAM("wraith"), S_WRAITH,
@@ -3810,7 +3807,7 @@
         M1_BREATHLESS | M1_HUMANOID | M1_SEE_INVIS,
         M2_NOPOLY | M2_STALK | M2_STRONG | M2_HOSTILE | M2_MALE
           | M2_COLLECT | M2_FLANK,
-        M3_ACCURATE | M3_INFRAVISION,
+        M3_ACCURATE,
         MH_UNDEAD, 19, HI_LORD, NAZGUL),
     MON(NAM("slaughter wight"), S_WRAITH,
        LVL(18, 18, -8, 18, -4), (G_NOCORPSE | G_GENO | 1 | G_SGROUP),
@@ -3822,7 +3819,7 @@
        MR_COLD | MR_SLEEP | MR_POISON, 0,
        M1_BREATHLESS | M1_HUMANOID, 
        M2_STALK | M2_HOSTILE | M2_COLLECT | M2_STRONG, 
-       M3_INFRAVISION | M3_ACCURATE | M3_BERSERK, 
+       M3_ACCURATE | M3_BERSERK, 
        MH_UNDEAD, 18, CLR_RED, SLAUGHTER_WIGHT),
     /*
      * Xorn
@@ -4291,7 +4288,7 @@
         SIZ(WT_ELF, 350, MS_HUMANOID, MZ_HUMAN), MR_SLEEP, MR_SLEEP,
         M1_HUMANOID | M1_OMNIVORE | M1_SEE_INVIS,
         M2_STRONG | M2_COLLECT,
-        M3_ACCURATE | M3_INFRAVISIBLE | M3_INFRAVISION,
+        M3_ACCURATE | M3_INFRAVISIBLE,
         MH_ELF, 13, HI_ZAP, ELVEN_CLERIC),
     MON(NAMS("Elvenking", "Elvenqueen", "elven monarch"), S_HUMAN,
          LVL(9, 12, 8, 25, -10), (G_GENO | 1),
@@ -4481,7 +4478,7 @@
             | M1_CARNIVORE,
         M2_NOPOLY | M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS
             | M2_MAGIC | M2_STALK | M2_PNAME | M2_FEMALE,
-        M3_INFRAVISION,
+        0,
         MH_DRAGON, 20, CLR_WHITE, WINTERCLOAK),
     MON(NAM("Medusa"), S_HUMAN,
         LVL(24, 12, -8, 50, -15), (G_NOGEN | G_UNIQ),
@@ -4671,7 +4668,7 @@
         SIZ(WT_HUMAN, 400, MS_SILENT, MZ_HUMAN),
         MR_FIRE | MR_POISON, 0,
         M1_FLY | M1_POIS | M1_THICK_HIDE,
-        M2_STALK | M2_HOSTILE | M2_NASTY, 0,
+        M2_STALK | M2_HOSTILE | M2_NASTY, M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_DEMON, 11, CLR_BRIGHT_GREEN, SPINED_DEVIL),
     MON(NAM("marilith"), S_DEMON,
         LVL(7, 12, -6, 80, -12), (G_HELL | G_NOCORPSE | 1),
