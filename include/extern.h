@@ -103,6 +103,7 @@ extern long timet_delta(time_t, time_t);
 extern boolean vamp_can_regen(void);
 extern boolean rehydrate(int);
 extern void dehydrate(int);
+extern int find_tier_index(int);
 
 /* ### apply.c ### */
 

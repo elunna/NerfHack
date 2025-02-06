@@ -1294,20 +1294,10 @@ status_enlightenment(int mode, int final)
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
         if (u.hydration == 0)
             Strcpy(buf, "dead from dehydration");
-        else if (u.hydration <= 10)
-            Strcpy(buf, "extremely dehydrated");
-        else if (u.hydration <= 25)
-            Strcpy(buf, "severely dehydrated");
-        else if (u.hydration <= 100)
-            Strcpy(buf, "very dehydrated");
-        else if (u.hydration <= 250)
-            Strcpy(buf, "dehydrated");
-        else if (u.hydration <= 500)
-            Strcpy(buf, "mildly dehydrated");
-        else if (u.hydration <= 1000)
-            Strcpy(buf, "thirsty");
-        else 
-            Strcpy(buf, "fully hydrated");
+        else {
+            int new_tier = find_tier_index(u.hydration);
+            Strcpy(buf, hydration_tiers[new_tier].description);
+        }
         if (wizard)
             Sprintf(eos(buf), " <%d>", u.hydration);
         you_are(buf, "");

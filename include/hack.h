@@ -173,6 +173,13 @@ struct PotionRecipe {
 
 extern const struct PotionRecipe potionrecipes[]; /* table of fusions */
 
+struct HydrationTier {
+    int threshold;
+    const char *description;
+};
+
+extern const struct HydrationTier hydration_tiers[]; /* table of hydrations */
+
 #define MAX_BMASK 4
 
 struct bubble {

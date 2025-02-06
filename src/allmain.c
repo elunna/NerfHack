@@ -25,7 +25,6 @@ staticfn void dump_enums(void);
 #endif
 staticfn void ck_foulstones(void);
 staticfn void check_hydration(void);
-staticfn int find_tier_index(int);
 
 #ifdef CRASHREPORT
 #define USED_FOR_CRASHREPORT
@@ -1484,11 +1483,20 @@ check_hydration(void)
     }
 }
 
+const struct HydrationTier hydration_tiers[] = {
+    { 10, "extremely dehydrated." },
+    { 25, "severely dehydrated." },
+    { 100, "very dehydrated." },
+    { 250, "dehydrated." },
+    { 500, "mildly dehydrated." },
+    { 1000, "thirsty." },
+    { 6000, "fully hydrated." }
+};
+#define NUM_TIERS (int) (sizeof(hydration_tiers) / sizeof(hydration_tiers[0]))
+
 /* Decrease the grung's hydration level. Maybe show a message if the player
  * passed a tier of dryness.
  */
-static const int tiers[] = { 10, 25, 100, 250, 500, 1000, 6000 };
-#define NUM_TIERS 7
 void
 dehydrate(int amt)
 {
@@ -1508,14 +1516,10 @@ dehydrate(int amt)
     int new_tier = find_tier_index(u.hydration);
     
     if (new_tier != old_tier) {
-        switch (new_tier) {
-        case 0: You_feel("extremely dehydrated."); break;   /* 10 */
-        case 1: You_feel("severely dehydrated."); break;    /* 25 */
-        case 2: You_feel("very dehydrated."); break;        /* 100 */
-        case 3: You_feel("dehydrated."); break;             /* 250 */
-        case 4: You_feel("mildly dehydrated."); break;      /* 500 */
-        case 5: You_feel("thirsty."); break;                /* 1000 */
-        }
+        if (new_tier < NUM_TIERS) {
+            You_feel("%s", hydration_tiers[new_tier].description);
+        } else
+            impossible("dehydrate: new_tier (%d) is out of bounds.", new_tier);
         stop_occupation();
     }
     
@@ -1537,10 +1541,10 @@ dehydrate(int amt)
     }
 }
 
-staticfn int
+int
 find_tier_index(int value) {
     for (int i = 0; i < NUM_TIERS; i++) {
-        if (value <= tiers[i]) {
+        if (value <= hydration_tiers[i].threshold) {
             return i;
         }
     }
