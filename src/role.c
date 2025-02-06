@@ -576,9 +576,9 @@ const struct Role roles[NUM_ROLES + 1] = {
       {  13,  7, 14,  8, 10, 10 },  /* lowest initial attributes */
       {  20, 15, 15, 10, 20, 10 },  /* dist of initial attribs */
       /* Init   Lower  Higher */
-      { 14, 0,  0, 8,  2, 0 },	    /* hp advancement */
+      { 16, 0,  2, 8,  2, 0 },     /* hp advancement */
       {  1, 4,  0, 1,  0, 2 },      /* energy advancement */
-      10,                           /* cutoff xp level */
+      12,                           /* cutoff xp level */
       10,                           /* initial alignment record */
       /* Spellcasting stats */
       8,                            /* base penalty */
