@@ -7505,6 +7505,8 @@ passive(
         }
         break;
     case AD_STUN:
+        if (ptr == &mons[PM_GLOWING_EYE])
+            break; /* Handled in next block */
         if (Underwater && ptr != &mons[PM_YELLOW_MOLD]) {
             pline("Its slime %s.", mon_underwater(mon)
                                        ? "disperses into the water" 
@@ -7728,6 +7730,46 @@ passive(
                     tele();
                     mon->mspec_used = mon->mspec_used + d(2, 6);
                 }
+            } else {
+                pline("%s cannot defend itself.",
+                      Adjmonnam(mon, "blind"));
+                if (!rn2(500))
+                    change_luck(-1);
+            }
+            break;
+            
+        case AD_STUN:
+            /* specifically glowing eye */
+                if (ptr != &mons[PM_GLOWING_EYE])
+                    break;
+            if (!m_next2u(mon) || !canseemon(mon) || Stunned)
+                break;
+            if (mon->mcansee) {
+                const char* reflectsrc = ureflectsrc();
+                if (reflectsrc) {
+                    /* Sometimes reflection still doesn't fully protect */
+                    if (rnl(10) > 5) {
+                        pline_mon(mon, "%s gaze is partially reflected by your %s.",
+                                  s_suffix(Monnam(mon)), reflectsrc);
+                        make_stunned((long) d(3, 2), TRUE);
+                    }
+                } else if (Hallucination) {
+                    pline("%s looks %s%s.", Monnam(mon),
+                          !rn2(2) ? "" : "rather ",
+                          !rn2(2) ? "numb" : "stupefied");
+                } else if (Underwater) {
+                    pline("%s looks like it's gazing at you through the murky water...",
+                          Monnam(mon));
+                } else if (ublindf
+                           && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                    pline("%s protect you from %s stunning gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mon)));
+                    break;
+               } else {
+                   pline_mon(mon, "%s stares piercingly at you!", Monnam(mon));
+                   make_stunned((HStun & TIMEOUT) + (long) d(2, 6), TRUE);
+                   stop_occupation();
+               }
             } else {
                 pline("%s cannot defend itself.",
                       Adjmonnam(mon, "blind"));
