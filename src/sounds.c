@@ -1537,17 +1537,13 @@ dochat(void)
         return ECMD_OK;
     }
     /* Valkyries can tame winter wolves via #chat */
-    if (((Role_if(PM_VALKYRIE)
-            && (mtmp->data == &mons[PM_WINTER_WOLF_CUB]
-                || mtmp->data == &mons[PM_WINTER_WOLF]))
+    if (((Role_if(PM_UNDEAD_SLAYER)
+            && mtmp->data == &mons[PM_REVENANT_HOUND])
         /* Vampires can tame familiars via chat */
         || (Race_if(PM_DHAMPIR)
             && mtmp->data == &mons[PM_FAMILIAR])) && !mtmp->mtame) {
 
-        if (Role_if(PM_VALKYRIE))
-            You("attempt to tame the %s with calm sounds.", l_monnam(mtmp));
-        else if (Race_if(PM_DHAMPIR))
-            You("attempt to dominate the %s.", l_monnam(mtmp));
+        You("attempt to dominate the %s.", l_monnam(mtmp));
         
         if (rnl(10) < 2) {
             (void) tamedog(mtmp, (struct obj *) 0, TRUE);

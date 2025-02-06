@@ -440,7 +440,7 @@
           ATTK(AT_CLAW, AD_COLD, 1, 4),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 250, MS_BARK, MZ_MEDIUM), MR_COLD | MR_SLEEP | MR_POISON, 0,
-        M1_WALLWALK | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
+        M1_WALLWALK | M1_ANIMAL | M1_NOHANDS,
         M2_STRONG | M2_DOMESTIC, M3_INFRAVISION,
         MH_UNDEAD, 7, CLR_BRIGHT_BLUE, REVENANT_HOUND),
     /* werewolf in wolf form; one in human form uses a different monster
