@@ -726,13 +726,13 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         free_mgivenname(mtmp);
         break;
     case PM_WAX_GOLEM:
-        num = d(2,4);
+        num = d(1,3);
         while (num--)
             obj = mksobj_at(WAX_CANDLE, x, y, TRUE, FALSE);
         free_mgivenname(mtmp);
         break;
     case PM_PLASTIC_GOLEM:
-        num = d(2, 2);
+        num = d(1, 3);
         while (num--)
             obj = mksobj_at(CREDIT_CARD, x, y, TRUE, FALSE);
         free_mgivenname(mtmp);
