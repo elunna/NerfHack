@@ -668,7 +668,8 @@ cast_wizard_spell(
                    spellnum, dmg);
         return 0;
     }
-
+    if (caster == mdef)
+        impossible("cast_wizard_spell: caster and mdef are same monster.");
     int ml = min(caster->m_lev, 50);
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
         impossible("cast directed wizard spell (%d) with dmg=0?", spellnum);
@@ -1158,6 +1159,8 @@ cast_cleric_spell(
                    spellnum, dmg);
         return 0;
     }
+    if (caster == mdef)
+        impossible("cast_wizard_spell: caster and mdef are same monster.");
     if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         impossible("cast directed cleric spell (%d) with dmg=0?", spellnum);
         return 0;
