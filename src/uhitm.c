@@ -1134,7 +1134,7 @@ hitum(struct monst *mon, struct attack *uattk)
     if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
         && !svc.context.forcefight) {
         /* Hero only gets a bite *or* a weapon attack, not both */
-        if (u.ulevel < 12) {
+        if (u.ulevel < 6) {
             /* If hungry, always bite first (if we can feed);
              * otherwise it's 50/50 whether we bite or use weapon */
             if ((u.uhunger < 300 || !rn2(2))) {
@@ -1142,7 +1142,7 @@ hitum(struct monst *mon, struct attack *uattk)
                 return malive;
             }
         } else {
-            /* At XP10+, we get to both bite and attack */
+            /* At XP6+, we get to both bite and attack */
             biteum(mon);
         }
     }
@@ -3197,6 +3197,17 @@ mhitm_ad_drli(
     }
 }
 
+/* Historically, in SLASH'EM and all variants, the chance of feeding 
+ * was 1 in 3
+ */
+#define FEED_CHANCE 3
+/* However, the amount of nutrition gained from feeding has varied:
+ * SLASHEM and UnNetHack:   6 nutrition per feed
+ * dNetHack and DynaHack:   6 nutrition per feed
+ * SpliceHack:             10 nutrition per feed
+ * SlashTHEM:              12 nutrition per feed
+ */
+#define FEED_AMOUNT 10
 /* Vampire draining bite. */
 void
 mhitm_ad_vamp(
@@ -3215,7 +3226,7 @@ mhitm_ad_vamp(
         vulnerable = mdef->msleeping || !mdef->mcanmove || mdef->mfrozen
             || mdef->mconf || mdef->mtrapped;
 
-    boolean success = vulnerable ? TRUE : rn2(2);
+    boolean success = vulnerable ? rn2(FEED_CHANCE) : !rn2(FEED_CHANCE);
                           
     if (magr == &gy.youmonst) {
         /* uhitm */
@@ -3230,11 +3241,11 @@ mhitm_ad_vamp(
                 You("%s on the lifeblood.",
                     vulnerable ? "feast" : "feed");
             }
-            /* [ALI] Biting monsters does not count against
-            eating conducts. The draining of life is
-            considered to be primarily a non-physical
-            effect */
-            lesshungry(mhm->damage * 6);
+            /* [ALI] Biting monsters does not count against eating
+             * conducts. The draining of life is considered to be
+             * primarily a non-physical effect */
+            int lifeblood = mhm->damage * FEED_AMOUNT * (vulnerable ? 2 : 1);
+            lesshungry(lifeblood);
             add_blood(u.ux, u.uy, PM_HUMAN);
 
             /* Maybe gain an intrinsic? */
@@ -7737,7 +7748,6 @@ passive(
                     change_luck(-1);
             }
             break;
-            
         case AD_STUN:
             /* specifically glowing eye */
                 if (ptr != &mons[PM_GLOWING_EYE])
