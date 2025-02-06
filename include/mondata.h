@@ -521,7 +521,10 @@
     (((ptr) == &mons[PM_MONKEY] || (ptr) == &mons[PM_APE])               \
      ? (obj)->otyp == BANANA                                             \
      : (ptr) == &mons[PM_RABBIT] ? (obj)->otyp == CARROT                 \
-     : (is_domestic(ptr) && (obj)->oclass == FOOD_CLASS                  \
+     : ((is_domestic(ptr)                                                \
+            || ((ptr) == &mons[PM_REVENANT_HOUND]                        \
+                && Role_if(PM_UNDEAD_SLAYER)))                           \
+        && (obj)->oclass == FOOD_CLASS                                   \
         && ((ptr)->mlet != S_UNICORN                                     \
             || objects[(obj)->otyp].oc_material == VEGGY                 \
             || ((obj)->otyp == CORPSE && (obj)->corpsenm == PM_LICHEN))))

@@ -224,9 +224,10 @@ makedog(void)
 
     pettype = pet_type();
     petname = (pettype == PM_LITTLE_DOG) ? gd.dogname
-              : (pettype == PM_KITTEN) ? gc.catname
-                : (pettype == PM_PONY) ? gh.horsename
-                  : "";
+              : (pettype == PM_REVENANT_HOUND) ? gd.dogname
+                : (pettype == PM_KITTEN) ? gc.catname
+                  : (pettype == PM_PONY) ? gh.horsename
+                    : "";
 
     /* default pet names */
     if (!*petname && pettype == PM_LITTLE_DOG) {

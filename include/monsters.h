@@ -434,6 +434,15 @@
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK, M3_INFRAVISIBLE,
         NO_RACE, 6, CLR_GRAY, WOLF),
+    MON(NAM("revenant hound"), S_DOG,
+        LVL(5, 15, 4, 20, 0), (G_GENO | G_SGROUP | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 2, 4),
+          ATTK(AT_CLAW, AD_COLD, 1, 4),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(800, 250, MS_BARK, MZ_MEDIUM), MR_COLD | MR_SLEEP | MR_POISON, 0,
+        M1_WALLWALK | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
+        M2_STRONG | M2_DOMESTIC, M3_INFRAVISION,
+        MH_UNDEAD, 7, CLR_BRIGHT_BLUE, REVENANT_HOUND),
     /* werewolf in wolf form; one in human form uses a different monster
        type (in the S_HUMAN section below); switching back and forth is
        a shape-change that sets monst->data to the appropriate monster */
