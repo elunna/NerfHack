@@ -442,18 +442,20 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
     coordxy omx, omy;
     int carryamt = 0;
     struct obj *obj, *otmp;
-
+    struct rm *lev;
+    
     if (helpless(mtmp) || mtmp->meating)
         return 0;
 
     omx = mtmp->mx;
     omy = mtmp->my;
-
+    lev = &levl[omx][omy];
+    
     /* If we are carrying something then we drop it (perhaps near @).
      * Note: if apport == 1 then our behavior is independent of udist.
      * Use udist+1 so steed won't cause divide by zero.
      */
-    if (droppables(mtmp)) {
+    if (droppables(mtmp) && !IS_OBSTRUCTED(lev->typ)) {
         assert(edog->apport > 0);
         if (!rn2(udist + 1) || !rn2(edog->apport))
             if (rn2(10) < edog->apport) {
