@@ -3671,7 +3671,6 @@ mhitm_ad_sgld(
     }
 }
 
-
 void
 mhitm_ad_tlpt(
     struct monst *magr, struct attack *mattk,
@@ -7685,6 +7684,49 @@ passive(
                 } else {
                     You("are freaked out by %s gaze!", s_suffix(mon_nam(mon)));
                     (void) make_hallucinated((HHallucination & TIMEOUT) + rn1(20, 20), TRUE, 0L);
+                }
+            } else {
+                pline("%s cannot defend itself.",
+                      Adjmonnam(mon, "blind"));
+                if (!rn2(500))
+                    change_luck(-1);
+            }
+            break;
+        case AD_TLPT:
+            /* specifically blinking eye */
+            if (ptr != &mons[PM_BLINKING_EYE])
+                break;
+            if (!m_next2u(mon) || !canseemon(mon))
+                break;
+            if (mon->mcansee) {
+                const char* reflectsrc = ureflectsrc();
+                if (reflectsrc) {
+                    /* Sometimes reflection still doesn't fully protect */
+                    if (rnl(10) > 5) {
+                        pline("%s stares blinkingly at you!", Monnam(mon));
+                        if (flags.verbose)
+                            Your("position suddenly seems very uncertain!");
+                        tele();
+                        mon->mspec_used = mon->mspec_used + d(2, 6);
+                    }
+                } else if (Hallucination) {
+                    pline("%s looks %s%s.", Monnam(mon),
+                          !rn2(2) ? "" : "rather ",
+                          !rn2(2) ? "numb" : "stupefied");
+                } else if (Underwater) {
+                    pline("%s looks like it's gazing at you through the murky water...",
+                          Monnam(mon));
+                } else if (ublindf
+                           && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                    pline("%s protect you from %s gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mon)));
+                    break;
+                } else {
+                    pline("%s stares blinkingly at you!", Monnam(mon));
+                    if (flags.verbose)
+                        Your("position suddenly seems very uncertain!");
+                    tele();
+                    mon->mspec_used = mon->mspec_used + d(2, 6);
                 }
             } else {
                 pline("%s cannot defend itself.",

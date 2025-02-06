@@ -3280,6 +3280,41 @@ passiveum(
                 }
             }
             return M_ATTK_HIT;
+    case AD_TLPT: /* Blinking eye */
+        if (u.umonnum == PM_BLINKING_EYE) {
+            if (mtmp->mcansee && haseyes(mtmp->data) && rn2(3)
+                && (mon_prop(mtmp, SEE_INVIS) || !Invis)) {
+                if (Blind) {
+                    pline("As a blind %s, you cannot defend yourself.",
+                          pmname(gy.youmonst.data,
+                                 flags.female ? FEMALE : MALE));
+                } else {
+                    const char* monreflector = mon_reflectsrc(mtmp);
+                    if (monreflector) {
+                        Your("gaze is reflected by %s %s.",
+                              s_suffix(mon_nam(mtmp)), monreflector);
+                        return 1;
+                    }
+                    if (mon_prop(mtmp, TELEPORT_CONTROL)) {
+                        pline_mon(mtmp, "%s winks.",
+                                  Monnam(mtmp));
+                        return 1;
+                    } else {
+                        char mdef_Monnam[BUFSZ];
+                        boolean wasseen = canspotmon(mtmp);
+                        You("gaze at the %s", mon_nam(mtmp));
+                        /* save the name before monster teleports, otherwise
+                           we'll get "it" in the suddenly disappears message */
+                        if (gv.vis && wasseen)
+                            Strcpy(mdef_Monnam, Monnam(mtmp));
+                        mtmp->mstrategy &= ~STRAT_WAITFORU;
+                        (void) rloc(mtmp, RLOC_MSG);
+                    }
+                    return M_ATTK_AGR_DONE;
+                }
+            }
+        }
+            return M_ATTK_HIT;
         case AD_COLD: /* Brown mold or blue jelly */
             if (resists_cold(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);

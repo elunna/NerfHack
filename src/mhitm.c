@@ -1687,6 +1687,41 @@ passivemm(
                 }
             }
             return 1;
+        case AD_TLPT: /* Blinking eye */
+            if (mddat == &mons[PM_BLINKING_EYE]) {
+                if (magr->mcansee && haseyes(madat) && mdef->mcansee
+                    && (mon_prop(magr, SEE_INVIS) || !mdef->minvis)) {
+                    /* construct format string; guard against '%' in Monnam */
+                    Strcpy(buf, s_suffix(Monnam(mdef)));
+                    (void) strNsubst(buf, "%", "%%", 0);
+                    Strcat(buf, " gaze is reflected by %s %s.");
+                    const char* monreflector = mon_reflectsrc(magr);
+                    if (monreflector) {
+                        pline_mon(magr, "But it reflects from %s %s!",
+                                  s_suffix(mon_nam(magr)), monreflector);
+                        return (mdead | mhit);
+                    }
+                    Strcpy(buf, Monnam(magr));
+                    if (canseemon(magr)) {
+                        if (mon_prop(magr, TELEPORT_CONTROL)) {
+                            pline("%s shifts momentarily.",
+                                  Monnam(magr));
+                        }
+                    }
+                    char mdef_Monnam[BUFSZ];
+                    boolean wasseen = canspotmon(magr);
+                    You("gaze at the %s", mon_nam(magr));
+                    /* save the name before monster teleports, otherwise
+                       we'll get "it" in the suddenly disappears message */
+                    if (gv.vis && wasseen)
+                        Strcpy(mdef_Monnam, Monnam(magr));
+                    magr->mstrategy &= ~STRAT_WAITFORU;
+                    (void) rloc(magr, RLOC_MSG);
+                    
+                    return (mdead | mhit);
+                }
+            }
+            return 1;
         case AD_COLD:
             if (resists_cold(magr)) {
                 if (canseemon(magr)) {
