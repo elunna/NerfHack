@@ -446,11 +446,8 @@ m_initweap(struct monst *mtmp)
                 (void) mongets(mtmp, ELVEN_DAGGER);
                 break;
             case 2:
-                otmp = mongets(mtmp, rn2(4) ? SLING_BULLET : FLINT);
-                otmp->quan = 4 + rnd(6);
-                otmp->owt = weight(otmp);
                 (void) mongets(mtmp, SLING);
-                m_initthrow(mtmp, !rn2(4) ? SLING_BULLET : FLINT, 6);
+                m_initthrow(mtmp, !rn2(4) ? SLING_BULLET : FLINT, 4 + rnd(6));
                 break;
             }
             if (!rn2(10))
