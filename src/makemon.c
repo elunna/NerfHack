@@ -1091,8 +1091,8 @@ m_initinv(struct monst *mtmp)
     default:
         break;
     }
-    /* vault guard farming nerf */
-    if (ptr == &mons[PM_GUARD])
+    /* farming nerfs */
+    if (ptr == &mons[PM_GUARD] || ptr == &mons[PM_WORM_THAT_WALKS])
         return;
     
     /* ordinary soldiers rarely have access to magic (or gold :-) */

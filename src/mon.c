@@ -4340,6 +4340,8 @@ xkilled(
             && mdat->mlet != S_KOP
             /* no extra item from guards--too easy to farm */
             && mdat != &mons[PM_GUARD]
+            /* no extra item from worms that walk--too easy to farm */
+            && mdat != &mons[PM_WORM_THAT_WALKS]
             /* no items from cloned monsters */
             && !mtmp->mcloned) {
             otmp = mkobj(RANDOM_CLASS, TRUE);
