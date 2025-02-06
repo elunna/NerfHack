@@ -7576,8 +7576,10 @@ passive(
             }
         }
         break;
-    case AD_HALU: /* specifically violet fungus */
+    case AD_HALU: /* specifically violet fungus/grung */
         /* Use the same values as breathing potion vapors. */
+        if (ptr == &mons[PM_THIRD_EYE])
+            break; /* Handled in next block */
         if (m_next2u(mon) && !Underwater) {
             if (is_grung(mon->data)) { /* orange grung */
                 You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
@@ -7650,6 +7652,45 @@ passive(
             } else {
                 u.ustuck = mon;
                 You("stick to %s!", mon_nam(mon));
+            }
+            break;
+        case AD_HALU:
+            /* specifically third eye */
+            if (ptr != &mons[PM_THIRD_EYE])
+                break;
+            if (!m_next2u(mon) || !canseemon(mon))
+                break;
+            if (mon->mcansee) {
+                const char* reflectsrc = ureflectsrc();
+                if (reflectsrc) {
+                    /* Sometimes reflection still doesn't fully protect */
+                    if (rnl(10) > 5) {
+                        pline_mon(mon, "%s gaze is partially reflected by your %s.",
+                                  s_suffix(Monnam(mon)), reflectsrc);
+                        You("are freaked out by %s gaze!", s_suffix(mon_nam(mon)));
+                        (void) make_hallucinated((HHallucination & TIMEOUT) + rn1(10, 10), TRUE, 0L);
+                    }
+                } else if (Hallucination) {
+                    pline("%s looks %s%s.", Monnam(mon),
+                          !rn2(2) ? "" : "rather ",
+                          !rn2(2) ? "numb" : "stupefied");
+                } else if (Underwater) {
+                    pline("%s looks like it's gazing at you through the murky water...",
+                          Monnam(mon));
+                } else if (ublindf
+                           && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                    pline("%s protect you from %s strange gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mon)));
+                    break;
+                } else {
+                    You("are freaked out by %s gaze!", s_suffix(mon_nam(mon)));
+                    (void) make_hallucinated((HHallucination & TIMEOUT) + rn1(20, 20), TRUE, 0L);
+                }
+            } else {
+                pline("%s cannot defend itself.",
+                      Adjmonnam(mon, "blind"));
+                if (!rn2(500))
+                    change_luck(-1);
             }
             break;
         case AD_PLYS:

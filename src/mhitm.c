@@ -1652,6 +1652,41 @@ passivemm(
                 return (mdead | mhit);
             }
             return 1;
+        case AD_HALU: /* Floating eye */
+            if (mddat == &mons[PM_THIRD_EYE]) {
+                if (magr->mcansee && haseyes(madat) && mdef->mcansee
+                    && (mon_prop(magr, SEE_INVIS) || !mdef->minvis)) {
+                    /* construct format string; guard against '%' in Monnam */
+                    Strcpy(buf, s_suffix(Monnam(mdef)));
+                    (void) strNsubst(buf, "%", "%%", 0);
+                    Strcat(buf, " gaze is reflected by %s %s.");
+                    const char* monreflector = mon_reflectsrc(magr);
+                    if (monreflector) {
+                        pline_mon(magr, "But it reflects from %s %s!",
+                                  s_suffix(mon_nam(magr)), monreflector);
+                        return (mdead | mhit);
+                    }
+                    Strcpy(buf, Monnam(magr));
+                    if (canseemon(magr)) {
+                        if (defended(magr, AD_HALU)) {
+                            pline("%s looks distracted for a moment.",
+                                  Monnam(magr));
+                        } else {
+                            pline("%s is freaked out by %s gaze!", buf,
+                                  s_suffix(mon_nam(mdef)));
+                        }
+                    }
+                    if (defended(magr, AD_HALU))
+                        return 1;
+                    if (!magr->mstun) {
+                        magr->mstun = 1;
+                        pline_mon(magr, "%s %s.", Monnam(magr),
+                              makeplural(stagger(magr->data, "stagger")));
+                    }
+                    return (mdead | mhit);
+                }
+            }
+            return 1;
         case AD_COLD:
             if (resists_cold(magr)) {
                 if (canseemon(magr)) {

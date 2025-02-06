@@ -3247,6 +3247,39 @@ passiveum(
                 return M_ATTK_AGR_DONE;
             }
             return M_ATTK_HIT;
+        case AD_HALU: /* Third eye */
+            if (u.umonnum == PM_THIRD_EYE) {
+                if (mtmp->mcansee && haseyes(mtmp->data) && rn2(3)
+                    && (mon_prop(mtmp, SEE_INVIS) || !Invis)) {
+                    if (Blind) {
+                        pline("As a blind %s, you cannot defend yourself.",
+                              pmname(gy.youmonst.data,
+                                     flags.female ? FEMALE : MALE));
+                    } else {
+                        const char* monreflector = mon_reflectsrc(mtmp);
+                        if (monreflector) {
+                            Your("gaze is reflected by %s %s.",
+                                  s_suffix(mon_nam(mtmp)), monreflector);
+                            return 1;
+                        }
+                        if (defended(mtmp, AD_HALU)) {
+                            pline_mon(mtmp, "%s looks distracted for a moment.",
+                                      Monnam(mtmp));
+                            return 1;
+                        } else {
+                            /* no hallucination for monsters, just stun them */
+                            pline("%s is freaked out by your gaze!", Monnam(mtmp));
+                            if (!mtmp->mstun) {
+                                mtmp->mstun = 1;
+                                pline_mon(mtmp, "%s %s.", Monnam(mtmp),
+                                      makeplural(stagger(mtmp->data, "stagger")));
+                            }
+                        }
+                        return M_ATTK_AGR_DONE;
+                    }
+                }
+            }
+            return M_ATTK_HIT;
         case AD_COLD: /* Brown mold or blue jelly */
             if (resists_cold(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);
