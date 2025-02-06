@@ -462,6 +462,7 @@ hates_silver(struct permonst *ptr)
 {
     return (boolean) (is_were(ptr) || is_vampire(ptr) || is_demon(ptr)
                       || shadelike(ptr)
+                      || ptr == &mons[PM_BARGHEST]
                       || (ptr->mlet == S_IMP && ptr != &mons[PM_TENGU]
                           && ptr != &mons[PM_REDCAP]));
 }

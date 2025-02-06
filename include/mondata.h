@@ -53,6 +53,7 @@
      || (ptr)->msound == MS_LEADER \
      || (ptr) == &mons[PM_MINOTAUR] \
      || (ptr) == &mons[PM_TITAN] \
+     || ptr == &mons[PM_BARGHEST] \
      || (ptr) == &mons[PM_DEATH])
 
 #define resists_sick(ptr)                      \
@@ -124,8 +125,7 @@
     || ptr == &mons[PM_DOPPELGANGER] \
     || ptr == &mons[PM_GUARD] \
     || ptr == &mons[PM_NURSE] \
-    || (ptr)->msound == MS_LEADER \
-    )
+    || (ptr)->msound == MS_LEADER)
 
 /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
 #define resists_mgc(ptr) \
@@ -138,6 +138,7 @@
      || ptr == &mons[PM_DEEPER_ONE]                 \
      || ptr == &mons[PM_DEEPEST_ONE]                \
      || ptr == &mons[PM_SHADOW_OGRE]                \
+     || ptr == &mons[PM_BARGHEST]                   \
      || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 
