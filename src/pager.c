@@ -1235,7 +1235,9 @@ add_mon_info(winid datawin, struct permonst * pm)
     Snprintf(buf, BUFSZ, "Is %sa valid polymorph form.",
             polyok(pm) ? "" : "not ");
     MONPUTSTR(buf);
-
+    if (hates_silver(pm))
+        MONPUTSTR("Hates silver.");
+    
     MONPUTSTR("Attacks: ");
     /* Attacks */
     buf[0] = buf2[0] = '\0';
