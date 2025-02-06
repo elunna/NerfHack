@@ -28,7 +28,7 @@ staticfn int vamp_shift(struct monst *, struct permonst *, boolean);
 staticfn boolean special_baalzebub_actions(struct monst *);
 staticfn void maybe_spin_web(struct monst *);
 staticfn boolean decide_to_teleport(struct monst *);
-staticfn void minfestcorpse(struct monst *);
+staticfn boolean minfestcorpse(struct monst *);
 
 /* a11y: give a message when monster moved */
 staticfn void
@@ -1949,9 +1949,10 @@ m_move(struct monst *mtmp, int after)
     }
 
     /* Maggots infest corpses, arch-viles revive them. */
-    if (ptr == &mons[PM_MAGGOT] || mtmp->data == &mons[PM_ARCH_VILE])
-        minfestcorpse(mtmp);
-
+    if (ptr == &mons[PM_MAGGOT] || mtmp->data == &mons[PM_ARCH_VILE]) {
+        if (minfestcorpse(mtmp))
+            return MMOVE_NOTHING;
+    }
     /* set up pre-move visibility flags */
     seenflgs = (canseemon(mtmp) ? 1 : 0) | (canspotmon(mtmp) ? 2 : 0);
 
@@ -2715,7 +2716,7 @@ decide_to_teleport(struct monst *mtmp)
 }
 
 /* Based on meatcorpse */
-void
+boolean
 minfestcorpse(struct monst *mtmp)
 {
     struct obj *otmp;
@@ -2724,7 +2725,7 @@ minfestcorpse(struct monst *mtmp)
 
     /* If a pet, eating is handled separately, in dog.c */
     if (mtmp->mtame)
-        return;
+        return FALSE;
 
     /* Infest topmost corpse if possible */
     for (otmp = svl.level.objects[mtmp->mx][mtmp->my];
@@ -2738,7 +2739,7 @@ minfestcorpse(struct monst *mtmp)
                     pline("%s attempts to infest %s!", Monnam(mtmp),
                       distant_name(otmp,doname));
                 (void) revive_corpse(otmp, FALSE);
-                return;
+                return FALSE;
             }
             if (cansee(mtmp->mx,mtmp->my) && flags.verbose)
                 pline("%s %s %s!", Monnam(mtmp),
@@ -2752,8 +2753,9 @@ minfestcorpse(struct monst *mtmp)
             if (mtmp->data == &mons[PM_MAGGOT]) {
                 if (enexto(&cc, mtmp->mx, mtmp->my, &mons[PM_WORM_THAT_WALKS])) {
                     makemon(&mons[PM_WORM_THAT_WALKS ], cc.x, cc.y, NO_MINVENT);
-                    /* Useup the maggot when it infests */
                     mongone(mtmp);
+                    delobj(otmp);
+                    return TRUE;
                 }
             } else if (resurrecting) {
                 if (enexto(&cc, mtmp->mx, mtmp->my, &mons[otmp->corpsenm])) {
@@ -2762,11 +2764,11 @@ minfestcorpse(struct monst *mtmp)
                     mtmp->mrevived = 1;
                 }
             }
-
             delobj(otmp);
             break; /* only eat one at a time... */
         }
     newsym(mtmp->mx, mtmp->my);
+    return FALSE;
 }
 
 /* once-per-move actions and effects for Baalzebub; return true if this has used
