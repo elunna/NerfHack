@@ -1759,11 +1759,11 @@ peffect_blood(struct obj *otmp)
             doesn't use violated_vegetarian() to prevent
             duplicated "you feel guilty" messages */
         u.uconduct.unvegetarian++;
-
+        boolean hates_blood = Role_if(PM_MONK) || Role_if(PM_UNDEAD_SLAYER);
         if (!Race_if(PM_DHAMPIR)) {
-            if (u.ualign.type == A_LAWFUL || Role_if(PM_MONK)) {
+            if (u.ualign.type == A_LAWFUL || hates_blood) {
                 You_feel("%sguilty about drinking such a vile liquid.",
-                            Role_if(PM_MONK) ? "especially " : "");
+                         hates_blood ? "especially " : "");
                 u.ugangr++;
                 adjalign(-15);
             } else if (u.ualign.type == A_NEUTRAL) {

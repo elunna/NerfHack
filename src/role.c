@@ -563,7 +563,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       PM_REVENANT_HOUND,            /* preferred pet */
       PM_VAN_HELSING,               /* quest leader */
       PM_EXTERMINATOR,              /* quest guardians */
-      PM_FIRST_EVIL,            /* quest nemesis */
+      PM_FIRST_EVIL,                /* quest nemesis */
       PM_HUMAN_MUMMY,               /* quest enemies */
       PM_VAMPIRE,                   /* quest enemies */
       S_MUMMY,                      /* quest enemies by class */
