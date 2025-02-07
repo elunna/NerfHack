@@ -63,7 +63,6 @@ static struct trobj Barbarian[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cartomancer[] = {
-#define C_DECK 8 /* playing card deck or deck of fate */
     { RAZOR_CARD, 2, WEAPON_CLASS, 40, 1 },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { MEAT_STICK, 0, FOOD_CLASS, 2, 0 },
@@ -761,8 +760,6 @@ u_init_role(void)
         skill_init(Skill_B);
         break;
     case PM_CARTOMANCER:
-        if (rn2(100) >= 50) /* see above comment */
-            Cartomancer[C_DECK].trotyp = DECK_OF_FATE;
         /* Cards only weigh 1 for Cartomancers */
         for (int s = SCR_ENCHANT_ARMOR; s < SCR_STINKING_CLOUD; s++)
             objects[s].oc_weight = 1;
