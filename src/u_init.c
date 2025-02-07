@@ -891,11 +891,11 @@ u_init_role(void)
         ini_inv(Magicmarker);
         skill_init(Skill_T);
         break;
-    case PM_UNDEAD_SLAYER:
+    case PM_UNDEAD_SLAYER: {
         /* The undead slayers starting kits also affect their
          * potential skill sets. */
-        skill_init(Skill_U);
-        switch (rn2(100) / 25) {
+        int kit = rn2(100) / 25;
+        switch (kit) {
         case 0:	/* Crossbow and bolts */
             UndeadSlayer[U_MINOR].trotyp = CROSSBOW;
             UndeadSlayer[U_RANGE].trotyp = CROSSBOW_BOLT;
@@ -904,16 +904,12 @@ u_init_role(void)
             UndeadSlayer[U_MISC].trspe = 1;
             UndeadSlayer[U_ARMOR].trotyp = LEATHER_JACKET;
             UndeadSlayer[U_ARMOR].trspe = 1;
-             set_skill_cap_minimum(P_CROSSBOW, P_EXPERT);
             break;
         case 1:	/* Whip and daggers */
             UndeadSlayer[U_MINOR].trotyp = BULLWHIP;
             UndeadSlayer[U_MINOR].trspe = 2;
-            set_skill_cap_minimum(P_WHIP, P_EXPERT);
-            set_skill_cap_minimum(P_BARE_HANDED_COMBAT, P_MASTER);
             break;
         case 2:	/* Silver spear and daggers */
-            set_skill_cap_minimum(P_SPEAR, P_EXPERT);
             break;
         case 3: 
             /* Silver short sword, silver daggers, gloves, and cloak */
@@ -921,28 +917,44 @@ u_init_role(void)
             UndeadSlayer[U_MISC].trspe = 1;
             UndeadSlayer[U_ARMOR].trotyp = LEATHER_CLOAK;
             UndeadSlayer[U_ARMOR].trspe = 0;
-            set_skill_cap_minimum(P_SHORT_SWORD, P_EXPERT);
-            set_skill_cap_minimum(P_LONG_SWORD, P_SKILLED);
             break;
         }
-        /* Dhampir have to get gloves to be able to use silver */
+        /* Dhampir need gloves to handle silver */
         if (Race_if(PM_DHAMPIR)) {
             UndeadSlayer[U_MISC].trotyp = LEATHER_GLOVES;
             UndeadSlayer[U_ARMOR].trspe = 0;
         }
-            
-        ini_inv(UndeadSlayer);
 
+        ini_inv(UndeadSlayer);
+        skill_init(Skill_U);
+        
+        /* We have to set skill maximums after inventory setup */
+        switch (kit) {
+        case 0:	/* Crossbow and bolts */
+            set_skill_cap_minimum(P_CROSSBOW, P_EXPERT);
+            break;
+        case 1:	/* Whip and daggers */
+            set_skill_cap_minimum(P_WHIP, P_EXPERT);
+            set_skill_cap_minimum(P_BARE_HANDED_COMBAT, P_MASTER);
+            break;
+        case 2:	/* Silver spear and daggers */
+            set_skill_cap_minimum(P_SPEAR, P_EXPERT);
+            break;
+        case 3: /* Silver short sword,  */
+            set_skill_cap_minimum(P_SHORT_SWORD, P_EXPERT);
+            set_skill_cap_minimum(P_LONG_SWORD, P_SKILLED);
+        }
+        
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
         if (!rn2(6))
             ini_inv(Lamp);
         
-        
         /* Kludge here to trigger Undead Warning */
         HWarn_of_mon = HUndead_warning;
         svc.context.warntype.intrins |= MH_UNDEAD;
         break;
+    }
     case PM_VALKYRIE:
         if (rn2(100) >= 50) { /* see above comment */
             Valkyrie[V_MAJOR].trotyp = WAR_HAMMER;
