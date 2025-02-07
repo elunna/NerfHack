@@ -483,6 +483,9 @@ genus(int mndx, int mode)
     case PM_CHIEFTAIN:
         mndx = mode ? PM_BARBARIAN : PM_HUMAN;
         break;
+    case PM_DUELIST:
+        mndx = mode ? PM_CARTOMANCER : PM_HUMAN;
+        break;
     case PM_NEANDERTHAL:
         mndx = mode ? PM_CAVE_DWELLER : PM_HUMAN;
         break;
@@ -509,6 +512,9 @@ genus(int mndx, int mode)
         break;
     case PM_GUIDE:
         mndx = mode ? PM_TOURIST : PM_HUMAN;
+        break;
+    case PM_EXTERMINATOR:
+        mndx = mode ? PM_UNDEAD_SLAYER : PM_HUMAN;
         break;
     case PM_APPRENTICE:
         mndx = mode ? PM_WIZARD : PM_HUMAN;
