@@ -564,8 +564,7 @@ m_destroy_armor(struct monst *caster, struct monst *mdef)
             }
             return 0;
         } else if (oatmp->otyp == CRYSTAL_PLATE_MAIL
-            || oatmp->otyp == CLOAK_OF_INTEGRITY
-            || oatmp->otyp == SHIELD_OF_INTEGRITY) {
+            || oatmp->otyp == BRACERS_OF_INTEGRITY) {
             if (udefend && !Blind)
                 pline("%s glimmers brightly.", Yname2(oatmp));
             pline("%s is immune to %s destructive magic.",
