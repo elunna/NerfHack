@@ -1557,7 +1557,6 @@ m_calcdistress(struct monst *mtmp)
     /* regenerate hit points - note that if withering, they won't gain hp,
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
-
     
     if (mtmp->mstone > 0) {
         if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {

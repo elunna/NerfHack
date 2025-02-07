@@ -336,17 +336,19 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
 void
 mon_regen(struct monst *mon, boolean digest_meal)
 {
-    struct obj *mstone = m_carrying(mon, HEALTHSTONE);
+    struct obj *healstone = m_carrying(mon, HEALTHSTONE);
+    boolean should_regen = (svm.moves % 20 == 0
+                            || regenerates(mon->data)
+                            || mon_prop(mon, REGENERATION)
+                            || (healstone && !healstone->cursed));
 
-    if ((svm.moves % 20 == 0 || regenerates(mon->data)
-            || mon_prop(mon, REGENERATION)
-            || (mstone && !mstone->cursed))
-        /* Below are conditions which prevent regen */
-        && (u_wield_art(ART_MORTALITY_DIAL) 
-            || u_offhand_art(ART_MORTALITY_DIAL))
-        && (!Is_valley(&u.uz) || is_undead(mon->data))
+    boolean regen_prevented = (u_wield_art(ART_MORTALITY_DIAL) 
+                                || u_offhand_art(ART_MORTALITY_DIAL))
+        || (Is_valley(&u.uz) || !is_undead(mon->data))
         /* rabid and withering monsters do not regenerate */
-        && !mon->mrabid && !mon->mwither)
+        || mon->mrabid || mon->mwither;
+
+    if (should_regen && !regen_prevented)
         healmon(mon, 1, 0);
     if (mon->mspec_used)
         mon->mspec_used--;
