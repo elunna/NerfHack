@@ -7342,15 +7342,8 @@ chest_trap(
         } /* Case 3 */
         case 2:
             /* Hinge screeches loudly */
-            if (!Deaf) {
-                if (Hallucination)
-                    pline("A loud siren blares from %s!", the(xname(obj)));
-                else
-                    pline_The("hinges on %s let out an %s screech!",
-                        the(xname(obj)),
-                        rn2(2) ? "unruly" :
-                        rn2(2) ? "ear-splitting" : "obstreperous");
-            }
+            if (!Deaf)
+                pline("A loud siren blares from %s!", the(xname(obj)));
             awaken_monsters(d(4, 6));
             break;
         case 1:
