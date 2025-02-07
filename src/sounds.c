@@ -1542,8 +1542,14 @@ dochat(void)
             || mtmp->data == &mons[PM_REVENANT_HOUND]))
         /* Vampires can tame familiars via chat */
         || (Race_if(PM_DHAMPIR)
-            && mtmp->data == &mons[PM_FAMILIAR])) && !mtmp->mtame) {
-
+            && mtmp->data == &mons[PM_FAMILIAR]))) {
+        
+        /* Increase apport */
+        if (mtmp->mtame) {
+            You("give your %s some encouragement.", l_monnam(mtmp));
+            EDOG(mtmp)->apport += rn1(25, 25);
+            return 0;
+        }
         You("attempt to dominate the %s.", l_monnam(mtmp));
         
         if (rnl(10) < 2) {
