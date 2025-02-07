@@ -587,23 +587,24 @@ static const struct def_skill Skill_T[] = {
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_U[] = {
-    { P_DAGGER, P_EXPERT },            /* Stakes */
-    { P_LONG_SWORD, P_SKILLED },       /* Buffy */
+    { P_DAGGER, P_EXPERT },              /* Stakes */
+    { P_LONG_SWORD, P_BASIC },           /* Buffy */
     { P_SHORT_SWORD, P_BASIC },
     { P_MACE, P_SKILLED },
     { P_MORNING_STAR, P_EXPERT },
     { P_FLAIL, P_SKILLED },
     { P_HAMMER, P_SKILLED },
     { P_POLEARMS, P_SKILLED },
-    { P_SPEAR, P_EXPERT },             /* starting weapon/artifact */
-    { P_CROSSBOW, P_EXPERT },          /* Dracula movies */
-    { P_WHIP, P_EXPERT },              /* Castlevania */
+    { P_SPEAR, P_BASIC },                 
+    { P_CROSSBOW, P_BASIC },              /* Dracula movies */
+    { P_WHIP, P_BASIC },                  /* Castlevania */
     { P_UNICORN_HORN, P_SKILLED },
     { P_CLERIC_SPELL, P_BASIC },
     { P_ESCAPE_SPELL, P_BASIC },
     { P_MATTER_SPELL, P_SKILLED },        /* Fireball, flame sphere, etc */
     { P_RIDING, P_SKILLED },
-    { P_BARE_HANDED_COMBAT, P_GRAND_MASTER }, /* Buffy the Vampire Slayer */
+    /* This counts as martial arts for undead slayers */
+    { P_BARE_HANDED_COMBAT, P_SKILLED }, /* Buffy the Vampire Slayer */
     { P_SHIELD, P_SKILLED },
     { P_NONE, 0 }
 };
@@ -894,6 +895,9 @@ u_init_role(void)
         skill_init(Skill_T);
         break;
     case PM_UNDEAD_SLAYER:
+        /* The undead slayers starting kits also affect their
+         * potential skill sets. */
+        skill_init(Skill_U);
         switch (rn2(100) / 25) {
         case 0:	/* Crossbow and bolts */
             UndeadSlayer[U_MINOR].trotyp = CROSSBOW;
@@ -903,12 +907,16 @@ u_init_role(void)
             UndeadSlayer[U_MISC].trspe = 1;
             UndeadSlayer[U_ARMOR].trotyp = LEATHER_JACKET;
             UndeadSlayer[U_ARMOR].trspe = 1;
+             set_skill_cap_minimum(P_CROSSBOW, P_EXPERT);
             break;
         case 1:	/* Whip and daggers */
             UndeadSlayer[U_MINOR].trotyp = BULLWHIP;
             UndeadSlayer[U_MINOR].trspe = 2;
+            set_skill_cap_minimum(P_WHIP, P_EXPERT);
+            set_skill_cap_minimum(P_BARE_HANDED_COMBAT, P_GRAND_MASTER);
             break;
         case 2:	/* Silver spear and daggers */
+            set_skill_cap_minimum(P_SPEAR, P_EXPERT);
             break;
         case 3: 
             /* Silver short sword, silver daggers, gloves, and cloak */
@@ -916,6 +924,8 @@ u_init_role(void)
             UndeadSlayer[U_MISC].trspe = 1;
             UndeadSlayer[U_ARMOR].trotyp = LEATHER_CLOAK;
             UndeadSlayer[U_ARMOR].trspe = 0;
+            set_skill_cap_minimum(P_SHORT_SWORD, P_EXPERT);
+            set_skill_cap_minimum(P_LONG_SWORD, P_SKILLED);
             break;
         }
         /* Dhampir have to get gloves to be able to use silver */
@@ -930,7 +940,7 @@ u_init_role(void)
         knows_class(ARMOR_CLASS);
         if (!rn2(6))
             ini_inv(Lamp);
-        skill_init(Skill_U);
+        
         
         /* Kludge here to trigger Undead Warning */
         HWarn_of_mon = HUndead_warning;
