@@ -455,7 +455,10 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
      * Note: if apport == 1 then our behavior is independent of udist.
      * Use udist+1 so steed won't cause divide by zero.
      */
-    if (droppables(mtmp) && !IS_OBSTRUCTED(lev->typ)) {
+    if (droppables(mtmp) && !IS_OBSTRUCTED(lev->typ)
+        /* Don't let pets drop random items inside shops - in general, this
+           is frustrating, but with pets that phase its infuriating. */
+        && !inside_shop(omx, omy)) {
         assert(edog->apport > 0);
         if (!rn2(udist + 1) || !rn2(edog->apport))
             if (rn2(10) < edog->apport) {
