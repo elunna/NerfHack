@@ -176,9 +176,9 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_SNAKE,                      /* quest enemies by class */
       S_NAGA,                       /* quest enemies by class */
       ART_HOLOGRAPHIC_VOID_LILY,    /* quest artifact */
-      MH_HUMAN | MH_DWARF | MH_ELF | MH_GNOME | MH_ORC | MH_GRUNG
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_GRUNG
 	  | ROLE_MALE | ROLE_FEMALE
-      | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
+          | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 10, 7, 7, 7, 7 },        /* lowest initial attributes */
       { 10, 30, 10, 20, 20, 10 },   /* dist of initial attribs */
