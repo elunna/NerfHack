@@ -1783,9 +1783,9 @@ ROCK("touchstone", "gray", 0,  10,  10, 45, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY,
 ROCK("flint", "gray",      0,  20,   2,  1, 6, 6, 0, 10, 7, MINERAL, CLR_GRAY,
                                                                     FLINT),
 ROCK("sling bullet", NoDes,
-                           0,  10,   2,  1, 6, 6, 0, 10, 7, IRON, HI_METAL,
+                           1,  10,   2,  1, 6, 6, 0, 10, 7, IRON, HI_METAL,
                                                                  SLING_BULLET),
-ROCK("rock", NoDes,         1, 100,  4,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY,
+ROCK("rock", NoDes,        1, 100,   4,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY,
                                                                     ROCK),
 #undef GEM
 #undef ROCK
