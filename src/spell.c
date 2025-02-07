@@ -44,7 +44,7 @@ staticfn void sortspells(void);
 staticfn boolean spellsortmenu(void);
 staticfn boolean dospellmenu(const char *, int, int *);
 staticfn int percent_success(int);
-staticfn char *spellretention(int, char *);
+staticfn long spellretention(int, char *);
 staticfn int throwspell(void);
 staticfn void cast_protection(void);
 staticfn void spell_backfire(int);
@@ -2198,12 +2198,12 @@ dospellmenu(
     int *spell_no)
 {
     winid tmpwin;
-    int i, n, how, splnum;
+    int i, n, how, splnum, clr = NO_COLOR;
     char buf[BUFSZ], retentionbuf[24];
     const char *fmt;
     menu_item *selected;
     anything any;
-    int clr = NO_COLOR;
+    boolean casting = !strcmp(prompt, "Choose which spell to cast");
 
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu(tmpwin, MENU_BEHAVE_STANDARD);
@@ -2228,10 +2228,13 @@ dospellmenu(
     add_menu_heading(tmpwin, buf);
     for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
         splnum = !gs.spl_orderindx ? i : gs.spl_orderindx[i];
+        /* Hide spells that are 0% */
+        long turnsleft = spellretention(splnum, retentionbuf);
+        if (casting && turnsleft < 1L)
+            continue;
         Sprintf(buf, fmt, spellname(splnum), spellev(splnum),
                 spelltypemnemonic(spell_skilltype(spellid(splnum))),
-                100 - percent_success(splnum),
-                spellretention(splnum, retentionbuf));
+                100 - percent_success(splnum), retentionbuf);
         any.a_int = splnum + 1; /* must be non-zero */
         add_menu(tmpwin, &nul_glyphinfo, &any, spellet(splnum), 0,
                  ATR_NONE, clr, buf,
@@ -2411,7 +2414,7 @@ percent_success(int spell)
     return chance;
 }
 
-staticfn char *
+staticfn long
 spellretention(int idx, char * outbuf)
 {
     long turnsleft, percent;
@@ -2436,7 +2439,7 @@ spellretention(int idx, char * outbuf)
         percent = (turnsleft - 1L) / ((long) KEEN / 100L) + 1L;
         Sprintf(outbuf, "%ld%%", percent);
     }
-    return outbuf;
+    return turnsleft;
 }
 
 /* Learn a spell during creation of the initial inventory */
