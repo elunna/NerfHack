@@ -183,7 +183,7 @@ static struct trobj Tourist[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj UndeadSlayer[] = {
-#define U_MAJOR 0       /* wooden stake or silver short sword for dhampir [Blade] */
+#define U_MAJOR 0       /* wooden stake or silver short sword for dhampir */
 #define U_MINOR 1       /* silver spear or whip [Castlevania] 25/25% */
                         /* crossbow 50% [Buffy] */
 #define U_RANGE 2       /* silver daggers or crossbow bolts */
@@ -899,7 +899,7 @@ u_init_role(void)
         case 0:	/* Crossbow and bolts */
             UndeadSlayer[U_MINOR].trotyp = CROSSBOW;
             UndeadSlayer[U_RANGE].trotyp = CROSSBOW_BOLT;
-            UndeadSlayer[U_RANGE].trquan = rn1(10, 30);
+            UndeadSlayer[U_RANGE].trquan = rn1(25, 40);
             UndeadSlayer[U_MISC].trotyp = LOW_BOOTS;
             UndeadSlayer[U_MISC].trspe = 1;
             UndeadSlayer[U_ARMOR].trotyp = LEATHER_JACKET;
