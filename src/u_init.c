@@ -913,7 +913,7 @@ u_init_role(void)
             UndeadSlayer[U_MINOR].trotyp = BULLWHIP;
             UndeadSlayer[U_MINOR].trspe = 2;
             set_skill_cap_minimum(P_WHIP, P_EXPERT);
-            set_skill_cap_minimum(P_BARE_HANDED_COMBAT, P_GRAND_MASTER);
+            set_skill_cap_minimum(P_BARE_HANDED_COMBAT, P_MASTER);
             break;
         case 2:	/* Silver spear and daggers */
             set_skill_cap_minimum(P_SPEAR, P_EXPERT);
