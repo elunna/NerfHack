@@ -521,7 +521,6 @@
 #define befriend_with_obj(ptr, obj) \
     (((ptr) == &mons[PM_MONKEY] || (ptr) == &mons[PM_APE])               \
      ? (obj)->otyp == BANANA                                             \
-     : (ptr) == &mons[PM_RABBIT] ? (obj)->otyp == CARROT                 \
      : ((is_domestic(ptr)                                                \
             || (((ptr) == &mons[PM_WINTER_WOLF]                          \
                 || (ptr) == &mons[PM_WINTER_WOLF_CUB])                   \
