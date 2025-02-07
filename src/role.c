@@ -560,7 +560,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       "the Temple of Light",
       "the Lair of The First Evil",
       PM_UNDEAD_SLAYER,             /* role */    
-      PM_REVENANT_HOUND,            /* preferred pet */
+      PM_REVENANT_PUP,            /* preferred pet */
       PM_VAN_HELSING,               /* quest leader */
       PM_EXTERMINATOR,              /* quest guardians */
       PM_FIRST_EVIL,                /* quest nemesis */

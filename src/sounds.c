@@ -1538,7 +1538,8 @@ dochat(void)
     }
     /* Valkyries can tame winter wolves via #chat */
     if (((Role_if(PM_UNDEAD_SLAYER)
-            && mtmp->data == &mons[PM_REVENANT_HOUND])
+            && (mtmp->data == &mons[PM_REVENANT_PUP]
+            || mtmp->data == &mons[PM_REVENANT_HOUND]))
         /* Vampires can tame familiars via chat */
         || (Race_if(PM_DHAMPIR)
             && mtmp->data == &mons[PM_FAMILIAR])) && !mtmp->mtame) {
