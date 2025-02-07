@@ -7172,6 +7172,9 @@ maybe_destroy_item(
         if ((uleft && uleft->otyp == RIN_SHOCK_RESISTANCE) || 
             (uright && uright->otyp == RIN_SHOCK_RESISTANCE))
             skip++;
+        /* Oathfire also protects fragile items */
+        if (uarms && uarms->oartifact == ART_OATHFIRE)
+            skip++;
         if (obj->oerodeproof || obj->otyp == WAN_STRIKING
                              || obj->otyp == RIN_SHOCK_RESISTANCE)
             skip++;

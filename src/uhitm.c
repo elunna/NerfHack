@@ -7908,6 +7908,46 @@ passive(
             break;
         }
     }
+
+    struct obj *passive_armor = which_armor(mon, W_ARMS);
+    
+    /* Humanoid monsters wearing various dragon-scaled armor */
+    if (passive_armor && passive_armor->oartifact == ART_OATHFIRE
+        && m_next2u(mon) && !rn2(3)) {
+
+        if (fully_resistant(FIRE_RES) || Underwater) {
+            shieldeff(u.ux, u.uy);
+            monstseesu(M_SEEN_FIRE);
+            You_feel("mildly warm from %s bracers.",
+                     s_suffix(mon_nam(mon)));
+            ugolemeffects(AD_FIRE, rnd(6));
+        } else {
+            if (rn2(20)) {
+                You("are suddenly very hot!");
+                tmp = rnd(6) + 1;
+                if (Cold_resistance)
+                    tmp += 7;
+                tmp = resist_reduce(tmp, FIRE_RES);
+                (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);
+                mdamageu(mon, tmp);
+                
+            } else {
+                pline("%s fiery bindings severely burn you!",
+                      s_suffix(Monnam(mon)));
+                tmp = d(4, 6) + 1;
+                if (Cold_resistance)
+                    tmp += 7;
+                tmp = resist_reduce(tmp, FIRE_RES);
+                (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);
+                mdamageu(mon, tmp);
+            }
+        }
+        if (!rn2(20)) {
+            pline("The Pyreguard Bindings blaze with divine fury!");
+            explode(mon->mx, mon->my, BZ_M_SPELL(ZT_FIRE), d(3, 6),
+                    0, EXPL_FIERY);
+        }
+    }
     return (malive | mhit);
 }
 

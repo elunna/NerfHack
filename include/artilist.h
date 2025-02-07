@@ -144,7 +144,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
       3, ARTVAL, 300L, NO_COLOR, SKULLCRUSHER),
-    
+
     /* From SpliceHack: Shield of King Arthur.
      * This shield now grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
@@ -153,6 +153,12 @@ static NEARDATA struct artifact artilist[] = {
       A_LAWFUL, NON_PM, NON_PM,
       ARMR_SPE, ARTVAL, 1500L, NO_COLOR, PRIDWEN),
 
+    A("Oathfire", LEATHER_BRACERS,
+      (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT), 0, 0,
+      NO_ATTK, DFNS(AD_FIRE), NO_CARY, 0,
+      A_LAWFUL, NON_PM, NON_PM,
+      ARMR_SPE, ARTVAL, 3400L, NO_COLOR, OATHFIRE),
+    
     /* From SLASH'EM; +9 to-hit bonus */
     A("Quick Blade", SILVER_SHORT_SWORD,
       (SPFX_RESTR | SPFX_FAST), 0, 0,

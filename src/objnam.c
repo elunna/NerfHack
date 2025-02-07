@@ -6094,7 +6094,7 @@ object_not_monster(const char *str)
         "master key",    /* not the "master" rank */
         "ninja-to",      /* not the "ninja" rank */
         "magenta",       /* not the "mage" rank */
-        "vampire blood"     /* not the "vampire" monster*/
+        "vampire blood"     /* not the "vampire" monster */
     };
     int i;
     for (i = 0; i < SIZE(non_monster_strs); ++i) {

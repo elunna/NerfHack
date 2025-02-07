@@ -3029,7 +3029,38 @@ passiveum(
 {
     int i, tmp, orig_dmg;
     struct attack *oldu_mattk = 0;
-
+    
+    if (uarms && uarms->oartifact == ART_OATHFIRE) {
+        if (!resists_fire(mtmp) && !defended(mtmp, AD_FIRE)
+                && !mon_underwater(mtmp)) {
+            if (rn2(20)) {
+                if (!rn2(3)) {
+                    if (canseemon(mtmp))
+                        pline_mon(mtmp, "%s is burned!", Monnam(mtmp));
+                    tmp = rnd(6) + 1;
+                }
+            } else {
+                if (canseemon(mtmp))
+                    pline_mon(mtmp, "%s is severely burned!", Monnam(mtmp));
+                tmp = d(4, 6) + 1;
+            }
+            if (resists_cold(mtmp))
+                tmp += 7;
+            tmp += destroy_items(mtmp, AD_FIRE, tmp);
+            
+        }
+      
+        if (assess_dmg(mtmp, tmp) == M_ATTK_AGR_DIED)
+            return M_ATTK_AGR_DIED;
+        /* Random explosions! */
+        if (!rn2(13)) {
+            pline("The Pyreguard Bindings blaze with divine fury!");
+            explode(u.ux, u.uy, BZ_U_SPELL(ZT_FIRE), d(3, 6),
+                    0, EXPL_FIERY);
+        }
+        tmp = 0;
+    }
+    
     if (Role_if(PM_ROGUE) && !Upolyd)
         return counterattack(mtmp, mattk);
     
