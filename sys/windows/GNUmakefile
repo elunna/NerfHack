@@ -512,6 +512,7 @@ LUALIST = \
 	minetn-9 	\
 	minetn-10 	\
 	minetn-11 	\
+	minetn-12 	\
 	temple-1	\
 	temple-2	\
 	nhcore 		\

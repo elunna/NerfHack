@@ -646,6 +646,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\minetn-9.lua \
 	$(DAT)\minetn-10.lua \
 	$(DAT)\minetn-11.lua \
+	$(DAT)\minetn-12.lua \
 	$(DAT)\Mon-fila.lua \
 	$(DAT)\Mon-filb.lua \
 	$(DAT)\Mon-goal.lua \
