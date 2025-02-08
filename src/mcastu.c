@@ -1858,7 +1858,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
                but caster might not realize that [chance to pick it then
                must be very small otherwise caller's many retry attempts
                will eventually end up picking it too often] */
-            if (!has_aggravatables(caster))
+            if (!has_aggravatables(caster) && !Aggravate_monster)
                 return rn2(100) ? TRUE : FALSE;
         }
         if ((m_seenres(caster, M_SEEN_FIRE))
