@@ -129,22 +129,19 @@ choose_magic_spell(struct monst* caster, int spellval)
     case 17:
         return MGC_SUMMON_MONS;
     case 16:
-        return MGC_CALL_UNDEAD;
     case 15:
         return MGC_ACID_BLAST;
     case 14:
     case 13:
-        return MGC_AGGRAVATION;
+        return !rn2(2) ? MGC_AGGRAVATION : MGC_REFLECTION;
     case 12:
-        return MGC_REFLECTION;
     case 11:
-    case 10:
         return MGC_CURSE_ITEMS;
+    case 10:
     case 9:
-    case 8:
-        if (caster->mflee)
-            return MGC_ENTOMB;
         return MGC_DESTRY_ARMR;
+    case 8:
+        return MGC_CALL_UNDEAD;
     case 7:
     case 6:
         if (!rn2(2))
@@ -153,7 +150,6 @@ choose_magic_spell(struct monst* caster, int spellval)
             return MGC_WEAKEN_YOU;
         break;
     case 5:
-        return MGC_FIRE_BOLT;
     case 4:
         return MGC_DISAPPEAR;
     case 3:
@@ -840,7 +836,7 @@ cast_wizard_spell(
         /* We don't want summons if we're not the target */
         if (!youdefend)
             break;
-        if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 192) {
+        if (mcast_dist_ok(caster)) {
             coord mm;
             mm.x = u.ux;
             mm.y = u.uy;
@@ -1936,8 +1932,6 @@ mspell_would_be_useless(
     struct monst *caster, struct monst *mdef,
     unsigned int adtyp, int spellnum)
 {
-    boolean evilpriest = (caster->ispriest && mon_aligntyp(caster) < A_NEUTRAL);
-
     if (adtyp == AD_SPEL) {
         /* don't cast these spells at range vs other monsters */
         if (distmin(caster->mx, caster->my, mdef->mx, mdef->my) > 1
@@ -2015,10 +2009,10 @@ mspell_would_be_useless(
                 || spellnum == MGC_ACID_BLAST)) {
             return TRUE;
         }
-        /* only undead/demonic spell casters, chaotic/unaligned priests
-           and quest nemesis can summon undead */
+        /* only undead/demonic spell casters, and quest nemesis
+           can summon undead */
         if (spellnum == MGC_CALL_UNDEAD && !is_undead(caster->data)
-            && !is_demon(caster->data) && !evilpriest
+            && !is_demon(caster->data)
             && caster->data->msound != MS_NEMESIS)
             return TRUE;
      } else if (adtyp == AD_CLRC) {
