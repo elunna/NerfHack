@@ -800,9 +800,8 @@ cast_wizard_spell(
             impossible("bad wizard cloning?");
         break;
     case MGC_SUMMON_MONS: {
-        /* In EvilHack this is handled a bit differently -
-           we'll keep it simple and ignore this for mhitm. */
-        if (youdefend) {
+        /* Must respect field of vision */
+        if (youdefend && mcast_dist_ok(caster)) {
             int count = nasty(caster, FALSE);
 
             if (!count) {
@@ -847,9 +846,8 @@ cast_wizard_spell(
     }
     case MGC_AGGRAVATION:
         /* Skip aggravate if we are not the target */
-        if (youdefend) {
-            if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 192)
-                incr_itimeout(&HAggravate_monster, rnd(75) + 50);
+        if (youdefend && mcast_dist_ok(caster)) {
+            incr_itimeout(&HAggravate_monster, rnd(75) + 50);
             You_feel("that monsters are aware of your presence.");
             aggravate();
         }
@@ -874,7 +872,7 @@ cast_wizard_spell(
         dmg = m_destroy_armor(caster, mdef);
         break;
     case MGC_EVIL_EYE: { /* drains luck */
-        if (youdefend) {
+        if (youdefend && mcast_dist_ok(caster)) {
             struct attack evilEye = { AT_GAZE, AD_LUCK, 1, 4 };
             (void) gazemu(caster, &evilEye);
         } else { /* mhitm */
@@ -1023,7 +1021,6 @@ cast_wizard_spell(
             explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
                     MON_CASTBALL, EXPL_FIERY);
         }
-
         dmg = 0; /* damage is handled by explode() */
         break;
     case MGC_ICE_BOLT:
@@ -1176,7 +1173,7 @@ cast_cleric_spell(
             break;
         }
         if (youdefend) {
-            if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 65
+            if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 64
                 && !BWithering) {
                 You("%s rapidly decomposing!", Withering ? "continue" : "begin");
                 incr_itimeout(&HWithering, withertime);
@@ -1192,10 +1189,9 @@ cast_cleric_spell(
                 }
                 disp.botl = TRUE;
             }
-        } else if (!mon_prop(mdef, DISINT_RES)) { /* mhitm */
+        } else { /* mhitm */
             if (canseemon(mdef))
                 pline("%s is withering away!", Monnam(mdef));
-
             if (mdef->mwither + withertime > UCHAR_MAX) {
                 mdef->mwither = UCHAR_MAX;
             } else {
@@ -1277,6 +1273,10 @@ cast_cleric_spell(
         Soundeffect(se_bolt_of_lightning, 80);
 
         if (youdefend) {
+            if (!mcast_dist_ok(caster)) {
+                dmg = 0;
+                break;
+            }
             pline("A bolt of lightning strikes down at you from above!");
             const char* reflectsrc = ureflectsrc();
             orig_dmg = dmg = d(8, 6);
@@ -1341,7 +1341,6 @@ cast_cleric_spell(
                 You_feel("as though %s needs some help.", mon_nam(mdef));
             mrndcurse(mdef);
         }
-
         dmg = 0;
         break;
     case CLC_FLESH_TO_STONE: {
