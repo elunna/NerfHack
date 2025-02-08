@@ -1794,6 +1794,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case CLC_HOBBLE:
         case CLC_FIRE_PILLAR:
         case CLC_FLESH_TO_STONE:
+        case CLC_LIGHTNING:
             return TRUE;
         default:
             break;
@@ -1893,13 +1894,13 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             && !caster->mflee)
             return TRUE;
     } else if (adtyp == AD_CLRC) {
-        /* should not be cast by peaceful monsters
-         */
+        /* should not be cast by peaceful monsters */
         if (caster->mpeaceful && (spellnum == CLC_INSECTS
                                 || spellnum == CLC_SPHERES
                                 || spellnum == CLC_HOBBLE
                                 || spellnum == CLC_OPEN_WOUNDS
                                 || spellnum == CLC_FIRE_PILLAR
+                                || spellnum == CLC_LIGHTNING
                                 || spellnum == CLC_FLESH_TO_STONE
                                 || spellnum == CLC_BLIGHT))
             return TRUE;
@@ -1912,6 +1913,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
                             || spellnum == CLC_SPHERES
                             || spellnum == CLC_HOBBLE
                             || spellnum == CLC_OPEN_WOUNDS
+                            || spellnum == CLC_LIGHTNING
                             || spellnum == CLC_FLESH_TO_STONE
                             || spellnum == CLC_BLIGHT))
             return TRUE;
@@ -1928,6 +1930,10 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)
             && spellnum == CLC_FIRE_PILLAR) {
             return TRUE;
+        }
+        if ((m_seenres(caster, M_SEEN_ELEC))
+            && spellnum == CLC_LIGHTNING) {
+                return TRUE;
         }
         /* Prevent monsters from constantly spamming protection */
         if (spellnum == CLC_PROTECTION && rn2(caster->mprotection + 1)
@@ -2032,7 +2038,6 @@ mspell_would_be_useless(
                 || spellnum == CLC_PARALYZE
                 || spellnum == CLC_BLIND_YOU
                 || spellnum == CLC_CURSE_ITEMS
-                || spellnum == CLC_LIGHTNING
                 || spellnum == CLC_GEYSER
                 /* Only arch-viles can cast fire pillar at range. */
                 || (spellnum == CLC_FIRE_PILLAR

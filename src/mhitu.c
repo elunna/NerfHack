@@ -1095,6 +1095,7 @@ mattacku(struct monst *mtmp)
         case AT_GAZE: /* can affect you either ranged or not */
             /* Medusa gaze already operated through m_respond in
                dochug(); don't gaze more than once per round. */
+                /* Note: gazemu takes care of displacement */
             if (mdat != &mons[PM_MEDUSA])
                 sum[i] = gazemu(mtmp, mattk);
             break;
