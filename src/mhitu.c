@@ -3028,7 +3028,7 @@ passiveum(
     struct monst *mtmp,
     struct attack *mattk)
 {
-    int i, tmp, orig_dmg;
+    int i, tmp = 0, orig_dmg;
     struct attack *oldu_mattk = 0;
     
     if (uarms && uarms->oartifact == ART_OATHFIRE) {
