@@ -3039,11 +3039,13 @@ passiveum(
                     if (canseemon(mtmp))
                         pline_mon(mtmp, "%s is burned!", Monnam(mtmp));
                     tmp = rnd(6) + 1;
+                    burn_away_slime();
                 }
             } else {
                 if (canseemon(mtmp))
                     pline_mon(mtmp, "%s is severely burned!", Monnam(mtmp));
                 tmp = d(4, 6) + 1;
+                burn_away_slime();
             }
             if (resists_cold(mtmp))
                 tmp += 7;
