@@ -1671,11 +1671,13 @@ cast_cleric_spell(
         dmg = m_cure_self(caster, dmg);
         break;
     case CLC_OPEN_WOUNDS:
-#if 0 /* EvilHack version of damage - use this? */
-        dmg = d((int) (((yours ? mons[u.umonnum].mlevel
-                               : min(caster->m_lev, 50)) / 2) + 1), 6);
-#endif
+        dmg = d((int) ((ml / 2) + 1), 6);
+        
         if (youdefend) {
+            if (!mcast_dist_ok(caster)) {
+                dmg = 0;
+                break;
+            }
             if (Antimagic) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_MAGR);
@@ -1777,6 +1779,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
     } else if (adtyp == AD_CLRC) {
         switch (spellnum) {
         case CLC_INSECTS:
+        case CLC_OPEN_WOUNDS:
         case CLC_SPHERES:
         case CLC_CURE_SELF:
         case CLC_PROTECTION:
@@ -1883,11 +1886,12 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             && !caster->mflee)
             return TRUE;
     } else if (adtyp == AD_CLRC) {
-        /* summon insects/sticks to snakes won't be cast by peaceful monsters
+        /* should not be cast by peaceful monsters
          */
         if (caster->mpeaceful && (spellnum == CLC_INSECTS
                                 || spellnum == CLC_SPHERES
                                 || spellnum == CLC_HOBBLE
+                                || spellnum == CLC_OPEN_WOUNDS
                                 || spellnum == CLC_FIRE_PILLAR
                                 || spellnum == CLC_FLESH_TO_STONE
                                 || spellnum == CLC_BLIGHT))
@@ -1900,6 +1904,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if (!mcouldseeu && (spellnum == CLC_INSECTS
                             || spellnum == CLC_SPHERES
                             || spellnum == CLC_HOBBLE
+                            || spellnum == CLC_OPEN_WOUNDS
                             || spellnum == CLC_FLESH_TO_STONE
                             || spellnum == CLC_BLIGHT))
             return TRUE;
