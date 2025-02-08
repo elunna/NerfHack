@@ -1,0 +1,402 @@
+b2a27d41a (tag: v2.1.0) Merge branch 'dev'
+5bfe999fa Revert "Disable bones files unless for wizmode testing."
+7cc902241 Merge branch 'dev'
+70c5f1ee1 Wizards can start with a spellbook of fire bolt instead of force bolt.
+d74ea8c37 Range adjustments for charm monster based on skill
+fd9c29b8a Fix: exploding drain life blast could cause is already detached error.
+570d2d125 Horns of plenty yield diminishing returns as they are recharged.
+1d73633fe Cave dwellers start with low intelligence.
+954948170 Add an insertion point for the fuzzer to generate specific items to test.
+4771baeb2 Fix: heap-use-after-free after cloning an item with a name (fixes #114).
+4f1a6594c Vampires can tame other vampires.
+d2e240acb Add some other things dumb characters can't read.
+80a67a43d Having really low intelligence prevents you from reading most things (from EvilHack).
+6b14615fa Allow vampires to use weapons (from EvilHack).
+3cb492d5e Tshirt message.
+15030e287 Getting hit by grease will not knock off worn cursed items (suggested by Noisytoot).
+6acfc79a0 Fix: Cure sickness spell wasn't curing other monsters (reported by tinklebear).
+fb0121ab4 Fix: arc bullwhip cracking message was malformed.
+112b0f2b6 Fumbling causes you to lose flying + revamp of inner workings of grease fumbling.
+4fcdd2a50 Gauntlets of fumbling block flying.
+1f90de254 Fumble boots block flying.
+041647a78 Merge branch 'dev'
+ab91fc101 Reduce the effect of luck on to-hit (xNetHack changes).
+aa52e9fc4 Fix: uninitialized local variable 'reflects' used
+5da512673 Overhaul monster reflection; monsters also get reflection from mirrors.
+d668e1e02 Fix: 'your mirror mirror shatters.'
+14f3eef7a Monsters also receive partial reflection.
+10e0a7972 Mirrors offer reflection while carried.
+4693bd369 Disable bones files unless for wizmode testing.
+7469cd2b9 Fix: cursed card of fire could backfire and destroy itself before being used up.
+6db91c151 Fix: frozen monster [queen bee] is able to move (fmon)
+13a6c1b04 Fix last commit and correct how scrolls of flood should be freed after mused.
+070227b18 Another fix for segfault for monsters reading scrolls of flood. Fixes #51.
+2940ef41e Revert "Fix: vampires could be drained by monsters with drain-bite attacks (reported by hothraxxa). Fixes #103."
+a765990d9 Skill based adjustments for spellcasting.
+31316b4d7 Tourists can reach skilled in enchantment spells.
+1cdfecc81 Don't take falling-on-weapon damage for deliberately lowering yourself into a pit (reported by tinklebear).
+537b5c9d9 Polytraps always disappear when they polymorph monsters.
+17d1fe2e4 Revert "Revert "Disable levl_sanity_check until we figure out why issue #104 is occurring.""
+3abde6ebf New themed room with random lava squares.
+f8adeee26 Increase piercer potency.
+89daa95c8 Revert "Hezrou and steam vortices don't leave clouds unless they moved."
+1ce1ba1e5 Show the cause when levl_sanity_check fails.
+9d32d4120 Revert "Revert 218c0d4a3 - Stinking clouds block line of sight"
+984bb93d7 Revert "Clouds are all visible if outside the cloud."
+e3a280abe Revert "Fix: vision_blocked sanity check should not apply to clouds."
+e64e03335 Fix: breakmsg impossible didn't allow for breakable rings.
+5b2a8ac35 Revert "Disable levl_sanity_check until we figure out why issue #104 is occurring."
+5a15a14ea Merge branch 'updates' into merges
+9702a6611 Revert "You can jump over tiny and small monsters."
+14e8ea63f Revert "We cannot jump over flying or levitating monsters."
+2d4108fea We cannot jump over flying or levitating monsters.
+e6f620e7b You can jump over tiny and small monsters.
+880f24f56 You cannot jump while flying.
+1c95fa96c Jumping boots block flying.
+65cbe5573 Stomping boots block flying.
+9369b34d2 You cannot be fast while flying or levitating.
+673b8410b Add phasing status.
+e991de587 Export messages for the first room to an external file.
+bb762fee8 Reset blood splatters when bones generate.
+326977ffc New appearances for rings (from UnNetHack and SpliceHack).
+49ca61f89 Add new item appearances for scrolls and wands.
+c8d86dd02 Raise difficulty of rabbits.
+351a64b08 1 in 2 rabbits spawn rabid.
+364e71d29 Uncursed potions of healing can cure rabid.
+89ea986ce Fix: Second forging ingredient check for rocks was incorrect.
+407a4d4ab Crystal plate mail updates (from EvilHack).
+db13a82a9 Revert "The ring of levitation is a valid starting ring."
+77749c567 Reduce the frequency of erodeproofed dwarvish items.
+3f6795680 Revise racial armor bonuses.
+e6f2b4384 Revert "Valkyries start with 5 daggers (SLASH'EM)."
+a22d0a412 Revert "Revert "Revert "Valkyries get a winter wolf cub as a starting pet."""
+1a197fe02 Add more adjectives for Killed by messages: berserking, rabid, diseased, and summoned.
+9cee596f3 New artifact: Mortality Dial (from SpliceHack).
+69a86e83c Disable levl_sanity_check until we figure out why issue #104 is occurring.
+e52c43200 Revert "Remove tohit penalty from scythe."
+8aa89d738 Fix bashing message for using scythe (reported by tinklebear).
+104dd3706 Use is_ghoul for ghouls vs maggots grudge.
+9e1eceee5 Cavemen do not start out knowing scrolls of identify.
+d86ee9df6 Stop drawing cards even after Death card polymorph.
+7734b9d7e Shriekers can shriek whenever they see you.
+d90cc1e17 Match caveman illiterate HP growth with EvilHack.
+21b75e1c1 Port the Wyrm Caves from SLASH'EM.
+3eca816ba Increase speed of Baalzebub.
+a4fdfeecc Geryon buffs (from EvilHack).
+b6cc3be78 Lepers can spawn with bells and will ring them incessantly.
+390714c9f The Devil card also inflicts -7 luck.
+ae33a3227 Juiblex buffs.
+43d8a1430 Fix: Devil card demon summon message use 'A foo' instead of 'The foo'.
+60ea37ce0 The Death card can result in polymorph if your luck is high.
+e51f6c06e Allow covetous monsters to follow normal AI (from xNetHack).
+7306c48fc Remove unused WAND_WREST_CHANCE.
+4be84dbe4 Wizards can always sense how many charges are left in wands.
+9dfd36d42 Wands are used up even if they fail their wresting chance; much higher wresting odds (from EvilHack).
+0e756295b Increase the Constitution penalty for getting lifesaved (from xNetHack).
+bad094965 Cursed amulets of life-saving are ineffective.
+61cec0880 Revert "Altars are always cracked after level 20 (instead of 15)."
+361f44a13 Don't show 'Your life will be saved' in enlightenment for being undead/nonliving.
+c246e21ed Fix: invalid characters in familiar #chat messages (reported by hothraxxa). Fixes #106.
+3c3804015 Amulet of life saving will not work if the player is in nonliving form (from EvilHack).
+409a316a7 Player monsters or any covetous monsters will grudge any monster that has the Amulet of Yendor (from EvilHack).
+37750097e Monsters carrying the Amulet of Yendor are incapable of teleportation.
+e88ab144c mplayers can steal the amulet from the player (from EvilHack).
+8f422e84d Fix: Level teleport traps could generate in the Sokoban entry level (reported by Janis).
+a6078d3d3 Cleanup intrinsics display in enlightenment.
+b8b9fc5cf New monster: leper (l).
+069512366 Show a message when the level has a portal to the Wizard's Tower.
+fb8abc1d0 Players also cannot use a forge while hallucinating.
+449aee346 Various player conditions can prevent successful forging (from EvilHack).
+eef7c6791 Spread wishes throughout Gehennom via scrolls of wishing.
+ebd174736 Revert "Revert "Guarantee magic marker in Moloch's Sanctum (from EvilHack).""
+742088949 Place Fort Ludios portal in the first eligible vault generated (from xnh/unnethack).
+4448ed221 Fix: Mayhem could cause extra hunger caused by conflict (reported by hothraxxa).
+45b4580b9 Altars don't start spawning until level 3.
+419ace914 Revert "Add some secret doors to Master Assassins lair."
+2446a1a7e Revert "Fix narrow passageways in cave dweller quest."
+591f0b4fc Crowning only provides a 50% increase in resistances.
+7795b3a22 Tweak arc's bullwhip cracking; higher frequency, no damage, and wakes up nearby.
+e4fa567cc Non-primary spellcasters don't get memory boosts.
+376e8e2b8 Koala attacks abuse charisma.
+855cf19bb Shortcut wish for ring of withering.
+25ec1c072 Archeologists are not afraid of snakes when hallucinating.
+eaaa14e1d Rename townfill.lua to sokostrt.lua.
+f51bed29f Revert "Fix: Invocation spot was not aligned with vibrating square, rendering invocation impossible (reported by hothraxxa)."
+31c62e5e9 Revert "Halve smoky potion djinni."
+4244c713f The portal to the Wizard's Tower can appear in Gehennom levels 10-17; extended hell to 19-21 levels.
+77c77f713 Monsters quaffing diluted smoky potions also never get wishes.
+25eccaeb8 Familiars get speed 14.
+4b32899ed Fix: Ring of withering causes vampires to wither (reported by hothraxxa). Fixes #101.
+a95dc15c8 Fix: vampires could be drained by monsters with drain-bite attacks (reported by hothraxxa). Fixes #103.
+7cf549ea4 Double odds of stoning from footrice attacks.
+b36953c8b Cockatrices only inflict slow stoning for the player and for monsters.
+105c21a8b You will always hit monsters who are holding you.
+d9667e111 Diluted milk does not heal any hp.
+94a1b8fd0 Message for drinking milk.
+f70d9aa30 Dipping a poisoned item into milk unpoisons it.
+6708811c1 Sync up muse potion healing with player; clean up diluted hp gains.
+8b52b324a Comment for wither/rabid preventing mon regen.
+6fd248749 Update mon_berserk to use healmon.
+52f7e8124 Merge branch 'updates' into merges
+3aa57e803 Potions of milk can be any appearance.
+4f3a46f05 Diluted milky potions never yield ghosts. This just parallels the commit for diluted smoky potions and djinii for consistency.
+bd98531d9 Diluted smoky potions will never yield a djini from a bottle.
+5aac3b701 Tourists can attain basic in clubs.
+eeea9480c Fix: vision_blocked sanity check should not apply to clouds.
+3780f7741 Merge branch 'merges' into dev
+545bedf48 Rename the flipsoko option to do_not_flip_soko.
+56b367eaf  Try to ensure an extra boulder in each soko level. Closes #98.
+8617aed6f No Sokoban guilt in wizmode.
+c23e5efb9 Update nhdat200 to nhdat210.
+e6eafeec8 Update version to 2.1.0.
+08e569a9b Move spellbooks of fireball and cone of cold to matter spell school; fire bolt to attack.
+98fc621bf Update object lookup with Angelslayer info.
+f16a1dedc New artifact: Glamdring (from EvilHack).
+39c7edc4e New artifact: Angelslayer (from EvilHack).
+497ed2a02 New artifact: drowsing rod (from HackEM) - first sacrifice gift for healers.
+6f5e5c734 New artifact: acidfall (from SpliceHack).
+1336a8e32 Reorganize some entries in artilist.h.
+3e01e707d Merge branch 'NerfHack-2.1' into dev
+6519c8cb9 Revert "workflow: only build when pushing to the master branch."
+15babda6c Merge branch 'updates' into merges
+32492683f (origin/NerfHack-2.1) Dispater drops a deck of fate.
+687594dd6 Revert "Demogorgon drops a scroll of wishing."
+450bf9001 Revert "Port Cerberus from EvilHack."
+6e7a77463 Demogorgon drops a scroll of wishing.
+718cb6465 Revert "Guarantee magic marker in Moloch's Sanctum (from EvilHack)."
+c466b1e54 New item: potion of milk.
+ebc8fc55a Remove all extra demon lords and lairs.
+899926147 Allow migo hives to generate in the dungeon.
+395a9317a Altars are always cracked after level 20 (instead of 15).
+2515867c7 Reset altar generation to normal, altars can appear starting on level 1.
+72e164444 Use the SLASH'EM template for Gehennom.
+0eae7c3ff Revert Lethe Branch and N'Kai changes.
+d2cd33e78 Remove Uevil check from murder check.
+8504dfe3d Fix a few resistance checks that should be using fully_resistant.
+09f124383 Fix: burdened status wasn't displaying with 3 statuslines.
+549cf7079 Fix: ualign.abuse check in Justice.
+d20dd84c8 workflow: only build when pushing to the master branch.
+9360dc4bb Revert "Sync up some various DUMP flags and code to hardfought's version."
+7a2ffd7db Revert Tower card effects to Splice: fire/magic missile + cancelling.
+b6b3ce721 Merge branch 'fixdump' into dev
+1e431df3f Enable dumplogs for local testing.
+132189eab Enable dumplogs in linux-debug.
+3c70ad79c Fix: remove Cerberus achievement from achieve_msg[].
+a797eb633 The pack rat gets a claw steal attack instead of a touch attack.
+6a053b3db Decks of Fate cannot be created from polypiling.
+64831d9a9 Cloning a deck of fate only results in a playing card deck.
+b3961238b Decks of fate cannot be wished for.
+21d562e66 Switch the effects of the World and the Star cards (suggested by aosdict).
+88045d9c5 Make it harder for pets to go berserk.
+24fc6705f Final fix for smoky potion check loop.
+19d5873aa Fix message for Devil card when we cannot see the summoned demon.
+acabae421 The High Priestess grants charisma and temp ESP instead of fixing alignment.
+ae23f02f6 Decks of fate cannot be #tipped for razor cards, only playing card decks.
+5e5d347d8 Cartomancers take doubled artifact blast damage.
+c381cce9b One more fix for the smoky potion check.
+145a9efd9 Fix: Foocubi summoned by Lovers card were not underlined.
+0a708589c Increase artifact blast damage (from SLASH'EM).
+5d74e2135 Artifacts always blast you if they have the chance.
+9ba3bcb9b Using a deck of fate sets your alignment to -1.
+bb2d27965 The Empress card summons an Elvenqueen if you have bad luck.
+fa6999983 The Hierophant and Empress cards can create features on grass or corridors.
+e10b776a4 The Fool grants aggravate monster for a while.
+c964c5acf The Hermit grants teleportitis instead of aggravate monster.
+c28bb4f8f The Wheel of Fortune card only grants 2 more cards.
+fd7ddb02c The chariot card instead performs an uncontrolled teleport.
+647b5fc1e Drawing the justice card with a bad effect stops your draws.
+a6beb3fb7 Better loop for smoky potion check.
+40d4e8c4f Smoky potions cannot appear in any starting inventory.
+5171f480a Fix: The Mitre of Holiness doesn't protect items from fire damage (reported by mobileuser).
+d59446420 Chaotic don't get an alignment penalty for killing peacefuls.
+bff36c1c5 Fix: Stormbringer didn't cause bloodthirst in offhand (reported by hothraxxa).
+2fb523e6e Fix: plural for endgame genocide message.
+92f443c89 Fix: Some Z class non-zombies could still count as zombie makers.
+ea70730fe Remove achievement for killing Cerberus.
+959ce58ca Sync up some various DUMP flags and code to hardfought's version.
+c945e0332 Remove extra #undef glyph_is_gascloud.
+9bd617ec1 Fix: Attacking with Stormbringer could attempt max-hp gain.
+7791df0c3 Fix: pokedex said quantum mechanics grant teleportation.
+569485626 Note wanderers in the pokedex.
+f72202802 Fix: koala calming steed caused 'no monster to remove' panic (reported by tinklebear).
+ac5a7e69d Fix: bite_monster was not being used.
+afde52c57 Silence potentially uninitialized local variable 'radius' used warning.
+2c2be880c Fix: boolean had_effect could be used uninitialized in update_mon_extrinsics.
+2c54c2680 Fix: Invocation spot was not aligned with vibrating square, rendering invocation impossible (reported by hothraxxa).
+2775cc898 Fix: You could see 'You are no longer withering' while wearing a ring of withering.
+a0689d180 Fix: boulders didn't stun from entomb or scrolls of earth (reported by hothraxxa).
+36de7e697 Discourage spellcasters from spamming entomb.
+28ed05e97 Reduce duration of aggravate monster when cast at the player.
+30b5960c0 Cleanup some things with aggravate monster timing out.
+3b0e1e407 Fix: Potion of full healing messaging (from EvilHack).
+135ee4567 Vampires always detect potions with food detection spells and scrolls.
+2e93c38fd Increase chances of falling onto your own weapon from a fall.
+61949f22c Reduce severity of hell levelport HP/EN loss.
+df91b6857 Remove the extra stunning from teleport pain in hell.
+98e5a0648 Fix: Sokoban entry level showed up as Unsolved in overview (reported by Janis).
+113626680 Fix: orange jelly passive sleep didn't check sleep resistance (reported by mobileuser).
+4ab3f5855 Occasional critical hits for veteran monks.
+cef3c403f Fix: soko2-5 had the stairs reversed (reported by loggers).
+5faefd655 More damage for falling down stairs/ladders.
+01ae7f2da Fix: Player took extra damage after dismounting steed from a grease trap (reported by tinklebear).
+65115d882 Bump compsognathus difficulty from 4 to 6.
+6b83a4f5d Gauntlets of force tweaks.
+85b20bbf8 Fix: vampires were still vulnerable to the wither spell (reported by mobileuser).
+4077163c9 A little cleanup in cancel_item().
+daa6cae13 Show how many points of divine protection hero has in the attributes screen.
+815b961f4 Magic cancellation offers protection vs cancellation.
+da83bf452 Add forging recipes for javelins, tridents, and scalpels (from EvilHack).
+2090ee0e6 Re-add crossbow skill for knights.
+24b39d22b The Chromatic Dragon can berserk.
+d00d7115e Migos explode into poison gas on death; reduced migo levels slightly.
+18e1097c5 Increase duration of ESP from floating eye corpses and similar corpses.
+8ce90721e Fix mangled message when monster loses rabid status from polymorphing (reported by loggers).
+1d7b360ae Improve unicorn horn timeout reduction.
+ca98e98a9 Reduce stun time from falling rock traps.
+f8773a080 Stop occupations when the hero is caught in a poison gas cloud (reported by Loggers_VIII).
+13ae9c9d6 Fix: castle-1 had an unintended extra chest of loot.
+4988a5516 Redundant transform message after vampire #monster polys.
+91e7d9322 Being polyd into a vampire bat doesn't cause stunning.
+39b877a4c Vampires and orcs cannot successfully engrave Elbereth.
+417369532 Revert 36b2824c1 - Elbereth fades instantly for vampires and orcs.
+58662586f Revert "Disabled vampire shapeshifting all vampires except Vlad."
+a8fe9f51d Revert "Disable vampshifting for the player; now mirrors the behavior for monsters."
+6074949e7 Revert "Disable vampire mages from vampshifting."
+d54ac60ba Fix: null uwep access in Sting_effects (reported by hothraxxa).
+93a0e24bf Potions of phasing can also graft dragon scales onto armor.
+547f74966 Fix: Some sanity checks for embedded dragon scales still were checking the armor slot.
+d999bc6cd Auto-id bags of holding when items are added or removed.
+ed63d1dfe Fix: crowning intrinsics broken from last revert.
+4cb6e6aba Fix: phase spider intrinsics were not synced with pokedex.
+4b1e65c1f Simplify wand recharge in mkobj_init().
+5ac213134 Fix: wand of wishing were not generating pre-charged (reported by mobileuser).
+11bca128c Revert "Disenchanter attacks can also remove erodeproofing from items."
+dbd952b42 Most lethe monsters don't spawn sleeping.
+34a24f3e3 Fix: Inaccurate messages when blinding effects are prevented.
+248311116 Monks gain acid resistance at level 19 (from dNetHack).
+007093aa3 Gauntlets of force confer steadfastnes.
+c97d644bf Fix: monsters/pets were not gaining intrinsics from eating corpses. Fixes #99.
+e36de06ec Fix: Gnome King's apiary luckstone didn't have achievement set.
+900fd0ff6 Fix dangling pointer when god grants 0 protection.
+5df4f045b Wands can sometimes generate pre-charged (suggested by bhaak).
+a1dbf3538 Worn towels provide 100% protection vs poison gas clouds.
+d04447efb Revert "Towels cannot be worn."
+3312ed61c Increase the odds of a magic lamp in the Lost Tomb.
+8c5d5445c Fix: wand of wishing guaranteed in lost tomb (reported by hothraxxa).
+24e9970fd Revert: ee07dcf0a - Increased weight of all gray stones (except load and flint) to 25.
+19e2d09fb Fix: skewer vs passive spore puff msg.
+0c33660d7 Fix: priests don't need hammer skill unlocked when crowned.
+6429f160a Fix: lawful priests were not receiving Mjollnir when crowned (reported by mobileuser). Fixes #97.
+a03aede2d Add missing temple room to leth-e.
+b2cb2c76c No filler level after the castle.
+2e432bc04 Fix: leth-b branch stairs not specified correctly.
+20c52907f Remove extra impaired check for vampire biting.
+9e1d2a331 Vampires with petrification resistance can bite stoning monsters.
+93cd7c28c Stunned/confused/hallucinating vampires bite anything (Spork/UnNetHackPlus).
+331468550 Racial and polyd vampires won't attempt fatal bites on monsters.
+d1f12c5fe Being polymorphed into a wandering form will sometimes make you wander.
+e67d440bc Database entry for familiars.
+05ca24070 Add livelog message for cracking altars.
+11b798269 Fix: Monsters triggering greased traps wouldn't reveal them (reported by tinkerbear).
+4ae4cede9 Fix: Green dragon scaled armor regeneration could cause hunger (reported by loggers).
+f41e47c47 Fix: spellbook of light diameter of lighting (reported by #nerfhack crew).
+b89d73df6 Skewering tweaks.
+9984a4a86 Fix: Extra end statement in minefill.lua.
+b1381aa6d Diluted vampire blood grants half the HP benefit.
+0fb447df7 Fix: Confusing Sokoban luck penalty message.
+00c3df145 Fix: Two duplicate Sokoban levels were present (reported by hothraxxa).
+350a3b558 Fix: soko3-8 had reversed up and down stairs (reported by malor).
+7b1493f31 Revamp how piercers damage hard helmets.
+9a2ca3c72 Fix: tinned blood from known tinning kit didn't result in BUC known potions (reported by hothraxxa). Fixes #95.
+c305b1e1e Let altars appear on level 5.
+1798ffb31 Reduce weight of potions to 10.
+95e63321b Bump the caveman's illiterate HP bonus.
+1f89a67cf Nerf temple ghost farming.
+d24731e7e Werefoo farming nerf; werefoo summon temporary spell-being breathren.
+2214d97a4 Nerf quest monster farming.
+c57dc0735 Nerf vault guard farming.
+318a01065 Consolidate display of extrinsic and intrinsic resistances in enlightenment. Fixes #92.
+07c34efa0 Enable wishing for razor cards. Fixes #85.
+5ff5091e2 Add a status for Rabid. Fixes #54.
+d94d8331b Wielding Origin protects from amnesia.
+3528d008f Yet another intro message.
+9d21e8e30 Decrease the to-hit penalty for racial items from a flat -5 to -d5.
+b7555c9d5 Revert "Increase AC penalty for racial hated items."
+1b5e1df99 Message for entering the Sokobon pre-puzzle level.
+5418e1815 Non-magical alchemy is less likely to result in an alchemical explosion.
+516d5f7d8 Monks start with a potion of reflection.
+7820965a3 Healers start out knowing a few more potions associated with healing (from HackEM).
+4510d3827 Cartomancers start with a playing card deck or a deck of fate.
+6745554f0 Cartomancers start with 4 potions of phasing.
+a7a036f0f Don't make ice in the Gnomish Mines.
+2461f551a Fix: declining tinning blood could use up a tinning kit charge (reported by hothraxxa).
+98a717801 Reduce spellbook of sleep to level 2.
+609db43b6 Vampires don't start with scrolls of food detection or rings of levitation.
+e0999e6d5 Thrown acid is a little less destructive, erodes armor or items, not both.
+440323d15 Monks can start with the spell of sleep again.
+38b6ae4be Reset killer mimic stats to SpliceHack levels.
+ab49f7e71 Don't give spellbooks of detect food to vampires (reported by hothraxxa).
+74c7fe876 Fix: melee attacks were broken by 7d580899e - vampire bite reordering.
+2e88e8734 Improve the chances of some of the minetown shops appearing.
+c3cfd2411 Lighten up on the bones trimmings.
+2b9a0706b Prevent cursed wands from ever exploding when engraving (SLASH'EM).
+bf95e8eef Fix: self-look with puddles and extra redundant message after splashing through (reported by mobileuser).
+0403d88d1 Better description for vampires over-drinking vampire blood.
+8e9952ecf Simplify and improve spellcasting and KEEN changes.
+7d580899e Fix: vampire bites were not occurring first in the attack chain for player vampires.
+0006b0451 Launchers don't count as weapons for the 'hit with a wielded weapon' conduct.
+772518a54 Tame pets cannot hide.
+a5c9dee56 Extrinsic poison resistance protects items from rotting in poison gas.
+db64e0b9f Fix: wizard quest nemesis was not getting bell of opening.
+47b7bbf12 Cartomancers get messages (similar to monks) for cumbersome armor/shields. Fixes #78.
+a167256fb Revert EXTRAINFO_FN filename.
+f98c7a013 Fix: vampires were not resisting lycanthropy (reported by mobileuser).
+e6f96ddfd Fix: missing EXTRAINFO_FN from allmain.c. Updated filename for extrainfo.
+42ce616c9 Message for losing luck when sitting on thrones.
+e8b08c08c Revise familiar and winter wolf taming.
+ccfb23819 Revert vampire and vampire priest starting inventory changes for cursed blood.
+873768e24 muse vampire blood should also prefer blessed blood.
+b517603e0 Fix: Vampires were still vulnerable to withering.
+edbdccc96 Fix: curses inventory was not updating for ungreased items (reported by hothraxxa). Fixes #79.
+498436fef 1 in 4 potions of blood generate blessed (instead of cursed) for V.
+04af9dc88 Revert "Vampires like cursed blood more."
+80f93caad Revert "Vampires like cursed blood (more fixes)."
+35b366d53 Fix: Starting inventory was not BUC identified (reported by Shrigis). Fixes #82.
+626883e16 Reset charisma-based pet limit to EvilHack level.
+554570938 Vampires attack with their bite attacks first.
+156d75ac0 Revert partial intrinsics numbers back to EvilHack levels.
+59888f0bf Never crack the altar in minetown/orctown.
+f75dfb260 Lower level players get an additional to-hit bonus.
+311d141e1 Healers start with a +1 scalpel.
+3852c8e86 Tweak weapon enchantment based to-hit bonus so it's at least +1.
+2819e9866 Reduce spiked orc's weapon attack a little.
+cdd5ea694 Revert: 208ef26d8 - Crowning grants *up to* 3 intrinsics.
+6aee12fd1 Revert "Disable paranoid confirm for walking into vapor/clouds."
+34a021afd Revert "Dretches leave clouds of poison gas like hezrou."
+405156acd Revert "Thrown projectiles above +7 have a high chance of dulling on hit."
+bb9c8254f Fix: Incorrect pokedex info for towels (reported by shadowrider38).
+2ffa1b0ac Fix: Bad orthogonal moving monster reference in pokedex.
+79658e2b5 Fix: Some WHEREIS_FILE code that got clobbered in past vanilla merges.
+aa4e86682 Fix: vampires were hungering at an accelerated rate.
+964a1ce28 Fix: vampires were not correctly resisting rabid (reported by mobileuser).
+21983cdc3 Don't crack altars from vampire blood conversion.
+1c4a69a51 Add pokedex info for grid-bug movement.
+9289bd60e Reduce speed of like-likes to 8.
+7a5240b79 Like-likes will only devour organic shields and cloaks.
+c357a6ffc Fix: Redundant pacify message for #chat with winter wolves/familiars.
+1c454fcd2 Endgame genocide effectiveness depends on the monster's proximity to the hero.
+acbdd02cf Prevent monsters from wearing levitation items when already flying.
+5f73160cb Auto-identify items that have an observable effect when monsters wear them.
+d8c69d2f9 Fix: missing period from goop message (reported by loggers).
+9a8b5b575 DDGAMELAUNCH defined twice in linux-debug.
+71b662c08 Fix: Inaccurate monster spellcaster messages when they fail.
+586070f5d Update inventory after blanking potions via scrolls of amnesia.
+47540c5de Reduce cartomancer card cost to 5.
+2cc4a9ab0 Fix: card shops wouldn't buy non-monster cards or razor cards.
+af05e5ee3 Revert to-hit penalties for artifacts.
+c4d294951 Null box when credit card slips through container lock. Fixes #76.
+01404ea83 Update suppress_alert.
+7caf1880c Update copywrite.
+bd663bdef Volatile mushrooms are no corpse. This matches gas spores to avoid weird ice box contents.
+25849c09a YAFM from Loggers.
+452eb4831 Remove a couple unused hints files.
