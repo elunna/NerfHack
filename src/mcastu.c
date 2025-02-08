@@ -108,15 +108,8 @@ choose_magic_spell(struct monst* caster, int spellval)
     switch (spellval) {
     case 24:
     case 23:
-        switch (rnd(3)) {
-        case 1:
-            return MGC_FIRE_BOLT;
-        case 2:
-            return MGC_ICE_BOLT;
-        default:
-            if (Antimagic || Hallucination)
-                return MGC_PSI_BOLT;
-        }
+        if (Antimagic || Hallucination)
+            return MGC_PSI_BOLT;
         FALLTHROUGH;
         /*FALLTHRU*/
     case 22:
