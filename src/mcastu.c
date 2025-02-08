@@ -1220,6 +1220,7 @@ cast_cleric_spell(
                 svk.killer.format = NO_KILLER_PREFIX;
                 rehumanize();
                 dmg = 0; /* prevent further damage after rehumanization */
+                rehydrate(rn1(300, 300));
             }
             erode_armor(&gy.youmonst, ERODE_RUST);
         } else { /* mhitm */
