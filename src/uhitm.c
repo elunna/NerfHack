@@ -7735,7 +7735,7 @@ passive(
                           An(bare_artifactname(ublindf)), s_suffix(mon_nam(mon)));
                     break;
                 } else {
-                    pline("%s stares blinkingly at you!", Monnam(mon));
+                    pline("%s blinks at you!", Monnam(mon));
                     if (flags.verbose)
                         Your("position suddenly seems very uncertain!");
                     tele();
@@ -7750,8 +7750,8 @@ passive(
             break;
         case AD_STUN:
             /* specifically glowing eye */
-                if (ptr != &mons[PM_GLOWING_EYE])
-                    break;
+            if (ptr != &mons[PM_GLOWING_EYE])
+                break;
             if (!m_next2u(mon) || !canseemon(mon) || Stunned)
                 break;
             if (mon->mcansee) {
