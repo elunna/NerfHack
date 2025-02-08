@@ -9,7 +9,7 @@
 des.level_init({ style = "solidfill", fg = " " });
 
 des.level_flags("mazelevel", "noflip", "inaccessibles")
-des.message(You hear the clang of hammers on anvils.);
+des.message("You hear the clang of hammers on anvils.");
 des.level_init({ style="mines", fg=".", bg="-", smoothed=true, joined=true,lit=1,walled=true })
 
 --0         1         2         3         4         5         6         7
@@ -53,7 +53,9 @@ end
 -- The masouleum
 --des.region({ region={14,11, 22,16}, lit=1, type="temple", filled=1 })
 -- Not very religious folk...
-des.altar({ x=18,y=13,align=align[1],type="altar"})
+des.altar({ x=18, y=13, align=align[1], type="altar", cracked=1 })
+-- The priest gave up...
+des.monster({ id = "aligned cleric", x = 18, y = 13, peaceful = 1 })
 
 -- Doors
 des.door("closed",56,01)
