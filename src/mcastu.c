@@ -7,44 +7,44 @@
 
 /* monster mage spells */
 enum mcast_mage_spells {
-    MGC_PSI_BOLT = 0,
-    MGC_FIRE_BOLT,
-    MGC_ICE_BOLT,
-    MGC_CURE_SELF,
-    MGC_HASTE_SELF,
-    MGC_STUN_YOU,
-    MGC_DISAPPEAR,
-    MGC_WEAKEN_YOU,
-    MGC_DESTRY_ARMR,
-    MGC_EVIL_EYE,
-    MGC_CURSE_ITEMS,
-    MGC_AGGRAVATION,
-    MGC_ACID_BLAST,
-    MGC_SUMMON_MONS,
-    MGC_CLONE_WIZ,
-    MGC_REFLECTION,
-    MGC_DEATH_TOUCH,
-    MGC_CALL_UNDEAD,
-    MGC_ENTOMB
+    MGC_PSI_BOLT = 0,  /* 0 */
+    MGC_FIRE_BOLT,     /* 1 */
+    MGC_ICE_BOLT,      /* 2 */
+    MGC_CURE_SELF,     /* 3 */
+    MGC_HASTE_SELF,    /* 4 */
+    MGC_STUN_YOU,      /* 5 */
+    MGC_DISAPPEAR,     /* 6 */
+    MGC_WEAKEN_YOU,    /* 7 */
+    MGC_DESTRY_ARMR,   /* 8 */
+    MGC_EVIL_EYE,      /* 9 */
+    MGC_CURSE_ITEMS,   /* 10 */
+    MGC_AGGRAVATION,   /* 11 */
+    MGC_ACID_BLAST,    /* 12 */
+    MGC_SUMMON_MONS,   /* 13 */
+    MGC_CLONE_WIZ,     /* 14 */
+    MGC_REFLECTION,    /* 15 */
+    MGC_DEATH_TOUCH,   /* 16 */
+    MGC_CALL_UNDEAD,   /* 17 */
+    MGC_ENTOMB         /* 18 */
 };
 
 /* monster cleric spells */
 enum mcast_cleric_spells {
-    CLC_OPEN_WOUNDS = 0,
-    CLC_CURE_SELF,
-    CLC_PROTECTION,
-    CLC_CONFUSE_YOU,
-    CLC_PARALYZE,
-    CLC_BLIND_YOU,
-    CLC_INSECTS,
-    CLC_CURSE_ITEMS,
-    CLC_LIGHTNING,
-    CLC_FIRE_PILLAR,
-    CLC_GEYSER,
-    CLC_BLIGHT,
-    CLC_HOBBLE,
-    CLC_SPHERES, /* Only for orb weavers */
-    CLC_FLESH_TO_STONE,
+    CLC_OPEN_WOUNDS = 0, /* 0 */
+    CLC_CURE_SELF,     /* 1 */
+    CLC_PROTECTION,    /* 2 */
+    CLC_CONFUSE_YOU,   /* 3 */
+    CLC_PARALYZE,      /* 4 */
+    CLC_BLIND_YOU,     /* 5 */
+    CLC_INSECTS,       /* 6 */
+    CLC_CURSE_ITEMS,   /* 7 */
+    CLC_LIGHTNING,     /* 8 */
+    CLC_FIRE_PILLAR,   /* 9 */
+    CLC_GEYSER,        /* 10 */
+    CLC_BLIGHT,        /* 11 */
+    CLC_HOBBLE,        /* 12 */
+    CLC_SPHERES,       /* 13 */ /* Only for orb weavers */
+    CLC_FLESH_TO_STONE, /* 14 */
 };
 
 extern const char *const flash_types[]; /* from zap.c */
@@ -342,7 +342,8 @@ castmu(
                      ? " at your displaced image"
                      : " at you");
     }
-
+    if (wizard)
+        pline("spellnum=%d", spellnum);
     if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
@@ -2207,6 +2208,8 @@ castmm(
         if (is_undirected_spell(mattk->adtyp, spellnum))
             pline("%s casts a spell!", Monnam(caster));
     }
+    if (wizard)
+        pline("spellnum=%d", spellnum);
 
     if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
