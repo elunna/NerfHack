@@ -143,6 +143,7 @@ choose_magic_spell(struct monst* caster, int spellval)
             return MGC_WEAKEN_YOU;
         break;
     case 5:
+        return rn2(2) ? MGC_FIRE_BOLT : MGC_ICE_BOLT;
     case 4:
         return MGC_DISAPPEAR;
     case 3:
@@ -153,14 +154,7 @@ choose_magic_spell(struct monst* caster, int spellval)
         return MGC_CURE_SELF;
     case 0:
     default:
-        switch (rnd(3)) {
-        case 1:
-            return MGC_FIRE_BOLT;
-        case 2:
-            return MGC_ICE_BOLT;
-        default:
-            return MGC_PSI_BOLT;
-        }
+        return MGC_PSI_BOLT;
     }
 }
 
@@ -1051,9 +1045,24 @@ cast_wizard_spell(
     case MGC_PSI_BOLT:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
+        /* Kludge required here, castmu will always pass FALSE for
+         * foundyou, resulting in 0 dmg. We can see that MGC_FIRE_BOLT,
+         * MGC_ICE_BOLT, and MGC_ACID_BLAST manually set their dmg
+         * and that is why. A better long term solution would be to
+         * have the monster using a correct foundyou value and use
+         * the damage thats already calculated in castmu... */
+        if (!dmg)
+            dmg = d((ml / 5) + 1, 6);
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
         if (youdefend) {
+            if (!mcast_dist_ok(caster)) {
+                dmg = 0;
+                return 0;
+            }
+            /* Little extra for sensitive minds */
+            if (HTelepat || ETelepat)
+                dmg += rnd(6);
             if (Antimagic) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_MAGR);
@@ -1061,6 +1070,7 @@ cast_wizard_spell(
             } else {
                 monstunseesu(M_SEEN_MAGR);
             }
+
             if (dmg <= 5)
                 You("get a slight %sache.", body_part(HEAD));
             else if (dmg <= 10)
@@ -1070,6 +1080,8 @@ cast_wizard_spell(
             else
                 Your("%s suddenly aches very painfully!", body_part(HEAD));
         } else {
+            if (telepathic(mdef->data))
+                dmg += rnd(6);
             if (resist(mdef, 0, 0, FALSE)) {
                 shieldeff(mdef->mx, mdef->my);
                 dmg = (dmg + 1) / 2;
@@ -1766,6 +1778,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_REFLECTION:
         case MGC_EVIL_EYE:
         case MGC_ENTOMB:
+        case MGC_PSI_BOLT:
             return TRUE;
         default:
             break;
@@ -1868,7 +1881,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             return TRUE;
         }
         if ((spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT
-             || spellnum == MGC_ACID_BLAST)
+             || spellnum == MGC_PSI_BOLT || spellnum == MGC_ACID_BLAST)
             && (caster->mpeaceful || u.uinvulnerable)) {
             return TRUE;
         }
@@ -1933,8 +1946,7 @@ mspell_would_be_useless(
     if (adtyp == AD_SPEL) {
         /* don't cast these spells at range vs other monsters */
         if (distmin(caster->mx, caster->my, mdef->mx, mdef->my) > 1
-            && (spellnum == MGC_PSI_BOLT
-                || spellnum == MGC_STUN_YOU
+            && (spellnum == MGC_STUN_YOU
                 || spellnum == MGC_WEAKEN_YOU
                 || spellnum == MGC_CURSE_ITEMS
                 || spellnum == MGC_AGGRAVATION
