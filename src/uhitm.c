@@ -2011,10 +2011,19 @@ hmon_hitmon_do_hit(
             Strcpy(hmd->saved_oname, bare_artifactname(obj));
 
         /* Rocks/flint/etc don't harm thick skinned monsters */
-        if (obj->oclass == GEM_CLASS && thick_skinned(mon->data)) {
-            if (canseemon(mon) && !rn2(3))
-                pline("The %s bounces harmlessly off %s thick skin.",
-                      xname(obj), s_suffix(mon_nam(mon)));
+        if (obj->oclass == GEM_CLASS && (thick_skinned(mon->data)
+                                         || unsolid(mon->data))) {
+            if (canseemon(mon) && rn2(3)) {
+                if (thick_skinned(mon->data))
+                    pline("The %s bounces harmlessly off %s thick skin.",
+                          xname(obj), s_suffix(mon_nam(mon)));
+                else
+                    pline("The %s %s right through %s.", xname(obj),
+                          mon->data == &mons[PM_WATER_ELEMENTAL] ? "splashes" 
+                                                                 : "passes",
+                          mon_nam(mon));
+                hmd->hittxt = TRUE;
+            }
             hmd->dmg = 0;
         } else if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
             || obj->oclass == GEM_CLASS) {
