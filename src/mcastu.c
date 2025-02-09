@@ -291,6 +291,11 @@ castmu(
             caster->mspec_used = 0;
     }
 
+    /* Check for protection from invisibility, displacement,
+       or cover of darkness */
+    if (!mon_really_found_us(caster))
+        foundyou = 0;
+
     /* Monster can cast spells, but is casting a directed spell at the
      * wrong place?  If so, give a message, and return.
      * Do this *after* penalizing mspec_used.

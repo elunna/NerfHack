@@ -2066,10 +2066,9 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     
     if (m_seenres(mtmp, cvt_adtyp_to_mseenres(mattk->adtyp)))
         return M_ATTK_MISS;
-    
+
     /* Check for protection from invisibility, displacement,
-       or cover of darkness
-     */
+       or cover of darkness */
     if (!mon_really_found_us(mtmp))
         mcanseeu = 0;
 
@@ -3616,20 +3615,19 @@ mon_really_found_us(struct monst *mtmp)
      * player's visibility status, and whether or not the monster had
      * the ability to see invisible. To address this, we are now
      * adopting the same detection odds as in the 'monmove' function,
-     * which employs a 1 in 11 chance of a random hit. If the gazer is
-     * in melee range, we allow for an easy hit (otherwise, gazers
-     * will simply linger awkwardly next to the player...)
-     */
+     * If the gazer is in melee range, we allow for an easy hit
+     * (otherwise, gazers will simply linger awkwardly next to the 
+     * player...) */
     if (mcanseeu && Invis && !mon_prop(mtmp, SEE_INVIS)
-        && !m_next2u(mtmp) && rn2(11)) {
-        if (!rn2(13)) /* Don't spam this. */
+        && !m_next2u(mtmp) && rn2(4)) {
+        if (!rn2(4)) /* Don't spam this. */
             pline("%s looks around searchingly...", Monnam(mtmp));
         return FALSE;
     }
 
     /* Displacement protection */
-    if (mcanseeu && Displaced && (!foundyou || rn2(11))) {
-        if (!rn2(13)) /* Don't spam this. */
+    if (mcanseeu && Displaced && (!foundyou || rn2(5))) {
+        if (!rn2(4)) /* Don't spam this. */
             pline("%s gazes at your displaced image and misses you!",
                   Monnam(mtmp));
         return FALSE;
@@ -3640,7 +3638,7 @@ mon_really_found_us(struct monst *mtmp)
      * to us, we should reasonably expect they can't "gaze" at us. */
     if (!levl[u.ux][u.uy].lit
         && !(infravisible(gy.youmonst.data) && infravision(mtmp->data))
-        && !m_next2u(mtmp) && rn2(5)) {
+        && !m_next2u(mtmp) && rn2(3)) {
         return FALSE;
     }
     return TRUE;
