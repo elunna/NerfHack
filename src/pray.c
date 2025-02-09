@@ -1960,7 +1960,7 @@ bestow_artifact(uchar max_giftvalue)
 {
     struct rm *lev = &levl[u.ux][u.uy];
     int nchance = u.ulevel + 12;
-    int arti_gift_odds = 8 + (2 * u.ugifts);
+    int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
     boolean do_bestow = u.ulevel > 2 && u.uluck >= 0;
         
     /* Cartomancers get the luck of the draw here...
