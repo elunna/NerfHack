@@ -283,6 +283,12 @@ castmu(
     if (mattk->adtyp == AD_SPEL || mattk->adtyp == AD_CLRC) {
         /* monst->m_lev is unsigned (uchar), monst->mspec_used is int */
         caster->mspec_used = (int) ((caster->m_lev < 8) ? (10 - caster->m_lev) : 2);
+    
+        /* mspec 0 two thirds of the time */
+        if ((rn2(3) && power_caster(caster->data)) 
+            || is_dprince(caster->data) || caster->iswiz)
+            /* mspec 0 always */
+            caster->mspec_used = 0;
     }
 
     /* Monster can cast spells, but is casting a directed spell at the
@@ -2176,29 +2182,11 @@ castmm(
         if (caster->mspec_used < 2)
             caster->mspec_used = 2;
 
-        /* many boss-type monsters than have two or more spell attacks
-           per turn are never able to fire off their second attack due
-           to mspec always being greater than 0. So set to 0 for those
-           types of monsters, either sometimes or all of the time
-           depending on how powerful they are or what their role is */
-        if (rn2(3) /* mspec 0 two thirds of the time */
-            && (is_dlord(caster->data)
-                || caster->data->msound == MS_LEADER
-                || caster->data->msound == MS_NEMESIS
-                || caster->data == &mons[PM_ORACLE]
-                || caster->data == &mons[PM_GHOUL_QUEEN]
-                || caster->data == &mons[PM_ELVEN_CLERIC]
-                || caster->data == &mons[PM_HIGH_CLERIC]))
+        /* mspec 0 two thirds of the time */
+        if ((rn2(3) && power_caster(caster->data))
+            /* mspec 0 always */
+            || is_dprince(caster->data) || caster->iswiz)
             caster->mspec_used = 0;
-
-        if (is_dprince(caster->data) || caster->iswiz)
-            caster->mspec_used = 0; /* mspec 0 always */
-
-        /* Having the EotA in inventory drops mspec to 0 */
-        if (carrying_arti(ART_EYE_OF_THE_AETHIOPICA) ||
-            carrying_arti(ART_HOLOGRAPHIC_VOID_LILY) ) {
-            caster->mspec_used = 0;
-        }
     }
 
     if (rn2(ml * 10) < (caster->mconf ? 100 : 20)) {	/* fumbled attack */

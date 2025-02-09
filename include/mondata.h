@@ -575,5 +575,17 @@
 #define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr))
 #define covetous_nonwarper(ptr) (is_archfiend(ptr) \
                                  || (ptr) == &mons[PM_CTHULHU])
+/* many boss-type monsters than have two or more spell attacks
+   per turn are never able to fire off their second attack due
+   to mspec always being greater than 0. So set to 0 for those
+   types of monsters, either sometimes or all of the time
+   depending on how powerful they are or what their role is */
+#define power_caster(ptr) \
+    (is_dlord(ptr) \
+    || (ptr)->msound == MS_LEADER \
+    || (ptr)->msound == MS_NEMESIS \
+    || (ptr) == &mons[PM_GHOUL_QUEEN] \
+    || (ptr) == &mons[PM_ELVEN_CLERIC] \
+    || (ptr) == &mons[PM_HIGH_CLERIC])
 
 #endif /* MONDATA_H */
