@@ -154,7 +154,7 @@ static NEARDATA struct artifact artilist[] = {
       ARMR_SPE, ARTVAL, 1500L, NO_COLOR, PRIDWEN),
 
     A("Oathfire", LEATHER_BRACERS,
-      (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT), 0, 0,
+      (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT | SPFX_INTEL), 0, 0,
       NO_ATTK, DFNS(AD_FIRE), NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       ARMR_SPE, ARTVAL, 3400L, NO_COLOR, OATHFIRE),
@@ -167,7 +167,7 @@ static NEARDATA struct artifact artilist[] = {
       3, ARTVAL, 1000L, NO_COLOR, QUICK_BLADE),
 
     A("Serenity", SILVER_SPEAR,
-      (SPFX_RESTR | SPFX_BAGGRV), 0, 0,
+      (SPFX_RESTR | SPFX_BAGGRV | SPFX_INTEL), 0, 0,
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 5000L, NO_COLOR, SERENITY),
