@@ -1911,14 +1911,20 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             return TRUE;
     } else if (adtyp == AD_CLRC) {
         /* should not be cast by peaceful monsters */
-        if (caster->mpeaceful && (spellnum == CLC_INSECTS
-                                || spellnum == CLC_SPHERES
-                                || spellnum == CLC_HOBBLE
-                                || spellnum == CLC_OPEN_WOUNDS
-                                || spellnum == CLC_FIRE_PILLAR
+        /* TODO: Create an offensive_spell macro for this? */
+        if (caster->mpeaceful && (spellnum == CLC_OPEN_WOUNDS
+                                || spellnum == CLC_CONFUSE_YOU
+                                || spellnum == CLC_PARALYZE
+                                || spellnum == CLC_BLIND_YOU
+                                || spellnum == CLC_INSECTS
+                                || spellnum == CLC_CURSE_ITEMS
                                 || spellnum == CLC_LIGHTNING
-                                || spellnum == CLC_FLESH_TO_STONE
-                                || spellnum == CLC_BLIGHT))
+                                || spellnum == CLC_FIRE_PILLAR
+                                || spellnum == CLC_GEYSER
+                                || spellnum == CLC_BLIGHT
+                                || spellnum == CLC_HOBBLE
+                                || spellnum == CLC_SPHERES
+                                || spellnum == CLC_FLESH_TO_STONE))
             return TRUE;
         /* healing when already healed */
         if (caster->mhp == caster->mhpmax && spellnum == CLC_CURE_SELF
