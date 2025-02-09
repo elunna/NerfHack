@@ -744,40 +744,35 @@ cast_wizard_spell(
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
         
-        if (mcast_dist_ok(caster)) {
-            if (youdefend)
+        if (youdefend) {
+            /* hotwire these to only go off if the critter can see you
+            * to avoid bugs WRT the Eyes and detect monsters */
+
+            if (mcast_dist_ok(caster)) {
                 pline("%s douses you in a torrent of acid!", Monnam(caster));
-            else
-                pline("%s douses %s in a torrent of acid!",
-                    Monnam(caster), mon_nam(mdef));
-            explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_ACID), dmg,
+                explode(u.ux, u.uy, BZ_M_SPELL(ZT_ACID), dmg,
                     MON_CASTBALL, EXPL_WET);
 
-            if (youdefend) {
                 if (Acid_resistance) {
                     shieldeff(u.ux, u.uy);
-                    pline("The acid doesn't harm you.");
                     monstseesu(M_SEEN_ACID);
+                } else {
+                    monstunseesu(M_SEEN_ACID);
                 }
-            } else { /* mhitm */
-                if (resists_acid(mdef) || defended(mdef, AD_ACID)) {
-                    shieldeff(mdef->mx, mdef->my);
-                    if (canseemon(mdef))
-                        pline("But the acid dissipates harmlessly.");
-                }
-                if (!rn2(6))
-                    acid_damage(MON_WEP(mdef));
-                if (!rn2(6))
-                    erode_armor(mdef, ERODE_CORRODE);
-            }
-        } else {
-            if (canseemon(caster)) {
-                pline("%s blasts the %s with %s and curses!",
+            } else {
+                if (canseemon(caster)) {
+                    pline("%s blasts the %s with %s and curses!",
                       Monnam(caster), rn2(2) ? "ceiling"
                                            : "floor", "acid");
-            } else {
-                You_hear("some cursing!");
+                } else {
+                    You_hear("some cursing!");
+                }
             }
+        } else {
+            if (canseemon(caster))
+                pline("%s blasts %s with acid!", Monnam(caster), mon_nam(mdef));
+            explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_ACID), dmg,
+                    MON_CASTBALL, EXPL_WET);
         }
         dmg = 0; /* damage is handled by explode() */
         break;
