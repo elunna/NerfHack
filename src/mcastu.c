@@ -651,7 +651,8 @@ cast_wizard_spell(
 {
     boolean youdefend = (mdef == &gy.youmonst),
             resisted = FALSE;
-
+    int mdist;
+    
     if (dmg < 0) {
         impossible("monster cast wizard spell (%d) with negative dmg (%d)?",
                    spellnum, dmg);
@@ -1046,7 +1047,7 @@ cast_wizard_spell(
     case MGC_PSI_BOLT:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
-
+        mdist = distu(caster->mx, caster->my);
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
         if (youdefend) {
@@ -1057,6 +1058,12 @@ cast_wizard_spell(
             /* Little extra for sensitive minds */
             if (HTelepat || ETelepat)
                 dmg += rnd(6);
+            /* Less damage the farther away */
+            if (mdist > 100)
+                dmg = (dmg + 1) / 2; /* 50% */
+            else if (mdist >= 25)
+                dmg -= (dmg / 4);    /* 75% */
+            
             if (Antimagic) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_MAGR);
@@ -1144,6 +1151,7 @@ cast_cleric_spell(
 {
     int ml = min(caster->m_lev, 50);
     int orig_dmg = 0;
+    int mdist;
     boolean youdefend = (mdef == &gy.youmonst);
 
     if (dmg < 0) {
@@ -1576,6 +1584,12 @@ cast_cleric_spell(
         break;
     case CLC_HOBBLE:
         if (youdefend) {
+            mdist = distu(caster->mx, caster->my);
+             /* Less damage the farther away */
+            if (mdist > 100)
+                dmg = (dmg + 1) / 2; /* 50% */
+            else if (mdist >= 25)
+                dmg -= (dmg / 4);    /* 75% */
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
             if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 192) {
