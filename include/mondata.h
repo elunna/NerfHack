@@ -226,22 +226,18 @@
 #define perceives(ptr) (((ptr)->mflags1 & M1_SEE_INVIS) != 0L)
 #define can_teleport(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
 #define control_teleport(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)
-#define telepathic(ptr)                                                \
+#define telepathic(ptr)                         \
     ((ptr) == &mons[PM_FLOATING_EYE]            \
      || (ptr) == &mons[PM_MIND_FLAYER]          \
      || (ptr) == &mons[PM_MASTER_MIND_FLAYER]   \
-     || (ptr) == &mons[PM_KOBOLD_SHAMAN]        \
-     || (ptr) == &mons[PM_ORC_SHAMAN]           \
-     || (ptr) == &mons[PM_ELVEN_CLERIC]         \
-     || (ptr) == &mons[PM_GNOMISH_WIZARD]       \
      || (ptr) == &mons[PM_ALHOON]               \
      || (ptr) == &mons[PM_SHAMAN_KARNOV]        \
      || (ptr) == &mons[PM_ORACLE]               \
-     || (ptr) == &mons[PM_GHOUL_MAGE]           \
-     || (ptr) == &mons[PM_OGRE_MAGE]            \
+     || (ptr) == &mons[PM_GHOUL_QUEEN]          \
+     || (ptr) == &mons[PM_MASTER_LICH]          \
+     || (ptr) == &mons[PM_ARCH_LICH]            \
      || (ptr) == &mons[PM_FIRE_VAMPIRE]         \
      || (ptr) == &mons[PM_STAR_VAMPIRE]         \
-     || (ptr) == &mons[PM_VAMPIRE_MAGE]         \
      || (ptr) == &mons[PM_EYE_OF_FEAR_AND_FLAME] \
      || (ptr) == &mons[PM_CTHULHU])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)

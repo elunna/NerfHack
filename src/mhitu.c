@@ -3608,7 +3608,14 @@ mon_really_found_us(struct monst *mtmp)
             mcanseeu = (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
                         && mtmp->mcansee);
     
-     /* Invisibility Protection: If the player character is currently
+    /* telepathic monsters usually can bypass the protection of 
+     * invisibility, displacement, and cover-of-darkness. The
+     * telepathic() list is limited to the core vanilla monsters
+     * that had telepathy and other high level monsters. */
+    if (telepathic(mtmp->data) && rn2(5))
+        return TRUE;
+    
+    /* Invisibility Protection: If the player character is currently
      * invisible, they should anticipate a reasonable number of avoided
      * gazes during gaze attacks. In vanilla NetHack's implementation, a
      * gazing monster would achieve 100% accuracy regardless of the
