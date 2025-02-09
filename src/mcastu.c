@@ -659,7 +659,7 @@ cast_wizard_spell(
     }
     if (caster == mdef)
         impossible("cast_wizard_spell: caster and mdef are same monster.");
-    int ml = min(caster->m_lev, 50);
+
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
         impossible("cast directed wizard spell (%d) with dmg=0?", spellnum);
         return 0;
@@ -743,7 +743,7 @@ cast_wizard_spell(
     case MGC_ACID_BLAST:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
-        dmg = d((ml / 2) + 4, 8);
+        
         if (mcast_dist_ok(caster)) {
             if (youdefend)
                 pline("%s douses you in a torrent of acid!", Monnam(caster));
@@ -984,7 +984,7 @@ cast_wizard_spell(
     case MGC_FIRE_BOLT:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
-        dmg = d((ml / 5) + 1, 8);
+
         if (youdefend) {
             /* hotwire these to only go off if the critter can see you
             * to avoid bugs WRT the Eyes and detect monsters */
@@ -1019,7 +1019,7 @@ cast_wizard_spell(
     case MGC_ICE_BOLT:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
-        dmg = d((ml / 5) + 1, 8);
+
         if (youdefend) {
             if (mcast_dist_ok(caster)) {
                 pline("%s blasts you with a bolt of cold!", Monnam(caster));
@@ -1051,14 +1051,7 @@ cast_wizard_spell(
     case MGC_PSI_BOLT:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
-        /* Kludge required here, castmu will always pass FALSE for
-         * foundyou, resulting in 0 dmg. We can see that MGC_FIRE_BOLT,
-         * MGC_ICE_BOLT, and MGC_ACID_BLAST manually set their dmg
-         * and that is why. A better long term solution would be to
-         * have the monster using a correct foundyou value and use
-         * the damage thats already calculated in castmu... */
-        if (!dmg)
-            dmg = d((ml / 5) + 1, 6);
+
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
         if (youdefend) {
@@ -1587,7 +1580,6 @@ cast_cleric_spell(
         }
         break;
     case CLC_HOBBLE:
-        dmg = 4 + (int) caster->m_lev;
         if (youdefend) {
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
@@ -1825,7 +1817,11 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
     /* Anti-magic fields block spellcasting */
     if (trap && trap->ttyp == ANTI_MAGIC)
         return TRUE;
-
+    
+    if (!is_undirected_spell(adtyp, spellnum)
+        && distu(caster->mx, caster->my) > 2)
+        return TRUE;
+    
     if (adtyp == AD_SPEL) {
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
         if (caster->mpeaceful

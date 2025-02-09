@@ -1105,11 +1105,9 @@ dochug(struct monst *mtmp)
             for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++) {
                 if (a->aatyp == AT_MAGC
                     && (a->adtyp == AD_SPEL || a->adtyp == AD_CLRC)) {
-                   
-                    /* TODO: Here thinks_it_foundyou and foundyou are always
-                     * passed FALSE. Perhaps we should actually check
-                     * those and pass accurate values? */
-                    if ((castmu(mtmp, a, FALSE, FALSE) & M_ATTK_HIT)) {
+                    boolean foundyou = u.ux == mtmp->mux && u.uy == mtmp->muy;
+                    
+                    if ((castmu(mtmp, a, TRUE, foundyou) & M_ATTK_HIT)) {
                         status = MMOVE_DONE; /* bypass m_move() */
                         break;
                     }
