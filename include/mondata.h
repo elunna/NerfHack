@@ -316,6 +316,10 @@
 #define is_wanderer(ptr) (((ptr)->mflags2 & M2_WANDER) != 0L)
 #define always_hostile(ptr) (((ptr)->mflags2 & M2_HOSTILE) != 0L)
 #define always_peaceful(ptr) (((ptr)->mflags2 & M2_PEACEFUL) != 0L)
+#define hostile_to_orcs(ptr) \
+    ((ptr) == &mons[PM_HEDGEHOG] \
+    || (ptr) == &mons[PM_FAMILIAR] \
+    || (ptr) == &mons[PM_PRISONER])
 #define race_hostile(ptr) (((ptr)->mhflags & gu.urace.hatemask) != 0L)
 #define race_peaceful(ptr) (((ptr)->mhflags & gu.urace.lovemask) != 0L)
 #define extra_nasty(ptr) (((ptr)->mflags2 & M2_NASTY) != 0L)
@@ -520,7 +524,8 @@
      : ((is_domestic(ptr)                                                \
             || (((ptr) == &mons[PM_WINTER_WOLF]                          \
                 || (ptr) == &mons[PM_WINTER_WOLF_CUB])                   \
-                && Role_if(PM_VALKYRIE)))                                \
+                && Role_if(PM_VALKYRIE))                                 \
+            || (tameable_by_orc(ptr) && Race_if(PM_ORC)))                 \
         && (obj)->oclass == FOOD_CLASS                                   \
         && ((ptr)->mlet != S_UNICORN                                     \
             || objects[(obj)->otyp].oc_material == VEGGY                 \
@@ -583,5 +588,10 @@
     || (ptr) == &mons[PM_GHOUL_QUEEN] \
     || (ptr) == &mons[PM_ELVEN_CLERIC] \
     || (ptr) == &mons[PM_HIGH_CLERIC])
+
+#define tameable_by_orc(ptr) \
+    ((ptr) == &mons[PM_WARG] || (ptr) == &mons[PM_BARGHEST] \
+    || (ptr) == &mons[PM_TROLL] || (ptr) == &mons[PM_OGRE] \
+    || (ptr) == &mons[PM_GOBLIN])
 
 #endif /* MONDATA_H */

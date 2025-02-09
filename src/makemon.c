@@ -2568,17 +2568,27 @@ peace_minded(struct permonst *ptr)
 {
     aligntyp mal = ptr->maligntyp, ual = u.ualign.type;
 
-	/* Less trouble for the player. Note: aligned unicorns will still be peaceful, their
-	 * mpeaceful flag is set after the initial check. */
-	if (In_sokoban(&u.uz))
-		return FALSE;
-
-    if (always_peaceful(ptr))
-        return TRUE;
-    if (always_hostile(ptr))
+    /* Less trouble for the player. Note: aligned unicorns will still be peaceful, their
+     * mpeaceful flag is set after the initial check. */
+    if (In_sokoban(&u.uz))
+	    return FALSE;
+    
+    if (always_peaceful(ptr)) {
+        if (Race_if(PM_ORC) && hostile_to_orcs(ptr))
+            return FALSE;
+        else
+            return TRUE;
+    }
+    if (always_hostile(ptr)) {
+        if (Race_if(PM_ORC) && is_demon(ptr) 
+            && (u.uevent.uhand_of_elbereth || rn2(2))) {
+            return TRUE;
+          }
         return FALSE;
+    }
     if (ptr->msound == MS_LEADER || ptr->msound == MS_GUARDIAN)
         return TRUE;
+    
     if (ptr->msound == MS_NEMESIS)
         return FALSE;
     if (ptr == &mons[PM_ERINYS])
@@ -2589,6 +2599,11 @@ peace_minded(struct permonst *ptr)
     if (race_hostile(ptr))
         return FALSE;
 
+    /* monsters of same race/alignment as the player tend to be peaceful,
+       orcs are the exception */
+    if (Race_if(PM_ORC))
+        return FALSE;
+    
     /* the monster is hostile if its alignment is different from the
      * player's */
     if (sgn(mal) != sgn(ual))
@@ -2638,7 +2653,7 @@ set_malign(struct monst *mtmp)
         if (mal != A_NONE)
             mal *= 5;
         /* make priests of Moloch hostile */
-        if (mal == A_NONE)
+        if (mal == A_NONE && !Race_if(PM_ORC))
             mtmp->mpeaceful = 0;
     }
 
@@ -2652,10 +2667,16 @@ set_malign(struct monst *mtmp)
             mtmp->malign = 20; /* really hostile */
     } else if (always_peaceful(mtmp->data)) {
         int absmal = abs(mal);
-        if (mtmp->mpeaceful)
-            mtmp->malign = -3 * max(5, absmal);
-        else
+        if (mtmp->mpeaceful) {
+            if (Race_if(PM_ORC))
+                /* Several 'always peaceful' types become hostile
+                   once they see an orc. */
+                mtmp->malign = -1 * max(1, absmal);
+            else
+                mtmp->malign = -3 * max(5, absmal);
+        } else {
             mtmp->malign = 3 * max(5, absmal); /* renegade */
+        }
     } else if (always_hostile(mtmp->data)) {
         int absmal = abs(mal);
         if (coaligned)

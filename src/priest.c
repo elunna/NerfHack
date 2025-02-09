@@ -413,7 +413,7 @@ intemple(int roomno)
 {
     struct monst *priest, *mtmp;
     struct epri *epri_p;
-    boolean shrined, sanctum, can_speak;
+    boolean shrined, sanctum, can_speak, call_guards = FALSE;
     long *this_time, *other_time;
     const char *msg1, *msg2;
     char buf[BUFSZ];
@@ -454,6 +454,22 @@ intemple(int roomno)
                 msg1 = "Infidel, you have entered Moloch's Sanctum!";
                 msg2 = "Be gone!";
                 priest->mpeaceful = 0;
+                newsym(priest->mx, priest->my);
+                /* became angry voluntarily; no penalty for attacking him */
+                set_malign(priest);
+            } else {
+                /* repeat visit, or attacked priest before entering */
+                msg1 = "You desecrate this place by your presence!";
+            }
+        } else if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC)) 
+                   && mon_aligntyp(priest) >= A_NEUTRAL) {
+            if (priest->mpeaceful) {
+                /* first time inside */
+                msg1 = "Begone, foul savage!";
+                msg2 = "You desecrate this holy Sanctum!";
+                call_guards = in_town(priest->mx, priest->my);
+                priest->mpeaceful = 0;
+                newsym(priest->mx, priest->my); /* clear peaceful glyph */
                 /* became angry voluntarily; no penalty for attacking him */
                 set_malign(priest);
             } else {
@@ -471,6 +487,11 @@ intemple(int roomno)
             if (msg2)
                 verbalize1(msg2);
             epri_p->enter_time = svm.moves + (long) d(10, 100); /* ~505 */
+        }
+        /* for orcs, visiting the Minetown temple is a very bad idea */
+        if (call_guards) {
+            pline("%s calls for guards!", Monnam(priest));
+            (void) angry_guards(FALSE);
         }
         if (!sanctum) {
             if (!shrined || !p_coaligned(priest)

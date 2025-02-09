@@ -362,6 +362,62 @@ check_caitiff(struct monst *mtmp)
         /* attacking peaceful creatures is bad for the samurai's giri */
         You("dishonorably attack the innocent!");
         adjalign(-1);
+    } else if (Race_if(PM_ORC)) {
+        if (is_undead(mtmp->data))
+            return;
+        if (mtmp->mpeaceful) {
+            adjalign(1);
+            if (rn2(3))
+                return;
+            switch (rnd(5)) {
+            case 1: You("revel in the slaughter of the weak.");
+                break;
+            case 2: Your("god approves of this carnage.");
+                break;
+            case 3: pline("The cries of the meek fuel your bloodlust.");
+                break;
+            case 4:verbalize("Might makes right. This world belongs to the strong.");
+                break;
+            case 5: verbalize("The weak exist only to be crushed.");
+                break;
+            }
+            return;
+        }
+        if (helpless(mtmp)) {
+            adjalign(1);
+            if (rn2(3))
+                return;
+            switch (rnd(5)) {
+            case 1: pline("The weak flounder before you — an easy kill.");
+                break;
+            case 2: You("strike with brutal precision as %s struggles helplessly.",
+                    mon_nam(mtmp));
+                break;
+            case 3: You("strike down the defenseless without a second thought.");
+                break;
+            case 4: verbalize("No mercy!");
+                break;
+            case 5: verbalize("The helpless make the best prey.");
+                break;
+            }
+            return;
+        }
+        if (mtmp->mflee) {
+            adjalign(1);
+            if (rn2(3))
+                return;
+            switch (rnd(4)) {
+            case 1: You("chase down the coward, eager to spill their blood.");
+                break;
+            case 2: pline("Their flight only drives you to strike harder.");
+                break;
+            case 3: verbalize("Fleeing only makes them easier to catch and kill.");
+                break;
+            case 4: verbalize("A fleeing monster is an easy target");
+                break;
+            }
+            return;
+        }
     }
 }
 
@@ -8307,7 +8363,8 @@ hates_item(struct monst *mtmp, int otyp)
     else if (is_you ? maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))
                     : is_orc(mtmp->data))
         return (is_dwarvish_obj(otyp) || is_elven_obj(otyp)
-                || is_gnomish_obj(otyp));
+                || is_gnomish_obj(otyp) 
+                || objects[otyp].oc_material == MITHRIL);
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN))
                     : is_human(mtmp->data))
         return (is_gnomish_obj(otyp));

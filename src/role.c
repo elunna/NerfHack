@@ -770,7 +770,8 @@ const struct Race races[] = {
         MH_ORC | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC, /* allowed variations */
         MH_ORC,                 /* your own race's bit mask */
         0,                      /* always peaceful */
-        MH_HUMAN | MH_ELF | MH_DWARF, /* always hostile */
+        MH_HUMAN | MH_ELF | MH_DWARF | MH_ORC
+                 | MH_GRUNG | MH_VAMPIRE, /* always hostile */
         /*  Str    Int Wis Dex Con Cha */
         { 3, 3, 3, 3, 3, 3 },   /* min allowable */
         { STR18(50), 16, 16, 18, 18, 16 }, /* max allowable */

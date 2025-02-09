@@ -1329,6 +1329,10 @@ acurr(int chridx)
     /* for Strength:  3 <= result <= 125;
        for all others:  3 <= result <= 25 */
     if (chridx == A_STR) {
+        if (Race_if(PM_ORC)) {
+            tmp += u.ulevel / 3;
+            tmp = (tmp > 18) ? STR19(tmp) : tmp;
+        }
         /* strength value is encoded:  3..18 normal, 19..118 for 18/xx (with
            1 <= xx <= 100), and 119..125 for other characteristics' 19..25;
            STR18(x) yields 18 + x (intended for 0 <= x <= 100; not used here);
@@ -1352,13 +1356,20 @@ acurr(int chridx)
     } else if (chridx == A_CON) {
         if (u_wield_art(ART_OGRESMASHER) || u_offhand_art(ART_OGRESMASHER))
             result = 25;
+        else if (Race_if(PM_ORC)) {
+            tmp += u.ulevel / 3;
+            result = (tmp > 25) ? 25 : tmp;
+        }
     } else if (chridx == A_INT || chridx == A_WIS) {
         /* Yes, this may raise Int and/or Wis if hero is sufficiently
            stupid.  There are lower levels of cognition than "dunce". */
         if (uarmh && uarmh->otyp == DUNCE_CAP)
             result = 6;
     } else if (chridx == A_DEX) {
-        ; /* there aren't any special cases for dexterity */
+        if (Race_if(PM_ORC)) {
+            tmp += u.ulevel / 3;
+            result = (tmp > 25) ? 25 : tmp;
+        }
     }
 
     if (result == 0) /* none of the special cases applied */

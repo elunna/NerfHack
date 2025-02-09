@@ -930,8 +930,7 @@ domonnoise(struct monst *mtmp)
             else if (mtmp->mtame && EDOG(mtmp)->hungrytime > svm.moves + 1000)
                 pline_msg = "yips.";
             else {
-                if (ptr != &mons[PM_DINGO]) /* dingos do not actually bark */
-                    pline_msg = "barks.";
+                pline_msg = "barks.";
             }
         } else {
             pline_msg = "growls.";

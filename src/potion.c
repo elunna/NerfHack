@@ -1766,11 +1766,16 @@ peffect_blood(struct obj *otmp)
                          hates_blood ? "especially " : "");
                 u.ugangr++;
                 adjalign(-15);
+                exercise(A_CON, FALSE);
             } else if (u.ualign.type == A_NEUTRAL) {
                 You_feel("guilty.");
                 adjalign(-3);
+                exercise(A_CON, FALSE);
+            } else if (Race_if(PM_ORC)) {
+                pline("Not bad...");
+                adjalign(3);
+                exercise(A_CON, TRUE);
             }
-            exercise(A_CON, FALSE);
         }
         if (Race_if(PM_DHAMPIR)) {
             if (!Unchanging)
@@ -1784,7 +1789,6 @@ peffect_blood(struct obj *otmp)
                 successful_polymorph = polymon(PM_VAMPIRE_BAT);
             else
                 successful_polymorph = polymon(PM_VAMPIRE);
-
             if (successful_polymorph)
                 u.mtimedone = 0;	/* "Permament" change */
         }

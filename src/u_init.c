@@ -1102,6 +1102,9 @@ u_init_race(void)
 
         /* All orcs are familiar with scimitars */
         set_skill_cap_minimum(P_SABER, P_SKILLED);
+        
+        /* Orcs start off very bad alignment */
+        adjalign(-20);
         break;
 
     case PM_DHAMPIR:

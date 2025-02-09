@@ -815,7 +815,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_COYOTE:
     case PM_WEREJACKAL:
     case PM_LITTLE_DOG:
-    case PM_DINGO:
+    case PM_WARG_PUP:
     case PM_DOG:
     case PM_LARGE_DOG:
     case PM_REVENANT_PUP:
@@ -3028,7 +3028,6 @@ mm_2way_aggression(struct monst *magr, struct monst *mdef)
     /* zombies vs things that can be zombified */
     if (zombie_maker(magr) && zombie_form(mdef->data) != NON_PM)
         return (ALLOW_M | ALLOW_TM);
-
     return 0;
 }
 
@@ -3058,6 +3057,14 @@ mm_aggression(
     if (is_ghoul(magr->data) && mdef->data == &mons[PM_MAGGOT])
         return ALLOW_M | ALLOW_TM;
 
+    /* orcs vs lawfuls or watchguards */
+    if (is_orc(magr->data) && (mdef->data == &mons[PM_WATCHMAN]
+                               || mdef->data == &mons[PM_WATCH_CAPTAIN]))
+        return ALLOW_M | ALLOW_TM;
+    if ((magr->data == &mons[PM_WATCHMAN] || magr->data == &mons[PM_WATCH_CAPTAIN])
+        && is_orc(mdef->data))
+        return ALLOW_M | ALLOW_TM;
+        
     /* Phoenixes loathe undead */
     if (mndx == PM_PHOENIX && is_undead(mdef->data))
         return ALLOW_M | ALLOW_TM;
@@ -4431,36 +4438,49 @@ xkilled(
     newexplevel(); /* will decide if you go up */
 
     /* adjust alignment points */
-    if (mtmp->m_id == svq.quest_status.leader_m_id) { /* REAL BAD! */
-        adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
-        u.ugangr += 7; /* instantly become "extremely" angry */
-        change_luck(-20);
-        pline("That was %sa bad idea...",
-              u.uevent.qcompleted ? "probably " : "");
+    if (mtmp->m_id == svq.quest_status.leader_m_id) { 
+        if (!Race_if(PM_ORC)) {
+            adjalign(-(u.ualign.record + (int) ALIGNLIM / 2)); /* REAL BAD! */
+            u.ugangr += 7; /* instantly become "extremely" angry */
+            change_luck(-20);
+            pline("That was %sa bad idea...",
+                  u.uevent.qcompleted ? "probably " : "");
+        } else {
+            pline("Meh...");
+        }
     } else if (mdat->msound == MS_NEMESIS) { /* Real good! */
         if (!svq.quest_status.killed_leader)
             adjalign((int) (ALIGNLIM / 4));
     } else if (mdat->msound == MS_GUARDIAN) { /* Bad */
-        adjalign(-(int) (ALIGNLIM / 8));
-        u.ugangr++;
-        change_luck(-4);
-        if (!Hallucination)
-            pline("That was probably a bad idea...");
-        else
-            pline("Whoopsie-daisy!");
+        if (!Race_if(PM_ORC)) {
+            adjalign(-(int) (ALIGNLIM / 8));
+            u.ugangr++;
+            change_luck(-4);
+            if (!Hallucination)
+                pline("That was probably a bad idea...");
+            else
+                pline("Whoopsie-daisy!");
+        } else {
+            pline("Eh...");
+        }
     } else if (mtmp->ispriest) {
         adjalign((p_coaligned(mtmp)) ? -2 : 2);
         /* cancel divine protection for killing your priest */
         if (p_coaligned(mtmp))
             u.ublessed = 0;
-        if (mdat->maligntyp == A_NONE)
+        if (mdat->maligntyp == A_NONE && !Race_if(PM_ORC))
             adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
+        if (Race_if(PM_ORC) && mdat->maligntyp == A_LAWFUL)
+            adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */                       
     } else if (mtmp->mtame) {
-        adjalign(-15); /* bad!! */
+        adjalign(Race_if(PM_ORC) ? -3 : -15); /* bad!! */
         /* your god is mighty displeased... */
         if (!Hallucination) {
             Soundeffect(se_distant_thunder, 40);
-            You_hear("the rumble of distant thunder...");
+            if (Race_if(PM_ORC))
+                You_hear("sinister laughter off in the distance...");
+            else
+                You_hear("the rumble of distant thunder...");
         } else {
             Soundeffect(se_applause, 40);
             You_hear("the studio audience applaud!");
@@ -4473,7 +4493,7 @@ xkilled(
                            mname ? ", " : "",
                            uhis(), pmname(mdat, Mgender(mtmp)));
         }
-    } else if (mtmp->mpeaceful)
+    } else if (mtmp->mpeaceful && !Race_if(PM_ORC))
         adjalign(-5);
 
     /* malign was already adjusted for u.ualign.type and randomization */
@@ -5136,7 +5156,7 @@ peacefuls_respond(struct monst *mtmp)
                     } else {
                         mon->mpeaceful = 0;
                         mon->mstrategy &= ~STRAT_WAITMASK;
-                        adjalign(-1);
+                        adjalign(Race_if(PM_ORC) ? 1 : -1);
                         if (!exclaimed)
                             pline_mon(mon, "%s gets angry!", Monnam(mon));
                     }
@@ -5173,7 +5193,10 @@ setmangry(struct monst *mtmp, boolean via_attack)
         /* only hypocritical if monster is vulnerable to Elbereth (or
            peaceful--not vulnerable but attacking it is hypocritical) */
         && (onscary(u.ux, u.uy, mtmp) || mtmp->mpeaceful)) {
-        You_feel("like a hypocrite.");
+        if (Race_if(PM_ORC))
+            You_feel("clever.");
+        else
+            You_feel("like a hypocrite.");
         /* AIS: Yes, I know alignment penalties and bonuses aren't balanced
            at the moment. This is about correct relative to other "small"
            penalties; it should be fairly large, as attacking while standing
@@ -5182,7 +5205,10 @@ setmangry(struct monst *mtmp, boolean via_attack)
            it's intentionally larger than the 1s and 2s that are normally
            given for this sort of thing. */
         /* reduce to 3 (average) when alignment is already very low */
-        adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
+        if (Race_if(PM_ORC))
+            adjalign(5);
+        else
+            adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
 
         if (!Blind)
             pline("The engraving beneath you fades.");
@@ -5204,7 +5230,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
             adjalign(-5); /* very bad */
         else
             adjalign(2);
-    } else if (u.ualign.type != A_CHAOTIC) {
+    } else if (!Race_if(PM_ORC)) {
         adjalign(-1); /* attacking peaceful monsters is bad */
     }
     if (humanoid(mtmp->data) || mtmp->isshk || mtmp->isgd) {

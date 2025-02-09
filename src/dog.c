@@ -75,6 +75,8 @@ initedog(struct monst *mtmp)
 staticfn int
 pet_type(void)
 {
+    if (Race_if(PM_ORC))
+        return PM_WARG_PUP;
     if (gu.urole.petnum != NON_PM)
         return  gu.urole.petnum;
     else if (gp.preferred_pet == 'c')
@@ -225,9 +227,10 @@ makedog(void)
     pettype = pet_type();
     petname = (pettype == PM_LITTLE_DOG) ? gd.dogname
               : (pettype == PM_REVENANT_PUP) ? gd.dogname
-                : (pettype == PM_KITTEN) ? gc.catname
-                  : (pettype == PM_PONY) ? gh.horsename
-                    : "";
+                : (pettype == PM_WARG_PUP) ? gd.dogname
+                  : (pettype == PM_KITTEN) ? gc.catname
+                    : (pettype == PM_PONY) ? gh.horsename
+                      : "";
 
     /* default pet names */
     if (!*petname && pettype == PM_LITTLE_DOG) {
@@ -1229,7 +1232,14 @@ tamedog(
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
     if (non_tameable(mtmp->data) || mtmp->mrabid)
         return FALSE;
-
+    
+    /* Orcs are limited to taming evilish monsters */
+    if (Race_if(PM_ORC) &&
+        (mtmp->data->mlet != S_TROLL && mtmp->data->mlet != S_OGRE
+        && mtmp->data->mlet != S_ORC && mtmp->data->mlet != S_DRAGON
+        && mtmp->data->mlet != S_UMBER && mtmp->data->mlet != S_UMBER))
+        return FALSE;
+    
     if (mtmp->mberserk) {
         calm_berserker(mtmp);
         return FALSE;

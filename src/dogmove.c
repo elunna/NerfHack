@@ -1109,7 +1109,7 @@ dog_move(
     if (appr == -2)
         return MMOVE_NOTHING;
 
-    if (Conflict && !resist_conflict(mtmp)) {
+    if (Race_if(PM_ORC) || (Conflict && !resist_conflict(mtmp))) {
         if (!edog) {
             /* Guardian angel refuses to be conflicted; rather,
              * it disappears, angrily, and sends in some nasties
