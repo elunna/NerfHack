@@ -2186,6 +2186,8 @@ castmm(
                 || caster->data->msound == MS_LEADER
                 || caster->data->msound == MS_NEMESIS
                 || caster->data == &mons[PM_ORACLE]
+                || caster->data == &mons[PM_GHOUL_QUEEN]
+                || caster->data == &mons[PM_ELVEN_CLERIC]
                 || caster->data == &mons[PM_HIGH_CLERIC]))
             caster->mspec_used = 0;
 
