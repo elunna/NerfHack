@@ -2063,45 +2063,15 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     const char* reflectsrc = ureflectsrc();
     boolean wearing_eyes = ublindf
                             && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD;
-    boolean foundyou = (u.ux == mtmp->mux && u.uy == mtmp->muy);
-
+    
     if (m_seenres(mtmp, cvt_adtyp_to_mseenres(mattk->adtyp)))
         return M_ATTK_MISS;
-
-    /* Invisibility Protection: If the player character is currently
-     * invisible, they should anticipate a reasonable number of avoided
-     * gazes during gaze attacks. In vanilla NetHack's implementation, a
-     * gazing monster would achieve 100% accuracy regardless of the
-     * player's visibility status, and whether or not the monster had
-     * the ability to see invisible. To address this, we are now
-     * adopting the same detection odds as in the 'monmove' function,
-     * which employs a 1 in 11 chance of a random hit. If the gazer is
-     * in melee range, we allow for an easy hit (otherwise, gazers
-     * will simply linger awkwardly next to the player...)
+    
+    /* Check for protection from invisibility, displacement,
+       or cover of darkness
      */
-    if (mcanseeu && Invis && !mon_prop(mtmp, SEE_INVIS)
-        && !m_next2u(mtmp) && rn2(11)) {
-        if (!rn2(13)) /* Don't spam this. */
-            pline("%s looks around searchingly...", Monnam(mtmp));
+    if (!mon_really_found_us(mtmp))
         mcanseeu = 0;
-    }
-
-    /* Displacement protection */
-    if (mcanseeu && Displaced && (!foundyou || rn2(11))) {
-        if (!rn2(13)) /* Don't spam this. */
-            pline("%s gazes at your displaced image and misses you!",
-                  Monnam(mtmp));
-        mcanseeu = 0;
-    }
-
-    /* Darkness protection: If we are on a dark square and the gazer doesn't
-     * have infravision and we are infravisible and they are not right next
-     * to us, we should reasonably expect they can't "gaze" at us. */
-    if (!levl[u.ux][u.uy].lit
-        && !(infravisible(gy.youmonst.data) && infravision(mtmp->data))
-        && !m_next2u(mtmp) && rn2(5)) {
-        mcanseeu = 0;
-    }
 
     is_medusa = (mtmp->data == &mons[PM_MEDUSA]);
     reflectable = (reflectsrc && couldsee(mtmp->mx, mtmp->my) && is_medusa);
@@ -3630,6 +3600,50 @@ piercer_hit(struct monst *magr, struct monst *mdef)
                 monkilled(mdef, "", AD_PHYS);
         }
     }
+}
+
+boolean
+mon_really_found_us(struct monst *mtmp)
+{
+    boolean foundyou = (u.ux == mtmp->mux && u.uy == mtmp->muy),
+            mcanseeu = (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
+                        && mtmp->mcansee);
+    
+     /* Invisibility Protection: If the player character is currently
+     * invisible, they should anticipate a reasonable number of avoided
+     * gazes during gaze attacks. In vanilla NetHack's implementation, a
+     * gazing monster would achieve 100% accuracy regardless of the
+     * player's visibility status, and whether or not the monster had
+     * the ability to see invisible. To address this, we are now
+     * adopting the same detection odds as in the 'monmove' function,
+     * which employs a 1 in 11 chance of a random hit. If the gazer is
+     * in melee range, we allow for an easy hit (otherwise, gazers
+     * will simply linger awkwardly next to the player...)
+     */
+    if (mcanseeu && Invis && !mon_prop(mtmp, SEE_INVIS)
+        && !m_next2u(mtmp) && rn2(11)) {
+        if (!rn2(13)) /* Don't spam this. */
+            pline("%s looks around searchingly...", Monnam(mtmp));
+        return FALSE;
+    }
+
+    /* Displacement protection */
+    if (mcanseeu && Displaced && (!foundyou || rn2(11))) {
+        if (!rn2(13)) /* Don't spam this. */
+            pline("%s gazes at your displaced image and misses you!",
+                  Monnam(mtmp));
+        return FALSE;
+    }
+
+    /* Darkness protection: If we are on a dark square and the gazer doesn't
+     * have infravision and we are infravisible and they are not right next
+     * to us, we should reasonably expect they can't "gaze" at us. */
+    if (!levl[u.ux][u.uy].lit
+        && !(infravisible(gy.youmonst.data) && infravision(mtmp->data))
+        && !m_next2u(mtmp) && rn2(5)) {
+        return FALSE;
+    }
+    return TRUE;
 }
 
 /*mhitu.c*/
