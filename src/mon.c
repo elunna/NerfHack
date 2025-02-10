@@ -2887,8 +2887,7 @@ mfndpos(
                 continue;
             if ((!lavaok || !(flag & ALLOW_WALL)) && ntyp == LAVAWALL)
                 continue;
-            if ((poolok || is_pool(nx, ny) == wantpool)
-                && (is_puddle(nx, ny) == wantpuddle || !wantpuddle)
+            if ((poolok || is_damp_terrain(nx, ny) == wantpool)
                 && (lavaok || !is_lava(nx, ny))
                 /* iron golems and longworms avoid shallow water */
                 && ((mon->data != &mons[PM_IRON_GOLEM] && !tiny_groundedmon(mdat))
