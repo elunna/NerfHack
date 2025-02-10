@@ -7166,7 +7166,7 @@ kill_monster_on_level(int mndx, boolean only_close)
          * hero. */
         if (only_close) {
             dist = distu(mtmp->mx, mtmp->my);
-            if (dist >= 3 && rn2(dist))
+            if (dist > 9 && rn2(dist))
                 continue;
         }
         tmp_mndx = monsndx(mtmp->data);
