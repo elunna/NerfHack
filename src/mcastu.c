@@ -4,6 +4,7 @@
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include <math.h>
 
 /* monster mage spells */
 enum mcast_mage_spells {
@@ -61,8 +62,10 @@ staticfn boolean mspell_would_be_useless(struct monst *,
                                         struct monst *, unsigned int, int);
 staticfn boolean is_entombed(coordxy, coordxy);
 staticfn boolean counterspell(struct monst *);
+staticfn int calculate_damage(int, int);
 staticfn int rnd_sphere(void);
 
+    
 /* feedback when frustrated monster couldn't cast a spell */
 staticfn void
 cursetxt(struct monst *caster, boolean undirected)
@@ -1052,7 +1055,7 @@ cast_wizard_spell(
     case MGC_PSI_BOLT:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
-        mdist = distu(caster->mx, caster->my);
+        
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
         if (youdefend) {
@@ -1063,12 +1066,11 @@ cast_wizard_spell(
             /* Little extra for sensitive minds */
             if (HTelepat || ETelepat)
                 dmg += rnd(6);
-            /* Less damage the farther away */
-            if (mdist > 100)
-                dmg = (dmg + 1) / 2; /* 50% */
-            else if (mdist >= 25)
-                dmg -= (dmg / 4);    /* 75% */
             
+            /* Less damage the farther away */
+            mdist = distu(caster->mx, caster->my);
+            dmg = calculate_damage(dmg, mdist);
+
             if (Antimagic) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_MAGR);
@@ -1086,6 +1088,10 @@ cast_wizard_spell(
             else
                 Your("%s suddenly aches very painfully!", body_part(HEAD));
         } else {
+            /* Less damage the farther away */
+            mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
+            dmg = calculate_damage(dmg, mdist);
+            
             if (telepathic(mdef->data))
                 dmg += rnd(6);
             if (resist(mdef, 0, 0, FALSE)) {
@@ -1689,6 +1695,7 @@ cast_cleric_spell(
         dmg = m_cure_self(caster, dmg);
         break;
     case CLC_OPEN_WOUNDS:
+        mdist = distu(caster->mx, caster->my);
         dmg = d((int) ((ml / 2) + 1), 6);
         
         if (youdefend) {
@@ -1696,6 +1703,10 @@ cast_cleric_spell(
                 dmg = 0;
                 break;
             }
+            /* Less damage the farther away */
+            mdist = distu(caster->mx, caster->my);
+            dmg = calculate_damage(dmg, mdist);
+                                     
             if (Antimagic) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_MAGR);
@@ -1712,6 +1723,10 @@ cast_cleric_spell(
             else
                 Your("body is covered with painful wounds!");
         } else { /* mhitm */
+            /* Less damage the farther away */
+            mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
+            dmg = calculate_damage(dmg, mdist);
+            
             if (resist(mdef, 0, 0, FALSE)) {
                 shieldeff(mdef->mx, mdef->my);
                 dmg = (dmg + 1) / 2;
@@ -2422,6 +2437,24 @@ mcast_dist_ok(struct monst *caster)
     if (distu(caster->mx, caster->my) <= 2 && rn2(5))
         return FALSE;
     return TRUE;
+}
+
+staticfn int
+calculate_damage(int base_damage, int distance) {
+    /* Anything less is next to the player */
+    if (distance < 9)
+        return base_damage;
+    if (distance > 80)
+        distance = 80;
+    
+    float tmp = (100 - distance) / 100;
+    tmp = ceil((float) (base_damage * tmp));
+    
+    /* debug line */
+    if (flags.showdamage && wizard)
+        pline("(in: %d  out: %d)", base_damage, (int) tmp);
+
+    return (int) tmp;
 }
 
 staticfn int
