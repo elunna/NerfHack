@@ -228,9 +228,6 @@ static struct trobj Wizard[] = {
 
 static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
-static struct trobj Magicmarker[] = { { MAGIC_MARKER, UNDEF_SPE, TOOL_CLASS,
-                                        1, 0 },
-                                      { 0, 0, 0, 0, 0 } };
 static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
 static struct trobj OilPotion[] = { { POT_OIL, 0, POTION_CLASS, 1, 0 },
@@ -739,7 +736,6 @@ u_init_role(void)
             ini_inv(Tinopener);
         else if (!rn2(4))
             ini_inv(Lamp);
-        ini_inv(Magicmarker);
         knows_object(SACK, FALSE);
         knows_object(TOUCHSTONE, FALSE); /* FALSE: don't override pauper here,
                                           * but TOUCHSTONE will be made known
@@ -817,7 +813,6 @@ u_init_role(void)
 
         Monk[M_BOOK].trotyp = M_spell[rn2(120) / 30]; /* [0..3] */
         ini_inv(Monk);
-        ini_inv(Magicmarker);
         if (!rn2(10))
             ini_inv(Lamp);
         knows_class(ARMOR_CLASS);
@@ -828,7 +823,6 @@ u_init_role(void)
     }
     case PM_CLERIC: /* priest/priestess */
         ini_inv(Priest);
-        ini_inv(Magicmarker);
         if (!rn2(10))
             ini_inv(Lamp);
         skill_init(Skill_P);
@@ -888,7 +882,6 @@ u_init_role(void)
             ini_inv(Leash);
         else if (!rn2(25))
             ini_inv(Towel);
-        ini_inv(Magicmarker);
         skill_init(Skill_T);
         break;
     case PM_UNDEAD_SLAYER: {
@@ -973,7 +966,6 @@ u_init_role(void)
         if (rn2(100) >= 50) /* see above comment */
             Wizard[W_BOOK].trotyp = SPE_FIRE_BOLT;
         ini_inv(Wizard);
-        ini_inv(Magicmarker);
         if (!rn2(5))
             ini_inv(Blindfold);
         skill_init(Skill_W);
@@ -1576,8 +1568,6 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
         }
         if (trop->trspe != UNDEF_SPE) {
             obj->spe = trop->trspe;
-            if (trop->trotyp == MAGIC_MARKER && obj->spe < 96)
-                obj->spe += rn2(4);
         } else {
             /* Don't start with +0 or negative rings */
             if (objects[obj->otyp].oc_class == RING_CLASS
