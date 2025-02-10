@@ -1515,7 +1515,7 @@
         A(ATTK(AT_BITE, AD_PHYS, 1, 2),
           ATTK(AT_NONE, AD_QUIL, 2, 3),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(300, 250, MS_BARK, MZ_SMALL), 0, 0,
+        SIZ(30, 25, MS_BARK, MZ_SMALL), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_HERBIVORE, M2_PEACEFUL, M3_INFRAVISIBLE,
         NO_RACE, 2, CLR_YELLOW, HEDGEHOG),
     /* rabid rat - always generates rabid! */
