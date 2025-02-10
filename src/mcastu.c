@@ -1866,6 +1866,11 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
                 || spellnum == MGC_SUMMON_MONS
                 || spellnum == MGC_CALL_UNDEAD
                 || spellnum == MGC_EVIL_EYE
+                || spellnum == MGC_STUN_YOU
+                || spellnum == MGC_WEAKEN_YOU
+                || spellnum == MGC_DESTRY_ARMR
+                || spellnum == MGC_DEATH_TOUCH
+                || spellnum == MGC_CURSE_ITEMS
                 || spellnum == MGC_CLONE_WIZ))
             return TRUE;
         /* haste self when already fast */
