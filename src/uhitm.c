@@ -7470,8 +7470,8 @@ passive(
             } else {
                 monstseesu(M_SEEN_POISON);
             }
+            exercise(A_STR, FALSE);
         }
-        exercise(A_STR, FALSE);
         break;
     }
     case AD_STON:

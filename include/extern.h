@@ -1573,6 +1573,7 @@ extern boolean mon_avoiding_this_attack(struct monst *, int) NONNULLARG1;
 extern boolean ranged_attk_available(struct monst *mtmp) NONNULLARG1;
 extern void piercer_hit(struct monst *, struct monst *);
 extern boolean mon_really_found_us(struct monst *);
+extern int passiveum(struct permonst *, struct monst *, struct attack *);
 
 /* ### minion.c ### */
 

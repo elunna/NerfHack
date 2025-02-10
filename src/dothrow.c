@@ -879,13 +879,17 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
         if (!canspotmon(mon))
             map_invisible(mon->mx, mon->my);
         setmangry(mon, FALSE);
+        
         if (touch_petrifies(mon->data)
             /* this is a bodily collision, so check for body armor */
             && !uarmu && !uarm && !uarmc) {
             Sprintf(svk.killer.name, "bumping into %s",
                     an(pmname(mon->data, NEUTRAL)));
             make_stoned(5L, (char *) 0, KILLED_BY, svk.killer.name);
+        } else if (is_grung(mon->data)) {
+            passive(mon, NULL, TRUE, 1, AT_NONE, FALSE); 
         }
+                   
         if (touch_petrifies(gy.youmonst.data)
             && !(resists_ston(mon) || defended(mon, AD_STON))
             && !which_armor(mon, W_ARMU | W_ARM | W_ARMC)) {
@@ -893,6 +897,9 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
                 mon->mstone = 5;
                 mon->mstonebyu = TRUE;
             }
+        } else if (maybe_polyd(is_grung(gy.youmonst.data),
+                               Race_if(PM_GRUNG))) {
+            passiveum(gy.youmonst.data, mon, AT_NONE);
         }
         wake_nearto(x, y, 10);
         return FALSE;

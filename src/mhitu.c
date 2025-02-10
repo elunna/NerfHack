@@ -20,7 +20,6 @@ staticfn int explmu(struct monst *, struct attack *, boolean);
 staticfn void mayberem(struct monst *, const char *, struct obj *,
                      const char *);
 staticfn int assess_dmg(struct monst *, int);
-staticfn int passiveum(struct permonst *, struct monst *, struct attack *);
 staticfn int counterattack(struct monst *, struct attack *);
 
 #define ld() ((yyyymmdd((time_t) 0) - (getyear() * 10000L)) == 0xe5)
@@ -2992,7 +2991,7 @@ boolean ranged_attk_available(struct monst *mtmp)
  *  to know whether hero reverted in order to decide whether passive
  *  damage applies.
  */
-staticfn int
+int
 passiveum(
     struct permonst *olduasmon,
     struct monst *mtmp,
