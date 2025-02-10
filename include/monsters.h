@@ -157,7 +157,8 @@
     MON(NAM("bullet ant"), S_ANT,
         LVL(4, 18, 3, 0, 0), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_STNG, AD_DRCO, 5, 4),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+          ATTK(AT_BITE, AD_COLD, 2, 4), /* snow ant */
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(20, 5, MS_SILENT, MZ_TINY), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK, 0,
