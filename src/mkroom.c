@@ -20,7 +20,7 @@
 staticfn boolean isbig(struct mkroom *);
 staticfn struct mkroom *pick_room(boolean);
 staticfn void mkshop(void), mkzoo(int), mkswamp(void);
-staticfn int mk_zoo_thronemon(coordxy, coordxy);
+staticfn int mk_zoo_thronemon(coordxy, coordxy, int);
 staticfn void mktemple(void);
 staticfn coord *shrine_pos(int);
 staticfn struct permonst *morguemon(void);
@@ -321,14 +321,19 @@ mkzoo(int type)
 /* Create an appropriate "king" monster at the given location (assumed to be on
  * a throne). */
 staticfn int
-mk_zoo_thronemon(coordxy x, coordxy y)
+mk_zoo_thronemon(coordxy x, coordxy y, int roomtype)
 {
     int i = rnd(level_difficulty());
-    int pm = (i > 20) ? PM_VAMPIRE_LEADER
-        : (i > 9) ? PM_OGRE_TYRANT
-        : (i > 5) ? PM_ELVEN_MONARCH
-        : (i > 2) ? PM_DWARF_RULER
-        : PM_GNOME_RULER;
+    int pm;
+    if (roomtype == GIANTCOURT) {
+        pm = PM_TITAN;
+    } else {
+        pm = (i > 20) ? PM_VAMPIRE_LEADER
+            : (i > 9) ? PM_OGRE_TYRANT
+            : (i > 5) ? PM_ELVEN_MONARCH
+            : (i > 2) ? PM_DWARF_RULER
+            : PM_GNOME_RULER;
+    }
     struct monst *mon = makemon(&mons[pm], x, y, NO_MM_FLAGS);
 
     if (mon) {
@@ -376,7 +381,7 @@ fill_zoo(struct mkroom *sroom)
             ty = mm.y;
         } while (occupied(tx, ty) && --i > 0);
  throne_placed:
-        ctype = mk_zoo_thronemon(tx, ty);
+        ctype = mk_zoo_thronemon(tx, ty, type);
         break;
     case ANTHOLE:
     case BEEHIVE:
