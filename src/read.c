@@ -1875,10 +1875,11 @@ seffect_enchant_weapon(struct obj **sobjp)
         return;
     }
 
-    /* Adjusted max weapon enchantment. For more exciting hackin 'n slashin
-     * we will allow the new 'soft' limit to be 11.
-     * This allows weapons to be safely enchanted up to 13 if the player
-     * hits a +2 when the weapon is +11. */
+    /* Adjusted max weapon enchantment. For more exciting hackin 'n 
+       slashin we will allow the new 'soft' limit to be 12. This 
+       allows weapons to be safely enchanted up to 13. 
+       After +5, scrolls only grant +1 so this will still require 
+       many scrolls to achieve. */
     if (!chwepon(sobj, scursed ? -1
                  : !uwep ? 1
                  : (uwep->spe >= (WEP_ENCHANT_MAX + 2)) ? !rn2(uwep->spe)
@@ -1902,7 +1903,7 @@ staticfn int
 wep_enchant_range(int wspe) {
     if (wspe < 4)
         return 3;
-    else if (wspe < 12)
+    else if (wspe < 6)
         return 2;
     return 1;
 }
