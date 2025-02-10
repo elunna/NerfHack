@@ -195,7 +195,7 @@ If players ask why object properties were not ported into *NerfHack*, the key an
 
 Object properties often introduce effects that overlap with or duplicate existing item properties. For example, fire resistance is a valuable and rare property in *NetHack*, typically granted by specific items like the **ring of fire resistance** or **Fire Brand**. If a generic "fire resistance" property was introduced that could be applied to multiple items, it would dilute the unique appeal of these specific items. Suddenly, instead of having a few prized items that grant fire resistance, there would be many ways to achieve the same effect, reducing the rarity and significance of these items.
 
-By preserving the uniqueness of individual items, challenge and excitement of acquiring powerful or rare effects is maintained. The value of an item like the **ring of fire frsistance** lies not just in the mechanics it provides, but in the fact that it's an item with a specific and often hard-to-come-by property. Introducing object properties would make such items less important and impose less decisions about equipment and the potential trade-offs they face.
+By preserving the uniqueness of individual items, challenge and excitement of acquiring powerful or rare effects is maintained. The value of an item like the **ring of fire resistance** lies not just in the mechanics it provides, but in the fact that it's an item with a specific and often hard-to-come-by property. Introducing object properties would make such items less important and impose fewer decisions about equipment and the potential trade-offs they face.
 
 
 ### **Why Some Items Violate the Uniqueness Principle:**
