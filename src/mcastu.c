@@ -8,45 +8,53 @@
 
 /* monster mage spells */
 enum mcast_mage_spells {
+                       /* Offensive spells */
     MGC_PSI_BOLT = 0,  /* 0 */
     MGC_FIRE_BOLT,     /* 1 */
     MGC_ICE_BOLT,      /* 2 */
-    MGC_CURE_SELF,     /* 3 */
-    MGC_HASTE_SELF,    /* 4 */
-    MGC_STUN_YOU,      /* 5 */
-    MGC_DISAPPEAR,     /* 6 */
-    MGC_WEAKEN_YOU,    /* 7 */
-    MGC_DESTRY_ARMR,   /* 8 */
-    MGC_EVIL_EYE,      /* 9 */
-    MGC_CURSE_ITEMS,   /* 10 */
-    MGC_AGGRAVATION,   /* 11 */
-    MGC_ACID_BLAST,    /* 12 */
-    MGC_SUMMON_MONS,   /* 13 */
-    MGC_CLONE_WIZ,     /* 14 */
-    MGC_REFLECTION,    /* 15 */
-    MGC_DEATH_TOUCH,   /* 16 */
-    MGC_CALL_UNDEAD,   /* 17 */
-    MGC_ENTOMB         /* 18 */
+    MGC_STUN_YOU,      /* 3 */
+    MGC_WEAKEN_YOU,    /* 4 */
+    MGC_DESTRY_ARMR,   /* 5 */
+    MGC_EVIL_EYE,      /* 6 */
+    MGC_CURSE_ITEMS,   /* 7 */
+    MGC_AGGRAVATION,   /* 8 */
+    MGC_ACID_BLAST,    /* 9 */
+    MGC_SUMMON_MONS,   /* 10 */
+    MGC_DEATH_TOUCH,   /* 11 */
+    MGC_CALL_UNDEAD,   /* 12 */
+    MGC_ENTOMB,        /* 13 */
+                       /* Defensive spells */
+    MGC_CURE_SELF,     /* 14 */
+    MGC_HASTE_SELF,    /* 15 */
+    MGC_DISAPPEAR,     /* 16 */
+    MGC_CLONE_WIZ,     /* 17 */
+    MGC_REFLECTION,    /* 18 */
 };
 
 /* monster cleric spells */
 enum mcast_cleric_spells {
+                       /* Offensive spells */
     CLC_OPEN_WOUNDS = 0, /* 0 */
-    CLC_CURE_SELF,     /* 1 */
-    CLC_PROTECTION,    /* 2 */
-    CLC_CONFUSE_YOU,   /* 3 */
-    CLC_PARALYZE,      /* 4 */
-    CLC_BLIND_YOU,     /* 5 */
-    CLC_INSECTS,       /* 6 */
-    CLC_CURSE_ITEMS,   /* 7 */
-    CLC_LIGHTNING,     /* 8 */
-    CLC_FIRE_PILLAR,   /* 9 */
-    CLC_GEYSER,        /* 10 */
-    CLC_BLIGHT,        /* 11 */
-    CLC_HOBBLE,        /* 12 */
-    CLC_SPHERES,       /* 13 */ /* Only for orb weavers */
-    CLC_FLESH_TO_STONE, /* 14 */
+    CLC_CONFUSE_YOU,   /* 1 */
+    CLC_PARALYZE,      /* 2 */
+    CLC_BLIND_YOU,     /* 3 */
+    CLC_INSECTS,       /* 4 */
+    CLC_CURSE_ITEMS,   /* 5 */
+    CLC_LIGHTNING,     /* 6 */
+    CLC_FIRE_PILLAR,   /* 7 */
+    CLC_GEYSER,        /* 8 */
+    CLC_BLIGHT,        /* 9 */
+    CLC_HOBBLE,        /* 10 */
+    CLC_SPHERES,       /* 11 */ /* Only for orb weavers */
+    CLC_FLESH_TO_STONE,/* 12 */
+                       /* Defensive spells */
+    CLC_CURE_SELF,     /* 13 */
+    CLC_PROTECTION,    /* 14 */
+    
 };
+
+#define offensive_spell(spelltype) \
+    (spelltype == MGC_PSI_BOLT
 
 extern const char *const flash_types[]; /* from zap.c */
 
@@ -1372,14 +1380,15 @@ cast_cleric_spell(
         if (youdefend) {
             /* Limit the range to either adjacent to hero or 1 square away, 
              * any more and this spell would be insane to deal with. */
-            if (distu(caster->mx, caster->my) > 2)
+            if (distu(caster->mx, caster->my) > 16)
                 break;
             if (!Blind) 
-                pline("A gray haze surrounds you!");
+                pline("A dense gray haze engulfs you!");
             else
-                You("suddenly catch the strong scent of sulfur in the air...");
+                You("suddenly catch a strong scent of sulfur in the air...");
             if (Stone_resistance)
                 break;
+            urgent_pline("You start turning to stone!");
             make_stoned(5L, (char *) 0, KILLED_BY, "flesh-to-stone spell");
         } else { /* mhitm */
             if (mdef->mstone)
@@ -1403,7 +1412,6 @@ cast_cleric_spell(
        break;
     }
     case CLC_INSECTS: {
-        /* TODO: prevent this pre-emptively in mspell_would_be_useless? */
         if (!youdefend) {
             dmg = 0;
             break;
@@ -1854,24 +1862,15 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
     /* Anti-magic fields block spellcasting */
     if (trap && trap->ttyp == ANTI_MAGIC)
         return TRUE;
-    
+
     if (!is_undirected_spell(adtyp, spellnum)
         && distu(caster->mx, caster->my) > 2)
         return TRUE;
     
     if (adtyp == AD_SPEL) {
-        /* aggravate monsters, etc. won't be cast by peaceful monsters */
-        if (caster->mpeaceful
-            && (spellnum == MGC_AGGRAVATION
-                || spellnum == MGC_SUMMON_MONS
-                || spellnum == MGC_CALL_UNDEAD
-                || spellnum == MGC_EVIL_EYE
-                || spellnum == MGC_STUN_YOU
-                || spellnum == MGC_WEAKEN_YOU
-                || spellnum == MGC_DESTRY_ARMR
-                || spellnum == MGC_DEATH_TOUCH
-                || spellnum == MGC_CURSE_ITEMS
-                || spellnum == MGC_CLONE_WIZ))
+        /* offensive spells won't be cast by peaceful monsters */
+        if ((caster->mpeaceful || u.uinvulnerable) && !Conflict
+            && (spellnum >= MGC_PSI_BOLT && spellnum <= MGC_ENTOMB))
             return TRUE;
         /* haste self when already fast */
         if (caster->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
@@ -1879,13 +1878,12 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         /* invisibility when already invisible */
         if ((caster->minvis || caster->invis_blkd) && spellnum == MGC_DISAPPEAR)
             return TRUE;
+        /* peaceful monster won't cast invisibility. Lets the player avoid 
+           hitting peaceful monsters by mistake */
+        if (caster->mpeaceful && !Conflict && spellnum == MGC_DISAPPEAR)
+            return TRUE;
         if ((has_reflection(caster) || mon_reflectsrc(caster))
             && spellnum == MGC_REFLECTION)
-            return TRUE;
-        /* peaceful monster won't cast invisibility. This doesn't
-           really make a lot of sense, but lets the player avoid hitting
-           peaceful monsters by mistake */
-        if (caster->mpeaceful && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* healing when already healed */
         if (spellnum == MGC_CURE_SELF && (caster->mhp == caster->mhpmax
@@ -1913,21 +1911,14 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             if (!has_aggravatables(caster) && !Aggravate_monster)
                 return rn2(100) ? TRUE : FALSE;
         }
-        if ((m_seenres(caster, M_SEEN_FIRE))
+        if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)
             && spellnum == MGC_FIRE_BOLT) {
             return TRUE;
         }
-        if ((m_seenres(caster, M_SEEN_COLD))
-            && spellnum == MGC_ICE_BOLT) {
+        if ((m_seenres(caster, M_SEEN_COLD)) && spellnum == MGC_ICE_BOLT) {
             return TRUE;
         }
-        if ((m_seenres(caster, M_SEEN_ACID))
-            && spellnum == MGC_ACID_BLAST) {
-            return TRUE;
-        }
-        if ((spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT
-             || spellnum == MGC_PSI_BOLT || spellnum == MGC_ACID_BLAST)
-            && (caster->mpeaceful || u.uinvulnerable)) {
+        if ((m_seenres(caster, M_SEEN_ACID)) && spellnum == MGC_ACID_BLAST) {
             return TRUE;
         }
         /* don't entomb if hero is already entombed */
@@ -1939,55 +1930,32 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             return TRUE;
     } else if (adtyp == AD_CLRC) {
         /* should not be cast by peaceful monsters */
-        /* TODO: Create an offensive_spell macro for this? */
-        if (caster->mpeaceful && (spellnum == CLC_OPEN_WOUNDS
-                                || spellnum == CLC_CONFUSE_YOU
-                                || spellnum == CLC_PARALYZE
-                                || spellnum == CLC_BLIND_YOU
-                                || spellnum == CLC_INSECTS
-                                || spellnum == CLC_CURSE_ITEMS
-                                || spellnum == CLC_LIGHTNING
-                                || spellnum == CLC_FIRE_PILLAR
-                                || spellnum == CLC_GEYSER
-                                || spellnum == CLC_BLIGHT
-                                || spellnum == CLC_HOBBLE
-                                || spellnum == CLC_SPHERES
-                                || spellnum == CLC_FLESH_TO_STONE))
+        if (caster->mpeaceful && !Conflict && 
+            (spellnum >= CLC_OPEN_WOUNDS && spellnum <= CLC_FLESH_TO_STONE))
             return TRUE;
         /* healing when already healed */
         if (caster->mhp == caster->mhpmax && spellnum == CLC_CURE_SELF
             && !caster->mdiseased && !caster->mwither && !caster->mblinded)
             return TRUE;
         /* don't summon insects if it doesn't think you're around */
-        if (!mcouldseeu && (spellnum == CLC_INSECTS
-                            || spellnum == CLC_SPHERES
-                            || spellnum == CLC_HOBBLE
-                            || spellnum == CLC_OPEN_WOUNDS
-                            || spellnum == CLC_LIGHTNING
-                            || spellnum == CLC_FLESH_TO_STONE
-                            || spellnum == CLC_BLIGHT))
+        if (!mcouldseeu
+                && (spellnum == CLC_INSECTS || spellnum == CLC_SPHERES))
             return TRUE;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)
             return TRUE;
-
         /* Only arch-viles can cast fire pillar at range. */
-        if (spellnum == CLC_FIRE_PILLAR
-            && caster->data != &mons[PM_ARCH_VILE]
-            && (distu(caster->mx, caster->my) > 2))
+        if (spellnum == CLC_FIRE_PILLAR && caster->data != &mons[PM_ARCH_VILE]
+            && distu(caster->mx, caster->my) > 2)
             return TRUE;
-
         if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)
             && spellnum == CLC_FIRE_PILLAR) {
             return TRUE;
         }
-        if ((m_seenres(caster, M_SEEN_ELEC))
-            && spellnum == CLC_LIGHTNING) {
-                return TRUE;
-        }
-        /* Prevent monsters from constantly spamming protection */
-        if (spellnum == CLC_PROTECTION && rn2(caster->mprotection + 1)
-            && !(caster->mhp * 2 <= caster->mhpmax)) {
+        if (Stone_resistance && spellnum == CLC_FLESH_TO_STONE) {
+            return TRUE;
+    }
+        if ((m_seenres(caster, M_SEEN_ELEC)) && spellnum == CLC_LIGHTNING) {
             return TRUE;
         }
     }
@@ -2005,28 +1973,23 @@ mspell_would_be_useless(
             && (spellnum == MGC_STUN_YOU
                 || spellnum == MGC_WEAKEN_YOU
                 || spellnum == MGC_CURSE_ITEMS
-                || spellnum == MGC_AGGRAVATION
                 || spellnum == MGC_SUMMON_MONS
-                || spellnum == MGC_CLONE_WIZ
-                || spellnum == MGC_DEATH_TOUCH
-                || spellnum == MGC_CALL_UNDEAD))
+                || spellnum == MGC_DEATH_TOUCH))
             return TRUE;
         /* aggravate monsters, monster summoning won't
            be cast by tame or peaceful monsters */
-        if ((caster->mtame || caster->mpeaceful)
-            && (spellnum == MGC_AGGRAVATION
-                || spellnum == MGC_CALL_UNDEAD
-                || spellnum == MGC_CLONE_WIZ))
+        if ((caster->mtame || caster->mpeaceful) && !Conflict
+            && (spellnum >= MGC_PSI_BOLT && spellnum <= MGC_ENTOMB))
             return TRUE;
         /* haste self when already fast */
         if (caster->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
             return TRUE;
         /* invisibility when already invisible */
-        if ((caster->minvis || caster->invis_blkd)
+        if ((caster->minvis || caster->invis_blkd) 
             && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* don't let peacefuls disappear. */
-        if ((caster->mtame || caster->mpeaceful)
+        if ((caster->mtame || caster->mpeaceful) && !Conflict
             && !See_invisible && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* reflection when already reflecting */
@@ -2042,46 +2005,43 @@ mspell_would_be_useless(
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
         /* Don't try to destroy armor if none is being worn */
-        if (!(mdef->misc_worn_check & W_ARMOR)
-            && spellnum == MGC_DESTRY_ARMR) {
+        if (!(mdef->misc_worn_check & W_ARMOR) && spellnum == MGC_DESTRY_ARMR) {
             return TRUE;
         }
         /* Don't blast itself with its own explosions
            if it doesn't resist the attack type (most times) */
         if (!(resists_fire(caster) || defended(caster, AD_FIRE))
-            && spellnum == MGC_FIRE_BOLT
-            && distmin(caster->mx, caster->my,
+            && spellnum == MGC_FIRE_BOLT && distmin(caster->mx, caster->my,
                        mdef->mx, mdef->my) < 3 && rn2(5)) {
             return TRUE;
         }
         if (!(resists_cold(caster) || defended(caster, AD_COLD))
-            && spellnum == MGC_ICE_BOLT
-            && distmin(caster->mx, caster->my,
+            && spellnum == MGC_ICE_BOLT && distmin(caster->mx, caster->my,
                        mdef->mx, mdef->my) < 3 && rn2(5)) {
             return TRUE;
         }
         if (!(resists_acid(caster) || defended(caster, AD_ACID))
-            && spellnum == MGC_ACID_BLAST
-            && distmin(caster->mx, caster->my,
+            && spellnum == MGC_ACID_BLAST && distmin(caster->mx, caster->my,
                        mdef->mx, mdef->my) < 3 && rn2(5)) {
             return TRUE;
         }
         /* prevent pet or peaceful monster from nuking
            the player if they are close to the target */
-        if ((caster->mtame || caster->mpeaceful)
-            && distu(mdef->mx, mdef->my) < 3
-            && (spellnum == MGC_ICE_BOLT
-                || spellnum == MGC_FIRE_BOLT
+        if ((caster->mtame || caster->mpeaceful) && distu(mdef->mx, mdef->my) < 3
+            && (spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT
                 || spellnum == MGC_ACID_BLAST)) {
             return TRUE;
         }
         /* only undead/demonic spell casters, and quest nemesis
            can summon undead */
         if (spellnum == MGC_CALL_UNDEAD && !is_undead(caster->data)
-            && !is_demon(caster->data)
-            && caster->data->msound != MS_NEMESIS)
+            && !is_demon(caster->data) && caster->data->msound != MS_NEMESIS)
             return TRUE;
      } else if (adtyp == AD_CLRC) {
+         /* offensive spells won't be cast by tame or peaceful monsters */
+         if ((caster->mtame || caster->mpeaceful) && !Conflict
+             && (spellnum >= CLC_OPEN_WOUNDS && spellnum <= CLC_FLESH_TO_STONE))
+             return TRUE;
         /* don't cast these spells at range vs other monsters */
         if (distmin(caster->mx, caster->my, mdef->mx, mdef->my) > 1
             && (spellnum == CLC_CONFUSE_YOU
@@ -2100,11 +2060,6 @@ mspell_would_be_useless(
         /* blindness spell on blinded target */
         if ((!haseyes(mdef->data) || mdef->mblinded)
             && spellnum == CLC_BLIND_YOU)
-            return TRUE;
-        /* monster summoning won't be cast by tame
-           or peaceful monsters */
-        if ((caster->mtame || caster->mpeaceful)
-            && (spellnum == CLC_INSECTS || spellnum == CLC_SPHERES))
             return TRUE;
     }
     return FALSE;
@@ -2442,8 +2397,6 @@ counterspell(struct monst *caster) {
 boolean
 mcast_dist_ok(struct monst *caster)
 {
-    if (!m_canseeu(caster))
-        return FALSE;
     if (distu(caster->mx, caster->my) > 192)
         return FALSE;
     /* Sometimes allow them to cast at close range. */
@@ -2460,7 +2413,8 @@ calculate_damage(int base_damage, int distance) {
     if (distance > 80)
         distance = 80;
     
-    float tmp = (100 - distance) / 100;
+    float tmp = 100 - distance;
+    tmp /= 100;
     tmp = ceil((float) (base_damage * tmp));
     
     /* debug line */

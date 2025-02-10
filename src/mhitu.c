@@ -2058,7 +2058,9 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     boolean is_medusa, reflectable,
             cancelled = (mtmp->mcan != 0), already = FALSE,
             mcanseeu = (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
-                        && mtmp->mcansee);
+                        && mtmp->mcansee), 
+            evil_eye = mattk->adtyp == AD_LUCK
+                   && mtmp->data != &mons[PM_BARGHEST];
     const char* reflectsrc = ureflectsrc();
     boolean wearing_eyes = ublindf
                             && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD;
@@ -2067,8 +2069,10 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         return M_ATTK_MISS;
 
     /* Check for protection from invisibility, displacement,
-       or cover of darkness */
-    if (!mon_really_found_us(mtmp))
+       or cover of darkness. We need to check a special case
+       for the evil eye gaze since that is already checked 
+       in mcastu. */
+    if (!evil_eye && !mon_really_found_us(mtmp))
         mcanseeu = 0;
 
     is_medusa = (mtmp->data == &mons[PM_MEDUSA]);
@@ -3634,7 +3638,7 @@ mon_really_found_us(struct monst *mtmp)
     /* Displacement protection */
     if (mcanseeu && Displaced && (!foundyou || rn2(5))) {
         if (!rn2(4)) /* Don't spam this. */
-            pline("%s gazes at your displaced image and misses you!",
+            pline("%s glances at your displaced image.",
                   Monnam(mtmp));
         return FALSE;
     }
