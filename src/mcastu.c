@@ -1595,14 +1595,15 @@ cast_cleric_spell(
         break;
     case CLC_HOBBLE:
         if (youdefend) {
+            /* Less damage the farther away */
             mdist = distu(caster->mx, caster->my);
-             /* Less damage the farther away */
-            if (mdist > 100)
-                dmg = (dmg + 1) / 2; /* 50% */
-            else if (mdist >= 25)
-                dmg -= (dmg / 4);    /* 75% */
+            dmg = calculate_damage(dmg, mdist);
+
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
+            if (dmg <= 0)
+                break;
+            
             if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 192) {
                 long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
                 Your("%s are smashed by a bolt of force!",
@@ -1612,10 +1613,17 @@ cast_cleric_spell(
                     set_wounded_legs(side, rn1(15, 15));
             }
         } else { /* mhitm */
+            /* Less damage the farther away */
+            mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
+            dmg = calculate_damage(dmg, mdist);
+            
             if (resist(mdef, 0, 0, FALSE)) {
                 shieldeff(mdef->mx, mdef->my);
                 dmg = (dmg + 1) / 2;
             }
+            if (dmg <= 0)
+                break;
+            
             if (canseemon(mdef)) {
                 pline("%s %s is smashed by a bolt of force!",
                     s_suffix(Monnam(mdef)),
