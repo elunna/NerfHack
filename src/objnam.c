@@ -746,9 +746,11 @@ xname_flags(
     if (obj->oartifact && obj->dknown)
         find_artifact(obj);
 
-    if (obj_is_pname(obj))
+    if (obj_is_pname(obj)) {
+        if (is_poisonable(obj) && obj->opoisoned)
+            Strcpy(buf, "poisoned ");
         goto nameit;
-
+    }
     /* Some classes use strcpy(buf, something)+strcat(buf, otherthing).
        In those cases, ConcUpdate() is needed in between if Concat()
        will be used for the strcat() part.  Other classes just use
