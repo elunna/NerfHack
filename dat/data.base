@@ -282,6 +282,18 @@ apple
 	and disciples have advanced so far as to be able to say
 	when.
 		[ The Devil's Dictionary, by Ambrose Bierce ]
+arch-vile
+arch vile
+    Arch-viles are fiends of unholy fire, their gaunt, elongated
+    forms moving with unnatural speed and purpose. Masters of
+    flame and resurrection, they delight in immolating their foes
+    with a mere gesture, reducing them to ash in an instant.
+    Worse still, they do not merely kill - they restore. Fallen
+    demons rise anew at their command, twisted mockeries of death
+    itself. Fighting one is perilous. Fighting one among a horde
+    is folly. If you cannot strike them down first, you may never
+    escape the flames.
+        [ Memoirs of Professor A. Van Helsing ]
 archeolog*
 * archeologist
 	Archeology is the search for fact, not truth. [...]
@@ -340,6 +352,12 @@ ashikaga takauji
 	government in the town of Yoshino.  This period of dual
 	governments was known as the Nambokucho.
 	  [ Samurai - The Story of a Warrior Tradition, by Cook ]
+asphynx
+	This small,  inoffensive-looking snake shares the feared power
+	of petrification with its distant relatives the cockatrice and
+	basilisk. Just one touch from its blunt snout  can render  one
+	motionless for all eternity.
+		[ The New Bestiary, Wizard Endlebrook ]
 athol
 	In 1927, zoologist Ernst Bartels was in his home near the
 	Tjidjenkol River in Java when he heard a strange cry louder than
@@ -380,6 +398,11 @@ asmodeus
 		[ Brewer's Concise Dictionary of Phrase and Fable ]
 assassin bug
 	Even lowly vermin are capable of feats of deceit.
+lightning bug
+arc bug
+spark bug
+	"What was that?" cried Buck, rubbing his numb and tingling arm.
+	"Nature's revenge for bug zappers," replied his companion.
 athame
 	The consecrated ritual knife of a Wiccan initiate (one of four
 	basic tools, together with the wand, chalice and pentacle).
@@ -1156,6 +1179,7 @@ cobra
 	afraid!'
 		[ Rikki-tikki-tavi, by Rudyard Kipling ]
 c*ckatrice
+basilisk
 	Once in a great while, when the positions of the stars are
 	just right, a seven-year-old rooster will lay an egg.  Then,
 	along will come a snake, to coil around the egg, or a toad,
@@ -2010,7 +2034,7 @@ argent cross
 # to The Dying Earth and in it the 'Eyes' were separate "cusps" that
 # needed to be worn like contact lenses, one on each eyeball.  Wearing
 # just one and attempting to look with both eyes caused instant stun.
-# And when wearing two you couldn't see normal world, only a projection
+# And when wearing two you couldn't see normal woendrld, only a projection
 # of it that had similar topology but where everything was "better".
 # NetHack simplifies things:  a pair of lenses is a single item like
 # spectacles (eyeglasses), and the effect of wearing these lenses has
@@ -2036,6 +2060,13 @@ fedora
 	stride as if you're only a step away from dancing.  They demand a
 	lot of you.
 		[ Anansi Boys, by Neil Gaiman ]
+fell beast
+	It was a winged creature: if bird, then greater than all other
+	birds, and it was naked, and neither quill nor feather did it
+	bear, and its vast pinions were as webs of hide between horned
+	fingers; and it stank.  A creature of an older world maybe it was...
+	   [ J.R.R. Tolkien, The Return of the King,
+		"The Battle of the Pelennor Fields" ]
 figurine*
 	Then it appeared in Paris at just about the time that Paris
 	was full of Carlists who had to get out of Spain.  One of
@@ -2386,6 +2417,7 @@ valley of *dea*
 	trench, there came a moaning that was horrible to hear.
 	Panic drained the blood from my cheeks.
 	     [ The Odyssey, (chapter Lambda), by Homer ]
+~ghoul queen
 ghoul
 	The forces of the gloom know each other, and are strangely
 	balanced by each other.  Teeth and claws fear what they cannot
@@ -2403,6 +2435,21 @@ ghoul
 	ferocious fear the sinister; wolves recoil when they encounter
 	a ghoul.
 		[ Les Miserables, by Victor Hugo ]
+ghoul queen
+    "There are things fouler than mere ghouls, for where the dead
+    feast, there must be a sovereign to rule them. The Ghoul Queen
+    is such a creature-born not merely of rot and hunger, but of a
+    wicked will that defies the grave."
+    
+    These abominations are no mere scavengers of the battlefield.
+    Unlike their lesser kin, who gnaw at the bones of the fallen,
+    Ghoul Queens command the legions of the dead with a malevolent
+    intelligence. Their touch is deathly cold, spreading paralysis
+    with but a graze, and their gaze alone can unravel the courage
+    of even the bravest souls. They weave necromantic spells to
+    summon fresh horrors, and their hunger is never sated, for they
+    do not merely consume flesh-they devour the very essence of life.
+        [ Dr. Abraham Van Helsing, "A Treatise on the Unhallowed" ]
 ~frost giant
 *giant
 giant humanoid
@@ -2417,6 +2464,13 @@ gauntlets*
 	And her old Uncle William used to say a lady is known by her
 	shoes and her gloves.
 		[ Mrs. Dalloway, by Virginia Woolf ]
+gnoll*
+flind
+	We are born and we die.
+	No one cares, no one remembers,
+	and it doesn't matter.
+	This is why we laugh.
+		[ The Gnoll Credo, by J. Stanton ]
 # note: "gnomish wizard" is a monster
 ~gnome ??m*
 #~gnom* cave*man
@@ -2601,6 +2655,12 @@ hydration
     Clever adventurers must plan their journeys with these needs in
     mind to ensure their Grung hero survives the perils of the
     dungeon.
+gug
+	These foul creatures dwell in the endless darkness of the 
+	Gulf of N'Kai, scavenging the bones of whatever luckless
+	intruders have stumbled into it.  It is suspected that they
+	may be some warped form of ghoul, but few have survived
+	seeing them so information is scarce.
 gunyoki
 	The samurai's last meal before battle.  It was usually made
 	up of cooked chestnuts, dried seaweed, and sake.
@@ -4023,6 +4083,15 @@ mercury
 	Roman god of commerce, trade and travellers.  He is commonly
 	depicted carrying a caduceus (a staff with two snakes
 	intertwining around it) and a purse.
+migo*
+mi-go*
+	These strange beings are visitors from another realm.  An 
+	unusual symbiotic relationship exists between the intelligent 
+	fungus and the insectoid form that comprises the bulk of its 
+	body.  They are said to have access to great magical powers. 
+	Their queens have been known to steal human brains, taking 
+	them back to distant Yuggoth.
+	Migo are also known as the Fungi from Yuggoth. 
 merfolk
 merman
 mermaid
@@ -4417,6 +4486,17 @@ naiad
 	later -- and some too late -- that joy blots suffering and
 	that the road to nymphs is beset by monsters.
 		[ The Minotaur, by Bernard Evslin ]
+nupperibo
+    Nupperibos are the wretched dregs of Baator, mindless husks
+    formed from the souls of the damned. Their bloated, sightless
+    forms shamble forward in relentless waves, impervious to pain
+    and heedless of their own destruction. Though individually
+    weak, they are drawn to greater evils, forming vast, writhing
+    hordes that overwhelm through sheer numbers.
+
+    Devoid of ambition, fear, or will, they exist only to suffer -
+    and to spread suffering in turn.
+-Unknown
 obsidian*
 	A volcanic glass, homogeneous in texture and having a low water
 	content, with a vitreous luster and a conchoidal fracture.  The
@@ -4528,6 +4608,16 @@ pear
 	can't find out what it is like unless you can get to that
 	country and taste it for yourself.
 		[ The Last Battle, by C.S. Lewis ]
+orb weaver
+    Orb weavers are humanoid spellcasters who specialize in a
+    singular branch of clerical magic, binding divine energies
+    into intricate, predetermined designs. 
+
+    To the untrained eye, an orb weaver may seem but a humble
+    wizard, but do not be fooled - for their magic is neither wild
+    nor free. It is woven with purpose, each spell an interlocking
+    thread in a vast and unseen pattern.
+         [ The New Bestiary, Wizard Endlebrook ]
 *orb of detection
 	This Orb is a crystal ball of exceptional powers.  When
 	carried, it grants ESP, limits damage done by spells, and
@@ -4666,6 +4756,25 @@ pelias
 	soul."
 	 [ Conan the Usurper, by Robert E. Howard and L. Sprague de Camp ]
 	war against nations, spread scandal or confess love.  Paper,
+phase spider
+	Phase potion, which is related to oil of etherealness, is more
+	useful for general combat. When imbibed, this potion allows the
+	user to shift in and out of phase with the Prime Material plane
+	at will, much like a phase spider. When out of phase, the user
+	is impervious to all forms of attack except those that reach
+	into Ethereal plane. ... Phase potions are brewed from phase-spider
+	ichor or from the concentrated juices of rare underground fungi.
+		[ RPG Sheets by Amalor Mymnyx ]
+
+	Phase Spiders are not true Spiders, but an alien race which
+	appear as giant spiders with humanoid shaped heads. Phase Spiders
+	speak a whispery language which is reminiscent of the sound of the
+	wind blowing through the trees. ... Phase Spiders are considered
+	Enlightened creatures as they have the ability to phase in and out
+	of our normal space-time into what most scientists would refer to
+	as Void-Space. Phase Spiders use this ability to their great
+	advantage in combat.
+		[ Alien Update Lexicon by Randy Walker ]
 phoenix
 	There are three conditions to terrify someone: One, the monster
 	can't speak. Two, the monster has to be unidentifiable. Three,
@@ -4713,6 +4822,14 @@ pit fiend
 	attacking twice with weapons as well as grabbing and crushing
 	the life out of those unwary enough to enter their
 	domains.
+pixie*
+fairy
+fairies
+	Do fairies live in the hedge by the lawn?
+	With pale, violet eyes and wings that shimmer?
+	Not in my garden of thistle and thorn,
+	Well, not since I tidied it up with my strimmer.
+		[ Learning to Live with Orcs by Richard A. Bartle ]
 platinum yendorian express card
 	This is an ancient artifact made of an unknown material.  It
 	is rectangular in shape, very thin, and inscribed with archaic
@@ -5293,6 +5410,13 @@ rust monster
 rust monster or disenchanter
 	These ground-dwelling monsters are known to make short
 	work out of degrading adventurers' combat equipment.
+rutterkin
+    "Misshapen, wretched, and cruel-these are the mongrels of the
+    Abyss, the castoffs of demonkind."
+    
+    "Pity them not-whatever they once were, the Abyss has claimed
+    them utterly."
+        [ The Black Codex of Fiends ]
 *saber
 *sabre
 	Flashed all their sabres bare,
@@ -5577,6 +5701,24 @@ shrieker
 	its fetid bulk looming overhead... The monster was some kind of
 	great dark worm, but that was about all they were sure of.
 		[ The Adventurers, Epic IV, by Thomas A. Miller ]
+*shoggoth
+*shuggoth
+	"... in the place of utter blasphemy, the unholy pit where 
+	the black realm begins and the watcher guards the gate - 
+	I saw a shoggoth - it changed shape ..."
+		[ The Thing on the Doorstep, by H.P. Lovecraft ]
+
+	It was a terrible, indescribable thing vaster than any subway 
+	train -- a shapeless congeries of protoplasmic bubbles, faintly
+	self-luminous, and with myriads of temporary eyes forming and 
+	un-forming as pustules of greenish light all over the tunnel-
+	filling front that bore down upon us, crushing the frantic 
+	penguins and slithering over the glistening floor that it and 
+	its kind had swept so evilly free of all litter. Still came 
+	that eldritch, mocking cry -- "Tekeli-li! Tekeli-li!" and at 
+	last we remembered that the demoniac Shoggoths - given life, 
+	thought, and plastic organ patterns solely by the Old Ones ...
+		[ At the Mountains of Madness, by H.P. Lovecraft ]
 throwing star
 shuriken
 	You know, that's what I hate most about fighting against magic:
@@ -5647,6 +5789,7 @@ sling
 serpent
 water moccasin
 pit viper
+*anaconda
 	Now the serpent was more subtle than any beast of the field
 	which the Lord God had made.  And he said unto the woman, Yea,
 	hath God said, Ye shall not eat of every tree of the garden?
@@ -5957,6 +6100,21 @@ tengu
 	belligerent tengu were supposed to have been man's first
 	instructors in the use of arms.
 	  [ Mythical Beasts, by Deirdre Headon (The Leprechaun Library) ]
+thing from below
+    No one who has truly seen the Thing from Below has lived to 
+    describe it. Those who glimpse it only in shadowed glimpses speak
+    of writhing limbs, too many eyes, and a hunger vast as the void.
+    It does not pursue prey-it simply waits, for all things collapse
+    into darkness eventually.
+
+    Some claim it is ancient, older than the dungeons themselves. 
+    Others insist it is still growing. Whatever the truth, if you hear
+    the slow, wet sound of something shifting in the deep, turn back.
+    Or do not. It makes no difference.
+    
+    "The dungeon has a bottom. Pray you never reach it."
+
+        [ Unknown explorer, last recorded words ]
 thoth
 	The Egyptian god of the moon and wisdom, Thoth is the patron
 	deity of scribes and of knowledge, including scientific,
@@ -6207,6 +6365,18 @@ long samurai sword
 	special process, causing it to never rust.  The tsurugi is
 	rumored to be so sharp that it can occasionally cut
 	opponents in half!
+tunnel worm
+    These massive, sightless burrowers carve through stone and soil
+    with ease, leaving behind treacherous tunnels in their wake.
+    Though lacking true intelligence, tunnel worms are relentless
+    predators, sensing vibrations to track their prey before striking
+    with crushing jaws. Some grow large enough to swallow an unwary
+    adventurer whole, dragging them into the depths where no light
+    shines.
+
+    Miners and spelunkers speak in hushed tones of entire expeditions
+    vanishing without a trace, leaving only the gaping wounds in the
+    earth as evidence of their doom.
 ~*spellbook
 turquoise*
 	TUBAL:  There came divers of Antonio's creditors in my company
@@ -6562,6 +6732,24 @@ winning
 	...
 	/Rule Six/:  The winning team shall be the first team that wins.
 	    [ Life, the Universe and Everything, by Douglas Adams ]
+wintercloak
+    "The halls of Sokoban were not always entombed in ice. Once, they
+    were merely a test of patience and wit. But then came the dragon."
+    
+    Wintercloak, the white dragon of frost, claimed the labyrinth as
+    its lair, turning stone corridors into frozen tombs. The bitter
+    cold of its breath seals passages in glacial walls, and the unwary
+    may find themselves encased in ice before they ever see the beast.
+    Unlike its lesser kin, Wintercloak is no mere brute - it is cunning,
+    patient, and delights in watching intruders struggle before
+    delivering the final, chilling blow.
+    
+    The boulders of Sokoban still move, but now they creak under layers
+    of frost, and their paths are littered with frozen adventurers who
+    failed the puzzle… or the predator that lurks within it.
+    
+    "Solve the maze swiftly, lest you become another frozen riddle."
+        [ Tales of the Lost Dungeons ]
 # note: need to convert player character "gnomish wizard" into just "wizard"
 # in the lookup code to avoid conflict with the monster of that same name
 ~gnomish wizard
