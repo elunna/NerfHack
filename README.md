@@ -2,6 +2,9 @@
 
 Welcome, traveler, to NerfHack!
 
+![nerfhack.bmp](nerfhack.bmp)
+
+---
 **NerfHack** is the successor to **Hack'EM**, which was a modernized variant of **SLASH'EM** based on **EvilHack**. Unlike Hack'EM, **NerfHack** starts fresh from **NetHack 3.7.0** and is designed to be a significantly more challenging variant than Vanilla NetHack. While it incorporates many features and mechanics from Hack'EM, it is *not* a full port, introducing numerous new changes in both content and design. By drawing inspiration from various NetHack variants and carefully fine-tuning different aspects of gameplay, key pain points have been identified and addressed to refine the difficulty curve — resulting in a more treacherous and rewarding dungeon.
 
 
