@@ -845,7 +845,7 @@ cast_wizard_spell(
             mm.x = u.ux;
             mm.y = u.uy;
             pline("Undead creatures are called forth from the grave!");
-            mkundead(&mm, FALSE, NO_MINVENT);
+            mkundead(caster, &mm, FALSE, NO_MINVENT);
         }
         break;
     }

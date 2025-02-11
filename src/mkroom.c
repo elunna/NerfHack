@@ -620,6 +620,7 @@ fill_zoo(struct mkroom *sroom)
  */
 void
 mkundead(
+    struct monst *mtmp,
     coord *mm,
     boolean revive_corpses,
     int mm_flags)
@@ -628,9 +629,19 @@ mkundead(
     struct permonst *mdat;
     struct obj *otmp;
     coord cc;
-
+    int difcap = mtmp ? mtmp->data->difficulty : 0; /* spellcasters */
+                                                        
     while (cnt--) {
         mdat = morguemon();
+        /* Don't create more spellcasters of the monsters' level or
+         * higher--avoids chain summoners filling up the level.
+         */
+        if (difcap > 0 && mdat->difficulty >= difcap
+            && attacktype(mdat, AT_MAGC)) {
+            cnt++;
+            continue;
+        }
+        
         if (mdat && enexto(&cc, mm->x, mm->y, mdat)
             && (!revive_corpses
                 || !(otmp = sobj_at(CORPSE, cc.x, cc.y))
