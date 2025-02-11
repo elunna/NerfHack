@@ -310,7 +310,7 @@ static struct inv_sub {
     { PM_GRUNG, SACK, OILSKIN_SACK },
     { PM_GRUNG, SMALL_SHIELD, LEATHER_BRACERS },
     { PM_GRUNG, LEATHER_GLOVES, LEATHER_BRACERS },
-    
+
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
@@ -591,7 +591,7 @@ static const struct def_skill Skill_U[] = {
     { P_FLAIL, P_SKILLED },
     { P_HAMMER, P_SKILLED },
     { P_POLEARMS, P_SKILLED },
-    { P_SPEAR, P_BASIC },                 
+    { P_SPEAR, P_BASIC },
     { P_CROSSBOW, P_BASIC },              /* Dracula movies */
     { P_WHIP, P_BASIC },                  /* Castlevania */
     { P_UNICORN_HORN, P_SKILLED },
@@ -777,7 +777,7 @@ u_init_role(void)
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
         Cave_man[C_SCALES].trotyp = FIRST_DRAGON_SCALES
-                    + rn2(LAST_DRAGON_SCALES - FIRST_DRAGON_SCALES);                        
+                    + rn2(LAST_DRAGON_SCALES - FIRST_DRAGON_SCALES);
         ini_inv(Cave_man);
         skill_init(Skill_C);
         knows_object(SLING_BULLET, FALSE);
@@ -904,7 +904,7 @@ u_init_role(void)
             break;
         case 2:	/* Silver spear and daggers */
             break;
-        case 3: 
+        case 3:
             /* Silver short sword, silver daggers, gloves, and cloak */
             UndeadSlayer[U_MINOR].trotyp = SILVER_SHORT_SWORD;
             UndeadSlayer[U_MISC].trspe = 1;
@@ -920,7 +920,7 @@ u_init_role(void)
 
         ini_inv(UndeadSlayer);
         skill_init(Skill_U);
-        
+
         /* We have to set skill maximums after inventory setup */
         switch (kit) {
         case 0:	/* Crossbow and bolts */
@@ -937,12 +937,12 @@ u_init_role(void)
             set_skill_cap_minimum(P_SHORT_SWORD, P_EXPERT);
             set_skill_cap_minimum(P_LONG_SWORD, P_SKILLED);
         }
-        
+
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
         if (!rn2(6))
             ini_inv(Lamp);
-        
+
         /* Kludge here to trigger Undead Warning */
         HWarn_of_mon = HUndead_warning;
         svc.context.warntype.intrins |= MH_UNDEAD;
@@ -1094,7 +1094,7 @@ u_init_race(void)
 
         /* All orcs are familiar with scimitars */
         set_skill_cap_minimum(P_SABER, P_SKILLED);
-        
+
         /* Orcs start off very bad alignment */
         adjalign(-20);
         break;
@@ -1214,7 +1214,7 @@ u_init(void)
     int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
     struct obj *otmp;
-    
+
     flags.female = flags.initgend;
     flags.beginner = Role_if(PM_TOURIST) ? TRUE : FALSE;
 
@@ -1298,10 +1298,10 @@ u_init(void)
 
     u_init_role();
     u_init_race();
-    
+
 #define FIRST_POTION POT_GAIN_ABILITY
 #define LAST_POTION POT_OIL
-    
+
     /* Ensure no smoky potions in starting inventory */
     int tries = 0;
 reroll:
@@ -1467,7 +1467,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
                /* vampires don't like silver */
                 || objects[otyp].oc_material == SILVER))
            /* orcs start with poison resistance */
-           || (otyp == RIN_POISON_RESISTANCE 
+           || (otyp == RIN_POISON_RESISTANCE
                && (Race_if(PM_ORC) || Race_if(PM_GRUNG)))
            /* Monks don't use weapons */
            || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
@@ -1537,7 +1537,7 @@ ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
                 break;
             }
         }
-        
+
     }
     return obj->otyp;
 }

@@ -404,7 +404,7 @@ enlightenment(
         u.ublessed, u.ublessed != 1 ? "s" : "",
         u.ublessed == 9 ? " (maximum)" : "");
     you_have(buf, "");
-    
+
     if (u.lastprayed) {
         Sprintf(buf, "You last %s %ld turns ago",
                 u.lastprayresult == PRAY_GIFT ? "received a gift" :
@@ -432,7 +432,7 @@ enlightenment(
     } else {
         enl_msg("You ", "have ", "had ", "never prayed", "");
     }
-    
+
     if (mode & MAGICENLIGHTENMENT) {
         if (u.ugangr) {
             Sprintf(buf, " %sangry with you",
@@ -1588,8 +1588,8 @@ attributes_enlightenment(
     int ltmp, armpro, warnspecies;
     char buf[BUFSZ];
 
-    
-    
+
+
     /*\
      *  Attributes
     \*/
@@ -1614,7 +1614,7 @@ attributes_enlightenment(
         enl_msg("Your alignment ", "is", "was", buf, "");
     }
 
-   
+
     /*** Vision and senses ***/
 
     if ((HBlinded || EBlinded) && BBlinded) /* blind w/ blindness blocked */
@@ -2127,8 +2127,8 @@ attributes_enlightenment(
         if (p)
             enl_msg(You_, "have been killed ", p, buf, "");
     }
-    
-    
+
+
     /*\
      *  Resistances
     \*/
@@ -2143,35 +2143,35 @@ attributes_enlightenment(
         strcat(buf, from_what(FIRE_RES));
     }
     you_are(buf, "");
-    
+
     Sprintf(buf, "%d%% cold resistant", intrinsic_res(COLD_RES));
     if (extrinsic_res(COLD_RES)) {
         strcat(buf, " and 100% protected");
         strcat(buf, from_what(COLD_RES));
     }
     you_are(buf, "");
-    
+
     Sprintf(buf, "%d%% sleep resistant", intrinsic_res(SLEEP_RES));
     if (extrinsic_res(SLEEP_RES)) {
         strcat(buf, " and 100% protected");
         strcat(buf, from_what(SLEEP_RES));
     }
     you_are(buf, "");
-    
+
     Sprintf(buf, "%d%% disintegration resistant", intrinsic_res(DISINT_RES));
     if (extrinsic_res(DISINT_RES)) {
         strcat(buf, " and 100% protected");
         strcat(buf, from_what(DISINT_RES));
     }
     you_are(buf, "");
-    
+
     Sprintf(buf, "%d%% shock resistant", intrinsic_res(SHOCK_RES));
     if (extrinsic_res(SHOCK_RES)) {
         strcat(buf, " and 100% protected");
         strcat(buf, from_what(SHOCK_RES));
     }
     you_are(buf, "");
-    
+
     Sprintf(buf, "%d%% poison resistant", intrinsic_res(POISON_RES));
     if (extrinsic_res(POISON_RES)) {
         strcat(buf, " and 100% protected");
@@ -2180,7 +2180,7 @@ attributes_enlightenment(
     you_are(buf, "");
 
     /* End of partial intrinsic resistances */
-    
+
     /* Group these together for readability */
     item_resistance_message(AD_FIRE, " protected from fire", final);
     item_resistance_message(AD_COLD, " protected from cold", final);
@@ -2188,13 +2188,13 @@ attributes_enlightenment(
     item_resistance_message(AD_ELEC, " protected from electric shocks", final);
     item_resistance_message(AD_ACID, " protected from acid", final);
     item_resistance_message(AD_DCAY, " protected from decay", final);
-    
+
     /*** Resistances to troubles ***/
     if (Invulnerable)
         you_are("invulnerable", from_what(INVULNERABLE));
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
-    
+
     if (Acid_resistance) {
         Sprintf(buf, "%.20s%.30s",
                 temp_resist(ACID_RES) ? "temporarily " : "",
@@ -2206,13 +2206,13 @@ attributes_enlightenment(
     if (BWithering) {
         you_are("withering resistant", from_what(DISINT_RES));
     }
-    
+
     if (Drain_resistance)
         you_are("level-drain resistant", from_what(DRAIN_RES));
 
     if (Sick_resistance)
         you_are("immune to sickness", from_what(SICK_RES));
-    
+
     if (Stone_resistance) {
         Sprintf(buf, "%.20s%.30s",
                 temp_resist(STONE_RES) ? "temporarily " : "",
@@ -2226,8 +2226,8 @@ attributes_enlightenment(
     if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));
-    
-    /* Conferred by Sunsword or Silver dragon scaled armor; 
+
+    /* Conferred by Sunsword or Silver dragon scaled armor;
      * no good checks for those yet.  */
     if (defended(&gy.youmonst, AD_BLND))
         enl_msg(You_, "resist", "resisted", " blinding effects", "");
@@ -2383,7 +2383,7 @@ show_conduct(int final)
     if (!u.uconduct.exiles) {
         you_have_never("exiled any monsters");
     } else {
-        Sprintf(buf, "exiled %ld monster%s", u.uconduct.exiles, 
+        Sprintf(buf, "exiled %ld monster%s", u.uconduct.exiles,
                 plur(u.uconduct.exiles));
         you_have_X(buf);
     }
@@ -3502,7 +3502,7 @@ mstatusline(struct monst *mtmp)
 {
     aligntyp alignment = mon_aligntyp(mtmp);
     char info[BUFSZ], monnambuf[BUFSZ];
-    
+
     if (mtmp->iscthulhu) {
         There("are some things incapable of being understood!");
         make_confused(HConfusion + rnd(20), FALSE);

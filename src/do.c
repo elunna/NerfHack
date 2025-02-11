@@ -287,7 +287,7 @@ flooreffects(
         }
         if (is_puddle(x, y) && !rn2(3))
             dryup_puddle(x, y, "dries up");
-        
+
         res = water_damage(obj, NULL, FALSE) == ER_DESTROYED;
     } else if (u_at(x, y) && (t = t_at(x, y)) != 0
                && (uteetering_at_seen_pit(t) || uescaped_shaft(t))) {

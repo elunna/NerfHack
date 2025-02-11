@@ -930,7 +930,7 @@ mksobj_init(struct obj **obj, boolean artif)
             otmp->spe = rne(2) * rnd(3) + 1;
             otmp->spe = otmp->spe < 13 ? otmp->spe : 13; /* Don't go over 13 */
         }
-        
+
         if (artif && !rn2(20 + (10 * nartifact_exist()))) {
             /* mk_artifact() with otmp and A_NONE will never return NULL */
             otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, TRUE);
@@ -1337,14 +1337,14 @@ mksobj(int otyp, boolean init, boolean artif)
         /* mk_artifact() with otmp and A_NONE will never return NULL */
         otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, FALSE);
     }
-    
+
     /* Prevent permapets for cartos, convert figurines to cards. */
     if (Role_if(PM_CARTOMANCER) && otmp->otyp == FIGURINE) {
         otmp->otyp = SCR_CREATE_MONSTER;
         otmp->oclass = SCROLL_CLASS;
         // otmp->spe = 0; /* reset spe just in case */
     }
-    
+
     otmp->owt = weight(otmp);
     return otmp;
 }
@@ -2827,7 +2827,7 @@ add_to_container(struct obj *container, struct obj *obj)
     obj->ocontainer = container;
     obj->nobj = container->cobj;
     container->cobj = obj;
-    
+
     /* There might be a more efficient way to identify this... */
     if (container->otyp == BAG_OF_HOLDING && carried(container)) {
        makeknown_msg(BAG_OF_HOLDING);

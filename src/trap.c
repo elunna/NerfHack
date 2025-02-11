@@ -1742,7 +1742,7 @@ trapeffect_rust_trap(
             break;
         case 1:
             pline("%s your left %s!", A_gush_of_water_hits, body_part(ARM));
-            if (water_damage(uarms, 
+            if (water_damage(uarms,
                            (uarms && is_bracer(uarms)) ? "bracers" : "shield",
                            TRUE) != ER_NOTHING)
                 break;
@@ -1781,7 +1781,7 @@ trapeffect_rust_trap(
             losehp(Maybe_Half_Phys(dam), "rusting away", KILLED_BY);
         } else if (u.umonnum == PM_GREMLIN && rn2(3)) {
             (void) split_mon(&gy.youmonst, (struct monst *) 0);
-        } 
+        }
         rehydrate(rn1(75, 25));
     } else {
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
@@ -1807,7 +1807,7 @@ trapeffect_rust_trap(
                       mon_nam(mtmp), mbodypart(mtmp, ARM));
             target = which_armor(mtmp, W_ARMS);
             if (water_damage(target, (target && is_bracer(target))
-                                         ? "bracers" : "shield", 
+                                         ? "bracers" : "shield",
                              TRUE) != ER_NOTHING)
                 break;
             target = MON_WEP(mtmp);
@@ -1904,7 +1904,7 @@ trapeffect_grease_trap(
 #if 0 /* Maybe come back to this - doesn't make sense for now */
         else if (Flying && !rn2(2)) {
             /* This is a bit of a stretch, but if you are flying
-               you get hit with an extra nasty splosh of grease that 
+               you get hit with an extra nasty splosh of grease that
                mucks up your flying and blinds you... */
             pline("A torrent of grease inundates you!");
             make_fumbling((HFumbling & TIMEOUT) + rnd(3)); /* + 1..3 */
@@ -2030,10 +2030,10 @@ trapeffect_grease_trap(
         struct obj *target;
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
-        
+
         if (in_sight)
             seetrap(trap);
-        
+
         if (!(mon_prop(mtmp, LEVITATION) || mon_prop(mtmp, FLYING)
                     || (is_clinger(mtmp->data) && has_ceiling(&u.uz))) && !rn2(2)) {
             if (canseemon(mtmp))
@@ -4582,7 +4582,7 @@ mselftouch(
             mon->mstone = 5;
             mon->mstonebyu = byplayer;
         }
-        
+
         /* if life-saved, might not be able to continue wielding */
         if (!DEADMONSTER(mon)
             && !safegloves(which_armor(mon, W_ARMG))
@@ -5398,10 +5398,10 @@ water_damage(
 
     if (!obj)
         return ER_NOTHING;
-    
+
     if (in_invent && Watertight)
         return ER_NOTHING;
-    
+
     if (splash_lit(obj))
         return ER_DAMAGED;
 
@@ -5813,7 +5813,7 @@ drown(void)
     }
 
     /* happily wading in the same contiguous pool */
-    if (u.uinwater 
+    if (u.uinwater
         && (is_pool(u.ux - u.dx, u.uy - u.dy) || (is_damp_terrain(u.ux - u.dx, u.uy - u.dy)
                 && tiny_groundedmon(gy.youmonst.data)))
         && (Swimming || Amphibious || Breathless)) {

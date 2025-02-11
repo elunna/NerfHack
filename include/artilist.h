@@ -49,8 +49,8 @@ static const char *const artifact_names[] = {
 #define     WTHR(a,b)   {0,AD_WTHR,a,b}         /* Wither attack  */
 
 /* Some helper macros for artifact value.
- * We diverge from Vanilla 3.7.0 and assign a value of 1 to all artifacts 
- * (except for quest artifacts). This is because we already have altar 
+ * We diverge from Vanilla 3.7.0 and assign a value of 1 to all artifacts
+ * (except for quest artifacts). This is because we already have altar
  * cracking nerfs in place and artifacts are rare.
  */
 #define ARTVAL 1
@@ -72,7 +72,7 @@ static NEARDATA struct artifact artilist[] = {
      * The combination of SPFX_WARN+SPFX_DFLAGH+MH_value will trigger
      * EWarn_of_mon for all monsters that have the MH_value flag.
      * For example, Sting and Orcrist will warn of MH_ORC monsters.
-     * 
+     *
      *    * Artifact gen_spe rationale:
      * 1.  If the artifact is useful against most enemies, +0.
      * 2.  If the artifact is useful against only a few enemies, usually +2.
@@ -135,7 +135,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 12), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 5000L, NO_COLOR, MORTALITY_DIAL),
-      
+
     /* From SLASH'EM; changed to an AKLYS.
      * Lessened to-hit penalty so aklys will connect
      * Guarantee +3 so illiterate cavemen have a nice weapon */
@@ -158,7 +158,7 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, DFNS(AD_FIRE), NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       ARMR_SPE, ARTVAL, 3400L, NO_COLOR, OATHFIRE),
-    
+
     /* From SLASH'EM; +9 to-hit bonus */
     A("Quick Blade", SILVER_SHORT_SWORD,
       (SPFX_RESTR | SPFX_FAST), 0, 0,
@@ -336,7 +336,7 @@ static NEARDATA struct artifact artilist[] = {
 
 
     /*** Chaotic artifacts ***/
-    
+
     /* From SpliceHack. Similar to the brands. Destroys items.
      * Was un-aligned in Splice, but was made chaotic and intelligent.
      */
@@ -345,7 +345,7 @@ static NEARDATA struct artifact artilist[] = {
       ACID(5, 0), DFNS(AD_ACID), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 3000L, NO_COLOR, ACIDFALL),
-    
+
     /* From xNetHack */
     A("The Amulet of Storms", AMULET_OF_FLYING,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
@@ -358,10 +358,10 @@ static NEARDATA struct artifact artilist[] = {
     A("Angelslayer", TRIDENT,
       (SPFX_RESTR | SPFX_ATTK | SPFX_SEARCH | SPFX_HSPDAM
        | SPFX_WARN | SPFX_DFLAGH | SPFX_INTEL), 0, MH_ANGEL,
-      FIRE(5, 10), NO_DFNS, NO_CARY, 0, 
+      FIRE(5, 10), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       BANE_SPE, ARTVAL, 5000L, CLR_RED, ANGELSLAYER),
-    
+
     /* From SlashTHEM with changes:
      * In THEM, this was a neutral cloak of protection that granted luck,
      * drain resistance, and warning. Now it is a chaotic cloak of
@@ -372,7 +372,7 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       ARMR_SPE, ARTVAL, 1500L, NO_COLOR, BLACKSHROUD),
-    
+
     /* From SLASH'EM */
     A("Doomblade", SHORT_SWORD,
       SPFX_RESTR, 0, 0,
@@ -459,7 +459,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(8, 10), DFNS(AD_ELEC), NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ELF,
       1, ARTVAL, 8000L, CLR_BRIGHT_BLUE, GLAMDRING),
-    
+
     /*** Unaligned artifacts ***/
 
     /* Now grants warning vs dragons and can instakill dragons */
@@ -470,9 +470,9 @@ static NEARDATA struct artifact artilist[] = {
       BANE_SPE, ARTVAL, 500L, CLR_RED, DRAGONBANE),
 
     /* First sac gift for Healers. */
-    A("Drowsing Rod", QUARTERSTAFF, 
+    A("Drowsing Rod", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
-      SLEE(5, 5), DFNS(AD_SLEE), NO_CARY, 0, 
+      SLEE(5, 5), DFNS(AD_SLEE), NO_CARY, 0,
       A_NONE, PM_HEALER, NON_PM,
       DFLT_SPE, ARTVAL, 500L, CLR_MAGENTA, DROWSING_ROD),
 
@@ -655,7 +655,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       NO_ATTK, DFNS(AD_WTHR), NO_CARY, 0,
       A_NEUTRAL, PM_UNDEAD_SLAYER, NON_PM,
       DFLT_SPE, QAVAL, 4000L, NO_COLOR, ARGENT_CROSS),
-    
+
     A("The Orb of Fate", CRYSTAL_BALL,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK | SPFX_NOWISH),
       (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM), 0,
@@ -664,7 +664,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       DFLT_SPE, QAVAL, 3500L, NO_COLOR, ORB_OF_FATE),
 
     A("The Eye of the Aethiopica", AMULET_OF_ESP,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH 
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH
        | SPFX_EREGEN | SPFX_HSPDAM),
       0, 0,
       NO_ATTK, DFNS(AD_MAGM), NO_CARY, CREATE_PORTAL,

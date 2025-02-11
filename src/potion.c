@@ -1077,14 +1077,14 @@ peffect_see_invisible(struct obj *otmp)
     int amt, msg = Invisible && !Blind;
     boolean is_spell = otmp->oclass == SPBOOK_CLASS;
     int role_skill;
-    
+
     if (is_spell)
         amt = rn1(40, 21);
     else
-        
-    
+
+
     if (is_spell) {
-        role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT 
+        role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT
                                                  : P_SKILL(P_CLERIC_SPELL);
         if (Hallucination)
             pline("Lux revelare!");
@@ -1493,7 +1493,7 @@ peffect_extra_healing(struct obj *otmp)
 {
     int amt = (16 + d(4 + 2 * bcsign(otmp), 8))
                        / (otmp->odiluted ? 2 : 1);
-    int gain = (otmp->blessed ? 5 : !otmp->cursed ? 2 : 0) 
+    int gain = (otmp->blessed ? 5 : !otmp->cursed ? 2 : 0)
                / (otmp->odiluted ? 2 : 1);
 
     You_feel("much better.");
@@ -1515,7 +1515,7 @@ peffect_full_healing(struct obj *otmp)
     healup(amt, gain, !otmp->cursed, TRUE);
     You_feel("%s healed.", Upolyd ? (u.mh == u.mhmax ? "completely" : "mostly")
                                       : (u.uhp == u.uhpmax ? "completely" : "mostly"));
-    
+
     /* Restore one lost level if blessed */
     if (otmp->blessed && !otmp->odiluted && u.ulevel < u.ulevelmax) {
             /* when multiple levels have been lost, drinking
@@ -1800,11 +1800,11 @@ peffect_blood(struct obj *otmp)
 }
 
 /* Milk must be ingested to have any effects, it won't
- * create any vapors. cancels various temporary good 
+ * create any vapors. cancels various temporary good
  * and bad status effects in general, like confusion,
- * stunning, and invisibility, but not nausea since 
+ * stunning, and invisibility, but not nausea since
  * drinking milk usually makes nausea worse in real life.
- * 
+ *
  * Severe conditions are NOT cancelled: illness, rabid,
  * lycanthropy, aggravate monster, withering.
  * Deafness don't make sense, so don't cure it.
@@ -1827,16 +1827,16 @@ peffect_milk(struct obj *otmp)
         /* Intentionally same as oil */
         pline("That was smooth!");
     }
-    
+
     /* Cancel bad statuses */
-    
+
     (void) make_hallucinated(0L, TRUE, 0L);
     make_confused(0L, TRUE);
     make_stunned(0L, TRUE);
     /* blindness is cured in the later call to healup() */
-    
+
     /* Also cancel good statuses */
-    
+
     if (u.uspellprot) {
         pline_The("%s haze around you disappears.",
                   hcolor(NH_GOLDEN));
@@ -1874,7 +1874,7 @@ peffect_milk(struct obj *otmp)
         You_feel(Hallucination ? "out of touch with the cosmos."
                                            : "a strange mental dullness.");
     }
-    
+
     /* Also - Unpoly yourself if polyd */
 	if (Upolyd) { /* includes lycanthrope in creature form */
         if (Unchanging && u.mh > 0)
@@ -2800,7 +2800,7 @@ potionbreathe(struct obj *obj)
                 you_were();
                 unambiguous = TRUE;
             }
-        } 
+        }
         rehydrate(rn1(25, 25));
         break;
     case POT_ACID:
@@ -3465,7 +3465,7 @@ potion_dip(struct obj *obj, struct obj *potion)
             /* oil and lit potions - obviously */
             || (obj->otyp == POT_OIL && obj->lamplit)
             /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
-            || mixture == ACID_VENOM 
+            || mixture == ACID_VENOM
             /* decrease the chance of non-magical mixtures of exploding */
             || (magic ? !rn2(10) : !rn2(20))) {
             /* it would be better to use up the whole stack in advance
@@ -3589,7 +3589,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         }
     }
     boolean draconic = (Is_dragon_scales(obj) && uarmc && obj == uarmc);
-    
+
     if (potion->otyp == POT_PHASING && draconic) {
         poof(potion);
         struct obj pseudo;
@@ -3759,10 +3759,10 @@ potion_dip(struct obj *obj, struct obj *potion)
             makeknown(POT_ACID);
             makeknown(singlegem->otyp);
             useup(singlegem);
-            
+
             /* Luck affects the chance of a pure non-diluted result.
              * LUCK:   −2 	 0 	+2 	+5 	+8 	+11
-             * CHANCE: 0.3% 	12.5% 	24.7% 	36.9% 	49.1% 	61.3% 
+             * CHANCE: 0.3% 	12.5% 	24.7% 	36.9% 	49.1% 	61.3%
              */
             if (rnl(8) == 0)
                 singlepotion->odiluted = 0;

@@ -961,7 +961,7 @@ staticfn boolean
 fuzzer_savelife(int how)
 {
     struct obj *obj;
-    
+
     /*
      * Some debugging code pulled out of done() to unclutter it.
      * 'done_seq' is maintained in done().
@@ -1010,12 +1010,12 @@ fuzzer_savelife(int how)
                    * or even Invulnerable */
             }
         }
-        
+
         /* Insertion point for testing specific items
          * Every so often, give the hero the specific item
-         * so the fuzzer is more exposed to it. 
+         * so the fuzzer is more exposed to it.
          * */
-        int TEST_OTYP = 0; 
+        int TEST_OTYP = 0;
         if (!rn2(20) && TEST_OTYP) {
             obj = mksobj(TEST_OTYP, TRUE, FALSE);
             (void) addinv(obj);
@@ -1111,7 +1111,7 @@ done(int how)
         /* assumes that only one type of item confers LifeSaved property */
         makeknown(AMULET_OF_LIFE_SAVING);
         Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
-        
+
         if (uamul->cursed || nonliving(gy.youmonst.data)) {
             Your("medallion %s!", !Blind ? "glows white-hot"
                                          : "sears your neck");

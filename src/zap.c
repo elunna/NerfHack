@@ -255,16 +255,16 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                     dmg += d(1, 10);         /* Skilled = +1d10 */
                 if (role_skill >= P_EXPERT)
                     dmg += d(1, 10);         /* Expert  = +1d10 */
-                
+
                 if (u.ulevel >= 5)
                     dmg += d(1, 4);
                 if (u.ulevel >= 11)
                     dmg += d(1, 4);
                 if (u.ulevel >= 17)
                     dmg += d(1, 4);
-                
+
                 /* Max possible = 3d10 + 3d4 */
-                
+
                 if (dbldam)
                     dmg *= 2;
                 hit(zap_type_text, mtmp, exclam(dmg));
@@ -669,7 +669,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                 pline("What a pity - you just ruined a future piece of art!");
             } else {
                 pline("%s seems limber!", Monnam(mtmp));
-            } 
+            }
         } else
             wake = FALSE;
         break;
@@ -1498,7 +1498,7 @@ cancel_item(struct obj *obj)
     /* Note: In some variants, there is a small chance DSM can revert to scales
      * if cancelled. That effect was not ported to NerfHack because of
      * the existing scarcity of resources. */
-    
+
     /* cancelled item might not be in hero's possession but
        cancellation is presumed to be instigated by hero */
     if (objects[otyp].oc_magic
@@ -1576,7 +1576,7 @@ cancel_item(struct obj *obj)
             (void) start_timer(timout, TIMER_OBJECT, ROT_CORPSE, &a);
         }
     }
-    
+
     /* Should these happen independant of MC protection? */
     unbless(obj);
     uncurse(obj);
@@ -1605,7 +1605,7 @@ drain_item(struct obj *obj, boolean by_you)
 {
     boolean u_ring;
     int otyp;
-        
+
     /* Is this a charged/enchanted object? */
     if (!obj
         || (!objects[obj->otyp].oc_charged && obj->oclass != WEAPON_CLASS
@@ -1615,13 +1615,13 @@ drain_item(struct obj *obj, boolean by_you)
     if (defends(AD_DRLI, obj) || defends_when_carried(AD_DRLI, obj)
         || obj_resists(obj, 10, 90))
         return FALSE;
-    
+
     otyp = obj->otyp;
-    
+
     /* convert mail to scales to simplify testing */
     if (Is_dragon_armor(obj))
         otyp = Dragon_armor_to_scales(obj);
-    
+
     /* Charge for the cost of the object */
     if (by_you)
         costly_alteration(obj, COST_DRAIN);
@@ -2221,7 +2221,7 @@ poly_obj(struct obj *obj, int id)
             remove_worn_item(obj, TRUE);
             /* if the new form can be worn in the same slot, make it so */
             if ((new_wornmask & W_WEP) != 0L) {
-                if (was_twohanded || !bimanual(otmp) 
+                if (was_twohanded || !bimanual(otmp)
                     || (!uarms || is_bracer(uarms)))
                     setuwep(otmp);
                 if (was_twoweap && uwep && !bimanual(uwep))
@@ -2787,13 +2787,13 @@ bhitpile(
             continue;
         hitanything += (*fhito)(otmp, obj);
         /* Short-circuit the "one-big-polypile" exploit.
-         * As soon as a golem is created, abort polymorphing. */ 
+         * As soon as a golem is created, abort polymorphing. */
         if (gp.poly_zapped >= 0) {
             create_polymon(svl.level.objects[tx][ty], gp.poly_zapped);
             break;
         }
     }
-    
+
     /* when boulders are present they're expected to be on top; with
        multiple boulders it's possible for some to have been changed into
        non-boulders (polymorph, stone-to-flesh) while ones beneath resist,
@@ -2825,14 +2825,14 @@ zappable(struct obj *wand)
 {
     int zap_it = 1;
     int wrestchance = 6 + (wand->cursed ? 2 : (wand->blessed ? - 2 : 0));
-    
+
     /* Not a wand, but definitely zappable. Don't remove any charges! */
     if (wand->otyp == SCR_ZAPPING)
         return 1;
-    
+
     if (wand->spe < 0)
         return 0;
-    
+
     if (wand->spe == 0) {
         if ((zap_it = !rn2(wrestchance)))
             You("wrest one last charge from the worn-out wand.");
@@ -5083,7 +5083,7 @@ zhitm(
     boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
     const char* monreflector = mon_reflectsrc(mon);
     *ootmp = (struct obj *) 0;
-    
+
     switch (damgtype) {
     case ZT_MAGIC_MISSILE:
         if (spellcaster) {
@@ -5158,13 +5158,13 @@ zhitm(
             type = -1; /* so they don't get saving throws */
         } else {                                /* disintegration*/
             struct obj *otmp2;
-            
+
             if (resists_disint(mon) || defended(mon, AD_DISN)) {
                 sho_shieldeff = TRUE;
                 tmp = 0;
             } else if (monreflector) {
                 /* no item destruction; still take damage though */
-                sho_shieldeff = TRUE; 
+                sho_shieldeff = TRUE;
                 tmp = d(nd, 6);
             } else if (mon->misc_worn_check & W_ARMS) {
                 /* destroy shield; victim survives */
@@ -5844,7 +5844,7 @@ dobuzz(
     struct monst *mon;
     struct monst *zapper;
     struct trap *ttmp;
-    
+
     coord save_bhitpos;
     boolean shopdamage = FALSE,
             fireball = (type == ZT_SPELL(ZT_FIRE)
@@ -5853,9 +5853,9 @@ dobuzz(
     struct obj *otmp;
     int spell_type;
     int hdmgtype = Hallucination ? rn2(6) : damgtype;
-    
+
     /* Drain life at expert can convert to an exploding type */
-    if (type == ZT_SPELL(ZT_DRAIN) 
+    if (type == ZT_SPELL(ZT_DRAIN)
         && P_SKILL(P_ATTACK_SPELL) >= P_EXPERT && !rn2(10)) {
             /* 10% chance of an explosion instead */
             fireball = TRUE;
@@ -5947,7 +5947,7 @@ dobuzz(
             gn.notonhead = (mon->mx != gb.bhitpos.x
                             || mon->my != gb.bhitpos.y);
             if (zap_hit(find_mac(mon), spell_type)) {
-                const char* mreflector = mon == &gy.youmonst 
+                const char* mreflector = mon == &gy.youmonst
                     ? ureflectsrc() : mon_reflectsrc(mon);
                 if (mreflector) {
                     if (cansee(mon->mx, mon->my)) {
@@ -5965,7 +5965,7 @@ dobuzz(
                     if (strcmp(mreflector, "mirror") == 0) {
                         struct obj *mmirror = m_carrying(mon, MIRROR);
                         /* They break roughly 50% of the time */
-                        if ((d(6,6) > 20 || mmirror->oeroded) 
+                        if ((d(6,6) > 20 || mmirror->oeroded)
                             && !mmirror->oartifact && breaktest(mmirror)) {
                             pline("A %s shatters!", xname(mmirror));
                             if (type >= 0) {
@@ -7169,7 +7169,7 @@ maybe_destroy_item(
     /* Fragile item destruction */
     case AD_PHYS:
         /* Rings of "shock" resistance prevent this type of damage */
-        if ((uleft && uleft->otyp == RIN_SHOCK_RESISTANCE) || 
+        if ((uleft && uleft->otyp == RIN_SHOCK_RESISTANCE) ||
             (uright && uright->otyp == RIN_SHOCK_RESISTANCE))
             skip++;
         /* Oathfire also protects fragile items */
@@ -7744,8 +7744,8 @@ calc_zap_range(int otyp)
 {
     int skill = spell_skilltype(otyp);
     int role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT : P_SKILL(skill);
-    
-    if (otyp == SPE_FORCE_BOLT || otyp == SPE_FIRE_BOLT 
+
+    if (otyp == SPE_FORCE_BOLT || otyp == SPE_FIRE_BOLT
         || otyp == SPE_DRAIN_LIFE || otyp == SPE_SLEEP
         || otyp == SPE_SLOW_MONSTER || otyp == SPE_CHARM_MONSTER
         || otyp == SPE_KNOCK || otyp == SPE_WIZARD_LOCK
@@ -7757,7 +7757,7 @@ calc_zap_range(int otyp)
         case P_EXPERT:  return rn1(7, 7);       /* range 7-13 */
         }
     }
-    
+
     if (otyp == SPE_CONE_OF_COLD || otyp == SPE_FIREBALL
         || otyp == SPE_LIGHTNING || otyp == SPE_POISON_BLAST
         || otyp == SPE_FINGER_OF_DEATH || otyp == SPE_POLYMORPH
@@ -7768,7 +7768,7 @@ calc_zap_range(int otyp)
         case P_SKILLED: return rn1(5, 9);       /* range 9-13 */
         case P_EXPERT:  return rn1(3, 11);      /* range 11-13 */
         }
-    }   
+    }
     return rn1(8, 6); /* Default range: 6-13 */
 }
 /*zap.c*/

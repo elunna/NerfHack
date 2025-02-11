@@ -229,7 +229,7 @@ mdisplacem(
      */
     gv.vis = (canspotmon(magr) && canspotmon(mdef));
 
-    if (touch_petrifies(pd) && !(resists_ston(magr) 
+    if (touch_petrifies(pd) && !(resists_ston(magr)
                                  || defended(magr, AD_STON))) {
         if (!safegloves(which_armor(magr, W_ARMG))) {
             if (poly_when_stoned(pa)) {
@@ -881,9 +881,9 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     /* call mon_reflectsrc 2x, first test, then, if visible, print message */
     const char* monreflector = mon_reflectsrc(mdef);
     boolean is_medusa = magr->data == &mons[PM_MEDUSA];
-    
+
     switch (mattk->adtyp) {
-    case AD_STON: 
+    case AD_STON:
         if (monreflector) {
             if (canseemon(mdef))
                 pline_mon(mdef, "The gaze is reflected away by %s %s.",
@@ -912,7 +912,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
                     mdef->mstone = 5;
                     mdef->mstonebyu = FALSE;
                 }
-                
+
                 if (!DEADMONSTER(magr))
                     return M_ATTK_MISS;
                 return M_ATTK_AGR_DIED;
@@ -1531,7 +1531,7 @@ passivemm(
             tmp = 0;
         goto assess_dmg;
     case AD_SLEE:
-        /* passive poison for grung's toxic skin */ 
+        /* passive poison for grung's toxic skin */
         if (mon_underwater(mdef))
             break;
         if (mhitb && !rn2(3)) {
@@ -1717,7 +1717,7 @@ passivemm(
                         Strcpy(mdef_Monnam, Monnam(magr));
                     magr->mstrategy &= ~STRAT_WAITFORU;
                     (void) rloc(magr, RLOC_MSG);
-                    
+
                     return (mdead | mhit);
                 }
             }

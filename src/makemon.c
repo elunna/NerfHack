@@ -266,7 +266,7 @@ m_initweap(struct monst *mtmp)
             switch (rn2(3)) {
             case 0:
                 if (!rn2(4))
-                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD 
+                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD
                                                 : LEATHER_BRACERS);
                 if (rn2(3))
                     (void) mongets(mtmp, ELVEN_SHORT_SWORD);
@@ -276,13 +276,13 @@ m_initweap(struct monst *mtmp)
             case 1:
                 (void) mongets(mtmp, ELVEN_BROADSWORD);
                 if (rn2(2))
-                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD 
+                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD
                                                : LEATHER_BRACERS);
                 break;
             case 2:
                 if (rn2(2)) {
                     (void) mongets(mtmp, ELVEN_SPEAR);
-                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD 
+                    (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD
                                                : LEATHER_BRACERS);
                 }
                 break;
@@ -408,7 +408,7 @@ m_initweap(struct monst *mtmp)
 
             /* some insurance against purple worms (and teleport wands) */
             if (on_level(&astral_level, &u.uz) && !rn2(3)) {
-                otmp = mksobj(rn2(3) ? RIN_SLOW_DIGESTION 
+                otmp = mksobj(rn2(3) ? RIN_SLOW_DIGESTION
                                      : RIN_TELEPORT_CONTROL, FALSE, FALSE);
                 (void) mpickobj(mtmp, otmp);
                 m_dowear(mtmp, FALSE);
@@ -617,16 +617,16 @@ m_initweap(struct monst *mtmp)
             break;
         case PM_RED_GRUNG:
         case PM_GOLD_GRUNG:
-            (void) mongets(mtmp, rn2(3) ? STUDDED_LEATHER_ARMOR 
+            (void) mongets(mtmp, rn2(3) ? STUDDED_LEATHER_ARMOR
                                         : LEATHER_ARMOR);
-            (void) mongets(mtmp, rn2(7) ? SPEAR : rn2(3) 
+            (void) mongets(mtmp, rn2(7) ? SPEAR : rn2(3)
                                                   ? TRIDENT : SCIMITAR);
         }
         /* Spellcasters */
-       
+
         /* Fighters */
-        
-        
+
+
         break;
     case S_DEMON:
         switch (mm) {
@@ -644,7 +644,7 @@ m_initweap(struct monst *mtmp)
                 otmp->spe = rnd(3) + 2;
                 (void) mpickobj(mtmp, otmp);
             }
-            
+
             otmp = mksobj(BULLWHIP, FALSE, FALSE);
             otmp->spe = rnd(3) + 2;
             otmp->oerodeproof = 1;
@@ -1091,7 +1091,7 @@ m_initinv(struct monst *mtmp)
     /* farming nerfs */
     if (ptr == &mons[PM_GUARD] || ptr == &mons[PM_WORM_THAT_WALKS])
         return;
-    
+
     /* ordinary soldiers rarely have access to magic (or gold :-) */
     if (ptr == &mons[PM_SOLDIER] && rn2(13))
         return;
@@ -1667,7 +1667,7 @@ makemon(
         mtmp->mpeaceful = mtmp->mtame = FALSE;
         mtmp->msleeping = 0;
     }
-    
+
     if ((ct = emits_light(mtmp->data)) > 0)
         new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,
                          monst_to_any(mtmp));
@@ -1763,11 +1763,11 @@ makemon(
             else
                 m_initsgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
         } else if(ptr->geno & G_VLGROUP) {
-            if (rn2(3))  
+            if (rn2(3))
                 m_initvlgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
-            else if (rn2(3))  
+            else if (rn2(3))
                 m_initlgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
-            else 
+            else
                 m_initsgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
         }
     }
@@ -2572,7 +2572,7 @@ peace_minded(struct permonst *ptr)
      * mpeaceful flag is set after the initial check. */
     if (In_sokoban(&u.uz))
 	    return FALSE;
-    
+
     if (always_peaceful(ptr)) {
         if (Race_if(PM_ORC) && hostile_to_orcs(ptr))
             return FALSE;
@@ -2580,7 +2580,7 @@ peace_minded(struct permonst *ptr)
             return TRUE;
     }
     if (always_hostile(ptr)) {
-        if (Race_if(PM_ORC) && is_demon(ptr) 
+        if (Race_if(PM_ORC) && is_demon(ptr)
             && (u.uevent.uhand_of_elbereth || rn2(2))) {
             return TRUE;
           }
@@ -2588,7 +2588,7 @@ peace_minded(struct permonst *ptr)
     }
     if (ptr->msound == MS_LEADER || ptr->msound == MS_GUARDIAN)
         return TRUE;
-    
+
     if (ptr->msound == MS_NEMESIS)
         return FALSE;
     if (ptr == &mons[PM_ERINYS])
@@ -2603,7 +2603,7 @@ peace_minded(struct permonst *ptr)
        orcs are the exception */
     if (Race_if(PM_ORC))
         return FALSE;
-    
+
     /* the monster is hostile if its alignment is different from the
      * player's */
     if (sgn(mal) != sgn(ual))

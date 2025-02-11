@@ -1153,7 +1153,7 @@ givit(int type, struct permonst *ptr)
         else
             You_feel(Hallucination ? "more in touch with the cosmos."
                                    : "more mentally acute.");
-        incr_itimeout(&HTelepat, ptr == &mons[PM_FLOATING_EYE] 
+        incr_itimeout(&HTelepat, ptr == &mons[PM_FLOATING_EYE]
                                      ? rn1(400, 400) : rn1(100, 100));
         /* If blind, make sure monsters show up. */
         if (Blind)
@@ -2852,14 +2852,14 @@ fpostfx(struct obj *otmp)
         if (ismnum(u.ulycn) || is_were(gy.youmonst.data))
             you_unwere(TRUE);
         break;
-    case HOLY_WAFER:            
+    case HOLY_WAFER:
         if (u.ualign.type == A_LAWFUL) {
             if (u.uhp < u.uhpmax) {
                 You_feel("warm inside.");
                 healup(rn1(20, 20), 0, 0, 0);
             }
         }
-        if (Sick) 
+        if (Sick)
             make_sick(0L, (char *)0, TRUE, SICK_ALL);
         if (ismnum(u.ulycn) || is_were(gy.youmonst.data))
             you_unwere(TRUE);

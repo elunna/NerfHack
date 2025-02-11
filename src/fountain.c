@@ -524,7 +524,7 @@ doforging(void)
         You("lack the strength to use the forge.");
         return 0;
     }
-    
+
     /* setup the base object */
     obj1 = getobj("use as a base", any_obj_ok, GETOBJ_PROMPT);
     if (!obj1) {
@@ -761,14 +761,14 @@ drinkfountain(void)
         pseudo->blessed = 1;
         peffects(pseudo);
         obfree(pseudo, (struct obj *) 0);
-        
+
         /* gain ability, blessed if "natural" luck is high */
         pseudo = mksobj(POT_GAIN_ABILITY, FALSE, FALSE);
         pseudo->cursed = 0;
         pseudo->blessed = !littleluck;
         peffects(pseudo);
         obfree(pseudo, (struct obj *) 0);
-        
+
         display_nhwindow(WIN_MESSAGE, FALSE);
         pline("A wisp of vapor escapes the fountain...");
         exercise(A_WIS, TRUE);

@@ -129,7 +129,7 @@ maybe_kick_monster(struct monst *mon, coordxy x, coordxy y)
 {
     if (mon) {
         boolean save_forcefight = svc.context.forcefight;
-        
+
         gb.bhitpos.x = x;
         gb.bhitpos.y = y;
         if (!mon->mpeaceful || !canspotmon(mon))
@@ -1190,7 +1190,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
             kick_ouch(x, y, "");
             return ECMD_TIME;
         }
-        if (!Is_special(&u.uz) 
+        if (!Is_special(&u.uz)
             && rn2(15) && !(gm.maploc->looted & TREE_LOOTED)
             && (treefruit = rnd_treefruit_at(x, y))) {
             long nfruit = 8L - rnl(7), nfall;
@@ -1552,7 +1552,7 @@ dokick(void)
             Your("slow motion kick can't reach %s.", mon_nam(mtmp));
             return ECMD_TIME;
         }
-        
+
         if (!maybe_kick_monster(mtmp, x, y))
             return (svc.context.move ? ECMD_TIME : ECMD_OK);
     }

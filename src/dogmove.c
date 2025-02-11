@@ -248,14 +248,14 @@ dog_eat(struct monst *mtmp,
     long oprice;
     char objnambuf[BUFSZ], *obj_name;
     boolean unstone;
-    
+
     objnambuf[0] = '\0';
     if (edog->hungrytime < svm.moves)
         edog->hungrytime = svm.moves;
     nutrit = dog_nutrition(mtmp, obj);
 
     unstone = (cures_stoning(mtmp, obj, TRUE) && mtmp->mstone);
-    
+
     if (devour) {
         if (mtmp->meating > 1)
             mtmp->meating /= 2;
@@ -366,7 +366,7 @@ dog_eat(struct monst *mtmp,
             /* m_consume_obj() -> delobj() -> obfree() will handle the shop
                billing update */
         }
-        
+
         if (unstone) {
             mtmp->mstone = 0;
             if (!gv.vis) {
@@ -377,7 +377,7 @@ dog_eat(struct monst *mtmp,
                 pline("%s seems limber!", Monnam(mtmp));
             }
         }
-        
+
         m_consume_obj(mtmp, obj);
     }
 
@@ -443,14 +443,14 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
     int carryamt = 0;
     struct obj *obj, *otmp;
     struct rm *lev;
-    
+
     if (helpless(mtmp) || mtmp->meating)
         return 0;
 
     omx = mtmp->mx;
     omy = mtmp->my;
     lev = &levl[omx][omy];
-    
+
     /* If we are carrying something then we drop it (perhaps near @).
      * Note: if apport == 1 then our behavior is independent of udist.
      * Use udist+1 so steed won't cause divide by zero.
@@ -1687,7 +1687,7 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
             continue;
         if (!obj->owornmask)
             continue;
-        
+
         best_score = armor_bonus(mtmp, best) + extra_pref(mtmp, best);
         obj_score = armor_bonus(mtmp, obj) + extra_pref(mtmp, obj);
 

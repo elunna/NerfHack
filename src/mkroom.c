@@ -72,7 +72,7 @@ do_mkroom(int roomtype)
             mkzoo(BEEHIVE);
             break;
         case MIGOHIVE:
-            mkzoo(MIGOHIVE); 
+            mkzoo(MIGOHIVE);
             break;
         case FUNGUSFARM:
             mkzoo(FUNGUSFARM);
@@ -798,7 +798,7 @@ mkswamp(void) /* Michiel Huisjes & Fred de Wilde */
                                                sx, sy, NO_MM_FLAGS);
                             eelct++;
                         }
-                    } else if (!rn2(4)) { 
+                    } else if (!rn2(4)) {
                         levl[sx][sy].typ = PUDDLE;
                         /* swamps tend to be moldy */
                         (void) makemon(mkclass(S_FUNGUS, 0), sx, sy,
@@ -1095,7 +1095,7 @@ horriblemon(void)
     /* Umbers are the default filler */
     if (rn2(4))
         return (&mons[PM_UMBER_HULK]);
-    
+
     if (i > 135)
         return (&mons[PM_STAR_VAMPIRE]);
     else if (i > 125)

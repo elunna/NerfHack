@@ -83,7 +83,7 @@ static const struct innate {
   tou_abil[] = { { 10, &(HSearching), "perceptive", "" },
                  { 20, &(HPoison_resistance), "hardy", "" },
                  { 0, 0, 0, 0 } },
-  
+
   und_abil[] = { { 1, &(HUndead_warning), "", "" },
                  { 1, &(HDrain_resistance), "", "" },
                  { 1, &(HSick_resistance), "", "" },
@@ -125,7 +125,7 @@ static const struct innate {
                  { 5, &(EJumping), "light on your feet", "stuck to the ground" },
                  { 7, &(HFast), "quick", "slow" },
                  { 0, 0, 0, 0 } },
-  
+
   hum_abil[] = { { 0, 0, 0, 0 } };
 
 staticfn void exerper(void);
@@ -1160,7 +1160,7 @@ adjabil(int oldlevel, int newlevel)
                 Your("powers diminish!");
         }
     }
-    
+
     /* ALI -- update Warn_of_mon */
     HWarn_of_mon = HUndead_warning;
     if (HUndead_warning)

@@ -606,7 +606,7 @@ find_defensive(struct monst *mtmp, boolean tryescape)
             }
         }
     }
-                    
+
     if (mtmp->mrabid || mtmp->mdiseased) {
         for (obj = mtmp->minvent; obj; obj = obj->nobj) {
             if (!nohands(mtmp->data)) {
@@ -1121,11 +1121,11 @@ use_defensive(struct monst *mtmp)
     case MUSE_SCR_FLOOD:
         if (otmp->quan > 1L)
             otmp = splitobj(otmp, 1L);
-        
+
         /* Note: do_clear_area did not work correctly when I tried
-         * to pass the scroll from the monsters position. As a 
+         * to pass the scroll from the monsters position. As a
          * consequence (and because I don't have the skilled to fix it)
-         * we are assuming the flood is always intended to be centered 
+         * we are assuming the flood is always intended to be centered
          * on the hero */
         mreadmsg(mtmp, otmp); /* sets otmp->dknown if !Blind or !Deaf */
         seffect_flood(&otmp, mtmp);
@@ -1395,7 +1395,7 @@ use_defensive(struct monst *mtmp)
         mquaffmsg(mtmp, otmp);
         i = (16 + d(4 + 2 * bcsign(otmp), 8))
             / (otmp->odiluted ? 2 : 1);
-        healmon(mtmp, i, (otmp->blessed ? 5 : 2) 
+        healmon(mtmp, i, (otmp->blessed ? 5 : 2)
                              / (otmp->odiluted ? 2 : 1));
         if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
@@ -1431,11 +1431,11 @@ use_defensive(struct monst *mtmp)
             makeknown(otmp->otyp);
         m_useup(mtmp, otmp);
         return 2;
-        
+
     case MUSE_POT_MILK:
         /* Cancels:
-         * confusion, stunning, 
-         * protection, reflection, phasing, 
+         * confusion, stunning,
+         * protection, reflection, phasing,
          * invisibility, unpolymorphs
          */
         mquaffmsg(mtmp, otmp);
@@ -1444,7 +1444,7 @@ use_defensive(struct monst *mtmp)
             mtmp->mhp = ++mtmp->mhpmax;
         if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
-        } 
+        }
         if (mtmp->mconf || mtmp->mstun) {
             mtmp->mconf = mtmp->mstun = 0;
             if (vismon)
@@ -1473,15 +1473,15 @@ use_defensive(struct monst *mtmp)
             mtmp->minvis = mtmp->perminvis = 0;
             newsym(mtmp->mx, mtmp->my);
         }
-        
+
         /* force shapeshifter into its base form or mimic to unhide */
         normal_shape(mtmp);
 
         if (oseen)
             makeknown(POT_MILK);
         m_useup(mtmp, otmp);
-        return 2;    
-    
+        return 2;
+
     case MUSE_POT_VAMPIRE_BLOOD:
         mquaffmsg(mtmp, otmp);
         if (!otmp->cursed) {
@@ -3511,9 +3511,9 @@ const char *
 mon_reflectsrc(struct monst *mon)
 {
     struct obj *orefl = which_armor(mon, W_ARMS);
-    
+
     /* TODO: Make sure the reflecting item is seen before identifying */
-    
+
     if (orefl && orefl->otyp == SHIELD_OF_REFLECTION) {
         makeknown(SHIELD_OF_REFLECTION);
         return "shield";
@@ -3538,13 +3538,13 @@ mon_reflectsrc(struct monst *mon)
         /* specifically for the monster spell MGC_REFLECTION */
         return "shimmering globe";
     } else if (m_carrying(mon, MIRROR)) {
-        /* Also applies to the Magic Mirror of Merlin - put this before the 
+        /* Also applies to the Magic Mirror of Merlin - put this before the
          * W_ART check */
         return "mirror";
     } else if (orefl && orefl->oartifact == ART_HOLOGRAPHIC_VOID_LILY) {
         /* Due to any carried artifact which grants reflection, which shows as W_ART */
         return "card";
-    } 
+    }
     return (const char*) NULL;
 }
 
@@ -3586,7 +3586,7 @@ ureflectsrc(void)
         return "scales";
     } else if (carrying(MIRROR)) {
         /* carried mirror offers reflection but easily breaks */
-        /* Also applies to the Magic Mirror of Merlin - put this before the 
+        /* Also applies to the Magic Mirror of Merlin - put this before the
          * W_ART check */
         makeknown(MIRROR);
         return "mirror";
@@ -3594,7 +3594,7 @@ ureflectsrc(void)
         /* Only carried artifact which grants reflection is
          * the Holographic Void Lily, which shows as W_ART */
         return "card";
-    } 
+    }
     return (const char*) NULL;
 }
 

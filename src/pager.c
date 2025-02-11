@@ -1051,7 +1051,7 @@ add_mon_info(winid datawin, struct permonst * pm)
           break;
     }
     MONPUTSTR(buf);
-    
+
     if (pm->maligntyp > 0)
         Sprintf(buf, "Alignment: lawful");
     else if (pm->maligntyp < 0)
@@ -1237,7 +1237,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     MONPUTSTR(buf);
     if (hates_silver(pm))
         MONPUTSTR("Hates silver.");
-    
+
     MONPUTSTR("Attacks: ");
     /* Attacks */
     buf[0] = buf2[0] = '\0';
@@ -1526,7 +1526,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     /* RING INFO */
 
     if (olet == RING_CLASS) {
-        OBJPUTSTR(reveal_info && oc.oc_charged 
+        OBJPUTSTR(reveal_info && oc.oc_charged
             ? "Chargeable ring." : "Ring.");
         /* see material comment below; only show toughness status if this
          * particular ring is already identified... */
@@ -4330,7 +4330,7 @@ corpse_conveys(char *buf, struct permonst * pm)
     /* acid, stone, and psionic resistance aren't currently conveyable */
     if (*buf)
         Strcat(buf, " resistance");
-    /* If we have many more corpses like this that have exceptions, implement 
+    /* If we have many more corpses like this that have exceptions, implement
      * official handling in eat.c */
     APPENDC(intrinsic_possible(TELEPORT, pm)
                 && pm != &mons[PM_QUANTUM_MECHANIC], "teleportation");

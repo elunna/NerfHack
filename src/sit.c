@@ -68,7 +68,7 @@ throne_sit_effect(void)
         case 3:
             pline("A%s electric shock shoots through your body!",
                   (!hardly_resistant(SHOCK_RES)) ? "n" : " massive");
-            losehp(resist_reduce(rnd(24), SHOCK_RES)  + rnd(6), 
+            losehp(resist_reduce(rnd(24), SHOCK_RES)  + rnd(6),
                    "electric chair", KILLED_BY_AN);
             exercise(A_CON, FALSE);
             break;
@@ -330,7 +330,7 @@ dosit(void)
     }
 
     u_wipe_engr(rnd(5));
-    
+
     if (OBJ_AT(u.ux, u.uy)
         /* ensure we're not standing on the precipice */
         && !(uteetering_at_seen_pit(trap) || uescaped_shaft(trap))) {
@@ -566,7 +566,7 @@ rndcurse(void)
             }
 
             /* Tell the player what was cursed please. */
-            if (!Blind) 
+            if (!Blind)
                 Shk_Your(Your_buf, otmp);
 
             if (otmp->blessed) {

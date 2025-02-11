@@ -1094,7 +1094,7 @@ dogfood(struct monst *mon, struct obj *obj)
           just like elves prefer starvation to cannibalism. */
         if (obj->otyp == CORPSE && fptr == &mons[PM_LIZARD] && mon->mstone)
             return DOGFOOD;
-        
+
 	/* vampires only "eat" very fresh corpses ...
 	 * Assume meat -> blood */
 	if (is_vampire(mptr)) {
@@ -1232,14 +1232,14 @@ tamedog(
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
     if (non_tameable(mtmp->data) || mtmp->mrabid)
         return FALSE;
-    
+
     /* Orcs are limited to taming evilish monsters */
     if (Race_if(PM_ORC) &&
         (mtmp->data->mlet != S_TROLL && mtmp->data->mlet != S_OGRE
         && mtmp->data->mlet != S_ORC && mtmp->data->mlet != S_DRAGON
         && mtmp->data->mlet != S_UMBER && mtmp->data->mlet != S_UMBER))
         return FALSE;
-    
+
     if (mtmp->mberserk) {
         calm_berserker(mtmp);
         return FALSE;

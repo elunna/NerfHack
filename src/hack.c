@@ -1945,7 +1945,7 @@ domove_bump_mon(struct monst *mtmp, int glyph)
             /* m_monnam(): "dog" or "Fido", no "invisible dog" or "it" */
             pline("Pardon me, %s.", m_monnam(mtmp));
         else
-            You("%s right into %s.", Underwater ? "swim" : "move ", 
+            You("%s right into %s.", Underwater ? "swim" : "move ",
                 mon_nam(mtmp));
         return TRUE;
     }
@@ -2755,7 +2755,7 @@ domove_core(void)
            will stop travel rather than domove */
         if (!is_safemon(mtmp) || svc.context.forcefight)
             nomul(0);
-        
+
         if (domove_bump_mon(mtmp, glyph))
             return;
 
@@ -4664,7 +4664,7 @@ rounddiv(long x, int y)
     return divsgn * r;
 }
 
-/* Handles the hero swimming underneath a monster 
+/* Handles the hero swimming underneath a monster
  * and required checks.
  * Returns TRUE if the hero and monster should trade places,
  * otherwise FALSE.

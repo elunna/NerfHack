@@ -210,11 +210,11 @@ hitval(struct obj *otmp, struct monst *mon)
     /* Blessed weapons used against undead or demons */
     if (Is_weapon && otmp->blessed && mon_hates_blessings(mon))
         tmp += 2;
-    
+
     /* Undead Slayers are naturally gifted at dispatching undead. */
     if (Role_if(PM_UNDEAD_SLAYER) && mon_hates_blessings(mon))
         tmp += 2;
-    
+
     if (is_spear(otmp) && strchr(kebabable, ptr->mlet))
         tmp += 2;
 
@@ -451,7 +451,7 @@ dmgval_core(
         /* Undead Slayers are naturally gifted at dispatching undead. */
         if (mon && Role_if(PM_UNDEAD_SLAYER) && mon_hates_blessings(mon))
             bonus += 1 + rnd(u.ulevel / 5 + 1);
-        
+
         if (is_axe(otmp)) {
             if (ptr && is_wooden(ptr))
                 bonus += rnd(4);
@@ -969,7 +969,7 @@ select_hwep(struct monst *mtmp)
                 wearing_shield = 0;
         }
     }
-    
+
     /* prefer artifacts to everything else */
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
         if (otmp->oclass == WEAPON_CLASS && otmp->oartifact
@@ -1232,7 +1232,7 @@ abon(void)
     sbon += (u.ulevel < 3) ? 1 : 0;
     /* Be a little more generous for NerfHack early game too */
     sbon += (u.ulevel < 6) ? 1 : 0;
-    
+
     if (dex < 4)
         return (sbon - 3);
     else if (dex < 6)
@@ -1707,7 +1707,7 @@ void
 use_skill(int skill, int degree)
 {
     boolean advance_before;
-    
+
     if (skill != P_NONE && !P_RESTRICTED(skill)) {
         advance_before = can_advance(skill, FALSE);
         P_ADVANCE(skill) += degree;

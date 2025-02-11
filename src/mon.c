@@ -1563,7 +1563,7 @@ m_calcdistress(struct monst *mtmp)
     /* regenerate hit points - note that if withering, they won't gain hp,
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
-    
+
     if (mtmp->mstone > 0) {
         if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {
             mtmp->mstone = 0;
@@ -1614,7 +1614,7 @@ m_calcdistress(struct monst *mtmp)
         if (DEADMONSTER(mtmp))
             return;
     }
-        
+
     /* diseased monsters can die as well... */
     if (mtmp->mdiseased && mtmp->mdiseasetime <= 1) {
         if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
@@ -2434,7 +2434,7 @@ meatcatnip(struct monst *mtmp)
     /* If a pet, eating is handled separately, in dog.c */
     if (mtmp->mtame || !is_feline(mtmp->data))
         return 0;
-    
+
     /* Eats topmost sprig of catnip if it is there */
     for (otmp = svl.level.objects[mtmp->mx][mtmp->my]; otmp;
          otmp = otmp->nexthere) {
@@ -2445,7 +2445,7 @@ meatcatnip(struct monst *mtmp)
             else if (!Deaf && flags.verbose)
                 You_hear("a meowing sound.");
             mtmp->meating = otmp->owt / 2 + 1;
-            
+
             if (!Blind)
                 pline_mon(mtmp, "%s chases %s tail!", Monnam(mtmp), mhis(mtmp));
             otmp->quan--;
@@ -3064,15 +3064,15 @@ mm_aggression(
     if ((magr->data == &mons[PM_WATCHMAN] || magr->data == &mons[PM_WATCH_CAPTAIN])
         && is_orc(mdef->data))
         return ALLOW_M | ALLOW_TM;
-        
+
     /* Phoenixes loathe undead */
     if (mndx == PM_PHOENIX && is_undead(mdef->data))
         return ALLOW_M | ALLOW_TM;
-    
+
     /* Grung really hate kamadan */
     if (is_grung(magr->data) && mdef->data == &mons[PM_KAMADAN])
         return ALLOW_M | ALLOW_TM;
-    
+
     /* berserk monsters sometimes lash out at everything
        when trying to attack you  */
     if (magr->mberserk && !magr->mpeaceful
@@ -3088,7 +3088,7 @@ mm_aggression(
     if ((is_covetous(magr->data) || is_mplayer(magr->data))
         && mon_has_amulet(mdef))
         return ALLOW_M | ALLOW_TM;
-    
+
     /* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */
@@ -3784,8 +3784,8 @@ mondead(struct monst *mtmp)
                 makemon(&mons[PM_MAGGOT], cc.x, cc.y, NO_MINVENT);
             }
         }
-    } 
-    
+    }
+
     if (mtmp->data == &mons[PM_STEAM_VORTEX])
         create_gas_cloud(mtmp->mx, mtmp->my, rn2(10) + 5, 0); /* harmless */
 
@@ -3917,7 +3917,7 @@ corpse_chance(
         pline("%s!", rn2(2) ? "Squish" : rn2(2) ? "Squash" : "Smash");
         return FALSE;
     }
-    
+
     /* Gas spores always explode upon death */
     for (i = 0; i < NATTK; i++) {
         if (mdat->mattk[i].aatyp == AT_BOOM) {
@@ -4155,7 +4155,7 @@ monkilled(
     if (mdef->data == &mons[PM_SLAUGHTER_WIGHT] && !gd.disintegested) {
         deathwail(mdef);
     }
-    
+
     if (!DEADMONSTER(mdef))
         return; /* life-saved */
 
@@ -4438,7 +4438,7 @@ xkilled(
     newexplevel(); /* will decide if you go up */
 
     /* adjust alignment points */
-    if (mtmp->m_id == svq.quest_status.leader_m_id) { 
+    if (mtmp->m_id == svq.quest_status.leader_m_id) {
         if (!Race_if(PM_ORC)) {
             adjalign(-(u.ualign.record + (int) ALIGNLIM / 2)); /* REAL BAD! */
             u.ugangr += 7; /* instantly become "extremely" angry */
@@ -4471,7 +4471,7 @@ xkilled(
         if (mdat->maligntyp == A_NONE && !Race_if(PM_ORC))
             adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
         if (Race_if(PM_ORC) && mdat->maligntyp == A_LAWFUL)
-            adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */                       
+            adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
     } else if (mtmp->mtame) {
         adjalign(Race_if(PM_ORC) ? -3 : -15); /* bad!! */
         /* your god is mighty displeased... */

@@ -959,7 +959,7 @@ mattacku(struct monst *mtmp)
         mtmp->minvis = 0;
         newsym(mtmp->mx, mtmp->my);
     }
-    
+
     /* Make Star Vampires visible the moment they hit/miss us */
     if (mtmp->data == &mons[PM_STAR_VAMPIRE] && mtmp->minvis
           && cansee(mtmp->mx, mtmp->my)) {
@@ -1035,7 +1035,7 @@ mattacku(struct monst *mtmp)
             || (gs.skipdrin && mattk->aatyp == AT_TENT
                 && mattk->adtyp == AD_DRIN))
             continue;
-        
+
         switch (mattk->aatyp) {
         case AT_CLAW: /* "hand to hand" attacks */
         case AT_KICK:
@@ -2058,19 +2058,19 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     boolean is_medusa, reflectable,
             cancelled = (mtmp->mcan != 0), already = FALSE,
             mcanseeu = (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
-                        && mtmp->mcansee), 
+                        && mtmp->mcansee),
             evil_eye = mattk->adtyp == AD_LUCK
                    && mtmp->data != &mons[PM_BARGHEST];
     const char* reflectsrc = ureflectsrc();
     boolean wearing_eyes = ublindf
                             && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD;
-    
+
     if (m_seenres(mtmp, cvt_adtyp_to_mseenres(mattk->adtyp)))
         return M_ATTK_MISS;
 
     /* Check for protection from invisibility, displacement,
        or cover of darkness. We need to check a special case
-       for the evil eye gaze since that is already checked 
+       for the evil eye gaze since that is already checked
        in mcastu. */
     if (!evil_eye && !mon_really_found_us(mtmp))
         mcanseeu = 0;
@@ -2146,7 +2146,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                 }
                 break;
             }
-                
+
             if (!m_canseeu(mtmp)) { /* probably you're invisible */
                 if (useeit)
                     pline(
@@ -2178,7 +2178,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             && !Stone_resistance && !Unaware) {
             You("meet %s gaze.", s_suffix(mon_nam(mtmp)));
             stop_occupation();
-            
+
             if (is_medusa) {
                 if (poly_when_stoned(gy.youmonst.data) && polymon(PM_STONE_GOLEM))
                     break;
@@ -2208,7 +2208,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             } else
                 pline("%s gaze reminds you of delicious %s.",
                       s_suffix(Monnam(mtmp)), fruitname(FALSE));
-            
+
             mtmp->mspec_used = mtmp->mspec_used + (hunger + rn2(6));
             morehungry(hunger);
         }
@@ -2405,7 +2405,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             } else if (wearing_eyes) {
                 if (!rn2(4))
                     pline_mon(mtmp, "%s protect you from %s slumbering gaze.",
-                          An(bare_artifactname(ublindf)), 
+                          An(bare_artifactname(ublindf)),
                               s_suffix(mon_nam(mtmp)));
                 break;
             } else if (!fully_resistant(SLEEP_RES)) {
@@ -2427,7 +2427,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                     pline("%s protect you from %s draining gaze.",
                           An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
                 break;
-            } 
+            }
             pline("%s stares into your eyes...", Monnam(mtmp));
             You("suddenly feel weaker!");
             losexp("life drainage");
@@ -3003,7 +3003,7 @@ passiveum(
 {
     int i, tmp = 0, orig_dmg;
     struct attack *oldu_mattk = 0;
-    
+
     if (uarms && uarms->oartifact == ART_OATHFIRE) {
         if (!resists_fire(mtmp) && !defended(mtmp, AD_FIRE)
                 && !mon_underwater(mtmp)) {
@@ -3023,9 +3023,9 @@ passiveum(
             if (resists_cold(mtmp))
                 tmp += 7;
             tmp += destroy_items(mtmp, AD_FIRE, tmp);
-            
+
         }
-      
+
         if (assess_dmg(mtmp, tmp) == M_ATTK_AGR_DIED)
             return M_ATTK_AGR_DIED;
         /* Random explosions! */
@@ -3036,14 +3036,14 @@ passiveum(
         }
         tmp = 0;
     }
-    
+
     if (Role_if(PM_ROGUE) && !Upolyd)
         return counterattack(mtmp, mattk);
-    
+
     /* Hack to make passive grung poison work */
     if (!Upolyd && Race_if(PM_GRUNG))
         olduasmon = &mons[PM_GRUNG];
-    
+
     /*
      * mattk      == mtmp's attack that hit you;
      * oldu_mattk == your passive counterattack (even if mtmp's attack
@@ -3125,7 +3125,7 @@ passiveum(
     case AD_SLEE:
         if (uarm && is_bulky(uarm))
             break;
-        /* passive sleep for gold grung */ 
+        /* passive sleep for gold grung */
         orig_dmg = tmp;
         if (!rn2(5)) {
             if (Underwater) {
@@ -3257,7 +3257,7 @@ passiveum(
         case AD_HALU: /* Third eye */
             if (u.umonnum != PM_THIRD_EYE)
                 break;
-                
+
             if (mtmp->mcansee && haseyes(mtmp->data) && rn2(3)
                 && (mon_prop(mtmp, SEE_INVIS) || !Invis)) {
                 if (Blind) {
@@ -3416,7 +3416,7 @@ struct attack *mattk)
         impossible("counterattack() with polyd-rogue!");
         return M_ATTK_HIT;
     }
-    
+
     /* Counterattacks use energy */
     if (u.uen < COUNTER_COST)
         return M_ATTK_HIT;
@@ -3610,14 +3610,14 @@ mon_really_found_us(struct monst *mtmp)
     boolean foundyou = (u.ux == mtmp->mux && u.uy == mtmp->muy),
             mcanseeu = (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
                         && mtmp->mcansee);
-    
-    /* telepathic monsters usually can bypass the protection of 
+
+    /* telepathic monsters usually can bypass the protection of
      * invisibility, displacement, and cover-of-darkness. The
      * telepathic() list is limited to the core vanilla monsters
      * that had telepathy and other high level monsters. */
     if (telepathic(mtmp->data) && rn2(5))
         return TRUE;
-    
+
     /* Invisibility Protection: If the player character is currently
      * invisible, they should anticipate a reasonable number of avoided
      * gazes during gaze attacks. In vanilla NetHack's implementation, a
@@ -3626,7 +3626,7 @@ mon_really_found_us(struct monst *mtmp)
      * the ability to see invisible. To address this, we are now
      * adopting the same detection odds as in the 'monmove' function,
      * If the gazer is in melee range, we allow for an easy hit
-     * (otherwise, gazers will simply linger awkwardly next to the 
+     * (otherwise, gazers will simply linger awkwardly next to the
      * player...) */
     if (mcanseeu && Invis && !mon_prop(mtmp, SEE_INVIS)
         && !m_next2u(mtmp) && rn2(4)) {

@@ -363,11 +363,11 @@ learn(void)
     boolean costly = TRUE, faded_to_blank = FALSE;
     struct obj *book = svc.context.spbook.book;
     short booktype;
-    
+
     /* Safety check in case spellbook doesn't exist anymore */
     if (!book)
         return 0; /* This should stop the occupation */
-        
+
     booktype = book->otyp;
     skill = objects[booktype].oc_skill;
 
@@ -1581,7 +1581,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
             (void) seffects(pseudo);
         else
             (void) make_msummoned(0, &gy.youmonst, FALSE, u.ux, u.uy);
-        
+
         break;
     /* these are all duplicates of potion effects */
     case SPE_HASTE_SELF:
@@ -1614,7 +1614,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
     case SPE_WATERPROOFING: {
         long t = (HWatertight & TIMEOUT);
         int nbase = max(5, role_skill * role_skill * 5);
-        
+
         if (!Watertight) {
              if (!Blind)
                  Your("belongings briefly glisten with an uncanny dryness.");
@@ -1711,7 +1711,7 @@ spelleffects(int spell_otyp, boolean atme, boolean force)
        four times faster when at basic skill or lower, two times
        when above. */
     if (!force) {
-        boolean spbonus = role_skill <= P_BASIC 
+        boolean spbonus = role_skill <= P_BASIC
                           && !can_advance(skill, FALSE);
         use_skill(skill, (spellev(spell) * (spbonus ? 4 : 2)));
     }
@@ -2673,10 +2673,10 @@ divine_reckon(void)
     struct monst *mtmp;
     struct obj *pseudo = mksobj(SCR_LIGHT, FALSE, FALSE);
     int unseen;
-    
+
     bless(pseudo);
     pseudo->ox = u.ux, pseudo->oy = u.uy;
-    
+
     if (!Blind)
         pline("A blinding light erupts, punishing the unworthy!");
     else

@@ -136,7 +136,7 @@ u_calc_moveamt(int wtcap)
                 moveamt = 10;
         } else {
             moveamt = gy.youmonst.data->mmove;
-        
+
             if (Very_fast) { /* speed boots, potion, or spell */
                 /* gain a free action on 2/3 of turns */
                 if (rn2(3) != 0)
@@ -185,7 +185,7 @@ moveloop_core(void)
     boolean monscanmove = FALSE;
     boolean vamp_regen = vamp_can_regen();
     int chance;
-    
+
 #ifdef SAFERHANGUP
     if (program_state.done_hup)
         end_of_input();
@@ -237,10 +237,10 @@ moveloop_core(void)
                 chance = u.uevent.udemigod ? 25
                          : (depth(&u.uz) > depth(&stronghold_level)) ? 50
                          : 70;
-                
+
                 /* Monster generation in quests is dramatically slowed down */
                 chance *= In_quest(&u.uz) ? 5 : 1;
-                
+
                 if (!rn2(chance))
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
@@ -294,7 +294,7 @@ moveloop_core(void)
                 run_regions();
                 check_dogs();
                 check_hydration();
-                
+
                 if (u.ublesscnt)
                     u.ublesscnt--;
 
@@ -454,12 +454,12 @@ moveloop_core(void)
                15 turns or theoretically never happen at all; but when
                a fast hero got multiple moves on that 15th turn, it
                could actually happen more than once on the same turn!] */
-            
+
             /* The Argent Cross piggybacks on this timer as well */
             if (uamul && uamul->oartifact == ART_ARGENT_CROSS)
                 argent_cross_turns();
         }
-        
+
         /* [fast hero who gets multiple moves per turn ends up sinking
            multiple times per turn; is that what we really want?] */
         if (u.utrap && u.utraptype == TT_LAVA)
@@ -1461,9 +1461,9 @@ ck_foulstones(void)
     }
 }
 
-/* This performs maintenance with the grung's requirement for periodic 
+/* This performs maintenance with the grung's requirement for periodic
  * hydration. Should this be managed in timeout.c?
- * If we do it there, we'd need to make hydration a property which seems 
+ * If we do it there, we'd need to make hydration a property which seems
  * strange. */
 staticfn void
 check_hydration(void)
@@ -1472,13 +1472,13 @@ check_hydration(void)
      * while polymorphed into a different form the timer will pause. */
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
-    
+
     if (Underwater || Is_waterlevel(&u.uz)) {
         rehydrate(1000);
     } else {
         dehydrate((In_hell(&u.uz) || Is_firelevel(&u.uz)) ? d(1, 2) : 1);
-        /* Should we dehydrate faster in Gehennom or plane of fire? ... 
-         * What about the plane of water? Maybe you are constantly hydrated 
+        /* Should we dehydrate faster in Gehennom or plane of fire? ...
+         * What about the plane of water? Maybe you are constantly hydrated
          * there? */
     }
 }
@@ -1504,17 +1504,17 @@ dehydrate(int amt)
 
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)) || !amt)
         return;
-    
+
     debugpline2("(T%ld:-%d)", svm.moves, amt);
-    
+
     old_tier = find_tier_index(u.hydration);
     u.hydration -= amt;
     if (u.hydration < 0)
         u.hydration = 0;
-    
+
     /* Show a message if there was a significant change. */
     int new_tier = find_tier_index(u.hydration);
-    
+
     if (new_tier != old_tier) {
         if (new_tier < NUM_TIERS) {
             You_feel("%s", hydration_tiers[new_tier].description);
@@ -1522,11 +1522,11 @@ dehydrate(int amt)
             impossible("dehydrate: new_tier (%d) is out of bounds.", new_tier);
         stop_occupation();
     }
-    
+
     if (new_tier > old_tier)
-        impossible("dehydrate: new_tier (%d) is higher than old_tier (%d), amt=%d", 
+        impossible("dehydrate: new_tier (%d) is higher than old_tier (%d), amt=%d",
                    new_tier, old_tier, amt);
-    
+
     if (u.hydration == 0) {
         Your("skin dries up into a lifeless husk!");
         if (Upolyd) {
@@ -1566,7 +1566,7 @@ rehydrate(int amt)
     if (u.hydration > HYDRATION_MAX)
         u.hydration = HYDRATION_MAX;
     amt_diff = u.hydration - old_hydration;
-    
+
     /* messages */
     if (amt_diff == 0)
         return FALSE;
@@ -1578,11 +1578,11 @@ rehydrate(int amt)
         You("feel more hydrated.");
     else
         You("feel a little more hydrated.");
-    
+
     if (u.hydration < old_hydration)
-        impossible("rehydrate: current hydration (%d) is less than before (%d), amt=%d", 
+        impossible("rehydrate: current hydration (%d) is less than before (%d), amt=%d",
                    u.hydration, old_hydration, amt);
-    
+
     /* Rehydrating needs to have a minimum amount of effect to
      * dry up a puddle or fountain */
     return amt_diff >= 50;

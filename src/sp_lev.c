@@ -2245,7 +2245,7 @@ create_monster(monster *m, struct mkroom *croom)
         /* Sanity check here - rabid overrides peaceful */
         if (mtmp->mpeaceful && mtmp->mrabid)
             mtmp->mpeaceful = 0;
-        
+
         if (m->asleep > BOOL_RANDOM)
             mtmp->msleeping = m->asleep;
         if (m->seentraps)
@@ -4981,18 +4981,18 @@ lspo_feature(lua_State *L)
         "toilet",
         "pool",
         "throne",
-        "tree", 
+        "tree",
         "puddle",
         "lava",
         NULL };
-    static const int features2i[] = { 
+    static const int features2i[] = {
         FOUNTAIN,
         FORGE,
         SINK,
         TOILET,
         POOL,
         THRONE,
-        TREE, 
+        TREE,
         PUDDLE,
         LAVAPOOL,
         STONE };

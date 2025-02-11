@@ -897,7 +897,7 @@ gcrownu(void)
         else
             You_feel("much healthier.");
     }
-    
+
     godvoice(u.ualign.type, (char *) 0);
 
     class_gift = STRANGE_OBJECT;
@@ -1009,7 +1009,7 @@ gcrownu(void)
         if (ok_wep(uwep))
             obj = uwep; /* to be blessed,&c */
     }
-    
+
     if (Role_if(PM_CLERIC)) {
         obj = mksobj(WAR_HAMMER, FALSE, FALSE);
         obj = oname(obj, artiname(PRIEST_GIFT), ONAME_GIFT | ONAME_KNOW_ARTI);
@@ -1102,7 +1102,7 @@ gcrownu(void)
             break;
         }
     }
-    
+
     /* enhance weapon regardless of alignment or artifact status */
     if (ok_wep(obj)) {
         bless(obj);
@@ -1962,7 +1962,7 @@ bestow_artifact(uchar max_giftvalue)
     int nchance = u.ulevel + 12;
     int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
     boolean do_bestow = u.ulevel > 2 && u.uluck >= 0;
-        
+
     /* Cartomancers get the luck of the draw here...
      * We purposely check for card drop first.
      * Based on the SpliceHack minion code adapted from SLASH'EM */
@@ -3084,19 +3084,19 @@ argent_cross_turns(void)
     }
     if (!uamul->blessed)
         return; /* No effect unless blessed */
-                
-    if ((u.ualign.type != A_CHAOTIC && (is_demon(gy.youmonst.data) 
-                                        || is_undead(gy.youmonst.data) 
+
+    if ((u.ualign.type != A_CHAOTIC && (is_demon(gy.youmonst.data)
+                                        || is_undead(gy.youmonst.data)
                                         || is_vampshifter(&gy.youmonst)))
         || u.ugangr > 6 || uamul->cursed) { /* "Die, mortal!" */
-        if (!Blind)   
+        if (!Blind)
             pline("For some reason, %s glows red.",
                   yobjnam(uamul, (const char *) 0));
         aggravate();
         exercise(A_WIS, FALSE);
         return;
     }
-    
+
     /* Let the player know this thing is working */
     if (!Blind)
         pline("%s glows with a holy silver light!",

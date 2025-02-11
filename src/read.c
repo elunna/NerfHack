@@ -349,7 +349,7 @@ doread(void)
     boolean confused, nodisappear;
     boolean carto = Role_if(PM_CARTOMANCER);
     int otyp;
-    
+
 
     /*
      * Reading while blind is allowed in most cases, including the
@@ -396,7 +396,7 @@ doread(void)
                  simple_typename(scroll->otyp));
         return 0;
     }
-    
+
     otyp = scroll->otyp;
     scroll->pickup_prev = 0; /* no longer 'just picked up' */
 
@@ -920,7 +920,7 @@ recharge(struct obj *obj, int curse_bless)
     } else if (obj->oclass == TOOL_CLASS) {
         n = (int) obj->recharged;
 
-        
+
         /* Use same recharging calculation as for wands. */
         if (obj->obroken) {
             pline_The("%s crumbles away!", xname(obj));
@@ -938,7 +938,7 @@ recharge(struct obj *obj, int curse_bless)
             if (n < 7) /* recharge_limit */
                 obj->recharged++;
         }
-        
+
         switch (obj->otyp) {
         case BELL_OF_OPENING:
             if (is_cursed)
@@ -1119,10 +1119,10 @@ void
 forget(int howmuch)
 {
     struct monst *mtmp;
-    
+
     if (u_wield_art(ART_ORIGIN))
         return;
-        
+
     if (Punished)
         u.bc_felt = 0; /* forget felt ball&chain */
 
@@ -1250,7 +1250,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     ttmp = t_at(x, y);
     if (ttmp && !delfloortrap(ttmp))
         return;
-    
+
     if (levl[x][y].typ == TREE) {
         if (ltyp == PUDDLE) /* This won't destroy a tree */
             return;
@@ -1261,7 +1261,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     del_engr_at(x, y);
     water_damage_chain(svl.level.objects[x][y], FALSE);
     maybe_unhide_at(x, y);
-    
+
     if (!does_block(x, y, &levl[x][y]))
         unblock_point(x, y); /* vision */
     vision_recalc(0);
@@ -1306,7 +1306,7 @@ seffect_enchant_armor(struct obj **sobjp)
     boolean old_erodeproof, new_erodeproof;
     boolean already_known = objects[sobj->otyp].oc_name_known;
     boolean resists_magic;
-    
+
     if (already_known) {
         for (i = 0; i < 5; i++) {
             otmp = getobj("enchant", enchant_ok, GETOBJ_NOFLAGS);
@@ -1385,14 +1385,14 @@ seffect_enchant_armor(struct obj **sobjp)
 
     /* KMH -- catch underflow */
     s = scursed ? -otmp->spe : otmp->spe;
-    
+
     /* Dragon scales that are worn over body armor will cause the armor to
      * become scaled. */
     if (draconic) {
         if (!maybe_merge_scales(sobj, otmp))
             return;
     }
-    
+
     if (s > (special_armor ? 5 : 3) && rn2(s)) {
         otmp->in_use = TRUE;
         pline("%s violently %s%s%s for a while, then %s.", Yname2(otmp),
@@ -1413,7 +1413,7 @@ seffect_enchant_armor(struct obj **sobjp)
         : sblessed
         ? rnd(3 - otmp->spe / 3)
         : 1;
-  
+
 
     /* Items which provide magic resistance also can resist enchanting.
      * They don't resist when their enchantment is zero or negative, that is
@@ -1476,7 +1476,7 @@ seffect_enchant_armor(struct obj **sobjp)
         pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
               Blind ? "again" : "unexpectedly");
 }
-                 
+
 staticfn void
 seffect_destroy_armor(struct obj **sobjp)
 {
@@ -1875,10 +1875,10 @@ seffect_enchant_weapon(struct obj **sobjp)
         return;
     }
 
-    /* Adjusted max weapon enchantment. For more exciting hackin 'n 
-       slashin we will allow the new 'soft' limit to be 12. This 
-       allows weapons to be safely enchanted up to 13. 
-       After +5, scrolls only grant +1 so this will still require 
+    /* Adjusted max weapon enchantment. For more exciting hackin 'n
+       slashin we will allow the new 'soft' limit to be 12. This
+       allows weapons to be safely enchanted up to 13.
+       After +5, scrolls only grant +1 so this will still require
        many scrolls to achieve. */
     if (!chwepon(sobj, scursed ? -1
                  : !uwep ? 1
@@ -2131,7 +2131,7 @@ seffect_cloning(struct obj **sobjp)
         otmp2->oeaten = otmp->oeaten;
         otmp2->opoisoned = otmp->opoisoned;
 
-        
+
         /* Copy the name over. Artifact names will not be copied.  */
         if (otmp->oextra)
             oname(otmp2, otmp->oextra->oname, ONAME_VIA_NAMING);
@@ -2431,7 +2431,7 @@ seffect_flood(struct obj **sobjp, struct monst *mtmp)
 
     if (!isyou)
         extract_from_minvent(mtmp, sobj, FALSE, TRUE);
-    
+
     if (confused) {
         int dried_up = 0;
         do_clear_area(wx, wy, range, unflood_space, (genericptr_t) &dried_up);
@@ -4090,12 +4090,12 @@ learnme(void)
 
 /* guarantees that worn cloak is scales, and that
  * otmp = uarmc, but does NOT guarantee existence of uarm
- * 
+ *
  * no body armor under the scales = the scales are enchanted directly
  * onto you (no such thing as a scaled shirt). The wearer will
  * polymorph. Also caused by a confused scroll, _after_ the scales meld.
  */
-boolean 
+boolean
 maybe_merge_scales(struct obj *sobj, struct obj *otmp)
 {
     boolean confused = (Confusion != 0);

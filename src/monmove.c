@@ -210,7 +210,7 @@ watch_on_duty(struct monst *mtmp)
 
     if (mtmp->mpeaceful && in_town(u.ux + u.dx, u.uy + u.dy)
         && mtmp->mcansee && m_canseeu(mtmp) && !rn2(3)) {
-        
+
         if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))) {
             mon_yells(mtmp, "Hey, no filth allowed in our town!");
             (void) angry_guards(!!Deaf);
@@ -285,7 +285,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
      * uniques have ascended their base monster instincts
      * Rodney, lawful minions, Angels, the Riders, shopkeepers, zombies,
      * inside their own shop, priests inside their own temple */
-    if (mtmp->iswiz || mtmp->iscthulhu || is_lminion(mtmp) 
+    if (mtmp->iswiz || mtmp->iscthulhu || is_lminion(mtmp)
         || mtmp->data == &mons[PM_ANGEL]
         || is_rider(mtmp->data)
         || mtmp->data == &mons[PM_GIANT_PRAYING_MANTIS]
@@ -349,7 +349,7 @@ mon_regen(struct monst *mon, boolean digest_meal)
                             || mon_prop(mon, REGENERATION)
                             || (healstone && !healstone->cursed));
 
-    boolean regen_prevented = (u_wield_art(ART_MORTALITY_DIAL) 
+    boolean regen_prevented = (u_wield_art(ART_MORTALITY_DIAL)
                                 || u_offhand_art(ART_MORTALITY_DIAL))
         || (Is_valley(&u.uz) || !is_undead(mon->data))
         /* rabid and withering monsters do not regenerate */
@@ -629,7 +629,7 @@ distfleeck(
         *scared = 1;
         monflee(mtmp, rnd(rn2(7) ? 10 : 100), TRUE, TRUE);
     } else if (Underwater && !mon_underwater(mtmp)) {
-        /* If out-of-water monsters cannot attack us, make them back off 
+        /* If out-of-water monsters cannot attack us, make them back off
          * a bit so they don't just camp on the same square next to us.
          */
         monflee(mtmp, d(3, 4), TRUE, FALSE);
@@ -761,7 +761,7 @@ m_postmove_effect(struct monst *mtmp)
         create_gas_cloud(x, y, 1, 8);
     else if (mtmp->data == &mons[PM_STEAM_VORTEX] && !mtmp->mcan)
         create_gas_cloud(x, y, 1, 0); /* harmless vapor */
-    
+
     /* Umbral hulks dim the lights as they move */
     if (mtmp->data == &mons[PM_UMBRAL_HULK]
           && !mtmp->mcan && !mtmp->mspec_used
@@ -840,7 +840,7 @@ dochug(struct monst *mtmp)
         mtmp->mstone = 0;
         return 1; /* this is its move */
     }
-    
+
     /* Some monsters teleport. Teleportation costs a turn. */
     if (mtmp->mflee && !rn2(40) && mon_prop(mtmp, TELEPORT) && !mtmp->iswiz
         && !noteleport_level(mtmp)) {
@@ -851,8 +851,8 @@ dochug(struct monst *mtmp)
     /* Erinyes will inform surrounding monsters of your crimes */
     if (mdat == &mons[PM_ERINYS] && !mtmp->mpeaceful && m_canseeu(mtmp))
         aggravate();
-    
-    /* It is now the considered opinion of historians of leprosy 
+
+    /* It is now the considered opinion of historians of leprosy
        that bells (and also clappers) were not used in medieval
        Europe to warn the uninfected away. Leprosy often has extreme
        effects on the larynx, meaning that loss of voice is one of
@@ -863,7 +863,7 @@ dochug(struct monst *mtmp)
     if (mdat == &mons[PM_LEPER] && mtmp->mcanmove &&
         (otmp = m_carrying(mtmp, BELL)) != 0 && m_canseeu(mtmp) && !rn2(5)) {
         pline_mon(mtmp, "%s rings %s.", Monnam(mtmp), the(xname(otmp)));
-        
+
         /* Copied from use_bell; consolidate? */
         if (otmp->cursed && !rn2(4)
             /* note: once any of them are gone, we stop all of them */
@@ -896,7 +896,7 @@ dochug(struct monst *mtmp)
             wake_nearby(TRUE);
         }
     }
-    
+
     /* Shriekers and Medusa have irregular abilities which must be
        checked every turn. These abilities do not cost a turn when
        used. */
@@ -915,7 +915,7 @@ dochug(struct monst *mtmp)
     if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my)
         && !mtmp->mpeaceful)
         m_respond(mtmp);
-    
+
     if (DEADMONSTER(mtmp))
         return 1; /* m_respond gaze can kill medusa */
 
@@ -1113,7 +1113,7 @@ dochug(struct monst *mtmp)
                 if (a->aatyp == AT_MAGC
                     && (a->adtyp == AD_SPEL || a->adtyp == AD_CLRC)) {
                     boolean foundyou = u.ux == mtmp->mux && u.uy == mtmp->muy;
-                    
+
                     if ((castmu(mtmp, a, TRUE, foundyou) & M_ATTK_HIT)) {
                         status = MMOVE_DONE; /* bypass m_move() */
                         break;
@@ -1401,11 +1401,11 @@ m_balks_at_approaching(struct monst *mtmp)
     if (MON_WEP(mtmp) && is_pole(MON_WEP(mtmp))
         && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= MON_POLE_DIST)
         return TRUE;
-    
+
     /* Bodaks try to stay away, unless they think you are weak. */
     if (mtmp->data == &mons[PM_BODAK] && ((u.uhpmax / u.uhp) < 4))
         return TRUE;
-    
+
     /* can attack from distance, and hp loss or attack not used */
     if (ranged_attk_available(mtmp)
         && ((mtmp->mhp < (mtmp->mhpmax + 1) / 4)

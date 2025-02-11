@@ -674,7 +674,7 @@ SHIELD("shield of reflection", "polished silver shield",
        0, 1, 1, REFLECTING, 3, 0,  50, 50, 8, 0,  SILVER, HI_SILVER,
                                                         SHIELD_OF_REFLECTION),
 /* Bracers share the same slot as shield so both cannot be worn
-    simultaneously. The two don't share any intrinsics either so 
+    simultaneously. The two don't share any intrinsics either so
     there are no bracers of reflection or magic resistance, etc.
  */
 SHIELD("leather bracers", "runed bracers",
@@ -1650,9 +1650,9 @@ WAND("draining",      "ceramic", 20, 200, 1, RAY, GLASS,  HI_MINERAL,
 WAND(NoDes,      "spiked", 0, 200, 1, 0, IRON, HI_METAL,        WAN2),
 WAND(NoDes,     "jeweled", 0, 200, 1, 0, IRON, HI_MINERAL,      WAN3),
 WAND(NoDes,      "crusty", 0, 200, 1, 0, IRON, CLR_RED,         WAN4),
-WAND(NoDes,       "green", 0, 200, 1, 0, PLASTIC, CLR_BRIGHT_GREEN, WAN5), 
-WAND(NoDes,       "black", 0, 200, 1, 0, IRON,  CLR_BLACK,      WAN6), 
-WAND(NoDes,      "bronze", 0, 200, 1, 0, COPPER, CLR_YELLOW,    WAN7), 
+WAND(NoDes,       "green", 0, 200, 1, 0, PLASTIC, CLR_BRIGHT_GREEN, WAN5),
+WAND(NoDes,       "black", 0, 200, 1, 0, IRON,  CLR_BLACK,      WAN6),
+WAND(NoDes,      "bronze", 0, 200, 1, 0, COPPER, CLR_YELLOW,    WAN7),
 WAND(NoDes,   "driftwood", 0, 200, 1, 0, WOOD,  HI_WOOD,        WAN8),
 WAND(NoDes,      "quartz", 0, 200, 1, 0, GLASS, HI_GLASS,       WAN9),
 WAND(NoDes,      "walnut", 0, 200, 1, 0, WOOD,  HI_WOOD,        WAN10),

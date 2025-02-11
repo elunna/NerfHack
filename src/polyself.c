@@ -134,7 +134,7 @@ set_uasmon(void)
             u.hydration = 0;
         }
     }
-    
+
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
         status_initialize(REASSESS_ONLY);
@@ -272,7 +272,7 @@ polyman(const char *fmt, const char *arg)
     }
     check_strangling(TRUE);
 
-    if (!Levitation && !u.ustuck 
+    if (!Levitation && !u.ustuck
         && (is_pool_or_lava(u.ux, u.uy) || is_puddle(u.ux, u.uy)))
         spoteffects(TRUE);
 
@@ -454,7 +454,7 @@ newman(void)
                    : gu.urace.noun;
     polyman("You feel like a new %s!", newform);
     break_armor();
-    
+
     newgend = poly_gender();
     /* note: newman() bypasses achievements for new ranks attained and
        doesn't log "new <form>" when that isn't accompanied by level change */
@@ -777,7 +777,7 @@ polymon(int mntmp)
         livelog_printf(LL_CONDUCT,
                        "changed form for the first time, becoming %s",
                        an(pmname(&mons[mntmp], flags.female ? FEMALE : MALE)));
-    
+
     /* exercise used to be at the very end but only Wis was affected
        there since the polymorph was always in effect by then */
     exercise(A_CON, FALSE);
@@ -894,7 +894,7 @@ polymon(int mntmp)
     check_strangling(FALSE); /* maybe stop strangling */
     if (nohands(gy.youmonst.data))
         make_glib(0);
-    
+
     /*
     mlvl = adj_lev(&mons[mntmp]);
      * We can't do the above, since there's no such thing as an
@@ -1009,7 +1009,7 @@ polymon(int mntmp)
     }
 
     find_ac();
-    if (((!Levitation && !u.ustuck && !Flying 
+    if (((!Levitation && !u.ustuck && !Flying
         && (is_pool_or_lava(u.ux, u.uy) || is_puddle(u.ux, u.uy)))
          || (Underwater && !Swimming))
         /* if expelled above, expels() already called spoteffects() */
@@ -1440,11 +1440,11 @@ rehumanize(void)
 
     if (emits_light(gy.youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
-    
+
     /* Don't keep this timer going when we revert to normal */
     if (u.hydration && !Race_if(PM_GRUNG))
         u.hydration = 0;
-    
+
     polyman("You return to %s form!", gu.urace.adj);
     break_armor();
     if (u.uhp < 1) {

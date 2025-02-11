@@ -170,7 +170,7 @@ throw_obj(struct obj *obj, int shotlimit)
                          : obj->oclass == WEAPON_CLASS)
         && !(Confusion || Stunned || Fumbling )) {
         /* some roles don't get a volley bonus until becoming expert */
-        weakmultishot = (Role_if(PM_WIZARD) 
+        weakmultishot = (Role_if(PM_WIZARD)
                          || Role_if(PM_CLERIC)
                          || Role_if(PM_UNDEAD_SLAYER)
                          || (Role_if(PM_HEALER) && skill != P_KNIFE)
@@ -879,7 +879,7 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
         if (!canspotmon(mon))
             map_invisible(mon->mx, mon->my);
         setmangry(mon, FALSE);
-        
+
         if (touch_petrifies(mon->data)
             /* this is a bodily collision, so check for body armor */
             && !uarmu && !uarm && !uarmc) {
@@ -887,9 +887,9 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
                     an(pmname(mon->data, NEUTRAL)));
             make_stoned(5L, (char *) 0, KILLED_BY, svk.killer.name);
         } else if (is_grung(mon->data)) {
-            passive(mon, NULL, TRUE, 1, AT_NONE, FALSE); 
+            passive(mon, NULL, TRUE, 1, AT_NONE, FALSE);
         }
-                   
+
         if (touch_petrifies(gy.youmonst.data)
             && !(resists_ston(mon) || defended(mon, AD_STON))
             && !which_armor(mon, W_ARMU | W_ARM | W_ARMC)) {
@@ -2395,7 +2395,7 @@ thitmonst(
                 } else
                     (void) mpickobj(mon, obj);
                 return 1;
-            } else 
+            } else
                 passive_obj(mon, obj, (struct attack *) 0);
         } else {
             tmiss(obj, mon, TRUE);
@@ -2565,7 +2565,7 @@ gem_accept(struct monst *mon, struct obj *obj)
         pline("Its %s %s.", xname(obj),
               canseemon(mon) ? "vanishes" : "seems to vanish");
     obfree(obj, (struct obj *) 0);
-    
+
     if (!tele_restrict(mon))
         (void) rloc(mon, RLOC_MSG);
     return ret;
@@ -2676,7 +2676,7 @@ breakobj(
     boolean fracture = FALSE;
     const char *ostr;
     int am;
-    
+
     if (IS_ALTAR(levl[x][y].typ))
         am = levl[x][y].altarmask & AM_MASK;
     else

@@ -547,7 +547,7 @@ again:
             break;
         }
         case DISPLACED:
-            /* Here we assume that monsters that have displacement will never 
+            /* Here we assume that monsters that have displacement will never
              * wear rings/cloaks of displacement; this should be true for
              * shimmering dragons and displacer beasts. */
             if (!unseen) {
@@ -1081,9 +1081,9 @@ m_dowear_type(
                 pline("%s is shining %s.", Something, adesc);
         }
     }
-    
+
     observed_effect = update_mon_extrinsics(mon, best, TRUE, creation);
-    
+
     if (!creation) {
         /* if couldn't see it but now can, or vice versa, */
         if ((sawmon ^ canseemon(mon))) {
@@ -1661,13 +1661,13 @@ armor_bonus(struct monst *mon, struct obj *armor)
         impossible("armor_bonus was passed a null obj");
         return 0;
     }
-    
+
     /* start with its base AC value */
     bon = objects[armor->otyp].a_ac;
-    
+
     /* subtract erosion */
     bon -= (int) greatest_erosion(armor);
-    
+
     /* erosion is not allowed to make the armor worse than wearing nothing;
      * only negative enchantment can do that. */
     if (bon < 0) {
@@ -1675,12 +1675,12 @@ armor_bonus(struct monst *mon, struct obj *armor)
     }
     /* add enchantment (could be negative) */
     bon += armor->spe;
-    
+
     /* add bonus for dragon-scaled armor */
     if (Is_dragon_scaled_armor(armor)) {
         bon += 3;
     }
-    
+
     /* add shield skill bonuses for the player */
     if (is_shield(armor) && is_you) {
         switch (P_SKILL(P_SHIELD)) {
@@ -1699,7 +1699,7 @@ armor_bonus(struct monst *mon, struct obj *armor)
         default: break;
         }
     }
-    
+
     /* Racial bonuses */
     if (is_you) {
         bon += race_bonus(armor);

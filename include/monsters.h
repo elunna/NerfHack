@@ -521,11 +521,11 @@
     MON(NAM("vulpenferno"), S_DOG,
         LVL(10, 16, 0, 55, 0), (G_GENO | 1),
         A(ATTK(AT_KICK, AD_PHYS, 2, 3),
-          ATTK(AT_BITE, AD_PHYS, 2, 3), 
+          ATTK(AT_BITE, AD_PHYS, 2, 3),
           ATTK(AT_TUCH, AD_FIRE, 2, 6),
           ATTK(AT_NONE, AD_ELEC, 3, 4),
           NO_ATTK, NO_ATTK),
-        SIZ(300, 250, MS_BARK, MZ_SMALL), 
+        SIZ(300, 250, MS_BARK, MZ_SMALL),
         MR_FIRE | MR_ELEC, MR_FIRE | MR_ELEC,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE,
         M3_INFRAVISIBLE | M3_JUMPER,
@@ -1171,7 +1171,7 @@
         SIZ(60, 30, MS_LAUGH, MZ_TINY), 0, 0,
         M1_HUMANOID | M1_TPORT, M2_HOSTILE | M2_GREEDY, M3_INFRAVISIBLE,
         NO_RACE, 4, CLR_GREEN, LEPRECHAUN),
-    MON(NAM("leper"), S_LEPRECHAUN, 
+    MON(NAM("leper"), S_LEPRECHAUN,
         LVL(3, 6, 5, 5, 0), (G_GENO | 1),
         A(ATTK(AT_TUCH, AD_DISE, 2, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2003,7 +2003,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(25, 25, MS_SILENT, MZ_TINY), 0, 0,
         M1_SWIM | M1_AMPHIBIOUS | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
-        M2_HOSTILE | M2_FLANK, 0, 
+        M2_HOSTILE | M2_FLANK, 0,
         NO_RACE, 6, CLR_GREEN, COMPSOGNATHUS),
     MON(NAM("velociraptor"), S_ZRUTY,
         LVL(14, 24, 5, 0, 0), (G_GENO | G_SGROUP | 3),
@@ -2073,16 +2073,16 @@
         MH_ANGEL, 19, CLR_WHITE, ANGEL),
     MON(NAM("movanic deva"), S_ANGEL,
         LVL(12, 18, -5, 90, 15), (G_NOHELL | G_NOCORPSE | 1),
-        A(ATTK(AT_WEAP, AD_FIRE, 3, 4), 
+        A(ATTK(AT_WEAP, AD_FIRE, 3, 4),
           ATTK(AT_WEAP, AD_FIRE, 3, 4),
-          ATTK(AT_CLAW, AD_PHYS, 3, 4), 
+          ATTK(AT_CLAW, AD_PHYS, 3, 4),
           ATTK(AT_MAGC, AD_CLRC, 2, 6),
           NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_CUSS, MZ_MEDIUM),
         MR_POISON | MR_FIRE | MR_ELEC, 0,
         M1_FLY | M1_HUMANOID | M1_SEE_INVIS,
         M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY,
-        M3_INFRAVISIBLE | M3_INFRAVISION, 
+        M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_ANGEL, 20, CLR_BLUE, MOVANIC_DEVA),
     /* the AD&D Monster Manual depicts ki-rin as very similar to unicorns
        except that they fly (without wings) and can cast spells; nethack's
@@ -2103,27 +2103,27 @@
         MH_ANGEL, 21, HI_GOLD, KI_RIN),
     MON(NAM("monadic deva"), S_ANGEL,
         LVL(15, 18, -4, 90, 15), (G_NOHELL | G_NOCORPSE | 1),
-        A(ATTK(AT_WEAP, AD_PHYS, 3, 4), 
+        A(ATTK(AT_WEAP, AD_PHYS, 3, 4),
           ATTK(AT_WEAP, AD_PHYS, 6, 4),
-          ATTK(AT_MAGC, AD_CLRC, 3, 4), 
+          ATTK(AT_MAGC, AD_CLRC, 3, 4),
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(WT_HUMAN, 400, MS_CUSS, MZ_MEDIUM), 
+        SIZ(WT_HUMAN, 400, MS_CUSS, MZ_MEDIUM),
         MR_POISON | MR_FIRE | MR_ELEC, 0,
         M1_FLY | M1_HUMANOID | M1_SEE_INVIS | M1_BREATHLESS,
-        M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY, 
-        M3_ACCURATE | M3_INFRAVISIBLE | M3_INFRAVISION, 
+        M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY,
+        M3_ACCURATE | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_ANGEL, 23, CLR_BRIGHT_CYAN, MONADIC_DEVA),
     MON(NAM("astral deva"), S_ANGEL,
         LVL(18, 18, -6, 90, 15), (G_NOHELL | G_NOCORPSE | 1),
-        A(ATTK(AT_WEAP, AD_PHYS, 3, 12), 
+        A(ATTK(AT_WEAP, AD_PHYS, 3, 12),
           ATTK(AT_WEAP, AD_STUN, 1, 4),
-          ATTK(AT_MAGC, AD_CLRC, 3, 4), 
+          ATTK(AT_MAGC, AD_CLRC, 3, 4),
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(WT_HUMAN, 400, MS_CUSS, MZ_MEDIUM), 
+        SIZ(WT_HUMAN, 400, MS_CUSS, MZ_MEDIUM),
         MR_POISON | MR_FIRE | MR_ELEC, 0,
         M1_FLY | M1_HUMANOID | M1_SEE_INVIS,
-        M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY, 
-        M3_ACCURATE | M3_INFRAVISIBLE | M3_INFRAVISION, 
+        M2_NOPOLY | M2_MINION | M2_STALK | M2_STRONG | M2_NASTY,
+        M3_ACCURATE | M3_INFRAVISIBLE | M3_INFRAVISION,
         MH_ANGEL, 27, CLR_WHITE, ASTRAL_DEVA),
     MON(NAM("Archon"), S_ANGEL,
         LVL(19, 16, -6, 80, 15), (G_NOHELL | G_NOCORPSE | 1),
@@ -2968,12 +2968,12 @@
         MH_UNDEAD, 18, CLR_RED, DEMILICH),
     MON(NAM("worm that walks"), S_LICH,
         LVL(11, 6, 0, 30, -9), (G_GENO | G_NOCORPSE | 1),
-        A(ATTK(AT_WEAP, AD_PHYS, 1, 10), 
+        A(ATTK(AT_WEAP, AD_PHYS, 1, 10),
           ATTK(AT_TUCH, AD_DRCO, 2, 4),
-          ATTK(AT_MAGC, AD_SPEL, 0, 0), 
+          ATTK(AT_MAGC, AD_SPEL, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1200, 100, MS_MUMBLE, MZ_HUMAN), 
-        MR_SLEEP | MR_POISON, MR_POISON, 
+        SIZ(1200, 100, MS_MUMBLE, MZ_HUMAN),
+        MR_SLEEP | MR_POISON, MR_POISON,
         M1_BREATHLESS | M1_HUMANOID | M1_POIS | M1_REGEN,
         M2_HOSTILE | M2_MAGIC, M3_INFRAVISION | M3_NOTAME,
         MH_UNDEAD, 15, CLR_GREEN, WORM_THAT_WALKS),
@@ -3456,7 +3456,7 @@
         SIZ(150, 80, MS_HISS, MZ_SMALL), MR_POISON, MR_POISON,
         M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_POIS
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
-        M2_HOSTILE, 
+        M2_HOSTILE,
         /* A water moccasin (also known as a cottonmouth) is a pit viper,
            meaning it has heat-sensing pit organs just like rattlesnakes.
          */
@@ -3472,7 +3472,7 @@
         SIZ(250, 100, MS_HISS, MZ_LARGE), 0, 0,
         M1_SWIM | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_CARNIVORE
             | M1_OVIPAROUS | M1_NOTAKE,
-        M2_HOSTILE | M2_STRONG, 
+        M2_HOSTILE | M2_STRONG,
         /* While some boas and pythons (like the ball python or boa
            constrictor) do have heat-sensing pits, these are less advanced
            than those of pit vipers. */
@@ -3508,8 +3508,8 @@
         SIZ(600, 250, MS_SILENT, MZ_LARGE),
         MR_FIRE | MR_POISON, MR_POISON,
         M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE |
-        M1_CONCEAL, M2_HOSTILE, 
-        /* The cerastes (also known as the horned viper) belongs to the 
+        M1_CONCEAL, M2_HOSTILE,
+        /* The cerastes (also known as the horned viper) belongs to the
            Viperidae family, similar to rattlesnakes and water moccasins. */
         M3_INFRAVISION,
         NO_RACE, 12, CLR_YELLOW, CERASTES),
@@ -3703,7 +3703,7 @@
           ATTK(AT_TENT, AD_VAMP, 2, 6),
           ATTK(AT_TENT, AD_VAMP, 2, 6),
           NO_ATTK, NO_ATTK ),
-        SIZ(WT_HUMAN, 400, MS_SILENT, MZ_LARGE), 
+        SIZ(WT_HUMAN, 400, MS_SILENT, MZ_LARGE),
         MR_SLEEP | MR_POISON | MR_COLD, 0,
         M1_NOHEAD | M1_NOLIMBS | M1_NOEYES
             | M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_CARNIVORE,
@@ -3821,9 +3821,9 @@
          NO_ATTK, NO_ATTK, NO_ATTK),
        SIZ(1200, 0, MS_SILENT, MZ_HUMAN),
        MR_COLD | MR_SLEEP | MR_POISON, 0,
-       M1_BREATHLESS | M1_HUMANOID, 
-       M2_STALK | M2_HOSTILE | M2_COLLECT | M2_STRONG, 
-       M3_ACCURATE | M3_BERSERK, 
+       M1_BREATHLESS | M1_HUMANOID,
+       M2_STALK | M2_HOSTILE | M2_COLLECT | M2_STRONG,
+       M3_ACCURATE | M3_BERSERK,
        MH_UNDEAD, 18, CLR_RED, SLAUGHTER_WIGHT),
     /*
      * Xorn
@@ -4786,7 +4786,7 @@
         A(ATTK(AT_ENGL, AD_DISE, 4, 10),
           ATTK(AT_SPIT, AD_ACID, 3, 6),
           ATTK(AT_TUCH, AD_SLIM, 1, 4),
-          ATTK(AT_NONE, AD_ACID, 0, 1), 
+          ATTK(AT_NONE, AD_ACID, 0, 1),
           ATTK(AT_BOOM, AD_ACID, 4, 6),
           NO_ATTK),
         SIZ(1500, 0, MS_GURGLE, MZ_GIGANTIC),
@@ -4888,7 +4888,7 @@
         MH_DEMON, 57, HI_LORD, DEMOGORGON),
     /* Cthulhu MUST be placed after Demogorgon so he will not be summoned
      * as a random demon lord or demon prince.  See minion.c */
-    /* NerfHack's Cthulhu is a blend of his counterparts in SLASH'EM 
+    /* NerfHack's Cthulhu is a blend of his counterparts in SLASH'EM
      * and UnNetHack with some new enhancements to make him a fearsome
      * component of the endgame:
      * - Speed of 18 matches slashem.
@@ -4898,7 +4898,7 @@
      * - Cthulhu can displace monsters, pass through iron bars, break boulders
      *   and bust down doors to get to you.
      * - Cthulhu will always track you down and chase you.
-     * - Converted the drain intelligence attack to drain energy instead 
+     * - Converted the drain intelligence attack to drain energy instead
      * - Cthulhu is placed right in the middle of Moloch's Sanctum as a
      *   guardian but does not receive the Amulet of Yendor.
      *
@@ -4909,16 +4909,16 @@
     MON(NAM("Cthulhu"), S_DEMON,
         LVL(106, 18, -8, 95, 0), (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_CLAW, AD_PHYS, 6, 8),
-          ATTK(AT_BITE, AD_PHYS, 4, 10), 
+          ATTK(AT_BITE, AD_PHYS, 4, 10),
           ATTK(AT_HUGS, AD_PHYS, 6, 6),
-          ATTK(AT_TENT, AD_VAMP, 2, 1), 
+          ATTK(AT_TENT, AD_VAMP, 2, 1),
           ATTK(AT_GAZE, AD_CONF, 0, 0),
-          ATTK(AT_MAGC, AD_CLRC, 4, 6)), 
-        SIZ(3000, 500, MS_ROAR, MZ_GIGANTIC), 
+          ATTK(AT_MAGC, AD_CLRC, 4, 6)),
+        SIZ(3000, 500, MS_ROAR, MZ_GIGANTIC),
         MR_POISON | MR_STONE | MR_DISINT | MR_SLEEP | MR_ACID, 0,
-        M1_FLY | M1_AMPHIBIOUS | M1_BREATHLESS | M1_THICK_HIDE 
+        M1_FLY | M1_AMPHIBIOUS | M1_BREATHLESS | M1_THICK_HIDE
             | M1_SEE_INVIS | M1_NOHANDS | M1_POIS | M1_REGEN | M1_OMNIVORE,
-        M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY | M2_STRONG 
+        M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY | M2_STRONG
             | M2_PRINCE | M2_NEUTER | M2_ROCKTHROW | M2_MAGIC,
         M3_WANTSAMUL | M3_WAITFORU | M3_INFRAVISION | M3_NOTAME
             | M3_DISPLACES,
@@ -5364,9 +5364,9 @@
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_STRONG | M2_COLLECT, M3_INFRAVISIBLE,
         MH_HUMAN, 12, HI_DOMESTIC, TOURIST),
-    MON(NAM("undead slayer"), S_HUMAN, 
+    MON(NAM("undead slayer"), S_HUMAN,
        LVL(10, 10, 10, 1, -1), G_NOGEN,
-       A(ATTK(AT_WEAP, AD_PHYS, 1, 8), 
+       A(ATTK(AT_WEAP, AD_PHYS, 1, 8),
          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
        SIZ(WT_HUMAN, 400, MS_HUMANOID, MZ_HUMAN), 0, 0,
        M1_HUMANOID | M1_OMNIVORE,
@@ -5555,7 +5555,7 @@
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE,
         MH_HUMAN, 24, HI_LORD, LORD_SATO),
-    MON(NAM("Van Helsing"), S_HUMAN, 
+    MON(NAM("Van Helsing"), S_HUMAN,
         LVL(20, 12, 0, 40, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10),
           ATTK(AT_WEAP, AD_PHYS, 4, 10),
@@ -5781,7 +5781,7 @@
     /*
      * Note: the Master of Thieves was defined above.
      */
-    MON(NAM("First Evil"), S_GHOST, 
+    MON(NAM("First Evil"), S_GHOST,
         LVL(25, 18, -8, 80, -10), (G_NOGEN | G_NOCORPSE | G_UNIQ),
         A(ATTK(AT_TUCH, AD_PLYS, 2, 6),
           ATTK(AT_TUCH, AD_SLOW, 1, 6),
@@ -5792,7 +5792,7 @@
         SIZ(WT_HUMAN, 0, MS_WAIL, MZ_HUMAN),
         MR_COLD | MR_DISINT | MR_SLEEP | MR_POISON | MR_STONE
             | MR_ACID | MR_ELEC, 0,
-        M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_POIS | M1_REGEN 
+        M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_POIS | M1_REGEN
             | M1_UNSOLID | M1_SEE_INVIS,
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_PNAME |
           M2_STRONG | M2_NASTY | M2_PRINCE | M2_NEUTER,
@@ -5970,7 +5970,7 @@
     /* warriors used to be chaotic but have been changed to lawful because
        grow_up() promotes them to valkyrie; for a valkyrie hero, they might
        be changed to neutral at game start; see the valkyrie comment above */
-    MON(NAM("exterminator"), S_HUMAN, 
+    MON(NAM("exterminator"), S_HUMAN,
         LVL(8, 10, 10, 10, 10), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),

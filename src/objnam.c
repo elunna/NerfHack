@@ -969,7 +969,7 @@ xname_flags(
                       && obj->corpsenm != NON_PM) {
             Strcat(buf, carto ? " - " : " of ");
             Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
-            
+
             if (!carto && !u.uconduct.literate)
                 Strcat(buf, " (zappable)");
         } else if (nn) {
@@ -3531,7 +3531,7 @@ static const struct alt_spellings {
     { "grey dragon scales", GRAY_DRAGON_SCALES },
     { "withering", RIN_WITHERING },
     { "catnip", PINCH_OF_CATNIP },
-    
+
     /* dragon scale mail no longer formally exists; a wish for it will get you
      * scales instead */
     { "gray dragon scale mail",   GRAY_DRAGON_SCALES },
@@ -3544,7 +3544,7 @@ static const struct alt_spellings {
     { "blue dragon scale mail",   BLUE_DRAGON_SCALES },
     { "green dragon scale mail",  GREEN_DRAGON_SCALES },
     { "yellow dragon scale mail", YELLOW_DRAGON_SCALES },
-    
+
     { "iron ball", HEAVY_IRON_BALL },
     { "lantern", BRASS_LANTERN },
     { "mattock", DWARVISH_MATTOCK },
@@ -3860,7 +3860,7 @@ wizterrainwish(struct _readobjnam_data *d)
         pline("Shallow water.");
         water_damage_chain(svl.level.objects[x][y], TRUE);
         madeterrain = TRUE;
-    
+
     /* also matches "molten lava" */
     } else if (!BSTRCMPI(bp, p - 4, "lava")
                || !BSTRCMPI(bp, p - 12, "wall of lava")) {
@@ -4466,7 +4466,7 @@ readobjnam_parse_charges(struct _readobjnam_data *d)
         d->spesgn = -1; /* cheaters get what they deserve */
         d->spe = abs(d->spe);
     }
-    
+
     /* cap on obj->spe is independent of (and less than) SCHAR_LIM */
     if (d->spe > SPE_LIM)
         d->spe = SPE_LIM; /* slime mold uses d.ftype, so not affected */
@@ -4633,7 +4633,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
                 *d->p = 0;
         }
     }
-    
+
     /* Alternate spellings (pick-ax, silver sabre, &c) */
     {
         const struct alt_spellings *as = spellings;
@@ -4656,7 +4656,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
                 ++d->p; /* self terminating */
         }
     }
-    
+
     /* Find corpse type w/o "of" (red dragon scale mail, yeti corpse) */
     if (!object_not_monster(d->bp)) {
         const char *rest = 0;
@@ -5266,11 +5266,11 @@ readobjnam(char *bp, struct obj *no_wish)
         && d.spe != 0) {
         d.spe = 0;
     }
-    
+
     /* For sanity... */
     if (d.oclass == POTION_CLASS)
         d.spe = 0;
-    
+
     /* if asking for corpse of a monster which leaves behind a glob, give
        glob instead of rejecting the monster type to create random corpse */
     if (d.typ == CORPSE && d.mntmp >= LOW_PM

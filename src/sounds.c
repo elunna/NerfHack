@@ -1542,7 +1542,7 @@ dochat(void)
         /* Vampires can tame familiars via chat */
         || (Race_if(PM_DHAMPIR)
             && mtmp->data == &mons[PM_FAMILIAR]))) {
-        
+
         /* Increase apport */
         if (mtmp->mtame) {
             You("give your %s some encouragement.", l_monnam(mtmp));
@@ -1550,7 +1550,7 @@ dochat(void)
             return 0;
         }
         You("attempt to dominate the %s.", l_monnam(mtmp));
-        
+
         if (rnl(10) < 2) {
             (void) tamedog(mtmp, (struct obj *) 0, TRUE);
         } else if (!mtmp->mpeaceful) {
@@ -1609,7 +1609,7 @@ pacify_with_words(struct monst *mtmp)
 {
     if (mtmp->mrabid) /* No chance... */
         return;
-    
+
     You("manage to calm %s.",
          genders[pronoun_gender(mtmp, PRONOUN_HALLU)].him);
     mtmp->mpeaceful = 1;

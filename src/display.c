@@ -3229,7 +3229,7 @@ static const char *const type_names[MAX_TYPE] = {
     "SDOOR", "SCORR", "POOL", "MOAT", "WATER", "DRAWBRIDGE_UP", "LAVAPOOL",
     "LAVAWALL",
     "IRON_BARS", "DOOR", "CORR", "ROOM", "STAIRS", "LADDER", "FOUNTAIN",
-    "FORGE", "THRONE", "SINK", "TOILET", "GRAVE", "ALTAR", "ICE", "GRASS", 
+    "FORGE", "THRONE", "SINK", "TOILET", "GRAVE", "ALTAR", "ICE", "GRASS",
     "DRAWBRIDGE_DOWN", "AIR", "CLOUD", "PUDDLE"
 };
 

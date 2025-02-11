@@ -461,7 +461,7 @@ intemple(int roomno)
                 /* repeat visit, or attacked priest before entering */
                 msg1 = "You desecrate this place by your presence!";
             }
-        } else if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC)) 
+        } else if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))
                    && mon_aligntyp(priest) >= A_NEUTRAL) {
             if (priest->mpeaceful) {
                 /* first time inside */
@@ -556,7 +556,7 @@ intemple(int roomno)
             nomul(-3);
             gm.multi_reason = "being terrified of a ghost";
             gn.nomovemsg = "You regain your composure.";
-            
+
             return FALSE;
         }
     }

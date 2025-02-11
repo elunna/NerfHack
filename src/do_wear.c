@@ -218,10 +218,10 @@ Boots_on(void)
         boolean was_flying = !!Flying;
         /* while jumping, block flying; you need boots on the ground */
         BFlying |= W_ARMF;
-        
+
         makeknown(uarmf->otyp);
         pline("Your %s feel longer.", makeplural(body_part(LEG)));
-        
+
         if (was_flying) {
             You("%s.", (is_pool_or_lava(u.ux, u.uy)
                     || Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
@@ -264,7 +264,7 @@ Boots_on(void)
         boolean was_flying = !!Flying;
         /* while stomping, block flying; you need boots on the ground */
         BFlying |= W_ARMF;
-        
+
         if (uarmf && uarmf->oartifact == ART_MAYHEM) {
             You_feel("the spirits begin to stir...");
             EConflict |= W_ARMF;
@@ -279,9 +279,9 @@ Boots_on(void)
             } else
                 You("begin stomping around very loudly.");
             makeknown(uarmf->otyp);
-        } 
+        }
         BStealth |= I_SPECIAL;
-        
+
         break;
     }
     case ELVEN_BOOTS:
@@ -291,7 +291,7 @@ Boots_on(void)
         boolean was_flying = !!Flying;
         /* while fumbling, block flying */
         BFlying |= W_ARMF;
-        
+
         if (!oldprop && !(HFumbling & ~TIMEOUT)) {
             incr_itimeout(&HFumbling, rnd(20));
             if (was_flying) {
@@ -571,7 +571,7 @@ Cloak_off(void)
     }
     if (was_arti_light)
         toggle_armor_light(otmp, FALSE);
-    
+
     /* vampires get a charisma bonus when wearing an opera cloak */
     if (was_opera &&
         maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
@@ -765,7 +765,7 @@ Gloves_on(void)
         boolean was_flying = !!Flying;
         /* while fumbling, block flying */
         BFlying |= W_ARMG;
-        
+
         if (!oldprop && !(HFumbling & ~TIMEOUT)) {
             incr_itimeout(&HFumbling, rnd(20));
             if (was_flying) {
@@ -1394,7 +1394,7 @@ Amulet_on(struct obj *amul)
 
     if (!on_msg_done)
         on_msg(uamul);
-    
+
     /* The Argent Cross emits light when worn;*/
     if (artifact_light(uamul) && !uamul->lamplit) {
         begin_burn(uamul, FALSE);
@@ -1411,7 +1411,7 @@ Amulet_off(void)
     struct obj *amul = uamul; /* for off_msg() after setworn(NULL,W_AMUL) */
     boolean mkn = FALSE, early_off_msg = FALSE;
     boolean was_arti_light = amul && amul->lamplit && artifact_light(amul);
-     
+
     svc.context.takeoff.mask &= ~W_AMUL;
 
     switch (uamul->otyp) {
@@ -1717,7 +1717,7 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
 {
     long mask = (obj->owornmask & W_RING);
     boolean observable, was_withering = Withering;
-    
+
     svc.context.takeoff.mask &= ~mask;
     if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
         impossible("Strange... I didn't know you had that ring.");
@@ -2906,7 +2906,7 @@ find_ac(void)
         dex_adjust_ac++;
         dex_adjust_ac *= 2;
     }
-        
+
     /* Wearing certain types of body armor negates any
      * beneficial dexterity bonus. So does being
      * encumbered in any way.
@@ -3686,12 +3686,12 @@ destroy_arm(
                          cloak_simple_name(otmp));
     } else if (!resistedc
              && (otmp = maybe_destroy_armor(uarm, atmp, &resistedsuit)) != 0) {
-        
+
         if (uarm && (uarm == otmp) && otmp->otyp == CRYSTAL_PLATE_MAIL) {
             otmp->in_use = FALSE; /* nothing happens */
             return 0;
         }
-        
+
         const char *suit = suit_simple_name(otmp);
 
         /* for gold DSM, we don't want Armor_gone() to report that it

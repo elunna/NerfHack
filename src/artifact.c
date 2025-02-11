@@ -186,7 +186,7 @@ mk_artifact(
             continue;
         else if (u.ualign.type == A_CHAOTIC && m == ART_STORMBRINGER)
             continue;
-        
+
         if (!by_align) {
             /* looking for a particular type of item; not producing a
                divine gift so we don't care about role's first choice */
@@ -1061,12 +1061,12 @@ touch_artifact(struct obj *obj, struct monst *mon)
         You("are blasted by %s power!", s_suffix(the(xname(obj))));
         touch_blasted = TRUE;
         dmg = d((Antimagic ? 6 : 8), (self_willed ? 10 : 6));
-        
+
         /* Cartomancers are more sensitive to the powers of artifacts, and
          * artifacts are more sensitive to cartomancers weakness */
         if (Role_if(PM_CARTOMANCER))
             dmg *= 2;
-        
+
         /* add half (maybe quarter) of the usual silver damage bonus */
         if (is_silver(obj) && Hate_silver)
             tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
@@ -1613,7 +1613,7 @@ artifact_hit(
                        /* feel the effect even if not seen */
                        || (youattack && mdef == u.ustuck));
     boolean def_underwater = youdefend ? Underwater : mon_underwater(mdef);
-    
+
     /* the four basic attacks: fire, cold, shock and missiles */
     if (attacks(AD_FIRE, otmp)) {
         if (realizes_damage) {
@@ -1805,7 +1805,7 @@ artifact_hit(
         return Mb_hit(magr, mdef, otmp, dmgptr, dieroll, vis, hittee);
     }
 
-    /* Drowsing Rod 
+    /* Drowsing Rod
      * */
     if (attacks(AD_SLEE, otmp) && rn2(10)) {
         if (realizes_damage) {
@@ -1814,8 +1814,8 @@ artifact_hit(
                     pline_The("staff sprays a %s %s at %s!", rndcolor(),
                               (rn2(2) ? "gas" : "mist"), hittee);
                 }
-            } 
-            
+            }
+
             if (youdefend &&
                 (how_resistant(SLEEP_RES) == 100 || Breathless)) {
                 pline_The("vapors do not affect you.");
@@ -1824,9 +1824,9 @@ artifact_hit(
                 if (Blind)
                     You("are put to sleep!");
                 else
-                    You("are put to sleep by %s!", 
+                    You("are put to sleep by %s!",
                         otmp->oartifact ? artiname(otmp->oartifact) : xname(otmp));
-            } else if (mdef->mcanmove && !breathless(mdef->data) 
+            } else if (mdef->mcanmove && !breathless(mdef->data)
                         && sleep_monst(mdef, d(2, 4), -1)) {
                 if (!Blind)
                     pline("%s is put to sleep!", Monnam(mdef));
@@ -1835,7 +1835,7 @@ artifact_hit(
         }
         return realizes_damage;
     }
-    
+
     if (!gs.spec_dbon_applies) {
         /* since damage bonus didn't apply, nothing more to do;
            no further attacks have side-effects on inventory */
@@ -2236,7 +2236,7 @@ artifact_hit(
             *dmgptr += d(3, 6) + 6;
             break;
         case 10:
-            *dmgptr = 2 * (youdefend ? Upolyd ? u.mh : u.uhp 
+            *dmgptr = 2 * (youdefend ? Upolyd ? u.mh : u.uhp
                                      : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
             break;
         }
@@ -2854,11 +2854,11 @@ artifact_light(struct obj *obj)
     if (obj && is_art(obj, ART_MIRRORBRIGHT)
             && (obj->owornmask & W_ARMS) != 0L)
         return TRUE;
-    
+
     if (obj && is_art(obj, ART_ARGENT_CROSS)
         && (obj->owornmask & W_AMUL) != 0L)
         return TRUE;
-        
+
     return (boolean) ((get_artifact(obj) != &artilist[ART_NONARTIFACT])
                       && is_art(obj, ART_SUNSWORD));
 }
@@ -3796,7 +3796,7 @@ artifact_info(int anum)
     case ART_OGRESMASHER:
         art_info.wielded[16] = "boosts constitution";
         break;
-    case ART_MORTALITY_DIAL: 
+    case ART_MORTALITY_DIAL:
         art_info.wielded[16] = "prevents monster regeneration";
         break;
     case ART_ORCRIST:

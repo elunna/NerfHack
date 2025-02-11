@@ -425,7 +425,7 @@ static const char *bogus_elbereth[N_BOGUS_ELBERETH] = {
     "ElberethElbereth",
     "Betherel", /* Anagram */
     "Thelbree", /* Anagram */
-    "Errrrrrrrr", 
+    "Errrrrrrrr",
     "Elberithius", /* latinized */
 };
 
@@ -1119,7 +1119,7 @@ doengrave(void)
         de->ret = ECMD_TIME;
         goto doengr_exit;/* costs a turn even though it didn't get worn */
     }
-    
+
     if (u.ustuck && (de->otmp == &hands_obj
                     || de->otmp->oclass == WEAPON_CLASS
                     || de->otmp->oclass == TOOL_CLASS)) {

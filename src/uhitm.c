@@ -500,7 +500,7 @@ find_roll_to_hit(
         && weapon_type(uswapwep) == P_SHORT_SWORD) {
         tmp++;
     }
-    if (Role_if(PM_ARCHEOLOGIST) && !Hallucination 
+    if (Role_if(PM_ARCHEOLOGIST) && !Hallucination
         && mtmp->data->mlet == S_SNAKE)
         tmp -= 1;
 
@@ -511,8 +511,8 @@ find_roll_to_hit(
         /* Instead of punishing spellcasting for armor and shields,
          * punish melee capabilities instead. */
         tmp -= uarm ? (*role_roll_penalty = gu.urole.spelarmr) : 0; /* spelarmr == 20 */
-        tmp -= (uarms && !is_bracer(uarms)) 
-                   ? (*role_roll_penalty += gu.urole.spelshld) 
+        tmp -= (uarms && !is_bracer(uarms))
+                   ? (*role_roll_penalty += gu.urole.spelshld)
                    : 0; /* spelshld == 10 */
         if (uwep)
             tmp -= 10;
@@ -522,7 +522,7 @@ find_roll_to_hit(
         && maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF)))
         tmp++;
 
-   
+
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
         /* hydration affects combat effectiveness */
         if (u.hydration < 1000)
@@ -797,7 +797,7 @@ do_attack(struct monst *mtmp)
             return FALSE;
         if (svc.context.forcefight) {
             return FALSE;
-        } 
+        }
     }
 
     if (Upolyd)
@@ -855,8 +855,8 @@ known_hitum(
         long oldweaphit = u.uconduct.weaphit;
 
         /* KMH, conduct */
-        if (weapon && (weapon->oclass == WEAPON_CLASS || is_weptool(weapon)) 
-            /* Don't break conduct with launchers */  
+        if (weapon && (weapon->oclass == WEAPON_CLASS || is_weptool(weapon))
+            /* Don't break conduct with launchers */
             && !is_launcher(weapon))
             u.uconduct.weaphit++;
 
@@ -1024,16 +1024,16 @@ should_skewer(int range)
         impossible("should_skewer: unknown target direction");
         return FALSE; /* better safe than sorry */
     }
-    
+
     mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
     if (mtmp && !can_skewer(mtmp))
         return FALSE;
-    
+
     for (i = 0; i < range; i++) {
         /* The +2 gets us one spot beyond the first monster. */
         int x = u.ux + u.dx * (i + 2);
         int y = u.uy + u.dy * (i + 2);
-        
+
         if (!isok(x, y))
             return FALSE;
 
@@ -1046,7 +1046,7 @@ should_skewer(int range)
             bystanders = TRUE;
         } else if (mtmp && !can_skewer(mtmp))
             return FALSE;
-        
+
     }
     if (bystanders) {
         if (!svc.context.forcefight)
@@ -1056,7 +1056,7 @@ should_skewer(int range)
 }
 
 /* We can always skewer through unsolid monsters, but fleshy monsters
- * need to be fairly low health (under 20%). This idea was adapted 
+ * need to be fairly low health (under 20%). This idea was adapted
  * from some ideas aosdict had in IRC.
  */
 staticfn boolean
@@ -1065,14 +1065,14 @@ can_skewer(struct monst *mtmp)
      if (unsolid(mtmp->data) || amorphous(mtmp->data)
         /* Most blobs are not amorphous for some reason */
         || mtmp->data->mlet == S_BLOB
-        || mtmp->data->mlet == S_FUNGUS 
+        || mtmp->data->mlet == S_FUNGUS
         /* Why wouldn't we use kebabable here?!? */
         || strchr(kebabable, mtmp->data->mlet)
         || (is_fleshy(mtmp->data) && mtmp->mhp < (mtmp->mhpmax / 5)))
         return TRUE;
      return FALSE;
 }
-    
+
 /* hit the monster next to you and the monster behind;
    return False if the primary target is killed, True otherwise
    This was copied and adapted from hitum_cleave.
@@ -1281,7 +1281,7 @@ hitum(struct monst *mon, struct attack *uattk)
             (void) passive(mon, secondwep, mhit, malive, AT_WEAP,
                            secondwep && !uswapwep);
     }
-    
+
     /* random shield bash if wearing a shield and are skilled
        in using shields */
     if (bash_chance && wearshield && !is_bracer(uarms)
@@ -1330,7 +1330,7 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
 {
     long spcdmgflg, silverhit = 0L; /* worn masks */
     boolean negated = mhitm_mgc_atk_negated(&gy.youmonst, mon, FALSE);
-    
+
     if (shadelike(hmd->mdat)) {
         hmd->dmg = 0;
     } else {
@@ -1351,7 +1351,7 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
               : (((hmd->twohits == 0 || hmd->twohits == 1) ? W_RINGR : 0L)
                  | ((hmd->twohits == 0 || hmd->twohits == 2) ? W_RINGL : 0L));
     hmd->dmg += special_dmgval(&gy.youmonst, mon, spcdmgflg, &silverhit);
-    
+
     if (uarmg && uarmg->oartifact == ART_THUNDERFISTS) {
         artifact_hit(&gy.youmonst, mon, uarmg, &hmd->dmg, hmd->dieroll);
         if (Hallucination)
@@ -1365,7 +1365,7 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
             return;
         }
     }
-    
+
     /* Grung have a poison touch that is effective when the hero is
      * fighting barehanded */
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
@@ -1385,7 +1385,7 @@ hmon_hitmon_barehands(struct _hitmon_data *hmd, struct monst *mon)
             }
         }
     }
-    
+
     /* copy silverhit info back into struct _hitmon_data *hmd */
     switch (hmd->twohits) {
     case 0: /* only one hit being attempted; a silver ring on either hand
@@ -1633,21 +1633,21 @@ hmon_hitmon_weapon_melee(
         && ammo_and_launcher(obj, uwep)) {
         hmd->dmg += rnd(7);
     }
-    
+
     if (hmd->material == SILVER && mon_hates_silver(mon)) {
         hmd->silvermsg = hmd->silverobj = TRUE;
     }
-    
+
     /* In NerfHack, launchers can contribute to damage. This
      * change was adapted from SpliceHack, but tempered back
-     * a bit to balance things out. For example, since the 
-     * cavemen starts with a +2 sling we don't want them 
+     * a bit to balance things out. For example, since the
+     * cavemen starts with a +2 sling we don't want them
      * getting a +2 damage bonus right off the bat.
      * This version of the mechanic also ignores the enchant
      * level of the ammo and only concerns the launcher. */
     if (uwep && ammo_and_launcher(obj, uwep) && uwep->spe > 2)
         hmd->dmg += rnd(uwep->spe / 3); /* Max possible bonus up to +4 */
-    
+
     if (artifact_light(obj) && obj->lamplit
         && mon_hates_light(mon))
         hmd->lightobj = TRUE;
@@ -2075,7 +2075,7 @@ hmon_hitmon_do_hit(
                           xname(obj), s_suffix(mon_nam(mon)));
                 else
                     pline("The %s %s right through %s.", xname(obj),
-                          mon->data == &mons[PM_WATER_ELEMENTAL] ? "splashes" 
+                          mon->data == &mons[PM_WATER_ELEMENTAL] ? "splashes"
                                                                  : "passes",
                           mon_nam(mon));
                 hmd->hittxt = TRUE;
@@ -2544,17 +2544,17 @@ hmon_hitmon(
     }
 
     /* Occasional critical hits for veteran monks */
-    if (hmd.dieroll == 1 && Role_if(PM_MONK) 
+    if (hmd.dieroll == 1 && Role_if(PM_MONK)
                && P_SKILL(P_BARE_HANDED_COMBAT) == P_GRAND_MASTER
                && u.ulevel > 20
-               && !Upolyd && !uwep && (!uarms || is_bracer(uarms)) 
+               && !Upolyd && !uwep && (!uarms || is_bracer(uarms))
                && !thrown) {
         pline("%s!", Hallucination ? monk_halucrit[rn2(N_HALUCRIT)]
                             : monk_crit[rn2(N_CRIT)]);
         pline("dmg=%d",hmd.dmg);
         hmd.dmg *= 2;
     }
-    
+
     if (!hmd.already_killed) {
         if (obj && (obj == uwep || (obj == uswapwep && u.twoweap))
             /* known_hitum 'what counts as a weapon' criteria */
@@ -3262,7 +3262,7 @@ mhitm_ad_drli(
     }
 }
 
-/* Historically, in SLASH'EM and all variants, the chance of feeding 
+/* Historically, in SLASH'EM and all variants, the chance of feeding
  * was 1 in 3
  */
 #define FEED_CHANCE 3
@@ -3292,7 +3292,7 @@ mhitm_ad_vamp(
             || mdef->mconf || mdef->mtrapped;
 
     boolean success = vulnerable ? rn2(FEED_CHANCE) : !rn2(FEED_CHANCE);
-                          
+
     if (magr == &gy.youmonst) {
         /* uhitm */
         mhm->damage = d(2, 6); /* Stormbringer uses monhp_per_lvl
@@ -4683,7 +4683,7 @@ mhitm_ad_wthr(struct monst *magr, struct attack *mattk,
        make a large set of monsters immune like
        fungus, blobs, and jellies. */
     boolean no_effect =
-            (nonliving(mdef->data) 
+            (nonliving(mdef->data)
              || (magr != &gy.youmonst && magr->mcan)
              || !(rn2(10) >= 3 * armpro));
     boolean lose_maxhp = (withertime >= 8); /* if already withering */
@@ -4860,7 +4860,7 @@ mhitm_ad_halu(
     boolean thirdeye = magr->mnum == PM_THIRD_EYE;
     int armpro = magic_negation(mdef);
     boolean negated = !(rn2(10) >= 3 * armpro);
-    
+
     /* Currently this code assumes this is an AT_EXPL attack (the only such
      * attack currently implemented). Make something break if some other
      * hallucination attack gets implemented, so that the below can be revised.
@@ -5013,7 +5013,7 @@ mhitm_ad_tckl(struct monst *magr, struct attack *mattk,
               struct monst *mdef, struct mhitm_data *mhm)
 {
     boolean negated = mhitm_mgc_atk_negated(magr, mdef, TRUE);
-    
+
     if (magr == &gy.youmonst) {
         /* uhitm */
         /* since hero can't be cancelled, only defender's armor applies */
@@ -5059,7 +5059,7 @@ mhitm_ad_hngy(struct monst *magr, struct attack *mattk UNUSED,
               struct monst *mdef, struct mhitm_data *mhm)
 {
     boolean negated = mhitm_mgc_atk_negated(magr, mdef, TRUE);
-    
+
     if (negated || magr->mcan)
         return;
     if (magr == &gy.youmonst) {
@@ -5378,7 +5378,7 @@ mhitm_ad_ston(
     struct monst *mdef, struct mhitm_data *mhm)
 {
     boolean negated = resists_ston(mdef) || defended(mdef, AD_STON);
-    
+
     if (magr == &gy.youmonst) {
         /* uhitm */
         if (negated)
@@ -5851,7 +5851,7 @@ mhitm_ad_samu(
         /* when the Wizard or quest nemesis hits, there's a 1/20 chance
            to steal a quest artifact (any, not just the one for the hero's
            own role) or the Amulet or one of the invocation tools
-           
+
            when a mplayer hits, there's a 1 in 3 chance to steal and they'll
            start running away.
         */
@@ -7403,7 +7403,7 @@ passive(
         if (mhitb && m_next2u(mon) && rn2(2)) {
             if (Underwater) {
                 pline("Its slime %s.", mon_underwater(mon)
-                                           ? "disperses into the water" 
+                                           ? "disperses into the water"
                                            : "splashes onto the water");
                 break;
             }
@@ -7439,7 +7439,7 @@ passive(
         /* passive poison for grung's toxic skin */
         int ptmp = A_STR;  /* A_STR == 0 */
         char buf[BUFSZ];
-        
+
         switch (ptr->mattk[i].adtyp) {
         case AD_DRST: ptmp = A_STR; break;
         case AD_DRDX: ptmp = A_DEX; break;
@@ -7451,11 +7451,11 @@ passive(
         if (mhitb && m_next2u(mon) && !rn2(3)) {
             if (Underwater) {
                 pline("Its slime %s.", mon_underwater(mon)
-                                           ? "disperses into the water" 
+                                           ? "disperses into the water"
                                            : "splashes onto the water");
                 break;
             }
-        
+
             if (Blind || !flags.verbose)
                 You("are splashed!");
             else
@@ -7488,7 +7488,7 @@ passive(
                     && !uwep && !wep_was_destroyed)
                 || (protector == W_ARMF && !uarmf)
                 || (protector == W_ARMH && !uarmh)
-                || (protector == (W_ARMC | W_ARMG) 
+                || (protector == (W_ARMC | W_ARMG)
                     && (!uarmc|| !safegloves(uarmg)))) {
                 if (!Stone_resistance
                     && !(poly_when_stoned(gy.youmonst.data)
@@ -7558,7 +7558,7 @@ passive(
         if (mhit && !mon->mcan && m_next2u(mon) && !rn2(3)) {
             if (Underwater) {
                 pline("Its slime %s.", mon_underwater(mon)
-                                           ? "disperses into the water" 
+                                           ? "disperses into the water"
                                            : "splashes onto the water");
                 break;
             }
@@ -7585,7 +7585,7 @@ passive(
             break; /* Handled in next block */
         if (Underwater && ptr != &mons[PM_YELLOW_MOLD]) {
             pline("Its slime %s.", mon_underwater(mon)
-                                       ? "disperses into the water" 
+                                       ? "disperses into the water"
                                        : "splashes onto the water");
             break;
         }
@@ -7625,7 +7625,7 @@ passive(
         /* passive sleep attack for orange jelly */
         if (Underwater) {
             pline("Its slime %s.", mon_underwater(mon)
-                                       ? "disperses into the water" 
+                                       ? "disperses into the water"
                                        : "splashes onto the water");
             break;
         }
@@ -7683,7 +7683,7 @@ passive(
                 pline("A cloud of spores surrounds you!");
             }
         } else if (malive && canseemon(mon))
-            pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon)); 
+            pline_mon(mon, "%s puffs out a cloud of spores!", Monnam(mon));
         break;
     case AD_QUIL: {
         boolean spikes = is_orc(mon->data);
@@ -7975,7 +7975,7 @@ passive(
     }
 
     struct obj *passive_armor = which_armor(mon, W_ARMS);
-    
+
     /* Humanoid monsters wearing various dragon-scaled armor */
     if (passive_armor && passive_armor->oartifact == ART_OATHFIRE
         && m_next2u(mon) && !rn2(3)) {
@@ -7995,7 +7995,7 @@ passive(
                 tmp = resist_reduce(tmp, FIRE_RES);
                 (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);
                 mdamageu(mon, tmp);
-                
+
             } else {
                 pline("%s fiery bindings severely burn you!",
                       s_suffix(Monnam(mon)));
@@ -8363,7 +8363,7 @@ hates_item(struct monst *mtmp, int otyp)
     else if (is_you ? maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))
                     : is_orc(mtmp->data))
         return (is_dwarvish_obj(otyp) || is_elven_obj(otyp)
-                || is_gnomish_obj(otyp) 
+                || is_gnomish_obj(otyp)
                 || objects[otyp].oc_material == MITHRIL);
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN))
                     : is_human(mtmp->data))
@@ -8374,7 +8374,7 @@ hates_item(struct monst *mtmp, int otyp)
     if (is_you ? maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
                 : is_grung(mtmp->data))
         return is_bulky;
-    
+
     return FALSE;
 }
 
@@ -8528,10 +8528,10 @@ biteum(struct monst *mon)
 {
     int tmp, armorpenalty, dieroll, mhit, attknum = 0;
     boolean malive;
-    
+
     if (DEADMONSTER(mon))
         impossible("biteum monster is already dead.");
-    
+
     if ((is_rider(mon->data)
             || mon->data == &mons[PM_GREEN_SLIME]
             || (touch_petrifies(mon->data) && !Stone_resistance))
@@ -8545,7 +8545,7 @@ biteum(struct monst *mon)
         mhit = (tmp > dieroll || u.uswallow || u.ustuck == mon);
         if (tmp > dieroll)
             exercise(A_DEX, TRUE);
-    
+
         if (mhit) {
             You("bite %s.", mon_nam(mon));
             malive = damageum(mon, &mons[PM_DHAMPIR].mattk[0], 0) != 2;
@@ -8558,7 +8558,7 @@ biteum(struct monst *mon)
             missum(mon, &mons[PM_DHAMPIR].mattk[0], FALSE);
         }
     }
-    
+
     return FALSE;
 }
 /*uhitm.c*/
