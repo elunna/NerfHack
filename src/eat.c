@@ -2648,12 +2648,15 @@ eataccessory(struct obj *otmp)
         break;
     case RIN_INCREASE_ACCURACY:
         accessory_has_effect(otmp);
-        u.uhitinc = (schar) bounded_increase((int) u.uhitinc, otmp->spe,
+        /* Because benefits are guaranteed, throttle the gains a bit */
+        u.uhitinc = (schar) bounded_increase((int) u.uhitinc,
+                    otmp->spe > 0 ? rnd(otmp->spe) : otmp->spe,
                                                 RIN_INCREASE_ACCURACY);
         break;
     case RIN_INCREASE_DAMAGE:
         accessory_has_effect(otmp);
-        u.udaminc = (schar) bounded_increase((int) u.udaminc, otmp->spe,
+        u.udaminc = (schar) bounded_increase((int) u.udaminc,
+                    otmp->spe > 0 ? rnd(otmp->spe) : otmp->spe,
                                                 RIN_INCREASE_DAMAGE);
         break;
     case RIN_PROTECTION:
