@@ -664,9 +664,12 @@ morguemon(void)
         else
             return mkclass(S_VAMPIRE, 0);
     }
+
+    /* added mummies, enabled all of S_wraith type monsters --Amy */
     return ((i < 20) ? &mons[PM_GHOST]
-                     : (i < 40) ? &mons[PM_WRAITH]
-                                : mkclass(S_ZOMBIE, 0));
+            : (i < 40) ? mkclass(S_WRAITH, 0) 
+            : (i < 70) ? mkclass(S_MUMMY, 0) 
+                       : mkclass(S_ZOMBIE, 0));
 }
 
 /* Return an appropriate ant monster type for an anthole.
