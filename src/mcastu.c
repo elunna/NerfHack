@@ -53,8 +53,10 @@ enum mcast_cleric_spells {
 
 };
 
-#define offensive_spell(spelltype) \
-    (spelltype == MGC_PSI_BOLT
+#define offensive_mgc(spelltype) \
+    (spelltype >= MGC_PSI_BOLT && spelltype <= MGC_ENTOMB)
+#define offensive_clc(spelltype) \
+    (spelltype >= CLC_OPEN_WOUNDS && spelltype <= CLC_FLESH_TO_STONE)
 
 extern const char *const flash_types[]; /* from zap.c */
 
@@ -302,10 +304,26 @@ castmu(
             caster->mspec_used = 0;
     }
 
+    /* Telepathic spellcasters don't have much reason to miss.
+       They have a chance to be wrong in mon_really_found_us */
+    if (telepathic(caster->data))
+        foundyou = 1;
+
     /* Check for protection from invisibility, displacement,
        or cover of darkness */
-    if (!mon_really_found_us(caster))
+    if (!mon_really_found_us(caster)) {
         foundyou = 0;
+        /* Let some spells be blocked; but always let the blasts through. */
+        if (mattk->adtyp == AD_SPEL) {
+            if (spellnum == MGC_PSI_BOLT)
+                thinks_it_foundyou = 1;
+            else if (spellnum == MGC_ICE_BOLT || spellnum == MGC_FIRE_BOLT
+                     || spellnum == MGC_ACID_BLAST)
+                thinks_it_foundyou = 0;
+        } else if (mattk->adtyp == AD_CLRC
+                 && (spellnum == CLC_OPEN_WOUNDS || spellnum == CLC_HOBBLE))
+            thinks_it_foundyou = 1;
+    }
 
     /* Monster can cast spells, but is casting a directed spell at the
      * wrong place?  If so, give a message, and return.
@@ -317,8 +335,7 @@ castmu(
      *  even when the caster has targeted the wrong spot?  Likewise
      *  for fire mis-aimed at ice.
      */
-    if (!foundyou && thinks_it_foundyou
-        && !is_undirected_spell(mattk->adtyp, spellnum)) {
+    if (!foundyou && thinks_it_foundyou) {
         pline_mon(caster, "%s casts a spell at %s!",
                  canseemon(caster) ? Monnam(caster) : "Something",
                  is_waterwall(caster->mux, caster->muy) ? "empty water"
@@ -666,7 +683,8 @@ cast_wizard_spell(
     int dmg, int spellnum)
 {
     boolean youdefend = (mdef == &gy.youmonst),
-            resisted = FALSE;
+            resisted = FALSE,
+            telepath_caster = mon_prop(caster, TELEPAT);
     int mdist;
 
     if (dmg < 0) {
@@ -760,23 +778,13 @@ cast_wizard_spell(
     case MGC_ACID_BLAST:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
-
+        /* hotwire these to only go off if the critter can see you
+         * to avoid bugs WRT the Eyes and detect monsters */
         if (youdefend) {
-            /* hotwire these to only go off if the critter can see you
-            * to avoid bugs WRT the Eyes and detect monsters */
-
-            if (mcast_dist_ok(caster)) {
-                pline("%s douses you in a torrent of acid!", Monnam(caster));
-                explode(u.ux, u.uy, BZ_M_SPELL(ZT_ACID), dmg,
-                    MON_CASTBALL, EXPL_WET);
-
-                if (Acid_resistance) {
-                    shieldeff(u.ux, u.uy);
-                    monstseesu(M_SEEN_ACID);
-                } else {
-                    monstunseesu(M_SEEN_ACID);
-                }
-            } else {
+            /* caster must be within range and have line-of-sight or ESP */
+            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
+                                           && !telepath_caster)) {
+                dmg = 0;
                 if (canseemon(caster)) {
                     pline("%s blasts the %s with %s and curses!",
                       Monnam(caster), rn2(2) ? "ceiling"
@@ -784,6 +792,17 @@ cast_wizard_spell(
                 } else {
                     You_hear("some cursing!");
                 }
+                return 0;
+            }
+            pline("%s douses you in a torrent of acid!", Monnam(caster));
+            explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_ACID), dmg,
+                MON_CASTBALL, EXPL_WET);
+
+            if (Acid_resistance) {
+                shieldeff(u.ux, u.uy);
+                monstseesu(M_SEEN_ACID);
+            } else {
+                monstunseesu(M_SEEN_ACID);
             }
         } else {
             if (canseemon(caster))
@@ -996,34 +1015,35 @@ cast_wizard_spell(
     case MGC_FIRE_BOLT:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
             return 0;
-
+        /* hotwire these to only go off if the critter can see you
+         * to avoid bugs WRT the Eyes and detect monsters */
         if (youdefend) {
-            /* hotwire these to only go off if the critter can see you
-            * to avoid bugs WRT the Eyes and detect monsters */
-
-            if (mcast_dist_ok(caster)) {
-                pline("%s blasts you with a bolt of fire!", Monnam(caster));
-                explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dmg,
-                    MON_CASTBALL, EXPL_FIERY);
-
-                if (fully_resistant(FIRE_RES)) {
-                    shieldeff(u.ux, u.uy);
-                    monstseesu(M_SEEN_FIRE);
-                } else {
-                    monstunseesu(M_SEEN_FIRE);
-                }
-            } else {
+            /* caster must be within range and have line-of-sight or ESP */
+            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
+                                           && !telepath_caster)) {
+                dmg = 0;
                 if (canseemon(caster)) {
                     pline("%s blasts the %s with fire and curses!",
                         Monnam(caster), rn2(2) ? "ceiling" : "floor");
                 } else {
                     You_hear("some cursing!");
                 }
+                return 0;
+            }
+            pline("%s blasts you with a bolt of fire!", Monnam(caster));
+            explode(u.ux, u.uy, BZ_M_SPELL(ZT_FIRE), dmg,
+                MON_CASTBALL, EXPL_FIERY);
+
+            if (fully_resistant(FIRE_RES)) {
+                shieldeff(u.ux, u.uy);
+                monstseesu(M_SEEN_FIRE);
+            } else {
+                monstunseesu(M_SEEN_FIRE);
             }
         } else {
             if (canseemon(caster))
                 pline("%s blasts %s with fire!", Monnam(caster), mon_nam(mdef));
-            explode(mdef->mx, mdef->my, BZ_M_SPELL(ZT_FIRE), dmg,
+            explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_FIRE), dmg,
                     MON_CASTBALL, EXPL_FIERY);
         }
         dmg = 0; /* damage is handled by explode() */
@@ -1033,24 +1053,27 @@ cast_wizard_spell(
             return 0;
 
         if (youdefend) {
-            if (mcast_dist_ok(caster)) {
-                pline("%s blasts you with a bolt of cold!", Monnam(caster));
-                explode(u.ux, u.uy, BZ_M_SPELL(ZT_COLD), dmg,
-                    MON_CASTBALL, EXPL_FROSTY);
-
-                if (fully_resistant(COLD_RES)) {
-                    shieldeff(u.ux, u.uy);
-                    monstseesu(M_SEEN_COLD);
-                } else {
-                    monstunseesu(M_SEEN_COLD);
-                }
-            } else {
+            /* caster must be within range and have line-of-sight or ESP */
+            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
+                                           && !telepath_caster)) {
+                dmg = 0;
                 if (canseemon(caster)) {
                     pline("%s blasts the %s with cold and curses!",
                         Monnam(caster), rn2(2) ? "ceiling" : "floor");
                 } else {
                     You_hear("some cursing!");
                 }
+                return 0;
+            }
+            pline("%s blasts you with a bolt of cold!", Monnam(caster));
+            explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_COLD), dmg,
+                MON_CASTBALL, EXPL_FROSTY);
+
+            if (fully_resistant(COLD_RES)) {
+                shieldeff(u.ux, u.uy);
+                monstseesu(M_SEEN_COLD);
+            } else {
+                monstunseesu(M_SEEN_COLD);
             }
         } else {
             if (canseemon(caster))
@@ -1067,7 +1090,9 @@ cast_wizard_spell(
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
         if (youdefend) {
-            if (!mcast_dist_ok(caster)) {
+            /* caster must be within range and have line-of-sight or ESP */
+            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
+                                           && !telepath_caster)) {
                 dmg = 0;
                 return 0;
             }
@@ -1870,7 +1895,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
     if (adtyp == AD_SPEL) {
         /* offensive spells won't be cast by peaceful monsters */
         if ((caster->mpeaceful || u.uinvulnerable) && !Conflict
-            && (spellnum >= MGC_PSI_BOLT && spellnum <= MGC_ENTOMB))
+            && offensive_mgc(spellnum))
             return TRUE;
         /* haste self when already fast */
         if (caster->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
@@ -1899,6 +1924,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             if (!is_undead(caster->data) && !is_demon(caster->data))
                 return TRUE;
         }
+        /* Don't allow double trouble when there are already 2 wizards in play */
         if ((!caster->iswiz || svc.context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
@@ -1911,13 +1937,16 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             if (!has_aggravatables(caster) && !Aggravate_monster)
                 return rn2(100) ? TRUE : FALSE;
         }
+        /* fire vs fire res */
         if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)
             && spellnum == MGC_FIRE_BOLT) {
             return TRUE;
         }
+        /* cold vs cold res */
         if ((m_seenres(caster, M_SEEN_COLD)) && spellnum == MGC_ICE_BOLT) {
             return TRUE;
         }
+        /* acid vs acid res */
         if ((m_seenres(caster, M_SEEN_ACID)) && spellnum == MGC_ACID_BLAST) {
             return TRUE;
         }
@@ -1930,16 +1959,14 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             return TRUE;
     } else if (adtyp == AD_CLRC) {
         /* should not be cast by peaceful monsters */
-        if (caster->mpeaceful && !Conflict &&
-            (spellnum >= CLC_OPEN_WOUNDS && spellnum <= CLC_FLESH_TO_STONE))
+        if (caster->mpeaceful && !Conflict && offensive_clc(spellnum))
             return TRUE;
         /* healing when already healed */
         if (caster->mhp == caster->mhpmax && spellnum == CLC_CURE_SELF
             && !caster->mdiseased && !caster->mwither && !caster->mblinded)
             return TRUE;
         /* don't summon insects if it doesn't think you're around */
-        if (!mcouldseeu
-                && (spellnum == CLC_INSECTS || spellnum == CLC_SPHERES))
+        if (!mcouldseeu && (spellnum == CLC_INSECTS || spellnum == CLC_SPHERES))
             return TRUE;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)
@@ -1948,16 +1975,20 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if (spellnum == CLC_FIRE_PILLAR && caster->data != &mons[PM_ARCH_VILE]
             && distu(caster->mx, caster->my) > 2)
             return TRUE;
+        /* fire vs fire res */
         if ((m_seenres(caster, M_SEEN_FIRE) || Underwater)
             && spellnum == CLC_FIRE_PILLAR) {
             return TRUE;
         }
-        if (Stone_resistance && spellnum == CLC_FLESH_TO_STONE) {
-            return TRUE;
-    }
+        /* lightning vs shock res */
         if ((m_seenres(caster, M_SEEN_ELEC)) && spellnum == CLC_LIGHTNING) {
             return TRUE;
         }
+        /* Don't try to stone us if we are stoning resistant or already stoned */
+        if (spellnum == CLC_FLESH_TO_STONE && (Stone_resistance || Stoned)) {
+            return TRUE;
+        }
+       
     }
     return FALSE;
 }
