@@ -7990,7 +7990,7 @@ passive(
             if (rn2(20)) {
                 You("are suddenly very hot!");
                 tmp = rnd(6) + 1;
-                if (Cold_resistance)
+                if (!hardly_resistant(COLD_RES))
                     tmp += 7;
                 tmp = resist_reduce(tmp, FIRE_RES);
                 (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);
@@ -8000,7 +8000,7 @@ passive(
                 pline("%s fiery bindings severely burn you!",
                       s_suffix(Monnam(mon)));
                 tmp = d(4, 6) + 1;
-                if (Cold_resistance)
+                if (!hardly_resistant(COLD_RES))
                     tmp += 7;
                 tmp = resist_reduce(tmp, FIRE_RES);
                 (void) destroy_items(&gy.youmonst, AD_FIRE, tmp);

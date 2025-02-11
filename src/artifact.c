@@ -1165,7 +1165,7 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
         case AD_ACID:
             return !(yours ? Acid_resistance : resists_acid(mtmp));
         case AD_SLEE:
-            return !(yours ? Sleep_resistance : resists_sleep(mtmp));
+            return !(yours ? fully_resistant(SLEEP_RES) : resists_sleep(mtmp));
         case AD_DISE:
             return !(yours ? Sick_resistance : resists_sick(mtmp->data));
         default:
