@@ -636,7 +636,7 @@ mkundead(
         /* Don't create more spellcasters of the monsters' level or
          * higher--avoids chain summoners filling up the level.
          */
-        if (difcap > 0 && mdat->difficulty >= difcap
+        if (mdat && difcap > 0 && mdat->difficulty >= difcap
             && attacktype(mdat, AT_MAGC)) {
             cnt++;
             continue;
