@@ -551,9 +551,9 @@ static NEARDATA struct artifact artilist[] = {
       DFLT_SPE, QAVAL, 2500L, NO_COLOR, ORB_OF_DETECTION),
 
     /* Instead of stealth, this grants displacement and flying when carried */
-    A("The Heart of Ahriman", LUCKSTONE,
+    A("The Heart of Ahriman", RUBY,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
-      (SPFX_FLYING | SPFX_DISPLAC), 0,
+      (SPFX_FLYING | SPFX_DISPLAC | SPFX_LUCK), 0,
       /* this stone does double damage if used as a projectile weapon */
       PHYS(0, 0), NO_DFNS, NO_CARY, UNCURSE_INVK,
       A_NEUTRAL, PM_BARBARIAN, NON_PM,
