@@ -4343,8 +4343,11 @@ xkilled(
         struct obj *cadaver;
         int otyp;
 
-        /* illogical but traditional "treasure drop" */
-        if (!rn2(6) && !(svm.mvitals[mndx].mvflags & G_NOCORPSE)
+        /* illogical but traditional "treasure drop"
+           over time, these decrease 
+         */
+        if (!rn2(6 + (svm.moves / 5000)) 
+            && !(svm.mvitals[mndx].mvflags & G_NOCORPSE)
             /* no extra item from swallower or steed */
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */
