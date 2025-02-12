@@ -365,7 +365,7 @@ check_caitiff(struct monst *mtmp)
     } else if (Race_if(PM_ORC)) {
         if (is_undead(mtmp->data))
             return;
-        if (mtmp->mpeaceful) {
+        if (mtmp->mpeaceful && canseemon(mtmp)) {
             adjalign(1);
             if (rn2(3))
                 return;
@@ -383,7 +383,7 @@ check_caitiff(struct monst *mtmp)
             }
             return;
         }
-        if (helpless(mtmp)) {
+        if (helpless(mtmp) && canseemon(mtmp)) {
             adjalign(1);
             if (rn2(3))
                 return;
@@ -402,7 +402,7 @@ check_caitiff(struct monst *mtmp)
             }
             return;
         }
-        if (mtmp->mflee) {
+        if (mtmp->mflee && canseemon(mtmp)) {
             adjalign(1);
             if (rn2(3))
                 return;
