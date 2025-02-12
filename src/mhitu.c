@@ -3630,14 +3630,14 @@ mon_really_found_us(struct monst *mtmp)
      * player...) */
     if (mcanseeu && Invis && !mon_prop(mtmp, SEE_INVIS)
         && !m_next2u(mtmp) && rn2(3)) {
-        if (!rn2(4)) /* Don't spam this. */
+        if (!rn2(4) && !mtmp->mpeaceful) /* Don't spam this. */
             pline("%s looks around searchingly...", Monnam(mtmp));
         return FALSE;
     }
 
     /* Displacement protection */
     if (mcanseeu && Displaced && (!foundyou || rn2(3))) {
-        if (!rn2(4)) /* Don't spam this. */
+        if (!rn2(4) && !mtmp->mpeaceful) /* Don't spam this. */
             pline("%s glances at your displaced image.",
                   Monnam(mtmp));
         return FALSE;
