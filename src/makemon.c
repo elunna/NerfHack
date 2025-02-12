@@ -1710,7 +1710,7 @@ makemon(
         (void) mongets(mtmp, mitem);
 
     if (gi.in_mklev) {
-        if ((is_ndemon(ptr) || mndx == PM_WUMPUS
+        if (((is_ndemon(ptr) && !Inhell) || mndx == PM_WUMPUS
              || mndx == PM_LONG_WORM || mndx == PM_GIANT_EEL)
             && !u.uhave.amulet && rn2(5))
             mtmp->msleeping = TRUE;
@@ -2051,6 +2051,8 @@ rndmonst_adj(int minadj, int maxadj)
         if (elemlevel && wrong_elem_type(ptr))
             continue;
         if (uncommon(mndx))
+            /* actually means extinct, genocided, unique, or out of place in/out
+             * of Gehennom */
             continue;
         if (Inhell && (ptr->geno & G_NOHELL))
             continue;

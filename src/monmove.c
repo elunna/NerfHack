@@ -945,7 +945,9 @@ dochug(struct monst *mtmp)
 
     /* Monsters that want to acquire things may teleport, so do it before
        inrange is set. This costs a turn only if mstate is set.  */
-    if (is_covetous(mdat) && !covetous_nonwarper(mdat)) {
+    /* mavenge is used as a kludgy flag to mark covetous_nonwarpers that have
+       performed their introductory warp and will no longer use tactics */
+    if (is_covetous(mdat) && !(covetous_nonwarper(mdat) && mtmp->mavenge)) {
         (void) tactics(mtmp);
         /* tactics -> mnexto -> deal_with_overcrowding */
         if (mtmp->mstate)
@@ -1985,8 +1987,8 @@ m_move(struct monst *mtmp, int after)
     }
 
     /* and the acquisitive monsters get special treatment */
-    if (is_covetous(ptr) && !covetous_nonwarper(ptr)) { /* [should this include
-                             *  '&& mtmp->mstrategy != STRAT_NONE'?] */
+    if (is_covetous(ptr) && !(covetous_nonwarper(ptr) && mtmp->mavenge)) { 
+        /* [should this include '&& mtmp->mstrategy != STRAT_NONE'?] */
         int covetousattack;
         coordxy tx = STRAT_GOALX(mtmp->mstrategy),
                 ty = STRAT_GOALY(mtmp->mstrategy);
@@ -2009,7 +2011,7 @@ m_move(struct monst *mtmp, int after)
         } else {
             mmoved = MMOVE_NOTHING;
         }
-        if (!covetous_nonwarper(ptr))
+        if (!(covetous_nonwarper(ptr) && mtmp->mavenge))
             return postmov(mtmp, ptr, omx, omy, mmoved,
                            seenflgs, can_tunnel, can_unlock, can_open);
     }

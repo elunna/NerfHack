@@ -571,9 +571,11 @@
 #define percent_granted(ptr) ((ptr)->cwt / 90)
 
 #define HYDRATION_MAX 6000
+
 /* The monster is covetous, but should not warp, heal, or otherwise use
- * tactics(). */
-#define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr))
+ * tactics() after an introduction. */
+#define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr) \
+    || (ptr)->msound == MS_NEMESIS)
 #define covetous_nonwarper(ptr) (is_archfiend(ptr) \
                                  || (ptr) == &mons[PM_CTHULHU])
 /* many boss-type monsters than have two or more spell attacks

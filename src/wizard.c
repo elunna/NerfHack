@@ -370,7 +370,7 @@ tactics(struct monst *mtmp)
     mtmp->mstrategy =
         (mtmp->mstrategy & (STRAT_WAITMASK | STRAT_APPEARMSG)) | strat;
 
-    if (covetous_nonwarper(mtmp->data))
+    if (covetous_nonwarper(mtmp->data) && mtmp->mavenge)
         /* currently every strategy below this involves warping; for
          * non-warpers, we still want to set mstrategy but don't want to go any
          * further */
@@ -410,8 +410,11 @@ tactics(struct monst *mtmp)
         /*FALLTHRU*/
 
     case STRAT_NONE: /* harass */
-        if (!rn2(!mtmp->mflee ? 5 : 33))
+        if (!rn2(!mtmp->mflee ? 5 : 33)) {
             mnexto(mtmp, RLOC_MSG);
+            if (covetous_nonwarper(mtmp->data))
+                mtmp->mavenge = 1;
+        }
         return 0;
 
     default: /* kill, maim, pillage! */
