@@ -141,6 +141,8 @@ des.monster("giant eel")
 des.monster("giant eel")
 des.monster("jellyfish")
 des.monster("jellyfish")
+des.monster("water troll")
+des.monster("water hulk")
 for i=1,14 do
    des.monster("S")
 end
