@@ -948,7 +948,7 @@ nh_timeout(void)
                     break;
                 case AGGRAVATE_MONSTER:
                     if (!Aggravate_monster)
-                        pline("The     lingering aura of hostility fades.");
+                        pline("The lingering aura of hostility fades.");
                     break;
                 case FAST:
                     if (!Very_fast)
