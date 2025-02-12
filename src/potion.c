@@ -1878,7 +1878,7 @@ peffect_milk(struct obj *otmp)
     /* Also - Unpoly yourself if polyd */
 	if (Upolyd) { /* includes lycanthrope in creature form */
         if (Unchanging && u.mh > 0)
-            Your("amulet grows hot for a moment, then cools.");
+            You_feel("a little %s.", Hallucination ? "normal" : "strange");
         else
             rehumanize();
     }

@@ -3906,7 +3906,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack,
                 u.mh = 0; /* fatal; death handled by rehumanize() */
             }
             if (Unchanging && u.mh > 0)
-                Your("amulet grows hot for a moment, then cools.");
+                You_feel("a little %s.", Hallucination ? "normal" : "strange");
             else
                 rehumanize();
         }
