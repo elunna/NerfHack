@@ -336,10 +336,12 @@ castmu(
      *  for fire mis-aimed at ice.
      */
     if (!foundyou && thinks_it_foundyou) {
-        pline_mon(caster, "%s casts a spell at %s!",
-                 canseemon(caster) ? Monnam(caster) : "Something",
-                 is_waterwall(caster->mux, caster->muy) ? "empty water"
-                                                    : "thin air");
+        if (!is_undirected_spell(mattk->adtyp, spellnum)) {
+            pline_mon(caster, "%s casts a spell at %s!",
+                     canseemon(caster) ? Monnam(caster) : "Something",
+                     is_waterwall(caster->mux, caster->muy) ? "empty water"
+                                                        : "thin air");
+        }
         return M_ATTK_MISS;
     }
 
