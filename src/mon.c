@@ -7651,6 +7651,8 @@ deathwail(struct monst *mtmp)
         if (u.usleep)
             unmul("You are frightened awake!");
     }
+    wake_nearto(mtmp->mx, mtmp->my, 8 * 8);
+
     if (u.umonnum == PM_GLASS_GOLEM) {
         You("shatter into a million pieces!");
         rehumanize();
