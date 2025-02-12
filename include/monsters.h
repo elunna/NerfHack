@@ -5789,7 +5789,7 @@
           ATTK(AT_TUCH, AD_ELEC, 2, 6),
           ATTK(AT_MAGC, AD_SPEL, 0, 0),
           NO_ATTK),
-        SIZ(WT_HUMAN, 0, MS_WAIL, MZ_HUMAN),
+        SIZ(WT_HUMAN, 0, MS_NEMESIS, MZ_HUMAN),
         MR_COLD | MR_DISINT | MR_SLEEP | MR_POISON | MR_STONE
             | MR_ACID | MR_ELEC, 0,
         M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_POIS | M1_REGEN
