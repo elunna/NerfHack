@@ -207,21 +207,21 @@ des.monster("iron golem",25,10)
 des.monster({id="Dispater", x=39, y=10})
 
 -- His court
-des.monster({ id = "nalfeshnee", x=38, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "nalfeshnee", x=38, y=11, peaceful=0, asleep = 1 })
-des.monster({ id = "succubus", x=39, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "incubus", x=39, y=11, peaceful=0, asleep = 1 })
+des.monster({ id = "nalfeshnee", x=38, y=09, peaceful=0 })
+des.monster({ id = "nalfeshnee", x=38, y=11, peaceful=0 })
+des.monster({ id = "succubus", x=39, y=09, peaceful=0 })
+des.monster({ id = "incubus", x=39, y=11, peaceful=0 })
 --MONSTER:''',"diamond golem",(35,09),asleep,hostile
 --MONSTER:''',"diamond golem",(35,11),asleep,hostile
-des.monster({ id = "iron golem", x=35, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "iron golem", x=35, y=11, peaceful=0, asleep = 1 })
+des.monster({ id = "iron golem", x=35, y=09, peaceful=0 })
+des.monster({ id = "iron golem", x=35, y=11, peaceful=0 })
 
 -- His guards
-des.monster({ id = "ice devil", x=31, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "ice devil", x=33, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "ice devil", x=31, y=11, peaceful=0, asleep = 1 })
-des.monster({ id = "ice devil", x=31, y=11, peaceful=0, asleep = 1 })
-des.monster({ id = "ice devil", x=30, y=10, peaceful=0, asleep = 1 })
+des.monster({ id = "ice devil", x=31, y=09, peaceful=0 })
+des.monster({ id = "ice devil", x=33, y=09, peaceful=0 })
+des.monster({ id = "ice devil", x=31, y=11, peaceful=0 })
+des.monster({ id = "ice devil", x=31, y=11, peaceful=0 })
+des.monster({ id = "ice devil", x=30, y=10, peaceful=0 })
 
 -- Some doorbells
 des.trap("board", 27,09)
@@ -260,7 +260,7 @@ des.trap("polymorph", 44,15)
 des.trap("magic", 45,15)
 
 -- MONSTER:''',"diamond golem",(43,15),asleep,hostile
-des.monster({ id = "iron golem", x=43, y=15, peaceful=0, asleep = 1 })
+des.monster({ id = "iron golem", x=43, y=15, peaceful=0 })
 
 -- Northern Vault
 des.trap("board", 40,04)

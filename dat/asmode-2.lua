@@ -95,13 +95,13 @@ des.region(selection.area(06,15,16,18), "lit")
 des.monster({id="Asmodeus", x=11, y=16})
 
 -- His close friends
-des.monster({id="marilith", x=08, y=16,name="Voran",asleep=1})
-des.monster({id="marilith", x=09, y=17,name="Joggeruuth",asleep=1})
-des.monster({id="succubus", x=14, y=16,asleep=1})
-des.monster({id="succubus", x=13, y=17,asleep=1})
-des.monster({id="incubus", x=11, y=18,asleep=1})
-des.monster({id="barbed devil", x=10, y=13,name="Gogmelon",asleep=1})
-des.monster({id="barbed devil", x=12, y=13,name="Ulgaxicus",asleep=1})
+des.monster({id="marilith", x=08, y=16,name="Voran" })
+des.monster({id="marilith", x=09, y=17,name="Joggeruuth" })
+des.monster({id="succubus", x=14, y=16 })
+des.monster({id="succubus", x=13, y=17 })
+des.monster({id="incubus", x=11, y=18 })
+des.monster({id="barbed devil", x=10, y=13,name="Gogmelon" })
+des.monster({id="barbed devil", x=12, y=13,name="Ulgaxicus" })
 
 -- A few traps on the way in
 des.trap("board",10,12)
