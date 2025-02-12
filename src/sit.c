@@ -103,11 +103,7 @@ throne_sit_effect(void)
                 if (!rn2(5)) {
                     makewish();
                     /* no farming thrones for multiple wishes */
-                    set_levltyp(u.ux, u.uy, ROOM);
-                    levl[u.ux][u.uy].flags = 0;
-                    pline_The("throne vanishes in a puff of logic.");
-                    maybe_unhide_at(u.ux, u.uy);
-                    newsym(u.ux, u.uy);
+                    goto rm_throne;
                 } else {
                     You_feel("your luck is changing...");
                     change_luck(-1); /* oops */
@@ -238,6 +234,7 @@ throne_sit_effect(void)
        started from.]  "Analyzing a throne" doesn't really make any sense
        but if the answer is yes than it will vanish in a puff of logic. */
     if (!rn2(3) && (!wizard || y_n("Analyze throne?") == 'y')) {
+rm_throne:
         levl[tx][ty].typ = ROOM, levl[tx][ty].flags = 0;
         maybe_unhide_at(tx, ty);
         map_background(tx, ty, FALSE);
