@@ -4041,7 +4041,7 @@
         M3_INFRAVISION,
         MH_UNDEAD, 18, CLR_ORANGE, GUG),
     MON(NAM("ghoul queen"), S_ZOMBIE,
-        LVL(14, 12, 0, 30, -8), (G_GENO | G_NOCORPSE | 1),
+        LVL(16, 12, -5, 30, -8), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_PLYS, 1, 3),
           ATTK(AT_CLAW, AD_PHYS, 1, 4),
           ATTK(AT_MAGC, AD_SPEL, 4, 6),
