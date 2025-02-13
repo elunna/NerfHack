@@ -41,11 +41,15 @@ des.region({ region={08,01,50,09}, lit=1, type="temple", filled=2 })
 
 des.region({ region={00,00,55,08}, lit=0, type="ordinary" })
 
--- the altar of Moloch (making four will make four priests....)
+-- the altar of Moloch
 des.altar({ x=47, y=05, align="noalign",type="shrine" })
-des.altar({ x=47, y=05, align="noalign",type="shrine" })
-des.altar({ x=47, y=05, align="noalign",type="shrine" })
-des.altar({ x=47, y=05, align="noalign",type="shrine" })
+
+-- We need to generate these separately, otherwise they all tend the same altar.
+-- If an orc/ or unaligned player converts the altar only one of the priests
+-- would get angry.
+des.monster({ id = "aligned cleric", x=47, y=04, align="noalign", peaceful=0 })
+des.monster({ id = "aligned cleric", x=47, y=06, align="noalign", peaceful=0 })
+des.monster({ id = "aligned cleric", x=48, y=05, align="noalign", peaceful=0 })
 
 des.levregion({ region = {03,05,03,05}, type = "branch" })
 --des.stair("up", 04,05)
