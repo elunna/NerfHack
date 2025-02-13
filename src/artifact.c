@@ -743,6 +743,8 @@ set_artifact_intrinsic(
         mask = &EAcid_resistance;
     else if (dtyp == AD_SLEE)
         mask = &ESleep_resistance;
+    else if (dtyp == AD_DISN)
+        mask = &EDisint_resistance;
     else if (dtyp == AD_DISE) {
         mask = &ESick_resistance;
         if (Sick) {
@@ -1168,6 +1170,8 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
             return !(yours ? fully_resistant(SLEEP_RES) : resists_sleep(mtmp));
         case AD_DISE:
             return !(yours ? Sick_resistance : resists_sick(mtmp->data));
+        case AD_DISN:
+            return !(yours ? Disint_resistance : resists_disint(mtmp));
         default:
             impossible("Weird weapon special attack.");
         }
@@ -2923,6 +2927,7 @@ abil_to_adtyp(long *abil)
         { &EDrain_resistance, AD_DRLI },
         { &EStun_resistance, AD_STUN },
         { &ESick_resistance, AD_DISE },
+        { &EDisint_resistance, AD_DISN },
     };
     int k;
 
