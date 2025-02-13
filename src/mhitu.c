@@ -1807,13 +1807,14 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
         break;
     case AD_ACID:
         orig_dmg = tmp;
-        if (Acid_resistance) {
+        if (fully_resistant(ACID_RES)) {
             You("are covered with a seemingly harmless goo.");
             /* NB: the monst[un]seesu calls in gulpmu are no-ops since the
                hero must be currently swallowed for the attack to hit... */
             monstseesu(M_SEEN_ACID);
             tmp = 0;
         } else {
+            tmp = resist_reduce(tmp, ACID_RES);
             if (Hallucination)
                 pline("Ouch!  You've been slimed!");
             else

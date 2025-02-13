@@ -1161,7 +1161,7 @@ givit(int type, struct permonst *ptr)
         break;
     case ACID_RES:
         debugpline0("Giving timed acid resistance");
-        if (!Acid_resistance)
+        if (!fully_resistant(ACID_RES))
             You_feel("%s.", Hallucination ? "secure from flashbacks"
                             : "less concerned about being harmed by acid");
         incr_itimeout(&HAcid_resistance, d(3, 6));
@@ -2092,10 +2092,11 @@ eatcorpse(struct obj *otmp)
         else
             useupf(otmp, 1L);
         return 2;
-    } else if (acidic(&mons[mnum]) && !Acid_resistance) {
+    } else if (acidic(&mons[mnum]) && !fully_resistant(ACID_RES)) {
         tp++;
         You("have a very bad case of stomach acid.");   /* not body_part() */
-        losehp(rnd(15), !glob ? "acidic corpse" : "acidic glob",
+        losehp(resist_reduce(d(4, 5), ACID_RES),
+               !glob ? "acidic corpse" : "acidic glob",
                KILLED_BY_AN); /* acid damage */
     } else if (poisonous(&mons[mnum]) && rn2(5)) {
         tp++;
@@ -3077,7 +3078,7 @@ edibility_prompts(struct obj *otmp)
     } else if (cadaver && !vegetarian(&mons[mnum])
                && !u.uconduct.unvegetarian && Role_if(PM_MONK)) {
         Snprintf(buf, sizeof buf, "%s unhealthy.", foodsmell);
-    } else if (cadaver && acidic(&mons[mnum]) && !Acid_resistance) {
+    } else if (cadaver && acidic(&mons[mnum]) && !fully_resistant(ACID_RES)) {
         Snprintf(buf, sizeof buf, "%s rather acidic.", foodsmell);
     } else if (Upolyd && u.umonnum == PM_RUST_MONSTER && is_metallic(otmp)
                && otmp->oerodeproof) {

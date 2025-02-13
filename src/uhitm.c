@@ -3637,7 +3637,7 @@ mhitm_ad_acid(
         /* mhitu */
         hitmsg(magr, mattk);
         if (!magr->mcan && !rn2(3)) {
-            if (Acid_resistance) {
+            if (fully_resistant(ACID_RES)) {
                 pline("You're covered in %s, but it seems harmless.",
                       hliquid("acid"));
                 monstseesu(M_SEEN_ACID);
@@ -3646,6 +3646,7 @@ mhitm_ad_acid(
                 pline("You're covered in %s!  It burns!", hliquid("acid"));
                 exercise(A_STR, FALSE);
                 monstunseesu(M_SEEN_ACID);
+                mhm->damage = resist_reduce(mhm->damage, ACID_RES);
             }
             if (rn2(u.twoweap ? 2 : 3))
                 acid_damage(uwep);
@@ -7413,8 +7414,8 @@ passive(
                 You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
                     hliquid("acid"));
 
-            if (!Acid_resistance) {
-                mdamageu(mon, tmp);
+            if (!fully_resistant(ACID_RES)) {
+                mdamageu(mon, resist_reduce(tmp, ACID_RES));
                 monstunseesu(M_SEEN_ACID);
             } else {
                 monstseesu(M_SEEN_ACID);

@@ -1056,7 +1056,7 @@ nh_timeout(void)
                     }
                     break;
                 case ACID_RES:
-                    if (!Acid_resistance) {
+                    if (!fully_resistant(ACID_RES)) {
                         if (eating_dangerous_corpse(ACID_RES)) {
                             /* extend temporary acid resistance if in midst
                                of eating an acidic corpse; this will repeat

@@ -61,7 +61,7 @@ explosionmask(
                 res = EXPL_HERO;
             break;
         case AD_ACID:
-            if (Acid_resistance)
+            if (fully_resistant(ACID_RES))
                 res = EXPL_HERO;
             break;
         case AD_DRLI:

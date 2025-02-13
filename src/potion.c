@@ -121,10 +121,15 @@ decr_resistance(long* which, int incr)
 int
 how_resistant(int which)
 {
-    if (extrinsic_res(which))
+    if (extrinsic_res(which)) {
+        /* Acid resistance is capped at 50% unless you are a form/role
+         * which is naturally acid resistant */
+        if (which == ACID_RES)
+            return 50;
         return 100;
-    else
+    } else {
       return intrinsic_res(which);
+  }
 }
 
 int
@@ -1685,7 +1690,7 @@ peffect_oil(struct obj *otmp)
 staticfn void
 peffect_acid(struct obj *otmp)
 {
-    if (Acid_resistance) {
+    if (fully_resistant(ACID_RES)) {
         /* Not necessarily a creature who _likes_ acid */
         pline("This tastes %s.", Hallucination ? "tangy" : "sour");
     } else {
@@ -1696,7 +1701,7 @@ peffect_acid(struct obj *otmp)
                                                          : " like acid");
         dmg = d(otmp->cursed ? 2 : 1, otmp->blessed ? 4 : 8);
         dmg /= (otmp->odiluted ? 2 : 1);
-
+        dmg = resist_reduce(dmg, ACID_RES);
         losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
         exercise(A_CON, FALSE);
     }
@@ -2290,17 +2295,19 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                 polyself(POLY_NOFLAGS);
             break;
         case POT_ACID:
-            if (!Acid_resistance) {
+            if (!fully_resistant(ACID_RES)) {
                 pline("This burns%s!",
                       obj->blessed ? " a little"
                                    : obj->cursed ? " a lot" : "");
                 dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
+                dmg = resist_reduce(dmg, ACID_RES);
                 losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
-                if (!rn2(3))
-                    erode_armor(&gy.youmonst, ERODE_CORRODE);
-                else if (!rn2(3))
-                    dmg += destroy_items(&gy.youmonst, AD_ACID, dmg);
             }
+            if (!rn2(3))
+                erode_armor(&gy.youmonst, ERODE_CORRODE);
+            else if (!rn2(3))
+                dmg += destroy_items(&gy.youmonst, AD_ACID, dmg);
+
             break;
         }
     } else if (hit_saddle && saddle) {
@@ -2574,7 +2581,7 @@ potionbreathe(struct obj *obj)
 
     if (!breathe) {
         /* currently only acid affects eyes */
-        if (eyes && obj->otyp == POT_ACID && !Acid_resistance) {
+        if (eyes && obj->otyp == POT_ACID && !fully_resistant(ACID_RES)) {
             pline("The fumes sting your %s.", eyestr);
         } else {
             pline("The vapors don't seem to affect you.");
@@ -2805,7 +2812,7 @@ potionbreathe(struct obj *obj)
         break;
     case POT_ACID:
         dmg = rnd(4);
-        if (Acid_resistance) {
+        if (fully_resistant(ACID_RES)) {
             if (cansmell) {
                 pline("It smells %s.", Hallucination ? "tangy" : "sour");
                 unambiguous = TRUE;
@@ -2816,7 +2823,7 @@ potionbreathe(struct obj *obj)
                     (eyes ? eyestr : ""),
                     makeplural(body_part(LUNG)));
             showdamage(dmg, TRUE);
-            losehp(dmg, "acid fumes", KILLED_BY);
+            losehp(resist_reduce(dmg, ACID_RES), "acid fumes", KILLED_BY);
             exercise(A_CON, FALSE);
             unambiguous = TRUE;
         }
@@ -3749,9 +3756,7 @@ potion_dip(struct obj *obj, struct obj *potion)
                 useup(singlepotion);
                 /* MRKR: an alchemy smock ought to be */
                 /* some protection against this: */
-                losehp(how_resistant(ACID_RES) > 50
-                    ? rnd(5)
-                    : rnd(10), "alchemic blast", KILLED_BY_AN);
+                losehp(resist_reduce(d(6, 6), ACID_RES), "alchemic blast", KILLED_BY_AN);
                 return 1;
             }
 

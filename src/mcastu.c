@@ -799,7 +799,7 @@ cast_wizard_spell(
             explode(caster->mux, caster->muy, BZ_M_SPELL(ZT_ACID), dmg,
                 MON_CASTBALL, EXPL_WET);
 
-            if (Acid_resistance) {
+            if (fully_resistant(ACID_RES)) {
                 shieldeff(u.ux, u.uy);
                 monstseesu(M_SEEN_ACID);
             } else {

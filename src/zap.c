@@ -3243,14 +3243,14 @@ zapyourself(struct obj *obj, boolean ordinary)
         break;
     case WAN_CORROSION:
         learn_it = TRUE;
-        if (Acid_resistance) {
+        if (fully_resistant(ACID_RES)) {
             shieldeff(u.ux, u.uy);
             You("coat yourself in a seemingly harmless substance.");
             monstseesu(M_SEEN_ACID);
             ugolemeffects(AD_ACID, d(12, 6));
         } else {
             You("cover yourself with slime!  It burns!");
-            damage = d(12, 6);
+            damage = resist_reduce(d(12, 6), ACID_RES);
             monstunseesu(M_SEEN_ACID);
         }
         /* using two weapons at once makes both of them more vulnerable */
@@ -5491,14 +5491,13 @@ zhitu(
         }
         break;
     case ZT_ACID:
-        /* No partial resistance for acid. */
-        if (Acid_resistance) {
+        if (fully_resistant(ACID_RES)) {
             pline_The("%s doesn't hurt.", hliquid("acid"));
             monstseesu(M_SEEN_ACID);
             dam = 0;
         } else {
             pline_The("%s burns!", hliquid("acid"));
-            dam = d(nd, 6);
+            dam = resist_reduce(d(nd, 6), ACID_RES);
             exercise(A_STR, FALSE);
             monstunseesu(M_SEEN_ACID);
         }
