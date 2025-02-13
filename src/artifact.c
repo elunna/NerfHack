@@ -1726,13 +1726,14 @@ artifact_hit(
                 erode_armor(mdef, ERODE_CORRODE);
             }
             if (!rn2(3)) {
-                int itemdmg = destroy_items(mdef, AD_ELEC, *dmgptr);
+                int itemdmg = destroy_items(mdef, AD_ACID, *dmgptr);
                 if (!youdefend)
                     *dmgptr += itemdmg; /* item destruction dmg */
             }
         }
         return realizes_damage;
     }
+    
     /* disease attack  */
     if (attacks(AD_DISE, otmp)) {
         boolean elf = youdefend ? maybe_polyd(is_elf(gy.youmonst.data),

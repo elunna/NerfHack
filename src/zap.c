@@ -7050,7 +7050,7 @@ const char *const destroy_strings[][3] = {
     { "breaks apart and explodes", "", "exploding wand" },
     { "smoulders", "smoulder", "" },
     { "rots", "rot", "" },
-    { "corrodes", "corrode", "" },
+    { "corrodes away", "corrode away", "" },
     { "fractures and shatters", "fracture and shatter", "shattered item" }, /* glass items */
     { "splats", "splat", "splatted comestible" }, /* food items */
     { "cracks and shatters", "crack and shatter", "shattered item" }, /* glass items */
