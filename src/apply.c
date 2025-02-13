@@ -2555,7 +2555,7 @@ use_unicorn_horn(struct obj **optr)
      * the enchantment.
      * */
     basefix = rnd(3) + 1;
-    basefix += !obj ? 0 : obj->spe * 3;
+    basefix += !obj ? 0 : (obj->spe * 5 + 1) / 2;
     basefix += P_SKILL(P_UNICORN_HORN) * 2;
 
     /* Additional bonus for being a healer or good luck roll.
