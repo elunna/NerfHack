@@ -1983,7 +1983,8 @@ goto_level(
         if (newdungeon)
             record_achievement(ACH_SOKO);
     } else if (at_dgn_entrance("The Wizard's Tower") && !u.uevent.udemigod) {
-        You_feel("the presence of a great wizard, his tower must be somewhere on this level!");
+        You_feel("the presence of a great wizard...");
+        pline("His tower must be somewhere on this level!");
     } else {
         if (new && Is_rogue_level(&u.uz)) {
             You("enter what seems to be an older, more primitive world.");
