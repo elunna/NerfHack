@@ -3709,7 +3709,7 @@
             | M1_FLY | M1_BREATHLESS | M1_POIS | M1_REGEN | M1_CARNIVORE,
         M2_STALK | M2_HOSTILE | M2_STRONG | M2_NASTY | M2_NEUTER,
         M3_INFRAVISIBLE,
-        NO_RACE, 26, CLR_CYAN, STAR_VAMPIRE),
+        NO_RACE, 26, CLR_WHITE, STAR_VAMPIRE),
     /*
      * Vampires
      */
