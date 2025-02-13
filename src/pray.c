@@ -1916,8 +1916,6 @@ sacrifice_your_race(
             change_luck(altaralign == A_NONE ? -2 : 2);
             demonless_msg = "blood coagulates";
             add_blood(u.ux, u.uy, gu.urace.mnum);
-            if (u.ualign.type != A_CHAOTIC)
-                crackaltar();
         }
         if ((pm = dlord(altaralign)) != NON_PM
             && (dmon = makemon(&mons[pm], u.ux, u.uy, MM_NOMSG))
@@ -2080,8 +2078,8 @@ bestow_artifact(uchar max_giftvalue)
                     discover_artifact(otmp->oartifact);
                 }
 
-                /* If more than 2 gifts have been granted, the altar can crack. */
-                if ((u.ugifts > 2 && !rn2(2))
+                /* If more than 1 gift has been granted, the altar can crack. */
+                if ((u.ugifts > 1)
                     /* If the player is already crowned, it definitely cracks. */
                     || u.uevent.uhand_of_elbereth
                     /* If the altar is already cracked - sorry... */
@@ -2091,9 +2089,6 @@ bestow_artifact(uchar max_giftvalue)
             }
         }
     }
-
-
-
     return FALSE;
 }
 
