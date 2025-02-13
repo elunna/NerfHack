@@ -184,9 +184,6 @@ choose_clerical_spell(struct monst* caster, int spellnum)
     if ((caster->mhp * 4) <= caster->mhpmax)
         spellnum = 1;
 
-    if (caster->data == &mons[PM_ARCH_VILE] && spellnum != 1)
-        return CLC_FIRE_PILLAR;
-
     if (caster->data == &mons[PM_ORB_WEAVER] && spellnum != 1) {
         if (rn2(4))
             return CLC_PROTECTION;
@@ -229,6 +226,8 @@ choose_clerical_spell(struct monst* caster, int spellnum)
         return CLC_CURE_SELF;
     case 0:
     default:
+        if (caster->data == &mons[PM_ARCH_VILE])
+            return CLC_FIRE_PILLAR;
         return CLC_OPEN_WOUNDS;
     }
 }
