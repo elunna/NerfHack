@@ -986,6 +986,7 @@ dochug(struct monst *mtmp)
                 pline("%s gets angry!", Amonnam(mtmp));
                 mtmp->mpeaceful = 0;
                 set_malign(mtmp);
+                newsym_force(mtmp->mx, mtmp->my);
                 /* since no way is an image going to pay it off */
             }
         } else if (demon_talk(mtmp))
