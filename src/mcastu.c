@@ -1532,18 +1532,20 @@ cast_cleric_spell(
         const char *fmt, *what;
         char whatbuf[QBUFSZ];
         boolean success = FALSE, seecaster;
-        int oldseen, newseen;
+        int i, quan = rnd(3), oldseen, newseen;
         coord bypos;
 
         oldseen = monster_census(TRUE);
 
-        if (!enexto(&bypos, caster->mx, caster->my, caster->data))
-            break;
-        if ((pm = &mons[rnd_sphere()]) != 0
-            && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y)) != 0) {
-            success = TRUE;
-            mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
-            set_malign(mtmp2);
+        for (i = 0; i <= quan; i++) {
+            if (!enexto(&bypos, caster->mx, caster->my, caster->data))
+                break;
+            if ((pm = &mons[rnd_sphere()]) != 0
+                && (mtmp2 = make_msummoned(pm, caster, FALSE, bypos.x, bypos.y)) != 0) {
+                success = TRUE;
+                mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
+                set_malign(mtmp2);
+            }
         }
         newseen = monster_census(TRUE);
 
