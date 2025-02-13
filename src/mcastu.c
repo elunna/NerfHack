@@ -1634,9 +1634,7 @@ cast_cleric_spell(
             /* Less damage the farther away */
             mdist = distu(caster->mx, caster->my);
             dmg = calculate_damage(dmg, mdist);
-
-            if (Half_spell_damage)
-                dmg -= (dmg + 1) / 4;
+            
             if (dmg <= 0)
                 break;
 
