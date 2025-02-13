@@ -664,7 +664,7 @@ explode(
              * Brittle - if the order of monattk.h AD types or the
              * prop.h prop_types ever changes, this needs updating.
              * */
-            if (adtyp >= AD_FIRE && adtyp <= AD_DRST)
+            if (adtyp >= AD_FIRE && adtyp <= AD_ACID)
                 damu = resist_reduce(damu, adtyp - 1);
 
             /* hero does not get same fire-resistant vs cold and
