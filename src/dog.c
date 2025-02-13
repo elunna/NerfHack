@@ -1237,7 +1237,7 @@ tamedog(
     if (Race_if(PM_ORC) &&
         (mtmp->data->mlet != S_TROLL && mtmp->data->mlet != S_OGRE
         && mtmp->data->mlet != S_ORC && mtmp->data->mlet != S_DRAGON
-        && mtmp->data->mlet != S_UMBER && mtmp->data->mlet != S_UMBER))
+        && mtmp->data->mlet != S_UMBER))
         return FALSE;
 
     if (mtmp->mberserk) {
