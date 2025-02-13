@@ -2581,13 +2581,9 @@ peace_minded(struct permonst *ptr)
         else
             return TRUE;
     }
-    if (always_hostile(ptr)) {
-        if (Race_if(PM_ORC) && is_demon(ptr)
-            && (u.uevent.uhand_of_elbereth || rn2(2))) {
-            return TRUE;
-          }
+    if (always_hostile(ptr))
         return FALSE;
-    }
+
     if (ptr->msound == MS_LEADER || ptr->msound == MS_GUARDIAN)
         return TRUE;
 
