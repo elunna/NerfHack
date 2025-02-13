@@ -5303,10 +5303,12 @@ deck_of_fate(struct obj *obj)
                 int dmg = d(8, 6);
                 /* Magic resistance or half spell damage will
                     cut this in half */
-                if (Antimagic || Half_spell_damage) {
+                if (Antimagic) {
                     shieldeff(u.ux, u.uy);
                     monstseesu(M_SEEN_MAGR);
                     dmg /= 2;
+                } else if (Half_spell_damage) {
+                    dmg -= (dmg + 1) / 4;
                 }
                 You_feel("drained...");
                 int drain = dmg / 3 + rn2(5);

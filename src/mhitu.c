@@ -1540,8 +1540,8 @@ hitmu(struct monst *mtmp, struct attack *mattk)
             /* Mitre of Holiness, even if not currently blessed */
             || (Role_if(PM_CLERIC) && uarmh && is_quest_artifact(uarmh)
                 && mon_hates_blessings(mtmp)))
-            mhm.damage -= (mhm.damage + 1) / 2;
-
+            mhm.damage -= (mhm.damage + 1) / 4;
+        
         /* Archeologists are deathly afraid of snakes -
          * This handled a bit differently from the AD_PLYS attacks -
          * it's a bit weaker. If it was as strong as most paralyze
@@ -2754,7 +2754,7 @@ doseduce(struct monst *mon)
         case 0:
             You_feel("drained of energy.");
             u.uen = 0;
-            u.uenmax -= rnd(Half_physical_damage ? 5 : 10);
+            u.uenmax -= rnd(Half_physical_damage ? 8 : 10);
             exercise(A_CON, FALSE);
             if (u.uenmax < 0)
                 u.uenmax = 0;
@@ -3526,7 +3526,7 @@ piercer_hit(struct monst *magr, struct monst *mdef)
     struct obj *helm = which_armor(mdef, W_ARMH);
 
     if (youdefend && Half_physical_damage)
-        dmg = (dmg + 1) / 2;
+        dmg -= (dmg + 1) / 4;
 
     if (!youattack) { /* caller gives messages in youattack case */
         pline("%s suddenly drops from the %s!", Amonnam(magr),

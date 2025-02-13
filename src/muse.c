@@ -1978,7 +1978,7 @@ mbhitm(struct monst *mtmp, struct obj *otmp)
                 monstunseesu(M_SEEN_MAGR); /* mons see hero not resisting */
                 pline_The("%s hits you!", otxt);
                 if (Half_spell_damage)
-                    tmp = (tmp + 1) / 2;
+                    tmp -= (tmp + 1) / 4;
                 (void) destroy_items(&gy.youmonst, AD_PHYS, orig_dmg);
                 losehp(tmp, otxt, KILLED_BY_AN);
                 learnit = TRUE;

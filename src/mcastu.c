@@ -390,7 +390,7 @@ castmu(
     else
         dmg = d((int) ((ml / 2) + 1), 6);
     if (Half_spell_damage)
-        dmg = (dmg + 1) / 2;
+        dmg -= (dmg + 1) / 4;
 
     ret = M_ATTK_HIT;
     /*
@@ -443,7 +443,7 @@ castmu(
         } else
             monstunseesu(M_SEEN_MAGR);
         if (Half_spell_damage) { /* stacks with Antimagic */
-            dmg = (dmg + 1) / 2;
+            dmg -= (dmg + 1) / 4;
         }
         /* shower of magic missiles scuffs an engraving */
         mon_spell_hits_spot(caster, AD_MAGM, u.ux, u.uy);
@@ -932,7 +932,7 @@ cast_wizard_spell(
                 if (dmg < 1) /* paranoia since only chosen when m_lev is high */
                     dmg = 1;
                 if (Half_spell_damage)
-                    dmg = (dmg + 1) / 2;
+                    dmg -= (dmg + 1) / 4;
                 losestr(rnd(dmg),
                         death_inflicted_by(kbuf, "strength loss", caster),
                         KILLED_BY);
@@ -983,7 +983,7 @@ cast_wizard_spell(
                     You(Stunned ? "struggle to keep your balance." : "reel...");
                 dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
                 if (Half_spell_damage)
-                    dmg = (dmg + 1) / 2;
+                    dmg -= (dmg + 1) / 4;
                 make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
                 monstunseesu(M_SEEN_MAGR);
             }
@@ -1265,7 +1265,7 @@ cast_cleric_spell(
         if (youdefend) {
             pline("A sudden geyser slams into you from nowhere!");
             if (Half_physical_damage)
-                dmg = (dmg + 1) / 2;
+                dmg -= (dmg + 1) / 4;
             if (u.umonnum == PM_IRON_GOLEM) {
                 You("rust!");
                 Strcpy(svk.killer.name, "rusted away");
@@ -1299,7 +1299,7 @@ cast_cleric_spell(
                 monstunseesu(M_SEEN_FIRE);
             }
             if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
+                dmg -= (dmg + 1) / 4;
             burn_away_slime();
             (void) burnarmor(&gy.youmonst);
             (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
@@ -1352,7 +1352,7 @@ cast_cleric_spell(
                 monstunseesu(M_SEEN_ELEC | M_SEEN_REFL);
             }
             if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
+                dmg -= (dmg + 1) / 4;
             (void) destroy_items(&gy.youmonst, AD_ELEC, orig_dmg);
             /* blind hero; no effect if already blind */
             (void) flashburn((long) rnd(100), TRUE);
@@ -1609,7 +1609,7 @@ cast_cleric_spell(
                 pline("Scales cover your %s!", (num_eyes == 1)
                                                 ? body_part(EYE)
                                                 : makeplural(body_part(EYE)));
-                make_blinded(Half_spell_damage ? 100L : 200L, FALSE);
+                make_blinded(Half_spell_damage ? 150L : 200L, FALSE);
                 if (!Blind)
                     Your1(vision_clears);
                 dmg = 0;
@@ -1636,7 +1636,7 @@ cast_cleric_spell(
             dmg = calculate_damage(dmg, mdist);
 
             if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
+                dmg -= (dmg + 1) / 4;
             if (dmg <= 0)
                 break;
 
@@ -1680,7 +1680,7 @@ cast_cleric_spell(
                 if (gm.multi >= 0)
                     You("are frozen in place!");
                 if (Half_spell_damage)
-                    dmg = (dmg + 1) / 2;
+                    dmg -= (dmg + 1) / 4;
                 monstunseesu(M_SEEN_MAGR);
             }
             nomul(-dmg);
@@ -1712,7 +1712,7 @@ cast_cleric_spell(
 
                 dmg = (int) caster->m_lev;
                 if (Half_spell_damage)
-                    dmg = (dmg + 1) / 2;
+                    dmg -= (dmg + 1) / 4;
                 make_confused(HConfusion + dmg, TRUE);
                 if (Hallucination)
                     You_feel("%s!", oldprop ? "trippier" : "trippy");
