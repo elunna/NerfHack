@@ -1657,10 +1657,6 @@ armor_bonus(struct monst *mon, struct obj *armor)
 {
     int bon;
     boolean is_you = mon == &gy.youmonst;
-    if (!armor) {
-        impossible("armor_bonus was passed a null obj");
-        return 0;
-    }
 
     /* start with its base AC value */
     bon = objects[armor->otyp].a_ac;

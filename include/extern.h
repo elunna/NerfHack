@@ -4035,7 +4035,7 @@ extern int extra_pref(struct monst *, struct obj *) NONNULLARG1;
 extern int racial_exception(struct monst *, struct obj *) NONNULLARG12;
 extern void extract_from_minvent(struct monst *, struct obj *, boolean,
                                  boolean) NONNULLARG12;
-extern int armor_bonus(struct monst *, struct obj *);
+extern int armor_bonus(struct monst *, struct obj *) NONNULLARG12;
 extern long armor_provides_extrinsic(struct obj *);
 
 /* ### write.c ### */
