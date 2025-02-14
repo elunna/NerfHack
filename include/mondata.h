@@ -239,6 +239,7 @@
      || (ptr) == &mons[PM_FIRE_VAMPIRE]         \
      || (ptr) == &mons[PM_STAR_VAMPIRE]         \
      || (ptr) == &mons[PM_EYE_OF_FEAR_AND_FLAME] \
+     || (ptr) == &mons[PM_WIZARD_OF_YENDOR]     \
      || (ptr) == &mons[PM_CTHULHU])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
