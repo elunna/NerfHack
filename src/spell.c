@@ -2230,7 +2230,7 @@ dospellmenu(
         splnum = !gs.spl_orderindx ? i : gs.spl_orderindx[i];
         /* Hide spells that are 0% */
         long turnsleft = spellretention(splnum, retentionbuf);
-        if (casting && turnsleft < 1L)
+        if (casting && turnsleft < 1L && flags.hide_old_spells)
             continue;
         Sprintf(buf, fmt, spellname(splnum), spellev(splnum),
                 spelltypemnemonic(spell_skilltype(spellid(splnum))),

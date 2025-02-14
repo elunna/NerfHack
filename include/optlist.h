@@ -182,7 +182,7 @@ static int optfn_##a(int, int, boolean, char *, char *);
     NHOPTO("autopickup exceptions", Behavior, o_autopickup_exceptions, BUFSZ,
                 opt_in, set_in_game,
                 No, Yes, No, NoAlias, "edit autopickup exceptions")
-     NHOPTB(autostairtravel, Behavior, 0, opt_in, set_in_game,
+    NHOPTB(autostairtravel, Behavior, 0, opt_in, set_in_game,
            Off, Yes, No, No, NoAlias, &flags.autostairtravel, Term_False,
            "allow using < and > to travel to stairs")
     NHOPTB(autoquiver, Behavior, 0, opt_in, set_in_game,
@@ -366,6 +366,9 @@ static int optfn_##a(int, int, boolean, char *, char *);
                 No, Yes, No, No, NoAlias,
                 "same as palette, only order is reversed")
 #endif
+    NHOPTB(hide_old_spells, Behavior, 0, opt_in, set_in_game,
+       Off, Yes, No, No, NoAlias, &flags.hide_old_spells, Term_False,
+       "don't show forgotten spells in your spellbook")
     NHOPTB(hilite_pet, Map, 0, opt_in, set_in_game,
            Off, Yes, No, No, NoAlias, &iflags.wc_hilite_pet, Term_False,
            "use highlight for pets")
