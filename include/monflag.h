@@ -59,6 +59,7 @@ enum ms_sounds {
     MS_PRIEST   = 44,   /* ask for contribution; do cleansing */
     MS_SPELL    = 45,   /* spellcaster not matching any of the above */
     MS_BOAST    = 46,   /* giants */
+    MS_GNOLL    = 47,   /* gnolls */
 };
 
 #define MR_FIRE         0x00000001L /* resists fire */

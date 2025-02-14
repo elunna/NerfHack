@@ -64,6 +64,7 @@
      || is_demon(ptr)                          \
      || is_angel(ptr)                          \
      || is_rider(ptr)                          \
+     || is_gnoll(ptr)                          \
      || (ptr) == &mons[PM_GIANT_COCKROACH]     \
      || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
      || (ptr) == &mons[PM_GREEN_DRAGON]        \
@@ -135,6 +136,7 @@
 
 #define resists_drain(ptr) \
     (is_undead(ptr) || is_demon(ptr) || is_were(ptr)\
+     || is_gnoll(ptr)                               \
      || ptr == &mons[PM_DEEP_ONE]                   \
      || ptr == &mons[PM_DEEPER_ONE]                 \
      || ptr == &mons[PM_DEEPEST_ONE]                \
@@ -301,6 +303,10 @@
 #define is_ghoul(ptr) ((ptr) == &mons[PM_GHOUL] \
                         || (ptr)== &mons[PM_GHOUL_MAGE] \
                         || (ptr)== &mons[PM_GHOUL_QUEEN])
+#define is_gnoll(ptr) ((ptr) == &mons[PM_GNOLL] \
+    || (ptr)== &mons[PM_GNOLL_WARRIOR] \
+    || (ptr)== &mons[PM_GNOLL_CHIEFTAIN] \
+    || (ptr)== &mons[PM_GNOLL_SHAMAN])
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mhflags & MH_DEMON) != 0L)
 #define is_angel(ptr) (((ptr)->mhflags & MH_ANGEL) != 0L)

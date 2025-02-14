@@ -658,6 +658,7 @@ maybe_gasp(struct monst *mon)
     case MS_ORACLE:
     case MS_PRIEST: /* temple priest, roaming aligned priest (not mplayer) */
     case MS_BOAST: /* giants */
+    case MS_GNOLL:
     case MS_IMITATE: /* doppelganger, leocrotta, Aleax */
         dogasp = TRUE;
         break;
@@ -1275,6 +1276,13 @@ domonnoise(struct monst *mtmp)
                 "You're under arrest!", "Stop in the name of the Law!",
             };
             verbl_msg = arrest_msg[rn2(3)];
+        }
+        break;
+    case MS_GNOLL:
+        if (mtmp->mpeaceful) {
+            pline("%s cackles conspiratorially.", Monnam(mtmp));
+        } else {
+            pline("%s cackles at you.", Monnam(mtmp));
         }
         break;
     case MS_BRIBE:

@@ -1265,6 +1265,8 @@ static const short grownups[][2] = {
     { PM_SPARK_BUG, PM_ARC_BUG },
     { PM_ARC_BUG, PM_LIGHTNING_BUG },
     { PM_CENTIPEDE, PM_NICKELPEDE },
+    { PM_GNOLL, PM_GNOLL_WARRIOR },
+    { PM_GNOLL_WARRIOR, PM_GNOLL_CHIEFTAIN },
     { NON_PM, NON_PM }
 };
 

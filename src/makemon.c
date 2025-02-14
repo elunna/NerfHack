@@ -752,7 +752,8 @@ m_initinv(struct monst *mtmp)
     int cnt;
     struct obj *otmp;
     struct permonst *ptr = mtmp->data;
-
+    int mm = monsndx(ptr);
+    
     if (Is_rogue_level(&u.uz))
         return;
     /*
@@ -1039,26 +1040,64 @@ m_initinv(struct monst *mtmp)
             (void) mongets(mtmp, WAN_FIRE);
         }
         break;
-    case S_GNOME:
-        if (ptr == &mons[PM_GNOLL]) {
+    case S_GNOLL:
+        switch (mm) {
+        /* SLASH'EM sometimes allowed for dragon scale mail for gnolls, 
+           we're going to leave that out to keep things simple */
+        case PM_GNOLL:
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_HELM);
             if (!rn2(3))
-                (void) mongets(mtmp, SPLINT_MAIL);
+                (void) mongets(mtmp, STUDDED_LEATHER_ARMOR);
+            if (!rn2(3))
+                (void) mongets(mtmp, LEATHER_CLOAK);
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_SHIELD);
+            if (!rn2(4))
+                 (void) mongets(mtmp, rn2(3) ? FLAIL : SPEAR);
+             break;
+        case PM_GNOLL_WARRIOR:
+            if (!rn2(2))
+                (void) mongets(mtmp, ORCISH_HELM);
+            if (rn2(4))
+                (void) mongets(mtmp, HIGH_BOOTS);
+            (void) mongets(mtmp, rn2(3) ? SCALE_MAIL : SPLINT_MAIL);
+            if (rn2(3)) {
+                (void) mongets(mtmp, !rn2(3) ? TWO_HANDED_SWORD : BATTLE_AXE);
+            } else {
+                (void) mongets(mtmp, ORCISH_SHIELD);
+                (void) mongets(mtmp, KATANA);
+            }
+            break;
+        case PM_GNOLL_CHIEFTAIN:
+            (void) mongets(mtmp, ORCISH_HELM);
+            (void) mongets(mtmp, CRYSTAL_PLATE_MAIL);
+            (void) mongets(mtmp, ORCISH_SHIELD);
+            (void) mongets(mtmp, KATANA);
+            (void) mongets(mtmp, rnd_offensive_item(mtmp));
+            break;
+        case PM_GNOLL_SHAMAN:
+            (void) mongets(mtmp, POT_REFLECTION);
+            if (rn2(5))
+                (void) mongets(mtmp, CRYSTAL_PLATE_MAIL);
             if (rn2(4))
                 (void) mongets(mtmp, rn2(3) ? FLAIL : SPEAR);
             else
                 (void) mongets(mtmp, !rn2(3) ? VOULGE : MORNING_STAR);
+            m_initthrow(mtmp, SHURIKEN, 12);
+            (void) mongets(mtmp, rnd_offensive_item(mtmp));
+            (void) mongets(mtmp, rnd_offensive_item(mtmp));
+            break;
         }
-        if (!rn2((In_mines(&u.uz) && gi.in_mklev) ? 10 : 60)) {
-            otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE);
-            otmp->quan = 1;
-            otmp->owt = weight(otmp);
-            if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
-                begin_burn(otmp, FALSE);
-        }
+        break;
+    case S_GNOME:
+         if (!rn2((In_mines(&u.uz) && gi.in_mklev) ? 10 : 60)) {
+             otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE);
+             otmp->quan = 1;
+             otmp->owt = weight(otmp);
+             if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
+                 begin_burn(otmp, FALSE);
+         }
         break;
     case S_VAMPIRE:
         /* some vampires get an opera cloak */
