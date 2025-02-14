@@ -1882,7 +1882,7 @@ seffect_enchant_weapon(struct obj **sobjp)
        many scrolls to achieve. */
     if (!chwepon(sobj, scursed ? -1
                  : !uwep ? 1
-                 : (uwep->spe >= (WEP_ENCHANT_MAX + 2)) ? !rn2(uwep->spe)
+                 : (uwep->spe >= (WEP_ENCHANT_MAX + 1)) ? !rn2(uwep->spe)
                  : sblessed ? rnd(wep_enchant_range(uwep->spe))
                  : 1))
         *sobjp = 0; /* nothing enchanted: strange_feeling -> useup */

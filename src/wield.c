@@ -1082,9 +1082,9 @@ chwepon(struct obj *otmp, int amount)
         if (!Blind)
             pline("%s %s for a while and then %s.",
                   Yobjnam2(uwep, "violently glow"), color,
-                  otense(uwep, "evaporate"));
+                  otense(uwep, "explode"));
         else
-            pline("%s.", Yobjnam2(uwep, "evaporate"));
+            pline("%s.", Yobjnam2(uwep, "explode"));
 
         /* It blows up... */
         explode(u.ux, u.uy, ZT_MAGIC_MISSILE, dmgval(uwep, &gy.youmonst) + rnd(12),
