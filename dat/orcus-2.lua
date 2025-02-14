@@ -121,6 +121,8 @@ des.monster("vampire",73,05)
 des.monster("vampire",69,04)
 des.monster("vampire lord",70,05)
 des.monster("vampire lord",72,06)
+des.monster("vampire royal")
+des.monster("vampire royal")
 
 -- Some loot...
 des.object({ id = "chest", locked = 1, x = 71, y = 09,

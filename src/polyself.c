@@ -695,7 +695,8 @@ polyself(int psflags)
         } else if (isvamp) {
  do_vampyr:
             if (mntmp < LOW_PM || (mons[mntmp].geno & G_UNIQ)) {
-                mntmp = (gy.youmonst.data == &mons[PM_VAMPIRE_LEADER]
+                mntmp = ((gy.youmonst.data == &mons[PM_VAMPIRE_LEADER]
+                        || gy.youmonst.data == &mons[PM_VAMPIRE_ROYAL])
                          && !rn2(10)) ? PM_WOLF
                                       : !rn2(4) ? PM_FOG_CLOUD
                                                 : PM_VAMPIRE_BAT;
@@ -2412,6 +2413,7 @@ polysense(void)
     case PM_DHAMPIR:
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL:
     case PM_VAMPIRE_MAGE:
         svc.context.warntype.polyd = MH_HUMAN | MH_ELF;
         HWarn_of_mon |= FROMRACE;

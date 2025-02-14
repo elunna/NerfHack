@@ -444,6 +444,7 @@ undead_to_corpse(int mndx)
     case PM_DHAMPIR:
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL:
     case PM_VAMPIRE_MAGE:
     case PM_HUMAN_ZOMBIE:
     case PM_HUMAN_MUMMY:
@@ -650,6 +651,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_DHAMPIR:
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL:
     case PM_VAMPIRE_MAGE:
         /* include mtmp in the mkcorpstat() call */
         num = undead_to_corpse(mndx);
@@ -829,6 +831,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BARGHEST:
     case PM_HELL_HOUND:
     case PM_VULPENFERNO:
+    case PM_WEREDEMON:
     case PM_GAS_SPORE:
     case PM_FLOATING_EYE:
     case PM_FREEZING_SPHERE:
@@ -1114,6 +1117,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_HUMAN_WERETIGER:
     case PM_HUMAN_WERESNAKE:
     case PM_HUMAN_WERESPIDER:
+    case PM_DEMON_WEREDEMON:
     case PM_ELF:
     case PM_WOODLAND_ELF:
     case PM_GREEN_ELF:
@@ -3820,6 +3824,8 @@ mondead(struct monst *mtmp)
 	    set_mon_data(mtmp, &mons[PM_HUMAN_WERESNAKE]);
 	else if (mtmp->data == &mons[PM_WERESPIDER])
 	    set_mon_data(mtmp, &mons[PM_HUMAN_WERESPIDER]);
+    else if (mtmp->data == &mons[PM_WEREDEMON])
+        set_mon_data(mtmp, &mons[PM_DEMON_WEREDEMON]);
 
     /*
      * svm.mvitals[].died does double duty as total number of dead monsters
@@ -5399,7 +5405,8 @@ normal_shape(struct monst *mon)
         newsym(mon->mx, mon->my);
         wakeup(mon, FALSE);
     }
-    if (is_were(mon->data) && mon->data->mlet != S_HUMAN) {
+    if (is_were(mon->data) && mon->data->mlet != S_HUMAN
+                           && mon->data->mlet != S_DEMON) {
         new_were(mon);
         wakeup(mon, FALSE);
     }
@@ -5921,7 +5928,8 @@ pickvampshape(struct monst *mon)
         wolfchance = 3;
         FALLTHROUGH;
         /*FALLTHRU*/
-    case PM_VAMPIRE_LEADER: /* vampire lord or Vlad can become wolf */
+    case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL: /* vampire lord or Vlad can become wolf */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
             break;
@@ -6157,6 +6165,7 @@ select_newcham_form(struct monst *mon)
     case PM_VLAD_THE_IMPALER:
     case PM_VAMPIRE_MAGE:
     case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL:
     case PM_VAMPIRE:
         mndx = pickvampshape(mon);
         break;
@@ -6806,10 +6815,12 @@ usmellmon(struct permonst *mdat)
         case PM_HUMAN_WERERAT:
         case PM_HUMAN_WEREWOLF:
         case PM_HUMAN_WERETIGER:
+        case PM_DEMON_WEREDEMON:
         case PM_WEREJACKAL:
         case PM_WERERAT:
         case PM_WEREWOLF:
         case PM_WERETIGER:
+        case PM_WEREDEMON:
         case PM_OWLBEAR:
             You("detect an odor reminiscent of an animal's den.");
             msg_given = TRUE;
@@ -7288,7 +7299,8 @@ unpoly_monster(struct monst *mtmp)
         return;
 
     /* Revert werefoo */
-    if (is_were(mtmp->data) && !is_human(mtmp->data) && rn2(13)) {
+    if (is_were(mtmp->data) && !is_human(mtmp->data)
+        && !is_demon(mtmp->data) && rn2(13)) {
         if (visible)
             pline("But wait...");
         new_were(mtmp);

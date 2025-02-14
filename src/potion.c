@@ -2464,14 +2464,16 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                     /* should only be by you */
                     if (DEADMONSTER(mon))
                         killed(mon);
-                    else if (is_were(mon->data) && !is_human(mon->data))
+                    else if (is_were(mon->data) && !is_human(mon->data)
+                                                && !is_demon(mon->data))
                         new_were(mon); /* revert to human */
                 } else if (obj->cursed) {
                     angermon = FALSE;
                     if (canseemon(mon))
                         pline("%s looks healthier.", Monnam(mon));
                     healmon(mon, d(2, 6), 0);
-                    if (is_were(mon->data) && is_human(mon->data)
+                    if (is_were(mon->data) && (is_human(mon->data) 
+                                               || is_demon(mon->data))
                         && !Protection_from_shape_changers)
                         new_were(mon); /* transform into beast */
                 }

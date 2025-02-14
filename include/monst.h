@@ -232,6 +232,7 @@ struct monst {
 #define is_vampshifter(mon) \
     ((mon)->cham == PM_VAMPIRE \
     || (mon)->cham == PM_VAMPIRE_LEADER \
+    || (mon)->cham == PM_VAMPIRE_ROYAL \
     || (mon)->cham == PM_VAMPIRE_MAGE \
     || (mon)->cham == PM_VLAD_THE_IMPALER)
 #define vampshifted(mon) (is_vampshifter((mon)) && !is_vampire((mon)->data))

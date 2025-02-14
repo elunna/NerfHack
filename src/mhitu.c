@@ -1257,7 +1257,7 @@ summonmu(struct monst *mtmp, boolean youseeit)
         /* if hero has Protection_from_shape_changers, new_were() will work
            in the critter-to-human direction but be a no-op the other way;
            we repeat the criteria here for clarity */
-        if (is_human(mdat)) { /* maybe switch to animal form */
+        if (is_human(mdat) || is_demon(mdat)) { /* maybe switch to animal form */
             if (!Protection_from_shape_changers && !rn2(5 - (night() * 2)))
                 new_were(mtmp);
         } else { /* maybe switch to back human form */

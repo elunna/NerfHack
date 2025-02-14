@@ -73,7 +73,7 @@ des.monster("nalfeshnee",49,08)
 des.monster("balrog",51,08)
 des.monster("nalfeshnee",49,10)
 des.monster("balrog",51,10)
-des.monster("pit fiend",50,08)
+des.monster("weredemon",50,08)
 des.monster("elder minotaur",49,09)
 des.monster("pit fiend",50,10)
 

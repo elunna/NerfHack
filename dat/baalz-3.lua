@@ -66,6 +66,7 @@ des.trap("magic")
 des.monster("ghost",37,07)
 des.monster("horned devil",32,05)
 des.monster("barbed devil",38,07)
+des.monster("weredemon")
 des.monster("L")
 
 -- Some Vampires for good measure

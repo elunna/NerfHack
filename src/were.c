@@ -11,7 +11,7 @@ were_change(struct monst *mon)
     if (!is_were(mon->data) || mon->mcan)
         return;
 
-    if (is_human(mon->data)) {
+    if (is_human(mon->data) || is_demon(mon->data)) {
         if (!Protection_from_shape_changers
             && !rn2(night() ? (flags.moonphase == FULL_MOON ? 3 : 30)
                             : (flags.moonphase == FULL_MOON ? 10 : 50))) {
@@ -31,6 +31,10 @@ were_change(struct monst *mon)
                 case PM_HUMAN_WERETIGER:
                     howler = "tiger";
                     howl = "yowling";
+                    break;
+                case PM_WEREDEMON:
+                    howler = "hell hound";
+                    howl = "howling";
                     break;
                 default:
                     howler = (char *) 0;
@@ -76,6 +80,11 @@ counter_were(int pm)
         return(PM_HUMAN_WERESPIDER);
     case PM_HUMAN_WERESPIDER:
         return(PM_WERESPIDER);
+        
+    case PM_WEREDEMON:
+        return PM_DEMON_WEREDEMON;
+    case PM_DEMON_WEREDEMON:
+        return PM_WEREDEMON;
     default:
         return NON_PM;
     }
@@ -111,6 +120,9 @@ were_beastie(int pm)
     case PM_PIT_VIPER:
     case PM_ASPHYNX:
         return PM_WERESNAKE;
+    case PM_WEREDEMON:
+    case PM_HELL_HOUND:
+        return PM_WEREDEMON;
     default:
         break;
     }
@@ -137,9 +149,11 @@ new_were(struct monst *mon)
 
     if (canseemon(mon) && !Hallucination)
         pline("%s changes into a %s.", Monnam(mon),
-              is_human(&mons[pm]) ? "human"
-                                  /* pmname()+4: skip past "were" prefix */
-                                  : pmname(&mons[pm], Mgender(mon)) + 4);
+              is_human(&mons[pm]) ? "human" :
+              is_demon(&mons[pm]) ? "demon" :
+              pm == PM_WEREDEMON  ? "hell hound" :
+              /* pmname()+4: skip past "were" prefix */
+              pmname(&mons[pm], Mgender(mon)) + 4);
 
     set_mon_data(mon, &mons[pm]);
     if (helpless(mon)) {
@@ -215,6 +229,12 @@ were_summon(
             typ = rn2(3) ? PM_GIANT_SPIDER : rn2(3) ? PM_PHASE_SPIDER : PM_MONSTROUS_SPIDER;
             if (genbuf)
                 Strcpy(genbuf, "spider");
+            break;
+        case PM_WEREDEMON:
+        case PM_DEMON_WEREDEMON:
+            typ = PM_HELL_HOUND;
+            if (genbuf)
+                Strcpy(genbuf, "hell hound");
             break;
         default:
             continue;

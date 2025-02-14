@@ -328,7 +328,7 @@ mk_zoo_thronemon(coordxy x, coordxy y, int roomtype)
     if (roomtype == GIANTCOURT) {
         pm = PM_TITAN;
     } else {
-        pm = (i > 20) ? PM_VAMPIRE_LEADER
+        pm = (i > 20) ? PM_VAMPIRE_ROYAL
             : (i > 9) ? PM_OGRE_TYRANT
             : (i > 5) ? PM_ELVEN_MONARCH
             : (i > 2) ? PM_DWARF_RULER
@@ -432,7 +432,7 @@ fill_zoo(struct mkroom *sroom)
                     && IS_THRONE(levl[sx][sy].typ))
                 continue;
             /* create the appropriate room filler monster */
-            mon = makemon((type == COURT) ? (ctype == PM_VAMPIRE_LEADER
+            mon = makemon((type == COURT) ? (ctype == PM_VAMPIRE_ROYAL
                                           ? mkclass(S_VAMPIRE, 0) : courtmon()) :
                           (type == BARRACKS) ? squadmon() :
                           (type == MORGUE) ? morguemon() :
