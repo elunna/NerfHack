@@ -3038,7 +3038,7 @@ passiveum(
         tmp = 0;
     }
 
-    if (Role_if(PM_ROGUE) && !Upolyd)
+    if (Role_if(PM_ROGUE) && !Upolyd && m_next2u(mtmp))
         return counterattack(mtmp, mattk);
 
     /* Hack to make passive grung poison work */
