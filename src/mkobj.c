@@ -253,7 +253,7 @@ mkobj_erosions(struct obj *otmp)
     /* Wands can sometimes generate pre-charged. */
     if (otmp->oclass == WAND_CLASS
         && svm.moves > 1L && !rn2(23))
-        otmp->recharged = 1;
+        otmp->recharged = rne(3);
 }
 
 /* make a random object of class 'let' at a specific location;
