@@ -50,7 +50,6 @@ des.region(selection.area(46,06,53,12),"unlit")
 
 -- Non diggable walls
 des.non_diggable(selection.area(45,05,54,13))
-des.non_passwall(selection.area(45,05,54,13));
 
 des.door("closed",28,07)
 des.door("closed",29,07)

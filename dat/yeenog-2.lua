@@ -64,7 +64,6 @@ des.region({ region={10,07,14,09},lit=1,type="throne", filled=0 })
 
 -- Non diggable walls
 des.non_diggable(selection.area(01,01,15,15))
-des.non_passwall(selection.area(01,01,15,15));
 
 -- the owner of the mansion
 des.monster({id="Yeenoghu", x=12, y=08})

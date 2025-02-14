@@ -51,7 +51,6 @@ des.teleport_region({region={00,00,24,18}, exclude = {00,00,00,00} })
 
 -- Protect the walls
 des.non_diggable(selection.area(35,00,75,18))
-des.non_passwall(selection.area(35,00,75,18));
 
 -- Stairs up and down
 des.stair("up",02,03)

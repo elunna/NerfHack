@@ -59,9 +59,7 @@ des.region(selection.area(43,02,57,16), "unlit");
 
 -- can't dig in the towers
 des.non_diggable(selection.area(02,02,16,16))
-des.non_passwall(selection.area(02,02,16,16));
 des.non_diggable(selection.area(43,02,58,16))
-des.non_passwall(selection.area(43,02,58,16));
 
 -- bridge between the two towers
 des.drawbridge({ dir="west", state="closed", x=17,y=09})

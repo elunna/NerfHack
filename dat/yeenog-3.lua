@@ -45,7 +45,6 @@ des.teleport_region({region={00,11,75,17}, exclude = {00,00,00,00} })
 
 --Protect the walls
 des.non_diggable(selection.area(00,00,75,17))
-des.non_passwall(selection.area(29,00,75,10));
 
 -- Regions
 des.region(selection.area(00,00,67,17),"unlit")

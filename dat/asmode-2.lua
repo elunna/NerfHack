@@ -78,7 +78,6 @@ des.drawbridge({dir="west",state="closed",x=43,y=06})
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
-des.non_passwall(selection.area(00,00,75,19));
 
 -- Regions of light and dark
 des.region(selection.area(00,00,75,19), "unlit")

@@ -52,7 +52,6 @@ des.teleport_region({region={01,00,74,19}, exclude = {26,00,74,19} })
 
 -- Protect the walls
 des.non_diggable(selection.area(00,00,48,19))
-des.non_passwall(selection.area(00,00,48,19));
 
 -- Maze the rest of the level
 des.mazewalk(00,10,"west")

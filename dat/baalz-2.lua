@@ -43,7 +43,6 @@ des.teleport_region({region={16,15,75,19}})
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
-des.non_passwall(selection.area(00,00,75,19));
 
 -- Doors
 des.door("locked",14,08)
