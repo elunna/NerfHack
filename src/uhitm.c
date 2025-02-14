@@ -7940,7 +7940,7 @@ passive(
             if (monnear(mon, u.ux, u.uy)) {
                 if (fully_resistant(FIRE_RES) || Underwater) {
                     shieldeff(u.ux, u.uy);
-                    You_feel("milmdly warm.");
+                    You_feel("mildly warm.");
                     monstseesu(M_SEEN_FIRE);
                     ugolemeffects(AD_FIRE, tmp);
                     break;
