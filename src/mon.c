@@ -1027,6 +1027,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_STORM_GIANT:
     case PM_TITAN:
     case PM_MINOTAUR:
+    case PM_ELDER_MINOTAUR:
     case PM_JABBERWOCK:
     case PM_KEYSTONE_KOP:
     case PM_KOP_SERGEANT:
@@ -6772,6 +6773,10 @@ usmellmon(struct permonst *mdat)
         case PM_ROTHE:
         case PM_MINOTAUR:
             You("notice a bovine smell.");
+            msg_given = TRUE;
+            break;
+        case PM_ELDER_MINOTAUR:
+            You("notice a strong bovine smell.");
             msg_given = TRUE;
             break;
         case PM_CAVE_DWELLER:

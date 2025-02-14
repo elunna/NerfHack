@@ -66,20 +66,15 @@ des.trap("fire")
 des.trap("fire")
 des.trap("fire")
 
--- Random monsters.
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
+-- Random minotaurs.
+for i = 1,16 do
+    if percent(75) then
+        des.monster("minotaur")
+    else
+        des.monster("elder minotaur")
+    end
+   des.object("*")
+end
 
 des.monster("horned devil")
 des.monster("horned devil")

@@ -2867,6 +2867,21 @@
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_FLANK,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK,
         NO_RACE, 17, CLR_BROWN, MINOTAUR),
+    /* From GruntHack. Have fun if you run into this one...
+    */
+    MON(NAM("elder minotaur"), S_GIANT,
+        LVL(26, 14, -8, 25, -4), (G_HELL | G_GENO | 1),
+        A(ATTK(AT_CLAW, AD_PHYS, 6, 6),
+          ATTK(AT_CLAW, AD_PHYS, 6, 6),
+          ATTK(AT_HUGS, AD_PHYS, 6, 4),
+          ATTK(AT_BUTT, AD_PHYS, 8, 4),
+          NO_ATTK, NO_ATTK),
+        SIZ(2200, 900, MS_ROAR, MZ_HUGE),
+        MR_POISON | MR_SLEEP, 0, /* Also resists death */
+        M1_ANIMAL | M1_HUMANOID | M1_CARNIVORE | M1_THICK_HIDE | M1_REGEN,
+        M2_HOSTILE | M2_STRONG | M2_NASTY | M2_FLANK | M2_STALK | M2_LORD,
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_BERSERK | M3_NOTAME,
+        NO_RACE, 29, CLR_BLACK, ELDER_MINOTAUR),
     /*
      * Invisible
      * S_invisible=='I' is a visual marker for all invisible monsters

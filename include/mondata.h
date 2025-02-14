@@ -52,6 +52,7 @@
      || is_vampire(ptr) \
      || (ptr)->msound == MS_LEADER \
      || (ptr) == &mons[PM_MINOTAUR] \
+     || (ptr) == &mons[PM_ELDER_MINOTAUR] \
      || (ptr) == &mons[PM_TITAN] \
      || ptr == &mons[PM_BARGHEST] \
      || (ptr) == &mons[PM_DEATH])

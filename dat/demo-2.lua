@@ -74,7 +74,7 @@ des.monster("balrog",51,08)
 des.monster("nalfeshnee",49,10)
 des.monster("balrog",51,10)
 des.monster("pit fiend",50,08)
-des.monster("pit fiend",49,09)
+des.monster("elder minotaur",49,09)
 des.monster("pit fiend",50,10)
 
 -- and some other denizens

@@ -336,6 +336,7 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
             && !(mtmp->isshk || mtmp->isgd || !mtmp->mcansee
                  || mtmp->mpeaceful || mtmp->data->mlet == S_HUMAN
                  || mtmp->data == &mons[PM_MINOTAUR]
+                 || mtmp->data == &mons[PM_ELDER_MINOTAUR]
                  || Inhell || In_endgame(&u.uz)));
 }
 
