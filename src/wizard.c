@@ -423,7 +423,10 @@ tactics(struct monst *mtmp)
         coordxy tx = STRAT_GOALX(strat), ty = STRAT_GOALY(strat);
         int targ = (int) (strat & STRAT_GOAL);
         struct obj *otmp;
-
+        
+        if (covetous_nonwarper(mtmp->data))
+            mtmp->mavenge = 1;
+        
         if (!targ) { /* simply wants you to close */
             return 0;
         }
