@@ -3778,7 +3778,7 @@ mondead(struct monst *mtmp)
             } else {
                 You_hear("the slithering of many bodies.");
             }
-            for (i = 0; i < rnd(10); i++) {
+            for (i = 0; i < rnd(3) + 1; i++) {
                 if (!enexto(&cc, mtmp->mx, mtmp->my, 0))
                     break;
                 makemon(&mons[PM_MAGGOT], cc.x, cc.y, NO_MINVENT);
