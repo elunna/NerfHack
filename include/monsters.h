@@ -851,19 +851,7 @@
          M2_STRONG | M2_PRINCE | M2_GREEDY | M2_JEWELS | M2_COLLECT
              | M2_FLANK, M3_INFRAVISIBLE | M3_BERSERK | M3_ACCURATE,
         MH_DWARF, 8, HI_LORD, DWARF_RULER),
-    MON(NAM("deep one"), S_HUMANOID,
-        LVL(7, 9, 5, 10, -5), (G_GENO | G_LGROUP | 2),
-        A(ATTK(AT_CLAW, AD_PHYS, 1, 6),
-          ATTK(AT_CLAW, AD_PHYS, 1, 6),
-          ATTK(AT_BITE, AD_PHYS, 2, 4),
-          NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1500, 400, MS_GURGLE, MZ_HUMAN), MR_COLD | MR_POISON, MR_POISON,
-        M1_SWIM | M1_AMPHIBIOUS | M1_HUMANOID | M1_OMNIVORE | M1_POIS
-            | M1_THICK_HIDE,
-        M2_HOSTILE | M2_STALK | M2_GREEDY | M2_JEWELS | M2_COLLECT
-            | M2_MAGIC | M2_FLANK,
-        M3_INFRAVISIBLE | M3_INFRAVISION,
-        NO_RACE, 9, CLR_BRIGHT_GREEN, DEEP_ONE),
+
     MON(NAM("mind flayer"), S_HUMANOID,
         LVL(9, 12, 5, 90, -8), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 4),
@@ -876,19 +864,20 @@
         M2_HOSTILE | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 13, CLR_BRIGHT_MAGENTA, MIND_FLAYER),
-    MON(NAM("deeper one"), S_HUMANOID,
-        LVL(15, 12, 0, 30, -7), (G_GENO | G_SGROUP | 2),
+    MON(NAM("deep one"), S_HUMANOID,
+        LVL(18, 12, 0, 30, -7), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4),
           ATTK(AT_CLAW, AD_PHYS, 3, 4),
           ATTK(AT_BITE, AD_PHYS, 4, 6),
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(2000, 500, MS_GURGLE, MZ_LARGE), MR_COLD | MR_POISON, MR_POISON,
+        SIZ(2000, 500, MS_GURGLE, MZ_LARGE),
+        MR_COLD | MR_POISON, MR_POISON,  /* resists draining */
         M1_SWIM | M1_AMPHIBIOUS | M1_HUMANOID | M1_OMNIVORE | M1_POIS
-            | M1_THICK_HIDE,
-        M2_HOSTILE | M2_STALK | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_LORD
+            | M1_THICK_HIDE | M1_REGEN,
+        M2_HOSTILE | M2_STALK | M2_GREEDY | M2_JEWELS | M2_COLLECT
             | M2_STRONG | M2_MAGIC | M2_FLANK,
-        M3_INFRAVISIBLE | M3_INFRAVISION,
-        NO_RACE, 13, CLR_BRIGHT_GREEN, DEEPER_ONE),
+        M3_INFRAVISION | M3_NOTAME,
+        NO_RACE, 15, CLR_BRIGHT_GREEN, DEEP_ONE),
     MON(NAM("master mind flayer"), S_HUMANOID,
         LVL(13, 12, 0, 90, -8), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8),
@@ -902,23 +891,38 @@
         M2_HOSTILE | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION,
         NO_RACE, 19, CLR_BRIGHT_MAGENTA, MASTER_MIND_FLAYER),
-    /* From SLASH'EM with changes:
-     * - Difficulty reduced from 33 to 27
-     * - They get flanking; removed traitorous nature
-     * - Cannot be exiled */
-    MON(NAM("deepest one"), S_HUMANOID,
-        LVL(30, 15, -5, 70, -9), (G_GENO | 1),
+    MON(NAM("deeper one"), S_HUMANOID,
+       LVL(30, 15, -5, 70, -9), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6),
           ATTK(AT_CLAW, AD_PHYS, 3, 6),
           ATTK(AT_BITE, AD_PHYS, 5, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(3000, 500, MS_GURGLE, MZ_HUGE), MR_COLD | MR_POISON, MR_POISON,
+          ATTK(AT_HUGS, AD_PHYS, 2, 6),
+          NO_ATTK, NO_ATTK),
+        SIZ(3000, 500, MS_GURGLE, MZ_HUGE),
+        /* resists draining */
+        MR_COLD | MR_POISON | MR_SLEEP | MR_ELEC, MR_POISON,
         M1_SWIM | M1_AMPHIBIOUS | M1_HUMANOID | M1_OMNIVORE | M1_POIS
-            | M1_THICK_HIDE,
+            | M1_THICK_HIDE | M1_REGEN,
+        M2_HOSTILE | M2_STALK | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_LORD
+            | M2_STRONG | M2_MAGIC | M2_FLANK,
+        M3_INFRAVISION | M3_NOTAME,
+        NO_RACE, 25, CLR_BRIGHT_GREEN, DEEPER_ONE),
+    MON(NAM("deepest one"), S_HUMANOID,
+        LVL(45, 15, -9, 100, -11), (G_GENO | 1),
+        A(ATTK(AT_CLAW, AD_PHYS, 4, 6),
+          ATTK(AT_CLAW, AD_PHYS, 6, 6),
+          ATTK(AT_BITE, AD_PHYS, 8, 6),
+          ATTK(AT_HUGS, AD_PHYS, 4, 6),
+          NO_ATTK, NO_ATTK),
+        SIZ(3000, 500, MS_GURGLE, MZ_GIGANTIC),
+        /* resists draining and magic */
+        MR_COLD | MR_POISON | MR_SLEEP | MR_ELEC | MR_ACID, MR_POISON,
+        M1_SWIM | M1_AMPHIBIOUS | M1_HUMANOID | M1_OMNIVORE | M1_POIS
+            | M1_THICK_HIDE | M1_REGEN,
         M2_HOSTILE | M2_STALK | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_PRINCE
             | M2_STRONG | M2_MAGIC | M2_FLANK,
-        M3_INFRAVISIBLE | M3_INFRAVISION,
-        NO_RACE, 25, HI_LORD, DEEPEST_ONE),
+        M3_INFRAVISION | M3_NOTAME,
+        NO_RACE, 33, HI_LORD, DEEPEST_ONE),
     /* From EvilHack:
      * 'Alhoon are the product of rogue mind flayers attempting to gain
      * ultimate power as a lich. They still retain their form but are a

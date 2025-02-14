@@ -2155,10 +2155,8 @@ mk_gen_ok(int mndx, unsigned mvflagsmask, unsigned genomask)
         return FALSE;
     if (is_dino(ptr) && !Role_if(PM_CAVE_DWELLER))
         return FALSE;
-    if (In_mines(&u.uz)
-        && (ptr == &mons[PM_ALHOON]
-            || ptr == &mons[PM_MASTER_MIND_FLAYER]
-            || ptr == &mons[PM_DEEPEST_ONE]))
+    /* mind flayers are difficulty 13, deep ones are 15 */
+    if (In_mines(&u.uz) && ptr->difficulty > 15)
         return FALSE;
 #ifdef MAIL_STRUCTURES
     /* special levels might ask for random demon type; reject this one */

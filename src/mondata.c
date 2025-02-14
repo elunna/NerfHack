@@ -478,7 +478,9 @@ mon_hates_blessings(struct monst *mon)
 boolean
 hates_blessings(struct permonst *ptr)
 {
-    return (boolean) (is_undead(ptr) || is_demon(ptr));
+    return (boolean) (is_undead(ptr) || is_demon(ptr)
+                      || ptr == &mons[PM_DEEPER_ONE]
+                      || ptr == &mons[PM_DEEPEST_ONE]);
 }
 
 /* True if specific monster is especially affected by light-emitting weapons */
