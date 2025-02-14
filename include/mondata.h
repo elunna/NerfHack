@@ -230,15 +230,10 @@
     ((ptr) == &mons[PM_FLOATING_EYE]            \
      || (ptr) == &mons[PM_MIND_FLAYER]          \
      || (ptr) == &mons[PM_MASTER_MIND_FLAYER]   \
-     || (ptr) == &mons[PM_ALHOON]               \
      || (ptr) == &mons[PM_SHAMAN_KARNOV]        \
      || (ptr) == &mons[PM_ORACLE]               \
-     || (ptr) == &mons[PM_GHOUL_QUEEN]          \
-     || (ptr) == &mons[PM_MASTER_LICH]          \
-     || (ptr) == &mons[PM_ARCH_LICH]            \
      || (ptr) == &mons[PM_FIRE_VAMPIRE]         \
      || (ptr) == &mons[PM_STAR_VAMPIRE]         \
-     || (ptr) == &mons[PM_EYE_OF_FEAR_AND_FLAME] \
      || (ptr) == &mons[PM_WIZARD_OF_YENDOR]     \
      || (ptr) == &mons[PM_CTHULHU])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
