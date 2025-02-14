@@ -4455,21 +4455,17 @@ do_break_wand(struct obj *obj)
         }
         FALLTHROUGH;
         /*FALLTHRU*/
+    case WAN_LOCKING:
+    case WAN_PROBING:
+    case WAN_ENLIGHTENMENT:
+    case WAN_IDENTIFY:
+    case WAN_SECRET_DOOR_DETECTION:
+        broken_wand_explode(obj, dmg, EXPL_MAGICAL);
+        return ECMD_TIME;
     case WAN_NOTHING:
         pline(nothing_else_happens);
         discard_broken_wand();
         return ECMD_TIME;
-    case WAN_SECRET_DOOR_DETECTION:
-        /* Detects portals: Use the same UnNetHack odds for
-         * creating traps when breaking wands. */
-        if ((obj->spe > 2) && rn2(obj->spe - 2)) {
-            trap_detect((struct obj *) 0);
-            makeknown(obj->otyp);
-        } else
-            pline(nothing_else_happens);
-        discard_broken_wand();
-        return ECMD_TIME;
-
     case WAN_WISHING:
         broken_wand_explode(obj, dmg * 12, EXPL_MAGICAL);
         return ECMD_TIME;
@@ -4493,12 +4489,7 @@ do_break_wand(struct obj *obj)
     case WAN_MAGIC_MISSILE:
         broken_wand_explode(obj, dmg * 2, EXPL_MAGICAL);
         return ECMD_TIME;
-    case WAN_LOCKING:
-    case WAN_PROBING:
-    case WAN_ENLIGHTENMENT:
-    case WAN_IDENTIFY:
-        broken_wand_explode(obj, dmg, EXPL_MAGICAL);
-        return ECMD_TIME;
+
 
     case WAN_STRIKING:
         /* we want this before the explosion instead of at the very end */
