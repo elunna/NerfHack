@@ -3650,7 +3650,8 @@ potion_dip(struct obj *obj, struct obj *potion)
         return ECMD_TIME;
     }
     /* removing erosion from items */
-    if (potion->otyp == POT_RESTORE_ABILITY && !potion->cursed
+    if (potion->otyp == POT_RESTORE_ABILITY
+        && !potion->cursed && !potion->odiluted
         && erosion_matters(obj) && (obj->oeroded || obj->oeroded2)) {
         obj->oeroded = obj->oeroded2 = 0;
         costly_alteration(obj, COST_DEGRD);
@@ -3662,7 +3663,8 @@ potion_dip(struct obj *obj, struct obj *potion)
     }
 
     /* erodeproofing items */
-    if (potion->otyp == POT_REFLECTION && !potion->cursed
+    if (potion->otyp == POT_REFLECTION
+        && !potion->cursed && !potion->odiluted
         && erosion_matters(obj) && !obj->oerodeproof) {
         obj->oerodeproof = 1;
         costly_alteration(obj, COST_DEGRD);
