@@ -1674,8 +1674,7 @@ mon_prop(struct monst *mon, int prop)
         return TRUE;
     if (prop == TELEPORT && can_teleport(mon->data) && !mon->mcan)
         return TRUE;
-    if (prop == TELEPORT_CONTROL &&
-        (control_teleport(mon->data) || is_covetous(mon->data)))
+    if (prop == TELEPORT_CONTROL && control_teleport(mon->data))
         return TRUE;
     if (prop == TELEPAT && telepathic(mon->data))
         return TRUE;
