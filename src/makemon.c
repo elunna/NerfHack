@@ -2512,6 +2512,16 @@ mongets(struct monst *mtmp, int otyp)
             if ((otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS)
                 && otmp->spe < 0)
                 otmp->spe = rnd(5) + 2;
+        } else {
+            /* Items frequently spawn used for lesser monsters to prevent
+               late-game inventory bloat. */
+            if (otmp->oclass == POTION_CLASS && rn2(3)) {
+                otmp->odiluted = 1;
+            } else if (otmp->oclass == WAND_CLASS && rn2(4)) {
+                otmp->recharged = rne(3);
+                otmp->recharged = otmp->recharged > 6 ? 6 : otmp->recharged;
+                otmp->spe -= rn2(3);
+            }
         }
 
         /* Any monster that gets a spear may get a stack of them. */
