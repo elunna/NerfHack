@@ -3343,7 +3343,7 @@ rnd_misc_item(struct monst *mtmp)
      * the monster and strong monsters won't use it at all...
      */
     if (difficulty < 6 && !rn2(30))
-        return rn2(6) ? POT_POLYMORPH : WAN_POLYMORPH;
+        return POT_POLYMORPH;
 
     if (!rn2(40) && !nonliving(pm) && !is_vampshifter(mtmp))
         return AMULET_OF_LIFE_SAVING;
