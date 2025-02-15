@@ -1151,10 +1151,12 @@ level_tele(void)
 
     /* Level teleports in Gehennom (including Vlad's/Wizards tower) are
     * not prevented, but the magic is resisted and inflicts pain.
+    * After you kill Rodney once, this effect no longer has any power.
+    * 
     * Don't enforce this in the fuzzer - it may prevent a lot of ports
     * in and around hell. */
     boolean tele_pain = (On_W_tower_level(&u.uz) || In_tower(&u.uz)
-        || In_hell(&u.uz)) && !iflags.debug_fuzzer;
+        || In_hell(&u.uz)) && !u.uevent.udemigod && !iflags.debug_fuzzer;
 
     if (iflags.debug_fuzzer)
         goto random_levtport;
