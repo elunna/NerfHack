@@ -3714,7 +3714,7 @@ dotrap(struct trap *trap, unsigned trflags)
     (void) trapeffect_selector(&gy.youmonst, trap, trflags);
 }
 
-staticfn char *
+char *
 trapnote(struct trap *trap, boolean noprefix)
 {
     static const char *const tnnames[] = {
