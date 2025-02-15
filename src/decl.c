@@ -865,8 +865,12 @@ static const struct instance_globals_w g_init_w = {
     UNDEFINED_VALUE, /* wc */
     /* mkmaze.c */
     UNDEFINED_PTR, /* wportal */
+    /* wizard.c */
+    /* wizpuzzle is a bit weird because it contains a 2D array */
+    { { UNDEFINED_VALUES }, UNDEFINED_VALUES, 0, 0, 0, 0 }, /* wizpuzzle */
     /* new */
     { wdmode_traditional, NO_COLOR },       /* wsettings */
+
     TRUE, /* havestate*/
     IVMAGIC  /* w_magic to validate that structure layout has been preserved */
 };
@@ -945,6 +949,8 @@ static const struct instance_globals_saved_d init_svd = {
       {0}, /* d_wiz1_level */
       {0}, /* d_wiz2_level */
       {0}, /* d_wiz3_level */
+      {0}, /* d_wiz4_level */
+      {0}, /* d_wiz6_level */
       {0}, /* d_juiblex_level */
       {0}, /* d_orcus_level*/
       {0}, /* d_baalzebub_level */

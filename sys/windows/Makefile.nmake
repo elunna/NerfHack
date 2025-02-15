@@ -750,8 +750,14 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\Wiz-loca.lua \
 	$(DAT)\Wiz-strt.lua \
 	$(DAT)\wizard1.lua  \
-	$(DAT)\wizard2.lua  \
+	$(DAT)\wizard2-1.lua  \
+	$(DAT)\wizard2-2.lua  \
 	$(DAT)\wizard3.lua  \
+	$(DAT)\wizard4.lua  \
+	$(DAT)\wizard5.lua  \
+	$(DAT)\wizard6.lua  \
+	$(DAT)\wizard7.lua  \
+	$(DAT)\wizard8.lua  \
 	$(DAT)\tut-1.lua    \
 	$(DAT)\tut-2.lua    \
 	$(DAT)\tomb-1.lua		\

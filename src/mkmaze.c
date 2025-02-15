@@ -719,6 +719,10 @@ fixup_special(void)
         baalz_fixup();
     } else if (u.uz.dnum == mines_dnum && gr.ransacked) {
        stolen_booty();
+    } else if (Is_wizpuzzle_lev(&u.uz)) {
+        /* not needed in normal play but otherwise won't get reset when doing
+         * #wizmakemap */
+        gw.wizpuzzle.entered = FALSE;
     }
 
     if ((sp = Is_special(&u.uz)) != 0 && sp->flags.town) /* Mine Town */

@@ -20,7 +20,13 @@ staticfn struct obj *on_ground(short);  /* might return NULL obj pointer */
 staticfn boolean you_have(int);
 staticfn unsigned long target_on(int, struct monst *) NONNULLARG2;
 staticfn unsigned long strategy(struct monst *) NONNULLARG1;
-
+staticfn void wizpuzzle_close_space(coordxy, coordxy, schar, boolean *);
+staticfn void wizpuzzle_open_space(coordxy, coordxy, boolean *);
+staticfn void wizpuzzle_give_clues(void);
+staticfn void wizpuzzle_move_gap(int, xint8);
+staticfn int wizpuzzle_clamp(int);
+staticfn void wizpuzzle_init(int);
+    
 /* adding more neutral creatures will tend to reduce the number of monsters
    summoned by nasty(); adding more lawful creatures will reduce the number
    of monsters summoned by lawfuls; adding more chaotic creatures will reduce
@@ -980,6 +986,419 @@ cuss(struct monst *mtmp)
             com_pager("demon_cuss");
     }
     wake_nearto(mtmp->mx, mtmp->my, 5 * 5);
+}
+
+/* In the Wizard's Tower puzzle, close the gap on a single space by slamming a
+ * wall down on it, turning the space into wall. */
+staticfn void
+wizpuzzle_close_space(coordxy x, coordxy y,
+                      schar newtyp, /* what sort of wall to put here */
+                      boolean *gavemsg)
+{
+    coord cc;
+    struct trap *ttmp;
+    struct monst *mtmp;
+    /* levl[x][y].typ != ROOM is not impossible, since this gets called on all
+     * gap_spaces except for the ones in the chamber the gap is moving to */
+    if (levl[x][y].typ == newtyp)
+        return; /* nothing to do */
+
+    if (cansee(x,y) && *gavemsg == FALSE) {
+        pline("A section of wall slams down!");
+        *gavemsg = TRUE;
+    }
+
+    ttmp = t_at(x, y); /* player dug a pit or something? */
+    if (ttmp)
+        deltrap(ttmp);
+
+    if (u_at(x, y)) {
+        You("are crushed beneath the falling wall!");
+        svk.killer.format = KILLED_BY_AN;
+        Strcpy(svk.killer.name, "falling section of wall");
+        done(CRUSHING);
+        /* life-saved */
+        enexto(&cc, u.ux, u.uy, gy.youmonst.data);
+        teleds(cc.x, cc.y, TELEDS_TELEPORT);
+    }
+    else if ((mtmp = m_at(x, y)) != (struct monst *) 0) {
+        if (!svc.context.mon_moving)
+            xkilled(mtmp, XKILL_GIVEMSG | XKILL_NOCORPSE);
+        else
+            /* AD_DGST prevents corpse creation */
+            monkilled(mtmp, "falling wall", AD_DGST);
+        if (!DEADMONSTER(mtmp)) {
+            /* life-saved */
+            enexto(&cc, mtmp->mx, mtmp->my, mtmp->data);
+            rloc_to(mtmp, cc.x, cc.y);
+        }
+    }
+
+    delallobj(x, y); /* does not harm unique items */
+    levl[x][y].typ = newtyp;
+    block_point(x,y);
+    newsym(x,y);
+}
+
+/* In the Wizard's Tower puzzle, open the gap on a single space by removing its
+ * wall. */
+staticfn void
+wizpuzzle_open_space(coordxy x, coordxy y, boolean *gavemsg)
+{
+    if (!IS_WALL(levl[x][y].typ)) {
+        impossible("wizpuzzle_open_space on non-wall %d,%d", x, y);
+        return;
+    }
+    if (cansee(x,y) && *gavemsg == FALSE) {
+        pline("A section of wall lifts up!");
+        *gavemsg = TRUE;
+    }
+    levl[x][y].typ = ROOM;
+    unblock_point(x,y);
+    newsym(x,y);
+
+}
+
+/* In the Wizard's Tower puzzle, the gaps have just moved; give a clue about the
+ * chambers the gaps are now in.
+ *
+ * Visual clue is based on the number of piles topped with gems of a certain
+ * color lying around in that room; the rooms all come prestocked with different
+ * colors of gems, but if they are removed or more gems of a different color
+ * scattered inside that room, it will be fooled.
+ *
+ * Auditory clue is based on the unique squeaky board's unique note in that
+ * room; this will only get removed if the player destroys it.
+ *
+ * The clues will not help a player who is playing with both the deaf and blind
+ * roleplay options, but to my knowledge no one has tried this yet.
+ */
+staticfn void
+wizpuzzle_give_clues(void)
+{
+    coordxy x, y;
+    int ring;
+    char lightbuf[BUFSZ] = DUMMY;
+    char notebuf[BUFSZ] = DUMMY;
+
+    for (ring = 0; ring < NUM_PUZZLE_RINGS; ++ring) {
+        int openroom = gw.wizpuzzle.open_chamber[ring];
+        struct trap *board = (struct trap *) 0;
+        xint8 colors_found[CLR_MAX] = {0};
+        xint8 maxcolor = 0;
+        /* Iterate over the room where the new gap is to look for a visual clue
+         * (based on the number of gems on the top of object piles there) and an
+         * auditory clue (based on the squeaky board in that room).
+         * Originally, it didn't have this and instead just had iron bars
+         * instead of walls so you could see where the gap was now, but those
+         * are trivially passable (with all carried gear) by polyselfing into a
+         * whirly monster. */
+        for (x = svr.rooms[openroom].lx; x <= svr.rooms[openroom].hx; ++x) {
+            for (y = svr.rooms[openroom].ly; y <= svr.rooms[openroom].hy; ++y) {
+                struct obj *otmp;
+                if (levl[x][y].roomno - ROOMOFFSET != openroom)
+                    continue; /* not part of this irregular room */
+                if (levl[x][y].typ != ROOM)
+                    continue; /* only care about floor space */
+                if (!board) {
+                    /* a slight optimization would be to loop over all traps
+                     * independently of this loop, but probably not needed */
+                    struct trap *ttmp = t_at(x, y);
+                    if (ttmp && ttmp->ttyp == SQKY_BOARD)
+                        board = ttmp;
+                }
+                otmp = vobj_at(x, y);
+                if (otmp && otmp->oclass == GEM_CLASS
+                    && is_glass(otmp)) {
+                    uchar color = objects[otmp->otyp].oc_color;
+                    colors_found[color]++;
+                    if (colors_found[color] > colors_found[maxcolor]) {
+                        maxcolor = color;
+                    }
+                }
+            }
+        }
+
+        /* if someone removed the gems, no hint here */
+        if (colors_found[maxcolor] >= 1) {
+            if (ring > 0)
+                Strcat(lightbuf, ", then ");
+            Strcat(lightbuf, hcolor(clr2colorname(maxcolor)));
+        }
+
+        if (board) {
+            if (ring > 0)
+                Strcat(notebuf, ", then ");
+            Strcat(notebuf, trapnote(board, gw.wizpuzzle.solved));
+        }
+        /* else impossible("no board found?"); -- except this isn't actually
+         * impossible, since hero may disarm the board. */
+
+        if (ring == 0 && gw.wizpuzzle.solved)
+            /* rings will be aligned so no point in continuing, and preserve the
+             * color and note in the buffers with no intervening "then" */
+            break;
+    }
+
+    if (gw.wizpuzzle.solved) {
+        if (!Blind)
+            pline("There is a brilliant flash of %s light.", lightbuf);
+        You_hear("a harmonious %s chime.", notebuf);
+    }
+    else {
+        if (!Blind)
+            pline("Lights flash briefly: %s.", lightbuf);
+        You_hear("chimes: %s.", notebuf);
+    }
+}
+
+staticfn struct {
+    int ring;
+    int roomno;
+    coordxy lx_offset;
+    coordxy ly_offset;
+    xint8 typ; /* wall typ when gap is closed */
+} gap_spaces[] = {
+    { 0, 0, 4,4, HWALL },
+    { 0, 0, 5,4, HWALL },
+    { 0, 0, 6,4, HWALL },
+    { 0, 1, -1,4, BLCORNER },
+    { 0, 1, 0,4, TRCORNER },
+    { 0, 1, 0,5, BLCORNER },
+    { 0, 1, 1,5, TRCORNER },
+    { 0, 2, -1,2, VWALL },
+    { 0, 2, -1,3, VWALL },
+    { 0, 3, 1,1, BRCORNER },
+    { 0, 3, 0,1, TLCORNER },
+    { 0, 3, 0,2, BRCORNER },
+    { 0, 3, -1,2, TLCORNER },
+    { 0, 4, 4,-1, HWALL },
+    { 0, 4, 5,-1, HWALL },
+    { 0, 4, 6,-1, HWALL },
+    { 0, 5, 10,1, BLCORNER },
+    { 0, 5, 11,1, TRCORNER },
+    { 0, 5, 11,2, BLCORNER },
+    { 0, 5, 12,2, TRCORNER },
+    { 0, 6, 11,2, VWALL },
+    { 0, 6, 11,3, VWALL },
+    { 0, 7, 10,5, TLCORNER },
+    { 0, 7, 11,5, BRCORNER },
+    { 0, 7, 11,4, TLCORNER },
+    { 0, 7, 12,4, BRCORNER },
+    /* begin inner ring */
+    { 1, 0, 4,5, HWALL },
+    { 1, 0, 5,5, HWALL },
+    { 1, 0, 6,5, HWALL },
+    { 1, 1, -2,5, BLCORNER },
+    { 1, 1, -1,5, TRCORNER },
+    { 1, 1, -1,6, BLCORNER },
+    { 1, 2, -2,2, VWALL },
+    { 1, 2, -2,3, VWALL },
+    { 1, 3, -1,0, TLCORNER },
+    { 1, 3, -1,1, BRCORNER },
+    { 1, 3, -2,1, TLCORNER },
+    { 1, 4, 4,-2, HWALL },
+    { 1, 4, 5,-2, HWALL },
+    { 1, 4, 6,-2, HWALL },
+    { 1, 5, 12,0, TRCORNER },
+    { 1, 5, 12,1, BLCORNER },
+    { 1, 5, 13,1, TRCORNER },
+    { 1, 6, 12,2, VWALL },
+    { 1, 6, 12,3, VWALL },
+    { 1, 7, 12,6, BRCORNER },
+    { 1, 7, 12,5, TLCORNER },
+    { 1, 7, 13,5, BRCORNER }
+};
+
+/* Close the current open gap in ring # <ring> and open the new gap at chamber
+ * <newc>. If <newc> currently has the open gap, do nothing. */
+staticfn void
+wizpuzzle_move_gap(int newc, xint8 ring)
+{
+    int i, round, x, y;
+    boolean gaveclosemsg = FALSE;
+    boolean gaveopenmsg = FALSE;
+    boolean solved = FALSE;
+
+    if (gw.wizpuzzle.solved)
+        return;
+
+    if (!gw.wizpuzzle.gave_msg) {
+        if (Deaf)
+            You_feel("the ground rumbling!");
+        else
+            You_hear("a massive grinding noise!");
+        gw.wizpuzzle.gave_msg = TRUE;
+    }
+
+    if (gw.wizpuzzle.open_chamber[ring] != newc) {
+        for (round = 1; round <= 2; ++round) {
+            /* round 1: wall comes down
+             * round 2: wall lifts up
+             * this puts the mechanisms in strict order so that if you had
+             * line-of-sight through the gap to the wall which will lift up, you
+             * don't get a message about seeing the wall lift up which shouldn't
+             * be possible now that the gap has closed */
+            for (i = 0; i < SIZE(gap_spaces); ++i) {
+                if (gap_spaces[i].ring != ring)
+                    continue;
+                x = svr.rooms[gap_spaces[i].roomno].lx + gap_spaces[i].lx_offset;
+                y = svr.rooms[gap_spaces[i].roomno].ly + gap_spaces[i].ly_offset;
+
+                if (round == 1 && gap_spaces[i].roomno != newc) {
+                    wizpuzzle_close_space(x, y, gap_spaces[i].typ,
+                                          &gaveclosemsg);
+                    vision_recalc(0);
+                }
+                else if (round == 2 && gap_spaces[i].roomno == newc) {
+                    wizpuzzle_open_space(x, y, &gaveopenmsg);
+                }
+            }
+        }
+    }
+
+    gw.wizpuzzle.open_chamber[ring] = newc;
+
+    /* only mark the puzzle as solved when processing the last ring, so that a
+     * move of another ring into the same room as another ring (which is about
+     * to move but hasn't yet) doesn't count it as solved */
+    if (ring == NUM_PUZZLE_RINGS - 1
+        && levl[u.ux][u.uy].roomno - ROOMOFFSET
+            == gw.wizpuzzle.open_chamber[ring]) {
+        solved = TRUE;
+        for (i = 0; i < NUM_PUZZLE_RINGS - 1; ++i) {
+            if (gw.wizpuzzle.open_chamber[i] != gw.wizpuzzle.open_chamber[i+1])
+                solved = FALSE;
+        }
+        if (solved)
+            gw.wizpuzzle.solved = TRUE;
+    }
+}
+
+/* In the Wizard's Tower puzzle, turn an offsetted room index (which may or may
+ * not be in the range [0-7]) into the correct room in the range [0-7].
+ * We need this function because a simple % operator won't work correctly on
+ * negative numbers. */
+staticfn int
+wizpuzzle_clamp(int unreliable_roomno) {
+    /* In practice, while unreliable_roomno can be negative, we don't expect it
+     * to be lower than -3. */
+    return (unreliable_roomno + NUM_PUZZLE_CHAMBERS) % NUM_PUZZLE_CHAMBERS;
+}
+
+/* Set up the data structures for the Wizard's Tower puzzle, when first entering
+ * the level or resetting it with wizmakemap. */
+staticfn void
+wizpuzzle_init(int init_room) {
+    int ring, room1;
+    for (ring = 0; ring < NUM_PUZZLE_RINGS; ++ring) {
+        gw.wizpuzzle.open_chamber[ring] = init_room;
+        /* Initialize and shuffle the chamber actions. */
+        gw.wizpuzzle.actions[ring][0] = NO_ROTATION;
+        gw.wizpuzzle.actions[ring][1] = CLOCKWISE_1;
+        gw.wizpuzzle.actions[ring][2] = CLOCKWISE_2;
+        gw.wizpuzzle.actions[ring][3] = CLOCKWISE_3;
+        gw.wizpuzzle.actions[ring][4] = COUNTERCLOCKWISE_1;
+        gw.wizpuzzle.actions[ring][5] = COUNTERCLOCKWISE_2;
+        gw.wizpuzzle.actions[ring][6] = COUNTERCLOCKWISE_3;
+        gw.wizpuzzle.actions[ring][7] = ROTATE_180;
+        for (room1 = NUM_PUZZLE_CHAMBERS - 1; room1 >= 1; --room1) {
+            int room2 = rn2(room1 + 1);
+            enum wizpuzzle_actions tmp = gw.wizpuzzle.actions[ring][room1];
+            gw.wizpuzzle.actions[ring][room1]
+                = gw.wizpuzzle.actions[ring][room2];
+            gw.wizpuzzle.actions[ring][room2] = tmp;
+        }
+    }
+    gw.wizpuzzle.activated_chamber = -1;
+    gw.wizpuzzle.entered = TRUE;
+    gw.wizpuzzle.solved = FALSE;
+}
+
+/* In the Wizard's Tower puzzle, you have just entered a new chamber, possibly
+ * triggering the puzzle to change. */
+void
+wizpuzzle_enterchamber(int rm_entered)
+{
+    int ring;
+    boolean firsttime = FALSE;
+    if (!gw.wizpuzzle.entered) { /* entering level for the first time */
+        wizpuzzle_init(rm_entered);
+        firsttime = TRUE;
+    }
+    if (gw.wizpuzzle.solved)
+        return;
+
+    for (ring = 0; ring < NUM_PUZZLE_RINGS; ++ring) {
+        if (gw.wizpuzzle.open_chamber[ring] != rm_entered)
+            return;
+    }
+
+    /* If you manipulate the puzzle such that the gaps line up in some other
+     * room (which isn't uncommon, it will happen 1/8 of the time when
+     * activating mechanisms randomly in a 2-ring puzzle), you can't win just by
+     * walking into that room containing the lined-up gaps. Instead, force the
+     * gaps to move somewhere random. */
+    gw.wizpuzzle.gave_msg = FALSE;
+    for (ring = 0; ring < NUM_PUZZLE_RINGS; ++ring) {
+        int selected = 0;
+        int nselected = 0;
+        int rm_candidate;
+        for (rm_candidate = 0; rm_candidate < NUM_PUZZLE_CHAMBERS;
+             ++rm_candidate) {
+            int room1;
+            boolean eligible = TRUE;
+            for (room1 = rm_entered - 1; room1 <= rm_entered + 1; ++room1) {
+                /* Case 1: Disqualify the room that the hero just entered and
+                 * its immediate neighbors. (So that if you walk into the
+                 * chamber containing the gap, the gap can't move to the chamber
+                 * you are exiting, allowing you to just turn around and walk
+                 * through the gap.) */
+                if (rm_candidate == wizpuzzle_clamp(room1)) {
+                    eligible = FALSE;
+                    break;
+                }
+            }
+            /* Case 2: Don't line up 2 gaps in successive rings (which prevents
+             * the puzzle from randomly producing a fully open gap in a
+             * different room). */
+            if (ring > 0
+                && rm_candidate == gw.wizpuzzle.open_chamber[ring-1]) {
+                eligible = FALSE;
+            }
+            if (eligible) {
+                nselected++;
+                if (!rn2(nselected))
+                    selected = rm_candidate;
+            }
+        }
+        wizpuzzle_move_gap(selected, ring);
+    }
+    if (firsttime)
+        wizpuzzle_give_clues();
+}
+
+/* In the Wizard's Tower puzzle, you have just triggered a mechanism that causes
+ * the puzzle to change. */
+void
+wizpuzzle_activate_mechanism(coordxy x, coordxy y)
+{
+    int roomno = levl[x][y].roomno - ROOMOFFSET;
+    int ring;
+    if (gw.wizpuzzle.activated_chamber == roomno) {
+        if (u_at(x, y) || cansee(x, y)) {
+            pline("Nothing else happens.");
+        }
+        return;
+    }
+    gw.wizpuzzle.activated_chamber = roomno;
+    gw.wizpuzzle.gave_msg = FALSE;
+    for (ring = 0; ring < NUM_PUZZLE_RINGS; ++ring) {
+        int destination = wizpuzzle_clamp(gw.wizpuzzle.open_chamber[ring]
+                                          + gw.wizpuzzle.actions[ring][roomno]);
+        wizpuzzle_move_gap(destination, ring);
+    }
+    wizpuzzle_give_clues();
 }
 
 /*wizard.c*/

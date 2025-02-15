@@ -133,6 +133,7 @@ SPEC_LEVS = 	 	\
 	valley-?.lua 	\
 	water.lua 		\
 	wizard?.lua 	\
+	wizard2-?.lua 	\
 	yeenog-?.lua
 
 QUEST_LEVS = ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua

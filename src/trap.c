@@ -44,7 +44,6 @@ staticfn int trapeffect_magic_portal(struct monst *, struct trap *, unsigned);
 staticfn int trapeffect_vibrating_square(struct monst *, struct trap *,
                                            unsigned);
 staticfn int trapeffect_selector(struct monst *, struct trap *, unsigned);
-staticfn char *trapnote(struct trap *, boolean);
 staticfn int choose_trapnote(struct trap *);
 staticfn int steedintrap(struct trap *, struct obj *);
 staticfn void launch_drop_spot(struct obj *, coordxy, coordxy);
@@ -1550,6 +1549,10 @@ trapeffect_sqky_board(
                   Deaf ? "" : trapnote(trap, FALSE),
                   Deaf ? "" : " loudly");
             wake_nearby(FALSE);
+            if (Is_wizpuzzle_lev(&u.uz)) {
+                /* squeaky boards are the activation mechanism for the puzzle */
+                wizpuzzle_activate_mechanism(u.ux, u.uy);
+            }
         }
     } else {
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
@@ -3681,6 +3684,10 @@ dotrap(struct trap *trap, unsigned trflags)
             return;
         }
         if (already_seen && !Fumbling && !undestroyable_trap(ttype)
+            /* in wiztower puzzles, player wants to trigger the trap, so don't
+             * frustrate them by randomly escaping it */
+            && !(ttype == SQKY_BOARD && Is_wizpuzzle_lev(&u.uz))
+            && !(ttype == TELEP_TRAP && Is_telemaze_lev(&u.uz))
             && ttype != ANTI_MAGIC && !forcebungle && !plunged
             && !conj_pit && !adj_pit
             && (!rn2(5) || (is_pit(ttype) && is_clinger(gy.youmonst.data)))) {

@@ -70,6 +70,7 @@ $	spec_files = "air.lua,"	-
 		+ "valley-%.lua" 	-
 		+ "water.lua," 		-
 		+ "wizard%.lua," 	-
+		+ "wizard2-%.lua," 	-
 		+ "yeenog-%.lua"
 $	qstl_files = "%%%-goal.lua,%%%-fil%.lua,%%%-loca.lua,%%%-strt.lua"
 $	dngn_files = "dungeon.lua"

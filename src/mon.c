@@ -973,6 +973,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_COUATL:
     case PM_ALEAX:
     case PM_ANGEL:
+    case PM_DARK_ANGEL:
     case PM_KI_RIN:
     case PM_ARCHON:
     case PM_MOVANIC_DEVA:
@@ -1144,6 +1145,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_MEDUSA:
     case PM_WIZARD_OF_YENDOR:
     case PM_CROESUS:
+    case PM_EXECUTIONER:
     case PM_GHOST:
     case PM_SHADE:
     case PM_SHADOW:

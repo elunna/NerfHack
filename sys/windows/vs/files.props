@@ -224,8 +224,14 @@
     <Luafiles Include = "Wiz-loca.lua"/>
     <Luafiles Include = "Wiz-strt.lua"/>
     <Luafiles Include = "wizard1.lua"/>
-    <Luafiles Include = "wizard2.lua"/>
+    <Luafiles Include = "wizard2-1.lua"/>
+    <Luafiles Include = "wizard2-2.lua"/>
     <Luafiles Include = "wizard3.lua"/>
+    <Luafiles Include = "wizard4.lua"/>
+    <Luafiles Include = "wizard5.lua"/>
+    <Luafiles Include = "wizard6.lua"/>
+    <Luafiles Include = "wizard7.lua"/>
+    <Luafiles Include = "wizard8.lua"/>
     <Luafiles Include = "tomb-1.lua"/>
     <Luafiles Include = "tomb-2.lua"/>
     <Luafiles Include = "yeenog-1.lua"/>

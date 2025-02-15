@@ -211,7 +211,15 @@ m_initweap(struct monst *mtmp)
         }
         break;
     case S_HUMAN:
-        if (is_mercenary(ptr)) {
+         if (mm == PM_EXECUTIONER) {
+                otmp = mksobj(BATTLE_AXE, FALSE, FALSE);
+                otmp = oname(otmp, artiname(ART_CLEAVER), ONAME_RANDOM);
+                bless(otmp);
+                otmp->oerodeproof = TRUE;
+                otmp->spe = rn2(6);
+                (void) mpickobj(mtmp, otmp);
+                (void) mongets(mtmp, CLOAK_OF_MAGIC_RESISTANCE);
+        } else if (is_mercenary(ptr)) {
             w1 = w2 = 0;
             switch (mm) {
             case PM_WATCHMAN:

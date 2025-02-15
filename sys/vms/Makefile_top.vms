@@ -164,6 +164,7 @@ SPEC_LEVS = 		\
 	tower?.lua 		\
 	valley-?.lua 	\
 	wizard?.lua 	\
+	wizard2-?.lua 	\
 	nhcore.lua 		\
 	nhlib.lua 		\
 	themerms.lua 	\

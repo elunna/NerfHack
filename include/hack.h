@@ -397,6 +397,8 @@ struct dgn_topology { /* special dungeon levels for speed */
     d_level d_wiz1_level;
     d_level d_wiz2_level;
     d_level d_wiz3_level;
+    d_level d_wiz4_level;
+    d_level d_wiz6_level;
     d_level d_juiblex_level;
     d_level d_orcus_level;
     d_level d_baalzebub_level; /* unused */
@@ -430,6 +432,8 @@ struct dgn_topology { /* special dungeon levels for speed */
 #define wiz1_level              (svd.dungeon_topology.d_wiz1_level)
 #define wiz2_level              (svd.dungeon_topology.d_wiz2_level)
 #define wiz3_level              (svd.dungeon_topology.d_wiz3_level)
+#define wiz4_level              (svd.dungeon_topology.d_wiz4_level)
+#define wiz6_level              (svd.dungeon_topology.d_wiz6_level)
 #define juiblex_level           (svd.dungeon_topology.d_juiblex_level)
 #define orcus_level             (svd.dungeon_topology.d_orcus_level)
 #define baalzebub_level         (svd.dungeon_topology.d_baalzebub_level)
@@ -772,6 +776,36 @@ enum polyself_flags {
 struct repo { /* repossession context */
     struct monst *shopkeeper;
     coord location;
+};
+
+/* Wizard's Tower puzzle */
+#define NUM_PUZZLE_CHAMBERS 8
+#define NUM_PUZZLE_RINGS 2
+enum wizpuzzle_actions {
+    /* The possible effects for each puzzle-activating trigger, which happen to
+     * be expressed in terms of the number that should be added to open_chamber
+     * (then taken modulo NUM_PUZZLE_CHAMBERS) to get the new open chamber. */
+    COUNTERCLOCKWISE_3 = -3,
+    COUNTERCLOCKWISE_2 = -2,
+    COUNTERCLOCKWISE_1 = -1,
+    NO_ROTATION = 0,
+    CLOCKWISE_1 = 1,
+    CLOCKWISE_2 = 2,
+    CLOCKWISE_3 = 3,
+    ROTATE_180 = 4,
+};
+
+struct wizard_puzzle {
+    enum wizpuzzle_actions actions[NUM_PUZZLE_RINGS][NUM_PUZZLE_CHAMBERS];
+    int open_chamber[NUM_PUZZLE_RINGS]; /* index into g.rooms, expected to be in
+                                           range [0-7] */
+    int activated_chamber; /* same as above; holds index of most recently
+                              activated chamber (so that you can't activate the
+                              same one multiple times). */
+    boolean entered;
+    boolean solved;
+    boolean gave_msg; /* used to ensure massive grinding noise only happens once
+                         per activation, rather than once per each ring's move */
 };
 
 struct restore_info {

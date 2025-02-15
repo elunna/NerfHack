@@ -160,7 +160,7 @@ struct conditionals_t {
     { MON_GLYPH, PM_BLINKING_EYE, "beholder" },
     { MON_GLYPH, PM_JABBERWOCK, "vorpal jabberwock" },
 #ifndef CHARON /* not supported yet */
-    { MON_GLYPH, PM_CROESUS, "Charon" },
+    { MON_GLYPH, PM_EXECUTIONER, "Charon" },
 #endif
 #ifndef MAIL_STRUCTURES
     { MON_GLYPH, PM_FAMINE, "mail daemon" },

@@ -3419,6 +3419,7 @@ extern void trap_ice_effects(coordxy x, coordxy y, boolean ice_is_melting);
 extern void trap_sanity_check(void);
 extern void trigger_trap_with_polearm(struct trap *, coord, struct obj *);
 extern boolean maybe_grease_off(struct obj *);
+extern char *trapnote(struct trap *, boolean);
 
 /* ### u_init.c ### */
 
@@ -3941,6 +3942,8 @@ extern void resurrect_cthulhu(void);
 extern void intervene(void);
 extern void wizdeadorgone(void);
 extern void cuss(struct monst *) NONNULLARG1;
+extern void wizpuzzle_enterchamber(int);
+extern void wizpuzzle_activate_mechanism(coordxy, coordxy);
 
 /* ### wizcmds.c ### */
 

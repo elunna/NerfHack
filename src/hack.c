@@ -2823,6 +2823,8 @@ domove_core(void)
         && !displaceu
         /* check for discovered trap */
         && (trap = t_at(x, y)) != 0 && trap->tseen
+        && !(Is_wizpuzzle_lev(&u.uz) && trap && trap->ttyp == SQKY_BOARD)
+        && !(Is_telemaze_lev(&u.uz) && trap && trap->ttyp == TELEP_TRAP)
         /* check whether attempted move will be viable */
     /*
      * FIXME:
@@ -3633,6 +3635,12 @@ check_special_room(boolean newlev)
     for (ptr = &u.uentered[0]; *ptr; ptr++) {
         int roomno = *ptr - ROOMOFFSET, rt = svr.rooms[roomno].rtype;
         boolean msg_given = TRUE;
+
+        /* Regions on wizard3 are not special rooms, but may trigger doing
+         * something with the puzzle on that level so it's handled here */
+        if (Is_wizpuzzle_lev(&u.uz)) {
+            wizpuzzle_enterchamber(roomno);
+        }
 
         /* Did we just enter some other special room? */
         /* vault.c insists that a vault remain a VAULT,
