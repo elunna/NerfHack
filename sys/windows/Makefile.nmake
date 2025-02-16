@@ -585,6 +585,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\bigrm-20.lua \
 	$(DAT)\bigrm-21.lua \
 	$(DAT)\bridge.lua   \
+	$(DAT)\invoke.lua   \
 	$(DAT)\dragons.lua   \
 	$(DAT)\castle-1.lua \
 	$(DAT)\castle-2.lua \

@@ -153,6 +153,10 @@ dungeon = {
             base = -1
          },
          {
+            name = "invoke",
+            base = -2
+         },
+         {
             name = "juiblex",
             bonetag = "J",
             base = 3,

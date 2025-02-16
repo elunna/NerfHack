@@ -1927,7 +1927,9 @@ create_trap(spltrap *t, struct mkroom *croom)
     unsigned mktrap_flags = MKTRAP_MAZEFLAG;
 
     if (t->type == VIBRATING_SQUARE) {
-        pick_vibrasquare_location();
+//        pick_vibrasquare_location();
+        svi.inv_pos.x = 39;
+        svi.inv_pos.y = 11;
         maketrap(svi.inv_pos.x, svi.inv_pos.y, VIBRATING_SQUARE);
         return;
     } else if (croom) {
@@ -1952,7 +1954,8 @@ create_trap(spltrap *t, struct mkroom *croom)
 
     tm.x = x;
     tm.y = y;
-
+    
+    
     mktrap(t->type, mktrap_flags, (struct mkroom *) 0, &tm);
 }
 

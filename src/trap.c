@@ -650,6 +650,14 @@ maketrap(coordxy x, coordxy y, int typ)
             }
         }
         break;
+    case VIBRATING_SQUARE:
+        if (!Invocation_lev(&u.uz)) {
+            impossible("creating vibrating square on wrong level");
+        } else {
+            svi.inv_pos.x = x;
+            svi.inv_pos.y = y;
+        }
+        break;
     }
 
     if (!oldplace) {

@@ -1084,6 +1084,11 @@ pick_vibrasquare_location(void)
     coordxy x, y;
     stairway *stway;
     int trycnt = 0;
+    
+    /* If the special invoke.lua level set the coords, don't write over them */
+    if (svi.inv_pos.x > 0 && svi.inv_pos.y > 0)
+        return;
+        
     /* these are also defined in mklev.c and they may not be appropriate
        for mazes with corridors wider than 1 or for cavernous levels */
 #define x_maze_min 2
@@ -1130,6 +1135,10 @@ pick_vibrasquare_location(void)
 #undef INVPOS_DISTANCE
 #undef x_maze_min
 #undef y_maze_min
+    
+    /* Kludge to make this always the center */
+//    svi.inv_pos.x = 37;
+//    svi.inv_pos.y = 04;
 }
 
 /* add objects and monsters to random maze */
@@ -1252,6 +1261,9 @@ makemaz(const char *s)
         mazexy(&mm);
         mkstairs(mm.x, mm.y, 0, (struct mkroom *) 0, FALSE); /* down */
     } else { /* choose "vibrating square" location */
+        /* vibrating square is now set by invocate.lua; however, this code
+        * remains in place so that the game is not unwinnable if invocate.lua
+        * fails to load. */
         pick_vibrasquare_location();
         maketrap(svi.inv_pos.x, svi.inv_pos.y, VIBRATING_SQUARE);
     }
