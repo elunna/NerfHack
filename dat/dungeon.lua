@@ -128,9 +128,10 @@ dungeon = {
          },
          {
             name = "The Wizard's Tower",
+            chainlevel = "fakewiz1",
             bonetag = "F",
-            base = 10,
-            range = 8,
+            base = 0,
+            range = 0,
             branchtype = "portal"
          },
       },
@@ -170,6 +171,12 @@ dungeon = {
             nlevels = 2,
             base = 3,
             range = 5
+         },
+         {
+            name = "fakewiz1",
+            bonetag = "F",
+            base = -6,
+            range = 4
          },
          {
             name = "demo",

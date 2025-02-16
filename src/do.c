@@ -1982,9 +1982,6 @@ goto_level(
     } else if (In_sokoban(&u.uz)) {
         if (newdungeon)
             record_achievement(ACH_SOKO);
-    } else if (at_dgn_entrance("The Wizard's Tower") && !u.uevent.udemigod) {
-        You_feel("the presence of a great wizard...");
-        pline("His tower must be somewhere on this level!");
     } else if (Is_wizpuzzle_lev(&u.uz) && new && !newdungeon && at_stairs) {
         /* if you somehow got into the wizard's tower puzzle from above, by
          * descending the ladder in the center, WITHOUT having triggered the
