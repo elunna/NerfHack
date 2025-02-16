@@ -1194,10 +1194,11 @@ cast_cleric_spell(
     struct monst *mdef,
     int dmg, int spellnum)
 {
-    int ml = min(caster->m_lev, 50);
-    int orig_dmg = 0;
-    int mdist;
-    boolean youdefend = (mdef == &gy.youmonst);
+    int ml = min(caster->m_lev, 50), 
+        orig_dmg = 0,
+        mdist;
+    boolean youdefend = (mdef == &gy.youmonst),
+            telepath_caster = mon_prop(caster, TELEPAT);
 
     if (dmg < 0) {
         impossible("monster cast cleric spell (%d) with negative dmg (%d)?",
@@ -1326,7 +1327,9 @@ cast_cleric_spell(
         Soundeffect(se_bolt_of_lightning, 80);
 
         if (youdefend) {
-            if (!mcast_dist_ok(caster)) {
+            /* caster must be within range and have line-of-sight or ESP */
+            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
+                                           && !telepath_caster)) {
                 dmg = 0;
                 break;
             }
@@ -1406,7 +1409,8 @@ cast_cleric_spell(
         if (youdefend) {
             /* Limit the range to either adjacent to hero or 1 square away,
              * any more and this spell would be insane to deal with. */
-            if (distu(caster->mx, caster->my) > 16)
+            if (distu(caster->mx, caster->my) > 16 
+                || (!couldsee(caster->mx, caster->my) && !telepath_caster))
                 break;
             if (!Blind)
                 pline("A dense gray haze engulfs you!");
@@ -1638,7 +1642,9 @@ cast_cleric_spell(
             if (dmg <= 0)
                 break;
 
-            if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 192) {
+            /* caster must be within range and have line-of-sight or ESP */
+            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
+                                           && !telepath_caster)) {
                 long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
                 Your("%s are smashed by a bolt of force!",
                     makeplural(body_part(LEG)));
@@ -1741,7 +1747,9 @@ cast_cleric_spell(
         dmg = d((int) ((ml / 2) + 1), 6);
 
         if (youdefend) {
-            if (!mcast_dist_ok(caster)) {
+            /* caster must be within range and have line-of-sight or ESP */
+            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
+                                           && !telepath_caster)) {
                 dmg = 0;
                 break;
             }
