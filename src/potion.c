@@ -2295,19 +2295,20 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                 polyself(POLY_NOFLAGS);
             break;
         case POT_ACID:
+            dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
             if (!fully_resistant(ACID_RES)) {
                 pline("This burns%s!",
                       obj->blessed ? " a little"
                                    : obj->cursed ? " a lot" : "");
-                dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
+                
                 dmg = resist_reduce(dmg, ACID_RES);
                 losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
             }
             if (!rn2(3))
                 erode_armor(&gy.youmonst, ERODE_CORRODE);
             else if (!rn2(3))
-                dmg += destroy_items(&gy.youmonst, AD_ACID, dmg);
-
+                losehp(destroy_items(&gy.youmonst, AD_ACID, dmg),
+                       "potion of acid", KILLED_BY_AN);
             break;
         }
     } else if (hit_saddle && saddle) {
