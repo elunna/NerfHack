@@ -214,7 +214,7 @@ DISABLE_WARNING_FORMAT_NONLITERAL
 staticfn void
 polyman(const char *fmt, const char *arg)
 {
-    boolean sticking = (sticks(gy.youmonst.data) && u.ustuck && !u.uswallow),
+    boolean sticking,
             was_mimicking = (U_AP_TYPE != M_AP_NOTHING);
     boolean was_blind = !!Blind;
 
@@ -231,6 +231,8 @@ polyman(const char *fmt, const char *arg)
     skinback(FALSE);
     u.uundetected = 0;
 
+    /* Check this here, after set_uasmon, in case grung died of dehydration.*/
+    sticking = (sticks(gy.youmonst.data) && u.ustuck && !u.uswallow);
     if (sticking)
         uunstick();
     find_ac();
