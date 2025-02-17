@@ -82,6 +82,10 @@ des.trap("hole", 23, 01);
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 
+-- A little help
+des.object("earth",01,02)
+des.object("earth",01,02)
+
 -- Random objects
 des.object({ class = "%" });
 des.object({ class = "%" });

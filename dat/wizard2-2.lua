@@ -85,6 +85,10 @@ des.trap("hole",22,01)
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 
+-- A little help
+des.object("earth",06,15)
+des.object("earth",06,15)
+
 -- Random objects
 des.object({ class = "%" });
 des.object({ class = "%" });
@@ -93,7 +97,7 @@ des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
 
--- Rewards
+-- Rewards?
 des.door("locked",23,12)
 des.door("closed",17,10)
 des.door("closed",17,12)
