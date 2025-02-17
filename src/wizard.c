@@ -864,7 +864,7 @@ void
 intervene(void)
 {
     struct monst *mtmp = (struct monst *) 0;
-    int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(8);
+    int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(9);
 
     /* cases 0 and 5 don't apply on the Astral level */
     switch (which) {
@@ -904,12 +904,13 @@ intervene(void)
         }
         break;
     case 6:
+    case 7:
         if (carrying(AMULET_OF_YENDOR))
             resurrect_cthulhu();
         else
             You_feel("vaguely nervous.");
         break;
-    case 7:
+    case 8:
         resurrect();
         break;
     }
