@@ -59,97 +59,30 @@ des.door("locked", 07, 05)
 des.trap("spiked pit",06,04)
 des.trap("spiked pit",06,06)
 
+function chest_fill()
+    des.object("wax candle")
+    des.gold()
+    des.gold()
+    des.object()
+    if percent(50) then
+        des.object()
+    end
+    if percent(25) then
+        des.object()
+    end
+end
+
 -- the treasure chamber!
-des.object({ id = "chest", x = 52, y = 04,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 53, y = 04,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 54, y = 04,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 52, y = 05,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 53, y = 05,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 54, y = 05,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 52, y = 06,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 53, y = 06,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 54, y = 06,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
+des.object({ id = "chest", x = 52, y = 04, contents = chest_fill });
+des.object({ id = "chest", x = 53, y = 04, contents = chest_fill });
+des.object({ id = "chest", x = 54, y = 04, contents = chest_fill });
+des.object({ id = "chest", x = 52, y = 05, contents = chest_fill });
+des.object({ id = "chest", x = 53, y = 05, contents = chest_fill });
+des.object({ id = "chest", x = 54, y = 05, contents = chest_fill });
+des.object({ id = "chest", x = 52, y = 06, contents = chest_fill });
+des.object({ id = "chest", x = 53, y = 06, contents = chest_fill });
+des.object({ id = "chest", x = 54, y = 06, contents = chest_fill });
+
 --  five gargoyles on either side, in the niches of the temple
 -- all should start asleep
 des.monster({id="glowing eye", x=14, y=01, peaceful=0})
@@ -177,7 +110,6 @@ des.monster({id="ghoul mage", x=32, y=04, peaceful=0})
 des.monster({id="ghoul mage", x=32, y=06, peaceful=0})
 
 -- a horde of zombies is also inside....
-
 des.monster({class="Z", x=17, y=04, peaceful=0})
 des.monster({class="Z", x=18, y=04, peaceful=0})
 des.monster({class="Z", x=19, y=04, peaceful=0})
