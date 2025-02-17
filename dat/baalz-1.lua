@@ -42,10 +42,8 @@ des.object(")")
 des.object(")")
 des.object("*")
 des.object("!")
-des.object("!")
 des.object("?")
-des.object("?")
-des.object("?")
+
 -- Some traps.
 des.trap("spiked pit")
 des.trap("fire")

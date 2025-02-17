@@ -48,9 +48,6 @@ des.object(")")
 des.object(")")
 des.object("*")
 des.object("!")
-des.object("!")
-des.object("?")
-des.object("?")
 des.object("?")
 
 -- Some traps.

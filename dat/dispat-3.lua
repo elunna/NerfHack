@@ -103,21 +103,14 @@ des.gold();
 des.gold();
 des.gold();
 
--- Some random gems
+-- Some random loot
+des.object("[")
+des.object("[")
+des.object(")")
+des.object(")")
 des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
+des.object("!")
+des.object("?")
 
 -- Some random traps
 des.trap("random")
@@ -135,17 +128,11 @@ des.trap("fire")
 
 -- Gold in the outer vaults
 des.monster("gold golem",07,04)
-des.object({ x = 07, y = 04 })
 des.monster("gold golem",07,02)
-des.object({ x = 07, y = 02 })
 des.monster("gold golem",03,04)
-des.object({ x = 03, y = 04 })
 des.monster("gold golem",07,09)
-des.object({ x = 07, y = 09 })
 des.monster("gold golem",01,18)
-des.object({ x = 01, y = 18 })
 des.monster("gold golem",09,11)
-des.object({ x = 09, y = 11 })
 
 -- A river of gold?
 des.gold({ x = 15, y = 02 });
@@ -245,14 +232,10 @@ des.trap("fire", 37,13)
 -- Northern antichamber
 des.monster("&",40,07)
 des.monster("&",38,06)
-des.object("chest",41,06)
-des.object("chest",41,07)
 
 -- Southern antichamber
 des.monster("&",40,13)
 des.monster("&",38,14)
-des.object("chest",41,14)
-des.object("chest",41,13)
 
 -- Escape Room
 des.trap("polymorph", 44,15)
@@ -265,28 +248,11 @@ des.monster({ id = "iron golem", x=43, y=15, peaceful=0 })
 des.trap("board", 40,04)
 
 des.gold({ x = 40, y = 03 });
-des.object("*",40,03)
-des.object("*",40,03)
-
 des.gold({ x = 41, y = 03 });
-des.object("*",41,03)
-des.object("*",41,03)
-
 des.gold({ x = 42, y = 03 });
-des.object("*",42,03)
-des.object("*",42,03)
-
 des.gold({ x = 40, y = 04 });
-des.object("*",40,04)
-des.object("*",40,04)
-
 des.gold({ x = 41, y = 04 });
-des.object("*",41,04)
-des.object("*",41,04)
-
 des.gold({ x = 42, y = 04 });
-des.object("*",42,04)
-des.object("*",42,04)
 
 des.monster("giant mimic",42,04)
 

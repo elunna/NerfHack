@@ -116,24 +116,9 @@ des.object("[")
 des.object("[")
 des.object(")")
 des.object(")")
-des.object("(")
-
-des.object("/")
-des.object("=")
-des.object("?")
-des.object("?")
+des.object("*")
 des.object("!")
-des.object("!")
-
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
+des.object("?")
 
 -- traps!
 des.trap("fire")

@@ -200,15 +200,13 @@ des.monster("salamander",62,18)
 des.monster("fire vampire",68,16)
 des.monster("red dragon",49,11)
 
-des.object("chest",49,11)
-des.object("ruby",49,11)
-des.object("ruby",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
+des.object("[")
+des.object("[")
+des.object(")")
+des.object(")")
+des.object("*")
+des.object("!")
+des.object("?")
 
 -- GOLD:random,(49,11)
 
@@ -235,10 +233,6 @@ des.monster("succubus",67,07)
 des.monster("succubus",65,07)
 
 des.monster("fire vampire",66,18)
-
-des.object("chest",66,06)
-des.object("chest",64,08)
-des.object("chest",68,08)
 
 -- Fake stairs
 des.monster({ id = "giant mimic", x = 71, y = 09, appear_as = "ter:staircase down" })

@@ -45,10 +45,8 @@ local asmo1 = des.map({ halign = "half-left", valign = "center", map = [[
    des.object(")")
    des.object("*")
    des.object("!")
-   des.object("!")
    des.object("?")
-   des.object("?")
-   des.object("?")
+
    -- Some traps.
    des.trap("spiked pit", 05,02)
    des.trap("fire", 08,06)

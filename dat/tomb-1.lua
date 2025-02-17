@@ -38,6 +38,8 @@ place:set(03,02);
 place:set(37,01);
 place:set(03,17);
 place:set(37,18);
+place:set(16,01);
+place:set(17,18);
 
 -- Make the path somewhat unpredictable
 
@@ -105,7 +107,7 @@ des.trap("spiked pit")
 des.trap("spiked pit")
 des.trap("spiked pit")
 
--- Stash spot 1
+-- Main cache #1
 des.object({ id = "chest", x = 40, y = 09,
              contents = function()
                 des.gold()
@@ -121,42 +123,13 @@ des.object({ id = "chest", x = 40, y = 09,
                 des.object("?")
                 des.object("?")
                 des.object("?")
-                des.object("?")
                 des.object("!")
                 des.object("!")
-                des.object("!")
-                des.object()
                 des.object()
              end
 });
 
-des.object()
-
--- Stash spot 2
-des.object({ id = "chest", x = 16, y = 01,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-
--- Stash spot 3
-des.object({ id = "chest", x = 17, y = 18,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-
--- Stash spot 4
+-- Main cache #2
 des.object({ id = "chest", x = 40, y = 10,
              contents = function()
                 des.object("wax candle")
@@ -173,20 +146,14 @@ des.object({ id = "chest", x = 40, y = 10,
                 des.object("?")
                 des.object("?")
                 des.object("?")
-                des.object("?")
                 des.object("+")
                 des.object("+")
-                des.object("+")
-                des.object("+")
-                des.object()
-                des.object()
-                des.object()
-                des.object()
                 des.object()
              end
 });
 
 -- A couple more chests, some empty, one with a nice prize.
+
 local loc = place:rndcoord(1);
 des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
@@ -210,9 +177,19 @@ des.object({ id = "chest", locked = 1, trapped = 1, coord = loc ,
 });
 
 local loc = place:rndcoord(3);
-des.object({ id = "chest", locked = 1, coord = loc });
+des.object({ id = "chest", locked = 1, trapped = 1, coord = loc ,
+             contents = function()
+                -- nothing
+             end
+});
 
 local loc = place:rndcoord(4);
+des.object({ id = "chest", locked = 1, coord = loc });
+
+local loc = place:rndcoord(5);
+des.object({ id = "chest", locked = 1, coord = loc });
+
+local loc = place:rndcoord(6);
 des.object({ id = "chest", locked = 1, coord = loc });
 
 -- monsters
