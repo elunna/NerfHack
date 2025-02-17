@@ -192,6 +192,15 @@ You couldn't quite make out that last message.]],
       quest_portal_demand = {
          text = "You again sense %l demanding your attendance.",
       },
+      wiz_forcefields_down = {
+        text = [["As the Wizard of Yendor falls, his scream echoes through the depths of Gehennom.
+
+A sudden pulse of dark energy ripples outward, and for a brief moment,
+the very fabric of reality seems to tremble. Then, all at once - you feel
+the wizard's oppressive magical force-fields waver, shudder... and collapse!
+
+The air feels strangely lighter, as if an ancient curse has been lifted.."]],
+      },
    },
    Arc = {
       assignquest = {

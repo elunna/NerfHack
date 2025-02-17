@@ -3676,6 +3676,8 @@ logdeadmon(struct monst *mtmp, int mndx)
 
     if (mndx == PM_MEDUSA && howmany == 1) {
         record_achievement(ACH_MEDU); /* also generates a livelog event */
+    } else if (mndx == PM_WIZARD_OF_YENDOR && howmany == 1) {
+        com_pager("wiz_forcefields_down");
     } else if ((unique_corpstat(mtmp->data)
                 && (mndx != PM_HIGH_CLERIC || !mtmp->mrevived))
                || (mtmp->isshk && !mtmp->mrevived)) {
