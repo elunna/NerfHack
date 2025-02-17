@@ -405,11 +405,11 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, NON_PM,
       ARMR_SPE, ARTVAL, 5000L, NO_COLOR, MAYHEM),
 
-    /* From SLASH'EM: Instead of granting poison resistance, this grants
-     * sickness resistance instead. */
+    /* From SLASH'EM: Grants poison resistance when carried, and
+     * sickness resistance when wielded. */
     A("Plague", BOW,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
-      PHYS(5, 7), DFNS(AD_DISE), NO_CARY, 0,
+      PHYS(5, 7), DFNS(AD_DISE), DFNS(AD_DRST), 0,
       A_CHAOTIC, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 4000L, NO_COLOR, PLAGUE),
 
