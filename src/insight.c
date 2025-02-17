@@ -1585,10 +1585,8 @@ attributes_enlightenment(
     static NEARDATA const char
         if_surroundings_permitted[] = " if surroundings permitted";
     int ltmp, armpro, warnspecies;
-    char buf[BUFSZ];
-
-
-
+    char buf[BUFSZ], buf2[BUFSZ];
+    
     /*\
      *  Attributes
     \*/
@@ -1612,7 +1610,6 @@ attributes_enlightenment(
         Sprintf(buf, " %d", u.ualign.record);
         enl_msg("Your alignment ", "is", "was", buf, "");
     }
-
 
     /*** Vision and senses ***/
 
@@ -2180,6 +2177,15 @@ attributes_enlightenment(
 
     /* End of partial intrinsic resistances */
 
+    /* This is a pseudo partial resistance - if extrinsic, it will max
+     * out at 50% */
+    Sprintf(buf, "%d%% acid resistant", intrinsic_res(ACID_RES));
+    if (extrinsic_res(ACID_RES)) {
+        Sprintf(buf2, " and %d%% protected%s", how_resistant(ACID_RES), from_what(ACID_RES));
+        strcat(buf, buf2);
+    }
+    you_are(buf, "");
+    
     /* Group these together for readability */
     item_resistance_message(AD_FIRE, " protected from fire", final);
     item_resistance_message(AD_COLD, " protected from cold", final);
@@ -2193,13 +2199,6 @@ attributes_enlightenment(
         you_are("invulnerable", from_what(INVULNERABLE));
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
-
-    if (Acid_resistance) {
-        Sprintf(buf, "%.20s%.30s",
-                temp_resist(ACID_RES) ? "temporarily " : "",
-                "acid resistant");
-        you_are(buf, from_what(ACID_RES));
-    }
 
     /* Not an official resistance, parallel with disintegration res . */
     if (BWithering) {
