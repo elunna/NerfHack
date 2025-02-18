@@ -529,6 +529,7 @@ LUALIST = \
 	soko1-6 	\
 	soko1-7 	\
 	soko1-8 	\
+	soko1-9     \
 	soko2-1 	\
 	soko2-2 	\
 	soko2-3 	\

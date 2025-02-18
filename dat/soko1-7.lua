@@ -1,5 +1,5 @@
 --
--- "Ringing Endorsement"
+-- "Running Rings Around"
 -- Ported from NetHack Fourk
 -- Converted to lua by hackemslashem
 --
@@ -7,67 +7,78 @@
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
 des.map([[
---------      -------------- 
-|...|..|---   |............| 
-|......F..|   |...--------+--
---.--..|..---F--.--   |.....|
- |.....--...|..|.|  --|.....|
- |.|....|......|.|  |.+.....|
- |...|.....---.|.|  |-|.....|
- |.....--..---.|.|  |.+.....|
- ---...F.......|.|  |-|.....|
-   ---.|...--..|.|  |.+.....|
-    |......||....|  --|.....|
-    |.....-----..|    |.....|
-    -------   ----    -------
+       ----        
+    ----..----     
+    |........|     
+  ---.|......|     
+  F...|......|     
+  F....-..-..----- 
+  --.............| 
+   |..-....--....| 
+   |.....----....| 
+   |---|.|-------| 
+ ---|  |.||.....---
+ |..----..|.....+.|
+ |........|.....|-|
+ |.|------|.....+.|
+-|.|      |.....|-|
+F..|------|.....+.|
+F.........+.....|--
+-----------------  
 ]]);
 
-des.stair("down",08,03)
-des.region(selection.area(00,00,28,12),"lit");
-des.non_diggable(selection.area(00,00,28,12));
-des.non_passwall(selection.area(00,00,28,12));
+des.stair("down",05,04)
+des.region(selection.area(00,00,18,17),"lit");
+des.non_diggable(selection.area(00,00,18,17));
+des.non_passwall(selection.area(00,00,18,17));
 
 -- Doors
-des.door("locked", 26,02)
-des.door("locked", 22,05)
-des.door("locked", 22,07)
-des.door("locked", 22,09)
+des.door("locked", 16,11)
+des.door("locked", 16,13)
+des.door("locked", 16,15)
+des.door("locked", 10,16)
 
 -- Boulders
-des.object("boulder", 02,02)
-des.object("boulder", 05,03)
-des.object("boulder", 04,04)
-des.object("boulder", 06,04)
-des.object("boulder", 09,04)
-des.object("boulder", 06,05)
-des.object("boulder", 10,05)
-des.object("boulder", 03,06)
-des.object("boulder", 06,06)
-des.object("boulder", 10,07)
-des.object("boulder", 05,08)
-des.object("boulder", 10,08)
-des.object("boulder", 10,09)
-des.object("boulder", 07,10)
-des.object("boulder", 08,10)
+des.object("boulder", 06,02)
+des.object("boulder", 09,03)
+des.object("boulder", 11,03)
+des.object("boulder", 08,04)
+des.object("boulder", 10,04)
+des.object("boulder", 05,05)
+des.object("boulder", 08,05)
+des.object("boulder", 09,05)
+des.object("boulder", 12,05)
+des.object("boulder", 07,06)
+des.object("boulder", 14,06)
+des.object("boulder", 05,07)
+des.object("boulder", 07,07)
+des.object("boulder", 08,07)
+des.object("boulder", 09,07)
+des.object("boulder", 13,07)
+des.object("boulder", 15,07)
 
 -- Traps
 -- prevent monster generation over the (filled) pits
-des.exclusion({ type = "monster-generation", region = { 18,01, 25,01 } });
-des.trap("hole", 18,01)
-des.trap("hole", 19,01)
-des.trap("hole", 20,01)
-des.trap("hole", 21,01)
-des.trap("hole", 22,01)
-des.trap("hole", 23,01)
-des.trap("hole", 24,01)
-des.trap("hole", 25,01)
-des.exclusion({ type = "monster-generation", region = { 16,04, 16,09 } });
-des.trap("hole", 16,04)
-des.trap("hole", 16,05)
-des.trap("hole", 16,06)
-des.trap("hole", 16,07)
-des.trap("hole", 16,08)
-des.trap("hole", 16,09)
+des.exclusion({ type = "monster-generation", region = { 08,09, 08,10 } });
+des.trap("hole", 08,09)
+des.trap("hole", 08,10)
+des.exclusion({ type = "monster-generation", region = { 04,12, 07,12 } });
+des.trap("hole", 04,12)
+des.trap("hole", 05,12)
+des.trap("hole", 06,12)
+des.trap("hole", 07,12)
+des.exclusion({ type = "monster-generation", region = { 02,13, 02,15 } });
+des.trap("hole", 02,13)
+des.trap("hole", 02,14)
+des.trap("hole", 02,15)
+des.exclusion({ type = "monster-generation", region = { 03,16, 09,16 } });
+des.trap("hole", 03,16)
+des.trap("hole", 04,16)
+des.trap("hole", 05,16)
+des.trap("hole", 06,16)
+des.trap("hole", 07,16)
+des.trap("hole", 08,16)
+des.trap("hole", 09,16)
 
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
@@ -81,8 +92,7 @@ des.object({ class = "=" });
 des.object({ class = "/" });
 
 -- Rewards
-
-des.region({ region={23,03,27,11}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
+des.region({ region={11,10,15,16}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
 
 -- Ice must be created after the zoo, otherwise it interferes with monster creation.
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
@@ -90,14 +100,12 @@ des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chanc
 -- Rewards
 
 local place = selection.new();
-place:set(21,05);
-place:set(21,07);
-place:set(21,09);
+place:set(17,11);
+place:set(17,13);
+place:set(17,15);
 
 local pt = selection.rndcoord(place);
 
--- Instead of the standard prize selection, this level guarantees
--- a sack with both control rings, and up to two bonus rings.
 
 des.object({ id = "sack", coord = pt, buc="uncursed",
              contents = function()
@@ -118,4 +126,4 @@ des.engraving({ coord = pt, type = "burn", text = "Elbereth" });
 des.object({ id = "scroll of scare monster", coord = pt, buc = "cursed" });
 
 -- Ruling steward of Sokoban
-des.monster({ id = "Wintercloak", x = 26, y = 3, waiting = 1 });
+des.monster({ id = "Wintercloak", x = 11, y = 16, waiting = 1 });

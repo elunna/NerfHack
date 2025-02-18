@@ -692,6 +692,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\soko1-6.lua  \
 	$(DAT)\soko1-7.lua  \
 	$(DAT)\soko1-8.lua  \
+	$(DAT)\soko1-9.lua  \
 	$(DAT)\soko2-1.lua  \
 	$(DAT)\soko2-2.lua  \
 	$(DAT)\soko2-3.lua  \
