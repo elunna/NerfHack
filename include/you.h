@@ -155,7 +155,7 @@ struct u_conduct {     /* number of times... */
     long polyselfs;    /* transformed yourself */
     long wishes;       /* used a wish */
     long wisharti;     /* wished for an artifact */
-    long elbereth;     /* engraved Elbereth */
+    long elbereth; /* hf uses for elbereth;for hf savefile compatiblity */
     long sokocheat;    /* violated special 'rules' in Sokoban */
     long pets;         /* obtained a pet */
     long altars;       /* altars destroyed via cracking */

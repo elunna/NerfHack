@@ -474,6 +474,7 @@ enum earlyarg {
     , ARG_DUMPENUMS
 #endif
     , ARG_DUMPGLYPHIDS
+    , ARG_DUMPMONGEN
 #ifdef WIN32
     , ARG_WINDOWS
 #endif
@@ -832,6 +833,7 @@ struct role_filter {
     boolean roles[NUM_ROLES + 1];
     short mask;
 };
+#define NUM_RACES (7)
 
 enum saveformats {
     invalid = 0,

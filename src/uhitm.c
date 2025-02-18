@@ -8300,8 +8300,14 @@ flash_hits_mon(
 void
 light_hits_gremlin(struct monst *mon, int dmg)
 {
-    pline_mon(mon, "%s %s!", Monnam(mon),
-          (dmg > mon->mhp / 2) ? "wails in agony" : "cries out in pain");
+    if (!Deaf && mdistu(mon) <= 90) {
+        /* cry of pain can be heard somewhat farther than the waking radius */
+        pline_mon(mon, "%s %s!", Monnam(mon),
+                  (dmg > mon->mhp / 2) ? "wails in agony"
+                                       : "cries out in pain");
+    } else if (canseemon(mon)) {
+        pline_mon(mon, "%s recoils from the light!", Monnam(mon));
+    }
     showdamage(dmg, FALSE);
     mon->mhp -= dmg;
     wake_nearto(mon->mx, mon->my, 30);

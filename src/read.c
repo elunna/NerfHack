@@ -2002,7 +2002,7 @@ seffect_light(struct obj **sobjp)
                     if (Role_if(PM_CARTOMANCER))
                         mon->mpeaceful = 1;
                     else
-                        initedog(mon);
+                        initedog(mon, TRUE);
                     mon->msleeping = 0;
                     mon->mcan = TRUE;
                     if (canspotmon(mon))
@@ -2063,7 +2063,7 @@ seffect_cloning(struct obj **sobjp)
                 return;
             }
             if (sblessed) {
-                initedog(mtmp);
+                initedog(mtmp, TRUE);
                 u.uconduct.pets++;
             } else if (!scursed && !mtmp->mrabid) {
                 mtmp->mpeaceful = 1;

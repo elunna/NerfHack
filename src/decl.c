@@ -870,7 +870,7 @@ static const struct instance_globals_w g_init_w = {
     { { UNDEFINED_VALUES }, UNDEFINED_VALUES, 0, 0, 0, 0 }, /* wizpuzzle */
     /* new */
     { wdmode_traditional, NO_COLOR },       /* wsettings */
-
+    0L,                                     /* were.c, allmain.c */
     TRUE, /* havestate*/
     IVMAGIC  /* w_magic to validate that structure layout has been preserved */
 };

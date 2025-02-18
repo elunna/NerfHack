@@ -206,7 +206,12 @@ done_in_by(struct monst *mtmp, int how)
         svk.killer.format = KILLED_BY;
     }
     /* _the_ <invisible> <distorted> ghost of Dudley */
+#if 0
+    /* hardfought */
+    if (has_ebones(mtmp)) {
+#else
     if (mptr == &mons[PM_GHOST] && has_mgivenname(mtmp)) {
+#endif
         Strcat(buf, "the ");
         svk.killer.format = KILLED_BY;
     }
@@ -257,8 +262,12 @@ done_in_by(struct monst *mtmp, int how)
                                : "%s imitating %s",
                 realnm, shape);
         mptr = mtmp->data; /* reset for mimicker case */
-    } else if (is_bones_monster(mptr)) {
-        Strcat(buf, pmname(mptr, Mgender(mtmp)));
+#if 0  /* hardfought */
+    } else if (has_ebones(mtmp)) {
+        Strcpy(buf, m_monnam(mtmp));
+#endif
+    } else if (mptr == &mons[PM_GHOST]) {
+        Strcat(buf, "ghost");
         if (has_mgivenname(mtmp))
             Sprintf(eos(buf), " of %s", MGIVENNAME(mtmp));
     } else if (mtmp->isshk) {
@@ -274,8 +283,11 @@ done_in_by(struct monst *mtmp, int how)
         Strcat(buf, m_monnam(mtmp));
     } else {
         Strcat(buf, pmname(mptr, Mgender(mtmp)));
-        if (has_mgivenname(mtmp))
-            Sprintf(eos(buf), " called %s", MGIVENNAME(mtmp));
+        if (has_mgivenname(mtmp)) {
+            Sprintf(eos(buf), " %s %s",
+                    has_ebones(mtmp) ? "of" : "called",
+                    MGIVENNAME(mtmp));
+        }
     }
 
     Strcpy(svk.killer.name, buf);

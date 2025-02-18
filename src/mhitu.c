@@ -3480,12 +3480,12 @@ cloneu(void)
         return NULL;
     mon->mcloned = 1;
     mon = christen_monst(mon, svp.plname);
-
+    
     /* No permapets for cartomancers */
     if (Role_if(PM_CARTOMANCER)) {
         mon->mpeaceful = 1;
     } else {
-        initedog(mon);
+        initedog(mon, TRUE);
     }
     mon->m_lev = gy.youmonst.data->mlevel;
     mon->mhpmax = u.mhmax;
