@@ -8,7 +8,7 @@
 
 /* NetHack 3.7.x */
 #define VERSION_MAJOR 2
-#define VERSION_MINOR 1
+#define VERSION_MINOR 2
 /*
  * PATCHLEVEL is updated for each release.
  */
@@ -59,7 +59,7 @@
  * to individual level files matter; changes to general game state don't)
  * but the extra complexity to support that is not worth the effort.]
  */
-/*#define VERSION_COMPATIBILITY 0x02010000L*/
+/*#define VERSION_COMPATIBILITY 0x02020000L*/
 
 /****************************************************************************/
 /* Version 3.7.x */
@@ -281,7 +281,7 @@
  *  Enhanced config file processing and alert to duplication of entries
  *  Player selection prompt enhancements for TTY and X11
  *  Objects merge in containers
- *  Wish for "nothing", and genocide "none" to preserve your conduct
+ *  Wish for "nothing", and exile "none" to preserve your conduct
  *  Changes to Wizard quest
  *  Added the travel command which works by mouse click or '_' command
  *  Config file BOULDER option to specify the symbol for displaying boulders

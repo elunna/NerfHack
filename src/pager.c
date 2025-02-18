@@ -978,6 +978,7 @@ static const char * damagetypes[] = {
     "arcane",
     "random breath",
     "blood drain",
+    "hunger",
     "steal Amulet",
     "steal intrinsic",
 };
@@ -1050,7 +1051,7 @@ add_mon_info(winid datawin, struct permonst * pm)
           break;
     }
     MONPUTSTR(buf);
-    
+
     if (pm->maligntyp > 0)
         Sprintf(buf, "Alignment: lawful");
     else if (pm->maligntyp < 0)
@@ -1081,9 +1082,9 @@ add_mon_info(winid datawin, struct permonst * pm)
     MONPUTSTR(buf);
 
     if (gen & G_GENO)
-        MONPUTSTR("Can be genocided.");
+        MONPUTSTR("Can be exiled.");
     else
-        MONPUTSTR("Can not be genocided.");
+        MONPUTSTR("Can not be exiled.");
 
     /* Resistances */
     buf[0] = '\0';
@@ -1147,7 +1148,7 @@ add_mon_info(winid datawin, struct permonst * pm)
 
 
     /* inherent characteristics: "Monster is X." */
-    APPENDC(!(gen & G_GENO), "ungenocideable");
+    APPENDC(!(gen & G_GENO), "inexilable");
     APPENDC(breathless(pm), "breathless");
     if (!breathless(pm))
         APPENDC(amphibious(pm), "amphibious");
@@ -1234,6 +1235,8 @@ add_mon_info(winid datawin, struct permonst * pm)
     Snprintf(buf, BUFSZ, "Is %sa valid polymorph form.",
             polyok(pm) ? "" : "not ");
     MONPUTSTR(buf);
+    if (hates_silver(pm))
+        MONPUTSTR("Hates silver.");
 
     MONPUTSTR("Attacks: ");
     /* Attacks */
@@ -1523,7 +1526,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
     /* RING INFO */
 
     if (olet == RING_CLASS) {
-        OBJPUTSTR(reveal_info && oc.oc_charged 
+        OBJPUTSTR(reveal_info && oc.oc_charged
             ? "Chargeable ring." : "Ring.");
         /* see material comment below; only show toughness status if this
          * particular ring is already identified... */
@@ -4327,7 +4330,7 @@ corpse_conveys(char *buf, struct permonst * pm)
     /* acid, stone, and psionic resistance aren't currently conveyable */
     if (*buf)
         Strcat(buf, " resistance");
-    /* If we have many more corpses like this that have exceptions, implement 
+    /* If we have many more corpses like this that have exceptions, implement
      * official handling in eat.c */
     APPENDC(intrinsic_possible(TELEPORT, pm)
                 && pm != &mons[PM_QUANTUM_MECHANIC], "teleportation");

@@ -63,7 +63,6 @@ static struct trobj Barbarian[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cartomancer[] = {
-#define C_DECK 8 /* playing card deck or deck of fate */
     { RAZOR_CARD, 2, WEAPON_CLASS, 40, 1 },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { MEAT_STICK, 0, FOOD_CLASS, 2, 0 },
@@ -132,8 +131,8 @@ static struct trobj Priest[] = {
     { ROBE, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_WATER, 0, POTION_CLASS, 4, 1 }, /* holy water */
-    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 4, 1 },
-    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 1 },
+    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 1 },
+    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 2, 1 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS },
     { 0, 0, 0, 0, 0 }
 };
@@ -183,7 +182,27 @@ static struct trobj Tourist[] = {
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
+static struct trobj UndeadSlayer[] = {
+#define U_MAJOR 0       /* wooden stake or silver short sword for dhampir */
+#define U_MINOR 1       /* silver spear or whip [Castlevania] 25/25% */
+                        /* crossbow 50% [Buffy] */
+#define U_RANGE 2       /* silver daggers or crossbow bolts */
+#define U_MISC  3       /* +1 boots [Buffy can kick] or helmet */
+#define U_ARMOR 4       /* Tshirt/leather +1 or chain mail */
+    { WOODEN_STAKE, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { SILVER_SPEAR, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { SILVER_DAGGER, 0, WEAPON_CLASS, 5, UNDEF_BLESS },
+    { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { CHAIN_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 3, 1 },
+    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 5, 1 },
+    { HOLY_WAFER, 0, FOOD_CLASS, 4, 0 },
+    { POT_WATER, 0, POTION_CLASS, 4, 1 },        /* holy water */
+    { 0, 0, 0, 0, 0 }
+};
 static struct trobj Valkyrie[] = {
+#define V_MAJOR 0
+#define V_ARMOR 2
     { SPEAR, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS },
@@ -209,9 +228,6 @@ static struct trobj Wizard[] = {
 
 static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
-static struct trobj Magicmarker[] = { { MAGIC_MARKER, UNDEF_SPE, TOOL_CLASS,
-                                        1, 0 },
-                                      { 0, 0, 0, 0, 0 } };
 static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0 },
                                { 0, 0, 0, 0, 0 } };
 static struct trobj OilPotion[] = { { POT_OIL, 0, POTION_CLASS, 1, 0 },
@@ -235,13 +251,22 @@ static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0 },
 static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0 },
                                 { 0, 0, 0, 0, 0 } };
 
+/* align-based substitutions for initial inventory */
+struct inv_asub {
+    aligntyp align;
+    short item_otyp, subs_otyp;
+} inv_asubs[] = {
+    { A_CHAOTIC, HOLY_WAFER, LEMBAS_WAFER },
+    { A_NONE, STRANGE_OBJECT, STRANGE_OBJECT }
+};
+
 /* race-based substitutions for initial inventory;
    the weaker cloak for elven rangers is intentional--they shoot better */
 static struct inv_sub {
     short race_pm, item_otyp, subs_otyp;
 } inv_subs[] = {
     { PM_ELF, DAGGER, ELVEN_DAGGER },
-    { PM_ELF, SPEAR, ELVEN_SPEAR },
+    /*{ PM_ELF, SPEAR, ELVEN_SPEAR },*/
     { PM_ELF, SHORT_SWORD, ELVEN_SHORT_SWORD },
     { PM_ELF, BOW, ELVEN_BOW },
     { PM_ELF, ARROW, ELVEN_ARROW },
@@ -250,7 +275,7 @@ static struct inv_sub {
     { PM_ELF, CLOAK_OF_DISPLACEMENT, ELVEN_CLOAK },
     { PM_ELF, CRAM_RATION, LEMBAS_WAFER },
     { PM_ORC, DAGGER, ORCISH_DAGGER },
-    { PM_ORC, SPEAR, ORCISH_SPEAR },
+    /*{ PM_ORC, SPEAR, ORCISH_SPEAR },*/
     { PM_ORC, SHORT_SWORD, ORCISH_SHORT_SWORD },
     { PM_ORC, BOW, ORCISH_BOW },
     { PM_ORC, ARROW, ORCISH_ARROW },
@@ -260,7 +285,7 @@ static struct inv_sub {
     { PM_ORC, CHAIN_MAIL, ORCISH_CHAIN_MAIL },
     { PM_ORC, CRAM_RATION, TRIPE_RATION },
     { PM_ORC, LEMBAS_WAFER, TRIPE_RATION },
-    { PM_DWARF, SPEAR, DWARVISH_SPEAR },
+    /*{ PM_DWARF, SPEAR, DWARVISH_SPEAR },*/
     { PM_DWARF, SHORT_SWORD, DWARVISH_SHORT_SWORD },
     { PM_DWARF, HELMET, DWARVISH_IRON_HELM },
     /* { PM_DWARF, SMALL_SHIELD, DWARVISH_ROUNDSHIELD }, */
@@ -278,11 +303,14 @@ static struct inv_sub {
     { PM_DHAMPIR, FOOD_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, CRAM_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, LEMBAS_WAFER, POT_VAMPIRE_BLOOD },
+    { PM_DHAMPIR, CHAIN_MAIL, LEATHER_JACKET },
     /* grung can't wear boots */
     { PM_GRUNG, HIGH_BOOTS, STRANGE_OBJECT },
-    { PM_GRUNG, LOW_BOOTS, STRANGE_OBJECT },
+    { PM_GRUNG, LOW_BOOTS, LEATHER_BRACERS },
     { PM_GRUNG, SACK, OILSKIN_SACK },
-    
+    { PM_GRUNG, SMALL_SHIELD, LEATHER_BRACERS },
+    { PM_GRUNG, LEATHER_GLOVES, LEATHER_BRACERS },
+
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
@@ -554,6 +582,28 @@ static const struct def_skill Skill_T[] = {
     { P_SHIELD, P_BASIC },
     { P_NONE, 0 }
 };
+static const struct def_skill Skill_U[] = {
+    { P_DAGGER, P_EXPERT },              /* Stakes */
+    { P_LONG_SWORD, P_BASIC },           /* Buffy */
+    { P_SHORT_SWORD, P_BASIC },
+    { P_MACE, P_SKILLED },
+    { P_MORNING_STAR, P_EXPERT },
+    { P_FLAIL, P_SKILLED },
+    { P_HAMMER, P_SKILLED },
+    { P_POLEARMS, P_SKILLED },
+    { P_SPEAR, P_BASIC },
+    { P_CROSSBOW, P_BASIC },              /* Dracula movies */
+    { P_WHIP, P_BASIC },                  /* Castlevania */
+    { P_UNICORN_HORN, P_SKILLED },
+    { P_CLERIC_SPELL, P_BASIC },
+    { P_ESCAPE_SPELL, P_BASIC },
+    { P_MATTER_SPELL, P_SKILLED },        /* Fireball, flame sphere, etc */
+    { P_RIDING, P_SKILLED },
+    /* This counts as martial arts for undead slayers */
+    { P_BARE_HANDED_COMBAT, P_SKILLED }, /* Buffy the Vampire Slayer */
+    { P_SHIELD, P_SKILLED },
+    { P_NONE, 0 }
+};
 static const struct def_skill Skill_V[] = {
     { P_DAGGER, P_EXPERT },
     { P_AXE, P_EXPERT },
@@ -686,7 +736,6 @@ u_init_role(void)
             ini_inv(Tinopener);
         else if (!rn2(4))
             ini_inv(Lamp);
-        ini_inv(Magicmarker);
         knows_object(SACK, FALSE);
         knows_object(TOUCHSTONE, FALSE); /* FALSE: don't override pauper here,
                                           * but TOUCHSTONE will be made known
@@ -707,8 +756,6 @@ u_init_role(void)
         skill_init(Skill_B);
         break;
     case PM_CARTOMANCER:
-        if (rn2(100) >= 50) /* see above comment */
-            Cartomancer[C_DECK].trotyp = DECK_OF_FATE;
         /* Cards only weigh 1 for Cartomancers */
         for (int s = SCR_ENCHANT_ARMOR; s < SCR_STINKING_CLOUD; s++)
             objects[s].oc_weight = 1;
@@ -730,7 +777,7 @@ u_init_role(void)
     case PM_CAVE_DWELLER:
         Cave_man[C_AMMO].trquan = rn1(11, 20); /* 20..30 */
         Cave_man[C_SCALES].trotyp = FIRST_DRAGON_SCALES
-                    + rn2(LAST_DRAGON_SCALES - FIRST_DRAGON_SCALES);                        
+                    + rn2(LAST_DRAGON_SCALES - FIRST_DRAGON_SCALES);
         ini_inv(Cave_man);
         skill_init(Skill_C);
         knows_object(SLING_BULLET, FALSE);
@@ -766,7 +813,6 @@ u_init_role(void)
 
         Monk[M_BOOK].trotyp = M_spell[rn2(120) / 30]; /* [0..3] */
         ini_inv(Monk);
-        ini_inv(Magicmarker);
         if (!rn2(10))
             ini_inv(Lamp);
         knows_class(ARMOR_CLASS);
@@ -777,7 +823,6 @@ u_init_role(void)
     }
     case PM_CLERIC: /* priest/priestess */
         ini_inv(Priest);
-        ini_inv(Magicmarker);
         if (!rn2(10))
             ini_inv(Lamp);
         skill_init(Skill_P);
@@ -837,10 +882,79 @@ u_init_role(void)
             ini_inv(Leash);
         else if (!rn2(25))
             ini_inv(Towel);
-        ini_inv(Magicmarker);
         skill_init(Skill_T);
         break;
+    case PM_UNDEAD_SLAYER: {
+        /* The undead slayers starting kits also affect their
+         * potential skill sets. */
+        int kit = rn2(100) / 25;
+        switch (kit) {
+        case 0:	/* Crossbow and bolts */
+            UndeadSlayer[U_MINOR].trotyp = CROSSBOW;
+            UndeadSlayer[U_RANGE].trotyp = CROSSBOW_BOLT;
+            UndeadSlayer[U_RANGE].trquan = rn1(25, 40);
+            UndeadSlayer[U_MISC].trotyp = LOW_BOOTS;
+            UndeadSlayer[U_MISC].trspe = 1;
+            UndeadSlayer[U_ARMOR].trotyp = LEATHER_JACKET;
+            UndeadSlayer[U_ARMOR].trspe = 1;
+            break;
+        case 1:	/* Whip and daggers */
+            UndeadSlayer[U_MINOR].trotyp = BULLWHIP;
+            UndeadSlayer[U_MINOR].trspe = 2;
+            break;
+        case 2:	/* Silver spear and daggers */
+            break;
+        case 3:
+            /* Silver short sword, silver daggers, gloves, and cloak */
+            UndeadSlayer[U_MINOR].trotyp = SILVER_SHORT_SWORD;
+            UndeadSlayer[U_MISC].trspe = 1;
+            UndeadSlayer[U_ARMOR].trotyp = LEATHER_CLOAK;
+            UndeadSlayer[U_ARMOR].trspe = 0;
+            break;
+        }
+        /* Dhampir need gloves to handle silver */
+        if (Race_if(PM_DHAMPIR)) {
+            UndeadSlayer[U_MISC].trotyp = LEATHER_GLOVES;
+            UndeadSlayer[U_ARMOR].trspe = 0;
+        }
+
+        ini_inv(UndeadSlayer);
+        skill_init(Skill_U);
+
+        /* We have to set skill maximums after inventory setup */
+        switch (kit) {
+        case 0:	/* Crossbow and bolts */
+            set_skill_cap_minimum(P_CROSSBOW, P_EXPERT);
+            break;
+        case 1:	/* Whip and daggers */
+            set_skill_cap_minimum(P_WHIP, P_EXPERT);
+            set_skill_cap_minimum(P_BARE_HANDED_COMBAT, P_MASTER);
+            break;
+        case 2:	/* Silver spear and daggers */
+            set_skill_cap_minimum(P_SPEAR, P_EXPERT);
+            break;
+        case 3: /* Silver short sword,  */
+            set_skill_cap_minimum(P_SHORT_SWORD, P_EXPERT);
+            set_skill_cap_minimum(P_LONG_SWORD, P_SKILLED);
+        }
+
+        knows_class(WEAPON_CLASS);
+        knows_class(ARMOR_CLASS);
+        if (!rn2(6))
+            ini_inv(Lamp);
+
+        /* Kludge here to trigger Undead Warning */
+        HWarn_of_mon = HUndead_warning;
+        svc.context.warntype.intrins |= MH_UNDEAD;
+        break;
+    }
     case PM_VALKYRIE:
+        if (rn2(100) >= 50) { /* see above comment */
+            Valkyrie[V_MAJOR].trotyp = WAR_HAMMER;
+            Valkyrie[V_MAJOR].trspe = 0;
+            Valkyrie[V_ARMOR].trotyp = LEATHER_CLOAK;
+            Valkyrie[V_ARMOR].trspe = 0;
+        }
         ini_inv(Valkyrie);
         if (!rn2(6))
             ini_inv(Lamp);
@@ -852,7 +966,6 @@ u_init_role(void)
         if (rn2(100) >= 50) /* see above comment */
             Wizard[W_BOOK].trotyp = SPE_FIRE_BOLT;
         ini_inv(Wizard);
-        ini_inv(Magicmarker);
         if (!rn2(5))
             ini_inv(Blindfold);
         skill_init(Skill_W);
@@ -960,7 +1073,7 @@ u_init_race(void)
 
     case PM_ORC:
         /* compensate for generally inferior equipment */
-        if (!Role_if(PM_WIZARD))
+        if (!Role_if(PM_WIZARD) && !Role_if(PM_UNDEAD_SLAYER))
             ini_inv(Xtra_food);
         /* Orcs carry poison */
         ini_inv(PoisonPotion);
@@ -981,6 +1094,9 @@ u_init_race(void)
 
         /* All orcs are familiar with scimitars */
         set_skill_cap_minimum(P_SABER, P_SKILLED);
+
+        /* Orcs start off very bad alignment */
+        adjalign(-20);
         break;
 
     case PM_DHAMPIR:
@@ -995,7 +1111,7 @@ u_init_race(void)
         change_luck(-1);
         break;
     case PM_GRUNG:
-        svc.context.hydration = HYDRATION_MAX;
+        u.hydration = HYDRATION_MAX;
         /* All grung are familiar with darts */
         set_skill_cap_minimum(P_DART, P_SKILLED);
         break;
@@ -1098,7 +1214,7 @@ u_init(void)
     int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
     struct obj *otmp;
-    
+
     flags.female = flags.initgend;
     flags.beginner = Role_if(PM_TOURIST) ? TRUE : FALSE;
 
@@ -1182,10 +1298,10 @@ u_init(void)
 
     u_init_role();
     u_init_race();
-    
+
 #define FIRST_POTION POT_GAIN_ABILITY
 #define LAST_POTION POT_OIL
-    
+
     /* Ensure no smoky potions in starting inventory */
     int tries = 0;
 reroll:
@@ -1284,6 +1400,9 @@ restricted_spell_discipline(int otyp)
     case PM_TOURIST:
         skills = Skill_T;
         break;
+    case PM_UNDEAD_SLAYER:
+        skills = Skill_U;
+        break;
     case PM_VALKYRIE:
         skills = Skill_V;
         break;
@@ -1348,7 +1467,7 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
                /* vampires don't like silver */
                 || objects[otyp].oc_material == SILVER))
            /* orcs start with poison resistance */
-           || (otyp == RIN_POISON_RESISTANCE 
+           || (otyp == RIN_POISON_RESISTANCE
                && (Race_if(PM_ORC) || Race_if(PM_GRUNG)))
            /* Monks don't use weapons */
            || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
@@ -1402,9 +1521,23 @@ ini_inv_obj_substitution(struct trobj *trop, struct obj *obj)
                             (trop->trotyp == UNDEF_TYP) ? "random " : "",
                             OBJ_NAME(objects[obj->otyp]));
                 obj->otyp = inv_subs[i].subs_otyp;
-		    obj->oclass = objects[obj->otyp].oc_class;
+                obj->oclass = objects[obj->otyp].oc_class;
             break;
         }
+        /* Alignment based substitutions */
+        for (i = 0; inv_asubs[i].align != A_NONE; ++i) {
+            if (inv_asubs[i].align == u.ualign.type
+                    && obj->otyp == inv_asubs[i].item_otyp) {
+                debugpline3("ini_inv: substituting %s for %s%s",
+                            OBJ_NAME(objects[inv_asubs[i].subs_otyp]),
+                            (trop->trotyp == UNDEF_TYP) ? "random " : "",
+                            OBJ_NAME(objects[obj->otyp]));
+                obj->otyp = inv_asubs[i].subs_otyp;
+                obj->oclass = objects[obj->otyp].oc_class;
+                break;
+            }
+        }
+
     }
     return obj->otyp;
 }
@@ -1435,8 +1568,6 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
         }
         if (trop->trspe != UNDEF_SPE) {
             obj->spe = trop->trspe;
-            if (trop->trotyp == MAGIC_MARKER && obj->spe < 96)
-                obj->spe += rn2(4);
         } else {
             /* Don't start with +0 or negative rings */
             if (objects[obj->otyp].oc_class == RING_CLASS
@@ -1474,7 +1605,10 @@ ini_inv_use_obj(struct obj *obj)
                weapon ready to swap with the primary; just make sure we
                aren't two-weaponing (academic; no one starts that way) */
             set_twoweap(FALSE); /* u.twoweap = FALSE */
-        } else if (is_helmet(obj) && !uarmh)
+        }
+        else if (is_bracer(obj) && !uarms)
+            setworn(obj, W_ARMS);
+        else if (is_helmet(obj) && !uarmh)
             setworn(obj, W_ARMH);
         else if (is_gloves(obj) && !uarmg)
             setworn(obj, W_ARMG);

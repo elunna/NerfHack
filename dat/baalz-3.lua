@@ -34,7 +34,6 @@ des.teleport_region({region = {01,00,15,20}, region_islev=1, exclude = {15,1,70,
 
 -- this actually leaves the farthest right column diggable
 des.non_diggable(selection.area(00,00,47,12))
-des.non_passwall(selection.area(00,00,47,12));
 des.mazewalk(00,06,"west")
 des.stair("down", 44,06)
 des.door("locked",00,06)
@@ -49,9 +48,6 @@ des.object(")")
 des.object(")")
 des.object("*")
 des.object("!")
-des.object("!")
-des.object("?")
-des.object("?")
 des.object("?")
 
 -- Some traps.
@@ -67,6 +63,7 @@ des.trap("magic")
 des.monster("ghost",37,07)
 des.monster("horned devil",32,05)
 des.monster("barbed devil",38,07)
+des.monster("weredemon")
 des.monster("L")
 
 -- Some Vampires for good measure

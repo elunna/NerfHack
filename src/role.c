@@ -24,6 +24,9 @@
  *
  * God names use a leading underscore to flag goddesses.
  */
+
+/* NUM_ROLES is defined in hack.h */
+
 const struct Role roles[NUM_ROLES + 1] = {
     { { "Archeologist", 0 },
       { { "Digger", 0 },
@@ -92,7 +95,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_OGRE,                       /* quest enemies by class */
       S_TROLL,                      /* quest enemies by class */
       ART_HEART_OF_AHRIMAN,         /* quest artifact */
-      MH_HUMAN | MH_ORC | MH_DWARF | MH_VAMPIRE | MH_GRUNG 
+      MH_HUMAN | MH_ORC | MH_DWARF | MH_VAMPIRE | MH_GRUNG
           | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 16, 7, 7, 15, 16, 6 },      /* lowest initial attributes */
@@ -176,9 +179,9 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_SNAKE,                      /* quest enemies by class */
       S_NAGA,                       /* quest enemies by class */
       ART_HOLOGRAPHIC_VOID_LILY,    /* quest artifact */
-      MH_HUMAN | MH_DWARF | MH_ELF | MH_GNOME | MH_ORC | MH_GRUNG
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_GRUNG
 	  | ROLE_MALE | ROLE_FEMALE
-      | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
+          | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 10, 7, 7, 7, 7 },        /* lowest initial attributes */
       { 10, 30, 10, 20, 20, 10 },   /* dist of initial attribs */
@@ -343,7 +346,8 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_ZOMBIE,                     /* quest enemies by class */
       S_WRAITH,                     /* quest enemies by class */
       ART_MITRE_OF_HOLINESS,        /* quest artifact */
-      MH_HUMAN | MH_ELF | MH_ORC | MH_DWARF | MH_VAMPIRE | ROLE_MALE | ROLE_FEMALE
+      MH_HUMAN | MH_ELF | MH_ORC | MH_DWARF | MH_VAMPIRE | MH_GRUNG
+          | ROLE_MALE | ROLE_FEMALE
           | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 7, 10, 7, 7, 7 },        /* lowest initial attributes */
@@ -387,7 +391,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_NYMPH,                      /* quest enemies by class */
       S_NAGA,                       /* quest enemies by class */
       ART_MASTER_KEY_OF_THIEVERY,   /* quest artifact */
-      MH_HUMAN | MH_ORC | MH_ELF | MH_GNOME | MH_VAMPIRE | MH_GRUNG 
+      MH_HUMAN | MH_ORC | MH_ELF | MH_GNOME | MH_VAMPIRE | MH_GRUNG
           | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 7, 7, 10, 7, 6 },        /* lowest initial attributes */
@@ -444,7 +448,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_CENTAUR,                    /* quest enemies by class */
       S_SPIDER,                     /* quest enemies by class */
       ART_LONGBOW_OF_DIANA,         /* quest artifact */
-      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_GRUNG 
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_GRUNG
           | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 13, 13, 13, 9, 13, 7 },     /* lowest initial attributes */
@@ -544,6 +548,49 @@ const struct Role roles[NUM_ROLES + 1] = {
       A_INT,                        /* spellcasting stat */
       SPE_CHARM_MONSTER,            /* special spell */
       -4 },                         /* (-bonus) for special spell */
+    { { "Undead Slayer", 0 },
+      { { "Assistant", 0 },
+        { "Eliminator", 0 },
+        { "Eliminator", 0 },
+        { "Exterminator", 0 },
+        { "Exterminator", 0 },
+        { "Destroyer", 0 },
+        { "Vindicator", 0 },
+        { "Vindicator", 0 },
+        { "Undead Slayer", 0 } },
+      "Seeker", "Osiris", "Seth", /* Egyptian */
+      "Und",
+      "the Temple of Light",
+      "the Lair of The First Evil",
+      PM_UNDEAD_SLAYER,             /* role */
+      PM_REVENANT_PUP,            /* preferred pet */
+      PM_VAN_HELSING,               /* quest leader */
+      PM_EXTERMINATOR,              /* quest guardians */
+      PM_FIRST_EVIL,                /* quest nemesis */
+      PM_HUMAN_MUMMY,               /* quest enemies */
+      PM_VAMPIRE,                   /* quest enemies */
+      S_MUMMY,                      /* quest enemies by class */
+      S_VAMPIRE,                    /* quest enemies by class */
+      ART_ARGENT_CROSS,         /* quest artifact */
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_VAMPIRE
+          | ROLE_MALE | ROLE_FEMALE
+          | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
+      /* Str Int Wis Dex Con Cha */ /* Modified from Knight */
+      {  13,  7, 14,  8, 10, 10 },  /* lowest initial attributes */
+      {  20, 15, 15, 10, 20, 10 },  /* dist of initial attribs */
+      /* Init   Lower  Higher */
+      { 16, 0,  2, 8,  2, 0 },     /* hp advancement */
+      {  1, 4,  0, 1,  0, 2 },      /* energy advancement */
+      12,                           /* cutoff xp level */
+      10,                           /* initial alignment record */
+      /* Spellcasting stats */
+      8,                            /* base penalty */
+      -2,                           /* healing spells (-bonus) */
+      0,                            /* shield penalty */
+      9,                            /* metal armor penalty */
+      A_WIS,                        /* spellcasting stat */
+      SPE_PROTECTION,               /* special spell */
+      -4 },                         /* (-bonus) for special spell */
     { { "Valkyrie", 0 },
       { { "Stripling", 0 },
         { "Skirmisher", 0 },
@@ -609,7 +656,7 @@ const struct Role roles[NUM_ROLES + 1] = {
       S_BAT,                        /* quest enemies by class */
       S_WRAITH,                     /* quest enemies by class */
       ART_EYE_OF_THE_AETHIOPICA,    /* quest artifact */
-      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_VAMPIRE | MH_GRUNG 
+      MH_HUMAN | MH_ELF | MH_GNOME | MH_ORC | MH_VAMPIRE | MH_GRUNG
           | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 7, 10, 7, 7, 7, 7 },        /* lowest initial attributes */
@@ -632,7 +679,9 @@ const struct Role roles[NUM_ROLES + 1] = {
 };
 
 /* Table of all races */
-const struct Race races[] = {
+
+/* NUM_RACES is defined in hack.h */
+const struct Race races[NUM_RACES + 1] = {
     {
         "human",
         "human",
@@ -726,7 +775,8 @@ const struct Race races[] = {
         MH_ORC | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC, /* allowed variations */
         MH_ORC,                 /* your own race's bit mask */
         0,                      /* always peaceful */
-        MH_HUMAN | MH_ELF | MH_DWARF, /* always hostile */
+        MH_HUMAN | MH_ELF | MH_DWARF | MH_ORC
+                 | MH_GRUNG | MH_VAMPIRE, /* always hostile */
         /*  Str    Int Wis Dex Con Cha */
         { 3, 3, 3, 3, 3, 3 },   /* min allowable */
         { STR18(50), 16, 16, 18, 18, 16 }, /* max allowable */
@@ -736,8 +786,8 @@ const struct Race races[] = {
     },
     {
         "dhampir",
-        "vampiric",
-        "kindred",
+        "dhampir",
+        "dhampir",
         "Vam",
         { 0, 0 },               /* individual as a noun */
         PM_DHAMPIR,             /* PM_ as a male monster */
@@ -758,14 +808,14 @@ const struct Race races[] = {
     {
         "grung",
         "grung",
-        "grungfolk",
+        "grung",
         "Gru",
         { 0, 0 },               /* individual as a noun */
         PM_GRUNG,               /* PM_ as a male monster */
         NON_PM,                 /* PM_ as a mummy */
         NON_PM,                 /* PM_ as a zombie */
                                 /* allowed variations */
-        MH_GRUNG | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC | ROLE_NEUTRAL, 
+        MH_GRUNG | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC | ROLE_NEUTRAL,
         MH_GRUNG,               /* your own race's bit mask */
         0,                      /* always peaceful */
         MH_HUMAN | MH_ELF | MH_DWARF | MH_ORC | MH_VAMPIRE, /* always hostile */

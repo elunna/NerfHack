@@ -40,7 +40,6 @@ des.mazewalk(00,06,"west")
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,46,12))
-des.non_passwall(selection.area(00,00,46,12));
 
 -- The fellow in residence
 des.monster({id="Geryon", x=35, y=06})
@@ -52,9 +51,6 @@ des.object(")")
 des.object(")")
 des.object("*")
 des.object("!")
-des.object("!")
-des.object("?")
-des.object("?")
 des.object("?")
 
 -- Some traps.
@@ -67,20 +63,15 @@ des.trap("fire")
 des.trap("fire")
 des.trap("fire")
 
--- Random monsters.
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
-des.monster("minotaur")
+-- Random minotaurs.
+for i = 1,16 do
+    if percent(75) then
+        des.monster("minotaur")
+    else
+        des.monster("elder minotaur")
+    end
+   des.object("*")
+end
 
 des.monster("horned devil")
 des.monster("horned devil")

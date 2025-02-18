@@ -25,8 +25,7 @@ staticfn void dump_enums(void);
 #endif
 staticfn void ck_foulstones(void);
 staticfn void check_hydration(void);
-staticfn int find_tier_index(long);
-    
+
 #ifdef CRASHREPORT
 #define USED_FOR_CRASHREPORT
 #else
@@ -126,16 +125,27 @@ u_calc_moveamt(int wtcap)
         /* your speed doesn't augment steed's speed */
         moveamt = mcalcmove(u.usteed, TRUE);
     } else {
-        moveamt = gy.youmonst.data->mmove;
+        /* Grung get speed penalties for being dehydrated */
+        if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
+            && u.hydration < 1000) {
+            if (u.hydration < 25)
+                moveamt = 7;
+            else if (u.hydration < 100)
+                moveamt = SLOW_SPEED; /* 9 */
+            else
+                moveamt = 10;
+        } else {
+            moveamt = gy.youmonst.data->mmove;
 
-        if (Very_fast) { /* speed boots, potion, or spell */
-            /* gain a free action on 2/3 of turns */
-            if (rn2(3) != 0)
-                moveamt += NORMAL_SPEED;
-        } else if (Fast) { /* intrinsic */
-            /* gain a free action on 1/3 of turns */
-            if (rn2(3) == 0)
-                moveamt += NORMAL_SPEED;
+            if (Very_fast) { /* speed boots, potion, or spell */
+                /* gain a free action on 2/3 of turns */
+                if (rn2(3) != 0)
+                    moveamt += NORMAL_SPEED;
+            } else if (Fast) { /* intrinsic */
+                /* gain a free action on 1/3 of turns */
+                if (rn2(3) == 0)
+                    moveamt += NORMAL_SPEED;
+            }
         }
     }
 
@@ -175,7 +185,7 @@ moveloop_core(void)
     boolean monscanmove = FALSE;
     boolean vamp_regen = vamp_can_regen();
     int chance;
-    
+
 #ifdef SAFERHANGUP
     if (program_state.done_hup)
         end_of_input();
@@ -213,6 +223,7 @@ moveloop_core(void)
                 struct monst *mtmp;
 
                 /* set up for a new turn */
+                gw.were_changes = 0L;
                 mcalcdistress(); /* adjust monsters' trap, blind, etc */
 
                 /* reallocate movement rations to monsters; don't need
@@ -227,10 +238,10 @@ moveloop_core(void)
                 chance = u.uevent.udemigod ? 25
                          : (depth(&u.uz) > depth(&stronghold_level)) ? 50
                          : 70;
-                
+
                 /* Monster generation in quests is dramatically slowed down */
                 chance *= In_quest(&u.uz) ? 5 : 1;
-                
+
                 if (!rn2(chance))
                     (void) makemon((struct permonst *) 0, 0, 0,
                                    NO_MM_FLAGS);
@@ -284,12 +295,9 @@ moveloop_core(void)
                 run_regions();
                 check_dogs();
                 check_hydration();
-                
+
                 if (u.ublesscnt)
                     u.ublesscnt--;
-                
-           
-
 
 #ifdef EXTRAINFO_FN
                 if ((prev_dgl_extrainfo == 0) || (prev_dgl_extrainfo < (svm.moves + 250))) {
@@ -377,6 +385,10 @@ moveloop_core(void)
                     (void) dosearch0(1);
                 if (Warning)
                     warnreveal();
+                if (gw.were_changes) {
+                    /* update innate intrinsics (mainly Drain_resistance) */
+                    set_uasmon();
+                }
                 mkot_trap_warn();
                 dosounds();
                 do_storms();
@@ -447,7 +459,12 @@ moveloop_core(void)
                15 turns or theoretically never happen at all; but when
                a fast hero got multiple moves on that 15th turn, it
                could actually happen more than once on the same turn!] */
+
+            /* The Argent Cross piggybacks on this timer as well */
+            if (uamul && uamul->oartifact == ART_ARGENT_CROSS)
+                argent_cross_turns();
         }
+
         /* [fast hero who gets multiple moves per turn ends up sinking
            multiple times per turn; is that what we really want?] */
         if (u.utrap && u.utraptype == TT_LAVA)
@@ -882,7 +899,7 @@ welcome(boolean new_game) /* false => restoring an old game */
 
     /* skip "welcome back" if restoring a doomed character */
     if (!new_game && Upolyd && ugenocided()) {
-        /* death via self-genocide is pending */
+        /* death via self-exile is pending */
         pline("You're back, but you still feel %s inside.", udeadinside());
         return;
     }
@@ -1002,6 +1019,7 @@ static const struct early_opt earlyopts[] = {
     { ARG_DUMPENUMS, "dumpenums", 9, FALSE },
 #endif
     { ARG_DUMPGLYPHIDS, "dumpglyphids", 12, FALSE },
+    { ARG_DUMPMONGEN, "dumpmongen", 10, FALSE },
 #ifdef WIN32
     { ARG_WINDOWS, "windows", 4, TRUE },
 #endif
@@ -1102,6 +1120,9 @@ argcheck(int argc, char *argv[], enum earlyarg e_arg)
 #endif
         case ARG_DUMPGLYPHIDS:
             dump_glyphids();
+            return 2;
+        case ARG_DUMPMONGEN:
+            dump_mongen();
             return 2;
 #ifdef CRASHREPORT
         case ARG_BIDSHOW:
@@ -1204,6 +1225,7 @@ timet_delta(time_t etim, time_t stim) /* end and start times */
 /* monsdump[] and objdump[] are also used in utf8map.c */
 
 #define DUMP_ENUMS
+#define UNPREFIXED_COUNT (5)
 struct enum_dump monsdump[] = {
 #include "monsters.h"
     { NUMMONS, "NUMMONS" },
@@ -1284,12 +1306,6 @@ dump_enums(void)
         arti_enum,
         NUM_ENUM_DUMPS
     };
-    static const char *const titles[NUM_ENUM_DUMPS] = {
-        "monnums", "objects_nums" , "misc_object_nums",
-        "cmap_symbols", "mon_syms", "mon_defchars",
-        "objclass_defchars", "objclass_classes",
-        "objclass_syms", "artifacts_nums",
-    };
 
 #define dump_om(om) { om, #om }
     static const struct enum_dump omdump[] = {
@@ -1310,6 +1326,7 @@ dump_enums(void)
         dump_om(MAX_GLYPH),
     };
 #undef dump_om
+
     static const struct enum_dump *const ed[NUM_ENUM_DUMPS] = {
         monsdump, objdump, omdump,
         defsym_cmap_dump, defsym_mon_syms_dump,
@@ -1319,34 +1336,37 @@ dump_enums(void)
         objclass_syms_dump,
         arti_enum_dump,
     };
-    static const char *const pfx[NUM_ENUM_DUMPS] = {
-        "PM_", "", "", "", "", "", "", "", "", ""
+
+    static const struct de_params {
+        const char *const title;
+        const char *const pfx;
+        int unprefixed_count;
+        int dumpflgs;  /* 0 = dump numerically only, 1 = add 'char' comment */
+        int szd;
+    } edmp[NUM_ENUM_DUMPS] = {
+        { "monnums", "PM_", UNPREFIXED_COUNT, 0, SIZE(monsdump) },
+        { "objects_nums", "", 1, 0, SIZE(objdump) },
+        { "misc_object_nums", "", 1, 0, SIZE(omdump) },
+        { "cmap_symbols", "", 1, 0, SIZE(defsym_cmap_dump) },
+        { "mon_syms", "", 1, 0, SIZE(defsym_mon_syms_dump) },
+        { "mon_defchars", "", 1, 1, SIZE(defsym_mon_defchars_dump) },
+        { "objclass_defchars", "", 1, 1, SIZE(objclass_defchars_dump) },
+        { "objclass_classes", "", 1, 0, SIZE(objclass_classes_dump) },
+        { "objclass_syms", "", 1, 0, SIZE(objclass_syms_dump) },
+        { "artifacts_nums", "", 1, 0, SIZE(arti_enum_dump) },
     };
-    /* 0 = dump numerically only, 1 = add 'char' comment */
-    static const int dumpflgs[NUM_ENUM_DUMPS] = {
-        0, 0, 0, 0, 0, 1, 1, 0, 0, 0
-    };
-    static int szd[NUM_ENUM_DUMPS] = { SIZE(monsdump), SIZE(objdump),
-                                       SIZE(omdump), SIZE(defsym_cmap_dump),
-                                       SIZE(defsym_mon_syms_dump),
-                                       SIZE(defsym_mon_defchars_dump),
-                                       SIZE(objclass_defchars_dump),
-                                       SIZE(objclass_classes_dump),
-                                       SIZE(objclass_syms_dump),
-                                       SIZE(arti_enum_dump),
-    };
+
     const char *nmprefix;
     int i, j, nmwidth;
     char comment[BUFSZ];
 
     for (i = 0; i < NUM_ENUM_DUMPS; ++ i) {
-        raw_printf("enum %s = {", titles[i]);
-        for (j = 0; j < szd[i]; ++j) {
-            int unprefixed_count = (i == monsters_enum) ? 4 : 1;
-            nmprefix = (j >= szd[i] - unprefixed_count)
-                           ? "" : pfx[i]; /* "" or "PM_" */
+        raw_printf("enum %s = {", edmp[i].title);
+        for (j = 0; j < edmp[i].szd; ++j) {
+            nmprefix = (j >= edmp[i].szd - edmp[i].unprefixed_count)
+                           ? "" : edmp[i].pfx; /* "" or "PM_" */
             nmwidth = 27 - (int) strlen(nmprefix); /* 27 or 24 */
-            if (dumpflgs[i] > 0) {
+            if (edmp[i].dumpflgs > 0) {
                 Snprintf(comment, sizeof comment,
                          "    /* '%c' */",
                          (ed[i][j].val >= 32 && ed[i][j].val <= 126)
@@ -1364,6 +1384,7 @@ dump_enums(void)
     }
     raw_print("");
 }
+#undef UNPREFIXED_COUNT
 #endif /* NODUMPENUMS */
 
 void
@@ -1449,9 +1470,9 @@ ck_foulstones(void)
     }
 }
 
-/* This performs maintenance with the grung's requirement for periodic 
+/* This performs maintenance with the grung's requirement for periodic
  * hydration. Should this be managed in timeout.c?
- * If we do it there, we'd need to make hydration a property which seems 
+ * If we do it there, we'd need to make hydration a property which seems
  * strange. */
 staticfn void
 check_hydration(void)
@@ -1460,45 +1481,62 @@ check_hydration(void)
      * while polymorphed into a different form the timer will pause. */
     if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
         return;
-    
-    if (Underwater) {
-        rehydrate(TRUE);
-        return;
+
+    if (Underwater || Is_waterlevel(&u.uz)) {
+        rehydrate(1000);
+    } else {
+        dehydrate((In_hell(&u.uz) || Is_firelevel(&u.uz)) ? d(1, 2) : 1);
+        /* Should we dehydrate faster in Gehennom or plane of fire? ...
+         * What about the plane of water? Maybe you are constantly hydrated
+         * there? */
     }
-    dehydrate(1);
 }
+
+const struct HydrationTier hydration_tiers[] = {
+    { 10, "extremely dehydrated." },
+    { 25, "severely dehydrated." },
+    { 100, "very dehydrated." },
+    { 250, "dehydrated." },
+    { 500, "mildly dehydrated." },
+    { 1000, "thirsty." },
+    { 6000, "fully hydrated." }
+};
+#define NUM_TIERS (int) (sizeof(hydration_tiers) / sizeof(hydration_tiers[0]))
 
 /* Decrease the grung's hydration level. Maybe show a message if the player
  * passed a tier of dryness.
  */
-static const int tiers[] = { 10, 25, 100, 250, 500, 1000, 6000 };
-#define NUM_TIERS 7
 void
-dehydrate(int dmg)
+dehydrate(int amt)
 {
     int old_tier;
-    
-    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+
+    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)) || !amt)
         return;
-        
-    old_tier = find_tier_index(svc.context.hydration);
-    svc.context.hydration -= (long) dmg;
-    if (svc.context.hydration < 0)
-        svc.context.hydration = 0;
-    
+
+    debugpline2("(T%ld:-%d)", svm.moves, amt);
+
+    old_tier = find_tier_index(u.hydration);
+    u.hydration -= amt;
+    if (u.hydration < 0)
+        u.hydration = 0;
+
     /* Show a message if there was a significant change. */
-    int new_tier = find_tier_index(svc.context.hydration);
+    int new_tier = find_tier_index(u.hydration);
+
     if (new_tier != old_tier) {
-        switch (new_tier) {
-        case 0: You_feel("extremely dehydrated."); break;
-        case 1: You_feel("severely dehydrated."); break;
-        case 2: You_feel("very dehydrated."); break;
-        case 3: You_feel("mildly dehydrated."); break;
-        case 4: You_feel("slightly thirsty."); break;
-        case 5: You_feel("mostly-hydrated."); break;
-        }
+        if (new_tier < NUM_TIERS) {
+            You_feel("%s", hydration_tiers[new_tier].description);
+        } else
+            impossible("dehydrate: new_tier (%d) is out of bounds.", new_tier);
+        stop_occupation();
     }
-    if (!svc.context.hydration) {
+
+    if (new_tier > old_tier)
+        impossible("dehydrate: new_tier (%d) is higher than old_tier (%d), amt=%d",
+                   new_tier, old_tier, amt);
+
+    if (u.hydration == 0) {
         Your("skin dries up into a lifeless husk!");
         if (Upolyd) {
             rehumanize();
@@ -1510,13 +1548,12 @@ dehydrate(int dmg)
             done(DIED);
         }
     }
-    stop_occupation();
 }
 
-staticfn int
-find_tier_index(long value) {
+int
+find_tier_index(int value) {
     for (int i = 0; i < NUM_TIERS; i++) {
-        if (value <= tiers[i]) {
+        if (value <= hydration_tiers[i].threshold) {
             return i;
         }
     }
@@ -1526,26 +1563,38 @@ find_tier_index(long value) {
 /* Check if player is grung before calling
 * Return TRUE if it had a measurable effect, FALSE otherwise.*/
 boolean
-rehydrate(boolean submerged)
+rehydrate(int amt)
 {
-    if (submerged) {
-        if (svc.context.hydration != HYDRATION_MAX)
-            You("feel fully hydrated again.");
-        svc.context.hydration = HYDRATION_MAX;
-    } else {
-        /* Rehydrating needs to have a minimum amount of effect to
-         * dry up a puddle or fountain */
-        if (HYDRATION_MAX - svc.context.hydration < 50)
-            return FALSE;
-        svc.context.hydration += rn1(25,25);
-        if (svc.context.hydration > HYDRATION_MAX) {
-            svc.context.hydration = HYDRATION_MAX;
-            You("feel fully hydrated again.");
-        } else {
-            You("feel a little more hydrated.");
-        }
-    }
-    return TRUE;
+    int old_hydration, amt_diff;
+    if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)) || !amt)
+        return FALSE;
+
+    old_hydration = u.hydration;
+    if (u.hydration < HYDRATION_MAX)
+        u.hydration += amt;
+    if (u.hydration > HYDRATION_MAX)
+        u.hydration = HYDRATION_MAX;
+    amt_diff = u.hydration - old_hydration;
+
+    /* messages */
+    if (amt_diff == 0)
+        return FALSE;
+    if (amt_diff > 0 && u.hydration == HYDRATION_MAX)
+        You("feel fully hydrated again.");
+    else if (amt_diff >= 1000)
+        You("feel much more hydrated.");
+    else if (amt_diff >= 100)
+        You("feel more hydrated.");
+    else
+        You("feel a little more hydrated.");
+
+    if (u.hydration < old_hydration)
+        impossible("rehydrate: current hydration (%d) is less than before (%d), amt=%d",
+                   u.hydration, old_hydration, amt);
+
+    /* Rehydrating needs to have a minimum amount of effect to
+     * dry up a puddle or fountain */
+    return amt_diff >= 50;
 }
 
 /*allmain.c*/

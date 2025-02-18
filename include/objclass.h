@@ -232,4 +232,6 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
     || (otmp)->otyp == EGG \
     || (otmp)->otyp == CREAM_PIE \
     || (otmp)->otyp == MELON)
+#define is_bulky(otmp) (objects[otmp->otyp].oc_bulky)
+
 #endif /* OBJCLASS_H */

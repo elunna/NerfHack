@@ -147,7 +147,7 @@ toss_wsegs(struct wseg *curr, boolean display_update)
         nxtseg = curr->nseg;
 
         /* remove from level.monsters[][];
-           need to check curr->wx for genocided while migrating_mon */
+           need to check curr->wx for exiled while migrating_mon */
         if (curr->wx) {
             remove_monster(curr->wx, curr->wy);
 

@@ -424,7 +424,7 @@ remove_mon_from_bones(struct monst *mtmp)
 {
     struct permonst *mptr = mtmp->data;
 
-    if (mtmp->iswiz || mptr == &mons[PM_MEDUSA]
+    if (mtmp->iswiz || mtmp->iscthulhu ||mptr == &mons[PM_MEDUSA]
         || mptr->msound == MS_NEMESIS || mptr->msound == MS_LEADER
         || is_Vlad(mtmp) /* mptr == &mons[VLAD_THE_IMPALER] || cham == VLAD */
         || (mptr == &mons[PM_ORACLE] && !fixuporacle(mtmp)))
@@ -492,7 +492,7 @@ savebones(int how, time_t when, struct obj *corpse)
         gi.in_mklev = TRUE; /* use <u.ux,u.uy> as-is */
         mtmp = makemon(&mons[u.ugrave_arise], u.ux, u.uy, NO_MINVENT);
         gi.in_mklev = FALSE;
-        if (!mtmp) { /* arise-type might have been genocided */
+        if (!mtmp) { /* arise-type might have been exiled */
             drop_upon_death((struct monst *) 0, (struct obj *) 0, u.ux, u.uy);
             u.ugrave_arise = NON_PM; /* in case caller cares */
             return;
@@ -541,11 +541,40 @@ savebones(int how, time_t when, struct obj *corpse)
             (void) obj_attach_mid(corpse, mtmp->m_id);
     }
     if (mtmp) {
+        int i;
+
         mtmp->m_lev = (u.ulevel ? u.ulevel : 1);
         mtmp->mhp = mtmp->mhpmax = u.uhpmax;
         mtmp->female = flags.female;
         mtmp->msleeping = 1;
-        Strcpy(mtmp->former_rank, rank());
+
+        if (!has_ebones(mtmp))
+            newebones(mtmp);
+        if (has_ebones(mtmp)) {
+            for (i = 0; i <= NUM_ROLES; ++i) {
+                if (!strcmp(gu.urole.name.m, roles[i].name.m)) {
+                    EBONES(mtmp)->role = i;
+                    break;
+                }
+                /* impossible("savebones: bad gu.urole.name.m \"%s\"",
+                              gu.urole.name.m); */
+            }
+            for (i = 0; i <= NUM_RACES; ++i) {
+                if (!strcmp(gu.urace.noun, races[i].noun)) {
+                    EBONES(mtmp)->race = i;
+                    break;
+                }
+                /* impossible("savebones: bad gu.urace.noun \"%s\"",
+                              gu.urace.noun); */
+            }
+            EBONES(mtmp)->oldalign = u.ualign;
+            EBONES(mtmp)->deathlevel = u.ulevel;
+            EBONES(mtmp)->luck = u.uluck; /* moreluck not included */
+            EBONES(mtmp)->mnum = Role_switch;
+            EBONES(mtmp)->female = flags.female;
+            EBONES(mtmp)->demigod = u.uevent.udemigod;
+            EBONES(mtmp)->crowned = u.uevent.uhand_of_elbereth;
+        }
     }
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         set_ghostly_objlist(mtmp->minvent);
@@ -715,7 +744,7 @@ getbones(void)
              * monsters such as demon lords, and tracks the
              * birth counts of all species just as makemon()
              * does.  If a bones monster is extinct or has been
-             * subject to genocide, their mhpmax will be
+             * subject to exile, their mhpmax will be
              * set to the magic DEFUNCT_MONSTER cookie value.
              */
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -814,6 +843,30 @@ fix_ghostly_obj(struct obj *obj)
             break;
     }
     obj->ghostly = 0;
+}
+
+void
+newebones(struct monst *mtmp)
+{
+    if (!mtmp->mextra)
+        mtmp->mextra = newmextra();
+    if (!EBONES(mtmp)) {
+        EBONES(mtmp) = (struct ebones *) alloc(
+            sizeof (struct ebones));
+        (void) memset((genericptr_t) EBONES(mtmp), 0,
+                      sizeof (struct ebones));
+        EBONES(mtmp)->parentmid = mtmp->m_id;
+    }
+}
+
+/* this is not currently used */
+void
+free_ebones(struct monst *mtmp)
+{
+    if (mtmp->mextra && EBONES(mtmp)) {
+        free((genericptr_t) EBONES(mtmp));
+        EBONES(mtmp) = (struct ebones *) 0;
+    }
 }
 
 /*bones.c*/

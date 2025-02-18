@@ -192,6 +192,15 @@ You couldn't quite make out that last message.]],
       quest_portal_demand = {
          text = "You again sense %l demanding your attendance.",
       },
+      wiz_forcefields_down = {
+        text = [["As the Wizard of Yendor falls, his scream echoes through the depths of Gehennom.
+
+A sudden pulse of dark energy ripples outward, and for a brief moment,
+the very fabric of reality seems to tremble. Then, all at once - you feel
+the wizard's oppressive magical force-fields waver, shudder... and collapse!
+
+The air feels strangely lighter, as if an ancient curse has been lifted.."]],
+      },
    },
    Arc = {
       assignquest = {
@@ -2885,6 +2894,224 @@ Things appear to have become so bad that you fear that soon
       posthanks = {
          text = [["I could not be more proud than if you were my own %S, %p!
 Tell me of your adventures in quest of the Amulet of Yendor."]],
+      },
+   },
+  Und = {
+      assignquest = {
+         synopsis = "[%nC invaded %H and captured %o.  Defeat %ni and retrieve %oh.]",
+         output = "text",
+         text = [["Yes, %p.  You are truly ready now.  Attend to me and I shall
+tell you of what has transpired:
+
+Long ago, I wielded %o, a relic of immense power that could banish 
+even the most ancient of evils. For centuries, it remained in safekeeping, passed down 
+through the order of Undead Slayers. But now, the unthinkable has happened — %n, 
+the progenitor of all unholy abominations, has stolen the relic and retreated 
+into the depths of his lair. Without it, the forces of darkness are growing bolder, 
+and the dead refuse to stay in their graves.
+
+You have been chosen to reclaim %o, for only a true Undead Slayer can withstand the 
+horrors guarding it. Time is running out—if %n succeeds in corrupting the 
+artifact, it may be lost forever."]],
+      },
+      badalign = {
+         synopsis = "[You have deviated from the path.  Return when you have purified yourself.]",
+         output = "text",
+         text = [["This is dire, %p. You have strayed from the path of the Slayer!
+You know that our order demands unwavering dedication — hesitation
+and doubt only serve the enemy. The %shood must stand for relentless
+vigilance against the undead."
+                   
+"Leave this place and reclaim your purpose. Prove yourself in battle,
+purge the darkness from your soul, and return only when you are worthy
+once more."]],
+      },
+      badlevel = {
+         synopsis = "[%rA cannot withstand %n.  Come back when you are %Ra.]",
+         output = "text",
+         text = [[Alas, %p, you are not yet ready. A mere %r cannot hope 
+to stand against the ancient power of %n. Go forth, hone your skills 
+in battle, and return only when you have risen to the rank of %R."]],
+      },
+      discourage = {
+         "\"Surrender to the darkness, %c, and I may grant you a swift death.\"",
+         "\"Your feeble weapons cannot stop me, %c. The dead do not fear steel.\"",
+         "\"You will rise as my servant, bound to my will for eternity!\"",
+         "\"Despair, %r. %d’s light cannot reach you here.\"",
+         "\"I shall feast upon your soul until nothing remains, %c.\"",
+         "\"Your suffering will echo through the ages, Undead Slayer. This I promise!\"",
+         "\"You cannot destroy me, fool. I am the source of all undeath!\"",
+         "\"Your beloved %lt will fall next, and there will be no one left to stop me.\"",
+         "\"I feel your strength waning, %r. Soon, you will be one of mine.\"",
+         "\"WWith %o in my grasp, the living will cower, and the dead shall reign!\"",
+      },
+      encourage = {
+         "\"You can prevail, if you trust in your training and steel your resolve.\"",
+         "\"Remember that %n commands dark sorcery beyond mortal reckoning.\"",
+         "\"Stay true to your oath, my %S. The dead must not claim victory.\"",
+         "\"Beware, %i is a place of death, surrounded by a vast graveyard of restless corpses.\"",
+         "\"Remember, no mercy for the damned! Destroy them before they rise again.\"",
+         "\"Seek out %o and wear it if you can. Its power will aid you against %n.\"",
+         "\"In your darkest hour, call upon %d. Even in the abyss, the light can still reach you.\"",
+         "\"The undead are weakest in the light of day, but their master knows no such limits.\"",
+         "\"Do not falter, %p. Doubt feeds the darkness, and %n grows stronger with every hesitation.\"",
+         "\"Wear %o—it was forged for this very purpose. It will aid you against the horrors you face.\"",
+      },
+      firsttime = {
+         synopsis = "[You are at %H; the doors are closed.  %lC needs your help!]",
+         output = "text",
+         text = [["The air is thick with the stench of decay, and an unnatural silence hangs 
+over the ruined monastery. Once a stronghold of the Undead Slayers, now it is nothing 
+more than a graveyard for those who stood against the darkness. The desecrated walls bear 
+marks of a terrible battle — holy symbols defaced, relics shattered, and the blood of 
+your brethren long since dried. Somewhere below, %n lurks, growing stronger 
+with each passing moment. If %o is not reclaimed soon, the dead will rise
+unchecked, and the world will drown in darkness. There is no turning back now."]],
+      },
+      goal_first = {
+         synopsis = "[The stench of brimstone surrounds you, the shrieks and moans are endless.]",
+         output = "text",
+         text = [["A chilling darkness clings to the air as you descend into
+The Abyssal Vaults. The walls are slick with something far older than blood, 
+and the very ground seems to shift beneath your feet, as if the earth itself 
+recoils from the presence of %n. Shadows stretch unnaturally, 
+twisting and writhing, whispering words you dare not understand. Here, the 
+dead do not merely rise — they linger, waiting, hungering. %o is near, but
+so is its defiler."]],
+      },
+      goal_next = {
+         text = "Again, you have invaded %ns domain.",
+      },
+      gotit = {
+         synopsis = "[You feel %d as you pick up %o; return %oh to %l.]",
+         output = "text",
+         text = [[As you pick up %o, you feel the essence of
+%d fill your soul.  You know now why %n stole it from
+%H, for with it, %ca of %d could
+easily defeat his plans.
+
+You sense a message from %d.  Though not verbal, you
+get the impression that you must return to %l as soon
+as possible.]],
+      },
+      guardtalk_after = {
+         "\"Greetings, %r.  It is good to see you again.\"",
+         "\"Ah, %p!  Our deepest gratitude for all of your help.\"",
+         "\"Welcome back, %s!  With %o, no undead can stand against us.\"",
+         "\"Praise be to %d, for delivering us from %n.\"",
+         "\"May %d be with you, %s.\"",
+         "\"With %n destroyed, we are safe once more!\"",
+      },
+      guardtalk_before = {
+         "\"Greetings, honored %r.  It is good to see you.\"",
+         "\"Ah, %p!  Surely you can help us in our hour of need.\"",
+         "\"Greetings, %s.  %lC has great need of your help.\"",
+         "\"Alas, it seems as if even %d has deserted us.\"",
+         "\"May %d be with you, %s.\"",
+      },
+      hasamulet = {
+         synopsis = "[Take the Amulet to the Astral Plane and offer it on %ds altar.]",
+         output = "text",
+         text = [["You have prevailed, %p!  %d is surely with you.  Now,
+you must take the amulet, and sacrifice it on %ds altar on
+the Astral Plane.  I suspect that I shall never see you again in this
+life, but I hope to at %ds feet."]],
+      },
+      killed_nemesis = {
+         synopsis = "[%nC dies.  Moloch is aware of you and angry at %n.]",
+         output = "text",
+         text = [["With a final, unearthly wail, %n begins to unravel,
+its form dissolving into darkness too ancient to comprehend. The very air 
+trembles as the shadows recoil, their master’s grip shattered at last.
+For a moment, silence hangs over the Abyssal Vaults—then, from the 
+swirling void, %o falls to the ground, purified 
+once more. The darkness has been driven back… but not destroyed.
+Evil is eternal, waiting for the day the foolish or the damned 
+will call it forth again. But today, the dead will rest, and the 
+living will know peace. You have prevailed, Undead Slayer."]],
+      },
+      leader_first = {
+         synopsis = "[You have returned and we need your help.  Are you ready?]",
+         output = "text",
+         text = [["Ah, %p, my %S.  You have returned to us at last.
+A great blow has befallen our order; perhaps you can help us.
+First, however, I must determine if you are prepared for this
+great challenge."]],
+      },
+      leader_last = {
+         synopsis = "[You are a heretic who has deviated from the teachings of %d.]",
+         output = "text",
+         text = [["You are a heretic, %p!  How can you, %ra, deviate so from the
+teachings of %d?  Begone from this temple.  You are no longer
+%sa to this order.  We will pray to %d for other assistance,
+as you have failed us utterly."]],
+      },
+      leader_next = {
+         text = "\"Again, my %S, you stand before me.  Are you ready now?\"",
+      },
+      leader_other = {
+         text = "\"Once more, %p, you stand within the sanctum.  Are you ready now?\"",
+      },
+      locate_first = {
+         synopsis = "[The trail to %n lies ahead.]",
+         output = "text",
+         text = [[You stand facing a large graveyard.  The sky above is filled with clouds
+that seem to get thicker closer to the center.  You sense the presence of
+undead in larger numbers than you have ever encountered before.
+
+You remember the descriptions of %i, given to you by
+%l.  It is ahead that you will find %ns trail.]],
+      },
+      locate_next = {
+         text = "Again, you stand before %i.",
+      },
+      nemesis_first = {
+         synopsis = "[%lC has sent you, but you are no %gC.  I shall destroy you.]",
+         output = "text",
+         text = [["Foolish hunter, you come seeking %o, but it is 
+no longer yours to wield. The light has no dominion here — only death and despair. 
+Soon, you will join my army of the damned!"]],
+      },
+      nemesis_next = {
+         text = "\"So, %r.  Again you challenge me.\"",
+      },
+      nemesis_other = {
+         text = "\"Die now, %r.  %d has no power here to aid you.\"",
+      },
+      nemesis_wantsit = {
+         text = "\"You shall die, %r, and I will have %o back.\"",
+      },
+      nexttime = {
+         text = "Once again, you stand before %H.",
+      },
+      offeredit = {
+         synopsis = "[Congratulations, %p.  Keep %o; go and recover the Amulet.]",
+         output = "text",
+         text = [["You have returned, %p.  And with %o, I see.
+Congratulations.
+
+"I have been in meditation, and have received direction from
+a minion of %d.  %d commands that you retain
+%o.  With it, you must recover the Amulet
+of Yendor.
+
+"Go forth, and let %d guide your steps."]],
+      },
+      offeredit2 = {
+         synopsis = "[%oC is yours now.  Return to %Z and find the Amulet.]",
+         output = "text",
+         text = [[%lC reiterates that %o is yours now.
+
+"The time has come to resume your search for the Amulet.
+%Z await your return through the magic portal
+that brought you here."]],
+      },
+      othertime = {
+         text = [[Again you face %H.  Your intuition hints that this may be
+the final time you come here.]],
+      },
+      posthanks = {
+         text = "\"Welcome back, %p.  How is your quest for the Amulet going?\"",
       },
    },
    Val = {

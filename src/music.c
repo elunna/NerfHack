@@ -449,6 +449,7 @@ do_earthquake(int force)
                 /*FALLTHRU*/
             case CORR:
             case ROOM:
+            case GRASS:
                 do_pit(x, y, tu_pit);
                 break;
             case SDOOR:

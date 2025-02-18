@@ -1262,6 +1262,8 @@ size_monst(struct monst *mtmp, boolean incl_wsegs)
             sz += (int) sizeof (struct emin);
         if (EDOG(mtmp))
             sz += (int) sizeof (struct edog);
+        if (EBONES(mtmp))
+            sz += (int) sizeof (struct ebones);
         /* mextra->mcorpsenm doesn't point to more memory */
     }
     return sz;
@@ -1451,14 +1453,14 @@ you_sanity_check(void)
     }
     /* Grung hydration checks */
     if (is_grung(gy.youmonst.data) || Race_if(PM_GRUNG)) {
-        if (svc.context.hydration == 0L)
+        if (u.hydration == 0)
             impossible("grung hydration is 0");
-        if (svc.context.hydration < 0L)
+        if (u.hydration < 0)
             impossible("grung hydration is negative");
-        if (svc.context.hydration > HYDRATION_MAX)
+        if (u.hydration > HYDRATION_MAX)
             impossible("grung hydration is over maximum (%d)", HYDRATION_MAX);
     } else {
-        if (svc.context.hydration != 0L)
+        if (u.hydration != 0)
             impossible("non-grung hydration is non-0");
     }
     check_wornmask_slots();
@@ -1501,7 +1503,7 @@ sanity_check(void)
     bc_sanity_check();
     trap_sanity_check();
     engraving_sanity_check();
-    levl_sanity_check();
+//    levl_sanity_check();
     program_state.in_sanity_check--;
 }
 

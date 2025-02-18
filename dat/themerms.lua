@@ -322,7 +322,8 @@ themerooms = {
             des.object('tin')
          end
          local ingr = { 'meatball', 'apple', 'orange', 'pear', 'melon', 'banana', 'egg',
-                        'carrot', 'clove of garlic', 'cream pie', 'fruit', 'egg', 'fruit' }
+                        'carrot', 'clove of garlic', 'cream pie', 'fruit', 'egg', 'fruit',
+                         'pineapple' }
          -- Missing ingredients: 'slice of cake', 'pumpkin pie', 'apple pie', 'pineapple',
          for i = 1, d(4) + 4 do
             local ingrdt = ingr[d(#ingr)]
@@ -774,13 +775,13 @@ xx|.....|xx
      local itm = obj.new(escape_items[math.random(#escape_items)]);
      local itmcls = itm:class()
      local box
-     if itmcls[ "material" ] == 19 then                         -- GLASS==19
-         -- item is made of glass so explicitly force chest to be unlocked
-     box = des.object({ id = "chest", coord = chest_spots[1],
+     if itmcls[ "material" ] == "glass" then
+         -- explicitly force chest to be unlocked
+	 box = des.object({ id = "chest", coord = chest_spots[1],
                             olocked = "no" });
      else
-         -- item isn't made of glass; accept random locked/unlocked state
-     box = des.object({ id = "chest", coord = chest_spots[1] });
+         -- accept random locked/unlocked state
+	 box = des.object({ id = "chest", coord = chest_spots[1] });
      end;
      box:addcontent(itm);
 

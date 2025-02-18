@@ -746,9 +746,11 @@ xname_flags(
     if (obj->oartifact && obj->dknown)
         find_artifact(obj);
 
-    if (obj_is_pname(obj))
+    if (obj_is_pname(obj)) {
+        if (is_poisonable(obj) && obj->opoisoned)
+            Strcpy(buf, "poisoned ");
         goto nameit;
-
+    }
     /* Some classes use strcpy(buf, something)+strcat(buf, otherthing).
        In those cases, ConcUpdate() is needed in between if Concat()
        will be used for the strcat() part.  Other classes just use
@@ -807,7 +809,7 @@ xname_flags(
         if (typ >= FIRST_DRAGON_SCALES && typ <= LAST_DRAGON_SCALES) {
             Sprintf(buf, "set of %s", actualn);
             break;
-        } else if (is_boots(obj) || is_gloves(obj)) {
+        } else if (is_boots(obj) || is_gloves(obj) || is_bracer(obj)) {
             Strcpy(buf, "pair of ");
         } else if (is_shield(obj) && !dknown) {
             if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD) {
@@ -967,7 +969,7 @@ xname_flags(
                       && obj->corpsenm != NON_PM) {
             Strcat(buf, carto ? " - " : " of ");
             Strcat(buf, OBJ_NAME(objects[obj->corpsenm]));
-            
+
             if (!carto && !u.uconduct.literate)
                 Strcat(buf, " (zappable)");
         } else if (nn) {
@@ -1475,7 +1477,11 @@ doname_base(
             Strcat(prefix, "uncursed ");
     }
 
-    /* "a large trapped box" would perhaps be more correct */
+    /* "a large trapped box" would perhaps be more correct; [no!]
+       what about ``(obj->tknown && !obj->otrapped)''? shouldn't that
+       yield "a non-trapped large box"? (not "an untrapped large box");
+       TODO: this should be ``(Is_box(obj) || obj->otyp == TIN) && ...''
+       but at present there's no way to set obj->tknown for tins */
     if (Is_box(obj) && obj->otrapped && obj->tknown && obj->dknown)
         Strcat(prefix,"trapped ");
     if (lknown && Is_box(obj)) {
@@ -1509,6 +1515,13 @@ doname_base(
             Concat(bp, 0, " (being worn)");
         if (known && obj->otyp == AMULET_OF_GUARDING)
             Sprintf(eos(prefix), "%+d ", obj->spe); /* sitoa(obj->spe)+" " */
+        if (bp_eos[-1] == ')') {
+            /* there could be light-emitting artifact gloves someday,
+               so add 'lit' separately from 'slippery' rather than via
+               'else if' after uarmg+Glib */
+            if (!Blind && obj->lamplit && artifact_light(obj))
+                ConcatF1(bp, 1, ", %s lit)", arti_light_description(obj));
+        }
         break;
     case ARMOR_CLASS:
         if (obj->owornmask & W_ARMOR) {
@@ -2810,19 +2823,21 @@ static const struct sing_plur one_off[] = {
     { "serum", "sera" },
     { "staff", "staves" },
     { "tooth", "teeth" },
+    { "worm that walks", "worms that walk" },
     { 0, 0 }
 };
 
 static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "gloves",    "lenses",   "scales",
-    "eyes",    "gauntlets", "iron bars",
+    "eyes",    "gauntlets", "iron bars", "bracers",
     /* both singular and plural are spelled the same */
     "bison",   "deer",      "elk",       "fish",      "fowl",
     "tuna",    "yaki",      "-hai",      "krill",     "manes",
     "moose",   "ninja",     "sheep",     "ronin",     "roshi",
     "shito",   "tengu",     "ki-rin",    "Nazgul",    "gunyoki",
     "piranha", "samurai",   "shuriken",  "haggis",    "Bordeaux",
+    "undead",
     0,
     /* Note:  "fish" and "piranha" are collective plurals, suitable
        for "wiped out all <foo>".  For "3 <foo>", they should be
@@ -3480,6 +3495,7 @@ static NEARDATA const struct o_range o_ranges[] = {
     { "candle", TOOL_CLASS, TALLOW_CANDLE, WAX_CANDLE },
     { "horn", TOOL_CLASS, TOOLED_HORN, HORN_OF_PLENTY },
     { "shield", ARMOR_CLASS, SMALL_SHIELD, SHIELD_OF_REFLECTION },
+    { "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_VS_STONE },
     { "hat", ARMOR_CLASS, FEDORA, DUNCE_CAP },
     { "helm", ARMOR_CLASS, ELVEN_LEATHER_HELM, HELM_OF_TELEPATHY },
     { "gloves", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
@@ -3514,7 +3530,8 @@ static const struct alt_spellings {
     { "smooth shield", SHIELD_OF_REFLECTION },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
     { "withering", RIN_WITHERING },
-    
+    { "catnip", PINCH_OF_CATNIP },
+
     /* dragon scale mail no longer formally exists; a wish for it will get you
      * scales instead */
     { "gray dragon scale mail",   GRAY_DRAGON_SCALES },
@@ -3527,7 +3544,7 @@ static const struct alt_spellings {
     { "blue dragon scale mail",   BLUE_DRAGON_SCALES },
     { "green dragon scale mail",  GREEN_DRAGON_SCALES },
     { "yellow dragon scale mail", YELLOW_DRAGON_SCALES },
-    
+
     { "iron ball", HEAVY_IRON_BALL },
     { "lantern", BRASS_LANTERN },
     { "mattock", DWARVISH_MATTOCK },
@@ -3591,7 +3608,7 @@ static const struct alt_spellings {
     { "box", LARGE_BOX },
     { "SoEA", SCR_ENCHANT_ARMOR },
     { "SoEW", SCR_ENCHANT_WEAPON },
-    { "genocide", SCR_GENOCIDE },
+    { "genocide", SCR_EXILE },
     { "RoC", RIN_CONFLICT },
     { "BoL",  LEVITATION_BOOTS},
     { "bos",  SPEED_BOOTS},
@@ -3843,7 +3860,7 @@ wizterrainwish(struct _readobjnam_data *d)
         pline("Shallow water.");
         water_damage_chain(svl.level.objects[x][y], TRUE);
         madeterrain = TRUE;
-    
+
     /* also matches "molten lava" */
     } else if (!BSTRCMPI(bp, p - 4, "lava")
                || !BSTRCMPI(bp, p - 12, "wall of lava")) {
@@ -4449,7 +4466,7 @@ readobjnam_parse_charges(struct _readobjnam_data *d)
         d->spesgn = -1; /* cheaters get what they deserve */
         d->spe = abs(d->spe);
     }
-    
+
     /* cap on obj->spe is independent of (and less than) SCHAR_LIM */
     if (d->spe > SPE_LIM)
         d->spe = SPE_LIM; /* slime mold uses d.ftype, so not affected */
@@ -4616,7 +4633,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
                 *d->p = 0;
         }
     }
-    
+
     /* Alternate spellings (pick-ax, silver sabre, &c) */
     {
         const struct alt_spellings *as = spellings;
@@ -4639,7 +4656,7 @@ readobjnam_postparse1(struct _readobjnam_data *d)
                 ++d->p; /* self terminating */
         }
     }
-    
+
     /* Find corpse type w/o "of" (red dragon scale mail, yeti corpse) */
     if (!object_not_monster(d->bp)) {
         const char *rest = 0;
@@ -5249,11 +5266,11 @@ readobjnam(char *bp, struct obj *no_wish)
         && d.spe != 0) {
         d.spe = 0;
     }
-    
+
     /* For sanity... */
     if (d.oclass == POTION_CLASS)
         d.spe = 0;
-    
+
     /* if asking for corpse of a monster which leaves behind a glob, give
        glob instead of rejecting the monster type to create random corpse */
     if (d.typ == CORPSE && d.mntmp >= LOW_PM
@@ -5842,6 +5859,8 @@ shield_simple_name(struct obj *shield)
                ? "heavy shield"
                : "light shield";
 #endif
+        if (is_bracer(shield))
+            return "bracers";
     }
     return "shield";
 }
@@ -6077,7 +6096,7 @@ object_not_monster(const char *str)
         "master key",    /* not the "master" rank */
         "ninja-to",      /* not the "ninja" rank */
         "magenta",       /* not the "mage" rank */
-        "vampire blood"     /* not the "vampire" monster*/
+        "vampire blood"     /* not the "vampire" monster */
     };
     int i;
     for (i = 0; i < SIZE(non_monster_strs); ++i) {

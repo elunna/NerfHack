@@ -1006,7 +1006,7 @@ bot_via_windowport(void)
 
     if (gm.multi < 0) {
         cond_cache_prepA();
-        
+
         if (condtests[bl_parlyz].enabled
             && cache_multi_reason && !cache_avail[1]) {
                 cache_reslt[1] = (!strncmp(cache_multi_reason, "paralyzed", 9)

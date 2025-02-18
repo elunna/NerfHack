@@ -77,34 +77,35 @@ static const char *const godvoices[] = {
  * order to have the values be meaningful.
  */
 
-#define TROUBLE_STONED 16
-#define TROUBLE_SLIMED 15
-#define TROUBLE_STRANGLED 14
-#define TROUBLE_LAVA 13
-#define TROUBLE_SICK 12
-#define TROUBLE_RABID 11
-#define TROUBLE_WITHERING 10
-#define TROUBLE_STARVING 9
-#define TROUBLE_REGION 8 /* stinking cloud */
-#define TROUBLE_HIT 7
-#define TROUBLE_LYCANTHROPE 6
-#define TROUBLE_COLLAPSING 5
-#define TROUBLE_STUCK_IN_WALL 4
-#define TROUBLE_CURSED_LEVITATION 3
-#define TROUBLE_UNUSEABLE_HANDS 2
-#define TROUBLE_CURSED_BLINDFOLD 1
+#define TROUBLE_STONED             17
+#define TROUBLE_SLIMED             16
+#define TROUBLE_STRANGLED          15
+#define TROUBLE_LAVA               14
+#define TROUBLE_SICK               13
+#define TROUBLE_RABID              12
+#define TROUBLE_WITHERING          11
+#define TROUBLE_DEHYDRATED         10
+#define TROUBLE_STARVING            9
+#define TROUBLE_REGION              8 /* stinking cloud */
+#define TROUBLE_HIT                 7
+#define TROUBLE_LYCANTHROPE         6
+#define TROUBLE_COLLAPSING          5
+#define TROUBLE_STUCK_IN_WALL       4
+#define TROUBLE_CURSED_LEVITATION   3
+#define TROUBLE_UNUSEABLE_HANDS     2
+#define TROUBLE_CURSED_BLINDFOLD    1
 
-#define TROUBLE_PUNISHED (-1)
-#define TROUBLE_FUMBLING (-2)
-#define TROUBLE_CURSED_ITEMS (-3)
-#define TROUBLE_SADDLE (-4)
-#define TROUBLE_BLIND (-5)
-#define TROUBLE_POISONED (-6)
-#define TROUBLE_WOUNDED_LEGS (-7)
-#define TROUBLE_HUNGRY (-8)
-#define TROUBLE_STUNNED (-9)
-#define TROUBLE_CONFUSED (-10)
-#define TROUBLE_HALLUCINATION (-11)
+#define TROUBLE_PUNISHED         (-1)
+#define TROUBLE_FUMBLING         (-2)
+#define TROUBLE_CURSED_ITEMS     (-3)
+#define TROUBLE_SADDLE           (-4)
+#define TROUBLE_BLIND            (-5)
+#define TROUBLE_POISONED         (-6)
+#define TROUBLE_WOUNDED_LEGS     (-7)
+#define TROUBLE_HUNGRY           (-8)
+#define TROUBLE_STUNNED          (-9)
+#define TROUBLE_CONFUSED        (-10)
+#define TROUBLE_HALLUCINATION   (-11)
 
 
 #define ugod_is_angry() (u.ualign.record < 0)
@@ -230,6 +231,9 @@ in_trouble(void)
         return TROUBLE_RABID;
     if (Withering)
         return TROUBLE_WITHERING;
+    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
+        && u.hydration <= 250)
+        return TROUBLE_DEHYDRATED;
     if (u.uhs >= WEAK)
         return TROUBLE_STARVING;
     if (region_danger())
@@ -421,6 +425,9 @@ fix_worst_trouble(int trouble)
             reset_utrap(TRUE);
         rescued_from_terrain(DISSOLVED); /* DISSOLVED: pending cause of death
                                           * if trouble didn't get cured */
+        break;
+    case TROUBLE_DEHYDRATED:
+        rehydrate(1000);
         break;
     case TROUBLE_STARVING:
         /* temporarily lost strength recovery now handled by init_uhunger() */
@@ -890,7 +897,7 @@ gcrownu(void)
         else
             You_feel("much healthier.");
     }
-    
+
     godvoice(u.ualign.type, (char *) 0);
 
     class_gift = STRANGE_OBJECT;
@@ -1002,7 +1009,7 @@ gcrownu(void)
         if (ok_wep(uwep))
             obj = uwep; /* to be blessed,&c */
     }
-    
+
     if (Role_if(PM_CLERIC)) {
         obj = mksobj(WAR_HAMMER, FALSE, FALSE);
         obj = oname(obj, artiname(PRIEST_GIFT), ONAME_GIFT | ONAME_KNOW_ARTI);
@@ -1095,7 +1102,7 @@ gcrownu(void)
             break;
         }
     }
-    
+
     /* enhance weapon regardless of alignment or artifact status */
     if (ok_wep(obj)) {
         bless(obj);
@@ -1909,8 +1916,6 @@ sacrifice_your_race(
             change_luck(altaralign == A_NONE ? -2 : 2);
             demonless_msg = "blood coagulates";
             add_blood(u.ux, u.uy, gu.urace.mnum);
-            if (u.ualign.type != A_CHAOTIC)
-                crackaltar();
         }
         if ((pm = dlord(altaralign)) != NON_PM
             && (dmon = makemon(&mons[pm], u.ux, u.uy, MM_NOMSG))
@@ -1953,9 +1958,9 @@ bestow_artifact(uchar max_giftvalue)
 {
     struct rm *lev = &levl[u.ux][u.uy];
     int nchance = u.ulevel + 12;
-    int arti_gift_odds = 8 + (2 * u.ugifts);
+    int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
     boolean do_bestow = u.ulevel > 2 && u.uluck >= 0;
-        
+
     /* Cartomancers get the luck of the draw here...
      * We purposely check for card drop first.
      * Based on the SpliceHack minion code adapted from SLASH'EM */
@@ -2073,8 +2078,8 @@ bestow_artifact(uchar max_giftvalue)
                     discover_artifact(otmp->oartifact);
                 }
 
-                /* If more than 2 gifts have been granted, the altar can crack. */
-                if ((u.ugifts > 2 && !rn2(2))
+                /* If more than 1 gift has been granted, the altar can crack. */
+                if ((u.ugifts > 1)
                     /* If the player is already crowned, it definitely cracks. */
                     || u.uevent.uhand_of_elbereth
                     /* If the altar is already cracked - sorry... */
@@ -2084,9 +2089,6 @@ bestow_artifact(uchar max_giftvalue)
             }
         }
     }
-
-
-
     return FALSE;
 }
 
@@ -2701,7 +2703,7 @@ maybe_turn_mon_iter(struct monst *mtmp)
         && (is_undead(mtmp->data) || is_vampshifter(mtmp)
             || (is_demon(mtmp->data) && (u.ulevel > (MAXULEV / 2))))) {
         mtmp->msleeping = 0;
-        if (Confusion) {
+        if (Confusion && !Role_if(PM_UNDEAD_SLAYER)) {
             if (!turn_undead_msg_cnt++)
                 pline("Unfortunately, your voice falters.");
             mtmp->mflee = 0;
@@ -3066,6 +3068,43 @@ blocked_boulder(int dx, int dy)
         return TRUE;
 
     return FALSE;
+}
+
+void
+argent_cross_turns(void)
+{
+    if (!uamul) {
+        impossible("argent_cross_turns called with NULL amul?");
+        return;
+    }
+    if (!uamul->blessed)
+        return; /* No effect unless blessed */
+
+    if ((u.ualign.type != A_CHAOTIC && (is_demon(gy.youmonst.data)
+                                        || is_undead(gy.youmonst.data)
+                                        || is_vampshifter(&gy.youmonst)))
+        || u.ugangr > 6 || uamul->cursed) { /* "Die, mortal!" */
+        if (!Blind)
+            pline("For some reason, %s glows red.",
+                  yobjnam(uamul, (const char *) 0));
+        aggravate();
+        exercise(A_WIS, FALSE);
+        return;
+    }
+
+    /* Let the player know this thing is working */
+    if (!Blind)
+        pline("%s glows with a holy silver light!",
+              Yobjnam2(uamul, (const char *) 0));
+    else
+        pline("%s suddenly feels hot!", Yobjnam2(uamul, (const char *) 0));
+
+    /* note: does not perform unturn_dead() on victims' inventories */
+    turn_undead_range = BOLT_LIM + (u.ulevel / 5); /* 8 to 14 */
+    turn_undead_range *= turn_undead_range;
+    turn_undead_msg_cnt = 0;
+
+    iter_mons(maybe_turn_mon_iter);
 }
 
 /*pray.c*/

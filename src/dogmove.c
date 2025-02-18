@@ -22,6 +22,7 @@ staticfn long score_targ(struct monst *, struct monst *);
 staticfn boolean can_reach_location(struct monst *, coordxy, coordxy, coordxy,
                                   coordxy) NONNULLARG1;
 staticfn boolean is_better_armor(struct monst *, struct obj *);
+staticfn boolean mnum_leashable(int);
 
 /* pick a carried item for pet to drop */
 struct obj *
@@ -248,14 +249,14 @@ dog_eat(struct monst *mtmp,
     long oprice;
     char objnambuf[BUFSZ], *obj_name;
     boolean unstone;
-    
+
     objnambuf[0] = '\0';
     if (edog->hungrytime < svm.moves)
         edog->hungrytime = svm.moves;
     nutrit = dog_nutrition(mtmp, obj);
 
     unstone = (cures_stoning(mtmp, obj, TRUE) && mtmp->mstone);
-    
+
     if (devour) {
         if (mtmp->meating > 1)
             mtmp->meating /= 2;
@@ -366,7 +367,7 @@ dog_eat(struct monst *mtmp,
             /* m_consume_obj() -> delobj() -> obfree() will handle the shop
                billing update */
         }
-        
+
         if (unstone) {
             mtmp->mstone = 0;
             if (!gv.vis) {
@@ -377,7 +378,7 @@ dog_eat(struct monst *mtmp,
                 pline("%s seems limber!", Monnam(mtmp));
             }
         }
-        
+
         m_consume_obj(mtmp, obj);
     }
 
@@ -442,18 +443,23 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
     coordxy omx, omy;
     int carryamt = 0;
     struct obj *obj, *otmp;
+    struct rm *lev;
 
     if (helpless(mtmp) || mtmp->meating)
         return 0;
 
     omx = mtmp->mx;
     omy = mtmp->my;
+    lev = &levl[omx][omy];
 
     /* If we are carrying something then we drop it (perhaps near @).
      * Note: if apport == 1 then our behavior is independent of udist.
      * Use udist+1 so steed won't cause divide by zero.
      */
-    if (droppables(mtmp)) {
+    if (droppables(mtmp) && !IS_OBSTRUCTED(lev->typ)
+        /* Don't let pets drop random items inside shops - in general, this
+           is frustrating, but with pets that phase its infuriating. */
+        && !inside_shop(omx, omy)) {
         assert(edog->apport > 0);
         if (!rn2(udist + 1) || !rn2(edog->apport))
             if (rn2(10) < edog->apport) {
@@ -1104,7 +1110,7 @@ dog_move(
     if (appr == -2)
         return MMOVE_NOTHING;
 
-    if (Conflict && !resist_conflict(mtmp)) {
+    if (Race_if(PM_ORC) || (Conflict && !resist_conflict(mtmp))) {
         if (!edog) {
             /* Guardian angel refuses to be conflicted; rather,
              * it disappears, angrily, and sends in some nasties
@@ -1478,10 +1484,23 @@ finish_meating(struct monst *mtmp)
     }
 }
 
+/*
+ * variation of leashable() that takes a PM_ index */
+staticfn boolean
+mnum_leashable(int mnum)
+{
+    return ((mnum >= LOW_PM && mnum <= HIGH_PM)
+            && mnum != PM_LONG_WORM && !unsolid(&mons[mnum])
+            && (!nolimbs(&mons[mnum]) || has_head(&mons[mnum])))
+               ? TRUE
+               : FALSE;
+}
+
 void
 quickmimic(struct monst *mtmp)
 {
     int idx = 0, trycnt = 5, spotted, seeloc;
+    boolean was_leashed = mtmp->mleashed;
     char buf[BUFSZ];
 
     if (Protection_from_shape_changers || !mtmp->meating)
@@ -1531,6 +1550,12 @@ quickmimic(struct monst *mtmp)
                                  : something;
 
         newsym(mtmp->mx, mtmp->my);
+        if (was_leashed
+            && (M_AP_TYPE(mtmp) != M_AP_MONSTER
+                || !mnum_leashable(mtmp->mappearance))) {
+            Your("leash goes slack.");
+            m_unleash(mtmp, FALSE);
+        }
         if (glyph_at(mtmp->mx, mtmp->my) != prev_glyph)
             You("%s %s %s where %s was!",
                 seeloc ? "see" : "sense that",
@@ -1682,7 +1707,7 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
             continue;
         if (!obj->owornmask)
             continue;
-        
+
         best_score = armor_bonus(mtmp, best) + extra_pref(mtmp, best);
         obj_score = armor_bonus(mtmp, obj) + extra_pref(mtmp, obj);
 

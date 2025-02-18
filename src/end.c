@@ -47,7 +47,7 @@ static NEARDATA const char *deaths[] = {
     /* the array of death */
     "died", "choked", "poisoned", "starvation", "drowning", "burning",
     "dissolving under the heat and pressure", "crushed", "turned to stone",
-    "turned into slime", "genocided", "panic", "trickery", "quit",
+    "turned into slime", "exiled", "panic", "trickery", "quit",
     "escaped", "ascended"
 };
 
@@ -57,7 +57,7 @@ static NEARDATA const char *ends[] = {
     "starved", "drowned", "burned",
     "dissolved in the lava",
     "were crushed", "turned to stone",
-    "turned into slime", "were genocided",
+    "turned into slime", "were exiled",
     "panicked", "were tricked", "quit",
     "escaped", "ascended"
 };
@@ -206,7 +206,12 @@ done_in_by(struct monst *mtmp, int how)
         svk.killer.format = KILLED_BY;
     }
     /* _the_ <invisible> <distorted> ghost of Dudley */
+#if 0
+    /* hardfought */
+    if (has_ebones(mtmp)) {
+#else
     if (mptr == &mons[PM_GHOST] && has_mgivenname(mtmp)) {
+#endif
         Strcat(buf, "the ");
         svk.killer.format = KILLED_BY;
     }
@@ -257,8 +262,12 @@ done_in_by(struct monst *mtmp, int how)
                                : "%s imitating %s",
                 realnm, shape);
         mptr = mtmp->data; /* reset for mimicker case */
-    } else if (is_bones_monster(mptr)) {
-        Strcat(buf, pmname(mptr, Mgender(mtmp)));
+#if 0  /* hardfought */
+    } else if (has_ebones(mtmp)) {
+        Strcpy(buf, m_monnam(mtmp));
+#endif
+    } else if (mptr == &mons[PM_GHOST]) {
+        Strcat(buf, "ghost");
         if (has_mgivenname(mtmp))
             Sprintf(eos(buf), " of %s", MGIVENNAME(mtmp));
     } else if (mtmp->isshk) {
@@ -274,8 +283,11 @@ done_in_by(struct monst *mtmp, int how)
         Strcat(buf, m_monnam(mtmp));
     } else {
         Strcat(buf, pmname(mptr, Mgender(mtmp)));
-        if (has_mgivenname(mtmp))
-            Sprintf(eos(buf), " called %s", MGIVENNAME(mtmp));
+        if (has_mgivenname(mtmp)) {
+            Sprintf(eos(buf), " %s %s",
+                    has_ebones(mtmp) ? "of" : "called",
+                    MGIVENNAME(mtmp));
+        }
     }
 
     Strcpy(svk.killer.name, buf);
@@ -333,12 +345,17 @@ done_in_by(struct monst *mtmp, int how)
         u.ugrave_arise = PM_VAMPIRE_MAGE;
     else if (mptr->mlet == S_VAMPIRE && Race_if(PM_HUMAN))
         u.ugrave_arise = PM_VAMPIRE;
+    else if (mptr == &mons[PM_WORM_THAT_WALKS])
+        u.ugrave_arise = Role_if(PM_WIZARD) ? PM_WORM_THAT_WALKS : PM_GHOUL;
     else if (is_ghoul(mptr))
         u.ugrave_arise = PM_GHOUL;
     else if (mptr->mlet == S_LICH)
         u.ugrave_arise = PM_REVENANT;
+    else if (mptr == &mons[PM_SLAUGHTER_WIGHT]
+             || mptr == &mons[PM_BARROW_WIGHT])
+        u.ugrave_arise = PM_BARROW_WIGHT;
     /* this could happen if a high-end vampire kills the hero
-       when ordinary vampires are genocided; ditto for wraiths */
+       when ordinary vampires are exiled; ditto for wraiths */
     if (u.ugrave_arise >= LOW_PM
         && (svm.mvitals[u.ugrave_arise].mvflags & G_GENOD))
         u.ugrave_arise = NON_PM;
@@ -728,8 +745,8 @@ savelife(int how)
     }
     /* Ensure grung get a little hydration when they survive. */
     if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-        if (!svc.context.hydration)
-            svc.context.hydration = (long) givehp;
+        if (u.hydration == 0)
+            u.hydration = givehp;
     }
     /* cure impending doom of sickness hero won't have time to fix
        [shouldn't this also be applied to other fatal timeouts?] */
@@ -956,7 +973,7 @@ staticfn boolean
 fuzzer_savelife(int how)
 {
     struct obj *obj;
-    
+
     /*
      * Some debugging code pulled out of done() to unclutter it.
      * 'done_seq' is maintained in done().
@@ -1005,12 +1022,12 @@ fuzzer_savelife(int how)
                    * or even Invulnerable */
             }
         }
-        
+
         /* Insertion point for testing specific items
          * Every so often, give the hero the specific item
-         * so the fuzzer is more exposed to it. 
+         * so the fuzzer is more exposed to it.
          * */
-        int TEST_OTYP = 0; 
+        int TEST_OTYP = 0;
         if (!rn2(20) && TEST_OTYP) {
             obj = mksobj(TEST_OTYP, TRUE, FALSE);
             (void) addinv(obj);
@@ -1106,7 +1123,7 @@ done(int how)
         /* assumes that only one type of item confers LifeSaved property */
         makeknown(AMULET_OF_LIFE_SAVING);
         Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
-        
+
         if (uamul->cursed || nonliving(gy.youmonst.data)) {
             Your("medallion %s!", !Blind ? "glows white-hot"
                                          : "sears your neck");
@@ -1140,7 +1157,7 @@ done(int how)
 
             savelife(how);
             if (how == GENOCIDED) {
-                pline("Unfortunately you are still genocided...");
+                pline("Unfortunately you are still exiled...");
             } else {
                 char killbuf[BUFSZ];
                 formatkiller(killbuf, BUFSZ, how, FALSE);
@@ -1260,9 +1277,9 @@ really_done(int how)
         u.ugrave_arise = LEAVESTATUE; /* statue instead of corpse */
     else if (how == TURNED_SLIME
              /* it's possible to turn into slime even though green slimes
-                have been genocided:  genocide could occur after hero is
+                have been exiled:  exile could occur after hero is
                 already infected or hero could eat a glob of one created
-                before genocide; don't try to arise as one if they're gone */
+                before exiled; don't try to arise as one if they're gone */
              && !(svm.mvitals[PM_GREEN_SLIME].mvflags & G_GENOD))
         u.ugrave_arise = PM_GREEN_SLIME;
 
@@ -1451,8 +1468,8 @@ really_done(int how)
         done_stopprint = 1; /* just avoid any more output */
 
 #if defined(DUMPLOG) || defined(DUMPHTML)
-    /* 'how' reasons beyond genocide shouldn't show tombstone;
-       for normal end of game, genocide doesn't either */
+    /* 'how' reasons beyond exile shouldn't show tombstone;
+       for normal end of game, exile doesn't either */
     if (how <= GENOCIDED) {
         dump_redirect(TRUE);
         if (iflags.in_dumplog)

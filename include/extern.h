@@ -1,4 +1,4 @@
-/* NetHack 3.7	extern.h	$NHDT-Date: 1723580890 2024/08/13 20:28:10 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1435 $ */
+/* NetHack 3.7	extern.h	$NHDT-Date: 1738638877 2025/02/03 19:14:37 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1476 $ */
 /* Copyright (c) Steve Creps, 1988.                               */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -101,8 +101,9 @@ extern int argcheck(int, char **, enum earlyarg);
 extern long timet_to_seconds(time_t);
 extern long timet_delta(time_t, time_t);
 extern boolean vamp_can_regen(void);
-extern boolean rehydrate(boolean);
+extern boolean rehydrate(int);
 extern void dehydrate(int);
+extern int find_tier_index(int);
 
 /* ### apply.c ### */
 
@@ -264,6 +265,8 @@ extern void savebones(int, time_t, struct obj *);
 extern int getbones(void);
 extern boolean bones_include_name(const char *) NONNULLARG1;
 extern void fix_ghostly_obj(struct obj *) NONNULLARG1;
+extern void newebones(struct monst *) NONNULLARG1;
+extern void free_ebones(struct monst *) NONNULLARG1;
 
 /* ### botl.c ### */
 
@@ -776,7 +779,7 @@ extern boolean will_touch_skin(long);
 
 extern void newedog(struct monst *) NONNULLARG1;
 extern void free_edog(struct monst *) NONNULLARG1;
-extern void initedog(struct monst *) NONNULLARG1;
+extern void initedog(struct monst *, boolean) NONNULLARG1;
 extern struct monst *make_familiar(struct obj *, coordxy, coordxy, boolean);
 extern struct monst *makedog(void);
 extern void update_mlstmv(void);
@@ -1255,6 +1258,7 @@ extern int inv_cnt(boolean);
 extern long money_cnt(struct obj *) NO_NNARGS;
 extern void spot_checks(coordxy, coordxy, schar);
 extern int rounddiv(long, int);
+extern boolean swim_under(struct monst *, boolean);
 
 /* ### strutil.c ### */
 
@@ -1289,7 +1293,6 @@ extern int set_vanq_order(boolean);
 extern int dovanquished(void);
 extern int doborn(void);
 extern void list_vanquished(char, boolean);
-extern int num_genocides(void);
 extern void list_genocided(char, boolean);
 extern int dogenocided(void);
 extern const char *align_str(aligntyp);
@@ -1507,6 +1510,7 @@ extern void mon_rabid(struct monst *, boolean);
 extern long mm_aggression(struct monst *, struct monst *);
 extern int mk_moncard(void);
 extern void get_particular_moncard(int, struct obj *);
+extern void dump_mongen(void);
 
 /* ### mcastu.c ### */
 
@@ -1571,6 +1575,8 @@ extern boolean mon_avoiding_this_attack(struct monst *, int) NONNULLARG1;
 */
 extern boolean ranged_attk_available(struct monst *mtmp) NONNULLARG1;
 extern void piercer_hit(struct monst *, struct monst *);
+extern boolean mon_really_found_us(struct monst *);
+extern int passiveum(struct permonst *, struct monst *, struct attack *);
 
 /* ### minion.c ### */
 
@@ -1755,7 +1761,7 @@ extern int somey(struct mkroom *) NONNULLARG1;
 extern boolean inside_room(struct mkroom *, coordxy, coordxy) NONNULLARG1;
 extern boolean somexy(struct mkroom *, coord *) NONNULLARG12;
 extern boolean somexyspace(struct mkroom *, coord *) NONNULLARG12;
-extern void mkundead(coord *, boolean, int) NONNULLARG1;
+extern void mkundead(struct monst *, coord *, boolean, int);
 extern struct permonst *courtmon(void);
 extern void save_rooms(NHFILE *) NONNULLARG1;
 extern void rest_rooms(NHFILE *) NONNULLARG1;
@@ -1786,6 +1792,7 @@ extern int meatcorpse(struct monst *) NONNULLARG1;
 extern void mon_give_prop(struct monst *, int) NONNULLARG1;
 extern void mon_givit(struct monst *, struct permonst *) NONNULLARG12;
 extern void mpickgold(struct monst *) NONNULLARG1;
+extern int meatcatnip(struct monst *) NONNULLARG1;
 extern boolean mpickstuff(struct monst *) NONNULLARG1;
 extern int curr_mon_load(struct monst *) NONNULLARG1;
 extern int max_mon_load(struct monst *) NONNULLARG1;
@@ -1851,7 +1858,7 @@ extern int can_be_hatched(int);
 extern int egg_type_from_parent(int, boolean);
 extern boolean dead_species(int, boolean);
 extern void kill_genocided_monsters(void);
-extern void kill_monster_on_level(int);
+extern void kill_monster_on_level(int, boolean);
 extern void golemeffects(struct monst *, int, int);
 extern boolean angry_guards(boolean);
 extern void pacify_guards(void);
@@ -1879,6 +1886,7 @@ extern boolean attacktype(struct permonst *, int) NONNULLARG1;
 extern boolean noattacks(struct permonst *) NONNULLARG1;
 extern boolean poly_when_stoned(struct permonst *) NONNULLARG1;
 extern boolean defended(struct monst *, int) NONNULLARG1;
+extern boolean Resists_Elem(struct monst *, int) NONNULLARG1;
 extern boolean resists_drli(struct monst *) NONNULLARG1;
 extern boolean resists_magm(struct monst *) NONNULLARG1;
 extern boolean resists_blnd(struct monst *) NONNULLARG1;
@@ -2620,6 +2628,7 @@ extern const char *halu_gname(aligntyp);
 extern const char *align_gtitle(aligntyp);
 extern void altar_wrath(coordxy, coordxy);
 extern void crackaltar(void);
+extern void argent_cross_turns(void);
 
 /* ### priest.c ### */
 
@@ -2746,6 +2755,7 @@ extern void save_regions(NHFILE *) NONNULLARG1;
 extern void rest_regions(NHFILE *) NONNULLARG1;
 extern void region_stats(const char *, char *, long *, long *) NONNULLPTRS;
 extern NhRegion *create_gas_cloud(coordxy, coordxy, int, int);
+extern NhRegion *create_cthulhu_death_cloud(coordxy, coordxy, int, int);
 extern NhRegion *create_gas_cloud_selection(struct selectionvar *, int);
 extern boolean region_danger(void);
 extern void region_safety(void);
@@ -3413,6 +3423,7 @@ extern void trap_ice_effects(coordxy x, coordxy y, boolean ice_is_melting);
 extern void trap_sanity_check(void);
 extern void trigger_trap_with_polearm(struct trap *, coord, struct obj *);
 extern boolean maybe_grease_off(struct obj *);
+extern char *trapnote(struct trap *, boolean);
 
 /* ### u_init.c ### */
 
@@ -3931,9 +3942,12 @@ extern void clonewiz(void);
 extern int pick_nasty(int);
 extern int nasty(struct monst *, boolean) NO_NNARGS;
 extern void resurrect(void);
+extern void resurrect_cthulhu(void);
 extern void intervene(void);
 extern void wizdeadorgone(void);
 extern void cuss(struct monst *) NONNULLARG1;
+extern void wizpuzzle_enterchamber(int);
+extern void wizpuzzle_activate_mechanism(coordxy, coordxy);
 
 /* ### wizcmds.c ### */
 
@@ -4028,7 +4042,7 @@ extern int extra_pref(struct monst *, struct obj *) NONNULLARG1;
 extern int racial_exception(struct monst *, struct obj *) NONNULLARG12;
 extern void extract_from_minvent(struct monst *, struct obj *, boolean,
                                  boolean) NONNULLARG12;
-extern int armor_bonus(struct monst *, struct obj *);
+extern int armor_bonus(struct monst *, struct obj *) NONNULLARG12;
 extern long armor_provides_extrinsic(struct obj *);
 
 /* ### write.c ### */

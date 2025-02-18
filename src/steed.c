@@ -27,6 +27,10 @@ can_saddle(struct monst *mtmp)
 {
     struct permonst *ptr = mtmp->data;
 
+    if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))
+        && mtmp->data == &mons[PM_WARG])
+        return TRUE;
+
     return (strchr(steeds, ptr->mlet) && (ptr->msize >= MZ_MEDIUM)
             && (!humanoid(ptr) || ptr->mlet == S_CENTAUR) && !amorphous(ptr)
             && !noncorporeal(ptr) && !is_whirly(ptr) && !unsolid(ptr));

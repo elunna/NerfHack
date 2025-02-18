@@ -43,7 +43,6 @@ des.teleport_region({region={16,15,75,19}})
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,75,19))
-des.non_passwall(selection.area(00,00,75,19));
 
 -- Doors
 des.door("locked",14,08)
@@ -60,23 +59,10 @@ des.monster({id="Baalzebub", x=44, y=08})
 -- Some random weapons and armor.
 des.object("[")
 des.object("[")
-des.object("[")
-des.object("[")
-des.object(")")
-des.object(")")
 des.object(")")
 des.object(")")
 des.object("*")
-des.object("*")
-des.object("*")
 des.object("!")
-des.object("!")
-des.object("!")
-des.object("!")
-des.object("?")
-des.object("?")
-des.object("?")
-des.object("?")
 des.object("?")
 
 -- Some traps.
@@ -100,6 +86,7 @@ des.trap("magic")
 des.monster({id="ghost", x=39, y=08})
 des.monster({id="horned devil", x=29, y=06})
 des.monster({id="barbed devil", x=29, y=10})
+des.monster("weredemon")
 des.monster("L")
 des.monster("ghost")
 des.monster("ghost")

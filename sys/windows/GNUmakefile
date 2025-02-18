@@ -227,7 +227,7 @@ endif
 #==============================================================================
 
 #  The version of the game this Makefile was designed for
-NETHACK_VERSION="2.1.0"
+NETHACK_VERSION="2.2.0"
 
 # A brief version for use in macros
 NHV1=$(subst .,,$(NETHACK_VERSION))
@@ -512,6 +512,7 @@ LUALIST = \
 	minetn-9 	\
 	minetn-10 	\
 	minetn-11 	\
+	minetn-12 	\
 	temple-1	\
 	temple-2	\
 	nhcore 		\
@@ -528,6 +529,7 @@ LUALIST = \
 	soko1-6 	\
 	soko1-7 	\
 	soko1-8 	\
+	soko1-9     \
 	soko2-1 	\
 	soko2-2 	\
 	soko2-3 	\
@@ -570,6 +572,11 @@ LUALIST = \
 	wizard1		\
 	wizard2 	\
 	wizard3 	\
+	wizard4 	\
+	wizard5 	\
+	wizard6 	\
+	wizard7 	\
+	wizard8 	\
 	yeenog-1	\
 	yeenog-2	\
 	yeenog-3	\
@@ -585,6 +592,7 @@ LUALIST = \
 	Rog-fila Rog-filb Rog-goal Rog-loca Rog-strt \
 	Sam-fila Sam-filb Sam-goal Sam-loca Sam-strt \
 	Tou-fila Tou-filb Tou-goal Tou-loca Tou-strt \
+	Und-fila Und-filb Und-goal Und-loca Und-strt \
 	Val-fila Val-filb Val-goal Val-loca Val-strt \
 	Wiz-fila Wiz-filb Wiz-goal Wiz-loca Wiz-strt \
 
@@ -1269,7 +1277,7 @@ $(ONH)/%.o: $(SRC)/%.c $(NHLUAH) | $(ONH)
 TARGET_CPU = x64
 NHV=370
 PKGFILES = nerfhackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
-        NerfHackW.exe opthelp nhdat210 record symbols sysconf.template
+        NerfHackW.exe opthelp nhdat220 record symbols sysconf.template
 FILESTOZIP = $(addprefix $(GAMEDIR)/, $(PKGFILES))
 MAINZIP = $(PkgDir)/nethack-$(NHV)-win-$(TARGET_CPU)-msys2.zip
 

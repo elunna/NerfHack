@@ -394,7 +394,7 @@ nemesis_speaks(void)
      * Qstat(in_battle) being set to true. For non-warping nemeses, ignore
      * whether this flag is set or not because nemesis_speaks should only get
      * called when nearby anyway. */
-    if (!Qstat(in_battle) || covetous_nonwarper(&mons[gu.urole.neminum])) {
+    if (!Qstat(in_battle)) {
         if (u.uhave.questart)
             qt_pager("nemesis_wantsit");
         else if (Qstat(made_goal) == 1 || !Qstat(met_nemesis))

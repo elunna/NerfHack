@@ -173,6 +173,13 @@ struct PotionRecipe {
 
 extern const struct PotionRecipe potionrecipes[]; /* table of fusions */
 
+struct HydrationTier {
+    int threshold;
+    const char *description;
+};
+
+extern const struct HydrationTier hydration_tiers[]; /* table of hydrations */
+
 #define MAX_BMASK 4
 
 struct bubble {
@@ -390,6 +397,8 @@ struct dgn_topology { /* special dungeon levels for speed */
     d_level d_wiz1_level;
     d_level d_wiz2_level;
     d_level d_wiz3_level;
+    d_level d_wiz4_level;
+    d_level d_wiz6_level;
     d_level d_juiblex_level;
     d_level d_orcus_level;
     d_level d_baalzebub_level; /* unused */
@@ -423,6 +432,8 @@ struct dgn_topology { /* special dungeon levels for speed */
 #define wiz1_level              (svd.dungeon_topology.d_wiz1_level)
 #define wiz2_level              (svd.dungeon_topology.d_wiz2_level)
 #define wiz3_level              (svd.dungeon_topology.d_wiz3_level)
+#define wiz4_level              (svd.dungeon_topology.d_wiz4_level)
+#define wiz6_level              (svd.dungeon_topology.d_wiz6_level)
 #define juiblex_level           (svd.dungeon_topology.d_juiblex_level)
 #define orcus_level             (svd.dungeon_topology.d_orcus_level)
 #define baalzebub_level         (svd.dungeon_topology.d_baalzebub_level)
@@ -463,6 +474,7 @@ enum earlyarg {
     , ARG_DUMPENUMS
 #endif
     , ARG_DUMPGLYPHIDS
+    , ARG_DUMPMONGEN
 #ifdef WIN32
     , ARG_WINDOWS
 #endif
@@ -767,6 +779,36 @@ struct repo { /* repossession context */
     coord location;
 };
 
+/* Wizard's Tower puzzle */
+#define NUM_PUZZLE_CHAMBERS 8
+#define NUM_PUZZLE_RINGS 2
+enum wizpuzzle_actions {
+    /* The possible effects for each puzzle-activating trigger, which happen to
+     * be expressed in terms of the number that should be added to open_chamber
+     * (then taken modulo NUM_PUZZLE_CHAMBERS) to get the new open chamber. */
+    COUNTERCLOCKWISE_3 = -3,
+    COUNTERCLOCKWISE_2 = -2,
+    COUNTERCLOCKWISE_1 = -1,
+    NO_ROTATION = 0,
+    CLOCKWISE_1 = 1,
+    CLOCKWISE_2 = 2,
+    CLOCKWISE_3 = 3,
+    ROTATE_180 = 4,
+};
+
+struct wizard_puzzle {
+    enum wizpuzzle_actions actions[NUM_PUZZLE_RINGS][NUM_PUZZLE_CHAMBERS];
+    int open_chamber[NUM_PUZZLE_RINGS]; /* index into g.rooms, expected to be in
+                                           range [0-7] */
+    int activated_chamber; /* same as above; holds index of most recently
+                              activated chamber (so that you can't activate the
+                              same one multiple times). */
+    boolean entered;
+    boolean solved;
+    boolean gave_msg; /* used to ensure massive grinding noise only happens once
+                         per activation, rather than once per each ring's move */
+};
+
 struct restore_info {
     const char *name;
     int mread_flags;
@@ -786,11 +828,12 @@ struct rogueroom {
     int nroom; /* Only meaningful for "real" rooms */
 };
 
-#define NUM_ROLES (14)
+#define NUM_ROLES (15)
 struct role_filter {
     boolean roles[NUM_ROLES + 1];
     short mask;
 };
+#define NUM_RACES (7)
 
 enum saveformats {
     invalid = 0,
@@ -1129,6 +1172,7 @@ typedef struct {
     (Warn_of_mon                                                        \
      && ((svc.context.warntype.obj & (mon)->data->mhflags) != 0           \
          || (svc.context.warntype.polyd & (mon)->data->mhflags) != 0      \
+         || (svc.context.warntype.intrins & (mon)->data->mhflags) != 0      \
          || (svc.context.warntype.species                                 \
              && (svc.context.warntype.species == (mon)->data))))
 
@@ -1216,16 +1260,17 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define DF_ALL      0x04
 
 /* special mhpmax value when loading bones monster to flag as extinct or
- * genocided */
+ * exiled */
 #define DEFUNCT_MONSTER (-100)
 
 /* macro form of adjustments of physical damage based on Half_physical_damage.
  * Can be used on-the-fly with the 1st parameter to losehp() if you don't
  * need to retain the dmg value beyond that call scope.
  * Take care to ensure it doesn't get used more than once in other instances.
+ * NOTE: This is now 1/4 damage reduction.
  */
 #define Maybe_Half_Phys(dmg) \
-    ((Half_physical_damage) ? (((dmg) + 1) / 2) : (dmg))
+    ((Half_physical_damage) ? ((dmg) - (((dmg) + 1) / 4)) : (dmg))
 
 /* flags for special ggetobj status returns */
 #define ALL_FINISHED 0x01 /* called routine already finished the job */

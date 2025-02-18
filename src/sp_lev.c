@@ -1927,7 +1927,9 @@ create_trap(spltrap *t, struct mkroom *croom)
     unsigned mktrap_flags = MKTRAP_MAZEFLAG;
 
     if (t->type == VIBRATING_SQUARE) {
-        pick_vibrasquare_location();
+//        pick_vibrasquare_location();
+        svi.inv_pos.x = 39;
+        svi.inv_pos.y = 11;
         maketrap(svi.inv_pos.x, svi.inv_pos.y, VIBRATING_SQUARE);
         return;
     } else if (croom) {
@@ -1952,7 +1954,8 @@ create_trap(spltrap *t, struct mkroom *croom)
 
     tm.x = x;
     tm.y = y;
-
+    
+    
     mktrap(t->type, mktrap_flags, (struct mkroom *) 0, &tm);
 }
 
@@ -2063,12 +2066,12 @@ create_monster(monster *m, struct mkroom *croom)
         g_mvflags = (unsigned) svm.mvitals[monsndx(pm)].mvflags;
         if ((pm->geno & G_UNIQ) && (g_mvflags & G_EXTINCT))
             return;
-        if (g_mvflags & G_GONE) /* genocided or extinct */
+        if (g_mvflags & G_GONE) /* exiled or extinct */
             pm = (struct permonst *) 0; /* make random monster */
     } else {
         pm = mkclass(class, G_NOGEN);
         /* if we can't get a specific monster type (pm == 0) then the
-           class has been genocided, so settle for a random monster */
+           class has been exiled, so settle for a random monster */
     }
     if (In_mines(&u.uz) && pm && your_race(pm)
         && (Race_if(PM_DWARF) || Race_if(PM_GNOME)) && rn2(3))
@@ -2245,7 +2248,7 @@ create_monster(monster *m, struct mkroom *croom)
         /* Sanity check here - rabid overrides peaceful */
         if (mtmp->mpeaceful && mtmp->mrabid)
             mtmp->mpeaceful = 0;
-        
+
         if (m->asleep > BOOL_RANDOM)
             mtmp->msleeping = m->asleep;
         if (m->seentraps)
@@ -4981,18 +4984,18 @@ lspo_feature(lua_State *L)
         "toilet",
         "pool",
         "throne",
-        "tree", 
+        "tree",
         "puddle",
         "lava",
         NULL };
-    static const int features2i[] = { 
+    static const int features2i[] = {
         FOUNTAIN,
         FORGE,
         SINK,
         TOILET,
         POOL,
         THRONE,
-        TREE, 
+        TREE,
         PUDDLE,
         LAVAPOOL,
         STONE };

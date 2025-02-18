@@ -34,7 +34,6 @@ local asmo1 = des.map({ halign = "half-left", valign = "center", map = [[
    des.stair("down", 13,07)
    -- Non diggable walls
    des.non_diggable(selection.area(00,00,20,11))
-   des.non_passwall(selection.area(00,00,20,11));
    -- Entire main area
    des.region(selection.area(01,01,20,10),"unlit")
    -- The fellow in residence
@@ -46,10 +45,8 @@ local asmo1 = des.map({ halign = "half-left", valign = "center", map = [[
    des.object(")")
    des.object("*")
    des.object("!")
-   des.object("!")
    des.object("?")
-   des.object("?")
-   des.object("?")
+
    -- Some traps.
    des.trap("spiked pit", 05,02)
    des.trap("fire", 08,06)

@@ -12,6 +12,7 @@ staticfn void choke_dialogue(void);
 staticfn void rabid_dialogue(void);
 staticfn void levitation_dialogue(void);
 staticfn void reappear_dialogue(void);
+staticfn void watertight_dialogue(void);
 staticfn void slime_dialogue(void);
 staticfn void slimed_to_death(struct kinfo *) NO_NNARGS;
 staticfn void sickness_dialogue(void);
@@ -471,6 +472,21 @@ reappear_dialogue(void)
     }
 }
 
+staticfn void
+watertight_dialogue(void)
+{
+    if (EWatertight)
+        return;
+
+    if ((HWatertight & TIMEOUT) == 5) {
+        if (Hallucination) {
+            pline("The grease on your items starts to stink...");
+        } else if (!Blind) {
+            pline("The protective sheen around your items flickers.");
+        }
+    }
+}
+
 static NEARDATA const char *const slime_texts[] = {
     "You are turning a little %s.",   /* 5 */
     "Your limbs are getting oozy.",   /* 4 */
@@ -583,7 +599,7 @@ slimed_to_death(struct kinfo *kptr)
      * but does not perform polyself()'s light source bookkeeping.
      * No longer need to manually increment uconduct.polyselfs to reflect
      * [formerly implicit] change of form; polymon() takes care of that.
-     * Temporarily ungenocide if necessary.
+     * Temporarily unexile if necessary.
      */
     if (emits_light(gy.youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&gy.youmonst));
@@ -595,7 +611,7 @@ slimed_to_death(struct kinfo *kptr)
     done_timeout(TURNED_SLIME, SLIMED);
 
     /* life-saved; even so, hero still has turned into green slime;
-       player may have genocided green slimes after being infected */
+       player may have exiled green slimes after being infected */
     if ((svm.mvitals[PM_GREEN_SLIME].mvflags & G_GENOD) != 0) {
         char slimebuf[BUFSZ];
 
@@ -603,7 +619,7 @@ slimed_to_death(struct kinfo *kptr)
         Strcpy(svk.killer.name, "slimicide");
         /* vary the message depending upon whether life-save was due to
            amulet or due to declining to die in explore or wizard mode */
-        Strcpy(slimebuf, "green slime has been genocided...");
+        Strcpy(slimebuf, "green slime has been exiled...");
         if (iflags.last_msg == PLNMSG_OK_DONT_DIE)
             /* follows "OK, so you don't die." and arg is second sentence */
             urgent_pline("Yes, you do.  %s", upstart(slimebuf));
@@ -760,6 +776,8 @@ nh_timeout(void)
     }
     if (HInvis & TIMEOUT)
         reappear_dialogue();
+    if (HWatertight & TIMEOUT)
+        watertight_dialogue();
     if (u.uinvulnerable)
         return; /* things past this point could kill you */
     if (Stoned)
@@ -930,7 +948,7 @@ nh_timeout(void)
                     break;
                 case AGGRAVATE_MONSTER:
                     if (!Aggravate_monster)
-                        You("are no longer feel so exposed.");
+                        pline("The lingering aura of hostility fades.");
                     break;
                 case FAST:
                     if (!Very_fast)
@@ -1038,7 +1056,7 @@ nh_timeout(void)
                     }
                     break;
                 case ACID_RES:
-                    if (!Acid_resistance) {
+                    if (!fully_resistant(ACID_RES)) {
                         if (eating_dangerous_corpse(ACID_RES)) {
                             /* extend temporary acid resistance if in midst
                                of eating an acidic corpse; this will repeat

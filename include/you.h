@@ -149,16 +149,17 @@ struct u_conduct {     /* number of times... */
     long gnostic;      /* used prayer, priest, or altar */
     long weaphit;      /* hit a monster with a weapon */
     long killer;       /* killed a monster yourself */
+    long exiles;       /* number of monsters exiled */
     long literate;     /* read something (other than BotD) */
     long polypiles;    /* polymorphed an object */
     long polyselfs;    /* transformed yourself */
     long wishes;       /* used a wish */
     long wisharti;     /* wished for an artifact */
-    long elbereth;     /* engraved Elbereth */
+    long elbereth; /* hf uses for elbereth;for hf savefile compatiblity */
     long sokocheat;    /* violated special 'rules' in Sokoban */
     long pets;         /* obtained a pet */
     long altars;       /* altars destroyed via cracking */
-    /* genocides already listed at end of game */
+    /* exiles already listed at end of game */
 };
 
 struct u_roleplay {
@@ -460,7 +461,7 @@ struct you {
 #define LUCKMIN (-10) /* minimum value of u.uluck */
     schar uhitinc;
     schar udaminc;
-    long  uhealbonus;        /* KMH -- Healing bonus from healthstones */
+    long uhealbonus;         /* KMH -- Healing bonus from healthstones */
     schar uac;
 #define AC_MAX    99  /* abs(u.uac) <= 99; likewise for monster AC */
     uchar uspellprot;        /* protection by SPE_PROTECTION */
@@ -475,7 +476,7 @@ struct you {
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
     int ublessed, ublesscnt; /* blessing/duration from #pray */
-    int combotime;              /* Timeout for last cartomancer combo */
+    int combotime;           /* Timeout for last cartomancer combo */
     int lastprayed;
     uchar lastprayresult, reconciled;
 #define PRAY_NONE   0
@@ -502,6 +503,7 @@ struct you {
     unsigned usteed_mid;     /* u.usteed->m_id, used during save/restore */
     long ugallop;            /* turns steed will run after being kicked */
     int urideturns;          /* time spent riding, for skill advancement */
+    int hydration;           /* grung timeout to dehydration */
     int umortality;          /* how many times you died */
     int ugrave_arise;    /* you die and become something aside from a ghost */
     int weapon_slots;        /* unused skill slots */

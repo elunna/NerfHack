@@ -642,14 +642,14 @@ doextlist(void)
                     continue;
                 /* command description might get modified on the fly */
                 cmd_desc = efp->ef_desc;
-                /* suppress part of the description for #genocided if it
+                /* suppress part of the description for #exiled if it
                    doesn't apply during the current game */
                 if (!wizard && !discover
                     && (efp->flags & GENERALCMD) != 0 /* minor optimization */
                     && strstri(cmd_desc, "extinct"))
                     cmd_desc = strsubst(strcpy(descbuf, cmd_desc),
-                                        " been genocided or become extinct",
-                                        " been genocided");
+                                        " been exiled or become extinct",
+                                        " been exiled");
                 /* if searching, skip this command if it doesn't match */
                 if (*searchbuf
                     /* first try case-insensitive substring match */
@@ -1717,8 +1717,8 @@ struct ext_func_tab extcmdlist[] = {
               dofire, 0, NULL },
     { M('f'), "force", "force a lock",
               doforce, AUTOCOMPLETE, NULL },
-    { M('g'), "genocided",
-              "list monsters that have been genocided or become extinct",
+    { M('g'), "exiled",
+              "list monsters that have been exiled or become extinct",
               dogenocided,
               IFBURIED | AUTOCOMPLETE | GENERALCMD | CMD_M_PREFIX, NULL },
     { ';',    "glance", "show what type of thing a map symbol corresponds to",
@@ -4869,6 +4869,9 @@ end_of_input(void)
 #endif
     program_state.something_worth_saving = 0; /* don't save */
 #endif
+
+    if (In_tutorial(&u.uz))
+        program_state.something_worth_saving = 0; /* don't save in tutorial */
 
 #ifndef SAFERHANGUP
     if (!program_state.done_hup++)

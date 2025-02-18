@@ -136,6 +136,8 @@ local orcus1 = des.map({ halign = "right", valign = "center", map = [[
    des.monster("vampire")
    des.monster("vampire lord")
    des.monster("vampire lord")
+   des.monster("vampire royal")
+   des.monster("vampire royal")
    -- A few more for the party
    des.monster()
    des.monster()

@@ -9,7 +9,7 @@
 #
 #       Visual Studio Compilers Tested:
 #            - Microsoft Visual Studio 2019 Community Edition v 16.11.42
-#            - Microsoft Visual Studio 2022 Community Edition v 17.12.4
+#            - Microsoft Visual Studio 2022 Community Edition v 17.13.0
 #
 #==============================================================================
 #   This is used for building two distinct executables of NetHack:
@@ -144,7 +144,7 @@ GIT_AVAILABLE=Y
 #==============================================================================
 #
 #  The version of the game this Makefile was designed for
-NETHACK_VERSION="2.1.0"
+NETHACK_VERSION="2.2.0"
 
 # A brief version for use in macros
 NHV=$(NETHACK_VERSION:.=)
@@ -585,6 +585,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\bigrm-20.lua \
 	$(DAT)\bigrm-21.lua \
 	$(DAT)\bridge.lua   \
+	$(DAT)\invoke.lua   \
 	$(DAT)\dragons.lua   \
 	$(DAT)\castle-1.lua \
 	$(DAT)\castle-2.lua \
@@ -646,6 +647,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\minetn-9.lua \
 	$(DAT)\minetn-10.lua \
 	$(DAT)\minetn-11.lua \
+	$(DAT)\minetn-12.lua \
 	$(DAT)\Mon-fila.lua \
 	$(DAT)\Mon-filb.lua \
 	$(DAT)\Mon-goal.lua \
@@ -690,6 +692,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\soko1-6.lua  \
 	$(DAT)\soko1-7.lua  \
 	$(DAT)\soko1-8.lua  \
+	$(DAT)\soko1-9.lua  \
 	$(DAT)\soko2-1.lua  \
 	$(DAT)\soko2-2.lua  \
 	$(DAT)\soko2-3.lua  \
@@ -729,6 +732,11 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\tower1.lua   \
 	$(DAT)\tower2.lua   \
 	$(DAT)\tower3.lua   \
+    $(DAT)\Und-fila.lua \
+    $(DAT)\Und-filb.lua \
+    $(DAT)\Und-goal.lua \
+    $(DAT)\Und-loca.lua \
+    $(DAT)\Und-strt.lua \
 	$(DAT)\Val-fila.lua \
 	$(DAT)\Val-filb.lua \
 	$(DAT)\Val-goal.lua \
@@ -744,8 +752,14 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\Wiz-loca.lua \
 	$(DAT)\Wiz-strt.lua \
 	$(DAT)\wizard1.lua  \
-	$(DAT)\wizard2.lua  \
+	$(DAT)\wizard2-1.lua  \
+	$(DAT)\wizard2-2.lua  \
 	$(DAT)\wizard3.lua  \
+	$(DAT)\wizard4.lua  \
+	$(DAT)\wizard5.lua  \
+	$(DAT)\wizard6.lua  \
+	$(DAT)\wizard7.lua  \
+	$(DAT)\wizard8.lua  \
 	$(DAT)\tut-1.lua    \
 	$(DAT)\tut-2.lua    \
 	$(DAT)\tomb-1.lua		\
@@ -1174,7 +1188,7 @@ rc=Rc.exe
 #
 # Recently tested versions:
 TESTEDVS2019 = 14.29.30157.0
-TESTEDVS2022 = 14.42.34436.0
+TESTEDVS2022 = 14.43.34808.0
 
 VS2019CUR = $(TESTEDVS2019:.=)
 VS2022CUR = $(TESTEDVS2022:.=)
@@ -2517,10 +2531,10 @@ $(SndWavDir)\sa2_xplevelup.wav: $(SndWavDir)\sa2_xplevelup.uu $(U)uudecode.exe
 #===============================================================================
 
 PKGFILES = nerfhackrc.template Guidebook.txt license NerfHack.exe NetHack.txt \
-	 NerfHackW.exe opthelp nhdat210 record symbols sysconf.template
+	 NerfHackW.exe opthelp nhdat220 record symbols sysconf.template
 FILESTOZIP = $(BinDir)\nerfhackrc.template $(BinDir)\Guidebook.txt $(BinDir)\license \
 	$(BinDir)\NerfHack.exe $(BinDir)\NetHack.txt $(BinDir)\NerfHackW.exe \
-	$(BinDir)\opthelp $(BinDir)\nhdat210 $(BinDir)\record \
+	$(BinDir)\opthelp $(BinDir)\nhdat220 $(BinDir)\record \
 	$(BinDir)\symbols $(BinDir)\sysconf.template 
 DBGSYMS = NerfHack.PDB NerfHackW.PDB
 PDBTOZIP = $(BinDir)\NerfHack.PDB $(BinDir)\NerfHackW.PDB

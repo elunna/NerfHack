@@ -760,7 +760,7 @@
           list of discovered objects in a  particular  class)  commands  to
           offer  a  menu  of several sorting alternatives (which sets a new
           value for the sortdiscoveries option); also for "#vanquished" and
-          "#genocided" commands to offer a sorting menu.
+          "#exiled" commands to offer a sorting menu.
 
           A  few  other commands (eat food, offer sacrifice, apply tinning-
           kit, drink/quaff, dip, tip container) use the `m' prefix to  skip
@@ -1440,8 +1440,8 @@
      #force
           Force a lock.  Autocompletes.  Default key is `M-f'.
 
-     #genocided
-          List  any  monster  types  which have been genocided.  In explore
+     #exiled
+          List  any  monster  types  which have been exiled.  In explore
           mode and debug  mode  it  also  shows  types  which  have  become
           extinct.
 
@@ -1458,13 +1458,13 @@
 
           The display order is the same as is used by #vanquished.  The `m'
           prefix brings up a menu of available sorting  orders,  and  doing
-          that  for  either #genocided or #vanquished changes the order for
+          that  for  either #exiled or #vanquished changes the order for
           both.
 
           If the sorting order is "count high to  low"  or  "count  low  to
           high"  (which  are  applicable  for  #vanquished),  that  will be
-          ignored for #genocided and alphabetical  will  be  used  instead.
-          The menu omits those two choices when used for #genocide.
+          ignored for #exiled and alphabetical  will  be  used  instead.
+          The menu omits those two choices when used for #exile.
 
           Autocompletes.  Default key is `M-g'.
 
@@ -1946,7 +1946,7 @@
           Note that the vanquished  monsters  list  includes  all  monsters
           killed  by  traps and each other as well as by you, and omits any
           which got removed from the game without being killed (perhaps  by
-          genocide,  or by a mollified shopkeeper dismissing summoned Kops)
+          exile,  or by a mollified shopkeeper dismissing summoned Kops)
           or were already corpses when placed on the map.
 
           Using the "request menu" prefix prior to #vanquished brings up  a
@@ -1954,7 +1954,7 @@
           monsters list contains at least two types of  monsters).   Which-
           ever  ordering  is  picked  gets  assigned  to the sortvanquished
           option so is remembered for subsequent #vanquished requests.  The
-          "#genocided" command shares this sorting order.
+          "#exiled" command shares this sorting order.
 
           During  end-of-game  disclosure,  when asked whether to show van-
           quished monsters answering `a' will let you choose from the  sort
@@ -2013,7 +2013,7 @@
           Wipe off your face.  Autocompletes.  Default key is `M-w'.
 
      #wizborn
-          Show monster birth,  death,  genocide,  and  extinct  statistics.
+          Show monster birth,  death,  exile,  and  extinct  statistics.
           Debug mode only.
 
      #wizbury
@@ -2200,7 +2200,7 @@
 
      M-f  #force
 
-     M-g  #genocided
+     M-g  #exiled
 
      M-i  #invoke
 
@@ -3729,9 +3729,9 @@
      prize" achievement (see Achievements below).)
 
           There are several other challenges tracked by the  game.   It  is
-     possible  to  eliminate  one  or more species of monsters by genocide;
+     possible  to  eliminate  one  or more species of monsters by exile;
      playing without this feature is considered a challenge.  When the game
-     offers  you  an opportunity to genocide monsters, you may respond with
+     offers  you  an opportunity to exile monsters, you may respond with
      the monster type "none" if you want to decline.  You  can  change  the
      form  of  an item into another item of the same type ("polypiling") or
      the form of your own body into another creature ("polyself") by  wand,
@@ -4319,7 +4319,7 @@
             i - disclose your inventory;
             a - disclose your attributes;
             v - summarize monsters that have been vanquished;
-            g - list monster species that have been genocided;
+            g - list monster species that have been exiled;
             c - display your conduct; also achievements, if any;
             o - display dungeon overview.
 
@@ -4331,7 +4331,7 @@
             + - disclose it without prompting;
             - - do not disclose it and do not prompt.
 
-       The  listings  of  vanquished monsters and of genocided types can be
+       The  listings  of  vanquished monsters and of exiled types can be
        sorted, so there are two additional choices for `v' and `g':
 
             ? - prompt you and default to ask on the prompt;
@@ -4349,7 +4349,7 @@
 
        (for example "disclose:yi na +v -g o") The example sets inventory to
        prompt  and  default to yes, attributes to prompt and default to no,
-       vanquished to disclose without prompting, genocided to not  disclose
+       vanquished to disclose without prompting, exiled to not  disclose
        and  not prompt, conduct to implicitly prompt and default to no, and
        overview to disclose without prompting.
 
@@ -5146,7 +5146,7 @@
 
      sortvanquished
        Controls the sorting behavior for the output of the #vanquished com-
-       mand and also for the #genocided command.  Persistent.
+       mand and also for the #exiled command.  Persistent.
 
        The possible values are:
 
@@ -5174,7 +5174,7 @@
        z - order by count, low to high; ties broken by internal index.
 
        Can be interactively set via the `m O' command or via using the  `m'
-       prefix  before either the #vanquished command or the #genocided com-
+       prefix  before either the #vanquished command or the #exiled com-
        mand.
 
      sounds

@@ -141,6 +141,7 @@ SPEC_LEVS = 		\
 	baalz-?.lua 	\
 	bigrm-*.lua 	\
 	bridge.lua		\
+	invoke.lua		\
 	dragons.lua		\
 	castle-?.lua 	\
 	fakewiz?.lua 	\
@@ -164,6 +165,7 @@ SPEC_LEVS = 		\
 	tower?.lua 		\
 	valley-?.lua 	\
 	wizard?.lua 	\
+	wizard2-?.lua 	\
 	nhcore.lua 		\
 	nhlib.lua 		\
 	themerms.lua 	\

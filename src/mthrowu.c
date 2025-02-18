@@ -127,7 +127,7 @@ thitu(
         else
             You("are hit by %s%s", onm, exclam(dam));
 
-        if (is_acid && Acid_resistance) {
+        if (is_acid && fully_resistant(ACID_RES)) {
             pline("It doesn't seem to hurt you.");
             monstseesu(M_SEEN_ACID);
         } else if (obj && stone_missile(obj)
@@ -180,7 +180,7 @@ thitu(
                 if (!rn2(3))
                     (void) destroy_items(&gy.youmonst, AD_ACID, dam);
             }
-            losehp(dam, knm, kprefix); /* acid damage */
+            losehp(resist_reduce(dam, ACID_RES), knm, kprefix); /* acid damage */
             exercise(A_STR, FALSE);
         }
         return 1;

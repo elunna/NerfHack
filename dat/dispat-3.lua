@@ -52,7 +52,6 @@ des.teleport_region({region={01,00,74,19}, exclude = {26,00,74,19} })
 
 -- Protect the walls
 des.non_diggable(selection.area(00,00,48,19))
-des.non_passwall(selection.area(00,00,48,19));
 
 -- Maze the rest of the level
 des.mazewalk(00,10,"west")
@@ -104,21 +103,14 @@ des.gold();
 des.gold();
 des.gold();
 
--- Some random gems
+-- Some random loot
+des.object("[")
+des.object("[")
+des.object(")")
+des.object(")")
 des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
+des.object("!")
+des.object("?")
 
 -- Some random traps
 des.trap("random")
@@ -136,17 +128,11 @@ des.trap("fire")
 
 -- Gold in the outer vaults
 des.monster("gold golem",07,04)
-des.object({ x = 07, y = 04 })
 des.monster("gold golem",07,02)
-des.object({ x = 07, y = 02 })
 des.monster("gold golem",03,04)
-des.object({ x = 03, y = 04 })
 des.monster("gold golem",07,09)
-des.object({ x = 07, y = 09 })
 des.monster("gold golem",01,18)
-des.object({ x = 01, y = 18 })
 des.monster("gold golem",09,11)
-des.object({ x = 09, y = 11 })
 
 -- A river of gold?
 des.gold({ x = 15, y = 02 });
@@ -207,21 +193,21 @@ des.monster("iron golem",25,10)
 des.monster({id="Dispater", x=39, y=10})
 
 -- His court
-des.monster({ id = "nalfeshnee", x=38, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "nalfeshnee", x=38, y=11, peaceful=0, asleep = 1 })
-des.monster({ id = "succubus", x=39, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "incubus", x=39, y=11, peaceful=0, asleep = 1 })
+des.monster({ id = "nalfeshnee", x=38, y=09, peaceful=0 })
+des.monster({ id = "nalfeshnee", x=38, y=11, peaceful=0 })
+des.monster({ id = "succubus", x=39, y=09, peaceful=0 })
+des.monster({ id = "incubus", x=39, y=11, peaceful=0 })
 --MONSTER:''',"diamond golem",(35,09),asleep,hostile
 --MONSTER:''',"diamond golem",(35,11),asleep,hostile
-des.monster({ id = "iron golem", x=35, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "iron golem", x=35, y=11, peaceful=0, asleep = 1 })
+des.monster({ id = "iron golem", x=35, y=09, peaceful=0 })
+des.monster({ id = "iron golem", x=35, y=11, peaceful=0 })
 
 -- His guards
-des.monster({ id = "ice devil", x=31, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "ice devil", x=33, y=09, peaceful=0, asleep = 1 })
-des.monster({ id = "ice devil", x=31, y=11, peaceful=0, asleep = 1 })
-des.monster({ id = "ice devil", x=31, y=11, peaceful=0, asleep = 1 })
-des.monster({ id = "ice devil", x=30, y=10, peaceful=0, asleep = 1 })
+des.monster({ id = "ice devil", x=31, y=09, peaceful=0 })
+des.monster({ id = "ice devil", x=33, y=09, peaceful=0 })
+des.monster({ id = "ice devil", x=31, y=11, peaceful=0 })
+des.monster({ id = "ice devil", x=31, y=11, peaceful=0 })
+des.monster({ id = "ice devil", x=30, y=10, peaceful=0 })
 
 -- Some doorbells
 des.trap("board", 27,09)
@@ -246,48 +232,27 @@ des.trap("fire", 37,13)
 -- Northern antichamber
 des.monster("&",40,07)
 des.monster("&",38,06)
-des.object("chest",41,06)
-des.object("chest",41,07)
 
 -- Southern antichamber
 des.monster("&",40,13)
 des.monster("&",38,14)
-des.object("chest",41,14)
-des.object("chest",41,13)
 
 -- Escape Room
 des.trap("polymorph", 44,15)
 des.trap("magic", 45,15)
 
 -- MONSTER:''',"diamond golem",(43,15),asleep,hostile
-des.monster({ id = "iron golem", x=43, y=15, peaceful=0, asleep = 1 })
+des.monster({ id = "iron golem", x=43, y=15, peaceful=0 })
 
 -- Northern Vault
 des.trap("board", 40,04)
 
 des.gold({ x = 40, y = 03 });
-des.object("*",40,03)
-des.object("*",40,03)
-
 des.gold({ x = 41, y = 03 });
-des.object("*",41,03)
-des.object("*",41,03)
-
 des.gold({ x = 42, y = 03 });
-des.object("*",42,03)
-des.object("*",42,03)
-
 des.gold({ x = 40, y = 04 });
-des.object("*",40,04)
-des.object("*",40,04)
-
 des.gold({ x = 41, y = 04 });
-des.object("*",41,04)
-des.object("*",41,04)
-
 des.gold({ x = 42, y = 04 });
-des.object("*",42,04)
-des.object("*",42,04)
 
 des.monster("giant mimic",42,04)
 

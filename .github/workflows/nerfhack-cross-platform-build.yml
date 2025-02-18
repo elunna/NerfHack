@@ -54,7 +54,7 @@ jobs:
         PDCURSES_TOP: ../submodules/pdcurses
         LUA_VERSION: 5.4.6
         TRAVIS_COMPILER: 1
-        ZIP_NAME: NerfHack_2.1.0.zip
+        ZIP_NAME: NerfHack_2.2.0.zip
     steps:
     - uses: actions/checkout@v4
       with:
@@ -77,12 +77,12 @@ jobs:
       with:
         type: 'zip'
         path: binary/
-        filename: NerfHack_2.1.0.zip
+        filename: NerfHack_2.2.0.zip
     - name: release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          NerfHack_2.1.0.zip
+          NerfHack_2.2.0.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

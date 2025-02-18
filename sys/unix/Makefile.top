@@ -103,6 +103,7 @@ SPEC_LEVS = 	 	\
 	baalz-?.lua		\
 	bigrm-*.lua 	\
 	bridge.lua		\
+	invoke.lua      \
 	dragons.lua		\
 	castle-?.lua 	\
 	demo-?.lua 		\
@@ -133,6 +134,7 @@ SPEC_LEVS = 	 	\
 	valley-?.lua 	\
 	water.lua 		\
 	wizard?.lua 	\
+	wizard2-?.lua 	\
 	yeenog-?.lua
 
 QUEST_LEVS = ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua
@@ -436,6 +438,25 @@ fetch-lua-http:
 	  curl -R -O http://$(LUA_URL)/lua-$(LUA_VERSION).tar.gz && \
 	  tar zxf lua-$(LUA_VERSION).tar.gz && \
 	  rm -f lua-$(LUA_VERSION).tar.gz )
+
+#
+# This is not part of the dependency build hierarchy.
+# It requires an explicit "make fetch-docs".
+fetch-docs:
+	@FDroot=https://www.nethack.org; \
+	FDvmajor=`awk '/VERSION_MAJOR/{print $$3}' < include/patchlevel.h`; \
+	FDvminor=`awk '/VERSION_MINOR/{print $$3}' < include/patchlevel.h`; \
+	RDIR="NetHack-$${FDvmajor}.$${FDvminor}"; \
+	echo "Fetching directory information for $${RDIR}"; \
+	RDOCFILES=`curl --no-progress-meter $${FDroot}/cgi-bin/lsautodocs?$$RDIR`; \
+	FDbase="$${FDroot}/autodocs/$${RDIR}"; \
+	set -- $${RDOCFILES}; \
+	echo "Fetching $$# files"; \
+	while [ $$# -gt 0 ]; do \
+	  echo "Downloading: '$$1' from '$${FDbase}/$$1'"; \
+	  curl --no-progress-meter -R $${FDbase}/$$1 -o doc/$$1; \
+	  shift; \
+	done
 
 # 'make update' can be used to install a revised version after making
 # customizations or such.  Unlike 'make install', it doesn't delete everything

@@ -12,8 +12,8 @@
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,1,0,0
- PRODUCTVERSION 2,1,0,0
+ FILEVERSION 2,2,0,0
+ PRODUCTVERSION 2,2,0,0
  FILEFLAGSMASK 0x1fL
 #ifdef _DEBUG
  FILEFLAGS 0x9L
@@ -29,13 +29,13 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "FileDescription", "NerfHack for Windows - TTY Interface\0"
-            VALUE "FileVersion", "2.1.0\0"
+            VALUE "FileVersion", "2.2.0\0"
             VALUE "InternalName", "NerfHack\0"
             VALUE "LegalCopyright", "Copyright (C) 1985 - 2025.  By Stichting Mathematisch Centrum and M. Stephenson.  See license for details.\0"
             VALUE "OriginalFilename", "NerfHack.exe\0"
             VALUE "PrivateBuild", "050107\0"
             VALUE "ProductName", "NerfHack\0"
-            VALUE "ProductVersion", "2.1.0\0"
+            VALUE "ProductVersion", "2.2.0\0"
         END
     END
     BLOCK "VarFileInfo"

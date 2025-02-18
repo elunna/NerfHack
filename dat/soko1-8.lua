@@ -1,84 +1,87 @@
 --
--- "Running Rings Around"
--- Ported from NetHack Fourk
+-- Steve Melenchuk <smelenchuk@gmail.com>
+-- Ported from GruntHack
 -- Converted to lua by hackemslashem
 --
-
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noteleport", "premapped", "sokoban", "solidify", "cold");
+
 des.map([[
-       ----        
-    ----..----     
-    |........|     
-  ---.|......|     
-  F...|......|     
-  F....-..-..----- 
-  --.............| 
-   |..-....--....| 
-   |.....----....| 
-   |---|.|-------| 
- ---|  |.||.....---
- |..----..|.....+.|
- |........|.....|-|
- |.|------|.....+.|
--|.|      |.....|-|
-F..|------|.....+.|
-F.........+.....|--
------------------  
+    ----                     
+    -..--                    
+ ----...---------------------
+ F..-.......................|
+--...-..------------------|.|
+|.................F       |.|
+|..-....-...----.-| -------.|
+--.-..--...-......---.....|.|
+--.---..--.-..-...|.+.....|.|
+--.- -....---.-...---.....|.|
+--.---..-..-....--|.+.....+.|
+--.-..-.--......-----.....---
+F...........-....F|.+.....|  
+|...-.....-......|---.....|  
+-----.........-..|  -------  
+    |..-..-..--..|           
+    --------------           
 ]]);
 
-des.stair("down",05,04)
-des.region(selection.area(00,00,18,17),"lit");
-des.non_diggable(selection.area(00,00,18,17));
-des.non_passwall(selection.area(00,00,18,17));
+des.stair("down", 15, 15);
+des.region(selection.area(00,00,28,16),"lit");
+des.non_diggable(selection.area(00,00,28,16));
+des.non_passwall(selection.area(00,00,28,16));
 
 -- Doors
-des.door("locked", 16,11)
-des.door("locked", 16,13)
-des.door("locked", 16,15)
-des.door("locked", 10,16)
+des.door("locked", 26,10)
+des.door("closed", 20,08)
+des.door("closed", 20,10)
+des.door("closed", 20,12)
 
 -- Boulders
-des.object("boulder", 06,02)
-des.object("boulder", 09,03)
-des.object("boulder", 11,03)
-des.object("boulder", 08,04)
-des.object("boulder", 10,04)
-des.object("boulder", 05,05)
-des.object("boulder", 08,05)
-des.object("boulder", 09,05)
-des.object("boulder", 12,05)
-des.object("boulder", 07,06)
-des.object("boulder", 14,06)
-des.object("boulder", 05,07)
-des.object("boulder", 07,07)
-des.object("boulder", 08,07)
-des.object("boulder", 09,07)
-des.object("boulder", 13,07)
-des.object("boulder", 15,07)
+des.object("boulder", 06,03);
+des.object("boulder", 07,03);
+des.object("boulder", 07,04);
+des.object("boulder", 02,05);
+des.object("boulder", 08,05);
+des.object("boulder", 11,05);
+des.object("boulder", 05,06);
+des.object("boulder", 15,08);
+des.object("boulder", 13,09);
+des.object("boulder", 16,09);
+des.object("boulder", 13,10);
+des.object("boulder", 11,11);
+des.object("boulder", 04,12);
+des.object("boulder", 06,12);
+des.object("boulder", 09,12);
+des.object("boulder", 15,12);
+des.object("boulder", 07,13);
+des.object("boulder", 08,13);
+des.object("boulder", 09,13);
+des.object("boulder", 11,13);
+des.object("boulder", 14,13);
+des.object("boulder", 11,14);
 
 -- Traps
 -- prevent monster generation over the (filled) pits
-des.exclusion({ type = "monster-generation", region = { 08,09, 08,10 } });
-des.trap("hole", 08,09)
-des.trap("hole", 08,10)
-des.exclusion({ type = "monster-generation", region = { 04,12, 07,12 } });
-des.trap("hole", 04,12)
-des.trap("hole", 05,12)
-des.trap("hole", 06,12)
-des.trap("hole", 07,12)
-des.exclusion({ type = "monster-generation", region = { 02,13, 02,15 } });
-des.trap("hole", 02,13)
-des.trap("hole", 02,14)
-des.trap("hole", 02,15)
-des.exclusion({ type = "monster-generation", region = { 03,16, 09,16 } });
-des.trap("hole", 03,16)
-des.trap("hole", 04,16)
-des.trap("hole", 05,16)
-des.trap("hole", 06,16)
-des.trap("hole", 07,16)
-des.trap("hole", 08,16)
-des.trap("hole", 09,16)
+des.exclusion({ type = "monster-generation", region = { 08,03, 25,03 } });
+des.trap("hole", 08,03)
+des.trap("hole", 09,03)
+des.trap("hole", 10,03)
+des.trap("hole", 11,03)
+des.trap("hole", 12,03)
+des.trap("hole", 13,03)
+des.trap("hole", 14,03)
+des.trap("hole", 15,03)
+des.trap("hole", 16,03)
+des.trap("hole", 17,03)
+des.trap("hole", 18,03)
+des.trap("hole", 19,03)
+des.trap("hole", 20,03)
+des.trap("hole", 21,03)
+des.trap("hole", 22,03)
+des.trap("hole", 23,03)
+des.trap("hole", 24,03)
+des.trap("hole", 25,03)
 
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
 des.monster({ id = "giant mimic", appear_as = "obj:boulder" });
@@ -91,39 +94,27 @@ des.object({ class = "%" });
 des.object({ class = "=" });
 des.object({ class = "/" });
 
--- Rewards
-des.region({ region={11,10,15,16}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
+des.region({ region={21,07,25,13}, lit = 1, type = "zoo", filled = 1, irregular = 1 });
 
 -- Ice must be created after the zoo, otherwise it interferes with monster creation.
 des.replace_terrain({ region={0,0, 75,19}, fromterrain=".", toterrain="I", chance=15 })
 
 -- Rewards
 
-local place = selection.new();
-place:set(17,11);
-place:set(17,13);
-place:set(17,15);
+place = selection.new();
+place:set(19,08);
+place:set(19,10);
+place:set(19,12);
 
 local pt = selection.rndcoord(place);
-
-
-des.object({ id = "sack", coord = pt, buc="uncursed",
-             contents = function()
-                des.object({ id = "magic marker" })
-                des.object({ id = "ring of teleport control" })
-                des.object({ id = "ring of polymorph control" })
-                if percent(75) then
-                    des.object("=")
-                end
-                if percent(25) then
-                   des.object("=")
-                end
-
-             end
-});
-
+local prizes = { { id = "bag of holding" },
+                 { id = "amulet of reflection"},
+                 { id = "cloak of magic resistance"},
+                 { id = "magic marker"} }
+shuffle(prizes)
+des.object({ id = prizes[1].id, coord=pt, buc="not-cursed", achievement=1 });
 des.engraving({ coord = pt, type = "burn", text = "Elbereth" });
 des.object({ id = "scroll of scare monster", coord = pt, buc = "cursed" });
 
 -- Ruling steward of Sokoban
-des.monster({ id = "Wintercloak", x = 11, y = 16, waiting = 1 });
+des.monster({ id = "Wintercloak", x = 25, y = 10, waiting = 1 });

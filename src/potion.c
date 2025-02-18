@@ -121,10 +121,15 @@ decr_resistance(long* which, int incr)
 int
 how_resistant(int which)
 {
-    if (extrinsic_res(which))
+    if (extrinsic_res(which)) {
+        /* Acid resistance is capped at 50% unless you are a form/role
+         * which is naturally acid resistant */
+        if (which == ACID_RES)
+            return 50;
         return 100;
-    else
+    } else {
       return intrinsic_res(which);
+  }
 }
 
 int
@@ -951,8 +956,7 @@ peffect_hallucination(struct obj *otmp)
 staticfn void
 peffect_water(struct obj *otmp)
 {
-    if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
-        rehydrate(FALSE);
+    rehydrate(rn1(75, 25));
 
     if (!otmp->blessed && !otmp->cursed) {
         pline("This tastes like %s.", hliquid("water"));
@@ -1078,14 +1082,14 @@ peffect_see_invisible(struct obj *otmp)
     int amt, msg = Invisible && !Blind;
     boolean is_spell = otmp->oclass == SPBOOK_CLASS;
     int role_skill;
-    
+
     if (is_spell)
         amt = rn1(40, 21);
     else
-        
-    
+
+
     if (is_spell) {
-        role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT 
+        role_skill = Role_if(PM_CARTOMANCER) ? P_EXPERT
                                                  : P_SKILL(P_CLERIC_SPELL);
         if (Hallucination)
             pline("Lux revelare!");
@@ -1355,12 +1359,13 @@ peffect_gain_ability(struct obj *otmp)
     } else {      /* If blessed, increase all; if not, try up to */
         int itmp; /* 6 times to find one which can be increased. */
         int ii, i = -1;   /* increment to 0 */
+        boolean gainall = otmp->blessed && !otmp->odiluted;
         for (ii = A_MAX; ii > 0; ii--) {
-            i = (otmp->blessed ? i + 1 : rn2(A_MAX));
+            i = (gainall ? i + 1 : rn2(A_MAX));
             /* only give "your X is already as high as it can get"
                message on last attempt (except blessed potions) */
-            itmp = (otmp->blessed || ii == 1) ? 0 : -1;
-            if (adjattrib(i, 1, itmp) && !otmp->blessed)
+            itmp = (gainall || ii == 1) ? 0 : -1;
+            if (adjattrib(i, 1, itmp) && !gainall)
                 break;
         }
     }
@@ -1444,7 +1449,8 @@ peffect_gain_level(struct obj *otmp)
 
         gp.potion_unkn++;
         /* they went up a level */
-        if (on_lvl_1 ? u.uhave.amulet : Can_rise_up(u.ux, u.uy, &u.uz)) {
+        if (!otmp->odiluted && on_lvl_1 ? u.uhave.amulet
+                                        : Can_rise_up(u.ux, u.uy, &u.uz)) {
             int newlev;
             d_level newlevel;
 
@@ -1466,6 +1472,7 @@ peffect_gain_level(struct obj *otmp)
             goto_level(&newlevel, FALSE, FALSE, FALSE);
         } else {
             You("have an uneasy feeling.");
+            peffect_levitation(otmp);
         }
         return;
     }
@@ -1491,7 +1498,7 @@ peffect_extra_healing(struct obj *otmp)
 {
     int amt = (16 + d(4 + 2 * bcsign(otmp), 8))
                        / (otmp->odiluted ? 2 : 1);
-    int gain = (otmp->blessed ? 5 : !otmp->cursed ? 2 : 0) 
+    int gain = (otmp->blessed ? 5 : !otmp->cursed ? 2 : 0)
                / (otmp->odiluted ? 2 : 1);
 
     You_feel("much better.");
@@ -1513,7 +1520,7 @@ peffect_full_healing(struct obj *otmp)
     healup(amt, gain, !otmp->cursed, TRUE);
     You_feel("%s healed.", Upolyd ? (u.mh == u.mhmax ? "completely" : "mostly")
                                       : (u.uhp == u.uhpmax ? "completely" : "mostly"));
-    
+
     /* Restore one lost level if blessed */
     if (otmp->blessed && !otmp->odiluted && u.ulevel < u.ulevelmax) {
             /* when multiple levels have been lost, drinking
@@ -1683,7 +1690,7 @@ peffect_oil(struct obj *otmp)
 staticfn void
 peffect_acid(struct obj *otmp)
 {
-    if (Acid_resistance) {
+    if (fully_resistant(ACID_RES)) {
         /* Not necessarily a creature who _likes_ acid */
         pline("This tastes %s.", Hallucination ? "tangy" : "sour");
     } else {
@@ -1694,7 +1701,7 @@ peffect_acid(struct obj *otmp)
                                                          : " like acid");
         dmg = d(otmp->cursed ? 2 : 1, otmp->blessed ? 4 : 8);
         dmg /= (otmp->odiluted ? 2 : 1);
-
+        dmg = resist_reduce(dmg, ACID_RES);
         losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
         exercise(A_CON, FALSE);
     }
@@ -1757,18 +1764,23 @@ peffect_blood(struct obj *otmp)
             doesn't use violated_vegetarian() to prevent
             duplicated "you feel guilty" messages */
         u.uconduct.unvegetarian++;
-
+        boolean hates_blood = Role_if(PM_MONK) || Role_if(PM_UNDEAD_SLAYER);
         if (!Race_if(PM_DHAMPIR)) {
-            if (u.ualign.type == A_LAWFUL || Role_if(PM_MONK)) {
+            if (u.ualign.type == A_LAWFUL || hates_blood) {
                 You_feel("%sguilty about drinking such a vile liquid.",
-                            Role_if(PM_MONK) ? "especially " : "");
+                         hates_blood ? "especially " : "");
                 u.ugangr++;
                 adjalign(-15);
+                exercise(A_CON, FALSE);
             } else if (u.ualign.type == A_NEUTRAL) {
                 You_feel("guilty.");
                 adjalign(-3);
+                exercise(A_CON, FALSE);
+            } else if (Race_if(PM_ORC)) {
+                pline("Not bad...");
+                adjalign(3);
+                exercise(A_CON, TRUE);
             }
-            exercise(A_CON, FALSE);
         }
         if (Race_if(PM_DHAMPIR)) {
             if (!Unchanging)
@@ -1782,7 +1794,6 @@ peffect_blood(struct obj *otmp)
                 successful_polymorph = polymon(PM_VAMPIRE_BAT);
             else
                 successful_polymorph = polymon(PM_VAMPIRE);
-
             if (successful_polymorph)
                 u.mtimedone = 0;	/* "Permament" change */
         }
@@ -1794,11 +1805,11 @@ peffect_blood(struct obj *otmp)
 }
 
 /* Milk must be ingested to have any effects, it won't
- * create any vapors. cancels various temporary good 
+ * create any vapors. cancels various temporary good
  * and bad status effects in general, like confusion,
- * stunning, and invisibility, but not nausea since 
+ * stunning, and invisibility, but not nausea since
  * drinking milk usually makes nausea worse in real life.
- * 
+ *
  * Severe conditions are NOT cancelled: illness, rabid,
  * lycanthropy, aggravate monster, withering.
  * Deafness don't make sense, so don't cure it.
@@ -1821,16 +1832,16 @@ peffect_milk(struct obj *otmp)
         /* Intentionally same as oil */
         pline("That was smooth!");
     }
-    
+
     /* Cancel bad statuses */
-    
+
     (void) make_hallucinated(0L, TRUE, 0L);
     make_confused(0L, TRUE);
     make_stunned(0L, TRUE);
     /* blindness is cured in the later call to healup() */
-    
+
     /* Also cancel good statuses */
-    
+
     if (u.uspellprot) {
         pline_The("%s haze around you disappears.",
                   hcolor(NH_GOLDEN));
@@ -1868,11 +1879,11 @@ peffect_milk(struct obj *otmp)
         You_feel(Hallucination ? "out of touch with the cosmos."
                                            : "a strange mental dullness.");
     }
-    
+
     /* Also - Unpoly yourself if polyd */
 	if (Upolyd) { /* includes lycanthrope in creature form */
         if (Unchanging && u.mh > 0)
-            Your("amulet grows hot for a moment, then cools.");
+            You_feel("a little %s.", Hallucination ? "normal" : "strange");
         else
             rehumanize();
     }
@@ -2284,17 +2295,20 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                 polyself(POLY_NOFLAGS);
             break;
         case POT_ACID:
-            if (!Acid_resistance) {
+            dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
+            if (!fully_resistant(ACID_RES)) {
                 pline("This burns%s!",
                       obj->blessed ? " a little"
                                    : obj->cursed ? " a lot" : "");
-                dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
+                
+                dmg = resist_reduce(dmg, ACID_RES);
                 losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
-                if (!rn2(3))
-                    erode_armor(&gy.youmonst, ERODE_CORRODE);
-                else if (!rn2(3))
-                    dmg += destroy_items(&gy.youmonst, AD_ACID, dmg);
             }
+            if (!rn2(3))
+                erode_armor(&gy.youmonst, ERODE_CORRODE);
+            else if (!rn2(3))
+                losehp(destroy_items(&gy.youmonst, AD_ACID, dmg),
+                       "potion of acid", KILLED_BY_AN);
             break;
         }
     } else if (hit_saddle && saddle) {
@@ -2451,14 +2465,16 @@ potionhit(struct monst *mon, struct obj *obj, int how)
                     /* should only be by you */
                     if (DEADMONSTER(mon))
                         killed(mon);
-                    else if (is_were(mon->data) && !is_human(mon->data))
+                    else if (is_were(mon->data) && !is_human(mon->data)
+                                                && !is_demon(mon->data))
                         new_were(mon); /* revert to human */
                 } else if (obj->cursed) {
                     angermon = FALSE;
                     if (canseemon(mon))
                         pline("%s looks healthier.", Monnam(mon));
                     healmon(mon, d(2, 6), 0);
-                    if (is_were(mon->data) && is_human(mon->data)
+                    if (is_were(mon->data) && (is_human(mon->data) 
+                                               || is_demon(mon->data))
                         && !Protection_from_shape_changers)
                         new_were(mon); /* transform into beast */
                 }
@@ -2568,7 +2584,7 @@ potionbreathe(struct obj *obj)
 
     if (!breathe) {
         /* currently only acid affects eyes */
-        if (eyes && obj->otyp == POT_ACID && !Acid_resistance) {
+        if (eyes && obj->otyp == POT_ACID && !fully_resistant(ACID_RES)) {
             pline("The fumes sting your %s.", eyestr);
         } else {
             pline("The vapors don't seem to affect you.");
@@ -2794,13 +2810,12 @@ potionbreathe(struct obj *obj)
                 you_were();
                 unambiguous = TRUE;
             }
-        } else if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-            rehydrate(FALSE);
         }
+        rehydrate(rn1(25, 25));
         break;
     case POT_ACID:
         dmg = rnd(4);
-        if (Acid_resistance) {
+        if (fully_resistant(ACID_RES)) {
             if (cansmell) {
                 pline("It smells %s.", Hallucination ? "tangy" : "sour");
                 unambiguous = TRUE;
@@ -2811,7 +2826,7 @@ potionbreathe(struct obj *obj)
                     (eyes ? eyestr : ""),
                     makeplural(body_part(LUNG)));
             showdamage(dmg, TRUE);
-            losehp(dmg, "acid fumes", KILLED_BY);
+            losehp(resist_reduce(dmg, ACID_RES), "acid fumes", KILLED_BY);
             exercise(A_CON, FALSE);
             unambiguous = TRUE;
         }
@@ -3265,12 +3280,13 @@ dodip(void)
             }
             ++drink_ok_extra;
         } else if (is_grung && is_poisonable(obj) && !obj->opoisoned) {
-            Snprintf(qbuf, sizeof(qbuf), "%s%s along your toxic skin??",
+            Snprintf(qbuf, sizeof(qbuf), "%s%s in your toxic skin?",
                      Dip_, flags.verbose ? obuf : shortestname);
             if (y_n(qbuf) == 'y') {
-                    pline("Your sticky poison forms a coating on %s.", the(xname(obj)));
-                    obj->opoisoned = TRUE;
-                    dehydrate(rn1(15, 15));
+                pline("Your sticky poison forms a coating on %s.", the(xname(obj)));
+                obj->opoisoned = TRUE;
+                dehydrate(rn1(15, 15));
+                update_inventory();
                 return ECMD_TIME;
             }
         }
@@ -3459,7 +3475,7 @@ potion_dip(struct obj *obj, struct obj *potion)
             /* oil and lit potions - obviously */
             || (obj->otyp == POT_OIL && obj->lamplit)
             /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
-            || mixture == ACID_VENOM 
+            || mixture == ACID_VENOM
             /* decrease the chance of non-magical mixtures of exploding */
             || (magic ? !rn2(10) : !rn2(20))) {
             /* it would be better to use up the whole stack in advance
@@ -3583,7 +3599,7 @@ potion_dip(struct obj *obj, struct obj *potion)
         }
     }
     boolean draconic = (Is_dragon_scales(obj) && uarmc && obj == uarmc);
-    
+
     if (potion->otyp == POT_PHASING && draconic) {
         poof(potion);
         struct obj pseudo;
@@ -3637,7 +3653,8 @@ potion_dip(struct obj *obj, struct obj *potion)
         return ECMD_TIME;
     }
     /* removing erosion from items */
-    if (potion->otyp == POT_RESTORE_ABILITY && !potion->cursed
+    if (potion->otyp == POT_RESTORE_ABILITY
+        && !potion->cursed && !potion->odiluted
         && erosion_matters(obj) && (obj->oeroded || obj->oeroded2)) {
         obj->oeroded = obj->oeroded2 = 0;
         costly_alteration(obj, COST_DEGRD);
@@ -3649,7 +3666,8 @@ potion_dip(struct obj *obj, struct obj *potion)
     }
 
     /* erodeproofing items */
-    if (potion->otyp == POT_REFLECTION && !potion->cursed
+    if (potion->otyp == POT_REFLECTION
+        && !potion->cursed && !potion->odiluted
         && erosion_matters(obj) && !obj->oerodeproof) {
         obj->oerodeproof = 1;
         costly_alteration(obj, COST_DEGRD);
@@ -3743,10 +3761,7 @@ potion_dip(struct obj *obj, struct obj *potion)
                 useup(singlepotion);
                 /* MRKR: an alchemy smock ought to be */
                 /* some protection against this: */
-                losehp(how_resistant(ACID_RES) > 50
-                    ? rnd(5)
-                    : rnd(10), "alchemic blast", KILLED_BY_AN);
-
+                losehp(resist_reduce(d(6, 6), ACID_RES), "alchemic blast", KILLED_BY_AN);
                 return 1;
             }
 
@@ -3754,6 +3769,15 @@ potion_dip(struct obj *obj, struct obj *potion)
             makeknown(POT_ACID);
             makeknown(singlegem->otyp);
             useup(singlegem);
+
+            /* Luck affects the chance of a pure non-diluted result.
+             * LUCK:   −2 	 0 	+2 	+5 	+8 	+11
+             * CHANCE: 0.3% 	12.5% 	24.7% 	36.9% 	49.1% 	61.3%
+             */
+            if (rnl(8) == 0)
+                singlepotion->odiluted = 0;
+            else
+                singlepotion->odiluted = 1;
         }
 
         costly_alteration(singlepotion, COST_NUTRLZ);

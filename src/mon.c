@@ -39,6 +39,8 @@ staticfn void unpoly_monster(struct monst *);
 staticfn int cham_depth_appropriate(struct monst *);
 staticfn boolean card_drop(struct monst *);
 staticfn void msummon_dies(struct monst *);
+staticfn void cthulhu_dies(struct monst *);
+staticfn void deathwail(struct monst *);
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -103,7 +105,7 @@ sanity_check_single_mon(
             return;
         }
         if (chk_geno && (svm.mvitals[mndx].mvflags & G_GENOD) != 0)
-            impossible("genocided %s in play (%s)",
+            impossible("exiled %s in play (%s)",
                        pmname(mptr, Mgender(mtmp)), msg);
         if (mtmp->mtame && !mtmp->mpeaceful)
             impossible("tame %s is not peaceful (%s)",
@@ -442,6 +444,7 @@ undead_to_corpse(int mndx)
     case PM_DHAMPIR:
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL:
     case PM_VAMPIRE_MAGE:
     case PM_HUMAN_ZOMBIE:
     case PM_HUMAN_MUMMY:
@@ -481,6 +484,9 @@ genus(int mndx, int mode)
     case PM_CHIEFTAIN:
         mndx = mode ? PM_BARBARIAN : PM_HUMAN;
         break;
+    case PM_DUELIST:
+        mndx = mode ? PM_CARTOMANCER : PM_HUMAN;
+        break;
     case PM_NEANDERTHAL:
         mndx = mode ? PM_CAVE_DWELLER : PM_HUMAN;
         break;
@@ -507,6 +513,9 @@ genus(int mndx, int mode)
         break;
     case PM_GUIDE:
         mndx = mode ? PM_TOURIST : PM_HUMAN;
+        break;
+    case PM_EXTERMINATOR:
+        mndx = mode ? PM_UNDEAD_SLAYER : PM_HUMAN;
         break;
     case PM_APPRENTICE:
         mndx = mode ? PM_WIZARD : PM_HUMAN;
@@ -642,6 +651,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_DHAMPIR:
     case PM_VAMPIRE:
     case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL:
     case PM_VAMPIRE_MAGE:
         /* include mtmp in the mkcorpstat() call */
         num = undead_to_corpse(mndx);
@@ -724,13 +734,13 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
         free_mgivenname(mtmp);
         break;
     case PM_WAX_GOLEM:
-        num = d(2,4);
+        num = d(1,3);
         while (num--)
             obj = mksobj_at(WAX_CANDLE, x, y, TRUE, FALSE);
         free_mgivenname(mtmp);
         break;
     case PM_PLASTIC_GOLEM:
-        num = d(2, 2);
+        num = d(1, 3);
         while (num--)
             obj = mksobj_at(CREDIT_CARD, x, y, TRUE, FALSE);
         free_mgivenname(mtmp);
@@ -807,9 +817,11 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_COYOTE:
     case PM_WEREJACKAL:
     case PM_LITTLE_DOG:
-    case PM_DINGO:
+    case PM_WARG_PUP:
     case PM_DOG:
     case PM_LARGE_DOG:
+    case PM_REVENANT_PUP:
+    case PM_REVENANT_HOUND:
     case PM_WOLF:
     case PM_WEREWOLF:
     case PM_WINTER_WOLF_CUB:
@@ -818,6 +830,8 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_HELL_HOUND_PUP:
     case PM_BARGHEST:
     case PM_HELL_HOUND:
+    case PM_VULPENFERNO:
+    case PM_WEREDEMON:
     case PM_GAS_SPORE:
     case PM_FLOATING_EYE:
     case PM_FREEZING_SPHERE:
@@ -910,7 +924,6 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_GIANT_RAT:
     case PM_PACK_RAT:
     case PM_HEDGEHOG:
-    case PM_RABBIT:
     case PM_WERERAT:
     case PM_RAT:
     case PM_ROCK_MOLE:
@@ -960,8 +973,12 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_COUATL:
     case PM_ALEAX:
     case PM_ANGEL:
+    case PM_DARK_ANGEL:
     case PM_KI_RIN:
     case PM_ARCHON:
+    case PM_MOVANIC_DEVA:
+    case PM_MONADIC_DEVA:
+    case PM_ASTRAL_DEVA:
     case PM_BAT:
     case PM_GIANT_BAT:
     case PM_RAVEN:
@@ -1005,6 +1022,9 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_GNOMISH_WIZARD:
     case PM_GNOME_RULER:
     case PM_GNOLL:
+    case PM_GNOLL_WARRIOR:
+    case PM_GNOLL_CHIEFTAIN:
+    case PM_GNOLL_SHAMAN:
     case PM_GIANT:
     case PM_STONE_GIANT:
     case PM_HILL_GIANT:
@@ -1014,13 +1034,16 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_STORM_GIANT:
     case PM_TITAN:
     case PM_MINOTAUR:
+    case PM_ELDER_MINOTAUR:
     case PM_JABBERWOCK:
     case PM_KEYSTONE_KOP:
     case PM_KOP_SERGEANT:
     case PM_KOP_LIEUTENANT:
     case PM_KOP_KAPTAIN:
     case PM_LICH:
+    case PM_WORM_THAT_WALKS:
     case PM_DEMILICH:
+    case PM_EYE_OF_FEAR_AND_FLAME:
     case PM_MASTER_LICH:
     case PM_ARCH_VILE:
     case PM_ARCH_LICH:
@@ -1069,8 +1092,10 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_STAR_VAMPIRE:
     case PM_VLAD_THE_IMPALER:
     case PM_BARROW_WIGHT:
+    case PM_BODAK:
     case PM_WRAITH:
     case PM_NAZGUL:
+    case PM_SLAUGHTER_WIGHT:
     case PM_XORN:
     case PM_MONKEY:
     case PM_APE:
@@ -1093,6 +1118,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_HUMAN_WERETIGER:
     case PM_HUMAN_WERESNAKE:
     case PM_HUMAN_WERESPIDER:
+    case PM_DEMON_WEREDEMON:
     case PM_ELF:
     case PM_WOODLAND_ELF:
     case PM_GREEN_ELF:
@@ -1119,6 +1145,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_MEDUSA:
     case PM_WIZARD_OF_YENDOR:
     case PM_CROESUS:
+    case PM_EXECUTIONER:
     case PM_GHOST:
     case PM_SHADE:
     case PM_SHADOW:
@@ -1145,6 +1172,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_BAALZEBUB:
     case PM_ASMODEUS:
     case PM_DEMOGORGON:
+    case PM_CTHULHU:
     case PM_LAVA_DEMON:
     case PM_DEATH:
     case PM_PESTILENCE:
@@ -1234,6 +1262,10 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_KING_OF_GAMES:
     case PM_DAL_ZETHIRE:
     case PM_DUELIST:
+    case PM_UNDEAD_SLAYER:
+    case PM_EXTERMINATOR:
+    case PM_FIRST_EVIL:
+    case PM_VAN_HELSING:
 #else
     default:
 #endif
@@ -1542,7 +1574,6 @@ m_calcdistress(struct monst *mtmp)
      * but we still need to call this for mspec_used */
     mon_regen(mtmp, FALSE);
 
-    
     if (mtmp->mstone > 0) {
         if (resists_ston(mtmp) || defended(mtmp, AD_STON)) {
             mtmp->mstone = 0;
@@ -1593,7 +1624,7 @@ m_calcdistress(struct monst *mtmp)
         if (DEADMONSTER(mtmp))
             return;
     }
-        
+
     /* diseased monsters can die as well... */
     if (mtmp->mdiseased && mtmp->mdiseasetime <= 1) {
         if (resists_sick(mtmp->data) || defended(mtmp, AD_DISE)) {
@@ -1660,7 +1691,8 @@ m_calcdistress(struct monst *mtmp)
                               mtmp->mprotection ? "becomes less dense"
                                                 : "disappears");
             if (mtmp->mprotection)
-                mtmp->mprottime = (mtmp->iswiz || is_prince(mtmp->data)
+                mtmp->mprottime = (mtmp->iswiz || mtmp->iscthulhu
+                                   || is_prince(mtmp->data)
                                    || mtmp->data->msound == MS_NEMESIS
                                    || mtmp->data->msound == MS_LEADER)
                                       ? 20 : 10;
@@ -1795,7 +1827,7 @@ movemon_singlemon(struct monst *mtmp)
     }
 
     /* continue if the monster died fighting */
-    if (Conflict && !mtmp->iswiz && m_canseeu(mtmp)) {
+    if (Conflict && !mtmp->iswiz && !mtmp->iscthulhu && m_canseeu(mtmp)) {
         /* Note:
          *  Conflict does not take effect in the first round.
          *  Therefore, A monster when stepping into the area will
@@ -1962,7 +1994,7 @@ m_consume_obj(struct monst *mtmp, struct obj *otmp)
 /*
  * Maybe eat a metallic object (not just gold).
  * Return value: 0 => nothing happened, 1 => monster ate something,
- * 2 => monster died (it must have grown into a genocided form, but
+ * 2 => monster died (it must have grown into a exiled form, but
  * that can't happen at present because nothing which eats objects
  * has young and old forms).
  */
@@ -2402,6 +2434,42 @@ mpickgold(struct monst *mtmp)
     }
 }
 
+
+/* monster eats catnip */
+int
+meatcatnip(struct monst *mtmp)
+{
+    struct obj *otmp;
+
+    /* If a pet, eating is handled separately, in dog.c */
+    if (mtmp->mtame || !is_feline(mtmp->data))
+        return 0;
+
+    /* Eats topmost sprig of catnip if it is there */
+    for (otmp = svl.level.objects[mtmp->mx][mtmp->my]; otmp;
+         otmp = otmp->nexthere) {
+        if (otmp->otyp == PINCH_OF_CATNIP) {
+            if (cansee(mtmp->mx, mtmp->my) && flags.verbose)
+                pline_mon(mtmp, "%s eats %s!", Monnam(mtmp),
+                          singular(otmp, doname));
+            else if (!Deaf && flags.verbose)
+                You_hear("a meowing sound.");
+            mtmp->meating = otmp->owt / 2 + 1;
+
+            if (!Blind)
+                pline_mon(mtmp, "%s chases %s tail!", Monnam(mtmp), mhis(mtmp));
+            otmp->quan--;
+            otmp->owt = weight(otmp);
+            if (otmp->quan <= 0)
+                delobj(otmp);
+            mtmp->mconf = 1;
+            newsym(mtmp->mx, mtmp->my);
+            return 1;
+        }
+    }
+    return 0;
+}
+
 /* monster picks up one item stack from the map location they are at */
 boolean
 mpickstuff(struct monst *mtmp)
@@ -2639,7 +2707,7 @@ mon_allowflags(struct monst *mtmp)
     boolean can_open = !(nohands(mtmp->data) || verysmall(mtmp->data));
     boolean can_unlock = ((can_open && monhaskey(mtmp, TRUE))
                           || mtmp->iswiz || is_rider(mtmp->data));
-    boolean doorbuster = is_giant(mtmp->data);
+    boolean doorbuster = is_giant(mtmp->data) || mtmp->iscthulhu;
     /* don't tunnel if on rogue level or if hostile and close enough
        to prefer a weapon; same criteria as in m_move() */
     boolean can_tunnel = (tunnels(mtmp->data) && !Is_rogue_level(&u.uz));
@@ -2829,8 +2897,7 @@ mfndpos(
                 continue;
             if ((!lavaok || !(flag & ALLOW_WALL)) && ntyp == LAVAWALL)
                 continue;
-            if ((poolok || is_pool(nx, ny) == wantpool)
-                && (is_puddle(nx, ny) == wantpuddle || !wantpuddle)
+            if ((poolok || is_damp_terrain(nx, ny) == wantpool)
                 && (lavaok || !is_lava(nx, ny))
                 /* iron golems and longworms avoid shallow water */
                 && ((mon->data != &mons[PM_IRON_GOLEM] && !tiny_groundedmon(mdat))
@@ -2971,7 +3038,6 @@ mm_2way_aggression(struct monst *magr, struct monst *mdef)
     /* zombies vs things that can be zombified */
     if (zombie_maker(magr) && zombie_form(mdef->data) != NON_PM)
         return (ALLOW_M | ALLOW_TM);
-
     return 0;
 }
 
@@ -3001,14 +3067,22 @@ mm_aggression(
     if (is_ghoul(magr->data) && mdef->data == &mons[PM_MAGGOT])
         return ALLOW_M | ALLOW_TM;
 
+    /* orcs vs lawfuls or watchguards */
+    if (is_orc(magr->data) && (mdef->data == &mons[PM_WATCHMAN]
+                               || mdef->data == &mons[PM_WATCH_CAPTAIN]))
+        return ALLOW_M | ALLOW_TM;
+    if ((magr->data == &mons[PM_WATCHMAN] || magr->data == &mons[PM_WATCH_CAPTAIN])
+        && is_orc(mdef->data))
+        return ALLOW_M | ALLOW_TM;
+
     /* Phoenixes loathe undead */
     if (mndx == PM_PHOENIX && is_undead(mdef->data))
         return ALLOW_M | ALLOW_TM;
-    
+
     /* Grung really hate kamadan */
     if (is_grung(magr->data) && mdef->data == &mons[PM_KAMADAN])
         return ALLOW_M | ALLOW_TM;
-    
+
     /* berserk monsters sometimes lash out at everything
        when trying to attack you  */
     if (magr->mberserk && !magr->mpeaceful
@@ -3024,7 +3098,7 @@ mm_aggression(
     if ((is_covetous(magr->data) || is_mplayer(magr->data))
         && mon_has_amulet(mdef))
         return ALLOW_M | ALLOW_TM;
-    
+
     /* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */
@@ -3220,6 +3294,12 @@ copy_mextra(struct monst *mtmp2, struct monst *mtmp1)
         assert(has_edog(mtmp2));
         *EDOG(mtmp2) = *EDOG(mtmp1);
     }
+    if (EBONES(mtmp1)) {
+        if (!EBONES(mtmp2))
+            newebones(mtmp2);
+        assert(has_ebones(mtmp2));
+        *EBONES(mtmp2) = *EBONES(mtmp1);
+    }
     if (has_mcorpsenm(mtmp1))
         MCORPSENM(mtmp2) = MCORPSENM(mtmp1);
 }
@@ -3242,6 +3322,8 @@ dealloc_mextra(struct monst *m)
             free((genericptr_t) x->emin), x->emin = 0;
         if (x->edog)
             free((genericptr_t) x->edog), x->edog = 0;
+        if (x->ebones)
+            free((genericptr_t) x->ebones), x->ebones = 0;
         x->mcorpsenm = NON_PM; /* no allocation to release */
 
         free((genericptr_t) x);
@@ -3337,9 +3419,12 @@ m_detach(
        leaving the dungeon alive rather than dying */
     if (mtmp->iswiz)
         wizdeadorgone();
+    if (mtmp->iscthulhu) {
+        svc.context.no_of_cthulhu = 0;
+    }
     /* foodead() might give quest feedback for foo having died; skip that
        if we're called for mongone() rather than mondead(); saving bones
-       or wizard mode genocide of "*" can result in special monsters going
+       or wizard mode exile of "*" can result in special monsters going
        away without having been killed */
     if (due_to_death) {
         if (mtmp->data->msound == MS_NEMESIS) {
@@ -3373,7 +3458,7 @@ m_detach(
         iflags.purge_monsters++;
     }
 
-    /* hero is thrown from his steed when it dies or gets genocided */
+    /* hero is thrown from his steed when it dies or gets exiled */
     if (mtmp == u.usteed)
         dismount_steed(DISMOUNT_GENERIC);
     return;
@@ -3470,9 +3555,9 @@ lifesaved_monster(struct monst *mtmp)
         mtmp->mhp = mtmp->mhpmax;
 
         if (!surviver) {
-            /* genocided monster can't be life-saved */
+            /* exiled monster can't be life-saved */
             if (cansee(mtmp->mx, mtmp->my))
-                pline("Unfortunately, %s is still genocided...",
+                pline("Unfortunately, %s is still exiled...",
                       mon_nam(mtmp));
             mtmp->mhp = 0;
         }
@@ -3599,6 +3684,8 @@ logdeadmon(struct monst *mtmp, int mndx)
 
     if (mndx == PM_MEDUSA && howmany == 1) {
         record_achievement(ACH_MEDU); /* also generates a livelog event */
+    } else if (mndx == PM_WIZARD_OF_YENDOR && howmany == 1) {
+        com_pager("wiz_forcefields_down");
     } else if ((unique_corpstat(mtmp->data)
                 && (mndx != PM_HIGH_CLERIC || !mtmp->mrevived))
                || (mtmp->isshk && !mtmp->mrevived)) {
@@ -3672,8 +3759,10 @@ void
 mondead(struct monst *mtmp)
 {
     struct permonst *mptr;
-    boolean be_sad;
-    int mndx;
+    boolean be_sad, nocorpse = u_wield_art(ART_SUNSWORD)
+                               || u_offhand_art(ART_SUNSWORD);
+    coord cc;
+    int mndx, i;
 
     /* potential pet message; always clear global flag */
     be_sad = iflags.sad_feeling;
@@ -3697,6 +3786,25 @@ mondead(struct monst *mtmp)
 
     if (be_sad)
         You("have a sad feeling for a moment, then it passes.");
+
+    if (mtmp->data == &mons[PM_WORM_THAT_WALKS]) {
+        if (nocorpse) {
+            if (cansee(mtmp->mx, mtmp->my))
+                pline("In the presence of %s, %s corpse flares brightly and burns to ashes.",
+                      artiname(uwep->oartifact), s_suffix(mon_nam(mtmp)));
+        } else {
+            if (cansee(mtmp->mx, mtmp->my)) {
+                pline_The("body of %s dissolves into worms!", mon_nam(mtmp));
+            } else {
+                You_hear("the slithering of many bodies.");
+            }
+            for (i = 0; i < rnd(3) + 1; i++) {
+                if (!enexto(&cc, mtmp->mx, mtmp->my, 0))
+                    break;
+                makemon(&mons[PM_MAGGOT], cc.x, cc.y, NO_MINVENT);
+            }
+        }
+    }
 
     if (mtmp->data == &mons[PM_STEAM_VORTEX])
         create_gas_cloud(mtmp->mx, mtmp->my, rn2(10) + 5, 0); /* harmless */
@@ -3728,6 +3836,8 @@ mondead(struct monst *mtmp)
 	    set_mon_data(mtmp, &mons[PM_HUMAN_WERESNAKE]);
 	else if (mtmp->data == &mons[PM_WERESPIDER])
 	    set_mon_data(mtmp, &mons[PM_HUMAN_WERESPIDER]);
+    else if (mtmp->data == &mons[PM_WEREDEMON])
+        set_mon_data(mtmp, &mons[PM_DEMON_WEREDEMON]);
 
     /*
      * svm.mvitals[].died does double duty as total number of dead monsters
@@ -3803,8 +3913,8 @@ corpse_chance(
         return FALSE;
     }
 
-    if (mdat == &mons[PM_VLAD_THE_IMPALER] || mdat->mlet == S_LICH
-        || mdat == &mons[PM_ALHOON]) {
+    if (mdat == &mons[PM_VLAD_THE_IMPALER] || mdat == &mons[PM_ALHOON]
+        || (mdat->mlet == S_LICH && mdat != &mons[PM_WORM_THAT_WALKS])) {
         if (cansee(mon->mx, mon->my) && !was_swallowed)
             pline_mon(mon, "%s body crumbles into dust.",
                       s_suffix(Monnam(mon)));
@@ -3820,6 +3930,13 @@ corpse_chance(
         if (cansee(mon->mx, mon->my))
             pline("In the presence of Sunsword, %s corpse dissolves into nothingness.",
                   s_suffix(mon_nam(mon)));
+        return FALSE;
+    }
+
+    /* Undead Slayers totally destroy zombie corpses */
+    if (is_zombie(mdat) && Role_if(PM_UNDEAD_SLAYER)
+        && svc.context.mon_moving == 0 && distu(mon->mx, mon->my) < 2) {
+        pline("%s!", rn2(2) ? "Squish" : rn2(2) ? "Squash" : "Smash");
         return FALSE;
     }
 
@@ -4053,6 +4170,14 @@ monkilled(
     else
         mondied(mdef); /* calls mondead() and maybe leaves a corpse */
 
+    if (mdef->data == &mons[PM_CTHULHU])
+        cthulhu_dies(mdef);
+
+    /* Slaughter wights release a death wail on dying */
+    if (mdef->data == &mons[PM_SLAUGHTER_WIGHT] && !gd.disintegested) {
+        deathwail(mdef);
+    }
+
     if (!DEADMONSTER(mdef))
         return; /* life-saved */
 
@@ -4217,6 +4342,12 @@ xkilled(
     mdat = mtmp->data; /* note: mondead can change mtmp->data */
     mndx = monsndx(mdat);
 
+    if (mdat == &mons[PM_CTHULHU])
+        cthulhu_dies(mtmp);
+    /* Slaughter wights release a death wail on dying */
+    if (mtmp->data == &mons[PM_SLAUGHTER_WIGHT] && !gd.disintegested) {
+        deathwail(mtmp);
+    }
     if (gs.stoned) {
         gs.stoned = FALSE;
         goto cleanup;
@@ -4234,14 +4365,19 @@ xkilled(
         struct obj *cadaver;
         int otyp;
 
-        /* illogical but traditional "treasure drop" */
-        if (!rn2(6) && !(svm.mvitals[mndx].mvflags & G_NOCORPSE)
+        /* illogical but traditional "treasure drop"
+           over time, these decrease 
+         */
+        if (!rn2(6 + (svm.moves / 5000)) 
+            && !(svm.mvitals[mndx].mvflags & G_NOCORPSE)
             /* no extra item from swallower or steed */
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */
             && mdat->mlet != S_KOP
             /* no extra item from guards--too easy to farm */
             && mdat != &mons[PM_GUARD]
+            /* no extra item from worms that walk--too easy to farm */
+            && mdat != &mons[PM_WORM_THAT_WALKS]
             /* no items from cloned monsters */
             && !mtmp->mcloned) {
             otmp = mkobj(RANDOM_CLASS, TRUE);
@@ -4327,36 +4463,49 @@ xkilled(
     newexplevel(); /* will decide if you go up */
 
     /* adjust alignment points */
-    if (mtmp->m_id == svq.quest_status.leader_m_id) { /* REAL BAD! */
-        adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
-        u.ugangr += 7; /* instantly become "extremely" angry */
-        change_luck(-20);
-        pline("That was %sa bad idea...",
-              u.uevent.qcompleted ? "probably " : "");
+    if (mtmp->m_id == svq.quest_status.leader_m_id) {
+        if (!Race_if(PM_ORC)) {
+            adjalign(-(u.ualign.record + (int) ALIGNLIM / 2)); /* REAL BAD! */
+            u.ugangr += 7; /* instantly become "extremely" angry */
+            change_luck(-20);
+            pline("That was %sa bad idea...",
+                  u.uevent.qcompleted ? "probably " : "");
+        } else {
+            pline("Meh...");
+        }
     } else if (mdat->msound == MS_NEMESIS) { /* Real good! */
         if (!svq.quest_status.killed_leader)
             adjalign((int) (ALIGNLIM / 4));
     } else if (mdat->msound == MS_GUARDIAN) { /* Bad */
-        adjalign(-(int) (ALIGNLIM / 8));
-        u.ugangr++;
-        change_luck(-4);
-        if (!Hallucination)
-            pline("That was probably a bad idea...");
-        else
-            pline("Whoopsie-daisy!");
+        if (!Race_if(PM_ORC)) {
+            adjalign(-(int) (ALIGNLIM / 8));
+            u.ugangr++;
+            change_luck(-4);
+            if (!Hallucination)
+                pline("That was probably a bad idea...");
+            else
+                pline("Whoopsie-daisy!");
+        } else {
+            pline("Eh...");
+        }
     } else if (mtmp->ispriest) {
         adjalign((p_coaligned(mtmp)) ? -2 : 2);
         /* cancel divine protection for killing your priest */
         if (p_coaligned(mtmp))
             u.ublessed = 0;
-        if (mdat->maligntyp == A_NONE)
+        if (mdat->maligntyp == A_NONE && !Race_if(PM_ORC))
+            adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
+        if (Race_if(PM_ORC) && mdat->maligntyp == A_LAWFUL)
             adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
     } else if (mtmp->mtame) {
-        adjalign(-15); /* bad!! */
+        adjalign(Race_if(PM_ORC) ? -3 : -15); /* bad!! */
         /* your god is mighty displeased... */
         if (!Hallucination) {
             Soundeffect(se_distant_thunder, 40);
-            You_hear("the rumble of distant thunder...");
+            if (Race_if(PM_ORC))
+                You_hear("sinister laughter off in the distance...");
+            else
+                You_hear("the rumble of distant thunder...");
         } else {
             Soundeffect(se_applause, 40);
             You_hear("the studio audience applaud!");
@@ -4369,21 +4518,24 @@ xkilled(
                            mname ? ", " : "",
                            uhis(), pmname(mdat, Mgender(mtmp)));
         }
-    } else if (mtmp->mpeaceful)
+    } else if (mtmp->mpeaceful && !Race_if(PM_ORC))
         adjalign(-5);
 
     /* malign was already adjusted for u.ualign.type and randomization */
     adjalign(mtmp->malign);
 
-    if (is_bones_monster(mtmp->data)
-        && *mtmp->former_rank && strlen(mtmp->former_rank) > 0) {
-        if (mtmp->data == &mons[PM_GHOST])
-            livelog_printf(LL_UMONST, "destroyed %s, the former %s",
-                           livelog_mon_nam(mtmp), mtmp->former_rank);
-        else
-            livelog_printf(LL_UMONST, "destroyed %s, and former %s",
-                           livelog_mon_nam(mtmp), mtmp->former_rank);
+#if 0  /* HARDFOUGHT-only at present */
+#ifdef LIVELOG
+    if (has_ebones(mtmp)) {
+        livelog_printf(LL_UMONST, "destroyed %s, %s former %s",
+                       livelog_mon_nam(mtmp),
+                       (mtmp->data == &mons[PM_GHOST]) ? "the" : "and",
+                       rank_of(EBONES(mtmp)->deathlevel,
+                               EBONES(mtmp)->mnum,
+                               EBONES(mtmp)->female));
     }
+#endif  /* LIVELOG */
+#endif
     return;
 }
 
@@ -4516,6 +4668,7 @@ ok_to_obliterate(struct monst *mtmp)
      * here (return FALSE).
      */
     if (mtmp->data == &mons[PM_WIZARD_OF_YENDOR] || is_rider(mtmp->data)
+        || mtmp->data == &mons[PM_CTHULHU]
         || has_emin(mtmp) || has_epri(mtmp) || has_eshk(mtmp)
         || mtmp == u.ustuck || mtmp == u.usteed)
         return FALSE;
@@ -5031,7 +5184,7 @@ peacefuls_respond(struct monst *mtmp)
                     } else {
                         mon->mpeaceful = 0;
                         mon->mstrategy &= ~STRAT_WAITMASK;
-                        adjalign(-1);
+                        adjalign(Race_if(PM_ORC) ? 1 : -1);
                         if (!exclaimed)
                             pline_mon(mon, "%s gets angry!", Monnam(mon));
                     }
@@ -5068,7 +5221,10 @@ setmangry(struct monst *mtmp, boolean via_attack)
         /* only hypocritical if monster is vulnerable to Elbereth (or
            peaceful--not vulnerable but attacking it is hypocritical) */
         && (onscary(u.ux, u.uy, mtmp) || mtmp->mpeaceful)) {
-        You_feel("like a hypocrite.");
+        if (Race_if(PM_ORC))
+            You_feel("clever.");
+        else
+            You_feel("like a hypocrite.");
         /* AIS: Yes, I know alignment penalties and bonuses aren't balanced
            at the moment. This is about correct relative to other "small"
            penalties; it should be fairly large, as attacking while standing
@@ -5077,7 +5233,10 @@ setmangry(struct monst *mtmp, boolean via_attack)
            it's intentionally larger than the 1s and 2s that are normally
            given for this sort of thing. */
         /* reduce to 3 (average) when alignment is already very low */
-        adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
+        if (Race_if(PM_ORC))
+            adjalign(5);
+        else
+            adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
 
         if (!Blind)
             pline("The engraving beneath you fades.");
@@ -5099,7 +5258,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
             adjalign(-5); /* very bad */
         else
             adjalign(2);
-    } else if (u.ualign.type != A_CHAOTIC) {
+    } else if (!Race_if(PM_ORC)) {
         adjalign(-1); /* attacking peaceful monsters is bad */
     }
     if (humanoid(mtmp->data) || mtmp->isshk || mtmp->isgd) {
@@ -5261,7 +5420,8 @@ normal_shape(struct monst *mon)
         newsym(mon->mx, mon->my);
         wakeup(mon, FALSE);
     }
-    if (is_were(mon->data) && mon->data->mlet != S_HUMAN) {
+    if (is_were(mon->data) && mon->data->mlet != S_HUMAN
+                           && mon->data->mlet != S_DEMON) {
         new_were(mon);
         wakeup(mon, FALSE);
     }
@@ -5783,7 +5943,8 @@ pickvampshape(struct monst *mon)
         wolfchance = 3;
         FALLTHROUGH;
         /*FALLTHRU*/
-    case PM_VAMPIRE_LEADER: /* vampire lord or Vlad can become wolf */
+    case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL: /* vampire lord or Vlad can become wolf */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
             break;
@@ -5795,7 +5956,7 @@ pickvampshape(struct monst *mon)
         break;
     }
 
-    /* return to base form if chosen poly target has been genocided
+    /* return to base form if chosen poly target has been exiled
        or randomly if already in an alternate form (to prevent always
        switching back and forth between bat and fog) */
     if ((svm.mvitals[mndx].mvflags & G_GENOD) != 0
@@ -6019,6 +6180,7 @@ select_newcham_form(struct monst *mon)
     case PM_VLAD_THE_IMPALER:
     case PM_VAMPIRE_MAGE:
     case PM_VAMPIRE_LEADER:
+    case PM_VAMPIRE_ROYAL:
     case PM_VAMPIRE:
         mndx = pickvampshape(mon);
         break;
@@ -6159,7 +6321,7 @@ newcham(
         if (!tryct)
             return 0;
     } else if (svm.mvitals[monsndx(mdat)].mvflags & G_GENOD)
-        return 0; /* passed in mdat is genocided */
+        return 0; /* passed in mdat is exiled */
 
     if (mdat == olddata)
         return 0; /* still the same monster */
@@ -6435,7 +6597,7 @@ dead_species(int m_idx, boolean egg)
                       || (svm.mvitals[alt_idx].mvflags & G_GENOD) != 0);
 }
 
-/* kill off any eggs of genocided monsters */
+/* kill off any eggs of exiled monsters */
 staticfn void
 kill_eggs(struct obj *obj_list)
 {
@@ -6465,7 +6627,7 @@ kill_eggs(struct obj *obj_list)
         }
 }
 
-/* kill all members of genocided species */
+/* kill all members of exiled species */
 void
 kill_genocided_monsters(void)
 {
@@ -6474,15 +6636,15 @@ kill_genocided_monsters(void)
     int mndx;
 
     /*
-     * Called during genocide, and again upon level change.  The latter
+     * Called during exile, and again upon level change.  The latter
      * catches up with any migrating monsters as they finally arrive at
      * their intended destinations, so possessions get deposited there.
      *
      * Chameleon handling:
-     *  1) if chameleons have been genocided, destroy them
+     *  1) if chameleons have been exiled, destroy them
      *     regardless of current form;
      *  2) otherwise, force every chameleon which is imitating
-     *     any genocided species to take on a new form.
+     *     any exiled species to take on a new form.
      */
     for (mtmp = fmon; mtmp; mtmp = mtmp2) {
         mtmp2 = mtmp->nmon;
@@ -6640,6 +6802,10 @@ usmellmon(struct permonst *mdat)
             You("notice a bovine smell.");
             msg_given = TRUE;
             break;
+        case PM_ELDER_MINOTAUR:
+            You("notice a strong bovine smell.");
+            msg_given = TRUE;
+            break;
         case PM_CAVE_DWELLER:
 	    case PM_CARTOMANCER:
         case PM_BARBARIAN:
@@ -6664,10 +6830,12 @@ usmellmon(struct permonst *mdat)
         case PM_HUMAN_WERERAT:
         case PM_HUMAN_WEREWOLF:
         case PM_HUMAN_WERETIGER:
+        case PM_DEMON_WEREDEMON:
         case PM_WEREJACKAL:
         case PM_WERERAT:
         case PM_WEREWOLF:
         case PM_WERETIGER:
+        case PM_WEREDEMON:
         case PM_OWLBEAR:
             You("detect an odor reminiscent of an animal's den.");
             msg_given = TRUE;
@@ -7016,10 +7184,10 @@ int flank_bonus(struct monst *mtmp)
 
 /**
  * Kills every member of the specified monster species on the current
- * level.
+ * level (or if specified only monsters that are close to the hero)
  */
 void
-kill_monster_on_level(int mndx)
+kill_monster_on_level(int mndx, boolean only_close)
 {
     struct monst *mtmp, *mtmp2;
     int tmp_mndx, dist;
@@ -7029,18 +7197,20 @@ kill_monster_on_level(int mndx)
         if (DEADMONSTER(mtmp))
             continue;
 
-        /* Genocides are throttled for the endgame; 
+        /* Uncursd exiles only work for close monsters
          * kills are guaranteed within a radius of 3 squares, but after that
          * the chance is 1 in x, where x is the monsters distance from the
          * hero. */
-        if (In_endgame(&u.uz)) {
+        if (only_close) {
             dist = distu(mtmp->mx, mtmp->my);
-            if (dist <= 3 || !rn2(dist))
+            if (dist > 9 && rn2(dist))
                 continue;
         }
         tmp_mndx = monsndx(mtmp->data);
-        if (mndx == tmp_mndx)
+        if (mndx == tmp_mndx) {
             mondead(mtmp);
+            u.uconduct.exiles++;
+        }
     }
 }
 
@@ -7144,7 +7314,8 @@ unpoly_monster(struct monst *mtmp)
         return;
 
     /* Revert werefoo */
-    if (is_were(mtmp->data) && !is_human(mtmp->data) && rn2(13)) {
+    if (is_were(mtmp->data) && !is_human(mtmp->data)
+        && !is_demon(mtmp->data) && rn2(13)) {
         if (visible)
             pline("But wait...");
         new_were(mtmp);
@@ -7296,6 +7467,7 @@ card_drop(struct monst *mon)
         || mon->mrevived    /* Prevent farming */
         || mon->mcloned     /* Prevent farming */
         || mon->iswiz       /* Prevent farming */
+        || mon->iscthulhu   /* Prevent farming */
         || mon->mcan        /* Cancelled */
         /* Avoid mon w/ special structure */
         || has_egd(mon)     || has_epri(mon)
@@ -7464,4 +7636,72 @@ flash_mon(struct monst *mtmp)
     gv.viz_array[my][mx] = saveviz;
     newsym(mx, my);
 }
+
+
+/** Creates Cthulhu's death message and death cloud. */
+staticfn void
+cthulhu_dies(struct monst *mon) /**< Cthulhu's struct */
+{
+    /* really dead? */
+    if (!DEADMONSTER(mon))
+        return;
+
+    svc.context.no_of_cthulhu = 0;
+
+    /* Cthulhu Deliquesces... */
+    if (cansee(mon->mx, mon->my)) {
+        pline("%s body deliquesces into a cloud of noxious gas!",
+              s_suffix(Monnam(mon)));
+    } else {
+        You_hear("hissing and bubbling!");
+    }
+
+    /* ...into a stinking cloud... */
+    if (svm.mvitals[PM_CTHULHU].died == 1 &&
+          distu(mon->mx, mon->my) > 2) {
+        /* Cthulhu got killed while meditating and the player
+         * was not next to him.
+         * You can't get rid of the True Final Boss so easily! */
+        (void) create_cthulhu_death_cloud(mon->mx, mon->my, 2, 4);
+    } else {
+        (void) create_cthulhu_death_cloud(mon->mx, mon->my, 3, 8);
+    }
+}
+
+staticfn void
+deathwail(struct monst *mtmp)
+{
+    int dmg = d(2, 18);
+
+    /* We have to be in fairly close proximity to be damaged by this */
+    if (distu(mtmp->mx, mtmp->my) > 25) {
+        if (canseemon(mtmp))
+            pline("%s screams as it dies!", Monnam(mtmp));
+        else
+            You("hear a deathly wail echo through the dungeon.");
+        return;
+    }
+
+    if (Deaf) {
+        pline("It looks as if %s is yelling at you.", mon_nam(mtmp));
+    } else {
+        pline("%s releases a piercing death wail!", Monnam(mtmp));
+        if (u.usleep)
+            unmul("You are frightened awake!");
+    }
+    wake_nearto(mtmp->mx, mtmp->my, 8 * 8);
+
+    if (u.umonnum == PM_GLASS_GOLEM) {
+        You("shatter into a million pieces!");
+        rehumanize();
+    } else if (!Deaf) {
+        Your("mind reels from the noise!");
+        make_stunned((HStun & TIMEOUT) + (long) dmg, TRUE);
+        stop_occupation();
+        mdamageu(mtmp, dmg);
+    }
+    /* being deaf won't protect objects in inventory */
+    (void) destroy_items(&gy.youmonst, AD_PHYS, dmg);
+}
+
 /*mon.c*/

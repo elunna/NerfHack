@@ -128,9 +128,10 @@ dungeon = {
          },
          {
             name = "The Wizard's Tower",
+            chainlevel = "fakewiz1",
             bonetag = "F",
-            base = 10,
-            range = 8,
+            base = 0,
+            range = 0,
             branchtype = "portal"
          },
       },
@@ -152,6 +153,10 @@ dungeon = {
             base = -1
          },
          {
+            name = "invoke",
+            base = -2
+         },
+         {
             name = "juiblex",
             bonetag = "J",
             base = 3,
@@ -170,6 +175,12 @@ dungeon = {
             nlevels = 2,
             base = 3,
             range = 5
+         },
+         {
+            name = "fakewiz1",
+            bonetag = "F",
+            base = -6,
+            range = 4
          },
          {
             name = "demo",
@@ -222,7 +233,7 @@ dungeon = {
             bonetag = "T",
             base = 3,
             range = 2,
-            nlevels = 11,
+            nlevels = 12,
             flags = "town"
          },
          {
@@ -380,7 +391,7 @@ dungeon = {
    {
       name = "The Wizard's Tower",
       bonetag = "W",
-      base = 3,
+      base = 8,
       flags = { "mazelike" },
       alignment = "unaligned",
       entry = -1,
@@ -391,13 +402,39 @@ dungeon = {
          },
          {
             name = "wizard2",
-            bonetag = "X",
-            base = 2
+            bonetag = "Z",
+            base = 2,
+            nlevels = 2,
          },
          {
             name = "wizard3",
             bonetag = "Y",
             base = 3
+         },
+         {
+            name = "wizard4",
+            bonetag = "X",
+            base = 4
+         },
+         {
+            name = "wizard5",
+            bonetag = "W",
+            base = 5
+         },
+         {
+            name = "wizard6",
+            bonetag = "V",
+            base = 6
+         },
+         {
+            name = "wizard7",
+            bonetag = "U",
+            base = 7,
+         },
+         {
+            name = "wizard8",
+            bonetag = "T",
+            base = 8
          },
       }
    },

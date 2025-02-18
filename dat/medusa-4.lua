@@ -122,12 +122,12 @@ des.monster({ id = "Medusa", coord=medloc, asleep=1 })
 des.monster("kraken", 07,07)
 --
 -- the nesting dragon
-des.monster({ id = "yellow dragon", x=05, y=04, asleep=1 })
+des.monster({ id = "yellow dragon", x=05, y=04  })
 if percent(50) then
-   des.monster({ id = "baby yellow dragon", x=04,y=04, asleep=1 })
+   des.monster({ id = "baby yellow dragon", x=04,y=04 })
 end
 if percent(25) then
-   des.monster({ id = "baby yellow dragon", x=04, y=05, asleep=1 })
+   des.monster({ id = "baby yellow dragon", x=04, y=05 })
 end
 des.object({ id = "egg", x=05, y=04, montype="yellow dragon" });
 if percent(50) then
@@ -141,6 +141,8 @@ des.monster("giant eel")
 des.monster("giant eel")
 des.monster("jellyfish")
 des.monster("jellyfish")
+des.monster("water troll")
+des.monster("water hulk")
 for i=1,14 do
    des.monster("S")
 end

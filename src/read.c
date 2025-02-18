@@ -349,7 +349,7 @@ doread(void)
     boolean confused, nodisappear;
     boolean carto = Role_if(PM_CARTOMANCER);
     int otyp;
-    
+
 
     /*
      * Reading while blind is allowed in most cases, including the
@@ -396,7 +396,7 @@ doread(void)
                  simple_typename(scroll->otyp));
         return 0;
     }
-    
+
     otyp = scroll->otyp;
     scroll->pickup_prev = 0; /* no longer 'just picked up' */
 
@@ -920,7 +920,7 @@ recharge(struct obj *obj, int curse_bless)
     } else if (obj->oclass == TOOL_CLASS) {
         n = (int) obj->recharged;
 
-        
+
         /* Use same recharging calculation as for wands. */
         if (obj->obroken) {
             pline_The("%s crumbles away!", xname(obj));
@@ -938,7 +938,7 @@ recharge(struct obj *obj, int curse_bless)
             if (n < 7) /* recharge_limit */
                 obj->recharged++;
         }
-        
+
         switch (obj->otyp) {
         case BELL_OF_OPENING:
             if (is_cursed)
@@ -1119,10 +1119,10 @@ void
 forget(int howmuch)
 {
     struct monst *mtmp;
-    
+
     if (u_wield_art(ART_ORIGIN))
         return;
-        
+
     if (Punished)
         u.bc_felt = 0; /* forget felt ball&chain */
 
@@ -1250,7 +1250,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     ttmp = t_at(x, y);
     if (ttmp && !delfloortrap(ttmp))
         return;
-    
+
     if (levl[x][y].typ == TREE) {
         if (ltyp == PUDDLE) /* This won't destroy a tree */
             return;
@@ -1261,7 +1261,7 @@ flood_space(coordxy x, coordxy y, genericptr_t poolcnt)
     del_engr_at(x, y);
     water_damage_chain(svl.level.objects[x][y], FALSE);
     maybe_unhide_at(x, y);
-    
+
     if (!does_block(x, y, &levl[x][y]))
         unblock_point(x, y); /* vision */
     vision_recalc(0);
@@ -1306,7 +1306,7 @@ seffect_enchant_armor(struct obj **sobjp)
     boolean old_erodeproof, new_erodeproof;
     boolean already_known = objects[sobj->otyp].oc_name_known;
     boolean resists_magic;
-    
+
     if (already_known) {
         for (i = 0; i < 5; i++) {
             otmp = getobj("enchant", enchant_ok, GETOBJ_NOFLAGS);
@@ -1385,14 +1385,14 @@ seffect_enchant_armor(struct obj **sobjp)
 
     /* KMH -- catch underflow */
     s = scursed ? -otmp->spe : otmp->spe;
-    
+
     /* Dragon scales that are worn over body armor will cause the armor to
      * become scaled. */
     if (draconic) {
         if (!maybe_merge_scales(sobj, otmp))
             return;
     }
-    
+
     if (s > (special_armor ? 5 : 3) && rn2(s)) {
         otmp->in_use = TRUE;
         pline("%s violently %s%s%s for a while, then %s.", Yname2(otmp),
@@ -1413,7 +1413,7 @@ seffect_enchant_armor(struct obj **sobjp)
         : sblessed
         ? rnd(3 - otmp->spe / 3)
         : 1;
-  
+
 
     /* Items which provide magic resistance also can resist enchanting.
      * They don't resist when their enchantment is zero or negative, that is
@@ -1476,7 +1476,7 @@ seffect_enchant_armor(struct obj **sobjp)
         pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
               Blind ? "again" : "unexpectedly");
 }
-                 
+
 staticfn void
 seffect_destroy_armor(struct obj **sobjp)
 {
@@ -1875,13 +1875,14 @@ seffect_enchant_weapon(struct obj **sobjp)
         return;
     }
 
-    /* Adjusted max weapon enchantment. For more exciting hackin 'n slashin
-     * we will allow the new 'soft' limit to be 11.
-     * This allows weapons to be safely enchanted up to 13 if the player
-     * hits a +2 when the weapon is +11. */
+    /* Adjusted max weapon enchantment. For more exciting hackin 'n
+       slashin we will allow the new 'soft' limit to be 12. This
+       allows weapons to be safely enchanted up to 13.
+       After +5, scrolls only grant +1 so this will still require
+       many scrolls to achieve. */
     if (!chwepon(sobj, scursed ? -1
                  : !uwep ? 1
-                 : (uwep->spe >= (WEP_ENCHANT_MAX + 2)) ? !rn2(uwep->spe)
+                 : (uwep->spe >= (WEP_ENCHANT_MAX + 1)) ? !rn2(uwep->spe)
                  : sblessed ? rnd(wep_enchant_range(uwep->spe))
                  : 1))
         *sobjp = 0; /* nothing enchanted: strange_feeling -> useup */
@@ -1902,7 +1903,7 @@ staticfn int
 wep_enchant_range(int wspe) {
     if (wspe < 4)
         return 3;
-    else if (wspe < 12)
+    else if (wspe < 6)
         return 2;
     return 1;
 }
@@ -1961,12 +1962,8 @@ seffect_genocide(struct obj **sobjp)
                              || objects[otyp].oc_name_known);
 
     if (!already_known)
-        You("have found a scroll of genocide!");
+        You("have found a scroll of exile!");
     gk.known = TRUE;
-
-    if (In_endgame(&u.uz)) {
-        sblessed = 0; /* No dungeon-wide genos in endgame */
-    }
 
     do_genocide((!scursed) | (2 * !!Confusion), !sblessed);
 }
@@ -2005,7 +2002,7 @@ seffect_light(struct obj **sobjp)
                     if (Role_if(PM_CARTOMANCER))
                         mon->mpeaceful = 1;
                     else
-                        initedog(mon);
+                        initedog(mon, TRUE);
                     mon->msleeping = 0;
                     mon->mcan = TRUE;
                     if (canspotmon(mon))
@@ -2066,7 +2063,7 @@ seffect_cloning(struct obj **sobjp)
                 return;
             }
             if (sblessed) {
-                initedog(mtmp);
+                initedog(mtmp, TRUE);
                 u.uconduct.pets++;
             } else if (!scursed && !mtmp->mrabid) {
                 mtmp->mpeaceful = 1;
@@ -2134,7 +2131,7 @@ seffect_cloning(struct obj **sobjp)
         otmp2->oeaten = otmp->oeaten;
         otmp2->opoisoned = otmp->opoisoned;
 
-        
+
         /* Copy the name over. Artifact names will not be copied.  */
         if (otmp->oextra)
             oname(otmp2, otmp->oextra->oname, ONAME_VIA_NAMING);
@@ -2434,7 +2431,7 @@ seffect_flood(struct obj **sobjp, struct monst *mtmp)
 
     if (!isyou)
         extract_from_minvent(mtmp, sobj, FALSE, TRUE);
-    
+
     if (confused) {
         int dried_up = 0;
         do_clear_area(wx, wy, range, unflood_space, (genericptr_t) &dried_up);
@@ -2446,11 +2443,11 @@ seffect_flood(struct obj **sobjp, struct monst *mtmp)
                 pline("You are suddenly very dry!");
                 /* TODO: Dry out towels, etc */
             }
-            if (!maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
-                svc.context.hydration /= 5 + 5;
         } else {
             pline("The air around you suddenly feels very dry.");
         }
+        if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
+            dehydrate(u.hydration - (u.hydration / 5));
     } else {
         int madepools = 0;
         int stilldry = -1;
@@ -2483,8 +2480,7 @@ seffect_flood(struct obj **sobjp, struct monst *mtmp)
         } else {
             pline("The air around you suddenly feels very humid.");
         }
-        if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG)))
-            rehydrate(TRUE);
+        rehydrate(rn1(1500, 3000));
         /* Cleanup when used in muse.c */
         if (!isyou)
             delobj(sobj);
@@ -2799,7 +2795,7 @@ seffects(
     case SCR_TAMING:
         seffect_taming(&sobj);
         break;
-    case SCR_GENOCIDE:
+    case SCR_EXILE:
         seffect_genocide(&sobj);
         break;
     case SCR_LIGHT:
@@ -3349,18 +3345,17 @@ litroom(
 #define ONTHRONE 4
 void
 do_genocide(
-    int how, /* 0 = no genocide; create monsters (cursed scroll)
-              * 1 = normal genocide
-              * 3 = forced genocide of player
-              * 5 (4 | 1) = normal genocide from throne */
-    boolean only_on_level)
+    int how, /* 0 = no exile; create monsters (cursed scroll)
+              * 1 = normal exile
+              * 3 = forced exile of player
+              * 5 (4 | 1) = normal exile from throne */
+    boolean only_close)
 {
     char buf[BUFSZ], promptbuf[QBUFSZ];
     int i, killplayer = 0;
     int mndx;
     struct permonst *ptr;
     const char *which;
-    const char *on_this_level;
 
     if (how & PLAYER) {
         mndx = u.umonster; /* non-polymorphed mon num */
@@ -3379,13 +3374,13 @@ do_genocide(
                 return;
             }
             Strcpy(promptbuf,
-                   "What type of monster do you want to genocide?");
+                   "What type of monster do you want to exile?");
             if (i > 0)
                 Snprintf(eos(promptbuf), sizeof promptbuf - strlen(promptbuf),
                          " [enter %s]",
                          iflags.cmdassist
                            ? "the name of a type of monster, or '?'"
-                           : "'?' to see previous genocides");
+                           : "'?' to see previous exiles");
             getlin(promptbuf, buf);
             (void) mungspaces(buf);
             /* avoid 'such creatures do not exist' for empty input */
@@ -3397,17 +3392,17 @@ do_genocide(
                              : "No type of monster specified");
                 continue; /* try again */
             }
-            /* choosing "none" preserves genocideless conduct */
+            /* choosing "none" preserves exileless conduct */
             if (*buf == '\033' || !strcmpi(buf, "none")
                 || !strcmpi(buf, "'none'") || !strcmpi(buf, "nothing")) {
                 /* ... but no free pass if cursed */
                 if (!(how & REALLY) && (ptr = rndmonst()) != 0)
                     break; /* remaining checks don't apply */
 
-                livelog_printf(LL_GENOCIDE, "declined to perform genocide");
+                livelog_printf(LL_GENOCIDE, "declined to perform exile");
                 return;
             }
-            /* "?" or "'?'" runs #genocided to show existing genocides */
+            /* "?" or "'?'" runs #exiled to show existing exiles */
             if (!strcmp(buf, "?") || !strcmp(buf, "'?'")) {
                 list_genocided('g', FALSE);
                 --i; /* don't count this iteration as one of the tries */
@@ -3443,7 +3438,7 @@ do_genocide(
                 && (mndx == u.umonnum || mndx == gy.youmonst.cham))
                 polyself(POLY_REVERT); /* vampshifter (bat, &c) to vampire */
             /* Although "genus" is Latin for race, the hero benefits
-             * from both race and role; thus genocide affects either.
+             * from both race and role; thus exile affects either.
              */
             if (Your_Own_Role(mndx) || Your_Own_Race(mndx)) {
                 killplayer++;
@@ -3477,8 +3472,7 @@ do_genocide(
         mndx = monsndx(ptr); /* needed for the 'no free pass' cases */
     }
 
-    on_this_level = only_on_level ? " on this level" : "";
-    which = In_endgame(&u.uz) ? "some " : "all ";
+    which = "some ";
     if (Hallucination) {
         if (Upolyd)
             Strcpy(buf, pmname(gy.youmonst.data,
@@ -3494,34 +3488,26 @@ do_genocide(
             which = !type_is_pname(ptr) ? "the " : "";
     }
     if (how & REALLY) {
-        if (only_on_level) {
-            livelog_printf(LL_GENOCIDE, "genocided %s on a level in %s",
-                           makeplural(buf), svd.dungeons[u.uz.dnum].dname);
-        } else if (!num_genocides())
+        if (!u.uconduct.exiles)
             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
-                           "performed %s first genocide (%s)",
+                           "performed %s first exile (%s)",
                            uhis(), makeplural(buf));
-        else
-            livelog_printf(LL_GENOCIDE, "genocided %s", makeplural(buf));
-
-        /* setting no-corpse affects wishing and random tin generation */
-        if (!only_on_level) {
-            svm.mvitals[mndx].mvflags |= (G_GENOD | G_NOCORPSE);
-        }
-        pline("Wiped out %s%s%s.", which, makeplural(buf), on_this_level);
+        livelog_printf(LL_GENOCIDE, "exiled %s in %s",
+                       makeplural(buf), svd.dungeons[u.uz.dnum].dname);
+        pline("Wiped out %s%s on this level.", which, makeplural(buf));
 
         if (killplayer) {
             u.uhp = -1;
             if (how & PLAYER) {
                 svk.killer.format = KILLED_BY;
-                Strcpy(svk.killer.name, "genocidal confusion");
+                Strcpy(svk.killer.name, "exiling confusion");
             } else if (how & ONTHRONE) {
                 /* player selected while on a throne */
                 svk.killer.format = KILLED_BY_AN;
                 Strcpy(svk.killer.name, "imperious order");
             } else { /* selected player deliberately, not confused */
                 svk.killer.format = KILLED_BY_AN;
-                Strcpy(svk.killer.name, "scroll of genocide");
+                Strcpy(svk.killer.name, "scroll of exile");
             }
 
             /* Polymorphed characters will die as soon as they're rehumanized.
@@ -3535,18 +3521,7 @@ do_genocide(
         } else if (ptr == gy.youmonst.data) {
             rehumanize();
         }
-        if (only_on_level) {
-            if (In_endgame(&u.uz)) {
-                if (!Deaf)
-                    You_hear("a sinister laughter in the distance...");
-                else
-                    You_feel("a sinister presence in the background...");
-            }
-            kill_monster_on_level(mndx);
-        } else {
-            kill_genocided_monsters();
-            update_inventory();	/* in case identified eggs were affected */
-        }
+        kill_monster_on_level(mndx, only_close);
     } else {
         int cnt = 0, census = monster_census(FALSE);
 
@@ -4115,12 +4090,12 @@ learnme(void)
 
 /* guarantees that worn cloak is scales, and that
  * otmp = uarmc, but does NOT guarantee existence of uarm
- * 
+ *
  * no body armor under the scales = the scales are enchanted directly
  * onto you (no such thing as a scaled shirt). The wearer will
  * polymorph. Also caused by a confused scroll, _after_ the scales meld.
  */
-boolean 
+boolean
 maybe_merge_scales(struct obj *sobj, struct obj *otmp)
 {
     boolean confused = (Confusion != 0);

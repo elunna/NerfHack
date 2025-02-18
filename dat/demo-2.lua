@@ -59,9 +59,7 @@ des.region(selection.area(43,02,57,16), "unlit");
 
 -- can't dig in the towers
 des.non_diggable(selection.area(02,02,16,16))
-des.non_passwall(selection.area(02,02,16,16));
 des.non_diggable(selection.area(43,02,58,16))
-des.non_passwall(selection.area(43,02,58,16));
 
 -- bridge between the two towers
 des.drawbridge({ dir="west", state="closed", x=17,y=09})
@@ -75,8 +73,8 @@ des.monster("nalfeshnee",49,08)
 des.monster("balrog",51,08)
 des.monster("nalfeshnee",49,10)
 des.monster("balrog",51,10)
-des.monster("pit fiend",50,08)
-des.monster("pit fiend",49,09)
+des.monster("weredemon",50,08)
+des.monster("elder minotaur",49,09)
 des.monster("pit fiend",50,10)
 
 -- and some other denizens
@@ -145,21 +143,10 @@ des.object("[")
 des.object("[")
 des.object(")")
 des.object(")")
-des.object("(")
-des.object("/")
-des.object("=")
-des.object("?")
-des.object("?")
+des.object("*")
 des.object("!")
-des.object("!")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
-des.object("*")
+des.object("?")
+
 
 -- some traps
 des.trap("fire")

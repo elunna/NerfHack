@@ -1508,6 +1508,7 @@
 				"$(NH_DAT_DIR)/minetn-9.lua",
 				"$(NH_DAT_DIR)/minetn-10.lua",
 				"$(NH_DAT_DIR)/minetn-11.lua",
+				"$(NH_DAT_DIR)/minetn-12.lua",
 				"$(NH_DAT_DIR)/Mon-fila.lua",
 				"$(NH_DAT_DIR)/Mon-filb.lua",
 				"$(NH_DAT_DIR)/Mon-goal.lua",
@@ -1550,6 +1551,7 @@
 				"$(NH_DAT_DIR)/soko1-6.lua",
 				"$(NH_DAT_DIR)/soko1-7.lua",
 				"$(NH_DAT_DIR)/soko1-8.lua",
+				"$(NH_DAT_DIR)/soko1-9.lua",
 				"$(NH_DAT_DIR)/soko2-1.lua",
 				"$(NH_DAT_DIR)/soko2-2.lua",
 				"$(NH_DAT_DIR)/soko2-3.lua",
@@ -1591,6 +1593,11 @@
 				"$(NH_DAT_DIR)/tower3.lua",
 				"$(NH_DAT_DIR)/tut-1.lua",
 				"$(NH_DAT_DIR)/tut-2.lua",
+                "$(NH_DAT_DIR)/Und-fila.lua",
+                "$(NH_DAT_DIR)/Und-filb.lua",
+                "$(NH_DAT_DIR)/Und-goal.lua",
+                "$(NH_DAT_DIR)/Und-loca.lua",
+                "$(NH_DAT_DIR)/Und-strt.lua",
 				"$(NH_DAT_DIR)/Val-fila.lua",
 				"$(NH_DAT_DIR)/Val-filb.lua",
 				"$(NH_DAT_DIR)/Val-goal.lua",
@@ -1606,13 +1613,20 @@
 				"$(NH_DAT_DIR)/Wiz-loca.lua",
 				"$(NH_DAT_DIR)/Wiz-strt.lua",
 				"$(NH_DAT_DIR)/wizard1.lua",
-				"$(NH_DAT_DIR)/wizard2.lua",
+				"$(NH_DAT_DIR)/wizard2-1.lua",
+				"$(NH_DAT_DIR)/wizard2-2.lua",
 				"$(NH_DAT_DIR)/wizard3.lua",
+				"$(NH_DAT_DIR)/wizard4.lua",
+				"$(NH_DAT_DIR)/wizard5.lua",
+				"$(NH_DAT_DIR)/wizard6.lua",
+				"$(NH_DAT_DIR)/wizard7.lua",
+				"$(NH_DAT_DIR)/wizard8.lua",
 				"$(NH_DAT_DIR)/yeenog-1.lua",
 				"$(NH_DAT_DIR)/yeenog-2.lua",
 				"$(NH_DAT_DIR)/yeenog-3.lua",
 				"$(NH_DAT_DIR)/dragons.lua",
 				"$(NH_DAT_DIR)/bridge.lua",
+				"$(NH_DAT_DIR)/invoke.lua",
 			);
 			name = "Build nhdat";
 			outputFileListPaths = (
@@ -1622,7 +1636,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${NH_DAT_DIR}\"\n\"${NH_UTIL_DIR}\"/dlb cf nhdat help hh cmdhelp keyhelp history opthelp optmenu wizhelp dungeon.lua tribute asmode-?.lua baalz-?.lua bigrm-*.lua castle-?.lua demo-?.lua dispat-?.lua geryon-?.lua fakewiz?.lua juiblex.lua knox-?.lua medusa-?.lua minend-?.lua minefill.lua sokostrt.lua minetn-*.lua oracle.lua orcus-?.lua sanctm-?.lua soko?-?.lua tower?.lua tut-?.lua valley-?.lua bridge.lua dragons.lua wizard?.lua yeenog-?.lua nhcore.lua nhlib.lua themerms.lua hellfill.lua astral.lua air.lua earth.lua fire.lua water.lua ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua bogusmon ntrymsgs data engrave epitaph oracles options quest.lua rumors\n";
+			shellScript = "cd \"${NH_DAT_DIR}\"\n\"${NH_UTIL_DIR}\"/dlb cf nhdat help hh cmdhelp keyhelp history opthelp optmenu wizhelp dungeon.lua tribute asmode-?.lua baalz-?.lua bigrm-*.lua castle-?.lua demo-?.lua dispat-?.lua geryon-?.lua fakewiz?.lua juiblex.lua knox-?.lua medusa-?.lua minend-?.lua minefill.lua sokostrt.lua minetn-*.lua oracle.lua orcus-?.lua sanctm-?.lua soko?-?.lua tower?.lua tut-?.lua valley-?.lua bridge.lua invoke.lua dragons.lua wizard?.lua wizard2-?.lua yeenog-?.lua nhcore.lua nhlib.lua themerms.lua hellfill.lua astral.lua air.lua earth.lua fire.lua water.lua ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua bogusmon ntrymsgs data engrave epitaph oracles options quest.lua rumors\n";
 		};
 		3192867021A39F6A00325BEB /* Install */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -46,10 +46,11 @@ static const char *const artifact_names[] = {
 #define     STUN(a,b)   {0,AD_STUN,a,b}         /* magical attack */
 #define     DISE(a,b)   {0,AD_DISE,a,b}         /* disease attack */
 #define     SLEE(a,b)   {0,AD_SLEE,a,b}         /* Sleep attack  */
+#define     DISN(a,b)   {0,AD_DISN,a,b}         /* disintegration attack */
 
 /* Some helper macros for artifact value.
- * We diverge from Vanilla 3.7.0 and assign a value of 1 to all artifacts 
- * (except for quest artifacts). This is because we already have altar 
+ * We diverge from Vanilla 3.7.0 and assign a value of 1 to all artifacts
+ * (except for quest artifacts). This is because we already have altar
  * cracking nerfs in place and artifacts are rare.
  */
 #define ARTVAL 1
@@ -71,7 +72,7 @@ static NEARDATA struct artifact artilist[] = {
      * The combination of SPFX_WARN+SPFX_DFLAGH+MH_value will trigger
      * EWarn_of_mon for all monsters that have the MH_value flag.
      * For example, Sting and Orcrist will warn of MH_ORC monsters.
-     * 
+     *
      *    * Artifact gen_spe rationale:
      * 1.  If the artifact is useful against most enemies, +0.
      * 2.  If the artifact is useful against only a few enemies, usually +2.
@@ -134,7 +135,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(5, 12), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 5000L, NO_COLOR, MORTALITY_DIAL),
-      
+
     /* From SLASH'EM; changed to an AKLYS.
      * Lessened to-hit penalty so aklys will connect
      * Guarantee +3 so illiterate cavemen have a nice weapon */
@@ -143,7 +144,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
       3, ARTVAL, 300L, NO_COLOR, SKULLCRUSHER),
-    
+
     /* From SpliceHack: Shield of King Arthur.
      * This shield now grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
@@ -151,6 +152,12 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       ARMR_SPE, ARTVAL, 1500L, NO_COLOR, PRIDWEN),
+
+    A("Oathfire", LEATHER_BRACERS,
+      (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT | SPFX_INTEL), 0, 0,
+      NO_ATTK, DFNS(AD_FIRE), NO_CARY, 0,
+      A_LAWFUL, NON_PM, NON_PM,
+      ARMR_SPE, ARTVAL, 3400L, NO_COLOR, OATHFIRE),
 
     /* From SLASH'EM; +9 to-hit bonus */
     A("Quick Blade", SILVER_SHORT_SWORD,
@@ -160,7 +167,7 @@ static NEARDATA struct artifact artilist[] = {
       3, ARTVAL, 1000L, NO_COLOR, QUICK_BLADE),
 
     A("Serenity", SILVER_SPEAR,
-      (SPFX_RESTR | SPFX_BAGGRV), 0, 0,
+      (SPFX_RESTR | SPFX_BAGGRV | SPFX_INTEL), 0, 0,
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 5000L, NO_COLOR, SERENITY),
@@ -329,7 +336,7 @@ static NEARDATA struct artifact artilist[] = {
 
 
     /*** Chaotic artifacts ***/
-    
+
     /* From SpliceHack. Similar to the brands. Destroys items.
      * Was un-aligned in Splice, but was made chaotic and intelligent.
      */
@@ -338,7 +345,7 @@ static NEARDATA struct artifact artilist[] = {
       ACID(5, 0), DFNS(AD_ACID), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 3000L, NO_COLOR, ACIDFALL),
-    
+
     /* From xNetHack */
     A("The Amulet of Storms", AMULET_OF_FLYING,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
@@ -351,10 +358,10 @@ static NEARDATA struct artifact artilist[] = {
     A("Angelslayer", TRIDENT,
       (SPFX_RESTR | SPFX_ATTK | SPFX_SEARCH | SPFX_HSPDAM
        | SPFX_WARN | SPFX_DFLAGH | SPFX_INTEL), 0, MH_ANGEL,
-      FIRE(5, 10), NO_DFNS, NO_CARY, 0, 
+      FIRE(5, 10), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       BANE_SPE, ARTVAL, 5000L, CLR_RED, ANGELSLAYER),
-    
+
     /* From SlashTHEM with changes:
      * In THEM, this was a neutral cloak of protection that granted luck,
      * drain resistance, and warning. Now it is a chaotic cloak of
@@ -365,7 +372,7 @@ static NEARDATA struct artifact artilist[] = {
       NO_ATTK, DFNS(AD_DRLI), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
       ARMR_SPE, ARTVAL, 1500L, NO_COLOR, BLACKSHROUD),
-    
+
     /* From SLASH'EM */
     A("Doomblade", SHORT_SWORD,
       SPFX_RESTR, 0, 0,
@@ -398,11 +405,11 @@ static NEARDATA struct artifact artilist[] = {
       A_CHAOTIC, NON_PM, NON_PM,
       ARMR_SPE, ARTVAL, 5000L, NO_COLOR, MAYHEM),
 
-    /* From SLASH'EM: Instead of granting poison resistance, this grants
-     * sickness resistance instead. */
+    /* From SLASH'EM: Grants poison resistance when carried, and
+     * sickness resistance when wielded. */
     A("Plague", BOW,
       (SPFX_RESTR | SPFX_DEFN), 0, 0,
-      PHYS(5, 7), DFNS(AD_DISE), NO_CARY, 0,
+      PHYS(5, 7), DFNS(AD_DISE), DFNS(AD_DRST), 0,
       A_CHAOTIC, NON_PM, NON_PM,
       DFLT_SPE, ARTVAL, 4000L, NO_COLOR, PLAGUE),
 
@@ -452,7 +459,7 @@ static NEARDATA struct artifact artilist[] = {
       PHYS(8, 10), DFNS(AD_ELEC), NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ELF,
       1, ARTVAL, 8000L, CLR_BRIGHT_BLUE, GLAMDRING),
-    
+
     /*** Unaligned artifacts ***/
 
     /* Now grants warning vs dragons and can instakill dragons */
@@ -463,9 +470,9 @@ static NEARDATA struct artifact artilist[] = {
       BANE_SPE, ARTVAL, 500L, CLR_RED, DRAGONBANE),
 
     /* First sac gift for Healers. */
-    A("Drowsing Rod", QUARTERSTAFF, 
+    A("Drowsing Rod", QUARTERSTAFF,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
-      SLEE(5, 5), DFNS(AD_SLEE), NO_CARY, 0, 
+      SLEE(5, 5), DFNS(AD_SLEE), NO_CARY, 0,
       A_NONE, PM_HEALER, NON_PM,
       DFLT_SPE, ARTVAL, 500L, CLR_MAGENTA, DROWSING_ROD),
 
@@ -544,9 +551,9 @@ static NEARDATA struct artifact artilist[] = {
       DFLT_SPE, QAVAL, 2500L, NO_COLOR, ORB_OF_DETECTION),
 
     /* Instead of stealth, this grants displacement and flying when carried */
-    A("The Heart of Ahriman", LUCKSTONE,
+    A("The Heart of Ahriman", RUBY,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
-      (SPFX_FLYING | SPFX_DISPLAC), 0,
+      (SPFX_FLYING | SPFX_DISPLAC | SPFX_LUCK), 0,
       /* this stone does double damage if used as a projectile weapon */
       PHYS(0, 0), NO_DFNS, NO_CARY, UNCURSE_INVK,
       A_NEUTRAL, PM_BARBARIAN, NON_PM,
@@ -608,8 +615,8 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
     /* Now grants physical damage reduction */
     A("The Longbow of Diana", BOW,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT | SPFX_HPHDAM
-        | SPFX_NOWISH),
-      SPFX_ESP, 0,
+       | SPFX_ESP | SPFX_NOWISH),
+      0, 0,
       PHYS(5, 0), NO_DFNS, NO_CARY, CREATE_AMMO,
       A_CHAOTIC, PM_RANGER, NON_PM,
       DFLT_SPE, QAVAL, 4000L, NO_COLOR, LONGBOW_OF_DIANA),
@@ -639,6 +646,17 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       A_NEUTRAL, PM_TOURIST, NON_PM,
       DFLT_SPE, QAVAL, 7000L, NO_COLOR, YENDORIAN_EXPRESS_CARD),
 
+    /* Revamped Undead Slayer quest artifact
+     * Acts as a magical light source, grants reflection, disintegration and
+     * withering resistance, and passively turns undead when in the presence
+     * of evil */
+    A("The Argent Cross", AMULET_OF_REFLECTION,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH | SPFX_HSPDAM),
+      0, 0,
+      NO_ATTK, DFNS(AD_DISN), NO_CARY, 0,
+      A_NEUTRAL, PM_UNDEAD_SLAYER, NON_PM,
+      DFLT_SPE, QAVAL, 4000L, NO_COLOR, ARGENT_CROSS),
+
     A("The Orb of Fate", CRYSTAL_BALL,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK | SPFX_NOWISH),
       (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM), 0,
@@ -647,8 +665,9 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       DFLT_SPE, QAVAL, 3500L, NO_COLOR, ORB_OF_FATE),
 
     A("The Eye of the Aethiopica", AMULET_OF_ESP,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
-      (SPFX_EREGEN | SPFX_HSPDAM), 0,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH
+       | SPFX_EREGEN | SPFX_HSPDAM),
+      0, 0,
       NO_ATTK, DFNS(AD_MAGM), NO_CARY, CREATE_PORTAL,
       A_NEUTRAL, PM_WIZARD, NON_PM,
       DFLT_SPE, QAVAL, 4000L, NO_COLOR, EYE_OF_THE_AETHIOPICA),
@@ -678,6 +697,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
 #undef STUN
 #undef DISE
 #undef SLEE
+#undef DISN
 #endif
 
 /*artilist.h*/

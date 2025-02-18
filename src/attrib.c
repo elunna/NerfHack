@@ -84,6 +84,11 @@ static const struct innate {
                  { 20, &(HPoison_resistance), "hardy", "" },
                  { 0, 0, 0, 0 } },
 
+  und_abil[] = { { 1, &(HUndead_warning), "", "" },
+                 { 1, &(HDrain_resistance), "", "" },
+                 { 1, &(HSick_resistance), "", "" },
+                 {   0, 0, 0, 0 } },
+
   val_abil[] = { { 1, &(HCold_resistance), "", "" },
                  { 3, &(HStealth), "stealthy", "" },
                  { 7, &(HFast), "quick", "slow" },
@@ -109,15 +114,18 @@ static const struct innate {
   vam_abil[] = { { 1, &HDrain_resistance, "", "" },
                  { 1, &HBreathless, "", "" },
                  { 1, &HHunger, "", "" },
-                 { 7, &(HFast), "quick", "slow" },
+                 /* dhampir start out only able to use their bite or weapon
+                    attack in melee combat, but not both in the same round.
+                    At level 6, they silently unlock the ability to use both. */
                  { 0, 0, 0, 0 } },
 
   gru_abil[] = { { 1, &HPoison_resistance, "", "" },
                  { 1, &(HSearching), "", "" },
                  { 1, &(HSwimming), "", "" },
                  { 5, &(EJumping), "light on your feet", "stuck to the ground" },
+                 { 7, &(HFast), "quick", "slow" },
                  { 0, 0, 0, 0 } },
-  
+
   hum_abil[] = { { 0, 0, 0, 0 } };
 
 staticfn void exerper(void);
@@ -851,6 +859,7 @@ role_abil(int r)
         { PM_ROGUE, rog_abil },
         { PM_SAMURAI, sam_abil },
         { PM_TOURIST, tou_abil },
+        { PM_UNDEAD_SLAYER, und_abil },
         { PM_VALKYRIE, val_abil },
         { PM_WIZARD, wiz_abil },
         { 0, 0 }
@@ -1151,6 +1160,13 @@ adjabil(int oldlevel, int newlevel)
                 Your("powers diminish!");
         }
     }
+
+    /* ALI -- update Warn_of_mon */
+    HWarn_of_mon = HUndead_warning;
+    if (HUndead_warning)
+        svc.context.warntype.intrins |= MH_UNDEAD;
+    else
+        svc.context.warntype.intrins &= ~MH_UNDEAD;
 }
 
 /* called when gaining a level (before u.ulevel gets incremented);
@@ -1313,6 +1329,10 @@ acurr(int chridx)
     /* for Strength:  3 <= result <= 125;
        for all others:  3 <= result <= 25 */
     if (chridx == A_STR) {
+        if (Race_if(PM_ORC)) {
+            tmp += u.ulevel / 3;
+            tmp = (tmp > 18) ? STR19(tmp) : tmp;
+        }
         /* strength value is encoded:  3..18 normal, 19..118 for 18/xx (with
            1 <= xx <= 100), and 119..125 for other characteristics' 19..25;
            STR18(x) yields 18 + x (intended for 0 <= x <= 100; not used here);
@@ -1336,13 +1356,20 @@ acurr(int chridx)
     } else if (chridx == A_CON) {
         if (u_wield_art(ART_OGRESMASHER) || u_offhand_art(ART_OGRESMASHER))
             result = 25;
+        else if (Race_if(PM_ORC)) {
+            tmp += u.ulevel / 3;
+            result = (tmp > 25) ? 25 : tmp;
+        }
     } else if (chridx == A_INT || chridx == A_WIS) {
         /* Yes, this may raise Int and/or Wis if hero is sufficiently
            stupid.  There are lower levels of cognition than "dunce". */
         if (uarmh && uarmh->otyp == DUNCE_CAP)
             result = 6;
     } else if (chridx == A_DEX) {
-        ; /* there aren't any special cases for dexterity */
+        if (Race_if(PM_ORC)) {
+            tmp += u.ulevel / 3;
+            result = (tmp > 25) ? 25 : tmp;
+        }
     }
 
     if (result == 0) /* none of the special cases applied */

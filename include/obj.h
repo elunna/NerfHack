@@ -46,7 +46,7 @@ struct obj {
     unsigned owt;
     long quan; /* number of items */
 
-#define WEP_ENCHANT_MAX 11
+#define WEP_ENCHANT_MAX 12
 #define SPE_LIM 99 /* abs(obj->spe) <= 99, cap for enchanted and charged
                     * objects (and others; named fruit index excepted) */
     schar spe; /* quality of weapon, weptool, armor, or some rings (+ or -);
@@ -423,6 +423,10 @@ struct obj {
 #define is_gnomish_armor(otyp) (otyp == GNOMISH_HELM \
     || otyp == GNOMISH_BOOTS || otyp == GNOMISH_SUIT)
 
+#define is_bracer(otmp)                     \
+    ((otmp)->otyp >= LEATHER_BRACERS        \
+        && (otmp)->otyp <= BRACERS_VS_STONE)
+
 /* Rings that monsters will wear */
 #define can_muse_ring(otyp)         \
     (otyp == RIN_COLD_RESISTANCE    \
@@ -507,11 +511,13 @@ struct obj {
         "a pair of lenses named the Eyes of the Overworld" is not */    \
      || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD                    \
          && !undiscovered_artifact(ART_EYES_OF_THE_OVERWORLD)))
-#define pair_of(o) ((o)->otyp == LENSES || is_gloves(o) || is_boots(o))
+#define pair_of(o) ((o)->otyp == LENSES || is_gloves(o) \
+                    || is_boots(o) || is_bracer(o))
 
 #define unpolyable(o) ((o)->otyp == WAN_POLYMORPH \
                        || (o)->otyp == SPE_POLYMORPH \
                        || (o)->otyp == POT_POLYMORPH \
+                       || (o)->otyp == RIN_SUSTAIN_ABILITY \
                        || (o)->otyp == AMULET_OF_UNCHANGING)
 
 /* achievement tracking; 3.6.x did this differently */

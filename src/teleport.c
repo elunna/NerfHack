@@ -31,7 +31,7 @@ noteleport_level(struct monst *mon)
     if (In_hell(&u.uz) && !(is_dlord(mon->data) || is_dprince(mon->data)))
         if (get_iter_mons(m_blocks_teleporting))
             return TRUE;
-    
+
     if (In_quest(&u.uz) && !svq.quest_status.killed_nemesis) {
         return TRUE;
     }
@@ -41,7 +41,7 @@ noteleport_level(struct monst *mon)
 
     if (m_carrying(mon, AMULET_OF_YENDOR))
         return FALSE;
-    
+
     return FALSE;
 }
 
@@ -1151,10 +1151,12 @@ level_tele(void)
 
     /* Level teleports in Gehennom (including Vlad's/Wizards tower) are
     * not prevented, but the magic is resisted and inflicts pain.
+    * After you kill Rodney once, this effect no longer has any power.
+    * 
     * Don't enforce this in the fuzzer - it may prevent a lot of ports
     * in and around hell. */
     boolean tele_pain = (On_W_tower_level(&u.uz) || In_tower(&u.uz)
-        || In_hell(&u.uz)) && !iflags.debug_fuzzer;
+        || In_hell(&u.uz)) && !u.uevent.udemigod && !iflags.debug_fuzzer;
 
     if (iflags.debug_fuzzer)
         goto random_levtport;
@@ -1293,7 +1295,7 @@ level_tele(void)
                 newlev = u.uz.dlevel;
             }
         }
-            
+
     } else { /* involuntary level tele */
  random_levtport:
 
@@ -2205,7 +2207,7 @@ random_teleport_level(void)
         if (dunlev_reached(&u.uz) < qlocate_depth)
             bottom = qlocate_depth;
         min_depth = svd.dungeons[u.uz.dnum].depth_start;
-        /* If the hero has not killed the quest nemesis, they 
+        /* If the hero has not killed the quest nemesis, they
          * are restricted from downward levelporting */
         max_depth = nemesis_dead ? u.uz.dlevel
                     : bottom + (svd.dungeons[u.uz.dnum].depth_start - 1);

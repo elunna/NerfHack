@@ -51,7 +51,6 @@ des.teleport_region({region={00,00,24,18}, exclude = {00,00,00,00} })
 
 -- Protect the walls
 des.non_diggable(selection.area(35,00,75,18))
-des.non_passwall(selection.area(35,00,75,18));
 
 -- Stairs up and down
 des.stair("up",02,03)
@@ -100,31 +99,31 @@ des.trap("anti magic")
 des.trap("anti magic")
 
 -- Outer defences
-des.monster({ id = "xorn", x = 10, y = 05, peaceful=0, asleep=1 })
-des.monster({ id = "xorn", x = 02, y = 10, peaceful=0, asleep=1 })
-des.monster({ id = "xorn", x = 11, y = 09, peaceful=0, asleep=1 })
-des.monster({ id = "xorn", x = 16, y = 01, peaceful=0, asleep=1 })
-des.monster({ id = "xorn", x = 22, y = 08, peaceful=0, asleep=1 })
+des.monster({ id = "xorn", x = 10, y = 05, peaceful=0 })
+des.monster({ id = "xorn", x = 02, y = 10, peaceful=0 })
+des.monster({ id = "xorn", x = 11, y = 09, peaceful=0 })
+des.monster({ id = "xorn", x = 16, y = 01, peaceful=0 })
+des.monster({ id = "xorn", x = 22, y = 08, peaceful=0 })
 
-des.monster({ id = "fire giant", x = 03, y = 15, peaceful=0, asleep=1 })
-des.monster({ id = "fire giant", x = 04, y = 17, peaceful=0, asleep=1 })
-des.monster({ id = "fire giant", x = 06, y = 14, peaceful=0, asleep=1 })
-des.monster({ id = "fire giant", x = 06, y = 17, peaceful=0, asleep=1 })
-des.monster({ id = "fire giant", x = 08, y = 16, peaceful=0, asleep=1 })
+des.monster({ id = "fire giant", x = 03, y = 15, peaceful=0 })
+des.monster({ id = "fire giant", x = 04, y = 17, peaceful=0 })
+des.monster({ id = "fire giant", x = 06, y = 14, peaceful=0 })
+des.monster({ id = "fire giant", x = 06, y = 17, peaceful=0 })
+des.monster({ id = "fire giant", x = 08, y = 16, peaceful=0 })
 
-des.monster({ id = "fire elemental", x = 11, y = 08, peaceful=0, asleep=1 })
-des.monster({ id = "fire elemental", x = 05, y = 16, peaceful=0, asleep=1 })
-des.monster({ id = "fire elemental", x = 17, y = 02, peaceful=0, asleep=1 })
-des.monster({ id = "fire elemental", x = 20, y = 10, peaceful=0, asleep=1 })
-des.monster({ id = "fire elemental", x = 22, y = 17, peaceful=0, asleep=1 })
-des.monster({ id = "fire elemental", x = 24, y = 15, peaceful=0, asleep=1 })
+des.monster({ id = "fire elemental", x = 11, y = 08, peaceful=0 })
+des.monster({ id = "fire elemental", x = 05, y = 16, peaceful=0 })
+des.monster({ id = "fire elemental", x = 17, y = 02, peaceful=0 })
+des.monster({ id = "fire elemental", x = 20, y = 10, peaceful=0 })
+des.monster({ id = "fire elemental", x = 22, y = 17, peaceful=0 })
+des.monster({ id = "fire elemental", x = 24, y = 15, peaceful=0 })
 
-des.monster({ id = "hell hound", x = 21, y = 08, peaceful=0, asleep=1 })
-des.monster({ id = "hell hound", x = 19, y = 10, peaceful=0, asleep=1 })
-des.monster({ id = "hell hound", x = 23, y = 09, peaceful=0, asleep=1 })
-des.monster({ id = "hell hound", x = 21, y = 11, peaceful=0, asleep=1 })
+des.monster({ id = "hell hound", x = 21, y = 08, peaceful=0 })
+des.monster({ id = "hell hound", x = 19, y = 10, peaceful=0 })
+des.monster({ id = "hell hound", x = 23, y = 09, peaceful=0 })
+des.monster({ id = "hell hound", x = 21, y = 11, peaceful=0 })
 
-des.monster({ id = "red dragon", x = 12, y = 15, peaceful=0, asleep=1 })
+des.monster({ id = "red dragon", x = 12, y = 15, peaceful=0 })
 
 des.trap("board",06,07)
 des.trap("board",01,14)
@@ -137,22 +136,22 @@ des.trap("board",17,13)
 des.trap("board",19,15)
 
 -- Guardians at the crossing
-des.monster({ class = "B", x = 32, y = 05, peaceful=0, asleep=1 })
-des.monster({ class = "B", x = 35, y = 06, peaceful=0, asleep=1 })
-des.monster({ class = "B", x = 30, y = 12, peaceful=0, asleep=1 })
-des.monster({ class = "B", x = 34, y = 11, peaceful=0, asleep=1 })
+des.monster({ class = "B", x = 32, y = 05, peaceful=0 })
+des.monster({ class = "B", x = 35, y = 06, peaceful=0 })
+des.monster({ class = "B", x = 30, y = 12, peaceful=0 })
+des.monster({ class = "B", x = 34, y = 11, peaceful=0 })
 
-des.monster({ id = "hezrou", x = 31, y = 08, peaceful=0, asleep=1 })
-des.monster({ id = "hezrou", x = 29, y = 12, peaceful=0, asleep=1 })
-des.monster({ id = "hezrou", x = 33, y = 08, peaceful=0, asleep=1 })
-des.monster({ id = "hezrou", x = 31, y = 07, peaceful=0, asleep=1 })
+des.monster({ id = "hezrou", x = 31, y = 08, peaceful=0 })
+des.monster({ id = "hezrou", x = 29, y = 12, peaceful=0 })
+des.monster({ id = "hezrou", x = 33, y = 08, peaceful=0 })
+des.monster({ id = "hezrou", x = 31, y = 07, peaceful=0 })
 
-des.monster({ id = "nalfeshnee", x = 37, y = 09, peaceful=0, asleep=1 })
-des.monster({ id = "nalfeshnee", x = 35, y = 12, peaceful=0, asleep=1 })
-des.monster({ id = "nalfeshnee", x = 39, y = 10, peaceful=0, asleep=1 })
+des.monster({ id = "nalfeshnee", x = 37, y = 09, peaceful=0 })
+des.monster({ id = "nalfeshnee", x = 35, y = 12, peaceful=0 })
+des.monster({ id = "nalfeshnee", x = 39, y = 10, peaceful=0 })
 
-des.monster({ id = "fire elemental", x = 35, y = 04, peaceful=0, asleep=1 })
-des.monster({ id = "fire elemental", x = 32, y = 14, peaceful=0, asleep=1 })
+des.monster({ id = "fire elemental", x = 35, y = 04, peaceful=0 })
+des.monster({ id = "fire elemental", x = 32, y = 14, peaceful=0 })
 
 des.trap("board",28,10)
 des.trap("board",32,07)
@@ -185,7 +184,7 @@ des.monster("gremlin",48,08)
 -- Secret rooms and passages are empty
 
 -- Gallery
-des.monster({ id = "arch-lich", x = 56, y = 12, peaceful=0, asleep=1 })
+des.monster({ id = "arch-lich", x = 56, y = 12, peaceful=0 })
 des.monster("nalfeshnee",55,12)
 des.monster("nalfeshnee",54,12)
 des.monster("blue dragon",59,12)
@@ -201,15 +200,13 @@ des.monster("salamander",62,18)
 des.monster("fire vampire",68,16)
 des.monster("red dragon",49,11)
 
-des.object("chest",49,11)
-des.object("ruby",49,11)
-des.object("ruby",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
-des.object("*",49,11)
+des.object("[")
+des.object("[")
+des.object(")")
+des.object(")")
+des.object("*")
+des.object("!")
+des.object("?")
 
 -- GOLD:random,(49,11)
 
@@ -237,10 +234,6 @@ des.monster("succubus",65,07)
 
 des.monster("fire vampire",66,18)
 
-des.object("chest",66,06)
-des.object("chest",64,08)
-des.object("chest",68,08)
-
 -- Fake stairs
 des.monster({ id = "giant mimic", x = 71, y = 09, appear_as = "ter:staircase down" })
 
@@ -253,6 +246,6 @@ des.monster("salamander",67,01)
 des.monster("fire vampire",57,00)
 
 -- Exit chamber
-des.monster({ id = "pit fiend", x = 42, y = 01, peaceful=0, asleep=1 })
+des.monster({ id = "pit fiend", x = 42, y = 01, peaceful=0 })
 
 des.trap("board",45,01)

@@ -342,6 +342,7 @@ savegamestate(NHFILE *nhfp)
     save_msghistory(nhfp);
     save_gamelog(nhfp);
     save_luadata(nhfp);
+    bwrite(nhfp->fd, (genericptr_t) &gw.wizpuzzle, sizeof gw.wizpuzzle);
     if (nhfp->structlevel)
         bflush(nhfp->fd);
     program_state.saving--;
@@ -946,6 +947,13 @@ savemon(NHFILE *nhfp, struct monst *mtmp)
         if (buflen > 0) {
             if (nhfp->structlevel)
                 bwrite(nhfp->fd, (genericptr_t) EDOG(mtmp), buflen);
+        }
+        buflen = EBONES(mtmp) ? (int) sizeof (struct ebones) : 0;
+        if (nhfp->structlevel)
+            bwrite(nhfp->fd, (genericptr_t) &buflen, sizeof (int));
+        if (buflen > 0) {
+            if (nhfp->structlevel)
+                bwrite(nhfp->fd, (genericptr_t) EBONES(mtmp), buflen);
         }
         /* mcorpsenm is inline int rather than pointer to something,
            so doesn't need to be preceded by a length field */

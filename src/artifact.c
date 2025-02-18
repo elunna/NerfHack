@@ -186,7 +186,7 @@ mk_artifact(
             continue;
         else if (u.ualign.type == A_CHAOTIC && m == ART_STORMBRINGER)
             continue;
-        
+
         if (!by_align) {
             /* looking for a particular type of item; not producing a
                divine gift so we don't care about role's first choice */
@@ -260,12 +260,10 @@ mk_artifact(
              * relevant */
             struct obj *artiobj = mksobj((int) a->otyp, TRUE, FALSE);
 
-            if (artiobj) {
-                /* nonnull value of 'otmp' is unexpected. Cope. */
-                if (otmp) /* just in case; avoid orphaning */
-                    dispose_of_orig_obj(otmp);
-                otmp = artiobj;
-            }
+            /* nonnull value of 'otmp' is unexpected. Cope. */
+            if (otmp) /* just in case; avoid orphaning */
+                dispose_of_orig_obj(otmp);
+            otmp = artiobj;
         }
         /*
          * otmp should be nonnull at this point:
@@ -745,6 +743,8 @@ set_artifact_intrinsic(
         mask = &EAcid_resistance;
     else if (dtyp == AD_SLEE)
         mask = &ESleep_resistance;
+    else if (dtyp == AD_DISN)
+        mask = &EDisint_resistance;
     else if (dtyp == AD_DISE) {
         mask = &ESick_resistance;
         if (Sick) {
@@ -1063,12 +1063,12 @@ touch_artifact(struct obj *obj, struct monst *mon)
         You("are blasted by %s power!", s_suffix(the(xname(obj))));
         touch_blasted = TRUE;
         dmg = d((Antimagic ? 6 : 8), (self_willed ? 10 : 6));
-        
+
         /* Cartomancers are more sensitive to the powers of artifacts, and
          * artifacts are more sensitive to cartomancers weakness */
         if (Role_if(PM_CARTOMANCER))
             dmg *= 2;
-        
+
         /* add half (maybe quarter) of the usual silver damage bonus */
         if (is_silver(obj) && Hate_silver)
             tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
@@ -1167,9 +1167,11 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
         case AD_ACID:
             return !(yours ? Acid_resistance : resists_acid(mtmp));
         case AD_SLEE:
-            return !(yours ? Sleep_resistance : resists_sleep(mtmp));
+            return !(yours ? fully_resistant(SLEEP_RES) : resists_sleep(mtmp));
         case AD_DISE:
             return !(yours ? Sick_resistance : resists_sick(mtmp->data));
+        case AD_DISN:
+            return !(yours ? Disint_resistance : resists_disint(mtmp));
         default:
             impossible("Weird weapon special attack.");
         }
@@ -1615,7 +1617,7 @@ artifact_hit(
                        /* feel the effect even if not seen */
                        || (youattack && mdef == u.ustuck));
     boolean def_underwater = youdefend ? Underwater : mon_underwater(mdef);
-    
+
     /* the four basic attacks: fire, cold, shock and missiles */
     if (attacks(AD_FIRE, otmp)) {
         if (realizes_damage) {
@@ -1724,13 +1726,14 @@ artifact_hit(
                 erode_armor(mdef, ERODE_CORRODE);
             }
             if (!rn2(3)) {
-                int itemdmg = destroy_items(mdef, AD_ELEC, *dmgptr);
+                int itemdmg = destroy_items(mdef, AD_ACID, *dmgptr);
                 if (!youdefend)
                     *dmgptr += itemdmg; /* item destruction dmg */
             }
         }
         return realizes_damage;
     }
+    
     /* disease attack  */
     if (attacks(AD_DISE, otmp)) {
         boolean elf = youdefend ? maybe_polyd(is_elf(gy.youmonst.data),
@@ -1807,7 +1810,7 @@ artifact_hit(
         return Mb_hit(magr, mdef, otmp, dmgptr, dieroll, vis, hittee);
     }
 
-    /* Drowsing Rod 
+    /* Drowsing Rod
      * */
     if (attacks(AD_SLEE, otmp) && rn2(10)) {
         if (realizes_damage) {
@@ -1816,8 +1819,8 @@ artifact_hit(
                     pline_The("staff sprays a %s %s at %s!", rndcolor(),
                               (rn2(2) ? "gas" : "mist"), hittee);
                 }
-            } 
-            
+            }
+
             if (youdefend &&
                 (how_resistant(SLEEP_RES) == 100 || Breathless)) {
                 pline_The("vapors do not affect you.");
@@ -1826,9 +1829,9 @@ artifact_hit(
                 if (Blind)
                     You("are put to sleep!");
                 else
-                    You("are put to sleep by %s!", 
+                    You("are put to sleep by %s!",
                         otmp->oartifact ? artiname(otmp->oartifact) : xname(otmp));
-            } else if (mdef->mcanmove && !breathless(mdef->data) 
+            } else if (mdef->mcanmove && !breathless(mdef->data)
                         && sleep_monst(mdef, d(2, 4), -1)) {
                 if (!Blind)
                     pline("%s is put to sleep!", Monnam(mdef));
@@ -1837,7 +1840,7 @@ artifact_hit(
         }
         return realizes_damage;
     }
-    
+
     if (!gs.spec_dbon_applies) {
         /* since damage bonus didn't apply, nothing more to do;
            no further attacks have side-effects on inventory */
@@ -2212,6 +2215,15 @@ artifact_hit(
 
     if (otmp->oartifact == ART_SERPENT_S_TONGUE) {
         otmp->dknown = TRUE;
+        if (youattack) {
+            if (Role_if(PM_SAMURAI)) {
+                You("dishonorably use a diseased weapon!");
+                adjalign(-sgn(u.ualign.type));
+            } else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) {
+                You_feel("like an evil coward for using a diseased weapon.");
+                adjalign(Role_if(PM_KNIGHT) ? -10 : -1);
+            }
+        }
         pline_The("twisted blade poisons %s!",
                   youdefend ? "you" : mon_nam(mdef));
   	if (youdefend ? fully_resistant(POISON_RES) : resists_poison(mdef)) {
@@ -2222,23 +2234,16 @@ artifact_hit(
             return TRUE;
         }
         switch (rnd(10)) {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
+        case 1: case 2: case 3: case 4:
             *dmgptr += d(1, 6) + 2;
             break;
-        case 5:
-        case 6:
-        case 7:
+        case 5: case 6: case 7:
             *dmgptr += d(2, 6) + 4;
             break;
-        case 8:
-        case 9:
-            *dmgptr += d(3, 6) + 6;
+        case 8: case 9: *dmgptr += d(3, 6) + 6;
             break;
         case 10:
-            *dmgptr = 2 * (youdefend ? Upolyd ? u.mh : u.uhp 
+            *dmgptr = 2 * (youdefend ? Upolyd ? u.mh : u.uhp
                                      : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
             break;
         }
@@ -2529,10 +2534,11 @@ arti_invoke(struct obj *obj)
             winid tmpwin = create_nhwindow(NHW_MENU);
             anything any;
             int clr = NO_COLOR;
-            /* Branchports in Gehennom inflict pain. */
-            boolean tele_pain = On_W_tower_level(&u.uz) || In_tower(&u.uz)
-                || In_hell(&u.uz);
-
+            /* Branchports in Gehennom inflict pain unless you've killed
+               the wizard */
+            boolean tele_pain = !u.uevent.udemigod && (On_W_tower_level(&u.uz)
+                                                       || In_tower(&u.uz) 
+                                                       || In_hell(&u.uz));
             if (tele_pain) {
                 You_feel("a powerful force confront you.");
                 if (y_n("Continue teleporting?") != 'y')
@@ -2857,6 +2863,10 @@ artifact_light(struct obj *obj)
             && (obj->owornmask & W_ARMS) != 0L)
         return TRUE;
 
+    if (obj && is_art(obj, ART_ARGENT_CROSS)
+        && (obj->owornmask & W_AMUL) != 0L)
+        return TRUE;
+
     return (boolean) ((get_artifact(obj) != &artilist[ART_NONARTIFACT])
                       && is_art(obj, ART_SUNSWORD));
 }
@@ -2921,6 +2931,7 @@ abil_to_adtyp(long *abil)
         { &EDrain_resistance, AD_DRLI },
         { &EStun_resistance, AD_STUN },
         { &ESick_resistance, AD_DISE },
+        { &EDisint_resistance, AD_DISN },
     };
     int k;
 
@@ -3781,6 +3792,10 @@ artifact_info(int anum)
         art_info.wielded[20] = "does not impede spellcasting";
         art_info.wielded[21] = "light source";
         break;
+    case ART_ARGENT_CROSS:
+        art_info.wielded[20] = "turns undead";
+        art_info.wielded[21] = "light source";
+        break;
     case ART_MITRE_OF_HOLINESS:
         art_info.wielded[16] = "1/2 physical damage from undead and demons (Priests only)";
         break;
@@ -3790,7 +3805,7 @@ artifact_info(int anum)
     case ART_OGRESMASHER:
         art_info.wielded[16] = "boosts constitution";
         break;
-    case ART_MORTALITY_DIAL: 
+    case ART_MORTALITY_DIAL:
         art_info.wielded[16] = "prevents monster regeneration";
         break;
     case ART_ORCRIST:

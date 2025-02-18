@@ -4,7 +4,7 @@
 #  The version of the game this Makefile was designed for
 
 !IFNDEF NETHACK_VERSION
-NETHACK_VERSION="2.1.0"
+NETHACK_VERSION="2.2.0"
 !MESSAGE NETHACK_VERSION set to $(NETHACK_VERSION).
 !ELSE
 !MESSAGE NETHACK_VERSION set to $(NETHACK_VERSION) by caller.
@@ -64,11 +64,11 @@ default: packageall
 #===============================================================================
 
 PKGFILES=Guidebook.txt license NerfHack.exe NetHack.txt \
-	 NerfHackW.exe opthelp nhdat210 record symbols.template sysconf.template \
+	 NerfHackW.exe opthelp nhdat220 record symbols.template sysconf.template \
 	nerfhackrc.template
 FILESTOZIP=$(VSBINDIR)\Guidebook.txt $(VSBINDIR)\license \
 	$(VSBINDIR)\NerfHack.exe $(VSBINDIR)\NetHack.txt $(VSBINDIR)\NerfHackW.exe \
-	$(VSBINDIR)\opthelp $(VSBINDIR)\nhdat210 $(VSBINDIR)\record \
+	$(VSBINDIR)\opthelp $(VSBINDIR)\nhdat220 $(VSBINDIR)\record \
 	$(VSBINDIR)\symbols.template $(VSBINDIR)\sysconf.template $(VSBINDIR)\nerfhackrc.template
 DBGSYMS = NerfHack.PDB NerfHackW.PDB
 PDBTOZIP = ..\NetHack\symbols\$(Configuration)\$(Platform)\NerfHack.PDB \

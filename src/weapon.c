@@ -211,6 +211,10 @@ hitval(struct obj *otmp, struct monst *mon)
     if (Is_weapon && otmp->blessed && mon_hates_blessings(mon))
         tmp += 2;
 
+    /* Undead Slayers are naturally gifted at dispatching undead. */
+    if (Role_if(PM_UNDEAD_SLAYER) && mon_hates_blessings(mon))
+        tmp += 2;
+
     if (is_spear(otmp) && strchr(kebabable, ptr->mlet))
         tmp += 2;
 
@@ -291,7 +295,7 @@ dmgval_core(
     struct permonst *ptr = mon ? mon->data : NULL;
     boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
 
-    if (otyp == CREAM_PIE)
+    if (otyp == CREAM_PIE || otyp == PINCH_OF_CATNIP)
         return 0;
 
     /* Damage vs large monsters */
@@ -444,6 +448,10 @@ dmgval_core(
 
         if (otmp->blessed && mon && mon_hates_blessings(mon))
             bonus += rnd(4);
+        /* Undead Slayers are naturally gifted at dispatching undead. */
+        if (mon && Role_if(PM_UNDEAD_SLAYER) && mon_hates_blessings(mon))
+            bonus += 1 + rnd(u.ulevel / 5 + 1);
+
         if (is_axe(otmp)) {
             if (ptr && is_wooden(ptr))
                 bonus += rnd(4);
@@ -640,6 +648,7 @@ static NEARDATA const int rwep[] = {
     JAVELIN,
     SHURIKEN,
     YA,
+    PINEAPPLE,
     SILVER_ARROW,
     ELVEN_ARROW,
     ARROW,
@@ -868,6 +877,7 @@ static const NEARDATA short hwep[] = {
     DWARVISH_MATTOCK,
     TWO_HANDED_SWORD,
     BATTLE_AXE,
+    WAR_HAMMER,
     KATANA,
     CRYSKNIFE,
     TRIDENT,
@@ -893,12 +903,12 @@ static const NEARDATA short hwep[] = {
     BULLWHIP,
     UNICORN_HORN,
     QUARTERSTAFF,
+    WOODEN_STAKE,
     JAVELIN,
     AKLYS,
     CLUB,
     PICK_AXE,
     RUBBER_HOSE,
-    WAR_HAMMER,
     SILVER_DAGGER,
     ELVEN_DAGGER,
     DAGGER,
@@ -951,6 +961,14 @@ select_hwep(struct monst *mtmp)
     int i;
     boolean strong = strongmonst(mtmp->data);
     boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
+
+    /* bracers don't really count as shields */
+    if (wearing_shield) {
+        for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+            if (otmp->owornmask && is_bracer(otmp))
+                wearing_shield = 0;
+        }
+    }
 
     /* prefer artifacts to everything else */
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
@@ -1214,7 +1232,7 @@ abon(void)
     sbon += (u.ulevel < 3) ? 1 : 0;
     /* Be a little more generous for NerfHack early game too */
     sbon += (u.ulevel < 6) ? 1 : 0;
-    
+
     if (dex < 4)
         return (sbon - 3);
     else if (dex < 6)
@@ -1689,7 +1707,7 @@ void
 use_skill(int skill, int degree)
 {
     boolean advance_before;
-    
+
     if (skill != P_NONE && !P_RESTRICTED(skill)) {
         advance_before = can_advance(skill, FALSE);
         P_ADVANCE(skill) += degree;

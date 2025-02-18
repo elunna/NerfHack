@@ -34,11 +34,15 @@ des.region({ region={08,01,41,07}, lit=1, type="temple", filled=2 })
 
 des.region({ region={00,00,55,08}, lit=0, type="ordinary" })
 
--- the altar of Moloch (making four will make four priests....)
+-- the altar of Moloch
 des.altar({ x=40, y=04, align="noalign",type="shrine" })
-des.altar({ x=40, y=04, align="noalign",type="shrine" })
-des.altar({ x=40, y=04, align="noalign",type="shrine" })
-des.altar({ x=40, y=04, align="noalign",type="shrine" })
+
+-- We need to generate these separately, otherwise they all tend the same altar.
+-- If an orc/ or unaligned player converts the altar only one of the priests
+-- would get angry.
+des.monster({ id = "aligned cleric", x=40, y=03, align="noalign", peaceful=0 })
+des.monster({ id = "aligned cleric", x=40, y=05, align="noalign", peaceful=0 })
+des.monster({ id = "aligned cleric", x=41, y=04, align="noalign", peaceful=0 })
 
 des.levregion({ region = {05,04,05,04}, type = "branch" })
 des.stair("up", 05, 04)
@@ -48,97 +52,29 @@ des.door("locked", 7, 04)
 des.trap("spiked pit",06,03)
 des.trap("spiked pit",06,05)
 
+function chest_fill()
+    des.object("wax candle")
+    des.gold()
+    des.gold()
+    des.object()
+    if percent(50) then
+        des.object()
+    end
+    if percent(25) then
+        des.object()
+    end
+end
+
 -- the treasure chamber!
-des.object({ id = "chest", x = 52, y = 03,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 53, y = 03,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 54, y = 03,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 52, y = 04,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 53, y = 04,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 54, y = 04,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 52, y = 05,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 53, y = 05,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
-des.object({ id = "chest", x = 54, y = 05,
-             contents = function()
-                des.object("wax candle")
-                des.gold()
-                des.gold()
-                des.object()
-                des.object()
-                des.object()
-             end
-});
+des.object({ id = "chest", x = 52, y = 03, contents = chest_fill });
+des.object({ id = "chest", x = 53, y = 03, contents = chest_fill });
+des.object({ id = "chest", x = 54, y = 03, contents = chest_fill });
+des.object({ id = "chest", x = 52, y = 04, contents = chest_fill });
+des.object({ id = "chest", x = 53, y = 04, contents = chest_fill });
+des.object({ id = "chest", x = 54, y = 04, contents = chest_fill });
+des.object({ id = "chest", x = 52, y = 05, contents = chest_fill });
+des.object({ id = "chest", x = 53, y = 05, contents = chest_fill });
+des.object({ id = "chest", x = 54, y = 05, contents = chest_fill });
 
 --  five gargoyles on either side, in the niches of the temple
 -- all should start asleep

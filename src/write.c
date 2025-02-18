@@ -50,7 +50,7 @@ ink_cost(short otyp)
     case SCR_TAMING:
     case SCR_TELEPORTATION:
         return 20;
-    case SCR_GENOCIDE:
+    case SCR_EXILE:
     case SCR_CLONING:
         return 30;
     case SCR_BLANK_PAPER:
@@ -288,6 +288,12 @@ dowrite(struct obj *pen)
 
     /* see if there's enough ink */
     basecost = ink_cost(new_obj->otyp);
+    
+    if (new_obj->otyp == SCR_CLONING) {
+        You("cannot write this scroll. If only duplication were that easy...");
+        return 1;
+    }
+    
     if (pen->spe < basecost / 2) {
         Your("marker is too dry to write that!");
         obfree(new_obj, (struct obj *) 0);

@@ -154,3 +154,6 @@ des.stair("up", 63,15)
 -- Teleporting to this level is allowed after the invocation creates its
 -- entrance.  Force arrival in that case to be on rightmost third of level.
 des.teleport_region({ region = {54,1,79,18}, region_islev=1, dir="down" })
+
+-- Cthulu is placed right in the middle
+des.monster({ id = "Cthulhu", x=45,y=14,peaceful=0 })

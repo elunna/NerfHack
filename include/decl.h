@@ -1063,8 +1063,12 @@ struct instance_globals_w {
     /* mkmaze.c */
     struct trap *wportal;
 
+    /* wizard.c */
+    struct wizard_puzzle wizpuzzle;
+
     /* new */
     struct win_settings wsettings;      /* wintype.h */
+    long were_changes;                  /* were.c, allmain.c */
 
     boolean havestate;
     unsigned long magic; /* validate that structure layout is preserved */

@@ -524,7 +524,7 @@ extern struct nomakedefs_s nomakedefs;
 #define LL_LIFESAVE   0x0010L /* Use up amulet of lifesaving */
 #define LL_CONDUCT    0x0020L /* Break conduct - not reported early-game */
 #define LL_ARTIFACT   0x0040L /* bestowed, found, or manufactured */
-#define LL_GENOCIDE   0x0080L /* Logging of genocides */
+#define LL_GENOCIDE   0x0080L /* Logging of exiles */
 #define LL_KILLEDPET  0x0100L /* Killed a tame monster */
 #define LL_ALIGNMENT  0x0200L /* changed alignment, temporary or permanent */
 #define LL_DUMP_ASC   0x0400L /* Log URL for dumplog if ascended */

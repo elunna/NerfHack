@@ -582,3 +582,5 @@ yellow wight
 youma
 zahhark
 zergling
+
+superb owl

@@ -11,11 +11,12 @@ were_change(struct monst *mon)
     if (!is_were(mon->data) || mon->mcan)
         return;
 
-    if (is_human(mon->data)) {
+    if (is_human(mon->data) || is_demon(mon->data)) {
         if (!Protection_from_shape_changers
             && !rn2(night() ? (flags.moonphase == FULL_MOON ? 3 : 30)
                             : (flags.moonphase == FULL_MOON ? 10 : 50))) {
             new_were(mon); /* change into animal form */
+            gw.were_changes++;
             if (!Deaf && !canseemon(mon)) {
                 const char *howler, *howl = "";
 
@@ -32,6 +33,10 @@ were_change(struct monst *mon)
                     howler = "tiger";
                     howl = "yowling";
                     break;
+                case PM_WEREDEMON:
+                    howler = "hell hound";
+                    howl = "howling";
+                    break;
                 default:
                     howler = (char *) 0;
                     break;
@@ -45,9 +50,8 @@ were_change(struct monst *mon)
         }
     } else if (!rn2(30) || Protection_from_shape_changers) {
         new_were(mon); /* change back into human form */
+        gw.were_changes++;
     }
-    /* update innate intrinsics (mainly Drain_resistance) */
-    set_uasmon(); /* new_were() doesn't do this */
 }
 
 int
@@ -78,6 +82,11 @@ counter_were(int pm)
         return(PM_HUMAN_WERESPIDER);
     case PM_HUMAN_WERESPIDER:
         return(PM_WERESPIDER);
+        
+    case PM_WEREDEMON:
+        return PM_DEMON_WEREDEMON;
+    case PM_DEMON_WEREDEMON:
+        return PM_WEREDEMON;
     default:
         return NON_PM;
     }
@@ -113,6 +122,9 @@ were_beastie(int pm)
     case PM_PIT_VIPER:
     case PM_ASPHYNX:
         return PM_WERESNAKE;
+    case PM_WEREDEMON:
+    case PM_HELL_HOUND:
+        return PM_WEREDEMON;
     default:
         break;
     }
@@ -139,9 +151,11 @@ new_were(struct monst *mon)
 
     if (canseemon(mon) && !Hallucination)
         pline("%s changes into a %s.", Monnam(mon),
-              is_human(&mons[pm]) ? "human"
-                                  /* pmname()+4: skip past "were" prefix */
-                                  : pmname(&mons[pm], Mgender(mon)) + 4);
+              is_human(&mons[pm]) ? "human" :
+              is_demon(&mons[pm]) ? "demon" :
+              pm == PM_WEREDEMON  ? "hell hound" :
+              /* pmname()+4: skip past "were" prefix */
+              pmname(&mons[pm], Mgender(mon)) + 4);
 
     set_mon_data(mon, &mons[pm]);
     if (helpless(mon)) {
@@ -218,12 +232,18 @@ were_summon(
             if (genbuf)
                 Strcpy(genbuf, "spider");
             break;
+        case PM_WEREDEMON:
+        case PM_DEMON_WEREDEMON:
+            typ = PM_HELL_HOUND;
+            if (genbuf)
+                Strcpy(genbuf, "hell hound");
+            break;
         default:
             continue;
         }
 //        mtmp = makemon(&mons[typ], u.ux, u.uy, NO_MM_FLAGS);
         mtmp = make_msummoned(&mons[typ], NULL, yours, u.ux, u.uy);
-        
+
         if (mtmp) {
             total++;
             if (canseemon(mtmp))
@@ -252,6 +272,7 @@ you_were(void)
         if (!paranoid_query(ParanoidWerechange, qbuf))
             return;
     }
+    gw.were_changes++;
     (void) polymon(u.ulycn);
 }
 

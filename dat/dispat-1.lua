@@ -36,7 +36,6 @@ des.teleport_region({region={01,00,15,20}, exclude = {15,01,70,16} })
 
 -- Non diggable walls
 des.non_diggable(selection.area(00,00,46,12))
-des.non_passwall(selection.area(00,00,46,12));
 
 des.mazewalk(00,06,"west")
 
@@ -52,9 +51,6 @@ des.object(")")
 des.object(")")
 des.object("*")
 des.object("!")
-des.object("!")
-des.object("?")
-des.object("?")
 des.object("?")
 
 -- Some traps.

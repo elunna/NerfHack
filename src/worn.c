@@ -379,7 +379,7 @@ check_wornmask_slots(void)
                     (!uwep && !uswapwep) ? " and without " : "",
                     !uswapwep ? "uswapwep" : "");
             why = whybuf;
-        } else if (uarms)
+        } else if (uarms && !is_bracer(uarms))
             why = "while wearing shield";
         else if (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep))
             why = "uwep is not a weapon";
@@ -547,7 +547,7 @@ again:
             break;
         }
         case DISPLACED:
-            /* Here we assume that monsters that have displacement will never 
+            /* Here we assume that monsters that have displacement will never
              * wear rings/cloaks of displacement; this should be true for
              * shimmering dragons and displacer beasts. */
             if (!unseen) {
@@ -843,8 +843,7 @@ m_dowear(struct monst *mon, boolean creation)
     if (can_wear_armor || WrappingAllowed(mon->data))
         m_dowear_type(mon, W_ARMC, creation, FALSE);
     m_dowear_type(mon, W_ARMH, creation, FALSE);
-    if (!MON_WEP(mon) || !bimanual(MON_WEP(mon)))
-        m_dowear_type(mon, W_ARMS, creation, FALSE);
+    m_dowear_type(mon, W_ARMS, creation, FALSE);
 
     m_dowear_type(mon, W_ARMG, creation, FALSE);
     if (!slithy(mon->data) && mon->data->mlet != S_CENTAUR
@@ -942,8 +941,12 @@ m_dowear_type(
                 continue;
             break;
         case W_ARMS:
-            if (!is_shield(obj))
+             if (!(is_shield(obj) || is_bracer(obj)))
                 continue;
+             /* no two-handed weapons with shields */
+             if (!is_bracer(obj))
+                 if (MON_WEP(mon) && bimanual(MON_WEP(mon)))
+                     continue;
             break;
         case W_ARMG:
             if (!is_gloves(obj))
@@ -1078,9 +1081,9 @@ m_dowear_type(
                 pline("%s is shining %s.", Something, adesc);
         }
     }
-    
+
     observed_effect = update_mon_extrinsics(mon, best, TRUE, creation);
-    
+
     if (!creation) {
         /* if couldn't see it but now can, or vice versa, */
         if ((sawmon ^ canseemon(mon))) {
@@ -1376,8 +1379,9 @@ mon_break_armor(struct monst *mon, boolean polyspot)
         if ((otmp = which_armor(mon, W_ARMS)) != 0) {
             Soundeffect(se_clank, 50);
             if (vis)
-                pline_mon(mon, "%s can no longer hold %s shield!",
-                          Monnam(mon), ppronoun);
+                pline_mon(mon, "%s can no longer %s %s %s!",
+                      Monnam(mon), is_bracer(otmp) ? "wear" : "hold",
+                      ppronoun, is_bracer(otmp) ? "bracers" : "shield");
             else
                 You_hear("a clank.");
             m_lose_armor(mon, otmp, polyspot);
@@ -1653,17 +1657,13 @@ armor_bonus(struct monst *mon, struct obj *armor)
 {
     int bon;
     boolean is_you = mon == &gy.youmonst;
-    if (!armor) {
-        impossible("armor_bonus was passed a null obj");
-        return 0;
-    }
-    
+
     /* start with its base AC value */
     bon = objects[armor->otyp].a_ac;
-    
+
     /* subtract erosion */
     bon -= (int) greatest_erosion(armor);
-    
+
     /* erosion is not allowed to make the armor worse than wearing nothing;
      * only negative enchantment can do that. */
     if (bon < 0) {
@@ -1671,23 +1671,31 @@ armor_bonus(struct monst *mon, struct obj *armor)
     }
     /* add enchantment (could be negative) */
     bon += armor->spe;
-    
+
     /* add bonus for dragon-scaled armor */
     if (Is_dragon_scaled_armor(armor)) {
         bon += 3;
     }
-    
+
     /* add shield skill bonuses for the player */
     if (is_shield(armor) && is_you) {
         switch (P_SKILL(P_SHIELD)) {
-        case P_BASIC:      bon += 1; break;
-        case P_SKILLED:    bon += 3; break;
-        case P_EXPERT:     bon += 5; break;
-        case P_MASTER:     bon += 8; break;
+        case P_BASIC:
+            bon += 1;
+            break;
+        case P_SKILLED:
+            bon += is_bracer(armor) ? 2 : 3;
+            break;
+        case P_EXPERT:
+            bon += is_bracer(armor) ? 3 : 5;
+            break;
+        case P_MASTER:
+            bon += is_bracer(armor) ? 4 : 8;
+            break;
         default: break;
         }
     }
-    
+
     /* Racial bonuses */
     if (is_you) {
         bon += race_bonus(armor);

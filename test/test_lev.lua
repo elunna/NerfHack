@@ -83,6 +83,7 @@ local special_levels = {
 "minetn-9",
 "minetn-10",
 "minetn-11",
+"minetn-12",
 "temple-1",
 "temple-2",
 "oracle",
@@ -99,6 +100,7 @@ local special_levels = {
 "soko1-6",
 "soko1-7",
 "soko1-8",
+"soko1-9",
 "soko2-1",
 "soko2-2",
 "soko2-3",
@@ -138,14 +140,21 @@ local special_levels = {
 "valley-3",
 "water",
 "wizard1",
-"wizard2",
+"wizard2-1",
+"wizard2-2",
 "wizard3",
+"wizard4",
+"wizard5",
+"wizard6",
+"wizard7",
+"wizard8",
 "yeenog-1",
 "yeenog-2",
 "yeenog-3",
 }
 
-local roles = { "Arc", "Bar", "Car", "Cav", "Hea", "Kni", "Mon", "Pri", "Ran", "Rog", "Sam", "Tou", "Val", "Wiz" }
+local roles = { "Arc", "Bar", "Car", "Cav", "Hea", "Kni", "Mon", "Pri",
+                "Ran", "Rog", "Sam", "Tou", "Und", "Val", "Wiz" }
 local questlevs = { "fila", "filb", "goal", "loca", "strt" }
 
 for _,role in ipairs(roles) do

@@ -229,7 +229,7 @@ mdisplacem(
      */
     gv.vis = (canspotmon(magr) && canspotmon(mdef));
 
-    if (touch_petrifies(pd) && !(resists_ston(magr) 
+    if (touch_petrifies(pd) && !(resists_ston(magr)
                                  || defended(magr, AD_STON))) {
         if (!safegloves(which_armor(magr, W_ARMG))) {
             if (poly_when_stoned(pa)) {
@@ -881,9 +881,9 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     /* call mon_reflectsrc 2x, first test, then, if visible, print message */
     const char* monreflector = mon_reflectsrc(mdef);
     boolean is_medusa = magr->data == &mons[PM_MEDUSA];
-    
+
     switch (mattk->adtyp) {
-    case AD_STON: 
+    case AD_STON:
         if (monreflector) {
             if (canseemon(mdef))
                 pline_mon(mdef, "The gaze is reflected away by %s %s.",
@@ -912,7 +912,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
                     mdef->mstone = 5;
                     mdef->mstonebyu = FALSE;
                 }
-                
+
                 if (!DEADMONSTER(magr))
                     return M_ATTK_MISS;
                 return M_ATTK_AGR_DIED;
@@ -1479,6 +1479,8 @@ passivemm(
     switch (mddat->mattk[i].adtyp) {
     case AD_ACID:
         orig_dmg = tmp;
+        if (mon_underwater(mdef))
+            break;
         if (mhitb && !rn2(2)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
@@ -1502,7 +1504,9 @@ passivemm(
     case AD_DRDX:
     case AD_DRCO:
     case AD_HALU:
-        /* passive poison for grung's toxic skin */ 
+        /* passive poison for grung's toxic skin */
+        if (mon_underwater(mdef))
+            break;
         if (mhitb && !rn2(3)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
@@ -1513,7 +1517,8 @@ passivemm(
                     pline("%s is not affected.", Monnam(magr));
                 tmp = 0;
             } else {
-                pline_mon(magr, "%s skin was poisoned!", s_suffix(Monnam(magr)));
+                if (canseemon(magr))
+                    pline_mon(magr, "%s skin was poisoned!", s_suffix(Monnam(magr)));
                 if (rn2(10))
                     tmp += rnd(6);
                 else {
@@ -1526,7 +1531,9 @@ passivemm(
             tmp = 0;
         goto assess_dmg;
     case AD_SLEE:
-        /* passive poison for grung's toxic skin */ 
+        /* passive poison for grung's toxic skin */
+        if (mon_underwater(mdef))
+            break;
         if (mhitb && !rn2(3)) {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
@@ -1548,6 +1555,8 @@ passivemm(
         }
         break;
     case AD_SLIM:
+        if (mon_underwater(mdef))
+            break;
         if (mhit && !mdef->mcan && !rn2(3)) {
             pline("Its slime splashes onto %s!", mon_nam(magr));
             if (flaming(magr->data)) {
@@ -1643,6 +1652,76 @@ passivemm(
                 return (mdead | mhit);
             }
             return 1;
+        case AD_HALU: /* Floating eye */
+            if (mddat == &mons[PM_THIRD_EYE]) {
+                if (magr->mcansee && haseyes(madat) && mdef->mcansee
+                    && (mon_prop(magr, SEE_INVIS) || !mdef->minvis)) {
+                    /* construct format string; guard against '%' in Monnam */
+                    Strcpy(buf, s_suffix(Monnam(mdef)));
+                    (void) strNsubst(buf, "%", "%%", 0);
+                    Strcat(buf, " gaze is reflected by %s %s.");
+                    const char* monreflector = mon_reflectsrc(magr);
+                    if (monreflector) {
+                        pline_mon(magr, "But it reflects from %s %s!",
+                                  s_suffix(mon_nam(magr)), monreflector);
+                        return (mdead | mhit);
+                    }
+                    Strcpy(buf, Monnam(magr));
+                    if (canseemon(magr)) {
+                        if (defended(magr, AD_HALU)) {
+                            pline("%s looks distracted for a moment.",
+                                  Monnam(magr));
+                        } else {
+                            pline("%s is freaked out by %s gaze!", buf,
+                                  s_suffix(mon_nam(mdef)));
+                        }
+                    }
+                    if (defended(magr, AD_HALU))
+                        return 1;
+                    if (!magr->mstun) {
+                        magr->mstun = 1;
+                        pline_mon(magr, "%s %s.", Monnam(magr),
+                              makeplural(stagger(magr->data, "stagger")));
+                    }
+                    return (mdead | mhit);
+                }
+            }
+            return 1;
+        case AD_TLPT: /* Blinking eye */
+            if (mddat == &mons[PM_BLINKING_EYE]) {
+                if (magr->mcansee && haseyes(madat) && mdef->mcansee
+                    && (mon_prop(magr, SEE_INVIS) || !mdef->minvis)) {
+                    /* construct format string; guard against '%' in Monnam */
+                    Strcpy(buf, s_suffix(Monnam(mdef)));
+                    (void) strNsubst(buf, "%", "%%", 0);
+                    Strcat(buf, " gaze is reflected by %s %s.");
+                    const char* monreflector = mon_reflectsrc(magr);
+                    if (monreflector) {
+                        pline_mon(magr, "But it reflects from %s %s!",
+                                  s_suffix(mon_nam(magr)), monreflector);
+                        return (mdead | mhit);
+                    }
+                    Strcpy(buf, Monnam(magr));
+                    if (canseemon(magr)) {
+                        if (mon_prop(magr, TELEPORT_CONTROL)) {
+                            pline("%s shifts momentarily.",
+                                  Monnam(magr));
+                        }
+                    }
+                    char mdef_Monnam[BUFSZ];
+                    boolean wasseen = canspotmon(magr);
+                    You("gaze at the %s", mon_nam(magr));
+                    /* save the name before monster teleports, otherwise
+                       we'll get "it" in the suddenly disappears message */
+                    if (gv.vis && wasseen)
+                        Strcpy(mdef_Monnam, Monnam(magr));
+                    magr->mstrategy &= ~STRAT_WAITFORU;
+                    (void) rloc(magr, RLOC_MSG);
+
+                    return (mdead | mhit);
+                }
+            }
+            return 1;
         case AD_COLD:
             if (resists_cold(magr)) {
                 if (canseemon(magr)) {
@@ -1668,7 +1747,7 @@ passivemm(
             tmp = 0;
             break;
         case AD_FIRE:
-            if (resists_fire(magr)) {
+            if (resists_fire(magr) || mon_underwater(magr)) {
                 if (canseemon(magr)) {
                     pline_mon(magr, "%s is mildly warmed.", Monnam(magr));
                     golemeffects(magr, AD_FIRE, tmp);

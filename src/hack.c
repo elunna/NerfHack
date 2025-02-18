@@ -1933,6 +1933,8 @@ domove_bump_mon(struct monst *mtmp, int glyph)
      * attack_check(), which still wastes a turn, but prints a
      * different message and makes the player remember the monster.
      */
+    if (swim_under(mtmp, FALSE))
+        return FALSE;
     if (svc.context.nopick && !svc.context.travel
         && (canspotmon(mtmp) || glyph_is_invisible(glyph)
             || glyph_is_warning(glyph))) {
@@ -1943,7 +1945,8 @@ domove_bump_mon(struct monst *mtmp, int glyph)
             /* m_monnam(): "dog" or "Fido", no "invisible dog" or "it" */
             pline("Pardon me, %s.", m_monnam(mtmp));
         else
-            You("move right into %s.", mon_nam(mtmp));
+            You("%s right into %s.", Underwater ? "swim" : "move ",
+                mon_nam(mtmp));
         return TRUE;
     }
     return FALSE;
@@ -2426,14 +2429,18 @@ slippery_ice_fumbling(void)
 
     if (on_ice) {
         if ((uarmf && objdescr_is(uarmf, "snow boots"))
-            || resists_cold(iceskater) || Flying
+            || resists_cold(iceskater)
+            || Flying
             || mon_prop(iceskater, LEVITATION)
-            || (uarm && Is_dragon_scaled_armor(uarm)
-                    && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES)
             || is_clinger(iceskater->data)
-            || is_whirly(iceskater->data)) {
+            || is_whirly(iceskater->data)
+            /* Wearing white dragon scales works regardless of steed */
+            || (uarm && Is_dragon_scaled_armor(uarm)
+                    && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES)) {
             on_ice = FALSE;
-        } else if (!rn2(fully_resistant(COLD_RES) ? 3 : 2)) {
+        } else if (!rn2((u.usteed ? resists_cold(iceskater)
+                                  : fully_resistant(COLD_RES))
+                            ? 3 : 2)) {
             HFumbling |= FROMOUTSIDE;
             HFumbling &= ~TIMEOUT;
             HFumbling += 1; /* slip on next move */
@@ -2816,6 +2823,8 @@ domove_core(void)
         && !displaceu
         /* check for discovered trap */
         && (trap = t_at(x, y)) != 0 && trap->tseen
+        && !(Is_wizpuzzle_lev(&u.uz) && trap && trap->ttyp == SQKY_BOARD)
+        && !(Is_telemaze_lev(&u.uz) && trap && trap->ttyp == TELEP_TRAP)
         /* check whether attempted move will be viable */
     /*
      * FIXME:
@@ -3403,6 +3412,8 @@ mon_findsu:
             piercer_hit(mtmp, &gy.youmonst);
             break;
         default: /* monster surprises you. */
+            if (Underwater)
+                break; /* No surprise - just swam under */
             if (mtmp->mtame)
                 pline("%s jumps near you from the %s.", Amonnam(mtmp),
                       ceiling(u.ux, u.uy));
@@ -3624,6 +3635,12 @@ check_special_room(boolean newlev)
     for (ptr = &u.uentered[0]; *ptr; ptr++) {
         int roomno = *ptr - ROOMOFFSET, rt = svr.rooms[roomno].rtype;
         boolean msg_given = TRUE;
+
+        /* Regions on wizard3 are not special rooms, but may trigger doing
+         * something with the puzzle on that level so it's handled here */
+        if (Is_wizpuzzle_lev(&u.uz)) {
+            wizpuzzle_enterchamber(roomno);
+        }
 
         /* Did we just enter some other special room? */
         /* vault.c insists that a vault remain a VAULT,
@@ -4372,7 +4389,7 @@ saving_grace(int dmg)
            to phrase this though; classifying it as a spoiler will hide it
            from #chronicle during play but show it to livelog observers */
         livelog_printf(LL_CONDUCT | LL_SPOILER, "%s (%d damage, %d/%d HP)",
-                       "survived one-shot death via saving-grave",
+                       "survived one-shot death via saving-grace",
                        dmg, u.uhp, u.uhpmax);
 
         /* note: this could reduce dmg to 0 if u.uhpmax==1 */
@@ -4655,5 +4672,40 @@ rounddiv(long x, int y)
     return divsgn * r;
 }
 
+/* Handles the hero swimming underneath a monster
+ * and required checks.
+ * Returns TRUE if the hero and monster should trade places,
+ * otherwise FALSE.
+ */
+boolean
+swim_under(struct monst *mtmp, boolean noisy)
+{
+    int glyph = glyph_at(mtmp->mx, mtmp->my);
+    boolean noticed_it = (canspotmon(mtmp)
+                                  || glyph_is_invisible(glyph)
+                                  || glyph_is_warning(glyph));
+
+    if (!Underwater)
+        return FALSE;
+    /* A puddle is not enough to swim under */
+    if (!is_pool(mtmp->mx, mtmp->my))
+        return FALSE;
+    /* Being engulfed or held prevents any swimming */
+    if (u.ustuck || u.uswallow)
+        return FALSE;
+//    !mtmp->minvis
+//     || can_wwalk(mtmp))
+
+    /* We can only swim under monsters that are above the water */
+    if (!grounded(mtmp->data)
+        || mon_prop(mtmp, FLYING) || can_fly(mtmp)
+        || mon_prop(mtmp, LEVITATION) || can_levitate(mtmp)) {
+
+        if (noisy)
+            You("swim underneath %s.", !noticed_it ? Something : mon_nam(mtmp));
+        return TRUE;
+    }
+    return FALSE;
+}
 
 /*hack.c*/

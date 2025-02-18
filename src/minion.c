@@ -21,6 +21,7 @@ newemin(struct monst *mtmp)
     if (!EMIN(mtmp)) {
         EMIN(mtmp) = (struct emin *) alloc(sizeof(struct emin));
         (void) memset((genericptr_t) EMIN(mtmp), 0, sizeof(struct emin));
+        EMIN(mtmp)->parentmid = mtmp->m_id;
     }
 }
 
@@ -322,7 +323,7 @@ demon_talk(struct monst *mtmp)
     if (!demand || gm.multi < 0 || cash <= 0) { /* you have no gold or can't move */
         mtmp->mpeaceful = 0;
         set_malign(mtmp);
-        newsym(mtmp->mx, mtmp->my);
+        newsym_force(mtmp->mx, mtmp->my);
         return 0;
     } else {
 
@@ -343,7 +344,7 @@ demon_talk(struct monst *mtmp)
             pline("%s gets angry...", Amonnam(mtmp));
             mtmp->mpeaceful = 0;
             set_malign(mtmp);
-            newsym(mtmp->mx, mtmp->my);
+            newsym_force(mtmp->mx, mtmp->my);
             return 0;
         }
     }
@@ -479,8 +480,8 @@ lose_guardian_angel(
         }
         mongone(mon);
     }
-    /* create 2 to 4 hostile angels to replace the lost guardian */
-    for (i = rn1(3, 2); i > 0; --i) {
+    /* create 4 to 7 hostile angels to replace the lost guardian */
+    for (i = rn1(4, 4); i > 0; --i) {
         mm.x = u.ux;
         mm.y = u.uy;
         if (enexto(&mm, mm.x, mm.y, &mons[PM_ANGEL]))

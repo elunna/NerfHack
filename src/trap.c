@@ -44,7 +44,6 @@ staticfn int trapeffect_magic_portal(struct monst *, struct trap *, unsigned);
 staticfn int trapeffect_vibrating_square(struct monst *, struct trap *,
                                            unsigned);
 staticfn int trapeffect_selector(struct monst *, struct trap *, unsigned);
-staticfn char *trapnote(struct trap *, boolean);
 staticfn int choose_trapnote(struct trap *);
 staticfn int steedintrap(struct trap *, struct obj *);
 staticfn void launch_drop_spot(struct obj *, coordxy, coordxy);
@@ -148,7 +147,8 @@ burnarmor(struct monst *victim)
             return TRUE;
         case 2:
             item = hitting_u ? uarms : which_armor(victim, W_ARMS);
-            if (!burn_dmg(item, "wooden shield"))
+            if (item)
+                if (!burn_dmg(item, is_bracer(item) ? "bracers" : "shield"))
                 continue;
             break;
         case 3:
@@ -266,7 +266,7 @@ erode_obj(
 
     /* Old gloves are already as damaged as they're going to get */
     if (otmp && (objdescr_is(otmp, "old gloves")
-                 || otmp->otyp == SHIELD_OF_INTEGRITY)) {
+                 || otmp->otyp == BRACERS_OF_INTEGRITY)) {
         if (flags.verbose && print && (uvictim || vismon))
             pline("%s %s %s not affected by %s.",
                   uvictim ? "Your" : s_suffix(Monnam(victim)), ostr,
@@ -650,6 +650,14 @@ maketrap(coordxy x, coordxy y, int typ)
             }
         }
         break;
+    case VIBRATING_SQUARE:
+        if (!Invocation_lev(&u.uz)) {
+            impossible("creating vibrating square on wrong level");
+        } else {
+            svi.inv_pos.x = x;
+            svi.inv_pos.y = y;
+        }
+        break;
     }
 
     if (!oldplace) {
@@ -686,6 +694,7 @@ fall_through(
     const char *dont_fall = 0;
     int newlevel;
     struct trap *t = (struct trap *) 0;
+    boolean controlled_flight = FALSE;
 
     /* we'll fall even while levitating in Sokoban; otherwise, if we
        won't fall and won't be told that we aren't falling, give up now */
@@ -734,12 +743,15 @@ fall_through(
         return;
     }
     if ((Flying || is_clinger(gy.youmonst.data))
-        && (ftflags & TOOKPLUNGE) && td && t)
+        && (ftflags & TOOKPLUNGE) && td && t) {
+        if (Flying)
+            controlled_flight = TRUE;
         You("%s down %s!",
             Flying ? "swoop" : "deliberately drop",
             (t->ttyp == TRAPDOOR)
                 ? "through the trap door"
                 : "into the gaping hole");
+    }
 
     if (*u.ushops)
         shopdig(1);
@@ -759,7 +771,9 @@ fall_through(
         }
         dist = depth(&dtmp) - depth(&u.uz);
         if (dist > 1)
-            You("fall down a %s%sshaft!", dist > 3 ? "very " : "",
+            You("%s down a %s%sshaft!",
+                controlled_flight ? "fly" : "fall",
+                dist > 3 ? "very " : "",
                 dist > 2 ? "deep " : "");
     }
     if (!td)
@@ -1549,6 +1563,10 @@ trapeffect_sqky_board(
                   Deaf ? "" : trapnote(trap, FALSE),
                   Deaf ? "" : " loudly");
             wake_nearby(FALSE);
+            if (Is_wizpuzzle_lev(&u.uz)) {
+                /* squeaky boards are the activation mechanism for the puzzle */
+                wizpuzzle_activate_mechanism(u.ux, u.uy);
+            }
         }
     } else {
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
@@ -1741,7 +1759,9 @@ trapeffect_rust_trap(
             break;
         case 1:
             pline("%s your left %s!", A_gush_of_water_hits, body_part(ARM));
-            if (water_damage(uarms, "shield", TRUE) != ER_NOTHING)
+            if (water_damage(uarms,
+                           (uarms && is_bracer(uarms)) ? "bracers" : "shield",
+                           TRUE) != ER_NOTHING)
                 break;
             if (u.twoweap || (uwep && bimanual(uwep)))
                 (void) water_damage(u.twoweap ? uswapwep : uwep, 0, TRUE);
@@ -1778,9 +1798,8 @@ trapeffect_rust_trap(
             losehp(Maybe_Half_Phys(dam), "rusting away", KILLED_BY);
         } else if (u.umonnum == PM_GREMLIN && rn2(3)) {
             (void) split_mon(&gy.youmonst, (struct monst *) 0);
-        } else if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))) {
-            rehydrate(FALSE);
         }
+        rehydrate(rn1(75, 25));
     } else {
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
         boolean trapkilled = FALSE;
@@ -1804,7 +1823,9 @@ trapeffect_rust_trap(
                       "%s %s's left %s!", A_gush_of_water_hits,
                       mon_nam(mtmp), mbodypart(mtmp, ARM));
             target = which_armor(mtmp, W_ARMS);
-            if (water_damage(target, "shield", TRUE) != ER_NOTHING)
+            if (water_damage(target, (target && is_bracer(target))
+                                         ? "bracers" : "shield",
+                             TRUE) != ER_NOTHING)
                 break;
             target = MON_WEP(mtmp);
             if (target && bimanual(target))
@@ -1900,7 +1921,7 @@ trapeffect_grease_trap(
 #if 0 /* Maybe come back to this - doesn't make sense for now */
         else if (Flying && !rn2(2)) {
             /* This is a bit of a stretch, but if you are flying
-               you get hit with an extra nasty splosh of grease that 
+               you get hit with an extra nasty splosh of grease that
                mucks up your flying and blinds you... */
             pline("A torrent of grease inundates you!");
             make_fumbling((HFumbling & TIMEOUT) + rnd(3)); /* + 1..3 */
@@ -2026,10 +2047,10 @@ trapeffect_grease_trap(
         struct obj *target;
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
-        
+
         if (in_sight)
             seetrap(trap);
-        
+
         if (!(mon_prop(mtmp, LEVITATION) || mon_prop(mtmp, FLYING)
                     || (is_clinger(mtmp->data) && has_ceiling(&u.uz))) && !rn2(2)) {
             if (canseemon(mtmp))
@@ -3677,6 +3698,10 @@ dotrap(struct trap *trap, unsigned trflags)
             return;
         }
         if (already_seen && !Fumbling && !undestroyable_trap(ttype)
+            /* in wiztower puzzles, player wants to trigger the trap, so don't
+             * frustrate them by randomly escaping it */
+            && !(ttype == SQKY_BOARD && Is_wizpuzzle_lev(&u.uz))
+            && !(ttype == TELEP_TRAP && Is_telemaze_lev(&u.uz))
             && ttype != ANTI_MAGIC && !forcebungle && !plunged
             && !conj_pit && !adj_pit
             && (!rn2(5) || (is_pit(ttype) && is_clinger(gy.youmonst.data)))) {
@@ -3703,7 +3728,7 @@ dotrap(struct trap *trap, unsigned trflags)
     (void) trapeffect_selector(&gy.youmonst, trap, trflags);
 }
 
-staticfn char *
+char *
 trapnote(struct trap *trap, boolean noprefix)
 {
     static const char *const tnnames[] = {
@@ -4578,7 +4603,7 @@ mselftouch(
             mon->mstone = 5;
             mon->mstonebyu = byplayer;
         }
-        
+
         /* if life-saved, might not be able to continue wielding */
         if (!DEADMONSTER(mon)
             && !safegloves(which_armor(mon, W_ARMG))
@@ -4959,7 +4984,7 @@ dofiretrap(
     else
         losehp(num, tower_of_flame, KILLED_BY_AN); /* fire damage */
     burn_away_slime();
-    dehydrate(orig_dmg);
+    dehydrate(resist_reduce(rn1(150, 150), FIRE_RES));
 
     if (burnarmor(&gy.youmonst) || rn2(3)) {
         (void) destroy_items(&gy.youmonst, AD_FIRE, orig_dmg);
@@ -5394,10 +5419,10 @@ water_damage(
 
     if (!obj)
         return ER_NOTHING;
-    
+
     if (in_invent && Watertight)
         return ER_NOTHING;
-    
+
     if (splash_lit(obj))
         return ER_DAMAGED;
 
@@ -5437,7 +5462,7 @@ water_damage(
         }
         water_damage_chain(obj->cobj, FALSE);
         return ER_DAMAGED; /* contents were damaged */
-    } else if (Waterproof_container(obj)) {
+    } else if (Waterproof_container(obj) || objdescr_is(obj, "oilskin")) {
         if (in_invent) {
             pline_The("%s slides right off your %s.", hliquid("water"), ostr);
             gm.mentioned_water = !Hallucination;
@@ -5523,8 +5548,7 @@ water_damage(
             if (isok(ox, oy) && cansee(ox, oy))
                 pline("Steam rises from %s.", the(xname(obj)));
             return 0;
-        } else if (otyp == SPE_BLANK_PAPER || otyp == SPE_WATERPROOFING
-                   || objdescr_is(uarmf, "oilskin")) {
+        } else if (otyp == SPE_BLANK_PAPER || otyp == SPE_WATERPROOFING) {
             return 0;
         }
         if (in_invent)
@@ -5810,7 +5834,7 @@ drown(void)
     }
 
     /* happily wading in the same contiguous pool */
-    if (u.uinwater 
+    if (u.uinwater
         && (is_pool(u.ux - u.dx, u.uy - u.dy) || (is_damp_terrain(u.ux - u.dx, u.uy - u.dy)
                 && tiny_groundedmon(gy.youmonst.data)))
         && (Swimming || Amphibious || Breathless)) {
@@ -7338,15 +7362,8 @@ chest_trap(
         } /* Case 3 */
         case 2:
             /* Hinge screeches loudly */
-            if (!Deaf) {
-                if (Hallucination)
-                    pline("A loud siren blares from %s!", the(xname(obj)));
-                else
-                    pline_The("hinges on %s let out an %s screech!",
-                        the(xname(obj)),
-                        rn2(2) ? "unruly" :
-                        rn2(2) ? "ear-splitting" : "obstreperous");
-            }
+            if (!Deaf)
+                pline("A loud siren blares from %s!", the(xname(obj)));
             awaken_monsters(d(4, 6));
             break;
         case 1:

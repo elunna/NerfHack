@@ -170,7 +170,9 @@ throw_obj(struct obj *obj, int shotlimit)
                          : obj->oclass == WEAPON_CLASS)
         && !(Confusion || Stunned || Fumbling )) {
         /* some roles don't get a volley bonus until becoming expert */
-        weakmultishot = (Role_if(PM_WIZARD) || Role_if(PM_CLERIC)
+        weakmultishot = (Role_if(PM_WIZARD)
+                         || Role_if(PM_CLERIC)
+                         || Role_if(PM_UNDEAD_SLAYER)
                          || (Role_if(PM_HEALER) && skill != P_KNIFE)
                          || (Role_if(PM_TOURIST) && skill != -P_DART)
                          || (Role_if(PM_CARTOMANCER) && skill != -P_SHURIKEN)
@@ -877,13 +879,17 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
         if (!canspotmon(mon))
             map_invisible(mon->mx, mon->my);
         setmangry(mon, FALSE);
+
         if (touch_petrifies(mon->data)
             /* this is a bodily collision, so check for body armor */
             && !uarmu && !uarm && !uarmc) {
             Sprintf(svk.killer.name, "bumping into %s",
                     an(pmname(mon->data, NEUTRAL)));
             make_stoned(5L, (char *) 0, KILLED_BY, svk.killer.name);
+        } else if (is_grung(mon->data)) {
+            passive(mon, NULL, TRUE, 1, AT_NONE, FALSE);
         }
+
         if (touch_petrifies(gy.youmonst.data)
             && !(resists_ston(mon) || defended(mon, AD_STON))
             && !which_armor(mon, W_ARMU | W_ARM | W_ARMC)) {
@@ -891,6 +897,9 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
                 mon->mstone = 5;
                 mon->mstonebyu = TRUE;
             }
+        } else if (maybe_polyd(is_grung(gy.youmonst.data),
+                               Race_if(PM_GRUNG))) {
+            passiveum(gy.youmonst.data, mon, AT_NONE);
         }
         wake_nearto(x, y, 10);
         return FALSE;
@@ -1248,6 +1257,7 @@ harmless_missile(struct obj *obj)
     switch (otyp) {
     case SLING:
     case EUCALYPTUS_LEAF:
+    case MISTLETOE:
     case KELP_FROND:
     case SPRIG_OF_WOLFSBANE:
     case FORTUNE_COOKIE:
@@ -1321,6 +1331,9 @@ toss_up(struct obj *obj, boolean hitsroof)
             obj = 0; /* it's now gone */
 
         switch (otyp) {
+        case PINEAPPLE:
+            pline("Ouch! %s is covered in spikes!", Doname2(obj));
+            break;
         case EGG:
             if (petrifier && !Stone_resistance
                 && !(poly_when_stoned(gy.youmonst.data)
@@ -1387,6 +1400,8 @@ toss_up(struct obj *obj, boolean hitsroof)
                 dmg += rnd(4);
             if (is_silver(obj) && Hate_silver)
                 dmg += rnd(20);
+            if (obj->otyp == PINEAPPLE)
+                dmg = dmg + 2;
         }
         if (dmg > 2 && less_damage)
             dmg = (dmg > 2 ? dmg - 2 : 2);
@@ -1985,6 +2000,9 @@ omon_adj(struct monst *mon, struct obj *obj, boolean mon_notices)
     }
     /* some objects are more likely to hit than others */
     switch (obj->otyp) {
+    case PINEAPPLE:
+        tmp += 4;
+        break;
     case HEAVY_IRON_BALL:
         if (obj != uball)
             tmp += 2;
@@ -2377,7 +2395,7 @@ thitmonst(
                 } else
                     (void) mpickobj(mon, obj);
                 return 1;
-            } else 
+            } else
                 passive_obj(mon, obj, (struct attack *) 0);
         } else {
             tmiss(obj, mon, TRUE);
@@ -2409,7 +2427,7 @@ thitmonst(
         }
 
     } else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM
-                || otyp == ACID_VENOM)
+                || otyp == ACID_VENOM || otyp == PINEAPPLE)
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) {
         (void) hmon(mon, obj, hmode, dieroll);
         return 1; /* hmon used it up */
@@ -2418,6 +2436,13 @@ thitmonst(
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) {
         potionhit(mon, obj, POTHIT_HERO_THROW);
         return 1;
+
+   } else if (obj->otyp == PINCH_OF_CATNIP && is_feline(mon->data)) {
+       if (!Blind)
+           pline("%s chases %s tail!", Monnam(mon), mhis(mon));
+       (void) tamedog(mon, obj, TRUE);
+       mon->mconf = 1;
+       return 1;
 
     } else if ((befriend_with_obj(mon->data, obj) && !obj->cursed)
                || (mon->mtame && dogfood(mon, obj) <= ACCFOOD)) {
@@ -2540,7 +2565,7 @@ gem_accept(struct monst *mon, struct obj *obj)
         pline("Its %s %s.", xname(obj),
               canseemon(mon) ? "vanishes" : "seems to vanish");
     obfree(obj, (struct obj *) 0);
-    
+
     if (!tele_restrict(mon))
         (void) rloc(mon, RLOC_MSG);
     return ret;
@@ -2651,7 +2676,7 @@ breakobj(
     boolean fracture = FALSE;
     const char *ostr;
     int am;
-    
+
     if (IS_ALTAR(levl[x][y].typ))
         am = levl[x][y].altarmask & AM_MASK;
     else
@@ -2812,6 +2837,7 @@ breaktest(struct obj *obj)
     case MELON:
     case ACID_VENOM:
     case BLINDING_VENOM:
+    case PINCH_OF_CATNIP:
         return TRUE;
      case EGG:
         return (obj->corpsenm != PM_PHOENIX);
@@ -2860,6 +2886,10 @@ breakmsg(struct obj *obj, boolean in_view)
     case ACID_VENOM:
     case BLINDING_VENOM:
         pline("Splash!");
+        break;
+    case PINCH_OF_CATNIP:
+        if (in_view)
+            pline("Catnip flies everywhere!");
         break;
     }
 }

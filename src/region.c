@@ -14,6 +14,7 @@
 
 boolean inside_gas_cloud(genericptr, genericptr);
 boolean expire_gas_cloud(genericptr, genericptr);
+boolean revive_cthulhu(genericptr, genericptr);
 boolean inside_rect(NhRect *, int, int);
 NhRegion *create_region(NhRect *, int);
 void add_rect_to_reg(NhRegion *, NhRect *);
@@ -45,7 +46,9 @@ static const callback_proc callbacks[] = {
 #define INSIDE_GAS_CLOUD 0
     inside_gas_cloud,
 #define EXPIRE_GAS_CLOUD 1
-    expire_gas_cloud
+    expire_gas_cloud,
+#define REVIVE_CTHULHU 2    /* Cthulhu comes back... */
+    revive_cthulhu
 };
 
 /* Should be inlined. */
@@ -1116,6 +1119,44 @@ expire_gas_cloud(genericptr_t p1, genericptr_t p2 UNUSED)
     return TRUE; /* OK, it's gone, you can free it! */
 }
 
+boolean
+revive_cthulhu(genericptr_t p1, genericptr_t p2)
+{
+    boolean ret = expire_gas_cloud(p1, p2);
+    if (ret) {
+        /* Bring back Cthulhu! */
+        int cx, cy;
+        NhRegion *reg = (NhRegion *) p1;
+        struct monst *cthulhu = NULL;
+        coord cc;
+
+        cx = (reg->bounding_box.lx + reg->bounding_box.hx) / 2;
+        cy = (reg->bounding_box.ly + reg->bounding_box.hy) / 2;
+
+        if (enexto(&cc, cx, cy, &mons[PM_CTHULHU])) {
+            cx = cc.x;
+            cy = cc.y;
+        } else {
+            cx = cy = 0; /* Place Cthulhu randomly */
+        }
+
+        /* Make sure Cthulhu doesn't get the Amulet again! :-) */
+        cthulhu = makemon(&mons[PM_CTHULHU], cx, cy,
+                          MM_NOCOUNTBIRTH | NO_MINVENT);
+        if (cthulhu) {
+            /* makemon() increments no_of_cthulhu for us */
+            if (canseemon(cthulhu)) {
+                pline("%s reforms!", Monnam(cthulhu));
+            }
+            /* don't let Cthulhu meditate after being killed once
+             * by the player */
+            wakeup(cthulhu, TRUE);
+        }
+
+    }
+    return ret;
+}
+
 /* returns True if p2 is killed by region p1, False otherwise */
 boolean
 inside_gas_cloud(genericptr_t p1, genericptr_t p2)
@@ -1148,7 +1189,7 @@ inside_gas_cloud(genericptr_t p1, genericptr_t p2)
         }
         if (Breathless)
             return FALSE;
-        
+
         if (!fully_resistant(POISON_RES) && !No_gas_damage) {
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
@@ -1207,7 +1248,8 @@ staticfn boolean
 is_hero_inside_gas_cloud(void)
 {
     int i;
-
+    if (Underwater)
+        return FALSE;
     for (i = 0; i < svn.n_regions; i++)
         if (hero_inside(gr.regions[i])
             && gr.regions[i]->inside_f == INSIDE_GAS_CLOUD)
@@ -1241,6 +1283,20 @@ make_gas_cloud(
             damage ? "noxious gas" : "steam");
         iflags.last_msg = PLNMSG_ENVELOPED_IN_GAS;
     }
+}
+
+NhRegion *
+create_cthulhu_death_cloud(
+    coordxy x, coordxy y,
+    int radius,
+    int damage)
+{
+    NhRegion *cloud;
+
+    cloud = create_gas_cloud(x, y, radius, damage);
+    if (cloud) cloud->expire_f = REVIVE_CTHULHU;
+
+    return cloud;
 }
 
 /* Create a gas cloud which starts at (x,y) and grows outward from it via

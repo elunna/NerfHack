@@ -41,6 +41,7 @@ $	spec_files = "air.lua,"	-
 		+ "baalz-%.lua,"	-
 		+ "bigrm-*.lua," 	-
 		+ "bridge.lua," 	-
+		+ "invoke.lua," 	-
 		+ "dragons.lua," 	-
 		+ "castle-%.lua," 	-
 		+ "demo-%.lua," 	-
@@ -70,6 +71,7 @@ $	spec_files = "air.lua,"	-
 		+ "valley-%.lua" 	-
 		+ "water.lua," 		-
 		+ "wizard%.lua," 	-
+		+ "wizard2-%.lua," 	-
 		+ "yeenog-%.lua"
 $	qstl_files = "%%%-goal.lua,%%%-fil%.lua,%%%-loca.lua,%%%-strt.lua"
 $	dngn_files = "dungeon.lua"

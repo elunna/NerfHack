@@ -35,6 +35,7 @@ struct flag {
     boolean female;
     boolean friday13;        /* it's Friday the 13th */
     boolean goldX;           /* for BUCX filtering, whether gold is X or U */
+    boolean hide_old_spells; /* don't show forgotten spells in your spellbook */
     boolean help;            /* look in data file for info about stuff */
     boolean tips;            /* show helpful hints? */
     boolean tutorial;        /* ask if player wants tutorial level? */

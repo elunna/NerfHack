@@ -55,6 +55,7 @@
     <Luafiles Include = "bigrm-20.lua"/>
     <Luafiles Include = "bigrm-21.lua"/>
     <Luafiles Include = "bridge.lua"/>
+    <Luafiles Include = "invoke.lua"/>
     <Luafiles Include = "dragons.lua"/>
     <Luafiles Include = "castle-1.lua"/>
     <Luafiles Include = "castle-2.lua"/>
@@ -116,6 +117,7 @@
     <Luafiles Include = "minetn-9.lua"/>
     <Luafiles Include = "minetn-10.lua"/>
     <Luafiles Include = "minetn-11.lua"/>
+    <Luafiles Include = "minetn-12.lua"/>
     <Luafiles Include = "Mon-fila.lua"/>
     <Luafiles Include = "Mon-filb.lua"/>
     <Luafiles Include = "Mon-goal.lua"/>
@@ -162,6 +164,7 @@
     <Luafiles Include = "soko1-6.lua"/>
     <Luafiles Include = "soko1-7.lua"/>
     <Luafiles Include = "soko1-8.lua"/>
+    <Luafiles Include = "soko1-9.lua"/>
     <Luafiles Include = "soko2-1.lua"/>
     <Luafiles Include = "soko2-2.lua"/>
     <Luafiles Include = "soko2-3.lua"/>
@@ -203,6 +206,11 @@
     <Luafiles Include = "tower3.lua"/>
     <Luafiles Include = "tut-1.lua"/>
     <Luafiles Include = "tut-2.lua"/>
+    <Luafiles Include = "Und-fila.lua"/>
+    <Luafiles Include = "Und-filb.lua"/>
+    <Luafiles Include = "Und-goal.lua"/>
+    <Luafiles Include = "Und-loca.lua"/>
+    <Luafiles Include = "Und-strt.lua"/>
     <Luafiles Include = "Val-fila.lua"/>
     <Luafiles Include = "Val-filb.lua"/>
     <Luafiles Include = "Val-goal.lua"/>
@@ -218,8 +226,14 @@
     <Luafiles Include = "Wiz-loca.lua"/>
     <Luafiles Include = "Wiz-strt.lua"/>
     <Luafiles Include = "wizard1.lua"/>
-    <Luafiles Include = "wizard2.lua"/>
+    <Luafiles Include = "wizard2-1.lua"/>
+    <Luafiles Include = "wizard2-2.lua"/>
     <Luafiles Include = "wizard3.lua"/>
+    <Luafiles Include = "wizard4.lua"/>
+    <Luafiles Include = "wizard5.lua"/>
+    <Luafiles Include = "wizard6.lua"/>
+    <Luafiles Include = "wizard7.lua"/>
+    <Luafiles Include = "wizard8.lua"/>
     <Luafiles Include = "tomb-1.lua"/>
     <Luafiles Include = "tomb-2.lua"/>
     <Luafiles Include = "yeenog-1.lua"/>

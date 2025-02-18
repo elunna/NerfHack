@@ -1,4 +1,4 @@
-/* NetHack 3.7	mondata.c	$NHDT-Date: 1711620615 2024/03/28 10:10:15 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.132 $ */
+/* NetHack 3.7	mondata.c	$NHDT-Date: 1738638877 2025/02/03 19:14:37 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.140 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -79,7 +79,7 @@ noattacks(struct permonst *ptr)
 boolean
 poly_when_stoned(struct permonst *ptr)
 {
-    /* non-stone golems turn into stone golems unless latter is genocided */
+    /* non-stone golems turn into stone golems unless latter is exiled */
     return (boolean) (is_golem(ptr) && ptr != &mons[PM_STONE_GOLEM]
                       && !(svm.mvitals[PM_STONE_GOLEM].mvflags & G_GENOD));
     /* allow G_EXTINCT */
@@ -120,6 +120,79 @@ defended(struct monst *mon, int adtyp)
     if (o && Is_dragon_armor(o) && defends(adtyp, o))
         return TRUE;
 
+    return FALSE;
+}
+
+/* returns True if monster resists particular elemental damage;
+   handles 'carry' effects of artifacts as well as worn/wielded items */
+boolean
+Resists_Elem(struct monst *mon, int propindx)
+{
+    struct obj *o;
+    long slotmask;
+    boolean is_you = (mon == &gy.youmonst);
+    int u_resist = 0, damgtype = 0, rsstmask = 0;
+
+    /*
+     * Main damage/resistance types, mostly matching dragon breath values.
+     *  propindx = property index, fire (1), cold, (2) through stone (8);
+     *  damgtype = damage type, 2 through 9 (0 and 1 aren't used here);
+     *  rsstmask = resistance mask, 1, 2, 4, ..., 64, 128.
+     */
+
+    switch (propindx) {
+    case FIRE_RES:   /* 1 */
+    case COLD_RES:   /* 2 */
+    case SLEEP_RES:  /* 3 */
+    case DISINT_RES: /* 4 */
+    case SHOCK_RES:  /* 5 */
+    case POISON_RES: /* 6 */
+    case ACID_RES:   /* 7 */
+    case STONE_RES:  /* 8 */
+        damgtype = propindx + 1; /* valid for propindx 1..8, damgtype 2..9 */
+        rsstmask = 1 << (propindx - 1); /* valid for propindx 1..8 */
+        u_resist = u.uprops[propindx].intrinsic
+                   || u.uprops[propindx].extrinsic;
+        break;
+
+    /* accept these, but we expect callers to use their routines directly */
+    case ANTIMAGIC:
+        return resists_magm(mon);
+    case DRAIN_RES:
+        return resists_drli(mon);
+    case BLND_RES:
+        return resists_blnd(mon);
+
+    default:
+        impossible("Resists_Elem(%d), unexpected property type", propindx);
+        return FALSE;
+    }
+
+    if (is_you ? u_resist : ((mon_resistancebits(mon) & rsstmask) != 0))
+        return TRUE;
+    /* check for resistance granted by wielded weapon */
+    o = is_you ? uwep : MON_WEP(mon);
+    if (o && o->oartifact && defends(damgtype, o))
+        return TRUE;
+    /* check for resistance granted by worn or carried items */
+    o = is_you ? gi.invent : mon->minvent;
+    slotmask = W_ARMOR | W_ACCESSORY;
+    if (!is_you /* assumes monsters don't wield non-weapons */
+        || (uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))))
+        slotmask |= W_WEP;
+    if (is_you && u.twoweap)
+        slotmask |= W_SWAPWEP;
+    for (; o; o = o->nobj)
+        if (((o->owornmask & slotmask) != 0L
+             && objects[o->otyp].oc_oprop == propindx)
+            || ((o->owornmask & W_ARMC) == W_ARMC
+                /* worn apron confers a pair of resistances but
+                   objects[ALCHEMY_SMOCK].oc_oprop can only represent one;
+                   we check both so won't need to know which one that is */
+                && o->otyp == ALCHEMY_SMOCK
+                && (propindx == POISON_RES || propindx == ACID_RES))
+            || (o->oartifact && defends_when_carried(damgtype, o)))
+            return TRUE;
     return FALSE;
 }
 
@@ -462,6 +535,7 @@ hates_silver(struct permonst *ptr)
 {
     return (boolean) (is_were(ptr) || is_vampire(ptr) || is_demon(ptr)
                       || shadelike(ptr)
+                      || ptr == &mons[PM_BARGHEST]
                       || (ptr->mlet == S_IMP && ptr != &mons[PM_TENGU]
                           && ptr != &mons[PM_REDCAP]));
 }
@@ -477,7 +551,9 @@ mon_hates_blessings(struct monst *mon)
 boolean
 hates_blessings(struct permonst *ptr)
 {
-    return (boolean) (is_undead(ptr) || is_demon(ptr));
+    return (boolean) (is_undead(ptr) || is_demon(ptr)
+                      || ptr == &mons[PM_DEEPER_ONE]
+                      || ptr == &mons[PM_DEEPEST_ONE]);
 }
 
 /* True if specific monster is especially affected by light-emitting weapons */
@@ -497,6 +573,8 @@ passes_bars(struct permonst *mptr)
                       || dmgtype(mptr, AD_RUST) || dmgtype(mptr, AD_CORR)
                       /* rock moles can eat bars */
                       || metallivorous(mptr)
+                      /* Cthulhu is unstoppable */
+                      || mptr == &mons[PM_CTHULHU] \
                       || (slithy(mptr) && !bigmonst(mptr)));
 }
 
@@ -560,9 +638,11 @@ can_be_strangled(struct monst *mon)
 boolean
 can_track(struct permonst *ptr)
 {
+    if (ptr == &mons[PM_CTHULHU])
+        return TRUE;
     if (u_wield_art(ART_EXCALIBUR) || u_offhand_art(ART_EXCALIBUR))
         return TRUE;
-    return (boolean) haseyes(ptr);
+    return (boolean) (haseyes(ptr) || Aggravate_monster);
 }
 
 /* creature will slide out of armor */
@@ -619,6 +699,7 @@ num_horns(struct permonst *ptr)
     switch (monsndx(ptr)) {
     case PM_HORNED_DEVIL: /* ? "more than one" */
     case PM_MINOTAUR:
+    case PM_ELDER_MINOTAUR:
     case PM_ASMODEUS:
     case PM_BALROG:
     case PM_CERASTES:
@@ -804,7 +885,7 @@ same_race(struct permonst *pm1, struct permonst *pm2)
         return (pm2 == &mons[PM_KILLER_BEE] || pm2 == &mons[PM_QUEEN_BEE]);
     if (pm1 == &mons[PM_GIANT_ANT] || pm1 == &mons[PM_QUEEN_ANT])
         return (pm2 == &mons[PM_GIANT_ANT] || pm2 == &mons[PM_QUEEN_ANT]);
-    
+
     if (is_longworm(pm1))
         return is_longworm(pm2); /* handles tail */
     /* [currently there's no reason to bother matching up
@@ -1030,7 +1111,7 @@ name_to_monplus(
     return mntmp;
 }
 
-/* monster class from user input; used for genocide and controlled polymorph;
+/* monster class from user input; used for exile and controlled polymorph;
    returns 0 rather than MAXMCLASSES if no match is found */
 int
 name_to_monclass(const char *in_str, int * mndx_p)
@@ -1160,10 +1241,10 @@ levl_follower(struct monst *mtmp)
         return TRUE;
 
     /* Wizard with Amulet won't bother trying to follow across levels */
-    if (mtmp->iswiz && mon_has_amulet(mtmp))
+    if ((mtmp->iswiz || mtmp->iscthulhu) && mon_has_amulet(mtmp))
         return FALSE;
     /* some monsters will follow even while intending to flee from you */
-    if (mtmp->mtame || mtmp->iswiz || is_fshk(mtmp))
+    if (mtmp->mtame || mtmp->iswiz || mtmp->iscthulhu || is_fshk(mtmp))
         return TRUE;
     /* stalking types follow, but won't when fleeing unless you hold
        the Amulet */
@@ -1176,7 +1257,9 @@ static const short grownups[][2] = {
     { PM_CHICKATRICE, PM_COCKATRICE },
     { PM_LITTLE_DOG, PM_DOG },
     { PM_DOG, PM_LARGE_DOG },
+    { PM_WARG_PUP, PM_WARG },
     { PM_HELL_HOUND_PUP, PM_HELL_HOUND },
+    { PM_REVENANT_PUP, PM_REVENANT_HOUND },
     { PM_WINTER_WOLF_CUB, PM_WINTER_WOLF },
     { PM_KITTEN, PM_HOUSECAT },
     { PM_HOUSECAT, PM_LARGE_CAT },
@@ -1208,6 +1291,7 @@ static const short grownups[][2] = {
     { PM_MASTER_LICH, PM_ARCH_LICH },
     { PM_DHAMPIR, PM_VAMPIRE },
     { PM_VAMPIRE, PM_VAMPIRE_LEADER },
+    { PM_VAMPIRE_LEADER, PM_VAMPIRE_ROYAL },
     { PM_BAT, PM_GIANT_BAT },
     { PM_BABY_GRAY_DRAGON, PM_GRAY_DRAGON },
     { PM_BABY_GOLD_DRAGON, PM_GOLD_DRAGON },
@@ -1257,6 +1341,8 @@ static const short grownups[][2] = {
     { PM_SPARK_BUG, PM_ARC_BUG },
     { PM_ARC_BUG, PM_LIGHTNING_BUG },
     { PM_CENTIPEDE, PM_NICKELPEDE },
+    { PM_GNOLL, PM_GNOLL_WARRIOR },
+    { PM_GNOLL_WARRIOR, PM_GNOLL_CHIEFTAIN },
     { NON_PM, NON_PM }
 };
 
@@ -1667,8 +1753,7 @@ mon_prop(struct monst *mon, int prop)
         return TRUE;
     if (prop == TELEPORT && can_teleport(mon->data) && !mon->mcan)
         return TRUE;
-    if (prop == TELEPORT_CONTROL &&
-        (control_teleport(mon->data) || is_covetous(mon->data)))
+    if (prop == TELEPORT_CONTROL && control_teleport(mon->data))
         return TRUE;
     if (prop == TELEPAT && telepathic(mon->data))
         return TRUE;
@@ -1720,12 +1805,13 @@ mon_race_name(unsigned mhflag)
         "", /* Kludges here to accomodate the rolerace mask */
         "",
         "",
-        "human", 
-        "elf", 
-        "dwarf", 
-        "gnome", 
-        "orc", 
+        "human",
+        "elf",
+        "dwarf",
+        "gnome",
+        "orc",
         "vampire",
+        "grung",
         "lycanthrope",
         "giant",
         "undead",

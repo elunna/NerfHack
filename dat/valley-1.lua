@@ -100,6 +100,8 @@ des.object({ id="corpse",montype="samurai" })
 des.object({ id="corpse",montype="samurai" })
 des.object({ id="corpse",montype="tourist" })
 des.object({ id="corpse",montype="tourist" })
+des.object({ id="corpse",montype="undead slayer" })
+des.object({ id="corpse",montype="undead slayer" })
 des.object({ id="corpse",montype="valkyrie" })
 des.object({ id="corpse",montype="valkyrie" })
 des.object({ id="corpse",montype="wizard" })
@@ -151,6 +153,10 @@ des.trap("magic")
 des.trap("magic")
 
 -- Random monsters.
+-- # And a couple weredemons too
+des.monster("weredemon",34,04)
+des.monster("weredemon",64,03)
+
 -- Add a few bats for atmosphere.
 des.monster("vampire bat")
 des.monster("vampire bat")
@@ -169,3 +175,4 @@ des.monster("M")
 des.monster("M")
 des.monster("M")
 des.monster("M")
+

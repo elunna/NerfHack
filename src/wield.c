@@ -214,7 +214,7 @@ ready_weapon(struct obj *wep)
     } else if (wep->otyp == CORPSE && cant_wield_corpse(wep)) {
         /* hero must have been life-saved to get here; use a turn */
         res = ECMD_TIME; /* corpse won't be wielded */
-    } else if (uarms && bimanual(wep)) {
+    } else if (uarms && !is_bracer(uarms) && bimanual(wep)) {
         You("cannot wield a two-handed %s while wearing a shield.",
             is_sword(wep) ? "sword" : wep->otyp == BATTLE_AXE ? "axe"
                                                               : "weapon");
@@ -770,7 +770,7 @@ wield_tool(struct obj *obj,
         return FALSE;
     }
     /* check shield */
-    if (uarms && bimanual(obj)) {
+    if (uarms && !is_bracer(uarms) && bimanual(obj)) {
         You("cannot %s a two-handed %s while wearing a shield.", verb,
             (obj->oclass == WEAPON_CLASS) ? "weapon" : "tool");
         return FALSE;
@@ -835,7 +835,7 @@ can_twoweapon(void)
     } else if (bimanual(uwep) || bimanual(uswapwep)) {
         otmp = bimanual(uwep) ? uwep : uswapwep;
         pline("%s isn't one-handed.", Yname2(otmp));
-    } else if (uarms) {
+    } else if (uarms && !is_bracer(uarms)) {
         You_cant("use two weapons while wearing a shield.");
     /* Adapted from EvilHack: Allow two-weaponing with an artifact,
      * but not if they are of opposite alignements. As expected,
@@ -1082,9 +1082,9 @@ chwepon(struct obj *otmp, int amount)
         if (!Blind)
             pline("%s %s for a while and then %s.",
                   Yobjnam2(uwep, "violently glow"), color,
-                  otense(uwep, "evaporate"));
+                  otense(uwep, "explode"));
         else
-            pline("%s.", Yobjnam2(uwep, "evaporate"));
+            pline("%s.", Yobjnam2(uwep, "explode"));
 
         /* It blows up... */
         explode(u.ux, u.uy, ZT_MAGIC_MISSILE, dmgval(uwep, &gy.youmonst) + rnd(12),

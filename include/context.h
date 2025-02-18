@@ -87,6 +87,7 @@ struct engrave_info {
 struct warntype_info {
     unsigned long obj;        /* object warn_of_mon monster type M2 */
     unsigned long polyd;      /* warn_of_mon monster type M2 due to poly */
+    unsigned long intrins;    /* intrinsic warn_of_mon monster type MH */
     struct permonst *species; /* particular species due to poly */
     short speciesidx; /* index of above in mons[] (for save/restore) */
 };
@@ -138,6 +139,7 @@ struct achievement_tracking {
 struct context_info {
     unsigned ident;         /* social security number for each monster */
     unsigned no_of_wizards; /* 0, 1 or 2 (wizard and his shadow) */
+    unsigned no_of_cthulhu; /* 0, or 1 */
     unsigned run;           /* 0: h (etc), 1: H (etc), 2: fh (etc),
                              * 3: FH, 4: ff+, 5: ff-, 6: FF+, 7: FF-,
                              * 8: travel */
@@ -150,7 +152,6 @@ struct context_info {
     long seer_turn;         /* when random clairvoyance will next kick in */
     long stethoscope_seq;   /* when a stethoscope was last used; first use
                              * during a move takes no time, second uses move */
-    long hydration;         /* Tracks grung's timeout to dehydration */
     boolean travel;  /* find way automatically to u.tx,u.ty */
     boolean travel1; /* first travel step */
     boolean forcefight;

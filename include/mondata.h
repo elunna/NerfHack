@@ -16,6 +16,7 @@
 #define pm_resistance(ptr, typ) (((ptr)->mresists & (typ)) != 0)
 
 #define immune_poisongas(ptr) ((ptr) == &mons[PM_HEZROU]        \
+                               || is_migo(ptr)                  \
                                || (ptr) == &mons[PM_VROCK])
 
 #define can_levitate(mon) \
@@ -51,7 +52,9 @@
      || is_vampire(ptr) \
      || (ptr)->msound == MS_LEADER \
      || (ptr) == &mons[PM_MINOTAUR] \
+     || (ptr) == &mons[PM_ELDER_MINOTAUR] \
      || (ptr) == &mons[PM_TITAN] \
+     || ptr == &mons[PM_BARGHEST] \
      || (ptr) == &mons[PM_DEATH])
 
 #define resists_sick(ptr)                      \
@@ -59,7 +62,9 @@
      || ((ptr)->mlet == S_ELEMENTAL && (ptr) != &mons[PM_STALKER]) \
      || nonliving(ptr)                         \
      || is_demon(ptr)                          \
+     || is_angel(ptr)                          \
      || is_rider(ptr)                          \
+     || is_gnoll(ptr)                          \
      || (ptr) == &mons[PM_GIANT_COCKROACH]     \
      || (ptr) == &mons[PM_BABY_GREEN_DRAGON]   \
      || (ptr) == &mons[PM_GREEN_DRAGON]        \
@@ -122,20 +127,23 @@
     || ptr == &mons[PM_DOPPELGANGER] \
     || ptr == &mons[PM_GUARD] \
     || ptr == &mons[PM_NURSE] \
-    || (ptr)->msound == MS_LEADER \
-    )
+    || (ptr)->msound == MS_LEADER)
 
 /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
 #define resists_mgc(ptr) \
-    (dmgtype(ptr, AD_MAGM) || ptr == &mons[PM_BABY_GRAY_DRAGON] \
+    (dmgtype(ptr, AD_MAGM) \
+     || ptr == &mons[PM_BABY_GRAY_DRAGON] \
+     || ptr == &mons[PM_DEEPEST_ONE] \
      || dmgtype(ptr, AD_RBRE)) /* Chromatic Dragon */
 
 #define resists_drain(ptr) \
     (is_undead(ptr) || is_demon(ptr) || is_were(ptr)\
+     || is_gnoll(ptr)                               \
      || ptr == &mons[PM_DEEP_ONE]                   \
      || ptr == &mons[PM_DEEPER_ONE]                 \
      || ptr == &mons[PM_DEEPEST_ONE]                \
      || ptr == &mons[PM_SHADOW_OGRE]                \
+     || ptr == &mons[PM_BARGHEST]                   \
      || ptr == &mons[PM_DEATH])
 /* is_were() doesn't handle hero in human form */
 
@@ -195,6 +203,8 @@
      || (ptr) == &mons[PM_WAX_GOLEM]       \
      || (ptr) == &mons[PM_SALAMANDER]      \
      || (ptr) == &mons[PM_LAVA_BLOB]       \
+     || (ptr) == &mons[PM_VULPENFERNO]     \
+     || (ptr) == &mons[PM_EYE_OF_FEAR_AND_FLAME] \
      || (ptr) == &mons[PM_LAVA_DEMON])
 #define is_silent(ptr) ((ptr)->msound == MS_SILENT)
 #define unsolid(ptr) (((ptr)->mflags1 & M1_UNSOLID) != 0L)
@@ -221,22 +231,16 @@
 #define perceives(ptr) (((ptr)->mflags1 & M1_SEE_INVIS) != 0L)
 #define can_teleport(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
 #define control_teleport(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)
-#define telepathic(ptr)                                                \
+#define telepathic(ptr)                         \
     ((ptr) == &mons[PM_FLOATING_EYE]            \
      || (ptr) == &mons[PM_MIND_FLAYER]          \
      || (ptr) == &mons[PM_MASTER_MIND_FLAYER]   \
-     || (ptr) == &mons[PM_KOBOLD_SHAMAN]        \
-     || (ptr) == &mons[PM_ORC_SHAMAN]           \
-     || (ptr) == &mons[PM_ELVEN_CLERIC]         \
-     || (ptr) == &mons[PM_GNOMISH_WIZARD]       \
-     || (ptr) == &mons[PM_ALHOON]               \
      || (ptr) == &mons[PM_SHAMAN_KARNOV]        \
      || (ptr) == &mons[PM_ORACLE]               \
-     || (ptr) == &mons[PM_GHOUL_MAGE]           \
-     || (ptr) == &mons[PM_OGRE_MAGE]            \
      || (ptr) == &mons[PM_FIRE_VAMPIRE]         \
      || (ptr) == &mons[PM_STAR_VAMPIRE]         \
-     || (ptr) == &mons[PM_VAMPIRE_MAGE])
+     || (ptr) == &mons[PM_WIZARD_OF_YENDOR]     \
+     || (ptr) == &mons[PM_CTHULHU])
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
 #define poisonous(ptr) (((ptr)->mflags1 & M1_POIS) != 0L)
@@ -301,10 +305,15 @@
 #define is_ghoul(ptr) ((ptr) == &mons[PM_GHOUL] \
                         || (ptr)== &mons[PM_GHOUL_MAGE] \
                         || (ptr)== &mons[PM_GHOUL_QUEEN])
+#define is_gnoll(ptr) ((ptr) == &mons[PM_GNOLL] \
+    || (ptr)== &mons[PM_GNOLL_WARRIOR] \
+    || (ptr)== &mons[PM_GNOLL_CHIEFTAIN] \
+    || (ptr)== &mons[PM_GNOLL_SHAMAN])
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mhflags & MH_DEMON) != 0L)
 #define is_angel(ptr) (((ptr)->mhflags & MH_ANGEL) != 0L)
 #define is_dragon(ptr) (((ptr)->mhflags & MH_DRAGON) != 0L)
+#define is_feline(ptr) ((ptr)->mlet == S_FELINE)
 #define is_mercenary(ptr) (((ptr)->mflags2 & M2_MERC) != 0L)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
 #define is_female(ptr) (((ptr)->mflags2 & M2_FEMALE) != 0L)
@@ -312,6 +321,10 @@
 #define is_wanderer(ptr) (((ptr)->mflags2 & M2_WANDER) != 0L)
 #define always_hostile(ptr) (((ptr)->mflags2 & M2_HOSTILE) != 0L)
 #define always_peaceful(ptr) (((ptr)->mflags2 & M2_PEACEFUL) != 0L)
+#define hostile_to_orcs(ptr) \
+    ((ptr) == &mons[PM_HEDGEHOG] \
+    || (ptr) == &mons[PM_FAMILIAR] \
+    || (ptr) == &mons[PM_PRISONER])
 #define race_hostile(ptr) (((ptr)->mhflags & gu.urace.hatemask) != 0L)
 #define race_peaceful(ptr) (((ptr)->mhflags & gu.urace.lovemask) != 0L)
 #define extra_nasty(ptr) (((ptr)->mflags2 & M2_NASTY) != 0L)
@@ -360,6 +373,7 @@
 #define is_displacer(ptr) (((ptr)->mflags3 & M3_DISPLACES) != 0L)
 #define is_displaced(ptr) \
     ((ptr) == &mons[PM_DISPLACER_BEAST] \
+    || (ptr) == &mons[PM_VULPENFERNO] \
     || (ptr) == &mons[PM_BABY_SHIMMERING_DRAGON] \
     || (ptr) == &mons[PM_SHIMMERING_DRAGON])
 #define is_mplayer(ptr) \
@@ -383,11 +397,15 @@
 #define is_fast_underwater(ptr)         \
     ((ptr) == &mons[PM_WATER_TROLL]     \
     || (ptr) == &mons[PM_WATER_HULK]    \
+    || (ptr) == &mons[PM_DEEP_ONE]    \
+    || (ptr) == &mons[PM_DEEPER_ONE]    \
+    || (ptr) == &mons[PM_DEEPEST_ONE]    \
     || (ptr) == &mons[PM_BABY_CROCODILE]\
     || (ptr) == &mons[PM_CROCODILE])
 
 /* return TRUE if the monster tends to revive */
 #define is_reviver(ptr) (is_rider(ptr) || is_zombie(ptr) \
+                         || (ptr) == &mons[PM_CTHULHU] \
                          || (ptr)->mlet == S_TROLL)
 /* monsters whose corpses and statues need special handling;
    note that high priests and the Wizard of Yendor are flagged
@@ -403,7 +421,8 @@
       || (ptr) == &mons[PM_GLOWING_EYE]                           \
       || (ptr) == &mons[PM_WAX_GOLEM]                             \
       || (ptr) == &mons[PM_FIRE_VAMPIRE]                          \
-      || (ptr) == &mons[PM_FIRE_VORTEX])                          \
+      || (ptr) == &mons[PM_FIRE_VORTEX]                           \
+      || (ptr) == &mons[PM_VULPENFERNO])                          \
          ? 1                                                      \
          : ((ptr) == &mons[PM_FIRE_ELEMENTAL]                     \
             || (ptr) == &mons[PM_GOLD_DRAGON]) ? 1 : 0)
@@ -422,7 +441,8 @@
 #define likes_fire(ptr)                                                  \
     ((ptr) == &mons[PM_FIRE_VORTEX] || (ptr) == &mons[PM_FLAMING_SPHERE] \
      || (ptr) == &mons[PM_FIRE_VAMPIRE] || (ptr) == &mons[PM_PHOENIX]    \
-     || likes_lava(ptr))
+     || (ptr) == &mons[PM_VULPENFERNO] || likes_lava(ptr)                \
+      || (ptr) == &mons[PM_EYE_OF_FEAR_AND_FLAME])
 
 #define touch_petrifies(ptr) \
     ((ptr) == &mons[PM_COCKATRICE] \
@@ -438,7 +458,8 @@
 #define passes_rocks(ptr) (passes_walls(ptr) && !unsolid(ptr))
 
 #define shadelike(ptr) \
-    ((ptr) == &mons[PM_SHADE] || (ptr) == &mons[PM_SHADOW])
+    ((ptr) == &mons[PM_SHADE] || (ptr) == &mons[PM_SHADOW] \
+    || (ptr) == &mons[PM_FIRST_EVIL])
 
 #define is_mind_flayer(ptr) \
     ((ptr) == &mons[PM_MIND_FLAYER] || (ptr) == &mons[PM_MASTER_MIND_FLAYER])
@@ -508,8 +529,12 @@
 #define befriend_with_obj(ptr, obj) \
     (((ptr) == &mons[PM_MONKEY] || (ptr) == &mons[PM_APE])               \
      ? (obj)->otyp == BANANA                                             \
-     : (ptr) == &mons[PM_RABBIT] ? (obj)->otyp == CARROT                 \
-     : (is_domestic(ptr) && (obj)->oclass == FOOD_CLASS                  \
+     : ((is_domestic(ptr)                                                \
+            || (((ptr) == &mons[PM_WINTER_WOLF]                          \
+                || (ptr) == &mons[PM_WINTER_WOLF_CUB])                   \
+                && Role_if(PM_VALKYRIE))                                 \
+            || (tameable_by_orc(ptr) && Race_if(PM_ORC)))                 \
+        && (obj)->oclass == FOOD_CLASS                                   \
         && ((ptr)->mlet != S_UNICORN                                     \
             || objects[(obj)->otyp].oc_material == VEGGY                 \
             || ((obj)->otyp == CORPSE && (obj)->corpsenm == PM_LICHEN))))
@@ -554,9 +579,29 @@
 #define percent_granted(ptr) ((ptr)->cwt / 90)
 
 #define HYDRATION_MAX 6000
+
 /* The monster is covetous, but should not warp, heal, or otherwise use
- * tactics(). */
-#define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr))
-#define covetous_nonwarper(ptr) (is_archfiend(ptr))
+ * tactics() after an introduction. */
+#define is_archfiend(ptr) (is_dlord(ptr) || is_dprince(ptr) \
+    || (ptr)->msound == MS_NEMESIS)
+#define covetous_nonwarper(ptr) (is_archfiend(ptr) \
+                                 || (ptr) == &mons[PM_CTHULHU])
+/* many boss-type monsters than have two or more spell attacks
+   per turn are never able to fire off their second attack due
+   to mspec always being greater than 0. So set to 0 for those
+   types of monsters, either sometimes or all of the time
+   depending on how powerful they are or what their role is */
+#define power_caster(ptr) \
+    (is_dlord(ptr) \
+    || (ptr)->msound == MS_LEADER \
+    || (ptr)->msound == MS_NEMESIS \
+    || (ptr) == &mons[PM_GHOUL_QUEEN] \
+    || (ptr) == &mons[PM_ELVEN_CLERIC] \
+    || (ptr) == &mons[PM_HIGH_CLERIC])
+
+#define tameable_by_orc(ptr) \
+    ((ptr) == &mons[PM_WARG] || (ptr) == &mons[PM_BARGHEST] \
+    || (ptr) == &mons[PM_TROLL] || (ptr) == &mons[PM_OGRE] \
+    || (ptr) == &mons[PM_GOBLIN])
 
 #endif /* MONDATA_H */

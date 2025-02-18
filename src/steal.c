@@ -685,12 +685,11 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
             pline("%s out.", Tobjnam(otmp, "go"));
         snuff_otmp = TRUE;
     }
+    /* for hero owned object on shop floor, mtmp is taking possession
+       and if it's eventually dropped in a shop, shk will claim it */
+    otmp->no_charge = 0;
     /* some object handling is only done if mtmp isn't a pet */
     if (!mtmp->mtame) {
-        /* for hero owned object on shop floor, mtmp is taking possession
-           and if it's eventually dropped in a shop, shk will claim it */
-        otmp->no_charge = 0;
-
         /* if otmp has flags set for how it left hero's inventory, change
            those flags; if thrown, now stolen and autopickup might override
            pickup_types and autopickup exceptions based on 'pickup_stolen'
@@ -716,8 +715,9 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
 static boolean
 is_stealable_item(struct obj *obj, struct monst *mtmp)
 {
-    /* the Wizard is not allowed to steal the player's quest artifact */
-    if (mtmp->iswiz && is_quest_artifact(obj))
+    /* the Wizard and Cthulhu are not allowed to steal
+       the player's quest artifact */
+    if ((mtmp->iswiz || mtmp->iscthulhu) && is_quest_artifact(obj))
         return FALSE;
 
     /* every other quest artifact is fine */

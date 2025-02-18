@@ -528,7 +528,7 @@ use_stethoscope(struct obj *obj)
         } else if (nonliving(mtmp->data)) {
             pline("It's not of the living.");
             // return res;
-        } else 
+        } else
             mstatusline(mtmp);
 
         if (!canspotmon(mtmp))
@@ -1376,7 +1376,7 @@ use_bell(struct obj **optr)
 
             mm.x = u.ux;
             mm.y = u.uy;
-            mkundead(&mm, FALSE, NO_MINVENT);
+            mkundead((struct monst *) 0, &mm, FALSE, NO_MINVENT);
             wakem = TRUE;
 
         } else if (invoking) {
@@ -1754,11 +1754,11 @@ use_lamp(struct obj *obj)
         Your("%s are occupied!", makeplural(body_part(HAND)));
         return;
     }
-    
+
     /* For convenience, allow just lighting one candle. */
-    if (!obj->lamplit 
-        && (obj->otyp == WAX_CANDLE || obj->otyp == TALLOW_CANDLE)) {
-        
+    if ((obj->otyp == WAX_CANDLE || obj->otyp == TALLOW_CANDLE)
+        && !obj->lamplit && inv_cnt(FALSE) < invlet_basic) {
+
         /* Don't allow splitting the stack if the player's
            inventory won't accomodate it */
         if (obj->quan > 1L && y_n("Light only one?") == 'y') {
@@ -1771,7 +1771,9 @@ use_lamp(struct obj *obj)
                 obj->nomerge = 0;
         }
     }
-    
+    if (!obj)
+        return; /* Safeguard against a dropped candle from splitting */
+
     /*
      * When blind, lamps' and candles' on/off state can be distinguished
      * by heat.  For brass lantern assume that there is an on/off switch
@@ -2209,7 +2211,7 @@ jump(int magic) /* 0=Physical, otherwise skill level */
         }
         You("cannot escape from %s!", mon_nam(u.ustuck));
         return ECMD_OK;
-    } else if (Levitation || Flying 
+    } else if (Levitation || Flying
                || Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) {
         if (magic) {
             You("flail around a little.");
@@ -2553,9 +2555,9 @@ use_unicorn_horn(struct obj **optr)
      * the enchantment.
      * */
     basefix = rnd(3) + 1;
-    basefix += !obj ? 0 : obj->spe * 3;
+    basefix += !obj ? 0 : (obj->spe * 5 + 1) / 2;
     basefix += P_SKILL(P_UNICORN_HORN) * 2;
-    
+
     /* Additional bonus for being a healer or good luck roll.
      * The success percent is chance doubling the timeout reduction:
      *  LUCK:     <0      0     +2     +5     +8    +11
@@ -4453,21 +4455,17 @@ do_break_wand(struct obj *obj)
         }
         FALLTHROUGH;
         /*FALLTHRU*/
+    case WAN_LOCKING:
+    case WAN_PROBING:
+    case WAN_ENLIGHTENMENT:
+    case WAN_IDENTIFY:
+    case WAN_SECRET_DOOR_DETECTION:
+        broken_wand_explode(obj, dmg, EXPL_MAGICAL);
+        return ECMD_TIME;
     case WAN_NOTHING:
         pline(nothing_else_happens);
         discard_broken_wand();
         return ECMD_TIME;
-    case WAN_SECRET_DOOR_DETECTION:
-        /* Detects portals: Use the same UnNetHack odds for
-         * creating traps when breaking wands. */
-        if ((obj->spe > 2) && rn2(obj->spe - 2)) {
-            trap_detect((struct obj *) 0);
-            makeknown(obj->otyp);
-        } else
-            pline(nothing_else_happens);
-        discard_broken_wand();
-        return ECMD_TIME;
-
     case WAN_WISHING:
         broken_wand_explode(obj, dmg * 12, EXPL_MAGICAL);
         return ECMD_TIME;
@@ -4491,12 +4489,7 @@ do_break_wand(struct obj *obj)
     case WAN_MAGIC_MISSILE:
         broken_wand_explode(obj, dmg * 2, EXPL_MAGICAL);
         return ECMD_TIME;
-    case WAN_LOCKING:
-    case WAN_PROBING:
-    case WAN_ENLIGHTENMENT:
-    case WAN_IDENTIFY:
-        broken_wand_explode(obj, dmg, EXPL_MAGICAL);
-        return ECMD_TIME;
+
 
     case WAN_STRIKING:
         /* we want this before the explosion instead of at the very end */
@@ -5206,7 +5199,7 @@ deck_of_fate(struct obj *obj)
     /* We need some way to make turn 1 cartomancer wishes not
      * as crazy overpowered... message for this? */
     u.ualign.record = -1;
-    
+
     if (obj->cursed) {
         badcards = TRUE;
     } else if (obj->blessed || Role_if(PM_CARTOMANCER)) {
@@ -5256,7 +5249,7 @@ deck_of_fate(struct obj *obj)
                 if (dnum != NON_PM)
                     mtmp = makemon(&mons[dnum], u.ux, u.uy, NO_MM_FLAGS);
             }
-          
+
             if (mtmp && !Blind) {
                 pline("%s appears from a cloud of noxious smoke!", Amonnam(mtmp));
                 newsym(mtmp->mx, mtmp->my);
@@ -5301,10 +5294,12 @@ deck_of_fate(struct obj *obj)
                 int dmg = d(8, 6);
                 /* Magic resistance or half spell damage will
                     cut this in half */
-                if (Antimagic || Half_spell_damage) {
+                if (Antimagic) {
                     shieldeff(u.ux, u.uy);
                     monstseesu(M_SEEN_MAGR);
                     dmg /= 2;
+                } else if (Half_spell_damage) {
+                    dmg -= (dmg + 1) / 4;
                 }
                 You_feel("drained...");
                 int drain = dmg / 3 + rn2(5);

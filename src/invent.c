@@ -4725,7 +4725,7 @@ look_here(
             /* skip 'dfeature' if caller used describe_decor() to show it */
             skip_dfeature = (lookhere_flags & LOOKHERE_SKIP_DFEATURE) != 0;
     boolean bloody = levl[u.ux][u.uy].splatpm;
-    
+
     /* default pile_limit is 5; a value of 0 means "never skip"
        (and 1 effectively forces "always skip") */
     skip_objects = (flags.pile_limit > 0 && obj_cnt >= flags.pile_limit);
@@ -4826,11 +4826,11 @@ look_here(
             return ECMD_OK;
         }
     }
-    
+
     /* Fix to avoid messages sequence: "You splash through the shallow water.  There is a pool of shallow water here." */
     if (SURFACE_AT(u.ux, u.uy) == PUDDLE && u.umoved)
         skip_dfeature = TRUE;
-    
+
     if (dfeature && !skip_dfeature) {
         const char *p;
         int article = 1; /* 0 => none, 1 => a/an, 2 => the (not used here) */

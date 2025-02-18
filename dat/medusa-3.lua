@@ -130,6 +130,8 @@ des.monster("wood nymph")
 des.monster("wood nymph")
 des.monster("water nymph")
 des.monster("water nymph")
+des.monster("water troll")
+des.monster("water hulk")
 
 for i=1,30 do
    des.monster({ id = "raven", peaceful = 0 })

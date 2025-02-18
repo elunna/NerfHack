@@ -370,6 +370,15 @@ restmon(NHFILE *nhfp, struct monst *mtmp)
                EDOG(mtmp)->apport = 1;
            }
         }
+        /* ebones */
+        if (nhfp->structlevel)
+            Mread(nhfp->fd, &buflen, sizeof buflen);
+        if (buflen > 0) {
+            newebones(mtmp);
+            if (nhfp->structlevel)
+                Mread(nhfp->fd, EBONES(mtmp),
+                      sizeof (struct ebones));
+        }
         /* mcorpsenm - obj->corpsenm for mimic posing as corpse or
            statue (inline int rather than pointer to something) */
         if (nhfp->structlevel)
@@ -692,6 +701,7 @@ restgamestate(NHFILE *nhfp)
     restore_msghistory(nhfp);
     restore_gamelog(nhfp);
     restore_luadata(nhfp);
+    Mread(nhfp->fd, (genericptr_t) &gw.wizpuzzle, sizeof gw.wizpuzzle);
     /* must come after all mons & objs are restored */
     relink_timers(FALSE);
     relink_light_sources(FALSE);

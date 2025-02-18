@@ -957,9 +957,10 @@ staticfn void
 mkgrass(void)
 {
     int x, y,
-        freq = max(30, 60 - (3 * depth(&u.uz))),
-        passes = max(2, 8 - depth(&u.uz));
-    int vaultroom = (int) vault_occupied(u.urooms);
+        offset = depth(&u.uz) < 15 ? -10 : 15,
+        freq = max(30, 60 - (3 * (depth(&u.uz) - offset))),
+        passes = max(2, 8 - (depth(&u.uz) - offset)),
+        vaultroom = (int) vault_occupied(u.urooms);
     char rno;
 
     cellular(freq, passes);
@@ -968,18 +969,15 @@ mkgrass(void)
         for (y = 0; y < ROWNO; y++) {
             rno = levl[x][y].roomno;
 
-            /* Don't generate grass in shops or vaults -
+            /* Don't generate grass in shops or vaults,
              * it breaks guard behavior for vaults. */
             if (inside_shop(x, y) || rno == vaultroom) {
                 levl[x][y].bk = 0;
                 continue;
             }
 
-            if (levl[x][y].bk) {
-                if (levl[x][y].typ == ROOM) {
-                    levl[x][y].typ = GRASS;
-                }
-            }
+            if (levl[x][y].bk && levl[x][y].typ == ROOM)
+                levl[x][y].typ = GRASS;
             levl[x][y].bk = 0;
         }
     }
