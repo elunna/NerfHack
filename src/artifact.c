@@ -2215,6 +2215,15 @@ artifact_hit(
 
     if (otmp->oartifact == ART_SERPENT_S_TONGUE) {
         otmp->dknown = TRUE;
+        if (youattack) {
+            if (Role_if(PM_SAMURAI)) {
+                You("dishonorably use a diseased weapon!");
+                adjalign(-sgn(u.ualign.type));
+            } else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) {
+                You_feel("like an evil coward for using a diseased weapon.");
+                adjalign(Role_if(PM_KNIGHT) ? -10 : -1);
+            }
+        }
         pline_The("twisted blade poisons %s!",
                   youdefend ? "you" : mon_nam(mdef));
   	if (youdefend ? fully_resistant(POISON_RES) : resists_poison(mdef)) {
@@ -2225,20 +2234,13 @@ artifact_hit(
             return TRUE;
         }
         switch (rnd(10)) {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
+        case 1: case 2: case 3: case 4:
             *dmgptr += d(1, 6) + 2;
             break;
-        case 5:
-        case 6:
-        case 7:
+        case 5: case 6: case 7:
             *dmgptr += d(2, 6) + 4;
             break;
-        case 8:
-        case 9:
-            *dmgptr += d(3, 6) + 6;
+        case 8: case 9: *dmgptr += d(3, 6) + 6;
             break;
         case 10:
             *dmgptr = 2 * (youdefend ? Upolyd ? u.mh : u.uhp
