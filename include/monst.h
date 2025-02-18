@@ -264,7 +264,8 @@ struct monst {
 
 /* is mon m (presumably just killed) a troll and obj o Trollsbane? */
 #define troll_baned(m,o) \
-    ((m)->data->mlet == S_TROLL && (o) && (o)->oartifact == ART_TROLLSBANE)
+    ((m)->data->mlet == S_TROLL && (o) && \
+    ((o)->oartifact == ART_TROLLSBANE || carrying_arti(ART_TROLLSBANE)))
 
 #define engulfing_u(mon) (u.uswallow && (u.ustuck == (mon)))
 #define helpless(mon) ((mon)->msleeping || !(mon)->mcanmove)
