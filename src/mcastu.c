@@ -29,6 +29,7 @@ enum mcast_mage_spells {
     MGC_DISAPPEAR,     /* 16 */
     MGC_CLONE_WIZ,     /* 17 */
     MGC_REFLECTION,    /* 18 */
+    MGC_TELEPORT,      /* 19 */
 };
 
 /* monster cleric spells */
@@ -50,7 +51,6 @@ enum mcast_cleric_spells {
                        /* Defensive spells */
     CLC_CURE_SELF,     /* 13 */
     CLC_PROTECTION,    /* 14 */
-
 };
 
 #define offensive_mgc(spelltype) \
@@ -139,10 +139,11 @@ choose_magic_spell(struct monst* caster, int spellval)
         return MGC_ACID_BLAST;
     case 14:
     case 13:
-        return !rn2(2) ? MGC_AGGRAVATION : MGC_REFLECTION;
+        /* Rodney is already covetous, teleport is useless for him */
+        return (rn2(3) || caster->iswiz) ? MGC_AGGRAVATION : MGC_TELEPORT;
     case 12:
     case 11:
-        return MGC_CURSE_ITEMS;
+        return rn2(3) ? MGC_CURSE_ITEMS : MGC_REFLECTION;
     case 10:
     case 9:
         return MGC_DESTRY_ARMR;
@@ -305,8 +306,9 @@ castmu(
 
     /* Telepathic spellcasters don't have much reason to miss.
        They have a chance to be wrong in mon_really_found_us */
-    if (telepathic(caster->data))
-        foundyou = 1;
+    if (telepathic(caster->data)
+            || (mattk->adtyp == AD_SPEL && spellnum == MGC_TELEPORT))
+        foundyou = thinks_it_foundyou = 1;
 
     /* Check for protection from invisibility, displacement,
        or cover of darkness */
@@ -1012,6 +1014,11 @@ cast_wizard_spell(
         break;
     case MGC_CURE_SELF:
         dmg = m_cure_self(caster, dmg);
+        break;
+    case MGC_TELEPORT:
+        if (youdefend)
+            mnexto(caster, RLOC_MSG);
+        dmg = 0;
         break;
     case MGC_FIRE_BOLT:
         if (!mdef || (DEADMONSTER(mdef) && !youdefend))
@@ -1856,6 +1863,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_EVIL_EYE:
         case MGC_ENTOMB:
         case MGC_PSI_BOLT:
+        case MGC_TELEPORT:
             return TRUE;
         default:
             break;
@@ -1922,6 +1930,9 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         /* healing when already healed */
         if (spellnum == MGC_CURE_SELF && (caster->mhp == caster->mhpmax
             && !caster->mdiseased && !caster->mwither && !caster->mblinded))
+            return TRUE;
+        /* don't teleport when close */
+        if (spellnum == MGC_TELEPORT && distu(caster->mx, caster->my) < 25)
             return TRUE;
         /* don't summon monsters if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS

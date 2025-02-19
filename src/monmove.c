@@ -1110,7 +1110,7 @@ dochug(struct monst *mtmp)
            from you from having cast dozens of sticks-to-snakes
            or similar spells by the time you reach it */
         if (!mtmp->mspec_used
-            && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= 49) {
+            /*&& dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= 49*/) {
             struct attack *a;
 
             for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++) {
