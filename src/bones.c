@@ -319,8 +319,6 @@ drop_upon_death(
             obj_shudders(otmp);
             do_osshock(otmp);
         } else {
-            if (!rn2(3))
-                otmp = poly_obj(otmp, STRANGE_OBJECT);
             if (mtmp)
                 (void) add_to_minv(mtmp, otmp);
             else if (cont)
