@@ -1642,6 +1642,12 @@ cast_cleric_spell(
         break;
     case CLC_HOBBLE:
         if (youdefend) {
+            /* caster must be within range and have line-of-sight or ESP */
+            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
+                                         && !telepath_caster)) {
+                dmg = 0;
+                break;
+            }
             /* Less damage the farther away */
             mdist = distu(caster->mx, caster->my);
             dmg = calculate_damage(dmg, mdist);
@@ -1649,16 +1655,12 @@ cast_cleric_spell(
             if (dmg <= 0)
                 break;
 
-            /* caster must be within range and have line-of-sight or ESP */
-            if (!mcast_dist_ok(caster) || (!couldsee(caster->mx, caster->my) 
-                                           && !telepath_caster)) {
-                long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
-                Your("%s are smashed by a bolt of force!",
-                    makeplural(body_part(LEG)));
+            long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
+            Your("%s are smashed by a bolt of force!",
+                makeplural(body_part(LEG)));
 
-                if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
-                    set_wounded_legs(side, rn1(15, 15));
-            }
+            if (!(uarmf && objdescr_is(uarmf, "jungle boots")))
+                set_wounded_legs(side, rn1(15, 15));
         } else { /* mhitm */
             /* Less damage the farther away */
             mdist = dist2(caster->mx, caster->my, mdef->mx, mdef->my);
