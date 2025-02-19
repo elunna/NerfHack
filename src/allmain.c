@@ -1493,13 +1493,13 @@ check_hydration(void)
 }
 
 const struct HydrationTier hydration_tiers[] = {
-    { 10, "extremely dehydrated." },
-    { 25, "severely dehydrated." },
-    { 100, "very dehydrated." },
-    { 250, "dehydrated." },
-    { 500, "mildly dehydrated." },
-    { 1000, "thirsty." },
-    { 6000, "fully hydrated." }
+    { 10, "extremely dehydrated" },
+    { 25, "severely dehydrated" },
+    { 100, "very dehydrated" },
+    { 250, "dehydrated" },
+    { 500, "mildly dehydrated" },
+    { 1000, "thirsty" },
+    { 6000, "fully hydrated" }
 };
 #define NUM_TIERS (int) (sizeof(hydration_tiers) / sizeof(hydration_tiers[0]))
 
@@ -1526,7 +1526,7 @@ dehydrate(int amt)
 
     if (new_tier != old_tier) {
         if (new_tier < NUM_TIERS) {
-            You_feel("%s", hydration_tiers[new_tier].description);
+            You_feel("%s.", hydration_tiers[new_tier].description);
         } else
             impossible("dehydrate: new_tier (%d) is out of bounds.", new_tier);
         stop_occupation();
