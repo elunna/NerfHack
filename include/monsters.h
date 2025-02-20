@@ -414,7 +414,7 @@
         M2_HOSTILE | M2_FLANK, M3_INFRAVISIBLE,
         NO_RACE, 4, CLR_YELLOW, WARG_PUP),
     MON(NAM("revenant pup"), S_DOG,
-        LVL(3, 18, 5, 15, 0), (G_GENO | G_SGROUP | 1),
+        LVL(3, 18, 5, 15, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6),
           ATTK(AT_CLAW, AD_COLD, 1, 2),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
