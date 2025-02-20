@@ -1934,7 +1934,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             && !caster->mdiseased && !caster->mwither && !caster->mblinded))
             return TRUE;
         /* don't teleport when close */
-        if (spellnum == MGC_TELEPORT && distu(caster->mx, caster->my) < 25)
+        if (spellnum == MGC_TELEPORT && distu(caster->mx, caster->my) < 49)
             return TRUE;
         /* don't summon monsters if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
