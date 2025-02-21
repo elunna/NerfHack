@@ -1822,17 +1822,6 @@
      * worms
      */
 
-    /* Maggots are originally from SLASH'EM, but now they are used with
-     * the worm that walks. They can infest corpses to ressurect as more
-     * worms that walk */
-    MON(NAM("maggot"), S_WORM,
-        LVL(2, 9, 5, 0, 0), (G_NOGEN),
-        A(ATTK(AT_BITE, AD_PHYS, 1, 3),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
-        M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE,
-        M2_HOSTILE, 0,
-        NO_RACE, 4, CLR_WHITE, MAGGOT),
     MON(NAM("baby long worm"), S_WORM,
         LVL(5, 3, 5, 0, 0), G_GENO,
         A(ATTK(AT_BITE, AD_PHYS, 1, 4),
@@ -1904,6 +1893,17 @@
           | M1_THICK_HIDE,
         M2_HOSTILE | M2_STRONG | M2_NASTY, 0,
         NO_RACE, 17, CLR_MAGENTA, PURPLE_WORM),
+    /* Maggots are originally from SLASH'EM, but now they are used with
+     * the worm that walks. They can infest corpses to ressurect as more
+     * worms that walk */
+    MON(NAM("maggot"), S_WORM,
+        LVL(2, 9, 5, 0, 0), (G_NOGEN | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 1, 3),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(10, 10, MS_SILENT, MZ_TINY), 0, 0,
+        M1_ANIMAL | M1_SLITHY | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE,
+        M2_HOSTILE, 0,
+        NO_RACE, 4, CLR_WHITE, MAGGOT),
     /*
      * xan, &c
      */
