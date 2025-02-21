@@ -387,6 +387,7 @@
    PM_DWARF and PM_GNOME are normal monsters, not placeholders */
 #define is_placeholder(ptr)                             \
     ((ptr) == &mons[PM_ORC] || (ptr) == &mons[PM_GIANT] \
+     || (ptr) == &mons[PM_GRUNG] \
      || (ptr) == &mons[PM_ELF] || (ptr) == &mons[PM_HUMAN])
 
 /* Is an iron piercer really made of iron?? */
