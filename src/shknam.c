@@ -815,7 +815,8 @@ stock_room(int shp_indx, struct mkroom *sroom)
             for (sy = sroom->ly; sy <= sroom->hy; sy++)
                 if (stock_room_goodpos(sroom, rmno, sh, sx,sy))
                     stockcount++;
-        specialspot = rnd(stockcount);
+        if (stockcount)
+            specialspot = rnd(stockcount);
         stockcount = 0;
     }
 
