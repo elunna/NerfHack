@@ -346,7 +346,6 @@ castmu(
         return M_ATTK_MISS;
     }
 
-    nomul(0);
     if (rn2(ml * 10) < (caster->mconf ? 100 : 20)) { /* fumbled attack */
         Soundeffect(se_air_crackles, 60);
         if (canseemon(caster) && !Deaf) {
@@ -366,15 +365,17 @@ castmu(
                    : (Displaced && !u_at(caster->mux, caster->muy))
                      ? " at your displaced image"
                      : " at you");
+        nomul(0);
     }
-    if (wizard)
-        pline("spellnum=%d", spellnum);
+
+    debugpline1("spellnum=%d", spellnum);
+    
     if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
             return M_ATTK_MISS;
     }
-
+    
     /*
      * As these are spells, the damage is related to the level
      * of the monster casting the spell.
@@ -2259,9 +2260,8 @@ castmm(
         if (is_undirected_spell(mattk->adtyp, spellnum))
             pline("%s casts a spell!", Monnam(caster));
     }
-    if (wizard)
-        pline("spellnum=%d", spellnum);
 
+    debugpline1("spellnum=%d", spellnum);
     if (u_wield_art(ART_SERENITY) || u_offhand_art(ART_SERENITY)
             || (uarms && uarms->otyp == ANTI_MAGIC_SHIELD)) {
         if (counterspell(caster))
