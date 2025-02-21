@@ -622,7 +622,7 @@ LUA_FILES = $(DAT)\air.lua  $(DAT)\Arc-fila.lua $(DAT)\Arc-filb.lua \
 	$(DAT)\Kni-strt.lua \
 	$(DAT)\knox-1.lua   \
 	$(DAT)\knox-2.lua   \
-	$(DAT)\knox-2.lua   \
+	$(DAT)\knox-3.lua   \
 	$(DAT)\medusa-1.lua \
 	$(DAT)\medusa-2.lua \
 	$(DAT)\medusa-3.lua \
