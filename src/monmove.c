@@ -352,7 +352,7 @@ mon_regen(struct monst *mon, boolean digest_meal)
 
     boolean regen_prevented = (u_wield_art(ART_MORTALITY_DIAL)
                                 || u_offhand_art(ART_MORTALITY_DIAL))
-        || (Is_valley(&u.uz) || !is_undead(mon->data))
+        || (Is_valley(&u.uz) && !is_undead(mon->data))
         /* rabid and withering monsters do not regenerate */
         || mon->mrabid || mon->mwither;
 
