@@ -2769,9 +2769,11 @@ domove_core(void)
     if (domove_fight_web(x, y))
         return;
 
-    if (domove_fight_empty(x, y))
-        return;
-
+    if (domove_fight_empty(x, y)) {
+        if (!displaceu)
+            return;
+    }
+    
     (void) unmap_invisible(x, y);
     /* not attacking an animal, so we try to move */
     if ((u.dx || u.dy) && u.usteed && stucksteed(FALSE)) {
