@@ -2013,13 +2013,13 @@ expensive camera
 		[ The Light Fantastic, by Terry Pratchett ]
 eye of the aethiopica
 	This is a powerful amulet of ESP.  In addition to its standard
-	powers, it regenerates the energy of anyone who carries
+	powers, it regenerates the energy of anyone who wears
 	it, allowing them to cast spells more often.  It also reduces
-	any spell damage to the person who carries it by half, and
-	protects from magic missiles.  Finally, when invoked it has
-	the power to instantly open a portal to any other area of the
-	dungeon, allowing its invoker to travel quickly between
-	areas.
+	any spell damage to the person who carries it by 25%, and
+	partially protects from magic missiles.  Finally, when
+	invoked it has the power to instantly open a portal to any other
+	area of the dungeon, allowing its invoker to travel quickly
+	between areas.
 argent cross
     This sacred artifact, wrought of blessed steel and consecrated in
     the blood of martyrs, is no mere ornament of piety. The Cross
@@ -2880,6 +2880,13 @@ hobgoblin
 	The ninety-nine years is nearly up, so trouble may soon be
 	heard of on the road between Hurworth and Neasham.
 		[ A Dictionary of Fairies, by Katharine Briggs ]
+holographic void lily
+    This incredible card was printed ages ago and is the subject
+    of many legends among cartomaners. Beyond its unbelieve price-
+    point, it is rumored to confer many abilities when carried such
+    as reflection, energy regeneration, and spell damage reduction.
+    When invoked it is said to grant the bearer many bountiful
+    card drops as it lights the way.
 holy water
 	"We want a word with you," said Ligur (in a tone of voice
 	intended to imply that "word" was synonymous with "horrifically
@@ -3777,8 +3784,9 @@ lolth
 	poisoned daggers.
 		[ Drizzt Do'Urden ]
 *longbow of diana
-	This legendary bow grants ESP when carried and can reflect magical
-	attacks when wielded.  When invoked it provides a supply of arrows.
+	This legendary bow grants ESP, physical damage reduction, and
+	can reflection when wielded.  When invoked it provides a supply
+	of arrows.
 # long worm -- see "worm"
 looking glass
 mirror
@@ -3999,7 +4007,7 @@ master key of thievery
 	This skeleton key was fashioned in ages past and imbued with
 	a powerful magic which allows it to open any lock.  When
 	carried, it grants its owner warning, teleport control, and
-	reduces all physical damage by half.  Finally, when invoked,
+	reduces all physical damage by 25%.  Finally, when invoked,
 	it has the ability to disarm any trapped lock.
 master of thieves
 	There was a flutter of wings at the window.  Ymor shifted his
@@ -4620,9 +4628,10 @@ orb weaver
          [ The New Bestiary, Wizard Endlebrook ]
 *orb of detection
 	This Orb is a crystal ball of exceptional powers.  When
-	carried, it grants ESP, limits damage done by spells, and
-	protects the carrier from magic missiles.  When invoked it
-	allows the carrier to become invisible.
+	carried, it grants ESP, reduces damage done by spells, and
+	partially protects the carrier from magic missiles.  When
+    invoked it allows the carrier to become invisible. It also
+    confers the powerful ability of clairvoyance when carried.
 *orb of fate
 	Some say that Odin himself created this ancient crystal ball,
 	although others argue that Loki created it and forged Odin's
@@ -4834,8 +4843,8 @@ platinum yendorian express card
 	This is an ancient artifact made of an unknown material.  It
 	is rectangular in shape, very thin, and inscribed with archaic
 	runes of power.  When carried, it grants the bearer ESP, reduces
-	incoming damage from spells by half, and protects from magic
-	missile attacks.  Additionally, its power is such that when
+	incoming damage from spells by 25%, and partially protects from
+	magic missile attacks.  Additionally, its power is such that when
 	invoked, it can charge other objects.
 # playing style, rather vague topic but these quotes are too apt to pass up
 player
@@ -5527,9 +5536,9 @@ scalpel
 	This mace was created aeons ago in some unknown cave,
 	and has been passed down from generation to generation of
 	cave dwellers.  It is a very mighty mace indeed, and in
-	addition will protect anyone who wields it from magic
-	missile attacks.  When invoked, it causes conflict in the
-	area around it.
+	addition will partially protect anyone who wields it from
+	magic missile attacks as well as conferring steadfastness.
+	When invoked, it causes conflict in the area around it.
 scimitar
 	Oh, how handsome, how noble was the Vizier Ali Tebelin,
 	my father, as he stood there in the midst of the shot, his
@@ -6353,9 +6362,10 @@ tripe ration
 *tsurugi of muramasa
 	This most ancient of swords has been passed down through the
 	leadership of the Samurai legions for hundreds of years.  It
-	is said to grant luck to its wielder, but its main power is
-	terrible to behold.  It has the capability to cut in half any
-	creature it is wielded against, instantly killing them.
+	is said to grant luck, protection, and great haste to its
+	wielder, but its main power is terrible to behold.  It has
+	the capability to cut in half any foe it is wielded against,
+	instantly killing them. 
 ~*muramasa
 tsurugi
 long samurai sword
