@@ -574,8 +574,8 @@
     || (ptr) == &mons[PM_HUNGER_HULK])
 
 /* Corpse intrinsic stats */
-#define MAX_GAIN 50
-#define MIN_GAIN 5
+#define MAX_GAIN 25
+#define MIN_GAIN 2
 #define MAX_PARTIAL (Race_if(PM_DHAMPIR) ? 50 : 100)
 #define percent_granted(ptr) ((ptr)->cwt / 90)
 
