@@ -605,7 +605,7 @@ ARMOR("T-shirt", NoDes,
 
 /* cloaks */
 CLOAK("mummy wrapping", NoDes,
-      1, 0,          0,  0, 0,  3,  2, 10, 1,  CLOTH, CLR_GRAY,
+      1, 0,          0,  0, 0,  3,  2, 10, 0,  CLOTH, CLR_GRAY,
                                                         MUMMY_WRAPPING),
         /* worn mummy wrapping blocks invisibility */
 CLOAK("elven cloak", "faded pall",
