@@ -1173,8 +1173,7 @@ test_move(
         /* FIXME: should be using lastseentyp[x][y] rather than seen vector
          */
         if ((levl[x][y].seenv
-            && (is_pool_or_lava(x, y)
-                || (is_puddle(x, y) && tiny_groundedmon(gy.youmonst.data)))) /* known pool/lava */
+            && (is_pool_or_lava(x, y) || is_puddle(x, y)))
             && ((IS_WATERWALL(levl[x][y].typ) /* never enter wall of liquid */
                  || levl[x][y].typ == LAVAWALL)
                 /* don't enter pool or lava (must be one of the two to
