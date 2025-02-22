@@ -91,10 +91,8 @@ void
 incr_resistance(long* which, int incr)
 {
     long oldval = *which & TIMEOUT;
-
-    /* cap at 100% */
-    if (oldval + incr > 100)
-        oldval = 100;
+    if ((oldval + incr) > MAX_PARTIAL)
+        oldval = MAX_PARTIAL;
     else
         oldval += incr;
 
@@ -121,15 +119,10 @@ decr_resistance(long* which, int incr)
 int
 how_resistant(int which)
 {
-    if (extrinsic_res(which)) {
-        /* Acid resistance is capped at 50% unless you are a form/role
-         * which is naturally acid resistant */
-        if (which == ACID_RES)
-            return 50;
-        return 100;
-    } else {
-      return intrinsic_res(which);
-  }
+    int res = extrinsic_res(which);
+    if (res)
+        return res;
+    return intrinsic_res(which);
 }
 
 int
@@ -153,7 +146,9 @@ extrinsic_res(int which)
     /* externals and level/race based intrinsics always provide 100%
      * as do monster resistances */
     if (u.uprops[which].extrinsic)
-        return 100;
+        /* ... Except acid resistance which is capped at 50% unless 
+         * you are a form/role which is naturally acid resistant */
+        return which == ACID_RES ? 50 : 100;;
     return 0;
 }
 

@@ -1070,7 +1070,7 @@ givit(int type, struct permonst *ptr)
     /* All these use the new system, which is based on corpse weight. */
     case FIRE_RES:
         debugpline0("Trying to give fire resistance");
-        if ((HFire_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
+        if (intrinsic_res(FIRE_RES) < MAX_PARTIAL) {
             incr_resistance(&HFire_resistance, increase);
             if ((HFire_resistance & TIMEOUT) == 100)
                 You(Hallucination ? "be chillin'." : "feel completely chilled.");
@@ -1080,7 +1080,7 @@ givit(int type, struct permonst *ptr)
         break;
     case COLD_RES:
         debugpline0("Trying to give cold resistance");
-        if ((HCold_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
+        if (intrinsic_res(COLD_RES) < MAX_PARTIAL) {
             incr_resistance(&HCold_resistance, increase);
             if ((HCold_resistance & TIMEOUT) == 100)
                 You_feel("full of hot air.");
@@ -1090,7 +1090,7 @@ givit(int type, struct permonst *ptr)
         break;
     case SHOCK_RES: /* shock (electricity) resistance */
         debugpline0("Trying to give shock resistance");
-        if ((HShock_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
+        if (intrinsic_res(SHOCK_RES) < MAX_PARTIAL) {
             incr_resistance(&HShock_resistance, increase);
             if ((HShock_resistance & TIMEOUT) == 100)
                 pline(Hallucination ? "You feel grounded in reality."
@@ -1101,7 +1101,7 @@ givit(int type, struct permonst *ptr)
         break;
     case SLEEP_RES:
         debugpline0("Trying to give sleep resistance");
-        if ((HSleep_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
+        if (intrinsic_res(SLEEP_RES) < MAX_PARTIAL) {
             incr_resistance(&HSleep_resistance, increase);
             if ((HSleep_resistance & TIMEOUT) == 100)
                 You_feel("wide awake.");
@@ -1111,7 +1111,7 @@ givit(int type, struct permonst *ptr)
         break;
     case DISINT_RES:
         debugpline0("Trying to give disintegration resistance");
-        if ((HDisint_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
+        if (intrinsic_res(DISINT_RES) < MAX_PARTIAL) {
             incr_resistance(&HDisint_resistance, increase);
             if ((HDisint_resistance & TIMEOUT) == 100)
                 You_feel(Hallucination ? "totally together, man." : "completely firm.");
@@ -1121,7 +1121,7 @@ givit(int type, struct permonst *ptr)
         break;
     case POISON_RES:
         debugpline0("Trying to give poison resistance");
-        if ((HPoison_resistance & (TIMEOUT | FROMRACE | FROMEXPER)) < MAX_PARTIAL) {
+        if (intrinsic_res(POISON_RES) < MAX_PARTIAL) {
             incr_resistance(&HPoison_resistance, increase);
             if ((HPoison_resistance & TIMEOUT) == 100)
                 You_feel("completely healthy.");
