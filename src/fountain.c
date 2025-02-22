@@ -392,9 +392,9 @@ result:
         if (!levl[u.ux][u.uy].looted && !obj->oerodeproof
                 && !is_supermaterial(obj)) {
             if (!Blind)
-                pline("%s flickers with purple light.", Doname2(obj));
+                pline("%s flickers with purple light.", Yname2(obj));
             else
-                pline("%s shudders slightly in your grip.", Doname2(obj));
+                pline("%s shudders slightly in your grip.", Yname2(obj));
             obj->oerodeproof = 1;
             obj->rknown = 1;
             levl[u.ux][u.uy].looted |= T_LOOTED;
