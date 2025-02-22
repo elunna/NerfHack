@@ -1937,9 +1937,12 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         /* don't teleport when close */
         if (spellnum == MGC_TELEPORT && distu(caster->mx, caster->my) < 49)
             return TRUE;
-        /* don't summon monsters if it doesn't think you're around */
+        /* don't cast these spells if you are not visible */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
                             || spellnum == MGC_CALL_UNDEAD
+                            || spellnum == MGC_HASTE_SELF
+                            || spellnum == MGC_DISAPPEAR
+                            || spellnum == MGC_REFLECTION
                             || (!caster->iswiz && spellnum == MGC_CLONE_WIZ)))
             return TRUE;
         /* only undead and demons can cast evil eye/call undead */
@@ -1988,8 +1991,10 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if (caster->mhp == caster->mhpmax && spellnum == CLC_CURE_SELF
             && !caster->mdiseased && !caster->mwither && !caster->mblinded)
             return TRUE;
-        /* don't summon insects if it doesn't think you're around */
-        if (!mcouldseeu && (spellnum == CLC_INSECTS || spellnum == CLC_SPHERES))
+        /* don't cast these spells if you are not visible */
+        if (!mcouldseeu && (spellnum == CLC_INSECTS 
+                            || spellnum == CLC_PROTECTION
+                            || spellnum == CLC_SPHERES))
             return TRUE;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)
