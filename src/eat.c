@@ -839,12 +839,12 @@ cprefx(int pm)
 
             Sprintf(svk.killer.name, "tasting %s meat",
                     mons[pm].pmnames[NEUTRAL]);
-            svk.killer.format = KILLED_BY;
-            You("turn to stone.");
-            done(STONING);
+            You("start turning to stone!");
+            make_stoned(5L, (char *) 0, KILLED_BY, svk.killer.name);
+            
             if (svc.context.victual.piece)
                 svc.context.victual.eating = 0;
-            return; /* lifesaved */
+            return;
         }
     }
 

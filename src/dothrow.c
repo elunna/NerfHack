@@ -1437,14 +1437,13 @@ toss_up(struct obj *obj, boolean hitsroof)
                    && !(poly_when_stoned(gy.youmonst.data)
                         && polymon(PM_STONE_GOLEM))) {
  petrify:
-            svk.killer.format = KILLED_BY;
             /* what goes up... */
             Strcpy(svk.killer.name, "elementary physics");
-            You("turn to stone.");
+            You("start turning to stone!");
             if (obj)
                 dropy(obj); /* bypass most of hitfloor() */
             gt.thrownobj = 0;  /* now either gone or on floor */
-            done(STONING);
+            make_stoned(5L, (char *) 0, KILLED_BY, svk.killer.name);
             return obj ? TRUE : FALSE;
         }
         if (is_silver(obj) && Hate_silver)
