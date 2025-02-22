@@ -7494,8 +7494,8 @@ passive(
                 if (!Stone_resistance
                     && !(poly_when_stoned(gy.youmonst.data)
                          && polymon(PM_STONE_GOLEM))) {
-                    done_in_by(mon, STONING); /* "You turn to stone..." */
-                    return M_ATTK_DEF_DIED;
+                    do_stone_u(mon);
+                    break;
                 }
             }
         }
@@ -8438,7 +8438,7 @@ bite_monster(struct monst *mon)
     switch(monsndx(mon->data)) {
     case PM_LIZARD:
         if (Stoned)
-	        fix_petrification();
+	    fix_petrification();
         break;
     case PM_DEATH:
     case PM_PESTILENCE:
@@ -8458,7 +8458,7 @@ bite_monster(struct monst *mon)
         /*FALLTHRU*/
     default:
         if (acidic(mon->data) && Stoned)
-	        fix_petrification();
+	    fix_petrification();
         break;
     }
     return FALSE;
