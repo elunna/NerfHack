@@ -69,6 +69,7 @@ static const char *const godvoices[] = {
 /* In case we ever want to easily change the priest's
  * crowning gift */
 #define PRIEST_GIFT ART_MJOLLNIR
+#define CAVEMAN_GIFT ART_GIANTSLAYER
 
 /*
  * The actual trouble priority is determined by the order of the
@@ -922,6 +923,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == PRIEST_GIFT);
             already_exists =
                     exist_artifact(WAR_HAMMER, artiname(PRIEST_GIFT));
+        } else if (Role_if(PM_CAVE_DWELLER)) {
+            in_hand = (uwep && uwep->oartifact == CAVEMAN_GIFT);
+            already_exists =
+                    exist_artifact(SPEAR, artiname(CAVEMAN_GIFT));
         }
         verbalize("I crown thee...  The Hand of Elbereth!");
         livelog_printf(LL_DIVINEGIFT,
@@ -935,6 +940,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == PRIEST_GIFT);
             already_exists =
                     exist_artifact(WAR_HAMMER, artiname(PRIEST_GIFT));
+        } else if (Role_if(PM_CAVE_DWELLER)) {
+            in_hand = (uwep && uwep->oartifact == CAVEMAN_GIFT);
+            already_exists =
+                    exist_artifact(SPEAR, artiname(CAVEMAN_GIFT));
         } else {
             in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE);
             already_exists =
@@ -952,6 +961,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == PRIEST_GIFT);
             already_exists =
                     exist_artifact(WAR_HAMMER, artiname(PRIEST_GIFT));
+        } else if (Role_if(PM_CAVE_DWELLER)) {
+            in_hand = (uwep && uwep->oartifact == CAVEMAN_GIFT);
+            already_exists =
+                    exist_artifact(SPEAR, artiname(CAVEMAN_GIFT));
         } else {
             in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER);
             already_exists =
@@ -1022,6 +1035,18 @@ gcrownu(void)
                        artiname(ART_MJOLLNIR));
         if (obj && obj->oartifact == PRIEST_GIFT)
             discover_artifact(PRIEST_GIFT);
+    } else if (Role_if(PM_CAVE_DWELLER)) {
+        obj = mksobj(SPEAR, FALSE, FALSE);
+        obj = oname(obj, artiname(CAVEMAN_GIFT), ONAME_GIFT | ONAME_KNOW_ARTI);
+        obj->spe = 1;
+        at_your_feet("A spear");
+        dropy(obj);
+        u.ugifts++;
+        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                       "was bestowed with %s",
+                       artiname(ART_GIANTSLAYER));
+        if (obj && obj->oartifact == CAVEMAN_GIFT)
+            discover_artifact(CAVEMAN_GIFT);
     } else {
         switch (u.ualign.type) {
         case A_LAWFUL:
