@@ -211,7 +211,7 @@ in_trouble(void)
      * their god being asleep at the switch. Give a little
      * break for major troubles.
      */
-    if (!rn2(13) && Role_if(PM_CAVE_DWELLER))
+    if (u.ualign.abuse != 0 && !rn2(13) && Role_if(PM_CAVE_DWELLER))
         return 0;
 
     /*
@@ -266,7 +266,7 @@ in_trouble(void)
     /*
      * minor troubles...
      */
-    if (!rn2(10) && Role_if(PM_CAVE_DWELLER))
+    if (u.ualign.abuse != 0 && !rn2(10) && Role_if(PM_CAVE_DWELLER))
         return 0;
 
     if (Punished || (u.utrap && u.utraptype == TT_BURIEDBALL))
@@ -1297,7 +1297,8 @@ pleased(aligntyp g_align)
        fixed or there were no troubles to begin with; hallucination
        won't be in effect so special handling for it is superfluous.
        Cavepersons are sometimes ignored by their god */
-    if (pat_on_head && (Role_if(PM_CAVE_DWELLER) ? rn2(10) : 1)) {
+    if (pat_on_head && (Role_if(PM_CAVE_DWELLER) && u.ualign.abuse != 0
+                            ? rn2(10) : 1)) {
         switch (rn2((Luck + 6) >> 1)) {
             case 0:
                 break;
@@ -1529,7 +1530,8 @@ water_prayer(boolean bless_water)
     long changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
 
-    if (bless_water && Role_if(PM_CAVE_DWELLER) && !rn2(10)) {
+    if (bless_water && Role_if(PM_CAVE_DWELLER)
+        && u.ualign.abuse != 0 && !rn2(10)) {
         You_feel("that someone upstairs is not entirely paying attention.");
         return FALSE;
     }
@@ -2490,7 +2492,7 @@ pray_revive(void)
     if (!otmp)
         return FALSE;
 
-    if (Role_if(PM_CAVE_DWELLER) && !rn2(10)) {
+    if (Role_if(PM_CAVE_DWELLER) && u.ualign.abuse != 0 && !rn2(10)) {
         You_feel("your god was looking the other way...");
         return FALSE;
     }
