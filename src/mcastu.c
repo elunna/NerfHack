@@ -793,7 +793,7 @@ cast_wizard_spell(
                     pline("%s blasts the %s with %s and curses!",
                       Monnam(caster), rn2(2) ? "ceiling"
                                            : "floor", "acid");
-                } else {
+                } else if (!rn2(20)) {
                     You_hear("some cursing!");
                 }
                 return 0;
@@ -1034,7 +1034,7 @@ cast_wizard_spell(
                 if (canseemon(caster)) {
                     pline("%s blasts the %s with fire and curses!",
                         Monnam(caster), rn2(2) ? "ceiling" : "floor");
-                } else {
+                } else if (!rn2(20)) {
                     You_hear("some cursing!");
                 }
                 return 0;
@@ -1069,7 +1069,7 @@ cast_wizard_spell(
                 if (canseemon(caster)) {
                     pline("%s blasts the %s with cold and curses!",
                         Monnam(caster), rn2(2) ? "ceiling" : "floor");
-                } else {
+                } else if (!rn2(20)) {
                     You_hear("some cursing!");
                 }
                 return 0;
