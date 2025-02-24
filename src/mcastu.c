@@ -1934,8 +1934,10 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if (spellnum == MGC_CURE_SELF && (caster->mhp == caster->mhpmax
             && !caster->mdiseased && !caster->mwither && !caster->mblinded))
             return TRUE;
-        /* don't teleport when close */
-        if (spellnum == MGC_TELEPORT && distu(caster->mx, caster->my) < 49)
+        /* don't teleport when close or fleeing or weak */
+        if (spellnum == MGC_TELEPORT && (distu(caster->mx, caster->my) < 49
+                                         || caster->mhp < (caster->mhpmax / 7)
+                                         || caster->mflee))
             return TRUE;
         /* don't cast these spells if you are not visible */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
