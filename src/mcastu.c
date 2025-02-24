@@ -112,7 +112,7 @@ choose_magic_spell(struct monst* caster, int spellval)
         spellval = rn2(spellval);
 
     /* Low HP, prioritize healing */
-    if ((caster->mhp * 5) <= caster->mhpmax) {
+    if ((caster->mhp * 7) <= caster->mhpmax) {
         if ((!rn2(10) || caster->mflee) && caster->m_lev > 8)
             return MGC_ENTOMB;
         return MGC_CURE_SELF;
@@ -1154,9 +1154,9 @@ cast_wizard_spell(
         /* entomb you in rocks to delay you and get away */
         coordxy x, y;
         /* Only allow casting at relatively short-range */
-        if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 26
-            /* Don't cast if we get hit by the boulders! */
-            && distu(caster->mx, caster->my) > 2) {
+        if (m_canseeu(caster) && distu(caster->mx, caster->my) <= 7*7
+            /* Don't cast if mon gets hit by the boulders! */
+            && !m_next2u(caster)) {
             pline_The("ground shakes violently!");
             if (!Blind)
                 pline("Boulders fall from above!");
@@ -1982,7 +1982,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if (spellnum == MGC_ENTOMB && is_entombed(u.ux, u.uy))
             return TRUE;
         /* only entomb as a desperation measure */
-        if (spellnum == MGC_ENTOMB && (caster->mhp > (caster->mhpmax / 5)
+        if (spellnum == MGC_ENTOMB && (caster->mhp > (caster->mhpmax / 7)
             || caster->mflee))
             return TRUE;
     } else if (adtyp == AD_CLRC) {
