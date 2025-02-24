@@ -1982,8 +1982,8 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
         if (spellnum == MGC_ENTOMB && is_entombed(u.ux, u.uy))
             return TRUE;
         /* only entomb as a desperation measure */
-        if (spellnum == MGC_ENTOMB && caster->mhp > (caster->mhpmax / 5)
-            && !caster->mflee)
+        if (spellnum == MGC_ENTOMB && (caster->mhp > (caster->mhpmax / 5)
+            || caster->mflee))
             return TRUE;
     } else if (adtyp == AD_CLRC) {
         /* should not be cast by peaceful monsters */
