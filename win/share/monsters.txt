@@ -7462,7 +7462,7 @@ Z = (195, 195, 195)
   ....DTTTTTTJAA..
   ......AAAAAAAA..
 }
-# tile 389 (dark Angel,male)
+# tile 389 (dark Angel,female)
 {
   ................
   ................
