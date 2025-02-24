@@ -5925,7 +5925,8 @@
         A(ATTK(AT_WEAP, AD_PHYS, 2, 10),
           ATTK(AT_WEAP, AD_PHYS, 2, 10),
           ATTK(AT_CLAW, AD_SAMU, 2, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK),
+          ATTK(AT_MAGC, AD_SPEL, 0, 0),
+          NO_ATTK, NO_ATTK),
         SIZ(2250, 850, MS_NEMESIS, MZ_HUGE), MR_FIRE | MR_STONE, MR_FIRE,
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_MALE | M2_PNAME | M2_HOSTILE | M2_STALK
