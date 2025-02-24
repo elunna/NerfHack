@@ -119,8 +119,9 @@ start: Blank
         S_ghost: \032
         S_giant: \032
         S_gnome: \032
+        S_gnoll: \032
         S_golem: \032
-				S_grass: \032
+        S_grass: \032
         S_grave: \032
         S_gremlin: \032
         S_hbeam: \032
@@ -148,6 +149,7 @@ start: Blank
         S_light: \032
         S_litcorr: \032
         S_lizard: \032
+        S_grung: \032
         S_lslant: \032
         S_magic_portal: \032
         S_magic_trap: \032
