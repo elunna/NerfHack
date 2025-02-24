@@ -136,11 +136,11 @@ choose_magic_spell(struct monst* caster, int spellval)
         return MGC_SUMMON_MONS;
     case 16:
     case 15:
-        return MGC_ACID_BLAST;
+        /* Rodney is already covetous, teleport is useless for him */
+        return (rn2(3) || caster->iswiz) ? MGC_ACID_BLAST : MGC_TELEPORT;
     case 14:
     case 13:
-        /* Rodney is already covetous, teleport is useless for him */
-        return (rn2(3) || caster->iswiz) ? MGC_AGGRAVATION : MGC_TELEPORT;
+        return MGC_AGGRAVATION;
     case 12:
     case 11:
         return rn2(3) ? MGC_CURSE_ITEMS : MGC_REFLECTION;
