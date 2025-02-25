@@ -6948,7 +6948,11 @@ u_adtyp_resistance_obj(int dmgtyp)
     if (uarmc && uarmc->otyp == DWARVISH_CLOAK
         && (dmgtyp == AD_COLD || dmgtyp == AD_FIRE))
         return 90;
-
+    
+    /* Extrinsic shock resistance provides 90% protection for fragile items */
+    if (EShock_resistance && dmgtyp == AD_PHYS)
+        return 90;
+    
     return 0;
 }
 
@@ -7166,10 +7170,6 @@ maybe_destroy_item(
         break;
     /* Fragile item destruction */
     case AD_PHYS:
-        /* Rings of "shock" resistance prevent this type of damage */
-        if ((uleft && uleft->otyp == RIN_SHOCK_RESISTANCE) ||
-            (uright && uright->otyp == RIN_SHOCK_RESISTANCE))
-            skip++;
         /* Oathfire also protects fragile items */
         if (uarms && uarms->oartifact == ART_OATHFIRE)
             skip++;
