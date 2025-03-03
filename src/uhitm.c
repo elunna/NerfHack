@@ -5877,7 +5877,11 @@ mhitm_ad_dise(
 {
     struct permonst *pa = magr->data, *pd = mdef->data;
     boolean unaffected = resists_sick(mdef->data) || defended(mdef, AD_DISE);
-
+    
+    /* Tone down the nastiness of gnoll attacks */
+    if (is_gnoll(magr->data) && !rn2(6))
+        return;
+    
     if (magr == &gy.youmonst) {
         if (!unaffected) {
             if (mdef->mdiseasetime)
