@@ -1466,11 +1466,8 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_SLEEPING
            || otyp == RIN_WITHERING
            || otyp == WAN_NOTHING
-           || (Race_if(PM_DHAMPIR) &&
-               /* vampirics don't eat */
-               (otyp == SPE_DETECT_FOOD || otyp == SCR_FOOD_DETECTION
-               /* vampires don't like silver */
-                || objects[otyp].oc_material == SILVER))
+           /* vampires don't like silver */
+           || (Race_if(PM_DHAMPIR) && objects[otyp].oc_material == SILVER)
            /* orcs start with poison resistance */
            || (otyp == RIN_POISON_RESISTANCE
                && (Race_if(PM_ORC) || Race_if(PM_GRUNG)))
