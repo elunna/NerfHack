@@ -5748,7 +5748,11 @@ readobjnam(char *bp, struct obj *no_wish)
             consume_oeaten(d.otmp, 1);
         }
     }
-    d.otmp->owt = weight(d.otmp);
+    /* These items should have had their weights fuzzed - don't reset it. */
+    if (d.otmp->oclass != WEAPON_CLASS && d.otmp->oclass != ARMOR_CLASS
+        && !is_weptool(d.otmp))
+        d.otmp->owt = weight(d.otmp);
+
     if (d.very && d.otmp->otyp == HEAVY_IRON_BALL)
         d.otmp->owt += WT_IRON_BALL_INCR;
 
