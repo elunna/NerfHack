@@ -1124,14 +1124,6 @@ forget(int howmuch)
     if (howmuch & ALL_SPELLS)
         losespells();
 
-    /* Can lose telepathy to amnesia attacks */
-    if (HTelepat & INTRINSIC && rn2(3)) {
-        HTelepat &= ~INTRINSIC;
-        if (Blind && !Blind_telepat)
-            see_monsters(); /* Can't sense mons anymore! */
-        Your("senses fail!");
-    }
-
     /* Forget some skills. */
     drain_weapon_skill(rnd(howmuch ? 5 : 3));
 
