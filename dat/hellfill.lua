@@ -17,6 +17,10 @@ function hellobjects()
    des.object(objclass[1]);
    des.object(objclass[1]);
    des.object(objclass[2]);
+   des.object(objclass[3]);
+   des.object(objclass[4]);
+   des.object(objclass[5]);
+   des.object()
    des.object()
 end
 

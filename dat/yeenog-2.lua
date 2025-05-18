@@ -122,6 +122,9 @@ des.monster("gnoll chieftain")
 des.monster("gnoll chieftain")
 des.monster("gnoll shaman")
 
+-- the throne room loot
+des.object("chest",13,08)
+
 -- some wasteland-ish stuff
 des.object("boulder")
 des.object("boulder")
@@ -134,9 +137,21 @@ des.object("[")
 des.object("[")
 des.object(")")
 des.object(")")
-des.object("*")
-des.object("!")
+des.object("(")
+des.object("/")
+des.object("=")
 des.object("?")
+des.object("?")
+des.object("!")
+des.object("!")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
+des.object("*")
 
 -- traps
 des.trap("fire")
