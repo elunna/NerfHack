@@ -3739,7 +3739,7 @@
         M1_CARNIVORE | M1_TUNNEL, M2_STRONG, M3_INFRAVISIBLE,
         NO_RACE, 15, CLR_MAGENTA, HUNGER_HULK),
     MON(NAM("slumber hulk"), S_UMBER,
-        LVL(9, 6, -12, 50, 0), (G_GENO | 2),
+        LVL(9, 6, 0, 50, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4),
           ATTK(AT_CLAW, AD_PHYS, 3, 4),
           ATTK(AT_BITE, AD_PHYS, 4, 5),
