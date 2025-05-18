@@ -4182,7 +4182,7 @@ weffects(struct obj *obj)
     if (otyp == WAN_WONDER) {
         wondertemp = WAN_LIGHT + rn2(LAST_WAND - WAN_LIGHT);
         /* Significantly reduced the chances of wishes */
-        if (wondertemp == WAN_WISHING && rn2(100)) {
+        if (wondertemp == WAN_WISHING) {
             wondertemp = WAN_POISON_GAS;
         }
         if (wondertemp == WAN_WONDER) {
