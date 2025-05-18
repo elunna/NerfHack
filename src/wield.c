@@ -295,16 +295,6 @@ ready_weapon(struct obj *wep)
     } else if (!retouch_object(&wep, !uarmg, FALSE)) {
         res = ECMD_TIME; /* takes a turn even though it doesn't get wielded */
     } else {
-        /* Allow anyone who gets expert in a weapon skill to identify those
-         * weapons easily as soon as they wield them. We can easily justify
-         * this with the extra effort it takes to train up now.
-         * Check this before setworn so the enchantment shows up in the
-         * wear message. */
-        if (wep && wep->oclass == WEAPON_CLASS && !is_ammo(wep)
-            && P_SKILL(objects[wep->otyp].oc_skill) >= P_EXPERT) {
-            wep->known = 1;
-        }
-
         /* Weapon WILL be wielded after this point */
         res = is_curved(wep) ? ECMD_OK : ECMD_TIME;
         if (will_weld(wep)) {
