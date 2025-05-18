@@ -9,6 +9,7 @@ staticfn boolean may_generate_eroded(struct obj *);
 staticfn void mkobj_erosions(struct obj *);
 staticfn void mkbox_cnts(struct obj *);
 staticfn unsigned nextoid(struct obj *, struct obj *);
+staticfn void fuzz_weight(struct obj *);
 staticfn void mksobj_init(struct obj **, boolean);
 staticfn int item_on_ice(struct obj *);
 staticfn void shrinking_glob_gone(struct obj *);
@@ -907,6 +908,26 @@ unknow_object(struct obj *obj)
     obj->known = objects[obj->otyp].oc_uses_known ? 0 : 1;
 }
 
+/* Fuzz the weight of a non-stacking object. Cluster weights around the
+   object class weight, so that very heavy and very light versions of
+   an object are rarer. Assumes that the obj's weight has already been
+   initialized. */
+staticfn void
+fuzz_weight(struct obj *obj) {
+    int wt, orig_wt, fuzz_factor;
+
+    if (objects[obj->otyp].oc_merge)
+        return;
+    orig_wt = obj->owt;
+    fuzz_factor = orig_wt / 4;
+    if (!fuzz_factor)
+        return;
+    wt = orig_wt + (2 * fuzz_factor) + 2 -  d(4, fuzz_factor);
+    if (wt < 1)
+        wt = 1;
+    obj->owt = wt;
+}
+
 /* do some initialization to newly created object; otyp must already be set */
 staticfn void
 mksobj_init(struct obj **obj, boolean artif)
@@ -1352,6 +1373,12 @@ mksobj(int otyp, boolean init, boolean artif)
     }
 
     otmp->owt = weight(otmp);
+
+    /* Fuzz weights after base weight is set,
+     * mergeable items are checked for in fuzz_weight */
+    if (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS
+        || is_weptool(otmp))
+        fuzz_weight(otmp);
     return otmp;
 }
 
@@ -2125,6 +2152,10 @@ weight(struct obj *obj)
         wt = (long_wt > LARGEST_INT) ? LARGEST_INT : (int) long_wt;
         if (obj->oeaten)
             wt = eaten_stat(wt, obj);
+        return wt;
+    } else if ((obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS
+            || is_weptool(obj))
+            && !objects[obj->otyp].oc_merge) {
         return wt;
     } else if (obj->oclass == FOOD_CLASS && obj->oeaten) {
         return eaten_stat((int) obj->quan * wt, obj);
