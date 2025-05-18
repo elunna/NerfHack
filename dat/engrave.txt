@@ -84,7 +84,7 @@ Haermund Hardaxe carved these runes
 # Advertising
 Need a light?  Come visit the Minetown branch of Izchak's Lighting Store!
 Snakes on the Astral Plane - Soon in a dungeon near you
-You are the one millionth visitor to this place!  Please wait 200 turns for your wand of wishing.
+You are the one millionth visitor to this place!
 
 # DnD
 Warning, Exploding runes!

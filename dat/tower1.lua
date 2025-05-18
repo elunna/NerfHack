@@ -114,14 +114,6 @@ des.door("locked",15,10)
 des.door("locked",23,05)
 des.door("locked",24,05)
 
--- treasures
-des.object({ id = "chest", x = 28, y = 04,
-            contents = function()
-               -- This is converted into a zappable scroll of wishing
-               des.object("wishing");
-            end
-});
-
 des.object("chest", 13,01)
 des.object("chest", 16,14)
 des.object("chest",niches[1])

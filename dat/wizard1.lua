@@ -62,8 +62,6 @@ des.object({ id = "Book of the Dead", coord = places[1] })
 
 des.object({ id = "chest", trapped = 0, locked = 1, coord = places[1],
              contents = function()
-                -- This is converted into a zappable scroll of wishing
-                des.object("wand of wishing");
                 des.object("full healing")
                 des.object("?")
                 des.object("?")
