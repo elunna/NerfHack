@@ -2355,9 +2355,10 @@ offer_corpse(struct obj *otmp, boolean highaltar, aligntyp altaralign)
     } else {
         int orig_luck, luck_increase;
 
+#if 0 /* No artifacts from #offer - NerfHack (TM) */
         if (bestow_artifact(value))
             return;
-
+#endif
         orig_luck = u.uluck;
         luck_increase = (value * LUCKMAX) / (MAXVALUE * 2);
 
