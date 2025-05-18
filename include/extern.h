@@ -2257,7 +2257,6 @@ extern int doclassdisco(void);
 extern void rename_disco(void);
 extern void get_sortdisco(char *opts, boolean cnf) NONNULLARG1;
 extern void makeknown_msg(int);
-void shuffle(int, int, boolean);
 
 /* ### objects.c ### */
 
