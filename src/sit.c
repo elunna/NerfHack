@@ -99,15 +99,8 @@ throne_sit_effect(void)
                 You_feel("your luck is changing.");
                 change_luck(1);
             } else {
-                  /* overall this equates to a 1.5% chance for a wish */
-                if (!rn2(5)) {
-                    makewish();
-                    /* no farming thrones for multiple wishes */
-                    goto rm_throne;
-                } else {
-                    You_feel("your luck is changing...");
-                    change_luck(-1); /* oops */
-                }
+                You_feel("your luck is changing...");
+                change_luck(-1); /* oops */
             }
             break;
         case 7:
@@ -237,7 +230,6 @@ throne_sit_effect(void)
        started from.]  "Analyzing a throne" doesn't really make any sense
        but if the answer is yes than it will vanish in a puff of logic. */
     if (!rn2(3) && (!wizard || y_n("Analyze throne?") == 'y')) {
-rm_throne:
         levl[tx][ty].typ = ROOM, levl[tx][ty].flags = 0;
         maybe_unhide_at(tx, ty);
         map_background(tx, ty, FALSE);
