@@ -22,6 +22,7 @@ staticfn boolean can_center_cloud(coordxy, coordxy);
 staticfn void display_stinking_cloud_positions(boolean);
 staticfn void seffect_enchant_armor(struct obj **);
 staticfn void seffect_destroy_armor(struct obj **);
+staticfn void seffect_proofing(struct obj **);
 staticfn void seffect_confuse_monster(struct obj **);
 staticfn void seffect_scare_monster(struct obj **);
 staticfn void seffect_remove_curse(struct obj **);
@@ -332,6 +333,19 @@ enchant_ok(struct obj* obj)
         return GETOBJ_EXCLUDE;
 
     if (obj->oclass == ARMOR_CLASS)
+        return GETOBJ_SUGGEST;
+
+    return GETOBJ_DOWNPLAY;
+}
+
+/* getobj callback for object to proof */
+static int
+proof_ok(struct obj* obj)
+{
+    if (!obj)
+        return GETOBJ_EXCLUDE;
+
+    if (erosion_matters(obj))
         return GETOBJ_SUGGEST;
 
     return GETOBJ_DOWNPLAY;
@@ -1521,6 +1535,93 @@ seffect_destroy_armor(struct obj **sobjp)
         }
         make_stunned((HStun & TIMEOUT) + (long) rn1(10, 10), TRUE);
     }
+}
+
+staticfn void
+seffect_proofing(struct obj **sobjp)
+{
+    int i;
+    struct obj *sobj = *sobjp;
+    struct obj *otmp = some_armor(&gy.youmonst);
+    boolean sblessed = sobj->blessed; /* blesses the item? */
+    boolean scursed = sobj->cursed;
+    boolean confused = (Confusion != 0); /* damages? */
+    boolean old_erodeproof, new_erodeproof;
+    boolean already_known = objects[sobj->otyp].oc_name_known;
+    if (already_known) {
+        for (i = 0; i < 5; i++) {
+            otmp = getobj("proof", proof_ok, GETOBJ_NOFLAGS);
+            if (!otmp) {
+                if (y_n("Really forfeit this scroll?") == 'y')
+                    break;
+                else
+                    continue;
+            } else if (!erosion_matters(otmp)) {
+                You("must select an item that is susceptible to erosion.");
+                otmp = (struct obj *) 0;
+            } else
+                break; /* Success! */
+        }
+    } else {
+        otmp = some_armor(&gy.youmonst);
+    }
+
+    if (!otmp) {
+        strange_feeling(sobj,"Some weird things are happening to your equipment!");
+        exercise(A_STR, FALSE);
+        exercise(A_CON, FALSE);
+        return;
+    }
+    if (scursed || confused) {
+        pline("%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
+                  scursed ? "mottled" : "shimmering",
+                  hcolor(scursed ? NH_BLACK : NH_GOLDEN),
+                  scursed ? "glow"
+                  : (is_shield(otmp) ? "layer" : "shield"));
+        otmp->oerodeproof = 0;
+    } else {
+        old_erodeproof = (otmp->oerodeproof != 0);
+        new_erodeproof = !scursed;
+        otmp->oerodeproof = 0; /* for messages */
+
+        if (is_supermaterial(otmp)) {
+            if (!Blind)
+                pline("%s for a moment.", Yobjnam2(otmp, "shimmer"));
+            return;
+        }
+
+        if (Blind) {
+            otmp->rknown = sobj->bknown;
+            Your("%s feels warm for a moment.", xname(otmp));
+        } else {
+            otmp->rknown = TRUE;
+            pline("%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
+                  scursed ? "mottled" : "shimmering",
+                  hcolor(scursed ? NH_PURPLE : NH_GOLDEN),
+                  scursed ? "glow" : "shield");
+        }
+        if (new_erodeproof && erosion_matters(otmp)
+            && (otmp->oeroded || otmp->oeroded2)) {
+            otmp->oeroded = otmp->oeroded2 = 0;
+            pline("%s as good as new!",
+                  Yobjnam2(uwep, Blind ? "feel" : "look"));
+            }
+        if (old_erodeproof && !new_erodeproof) {
+            /* restore old_erodeproof before shop charges */
+            otmp->oerodeproof = 1;
+            costly_alteration(otmp, COST_DEGRD);
+        }
+        otmp->oerodeproof = new_erodeproof ? 1 : 0;
+    }
+    if (scursed && !otmp->cursed)
+        curse(otmp);
+    else if (sblessed && !otmp->blessed)
+        bless(otmp);
+    else if (!scursed && otmp->cursed)
+        uncurse(otmp);
+
+    makeknown(SCR_PROOFING);
+    return;
 }
 
 staticfn void
@@ -2724,6 +2825,9 @@ seffects(
         break;
     case SCR_DESTROY_ARMOR:
         seffect_destroy_armor(&sobj);
+        break;
+    case SCR_PROOFING:
+        seffect_proofing(&sobj);
         break;
     case SCR_CONFUSE_MONSTER:
     case SPE_CONFUSE_MONSTER:

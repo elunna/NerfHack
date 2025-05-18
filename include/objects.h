@@ -1279,7 +1279,7 @@ POTION("vampire blood",     "blood-red",  1, 0, 0,  200, CLR_RED,
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, PAPER),    \
            0, SCROLL_CLASS, prob, 0, 5, cost, 0, 0, 0, 0, 6, \
            HI_PAPER, sn)
-SCROLL("enchant armor",              "ZELGO MER",  1,  63, 200,
+SCROLL("enchant armor",              "ZELGO MER",  1,  15, 200,
                                                         SCR_ENCHANT_ARMOR),
 SCROLL("destroy armor",         "JUYED AWK YACC",  1,  45, 200,
                                                         SCR_DESTROY_ARMOR),
@@ -1289,13 +1289,15 @@ SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA",  1,  35, 200,
                                                         SCR_SCARE_MONSTER),
 SCROLL("remove curse",             "PRATYAVAYAH",  1,  65, 200,
                                                         SCR_REMOVE_CURSE),
-SCROLL("enchant weapon",         "DAIYEN FOOELS",  1,  80, 200,
+SCROLL("enchant weapon",         "DAIYEN FOOELS",  1,  15, 200,
                                                         SCR_ENCHANT_WEAPON),
+SCROLL("proofing",                      "KA TET",  1,  73, 200,
+                                                        SCR_PROOFING),
 SCROLL("create monster",       "LEP GEX VEN ZEA",  1,  45, 200,
                                                         SCR_CREATE_MONSTER),
 SCROLL("taming",                   "PRIRUTSENIE",  1,  15, 200,
                                                         SCR_TAMING),
-SCROLL("exile",                  "ELBIB YLOH",  1,  15, 200,
+SCROLL("exile",                     "ELBIB YLOH",  1,  30, 200,
                                                         SCR_EXILE),
 SCROLL("light",                 "VERR YED HORRE",  1,  90, 200,
                                                         SCR_LIGHT),
@@ -1321,7 +1323,7 @@ SCROLL("earth",                          "KIRJE",  1,  18, 200,
                                                         SCR_EARTH),
 SCROLL("punishment",            "VE FORBRYDERNE",  1,  15, 200,
                                                         SCR_PUNISHMENT),
-SCROLL("cloning",               "TOYL ENT RUBLE",  1,  10, 200,
+SCROLL("cloning",               "TOYL ENT RUBLE",  1,  15, 200,
                                                         SCR_CLONING),
             /* Fire burn and cauldron bubble. */
 SCROLL("charging",                "EHCUM MEKCHA",  1,  15, 200,
@@ -1373,10 +1375,9 @@ XTRA_SCROLL_LABEL("ELPHE MONATER",       SC28), /* famous mistranslation */
 XTRA_SCROLL_LABEL("ABAJ",                SC29), /* famous mistranslation */
 XTRA_SCROLL_LABEL("CONG LAT URAT ION",   SC30), /* famous mistranslation */
 XTRA_SCROLL_LABEL("DESUM TETRAL",        SC31), /* dal aos */
-XTRA_SCROLL_LABEL("NHINRL",            SC32), /* meta */
+XTRA_SCROLL_LABEL("NHINRL",              SC32), /* meta */
 XTRA_SCROLL_LABEL("ISAY INAY",           SC33), /* meta */
 XTRA_SCROLL_LABEL("PEBCAK RTFM",         SC34), /* Slang */
-XTRA_SCROLL_LABEL("KA TET",              SC35), /* Dark Tower */
 
 #undef XTRA_SCROLL_LABEL
     /* These must come last because they have special fixed descriptions.
