@@ -1642,7 +1642,7 @@ seffect_remove_curse(struct obj **sobjp)
     gk.known = TRUE;
 
     You_feel(!Hallucination
-             ? (!confused ? "like someone is helping you."
+             ? (!(confused || scursed) ? "like someone is helping you."
                 : "like you need some help.")
              : (!confused ? "in touch with the Universal Oneness."
                 : "the power of the Force against you!"));
