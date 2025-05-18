@@ -249,9 +249,8 @@ kick_monster(struct monst *mon, coordxy x, coordxy y)
             clumsy = TRUE;
     }
 
-    if (Fumbling)
+    if (Fumbling && rn2(2))
         clumsy = TRUE;
-
     else if (uarm && is_bulky(uarm) && ACURR(A_DEX) < rnd(25))
         clumsy = TRUE;
  doit:
@@ -1597,7 +1596,7 @@ dokick(void)
         glyph = glyph_at(x, y);
 
         /* A non-reliable way to clean off your feet. */
-        if (HFumbling & I_SPECIAL && !rn2(20)
+        if (HFumbling & I_SPECIAL && !rn2(10)
               && !noncorporeal(mtmp->data)) {
             pline("The grease on your %s wears off.",
                 uarmf ? xname(uarmf) : makeplural(body_part(FOOT)));
