@@ -1236,9 +1236,9 @@ fill_ordinary_room(
         if (!rn2(15))
             mktoilet(croom);
     }
-    if (depth(&u.uz) > 14 && !rn2(60))
+    if (!rn2(60))
         mkaltar(croom);
-    if (!rn2(120))
+    if (!rn2(40))
         mkforge(croom);
     if (!rn2(120))
         mktoilet(croom);
