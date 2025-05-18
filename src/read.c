@@ -28,7 +28,6 @@ staticfn void seffect_remove_curse(struct obj **);
 staticfn boolean seffect_create_monster(struct obj **);
 staticfn boolean seffect_zapping(struct obj **);
 staticfn void seffect_enchant_weapon(struct obj **);
-staticfn int wep_enchant_range(int);
 staticfn void seffect_taming(struct obj **);
 staticfn void seffect_genocide(struct obj **);
 staticfn void seffect_light(struct obj **);
@@ -1854,8 +1853,7 @@ seffect_enchant_weapon(struct obj **sobjp)
         uwep->oerodeproof = new_erodeproof ? 1 : 0;
         return;
     }
-
-     /* Items that grant magic resistance themselves resist enchantment. */
+    /* Items that grant magic resistance themselves resist enchantment. */
     resists_magic = uwep && (objects[uwep->otyp].oc_oprop == ANTIMAGIC
         || defends(AD_MAGM, uwep));
     if (uwep && resists_magic && uwep->spe > rn2(13) + 1) {
@@ -1863,37 +1861,14 @@ seffect_enchant_weapon(struct obj **sobjp)
         return;
     }
 
-    /* Adjusted max weapon enchantment. For more exciting hackin 'n
-       slashin we will allow the new 'soft' limit to be 12. This
-       allows weapons to be safely enchanted up to 13.
-       After +5, scrolls only grant +1 so this will still require
-       many scrolls to achieve. */
     if (!chwepon(sobj, scursed ? -1
                  : !uwep ? 1
-                 : (uwep->spe >= (WEP_ENCHANT_MAX + 1)) ? !rn2(uwep->spe)
-                 : sblessed ? rnd(wep_enchant_range(uwep->spe))
+                 : (uwep->spe >= 9) ? !rn2(uwep->spe)
+                 : sblessed ? rnd(3 - uwep->spe / 3)
                  : 1))
         *sobjp = 0; /* nothing enchanted: strange_feeling -> useup */
     if (uwep)
         cap_spe(uwep);
-}
-
-/* Helper function to regular how enchant weapon bonuses are distributed.
- * I couldn't figure out a simple formula to calculate this without giving
- * too much enchantment to the player. My goal was to allow the player to roll
- * a d2 from 11, so that max 13 is possible, but difficult to reach.
- *
- * There is a long stretch from 4 to 11 where the player can only get +d2
- * enchantment. This is by design. If we let them roll d3 or even d4, that
- * destroys the item scarcity.
-*/
-staticfn int
-wep_enchant_range(int wspe) {
-    if (wspe < 4)
-        return 3;
-    else if (wspe < 6)
-        return 2;
-    return 1;
 }
 
 staticfn void
