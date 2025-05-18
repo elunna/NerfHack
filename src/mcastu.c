@@ -1255,6 +1255,7 @@ cast_cleric_spell(
                 && !BWithering) {
                 You("%s rapidly decomposing!", Withering ? "continue" : "begin");
                 incr_itimeout(&HWithering, withertime);
+                morehungry(40 + d(6, 4));
                 if (lose_maxhp) {
                     if (Upolyd && u.mhmax > 1) {
                         u.mhmax--;
