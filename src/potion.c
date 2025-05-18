@@ -3875,26 +3875,6 @@ potion_dip(struct obj *obj, struct obj *potion)
     return ECMD_TIME;
 }
 
-/* *monp grants a wish and then leaves the game */
-void
-mongrantswish(struct monst **monp)
-{
-    struct monst *mon = *monp;
-    int mx = mon->mx, my = mon->my, glyph = glyph_at(mx, my);
-
-    /* remove the monster first in case wish proves to be fatal
-       (blasted by artifact), to keep it out of resulting bones file */
-    mongone(mon);
-    *monp = 0; /* inform caller that monster is gone */
-    /* hide that removal from player--map is visible during wish prompt */
-    tmp_at(DISP_ALWAYS, glyph);
-    tmp_at(mx, my);
-    /* grant the wish */
-    makewish();
-    /* clean up */
-    tmp_at(DISP_END, 0);
-}
-
 void
 djinni_from_bottle(struct obj *obj)
 {
@@ -3924,10 +3904,6 @@ djinni_from_bottle(struct obj *obj)
     SetVoice(mtmp, 0, 80, 0);
     switch (chance) {
     case 0:
-        verbalize("I am in your debt.  I will grant one wish!");
-        /* give a wish and discard the monster (mtmp set to null) */
-        mongrantswish(&mtmp);
-        break;
     case 1:
         verbalize("Thank you for freeing me!");
         (void) tamedog(mtmp, (struct obj *) 0, FALSE);

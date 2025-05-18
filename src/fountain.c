@@ -74,13 +74,7 @@ dowaterdemon(void)
             else
                 You_feel("the presence of evil.");
 
-            /* Reward those on higher levels with better chances */
-            if (rnd(256) < level_difficulty()) {
-                pline("Grateful for %s release, %s grants you a wish!",
-                      mhis(mtmp), mhe(mtmp));
-                /* give a wish and discard the monster (mtmp set to null) */
-                mongrantswish(&mtmp);
-            } else if (t_at(mtmp->mx, mtmp->my))
+            if (t_at(mtmp->mx, mtmp->my))
                 (void) mintrap(mtmp, NO_TRAP_FLAGS);
         }
     } else {

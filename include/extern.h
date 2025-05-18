@@ -2611,7 +2611,6 @@ extern void potionhit(struct monst *, struct obj *, int) NONNULLARG12;
 extern void potionbreathe(struct obj *) NONNULLARG1;
 extern int dodip(void);
 extern int dip_into(void); /* altdip */
-extern void mongrantswish(struct monst **) NONNULLARG1;
 extern void djinni_from_bottle(struct obj *) NONNULLARG1;
 extern struct monst *split_mon(struct monst *, struct monst *) NONNULLARG1;
 extern const char *bottlename(void);
