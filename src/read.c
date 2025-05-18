@@ -2114,8 +2114,6 @@ seffect_cloning(struct obj **sobjp)
             otmp2->otyp = OIL_LAMP;
         } else if (otmp2->otyp == SCR_CLONING) {
             otmp2->otyp = SCR_BLANK_PAPER;
-        } else if (otmp2->otyp == DECK_OF_FATE) {
-            otmp2->otyp = PLAYING_CARD_DECK;
         } else if (otmp2->otyp == MAGIC_MARKER) {
             otmp2->otyp = ATHAME;
             if (sblessed)

@@ -3688,8 +3688,7 @@ tip_ok(struct obj *obj)
         return GETOBJ_SUGGEST;
     }
 
-    if (obj->otyp == PLAYING_CARD_DECK
-        || obj->otyp == DECK_OF_FATE) {
+    if (obj->otyp == PLAYING_CARD_DECK) {
         return GETOBJ_SUGGEST;
     }
 

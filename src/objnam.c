@@ -5273,9 +5273,6 @@ readobjnam(char *bp, struct obj *no_wish)
         case MAGIC_LAMP:
             d.typ = OIL_LAMP;
             break;
-        case DECK_OF_FATE:
-            d.typ = PLAYING_CARD_DECK;
-            break;
         default:
             /* catch any other non-wishable objects (venom) */
             if (objects[d.typ].oc_nowish)

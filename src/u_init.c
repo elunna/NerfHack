@@ -772,7 +772,6 @@ u_init_role(void)
         skill_init(Skill_Car);
         knows_object(CRYSTAL_BALL, FALSE);
         knows_object(PLAYING_CARD_DECK, FALSE);
-        knows_object(DECK_OF_FATE, FALSE);
         knows_class(SPBOOK_CLASS); /* all rulebooks */
         break;
     case PM_CAVE_DWELLER:

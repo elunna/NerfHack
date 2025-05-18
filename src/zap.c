@@ -2138,8 +2138,6 @@ poly_obj(struct obj *obj, int id)
             otmp->age = 1500L; /* "best" oil lamp possible */
         } else if (otmp->otyp == MAGIC_MARKER) {
             otmp->recharged = 1; /* degraded quality */
-        } else if (otmp->otyp == DECK_OF_FATE) {
-            otmp->otyp = PLAYING_CARD_DECK;
         }
         /* don't care about the recharge count of other tools */
         break;

@@ -668,7 +668,6 @@ m_initweap(struct monst *mtmp)
             break;
         case PM_DISPATER:
             (void) mongets(mtmp, WAN_STRIKING);
-            (void) mongets(mtmp, DECK_OF_FATE);
             break;
         case PM_YEENOGHU:
             (void) mongets(mtmp, FLAIL);

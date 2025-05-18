@@ -206,8 +206,6 @@ resetobjs(struct obj *ochain, boolean restore)
                 otmp->corpsenm = WAN_WONDER;
             } else if (otmp->otyp == MAGIC_LAMP) {
                 otmp->otyp = OIL_LAMP;
-            } else if (otmp->otyp == DECK_OF_FATE) {
-                otmp->otyp = PLAYING_CARD_DECK;
             } else if (otmp->otyp == MAGIC_MARKER) {
                 otmp->otyp = ATHAME;
                 otmp->oclass = WEAPON_CLASS;
