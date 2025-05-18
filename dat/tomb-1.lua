@@ -191,7 +191,7 @@ local loc = place:rndcoord(1);
 des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
                  if percent(30) then
-                    des.object('magic lamp') -- even if not a wish dlord
+                    des.object('magic candle') -- even if not a wish dlord
                  elseif percent(30) then
                     des.object('magic marker')
                  elseif percent(30) then

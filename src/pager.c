@@ -1591,9 +1591,9 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
             break;
         case TALLOW_CANDLE:
         case WAX_CANDLE:
+        case MAGIC_CANDLE:
         case BRASS_LANTERN:
         case OIL_LAMP:
-        case MAGIC_LAMP:
             subclass = "light source";
             break;
         case LAND_MINE:

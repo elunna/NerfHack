@@ -51,7 +51,6 @@ struct obj {
     schar spe; /* quality of weapon, weptool, armor, or some rings (+ or -);
                 * number of charges for wand or charged tool ( >= -1 );
                 * number of candles attached to candelabrum (0..7);
-                * magic lamp (1 iff djinni inside => lamp is lightable);
                 * oil lamp, tallow/wax candle (1 for no apparent reason?);
                 * marks spinach tins (1 iff corpsenm==NON_PM);
                 * marks tin variety (various: homemade, stir fried, &c);
@@ -463,20 +462,15 @@ struct obj {
     || otmp->otyp == MAGIC_CANDLE)
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 
-/* age field of this is relative age rather than absolute; does not include
-   magic lamp */
+/* age field of this is relative age rather than absolute */
 #define age_is_relative(otmp) \
     ((otmp)->otyp == BRASS_LANTERN || (otmp)->otyp == OIL_LAMP      \
      || (otmp)->otyp == CANDELABRUM_OF_INVOCATION                   \
      || (otmp)->otyp == TALLOW_CANDLE || (otmp)->otyp == WAX_CANDLE \
      || (otmp)->otyp == POT_OIL)
-/* object can be ignited; magic lamp used to excluded here too but all
-   usage of this macro ended up testing
-     (ignitable(obj) || obj->otyp == MAGIC_LAMP)
-   so include it; brass lantern can be lit but not by fire */
+/* object can be ignited; brass lantern can be lit but not by fire */
 #define ignitable(otmp) \
     ((otmp)->otyp == BRASS_LANTERN || (otmp)->otyp == OIL_LAMP      \
-     || ((otmp)->otyp == MAGIC_LAMP && (otmp)->spe > 0)             \
      || (otmp)->otyp == CANDELABRUM_OF_INVOCATION                   \
      || (otmp)->otyp == TALLOW_CANDLE || (otmp)->otyp == WAX_CANDLE \
      || (otmp)->otyp == MAGIC_CANDLE \

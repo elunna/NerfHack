@@ -1005,8 +1005,6 @@ TOOL("brass lantern",       NoDes, 1, 0, 0, 0, 30, 30, 12, COPPER, CLR_YELLOW,
                                                                 BRASS_LANTERN),
 TOOL("oil lamp",          "lamp", 0, 0, 0, 0, 45, 20, 10, COPPER, CLR_YELLOW,
                                                                 OIL_LAMP),
-TOOL("magic lamp",        "lamp", 0, 0, 1, 0, 5, 20,500, COPPER, CLR_YELLOW,
-                                                                MAGIC_LAMP),
 /* other tools */
 TOOL("expensive camera",    NoDes, 1, 0, 0, 1, 15, 12,200, PLASTIC, CLR_BLACK,
                                                             EXPENSIVE_CAMERA),

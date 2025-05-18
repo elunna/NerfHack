@@ -774,11 +774,7 @@ charge_ok(struct obj *obj)
 
     if (obj->oclass == TOOL_CLASS) {
         /* suggest tools that aren't oc_charged but can still be recharged */
-        if (obj->otyp == BRASS_LANTERN
-            || (obj->otyp == OIL_LAMP)
-            /* only list magic lamps if they are not identified yet */
-            || (obj->otyp == MAGIC_LAMP
-                && !objects[MAGIC_LAMP].oc_name_known)) {
+        if (obj->otyp == BRASS_LANTERN || (obj->otyp == OIL_LAMP)) {
             return GETOBJ_SUGGEST;
         }
         /* suggest chargeable tools only if discovered, to prevent leaking
@@ -2110,8 +2106,6 @@ seffect_cloning(struct obj **sobjp)
             otmp2->spe = rn1(10, 15);
         } else if (otmp2->otyp == SCR_ZAPPING && otmp2->corpsenm == WAN_WISHING) {
             otmp2->corpsenm = WAN_WONDER;
-        } else if (otmp2->otyp == MAGIC_LAMP) {
-            otmp2->otyp = OIL_LAMP;
         } else if (otmp2->otyp == SCR_CLONING) {
             otmp2->otyp = SCR_BLANK_PAPER;
         } else if (otmp2->otyp == MAGIC_MARKER) {

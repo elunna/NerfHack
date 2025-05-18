@@ -5649,16 +5649,13 @@ cost_per_charge(
     /* The idea is to make the exhaustive use of an unpaid item
      * more expensive than buying it outright.
      */
-    if (otmp->otyp == MAGIC_LAMP) { /* 1 */
-        /* normal use (ie, as light source) of a magic lamp never
+    if (otmp->otyp == MAGIC_CANDLE) { /* 1 */
+        /* normal use (ie, as light source) of a magic candle never
            degrades its value, but not charging anything would make
            identification too easy; charge an amount comparable to
            what is charged for an ordinary lamp (don't bother with
            angry shk surcharge) */
-        if (!altusage)
-            tmp = (long) objects[OIL_LAMP].oc_cost;
-        else
-            tmp += tmp / 3L;                 /* djinni is being released */
+        tmp = (long) objects[WAX_CANDLE].oc_cost;
     } else if (otmp->otyp == MAGIC_MARKER) { /* 70 - 100 */
         /* No way to determine in advance how many charges will be
          * wasted.  So, arbitrarily, one half of the price per use.

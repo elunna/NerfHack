@@ -204,8 +204,6 @@ resetobjs(struct obj *ochain, boolean restore)
             } else if (otmp->otyp == SCR_ZAPPING
                        && otmp->corpsenm == WAN_WISHING) {
                 otmp->corpsenm = WAN_WONDER;
-            } else if (otmp->otyp == MAGIC_LAMP) {
-                otmp->otyp = OIL_LAMP;
             } else if (otmp->otyp == MAGIC_MARKER) {
                 otmp->otyp = ATHAME;
                 otmp->oclass = WEAPON_CLASS;

@@ -3236,8 +3236,7 @@ itemactions(struct obj *otmp)
                 is_plural(otmp) ? "these" : "this",
                 simpleonames(otmp));
         ia_addmenu(win, IA_APPLY_OBJ, 'a', buf);
-    } else if (otmp->otyp == OIL_LAMP || otmp->otyp == MAGIC_LAMP
-               || otmp->otyp == BRASS_LANTERN) {
+    } else if (otmp->otyp == OIL_LAMP || otmp->otyp == BRASS_LANTERN) {
         Sprintf(buf, "%s this light source", light);
         ia_addmenu(win, IA_APPLY_OBJ, 'a', buf);
     } else if (otmp->otyp == POT_OIL && objects[otmp->otyp].oc_name_known) {
@@ -3404,8 +3403,7 @@ itemactions(struct obj *otmp)
     /* R: remove accessory or rub item */
     if (otmp->owornmask & W_ACCESSORY)
         ia_addmenu(win, IA_TAKEOFF_OBJ, 'R', "Remove this accessory");
-    if (otmp->otyp == OIL_LAMP || otmp->otyp == MAGIC_LAMP
-        || otmp->otyp == BRASS_LANTERN) {
+    if (otmp->otyp == OIL_LAMP || otmp->otyp == BRASS_LANTERN) {
         Sprintf(buf, "Rub this %s", simpleonames(otmp));
         ia_addmenu(win, IA_RUB_OBJ, 'R', buf);
     } else if (otmp->oclass == GEM_CLASS && is_graystone(otmp->otyp))

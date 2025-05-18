@@ -2041,14 +2041,13 @@ burn_object(anything *arg, long timeout)
  * create a light source for the vision system.  There had better not
  * be a burn already running on the object.
  *
- * Magic lamps stay lit as long as there's a genie inside, so don't start
- * a timer.
+ * Magic candles stay lit forever, so don't start a timer.
  *
  * Burn rules:
  *      potions of oil, lamps & candles:
  *              age = # of turns of fuel left
  *              spe = <unused>
- *      magic lamps:
+ *      magic candles:
  *              age = <unused>
  *              spe = 0 not lightable, 1 lightable forever
  *      candelabrum:
@@ -2072,12 +2071,11 @@ begin_burn(struct obj *obj, boolean already_lit)
     long turns = 0;
     boolean do_timer = TRUE;
 
-    if (obj->age == 0 && obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE
+    if (obj->age == 0 && obj->otyp != MAGIC_CANDLE
         && !artifact_light(obj))
         return;
 
     switch (obj->otyp) {
-    case MAGIC_LAMP:
     case MAGIC_CANDLE:
         obj->lamplit = 1;
         do_timer = FALSE;
@@ -2173,8 +2171,7 @@ end_burn(struct obj *obj, boolean timer_attached)
         return;
     }
 
-    if (obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE
-        || artifact_light(obj))
+    if (obj->otyp == MAGIC_CANDLE || artifact_light(obj))
         timer_attached = FALSE;
 
     if (!timer_attached) {

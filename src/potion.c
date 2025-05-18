@@ -3724,20 +3724,13 @@ potion_dip(struct obj *obj, struct obj *potion)
 
  more_dips:
 
-    /* Allow filling of MAGIC_LAMPs to prevent identification by player */
-    if ((obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP)
-        && (potion->otyp == POT_OIL)) {
+    if (obj->otyp == OIL_LAMP && (potion->otyp == POT_OIL)) {
         /* Turn off engine before fueling, turn off fuel too :-)  */
         if (obj->lamplit || potion->lamplit) {
             useup(potion);
             explode(u.ux, u.uy, BZ_U_SPELL(ZT_FIRE), d(6, 6), 0, EXPL_FIERY);
             exercise(A_WIS, FALSE);
             return ECMD_TIME;
-        }
-        /* Adding oil to an empty magic lamp renders it into an oil lamp */
-        if ((obj->otyp == MAGIC_LAMP) && obj->spe == 0) {
-            obj->otyp = OIL_LAMP;
-            obj->age = 0;
         }
         if (obj->age > 1000L) {
             pline("%s %s full.", Yname2(obj), otense(obj, "are"));

@@ -1627,7 +1627,7 @@ snuff_lit(struct obj *obj)
     coordxy x, y;
 
     if (obj->lamplit) {
-        if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
+        if (obj->otyp == OIL_LAMP
             || obj->otyp == BRASS_LANTERN || obj->otyp == POT_OIL) {
             (void) get_obj_location(obj, &x, &y, 0);
             if (obj->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
@@ -1708,9 +1708,7 @@ catch_lit(struct obj *obj)
     coordxy x, y;
 
     if (!obj->lamplit && ignitable(obj) && get_obj_location(obj, &x, &y, 0)) {
-        if (((obj->otyp == MAGIC_LAMP /* spe==0 => no djinni inside */
-              /* spe==0 => no candles attached */
-              || obj->otyp == CANDELABRUM_OF_INVOCATION) && obj->spe == 0)
+        if ((obj->otyp == CANDELABRUM_OF_INVOCATION && obj->spe == 0)
             /* age_is_relative && age==0 && still-exists means out of fuel */
             || (age_is_relative(obj) && obj->age == 0)
             /* lantern is classified as ignitable() but not by fire */
@@ -1718,7 +1716,7 @@ catch_lit(struct obj *obj)
             return FALSE;
         if (obj->otyp == CANDELABRUM_OF_INVOCATION && obj->cursed)
             return FALSE;
-        if ((obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP)
+        if (obj->otyp == OIL_LAMP
             /* once lit, cursed lamp is as good as non-cursed one, so failure
                to light is a minor inconvenience to make cursed be worse */
             && obj->cursed && !rn2(2))
@@ -1757,8 +1755,7 @@ staticfn void
 use_lamp(struct obj *obj)
 {
     char buf[BUFSZ];
-    const char *lamp = (obj->otyp == OIL_LAMP
-                        || obj->otyp == MAGIC_LAMP) ? "lamp"
+    const char *lamp = obj->otyp == OIL_LAMP  ? "lamp"
                        : (obj->otyp == BRASS_LANTERN) ? "lantern"
                          : NULL;
 
@@ -1806,9 +1803,7 @@ use_lamp(struct obj *obj)
                               : "Sorry, fire and water don't mix");
         return;
     }
-    /* magic lamps with an spe == 0 (wished for) cannot be lit */
-    if ((!Is_candle(obj) && obj->age == 0)
-        || (obj->otyp == MAGIC_LAMP && obj->spe == 0)) {
+    if ((!Is_candle(obj) && obj->age == 0)) {
         if (obj->otyp == BRASS_LANTERN) {
             if (!Blind)
                 Your("lantern is out of power.");
@@ -1820,7 +1815,7 @@ use_lamp(struct obj *obj)
         return;
     }
     if (obj->cursed && !rn2(2)) {
-        if ((obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP) && !rn2(3)) {
+        if (obj->otyp == OIL_LAMP && !rn2(3)) {
             pline_The("lamp spills and covers your %s with oil.",
                       fingers_or_gloves(TRUE));
             make_glib((int) (HGlib & TIMEOUT) + d(2, 10));
@@ -1930,7 +1925,7 @@ rub_ok(struct obj *obj)
     if (!obj)
         return GETOBJ_EXCLUDE;
 
-    if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
+    if (obj->otyp == OIL_LAMP
         || obj->otyp == BRASS_LANTERN || is_graystone(obj->otyp)
         || obj->otyp == LUMP_OF_ROYAL_JELLY)
         return GETOBJ_SUGGEST;
@@ -1980,30 +1975,7 @@ dorub(void)
     }
 
     /* now uwep is obj */
-    if (uwep->otyp == MAGIC_LAMP) {
-        if (uwep->spe > 0 && !rn2(3)) {
-            check_unpaid_usage(uwep, TRUE); /* unusual item use */
-            /* bones preparation:  perform the lamp transformation
-               before releasing the djinni in case the latter turns out
-               to be fatal (a hostile djinni has no chance to attack yet,
-               but an indebted one who grants a wish might bestow an
-               artifact which blasts the hero with lethal results) */
-            uwep->otyp = OIL_LAMP;
-            uwep->spe = 0; /* for safety */
-            uwep->age = rn1(500, 1000);
-            if (uwep->lamplit)
-                begin_burn(uwep, TRUE);
-            djinni_from_bottle(uwep);
-            makeknown(MAGIC_LAMP);
-            makeknown(OIL_LAMP);
-            update_inventory();
-        } else if (rn2(2)) {
-            You("%s smoke.", !Blind ? "see a puff of" : "smell");
-            makeknown_msg(MAGIC_LAMP);
-            makeknown(OIL_LAMP);
-        } else
-            pline1(nothing_happens);
-    } else if (obj->otyp == BRASS_LANTERN) {
+    if (obj->otyp == BRASS_LANTERN) {
         /* message from Adventure */
         pline("Rubbing the electric lamp is not particularly rewarding.");
         pline("Anyway, nothing exciting happens.");
@@ -4911,7 +4883,6 @@ doapply(void)
         use_candle(&obj);
         break;
     case OIL_LAMP:
-    case MAGIC_LAMP:
     case BRASS_LANTERN:
         use_lamp(obj);
         break;

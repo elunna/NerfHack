@@ -1639,7 +1639,7 @@ doname_base(
                     !obj->lamplit ? " attached" : ", lit");
             ConcatF2(bp, 0, " (%d of 7 candle%s)", obj->spe, suffix);
             break;
-        } else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
+        } else if (obj->otyp == OIL_LAMP
                    || obj->otyp == BRASS_LANTERN || Is_candle(obj)
                    || (obj->otyp == CREDIT_CARD
                         && obj->oartifact == ART_HOLOGRAPHIC_VOID_LILY)) {
@@ -3532,7 +3532,7 @@ static NEARDATA const struct o_range o_ranges[] = {
     { "anything", RANDOM_CLASS, ARROW, IRON_CHAIN },
     { "surprise me", RANDOM_CLASS, ARROW, IRON_CHAIN },
     { "bag", TOOL_CLASS, SACK, BAG_OF_TRICKS },
-    { "lamp", TOOL_CLASS, OIL_LAMP, MAGIC_LAMP },
+    { "lamp", TOOL_CLASS, BRASS_LANTERN, OIL_LAMP },
     { "candle", TOOL_CLASS, TALLOW_CANDLE, MAGIC_CANDLE },
     { "horn", TOOL_CLASS, TOOLED_HORN, HORN_OF_PLENTY },
     { "shield", ARMOR_CLASS, SMALL_SHIELD, SHIELD_OF_REFLECTION },
@@ -5270,9 +5270,6 @@ readobjnam(char *bp, struct obj *no_wish)
         case SPE_BOOK_OF_THE_DEAD:
             d.typ = SPE_BLANK_PAPER;
             break;
-        case MAGIC_LAMP:
-            d.typ = OIL_LAMP;
-            break;
         default:
             /* catch any other non-wishable objects (venom) */
             if (objects[d.typ].oc_nowish)
@@ -5364,7 +5361,7 @@ readobjnam(char *bp, struct obj *no_wish)
             d.otmp->quan = (long) d.cnt;
     }
 
-    if (d.islit && (d.typ == OIL_LAMP || d.typ == MAGIC_LAMP
+    if (d.islit && (d.typ == OIL_LAMP
                     || d.typ == BRASS_LANTERN
                     || Is_candle(d.otmp) || d.typ == POT_OIL)) {
         place_object(d.otmp, u.ux, u.uy); /* make it viable light source */
