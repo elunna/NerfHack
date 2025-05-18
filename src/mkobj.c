@@ -4058,8 +4058,6 @@ mk_zapcard(void)
     } while (otyp == WAN_WISHING
             || otyp == WAN_CREATE_MONSTER /* Already plenty of summon cards. */
             || otyp == WAN_NOTHING);
-    /* Wishing is excluded, but it's possible we might want to enable it against
-    * extremely rare odds. */
     return otyp;
 }
 

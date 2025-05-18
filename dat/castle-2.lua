@@ -46,7 +46,7 @@ des.map([[
 local object = { "[", ")", "*", "%" };
 shuffle(object)
 
--- For placing the real and fake chests for wands of wishing
+-- For placing the chests
 local place = selection.new();
 place:set(09,08);
 place:set(09,09);
@@ -163,28 +163,41 @@ local loc = place:rndcoord(1);
 
 des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
              contents = function()
-                -- This is converted into a zappable scroll of wishing
-                des.object("wishing");
+                 des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.object("?")
+                des.object("?")
+                des.object("!")
+                des.object("!")
+                des.object()
+                des.object()
+                des.object()
+                des.object()
              end
 });
 -- Prevent monsters from eating it.  (@'s never eat objects)
 des.engraving({ coord = loc, type="burn", text="Elbereth" })
 des.object({ id = "scroll of scare monster", coord = loc, buc="cursed" })
 
--- THE NOT QUITE WANDS OF WISHING
--- ...since you can see the chest now through the bars,
--- we have to find a better way to disguise where the wand is
--- From SporkHack
-
 local loc = place:rndcoord(2);
 des.object({ id = "chest", locked = 1, coord = loc ,
              contents = function()
-                des.object("?");
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
                 des.object("?")
                 des.object("?")
-                des.object("+")
-                des.object("*")
-                des.object("*")
+                des.object("!")
+                des.object("!")
+                des.object()
+                des.object()
+                des.object()
+                des.object()
              end
 });
 des.engraving({ coord = loc, type="burn", text="Elbereth" })

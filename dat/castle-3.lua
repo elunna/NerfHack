@@ -19,7 +19,7 @@
 --     MasterMind game...
 --
 -- To motivate the player : there are 4 storerooms (armors, weapons, food and
--- gems) and a wand of wishing in one of the 4 towers...
+-- gems) and a bunch of loot...
 --
 --
 des.level_init({ style="mazegrid", bg ="-" });
@@ -189,8 +189,19 @@ des.monster({ id = "ochre jelly", x = 43, y = 01, asleep=1 })
 -- treasure
 des.object({ id = "chest", trapped = 0, locked = 1, coord = places[1] ,
              contents = function()
-                -- This is converted into a zappable scroll of wishing
-                des.object("wishing");
+               des.gold()
+               des.gold()
+               des.gold()
+               des.gold()
+               des.gold()
+               des.object("?")
+               des.object("?")
+               des.object("!")
+               des.object("!")
+               des.object()
+               des.object()
+               des.object()
+               des.object()
              end
 });
 
@@ -208,14 +219,53 @@ des.object({ id = "chest", coord = places[7] })
 -- Guaranteed to be empty.
 des.object({ id = "chest", locked = 1, coord = places[8],
              contents = function()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.object("?")
+                des.object("?")
+                des.object("!")
+                des.object("!")
+                des.object()
+                des.object()
+                des.object()
+                des.object()
              end
 });
 des.object({ id = "chest", locked = 1, coord = places[9],
              contents = function()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.object("?")
+                des.object("?")
+                des.object("!")
+                des.object("!")
+                des.object()
+                des.object()
+                des.object()
+                des.object()
              end
 });
 des.object({ id = "chest", locked = 1, coord = places[10] ,
              contents = function()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.gold()
+                des.object("?")
+                des.object("?")
+                des.object("!")
+                des.object("!")
+                des.object()
+                des.object()
+                des.object()
+                des.object()
              end
 });
 
