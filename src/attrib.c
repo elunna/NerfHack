@@ -116,7 +116,7 @@ static const struct innate {
 
   vam_abil[] = { { 1, &HDrain_resistance, "", "" },
                  { 1, &HBreathless, "", "" },
-                 { 1, &HHunger, "", "" },
+                 { 10, &HHunger, "", "" },
                  /* dhampir start out only able to use their bite or weapon
                     attack in melee combat, but not both in the same round.
                     At level 6, they silently unlock the ability to use both. */
