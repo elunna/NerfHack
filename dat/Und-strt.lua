@@ -66,7 +66,7 @@ des.door("random",38,07)
 
 
 -- Unattended Altar - unaligned due to conflict - player must align it.
-des.altar({ x=25, y=03, align="noalign", type="altar", cracked=1 })
+des.altar({ x=25, y=03, align="noalign", type="altar" })
 
 des.region({ region={39,10,47,13}, lit=0, type="morgue", filled=1 })
 

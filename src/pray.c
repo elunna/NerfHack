@@ -1148,9 +1148,6 @@ gcrownu(void)
        up-to-29 you can get from gaining experience levels */
     add_weapon_skill(1);
 
-    /* The altar can't handle the transference of all that power! */
-    if (rn2(13))
-        crackaltar();
     return;
 }
 
@@ -1872,10 +1869,7 @@ offer_different_alignment_altar(
                                              ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
                 summon_minion(altaralign, FALSE);
-                if (!rn2(3))
-                    crackaltar();
-            } else if (!rn2(13))
-                crackaltar();
+            }
 
             /* anger priest; test handles bones files */
             if ((pri = findpriest(temple_occupied(u.urooms)))
@@ -1917,7 +1911,6 @@ sacrifice_your_race(
         pline_The("altar is stained with %s blood.", gu.urace.adj);
         levl[u.ux][u.uy].altarmask = AM_CHAOTIC;
         add_blood(u.ux, u.uy, gu.urace.mnum);
-        crackaltar();
         newsym(u.ux, u.uy); /* in case Invisible to self */
         angry_priest();
     } else {
@@ -1983,7 +1976,6 @@ sacrifice_your_race(
 staticfn int
 bestow_artifact(uchar max_giftvalue)
 {
-    struct rm *lev = &levl[u.ux][u.uy];
     int nchance = u.ulevel + 12;
     int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
     boolean do_bestow = u.ulevel > 2 && u.uluck >= 0;
@@ -2101,14 +2093,6 @@ bestow_artifact(uchar max_giftvalue)
                     makeknown(otmp->otyp);
                     discover_artifact(otmp->oartifact);
                 }
-
-                /* If more than 1 gift has been granted, the altar can crack. */
-                if ((u.ugifts > 1)
-                    /* If the player is already crowned, it definitely cracks. */
-                    || u.uevent.uhand_of_elbereth
-                    /* If the altar is already cracked - sorry... */
-                    || lev->cracked)
-                    crackaltar();
                 return TRUE;
             }
         }
@@ -2128,50 +2112,6 @@ sacrifice_value(struct obj *otmp)
             value = eaten_stat(value, otmp);
     }
     return value;
-}
-
-/* Altars can crack from bestowing gifts or crowning.
- * If an already cracked altar cracks again, it is destroyed forever.
- * Altars only crack from gifting if you have received more than 2 gifts
- * or if you are already crowned.
- *
- * Altars can also occasionally generate cracked, and they can crack from
- * being converted from one alignment to another.
- * */
-void
-crackaltar(void)
-{
-    struct rm *lev = &levl[u.ux][u.uy];
-
-    /* Safeguard mostly for #wizcrown*/
-    if (!IS_ALTAR(lev->typ))
-        return;
-
-    if (lev->cracked && !Is_astralevel(&u.uz)) {
-        /* don't leave loose ends.. */
-        set_levltyp(u.ux, u.uy, ROOM);
-        lev->looted = 0;
-        lev->cracked = 0;
-
-        Soundeffect(se_crash_throne_destroyed, 60);
-        maybe_unhide_at(u.ux, u.uy);
-        if (Blind && !Deaf)
-            pline("CRACK!  Something loudly crumbles.");
-        else {
-            pline("CRACK!  The altar splits in two and is destroyed!");
-            newsym(u.ux, u.uy);
-        }
-        livelog_printf(LL_CONDUCT, "cracked an altar in half");
-        u.uconduct.altars++;
-    } else {
-        lev->cracked = 1;
-        if (Blind && !Deaf)
-            You_hear(Hallucination ? "Snap! Crackle! Pop!"
-                                   : "something cracking.");
-        else {
-            pline("A large crack forms in the middle of the altar...");
-        }
-    }
 }
 
 /* the #offer command - sacrifice something to the gods */

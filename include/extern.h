@@ -2647,7 +2647,6 @@ extern const char *align_gname(aligntyp);
 extern const char *halu_gname(aligntyp);
 extern const char *align_gtitle(aligntyp);
 extern void altar_wrath(coordxy, coordxy);
-extern void crackaltar(void);
 extern void argent_cross_turns(void);
 
 /* ### priest.c ### */

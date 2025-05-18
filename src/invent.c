@@ -4679,8 +4679,7 @@ dfeature_at(coordxy x, coordxy y, char *buf)
     else if (IS_TOILET(ltyp))
         cmap = S_toilet; /* "toilet" */
     else if (IS_ALTAR(ltyp)) {
-        Sprintf(altbuf, "%s%saltar to %s (%s)",
-                levl[x][y].cracked ? "cracked " : "",
+        Sprintf(altbuf, "%saltar to %s (%s)",
                 (lev->altarmask & AM_SANCTUM) ? "high " : "",
                 a_gname(),
                 align_str(Amask2align(lev->altarmask & ~AM_SHRINE)));

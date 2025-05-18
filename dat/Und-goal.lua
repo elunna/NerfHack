@@ -56,16 +56,16 @@ des.region({ region={25,00,27,02}, lit=0, type="morgue", filled=1 })
 des.region({ region={25,04,27,06}, lit=0, type="morgue", filled=1 })
 
 --des.region({ region={46,04,46,04}, lit=1, type="temple", filled=1, irregular=1 })
-des.altar({ x=46,y=03, align=align[1], type="shrine", cracked=1 })
+des.altar({ x=46,y=03, align=align[1], type="shrine" })
 
 --des.region({ region={46,14,46,14}, lit=1, type="temple", filled=1, irregular=1 })
-des.altar({ x=46,y=15, align=align[2], type="shrine", cracked=1 })
+des.altar({ x=46,y=15, align=align[2], type="shrine" })
 
 --des.region({ region={51,09,51,09}, lit=1, type="temple", filled=1, irregular=1 })
-des.altar({ x=52,y=09, align=align[3], type="shrine", cracked=1 })
+des.altar({ x=52,y=09, align=align[3], type="shrine" })
 
 --des.region({ region={64,09,64,09}, lit=1, type="temple", filled=1, irregular=1 })
---des.altar({ x=65,y=09, align="noalign", type="shrine", cracked=1 })
+--des.altar({ x=65,y=09, align="noalign", type="shrine" })
 
 if percent(50) then
   local sel = selection.randline(selection.new(), 40,00, 56,20, 20)

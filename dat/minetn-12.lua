@@ -53,7 +53,7 @@ end
 -- The masouleum
 --des.region({ region={14,11, 22,16}, lit=1, type="temple", filled=1 })
 -- Not very religious folk...
-des.altar({ x=18, y=13, align=align[1], type="altar", cracked=1 })
+des.altar({ x=18, y=13, align=align[1], type="altar" })
 -- The priest gave up...
 des.monster({ id = "aligned cleric", x = 18, y = 13, peaceful = 1 })
 

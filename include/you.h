@@ -158,7 +158,6 @@ struct u_conduct {     /* number of times... */
     long elbereth; /* hf uses for elbereth;for hf savefile compatiblity */
     long sokocheat;    /* violated special 'rules' in Sokoban */
     long pets;         /* obtained a pet */
-    long altars;       /* altars destroyed via cracking */
     /* exiles already listed at end of game */
 };
 
