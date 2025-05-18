@@ -1353,7 +1353,7 @@ freeinv_core(struct obj *obj)
         set_artifact_intrinsic(obj, 0, W_ART);
     }
 
-    if (obj->otyp == LOADSTONE || obj->otyp == FOULSTONE) {
+    if (obj->otyp == LOADSTONE) {
         curse(obj);
     } else if (confers_luck(obj)) {
         set_moreluck();
