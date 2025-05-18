@@ -307,7 +307,7 @@ m_initweap(struct monst *mtmp)
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_CLERIC)) {
             otmp = mksobj(MACE, FALSE, FALSE);
-            otmp->spe = rnd(4) + rnd(3);
+            otmp->spe = rnd(3);
             if (!rn2(2))
                 curse(otmp);
             (void) mpickobj(mtmp, otmp);
@@ -402,11 +402,7 @@ m_initweap(struct monst *mtmp)
             /* enhance the weapon */
             bless(otmp);
             otmp->oerodeproof = TRUE;
-            /* make long sword be +0 to +3, mace be +3 to +6 to compensate
-               for being significantly weaker against large opponents */
             otmp->spe = rn2(4);
-            if (typ == MACE)
-                otmp->spe += 3;
             (void) mpickobj(mtmp, otmp);
 
             otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION
@@ -550,7 +546,7 @@ m_initweap(struct monst *mtmp)
         else if (mm == PM_OGRE_MAGE) {
             otmp = mksobj(QUARTERSTAFF, TRUE, FALSE);
             if (otmp->spe < 2)
-                otmp->spe += rnd(5);
+                otmp->spe += rnd(3);
             (void) mpickobj(mtmp, otmp);
         } else
             (void) mongets(mtmp, CLUB);
@@ -764,7 +760,7 @@ m_initinv(struct monst *mtmp)
     struct obj *otmp;
     struct permonst *ptr = mtmp->data;
     int mm = monsndx(ptr);
-    
+
     if (Is_rogue_level(&u.uz))
         return;
     /*
@@ -1053,7 +1049,7 @@ m_initinv(struct monst *mtmp)
         break;
     case S_GNOLL:
         switch (mm) {
-        /* SLASH'EM sometimes allowed for dragon scale mail for gnolls, 
+        /* SLASH'EM sometimes allowed for dragon scale mail for gnolls,
            we're going to leave that out to keep things simple */
         case PM_GNOLL:
             if (!rn2(3))
@@ -2659,7 +2655,7 @@ mongets(struct monst *mtmp, int otyp)
             otmp->oerodeproof = 1;
             otmp->oeroded = otmp->oeroded2 = 0;
         } else if (is_mplayer(mtmp->data) && is_sword(otmp)) {
-            otmp->spe = (3 + rn2(4) + rnd(5));
+            otmp->spe = (3 + rn2(4));
         }
 
         if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
@@ -2677,17 +2673,17 @@ mongets(struct monst *mtmp, int otyp)
         /* leaders don't tolerate inferior quality battle gear */
         if (is_prince(mtmp->data)) {
             if (otmp->oclass == WEAPON_CLASS && otmp->spe < 1)
-                otmp->spe = rnd(5) + 1;
+                otmp->spe = 1;
             else if (otmp->oclass == ARMOR_CLASS && otmp->spe < 0)
                 otmp->spe = 0;
         } else if (is_lord(mtmp->data)) {
             if ((otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS)
                 && otmp->spe < 0)
-                otmp->spe = rnd(5) + 2;
+                otmp->spe = rnd(3);
         } else {
             /* Items frequently spawn used for lesser monsters to prevent
                late-game inventory bloat. */
-            if (otmp->oclass == POTION_CLASS 
+            if (otmp->oclass == POTION_CLASS
                 && otmp->otyp != POT_WATER && otmp->otyp != POT_ACID
                 && rn2(3)) {
                 otmp->odiluted = 1;
