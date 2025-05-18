@@ -399,6 +399,7 @@ oname(
     if (lth)
         artifact_exists(obj, name, TRUE, oflgs);
     if (obj->oartifact) {
+        obj->oprops = 0L;
         /* can't dual-wield with artifact as secondary weapon */
         if (obj == uswapwep)
             untwoweapon();

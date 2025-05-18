@@ -22,7 +22,6 @@ static NEARDATA const long takeoff_order[] = {
 };
 
 staticfn void on_msg(struct obj *);
-staticfn void toggle_stealth(struct obj *, long, boolean);
 /* int Boots_on(void); -- moved to extern.h */
 /* int Gloves_on(void); -- moved to extern.h */
 staticfn int Cloak_on(void);
@@ -149,6 +148,45 @@ toggle_stealth(
                                   FALSE)
                        : "");
         }
+    }
+}
+
+/* putting on or taking off an item which confers see inv;
+   give feedback and discover it iff see invisible state is changing */
+void
+toggle_seeinv(
+    struct obj *obj,
+    long oldprop, /* prop[].extrinsic, with obj->owornmask stripped by caller */
+    boolean on)
+{
+    boolean discovered = FALSE;
+    if (on ? gi.initial_don : svc.context.takeoff.cancelled_don)
+        return;
+
+    if (!oldprop /* extrinsic stealth from something else */
+        && !HSee_invisible) {  /* intrinsic see invisible */
+
+        /* can now see invisible monsters */
+        set_mimic_blocking(); /* do special mimic handling */
+        see_monsters();
+
+        if (on) {
+            if (Invis && !oldprop && !HSee_invisible && !Blind) {
+                newsym(u.ux, u.uy);
+                pline("Suddenly you are transparent, but there!");
+                discovered = TRUE;
+            }
+        } else if (Invisible && !Blind) {
+            newsym(u.ux, u.uy);
+            pline("Suddenly you cannot see yourself.");
+            discovered = TRUE;
+        }
+    }
+    if (discovered) {
+        if (obj->otyp == RIN_SEE_INVISIBLE)
+            learnring(obj, TRUE);
+        else
+            makeknown(obj->otyp);
     }
 }
 
@@ -323,9 +361,12 @@ Boots_on(void)
         impossible(unknown_type, c_boots, uarmf->otyp);
     }
     /* uarmf could be Null here (levitation boots put on over a sink) */
-    if (uarmf && !uarmf->known) {
-        uarmf->known = 1; /* boots' +/- evident because of status line AC */
-        update_inventory();
+    if (uarmf) {
+        oprops_on(uarmf, WORN_BOOTS);
+        if (!uarmf->known) {
+            uarmf->known = 1; /* boots' +/- evident because of status line AC */
+            update_inventory();
+        }
     }
     if (uarmf && uarmf->greased && uarmf->otyp != FUMBLE_BOOTS)
         make_fumbling((HFumbling & TIMEOUT) + 3L);
@@ -348,6 +389,7 @@ Boots_off(void)
         EConflict &= ~W_ARMF;
     }
 
+    oprops_off(uarmf, WORN_BOOTS);
     svc.context.takeoff.mask &= ~W_ARMF;
     /* For levitation, float_down() returns if Levitation, so we
      * must do a setworn() _before_ the levitation case.
@@ -502,9 +544,12 @@ Cloak_on(void)
         disp.botl = 1;
     }
 
-    if (uarmc && !uarmc->known) { /* no known instance of !uarmc here */
-        uarmc->known = 1; /* cloak's +/- evident because of status line AC */
-        update_inventory();
+    if (uarmc) { /* no known instance of !uarmc here */
+        oprops_on(uarmc, WORN_CLOAK);
+        if (!uarmc->known) {
+            uarmc->known = 1; /* cloak's +/- evident because of status line AC */
+            update_inventory();
+        }
     }
     toggle_armor_light(uarmc, TRUE);
     return 0;
@@ -527,6 +572,7 @@ Cloak_off(void)
     if (hates_item(&gy.youmonst, uarmc->otyp))
         You_feel("more comfortable now.");
 
+    oprops_off(uarmc, WORN_CLOAK);
     svc.context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
     setworn((struct obj *) 0, W_ARMC);
@@ -677,9 +723,12 @@ Helmet_on(void)
         impossible(unknown_type, c_helmet, uarmh->otyp);
     }
     /* uarmh could be Null due to uchangealign() */
-    if (uarmh && !uarmh->known) {
-        uarmh->known = 1; /* helmet's +/- evident because of status line AC */
-        update_inventory();
+    if (uarmh) {
+        oprops_on(uarmh, WORN_HELMET);
+        if (!uarmh->known) {
+            uarmh->known = 1; /* helmet's +/- evident because of status line AC */
+            update_inventory();
+        }
     }
     return 0;
 }
@@ -687,6 +736,7 @@ Helmet_on(void)
 int
 Helmet_off(void)
 {
+    oprops_off(uarmh, WORN_HELMET);
     svc.context.takeoff.mask &= ~W_ARMH;
 
     if (hates_item(&gy.youmonst, uarmh->otyp))
@@ -795,9 +845,12 @@ Gloves_on(void)
     default:
         impossible(unknown_type, c_gloves, uarmg->otyp);
     }
-    if (!uarmg->known) {
-        uarmg->known = 1; /* gloves' +/- evident because of status line AC */
-        update_inventory();
+    if (uarmg) {
+        oprops_on(uarmg, WORN_GLOVES);
+        if (!uarmg->known) {
+            uarmg->known = 1; /* gloves' +/- evident because of status line AC */
+            update_inventory();
+        }
     }
     return 0;
 }
@@ -850,6 +903,7 @@ Gloves_off(void)
         u.uprops[objects[uarmg->otyp].oc_oprop].extrinsic & ~WORN_GLOVES;
     boolean on_purpose = !svc.context.mon_moving && !uarmg->in_use;
 
+    oprops_off(uarmg, WORN_GLOVES);
     svc.context.takeoff.mask &= ~W_ARMG;
 
     switch (uarmg->otyp) {
@@ -965,9 +1019,12 @@ Shield_on(void)
                   arti_light_description(uarms));
     }
 
-    if (!uarms->known) {
-        uarms->known = 1; /* shield's +/- evident because of status line AC */
-        update_inventory();
+    if (uarms) { /* no known instance of !uarmgs here but play it safe */
+        oprops_on(uarms, WORN_SHIELD);
+        if (!uarms->known) {
+            uarms->known = 1; /* shield's +/- evident because of status line AC */
+            update_inventory();
+        }
     }
     return 0;
 }
@@ -978,6 +1035,7 @@ Shield_off(void)
     struct obj *otmp = uarms;
     boolean was_arti_light = otmp && otmp->lamplit && artifact_light(otmp);
 
+    oprops_off(otmp, WORN_SHIELD);
     svc.context.takeoff.mask &= ~W_ARMS;
 
     if (hates_item(&gy.youmonst, uarms->otyp))
@@ -1038,9 +1096,12 @@ Shirt_on(void)
     default:
         impossible(unknown_type, c_shirt, uarmu->otyp);
     }
-    if (!uarmu->known) {
-        uarmu->known = 1; /* shirt's +/- evident because of status line AC */
-        update_inventory();
+    if (uarmu) { /* no known instances of !uarmu here but play it safe */
+        oprops_on(uarmu, WORN_SHIRT);
+        if (!uarmu->known) {
+            uarmu->known = 1; /* shirt's +/- evident because of status line AC */
+            update_inventory();
+        }
     }
     return 0;
 }
@@ -1048,6 +1109,7 @@ Shirt_on(void)
 int
 Shirt_off(void)
 {
+    oprops_off(uarmu, WORN_SHIRT);
     svc.context.takeoff.mask &= ~W_ARMU;
 
     /* no shirt currently requires special handling when taken off, but we
@@ -1202,6 +1264,7 @@ Armor_on(void)
     else if (hates_item(&gy.youmonst, uarm->otyp))
         You_feel("uncomfortable wearing such armor.");
 
+    oprops_on(uarm, W_ARM);
     dragon_armor_handling(uarm, TRUE, TRUE);
     /* gold DSM requires special handling since it emits light when worn;
        do that after the special armor handling */
@@ -1215,6 +1278,7 @@ Armor_off(void)
     struct obj *otmp = uarm;
     boolean was_arti_light = otmp && otmp->lamplit && artifact_light(otmp);
 
+    oprops_off(otmp, W_ARM);
     svc.context.takeoff.mask &= ~W_ARM;
     setworn((struct obj *) 0, W_ARM);
     svc.context.takeoff.cancelled_don = FALSE;
@@ -1245,6 +1309,7 @@ Armor_gone(void)
     struct obj *otmp = uarm;
     boolean was_arti_light = otmp && otmp->lamplit && artifact_light(otmp);
 
+    oprops_off(otmp, W_ARM);
     svc.context.takeoff.mask &= ~W_ARM;
     setnotworn(uarm);
     svc.context.takeoff.cancelled_don = FALSE;
@@ -1633,15 +1698,7 @@ Ring_on(struct obj *obj)
         see_monsters();
         break;
     case RIN_SEE_INVISIBLE:
-        /* can now see invisible monsters */
-        set_mimic_blocking(); /* do special mimic handling */
-        see_monsters();
-
-        if (Invis && !oldprop && !HSee_invisible && !Blind) {
-            newsym(u.ux, u.uy);
-            pline("Suddenly you are transparent, but there!");
-            learnring(obj, TRUE);
-        }
+        toggle_seeinv(obj, oldprop, TRUE);
         break;
     case RIN_INVISIBILITY:
         if (!oldprop && !HInvis && !BInvis && !Blind) {
@@ -1761,16 +1818,7 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
         break;
     case RIN_SEE_INVISIBLE:
         /* Make invisible monsters go away */
-        if (!See_invisible) {
-            set_mimic_blocking(); /* do special mimic handling */
-            see_monsters();
-        }
-
-        if (Invisible && !Blind) {
-            newsym(u.ux, u.uy);
-            pline("Suddenly you cannot see yourself.");
-            learnring(obj, TRUE);
-        }
+        toggle_seeinv(obj, (ESee_invisible& ~mask), FALSE);
         break;
     case RIN_INVISIBILITY:
         if (!Invis && !BInvis && !Blind) {

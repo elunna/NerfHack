@@ -2124,6 +2124,7 @@ seffect_cloning(struct obj **sobjp)
         otmp2->globby = otmp->globby;
         otmp2->greased = otmp->greased;
         otmp2->corpsenm = otmp->corpsenm;
+        otmp2->oprops = otmp->oprops;
         otmp2->oeaten = otmp->oeaten;
         otmp2->opoisoned = otmp->opoisoned;
 

@@ -4278,6 +4278,12 @@ getprice(struct obj *obj, boolean shk_buying)
         tmp = arti_cost(obj);
         if (shk_buying)
             tmp /= 4;
+    } else if (obj->oprops) {
+        int i, factor = 50, next = 2;
+        for (i = 0; i < MAX_ITEM_PROPS; i++)
+            if (obj->oprops & (1 << i))
+                factor *= next, next = (next == 2) ? 5 : 2;
+        tmp += factor;
     }
 
     /* object price is affected by its level of erosion,

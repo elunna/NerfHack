@@ -1616,7 +1616,7 @@ hmon_hitmon_weapon_melee(
         hmd->dmg += rnd(P_SKILL(P_TWO_WEAPON_COMBAT));
     }
 
-    if (obj->oartifact
+    if (((obj->oclass == WEAPON_CLASS && obj->oprops) || obj->oartifact)
         && artifact_hit(&gy.youmonst, mon, obj, &hmd->dmg, hmd->dieroll)) {
         /* artifact_hit updates 'tmp' but doesn't inflict any
            damage; however, it might cause carried items to be
@@ -5285,9 +5285,10 @@ mhitm_ad_phys(
                     mhm->damage += rn1(4, 3); /* 3..6 */
                 if (mhm->damage <= 0)
                     mhm->damage = 1;
-                if (!otmp->oartifact
+                if (!(((otmp->oclass == WEAPON_CLASS && otmp->oprops)
+                       || otmp->oartifact)
                     || !artifact_hit(magr, mdef, otmp, &mhm->damage,
-                                     gm.mhitu_dieroll)) {
+                                     gm.mhitu_dieroll))) {
                     hitmsg(magr, mattk);
                     mhm->hitflags |= M_ATTK_HIT;
                 }
@@ -5375,7 +5376,7 @@ mhitm_ad_phys(
                 mhm->damage += rn1(4, 3); /* 3..6 */
             if (mhm->damage < 1) /* is this necessary?  mhitu.c has it... */
                 mhm->damage = 1;
-            if (mwep->oartifact) {
+            if (mwep->oartifact || (mwep->oclass == WEAPON_CLASS && mwep->oprops)) {
                 /* when magr's weapon is an artifact, caller suppressed its
                    usual 'hit' message in case artifact_hit() delivers one;
                    now we'll know and might need to deliver skipped message

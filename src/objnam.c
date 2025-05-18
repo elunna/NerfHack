@@ -28,6 +28,8 @@ struct _readobjnam_data {
     int tmp, tinv, tvariety, mgend;
     int wetness, gsize;
     int ftype;
+    long objprops;
+    long objpropcount;
     boolean zombify;
     char globbuf[BUFSZ];
     char fruitbuf[BUFSZ];
@@ -800,6 +802,8 @@ xname_flags(
         else
             Strcat(buf, dn);
         ConcUpdate(buf);
+        if (dknown)
+            propnames(buf, obj->oprops, TRUE, !!strstri(buf, " of "));
 
         if (typ == FIGURINE && omndx != NON_PM) {
             char anbuf[10]; /* [4] would be enough: 'a','n',' ','\0' */
@@ -818,23 +822,41 @@ xname_flags(
             break;
         } else if (is_boots(obj) || is_gloves(obj) || is_bracer(obj)) {
             Strcpy(buf, "pair of ");
-        } else if (is_shield(obj) && !dknown) {
+        }
+#if 0
+        if (dknown && (obj->oprops & ITEM_OILSKIN)
+            && ((obj->oprops_known & ITEM_OILSKIN)
+                || dump_prop_flag))
+            Strcat(buf, "oilskin ");
+#endif
+        if (is_shield(obj) && !dknown) {
             if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD) {
                 Strcpy(buf, "shield");
+                if (dknown)
+                    propnames(buf, obj->oprops, FALSE, FALSE);
                 break;
             } else if (obj->otyp == SHIELD_OF_REFLECTION) {
                 Strcpy(buf, "smooth shield");
+                if (dknown)
+                    propnames(buf, obj->oprops, FALSE, FALSE);
                 break;
             }
         }
         ConcUpdate(buf);
 
-        if (nn)
+        if (nn) {
             Concat(buf, 0, actualn);
-        else if (un)
+            if (dknown)
+                propnames(buf, obj->oprops, FALSE, !!strstri(actualn, " of "));
+        } else if (un) {
             xcalled(buf, BUFSZ - PREFIX, armor_simple_name(obj), un);
-        else
+            if (dknown)
+                propnames(buf, obj->oprops, FALSE, FALSE);
+        } else {
             Concat(buf, 0, dn);
+            if (dknown)
+                propnames(buf, obj->oprops, FALSE, !!strstri(dn, " of "));
+        }
         break;
     case FOOD_CLASS:
         /* we could include partly-eaten-hack on fruit but don't need to */
@@ -1026,14 +1048,17 @@ xname_flags(
 	        Sprintf(eos(buf), "%s %s", dn, carto ? "rulebook": "spellbook");
         break;
     case RING_CLASS:
-        if (!dknown)
+        if (!dknown) {
             Strcpy(buf, "ring");
-        else if (nn)
+        } else if (nn) {
             Sprintf(buf, "ring of %s", actualn);
-        else if (un)
+            if (dknown)
+                propnames(buf, obj->oprops, FALSE, FALSE);
+        } else if (un) {
             xcalled(buf, BUFSZ - PREFIX, "ring", un);
-        else
+        } else {
             Sprintf(buf, "%s ring", dn);
+        }
         break;
     case GEM_CLASS: {
         const char *rock = (ocl->oc_material == MINERAL || typ == SLING_BULLET)
@@ -4190,6 +4215,8 @@ readobjnam_init(char *bp, struct _readobjnam_data *d)
     d->wetness = 0;
     d->gsize = 0;
     d->zombify = FALSE;
+    d->objprops = 0L;
+    d->objpropcount = 0L;
     d->bp = d->origbp = bp;
     d->p = (char *) 0;
     d->name = (const char *) 0;
@@ -5514,6 +5541,7 @@ readobjnam(char *bp, struct obj *no_wish)
     } else if (d.spesgn < 0) {
         curse(d.otmp);
     }
+    // d.otmp->oprops = 0;
 
     /* set eroded and erodeproof */
     if (erosion_matters(d.otmp)) {
@@ -5533,6 +5561,74 @@ readobjnam(char *bp, struct obj *no_wish)
         if (d.erodeproof
             && (is_damageable(d.otmp) || d.otmp->otyp == CRYSKNIFE))
             d.otmp->oerodeproof = (Luck >= 0 || wizard);
+    }
+
+    /* object property restrictions */
+    if (d.otmp->oclass == WEAPON_CLASS || is_weptool(d.otmp)
+          || d.otmp->oclass == ARMOR_CLASS || d.otmp->oclass == RING_CLASS) {
+
+        /* TODO: This refactor is better but... can it be consolidated more? */
+        if (d.objprops & ITEM_FIRE)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FIRE);
+        else if (d.objprops & ITEM_FROST)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FROST);
+        else if (d.objprops & ITEM_SHOCK)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SHOCK);
+        else if (d.objprops & ITEM_VENOM)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_VENOM);
+        else if (d.objprops & ITEM_ACID)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_ACID);
+        else if (d.objprops & ITEM_DRAIN)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_DRAIN);
+        else if (d.objprops & ITEM_SLEEP)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SLEEP);
+        else if (d.objprops & ITEM_SEARCH)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SEARCH);
+        else if (d.objprops & ITEM_FILTH)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FILTH);
+#if 0
+
+        else if (d.objprops & ITEM_SCREAM)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SCREAM);
+
+        else if (d.objprops & ITEM_FLEX)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FLEX);
+        else if (d.objprops & ITEM_DANGER)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_DANGER);
+        else if (d.objprops & ITEM_RAGE)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_RAGE);
+        else if (d.objprops & ITEM_TOUGH)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_TOUGH);
+        else if (d.objprops & ITEM_PROWESS)
+            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_PROWESS);
+#endif
+
+        if (objects[d.otmp->otyp].oc_unique || d.otmp->oartifact
+            || Is_dragon_armor(d.otmp))
+            d.objprops &= ~ITEM_PROP_MASK;
+
+        if (objects[d.otmp->otyp].oc_magic && !wizard)
+            d.objprops &= ~ITEM_PROP_MASK;
+
+        /* Launchers can have defensive properties */
+        if (is_launcher(d.otmp))
+            d.objprops &= ~((ITEM_RES_PROPS & ~ONLY_ARM_PROPS));
+        else if (is_ammo(d.otmp) || is_missile(d.otmp))
+            d.objprops &= ~(ITEM_GOOD_PROPS | ITEM_BAD_PROPS | ONLY_ARM_PROPS);
+        else if (d.otmp->oclass == WEAPON_CLASS || is_weptool(d.otmp))
+            d.objprops &= ~(ONLY_ARM_PROPS);
+
+        if (d.otmp->oclass == ARMOR_CLASS || d.otmp->oclass == RING_CLASS)
+            d.objprops &= ~ONLY_WEP_PROPS;
+#if 0
+        /* Burden doesn't really affect ring weight much */
+        if (d.otmp->oclass == RING_CLASS)
+            d.objprops &= ~ITEM_BURDEN;
+#endif
+        d.objprops = rm_redundant_oprops(d.otmp, d.objprops);
+
+        /* The player cannot wish for properties (outside of wizmode) */
+		// d.otmp->oprops |= d.objprops;
     }
 
     /* set otmp->recharged */

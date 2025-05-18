@@ -1627,6 +1627,10 @@ ini_inv_use_obj(struct obj *obj)
             setworn(obj, W_ARM);
     }
 
+    /* Don't allow gear with object properties
+     * to be start scummed for */
+    obj->oprops = 0L;
+
     if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
         || obj->otyp == TIN_OPENER
         || obj->otyp == FLINT || obj->otyp == ROCK) {
@@ -1641,6 +1645,8 @@ ini_inv_use_obj(struct obj *obj)
     }
     if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)
         initialspell(obj);
+
+
 }
 
 staticfn void

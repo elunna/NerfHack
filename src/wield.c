@@ -112,44 +112,117 @@ setuwep(struct obj *obj)
         if (!Blind)
             pline("%s shining.", Tobjnam(olduwep, "stop"));
     }
-    if (uwep == obj
-        && (u_wield_art(ART_OGRESMASHER)
-            || is_art(olduwep, ART_OGRESMASHER)))
-        disp.botl = TRUE;
-    if (uwep == obj && (u_wield_art(ART_GIANTSLAYER)
-            || is_art(olduwep, ART_GIANTSLAYER)))
-        disp.botl = TRUE;
-
-    if (uwep == obj && (u_wield_art(ART_ORIGIN)))
-        pline("Your mind is flooded with magical knowledge.");
-    else if (is_art(olduwep, ART_ORIGIN))
-        You_feel("less in touch with your magical abilities.");
-
-    /* Hated items decrease AC and affect to-hit */
-    if (uwep && hates_item(&gy.youmonst, uwep->otyp)) {
-        find_ac();
-        disp.botl = TRUE;
-        You_feel("awkward wielding %s...", yname(uwep));
-    } else if (olduwep && hates_item(&gy.youmonst, olduwep->otyp)) {
-        find_ac();
-        disp.botl = TRUE;
-        You_feel("more comfortable now.");
+    if (uwep == obj) {
+        if (u_wield_art(ART_OGRESMASHER)
+            || is_art(olduwep, ART_OGRESMASHER))
+            disp.botl = TRUE;
+        if (u_wield_art(ART_GIANTSLAYER)
+                || is_art(olduwep, ART_GIANTSLAYER))
+            disp.botl = TRUE;
+        if (u_wield_art(ART_ORIGIN))
+            pline("Your mind is flooded with magical knowledge.");
+    } else {
+        if (is_art(olduwep, ART_ORIGIN))
+            You_feel("less in touch with your magical abilities.");
     }
 
-    /* Cartomancers are quite adept with crystal balls */
-    if (olduwep && olduwep->otyp == CRYSTAL_BALL) {
-        ESee_invisible &= ~W_WEP;
-        ETelepat &= ~W_WEP;
-        u.xray_range = -1;
-        /* Charisma bonus handled in attrib.c */
-        disp.botl = TRUE;
+    /* This needs to come before setting properties in case we are
+     * switching between two weapons with properties. */
+    if (olduwep) {
+        if (hates_item(&gy.youmonst, olduwep->otyp)) {
+            find_ac();
+            disp.botl = TRUE;
+            You_feel("more comfortable now.");
+        }
+        /* Cartomancers are quite adept with crystal balls */
+        if (olduwep->otyp == CRYSTAL_BALL) {
+            ESee_invisible &= ~W_WEP;
+            ETelepat &= ~W_WEP;
+            u.xray_range = -1;
+            /* Charisma bonus handled in attrib.c */
+            disp.botl = TRUE;
+        }
+        if (olduwep->oprops & ITEM_FUMBLE) {
+            if (!(HFumbling & ~TIMEOUT))
+                HFumbling = EFumbling = 0;
+            EFumbling &= ~W_WEP;
+        }
+        if (olduwep->oprops & ITEM_HUNGER) {
+            EHunger &= ~W_WEP;
+        }
+        if (olduwep->oprops & ITEM_SEARCH) {
+            ESearching &= ~W_WEP;
+        }
+        if (olduwep->oprops & ITEM_INSIGHT) {
+            ESee_invisible &= ~W_WEP;
+            toggle_seeinv(olduwep, (ESee_invisible & ~W_WEP), FALSE);
+        }
+        if (olduwep->oprops & ITEM_STEALTH) {
+            EStealth &= ~W_WEP;
+            toggle_stealth(olduwep, (EStealth & ~W_WEP), FALSE);
+        }
+        if (olduwep->oprops & ITEM_WARN) {
+            EWarning  &= ~W_WEP;
+            see_monsters();
+        }
+        if (olduwep->oprops & ITEM_CHA) {
+            (void) changes_stat(ITEM_CHA);
+        }
     }
-    if (uwep && uwep->otyp == CRYSTAL_BALL) {
-        ESee_invisible |= W_WEP;
-        ETelepat |= W_WEP;
-        u.xray_range = 3;
-        disp.botl = TRUE;
+    if (uwep && uwep == obj) {
+        /* Hated items decrease AC and affect to-hit */
+        if (hates_item(&gy.youmonst, uwep->otyp)) {
+            find_ac();
+            disp.botl = TRUE;
+            You_feel("awkward wielding %s...", yname(uwep));
+        }
+        if (uwep->otyp == CRYSTAL_BALL) {
+            ESee_invisible |= W_WEP;
+            ETelepat |= W_WEP;
+            u.xray_range = 3;
+            disp.botl = TRUE;
+        }
+        if (uwep->oprops & ITEM_FUMBLE) {
+            if (!(HFumbling & ~TIMEOUT))
+                incr_itimeout(&HFumbling, rnd(20));
+            EFumbling |= W_WEP;
+        }
+        if (uwep->oprops & ITEM_HUNGER) {
+            EHunger |= W_WEP;
+        }
+        if (uwep->oprops & ITEM_SEARCH) {
+            ESearching |= W_WEP;
+        }
+        if (uwep->oprops & ITEM_INSIGHT) {
+            ESee_invisible |= W_WEP;
+        }
+        if (uwep->oprops & ITEM_INSIGHT) {
+            ESee_invisible |= W_WEP;
+            toggle_seeinv(uwep, (ESee_invisible & ~W_WEP), TRUE);
+        }
+        if (uwep->oprops & ITEM_STEALTH) {
+            EStealth |= W_WEP;
+            if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
+                pline("This %s will not silence someone %s.",
+                      xname(uwep), rn2(2) ? "as large as you" : "of your stature");
+                EStealth &= ~W_WEP;
+            } else if (Stomping) {
+                pline("This %s will not silence your stomping!",  xname(uwep));
+                EStealth &= ~W_WEP;
+            } else
+                toggle_stealth(uwep, (EStealth & ~W_WEP), TRUE);
+        }
+        if (uwep->oprops & ITEM_WARN) {
+            EWarning |= W_WEP;
+            see_monsters();
+        }
+        if (uwep->oprops & ITEM_CHA) {
+            (void) changes_stat(ITEM_CHA);
+        }
     }
+
+
+
 
     /* Note: Explicitly wielding a pick-axe will not give a "bashing"
      * message.  Wielding one via 'a'pplying it will.
@@ -325,7 +398,92 @@ setuqwep(struct obj *obj)
 void
 setuswapwep(struct obj *obj)
 {
+    struct obj *olduswapwep = uswapwep;
+
+    if (u.twoweap && obj && (obj->oartifact || obj->oprops))
+        set_artifact_intrinsic(obj, 1, W_SWAPWEP);
+
     setworn(obj, W_SWAPWEP);
+
+    /* Stat changing weapons are handled elsewhere */
+    if (uswapwep == obj && u.twoweap
+        && (uswapwep->oartifact == ART_OGRESMASHER
+                          || uswapwep->oartifact == ART_GIANTSLAYER))
+        disp.botl = 1;
+
+    /* Similar to the main weapons, this block should probably come before
+     * the wielding, otherwise we might set and then unset a stat. */
+    if (!u.twoweap && olduswapwep) {
+        /* Fumbling property */
+        if (olduswapwep->oprops & ITEM_FUMBLE) {
+            if (!(HFumbling & ~TIMEOUT))
+                HFumbling = EFumbling = 0;
+            EFumbling &= ~W_SWAPWEP;
+        }
+        /* Hunger property */
+        if (olduswapwep->oprops & ITEM_HUNGER) {
+            EHunger &= ~W_SWAPWEP;
+        }
+        /* Searching property */
+        if (olduswapwep->oprops & ITEM_SEARCH) {
+            ESearching &= ~W_SWAPWEP;
+        }
+        /* Insight property */
+        if (olduswapwep->oprops & ITEM_INSIGHT) {
+            ESee_invisible &= ~W_SWAPWEP;
+            toggle_seeinv(olduswapwep, (ESee_invisible & ~W_SWAPWEP), FALSE);
+        }
+        /* Stealth property */
+        if (olduswapwep->oprops & ITEM_STEALTH) {
+            EStealth &= ~W_SWAPWEP;
+            toggle_stealth(olduswapwep, (EStealth & ~W_SWAPWEP), TRUE);
+        }
+        /* Vigilance property */
+        if (olduswapwep->oprops & ITEM_WARN) {
+            EWarning  &= ~W_WEP;
+            see_monsters();
+        }
+        if (olduswapwep->oprops & ITEM_CHA) {
+            (void) changes_stat(ITEM_CHA);
+        }
+    }
+
+    if (uswapwep == obj && u.twoweap) {
+        if (uswapwep->oprops & ITEM_FUMBLE) {
+            if (!(HFumbling & ~TIMEOUT))
+                incr_itimeout(&HFumbling, rnd(20));
+            EFumbling |= W_SWAPWEP;
+        }
+        if (uswapwep->oprops & ITEM_HUNGER) {
+            EHunger |= W_SWAPWEP;
+        }
+        if (uswapwep->oprops & ITEM_SEARCH) {
+            ESearching |= W_SWAPWEP;
+        }
+        if (uswapwep->oprops & ITEM_INSIGHT) {
+            ESee_invisible |= W_SWAPWEP;
+            toggle_seeinv(uswapwep, (ESee_invisible & ~W_SWAPWEP), TRUE);
+        }
+        if (uswapwep->oprops & ITEM_STEALTH) {
+            EStealth |= W_SWAPWEP;
+            if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
+                pline("This %s will not silence someone %s.",
+                      xname(uswapwep), rn2(2) ? "as large as you" : "of your stature");
+                EStealth &= ~W_SWAPWEP;
+            } else if (Stomping) {
+                pline("This %s will not silence your stomping!", xname(uswapwep));
+                EStealth &= ~W_SWAPWEP;
+            } else
+                toggle_stealth(uswapwep, (EStealth & ~W_SWAPWEP), TRUE);
+        }
+        if (uswapwep->oprops & ITEM_WARN) {
+            EWarning |= W_WEP;
+            see_monsters();
+        }
+        if (uswapwep->oprops & ITEM_CHA) {
+            (void) changes_stat(ITEM_CHA);
+        }
+    }
     return;
 }
 
@@ -886,20 +1044,16 @@ drop_uswapwep(void)
 }
 
 void
-set_twoweap(boolean on_off)
+set_twoweap(boolean on)
 {
-    u.twoweap = on_off;
+    u.twoweap = on;
 
-    if (uswapwep && uswapwep->oartifact) {
-        set_artifact_intrinsic(uswapwep, on_off, W_SWAPWEP);
-    }
-
-    if (on_off && uswapwep && hates_item(&gy.youmonst,uswapwep->otyp)
+    if (on && uswapwep && hates_item(&gy.youmonst,uswapwep->otyp)
         && !hates_item(&gy.youmonst, uwep->otyp)) {
         find_ac();
         disp.botl = TRUE;
         You_feel("strange wielding %s...", yname(uswapwep));
-    } else if (!on_off && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp)
+    } else if (!on && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp)
                && !hates_item(&gy.youmonst, uwep->otyp))
         You_feel("more comfortable now.");
 }
@@ -926,10 +1080,6 @@ dotwoweapon(void)
             You("begin two-weapon combat.");
         }
         set_twoweap(TRUE); /* u.twoweap = TRUE */
-        if (u_offhand_art(ART_OGRESMASHER)
-            || u_offhand_art(ART_GIANTSLAYER))
-            disp.botl = TRUE;
-
         update_inventory();
         return (rnd(20) > ACURR(A_DEX)) ? ECMD_TIME : ECMD_OK;
     }
@@ -984,10 +1134,8 @@ untwoweapon(void)
     if (u.twoweap) {
         You("%s.", can_no_longer_twoweap);
         set_twoweap(FALSE); /* u.twoweap = FALSE */
-        if (is_art(olduswapwep, ART_OGRESMASHER)
-            || is_art(olduswapwep, ART_GIANTSLAYER))
-            disp.botl = TRUE;
-
+        setuswapwep((struct obj *) 0);
+        setuswapwep(olduswapwep);
         update_inventory();
     }
     return;

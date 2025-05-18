@@ -5087,6 +5087,9 @@ mergable(
         || has_omonst(otmp) || has_omid(otmp))
         return FALSE;
 
+    if (obj->oprops != otmp->oprops)
+        return FALSE;
+
     /* if they have names, make sure they're the same */
     objnamelth = strlen(safe_oname(obj));
     otmpnamelth = strlen(safe_oname(otmp));

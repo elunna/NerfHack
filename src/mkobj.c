@@ -940,6 +940,8 @@ mksobj_init(struct obj **obj, boolean artif)
             /* mk_artifact() with otmp and A_NONE will never return NULL */
             otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, TRUE);
             *obj = otmp;
+        }  else if (rn2(175) < (level_difficulty() / 2)) {
+            otmp = create_oprop(otmp, TRUE);
         }
         break;
     case FOOD_CLASS:
@@ -1175,6 +1177,8 @@ mksobj_init(struct obj **obj, boolean artif)
             /* mk_artifact() with otmp and A_NONE will never return NULL */
             otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, TRUE);
             *obj = otmp;
+        } else if (!rn2(150)) {
+            otmp = create_oprop(otmp, TRUE);
         }
         /* simulate lacquered armor for samurai */
         if (Role_if(PM_SAMURAI) && otmp->otyp == SPLINT_MAIL
@@ -1272,6 +1276,7 @@ mksobj(int otyp, boolean init, boolean artif)
     otmp->otyp = otyp;
     otmp->where = OBJ_FREE;
     unknow_object(otmp); /* set up dknown and known: non-0 for some things */
+    otmp->oprops = 0L;
     otmp->corpsenm = NON_PM;
     otmp->lua_ref_cnt = 0;
     otmp->pickup_prev = 0;
@@ -1904,6 +1909,10 @@ bless(struct obj *otmp)
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
+    if ((otmp->oprops & ITEM_CHA)
+            && (otmp->owornmask & (W_ARMOR | W_WEP | W_SWAPWEP)))
+        changes_stat(ITEM_CHA);
+
     return;
 }
 
@@ -1923,6 +1932,10 @@ unbless(struct obj *otmp)
         otmp->owt = weight(otmp);
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
+    if ((otmp->oprops & ITEM_CHA)
+            && (otmp->owornmask & (W_ARMOR | W_WEP | W_SWAPWEP)))
+        changes_stat(ITEM_CHA);
+
 }
 
 void
@@ -1965,6 +1978,10 @@ curse(struct obj *otmp)
     }
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
+    if ((otmp->oprops & ITEM_CHA)
+            && (otmp->owornmask & (W_ARMOR | W_WEP | W_SWAPWEP)))
+        changes_stat(ITEM_CHA);
+
     return;
 }
 
@@ -2441,6 +2458,11 @@ is_flammable(struct obj *otmp)
         || otyp == WAN_FIRE
         || otyp == RIN_FIRE_RESISTANCE
         || otyp == FIRE_HORN)
+        return FALSE;
+    else if (attacks(AD_FIRE, otmp) || defends(AD_FIRE, otmp))
+        return FALSE;
+    /* weapons of fire are handled above; armor is not*/
+    else if (otmp->oprops && otmp->oprops & ITEM_FIRE)
         return FALSE;
 
     return (boolean) ((omat <= WOOD && omat != LIQUID) || omat == PLASTIC);

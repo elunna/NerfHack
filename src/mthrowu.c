@@ -123,7 +123,10 @@ thitu(
             You("are almost hit by %s.", onm);
         return 0;
     } else {
-        if (Blind || !flags.verbose)
+        if (obj && (obj->oartifact || (obj->oprops &&
+                (obj->oclass == WEAPON_CLASS || is_weptool(obj)))))
+            (void) artifact_hit((struct monst *) 0, &gy.youmonst, obj, &dam, 0);
+        else if (Blind || !flags.verbose)
             You("are hit%s", exclam(dam));
         else
             You("are hit by %s%s", onm, exclam(dam));
@@ -982,7 +985,7 @@ return_from_mtoss(
     }
     if (otmp) {
         if (hits_thrower) {
-            if (otmp->oartifact)
+            if (otmp->oartifact || (otmp->oclass == WEAPON_CLASS && otmp->oprops))
                 (void) artifact_hit((struct monst *) 0, magr, otmp, &dmg, 0);
             magr->mhp -= dmg;
             if (DEADMONSTER(magr))

@@ -1325,6 +1325,7 @@ schar
 acurr(int chridx)
 {
     int tmp, result = 0; /* 'result' will always be reset to positive value */
+    schar res;
 
     assert(chridx >= 0 && chridx < A_MAX);
     tmp = u.abon.a[chridx] + u.atemp.a[chridx] + u.acurr.a[chridx];
@@ -1356,6 +1357,12 @@ acurr(int chridx)
         else if (Role_if(PM_CARTOMANCER)
             && uwep && uwep->otyp == CRYSTAL_BALL)
             result = 25;
+        if ((res = calc_prop_bonus(ITEM_CHA))) {
+            tmp += (int) res;
+            result = (tmp > 25) ? 25
+                     : (tmp < 3) ? 3
+                                 : tmp;
+        }
     } else if (chridx == A_CON) {
         if (u_wield_art(ART_OGRESMASHER) || u_offhand_art(ART_OGRESMASHER))
             result = 25;

@@ -25,6 +25,8 @@ staticfn boolean bane_applies(const struct artifact *, struct monst *)
                                                                  NONNULLARG12;
 staticfn int spec_applies(const struct artifact *, struct monst *)
                                                                  NONNULLARG12;
+staticfn int prop_applies(struct obj *, struct monst *)
+                                                                 NONNULLARG12;
 staticfn int invoke_ok(struct obj *);
 staticfn void nothing_special(struct obj *) NONNULLARG1;
 staticfn int arti_invoke(struct obj *);
@@ -37,6 +39,7 @@ staticfn boolean untouchable(struct obj *, boolean);
 staticfn int count_surround_traps(coordxy, coordxy);
 staticfn const char *adtyp_str(int, boolean);
 staticfn void dispose_of_orig_obj(struct obj *);
+staticfn boolean is_redundant_prop(struct obj *, int);
 
 /* The amount added to the victim's total hit points to insure that the
    victim will be killed even after damage bonus/penalty adjustments.
@@ -169,6 +172,10 @@ mk_artifact(
     boolean unique = !by_align && otmp && objects[o_typ].oc_unique;
     short eligible[NROFARTIFACTS];
     xint16 skill_compatibility;
+
+    /* don't add properties to special weapons */
+    if (otmp && otmp->oprops)
+        return otmp;
 
     n = altn = 0;    /* no candidates found yet */
     eligible[0] = 0; /* lint suppression */
@@ -625,10 +632,40 @@ restrict_name(struct obj *otmp, const char *name)
 boolean
 attacks(int adtyp, struct obj *otmp)
 {
-    const struct artifact *weap;
-
-    if ((weap = get_artifact(otmp)) != &artilist[ART_NONARTIFACT])
+    const struct artifact *weap = get_artifact(otmp);
+    boolean is_art = weap != &artilist[ART_NONARTIFACT];
+    if (is_art)
         return (boolean) (weap->attk.adtyp == adtyp);
+
+    if (otmp->oprops
+        && (otmp->oclass == WEAPON_CLASS || is_weptool(otmp)
+            || (uarms && otmp == uarms))) {
+        if (adtyp == AD_FIRE && (otmp->oprops & ITEM_FIRE))
+            return TRUE;
+        if (adtyp == AD_COLD && (otmp->oprops & ITEM_FROST))
+            return TRUE;
+        if (adtyp == AD_ELEC && (otmp->oprops & ITEM_SHOCK))
+            return TRUE;
+        if (adtyp == AD_DRST && (otmp->oprops & ITEM_VENOM))
+            return TRUE;
+        if (adtyp == AD_ACID && (otmp->oprops & ITEM_ACID))
+            return TRUE;
+        if (adtyp == AD_DRLI && (otmp->oprops & ITEM_DRAIN))
+            return TRUE;
+        if (adtyp == AD_SLEE && (otmp->oprops & ITEM_SLEEP))
+            return TRUE;
+        if (adtyp == AD_DISE && (otmp->oprops & ITEM_FILTH))
+            return TRUE;
+        if (adtyp == AD_DISE && (otmp->oprops & ITEM_FILTH))
+            return TRUE;
+    #if 0
+        if (adtyp == AD_LOUD && (otmp->oprops & ITEM_SCREAM))
+            return TRUE;
+        if (adtyp == AD_STON && (otmp->oprops & ITEM_FLEX))
+            return TRUE;
+#endif
+    }
+
     return FALSE;
 }
 
@@ -713,6 +750,7 @@ protects(struct obj *otmp, boolean being_worn)
 /*
  * a potential artifact has just been worn/wielded/picked-up or
  * unworn/unwielded/dropped.  Pickup/drop only set/reset the W_ART mask.
+* TODO: Use this to add oprop intrinsics also?
  */
 void
 set_artifact_intrinsic(
@@ -726,7 +764,7 @@ set_artifact_intrinsic(
     uchar dtyp;
     long spfx;
 
-    if (oart == &artilist[ART_NONARTIFACT])
+    if (oart == &artilist[ART_NONARTIFACT] && !otmp->oprops)
         return;
 
     /* effects from the defn field */
@@ -1186,6 +1224,37 @@ spec_applies(const struct artifact *weap, struct monst *mtmp)
     return 0;
 }
 
+/* decide whether an property's special attacks apply against mtmp */
+staticfn int
+prop_applies(struct obj *otmp, struct monst *mon)
+{
+    boolean yours = mon == &gy.youmonst;
+    int adtype;
+
+    /* until we know otherwise... */
+    if ((attacks(adtype = AD_FIRE, otmp)
+                && (yours ? !(Fire_resistance || Underwater)
+                : !(resists_fire(mon) || mon_underwater(mon))))
+            || (attacks(adtype = AD_COLD, otmp)
+                && (yours ? !Cold_resistance : !resists_cold(mon)))
+            || (attacks(adtype = AD_ELEC, otmp)
+                && (yours ? !Shock_resistance : !resists_elec(mon)))
+            || (attacks(adtype = AD_DRST, otmp)
+                && (yours ? !Poison_resistance : !resists_poison(mon)))
+            || (attacks(adtype = AD_SLEE, otmp)
+                && (yours ? !Sleep_resistance : !resists_sleep(mon)))
+            || (attacks(adtype = AD_DRLI, otmp)
+                && (yours ? !Drain_resistance : !resists_drli(mon)))
+            || (attacks(adtype = AD_DISE, otmp)
+                   && ((yours) ? (!Sick_resistance) : (!resists_sick(mon->data))))
+            || (attacks(adtype = AD_ACID, otmp)
+                && (yours ? !(Acid_resistance || Underwater)
+                : !(resists_acid(mon) || mon_underwater(mon))))) {
+		return TRUE;
+    }
+    return FALSE;
+}
+
 /* return the M2 flags of monster that an artifact's special attacks apply
  * against */
 long
@@ -1218,18 +1287,37 @@ int
 spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
 {
     const struct artifact *weap = get_artifact(otmp);
+    int dbon = 0;
 
-    if ((weap == &artilist[ART_NONARTIFACT])
+    if (weap == &artilist[ART_NONARTIFACT] && otmp->oprops
+        && (otmp->oclass == WEAPON_CLASS || is_weptool(otmp)
+            || (uarms && otmp == uarms)) && prop_applies(otmp, mon)) {
+        gs.spec_dbon_applies = TRUE;
+        dbon = rnd(5) + 3;
+
+		/*  Venom and Sleep damage handled in artifact_hit() */
+            if (otmp->oprops & ITEM_VENOM || otmp->oprops & ITEM_SLEEP) {
+                return 0;
+            } else {
+                dbon = rnd(5) + 3;
+//                if (vulnerable_to(mon, adtype))
+//                    dbon = ((3 * dbon) + 1) / 2;
+                return dbon;
+            }
+        return dbon;
+    } else if ((weap == &artilist[ART_NONARTIFACT])
         || (weap->attk.adtyp == AD_PHYS /* check for `NO_ATTK' */
-                  && weap->attk.damn == 0 && weap->attk.damd == 0))
+                  && weap->attk.damn == 0 && weap->attk.damd == 0)) {
         gs.spec_dbon_applies = FALSE;
-    else if (is_art(otmp, ART_GRIMTOOTH) || is_art(otmp, ART_VORPAL_BLADE)
-             || is_art(otmp, ART_GLAMDRING) || is_art(otmp, ART_ANGELSLAYER))
+    } else if (is_art(otmp, ART_GRIMTOOTH) || is_art(otmp, ART_VORPAL_BLADE)
+             || is_art(otmp, ART_GLAMDRING) || is_art(otmp, ART_ANGELSLAYER)) {
         /* Grimtooth has SPFX settings to warn against elves but we want its
            damage bonus to apply to all targets, so bypass spec_applies() */
         gs.spec_dbon_applies = TRUE;
-    else
+
+    } else {
         gs.spec_dbon_applies = spec_applies(weap, mon);
+    }
 
     if (gs.spec_dbon_applies)
         return weap->attk.damd ? rnd((int) weap->attk.damd) : max(tmp, 1);
@@ -1628,17 +1716,24 @@ artifact_hit(
     /* the four basic attacks: fire, cold, shock and missiles */
     if (attacks(AD_FIRE, otmp)) {
         if (realizes_damage) {
-            pline_The("%s %s %s%c",
-                      otmp->oartifact == ART_FIRE_BRAND ? "firey blade"
-                                                        : "infernal trident",
-                      !gs.spec_dbon_applies
-                          ? "hits"
-                          : (mdef->data == &mons[PM_WATER_ELEMENTAL]
-                             || mdef->data == &mons[PM_ICE_VORTEX])
-                                ? "vaporizes part of"
-                                : "burns",
-                      hittee, !gs.spec_dbon_applies ? '.' : '!');
-
+            if (otmp->oartifact) {
+                pline_The("%s %s %s%c",
+                          otmp->oartifact == ART_FIRE_BRAND ? "firey blade"
+                                                            : "infernal trident",
+                          !gs.spec_dbon_applies
+                              ? "hits"
+                              : (mdef->data == &mons[PM_WATER_ELEMENTAL]
+                                 || mdef->data == &mons[PM_ICE_VORTEX])
+                                    ? "vaporizes part of"
+                                    : "burns",
+                          hittee, !gs.spec_dbon_applies ? '.' : '!');
+            } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
+                pline_The("%s %s %s%c", makesingular(distant_name(otmp, xname)),
+                          !gs.spec_dbon_applies         ? "hits"
+                          : can_vaporize(mdef->data) ? "vaporizes part of"
+                          : mon_underwater(mdef)     ? "hits" : "burns",
+                          hittee, !gs.spec_dbon_applies ? '.' : '!');
+            }
             if (Slimed && (youattack || youdefend))
                 burn_away_slime();
 
@@ -1664,11 +1759,22 @@ artifact_hit(
         return realizes_damage;
     }
     if (attacks(AD_COLD, otmp)) {
-        if (realizes_damage)
-            pline_The("ice-cold blade %s %s%c",
-                      !gs.spec_dbon_applies ? "hits" : "freezes", hittee,
-                      !gs.spec_dbon_applies ? '.' : '!');
-
+        if (realizes_damage) {
+            if (otmp->oartifact) {
+                pline_The("ice-cold blade %s %s%c",
+                          !gs.spec_dbon_applies ? "hits" : "freezes", hittee,
+                          !gs.spec_dbon_applies ? '.' : '!');
+            } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
+                pline_The("%s %s %s%c",
+                          makesingular(distant_name(otmp, xname)),
+                          !gs.spec_dbon_applies
+                              ? "hits"
+                              : can_freeze(mdef->data)
+                                  ? "freezes part of"
+                                  : "freezes",
+                          hittee, !gs.spec_dbon_applies ? '.' : '!');
+            }
+        }
         if (mdef->data == &mons[PM_WATER_ELEMENTAL]) {
             if (youdefend) {
                 You("explode into shards of ice!");
@@ -1689,6 +1795,7 @@ artifact_hit(
     }
     if (attacks(AD_ELEC, otmp)) {
         if (realizes_damage) {
+            if (otmp->oartifact) {
             if (otmp->oartifact == ART_MJOLLNIR) {
                 pline_The("massive hammer hits%s %s%c",
                           !gs.spec_dbon_applies ? "" : "!  Lightning strikes",
@@ -1696,6 +1803,14 @@ artifact_hit(
             } else if (otmp->oartifact == ART_THUNDERFISTS) {
                 pline_The("thundering fists %s %s.",
                           rn2(2) ? "pummel" : "strike", hittee);
+            }
+            } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
+                pline_The("%s %s %s%c",
+                          makesingular(distant_name(otmp, xname)),
+                          !gs.spec_dbon_applies
+                              ? "hits"
+                              : rn2(2) ? "jolts" : "shocks",
+                          hittee, !gs.spec_dbon_applies ? '.' : '!');
             }
         }
         if (gs.spec_dbon_applies)
@@ -1719,7 +1834,8 @@ artifact_hit(
     /* Fifth basic attack - acid (for the new and improved Dirge... DIRGE) */
     if (attacks(AD_ACID, otmp)) {
         if (realizes_damage) {
-            pline_The("acidic blade %s %s%c",
+            if (otmp->oartifact) {
+                pline_The("acidic blade %s %s%c",
                       !gs.spec_dbon_applies
                           ? "hits"
                           : can_corrode(mdef->data)
@@ -1727,6 +1843,15 @@ artifact_hit(
                               : def_underwater
                                   ? "hits" : "burns",
                       hittee, !gs.spec_dbon_applies ? '.' : '!');
+            } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
+                pline_The("%s %s %s%c",
+                          makesingular(distant_name(otmp, xname)),
+                          !gs.spec_dbon_applies        ? "hits"
+                          : can_corrode(mdef->data) ? "eats away part of"
+                          : mon_underwater(mdef)    ? "hits"
+                                                    : "burns",
+                          hittee, !gs.spec_dbon_applies ? '.' : '!');
+            }
         }
         if (!def_underwater) {
             if (!rn2(5)) {
@@ -1741,6 +1866,41 @@ artifact_hit(
         return realizes_damage;
     }
 
+    /* Sixth basic attack - poison */
+    if (attacks(AD_DRST, otmp)) {
+         if (youattack) {
+            if (Role_if(PM_SAMURAI)) {
+                You("dishonorably use a poisoned weapon!");
+                adjalign(-sgn(u.ualign.type));
+            } else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) {
+                You_feel("like an evil coward for using a poisoned weapon.");
+                adjalign(Role_if(PM_KNIGHT) ? -10 : -1);
+            }
+        }
+        if (realizes_damage) {
+            pline_The("%s %s %s%c", makesingular(distant_name(otmp, xname)),
+                      (resists_poison(mdef) || defended(mdef, AD_DRST))
+                          ? "hits" : rn2(2) ? "infects" : "poisons",
+                      hittee, !gs.spec_dbon_applies ? '.' : '!');
+            *dmgptr += rnd(2) + rnd(6);
+
+        	if (youdefend) {
+            	*dmgptr = resist_reduce(*dmgptr, POISON_RES);
+            	if (*dmgptr >= (Upolyd ? u.mh : u.uhp))
+                	pline_The("poison was deadly...");
+                else
+                    if (gs.spec_dbon_applies && !rn2(8))
+                		poisoned("blade", A_STR, "poisoned blade", 30, FALSE);
+        	} else if (!rn2(10)) {
+            	*dmgptr = 2 * (youdefend ? Upolyd ? u.mh : u.uhp
+                                             : mdef->mhp) + FATAL_DAMAGE_MODIFIER;
+            	if (*dmgptr >= mdef->mhp)
+                	pline_The("poison was deadly...");
+        	}
+		}
+        return realizes_damage;
+    }
+
     /* disease attack  */
     if (attacks(AD_DISE, otmp)) {
         boolean elf = youdefend ? maybe_polyd(is_elf(gy.youmonst.data),
@@ -1749,6 +1909,8 @@ artifact_hit(
         boolean no_sick = youdefend ? Sick_resistance
                                     : (resists_sick(mdef->data)
                                        || defended(mdef, AD_DISE));
+        boolean grim = otmp->oartifact == ART_GRIMTOOTH;
+
         if (youattack) {
             if (Role_if(PM_SAMURAI)) {
                 You("dishonorably use a diseased weapon!");
@@ -1766,7 +1928,7 @@ artifact_hit(
                       hittee, !gs.spec_dbon_applies ? '.' : '!');
         }
 
-        if (!rn2(10) && elf) {
+        if (!rn2(10) && grim && elf) {
             if (show_instakill)
                 pline("The cruel blade penetrates %s soft flesh, disemboweling %s!",
                     youdefend ? "your" : s_suffix(mon_nam(mdef)),
@@ -1826,6 +1988,10 @@ artifact_hit(
                     pline_The("staff sprays a %s %s at %s!", rndcolor(),
                               (rn2(2) ? "gas" : "mist"), hittee);
                 }
+            } else if (otmp->oclass == WEAPON_CLASS || otmp == uarms) {
+                pline_The("%s sprays %s at %s!",
+                          makesingular(distant_name(otmp, xname)),
+                              (rn2(2) ? "gas" : "mist"), hittee);
             }
 
             if (youdefend &&
@@ -2284,7 +2450,7 @@ artifact_hit(
         return TRUE;
     }
 
-    if (spec_ability(otmp, SPFX_DRLI)) {
+    if (attacks(AD_DRLI, otmp) || spec_ability(otmp, SPFX_DRLI)) {
         /* some non-living creatures (golems, vortices) are vulnerable to
            life drain effects so can get "<Arti> draws the <life>" feedback */
         const char *life = nonliving(mdef->data) ? "animating force" : "life";
@@ -2308,6 +2474,10 @@ artifact_hit(
                 if (is_art(otmp, ART_STORMBRINGER))
                     pline_The("%s blade draws the %s from %s!",
                               hcolor(NH_BLACK), life, mon_nam(mdef));
+                else if (otmp->oclass == WEAPON_CLASS || otmp == uarms)
+                    pline_The("%s draws the %s from %s!",
+                          distant_name(otmp, xname), life,
+                          mon_nam(mdef));
                 else
                     pline("%s draws the %s from %s!",
                           The(otmpname), life, mon_nam(mdef));
@@ -2349,6 +2519,9 @@ artifact_hit(
                 if (is_art(otmp, ART_STORMBRINGER))
                     pline_The("%s blade drains your %s!",
                               hcolor(NH_BLACK), life);
+                else if (otmp->oclass == WEAPON_CLASS || otmp == uarms)
+                    pline_The("deadly %s drains your %s!",
+                              distant_name(otmp, xname), life);
                 else
                     pline("%s drains your %s!", The(otmpname), life);
             }
@@ -3952,4 +4125,571 @@ permapoisoned(struct obj *obj)
 {
     return (obj && is_art(obj, ART_GRIMTOOTH));
 }
+
+/* Create an item with special properties, or grant the item those properties */
+struct obj *
+create_oprop(struct obj *obj, boolean allow_detrimental)
+{
+    struct obj *otmp = obj;
+    int i, j;
+
+    if (!otmp) {
+        int type = 0, skill = P_NONE,
+            candidates[128], ccount,
+            threshold = P_EXPERT;
+        /* This probably is only ever done for weapons, y'know?
+         * Find an appropriate type of weapon */
+        while (threshold > P_UNSKILLED) {
+            ccount = 0;
+            for (i = P_FIRST_WEAPON; i < P_LAST_WEAPON; i++) {
+                if (P_MAX_SKILL(i) >= max(threshold, P_BASIC)
+                    && P_SKILL(i) >= threshold)
+                    candidates[ccount++] = i;
+                if (ccount >= 128)
+                    break;
+            }
+            if (ccount == 0) {
+                threshold--;
+                continue;
+            }
+            skill = candidates[rn2(ccount)];
+            ccount = 0;
+            for (i = ARROW; i <= CROSSBOW; i++) {
+                if (abs(objects[i].oc_skill) == skill)
+                    candidates[ccount++] = i;
+                if (ccount == 128)
+                    break;
+            }
+            if (!ccount) {
+                impossible("found no weapons for skill %d?", skill);
+                threshold--;
+                continue;
+            }
+            type = candidates[rn2(ccount)];
+            break;
+        }
+        /* Now make one, if we can */
+        if (type != 0)
+            otmp = mksobj(type, TRUE, FALSE);
+        else
+            otmp = mkobj(WEAPON_CLASS, FALSE);
+    }
+
+    /* Don't spruce up certain objects */
+    if (otmp->oartifact || objects[otmp->otyp].oc_unique)
+        return otmp;
+    /* already magical items obtain properties a tenth as often */
+    else if ((objects[otmp->otyp].oc_magic) && rn2(10))
+        return otmp;
+    else if (otmp && Is_dragon_armor(otmp))
+        return otmp;
+
+    /* properties only added to weapons, armor, and rings */
+    if (otmp->oclass != WEAPON_CLASS && !is_weptool(otmp)
+          && otmp->oclass != ARMOR_CLASS
+             && otmp->oclass != RING_CLASS)
+        return otmp;
+
+    /* it is possible to have an object spawn with more
+     * than one object property, but the odds are so low
+     * that if it happens, well good for you */
+    while (!otmp->oprops || !rn2(100000)) {
+        i = rn2(MAX_ITEM_PROPS);
+        j = 1 << i; /* pick an object property */
+
+        if (otmp->oprops & j) /* Same oprop already exists */
+            continue;
+
+        if ((j & ITEM_BAD_PROPS) && !allow_detrimental)
+            continue;
+
+        /* Launchers can have defensive properties, but not offensive */
+        if (is_launcher(otmp)
+            &&  (j & (ITEM_RES_PROPS)))
+            continue;
+        else if ((is_ammo(otmp) || is_missile(otmp))
+            && (j & (ITEM_GOOD_PROPS | ITEM_BAD_PROPS
+                     | ONLY_ARM_PROPS | ONLY_WEP_PROPS)))
+            continue;
+        /* check for restrictions */
+        else if ((otmp->oclass == WEAPON_CLASS || is_weptool(otmp))
+            && (j & ONLY_ARM_PROPS))
+            continue;
+
+#if 0 /* TODO: Implement */
+        /* Oilskin property can only appear on cloth items */
+        if (j & ITEM_OILSKIN && otmp->material != CLOTH)
+            continue;
+#endif
+
+        if ((otmp->oclass == ARMOR_CLASS || otmp->oclass == RING_CLASS)
+              && (j & ONLY_WEP_PROPS))
+            continue;
+
+#if 0 /* TODO: Implement */
+        /* Burden doesn't really affect ring weight much */
+        if (otmp->oclass == RING_CLASS && j & ITEM_BURDEN)
+            continue;
+#endif
+
+        if ((otmp->oprops & ITEM_RES_PROPS) && (j & ITEM_RES_PROPS))
+            continue; /* these are mutually exclusive */
+
+        if (is_redundant_prop(otmp, j))
+            continue;
+
+        otmp->oprops |= j;
+    }
+
+    /* Fix it up as necessary */
+    if (otmp->oprops && !(otmp->oprops & ITEM_BAD_PROPS)) {
+        if (!rn2(8)) {
+            blessorcurse(otmp, 8);
+            if (otmp->cursed) {
+                if (!otmp->spe)
+                    otmp->spe = -rne(3);
+                else
+                    otmp->spe -= rnd(2); /* Item already exists? */
+            } else {
+                if (!otmp->spe)
+                    otmp->spe = rne(3);
+                else if (otmp->spe <= 3)
+                    otmp->spe += rnd(2);
+            }
+        }
+    }
+
+    if (otmp->oprops & (ITEM_BAD_PROPS)) {
+        if (!otmp->cursed)
+            curse(otmp);
+        if (!otmp->spe)
+            otmp->spe = -rne(3);
+        else
+            otmp->spe -= rnd(2);
+    }
+    return otmp;
+}
+
+boolean
+is_redundant_prop(struct obj *otmp, int prop)
+{
+    int i;
+
+    /* Alchemy smock is the king of exceptions */
+    if (otmp->otyp == ALCHEMY_SMOCK && (prop & (ITEM_ACID | ITEM_VENOM)))
+        return TRUE;
+
+    for (i = 0; i < MAX_ITEM_PROPS; i++) {
+        if (otmp->otyp == prop_lookup[i].prop && (prop & prop_lookup[i].flag))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
+    { FIRE_RES,          ITEM_FIRE },
+    { COLD_RES,          ITEM_FROST },
+    { SHOCK_RES,         ITEM_SHOCK },
+    { POISON_RES,        ITEM_VENOM },
+    { ACID_RES,          ITEM_ACID },
+    { DRAIN_RES,         ITEM_DRAIN },
+    { SLEEP_RES,         ITEM_SLEEP },
+    { TELEPAT,           ITEM_ESP },
+    { SEARCHING,         ITEM_SEARCH },
+    { SEE_INVIS,         ITEM_INSIGHT },
+    { FUMBLING,          ITEM_FUMBLE },
+    { STEALTH,           ITEM_STEALTH },
+    { HUNGER,            ITEM_HUNGER },
+    { WARNING,           ITEM_WARN },
+    { SICK_RES,          ITEM_FILTH },
+#if 0
+    { SONIC_RES,         ITEM_SCREAM },
+    { STONE_RES,         ITEM_FLEX },
+    { INFRAVISION,       ITEM_DANGER },
+    { FEARLESS,          ITEM_RAGE },
+    { AGGRAVATE_MONSTER, ITEM_STENCH },
+    { TELEPORT,          ITEM_TELE },
+    { SLOW,              ITEM_SLOW },
+    { FIXED_ABIL,        ITEM_SUSTAIN },
+    { STABLE,            ITEM_BURDEN },
+    { WWALKING,          ITEM_SURF },
+    { SWIMMING,          ITEM_SWIM }
+#endif
+};
+
+boolean obj_has_prop(struct obj *obj, int which)
+{
+    boolean is_non_weapon = (obj->oclass != WEAPON_CLASS && !is_weptool(obj));
+    int i;
+
+    if (objects[obj->otyp].oc_oprop == which)
+        return TRUE;
+
+    if (!obj->oprops)
+        return FALSE;
+
+    for (i = 0; i < MAX_ITEM_PROPS; i++) {
+        if (prop_lookup[i].prop == which) {
+            return !!(is_non_weapon && (obj->oprops & prop_lookup[i].flag));
+        }
+    }
+    return FALSE;
+}
+
+
+/* Find properties the object has inherently and remove the
+ * redundant ones. The purpose of this function is to prevent
+ * items like "a ring of fire resistance of fire".
+ *
+ * Maybe we can even combine with is_redundant_prop... */
+long
+rm_redundant_oprops(struct obj *otmp, long objprops)
+{
+ 	if (otmp->otyp == ALCHEMY_SMOCK)
+        objprops &= ~(ITEM_ACID | ITEM_VENOM);
+    if (otmp->otyp == FUMBLE_BOOTS)
+        objprops &= ~ITEM_FUMBLE;
+#if 0 /* TODO: Cleanup */
+    if (is_helmet(otmp))
+        objprops &= ~ITEM_ESP;
+    if (otmp->material != CLOTH)
+        objprops &= ~ITEM_OILSKIN;
+    if (otmp->otyp == OILSKIN_CLOAK)
+        objprops &= ~ITEM_OILSKIN;
+    if (otmp->otyp == ROGUES_GLOVES)
+        objprops &= ~ITEM_SEARCH;
+    if (otmp->otyp == ROGUES_GLOVES)
+        objprops &= ~ITEM_SEARCH;
+    if (otmp->otyp == GAUNTLETS_OF_FUMBLING)
+        objprops &= ~ITEM_FUMBLE;
+    if (otmp->otyp == GAUNTLETS_OF_SWIMMING)
+        objprops &= ~ITEM_SWIM;
+    if (otmp->otyp == WATER_WALKING_BOOTS)
+        objprops &= ~ITEM_SURF;
+    if (otmp->otyp == RESONANT_SHIELD)
+        objprops &= ~ITEM_SCREAM;
+    if (otmp->otyp == ELVEN_CLOAK)
+        objprops &= ~ITEM_STEALTH;
+    if (otmp->otyp == ELVEN_BOOTS)
+        objprops &= ~ITEM_STEALTH;
+#endif
+    return objprops;
+}
+
+void
+propnames(char *buf, long props,
+          boolean weapon, boolean has_of)
+{
+    char of[6];
+
+    Strcpy(of, (has_of) ? " and" : " of");
+    if (props & ITEM_FIRE) {
+        Strcat(buf, of), Strcat(buf, weapon ? " fire" : " fire resistance"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_FROST) {
+        Strcat(buf, of), Strcat(buf, weapon ? " frost" : " cold resistance"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_SHOCK) {
+        Strcat(buf, of), Strcat(buf, weapon ? " shock" : " shock resistance"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_VENOM) {
+        Strcat(buf, of), Strcat(buf, weapon ? " venom" : " poison resistance"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_ACID) {
+        Strcat(buf, of), Strcat(buf, weapon ? " acid" : " acid resistance"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_DRAIN) {
+        Strcat(buf, of), Strcat(buf, weapon ? " draining" : " drain resistance"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_SLEEP) {
+        Strcat(buf, of), Strcat(buf, weapon ? " sleep" : " alertness"),
+                Strcpy(of, " and");
+    }
+    if (props & ITEM_ESP) {
+        Strcat(buf, of), Strcat(buf, " telepathy"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_SEARCH) {
+        Strcat(buf, of), Strcat(buf, " searching"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_STEALTH) {
+        Strcat(buf, of), Strcat(buf, " stealth"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_FUMBLE) {
+        Strcat(buf, of), Strcat(buf, " fumbling"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_HUNGER) {
+        Strcat(buf, of), Strcat(buf, " hunger"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_WARN) {
+        Strcat(buf, of), Strcat(buf, " warning"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_FILTH) {
+        Strcat(buf, of), Strcat(buf, weapon ? " filth" : " health"),
+                Strcpy(of, " and");
+    }
+    if (props & ITEM_INSIGHT) {
+        Strcat(buf, of), Strcat(buf, " insight"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_CHA) {
+        Strcat(buf, of), Strcat(buf, " charisma"),
+               Strcpy(of, " and");
+    }
+
+#if 0 /* TODO: IMPLEMENT */
+    if (props & ITEM_SCREAM) {
+        Strcat(buf, of), Strcat(buf, weapon ? " scream" : " sonic resistance"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_FLEX) {
+        Strcat(buf, " versus stone"), Strcpy(of, " and");
+    }
+    if (props & ITEM_DANGER) {
+        Strcat(buf, of), Strcat(buf, of), Strcat(buf, " danger"),
+            Strcpy(of, " and");
+    }
+    if (props & ITEM_RAGE) {
+        Strcat(buf, of), Strcat(buf, " rage"),
+        Strcpy(of, " and");
+    }
+    if (props & ITEM_PROWESS) {
+        Strcat(buf, of), Strcat(buf, " prowess"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_VIGIL) {
+        Strcat(buf, of), Strcat(buf, " vigilance"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_STENCH) {
+        Strcat(buf, of), Strcat(buf, " stench"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_TELE) {
+        Strcat(buf, of), Strcat(buf, " teleportation"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_SLOW) {
+        Strcat(buf, of), Strcat(buf, " lethargy"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_SUSTAIN) {
+        Strcat(buf, of), Strcat(buf, " sustainability"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_BURDEN) {
+        Strcat(buf, of), Strcat(buf, " burden"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_SURF) {
+        Strcat(buf, of), Strcat(buf, " surfing"),
+               Strcpy(of, " and");
+    }
+    if (props & ITEM_SWIM) {
+        Strcat(buf, of), Strcat(buf, " swimming"),
+               Strcpy(of, " and");
+    }
+#endif
+}
+
+struct obj *
+using_oprop(long oprop)
+{
+    struct obj *otmp;
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+        if (otmp->oprops & oprop && is_worn(otmp))
+            return otmp;
+    }
+    return (struct obj *) 0;
+}
+
+void
+oprops_on(struct obj *otmp, long mask)
+{
+    long props = otmp->oprops;
+
+    if (props & ITEM_FIRE)
+        EFire_resistance |= mask;
+    if (props & ITEM_FROST)
+        ECold_resistance |= mask;
+    if (props & ITEM_SHOCK)
+        EShock_resistance |= mask;
+    if (props & ITEM_ACID)
+        EAcid_resistance |= mask;
+    if (props & ITEM_DRAIN)
+        EDrain_resistance |= mask;
+    if (props & ITEM_VENOM)
+        EPoison_resistance |= mask;
+    if (props & ITEM_SLEEP)
+        ESleep_resistance |= mask;
+    if (props & ITEM_FILTH)
+        ESick_resistance |= mask;
+    if (props & ITEM_ESP) {
+        ETelepat |= mask;
+        see_monsters();
+    }
+    if (props & ITEM_SEARCH)
+        ESearching |= mask;
+    if (props & ITEM_STEALTH)
+        EStealth |= mask;
+    if (props & ITEM_INSIGHT) {
+        ESee_invisible |= mask;
+        toggle_seeinv(otmp, (ESee_invisible & ~mask), TRUE);
+    }
+    if (props & ITEM_FUMBLE) {
+        if (!EFumbling && !(HFumbling & ~TIMEOUT))
+            incr_itimeout(&HFumbling, rnd(20));
+        EFumbling |= mask;
+    }
+    if (props & ITEM_HUNGER)
+        EHunger |= mask;
+    if (props & ITEM_WARN) {
+        EWarning |= mask;
+        see_monsters();
+    }
+    if (props & ITEM_CHA) {
+        (void) changes_stat(ITEM_CHA);
+    }
+#if 0
+    if (props & ITEM_OILSKIN) {
+        pline("%s very tightly.", Tobjnam(otmp, "fit"));
+        otmp->oprops_known |= ITEM_OILSKIN;
+    }
+    if (props & ITEM_EXCEL) {
+        int which = A_CHA, old_attrib = ACURR(which);
+        /* HoB and GoD adjust CHA in adj_abon() */
+        if (otmp->otyp != HELM_OF_BRILLIANCE
+            && otmp->otyp != GAUNTLETS_OF_DEXTERITY)
+            /* borrowing this from Ring_on() as I may want
+               to add other attributes in the future */
+            ABON(which) += otmp->spe;
+        if (old_attrib != ACURR(which))
+            otmp->oprops_known |= ITEM_EXCEL;
+        set_moreluck();
+        context.botl = 1;
+    }
+#endif
+}
+
+void
+oprops_off(struct obj *otmp, long mask)
+{
+    long props = otmp->oprops;
+
+    if (props & ITEM_FIRE)
+        EFire_resistance &= ~mask;
+    if (props & ITEM_FROST)
+        ECold_resistance &= ~mask;
+    if (props & ITEM_SHOCK)
+        EShock_resistance &= ~mask;
+    if (props & ITEM_VENOM)
+        EPoison_resistance &= ~mask;
+    if (props & ITEM_ACID)
+        EAcid_resistance &= ~mask;
+    if (props & ITEM_DRAIN)
+        EDrain_resistance &= ~mask;
+    if (props & ITEM_SLEEP)
+        ESleep_resistance &= ~mask;
+    if (props & ITEM_FILTH)
+        ESick_resistance &= ~mask;
+
+    if (props & ITEM_ESP) {
+        ETelepat &= ~mask;
+        see_monsters();
+    }
+    if (props & ITEM_SEARCH)
+        ESearching &= ~mask;
+    if (props & ITEM_INSIGHT) {
+        ESee_invisible &= ~mask;
+        toggle_seeinv(otmp, (ESee_invisible & ~mask), FALSE);
+    }
+    if (props & ITEM_STEALTH)
+        EStealth &= ~mask;
+    if (props & ITEM_FUMBLE) {
+        EFumbling &= ~mask;
+    	if (!EFumbling && !(HFumbling & ~TIMEOUT))
+        	HFumbling = EFumbling = 0L;
+    }
+    if (props & ITEM_HUNGER)
+        EHunger &= ~mask;
+    if (props & ITEM_WARN) {
+        EWarning &= ~mask;
+        see_monsters();
+    }
+     if (props & ITEM_CHA) {
+        (void) changes_stat(ITEM_CHA);
+    }
+#if 0
+    if (props & ITEM_OILSKIN)
+        otmp->oprops_known |= ITEM_OILSKIN;
+
+    if (props & ITEM_EXCEL) {
+        int which = A_CHA, old_attrib = ACURR(which);
+        /* HoB and GoD adjust CHA in adj_abon() */
+        if (otmp->otyp != HELM_OF_BRILLIANCE
+            && otmp->otyp != GAUNTLETS_OF_DEXTERITY)
+            /* borrowing this from Ring_off() as I may want
+               to add other attributes in the future */
+            ABON(which) -= otmp->spe;
+        if (old_attrib != ACURR(which))
+            otmp->oprops_known |= ITEM_EXCEL;
+        otmp->oprops &= ~ITEM_EXCEL;
+        set_moreluck();
+        otmp->oprops |= ITEM_EXCEL;
+        context.botl = 1;
+    }
+#endif
+}
+
+/** Returns the bonus available for wearing/wielding
+  * items with the specified property
+  **/
+schar
+calc_prop_bonus(long prop)
+{
+    struct obj *otmp = using_oprop(prop);
+    schar bonus = 0;
+
+    /* TODO: Handle having 2 or more items with the same prop and different BUC... */
+    for (otmp = gi.invent; otmp; otmp = otmp->nobj)
+        if (otmp->oprops & prop && otmp->owornmask) {
+            if (otmp->cursed)
+                bonus -= (schar) 2;
+            else if (otmp->blessed)
+                bonus += (schar) 2;
+            else
+                bonus += (schar) 1;
+    }
+    return bonus;
+}
+
+/** Checks if an property will affect any stats.
+  * If it does, we'll update the display.
+  **/
+boolean
+changes_stat(long prop)
+{
+    int c;
+    for (c = 0; c < A_MAX; c++) {
+        int old_attrib = ACURR(c);
+        if (calc_prop_bonus(prop) != old_attrib) {
+            disp.botl = 1;
+            update_inventory();
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 /*artifact.c*/

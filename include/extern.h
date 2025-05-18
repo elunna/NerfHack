@@ -200,6 +200,15 @@ extern int arti_align(int);
 extern struct obj *get_faux_artifact_obj(const char *);
 extern struct art_info_t artifact_info(int);
 extern boolean permapoisoned(struct obj *);
+extern struct obj *create_oprop(struct obj *, boolean);
+extern boolean obj_has_prop(struct obj *, int);
+extern long rm_redundant_oprops(struct obj *, long);
+extern void propnames(char *, long, boolean, boolean);
+extern struct obj *using_oprop (long);
+extern void oprops_on(struct obj *, long);
+extern void oprops_off(struct obj *, long);
+extern schar calc_prop_bonus(long);
+extern boolean changes_stat(long);
 
 /* ### attrib.c ### */
 
@@ -781,6 +790,8 @@ extern int race_bonus(struct obj *) NONNULLARG1;
 extern int pole_bonus(struct obj *) NONNULLARG1;
 extern int ringbon(short);
 extern boolean will_touch_skin(long);
+extern void toggle_stealth(struct obj *, long, boolean);
+extern void toggle_seeinv(struct obj *, long, boolean);
 
 /* ### dog.c ### */
 

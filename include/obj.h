@@ -71,6 +71,7 @@ struct obj {
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
     char oartifact; /* artifact array index */
+    long oprops;       /* item properties */
 
     xint8 where;        /* where the object thinks it is */
 #define OBJ_FREE 0      /* object not attached to anything */
@@ -682,5 +683,60 @@ struct art_info_t {
     const char* xinfo;
     char* dbldmg;
 };
+
+
+/* object properties */
+
+/* When adding new properties:
+ * - IMPORTANT: Update the MAX_ITEM_PROPS and ITEM_PROP_MASK!
+ * - Also update ITEM_RES_PROPS, ITEM_GOOD_PROPS, and ITEM_BAD_PROPS below.
+ * - Also, check existing items for properties that would be redundant and add
+ *   them to is_redundant_prop and rm_redundant_oprops.
+ */
+#define ITEM_FIRE        0x00000001L /* fire damage or resistance */
+#define ITEM_FROST       0x00000002L /* frost damage or resistance */
+#define ITEM_SLEEP       0x00000004L /* sleep resistance */
+#define ITEM_SHOCK       0x00000008L /* shock damage or resistance */
+
+#define ITEM_VENOM       0x00000010L  /* poison damage or resistance */
+#define ITEM_ACID        0x00000020L /* acid damage or resistance */
+#define ITEM_DRAIN       0x00000040L /* drains life or resistance */
+#define ITEM_FILTH       0x00000080L /* disease damage or sickness resistance */
+
+#define ITEM_ESP         0x00000100L /* telepathy */
+#define ITEM_SEARCH      0x00000200L  /* searching */
+#define ITEM_STEALTH     0x00000400L /* stealth */
+#define ITEM_WARN        0x00000800L /* warning */
+
+#define ITEM_INSIGHT     0x00001000L /* see invisible */
+#define ITEM_CHA         0x00002000L /* charisma boost */
+#define ITEM_FUMBLE      0x00004000L /* fumbling */
+#define ITEM_HUNGER      0x00008000L /* hunger */
+
+#define ITEM_PROP_MASK   0x0000FFFFL /* all current properties */
+#define MAX_ITEM_PROPS            16
+
+/* Property and otyp property lookup table */
+struct PropTypes{
+    int prop;
+    int flag;
+};
+
+extern const struct PropTypes prop_lookup[]; /* table of properties */
+
+/* Properties that grant both a worn resistance and attack type */
+#define ITEM_RES_PROPS (ITEM_FIRE | ITEM_FROST | ITEM_SHOCK | ITEM_VENOM \
+                      | ITEM_ACID | ITEM_DRAIN | ITEM_SLEEP | ITEM_FILTH)
+/* Positive properties */
+#define ITEM_GOOD_PROPS (ITEM_ESP | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
+                         | ITEM_INSIGHT | ITEM_CHA)
+/* Negative properties */
+#define ITEM_BAD_PROPS (ITEM_FUMBLE | ITEM_HUNGER)
+
+#define ONLY_ARM_PROPS (ITEM_ESP)
+/* Tend to give only weapons the props that appear naturally on
+ * items like armor and rings. For exaple, stealth is already
+ * provided by the elven cloak, elven boots, and ring of stealth.  */
+#define ONLY_WEP_PROPS (ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN)
 
 #endif /* OBJ_H */

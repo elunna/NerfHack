@@ -2089,6 +2089,16 @@ poly_obj(struct obj *obj, int id)
     if (obj->opoisoned && is_poisonable(otmp))
         otmp->opoisoned = 1;
 
+    /* Maybe copy properties over. Depends on luck,
+     * the percent is chance of success:
+     *  LUCK:     <0      0     +2     +5     +8    +11
+     * 	SUCCESS: 0.5%  20.0%  39.5%  59.0%  78.5%  98.0%
+     *
+     * A cursed object always has its properties wiped.
+     */
+    if (obj->oprops && !obj->cursed && rnl(5) == 0) {
+        otmp->oprops = obj->oprops;
+    }
     if (id == STRANGE_OBJECT && obj->otyp == CORPSE) {
         /* turn crocodile corpses into shoes */
         if (obj->corpsenm == PM_CROCODILE) {

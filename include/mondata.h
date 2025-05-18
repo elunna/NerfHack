@@ -418,7 +418,12 @@
 
 /* Is an iron piercer really made of iron?? */
 #define can_corrode(ptr) \
-((ptr) == &mons[PM_IRON_GOLEM] || (ptr) == &mons[PM_IRON_PIERCER])
+    ((ptr) == &mons[PM_IRON_GOLEM] || (ptr) == &mons[PM_IRON_PIERCER])
+
+#define can_vaporize(ptr) \
+    ((ptr) == &mons[PM_WATER_ELEMENTAL]  || (ptr) == &mons[PM_ICE_VORTEX])
+
+#define can_freeze(ptr) ((ptr) == &mons[PM_WATER_ELEMENTAL])
 
 /* various monsters move faster underwater vs on land */
 #define is_fast_underwater(ptr)         \
