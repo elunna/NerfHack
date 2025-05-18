@@ -724,8 +724,10 @@ xname_flags(
 
     /* Cartomancers are masters of cards, they know everything about them. */
     if (carto && obj->otyp == RAZOR_CARD) {
-        obj->known = 1;
-        obj->bknown = 1;
+        if (u.ulevel >= 7)
+            obj->known = 1;
+        if (u.ulevel >= 15)
+            obj->bknown = 1;
     }
 
     if (iflags.override_ID) {
