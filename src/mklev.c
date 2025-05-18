@@ -1653,6 +1653,8 @@ makelevel(void)
             do_mkroom(ZOO);
         else if (u_depth > 7 && !rn2(25))
             do_mkroom(FUNGUSFARM);
+        else if (u_depth > 8 && !rn2(5))
+            do_mkroom(TEMPLE);
         else if (u_depth > 9 && !rn2(5)
                  && !(svm.mvitals[PM_KILLER_BEE].mvflags & G_GONE))
             do_mkroom(BEEHIVE);
@@ -1674,8 +1676,6 @@ makelevel(void)
         else if (u_depth > 16 && !rn2(8)
                  && !(svm.mvitals[PM_COCKATRICE].mvflags & G_GONE))
             do_mkroom(COCKNEST);
-        else if (u_depth > 14 && !rn2(5))
-            do_mkroom(TEMPLE);
         else if (u_depth > 16 && !rn2(4))
             do_mkroom(DRAGONLAIR);
         else if (u_depth > 18 && !rn2(6)
