@@ -20,7 +20,7 @@ struct _readobjnam_data {
     const char *name;
     char *p;
     int cnt, spe, spesgn, typ, very, rechrg;
-    int blessed, uncursed, iscursed, ispoisoned, isgreased;
+    int blessed, uncursed, iscursed, ispoisoned, isgreased, quality;
     int eroded, eroded2, erodeproof, locked, unlocked, broken, real, fake;
     int halfeaten, mntmp, contents;
     int islit, unlabeled, ishistoric, isdiluted, trapped;
@@ -788,6 +788,12 @@ xname_flags(
     case WEAPON_CLASS:
         if (is_poisonable(obj) && obj->opoisoned)
             Strcpy(buf, "poisoned ");
+        if (obj->bquality == FQ_SUPERIOR)
+            Strcat(buf, "superior ");
+        else if (obj->bquality == FQ_EXCEPTIONAL)
+            Strcat(buf, "exceptional ");
+        else if (obj->bquality == FQ_INFERIOR)
+            Strcat(buf, "inferior ");
         FALLTHROUGH;
         /*FALLTHRU*/
     case VENOM_CLASS:
@@ -4211,7 +4217,7 @@ readobjnam_init(char *bp, struct _readobjnam_data *d)
         = d->trapped = d->locked = d->unlocked = d->broken
         = d->open = d->closed = d->doorless /* wizard mode door */
         = d->looted /* wizard mode fountain/sink/throne/tree and grave */
-        = d->real = d->fake = 0; /* Amulet */
+        = d->real = d->fake = d->quality = 0; /* Amulet */
     d->tvariety = RANDOM_TIN;
     d->mgend = -1; /* not specified, aka random */
     d->mntmp = NON_PM;
@@ -4304,6 +4310,14 @@ readobjnam_preparse(struct _readobjnam_data *d)
             d->unlabeled = 1;
         } else if (!strncmpi(d->bp, "poisoned ", l = 9)) {
             d->ispoisoned = 1;
+
+        /* build quality */
+        } else if (!strncmpi(d->bp, "inferior ", l = 9)) {
+            d->quality = 1;
+        } else if (!strncmpi(d->bp, "superior ", l = 9)) {
+            d->quality = 2;
+        } else if (!strncmpi(d->bp, "exceptional ", l = 12)) {
+            d->quality = 3;
 
         /* "trapped" recognized but not honored outside wizard mode */
         } else if (!strncmpi(d->bp, "trapped ", l = 8)) {
@@ -5647,6 +5661,15 @@ readobjnam(char *bp, struct obj *no_wish)
             /* try to taint by making it as old as possible */
             d.otmp->age = 1L;
     }
+
+    /* set forge quality */
+    if (d.quality == 1)
+        d.otmp->bquality = FQ_INFERIOR;
+    if (d.quality == 2)
+        d.otmp->bquality = FQ_SUPERIOR;
+    if (d.quality == 3)
+        d.otmp->bquality = FQ_EXCEPTIONAL;
+
     /* and [un]trapped */
     if (d.trapped) {
         if (Is_box(d.otmp) || d.typ == TIN)
@@ -5733,9 +5756,14 @@ readobjnam(char *bp, struct obj *no_wish)
         pline("For a moment, you feel %s in your %s, but it disappears!",
               something, makeplural(body_part(HAND)));
         return d.otmp;
-    } else if (d.otmp->oartifact)
+    } else if (d.otmp->oartifact) {
         u.uconduct.wisharti++; /* KMH, conduct */
 
+        /* prevent artifacts from being wished for with
+           quality bit applied, adjust this if we want
+           certain artifacts to have a forged quality bit */
+        d.otmp->bquality = FQ_NORMAL;
+    }
     if (d.halfeaten && d.otmp->oclass == FOOD_CLASS) {
         unsigned nut = obj_nutrition(d.otmp);
 

@@ -409,6 +409,7 @@ m_initweap(struct monst *mtmp)
                                                   : LARGE_SHIELD,
                           FALSE, FALSE);
             /* uncurse(otmp); -- mksobj(,FALSE,) item is always uncursed */
+            otmp->bquality = rn2(5) ? FQ_NORMAL : FQ_SUPERIOR;
             otmp->oerodeproof = TRUE;
             otmp->spe = 0;
             (void) mpickobj(mtmp, otmp);
@@ -2682,10 +2683,14 @@ mongets(struct monst *mtmp, int otyp)
                 otmp->spe = 1;
             else if (otmp->oclass == ARMOR_CLASS && otmp->spe < 0)
                 otmp->spe = 0;
+            otmp->bquality = rn2(10) ? FQ_NORMAL
+                                       : rn2(20) ? FQ_SUPERIOR : FQ_EXCEPTIONAL;
         } else if (is_lord(mtmp->data)) {
             if ((otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS)
                 && otmp->spe < 0)
                 otmp->spe = rnd(3);
+            otmp->bquality = rn2(5) ? FQ_NORMAL
+                                       : rn2(10) ? FQ_SUPERIOR : FQ_EXCEPTIONAL;
         } else {
             /* Items frequently spawn used for lesser monsters to prevent
                late-game inventory bloat. */

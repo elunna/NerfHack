@@ -1675,6 +1675,13 @@ armor_bonus(struct monst *mon, struct obj *armor)
     /* add enchantment (could be negative) */
     bon += armor->spe;
 
+    if (armor->bquality == FQ_SUPERIOR)
+        bon += 1;
+    else if (armor->bquality == FQ_EXCEPTIONAL)
+        bon += 2;
+    else if (armor->bquality == FQ_INFERIOR)
+        bon -= 2;
+
     /* add bonus for dragon-scaled armor */
     if (Is_dragon_scaled_armor(armor)) {
         bon += 3;

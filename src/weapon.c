@@ -468,6 +468,14 @@ dmgval_core(
                 "\tAdditional 1d8 against light hating monsters.";
         }
 
+        /* Build quality adjustments */
+        if (otmp->bquality == FQ_INFERIOR)
+            bonus -= 2;
+        if (otmp->bquality == FQ_SUPERIOR)
+            bonus += 1;
+        if (otmp->bquality == FQ_EXCEPTIONAL)
+            bonus += 2;
+
         /* if the weapon is going to get a double damage bonus, adjust
            this bonus so that effectively it's added after the doubling */
         if (bonus > 1 && otmp->oartifact && spec_dbon(otmp, mon, 25) >= 25)
@@ -488,11 +496,9 @@ dmgval_core(
         /* Low AC subtracts damage, just as it does with players */
         if (mac < 0)
             tmp -= rnd(-mac);
-
-        if (tmp < 1)
-            tmp = 1;
     }
-
+    if (tmp < 1)
+        tmp = 1;
     return tmp;
 }
 

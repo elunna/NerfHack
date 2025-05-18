@@ -170,6 +170,11 @@ struct obj {
 #define wep_kills usecount  /* number of kills a weapon has */
 #define spestudied usecount /* # of times a spellbook has been studied */
 #define wishedfor usecount  /* flag for hold_another_object() if from wish */
+    unsigned bquality;   /* build quality of a forged object */
+#define FQ_NORMAL        0  /* default value, all objects start out 'normal' quality */
+#define FQ_INFERIOR      1  /* obj quality is inferior */
+#define FQ_SUPERIOR      2  /* obj quality is superior */
+#define FQ_EXCEPTIONAL   3  /* obj quality is exceptional */
     unsigned oeaten;        /* nutrition left in food, if partly eaten */
     long age;               /* creation date */
     long owornmask;        /* bit mask indicating which equipment slot(s) an

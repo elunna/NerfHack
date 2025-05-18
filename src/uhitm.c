@@ -609,6 +609,19 @@ find_roll_to_hit(
     if (u.utrap)
         tmp -= 3;
 
+    /* higher quality weapons have a slightly greater
+       chance to hit, inferior ones not so much */
+    if (uwep) {
+        if (uwep->bquality == FQ_EXCEPTIONAL
+            || (u.twoweap && uswapwep->bquality == FQ_EXCEPTIONAL)) {
+            tmp += 1;
+        }
+        if (uwep->bquality == FQ_INFERIOR
+            || (u.twoweap && uswapwep->bquality == FQ_INFERIOR)) {
+            tmp -= 2;
+        }
+    }
+
     /*
      * hitval applies if making a weapon attack while wielding a weapon;
      * weapon_hit_bonus applies if doing a weapon attack even bare-handed
@@ -1542,8 +1555,11 @@ hmon_hitmon_weapon_melee(
                    && P_SKILL(wtype) >= P_SKILLED)
                && ((monwep = MON_WEP(mon)) != 0
                    && !is_flimsy(monwep)
+                   && monwep->bquality != FQ_EXCEPTIONAL
+                   && (monwep->bquality != FQ_SUPERIOR && rn2(2))
                    && !obj_resists(monwep,
-                                   50 + 15 * (greatest_erosion(obj)
+                                   (monwep->bquality == FQ_INFERIOR ? 30 : 50)
+                                       + 15 * (greatest_erosion(obj)
                                               - greatest_erosion(monwep)),
                                    100))) {
         static const char from_your_blow[] = " from the force of your blow!";

@@ -2838,6 +2838,13 @@ breaktest(struct obj *obj)
     if (objects[obj->otyp].oc_material == GLASS && !obj->oartifact
         && obj->oclass != GEM_CLASS)
         return TRUE;
+
+    /* armor and weapons of inferior quality can sometimes
+       fall apart with use */
+    if (obj->bquality == FQ_INFERIOR
+        && !obj->oartifact && (rn2(8) < 3))
+        return 1;
+
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case EXPENSIVE_CAMERA:
         if (Role_if(PM_CARTOMANCER))
@@ -2869,7 +2876,8 @@ breakmsg(struct obj *obj, boolean in_view)
     to_pieces = "";
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     default: /* glass or crystal wand */
-        if (obj->oclass != WAND_CLASS && obj->oclass != RING_CLASS)
+        if (obj->oclass != WAND_CLASS && obj->oclass != RING_CLASS
+            && obj->bquality != FQ_INFERIOR)
             impossible("breaking odd object (%d)?", obj->otyp);
         FALLTHROUGH;
         /*FALLTHRU*/

@@ -4285,6 +4285,17 @@ getprice(struct obj *obj, boolean shk_buying)
                 factor *= next, next = (next == 2) ? 5 : 2;
         tmp += factor;
     }
+    /* object price can also be affected by the build
+      quality of said object, currently this only
+      affects armor and weaponry */
+    if (obj->bquality) {
+        if (obj->bquality == FQ_INFERIOR)
+            tmp /= 2L;
+        else if (obj->bquality == FQ_SUPERIOR)
+            tmp *= 2L;
+        else if (obj->bquality == FQ_EXCEPTIONAL)
+            tmp *= 3L;
+    }
 
     /* object price is affected by its level of erosion,
        or if made erodeproof. oeroded and eroded2 can stack,

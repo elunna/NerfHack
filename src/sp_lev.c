@@ -2396,6 +2396,11 @@ create_object(object *o, struct mkroom *croom)
         otmp->oeroded = otmp->oeroded2 = 0;
         otmp->oerodeproof = 0;
     }
+    if (o->bquality) {
+        otmp->bquality = (o->bquality % 4);
+    } else {
+        otmp->bquality = 0; /* normal */
+    }
     if (o->recharged)
         otmp->recharged = (o->recharged % 8);
     if (o->locked == 0 || o->locked == 1) {
@@ -3695,7 +3700,7 @@ lspo_object(lua_State *L)
             0,       /* buried */
             0,       /* lit */
             0, 0, 0, 0, 0, /* eroded, locked, trapped, tknown, recharged */
-            0, 0, 0, 0, /* invis, greased, broken, achievement */
+            0, 0, 0, 0, 0, /* invis, greased, broken, achievement, bquality */
     };
 #if 0
     int nparams = 0;
