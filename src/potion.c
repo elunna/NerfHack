@@ -614,7 +614,6 @@ make_glib(int xtime)
 void
 make_fumbling(long xtime)
 {
-    impossible("fumbling!");
     set_itimeout(&HFumbling, xtime);
 
     if (xtime) {
