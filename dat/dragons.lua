@@ -20,9 +20,6 @@ des.level_init({ style="mines", fg=".", bg=" ", smoothed=true, joined=true, wall
 --RANDOM_MONSTERS: 'D','w'
 des.stair("up")
 
--- Special treasure
-des.object({ id = "obsidian",buc="uncursed",spe=0,name="The Glyph Shard" })
-
 for i = 1,28 do
    des.object("*")
 end

@@ -1753,6 +1753,13 @@ makemon(
         mitem = BELL_OF_OPENING;
     } else if (mndx == PM_PESTILENCE) {
         mitem = POT_SICKNESS;
+    } else if (mndx == PM_WINTERCLOAK) {
+        struct obj *otmp;
+        otmp = mksobj(OBSIDIAN, FALSE, FALSE);
+        otmp = oname(otmp, "The Glyph Shard", ONAME_RANDOM);
+        otmp->oerodeproof = TRUE;
+        (void) mpickobj(mtmp, otmp);
+
     }
     if (mitem != STRANGE_OBJECT && allow_minvent)
         (void) mongets(mtmp, mitem);
