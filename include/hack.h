@@ -1442,6 +1442,15 @@ typedef uint32_t mmflags_nht;     /* makemon MM_ flags */
 #define TELEDS_ALLOW_DRAG 1
 #define TELEDS_TELEPORT   2
 
+/* Flags used in the return from artifact_hit()
+ * note that anywhere that returns INSTAKILLMSG should probably also return
+ * GAVEMSG since INSTAKILLMSG implies a message was given.
+ * message is by definition a specially printed message. */
+#define ARTIFACTHIT_NOMSG        0x0
+#define ARTIFACTHIT_GAVEMSG      0x1 /* printed any special message at all,
+                                        incl. things like "miss wildly" */
+#define ARTIFACTHIT_INSTAKILLMSG 0x2 /* "Vorpal Blade decapitates foo!" &c */
+
 enum concealed_spot_returnflags {
     NOT_CONCEALABLE_SPOT   = 0x0,
     CONCEALABLE_BY_TERRAIN = 0x1,

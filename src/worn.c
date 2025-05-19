@@ -890,6 +890,8 @@ m_dowear_type(
         /* Don't select items our race isn't compatible with */
         if (hates_item(mon, obj->otyp))
             continue;
+        if (mon_hates_material(mon, obj->material))
+            continue;
 
         switch (flag) {
         case W_AMUL:
@@ -1663,7 +1665,8 @@ armor_bonus(struct monst *mon, struct obj *armor)
 
     /* start with its base AC value */
     bon = objects[armor->otyp].a_ac;
-
+    /* adjust for material */
+    bon += material_bonus(armor);
     /* subtract erosion */
     bon -= (int) greatest_erosion(armor);
 

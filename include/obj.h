@@ -146,14 +146,15 @@ struct obj {
     Bitfield(how_lost, 3);  /* stolen by mon or thrown, dropped by hero, etc */
 
     Bitfield(named_how, 1);  /* source of name per TODO in resetobjs() */
+    Bitfield(material, 5); /* material this obj is made of */
 #if 0
     /* not implemented */
     Bitfield(eknown, 1); /* effect known for wands zapped or rings worn when
                           * not seen yet after being picked up while blind
                           * [maybe for remaining stack of used potion too] */
-    /* 5 free bits */
+    /* 0 free bits */
 #else
-    /* 6 free bits */
+    /* 1 free bit */
 #endif
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
@@ -222,7 +223,7 @@ struct obj {
      && objects[otmp->otyp].oc_skill >= P_DAGGER \
      && objects[otmp->otyp].oc_skill <= P_SABER)
 #define is_curved(otmp) \
-    (otmp->otyp == SCIMITAR || otmp->otyp == SILVER_SABER \
+    (otmp->otyp == SCIMITAR || otmp->otyp == SABER \
     || otmp->otyp == KATANA)
 #define is_axe(otmp)                                              \
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
@@ -379,8 +380,8 @@ struct obj {
 
 /* Elven gear */
 #define is_elven_armor(otyp) \
-    (otyp == ELVEN_LEATHER_HELM \
-     || otyp == ELVEN_MITHRIL_COAT \
+    (otyp == ELVEN_HELM \
+     || otyp == ELVEN_RING_MAIL \
      || otyp == ELVEN_CLOAK \
      || otyp == ELVEN_SHIELD \
      || otyp == ELVEN_BOOTS)
@@ -412,8 +413,8 @@ struct obj {
 
 /* Dwarvish gear */
 #define is_dwarvish_armor(otyp) \
-    (otyp == DWARVISH_IRON_HELM \
-     || otyp == DWARVISH_MITHRIL_COAT \
+    (otyp == DWARVISH_HELM \
+     || otyp == DWARVISH_RING_MAIL \
      || otyp == DWARVISH_CLOAK \
      || otyp == DWARVISH_BOOTS \
      || otyp == DWARVISH_ROUNDSHIELD)
@@ -429,7 +430,7 @@ struct obj {
     || otyp == GNOMISH_BOOTS || otyp == GNOMISH_SUIT)
 
 #define is_bracer(otmp)                     \
-    ((otmp)->otyp >= LEATHER_BRACERS        \
+    ((otmp)->otyp >= BRACERS        \
         && (otmp)->otyp <= BRACERS_VS_STONE)
 
 /* Rings that monsters will wear */
@@ -469,13 +470,13 @@ struct obj {
 
 /* age field of this is relative age rather than absolute */
 #define age_is_relative(otmp) \
-    ((otmp)->otyp == BRASS_LANTERN || (otmp)->otyp == OIL_LAMP      \
+    ((otmp)->otyp == LANTERN || (otmp)->otyp == OIL_LAMP      \
      || (otmp)->otyp == CANDELABRUM_OF_INVOCATION                   \
      || (otmp)->otyp == TALLOW_CANDLE || (otmp)->otyp == WAX_CANDLE \
      || (otmp)->otyp == POT_OIL)
 /* object can be ignited; brass lantern can be lit but not by fire */
 #define ignitable(otmp) \
-    ((otmp)->otyp == BRASS_LANTERN || (otmp)->otyp == OIL_LAMP      \
+    ((otmp)->otyp == LANTERN || (otmp)->otyp == OIL_LAMP      \
      || (otmp)->otyp == CANDELABRUM_OF_INVOCATION                   \
      || (otmp)->otyp == TALLOW_CANDLE || (otmp)->otyp == WAX_CANDLE \
      || (otmp)->otyp == MAGIC_CANDLE \

@@ -1235,8 +1235,7 @@ add_mon_info(winid datawin, struct permonst * pm)
     Snprintf(buf, BUFSZ, "Is %sa valid polymorph form.",
             polyok(pm) ? "" : "not ");
     MONPUTSTR(buf);
-    if (hates_silver(pm))
-        MONPUTSTR("Hates silver.");
+
     if (disrespects_elbereth(pm)) {
         MONPUTSTR("Does not respect Elbereth.");
     }
@@ -1591,7 +1590,7 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         case TALLOW_CANDLE:
         case WAX_CANDLE:
         case MAGIC_CANDLE:
-        case BRASS_LANTERN:
+        case LANTERN:
         case OIL_LAMP:
             subclass = "light source";
             break;
@@ -1599,20 +1598,20 @@ add_obj_info(winid datawin, struct obj *obj, short otyp, char *usr_text)
         case BEARTRAP:
             subclass = "trap which can be set";
             break;
-        case TIN_WHISTLE:
+        case PEA_WHISTLE:
         case MAGIC_WHISTLE:
         case BELL:
-        case LEATHER_DRUM:
+        case WAR_DRUM:
         case DRUM_OF_EARTHQUAKE:
             subclass = "atonal instrument";
             break;
         case BUGLE:
         case MAGIC_FLUTE:
-        case WOODEN_FLUTE:
+        case CHEAP_FLUTE:
         case TOOLED_HORN:
         case FIRE_HORN:
         case FROST_HORN:
-        case WOODEN_HARP:
+        case CHEAP_HARP:
         case MAGIC_HARP:
             subclass = "tonal instrument";
             break;
@@ -2195,6 +2194,7 @@ checkfile(
             break;
         }
     }
+
     /* Make sure the name is non-empty. */
     if (*dbase_str) {
         long pass1offset = -1L;

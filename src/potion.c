@@ -258,8 +258,24 @@ make_sick(long xtime,
         talk = FALSE;
 #endif
     if (xtime > 0L) {
+        int copperarmor = 0;
+        struct obj* otmp;
         if (Sick_resistance)
             return;
+
+        /* Copper's anti-microbial properties make it effective in warding off
+         * sickness. */
+        for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
+            if ((otmp->owornmask & W_ARMOR) && otmp->material == COPPER) {
+                copperarmor++;
+            }
+        }
+        if (rn2(20) < copperarmor) {
+            /* In xNetHack it's rn2(5), that's waaaaaaay too generous. */
+            You_feel("briefly ill.");
+            return;
+        }
+
         if (!old) {
             /* newly sick */
             You_feel("deathly sick.");

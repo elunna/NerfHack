@@ -189,7 +189,7 @@ void
 moveloop_core(void)
 {
     boolean monscanmove = FALSE;
-    boolean vamp_regen = vamp_can_regen();
+    boolean race_regen = mon_can_regen();
     int chance;
 
 #ifdef SAFERHANGUP
@@ -520,13 +520,13 @@ moveloop_core(void)
         curs_on_u();
     }
 
-    if (vamp_regen != vamp_can_regen()) {
+    if (race_regen != mon_can_regen()) {
         if (!Hallucination)
-            You_feel("%s.", (vamp_regen) ? "itchy" : "relief");
+            You_feel("%s.", (race_regen) ? "itchy" : "relief");
         else
-            You_feel("%s.", (vamp_can_regen()) ? "semi-precious"
+            You_feel("%s.", (mon_can_regen()) ? "semi-precious"
                         : "like you are no longer failing Organic Chemistry");
-        vamp_regen = vamp_can_regen();
+        race_regen = mon_can_regen();
     }
 
     m_everyturn_effect(&gy.youmonst);
@@ -684,7 +684,7 @@ regen_hp(int wtcap)
            once u.mh reached u.mhmax; that may have been convenient
            for the player, but it didn't make sense for gameplay...] */
         if (u.uhp < u.uhpmax
-	    && vamp_can_regen()
+	    && mon_can_regen()
             && !Rabid
             /* Non-undead cannot regenerate in the valley */
             && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))
@@ -1408,47 +1408,46 @@ dump_glyphids(void)
 #endif /* !NODUMPENUMS */
 
 boolean
-vamp_can_regen(void)
+mon_can_regen(void)
 {
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
-        if (uwep && is_silver(uwep) && !is_quest_artifact(uwep)
-                && !safegloves(uarmg))
-            return 0;
-        if (uswapwep && is_silver(uswapwep) && u.twoweap
-                && !safegloves(uarmg))
-            return 0;
-        /* Silver coated DSM*/
-        if (uarm && is_silver(uarm) && !uarmu)
-            return 0;
-        /* Shield of reflection */
-        if (uarms && is_silver(uarms) && !safegloves(uarmg))
-            return 0;
-        /* Silver rings */
-        if (uleft && is_silver(uleft))
-            return 0;
-        if (uright && is_silver(uright))
-            return 0;
+    if (uwep && Hate_material(uwep->material) /* Weapons */
+        && !is_quest_artifact(uwep) && !safegloves(uarmg))
+        return 0;
+    if (uswapwep && u.twoweap && Hate_material(uswapwep->material)
+            && !safegloves(uarmg))
+        return 0;
 
-#if 0 /* Currently unnecessary checks - no object materials */
-        if (uarmu && is_silver(uarmu))
-            return 0;
-        if (uarmc && is_silver(uarmc) && !uarmu && !uarm)
-            return 0;
-        if (uarmh && is_silver(uarmh) && !is_quest_artifact(uarmh))
-            return 0;
-        if (uarmg && is_silver(uarmg))
-            return 0;
-        if (uarmf && is_silver(uarmf))
-            return 0;
-        if (uamul && is_silver(uamul) && !is_quest_artifact(uamul)
-            && !uarmu && !uarm)
-            return 0;
-        if (ublindf && is_silver(ublindf))
-            return 0;
-        if (uchain && is_silver(uchain))
-            return 0;
-#endif
-    }
+    if (uarm && Hate_material(uarm->material) /* Armor */
+        && !uarmu)
+        return 0;
+    if (uarms && Hate_material(uarms->material) /* Shields */
+        && !safegloves(uarmg))
+        return 0;
+    if (uarmu && Hate_material(uarmu->material)) /* Shirts */
+        return 0;
+    if (uarmc && Hate_material(uarmc->material) /* Cloaks */
+        && !uarmu && !uarm)
+        return 0;
+    if (uarmh && Hate_material(uarmh->material) /* Helmets */
+        && !is_quest_artifact(uarmh))
+        return 0;
+    if (uarmg && Hate_material(uarmg->material)) /* Gloves */
+        return 0;
+    if (uarmf && Hate_material(uarmf->material)) /* Boots */
+        return 0;
+
+    if (uamul && Hate_material(uamul->material)  /* Amulets */
+        && !is_quest_artifact(uamul) && !uarmu && !uarm)
+        return 0;
+    if (uleft && Hate_material(uleft->material)) /* Rings */
+        return 0;
+    if (uright && Hate_material(uright->material))
+        return 0;
+    if (ublindf && Hate_material(ublindf->material)) /* Eyewear */
+        return 0;
+
+    if (uchain && Hate_material(uchain->material)) /* Ball and chain */
+        return 0;
     return 1;
 }
 

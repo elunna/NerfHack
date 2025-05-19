@@ -576,7 +576,7 @@ use_whistle(struct obj *obj)
             You(whistle_str, obj->cursed ? "shrill" : "high");
         Soundeffect(se_shrill_whistle, 50);
         wake_nearby(TRUE);
-        if (obj->otyp == TIN_WHISTLE)
+        if (obj->otyp == PEA_WHISTLE)
             makeknown_msg(obj->otyp);
         if (obj->cursed)
             vault_summon_gd();
@@ -1628,7 +1628,7 @@ snuff_lit(struct obj *obj)
 
     if (obj->lamplit) {
         if (obj->otyp == OIL_LAMP
-            || obj->otyp == BRASS_LANTERN || obj->otyp == POT_OIL) {
+            || obj->otyp == LANTERN || obj->otyp == POT_OIL) {
             (void) get_obj_location(obj, &x, &y, 0);
             if (obj->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
                 pline("%s %s out!", Yname2(obj), otense(obj, "go"));
@@ -1651,7 +1651,7 @@ splash_lit(struct obj *obj)
        but will be if submerged or placed into a container or swallowed by
        a monster (for mobile light source handling, not because it ought
        to stop being lit in all those situations...) */
-    if (obj->lamplit && obj->otyp == BRASS_LANTERN) {
+    if (obj->lamplit && obj->otyp == LANTERN) {
         struct monst *mtmp;
         boolean useeit = FALSE, uhearit = FALSE, snuff = TRUE;
 
@@ -1712,7 +1712,7 @@ catch_lit(struct obj *obj)
             /* age_is_relative && age==0 && still-exists means out of fuel */
             || (age_is_relative(obj) && obj->age == 0)
             /* lantern is classified as ignitable() but not by fire */
-            || obj->otyp == BRASS_LANTERN)
+            || obj->otyp == LANTERN)
             return FALSE;
         if (obj->otyp == CANDELABRUM_OF_INVOCATION && obj->cursed)
             return FALSE;
@@ -1756,7 +1756,7 @@ use_lamp(struct obj *obj)
 {
     char buf[BUFSZ];
     const char *lamp = obj->otyp == OIL_LAMP  ? "lamp"
-                       : (obj->otyp == BRASS_LANTERN) ? "lantern"
+                       : (obj->otyp == LANTERN) ? "lantern"
                          : NULL;
 
     if (!freehand()) {
@@ -1804,7 +1804,7 @@ use_lamp(struct obj *obj)
         return;
     }
     if ((!Is_candle(obj) && obj->age == 0)) {
-        if (obj->otyp == BRASS_LANTERN) {
+        if (obj->otyp == LANTERN) {
             if (!Blind)
                 Your("lantern is out of power.");
             else
@@ -1926,7 +1926,7 @@ rub_ok(struct obj *obj)
         return GETOBJ_EXCLUDE;
 
     if (obj->otyp == OIL_LAMP
-        || obj->otyp == BRASS_LANTERN || is_graystone(obj->otyp)
+        || obj->otyp == LANTERN || is_graystone(obj->otyp)
         || obj->otyp == LUMP_OF_ROYAL_JELLY)
         return GETOBJ_SUGGEST;
 
@@ -1975,7 +1975,7 @@ dorub(void)
     }
 
     /* now uwep is obj */
-    if (obj->otyp == BRASS_LANTERN) {
+    if (obj->otyp == LANTERN) {
         /* message from Adventure */
         pline("Rubbing the electric lamp is not particularly rewarding.");
         pline("Anyway, nothing exciting happens.");
@@ -3045,6 +3045,10 @@ use_stone(struct obj *tstone)
     int oclass, i, j;
     boolean known, whetting;
 
+    if (nohands(gy.youmonst.data)) { /* from xNetHack */
+        You("can't rub anything together without hands.");
+        return ECMD_OK;
+    }
     /* in case it was acquired while blinded */
     if (!Blind)
         tstone->dknown = 1;
@@ -3120,8 +3124,8 @@ use_stone(struct obj *tstone)
     oclass = obj->oclass;
     /* prevent non-gemstone rings from being treated like gems */
     if (oclass == RING_CLASS
-        && objects[obj->otyp].oc_material != GEMSTONE
-        && objects[obj->otyp].oc_material != MINERAL)
+        && obj->material != GEMSTONE
+        && obj->material != MINERAL)
         oclass = RANDOM_CLASS; /* something that's neither gem nor ring */
 
     if (tstone->otyp == WHETSTONE
@@ -3132,7 +3136,7 @@ use_stone(struct obj *tstone)
     case GEM_CLASS: /* these have class-specific handling below */
     case RING_CLASS:
         if (tstone->otyp != TOUCHSTONE) {
-            if (tstone->otyp == FLINT && objects[obj->otyp].oc_material == IRON)
+            if (tstone->otyp == FLINT && obj->material == IRON)
                 make_sparks = TRUE; /* we'll catch it later */
             do_scratch = TRUE;
         } else if (obj->oclass == GEM_CLASS
@@ -3145,7 +3149,7 @@ use_stone(struct obj *tstone)
             return ECMD_TIME;
         } else {
             /* either a ring or the touchstone was not effective */
-            if (objects[obj->otyp].oc_material == GLASS) {
+            if (obj->material == GLASS) {
                 do_scratch = TRUE;
                 break;
             }
@@ -3154,7 +3158,7 @@ use_stone(struct obj *tstone)
         break; /* gem or ring */
 
     default:
-        switch (objects[obj->otyp].oc_material) {
+        switch (obj->material) {
         case CLOTH:
             pline("%s a little more polished now.", Tobjnam(tstone, "look"));
             return ECMD_TIME;
@@ -4737,7 +4741,18 @@ doapply(void)
     if (!obj)
         return ECMD_CANCEL;
 
-    if (!retouch_object(&obj, !uarmg, FALSE))
+    if (obj == &hands_obj) { /* xNetHack */
+        const char *name = ldrname();
+        pline("%c%s always said you needed to apply yourself!", highc(name[0]), name + 1);
+        return ECMD_OK;
+    }
+
+    /* Assume applying an object specifically involves touching it with your
+     * hands, and that there will be no appliable items that are meant to be
+     * applied only with feet, or something. If wearing gloves of any sort, you
+     * are shielded from harmful material effects of that item, though only if
+     * it's not an artifact. */
+    if (!retouch_object(&obj, FALSE, !will_touch_skin(W_WEP)))
         return ECMD_TIME; /* evading your grasp costs a turn; just be
                              grateful that you don't drop it as well */
 
@@ -4839,7 +4854,7 @@ doapply(void)
     case MAGIC_WHISTLE:
         use_magic_whistle(obj);
         break;
-    case TIN_WHISTLE:
+    case PEA_WHISTLE:
         use_whistle(obj);
         break;
     case EUCALYPTUS_LEAF:
@@ -4883,7 +4898,7 @@ doapply(void)
         use_candle(&obj);
         break;
     case OIL_LAMP:
-    case BRASS_LANTERN:
+    case LANTERN:
         use_lamp(obj);
         break;
     case POT_OIL:
@@ -4913,15 +4928,15 @@ doapply(void)
     case UNICORN_HORN:
         use_unicorn_horn(&obj);
         break;
-    case WOODEN_FLUTE:
+    case CHEAP_FLUTE:
     case MAGIC_FLUTE:
     case TOOLED_HORN:
     case FROST_HORN:
     case FIRE_HORN:
-    case WOODEN_HARP:
+    case CHEAP_HARP:
     case MAGIC_HARP:
     case BUGLE:
-    case LEATHER_DRUM:
+    case WAR_DRUM:
     case DRUM_OF_EARTHQUAKE:
         return do_play_instrument(obj); /* Can break */
     case HORN_OF_PLENTY: /* not a musical instrument */

@@ -41,7 +41,7 @@ static struct trobj Archeologist[] = {
     #define A_BOOK 4
     /* if adventure has a name...  idea from tan@uvm-gen */
     { BULLWHIP, 2, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { LEATHER_JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 3, 0 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1 },
@@ -58,7 +58,7 @@ static struct trobj Barbarian[] = {
 #define B_MINOR 1 /* matched with axe or short sword */
     { TWO_HANDED_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { AXE, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { STUDDED_LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { STUDDED_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 2, 0 },
     { 0, 0, 0, 0, 0 }
 };
@@ -85,7 +85,7 @@ static struct trobj Cave_man[] = {
 };
 static struct trobj Healer[] = {
     { SCALPEL, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { STETHOSCOPE, 0, TOOL_CLASS, 1, 0 },
     { POT_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS },
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS },
@@ -101,17 +101,17 @@ static struct trobj Healer[] = {
 static struct trobj Knight[] = {
     { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { LANCE, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { STUDDED_LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { STUDDED_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
-    { LEATHER_GLOVES, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { GLOVES, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { APPLE, 0, FOOD_CLASS, 10, 0 },
     { CARROT, 0, FOOD_CLASS, 10, 0 },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Monk[] = {
 #define M_BOOK 2
-    { LEATHER_GLOVES, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { GLOVES, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
     { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1 },
     { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS },
@@ -153,7 +153,7 @@ static struct trobj Rogue[] = {
 #define R_KNIVES 1
     { STILETTO, 2, WEAPON_CLASS, 1, UNDEF_BLESS },
     { KNIFE, 0, WEAPON_CLASS, 10, 0 }, /* quan is variable */
-    { LEATHER_JACKET, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { JACKET, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_SICKNESS, 0, POTION_CLASS, 1, 0 },
     { SCR_GOLD_DETECTION, 0, SCROLL_CLASS, 4, 1 },
     { SCR_TELEPORTATION, 0, SCROLL_CLASS, 4, 1 },
@@ -189,9 +189,9 @@ static struct trobj UndeadSlayer[] = {
 #define U_RANGE 2       /* silver daggers or crossbow bolts */
 #define U_MISC  3       /* +1 boots [Buffy can kick] or helmet */
 #define U_ARMOR 4       /* Tshirt/leather +1 or chain mail */
-    { WOODEN_STAKE, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { SILVER_SPEAR, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { SILVER_DAGGER, 0, WEAPON_CLASS, 5, UNDEF_BLESS },
+    { STAKE, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { SPEAR, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { DAGGER, 0, WEAPON_CLASS, 5, UNDEF_BLESS },
     { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { CHAIN_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 3, 1 },
@@ -236,9 +236,9 @@ static struct trobj PoisonPotion[] = { { POT_SICKNESS, 0, POTION_CLASS, 2, 0 },
                                        { 0, 0, 0, 0, 0 } };
 static struct trobj Blindfold[] = { { BLINDFOLD, 0, TOOL_CLASS, 1, 0 },
                                     { 0, 0, 0, 0, 0 } };
-static struct trobj Instrument[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0 },
+static struct trobj Instrument[] = { { CHEAP_FLUTE, 0, TOOL_CLASS, 1, 0 },
                                      { 0, 0, 0, 0, 0 } };
-static struct trobj Xtra_Tool[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0 },
+static struct trobj Xtra_Tool[] = { { CHEAP_FLUTE, 0, TOOL_CLASS, 1, 0 },
                                      { 0, 0, 0, 0, 0 } };
 static struct trobj Xtra_food[] = { { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 2, 0},
                                     { 0, 0, 0, 0, 0 } };
@@ -270,10 +270,10 @@ static struct inv_sub {
     { PM_ELF, SHORT_SWORD, ELVEN_SHORT_SWORD },
     { PM_ELF, BOW, ELVEN_BOW },
     { PM_ELF, ARROW, ELVEN_ARROW },
-    { PM_ELF, HELMET, ELVEN_LEATHER_HELM },
+    { PM_ELF, HELMET, ELVEN_HELM },
     /* { PM_ELF, SMALL_SHIELD, ELVEN_SHIELD }, */
     { PM_ELF, CLOAK_OF_DISPLACEMENT, ELVEN_CLOAK },
-    { PM_ELF, LEATHER_CLOAK, ELVEN_CLOAK },
+    { PM_ELF, CLOAK, ELVEN_CLOAK },
     { PM_ELF, CRAM_RATION, LEMBAS_WAFER },
     { PM_ORC, DAGGER, ORCISH_DAGGER },
     { PM_ORC, SPEAR, ORCISH_SPEAR },
@@ -288,30 +288,30 @@ static struct inv_sub {
     { PM_ORC, LEMBAS_WAFER, TRIPE_RATION },
     { PM_DWARF, SPEAR, DWARVISH_SPEAR },
     { PM_DWARF, SHORT_SWORD, DWARVISH_SHORT_SWORD },
-    { PM_DWARF, HELMET, DWARVISH_IRON_HELM },
+    { PM_DWARF, HELMET, DWARVISH_HELM },
     /* { PM_DWARF, SMALL_SHIELD, DWARVISH_ROUNDSHIELD }, */
     /* { PM_DWARF, PICK_AXE, DWARVISH_MATTOCK }, */
-    { PM_DWARF, LEATHER_CLOAK, DWARVISH_CLOAK },
+    { PM_DWARF, CLOAK, DWARVISH_CLOAK },
     { PM_DWARF, LEMBAS_WAFER, CRAM_RATION },
     { PM_GNOME, BOW, CROSSBOW },
     { PM_GNOME, ARROW, CROSSBOW_BOLT },
     { PM_GNOME, HELMET, GNOMISH_HELM },
     { PM_GNOME, LOW_BOOTS, GNOMISH_BOOTS },
     { PM_GNOME, HIGH_BOOTS, GNOMISH_BOOTS },
-    { PM_GNOME, LEATHER_ARMOR, GNOMISH_SUIT },
+    { PM_GNOME, ARMOR, GNOMISH_SUIT },
     /* Create vampire blood */
     { PM_DHAMPIR, POT_FRUIT_JUICE, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, CLOVE_OF_GARLIC, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, FOOD_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, CRAM_RATION, POT_VAMPIRE_BLOOD },
     { PM_DHAMPIR, LEMBAS_WAFER, POT_VAMPIRE_BLOOD },
-    { PM_DHAMPIR, CHAIN_MAIL, LEATHER_JACKET },
+    { PM_DHAMPIR, CHAIN_MAIL, JACKET },
     /* grung can't wear boots */
     { PM_GRUNG, HIGH_BOOTS, STRANGE_OBJECT },
-    { PM_GRUNG, LOW_BOOTS, LEATHER_BRACERS },
+    { PM_GRUNG, LOW_BOOTS, BRACERS },
     { PM_GRUNG, SACK, OILSKIN_SACK },
-    { PM_GRUNG, SMALL_SHIELD, LEATHER_BRACERS },
-    { PM_GRUNG, LEATHER_GLOVES, LEATHER_BRACERS },
+    { PM_GRUNG, SMALL_SHIELD, BRACERS },
+    { PM_GRUNG, GLOVES, BRACERS },
 
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
@@ -896,7 +896,7 @@ u_init_role(void)
             UndeadSlayer[U_RANGE].trquan = rn1(25, 40);
             UndeadSlayer[U_MISC].trotyp = LOW_BOOTS;
             UndeadSlayer[U_MISC].trspe = 1;
-            UndeadSlayer[U_ARMOR].trotyp = LEATHER_JACKET;
+            UndeadSlayer[U_ARMOR].trotyp = JACKET;
             UndeadSlayer[U_ARMOR].trspe = 1;
             break;
         case 1:	/* Whip and daggers */
@@ -907,15 +907,15 @@ u_init_role(void)
             break;
         case 3:
             /* Silver short sword, silver daggers, gloves, and cloak */
-            UndeadSlayer[U_MINOR].trotyp = SILVER_SHORT_SWORD;
+            UndeadSlayer[U_MINOR].trotyp = SHORT_SWORD;
             UndeadSlayer[U_MISC].trspe = 1;
-            UndeadSlayer[U_ARMOR].trotyp = LEATHER_CLOAK;
+            UndeadSlayer[U_ARMOR].trotyp = CLOAK;
             UndeadSlayer[U_ARMOR].trspe = 0;
             break;
         }
         /* Dhampir need gloves to handle silver */
         if (Race_if(PM_DHAMPIR)) {
-            UndeadSlayer[U_MISC].trotyp = LEATHER_GLOVES;
+            UndeadSlayer[U_MISC].trotyp = GLOVES;
             UndeadSlayer[U_ARMOR].trspe = 0;
         }
 
@@ -952,7 +952,7 @@ u_init_role(void)
     case PM_VALKYRIE:
         if (rn2(100) >= 50) { /* see above comment */
             Valkyrie[V_MAJOR].trotyp = WAR_HAMMER;
-            Valkyrie[V_ARMOR].trotyp = LEATHER_CLOAK;
+            Valkyrie[V_ARMOR].trotyp = CLOAK;
             Valkyrie[V_ARMOR].trspe = 2;
         }
         ini_inv(Valkyrie);
@@ -995,12 +995,12 @@ u_init_race(void)
             || Role_if(PM_HEALER) || Role_if(PM_ROGUE)
             || Role_if(PM_ARCHEOLOGIST) || Role_if(PM_CARTOMANCER)) {
             static int trotyp[] = {
-                WOODEN_FLUTE,
+                CHEAP_FLUTE,
                 TOOLED_HORN,
-                WOODEN_HARP,
+                CHEAP_HARP,
                 BELL,
                 BUGLE,
-                LEATHER_DRUM
+                WAR_DRUM
             };
             Instrument[0].trotyp = ROLL_FROM(trotyp);
             ini_inv(Instrument);
@@ -1013,8 +1013,8 @@ u_init_race(void)
         knows_object(ELVEN_SPEAR, FALSE);
         knows_object(ELVEN_DAGGER, FALSE);
         knows_object(ELVEN_BROADSWORD, FALSE);
-        knows_object(ELVEN_MITHRIL_COAT, FALSE);
-        knows_object(ELVEN_LEATHER_HELM, FALSE);
+        knows_object(ELVEN_RING_MAIL, FALSE);
+        knows_object(ELVEN_HELM, FALSE);
         knows_object(ELVEN_SHIELD, FALSE);
         knows_object(ELVEN_BOOTS, FALSE);
         knows_object(ELVEN_CLOAK, FALSE);
@@ -1029,8 +1029,8 @@ u_init_race(void)
         knows_object(DWARVISH_SPEAR, FALSE);
         knows_object(DWARVISH_SHORT_SWORD, FALSE);
         knows_object(DWARVISH_MATTOCK, FALSE);
-        knows_object(DWARVISH_IRON_HELM, FALSE);
-        knows_object(DWARVISH_MITHRIL_COAT, FALSE);
+        knows_object(DWARVISH_HELM, FALSE);
+        knows_object(DWARVISH_RING_MAIL, FALSE);
         knows_object(DWARVISH_CLOAK, FALSE);
         knows_object(DWARVISH_ROUNDSHIELD, FALSE);
 
@@ -1445,8 +1445,12 @@ ini_inv_mkobj_filter(int oclass, boolean got_level1_spellbook)
            || otyp == RIN_SLEEPING
            || otyp == RIN_WITHERING
            || otyp == WAN_NOTHING
-           /* vampires don't like silver */
-           || (Race_if(PM_DHAMPIR) && objects[otyp].oc_material == SILVER)
+           /* items that will be silver for dhampir (rings/wands perhaps) that can't
+            * become copper */
+           || (Race_if(PM_DHAMPIR) && objects[otyp].oc_material == SILVER
+               && !valid_obj_material(obj, COPPER))
+           /* TODO: also iron for elves? */
+           /* TODO: also mithril for orcs? */
            /* orcs start with poison resistance */
            || (otyp == RIN_POISON_RESISTANCE
                && (Race_if(PM_ORC) || Race_if(PM_GRUNG)))
@@ -1547,6 +1551,27 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
                    && obj->otyp != FLINT) {
             obj->quan = 1L;
         }
+
+        /* Don't allow materials to be start scummed for */
+        set_material(obj, objects[obj->otyp].oc_material);
+
+        /* Replace silver objects with copper for dhampir */
+        if (Race_if(PM_DHAMPIR) && obj->material == SILVER) {
+            set_material(obj, COPPER);
+        }
+
+        /* Undead Slayers get special silver weapons.
+             * Before the object materials patch this was easy, but
+             * looks like we'll just do it here. */
+        if (Role_if(PM_UNDEAD_SLAYER)) {
+            if (is_spear(obj) ||  obj->otyp == SHORT_SWORD
+                || obj->otyp == DAGGER || obj->otyp == ELVEN_DAGGER)
+                set_material(obj, SILVER);
+
+            if (obj->otyp == JACKET || obj->otyp == CLOAK)
+                set_material(obj, LEATHER);
+        }
+
         if (trop->trspe != UNDEF_SPE) {
             obj->spe = trop->trspe;
         } else {

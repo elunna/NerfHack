@@ -568,7 +568,7 @@
             || (tameable_by_orc(ptr) && Race_if(PM_ORC)))                 \
         && (obj)->oclass == FOOD_CLASS                                   \
         && ((ptr)->mlet != S_UNICORN                                     \
-            || objects[(obj)->otyp].oc_material == VEGGY                 \
+            || obj->material == VEGGY                 \
             || ((obj)->otyp == CORPSE && (obj)->corpsenm == PM_LICHEN))))
 
 #define is_bones_monster(ptr) \

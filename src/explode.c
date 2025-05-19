@@ -859,7 +859,7 @@ scatter(coordxy sx, coordxy sy,  /* location of objects to scatter */
 
             /* 1 in 10 chance of destruction of obj; glass, egg destruction */
         } else if ((scflags & MAY_DESTROY) != 0
-                   && (!rn2(10) || (objects[otmp->otyp].oc_material == GLASS
+                   && (!rn2(10) || (otmp->material == GLASS
                                     || otmp->otyp == EGG))) {
             if (breaks(otmp, sx, sy))
                 used_up = TRUE;
@@ -1123,18 +1123,21 @@ mon_explodes(
             s_suffix(pmname(mon->data, Mgender(mon))));
     svk.killer.format = KILLED_BY_AN;
 
+    explode(mon->mx, mon->my, type, dmg, MON_EXPLODE,
+            adtyp_to_expltype(mattk->adtyp));
+
+    /* phoenix special case: drop an egg containing the reborn phoenix;
+     * eggs have to be done here instead of in the corpse function because
+     * otherwise the explosion destroys the egg */
     if (mon->data == &mons[PM_PHOENIX] && !mon->mcan && !mon->msummoned) {
-        explode(mon->mx, mon->my, -1, dmg, MON_EXPLODE, EXPL_FIERY);
-        /* eggs have to be done here instead of in the corpse
-           function because otherwise the explosion destroys the egg */
-        obj = mksobj_at(EGG, mon->mx, mon->my, TRUE, FALSE);
+        obj = mksobj(EGG, TRUE, FALSE);
         obj->corpsenm = PM_PHOENIX;
-        obj->blessed = TRUE;
+        bless(obj);
         obj->quan = 1;
+        obj->owt = weight(obj);
         attach_egg_hatch_timeout(obj, 10L);
-    } else
-        explode(mon->mx, mon->my, type, dmg, MON_EXPLODE,
-                adtyp_to_expltype(mattk->adtyp));
+        obj_drops_at(obj, mon->mx, mon->my);
+    }
 
     /* reset killer */
     svk.killer.name[0] = '\0';

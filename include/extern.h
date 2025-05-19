@@ -104,7 +104,7 @@ extern void welcome(boolean);
 extern int argcheck(int, char **, enum earlyarg);
 extern long timet_to_seconds(time_t);
 extern long timet_delta(time_t, time_t);
-extern boolean vamp_can_regen(void);
+extern boolean mon_can_regen(void);
 extern boolean rehydrate(int);
 extern void dehydrate(int);
 extern int find_tier_index(int);
@@ -176,8 +176,8 @@ extern void discover_artifact(xint16);
 extern boolean undiscovered_artifact(xint16);
 extern int disp_artifact_discoveries(winid);
 extern void dump_artifact_info(winid);
-extern boolean artifact_hit(struct monst *, struct monst *, struct obj *,
-                            int *, int) NONNULLARG2;
+extern int artifact_hit(struct monst *, struct monst *, struct obj *,
+                        int *, int) NONNULLARG2;
 extern int doinvoke(void);
 extern boolean finesse_ahriman(struct obj *);
 extern int arti_speak(struct obj *);
@@ -209,6 +209,7 @@ extern void oprops_on(struct obj *, long);
 extern void oprops_off(struct obj *, long);
 extern schar calc_prop_bonus(long);
 extern boolean changes_stat(long);
+extern short arti_material(int);
 
 /* ### attrib.c ### */
 
@@ -867,6 +868,7 @@ extern boolean breaktest(struct obj *) NONNULLARG1;
 extern boolean walk_path(coord *, coord *,
                          boolean(*)(void *, coordxy, coordxy), genericptr_t) NONNULLARG12;
 extern void ranseur_hit(struct monst *) NONNULLARG1;
+extern boolean crack_glass_obj(struct obj *) NO_NNARGS;
 
 /* ### drawing.c ### */
 
@@ -1595,6 +1597,7 @@ extern boolean mon_avoiding_this_attack(struct monst *, int) NONNULLARG1;
 */
 extern boolean ranged_attk_available(struct monst *mtmp) NONNULLARG1;
 extern void piercer_hit(struct monst *, struct monst *);
+extern long attack_contact_slots(struct monst *, int) NONNULLARG1;
 extern boolean mon_really_found_us(struct monst *);
 extern int passiveum(struct permonst *, struct monst *, struct attack *);
 
@@ -1768,6 +1771,11 @@ extern struct obj *obj_meld(struct obj **, struct obj **);
 extern void pudding_merge_message(struct obj *, struct obj *) NONNULLARG12;
 extern struct obj *init_dummyobj(struct obj *, short, long);
 extern int mk_zapcard(void);
+extern boolean obj_drops_at(struct obj *, int, int) NONNULLARG1;
+extern void init_obj_material(struct obj *) NONNULLARG1;
+extern boolean valid_obj_material(struct obj *, uchar) NONNULLARG1;
+extern void set_material(struct obj *, uchar) NONNULLARG1;
+extern int material_bonus(struct obj *) NONNULLARG1;
 
 /* ### mkroom.c ### */
 
@@ -1917,8 +1925,9 @@ extern boolean can_blnd(struct monst *, struct monst *,
                         uchar, struct obj *) NONNULLARG2;
 extern boolean resists_light_halu(struct monst *);
 extern boolean ranged_attk(struct permonst *) NONNULLARG1;
-extern boolean mon_hates_silver(struct monst *) NONNULLARG1;
-extern boolean hates_silver(struct permonst *) NONNULLARG1;
+extern boolean hates_material(struct permonst *, int) NONNULLARG1;
+extern boolean mon_hates_material(struct monst *, int) NONNULLARG1;
+extern int sear_damage(int);
 extern boolean mon_hates_blessings(struct monst *) NONNULLARG1;
 extern boolean hates_blessings(struct permonst *) NONNULLARG1;
 extern boolean mon_hates_light(struct monst *) NONNULLARG1;
@@ -1951,6 +1960,7 @@ extern const char *on_fire(struct permonst *, struct attack *) NONNULLARG12;
 extern const char *msummon_environ(struct permonst *, const char **) NONNULLARG12;
 extern const struct permonst *raceptr(struct monst *) NONNULLARG1;
 extern boolean olfaction(struct permonst *) NONNULLARG1;
+extern int monmaterial(int);
 extern boolean is_fleshy(const struct permonst *);
 unsigned long cvt_adtyp_to_mseenres(uchar);
 unsigned long cvt_prop_to_mseenres(uchar);
@@ -3814,8 +3824,10 @@ extern const char *weapon_descr(struct obj *) NONNULLARG1;
 extern int hitval(struct obj *, struct monst *) NONNULLARG12;
 extern struct damage_info_t dmgval_info(struct obj*);
 extern int dmgval(struct obj *, struct monst *) NONNULLARG12;
-extern int special_dmgval(struct monst *, struct monst *, long, long *) NONNULLARG12;
-extern void silver_sears(struct monst *, struct monst *, long) NONNULLARG2;
+extern int special_dmgval(struct monst *, struct monst *, long,
+                          struct obj **) NONNULLARG12; /* 4th can be null */
+extern void searmsg(struct monst *, struct monst *, struct obj *,
+                    boolean) NONNULLARG2;
 extern boolean would_prefer_rwep(struct monst *, struct obj *) NONNULLARG12;
 extern struct obj *select_rwep(struct monst *) NONNULLARG1;
 extern boolean monmightthrowwep(struct obj *) NONNULLARG1;
@@ -4134,6 +4146,7 @@ extern int zap_over_floor(coordxy, coordxy, int, boolean *,
                           boolean, short) NONNULLARG4;
 extern void mon_spell_hits_spot(struct monst *, int, coordxy x, coordxy y);
 extern void fracture_rock(struct obj *) NONNULLARG1;
+extern boolean destroyable_oclass(char);
 extern boolean break_statue(struct obj *) NONNULLARG1;
 extern int u_adtyp_resistance_obj(int);
 extern boolean inventory_resistance_check(int);

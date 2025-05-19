@@ -751,7 +751,7 @@ stripspe(struct obj *obj)
         pline("%s briefly.", Yobjnam2(obj, "vibrate"));
         costly_alteration(obj, COST_UNCHRG);
         obj->spe = 0;
-        if (obj->otyp == OIL_LAMP || obj->otyp == BRASS_LANTERN)
+        if (obj->otyp == OIL_LAMP || obj->otyp == LANTERN)
             obj->age = 0;
     }
 }
@@ -788,7 +788,7 @@ charge_ok(struct obj *obj)
 
     if (obj->oclass == TOOL_CLASS) {
         /* suggest tools that aren't oc_charged but can still be recharged */
-        if (obj->otyp == BRASS_LANTERN || (obj->otyp == OIL_LAMP)) {
+        if (obj->otyp == LANTERN || (obj->otyp == OIL_LAMP)) {
             return GETOBJ_SUGGEST;
         }
         /* suggest chargeable tools only if discovered, to prevent leaking
@@ -996,7 +996,7 @@ recharge(struct obj *obj, int curse_bless)
             }
             break;
         case OIL_LAMP:
-        case BRASS_LANTERN:
+        case LANTERN:
             if (is_cursed) {
                 stripspe(obj);
                 if (obj->lamplit) {
@@ -2955,6 +2955,7 @@ drop_boulder_on_player(
                         dmg -= 2;
                     Your("helmet only slightly protects you.");
                 } else {
+                    crack_glass_obj(uarmh);
                     if (dmg > 2)
                         dmg = 2;
                     pline("Fortunately, you are wearing a hard helmet.");
@@ -3018,6 +3019,7 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
                               s_suffix(Monnam(mtmp)));
                     }
                 } else {
+                    crack_glass_obj(helmet);
                     if (mdmg > 2)
                         mdmg = 2;
                     if (canspotmon(mtmp))

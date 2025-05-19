@@ -28,6 +28,7 @@ struct _readobjnam_data {
     int tmp, tinv, tvariety, mgend;
     int wetness, gsize;
     int ftype;
+    int material;
     long objprops;
     long objpropcount;
     boolean zombify;
@@ -111,12 +112,12 @@ static const struct Jitem Japanese_items[] = {
     { FLAIL, "nunchaku" },
     { GLAIVE, "naginata" },
     { LOCK_PICK, "osaku" },
-    { WOODEN_HARP, "koto" },
+    { CHEAP_HARP, "koto" },
     { MAGIC_HARP, "magic koto" },
     { KNIFE, "shito" },
     { PLATE_MAIL, "tanko" },
     { HELMET, "kabuto" },
-    { LEATHER_GLOVES, "yugake" },
+    { GLOVES, "yugake" },
     { FOOD_RATION, "gunyoki" },
     { POT_BOOZE, "sake" },
     { 0, "" }
@@ -248,7 +249,7 @@ obj_typename(int otyp)
 
     if (Role_if(PM_SAMURAI)) {
         actualn = Japanese_item_name(otyp, actualn);
-        if (otyp == WOODEN_HARP || otyp == MAGIC_HARP)
+        if (otyp == CHEAP_HARP || otyp == MAGIC_HARP)
             dn = "koto";
     }
     if (carto)
@@ -303,7 +304,7 @@ obj_typename(int otyp)
         /*FALLTHRU*/
     default:
         if (nn) {
-            Strcat(buf, actualn);
+            Strcpy(buf, actualn);
             if (GemStone(otyp))
                 Strcat(buf, !carto ? " stone" : otyp == FLINT
                                               ? " dice" : " token");
@@ -312,7 +313,7 @@ obj_typename(int otyp)
             if (dn)
                 Sprintf(eos(buf), " (%s)", dn);
         } else {
-            Strcat(buf, dn ? dn : actualn);
+            Strcpy(buf, dn ? dn : actualn);
             if (ocl->oc_class == GEM_CLASS) {
                 if (carto)
                     Strcat(buf, (ocl->oc_material == MINERAL || otyp == SLING_BULLET)
@@ -516,7 +517,7 @@ fruit_from_name(
         tentativef = 0;
         for (f = gf.ffruit; f; f = f->nextf) {
             k = Strlen(f->fname);
-            if (!strncmp(f->fname, fname, k)
+            if (!strncmpi(f->fname, fname, k)
                 && (!fname[k] || fname[k] == ' ')
                 && (!tentativef || k > strlen(tentativef->fname)))
                 tentativef = f;
@@ -628,8 +629,8 @@ xname(struct obj *obj)
 
     /* SLASH'EM style item hallucination.
      * This actually creates temporary random objects
-     * to mix up the item descriptions. As a result,
-     * we have disabled auto-pickup while hallucinating. */
+     * to mix up the item descriptions. To protect the
+     * player, we disabled autopickup while hallucinating. */
 	if (Hallucination && !program_state.gameover) {
 		hobj = mkobj(obj->oclass, 0);
 		hobj->quan = obj->quan;
@@ -674,7 +675,7 @@ xname_flags(
 
     if (Role_if(PM_SAMURAI)) {
         actualn = Japanese_item_name(typ, actualn);
-        if (typ == WOODEN_HARP || typ == MAGIC_HARP)
+        if (typ == CHEAP_HARP || typ == MAGIC_HARP)
             dn = "koto";
     }
     if (carto)
@@ -714,15 +715,14 @@ xname_flags(
         }
     } 
     /* Allow anyone who gets expert in a weapon skill to identify those
-     * weapons easily. We can easily justify this with the extra effort
-     * it takes to train up now. Similar to rangers, you need to be XP10+
+     * weapons easily. Similar to rangers, you need to be XP10+
      */
     else if (obj->oclass == WEAPON_CLASS
         && !is_ammo(obj) && P_SKILL(objects[obj->otyp].oc_skill) >= P_EXPERT) {
         obj->known = 1;
     }
 
-    /* Cartomancers are masters of cards, they know everything about them. */
+    /* Cartomancers are masters of cards, eventually. */
     if (carto && obj->otyp == RAZOR_CARD) {
         if (u.ulevel >= 7)
             obj->known = 1;
@@ -773,17 +773,22 @@ xname_flags(
        until after the switch. */
     switch (obj->oclass) {
     case AMULET_CLASS:
+        if (obj->material != objects[typ].oc_material && dknown) {
+            Strcat(buf, materialnm[obj->material]);
+            Strcat(buf, " ");
+        }
+
         if (!dknown)
-            Strcpy(buf, "amulet");
+            Strcat(buf, "amulet");
         else if (typ == AMULET_OF_YENDOR || typ == FAKE_AMULET_OF_YENDOR)
             /* each must be identified individually */
-            Strcpy(buf, known ? actualn : dn);
+            Strcat(buf, known ? actualn : dn);
         else if (nn)
-            Strcpy(buf, actualn);
+            Strcat(buf, actualn);
         else if (un)
             xcalled(buf, BUFSZ - PREFIX, "amulet", un);
         else
-            Sprintf(buf, "%s amulet", dn);
+            Sprintf(eos(buf), "%s amulet", dn);
         break;
     case WEAPON_CLASS:
         if (is_poisonable(obj) && obj->opoisoned)
@@ -804,6 +809,12 @@ xname_flags(
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->spe < 3) ? "moist " : "wet ");
+
+        if ((obj->material != objects[typ].oc_material
+             || force_material_name(typ)) && dknown) {
+            Strcat(buf, materialnm[obj->material]);
+            Strcat(buf, " ");
+        }
 
         if (!dknown)
             Strcat(buf, dn);
@@ -835,20 +846,20 @@ xname_flags(
         } else if (is_boots(obj) || is_gloves(obj) || is_bracer(obj)) {
             Strcpy(buf, "pair of ");
         }
-#if 0
-        if (dknown && (obj->oprops & ITEM_OILSKIN)
-            && ((obj->oprops_known & ITEM_OILSKIN)
-                || dump_prop_flag))
-            Strcat(buf, "oilskin ");
-#endif
+
+        if ((obj->material != objects[typ].oc_material
+             || force_material_name(typ)) && dknown) {
+            Concat(buf, 0, materialnm[obj->material]);
+            Concat(buf, 0, " ");
+        }
         if (is_shield(obj) && !dknown) {
             if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD) {
-                Strcpy(buf, "shield");
+                Strcat(buf, "shield");
                 if (dknown)
                     propnames(buf, obj->oprops, FALSE, FALSE);
                 break;
             } else if (obj->otyp == SHIELD_OF_REFLECTION) {
-                Strcpy(buf, "smooth shield");
+                Strcat(buf, "smooth shield");
                 if (dknown)
                     propnames(buf, obj->oprops, FALSE, FALSE);
                 break;
@@ -930,10 +941,11 @@ xname_flags(
             char anbuf[10];
             const char *statue_pmname = obj_pmname(obj);
 
-            Snprintf(buf, bufspaceleft, "%s%s of %s%s",
+            Snprintf(buf, bufspaceleft, "%s%s %s of %s%s",
                      (Role_if(PM_ARCHEOLOGIST)
                       && (obj->spe & CORPSTAT_HISTORIC) != 0) ? "historic "
                        : "",
+                     materialnm[obj->material],
                      actualn,
                      type_is_pname(&mons[omndx]) ? ""
                        : the_unique_pm(&mons[omndx]) ? "the "
@@ -985,7 +997,7 @@ xname_flags(
     case SCROLL_CLASS:
         if (carto) {
             if (obj->otyp == SCR_BLANK_PAPER) {
-                Strcat(buf, "blank card");
+                Strcpy(buf, "blank card");
                 break;
             }
             /* Prevent "summon card of create monster" */
@@ -1237,6 +1249,10 @@ minimal_xname(struct obj *obj)
        [perhaps we should force "slime mold" rather than use xname?] */
     if (obj->otyp == SLIME_MOLD)
         bareobj.spe = obj->spe;
+    /* in the interest of minimalism, don't show this specific object's
+     * material, unless the material is always included in the name. */
+    bareobj.material = force_material_name(obj->otyp)
+                        ? obj->material : objects[obj->otyp].oc_material;
 
     bufp = distant_name(&bareobj, xname);
     /* undo forced setting of bareobj.blessed for cleric (priest[ess]);
@@ -1646,7 +1662,7 @@ doname_base(
             ConcatF2(bp, 0, " (%d of 7 candle%s)", obj->spe, suffix);
             break;
         } else if (obj->otyp == OIL_LAMP
-                   || obj->otyp == BRASS_LANTERN || Is_candle(obj)
+                   || obj->otyp == LANTERN || Is_candle(obj)
                    || (obj->otyp == CREDIT_CARD
                         && obj->oartifact == ART_HOLOGRAPHIC_VOID_LILY)) {
             if (Is_candle(obj)) {
@@ -1903,6 +1919,7 @@ doname_base(
         nhUse(bp_eos);
         nhUse(bpspaceleft);
     }
+
     bp = strprepend(bp, prefix);
 
     /*
@@ -3538,15 +3555,15 @@ static NEARDATA const struct o_range o_ranges[] = {
     { "anything", RANDOM_CLASS, ARROW, IRON_CHAIN },
     { "surprise me", RANDOM_CLASS, ARROW, IRON_CHAIN },
     { "bag", TOOL_CLASS, SACK, BAG_OF_TRICKS },
-    { "lamp", TOOL_CLASS, BRASS_LANTERN, OIL_LAMP },
+    { "lamp", TOOL_CLASS, LANTERN, OIL_LAMP },
     { "candle", TOOL_CLASS, TALLOW_CANDLE, MAGIC_CANDLE },
     { "horn", TOOL_CLASS, TOOLED_HORN, HORN_OF_PLENTY },
     { "shield", ARMOR_CLASS, SMALL_SHIELD, SHIELD_OF_REFLECTION },
-    { "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_VS_STONE },
+    { "bracers", ARMOR_CLASS, BRACERS, BRACERS_VS_STONE },
     { "hat", ARMOR_CLASS, FEDORA, DUNCE_CAP },
-    { "helm", ARMOR_CLASS, ELVEN_LEATHER_HELM, HELM_OF_TELEPATHY },
-    { "gloves", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
-    { "gauntlets", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
+    { "helm", ARMOR_CLASS, ELVEN_HELM, HELM_OF_TELEPATHY },
+    { "gloves", ARMOR_CLASS, GLOVES, GAUNTLETS_OF_DEXTERITY },
+    { "gauntlets", ARMOR_CLASS, GLOVES, GAUNTLETS_OF_DEXTERITY },
     { "boots", ARMOR_CLASS, LOW_BOOTS, LEVITATION_BOOTS },
     { "shoes", ARMOR_CLASS, LOW_BOOTS, DWARVISH_BOOTS },
     { "cloak", ARMOR_CLASS, MUMMY_WRAPPING, CLOAK_OF_DISPLACEMENT },
@@ -3572,8 +3589,8 @@ static const struct alt_spellings {
     { "razor cards", RAZOR_CARD },
     { "pickax", PICK_AXE },
     { "whip", BULLWHIP },
-    { "saber", SILVER_SABER },
-    { "silver sabre", SILVER_SABER },
+    { "saber", SABER },
+    { "silver sabre", SABER },
     { "smooth shield", SHIELD_OF_REFLECTION },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
     { "withering", RIN_WITHERING },
@@ -3593,7 +3610,7 @@ static const struct alt_spellings {
     { "yellow dragon scale mail", YELLOW_DRAGON_SCALES },
 
     { "iron ball", HEAVY_IRON_BALL },
-    { "lantern", BRASS_LANTERN },
+    { "lantern", LANTERN },
     { "mattock", DWARVISH_MATTOCK },
     { "amulet of poison resistance", AMULET_VERSUS_POISON },
     { "amulet of protection", AMULET_OF_GUARDING },
@@ -3602,7 +3619,7 @@ static const struct alt_spellings {
     { "gauntlets of ogre power", GAUNTLETS_OF_POWER },
     { "gauntlets of giant strength", GAUNTLETS_OF_POWER },
     { "iron boots", DWARVISH_BOOTS },
-    { "elven chain mail", ELVEN_MITHRIL_COAT },
+    { "elven chain mail", ELVEN_RING_MAIL },
     { "silver shield", SHIELD_OF_REFLECTION },
     { "potion of sleep", POT_SLEEPING },
     { "scroll of recharging", SCR_CHARGING },
@@ -4190,6 +4207,79 @@ wizterrainwish(struct _readobjnam_data *d)
     return (struct obj *) 0;
 }
 
+
+/* Return true if the input string appears to be specifying something that
+ * happens to start with a material name and is not actually specifying a
+ * material. */
+static boolean
+not_actually_specifying_material(const char * const str, int material)
+{
+    int i;
+    const char *matstr = materialnm[material];
+    int matlen = strlen(matstr);
+    /* is this the entire string? e.g. "gold" is actually a wish for zorkmids
+     * The effect of this is that you can't just wish for a material and get a
+     * random item, made of that material, from the set of items that can be
+     * made of that material, but this was never a feature anyway; it would give
+     * a totally random object even if the material-object combo was invalid. */
+    if (!strcmp(str, matstr)) {
+        return TRUE;
+    }
+    /* does it match some object? */
+    for (i = STRANGE_OBJECT + 1; i < NUM_OBJECTS; ++i) {
+        /* match in the object name e.g. "gold detection", "wax candle" */
+        const char *oc_name = OBJ_NAME(objects[i]),
+                   *oc_descr = OBJ_DESCR(objects[i]);
+        if (oc_name && !strncmpi(str, oc_name, strlen(oc_name))) {
+            return TRUE;
+        }
+        /* match in the object description, followed by object class name e.g.
+         * "silver ring"
+         * Note: this assumes that the only types of objects that can have
+         * material strings as descriptions are not eligible to have object
+         * materials vary on them. It also does not account for the fact that,
+         * for instance, there being more wand descriptions than wands could
+         * mean that "iron wand" doesn't actually exist in this game... */
+        if (oc_descr && !strcmp(matstr, oc_descr)) {
+            /* this is a bit complicated... the only 3 object classes that ought
+             * to behave this way are rings, wands and spellbooks, all of which
+             * have the singular object class string in def_oc_syms[].explain.
+             * If e.g. "silver armor" was a real randomized armor description this
+             * would break because the .explain is "suit or piece of armor". */
+            const char *aftermat = str + matlen + 1; /* advance past material */
+            oc_descr = def_oc_syms[(int) objects[i].oc_class].explain;
+            if (!strncmpi(aftermat, oc_descr, strlen(oc_descr))) {
+                return TRUE;
+            }
+        }
+    }
+    /* does it match some monster? e.g. "silver dragon" */
+    for (i = LOW_PM; i < NUMMONS; ++i) {
+        const char *pmname;
+        int gend;
+        for (gend = 0; gend < NUM_MGENDERS; ++gend) {
+            pmname = mons[i].pmnames[gend];
+            if (pmname && !strncmpi(str, pmname, strlen(pmname))) {
+                return TRUE;
+            }
+        }
+    }
+    /* does it match some artifact? e.g. "platinum yendorian express card" */
+    short otyp;
+    if (artifact_name(str, &otyp, TRUE)) {
+        return TRUE;
+    }
+    /* does it match some terrain or a trap? e.g. "iron bars" */
+    for (i = 0; i < MAXPCHARS; ++i) {
+        const char *terr_name = defsyms[i].explanation;
+        if (terr_name && *terr_name
+            && !strncmpi(str, terr_name, strlen(terr_name))) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 /* message common to several wizterrainwish() results */
 staticfn void
 dbterrainmesg(
@@ -4222,6 +4312,7 @@ readobjnam_init(char *bp, struct _readobjnam_data *d)
     d->mgend = -1; /* not specified, aka random */
     d->mntmp = NON_PM;
     d->contents = TIN_UNDEFINED;
+    d->material = 0;
     d->oclass = 0;
     d->actualn = d->dn = d->un = 0;
     d->wetness = 0;
@@ -4450,7 +4541,26 @@ readobjnam_preparse(struct _readobjnam_data *d)
                 || !strncmpi(d->bp + l, "the ", more_l = 4))
                 l += more_l;
         } else {
-            break;
+            int i;
+            /* doesn't currently catch "wood" for wooden */
+            for (i = 1; i < NUM_MATERIAL_TYPES; i++) {
+                l = strlen(materialnm[i]);
+                if (l > 0 && !strncmpi(d->bp, materialnm[i], l)
+                    /* it LOOKS like a wish for a material...
+                     * but need to ensure that it's not just a wish for
+                     * something else that happens to have a prefix of a
+                     * material */
+                    && !not_actually_specifying_material(d->bp, i))
+                {
+                    d->material = i;
+                    l++;
+                    break; /* from this for loop, not the larger one */
+                }
+            }
+            if (i == NUM_MATERIAL_TYPES)
+                /* no matching materials so no match for anything in this whole
+                 * if chain */
+                break;
         }
         d->bp += l;
     }
@@ -4705,6 +4815,13 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         }
     }
 
+    /* Compatibility hack: leather armor from older version most closely
+       corresponds to light armor. */
+    if (d->material == LEATHER && !strncmpi(d->bp, "armor", 5)) {
+        d->typ = ARMOR;
+        return 2; /*goto typfnd;*/
+    }
+
     /* Find corpse type w/o "of" (red dragon scale mail, yeti corpse) */
     if (!object_not_monster(d->bp)) {
         const char *rest = 0;
@@ -4841,8 +4958,8 @@ readobjnam_postparse1(struct _readobjnam_data *d)
         && strncmpi(d->bp, "detect food", 11)
         && strncmpi(d->bp, "food detection", 14)
         && strncmpi(d->bp, "ring mail", 9)
-        && strncmpi(d->bp, "studded leather armor", 21)
-        && strncmpi(d->bp, "leather armor", 13)
+        && strncmpi(d->bp, "studded armor", 13)
+        && strncmpi(d->bp, "armor", 11)
         && strncmpi(d->bp, "tooled horn", 11)
         && strncmpi(d->bp, "food ration", 11)
         && strncmpi(d->bp, "amulet of storms", 16)
@@ -5260,6 +5377,12 @@ readobjnam(char *bp, struct obj *no_wish)
         }
     }
 
+    if (!d.oclass && d.material == GOLD) {
+        /* things like "5000 gold", which will get parsed as the material and
+         * not the object */
+        d.oclass = COIN_CLASS;
+        d.typ = GOLD_PIECE;
+    }
     if (!d.oclass)
         return ((struct obj *) 0);
  any:
@@ -5376,7 +5499,7 @@ readobjnam(char *bp, struct obj *no_wish)
     }
 
     if (d.islit && (d.typ == OIL_LAMP
-                    || d.typ == BRASS_LANTERN
+                    || d.typ == LANTERN
                     || Is_candle(d.otmp) || d.typ == POT_OIL)) {
         place_object(d.otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(d.otmp, FALSE);
@@ -5555,6 +5678,16 @@ readobjnam(char *bp, struct obj *no_wish)
     } else if (d.spesgn < 0) {
         curse(d.otmp);
     }
+
+    /* reset material if mksobj picked a different one (wishes are always base
+     * material -- unless in wizard mode, in which case the specified material
+     * is picked later -- mainly for balance reasons, but also to prevent
+     * problems like wishing for arrows and randomly getting glass arrows which
+     * will shatter.
+     * This must happen before erosion/dilution is set because set_material
+     * zeroes those when the material makes erosion irrelevant. */
+    set_material(d.otmp, objects[d.otmp->otyp].oc_material);
+
     // d.otmp->oprops = 0;
 
     /* set eroded and erodeproof */
@@ -5764,6 +5897,47 @@ readobjnam(char *bp, struct obj *no_wish)
            certain artifacts to have a forged quality bit */
         d.otmp->bquality = FQ_NORMAL;
     }
+    if (d.material > 0 && !d.otmp->oartifact && wizard) {
+        if (!valid_obj_material(d.otmp, d.material)) {
+            pline("Note: material %s is not normally valid for this object.",
+                  materialnm[d.material]);
+        }
+        set_material(d.otmp, d.material);
+    }
+    /* if oartifact is true, oname() will have handled the assignment of a
+     * specific material for any possible artifact. */
+
+    /* set eroded and erodeproof
+     * Moved here after final material is set because otherwise is_crackable
+     * won't be true for a glass object whose base type isn't glass.
+     * For most items, such a wish is only possible in wizard mode, but a
+     * normal-mode player could hypothetically wish for a cracked Mirror Brand,
+     * which is non-base-type glass. */
+    if (erosion_matters(d.otmp) || destroyable_oclass(d.otmp->oclass)) {
+        /* wished-for item shouldn't be eroded unless specified */
+        d.otmp->oeroded = d.otmp->oeroded2 = 0;
+        if (d.eroded && (is_flammable(d.otmp) || is_rustprone(d.otmp)
+                         || is_crackable(d.otmp)))
+            d.otmp->oeroded = d.eroded;
+        if (d.eroded2 && (is_corrodeable(d.otmp) || is_rottable(d.otmp)))
+            d.otmp->oeroded2 = d.eroded2;
+        /*
+         * 3.6.1: earlier versions included `&& !eroded && !eroded2' here,
+         * but damageproof combined with damaged is feasible (eroded
+         * armor modified by confused reading of cursed destroy armor)
+         * so don't prevent player from wishing for such a combination.
+         *
+         * Note on glass objects: this cannot be used to wish for shatterproof
+         * non-base-glass objects like daggers, but it can be used to e.g. get a
+         * shatterproof crystal plate mail.
+         */
+        if (d.erodeproof
+            && (is_damageable(d.otmp) || destroyable_oclass(d.otmp->oclass)
+                || d.otmp->otyp == CRYSKNIFE
+                || objects[d.otmp->otyp].oc_material == GLASS))
+            d.otmp->oerodeproof = (Luck >= 0 || wizard);
+    }
+
     if (d.halfeaten && d.otmp->oclass == FOOD_CLASS) {
         unsigned nut = obj_nutrition(d.otmp);
 
@@ -5918,8 +6092,8 @@ helm_simple_name(struct obj *helmet)
      *  given for various bonks on the head:  headgear that provides
      *  such protection is a "helm", that which doesn't is a "hat".
      *
-     *      elven leather helm / leather hat    -> hat
-     *      dwarvish iron helm / hard hat       -> helm
+     *      elven helm                          -> hat
+     *      dwarvish helm / hard hat            -> helm
      *  The rest are completely straightforward:
      *      fedora, cornuthaum, dunce cap       -> hat
      *      all other types of helmets          -> helm
@@ -5972,7 +6146,7 @@ shield_simple_name(struct obj *shield)
     if (shield) {
         /* xname() describes unknown (unseen) reflection as smooth */
         if (shield->otyp == SHIELD_OF_REFLECTION)
-            return shield->dknown ? "silver shield" : "smooth shield";
+            return "smooth shield";
         /*
          * We might distinguish between wooden vs metallic or
          * light vs heavy to give small benefit to spell casters.
@@ -6156,7 +6330,7 @@ name_to_otyp(const char *in_str)
         && strncmpi(in_str, "food detection", 14)
         && strncmpi(in_str, "ring mail", 9)
         && strncmpi(in_str, "studded armor", 21)
-        && strncmpi(in_str, "light armor", 13)
+        && strncmpi(in_str, "armor", 5)
         && strncmpi(in_str, "tooled horn", 11)
         && strncmpi(in_str, "food ration", 11)
         && strncmpi(in_str, "amulet of storms", 16)

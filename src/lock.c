@@ -229,7 +229,8 @@ forcelock(void)
 
     if (gx.xlock.picktyp) { /* blade */
         if (rn2(1000 - (int) uwep->spe) > (992 - greatest_erosion(uwep) * 10)
-            && !uwep->cursed && !obj_resists(uwep, 0, 99)) {
+            && !uwep->cursed && !(uwep->material == GLASS && uwep->oerodeproof)
+            && !obj_resists(uwep, 0, 99)) {
             /* for a +0 weapon, probability that it survives an unsuccessful
              * attempt to force the lock is (.992)^50 = .67
              */
@@ -1369,7 +1370,7 @@ chest_shatter_msg(struct obj *otmp)
     HBlinded = 1L,  BBlinded = 0L;
     thing = singular(otmp, xname);
     HBlinded = save_HBlinded,  BBlinded = save_BBlinded;
-    switch (objects[otmp->otyp].oc_material) {
+    switch (otmp->material) {
     case PAPER:
         disposition = "is torn to shreds";
         break;

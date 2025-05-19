@@ -3268,8 +3268,8 @@ use_misc(struct monst *mtmp)
                 if (freegrease)
                     maybe_grease_off(obj);
                 return 1;
-            } else if (where_to == 3 && mon_hates_silver(mtmp)
-                       && is_silver(obj)) {
+            } else if (where_to == 3
+                       && mon_hates_material(mtmp, obj->material)) {
                 /* this monster won't want to catch a silver
                    weapon; drop it at hero's feet instead */
                 where_to = 2;

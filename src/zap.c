@@ -1764,7 +1764,7 @@ polyuse(struct obj *objhdr, int mat, int minwt)
             continue;
 #endif
 
-        if (((int) objects[otmp->otyp].oc_material == mat)
+        if (((int) otmp->material == mat)
             == (rn2(minwt + 1) != 0)) {
             /* appropriately add damage to bill */
             if (costly_spot(otmp->ox, otmp->oy)) {
@@ -1907,7 +1907,7 @@ do_osshock(struct obj *obj)
              * Luck = -13:     1 in 2
              * */
             if (!rn2(Luck/2 + 8)) {
-                gp.poly_zapped = objects[obj->otyp].oc_material;
+                gp.poly_zapped = obj->material;
                 break;
             }
     }
@@ -2109,6 +2109,7 @@ poly_obj(struct obj *obj, int id)
             otmp->oerodeproof = TRUE;
             otmp->quan = 1L;
             otmp->cursed = FALSE;
+            set_material(otmp, LEATHER);
         }
     }
     if (obj->otyp == LEASH && obj->leashmon != 0) {
@@ -2192,10 +2193,11 @@ poly_obj(struct obj *obj, int id)
 
     case GEM_CLASS:
         if (otmp->quan > (long) rnd(4)
-            && objects[obj->otyp].oc_material == MINERAL
-            && objects[otmp->otyp].oc_material != MINERAL) {
+            && obj->material == MINERAL
+            && otmp->material != MINERAL) {
             otmp->otyp = ROCK; /* transmutation backfired */
             otmp->quan /= 2L;  /* some material has been lost */
+            set_material(otmp, MINERAL);
         }
         break;
     }
@@ -2310,8 +2312,7 @@ stone_to_flesh_obj(struct obj *obj) /* nonnull */
     boolean smell = FALSE, golem_xform = FALSE;
     int res = 1; /* affected object by default */
 
-    if (objects[obj->otyp].oc_material != MINERAL
-        && objects[obj->otyp].oc_material != GEMSTONE)
+    if (obj->material != MINERAL && obj->material != GEMSTONE)
         return 0;
     /* Heart of Ahriman usually resists; ordinary items rarely do */
     if (obj_resists(obj, 2, 98))
@@ -4053,9 +4054,10 @@ zap_updown(struct obj *obj) /* wand or spell, nonnull */
                   ceiling(x, y), body_part(HEAD));
             dmg = rnd(hard_helmet(uarmh) ? 2 : 6);
             losehp(Maybe_Half_Phys(dmg), "falling rock", KILLED_BY_AN);
-            if ((otmp = mksobj_at(ROCK, x, y, FALSE, FALSE)) != 0) {
+            crack_glass_obj(uarmh);
+            if ((otmp = mksobj(ROCK, FALSE, FALSE)) != 0) {
                 (void) xname(otmp); /* set dknown, maybe bknown */
-                stackobj(otmp);
+                obj_drops_at(otmp, x, y);
             }
             newsym(x, y);
         } else if (u.dz > 0 && ttmp) {
@@ -6876,6 +6878,25 @@ break_statue(struct obj *obj)
     obj->spe = 0;
     fracture_rock(obj);
     return TRUE;
+}
+
+/* Return true if this object class can be damaged or destroyed by an external
+ * effect that doesn't have to do with erosion.
+ * Generally these items would not be expected to have erosion_matters() return
+ * true for them. */
+boolean
+destroyable_oclass(char oclass)
+{
+    /* can be blanked by water and also burnt up by fire effects */
+    if (oclass == SCROLL_CLASS || oclass == SPBOOK_CLASS)
+        return TRUE;
+    /* can be frozen by ice effects */
+    if (oclass == POTION_CLASS)
+        return TRUE;
+    /* can be blown up by shock effects */
+    if (oclass == RING_CLASS || oclass == WAND_CLASS)
+        return TRUE;
+    return FALSE;
 }
 
 /* Return TRUE if obj is eligible to pass to maybe_destroy_item given

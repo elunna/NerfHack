@@ -355,7 +355,7 @@ ready_weapon(struct obj *wep)
 #if 0
         /* we'll get back to this someday, but it's not balanced yet */
         if (Race_if(PM_ELF) && !wep->oartifact
-            && objects[wep->otyp].oc_material == IRON) {
+            && wep->material == IRON) {
             /* Elves are averse to wielding cold iron */
             You("have an uneasy feeling about wielding cold iron.");
             change_luck(-1);
@@ -1173,6 +1173,7 @@ chwepon(struct obj *otmp, int amount)
              multiple ? "fuse, and become" : "is");
         uwep->otyp = CRYSKNIFE;
         uwep->oerodeproof = 0;
+        set_material(uwep, objects[CRYSKNIFE].oc_material);
         if (multiple) {
             uwep->quan = 1L;
             uwep->owt = weight(uwep);
@@ -1195,6 +1196,7 @@ chwepon(struct obj *otmp, int amount)
         costly_alteration(uwep, COST_DEGRD); /* DECHNT? other? */
         uwep->otyp = WORM_TOOTH;
         uwep->oerodeproof = 0;
+        set_material(uwep, objects[WORM_TOOTH].oc_material);
         if (multiple) {
             uwep->quan = 1L;
             uwep->owt = weight(uwep);
@@ -1206,6 +1208,13 @@ chwepon(struct obj *otmp, int amount)
         return 1;
     }
 
+    if (uwep->oclass == RING_CLASS) {
+        /* charge the ring; this shouldn't print "feeling of loss" message for
+         * failing to charge because we've ruled out non-chargeable rings above
+         */
+        recharge(uwep, bcsign(otmp));
+        return 1;
+    }
     if (has_oname(uwep))
         wepname = ONAME(uwep);
     if (amount < 0 && uwep->oartifact && restrict_name(uwep, wepname)) {

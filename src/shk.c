@@ -2789,6 +2789,36 @@ get_cost_of_shop_item(
     return cost;
 }
 
+/* Relative prices for the different materials.
+ * Units for this are much more poorly defined than for weights; the best
+ * approximation would be something like "zorkmids per aum".
+ * We only care about the ratio of two of these together. */
+static
+const int matprices[] = {
+     0,
+     1, /* LIQUID */
+     1, /* WAX */
+     1, /* VEGGY */
+     3, /* FLESH */
+     2, /* PAPER */
+     3, /* CLOTH */
+     5, /* LEATHER */
+     8, /* WOOD */
+    20, /* BONE */
+   200, /* DRAGON_HIDE - DSM to scale mail */
+    10, /* IRON */
+    10, /* METAL */
+    10, /* COPPER */
+    30, /* SILVER */
+    60, /* GOLD */
+    80, /* PLATINUM */
+    50, /* MITHRIL */
+     3, /* PLASTIC */
+    20, /* GLASS */
+   500, /* GEMSTONE */
+    10  /* MINERAL */
+};
+
 staticfn long
 get_pricing_units(struct obj *obj)
 {
@@ -2813,7 +2843,7 @@ oid_price_adjustment(struct obj *obj, unsigned int oid)
     int res = 0, otyp = obj->otyp;
 
     if (!(obj->dknown && objects[otyp].oc_name_known)
-        && (obj->oclass != GEM_CLASS || objects[otyp].oc_material != GLASS)) {
+        && (obj->oclass != GEM_CLASS || obj->material != GLASS)) {
         res = ((oid % 4) == 0); /* id%4 ==0 -> +1, ==1..3 -> 0 */
     }
     return res;
@@ -2842,8 +2872,7 @@ get_cost(
     /* shopkeeper may notice if the player isn't very knowledgeable -
        especially when gem prices are concerned */
     if (!obj->dknown || !objects[obj->otyp].oc_name_known) {
-        if (obj->oclass == GEM_CLASS
-            && objects[obj->otyp].oc_material == GLASS) {
+        if (obj->oclass == GEM_CLASS && obj->material == GLASS) {
             int i;
             /* get a value that's 'random' from game to game, but the
                same within the same game */
@@ -2891,6 +2920,10 @@ get_cost(
             divisor *= 3L;
         }
     }
+    /* adjust for different material */
+    multiplier *= matprices[obj->material];
+    divisor *= matprices[objects[obj->otyp].oc_material];
+
     if (uarmh && uarmh->otyp == DUNCE_CAP)
         multiplier *= 4L, divisor *= 3L;
     else if ((Role_if(PM_TOURIST) && u.ulevel < (MAXULEV / 2))
@@ -3097,6 +3130,10 @@ set_cost(struct obj *obj, struct monst *shkp)
     long tmp, unit_price = getprice(obj, TRUE), multiplier = 1L, divisor = 1L;
 
     tmp = get_pricing_units(obj) * unit_price;
+
+    /* adjust for different material */
+    multiplier *= matprices[obj->material];
+    divisor *= matprices[objects[obj->otyp].oc_material];
 
     if (uarmh && uarmh->otyp == DUNCE_CAP)
         divisor *= 3L;
@@ -5679,7 +5716,7 @@ cost_per_charge(
             tmp /= 5L;
     } else if (otmp->otyp == CRYSTAL_BALL               /* 1 - 5 */
                || otmp->otyp == OIL_LAMP                /* 1 - 10 */
-               || otmp->otyp == BRASS_LANTERN
+               || otmp->otyp == LANTERN
                || (otmp->otyp >= MAGIC_FLUTE
                    && otmp->otyp <= DRUM_OF_EARTHQUAKE) /* 5 - 9 */
                || otmp->oclass == WAND_CLASS) {         /* 3 - 11 */

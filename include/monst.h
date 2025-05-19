@@ -283,9 +283,14 @@ struct monst {
 #define montoostrong(monindx, lev) (mons[monindx].difficulty > lev)
 #define montooweak(monindx, lev) (mons[monindx].difficulty < lev)
 
+/* Override mrevived to track when a golem has been completely destroyed and
+ * shouldn't drop items from its body. */
+#define golem_destroyed mrevived
+
 #ifdef PMNAME_MACROS
 #define Mgender(mon) ((mon)->female ? FEMALE : MALE)
 #endif
+/* mresists from any source - innate, intrinsic, or extrinsic */
 #define mon_resistancebits(mon) \
     ((mon)->data->mresists | (mon)->mextrinsics | (mon)->mintrinsics)
 #define resists_fire(mon)   Resists_Elem(mon, FIRE_RES)

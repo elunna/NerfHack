@@ -229,15 +229,15 @@ loot_classify(Loot *sort_item, struct obj *obj)
             k = 1; /* regular container or unknown bag of tricks */
         else
             switch (otyp) {
-            case WOODEN_FLUTE:
+            case CHEAP_FLUTE:
             case MAGIC_FLUTE:
             case TOOLED_HORN:
             case FROST_HORN:
             case FIRE_HORN:
-            case WOODEN_HARP:
+            case CHEAP_HARP:
             case MAGIC_HARP:
             case BUGLE:
-            case LEATHER_DRUM:
+            case WAR_DRUM:
             case DRUM_OF_EARTHQUAKE:
             case HORN_OF_PLENTY: /* not a musical instrument */
                 k = 3; /* instrument or unknown horn of plenty */
@@ -285,7 +285,7 @@ loot_classify(Loot *sort_item, struct obj *obj)
          *  7) discovered gray stones ("touchstone"),
          *  8) seen rocks ("rock").
          */
-        switch (objects[obj->otyp].oc_material) {
+        switch (obj->material) {
         case GEMSTONE:
             k = !seen ? 1 : !discovered ? 2 : 3;
             break;
@@ -331,6 +331,7 @@ loot_xname(struct obj *obj)
     saveo.blessed = obj->blessed, saveo.cursed = obj->cursed;
     saveo.spe = obj->spe;
     saveo.owt = obj->owt;
+    saveo.material = obj->material;
     save_oname = has_oname(obj) ? ONAME(obj) : 0;
     save_debug = flags.debug;
     /* suppress "diluted" for potions and "holy/unholy" for water;
@@ -348,6 +349,8 @@ loot_xname(struct obj *obj)
        have the same size adjective hence same "small glob of " prefix */
     if (obj->globby)
         obj->owt = 20; /* weight of a fresh glob (one pudding's worth) */
+    /* suppress material by setting to default */
+    obj->material = objects[obj->otyp].oc_material;
     /* suppress user-assigned name */
     if (save_oname && !obj->oartifact)
         ONAME(obj) = 0;
@@ -366,6 +369,7 @@ loot_xname(struct obj *obj)
         program_state.something_worth_saving = 1;
     }
     /* restore the object */
+    obj->material = saveo.material;
     if (obj->oclass == POTION_CLASS) {
         obj->odiluted = saveo.odiluted;
         if (obj->otyp == POT_WATER)
@@ -417,6 +421,7 @@ sortloot_cmp(const genericptr vptr1, const genericptr vptr2)
     struct obj *obj1 = sli1->obj,
                *obj2 = sli2->obj;
     char *nam1, *nam2, *tmpstr;
+    const char *mat1, *mat2;
     int val1, val2, namcmp;
 
     /* in-use takes precedence over all others */
@@ -515,6 +520,14 @@ sortloot_cmp(const genericptr vptr1, const genericptr vptr2)
     val2 = obj2->bknown ? (obj2->blessed ? 3 : !obj2->cursed ? 2 : 1) : 0;
     if (val1 != val2)
         return val2 - val1; /* bigger is better */
+
+    /* Sort alphabetically by material. */
+    mat1 = (obj1->material != objects[obj1->otyp].oc_material)
+           ? materialnm[obj1->material] : "";
+    mat2 = (obj2->material != objects[obj2->otyp].oc_material)
+           ? materialnm[obj2->material] : "";
+    if ((namcmp = strcmpi(mat1, mat2)) != 0)
+        return namcmp;
 
     /* Sort by greasing.  This will put the objects in degreasing order. */
     val1 = obj1->greased;
@@ -1209,6 +1222,7 @@ hold_another_object(
         obj_extract_self(obj);
         if (crysknife) {
             obj->otyp = CRYSKNIFE;
+            set_material(obj, objects[CRYSKNIFE].oc_material);
             obj->oerodeproof = oerode;
         }
     }
@@ -3218,7 +3232,7 @@ itemactions(struct obj *otmp)
     else if (otmp->otyp == SADDLE)
         ia_addmenu(win, IA_APPLY_OBJ, 'a', "Place this saddle on a pet");
     else if (otmp->otyp == MAGIC_WHISTLE
-             || otmp->otyp == TIN_WHISTLE)
+             || otmp->otyp == PEA_WHISTLE)
         ia_addmenu(win, IA_APPLY_OBJ, 'a', "Blow this whistle");
     else if (otmp->otyp == EUCALYPTUS_LEAF)
         ia_addmenu(win, IA_APPLY_OBJ, 'a', "Use this leaf as a whistle");
@@ -3236,7 +3250,7 @@ itemactions(struct obj *otmp)
                 is_plural(otmp) ? "these" : "this",
                 simpleonames(otmp));
         ia_addmenu(win, IA_APPLY_OBJ, 'a', buf);
-    } else if (otmp->otyp == OIL_LAMP || otmp->otyp == BRASS_LANTERN) {
+    } else if (otmp->otyp == OIL_LAMP || otmp->otyp == LANTERN) {
         Sprintf(buf, "%s this light source", light);
         ia_addmenu(win, IA_APPLY_OBJ, 'a', buf);
     } else if (otmp->otyp == POT_OIL && objects[otmp->otyp].oc_name_known) {
@@ -3264,7 +3278,7 @@ itemactions(struct obj *otmp)
     else if (otmp->otyp == HORN_OF_PLENTY
              && objects[otmp->otyp].oc_name_known)
         ia_addmenu(win, IA_APPLY_OBJ, 'a', "Blow into the horn of plenty");
-    else if (otmp->otyp >= WOODEN_FLUTE && otmp->otyp <= DRUM_OF_EARTHQUAKE)
+    else if (otmp->otyp >= CHEAP_FLUTE && otmp->otyp <= DRUM_OF_EARTHQUAKE)
         ia_addmenu(win, IA_APPLY_OBJ, 'a', "Play this musical instrument");
     else if (otmp->otyp == LAND_MINE || otmp->otyp == BEARTRAP)
         ia_addmenu(win, IA_APPLY_OBJ, 'a', "Arm this trap");
@@ -3403,7 +3417,7 @@ itemactions(struct obj *otmp)
     /* R: remove accessory or rub item */
     if (otmp->owornmask & W_ACCESSORY)
         ia_addmenu(win, IA_TAKEOFF_OBJ, 'R', "Remove this accessory");
-    if (otmp->otyp == OIL_LAMP || otmp->otyp == BRASS_LANTERN) {
+    if (otmp->otyp == OIL_LAMP || otmp->otyp == LANTERN) {
         Sprintf(buf, "Rub this %s", simpleonames(otmp));
         ia_addmenu(win, IA_RUB_OBJ, 'R', buf);
     } else if (otmp->oclass == GEM_CLASS && is_graystone(otmp->otyp))
@@ -5048,7 +5062,7 @@ mergable(
         || (obj->bknown != otmp->bknown && !Role_if(PM_CLERIC) &&
             (Blind || Hallucination))
         || obj->oeroded != otmp->oeroded || obj->oeroded2 != otmp->oeroded2
-        || obj->greased != otmp->greased)
+        || obj->material != otmp->material || obj->greased != otmp->greased)
         return FALSE;
 
     if ((erosion_matters(obj))

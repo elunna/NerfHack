@@ -170,7 +170,7 @@ windsound_hero_playnotes(int32_t instrument, const char *str, int32_t volume UNU
         return;
     resourcename[0] = '\0';
     switch(instrument) {
-        case ins_flute:             /* WOODEN_FLUTE */
+        case ins_flute:             /* CHEAP_FLUTE */
             Strcpy(resourcename, "sound_Wooden_Flute");
             has_note_variations = TRUE;
             break;
@@ -192,7 +192,7 @@ windsound_hero_playnotes(int32_t instrument, const char *str, int32_t volume UNU
             Strcpy(resourcename, "sound_Bugle");
             has_note_variations = TRUE;
             break;
-        case ins_orchestral_harp:   /* WOODEN_HARP */
+        case ins_orchestral_harp:   /* CHEAP_HARP */
             Strcpy(resourcename, "sound_Wooden_Harp");
             has_note_variations = TRUE;
             break;
@@ -206,7 +206,7 @@ windsound_hero_playnotes(int32_t instrument, const char *str, int32_t volume UNU
         case ins_taiko_drum:        /* DRUM_OF_EARTHQUAKE */
             Strcpy(resourcename, "sound_Drum_Of_Earthquake");
             break;
-        case ins_melodic_tom:       /* LEATHER_DRUM */
+        case ins_melodic_tom:       /* WAR_DRUM */
             Strcpy(resourcename, "sound_Leather_Drum");
             break;
     }

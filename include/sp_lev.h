@@ -163,6 +163,7 @@ typedef struct {
     short lit;
     short eroded, locked, trapped, tknown, recharged, invis, greased, broken,
           achievement, bquality;
+    xint8 material;
 } object;
 
 typedef struct {

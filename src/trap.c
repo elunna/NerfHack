@@ -123,7 +123,7 @@ burnarmor(struct monst *victim)
         case 0:
             item = hitting_u ? uarmh : which_armor(victim, W_ARMH);
             if (item) {
-                mat_idx = objects[item->otyp].oc_material;
+                mat_idx = item->material;
                 Sprintf(buf, "%s %s", materialnm[mat_idx],
                         helm_simple_name(item));
             }
@@ -425,6 +425,8 @@ mk_trap_statue(coordxy x, coordxy y)
              && sgn(u.ualign.type) == sgn(mptr->maligntyp));
     statue = mkcorpstat(STATUE, (struct monst *) 0, mptr, x, y,
                         CORPSTAT_NONE);
+    /* randomize the material */
+    init_obj_material(statue);
     mtmp = makemon(&mons[statue->corpsenm], 0, 0, MM_NOCOUNTBIRTH | MM_NOMSG);
     if (!mtmp)
         return; /* should never happen */
@@ -1473,6 +1475,7 @@ trapeffect_rocktrap(
                     } else if (flags.verbose) {
                         Norep("%s does not protect you.", Yname2(uarmh));
                     }
+                    crack_glass_obj(uarmh);
                     gavemsg = TRUE;
                 } else if (passes_rocks(gy.youmonst.data)) {
                     Norep("It passes harmlessly through you.");
@@ -2456,9 +2459,11 @@ trapeffect_pit(
         set_utrap((unsigned) rn1(6, 2), TT_PIT);
         if (!steedintrap(trap, (struct obj *) 0)) {
             if (ttype == SPIKED_PIT) {
+                int dmg = rnd(conj_pit ? 4 : adj_pit ? 6 : 10);
+                if (mon_hates_material(mtmp, IRON))
+                    dmg += rnd(sear_damage(IRON));
                 int oldumort = u.umortality;
-
-                losehp(Maybe_Half_Phys(rnd(conj_pit ? 4 : adj_pit ? 6 : 10)),
+                losehp(Maybe_Half_Phys(dmg),
                        /* note: these don't need locomotion() handling;
                           if fatal while poly'd and Unchanging, the
                           death reason will be overridden with
@@ -2503,6 +2508,7 @@ trapeffect_pit(
             exercise(A_DEX, FALSE);
         }
     } else {
+        int dmg;
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
         boolean trapkilled = FALSE;
         boolean forcetrap = ((trflags & FORCETRAP) != 0);
@@ -2537,8 +2543,11 @@ trapeffect_pit(
             seetrap(trap);
         }
         mselftouch(mtmp, "Falling, ", FALSE);
+        dmg = rnd((ttype == PIT) ? 6 : 10);
+        if (ttype == SPIKED_PIT && mon_hates_material(mtmp, IRON))
+            dmg += rnd(sear_damage(IRON));
         if (DEADMONSTER(mtmp) || thitm(0, mtmp, (struct obj *) 0,
-                                       rnd((ttype == PIT) ? 6 : 10), FALSE))
+                                       dmg, FALSE))
             trapkilled = TRUE;
 
         return trapkilled ? Trap_Killed_Mon : mtmp->mtrapped
@@ -5587,6 +5596,7 @@ water_damage(
             Your("%s %s.", ostr, vtense(ostr, "fade"));
 
         obj->otyp = SPE_BLANK_PAPER;
+        set_material(obj, PAPER); /* in case it was one of the LEATHER books */
         /* same re-init as over-reading or polymorph; matters if it gets
            polymorphed into non-blank; doesn't matter if eventually written
            on since that replaces it with new book and studied count of 0 */
@@ -7691,6 +7701,10 @@ thitm(
             dam = dmgval(obj, mon);
             if (dam < 1)
                 dam = 1;
+            if (mon_hates_material(mon, obj->material)) {
+                /* extra damage already applied by dmgval() */
+                searmsg(NULL, mon, obj, TRUE);
+            }
         }
         if (!harmless) {
             mon->mhp -= dam;
@@ -8183,8 +8197,7 @@ trigger_trap_with_polearm(
         } else {
             see_trap = TRUE;
             otmp = mksobj((trap->ttyp == ROCKTRAP) ? ROCK :
-                            (trap->ttyp == DART_TRAP) ? DART :
-                            ((Inhell && !rn2(3)) ? SILVER_ARROW : ARROW),
+                            (trap->ttyp == DART_TRAP) ? DART : ARROW,
                             TRUE, FALSE);
             otmp->quan = 1L;
             otmp->owt = weight(otmp);

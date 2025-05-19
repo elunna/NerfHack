@@ -2624,6 +2624,15 @@ get_bkglyph_and_framecolor(
 #define GMAP_SET            0x0001
 #define GMAP_ROGUELEVEL     0x0002
 
+/* Externify this array if it's ever needed anywhere else.
+ * Colors are in the same order as materials are defined. */
+static const int materialclr[] = {
+    CLR_BLACK, HI_ORGANIC, CLR_WHITE, HI_ORGANIC, CLR_RED,
+    CLR_WHITE, HI_CLOTH, HI_LEATHER, HI_WOOD, CLR_WHITE, CLR_BLACK,
+    HI_METAL, HI_METAL, HI_COPPER, HI_SILVER, HI_GOLD, CLR_WHITE,
+    HI_SILVER, CLR_WHITE, HI_GLASS, CLR_RED, CLR_GRAY
+};
+
 void
 map_glyphinfo(
     coordxy x, coordxy y,
@@ -2699,6 +2708,38 @@ map_glyphinfo(
 
     /* isok is used because this is sometimes called with 0,0 */
     if (iflags.use_color && isok(x, y)) {
+        /* object or statue, which might be made of a non-default material or on
+         * stairs */
+        if (glyph_is_statue(glyph) || glyph_is_normal_object(glyph)
+            || glyph_is_body(glyph)) {
+            struct obj *otmp = vobj_at(x, y);
+            if (otmp) {
+                if (otmp && otmp->material != objects[otmp->otyp].oc_material)
+                    glyphinfo->gm.sym.color = materialclr[otmp->material];
+            }
+            /* !otmp is not actually impossible, because this is called from
+             * tmp_at(), in which an object is flying through the air above
+             * ground where there's usually no object.
+             * There is no single unified way to get the object that happens to
+             * be flying through the air. gt.thrownobj and gk.kickedobj are only
+             * set in a small number of cases involving flying objects, and it's
+             * possible that by comprehensively tracking them in all cases,
+             * !otmp would actually be an impossible case.
+             * This causes the following bugs (both of which were present before
+             * commit 1f6c1d0):
+             *   1. Flying objects' materials don't normally render. The object
+             *      is shown as the base glyph no matter its material.
+             *   2. If a flying object passes over an object of a material
+             *      that's not its base, it will briefly render as that material
+             *      (since we have only x, y, and glyph here and vobj_at() can't
+             *      tell that it's actually a flying object being mapped.)
+             * Another reason !otmp is not actually impossible is that the
+             * object could have been moved while out of sight.
+            else
+                impossible("no visible object at (%d, %d)?",
+                           x, y);
+            */
+        }
         /* colored walls - some of these are handled as separate glyphs in
          * wallcolors[] and don't appear here; currently no glyphs exist for all
          * the other interesting types of walls */

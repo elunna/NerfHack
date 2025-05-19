@@ -822,9 +822,19 @@ hurtle_step(genericptr_t arg, coordxy x, coordxy y)
             if (odoor_diag)
                 You("hit the door frame!");
             pline("Ouch!");
+            wake_nearto(x,y, 10);
         } else if (ltyp == IRONBARS) {
             why = "crashing into iron bars";
-            You("crash into some iron bars.  Ouch!");
+            You("crash into some iron bars.");
+            dmg = rnd(2 + *range);
+            if (Hate_material(IRON)) {
+                pline("The iron hurts to touch!");
+                dmg += sear_damage(IRON);
+            }
+            else {
+                pline("Ouch!");
+            }
+            wake_nearto(x,y, 20);
         } else if ((obj = sobj_at(BOULDER, x, y)) != 0) {
             why = "bumping into a boulder";
             You("bump into a %s.  Ouch!", xname(obj));
@@ -1274,7 +1284,7 @@ harmless_missile(struct obj *obj)
     default:
         if (obj->oclass == SCROLL_CLASS) /* scrolls but not all paper objs */
             return TRUE;
-        if (objects[otyp].oc_material == CLOTH)
+        if (obj->material == CLOTH)
             return TRUE;
         break;
     }
@@ -1373,10 +1383,10 @@ toss_up(struct obj *obj, boolean hitsroof)
         gt.thrownobj = 0;
     } else { /* neither potion nor other breaking object */
         boolean less_damage = (hard_helmet(uarmh)
-                               && (!is_silver(obj) || !Hate_silver)),
+                               && !Hate_material(obj->material)),
                 harmless = (stone_missile(obj)
-                            && passes_rocks(gy.youmonst.data)),
-                artimsg = FALSE;
+                            && passes_rocks(gy.youmonst.data));
+        int artimsg = ARTIFACTHIT_NOMSG;
         int dmg = dmgval(obj, &gy.youmonst);
 
         if (obj->oartifact && !harmless)
@@ -1395,12 +1405,12 @@ toss_up(struct obj *obj, boolean hitsroof)
                dmgval()'s artifact light against gremlin or axe against
                woody creature since both involve weapons; hero-as-shade is
                hypothetical because hero can't polymorph into that form */
-            if (shadelike(gy.youmonst.data) && !is_silver(obj))
+            if (shadelike(gy.youmonst.data) && !shade_glare(obj))
                 dmg = 0;
             if (obj->blessed && mon_hates_blessings(&gy.youmonst))
                 dmg += rnd(4);
-            if (is_silver(obj) && Hate_silver)
-                dmg += rnd(20);
+            if (Hate_material(obj->material))
+                dmg += rnd(sear_damage(obj->material));
             if (obj->otyp == PINEAPPLE)
                 dmg = dmg + 2;
         }
@@ -1416,7 +1426,7 @@ toss_up(struct obj *obj, boolean hitsroof)
             /* note: 'harmless' and 'petrifier' are mutually exclusive */
             if ((less_damage && dmg < (Upolyd ? u.mh : u.uhp))
                        || harmless) {
-                if (!artimsg) {
+                if ((artimsg & ARTIFACTHIT_GAVEMSG) == 0) {
                     if (dmg > 2)
                         Your("helmet only slightly protects you.");
                     else if (!harmless) /* !harmless => less_damage here */
@@ -1446,9 +1456,13 @@ toss_up(struct obj *obj, boolean hitsroof)
             gt.thrownobj = 0;  /* now either gone or on floor */
             make_stoned(5L, (char *) 0, KILLED_BY, svk.killer.name);
             return obj ? TRUE : FALSE;
+        } else if (Hate_material(obj->material)) {
+            /* dmgval() already added extra damage */
+            if ((artimsg & ARTIFACTHIT_INSTAKILLMSG) == 0) {
+                searmsg(&gy.youmonst, &gy.youmonst, obj, FALSE);
+            }
+            exercise(A_CON, FALSE);
         }
-        if (is_silver(obj) && Hate_silver)
-            pline_The("silver sears you!");
         if (harmless)
             hit(thesimpleoname(obj), &gy.youmonst, " but doesn't hurt.");
 
@@ -1582,11 +1596,12 @@ throwit(
             u.dy = rn2(3) - 1;
 
             if (!u.dx && !u.dy) {
+                int artimsg = ARTIFACTHIT_NOMSG;
                 You("hit yourself in the %s!", body_part(LEG));
 
                 if (obj->oartifact)
                     /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
-                    (void) artifact_hit((struct monst *) 0, &gy.youmonst, obj, &dmg,
+                    artimsg = artifact_hit((struct monst *) 0, &gy.youmonst, obj, &dmg,
                                         rn1(18, 2));
                 if (dmg > 0)
                     dmg += u.udaminc;
@@ -1594,10 +1609,13 @@ throwit(
                     dmg = 0; /* beware negative rings of increase damage */
                 dmg = Maybe_Half_Phys(dmg);
 
-                if (is_silver(obj) && Hate_silver) {
-                    /* dmgval() already added extra damage */
+                if (Hate_material(obj->material)) {
+                    dmg += rnd(sear_damage(obj->material));
                     pline_The("silver sears you!");
                     exercise(A_CON, FALSE);
+                    if ((artimsg & ARTIFACTHIT_INSTAKILLMSG) == 0) {
+                        searmsg(NULL, &gy.youmonst, obj, TRUE);
+                    }
                 }
                 Sprintf(tmpbuf, "hitting %sself with a cursed projectile",
                         uhim());
@@ -1818,14 +1836,23 @@ throwit(
                               Levitation ? "beneath" : "at",
                               makeplural(body_part(FOOT)));
                     } else {
+                        int artimsg = ARTIFACTHIT_NOMSG;
                         dmg += rnd(3);
                         pline(Blind ? "%s your %s!"
                                     : "%s back toward you, hitting your %s!",
                               Tobjnam(obj, Blind ? "hit" : "fly"),
                               body_part(ARM));
-                        if (obj->oartifact)
-                            (void) artifact_hit((struct monst *) 0,
-                                                &gy.youmonst, obj, &dmg, 0);
+                        if (obj->oartifact) {
+                            artimsg = artifact_hit((struct monst *) 0,
+                                                   &gy.youmonst, obj, &dmg, 0);
+                        }
+                        if (Hate_material(obj->material)) {
+                            dmg += rnd(sear_damage(obj->material));
+                            exercise(A_CON, FALSE);
+                            if ((artimsg & ARTIFACTHIT_INSTAKILLMSG) == 0) {
+                                searmsg(NULL, &gy.youmonst, obj, TRUE);
+                            }
+                        }
                         losehp(Maybe_Half_Phys(dmg), killer_xname(obj),
                                KILLED_BY);
                     }
@@ -2158,14 +2185,14 @@ thitmonst(
         switch (uarmg->otyp) {
         case GAUNTLETS_OF_POWER: /* metal */
         case GAUNTLETS_OF_FORCE: /* bulky */
-        case BRONZE_GAUNTLETS:
+        case GAUNTLETS:
             tmp -= 2;
             break;
         case GAUNTLETS_OF_FUMBLING:
             /* you're fumbling and shouldn't really even be able to throw */
             tmp -= 9;
             break;
-        case LEATHER_GLOVES:
+        case GLOVES:
         case GAUNTLETS_OF_SWIMMING:
         case ROGUE_S_GLOVES:
             break;
@@ -2194,7 +2221,7 @@ thitmonst(
        NerfHack: Also treat any cursed gems as attacks. */
     if (obj->oclass == GEM_CLASS
         && is_unicorn(mon->data)
-        && objects[obj->otyp].oc_material != MINERAL
+        && obj->material != MINERAL
         && !uslinging()
         && !obj->cursed) {
         if (helpless(mon)) {
@@ -2513,7 +2540,7 @@ gem_accept(struct monst *mon, struct obj *obj)
         addluck[]    = " gratefully";
     char buf[BUFSZ];
     boolean is_buddy = sgn(mon->data->maligntyp) == sgn(u.ualign.type);
-    boolean is_gem = objects[obj->otyp].oc_material == GEMSTONE;
+    boolean is_gem = obj->material == GEMSTONE;
     int ret = 0;
 
     Strcpy(buf, Monnam(mon));
@@ -2830,12 +2857,12 @@ breaktest(struct obj *obj)
     /* this may need to be changed if actual glass armor gets added someday;
        for now, it affects crystal plate mail and helm of brilliance;
        either of them will have to be cracked 4 times before breaking */
-    if (obj->oclass == ARMOR_CLASS && objects[obj->otyp].oc_material == GLASS)
+    if (obj->oclass == ARMOR_CLASS && obj->material == GLASS)
         nonbreakchance = 90;
 
     if (obj_resists(obj, nonbreakchance, 99))
         return FALSE;
-    if (objects[obj->otyp].oc_material == GLASS && !obj->oartifact
+    if (obj->material == GLASS && !obj->oartifact
         && obj->oclass != GEM_CLASS)
         return TRUE;
 
@@ -2876,9 +2903,9 @@ breakmsg(struct obj *obj, boolean in_view)
     to_pieces = "";
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     default: /* glass or crystal wand */
-        if (obj->oclass != WAND_CLASS && obj->oclass != RING_CLASS
-            && obj->bquality != FQ_INFERIOR)
-            impossible("breaking odd object (%d)?", obj->otyp);
+        if (obj->material != GLASS && obj->bquality != FQ_INFERIOR)
+            impossible("breaking odd object? otyp=%d, material=%d",
+                       obj->otyp, obj->material);
         FALLTHROUGH;
         /*FALLTHRU*/
     case LENSES:
@@ -2912,6 +2939,51 @@ breakmsg(struct obj *obj, boolean in_view)
             pline("Catnip flies everywhere!");
         break;
     }
+}
+
+/* Possibly crack a glass object by its use in melee or thrown combat.
+ * Separate logic from breakobj because we are not unconditionally cracking the
+ * object.
+ * Return TRUE if destroyed.
+ * Potential callers might decide to call is_crackable() then breakobj() instead
+ * of this function; that will no longer outright destroy the object, but will
+ * unconditionally crack it by avoiding breaktest().
+ */
+boolean
+crack_glass_obj(struct obj* obj)
+{
+    /* this function can get called with null via some_armor() or by being
+     * called with uarm* variables that weren't null-checked */
+    if (!obj)
+        return FALSE;
+
+    /* some_armor() may also give an arbitrary item; we only want to damage it
+     * if it's glass */
+    if (obj->material != GLASS)
+        return FALSE;
+
+    /* shouldn't be called on a glass object that isn't crackable */
+    if (!is_crackable(obj)) {
+        impossible("attempting to crack non-crackable glass obj %d",
+                    obj->otyp);
+        return FALSE;
+    }
+
+    /* breaktest() now tries a random chance for glass armor and weapons to
+     * resist cracking, so it's no longer necessary to put a random chance in
+     * here */
+    if (!breaktest(obj))
+        return FALSE;
+
+    /* now we are definitely trying to crack it */
+    boolean ucarried = carried(obj);
+    boolean it_broke = breakobj(obj, obj->ox, obj->oy,
+                                !svc.context.mon_moving, TRUE);
+
+    if (ucarried)
+        update_inventory();
+
+    return it_broke;
 }
 
 staticfn int

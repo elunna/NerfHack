@@ -403,6 +403,11 @@ dig(void)
                 else if (uarmf)
                     dmg = (dmg + 1) / 2;
                 You("hit yourself in the %s.", body_part(FOOT));
+                if (Hate_material(uwep->material)) {
+                    /* extra damage already applied by dmgval() */
+                    searmsg(&gy.youmonst, &gy.youmonst, uwep, FALSE);
+                    exercise(A_CON, FALSE);
+                }
                 Sprintf(kbuf, "chopping off %s own %s", uhis(),
                         body_part(FOOT));
                 losehp(Maybe_Half_Phys(dmg), kbuf, KILLED_BY);
@@ -1617,10 +1622,11 @@ zap_dig(int otyp)
                 pline("It falls on your %s!", body_part(HEAD));
                 dmg = rnd(hard_helmet(uarmh) ? 2 : 6);
                 losehp(Maybe_Half_Phys(dmg), "falling rock", KILLED_BY_AN);
-                otmp = mksobj_at(ROCK, u.ux, u.uy, FALSE, FALSE);
+                crack_glass_obj(uarmh);
+                otmp = mksobj(ROCK, FALSE, FALSE);
                 if (otmp) {
                     (void) xname(otmp); /* set dknown, maybe bknown */
-                    stackobj(otmp);
+                    obj_drops_at(otmp, u.ux, u.uy);
                 }
                 newsym(u.ux, u.uy);
             } else {

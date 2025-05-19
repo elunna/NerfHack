@@ -607,7 +607,7 @@ do_improvisation(struct obj *instr)
         exercise(A_DEX, TRUE);
         makeknown_msg(MAGIC_FLUTE);
         break;
-    case WOODEN_FLUTE: /* May charm snakes */
+    case CHEAP_FLUTE: /* May charm snakes */
         do_spec &= (rn2(ACURR(A_DEX)) + u.ulevel > 25);
         if (!Deaf)
             pline("%s%s.", Tobjnam(instr, do_spec ? "trill" : "toot"),
@@ -617,7 +617,7 @@ do_improvisation(struct obj *instr)
         Hero_playnotes(obj_to_instr(&itmp), improvisation, 50);
         if (do_spec)
             charm_snakes(u.ulevel * 3);
-        makeknown_msg(WOODEN_FLUTE);
+        makeknown_msg(CHEAP_FLUTE);
         exercise(A_DEX, TRUE);
         break;
     case FIRE_HORN:  /* Idem wand of fire */
@@ -683,7 +683,7 @@ do_improvisation(struct obj *instr)
         exercise(A_DEX, TRUE);
         makeknown_msg(MAGIC_HARP);
         break;
-    case WOODEN_HARP: /* May calm Nymph */
+    case CHEAP_HARP: /* May calm Nymph */
         do_spec &= (rn2(ACURR(A_DEX)) + u.ulevel > 25);
         if (!Deaf)
             pline("%s %s.", Yname2(instr),
@@ -698,12 +698,12 @@ do_improvisation(struct obj *instr)
         if (do_spec)
             calm_nymphs(u.ulevel * 3);
         exercise(A_DEX, TRUE);
-        makeknown_msg(WOODEN_HARP);
+        makeknown_msg(CHEAP_HARP);
         break;
     case DRUM_OF_EARTHQUAKE: /* create several pits */
         /* a drum of earthquake does not cause deafness
            while still magically functional, nor afterwards
-           when it invokes the LEATHER_DRUM case instead and
+           when it invokes the WAR_DRUM case instead and
            mundane is flagged */
         consume_obj_charge(instr, TRUE);
 
@@ -715,7 +715,7 @@ do_improvisation(struct obj *instr)
         awaken_monsters(ROWNO * COLNO);
         makeknown(DRUM_OF_EARTHQUAKE);
         break;
-    case LEATHER_DRUM: /* Awaken monsters */
+    case WAR_DRUM: /* Awaken monsters */
         if (!mundane) {
             if (!Deaf) {
                 You("beat a %sdeafening row!",
@@ -782,7 +782,7 @@ do_play_instrument(struct obj *instr)
     if (Underwater) {
         You_cant("play music underwater!");
         return ECMD_OK;
-    } else if ((instr->otyp == WOODEN_FLUTE || instr->otyp == MAGIC_FLUTE
+    } else if ((instr->otyp == CHEAP_FLUTE || instr->otyp == MAGIC_FLUTE
                 || instr->otyp == TOOLED_HORN || instr->otyp == FROST_HORN
                 || instr->otyp == FIRE_HORN || instr->otyp == BUGLE)
                && !can_blow(&gy.youmonst)) {
@@ -790,7 +790,7 @@ do_play_instrument(struct obj *instr)
         return ECMD_OK;
     }
     /* We can only bang with welded hands, not hold other instruments. */
-    if (!freehand() && !(instr->otyp == LEATHER_DRUM
+    if (!freehand() && !(instr->otyp == WAR_DRUM
             || instr->otyp == DRUM_OF_EARTHQUAKE)) {
         Your("%s are occupied!", makeplural(body_part(HAND)));
         return ECMD_OK;
@@ -807,7 +807,7 @@ do_play_instrument(struct obj *instr)
         return 0;
     }
 
-    if (instr->otyp != LEATHER_DRUM && instr->otyp != DRUM_OF_EARTHQUAKE
+    if (instr->otyp != WAR_DRUM && instr->otyp != DRUM_OF_EARTHQUAKE
         && !(Stunned || Confusion || Hallucination)) {
         c = ynq("Improvise?");
         if (c == 'q')
@@ -944,7 +944,7 @@ obj_to_instr(struct obj *obj SOUNDLIBONLY) {
 
 #if defined(SND_LIB_INTEGRATED)
     switch(obj->otyp) {
-        case WOODEN_FLUTE:
+        case CHEAP_FLUTE:
             ret_instr = ins_flute;
             break;
         case MAGIC_FLUTE:
@@ -962,7 +962,7 @@ obj_to_instr(struct obj *obj SOUNDLIBONLY) {
         case BUGLE:
             ret_instr = ins_trumpet;
             break;
-        case WOODEN_HARP:
+        case CHEAP_HARP:
             ret_instr = ins_orchestral_harp;
             break;
         case MAGIC_HARP:
@@ -975,7 +975,7 @@ obj_to_instr(struct obj *obj SOUNDLIBONLY) {
         case DRUM_OF_EARTHQUAKE:
             ret_instr = ins_taiko_drum;
             break;
-        case LEATHER_DRUM:
+        case WAR_DRUM:
             ret_instr = ins_melodic_tom;
             break;
     }

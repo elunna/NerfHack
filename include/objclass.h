@@ -195,38 +195,36 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 #define OBJ_NAME(obj) (obj_descr[(obj).oc_name_idx].oc_name)
 #define OBJ_DESCR(obj) (obj_descr[(obj).oc_descr_idx].oc_descr)
 
-#define is_organic(otmp) (objects[otmp->otyp].oc_material <= WOOD)
-#define is_metallic(otmp) \
-    (objects[otmp->otyp].oc_material >= IRON            \
-     && objects[otmp->otyp].oc_material <= MITHRIL)
+#define is_organic(otmp) ((otmp)->material <= WOOD)
+#define is_metallic(otmp)                    \
+    ((otmp)->material >= IRON && (otmp)->material <= MITHRIL)
 #define is_heavy_metallic(otmp)                    \
-    (objects[otmp->otyp].oc_material >= IRON \
-     && objects[otmp->otyp].oc_material <= PLATINUM)
+    ((otmp)->material >= IRON && (otmp)->material <= PLATINUM)
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
-#define is_rustprone(otmp) (objects[otmp->otyp].oc_material == IRON)
+#define is_rustprone(otmp) ((otmp)->material == IRON)
+/* note: is_crackable doesn't need to include weptools because none of them can
+ * generate as glass */
 #define is_crackable(otmp) (is_glass(otmp) &&                      \
     ((otmp)->oclass == ARMOR_CLASS || (otmp)->oclass == RING_CLASS \
     || (otmp)->oclass == WAND_CLASS || (otmp)->oclass == TOOL_CLASS))
 /* secondary damage: rot/acid/acid */
-#define is_corrodeable(otmp) \
-    (objects[otmp->otyp].oc_material == COPPER          \
-     || objects[otmp->otyp].oc_material == IRON         \
-     || is_silver(otmp))
+#define is_corrodeable(otmp)                   \
+    ((otmp)->material == COPPER || (otmp)->material == SILVER \
+     || (otmp)->material == IRON)
 /* inherently fooproof */
 #define is_supermaterial(otmp) \
-    (objects[otmp->otyp].oc_material == DRAGON_HIDE \
-    || objects[otmp->otyp].oc_material == MITHRIL)
+    ((otmp)->material == DRAGON_HIDE || (otmp)->material == MITHRIL)
 /* subject to any damage */
 #define is_damageable(otmp) \
     (is_rustprone(otmp) || is_flammable(otmp)           \
      || is_rottable(otmp) || is_corrodeable(otmp)       \
      || is_crackable(otmp))
-#define is_silver(otmp) (objects[otmp->otyp].oc_material == SILVER \
+#define is_silver(otmp) ((otmp)->material == SILVER \
     || otmp->otyp == SILVER_DRAGON_SCALES)
-#define is_glass(otmp) (objects[otmp->otyp].oc_material == GLASS)
-#define is_plastic(otmp) (objects[otmp->otyp].oc_material == PLASTIC)
+#define is_glass(otmp) ((otmp)->material == GLASS)
+#define is_plastic(otmp) ((otmp)->material == PLASTIC)
 #define is_fragile(otmp) ((is_glass(otmp) && (otmp)->oclass != GEM_CLASS) \
     || (otmp)->otyp == EXPENSIVE_CAMERA \
     || (otmp)->otyp == EGG \
@@ -234,4 +232,14 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
     || (otmp)->otyp == MELON)
 #define is_bulky(otmp) (objects[otmp->otyp].oc_bulky)
 
+/* Force rendering of materials on certain items where the object name
+ * wouldn't make as much sense without a material (e.g. "leather jacket" vs
+ * "jacket"), or those where the default material is non-obvious.
+ * NB: GLOVES have a randomized description when not identified; "leather
+ * padded gloves" would give the game away if we did not check their
+ * identification status */
+#define force_material_name(typ) \
+((typ) == ARMOR || (typ) == STUDDED_ARMOR || (typ) == JACKET \
+|| (typ) == CLOAK || (typ) == FIGURINE || (typ) == STATUE \
+|| ((typ) == GLOVES && objects[GLOVES].oc_name_known))
 #endif /* OBJCLASS_H */

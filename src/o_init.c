@@ -277,14 +277,14 @@ obj_shuffle_range(
     case ARMOR_CLASS:
         if (otyp >= HELMET && otyp <= HELM_OF_TELEPATHY)
             *lo_p = HELMET, *hi_p = HELM_OF_TELEPATHY;
-        else if (otyp >= LEATHER_GLOVES && otyp <= GAUNTLETS_OF_DEXTERITY)
-            *lo_p = LEATHER_GLOVES, *hi_p = GAUNTLETS_OF_DEXTERITY;
+        else if (otyp >= GLOVES && otyp <= GAUNTLETS_OF_DEXTERITY)
+            *lo_p = GLOVES, *hi_p = GAUNTLETS_OF_DEXTERITY;
         else if (otyp >= CLOAK_OF_PROTECTION && otyp <= CLOAK_OF_DISPLACEMENT)
             *lo_p = CLOAK_OF_PROTECTION, *hi_p = CLOAK_OF_DISPLACEMENT;
         else if (otyp >= SPEED_BOOTS && otyp <= LEVITATION_BOOTS)
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
-        else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_VS_STONE)
-            *lo_p = LEATHER_BRACERS, *hi_p = BRACERS_VS_STONE;
+        else if (otyp >= BRACERS && otyp <= BRACERS_VS_STONE)
+            *lo_p = BRACERS, *hi_p = BRACERS_VS_STONE;
         break;
     case POTION_CLASS:
         /* potion of water has the only fixed description */
@@ -328,8 +328,8 @@ shuffle_all(void)
     };
     /* sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
-        HELMET, LEATHER_GLOVES, CLOAK_OF_PROTECTION, SPEED_BOOTS,
-        LEATHER_BRACERS
+        HELMET, GLOVES, CLOAK_OF_PROTECTION, SPEED_BOOTS,
+        BRACERS
     };
     int first, last, idx;
 
@@ -656,7 +656,7 @@ disco_typename(int otyp)
 
     if (Role_if(PM_SAMURAI) && Japanese_item_name(otyp, (const char *) 0)) {
         char buf[BUFSZ];
-        const char *actualn = (((otyp != MAGIC_HARP && otyp != WOODEN_HARP)
+        const char *actualn = (((otyp != MAGIC_HARP && otyp != CHEAP_HARP)
                                 || objects[otyp].oc_name_known)
                                ? OBJ_NAME(objects[otyp])
                                /* undiscovered harp (since wooden harp is
@@ -1125,6 +1125,7 @@ rename_disco(void)
             odummy.oclass = objects[dis].oc_class;
             odummy.quan = 1L;
             odummy.known = !objects[dis].oc_uses_known;
+            odummy.material = objects[dis].oc_material;
             odummy.dknown = 1;
             docall(&odummy);
         }

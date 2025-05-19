@@ -493,7 +493,7 @@ Cloak_on(void)
     case DWARVISH_CLOAK:
     case CLOAK_OF_MAGIC_RESISTANCE:
     case ROBE:
-    case LEATHER_CLOAK:
+    case CLOAK:
     case GRAY_DRAGON_SCALES:
         break;
     case CLOAK_OF_PROTECTION:
@@ -583,7 +583,7 @@ Cloak_off(void)
     case CLOAK_OF_MAGIC_RESISTANCE:
     case OILSKIN_CLOAK:
     case ROBE:
-    case LEATHER_CLOAK:
+    case CLOAK:
     case GRAY_DRAGON_SCALES:
         break;
     case ELVEN_CLOAK:
@@ -643,15 +643,11 @@ Helmet_on(void)
         break;
     case HELMET:
     case DENTED_POT:
-    case ELVEN_LEATHER_HELM:
-    case DWARVISH_IRON_HELM:
+    case ELVEN_HELM:
+    case DWARVISH_HELM:
     case ORCISH_HELM:
     case GNOMISH_HELM:
     case HELM_OF_TELEPATHY:
-    case FIRE_HELMET:
-        break;
-    case OILSKIN_HELM:
-        pline("%s very tightly.", Tobjnam(uarmh, "fit"));
         break;
     case HELM_OF_CAUTION:
         see_monsters();
@@ -749,12 +745,10 @@ Helmet_off(void)
         break;
     case HELMET:
     case DENTED_POT:
-    case ELVEN_LEATHER_HELM:
-    case DWARVISH_IRON_HELM:
+    case ELVEN_HELM:
+    case DWARVISH_HELM:
     case ORCISH_HELM:
     case GNOMISH_HELM:
-    case FIRE_HELMET:
-    case OILSKIN_HELM:
         break;
     case DUNCE_CAP:
         disp.botl = TRUE;
@@ -796,7 +790,9 @@ hard_helmet(struct obj *obj)
 {
     if (!obj || !is_helmet(obj))
         return FALSE;
-    return (is_metallic(obj) || is_crackable(obj)) ? TRUE : FALSE;
+    return (is_metallic(obj) || is_crackable(obj)
+            || (obj->material == WOOD) || (obj->material == BONE)
+            || (obj->material == MINERAL)) ? TRUE : FALSE;
 }
 
 int
@@ -806,10 +802,10 @@ Gloves_on(void)
         u.uprops[objects[uarmg->otyp].oc_oprop].extrinsic & ~WORN_GLOVES;
 
     switch (uarmg->otyp) {
-    case LEATHER_GLOVES:
+    case GLOVES:
     case ROGUE_S_GLOVES:
     case GAUNTLETS_OF_FORCE:
-    case BRONZE_GAUNTLETS:
+    case GAUNTLETS:
         break;
     case GAUNTLETS_OF_FUMBLING: {
         boolean was_flying = !!Flying;
@@ -907,10 +903,10 @@ Gloves_off(void)
     svc.context.takeoff.mask &= ~W_ARMG;
 
     switch (uarmg->otyp) {
-    case LEATHER_GLOVES:
+    case GLOVES:
     case ROGUE_S_GLOVES:
     case GAUNTLETS_OF_FORCE:
-    case BRONZE_GAUNTLETS:
+    case GAUNTLETS:
         break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
@@ -949,6 +945,7 @@ Gloves_off(void)
        from gloves to bare hands */
     if (Glib)
         make_glib(0); /* for update_inventory() */
+
 
     /* prevent wielding cockatrice when not wearing gloves */
     if (uwep && uwep->otyp == CORPSE)
@@ -994,7 +991,7 @@ Shield_on(void)
     case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
     /* Bracers are also included in the shield slot */
-    case LEATHER_BRACERS:
+    case BRACERS:
     case BRACERS_OF_SLEEP_RESISTANCE:
     case BRACERS_OF_COLD_RESISTANCE:
     case BRACERS_OF_UNCHANGING:
@@ -1054,7 +1051,7 @@ Shield_off(void)
     case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
     /* Bracers are also included in the shield slot */
-    case LEATHER_BRACERS:
+    case BRACERS:
     case BRACERS_OF_SLEEP_RESISTANCE:
     case BRACERS_OF_COLD_RESISTANCE:
     case BRACERS_OF_UNCHANGING:

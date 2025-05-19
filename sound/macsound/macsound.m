@@ -178,7 +178,7 @@ static void macsound_hero_playnotes(int32_t instrument WAVEMUSICONLY,
             Strcpy(resourcename, "sound_Frost_Horn");
             pseudo_seid_base = 3;
             break;
-        case ins_melodic_tom:       /* LEATHER_DRUM */
+        case ins_melodic_tom:       /* WAR_DRUM */
             Strcpy(resourcename, "sound_Leather_Drum");
             pseudo_seid_base = 4;
             break;
@@ -197,12 +197,12 @@ static void macsound_hero_playnotes(int32_t instrument WAVEMUSICONLY,
             has_note_variations = true;
             pseudo_seid_base = 19;
             break;
-        case ins_flute:             /* WOODEN_FLUTE */
+        case ins_flute:             /* CHEAP_FLUTE */
             Strcpy(resourcename, "sound_Wooden_Flute");
             has_note_variations = true;
             pseudo_seid_base = 26;
             break;
-        case ins_orchestral_harp:   /* WOODEN_HARP */
+        case ins_orchestral_harp:   /* CHEAP_HARP */
             Strcpy(resourcename, "sound_Wooden_Harp");
             has_note_variations = true;
             pseudo_seid_base = 33;

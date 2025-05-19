@@ -1345,8 +1345,7 @@ u_slip_free(struct monst *mtmp, struct attack *mattk)
 
     /* if your cloak/armor is greased, monster slips off; this
        protection might fail (33% chance) when the armor is cursed */
-    if (obj && (obj->greased || obj->otyp == OILSKIN_CLOAK
-        || (obj == uarmh && obj->otyp == OILSKIN_HELM))
+    if (obj && (obj->greased || obj->otyp == OILSKIN_CLOAK)
         && (!obj->cursed || rn2(3))) {
         pline_mon(mtmp, "%s %s your %s %s!", Monnam(mtmp),
               (mattk->adtyp == AD_WRAP) ? "slips off of"
@@ -1402,6 +1401,12 @@ magic_negation(struct monst *mon)
         /* a_can field is only applicable for armor (which must be worn) */
         if ((o->owornmask & W_ARMOR) != 0L) {
             armpro = objects[o->otyp].a_can;
+            /* mithril armor grants MC 2 even if it has a different base
+             * material */
+            if (((o->owornmask & (W_ARM | W_ARMC)) != 0)
+                && o->material == MITHRIL && armpro < 2) {
+                armpro = 2;
+            }
             if (armpro > mc)
                 mc = armpro;
         } else if ((o->owornmask & W_AMUL) != 0L) {
@@ -1535,6 +1540,16 @@ hitmu(struct monst *mtmp, struct attack *mattk)
         mhm.damage -= rnd(-u.uac);
         if (mhm.damage < 1)
             mhm.damage = 1;
+    }
+
+    /* handle body/equipment made out of harmful materials for touch attacks */
+    /* should come after AC damage reduction */
+    long armask = attack_contact_slots(mtmp, mattk->aatyp);
+    struct obj* hated_obj;
+    mhm.damage += special_dmgval(mtmp, &gy.youmonst, armask, &hated_obj);
+    if (hated_obj) {
+        searmsg(mtmp, &gy.youmonst, hated_obj, FALSE);
+        exercise(A_CON, FALSE);
     }
 
     if (mhm.damage) {
@@ -3504,6 +3519,35 @@ cloneu(void)
     return mon;
 }
 
+/* Given an attacking monster and the attack type it's currently attacking with,
+ * return a bitmask of W_ARM* values representing the gear slots that might be
+ * coming in contact with the defender.
+ * Intended to return worn items. Will not return W_WEP.
+ * Does not check to see whether slots are ineligible due to being covered by
+ * some other piece of gear. Usually special_dmgval() will handle that.
+ */
+long
+attack_contact_slots(struct monst *magr, int aatyp)
+{
+    struct obj* mwep = (magr == &gy.youmonst ? uwep : magr->mw);
+    if (aatyp == AT_CLAW || aatyp == AT_TUCH || (aatyp == AT_WEAP && !mwep)
+        || (aatyp == AT_HUGS && hug_throttles(magr->data))) {
+        /* attack with hands; gloves and rings might touch */
+        return W_ARMG | W_RINGL | W_RINGR;
+    }
+    if (aatyp == AT_HUGS && !hug_throttles(magr->data)) {
+        /* bear hug which is not a strangling attack; gloves and rings might
+         * touch, but also all torso slots */
+        return W_ARMG | W_RINGL | W_RINGR | W_ARMC | W_ARM | W_ARMU;
+    }
+    if (aatyp == AT_KICK) {
+        return W_ARMF;
+    }
+    if (aatyp == AT_BUTT) {
+        return W_ARMH;
+    }
+    return 0;
+}
 
 /* Piercer (magr) falls and hits a monster (mdef).
  * Despite its presence in mhitu.c, this function can be called for any
@@ -3555,7 +3599,35 @@ piercer_hit(struct monst *magr, struct monst *mdef)
          * First we'll damage the helmet by reducing the enchantment.
          * If the enchantment is negative, it'll break. */
 
-        if (dmg > helm_res) {
+        /* Glass piercers piercer glass (from xNetHack) */
+        if (magr->data == &mons[PM_GLASS_PIERCER] && helm->material == GLASS
+            && !helm->oerodeproof) {
+            pline("%s is pierced and shattered!", Yname2(helm));
+            if (youdefend) {
+                Helmet_off();
+                update_inventory();
+            }
+            else {
+                helm->owornmask = 0;
+                mdef->misc_worn_check &= ~W_ARMH;
+                check_gear_next_turn(mdef);
+                update_mon_extrinsics(mdef, helm, FALSE, TRUE);
+            }
+            if (!svc.context.mon_moving && *u.ushops) {
+                /* effectively the same as check_shop_obj() */
+                struct monst *shkp = shop_keeper(*u.ushops);
+                if (is_unpaid(helm))
+                    (void) stolen_value(helm, u.ux, u.uy,
+                                        (boolean) shkp->mpeaceful, FALSE);
+                helm->no_charge = 1;
+            }
+            /* not crack_glass_obj: we want this always to break, not be subject
+             * to random chance */
+            delobj(helm);
+            /* glass piercer actually piercing glass.
+             * Give it some bonus damage. */
+            dmg += rnd(6);
+        } else if (dmg > helm_res) {
             if (helm->spe >= 0 || (is_glass(helm) && helm->oeroded > 2)) {
                 pline("%s is damaged!", Yname2(helm));
                 /* The cystal helm will crack instead */
