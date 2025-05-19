@@ -825,6 +825,11 @@ drinkfountain(void)
         return;
     }
 
+    if (Rabid && (Rabid & TIMEOUT) < 40) {
+        pline("Just the thought of drinking liquids makes you sick.");
+        return;
+    }
+
     if (mgkftn && u.uluck >= 0 && fate >= 10) {
         int littleluck = (u.uluck < 4);
 
@@ -1263,6 +1268,10 @@ drinksink(void)
         floating_above("sink");
         return;
     }
+    if (Rabid && (Rabid & TIMEOUT) < 40) {
+        pline("Just the thought of drinking liquids makes you sick.");
+        return;
+    }
     switch (rn2(20)) {
     case 0:
         You("take a sip of very cold %s.", hliquid("water"));
@@ -1583,6 +1592,10 @@ drinktoilet(void)
 {
     if (Levitation) {
         floating_above("toilet");
+        return;
+    }
+    if (Rabid && (Rabid & TIMEOUT) < 40) {
+        pline("Just the thought of drinking liquids makes you sick.");
         return;
     }
     if ((gy.youmonst.data->mlet == S_DOG) && (rn2(5))) {
