@@ -613,6 +613,12 @@ doforging(void)
     } else if (is_orcish_obj(objtype) && !Race_if(PM_ORC)) {
         pline("Only an orc would be willing to forge that...");
         return 1;
+    } else if (obj1->alignment && obj2->alignment
+                 && obj1->alignment != obj2->alignment) {
+        /* Items that are aligned can only be combined with like-aligned items -
+           however, non-aligned items have no problem merging with others. */
+        pline("These items refuse to merge together!");
+        return 1;
     } else if (objtype) {
         /* success */
         You("place %s, then %s inside the forge.",
@@ -630,6 +636,16 @@ doforging(void)
         } else if (obj1->oprops) {
             output->oprops = obj1->oprops;
         }
+
+        /* If a non-aligned item is forged with an aligned item,
+           the aligned item dominates the result.
+           Otherwise, the matching alignment carries over. */
+        if (obj1->alignment == obj2->alignment)
+            output->alignment = obj1->alignment;
+        else if (!obj1->alignment)
+            output->alignment = obj2->alignment;
+        else
+            output->alignment = obj1->alignment;
 
         /* if neither recipe object have an object property,
            ensure that the newly forged object doesn't
