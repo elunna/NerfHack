@@ -20,7 +20,7 @@ struct _readobjnam_data {
     const char *name;
     char *p;
     int cnt, spe, spesgn, typ, very, rechrg;
-    int blessed, uncursed, iscursed, ispoisoned, isgreased, quality;
+    int blessed, uncursed, iscursed, ispoisoned, isgreased, quality, alignment;
     int eroded, eroded2, erodeproof, locked, unlocked, broken, real, fake;
     int halfeaten, mntmp, contents;
     int islit, unlabeled, ishistoric, isdiluted, trapped;
@@ -793,12 +793,22 @@ xname_flags(
     case WEAPON_CLASS:
         if (is_poisonable(obj) && obj->opoisoned)
             Strcpy(buf, "poisoned ");
+
+        /* Build quality */
         if (obj->bquality == FQ_SUPERIOR)
             Strcat(buf, "superior ");
         else if (obj->bquality == FQ_EXCEPTIONAL)
             Strcat(buf, "exceptional ");
         else if (obj->bquality == FQ_INFERIOR)
             Strcat(buf, "inferior ");
+
+        /* Alignment */
+        if (obj->alignment == FA_CHAOTIC)
+            Strcat(buf, "chaotic ");
+        else if (obj->alignment == FA_NEUTRAL)
+            Strcat(buf, "neutral ");
+        else if (obj->alignment == FA_LAWFUL)
+            Strcat(buf, "lawful ");
         FALLTHROUGH;
         /*FALLTHRU*/
     case VENOM_CLASS:
@@ -4307,7 +4317,7 @@ readobjnam_init(char *bp, struct _readobjnam_data *d)
         = d->trapped = d->locked = d->unlocked = d->broken
         = d->open = d->closed = d->doorless /* wizard mode door */
         = d->looted /* wizard mode fountain/sink/throne/tree and grave */
-        = d->real = d->fake = d->quality = 0; /* Amulet */
+        = d->real = d->fake = d->quality = d->alignment = 0; /* Amulet */
     d->tvariety = RANDOM_TIN;
     d->mgend = -1; /* not specified, aka random */
     d->mntmp = NON_PM;
@@ -4410,6 +4420,13 @@ readobjnam_preparse(struct _readobjnam_data *d)
         } else if (!strncmpi(d->bp, "exceptional ", l = 12)) {
             d->quality = 3;
 
+        /* alignment */
+        } else if (!strncmpi(d->bp, "chaotic ", l = 8)) {
+            d->alignment = 1;
+        } else if (!strncmpi(d->bp, "neutral ", l = 8)) {
+            d->alignment = 2;
+        } else if (!strncmpi(d->bp, "lawful ", l = 7)) {
+            d->alignment = 3;
         /* "trapped" recognized but not honored outside wizard mode */
         } else if (!strncmpi(d->bp, "trapped ", l = 8)) {
             d->trapped = 0; /* undo any previous "untrapped" */
@@ -5796,12 +5813,12 @@ readobjnam(char *bp, struct obj *no_wish)
     }
 
     /* set forge quality */
-    if (d.quality == 1)
-        d.otmp->bquality = FQ_INFERIOR;
-    if (d.quality == 2)
-        d.otmp->bquality = FQ_SUPERIOR;
-    if (d.quality == 3)
-        d.otmp->bquality = FQ_EXCEPTIONAL;
+    if (d.quality > 0)
+        d.otmp->bquality = d.quality;
+
+    /* set alignmenty */
+    if (d.alignment > 0)
+        d.otmp->alignment = d.alignment;
 
     /* and [un]trapped */
     if (d.trapped) {
@@ -5896,6 +5913,7 @@ readobjnam(char *bp, struct obj *no_wish)
            quality bit applied, adjust this if we want
            certain artifacts to have a forged quality bit */
         d.otmp->bquality = FQ_NORMAL;
+        d.otmp->alignment = FA_NONE;
     }
     if (d.material > 0 && !d.otmp->oartifact && wizard) {
         if (!valid_obj_material(d.otmp, d.material)) {

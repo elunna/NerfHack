@@ -1155,6 +1155,7 @@ gcrownu(void)
         bless(obj);
         obj->oeroded = obj->oeroded2 = 0;
         obj->bquality = FQ_NORMAL;
+        obj->alignment = FA_NONE;
         obj->oerodeproof = TRUE;
         obj->bknown = obj->rknown = 1; /* ok to skip set_bknown() */
         if (obj->spe < 1)
@@ -2091,6 +2092,7 @@ bestow_artifact(uchar max_giftvalue)
                     uncurse(otmp);
                 otmp->oerodeproof = TRUE;
                 otmp->bquality = FQ_NORMAL;
+                otmp->alignment = FA_NONE;
                 Strcpy(buf, (Hallucination ? "a doodad"
                                 : Blind ? "an object"
                                 : ansimpleoname(otmp)));

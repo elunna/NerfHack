@@ -30,7 +30,9 @@ staticfn void sanity_check_worn(struct obj *);
 staticfn void init_oextra(struct oextra *);
 staticfn void init_charging(struct obj *);
 staticfn void mkobj_quality(struct obj *);
+staticfn void mkobj_align(struct obj *);
 staticfn boolean may_generate_quality(struct obj *);
+staticfn boolean may_generate_aligned(struct obj *);
 staticfn const struct icp* material_list(struct obj *);
 staticfn boolean nonsensical_obj_material(struct obj *, uchar);
 
@@ -1263,6 +1265,7 @@ mksobj_init(struct obj **obj, boolean artif)
 
     mkobj_erosions(otmp);
     mkobj_quality(otmp);
+    mkobj_align(otmp);
     if (permapoisoned(otmp))
         otmp->opoisoned = 1;
 }
@@ -4621,11 +4624,46 @@ mkobj_quality(struct obj *otmp)
     }
 }
 
+/* random chance of applying alignment bit to object */
+void
+mkobj_align(struct obj *otmp)
+{
+    if (may_generate_aligned(otmp)) {
+        if (!rn2(20))
+            otmp->alignment = rn2(3) + 1;
+    }
+}
 
 /* can object be generated with a certain level of quality?
    only if they can be forged */
 boolean
 may_generate_quality(struct obj *otmp)
+{
+    /* initial hero inventory */
+    if (svm.moves <= 1 && !gi.in_mklev)
+        return FALSE;
+    /* only armor and weapons */
+    if (!(otmp->oclass == ARMOR_CLASS || otmp->oclass == WEAPON_CLASS))
+        return FALSE;
+    /* part of a monster's body and produced when it dies */
+    if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
+        return FALSE;
+    /* artifacts cannot be generated with a quality bit */
+    if (otmp->oartifact)
+        return FALSE;
+    /* neither can magic items */
+    if (objects[otmp->otyp].oc_magic)
+        return FALSE;
+    /* only objects that can be forged */
+    if (!is_metallic(otmp))
+        return FALSE;
+
+    return TRUE;
+}
+
+/* can object be generated with an alignment? */
+boolean
+may_generate_aligned(struct obj *otmp)
 {
     /* initial hero inventory */
     if (svm.moves <= 1 && !gi.in_mklev)

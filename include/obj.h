@@ -176,6 +176,11 @@ struct obj {
 #define FQ_INFERIOR      1  /* obj quality is inferior */
 #define FQ_SUPERIOR      2  /* obj quality is superior */
 #define FQ_EXCEPTIONAL   3  /* obj quality is exceptional */
+    unsigned alignment;   /* alignment of bequeathing gods */
+#define FA_NONE          0  /* unaligned */
+#define FA_CHAOTIC       1  /* chaotic */
+#define FA_NEUTRAL       2  /* neutral */
+#define FA_LAWFUL        3  /* lawful */
     unsigned oeaten;        /* nutrition left in food, if partly eaten */
     long age;               /* creation date */
     long owornmask;        /* bit mask indicating which equipment slot(s) an
