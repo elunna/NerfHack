@@ -1548,6 +1548,8 @@ seffect_proofing(struct obj **sobjp)
     boolean confused = (Confusion != 0); /* damages? */
     boolean old_erodeproof, new_erodeproof;
     boolean already_known = objects[sobj->otyp].oc_name_known;
+    gk.known = TRUE;
+
     if (already_known) {
         for (i = 0; i < 5; i++) {
             otmp = getobj("proof", proof_ok, GETOBJ_NOFLAGS);
@@ -1567,9 +1569,10 @@ seffect_proofing(struct obj **sobjp)
     }
 
     if (!otmp) {
-        strange_feeling(sobj,"Some weird things are happening to your equipment!");
+        strange_feeling(sobj, "Some weird things are happening to your equipment!");
         exercise(A_STR, FALSE);
         exercise(A_CON, FALSE);
+        *sobjp = 0; /* failure: strange_feeling() -> useup() */
         return;
     }
     if (scursed || confused) {
