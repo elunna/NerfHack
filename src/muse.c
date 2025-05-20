@@ -4135,77 +4135,34 @@ muse_wonder(void)
             wondertemp = WAN_DRAINING;
 
         switch (wondertemp) {
-        case WAN_DEATH:
-            gm.m.has_offense = MUSE_WAN_DEATH;
-            break;
-        case WAN_DRAINING:
-            gm.m.has_offense = MUSE_WAN_DRAINING;
-            break;
-        case WAN_SLEEP:
-            gm.m.has_offense = MUSE_WAN_SLEEP;
-            break;
-        case WAN_FIRE:
-            gm.m.has_offense = MUSE_WAN_FIRE;
-            break;
-        case WAN_COLD:
-            gm.m.has_offense = MUSE_WAN_COLD;
-            break;
-        case WAN_LIGHTNING:
-            gm.m.has_offense = MUSE_WAN_LIGHTNING;
-            break;
-        case WAN_MAGIC_MISSILE:
-            gm.m.has_offense = MUSE_WAN_MAGIC_MISSILE;
-            break;
-        case WAN_CORROSION:
-            gm.m.has_offense = MUSE_WAN_CORROSION;
-            break;
-        case WAN_POISON_GAS:
-            gm.m.has_offense = MUSE_WAN_POISON_GAS;
-            break;
-        case WAN_TELEPORTATION:
-            gm.m.has_offense = MUSE_WAN_TELEPORTATION;
-            break;
-        case WAN_UNDEAD_TURNING:
-            gm.m.has_offense = MUSE_WAN_UNDEAD_TURNING;
-            break;
-        case WAN_STRIKING:
-            gm.m.has_offense = MUSE_WAN_STRIKING;
-            break;
-        case WAN_CANCELLATION:
-            gm.m.has_offense = MUSE_WAN_CANCELLATION;
-            break;
-        case WAN_SLOW_MONSTER:
-            gm.m.has_offense = MUSE_WAN_SLOW_MONSTER;
-            break;
-        case WAN_POLYMORPH:
-            /* Monsters can only get poly zaps here via
-             * wands of wonder, so they are rare. */
-            gm.m.has_offense = MUSE_WAN_POLYMORPH;
-            break;
-        case WAN_CREATE_MONSTER:
-            gm.m.has_offense = MUSE_WAN_CREATE_MONSTER;
-            break;
+        case WAN_DEATH:         gm.m.has_offense = MUSE_WAN_DEATH; break;
+        case WAN_DRAINING:      gm.m.has_offense = MUSE_WAN_DRAINING; break;
+        case WAN_SLEEP:         gm.m.has_offense = MUSE_WAN_SLEEP; break;
+        case WAN_FIRE:          gm.m.has_offense = MUSE_WAN_FIRE; break;
+        case WAN_COLD:          gm.m.has_offense = MUSE_WAN_COLD; break;
+        case WAN_LIGHTNING:     gm.m.has_offense = MUSE_WAN_LIGHTNING; break;
+        case WAN_MAGIC_MISSILE: gm.m.has_offense = MUSE_WAN_MAGIC_MISSILE; break;
+        case WAN_CORROSION:     gm.m.has_offense = MUSE_WAN_CORROSION; break;
+        case WAN_POISON_GAS:    gm.m.has_offense = MUSE_WAN_POISON_GAS; break;
+        case WAN_TELEPORTATION: gm.m.has_offense = MUSE_WAN_TELEPORTATION; break;
+        case WAN_UNDEAD_TURNING: gm.m.has_offense = MUSE_WAN_UNDEAD_TURNING; break;
+        case WAN_STRIKING:      gm.m.has_offense = MUSE_WAN_STRIKING; break;
+        case WAN_CANCELLATION:  gm.m.has_offense = MUSE_WAN_CANCELLATION; break;
+        case WAN_SLOW_MONSTER:  gm.m.has_offense = MUSE_WAN_SLOW_MONSTER; break;
+        /* Monsters can only get poly zaps here via
+         * wands of wonder, so they are rare. */
+        case WAN_POLYMORPH:     gm.m.has_offense = MUSE_WAN_POLYMORPH; break;
+        case WAN_CREATE_MONSTER: gm.m.has_offense = MUSE_WAN_CREATE_MONSTER; break;
 
-        /* Some of these could be crafted to their own effects, but for now
+        /* Some wands zaps could be crafted to their own effects, but for now
          * having them default to stun ray reduces the chances of other
          * really nasty effects (ie: death, polymorph, cancellation, etc) */
-        case WAN_ENLIGHTENMENT:
-        case WAN_PROBING:
-        case WAN_SECRET_DOOR_DETECTION:
-        case WAN_LIGHT:
-        case WAN_OPENING:
-        case WAN_LOCKING:
-        case WAN_DIGGING:
-        case WAN_MAKE_INVISIBLE:
-        case WAN_SPEED_MONSTER:
-        case WAN_WISHING:
+        default:
             /* This is a weird kludge until we (maybe) implement wands
              * of stunning */
             gm.m.has_offense = MUSE_WAN_STUNNING;
             wondertemp = WAN_DRAINING + 1;
             break;
-        default:
-            ;
         }
     }
     return wondertemp;
