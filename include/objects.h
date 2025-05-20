@@ -276,7 +276,7 @@ WEAPON("two-handed sword", NoDes,
                                                         TWO_HANDED_SWORD),
         /* +2d6 large */
 WEAPON("heavy sword", NoDes,
-       1, 0, 1,  0, 500,  50, 6,  8, -10, S,   P_TWO_HANDED_SWORD, MINERAL,
+       1, 0, 1,  15, 500,  50, 6,  8, -10, S,   P_TWO_HANDED_SWORD, MINERAL,
                                                 CLR_BLACK, HEAVY_SWORD),
         /* +2d6 large */
 WEAPON("katana", "samurai sword",
