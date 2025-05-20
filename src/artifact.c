@@ -188,17 +188,6 @@ mk_artifact(
         if (a->gift_value > max_giftvalue && !Role_if(a->role))
             continue;
 
-        /* Crowning gifts should not be granted during the normal course
-         * of #offering */
-        if (Role_if(PM_CLERIC) && m == ART_MJOLLNIR)
-            continue;
-        else if (u.ualign.type == A_NEUTRAL && m == ART_VORPAL_BLADE)
-            continue;
-        else if (u.ualign.type == A_LAWFUL && m == ART_EXCALIBUR)
-            continue;
-        else if (u.ualign.type == A_CHAOTIC && m == ART_STORMBRINGER)
-            continue;
-
         if (!by_align) {
             /* looking for a particular type of item; not producing a
                divine gift so we don't care about role's first choice */
@@ -211,9 +200,7 @@ mk_artifact(
            suitable for hero's role+race */
         if ((a->alignment == alignment || a->alignment == A_NONE)
             /* avoid enemies' equipment */
-            && (a->race == NON_PM || !race_hostile(&mons[a->race]))
-            /* Priests don't get pointy/slicey weapons */
-            && (!(Role_if(PM_CLERIC) && (is_slash(a) || is_pierce(a))))) {
+            && (a->race == NON_PM || !race_hostile(&mons[a->race]))) {
             /* when a role-specific first choice is available, use it */
             if (Role_if(a->role)) {
                 /* make this be the only possibility in the list */
