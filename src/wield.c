@@ -135,7 +135,7 @@ setuwep(struct obj *obj)
             You_feel("more comfortable now.");
         }
         /* Cartomancers are quite adept with crystal balls */
-        if (olduwep->otyp == CRYSTAL_BALL) {
+        if (Role_if(PM_CARTOMANCER) && olduwep->otyp == CRYSTAL_BALL) {
             ESee_invisible &= ~W_WEP;
             ETelepat &= ~W_WEP;
             u.xray_range = -1;
@@ -176,7 +176,7 @@ setuwep(struct obj *obj)
             disp.botl = TRUE;
             You_feel("awkward wielding %s...", yname(uwep));
         }
-        if (uwep->otyp == CRYSTAL_BALL) {
+        if (Role_if(PM_CARTOMANCER) && uwep->otyp == CRYSTAL_BALL) {
             ESee_invisible |= W_WEP;
             ETelepat |= W_WEP;
             u.xray_range = 3;
