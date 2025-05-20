@@ -2632,9 +2632,11 @@ arti_invoke(struct obj *obj)
             /* the artifact is tired :-) */
             You_feel("that %s %s ignoring you.", the(xname(obj)),
                      otense(obj, "are"));
-            /* and just got more so; patience is essential... */
-            obj->age += (long) d(3, 10);
-            return ECMD_TIME;
+            if (!(wizard && y_n("Override?") == 'y')) {
+                /* and just got more so; patience is essential... */
+                obj->age += (long) d(3, 10);
+                return ECMD_TIME;
+            }
         }
         obj->age = svm.moves + rnz(100);
 
