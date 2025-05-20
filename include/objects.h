@@ -987,7 +987,7 @@ TOOL("mirror",   "looking glass", 0, 0, 0, 0, 45, 13, 10, GLASS, HI_SILVER,
 TOOL("playing card deck", "pack of cards",
                                   0, 0, 0, 0,  20,  10,  80, LEATHER, HI_LEATHER,
                                                                PLAYING_CARD_DECK),
-TOOL("crystal ball", "glass orb", 0, 0, 1, 1, 15,150, 60, GLASS, HI_GLASS,
+TOOL("crystal ball", "glass orb", 0, 0, 1, 1, 15,100, 60, GLASS, HI_GLASS,
                                                                 CRYSTAL_BALL),
 /* eyewear - tools which can be worn on the face; (!mrg, !chg, !mgc)
    worn lenses don't confer the Blinded property, blindfolds and towels do;
