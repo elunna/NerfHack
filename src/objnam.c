@@ -6,8 +6,8 @@
 #include "hack.h"
 
 /* "an uncursed greased silver-scaled thoroughly rusty thoroughly corroded
-   rustproof +0 [chain mail]" (83 characters) */
-#define PREFIX 90
+   rustproof exceptional chaotic +0 [chain mail]" (103 characters) */
+#define PREFIX 110
 #define SCHAR_LIM 127
 #define NUMOBUF 12
 
