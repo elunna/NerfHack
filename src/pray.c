@@ -70,6 +70,7 @@ static const char *const godvoices[] = {
  * crowning gift */
 #define PRIEST_GIFT ART_MJOLLNIR
 #define CAVEMAN_GIFT ART_GIANTSLAYER
+#define MONK_GIFT ART_THUNDERFISTS
 
 /*
  * The actual trouble priority is determined by the order of the
@@ -909,9 +910,6 @@ gcrownu(void)
         && !u_wield_art(ART_STORMBRINGER)
         && !carrying(SPE_FINGER_OF_DEATH)) {
         class_gift = SPE_FINGER_OF_DEATH;
-    } else if (Role_if(PM_MONK) && (!uwep || !uwep->oartifact)) {
-        /* monks rarely wield a weapon */
-        class_gift = MAGIC_MARKER;
     }
 
     obj = ok_wep(uwep) ? uwep : 0;
@@ -927,6 +925,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == CAVEMAN_GIFT);
             already_exists =
                     exist_artifact(SPEAR, artiname(CAVEMAN_GIFT));
+        } else if (Role_if(PM_MONK)) {
+            in_hand = (uwep && uwep->oartifact == MONK_GIFT);
+            already_exists =
+                    exist_artifact(GAUNTLETS_OF_FORCE, artiname(MONK_GIFT));
         }
         verbalize("I crown thee...  The Hand of Elbereth!");
         livelog_printf(LL_DIVINEGIFT,
@@ -944,6 +946,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == CAVEMAN_GIFT);
             already_exists =
                     exist_artifact(SPEAR, artiname(CAVEMAN_GIFT));
+        } else if (Role_if(PM_MONK)) {
+            in_hand = (uwep && uwep->oartifact == MONK_GIFT);
+            already_exists =
+                    exist_artifact(GAUNTLETS_OF_FORCE, artiname(MONK_GIFT));
         } else {
             in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE);
             already_exists =
@@ -965,6 +971,10 @@ gcrownu(void)
             in_hand = (uwep && uwep->oartifact == CAVEMAN_GIFT);
             already_exists =
                     exist_artifact(SPEAR, artiname(CAVEMAN_GIFT));
+        } else if (Role_if(PM_MONK)) {
+            in_hand = (uwep && uwep->oartifact == MONK_GIFT);
+            already_exists =
+                    exist_artifact(GAUNTLETS_OF_FORCE, artiname(MONK_GIFT));
         } else {
             in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER);
             already_exists =
@@ -1047,6 +1057,18 @@ gcrownu(void)
                        artiname(ART_GIANTSLAYER));
         if (obj && obj->oartifact == CAVEMAN_GIFT)
             discover_artifact(CAVEMAN_GIFT);
+    } else if (Role_if(PM_MONK)) {
+        obj = mksobj(GAUNTLETS_OF_FORCE, FALSE, FALSE);
+        obj = oname(obj, artiname(MONK_GIFT), ONAME_GIFT | ONAME_KNOW_ARTI);
+        obj->spe = 1;
+        at_your_feet("A pair of gloves");
+        dropy(obj);
+        u.ugifts++;
+        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                       "was bestowed with %s",
+                       artiname(ART_THUNDERFISTS));
+        if (obj && obj->oartifact == MONK_GIFT)
+            discover_artifact(MONK_GIFT);
     } else {
         switch (u.ualign.type) {
         case A_LAWFUL:
