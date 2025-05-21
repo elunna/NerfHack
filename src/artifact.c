@@ -40,6 +40,7 @@ staticfn int count_surround_traps(coordxy, coordxy);
 staticfn const char *adtyp_str(int, boolean);
 staticfn void dispose_of_orig_obj(struct obj *);
 staticfn boolean is_redundant_prop(struct obj *, int);
+staticfn boolean xalign_item(struct obj *);
 
 /* The amount added to the victim's total hit points to insure that the
    victim will be killed even after damage bonus/penalty adjustments.
@@ -1054,28 +1055,38 @@ touch_artifact(struct obj *obj, struct monst *mon)
 {
     const struct artifact *oart = get_artifact(obj);
     boolean badclass, badalign, self_willed, yours;
+    boolean aligned_obj = obj->alignment > 0;
 
     touch_blasted = FALSE;
-    if (oart == &artilist[ART_NONARTIFACT])
+    if (oart == &artilist[ART_NONARTIFACT] && !aligned_obj)
         return 1;
 
     yours = (mon == &gy.youmonst);
     /* all quest artifacts are self-willed; if this ever changes, `badclass'
        will have to be extended to explicitly include quest artifacts */
-    self_willed = ((oart->spfx & SPFX_INTEL) != 0);
+    self_willed = ((oart->spfx & SPFX_INTEL) != 0) && !aligned_obj;
     if (yours) {
-        badclass = self_willed
-                   && ((oart->role != NON_PM && !Role_if(oart->role))
-                       || (oart->race != NON_PM && !Race_if(oart->race)));
-        badalign = ((oart->spfx & SPFX_RESTR) != 0
-                    && oart->alignment != A_NONE
-                    && (oart->alignment != u.ualign.type
-                        || u.ualign.record < 0));
+        if (aligned_obj) {
+            badclass = FALSE;
+            badalign = obj->alignment && (xalign_item(obj) || u.ualign.record < 0);
+        } else {
+        	badclass = self_willed
+            	       && ((oart->role != NON_PM && !Role_if(oart->role))
+                	       || (oart->race != NON_PM && !Race_if(oart->race)));
+        	badalign = ((oart->spfx & SPFX_RESTR) != 0
+            	        && oart->alignment != A_NONE
+                	    && (oart->alignment != u.ualign.type
+                    	    || u.ualign.record < 0));
+        }
     } else if (!is_covetous(mon->data) && !is_mplayer(mon->data)) {
-        badclass = self_willed && oart->role != NON_PM
-                   && oart != &artilist[ART_EXCALIBUR];
-        badalign = (oart->spfx & SPFX_RESTR) && oart->alignment != A_NONE
-                   && (oart->alignment != mon_aligntyp(mon));
+        if (aligned_obj) {
+            badclass = FALSE;
+        } else {
+        	badclass = self_willed && oart->role != NON_PM
+            	       && oart != &artilist[ART_EXCALIBUR];
+            /* TODO: Figure this out for monsters. Or they just avoid these... */
+        	badalign = FALSE;
+    	}
     } else { /* an M3_WANTSxxx monster or a fake player */
         /* special monsters trying to take the Amulet, invocation tools or
            quest item can touch anything except `spec_applies' artifacts */
@@ -1083,7 +1094,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
     }
     /* weapons which attack specific categories of monsters are
        bad for them even if their alignments happen to match */
-    if (!badalign)
+    if (!badalign && !aligned_obj)
         badalign = bane_applies(oart, mon);
 
     if (((badclass || badalign) && self_willed) || badalign) {
@@ -1094,12 +1105,17 @@ touch_artifact(struct obj *obj, struct monst *mon)
             return 0;
         You("are blasted by %s power!", s_suffix(the(xname(obj))));
         touch_blasted = TRUE;
-        dmg = d((Antimagic ? 6 : 8), (self_willed ? 10 : 6));
+
+        if (aligned_obj)
+	        dmg = d((Antimagic ? 3 : 6), 4);
+        else
+            dmg = d((Antimagic ? 6 : 8), (self_willed ? 10 : 6));
+
         /* add half (maybe quarter) of the usual silver damage bonus */
         if (Hate_material(obj->material)) {
             dmg += Maybe_Half_Phys(sear_damage(obj->material)) + 1;
         }
-        Sprintf(buf, "touching %s", oart->name);
+        Sprintf(buf, "touching %s", aligned_obj ? xname(obj) : oart->name);
         losehp(dmg, buf, KILLED_BY); /* magic damage, not physical */
         exercise(A_WIS, FALSE);
     }
@@ -4718,6 +4734,24 @@ arti_material(int artinum)
         return 0;
     }
     return artilist[artinum].material;
+}
+
+
+/* TODO: Find a more elegant way to do this; there are a million
+ * alignment conversion masks but none seem to fit what I want...
+ */
+staticfn boolean
+xalign_item(struct obj *obj)
+{
+    if (!obj->alignment)
+        return FALSE; /* unaligned */
+    if (u.ualign.type == A_LAWFUL && obj->alignment != FA_LAWFUL)
+        return TRUE;
+    if (u.ualign.type == A_CHAOTIC && obj->alignment != FA_CHAOTIC)
+        return TRUE;
+    if (u.ualign.type == A_NEUTRAL && obj->alignment != FA_NEUTRAL)
+        return TRUE;
+    return FALSE;
 }
 
 /*artifact.c*/
