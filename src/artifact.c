@@ -40,7 +40,8 @@ staticfn int count_surround_traps(coordxy, coordxy);
 staticfn const char *adtyp_str(int, boolean);
 staticfn void dispose_of_orig_obj(struct obj *);
 staticfn boolean is_redundant_prop(struct obj *, int);
-staticfn boolean xalign_item(struct obj *);
+staticfn boolean item_cross_aligned(struct obj *);
+staticfn boolean item_aligned(struct obj *);
 
 /* The amount added to the victim's total hit points to insure that the
    victim will be killed even after damage bonus/penalty adjustments.
@@ -1068,7 +1069,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
     if (yours) {
         if (aligned_obj) {
             badclass = FALSE;
-            badalign = obj->alignment && (xalign_item(obj) || u.ualign.record < 0);
+            badalign = obj->alignment && (item_cross_aligned(obj) || u.ualign.record < 0);
         } else {
         	badclass = self_willed
             	       && ((oart->role != NON_PM && !Role_if(oart->role))
@@ -4741,7 +4742,7 @@ arti_material(int artinum)
  * alignment conversion masks but none seem to fit what I want...
  */
 staticfn boolean
-xalign_item(struct obj *obj)
+item_cross_aligned(struct obj *obj)
 {
     if (!obj->alignment)
         return FALSE; /* unaligned */
@@ -4751,7 +4752,14 @@ xalign_item(struct obj *obj)
         return TRUE;
     if (u.ualign.type == A_NEUTRAL && obj->alignment != FA_NEUTRAL)
         return TRUE;
+
+    /* TODO: If our alignment matches, but alignment is negative - bad */
     return FALSE;
 }
 
+staticfn boolean
+item_aligned(struct obj *obj)
+{
+    return obj->alignment && !item_cross_aligned(obj);
+}
 /*artifact.c*/
