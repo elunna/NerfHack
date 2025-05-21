@@ -41,17 +41,17 @@ ink_cost(short otyp)
     case SCR_IDENTIFY:
     case SCR_KNOWLEDGE:
         return 14;
-    case SCR_ENCHANT_ARMOR:
     case SCR_REMOVE_CURSE:
-    case SCR_ENCHANT_WEAPON:
+    case SCR_EXILE:
     case SCR_CHARGING:
         return 16;
+    case SCR_ENCHANT_ARMOR:
+    case SCR_ENCHANT_WEAPON:
     case SCR_SCARE_MONSTER:
     case SCR_STINKING_CLOUD:
     case SCR_TAMING:
     case SCR_TELEPORTATION:
         return 20;
-    case SCR_EXILE:
     case SCR_CLONING:
         return 30;
     case SCR_BLANK_PAPER:
