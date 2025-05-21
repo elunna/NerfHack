@@ -206,9 +206,10 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 #define is_rustprone(otmp) ((otmp)->material == IRON)
 /* note: is_crackable doesn't need to include weptools because none of them can
  * generate as glass */
-#define is_crackable(otmp) (is_glass(otmp) &&                      \
-    ((otmp)->oclass == ARMOR_CLASS || (otmp)->oclass == RING_CLASS \
-    || (otmp)->oclass == WAND_CLASS || (otmp)->oclass == TOOL_CLASS))
+#define is_crackable(otmp) \
+    ((otmp)->material == GLASS               \
+     && ((otmp)->oclass == ARMOR_CLASS       \
+         || (otmp)->oclass == WEAPON_CLASS)) /* erosion_matters() */
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
     ((otmp)->material == COPPER || (otmp)->material == SILVER \
