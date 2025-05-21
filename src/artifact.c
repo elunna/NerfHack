@@ -40,8 +40,7 @@ staticfn int count_surround_traps(coordxy, coordxy);
 staticfn const char *adtyp_str(int, boolean);
 staticfn void dispose_of_orig_obj(struct obj *);
 staticfn boolean is_redundant_prop(struct obj *, int);
-staticfn boolean item_cross_aligned(struct obj *);
-staticfn boolean item_aligned(struct obj *);
+
 
 /* The amount added to the victim's total hit points to insure that the
    victim will be killed even after damage bonus/penalty adjustments.
@@ -1082,11 +1081,12 @@ touch_artifact(struct obj *obj, struct monst *mon)
     } else if (!is_covetous(mon->data) && !is_mplayer(mon->data)) {
         if (aligned_obj) {
             badclass = FALSE;
+            badalign = item_vs_mon(obj, mon);
         } else {
         	badclass = self_willed && oart->role != NON_PM
             	       && oart != &artilist[ART_EXCALIBUR];
-            /* TODO: Figure this out for monsters. Or they just avoid these... */
-        	badalign = FALSE;
+        	badalign = (oart->spfx & SPFX_RESTR) && oart->alignment != A_NONE
+                   && (oart->alignment != mon_aligntyp(mon));
     	}
     } else { /* an M3_WANTSxxx monster or a fake player */
         /* special monsters trying to take the Amulet, invocation tools or
@@ -4740,26 +4740,44 @@ arti_material(int artinum)
 
 /* TODO: Find a more elegant way to do this; there are a million
  * alignment conversion masks but none seem to fit what I want...
+* TODO: Add handling for checking items vs monsters too.
  */
-staticfn boolean
+boolean
 item_cross_aligned(struct obj *obj)
 {
     if (!obj->alignment)
         return FALSE; /* unaligned */
+
+    if (u.ualign.type != (signed char) (obj->alignment - 2))
+        return TRUE;
+#if 0
     if (u.ualign.type == A_LAWFUL && obj->alignment != FA_LAWFUL)
         return TRUE;
     if (u.ualign.type == A_CHAOTIC && obj->alignment != FA_CHAOTIC)
         return TRUE;
     if (u.ualign.type == A_NEUTRAL && obj->alignment != FA_NEUTRAL)
         return TRUE;
-
-    /* TODO: If our alignment matches, but alignment is negative - bad */
+#endif
+    /* If our alignment matches, but alignment record is negative - bad */
     return FALSE;
 }
 
-staticfn boolean
+boolean
 item_aligned(struct obj *obj)
 {
     return obj->alignment && !item_cross_aligned(obj);
 }
+
+boolean
+item_vs_mon(struct obj *obj, struct monst *mtmp)
+{
+    if (!obj->alignment) {
+        return FALSE; /* unaligned */
+	}
+    if (sgn(mtmp->data->maligntyp) != (signed char) (obj->alignment - 2)) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
 /*artifact.c*/

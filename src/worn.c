@@ -1722,6 +1722,19 @@ armor_bonus(struct monst *mon, struct obj *armor)
         else if (is_dwarf(mon->data) && is_dwarvish_armor(armor->otyp))
             bon += 1;
     }
+
+    /* Alignment bonuses */
+    if (armor->alignment) {
+        if (is_you) {
+            if (item_aligned(armor))
+                bon += 1;
+            else if (item_cross_aligned(armor))
+                bon -= 1;
+        } else {
+            if (!item_vs_mon(armor, mon))
+            	bon -= 1;
+        }
+    }
     /* appearance bonuses */
     if (objdescr_is(armor, "combat boots"))
         bon += 1;

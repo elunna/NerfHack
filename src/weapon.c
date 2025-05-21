@@ -448,6 +448,15 @@ dmgval_core(
 #undef is_odd_material
     }
 
+    boolean is_you = mon == &gy.youmonst;
+    /* Alignment bonuses: bonus damage vs cross aligned monsters */
+	if (otmp->alignment && mon) {
+    	if (is_you && item_cross_aligned(otmp)) {
+            tmp++;
+    	} else if (!is_you && item_vs_mon(otmp, mon)) {
+            tmp++;
+    	}
+    }
     /* negative modifiers mustn't produce negative damage */
     if (tmp < 0)
         tmp = 0;

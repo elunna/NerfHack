@@ -210,6 +210,9 @@ extern void oprops_off(struct obj *, long);
 extern schar calc_prop_bonus(long);
 extern boolean changes_stat(long);
 extern short arti_material(int);
+extern boolean item_cross_aligned(struct obj *);
+extern boolean item_aligned(struct obj *);
+extern boolean item_vs_mon(struct obj *, struct monst *);
 
 /* ### attrib.c ### */
 
