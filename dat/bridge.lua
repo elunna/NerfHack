@@ -67,7 +67,7 @@ for i = 1,math.random(2, 4) do
 end
 
 for i = 1,math.random(2, 2) do
-  des.object({ id = "dwarvish mithril-coat", buried = true, buc = "cursed" })
+  des.object({ id = "dwarvish ring mail", buried = true, buc = "cursed" })
 end
 
 --Branch flavor

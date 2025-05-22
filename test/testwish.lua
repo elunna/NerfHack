@@ -7,7 +7,7 @@ local wishtest_objects = {
    ["red glass"] = { otyp_name = "worthless piece of red glass", quan = 1, oclass = "*" },
    ["red gem"] = { otyp_descr = "red", oclass = "*" },
    ["orange gem"] = { otyp_descr = "orange", oclass = "*" },
-   ["5 +3 blessed silver daggers"] = { otyp_name = "silver dagger", blessed = 1, cursed = 0, spe = 3, quan = 5 },
+   ["5 +3 blessed silver daggers"] = { otyp_name = "dagger", blessed = 1, cursed = 0, spe = 3, quan = 5 },
    ["an empty locked large box"] = { otyp_name = "large box", is_container = 1, has_contents = 0, olocked = 1 },
    ["an empty trapped unlocked chest"] = { otyp_name = "chest", is_container = 1, has_contents = 0, olocked = 0,  otrapped = 1 },
    ["an empty untrapped locked chest"] = { otyp_name = "chest", is_container = 1, has_contents = 0, olocked = 1,  otrapped = 0 },
@@ -15,7 +15,7 @@ local wishtest_objects = {
    ["broken empty chest"] = { otyp_name = "chest", obroken = 1 },
    ["potion of holy water"] = { otyp_name = "water", oclass = "!", blessed = 1, cursed = 0 },
    ["potion of unholy water"] = { otyp_name = "water", oclass = "!", blessed = 0, cursed = 1 },
-   ["cursed greased +2 grey dragon scale mail"] = { otyp_name = "gray dragon scale mail", oclass = "[", blessed = 0, cursed = 1, spe = 2, greased = 1 },
+   ["cursed greased +2 grey dragon scales"] = { otyp_name = "gray dragon scales", oclass = "[", blessed = 0, cursed = 1, spe = 2, greased = 1 },
    ["+1 yellow dragon scales"] = { otyp_name = "yellow dragon scales", oclass = "[", spe = 1 },
    ["uncursed magic marker (11)"] = { otyp_name = "magic marker", blessed = 0, cursed = 0, spe = 11 },
    ["wand of locking (1:5)"] = { otyp_name = "locking", oclass = "/", recharged = 1, spe = 5 },
@@ -49,10 +49,9 @@ local wishtest_objects = {
    ["spellbook of food detection"] = { otyp_name = "detect food", oclass = "+" },
    ["spell"] = { NO_OBJ = 1 },
    ["-1 ring mail"] = { otyp_name = "ring mail", oclass = "[", spe = -1 },
-   ["studded leather armor"] = { otyp_name = "studded leather armor", oclass = "[" },
-   ["leather armor"] = { otyp_name = "leather armor", oclass = "[" },
+   ["studded armor"] = { otyp_name = "studded armor", oclass = "[" },
+   ["light armor"] = { otyp_name = "armor", oclass = "[" },
    ["plate armor"] = { otyp_name = "plate mail", oclass = "[" },
-   ["yellow dragon scale armor"] = { otyp_name = "yellow dragon scale mail", oclass = "[" },
    ["speed boots"] = { otyp_name = "speed boots", oclass = "[" },
    ["speedboots"] = { otyp_name = "speed boots", oclass = "[" },
    ["erodeproof speedboots"] = { otyp_name = "speed boots", oclass = "[", oerodeproof = 1 },
@@ -81,6 +80,14 @@ local wishtest_objects = {
                                   local oc = obj.class(obj.new("orange"));
                                   return (oc.nutrition // 2);
                              end },
+   ["gold silver dragon statue"] = { otyp_name = "statue", corpsenm_name = "silver dragon" },
+   -- Note that this will cause the PYEC to exist. The script can't be loaded again.
+   ["platinum yendorian express card"] = { otyp_name = "credit card", has_oname = 1, oname = "The Platinum Yendorian Express Card" },
+   ["wax candle"] = { otyp_name = "wax candle" },
+   ["10 gold"] = { otyp_name = "gold piece", quan = 10 },
+   ["copper ring"] = { oclass = "=", otyp_descr = "copper" },
+   ["silver spellbook"] = { oclass = "+", otyp_descr = "silver" },
+   ["gold wand"] = { oclass = "/", otyp_descr = "gold" }, -- may fail if gold wands don't exist in this particular game...
 };
 
 for str, tbl in pairs(wishtest_objects) do

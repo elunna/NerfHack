@@ -72,8 +72,8 @@ des.region({ region={39,10,47,13}, lit=0, type="morgue", filled=1 })
 
 -- Your quest leader
 des.monster({ id = "Van Helsing", coord = {28, 10}, inventory = function()
-   des.object({ id = "leather jacket", spe = 4 });
-   des.object({ id = "wooden stake", spe = 4 });
+   des.object({ id = "jacket", material = "leather", spe = 4 });
+   des.object({ id = "stake", material = "wooden", spe = 4 });
 end })
 
 -- The treasure of Van Helsing

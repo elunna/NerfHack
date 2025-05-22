@@ -206,7 +206,7 @@ des.monster("monkey",25,03)
 des.object("bugle",25,03)
 
 des.monster("monkey",19,06)
-des.object("leather drum",19,06)
+des.object("war drum",19,06)
 
 des.monster("monkey",29,04)
 des.object("tooled horn",29,04)
