@@ -958,6 +958,7 @@ can_twoweapon(void)
 {
     struct obj *otmp;
 
+
     if (!could_twoweap(gy.youmonst.data)) {
         if (Upolyd)
             You_cant("use two weapons in your current form.");
@@ -965,6 +966,7 @@ can_twoweapon(void)
             pline("%s aren't able to use two weapons at once.",
                   makeplural((flags.female && gu.urole.name.f)
                              ? gu.urole.name.f : gu.urole.name.m));
+        return FALSE;
     } else if (!uwep || !uswapwep) {
         const char *hand_s = body_part(HAND);
 
@@ -973,7 +975,15 @@ can_twoweapon(void)
         /* "your hands are empty" or "your {left|right} hand is empty" */
         Your("%s%s %s empty.", uwep ? "left " : uswapwep ? "right " : "",
              hand_s, vtense(hand_s, "are"));
-    } else if (!TWOWEAPOK(uwep) || !TWOWEAPOK(uswapwep)) {
+        return FALSE;
+    }
+    boolean opposed_artifacts = uswapwep->oartifact
+          && ((is_lawful_artifact(uswapwep) && is_chaotic_artifact(uwep))
+              || (is_chaotic_artifact(uswapwep) && is_lawful_artifact(uwep)));
+    boolean opposed_items = (uwep->alignment > 0 && uswapwep->alignment > 0)
+                            && uwep->alignment != uswapwep->alignment;
+
+    if (!TWOWEAPOK(uwep) || !TWOWEAPOK(uswapwep)) {
         otmp = !TWOWEAPOK(uwep) ? uwep : uswapwep;
         pline("%s %s suitable %s weapon%s.", Yname2(otmp),
               is_plural(otmp) ? "aren't" : "isn't a",
@@ -987,11 +997,7 @@ can_twoweapon(void)
     /* Adapted from EvilHack: Allow two-weaponing with an artifact,
      * but not if they are of opposite alignements. As expected,
      * neutral artifacts don't care */
-    } else if (uswapwep->oartifact
-               && ((is_lawful_artifact(uswapwep)
-                        && is_chaotic_artifact(uwep))
-                   || (is_chaotic_artifact(uswapwep)
-                        && is_lawful_artifact(uwep)))) {
+    } else if (opposed_artifacts || opposed_items) {
         pline("%s being held second to %s!",
               Yobjnam2(uswapwep, "resist"), artiname(uwep->oartifact));
     } else if (uswapwep->otyp == CORPSE && cant_wield_corpse(uswapwep)) {
