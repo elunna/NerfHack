@@ -2171,6 +2171,10 @@ thitmonst(
     if (uarmf && objdescr_is(uarmf, "combat boots"))
         tmp += 1;
 
+    /* Alignment bonuses */
+    if (obj->alignment)
+        tmp += item_aligned(obj) ? 1 : -1;
+
     /* Modify to-hit depending on distance; but keep it sane.
      * Polearms get a distance penalty even when wielded; it's
      * hard to hit at a distance.

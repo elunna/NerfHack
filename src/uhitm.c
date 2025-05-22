@@ -553,18 +553,10 @@ find_roll_to_hit(
         tmp++;
 
     /* Alignment bonuses */
-    if (uwep && uwep->alignment) {
-        if (item_aligned(uwep))
-            tmp++;
-        else if (item_cross_aligned(uwep))
-            tmp--;
-    }
-    if (u.twoweap && uswapwep && uswapwep->alignment) {
-        if (item_aligned(uswapwep))
-            tmp++;
-        else if (item_cross_aligned(uswapwep))
-            tmp--;
-    }
+    if (uwep && uwep->alignment)
+        tmp += item_aligned(uwep) ? 1 : -1;
+    if (u.twoweap && uswapwep && uswapwep->alignment)
+        tmp += item_aligned(uswapwep) ? 1 : -1;
 
     /* Some races really don't like wearing other racial armor, if they
      * do they get a severe to-hit penalty */
