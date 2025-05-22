@@ -411,6 +411,7 @@ m_initweap(struct monst *mtmp)
                 otmp = oname(otmp, nam, ONAME_RANDOM); /* randomly created */
             /* enhance the weapon */
             bless(otmp);
+            otmp->bquality = rn2(5) ? FQ_NORMAL : FQ_SUPERIOR;
             otmp->oerodeproof = TRUE;
             otmp->spe = rn2(4);
             (void) mpickobj(mtmp, otmp);
@@ -420,6 +421,7 @@ m_initweap(struct monst *mtmp)
                           FALSE, FALSE);
             /* uncurse(otmp); -- mksobj(,FALSE,) item is always uncursed */
             otmp->bquality = rn2(5) ? FQ_NORMAL : FQ_SUPERIOR;
+            otmp->alignment = !rn2(3) ? FA_LAWFUL : FA_NONE;
             otmp->oerodeproof = TRUE;
             otmp->spe = 0;
             (void) mpickobj(mtmp, otmp);
@@ -665,17 +667,22 @@ m_initweap(struct monst *mtmp)
                 curse(otmp);
                 otmp->oeroded = otmp->oeroded2 = 0;
                 otmp->oerodeproof = 1;
+                otmp->bquality = rn2(7) ? FQ_SUPERIOR : FQ_EXCEPTIONAL;
+                otmp->alignment = FA_CHAOTIC;
                 otmp->spe = rnd(3);
                 (void) mpickobj(mtmp, otmp);
             } else {
                 otmp = mksobj(BROADSWORD, FALSE, FALSE);
                 otmp->spe = rnd(3) + 2;
+                otmp->bquality = rn2(7) ? FQ_SUPERIOR : FQ_EXCEPTIONAL;
+                otmp->alignment = FA_CHAOTIC;
                 (void) mpickobj(mtmp, otmp);
             }
 
             otmp = mksobj(BULLWHIP, FALSE, FALSE);
             otmp->spe = rnd(3) + 2;
             otmp->oerodeproof = 1;
+            otmp->alignment = FA_CHAOTIC;
             (void) mpickobj(mtmp, otmp);
             break;
         case PM_ORCUS:
@@ -825,19 +832,22 @@ m_initinv(struct monst *mtmp)
     otmp = (struct obj *) 0;
 
             /* round 1: give them body armor */
-            if (mac < -2 && rn2(5))
+            if (mac < -2 && rn2(5)) {
                 otmp = mongets(mtmp, (rn2(5)) ? PLATE_MAIL
                                               : CRYSTAL_PLATE_MAIL);
-            else if (mac < 0 && rn2(5))
+            } else if (mac < 0 && rn2(5)) {
                 otmp = mongets(mtmp, (rn2(5)) ? SPLINT_MAIL
                                               : PLATE_MAIL);
-            else if (mac < 3 && rn2(5))
+            } else if (mac < 3 && rn2(5)) {
                 otmp = mongets(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);
-            else if (rn2(5))
+            } else if (rn2(5)) {
                 otmp = mongets(mtmp, (rn2(3)) ? RING_MAIL
                                               : STUDDED_ARMOR);
-            else
+            } else {
                 otmp = mongets(mtmp, ARMOR);
+            }
+            if (otmp)
+                otmp->bquality = rn2(10) ? FQ_NORMAL : FQ_SUPERIOR;
             add_ac(otmp);
 
             /* round 2: helmets */
@@ -845,6 +855,8 @@ m_initinv(struct monst *mtmp)
                 otmp = mongets(mtmp, HELMET);
             else if (mac < 10 && rn2(2))
                 otmp = mongets(mtmp, DENTED_POT);
+            if (otmp)
+                otmp->bquality = rn2(10) ? FQ_NORMAL : FQ_SUPERIOR;
             add_ac(otmp);
 
             /* round 3: shields */
@@ -852,6 +864,8 @@ m_initinv(struct monst *mtmp)
                 otmp = mongets(mtmp, SMALL_SHIELD);
             else if (mac < 10 && rn2(2))
                 otmp = mongets(mtmp, LARGE_SHIELD);
+            if (otmp)
+                otmp->bquality = rn2(10) ? FQ_NORMAL : FQ_SUPERIOR;
             add_ac(otmp);
 
             /* round 4: boots */
@@ -859,6 +873,8 @@ m_initinv(struct monst *mtmp)
                 otmp = mongets(mtmp, LOW_BOOTS);
             else if (mac < 10 && rn2(2))
                 otmp = mongets(mtmp, HIGH_BOOTS);
+            if (otmp)
+                otmp->bquality = rn2(10) ? FQ_NORMAL : FQ_SUPERIOR;
             add_ac(otmp);
 
             /* round 5: gloves + cloak */
@@ -866,6 +882,8 @@ m_initinv(struct monst *mtmp)
                 otmp = mongets(mtmp, GLOVES);
             else if (mac < 10 && rn2(2))
                 otmp = mongets(mtmp, CLOAK);
+            if (otmp)
+                otmp->bquality = rn2(10) ? FQ_NORMAL : FQ_SUPERIOR;
             add_ac(otmp); /* not technically needed */
 
 #undef add_ac
@@ -942,8 +960,8 @@ m_initinv(struct monst *mtmp)
                                             : RIN_TELEPORT_CONTROL);
                 m_dowear(mtmp, FALSE);
             }
-	} else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
-	    /* Dal Zethire */
+	    } else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
+	        /* Dal Zethire */
             for (cnt = 0; cnt < 7; cnt++) {
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
                 otmp->corpsenm = mk_moncard();
@@ -998,6 +1016,7 @@ m_initinv(struct monst *mtmp)
                  (void) mongets(mtmp, RIN_SLOW_DIGESTION);
         } else if (ptr == &mons[PM_WORM_THAT_WALKS]) {
             otmp = mksobj(MACE, TRUE, rn2(13) ? FALSE : TRUE);
+            otmp->alignment = rn2(5) ? FA_CHAOTIC : FA_NONE;
             if (otmp->spe < 2)
                 otmp->spe = rnd(3);
             if (!rn2(4))
@@ -1006,6 +1025,7 @@ m_initinv(struct monst *mtmp)
         } else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
             otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
                           rn2(13) ? FALSE : TRUE);
+            otmp->alignment = rn2(5) ? FA_CHAOTIC : FA_NONE;
             if (otmp->spe < 2)
                 otmp->spe = rnd(3);
             if (!rn2(4))
@@ -2641,9 +2661,13 @@ mongets(struct monst *mtmp, int otyp)
             /* demons never get blessed objects */
             if (otmp->blessed)
                 curse(otmp);
+            /* Some demons are lawful, hence the conversion below */
+            otmp->alignment = !rn2(3)
+                                  ? (int) mtmp->data->maligntyp + 2 : FA_NONE;
         } else if (is_lminion(mtmp)) {
             /* lawful minions don't get cursed, bad, or rusting objects */
             otmp->cursed = FALSE;
+            otmp->alignment = !rn2(3) ? FA_LAWFUL : FA_NONE;
             if (otmp->spe < 0)
                 otmp->spe = 0;
             otmp->oerodeproof = 1;
@@ -2651,6 +2675,12 @@ mongets(struct monst *mtmp, int otyp)
         } else if (is_mplayer(mtmp->data) && is_sword(otmp)) {
             otmp->spe = (3 + rn2(4));
         }
+
+        /* Don't let monsters spawn with cross-aligned items.
+           They won't be able to use them. Match it instead.
+         */
+        if (otmp->alignment && item_vs_mon(otmp, mtmp))
+            otmp->alignment = (int) mtmp->data->maligntyp + 2;
 
         if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
             otmp->spe = 0;
