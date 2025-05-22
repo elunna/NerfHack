@@ -1108,7 +1108,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
         touch_blasted = TRUE;
 
         if (aligned_obj)
-	        dmg = d((Antimagic ? 3 : 6), 4);
+	        dmg = d((Antimagic ? 3 : 5), 4);
         else
             dmg = d((Antimagic ? 6 : 8), (self_willed ? 10 : 6));
 
