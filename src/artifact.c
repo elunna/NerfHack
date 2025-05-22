@@ -4759,7 +4759,7 @@ item_cross_aligned(struct obj *obj)
         return TRUE;
 #endif
     /* If our alignment matches, but alignment record is negative - bad */
-    return FALSE;
+    return u.ualign.record < 0;
 }
 
 boolean
