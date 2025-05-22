@@ -2401,6 +2401,11 @@ create_object(object *o, struct mkroom *croom)
     } else {
         otmp->bquality = 0; /* normal */
     }
+    if (o->alignment) {
+        otmp->alignment = (o->alignment % 4);
+    } else {
+        otmp->alignment = 0; /* normal */
+    }
     if (o->recharged)
         otmp->recharged = (o->recharged % 8);
     if (o->locked == 0 || o->locked == 1) {
@@ -3703,7 +3708,7 @@ lspo_object(lua_State *L)
             0,       /* buried */
             0,       /* lit */
             0, 0, 0, 0, 0, /* eroded, locked, trapped, tknown, recharged */
-            0, 0, 0, 0, 0, /* invis, greased, broken, achievement, bquality */
+            0, 0, 0, 0, 0, 0, /* invis, greased, broken, achievement, bquality, alignment */
             0,       /* material */
     };
 #if 0
@@ -3782,7 +3787,6 @@ lspo_object(lua_State *L)
         tmpobj.greased = get_table_boolean_opt(L, "greased", 0);
         tmpobj.broken = get_table_boolean_opt(L, "broken", 0);
         tmpobj.achievement = get_table_boolean_opt(L, "achievement", 0);
-        /* TODO: Put bquality here? */
         /* There is currently no way to say "use the default material"; leaving
          * material blank may give it various materials using the normal
          * formula, if the object is eligible. */
