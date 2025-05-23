@@ -162,11 +162,14 @@ setuwep(struct obj *obj)
             toggle_stealth(olduwep, (EStealth & ~W_WEP), FALSE);
         }
         if (olduwep->oprops & ITEM_WARN) {
-            EWarning  &= ~W_WEP;
+            EWarning &= ~W_WEP;
             see_monsters();
         }
         if (olduwep->oprops & ITEM_CHA) {
             (void) changes_stat(ITEM_CHA);
+        }
+        if (olduwep->oprops & ITEM_BURDEN) {
+            EStable &= ~W_WEP;
         }
     }
     if (uwep && uwep == obj) {
@@ -219,10 +222,10 @@ setuwep(struct obj *obj)
         if (uwep->oprops & ITEM_CHA) {
             (void) changes_stat(ITEM_CHA);
         }
+        if (uwep->oprops & ITEM_BURDEN) {
+            EStable |= W_WEP;
+        }
     }
-
-
-
 
     /* Note: Explicitly wielding a pick-axe will not give a "bashing"
      * message.  Wielding one via 'a'pplying it will.
@@ -436,6 +439,10 @@ setuswapwep(struct obj *obj)
         if (olduswapwep->oprops & ITEM_CHA) {
             (void) changes_stat(ITEM_CHA);
         }
+        /* Burden/stability property */
+        if (olduswapwep->oprops & ITEM_BURDEN) {
+            HStable &= ~W_SWAPWEP;
+        }
     }
 
     if (uswapwep == obj && u.twoweap) {
@@ -472,6 +479,9 @@ setuswapwep(struct obj *obj)
         }
         if (uswapwep->oprops & ITEM_CHA) {
             (void) changes_stat(ITEM_CHA);
+        }
+        if (uswapwep->oprops & ITEM_BURDEN) {
+            HStable |= W_SWAPWEP;
         }
     }
     return;

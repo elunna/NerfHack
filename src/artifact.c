@@ -993,6 +993,12 @@ set_artifact_intrinsic(
             toggle_displacement(otmp, oldprop, FALSE);
         }
     }
+    if (spfx & SPFX_STABLE) {
+        if (on)
+            EStable |= wp_mask;
+        else
+            EStable &= ~wp_mask;
+    }
     if (spfx & SPFX_FLYING) {
         if (on) {
             EFlying |= wp_mask;
@@ -3237,6 +3243,7 @@ abil_to_spfx(long *abil)
         { &EMagical_breathing, SPFX_BREATHE },
         { &ESee_invisible, SPFX_SEEINV },
         { &EDisplaced, SPFX_DISPLAC },
+        { &EStable, SPFX_STABLE },
     };
     int k;
 
@@ -3731,15 +3738,6 @@ get_artifact(struct obj *obj)
     return &artilist[ART_NONARTIFACT];
 }
 
-boolean
-non_wishable_artifact(struct obj *otmp)
-{
-    int art = otmp->oartifact;
-    if (!art)
-        return FALSE;
-    return ((artilist[art].spfx & SPFX_NOWISH) != 0L);
-}
-
 int
 arti_align(int oartifact)
 {
@@ -3785,6 +3783,8 @@ arti_prop_spfx(int prop)
             return SPFX_SEEINV;
         case DISPLACED:
             return SPFX_DISPLAC;
+        case STABLE:
+            return SPFX_STABLE;
     }
      return 0L;
 }
@@ -3921,6 +3921,8 @@ artifact_info(int anum)
         art_info.wielded[18] = "protection vs shapechangers";
     if ((artilist[anum].spfx & SPFX_BAGGRV) != 0)
         art_info.wielded[19] = "suppresses aggravate monster";
+    if ((artilist[anum].spfx & SPFX_STABLE) != 0)
+        art_info.wielded[20] = "steadfastness";
 
     if ((artilist[anum].spfx & SPFX_WARN) != 0) {
         if ((artilist[anum].spfx & SPFX_DFLAGH) != 0) {
@@ -4026,15 +4028,13 @@ artifact_info(int anum)
         art_info.wielded[20] = "angers demons princes and lords";
         break;
     case ART_GIANTSLAYER:
-        art_info.wielded[20] = "steadfastness";
-        art_info.wielded[21] = "boosts strength";
+        art_info.wielded[20] = "boosts strength";
         break;
     case ART_GRIMTOOTH:
         art_info.xattack = "sickness attack";
         break;
     case ART_LOAD_BRAND:
-        art_info.wielded[20] = "steadfastness";
-        art_info.wielded[21] = "negates curses";
+        art_info.wielded[20] = "negates curses";
         break;
     case ART_MAGICBANE:
         art_info.wielded[20] = "negates curses";
@@ -4260,11 +4260,9 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
               && (j & ONLY_WEP_PROPS))
             continue;
 
-#if 0 /* TODO: Implement */
         /* Burden doesn't really affect ring weight much */
         if (otmp->oclass == RING_CLASS && j & ITEM_BURDEN)
             continue;
-#endif
 
         if ((otmp->oprops & ITEM_RES_PROPS) && (j & ITEM_RES_PROPS))
             continue; /* these are mutually exclusive */
@@ -4336,18 +4334,12 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { HUNGER,            ITEM_HUNGER },
     { WARNING,           ITEM_WARN },
     { SICK_RES,          ITEM_FILTH },
+    { STABLE,            ITEM_BURDEN },
 #if 0
-    { SONIC_RES,         ITEM_SCREAM },
-    { STONE_RES,         ITEM_FLEX },
     { INFRAVISION,       ITEM_DANGER },
     { FEARLESS,          ITEM_RAGE },
     { AGGRAVATE_MONSTER, ITEM_STENCH },
-    { TELEPORT,          ITEM_TELE },
-    { SLOW,              ITEM_SLOW },
     { FIXED_ABIL,        ITEM_SUSTAIN },
-    { STABLE,            ITEM_BURDEN },
-    { WWALKING,          ITEM_SURF },
-    { SWIMMING,          ITEM_SWIM }
 #endif
 };
 
@@ -4481,7 +4473,10 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " charisma"),
                Strcpy(of, " and");
     }
-
+    if (props & ITEM_BURDEN) {
+        Strcat(buf, of), Strcat(buf, " burden"),
+               Strcpy(of, " and");
+    }
 #if 0 /* TODO: IMPLEMENT */
     if (props & ITEM_SCREAM) {
         Strcat(buf, of), Strcat(buf, weapon ? " scream" : " sonic resistance"),
@@ -4520,10 +4515,6 @@ propnames(char *buf, long props,
     }
     if (props & ITEM_SUSTAIN) {
         Strcat(buf, of), Strcat(buf, " sustainability"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_BURDEN) {
-        Strcat(buf, of), Strcat(buf, " burden"),
                Strcpy(of, " and");
     }
     if (props & ITEM_SURF) {
@@ -4595,25 +4586,8 @@ oprops_on(struct obj *otmp, long mask)
     if (props & ITEM_CHA) {
         (void) changes_stat(ITEM_CHA);
     }
-#if 0
-    if (props & ITEM_OILSKIN) {
-        pline("%s very tightly.", Tobjnam(otmp, "fit"));
-        otmp->oprops_known |= ITEM_OILSKIN;
-    }
-    if (props & ITEM_EXCEL) {
-        int which = A_CHA, old_attrib = ACURR(which);
-        /* HoB and GoD adjust CHA in adj_abon() */
-        if (otmp->otyp != HELM_OF_BRILLIANCE
-            && otmp->otyp != GAUNTLETS_OF_DEXTERITY)
-            /* borrowing this from Ring_on() as I may want
-               to add other attributes in the future */
-            ABON(which) += otmp->spe;
-        if (old_attrib != ACURR(which))
-            otmp->oprops_known |= ITEM_EXCEL;
-        set_moreluck();
-        context.botl = 1;
-    }
-#endif
+    if (props & ITEM_BURDEN)
+        EStable |= mask;
 }
 
 void
@@ -4664,26 +4638,8 @@ oprops_off(struct obj *otmp, long mask)
      if (props & ITEM_CHA) {
         (void) changes_stat(ITEM_CHA);
     }
-#if 0
-    if (props & ITEM_OILSKIN)
-        otmp->oprops_known |= ITEM_OILSKIN;
-
-    if (props & ITEM_EXCEL) {
-        int which = A_CHA, old_attrib = ACURR(which);
-        /* HoB and GoD adjust CHA in adj_abon() */
-        if (otmp->otyp != HELM_OF_BRILLIANCE
-            && otmp->otyp != GAUNTLETS_OF_DEXTERITY)
-            /* borrowing this from Ring_off() as I may want
-               to add other attributes in the future */
-            ABON(which) -= otmp->spe;
-        if (old_attrib != ACURR(which))
-            otmp->oprops_known |= ITEM_EXCEL;
-        otmp->oprops &= ~ITEM_EXCEL;
-        set_moreluck();
-        otmp->oprops |= ITEM_EXCEL;
-        context.botl = 1;
-    }
-#endif
+    if (props & ITEM_BURDEN)
+        EStable &= ~mask;
 }
 
 /** Returns the bonus available for wearing/wielding

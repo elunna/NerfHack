@@ -2034,19 +2034,10 @@ attributes_enlightenment(
     if (Lifesaved && !nonliving(gy.youmonst.data))
         enl_msg("Your life ", "will be", "would have been", " saved", "");
 
-    /* Steadfastness checks: These are not very clean, perhaps in the future
-     * the devteam will add a Steadfast property. The challenge with that is
-     * that loadstones and other gray stones don't have a property field. */
-    if (u_wield_art(ART_GIANTSLAYER) || u_offhand_art(ART_GIANTSLAYER))
-        you_have("steadfastness", " from Giantslayer");
-    if (u_wield_art(ART_SCEPTRE_OF_MIGHT) || u_offhand_art(ART_SCEPTRE_OF_MIGHT))
-        you_have("steadfastness", " from the Sceptre of Might");
-    else if (u_wield_art(ART_LOAD_BRAND))
-        you_have("steadfastness", " from Load Brand");
-    else if (uarms && uarms->oartifact == ART_PRIDWEN)
-        you_have("steadfastness", " from Pridwen");
-    else if (uarmg && uarmg->otyp == GAUNTLETS_OF_FORCE)
-        you_have("steadfastness", " from your gauntlets");
+
+    if (Stable)
+        you_are("stable", from_what(STABLE));
+    /* TODO: Refactor gray stones to convey properties? */
     else if (m_carrying(&gy.youmonst, LOADSTONE))
         you_have("steadfastness", " from a loadstone");
 

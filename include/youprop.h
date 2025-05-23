@@ -426,6 +426,10 @@
 #define EWatertight u.uprops[WATERTIGHT].extrinsic
 #define Watertight (HWatertight || EWatertight)
 
+#define HStable u.uprops[STABLE].intrinsic
+#define EStable u.uprops[STABLE].extrinsic
+#define Stable (EStable || HStable)
+
 /*
  * Some pseudo-properties.
  */

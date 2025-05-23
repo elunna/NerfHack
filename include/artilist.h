@@ -147,7 +147,7 @@ static NEARDATA struct artifact artilist[] = {
     /* From SpliceHack: Shield of King Arthur.
      * This shield now grants steadfastness. */
     A("Pridwen", LARGE_SHIELD,
-      (SPFX_RESTR | SPFX_HPHDAM | SPFX_DEFN), 0, 0,
+      (SPFX_RESTR | SPFX_HPHDAM | SPFX_DEFN | SPFX_STABLE), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
       0, 1, 1500L, NO_COLOR, DEFAULT_MAT, PRIDWEN),
@@ -202,7 +202,7 @@ static NEARDATA struct artifact artilist[] = {
       0, 1, 1500L, NO_COLOR, DEFAULT_MAT, CLEAVER),
 
     A("David's Sling", SLING,
-      (SPFX_RESTR | SPFX_ATTK | SPFX_HPHDAM
+      (SPFX_RESTR | SPFX_ATTK | SPFX_HPHDAM | SPFX_STABLE
         | SPFX_WARN | SPFX_DFLAGH), 0, MH_GIANT,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
@@ -229,7 +229,7 @@ static NEARDATA struct artifact artilist[] = {
      * - grants max STR
      * - type was changed from long sword to spear */
     A("Giantslayer", SPEAR,
-      (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_GIANT,
+      (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN | SPFX_STABLE), 0, MH_GIANT,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
       0, 1, 200L, CLR_RED, DEFAULT_MAT, GIANTSLAYER),
@@ -492,7 +492,7 @@ static NEARDATA struct artifact artilist[] = {
 
     /* Debut artifact in NerfHack */
     A("Load Brand", HEAVY_SWORD,
-      (SPFX_RESTR | SPFX_PROTECT | SPFX_HPHDAM), 0, 0,
+      (SPFX_RESTR | SPFX_PROTECT | SPFX_HPHDAM | SPFX_STABLE), 0, 0,
       PHYS(1, 0), NO_DFNS, NO_CARY, 0,
       A_NONE, NON_PM, NON_PM,
       0, 1, 3000L, NO_COLOR, DEFAULT_MAT, LOAD_BRAND),
@@ -541,7 +541,7 @@ static NEARDATA struct artifact artilist[] = {
      branchport to a single location. It can be "keyed" to a
      level by applying it. */
     A("The Glyph Shard", OBSIDIAN,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_NOWISH), 0, 0,
+      (SPFX_NOGEN | SPFX_RESTR), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, CREATE_PORTAL,
       A_NONE, NON_PM, NON_PM,
       0, 1, 2500L, NO_COLOR, DEFAULT_MAT, GLYPH_SHARD),
@@ -552,7 +552,7 @@ static NEARDATA struct artifact artilist[] = {
 
 
     A("The Orb of Detection", CRYSTAL_BALL,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL),
       (SPFX_ESP | SPFX_HSPDAM), 0,
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), INVIS,
       A_LAWFUL, PM_ARCHEOLOGIST, NON_PM,
@@ -560,7 +560,7 @@ static NEARDATA struct artifact artilist[] = {
 
     /* Instead of stealth, this grants displacement and flying when carried */
     A("The Heart of Ahriman", RUBY,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL),
       (SPFX_FLYING | SPFX_DISPLAC | SPFX_LUCK), 0,
       /* this stone does double damage if used as a projectile weapon */
       PHYS(0, 0), NO_DFNS, NO_CARY, UNCURSE_INVK,
@@ -575,7 +575,7 @@ static NEARDATA struct artifact artilist[] = {
       0, QAVAL, 7000L, NO_COLOR, DEFAULT_MAT, HOLOGRAPHIC_VOID_LILY),
 
     A("The Sceptre of Might", MACE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH), 0, 0,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_STABLE), 0, 0,
       PHYS(5, 0), DFNS(AD_MAGM), NO_CARY, CONFLICT,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
       0, QAVAL, 2500L, NO_COLOR, DEFAULT_MAT, SCEPTRE_OF_MIGHT),
@@ -585,7 +585,7 @@ static NEARDATA struct artifact artilist[] = {
          * and the Elf role along with its quest was eliminated; it's a bit
          * overpowered to be an ordinary artifact so leave it excluded */
 A("The Palantir of Westernesse", CRYSTAL_BALL,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL),
       (SPFX_ESP | SPFX_REGEN | SPFX_HSPDAM), 0,
       NO_ATTK, NO_DFNS, NO_CARY, TAMING,
       A_CHAOTIC, NON_PM , PM_ELF,
@@ -594,27 +594,26 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
 
     A("The Staff of Aesculapius", QUARTERSTAFF,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK | SPFX_INTEL | SPFX_DRLI
-       | SPFX_REGEN | SPFX_NOWISH), 0, 0,
+       | SPFX_REGEN), 0, 0,
       DRLI(3, 0), DFNS(AD_DRLI), NO_CARY, HEALING,
       A_NEUTRAL, PM_HEALER, NON_PM,
       0, QAVAL, 5000L, NO_COLOR, DEFAULT_MAT, STAFF_OF_AESCULAPIUS),
 
     A("The Magic Mirror of Merlin", MIRROR,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK | SPFX_NOWISH),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK),
       (SPFX_REFLECT | SPFX_ESP | SPFX_HSPDAM), 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_KNIGHT, NON_PM,
       0, QAVAL, 1500L, NO_COLOR, DEFAULT_MAT, MAGIC_MIRROR_OF_MERLIN),
 
     A("The Eyes of the Overworld", LENSES,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_XRAY | SPFX_NOWISH), 0, 0,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_XRAY), 0, 0,
       NO_ATTK, DFNS(AD_MAGM), NO_CARY, ENLIGHTENING,
       A_NEUTRAL, PM_MONK, NON_PM,
       0, QAVAL, 2500L, NO_COLOR, DEFAULT_MAT, EYES_OF_THE_OVERWORLD),
 
     A("The Mitre of Holiness", HELM_OF_BRILLIANCE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_DFLAGH | SPFX_INTEL | SPFX_PROTECT
-       | SPFX_NOWISH),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_DFLAGH | SPFX_INTEL | SPFX_PROTECT),
       0, MH_UNDEAD,
       NO_ATTK, NO_DFNS, CARY(AD_FIRE), ENERGY_BOOST,
       A_LAWFUL, PM_CLERIC, NON_PM,
@@ -623,7 +622,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
     /* Now grants physical damage reduction */
     A("The Longbow of Diana", BOW,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT | SPFX_HPHDAM
-       | SPFX_ESP | SPFX_NOWISH),
+       | SPFX_ESP),
       0, 0,
       PHYS(5, 0), NO_DFNS, NO_CARY, CREATE_AMMO,
       A_CHAOTIC, PM_RANGER, NON_PM,
@@ -633,7 +632,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
        rogues) or blessed (for non-rogues):  #untrap of doors and chests
        will always find any traps and disarming those will always succeed */
     A("The Master Key of Thievery", SKELETON_KEY,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK | SPFX_NOWISH),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK),
       (SPFX_WARN | SPFX_TCTRL | SPFX_HPHDAM), 0,
       NO_ATTK, NO_DFNS, NO_CARY, UNTRAP,
       A_CHAOTIC, PM_ROGUE, NON_PM,
@@ -642,13 +641,13 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
     /* Increased the rate of bisection from 5% to 10% */
     A("The Tsurugi of Muramasa", TSURUGI,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_BEHEAD | SPFX_LUCK
-       | SPFX_PROTECT | SPFX_FAST | SPFX_NOWISH), 0, 0,
+       | SPFX_PROTECT | SPFX_FAST), 0, 0,
       PHYS(0, 8), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_SAMURAI, NON_PM,
       0, QAVAL, 4500L, NO_COLOR, DEFAULT_MAT, TSURUGI_OF_MURAMASA),
 
     A("The Platinum Yendorian Express Card", CREDIT_CARD,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DEFN | SPFX_NOWISH),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DEFN),
       (SPFX_ESP | SPFX_HSPDAM), 0,
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), CHARGE_OBJ,
       A_NEUTRAL, PM_TOURIST, NON_PM,
@@ -659,22 +658,21 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
      * withering resistance, and passively turns undead when in the presence
      * of evil */
     A("The Argent Cross", AMULET_OF_REFLECTION,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH | SPFX_HSPDAM),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_HSPDAM),
       0, 0,
       NO_ATTK, DFNS(AD_DISN), NO_CARY, 0,
       A_NEUTRAL, PM_UNDEAD_SLAYER, NON_PM,
       0, QAVAL, 4000L, NO_COLOR, DEFAULT_MAT, ARGENT_CROSS),
 
     A("The Orb of Fate", CRYSTAL_BALL,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK | SPFX_NOWISH),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK),
       (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM), 0,
       NO_ATTK, NO_DFNS, NO_CARY, LEV_TELE,
       A_NEUTRAL, PM_VALKYRIE, NON_PM,
       0, QAVAL, 3500L, NO_COLOR, DEFAULT_MAT, ORB_OF_FATE),
 
     A("The Eye of the Aethiopica", AMULET_OF_ESP,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_NOWISH
-       | SPFX_EREGEN | SPFX_HSPDAM),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_EREGEN | SPFX_HSPDAM),
       0, 0,
       NO_ATTK, DFNS(AD_MAGM), NO_CARY, CREATE_PORTAL,
       A_NEUTRAL, PM_WIZARD, NON_PM,

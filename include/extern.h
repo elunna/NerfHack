@@ -195,7 +195,6 @@ extern void mkot_trap_warn(void);
 extern boolean is_magic_key(struct monst *, struct obj *);
 extern struct obj *has_magic_key(struct monst *);
 extern boolean is_art(struct obj *, int);
-extern boolean non_wishable_artifact(struct obj *);
 extern int arti_align(int);
 extern struct obj *get_faux_artifact_obj(const char *);
 extern struct art_info_t artifact_info(int);

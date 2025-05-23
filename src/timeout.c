@@ -116,6 +116,7 @@ const struct propname {
     { LIFESAVED, "life will be saved" },
     { STOMPING, "stomping" },
     { WATERTIGHT, "protected inventory" },
+    { STABLE,    "extraodinarily stable" },
     {  0, 0 },
 };
 
@@ -944,6 +945,9 @@ nh_timeout(void)
                         You("are no longer withering away.");
                     }
                     disp.botl = TRUE;
+                    break;
+                case STABLE:
+                    You("are a little less sure of your footing.");
                     break;
                 case WATERTIGHT:
                     if (!Watertight) {

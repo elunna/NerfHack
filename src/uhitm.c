@@ -6758,6 +6758,8 @@ m_is_steadfast(struct monst *mtmp)
         return FALSE;
 #endif
 
+    if (is_u && Stable)
+        return TRUE;
     if (is_art(otmp, ART_GIANTSLAYER)
         || is_art(otmp, ART_LOAD_BRAND)
         || is_art(otmp, ART_SCEPTRE_OF_MIGHT)
@@ -6770,7 +6772,7 @@ m_is_steadfast(struct monst *mtmp)
     if (m_carrying(mtmp, LOADSTONE))
         return TRUE;
     /* when mounted and steed is target of knockback, check the rider for
-       a loadstone too (Giantslayer's protection doesn't extend to steed) */
+       a loadstone too */
     if (u.usteed && mtmp == u.usteed && carrying(LOADSTONE))
         return TRUE;
 

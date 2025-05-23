@@ -132,9 +132,8 @@ resetobjs(struct obj *ochain, boolean restore)
                          && otmp->corpsenm >= SPECIAL_PM))) {
                 free_oname(otmp);
             }
-            /* Prevent non-wishable artifacts from winding up
-             * in a bones pile. */
-            if (non_wishable_artifact(otmp)) {
+            /* Prevent artifacts from winding up in a bones pile. */
+            if (otmp->oartifact) {
                 otmp->oartifact = 0;
                 free_oname(otmp);
             }

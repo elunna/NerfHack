@@ -5784,11 +5784,11 @@ readobjnam(char *bp, struct obj *no_wish)
 
         if (d.otmp->oclass == ARMOR_CLASS || d.otmp->oclass == RING_CLASS)
             d.objprops &= ~ONLY_WEP_PROPS;
-#if 0
+
         /* Burden doesn't really affect ring weight much */
         if (d.otmp->oclass == RING_CLASS)
             d.objprops &= ~ITEM_BURDEN;
-#endif
+
         d.objprops = rm_redundant_oprops(d.otmp, d.objprops);
 
         /* The player cannot wish for properties (outside of wizmode) */
@@ -5884,8 +5884,9 @@ readobjnam(char *bp, struct obj *no_wish)
     if (permapoisoned(d.otmp))
         d.otmp->opoisoned = 1;
 
-    /* No wishing for quest artifacts, but don't charge them for it. */
-    if (!wizard && non_wishable_artifact(d.otmp)) {
+    /* No wishing for artifacts, but don't charge them for it.
+    * (This doesn't really matter now that we don't allow wishing ... */
+    if (!wizard && d.otmp->oartifact) {
         if (!Deaf) {
             if (flags.verbose)
                 pline("A thunderous voice booms through the caverns:");
