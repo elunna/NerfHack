@@ -171,6 +171,9 @@ setuwep(struct obj *obj)
         if (olduwep->oprops & ITEM_BURDEN) {
             EStable &= ~W_WEP;
         }
+        if (olduwep->oprops & ITEM_DANGER) {
+            EInfravision &= ~W_WEP;
+        }
     }
     if (uwep && uwep == obj) {
         /* Hated items decrease AC and affect to-hit */
@@ -224,6 +227,9 @@ setuwep(struct obj *obj)
         }
         if (uwep->oprops & ITEM_BURDEN) {
             EStable |= W_WEP;
+        }
+        if (uwep->oprops & ITEM_DANGER) {
+            EInfravision |= W_WEP;
         }
     }
 
@@ -443,6 +449,9 @@ setuswapwep(struct obj *obj)
         if (olduswapwep->oprops & ITEM_BURDEN) {
             HStable &= ~W_SWAPWEP;
         }
+        if (olduswapwep->oprops & ITEM_DANGER) {
+            EInfravision &= ~W_SWAPWEP;
+        }
     }
 
     if (uswapwep == obj && u.twoweap) {
@@ -482,6 +491,9 @@ setuswapwep(struct obj *obj)
         }
         if (uswapwep->oprops & ITEM_BURDEN) {
             HStable |= W_SWAPWEP;
+        }
+        if (uswapwep->oprops & ITEM_DANGER) {
+            EInfravision |= W_SWAPWEP;
         }
     }
     return;

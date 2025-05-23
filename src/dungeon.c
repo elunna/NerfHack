@@ -2027,7 +2027,7 @@ level_difficulty(void)
              */
     }
     /* ring of aggravate monster */
-    if (EAggravate_monster)
+    if (EAggravate_monster || using_oprop(ITEM_DANGER))
         res += 15;
     if (HAggravate_monster)
         res += 5;

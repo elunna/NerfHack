@@ -4336,8 +4336,8 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { WARNING,           ITEM_WARN },
     { SICK_RES,          ITEM_FILTH },
     { STABLE,            ITEM_BURDEN },
+{ INFRAVISION,       ITEM_DANGER },
 #if 0
-    { INFRAVISION,       ITEM_DANGER },
     { AGGRAVATE_MONSTER, ITEM_STENCH },
     { FIXED_ABIL,        ITEM_SUSTAIN },
 #endif
@@ -4481,11 +4481,11 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " rage"),
         Strcpy(of, " and");
     }
-#if 0 /* TODO: IMPLEMENT */
     if (props & ITEM_DANGER) {
         Strcat(buf, of), Strcat(buf, of), Strcat(buf, " danger"),
             Strcpy(of, " and");
     }
+#if 0 /* TODO: IMPLEMENT */
     if (props & ITEM_PROWESS) {
         Strcat(buf, of), Strcat(buf, " prowess"),
                Strcpy(of, " and");
@@ -4561,6 +4561,8 @@ oprops_on(struct obj *otmp, long mask)
     }
     if (props & ITEM_BURDEN)
         EStable |= mask;
+    if (props & ITEM_DANGER)
+        EInfravision |= mask;
 }
 
 void
@@ -4613,6 +4615,8 @@ oprops_off(struct obj *otmp, long mask)
     }
     if (props & ITEM_BURDEN)
         EStable &= ~mask;
+    if (props & ITEM_DANGER)
+        EInfravision &= ~mask;
 }
 
 /** Returns the bonus available for wearing/wielding
