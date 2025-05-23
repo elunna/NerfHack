@@ -716,6 +716,7 @@ struct art_info_t {
 #define ITEM_CHA         0x00002000L /* charisma boost */
 #define ITEM_FUMBLE      0x00004000L /* fumbling */
 #define ITEM_HUNGER      0x00008000L /* hunger */
+
 #define ITEM_BURDEN      0x00010000L /* stability, but item weighs more */
 
 #define ITEM_PROP_MASK   0x0001FFFFL /* all current properties */

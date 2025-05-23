@@ -6,6 +6,7 @@
 #include "hack.h"
 #include "artifact.h"
 #include "artilist.h"
+#include "math.h"
 
 /*
  * Note:  both artilist[] and artiexist[] have a dummy element #0,
@@ -4734,6 +4735,37 @@ item_vs_mon(struct obj *obj, struct monst *mtmp)
         return TRUE;
     }
     return FALSE;
+}
+
+int
+wiz_prop(void)
+{
+    char buf[BUFSZ] = DUMMY;
+    int draws;
+    /* Default to item in hand.. */
+    if (!uwep)
+        pline("Wield a weapon/armor first.");
+
+    getlin("Which property do you want to add?", buf);
+    if (sscanf(buf, "%d", &draws) != 1)
+        return 0;
+    if (draws > MAX_ITEM_PROPS) {
+        pline("Please enter a number from 1-%d", MAX_ITEM_PROPS);
+        return 0;
+    } else if (draws == 0) {
+        pline("Please enter a number from 1-%d", MAX_ITEM_PROPS);
+        return 0;
+    }
+    draws -= 1;
+    long result = pow(2, draws);
+
+    /* wipe props first */
+    uwep->oprops = result;
+    /* Adjust weight for burden prop */
+    uwep->owt = weight(uwep);
+    update_inventory();
+    prinv((char *) 0, uwep, 0L);
+    return 0;
 }
 
 /*artifact.c*/
