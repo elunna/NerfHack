@@ -4539,7 +4539,6 @@ readobjnam_preparse(struct _readobjnam_data *d)
             d->mgend = NEUTRAL;
             if (save_bp)
                 strsubst(d->bp, "neuter ", ""), l = 0;
-
         /*
          * Corpse/statue/figurine gender hack:  in order to accept
          * "statue of a female gnome ruler" for gnome queen we need

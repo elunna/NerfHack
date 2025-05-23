@@ -1618,6 +1618,10 @@ drain_item(struct obj *obj, boolean by_you)
     boolean u_ring;
     int otyp;
 
+    /* Sustainable items are immune to draining. */
+    if (obj && obj->oprops & ITEM_STASIS) {
+        return FALSE;
+    }
     /* Is this a charged/enchanted object? */
     if (!obj
         || (!objects[obj->otyp].oc_charged && obj->oclass != WEAPON_CLASS
@@ -1723,6 +1727,10 @@ obj_shudders(struct obj *obj)
     int zap_odds;
 
     if (svc.context.bypasses && obj->bypass)
+        return FALSE;
+
+    /* Sustainable or tough items will not shudder. */
+    if (obj->oprops & ITEM_STASIS)
         return FALSE;
 
     if (obj->oclass == WAND_CLASS)

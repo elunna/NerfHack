@@ -722,9 +722,10 @@ struct art_info_t {
 #define ITEM_DANGER      0x00040000L /* infravision + increased difficulty */
 #define ITEM_STENCH      0x00080000L /* aggravate monster, prevents digestion
                     * stenchy items cannot be eaten by players or monsters */
+#define ITEM_STASIS     0x08000000L /* sustain ability, item retains enchantment */
 
-#define ITEM_PROP_MASK   0x000FFFFFL /* all current properties */
-#define MAX_ITEM_PROPS            20
+#define ITEM_PROP_MASK   0x001FFFFFL /* all current properties */
+#define MAX_ITEM_PROPS            21
 
 /* Property and otyp property lookup table */
 struct PropTypes{
@@ -739,7 +740,7 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
                       | ITEM_ACID | ITEM_DRAIN | ITEM_SLEEP | ITEM_FILTH)
 /* Positive properties */
 #define ITEM_GOOD_PROPS (ITEM_ESP | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
-                         | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE)
+                         | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE | ITEM_STASIS)
 /* Negative properties */
 #define ITEM_BAD_PROPS (ITEM_FUMBLE | ITEM_HUNGER | ITEM_BURDEN | ITEM_DANGER \
                         | ITEM_STENCH)

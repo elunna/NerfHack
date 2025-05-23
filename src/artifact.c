@@ -4338,9 +4338,7 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { STABLE,            ITEM_BURDEN },
     { INFRAVISION,       ITEM_DANGER },
     { AGGRAVATE_MONSTER, ITEM_STENCH },
-#if 0
-    { FIXED_ABIL,        ITEM_SUSTAIN },
-#endif
+    { FIXED_ABIL,        ITEM_STASIS },
 };
 
 boolean obj_has_prop(struct obj *obj, int which)
@@ -4489,12 +4487,10 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " stench"),
                Strcpy(of, " and");
     }
-#if 0 /* TODO: IMPLEMENT */
-    if (props & ITEM_SUSTAIN) {
-        Strcat(buf, of), Strcat(buf, " sustainability"),
+    if (props & ITEM_STASIS) {
+        Strcat(buf, of), Strcat(buf, " stasis"),
                Strcpy(of, " and");
     }
-#endif
 }
 
 struct obj *
@@ -4563,6 +4559,8 @@ oprops_on(struct obj *otmp, long mask)
         EInfravision |= mask;
     if (props & ITEM_STENCH)
         EAggravate_monster |= mask;
+    if (props & ITEM_STASIS)
+        Fixed_abil |= mask;
 }
 
 void
@@ -4619,6 +4617,8 @@ oprops_off(struct obj *otmp, long mask)
         EInfravision &= ~mask;
     if (props & ITEM_STENCH)
         EAggravate_monster &= ~mask;
+    if (props & ITEM_STASIS)
+        Fixed_abil &= ~mask;
 }
 
 /** Returns the bonus available for wearing/wielding
