@@ -4338,7 +4338,6 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { STABLE,            ITEM_BURDEN },
 #if 0
     { INFRAVISION,       ITEM_DANGER },
-    { FEARLESS,          ITEM_RAGE },
     { AGGRAVATE_MONSTER, ITEM_STENCH },
     { FIXED_ABIL,        ITEM_SUSTAIN },
 #endif
@@ -4478,52 +4477,25 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, " burden"),
                Strcpy(of, " and");
     }
-#if 0 /* TODO: IMPLEMENT */
-    if (props & ITEM_SCREAM) {
-        Strcat(buf, of), Strcat(buf, weapon ? " scream" : " sonic resistance"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_FLEX) {
-        Strcat(buf, " versus stone"), Strcpy(of, " and");
-    }
-    if (props & ITEM_DANGER) {
-        Strcat(buf, of), Strcat(buf, of), Strcat(buf, " danger"),
-            Strcpy(of, " and");
-    }
     if (props & ITEM_RAGE) {
         Strcat(buf, of), Strcat(buf, " rage"),
         Strcpy(of, " and");
     }
+#if 0 /* TODO: IMPLEMENT */
+    if (props & ITEM_DANGER) {
+        Strcat(buf, of), Strcat(buf, of), Strcat(buf, " danger"),
+            Strcpy(of, " and");
+    }
     if (props & ITEM_PROWESS) {
         Strcat(buf, of), Strcat(buf, " prowess"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_VIGIL) {
-        Strcat(buf, of), Strcat(buf, " vigilance"),
                Strcpy(of, " and");
     }
     if (props & ITEM_STENCH) {
         Strcat(buf, of), Strcat(buf, " stench"),
                Strcpy(of, " and");
     }
-    if (props & ITEM_TELE) {
-        Strcat(buf, of), Strcat(buf, " teleportation"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_SLOW) {
-        Strcat(buf, of), Strcat(buf, " lethargy"),
-               Strcpy(of, " and");
-    }
     if (props & ITEM_SUSTAIN) {
         Strcat(buf, of), Strcat(buf, " sustainability"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_SURF) {
-        Strcat(buf, of), Strcat(buf, " surfing"),
-               Strcpy(of, " and");
-    }
-    if (props & ITEM_SWIM) {
-        Strcat(buf, of), Strcat(buf, " swimming"),
                Strcpy(of, " and");
     }
 #endif

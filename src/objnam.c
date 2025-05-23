@@ -5750,22 +5750,9 @@ readobjnam(char *bp, struct obj *no_wish)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SEARCH);
         else if (d.objprops & ITEM_FILTH)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FILTH);
-#if 0
-
-        else if (d.objprops & ITEM_SCREAM)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_SCREAM);
-
-        else if (d.objprops & ITEM_FLEX)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_FLEX);
-        else if (d.objprops & ITEM_DANGER)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_DANGER);
         else if (d.objprops & ITEM_RAGE)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_RAGE);
-        else if (d.objprops & ITEM_TOUGH)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_TOUGH);
-        else if (d.objprops & ITEM_PROWESS)
-            d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_PROWESS);
-#endif
+
 
         if (objects[d.otmp->otyp].oc_unique || d.otmp->oartifact
             || Is_dragon_armor(d.otmp))

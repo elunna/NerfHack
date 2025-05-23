@@ -76,6 +76,7 @@ staticfn boolean bite_monster(struct monst *);
 staticfn int shield_dmg(struct obj *, struct monst *);
 staticfn void ring_familiarity(void);
 staticfn boolean biteum(struct monst *);
+staticfn boolean u_bloodthirsty(void);
 
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
 #define KILL_FAMILIARITY 20
@@ -331,8 +332,7 @@ attack_checks(struct monst *mtmp) /* target */
     if (flags.confirm && mtmp->mpeaceful
         && !Confusion && !Hallucination && !Stunned) {
         /* Intelligent chaotic weapons (Stormbringer) want blood */
-        if (u_wield_art(ART_STORMBRINGER)
-                || u_offhand_art(ART_STORMBRINGER) || Rabid) {
+        if (u_bloodthirsty()) {
             go.override_confirmation = TRUE;
             return FALSE;
         }
@@ -689,8 +689,7 @@ do_attack(struct monst *mtmp)
      */
     /* Intelligent chaotic weapons (Stormbringer) want blood */
     if (is_safemon(mtmp) && !svc.context.forcefight) {
-        if (!u_wield_art(ART_STORMBRINGER)
-            && !u_offhand_art(ART_STORMBRINGER) && !Rabid) {
+        if (!u_bloodthirsty()) {
             /* There are some additional considerations: this won't work
              * if in a shop or Punished or you miss a random roll or
              * if you can walk thru walls and your pet cannot (KAA) or
@@ -865,13 +864,15 @@ known_hitum(
             slice_or_chop = (weapon && (is_blade(weapon) || is_axe(weapon)));
 
     if (go.override_confirmation) {
-        /* this may need to be generalized if weapons other than
-           Stormbringer acquire similar anti-social behavior... */
         if (flags.verbose) {
             if (weapon && weapon->oartifact == ART_STORMBRINGER)
                 Your("bloodthirsty blade attacks!");
+            if (weapon && (weapon->oprops & ITEM_RAGE))
+                Your("bloodthirsty weapon attacks!");
             else if (Rabid)
                 You("cannot stop yourself from attacking!");
+            else
+                impossible("bloodthirsty attack with non-bloodthirsty weapon?");
         }
     }
 
@@ -1287,11 +1288,10 @@ hitum(struct monst *mon, struct attack *uattk)
     (void) passive(mon, uwep, mhit, malive, AT_WEAP, wep_was_destroyed);
 
     /* second attack for two-weapon combat or skilled unarmed combat;
-       won't occur if Stormbringer overrode confirmation (assumes
-       Stormbringer is primary weapon), or if hero became paralyzed by
-       passive counter-attack, or if hero was killed by passive
-       counter-attack and got life-saved, or if monster was killed or
-       knocked to different location */
+       WILL occur if Stormbringer/rage overrode confirmation, or if
+       hero became paralyzed by passive counter-attack, or if hero was
+       killed by passive counter-attack and got life-saved, or if
+       monster was killed or knocked to different location */
     if (gt.twohits && !(go.override_confirmation
                         || gm.multi < 0 || u.umortality > oldumort
                         || !malive || m_at(x, y) != mon)) {
@@ -8644,4 +8644,21 @@ biteum(struct monst *mon)
 
     return FALSE;
 }
+
+staticfn boolean
+u_bloodthirsty(void)
+{
+    if (Rabid)
+        return TRUE;
+
+    if (uwep && (uwep->oartifact == ART_STORMBRINGER
+             || (u.twoweap && uswapwep->oartifact == ART_STORMBRINGER)))
+        return TRUE;
+
+    if (uwep && (uwep->oprops & ITEM_RAGE
+                || (u.twoweap && uswapwep->oprops & ITEM_RAGE)))
+        return TRUE;
+    return FALSE;
+}
+
 /*uhitm.c*/

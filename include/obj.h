@@ -718,9 +718,10 @@ struct art_info_t {
 #define ITEM_HUNGER      0x00008000L /* hunger */
 
 #define ITEM_BURDEN      0x00010000L /* stability, but item weighs more */
+#define ITEM_RAGE        0x00020000L /* bloodthirsty, double weapon damage */
 
 #define ITEM_PROP_MASK   0x0001FFFFL /* all current properties */
-#define MAX_ITEM_PROPS            17
+#define MAX_ITEM_PROPS            18
 
 /* Property and otyp property lookup table */
 struct PropTypes{
@@ -735,7 +736,7 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
                       | ITEM_ACID | ITEM_DRAIN | ITEM_SLEEP | ITEM_FILTH)
 /* Positive properties */
 #define ITEM_GOOD_PROPS (ITEM_ESP | ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN \
-                         | ITEM_INSIGHT | ITEM_CHA)
+                         | ITEM_INSIGHT | ITEM_CHA | ITEM_RAGE)
 /* Negative properties */
 #define ITEM_BAD_PROPS (ITEM_FUMBLE | ITEM_HUNGER | ITEM_BURDEN)
 
@@ -743,6 +744,6 @@ extern const struct PropTypes prop_lookup[]; /* table of properties */
 /* Tend to give only weapons the props that appear naturally on
  * items like armor and rings. For exaple, stealth is already
  * provided by the elven cloak, elven boots, and ring of stealth.  */
-#define ONLY_WEP_PROPS (ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN)
+#define ONLY_WEP_PROPS (ITEM_SEARCH | ITEM_STEALTH | ITEM_WARN | ITEM_RAGE)
 
 #endif /* OBJ_H */
