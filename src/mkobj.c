@@ -4334,11 +4334,7 @@ static const struct icp horn_materials[] = {
 
 /* hacks for specific objects... not great because it's a lot of data, but it's
  * a relatively clean solution */
-static const struct icp statue_materials[] = {
-    {95, MINERAL},
-    { 4, COPPER},
-    { 1, GOLD}
-};
+
 static const struct icp figurine_materials[] = {
     {45, MINERAL},
     {35, WOOD},
@@ -4391,6 +4387,7 @@ material_list(struct obj* obj)
     case AMULET_OF_YENDOR:
     case FAKE_AMULET_OF_YENDOR:
     case PLAYING_CARD_DECK:
+    case STATUE:
         return NULL;
     /* Any other cases for specific object types go here. */
     case SHIELD_OF_REFLECTION:
@@ -4427,12 +4424,6 @@ material_list(struct obj* obj)
     case FROST_HORN:
     case HORN_OF_PLENTY:
         return horn_materials;
-    case STATUE:
-        if (Is_medusa_level(&u.uz) && gi.in_mklev) {
-            /* All statues generated with the Medusa level must be stone. */
-            return NULL;
-        }
-        return statue_materials;
     case FIGURINE:
         return figurine_materials;
     default:
