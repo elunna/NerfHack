@@ -1196,9 +1196,8 @@ dogfood(struct monst *mon, struct obj *obj)
         }
         return UNDEF;
     default:
-        if (obj->otyp == AMULET_OF_STRANGULATION
-            || obj->otyp == FOULSTONE
-            || obj->otyp == RIN_SLOW_DIGESTION)
+        if (obj->otyp == AMULET_OF_STRANGULATION || obj->otyp == FOULSTONE
+            || obj->oprops & ITEM_STENCH || obj->otyp == RIN_SLOW_DIGESTION)
             return TABU;
         if (mon_hates_material(mon, obj->material))
             return TABU;

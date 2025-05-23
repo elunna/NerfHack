@@ -2084,8 +2084,8 @@ meatmetal(struct monst *mtmp)
         /* Don't eat indigestible/choking/inappropriate objects */
         if ((mtmp->data == &mons[PM_RUST_MONSTER] && !is_rustprone(otmp))
             || (otmp->otyp == AMULET_OF_STRANGULATION
-                || (otmp->otyp == FOULSTONE)
             || otmp->otyp == RIN_SLOW_DIGESTION)
+            || otmp->otyp == FOULSTONE || (otmp->oprops & ITEM_STENCH)
             || (otmp->opoisoned && !resists_poison(mtmp)))
             continue;
         if (is_metallic(otmp) && !obj_resists(otmp, 5, 95)
@@ -2200,6 +2200,7 @@ meatobj(struct monst *mtmp) /* for gelatinous cubes */
                       included for emphasis */
                    || (otmp->otyp == AMULET_OF_STRANGULATION
                        || otmp->otyp == FOULSTONE
+                       || (otmp->oprops & ITEM_STENCH)
                        || otmp->otyp == RIN_SLOW_DIGESTION)
                    || (otmp->opoisoned && !resists_poison(mtmp))
                    /* cockatrice corpses handled above; this

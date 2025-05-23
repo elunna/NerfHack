@@ -3311,6 +3311,12 @@ doeat(void)
             trycall(otmp);
         return ECMD_TIME;
     }
+    if (otmp->oprops & ITEM_STENCH) {
+        pline("This %s %s odious, you can't eat it!",
+              xname(otmp), olfaction(gy.youmonst.data) ? "smells" : "tastes");
+        (void) rottenfood(otmp);
+        return 1;
+    }
     if (otmp->oclass != FOOD_CLASS)
         return doeat_nonfood(otmp);
 

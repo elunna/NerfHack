@@ -1646,8 +1646,6 @@ ini_inv_use_obj(struct obj *obj)
     }
     if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)
         initialspell(obj);
-
-
 }
 
 staticfn void

@@ -766,6 +766,7 @@ domonnoise(struct monst *mtmp)
         *verbl_msg = 0,                 /* verbalize() */
         *verbl_msg_mcan = 0;            /* verbalize() if cancelled */
     struct permonst *ptr = mtmp->data;
+    struct obj *obj_stench = using_oprop(ITEM_STENCH);
     int msound = ptr->msound, gnomeplan = 0;
 
     /* presumably nearness and sleep checks have already been made */
@@ -774,6 +775,27 @@ domonnoise(struct monst *mtmp)
     /* shk_chat can handle nonverbal monsters */
     if (is_silent(ptr) && !mtmp->isshk)
         return ECMD_OK;
+
+    /* They'll notice your stenchy items */
+    if (obj_stench && olfaction(mtmp->data)) {
+        switch (rnd(5)) {
+        case 1:
+            verbalize("Haven't you gotten rid of that smelly thing yet?");
+            break;
+        case 2:
+            verbalize("You don't smell that?");
+            break;
+        case 3:
+            verbalize("Please take your %s out of here!", xname(obj_stench));
+            break;
+        case 4:
+            verbalize("Ugh, what is that smell?");
+            break;
+        case 5:
+            verbalize("Something really stinks... Is it you?");    
+            break;
+        }
+    }
 
     /* leader might be poly'd; if he can still speak, give leader speech */
     if (mtmp->m_id == svq.quest_status.leader_m_id && msound > MS_ANIMAL)

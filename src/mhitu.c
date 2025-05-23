@@ -1650,6 +1650,7 @@ staticfn int
 gulpmu(struct monst *mtmp, struct attack *mattk)
 {
     struct trap *t = t_at(u.ux, u.uy);
+    struct obj *prevents_gulp = using_oprop(ITEM_STENCH);
     int tmp = d((int) mattk->damn, (int) mattk->damd);
     int tim_tmp;
     struct obj *otmp2, *nextobj;
@@ -1787,7 +1788,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     switch (mattk->adtyp) {
     case AD_DGST:
         physical_damage = TRUE;
-        if (Slow_digestion || carrying(FOULSTONE)) {
+        if (Slow_digestion || prevents_gulp) {
             /* Messages are handled below */
             u.uswldtim = 0;
             tmp = 0;
@@ -2001,7 +2002,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
                        : enfolds(mtmp->data) ? "released"
                          : "expelled");
         if (flags.verbose
-            && (digests(mtmp->data) && (Slow_digestion || carrying(FOULSTONE))))
+            && (digests(mtmp->data) && (Slow_digestion || prevents_gulp)))
             pline("Obviously %s doesn't like your taste.", mon_nam(mtmp));
         expels(mtmp, mtmp->data, FALSE);
     }

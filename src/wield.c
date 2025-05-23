@@ -150,6 +150,9 @@ setuwep(struct obj *obj)
         if (olduwep->oprops & ITEM_HUNGER) {
             EHunger &= ~W_WEP;
         }
+        if (olduwep->oprops & ITEM_STENCH) {
+            EAggravate_monster &= ~W_WEP;
+        }
         if (olduwep->oprops & ITEM_SEARCH) {
             ESearching &= ~W_WEP;
         }
@@ -195,6 +198,9 @@ setuwep(struct obj *obj)
         }
         if (uwep->oprops & ITEM_HUNGER) {
             EHunger |= W_WEP;
+        }
+        if (uwep->oprops & ITEM_STENCH) {
+            EAggravate_monster |= W_WEP;
         }
         if (uwep->oprops & ITEM_SEARCH) {
             ESearching |= W_WEP;
@@ -423,6 +429,10 @@ setuswapwep(struct obj *obj)
         if (olduswapwep->oprops & ITEM_HUNGER) {
             EHunger &= ~W_SWAPWEP;
         }
+        /* Aggravate monster property */
+        if (olduswapwep->oprops & ITEM_STENCH) {
+            EAggravate_monster &= ~W_SWAPWEP;
+        }
         /* Searching property */
         if (olduswapwep->oprops & ITEM_SEARCH) {
             ESearching &= ~W_SWAPWEP;
@@ -462,6 +472,9 @@ setuswapwep(struct obj *obj)
         }
         if (uswapwep->oprops & ITEM_HUNGER) {
             EHunger |= W_SWAPWEP;
+        }
+        if (uswapwep->oprops & ITEM_STENCH) {
+            EAggravate_monster |= W_SWAPWEP;
         }
         if (uswapwep->oprops & ITEM_SEARCH) {
             ESearching |= W_SWAPWEP;

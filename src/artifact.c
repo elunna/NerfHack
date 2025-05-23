@@ -4336,9 +4336,9 @@ const struct PropTypes prop_lookup[MAX_ITEM_PROPS] = {
     { WARNING,           ITEM_WARN },
     { SICK_RES,          ITEM_FILTH },
     { STABLE,            ITEM_BURDEN },
-{ INFRAVISION,       ITEM_DANGER },
-#if 0
+    { INFRAVISION,       ITEM_DANGER },
     { AGGRAVATE_MONSTER, ITEM_STENCH },
+#if 0
     { FIXED_ABIL,        ITEM_SUSTAIN },
 #endif
 };
@@ -4485,15 +4485,11 @@ propnames(char *buf, long props,
         Strcat(buf, of), Strcat(buf, of), Strcat(buf, " danger"),
             Strcpy(of, " and");
     }
-#if 0 /* TODO: IMPLEMENT */
-    if (props & ITEM_PROWESS) {
-        Strcat(buf, of), Strcat(buf, " prowess"),
-               Strcpy(of, " and");
-    }
     if (props & ITEM_STENCH) {
         Strcat(buf, of), Strcat(buf, " stench"),
                Strcpy(of, " and");
     }
+#if 0 /* TODO: IMPLEMENT */
     if (props & ITEM_SUSTAIN) {
         Strcat(buf, of), Strcat(buf, " sustainability"),
                Strcpy(of, " and");
@@ -4507,6 +4503,8 @@ using_oprop(long oprop)
     struct obj *otmp;
     for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
         if (otmp->oprops & oprop && is_worn(otmp))
+            return otmp;
+        if (oprop == ITEM_STENCH && otmp->otyp == FOULSTONE)
             return otmp;
     }
     return (struct obj *) 0;
@@ -4563,6 +4561,8 @@ oprops_on(struct obj *otmp, long mask)
         EStable |= mask;
     if (props & ITEM_DANGER)
         EInfravision |= mask;
+    if (props & ITEM_STENCH)
+        EAggravate_monster |= mask;
 }
 
 void
@@ -4617,6 +4617,8 @@ oprops_off(struct obj *otmp, long mask)
         EStable &= ~mask;
     if (props & ITEM_DANGER)
         EInfravision &= ~mask;
+    if (props & ITEM_STENCH)
+        EAggravate_monster &= ~mask;
 }
 
 /** Returns the bonus available for wearing/wielding

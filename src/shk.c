@@ -798,7 +798,7 @@ u_entered_shop(char *enterstring)
         const char *tool;
         struct obj *pick = carrying(PICK_AXE),
                    *mattock = carrying(DWARVISH_MATTOCK),
-                   *foul = carrying(FOULSTONE);
+                   *foul = using_oprop(ITEM_STENCH);
 
         if (pick || mattock) {
             cnt = 1;               /* so far */
@@ -3941,11 +3941,18 @@ sellobj(
 
     offer = ltmp + cltmp;
 
-    if (obj->otyp == FOULSTONE) {
-        if (rn2(2))
+    if (obj->otyp == FOULSTONE || obj->oprops & ITEM_STENCH) {
+        switch (rnd(3)) {
+        case 1:
             verbalize("I'm not buying that stinky thing!");
-        else
-            verbalize("Your %s reeks, get it out of here!", xname(obj));
+            break;
+        case 2:
+            verbalize("Your %s smells, get it out of here!", xname(obj));
+            break;
+        case 3:
+            verbalize("Ugh, what stench you bring.");
+            break;
+        }
     }
 
     /* you dropped something of your own - probably want to sell it */
@@ -5017,7 +5024,7 @@ shk_move(struct monst *shkp)
             uondoor = u_at(eshkp->shd.x, eshkp->shd.y);
             if (uondoor) {
                 badinv = (carrying(PICK_AXE) || carrying(DWARVISH_MATTOCK)
-                          || carrying(FOULSTONE)
+                          || using_oprop(ITEM_STENCH)
                           || (Fast && (sobj_at(PICK_AXE, u.ux, u.uy)
                                   || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy))));
                 if (satdoor && badinv)
@@ -5638,7 +5645,7 @@ shk_chat(struct monst *shkp)
         pline("%s %s that %s is watching you carefully.", Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "warns you" : "indicates",
               noit_mhe(shkp));
-    } else if (carrying(FOULSTONE)) {
+    } else if (using_oprop(ITEM_STENCH)) {
         pline("%s %s that you stink and should leave immediately.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "reminds you" : "indicates");
