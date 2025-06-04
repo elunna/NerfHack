@@ -399,7 +399,7 @@
  * Flying allows for Fast speed but blocks Very Fast speed.
  */
 #define BFast (Levitation)
-#define BVery_fast (Levitation || Flying)
+#define BVery_fast (Levitation)
 
 #define HReflecting u.uprops[REFLECTING].intrinsic
 #define EReflecting u.uprops[REFLECTING].extrinsic
