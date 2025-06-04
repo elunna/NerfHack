@@ -965,7 +965,7 @@ mksobj_init(struct obj **obj, boolean artif)
         if (is_poisonable(otmp) && !rn2(100))
             otmp->opoisoned = 1;
 
-        if (artif && !rn2(20 + (10 * nartifact_exist()))) {
+        if (artif && !rn2(18 + (3 * nartifact_exist()))) {
             /* mk_artifact() with otmp and A_NONE will never return NULL */
             otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, TRUE);
             *obj = otmp;
@@ -1140,6 +1140,14 @@ mksobj_init(struct obj **obj, boolean artif)
         case DRUM_OF_EARTHQUAKE:
             otmp->spe = rn1(5, 4);
             break;
+        case LENSES:
+            /* For possible Lenses of Truth */
+            if (artif && !rn2(11 + (3 * nartifact_exist()))) {
+                /* mk_artifact() with otmp and A_NONE will never return NULL */
+                otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, TRUE);
+                *obj = otmp;
+            }
+            break;
         }
         break;
     case AMULET_CLASS:
@@ -1153,6 +1161,12 @@ mksobj_init(struct obj **obj, boolean artif)
             init_charging(otmp);
         } else
             blessorcurse(otmp, 10);
+        /* For possible Amulet of Storms. */
+        if (artif && !is_soko_prize(otmp) && !rn2(11 + (3 * nartifact_exist()))) {
+            /* mk_artifact() with otmp and A_NONE will never return NULL */
+            otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, TRUE);
+            *obj = otmp;
+        }
         break;
     case VENOM_CLASS:
     case CHAIN_CLASS:
@@ -1201,7 +1215,7 @@ mksobj_init(struct obj **obj, boolean artif)
             otmp->spe = rne(3);
         } else
             blessorcurse(otmp, 10);
-        if (artif && !rn2(40 + (10 * nartifact_exist()))) {
+        if (artif && !rn2(35 + (3 * nartifact_exist()))) {
             /* mk_artifact() with otmp and A_NONE will never return NULL */
             otmp = mk_artifact(otmp, (aligntyp) A_NONE, 99, TRUE);
             *obj = otmp;
