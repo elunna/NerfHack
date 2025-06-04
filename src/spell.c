@@ -2297,10 +2297,10 @@ percent_success(int spell)
     special = gu.urole.spelheal;
     statused = ACURR(gu.urole.spelstat);
 
+    /* Robes are body armour in NerfHack */
     if (uarm && is_metallic(uarm) && !paladin_bonus)
-        splcaster += (uarmc && uarmc->otyp == ROBE) ? gu.urole.spelarmr / 2
-                                                    : gu.urole.spelarmr;
-    else if (uarmc && uarmc->otyp == ROBE)
+        splcaster += gu.urole.spelarmr;
+    else if (uarm && uarm->otyp == ROBE_OF_POWER)
         splcaster -= gu.urole.spelarmr;
 
     if (uwep && uwep->otyp == QUARTERSTAFF)

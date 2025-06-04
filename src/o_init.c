@@ -285,6 +285,8 @@ obj_shuffle_range(
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
         else if (otyp >= BRACERS && otyp <= BRACERS_VS_STONE)
             *lo_p = BRACERS, *hi_p = BRACERS_VS_STONE;
+        else if (otyp >= ROBE && otyp <= ROBE_OF_PROTECTION)
+            *lo_p = ROBE, *hi_p = ROBE_OF_PROTECTION;
         break;
     case POTION_CLASS:
         /* potion of water has the only fixed description */

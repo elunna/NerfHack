@@ -388,6 +388,7 @@ struct obj {
     (otyp == ELVEN_HELM \
      || otyp == ELVEN_RING_MAIL \
      || otyp == ELVEN_CLOAK \
+     || otyp == ELVEN_ROBE \
      || otyp == ELVEN_SHIELD \
      || otyp == ELVEN_BOOTS)
 #define is_elven_weapon(otyp) \
@@ -406,6 +407,7 @@ struct obj {
      || otyp == ORCISH_CHAIN_MAIL \
      || otyp == ORCISH_RING_MAIL \
      || otyp == ORCISH_CLOAK \
+     || otyp == ORCISH_ROBE \
      || otyp == URUK_HAI_SHIELD \
      || otyp == ORCISH_SHIELD)
 #define is_orcish_weapon(otyp) \
@@ -431,12 +433,11 @@ struct obj {
                                    || is_dwarvish_weapon(otyp))
 /* Gnomish gear */
 #define is_gnomish_obj(otyp) (is_gnomish_armor(otyp))
-#define is_gnomish_armor(otyp) (otyp == GNOMISH_HELM \
+#define is_gnomish_armor(otyp) (otyp == GNOMISH_HELM || otyp == GNOMISH_ROBE \
     || otyp == GNOMISH_BOOTS || otyp == GNOMISH_SUIT)
 
-#define is_bracer(otmp)                     \
-    ((otmp)->otyp >= BRACERS        \
-        && (otmp)->otyp <= BRACERS_VS_STONE)
+#define is_bracer(otmp) \
+    ((otmp)->otyp >= BRACERS && (otmp)->otyp <= BRACERS_VS_STONE)
 
 /* Rings that monsters will wear */
 #define can_muse_ring(otyp)         \
@@ -543,6 +544,8 @@ struct obj {
     (humanoid(mptr) && (mptr)->msize >= MZ_SMALL && (mptr)->msize <= MZ_HUGE \
      && !noncorporeal(mptr) && (mptr)->mlet != S_CENTAUR                     \
      && (mptr) != &mons[PM_WINGED_GARGOYLE] && (mptr) != &mons[PM_MARILITH])
+
+#define is_robe(otmp) (otmp->otyp >= ROBE && otmp->otyp <= ROBE_OF_PROTECTION)
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

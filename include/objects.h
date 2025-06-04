@@ -573,6 +573,27 @@ ARMOR("jacket", NoDes,
       1, 0, 0,  0, 12, 0,  30,  10,  9, 0,  ARM_SUIT, LEATHER, CLR_BLACK,
                                                         JACKET),
 
+/* Robes */
+/* robe was adopted from slash'em, where it's worn as a suit
+           rather than as a cloak and there are several variations */
+CLOAK("robe", "white robe",
+      1, 1,          0,  3, 0, 15, 50,  8, 2,  CLOTH, CLR_RED, ROBE),
+ARMOR("gnomish robe", "orange robe",
+      0, 1, 0, 0,           0, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_ORANGE,
+                                                               GNOMISH_ROBE),
+ARMOR("elven robe", "green robe",
+      0, 1, 0, 0,           1, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_GREEN,
+                                                            ELVEN_ROBE),
+ARMOR("orcish robe", "black robe",
+      0, 1, 0, 0,           1, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_BLACK,
+                                                            ORCISH_ROBE),
+ARMOR("robe of power", "purple robe",
+      0, 1, 0, 0,           1, 1, 40, 50, 5, 1, ARM_SUIT, LEATHER, CLR_MAGENTA,
+                                                          ROBE_OF_POWER),
+ARMOR("robe of protection", "blue robe",
+      0, 1, 0, 0,           1, 1, 40, 50, 5, 1, ARM_SUIT, LEATHER, CLR_BLUE,
+                                                          ROBE_OF_PROTECTION),
+
 /* shirts */
 ARMOR("Hawaiian shirt", NoDes,
       1, 0, 0,  0,  8, 0,   5,   3, 10, 0,  ARM_SHIRT, CLOTH, CLR_MAGENTA,
@@ -597,10 +618,6 @@ CLOAK("dwarvish cloak", "hooded cloak",
 CLOAK("oilskin cloak", "slippery cloak",
       0, 0,          0,  8, 0, 10, 50,  9, 2,  CLOTH, HI_CLOTH,
                                                         OILSKIN_CLOAK),
-CLOAK("robe", NoDes,
-      1, 1,          0,  3, 0, 15, 50,  8, 2,  CLOTH, CLR_RED, ROBE),
-        /* robe was adopted from slash'em, where it's worn as a suit
-           rather than as a cloak and there are several variations */
 CLOAK("alchemy smock", "apron",
       0, 1, POISON_RES,  9, 0, 10, 50,  9, 1,  CLOTH, CLR_WHITE,
                                                         ALCHEMY_SMOCK),

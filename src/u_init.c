@@ -112,7 +112,7 @@ static struct trobj Knight[] = {
 static struct trobj Monk[] = {
 #define M_BOOK 2
     { GLOVES, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
-    { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { ROBE_OF_POWER, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1 },
     { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS },
     { POT_HEALING, 0, POTION_CLASS, 3, UNDEF_BLESS },
@@ -128,7 +128,7 @@ static struct trobj Monk[] = {
 };
 static struct trobj Priest[] = {
     { MACE, 1, WEAPON_CLASS, 1, 1 },
-    { ROBE, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { ROBE_OF_POWER, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { SMALL_SHIELD, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_WATER, 0, POTION_CLASS, 4, 1 }, /* holy water */
     { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 1 },

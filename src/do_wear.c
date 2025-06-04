@@ -1256,7 +1256,8 @@ Armor_on(void)
         uarm->known = 1; /* suit's +/- evident because of status line AC */
         update_inventory();
     }
-    if (Role_if(PM_MONK))
+
+    if (Role_if(PM_MONK) && !is_robe(uarm))
         You_feel("extremely uncomfortable wearing such armor.");
     else if (hates_item(&gy.youmonst, uarm->otyp))
         You_feel("uncomfortable wearing such armor.");
@@ -1279,7 +1280,8 @@ Armor_off(void)
     svc.context.takeoff.mask &= ~W_ARM;
     setworn((struct obj *) 0, W_ARM);
     svc.context.takeoff.cancelled_don = FALSE;
-    if (Role_if(PM_MONK))
+
+    if (Role_if(PM_MONK) && !is_robe(otmp))
         You_feel("much more comfortable and free now.");
     else if (hates_item(&gy.youmonst, otmp->otyp))
         You_feel("more comfortable now.");
@@ -1310,7 +1312,7 @@ Armor_gone(void)
     svc.context.takeoff.mask &= ~W_ARM;
     setnotworn(uarm);
     svc.context.takeoff.cancelled_don = FALSE;
-    if (Role_if(PM_MONK))
+    if (Role_if(PM_MONK) && !is_robe(otmp))
         You_feel("much more comfortable and free now.");
 
     /* losing yellow dragon scales/mail might be fatal; arti_light

@@ -264,7 +264,7 @@ m_initweap(struct monst *mtmp)
                 (void) mongets(mtmp, w2);
         } else if (is_elf(ptr)) {
             if (mm == PM_ELVEN_CLERIC) {
-                (void) mongets(mtmp, rn2(2) ? ELVEN_CLOAK : ROBE);
+                (void) mongets(mtmp, rn2(2) ? ELVEN_CLOAK : ELVEN_ROBE);
             } else if (rn2(2))
                 (void) mongets(mtmp,
                                rn2(2) ? ELVEN_RING_MAIL : ELVEN_CLOAK);
@@ -440,7 +440,9 @@ m_initweap(struct monst *mtmp)
             (void) mongets(mtmp, GNOMISH_HELM);
         if (is_lord(mtmp->data) || !rn2(5))
             (void) mongets(mtmp, GNOMISH_BOOTS);
-        if (is_lord(mtmp->data) || is_prince(mtmp->data) || !rn2(7))
+        if (mm == PM_GNOMISH_WIZARD && !rn2(3))
+            (void) mongets(mtmp, GNOMISH_ROBE);
+        else if (is_lord(mtmp->data) || is_prince(mtmp->data) || !rn2(7))
             (void) mongets(mtmp, GNOMISH_SUIT);
         goto catchgnomes;
         break;
@@ -556,8 +558,12 @@ m_initweap(struct monst *mtmp)
             if (!rn2(3))
                 (void) mongets(mtmp, URUK_HAI_SHIELD);
             break;
+        case PM_ORC_SHAMAN:
+            if (!rn2(3))
+                (void) mongets(mtmp, ORCISH_ROBE);
+            break;
         default:
-            if (mm != PM_ORC_SHAMAN && rn2(2))
+            if (rn2(2))
                 (void) mongets(mtmp, (mm == PM_GOBLIN || rn2(2) == 0)
                                          ? ORCISH_DAGGER
                                          : SCIMITAR);

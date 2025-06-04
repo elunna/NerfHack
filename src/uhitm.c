@@ -497,7 +497,7 @@ find_roll_to_hit(
 
     /* role/race adjustments */
     if (Role_if(PM_MONK) && !Upolyd) {
-        if (uarm)
+        if (uarm && !is_robe(uarm))
             tmp -= (*role_roll_penalty = gu.urole.spelarmr) + 20;
         else if (!uwep && (!uarms || is_bracer(uarms)))
             tmp += (u.ulevel / 3) + 2;
