@@ -2984,7 +2984,10 @@ set_mimic_sym(struct monst *mtmp)
     else
         rt = 0; /* roomno < 0 case for GCC_WARN */
 
-    if (OBJ_AT(mx, my)) {
+    if (mtmp->data == &mons[PM_BOULDERER]) {
+        ap_type = M_AP_OBJECT;
+        appear = BOULDER;
+    } else if (OBJ_AT(mx, my)) {
         ap_type = M_AP_OBJECT;
         appear = svl.level.objects[mx][my]->otyp;
     } else if (IS_DOOR(typ) || IS_WALL(typ) || typ == SDOOR || typ == SCORR) {
