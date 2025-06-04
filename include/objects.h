@@ -577,7 +577,7 @@ ARMOR("jacket", NoDes,
 /* robe was adopted from slash'em, where it's worn as a suit
            rather than as a cloak and there are several variations */
 CLOAK("robe", "white robe",
-      1, 1,          0,  3, 0, 15, 50,  8, 2,  CLOTH, CLR_RED, ROBE),
+      0, 1,          0,  3, 0, 15, 50,  8, 2,  CLOTH, CLR_RED, ROBE),
 ARMOR("gnomish robe", "orange robe",
       0, 1, 0, 0,           0, 1, 40, 50, 9, 0, ARM_SUIT, LEATHER, CLR_ORANGE,
                                                                GNOMISH_ROBE),
