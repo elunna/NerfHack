@@ -951,11 +951,10 @@ xname_flags(
             char anbuf[10];
             const char *statue_pmname = obj_pmname(obj);
 
-            Snprintf(buf, bufspaceleft, "%s%s %s of %s%s",
+            Snprintf(buf, bufspaceleft, "%s%s of %s%s",
                      (Role_if(PM_ARCHEOLOGIST)
                       && (obj->spe & CORPSTAT_HISTORIC) != 0) ? "historic "
                        : "",
-                     materialnm[obj->material],
                      actualn,
                      type_is_pname(&mons[omndx]) ? ""
                        : the_unique_pm(&mons[omndx]) ? "the "
