@@ -4480,7 +4480,7 @@ propnames(char *buf, long props,
         Strcpy(of, " and");
     }
     if (props & ITEM_DANGER) {
-        Strcat(buf, of), Strcat(buf, of), Strcat(buf, " danger"),
+        Strcat(buf, of), Strcat(buf, " danger"),
             Strcpy(of, " and");
     }
     if (props & ITEM_STENCH) {
