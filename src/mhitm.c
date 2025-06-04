@@ -1410,7 +1410,7 @@ rustm(struct monst *mdef, struct obj *obj)
     }
 
     if (dmgtyp >= 0 && !rn2(chance))
-        (void) erode_obj(obj, (char *) 0, dmgtyp, EF_GREASE | EF_DESTROY);
+        (void) erode_obj(obj, (char *) 0, dmgtyp, EF_GREASE | EF_VERBOSE);
 }
 
 staticfn void
