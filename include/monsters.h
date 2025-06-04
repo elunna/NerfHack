@@ -2,7 +2,7 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* NetHack may be freely redistributed.  See license for details. */
-
+dev
 #if defined(MONS_ENUM)
 #define MON(nam, sym, lvl, gen, atk, siz, mr1, mr2, flg1, flg2, flg3, \
             flhm, d, col, bn) PM_##bn
@@ -106,7 +106,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1, 5, MS_BUZZ, MZ_TINY), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_FLY | M1_NOHANDS | M1_POIS, M2_HOSTILE | M2_FEMALE, 0,
-        NO_RACE, 5, CLR_YELLOW, KILLER_BEE),
+        NO_RACE, 6, CLR_YELLOW, KILLER_BEE),
     MON(NAM("soldier ant"), S_ANT,
         LVL(3, 18, 3, 0, 0), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4),
@@ -115,7 +115,7 @@
         SIZ(20, 5, MS_SILENT, MZ_TINY), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
         M2_HOSTILE | M2_FLANK, 0,
-        NO_RACE, 6, CLR_BLUE, SOLDIER_ANT),
+        NO_RACE, 7, CLR_BLUE, SOLDIER_ANT),
     MON(NAM("fire ant"), S_ANT,
         LVL(3, 18, 3, 10, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4),
