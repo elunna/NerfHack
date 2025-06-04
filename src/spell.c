@@ -374,16 +374,13 @@ learn(void)
     if (svc.context.spbook.delay && ublindf
         && ublindf->otyp == LENSES && rn2(2))
         svc.context.spbook.delay++;
-
-    /* became confused while learning */
-    if (Confusion) {
-        (void) confused_book(book);
+    if (Confusion) { /* became confused while learning */
+        if (!confused_book(book)) {
+            You("can no longer focus on the book.");
+        }
         svc.context.spbook.book = 0; /* no longer studying */
         svc.context.spbook.o_id = 0;
         update_inventory();
-        nomul(svc.context.spbook.delay); /* remaining delay is uninterrupted */
-        gm.multi_reason = "reading a book";
-        gn.nomovemsg = 0;
         svc.context.spbook.delay = 0;
         return 0;
     }
@@ -428,7 +425,7 @@ learn(void)
         } else {
             Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
-            /* Restricted spells only get 1000 turns */
+            /* Restricted spells get less turns */
             incrnknow(i, (P_SKILL(skill) == P_ISRESTRICTED)
                              ? (KEEN / 2) : KEEN, 1);
             book->spestudied++;
@@ -641,16 +638,16 @@ study_book(struct obj *spellbook)
         }
 
         if (too_hard) {
-            boolean gone = cursed_book(spellbook);
+            You("can't comprehend the runes!");
+            make_confused(-svc.context.spbook.delay, FALSE); /* study time */
+            bot(); /* show Conf on status line before tele, crumbling, etc */
 
-            nomul(svc.context.spbook.delay); /* study time */
-            gm.multi_reason = "reading a book";
-            gn.nomovemsg = 0;
-            svc.context.spbook.delay = 0;
-            if (gone || !rn2(3)) {
-                if (!gone)
-                    pline_The("spellbook crumbles to dust!");
+            boolean gone = cursed_book(spellbook);
+            if (gone) {
                 trycall(spellbook);
+                if (!objects[spellbook->otyp].oc_name_known
+                    && !objects[spellbook->otyp].oc_uname)
+                    docall(spellbook);
                 useup(spellbook);
             } else
                 spellbook->in_use = FALSE;
@@ -659,10 +656,6 @@ study_book(struct obj *spellbook)
             if (!confused_book(spellbook)) {
                 spellbook->in_use = FALSE;
             }
-            nomul(svc.context.spbook.delay);
-            gm.multi_reason = "reading a book";
-            gn.nomovemsg = 0;
-            svc.context.spbook.delay = 0;
             return 1;
         }
         spellbook->in_use = FALSE;
