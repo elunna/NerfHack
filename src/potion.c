@@ -2960,7 +2960,7 @@ const struct PotionRecipe potionrecipes[] = {
     { POT_WATER,            UNICORN_HORN, POT_CONFUSION,        1 },
     { POT_WATER,            UNICORN_HORN, POT_BLOOD,            1 },
     { POT_WATER,            UNICORN_HORN, POT_VAMPIRE_BLOOD,    1 },
-    { POT_HEALING,          UNICORN_HORN, POT_ACID,             1 },
+    { POT_FULL_HEALING,          UNICORN_HORN, POT_ACID,             1 },
     { POT_OIL,              POT_WATER, POT_OIL,                 1 },
     { POT_RESTORE_ABILITY,  POT_SICKNESS, POT_HEALING,          1 },
 
