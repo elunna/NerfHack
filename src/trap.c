@@ -328,10 +328,7 @@ erode_obj(
             update_inventory();
 
         return ER_DAMAGED;
-    } else if (ef_flags & EF_DESTROY
-            /* Don't let the player easily rust away the ball and chain
-            * from punishment! */
-            && otmp != uball && otmp != uchain) {
+    } else if (ef_flags & EF_DESTROY) {
         otmp->in_use = 1; /* in case of hangup during message w/ --More-- */
         if (uvictim || vismon || visobj) {
             char actbuf[BUFSZ];
