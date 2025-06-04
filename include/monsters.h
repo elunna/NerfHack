@@ -2,7 +2,7 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* NetHack may be freely redistributed.  See license for details. */
-dev
+
 #if defined(MONS_ENUM)
 #define MON(nam, sym, lvl, gen, atk, siz, mr1, mr2, flg1, flg2, flg3, \
             flhm, d, col, bn) PM_##bn
@@ -155,7 +155,7 @@ dev
         M2_HOSTILE | M2_FLANK, 0,
         NO_RACE, 9, CLR_GREEN, GIANT_PRAYING_MANTIS),
     MON(NAM("bullet ant"), S_ANT,
-        LVL(4, 18, 3, 0, 0), (G_GENO | G_SGROUP | 2),
+        LVL(7, 18, 3, 0, 0), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_STNG, AD_DRCO, 5, 4),
           ATTK(AT_BITE, AD_COLD, 2, 4), /* snow ant */
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
