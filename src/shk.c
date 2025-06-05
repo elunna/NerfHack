@@ -4341,6 +4341,11 @@ getprice(struct obj *obj, boolean shk_buying)
             tmp *= 3L;
     }
 
+    /* Aligned items are also kind special, pay more for 'em */
+    if (obj->alignment) {
+        tmp *= 2L;
+    }
+
     /* object price is affected by its level of erosion,
        or if made erodeproof. oeroded and eroded2 can stack,
        so having an object that is rusted and corroded can
