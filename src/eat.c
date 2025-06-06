@@ -3177,9 +3177,12 @@ doeat_nonfood(struct obj *otmp)
     if (otmp->cursed) {
         (void) rottenfood(otmp);
         nodelicious = TRUE;
-    } else if (otmp->material == PAPER)
+    } else if (otmp->material == PAPER) {
         nodelicious = TRUE;
-
+    } else if (otmp->otyp == PINCH_OF_CATNIP) {
+        nodelicious = TRUE;
+    }
+    
     if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) {
         pline("Ecch - that must have been poisonous!");
         if (!fully_resistant(POISON_RES)) {
