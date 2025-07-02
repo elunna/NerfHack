@@ -137,7 +137,8 @@ setworn(struct obj *obj, long mask)
         if (obj && (obj->owornmask & W_ARMOR) != 0L)
             u.uroleplay.nudist = FALSE;
         /* tux -> tuxedo -> "monkey suit" -> monk's suit */
-        iflags.tux_penalty = (uarm && Role_if(PM_MONK) && gu.urole.spelarmr);
+        iflags.tux_penalty = (uarm && Role_if(PM_MONK) && !is_robe(uarm)
+                              && gu.urole.spelarmr);
     }
     update_inventory();
     recalc_telepat_range();
