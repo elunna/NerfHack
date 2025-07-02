@@ -7241,7 +7241,7 @@ maybe_destroy_item(
         quan = obj->quan;
         /* Some items are gradually cracked, other can shatter instantly */
         if (obj->oclass == RING_CLASS || obj->oclass == WAND_CLASS
-            || obj->oclass == ARMOR_CLASS) {
+            || obj->oclass == AMULET_CLASS || obj->oclass == ARMOR_CLASS) {
             (void) erode_obj(obj, NULL, ERODE_CRACK, EF_DESTROY | EF_VERBOSE);
             skip++;
         } else if (obj->oclass == FOOD_CLASS)
