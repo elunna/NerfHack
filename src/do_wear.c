@@ -109,7 +109,6 @@ on_msg(struct obj *otmp)
    give feedback and discover it iff stealth state is changing;
    stealth is blocked by riding unless hero+steed fly (handled with
    BStealth by mount and dismount routines) */
-staticfn
 void
 toggle_stealth(
     struct obj *obj,
