@@ -4661,6 +4661,14 @@
      *  ghosts and shades don't leave corpses; assigning human weight
      *  to them matters for statues
      */
+    MON(NAM("illusion"), S_GHOST,
+        LVL(1, 12, 10, 0, 0), (G_NOCORPSE | G_NOGEN),
+        A(NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(0, 0, MS_SILENT, MZ_HUMAN), 0, 0,
+        M1_FLY | M1_BREATHLESS | M1_NOTAKE | M1_UNSOLID,
+        M2_NOPOLY | M2_STALK | M2_HOSTILE,
+        M3_INFRAVISION,
+        NO_RACE, 1, CLR_BLUE, ILLUSION),
    MON(NAM("shadow"), S_GHOST,
         LVL(10, 9, -2, 0, 0), (G_NOCORPSE | G_NOGEN),
         A(ATTK(AT_TUCH, AD_DRST, 4, 4),

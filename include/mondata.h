@@ -513,7 +513,8 @@
                           || (ptr) == &mons[PM_SHADOW_OGRE])
 
 /* used to vary a few messages */
-#define weirdnonliving(ptr) (is_golem(ptr) || (ptr)->mlet == S_VORTEX)
+#define weirdnonliving(ptr) (is_golem(ptr) || (ptr)->mlet == S_VORTEX \
+    || ptr == &mons[PM_ILLUSION])
 #define nonliving(ptr) \
     (is_undead(ptr) || (ptr) == &mons[PM_MANES] || weirdnonliving(ptr))
 

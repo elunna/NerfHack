@@ -28,8 +28,9 @@ enum mcast_mage_spells {
     MGC_CURE_SELF,     /* 15 */
     MGC_HASTE_SELF,    /* 16 */
     MGC_DISAPPEAR,     /* 17 */
-    MGC_CLONE_WIZ,     /* 18 */
-    MGC_REFLECTION,    /* 19 */
+    MGC_MIRROR_IMAGE,  /* 18 */
+    MGC_CLONE_WIZ,     /* 19 */
+    MGC_REFLECTION,    /* 20 */
 };
 
 /* monster cleric spells */
@@ -74,6 +75,7 @@ staticfn boolean is_entombed(coordxy, coordxy);
 staticfn boolean counterspell(struct monst *);
 staticfn int calculate_damage(int, int);
 staticfn int rnd_sphere(void);
+staticfn int spawn_mirror_image(struct monst *, int, int);
 
 
 /* feedback when frustrated monster couldn't cast a spell */
@@ -146,7 +148,7 @@ choose_magic_spell(struct monst* caster, int spellval)
         return rn2(3) ? MGC_CURSE_ITEMS : MGC_REFLECTION;
     case 10:
     case 9:
-        return MGC_DESTRY_ARMR;
+        return rn2(3) ? MGC_DESTRY_ARMR : MGC_MIRROR_IMAGE;
     case 8:
         return MGC_CALL_UNDEAD;
     case 7:
@@ -875,6 +877,29 @@ cast_wizard_spell(
         dmg = 0;
         break;
     }
+    case MGC_MIRROR_IMAGE: {
+        dmg = 0;
+        if (!youdefend)
+            break;
+        if (!mcast_dist_ok(caster))
+            break;
+
+        int quan = rnd(caster->m_lev < 10 ? 2 : 5);
+        coord bypos;
+        boolean created = FALSE;
+        for (int i = 0; i < quan; i++) {
+            if (!enexto(&bypos, caster->mx, caster->my, caster->data))
+                break;
+            created = spawn_mirror_image(caster, bypos.x, bypos.y);
+        }
+        if (caster->iswiz && created) {
+            SetVoice(caster, 0, 80, 0);
+            verbalize("Ah, but which of us is the real one, fool?");
+        } else if (caster && canseemon(caster)) {
+            pline_mon(caster, "%s image splinters!", s_suffix(Monnam(caster)));
+        }
+        break;
+    }
     case MGC_CALL_UNDEAD: {
         dmg = 0;
         /* We don't want summons if we're not the target */
@@ -1034,8 +1059,23 @@ cast_wizard_spell(
         dmg = m_cure_self(caster, dmg);
         break;
     case MGC_TELEPORT:
-        if (youdefend)
-            mnexto(caster, RLOC_MSG);
+        if (youdefend) {
+            /* Warp the monster directly next to the player, or teleport them
+               elsewhere if their health is low.*/
+            if (caster->mhp * 3 >= caster->mhpmax)
+                mnexto(caster, RLOC_MSG);
+            else {
+                coordxy sx, sy;
+                coordxy ox = caster->mx;
+                coordxy oy = caster->my;
+                choose_stairs(&sx, &sy, (caster->m_id % 2));
+                mnearto(caster, sx, sy, TRUE, RLOC_NOMSG);
+                /* Leave behind an illusory duplicate (maybe) */
+                if (!Protection_from_shape_changers && rn2(caster->m_lev) < 20) {
+                    spawn_mirror_image(caster, ox, oy);
+                }
+            }
+        }
         dmg = 0;
         break;
     case MGC_FIRE_BOLT:
@@ -1885,6 +1925,7 @@ is_undirected_spell(unsigned int adtyp, int spellnum)
         case MGC_ENTOMB:
         case MGC_PSI_BOLT:
         case MGC_TELEPORT:
+        case MGC_MIRROR_IMAGE:
             return TRUE;
         default:
             break;
@@ -1940,6 +1981,9 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
             return TRUE;
         /* invisibility when already invisible */
         if ((caster->minvis || caster->invis_blkd) && spellnum == MGC_DISAPPEAR)
+            return TRUE;
+        /* Cannot disguise if protected */
+        if (Protection_from_shape_changers && spellnum == MGC_MIRROR_IMAGE)
             return TRUE;
         /* peaceful monster won't cast invisibility. Lets the player avoid
            hitting peaceful monsters by mistake */
@@ -2507,4 +2551,23 @@ rnd_sphere(void)
 {
     return PM_FREEZING_SPHERE + rn2(PM_ACID_SPHERE - PM_FREEZING_SPHERE);
 }
+
+/* Returns 1 if illusions were seen being created */
+staticfn int
+spawn_mirror_image(struct monst *mtmp, int x, int y) {
+    struct monst *illusion = 
+        makemon(&mons[PM_ILLUSION], 
+        x, y, MM_NOCOUNTBIRTH | MM_ANGRY | MM_NOMSG);
+    if (illusion) {
+        if (mtmp->mappearance && !Protection_from_shape_changers)
+            illusion->mappearance = mtmp->mappearance;
+        else
+            illusion->mappearance = mtmp->mnum;
+        newsym(illusion->mx, illusion->my);
+        if (canseemon(mtmp))
+            return 1;
+    }
+    return 0;
+}
+
 /*mcastu.c*/

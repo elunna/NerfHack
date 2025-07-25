@@ -221,7 +221,9 @@ sanity_check_single_mon(
            some other monster; pet's quickmimic effect can temporarily take
            on furniture, object, or monster shape, but only until the pet
            finishes eating a mimic corpse */
-        if (!(is_mimic || mtmp->meating || is_were(mtmp->data)
+        if (!(is_mimic || mtmp->meating
+              || mtmp->data == &mons[PM_ILLUSION]
+              || is_were(mtmp->data)
               || (mtmp->iswiz && M_AP_TYPE(mtmp) == M_AP_MONSTER)))
             impossible("non-mimic (%s) posing as %s (%s)",
                        mptr->pmnames[NEUTRAL], what, msg);
@@ -1213,6 +1215,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_WIZARD_OF_YENDOR:
     case PM_CROESUS:
     case PM_EXECUTIONER:
+    case PM_ILLUSION: 
     case PM_GHOST:
     case PM_SHADE:
     case PM_SHADOW:
@@ -4031,6 +4034,13 @@ corpse_chance(
         return FALSE;
     }
 
+    if (mdat == &mons[PM_ILLUSION]) {
+        /* Illusions killed while undiscovered yield a message. */
+        if (cansee(mon->mx, mon->my) && mon->mappearance)
+            pline_mon(mon, "%s wavers and vanishes.", Monnam(mon));
+        return FALSE;
+    }
+
     /* Wood nymphs do not leave corpses,
      they leave a patch of grass if possible (from CrecelleHack) */
     if (mdat == &mons[PM_WOOD_NYMPH]) {
@@ -5027,6 +5037,12 @@ m_respond(struct monst *mtmp)
                 You_hear("a distant athooool!");
         }
         aggravate();
+    }
+
+    /* Illusions may disappear in order to prevent flooding the level */
+    if (mtmp->data == &mons[PM_ILLUSION] && !rn2(10)) {
+        mongone(mtmp);
+        return;
     }
     if (mtmp->data == &mons[PM_MEDUSA]) {
         int i;

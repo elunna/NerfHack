@@ -1390,7 +1390,8 @@ newmonhp(struct monst *mon, int mndx)
     if (is_golem(ptr)) {
         /* golems have a fixed amount of HP, varying by golem type */
         mon->mhpmax = mon->mhp = golemhp(mndx);
-    } else if (mndx == PM_GAS_SPORE || mndx == PM_VOLATILE_MUSHROOM) {
+    } else if (mndx == PM_GAS_SPORE || mndx == PM_VOLATILE_MUSHROOM
+        || mndx == PM_ILLUSION) {
         mon->mhpmax = mon->mhp = 1;
     } else if (is_rider(ptr)) {
          /* we want low HP, but a high mlevel so they can attack well
@@ -1708,6 +1709,12 @@ makemon(
                 || mndx == PM_SHADOW_OGRE) {
             mtmp->perminvis = TRUE;
             mtmp->minvis = TRUE;
+        }
+        break;
+    case S_GHOST:
+        if (mndx == PM_ILLUSION) {
+            mtmp->m_ap_type = M_AP_MONSTER;
+            mtmp->mappearance = rndmonnum();
         }
         break;
     case S_EEL:
