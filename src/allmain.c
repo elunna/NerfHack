@@ -189,7 +189,7 @@ void
 moveloop_core(void)
 {
     boolean monscanmove = FALSE;
-    boolean race_regen = mon_can_regen();
+    boolean race_regen = umon_can_regen();
     int chance;
 
 #ifdef SAFERHANGUP
@@ -520,13 +520,13 @@ moveloop_core(void)
         curs_on_u();
     }
 
-    if (race_regen != mon_can_regen()) {
+    if (race_regen != umon_can_regen()) {
         if (!Hallucination)
             You_feel("%s.", (race_regen) ? "itchy" : "relief");
         else
-            You_feel("%s.", (mon_can_regen()) ? "semi-precious"
+            You_feel("%s.", (umon_can_regen()) ? "semi-precious"
                         : "like you are no longer failing Organic Chemistry");
-        race_regen = mon_can_regen();
+        race_regen = umon_can_regen();
     }
 
     m_everyturn_effect(&gy.youmonst);
@@ -684,7 +684,7 @@ regen_hp(int wtcap)
            once u.mh reached u.mhmax; that may have been convenient
            for the player, but it didn't make sense for gameplay...] */
         if (u.uhp < u.uhpmax
-	    && mon_can_regen()
+	    && umon_can_regen()
             && !Rabid
             /* Non-undead cannot regenerate in the valley */
             && (!Is_valley(&u.uz) || is_undead(gy.youmonst.data))
@@ -1408,7 +1408,7 @@ dump_glyphids(void)
 #endif /* !NODUMPENUMS */
 
 boolean
-mon_can_regen(void)
+umon_can_regen(void)
 {
     if (uwep && Hate_material(uwep->material) /* Weapons */
         && !is_quest_artifact(uwep) && !safegloves(uarmg))

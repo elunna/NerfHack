@@ -104,7 +104,7 @@ extern void welcome(boolean);
 extern int argcheck(int, char **, enum earlyarg);
 extern long timet_to_seconds(time_t);
 extern long timet_delta(time_t, time_t);
-extern boolean mon_can_regen(void);
+extern boolean umon_can_regen(void);
 extern boolean rehydrate(int);
 extern void dehydrate(int);
 extern int find_tier_index(int);

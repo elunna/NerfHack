@@ -1870,12 +1870,24 @@ attributes_enlightenment(
         you_can("walk through walls", from_what(PASSES_WALLS));
 
     /*** Physical attributes ***/
-    if (Regeneration) {
+    if (Regeneration && umon_can_regen()) {
         if (!Rabid)
             enl_msg("You regenerate", "", "d", "", from_what(REGENERATION));
         else
             enl_msg(You_, "will regenerate", "would have regenerated",
                     " if not rabid", "");
+    }
+    if (!umon_can_regen()) {
+        if (maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))) {
+            enl_msg(You_, "will heal", "would have healed",
+                                " if not in direct contact with iron", "");
+        } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+            enl_msg(You_, "will heal", "would have healed",
+                    " if not in direct contact with silver", "");
+        } else if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))) {
+            enl_msg(You_, "will heal", "would have healed",
+                    " if not in direct contact with mithril", "");
+        }
     }
     if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
@@ -2037,6 +2049,7 @@ attributes_enlightenment(
 
     if (Stable)
         you_are("stable", from_what(STABLE));
+
     /* TODO: Refactor gray stones to convey properties? */
     else if (m_carrying(&gy.youmonst, LOADSTONE))
         you_have("steadfastness", " from a loadstone");
