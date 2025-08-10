@@ -1715,8 +1715,10 @@ diptoilet(struct obj *obj)
             if (!Blind && obj->otyp != POT_SICKNESS)
                 pline_The("toilet water contaminates your %s.", cxname(obj));
             obj->otyp = POT_SICKNESS;
-        } else
+        } else {
             water_damage(obj, NULL, TRUE);
+        }
+        update_inventory();
     }
 
     if (is_poisonable(obj)) {
