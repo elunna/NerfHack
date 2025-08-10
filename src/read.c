@@ -727,7 +727,7 @@ doread(void)
     }
     if (!seffects(scroll)) {
         if (!objects[otyp].oc_name_known) {
-            if (gk.known)
+            if (gk.known && !Hallucination)
                 learnscroll(scroll);
             else
                 trycall(scroll);
@@ -2417,7 +2417,7 @@ seffect_earth(struct obj **sobjp)
                       sblessed ? "around" : "above");
             }
         }
-        gk.known = 1;
+        gk.known = TRUE;
         sokoban_guilt();
 
         /* Loop through the surrounding squares */
