@@ -1506,11 +1506,11 @@ check_hydration(void)
 
 const struct HydrationTier hydration_tiers[] = {
     { 10, "extremely dehydrated" },
-    { 25, "severely dehydrated" },
-    { 100, "very dehydrated" },
-    { 250, "dehydrated" },
-    { 500, "mildly dehydrated" },
-    { 1000, "thirsty" },
+    { 50, "severely dehydrated" },
+    { 250, "very dehydrated" },
+    { 500, "dehydrated" },
+    { 1000, "mildly dehydrated" },
+    { 2000, "thirsty" },
     { 6000, "fully hydrated" }
 };
 #define NUM_TIERS (int) (sizeof(hydration_tiers) / sizeof(hydration_tiers[0]))
