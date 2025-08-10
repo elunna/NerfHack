@@ -1465,6 +1465,12 @@ cancel_item(struct obj *obj)
                 disp.botl = TRUE;
             }
             break;
+        case RIN_GAIN_INTELLIGENCE:
+            if ((obj->owornmask & W_RING) != 0L) {
+                ABON(A_INT) -= cancel_amt;
+                disp.botl = TRUE;
+            }
+            break;
         case RIN_ADORNMENT:
             if ((obj->owornmask & W_RING) != 0L) {
                 ABON(A_CHA) -= cancel_amt;
@@ -1655,6 +1661,12 @@ drain_item(struct obj *obj, boolean by_you)
     case RIN_GAIN_CONSTITUTION:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_CON)--;
+            disp.botl = TRUE;
+        }
+        break;
+    case RIN_GAIN_INTELLIGENCE:
+        if ((obj->owornmask & W_RING) && u_ring) {
+            ABON(A_INT)--;
             disp.botl = TRUE;
         }
         break;

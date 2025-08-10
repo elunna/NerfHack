@@ -1721,6 +1721,9 @@ Ring_on(struct obj *obj)
     case RIN_GAIN_CONSTITUTION:
         adjust_attrib(obj, A_CON, obj->spe);
         break;
+    case RIN_GAIN_INTELLIGENCE:
+        adjust_attrib(obj, A_INT, obj->spe);
+        break;
     case RIN_ADORNMENT:
         adjust_attrib(obj, A_CHA, obj->spe);
         break;
@@ -1840,6 +1843,9 @@ Ring_off_or_gone(struct obj *obj, boolean gone)
         break;
     case RIN_GAIN_CONSTITUTION:
         adjust_attrib(obj, A_CON, -obj->spe);
+        break;
+    case RIN_GAIN_INTELLIGENCE:
+        adjust_attrib(obj, A_INT, -obj->spe);
         break;
     case RIN_ADORNMENT:
         adjust_attrib(obj, A_CHA, -obj->spe);

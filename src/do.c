@@ -641,6 +641,10 @@ dosinkring(struct obj *obj)
                   hliquid("water"),
                   (obj->spe < 0) ? "less" : "great");
         break;
+    case RIN_GAIN_INTELLIGENCE:
+        pline("The water flow seems %ser now.",
+                (obj->spe<0) ? "dull" : "quick");
+        break;
     case RIN_INCREASE_ACCURACY: /* KMH */
         pline_The("%s flow %s the drain.",
                   hliquid("water"),

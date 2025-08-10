@@ -2656,6 +2656,11 @@ eataccessory(struct obj *otmp)
         if (adjattrib(A_CON, otmp->spe, -1))
             makeknown(typ);
         break;
+    case RIN_GAIN_INTELLIGENCE:
+        accessory_has_effect(otmp);
+        if (adjattrib(A_INT, otmp->spe, -1))
+            makeknown(typ);
+        break;
     case RIN_INCREASE_ACCURACY:
         accessory_has_effect(otmp);
         /* Because benefits are guaranteed, throttle the gains a bit */
