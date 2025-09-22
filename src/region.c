@@ -1294,6 +1294,7 @@ make_gas_cloud(
                that but seems a step backward when it really is steam */
             damage ? "noxious gas" : "steam");
         iflags.last_msg = PLNMSG_ENVELOPED_IN_GAS;
+        rehydrate(rn1(100, 100)); /* Nice for grung...*/
     }
 }
 
