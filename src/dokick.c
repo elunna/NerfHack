@@ -1361,7 +1361,7 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
             else
                 pline("A %s ooze gushes up from the drain!",
                     hcolor(NH_AMBER));
-            (void) makemon(&mons[PM_BROWN_PUDDING], x, y, NO_MM_FLAGS);
+            (void) makemon(&mons[PM_BROWN_PUDDING], x, y, MM_NOMSG);
             exercise(A_DEX, TRUE);
             newsym(x, y);
             gm.maploc->looted |= S_LPOOPY;
