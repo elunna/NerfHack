@@ -5751,7 +5751,6 @@ readobjnam(char *bp, struct obj *no_wish)
         else if (d.objprops & ITEM_RAGE)
             d.objprops &= ~(ITEM_RES_PROPS & ~ITEM_RAGE);
 
-
         if (objects[d.otmp->otyp].oc_unique || d.otmp->oartifact
             || Is_dragon_armor(d.otmp))
             d.objprops &= ~ITEM_PROP_MASK;

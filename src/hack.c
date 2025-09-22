@@ -4164,6 +4164,7 @@ interesting_room(void)
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
             pline_The("light subsides.");
             exercise(A_WIS, TRUE);
+            (void) adjattrib(A_INT, 1, FALSE);
         } else {
             You("have an uneasy feeling...");
             exercise(A_WIS, FALSE);

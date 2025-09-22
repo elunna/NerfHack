@@ -4239,8 +4239,7 @@ create_oprop(struct obj *obj, boolean allow_detrimental)
             continue;
 
         /* Launchers can have defensive properties, but not offensive */
-        if (is_launcher(otmp)
-            &&  (j & (ITEM_RES_PROPS)))
+        if (is_launcher(otmp) && (j & (ITEM_RES_PROPS)))
             continue;
         else if ((is_ammo(otmp) || is_missile(otmp))
             && (j & (ITEM_GOOD_PROPS | ITEM_BAD_PROPS
