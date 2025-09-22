@@ -880,7 +880,7 @@ dopotion(struct obj *otmp)
         You("have a %s feeling for a moment, then it passes.",
             Hallucination ? "normal" : "peculiar");
     }
-    if (otmp->dknown && !objects[otmp->otyp].oc_name_known) {
+    if (otmp->dknown && !objects[otmp->otyp].oc_name_known && !Hallucination) {
         if (!gp.potion_unkn) {
             makeknown(otmp->otyp);
             more_experienced(0, 10);

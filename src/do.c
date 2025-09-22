@@ -745,7 +745,7 @@ dosinkring(struct obj *obj)
             break;
         }
     }
-    if (ideed) {
+    if (ideed && !Hallucination) {
         makeknown(obj->otyp);
     } else if (!nosink) {
         Soundeffect(se_ring_in_drain, 50);

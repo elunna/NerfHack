@@ -59,7 +59,7 @@ staticfn void specified_id(void);
 staticfn boolean
 learnscrolltyp(short scrolltyp)
 {
-    if (!objects[scrolltyp].oc_name_known) {
+    if (!objects[scrolltyp].oc_name_known && !Hallucination) {
         makeknown(scrolltyp);
         more_experienced(0, 10);
         return TRUE;

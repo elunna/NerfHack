@@ -461,6 +461,8 @@ discover_object(
     boolean mark_as_known,
     boolean credit_hero)
 {
+    if (Hallucination)
+        return; /* It's impossible to remember object identities... */
     if (!objects[oindx].oc_name_known
         || (Role_if(PM_SAMURAI)
             && Japanese_item_name(oindx, (const char *) 0))) {
