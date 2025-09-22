@@ -1359,8 +1359,8 @@ kick_nondoor(coordxy x, coordxy y, int avrg_attrib)
             if (Blind)
                 You_hear("a gushing sound.");
             else
-                pline("A %s ooze gushes up from the drain!",
-                    hcolor(NH_AMBER));
+                pline("%s ooze gushes up from the drain!",
+                    An(hcolor(NH_AMBER)));
             (void) makemon(&mons[PM_BROWN_PUDDING], x, y, MM_NOMSG);
             exercise(A_DEX, TRUE);
             newsym(x, y);
