@@ -2656,7 +2656,7 @@ seffect_knowledge(struct obj **sobjp)
                 an(simple_typename(learnabout)),
                 !rn2(3) ? "etches itself into your mind"
                       : rn2(2) ? "imprints itself on your mind"
-                               : "sears into your memory");
+                               : "sears itself into your memory");
             learned_something = TRUE;
         } else {
             break;

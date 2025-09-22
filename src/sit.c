@@ -215,7 +215,7 @@ throne_sit_effect(void)
                 an(simple_typename(learnabout)),
                 !rn2(3) ? "etches itself into your mind"
                       : rn2(2) ? "imprints itself on your mind"
-                               : "sears into your memory");
+                               : "sears itself into your memory");
         } else if (is_prince(gy.youmonst.data) || u.uevent.uhand_of_elbereth)
             You_feel("very comfortable here.");
         else
