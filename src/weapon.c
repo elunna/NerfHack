@@ -462,7 +462,7 @@ dmgval_core(
     if (tmp < 0)
         tmp = 0;
 
-    if (otmp->material && ptr && thick_skinned(ptr))
+    if (otmp->material <= LEATHER && ptr && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
 
