@@ -1320,14 +1320,14 @@ seffect_enchant_armor(struct obj **sobjp)
             } else
                 break; /* Success! */
         }
-     } else {
-         otmp = some_armor(&gy.youmonst);
-         if (draconic) {
-             /* if player is trying to enchant scales onto armor,
-                override random armor selection */
-             otmp = uarmc;
-         }
-     }
+    } else {
+        otmp = some_armor(&gy.youmonst);
+        if (draconic) {
+            /* if player is trying to enchant scales onto armor,
+               override random armor selection */
+            otmp = uarmc;
+        }
+    }
 
     if (!otmp) {
         strange_feeling(sobj, !Blind
@@ -1410,7 +1410,6 @@ seffect_enchant_armor(struct obj **sobjp)
         ? rnd(3 - otmp->spe / 3)
         : 1;
 
-
     /* Sustainable items can't have their stat changed, they are "fixed" */
     if (otmp && otmp->oprops & ITEM_STASIS && s != 0) {
         pline("%s vibrates and resists the change!", Yname2(otmp));
@@ -1421,7 +1420,7 @@ seffect_enchant_armor(struct obj **sobjp)
      * "un"-enchanting a bad enchantment. But for anything starting at
      * +1 has a x in 7 chance of failure. */
     resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
-        || defends(AD_MAGM, otmp);;
+        || defends(AD_MAGM, otmp);
     if (resists_magic && otmp->spe > rn2(7) + 1) {
         pline("%s vibrates and resists!", Yname2(otmp));
         return;
@@ -1587,6 +1586,7 @@ seffect_proofing(struct obj **sobjp)
                   scursed ? "glow"
                   : (is_shield(otmp) ? "layer" : "shield"));
         otmp->oerodeproof = 0;
+        costly_alteration(otmp, COST_DECHNT);
     } else {
         old_erodeproof = (otmp->oerodeproof != 0);
         new_erodeproof = !scursed;
@@ -1621,13 +1621,54 @@ seffect_proofing(struct obj **sobjp)
         }
         otmp->oerodeproof = new_erodeproof ? 1 : 0;
     }
-    if (scursed && !otmp->cursed)
+    if (scursed && !otmp->cursed) {
         curse(otmp);
-    else if (sblessed && !otmp->blessed)
+    } else if (sblessed && !otmp->blessed) {
         bless(otmp);
-    else if (!scursed && otmp->cursed)
+    } else if (!scursed && otmp->cursed) {
         uncurse(otmp);
+    }
 
+    /* Nice buff for the scroll of proofing, it's a lesser scroll of enchant
+        armor/weapon. Let's players enchant up to +5 in +1 increments. */
+    if (sblessed && !confused
+            && (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS)
+           && otmp->spe < 5) {
+        boolean resists_magic = objects[otmp->otyp].oc_oprop == ANTIMAGIC
+                        || defends(AD_MAGM, otmp);
+
+        /* Sustainable items can't have their stat changed, they are "fixed" */
+        if (otmp && otmp->oprops & ITEM_STASIS) {
+            pline("%s vibrates and resists the change!", Yname2(otmp));
+    
+           /* Items which provide magic resistance also can resist enchanting.
+            * They don't resist when their enchantment is zero or negative, that is
+            * "un"-enchanting a bad enchantment. But for anything starting at
+            * +1 has a x in 7 chance of failure. */
+        } else if (resists_magic && otmp->spe > rn2(7) + 1) {
+            pline("%s vibrates and resists!", Yname2(otmp));
+        } else if (otmp->oclass == WEAPON_CLASS) {
+            chwepon(otmp, 1);
+        } else {
+            /* RDSM act as a ring of increase damage, so we need to remove them
+             * and put them back on to recalculate the damage bonus. */
+            if (otmp->dragonscales == RED_DRAGON_SCALES)
+                Armor_off();
+
+            otmp->spe++;
+
+            if (otmp->dragonscales == RED_DRAGON_SCALES) {
+                setworn(otmp, W_ARM);
+                Armor_on();
+            }
+
+            adj_abon(otmp, 1); /* adjust armor bonus for Dex or Int+Wis */
+            /* update shop bill to reflect new higher price */
+            if (otmp->unpaid)
+                alter_cost(otmp, 0L);
+        }
+        /* No vibrate... */
+    }
     makeknown(SCR_PROOFING);
     return;
 }
