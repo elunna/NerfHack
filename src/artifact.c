@@ -4499,7 +4499,8 @@ using_oprop(long oprop)
     for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
         if (otmp->oprops & oprop && is_worn(otmp))
             return otmp;
-        if (oprop == ITEM_STENCH && otmp->otyp == FOULSTONE)
+        if (oprop == ITEM_STENCH
+            && (otmp->oprops & ITEM_STENCH || otmp->otyp == FOULSTONE))
             return otmp;
     }
     return (struct obj *) 0;

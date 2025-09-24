@@ -835,7 +835,7 @@ u_entered_shop(char *enterstring)
             should_block = TRUE;
         } else if (foul) {
             should_block = TRUE;
-            tool = "stinky rock";
+            tool = "stinky thing";
             if (!Deaf && !muteshk(shkp)) {
                 SetVoice(shkp, 0, 80, 0);
                 verbalize(not_upset
