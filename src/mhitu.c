@@ -2394,7 +2394,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         }
         break;
     case AD_LUCK:
-        if (mcanseeu) {
+        if (mcanseeu && !mtmp->mspec_used && rn2(3)) {
             if (cancelled) {
                 pline("%s winks.", Monnam(mtmp));
             } else {
