@@ -4632,6 +4632,10 @@ mkobj_quality(struct obj *otmp)
             otmp->bquality = rn2(8) ? FQ_SUPERIOR
                                        : rn2(2) ? FQ_EXCEPTIONAL
                                                 : FQ_INFERIOR;
+
+		/* Much higher chance of inferior... */
+		else if (!rn2(20))
+			otmp->bquality = FQ_INFERIOR;
     }
 }
 
