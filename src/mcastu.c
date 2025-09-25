@@ -881,7 +881,7 @@ cast_wizard_spell(
         dmg = 0;
         if (!youdefend)
             break;
-        if (!mcast_dist_ok(caster))
+        if (!m_canseeu(caster) || !mcast_dist_ok(caster))
             break;
 
         int quan = rnd(caster->m_lev < 10 ? 2 : 5);
