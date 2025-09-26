@@ -4660,22 +4660,12 @@ may_generate_quality(struct obj *otmp)
     /* only armor and weapons */
     if (!(otmp->oclass == ARMOR_CLASS || otmp->oclass == WEAPON_CLASS))
         return FALSE;
-    /* not ammo */
-    if (is_ammo(otmp) || is_missile(otmp))
-        return FALSE;
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
         return FALSE;
     /* artifacts cannot be generated with a quality bit */
     if (otmp->oartifact)
         return FALSE;
-    /* neither can magic items */
-    if (objects[otmp->otyp].oc_magic)
-        return FALSE;
-    /* only objects that can be forged */
-    if (!is_metallic(otmp))
-        return FALSE;
-
     return TRUE;
 }
 
@@ -4689,22 +4679,12 @@ may_generate_aligned(struct obj *otmp)
     /* only armor and weapons */
     if (!(otmp->oclass == ARMOR_CLASS || otmp->oclass == WEAPON_CLASS))
         return FALSE;
-    /* not ammo */
-    if (is_ammo(otmp) || is_missile(otmp))
-        return FALSE;
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
         return FALSE;
     /* artifacts cannot be generated with a quality bit */
     if (otmp->oartifact)
         return FALSE;
-    /* neither can magic items */
-    if (objects[otmp->otyp].oc_magic)
-        return FALSE;
-    /* only objects that can be forged */
-    if (!is_metallic(otmp))
-        return FALSE;
-
     return TRUE;
 }
 
