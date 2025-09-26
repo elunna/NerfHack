@@ -2631,6 +2631,7 @@ set_wounded_legs(long side, int timex)
        one leg mysteriously healed the other */
     EWounded_legs |= side;
     (void) encumber_msg();
+    update_inventory(); /* Carry cap needs redisplay */
 }
 
 void
@@ -2670,6 +2671,7 @@ heal_legs(
            feedback, then able to carry less when back on foot]. */
         if (how == 0)
             (void) encumber_msg();
+        update_inventory(); /* Carry cap needs redisplay */
     }
 }
 
