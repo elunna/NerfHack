@@ -1612,7 +1612,7 @@ seffect_proofing(struct obj **sobjp)
             && (otmp->oeroded || otmp->oeroded2)) {
             otmp->oeroded = otmp->oeroded2 = 0;
             pline("%s as good as new!",
-                  Yobjnam2(uwep, Blind ? "feel" : "look"));
+                  Yobjnam2(otmp, Blind ? "feel" : "look"));
             }
         if (old_erodeproof && !new_erodeproof) {
             /* restore old_erodeproof before shop charges */
