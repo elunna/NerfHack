@@ -1621,15 +1621,17 @@ seffect_proofing(struct obj **sobjp)
         }
         otmp->oerodeproof = new_erodeproof ? 1 : 0;
     }
+    makeknown(SCR_PROOFING);
     if (scursed && !otmp->cursed) {
         curse(otmp);
+        return;
     } else if (sblessed && !otmp->blessed) {
         bless(otmp);
     } else if (!scursed && otmp->cursed) {
         uncurse(otmp);
+        return;
     }
-
-    /* Nice buff for the scroll of proofing, it's a lesser scroll of enchant
+    /* Nice buff for blessed scrolls, it's a lesser scroll of enchant
         armor/weapon. Let's players enchant up to +5 in +1 increments. */
     if (sblessed && !confused
             && (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS)
@@ -1669,7 +1671,6 @@ seffect_proofing(struct obj **sobjp)
         }
         /* No vibrate... */
     }
-    makeknown(SCR_PROOFING);
     return;
 }
 
