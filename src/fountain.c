@@ -620,12 +620,30 @@ doforging(void)
         pline("These items refuse to merge together!");
         return 1;
     } else if (objtype) {
+        output = mksobj(objtype, TRUE, FALSE);
+        /* try to take on the material from one of the source objects;
+            check this first before printing success message in case 
+            the output material is not valid. */
+        if (valid_obj_material(output, obj2->material)) {
+            set_material(output, obj2->material);
+        } else if (valid_obj_material(output, obj1->material)) {
+            set_material(output, obj1->material);
+        } else {
+            /* neither material is valid for the output object, so can't
+             * forge them successfully */
+            pline_The("%s and %s resist melding in the forge.",
+                      materialnm[obj1->material],
+                      materialnm[obj2->material]);
+            You("fail to combine the two objects.");
+            delobj(output);
+            return 1;
+        }
+
         /* success */
         You("place %s, then %s inside the forge.",
             the(xname(obj1)), the(xname(obj2)));
         pline("Raising your %s, you begin to forge the objects together...",
               xname(uwep));
-        output = mksobj(objtype, TRUE, FALSE);
 
         /* any object properties, take secondary object property
                over primary. if you know the object property of one
