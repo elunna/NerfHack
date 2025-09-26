@@ -422,6 +422,7 @@ lava:
 /* forging recipes - first object is the end result
    of combining objects two and three */
 const struct ForgeRecipe fusions[] = {
+    /* RESULT             / INGREDIENT #1     / INGREDIENT #2 */
     /* Only samurai can forge these: */
     { KATANA,               LONG_SWORD,         LONG_SWORD,     1, 1 },
     { TSURUGI,              TWO_HANDED_SWORD,   KATANA,         1, 1 },
@@ -705,32 +706,25 @@ doforging(void)
            Superior or exceptional gear can be guaranteed,
            but at a cost */
         if (uwep && uwep->blessed) {
-            if (obj1->bquality == FQ_INFERIOR
-                || obj2->bquality == FQ_INFERIOR) {
-                /* if either object is inferior, the output
-                   will also be inferior */
+            if (obj1->bquality == FQ_INFERIOR || obj2->bquality == FQ_INFERIOR) {
+                /* if either object is inferior, output is also inferior */
                 output->bquality = FQ_INFERIOR;
-            } else if (obj1->bquality == FQ_EXCEPTIONAL
-                       && obj2->bquality == FQ_EXCEPTIONAL) {
-                /* if both objects are exceptional,
-                   the forged object will also be
-                   exceptional */
+            } else if (obj1->bquality == FQ_EXCEPTIONAL || obj2->bquality == FQ_EXCEPTIONAL) {
+                /* if either is exceptional, forged object will also be */
                 output->bquality = FQ_EXCEPTIONAL;
-            } else if (obj1->bquality >= FQ_SUPERIOR
-                       && obj2->bquality >= FQ_SUPERIOR) {
-                /* if both objects are at least of superior
-                   quality, the forged object will either be
+            } else if (obj1->bquality >= FQ_SUPERIOR || obj2->bquality >= FQ_SUPERIOR) {
+                /* if either is superior, forged object will either be
                    superior, or a small chance of exceptional */
                 output->bquality = (!rn2(10) ? FQ_EXCEPTIONAL
                                                 : FQ_SUPERIOR);
-            } else if (obj1->spe >= 5 && obj2->spe >= 5) {
+            } else if (obj1->spe >= 4 && obj2->spe >= 4) {
                 /* recipe objs 1 & 2 need an enchantment
                    of 5 or greater to ensure an exceptional
                    forged object, and not be inferior
                    (handled by first rule) */
                 output->bquality = FQ_EXCEPTIONAL;
                 output->spe = 0;
-            } else if (obj1->spe >= 3 && obj2->spe >= 3) {
+            } else if (obj1->spe >= 2 && obj2->spe >= 2) {
                 /* recipe objs 1 & 2 need an enchantment
                    of 3 or greater to ensure a superior
                    forged object, and not be inferior
@@ -744,8 +738,7 @@ doforging(void)
                                                     : FQ_SUPERIOR);
             }
         } else if (uwep && !uwep->blessed) { /* hammer is uncursed or cursed */
-            if (obj1->bquality == FQ_INFERIOR
-                || obj2->bquality == FQ_INFERIOR) {
+            if (obj1->bquality == FQ_INFERIOR || obj2->bquality == FQ_INFERIOR) {
                 /* if either object is inferior, the output
                    will be also */
                 output->bquality = FQ_INFERIOR;
