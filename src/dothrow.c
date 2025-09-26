@@ -2306,6 +2306,15 @@ thitmonst(
             } else {
                 tmp += min(7, uwep->spe) - greatest_erosion(uwep);
                 tmp += weapon_hit_bonus(uwep);
+                
+                /* Build quality adds to to-hit */
+                if (uwep->bquality == FQ_SUPERIOR)
+                    tmp += 1;
+                else if (uwep->bquality == FQ_EXCEPTIONAL)
+                    tmp += 2;
+                else if (uwep->bquality == FQ_INFERIOR)
+                    tmp -= 2;
+
                 if (uwep->oartifact)
                     tmp += spec_abon(uwep, mon);
                 /*
