@@ -857,6 +857,22 @@ xname_flags(
             Strcpy(buf, "pair of ");
         }
 
+        /* Build quality */
+        if (obj->bquality == FQ_SUPERIOR)
+            Strcat(buf, "superior ");
+        else if (obj->bquality == FQ_EXCEPTIONAL)
+            Strcat(buf, "exceptional ");
+        else if (obj->bquality == FQ_INFERIOR)
+            Strcat(buf, "inferior ");
+
+        /* Alignment */
+        if (obj->alignment == FA_CHAOTIC)
+            Strcat(buf, "chaotic ");
+        else if (obj->alignment == FA_NEUTRAL)
+            Strcat(buf, "neutral ");
+        else if (obj->alignment == FA_LAWFUL)
+            Strcat(buf, "lawful ");
+
         if ((obj->material != objects[typ].oc_material
              || force_material_name(typ)) && dknown) {
             Concat(buf, 0, materialnm[obj->material]);
