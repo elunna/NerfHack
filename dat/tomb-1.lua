@@ -197,7 +197,7 @@ des.object({ id = "chest", locked = 1, coord = loc ,
                  elseif percent(30) then
                     des.object({ class='/', id='death' })
                  else
-                    des.object({ id='gold piece', quan=1 })
+                    des.object({ class='/', id='polymorph' })
                  end
              end
 });

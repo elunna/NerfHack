@@ -425,7 +425,7 @@ des.object({ id='chest', coord=wisharea:rndcoord(), contents=function()
    elseif percent(30) then
       des.object({ class='/', id='death' })
    else
-      des.object({ id='gold piece', quan=1 })
+      des.object({ class='/', id='polymorph' })
    end
 end })
 
