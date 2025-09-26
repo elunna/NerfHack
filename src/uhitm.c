@@ -622,9 +622,13 @@ find_roll_to_hit(
     /* higher quality weapons have a slightly greater
        chance to hit, inferior ones not so much */
     if (uwep) {
-        if (uwep->bquality == FQ_EXCEPTIONAL
-            || (u.twoweap && uswapwep->bquality == FQ_EXCEPTIONAL)) {
+        if (uwep->bquality == FQ_SUPERIOR
+            || (u.twoweap && uswapwep->bquality == FQ_SUPERIOR)) {
             tmp += 1;
+        }
+        if (uwep->bquality == FQ_EXCEPTIONAL
+                    || (u.twoweap && uswapwep->bquality == FQ_EXCEPTIONAL)) {
+            tmp += 2;
         }
         if (uwep->bquality == FQ_INFERIOR
             || (u.twoweap && uswapwep->bquality == FQ_INFERIOR)) {
