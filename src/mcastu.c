@@ -23,12 +23,12 @@ enum mcast_mage_spells {
     MGC_DEATH_TOUCH,   /* 11 */
     MGC_CALL_UNDEAD,   /* 12 */
     MGC_ENTOMB,        /* 13 */
-    MGC_TELEPORT,      /* 14 */
+    MGC_MIRROR_IMAGE,  /* 14 */
+    MGC_TELEPORT,      /* 15 */
                        /* Defensive spells */
-    MGC_CURE_SELF,     /* 15 */
-    MGC_HASTE_SELF,    /* 16 */
-    MGC_DISAPPEAR,     /* 17 */
-    MGC_MIRROR_IMAGE,  /* 18 */
+    MGC_CURE_SELF,     /* 16 */
+    MGC_HASTE_SELF,    /* 17 */
+    MGC_DISAPPEAR,     /* 18 */
     MGC_CLONE_WIZ,     /* 19 */
     MGC_REFLECTION,    /* 20 */
 };
@@ -2007,6 +2007,7 @@ spell_would_be_useless(struct monst *caster, unsigned int adtyp, int spellnum)
                             || spellnum == MGC_HASTE_SELF
                             || spellnum == MGC_DISAPPEAR
                             || spellnum == MGC_REFLECTION
+                            || spellnum == MGC_MIRROR_IMAGE
                             || (!caster->iswiz && spellnum == MGC_CLONE_WIZ)))
             return TRUE;
         /* only undead and demons can cast evil eye/call undead */
