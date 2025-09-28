@@ -1595,7 +1595,7 @@ seffect_proofing(struct obj **sobjp)
         if (is_supermaterial(otmp)) {
             if (!Blind)
                 pline("%s for a moment.", Yobjnam2(otmp, "shimmer"));
-            return;
+            goto try_enchant;
         }
 
         if (Blind) {
@@ -1621,15 +1621,17 @@ seffect_proofing(struct obj **sobjp)
         }
         otmp->oerodeproof = new_erodeproof ? 1 : 0;
     }
+
+try_enchant:
     makeknown(SCR_PROOFING);
+
     if (scursed && !otmp->cursed) {
         curse(otmp);
-        return;
+        drain_item(otmp, TRUE);
     } else if (sblessed && !otmp->blessed) {
         bless(otmp);
     } else if (!scursed && otmp->cursed) {
         uncurse(otmp);
-        return;
     }
     /* Nice buff for blessed scrolls, it's a lesser scroll of enchant
         armor/weapon. Let's players enchant up to +5 in +1 increments. */
@@ -1649,8 +1651,6 @@ seffect_proofing(struct obj **sobjp)
             * +1 has a x in 7 chance of failure. */
         } else if (resists_magic && otmp->spe > rn2(7) + 1) {
             pline("%s vibrates and resists!", Yname2(otmp));
-        } else if (otmp->oclass == WEAPON_CLASS) {
-            chwepon(otmp, 1);
         } else {
             /* RDSM act as a ring of increase damage, so we need to remove them
              * and put them back on to recalculate the damage bonus. */
@@ -1671,6 +1671,7 @@ seffect_proofing(struct obj **sobjp)
         }
         /* No vibrate... */
     }
+    update_inventory();
     return;
 }
 
