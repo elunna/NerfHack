@@ -771,7 +771,6 @@ cast_wizard_spell(
             } else if (!resisted) {
                 mdef->mhp = -1;
                 monkilled(mdef, "", AD_SPEL);
-                return M_ATTK_DEF_DIED;
             } else {
                 if (resisted)
                     shieldeff(mdef->mx, mdef->my);
