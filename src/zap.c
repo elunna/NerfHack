@@ -245,7 +245,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
                     : (mtmp->data == &mons[PM_STRAW_GOLEM]) ? " straw" : "");
                 xkilled(mtmp, XKILL_NOMSG | XKILL_NOCORPSE);
                 dmg = 0;
-            } else if (!resist(mtmp, otmp->oclass, dmg, NOTELL)
+            } else if (!resist(mtmp, otmp->oclass, dmg, TELL)
                      && !DEADMONSTER(mtmp)) {
                 dmg = d(1, 10);      /* Level 1 = 1d10 fire damage */
                 dmg = spell_damage_bonus(dmg);
