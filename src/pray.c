@@ -863,7 +863,9 @@ gcrownu(void)
     short class_gift;
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
-    if (!(HFire_resistance & FROMOUTSIDE || fully_resistant(FIRE_RES))) {
+    /* Due to their undead nature, Dhampir cannot gain any fire resistance. */
+    if (!Race_if(PM_DHAMPIR)
+        && !(HFire_resistance & FROMOUTSIDE || fully_resistant(FIRE_RES))) {
         incr_resistance(&HFire_resistance, 50);
         if ((HFire_resistance & TIMEOUT) == 100)
             You(Hallucination ? "be chillin'." : "feel completely chilled.");

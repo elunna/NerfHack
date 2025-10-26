@@ -1099,6 +1099,9 @@ givit(int type, struct permonst *ptr)
     /* All these use the new system, which is based on corpse weight. */
     case FIRE_RES:
         debugpline0("Trying to give fire resistance");
+        /* Due to their undead nature, Dhampir cannot gain any fire resistance. */
+        if (Race_if(PM_DHAMPIR))
+            break;
         if (intrinsic_res(FIRE_RES) < MAX_PARTIAL) {
             incr_resistance(&HFire_resistance, increase);
             if ((HFire_resistance & TIMEOUT) == 100)
