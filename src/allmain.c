@@ -131,15 +131,10 @@ u_calc_moveamt(int wtcap)
         /* your speed doesn't augment steed's speed */
         moveamt = mcalcmove(u.usteed, TRUE);
     } else {
-        /* Grung get speed penalties for being dehydrated */
+        /* Grung get a speed penalty for being dehydrated */
         if (maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
-            && u.hydration < 1000) {
-            if (u.hydration < 25)
-                moveamt = 7;
-            else if (u.hydration < 100)
-                moveamt = 9;
-            else
-                moveamt = 10;
+            && u.hydration < 500) {
+            moveamt = 10;
         } else {
             moveamt = gy.youmonst.data->mmove;
 
