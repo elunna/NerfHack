@@ -1299,13 +1299,13 @@ status_enlightenment(int mode, int final)
     if (*buf) { /* (since "not hungry" was added, this will always be True) */
         *buf = lowc(*buf); /* override capitalization */
         if (!strcmp(buf, "weak")) {
-            if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+            if (i_vampire())
                 Strcat(buf, " from severe thirst");
             else
                 Strcat(buf, " from severe hunger");
         } else if (!strcmp(buf, "frail")) {
             /* vampire only, but with some future-proofing */
-            if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+            if (i_vampire())
                 Strcat(buf, " from extreme thirst");
             else
                 Strcat(buf, " from extreme hunger");
@@ -1893,7 +1893,7 @@ attributes_enlightenment(
         if (maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))) {
             enl_msg(You_, "will heal", "would have healed",
                                 " if not in direct contact with iron", "");
-        } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+        } else if (i_vampire()) {
             enl_msg(You_, "will heal", "would have healed",
                     " if not in direct contact with silver", "");
         } else if (maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))) {

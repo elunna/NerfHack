@@ -453,7 +453,7 @@ make_engr_at(
         del_engr(ep);
 
     if (!gi.in_mklev && e_type != HEADSTONE && strstri(s, "Elbereth")) {
-        if (Race_if(PM_DHAMPIR) || Race_if(PM_ORC)) {
+        if (i_vampire() || Race_if(PM_ORC)) {
             s = bogus_elbereth[rn2(N_BOGUS_ELBERETH)];
             smem = Strlen(s) + 1;
             pline("%s", refuse_write[rn2(N_REFUSE_WRITE)]);

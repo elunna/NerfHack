@@ -941,7 +941,7 @@ domonability(void)
             aggravate();
     } else if (Race_if(PM_DHAMPIR) && !Upolyd) {
         if (u.techtime)
-			You("cannot use your dazzle ability yet.");
+	    You("cannot use your dazzle ability yet.");
         else if (tech_dazzle()) {
             u.techtime = rn1(50, 25);
             return ECMD_TIME;

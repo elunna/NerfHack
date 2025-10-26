@@ -853,8 +853,7 @@ domonnoise(struct monst *mtmp)
         /* vampire messages are varied by tameness, peacefulness, and time of
            night */
         boolean isnight = night();
-        boolean kindred = maybe_polyd(is_vampire(gy.youmonst.data),
-                                      Race_if(PM_DHAMPIR));
+        boolean kindred = i_vampire();
 	    boolean nightchild = (Upolyd && (u.umonnum == PM_WOLF
                                          || u.umonnum == PM_WINTER_WOLF
                                          || u.umonnum == PM_WINTER_WOLF_CUB));
@@ -1570,8 +1569,7 @@ dochat(void)
             && (mtmp->data == &mons[PM_REVENANT_PUP]
             || mtmp->data == &mons[PM_REVENANT_HOUND]))
         /* Vampires can tame familiars via chat */
-        || (Race_if(PM_DHAMPIR)
-            && mtmp->data == &mons[PM_FAMILIAR]))) {
+        || (i_vampire() && mtmp->data == &mons[PM_FAMILIAR]))) {
 
         /* Increase apport */
         if (mtmp->mtame) {

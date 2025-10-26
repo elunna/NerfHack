@@ -534,8 +534,7 @@ Cloak_on(void)
     }
 
     /* Vampires get a charisma bonus when wearing an opera cloak */
-    if (uarmc && objdescr_is(uarmc, "opera cloak") &&
-          maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+    if (uarmc && objdescr_is(uarmc, "opera cloak") && i_vampire()) {
         You("%s very impressive in your %s.",
             Blind || (Invis && !See_invisible) ? "feel" : "look",
             OBJ_DESCR(objects[uarmc->otyp]));
@@ -618,8 +617,7 @@ Cloak_off(void)
         toggle_armor_light(otmp, FALSE);
 
     /* vampires get a charisma bonus when wearing an opera cloak */
-    if (was_opera &&
-        maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+    if (was_opera && i_vampire()) {
         ABON(A_CHA) -= 1;
         disp.botl = 1;
     }

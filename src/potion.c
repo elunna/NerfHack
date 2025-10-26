@@ -1742,7 +1742,7 @@ peffect_blood(struct obj *otmp)
     gp.potion_unkn++;
     u.uconduct.unvegan++;
 
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+    if (i_vampire()) {
         violated_vegetarian();
         if (otmp->cursed)
             pline("Yecch!  This %s.", Hallucination
@@ -2861,7 +2861,7 @@ potionbreathe(struct obj *obj)
         break;
     case POT_BLOOD:
     case POT_VAMPIRE_BLOOD:
-        if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+        if (i_vampire()) {
             exercise(A_WIS, FALSE);
             You_feel("a %ssense of loss.",
                      obj->otyp == POT_VAMPIRE_BLOOD ? "terrible " : "");

@@ -1223,8 +1223,7 @@ hitum(struct monst *mon, struct attack *uattk)
                        : !rn2(25));
 
     /* "smart biting" for vampirics. */
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
-        && !svc.context.forcefight) {
+    if (i_vampire() && !svc.context.forcefight) {
         /* Hero only gets a bite *or* a weapon attack, not both */
         if (u.ulevel < 10) {
             /* If hungry, always bite first (if we can feed);
@@ -7447,8 +7446,7 @@ passive(
     int mhit = mhitb ? M_ATTK_HIT : M_ATTK_MISS;
     int malive = maliveb ? M_ATTK_HIT : M_ATTK_MISS;
 
-    if (mhit && aatyp == AT_BITE
-          && maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+    if (mhit && aatyp == AT_BITE && i_vampire()) {
         if (bite_monster(mon))
             return 2; /* lifesaved */
     }
@@ -8466,8 +8464,7 @@ hates_item(struct monst *mtmp, int otyp)
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN))
                     : is_human(mtmp->data))
         return (is_gnomish_obj(otyp));
-    else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_DHAMPIR))
-                : is_vampire(mtmp->data))
+    else if (is_you ? i_vampire() : is_vampire(mtmp->data))
         return (is_gnomish_obj(otyp));
     if (is_you ? maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
                 : is_grung(mtmp->data))

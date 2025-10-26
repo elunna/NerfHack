@@ -118,7 +118,7 @@ is_edible(struct obj *obj)
                          || (obj->otyp == EGG));
 
     /* Vampires can only draw blood from the living or potions of blood. */
-    if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+    if (i_vampire())
 	return FALSE;
 
     if (is_bigeater(gy.youmonst.data) && is_organic(obj)
@@ -297,8 +297,7 @@ choke(struct obj *food)
             return;
         }
         You("%s yourself and then vomit voluminously.",
-            maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
-                ? "gorge" : "stuff");
+            i_vampire() ? "gorge" : "stuff");
         morehungry(Hunger ? (u.uhunger - 60) : 1000); /* just got very sick! */
         vomit();
     } else {
@@ -3622,7 +3621,7 @@ gethungry(void)
             || herbivorous(gy.youmonst.data)
             || lithivorous(gy.youmonst.data)
             || metallivorous(gy.youmonst.data)
-            || maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+            || i_vampire())
         && !(Slow_digestion && rn2(2)))
         u.uhunger--; /* ordinary food consumption */
 
@@ -3821,7 +3820,7 @@ newuhs(boolean incr)
     /* vampire race cannot die of starvation, but they do
            experience some serious adverse effects if they do
            not feed in a timely manner */
-    if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+    if (!i_vampire())
         newhs = (h > 1000)
                     ? SATIATED : (h > 150)
                         ? NOT_HUNGRY : (h > 50)
@@ -3923,7 +3922,7 @@ newuhs(boolean incr)
     }
 
     if (newhs != u.uhs) {
-        if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+        if (!i_vampire()) {
             /* typical conditions for non-vampires, also cover
                vampires that either polyd into a non-vampire,
                or non-vampire had polyd into a vampire and then
@@ -4071,7 +4070,7 @@ newuhs(boolean incr)
         switch (newhs) {
         case HUNGRY:
             if (Hallucination) {
-                if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+                if (i_vampire())
                     You((!incr) ? "now have a lesser craving for the sauce."
                                 : "are craving the sauce.");
                 else
@@ -4084,7 +4083,7 @@ newuhs(boolean incr)
                                   : rn2(2)
                                         ? "need to stop for second breakfast."
                                         : "hear your stomach rumble.  It's time for elevenses.");
-            } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+            } else if (i_vampire()) {
                 You((!incr) ? "only feel thirsty now."
                             : (u.uhunger < 145)
                                   ? "feel thirsty for blood."
@@ -4101,7 +4100,7 @@ newuhs(boolean incr)
             break;
         case WEAK:
             if (Hallucination) {
-                if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+                if (i_vampire())
                     pline((!incr) ? "You still have the craving for the sauce."
                                   : "Your cravings are interfering with your motor capabilities.");
                 else
@@ -4112,7 +4111,7 @@ newuhs(boolean incr)
                 pline("%s needs %s, badly!",
                       (Role_if(PM_WIZARD) || Role_if(PM_VALKYRIE))
                           ? gu.urole.name.m : "Elf",
-                      (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)) ? "blood" : "food"));
+                      (i_vampire() ? "blood" : "food"));
             } else {
                 You((!incr)
                         ? "only feel weak now."
@@ -4234,7 +4233,7 @@ floorfood(
     boolean feeding = !strcmp(verb, "eat"),        /* corpsecheck==0 */
             offering = !strcmp(verb, "sacrifice"); /* corpsecheck==1 */
 
-    if (feeding && (is_vampire(gy.youmonst.data) || Race_if(PM_DHAMPIR))) {
+    if (feeding && i_vampire()) {
         You("can't eat.");
         if (flags.verbose)
             pline("You can feed by attacking and biting other monsters.");

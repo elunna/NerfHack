@@ -583,7 +583,7 @@ exerper(void)
         unsigned hs;
         boolean hungerlvl = u.uhunger > 1000;
 
-        if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+        if (!i_vampire())
             hs = hungerlvl
                      ? SATIATED : (u.uhunger > 150)
                          ? NOT_HUNGRY : (u.uhunger > 50)
@@ -600,8 +600,8 @@ exerper(void)
         debugpline0("exerper: Hunger checks");
         switch (hs) {
         case SATIATED:
-	        /* Don't punish vampires for eating too much */
-            if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+	    /* Don't punish vampires for eating too much */
+            if (!i_vampire())
                 exercise(A_DEX, FALSE);
             if (Role_if(PM_MONK) || Role_if(PM_SAMURAI))
                 exercise(A_WIS, FALSE);
