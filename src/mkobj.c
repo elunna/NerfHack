@@ -4630,7 +4630,7 @@ mkobj_quality(struct obj *otmp)
     if (may_generate_quality(otmp)) {
         if (!rn2(80))
             otmp->bquality = rn2(8) ? FQ_SUPERIOR
-                                       : rn2(2) ? FQ_EXCEPTIONAL
+                                       : rn2(2) ? (!rn2(10) ? FQ_LEGENDARY : FQ_EXCEPTIONAL)
                                                 : FQ_INFERIOR;
 
 		/* Much higher chance of inferior... */

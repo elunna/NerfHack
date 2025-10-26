@@ -176,6 +176,7 @@ struct obj {
 #define FQ_INFERIOR      1  /* obj quality is inferior */
 #define FQ_SUPERIOR      2  /* obj quality is superior */
 #define FQ_EXCEPTIONAL   3  /* obj quality is exceptional */
+#define FQ_LEGENDARY     4  /* obj quality is legendary */
     unsigned alignment;   /* alignment of bequeathing gods */
 #define FA_NONE          0  /* unaligned */
 #define FA_CHAOTIC       1  /* chaotic */

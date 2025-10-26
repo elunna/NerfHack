@@ -2312,6 +2312,8 @@ thitmonst(
                     tmp += 1;
                 else if (uwep->bquality == FQ_EXCEPTIONAL)
                     tmp += 2;
+                else if (uwep->bquality == FQ_LEGENDARY)
+                    tmp += 3;
                 else if (uwep->bquality == FQ_INFERIOR)
                     tmp -= 2;
 

@@ -630,6 +630,10 @@ find_roll_to_hit(
                     || (u.twoweap && uswapwep->bquality == FQ_EXCEPTIONAL)) {
             tmp += 2;
         }
+        if (uwep->bquality == FQ_LEGENDARY
+                    || (u.twoweap && uswapwep->bquality == FQ_LEGENDARY)) {
+            tmp += 3;
+        }
         if (uwep->bquality == FQ_INFERIOR
             || (u.twoweap && uswapwep->bquality == FQ_INFERIOR)) {
             tmp -= 2;
@@ -1564,6 +1568,7 @@ hmon_hitmon_weapon_melee(
                    && !is_flimsy(monwep)
                    && !(monwep->material == GLASS && monwep->oerodeproof)
                    && monwep->bquality != FQ_EXCEPTIONAL
+                   && monwep->bquality != FQ_LEGENDARY
                    && (monwep->bquality != FQ_SUPERIOR && rn2(2))
                    && !obj_resists(monwep,
                                    (monwep->bquality == FQ_INFERIOR ? 30 : 50)

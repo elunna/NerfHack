@@ -524,6 +524,8 @@ dmgval_core(
             bonus += 1;
         if (otmp->bquality == FQ_EXCEPTIONAL)
             bonus += 3;
+        if (otmp->bquality == FQ_LEGENDARY)
+            bonus += 6;
 
         /* if the weapon is going to get a double damage bonus, adjust
            this bonus so that effectively it's added after the doubling */

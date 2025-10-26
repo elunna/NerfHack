@@ -797,6 +797,8 @@ xname_flags(
         /* Build quality */
         if (obj->bquality == FQ_SUPERIOR)
             Strcat(buf, "superior ");
+        else if (obj->bquality == FQ_LEGENDARY)
+            Strcat(buf, "legendary ");
         else if (obj->bquality == FQ_EXCEPTIONAL)
             Strcat(buf, "exceptional ");
         else if (obj->bquality == FQ_INFERIOR)
@@ -860,6 +862,8 @@ xname_flags(
         /* Build quality */
         if (obj->bquality == FQ_SUPERIOR)
             Strcat(buf, "superior ");
+        else if (obj->bquality == FQ_LEGENDARY)
+            Strcat(buf, "legendary ");
         else if (obj->bquality == FQ_EXCEPTIONAL)
             Strcat(buf, "exceptional ");
         else if (obj->bquality == FQ_INFERIOR)
@@ -4434,6 +4438,8 @@ readobjnam_preparse(struct _readobjnam_data *d)
             d->quality = 2;
         } else if (!strncmpi(d->bp, "exceptional ", l = 12)) {
             d->quality = 3;
+        } else if (!strncmpi(d->bp, "legendary ", l = 10)) {
+            d->quality = 4;
 
         /* alignment */
         } else if (!strncmpi(d->bp, "chaotic ", l = 8)) {

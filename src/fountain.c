@@ -709,17 +709,29 @@ doforging(void)
             if (obj1->bquality == FQ_INFERIOR || obj2->bquality == FQ_INFERIOR) {
                 /* if either object is inferior, output is also inferior */
                 output->bquality = FQ_INFERIOR;
-            } else if (obj1->bquality == FQ_EXCEPTIONAL || obj2->bquality == FQ_EXCEPTIONAL) {
-                /* if either is exceptional, forged object will also be */
-                output->bquality = FQ_EXCEPTIONAL;
+            } else if (obj1->bquality == FQ_LEGENDARY || obj2->bquality == FQ_LEGENDARY) {
+                /* if either is legendary, forged object will also be */
+                output->bquality = FQ_LEGENDARY;
+            } else if (obj1->bquality >= FQ_EXCEPTIONAL || obj2->bquality >= FQ_EXCEPTIONAL) {
+                /* if either is exceptional, forged object will either be
+                   exceptional, or a small chance of legendary */
+                output->bquality = (!rn2(10) ? FQ_LEGENDARY
+                                                : FQ_EXCEPTIONAL);
             } else if (obj1->bquality >= FQ_SUPERIOR || obj2->bquality >= FQ_SUPERIOR) {
                 /* if either is superior, forged object will either be
                    superior, or a small chance of exceptional */
                 output->bquality = (!rn2(10) ? FQ_EXCEPTIONAL
                                                 : FQ_SUPERIOR);
+            } else if (obj1->spe >= 6 && obj2->spe >= 6) {
+                /* recipe objs 1 & 2 need an enchantment
+                   of 6 or greater to ensure an exceptional
+                   forged object, and not be inferior
+                   (handled by first rule) */
+                output->bquality = FQ_LEGENDARY;
+                output->spe = 0;
             } else if (obj1->spe >= 4 && obj2->spe >= 4) {
                 /* recipe objs 1 & 2 need an enchantment
-                   of 5 or greater to ensure an exceptional
+                   of 4 or greater to ensure an exceptional
                    forged object, and not be inferior
                    (handled by first rule) */
                 output->bquality = FQ_EXCEPTIONAL;
@@ -734,7 +746,7 @@ doforging(void)
             } else {
                 /* random */
                 if (!rn2(10))
-                    output->bquality = (!rn2(10) ? FQ_EXCEPTIONAL
+                    output->bquality = (!rn2(10) ? (!rn2(10) ? FQ_LEGENDARY : FQ_EXCEPTIONAL)
                                                     : FQ_SUPERIOR);
             }
         } else if (uwep && !uwep->blessed) { /* hammer is uncursed or cursed */

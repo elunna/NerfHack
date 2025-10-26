@@ -4339,6 +4339,8 @@ getprice(struct obj *obj, boolean shk_buying)
             tmp *= 2L;
         else if (obj->bquality == FQ_EXCEPTIONAL)
             tmp *= 4L;
+        else if (obj->bquality == FQ_LEGENDARY)
+            tmp *= 10L;
     }
 
     /* Aligned items are also kind special, pay more for 'em */

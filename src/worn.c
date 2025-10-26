@@ -1681,6 +1681,8 @@ armor_bonus(struct monst *mon, struct obj *armor)
 
     if (armor->bquality == FQ_SUPERIOR)
         bon += 1;
+    else if (armor->bquality == FQ_LEGENDARY)
+        bon += 6;
     else if (armor->bquality == FQ_EXCEPTIONAL)
         bon += 3;
     else if (armor->bquality == FQ_INFERIOR)
