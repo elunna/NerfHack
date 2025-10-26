@@ -2321,6 +2321,8 @@ create_object(object *o, struct mkroom *croom)
     else
         c = 0;
 
+    char oclass = (char) def_char_to_objclass(c);
+
     if (!c) {
         otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
     } else if (o->id != -1) {
@@ -2330,7 +2332,6 @@ create_object(object *o, struct mkroom *croom)
          * The special levels are compiled with the default "text" object
          * class characters.  We must convert them to the internal format.
          */
-        char oclass = (char) def_char_to_objclass(c);
 
         if (oclass == MAXOCLASSES)
             panic("create_object:  unexpected object class '%c'", c);
@@ -2401,7 +2402,7 @@ create_object(object *o, struct mkroom *croom)
     } else {
         otmp->bquality = 0; /* normal */
     }
-    if (o->alignment) {
+    if (o->alignment && (oclass == WEAPON_CLASS || oclass == ARMOR_CLASS)) {
         otmp->alignment = (o->alignment % 4);
     } else {
         otmp->alignment = 0; /* normal */
