@@ -500,7 +500,8 @@
                      || ((ptr) == gy.youmonst.data &&       \
                          !Upolyd && Race_if(PM_DHAMPIR)))
 /* For checking if player is a V */
-#define i_vampire() maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))
+#define i_vampire() maybe_polyd(is_vampire(gy.youmonst.data), \
+                                Race_if(PM_DHAMPIR))
 #define is_grung(ptr) ((ptr)->mlet == S_GRUNG)
 #define is_hulk(ptr) ((ptr)->mlet == S_UMBER                \
             && (ptr) != &mons[PM_FIRE_VAMPIRE]              \

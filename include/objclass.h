@@ -225,6 +225,7 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
      || is_crackable(otmp))
 #define is_silver(otmp) ((otmp)->material == SILVER \
     || otmp->otyp == SILVER_DRAGON_SCALES)
+#define is_bone(otmp) ((otmp)->material == BONE)
 #define is_glass(otmp) ((otmp)->material == GLASS)
 #define is_plastic(otmp) ((otmp)->material == PLASTIC)
 #define is_fragile(otmp) ((is_glass(otmp) && (otmp)->oclass != GEM_CLASS) \

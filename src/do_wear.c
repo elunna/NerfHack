@@ -3957,6 +3957,8 @@ race_bonus(struct obj *obj)
         return 1;
     if (Race_if(PM_DWARF) && is_dwarvish_obj(obj->otyp))
         return 1;
+    if (i_vampire() && is_bone(obj))
+        return 1;
 
     /* Racial preferences in armor. Some races really hate wearing the armor
      * of other races, it's unfamiliar and uncomfortable - maybe it smells bad
