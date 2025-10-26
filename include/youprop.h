@@ -88,7 +88,7 @@
 #define Confusion HConfusion
 
 /* Blindness is more complex than other properties */
-#define HBlinded u.uprops[BLINDED].intrinsic /* TIMEOUT|FROMOUTSIDE|FROMFORM */
+#define HBlinded u.uprops[BLINDED].intrinsic /* TIMEOUT|FROMOUTSIDE|FROMFORM|FROMHUNGER */
 #define EBlinded u.uprops[BLINDED].extrinsic /* W_TOOL */
         /* wearing the Eyes of the Overworld overrides blindness */
 #define BBlinded u.uprops[BLINDED].blocked   /* W_TOOL */

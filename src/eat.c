@@ -68,7 +68,7 @@ staticfn void regen_hunger(void);
    Also used in botl.c and insight.c  */
 const char *const hu_stat[] = {
     "Satiated", "        ", "Hungry  ", "Weak    ",
-    "Fainting", "Fainted ", "Starved "
+    "Frail   ", "Fainting", "Fainted ", "Starved "
 };
 
 static const struct victual_info zero_victual = { 0 };
@@ -141,6 +141,30 @@ init_uhunger(void)
     if (ATEMP(A_STR) < 0) {
         ATEMP(A_STR) = 0;
         (void) encumber_msg();
+    }
+    if (Race_if(PM_VAMPIRE)) {
+        if (ATEMP(A_CON) < 0) {
+            ATEMP(A_CON) = 0;
+            (void) encumber_msg();
+        }
+        if (ATEMP(A_DEX) < 0)
+            ATEMP(A_DEX) = 0;
+        if (ATEMP(A_INT) < 0)
+            ATEMP(A_INT) = 0;
+        if (ATEMP(A_WIS) < 0)
+            ATEMP(A_WIS) = 0;
+        if (ATEMP(A_CHA) < 0)
+            ATEMP(A_CHA) = 0;
+        if (HBlinded & FROMHUNGER) {
+            HBlinded &= ~FROMHUNGER;
+            toggle_blindness();
+        }
+#if 0 /* Slow not implemented yet */
+        if (HSlow & FROMHUNGER)
+            HSlow &= ~FROMHUNGER;
+#endif
+        if (HDeaf & FROMHUNGER)
+            HDeaf &= ~FROMHUNGER;
     }
 }
 
@@ -3794,10 +3818,22 @@ newuhs(boolean incr)
     static boolean saved_hs = FALSE;
     int h = u.uhunger;
 
-    newhs = (h > 1000)
-                ? SATIATED
-                : (h > 150) ? NOT_HUNGRY
-                            : (h > 50) ? HUNGRY : (h > 0) ? WEAK : FAINTING;
+    /* vampire race cannot die of starvation, but they do
+           experience some serious adverse effects if they do
+           not feed in a timely manner */
+    if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+        newhs = (h > 1000)
+                    ? SATIATED : (h > 150)
+                        ? NOT_HUNGRY : (h > 50)
+                            ? HUNGRY : (h > 0)
+                                ? WEAK : FAINTING;
+    else /* vampire */
+        newhs = (h > 1000)
+                    ? SATIATED : (h > 150)
+                        ? NOT_HUNGRY : (h > 50)
+                            ? HUNGRY : (h > -100)
+                                ? WEAK : (h > -300)
+                                    ? FRAIL : STARVED;
 
     /* While you're eating, you may pass from WEAK to HUNGRY to NOT_HUNGRY.
      * This should not produce the message "you only feel hungry now";
@@ -3839,6 +3875,17 @@ newuhs(boolean incr)
         /* u,uhunger is likely to be negative at this point */
         int uhunger_div_by_10 = sgn(u.uhunger) * ((abs(u.uhunger) + 5) / 10);
 
+        /* called in case player was a vampire while FRAIL,
+           and changes into something other than a vampire */
+        ATEMP(A_STR) = -1;
+        ATEMP(A_DEX) = 0;
+        ATEMP(A_CON) = 0;
+        ATEMP(A_INT) = 0;
+        ATEMP(A_WIS) = 0;
+        ATEMP(A_CHA) = 0;
+        if (HDeaf & FROMHUNGER)
+            HDeaf &= ~FROMHUNGER;
+
         if (is_fainted())
             newhs = FAINTED;
         if (u.uhs <= WEAK || rn2(20 - uhunger_div_by_10) >= 19) {
@@ -3876,51 +3923,223 @@ newuhs(boolean incr)
     }
 
     if (newhs != u.uhs) {
-        if (newhs >= WEAK && u.uhs < WEAK) {
-            /* this used to be losestr(1) which had the potential to
-               be fatal (still handled below) by reducing HP if it
-               tried to take base strength below minimum of 3 */
-            ATEMP(A_STR) = -1; /* temporary loss overrides Fixed_abil */
-            /* defer context.botl status update until after hunger message */
-        } else if (newhs < WEAK && u.uhs >= WEAK) {
-            /* this used to be losestr(-1) which could be abused by
-               becoming weak while wearing ring of sustain ability,
-               removing ring, eating to 'restore' strength which boosted
-               strength by a point each time the cycle was performed;
-               substituting "while polymorphed" for sustain ability and
-               "rehumanize" for ring removal might have done that too */
-            ATEMP(A_STR) = 0; /* repair of loss also overrides Fixed_abil */
-            /* defer context.botl status update until after hunger message */
+        if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+            /* typical conditions for non-vampires, also cover
+               vampires that either polyd into a non-vampire,
+               or non-vampire had polyd into a vampire and then
+               reverted back (FRAIL/STARVED especially) */
+            switch(newhs) {
+            case STARVED:
+                disp.botl = 1;
+                bot();
+                You("die from starvation.");
+                svk.killer.format = KILLED_BY;
+                Strcpy(svk.killer.name, "starvation");
+                done(STARVING);
+                /* if we return, we lifesaved, and that calls newuhs */
+                return;
+            case FRAIL:
+                ATEMP(A_STR) = -1;
+                ATEMP(A_DEX) = 0;
+                ATEMP(A_CON) = 0;
+                ATEMP(A_INT) = 0;
+                ATEMP(A_WIS) = 0;
+                ATEMP(A_CHA) = 0;
+                if (HBlinded & FROMHUNGER) {
+                    HBlinded &= ~FROMHUNGER;
+                    toggle_blindness();
+                }
+#if 0 /* Slow not implemented yet */
+                if (HSlow & FROMHUNGER)
+                    HSlow &= ~FROMHUNGER;
+#endif
+                if (HDeaf & FROMHUNGER)
+                    HDeaf &= ~FROMHUNGER;
+                newhs = FAINTING;
+                break;
+            case WEAK:
+                /* this used to be losestr(1) which had the potential to
+                   be fatal (still handled below) by reducing HP if it
+                   tried to take base strength below minimum of 3 */
+                ATEMP(A_STR) = -1; /* temporary loss overrides Fixed_abil */
+                ATEMP(A_DEX) = 0;
+                ATEMP(A_CON) = 0;
+                ATEMP(A_INT) = 0;
+                ATEMP(A_WIS) = 0;
+                ATEMP(A_CHA) = 0;
+                /* defer disp.botl status update until after hunger message */
+                break;
+            default:
+                /* this used to be losestr(-1) which could be abused by
+                   becoming weak while wearing ring of sustain ability,
+                   removing ring, eating to 'restore' strength which boosted
+                   strength by a point each time the cycle was performed;
+                   substituting "while polymorphed" for sustain ability and
+                   "rehumanize" for ring removal might have done that too */
+                ATEMP(A_STR) = 0; /* repair of loss also overrides Fixed_abil */
+                ATEMP(A_DEX) = 0;
+                ATEMP(A_CON) = 0;
+                ATEMP(A_INT) = 0;
+                ATEMP(A_WIS) = 0;
+                ATEMP(A_CHA) = 0;
+                /* defer disp.botl status update until after hunger message */
+                break;
+            }
+        } else { /* vampire */
+            switch(newhs) {
+            case STARVED:
+                /* not to go below 3. the huge adjustment for strength
+                   is necessary because of 18/01 through 18/100 */
+                ATEMP(A_STR) = -120;
+                ATEMP(A_DEX) = -20;
+                ATEMP(A_CON) = -20;
+                ATEMP(A_INT) = -20;
+                ATEMP(A_WIS) = -20;
+                ATEMP(A_CHA) = -20;
+                /* set other conditions */
+                HBlinded |= FROMHUNGER;
+                HBlinded &= ~TIMEOUT;
+                toggle_blindness();
+#if 0
+                HSlow |= FROMHUNGER;
+                HSlow &= ~TIMEOUT;
+#endif
+                HDeaf |= FROMHUNGER;
+                HDeaf &= ~TIMEOUT;
+                break;
+            case FRAIL:
+                ATEMP(A_STR) = -5;
+                ATEMP(A_DEX) = -5;
+                ATEMP(A_CON) = -5;
+                ATEMP(A_INT) = -5;
+                ATEMP(A_WIS) = -5;
+                ATEMP(A_CHA) = -5;
+                /* set other conditions */
+                HDeaf |= FROMHUNGER;
+                HDeaf &= ~TIMEOUT;
+                /* possibly revert past conditions */
+                if (HBlinded & FROMHUNGER) {
+                    HBlinded &= ~FROMHUNGER;
+                    toggle_blindness();
+                }
+#if 0
+                if (HSlow & FROMHUNGER)
+                    HSlow &= ~FROMHUNGER;
+#endif
+                break;
+            case WEAK:
+                ATEMP(A_STR) = -1;
+                ATEMP(A_DEX) = -1;
+                ATEMP(A_CON) = -1;
+                ATEMP(A_INT) = -1;
+                ATEMP(A_WIS) = -1;
+                ATEMP(A_CHA) = -1;
+                /* possibly revert past conditions */
+                if (HBlinded & FROMHUNGER) {
+                    HBlinded &= ~FROMHUNGER;
+                    toggle_blindness();
+                }
+#if 0
+                if (HSlow & FROMHUNGER)
+                    HSlow &= ~FROMHUNGER;
+#endif
+                if (HDeaf & FROMHUNGER)
+                    HDeaf &= ~FROMHUNGER;
+                break;
+            default:
+                ATEMP(A_STR) = 0;
+                ATEMP(A_DEX) = 0;
+                ATEMP(A_CON) = 0;
+                ATEMP(A_INT) = 0;
+                ATEMP(A_WIS) = 0;
+                ATEMP(A_CHA) = 0;
+                /* possibly revert past conditions */
+                if (HBlinded & FROMHUNGER) {
+                    HBlinded &= ~FROMHUNGER;
+                    toggle_blindness();
+                }
+#if 0
+                if (HSlow & FROMHUNGER)
+                    HSlow &= ~FROMHUNGER;
+#endif
+                if (HDeaf & FROMHUNGER)
+                    HDeaf &= ~FROMHUNGER;
+                break;
+            }
         }
 
         switch (newhs) {
         case HUNGRY:
             if (Hallucination) {
-                You(!incr ? "now have a lesser case of the munchies."
-                    : "are getting the munchies.");
+                if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+                    You((!incr) ? "now have a lesser craving for the sauce."
+                                : "are craving the sauce.");
+                else
+                    You((!incr) ? "now have a lesser case of the munchies."
+                                : "are getting the munchies.");
+            } else if (!Upolyd && Race_if(PM_HOBBIT)) {
+                You((!incr) ? "could use some supper."
+                            : (u.uhunger < 145)
+                                  ? "feel it's time for afternoon tea."
+                                  : rn2(2)
+                                        ? "need to stop for second breakfast."
+                                        : "hear your stomach rumble.  It's time for elevenses.");
+            } else if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR))) {
+                You((!incr) ? "only feel thirsty now."
+                            : (u.uhunger < 145)
+                                  ? "feel thirsty for blood."
+                                  : "are beginning to feel thirsty for blood.");
             } else
-                You("%s.", !incr ? "only feel hungry now"
-                           : (u.uhunger < 145) ? "feel hungry"
-                             : "are beginning to feel hungry");
+                You((!incr) ? "only feel hungry now."
+                            : (u.uhunger < 145)
+                                  ? "feel hungry."
+                                  : "are beginning to feel hungry.");
             if (incr && go.occupation
                 && (go.occupation != eatfood && go.occupation != opentin))
                 stop_occupation();
             end_running(TRUE);
             break;
         case WEAK:
-            if (Hallucination)
-                pline(!incr ? "You still have the munchies."
-              : "The munchies are interfering with your motor capabilities.");
-            else if (incr && (Role_if(PM_WIZARD) || Race_if(PM_ELF)
-                              || Role_if(PM_VALKYRIE)))
-                pline("%s needs food, badly!",
+            if (Hallucination) {
+                if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+                    pline((!incr) ? "You still have the craving for the sauce."
+                                  : "Your cravings are interfering with your motor capabilities.");
+                else
+                    pline((!incr) ? "You still have the munchies."
+                                  : "The munchies are interfering with your motor capabilities.");
+            } else if (incr && (Role_if(PM_WIZARD) || Race_if(PM_ELF)
+                                || Role_if(PM_VALKYRIE))) {
+                pline("%s needs %s, badly!",
                       (Role_if(PM_WIZARD) || Role_if(PM_VALKYRIE))
-                          ? gu.urole.name.m
-                          : "Elf");
-            else
-                You("%s weak.", !incr ? "are still"
-                                : (u.uhunger < 45) ? "feel"
-                                  : "are beginning to feel");
+                          ? gu.urole.name.m : "Elf",
+                      (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)) ? "blood" : "food"));
+            } else {
+                You((!incr)
+                        ? "only feel weak now."
+                        : (u.uhunger < 45) ? "feel weak."
+                                           : "are beginning to feel weak.");
+            }
+            if (incr && go.occupation
+                && (go.occupation != eatfood && go.occupation != opentin))
+                stop_occupation();
+            end_running(TRUE);
+            break;
+        case FRAIL: /* vampires only */
+            You((!incr)
+                    ? "only feel frail now."
+                    : (u.uhunger < -100) ? "feel frail."
+                                         : "are beginning to feel frail.");
+            if (incr && go.occupation
+                && (go.occupation != eatfood && go.occupation != opentin))
+                stop_occupation();
+            end_running(TRUE);
+            break;
+        case STARVED: /* vampires only */
+            You((!incr)
+                    ? "are starving now."
+                    : (u.uhunger < -(300 + 10 * (int) ACURR(A_CON)))
+                        ? "are starving."
+                        : "are beginning to starve.");
             if (incr && go.occupation
                 && (go.occupation != eatfood && go.occupation != opentin))
                 stop_occupation();

@@ -580,11 +580,22 @@ exerper(void)
 {
     if (!(svm.moves % 10)) {
         /* Hunger Checks */
-        int hs = (u.uhunger > 1000) ? SATIATED
-                 : (u.uhunger > 150) ? NOT_HUNGRY
-                   : (u.uhunger > 50) ? HUNGRY
-                     : (u.uhunger > 0) ? WEAK
-                       : FAINTING;
+        unsigned hs;
+        boolean hungerlvl = u.uhunger > 1000;
+
+        if (!maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+            hs = hungerlvl
+                     ? SATIATED : (u.uhunger > 150)
+                         ? NOT_HUNGRY : (u.uhunger > 50)
+                             ? HUNGRY : (u.uhunger > 0)
+                                 ? WEAK : FAINTING;
+        else
+            hs = (u.uhunger > 1000)
+                     ? SATIATED : (u.uhunger > 150)
+                         ? NOT_HUNGRY : (u.uhunger > 50)
+                             ? HUNGRY : (u.uhunger > -100)
+                                 ? WEAK : (u.uhunger > -300)
+                                     ? FRAIL : STARVED;
 
         debugpline0("exerper: Hunger checks");
         switch (hs) {
@@ -605,6 +616,11 @@ exerper(void)
             break;
         case FAINTING:
         case FAINTED:
+            exercise(A_CON, FALSE);
+            break;
+        case FRAIL:
+        case STARVED:
+            exercise(A_STR, FALSE);
             exercise(A_CON, FALSE);
             break;
         }

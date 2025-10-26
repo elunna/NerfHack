@@ -1298,10 +1298,22 @@ status_enlightenment(int mode, int final)
         Strcpy(buf, "not hungry");
     if (*buf) { /* (since "not hungry" was added, this will always be True) */
         *buf = lowc(*buf); /* override capitalization */
-        if (!strcmp(buf, "weak"))
-            Strcat(buf, " from severe hunger");
-        else if (!strncmp(buf, "faint", 5)) /* fainting, fainted */
+        if (!strcmp(buf, "weak")) {
+            if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+                Strcat(buf, " from severe thirst");
+            else
+                Strcat(buf, " from severe hunger");
+        } else if (!strcmp(buf, "frail")) {
+            /* vampire only, but with some future-proofing */
+            if (maybe_polyd(is_vampire(gy.youmonst.data), Race_if(PM_DHAMPIR)))
+                Strcat(buf, " from extreme thirst");
+            else
+                Strcat(buf, " from extreme hunger");
+        } else if (!strncmp(buf, "faint", 5)) { /* fainting, fainted */
             Strcat(buf, " due to starvation");
+        } else if (!strcmp(buf, "starved")) { /* vampire */
+            Strcat(buf, " due to starvation");
+        }
         if (wizard)
             Sprintf(eos(buf), " <%d>", u.uhunger);
         you_are(buf, "");

@@ -599,9 +599,10 @@ enum hunger_state_types {
     NOT_HUNGRY = 1,
     HUNGRY     = 2,
     WEAK       = 3,
-    FAINTING   = 4,
-    FAINTED    = 5,
-    STARVED    = 6
+    FRAIL      = 4, /* vampire race only */
+    FAINTING   = 5,
+    FAINTED    = 6,
+    STARVED    = 7
 };
 
 /* inventory counts (slots in tty parlance)

@@ -1453,6 +1453,21 @@ rehumanize(void)
         u.hydration = 0;
 
     polyman("You return to %s form!", gu.urace.adj);
+
+    /* reset FROMHUNGER conditions in case player was polyd
+         as a vampire, starving, and reverted back to normal
+         form (livesaved or otherwise) */
+    if (HBlinded & FROMHUNGER) {
+        HBlinded &= ~FROMHUNGER;
+        toggle_blindness();
+    }
+#if 0 /* Slow not implemented yet */
+    if (HSlow & FROMHUNGER)
+        HSlow &= ~FROMHUNGER;
+#endif
+    if (HDeaf & FROMHUNGER)
+        HDeaf &= ~FROMHUNGER;
+
     break_armor();
     if (u.uhp < 1) {
         /* can only happen if some bit of code reduces u.uhp
