@@ -128,10 +128,9 @@ static const struct innate {
                  { 0, 0, 0, 0 } },
 
   gru_abil[] = { { 1, &HPoison_resistance, "", "" },
-                 { 1, &(HSearching), "", "" },
                  { 1, &(HSwimming), "", "" },
                  { 5, &(EJumping), "light on your feet", "stuck to the ground" },
-                 { 7, &(HFast), "quick", "slow" },
+                 { 13, &(HSearching), "", "" },
                  { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };
