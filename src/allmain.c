@@ -1537,6 +1537,14 @@ dehydrate(int amt)
         } else
             impossible("dehydrate: new_tier (%d) is out of bounds.", new_tier);
         stop_occupation();
+    } else if (amt > 1) {
+        /* Message for higher than average dehydration */
+        if (amt < 5)
+            You_feel("less hydrated...");
+        else if (amt < 25)
+            You_feel("some hydration leaving your body...");
+        else
+            You_feel("moisture evaporating from you...");
     }
 
     if (new_tier > old_tier)
