@@ -1565,7 +1565,7 @@ minliquid_core(struct monst *mtmp)
     } else {
         /* but eels have a difficult time outside */
         if (mtmp->data->mlet == S_EEL && !Is_waterlevel(&u.uz)
-            && !breathless(mtmp->data) && !is_puddle(mtmp->mx, mtmp->my)) {
+            && !is_puddle(mtmp->mx, mtmp->my)) {
             /* as mhp gets lower, the rate of further loss slows down */
             if (mtmp->mhp > 1 && rn2(mtmp->mhp) > rn2(8))
                 mtmp->mhp--;
@@ -2865,7 +2865,7 @@ mfndpos(
     int cnt = 0;
     uchar ntyp;
     uchar nowtyp;
-    boolean wantpool, puddleok, poolok, lavaok, nodiag;
+    boolean wantpool, wantpuddle, poolok, lavaok, nodiag;
     boolean rockok = FALSE, treeok = FALSE, thrudoor;
     int maxx, maxy;
     boolean poisongas_ok, in_poisongas;
@@ -2878,10 +2878,12 @@ mfndpos(
 
     nodiag = NODIAG(mdat - mons);
     wantpool = (mdat->mlet == S_EEL);
-    poolok = ((!Is_waterlevel(&u.uz) && (m_in_air(mon) || can_wwalk(mon)))
-              || (is_swimmer(mdat) && !wantpool));
-    puddleok = (m_in_air(mon) || can_wwalk(mon) || is_swimmer(mdat))
-               || (mdat != &mons[PM_IRON_GOLEM] && !tiny_groundedmon(mdat));
+    wantpuddle = (mdat->mlet == S_EEL);
+    poolok = ((!Is_waterlevel(&u.uz)
+               && (is_flyer(mdat) || is_floater(mdat)
+                   || is_clinger(mdat) || can_levitate(mon)))
+              || (is_swimmer(mdat) && !wantpool)
+              || can_wwalk(mon));
     /* note: floating eye is the only is_floater() so this could be
        simplified, but then adding another floater would be error prone */
     lavaok = (m_in_air(mon) || likes_lava(mdat));
@@ -2975,9 +2977,13 @@ mfndpos(
                 continue;
             if ((!lavaok || !(flag & ALLOW_WALL)) && ntyp == LAVAWALL)
                 continue;
-            if ((poolok || is_pool(nx, ny) == wantpool)
-                && (puddleok || is_puddle(nx, ny) == wantpool)
-                && (lavaok || !is_lava(nx, ny))) {
+            if ((is_pool(nx, ny) == wantpool || poolok)
+                && (is_puddle(nx, ny) == wantpuddle || !wantpuddle)
+                && (lavaok || !is_lava(nx, ny))
+                /* iron golems and longworms avoid shallow water */
+                && ((mon->data != &mons[PM_IRON_GOLEM] && !is_longworm(mdat)
+                   && !tiny_groundedmon(mdat))
+                   || !is_puddle(nx, ny))) {
                 int dispx, dispy;
                 boolean monseeu = (mon->mcansee
                                    && (!Invis || mon_prop(mon, SEE_INVIS)));
@@ -3105,6 +3111,10 @@ mfndpos(
         }
     if (!cnt && wantpool && !is_pool(x, y)) {
         wantpool = FALSE;
+        goto nexttry;
+    }
+    if (!cnt && wantpuddle && !is_puddle(x, y)) {
+        wantpuddle = FALSE;
         goto nexttry;
     }
     return cnt;
