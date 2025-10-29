@@ -1078,7 +1078,7 @@ static void generate_c_files(void)
     *c = '\0';    /* strip off the '\n' */
 
     /* begin sfproto.h */
-    Fprintf(SFPROTO,"/* NetHack %d.%d sfproto.h */\n",
+    Fprintf(SFPROTO,"/* NerfHack %d.%d sfproto.h */\n",
                VERSION_MAJOR, VERSION_MINOR);
     for (j = 0; j < 3; ++j)
         Fprintf(SFPROTO, "%s", get_preamble(j));
@@ -1092,7 +1092,7 @@ static void generate_c_files(void)
     Fprintf(SFI_PROTO, "/* generated input functions */\n");
 
     /* begin sfdata.c */
-    Fprintf(SFDATA,"/* NetHack %d.%d sfdata.c */\n",
+    Fprintf(SFDATA,"/* NerfHack %d.%d sfdata.c */\n",
             VERSION_MAJOR, VERSION_MINOR);
     for (j = 0; preamble[j]; ++j)
         Fprintf(SFDATA, "%s", get_preamble(j));
