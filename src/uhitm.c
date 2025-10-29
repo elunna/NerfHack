@@ -54,8 +54,6 @@ staticfn void hmon_hitmon_splitmon(struct _hitmon_data *, struct monst *,
                              struct obj *) NONNULLARG12;
 staticfn void hmon_hitmon_msg_hit(struct _hitmon_data *, struct monst *,
                              struct obj *) NONNULLARG12;
-staticfn void hmon_hitmon_msg_silver(struct _hitmon_data *, struct monst *,
-                             struct obj *) NONNULLARG12;
 staticfn void hmon_hitmon_msg_lightobj(struct _hitmon_data *, struct monst *,
                              struct obj *) NONNULLARG12;
 staticfn boolean hmon_hitmon(struct monst *, struct obj *, int, int)
@@ -2440,7 +2438,6 @@ hmon_hitmon_msg_lightobj(
  * These are equipped to handle a NULL obj pointer:
  *       hmon_hitmon_stagger,       - obj arg is unused
  *       hmon_hitmon_pet,           - obj arg is unused
- *       hmon_hitmon_msg_silver,    - obj arg is unused
  *       hmon_hitmon_msg_lightobj,  - obj arg is unused
  *       hmon_hitmon_do_hit,        - has obj and !obj code paths
  *       hmon_hitmon_splitmon,      - has !obj guards

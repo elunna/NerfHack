@@ -32,7 +32,6 @@ staticfn void qst_guardians_respond(void);
 staticfn void peacefuls_respond(struct monst *);
 staticfn void wake_nearto_core(coordxy, coordxy, int, boolean);
 staticfn void m_restartcham(struct monst *);
-staticfn void nazgul_shriek(struct monst *);
 staticfn boolean restrap(struct monst *);
 staticfn int pick_animal(void);
 staticfn int pickvampshape(struct monst *);
