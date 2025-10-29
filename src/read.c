@@ -17,8 +17,6 @@ staticfn void stripspe(struct obj *);
 staticfn void p_glow1(struct obj *);
 staticfn void p_glow2(struct obj *, const char *);
 staticfn void p_glow3(struct obj *, const char *);
-staticfn void forget(int);
-staticfn int maybe_tame(struct monst *, struct obj *);
 staticfn void flood_space(coordxy, coordxy, genericptr);
 staticfn void unflood_space(coordxy, coordxy, genericptr);
 staticfn boolean can_center_cloud(coordxy, coordxy);
