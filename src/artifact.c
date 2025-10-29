@@ -1317,16 +1317,13 @@ spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
         gs.spec_dbon_applies = TRUE;
         dbon = rnd(5) + 3;
 
-		/*  Venom and Sleep damage handled in artifact_hit() */
-            if (otmp->oprops & ITEM_VENOM || otmp->oprops & ITEM_SLEEP) {
-                return 0;
-            } else {
-                dbon = rnd(5) + 3;
-//                if (vulnerable_to(mon, adtype))
-//                    dbon = ((3 * dbon) + 1) / 2;
-                return dbon;
-            }
-        return dbon;
+	/*  Venom and Sleep damage handled in artifact_hit() */
+        if (otmp->oprops & ITEM_VENOM || otmp->oprops & ITEM_SLEEP) {
+            return 0;
+        } else {
+            dbon = rnd(5) + 3;
+            return dbon;
+        }
     } else if ((weap == &artilist[ART_NONARTIFACT])
         || (weap->attk.adtyp == AD_PHYS /* check for `NO_ATTK' */
                   && weap->attk.damn == 0 && weap->attk.damd == 0)) {
@@ -1336,7 +1333,6 @@ spec_dbon(struct obj *otmp, struct monst *mon, int tmp)
         /* Grimtooth has SPFX settings to warn against elves but we want its
            damage bonus to apply to all targets, so bypass spec_applies() */
         gs.spec_dbon_applies = TRUE;
-
     } else {
         gs.spec_dbon_applies = spec_applies(weap, mon);
     }
