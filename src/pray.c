@@ -2000,10 +2000,9 @@ sacrifice_your_race(
 }
 
 staticfn int
-bestow_artifact(uchar max_giftvalue)
+bestow_artifact(uchar max_giftvalue UNUSED)
 {
-    int nchance = u.ulevel + 12;
-    int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
+
     boolean do_bestow = u.ulevel > 2 && u.uluck >= 0;
 
     /* Cartomancers get the luck of the draw here...
@@ -2048,7 +2047,7 @@ bestow_artifact(uchar max_giftvalue)
                     "was bestowed with %s by %s",
                     xname(otmp),
                     align_gname(u.ualign.type));
-        /* These don't crack altars, don't count as gifts  */
+
         u.ublesscnt = rnz(300 + (50 * u.ugifts));
         u.lastprayed = svm.moves;
         u.lastprayresult = PRAY_GIFT;
@@ -2056,6 +2055,10 @@ bestow_artifact(uchar max_giftvalue)
         exercise(A_WIS, TRUE);
         return TRUE;
     }
+
+#if 0 /* No artifacts from #offer - NerfHack (TM) */
+    int nchance = u.ulevel + 12;
+    int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
     /* you were already in pretty good standing
     *
     * The player can gain an artifact;
@@ -2125,6 +2128,7 @@ bestow_artifact(uchar max_giftvalue)
             }
         }
     }
+#endif
     return FALSE;
 }
 
@@ -2383,10 +2387,9 @@ offer_corpse(struct obj *otmp, boolean highaltar, aligntyp altaralign)
     } else {
         int orig_luck, luck_increase;
 
-#if 0 /* No artifacts from #offer - NerfHack (TM) */
         if (bestow_artifact(value))
             return;
-#endif
+
         orig_luck = u.uluck;
         luck_increase = (value * LUCKMAX) / (MAXVALUE * 2);
 
