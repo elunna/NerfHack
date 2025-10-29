@@ -1668,7 +1668,7 @@ GAMEOBJ=$(GAMEOBJ:^ =^
 #--------
 #
 
-$(GAMEDIR)\NerfHack.exe : gamedir.tag $(OTTY)consoletty.o \
+$(GAMEDIR)NerfHack.exe : gamedir.tag $(OTTY)consoletty.o \
 			$(ALLOBJTTY) $(CURSESWINCONOBJS) \
 			$(TTYSOUNDOBJS) $(OTTY)date.o $(OTTY)console.res \
 			$(LUALIB) $(TTYOBJTTY) $(PDCWINCONLIB) $(PDCWINCONOBJS) $(OTTYHACKLIB)
@@ -1691,7 +1691,7 @@ $(GAMEDIR)\NerfHack.exe : gamedir.tag $(OTTY)consoletty.o \
 # NetHackW
 #---------
 #
-$(GAMEDIR)\NerfHackW.exe : gamedir.tag $(OGUI)tile.o \
+$(GAMEDIR)NerfHackW.exe : gamedir.tag $(OGUI)tile.o \
 			$(ALLOBJGUI) $(GAMEOBJGUI) $(GUIOBJ) $(GUISOUNDOBJS) \
 			$(CURSESWINGUIOBJS) $(OGUI)date.o \
 			$(OGUI)NetHackW.res \
