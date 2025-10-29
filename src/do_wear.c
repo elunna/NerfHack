@@ -2226,7 +2226,7 @@ armor_or_accessory_off(struct obj *obj)
                     Strcat(what, " and ");
                 Strcat(what, suit_simple_name(uarm));
             }
-            Snprintf(why, sizeof(why), " without taking off your %s first",
+            Snprintf(why, sizeof why, " without taking off your %s first",
                      what);
         } else {
             Strcpy(why, "; it's embedded");
@@ -2280,12 +2280,27 @@ dotakeoff(void)
             pline("Not wearing any armor or accessories.");
         return ECMD_OK;
     }
-    if (Narmorpieces != 1 || ParanoidRemove || cmdq_peek(CQ_CANNED))
+    if (Narmorpieces != 1 || ParanoidRemove || gi.item_action_in_progress)
         otmp = getobj("take off", takeoff_ok, GETOBJ_NOFLAGS);
     if (!otmp)
         return ECMD_CANCEL;
 
     return armor_or_accessory_off(otmp);
+}
+
+/* 'i' or 'I[' followed by <invlet> and then 'T';
+   plain dotakeoff() would not give any feedback when picking suit
+   covered by cloak or shirt covered by suit and/or cloak due to the
+   default behavior of equip_ok() (skipping inaccessible items) */
+int
+ia_dotakeoff(void)
+{
+    int res;
+
+    gi.item_action_in_progress = TRUE;
+    res = dotakeoff();
+    gi.item_action_in_progress = FALSE;
+    return res;
 }
 
 /* the #remove command - take off ring or other accessory */
@@ -3812,14 +3827,14 @@ adj_abon(struct obj *otmp, schar delta)
 }
 
 /* decide whether a worn item is covered up by some other worn item,
-   used for dipping into liquid and applying grease;
+   used for dipping into liquid and applying grease and takeoff_ok();
    some criteria are different than select_off()'s */
 boolean
-inaccessible_equipment(struct obj *obj,
-                       const char *verb, /* "dip" or "grease", or null to
-                                             avoid messages */
-                       boolean only_if_known_cursed) /* ignore covering unless
-                                                        known to be cursed */
+inaccessible_equipment(
+    struct obj *obj,
+    const char *verb, /* "dip" or "grease", or null to avoid messages */
+    boolean only_if_known_cursed) /* ignore covering unless it is known to
+                                   * be cursed */
 {
     static NEARDATA const char need_to_take_off_outer_armor[] =
         "need to take off %s to %s %s.";
@@ -3871,6 +3886,8 @@ inaccessible_equipment(struct obj *obj,
     }
     /* item is not inaccessible */
     return FALSE;
+
+#undef BLOCKSACCESS
 }
 
 /* not a getobj callback - unifies code among the other 4 getobj callbacks */
@@ -3910,9 +3927,11 @@ equip_ok(struct obj *obj, boolean removing, boolean accessory)
      * can't be worn because the slot is filled with something else. */
 
     /* removing inaccessible equipment */
-    if (removing && inaccessible_equipment(obj, (const char *) 0,
-                                           (obj->oclass == RING_CLASS)))
-        return GETOBJ_EXCLUDE_INACCESS;
+    if (removing && !gi.item_action_in_progress) {
+        if (inaccessible_equipment(obj, (const char *) 0,
+                                   (obj->oclass == RING_CLASS)))
+            return GETOBJ_EXCLUDE_INACCESS;
+    }
 
     /* all good to go */
     return GETOBJ_SUGGEST;

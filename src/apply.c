@@ -1,4 +1,4 @@
-/* NetHack 3.7	apply.c	$NHDT-Date: 1737275719 2025/01/19 00:35:19 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.464 $ */
+/* NetHack 3.7	apply.c	$NHDT-Date: 1753856387 2025/07/29 22:19:47 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.472 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -40,6 +40,7 @@ staticfn int set_whetstone(void);
 staticfn int set_trap(void); /* occupation callback */
 staticfn void display_polearm_positions(boolean);
 staticfn void calc_pole_range(int *, int *);
+staticfn boolean snickersnee_used_dist_attk(struct obj *);
 staticfn int use_cream_pie(struct obj *);
 staticfn int jelly_ok(struct obj *);
 staticfn int use_royal_jelly(struct obj **);
@@ -73,14 +74,14 @@ void
 do_blinding_ray(struct obj *obj)
 {
     struct monst *mtmp = bhit(u.dx, u.dy, COLNO, FLASHED_LIGHT,
-                    (int (*) (MONST_P, OBJ_P)) 0,
-                    (int (*) (OBJ_P, OBJ_P)) 0, &obj);
+                              (int (*) (MONST_P, OBJ_P)) 0,
+                              (int (*) (OBJ_P, OBJ_P)) 0, &obj);
 
     obj->ox = u.ux, obj->oy = u.uy; /* flash_hits_mon() wants this */
     if (mtmp) {
         (void) flash_hits_mon(mtmp, obj);
         if (obj->otyp == EXPENSIVE_CAMERA)
-            see_monster_closeup(mtmp);
+            see_monster_closeup(mtmp, TRUE); /* TRUE for photo */
     }
     /* normally bhit() would do this but for FLASHED_LIGHT we want it
        to be deferred until after flash_hits_mon() */
@@ -116,6 +117,7 @@ use_camera(struct obj *obj)
         You("take a picture of the %s.",
             (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
     } else if (!u.dx && !u.dy) {
+        /* TODO:  we ought to have a "selfie" joke here... */
         (void) zapyourself(obj, TRUE);
     } else {
         do_blinding_ray(obj);
@@ -438,7 +440,7 @@ use_stethoscope(struct obj *obj)
             Soundeffect(se_faint_splashing, 35);
             You_hear("faint splashing.");
         } else if (u.dz < 0 || !can_reach_floor(TRUE)) {
-            cant_reach_floor(u.ux, u.uy, (u.dz < 0), TRUE);
+            cant_reach_floor(u.ux, u.uy, (u.dz < 0), TRUE, FALSE);
     } else if (its_dead(u.ux, u.uy, &res, obj)) {
             ; /* message already given */
         } else if (Is_stronghold(&u.uz)) {
@@ -1564,7 +1566,7 @@ use_candle(struct obj **optr)
         } else if (!otmp->spe || otmp->age > obj->age) {
             otmp->age = obj->age;
         }
-        
+
         otmp->spe += (int) obj->quan;
         if (otmp->lamplit && !was_lamplit)
             pline_The("new %s magically %s!", s, vtense(s, "ignite"));
@@ -3902,6 +3904,16 @@ could_pole_mon(void)
     return FALSE;
 }
 
+/* was Snickersnee used to attack at distance this turn already? */
+staticfn boolean
+snickersnee_used_dist_attk(struct obj *obj)
+{
+    if (obj && obj == uwep && u_wield_art(ART_SNICKERSNEE)
+        && svc.context.snickersnee_turn == svm.moves)
+        return TRUE;
+    return FALSE;
+}
+
 /* Distance attacks by pole-weapons */
 int
 use_pole(struct obj *obj, boolean autohit)
@@ -3912,6 +3924,7 @@ use_pole(struct obj *obj, boolean autohit)
     struct monst *mtmp;
     struct monst *hitm = svc.context.polearm.hitmon;
     struct trap *ttmp;
+    boolean freehit = FALSE;
 
     /* Are you allowed to use the pole? */
     if (u.uswallow) {
@@ -3980,8 +3993,25 @@ use_pole(struct obj *obj, boolean autohit)
         if (overexertion())
             return ECMD_TIME; /* burn nutrition; maybe pass out */
         svc.context.polearm.hitmon = mtmp;
+
+        if (snickersnee_used_dist_attk(obj)) {
+            pline_The("blade doesn't reach there!");
+            return ECMD_FAIL;
+        }
+
         check_caitiff(mtmp);
         gn.notonhead = (gb.bhitpos.x != mtmp->mx || gb.bhitpos.y != mtmp->my);
+
+        /* Snickersnee allows one free hit from a distance per turn */
+        if (obj == uwep && u_wield_art(ART_SNICKERSNEE)) {
+            freehit = (svm.moves != svc.context.snickersnee_turn);
+            svc.context.snickersnee_turn = svm.moves;
+            if (freehit && !Deaf) {
+                Soundeffect(se_sword_blade_rings, 100);
+                pline("Shkinng!"); /* /sha-kin!/ */
+            }
+        }
+
         (void) thitmonst(mtmp, uwep);
     } else if (glyph_is_statue(glyph) /* might be hallucinatory */
                && sobj_at(STATUE, gb.bhitpos.x, gb.bhitpos.y)) {
@@ -4025,7 +4055,7 @@ use_pole(struct obj *obj, boolean autohit)
         }
     }
     u_wipe_engr(2); /* same as for melee or throwing */
-    return ECMD_TIME;
+    return freehit ? ECMD_OK : ECMD_TIME;
 }
 
 #undef glyph_is_poleable

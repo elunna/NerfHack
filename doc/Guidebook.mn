@@ -47,7 +47,7 @@
 .ds f0 \*(vr
 .ds f1 \" empty
 .\"DO NOT REMOVE NH_DATESUB .ds f2 Date(%B %-d, %Y)
-.ds f2 May 1, 2025
+.ds f2 October 24, 2025
 .
 .\" A note on some special characters:
 .\" \(lq = left double quote
@@ -2925,7 +2925,7 @@ Some objects of subtle enchantment are difficult to identify without these.
 .pg
 A scroll whose label is known can be read even when the hero is blind.
 If a scroll has been discovered, it will be listed in inventory by type
-rather than by label, but the label is known in that situtaion even though
+rather than by label, but the label is known in that situation even though
 it isn't shown.
 .pg
 Many scrolls produce a different effect from usual if they are blessed or
@@ -3664,7 +3664,7 @@ See the \(lqModifying NetHack Symbols\(rq section.
 Example:
 .sd
 \f(CR# replace small punctuation (tick marks) with digits\fP
-\f(CRSYMBOLS=S_boulder:0,S_golem:7\fP
+\f(CRSYMBOLS=S_golem:7\fP
 .ed
 .lp WIZKIT
 Debug mode only:  extra items to add to initial inventory.
@@ -3699,7 +3699,8 @@ OPTIONS=color           # Display things in color if possible
 OPTIONS=lit_corridor    # Show lit corridors differently
 OPTIONS=hilite_pet,hilite_pile
 # Replace small punctuation (tick marks) with digits
-SYMBOLS=S_boulder:0,S_golem:7
+OPTIONS=boulder:0
+SYMBOLS=S_golem:7
 #
 # No startup splash screen. Windows GUI only.
 OPTIONS=!splash_screen
@@ -6124,20 +6125,6 @@ the message as the only parameter.
 .lp
 MAXPLAYERS\ =\ Limit the maximum number of games that can be running
 at the same time.
-.lp
-SAVEFORMAT\ =\ A list of up to two save file formats separated by space. 
-The first format in the list will written as well as read. The second format 
-will be read only if no save file in the first format exists.
-Valid choices are \(lqhistorical\(rq for binary writing of entire structs, 
-\(lqlendian\(rq for binary writing of each field in little-endian order,
-\(lqascii\(rq for writing the save file content in ascii text.
-.lp
-BONESFORMAT\ =\ A list of up to two bones file formats separated by space. 
-The first format in the list will written as well as read. The second format 
-will be read only if no bones files in the first format exist.
-Valid choices are \(lqhistorical\(rq for binary writing of entire structs, 
-\(lqlendian\(rq for binary writing of each field in little-endian order,
-\(lqascii\(rq for writing the bones file content in ascii text.
 .lp
 SUPPORT\ =\ A string explaining how to get local support (no default value).
 .lp

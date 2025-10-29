@@ -195,6 +195,8 @@ moveloop_core(void)
 #ifdef POSITIONBAR
     do_positionbar();
 #endif
+    if (iflags.pending_customizations)
+        maybe_shuffle_customizations();
 
     dobjsfree();
 
@@ -203,6 +205,9 @@ moveloop_core(void)
 
     if (iflags.sanity_check || iflags.debug_fuzzer)
         sanity_check();
+
+    if (svc.context.resume_wish)
+        makewish(); /* clears resume_wish */
 
     if (svc.context.move) {
         /* actual time passed */
@@ -487,6 +492,13 @@ moveloop_core(void)
     /****************************************/
 
     clear_splitobjs();
+
+    /* the Amulet of Yendor gives a wish when initially picked up */
+    if (u.uhave.amulet && !u.uevent.amulet_wish) {
+        u.uevent.amulet_wish = 1;
+        makewish();
+    }
+
     find_ac();
     if (!svc.context.mv || Blind) {
         /* redo monsters if hallu or wearing a helm of telepathy */

@@ -405,7 +405,8 @@ dosounds(void)
                 You_hear("the chime of a cash register.");
             else
                 You_hear("%s cursing shoplifters.", name);
-           }
+        }
+        noisy_shop(sroom);
         return;
     }
     if (svl.level.flags.has_temple && !rn2(200)
@@ -792,7 +793,7 @@ domonnoise(struct monst *mtmp)
             verbalize("Ugh, what is that smell?");
             break;
         case 5:
-            verbalize("Something really stinks... Is it you?");    
+            verbalize("Something really stinks... Is it you?");
             break;
         }
     }

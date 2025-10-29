@@ -44,6 +44,7 @@ staticfn boolean H2Opotion_dip(struct obj *, struct obj *, boolean,
 staticfn int dip_ok(struct obj *);
 staticfn int dip_hands_ok(struct obj *);
 staticfn void poof(struct obj *);
+staticfn boolean dip_potion_explosion(struct obj *, struct obj *, int, boolean, short);
 staticfn int potion_dip(struct obj *obj, struct obj *potion);
 
 /* used to indicate whether quaff or dip has skipped an opportunity to
@@ -3362,6 +3363,45 @@ poof(struct obj *potion)
     useup(potion);
 }
 
+/* do dipped potion(s) explode? */
+staticfn boolean
+dip_potion_explosion(
+    struct obj *obj,
+    struct obj *potion,
+    int dmg,
+    boolean magic,
+    short mixture)
+{
+    /* NerfHack updates:
+         - if either dipper or dippee is cursed - boom
+         - If the resulting potion should be magic, there is a higher chance of exploding.
+         - Some recipes have explosions built in, that's why I'm using the ACID_VENOM flag.
+    */
+    if (obj->cursed || potion->cursed || obj->otyp == POT_ACID
+        || (obj->otyp == POT_OIL && obj->lamplit)
+        /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
+        || mixture == ACID_VENOM
+        || !rn2((uarmc && uarmc->otyp == ALCHEMY_SMOCK)
+                ? 30
+                : (magic ? !rn2(10) : !rn2(20)))) {
+        /* it would be better to use up the whole stack in advance
+           of the message, but we can't because we need to keep it
+           around for potionbreathe() [and we can't set obj->in_use
+           to 'amt' because that's not implemented] */
+        obj->in_use = 1;
+        pline("%sThey explode!", !Deaf ? "BOOM!  " : "");
+        wake_nearto(u.ux, u.uy, (BOLT_LIM + 1) * (BOLT_LIM + 1));
+        exercise(A_STR, FALSE);
+        if (!Breathless || haseyes(gy.youmonst.data))
+            potionbreathe(obj);
+        useupall(obj);
+        losehp(dmg, /* not physical damage */
+               "alchemic blast", KILLED_BY_AN);
+        return TRUE;
+    }
+    return FALSE;
+}
+
 /* called by dodip() or dip_into() after obj and potion have been chosen */
 staticfn int
 potion_dip(struct obj *obj, struct obj *potion)
@@ -3491,28 +3531,8 @@ potion_dip(struct obj *obj, struct obj *potion)
         useup(potion); /* now gone */
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
-        if (obj->cursed || potion->cursed || obj->otyp == POT_ACID
-            /* oil and lit potions - obviously */
-            || (obj->otyp == POT_OIL && obj->lamplit)
-            /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
-            || mixture == ACID_VENOM
-            /* decrease the chance of non-magical mixtures of exploding */
-            || (magic ? !rn2(10) : !rn2(20))) {
-            /* it would be better to use up the whole stack in advance
-               of the message, but we can't because we need to keep it
-               around for potionbreathe() [and we can't set obj->in_use
-               to 'amt' because that's not implemented] */
-            obj->in_use = 1;
-            pline("%sThey explode!", !Deaf ? "BOOM!  " : "");
-            wake_nearto(u.ux, u.uy, (BOLT_LIM + 1) * (BOLT_LIM + 1));
-            exercise(A_STR, FALSE);
-            if (!Breathless || haseyes(gy.youmonst.data))
-                potionbreathe(obj);
-            useupall(obj);
-            losehp(amt + rnd(9), /* not physical damage */
-                   "alchemic blast", KILLED_BY_AN);
+        if (dip_potion_explosion(obj, potion, amt + rnd(9), magic, mixture))
             return ECMD_TIME;
-        }
 
         obj->blessed = obj->cursed = obj->bknown = 0;
         if (Blind || Hallucination)

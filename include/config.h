@@ -259,7 +259,7 @@
 # ifdef CRASHREPORT
 #  undef CRASHREPORT
 # endif
-# ifdef MSDOS
+# if defined(MSDOS) || defined(NOPANICTRACE)
 #  undef PANICTRACE
 # endif
 #endif
@@ -273,7 +273,7 @@
 # endif
 # ifdef __linux__
 #  define PANICTRACE
-#  ifndef NOSTATICFN	   // may be defined on command line
+#  ifndef NOSTATICFN       // may be defined on command line
 #   define NOSTATICFN
 #  endif
 # endif

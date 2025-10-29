@@ -172,6 +172,7 @@ des.object({ id = "chest", trapped = 0, locked = 1, coord = loc ,
                 des.object()
                 des.object()
                 des.object()
+                des.object("potion of gain level");
              end
 });
 -- Prevent monsters from eating it.  (@'s never eat objects)

@@ -47,8 +47,10 @@
  *      Rule #1:        monsters of a given class are contiguous in the
  *                      mons[] array.
  *
- *      Rule #2:        monsters of a given class are presented in ascending
- *                      order of strength.
+ *      Rule #2:        monsters of a given class are generally kept in
+ *                      the same order as in previous versions of NetHack
+ *                      (they used to be presented in ascending order of
+ *                      strength, but this rule no longer applies).
  *
  *      Rule #3:        monster frequency is included in the geno mask;
  *                      the frequency can be from 0 to 7.  0's will also
@@ -114,7 +116,7 @@
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(20, 5, MS_SILENT, MZ_TINY), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
-        M2_HOSTILE | M2_FLANK, 0,
+        M2_HOSTILE, 0,
         NO_RACE, 7, CLR_BLUE, SOLDIER_ANT),
     MON(NAM("fire ant"), S_ANT,
         LVL(3, 18, 3, 10, 0), (G_GENO | G_SGROUP | 1),
@@ -1243,7 +1245,7 @@
           ATTK(AT_CLAW, AD_PHYS, 5, 6),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1000, 800, MS_BOAST, MZ_LARGE), MR_ACID, 0,
-        M1_CLING | M1_BREATHLESS | M1_HIDE | M1_HUMANOID 
+        M1_CLING | M1_BREATHLESS | M1_HIDE | M1_HUMANOID
           | M1_NOHEAD | M1_THICK_HIDE | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_FLANK, 0,
         NO_RACE, 18, CLR_GRAY, BOULDERER),

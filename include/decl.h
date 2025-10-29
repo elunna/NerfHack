@@ -258,7 +258,7 @@ struct instance_globals_c {
     /* symbols.c */
     int currentgraphics;
 
-    /* files.c */
+    /* files.c, cfgfiles.c */
     char *cmdline_rcfile;  /* set in unixmain.c, used in options.c */
     char *config_section_chosen;
     char *config_section_current;
@@ -296,6 +296,9 @@ struct instance_globals_c {
     short corpsenm_digested; /* monster type being digested, set by gulpum */
 
     /* zap.c */
+    /* new */
+    boolean converted_savefile_loaded;
+
     boolean havestate;
 };
 
@@ -423,6 +426,7 @@ struct instance_globals_g {
     long gmst_moves;
     struct obj *gmst_invent;
     genericptr_t *gmst_ubak, *gmst_disco, *gmst_mvitals;
+    struct spell gmst_spl_book[MAXSPELL + 1];
 
     /* pline.c */
     struct gamelog_line *gamelog;
@@ -475,6 +479,7 @@ struct instance_globals_i {
     /* invent.c */
     char *invbuf;
     unsigned invbufsiz;
+    boolean item_action_in_progress;
     int in_sync_perminvent;
 
     /* mon.c */
@@ -603,6 +608,9 @@ struct instance_globals_m {
 
     /* dokick.c */
     struct rm *maploc;
+
+    /* mhitm.c */
+    struct monst *mswallower; /* for gas spore explosion when it's swallowed*/
 
     /* mhitu.c */
     int mhitu_dieroll;
@@ -739,7 +747,6 @@ struct instance_globals_o {
 
     /* rumors.c */
     int oracle_flg; /* -1=>don't use, 0=>need init, 1=>init done */
-    unsigned long *oracle_loc;
 
     /* uhitm.c */
     boolean override_confirmation; /* Used to flag attacks caused by
@@ -1173,6 +1180,8 @@ struct instance_globals_saved_n {
 struct instance_globals_saved_o {
     /* rumors.c */
     unsigned oracle_cnt; /* oracles are handled differently from rumors... */
+    unsigned long *oracle_loc;
+
     /* other */
     long omoves;  /* level timestamp */
 };

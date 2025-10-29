@@ -83,7 +83,7 @@ Notes:
     logical name NERFHACKOPTIONS to have the value of a quoted string
     containing a comma separated list of option values.  The option names
     are case-insensitive.
-       $ define nethackoptions "noAutoPickup,Dog:Rover,Cat:Felix,DECgraphics"
+       $ define nerfhackoptions "noAutoPickup,Dog:Rover,Cat:Felix,DECgraphics"
     One value you'll probably want to specify is "noLegacy" to turn off
     the initial introductory passage.  The "checkpoint" option controls
     whether or not enough data is saved to disk so that the set of level
@@ -110,7 +110,7 @@ Notes:
     representation) can also be present; see the "Guidebook" for details.
     (Guidebook.txt can be found in the [.doc] subdirectory; a copy gets
     placed in the playground directory by install.com.  Also, an example
-    configuration file can be found in [.win.X11]nethack.rc.)
+    configuration file can be found in [.win.X11]nerfhack.rc.)
 
 3.  termcap is an ASCII data file containing descriptions of terminal
     capabilities and the escape sequences that software must use to take

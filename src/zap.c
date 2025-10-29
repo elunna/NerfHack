@@ -200,16 +200,18 @@ bhitm(struct monst *mtmp, struct obj *otmp)
         /*FALLTHRU*/
     case SPE_FORCE_BOLT:
         reveal_invis = TRUE;
-        if (disguised_mimic)
-            seemimic(mtmp);
         learn_it = cansee(gb.bhitpos.x, gb.bhitpos.y);
         dmg = d(2, 12);
         int orig_dmg = dmg;
         if (resists_magm(mtmp)) { /* match effect on player */
+            if (disguised_mimic && !disguised_as_mon(mtmp))
+                seemimic(mtmp);
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
             /* 3.7: used to 'break' to avoid setting learn_it here */
         } else if (u.uswallow || rnd(20) < 10 + find_mac(mtmp)) {
+            if (disguised_mimic)
+                seemimic(mtmp);
             if (dbldam)
                 dmg *= 2;
             if (otyp == SPE_FORCE_BOLT)
@@ -218,7 +220,8 @@ bhitm(struct monst *mtmp, struct obj *otmp)
             (void) resist(mtmp, otmp->oclass, dmg, TELL);
             dmg += destroy_items(mtmp, AD_PHYS, orig_dmg);
         } else {
-            miss(zap_type_text, mtmp);
+            if (!disguised_mimic)
+                miss(zap_type_text, mtmp);
             learn_it = FALSE;
         }
         break;
@@ -4453,7 +4456,7 @@ zap_map(
     ttmp = t_at(x, y); /* refresh in case trap was altered or is gone */
 
     if (u.dz > 0) { /* zapping down */
-        char ebuf[BUFSZ];
+        char ebuf[BUFSZ], pristinebuf[BUFSZ], *etxt;
         struct engr *e = engr_at(x, y);
 
         /* subset of engraving effects; none sets `disclose' */
@@ -4462,7 +4465,8 @@ zap_map(
             case WAN_POLYMORPH:
             case SPE_POLYMORPH:
                 del_engr(e);
-                make_engr_at(x, y, random_engraving(ebuf), svm.moves, 0);
+                etxt = random_engraving(ebuf, pristinebuf);
+                make_engr_at(x, y, etxt, pristinebuf, svm.moves, 0);
                 break;
             case WAN_CANCELLATION:
             case SPE_CANCELLATION:
@@ -4683,6 +4687,7 @@ bhit(
 
     while (range-- > 0) {
         coordxy x, y;
+        int xyglyph;
 
         gb.bhitpos.x += ddx;
         gb.bhitpos.y += ddy;
@@ -4853,10 +4858,15 @@ bhit(
            because the hero is likely aiming to throw over what seems to
            be an object rather than at it, and for balance because
            otherwise mimics are too easy to identify by throwing gold at
-           them) */
+           them); exception: if the hero knows there is a monster there,
+           they will be aiming at the monster */
+        xyglyph = glyph_at(x, y);
         if (mtmp && (((weapon == THROWN_WEAPON || weapon == KICKED_WEAPON)
                       && (shade_miss(&gy.youmonst, mtmp, obj, TRUE, TRUE)
-                          || M_AP_TYPE(mtmp) == M_AP_OBJECT))
+                          || (M_AP_TYPE(mtmp) == M_AP_OBJECT
+                              && !glyph_is_monster(xyglyph)
+                              && !glyph_is_warning(xyglyph)
+                              && !glyph_is_invisible(xyglyph))))
                      || (weapon == FLASHED_LIGHT
                          && M_AP_TYPE(mtmp) == M_AP_OBJECT)))
             mtmp = (struct monst *) 0;
@@ -5866,13 +5876,13 @@ disintegrate_mon(
 void
 ubuzz(int type, int nd)
 {
-    dobuzz(type, nd, u.ux, u.uy, u.dx, u.dy, TRUE);
+    dobuzz(type, nd, u.ux, u.uy, u.dx, u.dy, TRUE, FALSE);
 }
 
 void
 buzz(int type, int nd, coordxy sx, coordxy sy, int dx, int dy)
 {
-    dobuzz(type, nd, sx, sy, dx, dy, TRUE);
+    dobuzz(type, nd, sx, sy, dx, dy, TRUE, FALSE);
 }
 
 /*
@@ -5890,7 +5900,7 @@ dobuzz(
     int nd,                 /* damage strength ('number of dice') */
     coordxy sx, coordxy sy, /* starting point */
     int dx, int dy,         /* direction delta */
-    boolean say)    /* announce out of sight hit/miss events if true */
+    boolean sayhit, boolean saymiss)    /* announce out of sight hit/miss events if true */
 {
     int range, fltyp = zaptype(type), damgtype = fltyp % 10;
     coordxy lsx, lsy;
@@ -6082,7 +6092,7 @@ dobuzz(
                 } else {
                     if (!otmp) {
                         /* normal non-fatal hit */
-                        if (say || canseemon(mon)) {
+                        if (sayhit || canseemon(mon)) {
                             hit(flash_str(fltyp, FALSE), mon, exclam(tmp));
                             if ((resists_magm(mon) || defended(mon, AD_MAGM)
                                                    || mreflector)
@@ -6121,7 +6131,8 @@ dobuzz(
                 }
                 range -= 2;
             } else {
-                if (say || canseemon(mon))
+                if (saymiss
+                    || (canseemon(mon) && !disguised_as_non_mon(mon)))
                     miss(flash_str(fltyp, FALSE), mon);
             }
         } else if (u_at(sx, sy) && range >= 0) {
@@ -7648,6 +7659,7 @@ makewish(void)
     int tries = 0;
     long oldwisharti = u.uconduct.wisharti;
 
+    svc.context.resume_wish = 0;
     promptbuf[0] = '\0';
     nothing = cg.zeroobj; /* lint suppression; only its address matters */
     if (flags.verbose)
@@ -7658,6 +7670,12 @@ makewish(void)
         Strcat(promptbuf, " (enter 'help' for assistance)");
     Strcat(promptbuf, "?");
     getlin(promptbuf, buf);
+
+    if (iflags.term_gone) {
+        svc.context.resume_wish = 1;
+        return;
+    }
+
     (void) mungspaces(buf);
     if (buf[0] == '\033') {
         buf[0] = '\0';

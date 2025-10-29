@@ -1162,7 +1162,7 @@ breamm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
                           Monnam(mtmp), breathwep_name(typ));
                 gb.buzzer = mtmp;
                 dobuzz(BZ_M_BREATH(BZ_OFS_AD(typ)), (int) mattk->damn,
-                       mtmp->mx, mtmp->my, sgn(gt.tbx), sgn(gt.tby), utarget);
+                       mtmp->mx, mtmp->my, sgn(gt.tbx), sgn(gt.tby), utarget, utarget);
                 gb.buzzer = 0;
                 nomul(0);
                 /* breath runs out sometimes. Also, give monster some
@@ -1503,7 +1503,7 @@ hit_bars(
             dissolve_bars(barsx, barsy);
     } else {
         if (!Deaf) {
-            static enum sound_effect_entries se[] SOUNDLIBONLY = {
+            static enum sound_effect_entries se[] = {
                 se_zero_invalid,
                 se_bars_whang, se_bars_whap, se_bars_flapp,
                 se_bars_clink, se_bars_clonk
@@ -1524,6 +1524,7 @@ hit_bars(
 
             Soundeffect(se[bsindx], 100);
             pline("%s!", barsounds[bsindx]);
+            nhUse(se[bsindx]);
         }
         if (!(harmless_missile(otmp) || is_flimsy(otmp)))
             noise = 4 * 4;

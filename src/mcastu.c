@@ -2241,7 +2241,7 @@ buzzmm(
                       Monnam(caster), mon_nam(mdef),
                       flash_str(BZ_OFS_AD(mattk->adtyp), FALSE));
             dobuzz(BZ_M_SPELL(BZ_OFS_AD(mattk->adtyp)), (int) mattk->damn,
-                caster->mx, caster->my, sgn(gt.tbx), sgn(gt.tby), FALSE);
+                caster->mx, caster->my, sgn(gt.tbx), sgn(gt.tby), FALSE, FALSE);
         } else
             impossible("Monster spell %d cast", mattk->adtyp - 1);
     }

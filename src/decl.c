@@ -282,6 +282,7 @@ static const struct instance_globals_c g_init_c = {
     UNDEFINED_PTR, /* coder */
     /* uhitm.c */
     NON_PM, /* corpsenm_digested */
+    FALSE,  /* converted_savefile_loaded */
     TRUE, /* havestate*/
 };
 
@@ -374,6 +375,7 @@ static const struct instance_globals_g g_init_g = {
     0L, /* gmst_moves */
     NULL, /* gmst_invent */
     NULL, NULL, NULL, /* gmst_ubak, gmst_disco, gmst_mvitals */
+    { DUMMY }, /* gmst_spl_book */
     /* pline.c */
     UNDEFINED_PTR, /* gamelog */
     /* region.c */
@@ -415,6 +417,7 @@ static const struct instance_globals_i g_init_i = {
     /* invent.c */
     NULL, /* invbuf */
     0U, /* invbufsize */
+    FALSE, /* item_action_in_progress */
     0,       /* in_sync_perminvent */
     /* mon.c */
     NULL, /* itermonarr */
@@ -510,6 +513,8 @@ static const struct instance_globals_m g_init_m = {
     UNDEFINED_PTR, /* migrating_mons */
     /* dokick.c */
     UNDEFINED_PTR, /* maploc */
+    /* mhitm.c */
+    UNDEFINED_PTR, /* mswallower */
     /* mhitu.c */
     UNDEFINED_VALUE, /* mhitu_dieroll */
     /* mklev.c */
@@ -606,7 +611,6 @@ static const struct instance_globals_o g_init_o = {
     UNDEFINED_PTR, /* oldfruit */
     /* rumors.c */
     0, /* oracle_flag */
-    UNDEFINED_PTR, /* oracle_loc */
     /* uhitm.c */
     FALSE, /* override_confirmation */
     /* zap.c */
@@ -976,6 +980,8 @@ static const struct instance_globals_saved_n init_svn = {
 static const struct instance_globals_saved_o init_svo = {
     /* rumors.c */
     0U,                                  /* oracle_cnt */
+    UNDEFINED_PTR,                       /* oracle_loc */
+
     /* other */
     0L                                   /* omoves */
 };

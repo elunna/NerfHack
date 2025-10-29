@@ -279,24 +279,36 @@ boolean
 onscary(coordxy x, coordxy y, struct monst *mtmp)
 {
     struct engr *ep;
+    /* <0,0> is used by musical scaring;
+     * it doesn't care about scrolls or engravings or dungeon branch */
+    boolean auditory_scare = (x == 0 && y == 0),
+            magical_scare = !auditory_scare;
 
-    /* creatures who are directly resistant to magical scaring:
-     * humans aren't monsters
-     * uniques have ascended their base monster instincts
-     * Rodney, lawful minions, Angels, the Riders, zombies/revenants,
-     * shopkeepers, inside their own shop, priests inside their own
-     * temple */
+    /* creatures who are directly resistant to any type of scaring:
+     * Rodney, lawful minions, Angels, the Riders */
     if (mtmp->iswiz || mtmp->iscthulhu
         || immune_mgc_scare(mtmp->data)
-        || (mtmp->isshk && inhishop(mtmp))
-        || (mtmp->ispriest && inhistemple(mtmp))
+        //|| is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL]
+        //|| is_rider(mtmp->data)
         || mtmp->mberserk || mtmp->mrabid)
         return FALSE;
 
-    /* <0,0> is used by musical scaring to check for the above;
-     * it doesn't care about scrolls or engravings or dungeon branch */
-    if (x == 0 && y == 0)
-        /* Monsters don't respect musical scaring when aggravated */
+    /* creatures who are directly resistant to magical scaring
+     * based on the mere presence of something at a location:
+     * humans etc.
+     * uniques have ascended their base monster instincts */
+    if (magical_scare
+        && (mtmp->data->mlet == S_HUMAN || unique_corpstat(mtmp->data)))
+        return FALSE;
+
+    /* creatues who resist scaring under particular circumstances:
+     * shopkeepers inside their own shop
+     * priests inside their own temple */
+    if ((mtmp->isshk && inhishop(mtmp))
+        || (mtmp->ispriest && inhistemple(mtmp)))
+        return FALSE;
+
+    if (auditory_scare)
         return Aggravate_monster ? FALSE : TRUE;
 
     /* Vampires are not afraid of altars to moloch altars */
@@ -845,73 +857,8 @@ dochug(struct monst *mtmp)
         return 0;
     }
 
-    /* Erinyes will inform surrounding monsters of your crimes */
-    if (mdat == &mons[PM_ERINYS] && !mtmp->mpeaceful && m_canseeu(mtmp))
-        aggravate();
-
-    /* It is now the considered opinion of historians of leprosy
-       that bells (and also clappers) were not used in medieval
-       Europe to warn the uninfected away. Leprosy often has extreme
-       effects on the larynx, meaning that loss of voice is one of
-       the classic symptoms. Bells and clappers attracted the
-       attention of passers-by after the voice failed.
-        [ The New York Times, Opinion. Feb. 22, 2013 ]
-    */
-    if (mdat == &mons[PM_LEPER] && mtmp->mcanmove &&
-        (otmp = m_carrying(mtmp, BELL)) != 0 && m_canseeu(mtmp) && !rn2(5)) {
-        pline_mon(mtmp, "%s rings %s.", Monnam(mtmp), the(xname(otmp)));
-
-        /* Copied from use_bell; consolidate? */
-        if (otmp->cursed && !rn2(4)
-            /* note: once any of them are gone, we stop all of them */
-            && !(svm.mvitals[PM_WOOD_NYMPH].mvflags & G_GONE)
-            && !(svm.mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
-            && !(svm.mvitals[PM_MOUNTAIN_NYMPH].mvflags & G_GONE)
-            && (mtmp2 = makemon(mkclass(S_NYMPH, 0), u.ux, u.uy,
-                               NO_MINVENT | MM_NOMSG)) != 0) {
-            pline_mon(mtmp, "summons %s!", a_monnam(mtmp2));
-            if (!obj_resists(otmp, 93, 100)) {
-                pline("%s shattered!", Tobjnam(otmp, "have"));
-                useup(otmp);
-            } else {
-                switch (rn2(3)) {
-                default:
-                    break;
-                case 1:
-                    mon_adjust_speed(mtmp2, 2, (struct obj *) 0);
-                    break;
-                case 2: /* no explanation; it just happens... */
-                    aggravate();
-                    if (canseemon(mtmp2)) {
-                        gn.nomovemsg = "";
-                        gm.multi_reason = NULL;
-                        nomul(-rnd(2));
-                    }
-                    break;
-                }
-            }
-            wake_nearby(TRUE);
-        }
-    }
-
-    /* Shriekers and Medusa have irregular abilities which must be
-       checked every turn. These abilities do not cost a turn when
-       used. */
-    if (mdat->msound == MS_SHRIEK && m_canseeu(mtmp))
-        m_respond(mtmp);
-    /* Athols have a greater range than shriekers */
-    if (mdat->msound == MS_ATHOL
-            && !um_dist(mtmp->mx, mtmp->my, 3)
-            && couldsee(mtmp->mx, mtmp->my)) {
-        if (!rn2(10))
-            m_respond(mtmp);
-    }
-    if (mdat == &mons[PM_NAZGUL] || mdat == &mons[PM_BLACK_DRAGON]
-        || mdat == &mons[PM_T_REX])
-        m_respond(mtmp);
-    if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my)
-        && !mtmp->mpeaceful)
-        m_respond(mtmp);
+    /* some monsters have special abilities */
+    m_respond(mtmp);
 
     if (DEADMONSTER(mtmp))
         return 1; /* m_respond gaze can kill medusa */

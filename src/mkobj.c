@@ -1231,8 +1231,7 @@ mksobj_init(struct obj **obj, boolean artif)
     case WAND_CLASS:
         otmp->recharged = 0; /* used to control recharging */
         if (otmp->otyp == WAN_WISHING) {
-            /* The Castle wand is always (1:2) to guarantee 3 wishes. */
-            otmp->spe = 2;
+            otmp->spe = 0;
             otmp->recharged = 1;
         } else if (otmp->otyp == WAN_WONDER) {
             otmp->spe = rn1(10, 15);
@@ -2493,6 +2492,7 @@ save_mtraits(struct obj *obj, struct monst *mtmp)
         mtmp2->nmon = (struct monst *) 0;
         mtmp2->data = (struct permonst *) 0;
         mtmp2->minvent = (struct obj *) 0;
+        MON_NOWEP(mtmp2); /* mtmp2->mw = (struct obj *) 0; */
         if (mtmp->mextra)
             copy_mextra(mtmp2, mtmp);
         /* if mtmp is a long worm with segments, its saved traits will
@@ -3583,7 +3583,7 @@ mon_obj_sanity(struct monst *monlist, const char *mesg)
     for (mon = monlist; mon; mon = mon->nmon) {
         if (DEADMONSTER(mon))
             continue;
-        mwep = MON_WEP(mon);
+        mwep = MON_WEP(mon); /* mon->mw */
         if (mwep) {
             if (!mcarried(mwep))
                 insane_object(mwep, mfmt1, mesg, mon);
@@ -3603,6 +3603,18 @@ mon_obj_sanity(struct monst *monlist, const char *mesg)
             if (obj->in_use || obj->bypass || obj->nomerge
                 || (obj->otyp == BOULDER && obj->next_boulder))
                 insane_obj_bits(obj, mon);
+            if (obj == mwep)
+                mwep = (struct obj *) 0;
+        }
+        if (mwep) {
+            /* this is a monster check rather than an object check, but doing
+               it here avoids making an extra pass through mon's minvent;
+               if the full pass through that list hasn't reset mwep to Null,
+               then mwep isn't in that list where it should be */
+            impossible("monst (%s: %u) wielding %s (%u) not in %s inventory",
+                       pmname(mon->data, Mgender(mon)), mon->m_id,
+                       safe_typename(mwep->otyp), mwep->o_id, mhis(mon));
+
         }
     }
 }

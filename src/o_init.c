@@ -1,10 +1,11 @@
-/* NetHack 3.7	o_init.c	$NHDT-Date: 1720391455 2024/07/07 22:30:55 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.87 $ */
+/* NetHack 3.7	o_init.c	$NHDT-Date: 1756520041 2025/08/29 18:14:01 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.96 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
+#ifndef SFCTOOL
 staticfn void setgemprobs(d_level *);
 staticfn void randomize_gem_colors(void);
 staticfn void shuffle(int, int, boolean);
@@ -380,22 +381,15 @@ savenames(NHFILE *nhfp)
     int i;
     unsigned int len;
 
-    if (perform_bwrite(nhfp)) {
-        for (i = 0; i < (MAXOCLASSES + 2); ++i) {
-            if (nhfp->structlevel) {
-                bwrite(nhfp->fd, (genericptr_t) &svb.bases[i], sizeof (int));
-            }
+    if (update_file(nhfp)) {
+        for (i = 0; i < (MAXOCLASSES + 2); ++i) { 
+            Sfo_int(nhfp, &svb.bases[i], "names-bases");
         }
         for (i = 0; i < NUM_OBJECTS; ++i) {
-            if (nhfp->structlevel) {
-                bwrite(nhfp->fd, (genericptr_t) &svd.disco[i], sizeof (short));
-            }
+            Sfo_short(nhfp, &svd.disco[i], "names-disco");
         }
         for (i = 0; i < NUM_OBJECTS; ++i) {
-            if (nhfp->structlevel) {
-                bwrite(nhfp->fd, (genericptr_t) &objects[i],
-                       sizeof (struct objclass));
-            }
+            Sfo_objclass(nhfp, &objects[i], "names-objclass");
         }
     }
     /* as long as we use only one version of Hack we
@@ -403,12 +397,11 @@ savenames(NHFILE *nhfp)
        oc_uname for all objects */
     for (i = 0; i < NUM_OBJECTS; i++)
         if (objects[i].oc_uname) {
-            if (perform_bwrite(nhfp)) {
+            if (update_file(nhfp)) {
                 len = Strlen(objects[i].oc_uname) + 1;
-                if (nhfp->structlevel) {
-                    bwrite(nhfp->fd, (genericptr_t) &len, sizeof len);
-                    bwrite(nhfp->fd, (genericptr_t) &objects[i].oc_uname[0], len);
-                }
+                Sfo_unsigned(nhfp, &len, "names-len");
+                Sfo_char(nhfp, objects[i].oc_uname, "names-oc_uname",
+                             (int) len);
             }
             if (release_data(nhfp)) {
                 free((genericptr_t) objects[i].oc_uname);
@@ -416,6 +409,7 @@ savenames(NHFILE *nhfp)
             }
         }
 }
+#endif /* !SFCTOOL */
 
 void
 restnames(NHFILE *nhfp)
@@ -424,37 +418,29 @@ restnames(NHFILE *nhfp)
     unsigned int len = 0;
 
     for (i = 0; i < (MAXOCLASSES + 2); ++i) {
-        if (nhfp->structlevel) {
-            mread(nhfp->fd, (genericptr_t) &svb.bases[i], sizeof(int));
-        }
+        Sfi_int(nhfp, &svb.bases[i], "names-bases");
     }
     for (i = 0; i < NUM_OBJECTS; ++i) {
-        if (nhfp->structlevel) {
-            mread(nhfp->fd, (genericptr_t) &svd.disco[i], sizeof(short));
-        }
+        Sfi_short(nhfp, &svd.disco[i], "names-disco");
     }
     for (i = 0; i < NUM_OBJECTS; ++i) {
-        if (nhfp->structlevel) {
-            mread(nhfp->fd, (genericptr_t) &objects[i],
-                  sizeof(struct objclass));
-        }
+        Sfi_objclass(nhfp, &objects[i], "names-objclass");
     }
     for (i = 0; i < NUM_OBJECTS; i++) {
         if (objects[i].oc_uname) {
-            if (nhfp->structlevel) {
-                mread(nhfp->fd, (genericptr_t) &len, sizeof len);
-            }
+            Sfi_unsigned(nhfp, &len, "names-len");
             objects[i].oc_uname = (char *) alloc(len);
-            if (nhfp->structlevel) {
-                mread(nhfp->fd, (genericptr_t) &objects[i].oc_uname[0], len);
-            }
+            Sfi_char(nhfp, objects[i].oc_uname, "names-oc_uname", (int) len);
         }
     }
+#ifndef SFCTOOL
 #ifdef TILES_IN_GLYPHMAP
     shuffle_tiles();
 #endif
+#endif
 }
 
+#ifndef SFCTOOL
 void
 discover_object(
     int oindx,
@@ -588,6 +574,7 @@ sortloot_descr(int otyp, char *outbuf)
             sl_cookie.orderclass, sl_cookie.subclass, sl_cookie.disco);
     return outbuf;
 }
+#endif /* !SFCTOOL */
 
 #define DISCO_BYCLASS      0 /* by discovery order within each class */
 #define DISCO_SORTLOOT     1 /* by discovery order within each subclass */
@@ -602,6 +589,8 @@ static const char *const disco_orders_descr[] = {
     "alphabetical across all classes",
     (char *) 0
 };
+
+#ifndef SFCTOOL
 
 int
 choose_disco_sort(
@@ -710,9 +699,10 @@ disco_append_typename(char *buf, int dis)
 
 /* sort and output sorted_lines to window and free the lines */
 staticfn void
-disco_output_sorted(winid tmpwin,
-                    char **sorted_lines, int sorted_ct,
-                    boolean lootsort)
+disco_output_sorted(
+    winid tmpwin,
+    char **sorted_lines, int sorted_ct,
+    boolean lootsort)
 {
     char *p;
     int j;
@@ -720,6 +710,7 @@ disco_output_sorted(winid tmpwin,
     qsort(sorted_lines, sorted_ct, sizeof (char *), discovered_cmp);
     for (j = 0; j < sorted_ct; ++j) {
         p = sorted_lines[j];
+        assert(p != NULL); /* pacify static analyzer */
         if (lootsort) {
             p[6] = p[0]; /* '*' or ' ' */
             p += 6;
@@ -1137,6 +1128,7 @@ rename_disco(void)
     destroy_nhwindow(tmpwin);
     return;
 }
+#endif /* !SFCTOOL */
 
 void
 get_sortdisco(char *opts, boolean cnf)

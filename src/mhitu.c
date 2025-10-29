@@ -668,6 +668,22 @@ calc_mattacku_vars(
     gn.notonhead = FALSE;
 }
 
+/* return TRUE iff monster or hero is trapped in a (spiked) pit */
+boolean
+mtrapped_in_pit(struct monst *mtmp)
+{
+    struct trap *ttmp = 0;
+
+    if (mtmp == &gy.youmonst)
+        ttmp = (u.utrap && u.utraptype == TT_PIT) ? t_at(u.ux, u.uy) : 0;
+    else
+        ttmp = mtmp->mtrapped ? t_at(mtmp->mx, mtmp->my) : 0;
+
+    if (ttmp && is_pit(ttmp->ttyp))
+        return TRUE;
+    return FALSE;
+}
+
 /*
  * mattacku: monster attacks you
  *      returns 1 if monster dies (e.g. "yellow light"), 0 otherwise
@@ -1029,6 +1045,8 @@ mattacku(struct monst *mtmp)
             /* if hero was found but isn't anymore, avoid wildmiss now */
             if (firstfoundyou && !foundyou)
                 continue; /* set sum[i] to 'miss' but skip other actions */
+            if (!u_at(gb.bhitpos.x, gb.bhitpos.y))
+                continue;
         }
         mon_currwep = (struct obj *) 0;
         mattk = getmattk(mtmp, &gy.youmonst, i, sum, &alt_attk);
@@ -1046,6 +1064,8 @@ mattacku(struct monst *mtmp)
         case AT_TUCH:
         case AT_BUTT:
         case AT_TENT:
+            if (mattk->aatyp == AT_KICK && mtrapped_in_pit(mtmp))
+                continue;
             if (!range2 && (!MON_WEP(mtmp) || mtmp->mconf || Conflict
                             || !touch_petrifies(gy.youmonst.data))) {
                 if (foundyou) {
@@ -1184,6 +1204,7 @@ mattacku(struct monst *mtmp)
                     if (mon_currwep) {
                         boolean bash = (is_pole(mon_currwep)
                                         && mon_currwep->otyp != SCYTHE
+                                        && !is_art(mon_currwep, ART_SNICKERSNEE)
                                         && m_next2u(mtmp));
 
                         hittmp = hitval(mon_currwep, &gy.youmonst);
@@ -1552,7 +1573,8 @@ hitmu(struct monst *mtmp, struct attack *mattk)
         exercise(A_CON, FALSE);
     }
 
-    if (mhm.damage) {
+    if (mhm.damage > 0) {
+        /* [Half_physical_damage isn't applied to mhm.permdmg] */
         if (Half_physical_damage
             /* Mitre of Holiness, even if not currently blessed */
             || (Role_if(PM_CLERIC) && uarmh && is_quest_artifact(uarmh)
@@ -1645,7 +1667,7 @@ gulp_blnd_check(void)
     return FALSE;
 }
 
-/* monster swallows you, or damage if u.uswallow */
+/* monster swallows you, or damage if already swallowed (u.uswallow != 0) */
 staticfn int
 gulpmu(struct monst *mtmp, struct attack *mattk)
 {
@@ -1974,7 +1996,9 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
     if (physical_damage)
         tmp = Maybe_Half_Phys(tmp);
 
+    gm.mswallower = mtmp; /* match gulpmm() */
     mdamageu(mtmp, tmp);
+    gm.mswallower = 0;
     if (tmp)
         stop_occupation();
 

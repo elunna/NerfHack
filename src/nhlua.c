@@ -25,6 +25,7 @@
 
 struct e;
 
+#ifndef SFCTOOL
 /* lua_CFunction prototypes */
 #ifdef DUMPLOG
 staticfn int nhl_dump_fmtstr(lua_State *);
@@ -91,7 +92,9 @@ staticfn void nhl_warn(void *, const char *, int);
 staticfn void nhl_clearfromtable(lua_State *, int, int, struct e *);
 staticfn int nhl_panic(lua_State *);
 staticfn void nhl_hookfn(lua_State *, lua_Debug *);
+#endif /* !SFCTOOL */
 
+#ifndef SFCTOOL
 static const char *const nhcore_call_names[NUM_NHCORE_CALLS] = {
     "start_new_game",
     "restore_old_game",
@@ -102,6 +105,7 @@ static const char *const nhcore_call_names[NUM_NHCORE_CALLS] = {
     "leave_tutorial",
 };
 static boolean nhcore_call_available[NUM_NHCORE_CALLS];
+#endif
 
 /* internal structure that hangs off L->ud (but use lua_getallocf() )
  * Note that we use it for both memory use tracking and instruction counting.
@@ -126,6 +130,7 @@ typedef struct nhl_user_data {
 #endif
 } nhl_user_data;
 
+#ifndef SFCTOOL
 static lua_State *luapat;   /* instance for file pattern matching */
 
 void
@@ -1296,21 +1301,26 @@ get_nh_lua_variables(void)
 
 RESTORE_WARNING_UNREACHABLE_CODE
 
+#endif /* !SFCTOOL */
+
+#ifdef SFCTOOL
+char *lua_data;
+#endif
+
 /* save nh_lua_variables table to file */
 void
 save_luadata(NHFILE *nhfp)
 {
     unsigned lua_data_len;
+#ifndef SFCTOOL
     char *lua_data = get_nh_lua_variables(); /* note: '\0' terminated */
+#endif
 
     if (!lua_data)
         lua_data = dupstr(emptystr);
     lua_data_len = Strlen(lua_data) + 1; /* +1: include the terminator */
-    if (nhfp->structlevel) {
-        bwrite(nhfp->fd, (genericptr_t) &lua_data_len,
-               (unsigned) sizeof lua_data_len);
-        bwrite(nhfp->fd, (genericptr_t) lua_data, lua_data_len);
-    }
+    Sfo_unsigned(nhfp, &lua_data_len, "luadata-lua_data_len");
+    Sfo_char(nhfp, lua_data, "luadata", lua_data_len);
     free(lua_data);
 }
 
@@ -1319,21 +1329,24 @@ void
 restore_luadata(NHFILE *nhfp)
 {
     unsigned lua_data_len = 0;
+#ifndef SFCTOOL
     char *lua_data;
-    if (nhfp->structlevel) {
-        mread(nhfp->fd, (genericptr_t) &lua_data_len,
-              (unsigned) sizeof lua_data_len);
-    }
+#endif /* !SFCTOOL */
+
+    Sfi_unsigned(nhfp, &lua_data_len, "luadata-lua_data_len");
     lua_data = (char *) alloc(lua_data_len);
-    if (nhfp->structlevel) {
-        mread(nhfp->fd, (genericptr_t) lua_data, lua_data_len);
-    }
+    Sfi_char(nhfp, lua_data, "luadata", lua_data_len);
+
+#ifndef SFCTOOL
     if (!gl.luacore)
         l_nhcore_init();
     luaL_loadstring(gl.luacore, lua_data);
     free(lua_data);
     nhl_pcall_handle(gl.luacore, 0, 0, "restore_luadata", NHLpa_panic);
+#endif /* !SFCTOOL */
 }
+
+#ifndef SFCTOOL
 
 /* local stairs = stairways(); */
 staticfn int
@@ -1671,6 +1684,7 @@ nhl_gamestate(lua_State *L)
     struct obj *otmp;
     int argc = lua_gettop(L);
     boolean reststate = (argc > 0) ? lua_toboolean(L, -1) : FALSE;
+    int otyp;
 
     debugpline4("gamestate: %d:%d (%c vs %c)", u.uz.dnum, u.uz.dlevel,
                 reststate ? 'T' : 'F', gg.gmst_stored ? 't' : 'f');
@@ -1702,11 +1716,18 @@ nhl_gamestate(lua_State *L)
         assert(gg.gmst_mvitals != NULL);
         (void) memcpy((genericptr_t) &svm.mvitals, gg.gmst_mvitals,
                       sizeof svm.mvitals);
+        /* clear user-given object type names */
+        for (otyp = 0; otyp < NUM_OBJECTS; otyp++)
+            if (objects[otyp].oc_uname) {
+                free(objects[otyp].oc_uname);
+                objects[otyp].oc_uname = (char *) 0;
+            }
         /* some restored state would confuse the level change in progress */
         u.uz = cur_uz, u.uz0 = cur_uz0;
         init_uhunger();
         free_tutorial(); /* release gg.gmst_XYZ */
         gg.gmst_stored = FALSE;
+        (void) memcpy(svs.spl_book, gg.gmst_spl_book, sizeof svs.spl_book);
     } else if (!reststate && !gg.gmst_stored) {
         /* store game state */
         gg.gmst_moves = svm.moves;
@@ -1727,6 +1748,8 @@ nhl_gamestate(lua_State *L)
         gg.gmst_mvitals = (genericptr_t) alloc(sizeof svm.mvitals);
         (void) memcpy(gg.gmst_mvitals, (genericptr_t) &svm.mvitals,
                       sizeof svm.mvitals);
+        (void) memcpy(gg.gmst_spl_book, svs.spl_book, sizeof svs.spl_book);
+        (void) memset(svs.spl_book, 0, sizeof(svs.spl_book));
         gg.gmst_stored = TRUE;
     } else {
         impossible("nhl_gamestate: inconsistent state (%s vs %s)",
@@ -3014,6 +3037,8 @@ nhlL_newstate(nhl_sandbox_info *sbi, const char *name)
 
     return L;
 }
+
+#endif /* !SFCTOOL */
 
 /*
 (See end of comment for conclusion.)

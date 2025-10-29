@@ -48,7 +48,7 @@
 \author{Original version - Eric S. Raymond\\
 (Edited and expanded for 3.7.0 by Mike Stephenson and others)}
 %DO NOT REMOVE NH_DATESUB \date{Date(%B %-d, %Y)}
-\date{May 1, 2025}
+\date{October 24, 2025}
 
 \maketitle
 
@@ -3164,7 +3164,7 @@ Some objects of subtle enchantment are difficult to identify without these.
 %.pg
 A scroll whose label is known can be read even when the hero is blind.
 If a scroll has been discovered, it will be listed in inventory by type
-rather than by label, but the label is known in that situtaion even though
+rather than by label, but the label is known in that situation even though
 it isn't shown.
 
 %.pg
@@ -4015,7 +4015,7 @@ Example:
 %.sd
 \begin{verbatim}
    # replace small punctuation (tick marks) with digits
-   SYMBOLS=S_boulder:0,S_golem:7
+   SYMBOLS=S_golem:7
 \end{verbatim}
 %.ed
 
@@ -4051,7 +4051,8 @@ Here is an example of configuration file contents:
     OPTIONS=lit_corridor    # Show lit corridors differently
     OPTIONS=hilite_pet,hilite_pile
     # Replace small punctuation (tick marks) with digits
-    SYMBOLS=S_boulder:0,S_golem:7
+    OPTIONS=boulder:0
+    SYMBOLS=S_golem:7
 
     # No startup splash screen. Windows GUI only.
     OPTIONS=!splash_screen
@@ -6770,22 +6771,6 @@ the message as the only parameter.
 %.lp
 \item[\ib{MAXPLAYERS}]
 Limit the maximum number of games that can be running at the same time.
-%.lp
-\item[\ib{SAVEFORMAT}]
-A list of up to two save file formats separated by space. 
-The first format in the list will written as well as read. The second format 
-will be read only if no save file in the first format exists.
-Valid choices are ``{\tt historical}'' for binary writing of entire structs, 
-``{\tt lendian}'' for binary writing of each field in little-endian order,
-``{\tt ascii}'' for writing the save file content in ascii text.
-%.lp
-\item[\ib{BONESFORMAT}]
-A list of up to two bones file formats separated by space. 
-The first format in the list will written as well as read. The second
-format will be read only if no bones files in the first format exist.
-Valid choices are ``{\tt historical}'' for binary writing of entire structs, 
-``{\tt lendian}'' for binary writing of each field in little-endian order,
-``{\tt ascii}'' for writing the bones file content in ascii text.
 %.lp
 \item[\ib{SUPPORT}]
 A string explaining how to get local support (no default value).

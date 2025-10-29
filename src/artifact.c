@@ -8,6 +8,8 @@
 #include "artilist.h"
 #include "math.h"
 
+#ifndef SFCTOOL
+
 /*
  * Note:  both artilist[] and artiexist[] have a dummy element #0,
  *        so loops over them should normally start at #1.  The primary
@@ -30,6 +32,20 @@ staticfn int prop_applies(struct obj *, struct monst *)
                                                                  NONNULLARG12;
 staticfn int invoke_ok(struct obj *);
 staticfn void nothing_special(struct obj *) NONNULLARG1;
+staticfn int invoke_taming(struct obj *) NONNULLARG1;
+staticfn int invoke_healing(struct obj *) NONNULLARG1;
+staticfn int invoke_energy_boost(struct obj *) NONNULLARG1;
+staticfn int invoke_untrap(struct obj *) NONNULLARG1;
+staticfn int invoke_charge_obj(struct obj *) NONNULLARG1;
+staticfn int invoke_create_portal(struct obj *) NONNULLARG1;
+staticfn int invoke_create_ammo(struct obj *) NONNULLARG1;
+staticfn int invoke_banish(struct obj *) NONNULLARG1;
+staticfn int invoke_fling_poison(struct obj *) NONNULLARG1;
+staticfn int invoke_storm_spell(struct obj *) NONNULLARG1;
+staticfn int invoke_blinding_ray(struct obj *) NONNULLARG1;
+staticfn int invoke_summoning(struct obj *) NONNULLARG1;
+staticfn int invoke_uncurse(struct obj *) NONNULLARG1;
+staticfn int invoke_lightning(struct obj *) NONNULLARG1;
 staticfn int arti_invoke(struct obj *);
 staticfn boolean Mb_hit(struct monst * magr, struct monst *mdef,
                       struct obj *, int *, int, boolean, char *);
@@ -52,6 +68,7 @@ staticfn boolean is_redundant_prop(struct obj *, int);
    Note: this will still break if they have more than about half the number
    of hit points that will fit in a 15 bit integer. */
 #define FATAL_DAMAGE_MODIFIER 200
+#endif /* SFCTOOL */
 
 /* arti_info struct definition moved to artifact.h */
 
@@ -66,6 +83,8 @@ static xint16 artidisco[NROFARTIFACTS];
  * bulk re-init if game restart ever gets implemented.  They are saved
  * and restored but that is done through this file so they can be local.
  */
+
+#ifndef SFCTOOL
 static const struct arti_info zero_artiexist = {0}; /* all bits zero */
 
 staticfn void hack_artifacts(void);
@@ -108,35 +127,32 @@ save_artifacts(NHFILE *nhfp)
 {
     int i;
 
-    for (i = 0; i < (NROFARTIFACTS + 1); ++i) {
-        if (nhfp->structlevel)
-            bwrite(nhfp->fd, (genericptr_t) &artiexist[i],
-                   sizeof (struct arti_info));
-    }
-    for (i = 0; i < (NROFARTIFACTS); ++i) {
-        if (nhfp->structlevel)
-            bwrite(nhfp->fd, (genericptr_t) &artidisco[i],
-                   sizeof (xint16));
-    }
+    for (i = 0; i < (NROFARTIFACTS + 1); ++i)
+        Sfo_arti_info(nhfp, &artiexist[i], "artiexist");
+
+    for (i = 0; i < NROFARTIFACTS; ++i)
+        Sfo_xint16(nhfp, &artidisco[i], "artidisco");
 }
+
+#endif /* SFCTOOL */
 
 void
 restore_artifacts(NHFILE *nhfp)
 {
     int i;
 
-    for (i = 0; i < (NROFARTIFACTS + 1); ++i) {
-        if (nhfp->structlevel)
-            mread(nhfp->fd, (genericptr_t) &artiexist[i],
-                  sizeof (struct arti_info));
-    }
-    for (i = 0; i < (NROFARTIFACTS); ++i) {
-        if (nhfp->structlevel)
-            mread(nhfp->fd, (genericptr_t) &artidisco[i],
-                  sizeof (xint16));
-    }
+    for (i = 0; i < (NROFARTIFACTS + 1); ++i)
+        Sfi_arti_info(nhfp, &artiexist[i], "artiexist");
+    for (i = 0; i < NROFARTIFACTS; ++i)
+        Sfi_short(nhfp, &artidisco[i], "artidisco");
+#ifndef SFCTOOL
     hack_artifacts();   /* redo non-saved special cases */
+#else
+    nhUse(artilist);
+#endif
 }
+
+#ifndef SFCTOOL
 
 const char *
 artiname(int artinum)
@@ -298,7 +314,7 @@ mk_artifact(
             otmp = 0;
         } /* otherwise, otmp has not changed; just fallthrough to return it */
     }
-    if (permapoisoned(otmp))
+    if (otmp && permapoisoned(otmp))
         otmp->opoisoned = 1;
     return otmp;
 }
@@ -2633,9 +2649,402 @@ nothing_special(struct obj *obj)
 }
 
 staticfn int
+invoke_taming(struct obj *obj UNUSED)
+{
+    struct obj pseudo;
+
+    pseudo = cg.zeroobj; /* neither cursed nor blessed, zero oextra too */
+    pseudo.otyp = SCR_TAMING;
+    (void) seffects(&pseudo);
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_healing(struct obj *obj)
+{
+    int healamt = (u.uhpmax + 1 - u.uhp) / 2;
+    long creamed = (long) u.ucreamed;
+
+    if (Upolyd)
+        healamt = (u.mhmax + 1 - u.mh) / 2;
+    if (healamt || Sick || Slimed || HWithering || Rabid || Blinded > creamed)
+        You_feel("better.");
+    if (healamt || Sick || Slimed || BlindedTimeout > creamed)
+        You_feel("%sbetter.",
+                 (!healamt && !Sick && !Slimed
+                  /* when healing temporary blindness (aside from
+                     goop covering face), might still be blind
+                     due to PermaBlind or eyeless polymorph;
+                     vary the message in that situation */
+                  && (HBlinded & ~TIMEOUT) != 0L) ? "slightly " : "");
+    else {
+        nothing_special(obj);
+        return ECMD_TIME;
+    }
+    if (healamt > 0) {
+        if (Upolyd)
+            u.mh += healamt;
+        else
+            u.uhp += healamt;
+    }
+    if (HWithering)
+        make_withering(0L, TRUE);
+    if (Sick)
+        make_sick(0L, (char *) 0, FALSE, SICK_ALL);
+    if (Rabid)
+        make_rabid(0L, (char *) 0, 0, (char *) 0);
+    if (Slimed)
+        make_slimed(0L, (char *) 0);
+    if (BlindedTimeout > creamed)
+        make_blinded(creamed, FALSE);
+    disp.botl = TRUE;
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_energy_boost(struct obj *obj)
+{
+    int epboost = (u.uenmax + 1 - u.uen) / 2;
+
+    if (epboost > 120)
+        epboost = 120; /* arbitrary */
+    else if (epboost < 12)
+        epboost = u.uenmax - u.uen;
+    if (epboost) {
+        u.uen += epboost;
+        disp.botl = TRUE;
+        You_feel("re-energized.");
+    } else {
+        nothing_special(obj);
+        return ECMD_TIME;
+    }
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_untrap(struct obj *obj)
+{
+    if (!untrap(TRUE, 0, 0, (struct obj *) 0)) {
+        obj->age = 0; /* don't charge for changing their mind */
+        return ECMD_CANCEL;
+    }
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_charge_obj(struct obj *obj)
+{
+    const struct artifact *oart = get_artifact(obj);
+    struct obj *otmp = getobj("charge", charge_ok,
+                              GETOBJ_PROMPT | GETOBJ_ALLOWCNT);
+    boolean b_effect;
+
+    if (!otmp) {
+        obj->age = 0;
+        return ECMD_CANCEL;
+    }
+    b_effect = (obj->blessed && (oart->role == Role_switch
+                                 || oart->role == NON_PM));
+    recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0);
+    update_inventory();
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_create_portal(struct obj *obj)
+{
+    int i, num_ok_dungeons, last_ok_dungeon = 0;
+    d_level newlev;
+    winid tmpwin = create_nhwindow(NHW_MENU);
+    anything any;
+    int clr = NO_COLOR;
+
+    /* Branchports in Gehennom inflict pain unless you've killed
+       the wizard */
+    boolean tele_pain = !u.uevent.udemigod && (On_W_tower_level(&u.uz)
+                                || In_tower(&u.uz) || In_hell(&u.uz));
+    if (tele_pain) {
+        You_feel("a powerful force confront you.");
+        if (y_n("Continue teleporting?") != 'y')
+            return ECMD_TIME;
+    }
+
+    if (obj->oartifact == ART_GLYPH_SHARD) {
+        if (u.shard_key.dnum < 0 && u.shard_key.dlevel < 0) {
+            Your("shard has not been keyed to a level yet...");
+            return ECMD_CANCEL;
+        }
+        newlev.dnum = u.shard_key.dnum;
+        newlev.dlevel = u.shard_key.dlevel;
+        goto shard_travel;
+    }
+
+
+    any = cg.zeroany; /* set all bits to zero */
+    start_menu(tmpwin, MENU_BEHAVE_STANDARD);
+    /* use index+1 (can't use 0) as identifier */
+    for (i = num_ok_dungeons = 0; i < svn.n_dgns; i++) {
+        if (!svd.dungeons[i].dunlev_ureached)
+            continue;
+        if (i == tutorial_dnum) /* can't portal into tutorial */
+            continue;
+        any.a_int = i + 1;
+        add_menu(tmpwin, &nul_glyphinfo, &any, 0, 0,
+                 ATR_NONE, clr,
+                 svd.dungeons[i].dname, MENU_ITEMFLAGS_NONE);
+        num_ok_dungeons++;
+        last_ok_dungeon = i;
+    }
+    end_menu(tmpwin, "Open a portal to which dungeon?");
+    if (num_ok_dungeons > 1) {
+        /* more than one entry; display menu for choices */
+        menu_item *selected;
+        int n;
+
+        n = select_menu(tmpwin, PICK_ONE, &selected);
+        if (n <= 0) {
+            destroy_nhwindow(tmpwin);
+            nothing_special(obj);
+            return ECMD_TIME;
+        }
+        i = selected[0].item.a_int - 1;
+        free((genericptr_t) selected);
+    } else
+        i = last_ok_dungeon; /* also first & only OK dungeon */
+    destroy_nhwindow(tmpwin);
+
+    /*
+     * i is now index into dungeon structure for the new dungeon.
+     * Find the closest level in the given dungeon, open
+     * a use-once portal to that dungeon and go there.
+     * Go to the entry.
+     */
+    newlev.dnum = i;
+    newlev.dlevel = svd.dungeons[i].entry_lev;
+
+shard_travel:
+
+    if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
+        /* The Glyph Shard allows portaling within the same dungeon
+           as well as other dungeons. */
+        || (newlev.dnum == u.uz.dnum && obj->oartifact != ART_GLYPH_SHARD)
+        || !next_to_u()) {
+        You_feel("very disoriented for a moment.");
+    } else {
+        if (!Blind)
+            You("are surrounded by a shimmering sphere!");
+        else
+            You_feel("weightless for a moment.");
+        goto_level(&newlev, FALSE, FALSE, FALSE);
+        if (tele_pain)
+            teleport_pain();
+    }
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_create_ammo(struct obj *obj)
+{
+    struct obj *otmp = mksobj(ARROW, TRUE, FALSE);
+
+    if (!otmp) {
+        nothing_special(obj);
+        return ECMD_TIME;
+    }
+    otmp->blessed = obj->blessed;
+    otmp->cursed = obj->cursed;
+    otmp->bknown = obj->bknown;
+    otmp->oeroded = otmp->oeroded2 = 0;
+    if (obj->blessed) {
+        if (otmp->spe < 0)
+            otmp->spe = 0;
+        otmp->quan += rnd(10);
+    } else if (obj->cursed) {
+        if (otmp->spe > 0)
+            otmp->spe = 0;
+    } else
+        otmp->quan += rnd(5);
+    otmp->owt = weight(otmp);
+    otmp = hold_another_object(otmp, "Suddenly %s out.",
+                               aobjnam(otmp, "fall"), (char *) 0);
+    nhUse(otmp);
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_banish(struct obj *obj UNUSED)
+{
+    int nvanished = 0, nstayed = 0;
+    struct monst *mtmp, *mtmp2;
+    d_level dest;
+
+    find_hell(&dest);
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp2) {
+        int chance = 1;
+
+        mtmp2 = mtmp->nmon;
+        if (DEADMONSTER(mtmp) || !isok(mtmp->mx, mtmp->my))
+            continue;
+        if (!is_demon(mtmp->data) && mtmp->data->mlet != S_IMP)
+            continue;
+        if (!couldsee(mtmp->mx, mtmp->my))
+            continue;
+        if (mtmp->data->msound == MS_NEMESIS)
+            continue;
+
+        if (In_quest(&u.uz) && !svq.quest_status.killed_nemesis)
+            chance += 10;
+        if (is_dprince(mtmp->data))
+            chance += 2;
+        if (is_dlord(mtmp->data))
+            chance++;
+
+        mtmp->msleeping = mtmp->mtame = mtmp->mpeaceful = 0;
+        if (chance <= 1 || !rn2(chance)) {
+            if (!Inhell) {
+                nvanished++;
+                /* banish to a random level in Gehennom */
+                dest.dlevel = rn2(dunlevs_in_dungeon(&dest));
+                migrate_mon(mtmp, ledger_no(&dest), MIGR_RANDOM);
+            } else {
+                u_teleport_mon(mtmp, FALSE);
+            }
+        } else {
+            nstayed++;
+        }
+    }
+
+    if (nvanished) {
+        char subject[] = "demons";
+
+        if (nvanished == 1)
+            *(eos(subject) - 1) = '\0'; /* remove 's' */
+        pline("%s %s %s in a cloud of brimstone!",
+              nstayed ? ((nvanished > nstayed)
+                         ? "Most of the"
+                         : "Some of the")
+              : "The",
+              subject, vtense(subject, "disappear"));
+    }
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_fling_poison(struct obj *obj)
+{
+    if (getdir((char *) 0)) {
+        int venom = rn2(2) ? BLINDING_VENOM : ACID_VENOM;
+        struct obj *otmp = mksobj(venom, TRUE, FALSE);
+
+        otmp->spe = 1; /* the poison is yours */
+        throwit(otmp, 0L, FALSE, (struct obj *) 0);
+    } else {
+        /* no direction picked */
+        pline("%s", Never_mind);
+        obj->age = svm.moves;
+        return ECMD_CANCEL;
+    }
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_storm_spell(struct obj *obj)
+{
+    const struct artifact *oart = get_artifact(obj);
+    int storm = oart->inv_prop == SNOWSTORM ? SPE_CONE_OF_COLD : SPE_FIREBALL;
+    int skill = spell_skilltype(storm);
+    int expertise = P_SKILL(skill);
+
+    P_SKILL(skill) = P_EXPERT;
+    (void) spelleffects(storm, FALSE, TRUE);
+    P_SKILL(skill) = expertise;
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_blinding_ray(struct obj *obj)
+{
+    if (getdir((char *) 0)) {
+        if (u.dx || u.dy) {
+            do_blinding_ray(obj);
+        } else if (u.dz) {
+            /* up or down => light this map spot; litroom() uses
+               radius 0 for Sunsword, except on Rogue level where
+               whole room gets lit and corridor spots remain unlit */
+            litroom(TRUE, obj);
+            pline("%s", ((!Blind && levl[u.ux][u.uy].lit
+                          && !levl[u.ux][u.uy].waslit)
+                         ? "It is lit here now."
+                         : nothing_seems_to_happen));
+        } else { /* zapyourself() */
+            boolean vulnerable = (u.umonnum == PM_GREMLIN);
+            int damg = obj->blessed ? 15 : !obj->cursed ? 10 : 5;
+
+            if (vulnerable) /* could be fatal if Unchanging */
+                (void) lightdamage(obj, TRUE, 2 * damg);
+
+            if (!flashburn((long) (damg + rnd(damg)), FALSE)
+                && !vulnerable)
+                pline("%s", nothing_seems_to_happen);
+        }
+    } else {
+        /* no direction picked */
+        pline("%s", Never_mind);
+        obj->age = svm.moves;
+        return ECMD_CANCEL;
+    }
+    return ECMD_TIME;
+}
+
+
+staticfn int
+invoke_summoning(struct obj *obj)
+{
+    /* In SpliceHack, the Holographic Void Lily would summon 4-10 random spell beings.
+     * Now, it has an entirely different mechanic. It lights up for 25-50 turns and
+     * while lit, allows for a much higher rate of card drops. */
+    if (!obj->lamplit) {
+        obj->age = rn1(26, 25);
+        if (!Blind)
+            pline("%s starts to glow radiantly!", The(xname(obj)));
+        begin_burn(obj, FALSE);
+    }
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_uncurse(struct obj *obj UNUSED)
+{
+    struct obj pseudo = cg.zeroobj;
+    pseudo.blessed = 1;
+    pseudo.otyp = SCR_REMOVE_CURSE;
+    (void) seffects(&pseudo);
+    return ECMD_TIME;
+}
+
+staticfn int
+invoke_lightning(struct obj *obj UNUSED)
+{
+    struct obj pseudo;
+    pseudo = cg.zeroobj;
+    pseudo.otyp = WAN_LIGHTNING;
+
+    if (!getdir(NULL) || (!u.dx && !u.dy && !u.dz)) {
+        int damage = zapyourself(&pseudo, TRUE);
+        if (damage > 0)
+            losehp(damage, "struck by lightning", NO_KILLER_PREFIX);
+    } else {
+        buzz(ZT_SPELL(ZT_LIGHTNING), 8, u.ux, u.uy, u.dx, u.dy);
+    }
+    return ECMD_TIME;
+}
+
+staticfn int
 arti_invoke(struct obj *obj)
 {
     const struct artifact *oart;
+    int res = ECMD_OK;
 
     if (!obj) {
         impossible("arti_invoke without obj");
@@ -2656,370 +3065,39 @@ arti_invoke(struct obj *obj)
             /* the artifact is tired :-) */
             You_feel("that %s %s ignoring you.", the(xname(obj)),
                      otense(obj, "are"));
-            if (!(wizard && y_n("Override?") == 'y')) {
-                /* and just got more so; patience is essential... */
-                obj->age += (long) d(3, 10);
-                return ECMD_TIME;
-            }
+            /* and just got more so; patience is essential... */
+            obj->age += (long) d(3, 10);
+            return ECMD_TIME;
         }
         obj->age = svm.moves + rnz(100);
 
         switch (oart->inv_prop) {
-        case TAMING: {
-            struct obj pseudo;
-
-            pseudo =
-                cg.zeroobj; /* neither cursed nor blessed, zero oextra too */
-            pseudo.otyp = SCR_TAMING;
-            (void) seffects(&pseudo);
-            break;
-        }
-        case HEALING: {
-            int healamt = (u.uhpmax + 1 - u.uhp) / 2;
-            long creamed = (long) u.ucreamed;
-
-            if (Upolyd)
-                healamt = (u.mhmax + 1 - u.mh) / 2;
-            /* Blinded > creamed also catches intrinsic blindness */
-            if (healamt || Sick || Slimed || HWithering || Blinded > creamed)
-                You_feel("better.");
-            if (healamt || Sick || Slimed || BlindedTimeout > creamed)
-                You_feel("%sbetter.",
-                         (!healamt && !Sick && !Slimed
-                          /* when healing temporary blindness (aside from
-                             goop covering face), might still be blind
-                             due to PermaBlind or eyeless polymorph;
-                             vary the message in that situation */
-                          && (HBlinded & ~TIMEOUT) != 0L) ? "slightly " : "");
-            else {
-                nothing_special(obj);
-                return ECMD_TIME;
-            }
-            if (healamt > 0) {
-                if (Upolyd)
-                    u.mh += healamt;
-                else
-                    u.uhp += healamt;
-            }
-            if (HWithering)
-                make_withering(0L, TRUE);
-            if (Sick)
-                make_sick(0L, (char *) 0, FALSE, SICK_ALL);
-            if (Rabid)
-                make_rabid(0L, (char *) 0, 0, (char *) 0);
-            if (Slimed)
-                make_slimed(0L, (char *) 0);
-            if (BlindedTimeout > creamed)
-                make_blinded(creamed, FALSE);
-            disp.botl = TRUE;
-            break;
-        }
-        case ENERGY_BOOST: {
-            int epboost = (u.uenmax + 1 - u.uen) / 2;
-
-            if (epboost > 120)
-                epboost = 120; /* arbitrary */
-            else if (epboost < 12)
-                epboost = u.uenmax - u.uen;
-            if (epboost) {
-                u.uen += epboost;
-                disp.botl = TRUE;
-                You_feel("re-energized.");
-            } else {
-                nothing_special(obj);
-                return ECMD_TIME;
-            }
-            break;
-        }
-        case UNCURSE_INVK: {
-            struct obj pseudo = cg.zeroobj;
-            pseudo.blessed = 1;
-            pseudo.otyp = SCR_REMOVE_CURSE;
-            (void) seffects(&pseudo);
-            break;
-        }
-        case UNTRAP: {
-            if (!untrap(TRUE, 0, 0, (struct obj *) 0)) {
-                obj->age = 0; /* don't charge for changing their mind */
-                return ECMD_OK;
-            }
-            break;
-        }
-        case CHARGE_OBJ: {
-            struct obj *otmp = getobj("charge", charge_ok,
-                                      GETOBJ_PROMPT | GETOBJ_ALLOWCNT);
-            boolean b_effect;
-
-            if (!otmp) {
-                obj->age = 0;
-                return ECMD_CANCEL;
-            }
-            b_effect = (obj->blessed && (oart->role == Role_switch
-                                         || oart->role == NON_PM));
-            recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0);
-            update_inventory();
-            break;
-        }
-        case LEV_TELE:
-            level_tele();
-            break;
-        case CREATE_PORTAL: {
-            int i, num_ok_dungeons, last_ok_dungeon = 0;
-            d_level newlev;
-            winid tmpwin = create_nhwindow(NHW_MENU);
-            anything any;
-            int clr = NO_COLOR;
-            /* Branchports in Gehennom inflict pain unless you've killed
-               the wizard */
-            boolean tele_pain = !u.uevent.udemigod && (On_W_tower_level(&u.uz)
-                                                       || In_tower(&u.uz)
-                                                       || In_hell(&u.uz));
-            if (tele_pain) {
-                You_feel("a powerful force confront you.");
-                if (y_n("Continue teleporting?") != 'y')
-                    break;
-            }
-
-            if (obj->oartifact == ART_GLYPH_SHARD) {
-                if (u.shard_key.dnum < 0 && u.shard_key.dlevel < 0) {
-                    Your("shard has not been keyed to a level yet...");
-                    break;
-                }
-                newlev.dnum = u.shard_key.dnum;
-                newlev.dlevel = u.shard_key.dlevel;
-                goto shard_travel;
-            }
-
-            any = cg.zeroany; /* set all bits to zero */
-            start_menu(tmpwin, MENU_BEHAVE_STANDARD);
-            /* use index+1 (can't use 0) as identifier */
-            for (i = num_ok_dungeons = 0; i < svn.n_dgns; i++) {
-                if (!svd.dungeons[i].dunlev_ureached)
-                    continue;
-                if (i == tutorial_dnum) /* can't portal into tutorial */
-                    continue;
-                any.a_int = i + 1;
-                add_menu(tmpwin, &nul_glyphinfo, &any, 0, 0,
-                         ATR_NONE, clr,
-                         svd.dungeons[i].dname, MENU_ITEMFLAGS_NONE);
-                num_ok_dungeons++;
-                last_ok_dungeon = i;
-            }
-            end_menu(tmpwin, "Open a portal to which dungeon?");
-            if (num_ok_dungeons > 1) {
-                /* more than one entry; display menu for choices */
-                menu_item *selected;
-                int n;
-
-                n = select_menu(tmpwin, PICK_ONE, &selected);
-                if (n <= 0) {
-                    destroy_nhwindow(tmpwin);
-                    nothing_special(obj);
-                    return ECMD_TIME;
-                }
-                i = selected[0].item.a_int - 1;
-                free((genericptr_t) selected);
-            } else
-                i = last_ok_dungeon; /* also first & only OK dungeon */
-            destroy_nhwindow(tmpwin);
-
-            /*
-             * i is now index into dungeon structure for the new dungeon.
-             * Find the closest level in the given dungeon, open
-             * a use-once portal to that dungeon and go there.
-             * Go to the entry.
-             */
-            newlev.dnum = i;
-            newlev.dlevel = svd.dungeons[i].entry_lev;
-
-shard_travel:
-
-            if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
-                /* The Glyph Shard allows portaling within the same dungeon
-                   as well as other dungeons. */
-                || (newlev.dnum == u.uz.dnum && obj->oartifact != ART_GLYPH_SHARD)
-                || !next_to_u()) {
-                You_feel("very disoriented for a moment.");
-            } else {
-                if (!Blind)
-                    You("are surrounded by a shimmering sphere!");
-                else
-                    You_feel("weightless for a moment.");
-                goto_level(&newlev, FALSE, FALSE, FALSE);
-                if (tele_pain)
-                    teleport_pain();
-            }
-            break;
-        }
+        case TAMING: res = invoke_taming(obj); break;
+        case HEALING: res = invoke_healing(obj); break;
+        case ENERGY_BOOST: res = invoke_energy_boost(obj); break;
+        case UNTRAP: res = invoke_untrap(obj); break;
+        case CHARGE_OBJ: res = invoke_charge_obj(obj); break;
+        case LEV_TELE: level_tele(); res = ECMD_TIME; break;
+        case CREATE_PORTAL: res = invoke_create_portal(obj); break;
         case ENLIGHTENING:
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
+            res = ECMD_TIME;
             break;
-        case CREATE_AMMO: {
-            struct obj *otmp = mksobj(ARROW, TRUE, FALSE);
-
-            if (!otmp) {
-                nothing_special(obj);
-                return ECMD_TIME;
-            }
-            otmp->blessed = obj->blessed;
-            otmp->cursed = obj->cursed;
-            otmp->bknown = obj->bknown;
-            otmp->oeroded = otmp->oeroded2 = 0;
-            if (obj->blessed) {
-                if (otmp->spe < 0)
-                    otmp->spe = 0;
-                otmp->quan += rnd(10);
-            } else if (obj->cursed) {
-                if (otmp->spe > 0)
-                    otmp->spe = 0;
-            } else
-                otmp->quan += rnd(5);
-            otmp->owt = weight(otmp);
-            otmp = hold_another_object(otmp, "Suddenly %s out.",
-                                       aobjnam(otmp, "fall"), (char *) 0);
-            nhUse(otmp);
-            break;
-        }
-        case BANISH: {
-            int nvanished = 0, nstayed = 0;
-            struct monst *mtmp, *mtmp2;
-            d_level dest;
-
-            find_hell(&dest);
-
-            for (mtmp = fmon; mtmp; mtmp = mtmp2) {
-                int chance = 1;
-
-                mtmp2 = mtmp->nmon;
-                if (DEADMONSTER(mtmp) || !isok(mtmp->mx, mtmp->my))
-                    continue;
-                if (!is_demon(mtmp->data) && mtmp->data->mlet != S_IMP)
-                    continue;
-                if (!couldsee(mtmp->mx, mtmp->my))
-                    continue;
-                if (mtmp->data->msound == MS_NEMESIS)
-                    continue;
-
-                if (In_quest(&u.uz) && !svq.quest_status.killed_nemesis)
-                    chance += 10;
-                if (is_dprince(mtmp->data))
-                    chance += 2;
-                if (is_dlord(mtmp->data))
-                    chance++;
-
-                mtmp->msleeping = mtmp->mtame = mtmp->mpeaceful = 0;
-                if (chance <= 1 || !rn2(chance)) {
-                    if (!Inhell) {
-                        nvanished++;
-                        /* banish to a random level in Gehennom */
-                        dest.dlevel = rn2(dunlevs_in_dungeon(&dest));
-                        migrate_mon(mtmp, ledger_no(&dest), MIGR_RANDOM);
-                    } else {
-                        u_teleport_mon(mtmp, FALSE);
-                    }
-                } else {
-                    nstayed++;
-                }
-            }
-
-            if (nvanished) {
-                char subject[] = "demons";
-
-                if (nvanished == 1)
-                    *(eos(subject) - 1) = '\0'; /* remove 's' */
-                pline("%s %s %s in a cloud of brimstone!",
-                      nstayed ? ((nvanished > nstayed)
-                                 ? "Most of the"
-                                 : "Some of the")
-                              : "The",
-                      subject, vtense(subject, "disappear"));
-            }
-            break;
-        }
-        case SUMMONING:
-            /* In SpliceHack, the Holographic Void Lily would summon 4-10 random spell beings.
-             * Now, it has an entirely different mechanic. It lights up for 25-50 turns and
-             * while lit, allows for a much higher rate of card drops. */
-            if (!obj->lamplit) {
-                obj->age = rn1(26, 25);
-                if (!Blind)
-                    pline("%s starts to glow radiantly!", The(xname(obj)));
-                begin_burn(obj, FALSE);
-            }
-            break;
-        case LIGHTNING_BOLT: {
-            struct obj pseudo;
-            pseudo = cg.zeroobj;
-            pseudo.otyp = WAN_LIGHTNING;
-
-            if (!getdir(NULL) || (!u.dx && !u.dy && !u.dz)) {
-                int damage = zapyourself(&pseudo, TRUE);
-                if (damage > 0)
-                    losehp(damage, "struck by lightning", NO_KILLER_PREFIX);
-            } else {
-                buzz(ZT_SPELL(ZT_LIGHTNING), 8, u.ux, u.uy, u.dx, u.dy);
-            }
-            break;
-        }
-        case FLING_POISON:
-            if (getdir((char *) 0)) {
-                int venom = rn2(2) ? BLINDING_VENOM : ACID_VENOM;
-                struct obj *otmp = mksobj(venom, TRUE, FALSE);
-
-                otmp->spe = 1; /* the poison is yours */
-                throwit(otmp, 0L, FALSE, (struct obj *) 0);
-            } else {
-                /* no direction picked */
-                pline("%s", Never_mind);
-                obj->age = svm.moves;
-            }
-            break;
+        case CREATE_AMMO: res = invoke_create_ammo(obj); break;
+        case BANISH: res = invoke_banish(obj); break;
+        case FLING_POISON: res = invoke_fling_poison(obj); break;
         case SNOWSTORM:
-        case FIRESTORM:
-            {
-                int storm = oart->inv_prop == SNOWSTORM ? SPE_CONE_OF_COLD : SPE_FIREBALL;
-                int skill = spell_skilltype(storm);
-                int expertise = P_SKILL(skill);
-
-                P_SKILL(skill) = P_EXPERT;
-                (void) spelleffects(storm, FALSE, TRUE);
-                P_SKILL(skill) = expertise;
-            }
-            break;
-        case BLINDING_RAY:
-            if (getdir((char *) 0)) {
-                if (u.dx || u.dy) {
-                    do_blinding_ray(obj);
-                } else if (u.dz) {
-                    /* up or down => light this map spot; litroom() uses
-                       radius 0 for Sunsword, except on Rogue level where
-                       whole room gets lit and corridor spots remain unlit */
-                    litroom(TRUE, obj);
-                    pline("%s", ((!Blind && levl[u.ux][u.uy].lit
-                                  && !levl[u.ux][u.uy].waslit)
-                                 ? "It is lit here now."
-                                 : nothing_seems_to_happen));
-                } else { /* zapyourself() */
-                    boolean vulnerable = (u.umonnum == PM_GREMLIN);
-                    int damg = obj->blessed ? 15 : !obj->cursed ? 10 : 5;
-
-                    if (vulnerable) /* could be fatal if Unchanging */
-                        (void) lightdamage(obj, TRUE, 2 * damg);
-
-                    if (!flashburn((long) (damg + rnd(damg)), FALSE)
-                        && !vulnerable)
-                        pline("%s", nothing_seems_to_happen);
-                }
-            } else {
-                /* no direction picked */
-                pline("%s", Never_mind);
-                obj->age = svm.moves;
-            }
-            break;
+            /*FALLTHRU*/
+        case FIRESTORM: res = invoke_storm_spell(obj); break;
+        case BLINDING_RAY: res = invoke_blinding_ray(obj); break;
+        case SUMMONING: res = invoke_summoning(obj); break;
+        case UNCURSE_INVK: res = invoke_uncurse(obj); break;
+        case LIGHTNING_BOLT: res = invoke_lightning(obj); break;
         default:
             impossible("Unknown invoke power %d.", oart->inv_prop);
             break;
         }
+        return res;
     } else {
         long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTI),
              iprop = u.uprops[oart->inv_prop].intrinsic;
@@ -4746,4 +4824,5 @@ wiz_prop(void)
     return 0;
 }
 
+#endif /* SFCTOOL */
 /*artifact.c*/

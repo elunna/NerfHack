@@ -188,13 +188,17 @@ SYSOBJ = $(TARGETPFX)ioctl.o $(TARGETPFX)unixmain.o $(TARGETPFX)unixtty.o \
 #CFLAGS = -O -I../include
 #LFLAGS =
 
+#fallback values, only if these are not already set
+CFLAGS ?= -I../include
+LINK ?= $(CC)
+
 AR = ar
 ARFLAGS = rcs
 
 # The Qt and Be window systems are written in C++, while the rest of
 # NetHack is standard C.  If using Qt, uncomment the LINK line here to get
 # the C++ libraries linked in.
-CXXFLAGS = $(CCXXFLAGS) -I. -I$(QTDIR)/include $(QTCXXFLAGS)
+CXXFLAGS ?= $(CCXXFLAGS) -I. -I$(QTDIR)/include $(QTCXXFLAGS)
 CXX ?= g++
 MOC ?= moc
 MOCPATH ?= $(QTDIR)/bin/$(MOC)
@@ -406,6 +410,10 @@ WINCURSESLIB = -lncurses
 #
 # LIBS =
 
+#fallback values, only if these are not already set
+WINOBJ ?= $(WINTTYOBJ)
+WINLIB ?= $(WINTTYLIB) -lncurses
+
 # make NerfHack
 GAME     = nerfhack
 # GAME     = nethack.prg
@@ -518,7 +526,7 @@ HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   nhlua.c nhlsel.c nhlobj.c nhmd4.c o_init.c objects.c objnam.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
 	   priest.c quest.c questpgr.c read.c rect.c region.c report.c restore.c \
-	   rip.c rnd.c role.c rumors.c save.c selvar.c sfstruct.c \
+	   rip.c rnd.c role.c rumors.c save.c selvar.c sfbase.c sfstruct.c \
 	   shk.c shknam.c sit.c sounds.c sp_lev.c spell.c stairs.c steal.c steed.c \
 	   strutil.c symbols.c sys.c teleport.c \
 	   timeout.c topten.c track.c trap.c u_init.c utf8map.c \
@@ -561,14 +569,15 @@ CSOURCES = $(HACKCSRC) $(HACKLIBSRC) $(SYSCSRC) $(WINCSRC) $(CHAINSRC) $(GENCSRC
 #
 HACKINCL = align.h artifact.h artilist.h attrib.h botl.h \
 	color.h config.h config1.h context.h coord.h cstd.h decl.h \
-	display.h dlb.h dungeon.h engrave.h extern.h flag.h fnamesiz.h \
-	func_tab.h global.h warnings.h hack.h lint.h mextra.h mfndpos.h \
-	micro.h mkroom.h monattk.h mondata.h monflag.h monst.h monsters.h \
-	nhmd4.h obj.h objects.h objclass.h optlist.h patchlevel.h \
-	pcconf.h permonst.h prop.h rect.h region.h selvar.h sym.h defsym.h \
-	rm.h sp_lev.h spell.h sndprocs.h seffects.h stairs.h sys.h tcap.h \
-	timeout.h tradstdc.h trap.h unixconf.h vision.h vmsconf.h wintty.h \
-	wincurs.h winX.h winprocs.h wintype.h you.h youprop.h weight.h
+	defsym.h display.h dlb.h dungeon.h engrave.h extern.h flag.h \
+	fnamesiz.h func_tab.h global.h warnings.h hack.h lint.h mextra.h \
+	micro.h mfndpos.h mkroom.h monattk.h mondata.h monflag.h monst.h \
+	monsters.h nhmd4.h obj.h objects.h objclass.h optlist.h patchlevel.h \
+	pcconf.h permonst.h prop.h rect.h region.h savefile.h selvar.h sym.h \
+	rm.h sp_lev.h spell.h sndprocs.h seffects.h stairs.h sys.h \
+	tcap.h timeout.h tradstdc.h trap.h unixconf.h vision.h vmsconf.h \
+	wintty.h wincurs.h winX.h winprocs.h wintype.h you.h youprop.h \
+	weight.h
 
 HSOURCES = $(HACKINCL) dgn_file.h
 
@@ -582,7 +591,7 @@ HOSTOBJ = $(FIRSTOBJ) alloc.o drawing.o
 HOBJ = $(TARGETPFX)allmain.o $(TARGETPFX)alloc.o \
 	$(TARGETPFX)apply.o $(TARGETPFX)artifact.o $(TARGETPFX)attrib.o \
 	$(TARGETPFX)ball.o $(TARGETPFX)bones.o $(TARGETPFX)botl.o \
-	$(TARGETPFX)calendar.o $(TARGETPFX)cmd.o \
+	$(TARGETPFX)calendar.o $(TARGETPFX)cfgfiles.o $(TARGETPFX)cmd.o \
 	$(TARGETPFX)coloratt.o $(TARGETPFX)dbridge.o $(TARGETPFX)decl.o \
 	$(TARGETPFX)detect.o $(TARGETPFX)dig.o $(TARGETPFX)display.o \
 	$(TARGETPFX)dlb.o $(TARGETPFX)do.o $(TARGETPFX)do_name.o \
@@ -610,7 +619,7 @@ HOBJ = $(TARGETPFX)allmain.o $(TARGETPFX)alloc.o \
 	$(TARGETPFX)rect.o $(TARGETPFX)region.o $(TARGETPFX)report.o \
 	$(TARGETPFX)restore.o $(TARGETPFX)rip.o $(TARGETPFX)rnd.o \
 	$(TARGETPFX)role.o $(TARGETPFX)rumors.o $(TARGETPFX)save.o \
-	$(TARGETPFX)selvar.o $(TARGETPFX)sfstruct.o \
+	$(TARGETPFX)selvar.o $(TARGETPFX)sfbase.o $(TARGETPFX)sfstruct.o \
 	$(TARGETPFX)shk.o $(TARGETPFX)shknam.o $(TARGETPFX)sit.o \
 	$(TARGETPFX)sounds.o $(TARGETPFX)sp_lev.o $(TARGETPFX)spell.o \
 	$(TARGETPFX)stairs.o $(TARGETPFX)symbols.o $(TARGETPFX)sys.o \
@@ -633,7 +642,11 @@ DATE_O = $(TARGETPFX)date.o
 all:	$(GAME)
 	@echo ""
 
-pregame:
+create_responsefiles:
+	echo $(CC_COMPILER_SWITCHES) >$(CC_RESPONSEFILE)
+	echo $(CXX_COMPILER_SWITCHES) >$(CXX_RESPONSEFILE)
+
+pregame: $(RESPONSEFILES)
 	$(PREGAME)
 
 $(GAME):	pregame $(MAKEDEFS) $(LUALIB) $(WAVS) $(SYSTEM)
@@ -760,7 +773,7 @@ hacklib.a: hacklib.o
 ../win/gnome/gn_rip.h: ../win/X11/rip.xpm
 	cp ../win/X11/rip.xpm ../win/gnome/gn_rip.h
 
-$(TARGETPFX)sfstruct.o: sfstruct.c $(HACK_H)
+$(TARGETPFX)sfbase.o: sfbase.c $(HACK_H) ../include/sfprocs.h ../include/sfmacros.h
 
 #	date.c should be recompiled any time any of the source or include code
 #	is modified.
@@ -799,6 +812,7 @@ clean:
 	-rm -f *.o $(HACK_H) $(CONFIG_H)
 	-rm -f monstr.c vis_tab.c ../include/vis_tab.h #obsolete generated files
 	true; $(CLEANMORE)
+	true; $(CLEAN_CC_RESPONSEFILE) $(CLEAN_CXX_RESPONSEFILE)
 
 spotless: clean
 	-rm -f a.out core $(HACKLIB) $(GAMEBIN) Sys* 
@@ -886,7 +900,8 @@ $(HACK_H): $(CONFIG_H) ../include/align.h ../include/artilist.h \
 		../include/nhlua.h ../include/obj.h ../include/objclass.h \
 		../include/objects.h ../include/permonst.h ../include/prop.h \
 		../include/quest.h ../include/rect.h ../include/region.h \
-		../include/rm.h ../include/seffects.h ../include/selvar.h \
+		../include/rm.h ../include/savefile.h ../include/sfprocs.h \
+		../include/seffects.h ../include/selvar.h \
 		../include/skills.h ../include/sndprocs.h ../include/spell.h \
 		../include/stairs.h ../include/sym.h ../include/sys.h \
 		../include/timeout.h ../include/trap.h ../include/vision.h \
@@ -1127,6 +1142,7 @@ $(TARGETPFX)ball.o: ball.c $(HACK_H)
 $(TARGETPFX)bones.o: bones.c $(HACK_H)
 $(TARGETPFX)botl.o: botl.c $(HACK_H)
 $(TARGETPFX)calendar.o: calendar.c $(HACK_H)
+$(TARGETPFX)cfgfiles.o: cfgfiles.c $(HACK_H)
 $(TARGETPFX)cmd.o: cmd.c $(HACK_H) ../include/func_tab.h
 $(TARGETPFX)coloratt.o: coloratt.c $(HACK_H)
 $(TARGETPFX)dbridge.o: dbridge.c $(HACK_H)
@@ -1231,7 +1247,7 @@ $(TARGETPFX)role.o: role.c $(HACK_H)
 $(TARGETPFX)rumors.o: rumors.c $(HACK_H) ../include/dlb.h
 $(TARGETPFX)save.o: save.c $(HACK_H)
 $(TARGETPFX)selvar.o: selvar.c $(HACK_H) ../include/sp_lev.h
-$(TARGETPFX)sfstruct.o: sfstruct.c $(HACK_H)
+$(TARGETPFX)sfstruct.o: sfstruct.c $(HACK_H) ../include/sfprocs.h ../include/sfmacros.h
 $(TARGETPFX)shk.o: shk.c $(HACK_H)
 $(TARGETPFX)shknam.o: shknam.c $(HACK_H)
 $(TARGETPFX)sit.o: sit.c $(HACK_H) ../include/artifact.h

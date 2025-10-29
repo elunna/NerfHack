@@ -49,6 +49,7 @@ dospkg: dodata dosfonts $(GAMEBIN) $(TARGETPFX)recover.exe ../dat/nhtiles.bmp
 	mkdir -p $(TARGETPFX)pkg
 	cp $(GAMEBIN) $(TARGETPFX)pkg/NERFHACK.EXE
 	cp $(TARGETPFX)recover.exe $(TARGETPFX)pkg/RECOVER.EXE
+	-cp $(SFCTOOLBIN) $(TARGETPFX)pkg/SFCTOOL.EXE
 	cp ../dat/nhdat $(TARGETPFX)pkg/NHDAT
 	cp ../dat/license $(TARGETPFX)pkg/LICENSE
 	cp ../dat/nhtiles.bmp $(TARGETPFX)pkg/NHTILES.BMP
@@ -74,7 +75,7 @@ ifeq "$(WANT_DEBUG)" "1"
 	( if [ -f $(GDBEXE) ]; \
 	  then \
 		cp  $(GDBEXE) $(TARGETPFX)pkg/GDB.EXE; \
-		echo "gdb -ex '$(GDBCMDLINE)' NETHACK.EXE"> $(TARGETPFX)pkg/$(GDBBAT); \
+		echo "gdb -ex '$(GDBCMDLINE)' NERFHACK.EXE"> $(TARGETPFX)pkg/$(GDBBAT); \
           else \
 		pwd; echo "$(GDBEXE) not found and WANT_DEBUG=1 specified"; \
 	  fi; )
@@ -109,7 +110,7 @@ deploytodosbox: $(TARGETPFX)NH370DOS.ZIP $(dosboxnhfolder) $(dosboxnhsrc) \
 			$(dosboxnhsrc)/sys/msdos $(dosboxnhsrc)/sys/share \
 			$(dosboxnhsrc)/win/share $(dosboxnhsrc)/win/curses \
 			$(dosboxnhsrc)/win/tty $(dosboxnhsrc)/util \
-			$(dosboxnhfolder)/NETHACK.EXE
+			$(dosboxnhfolder)/NERFHACK.EXE
 	@echo DOS NetHack deployed to dosbox at $(dosboxnhfolder)
 $(TARGETPFX)NH370DOS.ZIP: dospkg
 $(dosboxnhfolder):
@@ -143,7 +144,7 @@ $(dosboxnhsrc)/util: $(dosboxnhsrc)
 	mkdir -p $@
 	cp --preserve=timestamps $(FLDR)util/*.c $(dosboxnhsrc)/util
 	cp --preserve=timestamps $(FLDR)util/*.h $(dosboxnhsrc)/util
-$(dosboxnhfolder)/NETHACK.EXE: $(TARGETPFX)NH370DOS.ZIP
+$(dosboxnhfolder)/NERFHACK.EXE: $(TARGETPFX)NH370DOS.ZIP
 	unzip -o $(TARGETPFX)NH370DOS.ZIP -d $(dosboxnhfolder)
 	find $(dosboxnhfolder) -type f -name "$(dosboxconfigfile)" \
 		| xargs sed -i 's/#OPTIONS=video:autodetect/OPTIONS=video:autodetect/g'
@@ -220,7 +221,7 @@ mipspkg: dodata $(GAMEBIN) $(TARGETPFX)recover
 	cp ../dat/nhdat $(TARGETPFX)pkg/nhdat
 	cp ../dat/license $(TARGETPFX)pkg/license
 	cp ../dat/symbols $(TARGETPFX)pkg/symbols
-	cp ../sys/share/NetHack.cnf $(TARGETPFX)pkg/.nethackrc
+	cp ../sys/share/NetHack.cnf $(TARGETPFX)pkg/.nerfhackrc
 	cp ../sys/msdos/sysconf $(TARGETPFX)pkg/sysconf
 	cp ../doc/nethack.txt $(TARGETPFX)pkg/nethack.txt
 	-touch $(TARGETPFX)pkg/record

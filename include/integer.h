@@ -39,26 +39,29 @@
 #define HAS_INTTYPES_H
 #else /*!__DECC*/
 
-#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-    && !defined(HAS_STDINT_H)
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
+#if !defined(HAS_STDINT_H)
 /* The compiler claims to conform to C99. Use stdint.h */
 #define HAS_STDINT_H
-#endif
+#endif  /* !HAS_STDINT_H */
+#if !defined(HAS_INTTYPES_H)
+/* The compiler claims to conform to C99. Use inttypes.h */
+#define HAS_INTTYPES_H
+#endif  /* !HAS_INTTYPES_H */
 #if defined(__GNUC__) && defined(__INT64_MAX__) && !defined(HAS_STDINT_H)
 #define HAS_STDINT_H
-#endif
+#endif 
+#endif  /* claims to be C99 */
 
 #endif /*?__DECC*/
 
 #ifdef HAS_STDINT_H
 #include <stdint.h>
 #define SKIP_STDINT_WORKAROUND
-#else /*!stdint*/
+#endif
 #ifdef HAS_INTTYPES_H
 #include <inttypes.h>
-#define SKIP_STDINT_WORKAROUND
-#endif
-#endif /*?stdint*/
+#endif  /* HAS_INTTYPES_H */
 
 #ifndef SKIP_STDINT_WORKAROUND /* !C99 */
 /*
@@ -86,8 +89,13 @@ typedef unsigned int uint32_t;
    64-bit integers, you should comment out USE_ISAAC64 in config.h so
    that the previous RNG gets used instead.  Then this file will be
    inhibited and it won't matter what the int64_t and uint64_t lines are. */
+
+#if defined(__cplusplus)
+#include <stdint.h>
+#else
 typedef long long int int64_t;
 typedef unsigned long long int uint64_t;
+#endif
 
 #endif /* !C99 */
 

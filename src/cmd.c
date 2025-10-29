@@ -999,7 +999,7 @@ enter_explore_mode(void)
 void
 makemap_prepost(boolean pre, boolean wiztower)
 {
-    NHFILE tmpnhfp;
+    NHFILE *tmpnhfp;
     struct monst *mtmp;
 
     if (pre) {
@@ -1047,9 +1047,9 @@ makemap_prepost(boolean pre, boolean wiztower)
         dobjsfree();
 
         /* discard current level; "saving" is used to release dynamic data */
-        zero_nhfile(&tmpnhfp);  /* also sets fd to -1 as desired */
-        tmpnhfp.mode = FREEING;
-        savelev(&tmpnhfp, ledger_no(&u.uz));
+        tmpnhfp = get_freeing_nhfile();
+        savelev(tmpnhfp, ledger_no(&u.uz));
+        close_nhfile(tmpnhfp);
     } else {
         vision_reset();
         gv.vision_full_recalc = 1;
@@ -2059,8 +2059,9 @@ struct ext_func_tab extcmdlist[] = {
     /* internal commands: only used by game core, not available for user */
     { '\0', "clicklook", NULL, doclicklook, INTERNALCMD | MOUSECMD, NULL },
     { '\0', "mouseaction", NULL, domouseaction, INTERNALCMD | MOUSECMD, NULL },
-    { '\0', "altdip", NULL, dip_into, INTERNALCMD, NULL },
     { '\0', "altadjust", NULL, adjust_split, INTERNALCMD, NULL },
+    { '\0', "altdip", NULL, dip_into, INTERNALCMD, NULL },
+    { '\0', "alttakeoff", NULL, ia_dotakeoff, INTERNALCMD, NULL },
     { '\0', "altunwield", NULL, remarm_swapwep, INTERNALCMD, NULL },
     { '\0', (char *) 0, (char *) 0, donull, 0, (char *) 0 } /* sentinel */
 };
@@ -2167,7 +2168,7 @@ handler_rebind_keys_add(boolean keyfirst)
         pline("Bind which key? ");
         key = pgetchar();
 
-        if (!key || key == '\027')
+        if (!key || key == '\033')
             return;
     }
 
@@ -2232,7 +2233,7 @@ handler_rebind_keys_add(boolean keyfirst)
             pline("Bind which key? ");
             key = pgetchar();
 
-            if (!key || key == '\027')
+            if (!key || key == '\033')
                 return;
         }
 

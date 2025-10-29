@@ -215,7 +215,7 @@ if riding or levitating, hero could apply bullwhip downward to pull up things
 some monster code was checking whether pets or engulfers were eating green
 	slime by checking for green slime corpse instead of glob
 change light radius of stack of candles to square root
-could get redundate "mon hits other-mon" messages when mon wields an artifact
+could get redundant "mon hits other-mon" messages when mon wields an artifact
 failed untrap while mounted that moved hero onto the trap would leave steed
 	with stale coordinates, triggering warnings if 'sanity_check' is On
 when digging a pit results in it being filled by adjacent pool or lava, any
@@ -530,7 +530,7 @@ innocuous items like scrolls or eucalyptus leaves did harm when falling on
 	hero's head after being thrown upward
 fighter types who start out knowing all non-magic armor should not know
 	cornuthaum and dunce cap
-prediscovered weapons adjustmens:  only knights and samurai know polearms;
+prediscovered weapons adjustments:  only knights and samurai know polearms;
 	rangers know launchers (bows), ammo (arrows), and spears regardless
 	of their race/species; likewise, rogues know all daggers
 if the move counter ever reaches 1000000000, end the game
@@ -715,7 +715,7 @@ selection of random engravings, epitaphs, and hallucinatory monster names had
 	follow longer than average lines are most likely to be chosen and
 	ones which follow shorter than average lines are least likely; use
 	same workaround as for rumors:  pad the shortest lines; result isn't
-	uniforn distribution but is better (tradeoff vs size; see makedefs)
+	uniform distribution but is better (tradeoff vs size; see makedefs)
 make selection of random rumors, engravings, epitaphs, and hallucinatory monst
 	names have uniform distribution by handling long lines specially
 when filling a special room with monsters, if one that can come in groups got
@@ -1237,7 +1237,7 @@ restore the ability for trap creation via magic which creates pits to destroy
 allow #sit while flying over a squeaky board trap to trigger it
 weight of statues of wraiths and of monsters which never leave a corpse was 0
 when a werecreature in human form attacked hero, it could transform to critter
-	despite hero having the Protection_from_shape_changers_attibute
+	despite hero having the Protection_from_shape_changers_attribute
 status highlighting for hit points didn't work as intended for up or down HP
 	changes; 'up' rule was used for both, 'down' rule was ignored
 unhide an unseen water monster using a polymorph trap on land
@@ -1513,6 +1513,21 @@ Grimtooth is permanently poisoned, protects from poison, and can fling poison
 cursed magic whistle can teleport you to your pet
 Fire and Frost Brand can be invoked for expert level fireball or cone of cold
 wielding Trollsbane grants hungerless regeneration
+hitting with Ogresmasher gives a higher chance of knockback
+Snickersnee can hit at a distance once per turn for free
+the engraving pristine text field was not being appropriately populated during
+       level creation
+worn alchemy smock reduces chances of dipped potions exploding
+dwarves can sense buried items under their feet
+monsters trapped in pits cannot kick
+create familiar spell can create harder creatures
+a vampire lord could choose to take on wolf form while flying over water or
+	lava, then revert to vampire lord form and teleport unnecessarily
+a gas spore that was killed when an engulfer swallowed it produced an explosion
+	on the map rather than inside the engulfer
+hallucination can display objects on the map that have a description (for
+	shuffling into play at game start) but no name; examining those might
+	trigger a crash
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -1840,7 +1855,7 @@ after the fix for zombie reviving near hero (which now interrupts hero's
 	occupation), could get "revive panic" when eating a troll corpse if
 	it revived on the same turn that eating the corpse would finish
 a wizard's starting equipment was supposed to include a random spellbook of
-	spell level 1 through 3 but it was being foced to be level 1
+	spell level 1 through 3 but it was being forced to be level 1
 earlier fix for prices of unpaid objects going away in persistent inventory
 	display when hero bought something during itemized billing didn't work
 	if paying for a used-up shop item--prices of any unpaid items vanished
@@ -1930,7 +1945,7 @@ don't blame/credit hero for stinking cloud if dying quest nemesis releases one
 Lua selection operations 'subtract' and 'xor' didn't always work as intended
 accept 'true' or 'false' as value for des.object field 'trapped'
 special level loader didn't check for bad coordinates supplied by <level>.lua
-	file thorougnly enough
+	file thoroughly enough
 hero might not be credited with "entered Mine Town" achievement for the town
 	variations which treat the whole level as the town if that level gets
 	entered via falling or level teleport
@@ -2054,7 +2069,7 @@ restoring a save file could trigger impossible "rnd(0) attempted" if it tried
 	a released version, it would crash due to divide by 0 error instead
 fix regression of a post-3.6 fix:  if 2 Wizards of Yendor were in play and 1
 	escaped the dungeon, bookkeeping for current number of Wizards stayed
-	at 2, interferring with future Wizard behavior
+	at 2, interfering with future Wizard behavior
 sometimes a repeat count from the preceding command carried over to most
 	recent one when using do-again (^A); if the most recent one was an
 	extended command, the spurious repeat was for '#'
@@ -2112,6 +2127,14 @@ successfully disarming a chest trap was clearing the chest's 'tknown' bit
 	used up the trap
 when game ended with 'force_invmenu' On, final disclosure of inventory would
 	contain spurious menu entry "? - (list likely candidates)"
+avoid reporting "a gold pieces appears next to you" for mimic
+don't try to split a pudding that got jousted into a hole and is off the map
+mounted hero was able to deliver joust hits when trapped
+timer sanity check for melting ice gave false complaint about non-ice for
+	frozen moat under open drawbridge
+mhitm_ad_phys() was not applying Half_physical_damage when hero was target
+throwing crystal plate mail or helm of brilliance up against the ceiling could
+	result in the item being cracked and then vanishing
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -2223,6 +2246,9 @@ X11: when trying to lookup scrollbars in order to handle scrolling via keys,
 X11: enable horizontal scrollbar for persistent inventory window
 X11: if a group accelerator matched a menu command ('^' in menu for '/')
 	it wouldn't work to select, just to manipulate the menu
+X11: ascii_map could try to use a color value, with some added flag bits set,
+	as an index into the color_gcs[] and inv_color_gcs[] arrays leading
+	to a segfault; clear the flag bits before using the color as an index
 X11+macOS: after the "bad Atom" fix (below), the persistent inventory window
 	crept downward every time it got updated
 
@@ -2441,6 +2467,8 @@ tty: hide cursor unless waiting for user input; now extended to include tty
 	platforms that define NO_TERMS, rather than just on those using
 	termcap/terminfo, namely Windows console and msdos (text-mode
 	implemented; vga and vesa just have stubs currently)
+tty+curses: if terminal goes away while in the wishing prompt, return to the
+	wish prompt when game is restored
 Unix: when user name is used as default character name, keep hyphenated value
 	intact instead stripping off dash and whatever follows as if that
 	specified role/race/&c (worked once upon a time; broken since 3.3.0)
@@ -2454,6 +2482,8 @@ Unix: add ../include/nhlua.h to the alloc.o dependencies in Makefile.utl to
 Unix: implement SELF_RECOVER compile-time option, on by default on linux
 Unix: allow build to succeed with musl (instead of glibc), by specifying
 	musl=1 on the make command line
+Unix: support tilde expansion for home directory path, "~/relative-path", in
+	command line --nethackrc=path and environment NERFHACKOPTIONS=@path
 user_sounds: move the message hook from inside individual window display ports
 	to the core where it allows MSGTYP_NOSHOW msgtyp's to still trigger
 	sounds to correct a reported github issue; also fixes a past reported

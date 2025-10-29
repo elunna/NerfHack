@@ -2890,7 +2890,7 @@ trapeffect_magicbeam_trap(
         seetrap(trap);
         dobuzz(trap->launch_otyp, 8, trap->launch.x, trap->launch.y,
                sgn(trap->tx - trap->launch.x), sgn(trap->ty - trap->launch.y),
-               FALSE);
+               FALSE, FALSE);
     } else {
         /* A magic beam trap. */
         boolean trapkilled = FALSE;
@@ -2903,7 +2903,7 @@ trapeffect_magicbeam_trap(
         trap->once = 1;
         dobuzz(trap->launch_otyp, 8, trap->launch.x, trap->launch.y,
                sgn(trap->tx - trap->launch.x), sgn(trap->ty - trap->launch.y),
-               FALSE);
+               FALSE, FALSE);
         if (DEADMONSTER(mtmp))
             trapkilled = TRUE;
 
@@ -8326,7 +8326,7 @@ trigger_trap_with_polearm(
             You_hear("a soft click.");
         dobuzz(trap->launch_otyp, 8, trap->launch.x, trap->launch.y,
             sgn(trap->tx - trap->launch.x), sgn(trap->ty - trap->launch.y),
-            FALSE);
+            FALSE, FALSE);
         if (!Blind)
             see_trap = TRUE;
         break;

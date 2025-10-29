@@ -1245,11 +1245,11 @@ init_tilemap(void)
         Snprintf(tilemap[GLYPH_STATUE_MALE_OFF + i].name,
                 sizeof tilemap[0].name,
                 "statue of male %s (mnum=%d)",
-                tilename(MON_GLYPH, file_entry, 0), file_entry);
+                tilename(MON_GLYPH, file_entry, 0), i);
         Snprintf(tilemap[GLYPH_STATUE_MALE_PILETOP_OFF + i].name,
                 sizeof tilemap[0].name,
                 "piletop statue of male %s (mnum=%d)",
-                tilename(MON_GLYPH, file_entry, 0), file_entry);
+                tilename(MON_GLYPH, file_entry, 0), i);
         add_tileref(tilenum, GLYPH_STATUE_MALE_OFF + i, generated, file_entry,
                     tilemap[GLYPH_STATUE_MALE_OFF + i].name,
                     "");
@@ -1268,10 +1268,10 @@ init_tilemap(void)
         Snprintf(tilemap[GLYPH_STATUE_FEM_OFF + i].name,
                 sizeof tilemap[0].name,
                 "statue of female %s (mnum=%d)",
-                tilename(MON_GLYPH, file_entry, 0), file_entry);
+                tilename(MON_GLYPH, file_entry, 0), i);
         Sprintf(tilemap[GLYPH_STATUE_FEM_PILETOP_OFF + i].name,
                 "piletop statue of female %s (mnum=%d)",
-                tilename(MON_GLYPH, file_entry, 0), file_entry);
+                tilename(MON_GLYPH, file_entry, 0), i);
         add_tileref(tilenum, GLYPH_STATUE_FEM_OFF + i, generated, file_entry,
                     tilemap[GLYPH_STATUE_FEM_OFF + i].name, "");
         add_tileref(tilenum, GLYPH_STATUE_FEM_PILETOP_OFF + i, generated,
@@ -1321,7 +1321,7 @@ extern void objects_globals_init(void);
 DISABLE_WARNING_UNREACHABLE_CODE
 
 int
-main(int argc UNUSED, char *argv[] UNUSED)
+main(int argc, char *argv[])
 {
     int i, tilenum;
     char filename[30];
@@ -1405,6 +1405,8 @@ main(int argc UNUSED, char *argv[] UNUSED)
     free_tilerefs();
     exit(EXIT_SUCCESS);
     /*NOTREACHED*/
+    nhUse(argc);
+    nhUse(argv);
     return 0;
 }
 
@@ -1501,7 +1503,7 @@ add_tileref(
     const char *prefix)
 {
     struct tiles_used temp = { 0 };
-    static const char ellipsis[] UNUSED = "...";
+    static const char ellipsis[] = "...";
     char buf[BUFSZ];
 
     if (!tilelist[n]) {
@@ -1529,6 +1531,7 @@ add_tileref(
              (strlen(temp.references) >= (sizeof temp.references - 7) - 1)
                  ? buf
                  : "");
+    nhUse(ellipsis);
 }
 
 void

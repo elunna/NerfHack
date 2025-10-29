@@ -1,10 +1,11 @@
-/* NetHack 3.7	timeout.c	$NHDT-Date: 1727251273 2024/09/25 08:01:13 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.193 $ */
+/* NetHack 3.7	timeout.c	$NHDT-Date: 1756531249 2025/08/29 21:20:49 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.205 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
+#ifndef SFCTOOL
 staticfn void stoned_dialogue(void);
 staticfn void vomiting_dialogue(void);
 staticfn void sleep_dialogue(void);
@@ -2392,7 +2393,7 @@ print_queue(winid win, timer_element *base)
         for (curr = base; curr; curr = curr->next) {
 #ifdef VERBOSE_TIMER
             Sprintf(buf, " %4ld   %4ld  %-6s %s(%s)", curr->timeout,
-                    curr->tid, kind_name(curr->kind),
+                    (long) curr->tid, kind_name(curr->kind),
                     timeout_funcs[curr->func_index].name,
                     fmt_ptr((genericptr_t) curr->arg.a_void));
 #else
@@ -2548,7 +2549,13 @@ timer_sanity_check(void)
                    the analyzer isn't aware that isok() filters such things */
                 assert(x > 0 && x < COLNO && y >= 0 && y < ROWNO);
 
-                if (curr->func_index == MELT_ICE_AWAY && !is_ice(x, y))
+                if (curr->func_index == MELT_ICE_AWAY && !is_ice(x, y)
+                    /* the terrain under the span of an open drawbridge might
+                       be frozen moat; is_ice() only checks for that when
+                       the drawbridge is closed (and terrain here would be
+                       DRAWBRIGE_UP) */
+                    && !(levl[x][y].typ == DRAWBRIDGE_DOWN
+                         && (levl[x][y].drawbridgemask & DB_UNDER) == DB_ICE))
                     impossible(
                          "timer sanity: melt timer %lu on non-ice %d <%d,%d>",
                                t_id, levl[x][y].typ, x, y);
@@ -2866,25 +2873,19 @@ write_timer(NHFILE *nhfp, timer_element *timer)
     case TIMER_GLOBAL:
     case TIMER_LEVEL:
         /* assume no pointers in arg */
-        if (nhfp->structlevel) {
-            bwrite(nhfp->fd, (genericptr_t) timer, sizeof(timer_element));
-        }
+        Sfo_fe(nhfp, timer, "timer");
         break;
 
     case TIMER_OBJECT:
         if (timer->needs_fixup) {
-            if (nhfp->structlevel) {
-                bwrite(nhfp->fd, (genericptr_t) timer, sizeof(timer_element));
-            }
+            Sfo_fe(nhfp, timer, "timer");
         } else {
             /* replace object pointer with id */
             arg_save.a_obj = timer->arg.a_obj;
             timer->arg = cg.zeroany;
             timer->arg.a_uint = (arg_save.a_obj)->o_id;
             timer->needs_fixup = 1;
-            if (nhfp->structlevel) {
-                bwrite(nhfp->fd, (genericptr_t) timer, sizeof(timer_element));
-            }
+            Sfo_fe(nhfp, timer, "timer");
             timer->arg.a_obj = arg_save.a_obj;
             timer->needs_fixup = 0;
         }
@@ -2892,18 +2893,14 @@ write_timer(NHFILE *nhfp, timer_element *timer)
 
     case TIMER_MONSTER:
         if (timer->needs_fixup) {
-            if (nhfp->structlevel) {
-                bwrite(nhfp->fd, (genericptr_t) timer, sizeof(timer_element));
-            }
+            Sfo_fe(nhfp, timer, "timer");
         } else {
             /* replace monster pointer with id */
             arg_save.a_monst = timer->arg.a_monst;
             timer->arg = cg.zeroany;
             timer->arg.a_uint = (arg_save.a_monst)->m_id;
             timer->needs_fixup = 1;
-            if (nhfp->structlevel) {
-                bwrite(nhfp->fd, (genericptr_t) timer, sizeof(timer_element));
-            }
+            Sfo_fe(nhfp, timer, "timer");
             timer->arg.a_monst = arg_save.a_monst;
             timer->needs_fixup = 0;
         }
@@ -3035,17 +3032,12 @@ save_timers(NHFILE *nhfp, int range)
     timer_element *curr, *prev, *next_timer = 0;
     int count;
 
-    if (perform_bwrite(nhfp)) {
+    if (update_file(nhfp)) {
         if (range == RANGE_GLOBAL) {
-            if (nhfp->structlevel) {
-                bwrite(nhfp->fd, (genericptr_t) &svt.timer_id,
-                       sizeof svt.timer_id);
-            }
+            Sfo_ulong(nhfp, &svt.timer_id, "timer-timer_id");
         }
         count = maybe_write_timer(nhfp, range, FALSE);
-        if (nhfp->structlevel) {
-            bwrite(nhfp->fd, (genericptr_t) &count, sizeof count);
-        }
+        Sfo_int(nhfp, &count, "timer-timer_count");
         (void) maybe_write_timer(nhfp, range, TRUE);
     }
 
@@ -3067,6 +3059,7 @@ save_timers(NHFILE *nhfp, int range)
         }
     }
 }
+#endif /* !SFCTOOL */
 
 /*
  * Pull in the structures from disk, but don't recalculate the object and
@@ -3080,28 +3073,23 @@ restore_timers(NHFILE *nhfp, int range, long adjust)
     boolean ghostly = (nhfp->ftype == NHF_BONESFILE); /* from a ghost level */
 
     if (range == RANGE_GLOBAL) {
-        if (nhfp->structlevel) {
-            mread(nhfp->fd, (genericptr_t) &svt.timer_id,
-                  sizeof svt.timer_id);
-        }
+        Sfi_ulong(nhfp, &svt.timer_id, "timer-timer_id");
     }
 
     /* restore elements */
-    if (nhfp->structlevel) {
-        mread(nhfp->fd, (genericptr_t) &count, sizeof count);
-    }
-
+    Sfi_int(nhfp, &count, "timer-timer_count");
     while (count-- > 0) {
         curr = (timer_element *) alloc(sizeof(timer_element));
-        if (nhfp->structlevel) {
-            mread(nhfp->fd, (genericptr_t) curr, sizeof(timer_element));
-        }
+        Sfi_fe(nhfp, curr, "timer");
         if (ghostly)
             curr->timeout += adjust;
+#ifndef SFCTOOL
         insert_timer(curr);
+#endif
     }
 }
 
+#ifndef SFCTOOL
 DISABLE_WARNING_FORMAT_NONLITERAL
 
 /* to support '#stats' wizard-mode command */
@@ -3146,6 +3134,7 @@ relink_timers(boolean ghostly)
         }
     }
 }
+#endif /* !SFCTOOL */
 
 void hatch_faster(struct obj *obj) {
     /* For phoenix eggs */

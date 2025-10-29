@@ -414,6 +414,8 @@ m_initweap(struct monst *mtmp)
             otmp->bquality = rn2(5) ? FQ_NORMAL : FQ_SUPERIOR;
             otmp->oerodeproof = TRUE;
             otmp->spe = rn2(4);
+            otmp->material = SILVER;
+            otmp->owt = weight(otmp);
             (void) mpickobj(mtmp, otmp);
 
             otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION
@@ -1931,8 +1933,10 @@ makemon(
             }
             if (what) {
                 set_msg_xy(mtmp->mx, mtmp->my);
-                Norep("%s%s appears%s%c", what,
+                Norep("%s%s %s%s%c", what,
                       exclaim ? " suddenly" : "",
+                      /* 'what' might be "gold pieces" so need plural verb */
+                      vtense(what, "appear"),
                       next2u(x, y) ? " next to you"
                       : (distu(x, y) <= (BOLT_LIM * BOLT_LIM)) ? " close by"
                         : "",

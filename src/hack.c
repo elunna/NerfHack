@@ -109,7 +109,7 @@ obj_to_any(struct obj *obj)
 boolean
 revive_nasty(coordxy x, coordxy y, const char *msg)
 {
-    struct obj *otmp, *otmp2;
+    struct obj *otmp = 0, *otmp2 = 0;
     struct monst *mtmp;
     coord cc;
     boolean revived = FALSE;
@@ -3492,7 +3492,7 @@ char *
 in_rooms(coordxy x, coordxy y, int typewanted)
 {
     static char buf[5];
-    char rno, *ptr = &buf[4];
+    char rno = 0, *ptr = &buf[4];
     int typefound, min_x, min_y, max_x, max_y_offset, step;
     struct rm *lev;
 
@@ -4623,9 +4623,10 @@ dump_weights(void)
 {
     int i, cnt = 0, nmwidth = 49, mcount = NUMMONS, ocount = NUM_OBJECTS;
     char nmbuf[BUFSZ], nmbufbase[BUFSZ];
+    size_t num_entries = (size_t) (mcount + ocount);
 
     weightlist = (struct weight_table_entry *)
-                alloc(sizeof (struct weight_table_entry) * (mcount + ocount));
+                alloc(sizeof (struct weight_table_entry) * num_entries);
     decl_globals_init();
     init_objects();
     for (i = 0; i < mcount; ++i) {

@@ -111,7 +111,7 @@ static struct allopt_t allopt[SIZE(allopt_init)];
 
 /* use rest of file */
 
-extern char configfile[]; /* for messages; files.c */
+/* extern char configfile[]; */ /* for messages; files.c */
 extern const struct symparse loadsyms[];
 #if defined(TOS)
 extern boolean colors_changed;  /* in tos.c */
@@ -457,8 +457,8 @@ ask_do_tutorial(void)
         boolean norc;
         int n, pass = 0;
 
-        rc = nh_basename(configfile, TRUE);
-        norc = !strcmp(configfile, "/dev/null");
+        rc = nh_basename(get_configfile(), TRUE);
+        norc = !strcmp(get_configfile(), "/dev/null");
         Snprintf(buf, sizeof buf,
                  "Put \"OPTIONS=!tutorial\" in %s to skip this query.",
                  (rc && *rc && !norc) ? rc : "your configuration file");
@@ -814,7 +814,7 @@ freeroleoptvals(void)
 void
 saveoptvals(NHFILE *nhfp)
 {
-    if (perform_bwrite(nhfp)) {
+    if (update_file(nhfp)) {
         char *val;
         unsigned len;
         int i, j;
@@ -823,11 +823,9 @@ saveoptvals(NHFILE *nhfp)
             for (j = 0; j < num_opt_phases; ++j) {
                 val = roleoptvals[i][j];
                 len = val ? Strlen(val) + 1 : 0;
-                if (nhfp->structlevel) {
-                    bwrite(nhfp->fd, (genericptr_t) &len, sizeof len);
-                    if (val)
-                        bwrite(nhfp->fd, (genericptr_t) val, len);
-                }
+                Sfo_unsigned(nhfp, &len, "optvals-len");
+                if (val)
+                    Sfo_char(nhfp, val, "optvals-val", len);
             }
     }
     if (release_data(nhfp))
@@ -846,10 +844,10 @@ restoptvals(NHFILE *nhfp)
         for (i = 0; i < 4; ++i)
             for (j = 0; j < num_opt_phases; ++j) {
                 /* len includes terminating '\0' for non-Null values */
-                mread(nhfp->fd, (genericptr_t) &len, sizeof len);
+                Sfi_unsigned(nhfp, &len, "optvals-len");
                 if (len) {
                     val = roleoptvals[i][j] = (char *) alloc(len);
-                    mread(nhfp->fd, (genericptr_t) val, len);
+                    Sfi_char(nhfp, val, "opvals-val", (int) len);
                 } else {
                     roleoptvals[i][j] = NULL;
                 }
@@ -6809,10 +6807,10 @@ staticfn void
 rejectoption(const char *optname)
 {
 #ifdef MICRO
-    pline("\"%s\" settable only from %s.", optname, configfile);
+    pline("\"%s\" settable only from %s.", optname, get_configfile());
 #else
     pline("%s can be set only from NERFHACKOPTIONS or %s.", optname,
-          configfile);
+          get_configfile());
 #endif
 }
 
@@ -7137,6 +7135,8 @@ initoptions_init(void)
     boolean have_branch = (nomakedefs.git_branch && *nomakedefs.git_branch);
 
     go.opt_phase = builtin_opt;    /* Did I need to move this here? */
+    /* initialize the function pointers for saving the game */
+    sf_init();
     memcpy(allopt, allopt_init, sizeof(allopt));
     determine_ambiguities();
 
@@ -7789,6 +7789,7 @@ msgtype_free(void)
         tmp2 = tmp->next;
         free((genericptr_t) tmp->pattern);
         regex_free(tmp->regex);
+        tmp->regex = 0;
         free((genericptr_t) tmp);
     }
     gp.plinemsg_types = (struct plinemsg_type *) 0;
@@ -9486,7 +9487,7 @@ option_help(void)
 
     datawin = create_nhwindow(NHW_TEXT);
     Snprintf(buf, sizeof buf,
-             "Set options as OPTIONS=<options> in %s", configfile);
+             "Set options as OPTIONS=<options> in %s", get_configfile());
     opt_intro[CONFIG_SLOT] = (const char *) buf;
     for (i = 0; opt_intro[i]; i++)
         putstr(datawin, 0, opt_intro[i]);
