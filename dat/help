@@ -127,7 +127,7 @@ Commands:
                 and most can be changed by simply selecting their entry.
                 Options are usually set before the game with NERFHACKOPTIONS
                 environment variable or via a configuration file (defaults.nh,
-                NetHack Defaults, nerfhack.cnf, ~/.nerfhackrc, etc.) rather
+                NetHack Defaults, nethack.cnf, ~/.nerfhackrc, etc.) rather
                 than with the 'O' command.
         p       Pay your shopping bill.
         P       Put on an accessory (ring, amulet, etc).

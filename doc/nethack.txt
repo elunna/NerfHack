@@ -58,7 +58,7 @@ DESCRIPTION
        and  named  .nerfhackrc  on  UNIX systems (including descendants such as
        linux, NetBSD, and macOS).  On Windows, the name is also .nerfhackrc but
        the  location  can vary (see --showpaths below).  On other systems, the
-       default may be different, possibly nerfhack.cnf.  On MS-DOS, the name is
+       default may be different, possibly nethack.cnf.  On MS-DOS, the name is
        defaults.nh in NetHack's directory (folder), while on VMS|OpenVMS it is
        nerfhack.ini in your home directory.  The default configuration file may
        be  overridden  via  the  --nerfhackrc:rc-file command line option or by

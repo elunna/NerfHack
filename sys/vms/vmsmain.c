@@ -130,7 +130,7 @@ main(int argc, char *argv[])
 #endif
 
 #ifdef SECURE
-    /* disable installed privs while loading nerfhack.cnf and termcap,
+    /* disable installed privs while loading nethack.cnf and termcap,
        and also while initializing terminal [$assign("TT:")]. */
     privoff();
 #endif

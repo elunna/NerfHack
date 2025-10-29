@@ -16,7 +16,7 @@
 # * ~/.nerfhackrc (Unix, linux, macOS)
 # * "NerfHack Defaults" on pre-OSX Mac and BeOS
 # * defaults.nh, same folder as NerfHack.exe on DOS
-# * nerfhack.cnf on Amiga, Atari, OS/2, and VMS
+# * nethack.cnf on Amiga, Atari, OS/2, and VMS
 #
 # To change the configuration, comment out the unwanted lines, and
 # uncomment the configuration you want.
