@@ -133,7 +133,7 @@ main(int argc, char *argv[])
 #endif
 
     if (!dir)
-        dir = getenv("NETHACKDIR");
+        dir = getenv("NERFHACKDIR");
     if (!dir)
         dir = getenv("HACKDIR");
 #if defined(EXEPATH)

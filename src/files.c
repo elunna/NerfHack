@@ -2219,7 +2219,7 @@ make_converted_name(const char *filename)
     ln = (unsigned) strlen(filename);
     if (!contains_directory(filename)) {
 #if defined(UNIX)
-        dir = nh_getenv("NETHACKDIR");
+        dir = nh_getenv("NERFHACKDIR");
         if (!dir)
             dir = nh_getenv("HACKDIR");
 #ifdef HACKDIR

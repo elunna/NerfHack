@@ -79,7 +79,7 @@ nethack --no-nerfhackrc
 
 nethack -dDir
 nethack --directory:Dir
-  could be used to override the build-time value of NETHACKDIR with
+  could be used to override the build-time value of NERFHACKDIR with
   location Dir; if used, it should precede other command line arguments.
 
 The assorted options above can be combined on a single command line;

@@ -3,7 +3,7 @@
 # Copyright (c) 2015 by Kenneth Lorber, Kensington, Maryland
 # NetHack may be freely redistributed.  See license for details.
 
-HACKDIR=/usr/games/lib/nethackdir
+HACKDIR=/usr/games/lib/nerfhackdir
 export HACKDIR
 HACK=$HACKDIR/nethack
 

@@ -77,7 +77,7 @@
  */
 
 /* #define NO_FILE_LINKS */                       /* if no hard links */
-/* #define LOCKDIR "/usr/games/lib/nethackdir" */ /* where to put locks */
+/* #define LOCKDIR "/usr/games/lib/nerfhackdir" */ /* where to put locks */
 
 /*
  * If you want the static parts of your playground on a read-only file

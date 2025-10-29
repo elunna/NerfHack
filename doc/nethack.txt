@@ -117,9 +117,9 @@ DESCRIPTION
 
        The  -d  or  --directory option, which must be the first argument if it
        appears, supplies a directory which is to serve as the playground.   It
-       overrides  the  value from NETHACKDIR, HACKDIR, or the directory speci-
+       overrides  the  value from NERFHACKDIR, HACKDIR, or the directory speci-
        fied  by   the   game   administrator   during   compilation   (usually
-       /usr/games/lib/nethackdir).   This option is usually only useful to the
+       /usr/games/lib/nerfhackdir).   This option is usually only useful to the
        game administrator.  The  playground  must  contain  several  auxiliary
        files  such  as help files, the list of top scorers, and a subdirectory
        save where games are saved.
@@ -197,7 +197,7 @@ FILES
        the name is '.nerfhackrc' in the user's home directory.
 
        All  other  files   are   in   the   playground   directory,   normally
-       /usr/games/lib/nethackdir.   If DLB was defined during the compile, the
+       /usr/games/lib/nerfhackdir.   If DLB was defined during the compile, the
        data files and special levels will be inside a  larger  file,  normally
        nhdat, instead of being separate files.
 
@@ -262,7 +262,7 @@ ENVIRONMENT
        MAIL                    Mailbox file.
        MAILREADER              Replacement for default reader
                                (probably /bin/mail or /usr/ucb/mail).
-       NETHACKDIR or HACKDIR   Playground.
+       NERFHACKDIR or HACKDIR   Playground.
        NERFHACKOPTIONS          String predefining several NetHack options.
 
        If the same option is specified in both NERFHACKOPTIONS and .nerfhackrc,

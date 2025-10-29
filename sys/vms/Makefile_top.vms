@@ -313,7 +313,7 @@ dofiles:
 #	cp util/recover $(INSTDIR)
 #	-if test -n '$(SHELLDIR)'; then rm -f $(SHELLDIR)/$(GAME); fi
 #	if test -n '$(SHELLDIR)'; then \
-#		sed -e 's;/usr/games/lib/nethackdir;$(HACKDIR);' \
+#		sed -e 's;/usr/games/lib/nerfhackdir;$(HACKDIR);' \
 #		-e 's;HACKDIR/nethack;HACKDIR/$(GAME);' \
 #		< sys/unix/nethack.sh \
 #		> $(SHELLDIR)/$(GAME) ; fi

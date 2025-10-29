@@ -325,7 +325,7 @@ verify_term(void)
    can simplify configuration for sites which don't already use termcap.
  */
 #define GNU_DEFAULT_TERMCAP "emacs_library:[etc]termcap.dat"
-#define NETHACK_DEF_TERMCAP "nethackdir:termcap"
+#define NETHACK_DEF_TERMCAP "nerfhackdir:termcap"
 #define HACK_DEF_TERMCAP "hackdir:termcap"
 
 char *verify_termcap(void) /* called from startup(src/termcap.c) */

@@ -17,7 +17,7 @@ $ !	@[.sys.vms]install "disk$users:[games.nethack]" "games"
 $ ! or	@[.sys.vms]install "[-.play]" "[40,1]"
 $ !
 $	! default location is old playground, default owner is installer
-$	gamedir = f$trnlnm("NETHACKDIR")	!location of playground
+$	gamedir = f$trnlnm("NERFHACKDIR")	!location of playground
 $	if gamedir.eqs."" then  gamedir = f$trnlnm("HACKDIR")
 $	gameuic = f$user()			!owner of playground
 $	! --- nothing below this line should need to be changed ---
@@ -312,7 +312,7 @@ $ if p3.nes."" then  exit
 $!
 $! done
 $	milestone "<done>"
-$ define/nolog nethackdir 'gamedir'
+$ define/nolog nerfhackdir 'gamedir'
 $ define/nolog hackdir 'gamedir'
 $ echo -
     f$fao("!/ Nethack installation complete. !/ Playground is !AS !/",gamedir)

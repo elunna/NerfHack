@@ -95,7 +95,7 @@ nhmain(int argc, char *argv[])
      * The environment variable HACKDIR is overridden by a
      *  -d command line option (must be the first option given).
      */
-    dir = nh_getenv("NETHACKDIR");
+    dir = nh_getenv("NERFHACKDIR");
     if (!dir)
         dir = nh_getenv("HACKDIR");
 

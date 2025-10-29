@@ -121,7 +121,7 @@ Notes:
     by install.com, and NetHack will use it if it can't find any other
     one.  NetHack uses the following sequence to attempt to locate the
     termcap file:  translation of the logical name TERMCAP (used as-is),
-    file NETHACKDIR:TERMCAP, similar file HACKDIR:TERMCAP, GNU-Emacs file
+    file NERFHACKDIR:TERMCAP, similar file HACKDIR:TERMCAP, GNU-Emacs file
     EMACS_LIBRARY:[ETC]TERMCAP.DAT, file []TERMCAP, and lastly file
     $TERMCAP (which most likely would be a logical name).  If NetHack
     can't find the termcap file, or if the above search sequence finds a
@@ -185,7 +185,7 @@ Notes:
     In order for installed privileges to be used at all, the value of
     HACKDIR (via Local_HACKDIR in vmsconf.h) compiled into the program
     must correspond to the actual playground directory.  If logical name
-    HACKDIR (or NETHACKDIR) is used to override that value, installed
+    HACKDIR (or NERFHACKDIR) is used to override that value, installed
     privileges will be deactivated unless its value corresponds to the
     same device and directory as the internal value.  If that internal
     value contains a logical name, only an executive-mode translation

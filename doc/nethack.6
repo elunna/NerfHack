@@ -136,7 +136,7 @@ Also
 .ad
 .hy 14
 .\" Make sure path is not hyphenated below
-.hw nethackdir
+.hw nerfhackdir
 .SH DESCRIPTION
 .PP
 .I NetHack
@@ -315,9 +315,9 @@ The
 .BR \-d " or " \-\-directory
 option, which must be the first argument if it appears,
 supplies a directory which is to serve as the playground.
-It overrides the value from NETHACKDIR, HACKDIR,
+It overrides the value from NERFHACKDIR, HACKDIR,
 or the directory specified by the game administrator during compilation
-(usually /usr/games/lib/nethackdir).
+(usually /usr/games/lib/nerfhackdir).
 This option is usually only useful to the game administrator.
 The playground must contain several auxiliary files such as help files,
 the list of top scorers, and a subdirectory
@@ -435,7 +435,7 @@ name is '.nerfhackrc' in the user's home directory.
 
 .br
 All other files are in the playground directory,
-normally /usr/games/lib/nethackdir.
+normally /usr/games/lib/nerfhackdir.
 If DLB was defined during the compile, the data files and special levels
 will be inside a larger file, normally nhdat, instead of being separate
 files.
@@ -544,7 +544,7 @@ the program distribution neglected to include it.
 In a perfect world, 'paniclog' would remain empty.
 .SH ENVIRONMENT
 .DT
-.ta \w'NETHACKDIR or HACKDIR\ \ \ 'u
+.ta \w'NERFHACKDIR or HACKDIR\ \ \ 'u
 USER or LOGNAME	Your login name.
 .br
 HOME		Your home directory.
@@ -561,7 +561,7 @@ MAILREADER	Replacement for default reader
 .br
 \ 	(probably /bin/mail or /usr/ucb/mail).
 .br
-NETHACKDIR or HACKDIR	Playground.
+NERFHACKDIR or HACKDIR	Playground.
 .br
 NERFHACKOPTIONS	String predefining several NetHack options.
 .br

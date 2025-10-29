@@ -140,7 +140,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 #endif
 #endif /* !AMIGA && !GNUDOS */
 
-    dir = nh_getenv("NETHACKDIR");
+    dir = nh_getenv("NERFHACKDIR");
     if (dir == (char *) 0)
         dir = nh_getenv("HACKDIR");
 #ifdef EXEPATH

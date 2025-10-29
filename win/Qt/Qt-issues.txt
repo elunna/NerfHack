@@ -16,7 +16,7 @@ has been reduced to a single event loop complaint, so downgraded from
 "Urgent", but the prompt is auto-answered with ESC instead of letting
 the user respond.
 
-On OSX, if the program is run from nethackdir/nethack rather than from
+On OSX, if the program is run from nerfhackdir/nethack rather than from
 NetHack.app/Contents/MacOS/nethack (plus having NetHack.app/Contents/
 Info.plist containing pertinent information) then the menu bar at the
 top of the screen won't accept mouse clicks and the application menu
