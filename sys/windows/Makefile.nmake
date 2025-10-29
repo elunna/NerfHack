@@ -1779,12 +1779,12 @@ $(INCL)nhlua.h:
 tileutil: $(U)gif2txt.exe $(U)gif2tx32.exe $(U)txt2ppm.exe
 	@echo Optional tile development utilities are up to date.
 
-$(OGUI)NetHackW.res: $(SRC)tiles.bmp $(MSWIN)NetHackW.rc $(MSWIN)NetHack.ico \
+$(OGUI)NetHackW.res: $(SRC)tiles.bmp $(MSWIN)NerfHackW.rc $(MSWIN)NetHack.ico \
 	$(MSWIN)mnsel.bmp $(MSWIN)mnselcnt.bmp $(MSWIN)mnunsel.bmp \
 	$(MSWIN)petmark.bmp $(MSWIN)pilemark.bmp $(MSWIN)NetHack.ico \
 	$(MSWIN)rip.bmp $(MSWIN)splash.bmp $(MSWIN)NerfHackW.exe.manifest $(WAV)
 	@echo Building resource file $@ from $**
-	$(rc) -nologo -r -fo$@ -i$(MSWIN) -i$(SndWavDir) -dNDEBUG -dVIA_MAKE $(RCFLAGS) $(MSWIN)NetHackW.rc
+	$(rc) -nologo -r -fo$@ -i$(MSWIN) -i$(SndWavDir) -dNDEBUG -dVIA_MAKE $(RCFLAGS) $(MSWIN)NerfHackW.rc
 
 $(OTTY)console.res: $(MSWSYS)console.rc $(MSWSYS)NetHack.ico $(WAV)
 	@echo Building resource file $@ from $**
