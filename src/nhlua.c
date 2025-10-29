@@ -1162,7 +1162,7 @@ get_table_option(lua_State *L,
 }
 
 #ifdef DUMPLOG
-/* local fname = dump_fmtstr("/tmp/nethack.%n.%d.log"); */
+/* local fname = dump_fmtstr("/tmp/nerfhack.%n.%d.log"); */
 staticfn int
 nhl_dump_fmtstr(lua_State *L)
 {

@@ -56,7 +56,7 @@ pool:
 variables:
   toolchain: $(toolchainName)
   buildTarget: $(buildTargetName)
-  netHackPath: s/NetHack
+  netHackPath: s/NerfHack
 
 steps:
 - bash: |
