@@ -14,7 +14,7 @@ jobs:
     env:
       #LUA_VERSION: 5.4.2
       #HINTS_FILE: linux.370
-      HINTS_FILE: linux-debug
+      HINTS_FILE: linux.370
     steps:
     - uses: actions/checkout@v4
     - name: setup
@@ -52,9 +52,9 @@ jobs:
         LUASRC: ../submodules/lua
         ADD_CURSES: Y
         PDCURSES_TOP: ../submodules/pdcurses
-        LUA_VERSION: 5.4.6
+        #LUA_VERSION: 5.4.6
         TRAVIS_COMPILER: 1
-        ZIP_NAME: NerfHack_2.2.1.zip
+        ZIP_NAME: nerfhack.zip
     steps:
     - uses: actions/checkout@v4
       with:
@@ -63,26 +63,21 @@ jobs:
     - name: setup
       run: |
         ./sys/windows/nhsetup.bat
-    - name: make install
+    - name: make package
       run: |
         cd src
-        nmake fetch-lua
         nmake package
-        # Note: mingw build doesn't seem to build NerfHackW.exe and is disabled.
-        # This would work to build the tty windows version, though.
-        #cp ../sys/winnt/Makefile.gcc ./Makefile
-        #mingw32-make LUA_VERSION=$LUA_VERSION install
     - uses: thedoctor0/zip-release@master
       if: startsWith(github.ref, 'refs/tags/')
       with:
         type: 'zip'
-        path: binary/
-        filename: NerfHack_2.2.1.zip
+        path: package/
+        filename: nerfhack_windows.zip
     - name: release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          NerfHack_2.2.1.zip
+          NerfHack_windows.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
