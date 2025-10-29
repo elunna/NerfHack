@@ -788,7 +788,6 @@ dochug(struct monst *mtmp)
 {
     struct permonst *mdat;
     struct obj *otmp;
-    struct monst *mtmp2;
     int status = MMOVE_NOTHING;
     int inrange, nearby, scared, res;
     boolean panicattk = FALSE;
