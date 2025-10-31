@@ -4267,7 +4267,8 @@ obj_drops_at(struct obj *obj, int x, int y)
 /* Object material probabilities. */
 /* for objects which are normally iron or metal */
 static const struct icp metal_materials[] = {
-    {700, 0}, /* default to base type, iron or metal */
+    {650, 0}, /* default to base type, iron or metal */
+    { 50, METAL},
     { 50, BONE},
     { 50, WOOD},
     { 40, SILVER},
@@ -4283,10 +4284,11 @@ static const struct icp metal_materials[] = {
 /* for objects which are normally wooden */
 static const struct icp wood_materials[] = {
     {800, WOOD},
-    { 85, MINERAL},
-    { 45, IRON},
-    { 25, BONE},
-    { 15, COPPER},
+    { 80, MINERAL},
+    { 40, IRON},
+    { 20, BONE},
+    { 10, COPPER},
+    { 20, METAL },
     {  0, GOLD}, /* can exist in certain special levels but not randomly
                  * generated */
     { 10, SILVER},
@@ -4312,7 +4314,8 @@ static const struct icp leather_materials[] = {
 
 /* for objects of dwarvish make */
 static const struct icp dwarvish_materials[] = {
-    {850, IRON},
+    {650, IRON},
+    {200, METAL},
     {100, MITHRIL},
     { 20, COPPER},
     { 10, SILVER},
@@ -4355,10 +4358,11 @@ static const struct icp shiny_materials[] = {
 /* for bells and other tools, especially instruments, which are normally copper
  * or metal.  Wood and glass in other lists precludes us from using those. */
 static const struct icp resonant_materials[] = {
-    {550, 0}, /* use base material */
+    {500, 0}, /* use base material */
     {250, COPPER},
     { 60, SILVER},
     { 50, IRON},
+    { 50, METAL},
     { 50, MITHRIL},
     { 30, GOLD},
     { 10, PLATINUM}
