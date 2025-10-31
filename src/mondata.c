@@ -569,12 +569,12 @@ hates_material(struct permonst *ptr, int material)
         return (is_were(ptr) || ptr->mlet == S_VAMPIRE
                 || is_demon(ptr) || ptr == &mons[PM_SHADE]
                 || (ptr->mlet == S_IMP));
-    } else if (material == IRON) {
-        if (is_undead(ptr)) {
+    } else if (material == IRON || material == METAL) {
+        if (is_undead(ptr))
             return FALSE;
-        }
         /* cold iron: fairy/fae creatures hate it */
-        return (is_elf(ptr) || ptr->mlet == S_NYMPH
+        return (is_elf(ptr)
+                || ptr->mlet == S_NYMPH
                 || ptr->mlet == S_IMP);
     } else if (material == COPPER) {
         /* copper has antibacterial and antifungal properties,
@@ -584,7 +584,9 @@ hates_material(struct permonst *ptr, int material)
                 || dmgtype(ptr, AD_DCAY)
                 || dmgtype(ptr, AD_PEST));
     } else if (material == MITHRIL) {
-        return ( is_orc(ptr));
+        if (is_undead(ptr))
+            return FALSE;
+        return (is_orc(ptr));
     }
     return FALSE;
 }
