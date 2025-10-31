@@ -4278,13 +4278,14 @@ static const struct icp metal_materials[] = {
     { 10, GLASS},
     { 10, PLATINUM},
     { 50, PLASTIC},
-    { 20, MINERAL},
+    { 15, MINERAL},
+    {  5, GEMSTONE},
 };
 
 /* for objects which are normally wooden */
 static const struct icp wood_materials[] = {
     {800, WOOD},
-    { 80, MINERAL},
+    { 75, MINERAL},
     { 40, IRON},
     { 20, BONE},
     { 10, COPPER},
@@ -4293,6 +4294,7 @@ static const struct icp wood_materials[] = {
                  * generated */
     { 10, SILVER},
     { 20, MITHRIL},
+    {  5, GEMSTONE},
 };
 
 /* for objects which are normally cloth */
@@ -4347,11 +4349,12 @@ static const struct icp crude_materials[] = {
 static const struct icp shiny_materials[] = {
     {500, 0}, /* use base material */
     {200, SILVER},
-    {100, GOLD},
+    { 25, GOLD},
     { 50, COPPER},
     { 50, MITHRIL},
     { 40, METAL}, /* aluminum, or similar */
     { 40, PLATINUM},
+    { 25, GEMSTONE},
     { 20, GLASS},
 };
 
@@ -4662,7 +4665,8 @@ set_material(struct obj *otmp, uchar material)
         otmp->oeroded = 0;
     if ((otmp->oeroded2) && !is_corrodeable(otmp) && !is_rottable(otmp))
         otmp->oeroded2 = 0;
-    if (otmp->oerodeproof && !is_damageable(otmp) && (otmp->material != GLASS))
+    if (otmp->oerodeproof && !is_damageable(otmp)
+        && otmp->material != GLASS && otmp->material != GEMSTONE)
         otmp->oerodeproof = FALSE;
 }
 
