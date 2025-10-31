@@ -1933,7 +1933,7 @@ hmon_hitmon_misc_obj(
                 obj->oartifact = 0;
                 obj->spe = 0;
                 obj->known = obj->dknown = obj->bknown = 0;
-                obj->owt = weight(obj);
+                set_material(obj, MINERAL);
                 if (hmd->thrown)
                     place_object(obj, mon->mx, mon->my);
             } else if (obj->corpsenm == PM_PYROLISK) {
