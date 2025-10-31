@@ -4782,7 +4782,7 @@ item_vs_mon(struct obj *obj, struct monst *mtmp)
 {
     if (!obj->alignment) {
         return FALSE; /* unaligned */
-	}
+    }
     if (sgn(mtmp->data->maligntyp) != (signed char) (obj->alignment - 2)) {
         return TRUE;
     }

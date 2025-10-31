@@ -4353,7 +4353,7 @@ getprice(struct obj *obj, boolean shk_buying)
             tmp *= 10L;
     }
 
-    /* Aligned items are also kind special, pay more for 'em */
+    /* Aligned items are special, pay more for 'em */
     if (obj->alignment) {
         tmp *= 2L;
     }

@@ -451,7 +451,7 @@ dmgval_core(
 
     boolean is_you = mon == &gy.youmonst;
     /* Alignment bonuses: bonus damage vs cross aligned monsters */
-	if (otmp->alignment && mon) {
+    if (otmp->alignment && mon) {
     	if (is_you && item_cross_aligned(otmp)) {
             tmp++;
     	} else if (!is_you && item_vs_mon(otmp, mon)) {

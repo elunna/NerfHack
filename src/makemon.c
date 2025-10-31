@@ -2680,7 +2680,7 @@ mongets(struct monst *mtmp, int otyp)
                 curse(otmp);
             /* Some demons are lawful, hence the conversion below */
             otmp->alignment = !rn2(3)
-                                  ? (int) mtmp->data->maligntyp + 2 : FA_NONE;
+                                  ? sgn(mtmp->data->maligntyp) + 2 : FA_NONE;
         } else if (is_lminion(mtmp)) {
             /* lawful minions don't get cursed, bad, or rusting objects */
             otmp->cursed = FALSE;
@@ -2697,7 +2697,7 @@ mongets(struct monst *mtmp, int otyp)
            They won't be able to use them. Match it instead.
          */
         if (otmp->alignment && item_vs_mon(otmp, mtmp))
-            otmp->alignment = (int) mtmp->data->maligntyp + 2;
+            otmp->alignment = sgn(mtmp->data->maligntyp) + 2;
 
         if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
             otmp->spe = 0;
