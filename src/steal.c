@@ -70,14 +70,15 @@ findgold( struct obj *chain, boolean only_coins)
 void
 stealgold(struct monst *mtmp)
 {
-    struct obj *fgold = g_at(u.ux, u.uy);
+    struct obj *fgold;
     struct obj *ygold;
     long tmp;
     struct monst *who;
     const char *whose, *what;
 
-    /* skip lesser coins on the floor */
-    while (fgold && fgold->otyp != GOLD_PIECE)
+    /* look for gold on the floor */
+    fgold = svl.level.objects[u.ux][u.uy];
+    while (fgold && fgold->material != GOLD)
         fgold = fgold->nexthere;
 
     /* Do you have real gold? */
@@ -110,17 +111,24 @@ stealgold(struct monst *mtmp)
             monflee(mtmp, 0, FALSE, FALSE);
         }
     } else if (ygold) {
-        const int gold_price = objects[GOLD_PIECE].oc_cost;
+        if (ygold->otyp == GOLD_PIECE) {
+            const int gold_price = objects[GOLD_PIECE].oc_cost;
 
-        tmp = (somegold(money_cnt(gi.invent)) + gold_price - 1) / gold_price;
-        tmp = min(tmp, ygold->quan);
-        if (tmp < ygold->quan)
-            ygold = splitobj(ygold, tmp);
-        else
-            setnotworn(ygold);
+            tmp = (somegold(money_cnt(gi.invent)) + gold_price - 1) / gold_price;
+            tmp = min(tmp, ygold->quan);
+            if (tmp < ygold->quan)
+                ygold = splitobj(ygold, tmp);
+            else
+                setnotworn(ygold);
+            Your("purse feels lighter.");
+        } else {
+            pline("%s steals %s!", Monnam(mtmp),
+                  ygold->oartifact ? bare_artifactname(ygold)
+                                   : yname(ygold));
+            remove_worn_item(ygold, TRUE);
+        }
         freeinv(ygold);
         add_to_minv(mtmp, ygold);
-        Your("purse feels lighter.");
         if (!tele_restrict(mtmp))
             (void) rloc(mtmp, RLOC_MSG);
         monflee(mtmp, 0, FALSE, FALSE);
