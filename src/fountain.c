@@ -754,9 +754,13 @@ doforging(void)
                 output->spe = 0;
             } else {
                 /* random */
-                if (!rn2(10))
+                if (!rn2(10)) {
                     output->bquality = (!rn2(10) ? (!rn2(10) ? FQ_LEGENDARY : FQ_EXCEPTIONAL)
                                                     : FQ_SUPERIOR);
+                } else if (!rn2(20)) {
+                    pline("Not your finest work...");
+                    output->bquality = FQ_INFERIOR;
+                }
             }
         } else if (uwep && !uwep->blessed) { /* hammer is uncursed or cursed */
             if (obj1->bquality == FQ_INFERIOR || obj2->bquality == FQ_INFERIOR) {
@@ -769,7 +773,7 @@ doforging(void)
                    forged object */
                 output->bquality = FQ_INFERIOR;
             } else {
-                if (rn2(5) && uwep->cursed)
+                if ((rn2(5) && uwep->cursed) || !rn2(20))
                     output->bquality = FQ_INFERIOR;
             }
         }
