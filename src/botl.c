@@ -3904,7 +3904,7 @@ status_hilite_menu_add(int origfld)
         } else if (fld == BL_HUNGER) {
             static const char *const hutxt[] = {
                 "Satiated", (char *) 0, "Hungry", "Weak",
-                "Fainting", "Fainted", "Starved"
+                 "Frail", "Fainting", "Fainted", "Starved"
             };
             int rv = query_arrayvalue(qry_buf, hutxt, SATIATED, STARVED + 1);
 
