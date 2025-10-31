@@ -4422,6 +4422,17 @@ static const struct icp elven_weapon_materials[] = {
     { 50, SILVER}
 };
 
+static const struct icp sling_bullet_materials[] = {
+    {650, IRON},
+    {125, METAL},
+    {100, MITHRIL},
+    { 50, SILVER},
+    { 30, COPPER},
+    { 25, GEMSTONE},
+    { 10, GOLD},
+    { 10, PLATINUM},
+};
+
 /* Return the appropriate above list for a given object, or NULL if there isn't
  * an appropriate list. */
 const struct icp*
@@ -4498,6 +4509,8 @@ material_list(struct obj* obj)
     case ELVEN_BROADSWORD:
     //case ELVEN_LONG_SWORD:
         return elven_weapon_materials;
+    case SLING_BULLET:
+        return sling_bullet_materials;
     default:
         break;
     }
