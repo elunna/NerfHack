@@ -412,10 +412,9 @@ m_initweap(struct monst *mtmp)
             /* enhance the weapon */
             bless(otmp);
             otmp->bquality = rn2(5) ? FQ_NORMAL : FQ_SUPERIOR;
-            otmp->oerodeproof = TRUE;
             otmp->spe = rn2(4);
-            otmp->material = SILVER;
-            otmp->owt = weight(otmp);
+            set_material(otmp, SILVER);
+            otmp->oerodeproof = TRUE;
             (void) mpickobj(mtmp, otmp);
 
             otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION
