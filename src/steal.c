@@ -472,6 +472,9 @@ steal(struct monst *mtmp, char *objnambuf)
         return 1; /* let them flee */
     }
 
+    if (otmp && mon_hates_material(mtmp, otmp->material))
+        goto cant_take;
+
     /* animals can't overcome curse stickiness nor unlock chains */
     if (monkey_business) {
         boolean ostuck;
@@ -495,11 +498,13 @@ steal(struct monst *mtmp, char *objnambuf)
                 "steal", "snatch", "grab", "take"
             };
  cant_take:
-            pline("%s tries to %s %s%s but gives up.", Monnambuf,
+            pline("%s tries to %s %s%s but %s.", Monnam(mtmp),
                   ROLL_FROM(how),
                   (otmp->owornmask & W_ARMOR) ? "your " : "",
                   (otmp->owornmask & W_ARMOR) ? armor_simple_name(otmp)
-                                              : yname(otmp));
+                                              : yname(otmp),
+                  mon_hates_material(mtmp, otmp->material) ? "can't handle it"
+                                                           : "gives up");
             /* the fewer items you have, the less likely the thief
                is going to stick around to try again (0) instead of
                running away (1) */
