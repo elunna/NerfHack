@@ -519,6 +519,7 @@ struct obj {
 
 #define is_flimsy(otmp)                           \
     (objects[(otmp)->otyp].oc_material <= LEATHER \
+     || objects[(otmp)->otyp].oc_material == DRAGON_HIDE \
      || (otmp)->otyp == RUBBER_HOSE)
 #define is_plural(o) \
     ((o)->quan != 1L                                                    \
