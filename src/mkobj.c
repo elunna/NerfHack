@@ -3499,6 +3499,20 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
                     obj->otyp);
             insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
         }
+
+        if (obj->bquality > FQ_LEGENDARY) {
+            char matbuf[BUFSZ];
+            Sprintf(matbuf, "invalid bquality %d (otyp %d)", obj->bquality,
+                    obj->otyp);
+            insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
+        }
+
+        if (obj->alignment > FA_LAWFUL) {
+            char matbuf[BUFSZ];
+            Sprintf(matbuf, "invalid alignment %d (otyp %d)", obj->alignment,
+                    obj->otyp);
+            insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
+        }
     }
 }
 
