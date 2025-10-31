@@ -2117,6 +2117,7 @@ const int matdensities[] = {
     25,  // BONE
     20,  // DRAGONHIDE
     80,  // IRON
+    75,  // COLD_IRON
     70,  // METAL
     85,  // COPPER
     90,  // SILVER
@@ -2270,6 +2271,7 @@ const int matac[] = {
      4,  // BONE
      10, // DRAGON_HIDE
      5,  // IRON - de facto baseline for metal armor
+     6,  // COLD_IRON
      5,  // METAL
      4,  // COPPER
      5,  // SILVER
@@ -4267,19 +4269,20 @@ obj_drops_at(struct obj *obj, int x, int y)
 /* Object material probabilities. */
 /* for objects which are normally iron or metal */
 static const struct icp metal_materials[] = {
-    {650, 0}, /* default to base type, iron or metal */
+    {600, 0}, /* default to base type, iron or metal */
     { 50, METAL},
     { 50, BONE},
     { 50, WOOD},
     { 40, SILVER},
     { 40, COPPER},
+    { 40, COLD_IRON},
     { 20, MITHRIL},
     { 10, GOLD},
     { 10, GLASS},
     { 10, PLATINUM},
     { 50, PLASTIC},
-    { 15, MINERAL},
-    {  5, GEMSTONE},
+    { 20, MINERAL},
+    { 10, GEMSTONE},
 };
 
 /* for objects which are normally wooden */
@@ -4316,10 +4319,12 @@ static const struct icp leather_materials[] = {
 
 /* for objects of dwarvish make */
 static const struct icp dwarvish_materials[] = {
-    {650, IRON},
+    {600, IRON},
     {200, METAL},
     {100, MITHRIL},
+    { 50, COLD_IRON},
     { 20, COPPER},
+    { 10, SILVER},
     { 10, SILVER},
     { 10, GOLD},
     { 10, PLATINUM}
@@ -4412,8 +4417,9 @@ static const struct icp bow_materials[] = {
 
 static const struct icp dwarvish_weapon_materials[] = {
     {500, IRON},
-    {250, METAL},
+    {200, METAL},
     {200, MITHRIL},
+    { 50, COLD_IRON},
     { 50, GEMSTONE} /* gemstone is very hard and very sharp */
 };
 
@@ -4426,7 +4432,8 @@ static const struct icp elven_weapon_materials[] = {
 };
 
 static const struct icp sling_bullet_materials[] = {
-    {650, IRON},
+    {400, IRON},
+    {150, COLD_IRON},
     {125, METAL},
     {100, MITHRIL},
     { 50, SILVER},

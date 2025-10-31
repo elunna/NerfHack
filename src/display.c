@@ -2627,10 +2627,28 @@ get_bkglyph_and_framecolor(
 /* Externify this array if it's ever needed anywhere else.
  * Colors are in the same order as materials are defined. */
 static const int materialclr[] = {
-    CLR_BLACK, HI_ORGANIC, CLR_WHITE, HI_ORGANIC, CLR_RED,
-    CLR_WHITE, HI_CLOTH, HI_LEATHER, HI_WOOD, CLR_WHITE, CLR_BLACK,
-    HI_METAL, HI_METAL, HI_COPPER, HI_SILVER, HI_GOLD, CLR_WHITE,
-    HI_SILVER, CLR_WHITE, HI_GLASS, CLR_RED, CLR_GRAY
+    CLR_BLACK, // NO_MATERIAL
+    HI_ORGANIC, // LIQUID
+    CLR_WHITE,  // WAX
+    HI_ORGANIC, // VEGGY
+    CLR_RED,    // FLESH
+    CLR_WHITE,  // PAPER
+    HI_CLOTH,   // CLOTH
+    HI_LEATHER, // LEATHER
+    HI_WOOD,    // WOOD
+    CLR_WHITE,  // BONE
+    CLR_BLACK,  // DRAGON_HIDE
+    HI_METAL,   // IRON
+    HI_METAL,   // COLD_IRON
+    HI_COPPER,  // COPPER
+    HI_SILVER,  // SILVER
+    HI_GOLD,    // GOLD
+    CLR_WHITE,  // PLATINUM
+    HI_SILVER,  // MITHRIL
+    CLR_WHITE,  // PLASTIC
+    HI_GLASS,   // GLASS
+    CLR_RED,    // GEMSTONE
+    CLR_GRAY    // MINERAL
 };
 
 void

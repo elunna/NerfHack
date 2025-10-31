@@ -2817,6 +2817,7 @@ const int matprices[] = {
     20, /* BONE */
    200, /* DRAGON_HIDE - DSM to scale mail */
     10, /* IRON */
+    50, /* COLD_IRON */
     10, /* METAL */
     10, /* COPPER */
     30, /* SILVER */

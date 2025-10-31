@@ -569,13 +569,16 @@ hates_material(struct permonst *ptr, int material)
         return (is_were(ptr) || ptr->mlet == S_VAMPIRE
                 || is_demon(ptr) || ptr == &mons[PM_SHADE]
                 || (ptr->mlet == S_IMP));
-    } else if (material == IRON || material == METAL) {
+    } else if (material == IRON) {
+        if (is_undead(ptr))
+            return FALSE;
+        return (is_elf(ptr));
+    } else if (material == COLD_IRON) {
         if (is_undead(ptr))
             return FALSE;
         /* cold iron: fairy/fae creatures hate it */
-        return (is_elf(ptr)
-                || ptr->mlet == S_NYMPH
-                || ptr->mlet == S_IMP);
+        return (is_elf(ptr) || ptr->mlet == S_NYMPH || ptr->mlet == S_IMP
+            || ptr == &mons[PM_LEPRECHAUN] || ptr == &mons[PM_DISPLACER_BEAST]);
     } else if (material == COPPER) {
         /* copper has antibacterial and antifungal properties,
          * very good versus sickness, mold and decay */
@@ -598,6 +601,7 @@ sear_damage(int material)
 {
     switch (material) {
     case SILVER:
+    case COLD_IRON:
         return 20;
     case MITHRIL:
         return rnd(4) + 4;

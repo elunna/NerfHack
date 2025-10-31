@@ -22,16 +22,17 @@ enum obj_material_types {
     BONE        =  9,
     DRAGON_HIDE = 10, /* not leather! */
     IRON        = 11, /* Fe - includes steel */
-    METAL       = 12, /* Sn, &c. */
-    COPPER      = 13, /* Cu - includes brass */
-    SILVER      = 14, /* Ag */
-    GOLD        = 15, /* Au */
-    PLATINUM    = 16, /* Pt */
-    MITHRIL     = 17,
-    PLASTIC     = 18,
-    GLASS       = 19,
-    GEMSTONE    = 20,
-    MINERAL     = 21
+    COLD_IRON   = 12, /* Iron that has been cold-forged */
+    METAL       = 13, /* Sn, &c. */
+    COPPER      = 14, /* Cu - includes brass */
+    SILVER      = 15, /* Ag */
+    GOLD        = 16, /* Au */
+    PLATINUM    = 17, /* Pt */
+    MITHRIL     = 18,
+    PLASTIC     = 19,
+    GLASS       = 20,
+    GEMSTONE    = 21,
+    MINERAL     = 22
 };
 
 #define NUM_MATERIAL_TYPES MINERAL
@@ -204,7 +205,8 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
-#define is_rustprone(otmp) ((otmp)->material == IRON)
+#define is_rustprone(otmp) ((otmp)->material == IRON \
+        || (otmp)->material == COLD_IRON)
 /* note: is_crackable doesn't need to include weptools because none of them can
  * generate as glass */
 #define is_crackable(otmp) \

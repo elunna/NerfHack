@@ -1564,8 +1564,8 @@ ini_inv_adjust_obj(struct trobj *trop, struct obj *obj)
         }
 
         /* Undead Slayers get special silver weapons.
-             * Before the object materials patch this was easy, but
-             * looks like we'll just do it here. */
+         * Before the object materials patch this was easy, but
+         * looks like we'll just do it here. */
         if (Role_if(PM_UNDEAD_SLAYER)) {
             if (is_spear(obj) ||  obj->otyp == SHORT_SWORD
                 || obj->otyp == DAGGER || obj->otyp == ELVEN_DAGGER)

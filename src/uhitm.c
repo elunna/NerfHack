@@ -2343,7 +2343,7 @@ hmon_hitmon_splitmon(
         /* iron weapon using melee or polearm hit [3.6.1: metal weapon too;
            also allow either or both weapons to cause split when twoweap] */
         && obj && (obj == uwep || (u.twoweap && obj == uswapwep))
-        && ((obj->material == IRON
+        && ((obj->material == IRON || obj->material == COLD_IRON
             /* allow scalpel and tsurugi to split puddings */
              || obj->material == METAL)
             /* but not bashing with darts, arrows or ya */
@@ -5361,7 +5361,8 @@ mhitm_ad_phys(
                     tmp = (tmp + 1) / 2;
 
                 if (u.mh - tmp > 1
-                    && (wepmaterial == IRON || wepmaterial == METAL)
+                    && (wepmaterial == IRON || wepmaterial == COLD_IRON
+                        || wepmaterial == METAL)
                         /* relevant 'metal' objects are scalpel and tsurugi */
                     && (u.umonnum == PM_BLACK_PUDDING
                         || u.umonnum == PM_BROWN_PUDDING)) {
