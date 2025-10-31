@@ -35,6 +35,7 @@ enum obj_material_types {
 };
 
 #define NUM_MATERIAL_TYPES MINERAL
+#define MATERIAL_PROB_TOTAL 1000
 
 enum obj_armor_types {
     ARM_SUIT   = 0,

@@ -4556,7 +4556,7 @@ init_obj_material(struct obj* obj)
     set_material(obj, objects[obj->otyp].oc_material);
 
     if (materials) {
-        int i = rnd(100);
+        int i = rnd(MATERIAL_PROB_TOTAL);
         while (i > 0) {
             if (i <= materials->iprob)
                 break;
@@ -4636,7 +4636,7 @@ valid_obj_material(struct obj *obj, uchar mat)
     const struct icp* materials = material_list(obj);
 
     if (materials) {
-        int i = 100; /* guarantee going through everything */
+        int i = MATERIAL_PROB_TOTAL; /* guarantee going through everything */
         while (i > 0) {
             if (materials->iclass == mat)
                 return TRUE;
