@@ -4349,13 +4349,13 @@ static const struct icp crude_materials[] = {
 static const struct icp shiny_materials[] = {
     {500, 0}, /* use base material */
     {200, SILVER},
-    { 25, GOLD},
+    {100, GOLD},
     { 50, COPPER},
     { 50, MITHRIL},
-    { 40, METAL}, /* aluminum, or similar */
-    { 40, PLATINUM},
-    { 25, GEMSTONE},
-    { 20, GLASS},
+    { 20, METAL}, /* aluminum, or similar */
+    { 20, PLATINUM},
+    { 30, GEMSTONE},
+    { 30, GLASS},
 };
 
 /* for bells and other tools, especially instruments, which are normally copper
