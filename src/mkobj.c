@@ -4407,6 +4407,21 @@ static const struct icp bow_materials[] = {
     { 10, GOLD}
 };
 
+static const struct icp dwarvish_weapon_materials[] = {
+    {500, IRON},
+    {250, METAL},
+    {200, MITHRIL},
+    { 50, GEMSTONE} /* gemstone is very hard and very sharp */
+};
+
+static const struct icp elven_weapon_materials[] = {
+    /* melee weapons only */
+    {500, WOOD},
+    {250, COPPER},
+    {200, MITHRIL},
+    { 50, SILVER}
+};
+
 /* Return the appropriate above list for a given object, or NULL if there isn't
  * an appropriate list. */
 const struct icp*
@@ -4425,7 +4440,6 @@ material_list(struct obj* obj)
     case BULLWHIP:
     case WORM_TOOTH:
     case CRYSKNIFE:
-    case ELVEN_BOOTS:
     case WAR_DRUM:
     case DRUM_OF_EARTHQUAKE:
     case LAND_MINE:
@@ -4447,6 +4461,7 @@ material_list(struct obj* obj)
     case BOOMERANG: /* wooden base, similar shape */
         return bow_materials;
     case ELVEN_HELM:
+    case ELVEN_BOOTS:
     case BRACERS:
     case BRACERS_OF_INTEGRITY:
     case BRACERS_OF_SLEEP_RESISTANCE:
@@ -4473,6 +4488,16 @@ material_list(struct obj* obj)
         return horn_materials;
     case FIGURINE:
         return figurine_materials;
+    case DWARVISH_SPEAR:
+    case DWARVISH_SHORT_SWORD:
+    case DWARVISH_MATTOCK:
+        return dwarvish_weapon_materials;
+    case ELVEN_SPEAR:
+    case ELVEN_DAGGER:
+    case ELVEN_SHORT_SWORD:
+    case ELVEN_BROADSWORD:
+    //case ELVEN_LONG_SWORD:
+        return elven_weapon_materials;
     default:
         break;
     }
