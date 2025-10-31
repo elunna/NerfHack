@@ -1037,8 +1037,8 @@ dochug(struct monst *mtmp)
        to move. Movement itself is handled by the m_move() function. */
     if (!nearby || mtmp->mflee || scared || mtmp->mconf || mtmp->mstun
         || (mtmp->minvis && !rn2(3))
-        || (mdat->mlet == S_LEPRECHAUN && !findgold(gi.invent)
-            && (findgold(mtmp->minvent) || rn2(2)))
+        || (mdat->mlet == S_LEPRECHAUN && !findgold(gi.invent, FALSE)
+            && (findgold(mtmp->minvent, FALSE) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4))
         || (Conflict && !mtmp->iswiz && !mtmp->iscthulhu)
         || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful
@@ -1308,9 +1308,9 @@ leppie_avoidance(struct monst *mtmp)
     struct obj *lepgold, *ygold;
 
     if (mtmp->data == &mons[PM_LEPRECHAUN]
-        && ((lepgold = findgold(mtmp->minvent))
+        && ((lepgold = findgold(mtmp->minvent, FALSE))
             && (lepgold->quan
-                > ((ygold = findgold(gi.invent)) ? ygold->quan : 0L))))
+                > ((ygold = findgold(gi.invent, FALSE)) ? ygold->quan : 0L))))
         return TRUE;
 
     return FALSE;

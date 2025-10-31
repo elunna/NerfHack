@@ -34,21 +34,34 @@ somegold(long lmoney)
 }
 
 /*
- * Find the first (and hopefully only) gold object in a chain.
+ * Find the first gold object in a chain.
  * Used when leprechaun (or you as leprechaun) looks for
  * someone else's gold.  Returns a pointer so the gold may
  * be seized without further searching.
  * May search containers too.
- * Deals in gold only, as leprechauns don't care for lesser coins.
+ * Deals in gold only, as leprechauns don't care for lesser materials.
+ * If only_coins is FALSE, it will return the first actual gold object in this
+ * chain, not just gold pieces. If it's TRUE, it will only look for gold
+ * pieces.
 */
 struct obj *
-findgold(struct obj *argchain)
+findgold( struct obj *chain, boolean only_coins)
 {
-    struct obj *chain = argchain; /* allow arg to be nonnull */
-
-    while (chain && chain->otyp != GOLD_PIECE)
+    struct obj* gold = (struct obj *) 0;
+    int ngoldobjs = 0;
+    while (chain) {
+        if (only_coins && chain->otyp == GOLD_PIECE) {
+            /* assume no multiple gold stacks */
+            return chain;
+        } else if (!only_coins && chain->material == GOLD) {
+            ngoldobjs++;
+            if (!rn2(ngoldobjs)) {
+                gold = chain;
+            }
+        }
         chain = chain->nobj;
-    return chain;
+    }
+    return gold;
 }
 
 /*
@@ -68,7 +81,7 @@ stealgold(struct monst *mtmp)
         fgold = fgold->nexthere;
 
     /* Do you have real gold? */
-    ygold = findgold(gi.invent);
+    ygold = findgold(gi.invent, FALSE);
 
     if (fgold && (!ygold || fgold->quan > ygold->quan || !rn2(5))) {
         obj_extract_self(fgold);
@@ -939,7 +952,7 @@ relobj(
     int omx = mtmp->mx, omy = mtmp->my;
 
     /* vault guard's gold goes away rather than be dropped... */
-    if (mtmp->isgd && (otmp = findgold(mtmp->minvent)) != 0) {
+    if (mtmp->isgd && (otmp = findgold(mtmp->minvent, TRUE)) != 0) {
         if (canspotmon(mtmp))
             pline("%s gold %s.", s_suffix(Monnam(mtmp)),
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");

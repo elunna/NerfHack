@@ -348,7 +348,7 @@ gold_detect(struct obj *sobj)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp) || (mtmp->isgd && !mtmp->mx))
             continue;
-        if (findgold(mtmp->minvent) || monsndx(mtmp->data) == PM_GOLD_GOLEM) {
+        if (findgold(mtmp->minvent, TRUE) || monsndx(mtmp->data) == PM_GOLD_GOLEM) {
             if (mtmp == u.usteed) {
                 steedgold = TRUE;
             } else {
@@ -437,7 +437,7 @@ gold_detect(struct obj *sobj)
         if (DEADMONSTER(mtmp) || (mtmp->isgd && !mtmp->mx))
             continue;
         temp = 0;
-        if (findgold(mtmp->minvent) || monsndx(mtmp->data) == PM_GOLD_GOLEM) {
+        if (findgold(mtmp->minvent, TRUE) || monsndx(mtmp->data) == PM_GOLD_GOLEM) {
             gold = cg.zeroobj; /* ensure oextra is cleared too */
             gold.otyp = GOLD_PIECE;
             gold.quan = (long) rnd(10); /* usually more than 1 */
@@ -686,7 +686,7 @@ object_detect(struct obj *detector, /* object doing the detecting */
         }
         if ((is_cursed && M_AP_TYPE(mtmp) == M_AP_OBJECT
              && (!class || class == objects[mtmp->mappearance].oc_class))
-            || (findgold(mtmp->minvent) && (!class || class == COIN_CLASS))) {
+            || (findgold(mtmp->minvent, TRUE) && (!class || class == COIN_CLASS))) {
             ct++;
             break;
         }
@@ -770,7 +770,7 @@ object_detect(struct obj *detector, /* object doing the detecting */
             /* used for mimicking a corpse or statue */
             temp.corpsenm = has_mcorpsenm(mtmp) ? MCORPSENM(mtmp) : PM_TENGU;
             map_object(&temp, 1);
-        } else if (findgold(mtmp->minvent)
+        } else if (findgold(mtmp->minvent, TRUE)
                    && (!class || class == COIN_CLASS)) {
             struct obj gold;
 

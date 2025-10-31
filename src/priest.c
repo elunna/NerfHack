@@ -710,7 +710,7 @@ priest_talk(struct monst *priest)
 
     /* The priest never carries cash; it might get stolen! */
     char pronounbuf[10];
-    if ((gypgold = findgold(priest->minvent)) != 0) {
+    if ((gypgold = findgold(priest->minvent, TRUE)) != 0) {
         if (canspotmon(priest))
             pline("%s gold %s.",  upstart(strcpy(pronounbuf, mhis(priest))),
                   canseemon(priest) ? "vanishes" : "seems to vanish");

@@ -2980,7 +2980,7 @@ steal_it(struct monst *mdef, struct attack *mattk)
             }
         *minvent_ptr = ustealo; /* put armor back into minvent */
     }
-    gold = findgold(mdef->minvent);
+    gold = findgold(mdef->minvent, TRUE);
 
     if (ustealo) { /* we will be taking everything */
         char heshe[20];
@@ -3048,7 +3048,7 @@ steal_it(struct monst *mdef, struct attack *mattk)
         /* take gold out of minvent before making next selection; if it
            is the only thing left, the loop will terminate and it will be
            put back below */
-        if ((gold = findgold(mdef->minvent)) != 0)
+        if ((gold = findgold(mdef->minvent, TRUE)) != 0)
             obj_extract_self(gold);
     }
 
@@ -3735,7 +3735,7 @@ mhitm_ad_sgld(
 
     if (magr == &gy.youmonst) {
         /* uhitm */
-        struct obj *mongold = findgold(mdef->minvent);
+        struct obj *mongold = findgold(mdef->minvent, FALSE);
 
         if (mongold) {
             obj_extract_self(mongold);
@@ -3769,7 +3769,7 @@ mhitm_ad_sgld(
          * between mdef's feet...
          */
         {
-            struct obj *gold = findgold(mdef->minvent);
+            struct obj *gold = findgold(mdef->minvent, FALSE);
 
             if (!gold)
                 return;
