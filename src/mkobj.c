@@ -4267,137 +4267,140 @@ obj_drops_at(struct obj *obj, int x, int y)
 /* Object material probabilities. */
 /* for objects which are normally iron or metal */
 static const struct icp metal_materials[] = {
-    {74, 0}, /* default to base type, iron or metal */
-    { 5, IRON},
-    { 5, WOOD},
-    { 5, SILVER},
-    { 3, COPPER},
-    { 3, MITHRIL},
-    { 1, GOLD},
-    { 1, BONE},
-    { 1, GLASS},
-    { 1, PLATINUM},
-    { 1, PLASTIC}
+    {700, 0}, /* default to base type, iron or metal */
+    { 50, BONE},
+    { 50, WOOD},
+    { 40, SILVER},
+    { 40, COPPER},
+    { 20, MITHRIL},
+    { 10, GOLD},
+    { 10, GLASS},
+    { 10, PLATINUM},
+    { 50, PLASTIC},
+    { 20, MINERAL},
 };
 
 /* for objects which are normally wooden */
 static const struct icp wood_materials[] = {
-    {80, WOOD},
-    {10, MINERAL},
-    { 5, IRON},
-    { 3, BONE},
-    { 1, COPPER},
-    { 0, GOLD}, /* can exist in certain special levels but not randomly
+    {800, WOOD},
+    { 85, MINERAL},
+    { 45, IRON},
+    { 25, BONE},
+    { 15, COPPER},
+    {  0, GOLD}, /* can exist in certain special levels but not randomly
                  * generated */
-    { 1, SILVER}
+    { 10, SILVER},
+    { 20, MITHRIL},
 };
 
 /* for objects which are normally cloth */
 static const struct icp cloth_materials[] = {
-    {80, CLOTH},
-    {10, LEATHER},
-    { 7, PLASTIC},
-    { 3, PAPER}
+    {800, CLOTH},
+    { 90, LEATHER},
+    { 70, PLASTIC},
+    { 30, PAPER},
+    { 10, DRAGON_HIDE}
 };
 
 /* for objects which are normally leather */
 static const struct icp leather_materials[] = {
-    {76, LEATHER},
-    {17, CLOTH},
-    { 7, PLASTIC},
+    {800, LEATHER},
+    {130, CLOTH},
+    { 60, PLASTIC},
+    { 10, DRAGON_HIDE}
 };
 
 /* for objects of dwarvish make */
 static const struct icp dwarvish_materials[] = {
-    {85, IRON},
-    {10, MITHRIL},
-    { 2, COPPER},
-    { 1, SILVER},
-    { 1, GOLD},
-    { 1, PLATINUM}
-};
-
-/* for objects of orcish make - no valuables */
-static const struct icp crude_materials[] = {
-    {60, 0}, /* use base */
-    {20, IRON},
-    { 8, BONE},
-    { 7, WOOD},
-    { 5, MINERAL}
+    {850, IRON},
+    {100, MITHRIL},
+    { 20, COPPER},
+    { 10, SILVER},
+    { 10, GOLD},
+    { 10, PLATINUM}
 };
 
 /* for armor-y objects of elven make - no iron!
  * Does not cover clothy items; those use the regular cloth probs. */
 static const struct icp elven_materials[] = {
-    {60, 0}, /* use base material */
-    {20, WOOD},
-    {10, COPPER},
-    { 5, MITHRIL},
-    { 3, SILVER},
-    { 2, GOLD}
+    {600, 0}, /* use base material */
+    {200, WOOD},
+    {100, COPPER},
+    { 50, MITHRIL},
+    { 30, SILVER},
+    { 20, GOLD}
+};
+
+/* for objects of orcish make - no valuables */
+static const struct icp crude_materials[] = {
+    {600, 0}, /* use base */
+    {250, BONE},
+    {100, WOOD},
+    { 50, MINERAL}
 };
 
 /* Reflectable items - for the shield of reflection; anything that can hold a
  * polish. Amulets also arbitrarily use this list. */
 static const struct icp shiny_materials[] = {
-    {30, SILVER},
-    {22, COPPER},
-    {12, GOLD},
-    {12, IRON}, /* stainless steel */
-    {10, GLASS},
-    { 7, MITHRIL},
-    { 5, METAL}, /* aluminum, or similar */
-    { 2, PLATINUM}
+    {500, 0}, /* use base material */
+    {200, SILVER},
+    {100, GOLD},
+    { 50, COPPER},
+    { 50, MITHRIL},
+    { 40, METAL}, /* aluminum, or similar */
+    { 40, PLATINUM},
+    { 20, GLASS},
 };
 
 /* for bells and other tools, especially instruments, which are normally copper
  * or metal.  Wood and glass in other lists precludes us from using those. */
 static const struct icp resonant_materials[] = {
-    {55, 0}, /* use base material */
-    {25, COPPER},
-    { 6, SILVER},
-    { 5, IRON},
-    { 5, MITHRIL},
-    { 3, GOLD},
-    { 1, PLATINUM}
+    {550, 0}, /* use base material */
+    {250, COPPER},
+    { 60, SILVER},
+    { 50, IRON},
+    { 50, MITHRIL},
+    { 30, GOLD},
+    { 10, PLATINUM}
 };
 
 /* for horns, currently. */
 static const struct icp horn_materials[] = {
-    {70, BONE},
-    {10, COPPER},
-    { 8, MITHRIL},
-    { 5, WOOD},
-    { 5, SILVER},
-    { 2, GOLD}
+    {700, BONE},
+    {100, COPPER},
+    { 80, MITHRIL},
+    { 50, WOOD},
+    { 50, SILVER},
+    { 20, GOLD}
 };
 
 /* hacks for specific objects... not great because it's a lot of data, but it's
  * a relatively clean solution */
 
 static const struct icp figurine_materials[] = {
-    {45, MINERAL},
-    {35, WOOD},
-    {10, PLASTIC},
-    { 5, METAL},
-    { 4, COPPER},
-    { 1, GOLD}
+    {450, MINERAL},
+    {350, WOOD},
+    {100, PLASTIC},
+    { 50, METAL},
+    { 40, COPPER},
+    { 10, GOLD}
 };
 static const struct icp elvenhelm_materials[] = {
-    {70, LEATHER},
-    {20, COPPER},
-    {10, WOOD}
+    {700, LEATHER},
+    {200, COPPER},
+    { 90, WOOD},
+    { 10, DRAGON_HIDE}
 };
 static const struct icp bow_materials[] = {
     /* assumes all bows will be wood by default, fairly safe assumption */
-    {75, WOOD},
-    { 7, IRON},
-    { 5, MITHRIL},
-    { 4, COPPER},
-    { 4, BONE},
-    { 2, SILVER},
-    { 2, PLASTIC},
-    { 1, GOLD}
+    {700, WOOD},
+    { 70, IRON},
+    { 70, BONE},
+    { 60, MITHRIL},
+    { 50, PLASTIC},
+    { 20, COPPER},
+    { 20, SILVER},
+    { 10, GOLD}
 };
 
 /* Return the appropriate above list for a given object, or NULL if there isn't
