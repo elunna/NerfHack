@@ -4432,7 +4432,7 @@ static const struct icp elven_weapon_materials[] = {
 };
 
 static const struct icp sling_bullet_materials[] = {
-    {400, IRON},
+    {500, IRON},
     {150, COLD_IRON},
     {125, METAL},
     {100, MITHRIL},
