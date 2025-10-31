@@ -90,7 +90,7 @@ NEARDATA struct accessibility_data a11y;
 const char *materialnm[] = { "mysterious", "liquid",  "wax",        "organic",
                              "flesh",      "paper",   "cloth",      "leather",
                              "wooden",     "bone",    "dragonhide", "iron",
-                             "metal",      "copper",  "silver",     "gold",
+                             "steel",      "copper",  "silver",     "gold",
                              "platinum",   "mithril", "plastic",    "glass",
                              "gemstone",   "stone" };
 const char quitchars[] = " \r\n\033";
