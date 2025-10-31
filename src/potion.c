@@ -3382,8 +3382,7 @@ dip_potion_explosion(
         /* ACID_VENOM is a kludge for mixtures guaranteed to explode */
         || mixture == ACID_VENOM
         || !rn2((uarmc && uarmc->otyp == ALCHEMY_SMOCK)
-                ? 30
-                : (magic ? !rn2(10) : !rn2(20)))) {
+                ? 30 : (magic ? 10 : 20))) {
         /* it would be better to use up the whole stack in advance
            of the message, but we can't because we need to keep it
            around for potionbreathe() [and we can't set obj->in_use
