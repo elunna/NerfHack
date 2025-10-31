@@ -2261,7 +2261,9 @@ seffect_cloning(struct obj **sobjp)
         otmp2->oprops = otmp->oprops;
         otmp2->oeaten = otmp->oeaten;
         otmp2->opoisoned = otmp->opoisoned;
-
+        otmp2->bquality = otmp->bquality;
+        otmp2->alignment = otmp->alignment;
+        set_material(otmp2, otmp->material);
 
         /* Copy the name over. Artifact names will not be copied.  */
         if (otmp->oextra)
