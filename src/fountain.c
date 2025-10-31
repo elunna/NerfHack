@@ -816,7 +816,7 @@ doforging(void)
         update_inventory();
         if (output->oprops) {
             /* forging magic can sometimes be too much stress */
-            if (!rn2(6))
+            if (!rn2(13))
                 coolforge(u.ux, u.uy);
             else
                 pline_The("lava in the forge bubbles ominously.");
