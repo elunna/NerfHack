@@ -517,7 +517,7 @@ mattackm(
                      || mdef->data == &mons[PM_BROWN_PUDDING]
                      || mdef->data == &mons[PM_SHOGGOTH]
                      || mdef->data == &mons[PM_JUIBLEX])
-                    && (mwep && (mwep->material == IRON || mwep->material == COLD_IRON
+                    && (mwep && (mwep->material == IRON || mwep->material == COLDSTEEL
                                  || mwep->material == METAL))
                     && mdef->mhp > 1 && !mdef->mcan) {
                     struct monst *mclone;

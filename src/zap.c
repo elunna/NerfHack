@@ -1839,7 +1839,7 @@ create_polymon(struct obj *obj, int okind)
     /* some of these choices are arbitrary */
     switch (okind) {
     case IRON:
-    case COLD_IRON:
+    case COLDSTEEL:
     case METAL:
     case MITHRIL:
         pm_index = PM_IRON_GOLEM;

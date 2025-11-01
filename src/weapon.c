@@ -449,7 +449,7 @@ dmgval_core(
             if (is_blade(otmp))
                 tmp -= 1;
         } else if (is_odd_material(otmp, METAL)
-            || is_odd_material(otmp, COLD_IRON)) {
+            || is_odd_material(otmp, COLDSTEEL)) {
             /* steel has roughly the same density as iron,
                but is stronger and makes for a finer edge
                on bladed weapons */
@@ -746,8 +746,8 @@ searmsg(
         Strcpy(whose, "the ");
         if (mat == SILVER) { /* different formatting */
             Strcpy(onamebuf, "silver");
-        } else if (mat == COLD_IRON) { /* different formatting */
-            Strcpy(onamebuf, "cold iron");
+        } else if (mat == COLDSTEEL) { /* different formatting */
+            Strcpy(onamebuf, "COLDSTEEL");
         } else {
             Sprintf(onamebuf, "touch of %s", materialnm[mat]);
         }
@@ -757,7 +757,7 @@ searmsg(
      * Note that this can assume it will be formatting some non-player entity
      * because it only applies when the player isn't involved. */
     if (!youattack && !youdefend && !canseemon(mdef) && minimal) {
-        if (mat == SILVER || mat == COLD_IRON) {
+        if (mat == SILVER || mat == COLDSTEEL) {
             char defender[BUFSZ];
             if (has_flesh) {
                 Sprintf(defender, "%s flesh", s_suffix(Monnam(mdef)));
@@ -778,7 +778,7 @@ searmsg(
         Strcpy(whom, "you");
     }
 
-    if (mat == SILVER || mat == COLD_IRON) { /* more dramatic effects than other materials */
+    if (mat == SILVER || mat == COLDSTEEL) { /* more dramatic effects than other materials */
         /* note: s_suffix returns a modifiable buffer */
         if (has_flesh)
             whom = strcat(s_suffix(whom), " flesh");

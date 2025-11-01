@@ -2117,7 +2117,7 @@ const int matdensities[] = {
     25,  // BONE
     20,  // DRAGONHIDE
     80,  // IRON
-    75,  // COLD_IRON
+    75,  // COLDSTEEL
     70,  // METAL
     85,  // COPPER
     90,  // SILVER
@@ -2271,7 +2271,7 @@ const int matac[] = {
      5,  // BONE
      8, // DRAGON_HIDE
      5,  // IRON - de facto baseline for metal armor
-     5,  // COLD_IRON
+     5,  // COLDSTEEL
      5,  // METAL
      4,  // COPPER
      5,  // SILVER
@@ -4275,7 +4275,7 @@ static const struct icp metal_materials[] = {
     { 50, WOOD},
     { 40, SILVER},
     { 40, COPPER},
-    { 40, COLD_IRON},
+    { 40, COLDSTEEL},
     { 20, MITHRIL},
     { 10, GOLD},
     { 10, GLASS},
@@ -4322,7 +4322,7 @@ static const struct icp dwarvish_materials[] = {
     {600, IRON},
     {200, METAL},
     {100, MITHRIL},
-    { 50, COLD_IRON},
+    { 50, COLDSTEEL},
     { 20, COPPER},
     { 10, SILVER},
     { 10, SILVER},
@@ -4419,7 +4419,7 @@ static const struct icp dwarvish_weapon_materials[] = {
     {500, IRON},
     {200, METAL},
     {200, MITHRIL},
-    { 50, COLD_IRON},
+    { 50, COLDSTEEL},
     { 50, GEMSTONE} /* gemstone is very hard and very sharp */
 };
 
@@ -4433,7 +4433,7 @@ static const struct icp elven_weapon_materials[] = {
 
 static const struct icp sling_bullet_materials[] = {
     {500, IRON},
-    {150, COLD_IRON},
+    {150, COLDSTEEL},
     {125, METAL},
     {100, MITHRIL},
     { 50, SILVER},

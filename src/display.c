@@ -2639,7 +2639,7 @@ static const int materialclr[] = {
     CLR_WHITE,  // BONE
     CLR_BLACK,  // DRAGON_HIDE
     HI_METAL,   // IRON
-    CLR_CYAN,   // COLD_IRON
+    CLR_CYAN,   // COLDSTEEL
     HI_METAL,   // METAL
     HI_COPPER,  // COPPER
     HI_SILVER,  // SILVER

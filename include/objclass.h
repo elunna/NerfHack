@@ -22,7 +22,7 @@ enum obj_material_types {
     BONE        =  9,
     DRAGON_HIDE = 10, /* not leather! */
     IRON        = 11, /* Fe - includes steel */
-    COLD_IRON   = 12, /* Iron that has been cold-forged */
+    COLDSTEEL   = 12, /* Iron that has been cold-forged */
     METAL       = 13, /* Sn, &c. */
     COPPER      = 14, /* Cu - includes brass */
     SILVER      = 15, /* Ag */
@@ -206,7 +206,7 @@ extern NEARDATA struct objdescr obj_descr[NUM_OBJECTS + 1];
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
 #define is_rustprone(otmp) ((otmp)->material == IRON \
-        || (otmp)->material == COLD_IRON)
+        || (otmp)->material == COLDSTEEL)
 /* note: is_crackable doesn't need to include weptools because none of them can
  * generate as glass */
 #define is_crackable(otmp) \

@@ -573,10 +573,10 @@ hates_material(struct permonst *ptr, int material)
         if (is_undead(ptr))
             return FALSE;
         return (is_elf(ptr));
-    } else if (material == COLD_IRON) {
+    } else if (material == COLDSTEEL) {
         if (is_undead(ptr))
             return FALSE;
-        /* cold iron: fairy/fae creatures hate it */
+        /* COLDSTEEL: fairy/fae creatures hate it */
         return (is_elf(ptr) || ptr->mlet == S_NYMPH || ptr->mlet == S_IMP
             || ptr == &mons[PM_LEPRECHAUN] || ptr == &mons[PM_DISPLACER_BEAST]);
     } else if (material == COPPER) {
@@ -601,9 +601,9 @@ sear_damage(int material)
 {
     switch (material) {
     case SILVER:
-    case COLD_IRON:
+    case COLDSTEEL:
         return 20;
-    case IRON: /* Save the big bonus for cold iron... */
+    case IRON: /* Save the big bonus for COLDSTEEL... */
         return 4;
     default: /* copper/mithril */
         return 6;
