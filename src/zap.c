@@ -1731,12 +1731,7 @@ obj_resists(struct obj *obj,
         return TRUE;
     } else {
         int chance = rn2(100);
-        if (obj->bquality == FQ_SUPERIOR)
-            ochance += 50;
-        if (obj->bquality == FQ_EXCEPTIONAL)
-            ochance += 100;
-        if (obj->bquality == FQ_LEGENDARY)
-            ochance += 200;
+
         return (boolean) (chance < (obj->oartifact ? achance : ochance));
     }
 }
