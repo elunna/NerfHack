@@ -608,17 +608,6 @@ doforging(void)
             the forging process fails */
         You("fail to combine these two objects.");
         return 1;
-    } else if (!Role_if(PM_SAMURAI)
-          && (objtype == KATANA || objtype == TSURUGI
-            || objtype == SHURIKEN)) {
-        You("need the mastery of a samurai to accomplish that.");
-        return 1;
-    } else if (is_dwarvish_obj(objtype) && !Race_if(PM_DWARF)) {
-        pline("Only a true dwarf would have the skills for that...");
-        return 1;
-    } else if (is_orcish_obj(objtype) && !Race_if(PM_ORC)) {
-        pline("Only an orc would be willing to forge that...");
-        return 1;
     } else if (obj1->alignment && obj2->alignment
                  && obj1->alignment != obj2->alignment) {
         /* Items that are aligned can only be combined with like-aligned items -
