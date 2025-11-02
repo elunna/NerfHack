@@ -953,7 +953,7 @@ m_dowear_type(
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         /* Don't select items our race isn't compatible with */
-        if (hates_item(mon, obj->otyp))
+        if (hates_item(mon, obj))
             continue;
         if (mon_hates_material(mon, obj->material))
             continue;

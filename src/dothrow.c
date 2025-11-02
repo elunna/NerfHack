@@ -1578,7 +1578,7 @@ throwit(
     if (((obj->cursed && rn2(7))
          || (obj->greased && rn2(7))
          || (cursed_launcher && rn2(7))
-         || (hates_item(&gy.youmonst, obj->otyp) && rn2(7)))
+         || (hates_item(&gy.youmonst, obj) && rn2(7)))
         && (u.dx || u.dy)) {
         boolean slipok = TRUE;
 

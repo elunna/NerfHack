@@ -1808,7 +1808,7 @@ is_better_armor(struct monst *mtmp, struct obj *otmp)
 
     if (otmp->oclass != ARMOR_CLASS)
         return FALSE;
-    if (hates_item(mtmp, otmp->otyp))
+    if (hates_item(mtmp, otmp))
         return FALSE;
 
     /* Can the monster even wear armor? Small monsters can wear cloaks. */
@@ -1884,7 +1884,7 @@ could_use_item(struct monst *mtmp, struct obj *otmp,
     if (is_animal(mtmp->data) || !mindless(mtmp->data)
         || !nohands(mtmp->data))
         return FALSE;
-    if (hates_item(mtmp, otmp->otyp))
+    if (hates_item(mtmp, otmp))
         return FALSE;
 
     boolean can_use = FALSE;

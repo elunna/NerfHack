@@ -564,36 +564,36 @@ find_roll_to_hit(
     if (tmp > 4 && !rn2(10)) {
         switch (rnd(7)) {
         case 1:
-            if (uarm && hates_item(&gy.youmonst, uarm->otyp))
+            if (uarm && hates_item(&gy.youmonst, uarm))
                 Your("%s is awkward for combat.", aobjnam(uarm, (char *) 0));
             break;
         case 2:
-            if (uarmc && hates_item(&gy.youmonst, uarmc->otyp))
+            if (uarmc && hates_item(&gy.youmonst, uarmc))
                 Your("%s is unbearable for combat.",
                      aobjnam(uarmc, (char *) 0));
             break;
         case 3:
-            if (uarmh && hates_item(&gy.youmonst, uarmh->otyp))
+            if (uarmh && hates_item(&gy.youmonst, uarmh))
                 Your("%s is annoying to fight in.",
                      aobjnam(uarmh, (char *) 0));
             break;
         case 4:
-            if (uarmf && hates_item(&gy.youmonst, uarmf->otyp))
+            if (uarmf && hates_item(&gy.youmonst, uarmf))
                 Your("%s are uncomfortable to fight in.",
                      aobjnam(uarmf, (char *) 0));
             break;
         case 5:
-            if (uarms && hates_item(&gy.youmonst, uarms->otyp))
+            if (uarms && hates_item(&gy.youmonst, uarms))
                 Your("%s is clunky to fight with.",
                      aobjnam(uarms, (char *) 0));
             break;
         case 6:
-            if (uwep && hates_item(&gy.youmonst, uwep->otyp))
+            if (uwep && hates_item(&gy.youmonst, uwep))
                 You("struggle trying to fight with your strange %s.",
                     aobjnam(uwep, (char *) 0));
             break;
         case 7:
-            if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp))
+            if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep))
                 You("struggle trying to fight with your strange %s.",
                     aobjnam(uswapwep, (char *) 0));
             break;
@@ -8495,11 +8495,22 @@ light_hits_gremlin(struct monst *mon, int dmg)
  * Grung tolerate different armors, but hate heavy metallic armor.
  */
 boolean
-hates_item(struct monst *mtmp, int otyp)
+hates_item(struct monst *mtmp, struct obj *otmp)
 {
+    int otyp = otmp->otyp;
     boolean is_you = (mtmp == &gy.youmonst);
     boolean is_bulky = otyp >= PLATE_MAIL && otyp <= SHIELD_OF_REFLECTION
                        && objects[otyp].oc_bulky;
+
+
+    /* No being can tolerate cross aligned items. */
+    if (is_you) {
+        if (item_cross_aligned(otmp))
+            return TRUE;
+    } else if (item_vs_mon(otmp, mtmp)) {
+        return TRUE;
+    }
+
     /* Special exception for archaeologists - the following text was written
      * by ChatGPT because, ... why not.
      *
@@ -8554,19 +8565,19 @@ count_hated_items(void)
 {
     int count = 0;
 
-    if (uarm && hates_item(&gy.youmonst, uarm->otyp))
+    if (uarm && hates_item(&gy.youmonst, uarm))
         count++;
-    if (uarmc && hates_item(&gy.youmonst, uarmc->otyp))
+    if (uarmc && hates_item(&gy.youmonst, uarmc))
         count++;
-    if (uarmh && hates_item(&gy.youmonst, uarmh->otyp))
+    if (uarmh && hates_item(&gy.youmonst, uarmh))
         count++;
-    if (uarmf && hates_item(&gy.youmonst, uarmf->otyp))
+    if (uarmf && hates_item(&gy.youmonst, uarmf))
         count++;
-    if (uarms && hates_item(&gy.youmonst, uarms->otyp))
+    if (uarms && hates_item(&gy.youmonst, uarms))
         count++;
-    if (uwep && hates_item(&gy.youmonst, uwep->otyp))
+    if (uwep && hates_item(&gy.youmonst, uwep))
         count++;
-    if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp))
+    if (u.twoweap && uswapwep && hates_item(&gy.youmonst, uswapwep))
         count++;
     return count;
 }

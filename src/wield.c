@@ -129,7 +129,7 @@ setuwep(struct obj *obj)
     /* This needs to come before setting properties in case we are
      * switching between two weapons with properties. */
     if (olduwep) {
-        if (hates_item(&gy.youmonst, olduwep->otyp)) {
+        if (hates_item(&gy.youmonst, olduwep)) {
             find_ac();
             disp.botl = TRUE;
             You_feel("more comfortable now.");
@@ -183,7 +183,7 @@ setuwep(struct obj *obj)
     }
     if (uwep && uwep == obj) {
         /* Hated items decrease AC and affect to-hit */
-        if (hates_item(&gy.youmonst, uwep->otyp)) {
+        if (hates_item(&gy.youmonst, uwep)) {
             find_ac();
             disp.botl = TRUE;
             You_feel("awkward wielding %s...", yname(uwep));
@@ -1093,13 +1093,13 @@ set_twoweap(boolean on)
 {
     u.twoweap = on;
 
-    if (on && uswapwep && hates_item(&gy.youmonst,uswapwep->otyp)
-        && !hates_item(&gy.youmonst, uwep->otyp)) {
+    if (on && uswapwep && hates_item(&gy.youmonst, uswapwep)
+        && !hates_item(&gy.youmonst, uwep)) {
         find_ac();
         disp.botl = TRUE;
         You_feel("strange wielding %s...", yname(uswapwep));
-    } else if (!on && uswapwep && hates_item(&gy.youmonst, uswapwep->otyp)
-               && !hates_item(&gy.youmonst, uwep->otyp))
+    } else if (!on && uswapwep && hates_item(&gy.youmonst, uswapwep)
+               && !hates_item(&gy.youmonst, uwep))
         You_feel("more comfortable now.");
 }
 
