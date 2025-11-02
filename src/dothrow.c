@@ -2926,6 +2926,15 @@ breakmsg(struct obj *obj, boolean in_view)
         if (obj->material != GLASS && obj->bquality != FQ_INFERIOR)
             impossible("breaking odd object? otyp=%d, material=%d",
                        obj->otyp, obj->material);
+
+        if (obj->bquality == FQ_INFERIOR) {
+            if (!in_view)
+                You_hear("%s crumble into fragments!", something);
+            else
+                pline("%s crumble%s%s!", Doname2(obj),
+                      (obj->quan == 1L) ? "s" : "", to_pieces);
+            break;
+        }
         FALLTHROUGH;
         /*FALLTHRU*/
     case LENSES:
@@ -2979,11 +2988,11 @@ crack_glass_obj(struct obj* obj)
 
     /* some_armor() may also give an arbitrary item; we only want to damage it
      * if it's glass */
-    if (obj->material != GLASS)
+    if (obj->material != GLASS && obj->bquality != FQ_INFERIOR)
         return FALSE;
 
     /* shouldn't be called on a glass object that isn't crackable */
-    if (!is_crackable(obj)) {
+    if (obj->material == GLASS && !is_crackable(obj)) {
         impossible("attempting to crack non-crackable glass obj %d",
                     obj->otyp);
         return FALSE;
