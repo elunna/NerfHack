@@ -747,7 +747,7 @@ searmsg(
         if (mat == SILVER) { /* different formatting */
             Strcpy(onamebuf, "silver");
         } else if (mat == COLDSTEEL) { /* different formatting */
-            Strcpy(onamebuf, "COLDSTEEL");
+            Strcpy(onamebuf, "cold steel");
         } else {
             Sprintf(onamebuf, "touch of %s", materialnm[mat]);
         }
