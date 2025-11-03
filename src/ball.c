@@ -55,7 +55,10 @@ ballfall(void)
 
         pline_The("iron ball falls on your %s.", body_part(HEAD));
         if (uarmh) {
-            if (hard_helmet(uarmh)) {
+            if (is_crackable(uarmh)
+                && breakobj(uarmh, u.ux, u.uy, TRUE, TRUE)) {
+                ;
+            } else if (hard_helmet(uarmh)) {
                 Your("helmet only slightly protects you.");
                 if (dmg > 2)
                     dmg -= 2;

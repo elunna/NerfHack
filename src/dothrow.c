@@ -22,7 +22,6 @@ staticfn struct obj *return_throw_to_inv(struct obj *, long, boolean,
 staticfn void tmiss(struct obj *, struct monst *, boolean);
 staticfn int throw_gold(struct obj *);
 staticfn void check_shop_obj(struct obj *, coordxy, coordxy, boolean);
-staticfn void breakmsg(struct obj *, boolean);
 staticfn boolean mhurtle_step(genericptr_t, coordxy, coordxy);
 staticfn void hitmon_bardiche(struct monst *, struct obj *) NONNULLARG12;
 
@@ -1433,6 +1432,8 @@ toss_up(struct obj *obj, boolean hitsroof)
             /* note: 'harmless' and 'petrifier' are mutually exclusive */
             if ((less_damage && dmg < (Upolyd ? u.mh : u.uhp))
                        || harmless) {
+                if (obj->owt >= CRACK_WT && is_crackable(uarmh))
+                    (void) breakobj(uarmh, u.ux, u.uy, TRUE, TRUE);
                 if ((artimsg & ARTIFACTHIT_GAVEMSG) == 0) {
                     if (dmg > 2)
                         Your("helmet only slightly protects you.");
@@ -1829,6 +1830,7 @@ throwit(
                         setuqwep((struct obj *) 0);
                     setuwep(obj);
                     set_twoweap(twoweap); /* u.twoweap = twoweap */
+                    retouch_object(&obj, TRUE, (uarmg != NULL));
                     if (cansee(gb.bhitpos.x, gb.bhitpos.y))
                         newsym(gb.bhitpos.x, gb.bhitpos.y);
                 } else {
@@ -2380,31 +2382,31 @@ thitmonst(
                 /* Spheres explode on contact! */
                 if (is_boomer(obj->corpsenm) && !obj->cursed) {
                     switch (obj->corpsenm) {
-                        case PM_FREEZING_SPHERE:
-                            explode(gb.bhitpos.x, gb.bhitpos.y,
-                                ZT_SPELL(ZT_COLD), d(4, 6), WEAPON_CLASS, EXPL_FROSTY);
-                            break;
-                        case PM_STINKING_SPHERE:
-                            explode(gb.bhitpos.x, gb.bhitpos.y,
-                                ZT_SPELL(ZT_POISON_GAS), d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
-                            break;
-                        case PM_FLAMING_SPHERE:
-                            explode(gb.bhitpos.x, gb.bhitpos.y,
-                                ZT_SPELL(ZT_FIRE), d(4, 6), WEAPON_CLASS, EXPL_FIERY);
-                            break;
-                        case PM_SHOCKING_SPHERE:
-                            explode(gb.bhitpos.x, gb.bhitpos.y,
-                                ZT_SPELL(ZT_LIGHTNING), d(4, 6), WEAPON_CLASS, EXPL_MAGICAL);
-                            break;
-                        case PM_ACID_SPHERE:
-                            explode(gb.bhitpos.x, gb.bhitpos.y,
-                                ZT_SPELL(ZT_ACID), d(4, 6), WEAPON_CLASS, EXPL_WET);
-                            break;
-                        case PM_GAS_SPORE:
-                        case PM_VOLATILE_MUSHROOM:
-                            explode(gb.bhitpos.x, gb.bhitpos.y,
-                                PHYS_EXPL_TYPE, d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
-                            break;
+                    case PM_FREEZING_SPHERE:
+                        explode(gb.bhitpos.x, gb.bhitpos.y,
+                            ZT_SPELL(ZT_COLD), d(4, 6), WEAPON_CLASS, EXPL_FROSTY);
+                        break;
+                    case PM_STINKING_SPHERE:
+                        explode(gb.bhitpos.x, gb.bhitpos.y,
+                            ZT_SPELL(ZT_POISON_GAS), d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
+                        break;
+                    case PM_FLAMING_SPHERE:
+                        explode(gb.bhitpos.x, gb.bhitpos.y,
+                            ZT_SPELL(ZT_FIRE), d(4, 6), WEAPON_CLASS, EXPL_FIERY);
+                        break;
+                    case PM_SHOCKING_SPHERE:
+                        explode(gb.bhitpos.x, gb.bhitpos.y,
+                            ZT_SPELL(ZT_LIGHTNING), d(4, 6), WEAPON_CLASS, EXPL_MAGICAL);
+                        break;
+                    case PM_ACID_SPHERE:
+                        explode(gb.bhitpos.x, gb.bhitpos.y,
+                            ZT_SPELL(ZT_ACID), d(4, 6), WEAPON_CLASS, EXPL_WET);
+                        break;
+                    case PM_GAS_SPORE:
+                    case PM_VOLATILE_MUSHROOM:
+                        explode(gb.bhitpos.x, gb.bhitpos.y,
+                            PHYS_EXPL_TYPE, d(4, 6), WEAPON_CLASS, EXPL_NOXIOUS);
+                        break;
                     }
                 } else
                     use_moncard(obj, gb.bhitpos.x, gb.bhitpos.y);
@@ -2719,7 +2721,7 @@ release_camera_demon(struct obj *obj, coordxy x, coordxy y)
 }
 
 /*
- * Break an object.  Breakable armor goes through erosion steps; other
+ * Break an object.  Breakable armor/weapon goes through erosion steps; other
  * items break unconditionally.  Assumes all resistance checks
  * and break messages have been delivered prior to getting here.
  * (No longer true; breakmsg() is silent for crackable armor and we
@@ -2874,28 +2876,27 @@ breaktest(struct obj *obj)
 {
     int nonbreakchance = 1; /* chance for non-artifacts to resist */
 
-    /* this may need to be changed if actual glass armor gets added someday;
-       for now, it affects crystal plate mail and helm of brilliance;
+    /* this affects all glass armor and weapons;
        either of them will have to be cracked 4 times before breaking */
-    if (obj->oclass == ARMOR_CLASS && obj->material == GLASS)
+    if (is_crackable(obj))
         nonbreakchance = 90;
 
     if (obj_resists(obj, nonbreakchance, 99))
         return FALSE;
-    if (obj->material == GLASS && !obj->oartifact
-        && obj->oclass != GEM_CLASS)
+    if (obj->material == GLASS && !obj->oerodeproof
+        && !obj->oartifact && obj->oclass != GEM_CLASS)
         return TRUE;
 
     /* armor and weapons of inferior quality can sometimes
        fall apart with use */
     if (obj->bquality == FQ_INFERIOR
         && !obj->oartifact && (rn2(8) < 3))
-        return 1;
+        return TRUE;
 
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case EXPENSIVE_CAMERA:
         if (Role_if(PM_CARTOMANCER))
-            return 0;
+            return FALSE;
         FALLTHROUGH;
         /*FALLTHRU*/
     case POT_WATER: /* really, all potions */
@@ -2912,7 +2913,7 @@ breaktest(struct obj *obj)
     }
 }
 
-staticfn void
+void
 breakmsg(struct obj *obj, boolean in_view)
 {
     const char *to_pieces;
@@ -2928,11 +2929,13 @@ breakmsg(struct obj *obj, boolean in_view)
                        obj->otyp, obj->material);
 
         if (obj->bquality == FQ_INFERIOR) {
-            if (!in_view)
+            if (!in_view) {
                 You_hear("%s crumble into fragments!", something);
-            else
-                pline("%s crumble%s%s!", Doname2(obj),
+            } else {
+                pline("%s crumble%s%s!", carried(obj)
+                                            ? Yname2(obj) : Doname2(obj),
                       (obj->quan == 1L) ? "s" : "", to_pieces);
+            }
             break;
         }
         FALLTHROUGH;
@@ -2970,7 +2973,7 @@ breakmsg(struct obj *obj, boolean in_view)
     }
 }
 
-/* Possibly crack a glass object by its use in melee or thrown combat.
+/* Possibly crack a glass/inferior object by its use in melee or thrown combat.
  * Separate logic from breakobj because we are not unconditionally cracking the
  * object.
  * Return TRUE if destroyed.
@@ -2981,38 +2984,129 @@ breakmsg(struct obj *obj, boolean in_view)
 boolean
 crack_glass_obj(struct obj* obj)
 {
+    long unwornmask;
+    boolean ucarried;
+    coordxy x, y;
+    struct monst *mon;
+
     /* this function can get called with null via some_armor() or by being
      * called with uarm* variables that weren't null-checked */
     if (!obj)
         return FALSE;
 
-    /* some_armor() may also give an arbitrary item; we only want to damage it
-     * if it's glass */
-    if (obj->material != GLASS && obj->bquality != FQ_INFERIOR)
+    /* position of the object */
+    x = obj->ox;
+    y = obj->oy;
+
+    /* guard against objects that can never break
+          or go 'splat!' */
+    if (!(obj->material == GLASS
+          || obj->material == FLESH
+          || obj->material == VEGGY
+          || obj->bquality == FQ_INFERIOR))
         return FALSE;
 
-    /* shouldn't be called on a glass object that isn't crackable */
-    if (obj->material == GLASS && !is_crackable(obj)) {
-        impossible("attempting to crack non-crackable glass obj %d",
-                    obj->otyp);
+    ucarried = carried(obj);
+
+    if (ucarried) {
+        x = u.ux;
+        y = u.uy;
+    } else if (mcarried(obj)) {
+        mon = obj->ocarry;
+        x = mon->mx;
+        y = mon->my;
+    }
+
+    if (!ucarried && !mcarried(obj)) {
+        impossible("trying to break non-equipped glass obj?");
         return FALSE;
     }
 
     /* breaktest() now tries a random chance for glass armor and weapons to
      * resist cracking, so it's no longer necessary to put a random chance in
      * here */
-    if (!breaktest(obj))
+    if (!breaktest(obj) || rn2(6))
         return FALSE;
 
-    /* now we are definitely trying to crack it */
-    boolean ucarried = carried(obj);
-    boolean it_broke = breakobj(obj, obj->ox, obj->oy,
-                                !svc.context.mon_moving, TRUE);
+    /* now we are definitely breaking it */
 
+    /* remove its worn flags */
+    unwornmask = obj->owornmask;
+    if (!unwornmask) {
+        impossible("breaking non-equipped glass obj?");
+        return FALSE;
+    }
+
+    if (obj->quan == 1L) {
+        if (!Blind && (ucarried || cansee(x, y)))
+            pline("%s %s!", Yname2(obj),
+                  obj->bquality == FQ_INFERIOR ? "falls apart"
+                                                     : "breaks into pieces");
+    } else {
+        if (!Blind && (ucarried || cansee(x, y)))
+            pline("One of %s %s!", yname(obj),
+                  obj->bquality == FQ_INFERIOR ? "falls apart"
+                                                     : "breaks into pieces");
+        obj = splitobj(obj, 1L);
+    }
+
+    if (ucarried) { /* hero's item */
+        if (obj->quan == 1L) {
+            /* weapon handling */
+            if (obj == uwep)
+                uwepgone();
+            if (u.twoweap && (obj == uswapwep))
+                uswapwepgone();
+            /* armor/accessory handling. some of these will
+               never be called currently (e.g. no such thing
+               as a glass cloak or t-shirt), but we'll cover
+               all the bases in case of future changes */
+            if (obj == uarmf)
+                (void) Boots_off();
+            if (obj == uarmc)
+                (void) Cloak_off();
+            if (obj == uarmh)
+                (void) Helmet_off();
+            if (obj == uarmg)
+                (void) Gloves_off();
+            if (obj == uarms)
+                (void) Shield_off();
+            if (obj == uarmu)
+                (void) Shirt_off();
+            if (obj == uarm)
+                (void) Armor_gone();
+            if (obj == uamul)
+                (void) Amulet_off();
+            if (obj == uleft)
+                (void) Ring_gone(uleft);
+            if (obj == uright)
+                (void) Ring_gone(uright);
+        }
+        obj->ox = u.ux, obj->oy = u.uy;
+        obj->owornmask = 0L;
+    } else if (mcarried(obj)) { /* monster's item */
+        if (obj->quan == 1L) {
+            mon->misc_worn_check &= ~unwornmask;
+            if (unwornmask & W_WEP) {
+                setmnotwielded(mon, obj);
+                possibly_unwield(mon, FALSE);
+            } else if (unwornmask & W_ARMG) {
+                mselftouch(mon, NULL, TRUE);
+            }
+            /* shouldn't really be needed but... */
+            update_mon_extrinsics(mon, obj, FALSE, FALSE);
+        }
+        obj->ox = mon->mx, obj->oy = mon->my;
+        obj->owornmask = 0L;
+    } else {
+        impossible("breaking glass obj not in inventory?");
+        return FALSE;
+    }
+
+    breakobj(obj, obj->ox, obj->oy, !svc.context.mon_moving, TRUE);
     if (ucarried)
         update_inventory();
-
-    return it_broke;
+    return TRUE;
 }
 
 staticfn int

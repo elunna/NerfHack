@@ -78,17 +78,21 @@ missmm(
     struct monst *mdef, /* defender */
     struct attack *mattk) /* attack and damage types */
 {
+    struct obj *oblock = (struct obj *) 0;
     pre_mm_attack(magr, mdef);
 
     if (gv.vis) {
-        const char *blocker = attack_blocker(mdef);
+        const char *blocker = attack_blocker(mdef, &oblock);
         if (blocker && !rn2(5)) {
             char buf[BUFSZ];
             Sprintf(buf, "%s %s %s", s_suffix(Monnam(mdef)), blocker,
                     rn2(3) ? "blocks" : "deflects");
             pline("%s %s attack.", buf, s_suffix(mon_nam_too(magr, mdef)));
-        }
-        else {
+            if (oblock) {
+                if (breaktest(oblock))
+                    breakmsg(oblock, canseemon(mdef));
+            }
+        } else {
            pline("%s %s %s.", Monnam(magr),
                  (magr->mcan || !could_seduce(magr, mdef, mattk)) ? "misses"
                      : "pretends to be friendly to",

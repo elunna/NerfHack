@@ -1439,6 +1439,7 @@ hmon_hitmon_weapon_ranged(
     struct monst *mon,
     struct obj *obj)    /* obj is not NULL */
 {
+    boolean is_inferior = obj->bquality == FQ_INFERIOR;
     /* then do only 1-2 points of damage and don't use or
        train weapon's skill */
     if (shadelike(hmd->mdat) && !shade_glare(obj))
@@ -1449,13 +1450,13 @@ hmon_hitmon_weapon_ranged(
         hmd->hated_obj = obj;
         hmd->dmg += rnd(sear_damage(obj->material));
     }
-    if (!hmd->thrown && obj == uwep && obj->otyp == BOOMERANG
+    if (!hmd->thrown && obj == uwep && (obj->otyp == BOOMERANG || is_inferior)
         && rnl(4) == 4 - 1) {
         boolean more_than_1 = (obj->quan > 1L);
 
-        pline("As you hit %s, %s%s breaks into splinters.",
+        pline("As you hit %s, %s%s %s.",
               mon_nam(mon), more_than_1 ? "one of " : "",
-              yname(obj));
+              yname(obj), is_inferior ? "crumbles to bits" : "breaks into splinters");
         if (!more_than_1)
             uwepgone(); /* set gu.unweapon */
         useup(obj);
@@ -6701,9 +6702,10 @@ gulpum(struct monst *mdef, struct attack *mattk)
 }
 
 /* Return a string describing something on mdef that is blocking an attack, for
- * formatting miss messages. */
+ * formatting miss messages. Also update the item that is blocking for further
+ * processing by the caller. */
 const char *
-attack_blocker(struct monst *mdef)
+attack_blocker(struct monst *mdef, struct obj **otmp)
 {
     /* Weight the probability of what the blocker is by the amount of AC it
      * confers. */
@@ -6712,6 +6714,8 @@ attack_blocker(struct monst *mdef)
     int armasks[] = { W_ARMU, W_ARM, W_ARMC, W_ARMS, W_ARMG, W_ARMF, W_ARMH,
                       BLOCKED_BODY, BLOCKED_PROT };
     int i, total = 0, selected = -1;
+    struct obj *armor;
+
     for (i = 0; i < SIZE(armasks); ++i) {
         int bon;
         if (armasks[i] == BLOCKED_BODY)
@@ -6719,7 +6723,7 @@ attack_blocker(struct monst *mdef)
         else if (armasks[i] == BLOCKED_PROT)
             bon = (mdef == &gy.youmonst) ? u.uspellprot : 0;
         else {
-            struct obj *armor = which_armor(mdef, armasks[i]);
+            armor = which_armor(mdef, armasks[i]);
             bon = armor ? armor_bonus(mdef, armor) : 0;
         }
 
@@ -6731,13 +6735,6 @@ attack_blocker(struct monst *mdef)
     }
     if (selected < 0) /* no blockers */
         return (const char *) 0;
-
-     /* train shield skill if the shield made a block
-      * Not ideal for this to be here, but for now the only
-      * call to attack_blocker for the player is in mhitu.
-      */
-    if (mdef == &gy.youmonst && armasks[selected] == W_ARMS)
-        use_skill(P_SHIELD, 4);
 
     /* Don't create messages saying T-shirts are blocking an attack when
      * they are covered by armor or a cloak. */
@@ -6752,8 +6749,10 @@ attack_blocker(struct monst *mdef)
         return mdef->data->mlet == S_DRAGON ? "scaly hide" : "thick hide";
     else if (armasks[selected] == BLOCKED_PROT)
         return "golden haze";
-    else /* This is a bit klunky but results in less wordy messages. */
-		return xname(which_armor(mdef, armasks[selected]));
+    else { /* This is a bit klunky but results in less wordy messages. */
+        *otmp = which_armor(mdef, armasks[selected]);
+	return xname(*otmp);
+    }
 #undef BLOCKED_BODY
 #undef BLOCKED_PROT
 }
@@ -6764,20 +6763,33 @@ missum(
     struct attack *mattk,
     boolean wouldhavehit)
 {
+    struct obj *oblock = (struct obj *) 0;
+
     if (wouldhavehit) /* monk is missing due to penalty for wearing suit */
         Your("armor is rather cumbersome...");
 
     if (could_seduce(&gy.youmonst, mdef, mattk))
         You("pretend to be friendly to %s.", mon_nam(mdef));
     else if (canspotmon(mdef) && flags.verbose) {
-        const char *blocker = attack_blocker(mdef);
-        if (blocker && !rn2(3))
+        const char *blocker = attack_blocker(mdef, &oblock);
+
+        if (blocker && !rn2(3)) {
             pline("%s %s %s your attack.", s_suffix(Monnam(mdef)), blocker,
                   rn2(3) ? "blocks" : "deflects");
-        else
+            /* called if player hates the material of the armor
+               that deflected their attack */
+            if (oblock && !uwep && !uarmg
+                && Hate_material(oblock->material)) {
+                searmsg(mdef, &gy.youmonst, oblock, FALSE);
+                /* glancing blow */
+                losehp(rnd(sear_damage(oblock->material) / 2),
+                       "touching a hated material", KILLED_BY);
+            }
+            if (oblock)
+                crack_glass_obj(oblock);
+        } else
             You("miss %s.", mon_nam(mdef));
-    }
-    else
+    } else
         You("miss it.");
     if (!helpless(mdef))
         wakeup(mdef, TRUE);

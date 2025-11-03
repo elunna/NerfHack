@@ -3019,7 +3019,9 @@ drop_boulder_on_player(
         dmg = (int) (dmgval(otmp2, &gy.youmonst) * otmp2->quan);
         if (uarmh && helmet_protects) {
             if (hard_helmet(uarmh)) {
-                if (otmp2->owt >= 400) {
+                if (otmp2->owt >= CRACK_WT) {
+                    if (is_crackable(uarmh))
+                        (void) breakobj(uarmh, u.ux, u.uy, byu, TRUE);
                     if (dmg > 2)
                         dmg -= 2;
                     Your("helmet only slightly protects you.");
@@ -3043,7 +3045,8 @@ drop_boulder_on_player(
         newsym(u.ux, u.uy);
     }
     if (dmg)
-        losehp(Maybe_Half_Phys(dmg), "scroll of earth", KILLED_BY_AN);
+        losehp(Maybe_Half_Phys(dmg), "crushed by a falling boulder",
+               KILLED_BY_AN);
     if (dmg > 6)
         make_stunned((HStun & TIMEOUT) + (long) d(dmg / 6 + 1, 3), TRUE);
 }
@@ -3080,7 +3083,9 @@ drop_boulder_on_monster(coordxy x, coordxy y, boolean confused, boolean byu)
         mdmg = dmgval(otmp2, mtmp) * otmp2->quan;
         if (helmet) {
             if (hard_helmet(helmet)) {
-                if (otmp2->owt >= 400) {
+                if (otmp2->owt >= CRACK_WT) {
+                    if (is_crackable(helmet))
+                        (void) breakobj(helmet, u.ux, u.uy, byu, TRUE);
                     if (mdmg > 2)
                         mdmg -= 2;
                     if (canspotmon(mtmp)) {

@@ -1484,6 +1484,10 @@ enum concealed_spot_returnflags {
     CONCEALABLE_BY_OBJECT  = 0x2
 };
 
+/* amount of weight a flying object needs to have to unconditionally crack a
+ * glass piece of armor */
+#define CRACK_WT 400
+
 /* flags for mktrap() */
 #define MKTRAP_NOFLAGS       0x0U
 #define MKTRAP_SEEN          0x1U /* trap is seen */

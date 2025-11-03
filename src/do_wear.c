@@ -35,7 +35,6 @@ staticfn int select_off(struct obj *);
 staticfn struct obj *do_takeoff(void);
 staticfn int take_off(void);
 staticfn int menu_remarm(int);
-staticfn void wornarm_destroyed(struct obj *);
 staticfn void count_worn_stuff(struct obj **, boolean);
 staticfn int armor_or_accessory_off(struct obj *);
 staticfn int accessory_or_armor_on(struct obj *);
@@ -3670,7 +3669,7 @@ menu_remarm(int retry)
 /* take off the specific worn object and if it still exists after that,
    destroy it (taking off the item might already destroy it by dunking
    hero into lava) */
-staticfn void
+void
 wornarm_destroyed(struct obj *wornarm)
 {
     struct obj *invobj, *nextobj;

@@ -249,6 +249,7 @@ hitmsg(struct monst *mtmp, struct attack *mattk)
 staticfn void
 missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
 {
+    struct obj *oblock = (struct obj *) 0;
     gh.hitmsg_mid = 0;
     gh.hitmsg_prev = NULL;
 
@@ -259,11 +260,32 @@ missmu(struct monst *mtmp, boolean nearmiss, struct attack *mattk)
         pline_mon(mtmp, "%s pretends to be friendly.",
                  Monnam(mtmp));
     else {
-        const char *blocker = attack_blocker(&gy.youmonst);
-        if (blocker && !rn2(5)) {
+        const char *blocker = attack_blocker(&gy.youmonst, &oblock);
+        if (blocker) {
             pline_xy(mtmp->mx, mtmp->my, "You %s %s attack with your %s.",
-                     rn2(3) ? "block" : "deflect", s_suffix(mon_nam(mtmp)),
-                     blocker);
+                 rn2(3) ? "block" : "deflect", s_suffix(mon_nam(mtmp)),
+                 blocker);
+            /* called if attacker hates the material of the armor
+               that deflected their attack */
+            if (oblock
+                && (!MON_WEP(mtmp) && which_armor(mtmp, W_ARMG) == 0)
+                && mon_hates_material(mtmp, oblock->material)) {
+                if (!DEADMONSTER(mtmp)) {
+                    /* glancing blow, partial damage */
+                    searmsg(&gy.youmonst, mtmp, oblock, FALSE);
+                    int sear_amt = rnd(sear_damage(oblock->material) / 2);
+                    showdamage(sear_amt, FALSE);
+                    mtmp->mhp -= sear_amt;
+                    if (DEADMONSTER(mtmp))
+                        killed(mtmp);
+                }
+            }
+            /* train shield skill if the shield made a block */
+            if (oblock == uarms)
+                use_skill(P_SHIELD, 1);
+
+            if (oblock)
+                crack_glass_obj(oblock);
         } else
             pline_mon(mtmp, "%s %smisses!", Monnam(mtmp),
                      (nearmiss && flags.verbose) ? "just " : "");
@@ -1093,8 +1115,6 @@ mattacku(struct monst *mtmp)
                             sum[i] = hitmu(mtmp, mattk);
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
-                        if (uarms && !rn2(3))
-                            use_skill(P_SHIELD, 4);
                     }
                 } else {
                     wildmiss(mtmp, mattk);
@@ -1137,8 +1157,6 @@ mattacku(struct monst *mtmp)
                         sum[i] = gulpmu(mtmp, mattk);
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
-                        if (uarms && !rn2(3))
-                            use_skill(P_SHIELD, 4);
                     }
                 } else if (digests(mtmp->data)) {
                     pline_mon(mtmp, "%s gulps some air!", Monnam(mtmp));
@@ -1215,8 +1233,6 @@ mattacku(struct monst *mtmp)
                         sum[i] = hitmu(mtmp, mattk);
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
-                        if (uarms && !rn2(3))
-                            use_skill(P_SHIELD, 4);
                     }
                     /* KMH -- Don't accumulate to-hit bonuses */
                     if (mon_currwep)

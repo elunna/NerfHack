@@ -819,6 +819,7 @@ extern int ringbon(short);
 extern boolean will_touch_skin(long);
 extern void toggle_stealth(struct obj *, long, boolean);
 extern void toggle_seeinv(struct obj *, long, boolean);
+extern void wornarm_destroyed(struct obj *);
 
 /* ### dog.c ### */
 
@@ -890,6 +891,7 @@ extern int hero_breaks(struct obj *, coordxy, coordxy, unsigned);
 extern int breaks(struct obj *, coordxy, coordxy) NONNULLARG1;
 extern void release_camera_demon(struct obj *, coordxy, coordxy) NONNULLARG1;
 extern int breakobj(struct obj *, coordxy, coordxy, boolean, boolean) NONNULLARG1;
+extern void breakmsg(struct obj *, boolean);
 extern boolean breaktest(struct obj *) NONNULLARG1;
 extern boolean walk_path(coord *, coord *,
                          boolean(*)(void *, coordxy, coordxy), genericptr_t) NONNULLARG12;
@@ -3599,7 +3601,7 @@ extern void do_stone_mon(struct monst *, struct attack *, struct monst *,
 extern int damageum(struct monst *, struct attack *, int) NONNULLARG12;
 /* domove_fight_empty passes NULL to explum arg1 */
 extern int explum(struct monst *, struct attack *) NONNULLARG2;
-extern const char *attack_blocker(struct monst *);
+extern const char *attack_blocker(struct monst *, struct obj **);
 extern void missum(struct monst *, struct attack *, boolean) NONNULLARG12;
 extern boolean m_is_steadfast(struct monst *) NONNULLARG1;
 extern boolean mhitm_knockback(struct monst *, struct monst *,struct attack *,

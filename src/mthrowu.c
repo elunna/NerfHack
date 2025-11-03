@@ -173,6 +173,10 @@ thitu(
                 searmsg((struct monst *) 0, &gy.youmonst, obj, TRUE);
                 exercise(A_CON, FALSE);
             }
+            else if (obj && obj->owt >= CRACK_WT && uarm
+                     && is_crackable(uarm)) {
+                breakobj(uarm, u.ux, u.uy, FALSE, TRUE);
+            }
             if (is_acid) {
                 pline("It burns!");
                 monstunseesu(M_SEEN_ACID);
