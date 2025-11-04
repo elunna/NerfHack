@@ -12,10 +12,10 @@ des.map([[
  --.......--                
  |..--.--..|                
  |.........|     FFFFF      
- F..-|.|-..F     F...F      
----..|.|..---    F.{.F      
-|...........|    F...F      
-|..|.....|..|  ----S----    
+ F..-|.|-..F     F{.{F      
+---..|.|..---    F...F      
+|...........|    F{.{F      
+|..|.....|..|  --FFSFF--    
 |-.F.-F-.F.-|  |.......|    
 |..|.....|..|  |.......|    
 |...........|  |.......|    
@@ -34,7 +34,7 @@ des.region(selection.area(00,00,27,17),"lit");
 des.non_diggable(selection.area(00,00,27,17));
 des.non_passwall(selection.area(00,00,27,17));
 
-des.object({ id = "statue", x=19, y=10, montype="white dragon", historic=1 })
+des.object({ id = "statue", x=19, y=5, montype="white dragon", historic=1 })
 
 
 -- Ice
