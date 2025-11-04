@@ -5930,10 +5930,8 @@ readobjnam(char *bp, struct obj *no_wish)
     } else if (d.otmp->oartifact) {
         u.uconduct.wisharti++; /* KMH, conduct */
 
-        /* prevent artifacts from being wished for with
-           quality bit applied, adjust this if we want
-           certain artifacts to have a forged quality bit */
-        d.otmp->bquality = FQ_NORMAL;
+        /* Artifacts are legendary by default.  */
+        d.otmp->bquality = FQ_LEGENDARY;
         d.otmp->alignment = FA_NONE;
     }
     if (d.material > 0 && !d.otmp->oartifact && wizard) {

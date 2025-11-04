@@ -99,5 +99,6 @@ struct arti_info {
     Bitfield(rndm, 1);   /* 1 iff randomly generated */
 };
 
+
 /* clang-format on */
 #endif /* ARTIFACT_H */
