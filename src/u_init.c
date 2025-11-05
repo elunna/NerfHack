@@ -281,6 +281,7 @@ static struct inv_sub {
     { PM_ORC, DAGGER, ORCISH_DAGGER },
     { PM_ORC, SPEAR, ORCISH_SPEAR },
     { PM_ORC, SHORT_SWORD, ORCISH_SHORT_SWORD },
+    { PM_ORC, LONG_SWORD, ORCISH_LONG_SWORD },
     { PM_ORC, BOW, ORCISH_BOW },
     { PM_ORC, ARROW, ORCISH_ARROW },
     { PM_ORC, HELMET, ORCISH_HELM },
@@ -1083,6 +1084,8 @@ u_init_race(void)
         ini_inv(PoisonPotion);
         /* Orcs can recognize all orcish objects */
         knows_object(ORCISH_SHORT_SWORD, FALSE);
+        knows_object(ORCISH_LONG_SWORD, FALSE);
+        knows_object(ORCISH_SCIMITAR, FALSE);
         knows_object(ORCISH_ARROW, FALSE);
         knows_object(ORCISH_BOW, FALSE);
         knows_object(ORCISH_SPEAR, FALSE);

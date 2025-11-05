@@ -1121,6 +1121,7 @@ static const NEARDATA short hwep[] = {
     ELVEN_SHORT_SWORD,
     DWARVISH_SHORT_SWORD,
     SHORT_SWORD,
+    ORCISH_SCIMITAR,
     ORCISH_SHORT_SWORD,
     MACE,
     AXE,

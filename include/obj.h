@@ -422,6 +422,8 @@ struct obj {
      || otyp == ORCISH_SPEAR \
      || otyp == ORCISH_DAGGER \
      || otyp == ORCISH_SHORT_SWORD \
+     || otyp == ORCISH_LONG_SWORD \
+     || otyp == ORCISH_SCIMITAR \
      || otyp == ORCISH_BOW)
 #define is_orcish_obj(otyp) (is_orcish_armor(otyp) || is_orcish_weapon(otyp))
 

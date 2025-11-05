@@ -535,7 +535,7 @@ m_initweap(struct monst *mtmp)
                 : rn2(2) ? PM_MORDOR_ORC : PM_URUK_HAI) {
         case PM_MORDOR_ORC:
             if (!rn2(3))
-                (void) mongets(mtmp, rn2(3) ? SCIMITAR : ORCISH_SPEAR);
+                (void) mongets(mtmp, rn2(3) ? ORCISH_SCIMITAR : ORCISH_SPEAR);
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_SHIELD);
             if (!rn2(3))
@@ -562,6 +562,9 @@ m_initweap(struct monst *mtmp)
         case PM_ORC_SHAMAN:
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_ROBE);
+            break;
+        case PM_ORC_CAPTAIN:
+            (void) mongets(mtmp, rn2(3) ? ORCISH_LONG_SWORD : ORCISH_SCIMITAR);
             break;
         default:
             if (rn2(2))
