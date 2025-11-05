@@ -3069,7 +3069,8 @@ arti_invoke(struct obj *obj)
             obj->age += (long) d(3, 10);
             return ECMD_TIME;
         }
-        obj->age = svm.moves + rnz(100);
+        /* Increased timeout to match prayer timeout */
+        obj->age = svm.moves + rnz(350);
 
         switch (oart->inv_prop) {
         case TAMING: res = invoke_taming(obj); break;
