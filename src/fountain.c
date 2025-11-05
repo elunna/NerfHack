@@ -423,76 +423,186 @@ lava:
    of combining objects two and three */
 const struct ForgeRecipe fusions[] = {
     /* RESULT             / INGREDIENT #1     / INGREDIENT #2 */
-    /* Only samurai can forge these: */
-    { KATANA,               LONG_SWORD,         LONG_SWORD,     1, 1 },
-    { TSURUGI,              TWO_HANDED_SWORD,   KATANA,         1, 1 },
-    { SHURIKEN,             DART,               DAGGER,         2, 1 },
-    /* Dwarvish items - only dwarves can forge */
-    { DWARVISH_MATTOCK,     PICK_AXE,           DWARVISH_SHORT_SWORD, 1, 1 },
-    { DWARVISH_SHORT_SWORD, DWARVISH_SPEAR,     SHORT_SWORD,    1, 1 },
-    { DWARVISH_SPEAR,       ARROW,              SPEAR,          2, 1 },
-    { DWARVISH_HELM,        HELMET,             DWARVISH_SHORT_SWORD, 1, 1 },
-    { DWARVISH_RING_MAIL,   CHAIN_MAIL,         DWARVISH_ROUNDSHIELD, 1, 1 },
-    { DWARVISH_ROUNDSHIELD, LARGE_SHIELD,       DWARVISH_HELM, 1, 1 },
-    { DWARVISH_BOOTS,       GAUNTLETS,          DWARVISH_SHORT_SWORD, 1, 1 },
 
-    /* Orcish items - only orcs can forge */
-    { ORCISH_DAGGER,        ORCISH_ARROW,       KNIFE,          2, 1 },
-    { ORCISH_SHORT_SWORD,   CROSSBOW_BOLT,      ORCISH_DAGGER,  2, 1 },
-    { ORCISH_SPEAR,         ORCISH_ARROW,       ORCISH_DAGGER,  2, 1 },
-    { ORCISH_HELM,          DENTED_POT,         ORCISH_DAGGER,  1, 1 },
-    { ORCISH_CHAIN_MAIL,    RING_MAIL,          ORCISH_SHIELD,  1, 1 },
-    { ORCISH_RING_MAIL,     ORCISH_SHIELD,      ORCISH_HELM,    1, 1 },
-    { ORCISH_SHIELD,        ORCISH_HELM,        ORCISH_BOOTS,   1, 1 },
-    { ORCISH_BOOTS,         GAUNTLETS,        ORCISH_SHORT_SWORD, 1, 1 },
-
-    /* Elven items - only elves can forge */
-    { ELVEN_SPEAR,          ELVEN_ARROW,        ELVEN_DAGGER,   2, 1 },
-    { ELVEN_DAGGER,         ELVEN_ARROW,        KNIFE,          2, 1 },
-    { ELVEN_SHORT_SWORD,    CROSSBOW_BOLT,      ELVEN_DAGGER,   2, 1 },
-    { ELVEN_BROADSWORD,     SCIMITAR,           ELVEN_SHORT_SWORD, 1, 1 },
-    { ELVEN_SHIELD,         ELVEN_DAGGER,       SMALL_SHIELD,   1, 1 },
-    { ELVEN_RING_MAIL,      CHAIN_MAIL,         ELVEN_SHIELD,   1, 1 },
-
-    /* Any role can forge the rest */
-    { DAGGER,               ARROW,              KNIFE,          2, 1 },
-    { ATHAME,               DAGGER,             STILETTO,       1, 1 },
-    { KNIFE,                ARROW,              DART,           2, 2 },
-    { SPEAR,                ARROW,              DAGGER,         2, 1 },
-    { JAVELIN,              CROSSBOW_BOLT,      SPEAR,          2, 1 },
-    { TRIDENT,              SCIMITAR,           SPEAR,          1, 1 },
-    { SCALPEL,              KNIFE,              STILETTO,       1, 1 },
-    { STILETTO,             CROSSBOW_BOLT,      KNIFE,          2, 1 },
-    { AXE,                  DAGGER,             SPEAR,          1, 1 },
-    { BATTLE_AXE,           AXE,                BROADSWORD,     1, 1 },
-    { SHORT_SWORD,          CROSSBOW_BOLT,      DAGGER,         2, 1 },
-    { LONG_SWORD,           SHORT_SWORD,        SHORT_SWORD,    1, 1 },
-    { TWO_HANDED_SWORD,     LONG_SWORD,         BROADSWORD,     1, 1 },
-    { SCIMITAR,             KNIFE,              SHORT_SWORD,    1, 1 },
-    { SABER,                SCIMITAR,           LONG_SWORD,     1, 1 },
-    { BROADSWORD,           SCIMITAR,           SHORT_SWORD,    1, 1 },
-    { RUNESWORD,            BROADSWORD,         DAGGER,         1, 1 },
-    { WAR_HAMMER,           MACE,               FLAIL,          1, 1 },
-    { MORNING_STAR,         MACE,               DAGGER,         1, 1 },
-    { MACE,                 CLUB,               DAGGER,         1, 1 },
     { AKLYS,                FLAIL,              CLUB,           1, 1 },
-    { FLAIL,                MORNING_STAR,       MACE,           1, 1 },
-    /* Polearms*/
-    { PARTISAN,             BROADSWORD,         SPEAR,          1, 1 },
-    { RANSEUR,              STILETTO,           SPEAR,          1, 1 },
-    { SPETUM,               KNIFE,              SPEAR,          1, 1 },
-    { GLAIVE,               SHORT_SWORD,        SPEAR,          1, 1 },
-    { LANCE,                JAVELIN,            GLAIVE,         1, 1 },
-    { HALBERD,              RANSEUR,            AXE,            1, 1 },
+    { AKLYS,                AKLYS,              AKLYS,          1, 1 },
+
+    { ATHAME,               DAGGER,             STILETTO,       1, 1 },
+    { ATHAME,               ATHAME,             ATHAME,         1, 1 },
+
+    { AXE,                  DAGGER,             SPEAR,          1, 1 },
+    { AXE,                  AXE,                AXE,            1, 1 },
+
     { BARDICHE,             BATTLE_AXE,         SPEAR,          1, 1 },
-    { VOULGE,               AXE,                SPEAR,          1, 1 },
-    { FAUCHARD,             SABER,              SPEAR,          1, 1 },
-    { GUISARME,             GRAPPLING_HOOK,     SPEAR,          1, 1 },
-    { BILL_GUISARME,        GUISARME,           SPEAR,          1, 1 },
-    { LUCERN_HAMMER,        WAR_HAMMER,         JAVELIN,        1, 1 },
+    { BARDICHE,             BARDICHE,           BARDICHE,       1, 1 },
+
+    { BATTLE_AXE,           AXE,                BROADSWORD,     1, 1 },
+    { BATTLE_AXE,           BATTLE_AXE,         BATTLE_AXE,     1, 1 },
+
     { BEC_DE_CORBIN,        WAR_HAMMER,         SPEAR,          1, 1 },
-    /* Ammo */
+    { BEC_DE_CORBIN,        BEC_DE_CORBIN,      BEC_DE_CORBIN,  1, 1 },
+
+    { BILL_GUISARME,        GUISARME,           SPEAR,          1, 1 },
+    { BILL_GUISARME,        BILL_GUISARME,      BILL_GUISARME,  1, 1 },
+
+    { BROADSWORD,           SCIMITAR,           SHORT_SWORD,    1, 1 },
+    { BROADSWORD,           BROADSWORD,         BROADSWORD,     1, 1 },
+
+    { DAGGER,               ARROW,              KNIFE,          2, 1 },
+    { DAGGER,               DAGGER,             DAGGER,         1, 1 },
+
+    { DWARVISH_BOOTS,       GAUNTLETS,          DWARVISH_SHORT_SWORD, 1, 1 },
+    { DWARVISH_BOOTS,       DWARVISH_BOOTS,     DWARVISH_BOOTS, 1, 1 },
+
+    { DWARVISH_HELM,        HELMET,             DWARVISH_SHORT_SWORD, 1, 1 },
+    { DWARVISH_HELM,        DWARVISH_HELM,      DWARVISH_HELM,  1, 1 },
+
+    { DWARVISH_MATTOCK,     PICK_AXE,           DWARVISH_SHORT_SWORD, 1, 1 },
+    { DWARVISH_MATTOCK,     DWARVISH_MATTOCK,   DWARVISH_MATTOCK, 1, 1 },
+
+    { DWARVISH_RING_MAIL,   CHAIN_MAIL,         DWARVISH_ROUNDSHIELD, 1, 1 },
+    { DWARVISH_RING_MAIL,   DWARVISH_RING_MAIL, DWARVISH_RING_MAIL, 1, 1 },
+
+    { DWARVISH_ROUNDSHIELD, LARGE_SHIELD,       DWARVISH_HELM,  1, 1 },
+    { DWARVISH_ROUNDSHIELD, DWARVISH_ROUNDSHIELD, DWARVISH_ROUNDSHIELD, 1, 1 },
+
+    { DWARVISH_SHORT_SWORD, DWARVISH_SPEAR,     SHORT_SWORD,    1, 1 },
+    { DWARVISH_SHORT_SWORD, DWARVISH_SHORT_SWORD, DWARVISH_SHORT_SWORD, 1, 1 },
+
+    { DWARVISH_SPEAR,       ARROW,              SPEAR,          2, 1 },
+    { DWARVISH_SPEAR,       DWARVISH_SPEAR,     DWARVISH_SPEAR, 1, 1 },
+
+    { ELVEN_BROADSWORD,     SCIMITAR,           ELVEN_SHORT_SWORD, 1, 1 },
+    { ELVEN_BROADSWORD,     ELVEN_BROADSWORD,   ELVEN_BROADSWORD, 1, 1 },
+
+    { ELVEN_DAGGER,         ELVEN_ARROW,        KNIFE,          2, 1 },
+    { ELVEN_DAGGER,         ELVEN_DAGGER,       ELVEN_DAGGER,   1, 1 },
+
+    { ELVEN_RING_MAIL,      CHAIN_MAIL,         ELVEN_SHIELD,   1, 1 },
+    { ELVEN_RING_MAIL,      ELVEN_RING_MAIL,    ELVEN_RING_MAIL, 1, 1 },
+
+    { ELVEN_SHIELD,         ELVEN_DAGGER,       SMALL_SHIELD,   1, 1 },
+    { ELVEN_SHIELD,         ELVEN_SHIELD,       ELVEN_SHIELD,   1, 1 },
+
+    { ELVEN_SHORT_SWORD,    CROSSBOW_BOLT,      ELVEN_DAGGER,   2, 1 },
+    { ELVEN_SHORT_SWORD,    ELVEN_SHORT_SWORD,  ELVEN_SHORT_SWORD, 1, 1 },
+
+    { ELVEN_SPEAR,          ELVEN_ARROW,        ELVEN_DAGGER,   2, 1 },
+    { ELVEN_SPEAR,          ELVEN_SPEAR,        ELVEN_SPEAR,    1, 1 },
+
+    { FAUCHARD,             SABER,              SPEAR,          1, 1 },
+    { FAUCHARD,             FAUCHARD,           FAUCHARD,       1, 1 },
+
+    { FLAIL,                MORNING_STAR,       MACE,           1, 1 },
+    { FLAIL,                FLAIL,              FLAIL,          1, 1 },
+
+    { GLAIVE,               SHORT_SWORD,        SPEAR,          1, 1 },
+    { GLAIVE,               GLAIVE,             GLAIVE,         1, 1 },
+
+    { GUISARME,             GRAPPLING_HOOK,     SPEAR,          1, 1 },
+    { GUISARME,             GUISARME,           GUISARME,       1, 1 },
+
+    { HALBERD,              RANSEUR,            AXE,            1, 1 },
+    { HALBERD,              HALBERD,            HALBERD,        1, 1 },
+
+    { JAVELIN,              CROSSBOW_BOLT,      SPEAR,          2, 1 },
+    { JAVELIN,              JAVELIN,            JAVELIN,        1, 1 },
+
+    { KATANA,               LONG_SWORD,         BATTLE_AXE,     1, 1 },
+    { KATANA,               KATANA,             KATANA,         1, 1 },
+
+    { KNIFE,                ARROW,              DART,           2, 2 },
+    { KNIFE,                KNIFE,              KNIFE,          1, 1 },
+
+    { LANCE,                JAVELIN,            GLAIVE,         1, 1 },
+    { LANCE,                LANCE,              LANCE,          1, 1 },
+
+    { LONG_SWORD,           SHORT_SWORD,        BATTLE_AXE,     1, 1 },
+    { LONG_SWORD,           LONG_SWORD,         LONG_SWORD,     1, 1 },
+
+    { LUCERN_HAMMER,        WAR_HAMMER,         JAVELIN,        1, 1 },
+    { LUCERN_HAMMER,        LUCERN_HAMMER,      LUCERN_HAMMER,  1, 1 },
+
+    { MACE,                 CLUB,               DAGGER,         1, 1 },
+    { MACE,                 MACE,               MACE,           1, 1 },
+
+    { MORNING_STAR,         MACE,               DAGGER,         1, 1 },
+    { MORNING_STAR,         MORNING_STAR,       MORNING_STAR,   1, 1 },
+
+    { ORCISH_BOOTS,         GAUNTLETS,          ORCISH_SHORT_SWORD, 1, 1 },
+    { ORCISH_BOOTS,         ORCISH_BOOTS,       ORCISH_BOOTS,   1, 1 },
+
+    { ORCISH_CHAIN_MAIL,    RING_MAIL,          ORCISH_SHIELD,  1, 1 },
+    { ORCISH_CHAIN_MAIL,    ORCISH_CHAIN_MAIL,  ORCISH_CHAIN_MAIL, 1, 1 },
+
+    { ORCISH_DAGGER,        ORCISH_ARROW,       KNIFE,          2, 1 },
+    { ORCISH_DAGGER,        ORCISH_DAGGER,      ORCISH_DAGGER,  1, 1 },
+
+    { ORCISH_HELM,          DENTED_POT,         ORCISH_DAGGER,  1, 1 },
+    { ORCISH_HELM,          ORCISH_HELM,        ORCISH_HELM,    1, 1 },
+
+    { ORCISH_RING_MAIL,     ORCISH_SHIELD,      ORCISH_HELM,    1, 1 },
+    { ORCISH_RING_MAIL,     ORCISH_RING_MAIL,   ORCISH_RING_MAIL, 1, 1 },
+
+    { ORCISH_SHIELD,        ORCISH_HELM,        ORCISH_BOOTS,   1, 1 },
+    { ORCISH_SHIELD,        ORCISH_SHIELD,      ORCISH_SHIELD,  1, 1 },
+
+    { ORCISH_SHORT_SWORD,   CROSSBOW_BOLT,      ORCISH_DAGGER,  2, 1 },
+    { ORCISH_SHORT_SWORD,   ORCISH_SHORT_SWORD, ORCISH_SHORT_SWORD, 1, 1 },
+
+    { ORCISH_SPEAR,         ORCISH_ARROW,       ORCISH_DAGGER,  2, 1 },
+    { ORCISH_SPEAR,         ORCISH_SPEAR,       ORCISH_SPEAR,   1, 1 },
+
+    { PARTISAN,             BROADSWORD,         SPEAR,          1, 1 },
+    { PARTISAN,             PARTISAN,           PARTISAN,       1, 1 },
+
+    { RANSEUR,              STILETTO,           SPEAR,          1, 1 },
+    { RANSEUR,              RANSEUR,            RANSEUR,        1, 1 },
+
+    { RUNESWORD,            BROADSWORD,         DAGGER,         1, 1 },
+    { RUNESWORD,            RUNESWORD,          RUNESWORD,      1, 1 },
+
+    { SABER,                SCIMITAR,           LONG_SWORD,     1, 1 },
+    { SABER,                SABER,              SABER,          1, 1 },
+
+    { SCALPEL,              KNIFE,              STILETTO,       1, 1 },
+    { SCALPEL,              SCALPEL,            SCALPEL,        1, 1 },
+
+    { SCIMITAR,             KNIFE,              SHORT_SWORD,    1, 1 },
+    { SCIMITAR,             SCIMITAR,           SCIMITAR,       1, 1 },
+
+    { SHORT_SWORD,          CROSSBOW_BOLT,      DAGGER,         2, 1 },
+    { SHORT_SWORD,          SHORT_SWORD,        SHORT_SWORD,    1, 1 },
+
+    { SHURIKEN,             DART,               DAGGER,         2, 1 },
+    { SHURIKEN,             SHURIKEN,           SHURIKEN,       1, 1 },
+
     { SLING_BULLET,         ROCK,               DART,           3, 1 },
+    { SLING_BULLET,         SLING_BULLET,       SLING_BULLET,   1, 1 },
+
+    { SPEAR,                ARROW,              DAGGER,         2, 1 },
+    { SPEAR,                SPEAR,              SPEAR,          1, 1 },
+
+    { SPETUM,               KNIFE,              SPEAR,          1, 1 },
+    { SPETUM,               SPETUM,             SPETUM,         1, 1 },
+
+    { STILETTO,             CROSSBOW_BOLT,      KNIFE,          2, 1 },
+    { STILETTO,             STILETTO,           STILETTO,       1, 1 },
+
+    { TRIDENT,              SCIMITAR,           SPEAR,          1, 1 },
+    { TRIDENT,              TRIDENT,            TRIDENT,        1, 1 },
+
+    { TSURUGI,              TWO_HANDED_SWORD,   KATANA,         1, 1 },
+    { TSURUGI,              TSURUGI,            TSURUGI,        1, 1 },
+
+    { TWO_HANDED_SWORD,     LONG_SWORD,         BROADSWORD,     1, 1 },
+    { TWO_HANDED_SWORD,     TWO_HANDED_SWORD,   TWO_HANDED_SWORD, 1, 1 },
+
+    { VOULGE,               AXE,                SPEAR,          1, 1 },
+    { VOULGE,               VOULGE,             VOULGE,         1, 1 },
+
+    { WAR_HAMMER,           MACE,               FLAIL,          1, 1 },
+    { WAR_HAMMER,           WAR_HAMMER,         WAR_HAMMER,     1, 1 },
 
     { 0, 0, 0, 0, 0 }
 };
