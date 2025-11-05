@@ -644,6 +644,10 @@ mkundead(
             && attacktype(mdat, AT_MAGC)) {
             cnt++;
             continue;
+        } else if (mdat == &mons[PM_NAZGUL]) {
+            /* These come paired with a Fell Beast - don't generate 
+               from summon undead or in morgues */
+            continue;
         }
 
         if (mdat && enexto(&cc, mm->x, mm->y, mdat)

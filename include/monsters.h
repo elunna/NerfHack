@@ -3909,7 +3909,7 @@
         M1_BREATHLESS | M1_FLY | M1_HUMANOID | M1_UNSOLID, M2_HOSTILE, 0,
         MH_UNDEAD, 8, CLR_BLACK, WRAITH),
     MON(NAM("Nazgul"), S_WRAITH,
-        LVL(17, 12, -2, 35, -17), (G_GENO | G_NOCORPSE | 1),
+        LVL(17, 12, -2, 35, -17), (G_GENO | G_HELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_DRLI, 1, 10),
           ATTK(AT_WEAP, AD_DRLI, 1, 10),
           ATTK(AT_BREA, AD_SLEE, 2, 25),
