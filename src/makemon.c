@@ -2720,13 +2720,15 @@ mongets(struct monst *mtmp, int otyp)
             else if (otmp->oclass == ARMOR_CLASS && otmp->spe < 0)
                 otmp->spe = 0;
             otmp->bquality = rn2(10) ? FQ_NORMAL
-                                       : rn2(20) ? FQ_SUPERIOR : FQ_EXCEPTIONAL;
+                                       : rn2(20) ? FQ_SUPERIOR
+                                       : rn2(10) ? FQ_EXCEPTIONAL : FQ_LEGENDARY;
         } else if (is_lord(mtmp->data)) {
             if ((otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS)
                 && otmp->spe < 0)
                 otmp->spe = rnd(3);
             otmp->bquality = rn2(5) ? FQ_NORMAL
-                                       : rn2(10) ? FQ_SUPERIOR : FQ_EXCEPTIONAL;
+                                       : rn2(10) ? FQ_SUPERIOR
+                                       : rn2(10) ? FQ_EXCEPTIONAL : FQ_LEGENDARY;
         } else {
             /* Items frequently spawn used for lesser monsters to prevent
                late-game inventory bloat. */
