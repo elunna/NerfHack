@@ -71,8 +71,8 @@ dungeon = {
          {
             name = "oracle",
             bonetag = "O",
-            base = 8,
-            range = 4,
+            base = 5,
+            range = 5,
             alignment = "neutral",
             nlevels = 3
          },
