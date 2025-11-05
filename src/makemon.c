@@ -285,7 +285,7 @@ m_initweap(struct monst *mtmp)
                 m_initthrow(mtmp, ELVEN_ARROW, 12);
                 break;
             case 1:
-                (void) mongets(mtmp, ELVEN_BROADSWORD);
+                (void) mongets(mtmp, !rn2(4) ? ELVEN_LONG_SWORD : ELVEN_BROADSWORD);
                 if (rn2(2))
                     (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD
                                                : BRACERS);

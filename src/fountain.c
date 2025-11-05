@@ -478,6 +478,9 @@ const struct ForgeRecipe fusions[] = {
     { ELVEN_DAGGER,         ELVEN_ARROW,        KNIFE,          2, 1 },
     { ELVEN_DAGGER,         ELVEN_DAGGER,       ELVEN_DAGGER,   1, 1 },
 
+    { ELVEN_LONG_SWORD,     ELVEN_SHORT_SWORD,  BATTLE_AXE, 1, 1 },
+    { ELVEN_LONG_SWORD,     ELVEN_LONG_SWORD,   ELVEN_LONG_SWORD, 1, 1 },
+
     { ELVEN_RING_MAIL,      CHAIN_MAIL,         ELVEN_SHIELD,   1, 1 },
     { ELVEN_RING_MAIL,      ELVEN_RING_MAIL,    ELVEN_RING_MAIL, 1, 1 },
 

@@ -400,6 +400,7 @@ struct obj {
 #define is_elven_weapon(otyp) \
     (otyp == ELVEN_ARROW \
      || otyp == ELVEN_SPEAR \
+     || otyp == ELVEN_LONG_SWORD \
      || otyp == ELVEN_DAGGER \
      || otyp == ELVEN_SHORT_SWORD \
      || otyp == ELVEN_BROADSWORD \

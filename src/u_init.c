@@ -269,6 +269,7 @@ static struct inv_sub {
     { PM_ELF, DAGGER, ELVEN_DAGGER },
     { PM_ELF, SPEAR, ELVEN_SPEAR },
     { PM_ELF, SHORT_SWORD, ELVEN_SHORT_SWORD },
+    { PM_ELF, LONG_SWORD, ELVEN_LONG_SWORD },
     { PM_ELF, BOW, ELVEN_BOW },
     { PM_ELF, ARROW, ELVEN_ARROW },
     { PM_ELF, HELMET, ELVEN_HELM },
@@ -1010,6 +1011,7 @@ u_init_race(void)
 
         /* Elves can recognize all elvish objects */
         knows_object(ELVEN_SHORT_SWORD, FALSE);
+        knows_object(ELVEN_LONG_SWORD, FALSE);
         knows_object(ELVEN_ARROW, FALSE);
         knows_object(ELVEN_BOW, FALSE);
         knows_object(ELVEN_SPEAR, FALSE);

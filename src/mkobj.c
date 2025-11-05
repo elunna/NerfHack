@@ -4516,6 +4516,7 @@ material_list(struct obj* obj)
     case ELVEN_SPEAR:
     case ELVEN_DAGGER:
     case ELVEN_SHORT_SWORD:
+    case ELVEN_LONG_SWORD:
     case ELVEN_BROADSWORD:
     //case ELVEN_LONG_SWORD:
         return elven_weapon_materials;
