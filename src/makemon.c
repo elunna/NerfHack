@@ -570,7 +570,7 @@ m_initweap(struct monst *mtmp)
             if (rn2(2))
                 (void) mongets(mtmp, (mm == PM_GOBLIN || rn2(2) == 0)
                                          ? ORCISH_DAGGER
-                                         : SCIMITAR);
+                                         : ORCISH_SCIMITAR);
         }
         break;
     case S_OGRE:
