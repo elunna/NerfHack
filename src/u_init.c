@@ -321,6 +321,12 @@ static struct inv_sub {
     { PM_GRUNG, FEDORA, SPORECAP_HOOD },
     { PM_GRUNG, CLOAK_OF_DISPLACEMENT, DRAGONFLY_CLOAK },
     { PM_GRUNG, CLOAK_OF_PROTECTION, DRAGONFLY_CLOAK },
+    { PM_GRUNG, SCIMITAR, SPINEBACK_CUTTER },
+    { PM_GRUNG, SHORT_SWORD, SPINEBACK_CUTTER },
+    { PM_GRUNG, MACE, SKULLCLAW_MACE },
+    { PM_GRUNG, AXE, CLAWBONE_HATCHET },
+    { PM_GRUNG, DAGGER, CLAWBONE_HATCHET },
+    { PM_GRUNG, KNIFE, CLAWBONE_HATCHET },
 
     { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
@@ -1137,6 +1143,9 @@ u_init_race(void)
         knows_object(TORTLE_SHELL_SHIELD, FALSE);
         knows_object(CRABBACK_SHIELD, FALSE);
         knows_object(FANG_NECKLACE, FALSE);
+        knows_object(SPINEBACK_CUTTER, FALSE);
+        knows_object(SKULLCLAW_MACE, FALSE);
+        knows_object(CLAWBONE_HATCHET, FALSE);
         u.hydration = HYDRATION_MAX;
         /* All grung are familiar with darts */
         set_skill_cap_minimum(P_DART, P_SKILLED);

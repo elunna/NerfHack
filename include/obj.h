@@ -229,8 +229,8 @@ struct obj {
      && objects[otmp->otyp].oc_skill >= P_DAGGER \
      && objects[otmp->otyp].oc_skill <= P_SABER)
 #define is_curved(otmp) \
-    (otmp->otyp == SCIMITAR || otmp->otyp == SABER \
-    || otmp->otyp == KATANA)
+    (otmp->otyp == SCIMITAR || otmp->otyp == ORCISH_SCIMITAR || otmp->otyp == SABER \
+    || otmp->otyp == KATANA || otmp->otyp == SPINEBACK_CUTTER)
 #define is_axe(otmp)                                              \
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
      && objects[otmp->otyp].oc_skill == P_AXE)
@@ -461,7 +461,11 @@ struct obj {
     || otyp == CRABBACK_SHIELD \
     || otyp == FANG_NECKLACE \
     || otyp == SNAKESKIN_WRAP)
-#define is_grung_obj(otyp) (is_grung_armor(otyp))
+#define is_grung_weapon(otyp) \
+    (otyp == SPINEBACK_CUTTER \
+    || otyp == CLAWBONE_HATCHET \
+    || otyp == SKULLCLAW_MACE)
+#define is_grung_obj(otyp) (is_grung_armor(otyp) || is_grung_weapon(otyp))
 
 #define is_bracer(otmp) \
     ((otmp)->otyp >= BRACERS && (otmp)->otyp <= BRACERS_VS_STONE)

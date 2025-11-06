@@ -650,16 +650,20 @@ m_initweap(struct monst *mtmp)
             else
                 m_initthrow(mtmp, DART, 12);
             break;
-        case PM_GREEN_GRUNG:
         case PM_ORANGE_GRUNG:
-            if (!rn2(3))
-                (void) mongets(mtmp, rn2(3) ? SNAKEHIDE_JERKIN : SWAMPWING_VEST);
+            (void) mongets(mtmp, rn2(3) ? SKULLCLAW_MACE : SPINEBACK_CUTTER);
+
             if (!rn2(3))
                 (void) mongets(mtmp, SNAKESKIN_WRAP);
             if (!rn2(3))
                 (void) mongets(mtmp, rn2(3) ? SPORECAP_HOOD : TURTLE_SHELL_HELM);
             if (!rn2(3))
                 (void) mongets(mtmp, GRUNG_BRACERS);
+            /* FALLTHROUGH */
+        case PM_GREEN_GRUNG:
+            if (!rn2(3))
+                (void) mongets(mtmp, rn2(3) ? SNAKEHIDE_JERKIN : SWAMPWING_VEST);
+            
             if (!rn2(2)) {
                 (void) mongets(mtmp, BOW);
                 m_initthrow(mtmp, ARROW, 12);
@@ -678,8 +682,7 @@ m_initweap(struct monst *mtmp)
                 (void) mongets(mtmp, !rn2(3) ? SPORECAP_HOOD : TURTLE_SHELL_HELM);
             if (!rn2(3))
                 (void) mongets(mtmp, rn2(3) ? CRABBACK_SHIELD : TORTLE_SHELL_SHIELD);
-            (void) mongets(mtmp, rn2(7) ? SPEAR : rn2(3)
-                                                  ? TRIDENT : SCIMITAR);
+            (void) mongets(mtmp, rn2(3) ? SKULLCLAW_MACE : SPINEBACK_CUTTER);
         }
         break;
     case S_DEMON:

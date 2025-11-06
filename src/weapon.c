@@ -50,6 +50,7 @@ static NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     PN_SABER,
     CLUB,
     MACE,
+    SKULLCLAW_MACE,
     MORNING_STAR,
     FLAIL,
     PN_HAMMER,
@@ -374,6 +375,7 @@ dmgval_core(
         case IRON_CHAIN:
         case CROSSBOW_BOLT:
         case MACE:
+        case SKULLCLAW_MACE:
         case FLAIL:
         case SPETUM:
         case TRIDENT:
@@ -1116,6 +1118,7 @@ static const NEARDATA short hwep[] = {
     ELVEN_BROADSWORD,
     BROADSWORD,
     SCIMITAR,
+    SPINEBACK_CUTTER,
     SABER,
     MORNING_STAR,
     ELVEN_SHORT_SWORD,
@@ -1124,7 +1127,10 @@ static const NEARDATA short hwep[] = {
     ORCISH_SCIMITAR,
     ORCISH_SHORT_SWORD,
     MACE,
+    SKULLCLAW_MACE,
     AXE,
+    CLAWBONE_HATCHET,
+    CLAWBONE_HATCHET,
     DWARVISH_SPEAR,
     ELVEN_SPEAR,
     SPEAR,
