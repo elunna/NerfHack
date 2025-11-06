@@ -7327,7 +7327,7 @@ calculate_flankers(struct monst *magr, struct monst *mdef)
 
     /* Depending on who the attacker and flanker are, return a boolean. */
     if (youflanker) {
-        if (!canseemon(mdef) || Hallucination || Confusion
+        if (!canseemon(magr) || Hallucination || Confusion
             || Punished || Fumbling || Wounded_legs || Stunned
             || gy.youmonst.data->mmove == 0 /* Stationary */
             || Unaware) /* Unaware includes fainted, sleeping, and periods
