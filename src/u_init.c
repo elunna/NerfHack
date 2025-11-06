@@ -1126,6 +1126,8 @@ u_init_race(void)
         knows_object(SPIDER_RIB_SHELL, FALSE);
         knows_object(BEETLE_CARAPACE, FALSE);
         knows_object(DRAGONFLY_CLOAK, FALSE);
+        knows_object(TURTLE_SHELL_HELM, FALSE);
+        knows_object(SPORECAP_HOOD, FALSE);
         u.hydration = HYDRATION_MAX;
         /* All grung are familiar with darts */
         set_skill_cap_minimum(P_DART, P_SKILLED);

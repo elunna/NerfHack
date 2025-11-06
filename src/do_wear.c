@@ -644,6 +644,8 @@ Helmet_on(void)
     case ORCISH_HELM:
     case GNOMISH_HELM:
     case HELM_OF_TELEPATHY:
+    case SPORECAP_HOOD:
+    case TURTLE_SHELL_HELM:
         break;
     case HELM_OF_CAUTION:
         see_monsters();
@@ -745,6 +747,8 @@ Helmet_off(void)
     case DWARVISH_HELM:
     case ORCISH_HELM:
     case GNOMISH_HELM:
+    case SPORECAP_HOOD:
+    case TURTLE_SHELL_HELM:
         break;
     case DUNCE_CAP:
         disp.botl = TRUE;
