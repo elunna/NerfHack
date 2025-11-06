@@ -638,16 +638,26 @@ m_initweap(struct monst *mtmp)
         switch (mm) {
         case PM_BLUE_GRUNG:
         case PM_PURPLE_GRUNG:
-             (void) mongets(mtmp, rn2(5) ? CLOAK : ROBE);
-             if (!rn2(4))
-                 (void) mongets(mtmp, QUARTERSTAFF);
-             else
-                 m_initthrow(mtmp, DART, 12);
-             break;
+            (void) mongets(mtmp, rn2(5) ? DRAGONFLY_CLOAK : ROBE);
+            if (!rn2(3))
+                (void) mongets(mtmp, GRUNG_BRACERS);
+            if (!rn2(4))
+                (void) mongets(mtmp, QUARTERSTAFF);
+            if (!rn2(3))
+                (void) mongets(mtmp, SPORECAP_HOOD);
+            if (!rn2(7))
+                (void) mongets(mtmp, FANG_NECKLACE);
+            else
+                m_initthrow(mtmp, DART, 12);
+            break;
         case PM_GREEN_GRUNG:
         case PM_ORANGE_GRUNG:
             if (!rn2(3))
-                (void) mongets(mtmp, ARMOR);
+                (void) mongets(mtmp, rn2(3) ? SNAKEHIDE_JERKIN : SWAMPWING_VEST);
+            if (!rn2(3))
+                (void) mongets(mtmp, SNAKESKIN_WRAP);
+            if (!rn2(3))
+                (void) mongets(mtmp, rn2(3) ? SPORECAP_HOOD : TURTLE_SHELL_HELM);
             if (!rn2(3))
                 (void) mongets(mtmp, GRUNG_BRACERS);
             if (!rn2(2)) {
@@ -659,18 +669,18 @@ m_initweap(struct monst *mtmp)
             break;
         case PM_RED_GRUNG:
         case PM_GOLD_GRUNG:
-            (void) mongets(mtmp, rn2(3) ? STUDDED_ARMOR
-                                        : ARMOR);
+            (void) mongets(mtmp, rn2(3) ? SPIDER_RIB_SHELL : BEETLE_CARAPACE);
             if (!rn2(3))
                 (void) mongets(mtmp, GRUNG_BRACERS);
+            if (!rn2(3))
+                (void) mongets(mtmp, SNAKESKIN_WRAP);
+            if (!rn2(3))
+                (void) mongets(mtmp, !rn2(3) ? SPORECAP_HOOD : TURTLE_SHELL_HELM);
+            if (!rn2(3))
+                (void) mongets(mtmp, rn2(3) ? CRABBACK_SHIELD : TORTLE_SHELL_SHIELD);
             (void) mongets(mtmp, rn2(7) ? SPEAR : rn2(3)
                                                   ? TRIDENT : SCIMITAR);
         }
-        /* Spellcasters */
-
-        /* Fighters */
-
-
         break;
     case S_DEMON:
         switch (mm) {
