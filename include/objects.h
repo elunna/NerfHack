@@ -980,6 +980,10 @@ AMULET("amulet of flying",              "cubical", FLYING, 60,
  * fake one must come before real one because selection for
  * description shuffling stops when a non-magic amulet is encountered
  */
+OBJECT(OBJ("fang necklace", NoDes),
+       BITS(1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, BONE),
+       0, AMULET_CLASS, 0, 0, 20, 0, 0, 0, 0, 0, 1, CLR_WHITE,
+                                                FANG_NECKLACE),
 OBJECT(OBJ("cheap plastic imitation of the Amulet of Yendor",
            "Amulet of Yendor"),
        BITS(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, PLASTIC),

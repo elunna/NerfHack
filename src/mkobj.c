@@ -4468,6 +4468,7 @@ material_list(struct obj* obj)
     case MUMMY_WRAPPING:
     case AMULET_OF_YENDOR:
     case FAKE_AMULET_OF_YENDOR:
+    case FANG_NECKLACE:
     case PLAYING_CARD_DECK:
     case STATUE:
         return NULL;

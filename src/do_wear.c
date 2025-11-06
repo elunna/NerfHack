@@ -1355,6 +1355,7 @@ Amulet_on(struct obj *amul)
     case AMULET_OF_LIFE_SAVING:
     case AMULET_VERSUS_POISON:
     case FAKE_AMULET_OF_YENDOR:
+    case FANG_NECKLACE:
         break;
     case AMULET_OF_REFLECTION:
         if (uamul->oartifact && uamul->oartifact == ART_ARGENT_CROSS)
@@ -1511,6 +1512,7 @@ Amulet_off(void)
     case AMULET_VERSUS_POISON:
     case AMULET_OF_CHANGE:
     case FAKE_AMULET_OF_YENDOR:
+    case FANG_NECKLACE:
         break;
     case AMULET_OF_REFLECTION:
         BWithering &= ~W_AMUL;
@@ -2962,10 +2964,13 @@ find_ac(void)
         uac -= uleft->spe;
     if (uright && uright->otyp == RIN_PROTECTION)
         uac -= uright->spe;
-    if (uamul && uamul->otyp == AMULET_OF_GUARDING)
-        uac -= uamul->spe; /* chargable; main benefit is to MC */
 
-
+    if (uamul) {
+        if (uamul->otyp == AMULET_OF_GUARDING)
+            uac -= uamul->spe; /* chargable; main benefit is to MC */
+        else if (uamul->otyp == FANG_NECKLACE)
+            uac -= race_bonus(uamul);
+    }
 
     /* armor class from other sources */
     if (HProtection & INTRINSIC)
