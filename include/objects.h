@@ -738,6 +738,9 @@ SHIELD("bracers vs stone", "spiral bracers",
 GLOVES("rogue's gloves", "fingerless gloves",
        0, 1, SEARCHING, 4, 1, 10, 50, 9, 0,  LEATHER, HI_LEATHER,
                                                         ROGUE_S_GLOVES),
+GLOVES("pincer gauntlets", NoDes,
+       1, 0,           0, 16, 1, 5,  8, 9, 0,  VEGGY, CLR_GREEN,
+                                                        PINCER_GAUNTLETS),
 /* These have their color but not material shuffled, so the IRON must
  * stay CLR_BROWN (== HI_LEATHER) even though it's normally either
  * HI_METAL or CLR_BLACK.  All have shuffled descriptions.

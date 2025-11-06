@@ -806,6 +806,7 @@ Gloves_on(void)
     case ROGUE_S_GLOVES:
     case GAUNTLETS_OF_FORCE:
     case GAUNTLETS:
+    case PINCER_GAUNTLETS:
         break;
     case GAUNTLETS_OF_FUMBLING: {
         boolean was_flying = !!Flying;
@@ -907,6 +908,7 @@ Gloves_off(void)
     case ROGUE_S_GLOVES:
     case GAUNTLETS_OF_FORCE:
     case GAUNTLETS:
+    case PINCER_GAUNTLETS:
         break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
