@@ -992,6 +992,8 @@ Shield_on(void)
     case SHIELD_OF_REFLECTION:
     case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
+    case CRABBACK_SHIELD:
+    case TORTLE_SHELL_SHIELD:
     /* Bracers are also included in the shield slot */
     case BRACERS:
     case ELVEN_BRACERS:
@@ -1054,6 +1056,8 @@ Shield_off(void)
     case SHIELD_OF_REFLECTION:
     case TOWER_SHIELD:
     case ANTI_MAGIC_SHIELD:
+    case CRABBACK_SHIELD:
+    case TORTLE_SHELL_SHIELD:
     /* Bracers are also included in the shield slot */
     case BRACERS:
     case ELVEN_BRACERS:
