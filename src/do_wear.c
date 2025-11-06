@@ -3981,6 +3981,8 @@ race_bonus(struct obj *obj)
         return 1;
     if (Race_if(PM_DWARF) && is_dwarvish_obj(obj->otyp))
         return 1;
+    if (Race_if(PM_GRUNG) && is_grung_obj(obj->otyp))
+        return 1;
     if (i_vampire() && is_bone(obj))
         return 1;
 

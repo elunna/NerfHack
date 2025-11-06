@@ -446,6 +446,10 @@ struct obj {
 #define is_gnomish_armor(otyp) (otyp == GNOMISH_HELM || otyp == GNOMISH_ROBE \
     || otyp == GNOMISH_BOOTS || otyp == GNOMISH_SUIT)
 
+/* Grung gear */
+#define is_grung_armor(otyp) (otyp == GRUNG_BRACERS)
+#define is_grung_obj(otyp) (is_grung_armor(otyp))
+
 #define is_bracer(otmp) \
     ((otmp)->otyp >= BRACERS && (otmp)->otyp <= BRACERS_VS_STONE)
 

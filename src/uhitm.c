@@ -8545,28 +8545,31 @@ hates_item(struct monst *mtmp, struct obj *otmp)
     if (is_you ? maybe_polyd(is_elf(gy.youmonst.data), Race_if(PM_ELF))
                     : is_elf(mtmp->data))
         return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
-                || is_gnomish_obj(otyp));
+                || is_gnomish_obj(otyp) || is_grung_obj(otyp));
     else if (is_you ? maybe_polyd(is_dwarf(gy.youmonst.data), Race_if(PM_DWARF))
                     : is_dwarf(mtmp->data))
         return (is_orcish_obj(otyp) || is_elven_obj(otyp)
-                || is_gnomish_obj(otyp));
+                || is_gnomish_obj(otyp) || is_grung_obj(otyp));
     else if (is_you ? maybe_polyd(is_gnome(gy.youmonst.data), Race_if(PM_GNOME))
                     : is_gnome(mtmp->data))
         return (is_orcish_obj(otyp) || is_dwarvish_obj(otyp)
-                || is_elven_obj(otyp));
+                || is_elven_obj(otyp) || is_grung_obj(otyp));
     else if (is_you ? maybe_polyd(is_orc(gy.youmonst.data), Race_if(PM_ORC))
                     : is_orc(mtmp->data))
         return (is_dwarvish_obj(otyp) || is_elven_obj(otyp)
-                || is_gnomish_obj(otyp)
+                || is_gnomish_obj(otyp) || is_grung_obj(otyp)
                 || objects[otyp].oc_material == MITHRIL);
+    /* Grung hate most other racial armor - but they have a distainful
+       respect for elven armor and will tolerate it. */
+    else if (is_you ? maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
+                    : is_grung(mtmp->data))
+        return (is_dwarvish_obj(otyp) || is_orcish_obj(otyp)
+                || is_gnomish_obj(otyp) || is_bulky);
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN))
                     : is_human(mtmp->data))
         return (is_gnomish_obj(otyp));
     else if (is_you ? i_vampire() : is_vampire(mtmp->data))
         return (is_gnomish_obj(otyp));
-    if (is_you ? maybe_polyd(is_grung(gy.youmonst.data), Race_if(PM_GRUNG))
-                : is_grung(mtmp->data))
-        return is_bulky;
 
     return FALSE;
 }

@@ -4529,7 +4529,8 @@ material_list(struct obj* obj)
 
     /* Otherwise, select an appropriate list, or return NULL if no appropriate
      * list exists. */
-    if (is_elven_obj(obj->otyp) && default_material != CLOTH) {
+    if ((is_elven_obj(obj->otyp) || is_grung_obj(obj->otyp))
+            && default_material != CLOTH) {
         return elven_materials;
     } else if (is_dwarvish_obj(obj->otyp) && default_material != CLOTH) {
         return dwarvish_materials;
