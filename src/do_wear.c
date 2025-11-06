@@ -989,6 +989,7 @@ Shield_on(void)
     /* Bracers are also included in the shield slot */
     case BRACERS:
     case ELVEN_BRACERS:
+    case GRUNG_BRACERS:
     case BRACERS_OF_SLEEP_RESISTANCE:
     case BRACERS_OF_COLD_RESISTANCE:
     case BRACERS_OF_UNCHANGING:
@@ -1050,6 +1051,7 @@ Shield_off(void)
     /* Bracers are also included in the shield slot */
     case BRACERS:
     case ELVEN_BRACERS:
+    case GRUNG_BRACERS:
     case BRACERS_OF_SLEEP_RESISTANCE:
     case BRACERS_OF_COLD_RESISTANCE:
     case BRACERS_OF_UNCHANGING:

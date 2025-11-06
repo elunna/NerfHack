@@ -648,6 +648,8 @@ m_initweap(struct monst *mtmp)
         case PM_ORANGE_GRUNG:
             if (!rn2(3))
                 (void) mongets(mtmp, ARMOR);
+            if (!rn2(3))
+                (void) mongets(mtmp, GRUNG_BRACERS);
             if (!rn2(2)) {
                 (void) mongets(mtmp, BOW);
                 m_initthrow(mtmp, ARROW, 12);
@@ -659,6 +661,8 @@ m_initweap(struct monst *mtmp)
         case PM_GOLD_GRUNG:
             (void) mongets(mtmp, rn2(3) ? STUDDED_ARMOR
                                         : ARMOR);
+            if (!rn2(3))
+                (void) mongets(mtmp, GRUNG_BRACERS);
             (void) mongets(mtmp, rn2(7) ? SPEAR : rn2(3)
                                                   ? TRIDENT : SCIMITAR);
         }
