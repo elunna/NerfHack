@@ -820,20 +820,25 @@ doforging(void)
                 output->bquality = FQ_INFERIOR;
             } else if (obj1->bquality == FQ_LEGENDARY
                 && obj2->bquality == FQ_LEGENDARY) {
-                /* if either is legendary, forged object will also be */
+                /* if both are legendary, forged object will also be */
                 output->bquality = FQ_LEGENDARY;
             } else if (obj1->bquality >= FQ_EXCEPTIONAL
                 && obj2->bquality >= FQ_EXCEPTIONAL) {
-                /* if either is exceptional, forged object will either be
+                /* if both are exceptional, forged object will either be
                    exceptional, or a small chance of legendary */
                 output->bquality = (!rn2(10) ? FQ_LEGENDARY
                                                 : FQ_EXCEPTIONAL);
             } else if (obj1->bquality >= FQ_SUPERIOR
                 && obj2->bquality >= FQ_SUPERIOR) {
-                /* if either is superior, forged object will either be
+                /* if both are superior, forged object will either be
                    superior, or a small chance of exceptional */
                 output->bquality = (!rn2(10) ? FQ_EXCEPTIONAL
                                                 : FQ_SUPERIOR);
+            } else if (obj1->bquality >= FQ_SUPERIOR
+                || obj2->bquality >= FQ_SUPERIOR) {
+                    /* if only one ingredient has any quality, we take the
+                     * average and randomly add a level of quality. */
+                    output->bquality = (obj1->bquality + obj2->bquality) / 2 + rn2(2) ? 0 : 1;
             } else if (obj1->spe >= 6 && obj2->spe >= 6) {
                 /* recipe objs 1 & 2 need an enchantment
                    of 6 or greater to ensure an exceptional
