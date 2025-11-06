@@ -48,6 +48,9 @@ function oracle_fill(rm)
       des.feature("forge")
    end
    if d(60) == 1 then
+      des.feature("altar")
+   end
+   if d(60) == 1 then
       des.feature("sink")
    end
    if percent(1) then
@@ -80,18 +83,9 @@ des.room({ contents = function()
               end
 });
 
--- Guaranteed altar!
-des.room({ contents = function()
-                 des.object();
-                 des.monster();
-                 des.altar({ type="altar" })
-              end
-});
-
 des.room({ contents = oracle_fill });
-
 des.room({ contents = oracle_fill });
-
+des.room({ contents = oracle_fill });
 des.room({ contents = oracle_fill });
 
 des.random_corridors();

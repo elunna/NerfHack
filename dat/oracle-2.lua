@@ -58,6 +58,9 @@ function oracle_fill(rm)
    if d(60) == 1 then
       des.feature("forge")
    end
+    if d(60) == 1 then
+      des.feature("altar")
+   end
    if d(60) == 1 then
       des.feature("sink")
    end
@@ -91,19 +94,9 @@ des.room({ contents = function()
               end
 })
 
--- Guaranteed altar!
--- This needs to precede the other rooms so it always connects.
-des.room({ contents = function()
-                 des.object();
-                 des.monster();
-                 des.altar({ type="altar" })
-              end
-});
-
 des.room({ contents = oracle_fill });
-
 des.room({ contents = oracle_fill });
-
+des.room({ contents = oracle_fill });
 des.room({ contents = oracle_fill });
 
 des.random_corridors()
