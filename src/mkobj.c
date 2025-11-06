@@ -4468,7 +4468,6 @@ material_list(struct obj* obj)
     case MUMMY_WRAPPING:
     case AMULET_OF_YENDOR:
     case FAKE_AMULET_OF_YENDOR:
-    case FANG_NECKLACE:
     case PLAYING_CARD_DECK:
     case STATUE:
         return NULL;
@@ -4527,11 +4526,12 @@ material_list(struct obj* obj)
     default:
         break;
     }
-
+    
     /* Otherwise, select an appropriate list, or return NULL if no appropriate
      * list exists. */
-    if ((is_elven_obj(obj->otyp) || is_grung_obj(obj->otyp))
-            && default_material != CLOTH) {
+    if (is_grung_obj(obj->otyp)) {
+        return NULL; /* ALl grung items are as is */
+    } else if (is_elven_obj(obj->otyp) && default_material != CLOTH) {
         return elven_materials;
     } else if (is_dwarvish_obj(obj->otyp) && default_material != CLOTH) {
         return dwarvish_materials;
