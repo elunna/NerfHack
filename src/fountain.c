@@ -838,7 +838,11 @@ doforging(void)
                 || obj2->bquality >= FQ_SUPERIOR) {
                     /* if only one ingredient has any quality, we take the
                      * average and randomly add a level of quality. */
-                    output->bquality = (obj1->bquality + obj2->bquality) / 2 + rn2(2) ? 0 : 1;
+                    output->bquality = (obj1->bquality + obj2->bquality) / 2
+                                + rn2(2) ? 0 : 1;
+                    /* Prevent inferior results - that doesn't make sense */
+                    if (output->bquality == 1)
+                        output->bquality = 0;
             } else if (obj1->spe >= 6 && obj2->spe >= 6) {
                 /* recipe objs 1 & 2 need an enchantment
                    of 6 or greater to ensure an exceptional
