@@ -1021,6 +1021,7 @@ u_init_race(void)
         knows_object(ELVEN_RING_MAIL, FALSE);
         knows_object(ELVEN_HELM, FALSE);
         knows_object(ELVEN_SHIELD, FALSE);
+        knows_object(ELVEN_BRACERS, FALSE);
         knows_object(ELVEN_BOOTS, FALSE);
         knows_object(ELVEN_CLOAK, FALSE);
 

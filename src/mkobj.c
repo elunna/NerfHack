@@ -4484,6 +4484,7 @@ material_list(struct obj* obj)
     case ELVEN_HELM:
     case ELVEN_BOOTS:
     case BRACERS:
+    case ELVEN_BRACERS:
     case BRACERS_OF_INTEGRITY:
     case BRACERS_OF_SLEEP_RESISTANCE:
     case BRACERS_OF_COLD_RESISTANCE:

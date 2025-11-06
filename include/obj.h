@@ -396,6 +396,7 @@ struct obj {
      || otyp == ELVEN_CLOAK \
      || otyp == ELVEN_ROBE \
      || otyp == ELVEN_SHIELD \
+     || otyp == ELVEN_BRACERS \
      || otyp == ELVEN_BOOTS)
 #define is_elven_weapon(otyp) \
     (otyp == ELVEN_ARROW \

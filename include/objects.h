@@ -681,9 +681,12 @@ SHIELD("shield of reflection", "polished shield",
     simultaneously. The two don't share any intrinsics either so
     there are no bracers of reflection or magic resistance, etc.
  */
-SHIELD("bracers", "runed bracers",
-       0, 0, 0,        0, 6, 0,  15,  10, 9, 0, LEATHER, CLR_BRIGHT_GREEN,
+SHIELD("bracers", NoDes,
+       1, 0, 0,        0, 6, 0,  15,  10, 9, 0, LEATHER, HI_LEATHER,
                                                            BRACERS),
+SHIELD("elven bracers", "runed bracers",
+       0, 0, 0,        0, 6, 0,  15,  10, 9, 0, WOOD, CLR_BRIGHT_GREEN,
+                                                           ELVEN_BRACERS),
 SHIELD("bracers of integrity", "chitinous bracers",
        0, 1, 0,DISINT_RES, 2, 0, 15,  50, 9, 0, LEATHER, CLR_YELLOW,
                                                BRACERS_OF_INTEGRITY),

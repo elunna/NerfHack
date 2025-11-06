@@ -278,7 +278,7 @@ m_initweap(struct monst *mtmp)
             case 0:
                 if (!rn2(4))
                     (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD
-                                                : BRACERS);
+                                                : ELVEN_BRACERS);
                 if (rn2(3))
                     (void) mongets(mtmp, ELVEN_SHORT_SWORD);
                 (void) mongets(mtmp, ELVEN_BOW);
@@ -288,13 +288,13 @@ m_initweap(struct monst *mtmp)
                 (void) mongets(mtmp, !rn2(4) ? ELVEN_LONG_SWORD : ELVEN_BROADSWORD);
                 if (rn2(2))
                     (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD
-                                               : BRACERS);
+                                               : ELVEN_BRACERS);
                 break;
             case 2:
                 if (rn2(2)) {
                     (void) mongets(mtmp, ELVEN_SPEAR);
                     (void) mongets(mtmp, rn2(3) ? ELVEN_SHIELD
-                                               : BRACERS);
+                                               : ELVEN_BRACERS);
                 }
                 break;
             }
