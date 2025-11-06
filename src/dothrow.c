@@ -2101,7 +2101,7 @@ should_mulch_missile(struct obj *obj)
 
     /* Daggers and knives have a small chance to mulch. */
     if (is_dagger || is_knife) {
-        if (!obj->cursed && rn2(100))
+        if (!obj->cursed && rn2(obj->bquality >= FQ_SUPERIOR ? 1000 : 100))
             return FALSE;
         /* Cursed daggers and knifes drop down to the standard
          * ammo mulching odds. */
@@ -2115,7 +2115,7 @@ should_mulch_missile(struct obj *obj)
     /* we had been breaking 2/3 of everything unconditionally.  we still don't
        want anything to survive unconditionally, but we need ammo to stay
        around longer on average. */
-    chance = 3 + greatest_erosion(obj) - obj->spe;
+    chance = 3 + greatest_erosion(obj) - obj->spe - obj->bquality;
     broken = chance > 1 ? rn2(chance) : !rn2(4);
     if (obj->blessed && (svc.context.mon_moving ? !rn2(3) : !rnl(4)))
         broken = FALSE;
