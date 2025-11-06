@@ -1121,6 +1121,10 @@ u_init_race(void)
     case PM_GRUNG:
         knows_object(GRUNG_BRACERS, FALSE);
         knows_object(SNAKESKIN_WRAP, FALSE);
+        knows_object(SWAMPWING_VEST, FALSE);
+        knows_object(SNAKEHIDE_JERKIN, FALSE);
+        knows_object(SPIDER_RIB_SHELL, FALSE);
+        knows_object(BEETLE_CARAPACE, FALSE);
         u.hydration = HYDRATION_MAX;
         /* All grung are familiar with darts */
         set_skill_cap_minimum(P_DART, P_SKILLED);

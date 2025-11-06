@@ -449,6 +449,10 @@ struct obj {
 /* Grung gear */
 #define is_grung_armor(otyp) \
     (otyp == GRUNG_BRACERS \
+    || otyp == SNAKEHIDE_JERKIN \
+    || otyp == SPIDER_RIB_SHELL \
+    || otyp == BEETLE_CARAPACE \
+    || otyp == SWAMPWING_VEST \
     || otyp == SNAKESKIN_WRAP)
 #define is_grung_obj(otyp) (is_grung_armor(otyp))
 
