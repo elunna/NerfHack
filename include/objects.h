@@ -471,7 +471,7 @@ HELM("dwarvish helm", "hard hat",
 HELM("fedora", NoDes,
      1, 0,           0,  0, 0,  3,  1, 10, 0, CLOTH, CLR_BROWN,
                                                         FEDORA),
-HELM("sporecap hood", NoDes,
+HELM("sporecap hood", NoDes, /* for grung */
      1, 0,           0,  0, 0,  3,  1, 10, 0, VEGGY, CLR_BROWN,
                                                         SPORECAP_HOOD),
 HELM("cornuthaum", "conical hat",

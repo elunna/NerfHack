@@ -8567,9 +8567,9 @@ hates_item(struct monst *mtmp, struct obj *otmp)
                 || is_gnomish_obj(otyp) || is_bulky);
     else if (is_you ? maybe_polyd(is_human(gy.youmonst.data), Race_if(PM_HUMAN))
                     : is_human(mtmp->data))
-        return (is_gnomish_obj(otyp));
+        return (is_gnomish_obj(otyp) || is_grung_obj(otyp));
     else if (is_you ? i_vampire() : is_vampire(mtmp->data))
-        return (is_gnomish_obj(otyp));
+        return (is_gnomish_obj(otyp) || is_grung_obj(otyp));
 
     return FALSE;
 }
