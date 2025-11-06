@@ -1091,29 +1091,29 @@ touch_artifact(struct obj *obj, struct monst *mon)
     yours = (mon == &gy.youmonst);
     /* all quest artifacts are self-willed; if this ever changes, `badclass'
        will have to be extended to explicitly include quest artifacts */
-    self_willed = ((oart->spfx & SPFX_INTEL) != 0) || aligned_obj;
+    self_willed = ((oart->spfx & SPFX_INTEL) != 0) && !aligned_obj;
     if (yours) {
         if (aligned_obj) {
             badclass = FALSE;
             badalign = obj->alignment && (item_cross_aligned(obj) || u.ualign.record < 0);
         } else {
-            badclass = self_willed
-            	   && ((oart->role != NON_PM && !Role_if(oart->role))
-                	   || (oart->race != NON_PM && !Race_if(oart->race)));
-            badalign = ((oart->spfx & SPFX_RESTR) != 0
-            	    && oart->alignment != A_NONE
-                	&& (oart->alignment != u.ualign.type
-                    	|| u.ualign.record < 0));
+        	badclass = self_willed
+            	       && ((oart->role != NON_PM && !Role_if(oart->role))
+                	       || (oart->race != NON_PM && !Race_if(oart->race)));
+        	badalign = ((oart->spfx & SPFX_RESTR) != 0
+            	        && oart->alignment != A_NONE
+                	    && (oart->alignment != u.ualign.type
+                    	    || u.ualign.record < 0));
         }
     } else if (!is_covetous(mon->data) && !is_mplayer(mon->data)) {
         if (aligned_obj) {
             badclass = FALSE;
             badalign = item_vs_mon(obj, mon);
         } else {
-            badclass = self_willed && oart->role != NON_PM
-            	   && oart != &artilist[ART_EXCALIBUR];
-            badalign = (oart->spfx & SPFX_RESTR) && oart->alignment != A_NONE
-               && (oart->alignment != mon_aligntyp(mon));
+        	badclass = self_willed && oart->role != NON_PM
+            	       && oart != &artilist[ART_EXCALIBUR];
+        	badalign = (oart->spfx & SPFX_RESTR) && oart->alignment != A_NONE
+                   && (oart->alignment != mon_aligntyp(mon));
     	}
     } else { /* an M3_WANTSxxx monster or a fake player */
         /* special monsters trying to take the Amulet, invocation tools or
@@ -1125,7 +1125,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
     if (!badalign && !aligned_obj)
         badalign = bane_applies(oart, mon);
 
-    if ((badclass && self_willed) || badalign) {
+    if (((badclass || badalign) && self_willed) || badalign) {
         int dmg;
         char buf[BUFSZ];
 
@@ -1135,7 +1135,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
         touch_blasted = TRUE;
 
         if (aligned_obj)
-	    dmg = d((Antimagic ? 3 : 5), 4);
+	        dmg = d((Antimagic ? 3 : 5), 4);
         else
             dmg = d((Antimagic ? 6 : 8), (self_willed ? 10 : 6));
 

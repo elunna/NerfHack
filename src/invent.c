@@ -1198,7 +1198,7 @@ hold_another_object(
 
     if (!Blind)
         obj->dknown = 1; /* maximize mergeability */
-    if (obj->oartifact || obj->alignment) {
+    if (obj->oartifact) {
         /* place_object may change these */
         boolean crysknife = (obj->otyp == CRYSKNIFE);
         int oerode = obj->oerodeproof;
