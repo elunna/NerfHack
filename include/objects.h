@@ -610,6 +610,9 @@ ARMOR("Hawaiian shirt", NoDes,
 ARMOR("T-shirt", NoDes,
       1, 0, 0,  0,  2, 0,   5,   2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE,
                                                         T_SHIRT),
+ARMOR("snakeskin wrap", NoDes,
+      1, 0, 0,  0,  2, 0,   5,   2, 10, 1,  ARM_SHIRT, CLOTH, CLR_BLACK,
+                                                        SNAKESKIN_WRAP),
 
 /* cloaks */
 CLOAK("mummy wrapping", NoDes,

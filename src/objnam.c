@@ -3596,7 +3596,7 @@ static NEARDATA const struct o_range o_ranges[] = {
     { "boots", ARMOR_CLASS, LOW_BOOTS, LEVITATION_BOOTS },
     { "shoes", ARMOR_CLASS, LOW_BOOTS, DWARVISH_BOOTS },
     { "cloak", ARMOR_CLASS, MUMMY_WRAPPING, CLOAK_OF_DISPLACEMENT },
-    { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
+    { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, SNAKESKIN_WRAP },
     { "dragon scales", ARMOR_CLASS, FIRST_DRAGON_SCALES,
                        LAST_DRAGON_SCALES },
     { "sword", WEAPON_CLASS, SHORT_SWORD, KATANA },
