@@ -164,6 +164,7 @@ staticfn void
 m_initweap(struct monst *mtmp)
 {
     struct permonst *ptr = mtmp->data;
+    struct obj* received;
     int mm = monsndx(ptr);
     struct obj *otmp;
     int bias, w1, w2;
@@ -246,8 +247,11 @@ m_initweap(struct monst *mtmp)
                 break;
             case PM_CAPTAIN:
             case PM_WATCH_CAPTAIN:
-                w1 = rn2(2) ? LONG_SWORD : SABER;
                 mongets(mtmp, SKELETON_KEY);
+                (void) mongets(mtmp,  rn2(2) ? LONG_SWORD : SABER);
+                received = m_carrying(mtmp, SABER);
+                if (received)
+                    set_material(received, SILVER);
                 break;
             default:
                 if (!rn2(4))
