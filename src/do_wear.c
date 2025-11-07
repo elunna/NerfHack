@@ -493,6 +493,7 @@ Cloak_on(void)
     case ROBE:
     case GRAY_DRAGON_SCALES:
     case CLOAK:
+    case DRAGONFLY_CLOAK:
         break;
     case CLOAK_OF_PROTECTION:
         makeknown(uarmc->otyp);
@@ -582,6 +583,7 @@ Cloak_off(void)
     case ROBE:
     case GRAY_DRAGON_SCALES:
     case CLOAK:
+    case DRAGONFLY_CLOAK:
         break;
     case ELVEN_CLOAK:
         toggle_stealth(otmp, oldprop, FALSE);
