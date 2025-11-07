@@ -263,7 +263,7 @@ WEAPON("spineback cutter", "hideous curved sword", /* grung */
        0, 0, 0 , 1,  20,  15,  8,  6, 0, S,   P_SABER, BONE, CLR_WHITE,
                                                              SPINEBACK_CUTTER),
 WEAPON("saber", NoDes,
-       1, 0, 0,  6,  40,  75,  8,  8, 0, S,   P_SABER, SILVER, HI_METAL,
+       1, 0, 0,  6,  40,  75,  8,  8, 0, S,   P_SABER, IRON, HI_METAL,
                                                         SABER),
 WEAPON("rapier", NoDes,
        1, 0, 0, 10,  15,  40,  6,  8, 0, P,   P_SABER, METAL, CLR_BLACK,
