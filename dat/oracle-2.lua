@@ -59,7 +59,7 @@ function oracle_fill(rm)
       des.feature("forge")
    end
     if d(60) == 1 then
-      des.feature("altar")
+      des.altar({ type="altar" })
    end
    if d(60) == 1 then
       des.feature("sink")
