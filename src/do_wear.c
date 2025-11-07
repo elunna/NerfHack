@@ -492,6 +492,7 @@ Cloak_on(void)
     case CLOAK_OF_MAGIC_RESISTANCE:
     case ROBE:
     case GRAY_DRAGON_SCALES:
+    case CLOAK:
         break;
     case CLOAK_OF_PROTECTION:
         makeknown(uarmc->otyp);
@@ -580,6 +581,7 @@ Cloak_off(void)
     case OILSKIN_CLOAK:
     case ROBE:
     case GRAY_DRAGON_SCALES:
+    case CLOAK:
         break;
     case ELVEN_CLOAK:
         toggle_stealth(otmp, oldprop, FALSE);
