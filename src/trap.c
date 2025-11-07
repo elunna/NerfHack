@@ -5298,10 +5298,9 @@ lava_damage(struct obj *obj, coordxy x, coordxy y)
         && !obj->oerodeproof
         /* fire_damage() knows how to deal with containers and contents */
         && !Has_contents(obj)) {
+        if (carried(obj)) /* shouldn't happen */
+            remove_worn_item(obj, TRUE);
         if (cansee(x, y)) {
-            if (carried(obj)) { /* shouldn't happen */
-                remove_worn_item(obj, TRUE);
-            }
             /* this feedback is pretty clunky and can become very verbose
                when former contents of a burned container get here via
                flooreffects() */
