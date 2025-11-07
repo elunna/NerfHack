@@ -4479,6 +4479,9 @@ material_list(struct obj* obj)
     case FAKE_AMULET_OF_YENDOR:
     case PLAYING_CARD_DECK:
     case STATUE:
+    case OILSKIN_SACK:
+    case OILSKIN_CLOAK:
+    case TINNING_KIT:
         return NULL;
     /* Any other cases for specific object types go here. */
     case SHIELD_OF_REFLECTION:
