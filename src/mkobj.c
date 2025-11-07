@@ -1401,6 +1401,7 @@ mksobj(int otyp, boolean init, boolean artif)
     if (Role_if(PM_CARTOMANCER) && otmp->otyp == FIGURINE) {
         otmp->otyp = SCR_CREATE_MONSTER;
         otmp->oclass = SCROLL_CLASS;
+        set_material(otmp, PAPER);
         // otmp->spe = 0; /* reset spe just in case */
     }
 
@@ -4631,7 +4632,10 @@ nonsensical_obj_material(struct obj *obj, uchar mat)
     if ((oclass == WEAPON_CLASS || oclass == ARMOR_CLASS) && mat == PAPER) {
         return TRUE;
     }
-
+    /* non-paper scrolls */
+    if (oclass == SCROLL_CLASS && mat != PAPER) {
+        return TRUE;
+    }
     /* elven gear that somehow generates as iron... */
     if (is_elven_obj(obj->otyp) && mat == IRON) {
         return TRUE;

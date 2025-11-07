@@ -991,8 +991,8 @@ m_initinv(struct monst *mtmp)
                                             : RIN_TELEPORT_CONTROL);
                 m_dowear(mtmp, FALSE);
             }
-	    } else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
-	        /* Dal Zethire */
+	} else if (quest_mon_represents_role(ptr, PM_CARTOMANCER)) {
+	    /* Dal Zethire */
             for (cnt = 0; cnt < 7; cnt++) {
                 otmp = mksobj(SCR_CREATE_MONSTER, FALSE, FALSE);
                 otmp->corpsenm = mk_moncard();
