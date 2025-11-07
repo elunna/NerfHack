@@ -1334,6 +1334,7 @@ mksobj(int otyp, boolean init, boolean artif)
         otmp->oclass = SCROLL_CLASS;
         otmp->otyp = SCR_ZAPPING;
         otmp->corpsenm = otyp;
+        set_material(otmp, PAPER);
     }
 
     if (init)
