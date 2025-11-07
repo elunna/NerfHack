@@ -4285,6 +4285,16 @@ static const struct icp metal_materials[] = {
     { 10, GEMSTONE},
 };
 
+/* for tools which are normally iron or steel */
+static const struct icp tool_materials[] = {
+    {500, 0}, /* default to base type, iron or steel */
+    {100, IRON},
+    {100, METAL},
+    {100, SILVER},
+    {100, COPPER},
+    {100, MITHRIL},
+};
+
 /* for objects which are normally wooden */
 static const struct icp wood_materials[] = {
     {800, WOOD},
@@ -4539,8 +4549,7 @@ material_list(struct obj* obj)
     } else if (obj->oclass == AMULET_CLASS) {
         /* could use metal_materials too */
         return shiny_materials;
-    } else if (obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS
-             || obj->oclass == TOOL_CLASS) {
+    } else if (obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS) {
         if (default_material == IRON || default_material == METAL) {
             return metal_materials;
         } else if (default_material == WOOD) {
@@ -4550,6 +4559,9 @@ material_list(struct obj* obj)
         } else if (default_material == LEATHER) {
             return leather_materials;
         }
+    } else if (obj->oclass == TOOL_CLASS) {
+        if (default_material == IRON || default_material == METAL)
+            return tool_materials;
     }
     return NULL;
 }
