@@ -516,7 +516,6 @@ struct you {
     short mcham;             /* vampire mndx if shapeshifted to bat/cloud */
     short umovement;         /* instead of youmonst.movement */
     schar uachieved[N_ACH];  /* list of achievements in the order attained */
-    d_level shard_key;       /* where the Glyph Shard is currently keyed to */
 }; /* end of `struct you' */
 
 

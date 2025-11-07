@@ -1302,7 +1302,6 @@ u_init(void)
     u.uspellprot = 0;
     adjabil(0, 1);
     u.ulevel = u.ulevelmax = 1;
-    u.shard_key.dnum = u.shard_key.dlevel = -1;
 
     init_uhunger();
     for (i = 0; i <= MAXSPELL; i++)

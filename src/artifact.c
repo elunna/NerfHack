@@ -2769,17 +2769,6 @@ invoke_create_portal(struct obj *obj)
             return ECMD_TIME;
     }
 
-    if (obj->oartifact == ART_GLYPH_SHARD) {
-        if (u.shard_key.dnum < 0 && u.shard_key.dlevel < 0) {
-            Your("shard has not been keyed to a level yet...");
-            return ECMD_CANCEL;
-        }
-        newlev.dnum = u.shard_key.dnum;
-        newlev.dlevel = u.shard_key.dlevel;
-        goto shard_travel;
-    }
-
-
     any = cg.zeroany; /* set all bits to zero */
     start_menu(tmpwin, MENU_BEHAVE_STANDARD);
     /* use index+1 (can't use 0) as identifier */
@@ -2822,12 +2811,7 @@ invoke_create_portal(struct obj *obj)
     newlev.dnum = i;
     newlev.dlevel = svd.dungeons[i].entry_lev;
 
-shard_travel:
-
     if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
-        /* The Glyph Shard allows portaling within the same dungeon
-           as well as other dungeons. */
-        || (newlev.dnum == u.uz.dnum && obj->oartifact != ART_GLYPH_SHARD)
         || !next_to_u()) {
         You_feel("very disoriented for a moment.");
     } else {

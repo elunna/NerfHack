@@ -491,7 +491,6 @@ Cloak_on(void)
     case DWARVISH_CLOAK:
     case CLOAK_OF_MAGIC_RESISTANCE:
     case ROBE:
-    case CLOAK:
     case GRAY_DRAGON_SCALES:
         break;
     case CLOAK_OF_PROTECTION:
@@ -580,7 +579,6 @@ Cloak_off(void)
     case CLOAK_OF_MAGIC_RESISTANCE:
     case OILSKIN_CLOAK:
     case ROBE:
-    case CLOAK:
     case GRAY_DRAGON_SCALES:
         break;
     case ELVEN_CLOAK:
