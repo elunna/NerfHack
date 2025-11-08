@@ -1705,19 +1705,19 @@ Ring_on(struct obj *obj)
         }
         break;
     case RIN_FIRE_RESISTANCE:
-        if (!oldprop && !HFire_resistance){
+        if (!oldprop && intrinsic_res(FIRE_RES) < 100){
             pline("The ring feels cool!");
             learnring(obj, TRUE);
         }
         break;
     case RIN_COLD_RESISTANCE:
-        if (!oldprop && !HCold_resistance){
+        if (!oldprop && intrinsic_res(COLD_RES) < 100){
             pline("The ring feels warm!");
             learnring(obj, TRUE);
         }
         break;
     case RIN_SHOCK_RESISTANCE:
-        if (!oldprop && !HShock_resistance) {
+        if (!oldprop && intrinsic_res(SHOCK_RES) < 100) {
             Your("ringfinger feels numb!");
             learnring(obj, TRUE);
         }
