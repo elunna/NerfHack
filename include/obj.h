@@ -82,9 +82,10 @@ struct obj {
 #define OBJ_ONBILL 7    /* object on shk bill */
 #define OBJ_LUAFREE 8   /* object has been dealloc'd, but is ref'd by lua */
 #define OBJ_DELETED 9   /* object is marked for deletion by dobjsfree() */
+#define OBJ_INTRAP 10   /* object is trap ammo */
     /* note: OBJ_xxx values are used in obj_state_names[] in mkobj.c
        so adding, removing, or renumbering these needs to change that too */
-#define NOBJ_STATES 10
+#define NOBJ_STATES 11
     xint16 timed; /* # of fuses (timers) attached to this obj */
 
     /* Bitfields currently require 5 bytes minimum */

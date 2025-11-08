@@ -414,7 +414,7 @@ dig(void)
             } else {
                 You("destroy the bear trap with %s.",
                     yobjnam(uwep, (const char *) 0));
-                deltrap(ttmp);
+                deltrap_with_ammo(ttmp, DELTRAP_DESTROY_AMMO);
                 reset_utrap(TRUE); /* release from trap, maybe Lev or Fly */
             }
             /* we haven't made any progress toward a pit yet */
@@ -1016,10 +1016,10 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
             /* magical digging disarms settable traps */
             if (by_magic && ttmp
                 && (ttmp->ttyp == LANDMINE || ttmp->ttyp == BEAR_TRAP)) {
-                int otyp = (ttmp->ttyp == LANDMINE) ? LAND_MINE : BEARTRAP;
-
                 /* convert trap into buried object (deletes trap) */
-                cnv_trap_obj(otyp, 1, ttmp, TRUE);
+                deltrap_with_ammo(ttmp, (ttmp->ttyp == LANDMINE
+                                             ? DELTRAP_BURY_AMMO
+                                             : DELTRAP_PLACE_AMMO));
             }
 
             /* finally we get to make a hole */

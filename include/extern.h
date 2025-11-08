@@ -3409,6 +3409,7 @@ extern int erode_obj(struct obj *, const char *, int, int) NO_NNARGS;
 extern boolean grease_protect(struct obj *, const char *,
                               struct monst *) NONNULLARG1;
 extern struct trap *maketrap(coordxy, coordxy, int);
+extern void set_trap_ammo(struct trap *, struct obj *) NO_NNARGS;
 extern d_level *clamp_hole_destination(d_level *) NONNULLARG1;
 extern void fall_through(boolean, unsigned);
 extern struct monst *animate_statue(struct obj *, coordxy, coordxy,
@@ -3458,6 +3459,7 @@ extern boolean closeholdingtrap(struct monst *, boolean *) NO_NNARGS;
 extern boolean openfallingtrap(struct monst *, boolean, boolean *) NONNULLARG3;
 extern boolean chest_trap(struct obj *, int, boolean) NONNULLARG1;
 extern void deltrap(struct trap *) NONNULLARG1;
+extern struct obj *deltrap_with_ammo(struct trap *, int) NO_NNARGS;
 extern boolean delfloortrap(struct trap *) NO_NNARGS;
 extern struct trap *t_at(coordxy, coordxy);
 extern int count_traps(int);

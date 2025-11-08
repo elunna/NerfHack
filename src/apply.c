@@ -3390,6 +3390,15 @@ set_trap(void)
     if (ttmp) {
         ttmp->madeby_u = 1;
         feeltrap(ttmp);
+
+        /* Our object becomes the new ammo of the trap. */
+        if (otmp->quan > 1) {
+            otmp = splitobj(otmp, 1);
+        }
+        setnotworn(otmp); /* in case it was wielded or uswapwep */
+        freeinv(otmp);
+        set_trap_ammo(ttmp, otmp);
+
         if (*in_rooms(u.ux, u.uy, SHOPBASE)) {
             add_damage(u.ux, u.uy, 0L); /* schedule removal */
         }
@@ -3403,7 +3412,6 @@ set_trap(void)
         /* this shouldn't happen */
         Your("trap setting attempt fails.");
     }
-    useup(otmp);
     reset_trapset();
     return 0;
 }

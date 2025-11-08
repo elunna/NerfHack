@@ -4269,11 +4269,9 @@ floorfood(
                     u_in_beartrap ? "holding you" : "armed");
             if ((c = yn_function(qbuf, ynqchars, 'n', TRUE)) == 'y') {
                 struct obj *beartrap;
-
-                deltrap(ttmp);
                 if (u_in_beartrap)
                     reset_utrap(TRUE);
-                beartrap = mksobj(BEARTRAP, TRUE, FALSE);
+                beartrap = deltrap_with_ammo(ttmp, DELTRAP_RETURN_AMMO);
                 Sprintf(qbuf,"You only manage to %s the bear trap.",
                         u_in_beartrap ? "free yourself from" : "disarm");
                 if (check_capacity(qbuf) && beartrap) {
