@@ -873,7 +873,7 @@ known_hitum(
         if (flags.verbose) {
             if (weapon && weapon->oartifact == ART_STORMBRINGER)
                 Your("bloodthirsty blade attacks!");
-            if (weapon && (weapon->oprops & ITEM_RAGE))
+            else if (weapon && (weapon->oprops & ITEM_RAGE))
                 Your("bloodthirsty weapon attacks!");
             else if (Rabid)
                 You("cannot stop yourself from attacking!");
