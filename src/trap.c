@@ -3078,7 +3078,11 @@ trapeffect_poly_trap(
                 seetrap(trap);
                 pline("The polymorph trap folds in on itself!");
             }
-            deltrap(trap);
+            if (!rn2(127)) {
+                if (in_sight)
+                    pline("The polymorph trap folds in on itself!");
+                deltrap(trap);
+            }
         }
     }
     return Trap_Effect_Finished;
