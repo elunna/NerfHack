@@ -978,7 +978,8 @@ staticfn int
 Shield_on(void)
 {
     if (hates_item(&gy.youmonst, uarms))
-        You_feel("uncomfortable wearing that shield.");
+        You_feel("uncomfortable wearing %s.",
+            is_bracer(uarms) ? "these bracers" : "this shield");
 
     /* no shield currently requires special handling when put on, but we
        keep this uncommented in case somebody adds a new one which does
