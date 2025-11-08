@@ -1682,9 +1682,7 @@ Ring_on(struct obj *obj)
     case RIN_TELEPORTATION:
     case RIN_SEARCHING:
     case RIN_HUNGER:
-    case RIN_AGGRAVATE_MONSTER:
     case RIN_POISON_RESISTANCE:
-    case RIN_CONFLICT:
     case RIN_TELEPORT_CONTROL:
     case RIN_POLYMORPH:
     case RIN_POLYMORPH_CONTROL:
@@ -1694,6 +1692,17 @@ Ring_on(struct obj *obj)
         break;
     case MEAT_RING:
         /* wearing a meat ring does not affect vegan conduct */
+        break;
+    case RIN_AGGRAVATE_MONSTER:
+        /* Give a vague thematic message */
+        if (!oldprop && !HAggravate_monster) {
+            pline("The ring feels unsettling!");
+        }
+        break;
+    case RIN_CONFLICT:
+        if (!oldprop && !HConflict) {
+            pline("The ring feels unsettling!");
+        }
         break;
     case RIN_FIRE_RESISTANCE:
         if (!oldprop && !HFire_resistance){
