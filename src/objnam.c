@@ -5929,9 +5929,7 @@ readobjnam(char *bp, struct obj *no_wish)
         return d.otmp;
     } else if (d.otmp->oartifact) {
         u.uconduct.wisharti++; /* KMH, conduct */
-
-        /* Artifacts are legendary by default.  */
-        d.otmp->bquality = FQ_LEGENDARY;
+        d.otmp->bquality = FQ_NORMAL;
         d.otmp->alignment = FA_NONE;
     }
     if (d.material > 0 && !d.otmp->oartifact && wizard) {
