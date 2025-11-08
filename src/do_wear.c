@@ -1684,9 +1684,6 @@ Ring_on(struct obj *obj)
     case RIN_HUNGER:
     case RIN_AGGRAVATE_MONSTER:
     case RIN_POISON_RESISTANCE:
-    case RIN_FIRE_RESISTANCE:
-    case RIN_COLD_RESISTANCE:
-    case RIN_SHOCK_RESISTANCE:
     case RIN_CONFLICT:
     case RIN_TELEPORT_CONTROL:
     case RIN_POLYMORPH:
@@ -1697,6 +1694,24 @@ Ring_on(struct obj *obj)
         break;
     case MEAT_RING:
         /* wearing a meat ring does not affect vegan conduct */
+        break;
+    case RIN_FIRE_RESISTANCE:
+        if (!oldprop && !HFire_resistance){
+            pline("The ring feels cool!");
+            learnring(obj, TRUE);
+        }
+        break;
+    case RIN_COLD_RESISTANCE:
+        if (!oldprop && !HCold_resistance){
+            pline("The ring feels warm!");
+            learnring(obj, TRUE);
+        }
+        break;
+    case RIN_SHOCK_RESISTANCE:
+        if (!oldprop && !HShock_resistance) {
+            Your("ringfinger feels numb!");
+            learnring(obj, TRUE);
+        }
         break;
     case RIN_CARRYING:
         /* with inventory weights available, this is trivial to identify if it's
