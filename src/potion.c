@@ -3640,14 +3640,22 @@ potion_dip(struct obj *obj, struct obj *potion)
     }
     boolean draconic = (Is_dragon_scales(obj) && uarmc && obj == uarmc);
 
-    if (potion->otyp == POT_PHASING && draconic) {
-        poof(potion);
-        struct obj pseudo;
-        pseudo = cg.zeroobj;
-        pseudo.otyp = SCR_ENCHANT_ARMOR;
-        /* don't use seffects, that would allow armor choice */
-        (void) maybe_merge_scales(&pseudo, uarmc);
-        return ECMD_TIME;
+    if (potion->otyp == POT_PHASING) {
+        if (draconic) {
+            poof(potion);
+            struct obj pseudo;
+            pseudo = cg.zeroobj;
+            pseudo.otyp = SCR_ENCHANT_ARMOR;
+            /* don't use seffects, that would allow armor choice */
+            (void) maybe_merge_scales(&pseudo, uarmc);
+            return ECMD_TIME;
+        } else if (!Blind) {
+            Your("%s looks a little hazy.", xname(obj));
+            if (potion->dknown)
+                makeknown(POT_PHASING);
+            potion->in_use = FALSE; /* didn't go poof */
+            return ECMD_TIME;
+        }
     }
 
     if (potion->otyp == POT_OIL) {
