@@ -9,7 +9,7 @@
 -- Converted to lua by hackemslashem
 --
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "hardfloor", "sokoban", "premapped", "solidify", "cold");
+des.level_flags("mazelevel", "noteleport", "sokoban", "premapped", "solidify", "cold");
 des.map([[
 -----------------
 |.......|...--..|
@@ -53,17 +53,17 @@ des.object("boulder",14,10)
 -- Traps
 -- prevent monster generation over the (filled) pits
 des.exclusion({ type = "monster-generation", region = { 06,07, 10,07 } });
-des.trap("pit",06,07)
-des.trap("pit",07,07)
-des.trap("pit",08,07)
-des.trap("pit",09,07)
-des.trap("pit",10,07)
+des.trap("hole",06,07)
+des.trap("hole",07,07)
+des.trap("hole",08,07)
+des.trap("hole",09,07)
+des.trap("hole",10,07)
 des.exclusion({ type = "monster-generation", region = { 06,09, 10,09 } });
-des.trap("pit",06,09)
-des.trap("pit",07,09)
-des.trap("pit",08,09)
-des.trap("pit",09,09)
-des.trap("pit",10,09)
+des.trap("hole",06,09)
+des.trap("hole",07,09)
+des.trap("hole",08,09)
+des.trap("hole",09,09)
+des.trap("hole",10,09)
 
 -- Random objects
 des.object({ class = "%" });

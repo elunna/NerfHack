@@ -5,7 +5,7 @@
 --
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "hardfloor", "sokoban", "premapped", "solidify", "cold");
+des.level_flags("mazelevel", "noteleport", "sokoban", "premapped", "solidify", "cold");
 des.map([[
    ---------   
  ---..F....--- 
@@ -51,21 +51,21 @@ des.object("boulder", 07,09)
 -- Traps
 
 des.exclusion({ type = "monster-generation", region = { 13,05, 13,06 } });
-des.trap("pit", 13,05)
-des.trap("pit", 13,06)
+des.trap("hole", 13,05)
+des.trap("hole", 13,06)
 des.exclusion({ type = "monster-generation", region = { 07,06, 07,07 } });
-des.trap("pit", 07,06)
-des.trap("pit", 07,07)
+des.trap("hole", 07,06)
+des.trap("hole", 07,07)
 des.exclusion({ type = "monster-generation", region = { 12,06, 12,07 } });
-des.trap("pit", 12,06)
-des.trap("pit", 12,07)
+des.trap("hole", 12,06)
+des.trap("hole", 12,07)
 des.exclusion({ type = "monster-generation", region = { 07,08, 12,08 } });
-des.trap("pit", 07,08)
-des.trap("pit", 08,08)
-des.trap("pit", 09,08)
-des.trap("pit", 10,08)
-des.trap("pit", 11,08)
-des.trap("pit", 12,08)
+des.trap("hole", 07,08)
+des.trap("hole", 08,08)
+des.trap("hole", 09,08)
+des.trap("hole", 10,08)
+des.trap("hole", 11,08)
+des.trap("hole", 12,08)
 
 -- Random objects
 des.object({ class = "%" });

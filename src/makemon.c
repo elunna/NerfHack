@@ -1832,7 +1832,7 @@ makemon(
     } else if (mndx == PM_PESTILENCE) {
         mitem = POT_SICKNESS;
     }
-    
+
     if (mitem != STRANGE_OBJECT && allow_minvent)
         (void) mongets(mtmp, mitem);
 

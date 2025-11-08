@@ -5,7 +5,7 @@
 --
 
 des.level_init({ style = "solidfill", fg = " " });
-des.level_flags("mazelevel", "noteleport", "hardfloor", "sokoban", "premapped", "solidify", "cold");
+des.level_flags("mazelevel", "noteleport", "sokoban", "premapped", "solidify", "cold");
 des.map([[
 ----   ----   ---- 
 |..-----..|----..| 
@@ -50,18 +50,18 @@ des.object("boulder",05,09)
 -- Traps
 -- prevent monster generation over the (filled) pits
 des.exclusion({ type = "monster-generation", region = { 15,02, 14,02 } });
-des.trap("pit",14,02)
-des.trap("pit",15,02)
+des.trap("hole",14,02)
+des.trap("hole",15,02)
 des.exclusion({ type = "monster-generation", region = { 16,03, 16,08 } });
-des.trap("pit",16,03)
-des.trap("pit",16,04)
-des.trap("pit",16,05)
-des.trap("pit",16,06)
-des.trap("pit",16,07)
-des.trap("pit",16,08)
+des.trap("hole",16,03)
+des.trap("hole",16,04)
+des.trap("hole",16,05)
+des.trap("hole",16,06)
+des.trap("hole",16,07)
+des.trap("hole",16,08)
 des.exclusion({ type = "monster-generation", region = { 14,10, 15,10 } });
-des.trap("pit",14,10)
-des.trap("pit",15,10)
+des.trap("hole",14,10)
+des.trap("hole",15,10)
 
 -- A little help
 des.object("earth",15,01)
