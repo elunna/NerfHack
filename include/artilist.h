@@ -138,7 +138,7 @@ static NEARDATA struct artifact artilist[] = {
     /* From SLASH'EM; changed to an AKLYS.
      * Lessened to-hit penalty so aklys will connect
      * Guarantee +3 so illiterate cavemen have a nice weapon */
-    A("Skullcrusher", AKLYS,
+    A("Skullcrusher", CLUB,
       (SPFX_RESTR), 0, 0,
       PHYS(3, 10), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
