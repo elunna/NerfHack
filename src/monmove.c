@@ -311,8 +311,9 @@ onscary(coordxy x, coordxy y, struct monst *mtmp)
     if (auditory_scare)
         return Aggravate_monster ? FALSE : TRUE;
 
-    /* Vampires are not afraid of altars to moloch altars */
+    /* Vampires are not afraid of altars to moloch or cracked altars */
     if (IS_ALTAR(levl[x][y].typ) && a_align(x, y) != A_NONE
+        && !levl[x][y].cracked
         && (mtmp->data->mlet == S_VAMPIRE || is_vampshifter(mtmp)))
         return TRUE;
 

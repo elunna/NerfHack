@@ -936,6 +936,7 @@ gcrownu(void)
         livelog_printf(LL_DIVINEGIFT,
                        "was crowned \"The Hand of Elbereth\" by %s",
                        u_gname());
+        crackaltar();
         break;
     case A_NEUTRAL:
         u.uevent.uhand_of_elbereth = 2;
@@ -961,6 +962,7 @@ gcrownu(void)
         verbalize("Thou shalt be my Envoy of Balance!");
         livelog_printf(LL_DIVINEGIFT, "became %s Envoy of Balance",
                        s_suffix(u_gname()));
+        crackaltar();
         break;
     case A_CHAOTIC:
         u.uevent.uhand_of_elbereth = 3;
@@ -990,6 +992,7 @@ gcrownu(void)
         verbalize("Thou art chosen to %s for My Glory!", what);
         livelog_printf(LL_DIVINEGIFT, "was chosen to %s for the Glory of %s",
                        what, u_gname());
+        crackaltar();
         break;
     }
 
@@ -1174,6 +1177,7 @@ gcrownu(void)
        up-to-29 you can get from gaining experience levels */
     add_weapon_skill(1);
 
+    crackaltar();
     return;
 }
 
@@ -1849,6 +1853,7 @@ offer_different_alignment_altar(
             u.lastprayed = svm.moves;
             u.lastprayresult = PRAY_CONV;
             u.reconciled = REC_NONE;
+            crackaltar();
         } else {
             u.ugangr += 3;
             adjalign(-5);
@@ -1895,6 +1900,10 @@ offer_different_alignment_altar(
                                              ? 12 : u.ulevel)) {
                 summon_minion(altaralign, TRUE);
                 summon_minion(altaralign, FALSE);
+            }
+            /* very small chance fracturing an altar after conversion */
+            if (!rn2(127)) {
+                crackaltar();
             }
 
             /* anger priest; test handles bones files */
@@ -2002,7 +2011,9 @@ sacrifice_your_race(
 staticfn int
 bestow_artifact(uchar max_giftvalue UNUSED)
 {
-
+    struct rm *lev = &levl[u.ux][u.uy];
+    int nchance = u.ulevel + 12;
+    int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
     boolean do_bestow = u.ulevel > 2 && u.uluck >= 0;
 
     /* Cartomancers get the luck of the draw here...
@@ -2055,10 +2066,6 @@ bestow_artifact(uchar max_giftvalue UNUSED)
         exercise(A_WIS, TRUE);
         return TRUE;
     }
-
-#if 0 /* No artifacts from #offer - NerfHack (TM) */
-    int nchance = u.ulevel + 12;
-    int arti_gift_odds = ((u.ualign.abuse == 0) ? 6 : 10) + (2 * u.ugifts);
     /* you were already in pretty good standing
     *
     * The player can gain an artifact;
@@ -2083,6 +2090,10 @@ bestow_artifact(uchar max_giftvalue UNUSED)
     else if (do_bestow && rn2(10) < (int) ((nchance * nchance) / 100)) {
         /* If we make it past the first gauntlet - one more for glory. */
         if (!rn2(arti_gift_odds)) {
+            if (lev->cracked) {
+                You_feel("a lack of something.");
+                return FALSE;
+            }
             struct obj *otmp;
             /* mk_artifact() with NULL obj and a_align() arg can return NULL */
             otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy),
@@ -2124,11 +2135,11 @@ bestow_artifact(uchar max_giftvalue UNUSED)
                     makeknown(otmp->otyp);
                     discover_artifact(otmp->oartifact);
                 }
+                crackaltar();
                 return TRUE;
             }
         }
     }
-#endif
     return FALSE;
 }
 
@@ -2144,6 +2155,29 @@ sacrifice_value(struct obj *otmp)
             value = eaten_stat(value, otmp);
     }
     return value;
+}
+
+/* Altars can crack from bestowing gifts or crowning.
+ * If an already cracked altar cracks again, it is destroyed forever.
+ * Altars only crack from gifting if you have received more than 2 gifts
+ * or if you are already crowned.
+ *
+ * Altars can also occasionally generate cracked, and they can crack from
+ * being converted from one alignment to another.
+ * */
+void
+crackaltar(void)
+{
+    struct rm *lev = &levl[u.ux][u.uy];
+
+    /* Safeguard mostly for #wizcrown*/
+    if (!IS_ALTAR(lev->typ) || lev->cracked)
+        return;
+    if (!Blind)
+        pline("A bolt of lightning from above strikes the altar, nearly splitting it in two!");
+    else
+        You("feel a surge of energy as the altar you're standing on shudders violently!");
+    lev->cracked = 1;
 }
 
 /* the #offer command - sacrifice something to the gods */
