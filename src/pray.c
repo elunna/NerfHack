@@ -1041,7 +1041,8 @@ gcrownu(void)
     if (Role_if(PM_CLERIC)) {
         obj = mksobj(WAR_HAMMER, FALSE, FALSE);
         obj = oname(obj, artiname(PRIEST_GIFT), ONAME_GIFT | ONAME_KNOW_ARTI);
-        obj->spe = 1;
+        obj->spe = 0;
+        obj->bquality = FQ_LEGENDARY;
         at_your_feet("A hammer");
         dropy(obj);
         u.ugifts++;
@@ -1053,7 +1054,8 @@ gcrownu(void)
     } else if (Role_if(PM_CAVE_DWELLER)) {
         obj = mksobj(SPEAR, FALSE, FALSE);
         obj = oname(obj, artiname(CAVEMAN_GIFT), ONAME_GIFT | ONAME_KNOW_ARTI);
-        obj->spe = 1;
+        obj->spe = 0;
+        obj->bquality = FQ_LEGENDARY;
         at_your_feet("A spear");
         dropy(obj);
         u.ugifts++;
@@ -1065,7 +1067,8 @@ gcrownu(void)
     } else if (Role_if(PM_MONK)) {
         obj = mksobj(GAUNTLETS_OF_FORCE, FALSE, FALSE);
         obj = oname(obj, artiname(MONK_GIFT), ONAME_GIFT | ONAME_KNOW_ARTI);
-        obj->spe = 1;
+        obj->spe = 0;
+        obj->bquality = FQ_LEGENDARY;
         at_your_feet("A pair of gloves");
         dropy(obj);
         u.ugifts++;
@@ -1087,6 +1090,7 @@ gcrownu(void)
                     Your("sword shines brightly for a moment.");
                 obj = oname(obj, artiname(ART_EXCALIBUR),
                             ONAME_GIFT | ONAME_KNOW_ARTI);
+                obj->bquality = FQ_LEGENDARY;
                 if (is_art(obj, ART_EXCALIBUR)) {
                     u.ugifts++;
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
@@ -1109,7 +1113,8 @@ gcrownu(void)
                 obj = mksobj(LONG_SWORD, FALSE, FALSE);
                 obj = oname(obj, artiname(ART_VORPAL_BLADE),
                             ONAME_GIFT | ONAME_KNOW_ARTI);
-                obj->spe = 1;
+                obj->spe = 0;
+                obj->bquality = FQ_LEGENDARY;
                 at_your_feet("A sword");
                 dropy(obj);
                 u.ugifts++;
@@ -1135,7 +1140,8 @@ gcrownu(void)
                 obj = mksobj(RUNESWORD, FALSE, FALSE);
                 obj = oname(obj, artiname(ART_STORMBRINGER),
                             ONAME_GIFT | ONAME_KNOW_ARTI);
-                obj->spe = 1;
+                obj->spe = 0;
+                obj->bquality = FQ_LEGENDARY;
                 at_your_feet(An(swordbuf));
                 dropy(obj);
                 u.ugifts++;
