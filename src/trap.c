@@ -1504,6 +1504,9 @@ trapeffect_rocktrap(
                     if (dmg > 6)
                         make_stunned((HStun & TIMEOUT) + (long) d(dmg / 6 + 1, 3), TRUE);
                 }
+
+                if (!trap->ammo)
+                    break;
             }
         }
     } else {
@@ -1521,7 +1524,6 @@ trapeffect_rocktrap(
             return Trap_Is_Gone;
         }
         drop_boulder = trap->ammo->otyp == BOULDER;
-        dropqty = max(1, level_difficulty() / (drop_boulder ? 8 : 4));
         trap->once = 1;
         otmp = trap->ammo;
         if (trap->ammo->quan > 1) {
