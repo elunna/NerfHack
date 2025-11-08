@@ -690,7 +690,8 @@ dosinkring(struct obj *obj)
         ideed = FALSE;
         break;
     }
-    if (!Blind && !ideed) {
+    /* =oHunger handled above */
+    if (!Blind && !ideed && obj->otyp != RIN_HUNGER) {
         ideed = TRUE;
         switch (obj->otyp) { /* effects that need eyes */
         case RIN_ADORNMENT:
