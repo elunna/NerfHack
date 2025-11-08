@@ -1507,8 +1507,6 @@ trapeffect_rocktrap(
             }
         }
     } else {
-        drop_boulder = trap->ammo->otyp == BOULDER;
-        dropqty = max(1, level_difficulty() / (drop_boulder ? 8 : 4));
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
         boolean see_it = cansee(mtmp->mx, mtmp->my);
         boolean trapkilled = FALSE;
@@ -1522,6 +1520,8 @@ trapeffect_rocktrap(
             newsym(mtmp->mx, mtmp->my);
             return Trap_Is_Gone;
         }
+        drop_boulder = trap->ammo->otyp == BOULDER;
+        dropqty = max(1, level_difficulty() / (drop_boulder ? 8 : 4));
         trap->once = 1;
         otmp = trap->ammo;
         if (trap->ammo->quan > 1) {
@@ -3251,9 +3251,6 @@ trapeffect_spear_trap(
             return Trap_Is_Gone;
         }
         otmp = trap->ammo;
-        if (trap->ammo->quan > 1) {
-            otmp = splitobj(trap->ammo, 1);
-        }
 
         feeltrap(trap);
 
@@ -3274,8 +3271,7 @@ trapeffect_spear_trap(
             deltrap_with_ammo(trap, DELTRAP_DESTROY_AMMO);
         } else if (unsolid(gy.youmonst.data)) {
             pline("But it passes right through you!");
-        // } else if (rnl(15)==0) {
-        } else if (rn2(2)) {
+        } else if (!rn2(20)) {
             pline("But it falls by the wayside!");
             deltrap_with_ammo(trap, DELTRAP_PLACE_AMMO);
         } else {
@@ -3296,7 +3292,13 @@ trapeffect_spear_trap(
         boolean trapkilled = FALSE;
         boolean in_sight = canseemon(mtmp) || (mtmp == u.usteed);
 
-        if (in_sight) {
+        if (!trap->ammo) {
+            Soundeffect(se_loud_click, 100);
+            You_hear("a loud click!");
+            deltrap(trap);
+            newsym(u.ux, u.uy);
+            return Trap_Is_Gone;
+        } else if (in_sight) {
             seetrap(trap);
             pline("A spear stabs up from a hole in the ground!");
         }
@@ -3312,12 +3314,14 @@ trapeffect_spear_trap(
             if (in_sight)
                 pline("But it breaks off against %s.",
                       mon_nam(mtmp));
-            deltrap(trap);
-            newsym(mtmp->mx, mtmp->my);
+            deltrap_with_ammo(trap, DELTRAP_DESTROY_AMMO);
         } else if (unsolid(mtmp->data)) {
             if (in_sight)
                 pline("It passes right through %s!",
                       mon_nam(mtmp));
+        } else if (!rn2(20)) {
+            pline("But it falls by the wayside!");
+            deltrap_with_ammo(trap, DELTRAP_PLACE_AMMO);
         } else {
             if ((DEADMONSTER(mtmp)
                  || thitm(0, mtmp, (struct obj *) 0,
