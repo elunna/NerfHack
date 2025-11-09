@@ -5335,6 +5335,14 @@ mhitm_ad_phys(
                     mhm->hitflags |= M_ATTK_HIT;
                 }
 
+                if (mhm->damage && Hate_material(wepmaterial)) {
+                    /* dmgval() already added extra damage */
+                    if ((artimsg & ARTIFACTHIT_INSTAKILLMSG) == 0) {
+                        searmsg(magr, &gy.youmonst, otmp, TRUE);
+                    }
+                    exercise(A_CON, FALSE);
+                }
+
                 /* glass breakage from the attack */
                 crack_glass_obj(some_armor(mdef));
                 if (crack_glass_obj(MON_WEP(magr))) {
@@ -5343,13 +5351,7 @@ mhitm_ad_phys(
 
                 if (!mhm->damage)
                     return;
-                if (Hate_material(wepmaterial)) {
-                    /* dmgval() already added extra damage */
-                    if ((artimsg & ARTIFACTHIT_INSTAKILLMSG) == 0) {
-                        searmsg(magr, &gy.youmonst, otmp, TRUE);
-                    }
-                    exercise(A_CON, FALSE);
-                }
+                
                 /* this redundancy necessary because you have
                    to take the damage _before_ being cloned;
                    need to have at least 2 hp left to split */
