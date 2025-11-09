@@ -1153,6 +1153,12 @@ getlev(NHFILE *nhfp, int pid, xint8 lev)
             }
             trap->ntrap = gf.ftrap;
             gf.ftrap = trap;
+            /* trap->ammo will either be NULL or a stale pointer from the previous
+             * game. We don't read the stale pointer, other than to see whether an
+             * object chain follows this trap. */
+            if (trap->ammo) {
+                trap->ammo = restobjchn(nhfp, FALSE);
+            }
         } else
             break;
     }
