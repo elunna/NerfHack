@@ -1,4 +1,4 @@
-/* NetHack 3.7	invent.c	$NHDT-Date: 1737384766 2025/01/20 06:52:46 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.531 $ */
+/* NetHack 3.7	invent.c	$NHDT-Date: 1762680996 2025/11/09 01:36:36 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.543 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -2473,8 +2473,11 @@ askchain(
                              ininv ? safeq_xprname : doname,
                              ininv ? safeq_shortxprname : ansimpleoname,
                              "item");
-            sym = (takeoff || ident || otmp->quan < 2L) ? nyaq(qbuf)
-                                                        : nyNaq(qbuf);
+            /* nyaq(qbuf) or nyNaq(qbuf), bypassing canned input for ^A */
+            sym = yn_function(qbuf,
+                              (takeoff || ident || otmp->quan < 2L)
+                                ? ynaqchars : ynNaqchars,
+                              'n', FALSE);
         } else
             sym = 'y';
 
@@ -4105,6 +4108,13 @@ display_inventory(const char *lets, boolean want_reply)
     }
     return display_pickinv(lets, (char *) 0, (char *) 0,
                            FALSE, want_reply, (long *) 0);
+}
+
+void
+repopulate_perminvent(void)
+{
+        (void) display_pickinv(NULL, (char *) 0, (char *) 0,
+                               FALSE, FALSE, (long *) 0);
 }
 
 /*

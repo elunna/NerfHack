@@ -1,4 +1,4 @@
-NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1535 $ $NHDT-Date: 1740629713 2025/02/26 20:15:13 $
+NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.1573 $ $NHDT-Date: 1762680996 2025/11/09 01:36:36 $
 
 General Fixes and Modified Features
 -----------------------------------
@@ -1528,6 +1528,8 @@ a gas spore that was killed when an engulfer swallowed it produced an explosion
 hallucination can display objects on the map that have a description (for
 	shuffling into play at game start) but no name; examining those might
 	trigger a crash
+some food and paper items do no damage when bashing
+improved messages for oilskin sacks protecting from water damage
 
 
 Fixes to 3.7.0-x General Problems Exposed Via git Repository
@@ -2135,6 +2137,9 @@ timer sanity check for melting ice gave false complaint about non-ice for
 mhitm_ad_phys() was not applying Half_physical_damage when hero was target
 throwing crystal plate mail or helm of brilliance up against the ceiling could
 	result in the item being cracked and then vanishing
+yn_function (used all over the place) sometimes triggered an impossible()
+	during do-again (^A) processing [ongoing revisions; more are probably
+	needed; listed here in case ^A behavior changes]
 
 
 Fixes to 3.7.0-x Platform and/or Interface Problems Exposed Via git Repository
@@ -2823,6 +2828,8 @@ archeologists' fedora is lucky
 telepathic hero can discern which particular monster just read a scroll
 add "make fetch-docs" to download pre-formatted documentation
 monsters will use throw-and-return weapons such as an aklys
+uncursed genocide while hallucinating deliberately mis-reports hero's role as
+	target but was also inappropriately showing it to livelog/#chronicle
 
 
 Platform- and/or Interface-Specific New Features
