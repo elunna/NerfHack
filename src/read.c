@@ -34,6 +34,7 @@ staticfn void seffect_taming(struct obj **);
 staticfn void seffect_genocide(struct obj **);
 staticfn void seffect_light(struct obj **);
 staticfn void seffect_cloning(struct obj **);
+staticfn void seffect_transmogrify(struct obj **);
 staticfn void seffect_charging(struct obj **);
 staticfn void seffect_amnesia(struct obj **);
 staticfn void seffect_fire(struct obj **);
@@ -56,6 +57,8 @@ staticfn boolean create_particular_parse(char *,
                                        struct _create_particular_data *);
 staticfn boolean create_particular_creation(struct _create_particular_data *);
 staticfn void specified_id(void);
+staticfn boolean warp_material(struct obj *, boolean);
+
 
 staticfn boolean
 learnscrolltyp(short scrolltyp)
@@ -2316,6 +2319,58 @@ seffect_cloning(struct obj **sobjp)
 }
 
 staticfn void
+seffect_transmogrify(struct obj **sobjp)
+{
+    struct obj *sobj = *sobjp;
+    struct obj *otmp;
+    int otyp = sobj->otyp;
+    boolean sblessed = sobj->blessed;
+    boolean scursed = sobj->cursed;
+    boolean confused = (Confusion != 0);
+    boolean already_known = objects[otyp].oc_name_known;
+
+    if (!already_known) {
+        You("have found a scroll of transmogrify!");
+        if (uwep && rn2(2))
+            otmp = uwep;
+        else
+            otmp = some_armor(&gy.youmonst);
+        learnscroll(sobj);
+    } else {
+        otmp = getobj("transmogrify", any_obj_ok, GETOBJ_PROMPT);
+    }
+
+    if (!otmp) {
+        strange_feeling(sobj, "Your skin crawls for a moment.");
+        sobj = 0; /* useup() in strange_feeling() */
+        exercise(A_CON, !scursed);
+        exercise(A_STR, !scursed);
+        return;
+    } else if (otmp->oartifact) {
+        Your("%s resists the transformation!", xname(otmp));
+        return;
+    }
+
+    if (confused || scursed) {
+        pline("%s with a sickly green light!", Yobjnam2(otmp, "glow"));
+        curse(otmp);
+        otmp->oerodeproof = 0;
+        if (valid_obj_material(otmp, PLASTIC)) {
+            set_material(otmp, PLASTIC);
+            costly_alteration(otmp, COST_DRAIN);
+        } else
+            warp_material(otmp, TRUE);
+        return;
+    } else {
+        if (sblessed)
+            bless(otmp);
+        pline("%s with a strange yellow light!", Yobjnam2(otmp, "glow"));
+        warp_material(otmp, TRUE);
+    }
+    update_inventory();
+}
+
+staticfn void
 seffect_charging(struct obj **sobjp)
 {
     struct obj *sobj = *sobjp;
@@ -2955,6 +3010,9 @@ seffects(
         break;
     case SCR_CLONING:
         seffect_cloning(&sobj);
+        break;
+    case SCR_TRANSMOGRIFY:
+        seffect_transmogrify(&sobj);
         break;
     case SCR_CHARGING:
         seffect_charging(&sobj);
@@ -4323,5 +4381,42 @@ maybe_merge_scales(struct obj *sobj, struct obj *otmp)
     return TRUE;
 }
 
+/* Based on init_obj_material by aosdict. */
+staticfn boolean
+warp_material(struct obj* obj, boolean by_you)
+{
+    int origmat, newmat, j = 0;
+
+    /* Artifacts can not be transmogrified. */
+    if (obj->oartifact)
+        return FALSE;
+
+    origmat = obj->material;
+
+    while (j < 200) {
+        newmat = 1 + rn2(NUM_MATERIAL_TYPES);
+        if (newmat != origmat && valid_obj_material(obj, newmat))
+            break;
+        j++;
+    }
+
+    /* Does the hero hate the material? */
+    /* Also we need to check if valid again if the above loop went through
+     * all tries. */
+    if (valid_obj_material(obj, newmat))
+        obj->material = newmat;
+    else
+        /* can use a 0 in the list to default to the base material */
+            obj->material = objects[obj->otyp].oc_material;
+
+    obj->owt = weight(obj);
+    if (origmat != obj->material) {
+        /* Charge for the cost of the object */
+        if (by_you)
+            costly_alteration(obj, COST_DEGRD);
+        return TRUE;
+    }
+    return FALSE;
+}
 
 /*read.c*/

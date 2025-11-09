@@ -46,6 +46,7 @@ ink_cost(short otyp)
     case SCR_CHARGING:
     case SCR_ENCHANT_ARMOR:
     case SCR_ENCHANT_WEAPON:
+    case SCR_TRANSMOGRIFY:
         return 16;
     case SCR_SCARE_MONSTER:
     case SCR_STINKING_CLOUD:

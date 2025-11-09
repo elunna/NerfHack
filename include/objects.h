@@ -1381,6 +1381,8 @@ SCROLL("punishment",            "VE FORBRYDERNE",  1,  15, 200,
                                                         SCR_PUNISHMENT),
 SCROLL("cloning",               "TOYL ENT RUBLE",  1,  15, 200,
                                                         SCR_CLONING),
+SCROLL("transmogrify",              "TLON UQBAR",  1,  15, 200,
+                                                        SCR_TRANSMOGRIFY),
             /* Fire burn and cauldron bubble. */
 SCROLL("charging",                "EHCUM MEKCHA",  1,  15, 200,
                                                         SCR_CHARGING),
@@ -1423,17 +1425,17 @@ XTRA_SCROLL_LABEL("STRC PRST SKRZ KRK",  SC20), /* Czech and Slovak
 XTRA_SCROLL_LABEL("4OFAE OF9 SCC9",      SC21), /* Voynich */
 XTRA_SCROLL_LABEL("TEMP USF UGIT",       SC22), /* tempus fugit */
 XTRA_SCROLL_LABEL("TRATS ARL",           SC23), /* LRA START */
-XTRA_SCROLL_LABEL("TLON UQBAR",          SC24), /* SpliceHack */
-XTRA_SCROLL_LABEL("HZLRC KSTSBD MPFNG",  SC25),
-XTRA_SCROLL_LABEL("OOBID IBBOB",         SC26), /* Cinderella */
-XTRA_SCROLL_LABEL("NYEHEHE",             SC27), /* laughing noise */
-XTRA_SCROLL_LABEL("ELPHE MONATER",       SC28), /* famous mistranslation */
-XTRA_SCROLL_LABEL("ABAJ",                SC29), /* famous mistranslation */
-XTRA_SCROLL_LABEL("CONG LAT URAT ION",   SC30), /* famous mistranslation */
-XTRA_SCROLL_LABEL("DESUM TETRAL",        SC31), /* dal aos */
-XTRA_SCROLL_LABEL("NHINRL",              SC32), /* meta */
-XTRA_SCROLL_LABEL("ISAY INAY",           SC33), /* meta */
-XTRA_SCROLL_LABEL("PEBCAK RTFM",         SC34), /* Slang */
+
+XTRA_SCROLL_LABEL("HZLRC KSTSBD MPFNG",  SC24),
+XTRA_SCROLL_LABEL("OOBID IBBOB",         SC25), /* Cinderella */
+XTRA_SCROLL_LABEL("NYEHEHE",             SC26), /* laughing noise */
+XTRA_SCROLL_LABEL("ELPHE MONATER",       SC27), /* famous mistranslation */
+XTRA_SCROLL_LABEL("ABAJ",                SC28), /* famous mistranslation */
+XTRA_SCROLL_LABEL("CONG LAT URAT ION",   SC29), /* famous mistranslation */
+XTRA_SCROLL_LABEL("DESUM TETRAL",        SC30), /* dal aos */
+XTRA_SCROLL_LABEL("NHINRL",              SC31), /* meta */
+XTRA_SCROLL_LABEL("ISAY INAY",           SC32), /* meta */
+XTRA_SCROLL_LABEL("PEBCAK RTFM",         SC33), /* Slang */
 
 #undef XTRA_SCROLL_LABEL
     /* These must come last because they have special fixed descriptions.
