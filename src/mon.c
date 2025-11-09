@@ -5117,6 +5117,7 @@ m_respond_illusion(struct monst *mtmp)
 staticfn void
 m_respond_fellbeast(struct monst *mtmp)
 {
+    const char *verb = mtmp->data == &mons[PM_FELL_BEAST] ? "shriek" : "scream";
     /* mspec_used also controls whether a Nazgul's breath weapon is ready
      * for use. This gets executed in dochug before it attempts to use its
      * attacks, so if it tried to shriek 100% of the time, it would never
@@ -5146,17 +5147,17 @@ m_respond_fellbeast(struct monst *mtmp)
     if (!Deaf) {
         if (distu(mtmp->mx, mtmp->my) > 100) {
             if (cansee)
-                pline("%s emits a fell cry.", Monnam(mtmp));
+                pline("%s %ss.", Monnam(mtmp), verb);
             else
-                pline("A distant fell cry pierces the air.");
+                pline("A distant %s pierces the air.", verb);
         } else {
             if (Underwater) {
-                You_hear("a muffled shriek.");
+                You_hear("a muffled %s.", verb);
                 return;
             } else if (cansee) {
-                pline("%s shrieks!", Monnam(mtmp));
+                pline("%s %ss!", Monnam(mtmp), verb);
             } else {
-                pline("A fell shriek reverberates nearby!");
+                pline("A terrifying %s reverberates nearby!", verb);
             }
             if (u.usleep)
                 unmul("You are shocked awake!");
@@ -5335,7 +5336,8 @@ m_respond(struct monst *mtmp)
         m_respond_shrieker(mtmp);
     if (mtmp->data->msound == MS_ATHOL)
         m_respond_athol(mtmp);
-    if (mtmp->data == &mons[PM_FELL_BEAST])
+    if (mtmp->data == &mons[PM_FELL_BEAST]
+            || mtmp->data == &mons[PM_MONSTROUS_SPIDER])
         m_respond_fellbeast(mtmp);
     if (mtmp->data == &mons[PM_BLACK_DRAGON] || mtmp->data == &mons[PM_T_REX])
         m_respond_dragon(mtmp);
