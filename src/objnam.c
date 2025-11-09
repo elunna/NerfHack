@@ -1101,20 +1101,21 @@ xname_flags(
 	        Sprintf(eos(buf), "%s %s", dn, carto ? "rulebook": "spellbook");
         break;
     case RING_CLASS:
-        if (known) {
+        if (dknown) {
             Concat(buf, 0, materialnm[obj->material]);
             Concat(buf, 0, " ");
-            }
+        }
         if (!dknown) {
-            Strcpy(buf, "ring");
+            Concat(buf, 0, "ring");
         } else if (nn) {
-            Sprintf(buf, "ring of %s", actualn);
+            Concat(buf, 0, "ring of ");
+            Concat(buf, 0, actualn);
             if (dknown)
                 propnames(buf, obj->oprops, FALSE, FALSE);
         } else if (un) {
             xcalled(buf, BUFSZ - PREFIX, "ring", un);
         } else {
-            Sprintf(buf, "%s ring", dn);
+            Sprintf(buf, "%s %s ring", materialnm[obj->material], dn);
         }
         break;
     case GEM_CLASS: {
