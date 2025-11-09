@@ -6960,9 +6960,7 @@ destroyable(struct obj *obj, int adtyp)
             || obj->otyp == POT_REFLECTION) {
             return FALSE;
         }
-        if (obj->oclass == POTION_CLASS
-            || obj->oclass == SCROLL_CLASS
-            || obj->oclass == SPBOOK_CLASS) {
+        if (is_flammable(obj)) {
             return TRUE;
         }
     } else if (adtyp == AD_COLD) {

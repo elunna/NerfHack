@@ -2618,7 +2618,7 @@ is_flammable(struct obj *otmp)
     else if (otmp->oprops && otmp->oprops & ITEM_FIRE)
         return FALSE;
 
-    return (boolean) ((omat <= WOOD && omat != LIQUID) || omat == PLASTIC);
+    return (boolean) ((omat <= BONE && omat != LIQUID) || omat == PLASTIC);
 }
 
 boolean
