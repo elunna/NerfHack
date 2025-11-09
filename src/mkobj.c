@@ -4383,6 +4383,25 @@ static const struct icp shiny_materials[] = {
     { 30, GLASS},
 };
 
+/* Rings */
+static const struct icp ring_materials[] = {
+    { 700, 0}, /* use base material */
+    { 40, GEMSTONE},
+    { 20, BONE},
+    { 20, DRAGON_HIDE},
+    { 20, COPPER},
+    { 20, GLASS},
+    { 20, GOLD},
+    { 20, IRON},
+    { 20, METAL},
+    { 20, MINERAL},
+    { 20, MITHRIL},
+    { 20, PLASTIC},
+    { 20, PLATINUM},
+    { 20, SILVER},
+    { 20, WOOD}
+};
+
 /* for bells and other tools, especially instruments, which are normally copper
  * or metal.  Wood and glass in other lists precludes us from using those. */
 static const struct icp resonant_materials[] = {
@@ -4551,7 +4570,9 @@ material_list(struct obj* obj)
     
     /* Otherwise, select an appropriate list, or return NULL if no appropriate
      * list exists. */
-    if (is_grung_obj(obj->otyp)) {
+    if (obj->oclass == RING_CLASS)
+        return ring_materials;
+    else if (is_grung_obj(obj->otyp)) {
         return NULL; /* ALl grung items are as is */
     } else if (is_elven_obj(obj->otyp) && default_material != CLOTH) {
         return elven_materials;

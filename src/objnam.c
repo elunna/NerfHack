@@ -1101,6 +1101,10 @@ xname_flags(
 	        Sprintf(eos(buf), "%s %s", dn, carto ? "rulebook": "spellbook");
         break;
     case RING_CLASS:
+        if (known) {
+            Concat(buf, 0, materialnm[obj->material]);
+            Concat(buf, 0, " ");
+            }
         if (!dknown) {
             Strcpy(buf, "ring");
         } else if (nn) {
