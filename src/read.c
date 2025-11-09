@@ -2329,7 +2329,7 @@ seffect_transmogrify(struct obj **sobjp)
     boolean confused = (Confusion != 0);
     boolean already_known = objects[otyp].oc_name_known;
 
-    if (!already_known) {
+    if (!already_known || confused) {
         You("have found a scroll of transmogrify!");
         if (uwep && rn2(2))
             otmp = uwep;
@@ -2341,8 +2341,7 @@ seffect_transmogrify(struct obj **sobjp)
     }
 
     if (!otmp) {
-        strange_feeling(sobj, "Your skin crawls for a moment.");
-        sobj = 0; /* useup() in strange_feeling() */
+        pline("Your skin crawls for a moment.");
         exercise(A_CON, !scursed);
         exercise(A_STR, !scursed);
         return;
