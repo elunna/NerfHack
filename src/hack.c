@@ -2434,10 +2434,11 @@ slippery_ice_fumbling(void)
 {
     boolean on_ice = !Levitation && is_ice(u.ux, u.uy);
     struct monst *iceskater = u.usteed ? u.usteed : &gy.youmonst;
+    boolean uskating = !u.usteed;
 
     if (on_ice) {
         if ((uarmf && objdescr_is(uarmf, "snow boots"))
-            || resists_cold(iceskater)
+            || (uskating ? fully_resistant(COLD_RES) : resists_cold(iceskater))
             || Flying
             || mon_prop(iceskater, LEVITATION)
             || is_clinger(iceskater->data)
@@ -2446,8 +2447,8 @@ slippery_ice_fumbling(void)
             || (uarm && Is_dragon_scaled_armor(uarm)
                     && Dragon_armor_to_scales(uarm) == WHITE_DRAGON_SCALES)) {
             on_ice = FALSE;
-        } else if (!rn2((u.usteed ? resists_cold(iceskater)
-                                  : fully_resistant(COLD_RES))
+        } else if (!rn2((uskating ? fully_resistant(COLD_RES)
+                                  : resists_cold(iceskater))
                             ? 3 : 2)) {
             HFumbling |= FROMOUTSIDE;
             HFumbling &= ~TIMEOUT;
