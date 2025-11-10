@@ -1455,7 +1455,7 @@ trapeffect_rocktrap(
                 the(ceiling(u.ux, u.uy)),
                 dropqty > 1 ? "some" : "a",
                 drop_boulder ? "boulder" : "rock",
-                dropqty > 1 ? "" : "s",
+                dropqty > 1 ? "s" : "",
                 body_part(HEAD));
 
             for (int i = 0; i < dropqty; i++) {
