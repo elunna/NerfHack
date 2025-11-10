@@ -106,7 +106,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_SEARCH | SPFX_STLTH), 0, 0,
       PHYS(3, 8), NO_DFNS, NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
-      0, 1, 400L, NO_COLOR, DEFAULT_MAT, CARNWENNAN),
+      0, 1, 400L, NO_COLOR, COLDSTEEL, CARNWENNAN),
 
     A("Demonbane", MACE,
       (SPFX_RESTR | SPFX_DFLAGH | SPFX_WARN), 0, MH_DEMON,
@@ -156,7 +156,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_DEFN | SPFX_PROTECT | SPFX_INTEL), 0, 0,
       NO_ATTK, DFNS(AD_FIRE), NO_CARY, 0,
       A_LAWFUL, NON_PM, NON_PM,
-      0, 1, 3400L, NO_COLOR, DEFAULT_MAT, OATHFIRE),
+      0, 1, 3400L, NO_COLOR, DRAGON_HIDE, OATHFIRE),
 
     /* From SLASH'EM; +9 to-hit bonus */
     A("Quick Blade", SHORT_SWORD,
@@ -190,7 +190,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_DFLAGH), 0, MH_UNDEAD,
       PHYS(5, 0), DFNS(AD_BLND), NO_CARY, BLINDING_RAY,
       A_LAWFUL, NON_PM, NON_PM,
-      0, 1, 1500L, NO_COLOR, GOLD, SUNSWORD),
+      0, 1, 1500L, NO_COLOR, GEMSTONE, SUNSWORD),
 
 
     /*** Neutral artifacts ***/
@@ -221,7 +221,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_WARN | SPFX_DFLAGH), 0, MH_UNDEAD,
       PHYS(5, 30), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_UNDEAD_SLAYER, NON_PM,
-      0, 1, 500L, CLR_RED, DEFAULT_MAT, DISRUPTER),
+      0, 1, 500L, CLR_RED, COLDSTEEL, DISRUPTER),
 
     /* When wielded:
      * - grants warning vs giants and instakills giants
@@ -254,7 +254,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
       NO_ATTK, NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
-      0, 1, 5000L, NO_COLOR, DEFAULT_MAT, MIRRORBRIGHT),
+      0, 1, 5000L, NO_COLOR, GEMSTONE, MIRRORBRIGHT),
 
     A("Thunderfists", GAUNTLETS_OF_FORCE,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_PROTECT), 0, 0,
@@ -290,7 +290,7 @@ static NEARDATA struct artifact artilist[] = {
       SPFX_RESTR, 0, 0,
       PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
-      0, 1, 600L, NO_COLOR, DEFAULT_MAT, MOUSER_S_SCALPEL),
+      0, 1, 600L, NO_COLOR, METAL, MOUSER_S_SCALPEL),
 
     /* From SlashTHEM with changes:  In SlashTHEM this is a neutral robe that
      * confers hallucination resistance and acid resistance when worn. It
@@ -300,7 +300,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_HALRES), 0, 0,
       NO_ATTK, DFNS(AD_ACID), NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
-      0, 1, 1700L, NO_COLOR, DEFAULT_MAT, SNAKESKIN),
+      0, 1, 1700L, NO_COLOR, DRAGON_HIDE, SNAKESKIN),
 
     /* From SpliceHack */
     A("The End", SCYTHE,
@@ -324,7 +324,7 @@ static NEARDATA struct artifact artilist[] = {
       0, MH_JABBERWOCK,
       PHYS(5, 1), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, NON_PM, NON_PM,
-      0, 1, 4000L, CLR_RED, DEFAULT_MAT, VORPAL_BLADE),
+      0, 1, 4000L, CLR_RED, METAL, VORPAL_BLADE),
 
     /* From SLASH'EM */
     A("Whisperfeet", SPEED_BOOTS,
@@ -359,7 +359,7 @@ static NEARDATA struct artifact artilist[] = {
        | SPFX_WARN | SPFX_DFLAGH | SPFX_INTEL), 0, MH_ANGEL,
       FIRE(5, 10), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
-      0, 1, 5000L, CLR_RED, DEFAULT_MAT, ANGELSLAYER),
+      0, 1, 5000L, CLR_RED, COLDSTEEL, ANGELSLAYER),
 
     /* From SlashTHEM with changes:
      * In THEM, this was a neutral cloak of protection that granted luck,
@@ -377,7 +377,7 @@ static NEARDATA struct artifact artilist[] = {
       SPFX_RESTR, 0, 0,
       PHYS(0, 10), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
-      0, 1, 1000L, NO_COLOR, DEFAULT_MAT, DOOMBLADE),
+      0, 1, 1000L, NO_COLOR, METAL, DOOMBLADE),
 
     /*
      *      Grimtooth glows in warning when elves are present, but its
@@ -388,7 +388,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_ATTK | SPFX_WARN | SPFX_DFLAGH), 0, MH_ELF,
       DISE(2, 6), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ORC,
-      0, 1, 1500L, CLR_RED, DEFAULT_MAT, GRIMTOOTH),
+      0, 1, 1500L, CLR_RED, COLDSTEEL, GRIMTOOTH),
 
     /* From SLASH'EM */
     A("Hellfire", CROSSBOW,
@@ -432,7 +432,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_WARN | SPFX_DFLAGH), 0, MH_ORC,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ELF,
-      0, 1, 800L, CLR_BRIGHT_BLUE, DEFAULT_MAT, STING),
+      0, 1, 800L, CLR_BRIGHT_BLUE, MITHRIL, STING),
 
     /* Stormbringer only has a 2 because it can drain a level,
      * providing 8 more. */
@@ -440,14 +440,14 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL| SPFX_DRLI), 0, 0,
       DRLI(5, 2), DFNS(AD_DRLI), NO_CARY, 0,
       A_CHAOTIC, NON_PM, NON_PM,
-      0, 1, 8000L, NO_COLOR, DEFAULT_MAT, STORMBRINGER),
+      0, 1, 8000L, NO_COLOR, METAL, STORMBRINGER),
 
     /* Same alignment as elves. */
     A("Orcrist", ELVEN_BROADSWORD,
       (SPFX_WARN | SPFX_DFLAGH), 0, MH_ORC,
       PHYS(5, 0), NO_DFNS, NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ELF,
-      0, 1, 2000L, CLR_BRIGHT_BLUE, DEFAULT_MAT, ORCRIST),
+      0, 1, 2000L, CLR_BRIGHT_BLUE, MITHRIL, ORCRIST),
 
     /* Glamdring, from the LotR series by J.R.R Tolkien. This was the
      * sword that was found along side Orcrist and Sting in a troll cave,
@@ -458,7 +458,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_WARN | SPFX_PROTECT | SPFX_DFLAGH), 0, MH_ORC,
       PHYS(8, 10), DFNS(AD_ELEC), NO_CARY, 0,
       A_CHAOTIC, NON_PM, PM_ELF,
-      0, 1, 8000L, CLR_BRIGHT_BLUE, DEFAULT_MAT, GLAMDRING),
+      0, 1, 8000L, CLR_BRIGHT_BLUE, MITHRIL, GLAMDRING),
 
     /*** Unaligned artifacts ***/
 
@@ -474,7 +474,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
       SLEE(5, 5), DFNS(AD_SLEE), NO_CARY, 0,
       A_NONE, PM_HEALER, NON_PM,
-      0, 1, 500L, CLR_MAGENTA, DEFAULT_MAT, DROWSING_ROD),
+      0, 1, 500L, CLR_MAGENTA, GEMSTONE, DROWSING_ROD),
 
     /* Now can instakill flammable monsters and green slime */
     A("Fire Brand", SHORT_SWORD,
@@ -568,7 +568,7 @@ static NEARDATA struct artifact artilist[] = {
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_STABLE), 0, 0,
       PHYS(5, 0), DFNS(AD_MAGM), NO_CARY, CONFLICT,
       A_LAWFUL, PM_CAVE_DWELLER, NON_PM,
-      0, QAVAL, 2500L, NO_COLOR, DEFAULT_MAT, SCEPTRE_OF_MIGHT),
+      0, QAVAL, 2500L, NO_COLOR, GEMSTONE, SCEPTRE_OF_MIGHT),
 
 #if 0 /* OBSOLETE -- from 3.1.0 to 3.2.x, this was quest artifact for the
          * Elf role; in 3.3.0 elf became a race available to several roles
@@ -607,7 +607,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       0, MH_UNDEAD,
       NO_ATTK, NO_DFNS, CARY(AD_FIRE), ENERGY_BOOST,
       A_LAWFUL, PM_CLERIC, NON_PM,
-      0, QAVAL, 2000L, NO_COLOR, DEFAULT_MAT, MITRE_OF_HOLINESS),
+      0, QAVAL, 2000L, NO_COLOR, GLASS, MITRE_OF_HOLINESS),
 
     /* Now grants physical damage reduction */
     A("The Longbow of Diana", BOW,
@@ -641,7 +641,7 @@ A("The Palantir of Westernesse", CRYSTAL_BALL,
       (SPFX_ESP | SPFX_HSPDAM), 0,
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), CHARGE_OBJ,
       A_NEUTRAL, PM_TOURIST, NON_PM,
-      0, QAVAL, 7000L, NO_COLOR, DEFAULT_MAT, YENDORIAN_EXPRESS_CARD),
+      0, QAVAL, 7000L, NO_COLOR, PLATINUM, YENDORIAN_EXPRESS_CARD),
 
     /* Revamped Undead Slayer quest artifact
      * Acts as a magical light source, grants reflection, disintegration and
