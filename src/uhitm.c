@@ -7278,7 +7278,7 @@ hmonas(struct monst *mon)
                     verb = "sting";
                     break;
                 case AT_GAZE:
-                    verb = "gaze";
+                    verb = "gaze at";
                     break;
                 default:
                     verb = "hit";
