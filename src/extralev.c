@@ -308,17 +308,12 @@ makerogueghost(void)
         ghostobj->quan = (long) rnd(7);
         ghostobj->owt = weight(ghostobj);
     }
-    if (rn2(2)) {
-        ghostobj = mksobj_at(MACE, x, y, FALSE, FALSE);
-        ghostobj->spe = rnd(3);
-        if (rn2(4))
-            curse(ghostobj);
-    } else {
-        ghostobj = mksobj_at(TWO_HANDED_SWORD, x, y, FALSE, FALSE);
-        ghostobj->spe = rnd(5) - 2;
-        if (rn2(4))
-            curse(ghostobj);
-    }
+
+    ghostobj = mksobj_at(WAR_HAMMER, x, y, FALSE, FALSE);
+    ghostobj->spe = rnd(5) - 2;
+    if (rn2(4))
+        curse(ghostobj);
+
     ghostobj = mksobj_at(BOW, x, y, FALSE, FALSE);
     ghostobj->spe = 1;
     if (rn2(4))
