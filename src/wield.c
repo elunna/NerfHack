@@ -411,12 +411,12 @@ setuqwep(struct obj *obj)
 void
 setuswapwep(struct obj *obj)
 {
-    setworn(obj, W_SWAPWEP);
-
-    if (u.twoweap && obj && obj->oartifact)
-        set_artifact_intrinsic(obj, 1, W_SWAPWEP);
-    if (u.twoweap && obj && obj->oprops)
+    if (u.twoweap && obj) {
+        if (obj->oartifact)
+            set_artifact_intrinsic(obj, 1, W_SWAPWEP);
         set_wep_oprops(obj, 1, W_SWAPWEP);
+    }
+    setworn(obj, W_SWAPWEP);
 
     /* Stat changing weapons are handled elsewhere */
     if (uswapwep == obj && u.twoweap
@@ -1001,10 +1001,11 @@ set_twoweap(boolean on)
                && !hates_item(&gy.youmonst, uwep))
         You_feel("more comfortable now.");
 
-    if (uswapwep && uswapwep->oartifact)
-        set_artifact_intrinsic(uswapwep, on, W_SWAPWEP);
-    if (uswapwep && uswapwep->oprops)
+    if (uswapwep) {
+        if (uswapwep->oartifact)
+            set_artifact_intrinsic(uswapwep, on, W_SWAPWEP);
         set_wep_oprops(uswapwep, on, W_SWAPWEP);
+    }
 }
 
 /* the #twoweapon command */
@@ -1280,6 +1281,11 @@ set_wep_oprops(struct obj *obj, boolean on, long mask)
     /* Similar to the main weapons, this block should probably come before
      * the wielding, otherwise we might set and then unset a stat. */
     if (!on && olduswapwep) {
+        if (obj != uswapwep && artifact_light(uswapwep) && uswapwep->lamplit) {
+            end_burn(uswapwep, FALSE);
+            if (!Blind)
+                pline("%s shining.", Tobjnam(uswapwep, "stop"));
+        }
         /* Fumbling property */
         if (olduswapwep->oprops & ITEM_FUMBLE) {
             if (!(HFumbling & ~TIMEOUT))
@@ -1330,6 +1336,14 @@ set_wep_oprops(struct obj *obj, boolean on, long mask)
     }
 
     if (uswapwep == obj && on) {
+        if (u.twoweap && uswapwep == obj && artifact_light(uswapwep)
+            && !uswapwep->lamplit) {
+            begin_burn(uswapwep, FALSE);
+            if (!Blind) {
+                pline("%s to shine %s!", Tobjnam(uswapwep, "begin"),
+                      arti_light_description(uswapwep));
+            }
+      }
         if (uswapwep->oprops & ITEM_FUMBLE) {
             if (!(HFumbling & ~TIMEOUT))
                 incr_itimeout(&HFumbling, rnd(20));

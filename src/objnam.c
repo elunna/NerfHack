@@ -1862,10 +1862,25 @@ doname_base(
         }
     }
     if (obj->owornmask & W_SWAPWEP) {
-        if (u.twoweap)
+        if (u.twoweap) {
             ConcatF2(bp, 0, " (wielded in %s %s)",
                      URIGHTY ? "left" : "right", body_part(HAND));
-        else
+
+            /* we just added a parenthesized phrase, but the right paren
+               might be absent if the appended string got truncated */
+            if (!Blind && bpspaceleft && bp_eos[-1] == ')') {
+                if (gw.warn_obj_cnt && obj == uswapwep
+                    && (EWarn_of_mon & W_SWAPWEP) != 0L)
+                    /* we know bp[] ends with ')'; overwrite that */
+                        ConcatF2(bp, 1, ", %s %s)",
+                                 glow_verb(gw.warn_obj_cnt, TRUE),
+                                 glow_color(obj->oartifact));
+                else if (obj->lamplit && artifact_light(obj))
+                    /* as above, overwrite known closing paren */
+                        ConcatF1(bp, 1, ", %s lit)",
+                                 arti_light_description(obj));
+            }
+        } else
             /* TODO: rephrase this when obj isn't a weapon or weptool */
             ConcatF1(bp, 0, " (alternate weapon%s; not wielded)",
                      plur(obj->quan));

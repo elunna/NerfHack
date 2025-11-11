@@ -1054,7 +1054,7 @@ set_artifact_intrinsic(
             (void) arti_invoke(otmp);
     }
 
-    if (wp_mask == W_WEP && is_art(otmp, ART_SUNSWORD)) {
+    if (is_art(otmp, ART_SUNSWORD) && (wp_mask & (W_WEP | W_SWAPWEP))) {
         if (on)
             EBlnd_resist |= wp_mask;
         else
