@@ -4838,6 +4838,9 @@ may_generate_aligned(struct obj *otmp)
     /* part of a monster's body and produced when it dies */
     if (otmp->otyp == WORM_TOOTH || otmp->otyp == UNICORN_HORN)
         return FALSE;
+    /* avoid weird questions with this item... */
+    if (otmp->otyp == HELM_OF_OPPOSITE_ALIGNMENT)
+        return FALSE;
     /* artifacts cannot be generated with a quality bit */
     if (otmp->oartifact)
         return FALSE;
