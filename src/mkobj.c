@@ -3513,18 +3513,38 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
                     obj->otyp);
             insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
         }
-
         if (obj->bquality > FQ_LEGENDARY) {
             char matbuf[BUFSZ];
             Sprintf(matbuf, "invalid bquality %d (otyp %d)", obj->bquality,
                     obj->otyp);
             insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
         }
-
         if (obj->alignment > FA_LAWFUL) {
             char matbuf[BUFSZ];
             Sprintf(matbuf, "invalid alignment %d (otyp %d)", obj->alignment,
                     obj->otyp);
+            insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
+        }
+        if (obj->alignment
+                && obj->oclass != ARMOR_CLASS
+                && obj->oclass != WEAPON_CLASS) {
+            char matbuf[BUFSZ];
+            Sprintf(matbuf, "non-valid item is aligned, class %d (otyp %d)",
+                    obj->oclass, obj->otyp);
+            insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
+        }
+        /* Artifacts have their own way of handling alignment */
+        if (obj->oartifact && obj->alignment) {
+            char matbuf[BUFSZ];
+            Sprintf(matbuf, "artifact has alignment value %d (otyp %d)", obj->alignment,
+                    obj->otyp);
+            insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
+        }
+        if (obj->otyp == SCR_CREATE_MONSTER && !Role_if(PM_CARTOMANCER)
+                && obj->corpsenm != NON_PM) {
+            char matbuf[BUFSZ];
+            Sprintf(matbuf, "scroll of create monster has corpsenm (%d) playing as non-cartomancer %d ",
+                obj->corpsenm, obj->otyp);
             insane_object(obj, ofmt0, matbuf, (struct monst *) 0);
         }
     }
