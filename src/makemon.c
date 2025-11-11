@@ -2696,12 +2696,14 @@ mongets(struct monst *mtmp, int otyp)
             if (otmp->blessed)
                 curse(otmp);
             /* Some demons are lawful, hence the conversion below */
-            otmp->alignment = !rn2(3)
+            if (otmp->alignment)
+                otmp->alignment = !rn2(3)
                                   ? sgn(mtmp->data->maligntyp) + 2 : FA_NONE;
         } else if (is_lminion(mtmp)) {
             /* lawful minions don't get cursed, bad, or rusting objects */
             otmp->cursed = FALSE;
-            otmp->alignment = !rn2(3) ? FA_LAWFUL : FA_NONE;
+            if (otmp->alignment)
+                otmp->alignment = !rn2(3) ? FA_LAWFUL : FA_NONE;
             if (otmp->spe < 0)
                 otmp->spe = 0;
             otmp->oerodeproof = 1;
