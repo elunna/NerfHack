@@ -33,7 +33,7 @@
  *     exception is made for two-weapon combat.
  * 4.  Is used as the second weapon for two-weapon combat, and as
  *     a convenience to swap with the main weapon.
- * 5.  Never conveys intrinsics.
+ * 5.  Always conveys intrinsics for artifacts and oprops.
  * 6.  Cursed items never weld (see #3 for reasons), but they also
  *     prevent two-weapon combat.
  *
@@ -57,6 +57,7 @@ staticfn int ready_weapon(struct obj *) NO_NNARGS;
 staticfn int ready_ok(struct obj *) NO_NNARGS;
 staticfn int wield_ok(struct obj *) NO_NNARGS;
 staticfn void finish_splitting(struct obj *);
+staticfn void set_wep_oprops(struct obj *, boolean, long);
 
 /* used by will_weld() */
 /* probably should be renamed */
@@ -410,120 +411,18 @@ setuqwep(struct obj *obj)
 void
 setuswapwep(struct obj *obj)
 {
-    struct obj *olduswapwep = uswapwep;
-
-    if (u.twoweap && obj && (obj->oartifact || obj->oprops))
-        set_artifact_intrinsic(obj, 1, W_SWAPWEP);
-
     setworn(obj, W_SWAPWEP);
+
+    if (u.twoweap && obj && obj->oartifact)
+        set_artifact_intrinsic(obj, 1, W_SWAPWEP);
+    if (u.twoweap && obj && obj->oprops)
+        set_wep_oprops(obj, 1, W_SWAPWEP);
 
     /* Stat changing weapons are handled elsewhere */
     if (uswapwep == obj && u.twoweap
         && (uswapwep->oartifact == ART_OGRESMASHER
                           || uswapwep->oartifact == ART_GIANTSLAYER))
         disp.botl = 1;
-
-    /* Similar to the main weapons, this block should probably come before
-     * the wielding, otherwise we might set and then unset a stat. */
-    if (!u.twoweap && olduswapwep) {
-        /* Fumbling property */
-        if (olduswapwep->oprops & ITEM_FUMBLE) {
-            if (!(HFumbling & ~TIMEOUT))
-                HFumbling = EFumbling = 0;
-            EFumbling &= ~W_SWAPWEP;
-        }
-        /* Hunger property */
-        if (olduswapwep->oprops & ITEM_HUNGER) {
-            EHunger &= ~W_SWAPWEP;
-        }
-        /* Aggravate monster property */
-        if (olduswapwep->oprops & ITEM_STENCH) {
-            EAggravate_monster &= ~W_SWAPWEP;
-        }
-        /* Searching property */
-        if (olduswapwep->oprops & ITEM_SEARCH) {
-            ESearching &= ~W_SWAPWEP;
-        }
-        /* Aggravate monster property */
-        if (olduswapwep->oprops & ITEM_STENCH) {
-            EAggravate_monster &= ~W_SWAPWEP;
-        }
-        /* Insight property */
-        if (olduswapwep->oprops & ITEM_INSIGHT) {
-            ESee_invisible &= ~W_SWAPWEP;
-            toggle_seeinv(olduswapwep, (ESee_invisible & ~W_SWAPWEP), FALSE);
-        }
-        /* Stealth property */
-        if (olduswapwep->oprops & ITEM_STEALTH) {
-            EStealth &= ~W_SWAPWEP;
-            toggle_stealth(olduswapwep, (EStealth & ~W_SWAPWEP), TRUE);
-        }
-        /* Vigilance property */
-        if (olduswapwep->oprops & ITEM_WARN) {
-            EWarning  &= ~W_WEP;
-            see_monsters();
-        }
-        if (olduswapwep->oprops & ITEM_CHA) {
-            (void) changes_stat(ITEM_CHA);
-        }
-        /* Burden/stability property */
-        if (olduswapwep->oprops & ITEM_BURDEN) {
-            HStable &= ~W_SWAPWEP;
-        }
-        if (olduswapwep->oprops & ITEM_DANGER) {
-            EInfravision &= ~W_SWAPWEP;
-        }
-    }
-
-    if (uswapwep == obj && u.twoweap) {
-        if (uswapwep->oprops & ITEM_FUMBLE) {
-            if (!(HFumbling & ~TIMEOUT))
-                incr_itimeout(&HFumbling, rnd(20));
-            EFumbling |= W_SWAPWEP;
-        }
-        if (uswapwep->oprops & ITEM_HUNGER) {
-            EHunger |= W_SWAPWEP;
-        }
-        if (uswapwep->oprops & ITEM_STENCH) {
-            EAggravate_monster |= W_SWAPWEP;
-        }
-        if (uswapwep->oprops & ITEM_SEARCH) {
-            ESearching |= W_SWAPWEP;
-        }
-        if (uswapwep->oprops & ITEM_STENCH) {
-            EAggravate_monster |= W_SWAPWEP;
-        }
-        if (uswapwep->oprops & ITEM_INSIGHT) {
-            ESee_invisible |= W_SWAPWEP;
-            toggle_seeinv(uswapwep, (ESee_invisible & ~W_SWAPWEP), TRUE);
-        }
-        if (uswapwep->oprops & ITEM_STEALTH) {
-            EStealth |= W_SWAPWEP;
-            if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
-                pline("This %s will not silence someone %s.",
-                      xname(uswapwep), rn2(2) ? "as large as you" : "of your stature");
-                EStealth &= ~W_SWAPWEP;
-            } else if (Stomping) {
-                pline("This %s will not silence your stomping!", xname(uswapwep));
-                EStealth &= ~W_SWAPWEP;
-            } else
-                toggle_stealth(uswapwep, (EStealth & ~W_SWAPWEP), TRUE);
-        }
-        if (uswapwep->oprops & ITEM_WARN) {
-            EWarning |= W_WEP;
-            see_monsters();
-        }
-        if (uswapwep->oprops & ITEM_CHA) {
-            (void) changes_stat(ITEM_CHA);
-        }
-        if (uswapwep->oprops & ITEM_BURDEN) {
-            HStable |= W_SWAPWEP;
-        }
-        if (uswapwep->oprops & ITEM_DANGER) {
-            EInfravision |= W_SWAPWEP;
-        }
-    }
-    return;
 }
 
 /* getobj callback for object to ready for throwing/shooting;
@@ -1102,9 +1001,10 @@ set_twoweap(boolean on)
                && !hates_item(&gy.youmonst, uwep))
         You_feel("more comfortable now.");
 
-    if (uswapwep && uswapwep->oartifact) {
+    if (uswapwep && uswapwep->oartifact)
         set_artifact_intrinsic(uswapwep, on, W_SWAPWEP);
-    }
+    if (uswapwep && uswapwep->oprops)
+        set_wep_oprops(uswapwep, on, W_SWAPWEP);
 }
 
 /* the #twoweapon command */
@@ -1115,6 +1015,7 @@ dotwoweapon(void)
     if (u.twoweap) {
         You("switch to your primary weapon.");
         set_twoweap(FALSE); /* u.twoweap = FALSE */
+        set_wep_oprops(uswapwep, FALSE, W_SWAPWEP);
         update_inventory();
         return ECMD_OK;
     }
@@ -1178,13 +1079,10 @@ uqwepgone(void)
 void
 untwoweapon(void)
 {
-    struct obj *olduswapwep = uswapwep;
-
     if (u.twoweap) {
         You("%s.", can_no_longer_twoweap);
         set_twoweap(FALSE); /* u.twoweap = FALSE */
-        setuswapwep((struct obj *) 0);
-        setuswapwep(olduswapwep);
+        set_wep_oprops(uswapwep, FALSE, W_SWAPWEP);
         update_inventory();
     }
     return;
@@ -1372,5 +1270,114 @@ mwelded(struct obj *obj)
         return TRUE;
     return FALSE;
 }
+
+/* We just care about on/off, caller handles the status of utwoweap. */
+staticfn void
+set_wep_oprops(struct obj *obj, boolean on, long mask)
+{
+    struct obj *olduswapwep = uswapwep;
+
+    /* Similar to the main weapons, this block should probably come before
+     * the wielding, otherwise we might set and then unset a stat. */
+    if (!on && olduswapwep) {
+        /* Fumbling property */
+        if (olduswapwep->oprops & ITEM_FUMBLE) {
+            if (!(HFumbling & ~TIMEOUT))
+                HFumbling = EFumbling = 0;
+            EFumbling &= ~mask;
+        }
+        /* Hunger property */
+        if (olduswapwep->oprops & ITEM_HUNGER) {
+            EHunger &= ~mask;
+        }
+        /* Aggravate monster property */
+        if (olduswapwep->oprops & ITEM_STENCH) {
+            EAggravate_monster &= ~mask;
+        }
+        /* Searching property */
+        if (olduswapwep->oprops & ITEM_SEARCH) {
+            ESearching &= ~mask;
+        }
+        /* Aggravate monster property */
+        if (olduswapwep->oprops & ITEM_STENCH) {
+            EAggravate_monster &= ~mask;
+        }
+        /* Insight property */
+        if (olduswapwep->oprops & ITEM_INSIGHT) {
+            ESee_invisible &= ~mask;
+            toggle_seeinv(olduswapwep, (ESee_invisible & ~mask), FALSE);
+        }
+        /* Stealth property */
+        if (olduswapwep->oprops & ITEM_STEALTH) {
+            EStealth &= ~mask;
+            toggle_stealth(olduswapwep, (EStealth & ~mask), TRUE);
+        }
+        /* Vigilance property */
+        if (olduswapwep->oprops & ITEM_WARN) {
+            EWarning  &= ~W_WEP;
+            see_monsters();
+        }
+        if (olduswapwep->oprops & ITEM_CHA) {
+            (void) changes_stat(ITEM_CHA);
+        }
+        /* Burden/stability property */
+        if (olduswapwep->oprops & ITEM_BURDEN) {
+            HStable &= ~mask;
+        }
+        if (olduswapwep->oprops & ITEM_DANGER) {
+            EInfravision &= ~mask;
+        }
+    }
+
+    if (uswapwep == obj && on) {
+        if (uswapwep->oprops & ITEM_FUMBLE) {
+            if (!(HFumbling & ~TIMEOUT))
+                incr_itimeout(&HFumbling, rnd(20));
+            EFumbling |= mask;
+        }
+        if (uswapwep->oprops & ITEM_HUNGER) {
+            EHunger |= mask;
+        }
+        if (uswapwep->oprops & ITEM_STENCH) {
+            EAggravate_monster |= mask;
+        }
+        if (uswapwep->oprops & ITEM_SEARCH) {
+            ESearching |= mask;
+        }
+        if (uswapwep->oprops & ITEM_STENCH) {
+            EAggravate_monster |= mask;
+        }
+        if (uswapwep->oprops & ITEM_INSIGHT) {
+            ESee_invisible |= mask;
+            toggle_seeinv(uswapwep, (ESee_invisible & ~mask), TRUE);
+        }
+        if (uswapwep->oprops & ITEM_STEALTH) {
+            EStealth |= mask;
+            if (maybe_polyd(is_giant(gy.youmonst.data), Race_if(PM_GIANT))) {
+                pline("This %s will not silence someone %s.",
+                      xname(uswapwep), rn2(2) ? "as large as you" : "of your stature");
+                EStealth &= ~mask;
+            } else if (Stomping) {
+                pline("This %s will not silence your stomping!", xname(uswapwep));
+                EStealth &= ~mask;
+            } else
+                toggle_stealth(uswapwep, (EStealth & ~mask), TRUE);
+        }
+        if (uswapwep->oprops & ITEM_WARN) {
+            EWarning |= W_WEP;
+            see_monsters();
+        }
+        if (uswapwep->oprops & ITEM_CHA) {
+            (void) changes_stat(ITEM_CHA);
+        }
+        if (uswapwep->oprops & ITEM_BURDEN) {
+            HStable |= mask;
+        }
+        if (uswapwep->oprops & ITEM_DANGER) {
+            EInfravision |= mask;
+        }
+    }
+}
+
 
 /*wield.c*/
