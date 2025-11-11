@@ -1101,6 +1101,10 @@ set_twoweap(boolean on)
     } else if (!on && uswapwep && hates_item(&gy.youmonst, uswapwep)
                && !hates_item(&gy.youmonst, uwep))
         You_feel("more comfortable now.");
+
+    if (uswapwep && uswapwep->oartifact) {
+        set_artifact_intrinsic(uswapwep, on, W_SWAPWEP);
+    }
 }
 
 /* the #twoweapon command */
